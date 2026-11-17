@@ -1,0 +1,325 @@
+{
+  "schemaVersion": "xiaozhi.ai-structure-source-acceptance.v1",
+  "date": "2026-11-18",
+  "result": "FEATURE_PASS_INTEGRATION_PENDING",
+  "fullKnowledgeGoal": "ACTIVE",
+  "featureBase": "09d7937a1bf6eaa616ccdcb2ee4897fa670bc8c4",
+  "remoteToIntegrate": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+  "finalFeatureRuntime": {
+    "runtimeTreeSha256": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+    "mainSha256": "de691b80e95d25f565fb8d826ba89fd6684c564b5ae28aa33428cf868180b28a",
+    "runtimeFiles": 476
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "logSha256": "e4b8d02124411740cff534e9deb5e3df0620bb7104f19edb3c28868c48eed882"
+  },
+  "gates": [
+    {
+      "name": "structure-source",
+      "passed": 16,
+      "total": 16,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/ai-structure-source-boundaries.mjs <controlled fixture>",
+      "logSha256": "8f4682e3bbb769104b0434f61a1a83cd196d48a59e972eceb2db73f306438440"
+    },
+    {
+      "name": "page",
+      "passed": 247,
+      "total": 247,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "logSha256": "c90eecdf3a5a31bdfb944120de464c80f34bdac247a0983dd60a57f33d9dc349"
+    },
+    {
+      "name": "structure",
+      "passed": 23,
+      "total": 23,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-boundaries.mjs",
+      "logSha256": "0d2a0c4d6717ad7b7f70fb7a61b512dd5c5fac4a48659a374b6734037c667adb"
+    },
+    {
+      "name": "repository",
+      "passed": 37,
+      "total": 37,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-repository.mjs",
+      "logSha256": "be37b7aa9ccc4e4dcb5ea32310a9860409ae148068f44efa06408cf832c1e0c8"
+    },
+    {
+      "name": "teacher-review",
+      "passed": 15,
+      "total": 15,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs",
+      "logSha256": "cbedbe673fe7d0913d5a085daf61cf228be510d856f89e0878b38ae39b2c03d9"
+    },
+    {
+      "name": "native-gap",
+      "passed": 15,
+      "total": 15,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/native-gap-boundaries.mjs",
+      "logSha256": "ba24944b98bd34c5e7fc1a0f7c091001c9d69635ed8efbcfe501ea09fb0fde08"
+    },
+    {
+      "name": "book-answer",
+      "passed": 18,
+      "total": 18,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-answer-boundaries.mjs",
+      "logSha256": "c72e4a36d1910f6cb473147d12474d74f0ba1882cd070a47b88df9fef7ec2053"
+    },
+    {
+      "name": "choice-answer",
+      "passed": 9,
+      "total": 9,
+      "exitCode": 0,
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-choice-answer-boundaries.mjs",
+      "logSha256": "d54c2ac27613a8ac6c252d0bbc1b252359f14215b27350f619a03d0b6c3b1710"
+    },
+    {
+      "name": "components",
+      "passed": 253,
+      "total": 253,
+      "exitCode": 0,
+      "command": "npm run test:renderer-components",
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  ],
+  "featureLegacyRegression": {
+    "command": "OMNI_EDU_TEST_BUILD_ROOT=<final feature tree> node scripts/electron-smoke.mjs",
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "runtimeTreeSha256": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+    "logSha256": "f2f82cb84ba9932e4d86d13f0ee1a72210afd51999f02d3d94cc1ec2186c357d"
+  },
+  "firstRealBatch": {
+    "runtimeTreeSha256": "f265ce81619ac47c39f8b02c9e4b32b2c5e501333014e20e98913ca5f54288cb",
+    "batchId": "aibatch_8aa61748-8389-445c-97ab-5c469b23f09c",
+    "input": {
+      "sha256": "d82825cc0480ebf6cd90a872606dc402fd0973b4fde40107d816578b8939b55d",
+      "bytes": 14815,
+      "contextBytes": 9140,
+      "paragraphs": 21,
+      "supplemental": 1
+    },
+    "result": {
+      "status": "attention",
+      "unitStatus": "review",
+      "error": "page_content_incomplete",
+      "calls": 3,
+      "elapsedMs": 76754,
+      "questions": 4,
+      "states": [
+        "ai_needs_review",
+        "ai_needs_review",
+        "ai_needs_review",
+        "ai_needs_review"
+      ],
+      "issues": [
+        [
+          "missing_grade",
+          "answer_conflict"
+        ],
+        [
+          "missing_grade",
+          "answer_conflict"
+        ],
+        [
+          "missing_grade",
+          "answer_conflict"
+        ],
+        [
+          "missing_grade",
+          "answer_conflict"
+        ]
+      ]
+    },
+    "transport": [
+      {
+        "hasContext": true,
+        "contextSha256": "104230bb9b22632bb1ba6a08ebff6f09387efd9d16486ad4ac0fe8850cf3c296",
+        "paragraphs": 21,
+        "supplemental": 1,
+        "hasBlockHints": true,
+        "hasMaterial": true,
+        "hasSupplementalText": true,
+        "imageCount": 1
+      },
+      {
+        "hasContext": false,
+        "contextSha256": null,
+        "paragraphs": 0,
+        "supplemental": 0,
+        "hasBlockHints": false,
+        "hasMaterial": false,
+        "hasSupplementalText": false,
+        "imageCount": 5
+      },
+      {
+        "hasContext": false,
+        "contextSha256": null,
+        "paragraphs": 0,
+        "supplemental": 0,
+        "hasBlockHints": false,
+        "hasMaterial": false,
+        "hasSupplementalText": false,
+        "imageCount": 5
+      }
+    ],
+    "checks": [
+      "Original AI authorization freezes the authenticated local paragraphs and missing-option OCR evidence in the new quality batch",
+      "Real DeepSeek receives restored evidence on the first pass while later independent visual reading omits all OCR and paragraph hints",
+      "Four real AI results preserve the printed missing option, keep unverified provenance and protect every earlier bank/source row",
+      "Both desktop sizes expose authenticated structure evidence and the actual restored AI transcript through the original materials navigation",
+      "Cold launch authenticates the new frozen structure input and real paid responses without rewriting old teacher facts"
+    ]
+  },
+  "finalRealBatch": {
+    "runtimeTreeSha256": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+    "batchId": "aibatch_7c805393-fb9b-4652-9400-f9b48ebbfa30",
+    "input": {
+      "sha256": "8792777603a57767fc8cf867569f2abc5d1d91edf0c1a2d8fb74aed2bc1fd2b6",
+      "bytes": 14878,
+      "contextBytes": 9140,
+      "paragraphs": 21,
+      "supplemental": 1
+    },
+    "result": {
+      "status": "attention",
+      "unitStatus": "review",
+      "error": "page_content_incomplete",
+      "calls": 3,
+      "elapsedMs": 71717,
+      "questions": 4,
+      "states": [
+        "ai_needs_review",
+        "ai_needs_review",
+        "ai_needs_review",
+        "ai_needs_review"
+      ],
+      "issues": [
+        [
+          "missing_grade",
+          "ai_mismatch"
+        ],
+        [
+          "missing_grade",
+          "ai_mismatch"
+        ],
+        [
+          "missing_grade",
+          "ai_mismatch"
+        ],
+        [
+          "missing_grade",
+          "ai_mismatch"
+        ]
+      ]
+    },
+    "transport": [
+      {
+        "hasContext": true,
+        "literalChoiceFormat": false,
+        "contextSha256": "104230bb9b22632bb1ba6a08ebff6f09387efd9d16486ad4ac0fe8850cf3c296",
+        "paragraphs": 21,
+        "supplemental": 1,
+        "hasBlockHints": true,
+        "hasMaterial": true,
+        "hasSupplementalText": true,
+        "imageCount": 1
+      },
+      {
+        "hasContext": false,
+        "literalChoiceFormat": false,
+        "contextSha256": null,
+        "paragraphs": 0,
+        "supplemental": 0,
+        "hasBlockHints": false,
+        "hasMaterial": false,
+        "hasSupplementalText": false,
+        "imageCount": 5
+      },
+      {
+        "hasContext": false,
+        "literalChoiceFormat": true,
+        "contextSha256": null,
+        "paragraphs": 0,
+        "supplemental": 0,
+        "hasBlockHints": false,
+        "hasMaterial": false,
+        "hasSupplementalText": false,
+        "imageCount": 5
+      }
+    ],
+    "checks": [
+      "Original AI authorization freezes the authenticated local paragraphs and missing-option OCR evidence in the new quality batch",
+      "Real DeepSeek receives restored evidence on the first pass while later independent visual reading omits all OCR and paragraph hints",
+      "Four real AI results preserve the printed missing option, keep unverified provenance and protect every earlier bank/source row",
+      "Both desktop sizes expose authenticated structure evidence and the actual restored AI transcript through the original materials navigation",
+      "Cold launch authenticates the new frozen structure input and real paid responses without rewriting old teacher facts"
+    ]
+  },
+  "sourceReadback": {
+    "runtimeTreeSha256": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+    "checks": [
+      "Final terminal batch status and structure provenance remain visible at both desktop sizes without new provider calls",
+      "All four current AI questions reopen their exact saved pending source crops through the existing notebook gallery",
+      "Earlier paid inputs/responses, current receipts and call counters remain byte-identical during source readback"
+    ],
+    "questions": 4,
+    "addedCalls": 0,
+    "allPaidCalls": 6
+  },
+  "modelCallsAdded": 6,
+  "publicTestSource": "Existing authored two-column physics fixture with actual PDFium/RapidOCR/native crop receipts",
+  "security": {
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "featureProductionDependenciesChanged": false,
+    "credentials": "Existing authorized environment credential configured through the original settings API into isolated Windows safe storage"
+  },
+  "remaining": [
+    "Four final records remain ai_needs_review with missing_grade and ai_mismatch",
+    "Source and final printed question/option label periods differ between ASCII and fullwidth; current comparison remains strict",
+    "No complete question documents for those four records yet; authenticated pending source crops remain readable",
+    "Next repair should reuse the saved responses and original local source-layout recheck with audit and 0 new model calls",
+    "Cross-page supplementary proof, broad natural quality, complex formulas/tables, answer enrichment, retrieval/papers, install/migration and 10GB remain open"
+  ],
+  "failureHistory": [
+    {
+      "stage": "Type narrowing",
+      "logSha256": "a2b819ade5abb2238b9ef0c23c4013e0e435a2a60dc0e4ad74b8b59d7e5b41d4"
+    },
+    {
+      "stage": "Supplement appended out of option order",
+      "logSha256": "88d2c8654011db22a35037fc827a8a166beeaa1dad2fbceda2bb0b9568b420a9"
+    },
+    {
+      "stage": "Observer dynamic import",
+      "logSha256": "cc04fb98c5790e42e1fbe0edceda965f9e93861f677440b836ddabdd9b7b8232"
+    },
+    {
+      "stage": "Cross-runtime credential fixture",
+      "logSha256": "322039bb117ec92f69a4ac31a221057408c08c5f18771c8375e9b25d77ea081b"
+    },
+    {
+      "stage": "Full-page versus pending-crop test oracle",
+      "logSha256": "b8f5edbdc5e4c9f1018c7f50a509eb41c13442741ce7945b73d6c92a941bf0b6"
+    },
+    {
+      "stage": "SQLite row prototype versus JSON oracle",
+      "logSha256": "1359b945a7516201d9b4b3e674fa22be335d38dc08aa1b9dd39bd3d862c514bc"
+    }
+  ]
+}

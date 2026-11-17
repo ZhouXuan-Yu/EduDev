@@ -43,6 +43,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
    {view&&<>
     <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.bookAnswers?(view.bookAnswers.pageUncertain?'答案整页转录仍有疑点':view.status==='needs_review'?'答案按条目核对，局部待核项已保留':'AI答案转录，未经教师逐字核验'):view.status==='needs_review'?(view.transcriptionStatus==='complete'?'正文可检索，题目仍需核对':'正文和题目仍需核对'):view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
     {view.status==='needs_review'&&view.transcriptionStatus==='complete'&&<p data-testid="material-ai-page-transcription-status">正文双遍转录一致，可检索；本页题目仍有待核项，未经教师逐字核验。</p>}
+    {view.structureContext&&<p role="note" data-testid="material-ai-structure-source">已对照本地恢复的{view.structureContext.paragraphs.length}段内容，补充识别{view.structureContext.supplemental.length}行{view.structureContext.unresolved.length?`，另有${view.structureContext.unresolved.length}行待核对`:'。'}</p>}
     {view.continuation&&<p role="note" data-testid="material-ai-page-continuation">已合并第{view.continuation.source.page}页的续题区域；完整题目仍须通过来源与质量核对。可在原件预览中切换到该页查看。</p>}
     <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} onDraftDirty={setDraftDirty} resource={view.resource} initialPage={view.source.page} busy={busy}/>
     {view.inputImage&&<div>

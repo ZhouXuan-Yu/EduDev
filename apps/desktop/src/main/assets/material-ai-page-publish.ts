@@ -1,3 +1,4 @@
+import {missingAiStructureQuestions} from '../../shared/material-ai-structure';
 import {attachReadingContent} from './material-ai-source-reading';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {printedChoiceIssues} from '../../shared/material-ai-printed-choice';
@@ -42,6 +43,10 @@ export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,s
  const visual=!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,crops,candidate.fields.stem,prompt);
  const bodyRequired=prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT;
  const issues=[...q.issues.filter(i=>!visual||i!=='requires_image'),...archiveMissing(q),...printedChoiceIssues(first,final,q,prompt),...blindAnswerIssues((sourceReadingEnabled(prompt)?originalFirst||first:first).questions.find(a=>a.number===q.number),q,prompt,bookAnswerPolicy)];if(assessment.review&&!(sourceReadingEnabled(prompt)&&visual)||!evidence&&!visual||bodyRequired&&!visual)issues.push('ai_mismatch');
+ if(prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT){
+  const missing=missingAiStructureQuestions(prompt.structureContext,final);
+  if(prompt.structureContext?.unresolved.length||missing.includes(q.number)||missing.includes('*'))issues.push('uncertain_ocr');
+ }
  if(sourceReadingEnabled(prompt)&&originalFirst)for(const role of ['answer','analysis'] as const){const original=originalFirst.questions.find(a=>a.number===q.number);if(original?.[`${role}Origin`]==='source'&&(q[`${role}Origin`]!=='source'||normalized(original[role])!==normalized(q[role])))issues.push('answer_conflict');}
  if(q.number===final.questions.at(-1)?.number&&following!=='separate'&&!(visual&&pageContinuation(prompt)?.number===q.number))issues.push(following==='continued'?'cross_page':'incomplete_question');
  if(!visual&&(q.requiresImage||q.projection.figures.state!=='not_applicable'))issues.push('requires_image');

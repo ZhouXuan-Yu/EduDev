@@ -3,6 +3,7 @@ import {aiTextSignature,questionNumberPrefix,type AiImageQuestion} from './mater
 import type {AiPagePrompt} from './material-ai-page';
 
 export const PRINTED_CHOICE_ANSWER = 'printed-choice-answer.v1' as const;
+export const PRINTED_CHOICE_LITERAL_ANSWER = 'printed-choice-literal-answer.v1' as const;
 export const printedChoiceAnswerEnabled = (prompt?: AiPagePrompt) => prompt?.policy === 'page-fragments.v3' && prompt.choiceAnswerPolicy === PRINTED_CHOICE_ANSWER;
 type Option = {label: string; text: string};
 
@@ -57,3 +58,10 @@ export function printedChoiceAnswerComparison(a: AiImageQuestion, b: AiImageQues
 }
 
 export const PRINTED_CHOICE_ANSWER_INSTRUCTION = `\n[普通选择题答案 printed-choice-answer.v1] 对新增的选择题解答，answer仅填写实际选项字母，多选按原选项顺序填写；选项内容、推导和说明写入analysis。完整原选项继续按来源协议保留，不能为答案改写选项。原件印刷的source答案保持原文。存在真实答案、条件、图义或选项数量疑点时保留原疑点，不能用格式统一声称答案正确或教师确认。`;
+
+/** Frozen for new structure-backed inputs; nested literal roles keep their schema. */
+export function printedChoiceLiteralInstruction(prompt: AiPagePrompt | undefined, sourceOnly: boolean) {
+  if (sourceOnly || prompt?.policy !== 'page-fragments.v3' || prompt.literalChoiceAnswerPolicy !== PRINTED_CHOICE_LITERAL_ANSWER) return '';
+  return PRINTED_CHOICE_ANSWER_INSTRUCTION.replace('printed-choice-answer.v1', PRINTED_CHOICE_LITERAL_ANSWER)
+    .replace('answer仅填写', 'answer.text仅填写').replace('写入analysis', '写入analysis.text');
+}

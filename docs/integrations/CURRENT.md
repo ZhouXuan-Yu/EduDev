@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+新增可选 xiaozhi.ai-structure-source.v1 与 printed-choice-literal-answer.v1，复用原 PDFium、RapidOCR、结构仓库、QuestionAssets、pageBlockTexts、AI writer、typed AiPageView 与 DeepSeek。单份结构上下文32KiB，派生读取4MiB，仍用原三阶段模型流程。没有新表、IPC、生产依赖或服务。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
+
 ## 2026-11-18 PDF 原生定位与局部 OCR 补缺
 
 复用锁定 unpdf1.8.1/PDF.js6.1.200、PDFium、RapidOCR、PP-DocLayoutV3 和原 QuestionAssets/local-utility-host。新增 pdf-text-worker 本地构建入口及私有版本化协议，页读取最多64MiB，4000项/128000字符；每页8个缺行、每行原图与固定纵向归一化两次上限。新派生引擎 v2，旧 schema 与归档 reader 兼容，无新生产依赖或模型调用。

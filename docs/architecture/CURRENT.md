@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+新 standard/quality AI 通过原 localBlocks/pagePreparation 接入可选结构来源，按段落顺序生成块提示，冻结历史 generation 和页摘要。原页、裁图及 nativeGap 回执发送前与冷读认证，独立 literal 阶段移除文字提示。发布检查未确认及被遗漏的补充行。原 SQLite/文件、Pi、任务 writer 与云端授权边界继续使用。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
+
 ## 2026-11-18 PDF 原生定位与局部 OCR 补缺
 
 在 material-structure-runtime 的整页 OCR/PP 区域之后、recoverStructurePage 之前，执行有界 pdf-text-worker 原生文字定位与局部 OCR 严格一致性检查。派生 v2 保存 nativeRecovery，全页原 rawText 保留。结构仓库的物理原 OCR 身份复用既有来源成员和题目，避免跨代重复；SQLite/文件事实源、原队列和 Pi 保持。未确认原生缺行阻止自动归档，教师可通过原显式来源核对修正并保存，原生文字也受原页隐私授权。
