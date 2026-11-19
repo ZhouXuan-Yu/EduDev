@@ -4,12 +4,14 @@ import type {EffectRecord, EffectProof} from './types';
 import {createEffectState} from './state';
 import {createNetworkReceiptFiles, networkOutcomeMatches} from './network-receipts';
 import {protocolHash} from '../capabilities/validation';
+import {retiredResizeProof} from './terminal-resize-proof';
 
 /** Explicit continuation rechecks durable receipts. No operation or network request is repeated. */
 export function createEffectReconciler(options: {sql: Sql; readback: ReceiptReadback; networkDirectory: string}) {
   const effects = createEffectState(options.sql);
   const files = createNetworkReceiptFiles(options.networkDirectory);
   async function proof(record: EffectRecord): Promise<{proofs: EffectProof[]; digest: string; failed?: boolean} | null> {
+    if (record.operation === 'job_resize') return retiredResizeProof(options.sql, options.readback, record);
     const execution = record.execution;
     if (record.operation === 'network_get' || record.operation === 'network_post') {
       if (!execution?.leaseId) return null;

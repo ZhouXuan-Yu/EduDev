@@ -57,7 +57,7 @@ export function createTerminalInput(sql: Sql, lifecycle: TerminalLifecycle) {
     if (!effect || effect.state !== 'executing') return;
     const record = await jobs.get(effect.target!);
     await effects.transition(effect.id, effect.revision, 'unknown', jobAuthority(record));
-    if (['starting', 'running'].includes(record.document.state)) {
+    if (['job_input', 'job_eof'].includes(effect.operation) && ['starting', 'running'].includes(record.document.state)) {
       lifecycle.notify(await jobs.capture(record.document.jobId, record.document.leaseRevision, doc => {doc.notice = 'unknown_ack';}));
     }
   }

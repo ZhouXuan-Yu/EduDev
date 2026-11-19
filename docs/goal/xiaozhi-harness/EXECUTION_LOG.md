@@ -1,5 +1,11 @@
 # 执行日志
 
+## 2026-11-19 终端关闭后的 resize 核对
+
+原确认 API 真实复现 not_ready。将 resize 的结算限定在可复核的关闭终端上，原 Effect CAS、文件核对以及真实输入阻断继续沿用。输入、EOF 仍可记录未知 ACK。页面点击和冷启动均保留教师确认，合成原任务和原文件字节未修改。[测试证据](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json)
+
+单次本地 API 观察为旧版 9.10ms 返回失败、修复版 101.85ms 完成核对，二者完成条件不同。无等待期模型请求，本轮累计付费账本 3/200。npm audit 29 项与 377d5dc 相同，包锁未变。需要回滚时对该功能提交做普通 revert，回执沿既有 schema 1 保存，无数据迁移。
+
 ## 2026-11-19 主线跟踪检查点
 
 `096b46b` 正常快进整合 GitHub `main`。当前证据检查点只修改测试和文档。真实 Host 终端 Grant 5/5、HTTP MCP 5/5，Terra 实页覆盖 W1、W3、A1、A2、S2。两套 Host 复用有界启动器，工作台脚本可以用隔离构建目录。 [终端与回归](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json) · [实页](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json)

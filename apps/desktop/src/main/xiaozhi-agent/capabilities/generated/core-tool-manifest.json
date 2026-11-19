@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "4bd208d9dbaf8fba8c31ab42639190db58d5f9de6b0cab4af9488f3b7888727f",
+  "sourceHash": "a29ffc22cffb9cf04cd9839ad422598def8a513f56ff53bc981990c589efa1cf",
   "sources": [
     {
       "file": "package-lock.json",
@@ -936,11 +936,15 @@
     },
     {
       "file": "src/main/xiaozhi-agent/effects/reconcile.ts",
-      "sha256": "103b86c30f9cf55a91427e5faa1f74937f2d6b2d064221dbd9c66db70103e427"
+      "sha256": "31152e22c73f8358928c458387fadcef86f1ec5b4c2015385774a3c7838aede6"
     },
     {
       "file": "src/main/xiaozhi-agent/effects/state.ts",
       "sha256": "162b5b9db8fd300877d2b58f468657e3dd233c190c286a3bd92fb8704ff506a5"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/effects/terminal-resize-proof.ts",
+      "sha256": "6d3fb0207c7c37ec15ae2d994c60b2447b8f711ae685143e930e9784969192ab"
     },
     {
       "file": "src/main/xiaozhi-agent/effects/tools.ts",
@@ -1576,7 +1580,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/input.ts",
-      "sha256": "a1948a2da85ad071f0cbf852b31a22be4af93097f69acacaea94acedd97fe86c"
+      "sha256": "001b2dab08710fac514d0049a79b25246f62714c96d9f0b38d650e028047ce6f"
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/job-state.ts",

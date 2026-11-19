@@ -183,6 +183,20 @@ try {
         const physical = final.audit.filter((row: any) => row.kind === 'terminal_job_terminal' && row.reference === job.jobId).at(-1);
         assert(physical); report.cleanup = JSON.parse(physical.metadata_json).result.cleanup;
         assert.deepEqual(report.cleanup, {jobActiveProcesses: 0, profileRemoved: true, remainingOwnedAces: 0, ptyClosed: true});
+        assert(final.task.ok, JSON.stringify(final.task));
+        const {task, candidate, canAccept} = final.task.value;
+        assert(task && candidate && canAccept, 'original reviewable Task candidate required');
+        const reviewed = await host!.reviewTask({schema: task.schema, sessionId, taskId: task.id,
+          revision: task.revision, requirementsVersion: task.requirementsVersion, requestId: 'xitact_' + randomUUID(),
+          candidate, checked: task.criteria.filter(criterion => criterion.kind === 'human')
+            .map(criterion => ({criterionId: criterion.id, version: criterion.version, accepted: true}))});
+        report.unknownInputReview = reviewed;
+        assert.deepEqual(reviewed, {ok: false, error: 'not_ready'});
+        const protectedState = await snapshot();
+        assert.deepEqual(protectedState.effects.find(row => row.id === effect.id),
+          final.effects.find(row => row.id === effect.id));
+        assert(protectedState.task.ok);
+        assert.equal(protectedState.task.value.task?.state, task.state);
         assert.equal(instrumentation.writes.length, 1); assert.equal(report.modelCalls, calls);
       });
     } else {

@@ -1,0 +1,162 @@
+{
+  "status": "PASS_SCOPED_RETIRED_RESIZE",
+  "sourceBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",
+  "mainSha256": "956cdb126e2716ca81c55cf0d4e2bd26e8a7b978aa186f9c18c56b3f9bcf8c72",
+  "coreToolSourceHash": "a29ffc22cffb9cf04cd9839ad422598def8a513f56ff53bc981990c589efa1cf",
+  "sealedOriginal": {
+    "dbSha256": "8b17ada029370e1b728a7de6f25f16f7fce2b9aec2ed04efeff3171c72c9503e",
+    "fileSha256": "a491a636bb1c0e184abde6d61ed861c9912754cdecdb7ba720c12ce0f1b2df8c",
+    "unchanged": true
+  },
+  "teacherConfirmation": {
+    "old": {
+      "compiledMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+      "report": {
+        "path": "%TEMP%/teacher-resize-red-nA8wjf/report.json",
+        "sha256": "7761e8a66d7ac803b991de8551bc6745626669e89402e3fb496c793d9a13611f"
+      },
+      "ui": {
+        "path": "%TEMP%/w3review-777c8afb/review-report-attempt4.json",
+        "sha256": "d5ccc14cf00dcfa3538e151410dd5b943514003331689ae9ee4c23bed19a0c41"
+      },
+      "state": "review_required",
+      "revision": 9,
+      "error": "not_ready",
+      "reviewMs": 9.1
+    },
+    "fixed": {
+      "report": {
+        "path": "%TEMP%/teacher-resize-green-xYEC0f/report.json",
+        "sha256": "d3b405039df77543727177e560db8758f85a267f40261546e912bf63054e32be"
+      },
+      "ui": {
+        "path": "%TEMP%/w3fixed-79816212/fixed-review-report.json",
+        "sha256": "5095b8e45ed2233c92133b59d5749112dca40ea37205dff1010fe1283cc354d4"
+      },
+      "independentCold": {
+        "path": "%TEMP%/w3fixed-79816212/fixed-cold-report.json",
+        "sha256": "65e514d3f96d571d9f07c8192044c13e965129ed4571e57a395b03ca808e39a0"
+      },
+      "state": "completed",
+      "revision": 10,
+      "teacherChecks": [
+        {
+          "authority": "teacher",
+          "state": "passed"
+        }
+      ],
+      "reviewMs": 101.85
+    },
+    "timingScope": "Single observed failing response versus verified successful confirmation; timings describe distinct outcomes, not a speed comparison."
+  },
+  "retirement": {
+    "beforeState": "unknown",
+    "afterState": "reconciled",
+    "afterRevision": 4,
+    "proofs": [
+      {
+        "kind": "terminal",
+        "reference": "terminal-resize-retired-closed-job.v1:term_d17e0f1f-2348-4d70-b143-1f00b29b3f33:xicmd_ee3632c6-98db-4818-987f-82e9a44e0f1c",
+        "digest": "b23e88c5e56c788cb9a346031d20cd77eb2ce9625e04c8a93917c07d0650d114"
+      }
+    ],
+    "noResizeAck": true,
+    "inputSequence": 2,
+    "acknowledgedInputSequence": 2,
+    "nativeCleanup": {
+      "jobActiveProcesses": 0,
+      "profileRemoved": true,
+      "remainingOwnedAces": 0,
+      "ptyClosed": true
+    },
+    "originalInputsPreserved": true,
+    "unrelatedPlanUnknownPreserved": true,
+    "coldNetworkCalls": 0
+  },
+  "hostRegressions": {
+    "terminalGrant": {
+      "report": {
+        "path": "%TEMP%/terminal-grant-dNOG7h/SUMMARY.json",
+        "sha256": "0843c3c74c3ad3ca9663a69be93e583840bb525f2d88fd2adbd319dc20381746"
+      },
+      "passed": 5,
+      "sourceInputs": 789,
+      "sourceDrift": []
+    },
+    "httpMcp": {
+      "report": {
+        "path": "%TEMP%/mcp-effect-2ZWHaL/SUMMARY.json",
+        "sha256": "e4153da2d3e1e6b5f5c6a05c7ff016d4a3c9ee2c607696c0b8bcbe53ba0e217c"
+      },
+      "passed": 5,
+      "sourceInputs": 790,
+      "sourceDrift": []
+    },
+    "independentDirectHost": {
+      "report": {
+        "path": "%TEMP%/terminal-resize-review-d4hPil/SUMMARY.json",
+        "sha256": "b1fd16061e9a4ef4db926e7ff38fa8307343bf4f6e284bfcee7904e9aed50421"
+      },
+      "passed": 3,
+      "sourceInputs": 789,
+      "sourceDrift": []
+    }
+  },
+  "realPtyRecovery": {
+    "command": "node scripts/xiaozhi-agent/phase6-job-recovery-parent.mjs",
+    "suite": {
+      "path": "%TEMP%/xiaozhi-phase6-job-recovery-fUtLeJ/report.json",
+      "sha256": "a8aea5bd6f6e7e5b77c8dd4d4fbd10479844a1d4e443e6b1afe4c9d2879abfad"
+    },
+    "ackLoss": {
+      "path": "%TEMP%/xiaozhi-phase6-job-recovery-fUtLeJ/J02-ack-loss/live/report.json",
+      "sha256": "64c4e3cb4818eb149aa92f161cd0cef54ade4d1f423aa2ec75a5438bfc40c1ef"
+    },
+    "checks": [
+      "J01_PARENT_KILL_COLD",
+      "J02_PHYSICAL_ACK_LOSS",
+      "J02_ACK_COMMIT_FAILURE",
+      "J03_TEACHER_REVIEW_CLOSES_JOB"
+    ],
+    "actualAckLossReviewRejected": true
+  },
+  "priorCandidateIndependentEvidence": {
+    "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+    "streamSwitch": {
+      "report": {
+        "path": "%TEMP%/phase7-stream-switch-d5c78694/report.json",
+        "sha256": "1a74d38ca722c96d4c65cfabc7326f1aa4891961f4eaa6646a9fd0265ba970bd"
+      },
+      "checks": 4,
+      "scope": "1366 synthetic streaming stayed active in A while B rendered its own answer. Returned to A and stopped; cold state and B data preserved without replay. Single run."
+    },
+    "revokedMcpLocalCitations": {
+      "assessment": {
+        "path": "%TEMP%/phase7-c2-local-citation-8c7ebbe2/assessment.json",
+        "sha256": "3f3dee331314aa4ddf92ea1f2d44e7d38f0e7df25b7b68d5cc96f5347efd4747"
+      },
+      "report": {
+        "path": "%TEMP%/phase7-c2-local-citation-8c7ebbe2/report.json",
+        "sha256": "47896023e27b9e10b31504d6e9df1d8e5b198d19b43eed02b95016784bf43077"
+      },
+      "scope": "Actual Pi rejected the old tool after revocation, kept total MCP calls at 1, read a permitted local source, displayed the matching citation ID as a link and cold-read without replay. Tool choices and response were scripted; link destination wasn't clicked."
+    }
+  },
+  "baselineScope": "Windows 11 dev Electron, sealed synthetic data and isolated profile; no paid calls.",
+  "sqliteProofRegressions": {
+    "passed": 10,
+    "report": {
+      "path": "%TEMP%/terminal-resize-reconcile-Hjk8lc/REPORT.json",
+      "sha256": "efe6c3a6ae92fde561de0dd9efd0b8154d6554653f714d0fc8896055132ce4f3"
+    },
+    "command": "node --experimental-transform-types scripts/xiaozhi-agent/terminal-resize-reconcile-smoke.mjs <synthetic-fixture-directory> <expected-database-sha256>"
+  },
+  "sourceParity": {
+    "productionAndLockManifests": 1724,
+    "unmatched": 0
+  },
+  "rendererComponents": {
+    "pass": 253,
+    "total": 253
+  }
+}

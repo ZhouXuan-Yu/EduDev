@@ -1,5 +1,13 @@
 # Harness 执行进度
 
+## 2026-11-19 教师确认与终端退出
+
+**已实现。** 旧版任务在确认前显示可核对，点击后仍被一条未决的终端尺寸调整挡住。修复复用原 Effect 核对，只在确认原终端已正常退出、完成清理和文件提交、输入全部确认时，给精确的历史 resize 记录补上终端已关闭的证明。核对不重放命令，也不写入输入 ACK。独立实页从待核对进入已确认，冷启动一致；真实终端丢失输入 ACK 的反例仍拒绝确认。[验证记录](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json)
+
+补充独立实页验证了执行时切换会话和 MCP 撤销后的本地读取引用。撤销之后旧名称被实际 Pi 拒绝，合成服务维持 1 次调用，原生本地读取回执与回答引用一致，冷启没有重放。模型行为由剧本控制。单独终端候选已完成两尺寸 Windows 便携启动。[实页](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json) · [便携包](evidence/phase8/windows-package-20261119/terminal-resize-packaged-startup.json)
+
+固定矩阵维持 **88/89**，Gate7 仍 **PARTIAL**。接续优先按独立页面合同补齐两种原生尺寸的键盘焦点、弹层恢复、适用加载/失败/重试状态及 A2 权限变动完整组合。原生拖窗、最大化/还原，以及 QG-09 干净 Windows 安装/快捷方式/卸载仍待证实。正式真实模型 ABBA 沿原合同，当前账本 3/200，本批新增 0。
+
 ## 当前接手点 · 2026-11-19
 
 已交付源码的基准是 GitHub `origin/main`，本批受测生产源码为 `096b46b`。后续 Harness 改动在 `codex/xiaozhi-harness-20261112` 实施，通过该模块验证后再整合 `main`。查看最新状态先读本节，其次读 [验收记录](ACCEPTANCE_REPORT.md)、[固定矩阵](ACCEPTANCE_MATRIX.json) 和 [执行状态](ORCHESTRATOR_STATE.json)。

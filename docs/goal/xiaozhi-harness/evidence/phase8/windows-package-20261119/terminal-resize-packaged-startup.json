@@ -1,0 +1,47 @@
+{
+  "status": "PASS_SCOPED_QG_08_PORTABLE_STARTUP",
+  "sourceBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",
+  "command": "electron-builder --win --x64 --dir --publish never",
+  "buildIdentity": {
+    "same": true,
+    "fileCount": 481,
+    "outSha256": "7076bf35ffc6dcef1e3b39813d995620e858d3f77b35930280c9b362ae981ea6",
+    "exeSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "mainSha256": "956cdb126e2716ca81c55cf0d4e2bd26e8a7b978aa186f9c18c56b3f9bcf8c72"
+  },
+  "identity": {
+    "path": "%TEMP%/edu-harness-terminal-resize-9e178138/identity.json",
+    "sha256": "aeac999b4bd7bd279be5d848441264b8e8c9af73ecb3a30e222f04381fdef9fb"
+  },
+  "packageReport": {
+    "path": "%TEMP%/edu-harness-terminal-resize-9e178138/electron-builder.log",
+    "sha256": "a4848bd3d849fa2d4ce133dbc7f9ef5d8f0def438f37624c62da47e1510b8836"
+  },
+  "startup": {
+    "path": "%TEMP%/edu-harness-terminal-resize-9e178138/startup-rwRIfU/report.json",
+    "sha256": "de001ea2f5c66276bb04cf00c735b09fdb1932e8885754b379800b0e82adfb4a"
+  },
+  "rendererErrors": 0,
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "promptVisible": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "promptVisible": true
+    }
+  ],
+  "electron": "43.8.3",
+  "verifiedResources": [
+    "page-blocks",
+    "ocr",
+    "education",
+    "retrieval",
+    "reranker"
+  ],
+  "paidCalls": 0,
+  "scope": "Standalone terminal resize candidate. QG-09 clean install, shortcuts and uninstall not run."
+}

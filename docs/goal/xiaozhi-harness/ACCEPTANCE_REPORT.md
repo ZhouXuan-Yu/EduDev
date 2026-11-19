@@ -1,5 +1,19 @@
 # 独立验收记录
 
+## 2026-11-19 教师确认跨终端退出的独立复验
+
+| 场景 | 结果 |
+| --- | --- |
+| 旧构建教师确认 | 真实页面点击和 typed preload 都返回未就绪，原任务停在 rev 9 待核对 |
+| 修复构建教师确认 | Terra 实际勾选并确认，rev 10 已完成，冷启动核对一致。已实现 |
+| 回执与既有效果 | 精确 resize 未决记录完成核对，两条输入 Effect、原文件、无关计划 Effect 原样保留。已实现 |
+| 真正丢失输入确认 | 实际受控 PTY 与原 Host 4/4，真实原生输入 ACK 被测试夹具截断后，重复输入与教师确认均保留原门禁。已实现 |
+| 旧候选流式会话切换、撤销后本地引用 | 独立页面限定范围通过。记录当前构建摘要与模型替身边界 |
+
+[独立实页、冷启和 Host 证据](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json) · [单独终端候选 Windows 便携启动](evidence/phase8/windows-package-20261119/terminal-resize-packaged-startup.json)
+
+完整 Gate7、QG-09 和正式真实模型阶段仍依原完成定义。固定矩阵 88/89。
+
 ## 2026-11-19 终端、审批与 Skill 独立补证
 
 | 场景 | 结果 | 证据 |
