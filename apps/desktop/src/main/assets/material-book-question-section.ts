@@ -12,7 +12,7 @@ export type BookQuestionSectionEvidence={schemaVersion:typeof BOOK_SECTION_CONTE
 export type BookAnswerSectionEvidence={schemaVersion:typeof BOOK_ANSWER_SECTION_CONTEXT;section:string;pages:Page[]};
 type Host={receipt:(batch:string,ordinal:number)=>Promise<Proof>};
 function numbers(proof:Proof,section:string|undefined){
- const read=(response:Proof['first'])=>bookAnswerPage(response,response).entries.filter(e=>section===undefined?!e.section:e.sectionKey===bookSectionKey(section)).map(e=>Number(e.number));
+ const read=(response:Proof['first'])=>bookAnswerPage(response,response,undefined,proof.unit.bookPagePolicy).entries.filter(e=>section===undefined?!e.section:e.sectionKey===bookSectionKey(section)).map(e=>Number(e.number));
  const a=read(proof.first),b=read(proof.final);
  return JSON.stringify(a)===JSON.stringify(b)&&b.every((n,i)=>n>0&&(!i||n>b[i-1]))?b:undefined;
 }
@@ -26,9 +26,9 @@ export class MaterialBookQuestionSection{
   return this.resolveRole(current,true,signal) as Promise<BookAnswerSectionEvidence|undefined>;
  }
  async answerPage(current:Proof,signal?:AbortSignal){
-  const raw=bookAnswerPage(current.first,current.final);
+  const raw=bookAnswerPage(current.first,current.final,undefined,current.unit.bookPagePolicy);
   const context=process.env.OMNI_EDU_BOOK_ANSWER_SECTION_INHERITANCE!=='0'&&raw.entries.some(e=>!e.section)?await this.resolveAnswer(current,signal):undefined;
-  return{page:context?bookAnswerPage(current.first,current.final,context.section):raw,context};
+  return{page:context?bookAnswerPage(current.first,current.final,context.section,current.unit.bookPagePolicy):raw,context};
  }
  private async resolveRole(current:Proof,answers:boolean,signal:AbortSignal):Promise<BookQuestionSectionEvidence|BookAnswerSectionEvidence|undefined>{
   const source=current.unit.pageSource;if(!source||source.page<=1||(current.unit.bookRole?.kind==='answers')!==answers)return;

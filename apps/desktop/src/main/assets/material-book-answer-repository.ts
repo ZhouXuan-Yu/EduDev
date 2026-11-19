@@ -44,12 +44,12 @@ export class MaterialBookAnswerRepository{
  async migrate(){await this.host.run("CREATE TABLE IF NOT EXISTS material_book_answer_journal_v1(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,question_id TEXT NOT NULL,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,payload_json TEXT NOT NULL,evidence_json TEXT NOT NULL,before_json TEXT NOT NULL,after_json TEXT NOT NULL DEFAULT '')");await this.host.run('CREATE INDEX IF NOT EXISTS material_book_answer_journal_page_v1 ON material_book_answer_journal_v1(batch_id,ordinal)');await this.host.run('CREATE INDEX IF NOT EXISTS material_book_answer_journal_question_v1 ON material_book_answer_journal_v1(batch_id,ordinal,question_id)');await this.index.migrate();await this.work.migrate();await migrateBookAnswerConflicts(this.host);}
  async rebuild(){await this.host.writer(t=>t.index.rebuild());}
  async pageView(proof:Proof,reference:{batchId:string;ordinal:number}){
-  const raw={page:bookAnswerPage(proof.first,proof.final),resolved:false};
+  const raw={page:bookAnswerPage(proof.first,proof.final,undefined,proof.unit.bookPagePolicy),resolved:false};
   try{
    if(!proof.unit.pageSource||!sameMaterialBookIdentity(await this.host.role(proof.unit.pageSource.resourceId),proof.unit.bookRole))return raw;
    const {page,context}=await this.sections.answerPage(proof);if(!context)return raw;
    await this.sections.validateAnswer(context,proof,reference);
-   return{page:{...page,sectionSource:{page:context.pages.at(-1)!.source.page,section:context.section}},resolved:proof.status==='review'&&bookAnswerSectionReviewResolved(proof.first,proof.final,page)};
+   return{page:{...page,sectionSource:{page:context.pages.at(-1)!.source.page,section:context.section}},resolved:proof.status==='review'&&bookAnswerSectionReviewResolved(proof.first,proof.final,page,proof.unit.bookPagePolicy)};
   }catch(error){if(error instanceof Error&&['source_changed','source_incomplete','privacy_blocked'].includes(error.message))return raw;throw error;}
  }
  async indexOne(){if(!await this.index.pending())return false;return this.host.writer(target=>target.index.applyOne());}
@@ -154,11 +154,11 @@ export class MaterialBookAnswerRepository{
    if(row.state!=='applied'||row.beforeVersion!==questionVersion(before)||row.afterVersion!==questionVersion(after)||row[role]!==q[role]||JSON.stringify(after.archive?.book?.roles[role])!==JSON.stringify(proof))throw Error('source_changed');
    const receipt=await this.host.receipt(e.answer.batchId,e.answer.ordinal);
    if(e.answerSection){const key=JSON.stringify([e.answer.batchId,e.answer.ordinal,e.answerSection]);if(!checkedSections.has(key)){await this.sections.validateAnswer(e.answerSection,receipt,e.answer);checkedSections.add(key);}}
-   const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section).entries.find(x=>x.start===e.answer.start);
+   const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section,receipt.unit.bookPagePolicy).entries.find(x=>x.start===e.answer.start);
    if(e.answerSection&&(bookSectionAt(receipt.final.pageText,entry?.start)!==undefined||!bookAnswerPage(receipt.first,receipt.first).entries.some(x=>!x.section&&x.number===e.number&&bookSectionAt(receipt.first.pageText,x.start)===undefined)))throw Error('source_changed');
    if(e.lookupPolicy!==undefined&&e.lookupPolicy!==BOOK_SECTION_LAYOUT)throw Error('source_changed');
    const sectionKey=e.lookupPolicy===BOOK_SECTION_LAYOUT?bookSectionLookupKey:bookSectionKey;
-   if(!sameMaterialBookIdentity(receipt.unit.bookRole,{...e.pair,kind:'answers'})||receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||!entry||sectionKey(entry.section)!==sectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
+   if(!sameMaterialBookIdentity(receipt.unit.bookRole,{...e.pair,kind:'answers'})||receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||!entry||!entry.agrees||entry.issues.some(i=>i!=='missing_analysis')||sectionKey(entry.section)!==sectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
    const question=await this.host.receipt(e.question.batchId,e.question.ordinal);
    const removedConflict=before.archive?.issues.includes('answer_conflict')&&!after.archive?.issues.includes('answer_conflict');
    if((removedConflict||e.slotRecoveryPolicy!==undefined)&&(e.slotRecoveryPolicy!==PRINTED_FILL_SLOTS||!canResolveBookFillConflict(before,question,entry)||after.archive?.state!=='book_enriched'||JSON.stringify(after.archive.issues)!==JSON.stringify(before.archive!.issues.filter(i=>i!=='answer_conflict'))))throw Error('source_changed');

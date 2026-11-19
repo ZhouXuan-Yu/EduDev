@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "ed31c2c0cf747d79e0013cb78920957f6f762c1e43bfaac21891fe8bc841dafa",
+  "sourceHash": "9b9f5a1aa21e42fbe79473fd720918dd0934e0b47c6012dd74d473155d3431c9",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1932,7 +1932,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "3c35841d079ca22facba6b0595a8eaf89bc58061577602da51c6aa6348e84de6"
+      "sha256": "87bf6b72b1be5b257a7258fd32020d6631716168909cd0e2f978457de99f4375"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
@@ -1964,7 +1964,7 @@
     },
     {
       "file": "src/shared/material-ai.ts",
-      "sha256": "b6721624d198bc1531b1035aedc6f5223635fb326422d8540af3b20908998637"
+      "sha256": "2a7fd029a3614e67a3e33fe1dfcabc3a02aee83e4714be53e313e5d6cfb40154"
     },
     {
       "file": "src/shared/material-answer-slots.ts",
@@ -1972,7 +1972,7 @@
     },
     {
       "file": "src/shared/material-book-answer.ts",
-      "sha256": "b50f94461f786ff4309b9127f2128adec2abbfdb4ad2121a50ce04b1b1a635f9"
+      "sha256": "3c22db5a0a1b54d5719e5520f0849afb9ac02b428973825402f33f3769af6dc3"
     },
     {
       "file": "src/shared/material-curriculum.ts",

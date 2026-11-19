@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 答案册速查表结构恢复
+
+答案册 v3 使用现有 DeepSeek v2 响应结构和两遍原图核对。新提供方提示保留原题号行、原答案行和列间空白，实际写回受主进程约束。
+
+详见 [本轮记录](../research/evidence/kb/20261119/book-key-tables/README.md)。
+
 ## 2026-11-19 题本完整题干优先
 
 共用 questionKeywordOrder。继续使用原 SQLite FTS5、题本 IPC 和 Pi 查询，现有索引不需重建。
