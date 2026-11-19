@@ -130,6 +130,8 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
   const opened = new Map<string, Promise<Awaited<ReturnType<Options['mcp']['tools']>>>>();
   let disposed = false;
   const available = new Set<string>();
+  let sharedStdio: ReturnType<typeof owned> | undefined;
+  const ownerStdio = () => sharedStdio ||= owned(options);
   const key = (id: string, version: string, hash: string) => JSON.stringify([id, version, hash]);
   async function artifactFor(id: string, version: string, hash: string) {
     const artifact = (await options.state.artifacts()).find(row => managedMcpProviderId(row) === id);
@@ -144,7 +146,7 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
     if (!artifact) return false;
     const source = await options.mcp.authority(artifact.serverId!);
     if (!source) return false;
-    const stdio = owned(options);
+    const stdio = ownerStdio();
     const scopes: PermissionScope[] = [...await stdio.scopes(source, 'read_text_file', {}), {kind: 'mcp', serverId: source.serverId,
       sourceHash: source.sourceHash, schemaHash: source.schemaHash, tools: ['read_text_file']}];
     const request: PermissionRequest = {schemaVersion: 2, owner: options.context.owner, requirementsVersion: options.context.requirementsVersion,
@@ -164,7 +166,7 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
     if (previous) return previous;
     let pending = opened.get(artifact.id);
     if (!pending) {
-      pending = options.mcp.tools(permission(options, owned(options)), {preparationTimeoutMs: 30000});
+      pending = options.mcp.tools(permission(options, ownerStdio().fork()), {preparationTimeoutMs: 30000});
       opened.set(artifact.id, pending);
     }
     const prepared = await pending;

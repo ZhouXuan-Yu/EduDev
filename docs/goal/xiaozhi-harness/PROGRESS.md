@@ -6,14 +6,16 @@ Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、
 
 ### 协作者接手
 
-- 以 GitHub `main` 为已集成基线。工作台、计时准备、审批与终端对应功能提交 `88ad67c`、`0978a1e`、`387a796`，合并保留上游协作规则、跨页选择题和独立原图块修复 `3ba66e5`、`f5d9453`。后续开发继续在 `codex/xiaozhi-harness-20261112` 进行。
+- 以 GitHub `main` 为集成基线。工作台、流式反馈、持久审批和终端改动已随 `83034fe` 合入。交接核验时 `main` 为 `cbc4e26`，包含该合并和后续知识库更新。后续优化从 `codex/xiaozhi-harness-20261112` 追踪。日常目录 `D:/WorkProject/EduProject` 有其他协作改动，开发与验证使用 `D:/WorkProject/EduProject-harness`。
 - [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 70 项阶段范围通过。未验项与证据边界见 [独立验收记录](ACCEPTANCE_REPORT.md)。合并后的验证见 [合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
-- 缓存优化的隔离原型已用同一工作负载比较，单次 24.01 秒降至 21.70 秒，源文件 SHA 读取 6 次降至 3 次。原型尚未进入生产源码，随后在功能分支补全并验证。原生窗口、真实模型 A/B 和打包继续按原方案验收。付费计数为 0/200。[性能对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+- 缓存优化的隔离原型在同一工作负载单次从 24.01 秒降至 21.70 秒，源文件完整 SHA 核验从 6 次降至 3 次。功能分支的生产 Host 三轮复测确认热路径和冷启同 Task 均各核验 3 次。热路径 19.89–21.71 秒，冷启 21.01–38.61 秒，正式延时门禁继续复测。原生窗口、模型质量和打包仍按原方案独立验收。[隔离对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [生产专项](evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json)。
 
 - 工作台、审批收件箱、能力中心已用真实 Electron 验证。独立验收确认现代审批、冷启动、团队技能版本回滚、窄窗长路径折行和指定合成模型密钥未外显。能力中心增加中文工具标题、调用范围和中文搜索。
 - 缓存能力的真实受控进程基线已取得。24.109 秒完成准备、解析、执行，私有合成文本读回与三个原生进程清理通过。发现先前准备结果留作未知 Effect 会挡住同任务继续，已列定向审计。详见 [基线与复测口径](evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md)。
 - 能力准备已有领域回执。Sol 的原 Host 冷启同 Task 回归 3/3，回执变更拒绝等负例 22/22。普通单次批准继续使用原 scope，能力准备增加明确当前任务授权入口。Terra 在真实 Electron 验证一个精确原 Task scope，最终工作台综合 9/9，含真实终端关闭和缓存隔离。
-- 原生拖窗与最大化还原等待可见桌面复验。真实模型 0/200，A/B 合成资料、加密设置和预算前置已形成证据。
+- 合成 Q1 的旧版和新版已完成真实 DeepSeek 连接预检及 SQLite 冷读回。首次旧版的流式计量失败保留，修订采集器后两版通过。累计 3/200，剩余 197 次。正式 32 次 ABBA 采集、盲评及失败场景尚待执行。[连接预检](evidence/phase8/connection-preflight-20261119.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+- 原生拖窗与最大化还原等待可见桌面复验。下一位 AI 从当前文档、[执行状态](ORCHESTRATOR_STATE.json)和[验收报告](ACCEPTANCE_REPORT.md)接手。继续使用原账本，正式验收须冻结实际受测提交与产物。
+- 本地安装准备已核实 OCR、教育和检索的锁定资源可以从现有工作树按 SHA 获取。Reranker 尚无同 SHA 的完整产物，后续在独立暂存区用锁定构建输入复核，再按 Windows 包合同测试安装、启动和卸载。
 
 ## 当前进度 2026-11-18
 

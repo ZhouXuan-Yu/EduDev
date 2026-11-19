@@ -3,8 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "387a796777109cdf222e0d027e528cf6686cc479",
-  "headRole": "Latest feature commit before the current integration merge. Git refs record the exact integration commit.",
+  "head": "83034fee00e0015e5f0d6f22392bf29d80f621b2",
+  "headRole": "Last integrated Harness production baseline. The feature branch ref tracks subsequent optimization checkpoints.",
+  "mainObserved": "cbc4e26b7b77a08bdea0dddf40d09554bc83759d",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -25,18 +26,18 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "Phase6 Effect/checkpoint and full network foundation passed, actual RecoveryHost four cases passed across scoped source revisions, full final-source Gate6 still pending",
-    "ConPTY9/9, terminal UI9/9 and actual Host terminal9/9 passed, remaining parent-death/unknown-ACK/Task-end and real renderer paths remain",
-    "Cached Pi preparation/tool latency is under targeted source audit for bounded Phase8 profiling and optimization"
+    "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
+    "Phase8: formal synthetic real-model ABBA, failure scenarios, packaging and independent final acceptance",
+    "Cached Pi preparation/tool latency optimization and frozen production verification continue on the feature branch"
   ],
   "paidRequestLimit": 200,
-  "paidRequestCount": 0,
+  "paidRequestCount": 3,
   "paidRequestLedger": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite",
-  "paidRequestLedgerStatus": "INITIALIZED_ZERO_WAL_FULL_HELPER_12_PASS_REAL_PROVIDER_ROUTING_NOT_TESTED",
+  "paidRequestLedgerStatus": "REAL_Q1_AB_TRANSPORT_PREFLIGHT_PASS_3_USED_197_REMAINING_0_UNRESOLVED",
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Continue cache-verification optimization on the feature branch. Original visible native drag/maximize, real-model A/B and packaging remain ahead.",
+  "next": "Track optimization on the feature branch. Complete native window and remaining Phase7 page evidence, then freeze the formal ABBA candidate and finish packaging/final acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -429,7 +430,7 @@
   },
   "phase6Integration": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
   "remoteAtPhase6": "main and codex/xiaozhi-harness-20261112 atomic push verified5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
-  "phase7": "IN_PROGRESS",
+  "phase7": "PARTIAL",
   "phase7WriteOwnership": {
     "core": "/root/phase4_resume_implementation main/shared/preload/db/build/out/runtime",
     "ui": "/root/phase4_resume_independent approved4 existing renderer files+3 new components/local styles+dedicated component tests",
@@ -485,16 +486,18 @@
   "phase8QuestionSeed": {
     "status": "FROZEN_A_SEALED_MODEL_SETUP_AND_PRELIMINARY_B_COLD_READBACK_PASS",
     "evidence": "evidence/phase8/question-seed-20261119/question-seed-evidence.json",
-    "modelCalls": 0,
+    "modelCalls": 3,
     "instrumentationCommit": "0978a1e",
-    "requires": "Final B identity, actual paired model runs after accepted readiness, paid chat 0/200",
+    "connectionPreflight": "evidence/phase8/connection-preflight-20261119.json",
+    "requires": "Final B identity and formal ABBA runs with independent scoring; paid chat 3/200",
     "modelSettings": "evidence/phase8/question-seed-20261119/settings-evidence.json",
     "sealedBReadback": "evidence/phase8/question-seed-20261119/sealed-b-readback.json"
   },
   "phase8CachedProfiling": {
-    "status": "PRODUCTION_HOST_CACHED_BASELINE_PASS_OPTIMIZATION_PENDING",
+    "status": "FEATURE_PRODUCTION_HOST_AND_BOUNDARIES_PASS_FINAL_PERFORMANCE_GATE_PENDING",
     "contract": "evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md",
     "baselineMs": 24109.337,
+    "featureEvidence": "evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json",
     "sameTaskPrepareFinding": "Original Host now passes exact Task-scope approval continuation and cold reopen; single-operation scope retains its boundary.",
     "runtimePaidCalls": 0
   }

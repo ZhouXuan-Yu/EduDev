@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-19",
+  "baselineCommit": "83034fee00e0015e5f0d6f22392bf29d80f621b2",
+  "sources": [
+    {
+      "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
+      "sha256": "4f8e570e748fed700232998e53bb7eafa6f969b213520d67306316fd15dd5da2"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+      "sha256": "3076c5a3746578c593b387cdd6684880b86375ed58b2e7e550f65bd4ad056d6c"
+    }
+  ],
+  "records": [
+    {
+      "case": "initial source validation",
+      "pass": true,
+      "paidCalls": 0,
+      "host": [
+        {
+          "name": "Same Task original dependency/start/function approvals resume to ready",
+          "pass": true,
+          "durationMs": 95239.9434
+        },
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "pass": true,
+          "durationMs": 19893.1446
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "pass": true,
+          "durationMs": 22280.994000000006
+        }
+      ],
+      "fullFileShaChecks": [
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "count": 3
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "case": "explicit read-only fixture input",
+      "pass": true,
+      "paidCalls": 0,
+      "host": [
+        {
+          "name": "Same Task original dependency/start/function approvals resume to ready",
+          "pass": true,
+          "durationMs": 90057.2105
+        },
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "pass": true,
+          "durationMs": 21705.681200000006
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "pass": true,
+          "durationMs": 21013.177200000006
+        }
+      ],
+      "fullFileShaChecks": [
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "count": 3
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "case": "preserve separate original Host output",
+      "pass": true,
+      "paidCalls": 0,
+      "host": [
+        {
+          "name": "Same Task original dependency/start/function approvals resume to ready",
+          "pass": true,
+          "durationMs": 89356.1506
+        },
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "pass": true,
+          "durationMs": 21085.1011
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "pass": true,
+          "durationMs": 38612.08910000001
+        }
+      ],
+      "fullFileShaChecks": [
+        {
+          "name": "Same Task ready cached prepare resolves and executes without new approvals",
+          "count": 3
+        },
+        {
+          "name": "Cold main rechecks original receipts and continues the same Task cached path",
+          "count": 3
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "name": "Root and fork share the existing immutable file memo",
+      "pass": true
+    },
+    {
+      "name": "Independent views prepare simultaneous same-server transports with separate projections",
+      "pass": true
+    },
+    {
+      "name": "Same view keeps original resource_busy and root view has no borrowed projection",
+      "pass": true
+    },
+    {
+      "name": "Closing one transport removes only its own projection",
+      "pass": true
+    },
+    {
+      "name": "Reserved runtime and outside input paths remain denied",
+      "pass": true
+    },
+    {
+      "name": "Warm file memo does not cache original binding/TTL availability",
+      "pass": true
+    },
+    {
+      "name": "Revocation still denies a new transport despite warm file validation",
+      "pass": true
+    },
+    {
+      "name": "Changing expected SHA invalidates an otherwise identical cached version",
+      "pass": true
+    },
+    {
+      "name": "Changing source version/bytes is rehashed and rejected",
+      "pass": true
+    },
+    {
+      "name": "Changed owner rejects old view and fork; a new owner gets a fresh memo",
+      "pass": true
+    },
+    {
+      "name": "Aborted original context cannot mint another view",
+      "pass": true
+    }
+  ],
+  "scope": "Actual production Host with loopback models and public cached synthetic data; separate metadata-only projection/validation negatives never launch their fake helper.",
+  "productionBuild": {
+    "outFiles": 481,
+    "outSha256": "0a8c18e8201b58b84c63b9acc7bb14208f65ab865b3f18e2125c7f46cde247f1"
+  },
+  "performanceComparison": "See fork-prototype-pair.json for the single before/after pair under identical input. These production Host timings are correctness runs and were not a controlled latency comparison."
+}

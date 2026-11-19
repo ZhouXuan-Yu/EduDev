@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "f85ee5c45af258ff85299e70564abcf3c598bf74939f776823a59a78d7b544dd",
+  "sourceHash": "487afeff89a6f313ea13543158827e7fffc771e92e999e1e4fd4a7aa29175192",
   "sources": [
     {
       "file": "package-lock.json",
@@ -620,7 +620,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
-      "sha256": "e0f7c60b841a3bcc4839c5e2345b08618f72be02cd7f50661dea0ee47f357b11"
+      "sha256": "3076c5a3746578c593b387cdd6684880b86375ed58b2e7e550f65bd4ad056d6c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/node-runtime.ts",
@@ -1064,7 +1064,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
-      "sha256": "857b1f7505dc4a8321ce89cb3876f12cda996d6aab602198bf4ff83e7ceedc21"
+      "sha256": "4f8e570e748fed700232998e53bb7eafa6f969b213520d67306316fd15dd5da2"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-transport.ts",
