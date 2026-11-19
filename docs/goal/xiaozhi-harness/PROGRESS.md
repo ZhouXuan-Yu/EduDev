@@ -1,5 +1,11 @@
 # Harness 执行进度
 
+## 2026-11-19 持久终端续跑与交接
+
+后台终端使用自己的有效授权提交文件。实际 Pi Host 4/4，旧 Run 的延迟输出和执行返回跨入新 Run，原回执和记录保持归属，新 Run 独立保存。终端回归 9/9，组件 253/253，便携包在两个尺寸下启动通过。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+固定矩阵 **88/89**，Gate7 **PARTIAL**。下一步在 codex/xiaozhi-harness-20261112 修复 C2 的已授权首次派发，复验授权、撤销和替代路径，再补齐 S1/W3 等实页。QG-09 独立安装卸载和正式模型 ABBA 待验。付费请求账本 3/200，本批新增 0。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
 ## 2026-11-19 工作台防重复保存与治理补证
 
 W2 已保存文件再次双击继续，独立实页 4/4。同一 Task 仅增加一个 Run，重复写入未派发，SQLite 已应用记录与原文件字节冷启一致。继续真实迟到旧 Run 与后台 Job 提交。[W2 回执](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json)。

@@ -1,5 +1,11 @@
 # 执行日志
 
+## 2026-11-19 持久终端续跑与交接
+
+修复持久终端文件 staging 的授权来源后，实际旧终端在新 Run 期间结束并合法落盘，旧 Run 回执保持原样。回归测试按真实调用回执选取 Job ID。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 独立实页尝试调用平台重新发现的精确工具，确认任务授权已存储，底层实际收包为零。继续修复内层权限门禁与外层效果账衔接。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
 ## 2026-11-19 已保存文件和治理页面复验
 
 实页按旧批准写入流程正式保存，双击续跑时重复写入未派发，原文件和单次已应用记录在 SQLite 冷读一致。Skill 分享产生独立版本目录；官方非审核员越权请求被拒绝。MCP 目录更改和撤销清除旧信任。[页面合同](PHASE_7_PAGE_CONTRACT.md)。

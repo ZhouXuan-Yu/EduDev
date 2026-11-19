@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "row": "C2",
+  "status": "FAIL_FIRST_AUTHORIZED_DISPATCH",
+  "buildMainSha256": "d443e1cfe06a467ca380f3c67db9278230c1fee655a1f30538f660515aa26063",
+  "reportSha256": "5d718361dd92d445679fb9792193bb76ff3739c5f18c9c93fe8cd4efbc6920ca",
+  "modelControlSha256": "db86e3c8832c1b6db9ab5f4d116b91e819a2ed83a439b2dd8b061100224b1c5d",
+  "steps": [
+    "Trust and select a synthetic loopback MCP service from Settings.",
+    "First tool attempt opens permission review. Authorize for this Task and continue.",
+    "Discover the deferred tool and attempt the exact call."
+  ],
+  "observed": {
+    "initialReview": "permission_pending",
+    "resumedAttempt": "task_effect_recheck_required",
+    "resumedDelivery": "not_delivered",
+    "loopbackToolsCall": 0,
+    "paidCalls": 0
+  },
+  "rootCause": "The effect begins before the inner MCP permission review. Approval pending exits before runtime.callTool and leaves an unknown effect, which blocks the resumed exact request.",
+  "remaining": "Record proof at the transport boundary for truly undispatched calls. Independently verify first authorized dispatch, post-revocation retry and fallback."
+}

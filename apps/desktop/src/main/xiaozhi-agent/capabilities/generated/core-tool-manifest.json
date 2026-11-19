@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "713c774b95caadc2fa636379b8cb56df7a7b58fcafa39ca2efe5533e4b82e0f0",
+  "sourceHash": "ae3a4fa64d580175d00edf17039411c9d00e0c70316a08e9e014aacc740faa73",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1300,7 +1300,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "838c9bdc8b4d8dbdfed0fafcad32178cc9c28344e42a59bb94dea34c9708c45e"
+      "sha256": "e5e4880e85f477c19f205912688ea25b793245c6523a113988649359668c3585"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
@@ -1312,7 +1312,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/projection.ts",
-      "sha256": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341"
+      "sha256": "a48da818478df4ce59c6f3a43f3ff4f018b983745327a32de2a9922f014c2f7d"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/runtime.ts",

@@ -87,3 +87,9 @@ S1 的分享副本和官方非审核员子场景已实现。Terra 在实际开�
 ## 2026-11-19 C2 MCP 目录变化与撤销
 
 C2 的目录变化、信任清除和撤销子场景已实现。Terra 从实际设置页添加并信任合成服务。工具 Schema 变化后重新连接，应用清除旧信任与选择；重新批准后执行页面撤销，冷启保持 revoked。测试没有发出 tools/call，撤销后的实际尝试及替代路径另行复验。[独立实页](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json)。
+
+## 2026-11-19 持久终端续跑与交接
+
+实际 Host 验证旧 Run 的原 PTY 与执行返回晚于新 Run 启动，旧回执及文件各自保持归属，后台 Job 可在原有效授权下落盘。W3 跨会话 UI 的 Artifact/Grant 隔离待验。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 真实设置授权后的再次调用未进入传输，Gate7 继续 PARTIAL。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。

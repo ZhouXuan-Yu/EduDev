@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-19 持久终端续跑与交接
+
+W2/W3 的实际 Host 迟到终端与 Job 提交子场景通过 4/4，终端专项 9/9。Windows 便携包在 1366×768、1920×1080 实际启动，输入框可见，渲染错误 0。完整 W3 和独立安装卸载待验。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 已授权的首次派发 FAIL。两次尝试合成 MCP 均未到 tools/call，后一次被旧的未知效果挡住。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
 ## 2026-11-19 工作台文件防重和治理页面
 
 W2 已提交文件防重已实现。另有 S1 独立分享和角色分支、C2 目录变化与撤销的实际页面证据，各按原完整范围继续。测试使用隔离合成数据、合成模型或无模型。完整 Gate7 和独立安装未达到完成条件。[核验](PHASE_7_PAGE_CONTRACT.md)。

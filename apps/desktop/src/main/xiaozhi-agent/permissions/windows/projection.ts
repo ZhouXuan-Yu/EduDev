@@ -4,7 +4,7 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {fileVersion} from '../../workspace-files';
 import {filesystemScope, checkedFile, digest, containsPath} from '../resources';
-import type {CurrentPermission} from '../current';
+import {runWithPermission,type CurrentPermission} from '../current';
 import type {PermissionStore} from '../store';
 import {withOwnedFileStage} from '../../owned-file-stage';
 
@@ -129,14 +129,14 @@ export async function commitExecutionProjection(projection: ExecutionProjection,
       const source = checkedFile(projected, path.join(projection.root, entry.relative), 'read');
       const bytes = await fs.promises.readFile(source);
       if (digest(bytes) !== entry.hash) throw Error('source_changed');
-      await withOwnedFileStage(destination, bytes, stage => store.audit(authority.request.owner.sessionId,
+      await runWithPermission(authority,()=>withOwnedFileStage(destination, bytes, stage => store.audit(authority.request.owner.sessionId,
         'projection_file_stage', projection.executionId, {owner: authority.request.owner, path: entry.relative, stage}), temporary => {
           authority.signal.throwIfAborted();
           verify(before.get(entry.relative), entry.relative);
           checkedFile(original, destination, 'write');
           if (before.has(entry.relative)) fs.renameSync(temporary, destination);
           else {fs.linkSync(temporary, destination); fs.unlinkSync(temporary);}
-        });
+        }));
       committed.push(entry.relative);
       await store.audit(authority.request.owner.sessionId, 'projection_file_committed', projection.executionId,
         {owner: authority.request.owner, path: entry.relative, afterHash: entry.hash, grantRefs: authority.decision.grantRefs});
