@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {MATERIAL_PAGE_SOURCE,MATERIAL_IMAGE_SOURCE,validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from '../../shared/material-ai-page';
 import {validPdfFilePage} from '../../shared/material-pdf-file';
 import {readImageOcr} from './material-image-ocr';
-import {startsWithContinuationChoices} from '../../shared/material-ai-continuation';
+import {startsWithContinuationChoices,startsWithFirstSubquestion} from '../../shared/material-ai-continuation';
 import {sourceLayoutSignature} from '../../shared/material-ai-source-layout';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
@@ -13,7 +13,7 @@ export async function readAiPageSource(host:Host,resourceId:string,version:strin
   if(page!==1||resource.content_hash!==version||!['ready','partial','parsed','chunked','indexed','graph_extracted','failed'].includes(String(resource.parse_status)))throw Error('source_incomplete');
   if((await host.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1',[resourceId])).length)throw Error('privacy_blocked');
   const receipt=await readImageOcr(host,resourceId,version),source:MaterialPageSource={schemaVersion:MATERIAL_IMAGE_SOURCE,resourceId,version,page:1,generation:receipt.generation,receiptSha:receipt.receiptSha};
-  if(!validMaterialPageSource(source))throw Error('source_changed');return{source,text:receipt.text,status:receipt.status,totalPages:1};
+  if(!validMaterialPageSource(source))throw Error('source_changed');return{source,text:receipt.text,selectedText:receipt.text,status:receipt.status,totalPages:1};
  }
  const r=(await host.all('SELECT j.generation,j.state,j.total,p.status,p.result_json,p.error,r.content_hash,r.parse_status,r.original_file_name FROM material_pdf_jobs j JOIN material_pdf_pages p ON p.generation=j.generation JOIN teacher_resources r ON r.id=j.resource_id WHERE j.resource_id=? AND j.version=? AND p.page=?',[resourceId,version,page]))[0];
  if(!r||r.content_hash!==version||!/\.pdf$/i.test(String(r.original_file_name))||!['complete','partial'].includes(String(r.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(r.parse_status))||!['complete','blank','failed','needs_review'].includes(String(r.status))||!Number.isSafeInteger(Number(r.total))||page>Number(r.total)||Number(r.total)>10000||typeof r.result_json!=='string'||Buffer.byteLength(r.result_json)>1048576)throw Error('source_incomplete');
@@ -23,7 +23,7 @@ export async function readAiPageSource(host:Host,resourceId:string,version:strin
  if(r.result_json&&(!validPdfFilePage(raw)||raw.status!==r.status||raw.error!==r.error)||!r.result_json&&r.status!=='failed')throw Error('source_changed');
  if(!raw||typeof raw!=='object'||Array.isArray(raw)||['text','nativeText','ocrText'].some(k=>raw[k]!==undefined&&typeof raw[k]!=='string'))throw Error('source_changed');
  const text=[...new Set([raw.text,raw.nativeText,raw.ocrText].filter((v):v is string=>typeof v==='string'&&v.length>0))].join('\n');if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
- return{source,text,status:String(r.status) as AiPagePrompt['ocrStatus'],totalPages:Number(r.total),
+ return{source,text,selectedText:typeof raw.text==='string'?raw.text:'',status:String(r.status) as AiPagePrompt['ocrStatus'],totalPages:Number(r.total),
   ...(r.error==='text_conflict'&&typeof raw.nativeText==='string'&&typeof raw.ocrText==='string'?{conflictingText:{native:raw.nativeText,ocr:raw.ocrText}}:{})};
 }
 export async function validateAiPageSource(host:Host,source:MaterialPageSource){
@@ -64,7 +64,7 @@ async function precedingPageHasCounter(host:Host,source:MaterialPageSource,total
  });
 }
 
-export type FollowingPageBoundary={status:'separate'|'continued'|'unknown';nextParentSource?:MaterialPageSource;choiceLead?:true};
+export type FollowingPageBoundary={status:'separate'|'continued'|'unknown';nextParentSource?:MaterialPageSource;choiceLead?:true;firstSubquestionLead?:true};
 /** A conflicted next page may independently prove its opening parent. The
  * evidence concerns this boundary only; its own text stays in needs_review. */
 export async function readFollowingPageBoundary(host:Host,source:MaterialPageSource,totalPages:number,priorNumber?:string):Promise<FollowingPageBoundary>{
@@ -78,6 +78,7 @@ export async function readFollowingPageBoundary(host:Host,source:MaterialPageSou
    if(a&&b&&a.number===Number(priorNumber)+1&&a.number===b.number&&a.textKey===b.textKey&&(!(a.usesFraction||b.usesFraction)||await precedingPageHasCounter(host,source,totalPages)))return {status:'separate',nextParentSource:following.source};
   }
   if(following.status!=='complete'||!following.text.trim())return {status:'unknown'};
+  if(startsWithFirstSubquestion(following.selectedText))return {status:'unknown',firstSubquestionLead:true};
   if(/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u.test(following.text))return {status:'continued'};
   if(startsWithContinuationChoices(following.text))return {status:'unknown',choiceLead:true};
   if(parent.test(following.text))return {status:'separate'};

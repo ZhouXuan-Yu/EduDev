@@ -1,14 +1,15 @@
 import {sourceLayoutEnabled,sourceLayoutSignatureFor,sourceLayoutQuestion} from '../../shared/material-ai-source-layout';
 import {isHostLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
-import {sourceContentEnabled} from '../../shared/material-ai-source-content';
+import {hasSourceReadings,sourceContentEnabled} from '../../shared/material-ai-source-content';
+import type {SourceCropReading} from '../../shared/material-ai-source-reading';
 import {figureDescriptionsAgree,readingBodyComplete} from './material-ai-source-reading';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,sourceCropKinds} from '../../shared/material-ai-owned-crops';
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
-import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,continuationChoicesAgree} from '../../shared/material-ai-continuation';
+import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,pageContinuationTextProof,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,continuationChoicesAgree} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees,continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
@@ -111,23 +112,32 @@ const literalLines=(text:string)=>text.split(/\r?\n/u).map(line=>line.trim()).fi
 
 /** The source planner pins ordered blocks. Only whole independent figure
  * groups can contribute captions, and their local reading must still agree. */
-function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop){
+function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop,readings?:SourceCropReading[]){
  const extra=pageContinuation(prompt);
  if(!extra||extra.number!==crop.number||!crop.fragments)return;
- const next=crop.fragments.filter(f=>f.image.page===extra.source.page);
- const owned=next.map(f=>f.blockIds||[f.blockId]);
+ const next=crop.fragments.flatMap((fragment,index)=>fragment.image.page===extra.source.page?[{fragment,reading:readings?.[index]}]:[]);
+ const owned=next.map(({fragment})=>fragment.blockIds||[fragment.blockId]);
  if(!owned.flat().every(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)))return;
  const groups=owned.map(ids=>ids.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length)));
  if(JSON.stringify(groups.flat())!==JSON.stringify(extra.blockIds))return;
  const roles=continuationSubcrops(prompt)?sourceCropKinds(extra.blocks,groups):[];
  const hints=new Map(extra.blockTexts.map(h=>[h.blockId,h.text]));
  const lines:string[]=[],local:string[]=[],captions=new Set<number>();
- for(const [i,fragment]of next.entries()){
+ for(const [i,{fragment,reading}]of next.entries()){
   if(!validCropQuality(fragment.quality)||!fragment.quality.clearEdges.every(Boolean))return;
   const printed=groups[i].flatMap(id=>literalLines(hints.get(id)??''));
-  const text=fragment.quality.text;
+  const text=reading?.text??fragment.quality.text;
   if(roles[i]==='figure'){
    if(!printed.length&&isDiagramGroup(extra.blocks,groups[i])&&/^[\s_]{0,64}$/u.test(text))continue;
+   // Both original-image readings may retain a label below the full-page OCR
+   // detection threshold. The separate diagram and its literal words still
+   // have to pass full source-content validation before this projection.
+   if(!printed.length&&reading){
+    const originalLabels=literalLines(fragment.quality.text).map(continuationTextSignature);
+    const labelsRead=literalLines(reading.text).map(continuationTextSignature);
+    let cursor=-1;
+    if(originalLabels.every(label=>{cursor=labelsRead.indexOf(label,cursor+1);return cursor>=0;}))continue;
+   }
    if(continuationTextSignature(printed.join('\n'))!==continuationTextSignature(text))return;
    printed.forEach((_,index)=>captions.add(lines.length+index));
   }
@@ -174,29 +184,35 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  ));
  if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith(CONTINUATION_BLOCK_PREFIX)))!==JSON.stringify(left.blockIds)||!(visualAgreement||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||(sourceLayoutEnabled(prompt)?sourceLayoutSignatureFor(sourceStem,prompt,number):aiTextSignature(sourceStem))!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
+ const proof=pageContinuationTextProof(extra);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!continuationCropMatches(prompt,f.image,groups[i])))return false;
- if(extra?.number===number){
-  if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
-   // Compare the source option seams before general question layout folding.
-   if(!originalA||!rawB||[originalA,rawB].some(q=>!continuationChoicesAgree(extra.text,q.stem)))return false;
-  }else if(!continuationSubcrops(prompt)&&extra.schemaVersion!==PAGE_CONTINUATION_TEXT){
-   if([a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
-  }else{
-   const evidence=continuationEvidence(prompt,crop);if(!evidence)return false;
-   const {lines,localText,captions}=evidence;
-   const body=captions.size?lines.filter((_,i)=>!captions.has(i)).join('\n'):extra.text;
-   if([a,b].some(q=>!continuationFiguresAgree(q,lines,captions)||(extra.schemaVersion===PAGE_CONTINUATION_TEXT
-    ?!continuationTextAgrees(extra.text,extra.textProof,q.stem,localText,captions)
-    :!aiTextSignature(q.stem).endsWith(aiTextSignature(body))||captions.size>0&&aiTextSignature(localText)!==aiTextSignature(extra.text))))return false;
-  }
- }
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  const bodyAgrees=sourceReadingEnabled(prompt)?readingBodyComplete(first,final,a,crop,prompt,crops)&&readingBodyComplete(first,final,b,crop,prompt,crops):prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
   ?cropBodyComplete(a,crop.fragments,prompt)&&cropBodyComplete(b,crop.fragments,prompt)
   :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
+ if(!bodyAgrees)return false;
+ if(extra?.number===number){
+  if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
+   // Compare the source option seams before general question layout folding.
+   if(!originalA||!rawB||[originalA,rawB].some(q=>!continuationChoicesAgree(extra.text,q.stem)))return false;
+  }else if(!continuationSubcrops(prompt)&&!proof&&extra.schemaVersion!==PAGE_CONTINUATION_FIRST){
+   if([a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+  }else{
+   const literal=extra.schemaVersion===PAGE_CONTINUATION_FIRST&&sourceContentEnabled(prompt)&&hasSourceReadings(final)?final.readings.find(row=>row.number===number)?.crops:undefined;
+   const evidence=continuationEvidence(prompt,crop,literal);if(!evidence)return false;
+   const {lines,localText,captions}=evidence;
+   const body=captions.size?lines.filter((_,i)=>!captions.has(i)).join('\n'):extra.text;
+   // The visual comparison may fold Chinese/Latin spacing for display.
+   // The continuation witness compares the saved literal readings instead.
+   const literalQuestions=extra.schemaVersion===PAGE_CONTINUATION_FIRST?[originalA!,rawB!]:[a,b];
+   if(literalQuestions.some(q=>!continuationFiguresAgree(q,lines,captions)||(proof
+    ?!continuationTextAgrees(extra.text,proof,q.stem,localText,captions)
+    :!aiTextSignature(q.stem).endsWith(aiTextSignature(body))||(captions.size>0||extra.schemaVersion===PAGE_CONTINUATION_FIRST)&&aiTextSignature(localText)!==aiTextSignature(extra.text))))return false;
+  }
+ }
  const signature=sourceLayoutEnabled(prompt)?(s:string)=>sourceLayoutSignatureFor(s,prompt,number):aiTextSignature;
- return bodyAgrees&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||signature(sourceStem).includes(signature(q.projection[k].text))));
+ return [a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||signature(sourceStem).includes(signature(q.projection[k].text))));
 }
 export function pageFragmentsDocument(q:AiImageQuestion,crop:PageCrop,batchId:string,model:string,prompt?:AiPagePrompt):QuestionDocument{
  const fragments=crop.fragments;if(!fragments?.length)throw Error('source_changed');const source=fragments[0].image,anchors=fragments.map(f=>({page:f.image.page,box:f.image.box}));

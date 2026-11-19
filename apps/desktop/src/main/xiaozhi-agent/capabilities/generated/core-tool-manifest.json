@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "cb611386648cd3a652bb9476f4ee0e8537dda6f2072ec80d1f9ac99dffb79df0",
+  "sourceHash": "02a4af9677272848c4957ece7913c554e96f61feebad992d4f2cd515aa4a37e6",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1896,7 +1896,7 @@
     },
     {
       "file": "src/shared/material-ai-continuation.ts",
-      "sha256": "e42754793aaf16ac9c3b17d46ddd15d5489a7dc3d15c366d3a432e4f5f2b5fbc"
+      "sha256": "9f208bacecbcc6f6c0236804e3474f58c7c3dd3ed3ec6455109c1a8fa6475413"
     },
     {
       "file": "src/shared/material-ai-figure-spacing.ts",

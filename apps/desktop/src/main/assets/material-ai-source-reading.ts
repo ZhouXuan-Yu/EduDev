@@ -1,8 +1,9 @@
 import {FIGURE_LABEL_SPACING,equivalentFigureSpacing} from '../../shared/material-ai-figure-spacing';
 import {sourceMarkerText} from '../../shared/material-ai-source-markers';
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
-import {sourceCropKinds} from '../../shared/material-ai-owned-crops';
-import {pageContinuation} from '../../shared/material-ai-continuation';
+import {CONTINUATION_BLOCK_PREFIX,sourceCropKinds} from '../../shared/material-ai-owned-crops';
+import {pageContinuation,PAGE_CONTINUATION_FIRST} from '../../shared/material-ai-continuation';
+import {continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading,type SourceCropEdge} from '../../shared/material-ai-source-reading';
 import {questionNumberPrefix,type AiImageQuestion} from '../../shared/material-ai-image';
 import type {AiPagePrompt,AiPageResponse} from '../../shared/material-ai-page';
@@ -23,9 +24,21 @@ function fullOcrWasProvided(number:string,response:AiPageResponse,crops:PageCrop
   budget-=used;if(question.number===number&&used!==original)return false;
  }return true;
 }
-function readingMatchesCrop(reading:SourceCropReading,crop:NonNullable<PageCrop['fragments']>[number]){
+function readingMatchesCrop(reading:SourceCropReading,crop:NonNullable<PageCrop['fragments']>[number],confirmedByPage=false){
  const exact=sourceTextSignature(reading.text)===sourceTextSignature(crop.quality.text);
- return reading.sha256===crop.image.sha256&&reading.ocrSha256===createHash('sha256').update(crop.quality.text).digest('hex')&&reading.assessment!=='uncertain'&&!reading.issues.length&&!sourceReadingRemovesText(crop.quality.text,reading.text)&&(reading.assessment!=='exact'||exact);
+ return reading.sha256===crop.image.sha256&&reading.ocrSha256===createHash('sha256').update(crop.quality.text).digest('hex')&&reading.assessment!=='uncertain'&&!reading.issues.length&&(confirmedByPage||!sourceReadingRemovesText(crop.quality.text,reading.text))&&(reading.assessment!=='exact'||exact);
+}
+
+/** A fresh crop OCR can duplicate or invent a glyph. On the new continuation
+ * both independent readings may correct it only with exact prior page evidence. */
+function firstSubquestionCorroborates(fragment:NonNullable<PageCrop['fragments']>[number],number:string,prompt:AiPagePrompt|undefined,left:SourceCropReading,right:SourceCropReading){
+ const extra=pageContinuation(prompt);
+ if(extra?.schemaVersion!==PAGE_CONTINUATION_FIRST||extra.number!==number||fragment.image.page!==extra.source.page)return false;
+ const ids=(fragment.blockIds||[fragment.blockId]).map(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)?id.slice(CONTINUATION_BLOCK_PREFIX.length):'');
+ if(!ids.length||ids.some(id=>!extra.blockIds.includes(id)))return false;
+ if(extra.blocks.blocks.some(block=>ids.includes(block.id)&&['image','chart','figure_title'].includes(block.kind)))return false;
+ const hint=continuationTextSignature(ids.map(id=>extra.blockTexts.find(block=>block.blockId===id)?.text||'').filter(Boolean).join('\n'));
+ return !!hint&&continuationTextSignature(left.text)===hint&&continuationTextSignature(right.text)===hint;
 }
 /** A standalone layout caption can belong to an independently owned diagram.
  * Mixed body/figure crops remain body text; every caption is still checked
@@ -71,8 +84,9 @@ export function readingBodyComplete(first:AiPageResponse,final:AiPageResponse,qu
  let body='',firstBody=true;
  for(const [i,fragment]of crop.fragments.entries()){
   const left=a.crops[i],right=b.crops[i];
-  if(!readingMatchesCrop(left,fragment)||!readingMatchesCrop(right,fragment))return false;
   const figure=figureFragment(fragment,crop,prompt!);
+  const confirmedByPage=!figure&&firstSubquestionCorroborates(fragment,question.number,prompt,left,right);
+  if(!readingMatchesCrop(left,fragment,confirmedByPage)||!readingMatchesCrop(right,fragment,confirmedByPage))return false;
   if(sourceContentEnabled(prompt)){
    if(![left,right].every(r=>contentPartRoles(r.parts,r.text,question.number,firstBody,figure)))return false;
    const part=(r:SourceCropReading,role:SourcePart['role'])=>r.parts!.filter(p=>p.role===role).map(p=>p.text).join('');
@@ -93,7 +107,8 @@ export function readingComparisons(first:AiPageResponse,final:AiPageResponse,cro
   const assessment=reading.assessment==='uncertain'||reading.issues.length?'uncertain':source&&sourceTextSignature(reading.text)===sourceTextSignature(source.quality.text)?'exact':'corrected';
   const publication=(r:SourceCropReading|undefined)=>r?.parts?.filter(p=>p.role==='publication').map(p=>p.text).join('')||'';
   const edges:SourceCropEdge[]=['top','right','bottom','left'];
-  return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source)&&readingMatchesCrop(other,source)&&sourceTextSignature(sourceMarkerText(reading.text,prompt,row.number))===sourceTextSignature(sourceMarkerText(other.text,prompt,row.number)),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
+  const confirmedByPage=!!source&&!!other&&firstSubquestionCorroborates(source,row.number,prompt,other,reading);
+  return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source,confirmedByPage)&&readingMatchesCrop(other,source,confirmedByPage)&&sourceTextSignature(sourceMarkerText(reading.text,prompt,row.number))===sourceTextSignature(sourceMarkerText(other.text,prompt,row.number)),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
  })}));
 }
 /** Deterministic parser adapter only: the entire parsed source must equal ALL

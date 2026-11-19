@@ -9,26 +9,30 @@ import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type M
 export const PAGE_CONTINUATION='page-continuation.v1' as const;
 export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
 export const PAGE_CONTINUATION_CHOICES='page-continuation.choices.v1' as const;
+export const PAGE_CONTINUATION_FIRST='page-continuation.first-subquestion.v1' as const;
 export const CONTINUATION_FIGURE_CROPS='layout-subcrops.v1' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
 type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
-export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof});
+export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_FIRST;textProof?:ContinuationTextProof});
 const parent=/^[ \t]*(?:第[ \t]*(\d{1,5})[ \t]*题[ \t]*[:：]?|(\d{1,5})[.、．](?!\d))/gmu;
 const markers=(text:string)=>[...text.matchAll(new RegExp(parent))];
 const continuationStart=/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u;
+const subquestion=/^\s*(?:[（(]\s*([1-9]\d?)\s*[)）]|([①-⑳]))/u;
+const firstSubquestion=/^\s*(?:[（(]\s*1\s*[)）]|①)/u;
+export const startsWithFirstSubquestion=(text:string)=>firstSubquestion.test(text);
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Object.getPrototypeOf(v)===Object.prototype&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});
 const number=(m:RegExpMatchArray)=>m[1]||m[2];
 /** Conservative source planner. An unambiguous complete prefix must end at the next parent. */
-export function continuationPrefix(currentText:string,currentHints:BlockTextHint[],nextText:string,blocks:PageBlocks,hints:BlockTextHint[]){
- if(!validPageBlocks(blocks)||!blocks.ok||!validBlockTexts(hints,blocks)||!continuationStart.test(nextText))return;
+function planSubquestionPrefix(currentText:string,currentHints:BlockTextHint[],nextText:string,blocks:PageBlocks,hints:BlockTextHint[],start:RegExp){
+ if(!validPageBlocks(blocks)||!blocks.ok||!validBlockTexts(hints,blocks)||!start.test(nextText))return;
  const last=markers(currentText).at(-1),hintLast=markers(currentHints.map(h=>h.text).join('\n')).at(-1),boundary=markers(nextText)[0];
  if(!last||!hintLast||!boundary||number(last)!==number(hintLast)||Number(number(boundary))!==Number(number(last))+1)return;
  const rawPrefix=nextText.slice(0,boundary.index).trim(),index=hints.findIndex(h=>markers(h.text)[0]?.index===0);
  if(!rawPrefix||index<=0||number(markers(hints[index].text)[0])!==number(boundary))return;
  const prefix=blocks.blocks.slice(0,index).filter(b=>!['header','footer','header_image','footer_image'].includes(b.kind)),blockIds=prefix.map(b=>b.id);
  const text=prefix.map(b=>hints.find(h=>h.blockId===b.id)!.text).join('\n').trim();
- if(!blockIds.length||blockIds.length>32||!continuationStart.test(text)||new TextEncoder().encode(text).length>8192)return;
+ if(!blockIds.length||blockIds.length>32||!start.test(text)||new TextEncoder().encode(text).length>8192)return;
  // Raw row-order OCR can interleave a lower neighbour's graph label before its parent.
  // Every owned line must occur in order; every leftover line needs an exact foreign-block witness.
  const raw=rawPrefix.split(/\r?\n/).map(aiTextSignature).filter(Boolean),used=new Set<number>();let cursor=0;
@@ -37,11 +41,42 @@ export function continuationPrefix(currentText:string,currentHints:BlockTextHint
  for(const [i,line]of raw.entries())if(!used.has(i)){const count=foreign.get(line)||0;if(!count)return;foreign.set(line,count-1);}
  try{const [group]=ownedPageFragmentGroups(blocks,blockIds,1);return{number:number(last),nextNumber:number(boundary),blockIds,text,box:group.box};}catch{return;}
 }
+
+export function continuationPrefix(currentText:string,currentHints:BlockTextHint[],nextText:string,blocks:PageBlocks,hints:BlockTextHint[]){
+ return planSubquestionPrefix(currentText,currentHints,nextText,blocks,hints,continuationStart);
+}
 const optionMarker=/(?:^|[ \t\u3000\n])(?:([A-H])[.．、]|[（(]([A-H])[）)])/gmu;
 export const startsWithContinuationChoices=(text:string)=>/^(?:A[.．、]|[（(]A[）)])/u.test(text.trimStart());
 const continuationMargins=new Set(['header','footer','header_image','footer_image','number']);
 const pendingChoice=/[（(]\s*[）)]\s*[。.!！?？]?\s*$/u;
 const pageCountLine=/^第\s*\d{1,5}\s*页\s*共\s*\d{1,5}\s*页$/u;
+
+export function openSubquestionStem(text:string){
+ const last=markers(text).at(-1);if(!last)return;
+ const lines=text.slice(last.index!+last[0].length).split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
+ if(pageCountLine.test(lines.at(-1)??''))lines.pop();
+ const body=lines.join('\n'),request=/(?:^|[。！？：，；,.!?:;])[ \t]*(?:求|(?:请)?回答(?:下列)?问题|完成下列(?:各题|小题))[:：]$/u;
+ const cue=request.exec(body);
+ if(!cue||cue.index<8||lines.some(line=>subquestion.test(line)))return;
+ return continuationTextSignature(body);
+}
+
+function orderedSubquestions(text:string){
+ const numbers=text.split(/\r?\n/u).flatMap(line=>{
+  const marker=subquestion.exec(line);
+  return marker?[marker[1]?Number(marker[1]):marker[2].codePointAt(0)!-0x245f]:[];
+ });
+ return numbers.length>=2&&numbers.every((value,index)=>value===index+1);
+}
+
+/** The first subquestion can start on the next page only if both current
+ * readings already end with the same explicit, still-open parent stem. */
+export function continuationFirstSubquestionPrefix(currentText:string,currentHints:BlockTextHint[],nextText:string,blocks:PageBlocks,hints:BlockTextHint[]){
+ const stem=openSubquestionStem(currentText);
+ if(!stem||stem!==openSubquestionStem(currentHints.map(hint=>hint.text).join('\n')))return;
+ const plan=planSubquestionPrefix(currentText,currentHints,nextText,blocks,hints,firstSubquestion);
+ if(plan&&orderedSubquestions(plan.text)&&orderedSubquestions(nextText.slice(0,markers(nextText)[0].index)))return plan;
+}
 
 function choiceBodies(text:string){
  const markers=[...text.matchAll(optionMarker)];
@@ -116,16 +151,22 @@ export function continuationChoicePrefix(currentText:string,currentHints:BlockTe
 export function validPageContinuation(v:unknown):v is PageContinuation{
  const keys=['schemaVersion','number','nextNumber','source','blocks','blockTexts','blockIds','text','image','scope'];
  if(!exact(v,keys)&&!exact(v,[...keys,'textProof']))return false;
- if(typeof v.text!=='string'||((v.schemaVersion===PAGE_CONTINUATION||v.schemaVersion===PAGE_CONTINUATION_CHOICES)?Object.hasOwn(v,'textProof'):v.schemaVersion!==PAGE_CONTINUATION_TEXT||!validContinuationTextProof(v.textProof,v.text)))return false;
+ const schema=v.schemaVersion,withProof=Object.hasOwn(v,'textProof');
+ if(typeof v.text!=='string'||![PAGE_CONTINUATION,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_FIRST].some(version=>version===schema))return false;
+ if(schema===PAGE_CONTINUATION_TEXT&&!withProof||withProof&&(schema!==PAGE_CONTINUATION_TEXT&&schema!==PAGE_CONTINUATION_FIRST||!validContinuationTextProof(v.textProof,v.text)))return false;
  if(!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
  const scope=v.scope;if(!(exact(scope,['kind'])&&scope.kind==='selected_pages'||exact(scope,['kind','folderId','revision'])&&scope.kind==='folder_grant'&&typeof scope.folderId==='string'&&/^batch_[a-f0-9-]{36}$/i.test(scope.folderId)&&Number.isSafeInteger(scope.revision)&&Number(scope.revision)>=1))return false;
  const choice=v.schemaVersion===PAGE_CONTINUATION_CHOICES;
  const current=`${v.number}. 原题${choice?'（ ）':''}`;
- const plan=(choice?continuationChoicePrefix:continuationPrefix)(current,[{blockId:'block-1',text:current}],`${v.text}\n${v.nextNumber}. 下一题`,v.blocks,v.blockTexts);
+ const first=v.schemaVersion===PAGE_CONTINUATION_FIRST;
+ const next=`${v.text}\n${v.nextNumber}. 下一题`,hints=[{blockId:'block-1',text:current}];
+ const plan=first?planSubquestionPrefix(current,hints,next,v.blocks,v.blockTexts,firstSubquestion):(choice?continuationChoicePrefix:continuationPrefix)(current,hints,next,v.blocks,v.blockTexts);
+ if(first&&!orderedSubquestions(v.text))return false;
  if(!plan||JSON.stringify(v.blockIds)!==JSON.stringify(plan.blockIds)||plan.text!==v.text)return false;
  const image=v.image;
  return exact(image,['schemaVersion','ok','requestId','resourceId','version','engine','assetId','page','total','box','width','height','sha256'])&&image.schemaVersion===MATERIAL_PREVIEW_SCHEMA&&image.ok===true&&image.engine===PDF_PAGE_ENGINE&&validMaterialPreviewQuery({schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:image.requestId,resourceId:image.resourceId,version:image.version,page:image.page,box:image.box})&&image.resourceId===v.source.resourceId&&image.version===v.source.version&&image.page===v.source.page&&JSON.stringify(image.box)===JSON.stringify(plan.box)&&Number.isSafeInteger(image.total)&&Number(image.total)>=v.source.page&&Number(image.total)<=10000&&typeof image.assetId==='string'&&/^asset_[a-f0-9-]{36}$/.test(image.assetId)&&typeof image.sha256==='string'&&/^[a-f0-9]{64}$/.test(image.sha256)&&[image.width,image.height].every(n=>Number.isSafeInteger(n)&&Number(n)>=1&&Number(n)<=2401);
 }
+export const pageContinuationTextProof=(extra?:PageContinuation)=>extra&&'textProof'in extra?extra.textProof:undefined;
 export const pageContinuation=(prompt?:AiPagePrompt)=>prompt?.policy==='page-fragments.v3'?prompt.continuation:undefined;
 export const continuationSubcrops=(prompt?:AiPagePrompt)=>prompt?.policy==='page-fragments.v3'&&prompt.continuationCropPolicy===CONTINUATION_FIGURE_CROPS;
 /** Resolve only the frozen page selected by the crop planner; legacy next-page rasters stay opaque. */

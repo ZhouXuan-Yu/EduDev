@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 首个小问位于下一页的跨页题
+
+复用 PDFium、RapidOCR、PP-DocLayout 和既有双遍原图转录，按同版本页回执定位首小问。源图、页范围、OCR 及授权绑定继续沿现有入口。
+
+详见 [本轮记录](../research/evidence/kb/20261119/first-subquestion-continuation/README.md)。
+
 ## 2026-11-19 跨页题的题干与图注归属
 
 PDFium、RapidOCR 和 PP-DocLayout 的原图及原块继续作为本地证据。DeepSeek 的独立字面转录沿现有契约核对，未增加模型调用轮次。

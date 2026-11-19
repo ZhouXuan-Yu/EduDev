@@ -1,0 +1,40 @@
+{
+  "baselineRevision": "cbc4e26b7b77a08bdea0dddf40d09554bc83759d",
+  "buildMainSha256": "a02964f5b85f178608fe008c0d20360d0bc41990d3c94045aff6e3b4c389c20b",
+  "checks": {
+    "naturalFirstSubquestionAndReplayedEvidence": "6/6",
+    "naturalFirstSubquestionDesktop": "2/2",
+    "figureContinuation": "10/10",
+    "generalCrossPage": "12/12",
+    "aiPages": "248/248",
+    "choiceContinuation": "7/7",
+    "naturalChoiceDesktop": "2/2",
+    "rendererComponents": "253/253",
+    "electronSmoke": "207/207"
+  },
+  "naturalDesktop": {
+    "pages": [1, 2],
+    "parentNumber": 4,
+    "subquestions": 4,
+    "nextParentExcluded": 5,
+    "proofVersion": "page-continuation.first-subquestion.v1",
+    "state": "ai_final",
+    "issues": [],
+    "originalQuestionImagePage": 2,
+    "correctedDuplicateAndSpuriousGlyph": true,
+    "originalOcrAndCropsPreserved": true,
+    "readableAfterRestartWithNewDiscoveryDisabled": true,
+    "controlledResponses": 6,
+    "externalModelCalls": 0,
+    "rendererErrors": 0
+  },
+  "planningBenchmark": {
+    "iterations": 100,
+    "baseAccepted": false,
+    "currentAccepted": true,
+    "baseP95Ms": 0.099,
+    "currentP95Ms": 0.180
+  },
+  "dependencyAudit": {"total": 29, "high": 8, "critical": 0},
+  "fullGoalComplete": false
+}

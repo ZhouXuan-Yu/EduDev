@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-19 首个小问位于下一页的跨页题
+
+M03/M05 支持前页设问结束后的首小问续接。真实 PDF 可选定完整连续小问与独立图，遇到只有普通文字接续的自然题继续单独处理。KB-A01～A10 保留全范围。
+
+详见 [本轮记录](../research/evidence/kb/20261119/first-subquestion-continuation/README.md)。
+
 ## 2026-11-19 跨页题的题干与图注归属
 
 M03/M05 已修复跨页题的独立图注与题干末尾证据冲突。质量模式双字面转录、原图归属和 SQLite 冷读专项通过。KB-A01～A10 继续按完整验收执行。

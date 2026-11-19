@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "9f851fb8260ec0f829286b02de854c8b3999d592694fb15306b6dbed8722d3d8"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "197c2303e1e2b98172acbf75235de6da73ccd38777e65adc7ea818bf635a0c04"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "6c03f863efbab4250659117a2440ffff47718b9009d1265e7634adc7ff77b3a1"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "9dd3f00e1694fe8c9785281771440c81bcd58c5d27e54abc9b955b1ce0607f89"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-choice-tail-electron.mjs",
+      "sha256": "fc967f613242335ad364e0c9bc1967c6f8ed0849e9ca7af53aa52a168b76aa92"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-first-subquestion-boundaries.mjs",
+      "sha256": "f21aae172b4ad964951385d5a652514fec26fd0ea8e440cef1a805a8c7145d22"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-continuation-text.ts",
+      "sha256": "83f1e1d4ff0bf7ae766e5c2e3496eca012e3fece2cf548155efe10442d634ea4"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-continuation.ts",
+      "sha256": "c086b50fa6d2d5313a9ca35cc3e0d922def6adb4d674848e3a48d3c0d6602df1"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "sha256": "30d9ceacab372ee2c05deac44ac377ac0797fd2527edba07fd7d9701a3501255"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+      "sha256": "49610949f26f796cb063bf18716422fb6fa70eec6b88fe341c4664f1998a40d0"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "80a1085824d179de3169563b191b2b283e373e4da2fdfa7822f5e03ff5e1145a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "e6e86a99125cefecb83ef78cf663c92cd960f44be0e5e977b1add8bf325b08fb"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-source-reading.ts",
+      "sha256": "14dcf8fcd6b1e48ba2eec9026f98940a29dac24584b9419fb3545c559599ea27"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "13472e59f2f088ad2c6766e66d3d330ba7b2a4939808b431dbe9c2e6233234dd"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation.ts",
+      "sha256": "f5c1bb6b9a671f83d97ddd90c133cbaa420ec7990d3c6adec34e71534eb6eaee"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "3556afcdfd128013af82ece75a4aa115e613450ce5d073d4fe7ff5d9cdf97202"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "f81ec68a209fd857fb67c5fd9e1ec7aa46f1512d94d4be0367f99796a41d2ced"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "5f0e49cd8f4652c1da1dcbb843690a9a5dfdd6e23c45057f54d119cee8d8e395"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "8169e6091b520174fb8b148efb0ed5d4dbedd712b6c607699db79974808bc325"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "632b75544f453a234ebd222be9c04dd670cfc59540e751aa92d580caea657364"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "67b89bcffded9e11a4cb2cb3cde3430e4ee0237b48385a4146156d4c2f525933"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "aa877b2be6a9ce159e453192a96d4ab7aaa5f4b64cdfda7b7a27806af1800f78"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "084d8b4d96cc393dfcfe57c6d2d4f8b78d3cbed21cdc22350d9d89ddc8c07e7d"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "d6d6429611ef03a757d1ae212b7e6c7a2c1faea6f67e86b6f70979198d615348"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "b0c2183a1edf798cfef54c3ef04d0644f518be552ab20cec57d4d0e9ba6818f4"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "1464e47b3260da638849cdb32fe7dbae3071f030e96ea61861e7c402261b3aa5"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "a06792dbd4be5b36cfa60059c7abce10445f1f57b022f80aae7a75ad926463f7"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/first-subquestion-continuation/README.md",
+      "sha256": "e0d8f3cc3b66ae9b99d539b79fcb611e13d8f650fc406f0e6c71537ebbfc5993"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/first-subquestion-continuation/summary.json",
+      "sha256": "5b5bd7802c629915112675186be41df08e7674719aca7096c13c2febdbcf66fa"
+    }
+  ]
+}

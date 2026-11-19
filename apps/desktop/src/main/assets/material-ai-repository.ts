@@ -21,7 +21,7 @@ import {sourceContentPrompt} from '../../shared/material-ai-source-content';
 import {SOURCE_READING_RESPONSE,sourceReadingEnabled,sourceReadingPrompt,validSourceReadingStage} from '../../shared/material-ai-source-reading';
 import {attachReadingContent,readingComparisons} from './material-ai-source-reading';
 import {PRINTED_CHOICE_COUNT} from '../../shared/material-ai-printed-choice';
-import {CONTINUATION_FIGURE_CROPS,hasUnfinishedContinuationChoice} from '../../shared/material-ai-continuation';
+import {CONTINUATION_FIGURE_CROPS,hasUnfinishedContinuationChoice,openSubquestionStem} from '../../shared/material-ai-continuation';
 import {BOUND_ANSWERS,boundAnswerSource} from '../../shared/material-ai-bound-answers';
 import {BOUND_ANSWERS_TABLE,resolveBoundAnswers,writeBoundAnswers,boundAnswerTextIsPublic} from './material-ai-bound-answers';
 import {BLIND_ANSWER_REVIEW} from '../../shared/material-ai-answer-review';
@@ -265,10 +265,11 @@ export class MaterialAiRepository{
           if(policy.crossPage&&blockTexts&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&page<original.totalPages&&(page+1<input.start+input.count||task?.folderId)){
             const nextBoundary=await readFollowingPageBoundary(this.host,original.source,original.totalPages);
             const choice=nextBoundary.choiceLead&&process.env.OMNI_EDU_AI_CONTINUATION_CHOICES!=='0'&&hasUnfinishedContinuationChoice(original.text);
-            if(nextBoundary.status==='continued'||choice){
+            const first=nextBoundary.firstSubquestionLead&&process.env.OMNI_EDU_AI_CONTINUATION_FIRST!=='0'&&openSubquestionStem(original.selectedText);
+            if(nextBoundary.status==='continued'||choice||first){
             if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
             const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1),next=await this.localBlocks(nextSource.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1'));
-            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined,choice);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;else unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;}finally{this.layoutControllers.delete(controller);}}
+            if(next&&'blockTexts'in next){const controller=new AbortController();this.layoutControllers.add(controller);try{unit.pagePrompt.continuation=await preparePageContinuation(this.host,input,original.source,first?original.selectedText:original.text,{blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined,first?'first-subquestion':choice?'choices':undefined);if(!unit.pagePrompt.continuation)delete unit.pagePrompt.continuation;else unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;}finally{this.layoutControllers.delete(controller);}}
             }
           }
           unit.pagePrompt=sourceReadingPrompt(unit.pagePrompt,policy.mode==='quality'?process.env.OMNI_EDU_AI_SOURCE_READING!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_SOURCE_READING==='1');
