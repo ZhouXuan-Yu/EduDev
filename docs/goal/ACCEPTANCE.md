@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-11-19 知识库已核对题面与补答
+
+两个自然来源完成题本转写和正式小智缺答检索路径验证，旧版本和图义缺失被拒。独立答案册配对、检索留出及整体 KB-A01～A10 仍开放。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 HTTP MCP 续跑、Provider 撤销与冷读通过独立页面复验，完整阶段保留原门槛。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。

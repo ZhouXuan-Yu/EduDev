@@ -24,7 +24,11 @@ import {
 import type { MaterialParseLease } from "./material-parse-queue";
 import type { OriginalImage } from "./question-assets";
 import type { QuestionDocument } from "../../shared/question-document";
-import { validQuestionDocument } from "../../shared/question-document";
+import { QUESTION_DOCUMENT_SCHEMA, isCompleteQuestionDocument, questionDocumentSchemaForRoles, validQuestionDocument } from "../../shared/question-document";
+import { validQuestionContextEdit, type QuestionContextEditInput } from "../../shared/question-context-edit";
+import { QUESTION_CONTEXT_SCHEMA, validQuestionContextSource, type QuestionContextSource } from "../../shared/question-context";
+import { projectionFormulasInQuestion } from "../../shared/question-projection";
+import { completeQuestion } from "../education/question-context-revision";
 import type { ArchiveFields } from "../../shared/question-archive";
 import { validPdfFilePage } from "../../shared/material-pdf-file";
 import { verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
@@ -52,6 +56,12 @@ type StructureReviewRecord = {
   document: QuestionDocument;
   createdAt: string;
 };
+type StructureContextReceipt = {
+  input: QuestionContextEditInput;
+  reference: DocumentStructureReference;
+  contextSha: string;
+  saved: QuestionContextSource;
+};
 type Host = {
   all: (sql: string, values?: Value[]) => Promise<Row[]>;
   run: (sql: string, values?: Value[]) => Promise<void>;
@@ -71,6 +81,7 @@ type Host = {
   ) => Promise<QuestionDocument>;
   enqueue: (id: string, version: string, token: string) => Promise<void>;
   publish: (resource: TeacherResource, generation: string) => Promise<void>;
+  unwrapWeb?: (q: QuestionBankItem) => Promise<QuestionDocument | undefined>;
   writer: <T>(
     action: (target: MaterialStructureRepository) => Promise<T>,
   ) => Promise<T>;
@@ -95,6 +106,8 @@ export class MaterialStructureRepository {
       `CREATE TABLE IF NOT EXISTS material_structure_questions(generation TEXT NOT NULL,id TEXT NOT NULL,first_page INTEGER NOT NULL,last_page INTEGER NOT NULL,status TEXT NOT NULL,body_json TEXT NOT NULL,document_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(generation,id))`,
       `CREATE INDEX IF NOT EXISTS material_structure_question_pages ON material_structure_questions(generation,first_page,last_page)`,
       `CREATE TABLE IF NOT EXISTS material_structure_reviews(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,candidate_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,UNIQUE(resource_id,version,candidate_id))`,
+      `CREATE TABLE IF NOT EXISTS material_structure_context_edits(question_id TEXT NOT NULL,request_id TEXT NOT NULL,context_sha TEXT NOT NULL,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(question_id,request_id))`,
+      `CREATE INDEX IF NOT EXISTS material_structure_context_hash ON material_structure_context_edits(question_id,context_sha)`,
       `CREATE TABLE IF NOT EXISTS material_structure_chunks(generation TEXT NOT NULL,id TEXT NOT NULL,page INTEGER NOT NULL,body_json TEXT NOT NULL,PRIMARY KEY(generation,id))`,
     ])
       await this.host.run(sql);
@@ -692,6 +705,7 @@ export class MaterialStructureRepository {
   private async sourceCandidate(
     reference: DocumentStructureReference,
     signal: AbortSignal,
+    verifyOriginal = true,
   ): Promise<StructureCandidate> {
     if (!validStructureReference(reference)) throw Error("invalid_input");
     const row = (
@@ -723,7 +737,7 @@ export class MaterialStructureRepository {
       page.version !== reference.version
     )
       throw Error("source_changed");
-    await this.host.verify(reference.resourceId, reference.version, signal);
+    if (verifyOriginal) await this.host.verify(reference.resourceId, reference.version, signal);
     return { question, document };
   }
 
@@ -843,7 +857,7 @@ export class MaterialStructureRepository {
     return receipt;
   }
 
-  private async authenticateReview(q: QuestionBankItem, signal: AbortSignal) {
+  private async authenticateReview(q: QuestionBankItem, signal: AbortSignal, verifyOriginal: boolean) {
     const receipt = q.archive?.structureReview;
     if (!receipt || !q.archive?.structure) throw Error("source_changed");
     const saved = this.reviewRecord(
@@ -863,7 +877,7 @@ export class MaterialStructureRepository {
       !validQuestionDocument(saved.body.document)
     )
       throw Error("source_changed");
-    const candidate = await this.sourceCandidate(saved.body.reference, signal);
+    const candidate = await this.sourceCandidate(saved.body.reference, signal, verifyOriginal);
     if (
       candidate.question.status !== "needs_review" ||
       candidate.question.kind !== "question" ||
@@ -879,8 +893,9 @@ export class MaterialStructureRepository {
   async authenticate(
     reference: DocumentStructureReference,
     signal: AbortSignal,
+    verifyOriginal = true,
   ): Promise<StructureCandidate> {
-    const candidate = await this.sourceCandidate(reference, signal);
+    const candidate = await this.sourceCandidate(reference, signal, verifyOriginal);
     if (
       !candidate.document ||
       candidate.question.status !== "candidate" ||
@@ -891,32 +906,99 @@ export class MaterialStructureRepository {
     return candidate;
   }
 
-  async validate(q: QuestionBankItem, signal = new AbortController().signal) {
+  private readContextReceipt(row: Row | undefined): StructureContextReceipt | undefined {
+    if (!row) return;
+    const body = JSON.parse(String(row.body_json)) as StructureContextReceipt;
+    if (hash(body) !== row.sha256 || !validQuestionContextEdit(body.input) ||
+        !validStructureReference(body.reference) || !validQuestionContextSource(body.saved) ||
+        body.input.questionId !== row.question_id || body.saved.questionId !== row.question_id ||
+        body.input.requestId !== row.request_id || body.contextSha !== row.context_sha)
+      throw Error("source_changed");
+    return body;
+  }
+
+  async contextRequest(id: string, requestId: string) {
+    const [row] = await this.host.all(
+      "SELECT * FROM material_structure_context_edits WHERE question_id=? AND request_id=?",
+      [id, requestId],
+    );
+    return this.readContextReceipt(row);
+  }
+
+  async recordContext(input: QuestionContextEditInput, q: QuestionBankItem, version: string) {
+    if (!q.archive?.structure || !isCompleteQuestionDocument(q.document)) throw Error("source_changed");
+    const contextSha = hash(q.document.context);
+    const body: StructureContextReceipt = {
+      input,
+      reference: q.archive.structure,
+      contextSha,
+      saved: { schemaVersion: QUESTION_CONTEXT_SCHEMA, questionId: q.id, version },
+    };
+    await this.host.run(
+      "INSERT INTO material_structure_context_edits(question_id,request_id,context_sha,body_json,sha256) VALUES(?,?,?,?,?)",
+      [q.id, input.requestId, contextSha, JSON.stringify(body), hash(body)],
+    );
+    return body.saved;
+  }
+
+  async completeContext(q: QuestionBankItem, input: QuestionContextEditInput, signal: AbortSignal) {
+    if (!q.archive?.sourceChecked || q.archive.state !== "teacher_edited") throw Error("permission_denied");
+    const { question } = await this.validate(q, signal);
+    const p = input.projection;
+    const frozen = question.stem + "\n" + p.statement.text;
+    if (!projectionFormulasInQuestion(p) ||
+        ((question.assets.some(a => a.kind === "image" || a.kind === "chart") ||
+          /如图|见图|附图|[上下左右]图|图中/u.test(frozen)) && p.figures.state !== "provided") ||
+        ((question.assets.some(a => a.kind === "table") ||
+          /如表|见表|[上下]表|表中/u.test(frozen)) && p.tables.state !== "provided") ||
+        (question.assets.some(a => a.kind === "inline_formula" || a.kind === "display_formula") &&
+          p.formulas.state !== "provided") ||
+        (question.options.length && p.choices.state !== "provided") ||
+        (question.subquestions.length && p.subquestions.state !== "provided"))
+      throw Error("invalid_input");
+    const labels = [...p.choices.text.matchAll(/(?:^|\s)(?:[（(]([A-H])[）)]|([A-H])[.．、])/gu)]
+      .map(match => match[1] || match[2]);
+    if (question.options.length &&
+        JSON.stringify(labels) !== JSON.stringify(question.options.map(option => option.label)))
+      throw Error("invalid_input");
+    return completeQuestion(q, p, now());
+  }
+
+  async validate(q: QuestionBankItem, signal = new AbortController().signal, verifyOriginal = true) {
     if (!q.archive?.structure) throw Error("source_changed");
     const candidate = q.archive.structureReview
-      ? await this.authenticateReview(q, signal)
-      : await this.authenticate(q.archive.structure, signal);
-    if (!q.document || !candidate.document) throw Error("source_changed");
-    const expected =
-      q.archive.state === "teacher_edited"
-        ? reviseStructureDocument(candidate.document, q)
-        : candidate.document;
-    if (q.archive.state === "teacher_edited") {
-      for (const role of ["answer", "analysis"] as const)
-        if (q.archive[`${role}Origin`] === "teacher")
-          expected[role] = { origin: "teacher", text: q[role], anchors: [] };
+      ? await this.authenticateReview(q, signal, verifyOriginal)
+      : await this.authenticate(q.archive.structure, signal, verifyOriginal);
+    const source = q.archive.web ? await this.host.unwrapWeb?.(q) : q.document;
+    if (!q.document || !source || !candidate.document ||
+        q.document.answer.text !== q.answer || q.document.analysis.text !== q.analysis ||
+        q.document.answer.origin !== q.archive.answerOrigin ||
+        q.document.analysis.origin !== q.archive.analysisOrigin) throw Error("source_changed");
+    const changed = q.archive.state === "teacher_edited" || q.archive.state === "web_enriched";
+    const expected = changed ? reviseStructureDocument(candidate.document, {
+      ...q, answer: source.answer.text, analysis: source.analysis.text,
+    }) : candidate.document;
+    if (changed) for (const role of ["answer", "analysis"] as const) {
+      if (source[role].origin === "teacher") expected[role] = {
+        origin: "teacher", text: source[role].text, anchors: [],
+      };
     }
-    if (
-      JSON.stringify(q.document) !== JSON.stringify(expected) ||
-      q.document.blocks.find(
-        (b) =>
-          b.id === "transcription" && b.kind === "text" && b.text === q.stem,
-      ) === undefined ||
-      q.document.answer.text !== q.answer ||
-      q.document.analysis.text !== q.analysis ||
-      expected.answer.origin !== q.archive.answerOrigin ||
-      expected.analysis.origin !== q.archive.analysisOrigin
-    )
+    let document = expected;
+    if (isCompleteQuestionDocument(source)) {
+      const context = source.context;
+      const contextSha = hash(context);
+      const [row] = await this.host.all(
+        "SELECT * FROM material_structure_context_edits WHERE question_id=? AND context_sha=? ORDER BY rowid DESC LIMIT 1",
+        [q.id, contextSha],
+      );
+      const receipt = this.readContextReceipt(row);
+      if (!receipt || JSON.stringify(receipt.reference) !== JSON.stringify(q.archive.structure) ||
+          JSON.stringify(receipt.input.projection) !== JSON.stringify(context.projection))
+        throw Error("source_changed");
+      document = completeQuestion({ ...q, document: expected }, context.projection, q.updatedAt).document!;
+    }
+    if (JSON.stringify(source) !== JSON.stringify(document) ||
+        !q.document.blocks.some(b => b.id === "transcription" && b.kind === "text" && b.text === q.stem))
       throw Error("source_changed");
     return candidate;
   }
@@ -926,7 +1008,11 @@ export function reviseStructureDocument(
   document: QuestionDocument,
   fields: ArchiveFields,
 ): QuestionDocument {
-  const next = structuredClone(document);
+  let next = structuredClone(document);
+  if (isCompleteQuestionDocument(next) && next.context.projection.statement.text !== fields.stem) {
+    const { context: _context, ...original } = next;
+    next = { ...original, schemaVersion: QUESTION_DOCUMENT_SCHEMA };
+  }
   next.blocks = next.blocks.map((block) =>
     block.id === "transcription" && block.kind === "text"
       ? { ...block, text: fields.stem }
@@ -939,6 +1025,7 @@ export function reviseStructureDocument(
         text: fields[role],
         anchors: [],
       };
+  if (isCompleteQuestionDocument(next)) next.schemaVersion = questionDocumentSchemaForRoles(next);
   if (!validQuestionDocument(next)) throw Error("invalid_input");
   return next;
 }

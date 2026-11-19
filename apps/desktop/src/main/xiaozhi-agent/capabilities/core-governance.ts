@@ -11,6 +11,8 @@ import type {PermissionOwner} from '../../../shared/xiaozhi-permissions';
 import type {PermissionRequest} from '../../../shared/xiaozhi-permissions';
 import {providerResult, type ProviderSnapshot} from './provider-contract';
 import {TaskAdmissionError} from '../tasks/admission-error';
+import {validBrowserInput} from '../../../shared/xiaozhi-browser';
+import {unwrapTaskArguments} from '../tasks/tool-envelope';
 import sourceManifest from './generated/core-tool-manifest.json' with {type: 'json'};
 
 type Result = Awaited<ReturnType<ToolDefinition['execute']>>;
@@ -215,11 +217,18 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
       const record = await assert(name, signal); const task = await options.task(callId);
       await options.preflight?.(callId, name, input, false);
       const snapshot = await options.snapshot(record); snapshots.set(callId, snapshot);
+      // Extract reads the DOM of an already authorized browser tab and may cache
+      // evidence locally. It must not replay or be fenced as a second navigation.
+      let effect = record.effect;
+      if (name === 'office_browser') {
+        const {input: browser} = unwrapTaskArguments(input);
+        if (validBrowserInput(browser) && browser.action === 'extract') effect = 'local_cache';
+      }
       const receipt: ToolContractReceipt = {schemaVersion: 1, capabilityId: record.capabilityId, providerId: record.providerId,
         providerVersion: record.providerVersion, providerHash: record.providerHash, schemaHash: record.schemaHash, sourceHash: record.sourceHash,
         contractVersion: '1.0.0', snapshotId: snapshot.snapshotId, registryRevision: snapshot.registryRevision, taskId: options.owner.taskId, stepId: task.stepId,
         planRevision: task.planRevision, requirementsVersion: task.requirementsVersion, target: task.target,
-        inputDigest: identityHash(input), effect: record.effect, scopePolicy: record.scopePolicy,
+        inputDigest: identityHash(input), effect, scopePolicy: record.scopePolicy,
         classification: record.classification, grantRefs: [], authorityRefs: []};
       await options.assertEffect?.(callId, name, receipt);
       await options.persist(callId, name, receipt); calls.set(callId, receipt); names.set(callId, name);

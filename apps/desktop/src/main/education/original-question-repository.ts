@@ -20,7 +20,7 @@ import {legacyOriginalImageReceipt} from './original-image-legacy-receipt';
 type Payload={schemaVersion:typeof ORIGINAL_REVIEW_SCHEMA;callId:string;studentId:string;draft:OriginalQuestionDraft;sourceTitle:string;image:OriginalImage};
 type Effect={schemaVersion:typeof ORIGINAL_REVIEW_SCHEMA;complete:true;draft:OriginalQuestionDraft;saved:QuestionContextSource;digest:string;contextRevisions?:ContextRevision[]};
 export type AutomaticQuestionSource={projection:QuestionProjection;images:{kind?:'diagram';choiceLabel?:string;blockId:string;role:'question';assetId:string;sha256:string;width:number;height:number;page:number;bytes:Buffer}[]};
-type Host=QuestionReviewSql&{automatic?:(q:import('../../shared/contracts').QuestionBankItem,signal:AbortSignal)=>Promise<AutomaticQuestionSource|undefined>;reviewImages?:(q:import('../../shared/contracts').QuestionBankItem,signal:AbortSignal)=>Promise<AutomaticQuestionSource['images']|undefined>;transaction:<T>(work:(sql:QuestionReviewSql)=>Promise<T>)=>Promise<T>};
+type Host=QuestionReviewSql&{completeStructure?:(input:QuestionContextEditInput,current:()=>boolean,afterWrite?:(current:()=>boolean)=>Promise<void>)=>Promise<QuestionContextSource>;automatic?:(q:import('../../shared/contracts').QuestionBankItem,signal:AbortSignal)=>Promise<AutomaticQuestionSource|undefined>;reviewImages?:(q:import('../../shared/contracts').QuestionBankItem,signal:AbortSignal)=>Promise<AutomaticQuestionSource['images']|undefined>;transaction:<T>(work:(sql:QuestionReviewSql)=>Promise<T>)=>Promise<T>};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const summary=(row:Record<string,unknown>,p:Payload):QuestionReviewSummary=>({id:String(row.id),runId:String(row.run_id),callId:p.callId,state:row.status as QuestionReviewSummary['state'],count:1,kind:'original'});
 /** Only main-rendered, original-backed candidates. Same ledger, same question facts and SQL transaction. */
@@ -54,7 +54,12 @@ export class OriginalQuestionRepository{
   signal.throwIfAborted();return result;
  }
  async completeContext(input:QuestionContextEditInput,current:()=>boolean,afterWrite?:(current:()=>boolean)=>Promise<void>):Promise<QuestionContextSource>{
-  if(!validQuestionContextEdit(input))throw new Error('invalid_input');return this.host.transaction(async sql=>{
+  if(!validQuestionContextEdit(input))throw new Error('invalid_input');
+  if((await this.host.read(input.questionId))?.archive?.structure){
+   if(!this.host.completeStructure)throw Error('unavailable');
+   return this.host.completeStructure(input,current,afterWrite);
+  }
+  return this.host.transaction(async sql=>{
    const check=()=>{if(!current())throw new Error('cancelled');};check();const b=await this.binding(input.questionId,sql),q=await sql.read(input.questionId);if(!q)throw new Error('source_changed');
    // Local teacher notebook authority. The caller cannot choose another student/session/run; archived chat retains canonical ownership.
    const owner=(await sql.all('SELECT s.student_id,t.status,r.session_id AS run_session,r.student_id AS run_student FROM ai_conversation_sessions s LEFT JOIN students t ON t.id=s.student_id JOIN ai_agent_runs r ON r.id=? WHERE s.id=?',[String(b.row.run_id),String(b.row.session_id)]))[0];if(!owner||String(owner.student_id||'')!==String(b.row.student_id||'')||owner.run_session!==b.row.session_id||String(owner.run_student||'')!==String(b.row.student_id||'')||owner.student_id&&owner.status!=='active')throw new Error('permission_denied');

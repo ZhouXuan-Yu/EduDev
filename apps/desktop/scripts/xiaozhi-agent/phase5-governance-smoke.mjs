@@ -56,6 +56,21 @@ try {
     assert.deepEqual(definitions.map(tool => JSON.stringify(tool.parameters)), before);
     const catalog = await registry.snapshot(); for (const record of records.values()) {assert(catalog.providers.some(provider => provider.id === record.providerId)); assert(record.scopePolicy);}
   });
+  await check('Only validated browser DOM extraction may be a local cache operation',async()=>{
+    const tool=runtime(),signal=new AbortController().signal,tabId='pibrowser_'+randomUUID();
+    const inputs=[
+      [{action:'navigate',url:'https://fixture.invalid/'},'external_effect'],
+      [{action:'extract',tabId},'local_cache'],
+      [{action:'extract',tabId,taskStepId:'web'},'local_cache'],
+      [{action:'extract',tabId,url:'https://fixture.invalid/'},'external_effect'],
+      [{action:'click',tabId,ref:1,snapshotId:'pisnapshot_'+randomUUID()},'external_effect'],
+    ];
+    for(const [input,effect] of inputs){
+      await tool.before(randomUUID(),'office_browser',input,signal);
+      assert.equal(persisted.at(-1).receipt.effect,effect);
+      assert.equal(persisted.at(-1).receipt.scopePolicy,records.get('office_browser').scopePolicy);
+    }
+  });
   await check('Duplicate and unknown tools fail registration before they acquire core authority', async () => {
     await assert.rejects(registerSessionToolGovernance({definitions: [definitions[0], definitions[0]], registry, mcp}), /tool_manifest_conflict/u);
     await assert.rejects(registerSessionToolGovernance({definitions: [{...definitions[0], name: 'unregistered_raw_tool'}], registry, mcp}), /tool_governance_missing/u);

@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 知识库已核对题面与补答
+
+转写是教师确认的派生文档，原题和历史回执保留。网页写回逐角色保存证据；读取已经授权的 DOM 使用本地缓存分类，导航仍走外部操作门禁。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 H-23、H-26、H-29 的 HTTP MCP 接缝继续复用原 Permission Engine、Effect、Event Journal 和 SQLite。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。

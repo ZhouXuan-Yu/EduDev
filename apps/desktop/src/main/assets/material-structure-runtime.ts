@@ -25,6 +25,7 @@ import {
   type QuestionBlock,
   type QuestionDocument,
 } from "../../shared/question-document";
+import { isCompleteQuestionDocument } from "../../shared/question-document";
 import { emptyQuestionProjection } from "../../shared/question-projection";
 import { MaterialLayoutCache, readMaterialLayout } from "./material-layout";
 import { withMaterialPageBlocks } from "./material-page-blocks";
@@ -181,7 +182,7 @@ export class MaterialStructureRuntime {
         bytes: await this.assets.read(image, true, signal),
       });
     }
-    return { projection: emptyQuestionProjection(q.stem), images };
+    return { projection: isCompleteQuestionDocument(q.document) ? q.document.context.projection : emptyQuestionProjection(q.stem), images };
   }
 
   async page(

@@ -1,5 +1,11 @@
 # 当前验收入口
 
+## 2026-11-19 知识库已核对题面与补答
+
+本次专项验证两份真实结构原题的教师转写、版本隔离、缺答检索及文档证据。独立答案册和正式检索指标保留验收任务。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 授权续跑由合成 HTTP 服务的实际发送次数、真实页面、SQLite、原生会话回执联合核验。 [Harness 专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)。
