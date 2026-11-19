@@ -1789,10 +1789,21 @@
       "id": "QG-05",
       "priority": "P1",
       "expected": "IPC 契约测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/education-core-and-ipc-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。Pi 真实生命周期 handler，原组卷注册器 sender/取消，Windows 实包的 typed preload 检索、Word 读回与能力中心。"
     },
     {
       "id": "QG-06",
@@ -1846,8 +1857,18 @@
       "id": "QG-10",
       "priority": "P1",
       "expected": "现有教育核心功能回归：知识检索、题库抽题、组卷、PPT 生成、文件读写。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase8/education-core-and-ipc-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "已实现。实际 Windows 包资料正文检索与 PPTX 产物，真实 SQLite 题库和组卷、受控文件读写均复验通过。"
     }
   ]
 }

@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 教育流程与 IPC 复核
+
+真实当前便携包验证资料来源与四格式输出，SQLite 组卷和题库、IPC 注册器及文件操作另有独立测试结果。两条质量门禁已实现。原教学全套源测试的 Electron 环境问题保留，不计通过。[证据](evidence/phase8/education-core-and-ipc-20261119.md)。
+
 ## 2026-11-19 Word 校验与质量门禁
 
 生产 Word Office 哈希路径改为八个文件的有界并行，固定有序拼接保证整树指纹。实际锁定树 ABBA、12 个组件专项及真实包 6/6 验证，之前真实 NSIS 完成 x64 交付候选。增加五项有证据的质量门禁至 83/89。[Word 对照](evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json) · [质量记录](evidence/phase8/current-quality-checkpoint-20261119.md)。
