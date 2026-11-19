@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-11-19 结构题与独立答案册匹配
+
+结构题配答的 SQLite 回归覆盖正册、错册凭据、同号错章、双栏不明和写入前原件变化。排印 PDF 对通过教师题本写回、答案原页和重启读回。
+
+详见 [配答证据](../research/evidence/kb/20261119/structure-book/README.md)。
+
 ## 2026-11-19 审批键盘与授权核对
 
 审批收件箱键盘循环和任务授权冷启通过独立页面验证，目标变化拒绝旧决定有实页与 SQLite 证据。[专项验收](xiaozhi-harness/ACCEPTANCE_REPORT.md)

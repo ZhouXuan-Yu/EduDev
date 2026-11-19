@@ -32,6 +32,8 @@ import { completeQuestion } from "../education/question-context-revision";
 import type { ArchiveFields } from "../../shared/question-archive";
 import { validPdfFilePage } from "../../shared/material-pdf-file";
 import { verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
+import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
+import { structureBookScope } from "./material-structure-book-scope";
 
 type Value = string | number | null;
 type Row = Record<string, unknown>;
@@ -82,6 +84,7 @@ type Host = {
   enqueue: (id: string, version: string, token: string) => Promise<void>;
   publish: (resource: TeacherResource, generation: string) => Promise<void>;
   unwrapWeb?: (q: QuestionBankItem) => Promise<QuestionDocument | undefined>;
+  unwrapBook?: (q: QuestionBankItem) => Promise<QuestionDocument | undefined>;
   writer: <T>(
     action: (target: MaterialStructureRepository) => Promise<T>,
   ) => Promise<T>;
@@ -964,17 +967,39 @@ export class MaterialStructureRepository {
     return completeQuestion(q, p, now());
   }
 
+  async bookScope(q: QuestionBankItem, signal: AbortSignal) {
+    const reference = q.archive?.structure;
+    if (!reference) throw Error("source_changed");
+    const { question } = await this.sourceCandidate(reference, signal);
+    if (question.number !== q.archive!.number) throw Error("source_changed");
+    const first = question.pageRange[0];
+    const start = Math.max(1, first - BOOK_SECTION_LOOKBACK);
+    const rows = await this.host.all(
+      "SELECT page,body_json,sha256 FROM material_structure_pages WHERE generation=? AND page BETWEEN ? AND ? ORDER BY page",
+      [reference.generation, start, first],
+    );
+    if (rows.length !== first - start + 1) throw Error("source_changed");
+    return structureBookScope(reference, question, rows.map(row => {
+      signal.throwIfAborted();
+      const page = JSON.parse(String(row.body_json)) as StructurePage;
+      if (page.page !== row.page || page.resourceId !== reference.resourceId ||
+          page.version !== reference.version || hash(page) !== row.sha256) throw Error("source_changed");
+      return { page, sha: String(row.sha256) };
+    }));
+  }
+
   async validate(q: QuestionBankItem, signal = new AbortController().signal, verifyOriginal = true) {
     if (!q.archive?.structure) throw Error("source_changed");
     const candidate = q.archive.structureReview
       ? await this.authenticateReview(q, signal, verifyOriginal)
       : await this.authenticate(q.archive.structure, signal, verifyOriginal);
-    const source = q.archive.web ? await this.host.unwrapWeb?.(q) : q.document;
+    let source = q.archive.web ? await this.host.unwrapWeb?.(q) : q.document;
+    if (q.archive.book) source = await this.host.unwrapBook?.({ ...q, document: source });
     if (!q.document || !source || !candidate.document ||
         q.document.answer.text !== q.answer || q.document.analysis.text !== q.analysis ||
         q.document.answer.origin !== q.archive.answerOrigin ||
         q.document.analysis.origin !== q.archive.analysisOrigin) throw Error("source_changed");
-    const changed = q.archive.state === "teacher_edited" || q.archive.state === "web_enriched";
+    const changed = ["teacher_edited", "web_enriched", "book_enriched"].includes(q.archive.state);
     const expected = changed ? reviseStructureDocument(candidate.document, {
       ...q, answer: source.answer.text, analysis: source.analysis.text,
     }) : candidate.document;

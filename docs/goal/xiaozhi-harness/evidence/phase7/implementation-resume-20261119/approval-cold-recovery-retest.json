@@ -78,6 +78,14 @@
       "pass": 9,
       "total": 9,
       "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-UGgG5j/evidence/ui-report.json"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "pass": 207,
+      "total": 207,
+      "exit": 0,
+      "scope": "模块候选 c83996…，真实 Electron 教育主流程，原 legacy 专用测试配置。",
+      "report": "%TEMP%/edu-main-harness-87-c77734b2/apps/desktop/test-results/harness-approval-cold-0458f2b/electron-smoke.log"
     }
   ],
   "workbenchFollowup": {
@@ -121,5 +129,38 @@
   "independentConversationRetry": {
     "case": "实际点击重新读取会话。测试注入坏记录存在时警告仍显示，仅在同一测试的隔离合成库撤销其注入后，点击刷新警告消失；会话与有效审批保留，其他行未发生变更。",
     "paidCalls": 0
+  },
+  "mainIntegration": {
+    "mainParent": "d2c85a568a6810ddcb8e13707f46f3b8d3ce2c53",
+    "moduleCommit": "6d8fecf",
+    "mainSha256": "bfd26e6c62847a37d81ffc3aebddf70d0c10526c68057aa7c2200668bedb70e5",
+    "build": {
+      "command": "npm.cmd run build -- --outDir test-results/harness-approval-cold-main-d2c85a5/out",
+      "result": "PASS，包括 TypeScript"
+    },
+    "coldApproval": {
+      "status": "PASS",
+      "coldOpenMs": 3268,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "approvalRowsPreserved": 5,
+      "paidCalls": 0,
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-oNSKio/cold-approval-report.json"
+    },
+    "renderer": {
+      "pass": 253,
+      "total": 253
+    },
+    "workbenchSource": {
+      "read": "11/11",
+      "renderer": "17/17"
+    },
+    "knowledgeBookBoundary": {
+      "priorExactMatching": "36/36",
+      "newStructureMatching": "8/8"
+    },
+    "scope": "双父组合版本；便携包与完整旧教育流程回归对应各自验证过的模块构建。"
   }
 }

@@ -1,0 +1,67 @@
+{
+  "target": "M02/M03/M05",
+  "base": "0458f2b027505d8e08bc8940019c78118ffcde46",
+  "checks": {
+    "structureBook": 8,
+    "legacyBook": 36,
+    "bookDocument": 7,
+    "webDocument": 14,
+    "aiPage": 249,
+    "renderer": 253,
+    "build": "pass",
+    "fullSmoke": "initial structure-book build passed"
+  },
+  "printedPair": {
+    "writeBuild": "c511e15a81dbd0d884d45b999b0d0d99d617f69b904adb19b9a4f56b5511eaca",
+    "finalReadBuild": "d7aee7b821ba23a24f2e25db512e5a58135cb2290a5d5b179d9527e9f3c8aa62",
+    "questionPage": 2,
+    "titlePage": 1,
+    "answerPage": 1,
+    "initialMatchMs": 300,
+    "repeatMatchMs": 418,
+    "viewports": [
+      [
+        1366,
+        768
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "rendererErrors": 0,
+    "newProviderRequests": 0
+  },
+  "naturalPair": {
+    "questionPage": 4,
+    "answerPage": 3,
+    "originalPixelEquality": true,
+    "answerPageChunks": 48,
+    "previousAnswerStatus": "unit_too_large before dispatch",
+    "newAnswerStatus": "review",
+    "newAnswerReason": "page_content_incomplete",
+    "historicalResponseReplays": 2,
+    "indexedAnswerEntries": 22,
+    "questionCandidates": 12,
+    "heldStructureCandidates": 11,
+    "remainingUncheckedNumber": 12,
+    "remainingUncheckedCause": "left-column options interleaved with right-column question",
+    "confirmedQuestions": 0,
+    "bookWrites": 0,
+    "cloudRequests": 0
+  },
+  "open": [
+    "natural column isolation",
+    "full-title/number duplicate audit across a booklet",
+    "background matching for reviewed structure questions",
+    "retrieval/assembly scale and installation/migration acceptance"
+  ],
+  "baselineIssues": {
+    "uiContracts": "PromptInput fingerprint drift",
+    "audit": {
+      "low": 8,
+      "moderate": 7,
+      "high": 8
+    }
+  }
+}

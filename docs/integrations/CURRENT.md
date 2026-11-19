@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 结构题与独立答案册匹配
+
+答案册匹配使用现有 typed IPC 和答案索引，增加结构题 ID 加当前版本的请求。发布前复核独立答案页和题册原稿，不接入新 provider。
+
+详见 [配答证据](../research/evidence/kb/20261119/structure-book/README.md)。
+
 ## 2026-11-19 审批键盘与授权核对
 
 审批和工作台沿现有 Pi Host、SQLite 与 typed preload，文件目标版本新增向后兼容的可选字段。面板沿现有 React Aria 运行，无新增依赖。
