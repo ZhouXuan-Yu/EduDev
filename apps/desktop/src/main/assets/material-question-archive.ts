@@ -132,6 +132,8 @@ export class MaterialQuestionArchive{
          return;
        if (JSON.stringify(await target.bookRole?.(id)) !== JSON.stringify(role))
          return;
+       if (structured.items.length &&
+         !(await target.structures!().currentPublication(id,version,structured.generation))) return;
        for (const candidate of structured.items) {
          const q = candidate.question;
          if (

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence.v1",
+  "integratedBase": "1de8807e18296e56926baef4db55621c68ca4eae",
+  "mainBundleSha256": "07c3618ffc38112b5a6e3cf7bf6cedc1c553786412c21d067f8ed616be0a71ad",
+  "v2BaselineBundleSha256": "50d480ac1877a252c9742a86cbaad0ffeb12a0870283eb674f5330fd4d91f4df",
+  "sample": {
+    "sha256": "d60d466cfa288faaec60cf8c327963744fba4f6ce316df9168284339d23ec1bd",
+    "pages": 4,
+    "questions": 8,
+    "v2": {
+      "needsReview": 8,
+      "ruleDrafts": 0
+    },
+    "v3": {
+      "needsReview": 6,
+      "ruleDrafts": 2,
+      "ruleDraftQuestionNumbers": [
+        3,
+        8
+      ]
+    }
+  },
+  "checks": {
+    "baselineElectron": [
+      5,
+      5
+    ],
+    "realPdfElectron": [
+      5,
+      5
+    ],
+    "documentBoundaries": [
+      27,
+      27
+    ],
+    "documentStoreAndQueue": [
+      39,
+      39
+    ],
+    "aiSourceBoundaries": [
+      16,
+      16
+    ],
+    "rendererComponents": [
+      253,
+      253
+    ],
+    "build": "pass",
+    "electronSmoke": [
+      207,
+      207
+    ]
+  },
+  "pairedStructureMs": {
+    "measurementsPerVersion": 100,
+    "v2P50": 0.3644,
+    "v3P50": 0.3683,
+    "v2P95": 0.6271,
+    "v3P95": 0.6095
+  },
+  "audit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0
+  },
+  "cloudModelCalls": 0
+}

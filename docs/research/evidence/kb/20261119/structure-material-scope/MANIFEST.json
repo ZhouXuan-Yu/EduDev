@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "ccfa59f4be1d17b7aa7d7311b5c5ddd39674666361d409efc998e73513d88d7a"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "d7909c99bc5354817e73d026d89ced4c7343fa0a4da2468e92f65bfd2290441f"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "dfd1c41e2e546d77e85353084a943121633d5ba7cd5cf4c5d062bf8e1a28232f"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "fe482fa6c89d2e50e95ff508b3f62ffbc2ec3bac62853a1cb447969208b2585b"
+    },
+    {
+      "path": "apps/desktop/scripts/education/ai-structure-source-boundaries.mjs",
+      "sha256": "e4f49db4a45d935c52887e51ba7c01ebc0abf92bec0b85b33ee635a61b456c4f"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-boundaries.mjs",
+      "sha256": "af6c9b9c2df691eaf6a5584767ca43b63a30e07ac466ef737caa4e9ec31cfda6"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-repository.mjs",
+      "sha256": "babd1183c5353130709e7b68e79affaaa660967cb8609b28d640711d7abc8224"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-pdf-printed-body-journey.mjs",
+      "sha256": "86e3b7d5233a39bf4c80f80cdfadc3a60ec5eabb396b5245cdd915d6c505b795"
+    },
+    {
+      "path": "apps/desktop/scripts/education/native-real-pdf-electron.mjs",
+      "sha256": "3fefd63c0d87fcb554b0bca74acebf7252519374ab61125f94ee7b1196464ab9"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-structure-source.ts",
+      "sha256": "4ca4e2bf8fc0a109a4e45f315e0febfc2c64782ecbce7b03127decfa8b3a8f22"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-document-structure.ts",
+      "sha256": "c3ecb3c330ce5a066e4583a4ffb33fadbd3fe79ce69ec0823c871e867d91f888"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "0ad8764bfbc7998e3fa809c0699786ff1c550e428365d41dba6d7553ef0f1cbb"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "f675d4e673dac4cbf063c02530010b5d1c1dc025980a2c51f8a96a9be8777f86"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-runtime.ts",
+      "sha256": "f5e2500ee3a31d924eb03070b1b7fa64bf2d9037cb4ef325e55c41f8cdb93047"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "055b80878fc3309080124f8c2f84de1dad68041f8f752c0cbf16d3980d5df792"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-structure.ts",
+      "sha256": "f6140bd3f320350cb748a4600732341be4a3b571512e6ac7402cb7a085030611"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-document-structure.ts",
+      "sha256": "06f3e3077b6278d6d68fca439cd551d840db7546f808468a5002dfa500c4b09d"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "147cfd3c3e3d2af7d7bec846b1ea557af452542c7cd823f6d56da37e2c1f14df"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "e67f8b6fe0aea6ab0f9b5789132f6c46735863d0db54f20433c28a0d666defc8"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "1ec51281a3869a6194ea85ab29b25fec0f7d15c5e246e1e2a9f70f66d2fb3988"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "64cfeb80429ad3cec448e807be44b25e1fe5dd972b187f268c0e4975161fac51"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "2b7c29e9acf75594fdd170589c9db1924059a16ac793a0306c50353ba9a51faf"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "7054e02cb2ba55b7dffed8ed109c6da568e4417080faf9bfb4095c2dddf82d46"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "53b9f22e83a980d22f568287d4e29bd2671bce519490ef3bb7da99911ae146d3"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "f7fa9c672d92fe699d230dd9b8e1958578a0997ead4f3705f9faaccf76ff0de8"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "c55f28e9216e3ca07cbbd0f12adcc25880a194ccd73e29c0448afbffdf5657a5"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "7b3a12ff44e445e5643cb0af3417d49c6e9c50538d704d2bb8579b0fce59d609"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "161e4b6de3c524a129bf1486fb1f2c14024c184fbd39b662b6d15acd99137848"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "0c1c2f4aa9e3d7f5113ef23dfdc9c6a488208623991abecd43bbe182558a5dfb"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/structure-material-scope/README.md",
+      "sha256": "42582179d10f70800174c269cb7e99ed8a9e7f924c6f30ce70152020ba1d7f49"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/structure-material-scope/summary.json",
+      "sha256": "53115340d1809b9870889a1daf187a16ec959a1f15cede73b2c71e21457fd844"
+    }
+  ]
+}

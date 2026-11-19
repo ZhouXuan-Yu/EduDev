@@ -45,6 +45,9 @@ const questionCue =
   /[?？]|求|计算|解方程|选择|填空|判断|已知|证明|下列|回答|写出|如图|简述|说明|[（(]\s*[）)]|_{2,}/u;
 const sectionHeading =
   /^(?:[一二三四五六七八九十百]+[、．.]|第[一二三四五六七八九十百\d]+[章节单元])/u;
+const previousMaterial =
+  /(?:上[述面]|前述|以上|所给|同一份)的?(?:材料|短文|文章|资料)|(?:根据|依据|结合|参照)\s*该?(?:材料|短文|文章)|上文|前文|文中|文意/u;
+const materialRange = /(?:回答|完成)?\s*(\d+)\s*[～~—–-]\s*(\d+)\s*题/u;
 
 /** Whitespace at a line boundary is derived layout. All original line strings remain in the snapshot. */
 export function joinStructureLines(lines: string[]) {
@@ -63,15 +66,20 @@ export function joinStructureLines(lines: string[]) {
 function lineRole(
   line: StructureLine,
   regions: PageBlock[],
+  page: Pick<StructurePageInput, "page" | "totalPages">,
 ): { role: ParagraphRole; marker?: StructureParagraph["marker"] } {
   const text = line.text.trim(),
     owned = regions.filter((region) => line.regionIds.includes(region.id));
   const kind = owned.sort((a, b) => area(a.box) - area(b.box))[0]?.kind;
+  if (kind === "number" && line.box[1] >= 0.88) {
+    const counter = /^(?:第[ \t]*(\d{1,5})[ \t]*页(?:[ \t]*共[ \t]*(\d{1,5})[ \t]*页)?|(\d{1,5})(?:\s*[/／]\s*(\d{1,5}))?)$/u.exec(text);
+    const sheet = counter?.[1] || counter?.[3], total = counter?.[2] || counter?.[4];
+    if (Number(sheet) === page.page && (!total || Number(total) === page.totalPages)) return { role: "footer" };
+  }
   if (kind === "header" || kind === "header_image") return { role: "header" };
   if (
     kind === "footer" ||
-    kind === "footer_image" ||
-    (kind === "number" && /^\d+(?:\s*\/\s*\d+)?$/u.test(text))
+    kind === "footer_image"
   )
     return { role: "footer" };
   if (
@@ -85,12 +93,6 @@ function lineRole(
     return { role: "answer" };
   if (/^(?:【|\[)?(?:解析|分析|解答)(?:】|\]|[:：])/u.test(text))
     return { role: "analysis" };
-  if (
-    /^(?:阅读|根据|依据).{0,30}(?:材料|短文|文章)|(?:回答|完成)\s*\d+\s*[～~—–-]\s*\d+\s*题/u.test(
-      text,
-    )
-  )
-    return { role: "material" };
   const child = /^(?:[（(](\d{1,3})[）)]|([①-⑳]))[ \t]*/u.exec(text);
   if (child)
     return {
@@ -113,6 +115,8 @@ function lineRole(
       role: "question",
       marker: { kind: "parent", label: parent[1] || parent[2] },
     };
+  if (/^(?:阅读\s*(?:下列|下面|以下)?|(?:根据|依据)\s*(?:下列|下面|以下))(?:材料|短文|文章)/u.test(text) ||
+      /(?:回答|完成)/u.test(text) && materialRange.test(text)) return { role:"material" };
   if (kind === "doc_title" || kind === "paragraph_title")
     return { role: "heading" };
   if (kind === "table") return { role: "table" };
@@ -125,12 +129,13 @@ function lineRole(
 
 function columnsFor(
   lines: StructureLine[],
-  regions: PageBlock[],
+  input: StructurePageInput,
   height: number,
 ): PageBox[] {
+  const {regions}=input;
   const body = lines.filter(
     (line) =>
-      lineRole(line, regions).role !== "option" &&
+      lineRole(line, regions, input).role !== "option" &&
       !regions.some(
         (region) =>
           line.regionIds.includes(region.id) &&
@@ -244,12 +249,12 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     };
   });
   const height = median(lines.map((line) => line.box[3] - line.box[1])),
-    columns = columnsFor(lines, input.regions, height),
+    columns = columnsFor(lines, input, height),
     ordered = orderedLines(lines, columns);
   const paragraphs: StructureParagraph[] = [];
   const byId = new Map(lines.map((line) => [line.id, line]));
   for (const { line, column } of ordered) {
-    const detected = lineRole(line, input.regions),
+    const detected = lineRole(line, input.regions, input),
       last = [...paragraphs]
         .reverse()
         .find((p) => !["figure", "header", "footer"].includes(p.role)),
@@ -375,8 +380,10 @@ export class StructureQuestionAssembler {
   private shared: StructureParagraph[] = [];
   private sharedPages = new Map<number, StructurePage>();
   private sharedOverflow = false;
+  private inferredShared = false;
   private unassigned: StructureParagraph[] = [];
   private unassignedPages = new Map<number, StructurePage>();
+  private sharedFrom?: number;
   private sharedUntil?: number;
   private instructions = false;
   private answers = false;
@@ -398,6 +405,7 @@ export class StructureQuestionAssembler {
         this.shared = [];
         this.sharedPages.clear();
         this.sharedOverflow = false;
+        this.sharedFrom = undefined;
         this.sharedUntil = undefined;
         this.unassigned = [];
         this.unassignedPages.clear();
@@ -422,12 +430,13 @@ export class StructureQuestionAssembler {
         this.unassignedPages.clear();
         this.sharedPages = new Map([[page.page, page]]);
         this.sharedOverflow = false;
-        this.sharedUntil =
-          Number(
-            paragraph.text.match(
-              /(?:回答|完成)?\s*\d+\s*[～~—–-]\s*(\d+)\s*题/u,
-            )?.[1],
-          ) || undefined;
+        const range = materialRange.exec(paragraph.text);
+        this.sharedFrom = range ? Number(range[1]) : undefined;
+        this.sharedUntil = range ? Number(range[2]) : undefined;
+        if (!this.sharedFrom || !this.sharedUntil || this.sharedFrom > this.sharedUntil) {
+          this.sharedFrom = undefined;
+          this.sharedUntil = undefined;
+        }
         continue;
       }
       if (paragraph.marker?.kind === "parent") {
@@ -471,17 +480,29 @@ export class StructureQuestionAssembler {
         if (numberingConflict)
           this.pending!.question.issues.push("numbering_conflict");
         if (this.pending) output.push(this.finish());
-        if (this.unassigned.length && !this.shared.length) {
-          this.shared = this.unassigned;
-          this.sharedPages = this.unassignedPages;
-          this.sharedUntil = undefined;
+        if (this.unassigned.length) {
+          // Preserve an ambiguous lead-in for the immediately following
+          // question. A new parent marker does not extend its ownership.
+          if (!this.shared.length && this.unassignedPages.size === 1 &&
+            this.unassigned.every(part => part.anchor.page === page.page &&
+              part.column === paragraph.column && part.anchor.box[3] <= paragraph.anchor.box[1])) {
+            this.shared = this.unassigned;
+            this.sharedPages = this.unassignedPages;
+            this.sharedFrom = undefined;
+            this.sharedUntil = undefined;
+            this.inferredShared = true;
+          }
           this.unassigned = [];
           this.unassignedPages = new Map();
         }
         if (this.sharedUntil && Number(number) > this.sharedUntil) {
           this.shared = [];
           this.sharedPages.clear();
+          this.sharedOverflow = false;
+          this.sharedFrom = undefined;
+          this.sharedUntil = undefined;
         }
+        const ownsShared = !this.sharedFrom || Number(number) >= this.sharedFrom;
         this.pending = {
           question: {
             id: "structure-question-" + ++this.sequence,
@@ -489,7 +510,7 @@ export class StructureQuestionAssembler {
             section: this.section,
             kind: this.answers ? "answer" : "question",
             paragraphIds: [],
-            sharedMaterialIds: this.shared.map((value) => value.id),
+            sharedMaterialIds: ownsShared ? this.shared.map((value) => value.id) : [],
             stem: "",
             answer: "",
             analysis: "",
@@ -506,12 +527,12 @@ export class StructureQuestionAssembler {
           paragraphs: [],
           pages: new Map(),
         };
-        this.pending.pages = new Map(this.sharedPages);
+        if (ownsShared) this.pending.pages = new Map(this.sharedPages);
         if (numberingConflict)
           this.pending.question.issues.push("numbering_conflict");
         if (precedingOrphan)
           this.pending.question.issues.push("shared_material_scope");
-        if (this.sharedOverflow)
+        if (ownsShared && this.sharedOverflow)
           this.pending.question.issues.push("shared_material_scope");
         if (!questionCue.test(paragraph.text) && !this.answers)
           this.pending.question.issues.push("uncertain_boundary");
@@ -587,7 +608,8 @@ export class StructureQuestionAssembler {
   }
   private finish(): StructureQuestion {
     const pending = this.pending!,
-      q = pending.question;
+      q = pending.question,
+      shared = q.sharedMaterialIds.length ? this.shared : [];
     let role: "stem" | "answer" | "analysis" = "stem";
     let child: StructureQuestion["subquestions"][number] | undefined;
     let parentChild: typeof child;
@@ -647,19 +669,19 @@ export class StructureQuestionAssembler {
       /^(?:第\s*\d+\s*题\s*[:：]?|\d+[.．、])[ \t]*/u,
       "",
     );
-    if (this.shared.length) {
-      for (const paragraph of this.shared) {
+    if (shared.length) {
+      for (const paragraph of shared) {
         q.confidence = Math.min(q.confidence, paragraph.confidence);
         q.issues.push(...paragraph.issues);
       }
       q.stem =
-        this.shared.map((paragraph) => paragraph.text).join("\n") +
+        shared.map((paragraph) => paragraph.text).join("\n") +
         "\n" +
         q.stem;
-      q.anchors.push(...this.shared.map((paragraph) => paragraph.anchor));
+      q.anchors.push(...shared.map((paragraph) => paragraph.anchor));
       q.pageRange[0] = Math.min(
         q.pageRange[0],
-        ...this.shared.map((p) => p.anchor.page),
+        ...shared.map((p) => p.anchor.page),
       );
     }
     q.answer = q.answer.replace(
@@ -671,7 +693,7 @@ export class StructureQuestionAssembler {
       "",
     );
     for (const [number, page] of pending.pages) {
-      const owned = [...pending.paragraphs, ...this.shared].filter(
+      const owned = [...pending.paragraphs, ...shared].filter(
           (p) => p.anchor.page === number,
         ),
         top = Math.min(...owned.map((p) => p.anchor.box[1])),
@@ -742,7 +764,7 @@ export class StructureQuestionAssembler {
         q.issues = q.issues.filter((issue) => issue !== "uncertain_boundary");
       else q.issues.push("uncertain_boundary");
     }
-    if (q.sharedMaterialIds.length && !this.sharedUntil)
+    if (shared.length ? !this.sharedUntil : pending.paragraphs.some(part => previousMaterial.test(part.text)))
       q.issues.push("shared_material_scope");
     if (Math.max(q.stem.length, q.answer.length, q.analysis.length) > 12000)
       q.issues.push("oversized_question");
@@ -761,6 +783,11 @@ export class StructureQuestionAssembler {
         q.stem,
       ]).slice(0, 40);
     this.pending = undefined;
+    if (this.inferredShared) {
+      this.shared = [];
+      this.sharedPages.clear();
+      this.inferredShared = false;
+    }
     return q;
   }
   end() {

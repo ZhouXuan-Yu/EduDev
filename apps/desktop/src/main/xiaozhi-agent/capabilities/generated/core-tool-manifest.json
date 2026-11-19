@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "c9f1924236670a1f87c77fd2e74c00cdf5a27d830e96b8c6280a507bd728e782",
+  "sourceHash": "73c9bfa5dac6d1a49e302b34b3660252ec0ef09fb94690ab1c0ad500488987d8",
   "sources": [
     {
       "file": "package-lock.json",
@@ -676,7 +676,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
-      "sha256": "98196fd775bb40c677173f884fe6a5661b17350d4153b0463f3fc438f901df6a"
+      "sha256": "0d029be58e30a25dbb44cd0de2cf07bcf1241c9e26f299ab6d15d229ae04a873"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
@@ -1292,7 +1292,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "838c9bdc8b4d8dbdfed0fafcad32178cc9c28344e42a59bb94dea34c9708c45e"
+      "sha256": "9cf8415d96648dca9df48b858d0cfa9b8d2b1feb6827b319d2ec31bd5a52ab67"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
@@ -1968,7 +1968,7 @@
     },
     {
       "file": "src/shared/material-ai-structure.ts",
-      "sha256": "5b869795cc272154fbcf00e557b8b70f73318222f5f06809a165b8a9f8b7cbe0"
+      "sha256": "c8c99d8aca4582084b403a5e6731c33beaacb4c01cfd08ed7b6a2f66512d9e16"
     },
     {
       "file": "src/shared/material-ai-text.ts",
@@ -1992,7 +1992,7 @@
     },
     {
       "file": "src/shared/material-document-structure.ts",
-      "sha256": "bdbc59993f143e43656b2934c69f345db4c9e819afeab2f64873dcf00629ee3b"
+      "sha256": "331820869f35cac5ce6531aee01ad54e8f3414c35b8960290687f9ba4488c567"
     },
     {
       "file": "src/shared/material-layout.ts",

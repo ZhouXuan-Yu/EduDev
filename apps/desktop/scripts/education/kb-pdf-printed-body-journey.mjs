@@ -10,6 +10,7 @@ import {productEntry} from '../product-navigation.mjs';
 const from=fs.realpathSync(process.argv[2]);
 const buildRoot=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out');
 const mainEntry=path.join(buildRoot,'main/index.js');
+const baselinePreface=process.argv.includes('--baseline-preface');
 assert.equal(path.basename(from),'data');
 assert.equal(path.basename(path.dirname(from)),'flow-1gb-20261111');
 const output=fs.mkdtempSync(path.resolve('test-results','native-printed-body-ui-'));
@@ -21,12 +22,14 @@ const source=new DatabaseSync(path.join(from,'app.db'),{readOnly:true});
 const fixtures=[
  {pattern:'gh-physics-7-%circuit_3.pdf',file:'可核对的物理电路.pdf',status:'complete'},
  {pattern:'gh-physics-5-%circuit_2.pdf',file:'含分式的物理电路.pdf',status:'needs_review'},
+ {pattern:'gh-physics-16-%pressure2.pdf',file:'液体压强练习.pdf',status:'needs_review',sourcePage:3},
 ];
 try{
  for(const fixture of fixtures){
   const original=source.prepare('SELECT id,local_path,content_hash FROM teacher_resources WHERE original_file_name LIKE ?').get(fixture.pattern);
   assert.equal(sha(fs.readFileSync(original.local_path)),original.content_hash);
-  const old=source.prepare('SELECT p.status FROM material_pdf_pages p JOIN material_pdf_jobs j ON p.generation=j.generation WHERE j.resource_id=? AND p.page=2').get(original.id);
+  fixture.sourcePage??=2;
+  const old=source.prepare('SELECT p.status FROM material_pdf_pages p JOIN material_pdf_jobs j ON p.generation=j.generation WHERE j.resource_id=? AND p.page=?').get(original.id,fixture.sourcePage);
   assert.equal(old.status,'needs_review');
   fs.copyFileSync(original.local_path,path.join(folder,fixture.file));
   fixture.hash=original.content_hash;
@@ -58,14 +61,14 @@ try{
  await launch();
  await app.evaluate(({dialog},selected)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[selected]});},folder);
  await page.getByTestId('materials-import-folder').click();
- const resources=await until(()=>{const rows=read('SELECT * FROM teacher_resources');return rows.length===2&&rows;});
+ const resources=await until(()=>{const rows=read('SELECT * FROM teacher_resources');return rows.length===fixtures.length&&rows;});
  for(const fixture of fixtures){
   const resource=resources.find(row=>row.original_file_name===fixture.file);
   assert(resource&&resource.content_hash===fixture.hash);
   fixture.id=resource.id;
   const job=await until(()=>read("SELECT * FROM material_pdf_jobs WHERE resource_id=? AND state IN ('complete','partial')",[resource.id])[0]);
-  const row=read('SELECT * FROM material_pdf_pages WHERE generation=? AND page=2',[job.generation])[0];
-  const receipt=JSON.parse(row.result_json),parts=read('SELECT content_md FROM material_pdf_chunks WHERE generation=? AND page=2',[job.generation]);
+  const row=read('SELECT * FROM material_pdf_pages WHERE generation=? AND page=?',[job.generation,fixture.sourcePage])[0];
+  const receipt=JSON.parse(row.result_json),parts=read('SELECT content_md FROM material_pdf_chunks WHERE generation=? AND page=?',[job.generation,fixture.sourcePage]);
   assert.equal(row.status,fixture.status);
   assert.equal((await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),fixture.id)).generation,job.generation);
   if(fixture.status==='complete'){
@@ -74,12 +77,12 @@ try{
    assert(parts.some(chunk=>chunk.content_md.includes('保护电表'))&&!parts.some(chunk=>chunk.content_md.includes('Ro')));
   }else{
    assert.equal(receipt.error,'text_conflict');assert.equal(receipt.method,'ocr');assert.equal(parts.length,0);
-   assert(receipt.nativeText.includes('1\n2')&&receipt.ocrText.includes('D. 1R'));
+   if(fixture.sourcePage===2)assert(receipt.nativeText.includes('1\n2')&&receipt.ocrText.includes('D. 1R'));
   }
   fixture.generation=job.generation;
   fixture.receipt=sha(row.result_json);
  }
- await until(()=>read("SELECT COUNT(*) n FROM material_structure_jobs WHERE status IN ('complete','partial')")[0].n===2);
+ await until(()=>read("SELECT COUNT(*) n FROM material_structure_jobs WHERE status IN ('complete','partial')")[0].n===fixtures.length);
  const [verified]=fixtures;
  const paragraphs=read("SELECT p.body_json FROM material_structure_pages p JOIN material_structure_jobs j ON j.generation=p.generation WHERE j.resource_id=? AND p.page=2",[verified.id]);
  assert(JSON.parse(paragraphs[0].body_json).paragraphs.some(part=>part.role==='figure'&&part.text==='Ro'));
@@ -91,16 +94,34 @@ try{
  const held=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:conflicted.id,version:conflicted.hash,page:2});
  assert(held.questions.some(q=>q.number==='3'&&q.status==='candidate'));
  assert(held.questions.some(q=>q.number==='4'&&q.status==='needs_review'&&q.issues.includes('pdf_text_conflict')));
- await until(()=>read("SELECT count(*) n FROM material_question_jobs WHERE status='complete'")[0].n===2);
+ await until(()=>read("SELECT count(*) n FROM material_question_jobs WHERE status='complete'")[0].n===fixtures.length);
  const admitted=read("SELECT json_extract(archive_json,'$.number') number FROM question_bank_items WHERE source_title=?",[conflicted.file]);
  assert(admitted.some(q=>q.number==='3')&&!admitted.some(q=>q.number==='4'));
  capture('Independent same-page question 3 is archived while question 4 with the missing denominator remains in review');
+ const pressure=fixtures[2];
+ const tail=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:pressure.id,version:pressure.hash,page:3});
+ const standalone=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:pressure.id,version:pressure.hash,page:2});
+ const restored=standalone.questions.find(q=>q.number==='3');
+ assert(restored&&restored.pageRange[0]===(baselinePreface?1:2)&&restored.pageRange[1]===2);
+ assert.equal(restored.status,baselinePreface?'needs_review':'candidate');
+ assert.equal(!!restored.sharedMaterialIds.length,baselinePreface);
+ if(!baselinePreface){
+  assert(restored.assets.some(a=>a.page===2&&a.kind==='image'));
+  assert(restored.stem.includes('灌入多少水')&&!restored.stem.includes('帕斯卡定律'));
+  assert(tail.page.paragraphs.some(p=>p.role==='footer'&&p.rawText.includes('第 3 页共 4 页')));
+  assert(tail.questions.some(q=>q.number==='7'&&q.issues.includes('missing_figure')&&!q.stem.includes('第 3 页共 4 页')));
+ }
+ assert(tail.questions.some(q=>q.number==='6'&&q.status==='needs_review'));
+ const pressureBank=read("SELECT json_extract(archive_json,'$.number') number FROM question_bank_items WHERE source_title=?",[pressure.file]);
+ assert.equal(pressureBank.some(q=>q.number==='3'),!baselinePreface);
+ assert(!pressureBank.some(q=>['6','7'].includes(q.number)));
+ capture(baselinePreface?'Baseline global preface blocks the independent pressure question':'An independent later-page question keeps its own source and diagram, while the missing figure and formula conflicts stay held');
  await app.close();app=undefined;
  await launch();
  for(const fixture of fixtures){
   const current=await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),fixture.id);
   assert.equal(current.generation,fixture.generation);
-  assert.equal(sha(read('SELECT result_json FROM material_pdf_pages WHERE generation=? AND page=2',[current.generation])[0].result_json),fixture.receipt);
+  assert.equal(sha(read('SELECT result_json FROM material_pdf_pages WHERE generation=? AND page=?',[current.generation,fixture.sourcePage])[0].result_json),fixture.receipt);
  }
  capture('Cold read keeps both original transcriptions, their source generation and the held page');
  await until(async()=>!(await page.evaluate(()=>window.omniEdu.getMaterialIndexStatus())).pending);

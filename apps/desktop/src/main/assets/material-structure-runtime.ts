@@ -441,7 +441,7 @@ export class MaterialStructureRuntime {
       source: {
         resourceId: resource.id,
         resourceVersion: resource.contentHash,
-        parserVersion: DOCUMENT_STRUCTURE_ENGINE,
+        parserVersion: pages[0]?.page.engine ?? DOCUMENT_STRUCTURE_ENGINE,
         ocrVersion: pages[0].page.sourceEngine,
       },
       blocks,
