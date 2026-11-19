@@ -1,0 +1,125 @@
+{
+  "status": "PASS_SCOPED",
+  "baseCommit": "0458f2b027505d8e08bc8940019c78118ffcde46",
+  "changed": [
+    "permissions/store.ts",
+    "production-host.ts",
+    "shared/xiaozhi-agent.ts",
+    "PiEducationWorkspace.tsx",
+    "core-tool-manifest.json",
+    "permission-phase3-store-smoke.mjs",
+    "phase7-approval-cold-ui.mjs",
+    "phase7-workbench-cold-ui.mjs",
+    "phase7-workbench-fixture.mjs"
+  ],
+  "red": {
+    "mainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e",
+    "case": "预置一行 payload_json='{}' 的现代审批",
+    "startup": "12s 首窗口超时，完整观测 13547ms",
+    "exception": "permission_approval_corrupt -> permissions.recover -> OmniEduStore.initialize -> app.whenReady",
+    "controlMs": 2115,
+    "report": "%TEMP%/omni-edu-xiaozhi-approval-diagnose-cM2QZa/electron.txt"
+  },
+  "green": {
+    "mainSha256": "c83996cca8f50aa266e22deab0d60c21d39a54c8c7bb32d438d806dba995459d",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "rendererEntrySha256": "467e15a46139d35b9d8d798cf5f6071f07f7dfb254e21985c89d7f7ab1f713f6",
+    "sameDamagedFixtureMs": 2633,
+    "controlMs": 2648,
+    "compare": "同一诊断脚本的单次前后观察；不推断延时趋势。",
+    "sourceParity": 3196
+  },
+  "suites": [
+    {
+      "command": "npm.cmd run build -- --outDir test-results/harness-approval-cold-0458f2b/out",
+      "result": "PASS，包括 TypeScript"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "pass": 253,
+      "total": 253
+    },
+    {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs",
+      "pass": 15,
+      "total": 15,
+      "report": "%TEMP%/xiaozhi-permission-phase3-store-2m3NQU/report.json",
+      "scope": "同会话坏记录保留；原权限路径拒绝；有效执行中状态结算；幂等；读失败透出；写审计失败回滚。"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs",
+      "result": "Terra PASS 两视口；重启模型请求 0；审批和 Run 未改",
+      "reports": [
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-pAlDad/cold-approval-report.json",
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-t0dX9e/cold-approval-report.json",
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-AcIvXd/cold-approval-report.json"
+      ]
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-cold-ui.mjs",
+      "pass": 5,
+      "total": 5,
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-B4MdbR/evidence/cold-overview-report.json",
+      "scope": "实际流出正文后点击停止，精确 Run、中断 Task、部分回复和冷启动零重放。"
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "existing": {
+        "low": 8,
+        "moderate": 13,
+        "high": 8,
+        "critical": 0,
+        "total": 29
+      }
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "pass": 9,
+      "total": 9,
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-UGgG5j/evidence/ui-report.json"
+    }
+  ],
+  "workbenchFollowup": {
+    "reports": [
+      "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-k49iCb/evidence/workbench-failure-retry-probe.json"
+    ],
+    "passed": [
+      "实际 SQLite 查询失败，显示错误、清除旧计数",
+      "恢复查询后点击刷新返回原任务计数"
+    ],
+    "fail": [
+      "部分任务源不可读、筛选无可读匹配时仍显示确定的空列表文案"
+    ]
+  },
+  "paidCalls": 0,
+  "ledgerUsed": 3,
+  "unchangedGates": [
+    "88/89",
+    "Gate7 PARTIAL",
+    "QG-09 BLOCKED",
+    "正式模型ABBA待执行"
+  ],
+  "package": {
+    "command": "OMNI_EDU_BUNDLE_PAGE_BLOCKS=1 electron-builder --win --x64 --dir --publish never (frozen candidate output)",
+    "verifiedRuntimeFiles": {
+      "pageBlocks": 767,
+      "ocr": 712,
+      "education": 90,
+      "retrieval": 154,
+      "reranker": 155
+    },
+    "matchedOutputFiles": 481,
+    "outSha256": "2a14cd64e8ddf7b2ceddb460f0fc31df2a963b3bff07bb2c9777d432f0fbb603",
+    "startupViewports": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "report": "%TEMP%/edu-harness-approval-cold-package-f52d21a3/startup-6hVKQI/report.json",
+    "scope": "本机便携构建，独立干净 Windows 的安装、快捷方式和卸载仍待验证。"
+  },
+  "independentConversationRetry": {
+    "case": "实际点击重新读取会话。测试注入坏记录存在时警告仍显示，仅在同一测试的隔离合成库撤销其注入后，点击刷新警告消失；会话与有效审批保留，其他行未发生变更。",
+    "paidCalls": 0
+  }
+}

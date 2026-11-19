@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-19 审批异常冷启与真实取消
+
+A1 的损坏审批场景独立验证两尺寸冷启、部分计数、有效详情与原会话提示和刷新。W1 真实 SQLite 查询失败可刷新恢复，部分为空的提示仍待修。W3 补证流式正文可见后停止，精确 Task 和 Run 终态，部分正文重启保留。[测试证据](evidence/phase7/implementation-resume-20261119/approval-cold-recovery-retest.json)
+
 ## 2026-11-19 审批键盘与授权核对
 
 独立审批详情的两尺寸双向焦点循环、Escape 关闭与触发器焦点恢复通过。A2 本片验证目标变化、任务授权刷新和续跑、MCP Schema 变化后原审批冷启动失效。忙碌与禁用、原生窗口操作及完整适用状态仍按原合同核对。[独立实页与反例](evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json)

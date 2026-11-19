@@ -285,6 +285,57 @@ try {
     }), /permission_denied/);
     assert.equal(writes, 0);
   });
+  await check('Corrupt approval recovery preserves raw authority, recovers valid same-session execution and keeps decisions strict', async () => {
+    const recoveryOwner = {...owner, sessionId: 'aisession_' + randomUUID(), taskId: 'xitask_' + 'e'.repeat(64)};
+    const recoveryEngine = createPermissionEngine({store, current: () => true});
+    async function approval(action, executing = false) {
+      const input = request(write, {owner: recoveryOwner, action});
+      const decision = await recoveryEngine.authorize(input);
+      let value = await store.approval(recoveryOwner.sessionId, decision.approvalId);
+      if (executing) {
+        value = await store.transition(recoveryOwner.sessionId, value.id, value.revision, ['pending'], 'approved');
+        value = await store.transition(recoveryOwner.sessionId, value.id, value.revision, ['approved'], 'executing');
+      }
+      return value;
+    }
+    const corrupt = await approval('corrupt-recovery-row');
+    const executing = await approval('valid-executing-recovery-row', true);
+    const pending = await approval('valid-pending-recovery-row');
+    await sql.run('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?', [JSON.stringify({schemaVersion: 999}), corrupt.id]);
+    const raw = (await sql.all('SELECT * FROM ai_confirmation_items WHERE id=?', [corrupt.id]))[0];
+    const executingRaw = (await sql.all('SELECT * FROM ai_confirmation_items WHERE id=?', [executing.id]))[0];
+    const writeFailure = Error('owned_recovery_audit_failure');
+    const failedWrites = createPermissionStore({...sql, transaction: action => sql.transaction(work => action({...work,
+      run: async (query, args) => {
+        if (query.startsWith('INSERT INTO xiaozhi_permission_audit_v1')) throw writeFailure;
+        return work.run(query, args);
+      }}))});
+    await assert.rejects(failedWrites.recover(), error => error === writeFailure);
+    assert.deepEqual((await sql.all('SELECT * FROM ai_confirmation_items WHERE id=?', [executing.id]))[0], executingRaw);
+    assert.equal((await sql.all("SELECT * FROM xiaozhi_permission_audit_v1 WHERE reference=? AND kind='approval_uncertain'", [executing.id])).length, 0);
+    await store.recover();
+    const recovered = await store.approvalSnapshot(recoveryOwner.sessionId);
+    assert.equal(recovered.unavailableCount, 1);
+    assert.equal(recovered.items.find(item => item.id === executing.id).state, 'uncertain');
+    assert.equal(recovered.items.find(item => item.id === executing.id).revision, executing.revision + 1);
+    assert.deepEqual(recovered.items.find(item => item.id === pending.id), pending);
+    assert.deepEqual((await sql.all('SELECT * FROM ai_confirmation_items WHERE id=?', [corrupt.id]))[0], raw);
+    await assert.rejects(store.approvals(recoveryOwner.sessionId), /permission_approval_corrupt/);
+    await assert.rejects(store.decide(recoveryOwner.sessionId, corrupt.id, corrupt.revision, 'approve', 'operation', corrupt.permissionSnapshotHash), /permission_approval_corrupt/);
+    let dispatched = false;
+    await assert.rejects(recoveryEngine.run(request(write, {owner: recoveryOwner, action: 'corrupt-recovery-row'}), new AbortController().signal,
+      async () => {dispatched = true;}), /permission_approval_corrupt/);
+    assert.equal(dispatched, false);
+    const auditBefore = await sql.all('SELECT * FROM xiaozhi_permission_audit_v1 WHERE session_id=? ORDER BY id', [recoveryOwner.sessionId]);
+    assert.equal(auditBefore.filter(row => row.kind === 'approval_uncertain' && row.reference === executing.id).length, 1);
+    await store.recover();
+    assert.deepEqual(await store.approvalSnapshot(recoveryOwner.sessionId), recovered);
+    assert.deepEqual(await sql.all('SELECT * FROM xiaozhi_permission_audit_v1 WHERE session_id=? ORDER BY id', [recoveryOwner.sessionId]), auditBefore);
+    const failure = Error('owned_recovery_read_failure');
+    const failedReads = createPermissionStore({...sql, all: async () => {throw failure;}});
+    await assert.rejects(failedReads.recover(), error => error === failure);
+    await assert.rejects(failedReads.approvalSnapshot(recoveryOwner.sessionId), error => error === failure);
+  });
   report.success = true;
 } catch (error) { report.error = error.stack; process.exitCode = 1; }
 finally {

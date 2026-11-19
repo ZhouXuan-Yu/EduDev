@@ -56,6 +56,14 @@ export function createPermissionStore(sql: Sql) {
     return readPermissionApprovalRow(row);
   }
 
+  function availableApproval(row: Record<string, unknown>): PermissionApproval | null {
+    try {return parseApproval(row);}
+    catch (error) {
+      if (error instanceof SyntaxError || error instanceof Error && error.message === 'permission_approval_corrupt') return null;
+      throw error;
+    }
+  }
+
   async function readApprovals(work: Sql, sessionId: string) {
     return (await work.all('SELECT * FROM ai_confirmation_items WHERE action_type=? AND session_id=? ORDER BY created_at,id',
       [approvalAction, sessionId])).map(parseApproval);
@@ -191,6 +199,18 @@ export function createPermissionStore(sql: Sql) {
     async approval(sessionId: string, id: string) {
       return (await readApprovals(sql, sessionId)).find(item => item.id === id) || null;
     },
+    /** Display only: incomplete records must never become authorization input. */
+    async approvalSnapshot(sessionId: string) {
+      const rows = await sql.all('SELECT * FROM ai_confirmation_items WHERE action_type=? AND session_id=? ORDER BY created_at,id',
+        [approvalAction, sessionId]);
+      const items: PermissionApproval[] = [];
+      let unavailableCount = 0;
+      for (const row of rows) {
+        const item = availableApproval(row);
+        if (item) items.push(item); else unavailableCount++;
+      }
+      return {items, unavailableCount};
+    },
     async transition(sessionId: string, id: string, revision: number, from: PermissionApproval['state'][], to: PermissionApproval['state'],
       fields: Pick<Partial<PermissionApproval>, 'scope' | 'invalidatedReason' | 'admittedOwner'> = {}) {
       return transaction(async work => {
@@ -242,8 +262,17 @@ export function createPermissionStore(sql: Sql) {
     async recover() {
       const rows = await sql.all('SELECT * FROM ai_confirmation_items WHERE action_type=?', [approvalAction]);
       for (const row of rows) {
-        const item = parseApproval(row);
-        if (item.state === 'executing') await this.transition(item.request.owner.sessionId, item.id, item.revision, ['executing'], 'uncertain');
+        const item = availableApproval(row);
+        if (!item || item.state !== 'executing') continue;
+        // Re-read only this authority inside the original transaction. A corrupt
+        // sibling stays untouched and cannot prevent a valid execution settling.
+        await transaction(async work => {
+          const currentRow = (await work.all('SELECT * FROM ai_confirmation_items WHERE id=? AND action_type=? AND session_id=?',
+            [item.id, approvalAction, item.request.owner.sessionId]))[0];
+          const current = currentRow ? availableApproval(currentRow) : null;
+          if (!current || current.state !== 'executing' || current.revision !== item.revision) return;
+          await writeApproval(work, current, {...current, state: 'uncertain', revision: current.revision + 1, updatedAt: now()});
+        });
       }
     },
     async auditOnce(sessionId: string, kind: string, reference: string, metadata: unknown) {

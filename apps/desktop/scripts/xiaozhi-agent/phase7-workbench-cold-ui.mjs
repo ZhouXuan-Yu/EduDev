@@ -40,12 +40,12 @@ async function openWorkbench(page) {
   await page.getByTestId('pi-task-filter').waitFor();
 }
 
-async function waitForPersistedStop(root, sessionId) {
+async function waitForPersistedStop(root, sessionId, runId) {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
     const facts = readOriginalFacts(root);
     if (facts.tasks.some(task => task.sessionId === sessionId && task.state === 'interrupted') &&
-        facts.runs.some(run => run.session_id === sessionId && run.status !== 'running')) return facts;
+        facts.runs.some(run => run.id === runId && run.session_id === sessionId && run.status !== 'running')) return facts;
     await delay(100);
   }
   throw Error('The interrupted Task and terminal Run did not settle in SQLite.');
@@ -105,19 +105,26 @@ try {
     return Boolean(session && !ids.includes(session));
   }, sessionsBefore);
   const sessionId = await composer.getAttribute('data-session-id');
-  fs.writeFileSync(path.join(root, 'stream-delay-ms.txt'), '600');
+  assert.equal(readOriginalFacts(root).runs.filter(run => run.session_id === sessionId).length, 0);
+  fs.writeFileSync(path.join(root, 'stream-delay-ms.txt'), '3000');
+  const partial = '已核对合成要求。';
   await page.getByTestId('office-prompt-input').fill('合成课堂知识核对，请在输出过程中由教师停止。');
   await page.getByRole('button', {name:'发送消息', exact:true}).click();
+  await page.getByText(partial, {exact: true}).waitFor({timeout: 20000});
+  const runs = readOriginalFacts(root).runs.filter(run => run.session_id === sessionId);
+  assert.equal(runs.length, 1);
+  assert.equal(runs[0].status, 'running');
+  const runId = runs[0].id;
   await page.getByRole('button', {name:'停止本轮', exact:true}).click();
-  await page.waitForFunction(async id => {
-    const snapshot = await window.omniEdu.getXiaozhiSnapshot(id);
-    return !snapshot.running && snapshot.projection.turns.at(-1)?.status === 'interrupted';
-  }, sessionId);
-  const original = await waitForPersistedStop(root, sessionId);
+  await page.waitForFunction(async ({sessionId, runId}) => {
+    const snapshot = await window.omniEdu.getXiaozhiSnapshot(sessionId);
+    return !snapshot.running && snapshot.projection.turns.find(turn => turn.id === runId)?.status === 'interrupted';
+  }, {sessionId, runId});
+  const original = await waitForPersistedStop(root, sessionId, runId);
   const interrupted = original.tasks.find(task => task.sessionId === sessionId);
   assert.equal(interrupted?.state, 'interrupted');
-  assert(original.runs.some(run => run.session_id === sessionId && run.status !== 'running'));
-  check('Actual UI stop persists an interrupted Task and its terminal Run');
+  assert(await page.getByText(partial, {exact: true}).isVisible());
+  check('UI stop after visible partial content persists the interrupted Task and exact terminal Run');
 
   await checkOverview(page, original, fixture.ids.permission.task.id);
   check('Visible rows, reasons, counts, and completed exclusion agree with the original SQLite facts');
@@ -144,6 +151,13 @@ try {
   await checkOverview(fixture.page, original, fixture.ids.permission.task.id);
   const cold = readOriginalFacts(root);
   assert.deepEqual(cold, original);
+  assert.deepEqual(await fixture.page.evaluate(async ({sessionId, runId, partial}) => {
+    const snapshot = await window.omniEdu.getXiaozhiSnapshot(sessionId);
+    const turn = snapshot.projection.turns.find(item => item.id === runId);
+    return {status: turn?.status, hasPartial: !!turn?.items.some(item =>
+      item.kind === 'message' && item.role === 'assistant' && item.text.includes(partial))};
+  }, {sessionId, runId, partial}), {status: 'interrupted', hasPartial: true});
+  check('Cold readback preserves the interrupted partial reply for the exact Run');
   assert.equal(fixture.requests.length, 0);
   assert.deepEqual(report.pageErrors, []);
   report.coldFacts = {taskHash: cold.taskHash, states: cold.tasks.map(({id,state}) => ({id,state})),

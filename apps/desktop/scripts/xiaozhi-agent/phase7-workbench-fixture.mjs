@@ -37,7 +37,7 @@ export async function startWorkbenchFixture(options = {}) {
         tool = {name: 'office_copy_file', input: {source: 'source.txt', target: 'legacy-pending.txt'}};
       const base = {id: 'phase7-fixture', object: 'chat.completion.chunk', created: 1, model: 'deepseek-flash'};
       response.writeHead(200, {'content-type': 'text/event-stream'}); response.flushHeaders();
-      const delayFile = path.join(root, 'stream-delay-ms.txt'), delay = fs.existsSync(delayFile) ? Math.max(0, Math.min(600, Number(fs.readFileSync(delayFile, 'utf8')) || 0)) : 0;
+      const delayFile = path.join(root, 'stream-delay-ms.txt'), delay = fs.existsSync(delayFile) ? Math.max(0, Math.min(3000, Number(fs.readFileSync(delayFile, 'utf8')) || 0)) : 0;
       const deltas = tool ? [{role: 'assistant', tool_calls: [{index: 0, id: 'call_' + randomUUID().replaceAll('-', ''), type: 'function', function: {name: tool.name, arguments: JSON.stringify(tool.input)}}]}]
         : ['已核对合成要求。', '保留原任务与来源。', '请教师检查当前结果。'].map(content => ({role: 'assistant', content}));
       for (const delta of deltas) {if (response.destroyed) return; response.write('data: ' + JSON.stringify({...base, choices: [{index: 0, delta, finish_reason: null}]}) + '\n\n'); if (delay) await new Promise(resolve => setTimeout(resolve, delay));}

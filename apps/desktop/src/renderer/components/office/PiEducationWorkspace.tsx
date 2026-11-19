@@ -4,6 +4,7 @@ import { createPiSessionNavigation } from './pi-session-navigation';
 import {continuationPrompt} from './continue-task';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
+import {Button} from '@heroui/react';
 import type { AiConversationWorkspace } from '../../../shared/contracts';
 import type { XiaozhiWorkspaceSnapshot,XiaozhiStartInput, XiaozhiAgentEvent } from '../../../shared/xiaozhi-agent';
 import { createEventReceiver,type XiaozhiEventSynchronization } from '../../../shared/xiaozhi-event-receiver';
@@ -394,6 +395,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       {snapshot?.fileWritesEnabled===false&&<p role="status" className="pi-history-note" data-testid="pi-file-writes-paused">小智自动文件生成已暂停，已有文件与对话仍可打开。恢复生成需取消启动停写设置并重启。</p>}
       {notice && <p role="alert" className="pi-history-note">{notice}</p>}
       {snapshot?.taskUnavailable&&<p role="alert" className="pi-history-note">本轮要求记录暂时无法核对，请重新读取会话。</p>}
+      {Boolean(snapshot?.approvalRecordsUnavailable)&&<p role="alert" className="pi-history-note" data-testid="pi-approval-records-incomplete">有 {snapshot!.approvalRecordsUnavailable} 条审批记录无法核对，原记录已保留。现有对话仍可查看；无法核对的审批不能用于授权。<Button size="sm" variant="ghost" isDisabled={returnHydrating} onPress={()=>void refreshCurrent()}>重新读取会话</Button></p>}
       {syncBlocked&&<OfficeSynchronizationNotice unavailable={eventSync==='unavailable'||refreshFailed||Boolean(snapshot?.eventPersistence)} refreshing={returnHydrating} onRefresh={()=>void refreshCurrent()}/>}
       <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => item.runId === turnId).map(approval => approval.permission ? <PiPermissionApproval key={approval.id} approval={approval.permission} onRefresh={() => hydrate(id)}/> : <PiCopyApproval key={approval.id} approval={approval} onDecision={async (approvalId, decision) => {
         const target = id; const result = await window.omniEdu?.decideXiaozhi({ sessionId: target, approvalId, decision });
