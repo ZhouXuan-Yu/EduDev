@@ -1,5 +1,41 @@
 # 执行日志
 
+## 2026-11-19 主线集成与续作入口
+
+以知识库跨页图形选项主线为第一父提交，以已经复验的 Harness 为第二父提交。保留两侧进度和决策条目，按最终组合源码重建 626 项清单。[组合验证](evidence/phase8/main-sync-harness-20261119.json)。
+
+## 2026-11-19 持久终端续跑与交接
+
+修复持久终端文件 staging 的授权来源后，实际旧终端在新 Run 期间结束并合法落盘，旧 Run 回执保持原样。回归测试按真实调用回执选取 Job ID。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 独立实页尝试调用平台重新发现的精确工具，确认任务授权已存储，底层实际收包为零。继续修复内层权限门禁与外层效果账衔接。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
+## 2026-11-19 已保存文件和治理页面复验
+
+实页按旧批准写入流程正式保存，双击续跑时重复写入未派发，原文件和单次已应用记录在 SQLite 冷读一致。Skill 分享产生独立版本目录；官方非审核员越权请求被拒绝。MCP 目录更改和撤销清除旧信任。[页面合同](PHASE_7_PAGE_CONTRACT.md)。
+
+已对最新知识库主线和当前 Harness 组合构建，保留双侧已有文档，626 项工具清单重建。闭合回读 8/8，事件账 23/23，真实续跑与隐私 Host 各通过。没有真实模型请求。[构建](evidence/phase8/harness-main-sync-2f18935.json)。
+
+## 2026-11-19 已批准文件请求的续跑修复
+
+在原执行、事件和 Effect 账接入未派发证明。复用原请求身份、调用摘要、拥有者和有效结果。独立复跑实际 Host 3/3、边界和冷读各 8/8。原库只读读取保持不确定效果，新增场景成功落盘的两个文件可读回。[运行证据](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+## 2026-11-19 当前 Windows 包与工作台去重
+
+生成 `d13e031` 的本地可启动包。最新知识库 OCR worker 通过 712 文件校验后复制到独立暂存目录，electron-builder 的原 afterPack 检查验证全部五组资源。未操作安装目录和现有快捷方式。[实包证据](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+Terra 实际从工作台双击恢复，限定场景 4/4。首个带文件夹具因依赖和审批前置尚未抵达恢复，保留原结果。[W2 证据](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+图像原生专项改用仓库已有纯合成 PNG 生成器，去除对旧真实模型预检目录的测试依赖。当前构建原生复跑 19/19。实包授权撤销独立 2/2，范围见页面合同。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
+## 2026-11-19 工具结果脱敏与拒绝后读回
+
+在 Pi 的模型上下文副本处理已授权读取结果和已持久的宿主索引，保持权限、版本、回执与本地原始内容。合入新主线后的完整构建通过，Host 8/8、领域 8/8、压缩边界 8/8、图像原生 19/19、组件 253/253。独立 8/8 的原红及中间历史索引红均保留。先前图像运行缺本地合成夹具，重建夹具后复跑全通过，未调用付费 Provider。[出站证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。
+
+历史复制卡补单次授权及拒绝后果。独立窗口从收件箱操作并验证原审批键冷启动读回，保留先前使用待审批控件验证终态导致的定位超时。[页面证据](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
 ## 2026-11-19 主线同步 87/89
 
 将冻结的 13 个提交合入主线，发布分支交接入口。旧会话来源标题恢复与当前工具结果脱敏留在功能分支继续独立复验。[主线验证](evidence/phase8/main-sync-20261119.md)。

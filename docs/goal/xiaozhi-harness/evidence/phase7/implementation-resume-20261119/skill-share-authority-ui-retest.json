@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "row": "S1",
+  "status": "PARTIAL",
+  "sourceCommit": "7b22c0b8bb21ed4ed030a1a3103501bff5518ebd",
+  "buildMainSha256": "d443e1cfe06a467ca380f3c67db9278230c1fee655a1f30538f660515aa26063",
+  "testScope": "Actual Skill UI; synthetic approved personal v1; team and local official review only. Private source capture and alternate user are not simulated.",
+  "actualAppPackaged": false,
+  "checks": [
+    {
+      "name": "ui_share_independent_copy_and_admin_review",
+      "status": "PASS"
+    },
+    {
+      "name": "official_nonreviewer_cannot_approve",
+      "status": "PASS"
+    },
+    {
+      "name": "cold_review_and_original_readback",
+      "status": "PASS"
+    }
+  ],
+  "team": {
+    "independentCopy": true,
+    "pendingBeforeReview": true,
+    "publishedAfterAdminDecision": true,
+    "sourceVersionAndFileUnchanged": true
+  },
+  "official": {
+    "newReviewPending": true,
+    "nonReviewerControlHidden": true,
+    "typedDecision": "permission_denied",
+    "coldStillPending": true
+  },
+  "stillOpen": "Non-admin team user, private-source text egress, official reviewer approval success and complete S1. The fixture is a published synthetic personal Skill, not an original with embedded sensitive text.",
+  "paidCalls": 0,
+  "rawReportSha256": "7681cbc69b5288de03d5c22f94247fdfa0ab84f80f990690e4f0f03cb48d1883",
+  "runnerSha256": "fc11de206b3643cfd63124f72313cd620320c3f42634f7086ea1eedb9153d61d",
+  "teamScreenshotSha256": "748eca2a677e46e6b2128f7673783637140aec066710a8d3bc845cca4ebe7abf",
+  "officialScreenshotSha256": "eb9e91fc75f183345d7a1e3fa088e6783ac7597ce394953a52bfc9205c37ec6e"
+}

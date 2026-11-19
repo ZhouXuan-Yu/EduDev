@@ -1,4 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import {nativeTestPng} from '../education/native-test-png.mjs';
 import {OmniEduStore} from '../../src/main/db';
 import {createAttachmentImportService} from '../../src/main/xiaozhi-agent/attachment-import-service';
 import {attachmentStartHash} from '../../src/main/xiaozhi-agent/attachment-send-state';
@@ -13,7 +14,7 @@ const close=()=>new Promise<void>((resolve,reject)=>(store as any).db.close((err
 const signal=()=>new AbortController().signal;globalThis.fetch=async()=>{throw new Error('No network in native boundary acceptance');};
 try{
  await store.init();const id=(await store.createAiConversationSession({title:'公开图片边界',folderId:null})).session.id;
- const sources=path.join(output,'sources');fs.mkdirSync(sources);const image=path.join(sources,'公开图表.png');fs.copyFileSync('test-results/xiaozhi-agent/pi-public-image-preflight-LanGoJ/prompt-public-synthetic.png',image);
+ const sources=path.join(output,'sources');fs.mkdirSync(sources);const image=path.join(sources,'公开图表.png');fs.writeFileSync(image,nativeTestPng(96),{flag:'wx'});
  const importer=createAttachmentImportService({dataRoot:data,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports});
  const draft=await importer.importFile(id,image,signal());const selected=(await store.xiaozhiState.attachments.get(id,draft.id))!;
  const prompt='请查看公开图表',selections=[{id:draft.id,revision:draft.revision}],commandId=`xicmd_${randomUUID()}`,hash=attachmentStartHash(id,prompt,selections,[selected]);

@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "rows": [
+    "W2",
+    "W3"
+  ],
+  "status": "PASS_PRODUCTION_HOST_SCENARIO",
+  "integrationParent": "843d7b1e4acfdf2c8ab2422e0fb5e0bbe1b823e0",
+  "buildMainSha256": "5e18464eab04e26c26e6f25b0ca2f9b452095190dccd93395d5bd6996d9127c4",
+  "projectionSourceSha256": "a48da818478df4ce59c6f3a43f3ff4f018b983745327a32de2a9922f014c2f7d",
+  "toolManifestSha256": "ae3a4fa64d580175d00edf17039411c9d00e0c70316a08e9e014aacc740faa73",
+  "nativeAdapterSourceSha256": "3c4ddeb75dc7201c4dcab39919dc94461a3ef6c1364cfc6ed4102814c0bc1231",
+  "nativeHelperSha256": "fb2aed5bbd7c9dbec023f54f3291eda0bb31f711e74a4c1c68626949d798f102",
+  "scope": "Real production Host/Pi, original controlled PTY, same Task/new Run and generation, original APIs, SQLite/JSONL/file readback. Delegate-only timing observations do not inject results or events. No paid provider, physical UI or W3 cold-UI acceptance.",
+  "sourceInputs": 786,
+  "sourceDrift": [],
+  "red": {
+    "strictRunSha256": "95b4f83b015d6207ab505d78bc8194ba466fa76eb50777ca8db599d0d2528151",
+    "diagnosticTraceSha256": "80f80d9fc20c29ad41194488e57e2430dab01fa0c1af644e44125a594be7281f",
+    "cleanup": "needs_check",
+    "result": "Real original terminal exited successfully, but the filesystem projection was not committed. The diagnostic trace retained this known failure and observed the old interrupted Run permission in the file staging context."
+  },
+  "verification": {
+    "checks": [
+      {
+        "name": "Actual old Run starts a real controlled PTY while original exec remains in its declared yield wait",
+        "pass": true
+      },
+      {
+        "name": "Old-origin PTY progress, retained file fact and exec settlement actually occur while the newer generation is active",
+        "pass": true
+      },
+      {
+        "name": "Late old work cannot append to old Run receipts/journal or take the fresh Run authority",
+        "pass": true
+      },
+      {
+        "name": "Fresh Run then saves its own reviewed artifact with independent SQLite and JSONL ownership",
+        "pass": true
+      }
+    ],
+    "generationBefore": 1,
+    "generationAfter": 2,
+    "sameTask": true,
+    "oldJob": {
+      "state": "completed",
+      "exitCode": 0,
+      "cleanup": "complete",
+      "projection": "committed",
+      "published": [
+        "old-job-fact.txt"
+      ],
+      "fileSha256": "a491a636bb1c0e184abde6d61ed861c9912754cdecdb7ba720c12ce0f1b2df8c"
+    },
+    "lateOldExecSettledDuringNewRun": true,
+    "staleReceiptsOrNewOwnerOverwritten": false,
+    "reportSha256": "ec37f2b4ef0886f81f5e4fb8aaa162a60be2c2acb4945d0830cf4b461a5d4c64",
+    "actualSourceListSha256": "b11cc27a416fd585937305a5411c63ad53c7c4716d75c15ea95a667c69b27a47"
+  },
+  "regressions": {
+    "build": "PASS",
+    "renderer": "253/253",
+    "permissionStore": "13/13",
+    "phase6TerminalHost": {
+      "checks": "9/9",
+      "reportSha256": "ca3dfcf0f0b145b6ff5c9633cc1012eec72aa1c9c3d3906e269cec0ecaf441dc"
+    }
+  },
+  "commands": [
+    "npm run build -- --outDir test-results/harness-pty-late-843d7b1/out",
+    "node scripts/xiaozhi-agent/late-run-host-smoke.mjs",
+    "node scripts/xiaozhi-agent/phase6-terminal-host-smoke.mjs"
+  ],
+  "paidCalls": 0,
+  "rollback": "Revert the projection authority binding and regenerate the manifests from the reverted sources. No schema change.",
+  "remaining": "Full W3 visible cross-session behavior, including Artifact and Grant isolation, is outside this actual Host scenario. Native window and final Gate7/8 remain open.",
+  "packagedStartup": {
+    "status": "PASS",
+    "packaged": true,
+    "electron": "43.8.3",
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "promptVisible": true
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "promptVisible": true
+      }
+    ],
+    "rendererErrors": 0,
+    "exeSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "reportSha256": "44f9edebbdc87b417a52b6173d0e48e8fa4104dc098623e96f52e0780a518b55",
+    "buildMainSha256": "5e18464eab04e26c26e6f25b0ca2f9b452095190dccd93395d5bd6996d9127c4",
+    "installUninstall": "NOT_RUN"
+  }
+}

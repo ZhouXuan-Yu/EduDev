@@ -5,6 +5,7 @@ import type {XiaozhiAgentEvent} from '../../../shared/xiaozhi-agent';
 import type {XiaozhiRecovery,XiaozhiRecoveryReceipt} from '../../../shared/xiaozhi-recovery';
 import {toolManifest} from '../tools/manifest';
 import type {ToolContractReceipt} from '../capabilities/core-governance';
+import {receiptWasNotDispatched} from '../effects/non-dispatch';
 
 export type ReceiptCapture={callId:string;tool:string;digest:string;failed:boolean};
 export type ReceiptReadback={readNative?:(binding:NativeRunBinding)=>Promise<NativeToolEntry[]>;readEffect?:(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry)=>Promise<'matched'|'uncertain'|'not_checked'>};
@@ -86,12 +87,14 @@ export function createToolReceipts(options:ReceiptReadback={}){
     const callId=String(row.call_id),tool=String(row.tool),entry=native?.find(r=>r.callId===callId);
     let nativeState:XiaozhiRecoveryReceipt['native']='missing',effect:XiaozhiRecoveryReceipt['effect']=row.effect_state==='uncertain'?'uncertain':'not_checked';
     if(entry){nativeState=entry.tool!==tool||row.admitted===0&&!entry.failed||row.result_digest&&row.result_digest!==entry.digest||row.success!==null&&Boolean(row.success)!==!entry.failed||row.native_entry_id&&row.native_entry_id!==entry.id||row.native_digest&&row.native_digest!==entry.digest?'conflict':row.result_digest?'matched':'recorded';}
+    const notDispatched=nativeState!=='conflict'&&row.success===0&&await receiptWasNotDispatched(work,owner,callId,tool);
     // Effect truth comes from existing teacher-confirmed ledgers and disk, not a native "success" string.
-    if(row.admitted!==0&&options.readEffect){const checked=await bounded(()=>options.readEffect!(owner,callId,tool,['matched','recorded'].includes(nativeState)?entry:undefined))||'uncertain';if(checked!=='not_checked'||effect!=='uncertain')effect=checked;}
+    if(notDispatched)effect='not_checked';
+    else if(row.admitted!==0&&options.readEffect){const checked=await bounded(()=>options.readEffect!(owner,callId,tool,['matched','recorded'].includes(nativeState)?entry:undefined))||'uncertain';if(checked!=='not_checked'||effect!=='uncertain')effect=checked;}
     // Cancellation can prevent the final attempt event from being committed.
     // A failed transcript is not proof that an admitted write/upload had no effect.
-    if(row.admitted!==0&&effect==='not_checked'&&mayHaveEffect(tool)&&(entry?.failed||row.success===0))effect='uncertain';
-    const disposition:XiaozhiRecoveryReceipt['disposition']=nativeState==='conflict'?'needs_check':row.admitted===0?'not_delivered':effect==='matched'?'recorded':effect==='uncertain'?'needs_check':entry&&entry.failed?'failed':['matched','recorded'].includes(nativeState)?'recorded':'needs_check';
+    if(!notDispatched&&row.admitted!==0&&effect==='not_checked'&&mayHaveEffect(tool)&&(entry?.failed||row.success===0))effect='uncertain';
+    const disposition:XiaozhiRecoveryReceipt['disposition']=nativeState==='conflict'?'needs_check':row.admitted===0||notDispatched?'not_delivered':effect==='matched'?'recorded':effect==='uncertain'?'needs_check':entry&&entry.failed?'failed':['matched','recorded'].includes(nativeState)?'recorded':'needs_check';
     await work.run('UPDATE xiaozhi_tool_receipts SET native_entry_id=?,native_digest=?,native_state=?,effect_state=?,updated_at=? WHERE run_id=? AND call_id=?',[row.native_entry_id?String(row.native_entry_id):((nativeState==='matched'||nativeState==='recorded')?entry!.id:null),row.native_digest?String(row.native_digest):((nativeState==='matched'||nativeState==='recorded')?entry!.digest:null),nativeState,effect,time(),owner.runId,callId]);
     summaries.push({id:`receipt_${owner.runId}_${callId}`,runId:owner.runId,callId,tool,disposition,native:nativeState,effect});
    }

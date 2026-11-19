@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "row": "W2",
+  "status": "PASS_FILE_REPLAY_SCENARIO",
+  "sourceCommit": "7b22c0b8bb21ed4ed030a1a3103501bff5518ebd",
+  "buildMainSha256": "d443e1cfe06a467ca380f3c67db9278230c1fee655a1f30538f660515aa26063",
+  "buildFingerprint": "21fb8acb5eb19cb2b112068b1bb161452f7cf4eb432b6a75e1565983bab57a00",
+  "scope": "Independent Terra High with actual Electron workbench, owned temporary SQLite and real file write. No physical desktop input. Synthetic loopback model explicitly attempted a duplicate write.",
+  "checks": [
+    {
+      "name": "Same Task new Run consumes the still-valid matching one-time approval once and shows file draft",
+      "pass": true
+    },
+    {
+      "name": "Teacher confirms one file; second file absent and original approval consumed once",
+      "pass": true
+    },
+    {
+      "name": "Workbench double-click starts one new Run; duplicate saved-file request is not admitted",
+      "pass": true
+    },
+    {
+      "name": "Cold readback preserves original file, applied receipt and resumed Task",
+      "pass": true
+    }
+  ],
+  "runCounts": {
+    "before": 2,
+    "after": 3
+  },
+  "appliedFileRecords": 1,
+  "preservedFile": {
+    "bytes": 83,
+    "sha256": "657865b0fd61e9f13cb895423bed24a3910116b4575c0886618c0f7647b0a695"
+  },
+  "duplicate": {
+    "code": "task_step_already_verified",
+    "disposition": "not_delivered",
+    "admitted": 0,
+    "durableEffectState": "not_checked"
+  },
+  "coldPaidCalls": 0,
+  "coldSyntheticModelCalls": 0,
+  "paidCalls": 0,
+  "remaining": "Positive next practice step and old Run late callback are outside this scenario.",
+  "rawReportSha256": "85243f7e992ddbc96ef0e46d1146958dc1532ec7ddbc56e1345230fdff74277e",
+  "screenshotSha256": "6923d42f85eaa5da86a7df5145509a9eba3b18bedf7426e0be7e9acfaef31849",
+  "coldScreenshotSha256": "c1c6b84c28bf546a58f2de9b594f83814c533e79b75c832018809e42e6a89021"
+}

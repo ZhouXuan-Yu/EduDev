@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "row": "A2",
+  "status": "PARTIAL",
+  "packageCheckpoint": "d13e0310fe64fcebd5e5aa0d7baa06274d0623b2",
+  "mainBundleSha256": "776a875e7ab418acb0e0bc38d8c9ee9f3952d585db37b4c340b5a1596da91a5b",
+  "scope": "Actual packaged Electron, independent GPT-6.1 Terra High, isolated clone of synthetic SQLite, visible Settings permissions page",
+  "checks": [
+    {
+      "name": "visible_grant_revocation_invalidates_exact_approval_without_dispatch",
+      "status": "PASS"
+    },
+    {
+      "name": "cold_exact_approval_and_grant_readback",
+      "status": "PASS"
+    }
+  ],
+  "approvalId": "confirm_b9a40c70-8768-4e69-ba2a-228372aaaac2",
+  "grantId": "xigrant_9abf5013-5033-44c0-9bea-bb446ee28b0b",
+  "permissionScope": "operation",
+  "before": {
+    "approval": "approved",
+    "approvalRevision": 2,
+    "grantRevision": 1
+  },
+  "cold": {
+    "approval": "invalidated",
+    "approvalRevision": 3,
+    "grantRevision": 2,
+    "reason": "grant_revoked"
+  },
+  "result": "After visible revocation, exact approval persisted invalidated in SQLite and the typed inbox. Runs, tool receipts and fixture directory remained unchanged.",
+  "modelActions": 0,
+  "remaining": "Explicit redispatch refusal, target or provider change and fallback still require independent verification.",
+  "rawReportSha256": "07c97d6139b746f69c7431cf519739d8bbbf7fa11531463015207f29b559944f",
+  "coldScreenshotSha256": "ffaaa800b09203912c04b41ac47eb7b84a3dc89dfd5a969d354197409c205c3c"
+}

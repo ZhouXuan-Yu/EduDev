@@ -204,7 +204,12 @@ try {
     await host!.waitForRun(sessionId, started.runId);
     const list = await host!.terminal.listXiaozhiTerminals(sessionId);
     assert(list.ok, JSON.stringify(list));
-    const selected = list.data.jobs.at(-1);
+    const receipts = bodies.flatMap((body:any)=>body.messages.filter((message:any)=>message.role==='tool').flatMap((message:any)=>{
+      try{return[JSON.parse(String(message.content).split('\n')[0])];}catch{return[];}
+    }));
+    const launched = receipts.findLast((value:any)=>value.jobId&&value.terminal?.command===command);
+    assert(launched, 'Original model POST must contain the actual launched Job');
+    const selected = list.data.jobs.find(value=>value.jobId===launched.jobId);
     assert(selected);
     job = selected;
   }

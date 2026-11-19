@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "scope": "Production Pi Host on Windows with synthetic loopback model, ordinary document utility, SQLite and ConPTY. Renderer and real cloud model results are outside this receipt.",
+  "mergeBase": "1de8807e18296e56926baef4db55621c68ca4eae",
+  "sourceSha256": {
+    "model-tool-privacy.ts": "e00a9774f7ffb684c68e5ee7e59bad3e31f39f0df5248368dc2a973fbbf4c83d",
+    "pi-session.ts": "7e4b03cab0abc0b4d01594c8b8282e8874d3ce7e0e2bf52c58004f71404ac3e0",
+    "production-host.ts": "b30d4c8fa3476d1fe99f3a469e78fdcada6919cf8ecb9440cfb06a3b00a1304f",
+    "compaction-context.ts": "b14d405fd462f3e868eb9deb2af05145be929e29807854eb7e93ea66c5a7b6a3"
+  },
+  "integratedBranchCheck": {
+    "scopedHostChecks": [
+      {
+        "name": "office-document-docx",
+        "status": "PASS"
+      },
+      {
+        "name": "office-document-pdf",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-txt",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-docx",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-pdf",
+        "status": "PASS"
+      },
+      {
+        "name": "persistent-terminal-result",
+        "status": "PASS"
+      },
+      {
+        "name": "actual-redacted-plaintext-artifact",
+        "status": "PASS"
+      },
+      {
+        "name": "cold-native-office-attachment-terminal-and-process",
+        "status": "PASS"
+      }
+    ],
+    "rawHostReportSha256": "8172afd5df6e70a8be01885aac5f83c33846a74e25ba1c3296f6912f8487e912",
+    "sourceDrift": [],
+    "rendererComponents": "253/253",
+    "modelToolPrivacy": "8/8",
+    "compactionContext": "8/8",
+    "typecheckAndBuild": "PASS",
+    "mainBundleSha256": "776a875e7ab418acb0e0bc38d8c9ee9f3952d585db37b4c340b5a1596da91a5b",
+    "toolManifestSourceSha256": "2531c78f60c5a2e7c98d0f8e1d1f7d89b6de7a32f8e2fb6f3b25e720604bbb90",
+    "toolManifestInputs": 625,
+    "nativeImageBoundary": {
+      "pass": 19,
+      "total": 19,
+      "reportSha256": "58e87bf6eef8fe2860644362301e6cd4cdcad7e639b2f0b88278ce7786d1853b",
+      "syntheticFixtureSha256": "7e62325a3d425263efdf872f111d234654f533c367d0ae0a530519aef0296df9",
+      "scope": "Actual Electron/SQLite/captured-file/owned image utility. Confirmation and metadata responses are boundary fixtures, not official provider or rendered UI proof.",
+      "previous": "Initial invocation lacked the ignored PNG fixture. No image or provider test executed in that invocation."
+    },
+    "commands": [
+      "npm run build -- --outDir test-results/harness-privacy-1de8807-20261119/out",
+      "npm run test:renderer-components",
+      "node scripts/xiaozhi-agent/model-tool-privacy-host-smoke.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/model-tool-privacy-smoke.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-compaction-context-smoke.mjs",
+      "node scripts/xiaozhi-agent/pi-public-image-native-smoke.mjs with OMNI_EDU_TEST_BUILD_ROOT set to the current out",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-effect-readback-boundaries.mjs"
+    ],
+    "lintErrors": 0,
+    "audit": {
+      "total": 29,
+      "high": 8,
+      "critical": 0,
+      "lockfileChanged": false
+    },
+    "effectReadback": "34/34"
+  },
+  "independent": {
+    "fresh": [
+      {
+        "name": "office-document-docx",
+        "status": "PASS"
+      },
+      {
+        "name": "office-document-pdf",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-txt",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-docx",
+        "status": "PASS"
+      },
+      {
+        "name": "submitted-attachment-pdf",
+        "status": "PASS"
+      },
+      {
+        "name": "persistent-terminal-result",
+        "status": "PASS"
+      }
+    ],
+    "historical": [
+      {
+        "name": "original-12f-docx",
+        "status": "PASS",
+        "recoverySnapshotAvailable": true,
+        "historyBodyRetained": true,
+        "runStatus": "succeeded",
+        "nativePrefix": {
+          "beforeBytes": 341218,
+          "afterBytes": 411970,
+          "sha256": "5a5a97dd944e688c203abfe1f764df6fa9cb7d6c181a38d91b9e049c96ae7274",
+          "preserved": true
+        },
+        "originalRedUnchanged": true,
+        "privatePayloadLabels": []
+      },
+      {
+        "name": "original-host-user-index",
+        "status": "PASS",
+        "recoverySnapshotAvailable": true,
+        "historyBodyRetained": true,
+        "runStatus": "succeeded",
+        "nativePrefix": {
+          "beforeBytes": 422268,
+          "afterBytes": 488041,
+          "sha256": "235c01d2df7efec1d6ac77769b09e29708831429403a63b65925b0084195260d",
+          "preserved": true
+        },
+        "originalRedUnchanged": true,
+        "privatePayloadLabels": []
+      }
+    ],
+    "localReadback": [
+      "Original and captured attachment hashes matched before and after reads.",
+      "Teacher terminal display and local native receipts retained the original text.",
+      "Both old JSONL prefixes and original red SQLite/native bytes were preserved.",
+      "Both resumed runs completed without additional tool receipts.",
+      "Terminal close reached cancelled, cleanup complete, zero active processes and zero retained owned ACL entries, profile removed and PTY closed."
+    ],
+    "loopbackModelPosts": 19,
+    "seededPrivateValuesInModelPayload": 0,
+    "rawEvidenceSha256": {
+      "FINAL_REPORT.md": "de90627db49dc93d89e6d4b0f11b8f1930447578a0d77b74f80d958256463737",
+      "EVIDENCE_MANIFEST.json": "965114b499094906cadd7e63c2363540054623ede55b453f7e3da1df2a0d1b67",
+      "CANDIDATE_SOURCE_MANIFEST.json": "599ca1691375ff518940cc07448024efc47d6fba620b8a09cf5bb60214f8cf2e",
+      "run/REPORT.json": "26629d160cca4c2563908bf526a1f393b2a18331ae62f11c732731d9a118e88e",
+      "history-run/REPORT.json": "464b6d0d41b99b8ec4a255b3351ccfe2583c3d7a6a9fa5a7881e253c302b6f3c",
+      "COLD_READBACK.json": "354ec0183b6ba6140d8522ca89fa56a162c92265260829bb218099fbef13a610",
+      "run/MODEL_REQUESTS.json": "f468533ec75e31a8b1a7fedc52d71246f3d01afaa8c482098815b119d03970a1",
+      "history-run/MODEL_REQUESTS.json": "512a89461676049b741311054c0823c3ff99888d1ba09c252939db5daebdbda7"
+    }
+  },
+  "paidModelRequests": 0,
+  "previousRed": [
+    "office-attachment-terminal-red.json",
+    "initial correction preserved in independent report as historical host user-index FAIL"
+  ],
+  "rollback": "Revert the scoped feature checkpoint on a new branch. The tool projection uses existing Pi messages and persistence, with no schema migration."
+}

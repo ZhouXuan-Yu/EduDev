@@ -24,7 +24,12 @@ export function PiCopyApproval({ approval, onDecision }: { approval: XiaozhiAppr
   return <ChatTool key={`${approval.id}:${expanded}`} state={state} defaultExpanded={expanded} className="pi-copy-approval" data-testid="pi-copy-approval" data-approval-id={approval.id} data-state={approval.state}>
     <ChatTool.Trigger><FileCheck2 size={16} aria-hidden="true"/><strong>复制教学资料</strong><span>{labels[approval.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
-      <div className="pi-copy-preview"><p>来源：<strong>{approval.source}</strong></p><p>目标：<strong>{approval.target}</strong></p><p>仅执行本次复制；已有同名文件不会被覆盖。</p></div>
+      <div className="pi-copy-preview">
+        <p>来源：<strong>{approval.source}</strong></p>
+        <p>目标：<strong>{approval.target}</strong></p>
+        <p>授权仅用于这次复制。已有同名文件会保留。</p>
+        {pending && <p>拒绝后，这次复制不会执行。</p>}
+      </div>
       <ChatTool.Approval><ChatTool.ApprovalActions>
         {pending && <><ChatTool.Approve isDisabled={busy} onPress={() => void decide('approve')} data-testid="pi-copy-approve">批准这一次</ChatTool.Approve><ChatTool.Reject isDisabled={busy} onPress={() => void decide('reject')} data-testid="pi-copy-reject">拒绝</ChatTool.Reject></>}
         {approval.state === 'uncertain' && <Button isDisabled={busy} onPress={() => void decide('verify')} data-testid="pi-copy-verify">核验现有文件</Button>}

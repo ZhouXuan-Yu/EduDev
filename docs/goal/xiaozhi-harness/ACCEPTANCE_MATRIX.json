@@ -186,13 +186,14 @@
       "priority": "P0",
       "scenario": "数据外发",
       "expected": "未授权教师/学生资料不发送到外部 Provider",
-      "status": "FAIL",
+      "status": "PASS",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
         "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
         "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json",
         "evidence/phase8/p0-current-source-20261119/structured-file-references.json",
-        "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json"
+        "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json",
+        "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json"
       ],
       "phaseEvidence": [
         {
@@ -206,8 +207,15 @@
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
       ],
-      "scope": "普通与结构化文件链、旧历史、HTTP 无授权外发均有证据。独立实测 Office/PDF、已提交附件以及持久终端模型结果的学校/路径仍待修复与专项复验。",
+      "scope": "已实现。现有权限与学生上下文、HTTP 无授权零外发、普通及结构化文件证据继续有效。当前 Office/PDF、已提交附件及持久终端的模型请求出站副本经过脱敏，独立复验原六条与两条旧历史冷恢复 8/8，本地原件及原始会话保留。图片准备与最终出站围栏原生测试 19/19。真实模型与完整 Gate7/8 仍按原合同执行。",
       "history": [
+        {
+          "status": "FAIL",
+          "scope": "普通与结构化文件链、旧历史、HTTP 无授权外发均有证据。独立实测 Office/PDF、已提交附件以及持久终端模型结果的学校/路径仍待修复与专项复验。",
+          "evidence": [
+            "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json"
+          ]
+        },
         {
           "status": "NOT_TESTED",
           "scope": "已有 HTTP 权限叶层、Extension 和 Skill 私有来源阻断证据。还需生产学生 SQLite 脱敏链及实际 HTTP 端点记录零外发。",

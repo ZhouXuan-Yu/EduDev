@@ -1,5 +1,37 @@
 # 独立验收记录
 
+## 2026-11-19 主线集成与续作入口
+
+主线组合验证包括 253 个组件用例、三个知识库专项及三组实际 Host 回归；上一合并候选另通过终端专项 9/9 和 Electron 教师流程 207/207。固定矩阵 88/89，完整 Gate7、QG-09 与正式模型对照继续按原合同验收。[组合验证](evidence/phase8/main-sync-harness-20261119.json)。
+
+## 2026-11-19 持久终端续跑与交接
+
+W2/W3 的实际 Host 迟到终端与 Job 提交子场景通过 4/4，终端专项 9/9。Windows 便携包在 1366×768、1920×1080 实际启动，输入框可见，渲染错误 0。完整 W3 和独立安装卸载待验。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 已授权的首次派发 FAIL。两次尝试合成 MCP 均未到 tools/call，后一次被旧的未知效果挡住。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
+## 2026-11-19 工作台文件防重和治理页面
+
+W2 已提交文件防重已实现。另有 S1 独立分享和角色分支、C2 目录变化与撤销的实际页面证据，各按原完整范围继续。测试使用隔离合成数据、合成模型或无模型。完整 Gate7 和独立安装未达到完成条件。[核验](PHASE_7_PAGE_CONTRACT.md)。
+
+## 2026-11-19 授权后写入续跑修复
+
+实际 Pi Host 与 SQLite 复验 3/3，扩展 Host 流程 4/4 含已保存目标防重。Terra 实页 3/3 同时覆盖有效单次审批首次消费、教师点击确认后文件落盘及冷启读回。原准备阶段失败仍在历史记录。当前宿主证明确认写入从未派发，已消费审批、已开始写入、旧记录缺证和拥有者不匹配仍按原权限与效果围栏处理。工具执行 21/21、事件账 23/23，构建与组件通过。[专项记录](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+## 2026-11-19 当前 Windows 包与工作台去重
+
+QG-08 当前便携候选继续通过。包内运行时集、源码指纹和隔离真实启动已读回。QG-09 完整独立安装和卸载仍 BLOCKED。[包与启动](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+Gate7 W2 新增独立证据。双击同 Task 恢复只新增一个 Run，第二次冷开未重放；旧 Run 迟到和已有文件效果仍有待补齐。[工作台复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
+## 2026-11-19 A-P0-08 数据出站复验与历史复制审批
+
+A-P0-08 已实现，固定矩阵 **88/89**。原六项出站回归与两个真实旧会话冷启动独立 8/8，19 个合成模型请求未包含已种入的姓名、学校、电话、邮箱或本机路径。原件、捕获附件、SQLite 锚点、JSONL 历史和终端教师可见输出读回保留。结合已验收的 HTTP 无授权零外发、结构化文件引用及图像准备至出站围栏 19/19。[证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。
+
+Gate7 历史复制拒绝路径在精确开发构建独立 PASS。原始源文件和目标路径在实际拒绝与冷启动前后均一致。A1 全部审批类型及 A2 授权变化、替代执行仍待完整验收。[审批记录](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
 ## 2026-11-19 其余模型结果隐私复现
 
 独立冻结旧源码 12f27f6，已在真实 Host 的模型回传确认六条普通路径仍暴露已知学校和本地路径，涉及 Office DOCX/PDF、提交附件 txt/DOCX/PDF 及正常持久终端。实际文件和原终端本地结果保持。A-P0-08 继续保留 FAIL，修复正在分支推进。[冻结红证](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json)。

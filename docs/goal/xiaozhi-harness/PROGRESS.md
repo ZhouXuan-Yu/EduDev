@@ -1,5 +1,49 @@
 # Harness 执行进度
 
+## 2026-11-19 主线集成与续作入口
+
+后续 AI 以 GitHub 的 main 为已整合版本，以 codex/xiaozhi-harness-20261112 为实施分支。知识库跨页图形选项与 Harness 组合构建通过，组件 253/253，知识库专项 32/32、39/39、16/16，真实 Host 迟到终端 4/4、文件续跑 4/4、出站脱敏 8/8。上一合并候选的持久终端专项 9/9、Electron 教师流程 207/207。
+
+当前接手点为 C2。先验证同任务授权后准确派发一次，再验证撤销、替代路径与曾派发但响应不明的反例。更多范围及付费账本见下文。[组合验证](evidence/phase8/main-sync-harness-20261119.json)。
+
+## 2026-11-19 持久终端续跑与交接
+
+后台终端使用自己的有效授权提交文件。实际 Pi Host 4/4，旧 Run 的延迟输出和执行返回跨入新 Run，原回执和记录保持归属，新 Run 独立保存。终端回归 9/9，组件 253/253，便携包在两个尺寸下启动通过。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+固定矩阵 **88/89**，Gate7 **PARTIAL**。下一步在 codex/xiaozhi-harness-20261112 修复 C2 的已授权首次派发，复验授权、撤销和替代路径，再补齐 S1/W3 等实页。QG-09 独立安装卸载和正式模型 ABBA 待验。付费请求账本 3/200，本批新增 0。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
+## 2026-11-19 工作台防重复保存与治理补证
+
+W2 已保存文件再次双击继续，独立实页 4/4。同一 Task 仅增加一个 Run，重复写入未派发，SQLite 已应用记录与原文件字节冷启一致。继续真实迟到旧 Run 与后台 Job 提交。[W2 回执](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json)。
+
+S1 团队分享和官方非审核员独立实页 3/3。C2 的服务目录变化、撤销和冷启独立实页 4/4。完整角色、后续派发及替代路径依原合同继续。[技能治理](evidence/phase7/implementation-resume-20261119/skill-share-authority-ui-retest.json) · [MCP 治理](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json)。
+
+功能分支同步知识库主线 `2f18935`，保留章节导语归属和页码排除。组合构建通过，组件 253/253，结构专项 27/27、39/39、16/16，真实写入续跑 4/4，模型脱敏 Host 8/8。固定矩阵为 88/89。[组合版本证据](evidence/phase8/harness-main-sync-2f18935.json)。
+
+## 2026-11-19 首次未派发写入可正确续跑
+
+W2 写入阻断已修复并通过实际 Host。宿主只为确认未进入原文件工具的请求保存未派发证明。续跑按当前权限重核。未消费的单次审批在同一任务、请求摘要及权限快照一致时可由新 Run 首次消费。独立 Host 场景另用新任务级授权及教师文件审阅后保存两份文件，额外续跑无法再次提交。历史无证明和已开始执行的效果继续复核。[Host 和冷读证据](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+Terra 独立实测 3/3。同一任务的新 Run 首次消费仍有效的精确单次审批，教师确认后写入一份讲义，第二文件未创建，冷启一致。固定矩阵仍为 88/89。W2 已保存后再次从页面续跑及旧 Run 迟到边界仍待补齐。
+
+## 2026-11-19 当前 Windows 包与工作台去重
+
+提交 `d13e031` 生成本地 Windows x64 便携包，五组锁定资源核验全部通过。包内 481 个输出文件与已验构建逐字节一致，实包在两个尺寸用隔离数据根启动，输入区可达，renderer 错误为 0。[当前构建](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+W2 双击去重子场景独立 4/4。同一 Task 仅新增一个 Run，冷重启仍可读回且零重放。带已有文件效果及旧 Run 迟到的完整验证继续进行。[双击复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+实包 A2 补充撤销子场景 2/2。真实权限页面撤销后，同一已批准申请失效并冷启动读回，原 Run、工具回执和文件未变化。重新派发与替代路径继续验证。[撤销证据](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json)。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
+## 2026-11-19 模型脱敏与历史审批复验
+
+固定矩阵 **88/89**，A-P0-08 已实现。在真实 Pi Host 中复验 Office DOCX/PDF、已提交附件 TXT/DOCX/PDF 和持久终端，并从两个原始失败的旧会话冷恢复。独立 8/8，19 个合成模型请求保留教学内容并清理已种入的敏感项。原文件、旧 JSONL 前缀和教师端终端输出保留。当前分支另有 Host 8/8、图像原生围栏 19/19 和组件 253/253。[脱敏证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。
+
+当前真实 Electron 开发构建验证历史复制卡展示单次范围与拒绝后果。点击拒绝、关闭并重启后，同一审批仍已拒绝，源文件 SHA 不变，目标未创建。[页面证据](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
+剩余固定项为 QG-09 独立 Windows 安装卸载。完整 Gate7 页面合同、冻结 B 后真实模型 ABBA 和最终独立验收仍有待完成。本轮付费请求新增 0。
+
 ## 2026-11-19 主线同步与分支交接
 
 本次主线接入 `59b81cb` 之后到 `dd09ab0fba6d0ed976e67ecc799f3133443a29c4` 的 13 个 Harness 提交。该批包含 Word 来源归档、Office 组件校验、受控文件引用和对话恢复、托管 MCP 撤销后同任务续跑，以及教育流程与实包页面的复验记录。主线父提交的知识库改动一并保留。

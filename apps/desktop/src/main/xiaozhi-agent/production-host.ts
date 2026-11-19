@@ -1,6 +1,7 @@
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createTerminalService, type TerminalService} from './terminal/service';
 import {createFileReferenceProjection} from './file-references';
+import {createModelToolPrivacy} from './model-tool-privacy';
 import {createPersistentTerminalTools} from './terminal/tools';
 import type {TerminalUpdate} from '../../shared/xiaozhi-terminal-jobs';
 import {createTaskPlanningRuntime} from './tasks/planning-runtime';
@@ -908,7 +909,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
-    try { return {stateRoot,workspace,fileReferences,thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
         return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:true,generatedWorkspace:!Boolean(await store.xiaozhiState.workspace(id))};
@@ -1219,6 +1220,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           current:callId=>acquisitionContext(id,callId,false)}) : undefined,
         persistentTerminalTools: run.task ? foreground => createPersistentTerminalTools({service: terminalService, sessionId: id,
           current: callId => acquisitionContext(id, callId)}, foreground) : undefined,
+        onToolNonDispatch:async(callId,tool,input,signal)=>{signal.throwIfAborted();if(!run.publisher||run.stopped||active.get(id)!==run)throw Error('cancelled');await run.publisher.persist(owner=>{signal.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.sealToolNonDispatch(owner,callId,tool,input);});signal.throwIfAborted();},
         beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{
         if(!run.publisher)throw Error('event_journal_unavailable');
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();

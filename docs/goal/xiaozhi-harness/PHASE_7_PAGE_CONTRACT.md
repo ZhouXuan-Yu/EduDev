@@ -55,3 +55,41 @@
 - 在生成期间实际输入、滚动查看历史、展开工具进度、停止及切换会话，记录响应、控制状态和持久终态。Phase8在同场景记录本地准备、长任务、帧与输入响应，按已冻结功能语义比较优化前后。
 
 页面验收由Terra High执行，隔离数据根与完整来源证据沿本文件原契约。
+
+## 2026-11-19 历史复制审批独立复验
+
+A1 历史复制子场景已实现。Terra 从真实 Electron 开发构建的审批收件箱展开原申请，核对来源、目标、单次范围与拒绝后果。A2 同一历史申请的拒绝及冷启动子场景已实现。SQLite 记录、审批 ID、原文件摘要及目标未创建均有读回。冷启动详情按已拒绝历史记录只读显示。[复验](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
+A1 其他审批类型、A2 范围变化与替代路径、最终包的完整页面合同继续验收。
+
+## 2026-11-19 工作台双击继续独立复验
+
+W2 的双击去重、同 Task 和冷启动子场景已实现。真实开发构建从可见工作台双击“继续剩余步骤”，仅新增一个 Run，Generation 从 1 到 2，恢复回答可见。第二次冷开读回相同 Task 和已恢复 Run，零模型重放。[复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+早期写入夹具把只读步骤登记为写入依赖，保留两次未进入草稿的记录。按当前计划合同并用实际审批点击后，观察到首次写入未派发却被本地效果账标记为不确定。同 Task 续跑出站前阻于 task_effect_needs_recheck，目标文件未创建。已提交文件、旧 Run 迟到结果和修复后重验仍待完成。W2 整体为 PARTIAL。
+
+## 2026-11-19 实包授权撤销独立复验
+
+A2 的授权撤销子场景已实现。Terra 在当前便携包的权限设置撤销同一合成工作区读取授权，已批准的原申请变为已失效，原因记录为 grant_revoked。重开后按相同审批 ID 从 SQLite 和收件箱读回，Run、工具回执与文件无新增。重新派发、目标或 Provider 变化及替代路径仍待完整验收。[撤销回执](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json)。
+
+## 2026-11-19 W2 文件续写修复独立复验
+
+W2 的授权后续写子场景已实现。新开发构建上，Terra 观察到同一任务仅新增一个 Run。同一已批准但未消费的精确单次请求首次进入执行，教师从实页确认文件草稿后才落盘。冷启继续读回同一审批、任务、Run 和文件。追加一代的防重复写在真实 Host 专项验证。W2 的同一可见场景再续跑已保存任务、迟到旧 Run 和完整页面合同仍待完成。[独立与 Host 回执](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+## 2026-11-19 已保存文件再次继续的页面验证
+
+W2 的已提交文件防重子场景已实现。Terra 在冻结开发构建从工作台双击继续，同一任务只新增一个 Run。合成模型尝试重复写同一已保存讲义，工具以 task_step_already_verified 阻断，回执显示未派发。原文件摘要、唯一已应用记录及原成功回执保持一致，冷启零模型重放。下一项任务未被错误创建，旧 Run 迟到仍单独验证。[独立实页](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json)。
+
+## 2026-11-19 S1 团队副本与官方审核角色
+
+S1 的分享副本和官方非审核员子场景已实现。Terra 在实际开发构建中从个人 Skill 分享出独立的团队副本。副本先待审，团队管理员批准后生效，原个人版本与文件字节不变。当前非官方审核员可提交官方审核申请；页面无审批入口，typed 主进程拒绝越权审核，冷启仍待审。非管理员团队角色、私有来源正文隔离及官方审核员批准成功继续验收。[独立证据](evidence/phase7/implementation-resume-20261119/skill-share-authority-ui-retest.json)。
+
+## 2026-11-19 C2 MCP 目录变化与撤销
+
+C2 的目录变化、信任清除和撤销子场景已实现。Terra 从实际设置页添加并信任合成服务。工具 Schema 变化后重新连接，应用清除旧信任与选择；重新批准后执行页面撤销，冷启保持 revoked。测试没有发出 tools/call，撤销后的实际尝试及替代路径另行复验。[独立实页](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json)。
+
+## 2026-11-19 持久终端续跑与交接
+
+实际 Host 验证旧 Run 的原 PTY 与执行返回晚于新 Run 启动，旧回执及文件各自保持归属，后台 Job 可在原有效授权下落盘。W3 跨会话 UI 的 Artifact/Grant 隔离待验。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
+
+C2 真实设置授权后的再次调用未进入传输，Gate7 继续 PARTIAL。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。

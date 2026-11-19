@@ -11,6 +11,7 @@ import {bindGoalRequirements,goalFromSource,goalTaskKey,requireTaskGoal} from '.
 import {writeTaskCheckpoint, readTaskCheckpoint, type TaskCheckpointRef} from './checkpoints';
 import {validTaskPlanning, type TaskPlanning} from '../../../shared/xiaozhi-task-planning';
 import {evaluateTaskPlanning} from './planning-policy';
+import {fileWasNotDispatched} from '../effects/non-dispatch';
 
 type Admission={runId:string;generation:number;callId:string;tool:string;stepId:string;planRevision:number;requirementsVersion:number;inputDigest:string;resource:string;criterionIds?:string[]};
 export type TaskDocument={view:TaskView;retiredIds:string[];lineage:{runId:string;generation:number;commandId:string}[];admissions:Admission[];eventOwner?:TaskOwner;checkpoint?:TaskCheckpointRef};
@@ -53,12 +54,12 @@ function applyPlan(doc:TaskDocument,clean:TaskPlanProposal){
       doc.view.planning = clone(clean.planning);
     } else delete doc.view.planning;
 }
-function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope:boolean,humanEffect:boolean,safeAfterVerified:boolean){
+function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope:boolean,humanEffect:boolean,safeAfterVerified:boolean,notDispatched:ReadonlySet<string>=new Set()){
     const step=doc.view.steps.find(s=>s.id===stepId);if(!step||taskStepState(doc.view,stepId)==='waiting_dependency')throw Error('task_dependency_blocked');
     if(taskStepState(doc.view,stepId)==='verified'&&!safeAfterVerified)throw Error('task_step_already_verified');
     if(!step.criterionIds.some(cid=>{const criterion=doc.view.criteria.find(c=>c.id===cid)!;return humanScope&&criterion.kind==='human'||criterion.resource===resource&&toolKinds[criterion.kind]?.includes(tool);}))throw Error('task_tool_scope');
     const currentEffect=humanEffect||step.criterionIds.some(cid=>doc.view.criteria.find(c=>c.id===cid)?.kind.startsWith('saved_'));
-    const priorEffect=doc.admissions.some(a=>a.runId!==owner.runId&&a.resource===resource&&a.requirementsVersion===doc.view.requirementsVersion&&currentEffect&&effectful(a.tool));
+    const priorEffect=doc.admissions.some(a=>a.runId!==owner.runId&&a.resource===resource&&a.requirementsVersion===doc.view.requirementsVersion&&currentEffect&&effectful(a.tool)&&!notDispatched.has(JSON.stringify([a.runId,a.callId])));
     if(priorEffect)throw Error(step.criterionIds.some(cid=>doc.view.criteria.find(c=>c.id===cid)?.resource===resource&&doc.view.checks.some(k=>k.criterionId===cid&&k.state==='passed'))?'task_effect_already_saved':'task_effect_needs_recheck');
     if(humanScope&&humanEffect&&doc.view.criteria.some(c=>c.kind!=='human'&&c.resource===resource))throw Error('task_tool_scope');
     const admission:Admission={runId:owner.runId,generation:owner.generation,callId,tool,stepId,planRevision:doc.view.planRevision,requirementsVersion:doc.view.requirementsVersion,inputDigest,resource,criterionIds:[...step.criterionIds]};
@@ -69,6 +70,12 @@ function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:st
 /** Main-only authority. No model-facing tool or renderer may call evidence/confirm
  * directly. Production activation awaits the typed/runtime B2 adapter. */
 export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise<string>;recheck?:(task:TaskView)=>Promise<TaskVerification[]>;resultRecheck?:(candidate:import('../../../shared/xiaozhi-task').TaskCandidate,task:TaskView)=>Promise<TaskVerification>}){
+ async function nonDispatchProofs(work:Sql,doc:TaskDocument,owner:TaskOwner,resource:string,stepId:string,humanEffect:boolean){
+  const proved=new Set<string>();
+  if(!humanEffect&&!doc.view.steps.find(step=>step.id===stepId)?.criterionIds.some(cid=>doc.view.criteria.find(criterion=>criterion.id===cid)?.kind.startsWith('saved_')))return proved;
+  for(const admission of doc.admissions)if(admission.runId!==owner.runId&&admission.resource===resource&&admission.requirementsVersion===doc.view.requirementsVersion&&effectful(admission.tool)&&await fileWasNotDispatched(work,doc,admission))proved.add(JSON.stringify([admission.runId,admission.callId]));
+  return proved;
+ }
  async function transaction<T>(action:(work:Sql)=>Promise<T>){if(!sql.transaction)throw Error('task_transaction_required');return sql.transaction(action);}
  async function read(work:Sql,id:string,auditChecks=true){if(!/^xitask_[a-f0-9]{64}$/u.test(id))throw Error('invalid_input');const row=(await work.all('SELECT value_json FROM app_settings WHERE key=?',[key(id)]))[0];if(!row)return null;const result={raw:String(row.value_json),doc:decode(String(row.value_json),id)};if(auditChecks)await auditTaskTeacherChecks(work,result.doc);return result;}
  async function latestId(work:Sql,sessionId:string):Promise<string|null>{
@@ -137,7 +144,7 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   async previewResume(sessionId:string,id:string,revision:number,requirementsVersion:number){const record=await load(sql,id,revision),view=record.doc.view;if(view.sessionId!==sessionId||view.requirementsVersion!==requirementsVersion||await latestId(sql,sessionId)!==id||!taskHasRemainingSteps(view))throw Error('task_resume_invalid');return clone(view);},
   async admittedRuns(sessionId:string,id:string){const record=await read(sql,id);if(!record||record.doc.view.sessionId!==sessionId)throw Error('permission_denied');return record.doc.lineage.filter(o=>record.doc.admissions.some(a=>a.runId===o.runId&&a.generation===o.generation&&a.requirementsVersion===record.doc.view.requirementsVersion)).map(o=>({runId:o.runId,generation:o.generation}));},
   async previewAdmission(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false){
-    const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified);decode(JSON.stringify(doc),id);
+    const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await nonDispatchProofs(sql,doc,owner,resource,stepId,humanEffect));decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
   async summaryRecord(id:string){const record=await read(sql,id);return record?clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}):null;},
@@ -236,8 +243,8 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   },
   async admit(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false){
    if(![stepId,callId,tool].every(taskIdentity)||!taskDigest(inputDigest)||typeof resource!=='string'||resource.length>512)throw Error('invalid_input');
-   return mutate(owner,id,revision,doc=>{
-     applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified);
+   return mutate(owner,id,revision,async(doc,work)=>{
+     applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await nonDispatchProofs(work,doc,owner,resource,stepId,humanEffect));
    });
   },
   async readback(owner:TaskOwner,id:string,revision:number,verification:TaskVerification){

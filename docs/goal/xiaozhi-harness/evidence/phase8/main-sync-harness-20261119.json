@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "parents": {
+    "main": "152f58595d748e441487c1b57c020900db64eb9b",
+    "harness": "7b8f924a856b4d6df0601c1c8da58d9c29533a4d"
+  },
+  "branch": "codex/xiaozhi-harness-20261112",
+  "build": {
+    "command": "npm run build -- --outDir test-results/harness-main-152f585/out",
+    "status": "PASS",
+    "mainSha256": "c0804e8744b15536966204a9513df78848608921b80772e7b691d0bb4f948542",
+    "coreToolSourceHash": "195a355314dfb432b5abd8a30fed6d7815f0dc84caa3a5ff9af4ee60acb8ce43",
+    "sourceInputs": 626,
+    "sourceDrift": []
+  },
+  "renderer": {
+    "command": "npm run test:renderer-components",
+    "passed": 253,
+    "total": 253
+  },
+  "documentStructure": {
+    "boundaries": "32/32",
+    "repository": "39/39",
+    "aiSource": "16/16"
+  },
+  "host": {
+    "lateRunHost": {
+      "checks": "4/4",
+      "reportSha256": "009791e7d16cad04652351499cac9763a2f39ed5a328439bad05f8ede195ff81"
+    },
+    "fileNonDispatchHost": {
+      "checks": "4/4",
+      "reportSha256": "57c89ca47833369719e6af88f54630cead9c12d5364b0fb64eb1a8f6a34ba7d0"
+    },
+    "modelToolPrivacyHost": {
+      "checks": "8/8",
+      "reportSha256": "4fb321ace7ae4c822244b9b01ccab2dac428e89b8b12a05c90a46d803d088d92"
+    }
+  },
+  "audit": {
+    "existingFindings": 29,
+    "high": 8,
+    "critical": 0,
+    "lockfileChanged": false
+  },
+  "acceptance": {
+    "fixedMatrix": "88/89",
+    "phase7": "PARTIAL",
+    "open": [
+      "C2 authorized first tool dispatch, revoke retry, and fallback",
+      "Remaining Phase7 page scenarios",
+      "QG-09 isolated Windows install and uninstall",
+      "Frozen-B formal real model ABBA and independent final acceptance"
+    ],
+    "paidCallsAdded": 0,
+    "paidLedger": "3/200"
+  },
+  "rollback": {
+    "command": "git revert -m 1 <main-merge-sha>",
+    "scope": "Reverts this Harness integration on main while keeping its first-parent KB baseline. No database migration in the merge."
+  },
+  "previousCombined": {
+    "mainParent": "37b2e327a33ddb09db1d938cbabe6846d39be7a6",
+    "buildMainSha256": "10eabfaaf1dcf120ae5365d659f134b448baeae3ccf509d7e4ab7551d2d5c374",
+    "mainIntegrationCandidate": "ad8a21622d2a970d131c2cf4f7c282ded485054d",
+    "phase6TerminalHost": {
+      "checks": "9/9",
+      "reportSha256": "339c4ab97af4de3d6257d86f586b8365b9faf070552da73b4acd11caf0d7de55"
+    },
+    "electronSmoke": {
+      "command": "OMNI_EDU_TEST_BUILD_ROOT=<isolated-prior-build> node scripts/electron-smoke.mjs",
+      "rendererMode": "legacy education path, credentials disabled",
+      "passed": 207,
+      "total": 207,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ]
+    }
+  }
+}

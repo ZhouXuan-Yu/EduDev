@@ -1,5 +1,6 @@
 import {createTerminalTool} from './tools/terminal';
 import type {FileReferenceProjection} from './file-references';
+import type {ModelToolPrivacy} from './model-tool-privacy';
 import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
@@ -106,6 +107,7 @@ export interface PiXiaozhiOptions {
   afterCopy?: Parameters<typeof createHanaOfficeTools>[0]['afterCopy'];
   sanitizeFileText?: (text: string) => Promise<string>;
   fileReferences?: FileReferenceProjection;
+  modelToolPrivacy?: ModelToolPrivacy;
   onEvent?: (event: XiaozhiAgentEvent) => void;
   /** Private actual SDK result observation; never renderer/model-supplied evidence. */
   onToolResult?: (callId:string,tool:string,result:unknown,failed:boolean) => void;
@@ -172,6 +174,7 @@ export interface PiXiaozhiOptions {
   persistentTerminalTools?: (foreground: ToolDefinition) => ToolDefinition[];
   /** Main-owned committed attempt callback, never accepted through IPC. */
   onToolAttempt?: (attempt:XiaozhiToolAttempt,signal?:AbortSignal)=>Promise<void>;
+  onToolNonDispatch?: (callId:string,tool:string,input:unknown,signal:AbortSignal)=>Promise<void>;
   onCriticalToolFailure?:(error?:unknown)=>void;
   /** Host run cancellation and main-only shortened deadline for isolated acceptance. */
   lifecycleSignal?:AbortSignal;
@@ -943,7 +946,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const manifests=manifestForTools(taskDefinitions,trustedMcpNames);
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
-  const toolBoundary=createToolExecutionBoundary({resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
+  const toolBoundary=createToolExecutionBoundary({notDispatched:options.onToolNonDispatch,resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
     executeAuthorized: governance ? (callId, name, input, signal, perform) => {
       const operation = (authorizedSignal: AbortSignal) => governance.execute(callId, name, input, authorizedSignal, perform);
       return options.executeAuthorized ? options.executeAuthorized(callId, name, input, signal, operation) : operation(signal);
@@ -1005,7 +1008,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const transformed=await phase(async()=>previousTransform?.(messages,signal),signal)||messages;
     const filtered=transformed.filter(message=>!(message.role==='custom'&&message.customType==='xiaozhi.goal-context.v1'));
     if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase(()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
-    return options.fileReferences?phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
+    const files=options.fileReferences?await phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
+    return options.modelToolPrivacy?phase(()=>options.modelToolPrivacy!.context(files,signal),signal):files;
   };
   try { await phase(async()=>options.modelHistory?.align(session,modelAuthorities)); }
   catch(error) { session.dispose(); auth.removeRuntimeApiKey(PROVIDER); throw error; }

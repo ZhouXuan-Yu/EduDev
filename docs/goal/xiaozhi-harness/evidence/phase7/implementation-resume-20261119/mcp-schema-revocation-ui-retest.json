@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "row": "C2",
+  "status": "PARTIAL",
+  "sourceCommit": "7b22c0b8bb21ed4ed030a1a3103501bff5518ebd",
+  "mainBundleSha256": "d443e1cfe06a467ca380f3c67db9278230c1fee655a1f30538f660515aa26063",
+  "scope": "Actual development Electron UI with an owned synthetic localhost HTTP MCP service and isolated state.",
+  "checks": [
+    {
+      "name": "visible_schema_change_invalidates_prior_trust",
+      "status": "PASS"
+    },
+    {
+      "name": "schema_changed_cold_persists_no_tool_dispatch",
+      "status": "PASS"
+    },
+    {
+      "name": "visible_revoke_clears_trust",
+      "status": "PASS"
+    },
+    {
+      "name": "revoke_cold_persists_no_tool_dispatch",
+      "status": "PASS"
+    }
+  ],
+  "logicalSchemaChange": "lookup_lesson maxLength 100 to 90",
+  "trustedToolsCleared": true,
+  "revokedPersisted": true,
+  "syntheticMcpToolCalls": 0,
+  "modelActions": 0,
+  "paidCalls": 0,
+  "open": "No actual invocation of the stale tool was attempted in this case. Final post-revocation dispatch/fallback and full C2 remain open.",
+  "rawReportSha256": "1b57b3541abfe4a3f0ac8c6a3f82f0b90312a13d2abc030d6f41cdd51249ba91",
+  "scriptSha256": "8ddcdedb324a53b4278956bc80cc9c70aacb221abf43d5f925f292e42cb38e76",
+  "changedScreenshotSha256": "653392ede5460d2ac7f4b019e0b2be95510aa4b6510d33f6508baa7a7867ef1f",
+  "revokedColdScreenshotSha256": "72ad6d8683ad683b3d21c93d50f45b2012e56a36767f63e8157814a93de4a963"
+}
