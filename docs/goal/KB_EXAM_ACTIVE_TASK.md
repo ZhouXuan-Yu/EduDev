@@ -12,11 +12,11 @@
 
 详见 [本轮记录](../research/evidence/kb/20261119/choice-continuation/README.md)。
 
-### 并行交接
+### 跨页选择题提交后的历史交接
 
 - 进度核对以 GitHub `origin/main` 与本页对应提交为准。先运行 `git fetch origin main` 与 `git log -1 --oneline origin/main`。后续跨页图修改从该版本进入 `codex/kb-cross-page-figures`。
 - 本轮已验证真实 PDF 的连续选项入库、两页裁图及重启后来源读回。模型响应由测试控制。页尾边界、答案册和题本搜索的前几轮证据仍可从本页下方进入。
-- 下一项复现 `apps/desktop/scripts/education/kb-continuation-figures-boundaries.mjs` 首个包含独立图和图注的用例。分别核对独立图的字面标签、相邻小问正文、两页原图归属和冷读。通过后再扩展到不同出版来源的真实资料与原组卷入口。
+- 当时待复现 `apps/desktop/scripts/education/kb-continuation-figures-boundaries.mjs` 首个包含独立图和图注的用例。该缺陷的修复和最新工作点见本页开头。
 - KB-A01～A10 仍按文末指标执行。约 10 GB、检索留出集、正式组卷交付及跨设备迁移仍待验收。
 
 
