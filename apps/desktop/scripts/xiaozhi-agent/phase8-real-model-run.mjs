@@ -89,6 +89,15 @@ function compareWire(transport, manifest) {
       JSON.stringify(request.configuration?.[key]) === JSON.stringify(value))}));
 }
 
+export function streamTransportComplete(request) {
+  if (!Number.isInteger(request.httpStatus) || request.httpStatus < 200 || request.httpStatus > 299) return false;
+  if (request.state === 'completed') return true;
+  // A client may abort its body reader after consuming the provider's complete SSE terminal event.
+  return ['client_cancelled', 'stream_failed'].includes(request.state)
+    && Number.isFinite(request.terminalFrameAt) && Number.isFinite(request.firstByteAt) && Number.isFinite(request.endAt)
+    && request.firstByteAt <= request.terminalFrameAt && request.terminalFrameAt <= request.endAt;
+}
+
 function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
   if (result.cleanupError || result.bindingError) throw Error(result.cleanupError || result.bindingError);
   if (result.collectionStatus !== 'PASS') throw Error(result.error || 'phase8_collection_failed');
@@ -105,8 +114,7 @@ function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
   result.wireComparison = compareWire(result.transport, manifest);
   if (result.wireComparison.some(request => !request.modelMatches)) throw Error('phase8_wire_model_mismatch');
   if (result.wireComparison.some(request => !request.expectedFieldsMatch)) throw Error('phase8_wire_configuration_mismatch');
-  if (chats.some(request => !Number.isInteger(request.httpStatus) || request.httpStatus < 200 || request.httpStatus > 299
-      || request.state !== 'completed')) throw Error('phase8_provider_transport_incomplete');
+  if (chats.some(request => !streamTransportComplete(request))) throw Error('phase8_provider_transport_incomplete');
   const evidenceRef = 'phase8-real/' + path.basename(path.dirname(result.output)) + '/' + row.id;
   const attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef);
   if (!attempts.length || attempts.length !== chats.length || attempts.length !== result.attempts?.length) throw Error('phase8_metered_attempts_missing');

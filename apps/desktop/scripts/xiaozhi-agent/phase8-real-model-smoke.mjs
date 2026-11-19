@@ -22,7 +22,7 @@ try {
   const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source} = await import('./phase8-real-model-plan.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
   const {verifiedRunBinding, exportBlindBundle, readOriginalRecords} = await import('./phase8-real-model-readback.mjs');
-  const {executePlan, rendererObservation, collectScheduledRuns} = await import('./phase8-real-model-run.mjs');
+  const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete} = await import('./phase8-real-model-run.mjs');
   const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
   await check('Q5 records exact URL timings without storing unrelated requests, headers or credentials', () => {
     const target = new URL(q5Source);
@@ -118,6 +118,33 @@ try {
     const safe = JSON.stringify({rows, attempts: ledger.attempts()});
     assert(!safe.includes('fixture-value')); assert(!safe.includes('fixture body excluded from telemetry'));
     assert(!safe.includes('messages')); assert(!safe.includes('authorization'));
+  });
+  await check('A reader termination after the exact SSE terminal event preserves protocol evidence', async () => {
+    const cases = [
+      {chunks: ['data: {"content":"' + 'a'.repeat(90), '"}\r\n\r\nda', 'ta: [DO', 'NE]\r\n\r', '\n'], ended: true},
+      {chunks: ['data: {"content":"[DONE]"}\n\n', 'data: [DO'], ended: false},
+      {chunks: ['data: [DONE]\n', 'data: second field\n\n'], ended: false},
+      {chunks: ['data: [DONE]\n'], ended: false},
+    ];
+    for (const {chunks, ended} of cases) {
+      const remaining = [...chunks];
+      const testNet = {fetch: async () => new Response(new ReadableStream({
+        pull(controller) {
+          if (!remaining.length) {controller.error(new DOMException('closed by reader', 'AbortError')); return;}
+          controller.enqueue(new TextEncoder().encode(remaining.shift()));
+        },
+      }), {status: 200, headers: {'content-type': 'text/event-stream; charset=utf-8'}})};
+      const testBridge = installProviderBridge(testNet, {chatRoutes: {'/v1/chat/completions': proxy.url, '/chat/completions': proxy.url}});
+      try {
+        const response = await testNet.fetch('https://api.deepseek.com/chat/completions', {method: 'POST', body: '{}'});
+        await assert.rejects(() => response.text(), /phase8_response_stream_failed/);
+        const [evidence] = testBridge.snapshot().chats;
+        assert.equal(evidence.state, 'stream_failed');
+        assert.equal(Number.isFinite(evidence.terminalFrameAt), ended);
+        assert.equal(streamTransportComplete(evidence), ended);
+      } finally {testBridge.restore();}
+    }
+    assert.equal(ledger.summary().used, 2);
   });
   await check('Models GET is separately observed and unknown provider routes fail before any upstream reservation', async () => {
     await net.fetch('https://api.deepseek.com/v1/models', {redirect: 'error'});
@@ -248,7 +275,7 @@ try {
     assert.equal(empty.calls.length, 0); assert.equal(empty.budget.summary().used, 1); assert(exhausted.stoppedAt);
     report.stopControl = {cases: observations, thinkingParityCalls: parity.calls, exhaustedDispatches: empty.calls.length};
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 9 && report.checks.every(row => row.pass);
+  report.budget = ledger.summary(); report.success = report.checks.length === 10 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();
