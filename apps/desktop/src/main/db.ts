@@ -40,7 +40,7 @@ import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
 import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
-import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
+import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionKeywordOrder,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
@@ -4327,7 +4327,8 @@ export class OmniEduStore {
    * overlays so categorisation never duplicates or mutates question content.
    */
   async listQuestionNotebook(filters: QuestionNotebookFilters = {}): Promise<QuestionNotebookListResult> {
-    const {clauses,params,method}=questionRetrievalWhere(filters,this.questionRetrievalIndexed);
+    const {clauses,params,filters:validated,method}=questionRetrievalWhere(filters,this.questionRetrievalIndexed);
+    const {ranking,rankParams}=questionKeywordOrder(validated.query);
     if(filters.showSourceCandidates!==undefined&&typeof filters.showSourceCandidates!=='boolean')throw Error('题目来源筛选参数不正确');
     if(!filters.showSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
     if(filters.offset!==undefined&&(!Number.isSafeInteger(filters.offset)||filters.offset<0))throw new Error('题目分页参数不正确');
@@ -4358,9 +4359,9 @@ export class OmniEduStore {
          FROM question_bank_usage GROUP BY question_id
        ) u ON u.question_id = q.id
        ${where}
-       ORDER BY notebook_bookmarked DESC, last_used_at DESC, q.updated_at DESC, q.id ASC
+       ORDER BY ${ranking.length?ranking.join(',')+',':''}notebook_bookmarked DESC, last_used_at DESC, q.updated_at DESC, q.id ASC
        LIMIT ? OFFSET ?`,
-      [...params, limit, offset],
+      [...params, ...rankParams, limit, offset],
     );
     const items = await Promise.all(rows.map(async (row) => {
       const item = this.mapQuestionBankItem(row);

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "adfdf6bfbbaee33f9fde7e4113f0994f8a54f46330819b31e26c9bc6ec523f29"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "42c6634be60e2d520704a67fb9d85c045bc093b14d5921ec870a80e13fb8b2df"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "a4d21651f4ca46e09fd4c7b394b1a44437bc4b5112d2a1b5e27e231865a548c6"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "ef5ce56aee78dd36c9d1ba9a45407c155fa1e74075d2355af1e2cc8c1be8cb44"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-notebook-phrase-ranking.mjs",
+      "sha256": "0c3ea050c1d2672da704ae2c6ea5b3e651f146fe872d4fb7d67e35bcbe788700"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "d0fbeb2b0fc50483e503d73b1352b0d587c643cacf6733e29c74eedca94d16e3"
+    },
+    {
+      "path": "apps/desktop/src/main/education/question-retrieval.ts",
+      "sha256": "73f672eb1790de6b8804f834a8ff6dfc3962edc22666ea0712865a856758ad11"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "e9b7411a94e931dc0cfdd3ce054fe2344e839e7323ecad89deaaa64fb905ef0b"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "ea0607968a3c1bea2de58173ebe3689317c96105fa72e39c7339c3b65398cfb3"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "a85267720313794fd0fbfcc8e1054dcc28c11230229e4551ad0394c8b1d89547"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "a348476892808ec24692ed956e6202e382d8c314b86266d6ba5e9b0c36caf075"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "559938392a3724b915cc57ab725af1260a4f8f7e24dc844a00f55e3d08da64d9"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "d53381004f4ac1a1e5b0f25d73569f126250f432c4141e611bcedae38a8c0cb3"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "c203ccd23b68e129fc3aadd4615043811f98fdd644aebb21d2c7ec1d88f24a29"
+    },
+    {
+      "path": "docs/goal/WORK_PROGRESS.md",
+      "sha256": "054bf3f601bd26d2815b7167653d6af611c56b8f804f592bc99c507188f57a6a"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "9aeedb5b14d66022b838516a1692a9a34c9f1eacd9f119c8fe146062c6f4cf7c"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "03f52ed89892437f26fa84e0b25f77d4619673e8fef748f31b3ff989f0f48add"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "cb6f223bb371c8f70b584829271825a7ec6607b73767cd6c21c8246ac9008765"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/notebook-phrase-ranking/README.md",
+      "sha256": "44c537f467e4f04798f05e975a9513ffbb8111706f7cceed208f67372155c9a9"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/notebook-phrase-ranking/summary.json",
+      "sha256": "ee1db6e0cdc235bbd86ec473c68916817c28cc25ef25c82040623114992bb292"
+    }
+  ]
+}

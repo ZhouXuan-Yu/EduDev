@@ -102,21 +102,27 @@ export function questionRetrievalWhere(raw:QuestionSearchFilters,indexed:boolean
  return{clauses,params,filters,method:indexed&&tokens.some(t=>[...t].length>=3&&!/[\\%_]/.test(t))?'local_keyword_index' as const:'local_keyword_scan' as const};
 }
 
+/** Text relevance for both entry points, applied after hard filtering and before LIMIT. */
+export function questionKeywordOrder(query?: string) {
+ const tokens=questionSearchTokens(query??'');
+ const rankParams:Value[]=[];
+ const ranking:string[]=[];
+ if(query&&tokens.length){
+  const text=['stem','knowledge_point','tags','source_title'].map(field=>`COALESCE(q.${field},'')`).join(' || char(10) || ');
+  const match=`(instr(lower(${text}),lower(?))>0)`;
+  ranking.push("(instr(lower(COALESCE(q.stem,'')),lower(?))>0) DESC",match+' DESC','('+tokens.map(()=>match).join(' + ')+') DESC');
+  rankParams.push(query,query,...tokens);
+ }
+ return {ranking,rankParams};
+}
+
 export async function searchQuestionRows(sql:Sql,raw:QuestionSearchFilters&{offset?:number},indexed:boolean,missingAnswersOnly=false,hideSourceCandidates=false){
  const {clauses,params,filters,method}=questionRetrievalWhere(raw,indexed);
  if(raw.offset!==undefined&&(!Number.isSafeInteger(raw.offset)||raw.offset<0||raw.offset>1000000))throw Error('题目分页参数不正确');
  // Candidate filtering precedes LIMIT; complete recent questions must not crowd out missing answers.
  if(missingAnswersOnly)clauses.push("(length(trim(q.answer))=0 OR length(trim(q.analysis))=0)");
  if(hideSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
- // Rank literal phrase and distinct keyword coverage before truncating lexical candidates.
- // Answers and derivations do not contribute to this ranking signal.
- const tokens=questionSearchTokens(filters.query??''),rankParams:Value[]=[],ranking:string[]=[];
- if(tokens.length){
-  const text=['stem','knowledge_point','tags','source_title'].map(field=>`COALESCE(q.${field},'')`).join(' || char(10) || ');
-  const match=`(instr(lower(${text}),lower(?))>0)`;
-  ranking.push(match+' DESC','('+tokens.map(()=>match).join(' + ')+') DESC');
-  rankParams.push(filters.query!,...tokens);
- }
+ const {ranking,rankParams}=questionKeywordOrder(filters.query);
  const rows=await sql.all(`SELECT q.* FROM question_bank_items q ${clauses.length?'WHERE '+clauses.join(' AND '):''} ORDER BY CASE WHEN q.knowledge_point=? THEN 0 ELSE 1 END,${ranking.length?ranking.join(',')+',':''}q.updated_at DESC,q.id ASC LIMIT ? OFFSET ?`,[...params,filters.knowledgePoint??'',...rankParams,raw.limit??8,raw.offset??0]);
  return{rows,method};
 }
