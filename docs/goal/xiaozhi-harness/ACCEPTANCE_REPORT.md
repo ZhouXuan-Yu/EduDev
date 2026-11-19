@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 A-P0-07 复验
+
+A-P0-07 已实现。正常 Grant、Provider、Artifact 撤销 3/3，冷启事实保持；既有 HTTP 与 Extension 证据合并覆盖。累积 78/89，A-P0-08 与 QG-01–10 继续完成。[证据](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。
+
 ## 2026-11-19 五资源实包补证
 
 实包合成资料 5/5 可用；冷入口检查 6/6。DOCX 派生 PDF 与双向来源关系经过 typed preload 和 SQLite/文件重启校验。截止本证据 Windows 仍待安装卸载链路和最终冻结候选复核。[原始时序与身份](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。

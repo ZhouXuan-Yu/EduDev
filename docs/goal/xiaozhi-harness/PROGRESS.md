@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-19 托管 MCP 撤销闭环
+
+同 Task 撤销精确 Grant、服务 Provider 或能力 Artifact 后，原回调与 Pi 重调均无新增原生派发，本地替代完成。独立 3/3，关闭 SQLite 冷读 3/3。旧 MCP 边界测试按有效配置运行 29/29。A-P0-07 已实现，累计 78/89。[撤销证据](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。
+
 ## 2026-11-19 Word 实包导入和重启读回
 
 此前 180 秒时限会在 Office 冷准备期间取消任务。相同五资源 EXE 使用空 PATH、新合成用户目录和锁定的两份下载件。TXT、Markdown、DOCX、图片、扫描 PDF 全部 ready，六项实包检查全部完成。Word 原件、派生 PDF、反向关系、实际字节及 SHA-256 在重启前后一致，SQLite 关闭读回相同。[实包证据](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。

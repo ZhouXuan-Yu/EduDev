@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 托管 MCP 撤销与准备预算
+
+独立真实 Host 3/3、关闭只读冷读 3/3。原任务前后原生工具计数不再增加，替代路径完成。修复旧 MCP 测试参数，使其同时覆盖非法 60ms 及实际 1000ms 共享预算，29/29。[报告](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。
+
 ## 2026-11-19 冷准备后的 Word 实包验证
 
 运行 `node scripts/release/packaged-smoke.mjs`，实际使用携带 fünf 套资源的便携 EXE、空 PATH、合成新 profile 和两份官方锁定下载件。原件身份 5/5、实包检查 6/6，零网络请求，零 renderer 错误。Word 页数为 1，文件 11,748 字节。重启检查覆盖正反索引、版本与 PDF 字节。保留原来的 180 秒超时样本。[验证报告](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。

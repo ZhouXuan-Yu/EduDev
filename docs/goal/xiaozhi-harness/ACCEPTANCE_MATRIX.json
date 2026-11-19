@@ -149,11 +149,12 @@
       "priority": "P0",
       "scenario": "撤销优先",
       "expected": "Provider/Grant 撤销后新执行被阻止",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
         "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
-        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+        "evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -167,7 +168,18 @@
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
       ],
-      "scope": "已获得 HTTP 与 Extension 撤销和持久化证据。还需当前 Task 保留的托管 MCP 回调在撤销后零新增派发的真实 Host 读回。"
+      "scope": "已实现。当前支持的 HTTP、托管 MCP 和 Extension 上，正常撤销后旧回调和新执行均受原权限限制。托管 MCP 原 Task 的 Grant、Provider 与 Artifact 真实撤销 3/3 及独立冷读 3/3。",
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": "已获得 HTTP 与 Extension 撤销和持久化证据。还需当前 Task 保留的托管 MCP 回调在撤销后零新增派发的真实 Host 读回。",
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+            "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+          ]
+        }
+      ]
     },
     {
       "id": "A-P0-08",
