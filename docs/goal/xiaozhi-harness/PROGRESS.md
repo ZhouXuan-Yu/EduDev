@@ -8,6 +8,7 @@ Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、
 
 - 以 GitHub `main` 为集成基线。工作台、流式反馈、持久审批和终端改动已随 `83034fe` 合入。交接核验时 `main` 为 `cbc4e26`，包含该合并和后续知识库更新。后续优化从 `codex/xiaozhi-harness-20261112` 追踪。日常目录 `D:/WorkProject/EduProject` 有其他协作改动，开发与验证使用 `D:/WorkProject/EduProject-harness`。
 - [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 70 项阶段范围通过。未验项与证据边界见 [独立验收记录](ACCEPTANCE_REPORT.md)。合并后的验证见 [合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
+- 功能分支代码检查点 `57d300d` 已通过构建、组件 253/253、Electron 综合回归 207/207。该版含缓存优化与真实模型预检采集修复。发布前须按同一冻结构建继续完成独立验收。
 - 缓存优化的隔离原型在同一工作负载单次从 24.01 秒降至 21.70 秒，源文件完整 SHA 核验从 6 次降至 3 次。功能分支的生产 Host 三轮复测确认热路径和冷启同 Task 均各核验 3 次。热路径 19.89–21.71 秒，冷启 21.01–38.61 秒，正式延时门禁继续复测。原生窗口、模型质量和打包仍按原方案独立验收。[隔离对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [生产专项](evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json)。
 
 - 工作台、审批收件箱、能力中心已用真实 Electron 验证。独立验收确认现代审批、冷启动、团队技能版本回滚、窄窗长路径折行和指定合成模型密钥未外显。能力中心增加中文工具标题、调用范围和中文搜索。
