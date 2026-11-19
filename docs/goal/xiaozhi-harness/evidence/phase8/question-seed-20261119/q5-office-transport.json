@@ -1,0 +1,20 @@
+{
+  "experiment": "fixed NASA source via production Office transport",
+  "pass": true,
+  "toolLayer": false,
+  "elapsedMs": 1649.4066,
+  "publicSource": "https://starchild.gsfc.nasa.gov/docs/StarChild/teachers/densities.html",
+  "realModelCalls": 0,
+  "clock": {"timeOrigin": 1795067130871.255},
+  "rows": [
+    {
+      "createdAt": 192.0747,
+      "sendingHeadersAt": 1496.2848,
+      "headersAt": 1821.1359,
+      "responseEndAt": 1823.6472,
+      "errorAt": null,
+      "status": 200
+    }
+  ],
+  "dropped": 0
+}

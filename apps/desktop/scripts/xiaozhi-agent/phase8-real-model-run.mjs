@@ -36,7 +36,7 @@ export function rendererObservation() {
   }};
 }
 
-function isolatedEnvironment(desktop, dataRoot, model) {
+function isolatedEnvironment(desktop, dataRoot, model, background) {
   const environment = {};
   for (const name of Object.keys(process.env)) {
     if (/(KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(name) || name.startsWith('OMNI_EDU_E2E_')
@@ -44,7 +44,8 @@ function isolatedEnvironment(desktop, dataRoot, model) {
     environment[name] = process.env[name];
   }
   return {...environment, OMNI_EDU_DATA_ROOT: dataRoot, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'),
-    OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_VISIBLE: '1', DEEPSEEK_MODEL: model};
+    OMNI_EDU_XIAOZHI_PI: '1', ...(background ? {OMNI_EDU_E2E_DIALOG_MODE: '1'} : {OMNI_EDU_E2E_VISIBLE: '1'}),
+    DEEPSEEK_MODEL: model};
 }
 
 function verifyVersion(item) {
@@ -123,7 +124,7 @@ function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
   return thinkingBaseline;
 }
 
-async function collectRun(row, manifest, version, ledger, output) {
+async function collectRun(row, manifest, version, ledger, output, {background}) {
   const root = path.join(output, row.id); fs.mkdirSync(root);
   const dataRoot = path.join(root, 'data'), profile = path.join(root, 'profile'), workspace = path.join(root, 'workspace');
   fs.cpSync(manifest.versions[row.version].dataSnapshot, dataRoot, {recursive: true, errorOnExist: true, force: false});
@@ -137,7 +138,7 @@ async function collectRun(row, manifest, version, ledger, output) {
   let application, page, snapshot, sessionId, runId;
   const result = {...row, collectionStatus: 'FAIL', qualityStatus: 'NOT_TESTED', output: root, decisions: [], beforeBudget, beforeFiles,
     requestTimingBoundary: 'Main monotonic clock measures request/body consumption. Renderer clock measures trusted submission and terminal UI. Cross-process epoch differences are estimates with recorded calibration.',
-    webpageHttpTiming: 'N/A unless independently observed in original source-tool evidence', failureRecoveryScenarios: 'NOT_TESTED_SEPARATE_PLANNED_SCENARIOS'};
+    webpageHttpTiming: null, failureRecoveryScenarios: 'NOT_TESTED_SEPARATE_PLANNED_SCENARIOS'};
   try {
     result.stage = 'proxy_setup';
     for (const providerPath of providerPaths) {
@@ -147,20 +148,28 @@ async function collectRun(row, manifest, version, ledger, output) {
     }
     const bootstrap = path.join(root, 'bootstrap.cjs');
     const transportModule = pathToFileURL(path.join(import.meta.dirname, 'phase8-real-model-transport.mjs')).href;
+    const webTimingModule = pathToFileURL(path.join(import.meta.dirname, 'phase8-web-timing.mjs')).href;
     fs.writeFileSync(bootstrap, `const {app,net}=require('electron');app.setPath('userData',${JSON.stringify(profile)});
 app.whenReady().then(async()=>{const {installProviderBridge}=await import(${JSON.stringify(transportModule)});
 globalThis.phase8RealBridge=installProviderBridge(net,${JSON.stringify({chatRoutes: routes})});
+${row.task === 'Q5' ? `const {observeQ5WebTiming}=await import(${JSON.stringify(webTimingModule)});globalThis.phase8WebTiming=observeQ5WebTiming();` : ''}
 await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main/index.js')).href)});});`);
     result.stage = 'electron_launch';
     const require = createRequire(path.join(version.desktop, 'package.json'));
     const {_electron: electron} = require('playwright');
     application = await electron.launch({executablePath: require('electron'), cwd: version.desktop,
-      args: [bootstrap, '--force-device-scale-factor=1'], env: isolatedEnvironment(version.desktop, dataRoot, manifest.model.id), timeout: 60000});
+      args: [bootstrap, '--force-device-scale-factor=1'], env: isolatedEnvironment(version.desktop, dataRoot, manifest.model.id, background), timeout: 60000});
     page = await application.firstWindow(); await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
     await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
-    await application.evaluate(({BrowserWindow}) => {const window = BrowserWindow.getAllWindows()[0]; window.setContentSize(1366, 768); window.show(); window.focus();});
+    await application.evaluate(({BrowserWindow}, hidden) => {
+      const window = BrowserWindow.getAllWindows()[0];
+      if (hidden && window.isVisible()) throw Error('phase8_background_window_visible');
+      window.setContentSize(1366, 768);
+      if (!hidden) {window.show(); window.focus();}
+    }, background);
     result.geometry = {main: await application.evaluate(({BrowserWindow}) => {
-      const window = BrowserWindow.getAllWindows()[0]; return {bounds: window.getBounds(), contentBounds: window.getContentBounds()};
+      const window = BrowserWindow.getAllWindows()[0];
+      return {bounds: window.getBounds(), contentBounds: window.getContentBounds(), visible: window.isVisible()};
     }), renderer: await page.evaluate(() => ({innerWidth, innerHeight, devicePixelRatio}))};
     const previousSession = await page.locator('.office-composer-container').getAttribute('data-session-id');
     await page.getByTestId('pi-new-session').click();
@@ -198,6 +207,7 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     result.stage = 'readback';
     result.observation = await page.evaluate(() => window.phase8RealObservation.snapshot());
     result.transport = await application.evaluate(() => globalThis.phase8RealBridge.snapshot());
+    if (row.task === 'Q5') result.webpageHttpTiming = await application.evaluate(() => globalThis.phase8WebTiming?.snapshot());
     result.records = readOriginalRecords(path.join(dataRoot, 'app.db'), sessionId, runId);
     result.binding = verifiedRunBinding({sessionId, runId, snapshot, records: result.records});
     const turn = snapshot.projection.turns.find(item => item.id === runId);
@@ -224,17 +234,20 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     result.explicitChecks = {scoresUnchanged: result.artifacts.find(item => item.relativePath === 'scores.csv')?.sha256 === beforeFiles.find(item => item.relativePath === 'scores.csv')?.sha256,
       practiceBytesExact: fs.existsSync(path.join(workspace, 'practice.txt')) ? fs.readFileSync(path.join(workspace, 'practice.txt'), 'utf8') === '合成练习：3/4 + 1/4 = 1' : false,
       copyAbsent: !fs.existsSync(path.join(workspace, 'copy.txt')), refusalObserved: result.decisions.some(item => item.decision === 'reject')};
-    await page.screenshot({path: path.join(root, 'terminal.png'), fullPage: true});
+    if (!background) await page.screenshot({path: path.join(root, 'terminal.png'), fullPage: true});
     result.collectionStatus = 'PASS';
   } catch (error) {
     result.error = /^phase8_[a-z_]+$/.test(error.message) ? error.message : 'phase8_collection_failed';
     if (application) result.transport = await application.evaluate(() => globalThis.phase8RealBridge?.snapshot()).catch(() => undefined);
-    if (page) await page.screenshot({path: path.join(root, 'failure.png'), fullPage: true}).catch(() => {});
+    if (application && row.task === 'Q5') {
+      result.webpageHttpTiming = await application.evaluate(() => globalThis.phase8WebTiming?.snapshot()).catch(() => undefined);
+    }
+    if (page && !background) await page.screenshot({path: path.join(root, 'failure.png'), fullPage: true}).catch(() => {});
   } finally {
     if (application) {
       await page?.evaluate(() => window.phase8RealObservation?.dispose()).catch(() => {});
       await application.evaluate(({dialog}) => {if (globalThis.phase8OriginalPicker) dialog.showOpenDialog = globalThis.phase8OriginalPicker;
-        globalThis.phase8RealBridge?.restore();}).catch(() => {result.cleanupError = 'phase8_restore_failed';});
+        globalThis.phase8RealBridge?.restore();globalThis.phase8WebTiming?.dispose();}).catch(() => {result.cleanupError = 'phase8_restore_failed';});
       await application.close().catch(() => {result.cleanupError = 'phase8_close_failed';});
     }
     for (const proxy of proxies) await proxy.close().catch(() => {result.cleanupError = 'phase8_proxy_close_failed';});
@@ -295,8 +308,12 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
   return collection;
 }
 
-export async function executePlan(manifestPath, output, mode = 'execute') {
+export async function executePlan(manifestPath, output, mode = 'execute', {background = false} = {}) {
   if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
+  if (background && (mode !== 'preflight' || !path.basename(output).startsWith('omni-edu-xiaozhi-phase8-real-model-')
+      || fs.realpathSync(path.dirname(path.resolve(output))) !== fs.realpathSync(os.tmpdir()))) {
+    throw Error('phase8_background_preflight_only');
+  }
   const manifest = validateManifest(JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
   if (!fs.existsSync(actualDatabasePath)) throw Error('phase8_actual_goal_ledger_missing');
   if (!fs.existsSync(manifest.questionSeedEvidence)) throw Error('phase8_question_seed_evidence_missing');
@@ -306,11 +323,13 @@ export async function executePlan(manifestPath, output, mode = 'execute') {
   fs.writeFileSync(path.join(output, 'builds.json'), JSON.stringify(versions, null, 2));
   fs.writeFileSync(path.join(output, 'machine.json'), JSON.stringify({node: process.version, platform: os.platform(), release: os.release(), arch: os.arch(),
     cpus: os.cpus().map(cpu => cpu.model), totalMemory: os.totalmem(), conditions: manifest.conditions,
-    launchMode: 'fresh Electron process and cloned synthetic snapshot per run'}, null, 2));
+    launchMode: background ? 'hidden automated preflight, fresh Electron and cloned synthetic snapshots'
+      : 'visible Electron and cloned synthetic snapshots per run'}, null, 2));
   const ledger = openBudgetLedger({databasePath: actualDatabasePath});
   let collection;
   try {
-    collection = await collectScheduledRuns({mode, manifest, versions, ledger, output, collect: collectRun});
+    collection = await collectScheduledRuns({mode, manifest, versions, ledger, output,
+      collect: (...args) => collectRun(...args, {background})});
     const {results} = collection;
     exportBlindBundle(path.join(output, 'blind-samples'), results.filter(row => row.collectionStatus === 'PASS'));
     const buildsAfter = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
@@ -321,7 +340,7 @@ export async function executePlan(manifestPath, output, mode = 'execute') {
         qualityStatus: row.qualityStatus, error: row.error, infrastructureFailure: row.infrastructureFailure,
         reason: row.reason, httpAttemptCount: row.httpAttemptCount, output: row.output})),
       limits: ['Q3 interactive HTML browser tests and all quality scoring remain independent.',
-        'Q5 webpage request clock and exact-once file writes require original source/receipt review.',
+        'Q5 exact URL transport timings, renderer tool events and exact-once file writes require original source/receipt review.',
         'The separately planned cancel/reject/network failure runs are outside this fixed32 collector.']}, null, 2));
   } finally {ledger.close();}
   return {output, mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS', stoppedAt: collection.stoppedAt,
@@ -329,12 +348,14 @@ export async function executePlan(manifestPath, output, mode = 'execute') {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  const [action, manifest] = process.argv.slice(2);
-  const output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-real-model-'));
+  const [action, manifest, option, ...extra] = process.argv.slice(2);
+  const background = option === '--background';
+  const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-phase8-real-model-' : 'xiaozhi-phase8-real-model-'));
   try {
+    if (extra.length || option && !background || background && action !== 'preflight') throw Error('phase8_invalid_collection_mode');
     if (action === 'prepare') console.log(JSON.stringify(preparePlan(output)));
     else if (['execute', 'preflight'].includes(action) && manifest) {
-      const result = await executePlan(manifest, output, action); console.log(JSON.stringify(result));
+      const result = await executePlan(manifest, output, action, {background}); console.log(JSON.stringify(result));
       if (result.collectionStatus === 'FAIL') process.exitCode = 1;
     } else throw Error('phase8_usage_prepare_or_preflight_or_execute_manifest');
   } catch (error) {console.error(JSON.stringify({status: 'NOT_TESTED', output,

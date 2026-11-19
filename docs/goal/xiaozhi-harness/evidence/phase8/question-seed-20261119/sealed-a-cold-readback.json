@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase8-migration-04TyA1",
+  "sourceDataSha256": "7f6e3ed92b10aabc31f54deb58f31e46964052dff4d96a7292d550c6c377ce7b",
+  "model": "deepseek-flash",
+  "choice": "high",
+  "sealedCredentialReadable": true,
+  "cloneAfterSha256": "d6bf43f2ed91cc7dfae41dbec1dea18c17b7737649b1b727c1476efebdcc632d",
+  "questionId": "question_e22e220c-6fda-45a4-9ab9-2310beff874d",
+  "questionVersion": "3afd9ecb10b18895d35ecb62d6aa94bc59e14928187667e24dc90df8a7921cb2",
+  "builtMainSha256": "e256923d46376b17f6492e5500bf5b97a0071b700d2e3bce8477ebca715f157c",
+  "paidCalls": 0
+}

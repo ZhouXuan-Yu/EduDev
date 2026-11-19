@@ -1,0 +1,213 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-real-model-protocol-O2eUfL",
+  "checks": [
+    {
+      "name": "Q5 records exact URL timings without storing unrelated requests, headers or credentials",
+      "pass": true
+    },
+    {
+      "name": "Frozen plan has exact Q1-Q8 ABBA order, 32 identities and precise role-submit observation",
+      "pass": true
+    },
+    {
+      "name": "Provider-scoped net bridge meters both exact chat paths and records only safe actual-wire fields",
+      "pass": true
+    },
+    {
+      "name": "Models GET is separately observed and unknown provider routes fail before any upstream reservation",
+      "pass": true
+    },
+    {
+      "name": "Subsequent SDK-shaped HTTP attempts each consume allowance and budget rejection occurs before upstream",
+      "pass": true
+    },
+    {
+      "name": "Original SQLite Run identity is required before binding all actual attempts to a runtime Run",
+      "pass": true
+    },
+    {
+      "name": "Blind export preserves artifact bytes and keeps version identity in a separate map",
+      "pass": true
+    },
+    {
+      "name": "Executable preflight dispatches only fixed Q1 A/B and full collection preserves 32 quality failures",
+      "pass": true
+    },
+    {
+      "name": "Executable collection stops dispatch on infrastructure/binding/wire errors and preserves spent allowance",
+      "pass": true
+    }
+  ],
+  "realProviderCalls": 0,
+  "actualGoalLedgerOpened": false,
+  "boundary": "Node-only protocol and local HTTP fixtures. No Electron, builds, native UI, real credentials or models.",
+  "submitObservation": {
+    "count": 1,
+    "trusted": false,
+    "boundary": "Actual DOM marker matching in JSDOM. DOM event is untrusted. Actual Electron trusted click remains NOT_TESTED."
+  },
+  "collectionControl": {
+    "preflightCalls": [
+      "Q1-r1-A",
+      "Q1-r1-B"
+    ],
+    "fullCalls": [
+      "Q1-r1-A",
+      "Q1-r1-B",
+      "Q1-r2-B",
+      "Q1-r2-A",
+      "Q2-r1-A",
+      "Q2-r1-B",
+      "Q2-r2-B",
+      "Q2-r2-A",
+      "Q3-r1-A",
+      "Q3-r1-B",
+      "Q3-r2-B",
+      "Q3-r2-A",
+      "Q4-r1-A",
+      "Q4-r1-B",
+      "Q4-r2-B",
+      "Q4-r2-A",
+      "Q5-r1-A",
+      "Q5-r1-B",
+      "Q5-r2-B",
+      "Q5-r2-A",
+      "Q6-r1-A",
+      "Q6-r1-B",
+      "Q6-r2-B",
+      "Q6-r2-A",
+      "Q7-r1-A",
+      "Q7-r1-B",
+      "Q7-r2-B",
+      "Q7-r2-A",
+      "Q8-r1-A",
+      "Q8-r1-B",
+      "Q8-r2-B",
+      "Q8-r2-A"
+    ],
+    "qualityFailuresPreserved": 32,
+    "boundary": "Same actual serial loop as executePlan. Collector callbacks produce synthetic rows using owned SQLite original Run validation and real TEMP budget reservations. These reservations simulate dispatch and make no HTTP request."
+  },
+  "stopControl": {
+    "cases": [
+      {
+        "name": "collection_failure",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_collection_failed"
+        },
+        "used": 1
+      },
+      {
+        "name": "collector_throw",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_collection_failed"
+        },
+        "used": 1
+      },
+      {
+        "name": "binding_failure",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_attempt_binding_or_readback_failed"
+        },
+        "used": 1
+      },
+      {
+        "name": "wrong_run",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_run_binding_unverified"
+        },
+        "used": 1
+      },
+      {
+        "name": "unbound_attempt",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_attempt_binding_unverified"
+        },
+        "used": 1
+      },
+      {
+        "name": "route_rejected",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_provider_route_rejected"
+        },
+        "used": 1
+      },
+      {
+        "name": "wrong_model",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_wire_model_mismatch"
+        },
+        "used": 1
+      },
+      {
+        "name": "wrong_thinking",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_wire_configuration_mismatch"
+        },
+        "used": 1
+      },
+      {
+        "name": "provider_failure",
+        "calls": [
+          "Q1-r1-A"
+        ],
+        "stoppedAt": {
+          "id": "Q1-r1-A",
+          "code": "phase8_provider_transport_incomplete"
+        },
+        "used": 1
+      }
+    ],
+    "thinkingParityCalls": [
+      "Q1-r1-A",
+      "Q1-r1-B"
+    ],
+    "exhaustedDispatches": 0
+  },
+  "budget": {
+    "schemaVersion": 1,
+    "goalId": "GOAL_XIAOZHI_HARNESS",
+    "limit": 4,
+    "initialUsed": 0,
+    "used": 4,
+    "remaining": 0,
+    "unresolved": 0,
+    "durability": {
+      "journalMode": "wal",
+      "synchronous": 2
+    }
+  }
+}

@@ -4,6 +4,7 @@ import path from 'node:path';
 import http from 'node:http';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
+import {channel} from 'node:diagnostics_channel';
 import {JSDOM} from 'jsdom';
 import {openBudgetLedger} from './phase8-budget-ledger.mjs';
 import {startCountingProxy} from './phase8-counting-proxy.mjs';
@@ -18,10 +19,35 @@ async function check(name, action) {
   console.log(JSON.stringify(report.checks.at(-1)));
 }
 try {
-  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan} = await import('./phase8-real-model-plan.mjs');
+  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source} = await import('./phase8-real-model-plan.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
   const {verifiedRunBinding, exportBlindBundle, readOriginalRecords} = await import('./phase8-real-model-readback.mjs');
   const {executePlan, rendererObservation, collectScheduledRuns} = await import('./phase8-real-model-run.mjs');
+  const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
+  await check('Q5 records exact URL timings without storing unrelated requests, headers or credentials', () => {
+    const target = new URL(q5Source);
+    const matched = {method: 'GET', origin: target.origin, path: target.pathname};
+    const unrelated = {...matched, path: target.pathname + '?q=private-canary'};
+    const publish = (event, data) => channel('undici:' + event).publish(data);
+    const observer = observeQ5WebTiming();
+    try {
+      publish('request:create', {request: unrelated});
+      publish('request:create', {request: matched});
+      publish('client:sendHeaders', {request: matched, headers: 'authorization: private-canary'});
+      publish('request:headers', {request: matched, response: {statusCode: 200, headers: ['private-canary']}});
+      publish('request:trailers', {request: matched, trailers: ['private-canary']});
+      const evidence = observer.snapshot();
+      assert.equal(evidence.rows.length, 1);
+      const row = evidence.rows[0];
+      assert.equal(row.status, 200);
+      assert(row.createdAt <= row.sendingHeadersAt && row.sendingHeadersAt <= row.headersAt && row.headersAt <= row.responseEndAt);
+      assert(!JSON.stringify(evidence).includes('private-canary'));
+    } finally {
+      observer.dispose();
+    }
+    publish('request:create', {request: {...matched}});
+    assert.equal(observer.snapshot().rows.length, 1);
+  });
   await check('Frozen plan has exact Q1-Q8 ABBA order, 32 identities and precise role-submit observation', () => {
     assert.equal(tasks.length, 8); assert.equal(schedule.length, 32);
     for (const task of tasks) assert.deepEqual(schedule.filter(row => row.task === task.id).map(row => row.version), ['A', 'B', 'B', 'A']);
@@ -222,7 +248,7 @@ try {
     assert.equal(empty.calls.length, 0); assert.equal(empty.budget.summary().used, 1); assert(exhausted.stoppedAt);
     report.stopControl = {cases: observations, thinkingParityCalls: parity.calls, exhaustedDispatches: empty.calls.length};
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 8 && report.checks.every(row => row.pass);
+  report.budget = ledger.summary(); report.success = report.checks.length === 9 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();

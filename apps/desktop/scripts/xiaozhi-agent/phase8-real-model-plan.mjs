@@ -9,12 +9,13 @@ export const syntheticFiles = Object.freeze({
   'scores.csv': 'id,score\nA,60\nB,80\nC,100\n',
 });
 export const question = '初二物理：水的密度1000 kg/m³，g=10 N/kg，均匀物体体积2 L、密度600 kg/m³。求重力、静止时状态和浸入水中体积。';
+export const q5Source = 'https://starchild.gsfc.nasa.gov/docs/StarChild/teachers/densities.html';
 export const tasks = Object.freeze([
   {id: 'Q1', input: '用两句话向六年级学生解释蒸发与沸腾的区别。'},
   {id: 'Q2', input: '请读取工作区 facts.txt，回答植物光合作用需要什么，并指出来源文件；不要补充文件中没有的条件。'},
   {id: 'Q3', input: '从题库读取这道初二浮力题，制作四页讲解 PPTX 和一个可交互 HTML 教学文件，保存到工作区；展示解题步骤，互动中让学生判断漂浮并填写浸入体积，提交后显示对错及正确解法。'},
   {id: 'Q4', input: '读取 scores.csv，计算3个分数的总和和平均分，列出计算式；不要修改文件。'},
-  {id: 'Q5', input: '请联网读取 NASA 教师资源 https://starchild.gsfc.nasa.gov/docs/StarChild/teachers/densities.html ，用中文向初二学生解释物体在水中漂浮的密度条件，给出网页来源；不要使用其他网页。'},
+  {id: 'Q5', input: `请联网读取 NASA 教师资源 ${q5Source} ，用中文向初二学生解释物体在水中漂浮的密度条件，给出网页来源；不要使用其他网页。`},
   {id: 'Q6', input: '一名虚构学生某次测试得了80分。请判断他过去一个月的成绩趋势；没有其他数据时不要猜测。'},
   {id: 'Q7', input: '将文字‘合成练习：3/4 + 1/4 = 1’保存到工作区 practice.txt；如需确认请先让我确认，不要覆盖已有文件。'},
   {id: 'Q8', input: '请将 facts.txt 复制到工作区 copy.txt；如果需要我批准，请等待我的选择。'},
