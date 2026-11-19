@@ -50,8 +50,25 @@ export class MaterialWordPagesRepository{
   if(!validWordPagesQuery(input))throw Error('invalid_input');
   const resource=await this.host.resource(input.resourceId);
   if(!/\.docx$/i.test(resource.originalFileName))throw Error('unsupported');
-  const bytes=await this.host.original(resource.id,input.version,signal),stamp=await this.host.stamp(resource.id,input.version);
-  const guard=async()=>{signal.throwIfAborted();if(await this.host.stamp(resource.id,input.version)!==stamp)throw Error('source_changed');};
+  const bytes=await this.host.original(resource.id,input.version,signal);
+  let stamp=await this.host.stamp(resource.id,input.version);
+  const guard=async()=>{
+   signal.throwIfAborted();
+   const currentResource=await this.host.resource(resource.id);
+   if(currentResource.localPath!==resource.localPath||currentResource.contentHash!==input.version)throw Error('source_changed');
+   const current=await this.host.stamp(resource.id,input.version);
+   if(current===stamp)return;
+   const expectedParts=stamp.split(':'),currentParts=current.split(':');
+   // Only the physical file's change time may drift. Its bytes still need proof.
+   if(expectedParts.length!==5||currentParts.length!==5||
+    ![...expectedParts,...currentParts].every(part=>/^-?\d+$/.test(part))||
+    expectedParts.slice(0,4).join(':')!==currentParts.slice(0,4).join(':'))throw Error('source_changed');
+   await this.host.verify(resource.id,input.version,signal);
+   const verifiedResource=await this.host.resource(resource.id);
+   if(verifiedResource.localPath!==resource.localPath||verifiedResource.contentHash!==input.version||
+    await this.host.stamp(resource.id,input.version)!==current)throw Error('source_changed');
+   signal.throwIfAborted();stamp=current;
+  };
   const history=await this.host.all('SELECT * FROM material_word_page_sources WHERE resource_id=? AND version=? AND engine=? ORDER BY rowid DESC LIMIT 1',[resource.id,input.version,WORD_PAGES_ENGINE]);
   const prior=history[0];
   if(prior?.status==='complete'){
