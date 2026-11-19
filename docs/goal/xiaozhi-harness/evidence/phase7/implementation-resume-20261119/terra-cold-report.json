@@ -1,0 +1,16 @@
+{
+  "checks": [
+    {
+      "name": "skill_cold_readback",
+      "status": "PASS",
+      "activeVersion": "1.0.0",
+      "history": "个人 · 合成核对流程 1.0.0\n\n当前版本 1.0.0\n\nv1.0.0 · 已发布 · 当前\n\n内容 SHA256 336c8115030fd0355682b1cf011161cf134a3244677ab97938db615749188473\n\n来源 teacher\n\n使用此版本\n分享团队副本\n撤回此版本\n\nv2.0.0 · 已发布\n\n内容 SHA256 77dfb272dd0abec0b91e0013d0ce3fa10c41c4641fb8479ef1518b93b82de48a\n\n来源 teacher\n\n使用此版本\n分享团队副本\n撤回此版本\n申请官方审核\n来源\n许可证\n测试证据\n提交审核副本"
+    },
+    {
+      "name": "approval_cold_readback",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "modelCalls": 0
+}

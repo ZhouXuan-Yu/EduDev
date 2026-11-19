@@ -1,0 +1,43 @@
+{
+  "mode": "--run",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-cached-baseline-xGCbZ2\\run-7DwWgZ",
+  "repo": "D:\\WorkProject\\EduProject-harness",
+  "baseline": {
+    "nativeHelper": {
+      "directory": "D:\\WorkProject\\EduProject-harness\\apps\\desktop\\src\\main\\xiaozhi-agent\\permissions\\windows\\generated",
+      "helperSha256": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
+      "sourceSha256": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+      "manifestSha256": "73deea186d758f1f44781deaebe50b811ce79ff179f726e03a89d6e2ae0c3bb3"
+    },
+    "coreManifestSha256": "ae0aaa6b97a1d489da948ae3779a07c0102f592fab4355dc0ddca3c855fc5214",
+    "fixture": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-grcqce",
+    "packageDir": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-grcqce\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+    "artifactId": "xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+    "expiresAt": "2026-12-17T11:35:08.719Z",
+    "executionFiles": [
+      {
+        "path": "node.exe",
+        "bytes": 89935872,
+        "sha256": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8"
+      },
+      {
+        "path": "package.json",
+        "bytes": 1692,
+        "sha256": "3c2ac88eff0d516f56c5fbdc5e2bd0ab95e0df5d0e98f11608498549ea0a70b7"
+      },
+      {
+        "path": "server.mjs",
+        "bytes": 2014271,
+        "sha256": "50f7b14ef1fb8f75096e3788a77186848d1fa9cb2202a9e71262ca4415434001"
+      }
+    ],
+    "installedCount": 2928,
+    "originalWorkerSha256": "b188e7fb419be60daa569646f2d4c0b64cde5c26241dce0da844b2923bd0d19c"
+  },
+  "focusedWorkerSha256": "3418e4537cf6cea431ab8b350d8663b9398fdedbaae08a7b5015b4c00ec5b964",
+  "scriptSha256": "a3acb8dd1d8faf47621b1b0b3b2cc85687a9b24fbc6f0c8152b82b5fb74a47fc",
+  "workerSha256": "c207fc83f9453752d92d8281561f0e40da991316896a64c613ff05403751b47f",
+  "sourceCount": 769,
+  "noManifestBuild": true,
+  "noElectronStarted": false
+}

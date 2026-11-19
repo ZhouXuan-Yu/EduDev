@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "recovery_default",
+      "status": "PASS"
+    },
+    {
+      "name": "permission_default_and_details",
+      "status": "PASS"
+    },
+    {
+      "name": "capability_default_and_details",
+      "status": "PASS"
+    },
+    {
+      "name": "skill_default_and_details",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh",
+  "modelCalls": 0,
+  "fixtureErrors": []
+}

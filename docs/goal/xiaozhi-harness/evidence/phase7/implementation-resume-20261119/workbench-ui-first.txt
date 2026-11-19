@@ -1,0 +1,11 @@
+(node:33832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS U01_visible_cross_session_overview_matches_original_completed_facts
+PASS U02_both_actual_sizes_keep_global_actions_pointer_reachable
+PASS U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run
+PASS U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop
+PASS U05_inbox_modern_rejection_uses_original_permission_CAS
+PASS U06_legacy_uncertain_verifies_existing_owned_copy_without_replay
+PASS U07_capability_center_true_metadata_search_and_original_management_navigation
+PASS U08_cold_original_summary_and_inbox_decision_readback
+{"success":true,"passed":8,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-workbench-ui-k9HsJh"}

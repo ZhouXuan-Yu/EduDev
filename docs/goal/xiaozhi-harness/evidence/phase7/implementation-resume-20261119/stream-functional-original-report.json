@@ -1,0 +1,3507 @@
+{
+  "success": false,
+  "measurementStatus": "SINGLE_SYNTHETIC_SAMPLE",
+  "label": "phase7-B-functional",
+  "desktop": "D:\\WorkProject\\EduProject-harness\\apps\\desktop",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-stream-QO8IFC",
+  "checks": [
+    {
+      "name": "Provider reasoning grows visibly before terminal state",
+      "pass": true
+    },
+    {
+      "name": "Actual original Pi UI handles one fixture run and terminal stop",
+      "pass": true
+    },
+    {
+      "name": "Reasoning and final have live renderer RAF samples and trusted input expansion scroll events",
+      "pass": true
+    },
+    {
+      "name": "Fixture transport remains loopback with a synthetic credential and no hidden retry",
+      "pass": true
+    },
+    {
+      "name": "SQLite run identity and renderer error evidence are retained",
+      "pass": true
+    }
+  ],
+  "realModelCalls": 0,
+  "workload": {
+    "reasoningChunks": 240,
+    "finalChunks": 320,
+    "intervalMs": 100,
+    "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+    "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+  },
+  "errors": [],
+  "automationRoundtrips": [
+    {
+      "id": "submit",
+      "milliseconds": 422.6745000000001,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "reasoning-input",
+      "milliseconds": 985.6851999999999,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "reasoning-expand",
+      "milliseconds": 2999.0701999999983,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "reasoning-scroll",
+      "milliseconds": 4012.8469000000005,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "final-input",
+      "milliseconds": 992.6942999999956,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "final-expand",
+      "milliseconds": 3009.7163999999975,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "final-scroll",
+      "milliseconds": 4011.316700000003,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    },
+    {
+      "id": "final-stop",
+      "milliseconds": 2046.1702000000005,
+      "clock": "Outer Node performance.now; includes Playwright transport/actionability/waiting"
+    }
+  ],
+  "displayMode": "background",
+  "boundary": "Actual original Electron main/preload/Pi/UI. Fixed net.fetch hook to loopback, synthetic key and empty DB/profile. Single run stops during final output. No product SLA or provider performance conclusion.",
+  "buildBefore": {
+    "sha256": "8f694c3af6e9fe783fd6aa2b29fa71ff5e5c071c7a9f6ce438df6c13dad053e9",
+    "files": 481
+  },
+  "geometry": {
+    "main": {
+      "bounds": {
+        "x": 600,
+        "y": 314,
+        "width": 1366,
+        "height": 768
+      },
+      "contentBounds": {
+        "x": 600,
+        "y": 314,
+        "width": 1366,
+        "height": 768
+      }
+    },
+    "renderer": {
+      "innerWidth": 1366,
+      "innerHeight": 768,
+      "devicePixelRatio": 1
+    },
+    "launchSwitch": "--force-device-scale-factor=1"
+  },
+  "isolation": {
+    "paths": {
+      "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-stream-QO8IFC\\profile",
+      "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-stream-QO8IFC\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/image-header-c9ikvmx3.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/material-native-text-cusbscnq.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/material-page-preview-buup-wou.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/materials-gxn1pjvy.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/office-images-_dydwlrr.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/office-pdf-renderer-dqmc5jhu.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/office-relative-path-bm0ywp48.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/runtime-command-cuw_jyvg.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/typed-table-bkfbpzb9.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/word-xml-bxtvxdc9.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-harness/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js"
+    ]
+  },
+  "clocks": {
+    "main": {
+      "timeOrigin": 1795062972740.62,
+      "epochMs": 1795062975857.5032,
+      "dateCalibrationMs": -0.50732421875
+    },
+    "renderer": {
+      "timeOrigin": 1795062974068.8,
+      "epochMs": 1795062975865,
+      "dateCalibrationMs": 0
+    },
+    "outerNode": {
+      "timeOrigin": 1795062972220.223,
+      "epochMs": 1795062975865.0366
+    },
+    "limitation": "Epoch anchors share the host wall clock with process-specific initialization/calibration uncertainty. RAF measures callback opportunities; physical display presentation is unobserved."
+  },
+  "visibleReasoning": {
+    "first": 1397,
+    "later": 3727
+  },
+  "turn": {
+    "sessionId": "aisession_5babea3a-d1bf-4d38-bd56-4f55afaa368f",
+    "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48",
+    "status": "interrupted",
+    "reasoningBlocks": 1,
+    "finalChars": 44636,
+    "observedAssistantPhases": [
+      "partial_answer"
+    ]
+  },
+  "transport": {
+    "calls": [
+      {
+        "path": "/v1/models",
+        "epochMs": 1795062974654.7446,
+        "method": "GET",
+        "httpStatus": 200
+      },
+      {
+        "path": "/v1/chat/completions",
+        "epochMs": 1795062980886.3706,
+        "method": "POST",
+        "httpStatus": 200
+      }
+    ],
+    "blocked": 0,
+    "timeOrigin": 1795062972740.62,
+    "dateCalibrationMs": -0.89404296875
+  },
+  "rendererRaw": {
+    "timeOrigin": 1795062974068.8,
+    "dateCalibrationMs": -0.199951171875,
+    "supportedLongTasks": true,
+    "phaseChanges": [
+      {
+        "at": 1798.3999999999069,
+        "phase": "idle"
+      },
+      {
+        "at": 6946.100000000093,
+        "phase": "reasoning"
+      },
+      {
+        "at": 32943.799999999814,
+        "phase": "final"
+      },
+      {
+        "at": 53290.60000000009,
+        "phase": "settled"
+      }
+    ],
+    "raf": [
+      {
+        "at": 2560.4,
+        "gap": 762.0000000000932
+      },
+      {
+        "at": 3566.4,
+        "gap": 1006
+      },
+      {
+        "at": 4572.1,
+        "gap": 1005.7000000000003
+      },
+      {
+        "at": 5577.7,
+        "gap": 1005.5999999999995
+      },
+      {
+        "at": 6583.6,
+        "gap": 1005.9000000000005
+      },
+      {
+        "at": 7589.3,
+        "gap": 1005.6999999999998
+      },
+      {
+        "at": 8595.1,
+        "gap": 1005.8000000000002
+      },
+      {
+        "at": 9595.1,
+        "gap": 1000
+      },
+      {
+        "at": 10600.6,
+        "gap": 1005.5
+      },
+      {
+        "at": 11600.6,
+        "gap": 1000
+      },
+      {
+        "at": 12606.2,
+        "gap": 1005.6000000000004
+      },
+      {
+        "at": 13612.1,
+        "gap": 1005.8999999999996
+      },
+      {
+        "at": 14617.8,
+        "gap": 1005.6999999999989
+      },
+      {
+        "at": 15623.5,
+        "gap": 1005.7000000000007
+      },
+      {
+        "at": 16623.6,
+        "gap": 1000.0999999999985
+      },
+      {
+        "at": 17629.1,
+        "gap": 1005.5
+      },
+      {
+        "at": 18634.7,
+        "gap": 1005.6000000000022
+      },
+      {
+        "at": 19640.7,
+        "gap": 1006
+      },
+      {
+        "at": 20646.4,
+        "gap": 1005.7000000000007
+      },
+      {
+        "at": 21652.1,
+        "gap": 1005.6999999999971
+      },
+      {
+        "at": 22658,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 23663.7,
+        "gap": 1005.7000000000007
+      },
+      {
+        "at": 24669.3,
+        "gap": 1005.5999999999985
+      },
+      {
+        "at": 25675.2,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 26681.1,
+        "gap": 1005.8999999999978
+      },
+      {
+        "at": 27686.7,
+        "gap": 1005.6000000000022
+      },
+      {
+        "at": 27698.8,
+        "gap": 12.099999999998545
+      },
+      {
+        "at": 27735.2,
+        "gap": 36.400000000001455
+      },
+      {
+        "at": 27741.4,
+        "gap": 6.200000000000728
+      },
+      {
+        "at": 27747.4,
+        "gap": 6
+      },
+      {
+        "at": 27753.4,
+        "gap": 6
+      },
+      {
+        "at": 27759.5,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 27765.5,
+        "gap": 6
+      },
+      {
+        "at": 27771.5,
+        "gap": 6
+      },
+      {
+        "at": 27777.7,
+        "gap": 6.200000000000728
+      },
+      {
+        "at": 27783.8,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 27789.8,
+        "gap": 6
+      },
+      {
+        "at": 27796.3,
+        "gap": 6.5
+      },
+      {
+        "at": 27802.1,
+        "gap": 5.799999999999272
+      },
+      {
+        "at": 27808,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 27814.2,
+        "gap": 6.200000000000728
+      },
+      {
+        "at": 27820.3,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 27826.1,
+        "gap": 5.799999999999272
+      },
+      {
+        "at": 27832.4,
+        "gap": 6.30000000000291
+      },
+      {
+        "at": 27838.5,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 27844.4,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 27850.4,
+        "gap": 6
+      },
+      {
+        "at": 27856.6,
+        "gap": 6.19999999999709
+      },
+      {
+        "at": 27862.5,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 27868.6,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 27874.6,
+        "gap": 6
+      },
+      {
+        "at": 27880.7,
+        "gap": 6.100000000002183
+      },
+      {
+        "at": 28881.2,
+        "gap": 1000.5
+      },
+      {
+        "at": 29886.3,
+        "gap": 1005.0999999999985
+      },
+      {
+        "at": 30886.5,
+        "gap": 1000.2000000000007
+      },
+      {
+        "at": 31891.7,
+        "gap": 1005.2000000000007
+      },
+      {
+        "at": 32897.4,
+        "gap": 1005.7000000000007
+      },
+      {
+        "at": 33903.1,
+        "gap": 1005.6999999999971
+      },
+      {
+        "at": 34903.2,
+        "gap": 1000.0999999999985
+      },
+      {
+        "at": 35908.9,
+        "gap": 1005.7000000000044
+      },
+      {
+        "at": 36914.7,
+        "gap": 1005.7999999999956
+      },
+      {
+        "at": 37920.4,
+        "gap": 1005.7000000000044
+      },
+      {
+        "at": 38926.3,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 39931.8,
+        "gap": 1005.5
+      },
+      {
+        "at": 40937.7,
+        "gap": 1005.8999999999942
+      },
+      {
+        "at": 41943.5,
+        "gap": 1005.8000000000029
+      },
+      {
+        "at": 42949.4,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 43955,
+        "gap": 1005.5999999999985
+      },
+      {
+        "at": 44960.9,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 45966.5,
+        "gap": 1005.5999999999985
+      },
+      {
+        "at": 46972.3,
+        "gap": 1005.8000000000029
+      },
+      {
+        "at": 47978,
+        "gap": 1005.6999999999971
+      },
+      {
+        "at": 48983.9,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 49989.6,
+        "gap": 1005.6999999999971
+      },
+      {
+        "at": 50995.5,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 52001.2,
+        "gap": 1005.6999999999971
+      },
+      {
+        "at": 53007,
+        "gap": 1005.8000000000029
+      },
+      {
+        "at": 53019.1,
+        "gap": 12.099999999998545
+      },
+      {
+        "at": 53025.3,
+        "gap": 6.200000000004366
+      },
+      {
+        "at": 53031.2,
+        "gap": 5.899999999994179
+      },
+      {
+        "at": 53037.3,
+        "gap": 6.100000000005821
+      },
+      {
+        "at": 53043.4,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 53049.6,
+        "gap": 6.19999999999709
+      },
+      {
+        "at": 53055.6,
+        "gap": 6
+      },
+      {
+        "at": 53061.5,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 53067.7,
+        "gap": 6.19999999999709
+      },
+      {
+        "at": 53073.6,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 53079.7,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 53085.8,
+        "gap": 6.100000000005821
+      },
+      {
+        "at": 53092,
+        "gap": 6.19999999999709
+      },
+      {
+        "at": 53097.9,
+        "gap": 5.900000000001455
+      },
+      {
+        "at": 53103.9,
+        "gap": 6
+      },
+      {
+        "at": 53110,
+        "gap": 6.099999999998545
+      },
+      {
+        "at": 54115.9,
+        "gap": 1005.9000000000015
+      },
+      {
+        "at": 55121.6,
+        "gap": 1005.6999999999971
+      }
+    ],
+    "longTasks": [],
+    "interactions": [
+      {
+        "id": "submit",
+        "kind": "submit",
+        "selector": "[data-phase8-action=\"submit\"]",
+        "phase": "idle",
+        "armedAt": 2139.5,
+        "eventAt": 2145.399999999907,
+        "epochMs": 1795062976214.2,
+        "trusted": true,
+        "eventPhase": "idle",
+        "frameRequested": true,
+        "frameAt": 2561.600000000093,
+        "complete": true
+      },
+      {
+        "id": "reasoning-input",
+        "kind": "input",
+        "selector": "[data-phase8-action=\"reasoning-input\"]",
+        "phase": "reasoning",
+        "armedAt": 10622.399999999907,
+        "eventAt": 10629,
+        "epochMs": 1795062984697.8,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "frameRequested": true,
+        "frameAt": 11605.5,
+        "complete": true
+      },
+      {
+        "id": "reasoning-expand",
+        "kind": "expand",
+        "selector": "[data-phase8-action=\"reasoning-expand\"]",
+        "expected": "true",
+        "attribute": "aria-pressed",
+        "control": "Original Task and Sources side panel",
+        "phase": "reasoning",
+        "armedAt": 11622.69999999972,
+        "eventAt": 13623.69999999972,
+        "epochMs": 1795062987692.5,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "changedAt": 13654.100000000093,
+        "frameRequested": true,
+        "frameAt": 14620.899999999907,
+        "complete": true
+      },
+      {
+        "id": "reasoning-scroll",
+        "kind": "scroll",
+        "selector": "[data-phase8-action=\"reasoning-scroll\"]",
+        "beforeScrollTop": 14375,
+        "phase": "reasoning",
+        "armedAt": 19653.299999999814,
+        "eventAt": 21655.899999999907,
+        "epochMs": 1795062995724.7,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "changedAt": 21932.5,
+        "afterScrollTop": 14015,
+        "frameRequested": true,
+        "frameAt": 22659.69999999972,
+        "complete": true
+      },
+      {
+        "id": "final-input",
+        "kind": "input",
+        "selector": "[data-phase8-action=\"final-input\"]",
+        "phase": "final",
+        "armedAt": 35925.69999999972,
+        "eventAt": 35930.39999999991,
+        "epochMs": 1795063009999.2,
+        "trusted": true,
+        "eventPhase": "final",
+        "frameRequested": true,
+        "frameAt": 36916.89999999991,
+        "complete": true
+      },
+      {
+        "id": "final-expand",
+        "kind": "expand",
+        "selector": "[data-phase8-action=\"final-expand\"]",
+        "expected": "true",
+        "attribute": "aria-pressed",
+        "control": "Original Task and Sources side panel",
+        "phase": "final",
+        "armedAt": 36930.89999999991,
+        "eventAt": 38935.60000000009,
+        "epochMs": 1795063013004.4001,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 38949.5,
+        "frameRequested": true,
+        "frameAt": 39939.69999999972,
+        "complete": true
+      },
+      {
+        "id": "final-scroll",
+        "kind": "scroll",
+        "selector": "[data-phase8-action=\"final-scroll\"]",
+        "beforeScrollTop": 14015,
+        "phase": "final",
+        "armedAt": 44975.39999999991,
+        "eventAt": 46973.69999999972,
+        "epochMs": 1795063021042.5,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 47637.39999999991,
+        "afterScrollTop": 13655,
+        "frameRequested": true,
+        "frameAt": 47979.60000000009,
+        "complete": true
+      },
+      {
+        "id": "final-stop",
+        "kind": "stop",
+        "selector": "[data-phase8-action=\"final-stop\"]",
+        "phase": "final",
+        "armedAt": 53078,
+        "eventAt": 53099.5,
+        "epochMs": 1795063027168.3,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 53290.60000000009,
+        "terminalStatus": "interrupted",
+        "frameRequested": true,
+        "frameAt": 54140.89999999991,
+        "complete": true
+      }
+    ],
+    "inputSamples": [
+      {
+        "at": 1828.1000000000931,
+        "phase": "idle",
+        "trusted": true,
+        "length": 1,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1842.7999999998137,
+        "phase": "idle",
+        "trusted": true,
+        "length": 2,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1858.1999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 3,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1873.7999999998137,
+        "phase": "idle",
+        "trusted": true,
+        "length": 4,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1889.2999999998137,
+        "phase": "idle",
+        "trusted": true,
+        "length": 5,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1904.8999999999069,
+        "phase": "idle",
+        "trusted": true,
+        "length": 6,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1920.6999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 7,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1936.1999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 8,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1952.1000000000931,
+        "phase": "idle",
+        "trusted": true,
+        "length": 9,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1968,
+        "phase": "idle",
+        "trusted": true,
+        "length": 10,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1984.3999999999069,
+        "phase": "idle",
+        "trusted": true,
+        "length": 11,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 1999.7999999998137,
+        "phase": "idle",
+        "trusted": true,
+        "length": 12,
+        "frameAt": 2561.5
+      },
+      {
+        "at": 2015,
+        "phase": "idle",
+        "trusted": true,
+        "length": 13,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2029.6999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 14,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2045.8999999999069,
+        "phase": "idle",
+        "trusted": true,
+        "length": 15,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2061.5,
+        "phase": "idle",
+        "trusted": true,
+        "length": 16,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2077.100000000093,
+        "phase": "idle",
+        "trusted": true,
+        "length": 17,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2092.6999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 18,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2107.899999999907,
+        "phase": "idle",
+        "trusted": true,
+        "length": 19,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 2122.1999999997206,
+        "phase": "idle",
+        "trusted": true,
+        "length": 20,
+        "frameAt": 2561.600000000093
+      },
+      {
+        "at": 10629,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 1,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10664.100000000093,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 2,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10711.899999999907,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 3,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10758.600000000093,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 4,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10806.19999999972,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 5,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10850.799999999814,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 6,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10881.19999999972,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 7,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10927.799999999814,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 8,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 10974.5,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 9,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11006.899999999907,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 10,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11047.899999999907,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 11,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11092.399999999907,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 12,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11140.69999999972,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 13,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11185.5,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 14,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11218.299999999814,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 15,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 11264.799999999814,
+        "phase": "reasoning",
+        "trusted": true,
+        "length": 16,
+        "frameAt": 11605.5
+      },
+      {
+        "at": 35930.39999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 17,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 35971.89999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 18,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36003.39999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 19,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36049.89999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 20,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36094.299999999814,
+        "phase": "final",
+        "trusted": true,
+        "length": 21,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36144.5,
+        "phase": "final",
+        "trusted": true,
+        "length": 22,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36188.299999999814,
+        "phase": "final",
+        "trusted": true,
+        "length": 23,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36233.39999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 24,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36264.60000000009,
+        "phase": "final",
+        "trusted": true,
+        "length": 25,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36295.19999999972,
+        "phase": "final",
+        "trusted": true,
+        "length": 26,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36327,
+        "phase": "final",
+        "trusted": true,
+        "length": 27,
+        "frameAt": 36916.89999999991
+      },
+      {
+        "at": 36358.39999999991,
+        "phase": "final",
+        "trusted": true,
+        "length": 28,
+        "frameAt": 36916.89999999991
+      }
+    ],
+    "events": [
+      {
+        "at": 2208.600000000093,
+        "kind": "status",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48",
+        "status": "running"
+      },
+      {
+        "at": 6946,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7067.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7186,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7285.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7385.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7494.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7608.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7714.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7826.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 7921.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8038.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8147,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8255.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8353.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8473.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8590.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8695.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8800.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 8897,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9018.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9127.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9242.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9339.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9440.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9566.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9681.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9791.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9880.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 9984.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10118.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10226.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10329.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10420.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10542.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10651.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10768.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10871.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 10871.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11090.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11090.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11304.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11403.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11495.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11500.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11727,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11853,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11924.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 11927.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12142.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12248,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12362.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12456.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12558.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12688.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12804.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12900.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 12991.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13125.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13220.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13223.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13421.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13532.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13655.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13655.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13869.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 13953.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14081.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14198.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14302.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14414.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14520.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14628.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14737.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14843.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 14946.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15046.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15172.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15275.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15384.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15487.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15600.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15715.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15828.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 15835.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16028.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16157.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16260.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16369.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16469.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16586,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16696.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16805.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 16907.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17006.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17132,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17235.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17349.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17460.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17549.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17669.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17787.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17895.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 17989.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18086.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18223.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18320.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18428.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18518.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18628.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18764.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18769.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 18969.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19050.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19186.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19288.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19408,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19499.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19594.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19712.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19833,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 19946.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20033.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20138.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20269.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20376.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20504.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20577.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20708.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20810.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 20933.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21019.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21116.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21237.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21348.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21466.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21547.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21667.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21776.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21883.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 21991.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22085.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22206.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22315,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22440.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22537.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22622.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22757,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22864.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 22981.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23067.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23168.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23291.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23403.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23516,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23602.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23725.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23848.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 23953,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24052.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24149.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24286.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24387,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24496.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24587.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24689.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24818.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 24822.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25036.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25123.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25244.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25356.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25464.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25566.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25659,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25786,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 25898.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26001.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26103.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26201.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26328.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26424.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26535.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26639.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26753.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26864.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 26969,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27082.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27181.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27308.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27433.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27538.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27626.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27727,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27864.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 27964,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28072.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28165.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28292.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28415.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28521.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28631.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28711.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28853.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 28953.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29058.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29150.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29254.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29378.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29490.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29606.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29683.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29811.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 29925.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30036.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30142,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30253,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30349.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30455.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30566.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30669.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30768.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30889.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 30996.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31002.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31198.299999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31321.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31327.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31537.399999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31662.100000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31666.799999999814,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31877.600000000093,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 31973.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32084.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32186.5,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32280.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32402.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32525.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32626.19999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32712.899999999907,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32837.69999999972,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32890.89999999991,
+        "kind": "model_reasoning",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 32943.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33050.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33053.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33255.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33376.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33480.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33589.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33693.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33786.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33909.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 33912.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34134.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34220.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34350.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34459.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34571.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34674.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34762.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 34891.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35000.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35111,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35215.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35311.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35427.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35547.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35659.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35750.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35874.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 35978.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36092.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36092.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36293,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36413.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36528.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36643.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36742.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36847.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36950.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 36954.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37150.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37259.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37363.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37489.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37594.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37597.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37794.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 37929.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38033.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38150,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38254.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38348.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38480,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38584.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38688.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38781.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38881.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 38999.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39117.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39244.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39250.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39447.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39557.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39660.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39768.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39862.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 39984.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40090.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40204.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40298,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40407.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40525.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40627.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40746.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40833.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 40956,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41067.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41183.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41293.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41375,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41513.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41607.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41726.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41818,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 41939.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42049.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42156.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42272.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42360.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42490.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42597.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42700.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42811.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 42904.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43024.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43145.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43259.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43336.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43445.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43574.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43675.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43791.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43882.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 43999.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44121.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44243.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44336.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44432.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44548.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44672.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44777.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44868.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 44984.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45101,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45203,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45312.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45410.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45535.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45662.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45762.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45862.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 45966.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46102.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46213.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46320.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46406.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46528.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46641.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46751.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46857.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 46945.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47066.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47177.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47286.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47382.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47558.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47628.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47728.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47838.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 47926.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48050.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48158.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48274.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48380,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48469.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48596,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48707.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48716.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 48902.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49016,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49142,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49149.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49334.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49423.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49545.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49668.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49775.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49889,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 49967.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50096.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50218.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50321,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50419.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50514.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50628.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50746.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50863.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 50943.89999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51069,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51190.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51294.799999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51401.69999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51489.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51623,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51722.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51835.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 51939,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52042.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52157.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52270.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52275.10000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52464.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52587.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52693.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52815.39999999991,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 52911.5,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 53001.60000000009,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 53120.19999999972,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 53126.299999999814,
+        "kind": "text_delta",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48"
+      },
+      {
+        "at": 53290.60000000009,
+        "kind": "status",
+        "runId": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48",
+        "status": "interrupted"
+      }
+    ],
+    "submissions": [
+      {
+        "at": 2145.399999999907,
+        "epochMs": 1795062976214.2,
+        "trusted": true
+      }
+    ]
+  },
+  "metrics": {
+    "phases": {
+      "idle": {
+        "raf": {
+          "count": 5,
+          "meanMs": 957.0400000000187,
+          "medianMs": 1005.7000000000003,
+          "maximumMs": 1006
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "reasoning": {
+        "raf": {
+          "count": 52,
+          "meanMs": 506.0346153846154,
+          "medianMs": 518.2000000000007,
+          "maximumMs": 1006
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "final": {
+        "raf": {
+          "count": 36,
+          "meanMs": 561.4611111111111,
+          "medianMs": 1005.5499999999993,
+          "maximumMs": 1005.9000000000015
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "settled": {
+        "raf": {
+          "count": 2,
+          "meanMs": 1005.7999999999993,
+          "medianMs": 1005.7999999999993,
+          "maximumMs": 1005.9000000000015
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      }
+    },
+    "interactions": [
+      {
+        "id": "submit",
+        "kind": "submit",
+        "selector": "[data-phase8-action=\"submit\"]",
+        "phase": "idle",
+        "armedAt": 2139.5,
+        "eventAt": 2145.399999999907,
+        "epochMs": 1795062976214.2,
+        "trusted": true,
+        "eventPhase": "idle",
+        "frameRequested": true,
+        "frameAt": 2561.600000000093,
+        "complete": true,
+        "eventToFrameMs": 416.20000000018626,
+        "eventToChangeMs": null
+      },
+      {
+        "id": "reasoning-input",
+        "kind": "input",
+        "selector": "[data-phase8-action=\"reasoning-input\"]",
+        "phase": "reasoning",
+        "armedAt": 10622.399999999907,
+        "eventAt": 10629,
+        "epochMs": 1795062984697.8,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "frameRequested": true,
+        "frameAt": 11605.5,
+        "complete": true,
+        "eventToFrameMs": 976.5,
+        "eventToChangeMs": null
+      },
+      {
+        "id": "reasoning-expand",
+        "kind": "expand",
+        "selector": "[data-phase8-action=\"reasoning-expand\"]",
+        "expected": "true",
+        "attribute": "aria-pressed",
+        "control": "Original Task and Sources side panel",
+        "phase": "reasoning",
+        "armedAt": 11622.69999999972,
+        "eventAt": 13623.69999999972,
+        "epochMs": 1795062987692.5,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "changedAt": 13654.100000000093,
+        "frameRequested": true,
+        "frameAt": 14620.899999999907,
+        "complete": true,
+        "eventToFrameMs": 997.2000000001863,
+        "eventToChangeMs": 30.40000000037253
+      },
+      {
+        "id": "reasoning-scroll",
+        "kind": "scroll",
+        "selector": "[data-phase8-action=\"reasoning-scroll\"]",
+        "beforeScrollTop": 14375,
+        "phase": "reasoning",
+        "armedAt": 19653.299999999814,
+        "eventAt": 21655.899999999907,
+        "epochMs": 1795062995724.7,
+        "trusted": true,
+        "eventPhase": "reasoning",
+        "changedAt": 21932.5,
+        "afterScrollTop": 14015,
+        "frameRequested": true,
+        "frameAt": 22659.69999999972,
+        "complete": true,
+        "eventToFrameMs": 1003.7999999998137,
+        "eventToChangeMs": 276.60000000009313
+      },
+      {
+        "id": "final-input",
+        "kind": "input",
+        "selector": "[data-phase8-action=\"final-input\"]",
+        "phase": "final",
+        "armedAt": 35925.69999999972,
+        "eventAt": 35930.39999999991,
+        "epochMs": 1795063009999.2,
+        "trusted": true,
+        "eventPhase": "final",
+        "frameRequested": true,
+        "frameAt": 36916.89999999991,
+        "complete": true,
+        "eventToFrameMs": 986.5,
+        "eventToChangeMs": null
+      },
+      {
+        "id": "final-expand",
+        "kind": "expand",
+        "selector": "[data-phase8-action=\"final-expand\"]",
+        "expected": "true",
+        "attribute": "aria-pressed",
+        "control": "Original Task and Sources side panel",
+        "phase": "final",
+        "armedAt": 36930.89999999991,
+        "eventAt": 38935.60000000009,
+        "epochMs": 1795063013004.4001,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 38949.5,
+        "frameRequested": true,
+        "frameAt": 39939.69999999972,
+        "complete": true,
+        "eventToFrameMs": 1004.0999999996275,
+        "eventToChangeMs": 13.899999999906868
+      },
+      {
+        "id": "final-scroll",
+        "kind": "scroll",
+        "selector": "[data-phase8-action=\"final-scroll\"]",
+        "beforeScrollTop": 14015,
+        "phase": "final",
+        "armedAt": 44975.39999999991,
+        "eventAt": 46973.69999999972,
+        "epochMs": 1795063021042.5,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 47637.39999999991,
+        "afterScrollTop": 13655,
+        "frameRequested": true,
+        "frameAt": 47979.60000000009,
+        "complete": true,
+        "eventToFrameMs": 1005.9000000003725,
+        "eventToChangeMs": 663.7000000001863
+      },
+      {
+        "id": "final-stop",
+        "kind": "stop",
+        "selector": "[data-phase8-action=\"final-stop\"]",
+        "phase": "final",
+        "armedAt": 53078,
+        "eventAt": 53099.5,
+        "epochMs": 1795063027168.3,
+        "trusted": true,
+        "eventPhase": "final",
+        "changedAt": 53290.60000000009,
+        "terminalStatus": "interrupted",
+        "frameRequested": true,
+        "frameAt": 54140.89999999991,
+        "complete": true,
+        "eventToFrameMs": 1041.3999999999069,
+        "eventToChangeMs": 191.10000000009313
+      }
+    ]
+  },
+  "preparation": {
+    "submitEpochMs": 1795062976214.2,
+    "mainFetchEpochMs": 1795062980886.3706,
+    "fixtureEpochMs": 1795062980889.319,
+    "submitToMainFetchMs": 4672.170654296875,
+    "submitToFixtureMs": 4675.119140625,
+    "clockOrderingValid": true,
+    "clock": "Separate process performance.timeOrigin + performance.now Unix epoch anchors. Cross-process calibration uncertainty applies."
+  },
+  "readback": {
+    "runs": [
+      {
+        "id": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48",
+        "status": "blocked"
+      }
+    ],
+    "eventRuns": [
+      {
+        "run_id": "run_a7e3d905-ec84-4713-ad45-e9add2afbd48",
+        "generation": 1,
+        "status": "interrupted",
+        "sequence": 451
+      }
+    ],
+    "nativeBindings": [
+      {
+        "conversation_id": "aisession_5babea3a-d1bf-4d38-bd56-4f55afaa368f",
+        "session_file": "aisession_5babea3a-d1bf-4d38-bd56-4f55afaa368f/sessions/2026-11-19T04-36-16-496Z_01a1f217-4fef-7513-a3a8-9beaa897d89a.jsonl"
+      }
+    ]
+  },
+  "error": "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n\n    at D:\\WorkProject\\EduProject-harness\\apps\\desktop\\scripts\\xiaozhi-agent\\phase8-stream-performance-smoke.mjs:213:14",
+  "fixtureRequests": [
+    {
+      "index": 1,
+      "epochMs": 1795062980889.319,
+      "authSynthetic": true,
+      "reasoningSent": 240,
+      "finalSent": 188,
+      "closed": true,
+      "requestBytes": 59832,
+      "requestSha256": "d8683590fabc5fd9e7380759173d982eaf47409fe26ebf945b578305294de026",
+      "closedEpochMs": 1795063027169.7664
+    }
+  ],
+  "buildAfter": {
+    "sha256": "8f694c3af6e9fe783fd6aa2b29fa71ff5e5c071c7a9f6ce438df6c13dad053e9",
+    "files": 481
+  },
+  "buildUnchanged": true,
+  "scriptHashes": [
+    {
+      "name": "phase8-stream-performance-check.mjs",
+      "sha256": "9e0ca80fae7fbab546c6ef6b1e88e5c2452fca5da519f0fc5e01983df21d0f0e"
+    },
+    {
+      "name": "phase8-stream-performance-contract.md",
+      "sha256": "005e77443dfdd6a469c90829e13adff97066d2405a2fae7985f2e5489a9f2708"
+    },
+    {
+      "name": "phase8-stream-performance-fixture.mjs",
+      "sha256": "b4768d865e92e622e92e79d688f2158cbffcdf0cb327d42913df68bb35256a41"
+    },
+    {
+      "name": "phase8-stream-performance-metrics.mjs",
+      "sha256": "204ad7ac309b72e0a392ef7593fdaccb12bb84cf1547b1c0628029ca06441efc"
+    },
+    {
+      "name": "phase8-stream-performance-probe.mjs",
+      "sha256": "4fb25e0e369b6b50a609ab5d948120c7b8877052fbe565ede22b735950ca0ff5"
+    },
+    {
+      "name": "phase8-stream-performance-smoke.mjs",
+      "sha256": "2988c2fe3928e24b55621c4a1af7af57b7af552e0698f7a07d007367779b70ef"
+    }
+  ]
+}

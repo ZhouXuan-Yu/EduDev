@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-19 Gate7 阶段复验
+
+Phase7 整体 PARTIAL。工作台过滤、一次继续、市场候选、个人团队官方归属、团队审核状态和版本历史/回滚已按固定矩阵范围验收，累计 63/89。独立复验确认长路径折行和审批动作，修前范围、恢复限制及两个 CSS 视口分别保留。后台流式专项 5/5，仍缺原生拖窗及最大化还原实操、部分 W/A/C/S 广义场景。真实模型 0/200。
+
+[独立复验范围](evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md) · [流式原始记录](evidence/phase7/implementation-resume-20261119/stream-final-report.json)
+
 ## 2026-11-17恢复推进
 
 用户已恢复Goal。执行树D:/WorkProject/EduProject-harness，分支codex/xiaozhi-harness-20261112，HEAD052bd688，原Phase4未提交修改均在。37源码和466构建产物按F03最新freeze逐项SHA核验零差异，原最后build已成功，无暂停前遗留Harness runtime。writer正串行受影响回归，reviewer只读既有审查和delta，等待runtime释放。Phase0至3已接受，Phase4整体Gate4及提交尚待完成，Phase5至8继续按既定顺序。真实模型0/200。

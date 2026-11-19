@@ -1,0 +1,33 @@
+{
+  "stage": "ready",
+  "model": "deepseek-flash",
+  "choice": "high",
+  "configured": true,
+  "configurationVersion": 1,
+  "catalogue": "cache",
+  "capacity": {
+    "contextWindow": 1048576,
+    "maxOutputTokens": 393216,
+    "supportedLevels": [
+      "low",
+      "high",
+      "max"
+    ]
+  },
+  "metadata": [
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/v1/models",
+      "status": 200
+    }
+  ],
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase8-model-settings-Bflt1L",
+  "paidChatAttempts": 0,
+  "dataSha256": "7f6e3ed92b10aabc31f54deb58f31e46964052dff4d96a7292d550c6c377ce7b",
+  "profileSha256": "1a5f6f258947b43bf50ccb4c8eef19b1487ad5108b839113e7b5b7ed1d0a4012"
+}

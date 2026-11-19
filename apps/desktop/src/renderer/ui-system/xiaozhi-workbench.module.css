@@ -1,0 +1,16 @@
+.root {display:flex; flex-direction:column; gap:16px; min-width:0; color:var(--foreground);}
+.actions {display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+.field {display:flex; flex-direction:column; gap:4px; min-width:0; font-size:13px;}
+.field select,.field input {border:1px solid var(--border,#ddd); border-radius:8px; padding:8px; background:var(--surface,#fff); color:inherit; max-width:100%;}
+.card {border:1px solid var(--border,#ddd); border-radius:12px; padding:14px; min-width:0; display:flex; flex-direction:column; gap:8px; overflow-wrap:anywhere;}
+.card h3,.root h2,.root p {margin:0;}
+.resources,.resources li {min-width:0; white-space:normal; overflow-wrap:anywhere;}
+.meta {font-size:12px; color:var(--muted,#666); overflow-wrap:anywhere;}
+.notice {border-left:3px solid var(--accent,#777); padding:8px 12px; font-size:13px; overflow-wrap:anywhere;}
+.axes {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; font-size:13px;}
+.axes div {display:flex; flex-direction:column; gap:4px;}
+.axes dt {color:var(--muted,#666);}
+.axes dd {margin:0;}
+.card code {white-space:pre-wrap; word-break:break-all; font-size:11px;}
+.detail {min-width:0;}
+@media(max-width:500px) {.axes {grid-template-columns:1fr;}}

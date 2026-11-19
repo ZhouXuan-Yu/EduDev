@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+  "questionId": "question_e22e220c-6fda-45a4-9ab9-2310beff874d",
+  "stemSha256": "7ce4c45b9ad1197b3ba8ee438b680364107a4c251d81d21eb4d2e5b11ba5343a",
+  "beforeVersion": "d5180a12c61af75fd6054b3ec175bcd7658dfebe6cdd9e3e81e3c0bad2092e65",
+  "afterVersion": "3afd9ecb10b18895d35ecb62d6aa94bc59e14928187667e24dc90df8a7921cb2",
+  "sourceKind": "local_bank",
+  "actions": [
+    "createQuestionBankItem",
+    "getArchivedQuestionVersion",
+    "editArchivedQuestion",
+    "getArchivedQuestionVersion"
+  ],
+  "modelRequests": 0,
+  "dataSnapshot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-question-seed-EBoQpS\\data",
+  "dataSha256": "370af8521456f26c7ef2538c9528cf1180a6e5a420fef6975aee13d7ce28900e"
+}

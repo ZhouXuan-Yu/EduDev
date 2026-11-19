@@ -1,0 +1,3 @@
+(node:3952) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"success":true,"passed":11,"total":11,"report":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-workbench-read-GYYXJv\\report.json"}

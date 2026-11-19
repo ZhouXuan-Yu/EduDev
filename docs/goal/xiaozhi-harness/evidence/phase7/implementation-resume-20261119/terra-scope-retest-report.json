@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "name": "approval_width_and_controls",
+      "status": "PASS"
+    },
+    {
+      "name": "team_review_source_disclosure",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "workbenchDimensions": {
+    "scroll": 308,
+    "client": 308
+  },
+  "overflow": [],
+  "largeDimensions": {
+    "scroll": 308,
+    "client": 308
+  },
+  "modelCalls": 0,
+  "fixtureErrors": []
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Button, Tooltip, Dropdown, Label } from '@heroui/react';
-import { History, PanelRight, Files, SquarePen, Ellipsis } from 'lucide-react';
+import { History, PanelRight, Files, SquarePen, Ellipsis, ListTodo } from 'lucide-react';
 import { useDesktopCommands } from '../desktop/DesktopFrame';
 import { EduShell } from '../../ui-system/EduShell';
 import { EduPanel } from '../../ui-system/EduPanel';
@@ -9,10 +9,12 @@ import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-
 import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
 
-export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, isEmpty = false, notifications = { hasFiles: false, pending: [] } }: {
+export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, notifications = { hasFiles: false, pending: [] } }: {
   title: string; sidebar: ReactNode; aside: ReactNode; children: ReactNode;
   onLeave: () => void; onSkills: () => void; onSettings: () => void;
   files?: (close: () => void) => ReactNode; visible?: boolean; fileRequest?: string; onNewChat?: () => void; sessionKey?: string;
+  workbench?: ReactNode; onWorkbenchClose?: () => void;
+  workbenchVisible?: boolean; onWorkbenchVisibleChange?: (open: boolean) => void;
   isEmpty?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
 }) {
   const main = useRef<HTMLDivElement>(null);
@@ -21,6 +23,10 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   const handledFileRequest = useRef<string | undefined>(undefined);
   const emptyWasVisible = useRef(isEmpty);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [localWorkbenchOpen, setLocalWorkbenchOpen] = useState(false);
+  const workbenchOpen = workbenchVisible ?? localWorkbenchOpen;
+  function setWorkbenchOpen(value: boolean) {setLocalWorkbenchOpen(value);onWorkbenchVisibleChange?.(value);}
+  const workbenchWasOpen = useRef(false);
   const historyWasOpen = useRef(false);
   const [panelWidth, setPanelWidth] = useState(() => readColumnWidth('xiaozhi.ui.panelWidth.v1', 340, 300, 680));
   const [narrow, setNarrow] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 1050px)').matches);
@@ -75,6 +81,12 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
     emptyWasVisible.current = isEmpty;
   }, [isEmpty]);
   useEffect(() => { setHistoryOpen(false); }, [sessionKey]);
+  function closeWorkbench() {onWorkbenchClose?.(); setWorkbenchOpen(false);}
+  useEffect(() => {if (!visible) {onWorkbenchClose?.(); setWorkbenchOpen(false);}}, [visible, onWorkbenchClose]);
+  useEffect(() => {
+    if (workbenchWasOpen.current && !workbenchOpen) document.querySelector<HTMLElement>('[data-testid="pi-workbench-open"]')?.focus();
+    workbenchWasOpen.current = workbenchOpen;
+  }, [workbenchOpen]);
   useEffect(() => {
     if (fileRequest && visible && fileRequest !== handledFileRequest.current) {
       handledFileRequest.current = fileRequest;
@@ -91,7 +103,8 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
     return false;
   }, 20);
   const actions = <>
-    <Tooltip><Button variant="ghost" isIconOnly aria-label="管理对话记录" data-testid="pi-sidebar-toggle" aria-expanded={historyOpen} onPress={() => setHistoryOpen(!historyOpen)}><History size={18} /></Button><Tooltip.Content>管理对话记录</Tooltip.Content></Tooltip>
+    <Tooltip><Button variant="ghost" isIconOnly aria-label="管理对话记录" data-testid="pi-sidebar-toggle" aria-expanded={historyOpen} onPress={() => {closeWorkbench(); setHistoryOpen(!historyOpen);}}><History size={18} /></Button><Tooltip.Content>管理对话记录</Tooltip.Content></Tooltip>
+    {workbench && <Button variant="ghost" size="sm" data-testid="pi-workbench-open" aria-expanded={workbenchOpen} onPress={() => {setHistoryOpen(false); if (workbenchOpen) closeWorkbench(); else setWorkbenchOpen(true);}}><ListTodo size={17}/>恢复与待办</Button>}
     {onNewChat && <Tooltip><Button variant="ghost" isIconOnly aria-label="新建对话" data-testid="pi-new-session" onPress={onNewChat}><SquarePen size={18} /></Button><Tooltip.Content>新建对话</Tooltip.Content></Tooltip>}
     {files && <Tooltip><Button variant="ghost" isIconOnly aria-label="本地文件" data-testid="pi-files-toggle" aria-pressed={open && mode === 'files'} onPress={() => panel(open && mode === 'files' ? 'closed' : 'files')}><Files size={18} /></Button><Tooltip.Content>本地文件</Tooltip.Content></Tooltip>}
     <Tooltip><Button variant="ghost" isIconOnly aria-label="任务与来源" data-testid="pi-aside-toggle" aria-pressed={open && mode === 'tasks'} onPress={() => panel(open && mode === 'tasks' ? 'closed' : 'tasks')}><PanelRight size={18} /></Button><Tooltip.Content>任务与来源</Tooltip.Content></Tooltip>
@@ -112,5 +125,6 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
       {open && <WorkbenchContextPanel mode={mode} onModeChange={panel} onClose={() => panel('closed')} focusRequest={panelFocus.session === sessionKey ? panelFocus.request : 0} tasks={aside} files={files?.(() => panel('closed'))} />}
     </div>
     {historyOpen && <EduPanel title="对话记录" history onClose={() => setHistoryOpen(false)}><div className="edu-history-content">{sidebar}</div></EduPanel>}
+    {workbenchOpen && <EduPanel title="恢复与待办" history onClose={closeWorkbench}>{workbench}</EduPanel>}
   </EduShell>;
 }

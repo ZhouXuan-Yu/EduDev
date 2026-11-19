@@ -8,13 +8,14 @@ const time = () => new Date().toISOString();
 const action = 'pi_office_copy';
 const states = new Set<XiaozhiApprovalState>(['pending', 'approved', 'executing', 'executed', 'rejected', 'interrupted', 'uncertain', 'verified', 'failed']);
 export const publicApproval = ({ id, runId, callId, source, target, state }: PrivateApproval): XiaozhiApproval => ({ id, runId, callId, source, target, state });
-function parse(row: Record<string, unknown>): PrivateApproval {
+export function readLegacyApprovalRow(row: Record<string, unknown>): PrivateApproval {
   const value = JSON.parse(String(row.payload_json));
   if (value.schemaVersion !== 1 || !states.has(value.state) || !/^[a-f0-9]{64}$/.test(value.sourceSha256)
     || !/^[a-f0-9]{64}$/.test(value.workspaceHash) || typeof value.callId !== 'string' || value.callId.length > 128
     || typeof value.source !== 'string' || value.source.length > 500 || typeof value.target !== 'string' || value.target.length > 500) throw new Error('configuration');
   return { ...value, id: String(row.id), sessionId: String(row.session_id), runId: String(row.run_id) };
 }
+const parse = readLegacyApprovalRow;
 /** SQLite is the command/approval truth; SDK history stays in SessionManager. */
 export function createPiPersistentState(sql: Sql) {
   const update = async (query: string, args: (string | number)[]) => {

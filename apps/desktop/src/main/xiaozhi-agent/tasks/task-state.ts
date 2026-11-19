@@ -140,6 +140,7 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified);decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
+  async summaryRecord(id:string){const record=await read(sql,id);return record?clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}):null;},
   async inspection(id:string){
     const record=await read(sql,id);
     if(!record)return null;

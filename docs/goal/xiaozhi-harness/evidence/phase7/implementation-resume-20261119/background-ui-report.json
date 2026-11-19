@@ -1,0 +1,56 @@
+{
+  "success": true,
+  "paidCalls": 0,
+  "checks": [
+    {
+      "name": "U01_visible_cross_session_overview_matches_original_completed_facts",
+      "pass": true,
+      "durationMs": 2569.2275999999983
+    },
+    {
+      "name": "U02_both_actual_sizes_keep_global_actions_pointer_reachable",
+      "pass": true,
+      "durationMs": 10651.171899999987
+    },
+    {
+      "name": "U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run",
+      "pass": true,
+      "durationMs": 47024.37640000001
+    },
+    {
+      "name": "U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop",
+      "pass": true,
+      "durationMs": 42572.3725
+    },
+    {
+      "name": "U05_inbox_modern_rejection_uses_original_permission_CAS",
+      "pass": true,
+      "durationMs": 5518.242100000003
+    },
+    {
+      "name": "U06_legacy_uncertain_verifies_existing_owned_copy_without_replay",
+      "pass": true,
+      "durationMs": 3748.4818999999843
+    },
+    {
+      "name": "U07_capability_center_true_metadata_search_and_original_management_navigation",
+      "pass": true,
+      "durationMs": 10241.324099999998
+    },
+    {
+      "name": "U08_original_idle_terminal_remains_controllable_with_global_navigation",
+      "pass": true,
+      "durationMs": 29282.26430000001
+    },
+    {
+      "name": "U09_cold_original_summary_and_inbox_decision_readback",
+      "pass": true,
+      "durationMs": 31182.4265
+    }
+  ],
+  "errors": [],
+  "boundary": "Actual built production main/preload/renderer with original typed actions. Synthetic metadata seeded through original domain APIs; all model traffic loopback. Independent visual/mouse acceptance remains Terra.",
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-46r34m",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-46r34m\\evidence",
+  "modelCalls": 11
+}

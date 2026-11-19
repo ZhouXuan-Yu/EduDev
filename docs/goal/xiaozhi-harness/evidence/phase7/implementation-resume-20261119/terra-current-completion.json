@@ -1,0 +1,27 @@
+{
+  "checks": [
+    {
+      "name": "overview_counts_filter_and_continue",
+      "status": "PASS"
+    },
+    {
+      "name": "capability_candidate_status",
+      "status": "PASS"
+    },
+    {
+      "name": "skill_select_rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "skill_cold_ui_readback",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "skill": {
+    "id": "skill_267fb1bb-e747-42c5-95d3-f1c54ed1f8d8",
+    "target": "1.0.0"
+  },
+  "modelCalls": 0
+}

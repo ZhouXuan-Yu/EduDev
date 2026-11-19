@@ -2,9 +2,11 @@ import {useEffect, useState} from 'react';
 import {Button} from '@heroui/react';
 import {SKILL_GOVERNANCE_ERRORS, type SkillGovernanceMutation, type SkillGovernanceView} from '../../../../shared/xiaozhi-skill-governance';
 import {SkillPublicationForm} from './SkillPublicationForm';
+import {DisclosureCard} from '../../ui/DisclosureCard';
 
 const scopeLabels = {personal: '个人', team: '团队', official: '官方'};
 const stateLabels = {draft: '检查未通过', published: '已发布', pending_review: '待审核', rejected: '审核拒绝', withdrawn: '已撤回'};
+const provenanceLabels = {legacy: '历史技能', creator: '小智创建', teacher: '教师创建', team_copy: '团队分享副本', official_review: '官方审核副本'};
 export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; onChanged: () => Promise<void>}) {
   const [view, setView] = useState<SkillGovernanceView>();
   const [busy, setBusy] = useState(false);
@@ -76,8 +78,11 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
         </>}
         {versions.map(version => <article key={version.version} data-testid="pi-skill-version" data-version={version.version}>
           <p>v{version.version} · {stateLabels[version.state]}{skill.activeVersion === version.version ? ' · 当前' : ''}</p>
-          <p>内容 SHA256 {version.sha256}</p>
-          <p>来源 {version.provenance.kind}{version.provenance.sourceSkillId ? ` · ${version.provenance.sourceSkillId}@${version.provenance.sourceVersion}` : ''}</p>
+          <p>来源 {provenanceLabels[version.provenance.kind]}{version.provenance.sourceVersion ? ` · 原版本 ${version.provenance.sourceVersion}` : ''}</p>
+          <DisclosureCard title="版本详情">
+            <p>内容指纹 <code>{version.sha256}</code></p>
+            {version.provenance.sourceSkillId && <p>原技能标识 <code>{version.provenance.sourceSkillId}</code></p>}
+          </DisclosureCard>
           {version.validation.checks.filter(check => check.reasons.length).map(check => <p key={check.kind} role="status">{check.kind} · {check.reasons.join('、')}</p>)}
           {version.dependencies.map(dependency => <p key={dependency.capabilityId}>依赖 {dependency.capabilityId} · {dependency.contractVersion}{dependency.required ? ' · 必需' : ' · 可选'}</p>)}
           {version.permissionRequirements.length > 0 && <p>使用时核对实际授权 {version.permissionRequirements.join('、')}。发布记录不能授予这些权限。</p>}
@@ -122,8 +127,14 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
       <section aria-label="技能审核" data-testid="pi-skill-reviews">
         {view.reviews.filter(review => review.status === 'pending').map(review => <article key={review.id} data-testid="pi-skill-review" data-review-id={review.id}>
           <p>{scopeLabels[review.scope]}审核 · v{review.version} · 待审核</p>
-          <p>副本 {review.skillId} · SHA256 {review.sha256}</p>
-          <p>来源 {review.metadata.source} · 许可证 {review.metadata.license}</p>
+          {review.metadata.license === 'private-team-copy'
+            ? <p>来源 个人技能副本 · 团队内分享</p>
+            : <p>来源 {review.metadata.source} · 许可证 {review.metadata.license}</p>}
+          <DisclosureCard title="审核副本详情">
+            {review.metadata.license === 'private-team-copy' && <p>原来源 <code>{review.metadata.source}</code> · {review.metadata.license}</p>}
+            <p>副本标识 <code>{review.skillId}</code></p>
+            <p>内容指纹 <code>{review.sha256}</code></p>
+          </DisclosureCard>
           {(review.scope === 'team' && view.membership?.role === 'admin' || review.scope === 'official' && view.officialReviewer) && <div className="pi-skills-toolbar">
             <Button size="sm" data-testid="pi-skill-review-approve" isDisabled={blocked} onPress={() => void mutate({action: 'review', reviewId: review.id, revision: review.revision, approve: true})}>批准发布</Button>
             <Button size="sm" variant="ghost" data-testid="pi-skill-review-reject" isDisabled={blocked} onPress={() => void mutate({action: 'review', reviewId: review.id, revision: review.revision, approve: false})}>拒绝</Button>

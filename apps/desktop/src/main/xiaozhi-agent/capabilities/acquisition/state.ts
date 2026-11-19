@@ -25,6 +25,14 @@ export type AcquisitionArtifact = AcquisitionArtifactView & {
 };
 const tables = {candidate: 'xiaozhi_acquisition_candidates_v1', operation: 'xiaozhi_acquisition_operations_v1', artifact: 'xiaozhi_acquisition_artifacts_v1'} as const;
 
+export function readAcquisitionRow<T>(row: Record<string, unknown> | undefined): T | null {
+  if (!row) return null;
+  const value = JSON.parse(String(row.payload_json));
+  if (protocolHash(value) !== row.document_hash || value.id !== row.id
+      || value.revision !== undefined && value.revision !== Number(row.revision)) throw Error('acquisition_state_corrupt');
+  return value as T;
+}
+
 /** Acquisition facts reuse the original Sql transaction/writer and immutable package files. */
 export function createAcquisitionState(source: Sql) {
   const sql = serializeStateWrites(source);
@@ -34,11 +42,7 @@ export function createAcquisitionState(source: Sql) {
       id TEXT PRIMARY KEY, revision INTEGER NOT NULL, payload_json TEXT NOT NULL, document_hash TEXT NOT NULL)`);
   })().catch(error => {migrated = undefined; throw error;});
   function read<T>(row: Record<string, unknown> | undefined): T | null {
-    if (!row) return null;
-    const value = JSON.parse(String(row.payload_json));
-    if (protocolHash(value) !== row.document_hash || value.id !== row.id
-        || value.revision !== undefined && value.revision !== Number(row.revision)) throw Error('acquisition_state_corrupt');
-    return value as T;
+    return readAcquisitionRow<T>(row);
   }
   async function get<T>(table: string, id: string) {await migrate(); return read<T>((await sql.all(`SELECT * FROM ${table} WHERE id=?`, [id]))[0]);}
   async function list<T>(table: string) {await migrate(); return (await sql.all(`SELECT * FROM ${table} ORDER BY id`)).map(row => read<T>(row)!);}

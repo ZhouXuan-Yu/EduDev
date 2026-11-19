@@ -1,0 +1,12 @@
+{
+  "exitCode": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "lockSha256": "7feeb79907fe3a231d9f9b1d0fd3023684c739d5c791eea5b1bddf6a1b095bc9"
+}

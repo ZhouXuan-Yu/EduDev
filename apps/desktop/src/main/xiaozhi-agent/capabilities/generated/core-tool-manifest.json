@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb",
+  "sourceHash": "06f49b6b8ca6f4918157ecc400a8b9b88d60cf95ab8e2096177c745ae70594ea",
   "sources": [
     {
       "file": "package-lock.json",
@@ -656,7 +656,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
-      "sha256": "8a1259091fd2816f8aa5f72a5e5e40fb1e274398d867b20f70e1e53cb2cd83a5"
+      "sha256": "7f3efa8632c71c938c217affc91fc3fbfdbdbd37c30a14be520f422ce5e4fdf3"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/tools.ts",
@@ -976,7 +976,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/extensions/package-manager.ts",
-      "sha256": "eaa0b14d8e1215779294d508964e877f8ab7f44667dcd3eb8b4ceb58b1865644"
+      "sha256": "3029b2f62e7c2e1669a2a78067d8d5c2068b78e5b7b1b5ea62f4464a1622b4f2"
     },
     {
       "file": "src/main/xiaozhi-agent/extensions/package-worker.ts",
@@ -1068,7 +1068,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-runtime.ts",
-      "sha256": "adf7591b8a578d9085f84aa5fbba96fa97139839604d295af2bb3c71816260f5"
+      "sha256": "f7c258cb4c88c21d6608dbe257a138e840d2a604184d0f8ecf64268d2bc6dbc9"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-schema.ts",
@@ -1300,7 +1300,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/persistent-state.ts",
-      "sha256": "6d505b6f820b374207dafe6ce9be09426758af33b73d40b38411210c66aef891"
+      "sha256": "56e8a8e6daa21fb504fe391886d2c8ef4fb40e71effa47e968e6418bd4780474"
     },
     {
       "file": "src/main/xiaozhi-agent/physics-answer-quality.ts",
@@ -1532,7 +1532,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/task-state.ts",
-      "sha256": "b5c47a9067838bcf4a31c86c2cd45d1bc8e3e3960e06c16559920e9fe0bcac24"
+      "sha256": "faded3d3cb977fca48c5df537c6d41920bc5b7e2886843fa898431b37fbcef8e"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/teacher-actions.ts",

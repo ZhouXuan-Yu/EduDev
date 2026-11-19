@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "name": "skill_scopes_reviews_and_rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "modern_approval_persisted",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-LlWbSk",
+  "modelCalls": 7,
+  "fixtureErrors": []
+}

@@ -13,12 +13,14 @@ import {summarizeProbe, preparationTiming} from './phase8-stream-performance-met
 const argumentsMap = new Map();
 for (let index = 2; index < process.argv.length; index += 2) argumentsMap.set(process.argv[index], process.argv[index + 1]);
 for (const key of argumentsMap.keys()) {
-  if (!['--desktop-root', '--label', '--expected-out-hash', '--expected-out-count'].includes(key)) throw Error('unknown_argument');
+  if (!['--desktop-root', '--label', '--expected-out-hash', '--expected-out-count', '--background'].includes(key)) throw Error('unknown_argument');
 }
 const desktop = fs.realpathSync(argumentsMap.get('--desktop-root') || process.cwd());
 const label = argumentsMap.get('--label') || 'unlabeled';
 assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
-const output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-stream-performance-'));
+const background = argumentsMap.get('--background') === 'true';
+const workload = {...streamWorkload, intervalMs: background ? 100 : streamWorkload.intervalMs};
+const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-stream-' : 'xiaozhi-phase8-stream-performance-'));
 const dataRoot = path.join(output, 'data');
 const profile = path.join(output, 'profile');
 const main = path.join(desktop, 'out/main/index.js');
@@ -28,7 +30,7 @@ const {fingerprint} = await import(pathToFileURL(path.join(desktop, 'scripts/acc
 const {assertIsolatedPiMain} = await import(pathToFileURL(path.join(desktop, 'scripts/acceptance/build-root.mjs')).href);
 const checks = [];
 const report = {success: false, measurementStatus: 'SINGLE_SYNTHETIC_SAMPLE', label, desktop, output, checks,
-  realModelCalls: 0, workload: streamWorkload, errors: [], automationRoundtrips: [],
+  realModelCalls: 0, workload, errors: [], automationRoundtrips: [], displayMode: background ? 'background' : 'visible',
   boundary: 'Actual original Electron main/preload/Pi/UI. Fixed net.fetch hook to loopback, synthetic key and empty DB/profile. Single run stops during final output. No product SLA or provider performance conclusion.'};
 let application, page, fixture, buildBefore;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -86,7 +88,7 @@ try {
   fs.writeFileSync(path.join(output, 'out-before.json'), JSON.stringify(buildBefore, null, 2));
   if (argumentsMap.has('--expected-out-hash')) assert.equal(buildBefore.sha256, argumentsMap.get('--expected-out-hash'));
   if (argumentsMap.has('--expected-out-count')) assert.equal(buildBefore.files.length, Number(argumentsMap.get('--expected-out-count')));
-  fixture = await startStreamFixture();
+  fixture = await startStreamFixture({intervalMs: workload.intervalMs});
   const bootstrap = path.join(output, 'bootstrap.cjs');
   fs.writeFileSync(bootstrap, `const {app,net}=require('electron');
 app.setPath('userData',${JSON.stringify(profile)});
@@ -111,13 +113,24 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   for (const key of ['NODE_OPTIONS', 'ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY']) delete environment[key];
   Object.assign(environment, {OMNI_EDU_DATA_ROOT: dataRoot, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'),
     OMNI_EDU_XIAOZHI_PI: '1', OMNI_EDU_E2E_VISIBLE: '1', DEEPSEEK_API_KEY: 'synthetic-stream-fixture-only', DEEPSEEK_MODEL: 'deepseek-flash'});
+  if (background) {
+    fs.mkdirSync(dataRoot);
+    fs.mkdirSync(profile);
+    Object.assign(environment, {OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_E2E_VISIBLE: '0'});
+  }
   application = await electron.launch({executablePath: packageRequire('electron'),
     args: [bootstrap, '--force-device-scale-factor=1'], cwd: desktop, env: environment, timeout: 60000});
   page = await application.firstWindow();
   page.on('pageerror', error => report.errors.push(error.message));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
   await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
-  await application.evaluate(({BrowserWindow}) => {const window = BrowserWindow.getAllWindows()[0]; window.setContentSize(1366, 768); window.show(); window.focus();});
+  const visible = await application.evaluate(({BrowserWindow}, hidden) => {
+    const window = BrowserWindow.getAllWindows()[0];
+    window.setContentSize(1366, 768);
+    if (!hidden) { window.show(); window.focus(); }
+    return window.isVisible();
+  }, background);
+  assert.equal(visible, !background);
   report.geometry = {main: await application.evaluate(({BrowserWindow}) => {
     const window = BrowserWindow.getAllWindows()[0];
     return {bounds: window.getBounds(), contentBounds: window.getContentBounds()};
@@ -134,6 +147,19 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   await input().pressSequentially('请直接逐段输出合成课堂说明，不调用工具。', {delay: 5});
   await measure('submit', 'submit', input(), () => input().press('Enter'));
   await waitPhase('reasoning');
+  if (background) {
+    const reasoning = page.getByTestId('model-reasoning').first();
+    await reasoning.waitFor({state: 'visible'});
+    const first = (await reasoning.innerText()).length;
+    await page.waitForFunction(length => (document.querySelector('[data-testid="model-reasoning"]')?.innerText.length || 0) > length, first);
+    const later = (await reasoning.innerText()).length;
+    const phase = await page.evaluate(() => window.phase8StreamProbe.snapshot().phaseChanges.at(-1).phase);
+    check('Provider reasoning grows visibly before terminal state', () => {
+      assert.equal(phase, 'reasoning');
+      assert(first > 0 && later > first);
+    });
+    report.visibleReasoning = {first, later};
+  }
   await typeDuring('reasoning');
   await togglePanel('reasoning');
   await scrollDuring('reasoning');
@@ -184,7 +210,7 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   check('SQLite run identity and renderer error evidence are retained', () => {
     assert(report.readback.runs.some(row => row.id === turn.id && row.status !== 'running')); assert.deepEqual(report.errors, []);
   });
-  await page.screenshot({path: path.join(output, 'stopped.png')});
+  if (!background) await page.screenshot({path: path.join(output, 'stopped.png')});
   report.success = true;
 } catch (error) {
   report.error = error.stack;

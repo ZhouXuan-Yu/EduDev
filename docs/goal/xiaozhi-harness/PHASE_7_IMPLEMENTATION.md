@@ -4,7 +4,7 @@
 
 ## 教师可见结果
 
-- 恢复与待办展示跨会话未完成Task、准确状态与数量，已完成和已结束记录通过独立筛选读取。选择记录后打开对应会话，重读精确Task，再由明确动作启动一次原续接。
+- 恢复与待办展示跨会话未完成Task、准确状态与数量，已完成和已结束记录从默认恢复列表过滤，已完成记录可单独查看。选择记录后打开对应会话，重读精确Task，再由明确动作启动一次原续接。
 - 审批Inbox展示持久跨会话待办、目的、资源、数据范围、有效期和拒绝后果。详情与批准/拒绝使用原安全投影及原审批API，结果可刷新和冷启读回。
 - 能力中心从原Registry及安装/候选元数据展示来源、版本、验证、安装、授权、缺口和可用状态。当前Task上下文明确可见，缺少具体操作与资源时显示需任务核对。
 - Skill治理复用现有个人/团队/官方页面、管理员审核、版本历史与回退。持久终端、流式过程和窗口控制沿现入口接受真实页面测试。
@@ -45,3 +45,9 @@ renderer由独立Sol叶负责。允许PiWorkspaceShell、PiEducationWorkspace、
 4. 原UI-01至UI-14按实际证据逐项备注已实现。独立通过后root正常提交整合推送，自动进入Phase8。阶段结束以固定原条目完成为准。
 
 本切片采用新增只读接缝和入口，回退按本阶段代码差异恢复原导航，原Task、审批、Skill、安装与产物事实继续保存。参考原始源码准备与core反馈分别位于evidence/phase7/implementation-preparation-20261118和core-preparation-20261118。
+
+## 2026-11-19 工作台切片交接
+
+工作台在阶段功能分支形成独立检查点。最终布局构建、renderer 253 项、Electron 工作台 9 项和流式 5 项通过，独立复验见 [阶段结论](evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md)。Phase7 总门禁保持 PARTIAL。
+
+已观测到已授权缓存工具准备成功后，原通用 Effect 缺少领域读回仍记为 unknown，阻塞同 Task 继续。待审批与准备成功分别补精确持久回执，同 Task 原授权续跑及历史未知结果的验证沿 [定向合同](evidence/phase8/cached-profiling-preparation-20261119/PHASE7_CAPABILITY_PREPARE_CONTRACT.md)。

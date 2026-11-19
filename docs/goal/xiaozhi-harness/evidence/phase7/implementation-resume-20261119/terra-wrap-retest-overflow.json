@@ -1,0 +1,74 @@
+[
+  {
+    "tag": "DIV",
+    "testid": "pi-approval-inbox",
+    "class": "_detail_1x8up_15",
+    "scroll": 491,
+    "client": 308,
+    "text": "持久审批收件箱\n\n这里只读取申请；批准、拒绝或核验均由你明确操作。拒绝不会替换模型或扩大授权。\n\n审批状态\n全部状态\n待处理\n已批准\n执行中\n已执行\n已拒绝\n申请已失效\n执行已中断\n结果待核验\n已核验"
+  },
+  {
+    "tag": "ARTICLE",
+    "testid": "pi-approval-inbox-row",
+    "class": "_card_1x8up_5",
+    "scroll": 370,
+    "client": 308,
+    "text": "兼容样本 · 历史复制申请 · 待处理\n\n使用已授资源完成当前教学任务\n\nredacted · 申请版本 1 · 有效至 2026/11/20 12:35:17\n\nC:\\Users\\ZhouXuan\\"
+  },
+  {
+    "tag": "UL",
+    "testid": null,
+    "class": "_resources_1x8up_7",
+    "scroll": 370,
+    "client": 308,
+    "text": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh\\owned-workspace"
+  },
+  {
+    "tag": "LI",
+    "testid": null,
+    "class": "",
+    "scroll": 370,
+    "client": 308,
+    "text": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh\\owned-workspace"
+  },
+  {
+    "tag": "ARTICLE",
+    "testid": "pi-approval-inbox-row",
+    "class": "_card_1x8up_5",
+    "scroll": 491,
+    "client": 308,
+    "text": "审批样本 · 现代权限申请 · 待处理\n\n在已授工作区运行受控脚本并提交文件变动\n\nredacted · 申请版本 1 · 有效至 2026/11/20 12:35:13\n\nC:\\Users\\Zhou"
+  },
+  {
+    "tag": "UL",
+    "testid": null,
+    "class": "_resources_1x8up_7",
+    "scroll": 491,
+    "client": 308,
+    "text": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh\\owned-workspace\nC:\\"
+  },
+  {
+    "tag": "LI",
+    "testid": null,
+    "class": "",
+    "scroll": 370,
+    "client": 308,
+    "text": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh\\owned-workspace"
+  },
+  {
+    "tag": "LI",
+    "testid": null,
+    "class": "",
+    "scroll": 491,
+    "client": 308,
+    "text": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+  },
+  {
+    "tag": "SECTION",
+    "testid": "pi-workbench",
+    "class": "_root_1x8up_1",
+    "scroll": 491,
+    "client": 308,
+    "text": "任务总览审批收件箱\n持久审批收件箱\n\n这里只读取申请；批准、拒绝或核验均由你明确操作。拒绝不会替换模型或扩大授权。\n\n审批状态\n全部状态\n待处理\n已批准\n执行中\n已执行\n已拒绝\n申请已失效\n执行已中断"
+  }
+]

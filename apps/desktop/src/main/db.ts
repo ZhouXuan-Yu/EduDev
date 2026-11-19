@@ -69,6 +69,7 @@ import {QuestionAssets} from './assets/question-assets';
 import {renderLocalPdfPage} from './xiaozhi-agent/ocr-host';
 import {PracticeReviewRepository} from './education/practice-review-repository';
 import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
+import {readWorkbenchSnapshot} from './xiaozhi-agent/workbench-read';
 import { conversationTitle } from './xiaozhi-agent/conversation-title';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
 import type {
@@ -1397,6 +1398,15 @@ export class OmniEduStore {
 
   getDataRoot() {
     return this.dataRoot;
+  }
+
+  readWorkbench<T>(action: (sql: import('./xiaozhi-agent/session-state').Sql) => Promise<T>) {
+    return readWorkbenchSnapshot(() => new Promise<sqlite3.Database>((resolveOpen, reject) => {
+      const database = new sqlite3.Database(this.dbPath, sqlite3.OPEN_READONLY | sqlite3.OPEN_FULLMUTEX, error => {
+        if (error) reject(error);
+        else {database.serialize(); resolveOpen(database);}
+      });
+    }), action);
   }
 
   async close() {

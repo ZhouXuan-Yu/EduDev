@@ -1,0 +1,198 @@
+{
+  "chain": [
+    {
+      "tag": "LI",
+      "cls": "",
+      "id": null,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "list-item",
+      "width": "308px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 491,
+      "client": 308
+    },
+    {
+      "tag": "UL",
+      "cls": "_resources_1x8up_7",
+      "id": null,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "block",
+      "width": "308px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 491,
+      "client": 308
+    },
+    {
+      "tag": "ARTICLE",
+      "cls": "_card_1x8up_5",
+      "id": "pi-approval-inbox-row",
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "block",
+      "width": "308px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 491,
+      "client": 308
+    },
+    {
+      "tag": "DIV",
+      "cls": "_detail_1x8up_15",
+      "id": "pi-approval-inbox",
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "block",
+      "width": "308px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 491,
+      "client": 308
+    },
+    {
+      "tag": "SECTION",
+      "cls": "_root_1x8up_1",
+      "id": "pi-workbench",
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "block",
+      "width": "308px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 491,
+      "client": 308
+    },
+    {
+      "tag": "DIV",
+      "cls": "edu-panel-content",
+      "id": null,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "block",
+      "width": "359px",
+      "minWidth": "auto",
+      "overflowX": "auto",
+      "scroll": 509,
+      "client": 344
+    },
+    {
+      "tag": "ASIDE",
+      "cls": "edu-history-panel",
+      "id": "edu-history-panel",
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "flex",
+      "width": "360px",
+      "minWidth": "0px",
+      "overflowX": "visible",
+      "scroll": 359,
+      "client": 359
+    },
+    {
+      "tag": "MAIN",
+      "cls": "edu-workspace",
+      "id": null,
+      "whiteSpace": "normal",
+      "overflowWrap": "normal",
+      "wordBreak": "normal",
+      "display": "flex",
+      "width": "1134px",
+      "minWidth": "0px",
+      "overflowX": "hidden",
+      "scroll": 1134,
+      "client": 1134
+    }
+  ],
+  "rules": [],
+  "html": "<html lang=\"zh-CN\" data-edu-modern=\"\" data-theme=\"light\"><head><style id=\"react-aria-pressable-style\">@layer {\n  [data-react-aria-pressable] {\n    touch-action: pan-x pan-y pinch-zoom;\n  }\n}</style>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+  "ancestors": [
+    {
+      "tag": "BUTTON",
+      "cls": "button button--icon-only button--md button--ghost",
+      "attrs": [
+        "data-slot",
+        "data-testid",
+        "class",
+        "data-rac",
+        "type",
+        "tabindex",
+        "data-react-aria-pressable",
+        "aria-label",
+        "aria-expanded",
+        "id"
+      ]
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "button button--sm button--ghost",
+      "attrs": [
+        "data-slot",
+        "data-testid",
+        "class",
+        "data-rac",
+        "type",
+        "tabindex",
+        "data-react-aria-pressable",
+        "aria-expanded",
+        "id"
+      ]
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "button button--icon-only button--md button--ghost",
+      "attrs": [
+        "data-slot",
+        "data-testid",
+        "class",
+        "data-rac",
+        "type",
+        "tabindex",
+        "data-react-aria-pressable",
+        "aria-label",
+        "id"
+      ]
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "button button--icon-only button--md button--ghost",
+      "attrs": [
+        "data-slot",
+        "data-testid",
+        "class",
+        "data-rac",
+        "type",
+        "tabindex",
+        "data-react-aria-pressable",
+        "aria-label",
+        "aria-pressed",
+        "id"
+      ]
+    },
+    {
+      "tag": "BUTTON",
+      "cls": "button button--icon-only button--md button--ghost",
+      "attrs": [
+        "data-slot",
+        "data-testid",
+        "class",
+        "data-rac",
+        "type",
+        "tabindex",
+        "data-react-aria-pressable",
+        "aria-label",
+        "aria-pressed",
+        "id"
+      ]
+    }
+  ]
+}

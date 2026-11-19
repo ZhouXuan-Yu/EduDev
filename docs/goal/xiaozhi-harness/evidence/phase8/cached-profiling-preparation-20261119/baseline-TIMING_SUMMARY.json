@@ -1,0 +1,243 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "first-authorized-public-cached-prepare-resolve-execute",
+      "pass": true,
+      "durationMs": 24109.337300000007,
+      "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071"
+    }
+  ],
+  "modelCalls": 8,
+  "paidCalls": 0,
+  "sourceRequests": [],
+  "setupScopeActions": [
+    "teacher_explicit_original_scopes_via_PermissionService.issue",
+    "original_discovered_schema_scoped_approval"
+  ],
+  "terminals": [
+    {
+      "state": "completed",
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      },
+      "helperMs": 1327
+    },
+    {
+      "state": "completed",
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      },
+      "helperMs": 20904
+    },
+    {
+      "state": "completed",
+      "cleanup": {
+        "jobActiveProcesses": 0,
+        "profileRemoved": true,
+        "remainingOwnedAces": 0
+      },
+      "helperMs": 2254
+    }
+  ],
+  "probes": [
+    {
+      "failed": false,
+      "code": null,
+      "healthMarker": true
+    }
+  ],
+  "groups": [
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "file.lstat",
+      "fileClass": "node.exe",
+      "location": "installed",
+      "count": 44,
+      "bytes": 3957178368,
+      "durationMs": 6.291400000009162
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "file.hash",
+      "fileClass": "node.exe",
+      "location": "installed",
+      "count": 6,
+      "bytes": 539615232,
+      "durationMs": 2279.334799999997
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "file.copyFile",
+      "fileClass": "node.exe",
+      "location": "installed",
+      "count": 3,
+      "bytes": 269807616,
+      "durationMs": 68.01580000000104
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "file.lstat",
+      "fileClass": "node.exe",
+      "location": "projection",
+      "count": 6,
+      "bytes": 539615232,
+      "durationMs": 0.46150000001944136
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "file.hash",
+      "fileClass": "node.exe",
+      "location": "projection",
+      "count": 3,
+      "bytes": 269807616,
+      "durationMs": 2792.954199999993
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "registry.sql",
+      "table": "xiaozhi_capability_provider_versions_v1",
+      "count": 104,
+      "bytes": 0,
+      "durationMs": 18.488299999989977
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "registry.sql",
+      "table": "xiaozhi_capability_registry_v1",
+      "count": 20,
+      "bytes": 0,
+      "durationMs": 24.266399999993155
+    },
+    {
+      "owner": {
+        "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+        "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+        "generation": 2,
+        "taskId": "xitask_8a0b8466b92c91153aa101d9fb7543447a18b9231d2928b9d62caf7fcf1a8428"
+      },
+      "kind": "native.helper",
+      "count": 3,
+      "bytes": 0,
+      "durationMs": 24582.3168
+    }
+  ],
+  "allPhaseSourceHashes": [
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 3678,
+      "method": "transport",
+      "durationMs": 181.30490000000282,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "projection",
+      "controlledId": 3678,
+      "method": "transport",
+      "durationMs": 1031.4830999999976,
+      "bytes": 89935872
+    },
+    {
+      "location": "installed",
+      "durationMs": 346.6134999999995,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 6910,
+      "method": "transport",
+      "durationMs": 409.5344000000041,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "projection",
+      "controlledId": 6910,
+      "method": "transport",
+      "durationMs": 1087.3699000000051,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 6971,
+      "method": "scopes",
+      "durationMs": 284.86909999999625,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 7012,
+      "method": "scopes",
+      "durationMs": 256.8426999999938,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 7032,
+      "method": "scopes",
+      "durationMs": 496.7118000000046,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "installed",
+      "controlledId": 7050,
+      "method": "transport",
+      "durationMs": 650.0718999999954,
+      "bytes": 89935872
+    },
+    {
+      "owner": "run_a6d1347e-d480-48ca-9f05-5e61917aa071",
+      "location": "projection",
+      "controlledId": 7050,
+      "method": "transport",
+      "durationMs": 674.1011999999901,
+      "bytes": 89935872
+    }
+  ]
+}

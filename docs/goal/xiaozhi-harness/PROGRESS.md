@@ -1,8 +1,16 @@
 # Harness 执行进度
 
+## 当前进度 2026-11-19
+
+Goal 已恢复 ACTIVE。Phase0 至 6 独立通过，含本轮六条页面标准的固定矩阵 63/89。Phase7 在功能分支继续实施和独立复验。主线工作见 [阶段顺序与证据入口](evidence/phase7/implementation-resume-20261119/MAINLINE.md)。
+
+- 工作台、审批收件箱、能力中心实现已进入真实 Electron 验证。Terra 已独立通过现代审批批准与冷启以及团队技能版本回滚；发现现代工作台样式被旧 CSS 作用域隔离，修复后重新构建成功，独立排版复验中。
+- 缓存能力的真实受控进程基线已取得。24.109 秒完成准备、解析、执行，私有合成文本读回与三个原生进程清理通过。发现先前准备结果留作未知 Effect 会挡住同任务继续，已列定向审计。详见 [基线与复测口径](evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md)。
+- 原生拖窗与最大化还原等待可见桌面复验。真实模型 0/200，A/B 合成资料、加密设置和预算前置已形成证据。
+
 ## 当前进度 2026-11-18
 
-Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶段范围PASS并备注已实现。Phase6功能提交2376c84已完成，正在正常整合origin/main09d7937。真实付费0/200。
+Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶段范围PASS并备注已实现。Phase6功能提交2376c84与主线09d7937正常整合为5938c31，main和功能分支已验证同步。真实付费0/200。
 
 | Phase | 当前状态 | 下一动作 |
 | --- | --- | --- |
@@ -12,8 +20,8 @@ Goal保持ACTIVE，Phase0至6已独立验收。固定89项累计57项具有阶�
 | 3 Permission/Environment | ACCEPTED 已实现 | 完整页面由Phase7复核 |
 | 4 三层Skill | ACCEPTED 已实现 | 复用现页进行Terra验收 |
 | 5 外部能力 | ACCEPTED 已实现 | 已整合推送0f753e5 |
-| 6 任务/恢复/持久终端 | ACCEPTED 已实现 | 正常提交、整合、验证及推送 |
-| 7 工作台与页面 | READY_AFTER_PHASE6_GIT | 三处缺口按只读合同实现，Terra验收 |
+| 6 任务/恢复/持久终端 | ACCEPTED 已实现 | 已整合推送5938c31，493项回归通过 |
+| 7 工作台与页面 | IN_PROGRESS | 三处缺口已release实施，Terra独立准备 |
 | 8 质量/性能/打包/最终验收 | NOT_STARTED | 准备已就绪，实际provider与终验待执行 |
 
 Phase6最终独立23项通过，原始证据与阶段边界见evidence/phase6/final/GATE6_REVIEW_FINAL.md。以下保留历史推进记录。
@@ -267,3 +275,15 @@ Phase7当前源合同已确认三处待补，跨会话任务总览、审批Inbox
 功能提交2376c84与origin/main09d7937正常整合，16处冲突保留双方完整文档、typed preload及各自业务实现。完整493/493 PASS，失败0、skipped0，build/全src类型检查、renderer253、Electron207、正常JobHost2、实际双尺寸UI10、native-reader6/native-gap15全部exit0。新主线教师资料结构与局部OCR实现保留，测试采用合成资料。
 
 最终1711生产文件/481输出及73依赖manifest前后零漂移，core618输入sourceHash99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb。build重算core与native-stat源清单，helper58880B/f68e8cb7、sandbox及native-stat bundle保持受测字节。41份精确整合证据归档evidence/phase6/integration-20261118。root接续正常merge提交与atomic push，再自动进入Phase7。真实付费0/200，原89项57项阶段验收通过。
+
+## 2026-11-19 主线恢复
+
+Phase7 三处页面已实现，实施侧构建及回归见 [主线与断点](evidence/phase7/implementation-resume-20261119/MAINLINE.md)。候选已记录，Terra High 开始独立实测。矩阵保持57/89，等逐项验收后更新。
+
+Terra 已保存实际桌面操作中止证据，拖窗/最大化保持待验。新建独立后台 Electron 验证实例，继续工作台原入口回归。Phase8 冻结 A 已经通过原题本 typed IPC 创建、补正和读回合成题，真实模型调用为 0。
+
+后台 Electron 9/9、exit 0，窗口可见性为 false。覆盖跨会话、两尺寸、审批拒绝与旧回执、能力中心、持久终端与冷启读回。Terra 接续其余可后台核验的范围。Phase8 同字节合成题库副本已在 Phase7 候选的实际 B 主进程迁移并按题目 ID、版本和内容摘要读回。冻结 A 数据保持同 SHA，最终 B 与模型配置待核。
+
+独立后台确认现代批准、团队技能审核和回退冷启。修复首屏直接暴露技术标识和原始参数，构建与工作台组件14项通过，Terra复核中。首轮失败证据已保留。Phase8 用现有配置在冻结 A 生成加密合成快照，官方目录 GET 2 次均200，B 冷读可解密并保持同题版本，付费聊天 0/200。缓存性能计量脚本完成非运行态预检。
+
+流式后台样本的五项功能断言均通过，推理可见文字 1397→3727 字符，正文阶段输入、滚动、侧栏和停止均实际执行，原 SQLite Run 进入 interrupted，模型为单次本地合成请求。末尾额外截图超时，保留 runner exit1 和已取得截图。隐藏窗口节流及改变的合成间隔不用于可见窗口时延对比。

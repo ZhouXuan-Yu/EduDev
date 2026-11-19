@@ -84,6 +84,15 @@ function validateState(value: unknown): State {
 function validUrl(value: string) {
   try { const url = new URL(value); return !url.username && !url.password && !url.search && !url.hash && (url.protocol === 'https:' || url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)); } catch { return false; }
 }
+export async function readMcpCatalog(sql: Sql): Promise<XiaozhiMcpCatalog> {
+  const row = (await sql.all('SELECT value_json FROM app_settings WHERE key=?', [KEY]))[0];
+  let value: State = {schemaVersion: 1, revision: 0, servers: []};
+  if (row) {
+    try {value = validateState(JSON.parse(String(row.value_json)));}
+    catch {throw Error('configuration');}
+  }
+  return {schemaVersion: XIAOZHI_MCP_SCHEMA, revision: value.revision, servers: value.servers.map(publicServer)};
+}
 export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   sanitize?: (text: string) => string | Promise<string>;
   timeoutMs?: number;
@@ -159,7 +168,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     const raw = secret ? open(secret) : '';
     return sanitize(raw ? text.split(raw).join('[凭证已隐藏]') : text);
   }
-  async function catalog(): Promise<XiaozhiMcpCatalog> { const value = await state(); return { schemaVersion: XIAOZHI_MCP_SCHEMA, revision: value.revision, servers: value.servers.map(publicServer) }; }
+  async function catalog(): Promise<XiaozhiMcpCatalog> { return readMcpCatalog(sql); }
   async function add(input: XiaozhiMcpAddInput) {
     if (!input || !object(input) || typeof input.name !== 'string' || !namePattern.test(input.name.trim()) || !['stdio', 'http'].includes(input.transport)) throw Error('invalid_input');
     const suppliedSecret = input.transport === 'stdio' ? input.secret : input.bearerToken;

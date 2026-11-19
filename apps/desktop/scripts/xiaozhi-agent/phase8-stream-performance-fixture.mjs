@@ -6,7 +6,7 @@ export const streamWorkload = Object.freeze({reasoningChunks: 240, finalChunks: 
   reasoningText: '合成流式测量，核对已给条件和来源，保留教师确认与实际结果。'.repeat(8) + '\n',
   finalText: '这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。'.repeat(5)});
 
-export async function startStreamFixture() {
+export async function startStreamFixture({intervalMs = streamWorkload.intervalMs} = {}) {
   const requests = [];
   const sockets = new Set();
   const server = http.createServer(async (request, response) => {
@@ -31,11 +31,11 @@ export async function startStreamFixture() {
       emit({role: 'assistant', content: ''});
       for (let index = 0; index < streamWorkload.reasoningChunks && !response.destroyed; index++) {
         if (!emit({reasoning_content: streamWorkload.reasoningText})) await once(response, 'drain');
-        row.reasoningSent++; await new Promise(resolve => setTimeout(resolve, streamWorkload.intervalMs));
+        row.reasoningSent++; await new Promise(resolve => setTimeout(resolve, intervalMs));
       }
       for (let index = 0; index < streamWorkload.finalChunks && !response.destroyed; index++) {
         if (!emit({content: `第${index + 1}段。${streamWorkload.finalText}\n\n`})) await once(response, 'drain');
-        row.finalSent++; await new Promise(resolve => setTimeout(resolve, streamWorkload.intervalMs));
+        row.finalSent++; await new Promise(resolve => setTimeout(resolve, intervalMs));
       }
       if (!response.destroyed) response.end('data: ' + JSON.stringify({id: 'phase8-stream-fixture', object: 'chat.completion.chunk',
         choices: [{index: 0, delta: {}, finish_reason: 'stop'}], usage: {prompt_tokens: 100, completion_tokens: 100, total_tokens: 200}}) + '\n\ndata: [DONE]\n\n');

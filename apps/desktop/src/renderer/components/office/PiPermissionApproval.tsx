@@ -1,29 +1,36 @@
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {ShieldCheck} from 'lucide-react';
 import {ChatTool} from '../../heroui-pro/components/chat-tool';
 import type {PermissionApproval} from '../../../shared/xiaozhi-permissions';
 import {useOfficeControlState} from './OfficeComposerState';
 import {permissionAction, permissionClassification, permissionResource} from './permissionPresentation';
+import {DisclosureCard} from '../ui/DisclosureCard';
 
 const labels: Record<PermissionApproval['state'], string> = {pending: '需要你的授权', approved: '已批准，等待执行',
   executing: '正在执行', executed: '已执行', rejected: '已拒绝', invalidated: '申请已失效', uncertain: '执行结果待核验', failed: '执行未完成'};
 
-export function PiPermissionApproval({approval, onRefresh}: {approval: PermissionApproval; onRefresh?: () => Promise<void>}) {
+export function PiPermissionApproval({approval, onRefresh, disabled = false}: {approval: PermissionApproval; onRefresh?: () => Promise<void>; disabled?: boolean}) {
   const [resolved, setResolved] = useState<PermissionApproval>();
   const item = resolved?.id === approval.id && resolved.revision >= approval.revision ? resolved : approval;
   const {draft, update, lock} = useOfficeControlState('permission:' + item.id);
   const request = item.request;
+  const identity = `${approval.request.owner.sessionId}:${approval.id}:${approval.revision}`;
+  const live = useRef({identity, mounted:true});live.current.identity=identity;
+  useEffect(()=>{live.current.mounted=true;return()=>{live.current.mounted=false;};},[]);
+  const expired = !Number.isFinite(Date.parse(request.expiresAt)) || Date.parse(request.expiresAt)<=Date.now();
   async function decide(decision: 'approve' | 'reject') {
-    if (lock.current) return;
+    if (lock.current || disabled || expired) return;
+    const own = identity, current = () => live.current.mounted && live.current.identity===own;
     lock.current = true; update({busy: true, error: ''});
     try {
       const result = await window.omniEdu?.decideXiaozhiPermission({sessionId: request.owner.sessionId,
         approvalId: item.id, revision: item.revision, decision, scope: 'operation'});
-      if (!result?.ok) throw Error('permission_decision_failed');
+      if (!current()) return;
+      if (!result?.ok || result.value.id!==item.id || result.value.request.owner.sessionId!==request.owner.sessionId || result.value.revision<item.revision) throw Error('permission_decision_failed');
       setResolved(result.value);
       await onRefresh?.();
-    } catch {update({error: '授权没有完成，请刷新当前申请后重试。'});}
-    finally {lock.current = false; update({busy: false});}
+    } catch {if(current())update({error: '授权没有完成，请刷新当前申请后重试。'});}
+    finally {lock.current = false; if(current())update({busy: false});}
   }
   const state = item.state === 'pending' ? 'requires-action' : ['approved', 'executing'].includes(item.state) ? 'input-available'
     : item.state === 'executed' ? 'output-available' : 'output-error';
@@ -31,19 +38,24 @@ export function PiPermissionApproval({approval, onRefresh}: {approval: Permissio
     data-approval-id={item.id} data-revision={item.revision} data-request-digest={item.requestDigest} data-state={item.state}>
     <ChatTool.Trigger><ShieldCheck size={16} aria-hidden="true"/><strong>{permissionAction(request.action)}</strong><span>{labels[item.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
-      <div className="pi-copy-preview">
+      <div className="pi-copy-preview" style={{minWidth: 0, overflowWrap: 'anywhere'}}>
         <p>{request.purpose}</p>
-        <ul>{request.scopes.map((scope, index) => <li key={index}>{permissionResource(scope)}</li>)}</ul>
-        <p>调用参数分类 {permissionClassification[request.classification]}</p>
+        <ul>{request.scopes.map((scope, index) => <li key={index} style={{overflowWrap: 'anywhere', whiteSpace: 'normal'}}>{permissionResource(scope)}</li>)}</ul>
+        <p>数据范围 {permissionClassification[request.classification]}</p>
         <p>有效至 {new Date(request.expiresAt).toLocaleString()}</p>
-        <pre style={{whiteSpace: 'pre-wrap', overflowWrap: 'anywhere'}}>{request.summary || '历史冻结输入摘要 ' + request.inputDigest}</pre>
         {request.action === 'exec_command' && <p>脚本结束后按当前授权和原文件版本提交变动。</p>}
         {request.scopes.some(scope => scope.kind === 'egress' || scope.kind === 'mcp') && <p>本次调用可能产生外部状态变化，失败后需要核对执行结果。</p>}
-        <details><summary>冻结请求标识</summary><code>{item.requestDigest}</code><p>输入摘要 {request.inputDigest}</p></details>
+        <DisclosureCard title="请求详情">
+          {request.summary && <pre style={{whiteSpace: 'pre-wrap', overflowWrap: 'anywhere'}}>{request.summary}</pre>}
+          <p>请求指纹 <code>{item.requestDigest}</code></p>
+          <p>输入指纹 <code>{request.inputDigest}</code></p>
+        </DisclosureCard>
+        <p>拒绝后本次操作不会获准执行；小智仍可继续已有授权范围内的步骤。</p>
+        {expired && item.state==='pending' && <p role="status">申请已过期，请重新读取并由当前任务重新申请。</p>}
       </div>
       {item.state === 'pending' && <ChatTool.Approval><ChatTool.ApprovalActions>
-        <ChatTool.Approve isDisabled={draft.busy} data-testid="pi-permission-approve" onPress={() => void decide('approve')}>批准本次操作</ChatTool.Approve>
-        <ChatTool.Reject isDisabled={draft.busy} data-testid="pi-permission-reject" onPress={() => void decide('reject')}>拒绝</ChatTool.Reject>
+        <ChatTool.Approve isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-approve" onPress={() => void decide('approve')}>批准本次操作</ChatTool.Approve>
+        <ChatTool.Reject isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-reject" onPress={() => void decide('reject')}>拒绝</ChatTool.Reject>
       </ChatTool.ApprovalActions></ChatTool.Approval>}
       {draft.busy && <p role="status">正在保存决定…</p>}
       {draft.error && <p role="alert">{draft.error}</p>}

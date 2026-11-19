@@ -10,6 +10,13 @@ const audit = 'xiaozhi_permission_audit_v1';
 const approvalAction = 'xiaozhi_permission_v2';
 const now = () => new Date().toISOString();
 
+export function readPermissionApprovalRow(row: Record<string, unknown>): PermissionApproval {
+  const value = JSON.parse(String(row.payload_json));
+  if (!validApproval(value) || value.id !== row.id || value.request.owner.sessionId !== row.session_id
+      || value.request.owner.runId !== row.run_id) throw Error('permission_approval_corrupt');
+  return value;
+}
+
 export function createPermissionStore(sql: Sql) {
   function transaction<T>(work: (connection: Sql) => Promise<T>) {
     if (!sql.transaction) throw Error('configuration');
@@ -45,10 +52,7 @@ export function createPermissionStore(sql: Sql) {
   }
 
   function parseApproval(row: Record<string, unknown>): PermissionApproval {
-    const value = JSON.parse(String(row.payload_json));
-    if (!validApproval(value) || value.id !== row.id || value.request.owner.sessionId !== row.session_id
-        || value.request.owner.runId !== row.run_id) throw Error('permission_approval_corrupt');
-    return value;
+    return readPermissionApprovalRow(row);
   }
 
   async function readApprovals(work: Sql, sessionId: string) {

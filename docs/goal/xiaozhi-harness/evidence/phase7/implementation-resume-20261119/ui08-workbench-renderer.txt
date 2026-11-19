@@ -1,0 +1,15 @@
+PASS W01 Real Shell opens the overview on demand, closes on Escape and restores its trigger
+PASS W02 Task filters/counts use the server universe and null counts remain unknown
+PASS W03 Actual restore helper selects/hydrates first, rereads exact Task and dispatches one original resume
+PASS W04 Changed/rejected selection and fresh Task mismatch issue no model/resume call
+PASS W05 Legacy no_criteria continuation carries explicit same Task and never falls back from rejected resume
+PASS W06 Summary filter epoch ignores an older deferred page after a newer result
+PASS A01 Inbox retrieves exact modern revision only on selection and sends the original CAS decision
+PASS A02 Expired/denied modern approvals and CAS errors remain visible and never claim success
+PASS A03 Legacy decisions reread the same etag and stop on changed detail before the original API
+PASS A04 Legacy pending/rejected/unknown/approved use original decide/verify/resume actions
+PASS A05 Late detail reads cannot revive an old approval after changing filter
+PASS C01 Capability axes distinguish installed, quarantined, authorization and missing requirements without Task authority
+PASS C02 Capability query binds the legitimate selected Task and stale/partial sources stay explicit
+PASS W07 Real parent cross-session restore survives Composer remount, holds single flight and preserves the target draft
+{"success":true,"passed":14,"total":14,"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-workbench-renderer-kkcFVp"}

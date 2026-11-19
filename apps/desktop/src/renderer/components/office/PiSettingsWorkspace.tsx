@@ -1,4 +1,5 @@
 import {PiManagedTools} from './PiManagedTools';
+import {PiCapabilityCenter} from './PiCapabilityCenter';
 import {PiPermissionSettings} from './PiPermissionSettings';
 import {PiEnvironmentSettings} from './PiEnvironmentSettings';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -33,6 +34,7 @@ import { useWorkbenchPreferences } from '../../ui-system/WorkbenchState';
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
   { id: 'skills', label: '教育技能', icon: BookOpen },
+  { id: 'capabilities', label: '能力中心', icon: Plug },
   { id: 'tools', label: '外部工具', icon: Plug },
   { id: 'permissions', label: '资料与权限', icon: FolderLock },
   { id: 'interface', label: '界面偏好', icon: Monitor },
@@ -149,6 +151,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
       <div className={layoutStyles.layout}>
         <nav className={layoutStyles.sidebar} aria-label="小智设置分类">
           {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
+          {!query.trim()&&<button type="button" className={layoutStyles.navigationEntry} aria-current={tab==='capabilities'?'page':undefined} disabled={busy} data-testid="pi-settings-tab-capabilities" onClick={()=>open('capabilities')}>能力中心</button>}
           <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy}>
             <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
           </SearchField>
@@ -161,6 +164,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
           {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
           {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
+          {tab === 'capabilities' && <SettingsPage tab={tab}><PiCapabilityCenter sessionId={sessionId||undefined} task={snapshot?.task&&snapshot.task.sessionId===sessionId?{id:snapshot.task.id,requirementsVersion:snapshot.task.requirementsVersion}:undefined} onNavigate={open}/></SettingsPage>}
           {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings sessionId={sessionId} running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
           {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，明确范围内自动执行，新增范围集中申请。</p></div>
             {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>

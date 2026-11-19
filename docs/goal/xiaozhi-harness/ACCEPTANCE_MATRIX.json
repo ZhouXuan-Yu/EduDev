@@ -1446,8 +1446,12 @@
       "id": "UI-02",
       "priority": "P1",
       "expected": "已完成任务不混入恢复列表。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。最终候选的独立后台页面验证完成样本只出现在完成筛选。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
+      ]
     },
     {
       "id": "UI-03",
@@ -1460,8 +1464,12 @@
       "id": "UI-04",
       "priority": "P1",
       "expected": "点击继续只启动一个新 Run，不重复创建 Task。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。独立后台页面与 SQLite 证实一次新 Run、同一 Task；实施专项补充双击与明确继续。W2 跨重启及迟到结果仍待完整复验。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/background-ui-report.json"
+      ]
     },
     {
       "id": "UI-05",
@@ -1555,8 +1563,11 @@
       "id": "UI-11",
       "priority": "P1",
       "expected": "市场候选不能显示为已验证能力。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。独立页面核对两个候选均显示真实隔离或过期状态，且不可用。C2 撤销、Schema 变更仍待完整复验。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-current-completion.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ]
     },
@@ -1564,22 +1575,34 @@
       "id": "UI-12",
       "priority": "P1",
       "expected": "个人/团队/官方归属清晰。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。最终候选独立页面显示个人、团队、官方三类。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
+      ]
     },
     {
       "id": "UI-13",
       "priority": "P1",
       "expected": "团队管理员审批状态清晰。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。最终候选独立验证待审批状态和操作入口，早期实施候选独立验证批准与冷启状态。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-independent-supplement.md"
+      ]
     },
     {
       "id": "UI-14",
       "priority": "P1",
       "expected": "版本历史、回滚和来源可查。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。最终候选独立验证两项历史版本、来源、页面切换并冷启读回。S2 的运行任务版本绑定等场景仍待完整复验。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
+      ]
     },
     {
       "id": "QG-01",

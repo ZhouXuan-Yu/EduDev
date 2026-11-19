@@ -45,6 +45,16 @@ const packageWorkerBytes = Buffer.from(EXTENSION_PACKAGE_WORKER);
 const packageMetadataBytes = Buffer.from(JSON.stringify({private: true}));
 const internalSource = 'edudev-local://extensions';
 
+export function readExtensionPackageRow(row: Record<string, unknown>, artifactId: string): ExtensionPackageRecord {
+  const stored = JSON.parse(String(row.value_json));
+  const value = stored.document as ExtensionPackageRecord;
+  if (!value || value.schemaVersion !== 1 || value.artifactId !== artifactId || !validManifest(value.manifest)
+      || value.manifest.artifactId !== artifactId || !Number.isSafeInteger(value.revision) || value.revision < 1
+      || value.provenance?.kind !== 'local_import' || value.provenance.trust !== 'unknown' || !Array.isArray(value.files)
+      || permissionHash(value) !== stored.hash) throw Error('extension_package_state_corrupt');
+  return value;
+}
+
 function relativePath(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= 240 && !/[\\:\x00-\x1f]/u.test(value)
     && !value.startsWith('/') && value.split('/').every(part => part && part !== '.' && part !== '..'
@@ -183,13 +193,7 @@ export function createExtensionPackageManager(options: {
     if (!/^[a-f0-9]{64}$/u.test(artifactId)) throw Error('invalid_input');
     const row = (await work.all('SELECT value_json FROM app_settings WHERE key=?', [prefix + artifactId]))[0];
     if (!row) return null;
-    const stored = JSON.parse(String(row.value_json));
-    const value = stored.document as ExtensionPackageRecord;
-    if (!value || value.schemaVersion !== 1 || value.artifactId !== artifactId || !validManifest(value.manifest)
-        || value.manifest.artifactId !== artifactId || !Number.isSafeInteger(value.revision) || value.revision < 1
-        || value.provenance?.kind !== 'local_import' || value.provenance.trust !== 'unknown' || !Array.isArray(value.files)
-        || permissionHash(value) !== stored.hash) throw Error('extension_package_state_corrupt');
-    return value;
+    return readExtensionPackageRow(row, artifactId);
   }
 
   async function save(record: ExtensionPackageRecord, expectedRevision: number) {

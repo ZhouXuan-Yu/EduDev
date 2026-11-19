@@ -33,6 +33,8 @@ import { PiSkillSettings } from './PiSkillSettings';
 import { PiHomeSuggestions, isHomeConversation } from './PiHomeLayout';
 import { workspaceNotifications } from './workspace-notifications';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
+import {PiRecoveryOverview, restoreWorkbenchTask, type WorkbenchRestoreMode} from './workbench/PiRecoveryOverview';
+import type {WorkbenchTaskRow} from '../../../shared/xiaozhi-workbench';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import { PiWorkbenchBridge } from './PiWorkbenchBridge';
@@ -83,6 +85,29 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   useEffect(()=>{if(visible)setHasEntered(true);},[visible]);
   const modelLock = useRef(false);
   const [notice, setNotice] = useState('');
+  const [workbenchOpen,setWorkbenchOpen]=useState(false),[workbenchBusy,setWorkbenchBusy]=useState(false),[workbenchNotice,setWorkbenchNotice]=useState('');
+  const workbenchEpoch=useRef(0),workbenchLock=useRef(false),workbenchAttempt=useRef<{key:string;commandId:string}|undefined>(undefined);
+  function closeWorkbench(){workbenchEpoch.current++;setWorkbenchOpen(false);}
+  // The parent survives the session-keyed Composer remount caused by its own selection.
+  async function restoreTask(row:WorkbenchTaskRow,mode:WorkbenchRestoreMode){
+    if(workbenchLock.current||!active.current||!visibleRef.current)return;
+    const api=window.omniEdu;if(!api)return;
+    const ticket=++workbenchEpoch.current,key=JSON.stringify([row.sessionId,row.taskId,row.revision,row.requirementsVersion,mode]);
+    if(workbenchAttempt.current?.key!==key)workbenchAttempt.current={key,commandId:`xicmd_${crypto.randomUUID()}`};
+    workbenchLock.current=true;setWorkbenchBusy(true);setWorkbenchNotice('');
+    let selectionIntent:number|undefined;
+    const selectionCurrent=()=>active.current&&visibleRef.current&&ticket===workbenchEpoch.current&&idRef.current===row.sessionId
+      &&selectionIntent!==undefined&&navigationRef.current.isCurrent(selectionIntent);
+    const current=()=>selectionCurrent()&&!mutationsBlocked();
+    try{
+      const result=await restoreWorkbenchTask(row,mode,{api,selectSession:async target=>{const selected=await sessionNavigation.current!.select(target);if(selected)selectionIntent=navigationRef.current.intent;return selected;},isCurrent:current,commandId:workbenchAttempt.current.commandId});
+      if(!selectionCurrent())return;
+      if(!result.ok){setWorkbenchNotice(XIAOZHI_ERRORS[result.error]);return;}
+      workbenchAttempt.current=undefined;setWorkbenchNotice(mode==='remaining'?'已继续同一任务的剩余步骤。':'已继续核对同一任务，原成果与来源保留。');
+      await hydrate(row.sessionId);await refreshList();
+    }catch(error){if(active.current&&ticket===workbenchEpoch.current)setWorkbenchNotice(String(error).includes('changed')?'任务或会话已变化，请刷新总览重新选择。':'继续结果尚未确认，请刷新原会话记录后核对。');}
+    finally{workbenchLock.current=false;if(active.current)setWorkbenchBusy(false);}
+  }
   const {permissionMode, setPermissionMode} = usePermissionMode(id, setNotice);
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [compactBusy, setCompactBusy] = useState(false);
@@ -352,6 +377,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
     }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} paperExportIntent={navigation.target.sessionId===id?navigation.target.paperExportIntent:undefined} onConsumed={()=>{if(navigation.target.sessionId===id&&navigation.target.draft!==undefined)navigation.consumeDraft(id,{text:navigation.target.draft,paperExportIntent:navigation.target.paperExportIntent});}}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
+    workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={setWorkbenchOpen} onWorkbenchClose={closeWorkbench}
+    workbench={<PiRecoveryOverview activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{

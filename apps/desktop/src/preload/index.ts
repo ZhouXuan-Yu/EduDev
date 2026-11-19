@@ -259,6 +259,7 @@ const api = {
   listXiaozhiEvents: (input: import('../shared/xiaozhi-events').XiaozhiEventsInput) => ipcRenderer.invoke('xiaozhi:events', input) as Promise<import('../shared/xiaozhi-events').XiaozhiEventsPage>,
   getXiaozhiPlanHistory:(input:import('../shared/xiaozhi-plan').PlanHistoryInput)=>ipcRenderer.invoke('xiaozhi:plan-history',input) as Promise<import('../shared/xiaozhi-plan').PlanHistoryResult>,
   mutateXiaozhiGoal:(input:GoalMutation)=>ipcRenderer.invoke('xiaozhi:goal-mutate',input) as Promise<GoalResult>,
+  getXiaozhiWorkbenchSummary:(query:import('../shared/xiaozhi-workbench').WorkbenchQuery)=>ipcRenderer.invoke('xiaozhi:workbench-summary',query) as Promise<import('../shared/xiaozhi-workbench').WorkbenchResult>,
   getXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskQuery)=>ipcRenderer.invoke('xiaozhi:task-snapshot',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
   reviewXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskReviewInput)=>ipcRenderer.invoke('xiaozhi:task-review',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
   correctXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskCorrectionInput)=>ipcRenderer.invoke('xiaozhi:task-correct',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,

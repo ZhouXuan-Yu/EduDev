@@ -4,6 +4,7 @@ import {registerPermissionIpc} from './permissions/api';
 import {registerEnvironmentIpc} from './environment/api';
 import {registerAcquisitionIpc} from './capabilities/acquisition/api';
 import {registerTerminalIpc} from './terminal/api';
+import {registerWorkbenchIpc} from './workbench-api';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -92,6 +93,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:event', event);
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
+  registerWorkbenchIpc({ipcMain: options.ipcMain, allowed: fromMain, read: action => options.store.readWorkbench(action)});
   registerTerminalIpc({ipcMain: options.ipcMain, allowed: fromMain, api: host.terminal});
   registerPermissionIpc({ipcMain: options.ipcMain, allowed: fromMain, permissions: host.permissions,
     resumeLegacy: input => host.resumeLegacyApproval(input)});

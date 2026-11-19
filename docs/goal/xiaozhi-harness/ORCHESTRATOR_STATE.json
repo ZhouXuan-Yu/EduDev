@@ -3,8 +3,8 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "2376c8433df55e49c33c64b3b4fbdab6ba981a73",
-  "phase": 6,
+  "head": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+  "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
   "writer": "/root/phase4_resume_implementation",
@@ -35,7 +35,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Root makes normal tested merge commit and atomic push, then releases formal Phase7 minimal read-only summary and three page gaps. Terra page acceptance follows, then Phase8 performance/quality/packaging/final independent acceptance. Goal ACTIVE, paid0/200.",
+  "next": "Complete Phase7 scoped independent page checks and inspect capability preparation receipt recovery. Native drag/maximize remains unverified. Phase8 cached profiling, fixture and real-model setup are ready for the next gate.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -227,7 +227,7 @@
     "Normal module commit, integration validation and atomic push"
   ],
   "phase7Preparation": {
-    "status": "READONLY_PLAN_DONE_ALL_PAGES_NOT_RUN",
+    "status": "FORMAL_IMPLEMENTATION_RELEASED_CORE_AND_UI_TERRA_READONLY_PREPARING",
     "model": "gpt-6.1-terra high",
     "agent": "/root/phase7_page_acceptance",
     "runtimeReleaseRequired": "After Gate6 acceptance and Git integration",
@@ -401,7 +401,7 @@
     "paidRequests": 0,
     "ownedProcesses": 0
   },
-  "phase6IntegrationStatus": "VALIDATED_READY_MERGE_COMMIT_AND_PUSH",
+  "phase6IntegrationStatus": "PUSHED_MAIN_AND_FEATURE_VERIFIED",
   "phase6Commit": "2376c8433df55e49c33c64b3b4fbdab6ba981a73",
   "phase6IntegratedOrigin": "09d7937a1bf6eaa616ccdcb2ee4897fa670bc8c4",
   "phase6IntegrationRuntime": {
@@ -425,5 +425,70 @@
     "coreSourceHash": "99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb",
     "sourceDrift": 0,
     "paidRequests": 0
+  },
+  "phase6Integration": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+  "remoteAtPhase6": "main and codex/xiaozhi-harness-20261112 atomic push verified5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+  "phase7": "IN_PROGRESS",
+  "phase7WriteOwnership": {
+    "core": "/root/phase4_resume_implementation main/shared/preload/db/build/out/runtime",
+    "ui": "/root/phase4_resume_independent approved4 existing renderer files+3 new components/local styles+dedicated component tests",
+    "reviewer": "/root/phase7_terra_pages gpt-6.1-terra high; readonly preparation until final runtime release",
+    "root": "Git and goal/project documentation",
+    "contract": "PHASE_7_IMPLEMENTATION.md",
+    "schema": "Core publishes single shared WorkbenchSummary DTO and typed API before UI implementation"
+  },
+  "phase8InitializationPreparation": {
+    "status": "SOURCE_AUDIT_DONE_ACTUAL_SEED_KEY_AND_MODEL_NOT_RUN",
+    "contract": "evidence/phase8/initialization-preparation-20261118/INITIALIZATION_CONTRACT.md",
+    "baselineA": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "teacherConfirmation": "Original manual local_bank create/edit/save and version/hash evidence; common API has no separate confirmed flag",
+    "modelRequestCount": 0,
+    "actualGoalLedgerOpened": false,
+    "safeStorageAcrossProfile": "NOT_TESTED",
+    "fixed8QModelRoutes": "Pi Electron net.fetch official chat paths; audited local artifact/document/web tools do not enter legacy completion"
+  },
+  "phase7Resume": {
+    "date": "2026-11-19",
+    "base": "5938c31bec9e978fbe82ca3e30a0c92807b0b9c5",
+    "candidate": "evidence/phase7/implementation-resume-20261119/candidate.json",
+    "mainline": "evidence/phase7/implementation-resume-20261119/MAINLINE.md",
+    "implementation": {
+      "electron": 207,
+      "renderer": 253,
+      "read": 11,
+      "uiComponents": 14,
+      "builtUi": 8
+    },
+    "reviewer": "/root/phase7_terra_resume",
+    "status": "WORKBENCH_CHECKPOINT_VERIFIED_PHASE7_GATE_PARTIAL",
+    "remoteMain": "50d3dfd22eb97daa4ec78a9c6955f247e16fa139",
+    "interruptedReport": "evidence/phase7/implementation-resume-20261119/terra-interrupted.md",
+    "backgroundRegression": "evidence/phase7/implementation-resume-20261119/background-ui-report.json",
+    "supplementalReview": "evidence/phase7/implementation-resume-20261119/terra-independent-supplement.md",
+    "layoutRetest": "evidence/phase7/implementation-resume-20261119/terra-scope-retest-report.json",
+    "streamRetest": "evidence/phase7/implementation-resume-20261119/stream-final-report.json",
+    "latestUi": "evidence/phase7/implementation-resume-20261119/workbench-final-ui-report.json",
+    "latestScopedReview": "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+    "finalLayoutRendererSha256": "4ddba5f7d6a41e40380147de98153f291eeeba1cf40ff05949c80cf1579a2aeb"
+  },
+  "phase7AcquisitionRecovery": {
+    "status": "IMPLEMENTING",
+    "writer": "/root/phase8_timing_prep",
+    "contract": "evidence/phase8/cached-profiling-preparation-20261119/PHASE7_CAPABILITY_PREPARE_CONTRACT.md"
+  },
+  "phase8QuestionSeed": {
+    "status": "FROZEN_A_SEALED_MODEL_SETUP_AND_PRELIMINARY_B_COLD_READBACK_PASS",
+    "evidence": "evidence/phase8/question-seed-20261119/question-seed-evidence.json",
+    "modelCalls": 0,
+    "requires": "Final B identity, actual paired model runs after accepted readiness, paid chat 0/200",
+    "modelSettings": "evidence/phase8/question-seed-20261119/settings-evidence.json",
+    "sealedBReadback": "evidence/phase8/question-seed-20261119/sealed-b-readback.json"
+  },
+  "phase8CachedProfiling": {
+    "status": "PRODUCTION_HOST_CACHED_BASELINE_PASS_OPTIMIZATION_PENDING",
+    "contract": "evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md",
+    "baselineMs": 24109.337,
+    "sameTaskPrepareFinding": "Generic unknown Effect blocks the same Task from explicitly preparing an acquired capability again; inspection in progress",
+    "runtimePaidCalls": 0
   }
 }

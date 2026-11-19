@@ -1,0 +1,102 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-cached-baseline-xGCbZ2\\run-7DwWgZ",
+  "checks": [
+    {
+      "name": "first-authorized-public-cached-prepare-resolve-execute",
+      "pass": true,
+      "durationMs": 24109.337300000007,
+      "runId": "run_a6d1347e-d480-48ca-9f05-5e61917aa071"
+    }
+  ],
+  "paidCalls": 0,
+  "modelCalls": 8,
+  "approvals": [
+    {
+      "setup": "teacher_explicit_original_scopes_via_PermissionService.issue",
+      "scopes": [
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\workspace"
+        }
+      ],
+      "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0"
+    },
+    {
+      "setup": "original_discovered_schema_scoped_approval",
+      "request": {
+        "schemaVersion": 2,
+        "owner": {
+          "sessionId": "aisession_84d19bf2-a20d-409c-9bcf-254224ec6be0",
+          "runId": "run_089ce53d-cd48-41c5-bacf-4363142bbda6",
+          "generation": 1,
+          "taskId": "xitask_496894d655a7818403e8fb80fdae945bf3a7494bdbae4d97e39a7bf11c61b1bb"
+        },
+        "requirementsVersion": 1,
+        "callId": "acquisition_health_faa2d14473b4a2f6",
+        "action": "mcp_call",
+        "inputDigest": "29537c49cbd929648918deadc2b069de6815f723dbe8d323c946862142916926",
+        "summary": "mcp_call:read_text_file\n{\"path\":\"__edudev_health__\"}",
+        "purpose": "调用已选外部工具并发送本次必要输入，外部效果按未知处理",
+        "scopes": [
+          {
+            "kind": "filesystem",
+            "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\workspace",
+            "identity": "353bc943b30d4ea6bea9569ec0d71d09c79766f4f195e85960fa17106ccde172",
+            "actions": [
+              "read"
+            ]
+          },
+          {
+            "kind": "process",
+            "backend": "appcontainer",
+            "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6\\node.exe",
+            "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+            "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\workspace"
+          },
+          {
+            "kind": "dependency",
+            "source": "https://registry.npmjs.org",
+            "package": "@modelcontextprotocol/server-filesystem",
+            "version": "2.3.0",
+            "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+            "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-J4FxiJ\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+            "installScripts": false
+          },
+          {
+            "kind": "mcp",
+            "serverId": "mcp_551df9a3-b077-4d68-8fdb-bc2ec7e01a24",
+            "sourceHash": "38f113da6fbc6e635f6153cf82d638bfc3fc19a7366ddd1650edf10d4122fae3",
+            "schemaHash": "5a454a42dbbb3dac4da9238eed86bd7705693da7c18e50f127f9ddcea70f8a75",
+            "tools": [
+              "read_text_file"
+            ]
+          }
+        ],
+        "files": [],
+        "provider": {
+          "id": "mcp.mcp-551df9a3-b077-4d68-8fdb-bc2ec7e01a24",
+          "version": "5a454a42dbbb",
+          "sourceHash": "38f113da6fbc6e635f6153cf82d638bfc3fc19a7366ddd1650edf10d4122fae3",
+          "schemaHash": "5a454a42dbbb3dac4da9238eed86bd7705693da7c18e50f127f9ddcea70f8a75"
+        },
+        "classification": "teacher_private",
+        "expiresAt": "2026-11-20T05:04:43.536Z"
+      }
+    }
+  ],
+  "sourceRequests": []
+}
