@@ -512,5 +512,11 @@
     "status": "TWO_PASS_TWO_PENDING_FULL_PROVIDER_RUNTIME_PROBES",
     "mechanismChecksPassed": 59,
     "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+  },
+  "phase8HttpMcp": {
+    "status": "HTTP_PROJECTION_FIXED_GRANT_REVOCATION_PASS_PROVIDER_REDISPATCH_FAIL",
+    "evidence": "evidence/phase8/http-mcp-projection-20261119/FINAL_FINDINGS.md",
+    "buildFingerprint": "f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb",
+    "paidCalls": 0
   }
 }

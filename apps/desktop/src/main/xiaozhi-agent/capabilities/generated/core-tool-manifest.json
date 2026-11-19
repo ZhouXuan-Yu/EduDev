@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "487afeff89a6f313ea13543158827e7fffc771e92e999e1e4fd4a7aa29175192",
+  "sourceHash": "1134e2901ffb0fa9277cd3240d82a92cd57275c6b880699679e6007a61ecab0b",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1244,7 +1244,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/mcp.ts",
-      "sha256": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695"
+      "sha256": "1a562e61967ebeb52dfe0e6709ed73d040e49d36678dace0287aabcc555ac408"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/network.ts",
