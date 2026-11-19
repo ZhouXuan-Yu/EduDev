@@ -1,3 +1,5 @@
+import {AI_STRUCTURE_SOURCE} from '../../shared/material-ai-structure';
+import {SOURCE_LAYOUT_MARKERS} from '../../shared/material-ai-source-markers';
 import {SOURCE_LAYOUT_TEXT} from '../../shared/material-ai-source-layout';
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
@@ -30,14 +32,20 @@ const candidates = `FROM question_bank_items q JOIN material_ai_members m ON m.q
     AND NOT EXISTS(SELECT 1 FROM question_notebook_bookmarks b WHERE b.question_id=q.id AND b.bookmarked=1)
     AND NOT EXISTS(SELECT 1 FROM question_notebook_category_links c WHERE c.question_id=q.id)
     AND NOT EXISTS(SELECT 1 FROM question_bank_usage usage WHERE usage.question_id=q.id)`;
-type Mode = 'choice' | 'layout';
-const policyFor = (mode: Mode) => mode === 'layout' ? SOURCE_LAYOUT_TEXT : PRINTED_CHOICE_ANSWER;
-const candidateQuery = (mode: Mode) => candidates + (mode === 'choice'
+type Mode = 'choice' | 'layout' | 'markers';
+const policyFor = (mode: Mode) => mode === 'markers' ? SOURCE_LAYOUT_MARKERS : mode === 'layout' ? SOURCE_LAYOUT_TEXT : PRINTED_CHOICE_ANSWER;
+const inputJson = "CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END";
+const promptField = (field: string) => `json_extract(${inputJson},'$.pagePrompt.${field}')`;
+const legacyLayout = `${promptField('sourceLayoutPolicy')} IS NULL`;
+const markerLayout = `${promptField('sourceLayoutPolicy')}='${SOURCE_LAYOUT_TEXT}'
+  AND ${promptField('structureContext.schemaVersion')}='${AI_STRUCTURE_SOURCE}'
+  AND ${promptField('sourceMarkerPolicy')} IS NULL`;
+const candidateQuery = (mode: 'choice' | 'layout') => candidates + (mode === 'choice'
   ? ` AND json_extract(${archive},'$.ai.policy')='page-crop-complete.v1' AND json_array_length(${archive},'$.issues')=1 AND json_extract(${archive},'$.issues[0]')='answer_conflict'`
   : ` AND json_extract(${archive},'$.ai.policy')='page-image-complete.v1' AND q.document_json=''
-      AND json_extract(CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END,'$.pagePrompt.sourceContentPolicy')='source-content-roles.v1'
-      AND json_extract(CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END,'$.pagePrompt.sourceReadingPolicy')='crop-source-reading.v1'
-      AND json_extract(CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END,'$.pagePrompt.sourceLayoutPolicy') IS NULL
+      AND ${promptField('sourceContentPolicy')}='source-content-roles.v1'
+      AND ${promptField('sourceReadingPolicy')}='crop-source-reading.v1'
+      AND ((${legacyLayout}) OR (${markerLayout}))
       AND EXISTS(SELECT 1 FROM json_each(${archive},'$.issues') WHERE value='ai_mismatch')
       AND NOT EXISTS(SELECT 1 FROM json_each(${archive},'$.issues') WHERE value='uncertain_ocr')`);
 const documentJson = (document: ReturnType<typeof planAiPageQuestion>['document']) => document ? JSON.stringify(document) : '';
@@ -45,8 +53,12 @@ const fields = {stem:'stem',answer:'answer',analysis:'analysis',subject:'subject
 
 function comparedPrompt(prompt?: AiPagePrompt, mode: Mode = 'choice'): AiPagePrompt | undefined {
   if (prompt?.policy !== 'page-fragments.v3' || prompt.choiceReviewPolicy !== CHOICE_CONCORDANCE) return;
-  if (mode === 'layout' && (!prompt.sourceReadingPolicy || !prompt.sourceContentPolicy)) return;
-  return {...prompt, choiceAnswerPolicy: PRINTED_CHOICE_ANSWER,...(mode==='layout'?{sourceLayoutPolicy:SOURCE_LAYOUT_TEXT}:{})};
+  if (mode !== 'choice' && (!prompt.sourceReadingPolicy || !prompt.sourceContentPolicy)) return;
+  return {...prompt, choiceAnswerPolicy: PRINTED_CHOICE_ANSWER,...(mode!=='choice'?{sourceLayoutPolicy:SOURCE_LAYOUT_TEXT}:{}),...(mode==='markers'?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{})};
+}
+function originalPolicyAllowed(prompt:AiPagePrompt|undefined,mode:Mode) {
+ if(prompt?.policy!=='page-fragments.v3')return false;
+ return mode==='choice'?!prompt.choiceAnswerPolicy:mode==='layout'?!prompt.sourceLayoutPolicy:prompt.sourceLayoutPolicy===SOURCE_LAYOUT_TEXT&&!!prompt.structureContext&&!prompt.sourceMarkerPolicy;
 }
 function proofSha(proof: Proof, number: string, crops: PageCrop[]) {
   return hash([proof.unit,proof.config,proof.firstSha,proof.finalSha,proof.imageSha,proof.review,proof.bookReferences,proof.bookAnswerPolicy,crops.find(crop => crop.number === number)]);
@@ -60,7 +72,7 @@ function plans(args: AiPagePublishArgs, number: string, mode: Mode = 'choice') {
   const before = planAiPageQuestion(args, model), after = planAiPageQuestion({...args, pagePrompt:prompt}, model);
   if (before.archive.state !== 'ai_needs_review' || after.archive.ai?.policy !== 'page-crop-complete.v1' || !after.document) return;
   if (mode === 'choice' && (before.archive.issues.length !== 1 || before.archive.issues[0] !== 'answer_conflict' || after.archive.state !== 'ai_final' || documentJson(before.document) !== documentJson(after.document))) return;
-  if (mode === 'layout' && (before.document || before.archive.issues.includes('uncertain_ocr') || after.archive.issues.length >= before.archive.issues.length || after.archive.issues.some(issue => !before.archive.issues.includes(issue) || ['ai_mismatch','requires_image'].includes(issue)))) return;
+  if (mode !== 'choice' && (before.document || before.archive.issues.includes('uncertain_ocr') || after.archive.issues.length >= before.archive.issues.length || after.archive.issues.some(issue => !before.archive.issues.includes(issue) || ['ai_mismatch','requires_image'].includes(issue)))) return;
   return {model,before,after,prompt};
 }
 
@@ -68,9 +80,9 @@ function plans(args: AiPagePublishArgs, number: string, mode: Mode = 'choice') {
 export class MaterialChoiceRechecks {
   constructor(private host: Host) {}
   async view(batchId: string) {
-    const count = async (mode: Mode) => Number((await this.host.all(`SELECT COUNT(*) n ${candidateQuery(mode)}`, [batchId]))[0]?.n || 0);
+    const count = async (mode: 'choice' | 'layout') => Number((await this.host.all(`SELECT COUNT(*) n ${candidateQuery(mode)}`, [batchId]))[0]?.n || 0);
     const applied = async (mode: Mode) => Number((await this.host.all('SELECT COUNT(*) n FROM material_ai_choice_rechecks WHERE batch_id=? AND policy=?', [batchId,policyFor(mode)]))[0]?.n || 0);
-    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout'),layoutApplied:await applied('layout')};
+    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout'),layoutApplied:await applied('layout')+await applied('markers')};
   }
   private async args(batchId: string, ordinal: number, proof: Proof, crops: PageCrop[]): Promise<AiPagePublishArgs> {
     const row = (await this.host.all('SELECT first_json,final_json FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId,ordinal]))[0];
@@ -80,25 +92,34 @@ export class MaterialChoiceRechecks {
     return {batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:row.first_json,finalRaw:row.final_json,first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following,bookReferences:proof.bookReferences,bookAnswerPolicy:proof.bookAnswerPolicy};
   }
   /** Called within the application's writer transaction, capped at twenty source candidates. */
-  async apply(batchId: string, mode: Mode = 'choice') {
-    if (process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS === '0' || mode==='layout'&&process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0') throw Error('unsupported');
-    const rows = await this.host.all(`SELECT q.*,m.ordinal recheck_ordinal,m.number recheck_number ${candidateQuery(mode)} ORDER BY m.ordinal,m.number LIMIT 20`, [batchId]);
+  async apply(batchId: string, action: 'choice' | 'layout' = 'choice') {
+    if (process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS === '0' || action === 'layout' && process.env.OMNI_EDU_AI_SOURCE_LAYOUT === '0') throw Error('unsupported');
+    const policyColumn = action === 'layout'
+      ? `CASE WHEN ${markerLayout} THEN 'markers' ELSE 'layout' END`
+      : "'choice'";
+    const rows = await this.host.all(
+      `SELECT q.*,m.ordinal recheck_ordinal,m.number recheck_number,${policyColumn} recheck_mode
+       ${candidateQuery(action)} ORDER BY m.ordinal,m.number,q.id LIMIT 20`,
+      [batchId],
+    );
     const contexts = new Map<number,{proof:Proof;crops:PageCrop[];args:AiPagePublishArgs}>();
     let applied = 0;
     for (const row of rows) {
+      const mode = row.recheck_mode as Mode;
       const ordinal = Number(row.recheck_ordinal), number = String(row.recheck_number);
       let context = contexts.get(ordinal);
       if (!context) {
         const proof = await this.host.proof(batchId,ordinal);
-        if (!proof.unit.pageSource || proof.unit.pagePrompt?.policy !== 'page-fragments.v3' || (mode==='choice'?proof.unit.pagePrompt.choiceAnswerPolicy:proof.unit.pagePrompt.sourceLayoutPolicy)) continue;
+        if (!proof.unit.pageSource || !originalPolicyAllowed(proof.unit.pagePrompt,mode)) continue;
         const raw = (await this.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId,ordinal]))[0];
         const crops = await readPageCrops(this.host,batchId,ordinal,proof.unit.pageSource,proof.first,String(raw.first_json),proof.imageSha,new AbortController().signal,undefined,proof.unit.pagePrompt);
         context = {proof,crops,args:await this.args(batchId,ordinal,proof,crops)};
         contexts.set(ordinal,context);
       }
+      if (!originalPolicyAllowed(context.proof.unit.pagePrompt, mode)) continue;
       const plan = plans(context.args,number,mode);
       if (!plan || row.archive_json !== JSON.stringify(plan.before.archive) || row.document_json !== documentJson(plan.before.document) || !sameFields(row,plan.model) || await teacherOwnsRuleQuestion(this.host,String(row.id))) continue;
-      const {recheck_ordinal:_,recheck_number:__,...before} = row;
+      const {recheck_ordinal:_,recheck_number:__,recheck_mode:___,...before} = row;
       await this.host.run(`INSERT INTO material_ai_choice_rechecks(question_id,batch_id,ordinal,number,policy,proof_sha,before_json,after_archive_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)`,
       [String(row.id),batchId,ordinal,number,policyFor(mode),proofSha(context.proof,number,context.crops),JSON.stringify(before),JSON.stringify(plan.after.archive),new Date().toISOString()]);
       // Retain exact model fields and timestamps. The layout policy derives a missing source document.
@@ -121,8 +142,8 @@ export class MaterialChoiceRechecks {
     const row = (await this.host.all('SELECT * FROM material_ai_choice_rechecks WHERE question_id=?', [question.id]))[0];
     if (!row) return proof.unit.pagePrompt;
     const receipt = question.archive?.ai, number = question.archive?.number;
-    const mode: Mode = row.policy === SOURCE_LAYOUT_TEXT ? 'layout' : 'choice';
-    if (!receipt || !number || row.batch_id !== receipt.batchId || Number(row.ordinal) !== receipt.ordinal || row.number !== number || row.policy !== policyFor(mode) || row.proof_sha !== proofSha(proof,number,crops) || proof.unit.pagePrompt?.policy !== 'page-fragments.v3' || (mode==='choice'?proof.unit.pagePrompt.choiceAnswerPolicy:proof.unit.pagePrompt.sourceLayoutPolicy)) throw Error('source_changed');
+    const mode: Mode = row.policy === SOURCE_LAYOUT_MARKERS ? 'markers' : row.policy === SOURCE_LAYOUT_TEXT ? 'layout' : 'choice';
+    if (!receipt || !number || row.batch_id !== receipt.batchId || Number(row.ordinal) !== receipt.ordinal || row.number !== number || row.policy !== policyFor(mode) || row.proof_sha !== proofSha(proof,number,crops) || !originalPolicyAllowed(proof.unit.pagePrompt,mode)) throw Error('source_changed');
     const args = {...await this.args(receipt.batchId,receipt.ordinal,proof,crops),following};
     let before: Row;
     try {before=JSON.parse(String(row.before_json));} catch {throw Error('source_changed');}
@@ -130,7 +151,7 @@ export class MaterialChoiceRechecks {
     // A later page may become readable after this question's conservative review
     // was archived. Reproduce the exact saved before/after plans without silently
     // advancing its state. Current boundary guards remain in validateSource.
-    const boundaries: AiPagePublishArgs['following'][] = mode === 'layout' ? ['separate','continued','unknown'] : [following];
+    const boundaries: AiPagePublishArgs['following'][] = mode !== 'choice' ? ['separate','continued','unknown'] : [following];
     const plan = boundaries.map(boundary => plans({...args,following:boundary},number,mode)).find(candidate => candidate
       && before.archive_json === JSON.stringify(candidate.before.archive)
       && before.document_json === documentJson(candidate.before.document)

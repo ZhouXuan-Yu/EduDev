@@ -1,3 +1,4 @@
+import {sourceMarkerText} from '../../shared/material-ai-source-markers';
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceCropKinds} from '../../shared/material-ai-owned-crops';
 import {pageContinuation} from '../../shared/material-ai-continuation';
@@ -10,7 +11,7 @@ import {hasSourceReadings,sourceContentEnabled,contentPartRoles,SOURCE_CONTENT_R
 import {QUESTION_SOURCE_CONTENT,type SourcePart} from '../../shared/question-source-content';
 import {isCompleteQuestionDocument,validQuestionDocument,type QuestionDocument} from '../../shared/question-document';
 
-const literalBody=(text:string,number:string)=>sourceTextSignature(text.replace(questionNumberPrefix(text,number)?.[0]||/^$/u,''));
+const literalBody=(text:string,number:string,prompt?:AiPagePrompt)=>sourceTextSignature(sourceMarkerText(text.replace(questionNumberPrefix(text,number)?.[0]||/^$/u,''),prompt,number));
 /** Same UTF8 clipping limits as the original crop-review transport; cold reads
  * must never authenticate unseen OCR suffixes by trusting a saved assessment. */
 function fullOcrWasProvided(number:string,response:AiPageResponse,crops:PageCrop[]){
@@ -53,23 +54,24 @@ export function readingBodyComplete(first:AiPageResponse,final:AiPageResponse,qu
   if(sourceContentEnabled(prompt)){
    if(![left,right].every(r=>contentPartRoles(r.parts,r.text,question.number,firstBody,figure)))return false;
    const part=(r:SourceCropReading,role:SourcePart['role'])=>r.parts!.filter(p=>p.role===role).map(p=>p.text).join('');
-   if(['marker','body','figure'].some(role=>sourceTextSignature(part(left,role as SourcePart['role']))!==sourceTextSignature(part(right,role as SourcePart['role'])))||left.parts!.some(p=>p.role==='publication')!==right.parts!.some(p=>p.role==='publication'))return false;
+   const partSignature=(r:SourceCropReading,role:SourcePart['role'])=>sourceTextSignature(role==='figure'?part(r,role):sourceMarkerText(part(r,role),prompt,question.number,role==='marker'));
+   if((['marker','body','figure'] as const).some(role=>partSignature(left,role)!==partSignature(right,role))||left.parts!.some(p=>p.role==='publication')!==right.parts!.some(p=>p.role==='publication'))return false;
    if(!figure){body+=part(right,'body')+'\n';firstBody=false;continue;}
   }else if(sourceTextSignature(left.text)!==sourceTextSignature(right.text))return false;
   if(figure&&question.requiresImage&&question.projection.figures.state==='provided'){
    if(right.text&&!sourceTextSignature(question.projection.figures.text).includes(sourceTextSignature(right.text)))return false;
   }else{body+=right.text+'\n';firstBody=false;}
  }
- const source=literalBody(body,question.number);return source.length>=8&&source===literalBody(question.stem,question.number);
+ const source=literalBody(body,question.number,prompt);return source.length>=8&&source===literalBody(question.stem,question.number,prompt);
 }
-export function readingComparisons(first:AiPageResponse,final:AiPageResponse,crops:PageCrop[]):SourceReadingComparison[]{
+export function readingComparisons(first:AiPageResponse,final:AiPageResponse,crops:PageCrop[],prompt?:AiPagePrompt):SourceReadingComparison[]{
  if(!hasSourceReadings(final))return[];
  return final.readings.map(row=>({number:row.number,crops:row.crops.map((reading,i)=>{
   const source=crops.find(c=>c.number===row.number)?.fragments?.[i],other=hasSourceReadings(first)?first.readings.find(r=>r.number===row.number)?.crops[i]:undefined;
   const assessment=reading.assessment==='uncertain'||reading.issues.length?'uncertain':source&&sourceTextSignature(reading.text)===sourceTextSignature(source.quality.text)?'exact':'corrected';
   const publication=(r:SourceCropReading|undefined)=>r?.parts?.filter(p=>p.role==='publication').map(p=>p.text).join('')||'';
   const edges:SourceCropEdge[]=['top','right','bottom','left'];
-  return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source)&&readingMatchesCrop(other,source)&&sourceTextSignature(reading.text)===sourceTextSignature(other.text),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
+  return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source)&&readingMatchesCrop(other,source)&&sourceTextSignature(sourceMarkerText(reading.text,prompt,row.number))===sourceTextSignature(sourceMarkerText(other.text,prompt,row.number)),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
  })}));
 }
 /** Deterministic parser adapter only: the entire parsed source must equal ALL
@@ -79,7 +81,7 @@ export function readingCandidateStem(response:AiPageResponse,question:AiImageQue
  const crop=crops.find(c=>c.number===question.number);if(!crop||!hasSourceReadings(response)||!readingBodyComplete(response,response,question,crop,prompt,crops))return;
  if(sourceContentEnabled(prompt))return question.stem;
  const row=response.readings.find(r=>r.number===question.number)!;
- if(literalBody(row.crops.map(r=>r.text).join('\n'),question.number)!==literalBody(parsedStem,question.number))return;
+ if(literalBody(row.crops.map(r=>r.text).join('\n'),question.number,prompt)!==literalBody(parsedStem,question.number,prompt))return;
  return question.stem;
 }
 /** Persist the source layer separately from editable canonical body and answers. */

@@ -1,4 +1,4 @@
-import {sourceLayoutEnabled,sourceLayoutSignature} from './material-ai-source-layout';
+import {sourceLayoutEnabled,sourceLayoutSignature,sourceLayoutSignatureFor} from './material-ai-source-layout';
 import {aiTextSignature,questionNumberPrefix,type AiImageQuestion} from './material-ai-image';
 import type {AiPagePrompt} from './material-ai-page';
 
@@ -8,10 +8,10 @@ export const printedChoiceAnswerEnabled = (prompt?: AiPagePrompt) => prompt?.pol
 type Option = {label: string; text: string};
 
 /** Literal source labels only. Ambiguous, nested and repeated groups remain unsupported. */
-function options(text: string, signature = aiTextSignature): Option[] | undefined {
+function options(text: string, signature = aiTextSignature, skipBeforeA=false): Option[] | undefined {
   if (!text || text.length > 64000) return;
   let markers = [...text.matchAll(/[（(]([A-H])[）)]|(?:^|\s)([A-H])[.．、]/gu)];
-  if (signature === sourceLayoutSignature) markers = markers.slice(markers.findIndex(marker => (marker[1] || marker[2]) === 'A'));
+  if (skipBeforeA || signature === sourceLayoutSignature) markers = markers.slice(markers.findIndex(marker => (marker[1] || marker[2]) === 'A'));
   if (markers.length < 2 || markers.length > 8) return;
   const result: Option[] = [];
   for (const [index, marker] of markers.entries()) {
@@ -47,11 +47,11 @@ export function printedChoiceAnswerComparison(a: AiImageQuestion, b: AiImageQues
     const prefix = questionNumberPrefix(question.stem, question.number);
     return prefix ? question.stem.slice(prefix[0].length) : question.stem;
   };
-  const signature = sourceLayoutEnabled(prompt) ? sourceLayoutSignature : aiTextSignature;
+  const layout=sourceLayoutEnabled(prompt),signature = layout ? (s:string)=>sourceLayoutSignatureFor(s,prompt,a.number) : aiTextSignature;
   const left = body(a), right = body(b);
   if (signature(left) !== signature(right) || a.projection.choices.state !== 'provided' || b.projection.choices.state !== 'provided') return;
-  const source = options(left,signature), other = options(right,signature);
-  if (!source || !other || JSON.stringify(source) !== JSON.stringify(other) || JSON.stringify(options(a.projection.choices.text,signature)) !== JSON.stringify(source) || JSON.stringify(options(b.projection.choices.text,signature)) !== JSON.stringify(source)) return;
+  const source = options(left,signature,layout), other = options(right,signature,layout);
+  if (!source || !other || JSON.stringify(source) !== JSON.stringify(other) || JSON.stringify(options(a.projection.choices.text,signature,layout)) !== JSON.stringify(source) || JSON.stringify(options(b.projection.choices.text,signature,layout)) !== JSON.stringify(source)) return;
   const x = selected(a.answer, source,signature), y = selected(b.answer, source,signature);
   if (!x || !y || /单|single/iu.test(a.questionType) && (x.length !== 1 || y.length !== 1)) return 'conflict';
   return JSON.stringify(x) === JSON.stringify(y) ? 'same' : 'conflict';

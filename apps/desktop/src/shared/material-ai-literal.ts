@@ -199,7 +199,7 @@ pageIssues、issues只允许${AI_ISSUES.join('/')}，无疑点为空数组。题
  * review remain in the host for comparison, persistence and teacher correction. */
 export function independentLiteralContext(payload: Record<string, unknown>, sourceOnly: boolean) {
   const page = payload.pageContext as Record<string, unknown>;
-  const { blockTexts: _ocrHints, structureContext: _structureHints, continuation, ...pageContext } = page;
+  const { blockTexts: _ocrHints, structureContext: _structureHints, sourceMarkerPolicy: _markerPolicy, continuation, ...pageContext } = page;
   const extra = continuation as Record<string, unknown> | undefined;
   const { text: _continuationOcr, ...continuationContext } = extra || {};
   const review = payload.cropReview as Review;
