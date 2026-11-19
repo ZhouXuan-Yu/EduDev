@@ -563,7 +563,7 @@
       "status": "DEV_AND_PACKAGED_IMPORT_PASS, LOCAL_NSIS_PREVIOUS_CANDIDATE_BUILT",
       "evidence": "evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json",
       "hash": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7",
-      "independentInstall": "NOT_TESTED"
+      "independentInstall": "BLOCKED_ON_CURRENT_HOST_EXISTING_PRODUCT_SHORTCUTS"
     }
   },
   "latestIntegration": {
@@ -586,7 +586,11 @@
       "QG-05",
       "QG-10"
     ],
-    "educationAndIpc": "evidence/phase8/education-core-and-ipc-20261119.md"
+    "educationAndIpc": "evidence/phase8/education-core-and-ipc-20261119.md",
+    "windowsInstall": {
+      "status": "BLOCKED_CURRENT_HOST",
+      "evidence": "evidence/phase8/current-quality-checkpoint-20261119.md"
+    }
   },
   "phase7PackagedC1": {
     "status": "PASS_SCOPED_GATE7_PARTIAL",

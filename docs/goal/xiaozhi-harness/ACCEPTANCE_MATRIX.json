@@ -1848,10 +1848,21 @@
       "id": "QG-09",
       "priority": "P1",
       "expected": "Windows 目标环境测试（项目支持范围内）。",
-      "status": "NOT_TESTED",
+      "status": "BLOCKED",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "Windows 实包启动与合成资料验证通过。当前主机已有小智桌面和开始菜单快捷方式，Windows Sandbox 不可用；需独立 Windows 验证真实安装与卸载。"
     },
     {
       "id": "QG-10",

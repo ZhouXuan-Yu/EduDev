@@ -14,3 +14,7 @@
 迁移及 IPC 通过 `node --experimental-transform-types` 执行本仓库实际脚本。诊断 SHA-256 为 `de558cc85e4a6b3f175cfd19fbaa06f86b6e0058c389cd9dae2fdb00d370c602`，本机日志目录 `%TEMP%/edu-harness-lint-4fd6b255`。校验范围参考 [Oxlint 命令行手册](https://oxc.rs/docs/guide/usage/linter/cli.html)。
 
 安装、快捷入口、卸载和最终冻结候选由 QG-09 与最后独立验收覆盖。A-P0-08 结构化标签仍 FAIL。
+
+## Windows 安装前置检查
+
+本机当前用户的桌面和开始菜单已有小智快捷方式，Windows Sandbox 不可用。仓库 `apps/desktop/scripts/release/test-nsis-install.ps1` 在执行 NSIS 之前会拒绝覆盖现有快捷方式。完整安装、实际快捷入口、安装后启动、卸载和数据保留须在独立 Windows 环境复验。现有应用与快捷方式的检查只读。可启动的实包和本地无签名 NSIS 证据已保存。
