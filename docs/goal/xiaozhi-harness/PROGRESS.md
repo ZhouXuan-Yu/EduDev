@@ -6,9 +6,9 @@ Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、
 
 ### 协作者接手
 
-- 以 GitHub `main` 为已集成基线。工作台、计时准备、审批与终端对应功能提交 `88ad67c`、`0978a1e`、`387a796`，合并保留知识库和协作规则提交 `3ba66e5`。后续开发继续在 `codex/xiaozhi-harness-20261112` 进行。
+- 以 GitHub `main` 为已集成基线。工作台、计时准备、审批与终端对应功能提交 `88ad67c`、`0978a1e`、`387a796`，合并保留上游协作规则、跨页选择题和独立原图块修复 `3ba66e5`、`f5d9453`。后续开发继续在 `codex/xiaozhi-harness-20261112` 进行。
 - [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 70 项阶段范围通过。未验项与证据边界见 [独立验收记录](ACCEPTANCE_REPORT.md)。合并后的验证见 [合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
-- 后续先对同一缓存工作负载测量磁盘核验与工具时延，再按原方案完成独立原生窗口操作、真实模型 A/B 和打包验收。真实付费计数为 0/200，后续使用 [原计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+- 缓存优化的隔离原型已用同一工作负载比较，单次 24.01 秒降至 21.70 秒，源文件 SHA 读取 6 次降至 3 次。原型尚未进入生产源码，随后在功能分支补全并验证。原生窗口、真实模型 A/B 和打包继续按原方案验收。付费计数为 0/200。[性能对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
 
 - 工作台、审批收件箱、能力中心已用真实 Electron 验证。独立验收确认现代审批、冷启动、团队技能版本回滚、窄窗长路径折行和指定合成模型密钥未外显。能力中心增加中文工具标题、调用范围和中文搜索。
 - 缓存能力的真实受控进程基线已取得。24.109 秒完成准备、解析、执行，私有合成文本读回与三个原生进程清理通过。发现先前准备结果留作未知 Effect 会挡住同任务继续，已列定向审计。详见 [基线与复测口径](evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md)。

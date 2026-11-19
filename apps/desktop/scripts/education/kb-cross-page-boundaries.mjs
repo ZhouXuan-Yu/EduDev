@@ -26,11 +26,19 @@ async function fixture({folder=true,mode='normal',prefixText=prefix,modelPrefix=
  f.repo.runtime.inspectCrop=async()=>{f.inspections++;if(mode==='local_failure'&&f.inspections===2)throw Error('ocr_failed');return{schemaVersion:'xiaozhi.material-ai-crop-quality.v1',engine:LOCAL_OCR_ENGINE,text:f.inspections%2?body:prefixText,clearEdges:[mode!=='clipped',true,true,true]};};
  f.repo.runtime.complete=async input=>{f.inputs.push(structuredClone(input));f.state.calls++;const extra=input.pagePrompt.continuation,stem=body+(extra&&mode!=='missing_tail'?'\n'+modelPrefix:''),q={number:'1',stem,answer:'根据完整两问给出的参考答案。',analysis:'两问分别分析，依据原题判断。',subject:'物理',grade:'九年级',knowledgePoint:'机械运动',questionType:'解答题',difficulty:'medium',answerOrigin:'ai_generated',analysisOrigin:'ai_generated',requiresImage:true,issues:[],projection:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(k=>[k,{state:['statement','subquestions','figures'].includes(k)?'provided':'not_applicable',text:['statement','subquestions'].includes(k)?stem:k==='figures'?'原图物体位置示意。':''}]))};if(mode==='unknown'&&input.verification)throw Error('outcome_unknown');return JSON.stringify({schemaVersion:'xiaozhi.material-ai-page-fragments.v1',outcome:'questions',pageText:'第1题 '+body+'\n第1页共2页'+(extra&&mode!=='missing_tail'?'\n'+modelPrefix:''),pageIssues:[],questions:[q],fragments:[{number:'1',complete:true,blockIds:['block-1']}]});};
  if(folder){f.folderId='batch_12345678-1234-1234-1234-123456789abc';f.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER,processing_mode TEXT);CREATE TABLE material_import_entries(batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT)');f.db.prepare('INSERT INTO material_folder_ai VALUES(?,\'running\',1,1,3,\'legacy\')').run(f.folderId);f.db.prepare('INSERT INTO material_import_entries VALUES(?,\'file\',\'saved\',?)').run(f.folderId,f.id);f.task={key:'a'.repeat(64),folderId:f.folderId,revision:1};}
- f.create=async()=>f.batch=await f.repo.create(f.input,f.task);f.finish=async()=>{await f.repo.drain();await f.repo.drain();await f.repo.drain();};return f;
+ f.create=async()=>{
+  // This retained fixture supplies the older page-fragments.v1 response.
+  // Modern literal/source response verification has its own executor fixtures.
+  const names=['OMNI_EDU_AI_SOURCE_READING','OMNI_EDU_AI_BOUND_ANSWERS'];
+  const prior=names.map(key=>process.env[key]);
+  try{for(const key of names)process.env[key]='0';return f.batch=await f.repo.create(f.input,f.task);}
+  finally{names.forEach((key,i)=>{if(prior[i]===undefined)delete process.env[key];else process.env[key]=prior[i];});}
+ };
+ f.finish=async()=>{await f.repo.drain();await f.repo.drain();await f.repo.drain();};return f;
 }
 let passed=0;const check=async(name,fn)=>{await fn();passed++;console.log('PASS '+name);};
 try{
- await check('Quality folder mode assembles cross-page questions with all developer switches disabled',async()=>{
+ await check('Quality folder mode assembles cross-page questions using its frozen legacy response fixture',async()=>{
   const keys=['OMNI_EDU_AI_PAGE_RESTORATION','OMNI_EDU_AI_PAGE_REGIONS','OMNI_EDU_AI_PAGE_FRAGMENTS','OMNI_EDU_AI_CROP_REVIEW','OMNI_EDU_AI_CROP_IMAGES','OMNI_EDU_AI_CROSS_PAGE','OMNI_EDU_AI_OWNED_CROP_MARGINS','OMNI_EDU_AI_CORRECTION_REVIEW','OMNI_EDU_AI_CONTINUATION_TEXT'],prior=keys.map(k=>process.env[k]),f=await fixture();
   try{for(const k of keys)process.env[k]='0';f.db.prepare("UPDATE material_folder_ai SET processing_mode='quality'").run();await f.create();const frozen=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);assert(validPageContinuation(frozen.pagePrompt.continuation));assert.equal(frozen.pagePrompt.cropReviewPolicy,'local-crop-review.v3');await f.finish();assert.equal(f.state.calls,3,JSON.stringify(f.db.prepare('SELECT status,error FROM material_ai_units').all()));const q=await f.question();assert(q.stem.endsWith(prefix));assert(archiveEligible(q),JSON.stringify(q.archive));await new MaterialAiRepository(f.host).validate(q);assert.deepEqual(q.document.blocks.filter(b=>b.kind==='image').map(b=>b.anchors[0].page),[1,2]);}
   finally{keys.forEach((k,i)=>{if(prior[i]===undefined)delete process.env[k];else process.env[k]=prior[i];});await f.dispose();}

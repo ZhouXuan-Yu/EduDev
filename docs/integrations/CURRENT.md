@@ -3,6 +3,12 @@
 ## 2026-11-19 小智工作台接线
 
 新增一个版本化工作台只读 API，继续、批准、拒绝和能力检查沿原 typed IPC。受控 PowerShell 的子进程模块缓存进入现有隔离临时目录。Pi、Registry、文件、SQLite 和原授权签发仍是对应领域入口。
+## 2026-11-19 跨页选择题的原图续接
+
+现有 PDFium、RapidOCR、PP-DocLayout 及 DeepSeek 协议共同提供跨页选择题证据。续页图像局限于授权范围内归属明确的原块。
+
+详见 [本轮记录](../research/evidence/kb/20261119/choice-continuation/README.md)。
+
 ## 2026-11-19 页尾题边界复核
 
 复核只读同一 PDF 版本的原生层与 RapidOCR，不重新运行 OCR、不上传下一页，也不为下一页解题。

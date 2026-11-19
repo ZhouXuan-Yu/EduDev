@@ -1,0 +1,152 @@
+{
+  "before": {
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-cached-frozen-oDROqO\\experiment\\before\\run-pkT75d",
+    "success": true,
+    "durationMs": 24008.409799999994,
+    "runId": "run_080f5438-17dc-412c-bba2-05b57e82d228",
+    "modelCalls": 8,
+    "sourceGET": 0,
+    "paid": 0,
+    "setupApprovals": [
+      "teacher_explicit_original_scopes_via_PermissionService.issue",
+      "original_discovered_schema_scoped_approval"
+    ],
+    "ownerSourceSha": {
+      "count": 6,
+      "bytes": 539615232,
+      "inclusiveMs": 2238.0135999999766
+    },
+    "phaseSourceSha": {
+      "count": 7,
+      "bytes": 629551104,
+      "inclusiveMs": 2547.8883999999816
+    },
+    "projectionSha": {
+      "count": 3,
+      "bytes": 269807616,
+      "inclusiveMs": 3163.2676999999967
+    },
+    "nodeCopies": {
+      "count": 3,
+      "bytes": 269807616,
+      "inclusiveMs": 73.87079999998969
+    },
+    "ownerSourceStats": {
+      "count": 44,
+      "bytes": null,
+      "inclusiveMs": 3.7172999999893364
+    },
+    "nativeTerminals": 3,
+    "nativeCleanup": true,
+    "functionProbes": [
+      {
+        "failed": false,
+        "healthMarker": true
+      }
+    ],
+    "registry": [
+      {
+        "owner": {
+          "sessionId": "aisession_7a9470c8-1850-47f4-9300-7f8c167cce6f",
+          "runId": "run_080f5438-17dc-412c-bba2-05b57e82d228",
+          "generation": 2,
+          "taskId": "xitask_4070fff05a0fdbea585dd27af7957beaed9406a3147f03bf13858e2c9ee343d7"
+        },
+        "kind": "registry.sql",
+        "table": "xiaozhi_capability_provider_versions_v1",
+        "count": 104,
+        "bytes": 0,
+        "durationMs": 16.785800000012387
+      },
+      {
+        "owner": {
+          "sessionId": "aisession_7a9470c8-1850-47f4-9300-7f8c167cce6f",
+          "runId": "run_080f5438-17dc-412c-bba2-05b57e82d228",
+          "generation": 2,
+          "taskId": "xitask_4070fff05a0fdbea585dd27af7957beaed9406a3147f03bf13858e2c9ee343d7"
+        },
+        "kind": "registry.sql",
+        "table": "xiaozhi_capability_registry_v1",
+        "count": 20,
+        "bytes": 0,
+        "durationMs": 23.62000000005355
+      }
+    ],
+    "dependencyIdentityCount": 562
+  },
+  "fork": {
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-cached-frozen-oDROqO\\experiment\\fork\\run-KSJfsA",
+    "success": true,
+    "durationMs": 21702.921799999996,
+    "runId": "run_f38af0de-d308-4d76-8cdd-52b44bab16f7",
+    "modelCalls": 8,
+    "sourceGET": 0,
+    "paid": 0,
+    "setupApprovals": [
+      "teacher_explicit_original_scopes_via_PermissionService.issue",
+      "original_discovered_schema_scoped_approval"
+    ],
+    "ownerSourceSha": {
+      "count": 3,
+      "bytes": 269807616,
+      "inclusiveMs": 972.2781999999861
+    },
+    "phaseSourceSha": {
+      "count": 4,
+      "bytes": 359743488,
+      "inclusiveMs": 1186.7814999999973
+    },
+    "projectionSha": {
+      "count": 3,
+      "bytes": 269807616,
+      "inclusiveMs": 2534.2839000000095
+    },
+    "nodeCopies": {
+      "count": 3,
+      "bytes": 269807616,
+      "inclusiveMs": 75.06789999999455
+    },
+    "ownerSourceStats": {
+      "count": 35,
+      "bytes": null,
+      "inclusiveMs": 3.0521000000153435
+    },
+    "nativeTerminals": 3,
+    "nativeCleanup": true,
+    "functionProbes": [
+      {
+        "failed": false,
+        "healthMarker": true
+      }
+    ],
+    "registry": [
+      {
+        "owner": {
+          "sessionId": "aisession_f8161240-7b8e-471a-b08d-2115f057dfe4",
+          "runId": "run_f38af0de-d308-4d76-8cdd-52b44bab16f7",
+          "generation": 2,
+          "taskId": "xitask_dfff14278d598f7ce1bd2c6bb63ee90905d4d6f8f33558f000ea50ca98721346"
+        },
+        "kind": "registry.sql",
+        "table": "xiaozhi_capability_provider_versions_v1",
+        "count": 104,
+        "bytes": 0,
+        "durationMs": 160.1071000000302
+      },
+      {
+        "owner": {
+          "sessionId": "aisession_f8161240-7b8e-471a-b08d-2115f057dfe4",
+          "runId": "run_f38af0de-d308-4d76-8cdd-52b44bab16f7",
+          "generation": 2,
+          "taskId": "xitask_dfff14278d598f7ce1bd2c6bb63ee90905d4d6f8f33558f000ea50ca98721346"
+        },
+        "kind": "registry.sql",
+        "table": "xiaozhi_capability_registry_v1",
+        "count": 20,
+        "bytes": 0,
+        "durationMs": 30.32729999998992
+      }
+    ],
+    "dependencyIdentityCount": 562
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "scope": "Two-page choice options and original-crop identity under independent literal reading",
+  "baselineRevision": "5cee8e9fc7d63610dbeb35e02e19def1f1a6f366",
+  "integrationParentRevision": "3ba66e5a15c7491dec6445e2c3c1ad3e6ec728e2",
+  "buildMainSha256": "b70c9edbf1cfcd70a953c1aab29e87d458ad4208865ac782592c334c0e628202",
+  "realBoundaryCases": [
+    {
+      "page": 2,
+      "next": 3,
+      "selection": true,
+      "legacyP95Ms": 0.045,
+      "newP95Ms": 0.185
+    },
+    {
+      "page": 2,
+      "next": 3,
+      "selection": false,
+      "legacyP95Ms": 0.075,
+      "newP95Ms": 0.083
+    }
+  ],
+  "desktop": {
+    "checks": 2,
+    "capturedPageAnchors": [
+      2,
+      3
+    ],
+    "state": "ai_final",
+    "issues": [],
+    "completeDocument": true,
+    "rendererErrors": 0,
+    "controlledResponses": 6,
+    "externalModelCalls": 0,
+    "coldSourceHashMatches": true
+  },
+  "regressions": {
+    "choiceContinuation": "7/7",
+    "legacyCrossPage": "12/12",
+    "page": "248/248",
+    "bookWriteback": "36/36",
+    "bookReference": "53/53",
+    "renderer": "253/253",
+    "electronSmoke": "207/207",
+    "figureContinuation": {
+      "status": "FAIL",
+      "test": "kb-continuation-figures-boundaries.mjs:45",
+      "scope": "Independent caption and subquestion publication"
+    }
+  },
+  "dependencyAudit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0
+  },
+  "nextBranch": "codex/kb-cross-page-figures",
+  "completeGoal": false
+}

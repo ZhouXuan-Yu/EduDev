@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "2fbb50296b5dd821d97ebdb314ef17bfb37356cdea0cf5554a12bd08d40cb07f",
+  "sourceHash": "f85ee5c45af258ff85299e70564abcf3c598bf74939f776823a59a78d7b544dd",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1896,7 +1896,7 @@
     },
     {
       "file": "src/shared/material-ai-continuation.ts",
-      "sha256": "bc04d70e67a592bb1daaf7cf0c9a39b6b0b0c1cd09d038d71b34b67aef726362"
+      "sha256": "e42754793aaf16ac9c3b17d46ddd15d5489a7dc3d15c366d3a432e4f5f2b5fbc"
     },
     {
       "file": "src/shared/material-ai-figure-spacing.ts",
@@ -1928,7 +1928,7 @@
     },
     {
       "file": "src/shared/material-ai-owned-crops.ts",
-      "sha256": "35ad8de0123164df7d359995c23db86c029b3291589aee82ed775aae00ea9d65"
+      "sha256": "1d16ac0fdc8b312a5bb0da8fbb7c2385172c3bf43ded7cb6a2ddc73527dc989c"
     },
     {
       "file": "src/shared/material-ai-page-fragments.ts",

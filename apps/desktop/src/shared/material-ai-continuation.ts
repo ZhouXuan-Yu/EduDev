@@ -1,6 +1,6 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
-import {validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
-import {MATERIAL_FIGURE_CROPS,isDiagramGroup,ownedPageFragmentGroups,ownedPageFragmentGroupPlans} from './material-ai-owned-crops';
+import {continuationTextSignature,validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
+import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,ownedPageFragmentGroups,ownedPageFragmentGroupPlans} from './material-ai-owned-crops';
 import {validBlockTexts,type BlockTextHint} from './material-ai-page-fragments';
 import {aiTextSignature} from './material-ai-image';
 import {validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from './material-ai-page';
@@ -8,11 +8,12 @@ import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type M
 
 export const PAGE_CONTINUATION='page-continuation.v1' as const;
 export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
+export const PAGE_CONTINUATION_CHOICES='page-continuation.choices.v1' as const;
 export const CONTINUATION_FIGURE_CROPS='layout-subcrops.v1' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
 type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
-export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof});
+export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof});
 const parent=/^[ \t]*(?:第[ \t]*(\d{1,5})[ \t]*题[ \t]*[:：]?|(\d{1,5})[.、．](?!\d))/gmu;
 const markers=(text:string)=>[...text.matchAll(new RegExp(parent))];
 const continuationStart=/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u;
@@ -36,13 +37,91 @@ export function continuationPrefix(currentText:string,currentHints:BlockTextHint
  for(const [i,line]of raw.entries())if(!used.has(i)){const count=foreign.get(line)||0;if(!count)return;foreign.set(line,count-1);}
  try{const [group]=ownedPageFragmentGroups(blocks,blockIds,1);return{number:number(last),nextNumber:number(boundary),blockIds,text,box:group.box};}catch{return;}
 }
+const optionMarker=/(?:^|[ \t\u3000\n])(?:([A-H])[.．、]|[（(]([A-H])[）)])/gmu;
+export const startsWithContinuationChoices=(text:string)=>/^(?:A[.．、]|[（(]A[）)])/u.test(text.trimStart());
+const continuationMargins=new Set(['header','footer','header_image','footer_image','number']);
+const pendingChoice=/[（(]\s*[）)]\s*[。.!！?？]?\s*$/u;
+const pageCountLine=/^第\s*\d{1,5}\s*页\s*共\s*\d{1,5}\s*页$/u;
+
+function choiceBodies(text:string){
+ const markers=[...text.matchAll(optionMarker)];
+ if(markers.length<2||markers.length>8||markers[0].index!==0)return;
+ const bodies=markers.map((marker,index)=>({
+  label:marker[1]||marker[2],
+  text:text.slice(marker.index!+marker[0].length,markers[index+1]?.index??text.length).trim(),
+ }));
+ if(bodies.every(({label,text},index)=>label===String.fromCharCode(65+index)&&!!aiTextSignature(text)))return bodies;
+}
+
+function sameChoiceOwnership(a:string,b:string){
+ if(aiTextSignature(a)===aiTextSignature(b))return true;
+ // PDFium and OCR may lay out inline fractions differently. This comparison
+ // only locates the printed region. Publication still checks the full source.
+ const prose=(s:string)=>s.replace(/[^\p{Script=Han}]/gu,'');
+ const left=prose(a),right=prose(b);
+ if(left.length<8)return false;
+ if(left===right)return true;
+ // Local OCR can mistake one glyph next to an equation for a Han character.
+ // Keep that glyph in its raw receipt, and allow it only to locate the crop.
+ if(right.length!==left.length+1||!/[=＝][ \t]*[\p{Script=Latin}\p{Script=Greek}\p{N}\u{1D400}-\u{1D7FF}]/u.test(a))return false;
+ const afterEquation=[...b.matchAll(/([=＝][ \t]*)\p{Script=Han}(?=\p{Script=Han}{5})/gu)];
+ if(afterEquation.length!==1)return false;
+ const match=afterEquation[0],start=match.index!+match[1].length;
+ return left===prose(b.slice(0,start)+b.slice(start+1));
+}
+
+function unfinishedChoice(text:string,marker:RegExpMatchArray){
+ const tail=text.slice(marker.index!+marker[0].length).split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
+ if(pageCountLine.test(tail.at(-1)??''))tail.pop();
+ const body=tail.join('\n');
+ return pendingChoice.test(body)&&![...body.matchAll(optionMarker)].length?body:undefined;
+}
+
+export function hasUnfinishedContinuationChoice(text:string){
+ const last=markers(text).at(-1);
+ return !!last&&!!unfinishedChoice(text,last);
+}
+
+/** Final evidence compares every choice body, including all math and units. */
+export function continuationChoicesAgree(text:string,stem:string){
+ const reference=choiceBodies(text);
+ const starts=[...stem.matchAll(optionMarker)].filter(m=>(m[1]||m[2])==='A');
+ if(!reference||starts.length!==1)return false;
+ const restored=choiceBodies(stem.slice(starts[0].index).trim());
+ return !!restored&&restored.length===reference.length&&
+  reference.every((choice,i)=>continuationTextSignature(choice.text)===continuationTextSignature(restored[i].text));
+}
+
+/** A complete, printed choice list on the next page may belong to the previous
+ * parent. Geometry and labels pin the crop; the original text stays exact. */
+export function continuationChoicePrefix(currentText:string,currentHints:BlockTextHint[],nextText:string,blocks:PageBlocks,hints:BlockTextHint[]){
+ if(!startsWithContinuationChoices(nextText)||!validPageBlocks(blocks)||!blocks.ok||!validBlockTexts(hints,blocks))return;
+ const currentLayout=currentHints.map(h=>h.text).join('\n'),last=markers(currentText).at(-1),localLast=markers(currentLayout).at(-1),next=markers(nextText)[0];
+ if(!last||!localLast||!next||number(last)!==number(localLast)||Number(number(next))!==Number(number(last))+1)return;
+ const head=unfinishedChoice(currentText,last),localHead=unfinishedChoice(currentLayout,localLast);
+ if(!head||!localHead||!sameChoiceOwnership(head,localHead))return;
+ const index=hints.findIndex(h=>markers(h.text)[0]?.index===0);
+ if(index<=0||number(markers(hints[index].text)[0])!==number(next))return;
+ const prefix=blocks.blocks.slice(0,index).filter(b=>!continuationMargins.has(b.kind)),blockIds=prefix.map(b=>b.id);
+ if(!blockIds.length||blockIds.length>32||prefix.some(b=>!['text','content'].includes(b.kind)))return;
+ const text=nextText.slice(0,next.index).trim(),local=prefix.map(b=>hints.find(h=>h.blockId===b.id)!.text).join('\n').trim();
+ if(new TextEncoder().encode(text).length>8192)return;
+ const raw=choiceBodies(text),layout=choiceBodies(local);
+ if(!raw||!layout||raw.length!==layout.length||!raw.every((choice,k)=>sameChoiceOwnership(choice.text,layout[k].text)))return;
+ try{
+  const [group]=ownedPageFragmentGroups(blocks,blockIds,1);
+  return {number:number(last),nextNumber:number(next),blockIds,text,box:group.box};
+ }catch{return;}
+}
 export function validPageContinuation(v:unknown):v is PageContinuation{
  const keys=['schemaVersion','number','nextNumber','source','blocks','blockTexts','blockIds','text','image','scope'];
  if(!exact(v,keys)&&!exact(v,[...keys,'textProof']))return false;
- if(typeof v.text!=='string'||(v.schemaVersion===PAGE_CONTINUATION?Object.hasOwn(v,'textProof'):v.schemaVersion!==PAGE_CONTINUATION_TEXT||!validContinuationTextProof(v.textProof,v.text)))return false;
+ if(typeof v.text!=='string'||((v.schemaVersion===PAGE_CONTINUATION||v.schemaVersion===PAGE_CONTINUATION_CHOICES)?Object.hasOwn(v,'textProof'):v.schemaVersion!==PAGE_CONTINUATION_TEXT||!validContinuationTextProof(v.textProof,v.text)))return false;
  if(!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
  const scope=v.scope;if(!(exact(scope,['kind'])&&scope.kind==='selected_pages'||exact(scope,['kind','folderId','revision'])&&scope.kind==='folder_grant'&&typeof scope.folderId==='string'&&/^batch_[a-f0-9-]{36}$/i.test(scope.folderId)&&Number.isSafeInteger(scope.revision)&&Number(scope.revision)>=1))return false;
- const plan=continuationPrefix(`${v.number}. 原题`,[{blockId:'block-1',text:`${v.number}. 原题`}],`${v.text}\n${v.nextNumber}. 下一题`,v.blocks,v.blockTexts);
+ const choice=v.schemaVersion===PAGE_CONTINUATION_CHOICES;
+ const current=`${v.number}. 原题${choice?'（ ）':''}`;
+ const plan=(choice?continuationChoicePrefix:continuationPrefix)(current,[{blockId:'block-1',text:current}],`${v.text}\n${v.nextNumber}. 下一题`,v.blocks,v.blockTexts);
  if(!plan||JSON.stringify(v.blockIds)!==JSON.stringify(plan.blockIds)||plan.text!==v.text)return false;
  const image=v.image;
  return exact(image,['schemaVersion','ok','requestId','resourceId','version','engine','assetId','page','total','box','width','height','sha256'])&&image.schemaVersion===MATERIAL_PREVIEW_SCHEMA&&image.ok===true&&image.engine===PDF_PAGE_ENGINE&&validMaterialPreviewQuery({schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:image.requestId,resourceId:image.resourceId,version:image.version,page:image.page,box:image.box})&&image.resourceId===v.source.resourceId&&image.version===v.source.version&&image.page===v.source.page&&JSON.stringify(image.box)===JSON.stringify(plan.box)&&Number.isSafeInteger(image.total)&&Number(image.total)>=v.source.page&&Number(image.total)<=10000&&typeof image.assetId==='string'&&/^asset_[a-f0-9-]{36}$/.test(image.assetId)&&typeof image.sha256==='string'&&/^[a-f0-9]{64}$/.test(image.sha256)&&[image.width,image.height].every(n=>Number.isSafeInteger(n)&&Number(n)>=1&&Number(n)<=2401);
@@ -53,7 +132,7 @@ export const continuationSubcrops=(prompt?:AiPagePrompt)=>prompt?.policy==='page
 export function fragmentSourceBlocks(prompt:AiPagePrompt,ids:string[]){
  if(!('blocks'in prompt))return [];
  const extra=pageContinuation(prompt);
- return ids.map(id=>id.startsWith('next:')?continuationSubcrops(prompt)?extra?.blocks.blocks.find(b=>b.id===id.slice(5)):undefined:prompt.blocks.blocks.find(b=>b.id===id));
+ return ids.map(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)?continuationSubcrops(prompt)?extra?.blocks.blocks.find(b=>b.id===id.slice(CONTINUATION_BLOCK_PREFIX.length)):undefined:prompt.blocks.blocks.find(b=>b.id===id));
 }
 const inside=(a:ContinuationImage['box'],b:ContinuationImage['box'])=>a[0]>=b[0]&&a[1]>=b[1]&&a[2]<=b[2]&&a[3]<=b[3];
 /** Subcrops bind the exact planned region, while legacy whole-prefix crops retain their SHA check. */
@@ -75,14 +154,14 @@ export function continuationCropGroups(prompt:Extract<AiPagePrompt,{blockTexts:B
   for(let slots=1;slots<8;slots++)for(let nextSlots=1;nextSlots<=8-slots;nextSlots++){
    if(!current[slots]||!following[nextSlots])continue;
    const groups:Groups=[...current[slots]!.map(g=>({...g,source:undefined})),
-    ...following[nextSlots]!.map(g=>({...g,blockIds:g.blockIds.map(id=>'next:'+id),source:extra.source}))];
+    ...following[nextSlots]!.map(g=>({...g,blockIds:g.blockIds.map(id=>CONTINUATION_BLOCK_PREFIX+id),source:extra.source}))];
    if(groups.some(g=>g.source&&!inside(g.box,extra.image.box)))continue;
    const mixed=groups.reduce((n,g)=>{const blocks=fragmentSourceBlocks(prompt,g.blockIds);return n+(blocks.some(b=>b&&!['image','chart','figure_title'].includes(b.kind))?blocks.filter(b=>b?.kind==='image'||b?.kind==='chart').length:0);},0),area=groups.reduce((n,g)=>n+(g.box[2]-g.box[0])*(g.box[3]-g.box[1]),0);
-   const diagrams=groups.filter(g=>g.source?isDiagramGroup(extra.blocks,g.blockIds.map(id=>id.slice(5))):isDiagramGroup(prompt.blocks,g.blockIds)).length;
+   const diagrams=groups.filter(g=>g.source?isDiagramGroup(extra.blocks,g.blockIds.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length))):isDiagramGroup(prompt.blocks,g.blockIds)).length;
    if(!best||mixed<best.mixed||mixed===best.mixed&&(diagrams>best.diagrams||diagrams===best.diagrams&&(groups.length>best.groups.length||groups.length===best.groups.length&&area<best.area)))best={groups,mixed,diagrams,area};
   }
   if(!best)throw Error('source_incomplete');return best.groups;
  }
  const groups=ownedPageFragmentGroups(prompt.blocks,ids,append?7:8,prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS).map(g=>({...g,source:undefined as MaterialPageSource|undefined}));
- if(append)groups.push({blockIds:extra.blockIds.map(id=>'next:'+id),box:extra.image.box,source:extra.source});return groups;
+ if(append)groups.push({blockIds:extra.blockIds.map(id=>CONTINUATION_BLOCK_PREFIX+id),box:extra.image.box,source:extra.source});return groups;
 }

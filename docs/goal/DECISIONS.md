@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 跨页选择题的原图续接
+
+为新任务增加 page-continuation.choices.v1，按冻结的候选文本和图片续接。OMNI_EDU_AI_CONTINUATION_CHOICES=0 停止新选择题续接，处理已保存任务仍按各自协议。
+
+详见 [本轮记录](../research/evidence/kb/20261119/choice-continuation/README.md)。
+
 ## 2026-11-19 页尾题边界复核
 
 将局部页首证据用于分界，整页状态独立持久化。复用资料页本地版式复核动作及原事务，新证据单独审计。OMNI_EDU_AI_NEXT_PARENT_BOUNDARY=0 可停止新写入。
