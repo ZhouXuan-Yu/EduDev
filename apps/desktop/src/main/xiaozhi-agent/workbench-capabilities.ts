@@ -1,6 +1,6 @@
 import type {WorkbenchCapabilityRow, WorkbenchTaskContext} from '../../shared/xiaozhi-workbench';
 import type {CapabilityCandidate} from '../../shared/xiaozhi-acquisition';
-import type {AcquisitionArtifact} from './capabilities/acquisition/state';
+import type {AcquisitionArtifact, AcquisitionOperation} from './capabilities/acquisition/state';
 import {readAcquisitionRow} from './capabilities/acquisition/state';
 import {createCapabilityRegistry} from './capabilities/registry';
 import {assessConformance} from './capabilities/resolver';
@@ -9,6 +9,7 @@ import {readMcpCatalog} from './mcp-runtime';
 import {readExtensionPackageRow} from './extensions/package-manager';
 import {createExtensionState} from './extensions/state';
 import {createTaskState} from './tasks/task-state';
+import {readPermissionApprovalRow} from './permissions/store';
 import {workbenchFailure, workbenchRows, workbenchSource, workbenchText, type WorkbenchRead} from './workbench-state';
 
 function base(id: string, name: string, sourceKind: WorkbenchCapabilityRow['sourceKind']): WorkbenchCapabilityRow {
@@ -31,8 +32,38 @@ export async function workbenchTaskContext(read: WorkbenchRead, query: {sessionI
     return {state: 'stale', sessionId: query.sessionId, taskId: query.taskId || null, requirementsVersion: query.requirementsVersion || null};
   }
 }
-export async function readWorkbenchCapabilities(read: WorkbenchRead): Promise<{items: WorkbenchCapabilityRow[]; registryRevision: number | null}> {
+async function pendingPreparation(read: WorkbenchRead, context: WorkbenchTaskContext) {
+  const candidates = new Set<string>(), artifacts = new Set<string>();
+  if (context.state !== 'current' || !context.sessionId || !context.taskId || context.requirementsVersion === null) return {candidates, artifacts};
+  const approvals = new Map<string, Set<string>>();
+  for await (const row of workbenchRows(read, 'ai_confirmation_items', 'approvals',
+    "action_type='xiaozhi_permission_v2' AND session_id=? AND status='pending'", [context.sessionId], true)) {
+    try {
+      const {state, request} = readPermissionApprovalRow(row);
+      if (state !== 'pending' || request.action !== 'capability_prepare' || request.owner.taskId !== context.taskId
+          || request.requirementsVersion !== context.requirementsVersion || Date.parse(request.expiresAt) <= Date.parse(read.now)) continue;
+      const digests = approvals.get(request.callId) || new Set<string>();
+      digests.add(request.inputDigest);
+      approvals.set(request.callId, digests);
+    } catch {workbenchFailure(read, 'approvals', 'corrupt');}
+  }
+  if (!approvals.size) return {candidates, artifacts};
+  for await (const row of workbenchRows(read, 'xiaozhi_acquisition_operations_v1', 'acquisition',
+    "json_extract(payload_json,'$.owner.sessionId')=? AND json_extract(payload_json,'$.owner.taskId')=?", [context.sessionId, context.taskId], true)) {
+    try {
+      const operation = readAcquisitionRow<AcquisitionOperation>(row)!;
+      if (operation.phase !== 'needs_approval' || operation.requirementsVersion !== context.requirementsVersion
+          || !operation.plan || !approvals.get(operation.id)?.has(protocolHash(operation.plan))) continue;
+      candidates.add(operation.candidateId);
+      if (operation.artifactId) artifacts.add(operation.artifactId);
+    } catch {workbenchFailure(read, 'acquisition', 'corrupt');}
+  }
+  return {candidates, artifacts};
+}
+
+export async function readWorkbenchCapabilities(read: WorkbenchRead, context: WorkbenchTaskContext): Promise<{items: WorkbenchCapabilityRow[]; registryRevision: number | null}> {
   const items: WorkbenchCapabilityRow[] = [], artifacts: AcquisitionArtifact[] = [];
+  const awaiting = await pendingPreparation(read, context);
   for await (const row of workbenchRows(read, 'xiaozhi_acquisition_artifacts_v1', 'acquisition')) {
     try {
       const artifact = readAcquisitionRow<AcquisitionArtifact>(row)!;
@@ -42,6 +73,7 @@ export async function readWorkbenchCapabilities(read: WorkbenchRead): Promise<{i
         source: workbenchSource(artifact.source), sourceHash: artifact.sourceHash, schemaHash: artifact.schemaHash, license: workbenchText(artifact.license, 100) || null,
         installed: 'installed', verification: artifact.status === 'revoked' ? 'revoked' : artifact.status === 'failed' ? 'failed'
           : expired ? 'expired' : artifact.status === 'ready' ? 'verified' : 'pending',
+        authorization: awaiting.artifacts.has(artifact.id) ? 'required' : 'task_check_required',
         availability: artifact.status === 'ready' && !expired ? 'task_check_required' : 'blocked', expiresAt: artifact.expiresAt,
         reasons: artifact.status === 'revoked' ? ['provider_revoked'] : expired ? ['verification_expired'] : [], risk: ['external_tool']});
     } catch {workbenchFailure(read, 'acquisition', 'corrupt');}
@@ -53,6 +85,7 @@ export async function readWorkbenchCapabilities(read: WorkbenchRead): Promise<{i
       items.push({...base('candidate:' + candidate.id, candidate.name, 'acquisition'), version: workbenchText(candidate.version, 100),
         source: workbenchSource(candidate.repository || candidate.packageName || candidate.externalId), sourceHash: candidate.sourceHash,
         installed: 'missing', verification: expired ? 'expired' : candidate.source === 'reviewed' ? 'pending' : 'quarantined',
+        authorization: awaiting.candidates.has(candidate.id) ? 'required' : 'task_check_required',
         availability: 'blocked', expiresAt: candidate.expiresAt, reasons: [expired ? 'candidate_expired' : 'candidate_requires_review'], risk: ['external_tool']});
     } catch {workbenchFailure(read, 'acquisition', 'corrupt');}
   }

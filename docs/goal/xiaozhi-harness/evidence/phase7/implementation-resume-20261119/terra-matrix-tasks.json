@@ -1,0 +1,156 @@
+{
+  "db": [
+    {
+      "id": "xitask_1ebc334112f6776b4010c6ea0749f138959d8f83a1cba433a19e012cd01d990f",
+      "state": "review_required",
+      "sessionId": "aisession_9d0b573f-91d0-474f-bb7b-90c0d7e8f851"
+    },
+    {
+      "id": "xitask_34d75fffbee9ac685daf4e915bc225076e02bee4c84281735b98fb683faf96d3",
+      "state": "review_required",
+      "sessionId": "aisession_85df8d1a-1213-41a6-89ac-59a9a71bd92f"
+    },
+    {
+      "id": "xitask_85be9ef2a6b131343b58afc96a2d80a3075dc311df6e13f0529632a33ee1f641",
+      "state": "review_required",
+      "sessionId": "aisession_84eae55c-1622-4967-8ee0-1ee0287d9418"
+    },
+    {
+      "id": "xitask_8cac3aff0307020997a24baf3285fb99642402283df4f4787c92a26977faedd9",
+      "state": "review_required",
+      "sessionId": "aisession_a05428eb-a95d-4266-94fe-e1fdeb7f95e9"
+    },
+    {
+      "id": "xitask_a5e919831380be24851da8bfc856dcb0890004ef15949fd5161608e84c60519e",
+      "state": "completed",
+      "sessionId": "aisession_7bfa5f34-6b12-4d95-91d6-c297fe601c4d"
+    }
+  ],
+  "summary": {
+    "schemaVersion": 1,
+    "asOf": "2026-11-19T05:42:46.196Z",
+    "items": [
+      {
+        "sessionId": "aisession_85df8d1a-1213-41a6-89ac-59a9a71bd92f",
+        "sessionTitle": "核对样本 · 同任务继续",
+        "taskId": "xitask_34d75fffbee9ac685daf4e915bc225076e02bee4c84281735b98fb683faf96d3",
+        "revision": 6,
+        "requirementsVersion": 1,
+        "state": "review_required",
+        "updatedAt": "2026-11-19T05:16:16.665Z",
+        "lastRunId": "run_527b4033-373b-48eb-9a08-d4e93e35b80c",
+        "isLatestForSession": true,
+        "resumeCandidate": false,
+        "continuationCandidate": true,
+        "blockedReasons": [
+          "no_remaining_steps",
+          "needs_new_candidate"
+        ],
+        "pendingApprovalCount": 0,
+        "unknownEffectCount": 0,
+        "planningLevel": 1,
+        "nativeInspection": "not_checked"
+      },
+      {
+        "sessionId": "aisession_84eae55c-1622-4967-8ee0-1ee0287d9418",
+        "sessionTitle": "兼容样本 · 历史复制申请",
+        "taskId": "xitask_85be9ef2a6b131343b58afc96a2d80a3075dc311df6e13f0529632a33ee1f641",
+        "revision": 3,
+        "requirementsVersion": 1,
+        "state": "review_required",
+        "updatedAt": "2026-11-19T04:35:16.352Z",
+        "lastRunId": "run_049f6f1f-ef46-43f2-952d-7b7e5a58fcb9",
+        "isLatestForSession": true,
+        "resumeCandidate": false,
+        "continuationCandidate": true,
+        "blockedReasons": [
+          "pending_approval",
+          "no_remaining_steps",
+          "needs_new_candidate"
+        ],
+        "pendingApprovalCount": 2,
+        "unknownEffectCount": 0,
+        "planningLevel": 1,
+        "nativeInspection": "not_checked"
+      },
+      {
+        "sessionId": "aisession_9d0b573f-91d0-474f-bb7b-90c0d7e8f851",
+        "sessionTitle": "审批样本 · 现代权限申请",
+        "taskId": "xitask_1ebc334112f6776b4010c6ea0749f138959d8f83a1cba433a19e012cd01d990f",
+        "revision": 4,
+        "requirementsVersion": 1,
+        "state": "review_required",
+        "updatedAt": "2026-11-19T04:35:14.771Z",
+        "lastRunId": "run_5941bbe4-552e-4b13-869c-71cdf44dfb1f",
+        "isLatestForSession": true,
+        "resumeCandidate": false,
+        "continuationCandidate": true,
+        "blockedReasons": [
+          "no_remaining_steps",
+          "needs_new_candidate"
+        ],
+        "pendingApprovalCount": 0,
+        "unknownEffectCount": 0,
+        "planningLevel": 1,
+        "nativeInspection": "not_checked"
+      },
+      {
+        "sessionId": "aisession_a05428eb-a95d-4266-94fe-e1fdeb7f95e9",
+        "sessionTitle": "恢复样本 · 尚有剩余步骤",
+        "taskId": "xitask_8cac3aff0307020997a24baf3285fb99642402283df4f4787c92a26977faedd9",
+        "revision": 6,
+        "requirementsVersion": 1,
+        "state": "review_required",
+        "updatedAt": "2026-11-19T04:35:12.015Z",
+        "lastRunId": "run_4d2a0061-29ee-409c-b641-217f70f6c775",
+        "isLatestForSession": true,
+        "resumeCandidate": true,
+        "continuationCandidate": true,
+        "blockedReasons": [
+          "unknown_effect"
+        ],
+        "pendingApprovalCount": 0,
+        "unknownEffectCount": 1,
+        "planningLevel": 2,
+        "nativeInspection": "not_checked"
+      },
+      {
+        "sessionId": "aisession_7bfa5f34-6b12-4d95-91d6-c297fe601c4d",
+        "sessionTitle": "已确认样本 · 已完成",
+        "taskId": "xitask_a5e919831380be24851da8bfc856dcb0890004ef15949fd5161608e84c60519e",
+        "revision": 4,
+        "requirementsVersion": 1,
+        "state": "completed",
+        "updatedAt": "2026-11-19T04:35:08.096Z",
+        "lastRunId": "run_854c7348-0448-4503-8333-1e77002734bb",
+        "isLatestForSession": true,
+        "resumeCandidate": false,
+        "continuationCandidate": false,
+        "blockedReasons": [
+          "completed"
+        ],
+        "pendingApprovalCount": 0,
+        "unknownEffectCount": 0,
+        "planningLevel": 1,
+        "nativeInspection": "not_checked"
+      }
+    ],
+    "total": 5,
+    "matched": 5,
+    "counts": {
+      "active": 0,
+      "review_required": 4,
+      "paused": 0,
+      "interrupted": 0,
+      "completed": 1,
+      "ended": 0
+    },
+    "nextCursor": null,
+    "partial": false,
+    "unavailableCount": 0,
+    "sourceFailures": [],
+    "scanned": 5,
+    "kind": "tasks"
+  },
+  "unfinishedText": "任务总览\n审批收件箱\n跨会话任务\n\n先核对已保存记录，再显式继续同一任务。不会自动重放未知操作。\n\n任务范围\n未完成\n可恢复\n需处理\n已确认\n已结束\n全部\n会话范围\n全部会话\n当前会话\n刷新记录\n\n任务总数 5 · 当前筛选 4 · 已确认 1 · 已结束 0\n\n核对样本 · 同任务继续\n\n待你核对\n\n2026/11/19 13:16:16 · 待审批 0 · 待核验操作 0\n\n没有可直接恢复的剩余步骤\n\n需要继续生成并重新核对成果\n\n继续检查任务已保存的来源和成果。\n\n查看会话\n继续核对本任务\n兼容样本 · 历史复制申请\n\n待你核对\n\n2026/11/19 12:35:16 · 待审批 2 · 待核验操作 0\n\n有待处理审批\n\n没有可直接恢复的剩余步骤\n\n需要继续生成并重新核对成果\n\n继续检查任务已保存的来源和成果。\n\n查看会话\n继续核对本任务\n审批样本 · 现代权限申请\n\n待你核对\n\n2026/11/19 12:35:14 · 待审批 0 · 待核验操作 0\n\n没有可直接恢复的剩余步骤\n\n需要继续生成并重新核对成果\n\n继续检查任务已保存的来源和成果。\n\n查看会话\n继续核对本任务\n恢复样本 · 尚有剩余步骤\n\n待你核对\n\n2026/11/19 12:35:12 · 待审批 0 · 待核验操作 1\n\n有操作结果待核验，不会自动重放\n\n继续检查任务已保存的来源和成果。\n\n查看会话\n继续剩余步骤\n继续核对本任务\n上一页\n下一页"
+}

@@ -50,8 +50,23 @@ try {
   });
   await check('U05_inbox_modern_rejection_uses_original_permission_CAS', async () => {
     if (!await page.getByTestId('pi-workbench').isVisible()) await overview(); await page.getByTestId('pi-workbench-approvals').click();
-    const row = page.getByTestId('pi-approval-inbox-row').filter({hasText: '审批样本 · 现代权限申请'}).first(); await row.getByTestId('pi-approval-inbox-detail').click();
-    const detail = page.getByTestId('pi-approval-inbox-selected'); await detail.getByTestId('pi-permission-reject').click();
+    const row = page.getByTestId('pi-approval-inbox-row').filter({hasText: '审批样本 · 现代权限申请'}).first();
+    assert.match(await row.innerText(), /数据范围 脱敏资料/);
+    assert.doesNotMatch(await row.innerText(), /redacted|申请版本/);
+    await row.getByTestId('pi-approval-inbox-detail').click();
+    const detail = page.getByTestId('pi-approval-inbox-selected');
+    const requestDetails = detail.getByRole('button', {name: '请求详情', exact: true});
+    await requestDetails.click();
+    assert.match(await detail.innerText(), /申请版本 1/);
+    const exposed = await page.evaluate(async () => {
+      const settings = await window.omniEdu.getXiaozhiSettings();
+      const secret = 'synthetic-phase7-loopback';
+      return {configured: settings.ok && settings.value.configured,
+        projectedSecret: JSON.stringify(settings).includes(secret),
+        renderedSecret: document.querySelector('[data-testid="pi-approval-inbox"]').textContent.includes(secret)};
+    });
+    assert.deepEqual(exposed, {configured: true, projectedSecret: false, renderedSecret: false});
+    await detail.getByTestId('pi-permission-reject').click();
     const id = fixture.ids.permission.approvals[0].id; await until(async () => approvals().some(item => item.id === id && item.value.state === 'rejected'));
     await page.getByTestId('pi-approval-filter').selectOption('rejected'); await page.getByTestId('pi-approval-inbox-row').filter({hasText: '审批样本'}).first().waitFor();
   });
@@ -89,6 +104,7 @@ try {
     await until(async () => {const read = await page.evaluate(input => window.omniEdu.readXiaozhiTerminal(input), {sessionId, jobId, sinceSequence: 0}); return read.ok && read.data.output.includes('PHASE7_VALUE_41');});
     assert.equal(fixture.requests.length, modelCalls); await console.getByTestId('terminal-close').click();
     await until(async () => {const listed = await page.evaluate(id => window.omniEdu.listXiaozhiTerminals(id), sessionId); return listed.ok && listed.data.jobs.find(item => item.jobId === jobId)?.cleanup === 'complete';});
+    assert.equal(fs.existsSync(path.join(fixture.ids.workspace, 'Microsoft', 'Windows', 'PowerShell', 'ModuleAnalysisCache')), false);
   });
   await check('U09_cold_original_summary_and_inbox_decision_readback', async () => {
     const before = await summary({kind: 'tasks', filter: 'all'}); assert(before.ok); report.modelCalls = fixture.requests.length; await fixture.close();

@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "name": "sqlite_overview_and_reasons",
+      "status": "PASS",
+      "extra": {
+        "dbTotal": 5,
+        "completed": 1,
+        "completedText": "已确认样本 · 已完成\n\n你已确认\n\n2026/11/19 12:35:08 · 待审批 0 · 待核验操作 0\n\n已确认完成\n\n查看会话"
+      }
+    },
+    {
+      "name": "approval_reject_modern_and_readback",
+      "status": "FAIL",
+      "error": "Error: no pending modern permission in reused synthetic fixture\n    at file:///C:/Users/ZhouXuan/AppData/Local/Temp/phase7-terra-matrix.mjs:4:512\n    at async c (file:///C:/Users/ZhouXuan/AppData/Local/Temp/phase7-terra-matrix.mjs:1:368)\n    at async file:///C:/Users/ZhouXuan/AppData/Local/Temp/phase7-terra-matrix.mjs:4:1"
+    },
+    {
+      "name": "capability_status_inventory",
+      "status": "PASS",
+      "extra": {
+        "installed": [
+          "bundled"
+        ],
+        "verification": [
+          "verified"
+        ],
+        "authorization": [
+          "task_check_required"
+        ],
+        "availability": [
+          "full"
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "modelCalls": 0
+}

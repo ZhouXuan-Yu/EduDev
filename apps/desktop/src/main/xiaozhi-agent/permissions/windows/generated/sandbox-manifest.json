@@ -14,8 +14,8 @@
   },
   "privateIdentityPath": ".runtime/.helper-state/identity.json",
   "helperFile": "xiaozhi-sandbox.exe",
-  "helperSha256": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
-  "sourceSha256": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+  "helperSha256": "fb2aed5bbd7c9dbec023f54f3291eda0bb31f711e74a4c1c68626949d798f102",
+  "sourceSha256": "c5f2df82df5b85a025ed53b2123aa3dfe8c0694179c7ad88a1c522dc7e21feb1",
   "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
   "helperBytes": 58880,
   "architecture": "x64",
@@ -38,11 +38,11 @@
   ],
   "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
   "outputLimitError": "output_limit",
-  "buildTime": "2026-11-17T15:50:34.008Z",
+  "buildTime": "2026-11-19T07:19:34.169Z",
   "sourceFiles": [
     {
       "file": "NativeSandbox.cs",
-      "sha256": "86efd211842a19765db635f965c27d5a95eb130a1e6cf77b95de852be9734d9f"
+      "sha256": "01694d0291bb2ed12e44181e5be7d878cd7670390cd00b290a1dd4bf1d665b7d"
     },
     {
       "file": "PlatformInfo.cs",

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-19 小智工作台接线
+
+新增一个版本化工作台只读 API，继续、批准、拒绝和能力检查沿原 typed IPC。受控 PowerShell 的子进程模块缓存进入现有隔离临时目录。Pi、Registry、文件、SQLite 和原授权签发仍是对应领域入口。
+
 ## 2026-11-18 Harness终端与恢复接线
 
 新增typed terminal Job契约、preload和原main IPC已贯通原Pi工具与当前对话组件。Task恢复沿原get/resume/continue/review流程，JSONL重建、Provider重新核验及审批延续保留原Task事实。Windows helper58880B，最终SHA f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8。xterm6.0.0与fit0.11.0均MIT，精确锁定且已验证。独立Gate6通过，asar与真实provider集成按Phase8执行。原source/out/lock身份和失败索引位于evidence/phase6/implementation-final-20261118及docs/goal/xiaozhi-harness/evidence/phase6/final/。

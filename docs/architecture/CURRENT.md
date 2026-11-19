@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-19 工作台与能力准备
+
+工作台汇总沿原 SQLite 的只读事务读取 Task、审批和 Registry。能力准备沿既有获取事务和权限审计记录每次精确结果，原 Effect 据领域读回区分已知审批暂停和已完成。旧记录缺少证据时保留原核对流程。
+
 ## 2026-11-18 Harness Gate6
 
 原Pi/Task/Journal/Permission架构已接Effect、immutable checkpoint与持久Job。Job控制者与lease采用独立revision，输入持久ACK可本地核对。后台作业沿原受控Windows helper/ConPTY执行，前台与PTY均以UTF8及owned PSDrive核对cwd。冷启恢复Task状态并维护已证实退出的owned资源，投影及unknown事实进入明确续接流程。SQLite/文件继续为事实来源。独立23项通过，完整报告位于docs/goal/xiaozhi-harness/evidence/phase6/final/。跨会话只读总览、完整页面和最终打包按Phase7/8继续。

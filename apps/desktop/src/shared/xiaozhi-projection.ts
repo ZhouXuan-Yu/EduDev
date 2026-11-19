@@ -38,6 +38,12 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
 };
 const labels: Record<string, string> = {
   exec_command:'运行终端命令', find_education_tools:'查找可用能力', read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
+  capability_inspect:'查看能力状态', capability_resolve:'匹配任务所需能力', capability_execute:'使用已选能力',
+  capability_search:'查找工具来源', capability_prepare:'准备本地工具', extension_inspect:'查看可用扩展',
+  extension_prepare:'准备本地扩展', extension_invoke:'运行已授权扩展', environment_inspect:'检查运行环境',
+  environment_repair:'修复运行环境', list_terminals:'查看终端作业', write_stdin:'向终端发送输入', close_terminal:'关闭终端',
+  read_effect_receipt:'核对已有操作结果', update_task_plan:'更新当前任务计划', read_teacher_request:'读取教师要求',
+  skill_create:'创建个人技能', prepare_education_tool:'准备教学工具',
   office_list_materials:'查找资料库文件',office_read_material:'读取资料库正文',
   education_verify_material_quote:'核验资料引用',
   education_verify_equation:'核验原方程与定义域',

@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/main/xiaozhi-agent/capabilities/acquisition/prepare-receipts.ts",
+    "sha256": "88cd637d269324288f7f437b40d7748be6fce40803efedaed01bbb15fb43993d"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+    "sha256": "d62ed07369481819e2c8acfd3119e60e9991993081aaa55b83738426ce17a22b"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+    "sha256": "07911055632db196eb252231b11f07bb3eabfa026810f89a3a5bbdbbfbdc4d03"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+    "sha256": "e0f7c60b841a3bcc4839c5e2345b08618f72be02cd7f50661dea0ee47f357b11"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
+    "sha256": "857b1f7505dc4a8321ce89cb3876f12cda996d6aab602198bf4ff83e7ceedc21"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/events/recovery-readback.ts",
+    "sha256": "6213970f9ce5a56244544eb09d47eb0efaf0e7dc6c6db807784692c80c1ab372"
+  },
+  {
+    "path": "src/main/xiaozhi-agent/production-host.ts",
+    "sha256": "c4e7e015799824601a0c2edd6bfea472693115b90b5c9dc1ad54a9bb0884fbd3"
+  },
+  {
+    "path": "scripts/xiaozhi-agent/phase7-acquisition-recovery-smoke.mjs",
+    "sha256": "e1764f34b7186fb30e48c8b2cc2628c890814a64f980f46c3c23c74bb5eeec2e"
+  },
+  {
+    "path": "scripts/xiaozhi-agent/phase7-acquisition-recovery-worker.ts",
+    "sha256": "188724c9be16518925a3affa9e5a24fb2ae222509bc019cd9439124740ba663c"
+  },
+  {
+    "path": "scripts/xiaozhi-agent/phase7-acquisition-proof-smoke.mjs",
+    "sha256": "ae9d57771909aa967028e0b0c915d96ba34f1e50f169246388e9b1d9fb0cb124"
+  }
+]

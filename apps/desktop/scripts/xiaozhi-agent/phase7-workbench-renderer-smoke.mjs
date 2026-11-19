@@ -9,8 +9,8 @@ import {JSDOM} from 'jsdom';
 
 const desktop=path.resolve(import.meta.dirname,'../..');
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-phase7-workbench-renderer-'));
-const sourcePaths=['PiWorkspaceShell.tsx','PiEducationWorkspace.tsx','PiSettingsWorkspace.tsx','PiPermissionApproval.tsx','PiCapabilityCenter.tsx','workbench/PiRecoveryOverview.tsx','workbench/PiApprovalInbox.tsx','workbench/useWorkbenchSummary.ts','workbench/workbench.module.css'].map(file=>'src/renderer/components/office/'+file);
-sourcePaths.push('scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs');
+const sourcePaths=['PiWorkspaceShell.tsx','PiEducationWorkspace.tsx','PiSettingsWorkspace.tsx','PiPermissionApproval.tsx','PiCapabilityCenter.tsx','workbench/PiRecoveryOverview.tsx','workbench/PiApprovalInbox.tsx','workbench/useWorkbenchSummary.ts'].map(file=>'src/renderer/components/office/'+file);
+sourcePaths.push('src/renderer/ui-system/xiaozhi-workbench.module.css','scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs');
 const report={success:false,output,checks:[],calls:[],boundary:'Actual production React/HeroUI components and parent workspace in JSDOM, synthetic typed IPC only. No Electron, SQL, native helper, provider/key, actual budget, build output, layout/keyboard/drag/cold-start product acceptance.'};
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);return{promise,resolve};};
@@ -90,8 +90,25 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     await select('pi-task-filter','ended');assert(document.body.textContent.includes('新筛选'));await settle(()=>gate.resolve(ok(page('tasks',[row({sessionTitle:'旧筛选'})]))));assert(!document.body.textContent.includes('旧筛选'));
   });
   await check('A01','Inbox retrieves exact modern revision only on selection and sends the original CAS decision',async()=>{
-    const value=approvalRow(),calls=[];await mount(C.PiApprovalInbox,{activeSessionId:S,onOpenSession:async()=>true,onChanged:async()=>{}},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(query.kind==='approval_detail'?approvalDetail(value):page('approvals',[value]));},decideXiaozhiPermission:async input=>{calls.push(input);return ok({...modern(),state:'approved',revision:8});}});
-    assert.equal(calls.length,1);await click('pi-approval-inbox-detail');assert.deepEqual(calls[1].ref,value.ref);await click('pi-permission-approve');const decision=calls.find(value=>value.decision);assert.equal(decision.sessionId,T);assert.equal(decision.revision,7);assert.equal(decision.scope,'operation');report.calls.push(...calls);
+    const value=approvalRow('permission_v2','pending',{classification:'redacted'}),calls=[];await mount(C.PiApprovalInbox,{activeSessionId:S,onOpenSession:async()=>true,onChanged:async()=>{}},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(query.kind==='approval_detail'?approvalDetail(value):page('approvals',[value]));},decideXiaozhiPermission:async input=>{calls.push(input);return ok({...modern(),state:'approved',revision:8});}});
+    const inboxRow = element('pi-approval-inbox-row');
+    assert.match(inboxRow.textContent, /数据范围 脱敏资料/);
+    assert.doesNotMatch(inboxRow.textContent, /redacted|申请版本/);
+    assert.equal(calls.length,1);await click('pi-approval-inbox-detail');assert.deepEqual(calls[1].ref,value.ref);
+    assert.equal(element('pi-permission-approve-task'), null);
+    await click('pi-permission-approve');const decision=calls.find(value=>value.decision);assert.equal(decision.sessionId,T);assert.equal(decision.revision,7);assert.equal(decision.scope,'operation');
+    const acquisition = approvalDetail(value);
+    acquisition.detail.approval.request.action = 'capability_prepare';
+    await mount(C.PiApprovalInbox, {activeSessionId:S,onOpenSession:async()=>true,onChanged:async()=>{}}, {
+      getXiaozhiWorkbenchSummary: async query => ok(query.kind === 'approval_detail' ? acquisition : page('approvals',[value])),
+      decideXiaozhiPermission: async input => {calls.push(input);return ok({...acquisition.detail.approval,state:'approved',revision:8});}
+    });
+    await click('pi-approval-inbox-detail');
+    assert(element('pi-permission-approve'));
+    await click('pi-permission-approve-task');
+    assert.equal(calls.at(-1).scope, 'task');
+    assert.equal(calls.at(-1).revision, 7);
+    report.calls.push(...calls);
   });
   await check('A02','Expired/denied modern approvals and CAS errors remain visible and never claim success',async()=>{
     let decisions=0;const value=approvalRow('permission_v2','pending',{canDecide:false});await mount(C.PiApprovalInbox,{activeSessionId:S,onOpenSession:async()=>true,onChanged:async()=>{}},{getXiaozhiWorkbenchSummary:async query=>ok(query.kind==='approval_detail'?approvalDetail(value):page('approvals',[value])),decideXiaozhiPermission:async()=>{decisions++;return{ok:false,error:'changed'};}});await click('pi-approval-inbox-detail');assert(element('pi-permission-approve').disabled);assert.equal(decisions,0);
@@ -110,7 +127,7 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
   });
   await check('C01','Capability axes distinguish installed, quarantined, authorization and missing requirements without Task authority',async()=>{
     const calls=[],navigation=[];await mount(C.PiCapabilityCenter,{onNavigate:tab=>navigation.push(tab)},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('capabilities',[capability()],{context:{state:'none',sessionId:null,taskId:null,requirementsVersion:null},registryRevision:1}));}});
-    const text=document.body.textContent;for(const expected of ['已安装','隔离待审核','需任务核对','当前不可用','许可证 未知','缺少必需项','可选项未提供','外部操作'])assert(text.includes(expected),expected);assert(!('taskId'in calls[0]));assert.equal(calls.length,1);
+    const text=document.body.textContent;for(const expected of ['已安装','隔离待审核','需任务核对','当前不可用','许可证 未知','缺少 1 项必需能力','缺少 1 项可选能力','需核对权限详情'])assert(text.includes(expected),expected);assert(!('taskId'in calls[0]));assert.equal(calls.length,1);
     await settle(()=>{Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(element('pi-capability-search'),'导出');element('pi-capability-search').dispatchEvent(new Event('input',{bubbles:true}));});await click('pi-capability-search-submit');assert.equal(calls.at(-1).query,'导出');const count=calls.length;await click('pi-capability-manage-skills');assert.deepEqual(navigation,['skills']);assert.equal(calls.length,count);
   });
   await check('C02','Capability query binds the legitimate selected Task and stale/partial sources stay explicit',async()=>{

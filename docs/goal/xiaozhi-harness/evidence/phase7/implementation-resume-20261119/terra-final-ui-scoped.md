@@ -1,0 +1,11 @@
+# Final UI scoped verification
+
+Candidate main out SHA256 CCE0F42DEA70DFFA1DE1C2335B78E447548A408EE5F4C4EE4F76A97CFBB556BE; renderer index-BZ52Tqk6.js SHA256 4F0B9E42B7F54EFCE1D93C3AEFDFD8E1EC92D9D9AC1C72D60726DC60EE2AB53C. Other files not frozen by reviewer. Background-only Electron; paid calls zero, no native desktop action.
+
+UI-07 PASS scoped: ZMpUWh/evidence/terra-secret-canary.json independently confirmed configured synthetic-phase7-loopback provider key was absent from serialized settings, approvals summary and complete Inbox text including expanded request details. One provider key only; does not prove every secret source or all interface surfaces.
+
+UI-08: approval repair PASS scoped on expired copied sample. `expired-review-retest.json` and approval.png show actual package/version in Inbox and Chinese title 准备本地工具, original `public` presented as 公开资料 and expiry shown; no approval or execution performed. Overall UI-08 remains PARTIAL because capability.txt shows native tool names and untranslated risk values such as registered_catalog, task_control and dependency_acquisition in ordinary visible view. No claim these codes produce incorrect execution.
+
+UI-09 PARTIAL for final UI: original vjeCaa SQLite still contained approval state pending before launch, but expiresAt 07:28:08 UTC and copied application at 07:38:38 UTC independently marked it invalidated, so it is not valid pending evidence. `summary.json`, `expired-review-retest.json` record this and copied selected current task displayed normal “需任务核对”; no real UI pending authorization claim. Source app.db hash before/after identical 4be986ead3bdb003704e32182ec5d254e5f0809f8e9849ee2cc03b1cd63b89b5. The source snapshot is never launched or modified; only copied data launched. Current visible provider/source/status parts and earlier source/SQLite pending test are bounded supplemental evidence, not substitute for current live page. First copied run's pending assertion fails because of expiry, and first expired-view attempt missed default pending filter; both failures preserved in report.json and expired-review-report.json.
+
+No fabricated expiry, no approval, no external execution, no real teacher data, no native dragging/maximizing. All owned processes exited and out released. Subsequent writer changes and phase8 results require their own verification.

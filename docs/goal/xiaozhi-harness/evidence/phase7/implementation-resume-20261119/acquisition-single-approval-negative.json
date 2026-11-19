@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-acquisition-recovery-Q1j95w",
+  "approvalScope": "operation",
+  "checks": [
+    {
+      "name": "Original single-operation authorization remains bounded and is never silently promoted to Task Grant",
+      "pass": true,
+      "durationMs": 52077.9152,
+      "runId": "run_3912f9f6-a4d9-428f-bf80-f5b782c9b60e"
+    }
+  ],
+  "paidCalls": 0,
+  "modelCalls": 7,
+  "approvals": [
+    {
+      "action": "capability_prepare",
+      "scopes": [
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        }
+      ],
+      "runId": "run_19d0d38e-d104-4271-b0e0-c7f6ba2051bd"
+    },
+    {
+      "action": "mcp_stdio_start",
+      "scopes": [
+        {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\workspace",
+          "identity": "7d61a7bb1987da9efda2ba3fd51ef3d35cc85f96d3683474d9324cca557597e3",
+          "actions": [
+            "read"
+          ]
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\workspace"
+        },
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        },
+        {
+          "kind": "dependency",
+          "source": "https://microsoft.com",
+          "package": "xiaozhi.permission-runtime",
+          "version": "1.0.0",
+          "sha256": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-KAPsVD\\data\\managed-tools\\permission-runtime",
+          "installScripts": false
+        }
+      ],
+      "runId": "run_79d13538-f0fc-4be3-9f52-2a821fff5792"
+    }
+  ],
+  "sourceRequests": []
+}

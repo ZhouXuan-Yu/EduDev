@@ -1,0 +1,11 @@
+{
+  "checks": [
+    {
+      "name": "task_scope_approval_and_single_dependency",
+      "status": "PASS",
+      "grantId": "xigrant_a8f2385a-1cd4-48cb-ba2c-e129e9676f23"
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0
+}

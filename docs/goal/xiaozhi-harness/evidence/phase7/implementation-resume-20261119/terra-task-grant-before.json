@@ -1,0 +1,72 @@
+{
+  "approval": {
+    "schemaVersion": 2,
+    "id": "confirm_74937a15-2ef1-4db3-9036-47976920c34d",
+    "revision": 1,
+    "request": {
+      "schemaVersion": 2,
+      "owner": {
+        "sessionId": "aisession_85047f59-e6f1-40eb-9291-d20e2eaa6738",
+        "runId": "run_4977b873-7d55-4843-b52a-fdca37021474",
+        "generation": 1,
+        "taskId": "xitask_88af79f81fc673b2727e1bd64ccc2cc4f30101bdf5ec89d58c0e1d70f3c9859d"
+      },
+      "requirementsVersion": 1,
+      "callId": "xiacquisition_9f8fec7818d0ca14c06c273ad8adea40778183d4878c6fc32ecee0f7c1260548",
+      "action": "capability_prepare",
+      "inputDigest": "2d7542127cd9709f8244406dfd03ec219747183f140ebe115b68cd8e74ff21a6",
+      "purpose": "获取并验证已锁定的免费本地能力包与运行依赖",
+      "scopes": [
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase7-pending-data-wUAzLe\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        }
+      ],
+      "files": [],
+      "provider": null,
+      "classification": "public",
+      "expiresAt": "2026-11-19T07:36:39.972Z"
+    },
+    "requestDigest": "b218a272414476160974eb5281a2da0e362c320d3b6052e925a42fb5e223043f",
+    "permissionSnapshotHash": "3a53714a0cf031531605a59c1e3351e448b5d44da2df424cb0912282f3054142",
+    "grantRefs": [],
+    "state": "pending",
+    "scope": "operation",
+    "createdAt": "2026-11-19T06:36:39.981Z",
+    "updatedAt": "2026-11-19T06:36:39.981Z"
+  },
+  "grants": [
+    {
+      "grant_id": "xigrant_4e0bc2ca-6cd4-4506-b75a-034322d581c6",
+      "session_id": "aisession_85047f59-e6f1-40eb-9291-d20e2eaa6738",
+      "task_id": null,
+      "document": {
+        "schemaVersion": 1,
+        "grantId": "xigrant_4e0bc2ca-6cd4-4506-b75a-034322d581c6",
+        "revision": 1,
+        "sessionId": "aisession_85047f59-e6f1-40eb-9291-d20e2eaa6738",
+        "taskId": null,
+        "scope": {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase7-pending-data-wUAzLe\\workspace",
+          "identity": "a36e1985cbe1ba6db028f13769ff09741ca534081682a674328c1ea0607519b0",
+          "actions": [
+            "read"
+          ]
+        },
+        "provenance": {
+          "kind": "legacy_workspace",
+          "reference": "legacy-workspace:577dce5c88ea97039ff9f6aca84fee707ac3ab89b1579e7fd5bd61d621f34b97"
+        },
+        "createdAt": "2026-11-19T06:35:56.570Z",
+        "expiresAt": null,
+        "revokedAt": null
+      }
+    }
+  ]
+}

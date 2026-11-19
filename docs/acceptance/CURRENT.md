@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-19 Harness Phase7 检查点
+
+工作台及终端 Electron 9/9、流式生成后台专项 5/5、同任务工具续跑 Host 3/3、原生回执负例 22/22。独立审批确认当前任务精确授权。可见桌面拖窗与最大化、最终模型质量、真实网络对照及打包仍待验证。见 [阶段验收记录](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)。
+
 ## 2026-11-18 Harness Gate6通过
 
 Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。

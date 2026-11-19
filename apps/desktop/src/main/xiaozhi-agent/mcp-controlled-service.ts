@@ -12,6 +12,7 @@ import {permissionHash} from './permissions/validation';
 import {prepareExecutionProjection, commitExecutionProjection, removeOwnedProjection} from './permissions/windows/projection';
 import {createControlledStdioTransport} from './mcp-controlled-transport';
 import {hashCapabilityFile} from './capabilities/acquisition/file-hash';
+import type {AcquisitionCall} from './capabilities/acquisition/prepare-receipts';
 
 export type PreparedStdioBinding = {
   artifactId: string;
@@ -42,6 +43,7 @@ export function createControlledMcpService(options: {
 }) {
   return {
     forOwner(context: {owner: () => PermissionOwner; signal: AbortSignal; workspace: string; requirementsVersion: () => number;
+      acquisitionCall?: AcquisitionCall; recordPendingApproval?: (request: PermissionRequest) => Promise<void>;
       recordAuthority?: (reference: string, refs: {grantId: string; revision: number}[]) => Promise<void>}) {
       const frozenOwner = context.owner();
       const projections = new Map<string, Awaited<ReturnType<typeof prepareExecutionProjection>>>();
@@ -125,7 +127,9 @@ export function createControlledMcpService(options: {
             inputDigest: permissionHash({source: configuration.source, packageHash: recipe.packageHash, limits: recipe.limits}),
             purpose: '在受控本地进程中运行已验证的MCP服务，授权覆盖其存活期间资源', scopes: requested, files: [], provider: null,
             classification: 'teacher_private', expiresAt: new Date(Date.now() + recipe.limits.leaseMs).toISOString()};
-          const lease = await openPermissionLease(options.permissions.engine, request, context.signal);
+          let lease: Awaited<ReturnType<typeof openPermissionLease>>;
+          try {lease = await openPermissionLease(options.permissions.engine, request, context.signal);}
+          catch (error) {if (error instanceof Error && error.message === 'permission_pending') await context.recordPendingApproval?.(request); throw error;}
           let projection: Awaited<ReturnType<typeof prepareExecutionProjection>> | undefined;
           let terminalState: string | undefined;
           let cleanupVerified = false;
@@ -154,7 +158,7 @@ export function createControlledMcpService(options: {
             const selected = projection;
             projections.set(configuration.source.serverId, selected);
             await options.store.audit(frozenOwner.sessionId, 'mcp_service_intent', selected.executionId, {
-              owner: frozenOwner, serverId: configuration.source.serverId, artifactId: recipe.artifactId, packageHash: recipe.packageHash,
+              owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), serverId: configuration.source.serverId, artifactId: recipe.artifactId, packageHash: recipe.packageHash,
               projectionRoot: selected.root, helperVersion: runtime.version, helperHash: runtime.manifest.helperSha256,
               grantRefs: lease.authority.decision.grantRefs, leaseExpiresAt: request.expiresAt, limits: recipe.limits});
             return createControlledStdioTransport({runtime, signal: lease.authority.signal, assert: async () => {assertOwner(); await lease.authority.assert();},
@@ -169,24 +173,24 @@ export function createControlledMcpService(options: {
                 cleanupVerified = result.cleanup.jobActiveProcesses === 0 && result.cleanup.profileRemoved && result.cleanup.remainingOwnedAces === 0;
                 terminalState = cleanupVerified ? result.state : 'failed';
                 await options.store.audit(frozenOwner.sessionId, 'mcp_service_terminal', selected.executionId,
-                  {owner: frozenOwner, serverId: configuration.source.serverId, artifactId: recipe.artifactId, result});
+                  {owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), serverId: configuration.source.serverId, artifactId: recipe.artifactId, result});
               },
               cleanup: async state => {
                 try {
                   if (terminalState === 'completed' && recipe.workspaceActions.includes('write')) await commitExecutionProjection(selected, lease.authority, options.store);
                   if (cleanupVerified || !state.launched) removeOwnedProjection(selected.root);
                   else await options.store.audit(frozenOwner.sessionId, 'mcp_service_cleanup_required', selected.executionId,
-                    {owner: frozenOwner, serverId: configuration.source.serverId, projectionRoot: selected.root, helperVersion: runtime.version});
+                    {owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), serverId: configuration.source.serverId, projectionRoot: selected.root, helperVersion: runtime.version});
                 } finally {
                   if (projections.get(configuration.source.serverId) === selected) projections.delete(configuration.source.serverId);
                   if (!state.launched) await options.store.audit(frozenOwner.sessionId, 'mcp_service_not_started', selected.executionId,
-                    {owner: frozenOwner, serverId: configuration.source.serverId});
+                    {owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), serverId: configuration.source.serverId});
                   await lease.close(terminalState === 'completed' || !state.launched ? undefined : Error('mcp_service_incomplete'));
                 }
               }});
           } catch (error) {
             await options.store.audit(frozenOwner.sessionId, 'mcp_service_start_failed', configuration.source.serverId,
-              {owner: frozenOwner, artifactId: recipe.artifactId, code: error instanceof Error && /^[A-Za-z0-9_:.-]{1,100}$/u.test(error.message)
+              {owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), artifactId: recipe.artifactId, code: error instanceof Error && /^[A-Za-z0-9_:.-]{1,100}$/u.test(error.message)
                 ? error.message : 'configuration'}).catch(() => undefined);
             if (projection && projections.get(configuration.source.serverId) === projection) projections.delete(configuration.source.serverId);
             if (projection) removeOwnedProjection(projection.root);

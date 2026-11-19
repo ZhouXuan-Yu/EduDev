@@ -46,7 +46,7 @@ export function createAcquisitionState(source: Sql) {
   }
   async function get<T>(table: string, id: string) {await migrate(); return read<T>((await sql.all(`SELECT * FROM ${table} WHERE id=?`, [id]))[0]);}
   async function list<T>(table: string) {await migrate(); return (await sql.all(`SELECT * FROM ${table} ORDER BY id`)).map(row => read<T>(row)!);}
-  async function save<T extends {id: string; revision: number}>(table: string, value: T, expected: number) {
+  async function save<T extends {id: string; revision: number}>(table: string, value: T, expected: number, after?: (work: Sql) => Promise<void>) {
     const frozen = structuredClone(value);
     await migrate();
     if (frozen.revision !== expected + 1) throw Error('conflict');
@@ -56,6 +56,7 @@ export function createAcquisitionState(source: Sql) {
       await work.run(`INSERT INTO ${table}(id,revision,payload_json,document_hash) VALUES(?,?,?,?)
         ON CONFLICT(id) DO UPDATE SET revision=excluded.revision,payload_json=excluded.payload_json,document_hash=excluded.document_hash`,
       [frozen.id, frozen.revision, JSON.stringify(frozen), protocolHash(frozen)]);
+      await after?.(work);
       return frozen;
     });
   }
@@ -85,7 +86,7 @@ export function createAcquisitionState(source: Sql) {
       await migrate();
       return read<AcquisitionArtifact>((await sql.all(`SELECT * FROM ${tables.artifact} WHERE json_extract(payload_json,'$.sourceHash')=?`, [sourceHash]))[0]);
     },
-    saveOperation: (value: AcquisitionOperation, expected: number) => save(tables.operation, value, expected),
+    saveOperation: (value: AcquisitionOperation, expected: number, after?: (work: Sql) => Promise<void>) => save(tables.operation, value, expected, after),
     saveArtifact: (value: AcquisitionArtifact, expected: number) => save(tables.artifact, value, expected),
   };
 }

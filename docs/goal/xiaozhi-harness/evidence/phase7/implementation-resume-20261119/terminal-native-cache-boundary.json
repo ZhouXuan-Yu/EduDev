@@ -1,0 +1,131 @@
+{
+  "success": true,
+  "root": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase7-module-cache-original-shell-T3xBvO",
+  "official": "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_windows_powershell_5.1?view=powershell-5.1",
+  "variants": [
+    {
+      "which": "before",
+      "helperHash": "8d7c08c5f86b82ae56fa8b576c35f9e1e8a361a36b657f5d0dc353fa72ea2783",
+      "sourceHash": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+      "projectionRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-c6f8c607-a667-4813-a927-28e482e53e12",
+      "output": "CACHEPATH=\r\nLOCALPATH=C:\\Users\\ZhouXuan\\AppData\\Local\\Packages\\xiaozhisandbox.fbff92f3006e4eb0be24d958c5d9ca3c\\AC\r\nCACHE_READY\r\n",
+      "result": {
+        "schemaVersion": 1,
+        "type": "result",
+        "executionId": "xiexec_fbff92f3-006e-4eb0-be24-d958c5d9ca3c",
+        "state": "cancelled",
+        "exitCode": 125,
+        "truncated": false,
+        "durationMs": 3235,
+        "cleanup": {
+          "jobActiveProcesses": 0,
+          "profileRemoved": true,
+          "remainingOwnedAces": 0
+        }
+      },
+      "expectedCache": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-c6f8c607-a667-4813-a927-28e482e53e12\\.runtime\\temp\\ModuleAnalysisCache",
+      "runtimeCacheExists": false,
+      "workspaceDefaultCacheExists": false,
+      "commit": {
+        "executionId": "xiexec_fbff92f3-006e-4eb0-be24-d958c5d9ca3c",
+        "changes": [
+          {
+            "path": "Microsoft",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows\\PowerShell",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows\\PowerShell\\teacher-note.txt",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": "47ccb18b4afeebca1f827d1c5114b42477e26ae5f7063d75955c5751be6cd3e5"
+          }
+        ],
+        "committed": [
+          "Microsoft",
+          "Microsoft\\Windows",
+          "Microsoft\\Windows\\PowerShell",
+          "Microsoft\\Windows\\PowerShell\\teacher-note.txt"
+        ],
+        "excluded": []
+      },
+      "teacherFilePreserved": true
+    },
+    {
+      "which": "after",
+      "helperHash": "75117949c706be817ad3bb6d3a13a496bec166a5bdee1179c8d1431f10dc9ac8",
+      "sourceHash": "c5f2df82df5b85a025ed53b2123aa3dfe8c0694179c7ad88a1c522dc7e21feb1",
+      "projectionRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-248a7f4f-ab9d-45e4-94c0-3408bdc42166",
+      "output": "CACHEPATH=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-248a7f4f-ab9d-45e4-94c0-3408bdc42166\\.runtime\\temp\\ModuleAnalysisCache\r\nLOCALPATH=C:\\Users\\ZhouXuan\\AppData\\Local\\Packages\\xiaozhisandbox.19629325d1f343d58047c8b79d28b29f\\AC\r\nCACHE_READY\r\n",
+      "result": {
+        "schemaVersion": 1,
+        "type": "result",
+        "executionId": "xiexec_19629325-d1f3-43d5-8047-c8b79d28b29f",
+        "state": "cancelled",
+        "exitCode": 125,
+        "truncated": false,
+        "durationMs": 3210,
+        "cleanup": {
+          "jobActiveProcesses": 0,
+          "profileRemoved": true,
+          "remainingOwnedAces": 0
+        }
+      },
+      "expectedCache": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-exec-248a7f4f-ab9d-45e4-94c0-3408bdc42166\\.runtime\\temp\\ModuleAnalysisCache",
+      "runtimeCacheExists": false,
+      "workspaceDefaultCacheExists": false,
+      "commit": {
+        "executionId": "xiexec_19629325-d1f3-43d5-8047-c8b79d28b29f",
+        "changes": [
+          {
+            "path": "Microsoft",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows\\PowerShell",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": null
+          },
+          {
+            "path": "Microsoft\\Windows\\PowerShell\\teacher-note.txt",
+            "action": "create",
+            "beforeHash": null,
+            "afterHash": "47ccb18b4afeebca1f827d1c5114b42477e26ae5f7063d75955c5751be6cd3e5"
+          }
+        ],
+        "committed": [
+          "Microsoft",
+          "Microsoft\\Windows",
+          "Microsoft\\Windows\\PowerShell",
+          "Microsoft\\Windows\\PowerShell\\teacher-note.txt"
+        ],
+        "excluded": []
+      },
+      "teacherFilePreserved": true
+    }
+  ],
+  "hostLocalAppData": "C:\\Users\\ZhouXuan\\AppData\\Local",
+  "hostCache": null
+}

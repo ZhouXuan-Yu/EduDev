@@ -35,7 +35,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Complete Phase7 scoped independent page checks and inspect capability preparation receipt recovery. Native drag/maximize remains unverified. Phase8 cached profiling, fixture and real-model setup are ready for the next gate.",
+  "next": "Verify the final Phase7 terminal cache fix and remaining scoped page checks, then commit. Native drag/maximize remains unverified. Phase8 cached profiling, fixture and real-model setup are ready for the next gate.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -472,14 +472,18 @@
     "finalLayoutRendererSha256": "4ddba5f7d6a41e40380147de98153f291eeeba1cf40ff05949c80cf1579a2aeb"
   },
   "phase7AcquisitionRecovery": {
-    "status": "IMPLEMENTING",
+    "status": "IMPLEMENTED_HOST_AND_INDEPENDENT_EXPLICIT_GRANT_PASS",
     "writer": "/root/phase8_timing_prep",
-    "contract": "evidence/phase8/cached-profiling-preparation-20261119/PHASE7_CAPABILITY_PREPARE_CONTRACT.md"
+    "contract": "evidence/phase8/cached-profiling-preparation-20261119/PHASE7_CAPABILITY_PREPARE_CONTRACT.md",
+    "workbenchCommit": "88ad67c89b6a199deb27824886ab47fa6d7c31bd",
+    "hostEvidence": "evidence/phase7/implementation-resume-20261119/acquisition-FINAL_IMPLEMENTATION_REPORT.md",
+    "uiEvidence": "evidence/phase7/implementation-resume-20261119/terra-task-grant-conclusion.md"
   },
   "phase8QuestionSeed": {
     "status": "FROZEN_A_SEALED_MODEL_SETUP_AND_PRELIMINARY_B_COLD_READBACK_PASS",
     "evidence": "evidence/phase8/question-seed-20261119/question-seed-evidence.json",
     "modelCalls": 0,
+    "instrumentationCommit": "0978a1e",
     "requires": "Final B identity, actual paired model runs after accepted readiness, paid chat 0/200",
     "modelSettings": "evidence/phase8/question-seed-20261119/settings-evidence.json",
     "sealedBReadback": "evidence/phase8/question-seed-20261119/sealed-b-readback.json"
@@ -488,7 +492,7 @@
     "status": "PRODUCTION_HOST_CACHED_BASELINE_PASS_OPTIMIZATION_PENDING",
     "contract": "evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md",
     "baselineMs": 24109.337,
-    "sameTaskPrepareFinding": "Generic unknown Effect blocks the same Task from explicitly preparing an acquired capability again; inspection in progress",
+    "sameTaskPrepareFinding": "Original Host now passes exact Task-scope approval continuation and cold reopen; single-operation scope retains its boundary.",
     "runtimePaidCalls": 0
   }
 }

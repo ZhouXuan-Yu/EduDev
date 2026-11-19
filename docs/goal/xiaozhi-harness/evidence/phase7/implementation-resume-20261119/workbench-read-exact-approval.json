@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-workbench-read-rBgpqx",
+  "paidCalls": 0,
+  "checks": [
+    {
+      "id": "R01_readonly_real_connection_rejects_writes_and_closes",
+      "pass": true
+    },
+    {
+      "id": "R02_tasks_cross_session_keyset_counts",
+      "pass": true,
+      "detail": {
+        "counts": [
+          20,
+          20,
+          17
+        ],
+        "distinct": 57
+      }
+    },
+    {
+      "id": "R03_session_filter_exact_and_invalid_cursor",
+      "pass": true
+    },
+    {
+      "id": "R04_modern_revision_detail_cas_and_saved_state_counts",
+      "pass": true
+    },
+    {
+      "id": "R05_legacy_etag_unknown_and_approved_actions",
+      "pass": true
+    },
+    {
+      "id": "R06_capability_metadata_not_authorization_and_search",
+      "pass": true,
+      "detail": {
+        "total": 3,
+        "counts": {
+          "registered": 2,
+          "candidate": 1,
+          "installed": 0
+        },
+        "taskApprovalRequired": true
+      }
+    },
+    {
+      "id": "R07_corrupt_row_partial_keeps_verified_rows",
+      "pass": true
+    },
+    {
+      "id": "R08_corrupt_registry_whole_source_not_salvaged",
+      "pass": true
+    },
+    {
+      "id": "R09_corrupt_task_partial_and_revision_history_not_counted",
+      "pass": true
+    },
+    {
+      "id": "R10_same_snapshot_counts_despite_concurrent_writer",
+      "pass": true
+    },
+    {
+      "id": "R11_cold_metadata_byte_identical_and_all_handles_closed",
+      "pass": true,
+      "detail": {
+        "sha256": "ff079aa3963b748699cf3a1378e3c6b084a3cf479e807917b6dbab19c180e111",
+        "opened": 31,
+        "closed": 31
+      }
+    }
+  ],
+  "opened": 31,
+  "closed": 31,
+  "boundary": "Actual sqlite3 READONLY handle/query_only/BEGIN. Original Task coordinator/Journal, Permission request/transition, legacy state, Registry and Acquisition writers seed owned synthetic metadata. No Host, guest, network or UI acceptance.",
+  "databaseHash": "ff079aa3963b748699cf3a1378e3c6b084a3cf479e807917b6dbab19c180e111"
+}

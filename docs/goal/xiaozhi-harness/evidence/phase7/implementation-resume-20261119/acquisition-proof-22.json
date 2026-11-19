@@ -1,0 +1,96 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-acquisition-proof-MKjkZM",
+  "sourceOutput": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-acquisition-recovery-3hVxGd",
+  "checks": [
+    {
+      "name": "Actual ready receipt matches exact original owner/call and current domain facts",
+      "pass": true
+    },
+    {
+      "name": "Known original approval boundary confirm_c36f6799-6a89-4750-864d-a655e813411a",
+      "pass": true
+    },
+    {
+      "name": "Known original approval boundary confirm_81a8814f-d598-46b2-8807-e0daa4098546",
+      "pass": true
+    },
+    {
+      "name": "Known original approval boundary confirm_3e9867fd-9e27-47a6-883e-53d86839eef2",
+      "pass": true
+    },
+    {
+      "name": "Reader performs no SQLite write or migration",
+      "pass": true
+    },
+    {
+      "name": "Wrong session or generation cannot borrow ready proof",
+      "pass": true
+    },
+    {
+      "name": "Wrong call remains unknown and unrelated tools are not checked",
+      "pass": true
+    },
+    {
+      "name": "Legacy call with no new completion receipt remains uncertain",
+      "pass": true
+    },
+    {
+      "name": "Receipt envelope hash corruption fails closed",
+      "pass": true
+    },
+    {
+      "name": "Rehashed foreign owner cannot certify a call",
+      "pass": true
+    },
+    {
+      "name": "Rehashed different candidate/input cannot certify a call",
+      "pass": true
+    },
+    {
+      "name": "Rehashed different operation cannot certify a call",
+      "pass": true
+    },
+    {
+      "name": "Rehashed operation revision cannot bypass the original ToolContract outcome reference",
+      "pass": true
+    },
+    {
+      "name": "Rehashed ready escalation cannot bypass the original ToolContract outcome reference",
+      "pass": true
+    },
+    {
+      "name": "Missing original native terminal leaves preparation uncertain",
+      "pass": true
+    },
+    {
+      "name": "Unverified original native cleanup cannot certify ready",
+      "pass": true
+    },
+    {
+      "name": "Native terminal from a different parent call cannot be borrowed",
+      "pass": true
+    },
+    {
+      "name": "Changed trusted schema refuses ready readback",
+      "pass": true
+    },
+    {
+      "name": "Changed artifact binding hash refuses ready readback",
+      "pass": true
+    },
+    {
+      "name": "Changed current registry provider cannot certify ready",
+      "pass": true
+    },
+    {
+      "name": "Changed original file version refuses ready proof without a hash reread",
+      "pass": true
+    },
+    {
+      "name": "Wrong pending approval binding is refused",
+      "pass": true
+    }
+  ],
+  "scriptSha256": "ae9d57771909aa967028e0b0c915d96ba34f1e50f169246388e9b1d9fb0cb124"
+}

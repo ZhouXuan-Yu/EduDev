@@ -10,11 +10,14 @@ import {presentationUnchangedReceipt} from '../../../shared/xiaozhi-presentation
 import type {NativeToolEntry} from './native-tail';
 import type {Sql} from '../session-state';
 import {createExecutionEffectReader} from '../effects/readback';
+import {createAcquisitionPrepareEffectReader} from '../capabilities/acquisition/prepare-receipts';
 
 /** Reuse independent teacher-confirmed ledger/disk readback. No grants are revived. */
 export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof createPiPersistentState>;changes:ReturnType<typeof createTextChangeState>;artifacts:ReturnType<typeof createOfficeArtifactState>;dataRoot?:()=>string;sql?:Sql}){
+ const acquisitionReader=state.sql?createAcquisitionPrepareEffectReader(state.sql):undefined;
  const executionReader=state.sql?createExecutionEffectReader(state.sql):undefined;
  return async(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry):Promise<'matched'|'uncertain'|'not_checked'>=>{
+  if(acquisitionReader){const checked=await acquisitionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(executionReader){const checked=await executionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document'].includes(tool))return'not_checked';
   try{

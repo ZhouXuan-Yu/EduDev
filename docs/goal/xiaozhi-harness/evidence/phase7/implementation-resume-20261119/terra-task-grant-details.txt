@@ -1,0 +1,20 @@
+capability_prepare
+需要你的授权
+
+获取并验证已锁定的免费本地能力包与运行依赖
+
+本地组件 @modelcontextprotocol/server-filesystem@2.3.0 · https://registry.npmjs.org · C:\Users\ZhouXuan\AppData\Local\Temp\omni-edu-phase7-pending-data-wUAzLe\data\managed-tools\capabilities\versions\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6
+
+数据范围 公开资料
+
+有效至 2026/11/19 15:36:39
+
+请求详情
+
+授权当前任务后，小智可在有效期内按这里列出的范围继续准备工具。
+
+拒绝后本次操作不会获准执行；小智仍可继续已有授权范围内的步骤。
+
+批准本次操作
+授权当前任务
+拒绝

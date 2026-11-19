@@ -5,7 +5,8 @@ export const permissionClassification: Record<PermissionRequest['classification'
 };
 export function permissionAction(action: string) {
   const names: Record<string, string> = {exec_command: '运行受控脚本', mcp_call: '调用外部MCP工具',
-    network_broker: '网络请求与资料外发', environment_repair: '修复本地环境', office_copy_file: '复制文件'};
+    network_broker: '网络请求与资料外发', environment_repair: '修复本地环境', office_copy_file: '复制文件',
+    capability_prepare: '准备本地工具', mcp_stdio_start: '启动受控工具'};
   return names[action] || action;
 }
 export function permissionResource(scope: PermissionScope) {

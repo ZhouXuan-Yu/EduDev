@@ -1,0 +1,55 @@
+{
+  "ok": true,
+  "value": {
+    "schemaVersion": 1,
+    "asOf": "2026-11-19T06:58:58.537Z",
+    "items": [
+      {
+        "ref": {
+          "kind": "permission_v2",
+          "sessionId": "aisession_85047f59-e6f1-40eb-9291-d20e2eaa6738",
+          "id": "confirm_74937a15-2ef1-4db3-9036-47976920c34d",
+          "revision": 2
+        },
+        "kind": "permission_v2",
+        "id": "confirm_74937a15-2ef1-4db3-9036-47976920c34d",
+        "revision": 2,
+        "etag": null,
+        "sessionId": "aisession_85047f59-e6f1-40eb-9291-d20e2eaa6738",
+        "sessionTitle": "Phase8 focused cached synthetic task",
+        "taskId": "xitask_88af79f81fc673b2727e1bd64ccc2cc4f30101bdf5ec89d58c0e1d70f3c9859d",
+        "runId": "run_4977b873-7d55-4843-b52a-fdca37021474",
+        "state": "approved",
+        "purpose": "获取并验证已锁定的免费本地能力包与运行依赖",
+        "resources": [
+          "dependency"
+        ],
+        "classification": "public",
+        "expiresAt": "2026-11-19T07:36:39.972Z",
+        "updatedAt": "2026-11-19T06:58:58.498Z",
+        "canDecide": false,
+        "blockedReasons": []
+      }
+    ],
+    "total": 1,
+    "matched": 1,
+    "counts": {
+      "pending": 0,
+      "approved": 1,
+      "executing": 0,
+      "executed": 0,
+      "rejected": 0,
+      "invalidated": 0,
+      "uncertain": 0,
+      "failed": 0,
+      "interrupted": 0,
+      "verified": 0
+    },
+    "nextCursor": null,
+    "partial": false,
+    "unavailableCount": 0,
+    "sourceFailures": [],
+    "scanned": 1,
+    "kind": "approvals"
+  }
+}

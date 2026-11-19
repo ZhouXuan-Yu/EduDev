@@ -1439,8 +1439,12 @@
       "id": "UI-01",
       "priority": "P1",
       "expected": "恢复任务数量和状态准确。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。独立页面、汇总与 SQLite 同一批五个当前 Task 状态一致，完成一项。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-matrix-tasks.json"
+      ]
     },
     {
       "id": "UI-02",
@@ -1457,8 +1461,12 @@
       "id": "UI-03",
       "priority": "P1",
       "expected": "教师能看懂已完成、待继续和阻塞原因。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。独立合成样本从页面读到待核对、待审批和已确认原因。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-matrix-retest-report.json"
+      ]
     },
     {
       "id": "UI-04",
@@ -1475,8 +1483,11 @@
       "id": "UI-05",
       "priority": "P1",
       "expected": "说明操作目的、资源、数据范围、持续时间和拒绝后果。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。两项真实现代审批样本在原详情展示上述字段。A1 全类型安全检查仍待完成。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-matrix-retest-report.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "phaseEvidence": [
@@ -1496,8 +1507,11 @@
       "id": "UI-06",
       "priority": "P1",
       "expected": "可批准/拒绝；状态持久化。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。独立 Electron 批准及拒绝，原状态读回并核对冷启。A2 权限变更和替代流程仍待完整复验。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-matrix-reject-cold.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "phaseEvidence": [
@@ -1517,8 +1531,10 @@
       "id": "UI-07",
       "priority": "P1",
       "expected": "不展示秘密值。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。独立合成 Provider 密钥哨兵在已配置的设置投影、实际审批汇总及展开详情中均未露出。范围为原审批页面。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-secret-canary.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
       "phaseEvidence": [
@@ -1538,8 +1554,12 @@
       "id": "UI-08",
       "priority": "P1",
       "expected": "不把技术细节强迫普通教师理解。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "scope": "已实现。独立验证审批与技能的教师侧名称及折叠详情，并在最新构建复验能力卡中文名称和范围、中文检索、展开后的原标识。范围为工作台、能力和审批样本。",
+      "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-final-ui-scoped.md",
+        "evidence/phase7/implementation-resume-20261119/terra-chinese-retest-report.json"
+      ]
     },
     {
       "id": "UI-09",
@@ -1554,8 +1574,11 @@
       "id": "UI-10",
       "priority": "P1",
       "expected": "展示来源、版本和风险详情（高级信息可折叠）。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。独立能力卡读到来源、当前版本、风险提示与可展开核验详情。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+        "evidence/phase7/implementation-resume-20261119/terra-matrix-capabilities.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ]
     },

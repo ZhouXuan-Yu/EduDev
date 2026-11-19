@@ -91,13 +91,30 @@ try {
     assert(page.items.some(item => item.sourceKind === 'registry')); assert(page.items.some(item => item.verification === 'quarantined'));
     assert(page.items.every(item => item.authorization === 'task_check_required'));
     const selected = await query({kind: 'capabilities', sessionId: origin.sessionId, taskId: origin.task.id, requirementsVersion: 2}); assert.equal(selected.context.state, 'stale');
-    const search = await query({kind: 'capabilities', query: 'Owned candidate'}); assert.equal(search.items.length, 1); assert.equal(search.items[0].installed, 'missing'); return {total: page.total, counts: page.counts};
+    const search = await query({kind: 'capabilities', query: 'Owned candidate'}); assert.equal(search.items.length, 1); assert.equal(search.items[0].installed, 'missing');
+    const plan = {artifactId: 'xiartifact_' + 'f'.repeat(64), digest: 'f'.repeat(64), directory: path.join(root, 'owned-package'), lock: []};
+    const operationId = 'xiacquisition_' + protocolHash([origin.task.id, candidate.id]);
+    await acquisition.saveOperation({id: operationId, revision: 1, owner: request.owner, requirementsVersion: 1,
+      candidateId: candidate.id, candidateHash: candidate.sourceHash, phase: 'needs_approval',
+      error: 'permission_pending', artifactId: plan.artifactId, plan, updatedAt: new Date().toISOString()}, 0);
+    const dependency = {...request, action: 'capability_prepare', callId: operationId, inputDigest: protocolHash(plan),
+      scopes: [{kind: 'dependency', source: 'https://registry.npmjs.org', package: 'owned-package',
+        version: '1.0.0', sha256: plan.digest, environment: plan.directory, installScripts: false}]};
+    const pending = await permission.request(dependency, {status: 'needs_approval', requestDigest: requestDigest(dependency), permissionSnapshotHash: 'd'.repeat(64), grantRefs: []});
+    const capabilityQuery = {kind: 'capabilities', query: 'Owned candidate', sessionId: origin.sessionId, taskId: origin.task.id, requirementsVersion: 1};
+    assert.equal((await query(capabilityQuery)).items[0].authorization, 'required');
+    assert.equal((await query({...capabilityQuery, requirementsVersion: 2})).items[0].authorization, 'task_check_required');
+    const pendingPage = await query({kind: 'approvals', sessionId: origin.sessionId, state: 'pending'});
+    assert.deepEqual(pendingPage.items.find(item => item.id === pending.id).resources, ['owned-package@1.0.0']);
+    await permission.transition(origin.sessionId, pending.id, 1, ['pending'], 'approved');
+    assert.equal((await query(capabilityQuery)).items[0].authorization, 'task_check_required');
+    return {total: page.total, counts: page.counts, taskApprovalRequired: true};
   });
   await check('R07_corrupt_row_partial_keeps_verified_rows', async () => {
     const row = f.db.prepare('SELECT * FROM ai_confirmation_items WHERE id=?').get(copy.id);
     f.db.prepare('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?').run('{broken', copy.id);
     const page = await query({kind: 'approvals', state: 'all'}); assert.equal(page.partial, true); assert.equal(page.total, null); assert.equal(page.counts, null); assert.equal(page.matched, null);
-    assert.equal(page.items.length, 1); assert.equal(page.unavailableCount, 1); assert.equal(page.sourceFailures[0].source, 'approvals');
+    assert.equal(page.items.length, 2); assert.equal(page.unavailableCount, 1); assert.equal(page.sourceFailures[0].source, 'approvals');
     f.db.prepare('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?').run(row.payload_json, copy.id);
   });
   await check('R08_corrupt_registry_whole_source_not_salvaged', async () => {

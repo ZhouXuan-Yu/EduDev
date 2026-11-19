@@ -1,0 +1,42 @@
+{
+  "checks": [
+    {
+      "name": "sqlite_overview_and_reasons",
+      "status": "PASS",
+      "extra": {
+        "dbTotal": 5,
+        "completed": 1,
+        "completedText": "已确认样本 · 已完成\n\n你已确认\n\n2026/11/19 12:35:08 · 待审批 0 · 待核验操作 0\n\n已确认完成\n\n查看会话"
+      }
+    },
+    {
+      "name": "approval_reject_modern_and_readback",
+      "status": "PASS",
+      "extra": {
+        "id": "confirm_b344229e-c122-4a04-90a5-59a80a0a0c83",
+        "text": "复制文件\n需要你的授权\n\n使用已授资源完成当前教学任务\n\nC:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-ZMpUWh\\owned-workspace · 读取、写入或覆盖\n\n数据范围 脱敏资料\n\n有效至 2026/11/20 12:35:17\n\n请求详情\n\n拒绝后本次操作不会获准执行；小智仍可继续已有授权范围内的步骤。\n\n批准本次操作\n拒绝"
+      }
+    },
+    {
+      "name": "capability_status_inventory",
+      "status": "PASS",
+      "extra": {
+        "installed": [
+          "bundled"
+        ],
+        "verification": [
+          "verified"
+        ],
+        "authorization": [
+          "task_check_required"
+        ],
+        "availability": [
+          "full"
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "paidCalls": 0,
+  "modelCalls": 0
+}

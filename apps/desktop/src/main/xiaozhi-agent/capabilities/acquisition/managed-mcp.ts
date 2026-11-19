@@ -51,7 +51,7 @@ type Options = {mcp: ReturnType<typeof createMcpRuntime>; controlled: ReturnType
   probe?: (result: unknown) => void};
 function owned(options: Options) {
   return options.controlled.forOwner({owner: () => {if (options.context.signal.aborted) throw Error('cancelled'); return options.context.owner;},
-    recordAuthority: options.context.recordAuthority,
+    recordAuthority: options.context.recordAuthority, acquisitionCall: options.context.acquisitionCall, recordPendingApproval: options.context.recordPendingApproval,
     signal: options.context.signal, workspace: options.context.workspace, requirementsVersion: () => options.context.requirementsVersion});
 }
 function permission(options: Options, stdio: ReturnType<typeof owned>) {
@@ -82,6 +82,14 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
   // The existing permission engine authorizes the real function probe. The fixture
   // lives only in the owned projection and is never written into teacher files.
   const prepared = await options.mcp.tools(permission(options, {...stdio, transformInput: stdio.healthInput}), {preparationTimeoutMs: 30000});
+  const healthCallId = 'acquisition_health_' + artifact.id.slice(-16);
+  const recordPending = async () => {
+    const approval = (await options.store.approvals(options.context.owner.sessionId)).find(row => row.state === 'pending'
+      && protocolHash(row.request.owner) === protocolHash(options.context.owner) && row.request.action === 'mcp_call'
+      && row.request.callId === healthCallId && row.request.scopes.some(scope => scope.kind === 'mcp' && scope.serverId === server!.id
+        && scope.schemaHash === server!.schemaHash && scope.tools.length === 1 && scope.tools[0] === 'read_text_file'));
+    if (approval) await options.context.recordPendingApproval?.(approval.request);
+  };
   const read = prepared.definitions.find(tool => tool.name === mcpToolName(server!.id, 'read_text_file'));
   try {
     if (!read) {
@@ -89,15 +97,15 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
       throw Error(approval ? 'permission_pending' : 'provider_unavailable');
     }
     // Domain health is supplied by the main-owned canary adapter below.
-    const result = await read.execute('acquisition_health_' + artifact.id.slice(-16), {path: '__edudev_health__'}, options.context.signal, undefined, undefined as never);
+    const result = await read.execute(healthCallId, {path: '__edudev_health__'}, options.context.signal, undefined, undefined as never);
     options.probe?.(result);
     await options.store.audit(options.context.owner.sessionId, 'capability_function_probe', artifact.id,
-      {owner: options.context.owner, failed: result.isError === true, code: (result.details as {error?: {code?: unknown}})?.error?.code || null,
+      {owner: options.context.owner, ...(options.context.acquisitionCall ? {acquisitionCall: options.context.acquisitionCall} : {}), failed: result.isError === true, code: (result.details as {error?: {code?: unknown}})?.error?.code || null,
         healthMarker: JSON.stringify(result.content).includes('EDUDEV_CAPABILITY_HEALTH_V1'),
         diagnostics: ['permission_pending', 'permission_denied', 'EACCES', 'ENOENT', 'outside', 'denied', 'invalid', 'not found', 'network', 'timeout']
           .filter(code => JSON.stringify(result.content).includes(code))});
     if (result.isError || !JSON.stringify(result.content).includes('EDUDEV_CAPABILITY_HEALTH_V1')) {
-      if (JSON.stringify(result).includes('permission_pending')) throw Error('permission_pending');
+      if (JSON.stringify(result).includes('permission_pending')) {await recordPending(); throw Error('permission_pending');}
       throw Error('invalid_output');
     }
   } finally {await prepared.dispose();}

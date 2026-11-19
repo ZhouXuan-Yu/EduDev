@@ -1,0 +1,6 @@
+{
+  "checks": [],
+  "errors": [],
+  "paidCalls": 0,
+  "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-approval-inbox-row').filter({ hasText: '准备' }).first() to be visible\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\phase7-terra-task-grant.mjs:4:1386"
+}

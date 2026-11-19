@@ -1899,6 +1899,8 @@ namespace Xiaozhi.PermissionRuntime
             env.Add("COMSPEC", Path.Combine(windows, "System32", "cmd.exe"));
             env.Add("LOCALAPPDATA", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
             env.Add("PATH", Path.Combine(windows, "System32") + ";" + Path.GetDirectoryName(request.Executable));
+            // Windows PowerShell 5.1 reads this full cache filename before process startup.
+            env.Add("PSModuleAnalysisCachePath", Path.Combine(runtime, "temp", "ModuleAnalysisCache"));
             env.Add("PSModulePath", Path.Combine(Path.GetDirectoryName(request.Executable), "Modules") + ";" + Path.Combine(windows, "System32", "WindowsPowerShell", "v1.0", "Modules"));
             env.Add("SystemDrive", Path.GetPathRoot(windows).TrimEnd('\\'));
             env.Add("SystemRoot", windows);

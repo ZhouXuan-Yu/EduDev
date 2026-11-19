@@ -527,7 +527,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if (closing || !run?.publisher || !run.task || run.stopped) throw Error('permission_denied');
     const workspace = needsWorkspace ? await host.resolveFileWorkspace(id) : {path: ''};
     if (closing || active.get(id) !== run || run.stopped) throw Error('permission_denied');
-    return {owner: {...run.publisher.owner, taskId: run.task.id}, requirementsVersion: run.task.requirementsVersion,
+    return {owner: {...run.publisher.owner, taskId: run.task.id}, ...(callId ? {callId} : {}), requirementsVersion: run.task.requirementsVersion,
       workspace: workspace.path, signal: run.abort.signal, current: () => !closing && active.get(id) === run && !run.stopped,
       recordAuthority: async (reference, refs, innerCallId) => {const parent = callId || innerCallId;
         if (parent) await run.toolGovernance?.recordAuthority(parent, refs, reference);},

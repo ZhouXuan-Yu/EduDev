@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-19 Harness Phase7 检查点
+
+已实现工作台总览、持久审批、能力中心及现有工具准备续跑。早期 PowerShell 缓存投影反例修复后，实际后台 Electron 9/9。阶段总门禁、真实模型和打包继续沿 [执行主线](xiaozhi-harness/evidence/phase7/implementation-resume-20261119/MAINLINE.md)。
+
 ## 2026-11-18 Harness Phase7正式实施
 
 Phase6功能2376c84与主线09d7937正常整合为5938c31，atomic push后main及功能分支逐项验证一致。合并后493/493回归通过。当前Phase7按PHASE_7_IMPLEMENTATION.md补跨会话任务总览、持久审批Inbox及统一只读能力中心，core与UI两个Sol分域实施，Terra独立准备页面验收。原89项57项阶段范围通过，真实付费0/200，Goal继续ACTIVE。大体积测试和打包采用C盘owned TEMP，原验收缓存已逐文件归档到Goal证据压缩包。

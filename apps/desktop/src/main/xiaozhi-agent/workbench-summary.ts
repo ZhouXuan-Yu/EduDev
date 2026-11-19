@@ -5,6 +5,7 @@ import {readWorkbenchApprovals, readWorkbenchApprovalDetail} from './workbench-a
 import {readWorkbenchTasks} from './workbench-tasks';
 import {readWorkbenchCapabilities, workbenchTaskContext} from './workbench-capabilities';
 import {workbenchFailure, workbenchText, type WorkbenchRead} from './workbench-state';
+import {xiaozhiToolLabel} from '../../shared/xiaozhi-projection';
 
 type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail'}>;
 type Cursor = {v: 1; query: string; key: string; id: string};
@@ -82,9 +83,10 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
             stateCounts(items, item => item.state, ['pending', 'approved', 'executing', 'executed', 'rejected', 'invalidated', 'uncertain', 'failed', 'interrupted', 'verified']),
             item => ({key: item.updatedAt, id: item.kind + ':' + item.sessionId + ':' + item.id})), kind: input.kind};
         }
-        const context = await workbenchTaskContext(read, input), {items, registryRevision} = await readWorkbenchCapabilities(read);
+        const context = await workbenchTaskContext(read, input), {items, registryRevision} = await readWorkbenchCapabilities(read, context);
         const search = (input.query || '').trim().toLocaleLowerCase();
-        return {...page(read, input, items, items.filter(item => !search || [item.name, item.version, item.source, item.capabilityId, item.providerId]
+        return {...page(read, input, items, items.filter(item => !search || [item.name, item.version, item.source, item.capabilityId, item.providerId,
+          item.capabilityId?.startsWith('edu.core.tool.') ? xiaozhiToolLabel(item.name) : null]
           .some(field => field?.toLocaleLowerCase().includes(search))), stateCounts(items, item => item.origin, ['registered', 'candidate', 'installed']),
           item => ({key: item.verifiedAt || '', id: item.id})), kind: input.kind, context, registryRevision};
       });

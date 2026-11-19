@@ -1,0 +1,67 @@
+{
+  "success": false,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-acquisition-recovery-lciqQO",
+  "approvalScope": "operation",
+  "checks": [],
+  "paidCalls": 0,
+  "modelCalls": 7,
+  "approvals": [
+    {
+      "action": "capability_prepare",
+      "scopes": [
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        }
+      ],
+      "runId": "run_d3bc0459-ec4a-4bee-95c4-14eb6cb30a8f"
+    },
+    {
+      "action": "mcp_stdio_start",
+      "scopes": [
+        {
+          "kind": "filesystem",
+          "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\workspace",
+          "identity": "5fc3e4e982c3a6d5b01b82830be5a2f806c218bea672fdaf97d7022491bc97ea",
+          "actions": [
+            "read"
+          ]
+        },
+        {
+          "kind": "process",
+          "backend": "appcontainer",
+          "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6\\node.exe",
+          "executableHash": "2ffe3acc0458fdde999f50d11809bbe7c9b7ef204dcf17094e325d26ace101d8",
+          "workspace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\workspace"
+        },
+        {
+          "kind": "dependency",
+          "source": "https://registry.npmjs.org",
+          "package": "@modelcontextprotocol/server-filesystem",
+          "version": "2.3.0",
+          "sha256": "e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\data\\managed-tools\\capabilities\\versions\\e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "installScripts": false
+        },
+        {
+          "kind": "dependency",
+          "source": "https://microsoft.com",
+          "package": "xiaozhi.permission-runtime",
+          "version": "1.0.0",
+          "sha256": "d8aab792d41d4a0d7686563112a560386b5c189ed0b5dc467227d9fc455e24f2",
+          "environment": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-production-kzYsw3\\data\\managed-tools\\permission-runtime",
+          "installScripts": false
+        }
+      ],
+      "runId": "run_508173fa-0032-4fd6-8eca-6c6c052beddb"
+    }
+  ],
+  "sourceRequests": [],
+  "error": "AssertionError [ERR_ASSERTION]: known waiting preparation effect has durable domain proof, never unknown\n    at file:///C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase7-acquisition-recovery-lciqQO/worker.mjs:102706:5"
+}

@@ -1,0 +1,47 @@
+{
+  "success": false,
+  "paidCalls": 0,
+  "checks": [
+    {
+      "name": "U01_visible_cross_session_overview_matches_original_completed_facts",
+      "pass": true,
+      "durationMs": 2345.985700000001
+    },
+    {
+      "name": "U02_both_actual_sizes_keep_global_actions_pointer_reachable",
+      "pass": true,
+      "durationMs": 8199.789499999999
+    },
+    {
+      "name": "U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run",
+      "pass": true,
+      "durationMs": 4427.255300000004
+    },
+    {
+      "name": "U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop",
+      "pass": true,
+      "durationMs": 8298.914700000001
+    },
+    {
+      "name": "U05_inbox_modern_rejection_uses_original_permission_CAS",
+      "pass": true,
+      "durationMs": 9755.0412
+    },
+    {
+      "name": "U06_legacy_uncertain_verifies_existing_owned_copy_without_replay",
+      "pass": true,
+      "durationMs": 3831.3145000000004
+    },
+    {
+      "name": "U07_capability_center_true_metadata_search_and_original_management_navigation",
+      "pass": true,
+      "durationMs": 9141.235799999995
+    }
+  ],
+  "errors": [],
+  "boundary": "Actual built production main/preload/renderer with original typed actions. Synthetic metadata seeded through original domain APIs; all model traffic loopback. Independent visual/mouse acceptance remains Terra.",
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-uOtBqE",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-xiaozhi-phase7-workbench-ui-uOtBqE\\evidence",
+  "error": "Error: ui_readback_timeout\n    at until (file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs:9:179)\n    at async file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs:106:5\n    at async check (file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs:10:72)\n    at async file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs:93:3",
+  "modelCalls": 11
+}

@@ -1,0 +1,10 @@
+{
+  "paidCalls": 0,
+  "errors": [],
+  "status": "PASS",
+  "defaultTextFile": "terra-chinese-default.txt",
+  "search": "查找可用能力",
+  "collapsed": "查找可用能力 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取工具目录\n\n来源与核验详情",
+  "expanded": "查找可用能力 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取工具目录\n\n来源与核验详情\n\n工具标识 find_education_tools · 完整版本 1.0.0+3964718e12ea1e05\n\n能力 edu.core.tool.find_education_tools · 提供方 edu.native.tool.find_education_tools\n\n来源标识 edudev:tool:find_education_tools\n\n来源指纹 3964718e12ea1e05d5d387e62c777c243b7bc0fb82d0229afb9eb1d38b0dea7f\n\n接口指纹 未提供\n\n权限记录 registered_catalog\n\n核验时间 2026/11/19 12:35:06 · 有效至 未提供",
+  "modelCalls": 0
+}

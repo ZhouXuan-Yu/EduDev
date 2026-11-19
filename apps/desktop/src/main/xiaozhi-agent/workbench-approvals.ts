@@ -20,7 +20,9 @@ function approvalValue(read: WorkbenchRead, row: Record<string, unknown>): {summ
       taskId: item.request.owner.taskId, runId: item.request.owner.runId, state: item.state,
       purpose: workbenchText(item.request.purpose, 500), resources: item.request.scopes.map(scope =>
         workbenchText(scope.kind === 'filesystem' ? scope.root : scope.kind === 'network' || scope.kind === 'egress' ? scope.origin
-          : scope.kind === 'process' ? scope.executable : scope.kind === 'mcp' ? scope.serverId : scope.kind, 500)),
+          : scope.kind === 'process' ? scope.executable : scope.kind === 'mcp' ? scope.serverId
+          : scope.kind === 'dependency' ? `${scope.package}@${scope.version}`
+          : scope.kind === 'extension' ? scope.extensionId : '安全凭据引用', 500)),
       classification: item.request.classification, expiresAt: item.request.expiresAt, updatedAt: item.updatedAt,
       canDecide: item.state === 'pending' && !expired, blockedReasons: expired ? ['expired'] : [],
     }};

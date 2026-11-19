@@ -3,6 +3,7 @@ import {Button} from '@heroui/react';
 import type {WorkbenchApprovalDetail, WorkbenchApprovalRef, WorkbenchApprovalRow, WorkbenchApprovalState} from '../../../../shared/xiaozhi-workbench';
 import {PiPermissionApproval} from '../PiPermissionApproval';
 import {PiCopyApproval} from '../PiCopyApproval';
+import {permissionClassification} from '../permissionPresentation';
 import {readWorkbenchSummary, useWorkbenchSummary} from './useWorkbenchSummary';
 import styles from '../../../ui-system/xiaozhi-workbench.module.css';
 
@@ -62,7 +63,10 @@ export function PiApprovalInbox({activeSessionId,onOpenSession,onChanged}: {
       {page.items.map(row => <article className={styles.card} key={`${row.kind}:${row.sessionId}:${row.id}`} data-testid="pi-approval-inbox-row">
         <h3>{row.sessionTitle || '未命名会话'} · {labels[row.state]}</h3>
         <p>{row.purpose}</p>
-        <p className={styles.meta}>{row.classification} · {row.kind === 'permission_v2' ? `申请版本 ${row.revision}` : '历史复制申请'}{row.expiresAt ? ` · 有效至 ${new Date(row.expiresAt).toLocaleString()}` : ''}</p>
+        <p className={styles.meta}>
+          {row.classification === 'unknown' ? '历史复制申请' : `数据范围 ${permissionClassification[row.classification]}`}
+          {row.expiresAt ? ` · 有效至 ${new Date(row.expiresAt).toLocaleString()}` : ''}
+        </p>
         <ul className={styles.resources}>{row.resources.map((resource, index) => <li key={index}>{resource}</li>)}</ul>
         {!row.canDecide && <p className={styles.meta}>当前记录不可直接决定，请查看详情或原会话核对。</p>}
         <div className={styles.actions}>

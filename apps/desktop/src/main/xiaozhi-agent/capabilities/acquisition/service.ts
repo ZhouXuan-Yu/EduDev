@@ -18,9 +18,14 @@ import {capabilityPackageFiles, installLockedNpmCapability} from './npm-install'
 import {FILESYSTEM_RECIPE, NODE_RECIPE} from './recipes';
 import type {PreparedStdioBinding} from '../../mcp-controlled-service';
 import {hashCapabilityFile} from './file-hash';
+import {writeAcquisitionPrepareReceipt, type AcquisitionCall} from './prepare-receipts';
+import {permissionHash} from '../../permissions/validation';
 
 export type AcquisitionContext = {
   owner: PermissionOwner;
+  callId?: string;
+  acquisitionCall?: AcquisitionCall;
+  recordPendingApproval?: (request: PermissionRequest) => Promise<void>;
   requirementsVersion: number;
   workspace: string;
   signal: AbortSignal;
@@ -79,6 +84,7 @@ export function createCapabilityAcquisition(options: {
     const candidate = await state.candidate(candidateId);
     if (!candidate) throw Error('not_found');
     const id = 'xiacquisition_' + protocolHash({sessionId: context.owner.sessionId, taskId: context.owner.taskId, candidateId, candidateHash: candidate.sourceHash});
+    if (context.callId) context = {...context, acquisitionCall: {owner: structuredClone(context.owner), callId: context.callId, operationId: id, candidateId}};
     const previous = await state.operation(id);
     let operation: AcquisitionOperation = {...previous, id, candidateId, candidateHash: candidate.sourceHash, owner: structuredClone(context.owner),
       requirementsVersion: context.requirementsVersion, revision: (previous?.revision || 0) + 1, phase: 'resolving', error: null,
@@ -117,7 +123,8 @@ export function createCapabilityAcquisition(options: {
       const request: PermissionRequest = {schemaVersion: 2, owner: context.owner, requirementsVersion: context.requirementsVersion,
         callId: id, action: 'capability_prepare', inputDigest: protocolHash(plan), purpose: '获取并验证已锁定的免费本地能力包与运行依赖',
         scopes, files: [], provider: null, classification: 'public', expiresAt: new Date(Date.now() + 3600000).toISOString()};
-      lease = await openPermissionLease(options.permissions.engine, request, context.signal);
+      try {lease = await openPermissionLease(options.permissions.engine, request, context.signal);}
+      catch (error) {if (error instanceof Error && error.message === 'permission_pending') await context.recordPendingApproval?.(request); throw error;}
       await context.recordAuthority?.('acquisition:' + id, lease.authority.decision.grantRefs);
       noLinks(root, true);
       await fs.mkdir(path.join(root, 'versions'), {recursive: true});
@@ -207,7 +214,24 @@ export function createCapabilityAcquisition(options: {
         return prior.result;
       }
       const controller = new AbortController();
-      const result = prepareWork({...context, signal: AbortSignal.any([context.signal, controller.signal])}, candidateId);
+      let pending: PermissionRequest | undefined;
+      const originalContext = context;
+      const ownedContext: AcquisitionContext = {...context, signal: AbortSignal.any([context.signal, controller.signal]),
+        recordPendingApproval: async request => {
+          if (permissionHash(request.owner) !== permissionHash(originalContext.owner)) throw Error('permission_denied');
+          pending = structuredClone(request);
+        }};
+      const result = (async () => {
+        const operation = await prepareWork(ownedContext, candidateId);
+        if (!originalContext.callId || !['ready', 'needs_approval'].includes(operation.phase)
+            || operation.phase === 'needs_approval' && !pending) return operation;
+        await assertContext(originalContext);
+        const next = {...operation, revision: operation.revision + 1};
+        const call: AcquisitionCall = {owner: structuredClone(originalContext.owner), callId: originalContext.callId, operationId: operation.id, candidateId};
+        await originalContext.recordAuthority?.('acquisition-outcome:' + protocolHash(next), []);
+        return originalContext.persist(() => state.saveOperation(next, operation.revision,
+          work => writeAcquisitionPrepareReceipt(work, call, next, pending)));
+      })();
       running.set(key, {owner: context.owner, controller, result});
       try {return await result;} finally {running.delete(key);}
     },
