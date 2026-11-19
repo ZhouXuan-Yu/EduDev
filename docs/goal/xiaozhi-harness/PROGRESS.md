@@ -6,6 +6,8 @@
 
 W2 双击去重子场景独立 4/4。同一 Task 仅新增一个 Run，冷重启仍可读回且零重放。带已有文件效果及旧 Run 迟到的完整验证继续进行。[双击复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
 
+实包 A2 补充撤销子场景 2/2。真实权限页面撤销后，同一已批准申请失效并冷启动读回，原 Run、工具回执和文件未变化。重新派发与替代路径继续验证。[撤销证据](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json)。
+
 W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
 
 ## 2026-11-19 模型脱敏与历史审批复验

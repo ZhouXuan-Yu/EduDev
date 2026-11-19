@@ -67,3 +67,7 @@ A1 其他审批类型、A2 范围变化与替代路径、最终包的完整页�
 W2 的双击去重、同 Task 和冷启动子场景已实现。真实开发构建从可见工作台双击“继续剩余步骤”，仅新增一个 Run，Generation 从 1 到 2，恢复回答可见。第二次冷开读回相同 Task 和已恢复 Run，零模型重放。[复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
 
 早期写入夹具把只读步骤登记为写入依赖，保留两次未进入草稿的记录。按当前计划合同并用实际审批点击后，观察到首次写入未派发却被本地效果账标记为不确定。同 Task 续跑出站前阻于 task_effect_needs_recheck，目标文件未创建。已提交文件、旧 Run 迟到结果和修复后重验仍待完成。W2 整体为 PARTIAL。
+
+## 2026-11-19 实包授权撤销独立复验
+
+A2 的授权撤销子场景已实现。Terra 在当前便携包的权限设置撤销同一合成工作区读取授权，已批准的原申请变为已失效，原因记录为 grant_revoked。重开后按相同审批 ID 从 SQLite 和收件箱读回，Run、工具回执与文件无新增。重新派发、目标或 Provider 变化及替代路径仍待完整验收。[撤销回执](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json)。
