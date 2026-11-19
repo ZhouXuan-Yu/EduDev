@@ -10,6 +10,8 @@ HTTP MCP 的真实 Host 首个授权工具调用原先在出站前被 stdio 路�
 
 Provider 撤销误停已定向修复。真实 Host 独立 2/2、冷读 2/2。受信准入错误与真实持久错误沿原行为分开处理，只有原 Tool 未被调用且边界确认拒绝时记录未派发。`node scripts/xiaozhi-agent/governance-admission-boundaries.mjs` 9/9，`node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs` 23/23，组件 253/253。构建 481 个产物，SHA-256 `42fb9495c378831618f98299268d22fb8e19d2340158c7bf9ad9f2cf5b1446a0`。
 
+Windows NSIS 基础候选本地构建成功。新版通过五套实际包装资源核对，Word 长路径宿主 5/5。改用合成 C 盘 profile 后，四份原件 ready，DOCX 已生成原版 PDF，归档仍为 source_changed。原测试 D 盘 disk_full 和源路径失败均保留。继续验证真实来源护栏及最终安装、启动和卸载。
+
 ## 2026-11-19 主线交接与专项分支检查点
 
 远端 `main` 已包含小智合并 `83034fe`，随后推进到知识库修复 `c071266`。本次代码与证据进入 `codex/xiaozhi-harness-20261112`。本地日常目录保留其他协作者的六处工作文件。

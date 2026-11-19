@@ -28,4 +28,6 @@
 
 生产版本只把 LibreOffice 的一次性 profile 放入主进程的短临时目录。Word 源、原版 PDF、协议、页数与来源校验沿原归档路径。实际新源码使用原进程宿主、已校验 Office 和 PDFium，156 字符目录 21.483 秒完成，11,748 字节、1 页，且取消、重试、失败及清理通过 5/5。已在相同源码通过类型检查、WordPages SQLite 11/11、Python 导出 7/7 和两条旧配置兼容检查。打包导入的测试根改用 OS TEMP，避免 D 盘余量低于原 Office 的 3 GiB 校验门槛，保留历史位置的冷读入口。[真实进程宿主](windows-package-20261119/word-host-156-path.json)。
 
+修复后的五资源包使用 `b634b3e`，实际 packaged out 481 文件，SHA-256 `a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900`。在 C 盘新的合成 profile 实际解包 Office，四种其他原件导入成功。DOCX 作业目录保留新生成的 11,748 字节 PDF，原件归档失败为 `source_changed`，版本与完整目录读回未通过。字段与 Worker 端成功分开保留，继续修复归档来源检查。[新版实际结果](windows-package-20261119/unpacked-word-profile-fixed-result.json)。
+
 当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。

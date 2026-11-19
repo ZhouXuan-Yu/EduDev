@@ -521,12 +521,14 @@
     "paidCalls": 0
   },
   "phase8WindowsPackage": {
-    "status": "WORD_PROFILE_PATH_FIXED_REAL_HOST_PASS_NEW_UNPACKED_IMPORT_RETEST",
+    "status": "WORD_PROFILE_PATH_FIXED_PDF_CREATED_ARCHIVAL_SOURCE_GUARD_REPRODUCED",
     "evidence": "evidence/phase8/windows-runtime-preparation-20261119.md",
     "baseInstallerLocal": "%TEMP%/edup-6e98963d/release/Xiaozhi-Setup-0.1.0-x64.exe",
     "fullUnpackedLocal": "%TEMP%/eduf-06f8ada8/release/win-unpacked",
     "wordProfilePathEvidence": "evidence/phase8/windows-package-20261119/word-office-profile-path-probe.json",
     "wordHostRetest": "evidence/phase8/windows-package-20261119/word-host-156-path.json",
-    "fullOutFingerprint": "f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb"
+    "fullOutFingerprint": "a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900",
+    "latestFullUnpackedLocal": "%TEMP%/eduw-117614f8/release/win-unpacked",
+    "latestFullUiRetest": "evidence/phase8/windows-package-20261119/unpacked-word-profile-fixed-result.json"
   }
 }

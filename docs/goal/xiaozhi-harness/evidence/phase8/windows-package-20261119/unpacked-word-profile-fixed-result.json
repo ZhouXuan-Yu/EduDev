@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-19",
+  "commit": "b634b3e",
+  "outFiles": 481,
+  "outSha256": "a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900",
+  "packagedOutEqual": true,
+  "testRootMode": "owned system temp",
+  "fivePinnedComponentsAfterPack": true,
+  "oldTestDiskGuard": "Same package on D failed Word component disk_full; original threshold retained and fresh synthetic fixture switched to system TEMP",
+  "officePackages": [
+    {
+      "name": "LibreOffice_26.8.2_Win_x86-64.msi",
+      "bytes": 375934976,
+      "sha256": "ff4b911403b67ee9e6249f820f9782c44bb32c94fdaa45b0da53a8e419e5307a"
+    },
+    {
+      "name": "lessmsi-v2.12.9.zip",
+      "bytes": 740956,
+      "sha256": "5b4e187e74b184ad3a63ccf06c3d17dae2b8c4b6c298a996dbd51a9f6db29d21"
+    }
+  ],
+  "componentChecks": [
+    {
+      "name": "Packaged frozen worker and native LanceDB",
+      "passed": true
+    },
+    {
+      "name": "Packaged PDFium page component on one synthetic scanned page",
+      "passed": true
+    }
+  ],
+  "readyImportCount": 4,
+  "wordJobFiles": [
+    {
+      "file": "source.docx",
+      "bytes": 9534,
+      "sha256": "77ed87223a0ed6c9e59f40382a3a8d39d3a2c87b67dd5ad603347ffc6b8cb9e2"
+    },
+    {
+      "file": "rendered.pdf",
+      "bytes": 11748,
+      "sha256": "162b889449ba52b5a6156e4052a9da56f2d9082c69f8939048f07b12a89e0291"
+    }
+  ],
+  "success": false,
+  "rendererErrors": [],
+  "networkAttempts": [],
+  "error": "AssertionError [ERR_ASSERTION]: Import did not complete: [{\"name\":\"教师讲义.docx\",\"status\":\"failed\",\"engine\":\"word-ooxml.v2:source_changed\"},{\"name\":\"扫描题页.pdf\",\"status\":\"ready\",\"engine\":\"pdfium-5.14.0-rapidocr-3.9.2-file.v3\"},{\"name\":\"题目照片.png\",\"status\":\"ready\",\"engine\":\"image-rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1\"},{\"name\":\"长教材.txt\",\"status\":\"ready\",\"engine\":\"local-text-v1\"},{\"name\":\"教师教案.md\",\"status\":\"ready\",\"engine\":\"local-text-v1\"}]\n    at file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/release/packaged-smoke.mjs:157:2"
+}
