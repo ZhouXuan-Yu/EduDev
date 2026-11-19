@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "23f656797f049359bc52014367c9b9a66fcfb455",
-  "headRole": "Last Harness source parent included in the new main merge. Read latestIntegration and branch refs for current integration and follow-up deltas.",
-  "mainObserved": "d94cfb6c0873aa257aa87bfdc3cf22b0417237e9",
+  "head": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+  "headRole": "Verified main merge baseline; feature implementation follows this commit.",
+  "mainObserved": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -27,8 +27,9 @@
   ],
   "openFindings": [
     "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
-    "Phase8: formal synthetic real-model ABBA, failure scenarios, packaging and independent final acceptance",
-    "Cached Pi preparation/tool latency optimization and frozen production verification continue on the feature branch"
+    "Phase8: A-P0-07 retained managed callback and A-P0-08 actual production sanitizer egress cases; QG-01 through QG-10",
+    "Word fresh-profile extraction deadline precedes archive verification; repeat by isolating preparation, conversion, archive, then cold readback",
+    "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 3,
@@ -37,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Follow the feature branch from this main merge. Continue the DOCX preparation/archive split, native window and remaining Phase7 coverage, then formal ABBA and independent final acceptance.",
+  "next": "Settle cold Word preparation/archive, A-P0-07/A-P0-08 and remaining native Phase7 evidence. Freeze formal ABBA candidate and complete the Windows and independent final gates.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -511,7 +512,13 @@
   "phase8P0CurrentSource": {
     "status": "TWO_PASS_TWO_PENDING_FULL_PROVIDER_RUNTIME_PROBES",
     "mechanismChecksPassed": 59,
-    "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+    "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+    "followup": {
+      "status": "SCOPED_4_PASS_2_OPEN",
+      "evidence": "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+      "acceptedMatrix": "77/89",
+      "paidCalls": 0
+    }
   },
   "phase8HttpMcp": {
     "status": "HTTP_PROJECTION_AND_PROVIDER_REDISPATCH_FIXED_SCOPED",
@@ -529,12 +536,19 @@
     "wordHostRetest": "evidence/phase8/windows-package-20261119/word-host-156-path.json",
     "fullOutFingerprint": "a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900",
     "latestFullUnpackedLocal": "%TEMP%/eduw-117614f8/release/win-unpacked",
-    "latestFullUiRetest": "evidence/phase8/windows-package-20261119/unpacked-word-profile-fixed-result.json"
+    "latestFullUiRetest": "evidence/phase8/windows-package-20261119/unpacked-word-profile-fixed-result.json",
+    "featureCheckpoint": {
+      "commit": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0",
+      "status": "CTIME_REGRESSION_18_PASS_FRESH_PACKAGE_4_OF_5_DOCX_PREPARATION_TIMEOUT",
+      "evidence": "evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json"
+    }
   },
   "latestIntegration": {
     "mainParent": "d94cfb6c0873aa257aa87bfdc3cf22b0417237e9",
     "harnessParent": "23f656797f049359bc52014367c9b9a66fcfb455",
     "scope": "Completed Harness fixes taken into main; concurrent KB continuation maintained",
-    "evidence": "evidence/phase8/main-sync-20261119.md"
+    "evidence": "evidence/phase8/main-sync-20261119.md",
+    "mainMerge": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+    "featureCheckpoint": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0"
   }
 }

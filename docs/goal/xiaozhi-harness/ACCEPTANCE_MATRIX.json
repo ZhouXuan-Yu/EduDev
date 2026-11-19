@@ -19,20 +19,33 @@
       "priority": "P0",
       "scenario": "执行边界",
       "expected": "所有动态 Provider 经过宿主执行边界",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
-      ]
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+          ]
+        }
+      ],
+      "scope": "已实现。统一宿主执行边界通过源码复核及 HTTP MCP、托管 MCP、Extension 真实 Host 合同验证。先前 Native 及包能力证据继续关联。"
     },
     {
       "id": "A-P0-03",
       "priority": "P0",
       "scenario": "权限越界",
       "expected": "超出授权范围的文件/命令/网络/MCP 操作被阻断",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -45,7 +58,17 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。当前适用 Windows 文件/命令/网络和 MCP 权限矩阵。原生操作、实际 stdio/HTTP、精确 Grant 和 Extension 专用 Scope 的检查均已复核。"
     },
     {
       "id": "A-P0-04",
@@ -72,9 +95,10 @@
       "priority": "P0",
       "scenario": "MCP 安全",
       "expected": "readOnlyHint 不被当作安全证明；Schema/来源/权限检查有效",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -87,17 +111,38 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。readOnlyHint 仅供目录展示。实际 stdio/HTTP 的 Schema、来源、精确 Grant 和拒绝场景通过。旧套件保留一个过时超时参数产生的失败。"
     },
     {
       "id": "A-P0-06",
       "priority": "P0",
       "scenario": "外部代码隔离",
       "expected": "未验证 Extension 不在 Electron 主进程执行",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。静态包候选保留在主进程执行边界外，已验证的 context.transform 与 event.observe 走隔离运行时。原生、包、协议和 Host 专项均通过。"
     },
     {
       "id": "A-P0-07",
@@ -107,7 +152,8 @@
       "status": "NOT_TESTED",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -120,7 +166,8 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "scope": "已获得 HTTP 与 Extension 撤销和持久化证据。还需当前 Task 保留的托管 MCP 回调在撤销后零新增派发的真实 Host 读回。"
     },
     {
       "id": "A-P0-08",
@@ -129,7 +176,8 @@
       "expected": "未授权教师/学生资料不发送到外部 Provider",
       "status": "NOT_TESTED",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -142,7 +190,8 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "scope": "已有 HTTP 权限叶层、Extension 和 Skill 私有来源阻断证据。还需生产学生 SQLite 脱敏链及实际 HTTP 端点记录零外发。"
     },
     {
       "id": "A-P0-09",

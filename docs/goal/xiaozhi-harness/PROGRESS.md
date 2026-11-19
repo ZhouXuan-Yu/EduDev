@@ -1,5 +1,12 @@
 # Harness 执行进度
 
+## 2026-11-19 优化分支接手点
+
+- GitHub 已整合的主线基线为 `59b81cb`。本分支从该主线版本继续，待验证的 Word 归档候选为 `f2b269f`。上一节以前的阶段和测试记录保留为历史证据。
+- 分支固定矩阵 **77/89**。独立托管 MCP 和 Extension 补充 124/124、7 个 Run 和 25 个回执冷读，本轮 A-P0-02、03、05、06 已实现。A-P0-07、08 和 QG-01–10 共 12 项尚待完成。[独立复核](evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md)。
+- Word 归档遇到仅 ctime 变化时重新核对锁定 SHA 和原文件身份。当前分支复跑 18/18。真实 Windows 五资源包在冷准备期间到达总时限，4 份合成资料 ready，DOCX 作业关闭后为 cancelled，原版 PDF 与重启读回尚未取得。[实包复测](evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json)。
+- 下一步分段记录 Office 固定组件准备、DOCX 转换和归档耗时，再在隔离 profile 完成真实打包导入。原生窗口拖动和最大化还原后继续正式 32 次 ABBA、前台性能、干净 Windows 安装卸载及独立终验。账本 3/200，本轮新增 0。
+
 ## 2026-11-19 主线发布点与接手入口
 
 本次主线合并纳入已完成的 MCP 工具派发、撤销后同任务续跑、工具准备校验复用、Windows 资源封装与 Word 转换路径修复。原知识库主线的跨页正文与相邻题图归属处理一并保留。源码父提交为 `23f6567` 和 `d94cfb6`。具体版本与测试用 [主线合并记录](evidence/phase8/main-sync-20261119.md) 核对。

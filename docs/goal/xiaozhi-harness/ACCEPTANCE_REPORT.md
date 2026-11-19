@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-19 专项分支复验
+
+独立 Sol 复核 11 套托管 MCP、现有权限和 Extension 专项 124/124。7 个真实 Host Run 和 25 个回执已冷读。A-P0-02、A-P0-03、A-P0-05、A-P0-06 已实现。固定矩阵 77/89；A-P0-07/08 的剩余范围及旧 MCP 套件的超时参数失败保留。[复验明细](evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md)。
+
+Word 来源归档专项 18/18。真实包的五种合成原件中四种 ready，DOCX 在冷准备窗口结束前未生成 PDF。完整资料归档与冷读、Windows 安装及终验继续执行。[实包报告](evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json)。
+
 ## 2026-11-19 能力状态与真实待审依赖
 
 UI-09 已实现。Terra 在冻结构建操作真实后台 Electron，核对“已安装、满足当前能力要求、待核验、需要授权、当前不可用”。实际 Task 的精确依赖从审批收件箱拒绝后，能力状态刷新，未新增授权，重启时原审批仍为拒绝。4/4、真实模型请求 0 次。另以两个合成 Registry Provider 验证缺必需项会被排除，缺可选项会标为部分可用，页面可展开查看缺口。真实 Provider 授权与执行、C1/C2 的其余场景继续复验。[独立审批证据](evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md) · [必需和可选缺口](evidence/phase7/pending-dependency-20261119/terra-c1-conclusion.md)。
