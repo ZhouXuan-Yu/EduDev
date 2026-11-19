@@ -357,7 +357,7 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "882552373fcdeae8ea78ab9caca09e9754abaffb524e6dbee87c1167f1479ea4"
+      "sha256": "a464e710c8cd8ddd385aa5a72edf3b2ed5c178daa2782795097c9dc54848833e"
     },
     {
       "path": "_internal/certifi/cacert.pem",
@@ -3576,13 +3576,13 @@
     },
     {
       "path": "omni-edu-ocr.exe",
-      "size": 9047980,
-      "sha256": "55e6dea5d203533d21c9fcbe77eb11e3f6b846e52d3f31abc01a187edd904d1c"
+      "size": 9050604,
+      "sha256": "596ff7835b42c7f030e6bfc8b4e6a578597234fc70fa57279def56098d8aa713"
     }
   ],
-  "totalBytes": 279128229,
+  "totalBytes": 279130853,
   "pdfFileEngine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3",
-  "pdfStreamSha256": "d927508c3d7d087f53a9608b43d9f22d389ee23c5dab4f6b81f14257782d9dd9",
+  "pdfStreamSha256": "74831a85b082e6fb52cf6aae0bd59fc1fa1565e36a54c99fcbfb8833463ff3fe",
   "metafileEngine": "windows-gdiplus-pillow-13.0.0-144dpi.v1",
   "metafilesSha256": "d2e00c5ef7adbccbdb340d04b2a5e88e3e1d0f4a75d6391f5acf6b7166e5f123",
   "metafileGdiSha256": "496db04e9feb6ec4f8bef7743dbcf1ffd2933cd75db9248744d7c0669846d3a7"

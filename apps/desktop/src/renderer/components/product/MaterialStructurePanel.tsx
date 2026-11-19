@@ -26,6 +26,7 @@ const roles: Record<ParagraphRole, string> = {
   figure: "图片",
 };
 const issueLabels: Record<string, string> = {
+  pdf_text_conflict: "PDF 页源待核对，请对照原页检查",
   native_unconfirmed: "原生文字与局部识别尚未一致",
   low_ocr_score: "OCR置信度偏低",
   ambiguous_region: "版面区域待核对",

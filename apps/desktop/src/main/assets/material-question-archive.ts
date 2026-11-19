@@ -157,6 +157,7 @@ export class MaterialQuestionArchive{
            this.controller.signal,
          );
          if(await target.structures!().archivedOwner(candidate.reference,q))continue;
+         if(!await target.structures!().permitsPdfQuestion(resource,q))continue;
          const {units}=await target.structureContext(candidate.reference,q.pageRange);
          if(!units.length)continue;
          const metadata = units[0].chunk;

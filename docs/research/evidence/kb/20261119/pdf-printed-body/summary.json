@@ -1,0 +1,32 @@
+{
+  "baseCommit": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+  "mainBundleSha256": "50d480ac1877a252c9742a86cbaad0ffeb12a0870283eb674f5330fd4d91f4df",
+  "worker": {
+    "runtimeSha256": "596ff7835b42c7f030e6bfc8b4e6a578597234fc70fa57279def56098d8aa713",
+    "pdfStreamSourceSha256": "74831a85b082e6fb52cf6aae0bd59fc1fa1565e36a54c99fcbfb8833463ff3fe",
+    "files": 712,
+    "bytes": 279130853,
+    "deltaBytes": 2624
+  },
+  "naturalSamples": [
+    {"sourceVersionSha256": "c3f746077b7ecd0e19c23dee98072bbe45691b66d1a94b3d1b9324b3da98088f", "page": 2, "before": "needs_review", "after": "complete", "selected": "native"},
+    {"sourceVersionSha256": "e0403d31b4c60fd002988ccefbe73d5f4e05e3cb1899d42eae91f5e8dffb1245", "page": 2, "before": "needs_review", "after": "needs_review", "ruleExtracted": ["3"], "heldForSourceConflict": ["4"]}
+  ],
+  "historyScreen": {"conflictedPages": 558, "whitespaceOnlyTokenCandidates": 10, "strictDiagramLabelTextCandidates": 1},
+  "localComparison": {"iterations": 100, "oldCoverageP95Ms": 0.2981, "extraGeometryP95Ms": 1.0413},
+  "regression": {
+    "runtimeBuildExit": 0,
+    "desktopBuildExit": 0,
+    "desktopNaturalPdf": {"passed": 4, "total": 4, "rendererErrors": 0, "networkModelCalls": 0},
+    "workerPython": {"passed": 2, "total": 2},
+    "workerLargePdf": {"pagesInFixture": 61, "selectedPagesVerified": 5, "sourceLockAndReleaseVerified": true},
+    "pdfPublication": {"passed": 4, "total": 4},
+    "nextParent": {"passed": 6, "total": 6},
+    "documentStructure": {"passed": 24, "total": 24},
+    "structureRepositoryAndQueue": {"passed": 38, "total": 38},
+    "aiStructureSource": {"passed": 15, "total": 15},
+    "rendererComponents": {"passed": 253, "total": 253},
+    "electronSmoke": {"passed": 207, "total": 207, "exitCode": 0}
+  },
+  "npmAudit": {"total": 29, "high": 8, "critical": 0}
+}

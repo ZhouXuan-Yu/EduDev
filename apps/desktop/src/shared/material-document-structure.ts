@@ -7,6 +7,7 @@ export const DOCUMENT_STRUCTURE_SCHEMA =
 export const DOCUMENT_STRUCTURE_ENGINE =
   "layout-paragraph-question.v2" as const;
 export type StructureIssue =
+  | "pdf_text_conflict"
   | "native_unconfirmed"
   | "low_ocr_score"
   | "ambiguous_region"

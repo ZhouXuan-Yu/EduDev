@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "bc5622212ed5c0da9d5623212962bf22d4e68d50d5dbca4f1a39b79eb87cad64"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "f6ba8eae7d638df1c54df9868ed5fedbe786dd0677a17b7dd72a7a9437cc97a4"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "b087efeca890ef6e7d5c63792da09f58ce23a71338cbfa9596098b0a0fabe6a8"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "d3f0ad0f6140df210282b0646c2db4220294ba3a8276b5f9cc4847f58af89f3c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-boundaries.mjs",
+      "sha256": "52936703289fe8a91111abfa735b3007c506c18b199f8e84df24c30feaf1e796"
+    },
+    {
+      "path": "apps/desktop/scripts/education/document-structure-repository.mjs",
+      "sha256": "2f5733e1dde574ffa83eb55553215df8804eafab605ca10f658f184d267484fb"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-pdf-printed-body-journey.mjs",
+      "sha256": "8cd6672906cceb369655272b830d1cbece826394d1e052cf2fb3b85c5f4baab2"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-pdf-question-conflict.ts",
+      "sha256": "f1765a2ed66216b9ff37720b649f307640757a813d8d022a0e63eced1ed1a587"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "f9d30d38ed4e4ce314164586c8050923a4172b9c6865ca5cac2ef8f6e51a3368"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "68d8bf88f704ee58938742ba902f60d426c53829a5e6dc88838f59bf9ba3d657"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "db8f9c02c0991f1ee7716b5c3153044019095aa2c8145190cd92984b2d0a6655"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/ocr-runtime-manifest.json",
+      "sha256": "c6a49c56f33ee55b48aad8f72af9e12befb143e35714a23aa025a56ca30f7483"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialStructurePanel.tsx",
+      "sha256": "7ab60d6a168cf31cf2b579dc87933466ebba042e65bf80a28d70baef1fb18670"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-document-structure.ts",
+      "sha256": "871effc54e0a03e24991c3bbccda2bc53be4266f36fc0732b78db05fef584271"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "1192f31f47af7e9f360a2096f0c37169438b5d6e19548d138fc1fec3539cca76"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "0ac7a282d95b690466df1cbce9dacef3a50a140b4f8af7240e75622362bde6fd"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "681269dcc2db4ec5cfe9819ccf8e216b2df5e6e4244086c9f0342752e0d8b616"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "b366a843401e5c4bd1bfa9011b205d3ff96b7502a330e117dfcd5ab5a16e1b91"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "aa3170ee5abda1a6edb645f7c678f47a389ace0d4d5ad15a13642cafb28e9e2e"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "2aaf47c6569ff2615755a029fc4ba77f1472a156daa5aa71146e5377f2041a3d"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "e6f1fb8e9330290825cc7296c486d14bf23ff9a705d33c6abf45b826ee7bc6e1"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "f1f205a959e4a2767bad69e3bb3578cbe52ed557f99626a4d10a8a005ab02e2d"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "3637ad81aba400d968c43b47f75f5cfea767d6f1d97cc406b1ce98fef3d313a3"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "75062afcbdac90abc918bd5b6886624f5d78b1f66b0946e1b6caa81c532eefa3"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "bb77caffb6a064c9ba457ee2849b47f12a6b1a1e2a0018dc15b039aa9cbf5e7e"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "9f40d52510c6887da26845e3b0809bcbcffd9b72cd2491e16ece4ebfdc50142e"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/pdf-printed-body/README.md",
+      "sha256": "323352a1a3c51b1a105e8773c1881d6bd6d056ee74f5e12f635f4896454d9b8f"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/pdf-printed-body/summary.json",
+      "sha256": "ea6be54f65da4b1aa99a18425a10d67daf13add72814377ca26d1098e71b5619"
+    },
+    {
+      "path": "python/omni_edu_ocr/pdf_stream.py",
+      "sha256": "49c42482c425939419da6b99398013bb5365f4ef1b897ab416ca566876128ef8"
+    },
+    {
+      "path": "python/omni_edu_ocr/test_pdf_body_reconciliation.py",
+      "sha256": "781a6984dd589ba29b669ba7598248e82718eb9b9e2db1ba37595874e3aeebde"
+    }
+  ]
+}

@@ -18,6 +18,7 @@ assert.notEqual(
 );
 const db = new DatabaseSync(":memory:");
 db.exec("CREATE TABLE ai_tasks(task_type TEXT,input_hash TEXT,status TEXT)");
+db.exec("CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,generation TEXT,state TEXT,total INTEGER); CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,error TEXT,result_json TEXT)");
 const results = [];
 async function check(name, action) {
   await action();
@@ -150,6 +151,28 @@ const repo = new MaterialStructureRepository(host),
 const query = { resourceId: id, version, page: 1 };
 await repo.migrate();
 await repo.migrate();
+await check("PDF admission rechecks staged questions and fails closed during retry", async () => {
+  const stem = "已知电阻 R1 = 5Ω，保持电流不变，求两端的电压。";
+  const q = { kind: "question", number: "3", pageRange: [1, 1], sharedMaterialIds: [], subquestions: [], assets: [], options: [], anchors: [], stem, answer: "", analysis: "" };
+  const nativeText = "3. " + stem + "\n4. 计算另一题。";
+  const receipt = { status: "needs_review", error: "text_conflict", method: "ocr", text: stem, nativeText, ocrText: stem, width: 100, height: 100, imageArea: 0, nativeBoxes: [] };
+  db.prepare("INSERT INTO material_pdf_jobs VALUES (?,?,?,?,?)").run(id, version, "pdf-stage", "partial", 1);
+  db.prepare("INSERT INTO material_pdf_pages VALUES (?,?,?,?,?)").run("pdf-stage", 1, receipt.status, receipt.error, JSON.stringify(receipt));
+  try {
+    assert(await repo.permitsPdfQuestion(resource, q));
+    assert(!await repo.permitsPdfQuestion(resource, { ...q, stem: stem.replace("5Ω", "15Ω") }));
+    db.exec("UPDATE material_pdf_pages SET status='pending',error='',result_json=''");
+    assert(!await repo.permitsPdfQuestion(resource, q));
+    db.exec("UPDATE material_pdf_pages SET status='failed',error='page_timeout'");
+    assert(!await repo.permitsPdfQuestion(resource, q));
+    db.exec("UPDATE material_pdf_pages SET status='needs_review',error='ocr_empty'");
+    assert(!await repo.permitsPdfQuestion(resource, q));
+    db.exec("UPDATE material_pdf_pages SET status='complete',error=''; UPDATE material_pdf_jobs SET generation='pdf-next'");
+    assert(!await repo.permitsPdfQuestion(resource, q));
+  } finally {
+    db.exec("DELETE FROM material_pdf_pages WHERE generation='pdf-stage'; DELETE FROM material_pdf_jobs WHERE generation IN ('pdf-stage','pdf-next')");
+  }
+});
 await check(
   "Fresh import is gated before raw parsing and no legacy fallback is returned",
   async () => {

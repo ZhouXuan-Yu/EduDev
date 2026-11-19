@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 混合 PDF 正文与图内读数核对
+
+文件 OCR 组件按原锁定工具链重新构建，保留应用协议和模型。更新 Worker 与编译清单配对使用，既有回执和正式题按原来源规则读取。
+
+详见 [本轮记录](../research/evidence/kb/20261119/pdf-printed-body/README.md)。
+
 ## 2026-11-19 跨页正文与相邻题图归属
 
 PDFium、RapidOCR、PP-DocLayout 和原图独立复核继续沿用。OMNI_EDU_AI_CONTINUATION_CAPTION_SEAM=0 停止新发现，已存回执可按各自版本读回。

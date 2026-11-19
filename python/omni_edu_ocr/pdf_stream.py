@@ -73,6 +73,59 @@ def native_covered(native, ocr):
     expected_tokens, recognized_tokens = critical(native), critical(ocr)
     return all(recognized_tokens[token] >= count for token, count in expected_tokens.items())
 
+
+_BODY_TOKENS = re.compile(r"[0-9]+(?:\.[0-9]+)?|[A-Za-zΑ-Ωα-ω]+|\S")
+_DIAGRAM_LABEL = re.compile(r"(?:[A-Za-zΑ-Ωα-ω][0-9₀-₉]{0,2}|[A-Za-zΑ-Ωα-ω]{2})")
+
+
+def printed_body_tokens(text):
+    # Font variants and fullwidth ASCII compare equal. Superscripts, subscripts,
+    # operators, and boundaries between numbers or Latin words stay significant.
+    def compare_character(char):
+        code = ord(char)
+        if 0xff01 <= code <= 0xff5e:
+            return chr(code - 0xfee0)
+        if 0x1d400 <= code <= 0x1d7ff:
+            plain = unicodedata.normalize("NFKC", char)
+            if len(plain) == 1 and plain.isascii() and plain.isalpha():
+                return plain
+        return char
+
+    return _BODY_TOKENS.findall("".join(map(compare_character, unicodedata.normalize("NFC", text))))
+
+
+def intersection_area(a, b):
+    return max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(0, min(a[3], b[3]) - max(a[1], b[1]))
+
+
+def matches_printed_body(native, native_boxes, images, bitmap, page, result):
+    """Extra diagram labels may explain a conflict only when the entire ordered
+    printed body agrees, with every extra label owned by a separate image."""
+    if not 1 <= len(images) <= 64 or not 1 <= len(native_boxes) <= 2000 or len(native.strip()) < 80:
+        return False
+    texts = result.txts or []
+    polygons = result.boxes
+    if polygons is None or not 1 <= len(texts) == len(polygons) <= 800:
+        return False
+    position = bitmap.get_posconv(page)
+    body, excluded = [], 0
+    for text, polygon in zip(texts, polygons):
+        if len(polygon) != 4 or any(len(point) != 2 or not all(math.isfinite(n) for n in point) for point in polygon):
+            return False
+        points = [position.to_page(round(float(x)), round(float(y))) for x, y in polygon]
+        xs, ys = zip(*points)
+        box = min(xs), min(ys), max(xs), max(ys)
+        area = intersection_area(box, box)
+        if not area:
+            return False
+        in_image = _DIAGRAM_LABEL.fullmatch(text.strip()) and any(intersection_area(box, image) >= 0.98 * area for image in images)
+        if in_image and not any(intersection_area(box, printed) > 0 for printed in native_boxes):
+            excluded += 1
+        else:
+            body.append(text)
+    return excluded > 0 and printed_body_tokens(native) == printed_body_tokens("\n".join(body))
+
+
 def bounded_text(text):
     text = text.replace("\x00", "").replace("\r\n", "\n").strip()
     if len(text.encode("utf-8")) > MAX_TEXT:
@@ -106,7 +159,7 @@ def read_page(page, create_engine, engine_holder):
         native = bounded_text(textpage.get_text_range(errors="replace"))
         count = textpage.count_rects()
         native_boxes = [list(textpage.get_rect(i)) for i in range(min(count, 2000))]
-    images, hidden, objects = [], False, 0
+    images, rectangular_images, hidden, objects = [], [], False, 0
     for item in page.get_objects(max_depth=15):
         objects += 1
         if objects > 50000:
@@ -115,7 +168,12 @@ def read_page(page, create_engine, engine_holder):
             pixels = item.get_px_size()
             if pixels[0] * pixels[1] > 64000000:
                 raise ValueError("too_large")
-            images.append(item.get_bounds())
+            bounds = item.get_bounds()
+            images.append(bounds)
+            if len(images) <= 64:
+                transform = item.get_matrix()
+                if transform.b == transform.c == 0 or transform.a == transform.d == 0:
+                    rectangular_images.append(bounds)
         elif item.type == pdfium.raw.FPDF_PAGEOBJ_TEXT:
             hidden = hidden or pdfium.raw.FPDFTextObj_GetTextRenderMode(item.raw) in (3, 7)
         elif item.type == pdfium.raw.FPDF_PAGEOBJ_FORM:
@@ -123,7 +181,7 @@ def read_page(page, create_engine, engine_holder):
     image_area = min(1.0, sum(max(0, min(width, b[2]) - max(0, b[0])) * max(0, min(height, b[3]) - max(0, b[1])) for b in images) / (width * height))
     suspicious = hidden or "\ufffd" in native or len(native_boxes) == 0 and bool(native)
     use_ocr = bool(images) or suspicious or len(native.strip()) < 20 and objects > 0
-    ocr = ""
+    ocr, verified_native = "", False
     pixel_width, pixel_height = max(1, round(width * 2400 / max(width, height))), max(1, round(height * 2400 / max(width, height)))
     state, error, method = "complete", "", "native"
     if not native and objects == 0:
@@ -140,10 +198,15 @@ def read_page(page, create_engine, engine_holder):
             if len(result.txts or []) > 4000:
                 raise ValueError("too_large")
             ocr = bounded_text("\n".join(result.txts or []))
+            conflict = bool(native and ocr and not native_covered(native, ocr))
+            if conflict and not suspicious and count <= 2000 and len(images) == len(rectangular_images) and 0 < image_area <= 0.20:
+                verified_native = matches_printed_body(native, native_boxes, rectangular_images, bitmap, page, result)
         method = "ocr"
         if not ocr:
             state, error = "needs_review", "ocr_empty"
-        elif native and not native_covered(native, ocr):
+        elif verified_native:
+            method = "native"
+        elif conflict:
             state, error = "needs_review", "text_conflict"
     # One selected transcription, never concatenate overlapping native/OCR versions.
     selected = ocr if method == "ocr" and ocr else native

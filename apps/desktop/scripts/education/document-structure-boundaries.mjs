@@ -2,6 +2,8 @@ import "../office-agent/register-source.mjs";
 import assert from "node:assert/strict";
 const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
+const { verifiedQuestionInPdfConflict } =
+  await import("../../src/main/assets/material-pdf-question-conflict.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -63,6 +65,28 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+await check("A conflicted page can admit one exact bounded parent without releasing its damaged sibling", () => {
+  const native = "3. 已知电阻 𝑅1 = 5Ω，电流保持不变，求电压的值。\n4. 另有电阻为 1\n2𝑅，求两端电压。";
+  const [a,b] = questions([page([
+    ["3. 已知电阻 R1 = 5Ω，电流保持不变，求电压的值。"],
+    ["4. 另有电阻为 1R，求两端电压。"],
+  ])]);
+  assert(verifiedQuestionInPdfConflict(native,a,1));
+  assert(!verifiedQuestionInPdfConflict(native,b,1));
+  assert(!verifiedQuestionInPdfConflict(native,{...a,stem:a.stem.replace("5Ω","15Ω")},1));
+  assert(!verifiedQuestionInPdfConflict(native,{...a,stem:a.stem.replace("R1","R₁")},1));
+  assert(!verifiedQuestionInPdfConflict(native+"\n3. 另一个重启编号的问题。",a,1));
+  assert(!verifiedQuestionInPdfConflict(native,{...a,pageRange:[1,2]},1));
+  assert(!verifiedQuestionInPdfConflict(native,{...a,sharedMaterialIds:["shared"]},1));
+  const choices = "\nA. 12Ω\nB. 21Ω";
+  const selected = {...a,stem:a.stem+choices,options:[{label:"A",text:"A. 12Ω"},{label:"B",text:"B. 21Ω"}]};
+  const nativeWithOptions = native.replace("\n4.",choices+"\n4.");
+  assert(verifiedQuestionInPdfConflict(nativeWithOptions,selected,1));
+  assert(!verifiedQuestionInPdfConflict(nativeWithOptions,{...selected,options:[{label:"A",text:"A. 21Ω"},selected.options[1]]},1));
+  assert(!verifiedQuestionInPdfConflict(nativeWithOptions,{...selected,options:selected.options.toReversed()},1));
+  for(const kind of ["inline_formula","display_formula","table"])
+    assert(!verifiedQuestionInPdfConflict(nativeWithOptions,{...selected,assets:[{kind}]},1));
+});
 await check(
   "Consecutive Chinese lines form a paragraph while a real vertical gap starts another",
   () => {

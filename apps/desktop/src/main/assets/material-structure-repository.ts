@@ -25,6 +25,8 @@ import type { OriginalImage } from "./question-assets";
 import type { QuestionDocument } from "../../shared/question-document";
 import { validQuestionDocument } from "../../shared/question-document";
 import type { ArchiveFields } from "../../shared/question-archive";
+import { validPdfFilePage } from "../../shared/material-pdf-file";
+import { verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 
 type Value = string | number | null;
 type Row = Record<string, unknown>;
@@ -229,6 +231,42 @@ export class MaterialStructureRepository {
     );
   }
 
+  /** The layout pass must not silently overrule conflicts from the same PDF
+   * version. Recheck at admission to cover previously staged candidates. */
+  async permitsPdfQuestion(resource: TeacherResource, question: StructureQuestion) {
+    if (!/\.pdf$/i.test(resource.originalFileName)) return true;
+    const [first, last] = question.pageRange;
+    const [job] = await this.host.all(
+      "SELECT generation,version,state,total FROM material_pdf_jobs WHERE resource_id=?",
+      [resource.id],
+    );
+    if (!job) return true; // Historical resources may predate the paged parser.
+    if (job.version !== resource.contentHash ||
+      !["complete", "partial"].includes(String(job.state)) ||
+      !Number.isSafeInteger(first) || !Number.isSafeInteger(last) ||
+      first < 1 || last < first || last > Number(job.total) || last - first >= 8) return false;
+    const pages = await this.host.all(
+      `SELECT page,status,error,CASE WHEN status='needs_review' AND error='text_conflict' THEN result_json END AS result_json
+       FROM material_pdf_pages WHERE generation=? AND page BETWEEN ? AND ? ORDER BY page`,
+      [String(job.generation), first, last],
+    );
+    if (pages.length !== last - first + 1) return false;
+    if (pages.every(row => row.status === "complete" ||
+      row.status === "blank" && !question.anchors.some(anchor => anchor.page === row.page))) return true;
+    if (pages.length !== 1) return false;
+    const [row] = pages;
+    if (row.status !== "needs_review" || row.error !== "text_conflict") return false;
+    let receipt: unknown;
+    try {
+      receipt = JSON.parse(String(row.result_json));
+    } catch {
+      return false;
+    }
+    return validPdfFilePage(receipt) && receipt.status === "needs_review" &&
+      receipt.error === "text_conflict" &&
+      verifiedQuestionInPdfConflict(receipt.nativeText, question, Number(row.page));
+  }
+
   async complete(
     resource: TeacherResource,
     signal: AbortSignal,
@@ -256,6 +294,11 @@ export class MaterialStructureRepository {
         question,
         pages.map((item) => item.page),
       );
+      const pdfConflict = question.status === "candidate" && !(await this.permitsPdfQuestion(resource, question));
+      if (pdfConflict) {
+        question.status = "needs_review";
+        question.issues.push("pdf_text_conflict");
+      }
       // Bounded source documents are quarantined instead of truncating their source or silently admitting them.
       let document: QuestionDocument | undefined;
       if (question.status === "candidate" && question.kind === "question") {
@@ -285,7 +328,10 @@ export class MaterialStructureRepository {
       await this.host.writer(async (target) => {
         await target.guard(resource, generation, signal, lease);
         await target.host.run(
-          `INSERT INTO material_structure_questions(generation,id,first_page,last_page,status,body_json,document_json,sha256) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(generation,id) DO NOTHING`,
+          `INSERT INTO material_structure_questions(generation,id,first_page,last_page,status,body_json,document_json,sha256) VALUES(?,?,?,?,?,?,?,?)
+           ON CONFLICT(generation,id) DO UPDATE SET status=excluded.status,body_json=excluded.body_json,
+             document_json=excluded.document_json,sha256=excluded.sha256
+           WHERE ?=1 AND material_structure_questions.status='candidate'`,
           [
             generation,
             question.id,
@@ -295,6 +341,7 @@ export class MaterialStructureRepository {
             JSON.stringify(question),
             document ? JSON.stringify(document) : "",
             hash(body),
+            Number(pdfConflict),
           ],
         );
       });
