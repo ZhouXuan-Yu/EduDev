@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 知识库结构 v5 图形选项
+
+逐项图形关系使用现有 QuestionDocument choices 和图库协议。字母不全或者源文本/OCR未核对时保持待核，继续沿用现有 PDF 入库门禁。
+
+详见 [本轮记录](../research/evidence/kb/20261119/graphic-choice-options/README.md)。
+
 ## 2026-11-19 知识库结构 v4 续页图
 
 无可靠图号的独立续页图只提供教师复核线索，明确图号仍保留原有 PDF 待核门禁。无需为此增加引擎或 SQLite 表。

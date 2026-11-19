@@ -149,6 +149,49 @@ await check("Page-leading image choices, prior-owned figures and layout conflict
   ]);
   assert.deepEqual(questions([alreadyOwned, newPage([leadingFigure, nextFigure])])[0].assets.map(a => a.regionId), ["prior-image"]);
 });
+
+function graphOptionPage({ labels = ["A.", "B.", "C.", "D."], grid = false, extra = [], tail = nextParent } = {}) {
+  const rows = [], images = [];
+  for (const [index, label] of labels.entries()) {
+    const x = 0.13 + (grid ? index % 2 : index) * 0.17;
+    const y = grid ? 0.05 + Math.floor(index / 2) * 0.11 : 0.08;
+    images.push({ ...leadingFigure, id: "option-image-" + index, box: [x, y, x + 0.12, y + 0.052] });
+    if (label) rows.push([label, x + 0.04, y + 0.057, 0.035, "figure_title"]);
+  }
+  return page([...rows, tail], 2, 2, [...images, ...extra]);
+}
+const graphStem = page([["7. 哪个图像表示物体运动的过程？（）", 0.12, 0.84]], 1, 2,
+  [{ ...leadingFigure, id: "apparatus", box: [0.86, 0.82, 0.96, 0.89] }]);
+
+await check("Four labeled graphics attach separately in horizontal and grid reading order, leaving the next question alone", () => {
+  for (const grid of [false, true]) {
+    const [question, next] = questions([graphStem, graphOptionPage({grid, extra: [nextFigure]})]);
+    assert.equal(question.status, "candidate");
+    assert.deepEqual(question.pageRange, [1, 2]);
+    assert.deepEqual(question.options.map(o => o.label), [..."ABCD"]);
+    assert.deepEqual(question.assets.map(a => [a.regionId, a.choiceLabel]), [
+      ["apparatus", undefined], ...[..."ABCD"].map((label, i) => ["option-image-" + i, label]),
+    ]);
+    assert.deepEqual(next.pageRange, [2, 2]);
+    assert.deepEqual(next.sharedMaterialIds, []);
+    assert.deepEqual(next.assets.map(a => a.regionId), ["next-image"]);
+    assert(!question.stem.includes("另一个物体"));
+  }
+});
+
+await check("Uncertain graph captions are shown for review and wrong or missing labels never publish", () => {
+  const [question] = questions([graphStem, graphOptionPage({labels:["（A","（B","(C","(D"]})]);
+  assert.equal(question.status, "needs_review");
+  assert(question.issues.includes("ambiguous_asset"));
+  assert.deepEqual(question.options.map(o => o.label), [..."ABCD"]);
+  assert.equal(question.options[0].text,"（A");
+  for (const labels of [["A.","C.","B.","D."], ["A.","B.","B.","D."], ["A.","B.","","D."]]) {
+    const [held] = questions([graphStem, graphOptionPage({labels})]);
+    assert.equal(held.status, "needs_review");
+    assert(held.issues.includes("missing_figure"));
+    assert(!held.assets.some(a => a.choiceLabel));
+  }
+});
 await check(
   "Consecutive Chinese lines form a paragraph while a real vertical gap starts another",
   () => {

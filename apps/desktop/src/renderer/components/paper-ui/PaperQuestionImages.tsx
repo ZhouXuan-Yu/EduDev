@@ -36,7 +36,7 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
           return {src: result.dataUrl, label: `题面图 ${index + 1}`};
         }));
       }
-      if (question.archive?.pageSource || question.document?.source.parserVersion.startsWith('teacher-transcription.v2+')) {
+      if (question.archive?.pageSource || question.archive?.structure || question.document?.source.parserVersion.startsWith('teacher-transcription.v2+')) {
         const result = await api.getOriginalQuestionGallery({schemaVersion: ORIGINAL_MULTI_SCHEMA,
           questionId: question.id, version: contentVersion});
         if (!result.ok) throw Error(result.error);
@@ -50,7 +50,7 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
             return image;
           });
         }
-        return pictures.map(image => ({src: image.dataUrl, diagram: image.kind==='diagram', label: `第 ${image.page} 页${image.kind==='diagram'?'题面插图':'题面图'}`}));
+        return pictures.map(image => ({src: image.dataUrl, diagram: image.kind==='diagram', label: image.choiceLabel ? `选项 ${image.choiceLabel} 原图` : `第 ${image.page} 页${image.kind==='diagram'?'题面插图':'题面图'}`}));
       }
       const result = await api.getOriginalQuestionImage({schemaVersion: ORIGINAL_REVIEW_SCHEMA,
         questionId: question.id, version: contentVersion});

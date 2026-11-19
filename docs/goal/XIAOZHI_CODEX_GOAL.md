@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-19 知识库结构 v5 图形选项
+
+已完成逐项绑定跨页图形选项的默认路径。继续 A04/A05 已复核题的答案与检索接通以及 KB-A01～A10 整体验收。
+
+详见 [本轮记录](../research/evidence/kb/20261119/graphic-choice-options/README.md)。
+
 ## 2026-11-19 知识库结构 v4 续页图
 
 本轮补齐页首独立图和纯图页裁图；后续接通默认成组跨页图形选项归档并继续 KB-A01～A10 完整验收。

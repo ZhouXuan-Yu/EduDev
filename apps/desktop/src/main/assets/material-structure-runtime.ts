@@ -22,6 +22,7 @@ import {
 import {
   QUESTION_DOCUMENT_SCHEMA,
   validQuestionDocument,
+  type QuestionBlock,
   type QuestionDocument,
 } from "../../shared/question-document";
 import { emptyQuestionProjection } from "../../shared/question-projection";
@@ -141,38 +142,45 @@ export class MaterialStructureRuntime {
   ): Promise<AutomaticQuestionSource> {
     if (!q.document) throw Error("source_changed");
     const images: AutomaticQuestionSource["images"] = [];
-    for (const block of q.document.blocks)
-      if (block.kind === "image") {
-        const source = q.document.source,
-          anchor = block.anchors[0];
-        const image: OriginalImage = {
-          schemaVersion: MATERIAL_PREVIEW_SCHEMA,
-          ok: true,
-          requestId: randomUUID(),
-          resourceId: source.resourceId,
-          version: source.resourceVersion,
-          engine: PDF_PAGE_ENGINE,
-          assetId: block.assetId,
-          page: anchor.page,
-          total: Math.max(
-            ...q.document.blocks.flatMap((b) => b.anchors.map((a) => a.page)),
-          ),
-          box: anchor.box,
-          width: block.width,
-          height: block.height,
-          sha256: block.sha256,
-        };
-        images.push({
-          blockId: block.id,
-          role: "question",
-          assetId: block.assetId,
-          sha256: block.sha256,
-          width: block.width,
-          height: block.height,
-          page: anchor.page,
-          bytes: await this.assets.read(image, true, signal),
-        });
-      }
+    const source = q.document.source;
+    const total = Math.max(...q.document.blocks.flatMap((b) => b.anchors.map((a) => a.page)));
+    type ImageBlock = Extract<QuestionBlock, { kind: "image" }>;
+    const blocks = q.document.blocks.flatMap((block): { block: ImageBlock; choiceLabel?: string }[] => {
+      if (block.kind === "image") return [{ block }];
+      if (block.kind !== "choices") return [];
+      return block.options.flatMap((option) =>
+        option.blocks.flatMap((child) => child.kind === "image" ? [{ block: child, choiceLabel: option.label }] : []),
+      );
+    });
+    for (const { block, choiceLabel } of blocks) {
+      const anchor = block.anchors[0];
+      const image: OriginalImage = {
+        schemaVersion: MATERIAL_PREVIEW_SCHEMA,
+        ok: true,
+        requestId: randomUUID(),
+        resourceId: source.resourceId,
+        version: source.resourceVersion,
+        engine: PDF_PAGE_ENGINE,
+        assetId: block.assetId,
+        page: anchor.page,
+        total,
+        box: anchor.box,
+        width: block.width,
+        height: block.height,
+        sha256: block.sha256,
+      };
+      images.push({
+        blockId: block.id,
+        role: "question",
+        ...(choiceLabel ? { kind: "diagram", choiceLabel } : {}),
+        assetId: block.assetId,
+        sha256: block.sha256,
+        width: block.width,
+        height: block.height,
+        page: anchor.page,
+        bytes: await this.assets.read(image, true, signal),
+      });
+    }
     return { projection: emptyQuestionProjection(q.stem), images };
   }
 
@@ -374,33 +382,41 @@ export class MaterialStructureRuntime {
     if (pages.length > 8 || q.anchors.length > 256 || q.stem.length > 12000)
       throw Error("question_too_large");
     const blocks: QuestionDocument["blocks"] = [];
+    const options: Extract<QuestionBlock, { kind: "choices" }>["options"] = [];
+    const captionIds = new Set(q.options.filter((part) => q.assets.some((a) => a.choiceLabel === part.label))
+      .flatMap((part) => part.paragraphIds));
     for (const { page, image } of pages) {
-      const paragraphs = page.paragraphs.filter(
-        (p) =>
-          q.paragraphIds.includes(p.id) || q.sharedMaterialIds.includes(p.id),
-      );
+      const paragraphs = page.paragraphs.filter((p) =>
+        !captionIds.has(p.id) && (q.paragraphIds.includes(p.id) || q.sharedMaterialIds.includes(p.id)));
       const pageAssets = q.assets.filter((asset) => asset.page === page.page);
-      const columns = paragraphs.length ? [...new Set(paragraphs.map((p) => p.column))] : pageAssets.length ? [-1] : [];
-      for (const column of columns) {
-        const owned = paragraphs
-          .filter((p) => p.column === column)
-          .map((p) => p.anchor.box);
-        const assets = pageAssets
-          .filter((a) =>
-            column < 0 ||
+      const regular = pageAssets.filter((asset) => !asset.choiceLabel);
+      const columns = paragraphs.length ? [...new Set(paragraphs.map((p) => p.column))] : regular.length ? [-1] : [];
+      const crops: { boxes: PageBox[]; label?: string }[] = columns.map((column) => ({
+        boxes: [
+          ...paragraphs.filter((p) => p.column === column).map((p) => p.anchor.box),
+          ...regular.filter((a) => column < 0 ||
             ((a.box[0] + a.box[2]) / 2 >= page.columns[column][0] &&
-              (a.box[0] + a.box[2]) / 2 <= page.columns[column][2]),
-          )
-          .map((a) => a.box);
-        const boxes = [...owned, ...assets];
+              (a.box[0] + a.box[2]) / 2 <= page.columns[column][2])).map((a) => a.box),
+        ],
+      }));
+      for (const asset of pageAssets) {
+        if (!asset.choiceLabel) continue;
+        const part = q.options.find((p) => p.label === asset.choiceLabel);
+        const caption = page.paragraphs.find((p) => part?.paragraphIds.includes(p.id));
+        if (!caption) throw Error("structure_document_invalid");
+        crops.push({ boxes: [asset.box, caption.anchor.box], label: asset.choiceLabel });
+      }
+      if (!crops.length) continue;
+      const bytes = await this.assets.read(image, true, signal);
+      const full = nativeImage.createFromBuffer(bytes);
+      for (const { boxes, label } of crops) {
+        const padX = label ? 0.002 : 0.008, padY = label ? 0.002 : 0.005;
         const box: PageBox = [
-          Math.max(0, Math.min(...boxes.map((b) => b[0])) - 0.008),
-          Math.max(0, Math.min(...boxes.map((b) => b[1])) - 0.005),
-          Math.min(1, Math.max(...boxes.map((b) => b[2])) + 0.008),
-          Math.min(1, Math.max(...boxes.map((b) => b[3])) + 0.005),
+          Math.max(0, Math.min(...boxes.map((b) => b[0])) - padX),
+          Math.max(0, Math.min(...boxes.map((b) => b[1])) - padY),
+          Math.min(1, Math.max(...boxes.map((b) => b[2])) + padX),
+          Math.min(1, Math.max(...boxes.map((b) => b[3])) + padY),
         ];
-        const bytes = await this.assets.read(image, true, signal),
-          full = nativeImage.createFromBuffer(bytes);
         const x = Math.floor(box[0] * image.width),
           y = Math.floor(box[1] * image.height);
         const crop = full.crop({
@@ -421,8 +437,8 @@ export class MaterialStructureRuntime {
           sha256,
         };
         await this.assets.put(saved, png, true, signal);
-        blocks.push({
-          id: `source_question_${blocks.length + 1}`,
+        const block: Extract<QuestionBlock, { kind: "image" }> = {
+          id: label ? "choice_image_" + label : `source_question_${blocks.length + 1}`,
           kind: "image",
           assetId: saved.assetId,
           sha256,
@@ -430,9 +446,17 @@ export class MaterialStructureRuntime {
           width: size.width,
           height: size.height,
           anchors: [{ page: page.page, box }],
-        });
+        };
+        if (label) options.push({ label, blocks: [block] });
+        else blocks.push(block);
       }
     }
+    if (options.length) blocks.push({
+      id: "graphic_choices",
+      kind: "choices",
+      options,
+      anchors: options.flatMap((option) => option.blocks[0].anchors),
+    });
     if (!blocks.length) throw Error("structure_document_invalid");
     const anchors = blocks.flatMap((b) => b.anchors);
     blocks.push({ id: "transcription", kind: "text", text: q.stem, anchors });

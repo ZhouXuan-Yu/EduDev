@@ -299,11 +299,11 @@ try {
     },
   );
   await check(
-    "Persisted v2 and v3 AI structure receipts remain authentic under the current reader",
+    "Persisted v2, v3 and v4 AI structure receipts remain authentic under the current reader",
     async () => {
       const f = await fixture();
       try {
-        for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3"]) {
+        for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3", "layout-paragraph-question.v4"]) {
           const body = JSON.stringify({...f.page,engine:engine});
           f.db.prepare("UPDATE material_structure_pages SET body_json=?,sha256=?").run(body,hash(body));
           f.db.prepare("UPDATE material_structure_jobs SET engine=?").run(engine);

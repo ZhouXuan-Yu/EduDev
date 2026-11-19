@@ -5,10 +5,10 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v4" as const;
-export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3";
+  "layout-paragraph-question.v5" as const;
+export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3" | "layout-paragraph-question.v4";
 export function validDocumentStructureEngine(value: unknown): value is DocumentStructureEngine {
-  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
+  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v4" || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
 }
 export type StructureIssue =
   | "pdf_text_conflict"
@@ -113,6 +113,7 @@ export type StructureQuestion = {
     box: PageBox;
     lineIds?: string[];
     rawText?: string;
+    choiceLabel?: string;
   }[];
   pageRange: [number, number];
   confidence: number;

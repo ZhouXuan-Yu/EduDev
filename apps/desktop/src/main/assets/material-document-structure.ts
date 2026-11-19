@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { leadingGraphicChoices } from "./material-structure-graphic-choices";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
   DOCUMENT_STRUCTURE_ENGINE,
@@ -440,10 +441,11 @@ function leadingQuestionFigure(
   return { image };
 }
 
-function attachStructureAsset(question: StructureQuestion, page: StructurePage, region: PageBlock) {
+function attachStructureAsset(question: StructureQuestion, page: StructurePage, region: PageBlock, choiceLabel?: string) {
   const lines = page.lines.filter((line) => overlap(line.box, region.box) / area(line.box) > 0.6);
   question.assets.push({
     page: page.page, regionId: region.id, kind: region.kind, box: [...region.box],
+    ...(choiceLabel ? { choiceLabel } : {}),
     lineIds: lines.map((line) => line.id), rawText: lines.map((line) => line.text).join("\n"),
   });
   if (lines.length) question.confidence = Math.min(question.confidence, ...lines.map((line) => line.score));
@@ -467,12 +469,26 @@ export class StructureQuestionAssembler {
   private sequence = 0;
   push(page: StructurePage): StructureQuestion[] {
     const output: StructureQuestion[] = [];
+    let choiceCaptions: Set<string> | undefined;
+    const pending = this.pending;
+    if (pending?.question.kind === "question" && !pending.question.sharedMaterialIds.length &&
+        pending.pages.size === 1) {
+      const previous = pending.pages.values().next().value!;
+      const group = leadingGraphicChoices(previous, pending.paragraphs, page);
+      if (group) {
+        if (group.choices.length) {
+          choiceCaptions = new Set(group.choices.map((choice) => choice.caption.id));
+          output.push(this.finish(undefined, group));
+        } else pending.question.issues.push("missing_figure");
+      }
+    }
     if (page.issues.includes("native_unconfirmed") && this.pending) {
       this.pending.question.issues.push("native_unconfirmed");
       this.pending.pages.set(page.page, page);
       this.pending.question.pageRange[1] = page.page;
     }
     for (const paragraph of page.paragraphs) {
+      if (choiceCaptions?.has(paragraph.id)) continue;
       if (["header", "footer", "figure", "note"].includes(paragraph.role))
         continue;
       if (paragraph.role === "heading") {
@@ -683,7 +699,10 @@ export class StructureQuestionAssembler {
     pending.question.issues.push(...paragraph.issues);
     pending.question.issues.push(...page.issues);
   }
-  private finish(following?: { page: StructurePage; next: StructureParagraph }): StructureQuestion {
+  private finish(
+    following?: { page: StructurePage; next: StructureParagraph },
+    graphics?: NonNullable<ReturnType<typeof leadingGraphicChoices>>,
+  ): StructureQuestion {
     const pending = this.pending!,
       q = pending.question,
       shared = q.sharedMaterialIds.length ? this.shared : [];
@@ -797,6 +816,18 @@ export class StructureQuestionAssembler {
         );
         if (compatible) attachStructureAsset(q, page, region);
       }
+    }
+    if (graphics) {
+      q.pageRange[1] = graphics.page.page;
+      for (const { label, caption, image } of graphics.choices) {
+        attachStructureAsset(q, graphics.page, image, label);
+        q.options.push({ label, paragraphIds: [caption.id], text: caption.rawText });
+        q.paragraphIds.push(caption.id);
+        q.anchors.push(caption.anchor, { page: graphics.page.page, box: [...image.box] });
+        q.confidence = Math.min(q.confidence, caption.confidence);
+        q.issues.push(...caption.issues);
+      }
+      if (graphics.needsReview) q.issues.push("ambiguous_asset");
     }
     if (following && !q.assets.length) {
       const match = leadingQuestionFigure(q, pending, following.page, following.next);

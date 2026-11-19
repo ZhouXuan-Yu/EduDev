@@ -14,6 +14,7 @@ const mainEntry=path.join(buildRoot,'main/index.js');
 const baselinePreface=process.argv.includes('--baseline-preface');
 const baselineFigure=process.argv.includes('--baseline-figure');
 const nextPageFigure=!baselinePreface&&!baselineFigure;
+const graphicChoices=nextPageFigure&&!process.argv.includes('--baseline-graphic-choices');
 assert.equal(path.basename(from),'data');
 assert.equal(path.basename(path.dirname(from)),'flow-1gb-20261111');
 const output=fs.mkdtempSync(path.resolve('test-results','native-printed-body-ui-'));
@@ -64,6 +65,34 @@ async function launch(){
  page=await app.firstWindow();page.setDefaultTimeout(60000);
  page.on('pageerror',error=>report.errors.push(error.message));
  await productEntry(page,'materials').click();
+}
+async function reviewFromOriginal(fixture,candidate,pages){
+  await productEntry(page,'materials').click();
+  const original=fixture.file.replace(/\.pdf$/i,'');
+  await page.getByTestId('materials-search').fill(original);
+  await page.getByTestId('materials-refresh').click();
+  await page.getByTestId('material-'+fixture.id).getByRole('button').click();
+  await page.getByRole('button',{name:'题目与校正',exact:true}).click();
+  const panel=page.getByTestId('material-structure-panel');
+  await openMaterialDisclosure(panel);
+  for(let n=1;n<pages[0];n++)await panel.getByTestId('structure-next').click();
+  const review=panel.getByTestId('structure-review-'+candidate.id);
+  await review.getByTestId('structure-review-open').click();
+  const preview=review.getByTestId('structure-review-source-image');
+  for(const target of pages){
+   await review.getByTestId('structure-review-source-page-'+target).click();
+   await until(async()=>await preview.getAttribute('alt')==='第'+target+'页结构来源');
+   await preview.evaluate(img=>img.decode());
+  }
+  await review.getByTestId('structure-review-difficulty').selectOption('medium');
+  assert(await review.getByTestId('structure-review-save').isDisabled());
+  await review.getByTestId('structure-review-checked').check();
+  await review.getByTestId('structure-review-save').click();
+  await panel.getByTestId('structure-reviewed-'+candidate.id).waitFor();
+  const reviewed=read('SELECT * FROM material_structure_reviews WHERE candidate_id=?',[candidate.id])[0];
+  const archived=read('SELECT * FROM question_bank_items WHERE id=?',[reviewed.question_id])[0];
+  assert.equal(JSON.parse(archived.archive_json).sourceChecked,true);
+  return { reviewed, archived };
 }
 try{
  await launch();
@@ -135,7 +164,7 @@ try{
  assert.equal(pressureBank.some(q=>q.number==='3'),!baselinePreface);
  assert(!pressureBank.some(q=>['6','7'].includes(q.number)));
  capture(baselinePreface?'Baseline global preface blocks the independent pressure question':'An independent later-page question keeps its own source and diagram, while the missing figure and formula conflicts stay held');
- let reviewed;
+ let reviewed, graphArchive;
  if(nextPageFigure){
   const negative=fixtures[3];
   if(negative){
@@ -145,33 +174,32 @@ try{
    const previous=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:negative.id,version:negative.hash,page:2});
    const figureChoices=previous.questions.find(q=>q.number==='13');
    assert(figureChoices&&figureChoices.status==='needs_review');
-   assert(!figureChoices.assets.some(a=>a.page===3&&figures.some(f=>f.id===a.regionId)));
-   capture('Four real graphical choices at the page head never become a single orphan attachment');
+   if (graphicChoices) {
+    assert.deepEqual(figureChoices.pageRange,[2,3]);
+    assert.deepEqual(figureChoices.options.map(o=>o.label),['A','B','C','D']);
+    assert.deepEqual(figureChoices.assets.map(a=>[a.page,a.regionId,a.choiceLabel]),[
+      [2,'block-14',undefined],[3,'block-1','A'],[3,'block-3','B'],[3,'block-5','C'],[3,'block-7','D'],
+    ]);
+    const next=data.questions.find(q=>q.number==='14');
+    assert(next&&!next.assets.some(a=>figureChoices.assets.some(b=>b.page===a.page&&b.regionId===a.regionId)));
+    assert(!read("SELECT id FROM question_bank_items WHERE source_title=? AND json_extract(archive_json,'$.number')='13'",[negative.file]).length);
+    ({archived:graphArchive}=await reviewFromOriginal(negative,figureChoices,[2,3]));
+    const document=JSON.parse(graphArchive.document_json);
+    const choices=document.blocks.find(b=>b.kind==='choices');
+    assert.deepEqual(choices.options.map(o=>o.label),['A','B','C','D']);
+    assert(document.blocks.some(b=>b.kind==='image'&&b.anchors[0].page===2));
+    assert(choices.options.every(o=>o.blocks.length===1&&o.blocks[0].kind==='image'&&
+      o.blocks[0].anchors[0].page===3&&o.blocks[0].anchors[0].box[3]<0.253));
+    assert.equal(new Set(choices.options.map(o=>o.blocks[0].sha256)).size,4);
+    capture('Four graphics map to their actual A–D captions and are archived only after source review');
+   } else {
+    assert(!figureChoices.assets.some(a=>a.page===3&&figures.some(f=>f.id===a.regionId)));
+    capture('Baseline keeps the four figures outside the solitary figure path');
+   }
+
   }
   const held=tail.questions.find(q=>q.number==='7');
-  const original=pressure.file.replace(/\.pdf$/i,'');
-  await page.getByTestId('materials-search').fill(original);
-  await page.getByTestId('materials-refresh').click();
-  await page.getByTestId('material-'+pressure.id).getByRole('button').click();
-  await page.getByRole('button',{name:'题目与校正',exact:true}).click();
-  const panel=page.getByTestId('material-structure-panel');
-  await openMaterialDisclosure(panel);
-  await panel.getByTestId('structure-next').click();
-  await panel.getByTestId('structure-next').click();
-  const review=panel.getByTestId('structure-review-'+held.id);
-  await review.getByTestId('structure-review-open').click();
-  const preview=review.getByTestId('structure-review-source-image');
-  for(const target of [3,4]){
-   await review.getByTestId('structure-review-source-page-'+target).click();
-   await until(async()=>await preview.getAttribute('alt')==='第'+target+'页结构来源');
-   await preview.evaluate(img=>img.decode());
-  }
-  await review.getByTestId('structure-review-difficulty').selectOption('medium');
-  assert(await review.getByTestId('structure-review-save').isDisabled());
-  await review.getByTestId('structure-review-checked').check();
-  await review.getByTestId('structure-review-save').click();
-  await panel.getByTestId('structure-reviewed-'+held.id).waitFor();
-  reviewed=read('SELECT * FROM material_structure_reviews WHERE candidate_id=?',[held.id])[0];
+  ({reviewed}=await reviewFromOriginal(pressure,held,[3,4]));
   const document=JSON.parse(reviewed.body_json).document;
   const images=document.blocks.filter(b=>b.kind==='image');
   assert.deepEqual(images.map(b=>b.anchors[0].page),[3,4]);
@@ -205,6 +233,22 @@ try{
  await preview.waitFor();
  await preview.evaluate(image=>image.decode());
  capture('The indexed question page is found by local search and opens its original diagram-bearing page');
+ if(graphArchive){
+  await productEntry(page,'teaching').click();
+  await page.getByRole('button',{name:'题本',exact:true}).click();
+  await page.getByTestId('question-notebook-search').fill(graphArchive.stem.slice(0,32));
+  const card=page.getByTestId('question-notebook-card-'+graphArchive.id);
+  await card.getByTestId('question-original-open').click();
+  const stored=JSON.parse(graphArchive.document_json).blocks.find(b=>b.kind==='choices');
+  for(const option of stored.options){
+   const image=card.getByRole('img',{name:'选项 '+option.label+' 原图',exact:true});
+   await image.evaluate(node=>node.decode());
+   const uri=await image.getAttribute('src');
+   assert(sha(Buffer.from(uri.split(',')[1],'base64'))===option.blocks[0].sha256);
+  }
+  capture('The restarted notebook displays four labeled original crops with the archived image hashes');
+ }
+
  assert.deepEqual(report.errors,[]);
  report.success=true;
 }catch(error){

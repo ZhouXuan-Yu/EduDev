@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 知识库结构 v5 图形选项
+
+默认导入复用 PP-DocLayoutV3、RapidOCR 与已有末题判断。原图读取沿用既有图库 IPC 和文档校验。
+
+详见 [本轮记录](../research/evidence/kb/20261119/graphic-choice-options/README.md)。
+
 ## 2026-11-19 知识库结构 v4 续页图
 
 继续复用 PDFium、RapidOCR、PP-DocLayoutV3 以及教师校正现有 IPC，结构升级到 v4 并兼容历史来源回执。
