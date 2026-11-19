@@ -1,5 +1,13 @@
 # Harness 执行进度
 
+## 2026-11-19 工作台防重复保存与治理补证
+
+W2 已保存文件再次双击继续，独立实页 4/4。同一 Task 仅增加一个 Run，重复写入未派发，SQLite 已应用记录与原文件字节冷启一致。继续真实迟到旧 Run 与后台 Job 提交。[W2 回执](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json)。
+
+S1 团队分享和官方非审核员独立实页 3/3。C2 的服务目录变化、撤销和冷启独立实页 4/4。完整角色、后续派发及替代路径依原合同继续。[技能治理](evidence/phase7/implementation-resume-20261119/skill-share-authority-ui-retest.json) · [MCP 治理](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json)。
+
+功能分支同步知识库主线 `2f18935`，保留章节导语归属和页码排除。组合构建通过，组件 253/253，结构专项 27/27、39/39、16/16，真实写入续跑 4/4，模型脱敏 Host 8/8。固定矩阵为 88/89。[组合版本证据](evidence/phase8/harness-main-sync-2f18935.json)。
+
 ## 2026-11-19 首次未派发写入可正确续跑
 
 W2 写入阻断已修复并通过实际 Host。宿主只为确认未进入原文件工具的请求保存未派发证明。续跑按当前权限重核。未消费的单次审批在同一任务、请求摘要及权限快照一致时可由新 Run 首次消费。独立 Host 场景另用新任务级授权及教师文件审阅后保存两份文件，额外续跑无法再次提交。历史无证明和已开始执行的效果继续复核。[Host 和冷读证据](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。

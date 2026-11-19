@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "6fcbfc65561285c9b5c6c4f376bbfe0ff06562fc7f1683177246de28d322c392",
+  "sourceHash": "713c774b95caadc2fa636379b8cb56df7a7b58fcafa39ca2efe5533e4b82e0f0",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1976,7 +1976,7 @@
     },
     {
       "file": "src/shared/material-ai-structure.ts",
-      "sha256": "5b869795cc272154fbcf00e557b8b70f73318222f5f06809a165b8a9f8b7cbe0"
+      "sha256": "c8c99d8aca4582084b403a5e6731c33beaacb4c01cfd08ed7b6a2f66512d9e16"
     },
     {
       "file": "src/shared/material-ai-text.ts",
@@ -2000,7 +2000,7 @@
     },
     {
       "file": "src/shared/material-document-structure.ts",
-      "sha256": "bdbc59993f143e43656b2934c69f345db4c9e819afeab2f64873dcf00629ee3b"
+      "sha256": "331820869f35cac5ce6531aee01ad54e8f3414c35b8960290687f9ba4488c567"
     },
     {
       "file": "src/shared/material-layout.ts",

@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-19 知识库结构 v3 材料归属
+
+知识库 v3 修复章节导语错误继承和真实页码误入题干。继续按 KB-A01～A10 推进，下轮以跨页图真实错例与相邻新题反例完成一处具体修复。
+
+详见 [本轮记录](../research/evidence/kb/20261119/structure-material-scope/README.md)。
+
 ## 2026-11-19 混合 PDF 正文与图内读数核对
 
 M02/M03 修复由图中文字误触发的 PDF 正文冲突，向结构化题库提供经同页核对的正文。KB-A01～A10 完整范围仍生效。

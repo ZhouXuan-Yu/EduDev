@@ -5,7 +5,12 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v2" as const;
+  "layout-paragraph-question.v3" as const;
+const previousStructureEngine = "layout-paragraph-question.v2";
+export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | typeof previousStructureEngine;
+export function validDocumentStructureEngine(value: unknown): value is DocumentStructureEngine {
+  return value === DOCUMENT_STRUCTURE_ENGINE || value === previousStructureEngine;
+}
 export type StructureIssue =
   | "pdf_text_conflict"
   | "native_unconfirmed"
@@ -61,7 +66,7 @@ export type StructureParagraph = {
 };
 export type StructurePage = {
   schemaVersion: typeof DOCUMENT_STRUCTURE_SCHEMA;
-  engine: typeof DOCUMENT_STRUCTURE_ENGINE;
+  engine: DocumentStructureEngine;
   resourceId: string;
   version: string;
   page: number;

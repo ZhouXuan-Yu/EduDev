@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "featureParent": "7b22c0b8bb21ed4ed030a1a3103501bff5518ebd",
+  "incomingMain": "2f1893570bfe4a2c0f846ee16540069a92531e3e",
+  "scope": "Feature branch integration candidate and associated production recovery regression. The independent UI cases use the frozen feature parent.",
+  "build": {
+    "passed": true,
+    "mainSha256": "60de7fdb82b4644c1578da3dce53fe009b2fc451852384de3ab87b5ab10e7885",
+    "coreManifestSha256": "713c774b95caadc2fa636379b8cb56df7a7b58fcafa39ca2efe5533e4b82e0f0",
+    "coreInputs": 626,
+    "parentSourcePinsVerified": 637,
+    "checkoutLineEndingRestorations": 5
+  },
+  "mergeConflictsResolved": [
+    "2.Memory.md",
+    "3.Learning.md",
+    "4.Wiki.md",
+    "generated core-tool-manifest.json"
+  ],
+  "validation": {
+    "renderer": "253/253",
+    "structuralBoundaries": "27/27",
+    "structuralRepository": "39/39",
+    "aiStructureSource": "16/16",
+    "journal": "23/23",
+    "actualNonDispatchHost": "4/4",
+    "closedNonDispatchReadback": "8/8",
+    "rawHostReportSha256": "0512f78af07a08e3f4568e79c207709e008b7f60dc4c26630c1b044f440dd81e",
+    "actualPrivacyHost": "8/8",
+    "rawPrivacySummarySha256": "44593d33bf8ed88a3c9d6061d4f792b5c332f35a3be60fb8363645dde6506225"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "dependencyLockChanged": false,
+  "formalModelExecutions": 0,
+  "paidCalls": 0
+}

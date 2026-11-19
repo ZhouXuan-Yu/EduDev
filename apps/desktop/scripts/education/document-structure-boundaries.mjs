@@ -329,6 +329,35 @@ await check('Shared materials and their diagrams keep cross-page provenance',()=
  const b=page([['1. 求加速度。',.1,.1],['2. 求位移。',.1,.2]],2,2);const q=questions([a,b]);
  assert(q.every(q=>q.sharedMaterialIds.length===2));assert(q.every(q=>q.pageRange[0]===1));assert(q.every(q=>q.assets.some(a=>a.regionId==='material-figure')));
 });
+await check('An unbounded lead-in stays with at most one review candidate; later references still need evidence',()=>{
+ const a=page([['导语：本章介绍液体静力学。',.1,.08,.8],['1. 已知水深为2m，求液体压强。',.1,.22],['2. 已知质量为3kg，求作用力。',.1,.39]],1,2);
+ const b=page([['3. 已知密度和体积，求质量。',.1,.08],['4. 已知条件，计算结果。',.1,.25],['（1）根据上述材料，求速度。',.12,.31],['5. 根据材料一求质量。',.1,.40],['6. 已知试验条件，分析结果。',.1,.49],['根据上述材料，求容器质量。',.1,.56]],2,2);
+ const [first,second,third,...dependent]=questions([a,b]);
+ assert(first.sharedMaterialIds.length&&first.issues.includes('shared_material_scope'));
+ assert(second.sharedMaterialIds.length===0&&!second.stem.includes('导语')&&second.status==='candidate');
+ assert(third.sharedMaterialIds.length===0&&third.status==='candidate');
+ assert.deepEqual(third.pageRange,[2,2]);
+ assert(dependent.length===3&&dependent.every(q=>q.issues.includes('shared_material_scope')&&q.status==='needs_review'));
+ assert(dependent[0].subquestions[0].text.includes('根据上述材料'));
+ assert(dependent[2].stem.includes('求容器质量'));
+ assert(a.paragraphs.some(p=>p.rawText.includes('本章介绍')));
+});
+await check('A printed page count is removed from stems only with bottom geometry, number region, and matching page',()=>{
+ const a=page([['1. 已知数据，求结果。',.1,.1],['第 1 页共 2 页',.42,.94,.16,'number']],1,2);
+ const b=page([['2. 已知条件，求结果。',.1,.1]],2,2);
+ assert(a.paragraphs.some(p=>p.role==='footer'&&p.rawText==='第 1 页共 2 页'));
+ assert(!questions([a,b])[0].stem.includes('第 1 页共'));
+ assert.equal(page([['1/2',.42,.94,.16,'number']],1,2).paragraphs[0].role,'footer');
+ for(const [text,y,kind] of [['第 2 页共 2 页',.94,'number'],['第 1 页共 7 页',.94,'number'],['第 1 页共 2 页',.5,'number'],['第 1 页共 2 页',.94,'text'],['3/7',.4,'number'],['2/2',.94,'number']])
+  assert.equal(page([[text,.42,y,.16,kind]],1,2).paragraphs[0].role,'body');
+});
+await check('A declared material range excludes questions both before and after it',()=>{
+ const rows=[['阅读材料，完成3～4题。',.1,.08],['背景材料内容。',.1,.13],['2. 已知条件，求结果。',.1,.23],['3. 根据材料一求结果。',.1,.32],['4. 根据材料计算差值。',.1,.40],['5. 已知功率，求耗电量。',.1,.49]];
+ const [before,first,last,after]=questions([page(rows)]);
+ assert(!before.sharedMaterialIds.length&&!before.stem.includes('背景材料'));
+ assert(first.sharedMaterialIds.length&&last.sharedMaterialIds.length);
+ assert(!after.sharedMaterialIds.length&&!after.stem.includes('背景材料'));
+});
 await check('Formula and table regions are associated without inventing symbols or cells',()=>{
  const q=questions([page([['1. 根据下表，计算结果。',.1,.1],['v = 2 m/s',.1,.15,.4,'display_formula'],['t/s  1  2  3',.1,.2,.6,'table']])])[0];
  assert(q.assets.some(a=>a.kind==='table'));assert(q.assets.some(a=>a.kind==='display_formula'));assert(q.stem.includes('v = 2 m/s'));assert(q.stem.includes('t/s  1  2  3'));

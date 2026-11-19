@@ -1,5 +1,5 @@
-import type { StructureParagraph } from "./material-document-structure";
-import { DOCUMENT_STRUCTURE_ENGINE } from "./material-document-structure";
+import type { DocumentStructureEngine, StructureParagraph } from "./material-document-structure";
+import { validDocumentStructureEngine } from "./material-document-structure";
 import { materialId } from "./materials";
 import { validPageBox, type PageBox } from "./material-page-preview";
 import { sourceLayoutSignature } from "./material-ai-source-layout";
@@ -7,7 +7,7 @@ import { sourceLayoutSignature } from "./material-ai-source-layout";
 export const AI_STRUCTURE_SOURCE = "xiaozhi.ai-structure-source.v1" as const;
 export type AiStructureContext = {
   schemaVersion: typeof AI_STRUCTURE_SOURCE;
-  engine: typeof DOCUMENT_STRUCTURE_ENGINE;
+  engine: DocumentStructureEngine;
   reference: {
     resourceId: string;
     version: string;
@@ -131,7 +131,7 @@ export function validAiStructureContext(
       "unresolved",
     ]) ||
     value.schemaVersion !== AI_STRUCTURE_SOURCE ||
-    value.engine !== DOCUMENT_STRUCTURE_ENGINE ||
+    !validDocumentStructureEngine(value.engine) ||
     !exact(value.reference, [
       "resourceId",
       "version",

@@ -75,3 +75,15 @@ A2 的授权撤销子场景已实现。Terra 在当前便携包的权限设置�
 ## 2026-11-19 W2 文件续写修复独立复验
 
 W2 的授权后续写子场景已实现。新开发构建上，Terra 观察到同一任务仅新增一个 Run。同一已批准但未消费的精确单次请求首次进入执行，教师从实页确认文件草稿后才落盘。冷启继续读回同一审批、任务、Run 和文件。追加一代的防重复写在真实 Host 专项验证。W2 的同一可见场景再续跑已保存任务、迟到旧 Run 和完整页面合同仍待完成。[独立与 Host 回执](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+## 2026-11-19 已保存文件再次继续的页面验证
+
+W2 的已提交文件防重子场景已实现。Terra 在冻结开发构建从工作台双击继续，同一任务只新增一个 Run。合成模型尝试重复写同一已保存讲义，工具以 task_step_already_verified 阻断，回执显示未派发。原文件摘要、唯一已应用记录及原成功回执保持一致，冷启零模型重放。下一项任务未被错误创建，旧 Run 迟到仍单独验证。[独立实页](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json)。
+
+## 2026-11-19 S1 团队副本与官方审核角色
+
+S1 的分享副本和官方非审核员子场景已实现。Terra 在实际开发构建中从个人 Skill 分享出独立的团队副本。副本先待审，团队管理员批准后生效，原个人版本与文件字节不变。当前非官方审核员可提交官方审核申请；页面无审批入口，typed 主进程拒绝越权审核，冷启仍待审。非管理员团队角色、私有来源正文隔离及官方审核员批准成功继续验收。[独立证据](evidence/phase7/implementation-resume-20261119/skill-share-authority-ui-retest.json)。
+
+## 2026-11-19 C2 MCP 目录变化与撤销
+
+C2 的目录变化、信任清除和撤销子场景已实现。Terra 从实际设置页添加并信任合成服务。工具 Schema 变化后重新连接，应用清除旧信任与选择；重新批准后执行页面撤销，冷启保持 revoked。测试没有发出 tools/call，撤销后的实际尝试及替代路径另行复验。[独立实页](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json)。

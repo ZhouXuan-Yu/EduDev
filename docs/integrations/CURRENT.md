@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 知识库结构 v3 材料归属
+
+复用现有 PDFium、RapidOCR、PP-DocLayoutV3 和 AI 输入协议。结构引擎 v3 支持验证已有 v2 冻结 AI 证据，旧代版本保留在回执中。
+
+详见 [本轮记录](../research/evidence/kb/20261119/structure-material-scope/README.md)。
+
 ## 2026-11-19 混合 PDF 正文与图内读数核对
 
 文件 OCR 组件按原锁定工具链重新构建，保留应用协议和模型。更新 Worker 与编译清单配对使用，既有回执和正式题按原来源规则读取。

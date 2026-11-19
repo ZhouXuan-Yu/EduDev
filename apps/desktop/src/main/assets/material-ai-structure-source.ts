@@ -5,7 +5,7 @@ import {
   type AiStructureContext,
 } from "../../shared/material-ai-structure";
 import {
-  DOCUMENT_STRUCTURE_ENGINE,
+  validDocumentStructureEngine,
   type StructurePage,
 } from "../../shared/material-document-structure";
 import {
@@ -42,7 +42,7 @@ function context(
   const recovery = page.nativeRecovery;
   const result: AiStructureContext = {
     schemaVersion: AI_STRUCTURE_SOURCE,
-    engine: DOCUMENT_STRUCTURE_ENGINE,
+    engine: page.engine,
     reference: {
       resourceId: page.resourceId,
       version: page.version,
@@ -107,7 +107,7 @@ async function readPage(
   if (
     digest(JSON.stringify(page)) !== row.sha256 ||
     (expectedSha && row.sha256 !== expectedSha) ||
-    page.engine !== DOCUMENT_STRUCTURE_ENGINE ||
+    !validDocumentStructureEngine(page.engine) ||
     page.resourceId !== source.resourceId ||
     page.version !== source.version ||
     page.page !== source.page ||
@@ -246,7 +246,7 @@ export async function withAiStructureSource(
       [source.resourceId],
     )
   )[0];
-  if (!job || job.engine !== DOCUMENT_STRUCTURE_ENGINE) return original;
+  if (!job || !validDocumentStructureEngine(job.engine)) return original;
   if (
     job.version !== source.version ||
     !["complete", "partial"].includes(String(job.status))
@@ -257,6 +257,7 @@ export async function withAiStructureSource(
     source,
     String(job.generation),
   );
+  if (page.engine !== job.engine) throw Error("source_changed");
   if (
     page.rasterSha256 !== original.blocks.rasterSha256 ||
     image.width !== original.blocks.width ||

@@ -6,6 +6,7 @@ import {
   validStructureReference,
   type StructureReviewReceipt,
   DOCUMENT_STRUCTURE_ENGINE,
+  validDocumentStructureEngine,
   DOCUMENT_STRUCTURE_SCHEMA,
   validStructureQuery,
   type DocumentStructureQuery,
@@ -117,9 +118,8 @@ export class MaterialStructureRepository {
     return (
       !!row &&
       row.version === resource.contentHash &&
-      [DOCUMENT_STRUCTURE_ENGINE, "layout-paragraph-question.v1"].includes(
-        String(row.engine),
-      ) &&
+      (validDocumentStructureEngine(row.engine) ||
+        row.engine === "layout-paragraph-question.v1") &&
       ["complete", "partial"].includes(String(row.status))
     );
   }
@@ -137,7 +137,8 @@ export class MaterialStructureRepository {
       if (!old && resource.chunkCount > 0) return false;
       if (
         old?.version === resource.contentHash &&
-        old.engine === DOCUMENT_STRUCTURE_ENGINE &&
+        (validDocumentStructureEngine(old.engine) ||
+          old.engine === "layout-paragraph-question.v1") &&
         ["complete", "partial"].includes(String(old.status))
       )
         return false;
@@ -146,7 +147,14 @@ export class MaterialStructureRepository {
         old.engine === DOCUMENT_STRUCTURE_ENGINE;
       if (lease && !(await target.host.lease(lease))) throw Error("cancelled");
       await target.host.run(
-        `INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,lease,updated_at) VALUES(?,?,?,?,'running',?,?) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,engine=excluded.engine,generation=excluded.generation,status='running',error='',lease=excluded.lease,updated_at=excluded.updated_at`,
+        `INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,lease,updated_at) VALUES(?,?,?,?,'running',?,?)
+         ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,engine=excluded.engine,generation=excluded.generation,
+         pages=CASE WHEN generation=excluded.generation THEN pages ELSE 0 END,
+         processed=CASE WHEN generation=excluded.generation THEN processed ELSE 0 END,
+         paragraphs=CASE WHEN generation=excluded.generation THEN paragraphs ELSE 0 END,
+         questions=CASE WHEN generation=excluded.generation THEN questions ELSE 0 END,
+         held=CASE WHEN generation=excluded.generation THEN held ELSE 0 END,
+         status='running',error='',lease=excluded.lease,updated_at=excluded.updated_at`,
         [
           resource.id,
           resource.contentHash,
@@ -561,6 +569,10 @@ export class MaterialStructureRepository {
     if (job.version !== version) throw Error("source_changed");
     if (!["complete", "partial"].includes(String(job.status)))
       throw Error("source_incomplete");
+    // Frozen older structures remain readable and reviewable. Automatic
+    // publishing uses the current ownership rules after an explicit rebuild.
+    if (job.engine !== DOCUMENT_STRUCTURE_ENGINE)
+      return {generation:String(job.generation),hasMore:false,items:[]};
     const rows = await this.host.all(
       "SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid LIMIT 17 OFFSET ?",
       [String(job.generation), offset],
@@ -583,6 +595,12 @@ export class MaterialStructureRepository {
         } as DocumentStructureReference,
       })),
     };
+  }
+
+  async currentPublication(id: string, version: string, generation: string) {
+    const job = await this.job(id);
+    return job?.version === version && job.generation === generation &&
+      job.engine === DOCUMENT_STRUCTURE_ENGINE && ["complete", "partial"].includes(String(job.status));
   }
 
   async archivedOwner(
