@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Complete A-P0-08 Office documents, attachments, persistent terminal and legacy replay model projections on the feature branch. Then finish the native Phase7, qualified Windows installation, formal ABBA and final independent acceptance.",
+  "next": "Finish the full Phase7 page contract, isolated Windows install/uninstall QG-09, formal ABBA on the frozen B and final independent acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -514,9 +514,9 @@
     "mechanismChecksPassed": 59,
     "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
     "followup": {
-      "status": "SCOPED_4_PASS_2_OPEN",
+      "status": "P0_PROVIDER_PERMISSION_AND_DATA_CHECKS_PASS",
       "evidence": "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
-      "acceptedMatrix": "87/89",
+      "acceptedMatrix": "88/89",
       "paidCalls": 0,
       "managedRevocation": {
         "status": "PASS",
@@ -532,9 +532,11 @@
         "evidence": "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
       },
       "remainingToolPrivacy": {
-        "status": "SIX_PRODUCTION_EGRESS_RED_CASES",
+        "status": "CURRENT_AND_LEGACY_MODEL_PROJECTION_PASS",
         "evidence": "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json",
-        "active": "Model-result and legacy-replay projection implementation",
+        "retest": "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json",
+        "independentHost": "8/8",
+        "nativeImageBoundary": "19/19",
         "paidCalls": 0
       }
     }
@@ -585,7 +587,7 @@
     "featureCheckpoint": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0"
   },
   "phase8QualityCheckpoint": {
-    "acceptedMatrix": "87/89",
+    "acceptedMatrix": "88/89",
     "evidence": "evidence/phase8/current-quality-checkpoint-20261119.md",
     "pass": [
       "QG-01",

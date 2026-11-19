@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "scope": "Phase 7 independent Terra High. Real Electron development build with isolated synthetic SQLite workspace and visible approval inbox. Legacy copy scenario only.",
+  "result": "PASS_SCOPED",
+  "fixedContractRows": [
+    "A1",
+    "A2"
+  ],
+  "rendererSourceSha256": "0d6c21137b01ea3674f08c8465a6de06a36675a5d12607f7926f25403797ee3b",
+  "mainBundleSha256": "776a875e7ab418acb0e0bc38d8c9ee9f3952d585db37b4c340b5a1596da91a5b",
+  "packaged": false,
+  "steps": [
+    "Open the existing approvals inbox, select the pending historical copy and expand the details.",
+    "Check single-copy authorization, preservation of existing names, and the consequence of refusing.",
+    "Click Reject. Confirm SQLite rejected the exact approval, source SHA stayed fixed and target was absent.",
+    "Stop cleanly, reopen and select the exact approval/session. Confirm the historical detail is rejected and action is disabled."
+  ],
+  "expandedTextLines": [
+    "复制教学资料",
+    "需要你的确认",
+    "来源：source.txt",
+    "目标：legacy-pending.txt",
+    "授权仅用于这次复制。已有同名文件会保留。",
+    "拒绝后，这次复制不会执行。",
+    "批准这一次",
+    "拒绝"
+  ],
+  "approvalId": "confirm_a0667ce9-49d8-468f-b48d-1bb5899f88a8",
+  "sessionId": "aisession_69fb9c26-c98c-4c7f-a05b-bc7a8f037de8",
+  "matchingColdSummary": {
+    "status": "rejected",
+    "canDecide": false,
+    "resources": [
+      "source.txt",
+      "legacy-pending.txt"
+    ]
+  },
+  "sourceSha256": "6f4fd0899e102629375c09cee1f4d4fdee6d2aacdb79171288d47ba93db7161f",
+  "targetCreated": false,
+  "coldState": "rejected",
+  "localNetworkPolicy": "Electron test net.fetch denied; no model operation",
+  "paidCalls": 0,
+  "sourceArtifacts": {
+    "reject-before-cold-retest.json": "30804d2a201a88a25356e9f41ef155c698465113b54ff046171d9f167ff725ea",
+    "cold-id-retest.json": "602ef6b0cc4eeb170332433afbc53b39c398d1889956b42ef910082a049421ae",
+    "pending.png": "bc150d228b7f7a9e6e34988630b5da727183cc4a5127cb108c139d0390618d5f",
+    "cold-id-retest.png": "5e6b1f5221e0e18e08c95824a5389f61b69ea430ddb040c1639c8e466192f306"
+  },
+  "stillOpen": "Full Phase 7 A1 approval-type coverage, A2 changed scope/target/provider and fallback, full page contract and final packaged retest remain open.",
+  "priorMeasurement": "Initial cold test expected pending-only controls on a rejected approval. Exact-ID cold retest used the historical read-only detail and SQLite to verify the actual state."
+}

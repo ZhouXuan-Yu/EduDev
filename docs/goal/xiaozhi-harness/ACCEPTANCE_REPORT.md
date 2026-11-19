@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-19 A-P0-08 数据出站复验与历史复制审批
+
+A-P0-08 已实现，固定矩阵 **88/89**。原六项出站回归与两个真实旧会话冷启动独立 8/8，19 个合成模型请求未包含已种入的姓名、学校、电话、邮箱或本机路径。原件、捕获附件、SQLite 锚点、JSONL 历史和终端教师可见输出读回保留。结合已验收的 HTTP 无授权零外发、结构化文件引用及图像准备至出站围栏 19/19。[证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。
+
+Gate7 历史复制拒绝路径在精确开发构建独立 PASS。原始源文件和目标路径在实际拒绝与冷启动前后均一致。A1 全部审批类型及 A2 授权变化、替代执行仍待完整验收。[审批记录](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
 ## 2026-11-19 其余模型结果隐私复现
 
 独立冻结旧源码 12f27f6，已在真实 Host 的模型回传确认六条普通路径仍暴露已知学校和本地路径，涉及 Office DOCX/PDF、提交附件 txt/DOCX/PDF 及正常持久终端。实际文件和原终端本地结果保持。A-P0-08 继续保留 FAIL，修复正在分支推进。[冻结红证](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json)。

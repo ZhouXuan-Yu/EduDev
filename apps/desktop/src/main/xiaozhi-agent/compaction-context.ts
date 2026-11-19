@@ -4,6 +4,7 @@ import type {TaskView} from '../../shared/xiaozhi-task';
 
 /** Main-owned, same-conversation facts. A summary never grants new authority. */
 export async function getPiProtectedContext(store: OmniEduStore, sessionId: string, excludedRunIds: readonly string[] = [], task?:TaskView|null, sanitizeRequest?:(text:string)=>Promise<string>): Promise<string> {
+  const clean=sanitizeRequest||(async(text:string)=>(await store.sanitizeProblemText(text)).sanitizedText);
   const [controls, approvals, detail, changes, artifacts] = await Promise.all([
     store.xiaozhiState.controls(sessionId), store.xiaozhiState.approvals(sessionId), store.getAiConversationSession(sessionId),
     store.xiaozhiState.changes?.list(sessionId) || [],
@@ -57,11 +58,11 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
     if(!add(`教师要求：${JSON.stringify(record)}`,'requests'))add(`教师要求：${JSON.stringify({...record,text:'',truncated:true})}`,'requests');
   }
   // Preserve the most recent file authority first; every omitted record is counted.
-  for (const item of safeApprovals.slice(-16).reverse()) add(`文件审批：${JSON.stringify({ source: item.source, target: item.target, state: item.state, sourceSha256: item.sourceSha256 })}`, 'approvals');
-  for (const item of safeChanges.slice(-16).reverse()) add(`文件修改：${JSON.stringify({ file: item.path, operation: item.operation, state: item.state })}`, 'changes');
-  for(const item of safeArtifacts.slice(-16).reverse())add(`办公产物：${JSON.stringify({file:item.path,format:item.format,state:item.state,artifactId:item.state==='saved'?item.artifactId:null})}`,'artifacts');
-  for (const plan of plans.slice(-8).reverse()) add(`计划：${JSON.stringify((plan.steps || []).slice(0, 12).map(step => ({ text: step.text.slice(0, 200), status: step.status })))}`, 'plans');
-  for (const title of [...titles].slice(-16).reverse()) add(`已检索来源标题：${title}`, 'titles');
+  for (const item of safeApprovals.slice(-16).reverse()) add(`文件审批：${JSON.stringify({ source: await clean(item.source), target: await clean(item.target), state: item.state, sourceSha256: item.sourceSha256 })}`, 'approvals');
+  for (const item of safeChanges.slice(-16).reverse()) add(`文件修改：${JSON.stringify({ file: await clean(item.path), operation: item.operation, state: item.state })}`, 'changes');
+  for(const item of safeArtifacts.slice(-16).reverse())add(`办公产物：${JSON.stringify({file:await clean(item.path),format:item.format,state:item.state,artifactId:item.state==='saved'?item.artifactId:null})}`,'artifacts');
+  for (const plan of plans.slice(-8).reverse()) add(`计划：${JSON.stringify(await Promise.all((plan.steps || []).slice(0, 12).map(async step => ({ text: await clean(step.text.slice(0, 200)), status: step.status }))))}`, 'plans');
+  for (const title of [...titles].slice(-16).reverse()) add(`已检索来源标题：${await clean(title)}`, 'titles');
   lines.push(`本索引省略记录：计划${plans.length - included.plans}，审批${safeApprovals.length - included.approvals}，修改${safeChanges.length - included.changes}，产物${safeArtifacts.length-included.artifacts}，来源${titles.size - included.titles}，教师要求${requests.length-included.requests}；计划长步骤仅索引前200字，截断请求以truncated明示，完整事实保留本地，可用read_teacher_request按sourceId分段重读。`);
   // Apply the same education redaction before any facts enter SDK history/API.
   return (await store.sanitizeProblemText(lines.join('\n'))).sanitizedText;

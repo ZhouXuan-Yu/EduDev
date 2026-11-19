@@ -1,5 +1,6 @@
 import {createTerminalTool} from './tools/terminal';
 import type {FileReferenceProjection} from './file-references';
+import type {ModelToolPrivacy} from './model-tool-privacy';
 import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
@@ -106,6 +107,7 @@ export interface PiXiaozhiOptions {
   afterCopy?: Parameters<typeof createHanaOfficeTools>[0]['afterCopy'];
   sanitizeFileText?: (text: string) => Promise<string>;
   fileReferences?: FileReferenceProjection;
+  modelToolPrivacy?: ModelToolPrivacy;
   onEvent?: (event: XiaozhiAgentEvent) => void;
   /** Private actual SDK result observation; never renderer/model-supplied evidence. */
   onToolResult?: (callId:string,tool:string,result:unknown,failed:boolean) => void;
@@ -1005,7 +1007,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const transformed=await phase(async()=>previousTransform?.(messages,signal),signal)||messages;
     const filtered=transformed.filter(message=>!(message.role==='custom'&&message.customType==='xiaozhi.goal-context.v1'));
     if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase(()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
-    return options.fileReferences?phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
+    const files=options.fileReferences?await phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
+    return options.modelToolPrivacy?phase(()=>options.modelToolPrivacy!.context(files,signal),signal):files;
   };
   try { await phase(async()=>options.modelHistory?.align(session,modelAuthorities)); }
   catch(error) { session.dispose(); auth.removeRuntimeApiKey(PROVIDER); throw error; }

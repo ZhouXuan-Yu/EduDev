@@ -1,5 +1,13 @@
 # Harness 执行进度
 
+## 2026-11-19 模型脱敏与历史审批复验
+
+固定矩阵 **88/89**，A-P0-08 已实现。在真实 Pi Host 中复验 Office DOCX/PDF、已提交附件 TXT/DOCX/PDF 和持久终端，并从两个原始失败的旧会话冷恢复。独立 8/8，19 个合成模型请求保留教学内容并清理已种入的敏感项。原文件、旧 JSONL 前缀和教师端终端输出保留。当前分支另有 Host 8/8、图像原生围栏 19/19 和组件 253/253。[脱敏证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。
+
+当前真实 Electron 开发构建验证历史复制卡展示单次范围与拒绝后果。点击拒绝、关闭并重启后，同一审批仍已拒绝，源文件 SHA 不变，目标未创建。[页面证据](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
+
+剩余固定项为 QG-09 独立 Windows 安装卸载。完整 Gate7 页面合同、冻结 B 后真实模型 ABBA 和最终独立验收仍有待完成。本轮付费请求新增 0。
+
 ## 2026-11-19 主线同步与分支交接
 
 本次主线接入 `59b81cb` 之后到 `dd09ab0fba6d0ed976e67ecc799f3133443a29c4` 的 13 个 Harness 提交。该批包含 Word 来源归档、Office 组件校验、受控文件引用和对话恢复、托管 MCP 撤销后同任务续跑，以及教育流程与实包页面的复验记录。主线父提交的知识库改动一并保留。
