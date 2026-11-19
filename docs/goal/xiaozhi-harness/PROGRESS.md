@@ -10,6 +10,10 @@
 
 验收 **83/89**。QG-01/02/03/04/08 已实现。A-P0-08 结构投影及 QG-05/06/07/09/10 尚待补齐。完整原生页面、真实模型对照和最终独立验收保持有效。 [质量门禁](evidence/phase8/current-quality-checkpoint-20261119.md)。
 
+## 2026-11-19 技能回滚实包独立复验
+
+真实页面激活 2.0.0 后回滚到 1.0.0，通过同修订的 IPC、SQLite 和冷启动读回检查，4/4。两个版本的记录和文件哈希不变，已结束 Run 仍绑定原 2.0.0。保留第一次漏掉第二次点击的测试时序失败记录。正在运行的 Task 绑定、完整 Gate7 和原生拖窗仍待验收。[复验记录](evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json)。
+
 ## 2026-11-19 能力中心实包独立复验
 
 独立 Terra 使用当前五资源 Windows 实包操作能力中心。合成能力必需项缺失显示当前不可用，可选项缺失显示部分可用，展开可见缺口。真实 Provider 和完整 C1 另有原验收范围；Gate7 仍为 PARTIAL，原生拖窗及最大化还原尚待运行。保留裸 out 缺依赖和隐藏窗口点击超时的原证据。[实包页面复验](evidence/phase7/implementation-resume-20261119/packaged-c1-retest.json) · [截图](evidence/phase7/implementation-resume-20261119/packaged-c1-retest.png)。

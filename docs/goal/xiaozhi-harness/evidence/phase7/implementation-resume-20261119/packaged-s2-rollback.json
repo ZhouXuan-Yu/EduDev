@@ -1,0 +1,60 @@
+{
+  "status": "PASS_SCOPED",
+  "scope": "Packaged Skill rollback and historical Run binding",
+  "candidateFingerprint": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7",
+  "checks": [
+    {
+      "name": "activation_committed",
+      "version": "2.0.0",
+      "revision": 6,
+      "status": "PASS"
+    },
+    {
+      "name": "activation_committed",
+      "version": "1.0.0",
+      "revision": 7,
+      "status": "PASS"
+    },
+    {
+      "name": "rollback_preserves_prior_version_records_files_and_historical_run_snapshot",
+      "status": "PASS",
+      "boundVersion": "2.0.0",
+      "activeVersion": "1.0.0",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "fileHash": "b346e5313c0476d4abb66bf799295bb9a832ffdcecd976dd84e1068894a6f7f3"
+        },
+        {
+          "version": "2.0.0",
+          "fileHash": "33413095e5d9c0b335c712fb5343d596a610ed1b63c2838f4114bab8dd182987"
+        }
+      ]
+    },
+    {
+      "name": "cold_ui_and_sqlite_readback",
+      "status": "PASS"
+    }
+  ],
+  "afterClose": {
+    "revision": 7,
+    "payload_json": "{\"id\":\"skill_267fb1bb-e747-42c5-95d3-f1c54ed1f8d8\",\"name\":\"phase7-review-flow\",\"legacyName\":\"phase7-review-flow\",\"title\":\"合成核对流程 1.0.0\",\"scope\":\"personal\",\"ownerId\":\"user_29d50cc9-3285-4c13-ad57-0d3ae6dd80a2\",\"activeVersion\":\"1.0.0\",\"autoActivate\":null,\"enabled\":true,\"archived\":false,\"revision\":7}"
+  },
+  "afterColdLaunch": {
+    "revision": 7,
+    "payload_json": "{\"id\":\"skill_267fb1bb-e747-42c5-95d3-f1c54ed1f8d8\",\"name\":\"phase7-review-flow\",\"legacyName\":\"phase7-review-flow\",\"title\":\"合成核对流程 1.0.0\",\"scope\":\"personal\",\"ownerId\":\"user_29d50cc9-3285-4c13-ad57-0d3ae6dd80a2\",\"activeVersion\":\"1.0.0\",\"autoActivate\":null,\"enabled\":true,\"archived\":false,\"revision\":7}"
+  },
+  "rendererErrors": [],
+  "paidCalls": 0,
+  "network": "Not measured; no model action requested",
+  "otherCases": {
+    "activeRunBinding": "NOT_RUN",
+    "gate7": "PARTIAL"
+  },
+  "rawEvidence": {
+    "confirmed": "935bc5cd15931f9a9a3ea8f4286c511ccba267e7052e5a85532b5bf57fd66213",
+    "originalFailed": "fa7d4197c1bdd0fd6ef5d4f534757d2ffa68c2fc2be58540dbd9fd7b12ee2cfb",
+    "timingInvestigation": "ddac26c13e7c67e68450c05f95467381b94d498029bbab3663e388ccbc04e95a",
+    "failureAnalysis": "Old fixture advanced before a version change reached both the UI/preload and the database, skipped its rollback click, and then read the persisted selected version."
+  }
+}

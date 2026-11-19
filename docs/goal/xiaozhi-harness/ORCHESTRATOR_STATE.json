@@ -593,5 +593,11 @@
     "evidence": "evidence/phase7/implementation-resume-20261119/packaged-c1-retest.json",
     "nativeWindow": "NOT_RUN",
     "paidCalls": 0
+  },
+  "phase7PackagedS2": {
+    "status": "PASS_SCOPED_COLD_ROLLBACK",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json",
+    "activeRun": "NOT_RUN",
+    "gate7": "PARTIAL"
   }
 }
