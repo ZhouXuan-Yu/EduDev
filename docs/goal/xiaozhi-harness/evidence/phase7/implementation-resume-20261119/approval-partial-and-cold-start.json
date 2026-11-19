@@ -1,0 +1,55 @@
+{
+  "testedCommit": "c59106ff2cd8184f525739e9b22c5cfbd9a16cf7",
+  "mainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e",
+  "environment": "独立 Terra Electron 验收；实际编译后的主进程与真实审批收件箱；隔离数据根和 profile；合成审批夹具",
+  "fixture": "从含一条可读已批准记录的合成数据库复制，插入一条 xiaozhi_permission_v2 记录，payload_json 为合法 JSON 对象 {}，但缺少审批契约字段。",
+  "paidModelRequests": 0,
+  "cases": [
+    {
+      "name": "应用运行后插入坏记录",
+      "status": "PASS_SCOPED",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "actions": [
+        "打开审批收件箱并筛选已批准",
+        "点击刷新收件箱",
+        "打开保留审批的详情"
+      ],
+      "observations": [
+        "两个视口均显示一条有效审批",
+        "三个计数显示未完整核对，审批来源不可读 1 条，原因 corrupt",
+        "刷新及详情读取前后两条 ai_confirmation_items 记录逐字段一致"
+      ],
+      "localReport": "%TEMP%/phase7-partial-live-b86729fc/report.json"
+    },
+    {
+      "name": "启动前预置坏记录",
+      "status": "FAIL",
+      "attempts": 2,
+      "observations": [
+        "两个独立副本均在 electronApplication.firstWindow 等待 30000ms 超时",
+        "没有取得确定根因的启动日志"
+      ],
+      "localReports": [
+        "%TEMP%/phase7-partial-inbox-5c84cf00/report.json",
+        "%TEMP%/phase7-partial-cold-repeat-6729de47/report.json"
+      ]
+    },
+    {
+      "name": "同源无坏记录副本",
+      "status": "PASS_CONTROL",
+      "observations": [
+        "Electron 首窗口正常打开"
+      ],
+      "localReport": "%TEMP%/phase7-partial-control-3251e17d/report.json"
+    }
+  ],
+  "pending": [
+    "采集主进程启动期错误并定位断点",
+    "修复后对照同一合成库，确认冷启、部分警告和恢复记录可达",
+    "向已有合成停止场景加入实际可见的部分回复和精确 Run ID 核对"
+  ],
+  "scope": "固定矩阵 88/89，Gate7 PARTIAL。已暂存的合成原始报告在本机临时目录；此处只提交匿名摘要。"
+}
