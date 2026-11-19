@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "7b8f924a856b4d6df0601c1c8da58d9c29533a4d",
-  "headRole": "Harness source parent of the current main integration. Resolve origin/main and the feature branch for current tips.",
-  "mainObserved": "152f58595d748e441487c1b57c020900db64eb9b",
+  "head": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
+  "headRole": "Latest tested production source; the documentation-only checkpoint is its descendant. Resolve origin/main and the feature branch for current tips.",
+  "mainObserved": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -26,10 +26,10 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
-    "Phase7: HTTP MCP authorization and Provider revocation independently verified. Local discovery passed; equivalent lesson fallback remains unverified.",
-    "Windows packaged cold Word prepared, archived and reopened; native install/uninstall and final branch build remain.",
-    "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
+    "Phase7: resize can remain unknown after the native terminal has ended, cleanup is complete and the Job has committed. Both input operations were acknowledged. Reproduce actual Teacher confirmation before the targeted fix.",
+    "Phase7: full Gate7 and physical window drag/maximize still require runtime evidence.",
+    "Phase8: QG-09 clean Windows install, shortcut launch and uninstall require an isolated Windows environment.",
+    "Phase8: formal synthetic real-model ABBA, foreground timing and independent final acceptance require an accepted frozen candidate."
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 3,
@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Finish W3 late same-Task cross-session UI, terminal task-grant recovery, and remaining full Gate7. Then isolated Windows QG-09, frozen-B real ABBA, and final independent acceptance.",
+  "next": "Reproduce the Teacher confirmation via the original taskSnapshot/reviewTask boundary on the sealed synthetic W3 fixture; reconcile only evidenced obsolete resize and retain uncertain input/file/job fences. Re-run affected Host and page checks, finish Gate7, QG-09 and the frozen-candidate Phase8.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -661,5 +661,18 @@
     "status": "LOCAL_SYNTHETIC_MEASUREMENT_SCOPED",
     "evidence": "evidence/phase8/pre-gate7-stream-sample-9b46267.json",
     "paidCalls": 0
+  },
+  "latestHandoff": {
+    "progress": "PROGRESS.md",
+    "testedProductionCommit": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
+    "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+    "featureBranch": "codex/xiaozhi-harness-20261112",
+    "fixedMatrix": "88/89",
+    "evidence": [
+      "evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json",
+      "evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json",
+      "evidence/phase8/windows-package-20261119/mcp-main-packaged-startup.json"
+    ],
+    "newPaidCalls": 0
   }
 }

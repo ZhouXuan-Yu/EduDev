@@ -7,8 +7,10 @@ import {randomUUID} from 'node:crypto';
 import {pathToFileURL, fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {_electron as electron} from 'playwright';
+import {testMain} from '../acceptance/build-root.mjs';
 
 export async function startWorkbenchFixture(options = {}) {
+  const main = testMain(process.cwd());
   const prefix = options.background ? 'omni-edu-xiaozhi-phase7-workbench-ui-' : 'xiaozhi-phase7-workbench-ui-';
   const root = options.root || fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   assert(path.resolve(root).startsWith(path.resolve(os.tmpdir()) + path.sep), 'Owned C TEMP fixture only');
@@ -47,12 +49,15 @@ export async function startWorkbenchFixture(options = {}) {
   await build({entryPoints: ['scripts/xiaozhi-agent/phase7-workbench-fixture-seed.ts'], outfile: bundle, bundle: true, platform: 'node', target: 'node24', format: 'esm', packages: 'external', logLevel: 'warning'});
   fs.copyFileSync('package.json', path.join(root, 'package.json')); if (!fs.existsSync(path.join(root, 'node_modules'))) fs.symlinkSync(path.resolve('node_modules'), path.join(root, 'node_modules'), 'junction');
   const bootstrap = path.join(root, 'bootstrap.cjs');
-  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net}=require('electron');app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{if(!fs.existsSync(${JSON.stringify(path.join(root, 'FIXTURE_IDS.json'))})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)});}await import(${JSON.stringify(pathToFileURL(path.resolve('out/main/index.js')).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
+  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net}=require('electron');app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{if(!fs.existsSync(${JSON.stringify(path.join(root, 'FIXTURE_IDS.json'))})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)});}await import(${JSON.stringify(pathToFileURL(main).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
   const env = {...process.env, OMNI_EDU_DATA_ROOT: path.join(root, 'data'), OMNI_EDU_REPO_ROOT: path.resolve('../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: 'synthetic-phase7-loopback', DEEPSEEK_MODEL: 'deepseek-flash'};
   if (options.background) {
     fs.mkdirSync(env.OMNI_EDU_DATA_ROOT, {recursive: true});
     fs.mkdirSync(path.join(root, 'profile'), {recursive: true});
     env.OMNI_EDU_E2E_VISIBLE = '0';
+  }
+  for (const key of Object.keys(env)) {
+    if (key !== 'DEEPSEEK_API_KEY' && /KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/iu.test(key)) delete env[key];
   }
   delete env.NODE_OPTIONS; delete env.ELECTRON_RUN_AS_NODE;
   let application;
@@ -67,7 +72,7 @@ export async function startWorkbenchFixture(options = {}) {
     const ids = JSON.parse(fs.readFileSync(path.join(root, 'FIXTURE_IDS.json'), 'utf8'));
     fs.writeFileSync(path.join(root, 'RUNNING.json'), JSON.stringify({root, dataRoot: path.join(root, 'data'), profileRoot: path.join(root, 'profile'), pid: application.process().pid,
       title: 'Phase7 Synthetic Workbench · ' + path.basename(root), modelOrigin: origin, paidCalls: 0, ids: path.join(root, 'FIXTURE_IDS.json')}, null, 2));
-    return {root, output, application, page, ids, requests, log,
+    return {root, output, main, application, page, ids, requests, log,
       scenario: tools => {queue.splice(0, queue.length, ...tools);},
       close: async () => {await application.close(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); fs.writeFileSync(path.join(root, 'STOPPED.json'), JSON.stringify({paidCalls: 0, modelCalls: requests.length, errors: log}, null, 2));}};
   } catch (error) {await application?.close().catch(() => {}); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); throw error;}

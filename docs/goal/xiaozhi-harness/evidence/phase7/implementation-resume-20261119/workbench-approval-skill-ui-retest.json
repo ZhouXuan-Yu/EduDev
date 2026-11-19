@@ -1,0 +1,96 @@
+{
+  "source": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
+  "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+  "reviewer": "Terra 6.1 High",
+  "status": "PASS_SCOPED",
+  "paidCalls": 0,
+  "W1": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-cold-ui.mjs",
+    "report": {
+      "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-12nELX/evidence/cold-overview-report.json",
+      "sha256": "b2f159220dd2e5234f85ff3335efdb672be3151410ffc415d401c11969980965"
+    },
+    "checks": [
+      "Actual UI stop persists an interrupted Task and its terminal Run",
+      "Visible rows, reasons, counts, and completed exclusion agree with the original SQLite facts",
+      "Task filter is reachable at both required viewport sizes",
+      "Cold open and overview filters preserve Task, Run, Effect, and approval facts with zero replay"
+    ],
+    "screenshots": [
+      {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-12nELX/evidence/cold-overview-1366.png",
+        "sha256": "09e808c7d5dd08514fa030ad9d468949cd178af79f04871b6c56b271758f9d59"
+      },
+      {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-12nELX/evidence/cold-overview-1920.png",
+        "sha256": "095059cfcac7f83106f56157b839c5da2e5f6bbda882a13ad36931a84945935d"
+      }
+    ],
+    "scope": "Counts, six canonical Task rows, visible pending reason, completed exclusion; both viewports reach the filter; cold launch and filtering replay zero model dispatches."
+  },
+  "A1": {
+    "report": {
+      "path": "%TEMP%/phase7-terra-w2-run-k5n309/report.json",
+      "sha256": "f1d1848d9765e5a6053249f533b6d00709f8ce8dd4b9b44ab49ea451037a2b8d"
+    },
+    "checks": [
+      "Filesystem write permission presents bounded scope and no configured synthetic key",
+      "Same filesystem approval remains pending and visible after cold restart"
+    ],
+    "runner": {
+      "path": "%TEMP%/phase7-terra-w2-double-20261119/a1-file-pending.mjs",
+      "sha256": "8d60179593bb765fbcc850b9c393a719b27bfedbb44cc664c5c73c47edcbe9b2"
+    },
+    "scope": "Actual filesystem approval fields, synthetic secret absent, same pending ID after Stop/cold; no target file was written."
+  },
+  "A2": {
+    "report": {
+      "path": "%TEMP%/phase7-terra-a2-alt-run-CdDirA/report.json",
+      "sha256": "a9891c07032674777112b74116d098b70d4a51b40dd03b06b4a8d3aba4842317"
+    },
+    "checks": [
+      "mcp_pending_detail_and_no_secret",
+      "pending_same_id_after_cold_restart",
+      "rejected_request_not_reapplied_same_task_local_fact"
+    ],
+    "runner": {
+      "path": "%TEMP%/phase7-terra-a2-alt-20261119/test.mjs",
+      "sha256": "133ebcb85d86a9b3c93f060db833b70b5112e18db8c37e3d0c911e422ba74ca1"
+    },
+    "earlierReport": {
+      "path": "%TEMP%/phase7-terra-a2-alt-run-KdoybS/report.json",
+      "sha256": "22ba2db93f4eddcb9473e263ec9a567a9c9a62aaa13b59cd08b5af2a6278a535"
+    },
+    "scope": "Actual MCP approval and rejection persisted; equivalent request in a new Run of the same Task stayed denied without a duplicate approval or HTTP call; actual office_read_text fed a local fact to the answer. Model tool selection used a synthetic fixture."
+  },
+  "S2": {
+    "report": {
+      "path": "%TEMP%/s2active-dkS6Az/report.json",
+      "sha256": "71bbfbd9aec394a81180163998a8c33ab43549f823e67d7017b60755829981e3"
+    },
+    "checks": [
+      "active_run_v2_rollback_control_disabled",
+      "post_completion_rollback_new_run_v1_old_run_v2",
+      "cold_readback_version_snapshots"
+    ],
+    "runner": {
+      "path": "%TEMP%/phase7-terra-s2-active-prep-20261119/test.mjs",
+      "sha256": "c8ada26524f1a7851966dc9d91ce8c9ebbdaeafd32a0c09e6d2a9793735c2bfe"
+    },
+    "busyScreenshot": {
+      "path": "%TEMP%/s2active-dkS6Az/busy.png",
+      "sha256": "50da1636558af270bd305acc4649ba9058d49cabbb7caf99c10943a107ffb8c0"
+    },
+    "earlierReports": [
+      {
+        "path": "%TEMP%/s2active-0Qd1bz/report.json",
+        "sha256": "50abb2efba173e85d679a9cffd510af66d2d19d6343bf3a6c0f6d94977d3d2ed"
+      },
+      {
+        "path": "%TEMP%/s2active-aXOhCN/report.json",
+        "sha256": "0fefac7ad59d261e9680521080b14cf187fdd4f41e111783c21bde31b61f7e54"
+      }
+    ],
+    "scope": "Active v2 Run prevented rollback. After first success, UI rolled back to v1 and a second same-session Run bound v1. Both runs succeeded and cold readback still showed original v2 and new v1. The raw final modelCalls=0 refers to the post-restart instance only."
+  }
+}

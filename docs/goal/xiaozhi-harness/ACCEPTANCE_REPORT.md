@@ -1,5 +1,18 @@
 # 独立验收记录
 
+## 2026-11-19 终端、审批与 Skill 独立补证
+
+| 场景 | 结果 | 证据 |
+| --- | --- | --- |
+| W1 工作台冷启、计数和筛选 | 4/4，已实现 | [实页一次复验](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json) |
+| W3 同任务使用终端 Grant、跨任务隔离 | 4/4 实页，另有 5/5 实际 Host，已实现 | [独立实页与原生宿主](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json) |
+| W3 旧 Job 跨新 Run 正常关闭并提交 | 限定场景通过，已实现。任务归属与冷启动一致 | [独立实页](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json) |
+| A1 文件审批与 A2 拒绝后走本地替代 | 2/2 与 3/3，已实现。合成模型驱动，底层读取与审批均真实 | [独立实页](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json) |
+| S2 活跃 Run 的 Skill 版本绑定和回滚 | 3/3，已实现。两次 Run 的版本在冷启动后仍分别为 v2 与 v1 | [独立实页](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json) |
+| QG-08 当前版本 Windows x64 便携包启动 | 两尺寸通过，渲染错误 0，已实现 | [包身份与启动](evidence/phase8/windows-package-20261119/mcp-main-packaged-startup.json) |
+
+退出期 resize 的未知回执仍待修复。数据库读回证实两笔输入均已确认，唯一 Job 关联未决项为 resize。教师确认的端到端操作未执行。固定矩阵仍为 88/89，完整 Gate7、QG-09 和真实模型终验保持原门禁。[具体记录](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json)
+
 ## 2026-11-19 HTTP MCP 授权后首次调用
 
 C2 的同任务首次派发与 Provider 撤销子场景已实现。Terra 实页 4/4。批准前请求 0 次，同任务授权续跑准确调用 1 次。撤销后 Pi 拒绝旧工具名，原生拒绝、成功回执、撤销和本地工具发现均可核对，冷启无新增调用。市场候选与已核验记录对比另通过 2/2。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。

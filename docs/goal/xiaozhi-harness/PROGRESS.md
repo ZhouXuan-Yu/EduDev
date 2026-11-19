@@ -1,5 +1,17 @@
 # Harness 执行进度
 
+## 当前接手点 · 2026-11-19
+
+已交付源码的基准是 GitHub `origin/main`，本批受测生产源码为 `096b46b`。后续 Harness 改动在 `codex/xiaozhi-harness-20261112` 实施，通过该模块验证后再整合 `main`。查看最新状态先读本节，其次读 [验收记录](ACCEPTANCE_REPORT.md)、[固定矩阵](ACCEPTANCE_MATRIX.json) 和 [执行状态](ORCHESTRATOR_STATE.json)。
+
+- **已实现 · 终端同任务授权续跑。** 独立页面 4/4，实际 Electron Host 和受控 PowerShell 5/5。原三个 Task Grant 允许同一任务的新 Run 真实执行并落盘一次。另一会话待批，撤销后停止派发，有潜在写入但未落盘的结果在冷启后保持待核对。旧 Run 的 PTY 跨到新 Run 结束，文件和回执仍归原 Job。 [终端证据](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json)
+- **已实现 · 本批工作台、审批及 Skill 子场景。** W1 冷启 SQLite 对齐 4/4，A1 文件审批 2/2、A2 MCP 拒绝后本地读取 3/3，S2 运行中版本锁定及下一 Run 回滚接管 3/3。 [独立实页](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json)
+- **QG-08 便携包启动复验通过。** 同一生产版本的 481 个输出文件逐字节一致。1366×768 和 1920×1080 能实际启动并访问输入区。 [包与启动](evidence/phase8/windows-package-20261119/mcp-main-packaged-startup.json)
+
+下一段功能优先处理终端退出期的 resize。SQLite 中两笔输入都已确认，输入序号与确认序号均为 2。已完成且已落盘的 Job 仍留有一条未知 resize，会计入工作台未决效果，也符合教师确认门禁的匹配条件。实际点击教师确认尚待复现。先在隔离副本走原确认入口，再按原生退出、资源清理和提交证明核对失效 resize，同时验证真正未确认的输入和写入仍保留门禁。[复现与源码线索](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json)
+
+专项 Goal 继续执行。固定矩阵 **88/89**，完整 Gate7 仍 **PARTIAL**。实际鼠标拖窗与最大化还原待测。QG-09 需要独立干净的 Windows 环境验证安装、快捷方式和卸载。完整 Gate7 冻结后继续正式 32 任务 ABBA 和最终独立验收。真实模型账本 3/200，本批新增 0。
+
 ## 2026-11-19 HTTP MCP 授权后首次调用
 
 HTTP MCP 现在在实际授权通过、主进程校验精确来源和输入后才进入执行记账，再发出请求。本次确认未派发的意图可由同一任务新 Run 继续。发出后断线仍需核对结果。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。

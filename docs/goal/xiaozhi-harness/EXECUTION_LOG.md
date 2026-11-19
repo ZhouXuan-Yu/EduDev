@@ -1,5 +1,13 @@
 # 执行日志
 
+## 2026-11-19 主线跟踪检查点
+
+`096b46b` 正常快进整合 GitHub `main`。当前证据检查点只修改测试和文档。真实 Host 终端 Grant 5/5、HTTP MCP 5/5，Terra 实页覆盖 W1、W3、A1、A2、S2。两套 Host 复用有界启动器，工作台脚本可以用隔离构建目录。 [终端与回归](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json) · [实页](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json)
+
+同生产字节生成 Windows 便携包，原首次启动等待渲染超时已保留。用独立配置、包目录作为 cwd 复验两尺寸通过，未确定首轮超时的单一原因。npm audit 实测 29 项，低 8、中 13、高 8、严重 0。锁文件相同。付费模型调用新增 0。[Windows 记录](evidence/phase8/windows-package-20261119/mcp-main-packaged-startup.json)
+
+下一切片从独立晚到 Job 的冷读回现场复现教师确认门禁。SQLite 原证据与历史失败保留。
+
 ## 2026-11-19 HTTP MCP 授权后首次调用
 
 HTTP MCP 现在在实际授权通过、主进程校验精确来源和输入后才进入执行记账，再发出请求。授权前未派发的旧意图可由同一任务新 Run 继续。发出后断线仍需核对结果。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。

@@ -1,0 +1,108 @@
+{
+  "source": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
+  "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+  "status": "PASS_SCOPED_WITH_OPEN_RESIZE_FINDING",
+  "paidCalls": 0,
+  "terminalGrantHost": {
+    "command": "node scripts/xiaozhi-agent/terminal-grant-host-smoke.mjs",
+    "report": {
+      "path": "%TEMP%/terminal-grant-rgcnjj/REPORT.json",
+      "sha256": "ecb4df955c138b06438776ae07c5c6dd525c55bbab3dcd65dad2669f47b04c21"
+    },
+    "checks": [
+      "Original unauthorized exact command settles without any controlled process or published file",
+      "Cold same Task new generation consumes valid Task Grants and executes/publishes once with exact current authority",
+      "Another Task on the identical physical root cannot inherit the first Task Grants",
+      "Revoking the exact Task filesystem Grant prevents another controlled execution and preserves the committed file",
+      "Actually executed but unpublished uncertain work survives cold read and blocks same-command replay before a new sandbox"
+    ],
+    "scope": "Real Electron Host, real controlled PowerShell, same-Task authorize/resume, second Task isolation, revoke and cold uncertain publication fence."
+  },
+  "unchangedMcpHostRegression": {
+    "command": "node scripts/xiaozhi-agent/mcp-effect-host-smoke.mjs",
+    "report": {
+      "path": "%TEMP%/mcp-effect-zSWtgM/REPORT.json",
+      "sha256": "64fef08837463493c2c5603b60e726d1b5da4d4607f7e5e902b3ed4f3c1d1f26"
+    },
+    "checks": [
+      "Actual pending HTTP tool has a settled failed intent with no dispatch and zero tools/call",
+      "Cold Host resumes the same Task under a fresh Run and exact current authority sends once, preserving original evidence",
+      "Sent-then-lost HTTP effect remains unknown after cold read and blocks replay before another tools/call",
+      "Actual cancel after durable begin fences the original HTTP send and retains conservative unknown",
+      "Actual revoke after durable begin fences the original HTTP send and retains conservative unknown"
+    ]
+  },
+  "terminalGrantUi": {
+    "reviewer": "Terra 6.1 High",
+    "status": "PASS_SCOPED_4_OF_4",
+    "report": {
+      "path": "%TEMP%/phase7-w3-resume-5ca772c3/report.json",
+      "sha256": "0bf8148c2abca883dd58892537390d19cb2a413ac93421854d50c83ea225a7bd"
+    },
+    "assessment": {
+      "path": "%TEMP%/phase7-w3-resume-5ca772c3/assessment.json",
+      "sha256": "f2252e5b3189c068ce51af427bd509c6d03f9d34c333f08fd2a103cab62f67ba"
+    },
+    "runner": {
+      "path": "%TEMP%/phase7-w3-resume-5ca772c3/test.mjs",
+      "sha256": "4d48222a77c1dbadd9e6337863b410978ca0ff839a1ae6571e619b548d1425dd"
+    },
+    "scope": "Teacher used the same-Task review continuation, fresh generation executed one controlled PowerShell operation with the original 3 Grant refs. The equivalent second session stayed pending.",
+    "earlierDifferentEntryReport": {
+      "path": "%TEMP%/phase7-w3-resume-2c0a0d68/report.json",
+      "sha256": "e909c1f4b5d530f4a6d9254a312d4d91678793aff65b9186d55ca93b5c937fa0"
+    }
+  },
+  "lateJobUi": {
+    "reviewer": "Terra 6.1 High",
+    "status": "PASS_SCOPED",
+    "report": {
+      "path": "%TEMP%/phase7-w3-late-ui-c5a95e67/report.json",
+      "sha256": "dd6a82b05aa5c6d16e0369f6f1da45d7108a185440ac3f5d1b59d4ae675ba30d"
+    },
+    "assessment": {
+      "path": "%TEMP%/phase7-w3-late-ui-c5a95e67/assessment.json",
+      "sha256": "e7c32adb9abb9de0e15a0f1b82fd6eab761e97ac5c5f2875e2fed3f2f5af8e7e"
+    },
+    "coldReadback": {
+      "path": "%TEMP%/phase7-w3-late-ui-c5a95e67/cold-report-final.json",
+      "sha256": "b4f8a11a9c2095b536f1d43d1414b8c4abeb76c380948556d719ca5924be1343"
+    },
+    "preservedEarlierReports": [
+      {
+        "path": "%TEMP%/phase7-w3-late-ui-c5a95e67/cold-report.json",
+        "sha256": "4f8d04608a9cd38cb1a7b156eb3efc28f27abe44a10a55202c25221fc1029f70"
+      },
+      {
+        "path": "%TEMP%/phase7-w3-late-ui-c5a95e67/cold-report-retest.json",
+        "sha256": "337d9ba24739abb630a09effbf8cf7c5352e4eba3edfa3173167c791fbfb3b79"
+      }
+    ],
+    "scope": "A native PTY created by generation 1 finished during generation 2 of the same Task; exit 0, cleanup complete, late file committed; generation 2 journal and session B do not inherit the old tool. Cold UI and SQLite preserved identities.",
+    "outcomeFileSha256": "a491a636bb1c0e184abde6d61ed861c9912754cdecdb7ba720c12ce0f1b2df8c",
+    "limits": [
+      "Late progress text and a separate generation 2 artifact were not asserted in this scenario."
+    ]
+  },
+  "openFinding": {
+    "status": "REPRODUCED_PERSISTED_RESIZE_UNKNOWN_TEACHER_CONFIRMATION_NOT_RUN",
+    "sourceReadbackSha256": "8b17ada029370e1b728a7de6f25f16f7fce2b9aec2ed04efeff3171c72c9503e",
+    "evidenceOwner": "Sol 6.1 High, opened the above synthetic cold DB read-only",
+    "effectId": "xieffect_42e516…b244",
+    "readback": {
+      "inputEffectsCommitted": 2,
+      "inputSequence": 2,
+      "acknowledgedInputSequence": 2,
+      "jobUnknownOperations": [
+        "job_resize"
+      ],
+      "otherTaskUnknownOperations": [
+        "update_task_plan"
+      ],
+      "unknownEffectCountBefore": 2
+    },
+    "timing": "Native successful terminal audit preceded creation of the resize effect. Resize settled unknown before the persisted Job document reached completed.",
+    "consequence": "The original closeTask pendingCompletion selector includes this resize, and the workbench counts it. Full teacher confirmation through taskSnapshot/reviewTask was not exercised. The caught exception was not logged; the raw unknown_ack notice did not show that either input was unconfirmed.",
+    "next": "Reproduce original Teacher review using the sealed synthetic fixture; reconcile only the conclusively ended Job resize and verify genuine unresolved input/write/job effects remain protected."
+  }
+}

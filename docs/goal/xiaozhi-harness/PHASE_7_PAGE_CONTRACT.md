@@ -1,5 +1,11 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-19 独立页面复验
+
+W1 冷启工作台、A1 文件审批、A2 MCP 拒绝后的实际本地读取、S2 活跃 Run 锁定 Skill 版本均获限定场景通过。W3 同任务使用终端 Grant 和旧 Job 跨新 Run 提交均获限定场景通过。[工作台与技能](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json) · [终端与冷读](evidence/phase7/implementation-resume-20261119/terminal-grant-and-late-job-ui.json)
+
+继续验证退出期 resize 遗留未决状态对教师确认的影响，以及实际拖窗、最大化还原和完整 Gate7。单项证据以构建摘要和各报告范围为准。
+
 日期：2026-11-12。工作树：`D:/WorkProject/EduProject-harness`，分支 `codex/xiaozhi-harness-20261112`。本报告是 Phase 2 进行期间的只读准备，Phase 3–6 交付后必须重新核对实际源码和构建身份。Phase 0 Gate ACCEPTED 和 Phase 1 ACCEPTED 均不代表页面验收通过。本报告所有页面验收项均为 **NOT_TESTED**。未启动 Electron、运行测试或模型请求；未修改生产、测试或根台账文件。
 
 ## 决策与边界

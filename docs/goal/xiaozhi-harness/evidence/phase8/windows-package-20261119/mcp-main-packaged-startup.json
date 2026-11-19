@@ -1,0 +1,55 @@
+{
+  "source": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
+  "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+  "status": "PASS_SCOPED_QG_08_PORTABLE_STARTUP",
+  "command": "electron-builder --win --x64 --dir --publish never",
+  "byteIdentity": {
+    "fileCount": 481,
+    "same": true,
+    "outSha256": "42193a18a733cb396bb292101693953ce3d1c1558ffbb70595deeb2eac9af731",
+    "exeSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "mainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4"
+  },
+  "identity": {
+    "path": "%TEMP%/edu-harness-096b46b-1VGZ5V/identity.json",
+    "sha256": "5e4351297ddeee2a992f390dab9e98204c925d55eef1b1bbe48ed905e8659646"
+  },
+  "builderLog": {
+    "path": "%TEMP%/edu-harness-096b46b-1VGZ5V/electron-builder.log",
+    "sha256": "f40d4554a42045d60213210577928677f2e70214e034ed382c47078a6f97937e"
+  },
+  "resourcesVerified": [
+    "page-blocks",
+    "ocr",
+    "education",
+    "retrieval",
+    "reranker"
+  ],
+  "startup": {
+    "path": "%TEMP%/edu-harness-096b46b-1VGZ5V/startup-3A5TOM/report.json",
+    "sha256": "924fd6693f11acdbb70a1b2966ec1538c8627acfda2ac873e9e458e270d2d4e7"
+  },
+  "initialTimedOutLaunch": {
+    "path": "%TEMP%/edu-harness-096b46b-1VGZ5V/startup-gOBfiK/report.json",
+    "sha256": "01c290488d6079f62ea153a4c314d8ad9cda4eb12f18ee609c7e84398772d8ae"
+  },
+  "bootChecks": [
+    {
+      "width": 1366,
+      "height": 768,
+      "promptVisible": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "promptVisible": true
+    }
+  ],
+  "rendererErrors": 0,
+  "paidCalls": 0,
+  "scope": "Packaged Electron 43.8.3 via explicit package cwd and isolated profile/data. The initial Playwright startup timed out before a renderer was available and has no proven single cause.",
+  "outstanding": [
+    "QG-09 independent clean Windows installation, shortcut/launch and uninstall.",
+    "Full Gate7 and formal frozen-candidate Phase8."
+  ]
+}
