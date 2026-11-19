@@ -18,7 +18,7 @@ Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、
 - 原生拖窗与最大化还原等待可见桌面复验。下一位 AI 从当前文档、[执行状态](ORCHESTRATOR_STATE.json)和[验收报告](ACCEPTANCE_REPORT.md)接手。继续使用原账本，正式验收须冻结实际受测提交与产物。
 - 后台流式同负载 A/B 两侧各 5/5，推理在终态前更新，实际停止动作产生终态且可读回。提交到模拟模型的请求到达时间 5.24 秒和 3.73 秒，停止到终态 151 毫秒和 169 毫秒。浏览器将部分后台帧限到约 1 秒，前台流畅度继续按原条件验收。[配对证据](evidence/phase8/background-stream-pair-20261119.json)。
 - HTTP MCP 已修复 stdio 输入转换误拦截及 Provider 撤销后误停整轮。独立真实 Host 两个场景均从一次合法调用开始，撤销后重调不增加外部执行，同 Task 成功走本地替代工具，重启读回一致。Provider 可信未派发可单列，Grant 下游拒绝的效果仍保守核对。真实 SQLite 写入错误继续按原规则停止。11 项传输、9 项准入及 23 项 Journal 测试通过。[独立 Host 复测](evidence/phase8/http-mcp-projection-20261119/provider-revocation/FINAL_VERDICT.json)。
-- Windows 重排资源已排除下载残片。首个 NSIS 候选已生成，单独保留。较新的五资源候选实际启动并通过教育 Worker、LanceDB、PDFium，TXT、Markdown、扫描 PDF 和图片导入成功。Office 在合成 profile 已用锁定包解包，DOCX 仍 partial，继续定位转换后的实际缺口。安装及卸载待续。[打包资源及导入证据](evidence/phase8/windows-runtime-preparation-20261119.md)。
+- Windows 重排资源已排除下载残片。首个 NSIS 候选已生成。五资源候选已通过教育 Worker、LanceDB、PDFium，TXT、Markdown、扫描 PDF 和图片导入成功。DOCX 配置长路径已修复，真实进程宿主 5/5，原失败路径约 21 秒完成转换。新包导入复测在 OS 临时盘运行，安装及卸载待续。[打包证据](evidence/phase8/windows-runtime-preparation-20261119.md)。
 
 ## 当前进度 2026-11-18
 

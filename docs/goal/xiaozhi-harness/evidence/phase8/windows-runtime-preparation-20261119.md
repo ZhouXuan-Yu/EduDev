@@ -26,4 +26,6 @@
 
 独立复现使用相同 DOCX、原候选 Worker、同一已校验 Office 程序及原协议。原 Worker 的短任务目录完成并生成 11,748 字节 PDF，用时 21.876 秒。与失败任务等长的 156 字符任务目录在 90.481 秒返回 unavailable，未生成 PDF。保留 156 字符的源和输出，仅在临时探针换短 LibreOffice 配置目录后，18.108 秒完成。生产修复及完整导入复测沿这个原因继续。[短与长路径证据](windows-package-20261119/word-office-profile-path-probe.json)。
 
+生产版本只把 LibreOffice 的一次性 profile 放入主进程的短临时目录。Word 源、原版 PDF、协议、页数与来源校验沿原归档路径。实际新源码使用原进程宿主、已校验 Office 和 PDFium，156 字符目录 21.483 秒完成，11,748 字节、1 页，且取消、重试、失败及清理通过 5/5。已在相同源码通过类型检查、WordPages SQLite 11/11、Python 导出 7/7 和两条旧配置兼容检查。打包导入的测试根改用 OS TEMP，避免 D 盘余量低于原 Office 的 3 GiB 校验门槛，保留历史位置的冷读入口。[真实进程宿主](windows-package-20261119/word-host-156-path.json)。
+
 当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。

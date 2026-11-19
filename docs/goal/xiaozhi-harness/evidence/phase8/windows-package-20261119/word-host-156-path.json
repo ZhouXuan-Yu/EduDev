@@ -1,0 +1,94 @@
+{
+  "success": true,
+  "passed": 5,
+  "failed": 0,
+  "skipped": 0,
+  "checks": [
+    {
+      "name": "Real production process host exports at the failing 156-character durable job path",
+      "passed": true,
+      "elapsedMs": 21483
+    },
+    {
+      "name": "Successful conversion cleans its owned short profile",
+      "passed": true,
+      "elapsedMs": 0
+    },
+    {
+      "name": "In-flight cancellation waits for the original owned Python child and removes its profile",
+      "passed": true,
+      "elapsedMs": 2156
+    },
+    {
+      "name": "The same durable job retries after cancellation and reads back a validated PDF",
+      "passed": true,
+      "elapsedMs": 20596
+    },
+    {
+      "name": "A nonzero worker exit retains the failure and cleans its new owned profile",
+      "passed": true,
+      "elapsedMs": 75
+    }
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-host-source-7d7270b3",
+  "job": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-host-source-7d7270b3\\job-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "jobLength": 156,
+  "profiles": [
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-pdf-vQAE6T",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-pdf-viCS3s",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-pdf-HGlPNX",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-word-pdf-BQ1T3V"
+  ],
+  "first": {
+    "sha256": "8cfef310f0b615a8c275f78ed1cbf5042708027367690640134be2a3eca89f89",
+    "bytes": 11748,
+    "pages": 1
+  },
+  "sourceFiles": [
+    {
+      "file": "src/main/assets/word-pdf-runtime.ts",
+      "sha256": "544689c483bd7db7fb259deaedea91629166054cc5e7448ee953295a004572e6"
+    },
+    {
+      "file": "src/main/assets/word_office_worker.py",
+      "sha256": "969296bb33ae36010b67df8efb05499e44faf3a73b8f01c82b0805cd5256e68b"
+    }
+  ],
+  "boundary": "Actual new renderWordPdf source, original runWordOfficeProcess/queue/package reader/PDFium host and actual installed LibreOffice/Python. Headless Electron app surface injected and ensureWordOffice returns the previously verified installation, so this does not repeat installation validation. No production out or original profile/db/job writes.",
+  "additionalValidation": {
+    "typecheck": {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0
+    },
+    "renderer": {
+      "command": "npm run test:renderer-components",
+      "passed": 253,
+      "total": 253
+    },
+    "wordPages": {
+      "initialCommand": "node scripts/education/kb-word-pages.mjs",
+      "initialFailure": "Node 24 strip-only mode does not support an existing constructor parameter property",
+      "command": "node --experimental-transform-types scripts/education/kb-word-pages.mjs",
+      "passed": 11,
+      "failed": 0
+    },
+    "pythonExport": {
+      "command": "<verified-program>/python.exe -B scripts/education/word-pdf-export-boundaries.py",
+      "passed": 7,
+      "failed": 0
+    },
+    "sharedHelper": {
+      "passed": 2,
+      "failed": 0,
+      "cases": [
+        "absent env uses original durable job/profile",
+        "explicit env uses the main-owned short profile"
+      ]
+    },
+    "diffCheck": {
+      "command": "git diff --check -- src/main/assets/word-pdf-runtime.ts src/main/assets/word_office_worker.py",
+      "exitCode": 0
+    },
+    "buildBoundary": "Production build/out/package rebuild delegated to root under the no-out-write instruction."
+  }
+}

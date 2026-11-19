@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {tmpdir} from 'node:os';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {_electron} from 'playwright';
@@ -14,10 +15,21 @@ const labelIndex=process.argv.indexOf('--label'),label=labelIndex>=0?process.arg
 assert(labelIndex<0||resume,'Labels require --resume-dir');
 assert(labelIndex<0||/^[a-z0-9-]{1,32}$/.test(label||''),'Invalid report label');
 const suffix=label?'-'+label:'';
-const parent=path.join(desktop,'test-results/goal/kb-s0');
-const output=resume?path.resolve(process.argv[resumeIndex+1]||''):path.join(parent,'packaged-'+Date.now());
-if(resume){assert.equal(path.dirname(output).toLowerCase(),parent.toLowerCase());assert(path.basename(output).startsWith('packaged-'));assert.equal(fs.realpathSync(output).toLowerCase(),output.toLowerCase());}
-fs.mkdirSync(output,{recursive:true});
+const previousParent=path.join(desktop,'test-results/goal/kb-s0');
+const temporaryParent=path.join(fs.realpathSync(tmpdir()),'omni-edu-release-smoke');
+let output;
+if(resume){
+ const requested=process.argv[resumeIndex+1];
+ assert(requested,'Resume requires a report directory');
+ output=path.resolve(requested);
+ assert([previousParent,temporaryParent].some(parent=>path.dirname(output).toLowerCase()===parent.toLowerCase()));
+ assert(path.basename(output).startsWith('packaged-'));
+ assert.equal(fs.realpathSync(output).toLowerCase(),output.toLowerCase());
+}else{
+ fs.mkdirSync(temporaryParent,{recursive:true});
+ assert.equal(fs.realpathSync(temporaryParent).toLowerCase(),temporaryParent.toLowerCase());
+ output=fs.mkdtempSync(path.join(temporaryParent,'packaged-'));
+}
 const profile=path.join(output,'profile'),data=path.join(output,'data'),exe=process.env.OMNI_EDU_PACKAGED_EXE||path.join(desktop,'.release/win-unpacked/小智.exe');
 const text=path.join(output,'教师教案.md'),docx=path.join(output,'教师讲义.docx');
 const longText=path.join(output,'长教材.txt'),image=path.join(output,'题目照片.png'),pdf=path.join(output,'扫描题页.pdf');

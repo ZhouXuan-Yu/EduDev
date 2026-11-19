@@ -76,8 +76,10 @@ def office_document(data, root):
     sanitized_copy(data, source)
     pipe = 'xiaozhi_word_office_' + uuid.uuid4().hex
     program = Path(os.environ['XIAOZHI_OFFICE_PROGRAM'])
+    # The PDF host owns a short disposable profile outside the durable archive.
+    profile = Path(os.environ.get('XIAOZHI_OFFICE_PROFILE', str(root / 'profile'))).resolve()
     child = subprocess.Popen([
-        str(program / 'soffice.exe'), '-env:UserInstallation=' + (root / 'profile').as_uri(),
+        str(program / 'soffice.exe'), '-env:UserInstallation=' + profile.as_uri(),
         '--headless', '--norestore', '--nodefault', '--nofirststartwizard',
         '--accept=pipe,name=' + pipe + ';urp;StarOffice.ComponentContext',
     ], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
