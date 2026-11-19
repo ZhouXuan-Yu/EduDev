@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-11-19 独立题图的标注间距复核
+
+原图证据用于区分说明排版空白与图标签/图义变化，比较副本沿原题文档与付费审计链，原字面转录可重建。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
 ## 2026-11-18 有来源编号的版式误判修复
 
 sourceMarkerText 以同页结构 parent/option 与完整原段落为依据生成比较副本，sourceMarkerPolicy按批冻结。原 MaterialChoiceRechecks 的 layout action 兼容旧 v1 与新 marker 审计，总上限20，原读器重算派生文档，不改变SQLite/文件真源。

@@ -1,3 +1,5 @@
+import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
+import {FIGURE_LABEL_SPACING} from '../../shared/material-ai-figure-spacing';
 import {AI_STRUCTURE_SOURCE} from '../../shared/material-ai-structure';
 import {SOURCE_LAYOUT_MARKERS} from '../../shared/material-ai-source-markers';
 import {SOURCE_LAYOUT_TEXT} from '../../shared/material-ai-source-layout';
@@ -32,8 +34,8 @@ const candidates = `FROM question_bank_items q JOIN material_ai_members m ON m.q
     AND NOT EXISTS(SELECT 1 FROM question_notebook_bookmarks b WHERE b.question_id=q.id AND b.bookmarked=1)
     AND NOT EXISTS(SELECT 1 FROM question_notebook_category_links c WHERE c.question_id=q.id)
     AND NOT EXISTS(SELECT 1 FROM question_bank_usage usage WHERE usage.question_id=q.id)`;
-type Mode = 'choice' | 'layout' | 'markers';
-const policyFor = (mode: Mode) => mode === 'markers' ? SOURCE_LAYOUT_MARKERS : mode === 'layout' ? SOURCE_LAYOUT_TEXT : PRINTED_CHOICE_ANSWER;
+type Mode = 'choice' | 'layout' | 'markers' | 'figure';
+const policyFor = (mode: Mode) => mode === 'figure' ? FIGURE_LABEL_SPACING : mode === 'markers' ? SOURCE_LAYOUT_MARKERS : mode === 'layout' ? SOURCE_LAYOUT_TEXT : PRINTED_CHOICE_ANSWER;
 const inputJson = "CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END";
 const promptField = (field: string) => `json_extract(${inputJson},'$.pagePrompt.${field}')`;
 const legacyLayout = `${promptField('sourceLayoutPolicy')} IS NULL`;
@@ -54,10 +56,11 @@ const fields = {stem:'stem',answer:'answer',analysis:'analysis',subject:'subject
 function comparedPrompt(prompt?: AiPagePrompt, mode: Mode = 'choice'): AiPagePrompt | undefined {
   if (prompt?.policy !== 'page-fragments.v3' || prompt.choiceReviewPolicy !== CHOICE_CONCORDANCE) return;
   if (mode !== 'choice' && (!prompt.sourceReadingPolicy || !prompt.sourceContentPolicy)) return;
-  return {...prompt, choiceAnswerPolicy: PRINTED_CHOICE_ANSWER,...(mode!=='choice'?{sourceLayoutPolicy:SOURCE_LAYOUT_TEXT}:{}),...(mode==='markers'?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{})};
+  return {...prompt, choiceAnswerPolicy: PRINTED_CHOICE_ANSWER,...(mode!=='choice'?{sourceLayoutPolicy:SOURCE_LAYOUT_TEXT}:{}),...(mode==='markers'?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{}),...(mode==='figure'?{sourceFigureSpacingPolicy:FIGURE_LABEL_SPACING}:{})};
 }
-function originalPolicyAllowed(prompt:AiPagePrompt|undefined,mode:Mode) {
+function originalPolicyAllowed(prompt:AiPagePrompt|undefined,mode:Mode): boolean {
  if(prompt?.policy!=='page-fragments.v3')return false;
+ if(mode==='figure')return isIndependentLiteralPolicy(prompt.literalReadingPolicy) && !prompt.sourceFigureSpacingPolicy && (originalPolicyAllowed(prompt,'layout') || originalPolicyAllowed(prompt,'markers'));
  return mode==='choice'?!prompt.choiceAnswerPolicy:mode==='layout'?!prompt.sourceLayoutPolicy:prompt.sourceLayoutPolicy===SOURCE_LAYOUT_TEXT&&!!prompt.structureContext&&!prompt.sourceMarkerPolicy;
 }
 function proofSha(proof: Proof, number: string, crops: PageCrop[]) {
@@ -73,7 +76,8 @@ function plans(args: AiPagePublishArgs, number: string, mode: Mode = 'choice') {
   if (before.archive.state !== 'ai_needs_review' || after.archive.ai?.policy !== 'page-crop-complete.v1' || !after.document) return;
   if (mode === 'choice' && (before.archive.issues.length !== 1 || before.archive.issues[0] !== 'answer_conflict' || after.archive.state !== 'ai_final' || documentJson(before.document) !== documentJson(after.document))) return;
   if (mode !== 'choice' && (before.document || before.archive.issues.includes('uncertain_ocr') || after.archive.issues.length >= before.archive.issues.length || after.archive.issues.some(issue => !before.archive.issues.includes(issue) || ['ai_mismatch','requires_image'].includes(issue)))) return;
-  return {model,before,after,prompt};
+  if (mode === 'figure' && plans(args,number,args.pagePrompt?.policy==='page-fragments.v3'&&args.pagePrompt.sourceLayoutPolicy?'markers':'layout')) return;
+  return {model,before,after,prompt,policy:policyFor(mode)};
 }
 
 /** Bounded local classification over immutable responses; no provider or second executor. */
@@ -82,7 +86,7 @@ export class MaterialChoiceRechecks {
   async view(batchId: string) {
     const count = async (mode: 'choice' | 'layout') => Number((await this.host.all(`SELECT COUNT(*) n ${candidateQuery(mode)}`, [batchId]))[0]?.n || 0);
     const applied = async (mode: Mode) => Number((await this.host.all('SELECT COUNT(*) n FROM material_ai_choice_rechecks WHERE batch_id=? AND policy=?', [batchId,policyFor(mode)]))[0]?.n || 0);
-    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout'),layoutApplied:await applied('layout')+await applied('markers')};
+    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout'),layoutApplied:await applied('layout')+await applied('markers')+await applied('figure')};
   }
   private async args(batchId: string, ordinal: number, proof: Proof, crops: PageCrop[]): Promise<AiPagePublishArgs> {
     const row = (await this.host.all('SELECT first_json,final_json FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId,ordinal]))[0];
@@ -117,11 +121,11 @@ export class MaterialChoiceRechecks {
         contexts.set(ordinal,context);
       }
       if (!originalPolicyAllowed(context.proof.unit.pagePrompt, mode)) continue;
-      const plan = plans(context.args,number,mode);
+      const plan = plans(context.args,number,mode) ?? (mode !== 'choice' && originalPolicyAllowed(context.proof.unit.pagePrompt,'figure') ? plans(context.args,number,'figure') : undefined);
       if (!plan || row.archive_json !== JSON.stringify(plan.before.archive) || row.document_json !== documentJson(plan.before.document) || !sameFields(row,plan.model) || await teacherOwnsRuleQuestion(this.host,String(row.id))) continue;
       const {recheck_ordinal:_,recheck_number:__,recheck_mode:___,...before} = row;
       await this.host.run(`INSERT INTO material_ai_choice_rechecks(question_id,batch_id,ordinal,number,policy,proof_sha,before_json,after_archive_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)`,
-      [String(row.id),batchId,ordinal,number,policyFor(mode),proofSha(context.proof,number,context.crops),JSON.stringify(before),JSON.stringify(plan.after.archive),new Date().toISOString()]);
+      [String(row.id),batchId,ordinal,number,plan.policy,proofSha(context.proof,number,context.crops),JSON.stringify(before),JSON.stringify(plan.after.archive),new Date().toISOString()]);
       // Retain exact model fields and timestamps. The layout policy derives a missing source document.
       await this.host.run('UPDATE question_bank_items SET archive_json=?,document_json=? WHERE id=? AND archive_json=? AND document_json=?', [JSON.stringify(plan.after.archive),documentJson(plan.after.document),String(row.id),String(row.archive_json),String(row.document_json)]);
       const current = (await this.host.all('SELECT archive_json,document_json FROM question_bank_items WHERE id=?', [String(row.id)]))[0];
@@ -142,7 +146,7 @@ export class MaterialChoiceRechecks {
     const row = (await this.host.all('SELECT * FROM material_ai_choice_rechecks WHERE question_id=?', [question.id]))[0];
     if (!row) return proof.unit.pagePrompt;
     const receipt = question.archive?.ai, number = question.archive?.number;
-    const mode: Mode = row.policy === SOURCE_LAYOUT_MARKERS ? 'markers' : row.policy === SOURCE_LAYOUT_TEXT ? 'layout' : 'choice';
+    const mode: Mode = row.policy === FIGURE_LABEL_SPACING ? 'figure' : row.policy === SOURCE_LAYOUT_MARKERS ? 'markers' : row.policy === SOURCE_LAYOUT_TEXT ? 'layout' : 'choice';
     if (!receipt || !number || row.batch_id !== receipt.batchId || Number(row.ordinal) !== receipt.ordinal || row.number !== number || row.policy !== policyFor(mode) || row.proof_sha !== proofSha(proof,number,crops) || !originalPolicyAllowed(proof.unit.pagePrompt,mode)) throw Error('source_changed');
     const args = {...await this.args(receipt.batchId,receipt.ordinal,proof,crops),following};
     let before: Row;

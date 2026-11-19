@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "a66d6321ba4cff91579e7e221279cfa4814219678bac9a996f932795da01a499",
+  "sourceHash": "ed31c2c0cf747d79e0013cb78920957f6f762c1e43bfaac21891fe8bc841dafa",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1891,6 +1891,10 @@
       "sha256": "bc04d70e67a592bb1daaf7cf0c9a39b6b0b0c1cd09d038d71b34b67aef726362"
     },
     {
+      "file": "src/shared/material-ai-figure-spacing.ts",
+      "sha256": "e099b322e4eca1696de2d74dee66b984df69f9128843ebc832d4524eac823dac"
+    },
+    {
       "file": "src/shared/material-ai-host-partition.ts",
       "sha256": "ba910cafff1711dfc807ed7f291b66383f4477ffd73b06b4b225fcfa7320b50b"
     },
@@ -1912,7 +1916,7 @@
     },
     {
       "file": "src/shared/material-ai-literal.ts",
-      "sha256": "2a80e5954691038b491afdd825eef97a7661f0cec302b0e1e35901835613be18"
+      "sha256": "1b72bdcdf2497a24f2ea233d89ef220b5cea4917ef73be3dfc4882b867ebd561"
     },
     {
       "file": "src/shared/material-ai-owned-crops.ts",
@@ -1928,7 +1932,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "61bbeec4778ca56bb801f844910c1b2172112153d8058a3edba7a04fa8e53b3d"
+      "sha256": "3c35841d079ca22facba6b0595a8eaf89bc58061577602da51c6aa6348e84de6"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",

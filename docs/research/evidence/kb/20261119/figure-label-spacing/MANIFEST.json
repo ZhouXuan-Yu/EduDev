@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "hashScope": "Raw accepted worktree bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "b73ce69e4fdacd23776fd6f8970b1e9ce6513f61a58361625d0aada857758bfd"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "0be4260236f27715808ab0d4b416e5089a9910468d2348c259647b5bcd9147f0"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "89089d0583b99d3ae0f03f38517c737168c1dac86b96b8b77fd902950cd9878b"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "5001b240e9d3df8ca734287d468e54483c68164170ad94b3b835fc9baddedfc7"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-figure-spacing-boundaries.mjs",
+      "sha256": "c9086e1ae233620e1dc9b8d391b979ec8614ab6ece5bda5ba7a9562f40561995"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-figure-spacing-electron.mjs",
+      "sha256": "50e446643fff00e195e54631be2e70187b2be6c7ff0002544d2891148dd492c1"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-choice-rechecks.ts",
+      "sha256": "db4249d6e77ad5cc5c53142c828251f90cb4b34fb99d1b4a581c1efaefc4f374"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "sha256": "6453a2a3bd78f3791ff08efd6362ebff6f0d82e88f8ccc80bc27cf2d61e68cd5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "1d9363df67ec40b660802baa06c7b2ba20d509044b0969bfcdcaa00eb9f7571f"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-source-reading.ts",
+      "sha256": "f775d79a0190cc2cacbb21defed5f29e5cd2b4f26ec0e29a3054d4cdb6afb2e9"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "d55706132c5270cec6951b28691c001408d6a4b6de36c0e0e0cf788031deb3dd"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-figure-spacing.ts",
+      "sha256": "e099b322e4eca1696de2d74dee66b984df69f9128843ebc832d4524eac823dac"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-literal.ts",
+      "sha256": "1b72bdcdf2497a24f2ea233d89ef220b5cea4917ef73be3dfc4882b867ebd561"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-page.ts",
+      "sha256": "3c35841d079ca22facba6b0595a8eaf89bc58061577602da51c6aa6348e84de6"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "bbbfce01f3488737a8be9c5f5e6512826dbc1f479f5fdea4b6eeda2e3abbe3f9"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "b13975102f2ab54959929ccd5bcb5ffb8859ff6567d1b973a023a4200b79e9d0"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "bdd562c7744ca3e5585cfbb4115c95cba5891d728af646b37ae3f6fa0543e751"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "3a4a82e7392488b4b9d983a880be516a680ff681a5859bd50912b583b6afa964"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "581b5761d6c6456b9083952c9458bc3f217646692568d7f541ef82e4b28661ab"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "40bdae559877efd5baebe1456562c19bd5d3c4b5b93f2e5661fd3cba952d8258"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "aeee1a7309485efcef73e88e1eba8b6cb38591944c93cfd011367ef454554733"
+    },
+    {
+      "path": "docs/goal/WORK_PROGRESS.md",
+      "sha256": "dcd8384faef446b380117a3d9808f32de93319533f5382079b4ae2b1d24fde85"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "bba4f63087af027c5148bc8e1570ba68c2cf2e05e28a33b63b4cffb7052db39a"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "2e9b4f2d6909d1322b7caad5c36ecb05e8f3cb054e361f12ec94e587b460bd5c"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "b45e6ed9923cb384cfef2ad5e538291ded117d47dc7a47dcbd882199474edede"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/figure-label-spacing/README.md",
+      "sha256": "aa3538c99325d7352cef5b98cab4b73a3c7fb287678c40653dc2d3ebbd3c6555"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/figure-label-spacing/summary.json",
+      "sha256": "bd5bbfb30c559a6b2e9d5b50142edcc242c5bb4dc0b7c0b26d6f9d5a7e0b8b35"
+    }
+  ]
+}

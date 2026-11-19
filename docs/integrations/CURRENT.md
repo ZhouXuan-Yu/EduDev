@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 独立题图的标注间距复核
+
+继续复用原图归档、独立读数、题本和原本地复核接口，无新增依赖、表或模型调用。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
 ## 2026-11-18 有来源编号的版式误判修复
 
 复用原 PDFium/RapidOCR/结构上下文、DeepSeek 已存响应、typed recheck_source_layout、MaterialChoiceRechecks 和来源读器。新增 source-layout-markers.v1，无新生产依赖、表、IPC或云端调用。旧 v1 审计与关闭开关继续可读。

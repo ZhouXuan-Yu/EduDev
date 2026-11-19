@@ -1,3 +1,4 @@
+import {FIGURE_LABEL_SPACING} from '../../shared/material-ai-figure-spacing';
 import {SOURCE_LAYOUT_MARKERS} from '../../shared/material-ai-source-markers';
 import {withAiStructureSource,validateAiStructureSource} from './material-ai-structure-source';
 import {SOURCE_LAYOUT_TEXT} from '../../shared/material-ai-source-layout';
@@ -6,7 +7,7 @@ import {folderResourceAuthorized} from './material-folder-word-pages';
 import {MaterialChoiceRechecks,CHOICE_RECHECK_TABLE} from './material-ai-choice-rechecks';
 import {NATIVE_FIELD_REVIEW} from '../../shared/material-ai-native-review';
 import {readSourceCropPreview} from './material-ai-source-preview';
-import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
+import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions,isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
 import {receivedAiContent} from './material-ai-response-content';
 import {AI_RESPONSE_RECOVERY,AI_UNCERTAIN_REVIEW_RECOVERY,recoverNativeResponse} from '../../shared/material-ai-response-recovery';
@@ -198,7 +199,7 @@ export class MaterialAiRepository{
     const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:input.processingMode??'legacy');
     const units=await this.rawInputs(input,policy,task);
     for(const unit of units)if(policy.mode==='quality'&&process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceReviewPolicy===CHOICE_CONCORDANCE)unit.pagePrompt={...unit.pagePrompt,choiceAnswerPolicy:PRINTED_CHOICE_ANSWER};
-    for(const unit of units)if(process.env.OMNI_EDU_AI_SOURCE_LAYOUT!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceAnswerPolicy&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,sourceLayoutPolicy:SOURCE_LAYOUT_TEXT,...(unit.pagePrompt.structureContext?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{})};
+    for(const unit of units)if(process.env.OMNI_EDU_AI_SOURCE_LAYOUT!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceAnswerPolicy&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,sourceLayoutPolicy:SOURCE_LAYOUT_TEXT,...(isIndependentLiteralPolicy(unit.pagePrompt.literalReadingPolicy)?{sourceFigureSpacingPolicy:FIGURE_LABEL_SPACING}:{}),...(unit.pagePrompt.structureContext?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{})};
     for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.structureContext&&unit.pagePrompt.literalReadingPolicy&&unit.pagePrompt.choiceAnswerPolicy===PRINTED_CHOICE_ANSWER)unit.pagePrompt={...unit.pagePrompt,literalChoiceAnswerPolicy:PRINTED_CHOICE_LITERAL_ANSWER};
     if(role?.kind==='questions'&&task?.folderId&&policy.mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
     return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;

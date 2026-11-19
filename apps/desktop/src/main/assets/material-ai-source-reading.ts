@@ -1,3 +1,4 @@
+import {FIGURE_LABEL_SPACING,equivalentFigureSpacing} from '../../shared/material-ai-figure-spacing';
 import {sourceMarkerText} from '../../shared/material-ai-source-markers';
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {sourceCropKinds} from '../../shared/material-ai-owned-crops';
@@ -36,6 +37,27 @@ function figureFragment(fragment:NonNullable<PageCrop['fragments']>[number],crop
  const ids=fragment.blockIds||[fragment.blockId];
  return ids.length>0&&ids.every(id=>prompt.blocks.blocks.find(b=>b.id===id)?.kind==='figure_title');
 }
+/** Authenticate the exact figure label suffix before allowing description spaces. */
+export function figureDescriptionsAgree(
+ first: AiPageResponse, final: AiPageResponse, number: string, crop: PageCrop | undefined,
+ prompt: AiPagePrompt, leftDescription: string, rightDescription: string,
+): boolean {
+ if (prompt.policy !== 'page-fragments.v3' || prompt.sourceFigureSpacingPolicy !== FIGURE_LABEL_SPACING
+  || !isIndependentLiteralPolicy(prompt.literalReadingPolicy)
+  || !sourceContentEnabled(prompt) || !crop?.fragments || crop.failure
+  || !hasSourceReadings(first) || !hasSourceReadings(final)) return false;
+ const figures = crop.fragments.filter(fragment => figureFragment(fragment,crop,prompt));
+ if (figures.length !== 1) return false;
+ const fragment = figures[0], index = crop.fragments.indexOf(fragment);
+ const left = first.readings.find(r=>r.number===number)?.crops[index];
+ const right = final.readings.find(r=>r.number===number)?.crops[index];
+ if (!left || !right || !left.text || left.text !== right.text
+  || !contentPartRoles(left.parts,left.text,number,false,true)
+  || !contentPartRoles(right.parts,right.text,number,false,true)
+  || !readingMatchesCrop(left,fragment) || !readingMatchesCrop(right,fragment)) return false;
+ return equivalentFigureSpacing(leftDescription,rightDescription,left.text);
+}
+
 /** Called after original bytes, ownership, geometry, edges and both projections agree.
  * Literal OCR changes require two saved image readings; the old OCR stays unchanged. */
 export function readingBodyComplete(first:AiPageResponse,final:AiPageResponse,question:AiImageQuestion,crop:PageCrop,prompt?:AiPagePrompt,allCrops:PageCrop[]=[crop]):boolean{

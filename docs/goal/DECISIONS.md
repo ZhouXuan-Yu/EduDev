@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 独立题图的标注间距复核
+
+以已保存双原图字面转录为证明。只有独立图标签后缀完整一致的说明可比对标注前空白，所有仍不具备独立证据的情况继续适用旧规则。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
 ## 2026-11-18 有来源编号的版式误判修复
 
 新增可选 sourceMarkerPolicy，版本为 source-layout-markers.v1；不改变 source-layout-text.v1 历史规则。比较限原 parent/option 段落及完整文字，数学符号/数字/单位/否定词保持严格，模型原文不修改。复用原本地动作、writer和审计，不新增基础设施或调用。 本地复核候选经同一条有界查询选出，坏输入维护待核，已有审计继续使用 originalPolicyAllowed 验证。
