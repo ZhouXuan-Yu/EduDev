@@ -521,10 +521,11 @@
     "paidCalls": 0
   },
   "phase8WindowsPackage": {
-    "status": "NSIS_BASE_CANDIDATE_BUILT_FULL_UNPACKED_DOCX_IMPORT_PARTIAL",
+    "status": "NSIS_BASE_CANDIDATE_BUILT_FULL_UNPACKED_WORD_PROFILE_PATH_REPRODUCED",
     "evidence": "evidence/phase8/windows-runtime-preparation-20261119.md",
     "baseInstallerLocal": "%TEMP%/edup-6e98963d/release/Xiaozhi-Setup-0.1.0-x64.exe",
     "fullUnpackedLocal": "%TEMP%/eduf-06f8ada8/release/win-unpacked",
+    "wordProfilePathEvidence": "evidence/phase8/windows-package-20261119/word-office-profile-path-probe.json",
     "fullOutFingerprint": "f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb"
   }
 }

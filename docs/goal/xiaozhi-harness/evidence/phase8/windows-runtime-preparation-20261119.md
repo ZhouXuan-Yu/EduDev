@@ -24,4 +24,6 @@
 
 导入测试现核对五份原件的文件名、长度和 SHA-256，允许单独出现转换派生件，并在异常前采集被阻断的网络请求。夹具定向复验 8/8。填入两个官方锁定下载件，实际候选在合成 profile 完成 Word 组件解包。在最新真实导入中，TXT、Markdown、图片、扫描 PDF 均 ready，DOCX 进入原版转换流程后仍返回 partial/parse_failed。记录到零网络请求和 renderer 错误；继续定位生产链路中的转换回执和归档，保留原强断言。[完整资源候选复测](windows-package-20261119/unpacked-full-structure-result.json)。
 
+独立复现使用相同 DOCX、原候选 Worker、同一已校验 Office 程序及原协议。原 Worker 的短任务目录完成并生成 11,748 字节 PDF，用时 21.876 秒。与失败任务等长的 156 字符任务目录在 90.481 秒返回 unavailable，未生成 PDF。保留 156 字符的源和输出，仅在临时探针换短 LibreOffice 配置目录后，18.108 秒完成。生产修复及完整导入复测沿这个原因继续。[短与长路径证据](windows-package-20261119/word-office-profile-path-probe.json)。
+
 当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。
