@@ -1,0 +1,56 @@
+{
+  "success": true,
+  "fixtures": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\rk-path-NISX8S",
+  "sourceSha256": "9cbef61d741520e7aaf683117de7d6d2a758625d86f820a8a5f8a479047ab0b2",
+  "checks": [
+    {
+      "name": "Nested relative paths with equal basenames keep their own target directories",
+      "pass": true
+    },
+    {
+      "name": "Parent traversal is refused before compiler",
+      "pass": true
+    },
+    {
+      "name": "Windows absolute asset is refused before compiler",
+      "pass": true
+    },
+    {
+      "name": "Backslash alias is refused before compiler",
+      "pass": true
+    },
+    {
+      "name": "Windows case-insensitive output collision is refused",
+      "pass": true
+    },
+    {
+      "name": "Asset cannot replace reserved original model-lock.json",
+      "pass": true
+    },
+    {
+      "name": "Windows trailing-dot alias is refused",
+      "pass": true
+    },
+    {
+      "name": "Alternate data stream is refused",
+      "pass": true
+    },
+    {
+      "name": "Size mismatch is refused",
+      "pass": true
+    },
+    {
+      "name": "Equal-size hash mismatch is refused",
+      "pass": true
+    },
+    {
+      "name": "Local lock cannot replace repository fixed requirements",
+      "pass": true
+    },
+    {
+      "name": "Junction parent cannot escape model root",
+      "pass": true
+    }
+  ],
+  "boundary": "Unchanged production builder with owned tiny fixture manifests. Child process calls are intercepted. No PyInstaller run here. The separate real build provides package evidence."
+}

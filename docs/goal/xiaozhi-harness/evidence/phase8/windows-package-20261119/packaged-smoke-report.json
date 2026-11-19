@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "executable": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\rk-wl-83c937b8\\apps\\desktop\\.local-reranker\\dist\\omni-edu-reranker\\omni-edu-reranker.exe",
+  "requestId": "f4d3b8f9-da00-475c-ab9d-468f3850b786",
+  "messages": [
+    {
+      "schemaVersion": "xiaozhi.rerank.v1",
+      "kind": "ready",
+      "identity": "bge-reranker-base.q8.pair512.window2.v1",
+      "modelHash": "dd98f3e67837d23210a6b7550c08cced4f61845b940ac45be3565840a10f3244",
+      "tokenizerHash": "48564c5c7d3fa64d85d95e65414a542385f88b0f128fd8d4163fd7a57f2be05c"
+    },
+    {
+      "schemaVersion": "xiaozhi.rerank.v1",
+      "kind": "result",
+      "requestId": "f4d3b8f9-da00-475c-ab9d-468f3850b786",
+      "identity": "bge-reranker-base.q8.pair512.window2.v1",
+      "scores": [
+        {
+          "id": "water",
+          "score": 6.128891944885254,
+          "complete": true
+        },
+        {
+          "id": "plant",
+          "score": -10.147744178771973,
+          "complete": true
+        }
+      ],
+      "elapsedMs": 31
+    }
+  ],
+  "stderr": "",
+  "boundary": "Actual locally packaged sidecar with synthetic two-item input. No model download or cloud call.",
+  "readyMs": 1750,
+  "exitCode": 0,
+  "elapsedMs": 1979
+}

@@ -14,4 +14,10 @@
 
 独立运行该干净候选的实际 `omni-edu-reranker.exe`，清空 PATH，使用合成中文题目和绑定父进程的原协议。验证模型与 tokenizer 标识、无效请求拒绝、纠正请求后相关性排序、长输入标记不完整，以及 EOF 正常退出。5/5，exit 0。局部候选在本机临时目录 `%TEMP%/rk-595b73fa`，最初下载与构建日志保存在 `%TEMP%/xiaozhi-reranker-build-9d0768c6f0f4426a96414a254899ffda`。
 
-后续检查点是按仓库锁定文件白名单封装边车，复核候选清单和刚构建的可执行文件，再运行实际 Windows 打包。当前用户桌面和开始菜单已经有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。当前验证保持该应用和快捷方式，真实干净安装、启动和卸载待隔离环境。当前构建使用四套独立资源和 unpacked 应用，由原 `electron-builder.cjs` 及 `verify-packaged-resources.cjs` 校验。
+构建器已改为逐文件收录，三种额外文件实际未进包。路径和锁验证 12/12。采用实测候选的 155 项清单，`npm run release:prepare` 和 unpacked 的 afterPack 四套资源检查均通过。unpacked 程序的 481 个构建文件与输入相同，目录指纹 `b2b9b6f239c7ba209da37e30579e2b93789749ea764d266f30e4ae32bfc3002d`。该包早于 HTTP MCP 修复。[构建修复](windows-package-20261119/BUILD_FIX_REPORT.md)。
+
+小智用实际 packed EXE、空 PATH、合成新资料目录和 profile 启动。教育 Worker、LanceDB、PDFium 直接探针通过。TXT/Markdown 可用，扫描 PDF、图片和 DOCX 未达标。原 SQLite 中图片 OCR 回执 complete，PDF 已有一页和一段，DOCX 已保存 OOXML 正文。独立复现定位到结构阶段。候选包缺少显式可选的版面分块组件，图片和扫描 PDF 的结构解析返回 unavailable。DOCX 原版转换尝试准备 LibreOffice，测试禁用网络返回错误并映射为 parse_failed。原失败报告的空网络数组产生于异常早于采集，定向探针捕获了被阻断的 MSI 请求。[真实导入失败](windows-package-20261119/unpacked-ui-failure.json) · [定向探针](windows-package-20261119/unpacked-import-structure-probe.json)。
+
+已在专用工作树逐文件校验 767 项版面分块资源。在 `OMNI_EDU_BUNDLE_PAGE_BLOCKS=1` 下五套资源 preflight 均通过。后续使用这一显式配置以及独立测试 profile 的官方 Office 组件缓存验证完整结构导入，同时保留组件不可用时的证据。
+
+当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。

@@ -17,7 +17,7 @@ Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、
 - 合成 Q1 的旧版和新版已完成真实 DeepSeek 连接预检及 SQLite 冷读回。首次旧版的流式计量失败保留，修订采集器后两版通过。累计 3/200，剩余 197 次。正式 32 次 ABBA 采集、盲评及失败场景尚待执行。[连接预检](evidence/phase8/connection-preflight-20261119.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
 - 原生拖窗与最大化还原等待可见桌面复验。下一位 AI 从当前文档、[执行状态](ORCHESTRATOR_STATE.json)和[验收报告](ACCEPTANCE_REPORT.md)接手。继续使用原账本，正式验收须冻结实际受测提交与产物。
 - 后台流式同负载 A/B 两侧各 5/5，推理在终态前更新，实际停止动作产生终态且可读回。提交到模拟模型的请求到达时间 5.24 秒和 3.73 秒，停止到终态 151 毫秒和 169 毫秒。浏览器将部分后台帧限到约 1 秒，前台流畅度继续按原条件验收。[配对证据](evidence/phase8/background-stream-pair-20261119.json)。
-- OCR、教育、检索资源已在专用工作树完成逐字节校验。重排模型固定资产已取得，隔离候选通过 5/5 离线协议检查。重建产物与旧发行清单存在字节差异，构建脚本正在修复将下载残片收录的缺口。按 Windows 包合同继续校验清单、构建、安装、启动和卸载。[打包资源证据](evidence/phase8/windows-runtime-preparation-20261119.md)。
+- Windows 四套运行时已逐字节校验。重排构建器实际排除了下载残片、额外文件和同名嵌套文件，采用新候选清单。打包版实际启动并通过教育 Worker、LanceDB 和 PDFium 直读。真实页面导入的扫描 PDF、图片、DOCX 暴露后续结构处理失败，安装门禁继续。[打包资源及导入证据](evidence/phase8/windows-runtime-preparation-20261119.md)。
 
 ## 当前进度 2026-11-18
 
