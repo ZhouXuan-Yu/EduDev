@@ -3,7 +3,7 @@ import { literalWire } from './kb-literal-boundaries.mjs';
 import { INDEPENDENT_LITERAL_READING, INDEPENDENT_LITERAL_RESPONSE, LITERAL_READING,
   deriveLiteralPageResponse, independentLiteralContext, literalReadingPrompt } from '../../src/shared/material-ai-literal.ts';
 import { parseAiPageResponse, validAiPagePrompt } from '../../src/shared/material-ai-page.ts';
-import { sourceCropKinds } from '../../src/shared/material-ai-owned-crops.ts';
+import { CONTINUATION_BLOCK_PREFIX, sourceCropKinds } from '../../src/shared/material-ai-owned-crops.ts';
 import { validCropReview } from '../../src/main/assets/material-ai-crop-review.ts';
 import { completeMaterialAi } from '../../src/main/assets/material-ai-provider.ts';
 
@@ -42,8 +42,8 @@ export async function runIndependentLiteralChecks({ check, sourceContentFixtures
       { id: 'figure', kind: 'chart' }, { id: 'caption', kind: 'figure_title' }] };
     assert.deepEqual(sourceCropKinds(page, [['body'], ['table'], ['figure'], ['caption']]), ['body', 'table', 'figure', 'figure']);
     assert.deepEqual(sourceCropKinds(page, [['body', 'figure']]), ['mixed']);
-    assert.deepEqual(sourceCropKinds(page, [['body'], ['next-table'], ['next-figure'], ['next-caption']], page), ['body', 'table', 'figure', 'figure']);
-    assert.throws(() => sourceCropKinds(page, [['next-table']]), /source_changed/);
+    assert.deepEqual(sourceCropKinds(page, [['body'], [CONTINUATION_BLOCK_PREFIX+'table'], [CONTINUATION_BLOCK_PREFIX+'figure'], [CONTINUATION_BLOCK_PREFIX+'caption']], page), ['body', 'table', 'figure', 'figure']);
+    assert.throws(() => sourceCropKinds(page, [[CONTINUATION_BLOCK_PREFIX+'table']]), /source_changed/);
   });
   await check('Vision-only context removes original OCR and derived negative comparisons without mutating host evidence', () => run(f => {
     const input = independentInput(f.inputs[1]);

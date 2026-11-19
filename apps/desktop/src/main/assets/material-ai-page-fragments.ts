@@ -4,11 +4,11 @@ import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {sourceContentEnabled} from '../../shared/material-ai-source-content';
 import {figureDescriptionsAgree,readingBodyComplete} from './material-ai-source-reading';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
-import {MATERIAL_FIGURE_CROPS,isDiagramGroup} from '../../shared/material-ai-owned-crops';
+import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup} from '../../shared/material-ai-owned-crops';
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
-import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT} from '../../shared/material-ai-continuation';
+import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,continuationChoicesAgree} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
@@ -33,7 +33,7 @@ const cropGroups=(prompt:AiPagePrompt,ids:string[],number:string)=>{
  const groups=prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.continuation
   ?continuationCropGroups(prompt,ids,number)
   :'blocks'in prompt?pageFragmentGroups(prompt.blocks,ids,pageFragmentTextPolicy(prompt.policy),'cropGeometryPolicy'in prompt?prompt.cropGeometryPolicy:undefined,'figureCropPolicy'in prompt?prompt.figureCropPolicy:undefined).map(g=>({...g,source:undefined as MaterialPageSource|undefined})):[];
- return groups.map(g=>({...g,...(prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS&&(!g.source?isDiagramGroup(prompt.blocks,g.blockIds):continuationSubcrops(prompt)&&isDiagramGroup(prompt.continuation!.blocks,g.blockIds.map(id=>id.slice(5))))?{kind:'diagram' as const}:{})}));
+ return groups.map(g=>({...g,...(prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.figureCropPolicy===MATERIAL_FIGURE_CROPS&&(!g.source?isDiagramGroup(prompt.blocks,g.blockIds):continuationSubcrops(prompt)&&isDiagramGroup(prompt.continuation!.blocks,g.blockIds.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length))))?{kind:'diagram' as const}:{})}));
 };
 
 async function authenticateContinuationParent(host:Host,prompt:AiPagePrompt,numbers:string[],signal:AbortSignal){
@@ -119,7 +119,7 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
   &&figureDescriptionsAgree(first,final,number,crop,prompt,a.projection.figures.text,b.projection.figures.text)
   &&visualQuestionAgrees({...a,projection:{...a.projection,figures:b.projection.figures}},b)
  ));
- if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==JSON.stringify(left.blockIds)||!(visualAgreement||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||(sourceLayoutEnabled(prompt)?sourceLayoutSignatureFor(sourceStem,prompt,number):aiTextSignature(sourceStem))!==aiTextSignature(b.stem))return false;
+ if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith(CONTINUATION_BLOCK_PREFIX)))!==JSON.stringify(left.blockIds)||!(visualAgreement||prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.sourceCropPolicy===MATERIAL_TEXT_SOURCE_CROPS&&!a.requiresImage&&!b.requiresImage&&a.projection.figures.state==='not_applicable'&&b.projection.figures.state==='not_applicable'&&!a.issues.length&&!b.issues.length&&sourceCropQuestionAgrees(a,b))||(sourceLayoutEnabled(prompt)?sourceLayoutSignatureFor(sourceStem,prompt,number):aiTextSignature(sourceStem))!==aiTextSignature(b.stem))return false;
  const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!continuationCropMatches(prompt,f.image,groups[i])))return false;
@@ -129,10 +129,17 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
   // with no frozen OCR labels may omit this narrow stroke-only artifact from
   // the BODY comparison. The pixels and original OCR receipt remain intact;
   // any letter, digit, unit, minus sign or known label still participates.
-  const emptyDiagram=continuationSubcrops(prompt)&&group.kind==='diagram'&&group.blockIds.every(id=>extra?.blockTexts.find(h=>h.blockId===id.slice(5))?.text==='');
+  const emptyDiagram=continuationSubcrops(prompt)&&group.kind==='diagram'&&group.blockIds.every(id=>extra?.blockTexts.find(h=>h.blockId===id.slice(CONTINUATION_BLOCK_PREFIX.length))?.text==='');
   return emptyDiagram&&/^[\s_]{1,64}$/u.test(f.quality.text)?[]:[f.quality.text];
  }).filter(Boolean).join('\n');
- if(extra?.number===number&&[a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT?!continuationTextAgrees(extra.text,extra.textProof,q.stem,nextText):!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+ if(extra?.number===number){
+  if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
+   // Compare the source option seams before general question layout folding.
+   if(!originalA||!rawB||[originalA,rawB].some(q=>!continuationChoicesAgree(extra.text,q.stem)))return false;
+  }else if([a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT
+   ?!continuationTextAgrees(extra.text,extra.textProof,q.stem,nextText)
+   :!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+ }
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  const bodyAgrees=sourceReadingEnabled(prompt)?readingBodyComplete(first,final,a,crop,prompt,crops)&&readingBodyComplete(first,final,b,crop,prompt,crops):prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT
   ?cropBodyComplete(a,crop.fragments,prompt)&&cropBodyComplete(b,crop.fragments,prompt)

@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "126d96deab7e30d4eb23b5a16ee5e2a155e29196bb0524fbb247b188bcee341d"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "4f333a9fd87110b52b46605a556f7f15b51fe0f263aff8a5e854d71b32d297e0"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "76dac514408085d54bd56857ebc055763620645e3434c0966038e911b8344178"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "347a492bdf9fcc7a0ffe9a2cd4c20948ffcdd122329274123a495d0e78207086"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-choice-tail-boundaries.mjs",
+      "sha256": "9619cc09fd0d74a708c205b70077edd716f1bdac7596407d4eacec27cfa45d57"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-choice-tail-electron.mjs",
+      "sha256": "f73196fad47aff5853c21cbc3229fcc099f8a83252df9385bbf3d95dfd2551c8"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-cross-page-boundaries.mjs",
+      "sha256": "79c6a3397d6feff8b5c6661e15fbea636475a609b7b915599af9cc6409e1577d"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-independent-literal-boundaries.mjs",
+      "sha256": "7407de1449c511ab4e3a577fcee5c9cb9037715255eff6d9e0c3e84d0c2cee7d"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-continuation.ts",
+      "sha256": "884cd6947f44077cbc374650af8ec8d56a231addea02064cdd1821c5a1f6b628"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-crop-body.ts",
+      "sha256": "be7d8d91a3bb94876231a137139294bb71cfe752443811a04c56668aa977f19a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "sha256": "254a4a98c659688a63e917944f6a5b7fa83f25e5233ec05bb6deee1195e4a537"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+      "sha256": "84dc2ba74310d953703461ca7a3bf738c39453f3a6b481a4684d039152157bb4"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "0f7545784550e78684e88e3e9ea604b6dd2f74587946a2acc84a0bf246b61bda"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "b08cc6dc49328d41eaacb41b0d0b98b2c7a60d85c029cfafa9672b58fa63c8f4"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-review-source.ts",
+      "sha256": "673b5a7412f42714b033b4f83e76874656113d426c0f6316e5518952c44bedb0"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "6cc7575476372ef9af9c74fa51e59bc2375f5918bcdc709df98b777f5886f92a"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation.ts",
+      "sha256": "4ea61092940ca7a581c5f4dd9eaf90b2101e2075b36dc3fab25d5e70c0be560d"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-owned-crops.ts",
+      "sha256": "15e33d9a995339e37c14554ffb2a22fdd833d6bd964d7d6020ccbf9aa7e1d213"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "00468e8c699231d29928c7722fa2e5f58d0d7cec4d4c5c86b66194a8f81b7d5c"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "ec233d6a789a75d30bbeb6730c9ef5d90a6395baded1b384a47ec10a33761cb0"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "7fba84527b60b605f69cbf3791fc99477684b15ab3bea76d0511d27440aa12b1"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "05254fba05cb064d2529d66e1dc401b5c2a703f1d78c55ff4ca0ae8579d1846c"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "505cef77a935cf0876b1faa16c043bab45647b4cefb0146a6f308108f7b61db6"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "a620ec2245a46f7e39d19cfdf1435b33d71be6bc1df1f6846eae5c1f198a419e"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "f017e66df98eae3951d6286c53d56f2086ad5c7d15fb435339b0e2880fa02d37"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "4dd975aa59b91e46666fc2ba13192a1bc140c09dfb2aaf8b3cc98f4a94b5d556"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "891c856813ac36f3b1a76291bb241a870fa65c3b68436888fd6b869d54c17342"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "117b0de400455161397e704a1bdeca023e943c8ee3f78549dfb2590ba59fe9aa"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "39ffb3831317cb7d5fc2e60bbf67716683610cd39282d738c3eae02a24d1e5f9"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "da64462e46919ce460facb11927d7e66efb5c0484f2512f27053bdc9e82ededa"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/choice-continuation/README.md",
+      "sha256": "dfa6f2c5eed02f55f6cde86851149b9a50e61c344c4437d8670029cd6dd08210"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/choice-continuation/summary.json",
+      "sha256": "f680e66013a3ff89d0bc85220a1b1ea0b4251412e16c25b14755ba67c8b7deca"
+    }
+  ]
+}

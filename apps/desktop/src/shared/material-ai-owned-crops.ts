@@ -3,6 +3,7 @@ import {PAGE_LINE_BLOCKS_ENGINE} from './material-page-blocks';
 import type {PageBox} from './material-page-preview';
 
 export const MATERIAL_OWNED_CROP_GEOMETRY='owned-block-margins.v1' as const;
+export const CONTINUATION_BLOCK_PREFIX='next:' as const;
 export const MATERIAL_FIGURE_CROPS='layout-figures.v1' as const;
 const figureKinds=new Set(['image','chart','figure_title']);
 /** A mixed text/figure rectangle remains a source crop, never an independent diagram. */
@@ -21,9 +22,9 @@ export function sourceCropKind(page:PageBlocks,ids:string[],hasDiagram:boolean):
 }
 export function sourceCropKinds(page:PageBlocks,groups:string[][],continuation?:PageBlocks):SourceCropKind[]{
  const scopes=groups.map(ids=>{
-  const next=ids.length>0&&ids.every(id=>id.startsWith('next-'));
-  if(next&&!continuation)throw Error('source_changed');
-  return{page:next?continuation!:page,ids:next?ids.map(id=>id.slice(5)):ids};
+  const next=ids[0]?.startsWith(CONTINUATION_BLOCK_PREFIX)??false;
+  if(!ids.length||ids.some(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)!==next)||next&&!continuation)throw Error('source_changed');
+  return{page:next?continuation!:page,ids:next?ids.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length)):ids};
  });
  return scopes.map(scope=>sourceCropKind(scope.page,scope.ids,scopes.some(other=>other.page===scope.page&&isDiagramGroup(other.page,other.ids))));
 }

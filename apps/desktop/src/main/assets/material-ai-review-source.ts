@@ -1,3 +1,4 @@
+import {CONTINUATION_BLOCK_PREFIX} from '../../shared/material-ai-owned-crops';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {MATERIAL_PAGE_FRAGMENTS_RESPONSE} from '../../shared/material-ai-page-fragments';
 import type {AiPageResponse} from '../../shared/material-ai-page';
@@ -15,6 +16,6 @@ export function reviewPageCrop(number:string,first:AiPageResponse,review:AiPageR
   const ids=JSON.stringify(fragment.blockIds);if(owned!==undefined&&owned!==ids)return;owned=ids;
  }
  const crop=crops.find(c=>c.number===number);
- if(!crop?.fragments?.length||crop.failure||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith('next:')))!==owned)return;
+ if(!crop?.fragments?.length||crop.failure||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]).filter(id=>!id.startsWith(CONTINUATION_BLOCK_PREFIX)))!==owned)return;
  return crop;
 }

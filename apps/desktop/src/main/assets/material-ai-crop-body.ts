@@ -1,3 +1,4 @@
+import {CONTINUATION_BLOCK_PREFIX} from '../../shared/material-ai-owned-crops';
 import type {AiImageQuestion} from '../../shared/material-ai-image';
 import type {AiPagePrompt} from '../../shared/material-ai-page';
 import type {PageFragment} from './material-ai-page-fragments';
@@ -22,10 +23,10 @@ export function cropBodyComplete(question:AiImageQuestion,fragments:PageFragment
  let first=true,body='',markerKnown=false;
  const marker=new RegExp('^(?:'+question.number+'[.、．](?![0-9])[ \\t]*|第[ \\t]*'+question.number+'[ \\t]*题[:：]?[ \\t]*)');
  for(const fragment of fragments){
-  const ids=fragment.blockIds||[fragment.blockId],next=ids[0]?.startsWith('next:');
-  if(!ids.length||ids.some(id=>id.startsWith('next:')!==next))return false;
+  const ids=fragment.blockIds||[fragment.blockId],next=ids[0]?.startsWith(CONTINUATION_BLOCK_PREFIX);
+  if(!ids.length||ids.some(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)!==next))return false;
   const page=next?prompt.continuation:prompt;if(!page)return false;
-  const blocks=ids.map(id=>page.blocks.blocks.find(b=>b.id===(next?id.slice(5):id)));
+  const blocks=ids.map(id=>page.blocks.blocks.find(b=>b.id===(next?id.slice(CONTINUATION_BLOCK_PREFIX.length):id)));
   if(blocks.some(b=>!b))return false;
   if(question.requiresImage&&question.projection.figures.state==='provided'&&blocks.every(b=>['image','chart','figure_title'].includes(b!.kind)))continue;
   let text=fragment.quality.text;
