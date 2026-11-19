@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-19 Harness 终端退出后的教师确认
+
+修复及独立页面、SQLite 冷读、真实未确认输入反例均已验证。主线同时保留结构原题转写与检索。[专项进度](xiaozhi-harness/PROGRESS.md)
+
 ## 2026-11-19 Harness Phase7 检查点
 
 已实现工作台总览、持久审批、能力中心及现有工具准备续跑。早期 PowerShell 缓存投影反例修复后，实际后台 Electron 9/9。阶段总门禁、真实模型和打包继续沿 [执行主线](xiaozhi-harness/evidence/phase7/implementation-resume-20261119/MAINLINE.md)。

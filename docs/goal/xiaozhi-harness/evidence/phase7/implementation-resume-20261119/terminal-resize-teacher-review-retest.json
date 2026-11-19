@@ -149,7 +149,7 @@
       "path": "%TEMP%/terminal-resize-reconcile-Hjk8lc/REPORT.json",
       "sha256": "efe6c3a6ae92fde561de0dd9efd0b8154d6554653f714d0fc8896055132ce4f3"
     },
-    "command": "node --experimental-transform-types scripts/xiaozhi-agent/terminal-resize-reconcile-smoke.mjs <synthetic-fixture-directory> <expected-database-sha256>"
+    "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/terminal-resize-reconcile-smoke.mjs <synthetic-fixture-directory> <expected-database-sha256>"
   },
   "sourceParity": {
     "productionAndLockManifests": 1724,

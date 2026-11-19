@@ -37,6 +37,40 @@ await check('Forged document proof, changed source image or inconsistent archive
 await check('Teacher edits remove role evidence and return to the existing complete schema when the last web role is removed',()=>use(async f=>{await f.repo.propose(owner,await f.prepare(),signal);const q=await f.read(),edited=editedPageCropDocument(q.document,{...q,answer:'教师答案',analysis:'教师解析'});assert.equal(edited.schemaVersion,'xiaozhi.question-document.v2');assert.equal(edited.answer.origin,'teacher');assert.deepEqual(edited.blocks,q.document.blocks);}));
 await check('Teacher export includes web attribution and exact URL, while student export isolates all answers and provenance',()=>use(async f=>{await f.repo.propose(owner,await f.prepare(),signal);const q=await f.read(),paper={id:'xipaper_'+randomUUID(),title:'网页补答样卷',digest:sha('paper'),blueprint:{grade:q.grade,subject:q.subject,durationMinutes:45,sections:[{id:'s',label:'解答题'}]},totalPoints:10,selection:{items:[{sectionId:'s',number:1,points:10,question:q,source:{version:questionVersion(q)}}]}},teacher=JSON.stringify(compileRichPaperOffice(paper,'teacher')),student=JSON.stringify(compileRichPaperOffice(paper,'student'));assert(teacher.includes('网页原文摘取'));assert(teacher.includes('https://fixture.invalid/solution'));assert(!student.includes('x=3'));assert(!student.includes('fixture.invalid'));}));
 await check('Versioned FTS trigger migration retains every fact and indexes current web-document projections',()=>use(async f=>{await f.repo.propose(owner,await f.prepare(),signal);const before=JSON.stringify(f.db.prepare('SELECT * FROM question_bank_items').all());await ensureQuestionRetrievalIndex(f.host);for(const name of ['question_retrieval_ai_v1','question_retrieval_au_v1']){const old=f.db.prepare('SELECT sql FROM sqlite_master WHERE name=?').get(name).sql.replace('sqlite-trigram-projection.v3-web','sqlite-trigram-projection.v2-native');f.db.exec('DROP TRIGGER '+name);f.db.exec(old);}f.db.exec("UPDATE question_retrieval_fts_v1 SET analysis=''");await ensureQuestionRetrievalIndex(f.host);await ensureQuestionRetrievalIndex(f.host);assert.equal(JSON.stringify(f.db.prepare('SELECT * FROM question_bank_items').all()),before);const trigger=f.db.prepare("SELECT sql FROM sqlite_master WHERE name='question_retrieval_au_v1'").get().sql;assert(trigger.includes(QUESTION_DOCUMENT_WEB_SCHEMA));assert.equal(f.db.prepare("SELECT COUNT(*) n FROM question_retrieval_fts_v1 WHERE question_retrieval_fts_v1 MATCH '等式两'").get().n,1);}));
+function structuredArchive(q){
+ const {pageSource,ai,...base}=q.archive;
+ const reference={schemaVersion:'xiaozhi.document-structure.v1',resourceId:q.document.source.resourceId,
+  version:q.document.source.resourceVersion,generation:pageSource.generation,candidateId:'sq_'+'1'.repeat(40),sha256:sha('structure')};
+ const source={schemaVersion:'xiaozhi.material-source.v1',resourceId:reference.resourceId,version:reference.version,chunkId:'chunk_'+randomUUID(),
+  offset:0,bodyVersion:sha('source paragraph')};
+ return {...base,schemaVersion:'xiaozhi.question-archive.structure.v1',extractor:'layout-question.v1',
+  state:'teacher_edited',sourceChecked:true,sources:[source],structure:reference};
+}
+await check('Reviewed rule structures keep the structure reference through an exact web application and unwrap to the original evidence',()=>use(async f=>{
+ const input=await f.prepare(),c=await f.repo.propose(owner,input,signal,'structure-write');
+ assert.equal(c.state,'applied');const saved=await f.read();
+ assert.deepEqual(saved.archive.structure,f.q.archive.structure);
+ assert.equal(saved.archive.web.base,'numbered');assert(validQuestionArchive(saved.archive));
+ assert.deepEqual(await f.repo.validatedSourceDocument(saved),f.q.document);
+ assert(!validQuestionArchive({...saved.archive,sourceChecked:false}));
+ const withdrawn={...saved,archive:{...saved.archive,state:'teacher_edited',sourceChecked:false}};
+ assert(validQuestionArchive(withdrawn.archive));
+ assert.deepEqual(await f.repo.validatedSourceDocument(withdrawn),f.q.document);
+ const proof=await f.repo.verificationSnapshot(owner,'structure-write',c.id,c.afterVersion);
+ assert.equal(proof.version,c.afterVersion);
+},q=>{q.archive=structuredArchive(q);}));
+await check('Rich paper compilation preserves original structured option crops in labeled order',()=>use(async f=>{
+ const q=await f.read();
+ q.document.blocks.push({id:'graphic_choices',kind:'choices',anchors:q.document.blocks[0].anchors,
+  options:['A','B','C','D'].map(label=>({label,blocks:[{...q.document.blocks[0],id:'choice_image_'+label,assetId:'asset_'+randomUUID()}]}))});
+ assert(validQuestionDocument(q.document));
+ const paper={id:'xipaper_'+randomUUID(),title:'图形选项样卷',digest:sha('paper'),blueprint:{grade:q.grade,subject:q.subject,durationMinutes:45,sections:[{id:'s',label:'选择题'}]},totalPoints:10,
+  selection:{items:[{sectionId:'s',number:1,points:10,question:q,source:{version:questionVersion(q)}}]}};
+ const office=compileRichPaperOffice(paper,'student');
+ assert.deepEqual(office.sections.flatMap(s=>s.figures||[]).map(x=>x.blockId),
+  ['source_question_0','choice_image_A','choice_image_B','choice_image_C','choice_image_D']);
+ assert(office.sections.flatMap(s=>s.paragraphs).includes('选项 D'));
+},q=>{q.archive=structuredArchive(q);}));
 await check('A later independent answer book preserves a protected web answer, upgrades only the AI analysis and authenticates both source layers',async()=>{
  const f=bookFixture({currentAnswer:'',origin:'missing'});try{
   await f.init();const q=await f.read(),parent=f.proofs.get(f.batch).final.questions[0],image={assetId:'asset_'+randomUUID(),sha256:sha('crop'),mime:'image/png',width:100,height:100,page:4,box:[.1,.1,.9,.9],resourceId:f.pair.questionId,version:f.pair.questionVersion,engine:'pdf-page-v1'},quality={schemaVersion:'xiaozhi.material-ai-crop-quality.v1',engine:'controlled',text:parent.stem,clearEdges:[true,true,true,true]},fragment={blockId:'block-1',blockIds:['block-1'],image,quality};

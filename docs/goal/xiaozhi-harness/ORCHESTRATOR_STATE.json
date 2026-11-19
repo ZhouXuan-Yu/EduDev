@@ -3,8 +3,8 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "096b46b036fa3bc74e67ae7ba11d398f5abf02e5",
-  "headRole": "Latest tested base for the terminal resize candidate; resolve origin/main and the feature ref for current commits.",
+  "head": "8bf01a8d9bb7abca03ad7c13b45c5b9a559fbbe4",
+  "headRole": "Harness feature parent of the current integration. Fetch origin/main and the feature branch to resolve their current tips.",
   "mainObserved": "2982762f10ba66519bba84d767963adb4e2f30f2",
   "phase": 7,
   "phase0": "ACCEPTED",
@@ -37,7 +37,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Finish scoped integration on the current main: verify both modules in the exact build. Then close remaining Gate7 page states and independent physical-window check, finish QG-09 and the frozen-candidate Phase8.",
+  "next": "Finish Phase7 page focus cycles, approval popup and relevant states at both sizes, A2 real scope-change variants and physical window evidence. Then finish QG-09 and frozen-candidate Phase8.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -671,6 +671,10 @@
       "evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json",
       "evidence/phase8/windows-package-20261119/terminal-resize-packaged-startup.json"
     ],
-    "newPaidCalls": 0
+    "newPaidCalls": 0,
+    "integrationEvidence": "evidence/phase8/harness-terminal-resize-main-2982762.json",
+    "integratedBuildMainSha256": "dba6214cae38e999e06b0b6fad22439b3111eeaf8bcc0d72ca1715112e501e47",
+    "terminalResizeFeatureCommit": "8bf01a8d9bb7abca03ad7c13b45c5b9a559fbbe4",
+    "keyboardScoped": "PASS_SCOPED task overview Enter, two Tab steps, Escape focus restoration at both sizes; remaining popup/full focus cycle/native interaction pending."
   }
 }

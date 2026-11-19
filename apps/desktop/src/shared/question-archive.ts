@@ -16,13 +16,15 @@ const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Ar
 Object.assign(archiveIssueLabels,{uncertain_ocr:'OCR与原图存在疑点',cross_page:'题目跨页，等待完整配对',requires_image:'题面图表尚未完整归档',incomplete_question:'题面信息不完整',answer_conflict:'答案存在冲突',ai_mismatch:'两次AI整理不一致',ai_review:'AI未能完成整理'});
 export function validQuestionArchive(v:unknown):v is QuestionArchive{
  if(!obj(v))return false;
- if(v.schemaVersion===QUESTION_STRUCTURE_ARCHIVE_SCHEMA){
-  if(v.extractor!=='layout-question.v1'||!obj(v.structure))return false;
+ if(v.schemaVersion===QUESTION_STRUCTURE_ARCHIVE_SCHEMA||v.schemaVersion===QUESTION_WEB_ARCHIVE_SCHEMA&&v.structure!==undefined){
+  const web=v.schemaVersion===QUESTION_WEB_ARCHIVE_SCHEMA;
+  if((web?v.extractor!=='web-answer-enriched.v1'||v.state==='web_enriched'&&v.sourceChecked!==true||v.ai!==undefined||v.book!==undefined:
+    v.extractor!=='layout-question.v1')||!obj(v.structure))return false;
   const r=v.structure;
   if(!validStructureReference(r))return false;
-  if(v.structureReview!==undefined&&(!validStructureReviewReceipt(v.structureReview)||v.state!=='teacher_edited'))return false;
+  if(v.structureReview!==undefined&&(!validStructureReviewReceipt(v.structureReview)||v.state!=='teacher_edited'&&(!web||v.state!=='web_enriched')))return false;
   const {structure,structureReview,...base}=v;
-  return validQuestionArchive({...base,schemaVersion:QUESTION_ARCHIVE_SCHEMA,extractor:'numbered-text.v1'})&&Array.isArray(v.sources)&&v.sources.every(s=>s.resourceId===r.resourceId&&s.version===r.version);
+  return validQuestionArchive(web?base:{...base,schemaVersion:QUESTION_ARCHIVE_SCHEMA,extractor:'numbered-text.v1'})&&Array.isArray(v.sources)&&v.sources.every(s=>s.resourceId===r.resourceId&&s.version===r.version);
  }
  const bookArchive=v.schemaVersion===QUESTION_BOOK_ARCHIVE_SCHEMA,book=bookArchive||v.book!==undefined;
  const native=v.schemaVersion===QUESTION_NATIVE_ARCHIVE_SCHEMA,web=v.schemaVersion===QUESTION_WEB_ARCHIVE_SCHEMA,pageArchive=v.schemaVersion===QUESTION_PAGE_ARCHIVE_SCHEMA||bookArchive,page=pageArchive||web&&v.pageSource!==undefined,ai=native||pageArchive||v.schemaVersion===QUESTION_AI_ARCHIVE_SCHEMA||web&&v.ai!==undefined;

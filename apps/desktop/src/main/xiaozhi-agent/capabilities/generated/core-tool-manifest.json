@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "a29ffc22cffb9cf04cd9839ad422598def8a513f56ff53bc981990c589efa1cf",
+  "sourceHash": "061c2ae1f9bed38ae59389fbb55c623b5b5d746de2fcdcd9b0e8e2bae01ebb92",
   "sources": [
     {
       "file": "package-lock.json",
@@ -256,7 +256,7 @@
     },
     {
       "file": "src/main/education/paper-rich-export.ts",
-      "sha256": "cd836ea3ce424f2f7db2231c3f3a13ef8f60dcd9a3e2c38158ef940c6740debb"
+      "sha256": "3a924ede435c1abf17f6e75091a87283b1ce2cd4422e18c20774611c983e2df0"
     },
     {
       "file": "src/main/education/paper-selection.ts",
@@ -668,7 +668,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/core-governance.ts",
-      "sha256": "5e24b341b24734aba943dc3bd2031ad41631819b1dd29ed2d12a70ed6367cb8f"
+      "sha256": "3744d4d1d61d33a389c77651c0363702cf1232e1297680242849f3db3d66939c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/dispatcher.ts",
@@ -2084,7 +2084,7 @@
     },
     {
       "file": "src/shared/native-question.ts",
-      "sha256": "4e931e417b732fe3c2a69f7bf9802db5b52d695e24c05ff67556672f71292b93"
+      "sha256": "3077785f3fed5e141fbc6603a672e387f8e5d9db0c0f467ed779c58702ce98fe"
     },
     {
       "file": "src/shared/office-math.ts",
@@ -2196,7 +2196,7 @@
     },
     {
       "file": "src/shared/question-archive.ts",
-      "sha256": "1b1b76a5546f0e7287b072be2f34d709b7550e56dca5ac44c3463cd6a9ad8e94"
+      "sha256": "c71bab4f93e013d59016d223eff60c044e75ccf01dca6cd745dfbc45813e4d7f"
     },
     {
       "file": "src/shared/question-book-answer.ts",

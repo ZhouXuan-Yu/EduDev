@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 主线组合版本与接手入口
+
+由终端功能提交 `8bf01a8` 与 `2982762` 合并，唯一冲突是生成的核心能力清单。用最终组合源码重建 628 项清单，核对 1724 源码与包清单零差异。知识库网页专项首命令漏注册源码加载器，旧日志保留。补充 `--import ./scripts/office-agent/register-source.mjs` 后 14/14 和 12/12。完整桌面回归、隔离知识库原业务入口和两次独立页面测试均通过。[命令、证据和边界](evidence/phase8/harness-terminal-resize-main-2982762.json)
+
 ## 2026-11-19 终端关闭后的 resize 核对
 
 原确认 API 真实复现 not_ready。将 resize 的结算限定在可复核的关闭终端上，原 Effect CAS、文件核对以及真实输入阻断继续沿用。输入、EOF 仍可记录未知 ACK。页面点击和冷启动均保留教师确认，合成原任务和原文件字节未修改。[测试证据](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json)

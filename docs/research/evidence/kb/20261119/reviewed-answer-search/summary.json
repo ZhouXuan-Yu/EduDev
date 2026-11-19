@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence.v1",
+  "integratedBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",
+  "mainBundleSha256": "665d77eb775f748bf246d97eda0ccfa2768fa939d7aae71509e680c140725e2a",
+  "samples": [
+    {
+      "sha256": "c3f746077b7ecd0e19c23dee98072bbe45691b66d1a94b3d1b9324b3da98088f",
+      "question": "10",
+      "labels": [
+        "teacher_transcription",
+        "answer_enrichment",
+        "old_transcription_revoked"
+      ]
+    },
+    {
+      "sha256": "beec4f0618675159e91a559d54bb61cd369537299213ad2bdcb0a6ff824e00fc",
+      "question": "1",
+      "labels": [
+        "teacher_transcription",
+        "authorized_local_dom",
+        "web_answer_applied",
+        "ordinary_search",
+        "cold_readback"
+      ]
+    }
+  ],
+  "checks": {
+    "realDesktop": [
+      6,
+      6
+    ],
+    "structureRepository": [
+      39,
+      39
+    ],
+    "structuredWebDocuments": [
+      14,
+      14
+    ],
+    "legacyWebAnswer": [
+      12,
+      12
+    ],
+    "governance": [
+      12,
+      12
+    ],
+    "rendererComponents": [
+      253,
+      253
+    ],
+    "build": "pass",
+    "electronSmoke": [
+      207,
+      207
+    ]
+  },
+  "performance": {
+    "scope": "two SQLite transcription receipts, parsed and hashed",
+    "warmups": 50,
+    "measurements": 100,
+    "p50Ms": 0.0258,
+    "p95Ms": 0.0371
+  },
+  "controlledModelTransport": true,
+  "controlledLocalDom": true,
+  "cloudModelCalls": 0,
+  "audit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0
+  }
+}

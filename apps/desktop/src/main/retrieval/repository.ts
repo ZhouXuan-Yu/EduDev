@@ -23,7 +23,7 @@ import {readAiPageReceipt} from '../assets/material-ai-page-evidence';
 import {aiPageQuestionIssues} from '../assets/material-ai-page-publish';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]};
-type Host={validatePageQuestion?:(q:QuestionBankItem)=>Promise<void>;root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
+type Host={validateStructureQuestion?:(q:QuestionBankItem)=>Promise<void>;validatePageQuestion?:(q:QuestionBankItem)=>Promise<void>;root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   keywordCandidates?:(f:QuestionSearchFilters)=>Promise<{questions:SimilarQuestionMatch[];excludedRecords:number;candidateLimitReached:boolean}>;
@@ -195,6 +195,7 @@ export class RetrievalRepository{
         if(q.archive.state==='ai_final'){if(sourceReadingEnabled(proof.unit.pagePrompt)){if(!this.host.validatePageQuestion)return{fact:deleted};await this.host.validatePageQuestion(q);}else if(aiPageQuestionIssues(proof.first,proof.final,source,proof.imageSha,original).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k]))return{fact:deleted};}
       }catch{return{fact:deleted};}
     }
+    if(q.archive?.structure){try{if(!this.host.validateStructureQuestion)return{fact:deleted};await this.host.validateStructureQuestion(q);}catch{return{fact:deleted};}}
     if(q.document){const document=q.document,parent=(await this.host.all('SELECT content_hash,COALESCE(v.revision,0) source_revision FROM teacher_resources r LEFT JOIN retrieval_source_revisions v ON v.resource_id=r.id WHERE r.id=?',[document.source.resourceId]))[0];if(!parent||!remember(document.source.resourceId,Number(parent.source_revision))||parent.content_hash!==document.source.resourceVersion)return{fact:deleted};
       // A verified full original can remain usable after OCR failure. Privacy on any cited page cannot.
       const pages=new Set<number>([...document.answer.anchors,...document.analysis.anchors].map(a=>a.page));const visit=(blocks:QuestionBlock[])=>{for(const b of blocks){b.anchors.forEach(a=>pages.add(a.page));if(b.kind==='subquestion')visit(b.blocks);if(b.kind==='choices')b.options.forEach(o=>visit(o.blocks));}};visit(document.blocks);

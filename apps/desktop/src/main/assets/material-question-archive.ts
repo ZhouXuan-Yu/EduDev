@@ -14,6 +14,8 @@ import type {MaterialSource} from '../../shared/materials';
 import {QUESTION_STRUCTURE_ARCHIVE_SCHEMA} from '../../shared/question-archive';
 import {reviseStructureDocument,type MaterialStructureRepository} from './material-structure-repository';
 import {validStructureReviewInput,type StructureReviewInput} from '../../shared/material-structure-review';
+import type {QuestionContextEditInput} from '../../shared/question-context-edit';
+import type {QuestionContextSource} from '../../shared/question-context';
 import type {DocumentStructureReference} from '../../shared/material-document-structure';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
@@ -299,6 +301,31 @@ export class MaterialQuestionArchive{
   if(!question)throw Error('source_changed');
   await this.validate(question);
   return question;
+ }
+
+ async completeStructureContext(input:QuestionContextEditInput,current:()=>boolean,verify:(q:QuestionBankItem,signal:AbortSignal)=>Promise<void>,afterWrite?:(current:()=>boolean)=>Promise<void>):Promise<QuestionContextSource>{
+  const check=()=>{if(!current())throw Error('cancelled');};
+  const signal=new AbortController().signal;
+  return this.host.withWriter(async target=>{
+   check();
+   const structures=target.structures?.(),q=await target.host.read(input.questionId);
+   if(!structures||!q?.archive?.structure)throw Error('source_changed');
+   const retry=await structures.contextRequest(q.id,input.requestId);
+   if(retry){
+    if(JSON.stringify(retry.input)!==JSON.stringify(input)||questionVersion(q)!==retry.saved.version)throw Error('conflict');
+    await structures.validate(q,signal);await verify(q,signal);check();return retry.saved;
+   }
+   if(questionVersion(q)!==input.version)throw Error('source_changed');
+   const next=await structures.completeContext(q,input,signal);
+   await verify(q,signal);check();
+   const saved=await structures.recordContext(input,next,questionVersion(next));
+   await target.host.run('UPDATE question_bank_items SET stem=?,document_json=?,updated_at=? WHERE id=?',
+    [next.stem,JSON.stringify(next.document),next.updatedAt,next.id]);
+   await afterWrite?.(current);check();
+   const latest=await target.host.read(next.id);
+   if(!latest||questionVersion(latest)!==saved.version)throw Error('source_changed');
+   await structures.validate(latest,signal);check();return saved;
+  });
  }
 
  async validate(q:QuestionBankItem,requireComplete=false,teacherEdit=false){

@@ -1,5 +1,11 @@
 # 小智能力与复用矩阵
 
+## 2026-11-19 知识库已核对题面与补答
+
+批量导入的结构题复用题本的完整题面校对、正式小智补答检索和网页证据。原题图、结构回执和来源版本一致后才能提供完整上下文。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 同任务已授权的 HTTP MCP 能通过 Pi 动态工具发现后调用，系统保留来源、Schema 和原回执。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。

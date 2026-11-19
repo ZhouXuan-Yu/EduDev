@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-19 Harness 终端退出后的教师确认
+
+原生产 Host、Pi 和 typed preload 保持原有任务确认入口，终端关闭证明沿 SQLite Effect 记录。没有新增下载、页面协议、依赖或数据迁移。
+
+## 2026-11-19 知识库已核对题面与补答
+
+结构题接收原有完整校对 IPC，补答复用 Pi、浏览器 Readability 和已有授权机制。网页不接收原图或整库。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 知识库结构 v5 图形选项
 
 默认导入复用 PP-DocLayoutV3、RapidOCR 与已有末题判断。原图读取沿用既有图库 IPC 和文档校验。

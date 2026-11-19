@@ -1,5 +1,15 @@
 # 当前状态与恢复入口
 
+## 2026-11-19 Harness 终端退出后的教师确认
+
+同一任务在旧终端提交并退出后可以完成教师确认。下一步继续 Gate7 两尺寸、键盘和权限变化实页，固定矩阵 88/89。[Harness 进度](xiaozhi-harness/PROGRESS.md)
+
+## 2026-11-19 知识库已核对题面与补答
+
+本轮接通结构题完整转写和补答检索。继续完善结构原题对应的答案册证据以及独立检索量化。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 小智已修复授权后 HTTP MCP 首次调用。当前分支继续 W3、终端授权恢复与完整页面验收。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。

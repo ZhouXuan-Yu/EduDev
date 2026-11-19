@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "1deca7dcc5abd109805af5c529aa65872e319162b27047a2cc63a2bedd76d99a"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "dfe8d530edf113ba0e4965b12da57a8f9cb9125895efff0a49d8fcee8c74a308"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "b2285c3b1421252656a006411f203501c4023d20f42591c64aaf34f3da7889d6"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "1fc677f790371b3bf8cdde03adf40c0a27797b815ee9092f416984dbab565886"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-reviewed-answer-journey.mjs",
+      "sha256": "8ff7aef67ca7491741ca0c9fd9c8dd1ef69590e3c772d903a9dda64b79a12090"
+    },
+    {
+      "path": "apps/desktop/scripts/education/question-web-document-boundaries.mjs",
+      "sha256": "30df59f0bf098088335b43d7276f89a06bdedbfc5112dade3ebcf037fd61b828"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+      "sha256": "73c08d0de1e451b09c5e45f293b6e4986a730a7258ea1b97bc55d77e80b5c9c5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "78d7ef03e0819263c5e7fd12dec8c10b54398bbe6cf1aa5bd1e31f7e14539700"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "bd84ae4ff3f4d43ff9b98c6ed9dad8d640e71fa5c64bf732a925fb5999dfb1e7"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-runtime.ts",
+      "sha256": "957742300a55606f1f511fccab35d44a9e530de14db1df4428e0a791161b80ee"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "d258781d8cc20921a0ceddb1366a021d0c0863504572b5f683dfc65a51adf1f7"
+    },
+    {
+      "path": "apps/desktop/src/main/education/original-question-repository.ts",
+      "sha256": "90973c086687f448b47e27f884c378a137cb3f7598e3e1e9a10191e0d208d41b"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-rich-export.ts",
+      "sha256": "e7a764ad16b9d7c76e71f8740d959813d609522ac0b018c76fff93fcd37d2390"
+    },
+    {
+      "path": "apps/desktop/src/main/education/question-web-answer-repository.ts",
+      "sha256": "d2d9a03a3a750911e8d9fbcc76927970a1e0f157f72995a57c2d7e00452dbaa1"
+    },
+    {
+      "path": "apps/desktop/src/main/retrieval/repository.ts",
+      "sha256": "4aeab3283d3df9a57a13113649ff3e792f0b67ab5658fe6ee2a5fc41f18c31b4"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+      "sha256": "a004ac40e3279399462ba388f04275d987024d8460ca56145830904cb2b8d080"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "ef4a8e9e0eda9a98d160366f3b17b8b2bcee27dabb0591f1435a8384d295e8fb"
+    },
+    {
+      "path": "apps/desktop/src/shared/native-question.ts",
+      "sha256": "3761bbe9ffae683741a0d004266ccc9835eccf2bb828b17eb189be8c55cc7339"
+    },
+    {
+      "path": "apps/desktop/src/shared/question-archive.ts",
+      "sha256": "8d145141b373359339fa41bdaad6153e905e5226a6006785441ca524ecfb311b"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "983c334aa409c76d39bce4a73335742159e1c3602fcc9f9b807dcb2fe8286952"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "330041cc2b273d3bc4ac9ee78b73023b1f77393b297aa98c8f1cab0b6e8ee788"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "ada7d5085ff257485a659e78cee7eae2a12f74f1cb5c9cbbacc04f664c90ec7e"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "028a837537f0c2c551bc00d1afd54515ab2426e9a6ed419c27bc89096c87d3ce"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "79b909ad944d38be286c57fff62f920123faf0cbc15291e1a7805d687017b13b"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "e49a0be6a7e95eb162f9833c67446cc146e3e7fabfedd3fbf0238cb87e01274c"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "623ce82f766425e562aa3b852eb932435004d00a17a272ffeb482bbe807e9474"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "fe45852e7495b0b620ad7d3a850952223b7803373f315e197cf2259361d1e5c7"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "e4f6b1fb94a6b7aed0e00cadf32c00240975f89f7746ce1897e0ea451b72523d"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "19e89a4e0344d1e242a94510444d2e2b69f4980544304c924627fdaf6a60844c"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "c180270800c2c7e34f9159c2d2a8aa06f718b15edb72900f60a354af9b041b04"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "0676a0f582bab35840a1464da2ad98a86cbe542d2cf5d41debb8b578fc97aae7"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/reviewed-answer-search/README.md",
+      "sha256": "c90556abfadd5443a7596759f9db230e3f24a6c52c5f56cf03ee237c5e75a290"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/reviewed-answer-search/summary.json",
+      "sha256": "44ea19317aea05e6c22528668c6bd5722ccd9cba41f1f0af12196309627d5ccd"
+    }
+  ]
+}

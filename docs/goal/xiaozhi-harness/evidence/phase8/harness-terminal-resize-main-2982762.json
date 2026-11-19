@@ -1,0 +1,179 @@
+{
+  "status": "PASS_SCOPED_INTEGRATION",
+  "sourceParents": {
+    "harness": "8bf01a8d9bb7abca03ad7c13b45c5b9a559fbbe4",
+    "knowledgeBase": "2982762f10ba66519bba84d767963adb4e2f30f2"
+  },
+  "mainSha256": "dba6214cae38e999e06b0b6fad22439b3111eeaf8bcc0d72ca1715112e501e47",
+  "manifestSha256": "f555855f5bad5b2cb64b705b9e3f4a6c3f1c85c2386487d9111143e138fe9136",
+  "coreToolSourceHash": "061c2ae1f9bed38ae59389fbb55c623b5b5d746de2fcdcd9b0e8e2bae01ebb92",
+  "sourceParity": {
+    "sourceAndLockFiles": 1724,
+    "unmatched": 0
+  },
+  "build": {
+    "command": "npm run build -- --outDir test-results/harness-terminal-resize-main-2982762/out",
+    "report": {
+      "path": "%TEMP%/harness-resize-integration-2982762-build.log",
+      "sha256": "8617e61fe41e227681917716f0958fd21807b6f6b387d8d8296d003aca275bbc"
+    }
+  },
+  "desktopSmoke": {
+    "state": "PASS",
+    "passed": 207,
+    "total": 207,
+    "report": {
+      "path": "%TEMP%/harness-resize-integration-2982762-smoke.log",
+      "sha256": "f51ab7b7c5a49f799b939b414ec8cb69e2a32a99ee710d02b2269f15d8c0d026"
+    },
+    "scope": "The two candidate smoke commands used separate profiles and data roots. They reused one screenshot output directory, so those shared image files are not used as build-specific acceptance evidence."
+  },
+  "rendererComponents": {
+    "passed": 253,
+    "total": 253,
+    "report": {
+      "path": "%TEMP%/harness-resize-integration-2982762-renderer.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  },
+  "knowledgeBase": {
+    "passed": 6,
+    "total": 6,
+    "report": {
+      "path": "%TEMP%/edu-main-harness-87-c77734b2/apps/desktop/test-results/reviewed-answer-ui-W3Iaiz/summary.json",
+      "sha256": "811c5e3a6b5c85f8b45e8444251ea353fe0688e9fa05626b8a53d45736be9748"
+    },
+    "contracts": {
+      "governance": {
+        "passed": 12,
+        "total": 12,
+        "report": {
+          "path": "%TEMP%/harness-resize-main-contracts-be0d87/phase5-governance-smoke.log",
+          "sha256": "c9e0dc2ff7fdcd00d1a5a2df1b8f90e893dcb66eb54d932a1692fe43302d9a8a"
+        }
+      },
+      "structureRepository": {
+        "passed": 39,
+        "total": 39,
+        "report": {
+          "path": "%TEMP%/harness-resize-main-contracts-be0d87/document-structure-repository.log",
+          "sha256": "f2538de3f9110f20fb752ddc1a300dd4fd44fef51d4c52ad1ff4b68889bbf13f"
+        }
+      },
+      "structuredWebDocuments": {
+        "passed": 14,
+        "total": 14,
+        "report": {
+          "path": "%TEMP%/harness-resize-main-contracts-be0d87/question-web-document-boundaries-registered.log",
+          "sha256": "688f1bf96721817fb4ef32de9101b602cedceb402c11a07615679edd03c2a151"
+        }
+      },
+      "legacyWebAnswer": {
+        "passed": 12,
+        "total": 12,
+        "report": {
+          "path": "%TEMP%/harness-resize-main-contracts-be0d87/question-web-answer-boundaries-registered.log",
+          "sha256": "674389fb7ca20a0f4b9941981dea579a448e56f8f158a9aa49e664d497bf968d"
+        }
+      }
+    },
+    "scope": "Two authentic local sources through teacher transcription, governed missing-answer read, authorized DOM, normal search and cold readback, with controlled model transport."
+  },
+  "terminal": {
+    "rootTypedReview": {
+      "path": "%TEMP%/teacher-resize-green-wka1Ek/report.json",
+      "sha256": "823276112a2b1c8eca94ca21177ef96e21815f6edbf7b9465c038a1f865ca5fb"
+    },
+    "independentUI": {
+      "path": "%TEMP%/w3combined-59bdb0ac/fixed-review-report.json",
+      "sha256": "b0e5b9193a92143da559bc87fdff11ce61b133907f6c020235867f042261d4ca"
+    },
+    "independentCold": {
+      "path": "%TEMP%/w3combined-59bdb0ac/fixed-cold-report.json",
+      "sha256": "a247d29a9d1e1c5cc1c9950250e682b37a99385ebe199550c4cc847618f5b9f0"
+    },
+    "sqliteProof": {
+      "passed": 10,
+      "report": {
+        "path": "%TEMP%/terminal-resize-reconcile-w4Uere/REPORT.json",
+        "sha256": "2f5e3a25c84d897d920bc04a918f68e04474ee5ff0ed22cbda3e27f61be141e1"
+      }
+    },
+    "realPtyRecovery": {
+      "passed": 4,
+      "report": {
+        "path": "%TEMP%/xiaozhi-phase6-job-recovery-qSBCzR/report.json",
+        "sha256": "01ea321a2bfd88005a8e6a07659f6a54c650c809c14f5176c43d94a369bbb529"
+      }
+    },
+    "scope": "Real teacher click completed the original review from an isolated copy; cold SQLite preserved both input ACKs and the unrelated unknown plan. The physical missing-ACK case still denied teacher review."
+  },
+  "keyboard": {
+    "report": {
+      "path": "%TEMP%/w3keyboard-ae14ddf6/keyboard-report.json",
+      "sha256": "05e9760407efea18fde9576098e0c73d85e772cc1df0c340235db468c6ef7b38"
+    },
+    "script": {
+      "path": "%TEMP%/w3keyboard-ae14ddf6/keyboard.mjs",
+      "sha256": "73e2c11230e26d99796d4414cb0aa78e98d3201bbe2cd69ddd9889fc0c8c96a4"
+    },
+    "setupFailure": {
+      "path": "%TEMP%/w3keyboard-ae14ddf6/keyboard-setup-failure.json",
+      "sha256": "cbddd70da969410eb0c382656fd3c0d99ea1da763280a98a15a1b561f9cbf71b"
+    },
+    "viewports": [
+      [
+        1366,
+        768
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "scope": "Enter opens task overview, Tab reaches close and overview category, Escape closes and returns focus to the trigger. No mutation. Full focus cycle, approval popup and native desktop control are outstanding."
+  },
+  "package": {
+    "identity": {
+      "fileCount": 481,
+      "outSha256": "85cec74724cdb6f7144ef1b566b4234569f79017f3d10062fca01568784244b8",
+      "mainSha256": "dba6214cae38e999e06b0b6fad22439b3111eeaf8bcc0d72ca1715112e501e47",
+      "exeSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481"
+    },
+    "report": {
+      "path": "%TEMP%/edu-harness-resize-main-2982762-91e017d8/startup-4dyKCH/report.json",
+      "sha256": "7562ae4f515bed6ac6905aec3d40024c44407df0f5604d515fa805d453ceb2ef"
+    },
+    "buildLog": {
+      "path": "%TEMP%/edu-harness-resize-main-2982762-91e017d8/electron-builder.log",
+      "sha256": "2437b75e6bd332d5350a184d5110fbb4a7f27aed7c0163d81f2c88f8d4238d81"
+    },
+    "verifiedResources": [
+      "page-blocks",
+      "ocr",
+      "education",
+      "retrieval",
+      "reranker"
+    ],
+    "viewportChecks": [
+      {
+        "width": 1366,
+        "height": 768,
+        "promptVisible": true
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "promptVisible": true
+      }
+    ],
+    "cleanInstallation": "NOT_RUN"
+  },
+  "paidCallsThisCheckpoint": 0,
+  "historicalPaidCalls": 3,
+  "pending": [
+    "Full Gate7, including final page states and native window interaction",
+    "QG-09 clean install, shortcut and uninstall",
+    "Formal frozen-candidate ABBA and independent final Gate"
+  ]
+}

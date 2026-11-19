@@ -1,5 +1,15 @@
 # 当前架构
 
+## 2026-11-19 Harness 终端退出后的教师确认
+
+原 Task 完成预检对已完成且已清理和提交的 Job 保留终态证明。独立读回确认目标与文件后，旧 resize 沿原 Effect CAS 核对，输入、EOF、关闭与文件沿各自证据。[Harness 专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
+## 2026-11-19 知识库已核对题面与补答
+
+结构原题完整文字是文档 v2 及独立投影回执，仍由同一 SQLite 和原件文件鉴真。网页派生角色单独保留证据链。
+
+详见 [本轮记录](../research/evidence/kb/20261119/reviewed-answer-search/README.md)。
+
 ## 2026-11-19 Harness 外部工具恢复
 
 HTTP MCP 的持久执行点在有效授权、来源和参数验证之后，真实传输之前。执行后失败与停机继续按不确定效果恢复。 [Harness 专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)。
