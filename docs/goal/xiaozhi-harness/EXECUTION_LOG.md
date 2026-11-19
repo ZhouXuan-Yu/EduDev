@@ -8,6 +8,8 @@
 
 HTTP MCP 的真实 Host 首个授权工具调用原先在出站前被 stdio 路径投影误拒。修复仅限制输入投影的适用传输，原网络、Egress、MCP、隐私和 Schema 检查继续生效。定向回归 `node scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs` 两次各 11/11，独立真实 Host 已核授权合同与外部计数。构建 481 产物，目录指纹 `f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb`。Provider 级撤销后特定 Pi 旧回调的 Run 终态仍失败，保留记录待定向修复。
 
+Provider 撤销误停已定向修复。真实 Host 独立 2/2、冷读 2/2。受信准入错误与真实持久错误沿原行为分开处理，只有原 Tool 未被调用且边界确认拒绝时记录未派发。`node scripts/xiaozhi-agent/governance-admission-boundaries.mjs` 9/9，`node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs` 23/23，组件 253/253。构建 481 个产物，SHA-256 `42fb9495c378831618f98299268d22fb8e19d2340158c7bf9ad9f2cf5b1446a0`。
+
 ## 2026-11-19 主线交接与专项分支检查点
 
 远端 `main` 已包含小智合并 `83034fe`，随后推进到知识库修复 `c071266`。本次代码与证据进入 `codex/xiaozhi-harness-20261112`。本地日常目录保留其他协作者的六处工作文件。

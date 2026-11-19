@@ -10,6 +10,8 @@ UI-09 已实现。Terra 在冻结构建操作真实后台 Electron，核对“�
 
 HTTP MCP 的真实 Host 已证明调用前持久化同 Task、Provider、三个 Grant 合同。精确 Grant 撤销后旧回调和 Pi 重调均未增加外部调用。整个 Provider 撤销后旧回调同样没有外部请求，Pi 重调触发 Run 级 event_persistence，保留失败。managed MCP 和 Extension 还需原流程证据，A-P0-02/07 不提升。[真实 Host 复测](evidence/phase8/http-mcp-projection-20261119/FINAL_FINDINGS.md)。
 
+针对整轮误停的修复已有独立复验 2/2。Grant 和 Provider 两支均先完成真实 HTTP 调用，撤销后外部调用维持 1 次，同 Task 跑通替代读取。Provider 拒绝写入明确未派发，旧 Grant 分支仍按原不确定效果标记，冷读一致。实际 SQLite 合同更新及尝试写入失败仍停止执行，未派发标记不能覆盖已知或不确定效果。A-P0-02/07 完整系统范围继续复验。[独立复验](evidence/phase8/http-mcp-projection-20261119/provider-revocation/FINAL_VERDICT.json)。
+
 ## 2026-11-19 真实模型连接预检
 
 使用合成题完成 Q1 A/B 预检。旧版首轮在响应完成后被采集器判定流式读回失败，原失败保留。采集器增加了对 SSE 完结帧的记录，随后同批旧版和新版均完成实际 HTTP 请求、Run 归属核对和 SQLite 冷读回。协议专项 10/10。累计 3/200，197 次可用，未决闸门记录 0。正式 ABBA 盲评、联网时延和任务质量仍待验收。固定矩阵仍为 70/89 阶段范围通过。[预检证据](evidence/phase8/connection-preflight-20261119.json)。

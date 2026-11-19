@@ -126,7 +126,7 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
     const timing=()=>({...teacherWaitMs > 0 ? {teacherWaitMs: Math.round(teacherWaitMs)} : {},...safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{},...executionStartedAt===undefined?{}:{executionMs:executionMs??Math.max(0,Math.round(performance.now()-executionStartedAt))}});
     let result:Result|undefined,code:ToolExecutionCode|undefined;
     const retryId=n===1?callId:`readretry_${createHash('sha256').update(`${epoch}:${callId}:${n}`).digest('hex')}`;
-    let preparing=true,preparationError:unknown;
+    let preparing=true,preparationError:unknown,executionError:unknown;
     const underlying:ToolDefinition['execute']=async(id,values,workSignal,progress,ctx)=>{
      try{
       current(workSignal!);
@@ -162,12 +162,17 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
      result=await executeWithToolBound(underlying,def.name,timeoutMs,retryId,input as Record<string,unknown>,active.signal,onUpdate?update=>{if(options.current(epoch))onUpdate(update);}:undefined,{context,waiting:options.waiting,onWaiting:options.onWaiting,onActualSettled:release});
      if(!options.current(epoch)||active.signal.aborted)code='cancelled';
      else if(!validBoundedToolResult(result))code='invalid_output';else code=resultCode(result);
-    }catch(error){code=toolExecutionCode(error);}
+    }catch(error){executionError=error;code=toolExecutionCode(error);}
     // This intrinsic tool only prepares local image bytes. Upload happens later
     // in the provider stream and is tracked by its separate delivery receipt.
     const effect=code&&invoked&&manifest.effect!=='safe_read'&&def.name!=='office_view_public_image'?'unknown':'none';
+    const admissionError=preparationError??executionError;
+    if(code==='task_blocked'&&!invoked&&taskAdmissionFailure(admissionError)){
+     const state:XiaozhiToolAttempt={...summary(n,'failed',code,'none',timing()),delivery:'not_delivered'},result=failed(code,state);
+     await persistAttempt(state);
+     return{...result,content:[...result.content,{type:'text' as const,text:JSON.stringify({success:false,scope:'task_admission',reason:admissionError.reason,delivery:'not_delivered'})}],details:{success:false,error:{code,retryable:false},taskReason:admissionError.reason,execution:state}};
+    }
     if(preparing&&code){
-     if(code==='task_blocked'&&taskAdmissionFailure(preparationError)){const state=summary(n,'failed',code,'none',timing()),result=failed(code,state);await persistAttempt(state);return{...result,content:[...result.content,{type:'text' as const,text:JSON.stringify({success:false,scope:'task_admission',reason:preparationError.reason,delivery:'not_delivered'})}],details:{success:false,error:{code,retryable:false},taskReason:preparationError.reason,execution:state}};}
      // The work signal was aborted by the race. The outstanding preparation
      // retains its lock until it really settles and is fenced before dispatch.
      if(code==='cancelled')return failed(code,summary(n,'failed',code,'none',timing()));

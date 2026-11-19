@@ -1,0 +1,134 @@
+[
+  {
+    "observedAt": "2026-11-19T09:34:12.762Z",
+    "when": "Before original fixture state.calls++",
+    "callsBefore": 0,
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "lookup_lesson",
+        "arguments": {
+          "topic": "public-normal-grant"
+        }
+      }
+    },
+    "row": {
+      "run_id": "run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b",
+      "generation": 1,
+      "call_id": "call_ff1ab0a664454a74813b153eb9ed9ed3",
+      "tool": "mcp_89920979e88fdb5046f14b73_lookup_lesson",
+      "phase": "admitted",
+      "contract_json": "{\"schemaVersion\":1,\"capabilityId\":\"mcp.tool.t_89920979e88fdb5046f14b73.invoke\",\"providerId\":\"mcp.tool.t_89920979e88fdb5046f14b73\",\"providerVersion\":\"1.0.0+13870913524cd99a\",\"providerHash\":\"13870913524cd99a7e9faa19a842e42146f1ea19b268c6665030fb1efb2a9736\",\"schemaHash\":\"8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5\",\"sourceHash\":\"77e9130ab785321857176e0b78054ffaf2947bfdedd719c0e8ca873ca63ad32e\",\"contractVersion\":\"1.0.0\",\"snapshotId\":\"xicap_e2a757c6-e4cd-44c5-b141-7ab561e211af\",\"registryRevision\":86,\"taskId\":\"xitask_e9a6927d36f2379293249e42a988e0acf7f79b37bab89c5247f80162b617c354\",\"stepId\":null,\"planRevision\":0,\"requirementsVersion\":1,\"target\":null,\"inputDigest\":\"e6aa4b02291ff9dd6efcffaa62a7ecaa9e6675886e37eb5fa5264fa56fdae6f7\",\"effect\":\"external_effect\",\"scopePolicy\":\"mcp_tool_request\",\"classification\":\"teacher_private\",\"grantRefs\":[{\"grantId\":\"xigrant_d3153b7a-a59f-472b-a568-442dff3c0df2\",\"revision\":1},{\"grantId\":\"xigrant_62ace6fe-f1cb-4bc5-a239-b779d92ef06e\",\"revision\":1},{\"grantId\":\"xigrant_f54e775d-80d3-4807-9876-e1fee092522b\",\"revision\":1}],\"authorityRefs\":[\"permission-request:76751fce34d4a919b823d07b3d1efa426d9cb21ab3a79c1066bda3f922860e99\"]}"
+    },
+    "contract": {
+      "schemaVersion": 1,
+      "capabilityId": "mcp.tool.t_89920979e88fdb5046f14b73.invoke",
+      "providerId": "mcp.tool.t_89920979e88fdb5046f14b73",
+      "providerVersion": "1.0.0+13870913524cd99a",
+      "providerHash": "13870913524cd99a7e9faa19a842e42146f1ea19b268c6665030fb1efb2a9736",
+      "schemaHash": "8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5",
+      "sourceHash": "77e9130ab785321857176e0b78054ffaf2947bfdedd719c0e8ca873ca63ad32e",
+      "contractVersion": "1.0.0",
+      "snapshotId": "xicap_e2a757c6-e4cd-44c5-b141-7ab561e211af",
+      "registryRevision": 86,
+      "taskId": "xitask_e9a6927d36f2379293249e42a988e0acf7f79b37bab89c5247f80162b617c354",
+      "stepId": null,
+      "planRevision": 0,
+      "requirementsVersion": 1,
+      "target": null,
+      "inputDigest": "e6aa4b02291ff9dd6efcffaa62a7ecaa9e6675886e37eb5fa5264fa56fdae6f7",
+      "effect": "external_effect",
+      "scopePolicy": "mcp_tool_request",
+      "classification": "teacher_private",
+      "grantRefs": [
+        {
+          "grantId": "xigrant_d3153b7a-a59f-472b-a568-442dff3c0df2",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_62ace6fe-f1cb-4bc5-a239-b779d92ef06e",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_f54e775d-80d3-4807-9876-e1fee092522b",
+          "revision": 1
+        }
+      ],
+      "authorityRefs": [
+        "permission-request:76751fce34d4a919b823d07b3d1efa426d9cb21ab3a79c1066bda3f922860e99"
+      ]
+    },
+    "owner": {
+      "run_id": "run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b",
+      "generation": 1
+    }
+  },
+  {
+    "observedAt": "2026-11-19T09:34:18.993Z",
+    "when": "Before original fixture state.calls++",
+    "callsBefore": 0,
+    "request": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "lookup_lesson",
+        "arguments": {
+          "topic": "public-normal-provider"
+        }
+      }
+    },
+    "row": {
+      "run_id": "run_733001b3-69a2-4538-b71e-fb3a3efd0bac",
+      "generation": 1,
+      "call_id": "call_c8dee004618b43cb8ae9e443830cf3b4",
+      "tool": "mcp_36c8c62b268c138bc1e19bda_lookup_lesson",
+      "phase": "admitted",
+      "contract_json": "{\"schemaVersion\":1,\"capabilityId\":\"mcp.tool.t_36c8c62b268c138bc1e19bda.invoke\",\"providerId\":\"mcp.tool.t_36c8c62b268c138bc1e19bda\",\"providerVersion\":\"1.0.0+b1162e33ac579974\",\"providerHash\":\"b1162e33ac57997440e0b1340db8e889c567f1d4ab3c760c7b9f962d4cad74be\",\"schemaHash\":\"8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5\",\"sourceHash\":\"05d06861c408cdcf973004048a63857c9266258dd4693985c5615838ba2dbb65\",\"contractVersion\":\"1.0.0\",\"snapshotId\":\"xicap_ba7cec22-5b08-410c-84a2-40d0ae2e666c\",\"registryRevision\":87,\"taskId\":\"xitask_6ce698cf8e07863e2c8778a6618ac770f1809d94399513e5c5cb7e9b8093dd4e\",\"stepId\":null,\"planRevision\":0,\"requirementsVersion\":1,\"target\":null,\"inputDigest\":\"d7f9b28cf7b2948b0651ad91ca3f98f6ad838de4567e2950eb1c0562b45adedd\",\"effect\":\"external_effect\",\"scopePolicy\":\"mcp_tool_request\",\"classification\":\"teacher_private\",\"grantRefs\":[{\"grantId\":\"xigrant_b5478278-f477-4359-91eb-609269d1c2aa\",\"revision\":1},{\"grantId\":\"xigrant_09c47518-4ee9-49a7-8662-e8c28d7120da\",\"revision\":1},{\"grantId\":\"xigrant_472de57b-314d-42db-bac4-81f1e21e76fc\",\"revision\":1}],\"authorityRefs\":[\"permission-request:080afb4002c62c3472178d05e8d77f3c5f9a8c309ca3385526f4b0510cc0a72e\"]}"
+    },
+    "contract": {
+      "schemaVersion": 1,
+      "capabilityId": "mcp.tool.t_36c8c62b268c138bc1e19bda.invoke",
+      "providerId": "mcp.tool.t_36c8c62b268c138bc1e19bda",
+      "providerVersion": "1.0.0+b1162e33ac579974",
+      "providerHash": "b1162e33ac57997440e0b1340db8e889c567f1d4ab3c760c7b9f962d4cad74be",
+      "schemaHash": "8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5",
+      "sourceHash": "05d06861c408cdcf973004048a63857c9266258dd4693985c5615838ba2dbb65",
+      "contractVersion": "1.0.0",
+      "snapshotId": "xicap_ba7cec22-5b08-410c-84a2-40d0ae2e666c",
+      "registryRevision": 87,
+      "taskId": "xitask_6ce698cf8e07863e2c8778a6618ac770f1809d94399513e5c5cb7e9b8093dd4e",
+      "stepId": null,
+      "planRevision": 0,
+      "requirementsVersion": 1,
+      "target": null,
+      "inputDigest": "d7f9b28cf7b2948b0651ad91ca3f98f6ad838de4567e2950eb1c0562b45adedd",
+      "effect": "external_effect",
+      "scopePolicy": "mcp_tool_request",
+      "classification": "teacher_private",
+      "grantRefs": [
+        {
+          "grantId": "xigrant_b5478278-f477-4359-91eb-609269d1c2aa",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_09c47518-4ee9-49a7-8662-e8c28d7120da",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_472de57b-314d-42db-bac4-81f1e21e76fc",
+          "revision": 1
+        }
+      ],
+      "authorityRefs": [
+        "permission-request:080afb4002c62c3472178d05e8d77f3c5f9a8c309ca3385526f4b0510cc0a72e"
+      ]
+    },
+    "owner": {
+      "run_id": "run_733001b3-69a2-4538-b71e-fb3a3efd0bac",
+      "generation": 1
+    }
+  }
+]

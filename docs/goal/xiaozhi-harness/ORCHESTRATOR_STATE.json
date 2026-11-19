@@ -514,9 +514,10 @@
     "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
   },
   "phase8HttpMcp": {
-    "status": "HTTP_PROJECTION_FIXED_GRANT_REVOCATION_PASS_PROVIDER_REDISPATCH_FAIL",
+    "status": "HTTP_PROJECTION_AND_PROVIDER_REDISPATCH_FIXED_SCOPED",
     "evidence": "evidence/phase8/http-mcp-projection-20261119/FINAL_FINDINGS.md",
-    "buildFingerprint": "f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb",
+    "providerRetest": "evidence/phase8/http-mcp-projection-20261119/provider-revocation/FINAL_VERDICT.json",
+    "buildFingerprint": "42fb9495c378831618f98299268d22fb8e19d2340158c7bf9ad9f2cf5b1446a0",
     "paidCalls": 0
   },
   "phase8WindowsPackage": {

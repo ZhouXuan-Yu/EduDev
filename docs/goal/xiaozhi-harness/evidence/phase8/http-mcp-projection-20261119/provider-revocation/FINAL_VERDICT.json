@@ -1,0 +1,173 @@
+{
+  "success": true,
+  "scope": "HTTP dynamic MCP only",
+  "originalRed": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-provider-trace-2ca8ee49b0",
+  "current": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-revoke-retest-98a6a26c7b",
+  "paidCalls": 0,
+  "productionEditsByReviewer": [],
+  "parity": {
+    "oldRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-provider-trace-2ca8ee49b0",
+    "currentRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-revoke-retest-98a6a26c7b",
+    "oldSourceCount": 781,
+    "currentSourceCount": 781,
+    "changed": [
+      {
+        "file": "src/main/xiaozhi-agent/capabilities/core-governance.ts",
+        "before": "7126ea50a55cf283eb0b14f27c340a5da99e862a74058865502bd25c1f7a9513",
+        "after": "ee64a5b9bc9008725e6b0a7f8c0ba20dd165fbf3dac8c29d30e93be3641c19a0"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "before": "175e417728fc8c735c8e4ff951c06e334a0ccf4582c8e52339611c3b82bb5eed",
+        "after": "5365e4a0b45378a664346c7a6a3c50a2db15a593120b4adfd65df94a4863e3ac"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/tools/execution-bound.ts",
+        "before": "fcf9653b238fd89028d8438357c5151a8cec386d4141dad7d60292d7f63012b6",
+        "after": "97ab0d3f57b73e17ea71300b34e6947caea02a1107954ee73ca62ddf8d165c12"
+      },
+      {
+        "file": "src/shared/xiaozhi-tool-attempt.ts",
+        "before": "6e52956a7ac4ac9131b745f1dde2fb0611b4bdd1171072f1366d22e0fbfba017",
+        "after": "cc74abb459df7fa3c7e9535bf3e0c65e1903ad5222057796d2870be288fad8d5"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/events/receipts.ts",
+        "before": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17",
+        "after": "7fd6a8758f1616669367343b53915728af15cf0edf53577dd6c852109e2ae4a3"
+      }
+    ],
+    "added": [],
+    "removed": []
+  },
+  "branches": [
+    {
+      "mode": "grant",
+      "runId": "run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b",
+      "taskId": "xitask_e9a6927d36f2379293249e42a988e0acf7f79b37bab89c5247f80162b617c354",
+      "status": "succeeded",
+      "failedCallId": "call_9ce19059a6c5458ab39e366cd970bb2c",
+      "phase": "settled",
+      "admitted": 1,
+      "effectState": "uncertain",
+      "recovery": {
+        "id": "receipt_run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b_call_9ce19059a6c5458ab39e366cd970bb2c",
+        "runId": "run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b",
+        "callId": "call_9ce19059a6c5458ab39e366cd970bb2c",
+        "tool": "mcp_89920979e88fdb5046f14b73_lookup_lesson",
+        "disposition": "needs_check",
+        "native": "matched",
+        "effect": "uncertain"
+      },
+      "external": {
+        "before": {
+          "calls": 1,
+          "requests": 8
+        },
+        "afterDirect": {
+          "calls": 1,
+          "requests": 8
+        },
+        "afterPi": {
+          "calls": 1,
+          "requests": 8
+        }
+      },
+      "fallbackTaskId": "xitask_e9a6927d36f2379293249e42a988e0acf7f79b37bab89c5247f80162b617c354"
+    },
+    {
+      "mode": "provider",
+      "runId": "run_733001b3-69a2-4538-b71e-fb3a3efd0bac",
+      "taskId": "xitask_6ce698cf8e07863e2c8778a6618ac770f1809d94399513e5c5cb7e9b8093dd4e",
+      "status": "succeeded",
+      "failedCallId": "call_b1faa015f1b74b448331c038d8e87aa2",
+      "phase": "settled",
+      "admitted": 0,
+      "effectState": "not_checked",
+      "recovery": {
+        "id": "receipt_run_733001b3-69a2-4538-b71e-fb3a3efd0bac_call_b1faa015f1b74b448331c038d8e87aa2",
+        "runId": "run_733001b3-69a2-4538-b71e-fb3a3efd0bac",
+        "callId": "call_b1faa015f1b74b448331c038d8e87aa2",
+        "tool": "mcp_36c8c62b268c138bc1e19bda_lookup_lesson",
+        "disposition": "not_delivered",
+        "native": "matched",
+        "effect": "not_checked"
+      },
+      "external": {
+        "before": {
+          "calls": 1,
+          "requests": 8
+        },
+        "afterDirect": {
+          "calls": 1,
+          "requests": 8
+        },
+        "afterPi": {
+          "calls": 1,
+          "requests": 8
+        }
+      },
+      "fallbackTaskId": "xitask_6ce698cf8e07863e2c8778a6618ac770f1809d94399513e5c5cb7e9b8093dd4e"
+    }
+  ],
+  "dispatchBeforeExecution": [
+    {
+      "owner": {
+        "run_id": "run_07c4d1ef-3e1d-4465-874f-d606da5f4d1b",
+        "generation": 1
+      },
+      "callId": "call_ff1ab0a664454a74813b153eb9ed9ed3",
+      "phase": "admitted",
+      "callsBefore": 0,
+      "providerId": "mcp.tool.t_89920979e88fdb5046f14b73",
+      "providerVersion": "1.0.0+13870913524cd99a",
+      "taskId": "xitask_e9a6927d36f2379293249e42a988e0acf7f79b37bab89c5247f80162b617c354",
+      "grantRefs": [
+        {
+          "grantId": "xigrant_d3153b7a-a59f-472b-a568-442dff3c0df2",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_62ace6fe-f1cb-4bc5-a239-b779d92ef06e",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_f54e775d-80d3-4807-9876-e1fee092522b",
+          "revision": 1
+        }
+      ],
+      "authorityRefs": [
+        "permission-request:76751fce34d4a919b823d07b3d1efa426d9cb21ab3a79c1066bda3f922860e99"
+      ]
+    },
+    {
+      "owner": {
+        "run_id": "run_733001b3-69a2-4538-b71e-fb3a3efd0bac",
+        "generation": 1
+      },
+      "callId": "call_c8dee004618b43cb8ae9e443830cf3b4",
+      "phase": "admitted",
+      "callsBefore": 0,
+      "providerId": "mcp.tool.t_36c8c62b268c138bc1e19bda",
+      "providerVersion": "1.0.0+b1162e33ac579974",
+      "taskId": "xitask_6ce698cf8e07863e2c8778a6618ac770f1809d94399513e5c5cb7e9b8093dd4e",
+      "grantRefs": [
+        {
+          "grantId": "xigrant_b5478278-f477-4359-91eb-609269d1c2aa",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_09c47518-4ee9-49a7-8662-e8c28d7120da",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_472de57b-314d-42db-bac4-81f1e21e76fc",
+          "revision": 1
+        }
+      ],
+      "authorityRefs": [
+        "permission-request:080afb4002c62c3472178d05e8d77f3c5f9a8c309ca3385526f4b0510cc0a72e"
+      ]
+    }
+  ]
+}

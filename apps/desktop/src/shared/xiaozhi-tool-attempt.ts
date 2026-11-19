@@ -1,14 +1,15 @@
 export const TOOL_EXECUTION_CODES=['invalid_input','invalid_output','permission_denied','authentication','cancelled','timeout','network','rate_limited','service_error','conflict','not_found','resource_busy','task_blocked','source_required','source_changed','not_confirmed','configuration','missing_dependency','unsupported','execution_failed','unknown'] as const;
 export type ToolExecutionCode=typeof TOOL_EXECUTION_CODES[number];
-export type XiaozhiToolAttempt={schemaVersion:1;callId:string;tool:string;attempt:number;maxAttempts:number;state:'queued'|'started'|'retrying'|'succeeded'|'failed';code?:ToolExecutionCode;effect:'none'|'unknown';queueWaitMs?:number;executionMs?:number;teacherWaitMs?:number};
+export type XiaozhiToolAttempt={schemaVersion:1;callId:string;tool:string;attempt:number;maxAttempts:number;state:'queued'|'started'|'retrying'|'succeeded'|'failed';code?:ToolExecutionCode;effect:'none'|'unknown';delivery?:'not_delivered';queueWaitMs?:number;executionMs?:number;teacherWaitMs?:number};
 export function validToolAttempt(value:unknown):value is XiaozhiToolAttempt{
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const v=value as Record<string,unknown>;
- return Object.keys(v).every(k=>['schemaVersion','callId','tool','attempt','maxAttempts','state','code','effect','queueWaitMs','executionMs','teacherWaitMs'].includes(k))&&v.schemaVersion===1
+ return Object.keys(v).every(k=>['schemaVersion','callId','tool','attempt','maxAttempts','state','code','effect','delivery','queueWaitMs','executionMs','teacherWaitMs'].includes(k))&&v.schemaVersion===1
   &&typeof v.callId==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(v.callId)&&typeof v.tool==='string'&&(/^[a-z_]{1,128}$/.test(v.tool)||/^mcp_[a-f0-9]{24}_[A-Za-z0-9_-]{1,35}$/.test(v.tool))
   &&Number.isSafeInteger(v.attempt)&&Number.isSafeInteger(v.maxAttempts)&&Number(v.attempt)>=1&&Number(v.attempt)<=Number(v.maxAttempts)&&Number(v.maxAttempts)<=2
   &&['queued','started','retrying','succeeded','failed'].includes(String(v.state))&&['none','unknown'].includes(String(v.effect))
   &&(v.code===undefined||TOOL_EXECUTION_CODES.includes(v.code as ToolExecutionCode))
+  &&(v.delivery===undefined||v.delivery==='not_delivered'&&v.state==='failed'&&v.code==='task_blocked'&&v.effect==='none')
   &&(v.queueWaitMs===undefined||Number.isFinite(v.queueWaitMs)&&Number(v.queueWaitMs)>=0&&Number(v.queueWaitMs)<=86_400_000)
   &&(v.executionMs===undefined||Number.isFinite(v.executionMs)&&Number(v.executionMs)>=0&&Number(v.executionMs)<=86_400_000)
   &&(v.teacherWaitMs===undefined||Number.isFinite(v.teacherWaitMs)&&Number(v.teacherWaitMs)>=0&&Number(v.teacherWaitMs)<=86_400_000)
