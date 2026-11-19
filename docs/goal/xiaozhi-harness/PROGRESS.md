@@ -10,6 +10,10 @@
 
 验收 **83/89**。QG-01/02/03/04/08 已实现。A-P0-08 结构投影及 QG-05/06/07/09/10 尚待补齐。完整原生页面、真实模型对照和最终独立验收保持有效。 [质量门禁](evidence/phase8/current-quality-checkpoint-20261119.md)。
 
+## 2026-11-19 工作台跨会话实包复核
+
+独立 Terra 从工作台在两条合成 Task 间顺序切换，原会话和 Run 对应准确；应用正常关闭并重开后，继续核对两边和 SQLite 原事实，2/2。运行中交错、迟到结果和 Artifact/Grant 隔离仍待证据。[W3 顺序场景](evidence/phase7/implementation-resume-20261119/packaged-w3-navigation.json)。
+
 ## 2026-11-19 技能回滚实包独立复验
 
 真实页面激活 2.0.0 后回滚到 1.0.0，通过同修订的 IPC、SQLite 和冷启动读回检查，4/4。两个版本的记录和文件哈希不变，已结束 Run 仍绑定原 2.0.0。保留第一次漏掉第二次点击的测试时序失败记录。正在运行的 Task 绑定、完整 Gate7 和原生拖窗仍待验收。[复验记录](evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json)。

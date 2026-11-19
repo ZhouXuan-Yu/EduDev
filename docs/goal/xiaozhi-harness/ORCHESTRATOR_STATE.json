@@ -603,5 +603,10 @@
     "evidence": "evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json",
     "activeRun": "NOT_RUN",
     "gate7": "PARTIAL"
+  },
+  "phase7PackagedW3": {
+    "status": "PASS_SCOPED_SEQUENTIAL_COLD_NAVIGATION",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-w3-navigation.json",
+    "gate7": "PARTIAL"
   }
 }
