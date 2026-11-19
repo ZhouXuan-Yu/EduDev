@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "xiaozhi.kb-evidence.v1",
+  "integratedBase": "2f1893570bfe4a2c0f846ee16540069a92531e3e",
+  "mainBundleSha256": "277a5a305f0431bf8ad93b3c993622529716edeb8034c42212f20f1ae31301e7",
+  "samples": [
+    {
+      "sha256": "d60d466cfa288faaec60cf8c327963744fba4f6ce316df9168284339d23ec1bd",
+      "question": "7",
+      "before": {
+        "pages": [
+          3,
+          3
+        ],
+        "issue": "missing_figure"
+      },
+      "after": {
+        "pages": [
+          3,
+          4
+        ],
+        "issue": "ambiguous_asset",
+        "teacherReviewed": true,
+        "retainedCropSha256": "c9d00f5a5c630123d00e10f42366cd6908e1fa084605ed437658a180e8e1d165"
+      }
+    },
+    {
+      "sha256": "beec4f0618675159e91a559d54bb61cd369537299213ad2bdcb0a6ff824e00fc",
+      "question": "13",
+      "leadingOptionImages": 4,
+      "attachedAsOrphan": false,
+      "finalStatus": "needs_review"
+    }
+  ],
+  "checks": {
+    "realPdfElectron": [
+      7,
+      7
+    ],
+    "documentBoundaries": [
+      30,
+      30
+    ],
+    "repositoryAndQueue": [
+      39,
+      39
+    ],
+    "aiSourceBoundaries": [
+      16,
+      16
+    ],
+    "rendererComponents": [
+      253,
+      253
+    ],
+    "build": "pass",
+    "uiContracts": "pre-existing-vendor-baseline-mismatch",
+    "electronSmoke": [
+      207,
+      207
+    ]
+  },
+  "pairedAssemblerMs": {
+    "pages": 11,
+    "measurementsPerVersion": 100,
+    "v3P50": 1.0847,
+    "v4P50": 1.1554,
+    "v3P95": 1.9097,
+    "v4P95": 2.1738
+  },
+  "audit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0
+  },
+  "cloudModelCalls": 0
+}

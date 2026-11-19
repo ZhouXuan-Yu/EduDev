@@ -299,18 +299,20 @@ try {
     },
   );
   await check(
-    "Persisted v2 AI structure receipts remain authentic after introducing v3",
+    "Persisted v2 and v3 AI structure receipts remain authentic under the current reader",
     async () => {
       const f = await fixture();
       try {
-        const body = JSON.stringify({...f.page,engine:"layout-paragraph-question.v2"});
-        f.db.prepare("UPDATE material_structure_pages SET body_json=?,sha256=?").run(body,hash(body));
-        f.db.exec("UPDATE material_structure_jobs SET engine='layout-paragraph-question.v2'");
-        const legacy = await withAiStructureSource(f.host,f.source,f.original,signal);
-        assert.equal(legacy.structureContext.engine,"layout-paragraph-question.v2");
-        f.db.exec("UPDATE material_structure_jobs SET engine='layout-paragraph-question.v3'");
-        await validateAiStructureSource(f.host,f.source,legacy.structureContext,rasterSha256,signal);
-        await assert.rejects(()=>withAiStructureSource(f.host,f.source,f.original,signal),/source_changed/);
+        for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3"]) {
+          const body = JSON.stringify({...f.page,engine:engine});
+          f.db.prepare("UPDATE material_structure_pages SET body_json=?,sha256=?").run(body,hash(body));
+          f.db.prepare("UPDATE material_structure_jobs SET engine=?").run(engine);
+          const legacy = await withAiStructureSource(f.host,f.source,f.original,signal);
+          assert.equal(legacy.structureContext.engine,engine);
+          f.db.prepare("UPDATE material_structure_jobs SET engine=?").run(f.page.engine);
+          await validateAiStructureSource(f.host,f.source,legacy.structureContext,rasterSha256,signal);
+          await assert.rejects(()=>withAiStructureSource(f.host,f.source,f.original,signal),/source_changed/);
+        }
       } finally {
         f.close();
       }

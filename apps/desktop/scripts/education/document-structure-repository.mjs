@@ -174,29 +174,32 @@ await check("PDF admission rechecks staged questions and fails closed during ret
   }
 });
 await check(
-  "A published v2 generation is preserved, while interrupted v2 work restarts with v3",
+  "Published v2 and v3 generations remain readable, while interrupted older work restarts with the current engine",
   async () => {
     const legacy = {...resource,id:"resource_22345678-1234-1234-1234-123456789abc"};
     const id=legacy.id;
-    db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,pages,processed,updated_at) VALUES(?,?,?,?,?,?,?,?)")
-      .run(id,version,"layout-paragraph-question.v2","legacy-v2","partial",2,2,new Date().toISOString());
-    db.prepare("INSERT INTO material_structure_questions(generation,id,first_page,last_page,status,body_json,document_json,sha256) VALUES(?,?,?,?,?,?,?,?)")
-      .run("legacy-v2","legacy-candidate",1,1,"candidate",JSON.stringify({id:"legacy-candidate",status:"candidate"}),"{}","c".repeat(64));
-    try {
-      assert(await repo.published(legacy));
-      assert.equal(await repo.begin(legacy,signal),false);
-      assert.equal(db.prepare("SELECT generation FROM material_structure_jobs WHERE resource_id=?").get(id).generation,"legacy-v2");
-      assert.equal((await repo.candidates(id,version,0)).items.length,0);
-      assert(!await repo.currentPublication(id,version,"legacy-v2"));
-      db.prepare("UPDATE material_structure_jobs SET status='cancelled' WHERE resource_id=?").run(id);
-      assert(await repo.begin(legacy,signal));
-      const job=db.prepare("SELECT engine,generation,processed FROM material_structure_jobs WHERE resource_id=?").get(id);
-      assert.equal(job.engine,DOCUMENT_STRUCTURE_ENGINE);
-      assert.notEqual(job.generation,"legacy-v2");
-      assert.equal(job.processed,0);
-    } finally {
-      db.prepare("DELETE FROM material_structure_questions WHERE generation=?").run("legacy-v2");
-      db.prepare("DELETE FROM material_structure_jobs WHERE resource_id=?").run(id);
+    for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3"]) {
+      const generation = "legacy-" + engine;
+      db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,pages,processed,updated_at) VALUES(?,?,?,?,?,?,?,?)")
+        .run(id,version,engine,generation,"partial",2,2,new Date().toISOString());
+      db.prepare("INSERT INTO material_structure_questions(generation,id,first_page,last_page,status,body_json,document_json,sha256) VALUES(?,?,?,?,?,?,?,?)")
+        .run(generation,"legacy-candidate",1,1,"candidate",JSON.stringify({id:"legacy-candidate",status:"candidate"}),"{}","c".repeat(64));
+      try {
+        assert(await repo.published(legacy));
+        assert.equal(await repo.begin(legacy,signal),false);
+        assert.equal(db.prepare("SELECT generation FROM material_structure_jobs WHERE resource_id=?").get(id).generation,generation);
+        assert.equal((await repo.candidates(id,version,0)).items.length,0);
+        assert(!await repo.currentPublication(id,version,generation));
+        db.prepare("UPDATE material_structure_jobs SET status='cancelled' WHERE resource_id=?").run(id);
+        assert(await repo.begin(legacy,signal));
+        const job=db.prepare("SELECT engine,generation,processed FROM material_structure_jobs WHERE resource_id=?").get(id);
+        assert.equal(job.engine,DOCUMENT_STRUCTURE_ENGINE);
+        assert.notEqual(job.generation,generation);
+        assert.equal(job.processed,0);
+      } finally {
+        db.prepare("DELETE FROM material_structure_questions WHERE generation=?").run(generation);
+        db.prepare("DELETE FROM material_structure_jobs WHERE resource_id=?").run(id);
+      }
     }
   },
 );

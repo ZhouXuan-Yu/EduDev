@@ -31,6 +31,25 @@ export function MaterialStructureReview({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [savedId, setSavedId] = useState("");
+  const [preview, setPreview] = useState<{ page: number; src: string }>(),
+    [previewLoading, setPreviewLoading] = useState(false),
+    [previewError, setPreviewError] = useState("");
+  async function openSourcePage(page: number) {
+    setPreviewLoading(true);
+    setPreviewError("");
+    try {
+      const src = await window.omniEdu!.getMaterialStructureImage({
+        resourceId: reference.resourceId,
+        version: reference.version,
+        page,
+      });
+      setPreview({ page, src });
+    } catch {
+      setPreviewError("原始页图读取失败，请重试。");
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
   useEffect(() => {
     onDirty(!!fields || busy);
     return () => onDirty(false);
@@ -106,6 +125,8 @@ export function MaterialStructureReview({
             setChecked(false);
             setDifficultyChosen(false);
             setError("");
+            setPreview(undefined);
+            setPreviewError("");
           }}
         >
           核对并保存到题本
@@ -119,6 +140,35 @@ export function MaterialStructureReview({
             请对照本题涉及的原始页面，补齐题干、选项、小问及公式。原始 OCR
             与结构候选会保留，修正内容记录为教师编辑。
           </p>
+          {question.pageRange[0] !== question.pageRange[1] && (
+            <>
+              <div className="toolbar-row">
+                {[...new Set(question.anchors.map((anchor) => anchor.page))]
+                  .sort((a, b) => a - b)
+                  .map((page) => (
+                    <Button
+                      key={page}
+                      variant="secondary"
+                      isDisabled={busy || previewLoading}
+                      onPress={() => void openSourcePage(page)}
+                      data-testid={`structure-review-source-page-${page}`}
+                    >
+                      对照第 {page} 页原图
+                    </Button>
+                  ))}
+              </div>
+              {previewLoading && <p role="status">正在读取原始页图…</p>}
+              {previewError && <p role="alert">{previewError}</p>}
+              {preview && (
+                <img
+                  src={preview.src}
+                  alt={`第${preview.page}页结构来源`}
+                  style={{ maxWidth: "100%", height: "auto" }}
+                  data-testid="structure-review-source-image"
+                />
+              )}
+            </>
+          )}
           <div className={editorStyles.fields}>
             <QuestionArchiveFields
               fields={fields}

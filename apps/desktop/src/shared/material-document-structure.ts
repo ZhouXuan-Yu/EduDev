@@ -5,11 +5,10 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v3" as const;
-const previousStructureEngine = "layout-paragraph-question.v2";
-export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | typeof previousStructureEngine;
+  "layout-paragraph-question.v4" as const;
+export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3";
 export function validDocumentStructureEngine(value: unknown): value is DocumentStructureEngine {
-  return value === DOCUMENT_STRUCTURE_ENGINE || value === previousStructureEngine;
+  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
 }
 export type StructureIssue =
   | "pdf_text_conflict"

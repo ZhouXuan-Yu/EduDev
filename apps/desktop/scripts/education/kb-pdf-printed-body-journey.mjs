@@ -6,11 +6,14 @@ import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
 import {_electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 
 const from=fs.realpathSync(process.argv[2]);
 const buildRoot=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out');
 const mainEntry=path.join(buildRoot,'main/index.js');
 const baselinePreface=process.argv.includes('--baseline-preface');
+const baselineFigure=process.argv.includes('--baseline-figure');
+const nextPageFigure=!baselinePreface&&!baselineFigure;
 assert.equal(path.basename(from),'data');
 assert.equal(path.basename(path.dirname(from)),'flow-1gb-20261111');
 const output=fs.mkdtempSync(path.resolve('test-results','native-printed-body-ui-'));
@@ -24,17 +27,22 @@ const fixtures=[
  {pattern:'gh-physics-5-%circuit_2.pdf',file:'含分式的物理电路.pdf',status:'needs_review'},
  {pattern:'gh-physics-16-%pressure2.pdf',file:'液体压强练习.pdf',status:'needs_review',sourcePage:3},
 ];
+const optionSource=nextPageFigure&&process.argv[3]&&!process.argv[3].startsWith('--')?
+ new DatabaseSync(path.join(fs.realpathSync(process.argv[3]),'app.db'),{readOnly:true}):undefined;
+if(optionSource)fixtures.push({pattern:'%ep-102-%2013%.pdf',file:'图形选项跨页练习.pdf',status:'needs_review'});
 try{
  for(const fixture of fixtures){
-  const original=source.prepare('SELECT id,local_path,content_hash FROM teacher_resources WHERE original_file_name LIKE ?').get(fixture.pattern);
+  const database=fixture===fixtures[3]?optionSource:source;
+  const original=database.prepare('SELECT id,local_path,content_hash FROM teacher_resources WHERE original_file_name LIKE ?').get(fixture.pattern);
   assert.equal(sha(fs.readFileSync(original.local_path)),original.content_hash);
   fixture.sourcePage??=2;
-  const old=source.prepare('SELECT p.status FROM material_pdf_pages p JOIN material_pdf_jobs j ON p.generation=j.generation WHERE j.resource_id=? AND p.page=?').get(original.id,fixture.sourcePage);
+  const old=database.prepare('SELECT p.status FROM material_pdf_pages p JOIN material_pdf_jobs j ON p.generation=j.generation WHERE j.resource_id=? AND p.page=?').get(original.id,fixture.sourcePage);
   assert.equal(old.status,'needs_review');
   fs.copyFileSync(original.local_path,path.join(folder,fixture.file));
   fixture.hash=original.content_hash;
+  if(fixture===fixtures[3])assert.equal(fixture.hash,'beec4f0618675159e91a559d54bb61cd369537299213ad2bdcb0a6ff824e00fc');
  }
-}finally{source.close();}
+}finally{source.close();optionSource?.close();}
 function read(sql,args=[]){
  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
  try{return db.prepare(sql).all(...args);}finally{db.close();}
@@ -77,7 +85,7 @@ try{
    assert(parts.some(chunk=>chunk.content_md.includes('保护电表'))&&!parts.some(chunk=>chunk.content_md.includes('Ro')));
   }else{
    assert.equal(receipt.error,'text_conflict');assert.equal(receipt.method,'ocr');assert.equal(parts.length,0);
-   if(fixture.sourcePage===2)assert(receipt.nativeText.includes('1\n2')&&receipt.ocrText.includes('D. 1R'));
+   if(fixture===fixtures[1])assert(receipt.nativeText.includes('1\n2')&&receipt.ocrText.includes('D. 1R'));
   }
   fixture.generation=job.generation;
   fixture.receipt=sha(row.result_json);
@@ -109,19 +117,80 @@ try{
   assert(restored.assets.some(a=>a.page===2&&a.kind==='image'));
   assert(restored.stem.includes('灌入多少水')&&!restored.stem.includes('帕斯卡定律'));
   assert(tail.page.paragraphs.some(p=>p.role==='footer'&&p.rawText.includes('第 3 页共 4 页')));
-  assert(tail.questions.some(q=>q.number==='7'&&q.issues.includes('missing_figure')&&!q.stem.includes('第 3 页共 4 页')));
+  const terminal=tail.questions.find(q=>q.number==='7');
+  assert(terminal&&!terminal.stem.includes('第 3 页共 4 页'));
+  if(nextPageFigure){
+   assert.equal(terminal.status,'needs_review');
+   assert.deepEqual(terminal.pageRange,[3,4]);
+   assert(terminal.issues.includes('ambiguous_asset')&&!terminal.issues.includes('missing_figure'));
+   assert(!terminal.stem.includes('容器 1,2,3'));
+   assert.deepEqual(terminal.assets.map(a=>[a.page,a.regionId]),[[4,'block-1']]);
+   const next=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:pressure.id,version:pressure.hash,page:4});
+   assert.deepEqual(next.questions.find(q=>q.number==='8').assets.map(a=>a.regionId),['block-3','block-5','block-7']);
+  }else assert(terminal.issues.includes('missing_figure'));
+
  }
  assert(tail.questions.some(q=>q.number==='6'&&q.status==='needs_review'));
  const pressureBank=read("SELECT json_extract(archive_json,'$.number') number FROM question_bank_items WHERE source_title=?",[pressure.file]);
  assert.equal(pressureBank.some(q=>q.number==='3'),!baselinePreface);
  assert(!pressureBank.some(q=>['6','7'].includes(q.number)));
  capture(baselinePreface?'Baseline global preface blocks the independent pressure question':'An independent later-page question keeps its own source and diagram, while the missing figure and formula conflicts stay held');
+ let reviewed;
+ if(nextPageFigure){
+  const negative=fixtures[3];
+  if(negative){
+   const data=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:negative.id,version:negative.hash,page:3});
+   const figures=data.page.regions.filter(region=>region.kind==='image'&&region.box[3]<0.4);
+   assert(figures.length>=4);
+   const previous=await page.evaluate(input=>window.omniEdu.getMaterialStructure(input),{resourceId:negative.id,version:negative.hash,page:2});
+   const figureChoices=previous.questions.find(q=>q.number==='13');
+   assert(figureChoices&&figureChoices.status==='needs_review');
+   assert(!figureChoices.assets.some(a=>a.page===3&&figures.some(f=>f.id===a.regionId)));
+   capture('Four real graphical choices at the page head never become a single orphan attachment');
+  }
+  const held=tail.questions.find(q=>q.number==='7');
+  const original=pressure.file.replace(/\.pdf$/i,'');
+  await page.getByTestId('materials-search').fill(original);
+  await page.getByTestId('materials-refresh').click();
+  await page.getByTestId('material-'+pressure.id).getByRole('button').click();
+  await page.getByRole('button',{name:'题目与校正',exact:true}).click();
+  const panel=page.getByTestId('material-structure-panel');
+  await openMaterialDisclosure(panel);
+  await panel.getByTestId('structure-next').click();
+  await panel.getByTestId('structure-next').click();
+  const review=panel.getByTestId('structure-review-'+held.id);
+  await review.getByTestId('structure-review-open').click();
+  const preview=review.getByTestId('structure-review-source-image');
+  for(const target of [3,4]){
+   await review.getByTestId('structure-review-source-page-'+target).click();
+   await until(async()=>await preview.getAttribute('alt')==='第'+target+'页结构来源');
+   await preview.evaluate(img=>img.decode());
+  }
+  await review.getByTestId('structure-review-difficulty').selectOption('medium');
+  assert(await review.getByTestId('structure-review-save').isDisabled());
+  await review.getByTestId('structure-review-checked').check();
+  await review.getByTestId('structure-review-save').click();
+  await panel.getByTestId('structure-reviewed-'+held.id).waitFor();
+  reviewed=read('SELECT * FROM material_structure_reviews WHERE candidate_id=?',[held.id])[0];
+  const document=JSON.parse(reviewed.body_json).document;
+  const images=document.blocks.filter(b=>b.kind==='image');
+  assert.deepEqual(images.map(b=>b.anchors[0].page),[3,4]);
+  assert(images[1].anchors[0].box[3]<0.274);
+  const archived=read('SELECT archive_json FROM question_bank_items WHERE id=?',[reviewed.question_id])[0];
+  assert.equal(JSON.parse(archived.archive_json).sourceChecked,true);
+  capture('Teacher compares both original pages and saves a draft containing the isolated page-four crop');
+ }
  await app.close();app=undefined;
  await launch();
  for(const fixture of fixtures){
   const current=await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),fixture.id);
   assert.equal(current.generation,fixture.generation);
   assert.equal(sha(read('SELECT result_json FROM material_pdf_pages WHERE generation=? AND page=?',[current.generation,fixture.sourcePage])[0].result_json),fixture.receipt);
+ }
+ if(reviewed){
+  const reopened=read('SELECT body_json FROM material_structure_reviews WHERE question_id=?',[reviewed.question_id])[0];
+  assert.equal(reopened.body_json,reviewed.body_json);
+  assert(JSON.parse(reopened.body_json).document.blocks.some(b=>b.kind==='image'&&b.anchors[0].page===4));
  }
  capture('Cold read keeps both original transcriptions, their source generation and the held page');
  await until(async()=>!(await page.evaluate(()=>window.omniEdu.getMaterialIndexStatus())).pending);

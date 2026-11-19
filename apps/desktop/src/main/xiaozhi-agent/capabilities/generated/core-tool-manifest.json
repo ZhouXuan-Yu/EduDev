@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "73c9bfa5dac6d1a49e302b34b3660252ec0ef09fb94690ab1c0ad500488987d8",
+  "sourceHash": "b5b23c266af0f8065278cc792cd836f213b76e8418278c1863f434d9bd214553",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1992,7 +1992,7 @@
     },
     {
       "file": "src/shared/material-document-structure.ts",
-      "sha256": "331820869f35cac5ce6531aee01ad54e8f3414c35b8960290687f9ba4488c567"
+      "sha256": "4ee0d0008ecc84338463a4a0af1d1ea5490856df63bddac0f4f884c10c95fd1b"
     },
     {
       "file": "src/shared/material-layout.ts",

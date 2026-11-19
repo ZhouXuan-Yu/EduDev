@@ -87,6 +87,68 @@ await check("A conflicted page can admit one exact bounded parent without releas
   for(const kind of ["inline_formula","display_formula","table"])
     assert(!verifiedQuestionInPdfConflict(nativeWithOptions,{...selected,assets:[{kind}]},1));
 });
+const trailingChoiceRows = (reference = "如图所示") => [
+  [`7. ${reference}，玻璃管和弹簧秤相连，求示数？`, 0.12, 0.72],
+  ["A. 选项甲的描述", 0.14, 0.77, 0.25],
+  ["B. 选项乙的描述", 0.14, 0.81, 0.25],
+  ["C. 选项丙的描述", 0.14, 0.85, 0.25],
+  ["D. 选项丁的描述", 0.14, 0.89, 0.25],
+];
+const leadingFigure = { id: "leading-image", kind: "image", score: 0.96, box: [0.60, 0.11, 0.76, 0.21], needsReview: true };
+const nextFigure = { ...leadingFigure, id: "next-image", box: [0.60, 0.39, 0.78, 0.52] };
+const nextParent = ["8. 如图所示，计算另一个物体的重力。", 0.12, 0.28];
+
+await check("An unnumbered next-page figure becomes a reviewable crop, while the following question keeps its own figure", () => {
+  const [previous, next] = questions([
+    page(trailingChoiceRows(), 1, 2),
+    page([nextParent], 2, 2, [leadingFigure, nextFigure]),
+  ]);
+  assert.deepEqual(previous.pageRange, [1, 2]);
+  assert.deepEqual(previous.assets.map(a => a.regionId), ["leading-image"]);
+  assert.deepEqual(previous.issues, ["ambiguous_asset"]);
+  assert.equal(previous.status, "needs_review");
+  assert(previous.anchors.some(a => a.page === 2));
+  assert(!previous.stem.includes("另一个物体"));
+  assert.deepEqual(next.assets.map(a => a.regionId), ["next-image"]);
+  assert.deepEqual(next.pageRange, [2, 2]);
+});
+
+await check("A matching literal caption verifies a standalone next-page diagram, but competing references keep it held", () => {
+  const before = page(trailingChoiceRows("如图12所示"), 1, 2);
+  const caption = ["图 12", 0.63, 0.22, 0.08, "figure_title"];
+  const match = questions([before, page([caption, nextParent], 2, 2, [leadingFigure, nextFigure])])[0];
+  assert.equal(match.status, "candidate");
+  assert.deepEqual(match.assets.map(a => a.regionId), ["leading-image"]);
+  assert(match.paragraphIds.some(id => id.startsWith("p2-")));
+  const overlap = ["8. 如图12所示，计算重力。", 0.12, 0.28];
+  for (const rows of [[caption, overlap], [["图 13", ...caption.slice(1)], nextParent]]) {
+    const [q] = questions([before, page(rows, 2, 2, [leadingFigure, nextFigure])]);
+    assert(q.issues.includes("missing_figure"));
+    assert.equal(q.assets.length, 0);
+  }
+});
+
+await check("Page-leading image choices, prior-owned figures and layout conflicts never become an orphan attachment", () => {
+  const before = page(trailingChoiceRows(), 1, 2);
+  const newPage = (figures, rows = [nextParent]) => page(rows, 2, 2, figures);
+  const many = [
+    leadingFigure,
+    { ...leadingFigure, id: "another-image", box: [0.3, 0.11, 0.45, 0.21] },
+    nextFigure,
+  ];
+  const gapped = newPage([leadingFigure, nextFigure], [["9. 计算重力。", 0.12, 0.28]]);
+  const captionChoices = newPage([leadingFigure, nextFigure], [["A.", 0.60, 0.23, 0.04], nextParent]);
+  const suspect = { ...newPage([leadingFigure, nextFigure]), issues: ["ambiguous_columns"] };
+  for (const continuation of [newPage(many), newPage([leadingFigure]), gapped, captionChoices, suspect]) {
+    const [q] = questions([before, continuation]);
+    assert(!q.assets.length);
+    assert(q.issues.includes("missing_figure"));
+  }
+  const alreadyOwned = page(trailingChoiceRows(), 1, 2, [
+    { ...leadingFigure, id: "prior-image", box: [0.60, 0.75, 0.76, 0.82] },
+  ]);
+  assert.deepEqual(questions([alreadyOwned, newPage([leadingFigure, nextFigure])])[0].assets.map(a => a.regionId), ["prior-image"]);
+});
 await check(
   "Consecutive Chinese lines form a paragraph while a real vertical gap starts another",
   () => {

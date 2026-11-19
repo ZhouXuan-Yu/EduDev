@@ -379,17 +379,17 @@ export class MaterialStructureRuntime {
         (p) =>
           q.paragraphIds.includes(p.id) || q.sharedMaterialIds.includes(p.id),
       );
-      for (const column of [...new Set(paragraphs.map((p) => p.column))]) {
+      const pageAssets = q.assets.filter((asset) => asset.page === page.page);
+      const columns = paragraphs.length ? [...new Set(paragraphs.map((p) => p.column))] : pageAssets.length ? [-1] : [];
+      for (const column of columns) {
         const owned = paragraphs
           .filter((p) => p.column === column)
           .map((p) => p.anchor.box);
-        const assets = q.assets
-          .filter(
-            (a) =>
-              a.page === page.page &&
-              (column < 0 ||
-                ((a.box[0] + a.box[2]) / 2 >= page.columns[column][0] &&
-                  (a.box[0] + a.box[2]) / 2 <= page.columns[column][2])),
+        const assets = pageAssets
+          .filter((a) =>
+            column < 0 ||
+            ((a.box[0] + a.box[2]) / 2 >= page.columns[column][0] &&
+              (a.box[0] + a.box[2]) / 2 <= page.columns[column][2]),
           )
           .map((a) => a.box);
         const boxes = [...owned, ...assets];

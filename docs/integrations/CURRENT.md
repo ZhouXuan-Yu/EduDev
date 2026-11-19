@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 知识库结构 v4 续页图
+
+继续复用 PDFium、RapidOCR、PP-DocLayoutV3 以及教师校正现有 IPC，结构升级到 v4 并兼容历史来源回执。
+
+详见 [本轮记录](../research/evidence/kb/20261119/next-page-figure/README.md)。
+
 ## 2026-11-19 知识库结构 v3 材料归属
 
 复用现有 PDFium、RapidOCR、PP-DocLayoutV3 和 AI 输入协议。结构引擎 v3 支持验证已有 v2 冻结 AI 证据，旧代版本保留在回执中。

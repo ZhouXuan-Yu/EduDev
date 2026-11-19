@@ -34,6 +34,9 @@ const assetKinds = new Set([
   "display_formula",
   "inline_formula",
 ]);
+const imageKinds = new Set(["image", "chart"]);
+const figureReference = /如图|见图|下图|图中|下表|表中/u;
+const figureNumber = /图[ 	]*([1-9]\d{0,3})(?![\d.．—~～-])/gu;
 const furnitureKinds = new Set([
   "header",
   "header_image",
@@ -373,6 +376,80 @@ type Pending = {
   paragraphs: StructureParagraph[];
   pages: Map<number, StructurePage>;
 };
+/** An image-only continuation can end before the next parent marker.
+ * Without a matching printed caption it is a lead for teacher review. */
+function leadingQuestionFigure(
+  question: StructureQuestion,
+  pending: Pending,
+  page: StructurePage,
+  next: StructureParagraph,
+) {
+  const [first] = pending.paragraphs;
+  const last = pending.paragraphs.at(-1);
+  const prior = last && pending.pages.get(last.anchor.page);
+  if (!prior || !last || pending.pages.size !== 1 || prior.page + 1 !== page.page ||
+      prior.columns.length !== 1 || page.columns.length !== 1 ||
+      prior.issues.length || page.issues.length || question.kind !== "question" ||
+      question.sharedMaterialIds.length || question.assets.length ||
+      question.answer || question.analysis ||
+      Number(next.marker?.label) !== Number(question.number) + 1 ||
+      Math.abs(first.anchor.box[0] - next.anchor.box[0]) > 0.05 ||
+      last.anchor.box[3] < 0.78 || next.anchor.box[1] > 0.38) return;
+
+  const start = page.paragraphs.indexOf(next);
+  const prefix = page.paragraphs.slice(0, start).filter((p) => p.role !== "header");
+  if (prefix.some((p) => p.role !== "figure")) return;
+  const end = next.anchor.box[1];
+  const before = page.regions.filter((r) => assetKinds.has(r.kind) && r.box[1] < end);
+  if (before.length !== 1) return;
+  const [image] = before;
+  if (!imageKinds.has(image.kind) || image.score < 0.85 || image.box[3] > end - 0.008 ||
+      image.box[3] - image.box[1] < 0.04 || image.box[2] - image.box[0] < 0.04) return;
+
+  const after = page.paragraphs.slice(start + 1);
+  const boundary = after.find((p) => p.marker?.kind === "parent" || p.role === "heading" || p.role === "material");
+  const nextEnd = boundary?.anchor.box[1] ?? 0.92;
+  const ownText = [next, ...after.filter((p) => p.anchor.box[1] < nextEnd)]
+    .filter((p) => p.role !== "figure").map((p) => p.text).join("\n");
+  const references = [...question.stem.matchAll(figureNumber)].map((match) => match[1]);
+  const captions = prefix.filter((p) => p.regionIds.some((id) =>
+    page.regions.some((r) => r.id === id && r.kind === "figure_title")));
+  const caption = captions[0];
+  const overlapX = caption && Math.min(caption.anchor.box[2], image.box[2]) -
+    Math.max(caption.anchor.box[0], image.box[0]);
+  const label = caption?.text.match(/^图\s*([1-9]\d{0,3})(?:$|[\s:：])/u)?.[1];
+  const containedLabels = prefix.every((p) => p === caption ||
+    overlap(p.anchor.box, image.box) >= area(p.anchor.box) * 0.85);
+  if (!containedLabels) return;
+  if (caption && captions.length === 1 && label && references.length === 1 &&
+      label === references[0] && ![...ownText.matchAll(figureNumber)].some((m) => m[1] === label) &&
+      overlapX && overlapX > 0 && caption.confidence >= 0.85 &&
+      Math.abs(caption.anchor.box[1] - image.box[3]) < 0.04 &&
+      caption.anchor.box[3] < end - 0.008) {
+    return { image, caption };
+  }
+
+  // A complete printed A–D group and independent next-question figures
+  // distinguish this lead from image-only choices or the next question's art.
+  if (captions.length || references.length || !/(?:如图|见图|下图)/u.test(question.stem) ||
+      question.subquestions.length ||
+      question.options.length !== 4 || !question.options.every((o, i) =>
+        o.label === "ABCD"[i] && o.text.replace(/^[（(]?[A-D][）).．、]?[ \t]*/u, "").trim().length >= 2) ||
+      !page.regions.some((r) => imageKinds.has(r.kind) && r.score >= 0.75 &&
+        r.box[1] >= next.anchor.box[3] && r.box[3] < nextEnd)) return;
+  return { image };
+}
+
+function attachStructureAsset(question: StructureQuestion, page: StructurePage, region: PageBlock) {
+  const lines = page.lines.filter((line) => overlap(line.box, region.box) / area(line.box) > 0.6);
+  question.assets.push({
+    page: page.page, regionId: region.id, kind: region.kind, box: [...region.box],
+    lineIds: lines.map((line) => line.id), rawText: lines.map((line) => line.text).join("\n"),
+  });
+  if (lines.length) question.confidence = Math.min(question.confidence, ...lines.map((line) => line.score));
+  if (region.score < 0.5) question.issues.push("ambiguous_asset");
+  if (lines.some((line) => line.score < 0.85)) question.issues.push("low_ocr_score");
+}
 /** Streaming book assembler. Retains one unfinished question and bounded shared-material context. */
 export class StructureQuestionAssembler {
   private pending?: Pending;
@@ -479,7 +556,7 @@ export class StructureQuestionAssembler {
         const precedingOrphan = this.pending?.question.number === "0";
         if (numberingConflict)
           this.pending!.question.issues.push("numbering_conflict");
-        if (this.pending) output.push(this.finish());
+        if (this.pending) output.push(this.finish({ page, next: paragraph }));
         if (this.unassigned.length) {
           // Preserve an ambiguous lead-in for the immediately following
           // question. A new parent marker does not extend its ownership.
@@ -606,7 +683,7 @@ export class StructureQuestionAssembler {
     pending.question.issues.push(...paragraph.issues);
     pending.question.issues.push(...page.issues);
   }
-  private finish(): StructureQuestion {
+  private finish(following?: { page: StructurePage; next: StructureParagraph }): StructureQuestion {
     const pending = this.pending!,
       q = pending.question,
       shared = q.sharedMaterialIds.length ? this.shared : [];
@@ -718,30 +795,24 @@ export class StructureQuestionAssembler {
             ((region.box[0] + region.box[2]) / 2 >= page.columns[p.column][0] &&
               (region.box[0] + region.box[2]) / 2 <= page.columns[p.column][2]),
         );
-        if (compatible) {
-          const lines = page.lines.filter(
-            (line) => overlap(line.box, region.box) / area(line.box) > 0.6,
-          );
-          q.assets.push({
-            page: number,
-            regionId: region.id,
-            kind: region.kind,
-            box: [...region.box],
-            lineIds: lines.map((l) => l.id),
-            rawText: lines.map((l) => l.text).join("\n"),
-          });
-          if (lines.length)
-            q.confidence = Math.min(
-              q.confidence,
-              ...lines.map((line) => line.score),
-            );
-          if (region.score < 0.5) q.issues.push("ambiguous_asset");
-          if (lines.some((line) => line.score < 0.85))
-            q.issues.push("low_ocr_score");
+        if (compatible) attachStructureAsset(q, page, region);
+      }
+    }
+    if (following && !q.assets.length) {
+      const match = leadingQuestionFigure(q, pending, following.page, following.next);
+      if (match) {
+        attachStructureAsset(q, following.page, match.image);
+        q.anchors.push({ page: following.page.page, box: [...match.image.box] });
+        q.pageRange[1] = following.page.page;
+        if (match.caption) {
+          q.paragraphIds.push(match.caption.id);
+          q.anchors.push(match.caption.anchor);
+        } else {
+          q.issues.push("ambiguous_asset");
         }
       }
     }
-    if (/如图|下图|图中|下表|表中/u.test(q.stem) && !q.assets.length)
+    if (figureReference.test(q.stem) && !q.assets.length)
       q.issues.push("missing_figure");
     const groups = [
       q.options,

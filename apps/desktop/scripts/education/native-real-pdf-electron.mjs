@@ -211,7 +211,7 @@ try {
   ).map((row) => JSON.parse(row.body_json));
   assert.equal(pages.length, oldPages.length);
   for (const page of pages) {
-    assert.equal(page.engine, "layout-paragraph-question.v3");
+    assert.equal(page.engine, "layout-paragraph-question.v4");
     assert.equal(
       page.rawText,
       oldPages.find((old) => old.page === page.page).body.rawText,
