@@ -2,7 +2,7 @@
 
 ## 2026-11-18 有来源编号的版式误判修复
 
-原本地来源核对已恢复4份完整题文档，新增4条 source-layout-markers.v1 审计，原37题和6次付费记录保持。4题只因 missing_grade 待核。build、253组件、15/10/20/247/16边界与6项真实UI/冷读通过，初版冻结构建 Electron 207/207 通过。下一继续自然资料剩余结构与题答断点，完整Goal ACTIVE。 最终合并版 build 和已有四题审计的 Electron 冷读 6 项通过。下一从自然库 23 道边缘通过的裁图追踪独立转录和题文投影分歧，见活动索引。
+原本地来源核对已恢复4份完整题文档，新增4条 source-layout-markers.v1 审计，原37题和6次付费记录保持。4题只因 missing_grade 待核。build、253组件、17/10/20/247/16边界与6项真实UI/冷读通过，初版冻结构建 Electron 207/207 通过。下一继续自然资料剩余结构与题答断点，完整Goal ACTIVE。 最终合并版 build 和已有四题审计的 Electron 冷读 6 项通过。下一从自然库 23 道边缘通过的裁图追踪独立转录和题文投影分歧，见活动索引。
 
 详见 [本轮报告](../research/evidence/kb/20261118/source-marker-recheck/README.md)。
 

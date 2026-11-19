@@ -4,11 +4,11 @@
   "files": [
     {
       "path": "1.Agent.md",
-      "sha256": "552150bcdb5788343ff34c8db359541b1c70d2e5bc7c3c4baa4a5453ab4350f3"
+      "sha256": "42c6366e06d6ead10dd7d5a1ce45f92ed98fa7050a42862076650bc116ff763f"
     },
     {
       "path": "2.Memory.md",
-      "sha256": "0cdb40ccb3e5ba8edd835bef58d50ae0f08006898df9daeca07d91e73bb08e72"
+      "sha256": "62fc79cc7e7a8bc3eaa6db0f942e9c9a54ce92ae91670e29a829be075c148d82"
     },
     {
       "path": "3.Learning.md",
@@ -20,7 +20,7 @@
     },
     {
       "path": "apps/desktop/scripts/education/kb-source-markers-boundaries.mjs",
-      "sha256": "19ddb4737012021c1967bcd753711640cd85870aa35cb85dd5df5c1b20005809"
+      "sha256": "304118cfa3ac5897a9ec755a4feb1ff93c4de081cca3abdfeb26e24668307f9e"
     },
     {
       "path": "apps/desktop/scripts/education/kb-source-markers-electron.mjs",
@@ -68,7 +68,7 @@
     },
     {
       "path": "docs/acceptance/CURRENT.md",
-      "sha256": "e25840d8a3d3a44897d041e67446a807596a8cb67068cb7189fbdf15ece7b322"
+      "sha256": "cd7d3a4d017d6ae54a59596cfd6e27334f55b2c8d78868dbc82ba7440cbd4131"
     },
     {
       "path": "docs/architecture/CURRENT.md",
@@ -76,11 +76,11 @@
     },
     {
       "path": "docs/goal/ACCEPTANCE.md",
-      "sha256": "03cb5cd10bb1344e3189005b7a5848f2aa5c90de6a379528c330f7695be8d2af"
+      "sha256": "62c930c81fb7d2c34a5af9399212c645b6b3ac0af4adde2d2f759b48c59902a9"
     },
     {
       "path": "docs/goal/CURRENT_STATE.md",
-      "sha256": "6907ef0a6f98fb5bf92c866cf3971509cf86c3259755661295c38c42a280a7f8"
+      "sha256": "a4107f47ff23ec9fa9a74ce3389c09b78221ffd884d538a121220fa8803cfdf6"
     },
     {
       "path": "docs/goal/DECISIONS.md",
@@ -88,7 +88,7 @@
     },
     {
       "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
-      "sha256": "5ef31c9ae4fcb10e7cb63e934bd4781f23a70ddf73a294f0901eb500b8963e96"
+      "sha256": "7920ebf1409d8ff4f7dcb0378df0108c9244ff6b497029ee13fc7a48342ab329"
     },
     {
       "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
@@ -96,7 +96,7 @@
     },
     {
       "path": "docs/goal/WORK_PROGRESS.md",
-      "sha256": "8dcd4668a9a91b65bc13a8d13573aef87c88f12ebf3afc7292b569296b91a44f"
+      "sha256": "ae1b6eac0834b712bc297828fbcc12a49c2d2649c26fc0d518a68d34c51f8ae6"
     },
     {
       "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
@@ -112,11 +112,11 @@
     },
     {
       "path": "docs/research/evidence/kb/20261118/source-marker-recheck/README.md",
-      "sha256": "f93a693ecf367d2e3d477fd79037f72831725d08e95301695769a53c16dc8920"
+      "sha256": "c0efcd639edc33ad4a667f074e75e255cfd9b8693416c5e3bb0d690e18e23c27"
     },
     {
       "path": "docs/research/evidence/kb/20261118/source-marker-recheck/summary.json",
-      "sha256": "55ca54a8caa24817491eb49808d1645a88daa2fc97a282673b982876fac8b04a"
+      "sha256": "2c6afb0a9f34840802d96a74e78246316d8e2e2739f47178cad9c52838184a18"
     }
   ]
 }

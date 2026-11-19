@@ -55,6 +55,31 @@ try {
   const q=proof.final.questions[0].stem;
   for(const broken of [q.replace('A．两米','A．三米'),q.replace('A．','X．'),q.replace('A．两米','B．两米').replace('B．四米','A．四米'),q+'\nA．两米',q.replace('D．十米','')])assert.equal(sourceMarkerText(broken,prompt,'1'),broken);
  });
+ await check('Number layout equivalence works for unrelated mixed-language exams and horizontal option groups',()=>{
+  const model=structuredClone(prompt);
+  const base=model.structureContext.paragraphs.find(p=>p.role==='question');
+  const makeParagraph=(index,role,kind,label,text)=>({...base,id:'p1-paragraph-'+index,role,marker:{kind,label},rawText:text,text});
+  for(const {number,stem,options} of [
+   {number:'12',stem:'比较速度 v₁ 与 v₂，已知 v₁ = −2.5 m/s。',options:['v₁ > v₂','v₁ ≤ v₂']},
+   {number:'105',stem:'Select the valid statement about orbit α.',options:['a = 0','a ≠ 0','1.5 m','1.5 m/s','α₁','α₂']}
+  ]){
+   const labels=options.map((_,i)=>String.fromCharCode(65+i));
+   model.structureContext.paragraphs=[
+    makeParagraph(1,'question','parent',number,number+'. '+stem),
+    ...options.map((body,i)=>makeParagraph(i+2,'option','option',labels[i],labels[i]+'. '+body))
+   ];
+   const page=mark=>number+mark+' '+stem+'\n'+options.map((body,i)=>labels[i]+mark+' '+body).join('   ');
+   const signature=text=>sourceLayoutSignatureFor(text,model,number);
+   assert.equal(signature(page('.')),signature(page('．')));
+   for(const change of [s=>s.replace(options[0],options[1]),s=>s.replace('1.5','1．5').replace('2.5','2．5'),s=>s.replace(options[0],options[0]+'条件变化')])assert.notEqual(signature(page('.')),signature(change(page('．'))));
+  }
+ });
+ await check('Number-only section labels and prose references cannot grant arithmetic punctuation equivalence',()=>{
+  const model=structuredClone(prompt);
+  model.structureContext.paragraphs=model.structureContext.paragraphs.map(p=>p.role==='question'?{...p,role:'heading'}:p);
+  const text='1．2 m 表示测量结果，参看选项 A．两米';
+  assert.equal(sourceMarkerText(text,model,'1'),text);
+ });
  await check('Independent visual reading cannot receive the new marker policy or its structure hints',()=>{
   const payload={pageContext:prompt,firstDraft:{questions:proof.first.questions,fragments:proof.first.fragments},cropReview:{questions:[]}};
   const blind=independentLiteralContext(payload,true);assert(!Object.hasOwn(blind.pageContext,'structureContext'));assert(!Object.hasOwn(blind.pageContext,'sourceMarkerPolicy'));

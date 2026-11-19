@@ -18,12 +18,12 @@
     {
       "name": "new-boundaries",
       "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-source-markers-boundaries.mjs D:/WorkProject/EduProject-kb-run/ocr-structure-20261118-f",
-      "passed": 15,
-      "total": 15,
+      "passed": 17,
+      "total": 17,
       "failed": 0,
       "skipped": 0,
       "exitCode": 0,
-      "logSha256": "4be4e4c5e377cfb45f79766b6c58656c209a66edcd7c14000396dbbc3e83cfc1"
+      "logSha256": "788cfe3c9e8d60cf5031dd83692c0cd16cc212fa4198751cc1deb920273b6851"
     },
     {
       "name": "legacy-source-layout",
