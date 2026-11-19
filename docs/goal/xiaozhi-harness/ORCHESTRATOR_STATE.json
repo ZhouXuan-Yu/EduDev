@@ -584,5 +584,11 @@
       "QG-04",
       "QG-08"
     ]
+  },
+  "phase7PackagedC1": {
+    "status": "PASS_SCOPED_GATE7_PARTIAL",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-c1-retest.json",
+    "nativeWindow": "NOT_RUN",
+    "paidCalls": 0
   }
 }
