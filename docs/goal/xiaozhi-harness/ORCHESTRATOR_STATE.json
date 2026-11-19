@@ -530,6 +530,12 @@
       "structuredFiles": {
         "status": "FILE_REFERENCE_PASS_OTHER_MODEL_TOOL_PROJECTIONS_FAIL",
         "evidence": "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      },
+      "remainingToolPrivacy": {
+        "status": "SIX_PRODUCTION_EGRESS_RED_CASES",
+        "evidence": "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json",
+        "active": "Model-result and legacy-replay projection implementation",
+        "paidCalls": 0
       }
     }
   },
