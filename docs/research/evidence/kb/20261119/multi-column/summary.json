@@ -1,0 +1,204 @@
+{
+  "engine": "layout-paragraph-question.v6",
+  "testedCodeBase": "17700bc",
+  "runtimeSha256": "551dc92182addc395582d038f0c9f1735cdcf48d2ed552815e032d32da54cd72",
+  "runtimeTreeSha256": "5abce17b5290055da6854a67e118706c05fbc11b6c3a856ef06940d8fd0e27ce",
+  "checks": {
+    "structure": 36,
+    "repositoryAndQueue": 39,
+    "renderer": 253,
+    "electron": [
+      "Original import action starts default local structure jobs",
+      "Every real OCR line survives exactly once with original text, quadrilateral and paragraph links",
+      "Only structurally admissible candidates enter the bank with immutable cropped sources and unverified teacher status",
+      "Original materials navigation exposes raw OCR, recovered paragraphs, question ownership and original page in both desktop sizes",
+      "Cold restart preserves source snapshots, question provenance and runtime identity"
+    ],
+    "structureBook": 8,
+    "legacyBook": 36,
+    "fullSmoke": 207,
+    "integratedTypecheck": "pass"
+  },
+  "realExtracts": [
+    {
+      "name": "物理主书-原件第4页.pdf",
+      "sourcePage": 4,
+      "sha256": "de730cb35c0e4a8fe5a51a83c180f8b52944e7af5703eda534ba7f68bf115eba",
+      "pixelsSha256": "5804e0865b64a0f8229b4ef4ff9eaa4d874de898233f0402baf1cb3184ccbabe"
+    },
+    {
+      "name": "SAT练习-原件第27页.pdf",
+      "sourcePage": 27,
+      "sha256": "1a3666fdbe7a77441e1f4afe2ba0de192d4c55aba3fbd53652b1edacaffc4ceb",
+      "pixelsSha256": "835644b2f302eb6607f4d478e54d52aaf9c127dbc2b63e3f876025f3de577e4a"
+    },
+    {
+      "name": "上海数学-原件第3页.pdf",
+      "sourcePage": 3,
+      "sha256": "8ed760948d0d96c990359dc702ef6812fa0b784d97d2a04906721baca50174d2",
+      "pixelsSha256": "cac986517f788b604ccfebdd8338d6730f2d2a4d2411599651b9e03520e0b9f7"
+    }
+  ],
+  "geometry": [
+    {
+      "name": "物理主书-原件第4页.pdf",
+      "lines": 186,
+      "beforeColumns": [
+        [
+          0,
+          0,
+          0.4,
+          1
+        ],
+        [
+          0.4,
+          0,
+          1,
+          1
+        ]
+      ],
+      "afterColumns": [
+        [
+          0,
+          0,
+          0.365,
+          1
+        ],
+        [
+          0.365,
+          0,
+          0.67,
+          1
+        ],
+        [
+          0.67,
+          0,
+          1,
+          1
+        ]
+      ],
+      "baselineMs": {
+        "median": 0.802,
+        "p95": 1.15
+      },
+      "newMs": {
+        "median": 0.798,
+        "p95": 1.187
+      },
+      "mainResult": {
+        "q7Options": 4,
+        "q12Options": 0,
+        "q12Column": 2,
+        "q12Assets": 1
+      }
+    },
+    {
+      "name": "SAT练习-原件第27页.pdf",
+      "lines": 88,
+      "beforeColumns": [
+        [
+          0,
+          0,
+          0.5,
+          1
+        ],
+        [
+          0.5,
+          0,
+          1,
+          1
+        ]
+      ],
+      "afterColumns": [
+        [
+          0,
+          0,
+          0.525,
+          1
+        ],
+        [
+          0.525,
+          0,
+          1,
+          1
+        ]
+      ],
+      "baselineMs": {
+        "median": 0.333,
+        "p95": 0.457
+      },
+      "newMs": {
+        "median": 0.388,
+        "p95": 0.578
+      }
+    },
+    {
+      "name": "上海数学-原件第3页.pdf",
+      "lines": 43,
+      "beforeColumns": [
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "afterColumns": [
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "baselineMs": {
+        "median": 0.094,
+        "p95": 0.15
+      },
+      "newMs": {
+        "median": 0.082,
+        "p95": 0.15
+      }
+    }
+  ],
+  "rebuild": {
+    "success": true,
+    "oldEngine": "layout-paragraph-question.v5",
+    "newEngine": "layout-paragraph-question.v6",
+    "newColumns": 3,
+    "oldGenerationPreserved": true,
+    "answerReceiptsPreserved": 1,
+    "q12ArchiveGenerations": 2
+  },
+  "desktop": {
+    "readingMilliseconds": 43886,
+    "viewports": [
+      [
+        1366,
+        768
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "errors": [],
+    "counts": {
+      "resources": 3,
+      "chunks": 100,
+      "bank": 4
+    }
+  },
+  "open": [
+    "missed numbered parent and two repeated option groups",
+    "printed fill blanks",
+    "old unreviewed candidates after rebuilding",
+    "background book matching, natural retrieval, scale, papers and migration"
+  ],
+  "audit": {
+    "total": 23,
+    "high": 8,
+    "dependenciesChanged": false
+  },
+  "integratedBase": "8af19266859562b3e9972612992264b12078d803"
+}

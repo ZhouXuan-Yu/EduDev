@@ -6,6 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 import { _electron } from "playwright";
 import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
+import { DOCUMENT_STRUCTURE_ENGINE } from "../../src/shared/material-document-structure.ts";
 
 const root = process.env.EDU_STRUCTURE_TEST_ROOT;
 assert(root && path.isAbsolute(root));
@@ -211,7 +212,7 @@ try {
   ).map((row) => JSON.parse(row.body_json));
   assert.equal(pages.length, oldPages.length);
   for (const page of pages) {
-    assert.equal(page.engine, "layout-paragraph-question.v5");
+    assert.equal(page.engine, DOCUMENT_STRUCTURE_ENGINE);
     assert.equal(
       page.rawText,
       oldPages.find((old) => old.page === page.page).body.rawText,

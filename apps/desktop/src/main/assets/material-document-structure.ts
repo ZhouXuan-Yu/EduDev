@@ -131,97 +131,88 @@ function lineRole(
   return { role: "body" };
 }
 
+type LineRole = ReturnType<typeof lineRole>;
+const centerY = (box: PageBox) => (box[1] + box[3]) / 2;
+const widthOf = (box: PageBox) => box[2] - box[0];
+
+/** Find gutters between neighboring text runs. Options affect gutter clearance,
+ * but cannot create columns on their own. */
 function columnsFor(
   lines: StructureLine[],
-  input: StructurePageInput,
+  roles: Map<string, LineRole>,
   height: number,
-): PageBox[] {
-  const {regions}=input;
-  const body = lines.filter(
-    (line) =>
-      lineRole(line, regions, input).role !== "option" &&
-      !regions.some(
-        (region) =>
-          line.regionIds.includes(region.id) &&
-          (assetKinds.has(region.kind) ||
-            furnitureKinds.has(region.kind) ||
-            region.kind === "doc_title"),
-      ),
+) {
+  const ink = lines.filter(line =>
+    !["header", "footer", "figure", "note", "formula", "table", "heading"].includes(roles.get(line.id)!.role) &&
+    widthOf(line.box) < 0.65,
   );
-  const candidates = [0.4, 0.45, 0.5, 0.55, 0.6];
-  for (const split of candidates) {
-    const left = body.filter(
-      (line) => line.box[2] < split - 0.012 && line.box[2] - line.box[0] > 0.16,
-    );
-    const right = body.filter(
-      (line) => line.box[0] > split + 0.012 && line.box[2] - line.box[0] > 0.16,
-    );
+  const body = ink.filter(line => roles.get(line.id)!.role !== "option" && widthOf(line.box) >= Math.max(0.10, height * 4));
+  const gutters: { x: number; strength: number; clearance: number }[] = [];
+  let unresolved = false;
+  for (let i = 32; i <= 168; i++) {
+    const x = i / 200;
+    const left = body.filter(({ box }) => box[2] <= x - 0.004 && box[2] >= x - 0.14);
+    const right = body.filter(({ box }) => box[0] >= x + 0.004 && box[0] <= x + 0.14);
     if (left.length < 2 || right.length < 2) continue;
-    const vertical =
-      Math.min(
-        Math.max(...left.map((line) => line.box[3])),
-        Math.max(...right.map((line) => line.box[3])),
-      ) -
-      Math.max(
-        Math.min(...left.map((line) => line.box[1])),
-        Math.min(...right.map((line) => line.box[1])),
-      );
-    if (vertical < height * 1.5) continue;
-    const cross = body.filter(
-      (line) =>
-        line.box[0] < split - 0.02 &&
-        line.box[2] > split + 0.02 &&
-        line.box[2] - line.box[0] < 0.65,
-    );
-    if (cross.length > Math.max(1, body.length * 0.05)) continue;
-    return [
-      [0, 0, split, 1],
-      [split, 0, 1, 1],
-    ];
+    const verticalOverlap = Math.min(Math.max(...left.map(l => l.box[3])), Math.max(...right.map(l => l.box[3]))) -
+      Math.max(Math.min(...left.map(l => l.box[1])), Math.min(...right.map(l => l.box[1])));
+    if (verticalOverlap < height * 1.5) continue;
+    const crossings = ink.filter(({ box }) => box[0] < x - 0.008 && box[2] > x + 0.008).length;
+    if (crossings > Math.max(1, Math.floor(ink.length * 0.025))) {
+      unresolved = true;
+      continue;
+    }
+    const clearance = Math.min(x - Math.max(...left.map(l => l.box[2])), Math.min(...right.map(l => l.box[0])) - x);
+    gutters.push({ x, strength: Math.min(left.length, right.length) - crossings * 3, clearance });
   }
-  return [[0, 0, 1, 1]];
+  const splits: number[] = [];
+  for (const { x } of gutters.sort((a, b) => b.strength - a.strength || b.clearance - a.clearance)) {
+    if (splits.every(other => Math.abs(x - other) >= 0.16)) splits.push(x);
+  }
+  const bounds = [0, ...splits.sort((a, b) => a - b), 1];
+  // When side-by-side short parents have independent aligned rows, preserve
+  // the page as an uncertain layout even without sufficient gutter votes.
+  const parents = splits.length ? [] : ink.filter(line => roles.get(line.id)!.role === "question" &&
+    ink.some(part => part !== line && Math.abs(part.box[0] - line.box[0]) < 0.055));
+  const sparseLanes = parents.some(left => parents.some(right =>
+    right.box[0] - left.box[2] >= 0.12 &&
+    Math.abs(centerY(left.box) - centerY(right.box)) <= height * 2,
+  ));
+  return {
+    columns: bounds.slice(1).map((end, i): PageBox => [bounds[i], 0, end, 1]),
+    unresolved: sparseLanes || unresolved && !splits.length,
+  };
 }
 
-function orderedLines(lines: StructureLine[], columns: PageBox[]) {
+function orderedLines(lines: StructureLine[], columns: PageBox[], roles: Map<string, LineRole>) {
   const vertical = (a: StructureLine, b: StructureLine) =>
-    Math.abs((a.box[1] + a.box[3] - b.box[1] - b.box[3]) / 2) <
-    Math.min(a.box[3] - a.box[1], b.box[3] - b.box[1]) * 0.45
+    Math.abs(centerY(a.box) - centerY(b.box)) < Math.min(a.box[3] - a.box[1], b.box[3] - b.box[1]) * 0.45
       ? a.box[0] - b.box[0]
       : a.box[1] - b.box[1] || a.box[0] - b.box[0];
   if (columns.length === 1)
-    return lines
-      .map((line) => ({ line, column: 0 }))
-      .sort((a, b) => vertical(a.line, b.line));
-  const split = columns[0][2],
-    wide = lines
-      .filter(
-        (line) => line.box[0] < split - 0.025 && line.box[2] > split + 0.025,
-      )
-      .sort(vertical);
-  const rows: { line: StructureLine; column: number }[] = [],
-    used = new Set<string>();
-  for (const separator of [...wide, undefined]) {
-    const band = lines.filter(
-      (line) =>
-        !used.has(line.id) &&
-        !wide.includes(line) &&
-        (!separator || (line.box[1] + line.box[3]) / 2 < separator.box[1]),
-    );
-    for (const column of [0, 1])
-      for (const line of band
-        .filter((line) =>
-          (line.box[0] + line.box[2]) / 2 < split ? column === 0 : column === 1,
-        )
-        .sort(vertical)) {
-        rows.push({ line, column });
-        used.add(line.id);
-      }
-    if (separator) {
-      rows.push({ line: separator, column: -1 });
-      used.add(separator.id);
-    }
+    return { rows: [...lines].sort(vertical).map(line => ({ line, column: 0 })), unresolved: false };
+
+  const ordered = lines.map(line => {
+    const portions = columns.map(box => Math.max(0, Math.min(box[2], line.box[2]) - Math.max(box[0], line.box[0])));
+    const column = portions.indexOf(Math.max(...portions));
+    const crosses = portions.filter(p => p > 0.012 && p >= widthOf(line.box) * 0.12).length > 1;
+    const role = roles.get(line.id)!.role;
+    const spanning = crosses && (role === "heading" || role === "material" || role === "body" && widthOf(line.box) >= 0.65);
+    const furniture = ["header", "footer", "note", "figure", "formula", "table"].includes(role);
+    return { line, column: spanning ? -1 : column, unresolved: crosses && !spanning && !furniture };
+  });
+  const separators = ordered.filter(row => row.column < 0).sort((a, b) => vertical(a.line, b.line));
+  const body = ordered.filter(row => row.column >= 0).sort((a, b) => centerY(a.line.box) - centerY(b.line.box));
+  let start = 0;
+  const rows: { line: StructureLine; column: number }[] = [];
+  for (const separator of [...separators, undefined]) {
+    let end = start;
+    while (end < body.length && (!separator || centerY(body[end].line.box) < separator.line.box[1])) end++;
+    rows.push(...body.slice(start, end).sort((a, b) => a.column - b.column || vertical(a.line, b.line)));
+    if (separator) rows.push(separator);
+    start = end;
   }
-  return rows;
+  return { rows, unresolved: ordered.some(row => row.unresolved) };
 }
 
 export function recoverStructurePage(input: StructurePageInput): StructurePage {
@@ -252,13 +243,15 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       regionIds: owned.map((region) => region.id),
     };
   });
-  const height = median(lines.map((line) => line.box[3] - line.box[1])),
-    columns = columnsFor(lines, input, height),
-    ordered = orderedLines(lines, columns);
+  const height = median(lines.map((line) => line.box[3] - line.box[1]));
+  const roles = new Map(lines.map(line => [line.id, lineRole(line, input.regions, input)]));
+  const layout = columnsFor(lines, roles, height);
+  const { columns } = layout;
+  const ordered = orderedLines(lines, columns, roles);
   const paragraphs: StructureParagraph[] = [];
   const byId = new Map(lines.map((line) => [line.id, line]));
-  for (const { line, column } of ordered) {
-    const detected = lineRole(line, input.regions, input),
+  for (const { line, column } of ordered.rows) {
+    const detected = roles.get(line.id)!,
       last = [...paragraphs]
         .reverse()
         .find((p) => !["figure", "header", "footer"].includes(p.role)),
@@ -365,9 +358,10 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     regions: input.regions,
     columns,
     paragraphs,
-    issues: input.nativeRecovery?.unresolved.length
-      ? ["native_unconfirmed"]
-      : [],
+    issues: [
+      ...(input.nativeRecovery?.unresolved.length ? ["native_unconfirmed" as const] : []),
+      ...(layout.unresolved || ordered.unresolved ? ["ambiguous_columns" as const] : []),
+    ],
     needsReview: true,
   };
 }
@@ -470,6 +464,7 @@ export class StructureQuestionAssembler {
   push(page: StructurePage): StructureQuestion[] {
     const output: StructureQuestion[] = [];
     let choiceCaptions: Set<string> | undefined;
+    let uncertainLeadingTableColumn: number | undefined;
     const pending = this.pending;
     if (pending?.question.kind === "question" && !pending.question.sharedMaterialIds.length &&
         pending.pages.size === 1) {
@@ -531,6 +526,23 @@ export class StructureQuestionAssembler {
           this.sharedUntil = undefined;
         }
         continue;
+      }
+      const previous = this.pending?.paragraphs.at(-1);
+      if (previous?.role === "option" && previous.anchor.page === page.page &&
+          previous.column >= 0 && paragraph.column > previous.column &&
+          paragraph.role === "table") {
+        const related = page.paragraphs.filter(part => part.role === "table" &&
+          part.regionIds.some(id => paragraph.regionIds.includes(id)));
+        const tableText = related.map(part => part.text).join(" ");
+        const scoreCard = paragraph.anchor.box[1] < 0.18 &&
+          /题序|题号/u.test(tableText) && /得分/u.test(tableText) && /评卷人|阅卷人|总分/u.test(tableText);
+        if (scoreCard && !this.pending!.paragraphs.some(part => /如表|见表|下表|表中/u.test(part.text))) {
+          output.push(this.finish());
+          continue;
+        }
+        // Keep a possible continuation with its original anchors pending review.
+        this.pending!.question.issues.push("ambiguous_columns");
+        uncertainLeadingTableColumn = paragraph.column;
       }
       if (paragraph.marker?.kind === "parent") {
         const number = paragraph.marker.label,
@@ -627,6 +639,9 @@ export class StructureQuestionAssembler {
           this.pending.question.issues.push("shared_material_scope");
         if (ownsShared && this.sharedOverflow)
           this.pending.question.issues.push("shared_material_scope");
+        if (uncertainLeadingTableColumn === paragraph.column)
+          this.pending.question.issues.push("ambiguous_columns");
+        uncertainLeadingTableColumn = undefined;
         if (!questionCue.test(paragraph.text) && !this.answers)
           this.pending.question.issues.push("uncertain_boundary");
         this.append(paragraph, page);

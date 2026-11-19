@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 多栏结构恢复
+
+v6 沿用 PDFium、RapidOCR、PP-DocLayoutV3 与已有桌面后台队列。多栏恢复是本地确定性处理，无需改助教模型或向云端发送 PDF。
+
+详见 [版面修复证据](../research/evidence/kb/20261119/multi-column/README.md)。
+
 ## 2026-11-19 结构题与独立答案册匹配
 
 答案册匹配使用现有 typed IPC 和答案索引，增加结构题 ID 加当前版本的请求。发布前复核独立答案页和题册原稿，不接入新 provider。

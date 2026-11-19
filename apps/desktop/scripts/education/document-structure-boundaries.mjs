@@ -249,6 +249,74 @@ await check(
     assert(!q[1].stem.includes("左栏"));
   },
 );
+await check("Three text columns retain every line without lending middle options or a leading table to another question", () => {
+  const p = page([
+    ["三栏练习测试卷", .08, .05, .87, "doc_title"],
+    ["1. 已知左栏条件，", .07, .14, .27],
+    ["求左栏的压强。", .08, .167, .24],
+    ["A. 甲 B. 乙 C. 丙 D. 丁", .08, .78, .27],
+    ["题号 得分 阅卷人", .38, .10, .21, "table"],
+    ["2. 已知中栏条件，", .375, .14, .28],
+    ["求中栏的速度。", .385, .167, .27],
+    ["A. 中栏甲", .388, .214, .26],
+    ["B. 中栏乙", .388, .25, .15],
+    ["C. 中栏丙", .388, .29, .27],
+    ["D. 中栏丁", .388, .33, .22],
+    ["3. 已知右栏条件，", .68, .14, .28],
+    ["计算右栏物体的质量。", .70, .167, .24],
+    ["右栏还有附加条件。", .70, .29, .23],
+  ]);
+  assert.equal(p.columns.length, 3);
+  assert.deepEqual(p.issues, []);
+  const q = questions([p]);
+  assert.deepEqual(q.map(item => item.number), ["1", "2", "3"]);
+  assert.deepEqual(q.map(item => item.options.length), [4, 4, 0]);
+  assert(!q[0].stem.includes("得分"));
+  assert(!q[2].stem.includes("中栏"));
+  const ownership = p.paragraphs.flatMap(part => part.lineIds);
+  assert.equal(new Set(ownership).size, p.lines.length);
+  assert.equal(ownership.length, p.lines.length);
+});
+await check("A fused OCR line across the gutter stays reviewable with its original coordinates", () => {
+  const p = page([
+    ["1. 已知左栏条件，", .07, .1, .36],
+    ["求左栏的压强。", .08, .127, .35],
+    ["混合了两个栏位的行", .36, .15, .28],
+    ["2. 已知右栏条件，", .56, .1, .37],
+    ["求右栏的质量。", .57, .127, .36],
+  ]);
+  assert.equal(p.columns.length, 2);
+  assert(p.issues.includes("ambiguous_columns"));
+  assert(questions([p]).every(q => q.status === "needs_review"));
+  assert(p.paragraphs.some(part => part.rawText.includes("混合了两个栏位的行")));
+});
+await check("Parallel short stems and options remain pending if a gutter cannot be established", () => {
+  const p = page([
+    ["1. 求值？", .08, .10, .08],
+    ["2. 求值？", .58, .10, .08],
+    ["A. 1", .08, .127, .07],
+    ["A. 2", .58, .127, .07],
+    ["B. 3", .08, .154, .07],
+    ["B. 4", .58, .154, .07],
+  ]);
+  assert(p.issues.includes("ambiguous_columns"));
+  assert(questions([p]).every(q => q.status === "needs_review"));
+});
+await check("An unresolved leading table keeps its text and marks both neighboring questions for review", () => {
+  const p = page([
+    ["1. 根据实验数据，选择结论。", .07, .26, .37],
+    ["比较各个数据后选择。", .07, .287, .37],
+    ["A. 恒定 B. 增大 C. 减小 D. 无关", .07, .75, .37],
+    ["次数 质量 时间", .56, .10, .35, "table"],
+    ["2. 根据右栏条件，求结果。", .56, .26, .37],
+    ["计算右栏量值。", .56, .287, .37],
+  ]);
+  assert.equal(p.columns.length, 2);
+  const q = questions([p]);
+  assert.equal(q.length, 2);
+  assert(q[0].stem.includes("次数 质量 时间"));
+  assert(q.every(item => item.status === "needs_review" && item.issues.includes("ambiguous_columns")));
+});
 await check("Subquestions keep their own option groups", () => {
   const q = questions([
     page([

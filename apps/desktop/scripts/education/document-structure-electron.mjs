@@ -39,10 +39,11 @@ function treeIdentity(directory){
  }}
  walk(directory);return {sha256:hash(Buffer.from(JSON.stringify(files))),files};
 }
-const originalTree=treeIdentity(path.resolve('out'));
+const buildRoot=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out');
+const originalTree=treeIdentity(buildRoot);
 const data=path.join(root,'data'),runtime=path.resolve('test-results','document-structure-runtime-'+originalTree.sha256.slice(0,24));
 if (!fs.existsSync(runtime))
-  fs.cpSync(path.resolve("out"), runtime, { recursive: true });
+  fs.cpSync(buildRoot, runtime, { recursive: true });
 fs.writeFileSync(path.join(root,'runtime-files.json'),JSON.stringify(originalTree,null,2));
 const entry = path.join(runtime, "main", "index.js");
 const runtimeSha = hash(fs.readFileSync(entry));
