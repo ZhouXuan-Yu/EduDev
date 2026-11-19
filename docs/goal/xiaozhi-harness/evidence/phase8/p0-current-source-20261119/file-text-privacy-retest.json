@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "implementationSha256": "2951697724239c7ad13ce81cebfa5dc7d3cfacee4e5799f60e331e6b4f40d42d",
+  "checks": {
+    "ordinaryOfficeReadAndTerminalAcrossModes": "6/6",
+    "independentProductionHost": [
+      {
+        "name": "selected-student-sqlite-and-prompt-redaction",
+        "pass": true
+      },
+      {
+        "name": "normal-authorized-teacher-file-redaction",
+        "pass": true
+      },
+      {
+        "name": "normal-http-egress-withheld-and-explicitly-denied",
+        "pass": true
+      }
+    ],
+    "types": "pass",
+    "renderer": "253/253",
+    "reasoning": "19/19",
+    "continuity": "9/9"
+  },
+  "previous": {
+    "verdict": "FAIL",
+    "fields": [
+      "name",
+      "school",
+      "localPath"
+    ]
+  },
+  "independent": {
+    "archiveSha256": "a1388cb7374d9f84a397a33275f4ebb84077f902df0586c4ea37acd53d3b1284",
+    "requests": 7,
+    "callsWithoutEgress": 0,
+    "coldEgressGrantAbsent": true,
+    "fileBefore": {
+      "bytes": 256,
+      "sha256": "56d3bd9432b11e996ce2233ceec0d29047bae9e44c4c945f4f2c05d2e9209fbc",
+      "version": "ccf6979222a3d5c1f61083db3b2c6789da4d64bf41b9f10a91b0b1f03b4b6589"
+    },
+    "fileAfter": {
+      "bytes": 256,
+      "sha256": "56d3bd9432b11e996ce2233ceec0d29047bae9e44c4c945f4f2c05d2e9209fbc",
+      "version": "ccf6979222a3d5c1f61083db3b2c6789da4d64bf41b9f10a91b0b1f03b4b6589"
+    },
+    "toolSource": {
+      "sha256": "56d3bd9432b11e996ce2233ceec0d29047bae9e44c4c945f4f2c05d2e9209fbc",
+      "version": "ccf6979222a3d5c1f61083db3b2c6789da4d64bf41b9f10a91b0b1f03b4b6589",
+      "sanitized": true
+    }
+  },
+  "open": {
+    "status": "FAIL",
+    "scope": "Separate actual list/stat/read chains in request and fullAccess leave sensitive path labels in structured model tool results. Selectors must continue resolving without exposing raw labels. Attachment and other input scopes still need evidence."
+  },
+  "paidCalls": 0
+}

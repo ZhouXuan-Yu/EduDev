@@ -27,7 +27,7 @@
   ],
   "openFindings": [
     "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
-    "Phase8: A-P0-08 production data projections and QG-01 through QG-10",
+    "Phase8: redaction in ordinary file text and HTTP egress refusal pass; structured file labels and selector round-trip need fix; QG-01 through QG-10",
     "Windows packaged cold Word prepared, archived and reopened; native install/uninstall and final branch build remain.",
     "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
   ],
@@ -522,6 +522,10 @@
         "status": "PASS",
         "evidence": "evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md",
         "coldReadback": "3/3"
+      },
+      "fileTextPrivacy": {
+        "status": "TEXT_PASS_STRUCTURED_FILE_PROJECTION_FAIL",
+        "evidence": "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json"
       }
     }
   },

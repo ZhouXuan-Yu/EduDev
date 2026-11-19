@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 普通文本模型边界
+
+更新 Production Host 的文本处理接线，复用学生上下文脱敏器。新增真实 loopback Host 6/6 及独立原样本 3/3。保留旧模型请求字段失败证据与新结构标签缺口；没有付费请求。[结果](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。
+
 ## 2026-11-19 托管 MCP 撤销与准备预算
 
 独立真实 Host 3/3、关闭只读冷读 3/3。原任务前后原生工具计数不再增加，替代路径完成。修复旧 MCP 测试参数，使其同时覆盖非法 60ms 及实际 1000ms 共享预算，29/29。[报告](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。

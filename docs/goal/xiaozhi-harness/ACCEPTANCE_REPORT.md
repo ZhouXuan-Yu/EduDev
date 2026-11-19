@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 A-P0-08 普通文本与结构字段
+
+原普通授权文本问题已修复。独立 3/3 同时覆盖选择学生、正常文本读取、明确拒绝 HTTP Egress。真实列表→元数据→读取另证实结构标签仍能外显。A-P0-08 整体 FAIL，适用发布门槛继续执行。[证据](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。
+
 ## 2026-11-19 A-P0-07 复验
 
 A-P0-07 已实现。正常 Grant、Provider、Artifact 撤销 3/3，冷启事实保持；既有 HTTP 与 Extension 证据合并覆盖。累积 78/89，A-P0-08 与 QG-01–10 继续完成。[证据](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。

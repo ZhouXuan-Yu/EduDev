@@ -1,5 +1,11 @@
 # Harness 执行进度
 
+## 2026-11-19 普通文本外发脱敏
+
+修复授权文本读取回传模型时遗漏 SQLite 已知姓名、学校和本地路径的情况。普通文件、前台终端及四种权限模式测试 6/6。独立生产 Host 同样本复验 3/3，缺 Egress 的真实 HTTP 工具发送 0 次，关闭后 SQLite 无该授权。原文件字节、来源 SHA 和版本一致。
+
+结构字段另有实测缺口。含合成身份的文件名和相对来源路径会出现在模型可见的列表和文件元数据内，当前模型直接依赖这些字段继续定位文件。A-P0-08 整体保持 FAIL，继续修复公开标识和原权限内文件选择的衔接。[范围证据](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。
+
 ## 2026-11-19 托管 MCP 撤销闭环
 
 同 Task 撤销精确 Grant、服务 Provider 或能力 Artifact 后，原回调与 Pi 重调均无新增原生派发，本地替代完成。独立 3/3，关闭 SQLite 冷读 3/3。旧 MCP 边界测试按有效配置运行 29/29。A-P0-07 已实现，累计 78/89。[撤销证据](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。

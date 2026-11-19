@@ -186,10 +186,11 @@
       "priority": "P0",
       "scenario": "数据外发",
       "expected": "未授权教师/学生资料不发送到外部 Provider",
-      "status": "NOT_TESTED",
+      "status": "FAIL",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+        "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json"
       ],
       "phaseEvidence": [
         {
@@ -203,7 +204,17 @@
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
       ],
-      "scope": "已有 HTTP 权限叶层、Extension 和 Skill 私有来源阻断证据。还需生产学生 SQLite 脱敏链及实际 HTTP 端点记录零外发。"
+      "scope": "普通文本脱敏和真实 HTTP 缺 Egress 拒绝通过。模型可见结构化文件标签仍可暴露 SQLite 已知的合成身份，需要上线前修复并保留文件选择兼容。",
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": "已有 HTTP 权限叶层、Extension 和 Skill 私有来源阻断证据。还需生产学生 SQLite 脱敏链及实际 HTTP 端点记录零外发。",
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+          ]
+        }
+      ]
     },
     {
       "id": "A-P0-09",
