@@ -1,0 +1,69 @@
+{
+  "status": "FAIL_SCOPED",
+  "baseline": "12f27f61de85fd33e5cfb2f24debfe394d4c2ca4",
+  "actualPackagingScope": "Production isolated Host with original local document parser/terminal and real loopback model serialization. All materials are synthetic.",
+  "verifiedSourceCount": 785,
+  "sourceDriftAtEnd": [],
+  "tests": [
+    {
+      "name": "office-document-docx",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    },
+    {
+      "name": "office-document-pdf",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    },
+    {
+      "name": "submitted-attachment-txt",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    },
+    {
+      "name": "submitted-attachment-docx",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    },
+    {
+      "name": "submitted-attachment-pdf",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    },
+    {
+      "name": "persistent-terminal-result",
+      "testStatus": "FAIL_PRIVACY",
+      "runStatus": "succeeded",
+      "leakedFields": [
+        "school",
+        "pathToken"
+      ]
+    }
+  ],
+  "finding": "The six ordinary authorized document, attachment and persistent terminal routes retain known schools and embedded local paths in the model payload. Their shared older sanitizer already masks known names and common contact attributes.",
+  "runtimeFacts": "Original source and captured copies verified after shutdown. Terminal successful replay with actual ConPTY cleanup and cold SQLite preserved. First harness setup failed on a test-only list variant; this failure and the independently completed terminal flow are retained.",
+  "paidCalls": 0,
+  "sourceGET": 0,
+  "rawReportSha256": "549b1f0b9a6f8018f7c5dc1959b524406b0f4ea4fd1081cd29effb0e722c22ce",
+  "coldReadbackSha256": "6f17f2e4b2d8b1955c203da391a84afbb3e44356893fbb3a599ab13fd86bfd90"
+}

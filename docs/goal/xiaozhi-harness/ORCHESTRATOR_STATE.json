@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "23f656797f049359bc52014367c9b9a66fcfb455",
-  "headRole": "Last Harness source parent included in the new main merge. Read latestIntegration and branch refs for current integration and follow-up deltas.",
-  "mainObserved": "d94cfb6c0873aa257aa87bfdc3cf22b0417237e9",
+  "head": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+  "headRole": "Verified main merge baseline; feature implementation follows this commit.",
+  "mainObserved": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -27,8 +27,9 @@
   ],
   "openFindings": [
     "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
-    "Phase8: formal synthetic real-model ABBA, failure scenarios, packaging and independent final acceptance",
-    "Cached Pi preparation/tool latency optimization and frozen production verification continue on the feature branch"
+    "Phase8: Office, attachment and persistent terminal model projections have current red evidence; Windows isolated install blocked here",
+    "Windows packaged cold Word prepared, archived and reopened; native install/uninstall and final branch build remain.",
+    "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 3,
@@ -37,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Follow the feature branch from this main merge. Continue the DOCX preparation/archive split, native window and remaining Phase7 coverage, then formal ABBA and independent final acceptance.",
+  "next": "Complete A-P0-08 Office documents, attachments, persistent terminal and legacy replay model projections on the feature branch. Then finish the native Phase7, qualified Windows installation, formal ABBA and final independent acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -511,7 +512,32 @@
   "phase8P0CurrentSource": {
     "status": "TWO_PASS_TWO_PENDING_FULL_PROVIDER_RUNTIME_PROBES",
     "mechanismChecksPassed": 59,
-    "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+    "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+    "followup": {
+      "status": "SCOPED_4_PASS_2_OPEN",
+      "evidence": "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+      "acceptedMatrix": "87/89",
+      "paidCalls": 0,
+      "managedRevocation": {
+        "status": "PASS",
+        "evidence": "evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md",
+        "coldReadback": "3/3"
+      },
+      "fileTextPrivacy": {
+        "status": "TEXT_PASS_STRUCTURED_FILE_PROJECTION_FAIL",
+        "evidence": "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json"
+      },
+      "structuredFiles": {
+        "status": "FILE_REFERENCE_PASS_OTHER_MODEL_TOOL_PROJECTIONS_FAIL",
+        "evidence": "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      },
+      "remainingToolPrivacy": {
+        "status": "SIX_PRODUCTION_EGRESS_RED_CASES",
+        "evidence": "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json",
+        "active": "Model-result and legacy-replay projection implementation",
+        "paidCalls": 0
+      }
+    }
   },
   "phase8HttpMcp": {
     "status": "HTTP_PROJECTION_AND_PROVIDER_REDISPATCH_FIXED_SCOPED",
@@ -529,12 +555,70 @@
     "wordHostRetest": "evidence/phase8/windows-package-20261119/word-host-156-path.json",
     "fullOutFingerprint": "a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900",
     "latestFullUnpackedLocal": "%TEMP%/eduw-117614f8/release/win-unpacked",
-    "latestFullUiRetest": "evidence/phase8/windows-package-20261119/unpacked-word-profile-fixed-result.json"
+    "latestFullUiRetest": "evidence/phase8/windows-package-20261119/unpacked-word-profile-fixed-result.json",
+    "featureCheckpoint": {
+      "commit": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0",
+      "status": "CTIME_REGRESSION_18_PASS_FRESH_PACKAGE_4_OF_5_DOCX_PREPARATION_TIMEOUT",
+      "evidence": "evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json"
+    },
+    "coldRetest": {
+      "status": "UNPACKED_FIVE_SOURCES_AND_COLD_READBACK_PASS",
+      "evidence": "evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json",
+      "officeReadyMs": 146508,
+      "wordArchiveMs": 169208,
+      "wordImportMs": 179353,
+      "installAndUninstall": "NOT_TESTED"
+    },
+    "optimizedOffice": {
+      "status": "DEV_AND_PACKAGED_IMPORT_PASS, LOCAL_NSIS_PREVIOUS_CANDIDATE_BUILT",
+      "evidence": "evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json",
+      "hash": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7",
+      "independentInstall": "BLOCKED_ON_CURRENT_HOST_EXISTING_PRODUCT_SHORTCUTS"
+    }
   },
   "latestIntegration": {
     "mainParent": "d94cfb6c0873aa257aa87bfdc3cf22b0417237e9",
     "harnessParent": "23f656797f049359bc52014367c9b9a66fcfb455",
     "scope": "Completed Harness fixes taken into main; concurrent KB continuation maintained",
-    "evidence": "evidence/phase8/main-sync-20261119.md"
+    "evidence": "evidence/phase8/main-sync-20261119.md",
+    "mainMerge": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+    "featureCheckpoint": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0"
+  },
+  "phase8QualityCheckpoint": {
+    "acceptedMatrix": "87/89",
+    "evidence": "evidence/phase8/current-quality-checkpoint-20261119.md",
+    "pass": [
+      "QG-01",
+      "QG-02",
+      "QG-03",
+      "QG-04",
+      "QG-08",
+      "QG-05",
+      "QG-10",
+      "QG-06",
+      "QG-07"
+    ],
+    "educationAndIpc": "evidence/phase8/education-core-and-ipc-20261119.md",
+    "windowsInstall": {
+      "status": "BLOCKED_CURRENT_HOST",
+      "evidence": "evidence/phase8/current-quality-checkpoint-20261119.md"
+    }
+  },
+  "phase7PackagedC1": {
+    "status": "PASS_SCOPED_GATE7_PARTIAL",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-c1-retest.json",
+    "nativeWindow": "NOT_RUN",
+    "paidCalls": 0
+  },
+  "phase7PackagedS2": {
+    "status": "PASS_SCOPED_COLD_ROLLBACK",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json",
+    "activeRun": "NOT_RUN",
+    "gate7": "PARTIAL"
+  },
+  "phase7PackagedW3": {
+    "status": "PASS_SCOPED_SEQUENTIAL_COLD_NAVIGATION",
+    "evidence": "evidence/phase7/implementation-resume-20261119/packaged-w3-navigation.json",
+    "gate7": "PARTIAL"
   }
 }

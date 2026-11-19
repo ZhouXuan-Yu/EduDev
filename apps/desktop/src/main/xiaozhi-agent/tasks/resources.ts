@@ -6,9 +6,10 @@ import {taskHash,taskToolKinds} from './task-evidence';
 import {TaskAdmissionError} from './admission-error';
 
 /** Identity only; does not grant permissions or read/execute a model proposal. */
-export function createTaskResources(options:{sessionId:string;workspace:()=>Promise<WorkspaceLease>;officeOutput?:()=>Promise<string|null>;studentId:()=>Promise<string>;attachment:(id:string)=>Promise<boolean>}){
+export function createTaskResources(options:{sessionId:string;resolveFile?:(target:string)=>Promise<string>;workspace:()=>Promise<WorkspaceLease>;officeOutput?:()=>Promise<string|null>;studentId:()=>Promise<string>;attachment:(id:string)=>Promise<boolean>}){
  async function resource(kind:TaskCriterionKind,target:string):Promise<string>{
   if(['file','saved_text','saved_office'].includes(kind)){
+   if(options.resolveFile)target=await options.resolveFile(target);
    let root:string;
    try{root=(await options.workspace()).path;}catch(error){
     // An output-only grant identifies a paper result, never a readable workspace.

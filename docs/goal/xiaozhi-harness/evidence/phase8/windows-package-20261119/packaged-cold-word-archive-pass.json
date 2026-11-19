@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "verdict": "PACKAGED_COLD_IMPORT_AND_REOPEN_PASS",
+  "source": {
+    "baseline": "23f656797f049359bc52014367c9b9a66fcfb455",
+    "wordFix": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0",
+    "compiledOutFiles": 481,
+    "compiledOutSha256": "83466a4cb9ce0c83949f29a83c5425fd608ec6d5d3373f07220e2220b6d30c5f"
+  },
+  "command": "npm run test:release-packaged with OMNI_EDU_PACKAGED_EXE and OMNI_EDU_PACKAGED_OFFICE_CACHE; direct equivalent node script used",
+  "priorAttempt": {
+    "scope": "Same EXE, fresh profile, 180-second aggregate test deadline",
+    "supportingFile": "unpacked-word-source-fence-result.json",
+    "reportSha256": "ad2f52ea6e28cd002abe86d8e12009d10e5f167a6162db97ae7545714b41685b"
+  },
+  "run": {
+    "reportSha256": "5cb03c00caec3555b3b7174e6d69c142990f5b87816311bbd07988c8f7ff9ac8",
+    "stageObservationsSha256": "e2179c057bac329cc7dee21176add6a1243d970a35ab2c2863dfa52ab33ad45d",
+    "executableSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "launches": [
+      {
+        "packaged": true,
+        "path": ""
+      },
+      {
+        "packaged": true,
+        "path": ""
+      }
+    ],
+    "checks": [
+      {
+        "name": "Packaged frozen worker and native LanceDB",
+        "passed": true
+      },
+      {
+        "name": "Packaged PDFium page component on one synthetic scanned page",
+        "passed": true
+      },
+      {
+        "name": "Teacher imports long text, Markdown, DOCX, image and synthetic scanned PDF through local parsers",
+        "passed": true
+      },
+      {
+        "name": "Original Word and derived PDF identities, bytes and reverse link persist after cold restart",
+        "passed": true
+      },
+      {
+        "name": "Tail beyond 80 chunks and image OCR persist after cold restart",
+        "passed": true
+      },
+      {
+        "name": "Cold restart catalogue/body readback",
+        "passed": true
+      }
+    ],
+    "networkAttempts": [],
+    "rendererErrors": [],
+    "wordImportTimeline": [
+      {
+        "elapsedMs": 315,
+        "import": "needs_parser",
+        "archive": "idle"
+      },
+      {
+        "elapsedMs": 838,
+        "import": "processing",
+        "archive": "running",
+        "component": "checking"
+      },
+      {
+        "elapsedMs": 1400,
+        "import": "processing",
+        "archive": "running",
+        "component": "extracting"
+      },
+      {
+        "elapsedMs": 33171,
+        "import": "processing",
+        "archive": "running",
+        "component": "verifying"
+      },
+      {
+        "elapsedMs": 146508,
+        "import": "processing",
+        "archive": "running",
+        "component": "ready"
+      },
+      {
+        "elapsedMs": 169208,
+        "import": "processing",
+        "archive": "complete",
+        "component": "ready"
+      },
+      {
+        "elapsedMs": 179353,
+        "import": "ready",
+        "archive": "complete",
+        "component": "ready"
+      }
+    ],
+    "wordArchive": {
+      "originalId": "resource_f67d5774-5e9a-416a-9048-c986830e2b20",
+      "originalSha256": "934208ce73992f897771814cbf26f66d381dac465437b5b4b8620e0fb10afe97",
+      "pdfId": "resource_7d41d6a1-09a9-44a5-a932-c8e5bfc26443",
+      "pdfSha256": "d2de45ec127cd5eca8cfc5c4c721118d68dcb5796f9eb68edb080fe090ae3c90",
+      "pdfBytes": 11748,
+      "pages": 1
+    },
+    "sqliteWord": [
+      {
+        "resource_id": "resource_f67d5774-5e9a-416a-9048-c986830e2b20",
+        "version": "934208ce73992f897771814cbf26f66d381dac465437b5b4b8620e0fb10afe97",
+        "status": "complete",
+        "error": "",
+        "pdf_resource_id": "resource_7d41d6a1-09a9-44a5-a932-c8e5bfc26443",
+        "pdf_sha": "d2de45ec127cd5eca8cfc5c4c721118d68dcb5796f9eb68edb080fe090ae3c90",
+        "pdf_bytes": 11748,
+        "pages": 1,
+        "created_at": "2026-11-19T10:26:12.069Z",
+        "updated_at": "2026-11-19T10:29:00.570Z"
+      }
+    ],
+    "originals": [
+      {
+        "originalFileName": "教师教案.md",
+        "fileSize": 64,
+        "contentHash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231",
+        "id": "resource_e26252a7-e27e-4ca3-adc4-05d8fba137f6",
+        "parseStatus": "ready",
+        "shaReadback": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231"
+      },
+      {
+        "originalFileName": "教师讲义.docx",
+        "fileSize": 9524,
+        "contentHash": "934208ce73992f897771814cbf26f66d381dac465437b5b4b8620e0fb10afe97",
+        "id": "resource_f67d5774-5e9a-416a-9048-c986830e2b20",
+        "parseStatus": "ready",
+        "shaReadback": "934208ce73992f897771814cbf26f66d381dac465437b5b4b8620e0fb10afe97"
+      },
+      {
+        "originalFileName": "长教材.txt",
+        "fileSize": 378052,
+        "contentHash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4",
+        "id": "resource_c5ed5030-4e65-434a-9e72-90d3bb295ce1",
+        "parseStatus": "ready",
+        "shaReadback": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4"
+      },
+      {
+        "originalFileName": "题目照片.png",
+        "fileSize": 3501,
+        "contentHash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5",
+        "id": "resource_7c0f24ea-2400-4e84-9149-7eca5e2c67e9",
+        "parseStatus": "ready",
+        "shaReadback": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5"
+      },
+      {
+        "originalFileName": "扫描题页.pdf",
+        "fileSize": 8212,
+        "contentHash": "25bb2d79a52e522670c2c169088f971d24a8b2e6f3a93074d6b1d7ac217a9e23",
+        "id": "resource_a5bedb4f-69ed-463c-8c11-beae9474b6b4",
+        "parseStatus": "ready",
+        "shaReadback": "25bb2d79a52e522670c2c169088f971d24a8b2e6f3a93074d6b1d7ac217a9e23"
+      }
+    ]
+  },
+  "limits": "Uses two pinned downloads in an isolated empty profile. Production extraction and full tree verification are real. No Windows installation or uninstall, no final main candidate, no live provider."
+}

@@ -5,6 +5,7 @@ import {spawn} from 'node:child_process';
 import yauzl from 'yauzl';
 import {noLinks} from '../xiaozhi-agent/managed-skills';
 import type {WordOfficeProgress} from '../../shared/material-word-drawing';
+import {verifyOfficeTree} from './word-office-tree';
 
 export const WORD_OFFICE_COMPONENT={
  id:'libreoffice-word-drawing',version:'26.8.2',license:'MPL-2.0 and bundled notices',
@@ -56,29 +57,7 @@ export function runWordOfficeProcess(executable:string,args:string[],options:{cw
 }
 
 export async function verifyWordOfficeTree(root:string,signal:AbortSignal){
- noLinks(root);
- const hash=createHash('sha256');let bytes=0,count=0;
- async function walk(folder:string,relative=''){
-  const entries=await fs.readdir(folder,{withFileTypes:true});
-  entries.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
-  for(const entry of entries){
-   signal.throwIfAborted();
-   const name=relative?relative+'/'+entry.name:entry.name,file=path.join(folder,entry.name);
-   if(entry.isSymbolicLink())throw Error('configuration');
-   if(entry.name==='__pycache__')continue;
-   if(entry.isDirectory())await walk(file,name);
-   else if(entry.isFile()){
-    const stat=await fs.stat(file);
-    if(stat.size>256*1048576||bytes+stat.size>WORD_OFFICE_COMPONENT.installedBytes)throw Error('configuration');
-    const data=await fs.readFile(file);bytes+=data.length;count++;
-    if(bytes>WORD_OFFICE_COMPONENT.installedBytes||count>WORD_OFFICE_COMPONENT.files)throw Error('configuration');
-    hash.update(name+'\0'+data.length+'\0'+digest(data)+'\n');
-   }else throw Error('configuration');
-  }
- }
- await walk(root);
- if(count!==WORD_OFFICE_COMPONENT.files||bytes!==WORD_OFFICE_COMPONENT.installedBytes||hash.digest('hex')!==WORD_OFFICE_COMPONENT.treeSha256)throw Error('configuration');
- signal.throwIfAborted();return path.join(root,'program');
+ return verifyOfficeTree(root,WORD_OFFICE_COMPONENT,signal);
 }
 
 async function extractLessMsi(file:string,folder:string,signal:AbortSignal){

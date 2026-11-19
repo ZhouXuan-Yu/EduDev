@@ -1,5 +1,6 @@
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createTerminalService, type TerminalService} from './terminal/service';
+import {createFileReferenceProjection} from './file-references';
 import {createPersistentTerminalTools} from './terminal/tools';
 import type {TerminalUpdate} from '../../shared/xiaozhi-terminal-jobs';
 import {createTaskPlanningRuntime} from './tasks/planning-runtime';
@@ -885,6 +886,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const adopted=lessonIntent?await Promise.all(lessonIntent.curricula.map(binding=>store.materialCurriculum.bound(binding))):undefined;
     if(adopted?.some(entry=>entry.metadata.status!=='active'))throw Error('source_changed');
     const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0,adopted);
+    const fileReferenceTask=owner?.task?.id||(await tasks.committed(id))?.id;
+    const fileReferences=fileReferenceTask?createFileReferenceProjection({state:store.xiaozhiState.fileReferences,sessionId:id,taskId:fileReferenceTask,
+      workspace:()=>host.resolveFileWorkspace(id),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped),
+      sanitize:async text=>(await createStudentContextSanitizer(store))(text),sanitizer:()=>createStudentContextSanitizer(store),
+      fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText}):undefined;
     const mcpTools = owner ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
       authority: async (callId, decision) => {await owner.toolGovernance?.recordAuthority(callId, decision.grantRefs, 'permission-request:' + decision.requestDigest);},
       stdio: controlledMcp.forOwner({signal: owner.abort.signal, workspace, requirementsVersion: () => owner.task?.requirementsVersion || 1,
@@ -902,7 +908,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
-    try { return {stateRoot,workspace,thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,fileReferences,thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
         return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:true,generatedWorkspace:!Boolean(await store.xiaozhiState.workspace(id))};
@@ -977,7 +983,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
       classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,paperExportIntent:owner?.paperExportIntent,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
-      sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await deliveries.context(id,owner?.resumeDeliveryId,source=>prepareScienceLessonRefresh(store,source,questionAliases)))
+      sanitizeFileText:async text=>(await createStudentContextSanitizer(store))(text),protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await (await createStudentContextSanitizer(store))(await deliveries.context(id,owner?.resumeDeliveryId,source=>prepareScienceLessonRefresh(store,source,questionAliases))))
         +(owner&&admittedPrompt?await preparePaperAdaptationContext(store.paperAdaptations,{sessionId:id,studentId,runId,prompt:admittedPrompt},questionAliases,owner.abort.signal,()=>!closing&&!owner.stopped&&active.get(id)===owner):'')
         +(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
       computationTools:managedComputationTools({service:owner?.computationScope||managedTools,capture:owner?.computationResults?.capture,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:async text=>(await createStudentContextSanitizer(store))(text)}),
@@ -1087,7 +1093,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         current:()=>!closing&&active.get(id)===run&&!run.stopped,questions:store.questionReviews});
       const readSavedPractice=createPracticeReadback({sessionId:id,runId:run.runId,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,practice:store.practiceReviews});
-      run.results=createRunResultReadback({runId:run.runId,
+      run.results=createRunResultReadback({runId:run.runId,canonicalize:base.fileReferences?.canonical,
         canResolveFailures:()=>!closing&&active.get(id)===run&&!run.stopped&&!!run.verification?.canResolveFailures(),
         ...(run.goalId?{bindDiscovery:createDiscoveryReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,workspace:()=>host.resolveFileWorkspace(id)})}:{}),
         bindEffect:(callId,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?readWebAnswers(callId,tool,payload):tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
@@ -1149,7 +1155,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const taskRuntime=run.task&&run.publisher?createTaskPlanRuntime({sql:store.xiaozhiState.sql,taskId:run.task.id,publisher:run.publisher,contextSanitizer:()=>createStudentContextSanitizer(store),
         planning: planningRuntime,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),trustedMcpNames:new Set(base.mcpTools?.map(t=>t.name)),
-        resources:createTaskResources({sessionId:id,workspace:()=>host.resolveFileWorkspace(id),officeOutput:()=>resolvePaperOutput(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
+        resources:createTaskResources({sessionId:id,resolveFile:base.fileReferences?.resolve,workspace:()=>host.resolveFileWorkspace(id),officeOutput:()=>resolvePaperOutput(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
         proofs:async()=>{if(!run.results||!run.readResults)return[];await run.publisher!.barrier();const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];
           const task=await tasks.committed(id);if(!task||task.id!==run.task!.id)throw Error('task_owner_stale');
           for(const previous of await tasks.admittedRuns(id,task.id)){if(previous.runId===run.runId)continue;try{proofs.push(await resumedResults!.run(previous.runId,task));}catch{run.abort.signal.throwIfAborted();if(closing||run.stopped||active.get(id)!==run)throw Error('cancelled');/* Missing old authority stays unverified; no tool or approval is replayed. */}}

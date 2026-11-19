@@ -1,0 +1,70 @@
+{
+  "status": "PASS_SCOPED",
+  "scope": "Sequential Workbench cross-session navigation and cold reopen",
+  "candidateFingerprint": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7",
+  "checks": [
+    {
+      "name": "cross_session_navigation_no_fact_or_run_mutation",
+      "status": "PASS",
+      "visits": [
+        {
+          "title": "恢复样本 · 尚有剩余步骤",
+          "sessionId": "aisession_a05428eb-a95d-4266-94fe-e1fdeb7f95e9",
+          "taskId": "xitask_8cac3aff0307020997a24baf3285fb99642402283df4f4787c92a26977faedd9",
+          "run": "run_4d2a0061-29ee-409c-b641-217f70f6c775",
+          "state": "review_required"
+        },
+        {
+          "title": "核对样本 · 同任务继续",
+          "sessionId": "aisession_85df8d1a-1213-41a6-89ac-59a9a71bd92f",
+          "taskId": "xitask_34d75fffbee9ac685daf4e915bc225076e02bee4c84281735b98fb683faf96d3",
+          "run": "run_54bc914c-f5c4-4729-b624-70dcd27f526d",
+          "state": "review_required"
+        },
+        {
+          "title": "恢复样本 · 尚有剩余步骤",
+          "sessionId": "aisession_a05428eb-a95d-4266-94fe-e1fdeb7f95e9",
+          "taskId": "xitask_8cac3aff0307020997a24baf3285fb99642402283df4f4787c92a26977faedd9",
+          "run": "run_4d2a0061-29ee-409c-b641-217f70f6c775",
+          "state": "review_required"
+        }
+      ]
+    },
+    {
+      "name": "cold_cross_session_navigation_and_sqlite_readback",
+      "status": "PASS",
+      "visits": [
+        {
+          "title": "核对样本 · 同任务继续",
+          "sessionId": "aisession_85df8d1a-1213-41a6-89ac-59a9a71bd92f",
+          "taskId": "xitask_34d75fffbee9ac685daf4e915bc225076e02bee4c84281735b98fb683faf96d3",
+          "run": "run_54bc914c-f5c4-4729-b624-70dcd27f526d",
+          "state": "review_required"
+        },
+        {
+          "title": "恢复样本 · 尚有剩余步骤",
+          "sessionId": "aisession_a05428eb-a95d-4266-94fe-e1fdeb7f95e9",
+          "taskId": "xitask_8cac3aff0307020997a24baf3285fb99642402283df4f4787c92a26977faedd9",
+          "run": "run_4d2a0061-29ee-409c-b641-217f70f6c775",
+          "state": "review_required"
+        }
+      ]
+    }
+  ],
+  "rendererErrors": [],
+  "paidCalls": 0,
+  "network": "Not measured; no model action requested",
+  "remaining": [
+    "late async result",
+    "interleaved active runs",
+    "cross-session artifact and Grant isolation"
+  ],
+  "originals": {
+    "reportSha256": "11dc1783f02ef44aaf190a18298dbc7829b0faa888291d7509ba8d0346abf7eb",
+    "screenshotsSha256": {
+      "before-restart.png": "d4c4a7e6d43606948c82563a4222af9c0bdd4d3b32f4067bb71668a98d056dde",
+      "after-restart.png": "d4c4a7e6d43606948c82563a4222af9c0bdd4d3b32f4067bb71668a98d056dde"
+    }
+  },
+  "gate7": "PARTIAL"
+}

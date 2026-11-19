@@ -1,0 +1,118 @@
+{
+  "status": "FAILED_AT_COLD_IMPORT_DEADLINE",
+  "build": {
+    "sourceParent": "23f656797f049359bc52014367c9b9a66fcfb455",
+    "outFiles": 481,
+    "outSha256": "83466a4cb9ce0c83949f29a83c5425fd608ec6d5d3373f07220e2220b6d30c5f",
+    "resources": 5,
+    "sourcePatch": [
+      {
+        "file": "src/main/assets/material-word-pages.ts",
+        "sha256": "0be449b56a9cf72d4c0bc6f258b44a4c460f322f9bf786da35ec7c1ec6ec7c68"
+      },
+      {
+        "file": "scripts/education/kb-word-pages.mjs",
+        "sha256": "a757a08daec64efa1e1669cdc664a8a6d541adb361b3cbe568d1c9e78df3b8b5"
+      }
+    ]
+  },
+  "packageTest": {
+    "launch": "Packaged Windows executable on this host with fresh synthetic profile and empty PATH",
+    "preflightChecks": [
+      {
+        "name": "Packaged frozen worker and native LanceDB",
+        "passed": true
+      },
+      {
+        "name": "Packaged PDFium page component on one synthetic scanned page",
+        "passed": true
+      }
+    ],
+    "originalInputs": [
+      {
+        "originalFileName": "教师教案.md",
+        "fileSize": 64,
+        "contentHash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231"
+      },
+      {
+        "originalFileName": "教师讲义.docx",
+        "fileSize": 9523,
+        "contentHash": "93bfd563570c7262450d7c26a011bbb65399ce285e33152b16d53fcb26782b8a"
+      },
+      {
+        "originalFileName": "长教材.txt",
+        "fileSize": 378052,
+        "contentHash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4"
+      },
+      {
+        "originalFileName": "题目照片.png",
+        "fileSize": 3501,
+        "contentHash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5"
+      },
+      {
+        "originalFileName": "扫描题页.pdf",
+        "fileSize": 8212,
+        "contentHash": "679f7012389cffb597eaa7e0afb3fd7e69d863a59100079208cf906c8e3c3000"
+      }
+    ],
+    "resourcesAfterShutdown": [
+      {
+        "original_file_name": "扫描题页.pdf",
+        "file_size": 8212,
+        "content_hash": "679f7012389cffb597eaa7e0afb3fd7e69d863a59100079208cf906c8e3c3000",
+        "parse_status": "ready",
+        "parse_engine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3"
+      },
+      {
+        "original_file_name": "教师教案.md",
+        "file_size": 64,
+        "content_hash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231",
+        "parse_status": "ready",
+        "parse_engine": "local-text-v1"
+      },
+      {
+        "original_file_name": "教师讲义.docx",
+        "file_size": 9523,
+        "content_hash": "93bfd563570c7262450d7c26a011bbb65399ce285e33152b16d53fcb26782b8a",
+        "parse_status": "partial",
+        "parse_engine": "word-ooxml.v2:cancelled"
+      },
+      {
+        "original_file_name": "长教材.txt",
+        "file_size": 378052,
+        "content_hash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4",
+        "parse_status": "ready",
+        "parse_engine": "local-text-v1"
+      },
+      {
+        "original_file_name": "题目照片.png",
+        "file_size": 3501,
+        "content_hash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5",
+        "parse_status": "ready",
+        "parse_engine": "image-rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1"
+      }
+    ],
+    "wordAfterShutdown": [
+      {
+        "status": "cancelled",
+        "error": "cancelled",
+        "pdf_bytes": 0,
+        "pages": 0,
+        "created_at": "2026-11-19T10:03:44.180Z",
+        "updated_at": "2026-11-19T10:07:00.713Z"
+      }
+    ],
+    "rendererErrors": [],
+    "networkAttempts": [],
+    "reportSha256": "ad2f52ea6e28cd002abe86d8e12009d10e5f167a6162db97ae7545714b41685b",
+    "archiveAndColdReopenReached": false
+  },
+  "sourceTest": {
+    "oldCtimeOnlyCase": "RED source_changed",
+    "wordPages": "18/18",
+    "renderer": "253/253",
+    "typecheck": "exit 0",
+    "contract": "ctime-only drift requires the pinned content hash and unchanged path/version/stamp before and after verification"
+  },
+  "followup": "The deadline occurred before the Word PDF was available. Run a controlled Word preparation case and compare the locked-component preparation, conversion and archival times before running the full fresh-profile package flow again."
+}

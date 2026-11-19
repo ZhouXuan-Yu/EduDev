@@ -129,4 +129,77 @@ await check('A snapshot can still identify a removed parent and survives data-ro
   f.resources.delete(f.id);const view=await f.repo.view({...f.query,resourceId:first.pdf.id,version:first.pdf.contentHash});assert.equal(view.original.id,f.id);assert.equal(view.originalAvailable,false);
  }finally{await f.dispose();}
 });
+async function usePhysicalSourceStamp(f){
+ const file=f.resources.get(f.id).localPath;
+ await fs.utimes(file,1700000000,1700000000);
+ f.host.stamp=async(id,version)=>{
+  const resource=await f.host.resource(id);
+  if(resource.contentHash!==version)throw Error('source_changed');
+  const stat=await fs.lstat(resource.localPath,{bigint:true});
+  if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1n)throw Error('missing');
+  return [stat.dev,stat.ino,stat.size,stat.mtimeNs,stat.ctimeNs].map(String).join(':');
+ };
+ return file;
+}
+async function changeMetadataOnly(file){
+ await fs.chmod(file,0o400);
+ await fs.chmod(file,0o600);
+}
+await check('An isolated ctime change verifies the locked bytes and completes the same source snapshot',async()=>{
+ const f=await fixture();try{
+  const file=await usePhysicalSourceStamp(f),before=await f.host.stamp(f.id,f.version),verify=f.host.verify;let originalChecks=0;
+  f.host.verify=async(...args)=>{if(args[0]===f.id)originalChecks++;await verify(...args);};
+  const view=await f.repo.prepare(f.query,async(...args)=>{
+   const result=await f.render(...args);await changeMetadataOnly(file);
+   const after=await f.host.stamp(f.id,f.version);
+   assert.deepEqual(after.split(':').slice(0,4),before.split(':').slice(0,4));assert.notEqual(after,before);
+   return result;
+  },new AbortController().signal);
+  assert.equal(view.status,'complete');assert.equal(view.original.version,f.version);assert(originalChecks>=3);assert.equal(f.state.publishes,1);
+ }finally{await f.dispose();}
+});
+await check('Restored size and mtime cannot admit changed source bytes after a ctime change',async()=>{
+ const f=await fixture();try{
+  const file=await usePhysicalSourceStamp(f);
+  await assert.rejects(()=>f.repo.prepare(f.query,async(...args)=>{
+   const result=await f.render(...args),changed=Buffer.from(f.bytes);changed[changed.length-1]^=1;
+   await fs.writeFile(file,changed);await fs.utimes(file,1700000000,1700000000);return result;
+  },new AbortController().signal),/source_changed/);
+  assert.equal(f.state.publishes,0);assert.equal((await f.repo.view(f.query)).status,'failed');
+ }finally{await f.dispose();}
+});
+for(const mutation of ['mtime','identity','path'])await check('A source '+mutation+' change is rejected before ctime recovery',async()=>{
+ const f=await fixture();try{
+  const file=await usePhysicalSourceStamp(f),verify=f.host.verify;let originalChecks=0;
+  f.host.verify=async(...args)=>{if(args[0]===f.id)originalChecks++;await verify(...args);};
+  await assert.rejects(()=>f.repo.prepare(f.query,async(...args)=>{
+   const result=await f.render(...args);
+   if(mutation==='mtime')await fs.utimes(file,1700000000,1700000002);
+   if(mutation==='identity'){
+    const replacement=file+'.replacement';await fs.writeFile(replacement,f.bytes);await fs.utimes(replacement,1700000000,1700000000);await fs.rename(replacement,file);
+   }
+   if(mutation==='path'){
+    const moved=file+'.moved';await fs.rename(file,moved);f.resources.get(f.id).localPath=moved;
+   }
+   return result;
+  },new AbortController().signal),/source_changed/);
+  assert.equal(originalChecks,0);assert.equal(f.state.publishes,0);
+ }finally{await f.dispose();}
+});
+await check('A second stamp change during SHA verification cannot refresh the source anchor',async()=>{
+ const f=await fixture();try{
+  const file=await usePhysicalSourceStamp(f),verify=f.host.verify;let checks=0;
+  f.host.verify=async(...args)=>{await verify(...args);if(args[0]===f.id){checks++;await changeMetadataOnly(file);}};
+  await assert.rejects(()=>f.repo.prepare(f.query,async(...args)=>{const result=await f.render(...args);await changeMetadataOnly(file);return result;},new AbortController().signal),/source_changed/);
+  assert.equal(checks,1);assert.equal(f.state.publishes,0);
+ }finally{await f.dispose();}
+});
+await check('SHA recovery cannot replace a changed conversion owner',async()=>{
+ const f=await fixture();try{
+  const file=await usePhysicalSourceStamp(f),verify=f.host.verify;
+  f.host.verify=async(...args)=>{await verify(...args);if(args[0]===f.id)f.db.prepare("UPDATE material_word_page_sources SET owner_nonce='foreign'").run();};
+  await assert.rejects(()=>f.repo.prepare(f.query,async(...args)=>{const result=await f.render(...args);await changeMetadataOnly(file);return result;},new AbortController().signal),/source_changed/);
+  assert.equal(f.state.publishes,0);const row=f.db.prepare('SELECT status,owner_nonce FROM material_word_page_sources').get();assert.equal(row.owner_nonce,'foreign');assert.equal(row.status,'running');
+ }finally{await f.dispose();}
+});
 console.log(JSON.stringify({passed:results.length,results,scope:'Actual SQLite, files and original resource lifecycle with controlled render/import callbacks. Real LibreOffice/PDF OCR and UI are separate checks; zero model calls.'}));

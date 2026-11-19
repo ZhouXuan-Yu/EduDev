@@ -31,3 +31,5 @@
 修复后的五资源包使用 `b634b3e`，实际 packaged out 481 文件，SHA-256 `a1e64ec1cafc62564728cab42c0deeb44af4434cc35d6e7311347db4aab24900`。在 C 盘新的合成 profile 实际解包 Office，四种其他原件导入成功。DOCX 作业目录保留新生成的 11,748 字节 PDF，原件归档失败为 `source_changed`，版本与完整目录读回未通过。字段与 Worker 端成功分开保留，继续修复归档来源检查。[新版实际结果](windows-package-20261119/unpacked-word-profile-fixed-result.json)。
 
 当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。
+
+同一五资源 EXE 使用新 profile 成功完成受控冷准备与原件导入 5/5。两次实际启动保持空 PATH。原件与一页 Word PDF 在正式入口、文件和关闭 SQLite 读回一致；0 网络请求及 0 renderer 错误。原 180 秒超时失败保留。新观测中组件校验约 113 秒，组件可用到归档约 23 秒，导入总耗时 179.4 秒。[通过报告](windows-package-20261119/packaged-cold-word-archive-pass.json)。

@@ -114,9 +114,22 @@ try {
     template.schemaHash = hash;
     privateState.servers = Array.from({ length: 3 }, (_, n) => ({ id: `mcp_00000000-0000-4000-8000-00000000000${n}`, name: `慢服务${n}`, transport: 'http', url: fixture.url, revision: 1, status: 'ready', schemaHash: template.schemaHash, trustedSchemaHash: template.schemaHash, tools: template.tools, selectedTools: ['lookup_lesson'] }));
     copy.prepare('INSERT INTO app_settings VALUES(?,?,?)').run('xiaozhi.mcp.v1', JSON.stringify(privateState), new Date().toISOString());
-    const slow = createMcpRuntime({ all: async (q, v=[]) => copy.prepare(q).all(...v), change: async (q,v=[]) => Number(copy.prepare(q).run(...v).changes) }, codec, { timeoutMs: 1000, preparationTimeoutMs: 60 });
-    fixture.state.hangInitialize = true; const started = performance.now();
-    try { const result = await slow.tools(); assert.equal(result.definitions.length, 0); assert(performance.now() - started < 700); assert((await slow.catalog()).servers.every(s => s.status === 'failed' && s.lastError === 'timeout')); await result.dispose(); }
+    const preparationTimeoutMs = 1000;
+    const slow = createMcpRuntime({
+      all: async (q, v=[]) => copy.prepare(q).all(...v),
+      change: async (q, v=[]) => Number(copy.prepare(q).run(...v).changes),
+    }, codec, { timeoutMs: 2000, preparationTimeoutMs });
+    fixture.state.hangInitialize = true;
+    try {
+      await assert.rejects(slow.tools(undefined, { preparationTimeoutMs: 60 }), /invalid_input/);
+      const started = performance.now();
+      const result = await slow.tools();
+      assert.equal(result.definitions.length, 0);
+      const elapsedMs = performance.now() - started;
+      assert(elapsedMs >= preparationTimeoutMs * 0.9 && elapsedMs < 2400, 'Offline services need one shared preparation budget');
+      assert((await slow.catalog()).servers.every(s => s.status === 'failed' && s.lastError === 'timeout'));
+      await result.dispose();
+    }
     finally { fixture.state.hangInitialize = false; await slow.dispose(); copy.close(); }
   });
   await check('Failed Pi assembly releases its MCP handles', async () => {

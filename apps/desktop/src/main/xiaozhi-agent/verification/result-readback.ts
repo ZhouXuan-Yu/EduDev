@@ -103,9 +103,20 @@ export function bindNativeResultReadback(file:string,stateRoot:string){
 
 /** Result integrity has an explicit scope and a separate human answer check.
  * Matching a durable tool body is never a claim that the answer is correct. */
-export function createRunResultReadback(options:{runId:string;readLocal:(tool:string,payload:Record<string,any>)=>Promise<unknown>;
+export function createRunResultReadback(options:{runId:string;canonicalize?:(tool:string,payload:Record<string,any>)=>Promise<Record<string,any>>;readLocal:(tool:string,payload:Record<string,any>)=>Promise<unknown>;
  verifyImage:(receipt:PublicImageDelivery)=>Promise<boolean>;canResolveFailures?:()=>boolean;bindEffect?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>;bindDiscovery?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>}){
  const captured=new Map<string,Captured>(),images=new Map<string,PublicImageDelivery>();let overflow=false,discoveryIncomplete=false,finished=false;
+ let captureTail=Promise.resolve();
+ async function canonicalContent(tool:string,content:unknown,callId:string):Promise<unknown>{
+  if(!options.canonicalize||!Array.isArray(content))return content;
+  const parts=withoutPlanBasisReference(content,callId,tool);
+  if(!Array.isArray(parts))return content;
+  const text=parts.flatMap(p=>p&&typeof p==='object'&&'type'in p&&p.type==='text'&&'text'in p&&typeof p.text==='string'?[p.text]:[]).join('\n');
+  let payload:Record<string,any>;try{payload=JSON.parse(text);}catch{return content;}
+  if(!payload||typeof payload!=='object'||Array.isArray(payload))return content;
+  const canonical=await options.canonicalize(tool,payload);
+  return canonical===payload?content:[{type:'text',text:JSON.stringify(canonical)}];
+ }
  const failedQuestions=new Map<string,{payload:Record<string,any>;digest:string;observedAt:string}>();
  function questionFailure(content:unknown,callId:string){
   if(!Array.isArray(content))return;
@@ -113,8 +124,8 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
   const text=parts.flatMap(p=>p&&typeof p==='object'&&'type'in p&&p.type==='text'&&'text'in p&&typeof p.text==='string'?[p.text]:[]).join('\n');if(text.length>1048576)return;
   try{const payload=JSON.parse(text);if(payload?.success===false&&payload.code==='quality_blocked'&&payload.submittedForTeacherReview===true&&validRepairReference(payload.repairReference)&&Number.isInteger(payload.repairAttempt)&&payload.repairAttempt>=0&&payload.repairAttempt<3)return{payload,digest:hash(payload),observedAt:new Date().toISOString()};}catch{/* A malformed or generic failure has no recoverable lineage. */}
  }
- function capture(callId:string,tool:string,result:unknown,failed:boolean){
-  if(finished||(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report'&&tool!=='education_export_teaching_lesson'))return;
+ function captureCanonical(callId:string,tool:string,result:unknown,failed:boolean){
+  if(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report'&&tool!=='education_export_teaching_lesson')return;
   if(failed){if(tool==='education_propose_questions'){const failure=questionFailure((result as {content?:unknown})?.content,callId);if(failure){if(!callId||callId.length>90||failedQuestions.has(callId)||failedQuestions.size>=30)overflow=true;else failedQuestions.set(callId,failure);}}return;}
   if(captured.has(callId)||captured.size>=30||!callId||callId.length>90){overflow=true;return;}
   const c=normalize(tool,(result as {content?:unknown})?.content,callId);if(c){
@@ -131,8 +142,17 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    if(!payload||payload.success!==true||!(['candidate','conflict'].includes(String(payload.state))||payload.state===undefined&&(typeof payload.grantId==='string'||Array.isArray(payload.items))))overflow=true;
   }else overflow=true;
  }
+ function capture(callId:string,tool:string,result:unknown,failed:boolean){
+  if(finished)return;
+  if(!options.canonicalize){captureCanonical(callId,tool,result,failed);return;}
+  captureTail=captureTail.then(async()=>{
+   const content=await canonicalContent(tool,(result as {content?:unknown})?.content,callId);
+   captureCanonical(callId,tool,{content},failed);
+  }).catch(()=>{overflow=true;});
+ }
  function image(receipt:PublicImageDelivery){if(receipt.state==='received')images.set(receipt.callId,structuredClone(receipt));}
  async function check(base:TaskVerification,readNative:()=>Promise<NativeResult[]>,signal?:AbortSignal,includeDiscovery=true):Promise<TaskVerification>{
+  await captureTail;
   signal?.throwIfAborted();
   if(base.runId!==options.runId)throw Error('invalid_input');
   if(base.schema===REPAIRED_VERIFICATION_SCHEMA){
@@ -142,7 +162,10 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
   }
   const checkpoint=[...captured.values()].filter(c=>includeDiscovery||!discoveryTools.has(c.tool)),incomplete=overflow||includeDiscovery&&discoveryIncomplete,imageSnapshot=new Map(images);
   if(!checkpoint.length&&!incomplete)return base;
-  let native:NativeResult[]=[];try{native=await bounded(readNative)||[];}catch{/* Missing native evidence cannot pass. */}signal?.throwIfAborted();
+  let native:NativeResult[]=[];try{
+   native=await bounded(readNative)||[];
+   native=await Promise.all(native.map(async entry=>({...entry,content:await canonicalContent(entry.toolName,entry.content,entry.toolCallId)})));
+  }catch{native=[];}signal?.throwIfAborted();
   const nativeMatch=(c:Captured)=>{const matches=native.filter(r=>r.toolCallId===c.callId&&r.toolName===c.tool);if(matches.length!==1||matches[0].isError)return false;const stored=normalize(c.tool,matches[0].content,c.callId);return stored?.digest===c.digest&&stored?.version===c.version&&(c.tool!=='office_read_text'||stored.payload.data.sha256===c.payload.data.sha256);};
   for(const c of checkpoint)if(c.effectWork){const effect=await c.effectWork;if(effect&&hex(effect.digest)&&hex(effect.version))c.effect=effect;}
   const historical=new Map<string,BoundEffect>();
@@ -210,5 +233,5 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
  // Discovery is a checkpoint for continuation, not an acceptance criterion.
  // Its immutable checkpoint events remain in the journal. Final results must
  // not become invalid merely because an approved save added a directory entry.
- return{capture,image,check,finish:async(base:TaskVerification,readNative:()=>Promise<NativeResult[]>)=>{finished=true;return check(base,readNative,undefined,false);}};
+ return{capture,image,check,finish:async(base:TaskVerification,readNative:()=>Promise<NativeResult[]>)=>{await captureTail;finished=true;return check(base,readNative,undefined,false);}};
 }

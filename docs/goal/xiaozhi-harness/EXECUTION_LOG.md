@@ -1,5 +1,37 @@
 # 执行日志
 
+## 2026-11-19 主线同步 87/89
+
+将冻结的 13 个提交合入主线，发布分支交接入口。旧会话来源标题恢复与当前工具结果脱敏留在功能分支继续独立复验。[主线验证](evidence/phase8/main-sync-20261119.md)。
+
+## 2026-11-19 持久文件引用与工具整合
+
+结构化文件引用接入原工具边界及 SQLite。正常路径、历史回放、同源编辑创建复制与冷恢复按生产 Host 验证。本轮关闭 QG-06/07，累计 87/89。其他模型结果的 A-P0-08 实测缺口独立留待现有 sanitizer 投影。[过程证据](evidence/phase8/p0-current-source-20261119/structured-file-references.json)。
+
+## 2026-11-19 教育流程与 IPC 复核
+
+真实当前便携包验证资料来源与四格式输出，SQLite 组卷和题库、IPC 注册器及文件操作另有独立测试结果。两条质量门禁已实现。原教学全套源测试的 Electron 环境问题保留，不计通过。[证据](evidence/phase8/education-core-and-ipc-20261119.md)。
+
+## 2026-11-19 Word 校验与质量门禁
+
+生产 Word Office 哈希路径改为八个文件的有界并行，固定有序拼接保证整树指纹。实际锁定树 ABBA、12 个组件专项及真实包 6/6 验证，之前真实 NSIS 完成 x64 交付候选。增加五项有证据的质量门禁至 83/89。[Word 对照](evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json) · [质量记录](evidence/phase8/current-quality-checkpoint-20261119.md)。
+
+## 2026-11-19 普通文本模型边界
+
+更新 Production Host 的文本处理接线，复用学生上下文脱敏器。新增真实 loopback Host 6/6 及独立原样本 3/3。保留旧模型请求字段失败证据与新结构标签缺口；没有付费请求。[结果](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。
+
+## 2026-11-19 托管 MCP 撤销与准备预算
+
+独立真实 Host 3/3、关闭只读冷读 3/3。原任务前后原生工具计数不再增加，替代路径完成。修复旧 MCP 测试参数，使其同时覆盖非法 60ms 及实际 1000ms 共享预算，29/29。[报告](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。
+
+## 2026-11-19 冷准备后的 Word 实包验证
+
+运行 `node scripts/release/packaged-smoke.mjs`，实际使用携带 fünf 套资源的便携 EXE、空 PATH、合成新 profile 和两份官方锁定下载件。原件身份 5/5、实包检查 6/6，零网络请求，零 renderer 错误。Word 页数为 1，文件 11,748 字节。重启检查覆盖正反索引、版本与 PDF 字节。保留原来的 180 秒超时样本。[验证报告](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。
+
+## 2026-11-19 续做分支与验收读回
+
+主线 `59b81cb` 已核对远端。专项分支从该合并快进并提交 Word 来源归档候选 `f2b269f`，18/18。五资源真实包 4/5，日志与 SQLite 仍保留冷时限失败。独立托管 MCP 与 Extension 测试 124/124，差异按照固定验收矩阵推进至 77/89。
+
 ## 2026-11-19 合并 Harness 及知识库并行增量
 
 合并 `d94cfb6` 与 `23f6567`，协作文档保留双方新增章节。工具清单从双方合并后的源码重新生成。完整生产构建、MCP、准入、WordPages 与知识库跨页相关测试通过。原生窗口、真实模型及安装范围延续专项分支。[合并测试](evidence/phase8/main-sync-20261119.md)。

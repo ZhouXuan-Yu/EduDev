@@ -1,5 +1,64 @@
 # Harness 执行进度
 
+## 2026-11-19 主线同步与分支交接
+
+本次主线接入 `59b81cb` 之后到 `dd09ab0fba6d0ed976e67ecc799f3133443a29c4` 的 13 个 Harness 提交。该批包含 Word 来源归档、Office 组件校验、受控文件引用和对话恢复、托管 MCP 撤销后同任务续跑，以及教育流程与实包页面的复验记录。主线父提交的知识库改动一并保留。
+
+**固定验收 87/89。** 后续开发继续在 `codex/xiaozhi-harness-20261112`。下一批先完成 A-P0-08 的 Office、附件和终端结果脱敏，以及旧会话来源标题重放的独立复验。QG-09 需要独立 Windows 安装和卸载。Gate 7 完整页面实操、Gate 8 正式模型质量与时延对照、最终独立验收仍待完成。查看 [固定矩阵](ACCEPTANCE_MATRIX.json)、[验收报告](ACCEPTANCE_REPORT.md) 和 [执行日志](EXECUTION_LOG.md)。
+
+Office 组件锁定树同条件配对均值 7.387 秒 → 3.004 秒，耗时约减少 59%。这是组件校验的对照结果，完整联网模型时延将在正式 A/B 中测量。[性能证据](evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json)。
+
+## 2026-11-19 结构化文件引用与恢复
+
+敏感文件名对模型使用可回译选择器，普通路径仍可使用。原 Task、工作区、物理身份、原授权与版本检查沿原链；SQLite 保存本地映射，旧 JSONL 维持原字节，重放模型副本清理旧正文和路径。真实生产 Host 5/5，原红历史冷启 2/2，领域及迁移 12/12。真实列表、查元数据、读取、审核编辑/创建、复制与同任务冷恢复通过。开发构建通过。[结构文件证据](evidence/phase8/p0-current-source-20261119/structured-file-references.json)。
+
+QG-06 和 QG-07 已实现，分支 **87/89**。A-P0-08 仍有其他实际处理链待修，已复现 Office/PDF、附件与持久终端的模型可见学校和本地路径。QG-09 完整安装卸载需要独立 Windows 环境。Gate7 完整交互、正式模型对照及独立终验继续有效。
+
+## 2026-11-19 教育核心流程复验
+
+实包资料正文检索及来源定位 2/2，SQLite 题库选择 13/13 与组卷 26/26，实际 Office 四格式含 PPTX 12/12，受控文件读写 14/14。QG-05/10 已实现，累计 **85/89**。其余固定条目为 A-P0-08、QG-06/07/09。完整原生窗口、最终真实模型质量和独立门槛继续有效。[教育与 IPC 证据](evidence/phase8/education-core-and-ipc-20261119.md)。
+
+## 2026-11-19 Word 校验优化与质量门禁
+
+保持完整文件清单、字节和 SHA 指纹，每批最多并行八个文件，每个文件分块读取。相同 19,271 文件配对 ABBA 的均值从 7.387 秒降到 3.004 秒，约减少 59%。Office 组件真实 Windows 专项 12/12。新便携包导入 5/5、实包检查 6/6，Word 归档实际 163.2 秒、资料 ready 173.2 秒；首次 179.4 秒对照保留。独立旧五资源候选已生成 NSIS x64。 [配对数据与包指纹](evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json)。
+
+验收 **83/89**。QG-01/02/03/04/08 已实现。A-P0-08 结构投影及 QG-05/06/07/09/10 尚待补齐。完整原生页面、真实模型对照和最终独立验收保持有效。 [质量门禁](evidence/phase8/current-quality-checkpoint-20261119.md)。
+
+## 2026-11-19 工作台跨会话实包复核
+
+独立 Terra 从工作台在两条合成 Task 间顺序切换，原会话和 Run 对应准确；应用正常关闭并重开后，继续核对两边和 SQLite 原事实，2/2。运行中交错、迟到结果和 Artifact/Grant 隔离仍待证据。[W3 顺序场景](evidence/phase7/implementation-resume-20261119/packaged-w3-navigation.json)。
+
+## 2026-11-19 技能回滚实包独立复验
+
+真实页面激活 2.0.0 后回滚到 1.0.0，通过同修订的 IPC、SQLite 和冷启动读回检查，4/4。两个版本的记录和文件哈希不变，已结束 Run 仍绑定原 2.0.0。保留第一次漏掉第二次点击的测试时序失败记录。正在运行的 Task 绑定、完整 Gate7 和原生拖窗仍待验收。[复验记录](evidence/phase7/implementation-resume-20261119/packaged-s2-rollback.json)。
+
+## 2026-11-19 能力中心实包独立复验
+
+独立 Terra 使用当前五资源 Windows 实包操作能力中心。合成能力必需项缺失显示当前不可用，可选项缺失显示部分可用，展开可见缺口。真实 Provider 和完整 C1 另有原验收范围；Gate7 仍为 PARTIAL，原生拖窗及最大化还原尚待运行。保留裸 out 缺依赖和隐藏窗口点击超时的原证据。[实包页面复验](evidence/phase7/implementation-resume-20261119/packaged-c1-retest.json) · [截图](evidence/phase7/implementation-resume-20261119/packaged-c1-retest.png)。
+
+## 2026-11-19 普通文本外发脱敏
+
+修复授权文本读取回传模型时遗漏 SQLite 已知姓名、学校和本地路径的情况。普通文件、前台终端及四种权限模式测试 6/6。独立生产 Host 同样本复验 3/3，缺 Egress 的真实 HTTP 工具发送 0 次，关闭后 SQLite 无该授权。原文件字节、来源 SHA 和版本一致。
+
+结构字段另有实测缺口。含合成身份的文件名和相对来源路径会出现在模型可见的列表和文件元数据内，当前模型直接依赖这些字段继续定位文件。A-P0-08 整体保持 FAIL，继续修复公开标识和原权限内文件选择的衔接。[范围证据](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。
+
+## 2026-11-19 托管 MCP 撤销闭环
+
+同 Task 撤销精确 Grant、服务 Provider 或能力 Artifact 后，原回调与 Pi 重调均无新增原生派发，本地替代完成。独立 3/3，关闭 SQLite 冷读 3/3。旧 MCP 边界测试按有效配置运行 29/29。A-P0-07 已实现，累计 78/89。[撤销证据](evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md)。
+
+## 2026-11-19 Word 实包导入和重启读回
+
+此前 180 秒时限会在 Office 冷准备期间取消任务。相同五资源 EXE 使用空 PATH、新合成用户目录和锁定的两份下载件。TXT、Markdown、DOCX、图片、扫描 PDF 全部 ready，六项实包检查全部完成。Word 原件、派生 PDF、反向关系、实际字节及 SHA-256 在重启前后一致，SQLite 关闭读回相同。[实包证据](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。
+
+实际时间点自提交导入起计，1.4 秒进入解包、33.2 秒进入完整树校验、146.5 秒组件可用、169.2 秒 PDF 归档完成、179.4 秒资料可用。实包试验为显式 Office 夹具保留冷准备预算，其他四份资料仍有 180 秒时限。Windows 安装、注册入口和卸载继续独立验收。
+
+## 2026-11-19 优化分支接手点
+
+- GitHub 已整合的主线基线为 `59b81cb`。本分支从该主线版本继续，待验证的 Word 归档候选为 `f2b269f`。上一节以前的阶段和测试记录保留为历史证据。
+- 分支固定矩阵 **77/89**。独立托管 MCP 和 Extension 补充 124/124、7 个 Run 和 25 个回执冷读，本轮 A-P0-02、03、05、06 已实现。A-P0-07、08 和 QG-01–10 共 12 项尚待完成。[独立复核](evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md)。
+- Word 归档遇到仅 ctime 变化时重新核对锁定 SHA 和原文件身份。当前分支复跑 18/18。真实 Windows 五资源包在冷准备期间到达总时限，4 份合成资料 ready，DOCX 作业关闭后为 cancelled，原版 PDF 与重启读回尚未取得。[实包复测](evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json)。
+- 下一步分段记录 Office 固定组件准备、DOCX 转换和归档耗时，再在隔离 profile 完成真实打包导入。原生窗口拖动和最大化还原后继续正式 32 次 ABBA、前台性能、干净 Windows 安装卸载及独立终验。账本 3/200，本轮新增 0。
+
 ## 2026-11-19 主线发布点与接手入口
 
 本次主线合并纳入已完成的 MCP 工具派发、撤销后同任务续跑、工具准备校验复用、Windows 资源封装与 Word 转换路径修复。原知识库主线的跨页正文与相邻题图归属处理一并保留。源码父提交为 `23f6567` 和 `d94cfb6`。具体版本与测试用 [主线合并记录](evidence/phase8/main-sync-20261119.md) 核对。

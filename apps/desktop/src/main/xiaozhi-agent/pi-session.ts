@@ -1,4 +1,5 @@
 import {createTerminalTool} from './tools/terminal';
+import type {FileReferenceProjection} from './file-references';
 import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
@@ -104,6 +105,7 @@ export interface PiXiaozhiOptions {
   beforeCopy?: Parameters<typeof createHanaOfficeTools>[0]['beforeCopy'];
   afterCopy?: Parameters<typeof createHanaOfficeTools>[0]['afterCopy'];
   sanitizeFileText?: (text: string) => Promise<string>;
+  fileReferences?: FileReferenceProjection;
   onEvent?: (event: XiaozhiAgentEvent) => void;
   /** Private actual SDK result observation; never renderer/model-supplied evidence. */
   onToolResult?: (callId:string,tool:string,result:unknown,failed:boolean) => void;
@@ -811,6 +813,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId: 'idle', excludedRoots: options.excludedRoots, fileVersion,
     networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, beforeCopy, afterCopy: options.afterCopy, beforeFileAccess: assertCurrentPermission });
   if(options.fileReadWorkspace)prompt+='\n本会话有宿主管理的小智生成文件区，可创建与读取本会话成果；未授权其他私人目录。制作文件直接调用已注册工具，按现有审阅确认保存，不要求教师先选择技术技能或工作目录。';
+  if(options.fileReferences)prompt+='\n文件工具的source和entries[].name可能是xiaozhi-file://宿主文件引用，可原样传入后续工具的path或复制source；sourceLabel和labels是脱敏显示名称。引用不授予权限，也不能代替version；旧引用过期时重新列目录获取当前引用。';
   if(options.officeTextTools)prompt+='\n需要数值联动、滑块、Canvas或动画的通用教学HTML时直接office_create_text创建完整自包含页面；Anatomy仅用于真实结构装配图，不强制把物理实验或所有科普内容转为40至80实体。HTML用saved_text，PPT用office_create_document并登记saved_office；要求两份文件时分别实际交付。';
   if(options.officeArtifactTools)prompt+='\n教师要求准确PPT页数、讲解备注或学生投影与答案分开时，office_create_document采用xiaozhi.presentation-draft.v1，每个section一页且含稳定pageId和speakerNotes。封面也算一页，讲解与答案放备注，不能把每个段落自动拆页。修改已保存的本产品PPT须实读当前版本并沿parentArtifactId另存；未改页/备注保留。含公式DOCX/PDF用office-draft.v2，含公式精确页数PPT用presentation-draft.v2，正文/表格以$...$包裹LaTeX，标题普通文字。复用本地公式排版图片并说明公式不可直接编辑，其余PPT正文保持可编辑；不把LaTeX原文当排版结果。';
   if(options.deliveryTools)prompt+='\n同一任务需要HTML与PPT等多份文件时优先office_deliver_files，一次提交整包草稿并等待一次真实审阅确认，不要拆成逐文件重复确认。整包计划登记saved_bundle，target=current；部分失败只报告实际已保存和未完成部分，后续新任务用resumeBundleId续做，不能重写成功文件。';
@@ -866,7 +869,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
           const title = result.data.source && result.data.source !== '.' ? result.data.source : '授权工作目录';
           const safeTitle = options.sanitizeFileText ? await options.sanitizeFileText(title) : title;
           signal?.throwIfAborted();
-          const local=def.name==='office_read_text'&&typeof result.data.text==='string'&&safeTitle===title?{
+          const local=def.name==='office_read_text'&&typeof result.data.text==='string'?{
             kind:'workspace',path:result.data.source.replace(/\\/g,'/'),version:result.data.version,
             startLine:1,endLine:result.data.text.split('\n').length,locator:'text_lines',
           }:undefined;
@@ -940,7 +943,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const manifests=manifestForTools(taskDefinitions,trustedMcpNames);
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
-  const toolBoundary=createToolExecutionBoundary({trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
+  const toolBoundary=createToolExecutionBoundary({resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
     executeAuthorized: governance ? (callId, name, input, signal, perform) => {
       const operation = (authorizedSignal: AbortSignal) => governance.execute(callId, name, input, authorizedSignal, perform);
       return options.executeAuthorized ? options.executeAuthorized(callId, name, input, signal, operation) : operation(signal);
@@ -963,6 +966,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       }:onUpdate;
       let result = await toolBoundary.execute({...def,execute:(...values)=>runTools.get(def.name)!.execute(...values)},callId,args,signal,progress,context);
       if (governance) result = governance.decorate(callId, def.name, result);
+      if(options.fileReferences)result=await options.fileReferences.project(def.name,result,args,signal) as typeof result;
       if(quality){
         const reminder=repetition.observe(def.name,args,{content:result.content,isError:result.isError});
         result=evidence?.attach(def.name,result)||result;
@@ -1001,7 +1005,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const transformed=await phase(async()=>previousTransform?.(messages,signal),signal)||messages;
     const filtered=transformed.filter(message=>!(message.role==='custom'&&message.customType==='xiaozhi.goal-context.v1'));
     if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase(()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
-    return filtered;
+    return options.fileReferences?phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
   };
   try { await phase(async()=>options.modelHistory?.align(session,modelAuthorities)); }
   catch(error) { session.dispose(); auth.removeRuntimeApiKey(PROVIDER); throw error; }

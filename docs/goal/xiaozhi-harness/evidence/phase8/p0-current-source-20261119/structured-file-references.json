@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "verdict": "STRUCTURED_FILE_PATHS_PASS_SCOPED",
+  "source": {
+    "src/main/xiaozhi-agent/file-references.ts": "31690e4656a78533638150b28697bdbc66a79cdf41a8d45fba99868eebdb037b",
+    "src/main/xiaozhi-agent/production-host.ts": "7957534d688a9d1bc275d69d440c2d5880aafe7793e7c21490ae7d3a4632cd77",
+    "src/main/xiaozhi-agent/pi-session.ts": "7050d3308496f7e02c963bec6802391c722ea1c5f44d9c9a2b4b33ebec81b8a9",
+    "src/main/xiaozhi-agent/session-state.ts": "9d1385e2e0f591986ebc6aebe31869a48e69087383e1217c99dd0df408037091",
+    "src/main/xiaozhi-agent/tasks/resources.ts": "e09c2c4bb2231281f38c71cfe85ac185a5f2cc89c478b34e187aa284de0388e6",
+    "src/main/xiaozhi-agent/tasks/result-recheck.ts": "9cb3fb058772402b2caa283d51b2d3242ce54914044bf4e59e42591d83efdf49",
+    "src/main/xiaozhi-agent/tools/execution-bound.ts": "d912ce5d0a52e908372334f194500e6a4cd817a35b4aad20144af8490b26857c",
+    "src/main/xiaozhi-agent/verification/result-readback.ts": "163ab65e337c2baff58dfd5e5e7248994f6bac579b31f5d15dfbe2472244dc44",
+    "scripts/xiaozhi-agent/file-reference-host-worker.ts": "3382a266f7638a18a2bc3ba542015a4aa9dbf670fad43c7224187789066e4a8c",
+    "scripts/xiaozhi-agent/file-reference-host-smoke.mjs": "844aa9cf7b418e2c20a766a578a7c6ba8c513bdd982cb89ad1f0f7fa6b00f24d"
+  },
+  "build": {
+    "productionManifest": "2317023166db51c62736342646cdbc46750b249d015a91220a47d7c1cf419b44",
+    "desktopBuild": "PASS",
+    "typecheck": "PASS"
+  },
+  "tests": {
+    "host": [
+      {
+        "name": "Normal list to stat to read selector roundtrip under request",
+        "pass": true,
+        "durationMs": 8627.179699999999
+      },
+      {
+        "name": "Normal list to stat to read selector roundtrip under fullAccess",
+        "pass": true,
+        "durationMs": 4926.445900000002
+      },
+      {
+        "name": "Synthetic original bytes and file version survive the selector roundtrip",
+        "pass": true,
+        "durationMs": 0.26569999999992433
+      },
+      {
+        "name": "Cold Host and SQLite reopen reuse same task selector without replaying effects",
+        "pass": true,
+        "durationMs": 4015.579099999999
+      },
+      {
+        "name": "Same-source task admission, approved edit and controlled copy use canonical private source",
+        "pass": true,
+        "durationMs": 13282.0144
+      }
+    ],
+    "persistedNativeReplay": [
+      {
+        "name": "body genuine legacy native history cold recovery",
+        "pass": true,
+        "sessionId": "aisession_47bd25a0-c1f7-46e1-b53f-50d131ebe861",
+        "originalNativeBytes": 341146,
+        "originalNativeSHA256": "131e3ef762d2c0af7157c96ddd3a499d4f9cfbd46b3fb804249ff24bff459e45",
+        "localHistoryPrefixUnchanged": true,
+        "originalDbUnchanged": true,
+        "modelPostCount": 1
+      },
+      {
+        "name": "metadata genuine legacy native history cold recovery",
+        "pass": true,
+        "sessionId": "aisession_185cd352-665a-481b-9f0e-b0aa7e37a6af",
+        "originalNativeBytes": 353056,
+        "originalNativeSHA256": "fe897e6c84498794d867553c2d4cdfeb8be51fcd1945de3a9ea16ca3b58d3850",
+        "localHistoryPrefixUnchanged": true,
+        "originalDbUnchanged": true,
+        "modelPostCount": 1
+      }
+    ],
+    "domain": "12/12",
+    "discovery": "19/19",
+    "execution": "21/21",
+    "resultReadback": "28/28",
+    "renderer": "253/253"
+  },
+  "identity": {
+    "hostReportSha256": "da134bda3fb2b6af4ad7fb77d07a590bae8462d4a044b17d9d4e8c26aa1d7c26",
+    "oldReplayReportSha256": "a3f58481bc43d8c2628a12e971ed2cf6320ea6a55713dbe293c066096ada520b"
+  },
+  "scope": "Model-visible labels and opaque file selectors, real SQLite persistence under the original Task and workspace; original IO, exact version, permissions and local records stay authoritative.",
+  "paidCalls": 0,
+  "remaining": "A-P0-08 remains failed for known school and local path fields in Office/PDF/attachment and persistent-terminal model payloads observed on frozen12f27f6. That separate fix and independent rerun remain required."
+}

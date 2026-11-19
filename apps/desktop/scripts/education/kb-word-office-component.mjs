@@ -3,12 +3,60 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
+import {createHash} from 'node:crypto';
 const {createWordOfficeComponent,runWordOfficeProcess,verifyWordOfficeTree,WORD_OFFICE_COMPONENT}=await import('../../src/main/assets/word-office-component.ts');
+const {verifyOfficeTree}=await import('../../src/main/assets/word-office-tree.ts');
 const root=await fs.mkdtemp(path.join(tmpdir(),'xiaozhi-office-component-test-'));
 const signal=new AbortController().signal;
 const checks=[];
 async function check(name,action){await action();checks.push(name);console.log('PASS '+name);}
 const unavailable=async()=>{throw Error('unavailable');};
+const tree=path.join(root,'ordered-tree');
+const files=[
+ ['a/empty',Buffer.alloc(0)],
+ ['a/nested/large',Buffer.alloc(600_000,7)],
+ ['a-after-dir',Buffer.from('ordinal directory first')],
+ ...Array.from({length:9},(_,i)=>['file-'+i,Buffer.from('content '+i)]),
+];
+for(const [name,data] of files){
+ const file=path.join(tree,name);
+ await fs.mkdir(path.dirname(file),{recursive:true});
+ await fs.writeFile(file,data);
+}
+await fs.mkdir(path.join(tree,'__pycache__'));
+await fs.writeFile(path.join(tree,'__pycache__/scratch'),Buffer.from('excluded by the runtime lock'));
+const pin={
+ files:files.length,
+ installedBytes:files.reduce((total,[,data])=>total+data.length,0),
+ treeSha256:createHash('sha256').update(files.map(([name,data])=>
+  name+'\0'+data.length+'\0'+createHash('sha256').update(data).digest('hex')+'\n',
+ ).join('')).digest('hex'),
+};
+await check('Bounded parallel reads preserve the ordered tree lock across batches and blocks',async()=>{
+ assert.equal(await verifyOfficeTree(tree,pin,signal),path.join(tree,'program'));
+});
+await check('The tree lock rejects same-length edits, missing files and extra bytes',async()=>{
+ const name=path.join(tree,'file-4'),original=await fs.readFile(name);
+ try{
+  await fs.writeFile(name,Buffer.alloc(original.length,0));
+  await assert.rejects(verifyOfficeTree(tree,pin,signal),/configuration/);
+  await fs.writeFile(name,Buffer.concat([original,Buffer.from('!')]));
+  await assert.rejects(verifyOfficeTree(tree,pin,signal),/configuration/);
+  await fs.unlink(name);
+  await assert.rejects(verifyOfficeTree(tree,pin,signal),/configuration/);
+ }finally{await fs.writeFile(name,original);}
+});
+await check('Linked runtime paths and cancelled verification are rejected',async()=>{
+ const controller=new AbortController();
+ const pending=verifyOfficeTree(tree,pin,controller.signal);
+ controller.abort(new Error('verification cancelled'));
+ await assert.rejects(pending,/verification cancelled/);
+ const link=path.join(tree,'link');
+ await fs.symlink(path.join(tree,'a'),link,process.platform==='win32'?'junction':'dir');
+ try{await assert.rejects(verifyOfficeTree(tree,pin,signal),/configuration/);}
+ finally{await fs.unlink(link);}
+ assert.equal(await verifyOfficeTree(tree,pin,signal),path.join(tree,'program'));
+});
 await check('Cancelled preparation creates no installation and makes no request',async()=>{
  const controller=new AbortController();controller.abort();let calls=0;
  await assert.rejects(createWordOfficeComponent({root:path.join(root,'cancel'),fetch:async()=>{calls++;throw Error('unexpected');}}).ensure(controller.signal));

@@ -1,0 +1,48 @@
+{
+  "verdict": "PASS_SCOPED",
+  "scope": "C1 packaged capability status and details on synthetic declarations",
+  "runtime": {
+    "packaged": true,
+    "isolatedProfile": true,
+    "isolatedData": true,
+    "frozenOutSha256": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7",
+    "initiallyVisible": true
+  },
+  "items": [
+    {
+      "availability": "partial",
+      "requiredMissing": [],
+      "optionalMissing": [
+        "mime"
+      ]
+    },
+    {
+      "availability": "blocked",
+      "requiredMissing": [
+        "file_metadata",
+        "mime_required"
+      ],
+      "optionalMissing": [
+        "mime"
+      ]
+    }
+  ],
+  "renderedTexts": [
+    "合成缺口核验 1.0.0+bf8b322e1af9\n\n来源 native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana · 登记能力 · 许可证 未知，需核对\n\n安装\n未核对\n核验\n已核验\n任务授权\n需任务核对\n可用性\n部分能力可用\n\n缺少 1 项可选能力\n\n调用范围 需核对权限详情\n\n来源与核验详情",
+    "合成缺口核验 1.0.0+bf8b322e1af9\n\n来源 native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana · 登记能力 · 许可证 未知，需核对\n\n安装\n未核对\n核验\n已核验\n任务授权\n需任务核对\n可用性\n当前不可用\n\n缺少 2 项必需能力\n\n缺少 1 项可选能力\n\n调用范围 需核对权限详情\n\n缺少必需能力；需核对任务条件\n\n来源与核验详情"
+  ],
+  "screenshot": {
+    "sha256": "7642920ac33d8acbea2a975f126c7342e2f6fbaa21d0782f49e7efedb91e0e79",
+    "width": 1360,
+    "height": 900
+  },
+  "reportSha256": "a01ef9a9ba6c9ac46b936f3fe7c3f7ea22e24f8ab42c06881066759abc27e5a0",
+  "fallbacks": {
+    "bareOut": "NOT_RUN: sqlite3 external package missing in the stand-alone build output location",
+    "hiddenPackaged": "NOT_RUN: Playwright click timed out while window hidden"
+  },
+  "gate7": "PARTIAL",
+  "nativeWindowDragMaximizeRestore": "NOT_RUN",
+  "errors": [],
+  "paidCalls": 0
+}

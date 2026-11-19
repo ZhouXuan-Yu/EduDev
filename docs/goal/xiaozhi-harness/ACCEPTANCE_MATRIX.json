@@ -19,20 +19,33 @@
       "priority": "P0",
       "scenario": "执行边界",
       "expected": "所有动态 Provider 经过宿主执行边界",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
-      ]
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+          ]
+        }
+      ],
+      "scope": "已实现。统一宿主执行边界通过源码复核及 HTTP MCP、托管 MCP、Extension 真实 Host 合同验证。先前 Native 及包能力证据继续关联。"
     },
     {
       "id": "A-P0-03",
       "priority": "P0",
       "scenario": "权限越界",
       "expected": "超出授权范围的文件/命令/网络/MCP 操作被阻断",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -45,7 +58,17 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。当前适用 Windows 文件/命令/网络和 MCP 权限矩阵。原生操作、实际 stdio/HTTP、精确 Grant 和 Extension 专用 Scope 的检查均已复核。"
     },
     {
       "id": "A-P0-04",
@@ -72,9 +95,10 @@
       "priority": "P0",
       "scenario": "MCP 安全",
       "expected": "readOnlyHint 不被当作安全证明；Schema/来源/权限检查有效",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -87,27 +111,50 @@
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
-      ]
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。readOnlyHint 仅供目录展示。实际 stdio/HTTP 的 Schema、来源、精确 Grant 和拒绝场景通过。旧套件保留一个过时超时参数产生的失败。"
     },
     {
       "id": "A-P0-06",
       "priority": "P0",
       "scenario": "外部代码隔离",
       "expected": "未验证 Extension 不在 Electron 主进程执行",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。静态包候选保留在主进程执行边界外，已验证的 context.transform 与 event.observe 走隔离运行时。原生、包、协议和 Host 专项均通过。"
     },
     {
       "id": "A-P0-07",
       "priority": "P0",
       "scenario": "撤销优先",
       "expected": "Provider/Grant 撤销后新执行被阻止",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+        "evidence/phase8/p0-current-source-20261119/managed-revoke-retest.md"
       ],
       "phaseEvidence": [
         {
@@ -119,6 +166,18 @@
             "evidence/phase3/final/final-source-out-dependency-verification.json"
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ],
+      "scope": "已实现。当前支持的 HTTP、托管 MCP 和 Extension 上，正常撤销后旧回调和新执行均受原权限限制。托管 MCP 原 Task 的 Grant、Provider 与 Artifact 真实撤销 3/3 及独立冷读 3/3。",
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": "已获得 HTTP 与 Extension 撤销和持久化证据。还需当前 Task 保留的托管 MCP 回调在撤销后零新增派发的真实 Host 读回。",
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md",
+            "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+          ]
         }
       ]
     },
@@ -127,9 +186,13 @@
       "priority": "P0",
       "scenario": "数据外发",
       "expected": "未授权教师/学生资料不发送到外部 Provider",
-      "status": "NOT_TESTED",
+      "status": "FAIL",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
+        "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json",
+        "evidence/phase8/p0-current-source-20261119/office-attachment-terminal-red.json"
       ],
       "phaseEvidence": [
         {
@@ -141,6 +204,17 @@
             "evidence/phase3/final/final-source-out-dependency-verification.json"
           ],
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
+        }
+      ],
+      "scope": "普通与结构化文件链、旧历史、HTTP 无授权外发均有证据。独立实测 Office/PDF、已提交附件以及持久终端模型结果的学校/路径仍待修复与专项复验。",
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": "已有 HTTP 权限叶层、Extension 和 Skill 私有来源阻断证据。还需生产学生 SQLite 脱敏链及实际 HTTP 端点记录零外发。",
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+            "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md"
+          ]
         }
       ]
     },
@@ -1640,87 +1714,196 @@
       "id": "QG-01",
       "priority": "P1",
       "expected": "TypeScript 类型检查。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。开发构建和定向生产源码类型检查退出 0。"
     },
     {
       "id": "QG-02",
       "priority": "P1",
       "expected": "Lint。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "已实现。使用 Oxlint 1.68.0 默认 correctness，527 个相关源码与脚本 0 error、170 warning，完整诊断保留。"
     },
     {
       "id": "QG-03",
       "priority": "P1",
       "expected": "相关单元测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。相关组件、预算、Word Office、Pi reasoning、continuity 均通过。"
     },
     {
       "id": "QG-04",
       "priority": "P1",
       "expected": "数据库迁移测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。实际旧合成库及 Skill v1 迁移合计 20/20。未改变原教学和对话事实。"
     },
     {
       "id": "QG-05",
       "priority": "P1",
       "expected": "IPC 契约测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/education-core-and-ipc-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。Pi 真实生命周期 handler，原组卷注册器 sender/取消，Windows 实包的 typed preload 检索、Word 读回与能力中心。"
     },
     {
       "id": "QG-06",
       "priority": "P1",
       "expected": "Tool 调用集成测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。真实主机工具登记及同 Task 的文件查询、写入审批、复制、来源校验和撤销专项均通过。模型外发的其他工具范围单列。"
     },
     {
       "id": "QG-07",
       "priority": "P1",
       "expected": "Pi Session 集成测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。实际 Pi 在 request 与 fullAccess 走完正常工具链，真实 Host/SQLite 冷启复用同任务引用及两条旧 JSONL 回放通过。"
     },
     {
       "id": "QG-08",
       "priority": "P1",
       "expected": "Electron 开发与打包构建。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md",
+        "evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。开发构建、五资源打包和实包启动通过；前一五资源候选生成 NSIS x64。最终安装和卸载由 QG-09 检查。"
     },
     {
       "id": "QG-09",
       "priority": "P1",
       "expected": "Windows 目标环境测试（项目支持范围内）。",
-      "status": "NOT_TESTED",
+      "status": "BLOCKED",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "Windows 实包启动与合成资料验证通过。当前主机已有小智桌面和开始菜单快捷方式，Windows Sandbox 不可用；需独立 Windows 验证真实安装与卸载。"
     },
     {
       "id": "QG-10",
       "priority": "P1",
       "expected": "现有教育核心功能回归：知识检索、题库抽题、组卷、PPT 生成、文件读写。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase8/education-core-and-ipc-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "已实现。实际 Windows 包资料正文检索与 PPTX 产物，真实 SQLite 题库和组卷、受控文件读写均复验通过。"
     }
   ]
 }
