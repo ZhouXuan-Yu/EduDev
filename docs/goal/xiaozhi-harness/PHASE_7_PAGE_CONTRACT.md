@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-19 三页面部分空态
+
+W1、A1、C1 的部分读取子场景已实现。独立复验用真实页面切换过滤和能力搜索，在两视口核对完整空、部分非空、部分空和刷新恢复。此项沿用已有的 W1 查询失败、冷启和真实停止证据。全阶段仍按冻结版本逐项验收。[实页对照](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json)
+
 ## 2026-11-19 审批异常冷启与真实取消
 
 A1 的损坏审批场景独立验证两尺寸冷启、部分计数、有效详情与原会话提示和刷新。W1 真实 SQLite 查询失败可刷新恢复，部分为空的提示仍待修。W3 补证流式正文可见后停止，精确 Task 和 Run 终态，部分正文重启保留。[测试证据](evidence/phase7/implementation-resume-20261119/approval-cold-recovery-retest.json)

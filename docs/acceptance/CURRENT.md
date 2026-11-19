@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-19 工作台部分读取提示
+
+三个实际页面与两个视口覆盖完整空、部分非空、部分空和刷新恢复，SQLite 原业务事实保持一致。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-19 审批冷启动与停止回复
 
 同源合成库独立对照确认坏记录冷启、两个视口的审批读取和会话刷新。真实停止按钮验证精确 Run、中断 Task 及部分正文的冷启动持久化。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

@@ -1,0 +1,78 @@
+{
+  "result": "PASS_SCOPED",
+  "basedOn": "17700bc9a7c64bafe81c73fe22b3c9a9f63434d4",
+  "exactBuild": {
+    "mainSha256": "bfd26e6c62847a37d81ffc3aebddf70d0c10526c68057aa7c2200668bedb70e5",
+    "oldRendererEntrySha256": "a9ef71228cf747713271ee669a525a009b1ea1d8c34b3aa516d757bab8b7ee31",
+    "rendererEntrySha256": "f43f1370904e8e5bff08ef24da8ae06b0e51ac38fb6a6529548f9cba131467b5",
+    "rendererIndexSha256": "ef99afbeca50e952d8162b4d73eee9149d5664e3c2d1a6f7eab5d57226e47c9e",
+    "mainByteIdentical": true
+  },
+  "fixture": "真实 Pi 工作台 Electron、原 typed IPC 和 SQLite。仅在隔离的合成场景动态插入各来源的坏条目，并逐项撤回合成注入。复用同一回归脚本验证旧版与新版。",
+  "commands": [
+    {
+      "command": "npm.cmd run build -- --outDir test-results/harness-workbench-partial-17700bc/out",
+      "status": "PASS 含 TypeScript"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "passed": 253,
+      "total": 253
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "passed": 9,
+      "total": 9,
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-5C0pgU/evidence/ui-report.json"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-partial-ui.mjs",
+      "oldPassed": 0,
+      "newPassed": 6,
+      "totalPerBuild": 6,
+      "oldReport": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-BYNaja/evidence/partial-empty-report.json",
+      "independentNewReport": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-wMrhQ6/evidence/partial-empty-report.json",
+      "sameDirScreenshots": 6
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "low": 8,
+      "moderate": 13,
+      "high": 8,
+      "critical": 0
+    },
+    {
+      "command": "node --max-old-space-size=2048 --experimental-transform-types scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs",
+      "passed": 17,
+      "total": 17,
+      "report": "%TEMP%/xiaozhi-phase7-workbench-renderer-65HtMx/report.json"
+    }
+  ],
+  "checks": [
+    "任务总览、审批收件箱、能力中心均分别验证完整空态、部分非空、部分空和恢复刷新",
+    "1366x768 和 1920x1080 renderer 视口",
+    "原有 SQLite 任务、Run、审批及扩展行逐行一致",
+    "页面错误 0；读取触发的模型请求 0"
+  ],
+  "paidCalls": 0,
+  "ledgerUsed": 3,
+  "gate": "88/89；Gate 7 部分完成；不包含真实模型、实际鼠标标题栏操作或干净 Windows 安装。",
+  "retainedFailures": [
+    {
+      "scope": "首次真实旧版样本仍复现三页面误提示；能力恢复检查等待到了上一轮旧空态，随后调整为等待部分提示离开再验证。",
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-ED773X/evidence/partial-empty-report.json"
+    },
+    {
+      "scope": "初次组件专项遇 Node 堆内存不足。增加测试进程堆上限，更新 W02 和 C02 旧的确定空态断言并保留正常空态反向检查，最终 17/17。",
+      "report": "%TEMP%/edu-main-harness-87-c77734b2/apps/desktop/test-results/harness-workbench-partial-17700bc/renderer-smoke-final.log"
+    }
+  ],
+  "loadingProbe": {
+    "status": "PASS_SCOPED",
+    "scope": "通过隔离 Electron 启动夹具在实际查询入口加 1700ms 延时并委托给原 IPC 处理器。任务、审批首次打开和能力中心刷新均显示加载状态，期间不显示计数，真实 SQLite 返回后计数恢复，新增模型请求 0。",
+    "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-bvSaw9/evidence/workbench-loading-probe.json",
+    "initialAttempt": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-YTcGck/evidence/workbench-loading-probe.json",
+    "initialAttemptScope": "首次未捕获进入能力页时的加载提示；复测先进入能力页，再从实际刷新按钮观察。"
+  }
+}

@@ -74,8 +74,8 @@ export function PiCapabilityCenter({sessionId,task,onNavigate}:{sessionId?:strin
         <p>要求版本 {page.context.requirementsVersion}</p>
       </DisclosureCard>}
       <p className={styles.meta} data-testid="pi-capability-counts">中心记录 {page.total??'未完整核对'} · 当前筛选 {page.matched??'未完整核对'} · 同一能力的不同提供方分别列出。</p>
-      {page.partial&&<p role="status" className={styles.notice} data-testid="pi-capability-partial">部分来源未读取，不能据此判断全部能力。不可读 {page.unavailableCount}；{page.sourceFailures.map(item=>`${item.source}: ${item.code}`).join('；')}</p>}
-      {!page.items.length&&<p data-testid="pi-capability-empty">当前筛选没有能力记录。</p>}
+      {page.partial&&<p role="status" className={styles.notice} data-testid="pi-capability-partial">部分来源未读取，不能据此判断全部能力。不可读 {page.unavailableCount}；{page.sourceFailures.map(item=>`${item.source}: ${item.code}`).join('；')}{!page.items.length&&' 当前筛选没有可显示的记录，请点击“刷新记录”重试。'}</p>}
+      {!page.partial&&!page.items.length&&<p data-testid="pi-capability-empty">当前筛选没有能力记录。</p>}
       {page.items.map(row => <CapabilityCard key={row.id} row={row}/>)}
       <div className={styles.actions}><Button size="sm" variant="ghost" isDisabled={!cursors.length} onPress={()=>setCursors(value=>value.slice(0,-1))} data-testid="pi-capability-page-prev">上一页</Button><Button size="sm" variant="ghost" isDisabled={!page.nextCursor} onPress={()=>setCursors(value=>[...value,page.nextCursor!])} data-testid="pi-capability-page-next">下一页</Button></div></>}
   </section>;

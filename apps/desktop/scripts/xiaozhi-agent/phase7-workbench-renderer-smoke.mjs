@@ -116,7 +116,12 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     assert(element('pi-task-counts').textContent.includes('41'));assert(element('pi-task-counts').textContent.includes('12'));assert(document.body.textContent.includes('结果待核验'));
     await click('pi-task-page-next');assert.equal(calls.at(-1).cursor,'page2');await select('pi-task-filter','completed');assert.equal(calls.at(-1).filter,'completed');assert(!calls.at(-1).cursor);
     await mount(C.PiRecoveryOverview,overviewProps,{getXiaozhiWorkbenchSummary:async()=>ok(page('tasks',[],{total:null,matched:null,counts:null,partial:true,unavailableCount:2,sourceFailures:[{source:'tasks',code:'corrupt',records:2}]}))});
-    assert(element('pi-task-counts').textContent.includes('未完整核对'));assert(element('pi-task-partial'));assert(element('pi-task-overview-empty'));
+    assert(element('pi-task-counts').textContent.includes('未完整核对'));
+    assert.match(element('pi-task-partial').textContent,/刷新记录/);
+    assert(!element('pi-task-overview-empty'));
+    await mount(C.PiRecoveryOverview,overviewProps,{getXiaozhiWorkbenchSummary:async()=>ok(page('tasks',[]))});
+    assert(element('pi-task-overview-empty'));
+    assert(!element('pi-task-partial'));
   });
   await check('W03','Actual restore helper selects/hydrates first, rereads exact Task and dispatches one original resume',async()=>{
     const order=[],gate=deferred();let current=true;
@@ -180,11 +185,11 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     await settle(()=>{Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(element('pi-capability-search'),'导出');element('pi-capability-search').dispatchEvent(new Event('input',{bubbles:true}));});await click('pi-capability-search-submit');assert.equal(calls.at(-1).query,'导出');const count=calls.length;await click('pi-capability-manage-skills');assert.deepEqual(navigation,['skills']);assert.equal(calls.length,count);
   });
   await check('C02','Capability query binds the legitimate selected Task and stale/partial sources stay explicit',async()=>{
-    const calls=[];await mount(C.PiCapabilityCenter,{sessionId:T,task:{id:task().id,requirementsVersion:1},onNavigate(){}},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('capabilities',[],{total:null,matched:null,counts:null,partial:true,unavailableCount:1,sourceFailures:[{source:'registry',code:'corrupt',records:1}],context:{state:'stale',sessionId:T,taskId:task().id,requirementsVersion:1},registryRevision:null}));}});assert.equal(calls[0].taskId,task().id);assert.equal(calls[0].requirementsVersion,1);assert(element('pi-capability-context').textContent.includes('已变化'));assert(element('pi-capability-partial'));assert(element('pi-capability-empty'));
+    const calls=[];await mount(C.PiCapabilityCenter,{sessionId:T,task:{id:task().id,requirementsVersion:1},onNavigate(){}},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('capabilities',[],{total:null,matched:null,counts:null,partial:true,unavailableCount:1,sourceFailures:[{source:'registry',code:'corrupt',records:1}],context:{state:'stale',sessionId:T,taskId:task().id,requirementsVersion:1},registryRevision:null}));}});assert.equal(calls[0].taskId,task().id);assert.equal(calls[0].requirementsVersion,1);assert(element('pi-capability-context').textContent.includes('已变化'));assert.match(element('pi-capability-partial').textContent,/刷新记录/);assert(!element('pi-capability-empty'));
     // The real Settings navigation has a fixed original-ID list. Exercise its consumer too.
     const settingsCalls=[];
     await mount(C.PiSettingsWorkspace,{onBack(){}},{listAiConversations:async()=>({folders:[],sessions:[{id:T,title:'第二会话'}],archivedFolders:[],archivedSessions:[]}),getDataRoot:async()=>'',getXiaozhiSettings:async()=>({ok:false,error:'unavailable'}),getXiaozhiSnapshot:async()=>({task:task()}),getXiaozhiWorkbenchSummary:async query=>{settingsCalls.push(query);return ok(page('capabilities',[],{context:{state:'current',sessionId:T,taskId:task().id,requirementsVersion:1},registryRevision:1}));}});
-    assert.equal(settingsCalls.length,0);await click('pi-settings-tab-capabilities');assert(element('pi-capability-center'));assert.equal(settingsCalls[0].sessionId,T);assert.equal(settingsCalls[0].taskId,task().id);
+    assert.equal(settingsCalls.length,0);await click('pi-settings-tab-capabilities');assert(element('pi-capability-center'));assert(element('pi-capability-empty'));assert(!element('pi-capability-partial'));assert.equal(settingsCalls[0].sessionId,T);assert.equal(settingsCalls[0].taskId,task().id);
   });
   await check('W07','Real parent cross-session restore survives Composer remount, holds single flight and preserves the target draft',async()=>{
     const calls=[],gate=deferred();localStorage.clear();localStorage.setItem('xiaozhi.current-session.v1',S);localStorage.setItem('xiaozhi.composer-draft.v1:'+T,JSON.stringify({version:1,text:'第二会话未发送草稿',skill:''}));
