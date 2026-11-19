@@ -1,0 +1,245 @@
+{
+  "scope": "Current dynamic HTTP MCP branch only; managed MCP and Extension are not claimed",
+  "grantBranch": "PASS_SCOPED",
+  "providerMcpRevokeOldClosure": "PASS_SCOPED_NO_EXTERNAL_DISPATCH",
+  "providerPiRedispatch": "FAIL_EVENT_PERSISTENCE",
+  "fullP0": "NOT_CLOSED",
+  "grant": {
+    "mode": "grant",
+    "sessionId": "aisession_b44681f8-bb1f-43e1-a1c9-4bf8c55c2501",
+    "runId": "run_c0581d0d-c818-4d00-9169-4a5b8c35655b",
+    "generation": 1,
+    "taskId": "xitask_a8a45a89ac5cf2cc7e5c2ea592ca56bde1db9a6b851527653f4cd5c8ccfdfe7e",
+    "normalCallId": "call_e73fcd03bbd546558e74592b5104d15e",
+    "staleCallId": "stale_grant_0f5e8a64-80f5-4f52-9939-dee3c1af50f8",
+    "providerId": "mcp.tool.t_eb85d3f68151940c32b7cbf6",
+    "providerVersion": "1.0.0+553ef83e5d98fb2f",
+    "snapshotId": "xicap_462e698e-a8cc-46b4-808c-7284c1fd8b4c",
+    "grantId": "xigrant_1453ed95-b58d-42d3-ae6f-4dc88a2f841a",
+    "grantRevision": 1,
+    "revokedAt": "2026-11-19T09:13:43.284Z",
+    "source": {
+      "serverId": "mcp_d25b76dd-9f12-4d3b-a2eb-f23969b2e36b",
+      "transport": "http",
+      "sourceHash": "e06919e4262bf44c1e584f09931450d6e6c527442a642addd5f8af59a02b27b5",
+      "schemaHash": "1c0133a9e24e881db4d3fb1c1524fcf65b871ff6dc747c1866f3631eecdccb80",
+      "tools": [
+        "lookup_lesson"
+      ],
+      "url": "http://127.0.0.1:50348/mcp"
+    },
+    "contract": {
+      "schemaVersion": 1,
+      "capabilityId": "mcp.tool.t_eb85d3f68151940c32b7cbf6.invoke",
+      "providerId": "mcp.tool.t_eb85d3f68151940c32b7cbf6",
+      "providerVersion": "1.0.0+553ef83e5d98fb2f",
+      "providerHash": "553ef83e5d98fb2f1d464825ee1780003ff59181f44329b20a8d192bce5792e2",
+      "schemaHash": "8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5",
+      "sourceHash": "9dc736d1a1a408bca1c592e1a65fcde65cfbcaf6bdb814f06b6ba961ad333be9",
+      "contractVersion": "1.0.0",
+      "snapshotId": "xicap_462e698e-a8cc-46b4-808c-7284c1fd8b4c",
+      "registryRevision": 86,
+      "taskId": "xitask_a8a45a89ac5cf2cc7e5c2ea592ca56bde1db9a6b851527653f4cd5c8ccfdfe7e",
+      "stepId": null,
+      "planRevision": 0,
+      "requirementsVersion": 1,
+      "target": null,
+      "inputDigest": "e6aa4b02291ff9dd6efcffaa62a7ecaa9e6675886e37eb5fa5264fa56fdae6f7",
+      "effect": "external_effect",
+      "scopePolicy": "mcp_tool_request",
+      "classification": "teacher_private",
+      "grantRefs": [
+        {
+          "grantId": "xigrant_03448d78-6b13-4171-be3f-1c0ede4b6c29",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_1453ed95-b58d-42d3-ae6f-4dc88a2f841a",
+          "revision": 1
+        },
+        {
+          "grantId": "xigrant_21b4c8a1-0fe4-4c39-aeb6-e58b836daa66",
+          "revision": 1
+        }
+      ],
+      "authorityRefs": [
+        "permission-request:7a12c0f18cbe11a75878fefa6006252a2102186d2fb284a9abb0142245602c31"
+      ]
+    },
+    "before": {
+      "calls": 1,
+      "requests": 8
+    },
+    "after": {
+      "calls": 1,
+      "requests": 8
+    },
+    "rejected": {
+      "content": [
+        {
+          "type": "text",
+          "text": "外部工具未完成：permission_pending"
+        }
+      ],
+      "details": {
+        "success": false,
+        "error": {
+          "code": "permission_pending",
+          "retryable": false
+        },
+        "callId": "stale_grant_0f5e8a64-80f5-4f52-9939-dee3c1af50f8"
+      },
+      "isError": true
+    },
+    "registeredClosurePreserved": true,
+    "journalRows": 17,
+    "terminal": {
+      "status": "succeeded"
+    },
+    "receipts": [
+      {
+        "run_id": "run_c0581d0d-c818-4d00-9169-4a5b8c35655b",
+        "call_id": "call_e73fcd03bbd546558e74592b5104d15e",
+        "generation": 1,
+        "tool": "mcp_eb85d3f68151940c32b7cbf6_lookup_lesson",
+        "start_sequence": 12,
+        "phase": "settled",
+        "admitted": 1,
+        "result_digest": "5aef9b6b98db80cbbe01e4895043ee8916e27e3b26c6ce825baec2ac2ef90ccc",
+        "success": 1,
+        "native_entry_id": "6998ed13",
+        "native_digest": "5aef9b6b98db80cbbe01e4895043ee8916e27e3b26c6ce825baec2ac2ef90ccc",
+        "native_state": "matched",
+        "effect_state": "not_checked",
+        "updated_at": "2026-11-19T09:13:45.611Z",
+        "contract_json": "{\"schemaVersion\":1,\"capabilityId\":\"mcp.tool.t_eb85d3f68151940c32b7cbf6.invoke\",\"providerId\":\"mcp.tool.t_eb85d3f68151940c32b7cbf6\",\"providerVersion\":\"1.0.0+553ef83e5d98fb2f\",\"providerHash\":\"553ef83e5d98fb2f1d464825ee1780003ff59181f44329b20a8d192bce5792e2\",\"schemaHash\":\"8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5\",\"sourceHash\":\"9dc736d1a1a408bca1c592e1a65fcde65cfbcaf6bdb814f06b6ba961ad333be9\",\"contractVersion\":\"1.0.0\",\"snapshotId\":\"xicap_462e698e-a8cc-46b4-808c-7284c1fd8b4c\",\"registryRevision\":86,\"taskId\":\"xitask_a8a45a89ac5cf2cc7e5c2ea592ca56bde1db9a6b851527653f4cd5c8ccfdfe7e\",\"stepId\":null,\"planRevision\":0,\"requirementsVersion\":1,\"target\":null,\"inputDigest\":\"e6aa4b02291ff9dd6efcffaa62a7ecaa9e6675886e37eb5fa5264fa56fdae6f7\",\"effect\":\"external_effect\",\"scopePolicy\":\"mcp_tool_request\",\"classification\":\"teacher_private\",\"grantRefs\":[{\"grantId\":\"xigrant_03448d78-6b13-4171-be3f-1c0ede4b6c29\",\"revision\":1},{\"grantId\":\"xigrant_1453ed95-b58d-42d3-ae6f-4dc88a2f841a\",\"revision\":1},{\"grantId\":\"xigrant_21b4c8a1-0fe4-4c39-aeb6-e58b836daa66\",\"revision\":1}],\"authorityRefs\":[\"permission-request:7a12c0f18cbe11a75878fefa6006252a2102186d2fb284a9abb0142245602c31\"]}"
+      },
+      {
+        "run_id": "run_c0581d0d-c818-4d00-9169-4a5b8c35655b",
+        "call_id": "call_1daeb753f3004c4e80f916b810f46a63",
+        "generation": 1,
+        "tool": "mcp_eb85d3f68151940c32b7cbf6_lookup_lesson",
+        "start_sequence": 26,
+        "phase": "settled",
+        "admitted": 1,
+        "result_digest": "d2f2a263e73cd4cf89378ba6ad971e396bd40d3e0215661afe69933de07cb1f1",
+        "success": 0,
+        "native_entry_id": "cb311753",
+        "native_digest": "d2f2a263e73cd4cf89378ba6ad971e396bd40d3e0215661afe69933de07cb1f1",
+        "native_state": "matched",
+        "effect_state": "uncertain",
+        "updated_at": "2026-11-19T09:13:45.611Z",
+        "contract_json": "{\"schemaVersion\":1,\"capabilityId\":\"mcp.tool.t_eb85d3f68151940c32b7cbf6.invoke\",\"providerId\":\"mcp.tool.t_eb85d3f68151940c32b7cbf6\",\"providerVersion\":\"1.0.0+553ef83e5d98fb2f\",\"providerHash\":\"553ef83e5d98fb2f1d464825ee1780003ff59181f44329b20a8d192bce5792e2\",\"schemaHash\":\"8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5\",\"sourceHash\":\"9dc736d1a1a408bca1c592e1a65fcde65cfbcaf6bdb814f06b6ba961ad333be9\",\"contractVersion\":\"1.0.0\",\"snapshotId\":\"xicap_462e698e-a8cc-46b4-808c-7284c1fd8b4c\",\"registryRevision\":86,\"taskId\":\"xitask_a8a45a89ac5cf2cc7e5c2ea592ca56bde1db9a6b851527653f4cd5c8ccfdfe7e\",\"stepId\":null,\"planRevision\":0,\"requirementsVersion\":1,\"target\":null,\"inputDigest\":\"78be7efad7ed46034500926d6ab494df84825a64a82b89d437a2a2f279c4c546\",\"effect\":\"external_effect\",\"scopePolicy\":\"mcp_tool_request\",\"classification\":\"teacher_private\",\"grantRefs\":[],\"authorityRefs\":[]}"
+      }
+    ],
+    "finalCalls": 1
+  },
+  "providerFailure": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-provider-trace-2ca8ee49b0",
+    "runId": "run_221de819-cb01-4b51-9403-1a645c12a67d",
+    "taskId": "xitask_2915fb6df957aa2b9ed57bd344ece8c6eee51d43ffa6295c857bb08046a506d1",
+    "normalCallId": "call_a8756061c7e94fa7b646f8c818bfa33f",
+    "failedCallId": "call_c2ae2433989144ce95160fe019eaf797",
+    "lastEvent": {
+      "kind": "tool_start",
+      "tool": "mcp_3ee3beb26cd935e1f338d1ad_lookup_lesson",
+      "callId": "call_c2ae2433989144ce95160fe019eaf797",
+      "capturedAt": 1795079737825,
+      "traceOrder": 9317857,
+      "sessionId": "aisession_bd61e8c9-6e5e-476d-a151-883e726d3138",
+      "runId": "run_221de819-cb01-4b51-9403-1a645c12a67d",
+      "sequence": 25,
+      "generation": 1,
+      "schemaVersion": 1,
+      "durability": "committed",
+      "revision": 15
+    },
+    "receipt": {
+      "run_id": "run_221de819-cb01-4b51-9403-1a645c12a67d",
+      "call_id": "call_c2ae2433989144ce95160fe019eaf797",
+      "generation": 1,
+      "tool": "mcp_3ee3beb26cd935e1f338d1ad_lookup_lesson",
+      "start_sequence": 25,
+      "phase": "admitted",
+      "admitted": 1,
+      "result_digest": null,
+      "success": null,
+      "native_entry_id": null,
+      "native_digest": null,
+      "native_state": "missing",
+      "effect_state": "not_checked",
+      "updated_at": "2026-11-19T09:15:37.928Z",
+      "contract_json": null
+    },
+    "originalError": {
+      "name": "Error",
+      "message": "source_changed",
+      "stack": "Error: source_changed\n    at assert3 (file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase8-p0-provider-trace-2ca8ee49b0/worker.mjs:56570:107)\n    at async Object.before (file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase8-p0-provider-trace-2ca8ee49b0/worker.mjs:56579:23)\n    at async Object.beforeDelivery (file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase8-p0-provider-trace-2ca8ee49b0/worker.mjs:102258:13)\n    at async Object.beforeDelivery (file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase8-p0-provider-trace-2ca8ee49b0/worker.mjs:22971:7)\n    at async underlying (file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase8-p0-provider-trace-2ca8ee49b0/worker.mjs:16289:15)"
+    },
+    "externalCalls": 1,
+    "status": "failed",
+    "verifiedThrowSite": {
+      "bundleLine": 56570,
+      "sourceFile": "src/main/xiaozhi-agent/capabilities/core-governance.ts",
+      "sourceLine": 183,
+      "expression": "if (record.source && protocolHash(await options.mcp(name)) !== protocolHash(record.source)) throw Error(source_changed)"
+    }
+  },
+  "identity": {
+    "observedProductionBase": "57d300d",
+    "redCheckout": "f9546eb7e8b6f64c9b6cb3577775331e31ddc9b6",
+    "lastObservedDocsCheckpoint": "a9c897d5033a55a17ee88260d2dac2d83c120b63",
+    "launched": "esbuild bundle of actual Host production sources in owned TEMP, not repo out",
+    "patchedSource": [
+      {
+        "file": "src/main/xiaozhi-agent/permissions/mcp.ts",
+        "before": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+        "after": "1a562e61967ebeb52dfe0e6709ed73d040e49d36678dace0287aabcc555ac408"
+      }
+    ],
+    "packageJsonSha256": "ea44ac1e9853a51baad3708019f53ea37b9e681c7d5f4e9f7e5d64d9f130e84c",
+    "electronEntrySha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "fixture": {
+      "file": "scripts/xiaozhi-agent/fixtures/mcp-server.mjs",
+      "sha256": "76026c6a4bb24023c9c2c36ba14312b1939244d7bda0881012c4291e80415342"
+    },
+    "runners": {
+      "grant": {
+        "worker": "6efb09e9104fbb07e46ddb6ae1bd45b8c55afda495e738b1c0defe15ce99b243",
+        "runner": "802b72e0b4c5da7ea97167a11563635a5f3162afe126258e2c7f855e9d1eda20",
+        "bundle": "02d1e5d1982770ca436a802e5c5225a4356d14aaf4e2b12ae5384d68e912b883"
+      },
+      "provider": {
+        "worker": "f761c7142e4928ec17ab7c596de49e20eff7a347e3a7ff448293eb7ef40b177e",
+        "runner": "4c5251492fe79bf8d2f8d671b8df4e24b28026ab3c1d6b75ba19a5aea2ee494b",
+        "bundle": "7f70410e1c188a4a625dfb03b3201c6ed1825033d51f18ab5f048d34d1c73871"
+      }
+    }
+  },
+  "parity": {
+    "beforeSourceCount": 781,
+    "afterSourceCount": 781,
+    "changed": [
+      {
+        "file": "src/main/xiaozhi-agent/permissions/mcp.ts",
+        "before": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+        "after": "1a562e61967ebeb52dfe0e6709ed73d040e49d36678dace0287aabcc555ac408"
+      }
+    ],
+    "added": [],
+    "removed": []
+  },
+  "paths": {
+    "good": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-grant-proof-e54e3e1322",
+    "bad": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-provider-trace-2ca8ee49b0",
+    "red": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-stale-callback-1fe4c4240c",
+    "httpTrace": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-stale-trace-196479b422",
+    "firstSetupFailure": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-stale-callback-9a3a4e9c25",
+    "mixedCounters": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-stale-after-4504693ad8",
+    "diagnosticBootstrapSetupFailure": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-phase8-p0-provider-trace-b2db43ed21"
+  },
+  "paidCalls": 0,
+  "sourceGET": 0,
+  "productionEditsByThisAgent": [],
+  "performance": "Not evaluated; test-only evidence. No build or out/native regeneration."
+}

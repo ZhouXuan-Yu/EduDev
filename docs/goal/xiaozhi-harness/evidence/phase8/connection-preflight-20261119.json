@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-19",
+  "mode": "synthetic background Q1 A/B transport and persisted readback preflight",
+  "baselineA": {
+    "commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2"
+  },
+  "baselineB": {
+    "commit": "83034fee00e0015e5f0d6f22392bf29d80f621b2",
+    "outSha256": "9c86527e412ff8ca60b67cc96a0891994455bc0931122f9faa9ed75b44d1715e"
+  },
+  "firstRun": [
+    {
+      "id": "Q1-r1-A",
+      "collection": "FAIL",
+      "error": "phase8_provider_transport_incomplete",
+      "terminal": "completed",
+      "quality": "NOT_TESTED",
+      "actualHttpAttempts": 1,
+      "upstreamStatus": 200,
+      "upstreamState": "completed",
+      "upstreamBytes": 33886,
+      "bridgeState": "stream_failed",
+      "bridgeBytes": 33886,
+      "terminalFrameObserved": false,
+      "runBound": true,
+      "coldRecordCount": 1,
+      "model": "deepseek-flash",
+      "stream": true,
+      "thinking": "enabled",
+      "reasoningEffort": "high",
+      "maxTokens": 16384,
+      "toolCount": 21
+    },
+    {
+      "id": "Q1-r1-B",
+      "collection": "NOT_TESTED",
+      "error": null,
+      "terminal": null,
+      "quality": null,
+      "actualHttpAttempts": 0,
+      "upstreamStatus": null,
+      "upstreamState": null,
+      "upstreamBytes": null,
+      "bridgeState": null,
+      "bridgeBytes": null,
+      "terminalFrameObserved": false,
+      "runBound": false,
+      "coldRecordCount": 0,
+      "model": null,
+      "stream": null,
+      "thinking": null,
+      "reasoningEffort": null,
+      "maxTokens": null,
+      "toolCount": null
+    }
+  ],
+  "fixedRun": [
+    {
+      "id": "Q1-r1-A",
+      "collection": "PASS",
+      "error": null,
+      "terminal": "completed",
+      "quality": "NOT_TESTED",
+      "actualHttpAttempts": 1,
+      "upstreamStatus": 200,
+      "upstreamState": "completed",
+      "upstreamBytes": 109065,
+      "bridgeState": "stream_failed",
+      "bridgeBytes": 109065,
+      "terminalFrameObserved": true,
+      "runBound": true,
+      "coldRecordCount": 1,
+      "model": "deepseek-flash",
+      "stream": true,
+      "thinking": "enabled",
+      "reasoningEffort": "high",
+      "maxTokens": 16384,
+      "toolCount": 21
+    },
+    {
+      "id": "Q1-r1-B",
+      "collection": "PASS",
+      "error": null,
+      "terminal": "completed",
+      "quality": "NOT_TESTED",
+      "actualHttpAttempts": 1,
+      "upstreamStatus": 200,
+      "upstreamState": "completed",
+      "upstreamBytes": 84600,
+      "bridgeState": "stream_failed",
+      "bridgeBytes": 84600,
+      "terminalFrameObserved": true,
+      "runBound": true,
+      "coldRecordCount": 1,
+      "model": "deepseek-flash",
+      "stream": true,
+      "thinking": "enabled",
+      "reasoningEffort": "high",
+      "maxTokens": 16384,
+      "toolCount": 27
+    }
+  ],
+  "protocolSmoke": {
+    "passed": 10,
+    "total": 10
+  },
+  "budget": {
+    "schemaVersion": 1,
+    "goalId": "GOAL_XIAOZHI_HARNESS",
+    "limit": 200,
+    "initialUsed": 0,
+    "used": 3,
+    "remaining": 197,
+    "unresolved": 0,
+    "durability": {
+      "journalMode": "wal",
+      "synchronous": 2
+    }
+  },
+  "quality": "pending independent blind review of the formal ABBA matrix"
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "70c2a3216ff3fee7d0dffb14de0ce922023108a1a856e797e1198708a6cfbf1d",
+  "sourceHash": "b74880de46e8873bfd9c88017f58cf73491f327dc7440e52f2569911b7fc41ba",
   "sources": [
     {
       "file": "package-lock.json",
@@ -620,7 +620,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
-      "sha256": "e0f7c60b841a3bcc4839c5e2345b08618f72be02cd7f50661dea0ee47f357b11"
+      "sha256": "3076c5a3746578c593b387cdd6684880b86375ed58b2e7e550f65bd4ad056d6c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/node-runtime.ts",
@@ -668,7 +668,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/core-governance.ts",
-      "sha256": "7126ea50a55cf283eb0b14f27c340a5da99e862a74058865502bd25c1f7a9513"
+      "sha256": "ee64a5b9bc9008725e6b0a7f8c0ba20dd165fbf3dac8c29d30e93be3641c19a0"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/dispatcher.ts",
@@ -964,7 +964,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/receipts.ts",
-      "sha256": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17"
+      "sha256": "7fd6a8758f1616669367343b53915728af15cf0edf53577dd6c852109e2ae4a3"
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
@@ -1064,7 +1064,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
-      "sha256": "857b1f7505dc4a8321ce89cb3876f12cda996d6aab602198bf4ff83e7ceedc21"
+      "sha256": "4f8e570e748fed700232998e53bb7eafa6f969b213520d67306316fd15dd5da2"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-transport.ts",
@@ -1244,7 +1244,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/mcp.ts",
-      "sha256": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695"
+      "sha256": "1a562e61967ebeb52dfe0e6709ed73d040e49d36678dace0287aabcc555ac408"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/network.ts",
@@ -1288,7 +1288,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "838c9bdc8b4d8dbdfed0fafcad32178cc9c28344e42a59bb94dea34c9708c45e"
+      "sha256": "cc2dcc931cd70ba93979d3cc4591f9d3877ca9b83f4e6925d0dc7240bbf91f0e"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
@@ -1620,7 +1620,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tools/execution-bound.ts",
-      "sha256": "fcf9653b238fd89028d8438357c5151a8cec386d4141dad7d60292d7f63012b6"
+      "sha256": "97ab0d3f57b73e17ea71300b34e6947caea02a1107954ee73ca62ddf8d165c12"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/manifest.ts",
@@ -2484,7 +2484,7 @@
     },
     {
       "file": "src/shared/xiaozhi-tool-attempt.ts",
-      "sha256": "6e52956a7ac4ac9131b745f1dde2fb0611b4bdd1171072f1366d22e0fbfba017"
+      "sha256": "cc74abb459df7fa3c7e9535bf3e0c65e1903ad5222057796d2870be288fad8d5"
     },
     {
       "file": "src/shared/xiaozhi-verification.ts",

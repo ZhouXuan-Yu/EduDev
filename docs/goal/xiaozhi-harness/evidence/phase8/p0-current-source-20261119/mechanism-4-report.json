@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase5-governance-rXsMw6",
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase8-current-governance-t3TxZg",
+  "checks": [
+    {
+      "name": "Every declared core identity plus selected MCP identity is registered without changing original names or input schemas",
+      "pass": true,
+      "durationMs": 1373.3007
+    },
+    {
+      "name": "Duplicate and unknown tools fail registration before they acquire core authority",
+      "pass": true,
+      "durationMs": 1.131900000000087
+    },
+    {
+      "name": "MCP hints retain external effect, one attempt and explicit MCP Scope policy",
+      "pass": true,
+      "durationMs": 0.04560000000014952
+    },
+    {
+      "name": "Original result body is preserved and a schema-valid unified provider result references it",
+      "pass": true,
+      "durationMs": 14.255699999999933
+    },
+    {
+      "name": "Dynamic provider results must match the actual current execution, snapshot and source identity",
+      "pass": true,
+      "durationMs": 8.734099999999899
+    },
+    {
+      "name": "Child resource leases append their actual original Grant references to the original call contract",
+      "pass": true,
+      "durationMs": 9.039499999999862
+    },
+    {
+      "name": "Domain malformed results fail the shared result boundary",
+      "pass": true,
+      "durationMs": 13.353900000000067
+    },
+    {
+      "name": "Private data under a dynamic surface name survives native JSON round trip as rejection evidence",
+      "pass": true,
+      "durationMs": 10.369200000000092
+    },
+    {
+      "name": "Schema mutation is rejected before the original implementation runs",
+      "pass": true,
+      "durationMs": 0.23099999999999454
+    },
+    {
+      "name": "Revoked core Provider blocks direct named execution through the same Registry",
+      "pass": true,
+      "durationMs": 29.67509999999993
+    },
+    {
+      "name": "Intrinsic Task controls also require the current main-owned Task generation",
+      "pass": true,
+      "durationMs": 0.12869999999998072
+    }
+  ],
+  "paidCalls": 0,
+  "coreTools": 84,
+  "boundary": "Registry, source/effect/Scope policies, uniform receipt and private-capture contract fixtures. Actual final Session and original Task/Journal execution are additionally asserted by phase5-production-smoke."
+}

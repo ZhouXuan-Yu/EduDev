@@ -1,0 +1,16 @@
+{
+  "runs": [
+    {
+      "id": "run_44361561-4ac7-499f-a534-f98d9930dba8",
+      "session_id": "aisession_e0fae6b4-f998-4352-9e22-7fcff5e78423",
+      "status": "succeeded",
+      "completed_at": "2026-11-19T08:47:26.089Z"
+    }
+  ],
+  "task": {
+    "id": "xitask_4786b7ca4fc3758e1bab0ff162daad1885ed3082ff869efb2c0aa26bd638a9bc",
+    "state": "review_required",
+    "sessionId": "aisession_e0fae6b4-f998-4352-9e22-7fcff5e78423"
+  },
+  "approvalId": "confirm_9eaa3b20-452b-4f85-aa78-01d8a5814dc4"
+}

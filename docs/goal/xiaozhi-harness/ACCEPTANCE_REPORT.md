@@ -1,5 +1,23 @@
 # 独立验收记录
 
+## 2026-11-19 能力状态与真实待审依赖
+
+UI-09 已实现。Terra 在冻结构建操作真实后台 Electron，核对“已安装、满足当前能力要求、待核验、需要授权、当前不可用”。实际 Task 的精确依赖从审批收件箱拒绝后，能力状态刷新，未新增授权，重启时原审批仍为拒绝。4/4、真实模型请求 0 次。另以两个合成 Registry Provider 验证缺必需项会被排除，缺可选项会标为部分可用，页面可展开查看缺口。真实 Provider 授权与执行、C1/C2 的其余场景继续复验。[独立审批证据](evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md) · [必需和可选缺口](evidence/phase7/pending-dependency-20261119/terra-c1-conclusion.md)。
+
+## 2026-11-19 当前构建 P0 专项
+
+独立 Sol 在冻结构建的当前源码运行五套机制测试 59/59。A-P0-01 已实现，正常对话沿唯一 Pi Runtime。A-P0-09 已实现，当前 Journal/冷启动 25/25 及同写入围栏真实 Host 归档共同验证旧代写入拒绝。A-P0-02/07 已补源码机制证据，系统状态等待当前构建的动态 MCP、Extension 负例。固定矩阵 73/89 已有通过证据。[源码与机制核查](evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md)。
+
+HTTP MCP 的真实 Host 已证明调用前持久化同 Task、Provider、三个 Grant 合同。精确 Grant 撤销后旧回调和 Pi 重调均未增加外部调用。整个 Provider 撤销后旧回调同样没有外部请求，Pi 重调触发 Run 级 event_persistence，保留失败。managed MCP 和 Extension 还需原流程证据，A-P0-02/07 不提升。[真实 Host 复测](evidence/phase8/http-mcp-projection-20261119/FINAL_FINDINGS.md)。
+
+针对整轮误停的修复已有独立复验 2/2。Grant 和 Provider 两支均先完成真实 HTTP 调用，撤销后外部调用维持 1 次，同 Task 跑通替代读取。Provider 拒绝写入明确未派发，旧 Grant 分支仍按原不确定效果标记，冷读一致。实际 SQLite 合同更新及尝试写入失败仍停止执行，未派发标记不能覆盖已知或不确定效果。A-P0-02/07 完整系统范围继续复验。[独立复验](evidence/phase8/http-mcp-projection-20261119/provider-revocation/FINAL_VERDICT.json)。
+
+## 2026-11-19 真实模型连接预检
+
+使用合成题完成 Q1 A/B 预检。旧版首轮在响应完成后被采集器判定流式读回失败，原失败保留。采集器增加了对 SSE 完结帧的记录，随后同批旧版和新版均完成实际 HTTP 请求、Run 归属核对和 SQLite 冷读回。协议专项 10/10。累计 3/200，197 次可用，未决闸门记录 0。正式 ABBA 盲评、联网时延和任务质量仍待验收。固定矩阵仍为 70/89 阶段范围通过。[预检证据](evidence/phase8/connection-preflight-20261119.json)。
+
+功能分支 `57d300d` 的生产构建、组件 253/253 和 Electron 综合回归 207/207 已复测。授权页面与性能的独立门禁继续使用对应分项的实测证据。[执行记录](EXECUTION_LOG.md) · [缓存专项](evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json)。
+
 ## 2026-11-19 Gate7 阶段复验
 
 Phase7 整体 PARTIAL。已验证工作台过滤和同任务继续、现代审批和冷启、市场候选来源、技能归属和版本回滚。新增独立检查覆盖当前任务的精确依赖授权及合成模型密钥哨兵。后台流式专项 5/5，真实 Electron 工作台专项 9/9，旧合同 Electron 回归 207/207。同任务授权续跑与冷启 Host 3/3，回执负例 22/22。原生拖窗及最大化还原实操、部分 W/A/C/S 广义场景、真实模型和安装仍待最终验收。真实模型 0/200。

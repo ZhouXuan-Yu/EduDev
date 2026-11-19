@@ -1,0 +1,98 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Additive fresh/old migrations are idempotent and preserve teacher facts",
+      "pass": true
+    },
+    {
+      "name": "State event outbox commit atomically",
+      "pass": true
+    },
+    {
+      "name": "Exact retry is idempotent and differing duplicate is rejected",
+      "pass": true
+    },
+    {
+      "name": "Gap cannot partially advance state",
+      "pass": true
+    },
+    {
+      "name": "Injected outbox write failure rolls back event and projection",
+      "pass": true
+    },
+    {
+      "name": "Existing owner cannot be overwritten while active",
+      "pass": true
+    },
+    {
+      "name": "Cross-session and oversized IPC cursors rejected",
+      "pass": true
+    },
+    {
+      "name": "Snapshot and bounded ordered catch-up expose only committed events",
+      "pass": true
+    },
+    {
+      "name": "Cold recovery settles active process unknown without executing tools",
+      "pass": true
+    },
+    {
+      "name": "Late owner callback after recovery/new owner cannot write",
+      "pass": true
+    },
+    {
+      "name": "Commit before notification; dropped UI notification remains pullable",
+      "pass": true
+    },
+    {
+      "name": "Rejected persistence barrier prevents next effect and emits no success",
+      "pass": true
+    },
+    {
+      "name": "Missing transaction capability fails closed",
+      "pass": true
+    },
+    {
+      "name": "Receiver repairs gaps and duplicates without losing order",
+      "pass": true
+    },
+    {
+      "name": "Navigation epoch prevents stale pull from changing new session",
+      "pass": true
+    },
+    {
+      "name": "Malformed replay page cannot advance cursor and asks for snapshot",
+      "pass": true
+    },
+    {
+      "name": "Transient persistence failure does not advance a committed cursor",
+      "pass": true
+    },
+    {
+      "name": "Tail polling recovers a lost terminal notification with no successor",
+      "pass": true
+    },
+    {
+      "name": "Tail probes target the active run without scanning historical runs",
+      "pass": true
+    },
+    {
+      "name": "Burst reasoning batches actual SQLite commits and flushes complete content before tool admission",
+      "pass": true
+    },
+    {
+      "name": "A failure inside a 128-row insert rolls back the whole batch, and exact retry preserves every event",
+      "pass": true
+    },
+    {
+      "name": "Queued small batches coalesce without crossing a private-write fence or changing the frozen terminal",
+      "pass": true
+    },
+    {
+      "name": "Snapshot observation waits for queued lifecycle commits without draining a pending text batch",
+      "pass": true
+    }
+  ],
+  "scope": "Real local SQLite transaction and public-event receiver boundaries; no model/provider/UI acceptance"
+}

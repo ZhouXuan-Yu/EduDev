@@ -1,0 +1,32 @@
+[
+  {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-capability-phase2-contract-FG3K8z/report.json",
+    "sha256": "d65650d29181dbe8d6322b9b5c90e1f09be9fe6d7b13be71fa46797da3242029",
+    "success": true,
+    "checks": 10
+  },
+  {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-permission-phase3-store-fRgCfo/report.json",
+    "sha256": "f6c51d37f975f24b4452fdfbd77c9684f8d63245494885cdd79e8fd291cc3660",
+    "success": true,
+    "checks": 13
+  },
+  {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase6-startup-recovery-Qqvv2V/report.json",
+    "sha256": "682bfb8527318dc9771b0abd5e24161ff5f0b973f2d8094177c36661fef26e50",
+    "success": true,
+    "checks": 2
+  },
+  {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase8-current-governance-t3TxZg/report.json",
+    "sha256": "f55ef83863be0f794872a2dae4ae08c774c68cacdcb423604dccee9c0f9ce999",
+    "success": true,
+    "checks": 11
+  },
+  {
+    "file": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-phase8-current-journal-TkWfxh/report.json",
+    "sha256": "56a2df2b1d4aa2441f4831a5f9049008968d78fd49a883a0d0ac0b68f54cb35d",
+    "success": true,
+    "checks": 23
+  }
+]

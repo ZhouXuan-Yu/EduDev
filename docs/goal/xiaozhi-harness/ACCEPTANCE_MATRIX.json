@@ -7,9 +7,11 @@
       "priority": "P0",
       "scenario": "唯一 Runtime",
       "expected": "不存在第二个 Agent Loop/独立 Planner Loop",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。按当前生产源码和冻结构建复核正常入口仅由 Pi AgentSession 编排，计划、恢复、Resolver 作为确定性宿主服务。独立 audit 核对真实 Host 执行归档与当前源码。",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
       ]
     },
     {
@@ -19,7 +21,8 @@
       "expected": "所有动态 Provider 经过宿主执行边界",
       "status": "NOT_TESTED",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
       ]
     },
     {
@@ -103,7 +106,8 @@
       "expected": "Provider/Grant 撤销后新执行被阻止",
       "status": "NOT_TESTED",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
       ],
       "phaseEvidence": [
         {
@@ -145,9 +149,12 @@
       "priority": "P0",
       "scenario": "旧 Run fencing",
       "expected": "旧 Generation 的延迟结果不能覆盖当前 Task",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。当前 SQLite Journal/启动专项 25/25 覆盖迟到旧 Owner 和冷启动同 Task 换代，结合已核对写入源码一致的真实 Host 恢复归档，独立确认旧 Run 无法覆盖当前 Task。",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase6/final/GATE6_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
       ]
     },
     {
@@ -1565,9 +1572,11 @@
       "id": "UI-09",
       "priority": "P1",
       "expected": "区分已安装、可用、待验证、需授权、不可用。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
+      "scope": "已实现。独立 Electron 在同一冻结构建的真实页面和 typed summary 核对五种状态。在当前 Task 的真实待审依赖上，页面拒绝、无新增授权、能力投影刷新及重启读回一致。范围为合成能力样本的五种状态，完整 C1/C2 的 Provider 条件更新仍待验。",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md"
       ]
     },
     {

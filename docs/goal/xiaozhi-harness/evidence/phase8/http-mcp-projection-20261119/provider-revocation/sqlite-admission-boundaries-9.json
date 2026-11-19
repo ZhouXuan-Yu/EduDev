@@ -1,0 +1,44 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-governance-admission-jDqBpr",
+  "checks": [
+    {
+      "name": "Provider source withdrawal before admission settles as not delivered and safe alternative can continue",
+      "pass": true
+    },
+    {
+      "name": "Provider Registry revocation before admission preserves its typed refusal",
+      "pass": true
+    },
+    {
+      "name": "Provider change between before and execute is refused before original tool invocation",
+      "pass": true
+    },
+    {
+      "name": "A typed failure after actual invocation retains unknown effect and cannot claim not delivered",
+      "pass": true
+    },
+    {
+      "name": "Ordinary source_changed storage error is not mistaken for typed admission failure",
+      "pass": true
+    },
+    {
+      "name": "Actual SQLite contract UPDATE failure permanently closes the original publisher",
+      "pass": true
+    },
+    {
+      "name": "Actual SQLite failed-attempt INSERT failure rolls back the not-delivered marker and fails closed",
+      "pass": true
+    },
+    {
+      "name": "Not-delivered marker cannot erase an existing uncertain effect",
+      "pass": true
+    },
+    {
+      "name": "Not-delivered marker cannot erase an existing matched effect",
+      "pass": true
+    }
+  ],
+  "paidCalls": 0,
+  "boundary": "Current governance, Tool boundary, Task, SQLite Journal/Receipt/Effect transactions. Original tool bodies and MCP identity lookup are declared counter fixtures. Actual production Host is tested separately."
+}

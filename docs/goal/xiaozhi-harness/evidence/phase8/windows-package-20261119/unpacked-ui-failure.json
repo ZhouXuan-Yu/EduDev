@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-19",
+  "outSha256": "b2b9b6f239c7ba209da37e30579e2b93789749ea764d266f30e4ae32bfc3002d",
+  "outFiles": 481,
+  "packagedOutEqual": true,
+  "packagedRuntimeChecks": [
+    {
+      "name": "OCR",
+      "files": 712
+    },
+    {
+      "name": "education",
+      "files": 90
+    },
+    {
+      "name": "retrieval",
+      "files": 154
+    },
+    {
+      "name": "reranker",
+      "files": 155
+    }
+  ],
+  "setup": "Windows candidate unpacked app, clean per-test data/profile, empty PATH and no provider credentials",
+  "componentChecks": [
+    {
+      "name": "Packaged frozen worker and native LanceDB",
+      "passed": true
+    },
+    {
+      "name": "Packaged PDFium page component on one synthetic scanned page",
+      "passed": true
+    }
+  ],
+  "uiImport": {
+    "success": false,
+    "error": "AssertionError [ERR_ASSERTION]: Import did not complete: [{\"name\":\"扫描题页.pdf\",\"status\":\"failed\",\"engine\":\"pdfium-5.14.0-rapidocr-3.9.2-file.v3:unavailable\"},{\"name\":\"题目照片.png\",\"status\":\"failed\",\"engine\":\"image-rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1:unavailable\"},{\"name\":\"教师讲义.docx\",\"status\":\"partial\",\"engine\":\"word-ooxml.v2:parse_failed\"},{\"name\":\"长教材.txt\",\"status\":\"ready\",\"engine\":\"local-text-v1\"},{\"name\":\"教师教案.md\",\"status\":\"ready\",\"engine\":\"local-text-v1\"}]\n    at file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/release/packaged-smoke.mjs:96:2",
+    "rendererErrors": [],
+    "networkAttempts": []
+  },
+  "isolatedLaunch": [
+    {
+      "isPackaged": true,
+      "path": ""
+    }
+  ],
+  "sourceScope": "Build whitelists pinned reranker assets and refreshes frozen manifest. Candidate predates HTTP MCP fix."
+}

@@ -33,6 +33,12 @@ export function createToolReceipts(options:ReceiptReadback={}){
    if(event.kind==='tool_attempt'){
     const a=event.attempt,row=(await work.all('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=? AND call_id=?',[owner.runId,a.callId]))[0];
     if(!row||row.tool!==a.tool||Number(row.generation)!==owner.generation||row.phase==='settled')throw Error('tool_receipt_conflict');
+    // Only the host boundary emits this marker after a typed admission refusal,
+    // before invoking the original tool. Legacy/uncertain effects stay conservative.
+    if(a.delivery==='not_delivered'){
+     if(row.effect_state!=='not_checked')throw Error('tool_receipt_conflict');
+     await work.run('UPDATE xiaozhi_tool_receipts SET admitted=0,updated_at=? WHERE run_id=? AND call_id=?',[time(),owner.runId,a.callId]);
+    }
     if(a.effect==='unknown'){
      if(row.admitted!==1)throw Error('tool_receipt_conflict');
      await work.run("UPDATE xiaozhi_tool_receipts SET effect_state='uncertain',updated_at=? WHERE run_id=? AND call_id=?",[time(),owner.runId,a.callId]);

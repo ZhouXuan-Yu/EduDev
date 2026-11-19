@@ -1,0 +1,59 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-permission-phase3-store-fRgCfo",
+  "checks": [
+    {
+      "name": "Incremental permission tables migrate idempotently and main mode changes use revision CAS",
+      "pass": true
+    },
+    {
+      "name": "Legacy main workspace import is idempotent and revocation cannot resurrect it",
+      "pass": true
+    },
+    {
+      "name": "Canonical filesystem checks reject parent traversal hardlinks ADS and root replacement",
+      "pass": true
+    },
+    {
+      "name": "Strict frozen requests reject renderer authorized fields and accessors",
+      "pass": true
+    },
+    {
+      "name": "Pending approval survives reconstruction and rejection deduplicates changed call IDs",
+      "pass": true
+    },
+    {
+      "name": "Approved operation resumes under a new generation with exactly one concurrent consumer",
+      "pass": true
+    },
+    {
+      "name": "G3A-F01 original approved expiry fences a longer reconstructed request before real IO",
+      "pass": true
+    },
+    {
+      "name": "Task grant approval permits repeated routine actions and active revocation aborts the operation",
+      "pass": true
+    },
+    {
+      "name": "Unrelated grants do not invalidate a pending request and expired approvals fail closed",
+      "pass": true
+    },
+    {
+      "name": "Grant owner/hash tampering and transaction failure preserve authority facts",
+      "pass": true
+    },
+    {
+      "name": "Network and egress grants are independent and actual broker traffic stays at the approved endpoint",
+      "pass": true
+    },
+    {
+      "name": "Environment diagnostics and non-sensitive configuration repair use real Grant CAS and preserve unknown fields",
+      "pass": true
+    },
+    {
+      "name": "Independent filesystem action Grants compose and either relevant revoke fences a live operation",
+      "pass": true
+    }
+  ],
+  "boundary": "Real SQLite permission store/engine unit integration, synthetic current-owner callback. Production Pi and Windows paths tested separately."
+}

@@ -15,8 +15,27 @@ if(extract.status!==0)throw Error('Wheel unpack failed');
 const probe=spawnSync(python,['-I','-c','import sys,json,platform,numpy,onnxruntime,PyInstaller;sys.path.insert(0,sys.argv[1]);import tokenizers;print(json.dumps(dict(python=platform.python_version(),numpy=numpy.__version__,ort=onnxruntime.__version__,pyinstaller=PyInstaller.__version__,tokenizers=tokenizers.__version__)))',deps],{windowsHide:true,encoding:'utf8'});
 if(probe.status!==0)throw Error('Build environment unavailable');const versions=JSON.parse(probe.stdout);
 if(JSON.stringify(versions)!==JSON.stringify({python:'3.12.14',numpy:'2.5.3',ort:'1.30.0',pyinstaller:'6.22.3',tokenizers:'0.21.4'}))throw Error('Unapproved toolchain');
-const lock=JSON.parse(fs.readFileSync(path.join(base,'base/model-lock.json')));
-for(const file of lock.files)if(sha(path.join(base,'base',file.path))!==file.sha256)throw Error('Model integrity');
+const modelRoot=fs.realpathSync(path.join(base,'base'));
+const lockPath=path.join(modelRoot,'model-lock.json');
+const lockStat=fs.lstatSync(lockPath);
+if(!lockStat.isFile()||lockStat.isSymbolicLink())throw Error('Model lock integrity');
+const lock=JSON.parse(fs.readFileSync(lockPath));
+const assets=JSON.parse(fs.readFileSync(path.join(desktop,'src/main/retrieval/reranker-assets.json')));
+if(JSON.stringify(lock)!==JSON.stringify(assets))throw Error('Model lock integrity');
+const modelData=['--add-data',lockPath+';models'];
+const destinations=new Set(['model-lock.json']);
+for(const file of assets.files){
+  if(typeof file.path!=='string'||file.path.split('/').some(part=>!part||part==='.'||part==='..'
+    ||/[\\:\x00-\x1f<>"|?*;]/.test(part)||/[ .]$/.test(part)||/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part)))throw Error('Model asset path');
+  const destination=file.path.toLowerCase();
+  if(destinations.has(destination))throw Error('Duplicate model asset');
+  destinations.add(destination);
+  const source=path.join(modelRoot,file.path),stat=fs.lstatSync(source);
+  const relative=path.relative(modelRoot,fs.realpathSync(source));
+  if(!stat.isFile()||stat.isSymbolicLink()||path.isAbsolute(relative)||relative==='..'||relative.startsWith('..'+path.sep)
+    ||stat.size!==file.size||sha(source)!==file.sha256)throw Error('Model integrity');
+  modelData.push('--add-data',source+';'+path.join('models',path.posix.dirname(file.path)));
+}
 const source=path.join(repo,'python/omni_edu_reranker'),entry=path.join(source,'worker.py');
 fs.mkdirSync(path.join(base,'licenses'),{recursive:true});fs.copyFileSync(path.join(desktop,'.local-retrieval/licenses/tokenizers.LICENSE'),path.join(base,'licenses/tokenizers.LICENSE'));
 const notices=spawnSync(python,['-I','-c',`import importlib.metadata as m,pathlib,shutil,sys
@@ -34,7 +53,7 @@ if not license.is_file():raise RuntimeError('Missing Python license')
 shutil.copyfile(license,root/'Python.LICENSE.txt')`,path.join(base,'licenses')],{windowsHide:true,encoding:'utf8'});
 if(notices.status!==0)throw Error('Runtime notices missing: '+notices.stderr.slice(-1000));
 const args=['-m','PyInstaller','--noconfirm','--clean','--onedir','--name','omni-edu-reranker','--distpath',path.join(base,'dist'),'--workpath',path.join(base,'work'),'--specpath',path.join(base,'spec'),'--paths',deps,
-  '--add-data',path.join(base,'base')+';models','--add-data',path.join(base,'licenses')+';licenses',
+  ...modelData,'--add-data',path.join(base,'licenses')+';licenses',
   '--collect-binaries','onnxruntime','--collect-data','onnxruntime',
   ...['torch','transformers','rapidocr','pypdfium2','cv2','PIL','sympy','scipy','huggingface_hub','requests','tkinter','pytest'].flatMap(m=>['--exclude-module',m]),entry];
 const built=spawnSync(python,args,{cwd:desktop,stdio:'inherit',windowsHide:true});if(built.status!==0)throw Error('Freeze failed');

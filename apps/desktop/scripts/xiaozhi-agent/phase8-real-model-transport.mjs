@@ -1,5 +1,31 @@
 import {createHash} from 'node:crypto';
 
+/** Keep only enough of an incomplete SSE line to recognize the provider's final event. */
+function observeStreamEnd() {
+  const decoder = new TextDecoder();
+  const maxLine = 64;
+  let tail = '', overflow = false, dataLines = 0, doneLine = false;
+  return bytes => {
+    const lines = (tail + decoder.decode(bytes, {stream: true})).split('\n');
+    const fragment = lines.pop();
+    for (const rawLine of lines) {
+      const line = rawLine.replace(/\r$/, '');
+      if (!overflow && line === '') {
+        if (dataLines === 1 && doneLine) return true;
+        dataLines = 0;
+        doneLine = false;
+      } else if (line.startsWith('data:')) {
+        dataLines++;
+        doneLine = !overflow && /^data: ?\[DONE\]$/.test(line);
+      }
+      overflow = false;
+    }
+    overflow = overflow || fragment.length > maxLine;
+    tail = fragment.slice(0, maxLine);
+    return false;
+  };
+}
+
 /** Installed only on an isolated Electron main's existing net object before its app import. */
 export function installProviderBridge(net, options) {
   if (!net || typeof net.fetch !== 'function' || !options || Object.keys(options).some(key => key !== 'chatRoutes')) {
@@ -55,7 +81,7 @@ export function installProviderBridge(net, options) {
       throw Error('phase8_provider_route_rejected');
     }
     const row = {index: chats.length + 1, path: url.pathname, method, at: at(), headersAt: null, firstByteAt: null,
-      endAt: null, httpStatus: null, responseBytes: 0, state: 'preparing', configuration: {}};
+      endAt: null, terminalFrameAt: null, httpStatus: null, responseBytes: 0, state: 'preparing', configuration: {}};
     chats.push(row);
     try {
       const request = new Request(url.href, {...init, ...(typeof input === 'object' && !(input instanceof URL) ? {headers: init?.headers || input.headers,
@@ -69,12 +95,15 @@ export function installProviderBridge(net, options) {
       row.headersAt = at(); row.httpStatus = response.status; row.state = 'response';
       if (!response.body) {row.endAt = at(); row.state = 'completed'; return response;}
       const reader = response.body.getReader();
+      const observedEnd = /^text\/event-stream(?:;|$)/i.test(response.headers.get('content-type') || '') ? observeStreamEnd() : null;
       const measured = new ReadableStream({
         async pull(controller) {
           try {
             const result = await reader.read();
             if (result.done) {row.endAt = at(); row.state = 'completed'; controller.close(); return;}
-            row.firstByteAt ??= at(); row.responseBytes += result.value.byteLength; controller.enqueue(result.value);
+            row.firstByteAt ??= at(); row.responseBytes += result.value.byteLength;
+            if (row.terminalFrameAt === null && observedEnd?.(result.value)) row.terminalFrameAt = at();
+            controller.enqueue(result.value);
           } catch {row.endAt = at(); row.state = 'stream_failed'; controller.error(Error('phase8_response_stream_failed'));}
         },
         async cancel() {row.endAt = at(); row.state = 'client_cancelled'; await reader.cancel().catch(() => {});},

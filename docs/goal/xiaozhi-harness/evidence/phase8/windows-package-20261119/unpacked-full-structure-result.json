@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-19",
+  "outSha256": "f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb",
+  "outFiles": 481,
+  "packagedOutEqual": true,
+  "bundledPageBlocks": 767,
+  "officePackages": [
+    {
+      "name": "LibreOffice_26.8.2_Win_x86-64.msi",
+      "bytes": 375934976,
+      "sha256": "ff4b911403b67ee9e6249f820f9782c44bb32c94fdaa45b0da53a8e419e5307a"
+    },
+    {
+      "name": "lessmsi-v2.12.9.zip",
+      "bytes": 740956,
+      "sha256": "5b4e187e74b184ad3a63ccf06c3d17dae2b8c4b6c298a996dbd51a9f6db29d21"
+    }
+  ],
+  "firstComponentInstallation": "Installed into the synthetic profile from pinned public downloads before the Word rendering stage. Component executable and worker files present.",
+  "componentChecks": [
+    {
+      "name": "Packaged frozen worker and native LanceDB",
+      "passed": true
+    },
+    {
+      "name": "Packaged PDFium page component on one synthetic scanned page",
+      "passed": true
+    }
+  ],
+  "inputs": [
+    {
+      "originalFileName": "教师教案.md",
+      "fileSize": 64,
+      "contentHash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231"
+    },
+    {
+      "originalFileName": "教师讲义.docx",
+      "fileSize": 9523,
+      "contentHash": "96e50ec7e5ce70620ea4b07646355b5d858066f863d21c4fe7c2df24b545ee39"
+    },
+    {
+      "originalFileName": "长教材.txt",
+      "fileSize": 378052,
+      "contentHash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4"
+    },
+    {
+      "originalFileName": "题目照片.png",
+      "fileSize": 3501,
+      "contentHash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5"
+    },
+    {
+      "originalFileName": "扫描题页.pdf",
+      "fileSize": 8212,
+      "contentHash": "500d4d101554871b46df499b6ab9d96997c3c24a33b1c5cb68b403928490bae3"
+    }
+  ],
+  "uiSucceeded": false,
+  "rendererErrors": [],
+  "networkAttempts": [],
+  "error": "AssertionError [ERR_ASSERTION]: Import did not complete: [{\"name\":\"教师讲义.docx\",\"status\":\"partial\",\"engine\":\"word-ooxml.v2:parse_failed\"},{\"name\":\"扫描题页.pdf\",\"status\":\"ready\",\"engine\":\"pdfium-5.14.0-rapidocr-3.9.2-file.v3\"},{\"name\":\"题目照片.png\",\"status\":\"ready\",\"engine\":\"image-rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1\"},{\"name\":\"长教材.txt\",\"status\":\"ready\",\"engine\":\"local-text-v1\"},{\"name\":\"教师教案.md\",\"status\":\"ready\",\"engine\":\"local-text-v1\"}]\n    at file:///D:/WorkProject/EduProject-harness/apps/desktop/scripts/release/packaged-smoke.mjs:145:2"
+}

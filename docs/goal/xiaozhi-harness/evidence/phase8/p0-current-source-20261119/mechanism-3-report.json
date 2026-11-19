@@ -1,0 +1,147 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase6-startup-recovery-Qqvv2V",
+  "checks": [
+    {
+      "name": "Cold startup restores the same Task after Journal invalidates the old owner",
+      "pass": true
+    },
+    {
+      "name": "Repeated startup recovery is idempotent and the old Run stays fenced",
+      "pass": true
+    }
+  ],
+  "paidCalls": 0,
+  "boundary": "Actual Task coordinator/state and Journal recovery against cold reopened owned SQLite. Store domain lookup is a synthetic adapter. No Electron, helper or model execution.",
+  "before": {
+    "owner": {
+      "sessionId": "aisession_bdf658dd-d9d1-4ae1-bfc9-45caf608cb51",
+      "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500",
+      "generation": 1
+    },
+    "task": {
+      "schema": "xiaozhi.task.v1",
+      "id": "xitask_8e2b6de2c686ce2bdec9dda4db337cb21e46af671b1918545c7efde57d841e04",
+      "sessionId": "aisession_bdf658dd-d9d1-4ae1-bfc9-45caf608cb51",
+      "revision": 2,
+      "requirementsVersion": 1,
+      "planRevision": 1,
+      "planReason": "需要核对剩余成果",
+      "state": "active",
+      "origin": {
+        "messageId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+        "commandId": "xicmd_4fa7fec5-4a12-4569-b890-acfd7f0bbc9e",
+        "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500"
+      },
+      "sources": [
+        {
+          "messageId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+          "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500",
+          "version": "1bdf0c58e43b51d2d7de54c41e371406bc1bd22d591fa477ac955043bba236e5"
+        }
+      ],
+      "criteria": [
+        {
+          "id": "teacher_request",
+          "version": 1,
+          "sourceId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+          "sourceVersion": "1bdf0c58e43b51d2d7de54c41e371406bc1bd22d591fa477ac955043bba236e5",
+          "text": "核对合成课堂成果",
+          "kind": "human"
+        }
+      ],
+      "steps": [
+        {
+          "id": "review",
+          "text": "核对课堂成果",
+          "dependsOn": [],
+          "criterionIds": [
+            "teacher_request"
+          ],
+          "reported": "in_progress"
+        }
+      ],
+      "checks": [],
+      "binding": {
+        "sessionId": "aisession_bdf658dd-d9d1-4ae1-bfc9-45caf608cb51",
+        "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500",
+        "generation": 1
+      },
+      "createdAt": "2026-11-19T08:48:53.700Z",
+      "updatedAt": "2026-11-19T08:48:53.712Z"
+    }
+  },
+  "recoveredOwner": {
+    "session_id": "aisession_bdf658dd-d9d1-4ae1-bfc9-45caf608cb51",
+    "generation": 2,
+    "run_id": ""
+  },
+  "snapshot": {
+    "ok": true,
+    "value": {
+      "task": {
+        "schema": "xiaozhi.task.v1",
+        "id": "xitask_8e2b6de2c686ce2bdec9dda4db337cb21e46af671b1918545c7efde57d841e04",
+        "sessionId": "aisession_bdf658dd-d9d1-4ae1-bfc9-45caf608cb51",
+        "revision": 3,
+        "requirementsVersion": 1,
+        "planRevision": 1,
+        "planReason": "需要核对剩余成果",
+        "state": "interrupted",
+        "origin": {
+          "messageId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+          "commandId": "xicmd_4fa7fec5-4a12-4569-b890-acfd7f0bbc9e",
+          "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500"
+        },
+        "sources": [
+          {
+            "messageId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+            "runId": "run_4506c2cc-2ca0-49fc-8e75-29b8c2557500",
+            "version": "1bdf0c58e43b51d2d7de54c41e371406bc1bd22d591fa477ac955043bba236e5"
+          }
+        ],
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "sourceId": "aimsg_8dae1097-6aea-4327-9667-46e313788265",
+            "sourceVersion": "1bdf0c58e43b51d2d7de54c41e371406bc1bd22d591fa477ac955043bba236e5",
+            "text": "核对合成课堂成果",
+            "kind": "human"
+          }
+        ],
+        "steps": [
+          {
+            "id": "review",
+            "text": "核对课堂成果",
+            "dependsOn": [],
+            "criterionIds": [
+              "teacher_request"
+            ],
+            "reported": "in_progress"
+          }
+        ],
+        "checks": [],
+        "binding": null,
+        "createdAt": "2026-11-19T08:48:53.700Z",
+        "updatedAt": "2026-11-19T08:48:53.724Z"
+      },
+      "canAccept": false,
+      "canResume": true
+    }
+  },
+  "sources": [
+    {
+      "file": "src/main/xiaozhi-agent/tasks/coordinator.ts",
+      "sha256": "121379efffc63443403989c4bb985b01a0ecdd34023a2d32a23d2bdb45327d32"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/events/journal.ts",
+      "sha256": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/tasks/task-state.ts",
+      "sha256": "faded3d3cb977fca48c5df537c6d41920bc5b7e2886843fa898431b37fbcef8e"
+    }
+  ]
+}

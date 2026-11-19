@@ -10,6 +10,7 @@ import type {CapabilityRegistry} from './registry';
 import type {PermissionOwner} from '../../../shared/xiaozhi-permissions';
 import type {PermissionRequest} from '../../../shared/xiaozhi-permissions';
 import {providerResult, type ProviderSnapshot} from './provider-contract';
+import {TaskAdmissionError} from '../tasks/admission-error';
 import sourceManifest from './generated/core-tool-manifest.json' with {type: 'json'};
 
 type Result = Awaited<ReturnType<ToolDefinition['execute']>>;
@@ -179,8 +180,8 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
     const binding = current.bindings.find(row => row.providerId === record.providerId && row.capabilityId === record.capabilityId);
     const version = await options.registry.providerVersion(record.providerId, record.providerVersion, record.capabilityId);
     if (!provider || provider.health !== 'ready' || !capability || capability.lifecycle.status === 'revoked' || !binding?.enabled
-        || !version || version.revoked || version.provider.source.packageHash !== record.providerHash) throw Error('capability_revoked');
-    if (record.source && protocolHash(await options.mcp(name)) !== protocolHash(record.source)) throw Error('source_changed');
+        || !version || version.revoked || version.provider.source.packageHash !== record.providerHash) throw new TaskAdmissionError('capability_revoked');
+    if (record.source && protocolHash(await options.mcp(name)) !== protocolHash(record.source)) throw new TaskAdmissionError('source_changed');
     signal.throwIfAborted(); if (!options.current()) throw Error('permission_denied');
     return record;
   }

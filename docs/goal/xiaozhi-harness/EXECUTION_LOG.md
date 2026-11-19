@@ -1,5 +1,31 @@
 # 执行日志
 
+## 2026-11-19 合并 Harness 及知识库并行增量
+
+合并 `d94cfb6` 与 `23f6567`，协作文档保留双方新增章节。工具清单从双方合并后的源码重新生成。完整生产构建、MCP、准入、WordPages 与知识库跨页相关测试通过。原生窗口、真实模型及安装范围延续专项分支。[合并测试](evidence/phase8/main-sync-20261119.md)。
+
+## 2026-11-19 能力中心与 Phase 8 验收增量
+
+独立 Terra 在冻结 481 文件构建操作实际后台 Electron。当前 Task 的精确依赖被拒绝后，未新增授权，冷启动仍拒绝。能力中心五种状态实测齐全，UI-09 已实现。原 Resolver 与能力页另核缺必需项、缺可选项的合成 Provider。保留首次测试预设必需缺口数量错误的报告。独立 Sol 五套当前机制 59/59，A-P0-01 与 A-P0-09 已实现，固定矩阵 73/89。
+
+后台 A/B 配对一次，各 5/5，无真实模型调用。打包资源预检前三套通过，原模型固定资产分段取得，干净隔离重排候选实机 5/5。完整安装和未完成系统门禁继续执行。正式模型账本维持 3/200。
+
+HTTP MCP 的真实 Host 首个授权工具调用原先在出站前被 stdio 路径投影误拒。修复仅限制输入投影的适用传输，原网络、Egress、MCP、隐私和 Schema 检查继续生效。定向回归 `node scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs` 两次各 11/11，独立真实 Host 已核授权合同与外部计数。构建 481 产物，目录指纹 `f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb`。Provider 级撤销后特定 Pi 旧回调的 Run 终态仍失败，保留记录待定向修复。
+
+Provider 撤销误停已定向修复。真实 Host 独立 2/2、冷读 2/2。受信准入错误与真实持久错误沿原行为分开处理，只有原 Tool 未被调用且边界确认拒绝时记录未派发。`node scripts/xiaozhi-agent/governance-admission-boundaries.mjs` 9/9，`node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs` 23/23，组件 253/253。构建 481 个产物，SHA-256 `42fb9495c378831618f98299268d22fb8e19d2340158c7bf9ad9f2cf5b1446a0`。
+
+Windows NSIS 基础候选本地构建成功。新版通过五套实际包装资源核对，Word 长路径宿主 5/5。改用合成 C 盘 profile 后，四份原件 ready，DOCX 已生成原版 PDF，归档仍为 source_changed。原测试 D 盘 disk_full 和源路径失败均保留。继续验证真实来源护栏及最终安装、启动和卸载。
+
+## 2026-11-19 主线交接与专项分支检查点
+
+远端 `main` 已包含小智合并 `83034fe`，随后推进到知识库修复 `c071266`。本次代码与证据进入 `codex/xiaozhi-harness-20261112`。本地日常目录保留其他协作者的六处工作文件。
+
+旧版 Q1 的首次真实请求已完成，采集器因结束帧后客户端读流终止而判失败。保留原始结果，协议专项补齐后 10/10，按原清单重试一次。旧版和新版的 Electron 真实 HTTP 连接、计量绑定和持久读回均通过。3/200 次，正式 A/B 质量评分待执行。证据见 `evidence/phase8/connection-preflight-20261119.json`。
+
+缓存文件身份验证在同一 Run 复用，每个传输维持独立投影。生产 Host 完成原审批、热复用和冷启动三条同 Task 路径，每个缓存 Run 三次源 Node 文件 SHA 核验。11 项边界验证通过。生产构建和组件 253/253 通过。提交前依赖审计返回 29 条，0 条 critical。正式性能门禁继续按冻结构建复测。
+
+代码检查点 `57d300d` 使用 `npm run build`、`npm run test:renderer-components`、`node scripts/electron-smoke.mjs`，均退出 0，组件 253/253、Electron 207/207。构建 481 个产物，目录指纹 `0a8c18e8201b58b84c63b9acc7bb14208f65ab865b3f18e2125c7f46cde247f1`。涉及失败回退可按对应提交在功能分支执行普通 revert，重建后复测缓存授权与审批读回。测试采集器可按 `5053a20` 独立回退。
+
 ## 2026-11-19 工作台与工具准备
 
 已提交工作台检查点 88ad67c，真实模型准备 0978a1e。原矩阵累计 68/89 阶段范围 PASS。实际工作台独立确认数量、任务续接、批准拒绝与冷启、能力状态、技能归属和回滚。能力准备因缺少领域回执导致同 Task 阻断，修复后原 Host 同 Task 与重启 3/3、负例 22/22；独立 Electron 显式授权实际写入一条精确 Task 依赖授权。真实费用 0/200。

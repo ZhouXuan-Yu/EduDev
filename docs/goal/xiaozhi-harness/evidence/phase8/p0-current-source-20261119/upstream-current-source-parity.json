@@ -1,0 +1,1563 @@
+[
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/api.ts",
+    "expected": "4d998bdd23a31ed25e88b22cfc2af25f20318942fb8059f1f4d84f537d878d82",
+    "actual": "4d998bdd23a31ed25e88b22cfc2af25f20318942fb8059f1f4d84f537d878d82",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/file-hash.ts",
+    "expected": "531edb80b86d12fe0cf9fcfcd4d761298407c1cfdf2084e89bb5eace5fa9310a",
+    "actual": "531edb80b86d12fe0cf9fcfcd4d761298407c1cfdf2084e89bb5eace5fa9310a",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+    "expected": "28f20cc586e0e483a69e2696319812febfd4225f5f0840a510b0e443ab1491f2",
+    "actual": "3076c5a3746578c593b387cdd6684880b86375ed58b2e7e550f65bd4ad056d6c",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/node-runtime.ts",
+    "expected": "3e22f2be737c7466f26c883e25ad823fa567a45565949739875eff330aa80d38",
+    "actual": "3e22f2be737c7466f26c883e25ad823fa567a45565949739875eff330aa80d38",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-install.ts",
+    "expected": "64b8f1452f6307c2f5802adb778eaf5a154811fa34789ff29b573d2052adf5d6",
+    "actual": "64b8f1452f6307c2f5802adb778eaf5a154811fa34789ff29b573d2052adf5d6",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-source.ts",
+    "expected": "d411c145dde13e85837f59a291b1531e28344f97dbf33eda5d6edafd96d9e066",
+    "actual": "d411c145dde13e85837f59a291b1531e28344f97dbf33eda5d6edafd96d9e066",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/package-archive.ts",
+    "expected": "9459f4eae2bb7f131a8f37df7107342d79ad9cd6334bca3fce72f83cc8f1d886",
+    "actual": "9459f4eae2bb7f131a8f37df7107342d79ad9cd6334bca3fce72f83cc8f1d886",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/public-fetch.ts",
+    "expected": "2cad75b618fd2bdbbe32708d45f31cc725f7837527ce4559e67679e6ff824e99",
+    "actual": "2cad75b618fd2bdbbe32708d45f31cc725f7837527ce4559e67679e6ff824e99",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/recipes.ts",
+    "expected": "481228357bb7f568288b01d967f4f2e6e28e786d871b33912f14edd90bb0c6e9",
+    "actual": "481228357bb7f568288b01d967f4f2e6e28e786d871b33912f14edd90bb0c6e9",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+    "expected": "ec19c16e88fede5cc73699a7c60383c8d37fb93a9d38d734317155659bf4ea2e",
+    "actual": "d62ed07369481819e2c8acfd3119e60e9991993081aaa55b83738426ce17a22b",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/sources.ts",
+    "expected": "854f19b4a6dcd4978b2386037855b7220547ffd2f5423ce8814d6dfacc5c7a5e",
+    "actual": "854f19b4a6dcd4978b2386037855b7220547ffd2f5423ce8814d6dfacc5c7a5e",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+    "expected": "8a1259091fd2816f8aa5f72a5e5e40fb1e274398d867b20f70e1e53cb2cd83a5",
+    "actual": "07911055632db196eb252231b11f07bb3eabfa026810f89a3a5bbdbbfbdc4d03",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/tools.ts",
+    "expected": "964707b2dae91144884d4a16c3828e92735f4f752aead6f1f8092486a6561724",
+    "actual": "964707b2dae91144884d4a16c3828e92735f4f752aead6f1f8092486a6561724",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+    "expected": "9e61d28ace9d7b7a4c71e212424129e5771dfe42a7769910d5b45ff9e9cc497a",
+    "actual": "7126ea50a55cf283eb0b14f27c340a5da99e862a74058865502bd25c1f7a9513",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/dispatcher.ts",
+    "expected": "0648c65d75287267ffe3708d3bc0eac692fd65e4b756fc13e18281ed2b4a6bfe",
+    "actual": "0648c65d75287267ffe3708d3bc0eac692fd65e4b756fc13e18281ed2b4a6bfe",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/.gitattributes",
+    "expected": "efe44c6a0d69fe6e5cd5ec69d255c4783283123aba57673dbd8a90392c6db27f",
+    "actual": "efe44c6a0d69fe6e5cd5ec69d255c4783283123aba57673dbd8a90392c6db27f",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "expected": "fd4946ef81a8b535f5fdcf299b72dae246eba2ffe9ff70724f0c83d3bc80af21",
+    "actual": "175e417728fc8c735c8e4ff951c06e334a0ccf4582c8e52339611c3b82bb5eed",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
+    "expected": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
+    "actual": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+    "expected": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+    "actual": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+    "expected": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+    "actual": "98196fd775bb40c677173f884fe6a5661b17350d4153b0463f3fc438f901df6a",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
+    "expected": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff",
+    "actual": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
+    "expected": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f",
+    "actual": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-executable.ts",
+    "expected": "e0f1e9863807876f887a1f7b254c0d99bdb8871867a0ad52e2c789b5564cff37",
+    "actual": "e0f1e9863807876f887a1f7b254c0d99bdb8871867a0ad52e2c789b5564cff37",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-require.ts",
+    "expected": "d9648e00e6edefc6877c44ea08699dce38a482a974788339cab7745643145203",
+    "actual": "d9648e00e6edefc6877c44ea08699dce38a482a974788339cab7745643145203",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+    "expected": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+    "actual": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-contract.ts",
+    "expected": "1a1872a133108e75d048125e73184bf5d75f7e5f275356aa99a6303cbeb5fc61",
+    "actual": "069396769caf49b5f8dcc686dd64b34f30b5f9598bfca662f38fc81de62034c3",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-snapshots.ts",
+    "expected": "930f7e3254e3b0121d8dbc277f450c003448c070ad0519c5549f5aeb528daa91",
+    "actual": "56f44502df0874794b00c6cafb9088b3b2f5cfb25dd6bba896c7c361bcc65a3f",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/registry.ts",
+    "expected": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0",
+    "actual": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/resolver.ts",
+    "expected": "57016a7b0ffe0ca3eef6109605f32e8cbf775f3990483009fd5fa6b1333c2597",
+    "actual": "57016a7b0ffe0ca3eef6109605f32e8cbf775f3990483009fd5fa6b1333c2597",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/runtime.ts",
+    "expected": "b3f9dec92aba2219716f2e11c859b93ca7748c7d896d03b9a498cb673c185a11",
+    "actual": "d2c6b015e3be42cc0fe020ff189cb2e1444795fa75015b5262fe212de2abf251",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/types.ts",
+    "expected": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b",
+    "actual": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/validation.ts",
+    "expected": "b0c547c4d483720ceeb516822023069d2472899f6e03a639cbf632128dd084e4",
+    "actual": "b0c547c4d483720ceeb516822023069d2472899f6e03a639cbf632128dd084e4",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/journal.ts",
+    "expected": "22ee6d0a81f002c21b710add44970025efdf2ad9ec59e0c8e3747edec4611518",
+    "actual": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/native-tail.ts",
+    "expected": "630754fa6932ccb47548ff359eeae1b545686bf73a5f6829c1468cd22debf85f",
+    "actual": "a056dff5a2acbd4f1300c6789b52ee3688de436e7c96d5c21a84d979dd3c9340",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/publisher.ts",
+    "expected": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "actual": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/receipts.ts",
+    "expected": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17",
+    "actual": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/recovery-readback.ts",
+    "expected": "0d3550c6a04aa80998e2654c13c365b0f944068ba2625e0b0ad185f38bebbd83",
+    "actual": "6213970f9ce5a56244544eb09d47eb0efaf0e7dc6c6db807784692c80c1ab372",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/terminal-cancellation.ts",
+    "expected": "88fa91b0d96e3731345311aa3d89ce88fb4f22a12cd112c5e3ea5dc60cc71a50",
+    "actual": "88fa91b0d96e3731345311aa3d89ce88fb4f22a12cd112c5e3ea5dc60cc71a50",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/host.ts",
+    "expected": "f3053a8ce9bb674d6fc471cf6a864a8e12baa15d91adaab8fda68a38a118e59a",
+    "actual": "f3053a8ce9bb674d6fc471cf6a864a8e12baa15d91adaab8fda68a38a118e59a",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/package-manager.ts",
+    "expected": "eaa0b14d8e1215779294d508964e877f8ab7f44667dcd3eb8b4ceb58b1865644",
+    "actual": "3029b2f62e7c2e1669a2a78067d8d5c2068b78e5b7b1b5ea62f4464a1622b4f2",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/package-worker.ts",
+    "expected": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece",
+    "actual": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/registry.ts",
+    "expected": "ba28250fe90158b49201c93c16339b4ac22b0c7d906e36dc23b7ee5a13f05114",
+    "actual": "ba28250fe90158b49201c93c16339b4ac22b0c7d906e36dc23b7ee5a13f05114",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/rpc.ts",
+    "expected": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22",
+    "actual": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/service.ts",
+    "expected": "d212dd38756e5cd219463bc47d3b6cd1739e7bb634c07e6b6eff655f8dfb2827",
+    "actual": "d212dd38756e5cd219463bc47d3b6cd1739e7bb634c07e6b6eff655f8dfb2827",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/state.ts",
+    "expected": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002",
+    "actual": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/types.ts",
+    "expected": "1ae33d099387eb8cf06be884f8ff37568f7a70e8c88f40aa98b563d1c9a6b9d1",
+    "actual": "1ae33d099387eb8cf06be884f8ff37568f7a70e8c88f40aa98b563d1c9a6b9d1",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/validation.ts",
+    "expected": "89ab41c6d4df8a90a0ffac5b2a4347800a07bb68724855007f344627dcbccf66",
+    "actual": "89ab41c6d4df8a90a0ffac5b2a4347800a07bb68724855007f344627dcbccf66",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+    "expected": "adf7591b8a578d9085f84aa5fbba96fa97139839604d295af2bb3c71816260f5",
+    "actual": "f7c258cb4c88c21d6608dbe257a138e840d2a604184d0f8ecf64268d2bc6dbc9",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/api.ts",
+    "expected": "f4b070246bfd1ae710a67bc578903a567ecde9dc35181c9ab943cfce507c0201",
+    "actual": "f4b070246bfd1ae710a67bc578903a567ecde9dc35181c9ab943cfce507c0201",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/current.ts",
+    "expected": "1986398b01a7c9746033c9f2688692c6ac14108a10924635dea8d2c93f6278b4",
+    "actual": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+    "expected": "6af562e915a0fabd10443db029f6b5c5aca51413ab29725e4c17e1aa1e6b47bf",
+    "actual": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/lease.ts",
+    "expected": "90c2a2405cd951624001651864d2c66ecd5408819e22d3661584ab1d57a36300",
+    "actual": "4cbe02b27ba3d0ba04cf6ff07f29c05ae226d4cf8c1127f898f3b0617955c709",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-approval.ts",
+    "expected": "05216135dfaa85838acfa857f8eed14a9b055b3edff65fd07879f05b058d9990",
+    "actual": "05216135dfaa85838acfa857f8eed14a9b055b3edff65fd07879f05b058d9990",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-request.ts",
+    "expected": "3a78073c4a9a62543c3d0046b9ba1ee5b0ae6554643d572e80b68073b6ca484b",
+    "actual": "3a78073c4a9a62543c3d0046b9ba1ee5b0ae6554643d572e80b68073b6ca484b",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp-http.ts",
+    "expected": "bc5db9932d1e6c5de7f17730775e33b0dda6a72f21f585f3c4f4997223f1aa5a",
+    "actual": "bc5db9932d1e6c5de7f17730775e33b0dda6a72f21f585f3c4f4997223f1aa5a",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+    "expected": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+    "actual": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/network.ts",
+    "expected": "157099208a637f0626dfa72e7ee58e996703b5c121f473c4314a07c592fde2b5",
+    "actual": "5f31c81ca04e3273b688bb2948949658b2b6b51bcb419fb84f346168243aaf58",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/provider-source.ts",
+    "expected": "49c2677208e83753918538465c770105f4c870a2075e72afa92bba8862dc827a",
+    "actual": "49c2677208e83753918538465c770105f4c870a2075e72afa92bba8862dc827a",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/public.ts",
+    "expected": "4d53d162f0da349c6b92ae75dc39b2de28a90b5b883bee47233185f51aee9bef",
+    "actual": "4d53d162f0da349c6b92ae75dc39b2de28a90b5b883bee47233185f51aee9bef",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts",
+    "expected": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4",
+    "actual": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+    "expected": "ea1390a68a524f9136a7adc76d3fde6145515b0e3d38ec01854e92213df4bf61",
+    "actual": "8d31bc5001a750b1077f9afea5d42aa230ed0413eb2ddbbb2120a05d09ee17e0",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+    "expected": "ded07ce5fa65dc5770ff0ff90d0c1b3fd5934c43660fd4b7f8980a4377f0e9f9",
+    "actual": "1c4fc8c8d2c66a1387fc904fd49cad12bc8a9be23e6ec458cfb2bd9c0fe41359",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/summary.ts",
+    "expected": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f",
+    "actual": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts",
+    "expected": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853",
+    "actual": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+    "expected": "3f47db6401524154fa6f80743c030cf3e1b3c8ae6126365114c8d2206f7eacc8",
+    "actual": "3f47db6401524154fa6f80743c030cf3e1b3c8ae6126365114c8d2206f7eacc8",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/.gitattributes",
+    "expected": "4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300",
+    "actual": "4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/JobLimits.cs",
+    "expected": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2",
+    "actual": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+    "expected": "b2ad83b7cd6ee8722f7e69685f0c7ddae39b55fc8aaf4d6b248da857e977d278",
+    "actual": "01694d0291bb2ed12e44181e5be7d878cd7670390cd00b290a1dd4bf1d665b7d",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/PlatformInfo.cs",
+    "expected": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+    "actual": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionInput.cs",
+    "expected": "44328304d3c045509e2d00af106ad4fca1e708bbe11ea30cbde2a98f6da0789a",
+    "actual": "fde2270e5587e3b4d6499043668f0404973a40886298a570f4be5874aa36c624",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionOptions.cs",
+    "expected": "7a56f5aa85b27d5ac66631fdb9b3096cdf43e0852bd87781d9127a6e4f08abe5",
+    "actual": "419fbc05b6b01bfe86edc928321ef50521eb79eb3d81bdd41127e3c234b05db5",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionPackage.cs",
+    "expected": "bb5553c17fa4f91a3a36960e535d1635eda3b23b50ffa0c29ca95805dc3d7c66",
+    "actual": "bb5553c17fa4f91a3a36960e535d1635eda3b23b50ffa0c29ca95805dc3d7c66",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/TrustedRuntimes.cs",
+    "expected": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+    "actual": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+    "expected": "325ca3793170164331ec309ea778588f4eb5d6c62d1220069c4f991cd87eecc0",
+    "actual": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+    "expected": "4f6fb1963a5864ed424e1bffe7af67d172f1462149c6aca3403786c973c15dd5",
+    "actual": "838c9bdc8b4d8dbdfed0fafcad32178cc9c28344e42a59bb94dea34c9708c45e",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+    "expected": "915a468e8747b93db77f3fb2c7424e43405ccd7ba973cad029af8b510ef5cf0f",
+    "actual": "fb2aed5bbd7c9dbec023f54f3291eda0bb31f711e74a4c1c68626949d798f102",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts",
+    "expected": "b91ef8ec4a3fbba92cc683c39a3dda1e7ca7d0a90c62b8f46c32a37ab31babff",
+    "actual": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts",
+    "expected": "83d7d3b0c56b82bbcc6fe72ac97afd277a243a48d67e7c7db09db316eae14a55",
+    "actual": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/projection.ts",
+    "expected": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341",
+    "actual": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/runtime.ts",
+    "expected": "6a12065c427132abe38e9574f25283e08007d4313a60ab3601c0bbd2f6eb8f1b",
+    "actual": "4b1722477a5e5c731e8388aa3de16bbe298401df60f6daca92235302c9801fcc",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+    "expected": "219ce4ec2e376340f9076e49714586be9c681cdef76040b0591a72dc44caa513",
+    "actual": "f566250679af2153534bc28a3ab46ca6eb7673d1dcaceeb1328942e17ef8e151",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+    "expected": "294367991efcbfde5b9f17bbd392483dd019296c6f30ff0b588c3ca6c3b0d55b",
+    "actual": "c4e7e015799824601a0c2edd6bfea472693115b90b5c9dc1ad54a9bb0884fbd3",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+    "expected": "137741f1bc6e0009267460ac98a4c93caa3f5ff2a50f52a3bc90cd77214bc443",
+    "actual": "1b7d3a9686da309dbe11b195236bc01cc09a7a7a74b289cf1a3bc4eb1814440a",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/admission-error.ts",
+    "expected": "f8fa0e3ed552fdced4ccfa8dddf875ed2d9a7a1bc580f0a060d47223e9413b4f",
+    "actual": "f8fa0e3ed552fdced4ccfa8dddf875ed2d9a7a1bc580f0a060d47223e9413b4f",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/api.ts",
+    "expected": "253d0292f9ba4bed8b0a234864026e2ac24a59a6b53b52bc18df9f9346dd74cc",
+    "actual": "253d0292f9ba4bed8b0a234864026e2ac24a59a6b53b52bc18df9f9346dd74cc",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/continuation.ts",
+    "expected": "e60463bb046b45f4349fa39b643833d8e68b4e9b05fd9111e57c720519526836",
+    "actual": "da7e98e5544ae92d627f132cfb8e40549b945e49dc9c4ab33f1f6e8fba9df032",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/coordinator.ts",
+    "expected": "1393ae21c7cc878aa1022de58ab2cab5c48b7804ae23f7f31052413db2eb8e76",
+    "actual": "121379efffc63443403989c4bb985b01a0ecdd34023a2d32a23d2bdb45327d32",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/goal-binding.ts",
+    "expected": "0d523f6c4cdc158b453dbbe1ebfe95650c4dfd5549e917e1b6d287c4e1f436b2",
+    "actual": "0d523f6c4cdc158b453dbbe1ebfe95650c4dfd5549e917e1b6d287c4e1f436b2",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/paper-export-continuation.ts",
+    "expected": "0b234e3304eba42b5564209ee9dc7dbf656ebbe706e7eaf1e476ae072c53f92c",
+    "actual": "0b234e3304eba42b5564209ee9dc7dbf656ebbe706e7eaf1e476ae072c53f92c",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+    "expected": "471d33f9b7f07cba75b31233a8e6b5056ab2c67a74b5c2ad2d9b550351d82a4e",
+    "actual": "c0eb975a97f11126e9424a38a9a89983215b043b814cd9391b8ff2c7eae9c30a",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/resources.ts",
+    "expected": "83ee8e2000cef26a5fecd04dbfbee749220e7a1c4c159344ffa76ef87338fe07",
+    "actual": "83ee8e2000cef26a5fecd04dbfbee749220e7a1c4c159344ffa76ef87338fe07",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/result-recheck.ts",
+    "expected": "9304db3b3361098f77d42826fcd47230670f3b65c850bf4b7f2a61516ebacfb5",
+    "actual": "9304db3b3361098f77d42826fcd47230670f3b65c850bf4b7f2a61516ebacfb5",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/task-evidence.ts",
+    "expected": "c0c8266d43e82e97ee31547876f4df3d8321989e86cbc9e08139c03de94d579c",
+    "actual": "c0c8266d43e82e97ee31547876f4df3d8321989e86cbc9e08139c03de94d579c",
+    "match": true
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts",
+    "expected": "ff266f2c8799fdd84e8d897574a10a95fc3c7a7bf38ca0b0b502a35d7b7926ff",
+    "actual": "faded3d3cb977fca48c5df537c6d41920bc5b7e2886843fa898431b37fbcef8e",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/teacher-actions.ts",
+    "expected": "3152ebb8245a4d0f7ca25886e8b2fb7de521c0165e11bf205cac9b193be46e6b",
+    "actual": "4db96ef8e4a7a4bb9164c5dcebaccf4e0e784950bb52ca2277ef7b3c599cf4d8",
+    "match": false
+  },
+  {
+    "phase": 5,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/tool-envelope.ts",
+    "expected": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+    "actual": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/api.ts",
+    "expected": "4d998bdd23a31ed25e88b22cfc2af25f20318942fb8059f1f4d84f537d878d82",
+    "actual": "4d998bdd23a31ed25e88b22cfc2af25f20318942fb8059f1f4d84f537d878d82",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/file-hash.ts",
+    "expected": "531edb80b86d12fe0cf9fcfcd4d761298407c1cfdf2084e89bb5eace5fa9310a",
+    "actual": "531edb80b86d12fe0cf9fcfcd4d761298407c1cfdf2084e89bb5eace5fa9310a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+    "expected": "28f20cc586e0e483a69e2696319812febfd4225f5f0840a510b0e443ab1491f2",
+    "actual": "3076c5a3746578c593b387cdd6684880b86375ed58b2e7e550f65bd4ad056d6c",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/node-runtime.ts",
+    "expected": "3e22f2be737c7466f26c883e25ad823fa567a45565949739875eff330aa80d38",
+    "actual": "3e22f2be737c7466f26c883e25ad823fa567a45565949739875eff330aa80d38",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-install.ts",
+    "expected": "64b8f1452f6307c2f5802adb778eaf5a154811fa34789ff29b573d2052adf5d6",
+    "actual": "64b8f1452f6307c2f5802adb778eaf5a154811fa34789ff29b573d2052adf5d6",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-source.ts",
+    "expected": "d411c145dde13e85837f59a291b1531e28344f97dbf33eda5d6edafd96d9e066",
+    "actual": "d411c145dde13e85837f59a291b1531e28344f97dbf33eda5d6edafd96d9e066",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/package-archive.ts",
+    "expected": "9459f4eae2bb7f131a8f37df7107342d79ad9cd6334bca3fce72f83cc8f1d886",
+    "actual": "9459f4eae2bb7f131a8f37df7107342d79ad9cd6334bca3fce72f83cc8f1d886",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/public-fetch.ts",
+    "expected": "2cad75b618fd2bdbbe32708d45f31cc725f7837527ce4559e67679e6ff824e99",
+    "actual": "2cad75b618fd2bdbbe32708d45f31cc725f7837527ce4559e67679e6ff824e99",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/recipes.ts",
+    "expected": "481228357bb7f568288b01d967f4f2e6e28e786d871b33912f14edd90bb0c6e9",
+    "actual": "481228357bb7f568288b01d967f4f2e6e28e786d871b33912f14edd90bb0c6e9",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+    "expected": "ec19c16e88fede5cc73699a7c60383c8d37fb93a9d38d734317155659bf4ea2e",
+    "actual": "d62ed07369481819e2c8acfd3119e60e9991993081aaa55b83738426ce17a22b",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/sources.ts",
+    "expected": "854f19b4a6dcd4978b2386037855b7220547ffd2f5423ce8814d6dfacc5c7a5e",
+    "actual": "854f19b4a6dcd4978b2386037855b7220547ffd2f5423ce8814d6dfacc5c7a5e",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+    "expected": "8a1259091fd2816f8aa5f72a5e5e40fb1e274398d867b20f70e1e53cb2cd83a5",
+    "actual": "07911055632db196eb252231b11f07bb3eabfa026810f89a3a5bbdbbfbdc4d03",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/tools.ts",
+    "expected": "964707b2dae91144884d4a16c3828e92735f4f752aead6f1f8092486a6561724",
+    "actual": "964707b2dae91144884d4a16c3828e92735f4f752aead6f1f8092486a6561724",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+    "expected": "7126ea50a55cf283eb0b14f27c340a5da99e862a74058865502bd25c1f7a9513",
+    "actual": "7126ea50a55cf283eb0b14f27c340a5da99e862a74058865502bd25c1f7a9513",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/dispatcher.ts",
+    "expected": "0648c65d75287267ffe3708d3bc0eac692fd65e4b756fc13e18281ed2b4a6bfe",
+    "actual": "0648c65d75287267ffe3708d3bc0eac692fd65e4b756fc13e18281ed2b4a6bfe",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/.gitattributes",
+    "expected": "efe44c6a0d69fe6e5cd5ec69d255c4783283123aba57673dbd8a90392c6db27f",
+    "actual": "efe44c6a0d69fe6e5cd5ec69d255c4783283123aba57673dbd8a90392c6db27f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "expected": "626c0b055d35d16f29bc51ace811f0973bfb17ac70312f839d5d47cc736dc4f1",
+    "actual": "175e417728fc8c735c8e4ff951c06e334a0ccf4582c8e52339611c3b82bb5eed",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
+    "expected": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
+    "actual": "0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+    "expected": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+    "actual": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+    "expected": "819aca5629e4c55fa3e4605e1c1e824af2964e75412dded68d71a34662d8a438",
+    "actual": "98196fd775bb40c677173f884fe6a5661b17350d4153b0463f3fc438f901df6a",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
+    "expected": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff",
+    "actual": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
+    "expected": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f",
+    "actual": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-executable.ts",
+    "expected": "e0f1e9863807876f887a1f7b254c0d99bdb8871867a0ad52e2c789b5564cff37",
+    "actual": "e0f1e9863807876f887a1f7b254c0d99bdb8871867a0ad52e2c789b5564cff37",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-require.ts",
+    "expected": "d9648e00e6edefc6877c44ea08699dce38a482a974788339cab7745643145203",
+    "actual": "d9648e00e6edefc6877c44ea08699dce38a482a974788339cab7745643145203",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+    "expected": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+    "actual": "849592c29c88647eba366d4cce6da768d95c9060ee6891ed21556391413cb30f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-contract.ts",
+    "expected": "069396769caf49b5f8dcc686dd64b34f30b5f9598bfca662f38fc81de62034c3",
+    "actual": "069396769caf49b5f8dcc686dd64b34f30b5f9598bfca662f38fc81de62034c3",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-snapshots.ts",
+    "expected": "56f44502df0874794b00c6cafb9088b3b2f5cfb25dd6bba896c7c361bcc65a3f",
+    "actual": "56f44502df0874794b00c6cafb9088b3b2f5cfb25dd6bba896c7c361bcc65a3f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/registry.ts",
+    "expected": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0",
+    "actual": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/resolver.ts",
+    "expected": "57016a7b0ffe0ca3eef6109605f32e8cbf775f3990483009fd5fa6b1333c2597",
+    "actual": "57016a7b0ffe0ca3eef6109605f32e8cbf775f3990483009fd5fa6b1333c2597",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/runtime.ts",
+    "expected": "d2c6b015e3be42cc0fe020ff189cb2e1444795fa75015b5262fe212de2abf251",
+    "actual": "d2c6b015e3be42cc0fe020ff189cb2e1444795fa75015b5262fe212de2abf251",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/types.ts",
+    "expected": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b",
+    "actual": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/validation.ts",
+    "expected": "b0c547c4d483720ceeb516822023069d2472899f6e03a639cbf632128dd084e4",
+    "actual": "b0c547c4d483720ceeb516822023069d2472899f6e03a639cbf632128dd084e4",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/journal.ts",
+    "expected": "c1033e8b9dfd24345e062e5d1c57cde66b1d58b92697a08c82102ab71536aab9",
+    "actual": "c1033e8b9dfd24345e062e5d1c57cde66b1d58b92697a08c82102ab71536aab9",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/network-receipts.ts",
+    "expected": "d8d8580c98eaac2a7edc319ace73d6137a3dadba41d3a319d11bfa0df2887537",
+    "actual": "d8d8580c98eaac2a7edc319ace73d6137a3dadba41d3a319d11bfa0df2887537",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/network.ts",
+    "expected": "741144b4b6647a042bd237695cd24b415a972918475319ae115d06e440ef360a",
+    "actual": "741144b4b6647a042bd237695cd24b415a972918475319ae115d06e440ef360a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/readback.ts",
+    "expected": "99e3f5b6b6dcc648973a2cd13124fdb9d22591529b58c94d69d6e372b51a6811",
+    "actual": "99e3f5b6b6dcc648973a2cd13124fdb9d22591529b58c94d69d6e372b51a6811",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/reconcile.ts",
+    "expected": "103b86c30f9cf55a91427e5faa1f74937f2d6b2d064221dbd9c66db70103e427",
+    "actual": "103b86c30f9cf55a91427e5faa1f74937f2d6b2d064221dbd9c66db70103e427",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/state.ts",
+    "expected": "162b5b9db8fd300877d2b58f468657e3dd233c190c286a3bd92fb8704ff506a5",
+    "actual": "162b5b9db8fd300877d2b58f468657e3dd233c190c286a3bd92fb8704ff506a5",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/tools.ts",
+    "expected": "6c3ca5a54117e0bd57760d7c9a7425df85b61af274fec2707aa0ad6f75771dc5",
+    "actual": "6c3ca5a54117e0bd57760d7c9a7425df85b61af274fec2707aa0ad6f75771dc5",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/effects/types.ts",
+    "expected": "a761728f7abe7c5522095b7e66416784cc54e29dfbfef4fd6cd977d2f36c0da9",
+    "actual": "a761728f7abe7c5522095b7e66416784cc54e29dfbfef4fd6cd977d2f36c0da9",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/journal.ts",
+    "expected": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a",
+    "actual": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/native-tail.ts",
+    "expected": "a056dff5a2acbd4f1300c6789b52ee3688de436e7c96d5c21a84d979dd3c9340",
+    "actual": "a056dff5a2acbd4f1300c6789b52ee3688de436e7c96d5c21a84d979dd3c9340",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/publisher.ts",
+    "expected": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "actual": "3790c071a3b02710624c1a6f021c036db4152c41de93bc0abbc762497bdbd2da",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/receipts.ts",
+    "expected": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17",
+    "actual": "4d5b57bf44b05ab73b231f80230cf6b429387735d7e1f9f9f54540a2ab131b17",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/recovery-readback.ts",
+    "expected": "d2f1b063c682f78bb243627aeba0fb056ed3b5e1135ecfa8a632c096af825ef6",
+    "actual": "6213970f9ce5a56244544eb09d47eb0efaf0e7dc6c6db807784692c80c1ab372",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/events/terminal-cancellation.ts",
+    "expected": "88fa91b0d96e3731345311aa3d89ce88fb4f22a12cd112c5e3ea5dc60cc71a50",
+    "actual": "88fa91b0d96e3731345311aa3d89ce88fb4f22a12cd112c5e3ea5dc60cc71a50",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/host.ts",
+    "expected": "f3053a8ce9bb674d6fc471cf6a864a8e12baa15d91adaab8fda68a38a118e59a",
+    "actual": "f3053a8ce9bb674d6fc471cf6a864a8e12baa15d91adaab8fda68a38a118e59a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/package-manager.ts",
+    "expected": "eaa0b14d8e1215779294d508964e877f8ab7f44667dcd3eb8b4ceb58b1865644",
+    "actual": "3029b2f62e7c2e1669a2a78067d8d5c2068b78e5b7b1b5ea62f4464a1622b4f2",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/package-worker.ts",
+    "expected": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece",
+    "actual": "20e7bfd548e58c53423b2cfcc572407db773315140ff566fdddd24eb7c763ece",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/registry.ts",
+    "expected": "ba28250fe90158b49201c93c16339b4ac22b0c7d906e36dc23b7ee5a13f05114",
+    "actual": "ba28250fe90158b49201c93c16339b4ac22b0c7d906e36dc23b7ee5a13f05114",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/rpc.ts",
+    "expected": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22",
+    "actual": "1e217c0242fc415858f8149140e1eb332829fb53a998ccc440d203f90e29cb22",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/service.ts",
+    "expected": "d212dd38756e5cd219463bc47d3b6cd1739e7bb634c07e6b6eff655f8dfb2827",
+    "actual": "d212dd38756e5cd219463bc47d3b6cd1739e7bb634c07e6b6eff655f8dfb2827",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/state.ts",
+    "expected": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002",
+    "actual": "8862a59605f947feaa6113d9ae07e7608d9387f9ca1665db7779b2580cb01002",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/types.ts",
+    "expected": "1ae33d099387eb8cf06be884f8ff37568f7a70e8c88f40aa98b563d1c9a6b9d1",
+    "actual": "1ae33d099387eb8cf06be884f8ff37568f7a70e8c88f40aa98b563d1c9a6b9d1",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/extensions/validation.ts",
+    "expected": "89ab41c6d4df8a90a0ffac5b2a4347800a07bb68724855007f344627dcbccf66",
+    "actual": "89ab41c6d4df8a90a0ffac5b2a4347800a07bb68724855007f344627dcbccf66",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+    "expected": "adf7591b8a578d9085f84aa5fbba96fa97139839604d295af2bb3c71816260f5",
+    "actual": "f7c258cb4c88c21d6608dbe257a138e840d2a604184d0f8ecf64268d2bc6dbc9",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/api.ts",
+    "expected": "f4b070246bfd1ae710a67bc578903a567ecde9dc35181c9ab943cfce507c0201",
+    "actual": "f4b070246bfd1ae710a67bc578903a567ecde9dc35181c9ab943cfce507c0201",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/current.ts",
+    "expected": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f",
+    "actual": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+    "expected": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1",
+    "actual": "eca8435ce2b02c360dd5259b092422f37e74698a335dc156dd045d8a77f84cf1",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/lease.ts",
+    "expected": "4cbe02b27ba3d0ba04cf6ff07f29c05ae226d4cf8c1127f898f3b0617955c709",
+    "actual": "4cbe02b27ba3d0ba04cf6ff07f29c05ae226d4cf8c1127f898f3b0617955c709",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-approval.ts",
+    "expected": "05216135dfaa85838acfa857f8eed14a9b055b3edff65fd07879f05b058d9990",
+    "actual": "05216135dfaa85838acfa857f8eed14a9b055b3edff65fd07879f05b058d9990",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/legacy-request.ts",
+    "expected": "3a78073c4a9a62543c3d0046b9ba1ee5b0ae6554643d572e80b68073b6ca484b",
+    "actual": "3a78073c4a9a62543c3d0046b9ba1ee5b0ae6554643d572e80b68073b6ca484b",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp-http.ts",
+    "expected": "bc5db9932d1e6c5de7f17730775e33b0dda6a72f21f585f3c4f4997223f1aa5a",
+    "actual": "bc5db9932d1e6c5de7f17730775e33b0dda6a72f21f585f3c4f4997223f1aa5a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+    "expected": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+    "actual": "93fd2dcd31633626b436cfc10b51385d9d6d85f9f3ef99f6a39cb18a50311695",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/network.ts",
+    "expected": "5f31c81ca04e3273b688bb2948949658b2b6b51bcb419fb84f346168243aaf58",
+    "actual": "5f31c81ca04e3273b688bb2948949658b2b6b51bcb419fb84f346168243aaf58",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/provider-source.ts",
+    "expected": "49c2677208e83753918538465c770105f4c870a2075e72afa92bba8862dc827a",
+    "actual": "49c2677208e83753918538465c770105f4c870a2075e72afa92bba8862dc827a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/public.ts",
+    "expected": "4d53d162f0da349c6b92ae75dc39b2de28a90b5b883bee47233185f51aee9bef",
+    "actual": "4d53d162f0da349c6b92ae75dc39b2de28a90b5b883bee47233185f51aee9bef",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts",
+    "expected": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4",
+    "actual": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+    "expected": "8d31bc5001a750b1077f9afea5d42aa230ed0413eb2ddbbb2120a05d09ee17e0",
+    "actual": "8d31bc5001a750b1077f9afea5d42aa230ed0413eb2ddbbb2120a05d09ee17e0",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+    "expected": "ded07ce5fa65dc5770ff0ff90d0c1b3fd5934c43660fd4b7f8980a4377f0e9f9",
+    "actual": "1c4fc8c8d2c66a1387fc904fd49cad12bc8a9be23e6ec458cfb2bd9c0fe41359",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/summary.ts",
+    "expected": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f",
+    "actual": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts",
+    "expected": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853",
+    "actual": "0876747ba1f917d7cccf65d4fc0e53ad358a59180a831159d0fa72c5ee8e2853",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+    "expected": "3f47db6401524154fa6f80743c030cf3e1b3c8ae6126365114c8d2206f7eacc8",
+    "actual": "3f47db6401524154fa6f80743c030cf3e1b3c8ae6126365114c8d2206f7eacc8",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/.gitattributes",
+    "expected": "4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300",
+    "actual": "4541989d6ff350d0fa21c7880d2481fffe1b1b8a35d46221d5016432306cf300",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/ConPtyNative.cs",
+    "expected": "3bdecfc531a4c268879e548b09b3fd6f5960485d45c7b20bc2c5710f897a298f",
+    "actual": "3bdecfc531a4c268879e548b09b3fd6f5960485d45c7b20bc2c5710f897a298f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/ConPtySession.cs",
+    "expected": "0e4fbc65ea2c76421e5b9c123a5fbd9672c49ba05042f7051eaf7bc84635343d",
+    "actual": "0e4fbc65ea2c76421e5b9c123a5fbd9672c49ba05042f7051eaf7bc84635343d",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/JobLimits.cs",
+    "expected": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2",
+    "actual": "0cbc9152724cc0fe3d8ab50b40b9738c14c1bd2afb20ffd8a464f9a1b12fa5d2",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+    "expected": "86efd211842a19765db635f965c27d5a95eb130a1e6cf77b95de852be9734d9f",
+    "actual": "01694d0291bb2ed12e44181e5be7d878cd7670390cd00b290a1dd4bf1d665b7d",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/PlatformInfo.cs",
+    "expected": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+    "actual": "8198cebea1d7d5bf4aca3b9b303221f1c2572e3152ade20038a595a831747b5b",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/PtyRunner.cs",
+    "expected": "16c4504afcf60334afb11a156779ca8d19f48502f1c923783e842ce0b1ffe631",
+    "actual": "16c4504afcf60334afb11a156779ca8d19f48502f1c923783e842ce0b1ffe631",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionInput.cs",
+    "expected": "fde2270e5587e3b4d6499043668f0404973a40886298a570f4be5874aa36c624",
+    "actual": "fde2270e5587e3b4d6499043668f0404973a40886298a570f4be5874aa36c624",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionOptions.cs",
+    "expected": "419fbc05b6b01bfe86edc928321ef50521eb79eb3d81bdd41127e3c234b05db5",
+    "actual": "419fbc05b6b01bfe86edc928321ef50521eb79eb3d81bdd41127e3c234b05db5",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionPackage.cs",
+    "expected": "bb5553c17fa4f91a3a36960e535d1635eda3b23b50ffa0c29ca95805dc3d7c66",
+    "actual": "bb5553c17fa4f91a3a36960e535d1635eda3b23b50ffa0c29ca95805dc3d7c66",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/TrustedRuntimes.cs",
+    "expected": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+    "actual": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+    "expected": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf",
+    "actual": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+    "expected": "73deea186d758f1f44781deaebe50b811ce79ff179f726e03a89d6e2ae0c3bb3",
+    "actual": "838c9bdc8b4d8dbdfed0fafcad32178cc9c28344e42a59bb94dea34c9708c45e",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+    "expected": "f68e8cb75f0b7cb0f8d1a0eae491163aea3545044d8b491ebef5e6266be079e8",
+    "actual": "fb2aed5bbd7c9dbec023f54f3291eda0bb31f711e74a4c1c68626949d798f102",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts",
+    "expected": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba",
+    "actual": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts",
+    "expected": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994",
+    "actual": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/projection.ts",
+    "expected": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341",
+    "actual": "bfb4e95b5cd162a384e562f80ba4e4f9887006f92f1da68ad7698c019cc1a341",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/runtime.ts",
+    "expected": "4b1722477a5e5c731e8388aa3de16bbe298401df60f6daca92235302c9801fcc",
+    "actual": "4b1722477a5e5c731e8388aa3de16bbe298401df60f6daca92235302c9801fcc",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+    "expected": "f566250679af2153534bc28a3ab46ca6eb7673d1dcaceeb1328942e17ef8e151",
+    "actual": "f566250679af2153534bc28a3ab46ca6eb7673d1dcaceeb1328942e17ef8e151",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+    "expected": "16b5b32f4d6d3d4dc6c84ac66e49be6a122ee5a1c2d5416ec68fc2e39c7d0d52",
+    "actual": "c4e7e015799824601a0c2edd6bfea472693115b90b5c9dc1ad54a9bb0884fbd3",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+    "expected": "1b7d3a9686da309dbe11b195236bc01cc09a7a7a74b289cf1a3bc4eb1814440a",
+    "actual": "1b7d3a9686da309dbe11b195236bc01cc09a7a7a74b289cf1a3bc4eb1814440a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/admission-error.ts",
+    "expected": "f8fa0e3ed552fdced4ccfa8dddf875ed2d9a7a1bc580f0a060d47223e9413b4f",
+    "actual": "f8fa0e3ed552fdced4ccfa8dddf875ed2d9a7a1bc580f0a060d47223e9413b4f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/api.ts",
+    "expected": "253d0292f9ba4bed8b0a234864026e2ac24a59a6b53b52bc18df9f9346dd74cc",
+    "actual": "253d0292f9ba4bed8b0a234864026e2ac24a59a6b53b52bc18df9f9346dd74cc",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/checkpoints.ts",
+    "expected": "7c8a6fa5797201c1fc9004041ac1833523bbe6f31de77fa049e9dfa7804407aa",
+    "actual": "7c8a6fa5797201c1fc9004041ac1833523bbe6f31de77fa049e9dfa7804407aa",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/continuation.ts",
+    "expected": "da7e98e5544ae92d627f132cfb8e40549b945e49dc9c4ab33f1f6e8fba9df032",
+    "actual": "da7e98e5544ae92d627f132cfb8e40549b945e49dc9c4ab33f1f6e8fba9df032",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/coordinator.ts",
+    "expected": "121379efffc63443403989c4bb985b01a0ecdd34023a2d32a23d2bdb45327d32",
+    "actual": "121379efffc63443403989c4bb985b01a0ecdd34023a2d32a23d2bdb45327d32",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/goal-binding.ts",
+    "expected": "0d523f6c4cdc158b453dbbe1ebfe95650c4dfd5549e917e1b6d287c4e1f436b2",
+    "actual": "0d523f6c4cdc158b453dbbe1ebfe95650c4dfd5549e917e1b6d287c4e1f436b2",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/native-rebuild-state.ts",
+    "expected": "a0c5c568b804c6e376b0dc77c845b46d2c80ac3dec1e565652c4ef17d33a2d77",
+    "actual": "a0c5c568b804c6e376b0dc77c845b46d2c80ac3dec1e565652c4ef17d33a2d77",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/native-session-replacement.ts",
+    "expected": "13974571233ee8321363077508aae2a861f4d1285ee5a94db17532035037c096",
+    "actual": "13974571233ee8321363077508aae2a861f4d1285ee5a94db17532035037c096",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/paper-export-continuation.ts",
+    "expected": "0b234e3304eba42b5564209ee9dc7dbf656ebbe706e7eaf1e476ae072c53f92c",
+    "actual": "0b234e3304eba42b5564209ee9dc7dbf656ebbe706e7eaf1e476ae072c53f92c",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+    "expected": "c0eb975a97f11126e9424a38a9a89983215b043b814cd9391b8ff2c7eae9c30a",
+    "actual": "c0eb975a97f11126e9424a38a9a89983215b043b814cd9391b8ff2c7eae9c30a",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/planning-policy.ts",
+    "expected": "f94925a490a58b07f92f09f3caba539c37518c3d6e2a5cc4e4c77cca6d25a00d",
+    "actual": "f94925a490a58b07f92f09f3caba539c37518c3d6e2a5cc4e4c77cca6d25a00d",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/planning-runtime.ts",
+    "expected": "09df0bb9ea7da0cbf91433e78e2d8e5113520b588390f46a3b26119857959906",
+    "actual": "09df0bb9ea7da0cbf91433e78e2d8e5113520b588390f46a3b26119857959906",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/recovery-inspection.ts",
+    "expected": "23f36a42813a4771cc7c195fdf3ed4b99cc791494a1366213de408b291e8e926",
+    "actual": "23f36a42813a4771cc7c195fdf3ed4b99cc791494a1366213de408b291e8e926",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/resources.ts",
+    "expected": "83ee8e2000cef26a5fecd04dbfbee749220e7a1c4c159344ffa76ef87338fe07",
+    "actual": "83ee8e2000cef26a5fecd04dbfbee749220e7a1c4c159344ffa76ef87338fe07",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/result-recheck.ts",
+    "expected": "9304db3b3361098f77d42826fcd47230670f3b65c850bf4b7f2a61516ebacfb5",
+    "actual": "9304db3b3361098f77d42826fcd47230670f3b65c850bf4b7f2a61516ebacfb5",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/startup-recovery.ts",
+    "expected": "4862aedaddc6529b481a797ccbf28cf4575a5cbfa7d80c11d89f21b816f5c43d",
+    "actual": "4862aedaddc6529b481a797ccbf28cf4575a5cbfa7d80c11d89f21b816f5c43d",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/task-evidence.ts",
+    "expected": "c0c8266d43e82e97ee31547876f4df3d8321989e86cbc9e08139c03de94d579c",
+    "actual": "c0c8266d43e82e97ee31547876f4df3d8321989e86cbc9e08139c03de94d579c",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts",
+    "expected": "b5c47a9067838bcf4a31c86c2cd45d1bc8e3e3960e06c16559920e9fe0bcac24",
+    "actual": "faded3d3cb977fca48c5df537c6d41920bc5b7e2886843fa898431b37fbcef8e",
+    "match": false
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/teacher-actions.ts",
+    "expected": "4db96ef8e4a7a4bb9164c5dcebaccf4e0e784950bb52ca2277ef7b3c599cf4d8",
+    "actual": "4db96ef8e4a7a4bb9164c5dcebaccf4e0e784950bb52ca2277ef7b3c599cf4d8",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/tasks/tool-envelope.ts",
+    "expected": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+    "actual": "a90e61f517345e09fc30e7f8bce0d6e0d5b925fe1b3103e1aff02ecfdc935344",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/api.ts",
+    "expected": "01d0cfd8ad19ed40d9235fe3310bb45bea9ac39bc6f668de6cf3e8c18ed3d5d6",
+    "actual": "01d0cfd8ad19ed40d9235fe3310bb45bea9ac39bc6f668de6cf3e8c18ed3d5d6",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/controlled-backend.ts",
+    "expected": "f3d7d88afd50a2b026e47042f9cc473d998230d0ee1ba3da969d9f6b07f69155",
+    "actual": "f3d7d88afd50a2b026e47042f9cc473d998230d0ee1ba3da969d9f6b07f69155",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/controlled-types.ts",
+    "expected": "3e7cd38163cc5c65293563b9dc46bdd47e1e6eeb60ccf393cc2ee541b9fb96b3",
+    "actual": "3e7cd38163cc5c65293563b9dc46bdd47e1e6eeb60ccf393cc2ee541b9fb96b3",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/input.ts",
+    "expected": "a1948a2da85ad071f0cbf852b31a22be4af93097f69acacaea94acedd97fe86c",
+    "actual": "a1948a2da85ad071f0cbf852b31a22be4af93097f69acacaea94acedd97fe86c",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/job-state.ts",
+    "expected": "35037088543b24cead883d154a08f9453b7d07487569a366dada2075cbca1b58",
+    "actual": "35037088543b24cead883d154a08f9453b7d07487569a366dada2075cbca1b58",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/job-types.ts",
+    "expected": "bbeeb456dedc95f7e7cf2cc1cff30edcc34bc8419a7e416ee1b88278c4bc8c93",
+    "actual": "bbeeb456dedc95f7e7cf2cc1cff30edcc34bc8419a7e416ee1b88278c4bc8c93",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/lifecycle.ts",
+    "expected": "260338364c203363fd5fc1dd38b0e49bdd6432b4f42aceb514ce51a510999be7",
+    "actual": "260338364c203363fd5fc1dd38b0e49bdd6432b4f42aceb514ce51a510999be7",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/presentation.ts",
+    "expected": "9fbdba19e8c13f265fe7841577010f7701d78ca8db5c4939d924697d01c38818",
+    "actual": "9fbdba19e8c13f265fe7841577010f7701d78ca8db5c4939d924697d01c38818",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/recovery.ts",
+    "expected": "c2db74426ca768e6fa85040536a76be5af202f632739edfe6004a3d4d97b99cc",
+    "actual": "c2db74426ca768e6fa85040536a76be5af202f632739edfe6004a3d4d97b99cc",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/service.ts",
+    "expected": "57d4e257a2dbacd130787c34f6a80d3593c0a949d703d7692ba0093fc8dc3075",
+    "actual": "57d4e257a2dbacd130787c34f6a80d3593c0a949d703d7692ba0093fc8dc3075",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/shell-startup.ts",
+    "expected": "24cdbc7a5912ad484f490c448228cd284de87985fbd205a054ac04532f75378d",
+    "actual": "24cdbc7a5912ad484f490c448228cd284de87985fbd205a054ac04532f75378d",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/tools.ts",
+    "expected": "d853999b87869af540885b031fa8f7e42b8e6db90635bb6dcd6668835868969f",
+    "actual": "d853999b87869af540885b031fa8f7e42b8e6db90635bb6dcd6668835868969f",
+    "match": true
+  },
+  {
+    "phase": 6,
+    "file": "apps/desktop/src/main/xiaozhi-agent/terminal/validation.ts",
+    "expected": "172c2df050e0f0bb47665d1c4ad83797baa90963264c3809d3a83500f06ace44",
+    "actual": "172c2df050e0f0bb47665d1c4ad83797baa90963264c3809d3a83500f06ace44",
+    "match": true
+  }
+]

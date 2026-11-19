@@ -1,0 +1,112 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\rk-wl-83c937b8\\apps\\desktop\\.local-reranker\\dist\\omni-edu-reranker",
+  "filename": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\rk-wl-83c937b8\\apps\\desktop\\src\\main\\retrieval\\reranker-runtime-manifest.json",
+  "modelFiles": [
+    {
+      "path": "_internal/models/LICENSE",
+      "size": 1065,
+      "sha256": "587a673933425dbc36ec61268d3b954051b2d3ef3c9b322ede357976055ffdd5"
+    },
+    {
+      "path": "_internal/models/README.md",
+      "size": 1135,
+      "sha256": "2ccb3f72b5eb6205316c0b9dde944d6f944ec4a87b85706ce07ef9d9d02b4690"
+    },
+    {
+      "path": "_internal/models/UPSTREAM_MODEL_CARD.md",
+      "size": 34111,
+      "sha256": "b4223c8c1e95538f8c79168afc501f8b2da06c63221f013b79b28af78b59366d"
+    },
+    {
+      "path": "_internal/models/config.json",
+      "size": 782,
+      "sha256": "b6575b9d5be20d6747417c8e20c5a0db1636356e0b6d422d7244c628423c4d4c"
+    },
+    {
+      "path": "_internal/models/model-lock.json",
+      "size": 2356,
+      "sha256": "2d5c383b959749a2a2e326acbeb5e8a88b02302a6df0d75a1c5c330a9c525b04"
+    },
+    {
+      "path": "_internal/models/model_quantized.onnx",
+      "size": 279301077,
+      "sha256": "dd98f3e67837d23210a6b7550c08cced4f61845b940ac45be3565840a10f3244"
+    },
+    {
+      "path": "_internal/models/tokenizer.json",
+      "size": 17098079,
+      "sha256": "48564c5c7d3fa64d85d95e65414a542385f88b0f128fd8d4163fd7a57f2be05c"
+    },
+    {
+      "path": "_internal/models/tokenizer_config.json",
+      "size": 443,
+      "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b"
+    }
+  ],
+  "manifestSha256": "3707e18b10cc7f76706a795791d8ef56341ee26e6d9bf8148e35704c13320dd1",
+  "buildScriptSha256": "9cbef61d741520e7aaf683117de7d6d2a758625d86f820a8a5f8a479047ab0b2",
+  "executableSha256": "0b7581e977a4a05d11a8e5a0f3f254f1dc0c4b95d244721974c62cb97e8a6c29",
+  "productionManifestSha256": "a31127c41f84dfe54f2b572a398526e7848544ccc877afa994b77b26fe03160b",
+  "candidateFiles": 155,
+  "candidateBytes": 397959129,
+  "sourceCanaries": [
+    {
+      "file": "model_quantized.onnx.download",
+      "bytes": 11079949,
+      "sha256": "931926cc13d842bf4a7fdc949531bd7bb57d6ecf61794b56ca43c756bcdf7d5b"
+    },
+    {
+      "file": "unexpected.txt",
+      "bytes": 28,
+      "sha256": "6cc3963c3cca041ba1753e06baafb338a9a7644d27e2f8b5628ce0482123f2d4"
+    },
+    {
+      "file": "unexpected/config.json",
+      "bytes": 28,
+      "sha256": "c76dff8c36608eab946617bce14d4cb4ae5c258753c90cd444c2322e6482ab02"
+    }
+  ],
+  "differences": {
+    "added": [
+      "_internal/numpy-2.5.3.dist-info/REQUESTED"
+    ],
+    "removed": [
+      "_internal/charset_normalizer/cd.cp312-win_amd64.pyd",
+      "_internal/charset_normalizer/md.cp312-win_amd64.pyd",
+      "_internal/yaml/_yaml.cp312-win_amd64.pyd"
+    ],
+    "changed": [
+      "_internal/_asyncio.pyd",
+      "_internal/_bz2.pyd",
+      "_internal/_ctypes.pyd",
+      "_internal/_decimal.pyd",
+      "_internal/_hashlib.pyd",
+      "_internal/_lzma.pyd",
+      "_internal/_multiprocessing.pyd",
+      "_internal/_overlapped.pyd",
+      "_internal/_queue.pyd",
+      "_internal/_socket.pyd",
+      "_internal/_ssl.pyd",
+      "_internal/_wmi.pyd",
+      "_internal/base_library.zip",
+      "_internal/libcrypto-3-x64.dll",
+      "_internal/libffi-8.dll",
+      "_internal/libssl-3-x64.dll",
+      "_internal/numpy-2.5.3.dist-info/INSTALLER",
+      "_internal/numpy-2.5.3.dist-info/RECORD",
+      "_internal/pyexpat.pyd",
+      "_internal/python3.dll",
+      "_internal/python312.dll",
+      "_internal/select.pyd",
+      "_internal/unicodedata.pyd",
+      "omni-edu-reranker.exe"
+    ],
+    "buildInputs": [
+      {
+        "path": "apps/desktop/scripts/release/build-reranker-runtime.mjs",
+        "sha256": "9cbef61d741520e7aaf683117de7d6d2a758625d86f820a8a5f8a479047ab0b2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "success": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-mcp-transports-vLgRlW",
+  "checks": [
+    {
+      "name": "Mixed adapter leaves HTTP input unchanged and does not invoke the stdio converter",
+      "pass": true
+    },
+    {
+      "name": "Stdio converter result and denial still propagate",
+      "pass": true
+    },
+    {
+      "name": "Real HTTP metadata and selected tools initialize with the mixed adapter",
+      "pass": true
+    },
+    {
+      "name": "Network grant for another actual URL origin cannot authorize this endpoint",
+      "pass": true
+    },
+    {
+      "name": "Exact Network Egress and MCP grants permit the actual HTTP call without stdio projection",
+      "pass": true
+    },
+    {
+      "name": "Input schema and privacy refusals happen before any HTTP request",
+      "pass": true
+    },
+    {
+      "name": "Server authentication failure is reported independently from URL authorization",
+      "pass": true
+    },
+    {
+      "name": "Relevant Egress revocation blocks the registered callback before network IO",
+      "pass": true
+    },
+    {
+      "name": "Relevant MCP revocation blocks the registered callback before network IO",
+      "pass": true
+    },
+    {
+      "name": "Relevant Network revocation blocks the registered callback before network IO",
+      "pass": true
+    },
+    {
+      "name": "Server revocation blocks the old registered callback with all grants still present",
+      "pass": true
+    }
+  ],
+  "paidCalls": 0,
+  "boundary": "Current permission adapter and engine, owned SQLite, actual HTTP MCP loopback and network broker. Stdio input conversion is a declared callback fixture, without a native stdio process. No Electron or model.",
+  "calls": 4,
+  "requests": 15,
+  "sourceSha256": "1a562e61967ebeb52dfe0e6709ed73d040e49d36678dace0287aabcc555ac408"
+}

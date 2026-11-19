@@ -1,0 +1,34 @@
+{
+  "boundary": "No Electron launch. Actual candidate OCR bundle with an injected packaged app surface. Production office component with its exact noLinks helper isolated, synthetic TEMP root and fetch blocked. No source/out/package/SQLite mutations.",
+  "checks": [
+    {
+      "name": "compiled-block-runtime-guard",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edup-6e98963d\\release\\win-unpacked\\resources\\page-blocks-runtime",
+      "exists": false,
+      "error": "unavailable"
+    },
+    {
+      "name": "fresh-office-blocked-fetch",
+      "calls": [
+        "https://download.documentfoundation.org/libreoffice/stable/26.8.2/win/x86_64/LibreOffice_26.8.2_Win_x86-64.msi"
+      ],
+      "progress": [
+        {
+          "phase": "checking",
+          "downloadedBytes": 0,
+          "totalBytes": 376675932,
+          "installedBytes": 1526232897
+        },
+        {
+          "phase": "failed",
+          "downloadedBytes": 0,
+          "totalBytes": 376675932,
+          "installedBytes": 1526232897,
+          "error": "Network disabled in packaged local import check"
+        }
+      ],
+      "error": "Network disabled in packaged local import check",
+      "mappedByMaterialWordPages": "parse_failed"
+    }
+  ]
+}

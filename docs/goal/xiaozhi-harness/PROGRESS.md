@@ -1,19 +1,32 @@
 # Harness 执行进度
 
+## 2026-11-19 主线发布点与接手入口
+
+本次主线合并纳入已完成的 MCP 工具派发、撤销后同任务续跑、工具准备校验复用、Windows 资源封装与 Word 转换路径修复。原知识库主线的跨页正文与相邻题图归属处理一并保留。源码父提交为 `23f6567` 和 `d94cfb6`。具体版本与测试用 [主线合并记录](evidence/phase8/main-sync-20261119.md) 核对。
+
+- 最新运行基线跟踪 GitHub `main`。后续优化和在途证据跟踪 `codex/xiaozhi-harness-20261112` 的本页、[机器状态](ORCHESTRATOR_STATE.json) 与 [验收矩阵](ACCEPTANCE_MATRIX.json)。本地专项工作树为 `D:/WorkProject/EduProject-harness`。
+- 此主线检查点的矩阵为 73/89。后续需要继续 Word 冷启动归档与读回、原生窗口交互、正式真实模型对照、安装/卸载以及独立终验。付费累计 3/200。
+- 主线集成在隔离工作树完成。日常工作区保留自身检出和协作改动。
+
 ## 当前进度 2026-11-19
 
 Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、审批和能力界面进入主线合并，完整 Gate7 继续复验。下一轮沿 `codex/xiaozhi-harness-20261112` 分支推进。主线工作见 [阶段顺序与证据入口](evidence/phase7/implementation-resume-20261119/MAINLINE.md)。
 
 ### 协作者接手
 
-- 以 GitHub `main` 为已集成基线。工作台、计时准备、审批与终端对应功能提交 `88ad67c`、`0978a1e`、`387a796`，合并保留上游协作规则、跨页选择题和独立原图块修复 `3ba66e5`、`f5d9453`。后续开发继续在 `codex/xiaozhi-harness-20261112` 进行。
-- [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 70 项阶段范围通过。未验项与证据边界见 [独立验收记录](ACCEPTANCE_REPORT.md)。合并后的验证见 [合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
-- 缓存优化的隔离原型已用同一工作负载比较，单次 24.01 秒降至 21.70 秒，源文件 SHA 读取 6 次降至 3 次。原型尚未进入生产源码，随后在功能分支补全并验证。原生窗口、真实模型 A/B 和打包继续按原方案验收。付费计数为 0/200。[性能对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+- 以 GitHub `main` 为集成基线。工作台、流式反馈、持久审批和终端改动已随 `83034fe` 合入。交接核验时 `main` 为 `cbc4e26`，包含该合并和后续知识库更新。后续优化从 `codex/xiaozhi-harness-20261112` 追踪。日常目录 `D:/WorkProject/EduProject` 有其他协作改动，开发与验证使用 `D:/WorkProject/EduProject-harness`。
+- [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 73 项通过证据。新增 UI-09 五种实际能力状态、A-P0-01 唯一 Pi Runtime 及 A-P0-09 旧 Run 写入围栏。当前 Task 的依赖从待审到拒绝并冷启动复验。未验项见 [独立验收记录](ACCEPTANCE_REPORT.md)。[合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
+- 功能分支代码检查点 `57d300d` 已通过构建、组件 253/253、Electron 综合回归 207/207。该版含缓存优化与真实模型预检采集修复。发布前须按同一冻结构建继续完成独立验收。
+- 缓存优化的隔离原型在同一工作负载单次从 24.01 秒降至 21.70 秒，源文件完整 SHA 核验从 6 次降至 3 次。功能分支的生产 Host 三轮复测确认热路径和冷启同 Task 均各核验 3 次。热路径 19.89–21.71 秒，冷启 21.01–38.61 秒，正式延时门禁继续复测。原生窗口、模型质量和打包仍按原方案独立验收。[隔离对照](evidence/phase8/cached-profiling-preparation-20261119/fork-prototype-pair.json) · [生产专项](evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json)。
 
 - 工作台、审批收件箱、能力中心已用真实 Electron 验证。独立验收确认现代审批、冷启动、团队技能版本回滚、窄窗长路径折行和指定合成模型密钥未外显。能力中心增加中文工具标题、调用范围和中文搜索。
 - 缓存能力的真实受控进程基线已取得。24.109 秒完成准备、解析、执行，私有合成文本读回与三个原生进程清理通过。发现先前准备结果留作未知 Effect 会挡住同任务继续，已列定向审计。详见 [基线与复测口径](evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md)。
 - 能力准备已有领域回执。Sol 的原 Host 冷启同 Task 回归 3/3，回执变更拒绝等负例 22/22。普通单次批准继续使用原 scope，能力准备增加明确当前任务授权入口。Terra 在真实 Electron 验证一个精确原 Task scope，最终工作台综合 9/9，含真实终端关闭和缓存隔离。
-- 原生拖窗与最大化还原等待可见桌面复验。真实模型 0/200，A/B 合成资料、加密设置和预算前置已形成证据。
+- 合成 Q1 的旧版和新版已完成真实 DeepSeek 连接预检及 SQLite 冷读回。首次旧版的流式计量失败保留，修订采集器后两版通过。累计 3/200，剩余 197 次。正式 32 次 ABBA 采集、盲评及失败场景尚待执行。[连接预检](evidence/phase8/connection-preflight-20261119.json) · [真实模型计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+- 原生拖窗与最大化还原等待可见桌面复验。下一位 AI 从当前文档、[执行状态](ORCHESTRATOR_STATE.json)和[验收报告](ACCEPTANCE_REPORT.md)接手。继续使用原账本，正式验收须冻结实际受测提交与产物。
+- 后台流式同负载 A/B 两侧各 5/5，推理在终态前更新，实际停止动作产生终态且可读回。提交到模拟模型的请求到达时间 5.24 秒和 3.73 秒，停止到终态 151 毫秒和 169 毫秒。浏览器将部分后台帧限到约 1 秒，前台流畅度继续按原条件验收。[配对证据](evidence/phase8/background-stream-pair-20261119.json)。
+- HTTP MCP 已修复 stdio 输入转换误拦截及 Provider 撤销后误停整轮。独立真实 Host 两个场景均从一次合法调用开始，撤销后重调不增加外部执行，同 Task 成功走本地替代工具，重启读回一致。Provider 可信未派发可单列，Grant 下游拒绝的效果仍保守核对。真实 SQLite 写入错误继续按原规则停止。11 项传输、9 项准入及 23 项 Journal 测试通过。[独立 Host 复测](evidence/phase8/http-mcp-projection-20261119/provider-revocation/FINAL_VERDICT.json)。
+- Windows 重排资源已排除下载残片，首个 NSIS 候选已生成。新版五资源包实测完成 TXT、Markdown、扫描 PDF 和图片导入。DOCX 配置长路径已修复，原失败路径在真实宿主约 21 秒完成。新版打包复测中实际生成 DOCX 原版 PDF，归档阶段仍报 source_changed；旧 D 盘测试触发原空间门槛，已在充足空间的 OS TEMP 重现独立归档故障。安装及卸载继续按原合同验收。[打包证据](evidence/phase8/windows-runtime-preparation-20261119.md)。
 
 ## 当前进度 2026-11-18
 

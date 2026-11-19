@@ -1,0 +1,84 @@
+{
+  "text": "能力中心\n\n安装、核验、任务授权与可用性分别核对。读取本页不会连接工具、运行探测或安装组件。\n\n搜索能力\n搜索\n刷新记录\n管理工具与安装\n管理教育技能\n查看资料与权限\n\n已选中当前任务。小智会在调用时核对操作和授权范围。\n\n当前任务详情\n\n中心记录 87 · 当前筛选 2 · 同一能力的不同提供方分别列出。\n\n本地资料只读访问 2.3.0\n\n来源 https://registry.npmjs.org/ · 安装与候选来源 · 许可证 Apache-2.0 AND MIT\n\n安装\n已安装\n核验\n已核验\n任务授权\n需任务核对\n可用性\n需任务核对\n\n调用范围 外部工具\n\n来源与核验详情\n本地资料只读访问 2.3.0\n\n来源 https://github.com/modelcontextprotocol/servers · 安装与候选来源 · 许可证 未知，需核对\n\n安装\n未安装\n核验\n待核验\n任务授权\n需任务核对\n可用性\n当前不可用\n\n调用范围 外部工具\n\n候选来源需要审核\n\n来源与核验详情\n上一页\n下一页",
+  "summary": {
+    "ok": true,
+    "value": {
+      "schemaVersion": 1,
+      "asOf": "2026-11-19T08:48:54.798Z",
+      "items": [
+        {
+          "id": "artifact:xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+          "name": "本地资料只读访问",
+          "sourceKind": "acquisition",
+          "capabilityId": null,
+          "providerId": null,
+          "version": "2.3.0",
+          "origin": "installed",
+          "source": "https://registry.npmjs.org/",
+          "sourceHash": "38f113da6fbc6e635f6153cf82d638bfc3fc19a7366ddd1650edf10d4122fae3",
+          "schemaHash": "5a454a42dbbb3dac4da9238eed86bd7705693da7c18e50f127f9ddcea70f8a75",
+          "license": "Apache-2.0 AND MIT",
+          "installed": "installed",
+          "verification": "verified",
+          "authorization": "task_check_required",
+          "availability": "task_check_required",
+          "requiredMissing": [],
+          "optionalMissing": [],
+          "reasons": [],
+          "risk": [
+            "external_tool"
+          ],
+          "verifiedAt": null,
+          "expiresAt": "2026-12-17T11:35:08.719Z"
+        },
+        {
+          "id": "candidate:xicandidate_8e249a5b3b05106cf553c5698448e65d00c48af78ff8448df996d5a9e7613a76",
+          "name": "本地资料只读访问",
+          "sourceKind": "acquisition",
+          "capabilityId": null,
+          "providerId": null,
+          "version": "2.3.0",
+          "origin": "candidate",
+          "source": "https://github.com/modelcontextprotocol/servers",
+          "sourceHash": "a191263fc0e62f1730ee6b46e609434be10e227ddec2c1025ceacfb20005cd76",
+          "schemaHash": null,
+          "license": null,
+          "installed": "missing",
+          "verification": "pending",
+          "authorization": "task_check_required",
+          "availability": "blocked",
+          "requiredMissing": [],
+          "optionalMissing": [],
+          "reasons": [
+            "candidate_requires_review"
+          ],
+          "risk": [
+            "external_tool"
+          ],
+          "verifiedAt": null,
+          "expiresAt": "2026-11-20T08:46:43.350Z"
+        }
+      ],
+      "total": 87,
+      "matched": 2,
+      "counts": {
+        "registered": 85,
+        "candidate": 1,
+        "installed": 1
+      },
+      "nextCursor": null,
+      "partial": false,
+      "unavailableCount": 0,
+      "sourceFailures": [],
+      "scanned": 87,
+      "kind": "capabilities",
+      "context": {
+        "state": "current",
+        "sessionId": "aisession_e0fae6b4-f998-4352-9e22-7fcff5e78423",
+        "taskId": "xitask_4786b7ca4fc3758e1bab0ff162daad1885ed3082ff869efb2c0aa26bd638a9bc",
+        "requirementsVersion": 1
+      },
+      "registryRevision": 85
+    }
+  }
+}

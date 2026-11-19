@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-19",
+  "cases": [
+    {
+      "case": "short-original-worker",
+      "elapsedMs": 21876,
+      "exitCode": 0,
+      "stderr": "",
+      "pdfExists": true,
+      "jobLength": null,
+      "limits": "Original candidate worker and extracted production Python, original synthetic DOCX, exact allowlisted host environment, new TEMP job only."
+    },
+    {
+      "case": "long-original-worker",
+      "elapsedMs": 90481,
+      "exitCode": 1,
+      "stderr": "unavailable\r\n",
+      "pdfExists": false,
+      "jobLength": 156,
+      "limits": "Original candidate worker, exact production protocol limits/environment, same-length new TEMP job, original synthetic bytes; original profile/db/job not modified."
+    },
+    {
+      "case": "long-job-short-office-profile",
+      "elapsedMs": 18108,
+      "exitCode": 0,
+      "stderr": "",
+      "pdfExists": true,
+      "jobLength": 156,
+      "limits": "Original candidate worker via runpy and a TEMP-only helper copy changing only UserInstallation profile path. Same long job/source/output and exact production request limits/environment. No original files modified."
+    }
+  ],
+  "scope": "Identical synthetic DOCX and offline managed Office program. A TEMP-only worker helper modification tests the short profile inside the long-job case. This file records diagnosis before production repair."
+}

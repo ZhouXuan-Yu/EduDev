@@ -15,7 +15,11 @@ export function createMcpPermissionContext(options: {
     transformInput?: McpPermissionContext['transformInput'];
     scopes: (source: McpPermissionSource, tool: string, input: unknown) => Promise<PermissionScope[]>};
 }): McpPermissionContext {
-  return {...(options.stdio ? {stdioTransport: options.stdio.transport, transformInput: options.stdio.transformInput} : {}), async run(source, tool, input, signal, operation, callId) {
+  const stdioInput = options.stdio?.transformInput;
+  const transformInput: McpPermissionContext['transformInput'] = stdioInput
+    ? async (source, tool, input) => source.transport === 'stdio' ? stdioInput(source, tool, input) : input
+    : undefined;
+  return {...(options.stdio ? {stdioTransport: options.stdio.transport, transformInput} : {}), async run(source, tool, input, signal, operation, callId) {
     if (source.transport === 'stdio' && !options.stdio || source.transport === 'http' && !source.url) throw Error('unsupported_constraint');
     // The stdio transport acquires a separate engine lease covering its full Job lifetime.
     if (source.transport === 'stdio' && tool === null) return operation(signal);
