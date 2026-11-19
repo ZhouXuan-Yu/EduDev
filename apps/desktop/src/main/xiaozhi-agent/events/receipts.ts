@@ -6,6 +6,7 @@ import type {XiaozhiRecovery,XiaozhiRecoveryReceipt} from '../../../shared/xiaoz
 import {toolManifest} from '../tools/manifest';
 import type {ToolContractReceipt} from '../capabilities/core-governance';
 import {receiptWasNotDispatched} from '../effects/non-dispatch';
+import {mcpIntentWasNotDispatched} from '../effects/mcp-dispatch';
 
 export type ReceiptCapture={callId:string;tool:string;digest:string;failed:boolean};
 export type ReceiptReadback={readNative?:(binding:NativeRunBinding)=>Promise<NativeToolEntry[]>;readEffect?:(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry)=>Promise<'matched'|'uncertain'|'not_checked'>};
@@ -87,7 +88,7 @@ export function createToolReceipts(options:ReceiptReadback={}){
     const callId=String(row.call_id),tool=String(row.tool),entry=native?.find(r=>r.callId===callId);
     let nativeState:XiaozhiRecoveryReceipt['native']='missing',effect:XiaozhiRecoveryReceipt['effect']=row.effect_state==='uncertain'?'uncertain':'not_checked';
     if(entry){nativeState=entry.tool!==tool||row.admitted===0&&!entry.failed||row.result_digest&&row.result_digest!==entry.digest||row.success!==null&&Boolean(row.success)!==!entry.failed||row.native_entry_id&&row.native_entry_id!==entry.id||row.native_digest&&row.native_digest!==entry.digest?'conflict':row.result_digest?'matched':'recorded';}
-    const notDispatched=nativeState!=='conflict'&&row.success===0&&await receiptWasNotDispatched(work,owner,callId,tool);
+    const notDispatched=nativeState!=='conflict'&&row.success===0&&(await receiptWasNotDispatched(work,owner,callId,tool)||await mcpIntentWasNotDispatched(work,owner,callId,tool));
     // Effect truth comes from existing teacher-confirmed ledgers and disk, not a native "success" string.
     if(notDispatched)effect='not_checked';
     else if(row.admitted!==0&&options.readEffect){const checked=await bounded(()=>options.readEffect!(owner,callId,tool,['matched','recorded'].includes(nativeState)?entry:undefined))||'uncertain';if(checked!=='not_checked'||effect!=='uncertain')effect=checked;}

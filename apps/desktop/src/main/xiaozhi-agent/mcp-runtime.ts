@@ -22,6 +22,7 @@ export type McpStdioConfiguration = {source: McpPermissionSource; command: strin
 export type McpPermissionContext = {
   stdioTransport?: (configuration: McpStdioConfiguration, signal?: AbortSignal) => Promise<McpTransport>;
   transformInput?: (source: McpPermissionSource, tool: string, input: Record<string, unknown>) => Promise<Record<string, unknown>>;
+  beforeCall?: (source: McpPermissionSource, tool: string, input: Record<string, unknown>, signal: AbortSignal, callId: string) => Promise<void>;
   run: <T>(source: McpPermissionSource, tool: string | null, input: unknown, signal: AbortSignal,
     operation: (signal: AbortSignal) => Promise<T>, callId?: string) => Promise<T>;
 };
@@ -323,6 +324,14 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
                   if (disposed || !sourceMatches) throw Error('permission_denied');
                   const wireInput = permission?.transformInput ? await permission.transformInput(source, tool.name, input) : input;
                   ownedSignal.throwIfAborted();
+                  if (source.transport === 'http' && permission?.beforeCall) {
+                    await permission.beforeCall(source, tool.name, input, ownedSignal, callId);
+                    ownedSignal.throwIfAborted();
+                    const current = (await state()).servers.find(s => s.id === server.id);
+                    if (disposed || current?.status !== 'ready' || current.trustedSchemaHash !== server.trustedSchemaHash
+                        || !current.selectedTools.includes(tool.name)) throw Error('permission_denied');
+                    ownedSignal.throwIfAborted();
+                  }
                   return await runtime.callTool(tool.name, wireInput, {signal: ownedSignal, timeoutMs});
                 } finally {release();}
               };

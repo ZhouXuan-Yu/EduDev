@@ -893,6 +893,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       sanitize:async text=>(await createStudentContextSanitizer(store))(text),sanitizer:()=>createStudentContextSanitizer(store),
       fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText}):undefined;
     const mcpTools = owner ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
+      beforeCall: async (source, tool, input, signal, callId) => {
+        if (!owner.toolGovernance) throw Error('permission_denied');
+        await owner.toolGovernance.beginMcpCall(callId, {serverId: source.serverId, tool, transport: source.transport,
+          sourceHash: source.sourceHash, schemaHash: source.schemaHash}, input, signal);
+      },
       authority: async (callId, decision) => {await owner.toolGovernance?.recordAuthority(callId, decision.grantRefs, 'permission-request:' + decision.requestDigest);},
       stdio: controlledMcp.forOwner({signal: owner.abort.signal, workspace, requirementsVersion: () => owner.task?.requirementsVersion || 1,
         owner: () => {
@@ -1209,7 +1214,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
                 providerHash: record.providerHash, evidenceRefs: version.binding.conformance.evidence.map(item => item.reference),
                 previousSnapshotId: existing?.snapshotId || null, refreshReason: existing ? 'explicit_refresh' : 'initial'}));
             }, persist: (callId, name, receipt) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt)),
-            beginEffect: callId => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.beginToolEffect(owner, callId)),
+            beginEffect: (callId, expected) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.beginToolEffect(owner, callId, expected)),
             bindExecution: (callId, execution) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.bindToolEffectExecution(owner, callId, execution))});
           return run.toolGovernance;
         }}} : {}),

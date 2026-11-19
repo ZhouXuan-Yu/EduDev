@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-19 Harness 外部工具恢复
+
+HTTP MCP 的持久执行点在有效授权、来源和参数验证之后，真实传输之前。执行后失败与停机继续按不确定效果恢复。 [Harness 专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)。
+
 ## 2026-11-19 知识库结构 v5 图形选项
 
 结构装配 v5 复用末题条件，图框同图注一对一绑定。仓储沿用现有题目文档 choices 和 SQLite/本地裁图。

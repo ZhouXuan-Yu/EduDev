@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-19 Harness 外部工具恢复
+
+H-23、H-26、H-29 的 HTTP MCP 接缝继续复用原 Permission Engine、Effect、Event Journal 和 SQLite。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。
+
 ## 2026-11-19 知识库结构 v5 图形选项
 
 逐项图形关系使用现有 QuestionDocument choices 和图库协议。字母不全或者源文本/OCR未核对时保持待核，继续沿用现有 PDF 入库门禁。

@@ -42,6 +42,46 @@
   "artifactReadbackSha256": "72daaeaf1a1779fb58ff5d5024b18167b8e09ee38b8a0d7da73d87f443c3c30e",
   "priorUiSha256": "5c05ca38e5ee5953ecaf89526d4f42e50575753ad8eebc76a3e34ba9c92a1294",
   "failedFixtureSha256": "edce837f730f4d37be80b473e9901b12e3044b166ec345d5a5ea5fccf09794df",
-  "remaining": "Grant isolation and actual late effect from an older generation when switching between sessions, plus artifacts directory presentation.",
-  "paidCalls": 0
+  "remaining": "Cross-session UI with late effects from an older generation of the same Task and a targeted same-Task terminal Grant consumption check.",
+  "paidCalls": 0,
+  "taskGrants": {
+    "status": "PASS_SCOPED",
+    "checks": [
+      {
+        "name": "A explicitly approves its task scope in real settings; exact grant owner matches task",
+        "status": "PASS"
+      },
+      {
+        "name": "B asks approval for same controlled command instead of inheriting A task Grant",
+        "status": "PASS"
+      },
+      {
+        "name": "Teacher revokes exact A Grant from settings; same grant ID records revokedAt",
+        "status": "PASS"
+      },
+      {
+        "name": "Cold UI and SQLite preserve B pending approval and exact revoked Grant",
+        "status": "PASS"
+      }
+    ],
+    "runnerSha256": "751927e33d79dd2bf74856e84f0398fe2765a54f1d9505cc48f38f89d106e5cf",
+    "correctedReportSha256": "f8edcf1be46c9855d9f7e782c40c4ff34060260ccaa389427261cfaafbf5235c",
+    "originalReportSha256": "de00fe3537ef558df5e9536bf2dc1f000063289fe08b262fe99ffd9ed65f2cbc",
+    "diagnosticSha256": "e946ea31ecd331af7157740cb59b37bdd0b2b88c70e117f6af939b2ec05ce1c2",
+    "limits": "The original command was denied before Task Grant approval. The approval became invalidated / permission_changed before the later explicit Grant revoke. Continued command consumption was not verified. Four synthetic responses are identifiable, exact request count unavailable, cold restart 0."
+  },
+  "artifactDirectory": {
+    "status": "PASS_SCOPED",
+    "checks": [
+      {
+        "name": "Teaching directory returns 成果A to its own session",
+        "status": "PASS"
+      },
+      {
+        "name": "Teaching directory returns 成果B to its own session",
+        "status": "PASS"
+      }
+    ],
+    "rawReportSha256": "7d3e3f49e29858d3c4e1859e9f1ee472a007ba2f378bd21ca06cf513939aff8f"
+  }
 }

@@ -1,5 +1,13 @@
 # 执行日志
 
+## 2026-11-19 HTTP MCP 授权后首次调用
+
+HTTP MCP 现在在实际授权通过、主进程校验精确来源和输入后才进入执行记账，再发出请求。授权前未派发的旧意图可由同一任务新 Run 继续。发出后断线仍需核对结果。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。
+
+真实 Electron Host 5/5，实际覆盖未发送、冷恢复、发送后断线、持久执行记录后的取消与撤销；组件 253/253，事件账 23/23，MCP 29/29，权限传输和受控 stdio 各 11/11。构建和类型检查通过。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。
+
+W3 的任务授权隔离另通过 4/4，教学文件目录返回原会话 2/2。原受控命令在批准前已返回拒绝，续跑消费授权待验证。[W3 证据](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。
+
 ## 2026-11-19 独立技能与跨会话复验
 
 Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。

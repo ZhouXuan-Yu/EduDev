@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-19 Harness 外部工具恢复
+
+HTTP MCP 续跑、Provider 撤销与冷读通过独立页面复验，完整阶段保留原门槛。 [Harness 专项](xiaozhi-harness/ACCEPTANCE_REPORT.md)。
+
 ## 2026-11-19 知识库结构 v5 图形选项
 
 跨页四图已验证横排、网格、错误标签、真实教师归档和重启。真实低置信图组在核对前保持待核。整体 KB-A01～A10 待验收。

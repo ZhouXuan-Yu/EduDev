@@ -1,5 +1,13 @@
 # 独立验收记录
 
+## 2026-11-19 HTTP MCP 授权后首次调用
+
+C2 的同任务首次派发与 Provider 撤销子场景已实现。Terra 实页 4/4。批准前请求 0 次，同任务授权续跑准确调用 1 次。撤销后 Pi 拒绝旧工具名，原生拒绝、成功回执、撤销和本地工具发现均可核对，冷启无新增调用。市场候选与已核验记录对比另通过 2/2。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。
+
+真实 Electron Host 5/5，实际覆盖未发送、冷恢复、发送后断线、持久执行记录后的取消与撤销；组件 253/253，事件账 23/23，MCP 29/29，权限传输和受控 stdio 各 11/11。构建和类型检查通过。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。
+
+固定矩阵 88/89，Gate7 PARTIAL。继续验证终端任务授权后续跑、跨会话旧 Run 和完整页面。QG-09 仍需独立 Windows 安装卸载，正式真实模型对照在 Gate7 冻结后执行。账本 3/200，本轮新增 0。
+
 ## 2026-11-19 独立技能与跨会话复验
 
 Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。

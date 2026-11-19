@@ -65,8 +65,22 @@ export function createJournalEffects(sql: Sql, readback: ReceiptReadback) {
         idempotencyKey: protocolHash(['tool', owner, callId, contract.taskId, contract.inputDigest]),
         receipt: {runId: owner.runId, callId}, contract, target: contract.target, targetVersion: null}, {kind: 'run', owner: record});
     },
-    async executing(work: Sql, owner: JournalOwner, callId: string) {
+    async executing(work: Sql, owner: JournalOwner, callId: string, expected?: {tool: string; inputDigest: string}) {
       const record = await read(work, owner, callId);
+      if (expected) {
+        const row = (await work.all('SELECT phase,admitted,generation,tool,contract_json FROM xiaozhi_tool_receipts WHERE run_id=? AND call_id=?', [owner.runId, callId]))[0];
+        if (!record || record.state !== 'intent' || record.execution !== null || record.tool !== expected.tool
+            || record.contract.scopePolicy !== 'mcp_tool_request' || record.contract.effect !== 'external_effect'
+            || record.contract.inputDigest !== expected.inputDigest || record.owner.sessionId !== owner.sessionId
+            || record.owner.runId !== owner.runId || record.owner.generation !== owner.generation
+            || record.receipt.runId !== owner.runId || record.receipt.callId !== callId
+            || !row || row.phase !== 'admitted' || row.admitted !== 1
+            || Number(row.generation) !== owner.generation || row.tool !== expected.tool || !row.contract_json
+            || protocolHash(JSON.parse(String(row.contract_json))) !== protocolHash(record.contract)) throw Error('tool_receipt_conflict');
+        // Admission may precede another same-input intent. Recheck inside the
+        // same transaction that establishes the durable transport crash fence.
+        await assertIntent(work, owner, callId, expected.tool, record.contract);
+      }
       if (record?.state === 'intent') await createEffectState(inline(work)).transition(record.id, record.revision, 'executing', authority(record),
         {execution: {id: owner.runId + ':' + callId}});
     },

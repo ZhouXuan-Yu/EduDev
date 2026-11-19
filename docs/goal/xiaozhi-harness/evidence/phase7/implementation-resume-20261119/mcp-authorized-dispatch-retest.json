@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "row": "C2",
+  "status": "PASS_SCOPED_HTTP_MCP_PROVIDER_REVOCATION",
+  "sourceParent": "27a4c5d33aedc9f22c77a457ade0babb1310d1e7",
+  "buildMainSha256": "58f23ddbacbe5a7dc7f48cd0cc9df31cc974da260a94f2d4c934710d276114c4",
+  "coreToolSourceHash": "4bd208d9dbaf8fba8c31ab42639190db58d5f9de6b0cab4af9488f3b7888727f",
+  "generatedManifestSha256": "10e8023cdbf3ac378dbf31f54c7662c7ec9bdf4f1924b552b179983af1a56f29",
+  "buildCommand": "npm run build -- --outDir test-results/harness-c2-adapter-27a4c5d/out",
+  "sources": {
+    "freezeManifestSha256": "f37fc4689eeb0f538e62e4d153ef4b1c04eca1a7ea7e1149a7587bf397f3e2e4",
+    "entries": [
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+        "sha256": "5e24b341b24734aba943dc3bd2031ad41631819b1dd29ed2d12a70ed6367cb8f"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+        "sha256": "a091b9e4a65b05f69c7e80f586f07ab96a2655bbfd20f6e47bbb1a85e1a7a810"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+        "sha256": "17e09dae03003f56e97dfc2a345abf1258057393277ce1ea23cc85e708d561a8"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        "sha256": "620534020c0a67d3f0799c137deadbe2b12a730dfdb7c48e130d7adea47be960"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/events/journal.ts",
+        "sha256": "48c35325bcad1ffcc449cf9269c447e2593dfb83dcd4d4e6267f037cebf8f957"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/effects/journal.ts",
+        "sha256": "6feb32796267537646e3c9c43e81dda8cc6199edce3082f7e1b6270c3b02610c"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/effects/mcp-dispatch.ts",
+        "sha256": "db4bd766ca50565428507fa21cad838e7ebddccf602f719e0b257cb0459b3bec"
+      },
+      {
+        "file": "apps/desktop/src/main/xiaozhi-agent/events/receipts.ts",
+        "sha256": "c98a9c4523b4dff1449e9a5bb36bc9a1982b9602ddae853abbe0003db3fe46f0"
+      }
+    ],
+    "testFiles": [
+      {
+        "file": "apps/desktop/scripts/xiaozhi-agent/mcp-effect-host-smoke.mjs",
+        "sha256": "4d9e7ebb9c6f7aed973d936703298fd1bb5cbeb57bae15306659de65ef0aecb0"
+      },
+      {
+        "file": "apps/desktop/scripts/xiaozhi-agent/mcp-effect-host-worker.ts",
+        "sha256": "75ec8cf2d11f44e30b0c53de32e4e06cb213547c6c85f0658121e0fdb2d489ea"
+      }
+    ]
+  },
+  "phase7Ui": {
+    "checks": [
+      {
+        "name": "actual_registered_tool_reaches_owned_mcp",
+        "status": "PASS"
+      },
+      {
+        "name": "real_local_discovery_no_external_call",
+        "status": "PASS"
+      },
+      {
+        "name": "revoked_old_tool_rejected_by_pi_with_native_receipt",
+        "status": "PASS"
+      },
+      {
+        "name": "cold_revocation_and_receipts",
+        "status": "PASS"
+      }
+    ],
+    "rawReportSha256": "0fba131535d6b0978182b5b4d2a5d13390af118d0d311f5991008b1d8ffde27d",
+    "reviewer": "6.1 Terra High",
+    "selectedTool": {
+      "tool": "mcp_99b675b0dad3db686c4facd9_lookup_lesson",
+      "callId": "synthetic_retry_2",
+      "providerId": "mcp.tool.t_99b675b0dad3db686c4facd9",
+      "sourceSha256": "6ae138d6fedbfdcf120d53839f67c49ffeda9b4fff2854bac8f0d3358d98cafe",
+      "schemaSha256": "8d1a4b200d5ea6f7d2b57869564eec68b257dc4dd1fd3d1b53a042b5b40e9bd5"
+    },
+    "transportCalls": {
+      "beforeApproval": 0,
+      "afterSameTaskResume": 1,
+      "afterRevocation": 1
+    },
+    "rejectedOldCall": {
+      "callId": "synthetic_revoked_1",
+      "nativeError": true,
+      "layer": "Pi rejected unregistered old tool. No Host admission."
+    },
+    "localAlternativeScope": "Local tool discovery executed. The test does not prove a replacement lesson lookup.",
+    "coldReadback": "Original successful Host receipt, native denial, Provider revoked state and fallback discovery persist.",
+    "strictFixtureRedSha256": "2e3d09f3ee2e3397baf0a330f6abcd0a041e5ef07a1484de530873c3f4ad91da",
+    "priorBuildRedSha256": "da3d2081b0a6fa9d34183385cf3ca6a20fd35f689ccd194ed35a595d5de60108",
+    "independentColdSqliteSha256": "27889627533f03f094a67418459dec05ace3a3567c6f37ecef70546f72a1ea34",
+    "authorityEvidence": "Provider status, removed selection/trust, and prior transport execution audit persist. Separate revoke event not identified."
+  },
+  "market": {
+    "checks": [
+      {
+        "name": "candidate_remains_uninstalled_unverified_and_distinct_from_artifact",
+        "status": "PASS"
+      },
+      {
+        "name": "cold_candidate_and_registry_identity_readback",
+        "status": "PASS"
+      }
+    ],
+    "rawReportSha256": "d074d558695f87a2dd60bcd4e512c1dc159e33aceef20a278b6a170f5e7aa00f",
+    "scope": "Different sources with identical name/version. Market candidate stays outside Registry. Verified artifact metadata from synthetic SQLite, without reinstalling or running the artifact."
+  },
+  "host": {
+    "checks": [
+      "Actual pending HTTP tool has a settled failed intent with no dispatch and zero tools/call",
+      "Cold Host resumes the same Task under a fresh Run and exact current authority sends once, preserving original evidence",
+      "Sent-then-lost HTTP effect remains unknown after cold read and blocks replay before another tools/call",
+      "Actual cancel after durable begin fences the original HTTP send and retains conservative unknown",
+      "Actual revoke after durable begin fences the original HTTP send and retains conservative unknown"
+    ],
+    "rawReportSha256": "2da31e13d3cc1cb453ebcdeb34729cedcff4ad1bc636df8891d97cde842cabcd",
+    "sourceInputs": 789,
+    "sourceDrift": [],
+    "implementedTests": "node scripts/xiaozhi-agent/mcp-effect-host-smoke.mjs",
+    "authorInitialRedSha256": "e1a79fd92230900a41ac9e18756b734a962545f51e1989257a1b6dd936b1978f",
+    "sqliteBoundaries": {
+      "checks": "9/9",
+      "reportSha256": "06eba7d2348ef407e1833290c3988fd312b18bc6c9db4fa5aa345747eba754c2",
+      "scope": "Author tested the isolated fixture. No duplicate scope file included in this commit."
+    },
+    "preFormattingReportSha256": "7ded98ff438903ef1df3e64aef297e56c8f3ce75ea067bb170ede812891a3c04",
+    "frozenInputListSha256": "6bdb43746ac129d2c458537b7a1c80898edb9cfc483bf55dd2ef38630a8731b6",
+    "dispatchCommitMs": [
+      22,
+      24,
+      19,
+      18
+    ],
+    "dispatchCommitTimingScope": "Single synthetic Host run, only measured durable SQLite begin. No end-to-end latency claim."
+  },
+  "regressions": {
+    "renderer": "253/253",
+    "eventJournal": "23/23",
+    "mcpBoundaries": "29/29",
+    "permissionTransports": "11/11",
+    "controlledStdioLifecycle": "11/11",
+    "dependencyAudit": {
+      "unchangedExisting": 29,
+      "high": 8,
+      "critical": 0
+    }
+  },
+  "rollback": "Revert this product commit and regenerate the core manifest in a clean worktree. No database schema migration. Existing effect facts carry original intent/execution and receipt.",
+  "remaining": "Full Gate7, W3 concurrent older generation cross-session UI, the terminal grant consumption follow-up, complete isolated QG-09 and real-model ABBA; local fallback beyond discovery remains separate.",
+  "paidCalls": 0
+}

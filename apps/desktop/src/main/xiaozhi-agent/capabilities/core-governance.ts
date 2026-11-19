@@ -152,12 +152,15 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
   persist: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
   preflight?: (callId: string, name: string, input: unknown, enforce: boolean) => Promise<unknown>;
   assertEffect?: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
-  beginEffect?: (callId: string) => Promise<void>;
+  beginEffect?: (callId: string, expected?: {tool: string; inputDigest: string}) => Promise<void>;
   bindExecution?: (callId: string, execution: {id: string}) => Promise<void>}) {
   const calls = new Map<string, ToolContractReceipt>();
   const snapshots = new Map<string, ProviderSnapshot>();
   const names = new Map<string, string>();
   const authorityWrites = new Map<string, Promise<void>>();
+  // HTTP MCP authorizes inside the original adapter. Its outer invocation is
+  // not a transport dispatch; only that adapter may cross this one-shot gate.
+  const pendingMcp = new Map<string, {name: string; source: McpToolIdentity; state: 'waiting' | 'starting' | 'ready'}>();
   async function recordAuthority(callId: string, references: ToolContractReceipt['grantRefs'], reference?: string) {
     const previous = authorityWrites.get(callId) || Promise.resolve();
     const pending = previous.then(async () => {
@@ -188,6 +191,26 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
   return {
     records: options.records,
     recordAuthority,
+    async beginMcpCall(callId: string, source: McpToolIdentity, input: unknown, signal: AbortSignal) {
+      const pending = pendingMcp.get(callId), receipt = calls.get(callId);
+      if (!pending || pending.state !== 'waiting' || !receipt || source.transport !== 'http'
+          || protocolHash(pending.source) !== protocolHash(source) || receipt.inputDigest !== identityHash(input)
+          || !options.beginEffect) throw Error('permission_denied');
+      pending.state = 'starting';
+      await assert(pending.name, signal);
+      const authority = currentPermission();
+      if (!authority || authority.request.action !== 'mcp_call'
+          || authority.request.callId !== callId || authority.request.inputDigest !== protocolHash(input)
+          || authority.request.provider?.sourceHash !== source.sourceHash || authority.request.provider.schemaHash !== source.schemaHash
+          || protocolHash(authority.request.owner) !== protocolHash(options.owner)) throw Error('permission_denied');
+      await authority.assert();
+      await options.beginEffect(callId, {tool: pending.name, inputDigest: receipt.inputDigest});
+      await authority.assert();
+      signal.throwIfAborted();
+      // Starting is one-shot; ready additionally proves durable begin and the
+      // post-COMMIT authority assertion both completed successfully.
+      pending.state = 'ready';
+    },
     async before(callId: string, name: string, input: unknown, signal: AbortSignal) {
       const record = await assert(name, signal); const task = await options.task(callId);
       await options.preflight?.(callId, name, input, false);
@@ -202,15 +225,24 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
       await options.persist(callId, name, receipt); calls.set(callId, receipt); names.set(callId, name);
     },
     async execute(callId: string, name: string, input: unknown, signal: AbortSignal, perform: (signal: AbortSignal) => Promise<Result>): Promise<Result> {
-      await assert(name, signal);
+      const record = await assert(name, signal);
       await options.preflight?.(callId, name, input, true);
       const receipt = calls.get(callId); if (!receipt) throw Error('permission_denied');
       const authority = currentPermission();
       if (authority) await recordAuthority(callId, authority.decision.grantRefs, 'permission-request:' + authority.decision.requestDigest);
-      await options.beginEffect?.(callId);
+      const deferred = record.source?.transport === 'http';
+      if (deferred) {
+        if (pendingMcp.has(callId)) throw Error('permission_denied');
+        pendingMcp.set(callId, {name, source: record.source!, state: 'waiting'});
+      } else await options.beginEffect?.(callId);
       if (authority && options.bindExecution) authority.recordExecution = execution => options.bindExecution!(callId, execution);
       if (authority) authority.recordAuthority = (reference, refs) => recordAuthority(callId, refs, reference);
-      const result = await perform(signal);
+      let result: Result;
+      try {
+        result = await perform(signal);
+        if (deferred && pendingMcp.get(callId)?.state !== 'ready' && result.isError !== true
+            && !(result.details && typeof result.details === 'object' && (result.details as {success?: boolean}).success === false)) throw Error('invalid_output');
+      } finally {if (deferred) pendingMcp.delete(callId);}
       if (!validBoundedToolResult(result)) throw Error('invalid_output');
       signal.throwIfAborted(); if (!options.current()) throw Error('permission_denied');
       if (authority?.execution) await options.bindExecution?.(callId, {id: authority.execution.id});

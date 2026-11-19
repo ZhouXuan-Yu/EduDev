@@ -197,7 +197,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       await assertOwned(work,owner);await receipts.contract(work,owner,callId,tool,contract);
       await effects.intent(work, owner, callId, tool, contract);
     }),
-    beginToolEffect:(owner:JournalOwner,callId:string)=>transaction(async work=>{await assertOwned(work,owner);await effects.executing(work,owner,callId);}),
+    beginToolEffect:(owner:JournalOwner,callId:string,expected?:{tool:string;inputDigest:string})=>transaction(async work=>{await assertOwned(work,owner);await effects.executing(work,owner,callId,expected);}),
     sealToolNonDispatch:(owner:JournalOwner,callId:string,tool:string,input:unknown)=>transaction(async work=>{await assertOwned(work,owner);await sealFileNonDispatch(work,owner,callId,tool,input);}),
     bindToolEffectExecution:(owner:JournalOwner,callId:string,execution:{id:string;jobId?:string;leaseId?:string})=>transaction(async work=>{
       await assertOwned(work,owner);await effects.execution(work,owner,callId,execution);

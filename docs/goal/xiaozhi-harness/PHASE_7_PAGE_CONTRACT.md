@@ -99,3 +99,13 @@ C2 真实设置授权后的再次调用未进入传输，Gate7 继续 PARTIAL。
 Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。
 
 Terra 的 W3 实页 5/5。两个会话同时等待，释放 A 时 B 不显示 A 的内容，两边从页面各自保存 Markdown，冷读会话、Run 和文件摘要一致。Grant 和跨会话旧 Generation 仍待实页核对。[跨会话与产物](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。
+
+## 2026-11-19 W3 成果目录与任务授权隔离
+
+冷开从教学文件目录回到两条合成成果各自原会话，2/2。A 从实际设置页获当前 Task Grant 后，B 在同工作区请求相同命令仍独立待批。实际撤销 A 文件权限后，以相同 Grant ID 和 B 审批冷读通过，4/4。A 的原命令在批准前已未执行，后续仍需单独验证同一任务续跑能使用新的授权。[独立证据](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。
+
+## 2026-11-19 HTTP MCP 授权后首次调用
+
+C2 的同任务首次派发与 Provider 撤销子场景已实现。Terra 实页 4/4。批准前请求 0 次，同任务授权续跑准确调用 1 次。撤销后 Pi 拒绝旧工具名，原生拒绝、成功回执、撤销和本地工具发现均可核对，冷启无新增调用。市场候选与已核验记录对比另通过 2/2。[验证记录](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json)。
+
+撤销后完成了实际本地工具发现。进一步验证替代课程查询属于剩余场景。
