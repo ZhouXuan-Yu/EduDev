@@ -93,3 +93,9 @@ C2 的目录变化、信任清除和撤销子场景已实现。Terra 从实际�
 实际 Host 验证旧 Run 的原 PTY 与执行返回晚于新 Run 启动，旧回执及文件各自保持归属，后台 Job 可在原有效授权下落盘。W3 跨会话 UI 的 Artifact/Grant 隔离待验。[终端验证](evidence/phase7/implementation-resume-20261119/late-pty-owner-retest.json)。
 
 C2 真实设置授权后的再次调用未进入传输，Gate7 继续 PARTIAL。[C2 首次派发复现](evidence/phase7/implementation-resume-20261119/mcp-authorized-first-dispatch-red.json)。
+
+## 2026-11-19 独立技能与跨会话复验
+
+Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。
+
+Terra 的 W3 实页 5/5。两个会话同时等待，释放 A 时 B 不显示 A 的内容，两边从页面各自保存 Markdown，冷读会话、Run 和文件摘要一致。Grant 和跨会话旧 Generation 仍待实页核对。[跨会话与产物](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。

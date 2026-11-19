@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_SCOPED_MEASUREMENT",
+  "preliminary": true,
+  "sourceCommit": "9b46267012e2649adc7b5c17e5a88d1fd51dbd9e",
+  "buildMainSha256": "c0804e8744b15536966204a9513df78848608921b80772e7b691d0bb4f948542",
+  "paidCalls": 0,
+  "scope": "One foreground run on each build under the fixed loopback fixture, plus one background candidate run with slower fixture to verify visible reasoning. No final performance result or model quality inference.",
+  "foreground": [
+    {
+      "branch": "B-preview",
+      "fixture": {
+        "reasoningChunks": 240,
+        "finalChunks": 320,
+        "intervalMs": 30,
+        "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+        "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+      },
+      "display": "visible",
+      "view": {
+        "innerWidth": 1366,
+        "innerHeight": 768,
+        "devicePixelRatio": 1
+      },
+      "builtOutput": {
+        "sha256": "57ad053f9bfffc1beda943cced3344847db568818ff47dae9b169d91f613ee3a",
+        "files": 481
+      },
+      "buildUnchanged": true,
+      "preModelMs": 2977.058837890625,
+      "stopIpcMs": 115.80000000447035,
+      "reasoningRafMedianMs": 6.099999999998545,
+      "finalRafMedianMs": 6.099999999998545,
+      "longTasksWhileStreaming": 0,
+      "checks": 4,
+      "rawReportSha256": "2a0e895de256ffdf5015603e1a10bb1b6ab0a46ffe065f36d17b24702b3ffb19"
+    },
+    {
+      "branch": "A",
+      "fixture": {
+        "reasoningChunks": 240,
+        "finalChunks": 320,
+        "intervalMs": 30,
+        "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+        "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+      },
+      "display": "visible",
+      "view": {
+        "innerWidth": 1366,
+        "innerHeight": 768,
+        "devicePixelRatio": 1
+      },
+      "builtOutput": {
+        "sha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+        "files": 458
+      },
+      "buildUnchanged": true,
+      "preModelMs": 2820.917236328125,
+      "stopIpcMs": 96.19999999552965,
+      "reasoningRafMedianMs": 6.099999999999454,
+      "finalRafMedianMs": 6.099999999998545,
+      "longTasksWhileStreaming": 0,
+      "checks": 4,
+      "rawReportSha256": "1d92cc9cd95d024a481b256c06c75957ad983f0973b35ad601e525b0f9e6b58a"
+    }
+  ],
+  "background": {
+    "branch": "B-preview",
+    "fixture": {
+      "reasoningChunks": 240,
+      "finalChunks": 320,
+      "intervalMs": 100,
+      "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+      "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+    },
+    "display": "background",
+    "view": {
+      "innerWidth": 1366,
+      "innerHeight": 768,
+      "devicePixelRatio": 1
+    },
+    "builtOutput": {
+      "sha256": "57ad053f9bfffc1beda943cced3344847db568818ff47dae9b169d91f613ee3a",
+      "files": 481
+    },
+    "buildUnchanged": true,
+    "preModelMs": 5367.62451171875,
+    "stopIpcMs": 199.10000000149012,
+    "reasoningRafMedianMs": 1005.0000000000005,
+    "finalRafMedianMs": 506.34999999999854,
+    "liveReasoning": {
+      "first": 2329,
+      "later": 4426
+    },
+    "longTasksWhileStreaming": 0,
+    "checks": 5,
+    "rawReportSha256": "bf2c2c24b04bc8ffc03932cd8d9ab367a787c8e866ef5ea638a9f1b93ea37b9e"
+  },
+  "runnerSha256": "09e400cc98140ed6e61a7b1e06b711af475b17899af949629a81f210bb450ae7"
+}

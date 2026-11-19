@@ -640,5 +640,20 @@
     "evidence": "evidence/phase8/main-sync-20261119.md",
     "mainMerge": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
     "featureCheckpoint": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0"
+  },
+  "phase7S1Addendum": {
+    "status": "INDEPENDENT_UI_PASS_SCOPED",
+    "evidence": "evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json",
+    "checks": "6/6"
+  },
+  "phase7W3Interleaving": {
+    "status": "INDEPENDENT_UI_PASS_SCOPED",
+    "evidence": "evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json",
+    "checks": "5/5"
+  },
+  "preGate7Stream": {
+    "status": "LOCAL_SYNTHETIC_MEASUREMENT_SCOPED",
+    "evidence": "evidence/phase8/pre-gate7-stream-sample-9b46267.json",
+    "paidCalls": 0
   }
 }

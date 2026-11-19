@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "row": "S1",
+  "status": "PASS_SCOPED",
+  "sourceCommit": "9b46267012e2649adc7b5c17e5a88d1fd51dbd9e",
+  "buildMainSha256": "c0804e8744b15536966204a9513df78848608921b80772e7b691d0bb4f948542",
+  "reviewer": "6.1 Terra High",
+  "synthetic": true,
+  "paidCalls": 0,
+  "cases": [
+    {
+      "test": "trusted_review",
+      "status": "PASS_SCOPED",
+      "observed": "A synthetic reviewer is provisioned through the actual main-only authority in a copy. UI approves the exact pending version, and cold SQLite and hashes preserve original and reviewed Skill bytes.",
+      "limit": "Signed production reviewer provisioning and independent official distribution remain outside this test.",
+      "rawReportSha256": "d570f907e938ee3297d06adf18f5f50025a59148c2cebfa5c79dc489a3455e75",
+      "screenshotSha256": "f252a862991d2a882d956fe7a309e1513e0944543cb8d9ebdbd19fe2d86552a4"
+    },
+    {
+      "test": "member_cannot_approve",
+      "status": "PASS_SCOPED",
+      "observed": "Actual member UI shares an independent team copy. One exact typed review attempt is denied; pending, no active version, and private original persist after restart.",
+      "limit": "Membership setup uses the real local state adapter in synthetic data.",
+      "rawReportSha256": "bb63e4d699ab37786d25390d881c92cc35991ecc08133592cc1c1bc6549eb64b",
+      "screenshotSha256": "d59e7bd9ae23acee2bfa9a8e845286c0a079b80f7cbe7c39dd4440fbfcf6c3e4"
+    },
+    {
+      "test": "private_draft",
+      "status": "PASS_SCOPED",
+      "observed": "UI submission with synthetic phone and email produces safe blocked draft, share unavailable, exact typed share denied. No markers in saved package or closed SQLite and cold UI agrees.",
+      "limit": "The private teaching-material and automatic creator cases retain their own Phase4 evidence.",
+      "rawReportSha256": "c2eb5c3ad22e2a9ee49587be6e95e84ae21aa1dfd6a93bd48b8d817093314886",
+      "screenshotSha256": "b8b4bd9a3d696252c7d12446229c4751f60bb7ea52f998e622adb2cec34e700b"
+    }
+  ],
+  "failedFixtureAttempts": {
+    "firstOfficialClosedPrecondition": "c6fbb897b705be23e55267e2a0cb147cebdb2be9575ec37c1a6ce232d90fe9de",
+    "incorrectTypedAction": "0054808551d967a6319a41dc2b56285e2bb5743572d69180be8a47fbebc338af"
+  }
+}

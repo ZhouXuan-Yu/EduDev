@@ -1,5 +1,15 @@
 # Harness 执行进度
 
+## 2026-11-19 独立技能与跨会话复验
+
+Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。
+
+Terra 的 W3 实页 5/5。两个会话同时等待，释放 A 时 B 不显示 A 的内容，两边从页面各自保存 Markdown，冷读会话、Run 和文件摘要一致。Grant 和跨会话旧 Generation 仍待实页核对。[跨会话与产物](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。
+
+固定合成流的两侧单次开发构建前台采样均通过，输入到下一帧约 3–5 ms，推理和正文阶段均无观测到的 Long Task。本地首模型请求前 A 2.82 秒、当前候选 2.98 秒。后台另见推理文本在结束前增长。正式性能与真实模型继续按完整 Gate7 冻结后执行。[测量](evidence/phase8/pre-gate7-stream-sample-9b46267.json)。
+
+C2 仍依授权后首次派发与撤销路径的独立实页待验。固定矩阵 88/89，Gate7 PARTIAL。
+
 ## 2026-11-19 主线集成与续作入口
 
 后续 AI 以 GitHub 的 main 为已整合版本，以 codex/xiaozhi-harness-20261112 为实施分支。知识库跨页图形选项与 Harness 组合构建通过，组件 253/253，知识库专项 32/32、39/39、16/16，真实 Host 迟到终端 4/4、文件续跑 4/4、出站脱敏 8/8。上一合并候选的持久终端专项 9/9、Electron 教师流程 207/207。

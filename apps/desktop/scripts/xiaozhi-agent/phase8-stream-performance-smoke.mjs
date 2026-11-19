@@ -13,9 +13,17 @@ import {summarizeProbe, preparationTiming} from './phase8-stream-performance-met
 const argumentsMap = new Map();
 for (let index = 2; index < process.argv.length; index += 2) argumentsMap.set(process.argv[index], process.argv[index + 1]);
 for (const key of argumentsMap.keys()) {
-  if (!['--desktop-root', '--label', '--expected-out-hash', '--expected-out-count', '--background'].includes(key)) throw Error('unknown_argument');
+  if (!['--desktop-root', '--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--background'].includes(key)) throw Error('unknown_argument');
 }
 const desktop = fs.realpathSync(argumentsMap.get('--desktop-root') || process.cwd());
+const buildRoot = fs.realpathSync(argumentsMap.get('--build-root') || path.join(desktop, 'out'));
+if (argumentsMap.has('--build-root')) {
+  const testResults = fs.realpathSync(path.join(desktop, 'test-results'));
+  const relative = path.relative(testResults, buildRoot);
+  if (!relative || relative === '..' || relative.startsWith('..' + path.sep) || path.isAbsolute(relative)) {
+    throw Error('Explicit build root must be inside desktop test-results.');
+  }
+}
 const label = argumentsMap.get('--label') || 'unlabeled';
 assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
 const background = argumentsMap.get('--background') === 'true';
@@ -23,13 +31,13 @@ const workload = {...streamWorkload, intervalMs: background ? 100 : streamWorklo
 const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-stream-' : 'xiaozhi-phase8-stream-performance-'));
 const dataRoot = path.join(output, 'data');
 const profile = path.join(output, 'profile');
-const main = path.join(desktop, 'out/main/index.js');
+const main = path.join(buildRoot, 'main/index.js');
 const packageRequire = createRequire(path.join(desktop, 'package.json'));
 const { _electron: electron } = packageRequire('playwright');
 const {fingerprint} = await import(pathToFileURL(path.join(desktop, 'scripts/acceptance/evidence.mjs')).href);
 const {assertIsolatedPiMain} = await import(pathToFileURL(path.join(desktop, 'scripts/acceptance/build-root.mjs')).href);
 const checks = [];
-const report = {success: false, measurementStatus: 'SINGLE_SYNTHETIC_SAMPLE', label, desktop, output, checks,
+const report = {success: false, measurementStatus: 'SINGLE_SYNTHETIC_SAMPLE', label, desktop, buildRoot, output, checks,
   realModelCalls: 0, workload, errors: [], automationRoundtrips: [], displayMode: background ? 'background' : 'visible',
   boundary: 'Actual original Electron main/preload/Pi/UI. Fixed net.fetch hook to loopback, synthetic key and empty DB/profile. Single run stops during final output. No product SLA or provider performance conclusion.'};
 let application, page, fixture, buildBefore;
@@ -83,7 +91,7 @@ async function scrollDuring(phase) {
 
 try {
   assert(!fs.existsSync(path.join(dataRoot, 'app.db')));
-  buildBefore = fingerprint(path.join(desktop, 'out'));
+  buildBefore = fingerprint(buildRoot);
   report.buildBefore = {sha256: buildBefore.sha256, files: buildBefore.files.length};
   fs.writeFileSync(path.join(output, 'out-before.json'), JSON.stringify(buildBefore, null, 2));
   if (argumentsMap.has('--expected-out-hash')) assert.equal(buildBefore.sha256, argumentsMap.get('--expected-out-hash'));
@@ -235,7 +243,7 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
       mainFetchEpochMs: request.epochMs, fixtureEpochMs: fixture.requests[0].epochMs});
   }
   if (buildBefore) {
-    const after = fingerprint(path.join(desktop, 'out'));
+    const after = fingerprint(buildRoot);
     report.buildAfter = {sha256: after.sha256, files: after.files.length};
     report.buildUnchanged = after.sha256 === buildBefore.sha256;
     if (!report.buildUnchanged) report.success = false;

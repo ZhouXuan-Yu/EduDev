@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "row": "W3",
+  "status": "PASS_SCOPED",
+  "sourceCommit": "9b46267012e2649adc7b5c17e5a88d1fd51dbd9e",
+  "buildMainSha256": "c0804e8744b15536966204a9513df78848608921b80772e7b691d0bb4f948542",
+  "reviewer": "6.1 Terra High",
+  "checks": [
+    {
+      "name": "Two distinct sessions have independent pending model requests",
+      "status": "PASS"
+    },
+    {
+      "name": "A completes after switching while B is active; B projection and current UI exclude A",
+      "status": "PASS"
+    },
+    {
+      "name": "Visible history navigation preserves each session answer",
+      "status": "PASS"
+    },
+    {
+      "name": "Visible teacher saves both session answers as separate files and artifact records",
+      "status": "PASS"
+    },
+    {
+      "name": "Cold UI and SQLite readback retain both session/run associations and distinct answers; no model replay",
+      "status": "PASS"
+    }
+  ],
+  "artifacts": [
+    {
+      "sessionId": "aisession_715c9c55-bcc0-4054-9f88-5b3985adda06",
+      "contentSha256": "4cd0a976753a3b259c0366f4a14b2ba1a38d5400d9f8d0ef3129e994bbec104d"
+    },
+    {
+      "sessionId": "aisession_0d114fd9-9ad7-4269-a831-16d975693cc7",
+      "contentSha256": "034c9424a12868a60b95184acf7d6b6ec5997c4608c4c726780b86aadce80e42"
+    }
+  ],
+  "rawReportSha256": "6057f5a7d069d82d58856ea59476eadf3af5c774635232f9dcc198a4d66276e7",
+  "runnerSha256": "577aa57b3f34cefd385c3d0ff4a725abf6523747ae80ac1aae023102118e3ff9",
+  "artifactReadbackSha256": "72daaeaf1a1779fb58ff5d5024b18167b8e09ee38b8a0d7da73d87f443c3c30e",
+  "priorUiSha256": "5c05ca38e5ee5953ecaf89526d4f42e50575753ad8eebc76a3e34ba9c92a1294",
+  "failedFixtureSha256": "edce837f730f4d37be80b473e9901b12e3044b166ec345d5a5ea5fccf09794df",
+  "remaining": "Grant isolation and actual late effect from an older generation when switching between sessions, plus artifacts directory presentation.",
+  "paidCalls": 0
+}

@@ -1,5 +1,13 @@
 # 独立验收记录
 
+## 2026-11-19 独立技能与跨会话复验
+
+Terra 在冻结开发构建完成 S1 三个实页子场景，共 6/6。合成审核员批准精确官方版本，普通成员的团队副本保持待审，含合成号码和邮箱的个人草稿不能分享，冷重启与 SQLite、文件一致。[技能复验](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json)。
+
+Terra 的 W3 实页 5/5。两个会话同时等待，释放 A 时 B 不显示 A 的内容，两边从页面各自保存 Markdown，冷读会话、Run 和文件摘要一致。Grant 和跨会话旧 Generation 仍待实页核对。[跨会话与产物](evidence/phase7/implementation-resume-20261119/workbench-interleaved-artifacts-ui.json)。
+
+完整 Gate7 和最终独立验收继续按原合同。单次合成测量和正式真实模型质量分开记录。[本地流式采样](evidence/phase8/pre-gate7-stream-sample-9b46267.json)。
+
 ## 2026-11-19 主线集成与续作入口
 
 主线组合验证包括 253 个组件用例、三个知识库专项及三组实际 Host 回归；上一合并候选另通过终端专项 9/9 和 Electron 教师流程 207/207。固定矩阵 88/89，完整 Gate7、QG-09 与正式模型对照继续按原合同验收。[组合验证](evidence/phase8/main-sync-harness-20261119.json)。
