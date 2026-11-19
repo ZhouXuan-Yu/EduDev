@@ -12,7 +12,7 @@ import type {BookFinalReferences} from '../../shared/material-ai-book-reference'
 import {PRINTED_FILL_SLOTS} from '../../shared/material-answer-slots';
 import {readAiPageReceipt} from './material-ai-page-evidence';
 import {readPageCrops,type PageCrop} from './material-ai-page-crops';
-import {followingPageStatus} from './material-ai-page-source';
+import {followingPageStatus,readFollowingPageBoundary} from './material-ai-page-source';
 import {planAiPageQuestion,type AiPagePublishArgs} from './material-ai-page-publish';
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
 
@@ -24,13 +24,16 @@ const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(valu
 export const CHOICE_RECHECK_TABLE = `CREATE TABLE IF NOT EXISTS material_ai_choice_rechecks(
   question_id TEXT PRIMARY KEY,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,
   policy TEXT NOT NULL,proof_sha TEXT NOT NULL,before_json TEXT NOT NULL,after_archive_json TEXT NOT NULL,created_at TEXT NOT NULL)`;
+export const NEXT_PARENT_RECHECK_TABLE = `CREATE TABLE IF NOT EXISTS material_ai_next_parent_rechecks(
+  question_id TEXT PRIMARY KEY,next_source_json TEXT NOT NULL,before_archive_json TEXT NOT NULL,
+  after_archive_json TEXT NOT NULL,created_at TEXT NOT NULL)`;
+const nextParentWritesEnabled = () => process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY !== '0';
 const archive = "CASE WHEN json_valid(q.archive_json) THEN q.archive_json ELSE '{}' END";
 const candidates = `FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id
   JOIN material_ai_units u ON u.batch_id=m.batch_id AND u.ordinal=m.ordinal
   WHERE m.batch_id=? AND u.status='review' AND q.created_at=q.updated_at
     AND json_extract(${archive},'$.state')='ai_needs_review'
     AND json_type(${archive},'$.sourceChecked')='false'
-    AND NOT EXISTS(SELECT 1 FROM material_ai_choice_rechecks a WHERE a.question_id=q.id)
     AND NOT EXISTS(SELECT 1 FROM question_notebook_bookmarks b WHERE b.question_id=q.id AND b.bookmarked=1)
     AND NOT EXISTS(SELECT 1 FROM question_notebook_category_links c WHERE c.question_id=q.id)
     AND NOT EXISTS(SELECT 1 FROM question_bank_usage usage WHERE usage.question_id=q.id)`;
@@ -42,7 +45,8 @@ const legacyLayout = `${promptField('sourceLayoutPolicy')} IS NULL`;
 const markerLayout = `${promptField('sourceLayoutPolicy')}='${SOURCE_LAYOUT_TEXT}'
   AND ${promptField('structureContext.schemaVersion')}='${AI_STRUCTURE_SOURCE}'
   AND ${promptField('sourceMarkerPolicy')} IS NULL`;
-const candidateQuery = (mode: 'choice' | 'layout') => candidates + (mode === 'choice'
+const candidateQuery = (mode: 'choice' | 'layout') => candidates +
+  ' AND NOT EXISTS(SELECT 1 FROM material_ai_choice_rechecks a WHERE a.question_id=q.id)' + (mode === 'choice'
   ? ` AND json_extract(${archive},'$.ai.policy')='page-crop-complete.v1' AND json_array_length(${archive},'$.issues')=1 AND json_extract(${archive},'$.issues[0]')='answer_conflict'`
   : ` AND json_extract(${archive},'$.ai.policy')='page-image-complete.v1' AND q.document_json=''
       AND ${promptField('sourceContentPolicy')}='source-content-roles.v1'
@@ -50,6 +54,13 @@ const candidateQuery = (mode: 'choice' | 'layout') => candidates + (mode === 'ch
       AND ((${legacyLayout}) OR (${markerLayout}))
       AND EXISTS(SELECT 1 FROM json_each(${archive},'$.issues') WHERE value='ai_mismatch')
       AND NOT EXISTS(SELECT 1 FROM json_each(${archive},'$.issues') WHERE value='uncertain_ocr')`);
+const boundaryCandidates = candidates + `
+    AND json_extract(${archive},'$.ai.policy')='page-crop-complete.v1' AND q.document_json<>''
+    AND EXISTS(SELECT 1 FROM material_pdf_pages p WHERE p.generation=json_extract(${inputJson},'$.pageSource.generation')
+      AND p.page=json_extract(${inputJson},'$.pageSource.page')+1 AND p.status='needs_review' AND p.error='text_conflict')
+    AND EXISTS(SELECT 1 FROM json_each(${archive},'$.issues') WHERE value='incomplete_question')
+    AND NOT EXISTS(SELECT 1 FROM material_ai_next_parent_rechecks b WHERE b.question_id=q.id)
+    AND m.number=json_extract(CASE WHEN json_valid(u.final_json) THEN u.final_json ELSE '{}' END,'$.questions[#-1].number')`;
 const documentJson = (document: ReturnType<typeof planAiPageQuestion>['document']) => document ? JSON.stringify(document) : '';
 const fields = {stem:'stem',answer:'answer',analysis:'analysis',subject:'subject',grade:'grade',knowledgePoint:'knowledge_point',questionType:'question_type',difficulty:'difficulty'} as const;
 
@@ -86,7 +97,9 @@ export class MaterialChoiceRechecks {
   async view(batchId: string) {
     const count = async (mode: 'choice' | 'layout') => Number((await this.host.all(`SELECT COUNT(*) n ${candidateQuery(mode)}`, [batchId]))[0]?.n || 0);
     const applied = async (mode: Mode) => Number((await this.host.all('SELECT COUNT(*) n FROM material_ai_choice_rechecks WHERE batch_id=? AND policy=?', [batchId,policyFor(mode)]))[0]?.n || 0);
-    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout'),layoutApplied:await applied('layout')+await applied('markers')+await applied('figure')};
+    const boundaryCount=nextParentWritesEnabled()?Number((await this.host.all(`SELECT COUNT(*) n ${boundaryCandidates}`,[batchId]))[0]?.n||0):0;
+    const boundaryApplied=Number((await this.host.all('SELECT COUNT(*) n FROM material_ai_members m JOIN material_ai_next_parent_rechecks r ON r.question_id=m.question_id WHERE m.batch_id=?',[batchId]))[0]?.n||0);
+    return {candidates:process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('choice'),applied:await applied('choice'),layoutCandidates:process.env.OMNI_EDU_AI_SOURCE_LAYOUT==='0'||process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS==='0'?0:await count('layout')+boundaryCount,layoutApplied:await applied('layout')+await applied('markers')+await applied('figure')+boundaryApplied};
   }
   private async args(batchId: string, ordinal: number, proof: Proof, crops: PageCrop[]): Promise<AiPagePublishArgs> {
     const row = (await this.host.all('SELECT first_json,final_json FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId,ordinal]))[0];
@@ -94,6 +107,41 @@ export class MaterialChoiceRechecks {
     const source = proof.unit.pageSource!;
     const following = await followingPageStatus(this.host,source,proof.unit.pagePrompt&&'totalPages' in proof.unit.pagePrompt?proof.unit.pagePrompt.totalPages:source.page);
     return {batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:row.first_json,finalRaw:row.final_json,first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following,bookReferences:proof.bookReferences,bookAnswerPolicy:proof.bookAnswerPolicy};
+  }
+  private async applyNextParents(batchId:string,limit:number){
+    if(!limit||!nextParentWritesEnabled())return 0;
+    const rows=await this.host.all(`SELECT q.*,m.ordinal recheck_ordinal,m.number recheck_number
+      ${boundaryCandidates} ORDER BY m.ordinal,m.number,q.id LIMIT ?`,[batchId,limit]);
+    let applied=0;
+    for(const row of rows){
+      const id=String(row.id),ordinal=Number(row.recheck_ordinal),number=String(row.recheck_number);
+      if(await teacherOwnsRuleQuestion(this.host,id))continue;
+      const proof=await this.host.proof(batchId,ordinal),source=proof.unit.pageSource,base=proof.unit.pagePrompt;
+      const model=proof.final.questions.at(-1);
+      if(!source||!base||!('totalPages'in base)||!model||model.number!==number||!sameFields(row,model))continue;
+      const boundary=await readFollowingPageBoundary(this.host,source,base.totalPages,number);
+      if(!boundary.nextParentSource)continue;
+      const args=await this.args(batchId,ordinal,proof,[]);
+      const crops=await readPageCrops(this.host,batchId,ordinal,source,proof.first,args.firstRaw,proof.imageSha,new AbortController().signal,number,base);
+      const archive=JSON.parse(String(row.archive_json)) as QuestionBankItem['archive'];
+      const pagePrompt=await this.promptFor({id,archive},proof,crops,'unknown');
+      const proposal={...args,pagePrompt,crops};
+      const before=planAiPageQuestion({...proposal,following:'unknown'},model);
+      const after=planAiPageQuestion({...proposal,following:'separate'},model);
+      const beforeJson=JSON.stringify(before.archive),afterJson=JSON.stringify(after.archive);
+      if(!before.document||beforeJson!==row.archive_json||documentJson(before.document)!==row.document_json
+       ||documentJson(after.document)!==row.document_json||!before.archive.issues.includes('incomplete_question')
+       ||JSON.stringify(after.archive.issues)!==JSON.stringify(before.archive.issues.filter(i=>i!=='incomplete_question'))
+       ||JSON.stringify({...after.archive,state:before.archive.state,issues:before.archive.issues})!==beforeJson)continue;
+      // The local writer owns one transaction for the source proof, audit and archive.
+      await this.host.run('INSERT INTO material_ai_next_parent_rechecks(question_id,next_source_json,before_archive_json,after_archive_json,created_at) VALUES(?,?,?,?,?)',
+        [id,JSON.stringify(boundary.nextParentSource),beforeJson,afterJson,new Date().toISOString()]);
+      await this.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=? AND archive_json=? AND document_json=?',
+        [afterJson,id,beforeJson,String(row.document_json)]);
+      if((await this.host.all('SELECT archive_json FROM question_bank_items WHERE id=?',[id]))[0]?.archive_json!==afterJson)throw Error('conflict');
+      applied++;
+    }
+    return applied;
   }
   /** Called within the application's writer transaction, capped at twenty source candidates. */
   async apply(batchId: string, action: 'choice' | 'layout' = 'choice') {
@@ -139,10 +187,10 @@ export class MaterialChoiceRechecks {
         if (proofSha(current,number,crops) !== proofSha(context.proof,number,context.crops)) throw Error('source_changed');
       }
     }
-    return applied;
+    return applied+(action==='layout'?await this.applyNextParents(batchId,20-rows.length):0);
   }
   /** Audit absence preserves the old policy. An audited classification is independently rederived. */
-  async promptFor(question: QuestionBankItem, proof: Proof, crops: PageCrop[], following: AiPagePublishArgs['following']) {
+  async promptFor(question: Pick<QuestionBankItem,'id'|'archive'>, proof: Proof, crops: PageCrop[], following: AiPagePublishArgs['following']) {
     const row = (await this.host.all('SELECT * FROM material_ai_choice_rechecks WHERE question_id=?', [question.id]))[0];
     if (!row) return proof.unit.pagePrompt;
     const receipt = question.archive?.ai, number = question.archive?.number;

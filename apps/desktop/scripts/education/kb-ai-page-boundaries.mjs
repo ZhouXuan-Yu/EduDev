@@ -629,6 +629,35 @@ await check('A scored chapter followed by a parent starts a new section; continu
  }finally{f.db.close();}
 });
 
+await check('Separate next-parent proof releases only the current complete crop, revalidates at cold read and honors write rollback',async()=>{
+ const initial=process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY;
+ try{
+  for(const useProof of [true,false]){
+   process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY=useProof?'1':'0';
+   const f=await fragmentsFixture('hints');
+   try{
+    const row=f.db.prepare('SELECT generation,result_json FROM material_pdf_pages').get(),raw=JSON.parse(row.result_json);
+    const next='2．一物体在光滑水平面上匀速运动，求此时的合力。';
+    const conflict={...raw,status:'needs_review',error:'text_conflict',method:'ocr',text:next+'\n后部 OCR 内容',nativeText:next+'\n后部文字层内容',ocrText:next+'\n后部 OCR 内容'};
+    f.db.prepare('UPDATE material_pdf_jobs SET total=2').run();
+    f.db.prepare('INSERT INTO material_pdf_pages VALUES(?,2,?,?,?)').run(row.generation,conflict.status,JSON.stringify(conflict),conflict.error);
+    await f.repo.create(f.input);await f.repo.drain();
+    const q=await f.question();
+    assert(q.document&&q.archive.ai.policy==='page-crop-complete.v1');
+    assert.equal(archiveEligible(q),useProof);
+    assert.equal(q.archive.issues.includes('incomplete_question'),!useProof);
+    await new MaterialAiRepository(f.host).validate(q);
+    assert.equal(f.db.prepare("SELECT status FROM material_pdf_pages WHERE page=2").get().status,'needs_review');
+    if(useProof){
+     const revised={...conflict,nativeText:'(2) 本题后续仍需对照原图。\n'+conflict.nativeText};
+     f.db.prepare('UPDATE material_pdf_pages SET result_json=? WHERE page=2').run(JSON.stringify(revised));
+     await assert.rejects(new MaterialAiRepository(f.host).validate(q),/source_incomplete/);
+    }
+   }finally{await f.dispose();}
+  }
+ }finally{if(initial===undefined)delete process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY;else process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY=initial;}
+});
+
 async function correctionFixture(mode='normal'){
  const f=await cropReviewFixture(mode==='ocr_error'?'ocr_error':'normal'),complete=f.repo.runtime.complete;
  f.repo.runtime.complete=async input=>{const result=JSON.parse(await complete(input));if(!input.previous)result.questions[0].projection.figures.text='首稿误读图形';if(input.verification&&mode==='mismatch')result.questions[0].answer='99';if(input.verification&&mode==='geometry')result.fragments[0].blockIds=['block-1'];return JSON.stringify(result);};

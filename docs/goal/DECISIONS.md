@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 页尾题边界复核
+
+将局部页首证据用于分界，整页状态独立持久化。复用资料页本地版式复核动作及原事务，新证据单独审计。OMNI_EDU_AI_NEXT_PARENT_BOUNDARY=0 可停止新写入。
+
+详见 [本轮报告](../research/evidence/kb/20261119/next-parent-boundary/README.md)。
+
 ## 2026-11-19 答案册速查表结构恢复
 
 按原页版面派生速查表候选。新任务冻结 v3，已保存 v1/v2 回执保持语义。环境变量 OMNI_EDU_BOOK_ANSWER_TABLES=0 可停止给新批次选择 v3。

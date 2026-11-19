@@ -1,0 +1,61 @@
+{
+  "scope": "PDF following-parent boundary from native/OCR agreement despite local page conflict",
+  "baseRevision": "8c980181efbbc2493a1759e25ad31d742d439552",
+  "buildMainSha256": "108a3e335ea55d7251b7ba4dbc4cd10abb31da62c47c3bdd7cb2f5d4d7e4a60d",
+  "cases": [
+    {
+      "realPage": 1,
+      "nextPage": 2,
+      "remaining": [
+        "missing_grade",
+        "answer_conflict"
+      ],
+      "beforeP95Ms": 0.288,
+      "afterP95Ms": 0.307,
+      "elapsedMs": 77
+    },
+    {
+      "realPage": 1,
+      "nextPage": 2,
+      "remaining": [],
+      "beforeP95Ms": 0.404,
+      "afterP95Ms": 0.968,
+      "elapsedMs": 62
+    }
+  ],
+  "nativeDesktop": {
+    "checks": 2,
+    "recheckedArchives": 2,
+    "recoverable": 1,
+    "heldForOtherReasons": 1,
+    "cloudRequests": 0,
+    "renderErrors": 0,
+    "coldReadBoth": true,
+    "controlTrueContinuationUnchanged": true
+  },
+  "regressions": {
+    "rendererComponents": "253/253",
+    "aiPageBoundary": "248/248",
+    "nextParent": "7/7",
+    "bookReference": "53/53",
+    "electronSmoke": {
+      "passed": 207,
+      "total": 207,
+      "build": "pre-final-crop-error-guard"
+    },
+    "crossPageFigures": {
+      "status": "FAIL",
+      "baseAlsoFailed": true,
+      "upstreamTest": "kb-cross-page-boundaries.mjs:35",
+      "failure": "invalid_response",
+      "actualControlledCalls": 1,
+      "expectedControlledCalls": 3
+    }
+  },
+  "audit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0,
+    "dependenciesChanged": false
+  }
+}
