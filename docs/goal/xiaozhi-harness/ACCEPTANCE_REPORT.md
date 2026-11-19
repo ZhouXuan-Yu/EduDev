@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 授权后写入续跑修复
+
+实际 Pi Host 与 SQLite 复验 3/3，扩展 Host 流程 4/4 含已保存目标防重。Terra 实页 3/3 同时覆盖有效单次审批首次消费、教师点击确认后文件落盘及冷启读回。原准备阶段失败仍在历史记录。当前宿主证明确认写入从未派发，已消费审批、已开始写入、旧记录缺证和拥有者不匹配仍按原权限与效果围栏处理。工具执行 21/21、事件账 23/23，构建与组件通过。[专项记录](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
 ## 2026-11-19 当前 Windows 包与工作台去重
 
 QG-08 当前便携候选继续通过。包内运行时集、源码指纹和隔离真实启动已读回。QG-09 完整独立安装和卸载仍 BLOCKED。[包与启动](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。

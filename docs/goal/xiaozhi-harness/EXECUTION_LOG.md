@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 已批准文件请求的续跑修复
+
+在原执行、事件和 Effect 账接入未派发证明。复用原请求身份、调用摘要、拥有者和有效结果。独立复跑实际 Host 3/3、边界和冷读各 8/8。原库只读读取保持不确定效果，新增场景成功落盘的两个文件可读回。[运行证据](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
 ## 2026-11-19 当前 Windows 包与工作台去重
 
 生成 `d13e031` 的本地可启动包。最新知识库 OCR worker 通过 712 文件校验后复制到独立暂存目录，electron-builder 的原 afterPack 检查验证全部五组资源。未操作安装目录和现有快捷方式。[实包证据](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。

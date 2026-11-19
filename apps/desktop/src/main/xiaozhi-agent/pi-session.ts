@@ -174,6 +174,7 @@ export interface PiXiaozhiOptions {
   persistentTerminalTools?: (foreground: ToolDefinition) => ToolDefinition[];
   /** Main-owned committed attempt callback, never accepted through IPC. */
   onToolAttempt?: (attempt:XiaozhiToolAttempt,signal?:AbortSignal)=>Promise<void>;
+  onToolNonDispatch?: (callId:string,tool:string,input:unknown,signal:AbortSignal)=>Promise<void>;
   onCriticalToolFailure?:(error?:unknown)=>void;
   /** Host run cancellation and main-only shortened deadline for isolated acceptance. */
   lifecycleSignal?:AbortSignal;
@@ -945,7 +946,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const manifests=manifestForTools(taskDefinitions,trustedMcpNames);
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
-  const toolBoundary=createToolExecutionBoundary({resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
+  const toolBoundary=createToolExecutionBoundary({notDispatched:options.onToolNonDispatch,resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
     executeAuthorized: governance ? (callId, name, input, signal, perform) => {
       const operation = (authorizedSignal: AbortSignal) => governance.execute(callId, name, input, authorizedSignal, perform);
       return options.executeAuthorized ? options.executeAuthorized(callId, name, input, signal, operation) : operation(signal);

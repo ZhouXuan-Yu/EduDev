@@ -1,5 +1,11 @@
 # Harness 执行进度
 
+## 2026-11-19 首次未派发写入可正确续跑
+
+W2 写入阻断已修复并通过实际 Host。宿主只为确认未进入原文件工具的请求保存未派发证明。续跑按当前权限重核。未消费的单次审批在同一任务、请求摘要及权限快照一致时可由新 Run 首次消费。独立 Host 场景另用新任务级授权及教师文件审阅后保存两份文件，额外续跑无法再次提交。历史无证明和已开始执行的效果继续复核。[Host 和冷读证据](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
+
+Terra 独立实测 3/3。同一任务的新 Run 首次消费仍有效的精确单次审批，教师确认后写入一份讲义，第二文件未创建，冷启一致。固定矩阵仍为 88/89。W2 已保存后再次从页面续跑及旧 Run 迟到边界仍待补齐。
+
 ## 2026-11-19 当前 Windows 包与工作台去重
 
 提交 `d13e031` 生成本地 Windows x64 便携包，五组锁定资源核验全部通过。包内 481 个输出文件与已验构建逐字节一致，实包在两个尺寸用隔离数据根启动，输入区可达，renderer 错误为 0。[当前构建](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。

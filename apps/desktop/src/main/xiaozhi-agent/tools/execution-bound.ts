@@ -11,8 +11,9 @@ import {acquireSafeReadSlot,type ReadSlot} from './read-scheduler';
 import {TOOL_EXECUTION_CODES,TOOL_EXECUTION_MESSAGES,type ToolExecutionCode,type XiaozhiToolAttempt} from '../../../shared/xiaozhi-tool-attempt';
 import {taskAdmissionFailure} from '../tasks/admission-error';
 import type {PermissionToolExecution} from '../permissions/tool-runtime';
+import {nonDispatchFileTools} from '../effects/non-dispatch';
 type Result=Awaited<ReturnType<ToolDefinition['execute']>>;
-type Options={resolveInput?:(tool:string,input:unknown,signal?:AbortSignal)=>Promise<unknown>;trustedMcpNames?:ReadonlySet<string>;sessionId:string;workspaceKey:string;outputWorkspaceKey?:string;registry:SessionExecutionRegistry;epoch:()=>string;current:(epoch:string)=>boolean;waiting:()=>boolean;onWaiting:(fn:(waiting:boolean)=>void)=>()=>void;beforeDelivery:(callId:string,tool:string,signal:AbortSignal,input:unknown)=>Promise<void>;attempt:(attempt:XiaozhiToolAttempt,signal:AbortSignal)=>Promise<void>;criticalFailure?:(error:unknown)=>void;timeout?: (manifest:ToolManifest)=>number};
+type Options={notDispatched?:(callId:string,tool:string,input:unknown,signal:AbortSignal)=>Promise<void>;resolveInput?:(tool:string,input:unknown,signal?:AbortSignal)=>Promise<unknown>;trustedMcpNames?:ReadonlySet<string>;sessionId:string;workspaceKey:string;outputWorkspaceKey?:string;registry:SessionExecutionRegistry;epoch:()=>string;current:(epoch:string)=>boolean;waiting:()=>boolean;onWaiting:(fn:(waiting:boolean)=>void)=>()=>void;beforeDelivery:(callId:string,tool:string,signal:AbortSignal,input:unknown)=>Promise<void>;attempt:(attempt:XiaozhiToolAttempt,signal:AbortSignal)=>Promise<void>;criticalFailure?:(error:unknown)=>void;timeout?: (manifest:ToolManifest)=>number};
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 export function toolExecutionCode(raw:unknown):ToolExecutionCode{
  if(taskAdmissionFailure(raw))return'task_blocked';
@@ -150,13 +151,25 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
        waitingSince = undefined;
       }
      });
+     let dispatchClosed=false;
      try {
-      const perform = (authorizedSignal: AbortSignal) => {invoked=true;return def.execute(id, values, authorizedSignal, progress, ctx);};
+      const perform = async (authorizedSignal: AbortSignal) => {current(authorizedSignal);if(dispatchClosed||invoked)throw Error('permission_denied');invoked=true;return def.execute(id, values, authorizedSignal, progress, ctx);};
       return options.executeAuthorized
        ? await options.executeAuthorized(callId, def.name, values, workSignal!, perform)
        : await perform(workSignal!);
      }
+     catch(error){
+      dispatchClosed=true;
+      // Seal only after actual authorization settlement. Timeout/cancel races
+      // cannot infer no dispatch from the race winner or a permission error code.
+      if(!invoked&&nonDispatchFileTools.has(def.name)&&options.notDispatched&&!workSignal?.aborted&&options.current(epoch)){
+       try{await options.notDispatched(callId,def.name,values,workSignal!);current(workSignal!);}
+       catch(persistence){options.criticalFailure?.(persistence);throw persistence;}
+      }
+      throw error;
+     }
      finally {
+      dispatchClosed=true;
       if(effectful)activeEffects--;
       if (waitingSince !== undefined) teacherWaitMs += performance.now() - waitingSince;
       stopObserving();

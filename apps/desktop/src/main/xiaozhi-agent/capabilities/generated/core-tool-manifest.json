@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "2531c78f60c5a2e7c98d0f8e1d1f7d89b6de7a32f8e2fb6f3b25e720604bbb90",
+  "sourceHash": "6fcbfc65561285c9b5c6c4f376bbfe0ff06562fc7f1683177246de28d322c392",
   "sources": [
     {
       "file": "package-lock.json",
@@ -923,6 +923,10 @@
       "sha256": "741144b4b6647a042bd237695cd24b415a972918475319ae115d06e440ef360a"
     },
     {
+      "file": "src/main/xiaozhi-agent/effects/non-dispatch.ts",
+      "sha256": "a410dd00e45777a86d8dc25ec3fddcbd48cec2284e18724e28ee4a17bda520eb"
+    },
+    {
       "file": "src/main/xiaozhi-agent/effects/readback.ts",
       "sha256": "99e3f5b6b6dcc648973a2cd13124fdb9d22591529b58c94d69d6e372b51a6811"
     },
@@ -952,7 +956,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/journal.ts",
-      "sha256": "f6cb7f6fabb287992654304ac5ecdbd60932f69264fa75c06966bbd6c826714a"
+      "sha256": "9bb63ddf47cd8e94cdecd5f9cef1fff2f338651568c03664b567a57312f0e20b"
     },
     {
       "file": "src/main/xiaozhi-agent/events/native-tail.ts",
@@ -964,7 +968,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/receipts.ts",
-      "sha256": "7fd6a8758f1616669367343b53915728af15cf0edf53577dd6c852109e2ae4a3"
+      "sha256": "c8fa6b534be743dcd7fb5ebf28aec4ddc5690c03c0f52a18c4c439a043da625e"
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
@@ -1324,7 +1328,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "7e4b03cab0abc0b4d01594c8b8282e8874d3ce7e0e2bf52c58004f71404ac3e0"
+      "sha256": "6677cd633b41aa318d7ec6dc39765d5223b2996a1e7cbce8f9e74febf9ad41ab"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1356,7 +1360,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "b30d4c8fa3476d1fe99f3a469e78fdcada6919cf8ecb9440cfb06a3b00a1304f"
+      "sha256": "17ba7a6044ba9f6b7a66cb3afca05de0d8ca4304c1bc2e7b10d689a791ecb8f7"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1548,7 +1552,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/task-state.ts",
-      "sha256": "faded3d3cb977fca48c5df537c6d41920bc5b7e2886843fa898431b37fbcef8e"
+      "sha256": "178cae9eab8d3cd1e16d0a1e4cbf95f22e3fe9d911061736a36c53aad9ee9b34"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/teacher-actions.ts",
@@ -1628,7 +1632,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tools/execution-bound.ts",
-      "sha256": "d912ce5d0a52e908372334f194500e6a4cd817a35b4aad20144af8490b26857c"
+      "sha256": "898ef680493e38cbab92fcdb3d479aed1a20e111d0a63a83a19b3f2a36a667cc"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/manifest.ts",

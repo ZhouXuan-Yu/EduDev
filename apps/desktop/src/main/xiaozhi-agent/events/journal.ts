@@ -19,6 +19,7 @@ import {taskGoalProjection} from '../tasks/goal-binding';
 import type {ToolContractReceipt} from '../capabilities/core-governance';
 import {recoverStartupTask} from '../tasks/startup-recovery';
 import {createJournalEffects} from '../effects/journal';
+import {sealFileNonDispatch} from '../effects/non-dispatch';
 
 export type JournalOwner = { sessionId: string; runId: string; generation: number };
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
@@ -197,6 +198,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       await effects.intent(work, owner, callId, tool, contract);
     }),
     beginToolEffect:(owner:JournalOwner,callId:string)=>transaction(async work=>{await assertOwned(work,owner);await effects.executing(work,owner,callId);}),
+    sealToolNonDispatch:(owner:JournalOwner,callId:string,tool:string,input:unknown)=>transaction(async work=>{await assertOwned(work,owner);await sealFileNonDispatch(work,owner,callId,tool,input);}),
     bindToolEffectExecution:(owner:JournalOwner,callId:string,execution:{id:string;jobId?:string;leaseId?:string})=>transaction(async work=>{
       await assertOwned(work,owner);await effects.execution(work,owner,callId,execution);
     }),

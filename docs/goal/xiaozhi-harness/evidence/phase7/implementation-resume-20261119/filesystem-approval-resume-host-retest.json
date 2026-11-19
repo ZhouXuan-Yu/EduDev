@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "row": "W2",
+  "status": "HOST_FIX_VERIFIED_SCOPE_CURRENTLY_PARTIAL",
+  "sourceSha256": {
+    "effects/non-dispatch.ts": "a410dd00e45777a86d8dc25ec3fddcbd48cec2284e18724e28ee4a17bda520eb",
+    "tools/execution-bound.ts": "898ef680493e38cbab92fcdb3d479aed1a20e111d0a63a83a19b3f2a36a667cc",
+    "tasks/task-state.ts": "178cae9eab8d3cd1e16d0a1e4cbf95f22e3fe9d911061736a36c53aad9ee9b34",
+    "events/journal.ts": "9bb63ddf47cd8e94cdecd5f9cef1fff2f338651568c03664b567a57312f0e20b",
+    "events/receipts.ts": "c8fa6b534be743dcd7fb5ebf28aec4ddc5690c03c0f52a18c4c439a043da625e",
+    "pi-session.ts": "6677cd633b41aa318d7ec6dc39765d5223b2996a1e7cbce8f9e74febf9ad41ab",
+    "production-host.ts": "17ba7a6044ba9f6b7a66cb3afca05de0d8ca4304c1bc2e7b10d689a791ecb8f7"
+  },
+  "sourceInputs": 626,
+  "sourceManifestSha256": "6fcbfc65561285c9b5c6c4f376bbfe0ff06562fc7f1683177246de28d322c392",
+  "mainBundleSha256": "d443e1cfe06a467ca380f3c67db9278230c1fee655a1f30538f660515aa26063",
+  "originalRed": {
+    "rawSha256": "71b3b0742792f616abb729c32018639e85caa32301d581e3aca058993e8bf94c",
+    "stage": "actual approval UI before the patch",
+    "permissionError": "permission_denied",
+    "recordedEffect": "uncertain",
+    "resumedBlock": "task_effect_needs_recheck",
+    "targetsCreated": 0
+  },
+  "currentHost": {
+    "checks": [
+      {
+        "name": "Both actual filesystem tools are admitted and settled with never-dispatched proof before any file exists",
+        "pass": true
+      },
+      {
+        "name": "Cold SQLite/Host retains exact settled proof and same Task without replaying effects",
+        "pass": true
+      },
+      {
+        "name": "New Run reauthorizes exact current Task and real teacher-reviewed writes retain both actual files",
+        "pass": true
+      }
+    ],
+    "scope": "Actual native SQLite and production Pi Host. Synthetic loopback model, permission and approval through normal host interfaces, actual owned files.",
+    "oldRun": "run_d9d9efeb-309a-411b-8f77-57a774cb1de4",
+    "newRun": "run_ee313cee-0104-4b67-a9f2-bdf70548e989",
+    "result": "Two prior local writes were settled as not delivered. In this fixture a new current Task grant invalidated the earlier unused operation approvals. The new grant and native file approvals allowed both real saves.",
+    "rawSha256": "00c1e774a7d94b16d6876314a772c10b7d89a26752780ffeb43e7e222c6fb27d"
+  },
+  "regressions": {
+    "lateInvocationAndProofBoundary": "8/8",
+    "closedSQLiteAndAdversarialMismatches": "8/8",
+    "toolExecution": "21/21",
+    "journal": "23/23",
+    "startupRecovery": "2/2",
+    "renderer": "253/253",
+    "typecheckAndBuild": "PASS",
+    "lintErrors": 0,
+    "legacyCounterexampleReadOnly": "Old uncertain rows lack the new trusted proof and are not released; original fixture checksum unchanged."
+  },
+  "commands": [
+    "npm run build -- --outDir test-results/harness-w2-non-dispatch-303cd02/out",
+    "npm run test:renderer-components",
+    "node scripts/xiaozhi-agent/non-dispatch-host-smoke.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-non-dispatch-boundaries.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/non-dispatch-readback-smoke.mjs <owned Host run root>",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-tool-execution-boundaries.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs",
+    "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase6-startup-recovery-smoke.mjs"
+  ],
+  "paidCalls": 0,
+  "rollback": "Revert this source checkpoint. It adds no SQLite tables and leaves old admissions and effect ledgers intact. The previous effect guard remains conservative.",
+  "stillOpen": "Full W2 same-build UI approval and previously committed output under duplicate Continue, old Run late result, full Gate7, independent clean Windows install/uninstall, real model ABBA.",
+  "implementationExtendedHost": {
+    "checks": [
+      {
+        "name": "Both actual filesystem tools are admitted and settled with never-dispatched proof before any file exists",
+        "pass": true
+      },
+      {
+        "name": "Cold SQLite/Host retains exact settled proof and same Task without replaying effects",
+        "pass": true
+      },
+      {
+        "name": "New Run reauthorizes exact current Task and real teacher-reviewed writes retain both actual files",
+        "pass": true
+      },
+      {
+        "name": "A later generation retains both saved effects and cannot create duplicate review records",
+        "pass": true
+      }
+    ],
+    "reportSha256": "e62068c1015c6436fa041958e72db36487e16c59e796877ce9ff60719f1f8ee3",
+    "coldRecoverySha256": "06ad7945a8f6233ff02f107360842461607993b50a0c83755a9c2823654010cd",
+    "scope": "Additional Run tried to replay both already saved targets. Existing Task guards blocked the repeat, with exactly two applied writes and same file contents."
+  },
+  "independentUiFirstReplay": {
+    "scope": "New anchored development build with a one-use exact original approval and matching continued operation.",
+    "result": "It reached a real pending save draft after the same still-valid approval was first consumed by Generation 2. Neither target was written in this first replay, as the fixture waited for an extra permission card.",
+    "initialVerdict": "FAIL_TEST_EXPECTATION: fresh pending permission was incorrectly expected for the unchanged, unused operation.",
+    "contract": "PHASE_6_IMPLEMENTATION_DRAFT.md permits first consumption by a new owner after checking the same task scope and evidence; no change to permission behavior was needed.",
+    "rawReportSha256": "a0e6865d6eec299d2a5bd91c38ccd65335d36eb359a449c8441551ef2dd85d25"
+  },
+  "independentUi": {
+    "developmentBuild": true,
+    "buildFingerprint": "21fb8acb5eb19cb2b112068b1bb161452f7cf4eb432b6a75e1565983bab57a00",
+    "rawReportSha256": "b66597218f9e08d7811c03cb16b5daef624e0f6bf9e5425bea8dce61f9819762",
+    "coldScreenshotSha256": "57c389dd5a32c02f18ee713a0a6b34271ff776a30d79665801fe3c40508d595b",
+    "beforeConfirmScreenshotSha256": "c54745419560dbc56a21d1c937907ac2167af743190115dc148f57795c1f9c97",
+    "checks": [
+      {
+        "name": "Same Task new Run consumes the still-valid matching one-time approval once and shows file draft",
+        "pass": true
+      },
+      {
+        "name": "Teacher confirms one file; second file absent and original approval consumed once",
+        "pass": true
+      },
+      {
+        "name": "Cold readback preserves file, task, resumed Run and one approval consumption",
+        "pass": true
+      }
+    ],
+    "coldAdditionalModelRequests": 0,
+    "paidCalls": 0,
+    "result": "Terra observed same Task, unique resumed Run and one owner consumption of the still-valid matching operation. The teacher confirmed a real draft and the first file was written. The second file stayed absent. Cold UI and file bytes agreed with SQLite.",
+    "remaining": "An additional visible Continue after the first file is already committed, and late old Run effects. The extra duplicate-write prevention case is separately covered by the actual Host fixture."
+  }
+}

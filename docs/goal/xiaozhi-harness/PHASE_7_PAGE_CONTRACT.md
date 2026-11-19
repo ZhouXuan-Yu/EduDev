@@ -71,3 +71,7 @@ W2 的双击去重、同 Task 和冷启动子场景已实现。真实开发构�
 ## 2026-11-19 实包授权撤销独立复验
 
 A2 的授权撤销子场景已实现。Terra 在当前便携包的权限设置撤销同一合成工作区读取授权，已批准的原申请变为已失效，原因记录为 grant_revoked。重开后按相同审批 ID 从 SQLite 和收件箱读回，Run、工具回执与文件无新增。重新派发、目标或 Provider 变化及替代路径仍待完整验收。[撤销回执](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json)。
+
+## 2026-11-19 W2 文件续写修复独立复验
+
+W2 的授权后续写子场景已实现。新开发构建上，Terra 观察到同一任务仅新增一个 Run。同一已批准但未消费的精确单次请求首次进入执行，教师从实页确认文件草稿后才落盘。冷启继续读回同一审批、任务、Run 和文件。追加一代的防重复写在真实 Host 专项验证。W2 的同一可见场景再续跑已保存任务、迟到旧 Run 和完整页面合同仍待完成。[独立与 Host 回执](evidence/phase7/implementation-resume-20261119/filesystem-approval-resume-host-retest.json)。
