@@ -36,12 +36,12 @@
   ],
   "electron": "43.8.3",
   "verifiedResources": [
-    "page-blocks",
     "ocr",
     "education",
     "retrieval",
     "reranker"
   ],
   "paidCalls": 0,
-  "scope": "Standalone terminal resize candidate. QG-09 clean install, shortcuts and uninstall not run."
+  "scope": "Standalone terminal resize candidate. QG-09 clean install, shortcuts and uninstall not run.",
+  "resourceEvidenceCorrection": "Original builder log verifies four runtime groups. Optional page-blocks bundling was disabled in this historical candidate. Startup and frozen app file hashes remain as recorded."
 }

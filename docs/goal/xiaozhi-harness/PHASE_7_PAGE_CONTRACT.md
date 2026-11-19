@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-19 审批键盘与授权核对
+
+独立审批详情的两尺寸双向焦点循环、Escape 关闭与触发器焦点恢复通过。A2 本片验证目标变化、任务授权刷新和续跑、MCP Schema 变化后原审批冷启动失效。忙碌与禁用、原生窗口操作及完整适用状态仍按原合同核对。[独立实页与反例](evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json)
+
 ## 2026-11-19 关闭终端后确认与两个独立实页范围
 
 已修复旧 Job 正常结束后尺寸调整未决而阻断教师确认。Terra 从旧版错误提示到新版真实点击、同任务已完成与冷启动读回独立验证。真实输入 ACK 丢失反例仍禁止确认。另在旧候选独立验证流式切会话和 MCP 撤销后走本地来源、显示匹配引用。仍须核对最终组合构建的两尺寸页面、键盘焦点和弹层恢复、适用异常状态、A2 变更组合与物理窗口操作。[独立记录](evidence/phase7/implementation-resume-20261119/terminal-resize-teacher-review-retest.json)

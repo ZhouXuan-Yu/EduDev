@@ -8,6 +8,7 @@ import sqlite3 from 'sqlite3';
 import http from 'node:http';
 const {createPermissionStore} = await import('../../src/main/xiaozhi-agent/permissions/store.ts');
 const {createPermissionEngine} = await import('../../src/main/xiaozhi-agent/permissions/engine.ts');
+const {createPermissionService} = await import('../../src/main/xiaozhi-agent/permissions/service.ts');
 const {filesystemScope,checkedFile} = await import('../../src/main/xiaozhi-agent/permissions/resources.ts');
 const {permissionHash,validRequest,snapshotRequest} = await import('../../src/main/xiaozhi-agent/permissions/validation.ts');
 const {serializeStateWrites} = await import('../../src/main/xiaozhi-agent/serialized-state-sql.ts');
@@ -136,7 +137,12 @@ try {
     const input = request(write, {action: 'task-grant'});
     const decision = await engine.authorize(input);
     const approval = await store.approval(sessionId, decision.approvalId);
-    await engine.decide({sessionId, approvalId: approval.id, revision: approval.revision, decision: 'approve', scope: 'task'});
+    const approved = await engine.decide({sessionId, approvalId: approval.id, revision: approval.revision, decision: 'approve', scope: 'task'});
+    const granted = (await store.grants(sessionId)).find(item => item.provenance.reference === approval.id);
+    assert(approved.grantRefs.some(ref => ref.grantId === granted.grantId && ref.revision === granted.revision));
+    await store.recover();
+    await engine.revalidate(sessionId);
+    assert.deepEqual(await store.approval(sessionId, approval.id), approved);
     for (let index = 0; index < 3; index++) {
       await engine.run({...input, callId: 'routine_' + index}, new AbortController().signal, async context => {
         await context.assert(); fs.writeFileSync(path.join(workspace, 'output.txt'), String(index));
@@ -149,10 +155,12 @@ try {
       started(); await new Promise(resolve => context.signal.addEventListener('abort', resolve, {once: true})); await context.assert();
     });
     await ready;
-    const granted = (await store.grants(sessionId)).find(item => item.provenance.reference === approval.id);
     await engine.revoke(sessionId, granted.grantId, granted.revision);
     await assert.rejects(operation);
     assert.equal(engine.activeCount(), 0);
+    const invalidated = await store.approval(sessionId, approval.id);
+    assert.equal(invalidated.state, 'invalidated');
+    assert.equal(invalidated.invalidatedReason, 'grant_revoked');
   });
   await check('Unrelated grants do not invalidate a pending request and expired approvals fail closed', async () => {
     const input = request(write, {action: 'unrelated'});
@@ -161,6 +169,41 @@ try {
     const pending = await store.approval(sessionId, decision.approvalId);
     await engine.decide({sessionId, approvalId: pending.id, revision: pending.revision, decision: 'approve', scope: 'operation'});
     assert.equal((await engine.evaluate(request(read, {expiresAt: '2000-01-01T00:00:00.000Z'}))).reason, 'expired');
+  });
+  await check('Changed write targets invalidate the old decision, while a valid admitted write can change its own target', async () => {
+    const service = createPermissionService({
+      store, dataRoot: path.join(root, 'data'), owner: () => owner,
+      archived: async () => false, workspace: async () => ({path: workspace}),
+    });
+    function createRequest(filename) {
+      return request(write, {
+        action: 'office_create_text',
+        inputDigest: permissionHash({path: filename}),
+        files: [{root: write.root, path: filename, version: null, sha256: null, kind: 'write_target'}],
+      });
+    }
+    async function decide(input) {
+      const {approvalId} = await service.engine.authorize(input);
+      const pending = await store.approval(sessionId, approvalId);
+      assert.equal(pending.state, 'pending');
+      return {sessionId, approvalId, revision: pending.revision, decision: 'approve', scope: 'operation'};
+    }
+    const changed = createRequest('changed-target.md');
+    const first = await decide(changed);
+    const changedPath = path.join(workspace, changed.files[0].path);
+    fs.writeFileSync(changedPath, 'teacher copy', {flag: 'wx'});
+    await assert.rejects(service.decide(first), /permission_denied/);
+    assert.equal((await store.approval(sessionId, first.approvalId)).state, 'invalidated');
+    assert.equal(fs.readFileSync(changedPath, 'utf8'), 'teacher copy');
+
+    const intact = createRequest('new-target.md');
+    const second = await decide(intact);
+    await service.decide(second);
+    await service.engine.run(intact, new AbortController().signal, async context => {
+      await context.assert();
+      fs.writeFileSync(path.join(workspace, intact.files[0].path), 'admitted result', {flag: 'wx'});
+    });
+    assert.equal((await store.approval(sessionId, second.approvalId)).state, 'executed');
   });
   await check('Grant owner/hash tampering and transaction failure preserve authority facts', async () => {
     const before = await store.grants(sessionId);

@@ -9,7 +9,9 @@ import {DisclosureCard} from '../ui/DisclosureCard';
 const labels: Record<PermissionApproval['state'], string> = {pending: '需要你的授权', approved: '已批准，等待执行',
   executing: '正在执行', executed: '已执行', rejected: '已拒绝', invalidated: '申请已失效', uncertain: '执行结果待核验', failed: '执行未完成'};
 
-export function PiPermissionApproval({approval, onRefresh, disabled = false}: {approval: PermissionApproval; onRefresh?: () => Promise<void>; disabled?: boolean}) {
+export function PiPermissionApproval({approval, onRefresh, disabled = false}: {
+  approval: PermissionApproval; onRefresh?: (current?: PermissionApproval) => Promise<void>; disabled?: boolean;
+}) {
   const [resolved, setResolved] = useState<PermissionApproval>();
   const item = resolved?.id === approval.id && resolved.revision >= approval.revision ? resolved : approval;
   const {draft, update, lock} = useOfficeControlState('permission:' + item.id);
@@ -28,6 +30,16 @@ export function PiPermissionApproval({approval, onRefresh, disabled = false}: {a
       const result = await window.omniEdu?.decideXiaozhiPermission({sessionId: request.owner.sessionId,
         approvalId: item.id, revision: item.revision, decision, scope});
       if (!current()) return;
+      if (result && !result.ok && (result.error === 'conflict' || result.error === 'permission_denied')) {
+        const view = await window.omniEdu?.getXiaozhiPermissions(request.owner.sessionId);
+        if (!current()) return;
+        const latest = view?.ok ? view.value.approvals.find(row => row.id === item.id && row.revision > item.revision) : undefined;
+        if (latest) {
+          setResolved(latest);
+          await onRefresh?.(latest);
+          return;
+        }
+      }
       if (!result?.ok || result.value.id!==item.id || result.value.request.owner.sessionId!==request.owner.sessionId || result.value.revision<item.revision) throw Error('permission_decision_failed');
       setResolved(result.value);
       await onRefresh?.();
@@ -55,6 +67,7 @@ export function PiPermissionApproval({approval, onRefresh, disabled = false}: {a
         </DisclosureCard>
         {acquisitionRequest && item.state === 'pending' && <p>授权当前任务后，小智可在有效期内按这里列出的范围继续准备工具。</p>}
         <p>拒绝后本次操作不会获准执行；小智仍可继续已有授权范围内的步骤。</p>
+        {item.state==='invalidated' && <p role="status">授权条件已变化，请重新核对申请。</p>}
         {expired && item.state==='pending' && <p role="status">申请已过期，请重新读取并由当前任务重新申请。</p>}
       </div>
       {item.state === 'pending' && <ChatTool.Approval><ChatTool.ApprovalActions>

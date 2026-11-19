@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-19 审批键盘与授权核对
+
+审批收件箱键盘循环和任务授权冷启通过独立页面验证，目标变化拒绝旧决定有实页与 SQLite 证据。[专项验收](xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-19 Harness 终端退出后的教师确认
 
 独立实际页面教师确认和冷启动复验通过，未确认输入仍挡住确认。完整 Gate7 和正式模型验收沿原门槛。[专项验收](xiaozhi-harness/ACCEPTANCE_REPORT.md)

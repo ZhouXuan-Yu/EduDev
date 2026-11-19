@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-19 审批键盘与授权核对
+
+有审批双向键盘测试、任务授权刷新及冷启、文件目标变更真实页面，和操作授权真实写入反例验证。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-19 Harness 终端退出后的教师确认
 
 基于同一隔离合成现场完成旧版失败、新版真实点击、冷启动读回和实际 PTY 丢 ACK 反例。[Harness 证据](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

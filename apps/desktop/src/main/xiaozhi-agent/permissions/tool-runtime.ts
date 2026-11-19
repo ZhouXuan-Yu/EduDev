@@ -52,9 +52,13 @@ export function createToolPermissionRuntime(options: {
       for (const key of ['path', 'source', 'target', 'workdir']) {
         if (typeof business[key] === 'string') {
           const filename = path.resolve(workspace.path, business[key]);
-          checkedFile(scope, filename, key === 'target' ? 'write' : 'read');
-          if (key === 'source' || reads.has(name) && key === 'path') files.push({root: scope.root, path: path.relative(scope.root, filename) || '.',
-            version: fs.existsSync(filename) ? fileVersion(fs.lstatSync(filename)) : null, sha256: null});
+          const writeTarget = scope.actions.includes('write') && (key === 'target' || key === 'path');
+          checkedFile(scope, filename, writeTarget || key === 'target' ? 'write' : 'read');
+          if (writeTarget || key === 'source' || reads.has(name) && key === 'path') {
+            files.push({root: scope.root, path: path.relative(scope.root, filename) || '.',
+              version: fs.existsSync(filename) ? fileVersion(fs.lstatSync(filename)) : null, sha256: null,
+              ...(writeTarget ? {kind: 'write_target' as const} : {})});
+          }
         }
       }
       if (name === 'office_copy_file' && typeof input.source === 'string') {

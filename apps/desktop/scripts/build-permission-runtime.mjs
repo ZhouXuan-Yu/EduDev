@@ -15,7 +15,7 @@ export function buildPermissionRuntime() {
     .map(file => ({file, sha256: sha256(fs.readFileSync(path.join(source, file)))}));
   const sourceHash = sha256(JSON.stringify(sourceFiles));
   const adapterFiles = ['windows/launcher.ts', 'windows/projection.ts', 'windows/operations.ts', 'windows/broker.ts',
-    'windows/runtime.ts', 'current.ts', 'engine.ts', 'resources.ts', 'summary.ts', 'tool-runtime.ts', '../tools/terminal.ts']
+    'windows/runtime.ts', 'current.ts', 'engine.ts', 'grant-snapshot.ts', 'resources.ts', 'summary.ts', 'tool-runtime.ts', '../tools/terminal.ts']
     .map(file => ({file, sha256: sha256(fs.readFileSync(path.join(source, '..', file)))}));
   const adapterSourceSha256 = sha256(JSON.stringify(adapterFiles));
   const pins = fs.readFileSync(path.join(source, 'TrustedRuntimes.cs'));

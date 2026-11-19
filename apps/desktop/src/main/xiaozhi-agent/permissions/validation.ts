@@ -74,7 +74,10 @@ export function validRequest(value: unknown): value is PermissionRequest {
     && hash(value.inputDigest) && text(value.purpose) && Array.isArray(value.scopes) && value.scopes.length > 0
     && value.scopes.length <= 32 && value.scopes.every(validScope) && validProvider
     && Array.isArray(value.files) && value.files.length <= 16 && value.files.every(file => plain(file)
-      && exact(file, ['root', 'path', 'version', 'sha256']) && text(file.root) && text(file.path)
+      && (file.kind === undefined
+        ? exact(file, ['root', 'path', 'version', 'sha256'])
+        : file.kind === 'write_target' && file.sha256 === null && exact(file, ['root', 'path', 'version', 'sha256', 'kind']))
+      && text(file.root) && text(file.path)
       && (file.version === null || hash(file.version)) && (file.sha256 === null || hash(file.sha256)))
     && ['public', 'redacted', 'teacher_private', 'student_private'].includes(String(value.classification)) && date(value.expiresAt);
 }

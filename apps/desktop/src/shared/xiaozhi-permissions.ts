@@ -41,7 +41,7 @@ export type PermissionRequest = {
   purpose: string;
   summary?: string;
   scopes: PermissionScope[];
-  files: {root: string; path: string; version: string | null; sha256: string | null}[];
+  files: {root: string; path: string; version: string | null; sha256: string | null; kind?: 'write_target'}[];
   provider: { id: string; version: string; sourceHash: string; schemaHash: string } | null;
   classification: 'public' | 'redacted' | 'teacher_private' | 'student_private';
   expiresAt: string;

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-19 审批键盘与授权核对
+
+审批和工作台沿现有 Pi Host、SQLite 与 typed preload，文件目标版本新增向后兼容的可选字段。面板沿现有 React Aria 运行，无新增依赖。
+
 ## 2026-11-19 Harness 终端退出后的教师确认
 
 原生产 Host、Pi 和 typed preload 保持原有任务确认入口，终端关闭证明沿 SQLite Effect 记录。没有新增下载、页面协议、依赖或数据迁移。

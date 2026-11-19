@@ -1,60 +1,43 @@
 import { randomUUID } from 'node:crypto';
-import type { PermissionDecision, PermissionOwner, PermissionRequest, PermissionApprovalInput, PermissionScope } from '../../../shared/xiaozhi-permissions';
+import type { PermissionDecision, PermissionOwner, PermissionRequest, PermissionApprovalInput } from '../../../shared/xiaozhi-permissions';
 import type { PermissionStore } from './store';
-import { permissionHash, requestDigest, snapshotRequest } from './validation';
-import { scopeCovers } from './resources';
+import { permissionHash, snapshotRequest } from './validation';
+import { permissionGrantSnapshot } from './grant-snapshot';
 
 export type JobPermissionBinding = {jobId: string; leaseRevision: number; approvalId?: string};
 type Activity = { owner: PermissionOwner; grantIds: string[]; controller: AbortController; serverId?: string; job?: JobPermissionBinding };
+type RequestCheck = 'admission' | 'execution';
 type PermissionOperation<T> = (context: {signal: AbortSignal; decision: PermissionDecision; assert: () => Promise<void>}) => Promise<T>;
 type Options = {
   store: PermissionStore;
   current: (owner: PermissionOwner) => boolean | Promise<boolean>;
   notify?: (sessionId: string) => void | Promise<void>;
   now?: () => number;
-  verifyRequest?: (request: PermissionRequest) => Promise<boolean>;
+  verifyRequest?: (request: PermissionRequest, check: RequestCheck) => Promise<boolean>;
   jobCurrent?: (binding: JobPermissionBinding, request: PermissionRequest) => Promise<boolean>;
 };
-
-function scopeParts(scope: PermissionScope): PermissionScope[] {
-  if (scope.kind === 'filesystem') return scope.actions.map(action => ({...scope, actions: [action]}));
-  if (scope.kind === 'network') return scope.methods.map(method => ({...scope, methods: [method]}));
-  if (scope.kind === 'egress') return scope.classifications.map(classification => ({...scope, classifications: [classification]}));
-  if (scope.kind === 'mcp') return scope.tools.map(tool => ({...scope, tools: [tool]}));
-  return [scope];
-}
 
 /** Main-owned policy evaluation. References never replace current grants. */
 export function createPermissionEngine(options: Options) {
   const active = new Map<string, Activity>();
   const currentTime = options.now || Date.now;
 
-  async function evaluate(raw: PermissionRequest, approvalLease?: string, continuingJob = false): Promise<PermissionDecision> {
+  async function evaluate(raw: PermissionRequest, approvalLease?: string, continuingJob = false,
+    check: RequestCheck = 'admission'): Promise<PermissionDecision> {
     const request = snapshotRequest(raw);
-    const digest = requestDigest(request);
-    const grants = await options.store.grants(request.owner.sessionId);
-    const requestedParts = request.scopes.flatMap(scopeParts);
-    const relevant = grants.filter(grant => (grant.taskId === null || grant.taskId === request.owner.taskId)
-      && requestedParts.some(scope => scopeCovers(grant.scope, scope)));
-    const usable = relevant.filter(grant => !grant.revokedAt && (!grant.expiresAt || Date.parse(grant.expiresAt) > currentTime()));
-    const missing = requestedParts.filter(scope => !usable.some(grant => scopeCovers(grant.scope, scope)));
-    const refs = usable.map(grant => ({grantId: grant.grantId, revision: grant.revision}));
-    const snapshot = permissionHash({requestDigest: digest, grants: relevant.map(grant => ({
-      grantId: grant.grantId, revision: grant.revision, revokedAt: grant.revokedAt, expiresAt: grant.expiresAt,
-      scopeHash: permissionHash(grant.scope)
-    })).sort((left, right) => left.grantId.localeCompare(right.grantId))});
-    const base = {schemaVersion: 1 as const, requestDigest: digest, permissionSnapshotHash: snapshot, grantRefs: refs, missing};
+    const evaluatedAt = currentTime();
+    const base = {schemaVersion: 1 as const, ...permissionGrantSnapshot(request, await options.store.grants(request.owner.sessionId), evaluatedAt)};
     if (Date.parse(request.expiresAt) <= currentTime()) return {...base, state: 'blocked', reason: 'expired'};
-    if (options.verifyRequest && !await options.verifyRequest(request)) return {...base, state: 'blocked', reason: 'source_changed'};
-    if (!missing.length) return {...base, state: 'allow'};
+    if (options.verifyRequest && !await options.verifyRequest(request, check)) return {...base, state: 'blocked', reason: 'source_changed'};
+    if (!base.missing.length) return {...base, state: 'allow'};
     const prior = (await options.store.approvals(request.owner.sessionId))
-      .find(item => item.request.owner.taskId === request.owner.taskId && item.requestDigest === digest);
+      .find(item => item.request.owner.taskId === request.owner.taskId && item.requestDigest === base.requestDigest);
     if (prior?.state === 'rejected') return {...base, state: 'blocked', reason: 'rejected', approvalId: prior.id};
     if (prior && Date.parse(prior.request.expiresAt) <= currentTime()) {
       return {...base, state: 'blocked', reason: 'expired', approvalId: prior.id};
     }
     if (prior && prior.id === approvalLease && (prior.state === 'executing' || continuingJob && prior.state === 'executed') && prior.admittedOwner && permissionHash(prior.admittedOwner) === permissionHash(request.owner)
-        && prior.permissionSnapshotHash === snapshot) return {...base, state: 'allow', approvalId: prior.id};
+        && prior.permissionSnapshotHash === base.permissionSnapshotHash) return {...base, state: 'allow', approvalId: prior.id};
     return {...base, state: 'pending', reason: 'missing_grant', ...(prior ? {approvalId: prior.id} : {})};
   }
 
@@ -107,7 +90,8 @@ export function createPermissionEngine(options: Options) {
     async revalidate(sessionId: string) {
       for (const approval of await options.store.approvals(sessionId)) {
         if (!['pending', 'approved'].includes(approval.state)) continue;
-        const current = await evaluate(approval.request);
+          const check = approval.state === 'approved' && approval.scope !== 'operation' ? 'execution' : 'admission';
+          const current = await evaluate(approval.request, undefined, false, check);
         if (current.reason === 'source_changed' || current.reason === 'expired'
             || current.permissionSnapshotHash !== approval.permissionSnapshotHash) {
           await invalidate(approval, current.reason || 'permission_changed');
@@ -147,18 +131,21 @@ export function createPermissionEngine(options: Options) {
       const server = request.scopes.find(scope => scope.kind === 'mcp');
       active.set(id, {owner: request.owner, grantIds: decision.grantRefs.map(ref => ref.grantId), controller,
         ...(server?.kind === 'mcp' ? {serverId: server.serverId} : {}), ...(job ? {job} : {})});
-      const assert = async () => {
+      const assertRequest = async (check: RequestCheck) => {
         combined.throwIfAborted();
         if (!await current(request, job)) throw Error('permission_denied');
-        const latest = await evaluate(request, decision.approvalId, !!job);
+        const latest = await evaluate(request, decision.approvalId, !!job, check);
         if (latest.state !== 'allow') {
           if (latest.reason === 'expired') controller.abort('expired');
           throw Error('permission_denied');
         }
         combined.throwIfAborted();
       };
+      // A successful write changes its own target. The tool's staged commit
+      // owns its version fence; the engine still checks sources and authority.
+      const assert = () => assertRequest('execution');
       try {
-        await assert();
+        await assertRequest('admission');
         await options.store.audit(request.owner.sessionId, 'execution_intent', id,
           {owner: request.owner, callId: request.callId, requestDigest: decision.requestDigest, grantRefs: decision.grantRefs, approvalId: decision.approvalId});
         const result = await operation({signal: combined, decision, assert});

@@ -149,7 +149,6 @@
       "sha256": "2437b75e6bd332d5350a184d5110fbb4a7f27aed7c0163d81f2c88f8d4238d81"
     },
     "verifiedResources": [
-      "page-blocks",
       "ocr",
       "education",
       "retrieval",
@@ -167,7 +166,8 @@
         "promptVisible": true
       }
     ],
-    "cleanInstallation": "NOT_RUN"
+    "cleanInstallation": "NOT_RUN",
+    "resourceEvidenceCorrection": "Original builder log verifies four runtime groups. Optional page-blocks bundling was disabled in this historical candidate. Startup and frozen app file hashes remain as recorded."
   },
   "paidCallsThisCheckpoint": 0,
   "historicalPaidCalls": 3,

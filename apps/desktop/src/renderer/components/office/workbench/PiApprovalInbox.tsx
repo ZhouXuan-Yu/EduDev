@@ -75,7 +75,10 @@ export function PiApprovalInbox({activeSessionId,onOpenSession,onChanged}: {
         </div>
       </article>)}
       <div className={styles.actions}><Button size="sm" variant="ghost" isDisabled={busy||!cursors.length} onPress={()=>setCursors(value=>value.slice(0,-1))}>上一页</Button><Button size="sm" variant="ghost" isDisabled={busy||!page.nextCursor} onPress={()=>setCursors(value=>[...value,page.nextCursor!])}>下一页</Button></div></>}
-    {selection&&<section className={styles.card} data-testid="pi-approval-inbox-selected" key={JSON.stringify(selection.detail.ref)}><h3>当前申请 · {selection.row.sessionTitle}</h3>{selection.detail.kind==='permission_v2'?<PiPermissionApproval approval={selection.detail.approval} disabled={!selection.row.canDecide||busy} onRefresh={()=>changed(selection.row.sessionId)}/>:<>
+    {selection&&<section className={styles.card} data-testid="pi-approval-inbox-selected" key={JSON.stringify(selection.detail.ref)}><h3>当前申请 · {selection.row.sessionTitle}</h3>{selection.detail.kind==='permission_v2'?<PiPermissionApproval approval={selection.detail.approval} disabled={!selection.row.canDecide||busy} onRefresh={current=>{
+      if(current?.state==='invalidated')setNotice('申请已失效，请重新核对授权条件。');
+      return changed(selection.row.sessionId);
+    }}/>:<>
       {selection.row.canDecide?<PiCopyApproval approval={selection.detail.approval} onDecision={(_id,decision)=>legacy(decision)}/>:<p>历史申请状态：{labels[selection.detail.approval.state]}。该记录当前不可操作。</p>}
       {selection.detail.approval.state==='approved'&&selection.row.canDecide&&<Button size="sm" isDisabled={busy} data-testid="pi-approval-legacy-resume" onPress={()=>void legacy('resume').catch(()=>{})}>执行已批准的复制</Button>}
     </>}</section>}

@@ -37,17 +37,25 @@ export function createPermissionService(options: {
     jobCurrent: options.jobCurrent,
     current: async owner => permissionHash(options.owner(owner.sessionId)) === permissionHash(owner)
       && (!options.validateTaskOwner || await options.validateTaskOwner(owner)), notify: options.notify,
-    verifyRequest: async request => {
+    verifyRequest: async (request, check) => {
       if (options.task) {
         const task = await options.task(request.owner.taskId);
         if (!task || task.sessionId !== request.owner.sessionId || task.requirementsVersion !== request.requirementsVersion || task.state === 'cancelled') return false;
       }
       if (request.provider && options.verifyProvider && !await options.verifyProvider(request.provider)) return false;
+      for (const scope of request.scopes) {
+        if (scope.kind !== 'filesystem') continue;
+        try {
+          if (permissionHash(filesystemScope(scope.root, scope.actions)) !== permissionHash(scope)) return false;
+        } catch {return false;}
+      }
       for (const file of request.files) {
+        const target = file.kind === 'write_target';
+        if (target && check === 'execution') continue;
         const scope = request.scopes.find(scope => scope.kind === 'filesystem' && scope.root === file.root);
         if (!scope || scope.kind !== 'filesystem') return false;
         try {
-          const filename = checkedFile(scope, path.resolve(file.root, file.path), 'read');
+          const filename = checkedFile(scope, path.resolve(file.root, file.path), target ? 'write' : 'read');
           if (file.version === null ? fs.existsSync(filename) : !fs.existsSync(filename) || fileVersion(fs.lstatSync(filename)) !== file.version) return false;
           if (file.sha256 !== null) {
             const read = filesystemScope(scope.root, ['read']);

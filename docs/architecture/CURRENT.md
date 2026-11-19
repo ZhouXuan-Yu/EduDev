@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-19 审批键盘与授权核对
+
+审批事务持久化签发后的精确授权引用。权限引擎校验具名目标的准入版本，原文件提交服务持续保护已授权写入。[专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-19 Harness 终端退出后的教师确认
 
 原 Task 完成预检对已完成且已清理和提交的 Job 保留终态证明。独立读回确认目标与文件后，旧 resize 沿原 Effect CAS 核对，输入、EOF、关闭与文件沿各自证据。[Harness 专项](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

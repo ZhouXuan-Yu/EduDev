@@ -3,6 +3,7 @@ import type { Sql } from '../session-state';
 import type { PermissionProfile, PermissionMode, ScopeGrant, PermissionScope, PermissionApproval, PermissionRequest, PermissionDecision, PermissionOwner } from '../../../shared/xiaozhi-permissions';
 import { permissionHash, requestDigest, validProfile, validGrant, validApproval, validScope, snapshotRequest, sessionId as validSession } from './validation';
 import { filesystemScope } from './resources';
+import { permissionGrantSnapshot } from './grant-snapshot';
 
 const profiles = 'xiaozhi_permission_profiles_v1';
 const grants = 'xiaozhi_permission_grants_v1';
@@ -221,8 +222,18 @@ export function createPermissionStore(sql: Sql) {
         const next: PermissionApproval = {...previous, scope, state: decision === 'approve' ? 'approved' : 'rejected',
           revision: revision + 1, updatedAt: now()};
         if (decision === 'approve' && scope !== 'operation') {
-          await issue(work, sessionId, previous.request.scopes, {kind: 'approval', reference: id},
+          const existingGrants = await readGrants(work, sessionId);
+          const decisionTime = Date.now();
+          if (permissionGrantSnapshot(previous.request, existingGrants, decisionTime).permissionSnapshotHash !== expectedSnapshot) {
+            throw Error('permission_revision_conflict');
+          }
+          const issued = await issue(work, sessionId, previous.request.scopes, {kind: 'approval', reference: id},
             scope === 'task' ? previous.request.owner.taskId : null, scope === 'task' ? previous.request.expiresAt : null);
+          // The decision itself changes the authority snapshot. Save its new
+          // references with the same transaction so refresh cannot stale it.
+          const current = permissionGrantSnapshot(previous.request, [...existingGrants, ...issued], decisionTime);
+          next.permissionSnapshotHash = current.permissionSnapshotHash;
+          next.grantRefs = current.grantRefs;
         }
         await writeApproval(work, previous, next);
         return next;

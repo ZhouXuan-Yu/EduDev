@@ -10,7 +10,7 @@ import {JSDOM} from 'jsdom';
 const desktop=path.resolve(import.meta.dirname,'../..');
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-phase7-workbench-renderer-'));
 const sourcePaths=['PiWorkspaceShell.tsx','PiEducationWorkspace.tsx','PiSettingsWorkspace.tsx','PiPermissionApproval.tsx','PiCapabilityCenter.tsx','workbench/PiRecoveryOverview.tsx','workbench/PiApprovalInbox.tsx','workbench/useWorkbenchSummary.ts'].map(file=>'src/renderer/components/office/'+file);
-sourcePaths.push('src/renderer/ui-system/xiaozhi-workbench.module.css','scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs');
+sourcePaths.push('src/renderer/ui-system/EduPanel.tsx','src/renderer/ui-system/xiaozhi-workbench.module.css','scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs');
 const report={success:false,output,checks:[],calls:[],boundary:'Actual production React/HeroUI components and parent workspace in JSDOM, synthetic typed IPC only. No Electron, SQL, native helper, provider/key, actual budget, build output, layout/keyboard/drag/cold-start product acceptance.'};
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);return{promise,resolve};};
@@ -38,6 +38,8 @@ try{
 ${['PiRecoveryOverview','PiApprovalInbox'].map(name=>`export {${name}${name==='PiRecoveryOverview'?',restoreWorkbenchTask':''}} from ${JSON.stringify(path.join(desktop,'src/renderer/components/office/workbench/'+name+'.tsx'))};`).join('\n')}
 ${['PiCapabilityCenter','PiWorkspaceShell','PiEducationWorkspace','PiSettingsWorkspace'].map(name=>`export {${name}} from ${JSON.stringify(path.join(desktop,'src/renderer/components/office/'+name+'.tsx'))};`).join('\n')}
 export {DesktopFrame} from ${JSON.stringify(path.join(desktop,'src/renderer/components/desktop/DesktopFrame.tsx'))};
+export {EduPanel} from ${JSON.stringify(path.join(desktop,'src/renderer/ui-system/EduPanel.tsx'))};
+export {Button,Dropdown,Label} from '@heroui/react';
 export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaozhi-task.ts'))};`);
   const bundle=path.join(output,'components.cjs');
   await build({entryPoints:[entry],outfile:bundle,bundle:true,platform:'node',format:'cjs',target:'node24',nodePaths:[path.join(desktop,'node_modules')],loader:{'.css':'empty'},jsx:'automatic',logLevel:'silent',plugins:[{name:'unmounted-classroom-virtual-asset',setup(plugin){plugin.onResolve({filter:/^virtual:classroom-preview$/},()=>({path:'classroom-preview',namespace:'fixture-asset'}));plugin.onLoad({filter:/.*/,namespace:'fixture-asset'},()=>({contents:'export const classroomPreviewScript="";export const classroomPreviewCss="";',loader:'js'}));}}]});
@@ -48,6 +50,7 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
   globalThis.requestAnimationFrame=callback=>setTimeout(()=>callback(performance.now()),16);globalThis.cancelAnimationFrame=clearTimeout;
   globalThis.CSS=dom.window.CSS||{escape:value=>String(value).replace(/[^A-Za-z0-9_-]/g,'\\$&')};
   window.HTMLElement.prototype.scrollIntoView=function(){};
+  window.HTMLElement.prototype.scrollTo=function(){};
   globalThis.matchMedia=window.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){},addListener(){},removeListener(){}});
   globalThis.ResizeObserver=class{observe(){}unobserve(){}disconnect(){}};
   if(NativeMessageChannel)globalThis.MessageChannel=class extends NativeMessageChannel{constructor(){super();channels.add(this);}};
@@ -61,6 +64,52 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     assert.equal(reads,0);await click('pi-workbench-open');assert(element('pi-workbench'));assert.equal(reads,1);
     await settle(()=>document.querySelector('[role="dialog"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
     assert(!element('pi-workbench'));assert.equal(document.activeElement,element('pi-workbench-open'));
+  });
+  await check('W01a','Both modal panels wrap Tab in either direction and Escape restores the initiating control',async()=>{
+    const controls=React.createElement('div',null,
+      React.createElement('button',{'data-testid':'panel-first'},'第一项'),
+      React.createElement('button',{'data-testid':'panel-last'},'最后一项'));
+    const props={title:'合成会话',sidebar:controls,aside:null,children:null,onLeave(){},onSkills(){},onSettings(){},workbench:controls};
+    for(const trigger of ['pi-workbench-open','pi-sidebar-toggle']){
+      await mount(C.PiWorkspaceShell,props);
+      await settle(()=>element(trigger).focus());await click(trigger);
+      const panel=element('edu-history-panel');
+      const first=panel.querySelector('button');
+      const last=element('panel-last');
+      await settle(()=>last.focus());
+      await settle(()=>last.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true})));
+      assert(document.activeElement===first,'Tab must wrap to modal close control');
+      await settle(()=>first.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',shiftKey:true,bubbles:true,cancelable:true})));
+      assert(document.activeElement===last,'reverse Tab must wrap to final modal control');
+      await settle(()=>last.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})));
+      assert(!element('edu-history-panel'));assert.equal(document.activeElement,element(trigger));
+    }
+  });
+  await check('W01b','A portalled child menu owns the first Escape and restores focus inside its modal',async()=>{
+    let closed=0;
+    const menu=React.createElement(C.Dropdown,null,
+      React.createElement(C.Button,{'data-testid':'panel-menu-trigger'},'菜单'),
+      React.createElement(C.Dropdown.Popover,null,
+        React.createElement(C.Dropdown.Menu,{'aria-label':'合成菜单'},
+          React.createElement(C.Dropdown.Item,{id:'item',textValue:'合成选项'},React.createElement(C.Label,null,'合成选项')))));
+    await mount(C.EduPanel,{title:'合成模态',history:true,onClose(){closed++;},children:menu});
+    await settle(()=>element('panel-menu-trigger').focus());await click('panel-menu-trigger');
+    const item=document.querySelector('[role="menuitem"]');assert(item);
+    assert(!element('edu-history-panel').contains(item),'menu must actually use a portal');
+    await settle(()=>item.focus());assert.equal(document.activeElement,item);
+    await settle(()=>item.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})));
+    assert.equal(closed,0,'child Escape must not also close the outer panel');
+    assert.equal(document.activeElement,element('panel-menu-trigger'));
+    await settle(()=>element('panel-menu-trigger').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})));
+    assert.equal(closed,1);
+  });
+  await check('W01c','An ordinary context panel leaves focus outside it available',async()=>{
+    function NonModal(){return React.createElement(React.Fragment,null,
+      React.createElement('button',{'data-testid':'outside-panel'},'工作区操作'),
+      React.createElement(C.EduPanel,{title:'普通上下文',onClose(){},children:React.createElement('button',null,'栏内操作')}));}
+    await mount(NonModal);await settle(()=>element('outside-panel').focus());
+    await settle();assert.equal(document.activeElement,element('outside-panel'));
+    assert(!element('edu-context-panel').hasAttribute('aria-modal'));
   });
   await check('W02','Task filters/counts use the server universe and null counts remain unknown',async()=>{
     const calls=[];await mount(C.PiRecoveryOverview,overviewProps,{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('tasks',[row()],{total:41,matched:9,counts:{completed:12,ended:4},nextCursor:'page2'}));}});
@@ -147,7 +196,7 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     assert(element('pi-workbench'),'panel must stay open across keyed remount');assert.equal(element('office-prompt-input').value,'第二会话未发送草稿');assert.equal(calls.filter(value=>value[0]==='resume').length,1);await click('pi-task-overview-resume');assert.equal(calls.filter(value=>value[0]==='resume').length,1);
     await settle(()=>gate.resolve({ok:true}));assert(element('pi-workbench-action-notice').textContent.includes('同一任务'));assert(calls.findIndex(value=>value[0]==='snapshot'&&value[1]===T)<calls.findIndex(value=>value[0]==='get'));report.calls.push(...calls);
   });
-  report.success=report.checks.every(value=>value.pass)&&report.checks.length===14;
+  report.success=report.checks.every(value=>value.pass)&&report.checks.length===17;
 }catch(error){report.fatal=String(error.stack||error);console.error(error);}
 finally{
   if(root&&act)await act(async()=>root.unmount());dom?.window.close();for(const channel of channels){channel.port1.close();channel.port2.close();}if(NativeMessageChannel)globalThis.MessageChannel=NativeMessageChannel;

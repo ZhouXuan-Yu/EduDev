@@ -1,0 +1,258 @@
+{
+  "status": "PASS_SCOPED",
+  "baseCommit": "16bc186424f9b63a4e4b198c37f4d938c47362dc",
+  "redMainSha256": "dba6214cae38e999e06b0b6fad22439b3111eeaf8bcc0d72ca1715112e501e47",
+  "firstGreenMainSha256": "65d54232a9b30a323fcac2d0e3a5d6e3a35103c2fb3cfe5e27d644c7fe3d8535",
+  "scope": "A1/A2 and workbench modal regressions. Product tasks and files used separate owned synthetic fixtures. Zero real or paid model calls.",
+  "focus": {
+    "red": {
+      "path": "%TEMP%/a11yapproval-5b507b0f/approval-keyboard-report.json",
+      "sha256": "cf42ae5bb5013ea2d689a53cbb1c6b4a12a4795e36765dee1f7253dc9f26c226"
+    },
+    "green": {
+      "path": "%TEMP%/a11ygreen-63e67bbe/approval-keyboard-report.json",
+      "sha256": "f2c136ccbf5272458edd8eadbc58a8edb8df6428aa05ed8c547658bdf5e4ed5a"
+    },
+    "falseCycleFixture": {
+      "path": "%TEMP%/a11yapproval-5b507b0f/false-cycle-report.json",
+      "sha256": "9555763310c213f3b8c44e2cc958930536da61c0f0e5933ae45de50e5f2d8f52"
+    },
+    "viewports": [
+      [
+        1366,
+        768
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "observed": "Keyboard from actual approval detail stays inside the dialog in both Tab directions. Escape closes it and returns focus to the original trigger. SQLite approvals were unchanged.",
+    "componentRed": {
+      "path": "%TEMP%/xiaozhi-phase7-workbench-renderer-jkavJS/report.json",
+      "sha256": "cf5652c9164be07513688caa431e587a84047613e9bbe0b4b221675c081d23d8"
+    },
+    "componentGreen": {
+      "path": "%TEMP%/xiaozhi-phase7-workbench-renderer-VcJKwB/report.json",
+      "sha256": "3826b315713cadfb0b98eda38617ec8c61f5d870dbf7b74c27571c85434efc76"
+    }
+  },
+  "authority": {
+    "oldTaskGrant": {
+      "path": "%TEMP%/phase7-a2-schema-6bbaa687/report.json",
+      "sha256": "e97f0ea33c3e96115e456c271870dc2dfd7ba0623d2cc8b7b15ef2c3ce595506"
+    },
+    "newTaskGrant": {
+      "path": "%TEMP%/phase7-a2-grant-accept-34d6dd38/report.json",
+      "sha256": "52413fa9cde0cbece26dd6c70bf35d02390a7f89db90a1e3fe9163756ce91af4"
+    },
+    "taskGrantSource": "Independent Terra High; three refreshes, cold same ID/exact Grant refs and native same-Task terminal execution. A separate local public acquisition attempt could not reach pending approval.",
+    "unavailableAcquisition": {
+      "path": "%TEMP%/phase7-mcp-grant-retest-d8480961/report.json",
+      "sha256": "5d584efe9a9cc82035677f6e3c7a0a3d506cc14f27adfdb403c12d844d8853c8"
+    },
+    "fileTargetBefore": {
+      "path": "%TEMP%/a2-stale-file-target-uukrX6/report.json",
+      "sha256": "7b5e2c3ee6e43bdddccae2f9ff3cff05dd12fac63ea2264228f7d7a54d62b228"
+    },
+    "fileTargetAfter": {
+      "path": "%TEMP%/a2-stale-file-target-fixed-oiAYcz/report.json",
+      "sha256": "02d897eda7570ba77920e703f9e4ec46648ecec534af0853883186b5c5235644"
+    },
+    "observed": "UI approval was approved on old source even though the file appeared while pending. Current app records invalidated, shows the changed condition without manual refresh, preserves original data and shows the same invalidated state cold.",
+    "timing": {
+      "currentStaleFeedbackMs": 186.4,
+      "scope": "Single isolated real page observation; old approval had a different outcome."
+    },
+    "providerSchemaCold": {
+      "path": "%TEMP%/phase7-a2-schema-a5c77524/cold-ui-invalidated-report.json",
+      "sha256": "c94f2eafea5061554a6b7ef1044a7522bfedace95eedb422269cc5e18d540de6"
+    },
+    "providerSchemaInitialObservation": {
+      "path": "%TEMP%/phase7-a2-schema-a5c77524/report.json",
+      "sha256": "49398d3cf366b06cf68dd08637a2fb6d6fddd8def73d407e1fdf56f4792660d5"
+    },
+    "providerScope": "Different synthetic run on baseline; original one-time approval was still approved before the cold permission read finished, then invalidated / source_changed was read from the actual Inbox and SQLite. Zero old dispatch.",
+    "scopeSnapshotRecheck": "Scoped and persistent decisions save the post-issue approval snapshot and exact Grant references in the same SQLite transaction. Already invalidated records retain their history.",
+    "fileTargetOldReadback": {
+      "state": "approved",
+      "scope": "operation",
+      "revision": 2,
+      "targetVersions": 0,
+      "dispatched": false
+    },
+    "loopbackMcpSameGrantFirstGreen": {
+      "path": "%TEMP%/phase7-mcp-same-grant-GOAw3R/report.json",
+      "sha256": "fe6379a912d26a9e8a906eb7d49f4b4c50b237ab684d2e3ba2d19adda09a33f9"
+    }
+  },
+  "checks": {
+    "permissionStore": {
+      "passed": 14,
+      "report": {
+        "path": "%TEMP%/xiaozhi-permission-phase3-store-mXTbCN/report.json",
+        "sha256": "de4208223fc06e62a29b1d82113fa2898de57e99abdf0e57124c91e60a68ae34"
+      }
+    },
+    "runtimeWorkbench": {
+      "passed": 9,
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-L2zenj/evidence/ui-report.json",
+        "sha256": "65b0f46c71617f872544bfbb977100483fc00220ee49dbc0a04ba8be8a877d1c"
+      }
+    },
+    "mcpRealHost": {
+      "passed": 5,
+      "report": {
+        "path": "%TEMP%/mcp-effect-TLSlVa/SUMMARY.json",
+        "sha256": "f18cfeee3088cf796de2c9a4688e3efca33596b28b51105447be9828003af61d"
+      }
+    },
+    "terminalRealHost": {
+      "passed": 5,
+      "report": {
+        "path": "%TEMP%/terminal-grant-9NcC0r/SUMMARY.json",
+        "sha256": "a512bc80298bd4a19e2eebc8ed0b494acbf143ee001277cd25f6b114a8ae6476"
+      }
+    },
+    "filesRealHost": {
+      "passed": 4,
+      "report": {
+        "path": "%TEMP%/xiaozhi-non-dispatch-host-ePEtZz/REPORT.json",
+        "sha256": "0bb84806e6ea8056fa9e44b9edd0386e633718c9eae5725ce16fd9d30af6e2bc"
+      }
+    },
+    "componentState": {
+      "passed": 253,
+      "report": {
+        "path": "%TEMP%/harness-approvals-16bc186-components.log",
+        "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+      }
+    },
+    "build": {
+      "report": {
+        "path": "%TEMP%/harness-approvals-16bc186-build.log",
+        "sha256": "0efe4b5439404a5446e09e12e4e303876c5f446fb1637bf78af6f5fde8a13404"
+      }
+    }
+  },
+  "paidCalls": 0,
+  "goalLedgerUsed": 3,
+  "open": [
+    "Full Gate7 page states and native drag/maximize",
+    "Independent Windows clean installation, shortcut and uninstall QG-09",
+    "Frozen-candidate real model and overall independent Gate"
+  ],
+  "final": {
+    "mainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e",
+    "build": {
+      "path": "%TEMP%/harness-approvals-bound-16bc186-build.log",
+      "sha256": "e33d6c01cbe24125c339154e7fa691da014f90c6ccc3690a7f89041101ce233a"
+    },
+    "parity": {
+      "path": "%TEMP%/harness-approvals-bound-16bc186-parity.json",
+      "sha256": "05fd103fff0decb13742301a87bfaa73f42c29e74d88930675a2a19233f4cc9b"
+    },
+    "sourceInputs": 1725,
+    "sourceMismatches": 0,
+    "priorGreenRendererAndPreloadMatch": true,
+    "terminalTaskGrant": {
+      "path": "%TEMP%/phase7-bound-grant-accept-8b387809/report.json",
+      "sha256": "236e8bfc681d4228e744a4098f796dd568a99c00d8beb5abb8de025a3b2ffcfe"
+    },
+    "sameLoopbackMcpGrant": {
+      "path": "%TEMP%/phase7-mcp-bound-grant-724328a2/report.json",
+      "sha256": "4fd6e8844c37458297155ecea5913faf7395361e44d983cc4b7c3157574522f6"
+    },
+    "staleNamedFile": {
+      "path": "%TEMP%/a2-stale-file-target-bound-BkVcqf/report.json",
+      "sha256": "bea2d6c5ff5e04a217e081401129e667563e578252f7f3a3f0cfa1cda08e4fc5"
+    },
+    "staleFeedbackMs": 147.74,
+    "workbench": {
+      "passed": 9,
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-pL7YWs/evidence/ui-report.json",
+        "sha256": "980ea283285ef17af5e8fa00327c27a9cca2f88dcd5d172a903bbb351dce233d"
+      }
+    },
+    "dependencyAudit": {
+      "total": 29,
+      "high": 8,
+      "critical": 0,
+      "lockfileChanged": false,
+      "report": {
+        "path": "%TEMP%/harness-approvals-16bc186-audit-counts.json",
+        "sha256": "997f22836811a6cf45f05faa2c82c4f12151490d3142195d21860a14412a3771"
+      }
+    },
+    "desktopSmoke": {
+      "passed": 207,
+      "report": {
+        "path": "%TEMP%/harness-approvals-bound-16bc186-smoke.log",
+        "sha256": "e4d2475d1e1bf9e68d038bcf5be5943337f384852b3ac91fc8c20bb6a2336757"
+      }
+    },
+    "package": {
+      "build": {
+        "path": "%TEMP%/edu-harness-approvals-bound-full-resources/electron-builder.log",
+        "sha256": "0ad2ff057c58b64bc9f350c864688c6271cd8f0aad3d6235b93bfecbac92fccc"
+      },
+      "identity": {
+        "path": "%TEMP%/edu-harness-approvals-bound-full-resources/identity.json",
+        "sha256": "643401c81a75731a291c75b21a78bb2cf39e6f903e869a08874fb04452195ec7"
+      },
+      "startup": {
+        "path": "%TEMP%/edu-harness-approvals-bound-full-resources/startup-HDh2Dv/report.json",
+        "sha256": "044648a31cf7849c06700909fba8d367faa93344c4ae84f889680bd083cd59e0"
+      },
+      "outputFiles": 481,
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "promptVisible": true
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "promptVisible": true
+        }
+      ],
+      "resourceGroups": [
+        "page-blocks-runtime",
+        "ocr-runtime",
+        "education-runtime",
+        "retrieval-runtime",
+        "reranker-runtime"
+      ],
+      "mode": "Unpacked Windows x64 production executable with page-blocks enabled; no clean installation attempt.",
+      "defaultOptionalResourceOmitted": {
+        "build": {
+          "path": "%TEMP%/edu-harness-approvals-bound-16bc186-adb318b7/electron-builder.log",
+          "sha256": "cf8aad44b03bc37f43f67d64b0d67de09ead1045708c98ceb1fd6b8db4edb509"
+        },
+        "startup": {
+          "path": "%TEMP%/edu-harness-approvals-bound-16bc186-adb318b7/startup-30e6WA/report.json",
+          "sha256": "a05507b5b06ade33d441ffa17ef77dba0bf7a14b15ac25a21ab12bd25000479f"
+        }
+      }
+    },
+    "emptyPages": {
+      "report": {
+        "path": "%TEMP%/phase7-empty-accept-804b7bdc/report.json",
+        "sha256": "4e527e128b70454d414be564d62db07f9f9bb83b44e366ed079f3e9020acb537"
+      },
+      "scope": "Actual empty Task overview and approval Inbox at 1366×768 and 1920×1080. Fresh synthetic data, unchanged zero Run rows; damaged-row partial handling was outside this probe."
+    },
+    "commands": [
+      "npm run build -- --outDir test-results/harness-approvals-bound-16bc186/out",
+      "npm run test:renderer-components",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs",
+      "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs (isolated final OMNI_EDU_TEST_BUILD_ROOT)",
+      "node scripts/electron-smoke.mjs (isolated final OMNI_EDU_TEST_BUILD_ROOT)",
+      "OMNI_EDU_BUNDLE_PAGE_BLOCKS=1 electron-builder --win --x64 --dir --publish never (frozen output and five locked runtime groups)"
+    ]
+  }
+}

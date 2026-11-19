@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "8bf01a8d9bb7abca03ad7c13b45c5b9a559fbbe4",
-  "headRole": "Harness feature parent of the current integration. Fetch origin/main and the feature branch to resolve their current tips.",
-  "mainObserved": "2982762f10ba66519bba84d767963adb4e2f30f2",
+  "head": "16bc186424f9b63a4e4b198c37f4d938c47362dc",
+  "headRole": "Base of the approval keyboard and authority slice. Resolve the current remote main and feature refs.",
+  "mainObserved": "16bc186424f9b63a4e4b198c37f4d938c47362dc",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -26,7 +26,7 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "Phase7 full Gate7 remains partial. Complete the two-native-size applicable UI states, keyboard/focus/popup recovery and A2 variants. Physical mouse drag and maximize/restore still need runtime evidence.",
+    "Phase7 full Gate7 remains partial. Approval keyboard focus and A2 same-task Grant, exact target change and provider Schema cold invalidation have scoped evidence. Complete applicable snapshot/runtime states at both sizes and physical mouse drag and maximize/restore.",
     "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall.",
     "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build."
   ],
@@ -37,7 +37,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Finish Phase7 page focus cycles, approval popup and relevant states at both sizes, A2 real scope-change variants and physical window evidence. Then finish QG-09 and frozen-candidate Phase8.",
+  "next": "Continue Gate7 loading, empty, error, cancel, partial and retry states where applicable, then native window interaction and frozen Phase8 acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -675,6 +675,9 @@
     "integrationEvidence": "evidence/phase8/harness-terminal-resize-main-2982762.json",
     "integratedBuildMainSha256": "dba6214cae38e999e06b0b6fad22439b3111eeaf8bcc0d72ca1715112e501e47",
     "terminalResizeFeatureCommit": "8bf01a8d9bb7abca03ad7c13b45c5b9a559fbbe4",
-    "keyboardScoped": "PASS_SCOPED task overview Enter, two Tab steps, Escape focus restoration at both sizes; remaining popup/full focus cycle/native interaction pending."
+    "keyboardScoped": "PASS_SCOPED task overview Enter, two Tab steps, Escape focus restoration at both sizes; remaining popup/full focus cycle/native interaction pending.",
+    "approvalEvidence": "evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json",
+    "approvalBaseline": "16bc186424f9b63a4e4b198c37f4d938c47362dc",
+    "approvalFinalMainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e"
   }
 }
