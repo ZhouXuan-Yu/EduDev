@@ -7,7 +7,7 @@ import {canResolveBookFillConflict} from './material-book-fill-recovery';
 import {BOOK_ANSWER_CONFLICT_POLICY,migrateBookAnswerConflicts,quarantineBookAnswerConflict} from './material-book-answer-conflict';
 import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
-import {QUESTION_BOOK_ARCHIVE_SCHEMA,QUESTION_BOOK_EVIDENCE_SCHEMA,MATERIAL_BOOK_MATCH_SCHEMA,validBookMatchQuery,type BookMatchQuery,type BookMatchRow,type BookMatchView} from '../../shared/question-book-answer';
+import {QUESTION_BOOK_ARCHIVE_SCHEMA,QUESTION_BOOK_EVIDENCE_SCHEMA,MATERIAL_BOOK_MATCH_SCHEMA,validAnyBookMatchQuery,type AnyBookMatchQuery,type BookMatchQuery,type BookMatchRow,type BookMatchView} from '../../shared/question-book-answer';
 import {validQuestionArchive,archiveEligible} from '../../shared/question-archive';
 import {sameMaterialBookIdentity,type MaterialBookRole} from '../../shared/material-book-pair';
 import {aiTextSignature} from '../../shared/material-ai-image';
@@ -16,9 +16,12 @@ import {bookAnswerPage,bookAnswerSectionReviewResolved,bookSectionAt,bookSection
 import {MaterialBookAnswerIndex} from './material-book-answer-index';
 import {MaterialBookQuestionSection,type BookQuestionSectionEvidence,type BookAnswerSectionEvidence} from './material-book-question-section';
 import type {readAiPageReceipt} from './material-ai-page-evidence';
+import type {StructureBookScope} from './material-structure-book-scope';
 type Row=Record<string,unknown>;type Value=string|number|null;type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
-type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem)=>Promise<void>;title:(id:string)=>Promise<string>;writer:<T>(fn:(target:MaterialBookAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
-type Evidence={pair:MaterialBookRole;question:{batchId:string;ordinal:number};answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;lookupPolicy?:typeof BOOK_SECTION_LAYOUT;questionSection?:BookQuestionSectionEvidence;answerSection?:BookAnswerSectionEvidence;slotRecoveryPolicy?:typeof PRINTED_FILL_SLOTS};
+type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem)=>Promise<void>;structureScope?:(q:QuestionBankItem,signal:AbortSignal)=>Promise<StructureBookScope>;title:(id:string)=>Promise<string>;writer:<T>(fn:(target:MaterialBookAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
+type PageKey={batchId:string;ordinal:number};
+type QuestionProof={key:PageKey;receipt:Proof;context?:BookQuestionSectionEvidence}|{key:PageKey;structure:StructureBookScope};
+type Evidence={pair:MaterialBookRole;question:PageKey;answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;lookupPolicy?:typeof BOOK_SECTION_LAYOUT;questionSection?:BookQuestionSectionEvidence;structure?:StructureBookScope;answerSection?:BookAnswerSectionEvidence;slotRecoveryPolicy?:typeof PRINTED_FILL_SLOTS};
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex'),roles=['answer','analysis'] as const;
 type Entries=ReturnType<typeof bookAnswerPage>['entries'];
 function questionSection(q:QuestionBankItem,proof:Proof,a:Entries,b:Entries,context?:BookQuestionSectionEvidence,lookupPolicy?:typeof BOOK_SECTION_LAYOUT){
@@ -53,10 +56,33 @@ export class MaterialBookAnswerRepository{
   }catch(error){if(error instanceof Error&&['source_changed','source_incomplete','privacy_blocked'].includes(error.message))return raw;throw error;}
  }
  async indexOne(){if(!await this.index.pending())return false;return this.host.writer(target=>target.index.applyOne());}
- async list(input:BookMatchQuery):Promise<BookMatchView>{if(!validBookMatchQuery(input))throw Error('invalid_input');const rows=await this.host.all('SELECT j.payload_json FROM material_ai_members m JOIN material_book_answer_journal_v1 j ON j.rowid=(SELECT rowid FROM material_book_answer_journal_v1 WHERE batch_id=m.batch_id AND ordinal=m.ordinal AND question_id=m.question_id ORDER BY rowid DESC LIMIT 1) WHERE m.batch_id=? AND m.ordinal=? ORDER BY m.rowid LIMIT 20',[input.batchId,input.ordinal]);const latest=new Map<string,BookMatchRow>();for(const row of rows){const value=JSON.parse(String(row.payload_json)) as BookMatchRow;if(!latest.has(value.questionId))latest.set(value.questionId,value);}for(const value of latest.values())if(value.afterVersion){const q=await this.host.read(value.questionId);if(!q||questionVersion(q)!==value.afterVersion){value.state='conflict';value.reason='teacher_changed';}}const work=await this.work.state(input.batchId,input.ordinal);return{schemaVersion:MATERIAL_BOOK_MATCH_SCHEMA,rows:[...latest.values()],indexPending:await this.index.pending(),automaticPending:!!work&&!work.error,automaticError:String(work?.error||'')};}
- async match(input:BookMatchQuery,signal=new AbortController().signal):Promise<BookMatchView>{
+ async list(input:AnyBookMatchQuery):Promise<BookMatchView>{
+  if(!validAnyBookMatchQuery(input))throw Error('invalid_input');
+  const rows='questionId' in input
+   ? await this.host.all("SELECT payload_json FROM material_book_answer_journal_v1 WHERE question_id=? AND batch_id LIKE 'structure:%' ORDER BY rowid DESC LIMIT 1",[input.questionId])
+   : await this.host.all('SELECT j.payload_json FROM material_ai_members m JOIN material_book_answer_journal_v1 j ON j.rowid=(SELECT rowid FROM material_book_answer_journal_v1 WHERE batch_id=m.batch_id AND ordinal=m.ordinal AND question_id=m.question_id ORDER BY rowid DESC LIMIT 1) WHERE m.batch_id=? AND m.ordinal=? ORDER BY m.rowid LIMIT 20',[input.batchId,input.ordinal]);
+  const latest=new Map<string,BookMatchRow>();
+  for(const row of rows){const value=JSON.parse(String(row.payload_json)) as BookMatchRow;if(!latest.has(value.questionId))latest.set(value.questionId,value);}
+  for(const value of latest.values())if(value.afterVersion){const q=await this.host.read(value.questionId);if(!q||questionVersion(q)!==value.afterVersion){value.state='conflict';value.reason='teacher_changed';}}
+  const work='batchId' in input?await this.work.state(input.batchId,input.ordinal):undefined;
+  return{schemaVersion:MATERIAL_BOOK_MATCH_SCHEMA,rows:[...latest.values()],indexPending:await this.index.pending(),automaticPending:!!work&&!work.error,automaticError:String(work?.error||'')};
+ }
+ async match(input:AnyBookMatchQuery,signal=new AbortController().signal):Promise<BookMatchView>{
   signal.throwIfAborted();if(process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK==='0')throw Error('book_writeback_disabled');
-  if(!validBookMatchQuery(input))throw Error('invalid_input');if(await this.index.pending())return this.list(input);
+  if(!validAnyBookMatchQuery(input))throw Error('invalid_input');if(await this.index.pending())return this.list(input);
+  if('questionId' in input){
+   const q=await this.host.read(input.questionId);
+   if(!q||!q.archive?.structure||!q.archive.sourceChecked||questionVersion(q)!==input.version)throw Error('source_changed');
+   if(!isCompleteQuestionDocument(q.document)||!this.host.structureScope)throw Error('unsupported');
+   const {resourceId,version}=q.archive.structure;
+   const pair=await this.host.role(resourceId);
+   if(!pair||pair.kind!=='questions'||pair.questionId!==resourceId||pair.questionVersion!==version)throw Error('book_pair_required');
+   await this.host.validate(q);
+   const structure=await this.host.structureScope(q,signal);
+   const found=structure.section?await this.index.find(pair.answerId,pair.answerVersion,bookSectionKey(structure.section),q.archive.number):[];
+   await this.propose(input,q,{key:{batchId:'structure:'+structure.reference.generation,ordinal:structure.page},structure},pair,structure.section,found,signal);
+   return this.list(input);
+  }
   const questionProof=await this.host.receipt(input.batchId,input.ordinal),source=questionProof.unit.pageSource;if(!source||questionProof.unit.bookRole?.kind==='answers')throw Error('unsupported');
   const pair=await this.host.role(source.resourceId);if(pair?.kind!=='questions'||pair.revision!==input.revision||pair.questionVersion!==source.version)throw Error('source_changed');
   const members=await this.host.all('SELECT question_id FROM material_ai_members WHERE batch_id=? AND ordinal=? ORDER BY rowid LIMIT 21',[input.batchId,input.ordinal]);if(members.length>20)throw Error('unit_too_large');
@@ -67,21 +93,25 @@ export class MaterialBookAnswerRepository{
    const q=await this.host.read(String(member.question_id));if(!q)continue;
    const scope=questionSection(q,questionProof,a,b,inherited,process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0'?BOOK_SECTION_LAYOUT:undefined);
    const found=scope.section?await this.index.find(pair.answerId,pair.answerVersion,bookSectionKey(scope.section),q.archive?.number||'0'):[];
-   await this.propose(input,q,questionProof,pair,scope.section,scope.context,found,signal);
+   await this.propose(input,q,{key:{batchId:input.batchId,ordinal:input.ordinal},receipt:questionProof,context:scope.context},pair,scope.section,found,signal);
   }
   return this.list(input);
  }
- private async propose(input:BookMatchQuery,snapshot:QuestionBankItem,questionProof:Proof,pair:MaterialBookRole,section:string,sectionContext:BookQuestionSectionEvidence|undefined,found:Row[],signal:AbortSignal){
+ private async propose(input:AnyBookMatchQuery,snapshot:QuestionBankItem,proof:QuestionProof,pair:MaterialBookRole,section:string,found:Row[],signal:AbortSignal){
+  const {batchId,ordinal}=proof.key;
+  const structure='structure' in proof?proof.structure:undefined;
+  const questionProof='receipt' in proof?proof.receipt:undefined;
+  const sectionContext='context' in proof?proof.context:undefined;
   return this.host.writer(async target=>{
    signal.throwIfAborted();if(await target.index.pending())throw Error('busy');
-   if(sectionContext)await target.sections.validate(sectionContext,await target.host.receipt(input.batchId,input.ordinal),signal);
+   if(sectionContext)await target.sections.validate(sectionContext,await target.host.receipt(batchId,ordinal),signal);
    const currentPair=await target.host.role(pair.questionId);if(JSON.stringify(pair)!==JSON.stringify(currentPair))throw Error('source_changed');
    if(section){const current=await target.index.find(pair.answerId,pair.answerVersion,bookSectionKey(section),snapshot.archive?.number||'0');if(JSON.stringify(current)!==JSON.stringify(found))throw Error('source_changed');}
    const q=await target.host.read(snapshot.id);if(!q)throw Error('source_changed');
    const lookupPolicy=process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0'?BOOK_SECTION_LAYOUT:undefined,slotPolicy=process.env.OMNI_EDU_BOOK_FILL_SLOTS!=='0'?PRINTED_FILL_SLOTS:undefined;
-   const number=q.archive?.number||'0',key=hash(JSON.stringify([BOOK_ANSWER_CONFLICT_POLICY,snapshot.id,questionVersion(snapshot),input,section,found.map(f=>[f.batch_id,f.ordinal,f.start,f.proof_sha]),...(lookupPolicy?[lookupPolicy]:[]),...(slotPolicy?[slotPolicy]:[]),...(sectionContext?[sectionContext]:[]),...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[])])),old=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE request_key=?',[key]))[0];if(old)return;
+   const number=q.archive?.number||'0',key=hash(JSON.stringify([BOOK_ANSWER_CONFLICT_POLICY,snapshot.id,questionVersion(snapshot),input,section,found.map(f=>[f.batch_id,f.ordinal,f.start,f.proof_sha]),...(lookupPolicy?[lookupPolicy]:[]),...(slotPolicy?[slotPolicy]:[]),...(sectionContext?[sectionContext]:[]),...(structure?[pair,structure]:[]),...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[])])),old=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE request_key=?',[key]))[0];if(old)return;
    const row:BookMatchRow={id:'bookanswer_'+randomUUID(),questionId:q.id,number,section,state:'held',reason:'',answer:'',analysis:'',beforeVersion:questionVersion(snapshot),afterVersion:''};
-   const evidence:Evidence={pair,question:{batchId:input.batchId,ordinal:input.ordinal},answer:{batchId:'',ordinal:0,start:0,firstSha:'',finalSha:'',imageSha:''},section,number,...(lookupPolicy?{lookupPolicy}:{}),...(sectionContext?{questionSection:sectionContext}:{})};
+   const evidence:Evidence={pair,question:proof.key,answer:{batchId:'',ordinal:0,start:0,firstSha:'',finalSha:'',imageSha:''},section,number,...(lookupPolicy?{lookupPolicy}:{}),...(sectionContext?{questionSection:sectionContext}:{}),...(structure?{structure}:{})};
    let answerProof:Proof|undefined,answerEntry:ReturnType<typeof bookAnswerPage>['entries'][number]|undefined,slotRecovery=false;
    if(questionVersion(q)!==row.beforeVersion){row.state='conflict';row.reason='source_changed';}
    else if(!section)row.reason='missing_section';else if(!found.length)row.reason='answer_not_found';else if(found.length!==1)row.reason='ambiguous_answer';
@@ -97,9 +127,11 @@ export class MaterialBookAnswerRepository{
      await target.host.validate(q);
      const earlier=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE question_id=? AND after_json<>\'\' ORDER BY rowid DESC LIMIT 1',[q.id]))[0];
      if(earlier){const previous=JSON.parse(String(earlier.payload_json)) as BookMatchRow;if(previous.afterVersion===questionVersion(q)&&previous.source?.batchId===row.source.batchId&&previous.source.ordinal===row.source.ordinal&&previous.source.start===row.source.start)return;}
-     slotRecovery=!!slotPolicy&&canResolveBookFillConflict(q,questionProof,answerEntry);
+     slotRecovery=!!slotPolicy&&!!questionProof&&canResolveBookFillConflict(q,questionProof,answerEntry);
      if(slotRecovery)evidence.slotRecoveryPolicy=slotPolicy;
-     row.reason=q.document&&(!isCompleteQuestionDocument(q.document)||process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK==='0')||!q.archive?.ai||!q.archive.pageSource?'unsupported':q.archive.issues.some(i=>!metadata.has(i)&&!(slotRecovery&&i==='answer_conflict'))||q.archive.sourceRisks.length?'question_unchecked':!answerEntry.agrees||answerEntry.issues.some(code=>code!=='missing_analysis')?'answer_unchecked':q.answer.trim()&&!(slotPolicy?samePrintedFillAnswer(q,q.answer,row.answer):aiTextSignature(q.answer)===aiTextSignature(row.answer))?'existing_answer_conflict':'';
+     const archive=q.archive;
+     const supported=archive&&(structure?!!archive.structure&&archive.sourceChecked:!!archive.ai&&!!archive.pageSource);
+     row.reason=!supported||q.document&&(!isCompleteQuestionDocument(q.document)||process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK==='0')?'unsupported':archive.issues.some(i=>!metadata.has(i)&&!(slotRecovery&&i==='answer_conflict'))||archive.sourceRisks.length?'question_unchecked':!answerEntry.agrees||answerEntry.issues.some(code=>code!=='missing_analysis')?'answer_unchecked':q.answer.trim()&&!(slotPolicy?samePrintedFillAnswer(q,q.answer,row.answer):aiTextSignature(q.answer)===aiTextSignature(row.answer))?'existing_answer_conflict':'';
     }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;row.reason='source_changed';}
    }
    let next:QuestionBankItem|undefined=row.reason==='existing_answer_conflict'?quarantineBookAnswerConflict(q):undefined;
@@ -117,12 +149,18 @@ export class MaterialBookAnswerRepository{
      if(!Object.keys(archive.book.roles).length){next=undefined;row.reason='no_change';}else if(!validQuestionArchive(archive))throw Error('invalid_input');
     }
    }
-   await target.host.run('INSERT INTO material_book_answer_journal_v1(id,request_key,question_id,batch_id,ordinal,payload_json,evidence_json,before_json) VALUES(?,?,?,?,?,?,?,?)',[row.id,key,q.id,input.batchId,input.ordinal,JSON.stringify(row),JSON.stringify(evidence),JSON.stringify(q)]);
+   await target.host.run('INSERT INTO material_book_answer_journal_v1(id,request_key,question_id,batch_id,ordinal,payload_json,evidence_json,before_json) VALUES(?,?,?,?,?,?,?,?)',[row.id,key,q.id,batchId,ordinal,JSON.stringify(row),JSON.stringify(evidence),JSON.stringify(q)]);
    signal.throwIfAborted();if(next){
     const fresh=await target.host.read(q.id);if(!fresh||questionVersion(fresh)!==row.beforeVersion||JSON.stringify(await target.host.role(pair.questionId))!==JSON.stringify(pair))throw Error('source_changed');
     // Reopen both source receipts inside the same writer transaction before publishing any canonical field.
-    const checked=await target.host.receipt(input.batchId,input.ordinal),known=await target.host.receipt(evidence.answer.batchId,evidence.answer.ordinal);if(checked.firstSha!==questionProof.firstSha||checked.finalSha!==questionProof.finalSha||known.firstSha!==evidence.answer.firstSha||known.finalSha!==evidence.answer.finalSha||known.imageSha!==evidence.answer.imageSha)throw Error('source_changed');
-    if(sectionContext)await target.sections.validate(sectionContext,checked,signal);
+    if(structure)await target.checkStructureScope(fresh,structure,signal);
+    else if(questionProof){
+     const checked=await target.host.receipt(batchId,ordinal);
+     if(checked.firstSha!==questionProof.firstSha||checked.finalSha!==questionProof.finalSha)throw Error('source_changed');
+     if(sectionContext)await target.sections.validate(sectionContext,checked,signal);
+    }
+    const known=await target.host.receipt(evidence.answer.batchId,evidence.answer.ordinal);
+    if(known.firstSha!==evidence.answer.firstSha||known.finalSha!==evidence.answer.finalSha||known.imageSha!==evidence.answer.imageSha)throw Error('source_changed');
     if(evidence.answerSection)await target.sections.validateAnswer(evidence.answerSection,known,evidence.answer,signal);
     if(next.document)await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,document_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(next.archive),JSON.stringify(next.document),next.updatedAt,q.id]);
     else await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(next.archive),next.updatedAt,q.id]);
@@ -130,6 +168,9 @@ export class MaterialBookAnswerRepository{
     await target.host.run('UPDATE material_book_answer_journal_v1 SET payload_json=?,after_json=? WHERE id=?',[JSON.stringify(row),JSON.stringify(next),row.id]);await target.host.validate(next);signal.throwIfAborted();
    }
   },()=>signal.throwIfAborted());
+ }
+ private async checkStructureScope(q:QuestionBankItem,expected:StructureBookScope,signal=new AbortController().signal){
+  if(!this.host.structureScope||JSON.stringify(await this.host.structureScope(q,signal))!==JSON.stringify(expected))throw Error('source_changed');
  }
  async drain(signal:AbortSignal){
   signal.throwIfAborted();if(await this.indexOne())return true;if(process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK==='0')return false;
@@ -159,14 +200,25 @@ export class MaterialBookAnswerRepository{
    if(e.lookupPolicy!==undefined&&e.lookupPolicy!==BOOK_SECTION_LAYOUT)throw Error('source_changed');
    const sectionKey=e.lookupPolicy===BOOK_SECTION_LAYOUT?bookSectionLookupKey:bookSectionKey;
    if(!sameMaterialBookIdentity(receipt.unit.bookRole,{...e.pair,kind:'answers'})||receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||!entry||!entry.agrees||entry.issues.some(i=>i!=='missing_analysis')||sectionKey(entry.section)!==sectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
-   const question=await this.host.receipt(e.question.batchId,e.question.ordinal);
+   if(receipt.unit.pageSource?.resourceId!==e.pair.answerId||receipt.unit.pageSource.version!==e.pair.answerVersion)throw Error('source_changed');
    const removedConflict=before.archive?.issues.includes('answer_conflict')&&!after.archive?.issues.includes('answer_conflict');
-   if((removedConflict||e.slotRecoveryPolicy!==undefined)&&(e.slotRecoveryPolicy!==PRINTED_FILL_SLOTS||!canResolveBookFillConflict(before,question,entry)||after.archive?.state!=='book_enriched'||JSON.stringify(after.archive.issues)!==JSON.stringify(before.archive!.issues.filter(i=>i!=='answer_conflict'))))throw Error('source_changed');
-   if(question.firstSha!==before.archive?.ai?.firstSha||question.finalSha!==before.archive?.ai?.finalSha||question.imageSha!==before.archive?.ai?.imageSha||question.unit.pageSource?.resourceId!==e.pair.questionId||question.unit.pageSource.version!==e.pair.questionVersion||receipt.unit.pageSource?.resourceId!==e.pair.answerId||receipt.unit.pageSource.version!==e.pair.answerVersion)throw Error('source_changed');
-   if(e.questionSection){const key=JSON.stringify([e.question,e.questionSection]);if(!checkedSections.has(key)){
-    const scope=questionSection(before,question,bookAnswerPage(question.first,question.first).entries,bookAnswerPage(question.final,question.final).entries,e.questionSection,e.lookupPolicy);
-    if(!scope.context||scope.section!==e.section)throw Error('source_changed');await this.sections.validate(e.questionSection,question);checkedSections.add(key);
-   }}
+   if(e.structure){
+    const reference=before.archive?.structure;
+    if(!before.archive?.sourceChecked||!reference||JSON.stringify(reference)!==JSON.stringify(q.archive?.structure)||
+      reference.resourceId!==e.pair.questionId||reference.version!==e.pair.questionVersion||before.archive.number!==e.number||
+      e.structure.section!==e.section||e.question.batchId!=='structure:'+reference.generation||e.question.ordinal!==e.structure.page||
+      e.questionSection||removedConflict||e.slotRecoveryPolicy!==undefined)throw Error('source_changed');
+    const key=JSON.stringify(e.structure);
+    if(!checkedSections.has(key)){await this.checkStructureScope(before,e.structure);checkedSections.add(key);}
+   }else{
+    const question=await this.host.receipt(e.question.batchId,e.question.ordinal);
+    if((removedConflict||e.slotRecoveryPolicy!==undefined)&&(e.slotRecoveryPolicy!==PRINTED_FILL_SLOTS||!canResolveBookFillConflict(before,question,entry)||after.archive?.state!=='book_enriched'||JSON.stringify(after.archive.issues)!==JSON.stringify(before.archive!.issues.filter(i=>i!=='answer_conflict'))))throw Error('source_changed');
+    if(question.firstSha!==before.archive?.ai?.firstSha||question.finalSha!==before.archive?.ai?.finalSha||question.imageSha!==before.archive?.ai?.imageSha||question.unit.pageSource?.resourceId!==e.pair.questionId||question.unit.pageSource.version!==e.pair.questionVersion)throw Error('source_changed');
+    if(e.questionSection){const key=JSON.stringify([e.question,e.questionSection]);if(!checkedSections.has(key)){
+     const scope=questionSection(before,question,bookAnswerPage(question.first,question.first).entries,bookAnswerPage(question.final,question.final).entries,e.questionSection,e.lookupPolicy);
+     if(!scope.context||scope.section!==e.section)throw Error('source_changed');await this.sections.validate(e.questionSection,question);checkedSections.add(key);
+    }}
+   }
    if(source){
     const old=before.document,applied=after.document;
     if(!isCompleteQuestionDocument(old)||!applied||!validQuestionDocument(applied)||![QUESTION_DOCUMENT_BOOK_SCHEMA,QUESTION_DOCUMENT_WEB_SCHEMA].includes(applied.schemaVersion as typeof QUESTION_DOCUMENT_BOOK_SCHEMA)||old[role].origin==='book_extracted'||JSON.stringify(source[role])!==JSON.stringify(bookDocumentRole(row.id,q[role],e,receipt,entry.quote))||JSON.stringify(applied[role])!==JSON.stringify(source[role])||JSON.stringify(old.source)!==JSON.stringify(applied.source)||JSON.stringify(old.blocks)!==JSON.stringify(applied.blocks)||!isCompleteQuestionDocument(applied)||JSON.stringify(old.context)!==JSON.stringify(applied.context))throw Error('source_changed');

@@ -292,6 +292,28 @@ await check('An explicitly linked answer book retains original-page transcriptio
 await check('Legacy answer first_saved units resume their original schema and leave the immutable first pass unchanged',async()=>{
  const f=fixture('blank');try{await f.init();const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.input.version,answerId:f.input.resourceId,answerVersion:f.input.version,revision:1};f.repo.books.role=async()=>role;const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);delete unit.bookPagePolicy;const first=JSON.stringify({schemaVersion:pageSchema,outcome:'no_questions',questions:[],pageText:'第十三章 素养基础测试卷\n1. D 原文解析。',pageIssues:[]}),image=Buffer.from('controlled-owned-image'),imageSha=sha(image);f.db.prepare("UPDATE material_ai_units SET input_json=?,status='first_saved',first_json=?,image_sha=?").run(JSON.stringify(unit),first,imageSha);f.db.prepare('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64) VALUES(?,1,?,?,?)').run(batch,imageSha,'image/png',image.toString('base64'));f.db.prepare('UPDATE material_ai_batches SET calls=1').run();f.repo.runtime.complete=async input=>{f.state.calls++;assert.equal(input.bookPagePolicy,undefined);assert.equal(input.answerBook,true);assert.equal(JSON.stringify(input.previous),first);return first;};await f.repo.drain();assert.equal(f.state.calls,1);assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,first);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches').get().calls,2);const view=await f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:batch,ordinal:1});assert.equal(view.bookAnswers.policy,'section-number-two-pass.v1');assert.equal(view.bookAnswers.entries[0].answer,'D');}finally{f.db.close();}
 });
+await check('A dense answer book freezes the whole original page, independently of retrieval chunks and with the same privacy gate',async()=>{
+ const f=fixture('complete');
+ try{
+  await f.init();
+  const chunk=f.db.prepare("INSERT INTO resource_chunks VALUES(?,?,1,0,?,'检索切块')");
+  for(let i=1;i<48;i++)chunk.run('chunk_'+randomUUID(),f.id,i);
+  await assert.rejects(f.repo.create(f.input),/unit_too_large/);
+  const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.version,answerId:f.id,answerVersion:f.version,revision:1};
+  f.repo.books.role=async()=>role;
+  const batch=await f.repo.create(f.input);
+  const unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);
+  assert.deepEqual(unit.sources,[]);
+  const page=JSON.parse(f.db.prepare('SELECT result_json FROM material_pdf_pages').get().result_json);
+  assert.equal(unit.text,page.text);
+  assert.equal(unit.pageSource.resourceId,f.id);
+  f.db.prepare('UPDATE resource_chunks SET contains_personal_data=1 WHERE chunk_index=47').run();
+  await assert.rejects(f.repo.create(f.input),/privacy_blocked/);
+  await f.repo.drain();
+  assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'privacy_blocked');
+  assert.equal(f.state.calls,0);
+ }finally{f.db.close();}
+});
 await check('New answer responses cannot downgrade or mix policies; malformed policy is rejected without a paid call',async()=>{
  for(const mode of ['forged','downgrade','saved_mix']){const f=fixture('blank');try{await f.init();const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.input.version,answerId:f.input.resourceId,answerVersion:f.input.version,revision:1};f.repo.books.role=async()=>role;const batch=await f.repo.create(f.input);f.repo.runtime.complete=async()=>{f.state.calls++;return JSON.stringify({schemaVersion:pageSchema,outcome:'no_questions',pageText:'第十三章 素养基础测试卷\n1.D 原文。',pageIssues:[],questions:[]});};if(mode==='forged'){const unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);unit.bookPagePolicy='future';f.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));}else if(mode==='saved_mix'){const first=JSON.stringify({schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]});f.db.prepare("UPDATE material_ai_units SET status='first_saved',first_json=?").run(first);}await f.repo.drain();assert.equal(await f.question(),undefined);assert.equal(f.state.calls,mode==='downgrade'?1:0);assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'failed');await f.repo.drain();assert.equal(f.state.calls,mode==='downgrade'?1:0);}finally{f.db.close();}}
 });
