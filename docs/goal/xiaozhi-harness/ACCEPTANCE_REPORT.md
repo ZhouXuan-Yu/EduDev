@@ -1,5 +1,13 @@
 # 独立验收记录
 
+## 2026-11-19 能力状态与真实待审依赖
+
+UI-09 已实现。Terra 在冻结构建操作真实后台 Electron，核对“已安装、满足当前能力要求、待核验、需要授权、当前不可用”。实际 Task 的精确依赖从审批收件箱拒绝后，能力状态刷新，未新增授权，重启时原审批仍为拒绝。4/4、真实模型请求 0 次。另以两个合成 Registry Provider 验证缺必需项会被排除，缺可选项会标为部分可用，页面可展开查看缺口。真实 Provider 授权与执行、C1/C2 的其余场景继续复验。[独立审批证据](evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md) · [必需和可选缺口](evidence/phase7/pending-dependency-20261119/terra-c1-conclusion.md)。
+
+## 2026-11-19 当前构建 P0 专项
+
+独立 Sol 在冻结构建的当前源码运行五套机制测试 59/59。A-P0-01 已实现，正常对话沿唯一 Pi Runtime。A-P0-09 已实现，当前 Journal/冷启动 25/25 及同写入围栏真实 Host 归档共同验证旧代写入拒绝。A-P0-02/07 已补源码机制证据，系统状态等待当前构建的动态 MCP、Extension 负例。固定矩阵 73/89 已有通过证据。[源码与机制核查](evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md)。
+
 ## 2026-11-19 真实模型连接预检
 
 使用合成题完成 Q1 A/B 预检。旧版首轮在响应完成后被采集器判定流式读回失败，原失败保留。采集器增加了对 SSE 完结帧的记录，随后同批旧版和新版均完成实际 HTTP 请求、Run 归属核对和 SQLite 冷读回。协议专项 10/10。累计 3/200，197 次可用，未决闸门记录 0。正式 ABBA 盲评、联网时延和任务质量仍待验收。固定矩阵仍为 70/89 阶段范围通过。[预检证据](evidence/phase8/connection-preflight-20261119.json)。

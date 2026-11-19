@@ -1,0 +1,95 @@
+{
+  "paidCalls": 0,
+  "errors": [],
+  "texts": [
+    "合成缺口核验 1.0.0+bf8b322e1af9\n\n来源 native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana · 登记能力 · 许可证 未知，需核对\n\n安装\n未核对\n核验\n已核验\n任务授权\n需任务核对\n可用性\n部分能力可用\n\n缺少 1 项可选能力\n\n调用范围 需核对权限详情\n\n来源与核验详情",
+    "合成缺口核验 1.0.0+bf8b322e1af9\n\n来源 native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana · 登记能力 · 许可证 未知，需核对\n\n安装\n未核对\n核验\n已核验\n任务授权\n需任务核对\n可用性\n当前不可用\n\n缺少 2 项必需能力\n\n缺少 1 项可选能力\n\n调用范围 需核对权限详情\n\n缺少必需能力；需核对任务条件\n\n来源与核验详情"
+  ],
+  "summary": {
+    "schemaVersion": 1,
+    "asOf": "2026-11-19T08:56:38.880Z",
+    "items": [
+      {
+        "id": "registry:edu.fixture.c1:mcp.fixture.c1-optional",
+        "name": "合成缺口核验",
+        "sourceKind": "registry",
+        "capabilityId": "edu.fixture.c1",
+        "providerId": "mcp.fixture.c1-optional",
+        "version": "1.0.0+bf8b322e1af9",
+        "origin": "registered",
+        "source": "native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana",
+        "sourceHash": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+        "schemaHash": null,
+        "license": null,
+        "installed": "unknown",
+        "verification": "verified",
+        "authorization": "task_check_required",
+        "availability": "partial",
+        "requiredMissing": [],
+        "optionalMissing": [
+          "mime"
+        ],
+        "reasons": [],
+        "risk": [
+          "workspace.file.metadata"
+        ],
+        "verifiedAt": "2026-11-12T00:00:00.000Z",
+        "expiresAt": null
+      },
+      {
+        "id": "registry:edu.fixture.c1:mcp.fixture.c1-required",
+        "name": "合成缺口核验",
+        "sourceKind": "registry",
+        "capabilityId": "edu.fixture.c1",
+        "providerId": "mcp.fixture.c1-required",
+        "version": "1.0.0+bf8b322e1af9",
+        "origin": "registered",
+        "source": "native-artifact:bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274#hana",
+        "sourceHash": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
+        "schemaHash": null,
+        "license": null,
+        "installed": "unknown",
+        "verification": "verified",
+        "authorization": "task_check_required",
+        "availability": "blocked",
+        "requiredMissing": [
+          "file_metadata",
+          "mime_required"
+        ],
+        "optionalMissing": [
+          "mime"
+        ],
+        "reasons": [
+          "missing_required",
+          "conditional_task_check"
+        ],
+        "risk": [
+          "workspace.file.metadata"
+        ],
+        "verifiedAt": "2026-11-12T00:00:00.000Z",
+        "expiresAt": null
+      }
+    ],
+    "total": 89,
+    "matched": 2,
+    "counts": {
+      "registered": 87,
+      "candidate": 1,
+      "installed": 1
+    },
+    "nextCursor": null,
+    "partial": false,
+    "unavailableCount": 0,
+    "sourceFailures": [],
+    "scanned": 89,
+    "kind": "capabilities",
+    "context": {
+      "state": "none",
+      "sessionId": null,
+      "taskId": null,
+      "requirementsVersion": null
+    },
+    "registryRevision": 87
+  },
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r.texts.some(x=>x.includes('当前不可用')&&x.includes('缺少 1 项必需能力')))\n\n    at file:///C:/Users/ZhouXuan/AppData/Local/Temp/phase7-terra-c1-ui.mjs:1:2410"
+}

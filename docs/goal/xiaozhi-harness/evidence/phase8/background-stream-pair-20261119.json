@@ -1,0 +1,317 @@
+{
+  "date": "2026-11-19",
+  "baselineA": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+  "baselineB": "f9546eb",
+  "mode": "same-machine background Electron paired loopback runs; same script, workload, readiness and viewport",
+  "cases": [
+    {
+      "label": "A",
+      "pass": true,
+      "checks": [
+        {
+          "name": "Provider reasoning grows visibly before terminal state",
+          "pass": true
+        },
+        {
+          "name": "Actual original Pi UI handles one fixture run and terminal stop",
+          "pass": true
+        },
+        {
+          "name": "Reasoning and final have live renderer RAF samples and trusted input expansion scroll events",
+          "pass": true
+        },
+        {
+          "name": "Fixture transport remains loopback with a synthetic credential and no hidden retry",
+          "pass": true
+        },
+        {
+          "name": "SQLite run identity and renderer error evidence are retained",
+          "pass": true
+        }
+      ],
+      "paidCalls": 0,
+      "window": {
+        "main": {
+          "bounds": {
+            "x": 600,
+            "y": 314,
+            "width": 1366,
+            "height": 768
+          },
+          "contentBounds": {
+            "x": 600,
+            "y": 314,
+            "width": 1366,
+            "height": 768
+          }
+        },
+        "renderer": {
+          "innerWidth": 1366,
+          "innerHeight": 768,
+          "devicePixelRatio": 1
+        },
+        "launchSwitch": "--force-device-scale-factor=1"
+      },
+      "workload": {
+        "reasoningChunks": 240,
+        "finalChunks": 320,
+        "intervalMs": 100,
+        "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+        "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+      },
+      "buildUnchanged": true,
+      "expectedBuiltFiles": 458,
+      "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+      "preparation": {
+        "submitEpochMs": 1795078029593.2998,
+        "mainFetchEpochMs": 1795078034825.9487,
+        "fixtureEpochMs": 1795078034831.7446,
+        "submitToMainFetchMs": 5232.64892578125,
+        "submitToFixtureMs": 5238.44482421875,
+        "clockOrderingValid": true,
+        "clock": "Separate process performance.timeOrigin + performance.now Unix epoch anchors. Cross-process calibration uncertainty applies."
+      },
+      "reasoning": {
+        "raf": {
+          "count": 75,
+          "meanMs": 352.9226666666667,
+          "medianMs": 6.19999999999709,
+          "maximumMs": 1006
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "finalAnswer": {
+        "raf": {
+          "count": 35,
+          "meanMs": 577.4428571428572,
+          "medianMs": 1005.5,
+          "maximumMs": 1006.1999999999971
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "interactions": [
+        {
+          "id": "submit",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 408.4000000022352,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-input",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 981.5999999977648,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-expand",
+          "trusted": true,
+          "eventToChangeMs": 40.70000000298023,
+          "eventToFrameMs": 998.7000000029802,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-scroll",
+          "trusted": true,
+          "eventToChangeMs": 1001.0999999977648,
+          "eventToFrameMs": 2003,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-input",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 975.1999999992549,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-expand",
+          "trusted": true,
+          "eventToChangeMs": 27.5,
+          "eventToFrameMs": 1003.8999999985099,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-scroll",
+          "trusted": true,
+          "eventToChangeMs": 1005.6999999992549,
+          "eventToFrameMs": 2011.199999999255,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-stop",
+          "trusted": true,
+          "eventToChangeMs": 150.90000000223517,
+          "eventToFrameMs": 1034.4000000022352,
+          "terminalStatus": "interrupted"
+        }
+      ]
+    },
+    {
+      "label": "B",
+      "pass": true,
+      "checks": [
+        {
+          "name": "Provider reasoning grows visibly before terminal state",
+          "pass": true
+        },
+        {
+          "name": "Actual original Pi UI handles one fixture run and terminal stop",
+          "pass": true
+        },
+        {
+          "name": "Reasoning and final have live renderer RAF samples and trusted input expansion scroll events",
+          "pass": true
+        },
+        {
+          "name": "Fixture transport remains loopback with a synthetic credential and no hidden retry",
+          "pass": true
+        },
+        {
+          "name": "SQLite run identity and renderer error evidence are retained",
+          "pass": true
+        }
+      ],
+      "paidCalls": 0,
+      "window": {
+        "main": {
+          "bounds": {
+            "x": 600,
+            "y": 314,
+            "width": 1366,
+            "height": 768
+          },
+          "contentBounds": {
+            "x": 600,
+            "y": 314,
+            "width": 1366,
+            "height": 768
+          }
+        },
+        "renderer": {
+          "innerWidth": 1366,
+          "innerHeight": 768,
+          "devicePixelRatio": 1
+        },
+        "launchSwitch": "--force-device-scale-factor=1"
+      },
+      "workload": {
+        "reasoningChunks": 240,
+        "finalChunks": 320,
+        "intervalMs": 100,
+        "reasoningText": "合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。合成流式测量，核对已给条件和来源，保留教师确认与实际结果。\n",
+        "finalText": "这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。这是一段合成课堂说明，用于比较同一负载的流式渲染与交互。核对条件、保持清晰，并检查实际输出。"
+      },
+      "buildUnchanged": true,
+      "expectedBuiltFiles": 481,
+      "outSha256": "0a8c18e8201b58b84c63b9acc7bb14208f65ab865b3f18e2125c7f46cde247f1",
+      "preparation": {
+        "submitEpochMs": 1795078087396.9,
+        "mainFetchEpochMs": 1795078091120.3748,
+        "fixtureEpochMs": 1795078091124.4426,
+        "submitToMainFetchMs": 3723.474853515625,
+        "submitToFixtureMs": 3727.542724609375,
+        "clockOrderingValid": true,
+        "clock": "Separate process performance.timeOrigin + performance.now Unix epoch anchors. Cross-process calibration uncertainty applies."
+      },
+      "reasoning": {
+        "raf": {
+          "count": 75,
+          "meanMs": 339.5653333333333,
+          "medianMs": 6.100000000002183,
+          "maximumMs": 1006
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "finalAnswer": {
+        "raf": {
+          "count": 31,
+          "meanMs": 715.1903225806452,
+          "medianMs": 1004.7999999999956,
+          "maximumMs": 1013.0999999999985
+        },
+        "longTasks": {
+          "count": 0,
+          "meanMs": null,
+          "medianMs": null,
+          "maximumMs": null
+        }
+      },
+      "interactions": [
+        {
+          "id": "submit",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 471.0999999977648,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-input",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 986.6999999992549,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-expand",
+          "trusted": true,
+          "eventToChangeMs": 29.699999999254942,
+          "eventToFrameMs": 996.1000000014901,
+          "terminalStatus": null
+        },
+        {
+          "id": "reasoning-scroll",
+          "trusted": true,
+          "eventToChangeMs": 181.89999999850988,
+          "eventToFrameMs": 1004.8999999985099,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-input",
+          "trusted": true,
+          "eventToChangeMs": null,
+          "eventToFrameMs": 990.8000000007451,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-expand",
+          "trusted": true,
+          "eventToChangeMs": 14.700000002980232,
+          "eventToFrameMs": 1011.7000000029802,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-scroll",
+          "trusted": true,
+          "eventToChangeMs": 46.80000000074506,
+          "eventToFrameMs": 1004.3000000007451,
+          "terminalStatus": null
+        },
+        {
+          "id": "final-stop",
+          "trusted": true,
+          "eventToChangeMs": 168.89999999850988,
+          "eventToFrameMs": 1003.8999999985099,
+          "terminalStatus": "interrupted"
+        }
+      ]
+    }
+  ],
+  "limits": "A single pair. Chromium throttles many background RAF intervals to about one second. Foreground responsiveness and service latency are outside this evidence."
+}

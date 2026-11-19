@@ -1,0 +1,88 @@
+{
+  "at": "2026-11-19T08:53:11.935Z",
+  "expectedOut": "0a8c18e8201b58b84c63b9acc7bb14208f65ab865b3f18e2125c7f46cde247f1",
+  "out": {
+    "count": 481,
+    "sha256": "0a8c18e8201b58b84c63b9acc7bb14208f65ab865b3f18e2125c7f46cde247f1"
+  },
+  "outMatch": true,
+  "parity": [
+    {
+      "phase": 5,
+      "count": 96,
+      "changed": [
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-contract.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/provider-snapshots.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/runtime.ts",
+        "apps/desktop/src/main/xiaozhi-agent/events/journal.ts",
+        "apps/desktop/src/main/xiaozhi-agent/events/native-tail.ts",
+        "apps/desktop/src/main/xiaozhi-agent/events/recovery-readback.ts",
+        "apps/desktop/src/main/xiaozhi-agent/extensions/package-manager.ts",
+        "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/current.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/lease.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/network.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionInput.cs",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/SessionOptions.cs",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/runtime.ts",
+        "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+        "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/continuation.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/coordinator.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/teacher-actions.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "count": 127,
+      "changed": [
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/events/recovery-readback.ts",
+        "apps/desktop/src/main/xiaozhi-agent/extensions/package-manager.ts",
+        "apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/NativeSandbox.cs",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/xiaozhi-sandbox.exe",
+        "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts"
+      ]
+    }
+  ],
+  "archives": [
+    {
+      "phase": 5,
+      "file": "docs/goal/xiaozhi-harness/evidence/phase5/final/independent-gate5-evidence.zip",
+      "expected": "df162c5a14be0601e1a9bf5e8a231c88e80b90705e2c8f69a94f381e7490eebe",
+      "actual": "df162c5a14be0601e1a9bf5e8a231c88e80b90705e2c8f69a94f381e7490eebe"
+    },
+    {
+      "phase": 6,
+      "file": "docs/goal/xiaozhi-harness/evidence/phase6/final/independent-gate6-evidence.zip",
+      "expected": "c46a4a8ab44f5773079a028f9561be4bd37c662b7e8d06951af429f4c1099ca2",
+      "actual": "c46a4a8ab44f5773079a028f9561be4bd37c662b7e8d06951af429f4c1099ca2"
+    }
+  ]
+}

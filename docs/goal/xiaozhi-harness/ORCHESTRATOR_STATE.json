@@ -473,6 +473,8 @@
     "streamRetest": "evidence/phase7/implementation-resume-20261119/stream-final-report.json",
     "latestUi": "evidence/phase7/implementation-resume-20261119/workbench-final-ui-report.json",
     "latestScopedReview": "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
+    "ui09ScopedPass": "evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md",
+    "c1MissingFeaturesProbe": "evidence/phase7/pending-dependency-20261119/terra-c1-conclusion.md",
     "finalLayoutRendererSha256": "4ddba5f7d6a41e40380147de98153f291eeeba1cf40ff05949c80cf1579a2aeb"
   },
   "phase7AcquisitionRecovery": {
@@ -500,5 +502,15 @@
     "featureEvidence": "evidence/phase8/cached-profiling-preparation-20261119/production-cache-checkpoint.json",
     "sameTaskPrepareFinding": "Original Host now passes exact Task-scope approval continuation and cold reopen; single-operation scope retains its boundary.",
     "runtimePaidCalls": 0
+  },
+  "phase8StreamBackgroundPair": {
+    "status": "TWO_BUILDS_PASS_SCOPED_FIXTURE_FOREGROUND_PERFORMANCE_PENDING",
+    "evidence": "evidence/phase8/background-stream-pair-20261119.json",
+    "realPaidCalls": 0
+  },
+  "phase8P0CurrentSource": {
+    "status": "TWO_PASS_TWO_PENDING_FULL_PROVIDER_RUNTIME_PROBES",
+    "mechanismChecksPassed": 59,
+    "evidence": "evidence/phase8/p0-current-source-20261119/P0_SOURCE_AND_EVIDENCE_REVIEW.md"
   }
 }

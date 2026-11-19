@@ -1,0 +1,27 @@
+{
+  "paidCalls": 0,
+  "errors": [],
+  "checks": [
+    {
+      "name": "real_pending_dependency_current_task_visible",
+      "status": "PASS",
+      "required": [
+        "artifact:xiartifact_e9fe9851ff24b2479da1900ff81c2be5363e3186b6efccecfaa2d14473b4a2f6",
+        "candidate:xicandidate_8e249a5b3b05106cf553c5698448e65d00c48af78ff8448df996d5a9e7613a76"
+      ]
+    },
+    {
+      "name": "reject_exact_request_no_task_grant",
+      "status": "PASS"
+    },
+    {
+      "name": "rejected_scope_removed_from_current_task_projection",
+      "status": "PASS"
+    },
+    {
+      "name": "rejected_cold_readback",
+      "status": "PASS"
+    }
+  ],
+  "success": true
+}

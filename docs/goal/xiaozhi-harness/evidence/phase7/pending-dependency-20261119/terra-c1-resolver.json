@@ -1,0 +1,63 @@
+{
+  "fixtures": [
+    {
+      "provider": "mcp.fixture.c1-required",
+      "evidence": []
+    },
+    {
+      "provider": "mcp.fixture.c1-optional",
+      "evidence": [
+        "file_metadata",
+        "mime_required"
+      ]
+    }
+  ],
+  "request": {
+    "capabilityId": "edu.fixture.c1",
+    "contractVersion": "1.0.0",
+    "required": [],
+    "optional": [],
+    "conditions": [],
+    "localOnly": true,
+    "platform": "win32",
+    "budget": {
+      "latencyMs": 30000,
+      "resourceUnits": 1
+    }
+  },
+  "result": {
+    "capabilityId": "edu.fixture.c1",
+    "status": "partial",
+    "selectedProviders": [
+      {
+        "providerId": "mcp.fixture.c1-optional",
+        "providerVersion": "1.0.0+bf8b322e1af9",
+        "contractVersion": "1.0.0",
+        "level": "partial",
+        "missingRequirements": [
+          "mime"
+        ],
+        "limitations": [
+          "missing:mime"
+        ]
+      }
+    ],
+    "alternatives": [],
+    "acceptedLimitations": [
+      "missing:mime"
+    ],
+    "excludedProviders": [
+      {
+        "providerId": "mcp.fixture.c1-required",
+        "reasons": [
+          "missing_required"
+        ],
+        "missingRequirements": [
+          "file_metadata"
+        ]
+      }
+    ],
+    "blockedReasons": [],
+    "registryRevision": 87
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "paidCalls": 0,
+  "errors": [],
+  "text": "查找可用能力 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取工具目录\n\n来源与核验详情",
+  "summary": {
+    "ok": true,
+    "value": {
+      "schemaVersion": 1,
+      "asOf": "2026-11-19T08:51:01.661Z",
+      "items": [
+        {
+          "id": "registry:edu.core.tool.find_education_tools:edu.native.tool.find_education_tools",
+          "name": "find_education_tools",
+          "sourceKind": "registry",
+          "capabilityId": "edu.core.tool.find_education_tools",
+          "providerId": "edu.native.tool.find_education_tools",
+          "version": "1.0.0+cb1d3014c683055b",
+          "origin": "registered",
+          "source": "edudev:tool:find_education_tools",
+          "sourceHash": "cb1d3014c683055bb01921467164a2ceaded0eff84e6d54b64b9e723fd29c063",
+          "schemaHash": null,
+          "license": null,
+          "installed": "bundled",
+          "verification": "verified",
+          "authorization": "task_check_required",
+          "availability": "full",
+          "requiredMissing": [],
+          "optionalMissing": [],
+          "reasons": [],
+          "risk": [
+            "registered_catalog"
+          ],
+          "verifiedAt": "2026-11-19T08:46:41.664Z",
+          "expiresAt": null
+        }
+      ],
+      "total": 87,
+      "matched": 1,
+      "counts": {
+        "registered": 85,
+        "candidate": 1,
+        "installed": 1
+      },
+      "nextCursor": null,
+      "partial": false,
+      "unavailableCount": 0,
+      "sourceFailures": [],
+      "scanned": 87,
+      "kind": "capabilities",
+      "context": {
+        "state": "current",
+        "sessionId": "aisession_e0fae6b4-f998-4352-9e22-7fcff5e78423",
+        "taskId": "xitask_4786b7ca4fc3758e1bab0ff162daad1885ed3082ff869efb2c0aa26bd638a9bc",
+        "requirementsVersion": 1
+      },
+      "registryRevision": 85
+    }
+  },
+  "status": "PASS"
+}
