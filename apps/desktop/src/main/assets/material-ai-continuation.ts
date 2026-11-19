@@ -1,4 +1,4 @@
-import {PAGE_CONTINUATION,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,continuationPrefix,continuationChoicePrefix,continuationFirstSubquestionPrefix,continuationSentencePrefix,pageContinuation,pageContinuationTextProof,validPageContinuation,type PageContinuation,type ContinuationScope} from '../../shared/material-ai-continuation';
+import {PAGE_CONTINUATION,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,continuationPrefix,continuationChoicePrefix,continuationFirstSubquestionPrefix,continuationSentencePrefix,continuationCaptionPrefix,PAGE_CONTINUATION_CAPTION,isSentenceContinuation,pageContinuation,pageContinuationTextProof,validPageContinuation,type PageContinuation,type ContinuationScope} from '../../shared/material-ai-continuation';
 import type {ContinuationTextInspector} from './material-ai-continuation-text';
 import type {AiBatchInput,AiUnitInput} from '../../shared/material-ai';
 import type {FragmentPageSource} from '../../shared/material-ai-page-fragments';
@@ -10,13 +10,15 @@ import {createHash} from 'node:crypto';
 
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 type Task={folderId?:string;revision?:number};
-export async function preparePageContinuation(host:Host,input:AiBatchInput,source:MaterialPageSource,text:string,current:FragmentPageSource,next:FragmentPageSource,render:PageCropRenderer,raster:(source:MaterialPageSource,signal:AbortSignal)=>Promise<{data:string;mime:string}>,scope:ContinuationScope,signal:AbortSignal,inspectText?:ContinuationTextInspector,lead?:'choices'|'first-subquestion'|'sentence'):Promise<PageContinuation|undefined>{
+export async function preparePageContinuation(host:Host,input:AiBatchInput,source:MaterialPageSource,text:string,current:FragmentPageSource,next:FragmentPageSource,render:PageCropRenderer,raster:(source:MaterialPageSource,signal:AbortSignal)=>Promise<{data:string;mime:string}>,scope:ContinuationScope,signal:AbortSignal,inspectText?:ContinuationTextInspector,lead?:'choices'|'first-subquestion'|'sentence'|'caption'):Promise<PageContinuation|undefined>{
  signal.throwIfAborted();const following=await readAiPageSource(host,input.resourceId,input.version,source.page+1);
  if(following.status!=='complete'||following.source.generation!==source.generation)return;
  const choice=lead==='choices'?continuationChoicePrefix(text,current.blockTexts,following.text,next.blocks,next.blockTexts):undefined;
  const first=lead==='first-subquestion';
- const sentence=lead==='sentence'?continuationSentencePrefix(current,text,next,following.selectedText,source.page,following.totalPages):undefined;
- if(lead==='sentence'&&!sentence)return;
+ const caption=lead==='caption';
+ const sentence=caption?continuationCaptionPrefix(current,text,next,following.selectedText,source.page):
+  lead==='sentence'?continuationSentencePrefix(current,text,next,following.selectedText,source.page,following.totalPages):undefined;
+ if((lead==='sentence'||caption)&&!sentence)return;
  const plan=sentence??(first?continuationFirstSubquestionPrefix(text,current.blockTexts,following.selectedText,next.blocks,next.blockTexts):choice??continuationPrefix(text,current.blockTexts,following.text,next.blocks,next.blockTexts));
  if(!plan)return;
  if(!host.root)throw Error('storage_unavailable');
@@ -24,13 +26,13 @@ export async function preparePageContinuation(host:Host,input:AiBatchInput,sourc
  if(original.mime!=='image/png'||!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==original.data||createHash('sha256').update(bytes).digest('hex')!==next.blocks.rasterSha256)throw Error('source_changed');
  const {dataUrl,...raw}=await render(following.source,plan.box,signal),image=checkedPageCropImage(raw,following.source,plan.box);
  const owned={number:plan.number,nextNumber:plan.nextNumber,source:following.source,blocks:next.blocks,blockTexts:next.blockTexts,blockIds:plan.blockIds,text:plan.text,image,scope};
- let value:PageContinuation=sentence?{...owned,schemaVersion:PAGE_CONTINUATION_SENTENCE,preceding:sentence.preceding}
+ let value:PageContinuation=sentence?{...owned,schemaVersion:caption?PAGE_CONTINUATION_CAPTION:PAGE_CONTINUATION_SENTENCE,preceding:sentence.preceding}
   :{...owned,schemaVersion:first?PAGE_CONTINUATION_FIRST:choice?PAGE_CONTINUATION_CHOICES:PAGE_CONTINUATION};
  const prefixBytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
  await new QuestionAssets(host.root).put(image,prefixBytes,true,signal);
  if(!choice&&inspectText&&next.lines){
   const textProof=await inspectText(value,next.lines,prefixBytes,signal);
-  if(textProof)value=value.schemaVersion===PAGE_CONTINUATION_SENTENCE?{...value,textProof}:{...value,schemaVersion:first?PAGE_CONTINUATION_FIRST:PAGE_CONTINUATION_TEXT,textProof};
+  if(textProof)value=isSentenceContinuation(value)?{...value,textProof}:{...value,schemaVersion:first?PAGE_CONTINUATION_FIRST:PAGE_CONTINUATION_TEXT,textProof};
  }
  if(!validPageContinuation(value))throw Error('source_changed');
  return value;
@@ -49,10 +51,11 @@ export async function validatePageContinuation(host:Host,config:AiBatchInput,uni
  }
  const following=await validateAiPageSource(host,extra.source);
  let plan:ReturnType<typeof continuationPrefix>;
- if(extra.schemaVersion===PAGE_CONTINUATION_SENTENCE){
+ if(isSentenceContinuation(extra)){
   const preceding=await validateAiPageSource(host,source);
   if(preceding.status!=='complete'||following.status!=='complete'||preceding.totalPages!==following.totalPages)throw Error('source_changed');
-  const verified=continuationSentencePrefix(prompt,preceding.selectedText,extra,following.selectedText,source.page,following.totalPages);
+  const verified=extra.schemaVersion===PAGE_CONTINUATION_CAPTION?continuationCaptionPrefix(prompt,preceding.selectedText,extra,following.selectedText,source.page):
+   continuationSentencePrefix(prompt,preceding.selectedText,extra,following.selectedText,source.page,following.totalPages);
   if(!verified||JSON.stringify(verified.preceding)!==JSON.stringify(extra.preceding))throw Error('source_changed');
   plan=verified;
  }else{

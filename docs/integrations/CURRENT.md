@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 跨页正文与相邻题图归属
+
+PDFium、RapidOCR、PP-DocLayout 和原图独立复核继续沿用。OMNI_EDU_AI_CONTINUATION_CAPTION_SEAM=0 停止新发现，已存回执可按各自版本读回。
+
+详见 [本轮记录](../research/evidence/kb/20261119/caption-seam-continuation/README.md)。
+
 ## 2026-11-19 普通正文跨页续接
 
 沿既有 PDFium、RapidOCR、PP-DocLayout、DeepSeek 字面转录接口处理前后页，不增加模型轮次。

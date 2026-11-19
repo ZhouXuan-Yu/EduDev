@@ -9,7 +9,7 @@ import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,sourceCro
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
-import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,pageContinuationTextProof,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,continuationChoicesAgree,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
+import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,pageContinuationTextProof,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_CAPTION,isSentenceContinuation,continuationChoicesAgree,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees,continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
@@ -110,6 +110,23 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
 }
 const literalLines=(text:string)=>text.split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
 
+/** The title is an ownership anchor. Small labels inside an authenticated
+ * image are checked against a fresh crop read, which has more usable pixels. */
+function captionArtworkAgrees(caption:string,local:string,literal:string,preceding:string){
+ const title=aiTextSignature(caption),crop=aiTextSignature(local),read=aiTextSignature(literal);
+ if(title&&(!crop.endsWith(title)||!read.endsWith(title)))return false;
+ if(crop===read)return !!crop;
+ // The standalone zero must lead the horizontal tick sequence of named axes.
+ // Both original-image readings must still agree on all other chart labels.
+ if(!/\b(?:xOy|yOx)\b/u.test(preceding))return false;
+ const labels=literalLines(local);
+ const zero=labels.indexOf('0'),xAxis=/^x(?:\/\w+)?$/u,yAxis=/^y(?:\/\w+)?$/u;
+ if(zero<1||zero!==labels.lastIndexOf('0')||!xAxis.test(labels.at(-1)??'')||!yAxis.test(labels[0]))return false;
+ const ticks=labels.slice(zero+1,-1);
+ if(ticks.length<2||!ticks.every((line,i)=>/^[1-9]\d*$/u.test(line)&&(!i||Number(line)>Number(ticks[i-1]))))return false;
+ return aiTextSignature(labels.map(line=>line==='0'?'O':line).join('\n'))===read;
+}
+
 /** The source planner pins ordered blocks. Only whole independent figure
  * groups can contribute captions, and their local reading must still agree. */
 function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop,readings?:SourceCropReading[]){
@@ -121,13 +138,26 @@ function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop,readings?:Source
  const groups=owned.map(ids=>ids.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length)));
  if(JSON.stringify(groups.flat())!==JSON.stringify(extra.blockIds))return;
  const roles=continuationSubcrops(prompt)?sourceCropKinds(extra.blocks,groups):[];
+ const captionSeam=extra.schemaVersion===PAGE_CONTINUATION_CAPTION;
  const hints=new Map(extra.blockTexts.map(h=>[h.blockId,h.text]));
- const lines:string[]=[],local:string[]=[],captions=new Set<number>();
+ const lines:string[]=[],local:string[]=[],figures:string[]=[],captions=new Set<number>();
  for(const [i,{fragment,reading}]of next.entries()){
   if(!validCropQuality(fragment.quality)||!fragment.quality.clearEdges.every(Boolean))return;
   const printed=groups[i].flatMap(id=>literalLines(hints.get(id)??''));
   const text=reading?.text??fragment.quality.text;
+  if(captionSeam&&roles[i]!=='body'&&roles[i]!=='figure')return;
   if(roles[i]==='figure'){
+   if(captionSeam){
+    const title=groups[i].filter(id=>extra.blocks.blocks.find(b=>b.id===id)?.kind==='figure_title').map(id=>hints.get(id)).join('\n');
+    if(!reading||!captionArtworkAgrees(title,fragment.quality.text,text,extra.preceding.text))return;
+    printed.forEach((_,index)=>captions.add(lines.length+index));
+    lines.push(...printed);
+    // The text proof addresses the frozen layout receipt. Its diagram lines
+    // are skipped in the stem and independently verified above.
+    local.push(...printed);
+    figures.push(text);
+    continue;
+   }
    if(!printed.length&&isDiagramGroup(extra.blocks,groups[i])&&/^[\s_]{0,64}$/u.test(text))continue;
    // Both original-image readings may retain a label below the full-page OCR
    // detection threshold. The separate diagram and its literal words still
@@ -144,15 +174,16 @@ function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop,readings?:Source
   lines.push(...printed);
   if(text)local.push(text);
  }
- if(JSON.stringify(lines)!==JSON.stringify(literalLines(extra.text)))return;
- return {extra,lines,localText:local.join('\n'),captions};
+ if(JSON.stringify(lines)!==JSON.stringify(literalLines(extra.text))||captionSeam&&!figures.length)return;
+ return {extra,lines,localText:local.join('\n'),captions,figures};
 }
 
-function continuationFiguresAgree(question:AiImageQuestion,lines:string[],captions:ReadonlySet<number>){
- if(!captions.size)return true;
+function continuationFiguresAgree(question:AiImageQuestion,lines:string[],captions:ReadonlySet<number>,figures:string[]=[]){
+ if(!captions.size&&!figures.length)return true;
  if(!question.requiresImage||question.projection.figures.state!=='provided')return false;
  const description=continuationTextSignature(question.projection.figures.text);
- const printed=continuationTextSignature(lines.filter((_,i)=>captions.has(i)).join('\n'));
+ const printed=continuationTextSignature((figures.length?figures:lines.filter((_,i)=>captions.has(i))).join('\n'));
+ if(figures.length)return description===printed;
  const at=description.indexOf(printed);
  if(at<0)return false;
  const joined=(a:string,b:string)=>/[\p{Script=Latin}\p{N}]$/u.test(a)&&/^[\p{Script=Latin}\p{N}]/u.test(b);
@@ -193,7 +224,7 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
   :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
  if(!bodyAgrees)return false;
  if(extra?.number===number){
-  const sentence=extra.schemaVersion===PAGE_CONTINUATION_SENTENCE;
+  const sentence=isSentenceContinuation(extra);
   const literalPolicy=sentence||extra.schemaVersion===PAGE_CONTINUATION_FIRST;
   if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
    // Compare the source option seams before general question layout folding.
@@ -204,20 +235,20 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
    const literal=literalPolicy&&sourceContentEnabled(prompt)&&hasSourceReadings(final)?final.readings.find(row=>row.number===number)?.crops:undefined;
    if(sentence&&!literal)return false;
    const evidence=continuationEvidence(prompt,crop,literal);if(!evidence)return false;
-   const {lines,localText,captions}=evidence;
+   const {lines,localText,captions,figures}=evidence;
    const body=captions.size?lines.filter((_,i)=>!captions.has(i)).join('\n'):extra.text;
    // The visual comparison may fold Chinese/Latin spacing for display.
    // The continuation witness compares the saved literal readings instead.
    const literalQuestions=literalPolicy?[originalA!,rawB!]:[a,b];
    const preceding=sentence?continuationTextSignature(extra.preceding.text.slice(questionNumberPrefix(extra.preceding.text,number)?.[0].length??0)):'';
    if(literalQuestions.some(q=>{
-    if(!continuationFiguresAgree(q,lines,captions))return true;
+    if(!continuationFiguresAgree(q,lines,captions,figures))return true;
     let stem=q.stem;
     if(sentence){
      const joined=continuationTextSignature(stem);
      if(!preceding||!sentenceLiteralAgrees(preceding,joined.slice(0,preceding.length)))return true;
      stem=joined.slice(preceding.length);
-     if(!proof?.gaps.length)return !sentenceLiteralAgrees(extra.text,stem)||!sentenceLiteralAgrees(extra.text,localText);
+     if(!proof?.gaps.length)return !sentenceLiteralAgrees(body,stem)||!sentenceLiteralAgrees(extra.text,localText);
     }
     return proof?!continuationTextAgrees(extra.text,proof,stem,localText,captions,sentence)
      :!aiTextSignature(stem).endsWith(aiTextSignature(body))||(captions.size>0||literalPolicy)&&aiTextSignature(localText)!==aiTextSignature(extra.text);

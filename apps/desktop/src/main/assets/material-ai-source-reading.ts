@@ -2,7 +2,7 @@ import {FIGURE_LABEL_SPACING,equivalentFigureSpacing} from '../../shared/materia
 import {sourceMarkerText} from '../../shared/material-ai-source-markers';
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {CONTINUATION_BLOCK_PREFIX,sourceCropKinds} from '../../shared/material-ai-owned-crops';
-import {pageContinuation,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
+import {pageContinuation,PAGE_CONTINUATION_FIRST,isSentenceContinuation,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
 import {continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading,type SourceCropEdge} from '../../shared/material-ai-source-reading';
 import {questionNumberPrefix,type AiImageQuestion} from '../../shared/material-ai-image';
@@ -33,16 +33,16 @@ function readingMatchesCrop(reading:SourceCropReading,crop:NonNullable<PageCrop[
  * both independent readings may correct it only with exact prior page evidence. */
 function continuationCorroborates(fragment:NonNullable<PageCrop['fragments']>[number],number:string,prompt:AiPagePrompt|undefined,left:SourceCropReading,right:SourceCropReading){
  const extra=pageContinuation(prompt);
- if(!extra||extra.number!==number||extra.schemaVersion!==PAGE_CONTINUATION_FIRST&&extra.schemaVersion!==PAGE_CONTINUATION_SENTENCE)return false;
+ if(!extra||extra.number!==number||extra.schemaVersion!==PAGE_CONTINUATION_FIRST&&!isSentenceContinuation(extra))return false;
  const next=fragment.image.page===extra.source.page;
- const layout=next?extra:extra.schemaVersion===PAGE_CONTINUATION_SENTENCE&&prompt?.policy==='page-fragments.v3'&&fragment.image.page===extra.source.page-1?prompt:undefined;
- const ownership=next?extra.blockIds:extra.schemaVersion===PAGE_CONTINUATION_SENTENCE?extra.preceding.blockIds:[];
+ const layout=next?extra:isSentenceContinuation(extra)&&prompt?.policy==='page-fragments.v3'&&fragment.image.page===extra.source.page-1?prompt:undefined;
+ const ownership=next?extra.blockIds:isSentenceContinuation(extra)?extra.preceding.blockIds:[];
  if(!layout)return false;
  const ids=(fragment.blockIds||[fragment.blockId]).map(id=>next?(id.startsWith(CONTINUATION_BLOCK_PREFIX)?id.slice(CONTINUATION_BLOCK_PREFIX.length):''):id);
  if(!ids.length||ids.some(id=>!ownership.includes(id)))return false;
  if(layout.blocks.blocks.some(block=>ids.includes(block.id)&&['image','chart','figure_title'].includes(block.kind)))return false;
  const hint=continuationTextSignature(ids.map(id=>layout.blockTexts.find(block=>block.blockId===id)?.text||'').filter(Boolean).join('\n'));
- if(extra.schemaVersion===PAGE_CONTINUATION_SENTENCE)return !!hint&&continuationTextSignature(left.text)===continuationTextSignature(right.text)&&sentenceLiteralAgrees(hint,left.text);
+ if(isSentenceContinuation(extra))return !!hint&&continuationTextSignature(left.text)===continuationTextSignature(right.text)&&sentenceLiteralAgrees(hint,left.text);
  return !!hint&&continuationTextSignature(left.text)===hint&&continuationTextSignature(right.text)===hint;
 }
 /** A standalone layout caption can belong to an independently owned diagram.

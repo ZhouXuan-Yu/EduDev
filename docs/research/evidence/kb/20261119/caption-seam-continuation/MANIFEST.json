@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "8f73c5c0a10b21158e0909645135d3cd7003c02b6a70a648d47b131703266eec"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "946de4c7c284e8db074eba541d005f2e8f1834bb2924372609470193ddb6cde2"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "6fa3502ada81126e54e61f6a477ae664f02ed4ceedfaafe7acc92c64a3a1c7e2"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "7876e0eeb41e2a7b0431fc0fcd8ada0a09e0b5c96fd9a1e7200ce628bacbfb3a"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-caption-seam-boundaries.mjs",
+      "sha256": "5830e01f85e860e6ea60f9dab6ae45953f7f10d9b4ac45d25b5faf1621c9e7b3"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-choice-tail-electron.mjs",
+      "sha256": "529e5db5889b6d12bb2d9e415f47a1a59ede3edfef3a410c53824f6a77e52fab"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-continuation.ts",
+      "sha256": "e9ba59257a20bc3351049056bc713eacbe91ded4aa44a35e4b967975505344a4"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "sha256": "a26d649f5fd09336add678f4f5494704afa39d3f161e58b9eab55c2a10bef35e"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+      "sha256": "685924b04e2d746590a49a9405396aa36e2bcd49df7d183c1ebe73f08bd306ea"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "d501206e9f66d1816fd152dbaf3a9c1b496415536c465a411021c49b34c2743b"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "d442fc6909531cdc7c162f2a0a35b94c1c1145173c20f5fdcd0b5b957bdb5337"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-source-reading.ts",
+      "sha256": "48d2d592bd004ba0cf7fb5ef5c35051307908d6b5b0947fdfdfb2b5538fbfea9"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "9d9ec3d025bbdca7d1f0ec68b038ebf4cc2c12320609f7abe3f3c5dc5fbac543"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation.ts",
+      "sha256": "e6883e1450f3154911b2ab6e36b23a349e4fe98fcdc564384b8bb78b243ac35f"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-literal.ts",
+      "sha256": "1d844ffe520936438396bae6f4f1725ab5c59e2b07f45fcc43e83a80a5bc8aca"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "9a3c2da13305bbfdd011508ba2d791303841cec2ae63116c2906c14fddcf011e"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "a7738356e5891fd3986daf64a3cdf4634940512cc68110c5a31240233ec28716"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "0f9bb8c0425cde786d6a798739fd69a3d43882b8155f2783caedd227a502c001"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "75eaf52f2a9f5dd7ed4e7fe8c8b78c7f0b40365313de15fc2391cea17377e458"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "3d8c8a023d56a3975d0fc49471ccf14963fde9bca45e98a2399fd478eaf8af88"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "c0a6bc8639b9fe632de82df067f9b9e9b4854c5536b1dad7231dee5d7b41d03a"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "a8e95e0395a2d6972005048aaf8883671f34f3bc3ddcf37dae9e569fa9e0bd70"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "2ec0a6f690d3eb267f60b9cf0a28ba799a97b3023e814b2dfd2dd2f95896f0bf"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "11dedbcc2fc38af82e61ddb981b3a8437e2d8bf8d9769fe9f808b5283609121e"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "67fda46f8dcef27e3dc788db2ccba44b94400030a676bcc5f5a972d6adbc6a70"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "f1b709a7ff9e89c6e6268e1e420e0d1202d35233f4bf1a83a8cbff9b5956690b"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "34b7ae54a47354cc4d976208efb01586510913dde756063c0e32977f2cc1d675"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/caption-seam-continuation/README.md",
+      "sha256": "974880358d36e467dd62a5f5904008efe68930d3e5631d0a0fb8d8cf3b5ebb9d"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/caption-seam-continuation/summary.json",
+      "sha256": "8bde3a3bea1f9ff05abbe339e5556f7e3cdf5e35b47cf7cc5acc5ecb8beecf42"
+    }
+  ]
+}

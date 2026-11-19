@@ -4,7 +4,7 @@ import { parseAiPageResponse, type AiPagePrompt, type AiPageResponse } from './m
 import { SOURCE_CONTENT_RESPONSE, sourceContentEnabled, contentPartRoles } from './material-ai-source-content';
 import { sourceTextSignature } from './material-ai-source-reading';
 import { CONTINUATION_BLOCK_PREFIX, type SourceCropKind } from './material-ai-owned-crops';
-import { PAGE_CONTINUATION_SENTENCE, type PageContinuation } from './material-ai-continuation';
+import { isSentenceContinuation, PAGE_CONTINUATION_CAPTION, type PageContinuation } from './material-ai-continuation';
 import { validSourceParts, type SourcePart } from './question-source-content';
 import type { QuestionProjection } from './question-projection';
 import { assertLiteralQuestionIdentity, heldLiteralQuestion } from './material-ai-isolated-literal';
@@ -115,7 +115,7 @@ export function deriveLiteralPageResponse(raw: string, previous: AiPageResponse,
           parts, assessment, issues: crop.issues };
       });
       const bodyParts = crops.map(crop => crop.parts.filter(part => part.role === 'body').map(part => part.text).join(''));
-      const seam = continuation?.schemaVersion === PAGE_CONTINUATION_SENTENCE && continuation.number === question.number
+      const seam = isSentenceContinuation(continuation) && continuation.number === question.number
         ? owned.crops.findIndex(crop => crop.blockIds?.[0]?.startsWith(CONTINUATION_BLOCK_PREFIX)) : -1;
       let body = available ? bodyParts.filter(Boolean).join('\n').trim() : prior.stem;
       if (available && seam > 0) {
@@ -147,8 +147,9 @@ export function deriveLiteralPageResponse(raw: string, previous: AiPageResponse,
       if (figure.state === 'missing' && !issues.includes('incomplete_question')) issues.push('incomplete_question');
       if (literalFigure) {
         if (!requiresImage || !flat && figure.state !== 'provided') throw Error();
-        projection.figures = { state: figure.state === 'provided' ? 'provided' : 'missing', text: literalSignature(figure.text).includes(literalSignature(literalFigure))
-          ? figure.text : [figure.text, literalFigure].filter(Boolean).join('\n') };
+        const captionSeam = continuation?.schemaVersion === PAGE_CONTINUATION_CAPTION && continuation.number === question.number;
+        projection.figures = { state: figure.state === 'provided' ? 'provided' : 'missing', text: captionSeam ? literalFigure
+          : literalSignature(figure.text).includes(literalSignature(literalFigure)) ? figure.text : [figure.text, literalFigure].filter(Boolean).join('\n') };
       }
       const ownedText = literalSignature(crops.map(crop => crop.text).join('\n'));
       for (const role of ['answer', 'analysis'] as const) {

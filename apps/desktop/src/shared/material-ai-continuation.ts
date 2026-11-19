@@ -12,12 +12,16 @@ export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
 export const PAGE_CONTINUATION_CHOICES='page-continuation.choices.v1' as const;
 export const PAGE_CONTINUATION_FIRST='page-continuation.first-subquestion.v1' as const;
 export const PAGE_CONTINUATION_SENTENCE='page-continuation.sentence.v1' as const;
+export const PAGE_CONTINUATION_CAPTION='page-continuation.caption-seam.v1' as const;
 export const CONTINUATION_FIGURE_CROPS='layout-subcrops.v1' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
 type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
 type SentencePreceding={blockIds:string[];text:string};
-export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_FIRST;textProof?:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_SENTENCE;preceding:SentencePreceding;textProof?:ContinuationTextProof});
+type SentenceContinuation={schemaVersion:typeof PAGE_CONTINUATION_SENTENCE|typeof PAGE_CONTINUATION_CAPTION;preceding:SentencePreceding;textProof?:ContinuationTextProof};
+export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_FIRST;textProof?:ContinuationTextProof}|SentenceContinuation);
+const sentenceSchema=(schema:unknown)=>schema===PAGE_CONTINUATION_SENTENCE||schema===PAGE_CONTINUATION_CAPTION;
+export const isSentenceContinuation=(extra?:PageContinuation):extra is ContinuationBase&SentenceContinuation=>sentenceSchema(extra?.schemaVersion);
 const parent=/^[ \t]*(?:第[ \t]*(\d{1,5})[ \t]*题[ \t]*[:：]?|(\d{1,5})[.、．](?!\d))/gmu;
 const markers=(text:string)=>[...text.matchAll(new RegExp(parent))];
 const continuationStart=/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u;
@@ -152,6 +156,73 @@ export function continuationSentencePrefix(previous:FragmentPageSource,currentRa
  return {...rest,number:number(last),preceding:{blockIds,text}};
 }
 
+const numberedCaption=/^图[ \t]*(\d{1,4})(?:[：:、.．]|[ \t])[^\n]*$/u;
+const referencedFigures=(text:string)=>new Set([...text.matchAll(/图\s*(\d{1,4})(?![\d.．\-—－])/gu)].map(m=>m[1]));
+const uniqueFigureReference=(text:string,expected:string)=>{
+ const figures=referencedFigures(text);
+ return figures.size===1&&figures.has(expected);
+};
+function captionLead(raw:string){
+ const boundary=markers(raw)[0];if(!boundary)return;
+ const prefix=raw.slice(0,boundary.index).trim(),rows=lines(prefix);
+ const captions=rows.flatMap((row,index)=>{const match=numberedCaption.exec(row);return match?[{index,number:match[1]}]:[];});
+ if(captions.length!==2||captions[0].number===captions[1].number||captions[0].index<1||captions[1].index!==rows.length-1)return;
+ return rows.slice(captions[0].index+1,captions[1].index).some(row=>/^\p{Script=Han}.{8,}/u.test(row))?{prefix,nextNumber:number(boundary)}:undefined;
+}
+export const hasCaptionContinuationLead=(raw:string)=>!!captionLead(raw);
+
+function captionRegion(blocks:PageBlocks,hints:BlockTextHint[]){
+ const boundary=hints.findIndex(h=>markers(h.text)[0]?.index===0);
+ if(boundary<5||boundary>32)return;
+ const prefix=blocks.blocks.slice(0,boundary).filter(b=>!continuationMargins.has(b.kind));
+ const artwork=(b:PageBlocks['blocks'][number])=>b.kind==='image'||b.kind==='chart';
+ const [foreign,foreignCaption]=prefix;
+ const [figure,caption]=prefix.slice(-2),body=prefix.slice(2,-2);
+ if(!body.length||!artwork(foreign)||!artwork(figure)||foreignCaption.kind!=='figure_title'||caption.kind!=='figure_title'||body.some(b=>!proseKinds.has(b.kind)))return;
+ const lookup=new Map(hints.map(h=>[h.blockId,h.text])),textOf=(b:PageBlocks['blocks'][number])=>lookup.get(b.id)!;
+ const foreignNumber=numberedCaption.exec(textOf(foreignCaption))?.[1],figureNumber=numberedCaption.exec(textOf(caption))?.[1];
+ if(!foreignNumber||!figureNumber||foreignNumber===figureNumber)return;
+ for(const [art,label] of [[foreign,foreignCaption],[figure,caption]]){
+  if(label.box[1]<art.box[3]-.004||label.box[1]>art.box[3]+.035||Math.min(art.box[2],label.box[2])<=Math.max(art.box[0],label.box[0]))return;
+ }
+ if(foreignCaption.box[3]>=body[0].box[1]||body.at(-1)!.box[3]>figure.box[1]+.004||caption.box[3]>=blocks.blocks[boundary].box[1])return;
+ const prose=body.map(textOf).join('\n').trim();
+ if(!/^\p{Script=Han}/u.test(prose)||prose.length<12||!/[？?]$/u.test(prose)||lines(prose).some(line=>subquestion.test(line)))return;
+ const owned=prefix.slice(2),blockIds=owned.map(b=>b.id),text=owned.map(textOf).join('\n').trim();
+ if(new TextEncoder().encode(text).length>8192)return;
+ try{return {nextNumber:number(markers(hints[boundary].text)[0]),foreignNumber,figureNumber,bodyBox:body[0].box,
+  rawPrefix:prefix.map(textOf).join('\n'),blockIds,text,box:ownedPageFragmentGroups(blocks,blockIds,1)[0].box};}catch{return;}
+}
+
+/** A displaced opening figure is excluded only when an earlier parent claims
+ * its printed number and a different figure uniquely matches the open parent. */
+export function continuationCaptionPrefix(previous:FragmentPageSource,currentRaw:string,next:FragmentPageSource,nextRaw:string,page:number){
+ if(!validPageBlocks(previous.blocks)||!previous.blocks.ok||!validBlockTexts(previous.blockTexts,previous.blocks)||
+    !validPageBlocks(next.blocks)||!next.blocks.ok||!validBlockTexts(next.blockTexts,next.blocks))return;
+ const lead=captionLead(nextRaw);if(!lead)return;
+ const region=captionRegion(next.blocks,next.blockTexts);
+ if(!region||lead.nextNumber!==region.nextNumber||sentenceOwnershipKey(lead.prefix)!==sentenceOwnershipKey(region.rawPrefix))return;
+ const currentParents=markers(currentRaw),prior=currentParents.at(-2),last=currentParents.at(-1);
+ if(!prior||!last||Number(number(prior))+1!==Number(number(last))||Number(number(last))+1!==Number(region.nextNumber))return;
+ const layoutParents=previous.blockTexts.flatMap((hint,index)=>{const marker=markers(hint.text)[0];return marker?.index===0?[{index,number:number(marker)}]:[];});
+ const priorLayout=layoutParents.at(-2),lastLayout=layoutParents.at(-1);
+ if(!priorLayout||!lastLayout||priorLayout.number!==number(prior)||lastLayout.number!==number(last))return;
+ const blockRange=previous.blocks.blocks.slice(lastLayout.index),owned=blockRange.filter(b=>!continuationMargins.has(b.kind));
+ const text=previous.blockTexts.slice(lastLayout.index).filter((_,index)=>!continuationMargins.has(blockRange[index].kind)).map(h=>h.text).join('\n').trim();
+ if(!owned.length||owned.length>32||owned.some(b=>!proseKinds.has(b.kind))||owned[0].box[1]<.65||owned.at(-1)!.box[3]<.78||
+    Math.abs(owned[0].box[0]-region.bodyBox[0])>.045||!/\p{Script=Han}$/u.test(text)||lines(text).some(line=>subquestion.test(line))||text.length>8192)return;
+ const rows=lines(currentRaw.slice(last.index)),printedFooter=rows.at(-1)??'';
+ if(Number(pageLabel.exec(printedFooter)?.[1])===page&&blockRange.some((b,i)=>b.kind==='number'&&b.box[1]>.9&&
+    sentenceOwnershipKey(previous.blockTexts[lastLayout.index+i].text)===sentenceOwnershipKey(printedFooter)))rows.pop();
+ if(sentenceOwnershipKey(rows.join('\n'))!==sentenceOwnershipKey(text))return;
+ const earlier=previous.blockTexts.slice(priorLayout.index,lastLayout.index).filter((_,i)=>proseKinds.has(previous.blocks.blocks[priorLayout.index+i].kind)).map(h=>h.text).join('\n');
+ if(!uniqueFigureReference(text,region.figureNumber)||!uniqueFigureReference(earlier,region.foreignNumber)||
+    !uniqueFigureReference(currentRaw.slice(prior.index,last.index),region.foreignNumber))return;
+ const blockIds=owned.map(b=>b.id);
+ try{ownedPageFragmentGroups(previous.blocks,blockIds,8,true);}catch{return;}
+ return {number:number(last),nextNumber:region.nextNumber,blockIds:region.blockIds,text:region.text,box:region.box,preceding:{blockIds,text}};
+}
+
 export function openSubquestionStem(text:string){
  const last=markers(text).at(-1);if(!last)return;
  const lines=text.slice(last.index!+last[0].length).split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
@@ -255,8 +326,8 @@ export function validPageContinuation(v:unknown):v is PageContinuation{
  const fields=[...keys,...(Object.hasOwn(v,'preceding')?['preceding']:[]),...(Object.hasOwn(v,'textProof')?['textProof']:[])];
  if(!exact(v,fields))return false;
  const schema=v.schemaVersion,withProof=Object.hasOwn(v,'textProof');
- const sentence=schema===PAGE_CONTINUATION_SENTENCE;
- if(typeof v.text!=='string'||![PAGE_CONTINUATION,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE].some(version=>version===schema))return false;
+ const sentence=sentenceSchema(schema);
+ if(typeof v.text!=='string'||!sentence&&![PAGE_CONTINUATION,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_FIRST].some(version=>version===schema))return false;
  if(sentence!==Object.hasOwn(v,'preceding')||schema===PAGE_CONTINUATION_TEXT&&!withProof||withProof&&(schema!==PAGE_CONTINUATION_TEXT&&schema!==PAGE_CONTINUATION_FIRST&&!sentence||!validContinuationTextProof(v.textProof,v.text)))return false;
  if(!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
  const scope=v.scope;if(!(exact(scope,['kind'])&&scope.kind==='selected_pages'||exact(scope,['kind','folderId','revision'])&&scope.kind==='folder_grant'&&typeof scope.folderId==='string'&&/^batch_[a-f0-9-]{36}$/i.test(scope.folderId)&&Number.isSafeInteger(scope.revision)&&Number(scope.revision)>=1))return false;
@@ -272,7 +343,10 @@ export function validPageContinuation(v:unknown):v is PageContinuation{
      !Array.from({length:prior.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(prior.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'&&/^block-[1-9]\d{0,2}$/u.test(d.value))||
      new Set(prior.blockIds).size!==prior.blockIds.length)return false;
  }
- const plan=sentence?sentenceRegion(next,v.blocks,v.blockTexts,v.source.page,0):first?planSubquestionPrefix(current,hints,next,v.blocks,v.blockTexts,firstSubquestion):(choice?continuationChoicePrefix:continuationPrefix)(current,hints,next,v.blocks,v.blockTexts);
+ const caption=schema===PAGE_CONTINUATION_CAPTION?captionRegion(v.blocks,v.blockTexts):undefined;
+ if(schema===PAGE_CONTINUATION_CAPTION&&(!caption||caption.nextNumber!==v.nextNumber||
+    !uniqueFigureReference((v.preceding as SentencePreceding).text,caption.figureNumber)))return false;
+ const plan=caption??(sentence?sentenceRegion(next,v.blocks,v.blockTexts,v.source.page,0):first?planSubquestionPrefix(current,hints,next,v.blocks,v.blockTexts,firstSubquestion):(choice?continuationChoicePrefix:continuationPrefix)(current,hints,next,v.blocks,v.blockTexts));
  if(first&&!orderedSubquestions(v.text))return false;
  if(!plan||JSON.stringify(v.blockIds)!==JSON.stringify(plan.blockIds)||plan.text!==v.text)return false;
  const image=v.image;
@@ -298,7 +372,7 @@ export function continuationCropMatches(prompt:AiPagePrompt,image:Pick<Continuat
 /** Main block ids remain the model's selection. The authenticated prefix is appended exactly once. */
 export function continuationCropGroups(prompt:Extract<AiPagePrompt,{blockTexts:BlockTextHint[]}>,ids:string[],number:string){
  const extra=pageContinuation(prompt),append=extra?.number===number;
- if(append&&extra.schemaVersion===PAGE_CONTINUATION_SENTENCE&&JSON.stringify(ids)!==JSON.stringify(extra.preceding.blockIds))throw Error('source_incomplete');
+ if(append&&isSentenceContinuation(extra)&&JSON.stringify(ids)!==JSON.stringify(extra.preceding.blockIds))throw Error('source_incomplete');
  if(append&&continuationSubcrops(prompt)){
   // Share the existing eight-image budget across both pages. Every candidate
   // covers every owned block; no clipping or truncation is used to fit the budget.

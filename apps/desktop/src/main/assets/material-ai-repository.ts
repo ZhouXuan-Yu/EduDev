@@ -267,7 +267,8 @@ export class MaterialAiRepository{
             const choice=nextBoundary.choiceLead&&process.env.OMNI_EDU_AI_CONTINUATION_CHOICES!=='0'&&hasUnfinishedContinuationChoice(original.text);
             const first=nextBoundary.firstSubquestionLead&&process.env.OMNI_EDU_AI_CONTINUATION_FIRST!=='0'&&openSubquestionStem(original.selectedText);
             const sentence=nextBoundary.sentenceLead&&original.status==='complete'&&process.env.OMNI_EDU_AI_CONTINUATION_SENTENCE!=='0';
-            if(nextBoundary.status==='continued'||choice||first||sentence){
+            const caption=nextBoundary.captionLead&&original.status==='complete'&&process.env.OMNI_EDU_AI_CONTINUATION_CAPTION_SEAM!=='0';
+            if(nextBoundary.status==='continued'||choice||first||sentence||caption){
               if(task?.folderId)await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId);
               const nextSource=await readAiPageSource(this.host,input.resourceId,input.version,page+1);
               const next=await this.localBlocks(nextSource.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1'));
@@ -275,11 +276,11 @@ export class MaterialAiRepository{
                 const controller=new AbortController();
                 this.layoutControllers.add(controller);
                 try{
-                  const continuation=await preparePageContinuation(this.host,input,original.source,first||sentence?original.selectedText:original.text,
+                  const continuation=await preparePageContinuation(this.host,input,original.source,first||sentence||caption?original.selectedText:original.text,
                     {blocks:blocks!,blockTexts},next,this.runtime!.crop!,(s,signal)=>this.runtime!.image(s.resourceId,s.version,s.page,signal),
                     task?.folderId?{kind:'folder_grant',folderId:task.folderId,revision:task.revision!}:{kind:'selected_pages'},
                     AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),policy.continuationText?this.host.inspectContinuationText:undefined,
-                    sentence?'sentence':first?'first-subquestion':choice?'choices':undefined);
+                    caption?'caption':sentence?'sentence':first?'first-subquestion':choice?'choices':undefined);
                   if(continuation){
                     unit.pagePrompt.continuation=continuation;
                     unit.pagePrompt.continuationCropPolicy=CONTINUATION_FIGURE_CROPS;

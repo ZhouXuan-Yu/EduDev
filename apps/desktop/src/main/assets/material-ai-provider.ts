@@ -9,7 +9,7 @@ import {sourceReadingEnabled,sourceReadingDraft,sourceReadingInstruction,sourceO
 import {MATERIAL_PAGE_FRAGMENTS_RESPONSE} from '../../shared/material-ai-page-fragments';
 import {printedChoiceEnabled,PRINTED_CHOICE_INSTRUCTION} from '../../shared/material-ai-printed-choice';
 import {printedChoiceAnswerEnabled,PRINTED_CHOICE_ANSWER_INSTRUCTION,printedChoiceLiteralInstruction} from '../../shared/material-ai-choice-answer';
-import {pageContinuation,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE} from '../../shared/material-ai-continuation';
+import {pageContinuation,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_CAPTION,isSentenceContinuation} from '../../shared/material-ai-continuation';
 import {BOUND_ANSWERS,BOUND_ANSWERS_INSTRUCTION,boundAnswerSource,parseBoundAnswers} from '../../shared/material-ai-bound-answers';
 import {boundSourceSha} from './material-ai-bound-answers';
 import {blindAnswerPass,sourceReviewDraft} from '../../shared/material-ai-answer-review';
@@ -83,8 +83,8 @@ export const completeMaterialAi:AiCompletion=async(input,signal)=>{
   if(input.nativeReviewSha256!==undefined&&(!input.native||!input.previous||!/^[a-f0-9]{64}$/.test(input.nativeReviewSha256)||parseNativeAiResponse(JSON.stringify(input.previous)).questions.length!==1))throw Error('invalid_input');
   const continuedChoices=continuation?.schemaVersion===PAGE_CONTINUATION_CHOICES;
   const firstSubquestion=continuation?.schemaVersion===PAGE_CONTINUATION_FIRST;
-  const sentenceContinuation=continuation?.schemaVersion===PAGE_CONTINUATION_SENTENCE;
-  const continuationInstruction=sentenceContinuation?'\n[跨页正文] 前页最后一道题的句子在页边界中断，附图从原句继续。保留父题编号、全部条件、变量、上下标、单位、小问及前页题图。首遍选择同一父题的前页正文和题图块。续页只按附图逐字转录，不把页码、相邻题或图中标签当作正文。不确定时保留疑点。仅转录阶段不解题，答案专用阶段仍用原答案协议。':firstSubquestion?'\n[跨页首小问] 附图从（1）开始，属于当前父题。按实际裁图把全部小问接入同一题，保留编号、公式、单位和印刷填空线。独立图注随原图留在插图证据，混排中的题文必须照录。不要复制下一个父题、移动题图或另起题号；看不清或归属不明时保留疑点。仅转录阶段不解题，答案专用阶段仍按原答案协议输出。':continuedChoices?'\n[跨页选项 page-continuation.choices.v1] 附图仅含该父题尚缺的全部选项。按原图保留每个选项及其顺序、公式、单位和符号，归入同题的choices。裁图按页依序保留，续页块从原样选项开头转录，不添题号，不引入下一题。不确定时标疑点，不能从本地文字推断原图上没有的符号。只有原题包含图形时才声明图义。':'';
+  const sentenceContinuation=isSentenceContinuation(continuation);
+  const continuationInstruction=continuation?.schemaVersion===PAGE_CONTINUATION_CAPTION?'\n[跨页正文] 前页最后一题的文字跨页，附图仅提供该题正文、插图及图注。首遍只选该题的前页正文块，后续逐字读取给定裁图。图内标签和图注留在插图证据。保留题号、全部条件、公式、单位及正文顺序，归属或字形不清时保留疑点。仅转录阶段不解题。':sentenceContinuation?'\n[跨页正文] 前页最后一道题的句子在页边界中断，附图从原句继续。保留父题编号、全部条件、变量、上下标、单位、小问及前页题图。首遍选择同一父题的前页正文和题图块。续页只按附图逐字转录，不把页码、相邻题或图中标签当作正文。不确定时保留疑点。仅转录阶段不解题，答案专用阶段仍用原答案协议。':firstSubquestion?'\n[跨页首小问] 附图从（1）开始，属于当前父题。按实际裁图把全部小问接入同一题，保留编号、公式、单位和印刷填空线。独立图注随原图留在插图证据，混排中的题文必须照录。不要复制下一个父题、移动题图或另起题号；看不清或归属不明时保留疑点。仅转录阶段不解题，答案专用阶段仍按原答案协议输出。':continuedChoices?'\n[跨页选项 page-continuation.choices.v1] 附图仅含该父题尚缺的全部选项。按原图保留每个选项及其顺序、公式、单位和符号，归入同题的choices。裁图按页依序保留，续页块从原样选项开头转录，不添题号，不引入下一题。不确定时标疑点，不能从本地文字推断原图上没有的符号。只有原题包含图形时才声明图义。':'';
   const pageContext=continuation&&input.pagePrompt?{...input.pagePrompt,continuation:{policy:continuation.schemaVersion,number:continuation.number,nextNumber:continuation.nextNumber,page:continuation.source.page,...(sentenceContinuation?{precedingBlockIds:continuation.preceding.blockIds}:{}),text:continuation.text,imageSha256:continuation.image.sha256,box:continuation.image.box}}:input.pagePrompt;
   const limits=materialInferenceLimits(input.pagePrompt,input.inferencePolicy),timed=AbortSignal.any([signal,AbortSignal.timeout(limits.timeoutMs)]);
   const reading=sourceReadingEnabled(input.pagePrompt),sourceOnly=reading&&!!input.previous&&!input.verification,readingPhase=!input.previous?'first':sourceOnly?'source':'final';

@@ -10,17 +10,18 @@ import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 const from=fs.realpathSync(process.argv[2]);
 const firstSubquestion=process.argv.includes('--first-subquestion');
 const sentence=process.argv.includes('--sentence-seam');
+const captionSeam=process.argv.includes('--caption-seam');
 const layoutOnly=process.argv.includes('--layout-only');
-assert(!(sentence&&firstSubquestion));
-assert(!layoutOnly||sentence);
-const illustrated=sentence||firstSubquestion;
-const pageStart=sentence?4:firstSubquestion?1:2,followingPage=pageStart+1;
+assert([sentence,firstSubquestion,captionSeam].filter(Boolean).length<=1);
+assert(!layoutOnly||sentence||captionSeam);
+const illustrated=sentence||firstSubquestion||captionSeam;
+const pageStart=captionSeam?5:sentence?4:firstSubquestion?1:2,followingPage=pageStart+1;
 const number=sentence?'25':firstSubquestion?'4':'5',nextNumber=String(Number(number)+1);
-const policy=sentence?'page-continuation.sentence.v1':firstSubquestion?'page-continuation.first-subquestion.v1':'page-continuation.choices.v1';
+const policy=captionSeam?'page-continuation.caption-seam.v1':sentence?'page-continuation.sentence.v1':firstSubquestion?'page-continuation.first-subquestion.v1':'page-continuation.choices.v1';
 const markerFor=n=>new RegExp('^\\s*'+n+'[.．、]','u');
 assert.equal(path.basename(path.dirname(from)),'flow-1gb-20261111');
 assert.equal(path.basename(from),'data');
-const output=fs.mkdtempSync(path.resolve('test-results',layoutOnly?'sentence-seam-layout-':sentence?'sentence-seam-ui-':firstSubquestion?'first-subquestion-ui-':'choice-tail-ui-')),data=path.join(output,'data');
+const output=fs.mkdtempSync(path.resolve('test-results',captionSeam?(layoutOnly?'caption-seam-layout-':'caption-seam-ui-'):layoutOnly?'sentence-seam-layout-':sentence?'sentence-seam-ui-':firstSubquestion?'first-subquestion-ui-':'choice-tail-ui-')),data=path.join(output,'data');
 console.log('OUTPUT '+output);
 fs.mkdirSync(data);
 const sha=value=>createHash('sha256').update(value).digest('hex');
@@ -28,12 +29,15 @@ const original=new DatabaseSync(path.join(from,'app.db'),{readOnly:true});
 original.exec('PRAGMA busy_timeout=5000');
 const old='aibatch_beeb42f0-318b-4fd2-a7e5-bd009f640e4c';
 const saved=original.prepare('SELECT * FROM material_ai_units WHERE batch_id=? AND ordinal=1').get(old),unit=JSON.parse(saved.input_json);
-const resource=sentence?original.prepare('SELECT * FROM teacher_resources WHERE id=?').get('resource_ad80ba69-e4b7-4051-a6e7-11d4da0350f0'):firstSubquestion?original.prepare('SELECT * FROM teacher_resources WHERE original_file_name=?').get('gh-physics-1-gh-physics-1-pyhsics_buoyantforce.pdf'):original.prepare('SELECT * FROM teacher_resources WHERE id=?').get(unit.pageSource.resourceId);
+const resource=captionSeam||sentence?original.prepare('SELECT * FROM teacher_resources WHERE id=?').get(captionSeam?'resource_5b62fdae-5140-4e46-8516-4fa73d92664a':'resource_ad80ba69-e4b7-4051-a6e7-11d4da0350f0'):firstSubquestion?original.prepare('SELECT * FROM teacher_resources WHERE original_file_name=?').get('gh-physics-1-gh-physics-1-pyhsics_buoyantforce.pdf'):original.prepare('SELECT * FROM teacher_resources WHERE id=?').get(unit.pageSource.resourceId);
 const job=original.prepare('SELECT generation FROM material_pdf_jobs WHERE resource_id=? AND version=?').get(resource.id,resource.content_hash);
 const originalPage=page=>JSON.parse(original.prepare('SELECT result_json FROM material_pdf_pages WHERE generation=? AND page=?').get(job.generation,page).result_json).text;
-const firstPageText=firstSubquestion?originalPage(pageStart):unit.text;
+const firstPageText=firstSubquestion||captionSeam?originalPage(pageStart):unit.text;
 const nextPageText=originalPage(followingPage);
-const tailLines=nextPageText.split(/\r?\n/u).slice(0,nextPageText.split(/\r?\n/u).findIndex(line=>markerFor(nextNumber).test(line)));
+const rawTailLines=nextPageText.split(/\r?\n/u).slice(0,nextPageText.split(/\r?\n/u).findIndex(line=>markerFor(nextNumber).test(line)));
+const tailLines=captionSeam?rawTailLines.slice(rawTailLines.findIndex(line=>/^图\s*10[：:]/u.test(line))+1):rawTailLines;
+const captionAt=captionSeam?tailLines.findIndex(line=>/^[^\p{Script=Han}]/u.test(line)):0;
+const captionBody=tailLines.slice(0,captionAt).join('\n');
 // Verified OCR fixture text from the two owned pages. The independent transport
 // receives only images; printed subscripts are authored below as literal readings.
 const sentenceBlocks=[
@@ -45,10 +49,13 @@ const indices=text=>text.replace(/R([1-3])/gu,(_,n)=>'R'+String.fromCharCode(0x2
 const tail=sentence?sentenceBlocks.join('\n'):tailLines.join('\n').trim();
 const headLines=firstPageText.split(/\r?\n/u),at=headLines.findLastIndex(line=>markerFor(number).test(line));
 const head=sentence?'25.（8 分）如图所示电路中，电阻 R1 = 5Ω，R2 = 14Ω，\nR3是总电阻为20Ω的滑动变阻器，滑动片位于中点。电压':firstSubquestion?headLines.slice(at).filter(line=>!/^第\s*\d+\s*页共/u.test(line)).join('\n').trim():headLines[at];
-const stem=sentence?indices(head.replace(markerFor(number),'').trimStart()+tail):head.replace(markerFor(number),'').trimStart()+'\n'+tail;
+const start=head.replace(markerFor(number),'').trimStart();
+const stem=captionSeam?start+captionBody:sentence?indices(start+tail):start+'\n'+tail;
+// Read directly from the plotted labels. OCR confuses the plotted point with a plus.
+const captionReadings=[head,captionBody,'y/m\n4\nP\n3\n2\n1\nM\nN\nO\n1\n2\n3\nx/m','图 11: 示意图'];
 const sentenceReadings=sentence?[indices(head),'S\nR₃\nR₂\nU\nR₁\nA\nV',indices(tail)]:[];
 assert(markerFor(number).test(head));
-assert(sentence?stem.includes('电压表和电流表'):firstSubquestion?head.endsWith('求：')&&tail.startsWith('(1)')&&tail.includes('\n(4)'):tail.startsWith('A. ')&&tail.includes('\nD.'));
+assert(layoutOnly||(captionSeam?stem.includes('竖直放置')&&captionAt===3:sentence?stem.includes('电压表和电流表'):firstSubquestion?head.endsWith('求：')&&tail.startsWith('(1)')&&tail.includes('\n(4)'):tail.startsWith('A. ')&&tail.includes('\nD.')));
 assert.equal(sha(fs.readFileSync(resource.local_path)),resource.content_hash);
 await backup(original,path.join(data,'app.db'));original.close();
 const destination=path.join(data,'teacher_resources');
@@ -75,9 +82,10 @@ async function launch(cold=false){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_VISIBLE:'0'};
  for(const key of ['DEEPSEEK_API_KEY','ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','OMNI_EDU_AI_CONTINUATION_CHOICES','OMNI_EDU_AI_CONTINUATION_FIRST','OMNI_EDU_AI_SOURCE_READING'])delete env[key];
  if(cold&&firstSubquestion)env.OMNI_EDU_AI_CONTINUATION_FIRST='0';
+ if(captionSeam)env.OMNI_EDU_AI_CONTINUATION_CAPTION_SEAM=cold?'0':'1';
  if(sentence)env.OMNI_EDU_AI_CONTINUATION_SENTENCE=cold?'0':'1';
  app=await _electron.launch({args:[path.resolve('out/main/index.js'),'--user-data-dir='+path.join(output,'profile')],env,cwd:process.cwd(),timeout:90000});
- await app.evaluate(({net},{head,tail,tailLines,stem,nextPageText,ledger,stubErrors,cold,firstSubquestion,sentence,sentenceReadings,illustrated,number,policy})=>{
+ await app.evaluate(({net},{head,tail,tailLines,stem,nextPageText,ledger,stubErrors,cold,firstSubquestion,sentence,sentenceReadings,captionSeam,captionReadings,illustrated,number,policy})=>{
   const fs=process.getBuiltinModule('fs'),crypto=process.getBuiltinModule('crypto');
   const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
   for(const owner of [net,globalThis]){
@@ -94,11 +102,11 @@ async function launch(cold=false){
      const sourceOnly=p.phase==='仅转录原图来源，不解题';
      const first=!p.firstDraft;
      const labels=['statement','formulas','tables','figures','choices','subquestions'];
-     const present=key=>['statement','formulas',...(illustrated?['subquestions','figures']:['choices'])].includes(key);
-     const description=sentence?'电路包含开关、三只电阻和两只电表。':firstSubquestion?'原图为浸没在水中的木块。':'';
+     const present=key=>['statement','formulas',...(captionSeam?['figures']:illustrated?['subquestions','figures']:['choices'])].includes(key);
+     const description=captionSeam?'坐标图标出点 P 和平面镜 MN。':sentence?'电路包含开关、三只电阻和两只电表。':firstSubquestion?'原图为浸没在水中的木块。':'';
      const figure={state:illustrated?'provided':'not_applicable',text:description};
-     const answer=sentence?'按原图分别计算开关断开和闭合两种情况。':firstSubquestion?'9.80 N；1.00×10⁻³ m³；980 Pa；4.00×10⁻⁴ m³。':'A';
-     const analysis='对照原页保留题面，答案仅供受控测试。';
+     const answer=captionSeam?'4.5 m²':sentence?'按原图分别计算开关断开和闭合两种情况。':firstSubquestion?'9.80 N；1.00×10⁻³ m³；980 Pa；4.00×10⁻⁴ m³。':'A';
+     const analysis=captionSeam?'以镜面对称点 P′(6m,4m) 作过 M、N 的边界线。两线截 y 轴长度为 2m，镜面截线长度为 1m，宽为 3m，区域面积为 4.5 m²。':'对照原页保留题面，答案仅供受控测试。';
      let body;
      if(!first&&!current&&p.cropReview?.questions&&!p.cropReview.questions.length){
       const wire=request.messages[0].content.includes('xiaozhi.material-ai-literal.v5')?'xiaozhi.material-ai-literal.v5':'xiaozhi.material-ai-literal.v4';
@@ -106,19 +114,20 @@ async function launch(cold=false){
      }else if(first||!p.cropReview?.questions?.length){
       const block=current?p.pageContext.blockTexts.find(x=>new RegExp('^\\s*'+number+'[.．、]','u').test(x.text)):null;
       if(current&&(!block||p.pageContext.continuation.policy!==policy||p.pageContext.continuation.text!==tail))throw Error('Unexpected continuation selection');
-      const question={number,stem,answer,analysis,subject:'物理',grade:sentence?'高一':'九年级',knowledgePoint:firstSubquestion?'浮力':'欧姆定律',questionType:illustrated?'解答题':'单选题',difficulty:'medium',answerOrigin:'ai_generated',analysisOrigin:'ai_generated',requiresImage:illustrated,issues:[],
+      const question={number,stem,answer,analysis,subject:'物理',grade:sentence?'高一':'九年级',knowledgePoint:captionSeam?'平面镜成像':firstSubquestion?'浮力':'欧姆定律',questionType:illustrated?'解答题':'单选题',difficulty:'medium',answerOrigin:'ai_generated',analysisOrigin:'ai_generated',requiresImage:illustrated,issues:[],
        projection:Object.fromEntries(labels.map(key=>[key,{state:present(key)?'provided':'not_applicable',text:present(key)?key==='figures'?description:stem:''}]))};
-      const blockIds=sentence?p.pageContext.continuation?.precedingBlockIds:[block?.blockId];
+      const blockIds=sentence||captionSeam?p.pageContext.continuation?.precedingBlockIds:[block?.blockId];
       body={schemaVersion:'xiaozhi.material-ai-page-readings.v2',outcome:current?'questions':'no_questions',questions:current?[question]:[],pageText:current?number+'. '+stem:nextPageText,pageIssues:[],fragments:current?[{number,complete:true,blockIds}]:[],readings:[]};
      }else{
       const crops=p.cropReview.questions[0]?.crops||[];
-      const instruction=sentence?'[跨页正文]':firstSubquestion?'[跨页首小问]':'[跨页选项 page-continuation.choices.v1]';
+      const instruction=sentence||captionSeam?'[跨页正文]':firstSubquestion?'[跨页首小问]':'[跨页选项 page-continuation.choices.v1]';
       if(!current||crops.length<2||!request.messages[0].content.includes(instruction))throw Error('Actual literal reply must receive both owned pages');
       const wire=request.messages[0].content.includes('xiaozhi.material-ai-literal.v5')?'xiaozhi.material-ai-literal.v5':'xiaozhi.material-ai-literal.v4';
       if(firstSubquestion&&crops.slice(1).filter(crop=>crop.kind!=='figure').length!==tailLines.length)throw Error('Expected a readable original crop for each subquestion');
       if(sentence&&(crops.length!==sentenceReadings.length||crops[1].kind!=='figure'))throw Error('Expected a separate original circuit diagram');
+      if(captionSeam&&(crops.length!==4||crops.slice(2).some(crop=>crop.kind!=='figure')))throw Error('Expected separate body, owned chart and caption crops: '+JSON.stringify(crops.map(c=>c.kind)));
       let nextLine=0;
-      const readings=crops.map((crop,index)=>({index,text:sentence?sentenceReadings[index]:index===0?head:firstSubquestion?crop.kind==='figure'?'F\nA':tailLines[nextLine++]:tail,issues:[]}));
+      const readings=crops.map((crop,index)=>({index,text:captionSeam?captionReadings[index]:sentence?sentenceReadings[index]:index===0?head:firstSubquestion?crop.kind==='figure'?'F\nA':tailLines[nextLine++]:tail,issues:[]}));
       body={schemaVersion:wire,pageText:number+'. '+stem,pageIssues:[],questions:[{number,crops:readings,
        coverage:{formulas:'provided',tables:'not_applicable',choices:present('choices')?'provided':'not_applicable',subquestions:present('subquestions')?'provided':'not_applicable'},figure,requiresImage:illustrated,issues:[],
        answer:{origin:sourceOnly?'missing':'ai_generated',text:sourceOnly?'':answer},analysis:{origin:sourceOnly?'missing':'ai_generated',text:sourceOnly?'':analysis}}]};
@@ -132,7 +141,7 @@ async function launch(cold=false){
     }
    };
   }
- },{head,tail,tailLines,stem,nextPageText,ledger,stubErrors,cold,firstSubquestion,sentence,sentenceReadings,illustrated,number,policy});
+ },{head,tail,tailLines,stem,nextPageText,ledger,stubErrors,cold,firstSubquestion,sentence,sentenceReadings,captionSeam,captionReadings,illustrated,number,policy});
  page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));
 }
 async function until(test,limit=180000){
@@ -188,7 +197,7 @@ try{
  const extra=JSON.parse(units[0].input_json).pagePrompt.continuation;
  assert.equal(extra.schemaVersion,policy);
  assert.equal(extra.source.page,followingPage);assert.equal(extra.nextNumber,nextNumber);
- assert.deepEqual(extra.blockIds,sentence?['block-1','block-2','block-3']:firstSubquestion?['block-1','block-2','block-3','block-4','block-5']:['block-1']);assert.equal(extra.text,tail);
+ assert.deepEqual(extra.blockIds,captionSeam?['block-3','block-4','block-5']:sentence?['block-1','block-2','block-3']:firstSubquestion?['block-1','block-2','block-3','block-4','block-5']:['block-1']);assert.equal(extra.text,tail);
  const attempts=JSON.parse(fs.readFileSync(ledger,'utf8'));
  assert.equal(attempts.filter(r=>r.current).length,3);
  assert(attempts.filter(r=>r.current).every(r=>r.images.includes(extra.image.sha256)));
@@ -201,18 +210,26 @@ try{
  assert.equal(archive.state,'ai_final',JSON.stringify(report.archived));
  const document=JSON.parse(q.document_json);
  assert.deepEqual([...new Set(document.blocks.filter(b=>b.kind==='image').map(b=>b.anchors[0].page))],[pageStart,followingPage]);
- if(firstSubquestion)assert(document.context.illustrations.blockIds.some(id=>document.blocks.find(b=>b.id===id).anchors[0].page===followingPage));
+ if(firstSubquestion||captionSeam)assert(document.context.illustrations.blockIds.some(id=>document.blocks.find(b=>b.id===id).anchors[0].page===followingPage));
  if(sentence)assert(document.context.illustrations.blockIds.some(id=>document.blocks.find(b=>b.id===id).anchors[0].page===pageStart));
+ if(captionSeam)assert(!q.stem.includes('图 10')&&!q.stem.includes('图 11:')&&!q.stem.includes('4+P'));
  const crops=sql('SELECT * FROM material_ai_page_crops WHERE batch_id=? AND ordinal=1 AND number=?',[batchId,number])[0];
  const fragments=JSON.parse(crops.image_json).fragments;
  assert.deepEqual([...new Set(fragments.map(f=>f.image.page))],[pageStart,followingPage]);
  const nextIndex=fragments.findIndex(f=>f.image.page===followingPage);
+ if(captionSeam)assert.deepEqual(fragments.slice(nextIndex).flatMap(f=>f.blockIds||[f.blockId]),['next:block-3','next:block-4','next:block-5']);
  report.checks.push('Real PDF produced one selected parent with all continuation text and both page anchors, with following parent excluded');
  await app.close();app=undefined;await launch(true);
  const view=await page.evaluate(input=>window.omniEdu.getMaterialAiPage(input),{schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal:1});
  assert.equal(view.continuation.source.page,followingPage);assert.equal(view.continuation.ocrText,tail);
  const readings=view.sourceReadings.find(r=>r.number===number).crops.slice(nextIndex);
- assert.equal(readings.filter(c=>!c.parts?.some(p=>p.role==='figure')).map(c=>c.text).filter(Boolean).join('\n'),sentence?indices(tail):tail);
+ assert.equal(readings.filter(c=>!c.parts?.some(p=>p.role==='figure')).map(c=>c.text).filter(Boolean).join('\n'),captionSeam?captionBody:sentence?indices(tail):tail);
+ if(captionSeam){
+  const figureReads=readings.filter(c=>c.parts?.some(p=>p.role==='figure'));
+  assert.equal(figureReads.map(c=>c.text).join('\n'),captionReadings.slice(2).join('\n'));
+  assert(figureReads.every(c=>c.agrees)&&view.continuation.ocrText.includes('4+P'));
+  assert(figureReads[0].ocrText.includes('\n4\nP\n')&&!figureReads[0].ocrText.includes('4+P'));
+ }
  if(firstSubquestion){
   assert(readings.some(c=>c.assessment==='corrected'&&c.agrees&&/V\s+V/u.test(c.ocrText)&&c.text!==c.ocrText));
   assert(readings.some(c=>c.assessment==='corrected'&&c.agrees&&c.ocrText.includes('4 底部')&&!c.text.includes('4 底部')));
@@ -228,10 +245,10 @@ try{
  assert.equal(JSON.parse(fs.readFileSync(ledger,'utf8')).length,attempts.length);
  assert.deepEqual(report.rendererErrors,[]);
  report.checks.push('Cold typed source reader revalidates the exact next-page crop PNG, original PDF and prior response facts');
- if(sentence){
+ if(sentence||captionSeam){
   await productEntry(page,'teaching').click();
   await page.getByRole('button',{name:'题本',exact:true}).filter({visible:true}).click();
-  await page.getByTestId('question-notebook-search').fill('电压表和电流表均为理想电表');
+  await page.getByTestId('question-notebook-search').fill(captionSeam?'竖直放置':'电压表和电流表均为理想电表');
   const card=page.getByTestId('question-notebook-card-'+q.id);
   await card.waitFor();
   await card.getByTestId('question-original-open').click();
@@ -239,7 +256,7 @@ try{
   await figure.waitFor();
   await figure.evaluate(image=>image.decode());
   assert.deepEqual(report.rendererErrors,[]);
-  report.checks.push('Teacher notebook finds the phrase across the page seam and opens the original circuit diagram');
+  report.checks.push('Teacher notebook finds the joined phrase and opens the owned original diagram');
  }
  report.success=true;
 }catch(error){report.error=String(error.stack||error);process.exitCode=1;if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}

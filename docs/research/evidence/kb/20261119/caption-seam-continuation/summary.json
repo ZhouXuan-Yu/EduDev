@@ -1,0 +1,33 @@
+{
+  "scope": "One natural PDF continuation with an unrelated figure above it, synthetic ownership and mutation controls, and desktop regression",
+  "baselineCommit": "4aaa069d2504ad2f5ef59446a309f933bfeef980",
+  "mainBundleSha256": "9d971ac6f1398eeaa9303f8ec765c95773057b9eff4e8e27e35a1ab37c6cbeb1",
+  "sourceVersionSha256": "909fba1e72dbc62539f030a1a27d08f4f19127f3fcf8e0538898e687cfb86fb9",
+  "sourcePages": [5, 6],
+  "ownedQuestion": "5",
+  "precedingFigureExcluded": "10",
+  "ownedFigure": "11",
+  "followingQuestionExcluded": "6",
+  "archiveState": "ai_final",
+  "teacherConfirmed": false,
+  "desktopSourceCrops": [
+    {"page": 5, "ownedBlocks": ["block-7"], "sha256": "91c49bd1b613d35b8a5d87fb7182d60134d0c7f6ea4dd3f8d62c1da623623242"},
+    {"page": 6, "ownedBlocks": ["next:block-3"], "sha256": "aa97346afc8f460fad4aa59f4fa93351ab2eaf33856d15ad626c7e7c357d7200"},
+    {"page": 6, "ownedBlocks": ["next:block-4"], "sha256": "ea1bf839ed6a67be042c0612dfc7e3be7551c4c7a72cfc07483e757aa8c628df"},
+    {"page": 6, "ownedBlocks": ["next:block-5"], "sha256": "5d792560c2e604f2ab7d388ce3ca431368e3a6b50de36d5efa8a5091aa527215"}
+  ],
+  "regression": {
+    "buildExit": 0,
+    "boundaries": {"passed": 9, "total": 9},
+    "desktopNaturalPdfControlledTransport": {"passed": 3, "total": 3, "controlledResponses": 6, "networkModelCalls": 0, "rendererErrors": 0},
+    "continuationFigures": {"passed": 10, "total": 10},
+    "continuationText": {"passed": 10, "total": 10},
+    "crossPage": {"passed": 12, "total": 12},
+    "aiPage": {"passed": 248, "total": 248},
+    "rendererComponents": {"passed": 253, "total": 253},
+    "electronSmoke": {"passed": 207, "total": 207, "exitCode": 0}
+  },
+  "localPlanning": {"repetitions": 100, "sourceLeadP95Ms": 0.0143, "geometryP95Ms": 0.3183},
+  "historicalImportSnapshot": {"heldPdfPages": 565, "nativeOcrConflict": 558, "relatedJobs": 63},
+  "npmAudit": {"total": 29, "high": 8, "critical": 0}
+}
