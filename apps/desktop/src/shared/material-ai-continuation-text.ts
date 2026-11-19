@@ -83,13 +83,24 @@ export function continuationTextLines(extra:{image:{box:PageBox};blocks:PageBloc
 }
 
 const escape=(s:string)=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-/** Entire independent OCR must correspond; the model must explicitly retain every proven blank. */
-export function continuationTextAgrees(text:string,proof:ContinuationTextProof,stem:string,localText:string){
- if(!validContinuationTextProof(proof,text))return false;
- const source=continuationTextSignature(text),positions=proof.gaps.map(g=>continuationTextSignature(proof.lines.slice(0,g.afterLine+1).map(l=>l.text).join('\n')).length);
+const noCaptions:ReadonlySet<number>=new Set();
+function splitAtProvenBlanks(lines:ContinuationTextLine[],gaps:ContinuationTextProof['gaps'],captions:ReadonlySet<number>){
+ const body=(end:number)=>continuationTextSignature(lines.slice(0,end).filter((_,i)=>!captions.has(i)).map(l=>l.text).join('\n'));
+ const source=body(lines.length),positions=gaps.map(g=>body(g.afterLine+1).length);
+ if(!source)return;
  let start=0;const parts:string[]=[];
- for(const end of positions){if(end<=start||end>=source.length)return false;parts.push(escape(source.slice(start,end)));start=end;}
+ for(const end of positions){if(end<=start||end>=source.length)return;parts.push(escape(source.slice(start,end)));start=end;}
  parts.push(escape(source.slice(start)));
- const all=new RegExp(parts.join('_{3,64}'),'gu'),body=continuationTextSignature(stem),only=all.exec(body);
- return !!only&&only.index+only[0].length===body.length&&!all.exec(body)&&new RegExp('^'+parts.join('(?:_{3,64})?')+'$','u').test(continuationTextSignature(localText));
+ return parts;
+}
+
+/** Independent OCR covers the full prefix. Layout-owned captions stay in that
+ * proof and the original image, while the stem must retain every body blank. */
+export function continuationTextAgrees(text:string,proof:ContinuationTextProof,stem:string,localText:string,captions:ReadonlySet<number>=noCaptions){
+ if(!validContinuationTextProof(proof,text)||proof.gaps.some(g=>captions.has(g.afterLine)||captions.has(g.afterLine+1)))return false;
+ const full=splitAtProvenBlanks(proof.lines,proof.gaps,noCaptions);
+ const bodyParts=captions.size?splitAtProvenBlanks(proof.lines,proof.gaps,captions):full;
+ if(!full||!bodyParts||!new RegExp('^'+full.join('(?:_{3,64})?')+'$','u').test(continuationTextSignature(localText)))return false;
+ const all=new RegExp(bodyParts.join('_{3,64}'),'gu'),body=continuationTextSignature(stem),only=all.exec(body);
+ return !!only&&only.index+only[0].length===body.length&&!all.exec(body);
 }

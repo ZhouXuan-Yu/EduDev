@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 跨页题的题干与图注归属
+
+继续使用已冻结的跨页裁图与 OCR 协议。只在图归属明确且独立 OCR 完整一致时从题干比较中排除图注，跨图注的空格线证据进入待核。沿用现有数据库和回执。
+
+详见 [本轮记录](../research/evidence/kb/20261119/continuation-caption-proof/README.md)。
+
 ## 2026-11-19 跨页选择题的原图续接
 
 为新任务增加 page-continuation.choices.v1，按冻结的候选文本和图片续接。OMNI_EDU_AI_CONTINUATION_CHOICES=0 停止新选择题续接，处理已保存任务仍按各自协议。

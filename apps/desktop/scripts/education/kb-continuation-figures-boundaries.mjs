@@ -14,8 +14,27 @@ import {compileRichPaperOffice} from '../../src/main/education/paper-rich-export
 
 const prefix='(2)继续观察图甲和图乙，请判断物体的运动状态并说明理由。',tail=prefix+'\n图甲\n图乙';
 const block=(n,box,kind='text')=>({id:'block-'+n,box,kind,score:.99,needsReview:true});
-async function figureFixture({textProof=true,unlabeled=false}={}){
+async function figureFixture({textProof=true,unlabeled=false,modern=false}={}){
  const f=await fixture({prefixText:unlabeled?prefix:tail});f.db.prepare("UPDATE material_folder_ai SET processing_mode='quality'").run();
+ const complete=f.repo.runtime.complete;
+ f.repo.runtime.complete=async input=>{
+  const raw=await complete(input);
+  if(!input.pagePrompt.continuationCropPolicy||unlabeled)return raw;
+  const response=JSON.parse(raw),question=response.questions[0];
+  question.stem=question.stem.slice(0,-'\n图甲\n图乙'.length);
+  question.projection.statement.text=question.stem;
+  question.projection.subquestions.text=question.stem;
+  question.projection.figures.text+='\n图甲\n图乙';
+  if(modern){
+   response.schemaVersion='xiaozhi.material-ai-page-readings.v2';
+   response.readings=(input.cropReview?.questions||[]).map(row=>({number:row.number,crops:row.crops.map(crop=>({
+    sha256:crop.sha256,ocrSha256:crop.ocrSha256,text:crop.text,assessment:'exact',issues:[],
+    parts:[{role:crop.kind==='figure'?'figure':'body',text:crop.text}],
+   }))}));
+   if(input.previous&&!input.verification){question.answer='';question.answerOrigin='missing';question.analysis='';question.analysisOrigin='missing';}
+  }
+  return JSON.stringify(response);
+ };
  const originalBlocks=f.repo.runtime.blocks;
  f.repo.runtime.blocks=async s=>{
   const p=await originalBlocks(s);if(s.page===1)return p;
@@ -37,6 +56,11 @@ async function figureFixture({textProof=true,unlabeled=false}={}){
   const crops=await readPageFragments(f.host,f.batch,1,unit.pageSource,JSON.parse(u.first_json),u.first_json,u.image_sha,new AbortController().signal,undefined,unit.pagePrompt);
   return {u,unit,prompt:unit.pagePrompt,crops};
  };
+ if(modern)f.create=async()=>{
+  const name='OMNI_EDU_AI_SOURCE_READING',previous=process.env[name];process.env[name]='1';
+  try{return f.batch=await f.repo.create(f.input,f.task);}
+  finally{if(previous===undefined)delete process.env[name];else process.env[name]=previous;}
+ };
  return f;
 }
 let passed=0;const check=async(name,fn)=>{await fn();passed++;console.log('PASS '+name);};
@@ -45,6 +69,7 @@ await check('New default executor archives both next-page diagrams; frozen text 
   await f.create();await f.finish();const q=await f.question();assert(archiveEligible(q),JSON.stringify(q));
   const {u,prompt,crops}=await f.cold();assert.equal(prompt.continuationCropPolicy,CONTINUATION_FIGURE_CROPS);assert(validAiPagePrompt(prompt));assert.equal(prompt.continuation.schemaVersion,'page-continuation.v2');
   assert.equal(crops[0].fragments.length,4);assert.deepEqual(crops[0].fragments.filter(c=>c.kind==='diagram').map(c=>c.blockIds),[['next:block-2'],['next:block-3']]);
+  assert(q.stem.endsWith(prefix));assert(JSON.parse(u.final_json).pageText.endsWith(tail));
   assert.deepEqual(editablePageFigures(crops[0],prompt,JSON.parse(u.final_json).questions[0]),['source_question_2','source_question_3']);
   assert.deepEqual(q.document.context.illustrations,{schemaVersion:'xiaozhi.question-illustrations.v1',complete:true,blockIds:['source_question_2','source_question_3']});
   assert(q.document.blocks.filter(b=>b.kind==='image').slice(1).every(b=>b.anchors[0].page===2));
@@ -59,6 +84,22 @@ await check('Missing or reordered independent next-page OCR cannot pass the comp
  const f=await figureFixture();try{await f.create();await f.finish();const {u,prompt,crops}=await f.cold(),response=JSON.parse(u.final_json),first=JSON.parse(f.db.prepare('SELECT review_json FROM material_ai_page_verifications').get().review_json),stem=response.questions[0].stem;
   assert(pageFragmentsAgree(first,response,'1',crops,stem,prompt));
   for(const change of [c=>{c.fragments[1].quality.text=prefix.replace('运动状态','状态');},c=>{[c.fragments[2].quality,c.fragments[3].quality]=[c.fragments[3].quality,c.fragments[2].quality];},c=>{c.fragments[2].quality.text='';},c=>{c.fragments[2].quality.text='_';},c=>{c.fragments[3].quality.text+='\n下一题文字';}]){const bad=structuredClone(crops);change(bad[0]);assert(!pageFragmentsAgree(first,response,'1',bad,stem,prompt));}
+  for(const description of ['无原图图号','图甲','图乙\n图甲']){
+   const wrong=structuredClone(response);wrong.questions[0].projection.figures.text=description;
+   assert(!pageFragmentsAgree(wrong,wrong,'1',crops,stem,prompt));
+  }
+ }finally{await f.dispose();}
+});
+await check('Quality mode with two independent literal readings retains complete OCR, both subquestions and separate original figure labels',async()=>{
+ const f=await figureFixture({modern:true});try{
+  await f.create();await f.finish();const q=await f.question();assert(q&&archiveEligible(q),JSON.stringify(q?.archive??f.db.prepare('SELECT status,error FROM material_ai_units').get()));
+  assert(q.stem.endsWith(prefix));assert(!q.stem.includes('\n图甲'));
+  const {crops,prompt}=await f.cold();assert.equal(prompt.sourceReadingPolicy,'crop-source-reading.v1');
+  assert.deepEqual(crops[0].fragments.slice(2).map(c=>c.quality.text),['图甲','图乙']);
+  assert.deepEqual(q.document.context.sourceContent.crops.slice(2).map(c=>c.readings.map(r=>r.parts)),[
+   [[{role:'figure',text:'图甲'}],[{role:'figure',text:'图甲'}]],[[{role:'figure',text:'图乙'}],[{role:'figure',text:'图乙'}]],
+  ]);
+  await new MaterialAiRepository(f.host).validate(q);assert.equal(f.state.calls,3);
  }finally{await f.dispose();}
 });
 await check('Wrong next-page boxes, page/version identities, missing groups and foreign IDs fail cold authentication',async()=>{

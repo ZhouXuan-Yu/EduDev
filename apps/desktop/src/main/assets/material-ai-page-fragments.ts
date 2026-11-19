@@ -4,12 +4,12 @@ import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {sourceContentEnabled} from '../../shared/material-ai-source-content';
 import {figureDescriptionsAgree,readingBodyComplete} from './material-ai-source-reading';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
-import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup} from '../../shared/material-ai-owned-crops';
+import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,sourceCropKinds} from '../../shared/material-ai-owned-crops';
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
 import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_CHOICES,continuationChoicesAgree} from '../../shared/material-ai-continuation';
-import {continuationTextAgrees} from '../../shared/material-ai-continuation-text';
+import {continuationTextAgrees,continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
@@ -107,6 +107,59 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
   const crop={number:region.number,image:fragments[0].image,quality:fragments[0].quality,fragments},stored=pageCropStorage(crop);if(Buffer.byteLength(stored.image)>65536||Buffer.byteLength(stored.quality)>128*1024)throw Error('unit_too_large');result.push(crop);
  }return result;
 }
+const literalLines=(text:string)=>text.split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
+
+/** The source planner pins ordered blocks. Only whole independent figure
+ * groups can contribute captions, and their local reading must still agree. */
+function continuationEvidence(prompt:AiPagePrompt,crop:PageCrop){
+ const extra=pageContinuation(prompt);
+ if(!extra||extra.number!==crop.number||!crop.fragments)return;
+ const next=crop.fragments.filter(f=>f.image.page===extra.source.page);
+ const owned=next.map(f=>f.blockIds||[f.blockId]);
+ if(!owned.flat().every(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)))return;
+ const groups=owned.map(ids=>ids.map(id=>id.slice(CONTINUATION_BLOCK_PREFIX.length)));
+ if(JSON.stringify(groups.flat())!==JSON.stringify(extra.blockIds))return;
+ const roles=continuationSubcrops(prompt)?sourceCropKinds(extra.blocks,groups):[];
+ const hints=new Map(extra.blockTexts.map(h=>[h.blockId,h.text]));
+ const lines:string[]=[],local:string[]=[],captions=new Set<number>();
+ for(const [i,fragment]of next.entries()){
+  if(!validCropQuality(fragment.quality)||!fragment.quality.clearEdges.every(Boolean))return;
+  const printed=groups[i].flatMap(id=>literalLines(hints.get(id)??''));
+  const text=fragment.quality.text;
+  if(roles[i]==='figure'){
+   if(!printed.length&&isDiagramGroup(extra.blocks,groups[i])&&/^[\s_]{0,64}$/u.test(text))continue;
+   if(continuationTextSignature(printed.join('\n'))!==continuationTextSignature(text))return;
+   printed.forEach((_,index)=>captions.add(lines.length+index));
+  }
+  lines.push(...printed);
+  if(text)local.push(text);
+ }
+ if(JSON.stringify(lines)!==JSON.stringify(literalLines(extra.text)))return;
+ return {extra,lines,localText:local.join('\n'),captions};
+}
+
+function continuationFiguresAgree(question:AiImageQuestion,lines:string[],captions:ReadonlySet<number>){
+ if(!captions.size)return true;
+ if(!question.requiresImage||question.projection.figures.state!=='provided')return false;
+ const description=continuationTextSignature(question.projection.figures.text);
+ const printed=continuationTextSignature(lines.filter((_,i)=>captions.has(i)).join('\n'));
+ const at=description.indexOf(printed);
+ if(at<0)return false;
+ const joined=(a:string,b:string)=>/[\p{Script=Latin}\p{N}]$/u.test(a)&&/^[\p{Script=Latin}\p{N}]/u.test(b);
+ return !joined(description.slice(0,at),printed)&&!joined(printed,description.slice(at+printed.length));
+}
+
+/** Legacy model transcripts may include the captions inline. Only project
+ * the exact frozen suffix and leave its original lines in the saved response. */
+export function continuationParserStem(prompt:AiPagePrompt,crop:PageCrop,question:AiImageQuestion,stem:string){
+ const evidence=continuationEvidence(prompt,crop);
+ if(!evidence?.captions.size)return;
+ const {lines,captions}=evidence,parsed=literalLines(stem),offset=parsed.length-lines.length;
+ if(offset<0||!lines.every((line,i)=>aiTextSignature(line)===aiTextSignature(parsed[offset+i]))||!continuationFiguresAgree(question,lines,captions))return;
+ const body=parsed.filter((_,i)=>!captions.has(i-offset)).join('\n');
+ if(aiTextSignature(body)===aiTextSignature(question.stem))return question.stem;
+}
+
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
  if(!isFragmentPageResponse(first)||!isFragmentPageResponse(final)||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
  // New literal receipts prove this complete question independently. A change
@@ -123,22 +176,20 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
  const extra=pageContinuation(prompt);
  let groups;try{groups=cropGroups(prompt,left.blockIds,number);}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)||JSON.stringify(f.blockIds||[f.blockId])!==JSON.stringify(groups[i].blockIds)||!continuationCropMatches(prompt,f.image,groups[i])))return false;
- const nextText=crop.fragments.flatMap((f,i)=>{
-  const group=groups[i];if(!group.source)return [];
-  // A beaker baseline can OCR as "_". Only an independently proven diagram
-  // with no frozen OCR labels may omit this narrow stroke-only artifact from
-  // the BODY comparison. The pixels and original OCR receipt remain intact;
-  // any letter, digit, unit, minus sign or known label still participates.
-  const emptyDiagram=continuationSubcrops(prompt)&&group.kind==='diagram'&&group.blockIds.every(id=>extra?.blockTexts.find(h=>h.blockId===id.slice(CONTINUATION_BLOCK_PREFIX.length))?.text==='');
-  return emptyDiagram&&/^[\s_]{1,64}$/u.test(f.quality.text)?[]:[f.quality.text];
- }).filter(Boolean).join('\n');
  if(extra?.number===number){
   if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
    // Compare the source option seams before general question layout folding.
    if(!originalA||!rawB||[originalA,rawB].some(q=>!continuationChoicesAgree(extra.text,q.stem)))return false;
-  }else if([a,b].some(q=>extra.schemaVersion===PAGE_CONTINUATION_TEXT
-   ?!continuationTextAgrees(extra.text,extra.textProof,q.stem,nextText)
-   :!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+  }else if(!continuationSubcrops(prompt)&&extra.schemaVersion!==PAGE_CONTINUATION_TEXT){
+   if([a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
+  }else{
+   const evidence=continuationEvidence(prompt,crop);if(!evidence)return false;
+   const {lines,localText,captions}=evidence;
+   const body=captions.size?lines.filter((_,i)=>!captions.has(i)).join('\n'):extra.text;
+   if([a,b].some(q=>!continuationFiguresAgree(q,lines,captions)||(extra.schemaVersion===PAGE_CONTINUATION_TEXT
+    ?!continuationTextAgrees(extra.text,extra.textProof,q.stem,localText,captions)
+    :!aiTextSignature(q.stem).endsWith(aiTextSignature(body))||captions.size>0&&aiTextSignature(localText)!==aiTextSignature(extra.text))))return false;
+  }
  }
  const quality:CropQuality={schemaVersion:crop.fragments[0].quality.schemaVersion,engine:crop.fragments[0].quality.engine,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  const bodyAgrees=sourceReadingEnabled(prompt)?readingBodyComplete(first,final,a,crop,prompt,crops)&&readingBodyComplete(first,final,b,crop,prompt,crops):prompt.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropTextPolicy===MATERIAL_CROP_BODY_TEXT

@@ -1,0 +1,44 @@
+{
+  "baselineRevision": "f5d94537e15de9c20c7dbba9652c882c1dcc9d50",
+  "integrationParentRevision": "83034fee00e0015e5f0d6f22392bf29d80f621b2",
+  "buildMainSha256": "8f677a45b10593103824c65ed71f61369481fc0669a2be199c28117f3329c322",
+  "checks": {
+    "aiPage": "248/248",
+    "generalCrossPage": "12/12",
+    "figureContinuation": "10/10",
+    "literalContinuation": "10/10",
+    "rendererComponents": "253/253",
+    "electronSmoke": "207/207",
+    "desktopFolderBookPair": "7/7"
+  },
+  "desktopFolderBookPair": {
+    "modelProtocol": "retained fragment response",
+    "documents": "generated question and answer PDFs",
+    "crossPageQuestionState": "book_enriched",
+    "anchorPages": [1, 1, 2, 2],
+    "independentDiagramPage": 2,
+    "printedDiagramLabels": false,
+    "controlledResponses": 8,
+    "cloudCalls": 0,
+    "coldModelCalls": 0,
+    "rendererErrors": 0
+  },
+  "literalComparison": {
+    "iterationCount": 1000,
+    "oldAccepted": false,
+    "newAccepted": true,
+    "oldP95Ms": 0.0147,
+    "newP95Ms": 0.0177
+  },
+  "naturalSampleCoverage": {
+    "previouslyParsedNextPagesScreened": 245,
+    "matchedCurrentPlannerCriteria": 0,
+    "naturalLabeledContinuation": "NOT_RUN"
+  },
+  "dependencyAudit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0
+  },
+  "fullGoalComplete": false
+}

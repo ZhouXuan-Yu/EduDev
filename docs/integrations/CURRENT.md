@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 跨页题的题干与图注归属
+
+PDFium、RapidOCR 和 PP-DocLayout 的原图及原块继续作为本地证据。DeepSeek 的独立字面转录沿现有契约核对，未增加模型调用轮次。
+
+详见 [本轮记录](../research/evidence/kb/20261119/continuation-caption-proof/README.md)。
+
 ## 2026-11-19 小智工作台接线
 
 新增一个版本化工作台只读 API，继续、批准、拒绝和能力检查沿原 typed IPC。受控 PowerShell 的子进程模块缓存进入现有隔离临时目录。Pi、Registry、文件、SQLite 和原授权签发仍是对应领域入口。

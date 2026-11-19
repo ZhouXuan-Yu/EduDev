@@ -1,6 +1,7 @@
 import {sourceContentEnabled} from '../../shared/material-ai-source-content';
 import {isFragmentPageResponse} from '../../shared/material-ai-page';
 import {readingCandidateStem} from './material-ai-source-reading';
+import {continuationParserStem} from './material-ai-page-fragments';
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
 import {extractMaterialQuestions} from './material-question-extract';
@@ -34,7 +35,12 @@ export function restoredResponseQuestions(response:AiPageResponse,source:Materia
  const body=bodyLines.join('\n');
  return restoredPageQuestions(body,source,response.questions.map(q=>q.number),prompt).map(candidate=>{
   const q=response.questions.find(q=>q.number===candidate.number),fragment=response.fragments.find(f=>f.number===candidate.number);
-  if(q){const reading=readingCandidateStem(response,q,crops,prompt,candidate.fields.stem);if(reading!==undefined)return{...candidate,fields:{...candidate.fields,stem:reading}};}
+  if(q){
+   const reading=readingCandidateStem(response,q,crops,prompt,candidate.fields.stem);
+   const crop=crops.find(c=>c.number===q.number);
+   const stem=reading??(crop&&continuationParserStem(prompt,crop,q,candidate.fields.stem));
+   if(stem!==undefined)return{...candidate,fields:{...candidate.fields,stem}};
+  }
   if(!q?.requiresImage||q.projection.figures.state!=='provided'||!fragment?.complete||aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem))return candidate;
   const captions=new Map<string,number>();
   for(const id of fragment.blockIds){if(prompt.blocks.blocks.find(b=>b.id===id)?.kind!=='figure_title')continue;
