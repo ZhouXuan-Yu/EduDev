@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 Word 校验与质量门禁
+
+生产 Word Office 哈希路径改为八个文件的有界并行，固定有序拼接保证整树指纹。实际锁定树 ABBA、12 个组件专项及真实包 6/6 验证，之前真实 NSIS 完成 x64 交付候选。增加五项有证据的质量门禁至 83/89。[Word 对照](evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json) · [质量记录](evidence/phase8/current-quality-checkpoint-20261119.md)。
+
 ## 2026-11-19 普通文本模型边界
 
 更新 Production Host 的文本处理接线，复用学生上下文脱敏器。新增真实 loopback Host 6/6 及独立原样本 3/3。保留旧模型请求字段失败证据与新结构标签缺口；没有付费请求。[结果](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。

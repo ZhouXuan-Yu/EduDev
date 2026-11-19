@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "verdict": "PACKAGED_IMPORT_AND_WORD_COLD_READBACK_PASS",
+  "sources": {
+    "inputCommit": "257ed67",
+    "hostFileTextPatch": "e112ff4",
+    "productionToolSourceHash": "853c3482da4bb96375092c278aa072e2277d2f5a3d804f80a07c3bfc2f07da6c",
+    "wordOfficeSources": [
+      {
+        "file": "src/main/assets/word-office-component.ts",
+        "sha256": "92c1ce865e2b53a9d6abf257c07af681fd97e38dc512fd228bd30b475230e800"
+      },
+      {
+        "file": "src/main/assets/word-office-tree.ts",
+        "sha256": "8f929d18e881372112ad00dc6fd58e140efc74d945df5a5ce2638f6baa08f7bd"
+      }
+    ],
+    "compiledAndPackagedOut": {
+      "files": 481,
+      "sha256": "24bcc61fbb0e86c38338382d0a506bbee42beb17d84b737fc6559b473ce58ea7"
+    }
+  },
+  "reader": {
+    "bound": "Eight file handles at a time, at most one 256 KiB buffer per file, in original ordinal traversal order",
+    "verifiedWindowsComponentCases": 12,
+    "officialFileCount": 19271,
+    "officialBytes": 1526232897,
+    "officialTreeSha256": "36dbb393603e2a1513546c8d10dd6efc745c6522063a4ad51097390c8802ec6f",
+    "benchmark": {
+      "baseline": "257ed67",
+      "order": "ABBA",
+      "sample": "Same warm locked Office tree, old Git blob and new current production implementation",
+      "results": [
+        {
+          "label": "before",
+          "ms": 7063,
+          "files": 19271,
+          "bytes": 1526232897,
+          "sha256": "36dbb393603e2a1513546c8d10dd6efc745c6522063a4ad51097390c8802ec6f"
+        },
+        {
+          "label": "after",
+          "ms": 2945,
+          "files": 19271,
+          "bytes": 1526232897,
+          "sha256": "36dbb393603e2a1513546c8d10dd6efc745c6522063a4ad51097390c8802ec6f"
+        },
+        {
+          "label": "after",
+          "ms": 3062,
+          "files": 19271,
+          "bytes": 1526232897,
+          "sha256": "36dbb393603e2a1513546c8d10dd6efc745c6522063a4ad51097390c8802ec6f"
+        },
+        {
+          "label": "before",
+          "ms": 7711,
+          "files": 19271,
+          "bytes": 1526232897,
+          "sha256": "36dbb393603e2a1513546c8d10dd6efc745c6522063a4ad51097390c8802ec6f"
+        }
+      ],
+      "beforeMeanMs": 7387,
+      "afterMeanMs": 3003.5,
+      "percentReduction": 59.34
+    }
+  },
+  "packaged": {
+    "reportSha256": "01f61236ab1543a747912e7fcf167c38bb565801f34370fcb60cdb0a8cbbef75",
+    "executableSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "sourceCount": 5,
+    "checks": [
+      {
+        "name": "Packaged frozen worker and native LanceDB",
+        "passed": true
+      },
+      {
+        "name": "Packaged PDFium page component on one synthetic scanned page",
+        "passed": true
+      },
+      {
+        "name": "Teacher imports long text, Markdown, DOCX, image and synthetic scanned PDF through local parsers",
+        "passed": true
+      },
+      {
+        "name": "Original Word and derived PDF identities, bytes and reverse link persist after cold restart",
+        "passed": true
+      },
+      {
+        "name": "Tail beyond 80 chunks and image OCR persist after cold restart",
+        "passed": true
+      },
+      {
+        "name": "Cold restart catalogue/body readback",
+        "passed": true
+      }
+    ],
+    "launches": [
+      {
+        "packaged": true,
+        "path": ""
+      },
+      {
+        "packaged": true,
+        "path": ""
+      }
+    ],
+    "timeline": [
+      {
+        "elapsedMs": 887,
+        "import": "needs_parser",
+        "archive": "idle"
+      },
+      {
+        "elapsedMs": 1267,
+        "import": "processing",
+        "archive": "running",
+        "component": "checking"
+      },
+      {
+        "elapsedMs": 2748,
+        "import": "processing",
+        "archive": "running",
+        "component": "extracting"
+      },
+      {
+        "elapsedMs": 58865,
+        "import": "processing",
+        "archive": "running",
+        "component": "verifying"
+      },
+      {
+        "elapsedMs": 139435,
+        "import": "processing",
+        "archive": "running",
+        "component": "ready"
+      },
+      {
+        "elapsedMs": 163236,
+        "import": "processing",
+        "archive": "complete",
+        "component": "ready"
+      },
+      {
+        "elapsedMs": 173246,
+        "import": "ready",
+        "archive": "complete",
+        "component": "ready"
+      }
+    ],
+    "wordArchive": {
+      "originalId": "resource_107813e2-b4ee-4c11-b7aa-f66b98ec2bef",
+      "originalSha256": "d99d1417f744c36fa98216cab6df7d1f183116add7504dc258d4c3a165f1d5df",
+      "pdfId": "resource_acd5ec02-7dc3-47ea-9f53-9af2b0a14801",
+      "pdfSha256": "6ac7eb5c96787de97835e7b54b6df5323f4a945e6c0ec59b94840c300488c442",
+      "pdfBytes": 11748,
+      "pages": 1
+    },
+    "networkAttempts": [],
+    "rendererErrors": []
+  },
+  "separateInstaller": {
+    "candidate": "Previous five-resource portable candidate which passed the first cold import and reopening",
+    "bytes": 886055267,
+    "sha256": "05d778c341b12a5892b1667bb9ffc58ad9da6954abcc6fec6820ccb531fc28ca",
+    "unsigned": true,
+    "installAndUninstall": "NOT_TESTED"
+  }
+}

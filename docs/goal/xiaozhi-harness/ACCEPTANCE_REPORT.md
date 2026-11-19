@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 质量门禁检查点
+
+QG-01 类型、QG-02 Lint、QG-03 单测、QG-04 迁移和 QG-08 开发/打包构建已实现。分支矩阵 83/89。已归档 527 文件 lint 的 170 个警告，以及测试范围和安装卸载仍待复验的边界。[门禁证据](evidence/phase8/current-quality-checkpoint-20261119.md)。
+
 ## 2026-11-19 A-P0-08 普通文本与结构字段
 
 原普通授权文本问题已修复。独立 3/3 同时覆盖选择学生、正常文本读取、明确拒绝 HTTP Egress。真实列表→元数据→读取另证实结构标签仍能外显。A-P0-08 整体 FAIL，适用发布门槛继续执行。[证据](evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json)。

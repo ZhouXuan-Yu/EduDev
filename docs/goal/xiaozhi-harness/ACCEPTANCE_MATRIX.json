@@ -1712,35 +1712,78 @@
       "id": "QG-01",
       "priority": "P1",
       "expected": "TypeScript 类型检查。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。开发构建和定向生产源码类型检查退出 0。"
     },
     {
       "id": "QG-02",
       "priority": "P1",
       "expected": "Lint。",
-      "status": "NOT_TESTED",
-      "evidence": []
+      "status": "PASS",
+      "evidence": [
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": []
+        }
+      ],
+      "scope": "已实现。使用 Oxlint 1.68.0 默认 correctness，527 个相关源码与脚本 0 error、170 warning，完整诊断保留。"
     },
     {
       "id": "QG-03",
       "priority": "P1",
       "expected": "相关单元测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。相关组件、预算、Word Office、Pi reasoning、continuity 均通过。"
     },
     {
       "id": "QG-04",
       "priority": "P1",
       "expected": "数据库迁移测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。实际旧合成库及 Skill v1 迁移合计 20/20。未改变原教学和对话事实。"
     },
     {
       "id": "QG-05",
@@ -1773,10 +1816,22 @@
       "id": "QG-08",
       "priority": "P1",
       "expected": "Electron 开发与打包构建。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/current-quality-checkpoint-20261119.md",
+        "evidence/phase8/windows-package-20261119/optimized-office-verify-and-package.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。开发构建、五资源打包和实包启动通过；前一五资源候选生成 NSIS x64。最终安装和卸载由 QG-09 检查。"
     },
     {
       "id": "QG-09",
