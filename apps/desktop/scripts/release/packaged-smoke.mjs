@@ -6,6 +6,7 @@ import {_electron} from 'playwright';
 import {Document,Packer,Paragraph} from 'docx';
 import {setTimeout as delay} from 'node:timers/promises';
 import {createHash} from 'node:crypto';
+import {runInNewContext} from 'node:vm';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const resumeIndex=process.argv.indexOf('--resume-dir');
 const resume=resumeIndex>=0;
@@ -20,6 +21,10 @@ fs.mkdirSync(output,{recursive:true});
 const profile=path.join(output,'profile'),data=path.join(output,'data'),exe=process.env.OMNI_EDU_PACKAGED_EXE||path.join(desktop,'.release/win-unpacked/小智.exe');
 const text=path.join(output,'教师教案.md'),docx=path.join(output,'教师讲义.docx');
 const longText=path.join(output,'长教材.txt'),image=path.join(output,'题目照片.png'),pdf=path.join(output,'扫描题页.pdf');
+const originalFiles=[text,docx,longText,image,pdf];
+// A fresh synthetic profile may explicitly seed these two locked downloads.
+// Resume mode only reads the existing profile and never copies cache packages.
+const officeCache=process.env.OMNI_EDU_PACKAGED_OFFICE_CACHE;
 if(!resume){
 fs.writeFileSync(text,'# 一元一次方程\n\n方程的解必须使等式两边相等。');
 fs.writeFileSync(docx,await Packer.toBuffer(new Document({sections:[{children:[new Paragraph('一元一次方程讲义：移项必须变号。')]}]})));
@@ -28,6 +33,46 @@ fs.writeFileSync(longText,'完整教材内容。'.repeat(18000)+'\n教材尾部�
 const report={executable:exe,profile,data,checks:[],rendererErrors:[],networkAttempts:[],boundary:'Packaged executable on this Windows host with empty PATH; synthetic local imports only, no provider calls; not a clean VM or signed release.'};
 if(resume){const original=fs.readFileSync(path.join(output,'report.json'));report.resumedFrom={sha256:createHash('sha256').update(original).digest('hex'),report:'report.json',boundary:'Only existing catalogue/body/UI readback; no repeated generation, import or worker probes'};}
 let app,page;
+let originalInputs,importedIds;
+function identifyOriginalInputs(){
+ originalInputs=originalFiles.map(file=>{
+  const bytes=fs.readFileSync(file);
+  return {originalFileName:path.basename(file),fileSize:bytes.length,contentHash:createHash('sha256').update(bytes).digest('hex')};
+ });
+ report.originalInputs=originalInputs;
+}
+function findOriginalResources(resources){
+ const matches=originalInputs.map(input=>resources.filter(resource=>resource.originalFileName===input.originalFileName&&resource.fileSize===input.fileSize&&resource.contentHash===input.contentHash));
+ if(matches.some(items=>items.length!==1))return undefined;
+ return matches.map(items=>items[0]);
+}
+function prepareOfficeCache(){
+ assert(path.isAbsolute(officeCache),'OMNI_EDU_PACKAGED_OFFICE_CACHE must be an absolute directory');
+ const cache=fs.realpathSync(officeCache);
+ assert(fs.statSync(cache).isDirectory(),'Office cache must be a directory');
+ // Reuse the production recipe without importing its Electron dependency graph.
+ const source=fs.readFileSync(path.join(desktop,'src/main/assets/word-office-component.ts'),'utf8');
+ const declaration=source.match(/export const WORD_OFFICE_COMPONENT=(\{[\s\S]*?\n\}) as const;/);
+ assert(declaration,'Production Office component recipe was not found');
+ const recipe=runInNewContext('('+declaration[1]+')',Object.create(null),{timeout:1000});
+ const destination=path.join(profile,'managed-components','downloads');
+ fs.mkdirSync(destination,{recursive:true});
+ const files=[recipe.msi,recipe.extractor].map(item=>{
+  assert.equal(path.basename(item.name),item.name,'Invalid Office package name');
+  const file=path.join(cache,item.name),stat=fs.lstatSync(file);
+  assert(stat.isFile()&&!stat.isSymbolicLink(),'Office cache package must be a regular file');
+  assert.equal(stat.size,item.bytes,'Office cache package size mismatch');
+  const bytes=fs.readFileSync(file),sha256=createHash('sha256').update(bytes).digest('hex');
+  assert.equal(bytes.length,item.bytes,'Office cache package changed size');
+  assert.equal(sha256,item.sha256,'Office cache package hash mismatch');
+  fs.writeFileSync(path.join(destination,item.name),bytes,{flag:'wx'});
+  return {name:item.name,bytes:bytes.length,sha256};
+ });
+ report.officeCache={source:cache,destination,files,boundary:'Only the two locked download packages are seeded into this fresh synthetic profile; production ensure validates and extracts them.'};
+}
+async function collectNetworkAttempts(){
+ if(app)report.networkAttempts.push(...await app.evaluate(()=>globalThis.__packagedNetworkAttempts?.splice(0)??[]));
+}
 async function launch(){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_PYTHON:'C:\\not-installed\\python.exe',PATH:''};
  for(const key of Object.keys(env))if(/API_KEY|AUTH_TOKEN|ACCESS_TOKEN/.test(key)||key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
@@ -42,6 +87,8 @@ async function launch(){
  await page.getByTestId('nav-knowledge').click();await page.getByTestId('materials-import').waitFor();
 }
 try{
+ if(officeCache&&!resume)prepareOfficeCache();
+ if(resume)identifyOriginalInputs();
  await launch();
  if(!resume){
  const components=await app.evaluate(async({app},root)=>{
@@ -84,29 +131,35 @@ try{
   if(!receipt.ok)throw new Error('PDF page component failed');return {ok:receipt.ok};
  },pdf);
  report.checks.push({name:'Packaged PDFium page component on one synthetic scanned page',passed:true,pdfComponent});
+ identifyOriginalInputs();
  // Use the real teacher action; only the native picker selection is controlled.
- await app.evaluate(({dialog},files)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:files});},[text,docx,longText,image,pdf]);
+ await app.evaluate(({dialog},files)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:files});},originalFiles);
  await page.getByTestId('materials-import').click();
  const deadline=Date.now()+180000;let ready=false,last;
  while(Date.now()<deadline){
   last=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
-  if(last.total===5&&last.resources.every(x=>x.parseStatus==='ready')){ready=true;break;}
+  const originals=findOriginalResources(last.resources);
+  if(originals&&originals.every(x=>x.parseStatus==='ready')){ready=true;importedIds=originals.map(x=>x.id);break;}
   await delay(250);
  }
  assert(ready,'Import did not complete: '+JSON.stringify(last?.resources.map(x=>({name:x.originalFileName,status:x.parseStatus,engine:x.parseEngine}))));
  report.checks.push({name:'Teacher imports long text, Markdown, DOCX, image and synthetic scanned PDF through local parsers',passed:true});
  await page.screenshot({path:path.join(output,'materials-packaged.png'),fullPage:true});
- report.networkAttempts.push(...await app.evaluate(()=>globalThis.__packagedNetworkAttempts));
+ await collectNetworkAttempts();
  await app.close();app=undefined;await launch();
  }
  const catalog=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
- assert.equal(catalog.total,5);assert(catalog.resources.every(x=>x.parseStatus==='ready'));
- const bodies=await page.evaluate(async resources=>Promise.all(resources.map(r=>window.omniEdu.getMaterialBody({schemaVersion:'xiaozhi.materials.v1',resourceId:r.id,offset:0}))),catalog.resources);
+ const originals=findOriginalResources(catalog.resources);
+ assert(originals,'Cold restart must retain exactly one resource for each original filename, size and SHA-256');
+ assert(originals.every(x=>x.parseStatus==='ready'));
+ if(importedIds)assert.deepEqual(originals.map(x=>x.id),importedIds);
+ report.originalResourceIds=originals.map(x=>x.id);
+ const bodies=await page.evaluate(async resources=>Promise.all(resources.map(r=>window.omniEdu.getMaterialBody({schemaVersion:'xiaozhi.materials.v1',resourceId:r.id,offset:0}))),originals);
  assert(bodies.every(x=>x.chunks.length>0));
- const longResource=catalog.resources.find(x=>x.originalFileName==='长教材.txt');assert(longResource.chunkCount>80);
+ const longResource=originals.find(x=>x.originalFileName==='长教材.txt');assert(longResource.chunkCount>80);
  const tail=await page.evaluate(async r=>window.omniEdu.getMaterialBody({schemaVersion:'xiaozhi.materials.v1',resourceId:r.id,offset:r.chunkCount-1}),longResource);
  assert(tail.chunks.some(x=>x.contentMd.includes('尾部知识点不能丢失')));
- const imageResource=catalog.resources.find(x=>x.originalFileName==='题目照片.png');
+ const imageResource=originals.find(x=>x.originalFileName==='题目照片.png');
  const imageBody=bodies.find(x=>x.resource.id===imageResource.id);assert(imageBody.chunks.some(x=>x.contentMd.includes('2')));
  assert(imageResource.parseEngine.startsWith('image-rapidocr'));
  await page.getByTestId('material-'+imageResource.id).click();
@@ -118,8 +171,8 @@ try{
  await page.screenshot({path:path.join(output,'image-ocr-1920'+suffix+'.png'),fullPage:true});
  report.checks.push({name:'Tail beyond 80 chunks and image OCR persist after cold restart',passed:true});
  report.checks.push({name:'Cold restart catalogue/body readback',passed:true});
- report.networkAttempts.push(...await app.evaluate(()=>globalThis.__packagedNetworkAttempts));assert.deepEqual(report.networkAttempts,[]);
+ await collectNetworkAttempts();assert.deepEqual(report.networkAttempts,[]);
  assert.deepEqual(report.rendererErrors,[]);
  report.success=true;
-}catch(error){report.success=false;report.error=String(error.stack||error);if(page)await page.screenshot({path:path.join(output,resume?'failure-readback'+suffix+'.png':'failure.png'),fullPage:true}).catch(()=>{});throw error;}
-finally{if(app)await app.close();fs.writeFileSync(path.join(output,resume?'report-readback'+suffix+'.json':'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,...report},null,2));}
+}catch(error){report.success=false;report.error=String(error.stack||error);await collectNetworkAttempts().catch(captureError=>{report.networkCaptureError=String(captureError.message||captureError);});if(page)await page.screenshot({path:path.join(output,resume?'failure-readback'+suffix+'.png':'failure.png'),fullPage:true}).catch(()=>{});throw error;}
+finally{try{if(app)await app.close();}finally{fs.writeFileSync(path.join(output,resume?'report-readback'+suffix+'.json':'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,...report},null,2));}}

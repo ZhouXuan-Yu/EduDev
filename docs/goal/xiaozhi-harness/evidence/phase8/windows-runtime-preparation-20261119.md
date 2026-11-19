@@ -20,4 +20,8 @@
 
 已在专用工作树逐文件校验 767 项版面分块资源。在 `OMNI_EDU_BUNDLE_PAGE_BLOCKS=1` 下五套资源 preflight 均通过。后续使用这一显式配置以及独立测试 profile 的官方 Office 组件缓存验证完整结构导入，同时保留组件不可用时的证据。
 
+四资源候选的 NSIS x64 本地构建退出 0，生成 `%TEMP%/edup-6e98963d/release/Xiaozhi-Setup-0.1.0-x64.exe`，664,934,678 字节，SHA-256 `5959a9746b2569f44b3c84019bf553a57ed9aa7038d6dc69cd35a269b159202f`。这是保留失败边界的候选，无签名、未执行安装。带版面分块及 HTTP MCP 修复的独立 unpacked 候选位于 `%TEMP%/eduf-06f8ada8/release/win-unpacked`，五套 afterPack 均通过。构建输入 481 文件，指纹 `f9148022679dbd3c52df3d9382be58e59ebde0f78e5972abc6e2dc669ee65feb`。
+
+导入测试现核对五份原件的文件名、长度和 SHA-256，允许单独出现转换派生件，并在异常前采集被阻断的网络请求。夹具定向复验 8/8。填入两个官方锁定下载件，实际候选在合成 profile 完成 Word 组件解包。在最新真实导入中，TXT、Markdown、图片、扫描 PDF 均 ready，DOCX 进入原版转换流程后仍返回 partial/parse_failed。记录到零网络请求和 renderer 错误；继续定位生产链路中的转换回执和归档，保留原强断言。[完整资源候选复测](windows-package-20261119/unpacked-full-structure-result.json)。
+
 当前用户桌面和开始菜单有指向日常小智的快捷方式，Windows 11 家庭版机器没有 Windows Sandbox。与真实安装和卸载相关的快捷方式、应用注册及数据保留仍需隔离环境完成。

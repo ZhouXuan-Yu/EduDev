@@ -1,0 +1,18 @@
+{
+  "fixture": "scripts/release/packaged-smoke.mjs",
+  "sha256": "b21ce116a4197ebfbcb32595a263c5263c2607ee05c9a9380c382f84ddaabab7",
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "boundary": "Exact edited fixture functions and catch/finally extracted into a VM with synthetic TEMP files and fake app surfaces. No Electron, network, downloads, installation or production/out/DB mutations.",
+  "checks": [
+    "five identities alongside a derived PDF",
+    "duplicate rejected",
+    "hash change rejected",
+    "missing original rejected",
+    "capture drains without duplicates",
+    "wrong Office cache rejected",
+    "failure captures before screenshot and close",
+    "report persists even when close fails"
+  ]
+}
