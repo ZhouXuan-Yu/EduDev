@@ -1,5 +1,43 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-19 页尾题边界复核
+
+M03/M05 已恢复可证明的页尾题边界。下一页待核不会阻断已有完整题文档且原生文字与 OCR 共证的新父题边界。真实跨页、公式和多源留出仍继续验收。
+
+详见 [本轮报告](../research/evidence/kb/20261119/next-parent-boundary/README.md)。
+
+## 2026-11-19 答案册速查表结构恢复
+
+M05 支持独立答案册的双行速查表。明确试卷范围、连续唯一题号、等长列与双读一致才关联；未达到条件应保留原文与待核。全量通用资料从版面到题库交付仍在进行。
+
+详见 [本轮记录](../research/evidence/kb/20261119/book-key-tables/README.md)。
+
+## 2026-11-19 题本完整题干优先
+
+题本粘贴自然题干时，字面结果从第 1518 位提升到第 1 位，共 1577 命中。复用 Pi 关键词覆盖排序并优先题干原句，保留硬筛选和空查询浏览顺序。Electron 首屏打开两张原图，新增模型调用 0。专项 7、原检索 17、题号范围 9 和 build 通过。30 次热查询 P95 127.3→153.5ms，整库性能及检索留出仍待验收。完整 Goal ACTIVE。
+
+详见 [本轮记录](../research/evidence/kb/20261119/notebook-phrase-ranking/README.md)。
+
+## 2026-11-19 独立题图的标注间距复核
+
+自然样本的独立图说明只在已证实标注词前有排版空白，旧比较使整题只能见整页。figure-label-spacing.v1 绑定双独立图像转录、原裁图和原 OCR 摘要，仅比较说明中的标注前横向空白。恢复 1 份完整题文档，2 张原图冷读和原付费记录核对通过，新增调用 0。真实答案冲突、年级和续页待核保留。自然整库与完整 Goal ACTIVE。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
+## 2026-11-18 有来源编号的版式误判修复
+
+四题全半角编号版式误判已修复并由原界面恢复完整题文档，保留原文与真实缺年级待核，新模型调用0。初版冻结构建 Electron 207/207 通过，整体知识库目标继续 ACTIVE；不将这一受控样本的局部通过声明为全目录质量或检索组卷完成。
+
+详见 [本轮报告](../research/evidence/kb/20261118/source-marker-recheck/README.md)。
+
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+主线整合补充：57c4f20 的功能已通过 8da5d2e 整合 origin/main 5938c31 的协作终端/恢复代码，双方状态记录保留。整合树 b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73 的 build、253 组件、16 来源、247 AI 页及完整 207 Electron 回归通过；原付费输入/四份裁图冷读 3 项、协作终端双尺寸 10 项通过，整合新增付费 0。原真实 AI 验证树 e996a501 保留，不能与整合树混称。完整知识库仍 ACTIVE，四题待核和下一处标点比较缺陷不变。
+
+本轮结构来源接续与独立末稿答案格式修复已完成定向验收和真实调用。四题完整保留补充选项，仍有缺年级及全半角标点误判，已将使用已存响应的本地来源核对列为下一位置。完整知识库 Goal 继续 ACTIVE。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
+
 ## 2026-11-18 Harness Gate6通过
 
 Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。

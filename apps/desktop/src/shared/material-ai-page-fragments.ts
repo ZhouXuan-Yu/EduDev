@@ -21,7 +21,7 @@ export const pageFragmentTextPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGME
 export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||pageFragmentTextPolicy(v);
 export const MATERIAL_PAGE_FRAGMENTS_RESPONSE='xiaozhi.material-ai-page-fragments.v1' as const;
 export type BlockTextHint={blockId:string;text:string};
-export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[];lines?:MaterialLine[]};
+export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[];lines?:MaterialLine[];structureContext?:import('./material-ai-structure').AiStructureContext};
 export type AiQuestionFragments={number:string;blockIds:string[];complete:boolean};
 /** Comparison-only adapter. The final stem must already match the independently parsed source. */
 export function comparableFragmentQuestion(a:AiImageQuestion,b:AiImageQuestion|undefined,sourceStem:string,policy:unknown,prompt?:AiPagePrompt):AiImageQuestion{

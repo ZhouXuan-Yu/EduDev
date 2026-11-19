@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "xiaozhi.notebook-phrase-ranking-evidence.v1",
+  "date": "2026-11-19",
+  "result": "PASS",
+  "fullKnowledgeGoal": "ACTIVE",
+  "before": {
+    "ok": true,
+    "baseline": true,
+    "mainSha256": "301979cab1451743c06c094d1ed3c627f9225a75e05e4365e4a9accfd4a10eb0",
+    "rank": 1518,
+    "total": 1577,
+    "p50": 87.8000000002794,
+    "p95": 127.29999999981374,
+    "samples": 30,
+    "visibleOriginalGallery": false,
+    "addedCalls": 0
+  },
+  "after": {
+    "ok": true,
+    "baseline": false,
+    "mainSha256": "803e56c63ccc6ae78d735e4be4ba483be43f09f52ed82130b80fded99d501df6",
+    "rank": 1,
+    "total": 1577,
+    "p50": 131.1999999997206,
+    "p95": 153.5,
+    "samples": 30,
+    "syntheticChecks": 7,
+    "visibleOriginalGallery": true,
+    "addedCalls": 0
+  },
+  "gates": {
+    "retrieval": 17,
+    "exactNumberScope": 9,
+    "independentIpc": 7
+  },
+  "npmAudit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "logs": {
+    "before": "85846083fbe6194918f5b57d8e352781802db4b6979a6e2caf08dcec7e974a99",
+    "after": "fa0b2f0dad7654c41c32fa168ceba6e7818e3b9bfd259ef6eedbdc26eda5b691",
+    "build": "d2e1252c1614ebc2ba1d8fa9c9f8977c77f6eb42a2f349b5d4c20e43ab3420fb",
+    "retrieval": "6b734a9411b09124be42aed8e950bc2e4e1ae09cd0387aae58da5fbde7bd3140",
+    "scope": "63ebb83df39f749aa417a7a09fba5a9135f1c718f23acb517a70ac5ddc019194",
+    "smoke": "4d278cc18f6f878586717301704eacd74eac7b9e64c44998a182b2a25bc53d6d",
+    "audit": "77b7c447e643a194b13f34bb6ef6efaba4d628287be17ea18f3cd6415629d4dc"
+  }
+}

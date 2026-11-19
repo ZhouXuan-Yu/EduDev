@@ -1,0 +1,194 @@
+{
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-phase7-workbench-renderer-tqoIWz",
+  "checks": [
+    {
+      "id": "W01",
+      "name": "Real Shell opens the overview on demand, closes on Escape and restores its trigger",
+      "pass": true
+    },
+    {
+      "id": "W02",
+      "name": "Task filters/counts use the server universe and null counts remain unknown",
+      "pass": true
+    },
+    {
+      "id": "W03",
+      "name": "Actual restore helper selects/hydrates first, rereads exact Task and dispatches one original resume",
+      "pass": true
+    },
+    {
+      "id": "W04",
+      "name": "Changed/rejected selection and fresh Task mismatch issue no model/resume call",
+      "pass": true
+    },
+    {
+      "id": "W05",
+      "name": "Legacy no_criteria continuation carries explicit same Task and never falls back from rejected resume",
+      "pass": true
+    },
+    {
+      "id": "W06",
+      "name": "Summary filter epoch ignores an older deferred page after a newer result",
+      "pass": true
+    },
+    {
+      "id": "A01",
+      "name": "Inbox retrieves exact modern revision only on selection and sends the original CAS decision",
+      "pass": true
+    },
+    {
+      "id": "A02",
+      "name": "Expired/denied modern approvals and CAS errors remain visible and never claim success",
+      "pass": true
+    },
+    {
+      "id": "A03",
+      "name": "Legacy decisions reread the same etag and stop on changed detail before the original API",
+      "pass": true
+    },
+    {
+      "id": "A04",
+      "name": "Legacy pending/rejected/unknown/approved use original decide/verify/resume actions",
+      "pass": true
+    },
+    {
+      "id": "A05",
+      "name": "Late detail reads cannot revive an old approval after changing filter",
+      "pass": true
+    },
+    {
+      "id": "C01",
+      "name": "Capability axes distinguish installed, quarantined, authorization and missing requirements without Task authority",
+      "pass": true
+    },
+    {
+      "id": "C02",
+      "name": "Capability query binds the legitimate selected Task and stale/partial sources stay explicit",
+      "pass": true
+    },
+    {
+      "id": "W07",
+      "name": "Real parent cross-session restore survives Composer remount, holds single flight and preserves the target draft",
+      "pass": true
+    }
+  ],
+  "calls": [
+    [
+      "select",
+      "aisession_22222222-2222-4222-8222-222222222222"
+    ],
+    [
+      "get",
+      {
+        "sessionId": "aisession_22222222-2222-4222-8222-222222222222"
+      }
+    ],
+    [
+      "resume",
+      {
+        "schema": "xiaozhi.task.v1",
+        "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+        "taskId": "xitask_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "revision": 3,
+        "requirementsVersion": 1,
+        "commandId": "xicmd_11111111-1111-4111-8111-111111111111"
+      }
+    ],
+    {
+      "schemaVersion": 1,
+      "kind": "approvals",
+      "state": "pending",
+      "limit": 20
+    },
+    {
+      "schemaVersion": 1,
+      "kind": "approval_detail",
+      "ref": {
+        "kind": "permission_v2",
+        "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+        "id": "approval_fixture",
+        "revision": 7
+      }
+    },
+    {
+      "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+      "approvalId": "approval_fixture",
+      "revision": 7,
+      "decision": "approve",
+      "scope": "operation"
+    },
+    {
+      "schemaVersion": 1,
+      "kind": "approvals",
+      "state": "pending",
+      "limit": 20
+    },
+    {
+      "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+      "approvalId": "approval_fixture",
+      "revision": 7,
+      "decision": "approve",
+      "scope": "task"
+    },
+    {
+      "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+      "approvalId": "copy_fixture",
+      "decision": "reject",
+      "action": "reject"
+    },
+    {
+      "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+      "approvalId": "copy_fixture",
+      "decision": "verify",
+      "action": "verify"
+    },
+    {
+      "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+      "approvalId": "copy_fixture",
+      "action": "resume"
+    },
+    [
+      "snapshot",
+      "aisession_11111111-1111-4111-8111-111111111111"
+    ],
+    [
+      "snapshot",
+      "aisession_22222222-2222-4222-8222-222222222222"
+    ],
+    [
+      "get",
+      {
+        "sessionId": "aisession_22222222-2222-4222-8222-222222222222"
+      }
+    ],
+    [
+      "resume",
+      {
+        "schema": "xiaozhi.task.v1",
+        "sessionId": "aisession_22222222-2222-4222-8222-222222222222",
+        "taskId": "xitask_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "revision": 3,
+        "requirementsVersion": 1,
+        "commandId": "xicmd_e021f61a-aef6-40d1-b243-4c6d85ba3fba"
+      }
+    ],
+    [
+      "snapshot",
+      "aisession_22222222-2222-4222-8222-222222222222"
+    ]
+  ],
+  "boundary": "Actual production React/HeroUI components and parent workspace in JSDOM, synthetic typed IPC only. No Electron, SQL, native helper, provider/key, actual budget, build output, layout/keyboard/drag/cold-start product acceptance.",
+  "sources": {
+    "src/renderer/components/office/PiWorkspaceShell.tsx": "ef048d3c5042b4f7ab9f292d92282277c87bf90e05459612b96cecff7fadd777",
+    "src/renderer/components/office/PiEducationWorkspace.tsx": "e088f8407b2d56dafed7f34c5ea050d38b3f070c8ba5ccbc4ffc06e91c43ed70",
+    "src/renderer/components/office/PiSettingsWorkspace.tsx": "f0925414850e63f6ac7f7cd2d80db433a566d395e54f76e58575a20bc56b39a1",
+    "src/renderer/components/office/PiPermissionApproval.tsx": "e864c339b6f60ff397559f02d5b94eebc4c850c2a65c81c32b8ffbf9cd2b1265",
+    "src/renderer/components/office/PiCapabilityCenter.tsx": "e3fdbb8021c92c3d64bca06ac959fc9cdc0c0c79193c3f0a40a851ead2e17486",
+    "src/renderer/components/office/workbench/PiRecoveryOverview.tsx": "206ce23cbda80adf3c2462fc38d9db3f41352eced00ce1cc427b429edcaf9317",
+    "src/renderer/components/office/workbench/PiApprovalInbox.tsx": "08ca6e30a33906729b6cdb0499270b366764cdde1f99dffed57edcb11f610de4",
+    "src/renderer/components/office/workbench/useWorkbenchSummary.ts": "c517f28d06c421ce88bd40994a6de05a78c94dff9965cf6341630864866df10e",
+    "src/renderer/ui-system/xiaozhi-workbench.module.css": "d596eac005fb56507accd6944b4aca5dee8664c0b2208ae51ddea28d6a0c648e",
+    "scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs": "1f2e801a6201c909be76e89045cf42e10e9aa13147cf8009dfc46293ef87d4e6"
+  }
+}

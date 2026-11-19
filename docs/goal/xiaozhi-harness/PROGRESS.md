@@ -4,6 +4,12 @@
 
 Goal 保持 ACTIVE。Phase0 至 6 独立通过。Phase7 已实现的工作台、审批和能力界面进入主线合并，完整 Gate7 继续复验。下一轮沿 `codex/xiaozhi-harness-20261112` 分支推进。主线工作见 [阶段顺序与证据入口](evidence/phase7/implementation-resume-20261119/MAINLINE.md)。
 
+### 协作者接手
+
+- 以 GitHub `main` 为已集成基线。工作台、计时准备、审批与终端对应功能提交 `88ad67c`、`0978a1e`、`387a796`，合并保留知识库和协作规则提交 `3ba66e5`。后续开发继续在 `codex/xiaozhi-harness-20261112` 进行。
+- [验收矩阵](ACCEPTANCE_MATRIX.json) 固定 89 项，已记录 70 项阶段范围通过。未验项与证据边界见 [独立验收记录](ACCEPTANCE_REPORT.md)。合并后的验证见 [合并验证](evidence/phase7/implementation-resume-20261119/main-integration.md)。
+- 后续先对同一缓存工作负载测量磁盘核验与工具时延，再按原方案完成独立原生窗口操作、真实模型 A/B 和打包验收。真实付费计数为 0/200，后续使用 [原计量方案](PHASE_8_REAL_MODEL_ACCEPTANCE_PLAN.md)。
+
 - 工作台、审批收件箱、能力中心已用真实 Electron 验证。独立验收确认现代审批、冷启动、团队技能版本回滚、窄窗长路径折行和指定合成模型密钥未外显。能力中心增加中文工具标题、调用范围和中文搜索。
 - 缓存能力的真实受控进程基线已取得。24.109 秒完成准备、解析、执行，私有合成文本读回与三个原生进程清理通过。发现先前准备结果留作未知 Effect 会挡住同任务继续，已列定向审计。详见 [基线与复测口径](evidence/phase8/cached-profiling-preparation-20261119/baseline-REPORT.md)。
 - 能力准备已有领域回执。Sol 的原 Host 冷启同 Task 回归 3/3，回执变更拒绝等负例 22/22。普通单次批准继续使用原 scope，能力准备增加明确当前任务授权入口。Terra 在真实 Electron 验证一个精确原 Task scope，最终工作台综合 9/9，含真实终端关闭和缓存隔离。

@@ -4,7 +4,7 @@ import {readPageVerification} from './material-ai-page-verification';
 import {pageFragmentsPolicy} from '../../shared/material-ai-page-fragments';
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
 import {createHash} from 'node:crypto';
-import {parseAiPageResponse,validMaterialPageSource,validAiPagePrompt,MATERIAL_BOOK_PAGE_POLICY,MATERIAL_QUESTION_PAGE_PROMPT,pageResponseMatchesPolicy} from '../../shared/material-ai-page';
+import {parseAiPageResponse,validMaterialPageSource,validAiPagePrompt,validMaterialBookPagePolicy,MATERIAL_QUESTION_PAGE_PROMPT,pageResponseMatchesPolicy} from '../../shared/material-ai-page';
 import {validMaterialBookRole} from '../../shared/material-book-pair';
 import {validAiBatch,type AiUnitInput} from '../../shared/material-ai';
 import {validMaterialSource} from '../../shared/materials';
@@ -19,7 +19,7 @@ export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number)
  if(!pageFragmentsPolicy(unit.pagePrompt?.policy)&&Buffer.byteLength(row.input_json)>96*1024)throw Error('source_changed');
  if(unit.pagePrompt!==undefined&&!validAiPagePrompt(unit.pagePrompt))throw Error('source_changed');
  if((unit.pagePrompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT||pageRegionsPolicy(unit.pagePrompt?.policy))&&(unit.bookRole?.kind==='answers'||!unit.pageSource||unit.pageSource.page>unit.pagePrompt.totalPages))throw Error('source_changed');
- if(unit.bookPagePolicy!==undefined&&(unit.bookPagePolicy!==MATERIAL_BOOK_PAGE_POLICY||!unit.pagePrompt||unit.bookRole?.kind!=='answers'||!validMaterialBookRole(unit.bookRole)))throw Error('source_changed');
+ if(unit.bookPagePolicy!==undefined&&(!validMaterialBookPagePolicy(unit.bookPagePolicy)||!unit.pagePrompt||unit.bookRole?.kind!=='answers'||!validMaterialBookRole(unit.bookRole)))throw Error('source_changed');
  if(!config||typeof config!=='object')throw Error('source_changed');const {model,...batch}=config;
  if(model!=='deepseek-flash'||!validAiBatch(batch)||!batch.images||ordinal>batch.count||!validMaterialPageSource(unit.pageSource)||unit.native||!Array.isArray(unit.sources)||unit.sources.length>64||!unit.sources.every(s=>validMaterialSource(s)&&s.resourceId===batch.resourceId&&s.version===batch.version)||unit.pageSource.resourceId!==batch.resourceId||unit.pageSource.version!==batch.version||unit.pageSource.page!==batch.start+ordinal-1||unit.page!==unit.pageSource.page||typeof unit.text!=='string'||Buffer.byteLength(unit.text)>64000||typeof unit.stamp!=='string'||JSON.stringify(unit.pageSource)!==row.source_json)throw Error('source_changed');
  const image=(await host.all('SELECT * FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];

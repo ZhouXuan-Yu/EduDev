@@ -9,6 +9,7 @@ export function MaterialBookAnswers({page}:{page:BookAnswerPage}){
   {page.sectionSource&&<p role="status" data-testid="material-book-answer-section-source">所属试卷：{page.sectionSource.section}，标题来自同册第 {page.sectionSource.page} 页。已核对连续前页，原始转录保留；内容疑点仍逐条显示。</p>}
   {page.policy==='section-number-two-pass.v2'&&!page.pageUncertain&&<p role="status" data-testid="material-book-answer-scope">疑点按条目保留；有疑点的条目不能自动写回，其他条目仍须通过题面、来源及答案冲突检查。</p>}
   {page.pageUncertain&&<p role="note">本页转录仍有疑点，以下条目保留待核，不能自动写回。</p>}
+  {!!page.unresolvedTables&&<p role="note" data-testid="material-book-answer-table-held">有速查表的题号与答案无法逐列对应，请核对原页。</p>}
   {page.status==='too_large'&&<p role="alert">本页答案条目过多或文本超限，未显示部分结果，请对照原页处理。</p>}
   {page.status==='unstructured'&&<p role="status">尚未识别出明确的编号答案。请查看下方原文及原页；未猜测题号或答案。</p>}
   {page.firstOnly.length>0&&<p role="alert" data-testid="material-book-answer-omissions">第二遍未找到：{page.firstOnly.map(e=>(e.section||'缺少标题')+' 第'+e.number+'题').join('；')}</p>}

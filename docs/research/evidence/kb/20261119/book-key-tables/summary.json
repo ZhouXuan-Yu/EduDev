@@ -1,0 +1,79 @@
+{
+  "scope": "answer_key_table_and_source_retention",
+  "baseGitRevision": "f07e9520962f856ce5cb728bc9e6d7be5ea6d421",
+  "policy": "answer-entry-topology.v3",
+  "hostBuildSha256": "bff93e97a5b24fcee36b0b94314133e7a268d7c5ddc2d6d5f396587104e7d784",
+  "cloudRequests": 0,
+  "naturalStoredAnswerPage": {
+    "naturalSavedPage": 1,
+    "legacyEntries": 22,
+    "newEntries": 22,
+    "unresolvedTables": 1,
+    "receiptDigest": "682f6b741861cf81f327dac07f598eefd1fd196a55397809000dab92f5bc1843",
+    "legacyP95Ms": 0.35,
+    "parseP95Ms": 0.731,
+    "noProviderRequests": true
+  },
+  "fixtureReports": {
+    "electronLatest": {
+      "checks": 5,
+      "stubResponses": 8,
+      "published": [
+        {
+          "state": "book_enriched",
+          "issues": [],
+          "answer": "B",
+          "document": true
+        },
+        {
+          "state": "ai_needs_review",
+          "issues": [
+            "answer_conflict"
+          ],
+          "answer": "100℃",
+          "document": true
+        }
+      ],
+      "rendererErrors": 0,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ]
+    },
+    "electronLegacyFallback": {
+      "checks": 5,
+      "stubResponses": 8
+    }
+  },
+  "regression": {
+    "rendererComponents": 253,
+    "answerKeyBoundaryChecks": 13,
+    "legacyBookAnswerBoundaryChecks": 18,
+    "bookReferenceChecks": 53,
+    "bookWritebackImportedChecks": 36,
+    "aiPageImportedChecks": 247,
+    "aiPageLegacyPolicyChecks": 247,
+    "structuredFillChecks": 13,
+    "bookSectionChecks": 16,
+    "questionSectionChecks": 13,
+    "sectionStatusChecks": 12,
+    "electronSmoke": {
+      "passed": 207,
+      "total": 207
+    }
+  },
+  "unverified": [
+    "new_rules_real_provider_holdout",
+    "cross_publisher_coverage",
+    "cross_page_table",
+    "non_letter_table",
+    "full_mixed_document_structure",
+    "about_10GB_scale"
+  ],
+  "npmAudit": {
+    "total": 29,
+    "high": 8,
+    "critical": 0,
+    "dependencyManifestChanged": false
+  }
+}

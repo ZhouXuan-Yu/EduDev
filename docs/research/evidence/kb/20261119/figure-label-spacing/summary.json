@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "xiaozhi.figure-label-spacing-evidence.v1",
+  "date": "2026-11-19",
+  "result": "PASS",
+  "fullKnowledgeGoal": "ACTIVE",
+  "sourceCohort": {
+    "fullPageOnly": 51,
+    "cropsWithClearEdges": 23,
+    "trueNewDocuments": 1
+  },
+  "releaseBuild": {
+    "command": "npm run build",
+    "runtimeTreeSha256": "e8d1d8c4af2886275f6c67522db14372d78d07ce093eea544aeef893362b3036",
+    "mainSha256": "301979cab1451743c06c094d1ed3c627f9225a75e05e4365e4a9accfd4a10eb0",
+    "runtimeFiles": 481
+  },
+  "copy": {
+    "success": true,
+    "appliedInCopy": 1,
+    "localActionMs": 31,
+    "keptIssues": [
+      "missing_grade",
+      "answer_conflict",
+      "incomplete_question"
+    ],
+    "paidCalls": 0
+  },
+  "firstOriginalActionMs": 464,
+  "electronChecks": [
+    "Existing Materials action derives the single illustrated document and protects all original responses and other questions.",
+    "Restart and the actual notebook validate the same two PNGs while retaining genuine review issues."
+  ],
+  "newModelCalls": 0,
+  "gates": {
+    "aiPages": 247,
+    "sourceLayout": 10,
+    "sourceMarkers": 17
+  },
+  "npmAudit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "total": 29
+  },
+  "logs": {
+    "figure-spacing-build.log": "2a4c9dc688c7cf157a92dcb0d9f6fb20beaaae577889efa7f856abbd6c9b3af0",
+    "figure-spacing-build-release.log": "1e79c39190d6c431a456a8cd50c979a9daf446b6ac2a1e043d31a42f381fbce0",
+    "figure-spacing-boundaries-release.log": "84825b697e57fd17f3e01aca6843da1d0bc2d0818c0ec38ba0ab8581b0d248c5",
+    "figure-spacing-ui-final.log": "a733d4157e3fa801b86f6b2a8bc459ef75f836d0168531ceea986dd23db98ec3",
+    "figure-spacing-ui-release.log": "18a0a90ff970a898655ebbf3248b75afbb2f677f51cf08a2b8907abf8f0d4552",
+    "figure-spacing-ui-narrow.log": "3b4c6e2a4d9db83201a2af7870bc6a242623360e2df3829ad8fd304dbc99b468",
+    "figure-spacing-page-release.log": "c5ea7444fc8aceb7dfada676b24fa82aad2c5ace30966beb608ac40e1b893ea7",
+    "figure-spacing-layout-release.log": "d9773d19dc0421f7d3162b041b878d1aec6c339e044967b22abc4a4eadbb9115",
+    "figure-spacing-markers-release.log": "ffa93896d587a281841bde94ee53171811e747e667fccb0abeceeee99f6f0bad"
+  }
+}

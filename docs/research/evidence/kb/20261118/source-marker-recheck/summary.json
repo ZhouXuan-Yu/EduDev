@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "xiaozhi.source-marker-acceptance.v1",
+  "date": "2026-11-18",
+  "result": "PASS",
+  "fullKnowledgeGoal": "ACTIVE",
+  "base": "50d3dfd22eb97daa4ec78a9c6955f247e16fa139",
+  "runtime": {
+    "runtimeTreeSha256": "e5878581f69b02374c096dc4e66f13de4a8c3f8f4d575f7bc0e371eabfb1d4af",
+    "mainSha256": "881e6b552ecc7903e1bf597ee66788e8c3adb5b14d73a83fab02d24b3123aee1",
+    "runtimeFiles": 481
+  },
+  "workingDirectory": "D:/WorkProject/EduProject-kb-isolation/apps/desktop",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "gates": [
+    {
+      "name": "new-boundaries",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-source-markers-boundaries.mjs D:/WorkProject/EduProject-kb-run/ocr-structure-20261118-f",
+      "passed": 17,
+      "total": 17,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "788cfe3c9e8d60cf5031dd83692c0cd16cc212fa4198751cc1deb920273b6851"
+    },
+    {
+      "name": "legacy-source-layout",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-source-layout-boundaries.mjs D:/WorkProject/EduProject-kb-run/flow-1gb-20261111 D:/WorkProject/EduProject-kb-run/flow-1gb-20261111/source-layout-before.db",
+      "passed": 10,
+      "total": 10,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "eee98f5c33c6c21b203644239dac8eae2c927953b4aad9c6e34de50630ab76ad"
+    },
+    {
+      "name": "legacy-choice-answer",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-choice-answer-boundaries.mjs D:/WorkProject/EduProject-kb-run/flow-1gb-20261111 D:/WorkProject/EduProject-kb-run/flow-1gb-20261111/choice-answer-before.db",
+      "passed": 20,
+      "total": 20,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "c33b5055ccb22facd9b27fb3e63c56305e493fd09e68dbb245fd1f756506e281"
+    },
+    {
+      "name": "page",
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "passed": 247,
+      "total": 247,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "1c51167c26cfbe605853e50ba5e52d9b7efa359d0661067417f69a29ef4584b5"
+    },
+    {
+      "name": "structure-source",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/ai-structure-source-boundaries.mjs D:/WorkProject/EduProject-kb-run/ocr-structure-20261118-f",
+      "passed": 16,
+      "total": 16,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "69e0de5539e67c7876c94b85101ada5090e7bc0929b4705b151e7f2c4a0edcce"
+    },
+    {
+      "name": "components",
+      "command": "npm run test:renderer-components",
+      "passed": 253,
+      "total": 253,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  ],
+  "realReadback": {
+    "command": "$env:EDU_STRUCTURE_TEST_ROOT='D:\\WorkProject\\EduProject-kb-run\\ocr-structure-20261118-f'; node scripts/education/kb-source-markers-electron.mjs",
+    "checks": [
+      "Original materials navigation and source-layout action restore four held question documents using zero provider calls",
+      "Restored source evidence and held missing-grade status remain visible at both desktop sizes without new provider calls",
+      "Cold launch preserves all four source marker audits and their visible local-review count",
+      "All four complete question documents reopen their exact original crop through the existing notebook gallery",
+      "All original OCR/structure rows, paid inputs/responses and 37 earlier questions stay byte-identical; four new documents preserve raw model fields",
+      "Earlier paid inputs/responses, current receipts and call counters remain byte-identical during source readback"
+    ],
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "originalPaidRuntime": "e996a50114b62ff42655a818c95e0cb5a5dec3e83ad85d8e1d44b9799dc9eef8",
+    "restoredCompleteDocuments": 4,
+    "earlierQuestionsUnchanged": 37,
+    "questionsTotal": 41,
+    "paidCallsBeforeAndAfter": 6,
+    "newModelCalls": 0,
+    "firstLocalActionIncludingStartupMs": 2976
+  },
+  "security": {
+    "npmAudit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 12,
+      "high": 15,
+      "critical": 0,
+      "total": 35
+    },
+    "newDependencies": false
+  },
+  "remaining": [
+    "Four questions remain ai_needs_review only for missing_grade; sourceChecked remains false",
+    "Marker policy covers source-proven parent and contiguous A-H option periods only; other uncertain punctuation is held",
+    "No new real model batch; existing real DeepSeek responses authenticated without modification",
+    "Cross-page/new scan native-free gaps, formulas/tables, broad natural quality, answer enrichment, retrieval/papers, install/migration and approximately 10GB remain open"
+  ],
+  "failures": [
+    {
+      "name": "Saved actual response reproduces original mismatch",
+      "log": "source-markers-red.log"
+    },
+    {
+      "name": "Cold UI test omitted opening existing AI disclosure; original local action had succeeded",
+      "log": "source-markers-ui.log"
+    },
+    {
+      "name": "Old v1 regression initially used already-processed live database; rerun uses its original pre-action database snapshot with unchanged assertions",
+      "log": "source-markers-legacy-layout.log",
+      "note": "The successful rerun log replaced the local diagnostic output; original 6-versus-3 error is retained in conversation only"
+    },
+    {
+      "name": "Initial copied UI harness reused old ai-structure-final screenshot names",
+      "note": "Two local previous accepted screenshots were overwritten before correction. Previous JSON and logs remain; current images now use independent source-markers names. Historical screenshots are not claimed restored."
+    }
+  ],
+  "logSha256": {
+    "source-markers-build.log": "53d2ca1b76634cecd6a2ebaac933e57059a43926246f717819d13c36f8276d14",
+    "source-markers-ui.log": "3cb14f9758535051a8f35dd576fbbc7ba70ebeebf06668ceb1647002a85bb43f",
+    "source-markers-ui-final.log": "1481ab3569e4e839638c3aa1ee0646898629eb8c564a193db4e55ade94753b05",
+    "source-markers-red.log": "7e24ecec417eeaae50ebf2de4d4009194eee308b218603567270d3093dc305af",
+    "source-markers-audit.json": "e2daa2cc2f9cb57976f586b496cbe0c1d932be15c89fa7022c2029843f20b8a7"
+  },
+  "featureElectronRegression": {
+    "command": "$env:OMNI_EDU_TEST_BUILD_ROOT='D:/WorkProject/EduProject-kb-isolation/apps/desktop/test-results/document-structure-runtime-e5878581f69b02374c096dc4'; node scripts/electron-smoke.mjs",
+    "passed": 207,
+    "failed": 0,
+    "skipped": 0,
+    "runtimeTreeSha256": "e5878581f69b02374c096dc4e66f13de4a8c3f8f4d575f7bc0e371eabfb1d4af",
+    "logSha256": "29dc7f9feef317de3565e2f10b04aa968ae72efaa52139db7ed10ff5b958bb20"
+  },
+  "batchReadbackAudit": {
+    "existingCorpusResources": 223,
+    "ready": 160,
+    "partial": 63,
+    "heldAiQuestions": 103,
+    "incompleteQuestions": 84,
+    "sourceMismatchQuestions": 69,
+    "missingImageQuestions": 49,
+    "unknownUnits": 22,
+    "wholePageIncomplete": 51,
+    "wholePageAuditedUnits": 31,
+    "hasSavedCrops": 37,
+    "clearCropEdges": 23,
+    "edgeContact": 14,
+    "noCrop": 14,
+    "deterministicBodyMismatch": 19,
+    "deterministicCandidateAgrees": 29,
+    "deterministicParserRisk": 3,
+    "followingUnknown": 24,
+    "followingContinued": 2,
+    "cropAgreementUnderOriginalPolicy": 0,
+    "newModelCalls": 0,
+    "diagnosticLogSha256": "8a15078aab31f74f76b88f82ee70fe6c1d680829c6a1ee9ece079f1776926a14",
+    "clearPageIssues": 9,
+    "clearProjectionOrTextDisagreement": 15,
+    "clearLiteralReadingDisagreement": 13,
+    "gateLogSha256": "5884ec59cad5d35fdde2a922071aa0538616a64f97e63e58bfb3cf706e36b49f"
+  },
+  "completedDate": "2026-11-19",
+  "finalBuild": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "logSha256": "ec9a87892c16c635c4276faa6930079c0d13fe5ab62fd80d0af50bfdfa4884c6",
+    "runtime": {
+      "runtimeTreeSha256": "a230693f7eacbbb65b80378ccb3edb95fb216cf371ce4a7d3c7ae9fb5f911ff5",
+      "mainSha256": "6bccbdcac11e4f1a84cd9bd927ee836528198936b9b2c4d5516b8b5579bcd6e9",
+      "runtimeFiles": 481
+    }
+  },
+  "finalColdReadback": {
+    "command": "$env:EDU_STRUCTURE_TEST_ROOT='D:\\WorkProject\\EduProject-kb-run\\ocr-structure-20261118-f'; node scripts/education/kb-source-markers-electron.mjs",
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "addedCalls": 0,
+    "hadExistingAudits": true,
+    "logSha256": "d030a2d245586a28d1da20bda8195625e2cc3cd8e2f39ea425d7d5254158c26e"
+  }
+}

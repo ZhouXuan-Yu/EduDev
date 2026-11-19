@@ -3,6 +3,43 @@
 ## 2026-11-19 工作台与能力准备
 
 工作台汇总沿原 SQLite 的只读事务读取 Task、审批和 Registry。能力准备沿既有获取事务和权限审计记录每次精确结果，原 Effect 据领域读回区分已知审批暂停和已完成。旧记录缺少证据时保留原核对流程。
+## 2026-11-19 页尾题边界复核
+
+局部新父题边界沿 PDFium/RapidOCR 已保存的同版本页回执派生，前页题问归档独立于下一页整页待核。SQLite 审计记录前后状态与下一页来源。
+
+详见 [本轮报告](../research/evidence/kb/20261119/next-parent-boundary/README.md)。
+
+## 2026-11-19 答案册速查表结构恢复
+
+答案册按持久化单元解析策略恢复结构，v3 识别同一原页的题号行与答案行，再交给共享逐条比较、索引、引用和事务写回。原文、资源版本和原页范围可追溯。
+
+详见 [本轮记录](../research/evidence/kb/20261119/book-key-tables/README.md)。
+
+## 2026-11-19 题本完整题干优先
+
+复用 SQLite 原候选集和 Pi 文本排序逻辑，题本在同一筛选结果上按题干原句、关键词覆盖及原业务字段确定分页顺序。无迁移。
+
+详见 [本轮记录](../research/evidence/kb/20261119/notebook-phrase-ranking/README.md)。
+
+## 2026-11-19 独立题图的标注间距复核
+
+原图证据用于区分说明排版空白与图标签/图义变化，比较副本沿原题文档与付费审计链，原字面转录可重建。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
+## 2026-11-18 有来源编号的版式误判修复
+
+sourceMarkerText 以同页结构 parent/option 与完整原段落为依据生成比较副本，sourceMarkerPolicy按批冻结。原 MaterialChoiceRechecks 的 layout action 兼容旧 v1 与新 marker 审计，总上限20，原读器重算派生文档，不改变SQLite/文件真源。
+
+详见 [本轮报告](../research/evidence/kb/20261118/source-marker-recheck/README.md)。
+
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+主线整合补充：57c4f20 的功能已通过 8da5d2e 整合 origin/main 5938c31 的协作终端/恢复代码，双方状态记录保留。整合树 b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73 的 build、253 组件、16 来源、247 AI 页及完整 207 Electron 回归通过；原付费输入/四份裁图冷读 3 项、协作终端双尺寸 10 项通过，整合新增付费 0。原真实 AI 验证树 e996a501 保留，不能与整合树混称。完整知识库仍 ACTIVE，四题待核和下一处标点比较缺陷不变。
+
+新 standard/quality AI 通过原 localBlocks/pagePreparation 接入可选结构来源，按段落顺序生成块提示，冻结历史 generation 和页摘要。原页、裁图及 nativeGap 回执发送前与冷读认证，独立 literal 阶段移除文字提示。发布检查未确认及被遗漏的补充行。原 SQLite/文件、Pi、任务 writer 与云端授权边界继续使用。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
 
 ## 2026-11-18 Harness Gate6
 

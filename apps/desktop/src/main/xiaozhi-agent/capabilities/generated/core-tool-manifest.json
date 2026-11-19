@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "33a2560ee3b559b8ff999bbeb8d35872d6577222301bbddf30d10ec3b900946a",
+  "sourceHash": "2fbb50296b5dd821d97ebdb314ef17bfb37356cdea0cf5554a12bd08d40cb07f",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1884,7 +1884,7 @@
     },
     {
       "file": "src/shared/material-ai-choice-answer.ts",
-      "sha256": "60fe6cf522e8973faaf018e9d336454ca3a0609936af42294bdbae778a10d133"
+      "sha256": "b65b33f3940733a63edf3147b6b668534a0e00d0676462a0e5275f88cf91e813"
     },
     {
       "file": "src/shared/material-ai-choice.ts",
@@ -1897,6 +1897,10 @@
     {
       "file": "src/shared/material-ai-continuation.ts",
       "sha256": "bc04d70e67a592bb1daaf7cf0c9a39b6b0b0c1cd09d038d71b34b67aef726362"
+    },
+    {
+      "file": "src/shared/material-ai-figure-spacing.ts",
+      "sha256": "e099b322e4eca1696de2d74dee66b984df69f9128843ebc832d4524eac823dac"
     },
     {
       "file": "src/shared/material-ai-host-partition.ts",
@@ -1920,7 +1924,7 @@
     },
     {
       "file": "src/shared/material-ai-literal.ts",
-      "sha256": "0fea901ec82c1fe5eb5642a17d9f57db081bf7ab23bf4a3a337f1e00fa45a4ac"
+      "sha256": "1b72bdcdf2497a24f2ea233d89ef220b5cea4917ef73be3dfc4882b867ebd561"
     },
     {
       "file": "src/shared/material-ai-owned-crops.ts",
@@ -1928,7 +1932,7 @@
     },
     {
       "file": "src/shared/material-ai-page-fragments.ts",
-      "sha256": "28a62f4b3b3c2cb773c803c713896bc37efa3e54634d31abec6ba09c10a47e58"
+      "sha256": "141883003b8db2b9e27e04f4bdbe981ba4c56573b9147dddc4acbd8d71df73c2"
     },
     {
       "file": "src/shared/material-ai-page-regions.ts",
@@ -1936,7 +1940,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "b6f6f2f318f61c9c80dbc1171d091f9f859e1e85e611d2e723b10e0bd93e0a22"
+      "sha256": "87bf6b72b1be5b257a7258fd32020d6631716168909cd0e2f978457de99f4375"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
@@ -1948,11 +1952,19 @@
     },
     {
       "file": "src/shared/material-ai-source-layout.ts",
-      "sha256": "677220614a0a18bf2493fff14e1a02608ddbe3b637f747175d52b01bd28fef2f"
+      "sha256": "2e7537e8f642b7f43bf26ffd4070d2b02b5c5740d94a606c319555d01ead8549"
+    },
+    {
+      "file": "src/shared/material-ai-source-markers.ts",
+      "sha256": "505ad1c67d6ffa45a32de3baf2865d985327564f9f990593a8a686ddbbe9710e"
     },
     {
       "file": "src/shared/material-ai-source-reading.ts",
       "sha256": "4ef5b87fbf549886f9bd9d6ecc9e0ce52866af0e57443e3dc3506360fc9bef2a"
+    },
+    {
+      "file": "src/shared/material-ai-structure.ts",
+      "sha256": "5b869795cc272154fbcf00e557b8b70f73318222f5f06809a165b8a9f8b7cbe0"
     },
     {
       "file": "src/shared/material-ai-text.ts",
@@ -1960,7 +1972,7 @@
     },
     {
       "file": "src/shared/material-ai.ts",
-      "sha256": "b6721624d198bc1531b1035aedc6f5223635fb326422d8540af3b20908998637"
+      "sha256": "2a7fd029a3614e67a3e33fe1dfcabc3a02aee83e4714be53e313e5d6cfb40154"
     },
     {
       "file": "src/shared/material-answer-slots.ts",
@@ -1968,7 +1980,7 @@
     },
     {
       "file": "src/shared/material-book-answer.ts",
-      "sha256": "b50f94461f786ff4309b9127f2128adec2abbfdb4ad2121a50ce04b1b1a635f9"
+      "sha256": "3c22db5a0a1b54d5719e5520f0849afb9ac02b428973825402f33f3769af6dc3"
     },
     {
       "file": "src/shared/material-curriculum.ts",

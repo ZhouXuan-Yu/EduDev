@@ -1,5 +1,8 @@
+import {FIGURE_LABEL_SPACING} from './material-ai-figure-spacing';
+import {SOURCE_LAYOUT_MARKERS} from './material-ai-source-markers';
+import {validAiStructureContext,missingAiStructureQuestions,type AiStructureContext} from './material-ai-structure';
 import {SOURCE_LAYOUT_TEXT} from './material-ai-source-layout';
-import {LITERAL_READING,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,type LiteralPolicy} from './material-ai-literal';
+import {LITERAL_READING,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isIndependentLiteralPolicy,type LiteralPolicy} from './material-ai-literal';
 import {alignSourcePartWhitespace} from './question-source-content';
 import {BOOK_FINAL_REFERENCE,type BookFinalReferences} from './material-ai-book-reference';
 import {SOURCE_CONTENT_ROLES,SOURCE_CONTENT_RESPONSE,sourceContentEnabled} from './material-ai-source-content';
@@ -8,7 +11,7 @@ import {SOURCE_READING,SOURCE_READING_RESPONSE,sourceReadingEnabled,validSourceR
 import {CONTINUATION_FIGURE_CROPS,validPageContinuation,type PageContinuation} from './material-ai-continuation';
 import {BOUND_ANSWERS} from './material-ai-bound-answers';
 import {CHOICE_CONCORDANCE,choiceLayoutSignature} from './material-ai-choice';
-import {PRINTED_CHOICE_ANSWER} from './material-ai-choice-answer';
+import {PRINTED_CHOICE_ANSWER,PRINTED_CHOICE_LITERAL_ANSWER} from './material-ai-choice-answer';
 import {BLIND_ANSWER_REVIEW} from './material-ai-answer-review';
 import {MATERIAL_HIGH_INFERENCE} from './material-ai-inference';
 import {MATERIAL_CROP_BODY_TEXT} from './material-ai-page-fragments';
@@ -28,20 +31,23 @@ export const MATERIAL_AI_PAGE='xiaozhi.material-ai-page.v1' as const;
 export const MATERIAL_AI_PAGE_RESPONSE='xiaozhi.material-ai-page-response.v1' as const;
 export const MATERIAL_AI_BOOK_PAGE_RESPONSE='xiaozhi.material-ai-book-page-response.v2' as const;
 export const MATERIAL_BOOK_PAGE_POLICY='answer-entry-uncertainty.v2' as const;
+export const MATERIAL_BOOK_PAGE_TABLE_POLICY='answer-entry-topology.v3' as const;
+export type MaterialBookPagePolicy=typeof MATERIAL_BOOK_PAGE_POLICY|typeof MATERIAL_BOOK_PAGE_TABLE_POLICY;
+export const validMaterialBookPagePolicy=(value:unknown):value is MaterialBookPagePolicy=>value===MATERIAL_BOOK_PAGE_POLICY||value===MATERIAL_BOOK_PAGE_TABLE_POLICY;
 export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;
 type OcrStatus='complete'|'blank'|'failed'|'needs_review';
-export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions}|{policy:typeof MATERIAL_PAGE_FRAGMENTS_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks}|{policy:typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks;blockTexts:BlockTextHint[];sourceCropPolicy?:typeof MATERIAL_TEXT_SOURCE_CROPS;answerReviewPolicy?:typeof BLIND_ANSWER_REVIEW;inferencePolicy?:typeof MATERIAL_HIGH_INFERENCE;choiceReviewPolicy?:typeof CHOICE_CONCORDANCE;choiceAnswerPolicy?:typeof PRINTED_CHOICE_ANSWER;sourceLayoutPolicy?:typeof SOURCE_LAYOUT_TEXT;answerBindingPolicy?:typeof BOUND_ANSWERS;printedChoicePolicy?:typeof PRINTED_CHOICE_COUNT;sourceReadingPolicy?:typeof SOURCE_READING;sourceContentPolicy?:typeof SOURCE_CONTENT_ROLES;literalReadingPolicy?:LiteralPolicy;bookReferencePolicy?:typeof BOOK_FINAL_REFERENCE;cropTextPolicy?:typeof MATERIAL_CROP_BODY_TEXT;figureCropPolicy?:typeof MATERIAL_FIGURE_CROPS;cropReviewPolicy?:typeof MATERIAL_CROP_REVIEW_POLICY|typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY|typeof MATERIAL_CROP_CORRECTION_POLICY;cropGeometryPolicy?:typeof MATERIAL_OWNED_CROP_GEOMETRY;continuation?:PageContinuation;continuationCropPolicy?:typeof CONTINUATION_FIGURE_CROPS};
+export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions}|{policy:typeof MATERIAL_PAGE_FRAGMENTS_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks}|{policy:typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks;blockTexts:BlockTextHint[];structureContext?:AiStructureContext;sourceCropPolicy?:typeof MATERIAL_TEXT_SOURCE_CROPS;answerReviewPolicy?:typeof BLIND_ANSWER_REVIEW;inferencePolicy?:typeof MATERIAL_HIGH_INFERENCE;choiceReviewPolicy?:typeof CHOICE_CONCORDANCE;choiceAnswerPolicy?:typeof PRINTED_CHOICE_ANSWER;literalChoiceAnswerPolicy?:typeof PRINTED_CHOICE_LITERAL_ANSWER;sourceLayoutPolicy?:typeof SOURCE_LAYOUT_TEXT;sourceMarkerPolicy?:typeof SOURCE_LAYOUT_MARKERS;sourceFigureSpacingPolicy?:typeof FIGURE_LABEL_SPACING;answerBindingPolicy?:typeof BOUND_ANSWERS;printedChoicePolicy?:typeof PRINTED_CHOICE_COUNT;sourceReadingPolicy?:typeof SOURCE_READING;sourceContentPolicy?:typeof SOURCE_CONTENT_ROLES;literalReadingPolicy?:LiteralPolicy;bookReferencePolicy?:typeof BOOK_FINAL_REFERENCE;cropTextPolicy?:typeof MATERIAL_CROP_BODY_TEXT;figureCropPolicy?:typeof MATERIAL_FIGURE_CROPS;cropReviewPolicy?:typeof MATERIAL_CROP_REVIEW_POLICY|typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY|typeof MATERIAL_CROP_CORRECTION_POLICY;cropGeometryPolicy?:typeof MATERIAL_OWNED_CROP_GEOMETRY;continuation?:PageContinuation;continuationCropPolicy?:typeof CONTINUATION_FIGURE_CROPS};
 export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof MATERIAL_IMAGE_SOURCE;resourceId:string;version:string;page:number;generation:string;receiptSha:string};
 export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]}|{schemaVersion:typeof MATERIAL_PAGE_FRAGMENTS_RESPONSE;fragments:AiQuestionFragments[]}|{schemaVersion:typeof SOURCE_READING_RESPONSE|typeof SOURCE_CONTENT_RESPONSE;fragments:AiQuestionFragments[];readings:SourceReading[]});
 export function isFragmentPageResponse(r:AiPageResponse):r is Extract<AiPageResponse,{fragments:AiQuestionFragments[]}>{return r.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE||(r.schemaVersion===SOURCE_READING_RESPONSE||r.schemaVersion===SOURCE_CONTENT_RESPONSE);}
-export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageFragmentsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&isFragmentPageResponse(response)&&response.schemaVersion===(sourceContentEnabled(prompt)?SOURCE_CONTENT_RESPONSE:sourceReadingEnabled(prompt)?SOURCE_READING_RESPONSE:MATERIAL_PAGE_FRAGMENTS_RESPONSE)&&fragmentsMatchPage(response.fragments,prompt.blocks):pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
+export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageFragmentsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&isFragmentPageResponse(response)&&response.schemaVersion===(sourceContentEnabled(prompt)?SOURCE_CONTENT_RESPONSE:sourceReadingEnabled(prompt)?SOURCE_READING_RESPONSE:MATERIAL_PAGE_FRAGMENTS_RESPONSE)&&fragmentsMatchPage(response.fragments,prompt.blocks):pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:validMaterialBookPagePolicy(policy)&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
 export type SourceCropSelection={number:string;index:number};
 export type SourceCropPreview=SourceCropSelection&{sha256:string;width:number;height:number;dataUrl:string};
 export type AiPageQuery={schemaVersion:typeof MATERIAL_AI_PAGE;batchId:string;ordinal:number;includeImage?:true;cropPreview?:SourceCropSelection};
 export type AiPageStatus='complete'|'needs_review'|'blank';
-export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;transcriptionStatus?:AiPageStatus;issues:AiIssue[];continuation?:{source:MaterialPageSource;ocrText:string};inputImage?:{dataUrl:string};cropPreview?:SourceCropPreview;sourceReadings?:SourceReadingComparison[];finalBookReferences?:BookFinalReferences;bookAnswers?:BookAnswerPage};
+export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;structureContext?:AiStructureContext;transcriptionStatus?:AiPageStatus;issues:AiIssue[];continuation?:{source:MaterialPageSource;ocrText:string};inputImage?:{dataUrl:string};cropPreview?:SourceCropPreview;sourceReadings?:SourceReadingComparison[];finalBookReferences?:BookFinalReferences;bookAnswers?:BookAnswerPage};
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v))&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 function exactContinuation(v:unknown,keys:string[],review:(p:unknown)=>boolean):v is Record<string,unknown>{
@@ -49,6 +55,27 @@ function exactContinuation(v:unknown,keys:string[],review:(p:unknown)=>boolean):
  return shape&&v.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&v.cropGeometryPolicy===MATERIAL_OWNED_CROP_GEOMETRY&&validPageContinuation(v.continuation)&&Number(v.continuation.source.page)<=Number(v.totalPages)&&v.continuation.image.total===v.totalPages;
 }
 export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
+ if(v&&typeof v==='object'&&Object.hasOwn(v,'sourceFigureSpacingPolicy')){
+  if(!plain(v,Object.keys(v))||v.sourceFigureSpacingPolicy!==FIGURE_LABEL_SPACING||v.sourceLayoutPolicy!==SOURCE_LAYOUT_TEXT||!isIndependentLiteralPolicy(v.literalReadingPolicy as LiteralPolicy))return false;
+  const {sourceFigureSpacingPolicy:_,...previous}=v;return validAiPagePrompt(previous);
+ }
+
+ if(v&&typeof v==='object'&&Object.hasOwn(v,'sourceMarkerPolicy')){
+  if(!plain(v,Object.keys(v))||v.sourceMarkerPolicy!==SOURCE_LAYOUT_MARKERS||v.sourceLayoutPolicy!==SOURCE_LAYOUT_TEXT||!validAiStructureContext(v.structureContext))return false;
+  const {sourceMarkerPolicy:_,...previous}=v;return validAiPagePrompt(previous);
+ }
+
+ if(v&&typeof v==='object'&&Object.hasOwn(v,'literalChoiceAnswerPolicy')){
+  if(!plain(v,Object.keys(v))||v.literalChoiceAnswerPolicy!==PRINTED_CHOICE_LITERAL_ANSWER||v.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||v.choiceAnswerPolicy!==PRINTED_CHOICE_ANSWER||!Object.hasOwn(v,'literalReadingPolicy')||!Object.hasOwn(v,'structureContext'))return false;
+  const {literalChoiceAnswerPolicy:_,...previous}=v;return validAiPagePrompt(previous);
+ }
+
+ if(v&&typeof v==='object'&&Object.hasOwn(v,'structureContext')){
+  if(!plain(v,Object.keys(v))||v.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!validAiStructureContext(v.structureContext)||!('blocks'in v)||!v.blocks||typeof v.blocks!=='object')return false;
+  const {structureContext,...previous}=v;
+  return validAiPagePrompt(previous)&&'blocks'in previous&&previous.blocks.rasterSha256===structureContext.reference.rasterSha256&&structureContext.reference.page<=previous.totalPages;
+ }
+
  if(v&&typeof v==='object'&&Object.hasOwn(v,'sourceLayoutPolicy')){
   if(!plain(v,Object.keys(v))||v.sourceLayoutPolicy!==SOURCE_LAYOUT_TEXT||v.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||v.sourceReadingPolicy!==SOURCE_READING||v.sourceContentPolicy!==SOURCE_CONTENT_ROLES||v.choiceAnswerPolicy!==PRINTED_CHOICE_ANSWER)return false;
   const {sourceLayoutPolicy:_,...previous}=v;return validAiPagePrompt(previous);
@@ -148,11 +175,14 @@ export function parseAiPageResponse(raw:string):AiPageResponse{
 // Compatibility normalization erases mathematical superscripts/subscripts (x² -> x2).
 const normalized=aiTextSignature;
 export const pageHasAnswerIssues=(r:AiPageResponse)=>r.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&r.answerIssues.length>0;
-export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse,prompt?:AiPagePrompt){return first.schemaVersion===final.schemaVersion&&!first.pageIssues.length&&!final.pageIssues.length&&!pageHasAnswerIssues(first)&&!pageHasAnswerIssues(final)&&first.outcome===final.outcome&&choiceLayoutSignature(first.pageText,prompt)===choiceLayoutSignature(final.pageText,prompt);}
+export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse,prompt?:AiPagePrompt){
+ if(prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&(missingAiStructureQuestions(prompt.structureContext,first).length||missingAiStructureQuestions(prompt.structureContext,final).length))return false;
+ return !(prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.structureContext?.unresolved.length)&&first.schemaVersion===final.schemaVersion&&!first.pageIssues.length&&!final.pageIssues.length&&!pageHasAnswerIssues(first)&&!pageHasAnswerIssues(final)&&first.outcome===final.outcome&&choiceLayoutSignature(first.pageText,prompt)===choiceLayoutSignature(final.pageText,prompt);}
 /** Transcription quality is separate from extracting/solving a figure-dependent question. */
 export function pageTranscriptionStatus(first:AiPageResponse,final:AiPageResponse,prompt?:AiPagePrompt):AiPageStatus{
+ if(prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&(missingAiStructureQuestions(prompt.structureContext,first).length||missingAiStructureQuestions(prompt.structureContext,final).length))return 'needs_review';
  const unclear=(r:AiPageResponse)=>r.questions.some(q=>q.issues.some(i=>i==='uncertain_ocr'||i==='cross_page'||i==='incomplete_question'));
- if(first.schemaVersion!==final.schemaVersion||first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&(first.outcome==='needs_review'||final.outcome==='needs_review')||first.pageIssues.length||final.pageIssues.length||pageHasAnswerIssues(first)||pageHasAnswerIssues(final)||choiceLayoutSignature(first.pageText,prompt)!==choiceLayoutSignature(final.pageText,prompt)||unclear(first)||unclear(final))return 'needs_review';
+ if(prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.structureContext?.unresolved.length||first.schemaVersion!==final.schemaVersion||first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&(first.outcome==='needs_review'||final.outcome==='needs_review')||first.pageIssues.length||final.pageIssues.length||pageHasAnswerIssues(first)||pageHasAnswerIssues(final)||choiceLayoutSignature(first.pageText,prompt)!==choiceLayoutSignature(final.pageText,prompt)||unclear(first)||unclear(final))return 'needs_review';
  return final.pageText?'complete':'blank';
 }
 /** Missing new metadata keeps the old conservative status for older host adapters. */

@@ -1,10 +1,13 @@
+import {FIGURE_LABEL_SPACING} from '../../shared/material-ai-figure-spacing';
+import {SOURCE_LAYOUT_MARKERS} from '../../shared/material-ai-source-markers';
+import {withAiStructureSource,validateAiStructureSource} from './material-ai-structure-source';
 import {SOURCE_LAYOUT_TEXT} from '../../shared/material-ai-source-layout';
-import {PRINTED_CHOICE_ANSWER} from '../../shared/material-ai-choice-answer';
+import {PRINTED_CHOICE_ANSWER,PRINTED_CHOICE_LITERAL_ANSWER} from '../../shared/material-ai-choice-answer';
 import {folderResourceAuthorized} from './material-folder-word-pages';
-import {MaterialChoiceRechecks,CHOICE_RECHECK_TABLE} from './material-ai-choice-rechecks';
+import {MaterialChoiceRechecks,CHOICE_RECHECK_TABLE,NEXT_PARENT_RECHECK_TABLE} from './material-ai-choice-rechecks';
 import {NATIVE_FIELD_REVIEW} from '../../shared/material-ai-native-review';
 import {readSourceCropPreview} from './material-ai-source-preview';
-import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions} from '../../shared/material-ai-literal';
+import {literalReadingPrompt,INDEPENDENT_LITERAL_READING,HOST_PARTITION_READING,HOST_BODY_READING,ISOLATED_BODY_READING,isolateLiteralQuestions,isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {MaterialAiResponses} from './material-ai-responses';
 import {receivedAiContent} from './material-ai-response-content';
 import {AI_RESPONSE_RECOVERY,AI_UNCERTAIN_REVIEW_RECOVERY,recoverNativeResponse} from '../../shared/material-ai-response-recovery';
@@ -66,7 +69,7 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_BOOK_PAGE_POLICY,pageResponseMatchesPolicy,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_BOOK_PAGE_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,validMaterialBookPagePolicy,pageResponseMatchesPolicy,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiPageSource,validateAiPageSource,followingPageStatus} from './material-ai-page-source';
 import {restoredResponseQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
@@ -112,10 +115,15 @@ export class MaterialAiRepository{
     try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),layout=await this.runtime.layout(source,signal);signal.throwIfAborted();return layout;}
     finally{this.layoutControllers.delete(controller);}
   }
-  private async localBlocks(source:MaterialPageSource,lineRegions=false){
+  private async localBlocks(source:MaterialPageSource,lineRegions=false,structure=false){
     if(this.closing||!this.runtime?.blocks)throw Error('cancelled');
     const controller=new AbortController();this.layoutControllers.add(controller);
-    try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),blocks=await this.runtime.blocks(source,signal);signal.throwIfAborted();return lineRegions&&blocks&&'blockTexts'in blocks?refinePageLineBlocks(blocks):blocks;}
+    try{
+      const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]);
+      let blocks=await this.runtime.blocks(source,signal);
+      if(structure&&blocks&&'blockTexts'in blocks)blocks=await withAiStructureSource(this.host,source,blocks,signal);
+      signal.throwIfAborted();return lineRegions&&blocks&&'blockTexts'in blocks?refinePageLineBlocks(blocks):blocks;
+    }
     finally{this.layoutControllers.delete(controller);}
   }
   readonly responses:MaterialAiResponses;
@@ -144,7 +152,7 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_pending(sha256 TEXT PRIMARY KEY,temporary_name TEXT NOT NULL,error TEXT NOT NULL DEFAULT '')`,
       `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
-      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,BOUND_ANSWERS_TABLE,BOOK_REFERENCE_TABLE,...CROP_RECHECK_TABLES,CHOICE_RECHECK_TABLE,
+      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,PAGE_VERIFICATION_TABLE,BOUND_ANSWERS_TABLE,BOOK_REFERENCE_TABLE,...CROP_RECHECK_TABLES,CHOICE_RECHECK_TABLE,NEXT_PARENT_RECHECK_TABLE,
       'CREATE INDEX IF NOT EXISTS material_ai_choice_rechecks_batch ON material_ai_choice_rechecks(batch_id)',
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
@@ -191,17 +199,18 @@ export class MaterialAiRepository{
     const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:input.processingMode??'legacy');
     const units=await this.rawInputs(input,policy,task);
     for(const unit of units)if(policy.mode==='quality'&&process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceReviewPolicy===CHOICE_CONCORDANCE)unit.pagePrompt={...unit.pagePrompt,choiceAnswerPolicy:PRINTED_CHOICE_ANSWER};
-    for(const unit of units)if(process.env.OMNI_EDU_AI_SOURCE_LAYOUT!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceAnswerPolicy&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,sourceLayoutPolicy:SOURCE_LAYOUT_TEXT};
+    for(const unit of units)if(process.env.OMNI_EDU_AI_SOURCE_LAYOUT!=='0'&&unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.choiceAnswerPolicy&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,sourceLayoutPolicy:SOURCE_LAYOUT_TEXT,...(isIndependentLiteralPolicy(unit.pagePrompt.literalReadingPolicy)?{sourceFigureSpacingPolicy:FIGURE_LABEL_SPACING}:{}),...(unit.pagePrompt.structureContext?{sourceMarkerPolicy:SOURCE_LAYOUT_MARKERS}:{})};
+    for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.structureContext&&unit.pagePrompt.literalReadingPolicy&&unit.pagePrompt.choiceAnswerPolicy===PRINTED_CHOICE_ANSWER)unit.pagePrompt={...unit.pagePrompt,literalChoiceAnswerPolicy:PRINTED_CHOICE_LITERAL_ANSWER};
     if(role?.kind==='questions'&&task?.folderId&&policy.mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0')for(const unit of units)if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.sourceContentPolicy)unit.pagePrompt={...unit.pagePrompt,bookReferencePolicy:BOOK_FINAL_REFERENCE};
-    return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;
+    return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pagePrompt?{pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:unit.pagePrompt.ocrStatus}}:{}),...(unit.pageSource?{bookPagePolicy:process.env.OMNI_EDU_BOOK_ANSWER_TABLES==='0'?MATERIAL_BOOK_PAGE_POLICY:MATERIAL_BOOK_PAGE_TABLE_POLICY}:{})})):units;
   }
   private async pagePreparation(resource:{id:string;originalFileName:string},original:Awaited<ReturnType<typeof readAiPageSource>>,policy:ReturnType<typeof materialAiProcessingPolicy>){
     const regions=!!(this.runtime?.crop&&this.runtime.inspectCrop&&this.host.root&&policy.regions);
-    const blockSource=regions&&this.runtime?.blocks&&policy.fragments&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localBlocks(original.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1')):undefined;
+    const blockSource=regions&&this.runtime?.blocks&&policy.fragments&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localBlocks(original.source,policy.ownedMargins&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_LINE_REGIONS!=='0':process.env.OMNI_EDU_AI_LINE_REGIONS==='1'),policy.mode!=='legacy'):undefined;
     const blocks=blockSource&&'blockTexts'in blockSource?blockSource.blocks:blockSource,blockTexts=blockSource&&'blockTexts'in blockSource?blockSource.blockTexts:undefined;
     const layout=!blocks&&regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
     if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==original.source.version||layout.page!==original.source.page||layout.total!==original.totalPages))throw Error('source_changed');
-    return{blocks,blockTexts,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,sourceCropPolicy:MATERIAL_TEXT_SOURCE_CROPS,...(policy.ownedMargins?{cropGeometryPolicy:MATERIAL_OWNED_CROP_GEOMETRY,figureCropPolicy:MATERIAL_FIGURE_CROPS,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{answerReviewPolicy:BLIND_ANSWER_REVIEW,...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE!=='0':process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE==='1')?{choiceReviewPolicy:CHOICE_CONCORDANCE,...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&(policy.mode==='quality'?process.env.OMNI_EDU_AI_BOUND_ANSWERS!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_BOUND_ANSWERS==='1')?{answerBindingPolicy:BOUND_ANSWERS}:{})}:{}),...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&useHighMaterialInference(policy.mode,process.env.OMNI_EDU_AI_REASONING_HIGH)?{inferencePolicy:MATERIAL_HIGH_INFERENCE}:{})}:{}),...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')?{cropTextPolicy:MATERIAL_CROP_BODY_TEXT,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT!=='0':process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{printedChoicePolicy:PRINTED_CHOICE_COUNT}:{})}:{})}:{}),...(policy.cropReviewPolicy?{cropReviewPolicy:policy.cropReviewPolicy}:{})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}};
+    return{blocks,blockTexts,pagePrompt:blocks?{...(blockSource&&'structureContext'in blockSource&&blockSource.structureContext?{structureContext:blockSource.structureContext}:{}),...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,sourceCropPolicy:MATERIAL_TEXT_SOURCE_CROPS,...(policy.ownedMargins?{cropGeometryPolicy:MATERIAL_OWNED_CROP_GEOMETRY,figureCropPolicy:MATERIAL_FIGURE_CROPS,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{answerReviewPolicy:BLIND_ANSWER_REVIEW,...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE!=='0':process.env.OMNI_EDU_AI_CHOICE_CONCORDANCE==='1')?{choiceReviewPolicy:CHOICE_CONCORDANCE,...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&(policy.mode==='quality'?process.env.OMNI_EDU_AI_BOUND_ANSWERS!=='0':policy.mode==='legacy'&&process.env.OMNI_EDU_AI_BOUND_ANSWERS==='1')?{answerBindingPolicy:BOUND_ANSWERS}:{})}:{}),...(policy.cropReviewPolicy===MATERIAL_CROP_CORRECTION_POLICY&&useHighMaterialInference(policy.mode,process.env.OMNI_EDU_AI_REASONING_HIGH)?{inferencePolicy:MATERIAL_HIGH_INFERENCE}:{})}:{}),...(process.env.OMNI_EDU_AI_CROP_BODY_TEXT!=='0'&&(policy.mode!=='legacy'||process.env.OMNI_EDU_AI_CROP_BODY_TEXT==='1')?{cropTextPolicy:MATERIAL_CROP_BODY_TEXT,...((policy.mode!=='legacy'?process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT!=='0':process.env.OMNI_EDU_AI_PRINTED_CHOICE_COUNT==='1')&&(policy.mode!=='legacy'?process.env.OMNI_EDU_AI_BLIND_ANSWERS!=='0':process.env.OMNI_EDU_AI_BLIND_ANSWERS==='1')&&[MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_CORRECTION_POLICY].includes(policy.cropReviewPolicy as typeof MATERIAL_CROP_REVIEW_IMAGES_POLICY)?{printedChoicePolicy:PRINTED_CHOICE_COUNT}:{})}:{})}:{}),...(policy.cropReviewPolicy?{cropReviewPolicy:policy.cropReviewPolicy}:{})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}};
   }
   private async rawInputs(input:AiBatchInput,policy:ReturnType<typeof materialAiProcessingPolicy>,task?:AiBatchTask):Promise<AiUnitInput[]>{
     const resource=await this.host.materials().resource(input.resourceId);
@@ -337,7 +346,7 @@ export class MaterialAiRepository{
     await this.validateOriginalInput(proof.config,proof.unit,batchId);return proof;
   }
   private async validateOriginalInput(config:AiBatchInput,unit:AiUnitInput,batchId?:string,task?:AiBatchTask){
-    if(unit.bookPagePolicy!==undefined&&(unit.bookPagePolicy!==MATERIAL_BOOK_PAGE_POLICY||!unit.pageSource||!unit.pagePrompt||unit.bookRole?.kind!=='answers'||!validMaterialBookRole(unit.bookRole)))throw Error('source_changed');
+    if(unit.bookPagePolicy!==undefined&&(!validMaterialBookPagePolicy(unit.bookPagePolicy)||!unit.pageSource||!unit.pagePrompt||unit.bookRole?.kind!=='answers'||!validMaterialBookRole(unit.bookRole)))throw Error('source_changed');
     if(unit.pagePrompt!==undefined&&(!unit.pageSource||!validAiPagePrompt(unit.pagePrompt)))throw Error('source_changed');
     if((unit.pagePrompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT||pageRegionsPolicy(unit.pagePrompt?.policy))&&(unit.bookRole?.kind==='answers'||unit.pageSource!.page>unit.pagePrompt.totalPages))throw Error('source_changed');
     const resource=await this.host.materials().resource(config.resourceId);
@@ -347,6 +356,7 @@ export class MaterialAiRepository{
     for(const source of unit.sources){const view=await this.host.materials().source(source);if(unit.pageSource&&view.body.chunks[0]?.pageNumber!==unit.page)throw Error('source_changed');}
     if(unit.pageSource){
       if(!config.images||unit.native||unit.pageSource.resourceId!==config.resourceId||unit.pageSource.version!==config.version||unit.pageSource.page!==unit.page)throw Error('source_changed');
+      if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.structureContext)await validateAiStructureSource(this.host,unit.pageSource,unit.pagePrompt.structureContext,unit.pagePrompt.blocks.rasterSha256,new AbortController().signal,unit.pagePrompt);
       const current=await validateAiPageSource(this.host,unit.pageSource);if(current.text!==unit.text||unit.pagePrompt&&(current.status!==unit.pagePrompt.ocrStatus||unit.pagePrompt.policy!=='page-restoration.v2'&&current.totalPages!==unit.pagePrompt.totalPages))throw Error('source_changed');
     }
     await validatePageContinuation(this.host,config,unit,batchId,task,this.host.inspectContinuationText);
@@ -401,7 +411,7 @@ export class MaterialAiRepository{
       if(!['page-image-complete.v1','page-crop-complete.v1'].includes(receipt.policy)||!unit.pageSource||JSON.stringify(unit.pageSource)!==JSON.stringify(q.archive?.pageSource))throw Error('source_changed');
       const original=proof.final.questions.find(p=>p.number===q.archive!.number);if(!original)throw Error('source_changed');
       const crops=pageRegionsPolicy(unit.pagePrompt?.policy)?await readPageCrops(this.host,receipt.batchId,receipt.ordinal,unit.pageSource,proof.first,String(row.first_json),receipt.imageSha,signal,q.archive!.number,unit.pagePrompt):[];
-      const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
+      const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page,proof.final.questions.at(-1)?.number):'separate';
       const answerPrompt=await this.choiceRechecks.promptFor(q,proof,crops,following);
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,answerPrompt,crops).find(c=>c.number===original.number);
         if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,answerPrompt))throw Error('source_changed');
@@ -486,16 +496,16 @@ export class MaterialAiRepository{
     return this.responses.view(input);
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
-    if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt);
+    if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt,[],proof.unit.bookPagePolicy);
     const answers=proof.unit.bookRole?.kind==='answers'?await this.bookAnswers.pageView(proof,input):undefined;
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true,input.batchId);
     const signal=new AbortController().signal;
     const crops=sourceReadingEnabled(proof.unit.pagePrompt)?await readPageCrops(this.host,input.batchId,input.ordinal,source,proof.first,String((await this.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[input.batchId,input.ordinal]))[0]?.first_json||''),proof.imageSha,signal,input.cropPreview?.number,proof.unit.pagePrompt):[];
-    const sourceReadings=sourceReadingEnabled(proof.unit.pagePrompt)?readingComparisons(proof.review||proof.first,proof.final,crops):undefined;
+    const sourceReadings=sourceReadingEnabled(proof.unit.pagePrompt)?readingComparisons(proof.review||proof.first,proof.final,crops,proof.unit.pagePrompt):undefined;
     const cropPreview=input.cropPreview?await readSourceCropPreview(this.host.root,crops,sourceReadings,input.cropPreview,signal):undefined;
     const finalReferences=bookReferenceEnabled(proof.unit.pagePrompt)&&proof.review?await readBookReferenceRecord(this.bookReferenceHost(),input.batchId,input.ordinal,bookReferenceSourceSha(proof.unit,proof.first,proof.review),proof.finalRaw):undefined;
-    return{...(finalReferences?{finalBookReferences:finalReferences.payload}:{}),schemaVersion:MATERIAL_AI_PAGE,resource,source,...(sourceReadings?{sourceReadings}:{}),...(cropPreview?{cropPreview}:{}),text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final,proof.unit.pagePrompt),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
+    return{...(finalReferences?{finalBookReferences:finalReferences.payload}:{}),schemaVersion:MATERIAL_AI_PAGE,resource,source,...(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&proof.unit.pagePrompt.structureContext?{structureContext:proof.unit.pagePrompt.structureContext}:{}),...(sourceReadings?{sourceReadings}:{}),...(cropPreview?{cropPreview}:{}),text:proof.final.pageText,ocrText:proof.unit.text,status:!answers?.resolved&&(proof.status==='review'||assessment.review)?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:answers?.resolved?'complete':proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.review||proof.first,proof.final,proof.unit.pagePrompt),issues:proof.final.pageIssues,...(pageContinuation(proof.unit.pagePrompt)?{continuation:{source:pageContinuation(proof.unit.pagePrompt)!.source,ocrText:pageContinuation(proof.unit.pagePrompt)!.text}}:{}),...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(answers?{bookAnswers:answers.page}:{})};
   }
   private async syncRecoveredFolderUnit(batchId:string,ordinal:number){
     if(ordinal!==1||!(await this.host.all("SELECT 1 FROM sqlite_master WHERE type='table' AND name='material_folder_ai_units'")).length)return;
@@ -691,6 +701,10 @@ export class MaterialAiRepository{
       const clean=await this.runtime.clean(unit.text);
       if(config.images&&clean!==unit.text)throw new Error('privacy_blocked');
       if(unit.pagePrompt&&'blockTexts'in unit.pagePrompt&&pageFragmentTextPolicy(unit.pagePrompt.policy)){const hints=unit.pagePrompt.blockTexts.map(h=>h.text).join('\n');if(await this.runtime.clean(hints)!==hints)throw Error('privacy_blocked');}
+      if(unit.pagePrompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&unit.pagePrompt.structureContext){
+        const text=unit.pagePrompt.structureContext.paragraphs.map(p=>p.rawText+'\n'+p.text).join('\n');
+        if(await this.runtime.clean(text)!==text)throw Error('privacy_blocked');
+      }
       let image:Awaited<ReturnType<AiRuntime['image']>>|undefined;
       if(config.images){
         const stored=await this.storedImage(batchId,ordinal,signal);image=stored||await this.runtime.image(config.resourceId,config.version,unit.page,signal,unit.pageSource?.schemaVersion===MATERIAL_IMAGE_SOURCE&&pageFragmentsPolicy(unit.pagePrompt?.policy)?IMAGE_PAGE_ENGINE:undefined);
@@ -782,10 +796,12 @@ export class MaterialAiRepository{
         const originalQuestions=extractMaterialQuestions(sourceUnits,'local-text-v1');
         await this.write(async target=>{
           await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
-          const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(target.host,unit.pageSource!,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource!.page):'separate';
+          const lastNumber=pageFinal.questions.at(-1)?.number;
+          const canCheckBoundary=process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY!=='0'&&crops.some(c=>c.number===lastNumber&&!c.failure);
+          const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(target.host,unit.pageSource!,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource!.page,canCheckBoundary?lastNumber:undefined):'separate';
           if(bookReference){const saved=await readBookReferenceRecord(target.bookReferenceHost(),batchId,ordinal,bookReference.payload.sourceSha256);if(JSON.stringify(saved)!==JSON.stringify(bookReference))throw Error('source_changed');await validateBookReferenceRecord(target.bookReferenceHost(),bookReference,unit,pageFirst,verification!.review,signal);await target.host.run("UPDATE material_ai_book_references SET final_sha=? WHERE batch_id=? AND ordinal=? AND context_sha=? AND final_sha=''",[hash(finalRaw),batchId,ordinal,hash(JSON.stringify(bookReference))]);}
           if(answerSource)await writeBoundAnswers(target.host,batchId,ordinal,answerSource,responseRaw,finalRaw);
-          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',pagePrompt:unit.pagePrompt,crops,following,...(bookReference?{bookReferences:bookReference.payload,...(bookReference.comparisonPolicy?{bookAnswerPolicy:bookReference.comparisonPolicy}:{})}:{})});
+          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,review:verification?.review,imageSha,title:String(row.title),model:config.model,answerBook:unit.bookRole?.kind==='answers',bookPagePolicy:unit.bookPagePolicy,pagePrompt:unit.pagePrompt,crops,following,...(bookReference?{bookReferences:bookReference.payload,...(bookReference.comparisonPolicy?{bookAnswerPolicy:bookReference.comparisonPolicy}:{})}:{})});
           await target.guard(batchId,config,unit,signal);
         },()=>signal.throwIfAborted());lease='';return true;
       }

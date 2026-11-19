@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "hashScope": "Raw accepted integrated worktree bytes; Git may normalize text line endings. Incoming main files outside this KB inventory are identified by integration parents in summary.json.",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "3bcde41db43ea526d93ad5b7b532d76a4e2a63ad7087cf1e1228d069d95f9bc7"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "71535adb114523cbfd44bd5f393468508d4c5145d85662100a82239ef5b9ffe8"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "3c9b25cd39f633f86a61916344c8b0d047f35727e01ac81b4cd9aff2289ab35e"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "0864f6e5a0d6d7843ec53923074e133be5bf45811c9e0fedad5c86e677598060"
+    },
+    {
+      "path": "apps/desktop/scripts/education/ai-structure-source-boundaries.mjs",
+      "sha256": "847ab91210c22443dc2002a98d94af586de3aa7bf08fe75b6195613747d187c8"
+    },
+    {
+      "path": "apps/desktop/scripts/education/ai-structure-source-electron.mjs",
+      "sha256": "d5656c547e9d0786c99b5cfc4ab9906e28f5448bf087f1ede48290b2bbfffdc0"
+    },
+    {
+      "path": "apps/desktop/scripts/education/ai-structure-source-readback.mjs",
+      "sha256": "6ca5317da83aadc002da32845e82dab9d720cc5022c0b3e32616c0594a47d070"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+      "sha256": "80a630e0a8fa23e9cca4665e35ae32e91fb37232b0ce1d75adc9b0137e607379"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "ef52378065635b45c3238aaa6d0a6b23b2c5631a8895779b8e92fa2ff31755ec"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "ee220c128bd856934facf8e79250db64f423fb3f46d78de57a940f90965b6d4e"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-structure-source.ts",
+      "sha256": "de1545ff8e0510aedaaf88aabafe054044e481bb412b634108fcacc707b6e6e3"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "e3bb5112030268e0b2c4759d4b7ce209c70cf4dbf24829d28ec96c4e320b126f"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+      "sha256": "0d029be58e30a25dbb44cd0de2cf07bcf1241c9e26f299ab6d15d229ae04a873"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+      "sha256": "61eecc9bafb99a2a9524282e6b5b8529df7afb64b64b28c3b11594890c915140"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx",
+      "sha256": "d4b93b19d467049d1f6271db4f748849c42de66e32fda62037a10f64f61a0727"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-choice-answer.ts",
+      "sha256": "00c332c37b75b4f6373f12ae792c5ec15a488a761867d4a96ab200dbb7d872cf"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-literal.ts",
+      "sha256": "6272a68396377f68d87004762554970cd5b82ad311835652fa2eb5dca9294069"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-page-fragments.ts",
+      "sha256": "141883003b8db2b9e27e04f4bdbe981ba4c56573b9147dddc4acbd8d71df73c2"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-page.ts",
+      "sha256": "09841279cdc9c7a98ce521533437f3f8bd554ca1ddc1a527d15e93af2d17c525"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-structure.ts",
+      "sha256": "5a0e643ac0cce0c4e18fcae39ae471299f4b4e5031eb9744b2336c52dc4cd8a3"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "254c0b33f5dc976b3a1868a5ed8cf1980d8163adb082293e77849f7da2227c1e"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "1597f5f19c9aa24107f9d0d979fdd3faf8d264e6510a159bb27bbfa7e3a3d860"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "0ba4f33f12aac52bf772c51bf586e2489e99fffdafd390206700823a2594b94f"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "231990f187433279be87611987cd8c2e655debddfa02c671c729d5b3fa3b2b94"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "b86aba7d60db32346ef7b3ab3a0dbb165e01105a4bc54c687b358426be06ec12"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "97120f17523a5f104cbf5ef09af52a8cbb81f6ab548027866a8a427db5f8f652"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "ee80bbcfc8804cb5b673079308b48df2bdf29b99c885e2344b29473a5af09942"
+    },
+    {
+      "path": "docs/goal/WORK_PROGRESS.md",
+      "sha256": "02d6713afb42156251871daa841137a0947d21b10463ed1d0da2af0270179174"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "c836454adf2c7e6dc37a8548700dcc877ee229e8a0bcd441f3c05407928058ae"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "e12a0ae2a42857cb20d8b1113a2c9d5e8017dffbed847061a3e32236e6d46da8"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "359b044869a176e922fbc68b03643bf42182d9e8561098314cd1cac7b6683fef"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/ai-structure-source/README.md",
+      "sha256": "799116109ce602b909b6112c4a01a4d4b6394036ffdcb57afa407f96838de1e6"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261118/ai-structure-source/summary.json",
+      "sha256": "a01da533686652ec389361cfb1abcd76a855fd6246e84cbd07936a9dc4bb8e72"
+    }
+  ]
+}

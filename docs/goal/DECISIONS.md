@@ -1,5 +1,43 @@
 # Goal 决策记录
 
+## 2026-11-19 页尾题边界复核
+
+将局部页首证据用于分界，整页状态独立持久化。复用资料页本地版式复核动作及原事务，新证据单独审计。OMNI_EDU_AI_NEXT_PARENT_BOUNDARY=0 可停止新写入。
+
+详见 [本轮报告](../research/evidence/kb/20261119/next-parent-boundary/README.md)。
+
+## 2026-11-19 答案册速查表结构恢复
+
+按原页版面派生速查表候选。新任务冻结 v3，已保存 v1/v2 回执保持语义。环境变量 OMNI_EDU_BOOK_ANSWER_TABLES=0 可停止给新批次选择 v3。
+
+详见 [本轮记录](../research/evidence/kb/20261119/book-key-tables/README.md)。
+
+## 2026-11-19 题本完整题干优先
+
+题本与 Pi 共用分页前相关性排序。严格题干字段优先，匹配拆分词继续召回，筛选、来源及空查询顺序沿原规则。
+
+详见 [本轮记录](../research/evidence/kb/20261119/notebook-phrase-ranking/README.md)。
+
+## 2026-11-19 独立题图的标注间距复核
+
+以已保存双原图字面转录为证明。只有独立图标签后缀完整一致的说明可比对标注前空白，所有仍不具备独立证据的情况继续适用旧规则。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
+## 2026-11-18 有来源编号的版式误判修复
+
+新增可选 sourceMarkerPolicy，版本为 source-layout-markers.v1；不改变 source-layout-text.v1 历史规则。比较限原 parent/option 段落及完整文字，数学符号/数字/单位/否定词保持严格，模型原文不修改。复用原本地动作、writer和审计，不新增基础设施或调用。 本地复核候选经同一条有界查询选出，坏输入维护待核，已有审计继续使用 originalPolicyAllowed 验证。
+
+详见 [本轮报告](../research/evidence/kb/20261118/source-marker-recheck/README.md)。
+
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+主线整合补充：57c4f20 的功能已通过 8da5d2e 整合 origin/main 5938c31 的协作终端/恢复代码，双方状态记录保留。整合树 b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73 的 build、253 组件、16 来源、247 AI 页及完整 207 Electron 回归通过；原付费输入/四份裁图冷读 3 项、协作终端双尺寸 10 项通过，整合新增付费 0。原真实 AI 验证树 e996a501 保留，不能与整合树混称。完整知识库仍 ACTIVE，四题待核和下一处标点比较缺陷不变。
+
+本地结构作为可选版本化来源进入新 AI 输入，复用原段落、原页和局部 OCR 回执。按段落顺序形成提示，独立原图转录移除所有结构文字提示。已确认行被模型漏掉时继续待核。新批 literalChoiceAnswerPolicy 单独冻结，旧任务读器兼容。真实全半角标点差异仍按原严格规则待核，下一以存储响应做有审计的本地比较修复。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
+
 ## 2026-11-18 Harness Gate6通过
 
 Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。独立23/23 PASS、失败0、skipped0，1697生产文件、25专项脚本、1386验证脚本、478输出和73依赖manifest前后零漂移，21个已采集进程均退出。原89项累计57项阶段范围PASS并备注已实现，Phase7完整页面和Phase8系统终验继续推进。报告docs/goal/xiaozhi-harness/evidence/phase6/final/GATE6_REVIEW_FINAL.md。

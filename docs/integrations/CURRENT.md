@@ -3,6 +3,43 @@
 ## 2026-11-19 小智工作台接线
 
 新增一个版本化工作台只读 API，继续、批准、拒绝和能力检查沿原 typed IPC。受控 PowerShell 的子进程模块缓存进入现有隔离临时目录。Pi、Registry、文件、SQLite 和原授权签发仍是对应领域入口。
+## 2026-11-19 页尾题边界复核
+
+复核只读同一 PDF 版本的原生层与 RapidOCR，不重新运行 OCR、不上传下一页，也不为下一页解题。
+
+详见 [本轮报告](../research/evidence/kb/20261119/next-parent-boundary/README.md)。
+
+## 2026-11-19 答案册速查表结构恢复
+
+答案册 v3 使用现有 DeepSeek v2 响应结构和两遍原图核对。新提供方提示保留原题号行、原答案行和列间空白，实际写回受主进程约束。
+
+详见 [本轮记录](../research/evidence/kb/20261119/book-key-tables/README.md)。
+
+## 2026-11-19 题本完整题干优先
+
+共用 questionKeywordOrder。继续使用原 SQLite FTS5、题本 IPC 和 Pi 查询，现有索引不需重建。
+
+详见 [本轮记录](../research/evidence/kb/20261119/notebook-phrase-ranking/README.md)。
+
+## 2026-11-19 独立题图的标注间距复核
+
+继续复用原图归档、独立读数、题本和原本地复核接口，无新增依赖、表或模型调用。
+
+详见 [本轮记录](../research/evidence/kb/20261119/figure-label-spacing/README.md)。
+
+## 2026-11-18 有来源编号的版式误判修复
+
+复用原 PDFium/RapidOCR/结构上下文、DeepSeek 已存响应、typed recheck_source_layout、MaterialChoiceRechecks 和来源读器。新增 source-layout-markers.v1，无新生产依赖、表、IPC或云端调用。旧 v1 审计与关闭开关继续可读。
+
+详见 [本轮报告](../research/evidence/kb/20261118/source-marker-recheck/README.md)。
+
+## 2026-11-18 本地结构证据接续 DeepSeek
+
+主线整合补充：57c4f20 的功能已通过 8da5d2e 整合 origin/main 5938c31 的协作终端/恢复代码，双方状态记录保留。整合树 b7c6da0f825aae71dae0f035316c8b377fe38e0d031426f8a616d41eeb6bee73 的 build、253 组件、16 来源、247 AI 页及完整 207 Electron 回归通过；原付费输入/四份裁图冷读 3 项、协作终端双尺寸 10 项通过，整合新增付费 0。原真实 AI 验证树 e996a501 保留，不能与整合树混称。完整知识库仍 ACTIVE，四题待核和下一处标点比较缺陷不变。
+
+新增可选 xiaozhi.ai-structure-source.v1 与 printed-choice-literal-answer.v1，复用原 PDFium、RapidOCR、结构仓库、QuestionAssets、pageBlockTexts、AI writer、typed AiPageView 与 DeepSeek。单份结构上下文32KiB，派生读取4MiB，仍用原三阶段模型流程。没有新表、IPC、生产依赖或服务。
+
+详见 [本轮报告](../research/evidence/kb/20261118/ai-structure-source/README.md)。
 
 ## 2026-11-18 Harness终端与恢复接线
 

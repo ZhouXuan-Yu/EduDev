@@ -64,7 +64,7 @@ export class MaterialBookAnswerIndex{
      // A sentinel for every latest page prevents an older successful transcript surviving a later empty page.
      const {page,context}=await new MaterialBookQuestionSection(this.host,this).answerPage(proof);
      const fingerprint=createHash('sha256').update(JSON.stringify([source,proof.firstSha,proof.finalSha,proof.imageSha,context])).digest('hex');
-     const resolved=proof.status==='review'&&!!context&&bookAnswerSectionReviewResolved(proof.first,proof.final,page);
+     const resolved=proof.status==='review'&&!!context&&bookAnswerSectionReviewResolved(proof.first,proof.final,page,proof.unit.bookPagePolicy);
      for(const entry of [{start:-1,sectionKey:'',number:''},...page.entries])await this.put(batch,ordinal,entry.start,source.resourceId,source.version,source.page,Number(slot.seq),entry.sectionKey,entry.number,'answers',fingerprint,entry.start===-1&&resolved?'section-resolved.v1':'');
     }
    }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;}
