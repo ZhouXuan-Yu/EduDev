@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "d13e0310fe64fcebd5e5aa0d7baa06274d0623b2",
+  "status": "PACKAGED_STARTUP_PASS_SCOPED",
+  "platform": "Windows x64",
+  "electron": "43.8.3",
+  "executableLocal": "%TEMP%/edu-harness-d13e031-e3a5c24a/release/win-unpacked/小智.exe",
+  "executableSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+  "mainBundleSha256": "776a875e7ab418acb0e0bc38d8c9ee9f3952d585db37b4c340b5a1596da91a5b",
+  "outputTree": {
+    "files": 481,
+    "sha256": "44f05e690c0d2f5ade01262c116b03b25c278767a19101ae9649a27cdfe7685e",
+    "allFilesMatchValidatedBuild": true
+  },
+  "locks": [
+    {
+      "packagedRuntime": "page-blocks-runtime",
+      "files": 767,
+      "verified": true
+    },
+    {
+      "packagedRuntime": "ocr-runtime",
+      "files": 712,
+      "verified": true
+    },
+    {
+      "packagedRuntime": "education-runtime",
+      "files": 90,
+      "verified": true
+    },
+    {
+      "packagedRuntime": "retrieval-runtime",
+      "files": 154,
+      "verified": true
+    },
+    {
+      "packagedRuntime": "reranker-runtime",
+      "files": 155,
+      "verified": true
+    }
+  ],
+  "ocrWorkerSha256": "596ff7835b42c7f030e6bfc8b4e6a578597234fc70fa57279def56098d8aa713",
+  "staleLocalWorkerReplacedInTemporaryStagingOnly": true,
+  "bootCheck": {
+    "appIsPackaged": true,
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "promptVisible": true
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "promptVisible": true
+      }
+    ],
+    "rendererErrors": [],
+    "isolatedProfileAndDatabase": true,
+    "rawReportSha256": "8e55328a0660d980c2795abf01061b5c91f7c07653db7cc2391a6bbb88b2162e"
+  },
+  "command": "electron-builder --win --x64 --dir --config <owned-temp-packaging.cjs> --publish never",
+  "signed": false,
+  "installerTested": false,
+  "paidCalls": 0,
+  "QG09": "BLOCKED_CURRENT_HOST"
+}

@@ -61,3 +61,9 @@
 A1 历史复制子场景已实现。Terra 从真实 Electron 开发构建的审批收件箱展开原申请，核对来源、目标、单次范围与拒绝后果。A2 同一历史申请的拒绝及冷启动子场景已实现。SQLite 记录、审批 ID、原文件摘要及目标未创建均有读回。冷启动详情按已拒绝历史记录只读显示。[复验](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json)。
 
 A1 其他审批类型、A2 范围变化与替代路径、最终包的完整页面合同继续验收。
+
+## 2026-11-19 工作台双击继续独立复验
+
+W2 的双击去重、同 Task 和冷启动子场景已实现。真实开发构建从可见工作台双击“继续剩余步骤”，仅新增一个 Run，Generation 从 1 到 2，恢复回答可见。第二次冷开读回相同 Task 和已恢复 Run，零模型重放。[复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+早期写入夹具把只读步骤登记为写入依赖，保留两次未进入草稿的记录。按当前计划合同并用实际审批点击后，观察到首次写入未派发却被本地效果账标记为不确定。同 Task 续跑出站前阻于 task_effect_needs_recheck，目标文件未创建。已提交文件、旧 Run 迟到结果和修复后重验仍待完成。W2 整体为 PARTIAL。

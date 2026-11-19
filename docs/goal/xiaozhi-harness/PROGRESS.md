@@ -1,5 +1,13 @@
 # Harness 执行进度
 
+## 2026-11-19 当前 Windows 包与工作台去重
+
+提交 `d13e031` 生成本地 Windows x64 便携包，五组锁定资源核验全部通过。包内 481 个输出文件与已验构建逐字节一致，实包在两个尺寸用隔离数据根启动，输入区可达，renderer 错误为 0。[当前构建](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+W2 双击去重子场景独立 4/4。同一 Task 仅新增一个 Run，冷重启仍可读回且零重放。带已有文件效果及旧 Run 迟到的完整验证继续进行。[双击复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
 ## 2026-11-19 模型脱敏与历史审批复验
 
 固定矩阵 **88/89**，A-P0-08 已实现。在真实 Pi Host 中复验 Office DOCX/PDF、已提交附件 TXT/DOCX/PDF 和持久终端，并从两个原始失败的旧会话冷恢复。独立 8/8，19 个合成模型请求保留教学内容并清理已种入的敏感项。原文件、旧 JSONL 前缀和教师端终端输出保留。当前分支另有 Host 8/8、图像原生围栏 19/19 和组件 253/253。[脱敏证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。

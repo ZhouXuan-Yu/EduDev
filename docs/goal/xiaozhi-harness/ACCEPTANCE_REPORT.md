@@ -1,5 +1,13 @@
 # 独立验收记录
 
+## 2026-11-19 当前 Windows 包与工作台去重
+
+QG-08 当前便携候选继续通过。包内运行时集、源码指纹和隔离真实启动已读回。QG-09 完整独立安装和卸载仍 BLOCKED。[包与启动](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+Gate7 W2 新增独立证据。双击同 Task 恢复只新增一个 Run，第二次冷开未重放；旧 Run 迟到和已有文件效果仍有待补齐。[工作台复验](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
 ## 2026-11-19 A-P0-08 数据出站复验与历史复制审批
 
 A-P0-08 已实现，固定矩阵 **88/89**。原六项出站回归与两个真实旧会话冷启动独立 8/8，19 个合成模型请求未包含已种入的姓名、学校、电话、邮箱或本机路径。原件、捕获附件、SQLite 锚点、JSONL 历史和终端教师可见输出读回保留。结合已验收的 HTTP 无授权零外发、结构化文件引用及图像准备至出站围栏 19/19。[证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。

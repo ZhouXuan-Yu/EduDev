@@ -1,5 +1,13 @@
 # 执行日志
 
+## 2026-11-19 当前 Windows 包与工作台去重
+
+生成 `d13e031` 的本地可启动包。最新知识库 OCR worker 通过 712 文件校验后复制到独立暂存目录，electron-builder 的原 afterPack 检查验证全部五组资源。未操作安装目录和现有快捷方式。[实包证据](evidence/phase8/windows-package-20261119/privacy-and-ocr-packaged-startup.json)。
+
+Terra 实际从工作台双击恢复，限定场景 4/4。首个带文件夹具因依赖和审批前置尚未抵达恢复，保留原结果。[W2 证据](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json)。
+
+W2 写入变体新增一处待修复。真正未调用底层写入的权限失败在续跑时仍被当作不确定效果，导致教师确认后无法继续。同一记录保留实际未派发、文件不存在及阻断原因。
+
 ## 2026-11-19 工具结果脱敏与拒绝后读回
 
 在 Pi 的模型上下文副本处理已授权读取结果和已持久的宿主索引，保持权限、版本、回执与本地原始内容。合入新主线后的完整构建通过，Host 8/8、领域 8/8、压缩边界 8/8、图像原生 19/19、组件 253/253。独立 8/8 的原红及中间历史索引红均保留。先前图像运行缺本地合成夹具，重建夹具后复跑全通过，未调用付费 Provider。[出站证据](evidence/phase8/p0-current-source-20261119/office-attachment-terminal-green.json)。

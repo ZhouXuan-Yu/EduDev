@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "row": "W2",
+  "status": "PARTIAL",
+  "build": "d13e0310fe64fcebd5e5aa0d7baa06274d0623b2",
+  "mainBundleSha256": "776a875e7ab418acb0e0bc38d8c9ee9f3952d585db37b4c340b5a1596da91a5b",
+  "buildFingerprint": "7fe70de7977b02ea3f40829cf6f8cba457c59fc3374aba3090d2187eef3a0338",
+  "scope": "Terra High, actual isolated Electron workbench, development build and in-memory model fixture",
+  "checks": [
+    {
+      "name": "Synthetic model stalled and teacher Stop persisted interrupted Task",
+      "pass": true
+    },
+    {
+      "name": "Workbench double click created exactly one new Run and generation for the same Task",
+      "pass": true
+    },
+    {
+      "name": "Visible response and terminal same-task state persisted without duplicate Run",
+      "pass": true
+    },
+    {
+      "name": "Cold readback retains same Task and resumed Run with no replay",
+      "pass": true
+    }
+  ],
+  "task": "xitask_03658e8a8aac2c514ecec75435c4e24f2ddb7eb7aa6851d3282f3f51daa70365",
+  "beforeRuns": [
+    {
+      "id": "run_14d118fc-fa72-44e7-8a71-8965aefdb8a4",
+      "session_id": "aisession_c6e4dbb1-afce-4bf4-b43d-d2ab5f33ab0f",
+      "status": "blocked"
+    }
+  ],
+  "afterDoubleClickRuns": [
+    {
+      "id": "run_d4458889-3f87-41fb-bd6d-1a211cb5040a",
+      "session_id": "aisession_c6e4dbb1-afce-4bf4-b43d-d2ab5f33ab0f",
+      "status": "running"
+    },
+    {
+      "id": "run_14d118fc-fa72-44e7-8a71-8965aefdb8a4",
+      "session_id": "aisession_c6e4dbb1-afce-4bf4-b43d-d2ab5f33ab0f",
+      "status": "blocked"
+    }
+  ],
+  "finalTaskState": "review_required",
+  "coldAdditionalModelRequests": 0,
+  "totalLoopbackModelRequests": 2,
+  "paidCalls": 0,
+  "evidence": {
+    "independentReportSha256": "206b20f7229639315dcd666b04f701cb70bee8542f6ecd006fa621ab9aaab4ae",
+    "resultScreenshotSha256": "9c21fd95880b99d98a1dfa51f9e49bd52028e9ae4257374de39790440d13085f",
+    "coldScreenshotSha256": "9a9c3e2139d8d84ccdfd0e70be8cdd82d47c61e2589a5129135bb2726af65f79",
+    "basedOnLocalFixture": "Phase7 plain-test.mjs, built from existing native resume fixture"
+  },
+  "compoundFixture": {
+    "status": "NOT_REACHED",
+    "rawReportSha256": "239aef6705ad22ffc63ca6d8187cae631573fba1fb75484f86657de6e72c846e",
+    "actual": "The fixture called plan update and file read in the same model response. The file read succeeded. The Task had no verified readback checks, so the draft was not delivered.",
+    "reason": "task_dependency_blocked",
+    "duplicateEffectAndLateOldRun": "NOT_TESTED"
+  },
+  "orderedRecoveryCounterexample": {
+    "status": "NOT_REACHED",
+    "scenario": "Issued the plan and safe read in separate model responses. The fixture still listed a read as a planned dependency, contrary to the current tool contract.",
+    "rawReportSha256": "4a022d4ea92db68da14c218ce2c9fcd500746c8f8b8926e78c377925da8e2182"
+  },
+  "approvalResumeFinding": {
+    "status": "FAIL_SCOPED",
+    "scenario": "Real visible UI approved one exact synthetic filesystem operation. After stopping and continuing the same Task, the identical draft was blocked at the effect recheck.",
+    "expected": "A known non-dispatched write can be attempted again only after the current permission gate authorizes it.",
+    "actual": "First write was admitted to the Task, then returned permission_denied. The native effect was none; the stored effect was uncertain. The next Run failed task_effect_needs_recheck before delivery. Neither output file was created.",
+    "implementationTrace": "tools/execution-bound.ts still has invoked=false when the native write is never called. tasks/task-state.ts priorEffect treats a prior cross-Run effectful admission as an unresolved write.",
+    "rawReportSha256": "71b3b0742792f616abb729c32018639e85caa32301d581e3aca058993e8bf94c",
+    "needed": "Reconcile only trusted, fenced never-dispatched effects and retain the existing permission and actually-invoked effect fences. Then rerun file preservation and old-Run callbacks.",
+    "paidCalls": 0
+  }
+}
