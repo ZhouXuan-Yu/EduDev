@@ -3,7 +3,8 @@ import { partitionLiteralCrop, partitionLiteralBody } from './material-ai-host-p
 import { parseAiPageResponse, type AiPagePrompt, type AiPageResponse } from './material-ai-page';
 import { SOURCE_CONTENT_RESPONSE, sourceContentEnabled, contentPartRoles } from './material-ai-source-content';
 import { sourceTextSignature } from './material-ai-source-reading';
-import type { SourceCropKind } from './material-ai-owned-crops';
+import { CONTINUATION_BLOCK_PREFIX, type SourceCropKind } from './material-ai-owned-crops';
+import { PAGE_CONTINUATION_SENTENCE, type PageContinuation } from './material-ai-continuation';
 import { validSourceParts, type SourcePart } from './question-source-content';
 import type { QuestionProjection } from './question-projection';
 import { assertLiteralQuestionIdentity, heldLiteralQuestion } from './material-ai-isolated-literal';
@@ -43,7 +44,7 @@ type LiteralQuestion = {
   number: string; crops: Crop[]; coverage: Record<CoverageField, 'provided' | 'missing' | 'not_applicable'>;
   figure: QuestionProjection['figures']; requiresImage: boolean; issues: AiIssue[]; answer: Role; analysis: Role;
 };
-type Review = { questions: { number: string; ocrStatus: string; crops: { kind?: SourceCropKind; sha256: string; ocrSha256?: string; text: string; truncated: boolean }[] }[] };
+type Review = { questions: { number: string; ocrStatus: string; crops: { blockIds?: string[]; kind?: SourceCropKind; sha256: string; ocrSha256?: string; text: string; truncated: boolean }[] }[] };
 const exact = (value: unknown, keys: string[]): boolean => !!value && typeof value === 'object' &&
   !Array.isArray(value) && Reflect.ownKeys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key));
 const issuesValid = (value: unknown): value is AiIssue[] => Array.isArray(value) && value.length <= 5 &&
@@ -52,7 +53,7 @@ const literalSignature = (text: string) => text.normalize('NFC').replace(/\s/gu,
 
 /** Decode the new wire format once. Canonical fields are deterministic views of
  * retained literal parts, never additional model-authored copies of the body. */
-export function deriveLiteralPageResponse(raw: string, previous: AiPageResponse, review: Review, sourceOnly: boolean, policy: LiteralPolicy = LITERAL_READING): string {
+export function deriveLiteralPageResponse(raw: string, previous: AiPageResponse, review: Review, sourceOnly: boolean, policy: LiteralPolicy = LITERAL_READING, continuation?: PageContinuation): string {
   try {
     const independent = isIndependentLiteralPolicy(policy), flat = isHostLiteralPolicy(policy), bodyOnly = policy === HOST_BODY_READING || policy === ISOLATED_BODY_READING;
     if (new TextEncoder().encode(raw).length > 128 * 1024 || !('fragments' in previous)) throw Error();
@@ -113,8 +114,15 @@ export function deriveLiteralPageResponse(raw: string, previous: AiPageResponse,
         return { sha256: original.sha256, ocrSha256: original.ocrSha256, text,
           parts, assessment, issues: crop.issues };
       });
-      const body = available ? crops.map(crop => crop.parts.filter(part => part.role === 'body')
-        .map(part => part.text).join('')).filter(Boolean).join('\n').trim() : prior.stem;
+      const bodyParts = crops.map(crop => crop.parts.filter(part => part.role === 'body').map(part => part.text).join(''));
+      const seam = continuation?.schemaVersion === PAGE_CONTINUATION_SENTENCE && continuation.number === question.number
+        ? owned.crops.findIndex(crop => crop.blockIds?.[0]?.startsWith(CONTINUATION_BLOCK_PREFIX)) : -1;
+      let body = available ? bodyParts.filter(Boolean).join('\n').trim() : prior.stem;
+      if (available && seam > 0) {
+        const left = bodyParts.slice(0, seam).filter(Boolean).join('\n').trimEnd();
+        const right = bodyParts.slice(seam).filter(Boolean).join('\n').trimStart();
+        if (/\p{Script=Han}$/u.test(left) && /^\p{Script=Han}/u.test(right)) body = (left + right).trim();
+      }
       const stem = flat && !body ? prior.stem : body;
       if (!stem) throw Error();
       let requiresImage = question.requiresImage, figure = question.figure;

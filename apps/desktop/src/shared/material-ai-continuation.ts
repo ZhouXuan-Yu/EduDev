@@ -1,8 +1,9 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import {continuationTextSignature,validContinuationTextProof,type ContinuationTextProof} from './material-ai-continuation-text';
 import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,ownedPageFragmentGroups,ownedPageFragmentGroupPlans} from './material-ai-owned-crops';
-import {validBlockTexts,type BlockTextHint} from './material-ai-page-fragments';
+import {validBlockTexts,type BlockTextHint,type FragmentPageSource} from './material-ai-page-fragments';
 import {aiTextSignature} from './material-ai-image';
+import {sourceLayoutSignature} from './material-ai-source-layout';
 import {validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from './material-ai-page';
 import {MATERIAL_PREVIEW_SCHEMA,PDF_PAGE_ENGINE,validMaterialPreviewQuery,type MaterialPreviewResult} from './material-page-preview';
 
@@ -10,11 +11,13 @@ export const PAGE_CONTINUATION='page-continuation.v1' as const;
 export const PAGE_CONTINUATION_TEXT='page-continuation.v2' as const;
 export const PAGE_CONTINUATION_CHOICES='page-continuation.choices.v1' as const;
 export const PAGE_CONTINUATION_FIRST='page-continuation.first-subquestion.v1' as const;
+export const PAGE_CONTINUATION_SENTENCE='page-continuation.sentence.v1' as const;
 export const CONTINUATION_FIGURE_CROPS='layout-subcrops.v1' as const;
 export type ContinuationScope={kind:'selected_pages'}|{kind:'folder_grant';folderId:string;revision:number};
 export type ContinuationImage=Omit<Extract<MaterialPreviewResult,{ok:true}>,'dataUrl'>;
 type ContinuationBase={number:string;nextNumber:string;source:MaterialPageSource;blocks:PageBlocks;blockTexts:BlockTextHint[];blockIds:string[];text:string;image:ContinuationImage;scope:ContinuationScope};
-export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_FIRST;textProof?:ContinuationTextProof});
+type SentencePreceding={blockIds:string[];text:string};
+export type PageContinuation=ContinuationBase&({schemaVersion:typeof PAGE_CONTINUATION|typeof PAGE_CONTINUATION_CHOICES}|{schemaVersion:typeof PAGE_CONTINUATION_TEXT;textProof:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_FIRST;textProof?:ContinuationTextProof}|{schemaVersion:typeof PAGE_CONTINUATION_SENTENCE;preceding:SentencePreceding;textProof?:ContinuationTextProof});
 const parent=/^[ \t]*(?:第[ \t]*(\d{1,5})[ \t]*题[ \t]*[:：]?|(\d{1,5})[.、．](?!\d))/gmu;
 const markers=(text:string)=>[...text.matchAll(new RegExp(parent))];
 const continuationStart=/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u;
@@ -50,6 +53,104 @@ export const startsWithContinuationChoices=(text:string)=>/^(?:A[.．、]|[（(]
 const continuationMargins=new Set(['header','footer','header_image','footer_image','number']);
 const pendingChoice=/[（(]\s*[）)]\s*[。.!！?？]?\s*$/u;
 const pageCountLine=/^第\s*\d{1,5}\s*页\s*共\s*\d{1,5}\s*页$/u;
+const pageLabel=/^(?:第\s*)?([1-9]\d{0,4})\s*(?:页\s*共|[/／])\s*([1-9]\d{0,4})\s*页?$/u;
+const sentenceOpening=/^\p{Script=Han}.{5,}[。！？!?]$/u;
+const proseKinds=new Set(['text','content']);
+const diagramKinds=new Set(['image','chart','figure_title']);
+const lines=(text:string)=>text.split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
+const counterMatches=(text:string,page:number,total:number)=>{
+ const match=pageLabel.exec(text);
+ return !!match&&Number(match[1])===page&&Number(match[2])===total;
+};
+const paginationBlock=(page:PageBlocks,hints:BlockTextHint[],index:number,total:number)=>page.blocks.some((b,i)=>
+ b.kind==='number'&&(b.box[3]<.12||b.box[1]>.85)&&counterMatches(hints[i].text,index,total));
+
+/** PDF text extractors can flatten a printed variable index. This key only
+ * anchors layout ownership. The archived literal text keeps the actual glyphs. */
+function sentenceOwnershipKey(text:string){
+ return sourceLayoutSignature(continuationTextSignature(text)
+  .replace(/(?<=[a-zA-Z])[₀-₉]+/gu,value=>Array.from(value,char=>String(char.codePointAt(0)!-0x2080)).join(''))
+  .replace(/[ʹ’]/gu,'′').replace(/[．]/gu,'.'));
+}
+
+/** Two agreeing original-image readings may restore a variable index which
+ * text extraction flattened. A known subscript, value or operator cannot be
+ * flattened or replaced to get agreement. This never rewrites the receipt. */
+export function sentenceLiteralAgrees(reference:string,reading:string){
+ const expected=continuationTextSignature(reference),actual=continuationTextSignature(reading);
+ if(expected.length!==actual.length)return false;
+ for(let i=0;i<expected.length;i++){
+  if(expected[i]===actual[i])continue;
+  if(!/[0-9]/u.test(expected[i])||!/[A-Za-z]/u.test(expected[i-1]||'')||
+   /[A-Za-z0-9]/u.test(expected[i-2]||'')||actual.charCodeAt(i)!==0x2080+Number(expected[i]))return false;
+ }
+ return true;
+}
+
+function sentenceLead(text:string){
+ const boundary=markers(text)[0];
+ if(!boundary)return;
+ const prefix=text.slice(0,boundary.index).trim(),rows=lines(prefix);
+ if(!sentenceOpening.test(rows[0]||'')||!subquestion.test(rows[1]||'')||!orderedSubquestions(prefix))return;
+ return {number:number(boundary),prefix};
+}
+
+/** Cheap source-only filter before loading the adjacent raster/layout. */
+export function hasSentenceContinuationLead(text:string,page:number,total:number){
+ const rows=lines(text);
+ if(counterMatches(rows[0]||'',page,total))rows.shift();
+ return !!sentenceLead(rows.join('\n'));
+}
+
+function sentenceRegion(raw:string,blocks:PageBlocks,hints:BlockTextHint[],page:number,total:number){
+ const rows=lines(raw),withCounter=counterMatches(rows[0]||'',page,total);
+ if(withCounter){
+  if(!paginationBlock(blocks,hints,page,total))return;
+  rows.shift();
+ }
+ const lead=sentenceLead(rows.join('\n'));if(!lead)return;
+ const index=hints.findIndex(h=>markers(h.text)[0]?.index===0);
+ if(index<1||number(markers(hints[index].text)[0])!==lead.number)return;
+ const owned=blocks.blocks.slice(0,index).filter(b=>!continuationMargins.has(b.kind));
+ if(!owned.length||owned.length>32||owned[0].box[1]>.24||owned.some(b=>!proseKinds.has(b.kind)))return;
+ const text=owned.map(b=>hints.find(h=>h.blockId===b.id)!.text).join('\n').trim();
+ if(new TextEncoder().encode(text).length>8192||sentenceOwnershipKey(text)!==sentenceOwnershipKey(lead.prefix))return;
+ if(!sentenceLead(text+'\n'+lead.number+'. 下一题'))return;
+ const blockIds=owned.map(b=>b.id);
+ try{return{nextNumber:lead.number,text,blockIds,box:ownedPageFragmentGroups(blocks,blockIds,1)[0].box,withCounter};}catch{return;}
+}
+
+export function continuationSentencePrefix(previous:FragmentPageSource,currentRaw:string,next:FragmentPageSource,nextRaw:string,page:number,total:number){
+ if(!validPageBlocks(previous.blocks)||!previous.blocks.ok||!validBlockTexts(previous.blockTexts,previous.blocks)||
+    !validPageBlocks(next.blocks)||!next.blocks.ok||!validBlockTexts(next.blockTexts,next.blocks))return;
+ const region=sentenceRegion(nextRaw,next.blocks,next.blockTexts,page+1,total);if(!region)return;
+ if(region.withCounter&&(!counterMatches(lines(currentRaw)[0]||'',page,total)||!paginationBlock(previous.blocks,previous.blockTexts,page,total)))return;
+ const last=markers(currentRaw).at(-1);if(!last||Number(number(last))+1!==Number(region.nextNumber))return;
+ const index=previous.blockTexts.findLastIndex(h=>markers(h.text)[0]?.index===0);
+ if(index<0||number(markers(previous.blockTexts[index].text)[0])!==number(last))return;
+ const left=previous.blocks.blocks.slice(index).filter(b=>!continuationMargins.has(b.kind));
+ if(!left.length||left.length>32||left[0].box[1]<.65||Math.abs(left[0].box[0]-region.box[0])>.045||
+    left.some(b=>!proseKinds.has(b.kind)&&!diagramKinds.has(b.kind)))return;
+ const body=left.filter(b=>proseKinds.has(b.kind)),bodyEnd=body.at(-1)?.box[3]||0;
+ if(bodyEnd<.78||left.some(b=>diagramKinds.has(b.kind)&&(b.box[1]<left[0].box[1]-.015||b.box[1]>bodyEnd+.06)))return;
+ const lookup=new Map(previous.blockTexts.map(h=>[h.blockId,h.text]));
+ const text=body.map(b=>lookup.get(b.id)).join('\n').trim();
+ if(text.length>8192||!/\p{Script=Han}$/u.test(text)||lines(text).some(line=>subquestion.test(line)))return;
+ const nativeRows=lines(currentRaw.slice(last.index));
+ const count=lines(text).length;
+ if(sentenceOwnershipKey(nativeRows.slice(0,count).join('\n'))!==sentenceOwnershipKey(text))return;
+ // Unmatched native text must be a bounded label or a label identified in
+ // non-body artwork. A detached prose condition can never be discarded here.
+ const figureKey=previous.blocks.blocks.filter(b=>diagramKinds.has(b.kind)).map(b=>sentenceOwnershipKey(lookup.get(b.id)||'')).join('\n').replace(/\s/gu,'');
+ if(nativeRows.slice(count).some(row=>{
+  const key=sentenceOwnershipKey(row).replace(/\s/gu,'');
+  return !counterMatches(row,page,total)&&!figureKey.includes(key)&&(row.length>32||/[\p{Script=Han}。；！？=＝±×÷≤≥≠]/u.test(row));
+ }))return;
+ const {withCounter:_,...rest}=region;
+ const blockIds=left.map(b=>b.id);
+ try{ownedPageFragmentGroups(previous.blocks,blockIds,8,true);}catch{return;}
+ return {...rest,number:number(last),preceding:{blockIds,text}};
+}
 
 export function openSubquestionStem(text:string){
  const last=markers(text).at(-1);if(!last)return;
@@ -150,17 +251,28 @@ export function continuationChoicePrefix(currentText:string,currentHints:BlockTe
 }
 export function validPageContinuation(v:unknown):v is PageContinuation{
  const keys=['schemaVersion','number','nextNumber','source','blocks','blockTexts','blockIds','text','image','scope'];
- if(!exact(v,keys)&&!exact(v,[...keys,'textProof']))return false;
+ if(!v||typeof v!=='object')return false;
+ const fields=[...keys,...(Object.hasOwn(v,'preceding')?['preceding']:[]),...(Object.hasOwn(v,'textProof')?['textProof']:[])];
+ if(!exact(v,fields))return false;
  const schema=v.schemaVersion,withProof=Object.hasOwn(v,'textProof');
- if(typeof v.text!=='string'||![PAGE_CONTINUATION,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_FIRST].some(version=>version===schema))return false;
- if(schema===PAGE_CONTINUATION_TEXT&&!withProof||withProof&&(schema!==PAGE_CONTINUATION_TEXT&&schema!==PAGE_CONTINUATION_FIRST||!validContinuationTextProof(v.textProof,v.text)))return false;
+ const sentence=schema===PAGE_CONTINUATION_SENTENCE;
+ if(typeof v.text!=='string'||![PAGE_CONTINUATION,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_TEXT,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE].some(version=>version===schema))return false;
+ if(sentence!==Object.hasOwn(v,'preceding')||schema===PAGE_CONTINUATION_TEXT&&!withProof||withProof&&(schema!==PAGE_CONTINUATION_TEXT&&schema!==PAGE_CONTINUATION_FIRST&&!sentence||!validContinuationTextProof(v.textProof,v.text)))return false;
  if(!validMaterialPageSource(v.source)||v.source.schemaVersion!=='xiaozhi.material-page-source.v1'||!validPageBlocks(v.blocks)||!v.blocks.ok||!validBlockTexts(v.blockTexts,v.blocks)||typeof v.number!=='string'||!/^\d{1,5}$/.test(v.number)||typeof v.nextNumber!=='string'||Number(v.nextNumber)!==Number(v.number)+1||!/^\d{1,5}$/.test(v.nextNumber)||typeof v.text!=='string'||v.text.length>8192||!Array.isArray(v.blockIds)||Object.getPrototypeOf(v.blockIds)!==Array.prototype||v.blockIds.length<1||v.blockIds.length>32||Reflect.ownKeys(v.blockIds).length!==v.blockIds.length+1||!Array.from({length:v.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(v.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'))return false;
  const scope=v.scope;if(!(exact(scope,['kind'])&&scope.kind==='selected_pages'||exact(scope,['kind','folderId','revision'])&&scope.kind==='folder_grant'&&typeof scope.folderId==='string'&&/^batch_[a-f0-9-]{36}$/i.test(scope.folderId)&&Number.isSafeInteger(scope.revision)&&Number(scope.revision)>=1))return false;
  const choice=v.schemaVersion===PAGE_CONTINUATION_CHOICES;
  const current=`${v.number}. 原题${choice?'（ ）':''}`;
  const first=v.schemaVersion===PAGE_CONTINUATION_FIRST;
  const next=`${v.text}\n${v.nextNumber}. 下一题`,hints=[{blockId:'block-1',text:current}];
- const plan=first?planSubquestionPrefix(current,hints,next,v.blocks,v.blockTexts,firstSubquestion):(choice?continuationChoicePrefix:continuationPrefix)(current,hints,next,v.blocks,v.blockTexts);
+ if(sentence){
+  const prior=v.preceding;
+  if(!exact(prior,['blockIds','text'])||typeof prior.text!=='string'||prior.text.length>8192||!/\p{Script=Han}$/u.test(prior.text)||
+     number(markers(prior.text)[0]||[])!==v.number||!Array.isArray(prior.blockIds)||Object.getPrototypeOf(prior.blockIds)!==Array.prototype||
+     prior.blockIds.length<1||prior.blockIds.length>32||Reflect.ownKeys(prior.blockIds).length!==prior.blockIds.length+1||
+     !Array.from({length:prior.blockIds.length},(_,i)=>Object.getOwnPropertyDescriptor(prior.blockIds,String(i))).every(d=>!!d&&d.enumerable&&'value'in d&&typeof d.value==='string'&&/^block-[1-9]\d{0,2}$/u.test(d.value))||
+     new Set(prior.blockIds).size!==prior.blockIds.length)return false;
+ }
+ const plan=sentence?sentenceRegion(next,v.blocks,v.blockTexts,v.source.page,0):first?planSubquestionPrefix(current,hints,next,v.blocks,v.blockTexts,firstSubquestion):(choice?continuationChoicePrefix:continuationPrefix)(current,hints,next,v.blocks,v.blockTexts);
  if(first&&!orderedSubquestions(v.text))return false;
  if(!plan||JSON.stringify(v.blockIds)!==JSON.stringify(plan.blockIds)||plan.text!==v.text)return false;
  const image=v.image;
@@ -186,6 +298,7 @@ export function continuationCropMatches(prompt:AiPagePrompt,image:Pick<Continuat
 /** Main block ids remain the model's selection. The authenticated prefix is appended exactly once. */
 export function continuationCropGroups(prompt:Extract<AiPagePrompt,{blockTexts:BlockTextHint[]}>,ids:string[],number:string){
  const extra=pageContinuation(prompt),append=extra?.number===number;
+ if(append&&extra.schemaVersion===PAGE_CONTINUATION_SENTENCE&&JSON.stringify(ids)!==JSON.stringify(extra.preceding.blockIds))throw Error('source_incomplete');
  if(append&&continuationSubcrops(prompt)){
   // Share the existing eight-image budget across both pages. Every candidate
   // covers every owned block; no clipping or truncation is used to fit the budget.

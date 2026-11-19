@@ -9,13 +9,13 @@ import {MATERIAL_FIGURE_CROPS,CONTINUATION_BLOCK_PREFIX,isDiagramGroup,sourceCro
 import {sourceComparisonQuestion} from '../../shared/material-ai-answer-review';
 import {MATERIAL_CROP_BODY_TEXT} from '../../shared/material-ai-page-fragments';
 import {cropBodyComplete} from './material-ai-crop-body';
-import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,pageContinuationTextProof,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,continuationChoicesAgree} from '../../shared/material-ai-continuation';
+import {continuationCropGroups,continuationSubcrops,continuationCropMatches,validPageContinuation,pageContinuation,pageContinuationTextProof,PAGE_CONTINUATION_CHOICES,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,continuationChoicesAgree,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
 import {continuationTextAgrees,continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {createHash} from 'node:crypto';
 import {MATERIAL_TEXT_SOURCE_CROPS,pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
 import {visualQuestionAgrees,sourceCropQuestionAgrees} from '../../shared/material-ai-page-regions';
-import {aiTextSignature,type AiImageQuestion} from '../../shared/material-ai-image';
+import {aiTextSignature,questionNumberPrefix,type AiImageQuestion} from '../../shared/material-ai-image';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
 import {checkedPageCropImage,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
@@ -193,22 +193,35 @@ export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,num
   :cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions);
  if(!bodyAgrees)return false;
  if(extra?.number===number){
+  const sentence=extra.schemaVersion===PAGE_CONTINUATION_SENTENCE;
+  const literalPolicy=sentence||extra.schemaVersion===PAGE_CONTINUATION_FIRST;
   if(extra.schemaVersion===PAGE_CONTINUATION_CHOICES){
    // Compare the source option seams before general question layout folding.
    if(!originalA||!rawB||[originalA,rawB].some(q=>!continuationChoicesAgree(extra.text,q.stem)))return false;
-  }else if(!continuationSubcrops(prompt)&&!proof&&extra.schemaVersion!==PAGE_CONTINUATION_FIRST){
+  }else if(!continuationSubcrops(prompt)&&!proof&&!literalPolicy){
    if([a,b].some(q=>!aiTextSignature(q.stem).endsWith(aiTextSignature(extra.text))))return false;
   }else{
-   const literal=extra.schemaVersion===PAGE_CONTINUATION_FIRST&&sourceContentEnabled(prompt)&&hasSourceReadings(final)?final.readings.find(row=>row.number===number)?.crops:undefined;
+   const literal=literalPolicy&&sourceContentEnabled(prompt)&&hasSourceReadings(final)?final.readings.find(row=>row.number===number)?.crops:undefined;
+   if(sentence&&!literal)return false;
    const evidence=continuationEvidence(prompt,crop,literal);if(!evidence)return false;
    const {lines,localText,captions}=evidence;
    const body=captions.size?lines.filter((_,i)=>!captions.has(i)).join('\n'):extra.text;
    // The visual comparison may fold Chinese/Latin spacing for display.
    // The continuation witness compares the saved literal readings instead.
-   const literalQuestions=extra.schemaVersion===PAGE_CONTINUATION_FIRST?[originalA!,rawB!]:[a,b];
-   if(literalQuestions.some(q=>!continuationFiguresAgree(q,lines,captions)||(proof
-    ?!continuationTextAgrees(extra.text,proof,q.stem,localText,captions)
-    :!aiTextSignature(q.stem).endsWith(aiTextSignature(body))||(captions.size>0||extra.schemaVersion===PAGE_CONTINUATION_FIRST)&&aiTextSignature(localText)!==aiTextSignature(extra.text))))return false;
+   const literalQuestions=literalPolicy?[originalA!,rawB!]:[a,b];
+   const preceding=sentence?continuationTextSignature(extra.preceding.text.slice(questionNumberPrefix(extra.preceding.text,number)?.[0].length??0)):'';
+   if(literalQuestions.some(q=>{
+    if(!continuationFiguresAgree(q,lines,captions))return true;
+    let stem=q.stem;
+    if(sentence){
+     const joined=continuationTextSignature(stem);
+     if(!preceding||!sentenceLiteralAgrees(preceding,joined.slice(0,preceding.length)))return true;
+     stem=joined.slice(preceding.length);
+     if(!proof?.gaps.length)return !sentenceLiteralAgrees(extra.text,stem)||!sentenceLiteralAgrees(extra.text,localText);
+    }
+    return proof?!continuationTextAgrees(extra.text,proof,stem,localText,captions,sentence)
+     :!aiTextSignature(stem).endsWith(aiTextSignature(body))||(captions.size>0||literalPolicy)&&aiTextSignature(localText)!==aiTextSignature(extra.text);
+   }))return false;
   }
  }
  const signature=sourceLayoutEnabled(prompt)?(s:string)=>sourceLayoutSignatureFor(s,prompt,number):aiTextSignature;

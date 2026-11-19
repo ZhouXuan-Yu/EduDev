@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "6b59455172adf78cc967d6810813b2e63f811097246fa4e83674e7c0136eb9a7"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "59acda327b79d770dcdae6d3875207762b42964b4ff2d6d70caf20d69ba2e3d9"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "218771316bbf82755ae0f0911a72b948b3718eb59a91a6e4bf05d01efacef110"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "d9b82a0229222d2e7431ea326647becd5e2dd948248f2a42c42068a01d1c2f3c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-choice-tail-electron.mjs",
+      "sha256": "6e5009f011e2909e9613bfd18752d9ae4bd39d42e8f8d2f9ef8da0ac53cf834e"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-sentence-seam-boundaries.mjs",
+      "sha256": "c928e98d356a40da9710e0e0c51dfadd82a143e9a7d603f6a8e2207c0ad47372"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-continuation.ts",
+      "sha256": "1f0a07f9c98ed168c1a060eedc29298fac865738d363713163e6a4c8a0f8eca2"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-fragments.ts",
+      "sha256": "12ea92aebd8c6aeaef4297df0e9c1a9575c89ff010807608a4d18fee109b6ae1"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+      "sha256": "29f0dc657e8012879826b231051851e75956d3f3a46011ff523ff74e1646773d"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+      "sha256": "640ab40275d6685df9fcf6295c95711b0ef05df4517d06bda5071d0f44532fa2"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "6f130ef54b984934d5b895ab72fadeb70060331e97eb191eff490745e4e2f3fc"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-source-reading.ts",
+      "sha256": "9c6375380bb76ea4b0f1bb90da15d84b584bf026945c1197aff42d70625bb581"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "e281c5895f2144dde3935a7d7338458be173b88b6e8636fbfcda48d2fce8c7e8"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation-text.ts",
+      "sha256": "0fc000ce3ac55bd98861dd79ad552d99c001e998abe348c2c66aa2296db6e54f"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-continuation.ts",
+      "sha256": "8607bc4878781b79d7bff72199bf11cd3de73f0730302b25dbbcacc4558d7d19"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-literal.ts",
+      "sha256": "5ee4393ee580ffec85b48deca7844552415fc02669073b5c285ad3832b622e6b"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "67b0c07728c365dec1fe762cdc3ea108cee097f89687421a40e0265ef6206c0b"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "42b39e08e51504c6000c21542706f90f5130aadb5491c7da9905fa33690953a7"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "a0e3c8260bd6e140cf150463efb5b835d1fbac809ee4c41afd3dd3daadb7d061"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "9ec295e19af15be56306f870c9002de50ac799dcea1cbb8d887cb53351b3b5d9"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "4070d87361d0d1827830f66355c59d1f3d5c17ccfc29ee7db4cec4fc019fc31b"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "fe534619a5c44449a0592b2fcdf0526f2c874a2e0514c5082ea4299125970450"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "7742b1eb9957db02ebe25158a58599badf3dd885c54351ec5913b1e2e6250013"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+      "sha256": "92bf3d0c282c3fdb3c4f1867c6a49a366cf3b012d693ac8c507de46793f38c75"
+    },
+    {
+      "path": "docs/goal/KB_IMPLEMENTATION_EVIDENCE.md",
+      "sha256": "53d33f261a21b3ddacb237ec800a6904e2126d0f905618202dbbc816060581a4"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "ab70dcd6b06eaff05cfb79fb904cde7b59620ee19307d120a1c64522d27438e9"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "5982c581f327a45d7279e40a01d5f28a6c644b666d27922d743b7fe20c2f5017"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "52df43716c3901b5cdbd6ddf49bedb147df49a3dc22fff20f31e94e69d56918c"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/sentence-seam-continuation/README.md",
+      "sha256": "9fda91ae3062fd69fbad8771eac3a4bc821088b3179c895c75480f725a0596ce"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261119/sentence-seam-continuation/summary.json",
+      "sha256": "4f9cc6e9e754360f14cae60f974bec5ce0a08973f79f4b4ee8d7458b486ebee8"
+    }
+  ]
+}

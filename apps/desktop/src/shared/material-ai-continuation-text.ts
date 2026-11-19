@@ -96,11 +96,11 @@ function splitAtProvenBlanks(lines:ContinuationTextLine[],gaps:ContinuationTextP
 
 /** Independent OCR covers the full prefix. Layout-owned captions stay in that
  * proof and the original image, while the stem must retain every body blank. */
-export function continuationTextAgrees(text:string,proof:ContinuationTextProof,stem:string,localText:string,captions:ReadonlySet<number>=noCaptions){
+export function continuationTextAgrees(text:string,proof:ContinuationTextProof,stem:string,localText:string,captions:ReadonlySet<number>=noCaptions,wholeStem=false){
  if(!validContinuationTextProof(proof,text)||proof.gaps.some(g=>captions.has(g.afterLine)||captions.has(g.afterLine+1)))return false;
  const full=splitAtProvenBlanks(proof.lines,proof.gaps,noCaptions);
  const bodyParts=captions.size?splitAtProvenBlanks(proof.lines,proof.gaps,captions):full;
  if(!full||!bodyParts||!new RegExp('^'+full.join('(?:_{3,64})?')+'$','u').test(continuationTextSignature(localText)))return false;
  const all=new RegExp(bodyParts.join('_{3,64}'),'gu'),body=continuationTextSignature(stem),only=all.exec(body);
- return !!only&&only.index+only[0].length===body.length&&!all.exec(body);
+ return !!only&&(!wholeStem||only.index===0)&&only.index+only[0].length===body.length&&!all.exec(body);
 }

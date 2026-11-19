@@ -1,0 +1,33 @@
+{
+  "baselineRevision": "fe3d6345a5c1effb799a3299442313fc2c46723c",
+  "buildMainSha256": "b08f463f63616d5b727081a26a8d0063fe57fc03e48d95344b36360ed8cd2b28",
+  "checks": {
+    "sentenceSeamNaturalAndNegativeEvidence": "6/6",
+    "sentenceSeamDesktop": "3/3",
+    "firstSubquestionDesktopCompatibility": "2/2",
+    "generalCrossPage": "12/12",
+    "figureContinuation": "10/10",
+    "continuationText": "10/10",
+    "aiPages": "248/248",
+    "rendererComponents": "253/253",
+    "electronSmoke": "207/207"
+  },
+  "naturalDesktop": {
+    "pages": [4, 5],
+    "parentNumber": 25,
+    "excludedNextParentNumber": 26,
+    "cropPages": [4, 4, 5],
+    "originalDiagramPage": 4,
+    "state": "ai_final",
+    "issues": [],
+    "readableWithNewDiscoveryDisabled": true,
+    "teacherNotebookSeamPhraseLookup": true,
+    "reviewOfOtherQuestionsContinues": true,
+    "controlledResponses": 6,
+    "externalProviderCalls": 0,
+    "rendererErrors": 0
+  },
+  "planning": {"screenedParsedPages": 245, "sentenceCandidates": 1, "sampleIterations": 100, "baselineP95Ms": 0.0616, "plannerP95Ms": 0.5018, "otherPlannerP95Ms": 2.5346},
+  "dependencyAudit": {"total": 29, "high": 8, "critical": 0},
+  "fullGoalComplete": false
+}

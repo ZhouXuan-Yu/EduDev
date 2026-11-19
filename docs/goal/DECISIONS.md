@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-19 普通正文跨页续接
+
+普通正文续接新任务采用独立冻结协议，由版面与选定页文字确定候选。发布使用双遍字面读数，页码、前页和后页材料沿获取授权核对。OMNI_EDU_AI_CONTINUATION_SENTENCE=0 暂停新任务发现。
+
+详见 [本轮记录](../research/evidence/kb/20261119/sentence-seam-continuation/README.md)。
+
 ## 2026-11-19 首个小问位于下一页的跨页题
 
 首小问续接使用独立冻结协议，允许依据同页整页 OCR 与两遍原图恢复局部 OCR 错误。关闭 OMNI_EDU_AI_CONTINUATION_FIRST=0 暂停新发现，冻结任务继续原验证。

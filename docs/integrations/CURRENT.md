@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-11-19 普通正文跨页续接
+
+沿既有 PDFium、RapidOCR、PP-DocLayout、DeepSeek 字面转录接口处理前后页，不增加模型轮次。
+
+详见 [本轮记录](../research/evidence/kb/20261119/sentence-seam-continuation/README.md)。
+
 ## 2026-11-19 首个小问位于下一页的跨页题
 
 复用 PDFium、RapidOCR、PP-DocLayout 和既有双遍原图转录，按同版本页回执定位首小问。源图、页范围、OCR 及授权绑定继续沿现有入口。

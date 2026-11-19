@@ -2,7 +2,7 @@ import {FIGURE_LABEL_SPACING,equivalentFigureSpacing} from '../../shared/materia
 import {sourceMarkerText} from '../../shared/material-ai-source-markers';
 import {isIndependentLiteralPolicy} from '../../shared/material-ai-literal';
 import {CONTINUATION_BLOCK_PREFIX,sourceCropKinds} from '../../shared/material-ai-owned-crops';
-import {pageContinuation,PAGE_CONTINUATION_FIRST} from '../../shared/material-ai-continuation';
+import {pageContinuation,PAGE_CONTINUATION_FIRST,PAGE_CONTINUATION_SENTENCE,sentenceLiteralAgrees} from '../../shared/material-ai-continuation';
 import {continuationTextSignature} from '../../shared/material-ai-continuation-text';
 import {sourceReadingEnabled,SOURCE_READING_RESPONSE,sourceTextSignature,sourceReadingRemovesText,type SourceReadingComparison,type SourceCropReading,type SourceCropEdge} from '../../shared/material-ai-source-reading';
 import {questionNumberPrefix,type AiImageQuestion} from '../../shared/material-ai-image';
@@ -31,13 +31,18 @@ function readingMatchesCrop(reading:SourceCropReading,crop:NonNullable<PageCrop[
 
 /** A fresh crop OCR can duplicate or invent a glyph. On the new continuation
  * both independent readings may correct it only with exact prior page evidence. */
-function firstSubquestionCorroborates(fragment:NonNullable<PageCrop['fragments']>[number],number:string,prompt:AiPagePrompt|undefined,left:SourceCropReading,right:SourceCropReading){
+function continuationCorroborates(fragment:NonNullable<PageCrop['fragments']>[number],number:string,prompt:AiPagePrompt|undefined,left:SourceCropReading,right:SourceCropReading){
  const extra=pageContinuation(prompt);
- if(extra?.schemaVersion!==PAGE_CONTINUATION_FIRST||extra.number!==number||fragment.image.page!==extra.source.page)return false;
- const ids=(fragment.blockIds||[fragment.blockId]).map(id=>id.startsWith(CONTINUATION_BLOCK_PREFIX)?id.slice(CONTINUATION_BLOCK_PREFIX.length):'');
- if(!ids.length||ids.some(id=>!extra.blockIds.includes(id)))return false;
- if(extra.blocks.blocks.some(block=>ids.includes(block.id)&&['image','chart','figure_title'].includes(block.kind)))return false;
- const hint=continuationTextSignature(ids.map(id=>extra.blockTexts.find(block=>block.blockId===id)?.text||'').filter(Boolean).join('\n'));
+ if(!extra||extra.number!==number||extra.schemaVersion!==PAGE_CONTINUATION_FIRST&&extra.schemaVersion!==PAGE_CONTINUATION_SENTENCE)return false;
+ const next=fragment.image.page===extra.source.page;
+ const layout=next?extra:extra.schemaVersion===PAGE_CONTINUATION_SENTENCE&&prompt?.policy==='page-fragments.v3'&&fragment.image.page===extra.source.page-1?prompt:undefined;
+ const ownership=next?extra.blockIds:extra.schemaVersion===PAGE_CONTINUATION_SENTENCE?extra.preceding.blockIds:[];
+ if(!layout)return false;
+ const ids=(fragment.blockIds||[fragment.blockId]).map(id=>next?(id.startsWith(CONTINUATION_BLOCK_PREFIX)?id.slice(CONTINUATION_BLOCK_PREFIX.length):''):id);
+ if(!ids.length||ids.some(id=>!ownership.includes(id)))return false;
+ if(layout.blocks.blocks.some(block=>ids.includes(block.id)&&['image','chart','figure_title'].includes(block.kind)))return false;
+ const hint=continuationTextSignature(ids.map(id=>layout.blockTexts.find(block=>block.blockId===id)?.text||'').filter(Boolean).join('\n'));
+ if(extra.schemaVersion===PAGE_CONTINUATION_SENTENCE)return !!hint&&continuationTextSignature(left.text)===continuationTextSignature(right.text)&&sentenceLiteralAgrees(hint,left.text);
  return !!hint&&continuationTextSignature(left.text)===hint&&continuationTextSignature(right.text)===hint;
 }
 /** A standalone layout caption can belong to an independently owned diagram.
@@ -85,7 +90,7 @@ export function readingBodyComplete(first:AiPageResponse,final:AiPageResponse,qu
  for(const [i,fragment]of crop.fragments.entries()){
   const left=a.crops[i],right=b.crops[i];
   const figure=figureFragment(fragment,crop,prompt!);
-  const confirmedByPage=!figure&&firstSubquestionCorroborates(fragment,question.number,prompt,left,right);
+  const confirmedByPage=!figure&&continuationCorroborates(fragment,question.number,prompt,left,right);
   if(!readingMatchesCrop(left,fragment,confirmedByPage)||!readingMatchesCrop(right,fragment,confirmedByPage))return false;
   if(sourceContentEnabled(prompt)){
    if(![left,right].every(r=>contentPartRoles(r.parts,r.text,question.number,firstBody,figure)))return false;
@@ -107,7 +112,7 @@ export function readingComparisons(first:AiPageResponse,final:AiPageResponse,cro
   const assessment=reading.assessment==='uncertain'||reading.issues.length?'uncertain':source&&sourceTextSignature(reading.text)===sourceTextSignature(source.quality.text)?'exact':'corrected';
   const publication=(r:SourceCropReading|undefined)=>r?.parts?.filter(p=>p.role==='publication').map(p=>p.text).join('')||'';
   const edges:SourceCropEdge[]=['top','right','bottom','left'];
-  const confirmedByPage=!!source&&!!other&&firstSubquestionCorroborates(source,row.number,prompt,other,reading);
+  const confirmedByPage=!!source&&!!other&&continuationCorroborates(source,row.number,prompt,other,reading);
   return{...reading,assessment,ocrText:source?.quality.text||'',...(source?{edgeContacts:edges.filter((_,i)=>!source.quality.clearEdges[i])}:{}),agrees:!!source&&!!other&&readingMatchesCrop(reading,source,confirmedByPage)&&readingMatchesCrop(other,source,confirmedByPage)&&sourceTextSignature(sourceMarkerText(reading.text,prompt,row.number))===sourceTextSignature(sourceMarkerText(other.text,prompt,row.number)),...(reading.parts?{previousText:other?.text||'',publicationStatus:sourceTextSignature(publication(reading))===sourceTextSignature(publication(other))?'agrees' as const:'needs_review' as const}:{})};
  })}));
 }

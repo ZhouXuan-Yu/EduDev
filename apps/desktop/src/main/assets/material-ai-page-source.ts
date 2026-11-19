@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {MATERIAL_PAGE_SOURCE,MATERIAL_IMAGE_SOURCE,validMaterialPageSource,type MaterialPageSource,type AiPagePrompt} from '../../shared/material-ai-page';
 import {validPdfFilePage} from '../../shared/material-pdf-file';
 import {readImageOcr} from './material-image-ocr';
-import {startsWithContinuationChoices,startsWithFirstSubquestion} from '../../shared/material-ai-continuation';
+import {hasSentenceContinuationLead,startsWithContinuationChoices,startsWithFirstSubquestion} from '../../shared/material-ai-continuation';
 import {sourceLayoutSignature} from '../../shared/material-ai-source-layout';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
@@ -64,7 +64,7 @@ async function precedingPageHasCounter(host:Host,source:MaterialPageSource,total
  });
 }
 
-export type FollowingPageBoundary={status:'separate'|'continued'|'unknown';nextParentSource?:MaterialPageSource;choiceLead?:true;firstSubquestionLead?:true};
+export type FollowingPageBoundary={status:'separate'|'continued'|'unknown';nextParentSource?:MaterialPageSource;choiceLead?:true;firstSubquestionLead?:true;sentenceLead?:true};
 /** A conflicted next page may independently prove its opening parent. The
  * evidence concerns this boundary only; its own text stays in needs_review. */
 export async function readFollowingPageBoundary(host:Host,source:MaterialPageSource,totalPages:number,priorNumber?:string):Promise<FollowingPageBoundary>{
@@ -84,7 +84,8 @@ export async function readFollowingPageBoundary(host:Host,source:MaterialPageSou
   if(parent.test(following.text))return {status:'separate'};
   const lines=following.text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
   // Do not skip arbitrary prose, captions, page headers or intervening continuation.
-  return {status:section.test(lines[0]||'')&&parent.test(lines[1]||'')?'separate':'unknown'};
+  if(section.test(lines[0]||'')&&parent.test(lines[1]||''))return {status:'separate'};
+  return hasSentenceContinuationLead(following.selectedText,following.source.page,totalPages)?{status:'unknown',sentenceLead:true}:{status:'unknown'};
  }catch{return {status:'unknown'};}
 }
 
