@@ -28,7 +28,7 @@
   "openFindings": [
     "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
     "Phase8: A-P0-07 retained managed callback and A-P0-08 actual production sanitizer egress cases; QG-01 through QG-10",
-    "Word fresh-profile extraction deadline precedes archive verification; repeat by isolating preparation, conversion, archive, then cold readback",
+    "Windows packaged cold Word prepared, archived and reopened; native install/uninstall and final branch build remain.",
     "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
   ],
   "paidRequestLimit": 200,
@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Settle cold Word preparation/archive, A-P0-07/A-P0-08 and remaining native Phase7 evidence. Freeze formal ABBA candidate and complete the Windows and independent final gates.",
+  "next": "Continue A-P0-07/A-P0-08, QG and remaining native Phase7 evidence. Finish packaging qualification on the Windows candidate; formal ABBA follows the frozen Gate7 candidate.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -541,6 +541,14 @@
       "commit": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0",
       "status": "CTIME_REGRESSION_18_PASS_FRESH_PACKAGE_4_OF_5_DOCX_PREPARATION_TIMEOUT",
       "evidence": "evidence/phase8/windows-package-20261119/unpacked-word-source-fence-result.json"
+    },
+    "coldRetest": {
+      "status": "UNPACKED_FIVE_SOURCES_AND_COLD_READBACK_PASS",
+      "evidence": "evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json",
+      "officeReadyMs": 146508,
+      "wordArchiveMs": 169208,
+      "wordImportMs": 179353,
+      "installAndUninstall": "NOT_TESTED"
     }
   },
   "latestIntegration": {

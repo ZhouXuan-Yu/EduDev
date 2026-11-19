@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 五资源实包补证
+
+实包合成资料 5/5 可用；冷入口检查 6/6。DOCX 派生 PDF 与双向来源关系经过 typed preload 和 SQLite/文件重启校验。截止本证据 Windows 仍待安装卸载链路和最终冻结候选复核。[原始时序与身份](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。
+
 ## 2026-11-19 专项分支复验
 
 独立 Sol 复核 11 套托管 MCP、现有权限和 Extension 专项 124/124。7 个真实 Host Run 和 25 个回执已冷读。A-P0-02、A-P0-03、A-P0-05、A-P0-06 已实现。固定矩阵 77/89；A-P0-07/08 的剩余范围及旧 MCP 套件的超时参数失败保留。[复验明细](evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md)。

@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 冷准备后的 Word 实包验证
+
+运行 `node scripts/release/packaged-smoke.mjs`，实际使用携带 fünf 套资源的便携 EXE、空 PATH、合成新 profile 和两份官方锁定下载件。原件身份 5/5、实包检查 6/6，零网络请求，零 renderer 错误。Word 页数为 1，文件 11,748 字节。重启检查覆盖正反索引、版本与 PDF 字节。保留原来的 180 秒超时样本。[验证报告](evidence/phase8/windows-package-20261119/packaged-cold-word-archive-pass.json)。
+
 ## 2026-11-19 续做分支与验收读回
 
 主线 `59b81cb` 已核对远端。专项分支从该合并快进并提交 Word 来源归档候选 `f2b269f`，18/18。五资源真实包 4/5，日志与 SQLite 仍保留冷时限失败。独立托管 MCP 与 Extension 测试 124/124，差异按照固定验收矩阵推进至 77/89。

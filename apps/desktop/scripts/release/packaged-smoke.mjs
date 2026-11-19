@@ -46,6 +46,11 @@ const report={executable:exe,profile,data,checks:[],rendererErrors:[],networkAtt
 if(resume){const original=fs.readFileSync(path.join(output,'report.json'));report.resumedFrom={sha256:createHash('sha256').update(original).digest('hex'),report:'report.json',boundary:'Only existing catalogue/body/UI readback; no repeated generation, import or worker probes'};}
 let app,page;
 let originalInputs,importedIds;
+let wordArchive;
+const ordinaryImportTimeoutMs=180_000;
+// The locked download fixture still goes through the real cold component
+// extraction (10 min) and Word worker (5 min), plus verification and archive.
+const coldWordImportTimeoutMs=17*60_000;
 function identifyOriginalInputs(){
  originalInputs=originalFiles.map(file=>{
   const bytes=fs.readFileSync(file);
@@ -57,6 +62,64 @@ function findOriginalResources(resources){
  const matches=originalInputs.map(input=>resources.filter(resource=>resource.originalFileName===input.originalFileName&&resource.fileSize===input.fileSize&&resource.contentHash===input.contentHash));
  if(matches.some(items=>items.length!==1))return undefined;
  return matches.map(items=>items[0]);
+}
+const isWord=resource=>resource.originalFileName.endsWith('.docx');
+async function readWordPages(resource){
+ return page.evaluate(({id,contentHash})=>window.omniEdu.getMaterialWordPages({
+  schemaVersion:'xiaozhi.word-pages.v1',resourceId:id,version:contentHash,
+ }),resource);
+}
+async function readWordArchive(original){
+ const entry=await readWordPages(original);
+ assert.equal(entry.role,'original');
+ assert.equal(entry.status,'complete');
+ assert.equal(entry.originalAvailable,true);
+ assert.equal(entry.original.id,original.id);
+ assert.equal(entry.original.version,original.contentHash);
+ assert(entry.pages>0&&entry.pdf?.fileSize>0);
+ assert.match(entry.pdf.contentHash,/^[a-f0-9]{64}$/);
+ const file=path.resolve(entry.pdf.localPath);
+ const relative=path.relative(data,file);
+ assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'Word PDF must be in the isolated data directory');
+ const bytes=fs.readFileSync(file);
+ assert.equal(bytes.length,entry.pdf.fileSize);
+ assert.equal(createHash('sha256').update(bytes).digest('hex'),entry.pdf.contentHash);
+ const reverse=await readWordPages(entry.pdf);
+ assert.equal(reverse.role,'pages');
+ assert.equal(reverse.status,'complete');
+ assert.deepEqual(reverse.original,entry.original);
+ return {originalId:original.id,originalSha256:original.contentHash,pdfId:entry.pdf.id,pdfSha256:entry.pdf.contentHash,pdfBytes:bytes.length,pages:entry.pages};
+}
+async function waitForLocalImports(){
+ const started=performance.now();
+ const deadline=started+(officeCache?coldWordImportTimeoutMs:ordinaryImportTimeoutMs);
+ report.wordImportTimeline=[];
+ let formerState;
+ let last;
+ while(performance.now()<deadline){
+  last=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
+  const originals=findOriginalResources(last.resources);
+  const wordInput=originalInputs.find(isWord);
+  const word=last.resources.find(resource=>resource.originalFileName===wordInput.originalFileName&&resource.contentHash===wordInput.contentHash);
+  if(word){
+   const view=await readWordPages(word);
+   const state={import:word.parseStatus,archive:view?.status,component:view?.component?.phase,error:view?.error||view?.component?.error||undefined};
+   const fingerprint=JSON.stringify(state);
+   if(fingerprint!==formerState){
+    report.wordImportTimeline.push({elapsedMs:Math.round(performance.now()-started),...state});
+    formerState=fingerprint;
+   }
+  }
+  if(performance.now()-started>=ordinaryImportTimeoutMs){
+   assert(originalInputs.filter(input=>!isWord(input)).every(input=>last.resources.some(
+    item=>item.originalFileName===input.originalFileName&&item.contentHash===input.contentHash&&item.fileSize===input.fileSize&&item.parseStatus==='ready',
+   )),'An ordinary source missed its import deadline');
+  }
+  if(originals?.every(item=>item.parseStatus==='ready'))return originals;
+  if(word&&['partial','failed'].includes(word.parseStatus))break;
+  await delay(250);
+ }
+ assert.fail('Import did not complete: '+JSON.stringify(last?.resources.map(item=>({name:item.originalFileName,status:item.parseStatus,engine:item.parseEngine}))));
 }
 function prepareOfficeCache(){
  assert(path.isAbsolute(officeCache),'OMNI_EDU_PACKAGED_OFFICE_CACHE must be an absolute directory');
@@ -147,14 +210,10 @@ try{
  // Use the real teacher action; only the native picker selection is controlled.
  await app.evaluate(({dialog},files)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:files});},originalFiles);
  await page.getByTestId('materials-import').click();
- const deadline=Date.now()+180000;let ready=false,last;
- while(Date.now()<deadline){
-  last=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
-  const originals=findOriginalResources(last.resources);
-  if(originals&&originals.every(x=>x.parseStatus==='ready')){ready=true;importedIds=originals.map(x=>x.id);break;}
-  await delay(250);
- }
- assert(ready,'Import did not complete: '+JSON.stringify(last?.resources.map(x=>({name:x.originalFileName,status:x.parseStatus,engine:x.parseEngine}))));
+ const imported=await waitForLocalImports();
+ importedIds=imported.map(x=>x.id);
+ wordArchive=await readWordArchive(imported.find(isWord));
+ report.wordArchive=wordArchive;
  report.checks.push({name:'Teacher imports long text, Markdown, DOCX, image and synthetic scanned PDF through local parsers',passed:true});
  await page.screenshot({path:path.join(output,'materials-packaged.png'),fullPage:true});
  await collectNetworkAttempts();
@@ -165,6 +224,10 @@ try{
  assert(originals,'Cold restart must retain exactly one resource for each original filename, size and SHA-256');
  assert(originals.every(x=>x.parseStatus==='ready'));
  if(importedIds)assert.deepEqual(originals.map(x=>x.id),importedIds);
+ if(wordArchive){
+  assert.deepEqual(await readWordArchive(originals.find(isWord)),wordArchive);
+  report.checks.push({name:'Original Word and derived PDF identities, bytes and reverse link persist after cold restart',passed:true});
+ }
  report.originalResourceIds=originals.map(x=>x.id);
  const bodies=await page.evaluate(async resources=>Promise.all(resources.map(r=>window.omniEdu.getMaterialBody({schemaVersion:'xiaozhi.materials.v1',resourceId:r.id,offset:0}))),originals);
  assert(bodies.every(x=>x.chunks.length>0));
