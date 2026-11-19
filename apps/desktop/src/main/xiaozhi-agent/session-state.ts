@@ -1,6 +1,7 @@
 import {createClassroomPlanState} from '../education/classroom-plan-state';
 import path from 'node:path';
 import {createInspectionState} from './checks/state';
+import {createFileReferenceState} from './file-references';
 type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
   change?: (sql: string, values?: SqlValue[]) => Promise<number>;
@@ -55,6 +56,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const officeArtifacts = createOfficeArtifactState(sql);
   const deliveries=createDeliveryState(sql);
   const inspections=createInspectionState(sql);
+  const fileReferences=createFileReferenceState(sql);
   const attachments = createAttachmentState(sql);
   const attachmentImports = createAttachmentImportState(sql);
   const attachmentSends=createAttachmentSendState(sql);
@@ -83,6 +85,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     officeArtifacts,
     deliveries,
     inspections,
+    fileReferences,
     attachments,
     attachmentImports,
     attachmentSends,
@@ -117,6 +120,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await officeArtifacts.migrate();
       await deliveries.migrate();
       await inspections.migrate();
+      await fileReferences.migrate();
       await attachments.migrate();
       await attachmentImports.migrate();
       await attachmentSends.migrate();

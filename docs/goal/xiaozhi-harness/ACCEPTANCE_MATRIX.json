@@ -190,7 +190,8 @@
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
         "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
-        "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json"
+        "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
       ],
       "phaseEvidence": [
         {
@@ -204,7 +205,7 @@
           "scope": "Phase3权限、HTTP MCP、前台终端及会话审批范围已验收。其余适用Provider、替代恢复和完整页面仍依对应后续阶段。"
         }
       ],
-      "scope": "普通文本脱敏和真实 HTTP 缺 Egress 拒绝通过。模型可见结构化文件标签仍可暴露 SQLite 已知的合成身份，需要上线前修复并保留文件选择兼容。",
+      "scope": "普通与结构化文件链、旧历史、HTTP 无授权外发均有证据。独立实测 Office/PDF、已提交附件以及持久终端模型结果的学校/路径仍待修复与专项复验。",
       "history": [
         {
           "status": "NOT_TESTED",
@@ -1809,19 +1810,41 @@
       "id": "QG-06",
       "priority": "P1",
       "expected": "Tool 调用集成测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。真实主机工具登记及同 Task 的文件查询、写入审批、复制、来源校验和撤销专项均通过。模型外发的其他工具范围单列。"
     },
     {
       "id": "QG-07",
       "priority": "P1",
       "expected": "Pi Session 集成测试。",
-      "status": "NOT_TESTED",
+      "status": "PASS",
       "evidence": [
-        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
-      ]
+        "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
+        "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
+      ],
+      "history": [
+        {
+          "status": "NOT_TESTED",
+          "scope": null,
+          "evidence": [
+            "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
+          ]
+        }
+      ],
+      "scope": "已实现。实际 Pi 在 request 与 fullAccess 走完正常工具链，真实 Host/SQLite 冷启复用同任务引用及两条旧 JSONL 回放通过。"
     },
     {
       "id": "QG-08",

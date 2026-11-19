@@ -19,6 +19,7 @@ import {sanitizeOfficeDocumentText} from '../office-document-tools';
 import {createStudentContextSanitizer} from '../../students/context-sanitizer';
 import {waitForLifecycle} from '../lifecycle-wait';
 import {createTaskState} from './task-state';
+import {createFileReferenceProjection} from '../file-references';
 
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 /** Reconstruct only actual tool receipts from their immutable native owner.
@@ -42,6 +43,8 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const receipts=await sql.all('SELECT call_id,tool,phase,admitted,success,result_digest FROM xiaozhi_tool_receipts WHERE run_id=? AND generation=? LIMIT 257',[candidate.runId,binding.generation]);if(receipts.length>256)throw Error('task_result_unverified');
   if(!strict)base.operations={succeeded:receipts.filter(r=>r.phase==='settled'&&r.admitted===1&&r.success===1).length,failed:receipts.filter(r=>r.admitted===1&&(r.phase!=='settled'||r.success!==1)).length};
   const sanitize=await createStudentContextSanitizer(store),importer=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,isCurrent:current});
+  const fileReferences=createFileReferenceProjection({state:store.xiaozhiState.fileReferences,sessionId:id,taskId:task.id,workspace:()=>options.workspace(id),current,sanitize,
+   fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText});
   const attachments=createAttachmentReadTools({sessionId:id,state:store.xiaozhiState.attachments,ocr:store.xiaozhiState.attachmentOcr,importer,isCurrent:current,authorize:async row=>{const value=await store.getAiConversationSession(id);return !value.session.archivedAt&&value.messages.some(m=>m.id===row.messageId&&m.role==='user'&&m.metadata.agentRunId===row.runId);},sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const files=createEffectReadback({requireCurrentOffice:true,sessionId:id,runId:candidate.runId,current,workspace:async()=>(await options.workspace(id)).path,fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,fileText:sanitize,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
   const bundles=createDeliveryReadback({requireCurrentOffice:true,sessionId:id,runId:candidate.runId,current,state:store.xiaozhiState.deliveries,workspace:async()=>(await options.workspace(id)).path,fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
@@ -49,7 +52,7 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const questions=createEducationReadback({sessionId:id,runId:candidate.runId,current,questions:store.questionReviews});
   const practice=createPracticeReadback({sessionId:id,runId:candidate.runId,current,practice:store.practiceReviews});
   let canResolveFailures=false;
-  const results=createRunResultReadback({runId:candidate.runId,canResolveFailures:()=>current()&&canResolveFailures,bindEffect:(call,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
+  const results=createRunResultReadback({runId:candidate.runId,canonicalize:fileReferences.canonical,canResolveFailures:()=>current()&&canResolveFailures,bindEffect:(call,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
     :tool==='education_propose_practice'?practice(call,tool,payload):tool==='office_deliver_files'?bundles.bind(call,payload):files(call,tool,payload);},readLocal:async(tool,payload)=>{
    fence();if(tool==='office_read_attachment'){
     const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);if(!row||row.version!==payload.source.version)throw Error('attachment_changed');

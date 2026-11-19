@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-19 持久文件引用与工具整合
+
+结构化文件引用接入原工具边界及 SQLite。正常路径、历史回放、同源编辑创建复制与冷恢复按生产 Host 验证。本轮关闭 QG-06/07，累计 87/89。其他模型结果的 A-P0-08 实测缺口独立留待现有 sanitizer 投影。[过程证据](evidence/phase8/p0-current-source-20261119/structured-file-references.json)。
+
 ## 2026-11-19 教育流程与 IPC 复核
 
 真实当前便携包验证资料来源与四格式输出，SQLite 组卷和题库、IPC 注册器及文件操作另有独立测试结果。两条质量门禁已实现。原教学全套源测试的 Electron 环境问题保留，不计通过。[证据](evidence/phase8/education-core-and-ipc-20261119.md)。

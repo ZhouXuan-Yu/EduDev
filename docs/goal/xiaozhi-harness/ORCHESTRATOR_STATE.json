@@ -27,7 +27,7 @@
   ],
   "openFindings": [
     "Phase7 partial: native window drag/maximize and remaining full W/A/C/S page scenarios require runtime evidence",
-    "Phase8: A-P0-08 structured file label projection and QG-06 tool, QG-07 Pi, QG-09 Windows install verification",
+    "Phase8: Office, attachment and persistent terminal model projections have current red evidence; Windows isolated install blocked here",
     "Windows packaged cold Word prepared, archived and reopened; native install/uninstall and final branch build remain.",
     "Formal synthetic real-model ABBA, foreground timing, clean Windows install/uninstall, independent final acceptance"
   ],
@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Land model-safe structured file references, complete Phase7 and remaining QG, then run formal ABBA, Windows install/uninstall and final independent acceptance.",
+  "next": "Complete A-P0-08 Office documents, attachments, persistent terminal and legacy replay model projections on the feature branch. Then finish the native Phase7, qualified Windows installation, formal ABBA and final independent acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -516,7 +516,7 @@
     "followup": {
       "status": "SCOPED_4_PASS_2_OPEN",
       "evidence": "evidence/phase8/p0-current-source-20261119/managed-and-extension-retest.md",
-      "acceptedMatrix": "85/89",
+      "acceptedMatrix": "87/89",
       "paidCalls": 0,
       "managedRevocation": {
         "status": "PASS",
@@ -526,6 +526,10 @@
       "fileTextPrivacy": {
         "status": "TEXT_PASS_STRUCTURED_FILE_PROJECTION_FAIL",
         "evidence": "evidence/phase8/p0-current-source-20261119/file-text-privacy-retest.json"
+      },
+      "structuredFiles": {
+        "status": "FILE_REFERENCE_PASS_OTHER_MODEL_TOOL_PROJECTIONS_FAIL",
+        "evidence": "evidence/phase8/p0-current-source-20261119/structured-file-references.json"
       }
     }
   },
@@ -575,7 +579,7 @@
     "featureCheckpoint": "f2b269f3fdc479d7caa4bff60c88de111a6f42e0"
   },
   "phase8QualityCheckpoint": {
-    "acceptedMatrix": "85/89",
+    "acceptedMatrix": "87/89",
     "evidence": "evidence/phase8/current-quality-checkpoint-20261119.md",
     "pass": [
       "QG-01",
@@ -584,7 +588,9 @@
       "QG-04",
       "QG-08",
       "QG-05",
-      "QG-10"
+      "QG-10",
+      "QG-06",
+      "QG-07"
     ],
     "educationAndIpc": "evidence/phase8/education-core-and-ipc-20261119.md",
     "windowsInstall": {

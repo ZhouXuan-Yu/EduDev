@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-19 QG-06 与 QG-07
+
+文件 Tool 和 Pi Session 集成已实现。真实 Host 5/5、原历史恢复 2/2、领域 12/12，开发构建成功。固定矩阵 87/89。A-P0-08 仍需其他工具的模型输出副本复验，QG-09 保持独立 Windows 门槛。[复测](evidence/phase8/p0-current-source-20261119/structured-file-references.json)。
+
 ## 2026-11-19 QG-05 与 QG-10
 
 相关 IPC、知识检索、题库选取、组卷、PPT 和文件读写均已实现并复验。验收分支累计 85/89。独立 final 包和真实模型验收保持原范围。[专项证据](evidence/phase8/education-core-and-ipc-20261119.md)。
