@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-21 Skill 权限、版本绑定与冷启
+
+在 4b4ebe4 的同一封存构建，Terra 独立核对审核员、团队成员和隐私三组，共 6/6。总控复验个人 Skill 发布、活跃 Run 固定版本、回滚后下轮换版本和冷读，两尺寸各 4/4。保留三次夹具失败。Gate 7 继续按最终候选做独立复核，QG-09 和正式模型对照状态保持。 [复验记录](evidence/phase7/implementation-resume-20261119/skill-governance-main-20261121.json)
+
 ## 2026-11-21 原生窗口与深目录下的持久终端
 
 已实现。Windows 运行助手在独立短目录完成编译，长路径启动也使用逐字节核验的短路径副本。原版本目录、授权、健康检查和持久回执继续生效。235 字符暂存目录下工作台 9/9，终端两次输入均有回执，退出清理完成。Terra 已在同一修复构建完成两尺寸的原生拖动、最大化和拖拽还原。完整 Gate 7、独立 Windows 安装及正式模型对照仍按原合同推进。 [本轮证据](evidence/phase7/implementation-resume-20261119/windows-helper-deep-path-20261121.json)

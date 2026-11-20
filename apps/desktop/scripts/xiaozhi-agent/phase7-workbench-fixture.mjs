@@ -18,6 +18,14 @@ export async function startWorkbenchFixture(options = {}) {
     && !fs.lstatSync(root).isSymbolicLink(), 'Exact owned fixture root');
   const token = randomUUID(), log = [], requests = [], queue = [];
   const output = path.join(root, 'evidence'); fs.mkdirSync(output, {recursive: true});
+  let nextReply;
+  function holdNextReply(prompt) {
+    assert(!nextReply && typeof prompt === 'string' && prompt.length > 0);
+    const arrived = Promise.withResolvers();
+    const released = Promise.withResolvers();
+    nextReply = {prompt, arrived, released};
+    return {arrived: arrived.promise, release: released.resolve};
+  }
   const server = http.createServer(async (request, response) => {
     try {
       if (request.url === '/fixture/control') {
@@ -40,7 +48,19 @@ export async function startWorkbenchFixture(options = {}) {
       const delayFile = path.join(root, 'stream-delay-ms.txt'), delay = fs.existsSync(delayFile) ? Math.max(0, Math.min(3000, Number(fs.readFileSync(delayFile, 'utf8')) || 0)) : 0;
       const deltas = tool ? [{role: 'assistant', tool_calls: [{index: 0, id: 'call_' + randomUUID().replaceAll('-', ''), type: 'function', function: {name: tool.name, arguments: JSON.stringify(tool.input)}}]}]
         : ['已核对合成要求。', '保留原任务与来源。', '请教师检查当前结果。'].map(content => ({role: 'assistant', content}));
-      for (const delta of deltas) {if (response.destroyed) return; response.write('data: ' + JSON.stringify({...base, choices: [{index: 0, delta, finish_reason: null}]}) + '\n\n'); if (delay) await new Promise(resolve => setTimeout(resolve, delay));}
+      const held = nextReply && userText.includes(nextReply.prompt) && last?.role === 'user' ? nextReply : undefined;
+      if (held) nextReply = undefined;
+      for (const [index, delta] of deltas.entries()) {
+        if (response.destroyed) return;
+        response.write('data: ' + JSON.stringify({...base, choices: [{index: 0, delta, finish_reason: null}]}) + '\n\n');
+        if (index === 0 && held) {
+          response.once('close', held.released.resolve);
+          held.arrived.resolve();
+          await held.released.promise;
+          response.removeListener('close', held.released.resolve);
+        }
+        if (delay) await new Promise(resolve => setTimeout(resolve, delay));
+      }
       if (!response.destroyed) response.end('data: ' + JSON.stringify({...base, choices: [{index: 0, delta: {}, finish_reason: tool ? 'tool_calls' : 'stop'}], usage: {prompt_tokens: 100, completion_tokens: 30, total_tokens: 130}}) + '\n\ndata: [DONE]\n\n');
     } catch (error) {log.push(String(error.stack)); if (!response.headersSent) response.writeHead(500); response.end();}
   });
@@ -87,7 +107,7 @@ export async function startWorkbenchFixture(options = {}) {
     const ids = JSON.parse(fs.readFileSync(path.join(root, 'FIXTURE_IDS.json'), 'utf8'));
     fs.writeFileSync(path.join(root, 'RUNNING.json'), JSON.stringify({root, dataRoot: path.join(root, 'data'), profileRoot: path.join(root, 'profile'), pid: application.process().pid,
       title: 'Phase7 Synthetic Workbench · ' + path.basename(root), modelOrigin: origin, paidCalls: 0, ids: path.join(root, 'FIXTURE_IDS.json')}, null, 2));
-    return {root, output, main, application, page, ids, requests, log,
+    return {root, output, main, application, page, ids, requests, log, holdNextReply,
       scenario: tools => {queue.splice(0, queue.length, ...tools);},
       close: async () => {await application.close(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); fs.writeFileSync(path.join(root, 'STOPPED.json'), JSON.stringify({paidCalls: 0, modelCalls: requests.length, errors: log}, null, 2));}};
   } catch (error) {await application?.close().catch(() => {}); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); throw error;}
