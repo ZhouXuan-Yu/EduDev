@@ -1,5 +1,21 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 当前实页证据索引
+
+| 场景 | 已有可复用证据 | 最终复核 |
+| --- | --- | --- |
+| W1 任务总览 | [冷启、停止与查询重试](evidence/phase7/implementation-resume-20261119/approval-cold-recovery-retest.json) · [三页部分状态](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json) | 以最终候选校对键盘、可达性与各状态入口 |
+| W2 同任务继续 | [双击去重与重启](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json) · [已提交文件不重写](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json) · [旧事件迟到](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json) | 核对冻结版本的恢复操作与记录 |
+| W3 跨会话隔离 | [独立成果、迟到事件与隐藏窗口中的原终端](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json) | 核对冻结版本的运行、文件和工具归属 |
+| A1 审批可读性 | [审批键盘与授权核对](evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json) · [秘密值哨兵](evidence/phase7/implementation-resume-20261119/terra-secret-canary.json) · [不同审批类型](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json) | 核对聚焦、忙碌、禁用和详情 |
+| A2 审批状态变化 | [目标版本与授权变化](evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json) · [实包授权撤销](evidence/phase7/implementation-resume-20261119/packaged-grant-revocation-retest.json) · [目录隔离冷启动](evidence/phase7/implementation-resume-20261119/workspace-scope-cold-20261120.json) | 核对冻结版本的相关路径与拒绝后的替代步骤 |
+| C1 能力状态 | [五种可用性状态](evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md) · [必需和可选缺口](evidence/phase7/pending-dependency-20261119/terra-c1-conclusion.md) | 核对实际候选来源、缺口显示和动作可达性 |
+| C2 外部能力变化 | [Schema 变化与撤销](evidence/phase7/implementation-resume-20261119/mcp-schema-revocation-ui-retest.json) · [授权派发及撤销后拒绝](evidence/phase7/implementation-resume-20261119/mcp-authorized-dispatch-retest.json) | 核对冻结版本的安全条件变化与本地替代 |
+| S1 Skill 归属与分享 | [团队独立副本](evidence/phase7/implementation-resume-20261119/skill-share-authority-ui-retest.json) · [角色与合成隐私反例](evidence/phase7/implementation-resume-20261119/skill-reviewer-member-privacy-ui.json) | 核对冻结版本各角色的入口及反馈 |
+| S2 Skill 版本与回滚 | [实页、冷启和运行锁定](evidence/phase7/implementation-resume-20261119/workbench-approval-skill-ui-retest.json) | 核对冻结版本的历史、回滚和失败状态 |
+
+该索引汇总各场景证据的实际边界。完整 Gate 7 仍需统一构建、两尺寸的交互核对，以及实际鼠标拖动和最大化还原的原生窗口记录。
+
 ## 2026-11-20 W2/W3 原通知迟到和会话成果
 
 同一任务新运行持有时释放来自原 SQLite 日志的旧停止通知，独立会话 B 前台活跃时释放旧任务通知。新运行和另一会话不继承旧状态。实际回复保存、消息到 Run 的关联和冷启动读回补证。另有旧 Job 迟到完成和冷启 xterm 进度的独立验证。完整 Gate 7 继续沿原交互、两尺寸与证据合同。[实页证据](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json)

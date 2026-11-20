@@ -1,0 +1,53 @@
+{
+  "status": "PASS_SCOPED",
+  "row": "A2",
+  "source": "c2e182b54c12d6e515f29ebac67d6cfa9f855ad1",
+  "mainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5",
+  "rendererEntrySha256": "f43f1370904e8e5bff08ef24da8ae06b0e51ac38fb6a6529548f9cba131467b5",
+  "commands": [
+    "node scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs 1366x768",
+    "node scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs 1920x1080"
+  ],
+  "runs": [
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "reviewer": "root",
+      "checks": [
+        "Bound A workspace cannot change; chooser was not called; original approval and authority are identical",
+        "New B can select B workspace and creates a separate pending approval with B scope; A state did not change",
+        "Cold restart preserves both exact pending requests, separate directories and original authority without model replay"
+      ],
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-Cl4Pbs/evidence/workspace-scope-probe.json",
+      "reportSha256": "26612e7e99c4b690b2351985b1d88c2a42cbee278da0e7982519b0fe6ac7330c",
+      "screenshots": [
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-Cl4Pbs/evidence/cold-approval-aisession_234283db-9d3d-4c9d-ac27-c31a1b14a735.png",
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-Cl4Pbs/evidence/cold-approval-aisession_3456f571-6370-494a-b2f2-43554a41db86.png"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "reviewer": "Terra High",
+      "checks": [
+        "Bound A workspace cannot change; chooser was not called; original approval and authority are identical",
+        "New B can select B workspace and creates a separate pending approval with B scope; A state did not change",
+        "Cold restart preserves both exact pending requests, separate directories and original authority without model replay"
+      ],
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-OncdaQ/evidence/workspace-scope-probe.json",
+      "reportSha256": "6adcaa26065b94b10db146dc6aaaf14be4aca4c5fcafc6d8c55d0823b97ddc0f",
+      "screenshots": [
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-OncdaQ/evidence/cold-approval-aisession_0e557aea-8fc3-44b6-9f34-c3019d8a50b2.png",
+        "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-OncdaQ/evidence/cold-approval-aisession_3b8e54d7-d77f-4423-bb08-5579b7588d2b.png"
+      ]
+    }
+  ],
+  "scope": "实际已绑定目录的选择入口、原审批、Pi 与 SQLite。合成模型及目录选择响应，冷启动未调用模型；不含原生目录选择器物理验收。",
+  "paidCalls": 0,
+  "ledgerUsed": 3,
+  "matrix": "88/89"
+}
