@@ -2,7 +2,7 @@
 
 ## 2026-11-21 Gate 7 同一构建集中复验
 
-独立通过原生拖窗两尺寸、长路径工作台 9/9、已提交文件去重 4/4、工作台模态焦点两尺寸各 6/6、实际审批拒绝与目录隔离、Capability/MCP 和 Skill 角色与回滚用例。两尺寸合成流式各 8/8，另有单份独立前台 7/7。目标变化 A2 未达原审批操作，首个计划工具返回 skill_source_changed 后出现 tool_receipt_conflict。初次清单错配和后台目录前缀失败保留。完整 Gate 7、正式模型对照和干净 Windows 安装继续按原标准。 [逐项原始报告](evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json)
+独立通过原生拖窗两尺寸、长路径工作台 9/9、已提交文件去重 4/4、工作台模态焦点两尺寸各 6/6、实际审批拒绝与目录隔离、Capability/MCP 和 Skill 角色与回滚用例。两尺寸合成流式各 8/8，另有单份独立前台 7/7。目标变化 A2 未达原审批操作，首个计划工具返回 skill_source_changed 后出现 tool_receipt_conflict。 两项受控反例已复现。合法计划修订可能使 Skill 的旧修订核验返回 false，已取消的工具也可能在回执结算后才尝试持久化合同。原失败的具体时序仍待复核。初次清单错配和后台目录前缀失败保留。完整 Gate 7、正式模型对照和干净 Windows 安装继续按原标准。 [逐项原始报告](evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json)
 
 ## 2026-11-21 历史审批精确执行与冷启
 

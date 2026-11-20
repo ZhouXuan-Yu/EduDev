@@ -246,7 +246,27 @@
       "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/failed-a2-skill-readonly-check.json",
       "sha256": "55981804f30db33f3150528daf2d6b8c5fab283e187a7914264273ad0825ba17"
     },
-    "boundary": "All five cached package reads completed after shutdown, and every file matched its packaged SHA, so file lengths or actual source changes are unproven as the cause."
+    "boundary": "All five cached package reads completed after shutdown, and every file matched its packaged SHA, so file lengths or actual source changes are unproven as the cause.",
+    "deterministicReproduction": {
+      "isolated": "E only, exact worker behavior, owned failure database copied and original hash preserved",
+      "passed": 2,
+      "status": "REPRODUCED_TWO_BOUNDARY_RACES",
+      "script": {
+        "sha256": "fea00934e16e028787502e2ed203bcf0e799f31f6cfc59ab492a78442efdd3e7",
+        "path": "E:/EduDev-Harness-Acceptance-20261121/skill-journal-audit/counterexample.mjs"
+      },
+      "tests": 2,
+      "outcome": [
+        "The exact present Skill owner callback returns false when an unrelated same Task and Run planning revision updates between its read and revision assertion.",
+        "After signal abort and actual receipt settlement, delayed unmodified core governance still tries to write the contract and hits the expected settled receipt fence."
+      ],
+      "report": {
+        "sha256": "d7d49c816e39d5247b383209bf484a49882fa2a2c4036f7f456b1a65d2be31a7",
+        "path": "E:/EduDev-Harness-Acceptance-20261121/skill-journal-audit/counterexample-report.json"
+      },
+      "fixBoundary": "Separate current owner/source read validation from revision CAS for actual mutations. Recheck the active Run and signal in queued contract persistence. Keep all settled receipt protection.",
+      "scope": "These synthetic counterexamples establish the current races. The exact interleaving of the historic 148 ms production outcome was not captured."
+    }
   },
   "workbenchApprovals": {
     "reviewer": "independent Terra High",
