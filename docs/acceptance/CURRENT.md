@@ -12,6 +12,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 扫描题旁批注的区域核对
+
+批注隔离验证覆盖不同选项数、无图与多图、横排、独立栏及不同颜色。自然样本验收要按版式和来源分层，独立统计正式可用率。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)
+
 ## 2026-11-20 裁缺题号的原页恢复
 
 对原件无法识别题号的题，检查候选原文、真实页、核对入口和来源确认；题号图注不能切断选择题。回归验证同时覆盖后页显式新例题和模糊的近距离断点。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)

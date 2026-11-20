@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-20 扫描题旁批注的区域核对
+
+沿用 PDFium、PDF.js、RapidOCR、PP-DocLayoutV3 和本地原像素裁剪。单页按实际列和标记颜色复核来源，不新增依赖或外部调用。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)
+
 ## 2026-11-20 裁缺题号的原页恢复
 
 复用 PDFium 原页、RapidOCR 行框和 PP-DocLayoutV3 分块恢复裁缺题号的题干与邻题。没有新增 OCR、模型、服务或依赖。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)

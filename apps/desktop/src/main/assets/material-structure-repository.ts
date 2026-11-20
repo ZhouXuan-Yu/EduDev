@@ -30,8 +30,10 @@ import { QUESTION_CONTEXT_SCHEMA, validQuestionContextSource, type QuestionConte
 import { projectionFormulasInQuestion } from "../../shared/question-projection";
 import { completeQuestion } from "../education/question-context-revision";
 import type { ArchiveFields } from "../../shared/question-archive";
+import { PDF_LAYOUT_ENGINE } from "../../shared/material-layout";
+import type { PageBox } from "../../shared/material-page-preview";
 import { validPdfFilePage } from "../../shared/material-pdf-file";
-import { verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
+import { localizedPdfMarkProof, verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
 import { structureBookScope } from "./material-structure-book-scope";
 import { checkedStructureArchive, STRUCTURE_BANK_REVISION } from "./material-structure-bank";
@@ -83,6 +85,9 @@ type Host = {
     pages: { page: StructurePage; image: OriginalImage }[],
     signal: AbortSignal,
   ) => Promise<QuestionDocument>;
+  verifyPdfMarks?: (
+    image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal,
+  ) => Promise<boolean>;
   enqueue: (id: string, version: string, token: string) => Promise<void>;
   publish: (resource: TeacherResource, generation: string) => Promise<void>;
   unwrapWeb?: (q: QuestionBankItem) => Promise<QuestionDocument | undefined>;
@@ -260,7 +265,17 @@ export class MaterialStructureRepository {
 
   /** The layout pass must not silently overrule conflicts from the same PDF
    * version. Recheck at admission to cover previously staged candidates. */
-  async permitsPdfQuestion(resource: TeacherResource, question: StructureQuestion) {
+  async permitsPdfQuestion(resource: TeacherResource, question: StructureQuestion, generation: string, signal: AbortSignal) {
+    const admitted = await this.pdfQuestionAdmission(resource, question, generation, signal);
+    if (admitted === false) return false;
+    return Array.isArray(admitted)
+      ? JSON.stringify(admitted) === JSON.stringify(question.pdfSourceSlices)
+      : !question.pdfSourceSlices;
+  }
+
+  private async pdfQuestionAdmission(
+    resource: TeacherResource, question: StructureQuestion, generation: string, signal: AbortSignal,
+  ): Promise<boolean | PageBox[]> {
     if (!/\.pdf$/i.test(resource.originalFileName)) return true;
     const [first, last] = question.pageRange;
     const [job] = await this.host.all(
@@ -289,9 +304,28 @@ export class MaterialStructureRepository {
     } catch {
       return false;
     }
-    return validPdfFilePage(receipt) && receipt.status === "needs_review" &&
-      receipt.error === "text_conflict" &&
-      verifiedQuestionInPdfConflict(receipt.nativeText, question, Number(row.page));
+    if (!validPdfFilePage(receipt) || receipt.status !== "needs_review" || receipt.error !== "text_conflict") return false;
+    if (verifiedQuestionInPdfConflict(receipt.nativeText, question, Number(row.page))) return true;
+    if (!this.host.verifyPdfMarks) return false;
+    const [stored] = await this.host.all(
+      "SELECT body_json,image_json,sha256 FROM material_structure_pages WHERE generation=? AND page=?",
+      [generation, first],
+    );
+    if (!stored) return false;
+    const structure = JSON.parse(String(stored.body_json)) as StructurePage;
+    const image = JSON.parse(String(stored.image_json)) as OriginalImage;
+    if (hash(structure) !== stored.sha256 || structure.engine !== DOCUMENT_STRUCTURE_ENGINE ||
+        structure.resourceId !== resource.id || structure.version !== resource.contentHash ||
+        structure.page !== first || structure.totalPages !== Number(job.total) ||
+        structure.sourceEngine !== PDF_LAYOUT_ENGINE ||
+        structure.rasterSource?.resourceId !== resource.id || structure.rasterSource.version !== resource.contentHash ||
+        image.resourceId !== resource.id || image.version !== resource.contentHash ||
+        image.page !== first || image.total !== structure.totalPages || image.sha256 !== structure.rasterSha256 ||
+        JSON.stringify(image.box) !== "[0,0,1,1]" ||
+        image.width !== receipt.width || image.height !== receipt.height) return false;
+    const proof = localizedPdfMarkProof(receipt, question, structure);
+    if (!proof || !await this.host.verifyPdfMarks(image, proof.marks, proof.slices, signal)) return false;
+    return proof.slices;
   }
 
   async complete(
@@ -321,7 +355,10 @@ export class MaterialStructureRepository {
         question,
         pages.map((item) => item.page),
       );
-      const pdfConflict = question.status === "candidate" && !(await this.permitsPdfQuestion(resource, question));
+      const admitted = question.status === "candidate"
+        ? await this.pdfQuestionAdmission(resource, question, generation, signal) : true;
+      const pdfConflict = admitted === false;
+      if (Array.isArray(admitted)) question.pdfSourceSlices = admitted;
       if (pdfConflict) {
         question.status = "needs_review";
         question.issues.push("pdf_text_conflict");

@@ -186,7 +186,7 @@ try {
     chunks: query("SELECT COUNT(*) n FROM resource_chunks")[0].n,
     bank: query("SELECT COUNT(*) n FROM question_bank_items")[0].n,
   };
-  if (verifyCroppedNumber) assert.equal(report.counts.bank, 0);
+  if (verifyCroppedNumber) assert.equal(report.counts.bank, 1);
   else assert(report.counts.bank > 0);
   const paragraphs = [],
     pages = query("SELECT * FROM material_structure_pages");
@@ -280,7 +280,20 @@ try {
     assert.deepEqual(six[0].pageRange, [2, 2]);
     assert.deepEqual(six[0].options.map(option => option.label), Array.from("ABCD"));
     assert.equal(six[0].assets.length, 1);
-    assert.deepEqual(six[0].issues, ["pdf_text_conflict"]);
+    assert.deepEqual(six[0].issues, []);
+    assert.equal(six[0].pdfSourceSlices.length, 7);
+    const draft = bank.find(item => JSON.parse(item.archive_json).number === "6");
+    assert(draft);
+    const draftArchive = JSON.parse(draft.archive_json);
+    assert.equal(draftArchive.sourceChecked,false);
+    assert.equal(draft.answer,"");
+    assert.equal(draft.analysis,"");
+    const cropBlocks=JSON.parse(draft.document_json).blocks.filter(block=>block.kind==="image");
+    assert.deepEqual(cropBlocks.map(block=>block.anchors[0].box),six[0].pdfSourceSlices);
+    assert.deepEqual(cropBlocks.map(block=>block.anchors[0].page),Array(7).fill(2));
+    const marker = query("SELECT status,error FROM material_pdf_pages WHERE page=2")[0];
+    assert.deepEqual({...marker},{status:"needs_review",error:"text_conflict"});
+    check("The original annotated PDF publishes a rule draft with seven separate slices and no derived answer");
     assert(!/例5|第6题图/u.test(six[0].stem));
     const savedPage = JSON.parse(pages.find(row => row.page === 2).body_json);
     assert.equal(savedPage.paragraphs.find(paragraph => paragraph.id === held.paragraphIds[0]).text, held.stem);

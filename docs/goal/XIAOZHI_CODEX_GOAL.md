@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 扫描题旁批注的区域核对
+
+M03/M05 增加通用的局部批注冲突恢复。验收按有来源的自然题覆盖多个版式，结合实际存量优先贯通答案证据、检索与正式组卷。整库目标仍在进行。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)
+
 ## 2026-11-20 裁缺题号的原页恢复
 
 M03 恢复原件裁去题号时的独立题干候选，修复编号图注截断选项和新例题串页。第 6 题仍有原生文字冲突，完整知识库验收继续。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)

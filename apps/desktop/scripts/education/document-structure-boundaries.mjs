@@ -2,7 +2,7 @@ import "../office-agent/register-source.mjs";
 import assert from "node:assert/strict";
 const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
-const { verifiedQuestionInPdfConflict } =
+const { localizedPdfMarkProof, separatedMarkPixels, verifiedQuestionInPdfConflict } =
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
 const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
@@ -103,6 +103,94 @@ await check("An isolated unnumbered prompt stays reviewable and a numbered figur
     assert(following.issues.includes("shared_material_scope"));
   }
   assert.equal(page([["第6题 图中有五个不同的小球，请计算它们的质量。"]]).paragraphs[0].marker.label,"6");
+});
+function fixtureWithNativeMarks(p, marks) {
+  const items = marks.map(([text,box],i)=>({
+    id:"native-item-"+(i+1),text,box,transform:[1,0,0,1,0,0],width:12,height:12,
+  }));
+  p.nativeRecovery = {policy:"pdf-native-crop-concordance.v1",rasterSha256:p.rasterSha256,
+    accepted:[],attempts:[],unresolved:[],native:{
+      schemaVersion:"xiaozhi.pdf-native-text.v1",engine:"unpdf-1.8.1/pdfjs-6.1.200-text.v1",
+      ok:true,version:p.version,page:p.page,total:p.totalPages,readBytes:1,items,lines:[],
+    }};
+  const text=p.lines.map(line=>line.text).join("\n");
+  return {status:"needs_review",error:"text_conflict",method:"ocr",text,ocrText:text,
+    nativeText:items.map(item=>item.text).join(" "),width:1000,height:1000,imageArea:.5,nativeBoxes:[]};
+}
+await check("PDF annotations must be complete, detached and backed by exact paged OCR", () => {
+  const y = [.3,.36,.42,.48];
+  const p = page([
+    ["6. 根据题图，选择符合两个摩擦力方向的选项。",.1,.1,.7],
+    ...Array.from("ABCD",(label,i)=>[label+". 选项内容各不相同 "+i,.12,y[i],.36]),
+  ],1,1,[{id:"figure",kind:"image",score:.98,box:[.76,.32,.92,.47],needsReview:true}]);
+  const [q] = questions([p]);
+  const receipt=fixtureWithNativeMarks(p,["α","√","√","√"].map((text,i)=>[
+    text,[.49,y[i]+.001,.515,y[i]+.017],
+  ]));
+  const positive=localizedPdfMarkProof(receipt,q,p);
+  assert.equal(positive.slices.length,6);
+  assert.equal(positive.marks.length,4);
+  assert.equal(localizedPdfMarkProof({...receipt,nativeText:"α √ √ √ +"},q,p),undefined);
+  assert.equal(localizedPdfMarkProof({...receipt,ocrText:receipt.ocrText.replace("3","4")},q,p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,pageRange:[1,2]},p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,stem:q.stem.replace("3","4")},p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,options:q.options.slice(0,3)},p),undefined);
+  for(const i of [0,2,3]){
+    const mixed=structuredClone(p);
+    mixed.nativeRecovery.native.items[i].box[0]=.47;
+    assert.equal(localizedPdfMarkProof(receipt,q,mixed),undefined);
+  }
+  const orphan=structuredClone(p);
+  orphan.nativeRecovery.unresolved=["native-line-1"];
+  assert.equal(localizedPdfMarkProof(receipt,q,orphan),undefined);
+});
+await check("Option-mark recovery works across choice counts, graphics and row layouts", () => {
+  const stem="8. 根据给定条件和已知物理量，选出正确的判断。";
+  for (const [count, figureCount] of [[2,0],[3,0],[5,2],[8,0]]) {
+    const regions=Array.from({length:figureCount},(_,i)=>({
+      id:"graphic-"+i,kind:i?"chart":"image",score:.98,
+      box:[.77,.32+i*.045,.93,.36+i*.045],needsReview:true,
+    }));
+    const p=page([[stem,.10,.09,.48],...Array.from("ABCDEFGH".slice(0,count),(label,i)=>
+      [label+". 原文选择条件各不相同 "+i,.12,.3+i*.03,.36])],1,1,regions);
+    const [q]=questions([p]);
+    assert.equal(q.assets.length,figureCount);
+    const receipt=fixtureWithNativeMarks(p,[["✓",[.49,.301,.514,.316]]]);
+    const proof=localizedPdfMarkProof(receipt,q,p);
+    assert(proof, count+" options, "+figureCount+" figures");
+    assert(proof.slices.length<=8);
+    for(const asset of q.assets)assert(proof.slices.some(box=>JSON.stringify(box)===JSON.stringify(asset.box)));
+  }
+
+  const horizontal=page([[stem,.1,.09,.48],["A. 甲 B. 乙 C. 丙",.12,.30,.48]]);
+  const [h]=questions([horizontal]);
+  assert.equal(h.options.length,3);
+  const hReceipt=fixtureWithNativeMarks(horizontal,[["×",[.62,.301,.646,.318]]]);
+  assert.equal(localizedPdfMarkProof(hReceipt,h,horizontal).slices.length,2);
+
+  const twoColumns=page([[stem,.1,.09,.48],["A. 第一种可能的解释",.12,.3,.36],["B. 第二种可能的解释",.12,.37,.36]]);
+  const [left]=questions([twoColumns]);
+  twoColumns.columns=[[0,0,.62,1],[.64,0,1,1]];
+  const right={...twoColumns.lines[0],id:"right-line",text:"9. 同一原页的另一题",box:[.71,.31,.95,.328]};
+  twoColumns.lines.splice(2,0,right);
+  const receipt=fixtureWithNativeMarks(twoColumns,[["√",[.49,.301,.515,.317]],["物理",[.76,.32,.84,.337]]]);
+  assert.equal(localizedPdfMarkProof(receipt,left,twoColumns).slices.length,3);
+  right.box=[.51,.31,.60,.328];
+  assert.equal(localizedPdfMarkProof(receipt,left,twoColumns),undefined);
+});
+await check("Each mark pigment is checked independently against every source crop", () => {
+  const pixels=(...parts)=>Buffer.from(parts.flatMap(([count,bgra])=>
+    Array.from({length:count},()=>bgra).flat()));
+  const white=[240,240,240,255], black=[18,18,18,255], red=[20,20,220,255];
+  const blue=[230,40,20,255], green=[0,160,30,255];
+  const mark=color=>pixels([70,white],[30,color]);
+  const content=pixels([60,white],[30,black],[10,green]);
+  assert(separatedMarkPixels([mark(red)],[content]));
+  assert(separatedMarkPixels([mark(blue)],[content]));
+  assert(separatedMarkPixels([mark(red),mark(blue)],[content]));
+  assert(!separatedMarkPixels([mark(black)],[content]));
+  assert(!separatedMarkPixels([mark(green)],[content]));
+  assert(!separatedMarkPixels([mark(red)],[pixels([69,white],[30,black],[1,red])]));
 });
 await check("Printed fill slots preserve literal OCR and require visible thin rules", () => {
   const width = 100, height = 60;
