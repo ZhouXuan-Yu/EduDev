@@ -1,4 +1,4 @@
-# 扫描选择题的局部红批冲突
+# 扫描选择题的局部批注冲突
 
 ## 根因
 
@@ -6,8 +6,8 @@
 
 ## 实施与来源
 
-- `material-pdf-question-conflict.ts` 验证同一版本和页的两个原生读取结果对字符的覆盖一致，页级 OCR 与版面原始行逐字对应。只接受完全落在各选项右侧、位置成列的独立候选标记。
-- `material-structure-repository.ts`、`material-structure-runtime.ts`、`material-question-archive.ts` 与 `db.ts` 复核源图文件摘要、标记实际红色像素和裁片干净程度。从题干逐行、A–D 和图注得到独立原像素裁片。正式发布草稿前重算同一证据。
+- `material-pdf-question-conflict.ts` 验证同一版本和页的两个原生读取结果对字符的覆盖一致，页级 OCR 与版面原始行逐字对应。按选项行和题图位置核对独立批注，支持 2～8 个选项、无图、多图、单独成行或横向排列，以及有明确分隔的独立双栏。
+- `material-structure-repository.ts`、`material-structure-runtime.ts`、`material-question-archive.ts` 与 `db.ts` 复核源图文件摘要、标记的实际彩色像素与裁片内容。按题干、实际选项和图注得到原像素裁片，安全合并相邻文字块以沿用现有截图数量约定。正式发布草稿前重算同一证据。
 - 现有题号边界、原文、原图与原生 OCR 冲突状态均保留。共享结构合同升级为 v9，历史 v2～v8 按原回执读取。没有新增 SQLite 表、组件或云端调用。
 - `document-structure-boundaries.mjs` 和 `document-structure-electron.mjs` 覆盖缺失字符、原生符号与正文重叠、OCR 或选项不一致、出页和真实来源回读。
 
@@ -24,14 +24,20 @@
 
 ## 测试与性能
 
-- `node --experimental-transform-types scripts/education/document-structure-boundaries.mjs` 41/41。
-- 原真实 OCR 回执的内存判定各运行 1,200 次。旧定位失败的 P95 约 0.0013 ms，新的文本和几何证明约 0.165 ms。该数据不含图像解码、SQLite 和 OCR，像素工作量只限接受候选的裁片与标记盒。
+- `node --experimental-transform-types scripts/education/document-structure-boundaries.mjs` 43/43。
+- 原真实 OCR 回执的内存判定各运行 1,200 次。旧定位失败的 P95 约 0.0021 ms，通用的文本和几何证明约 0.244 ms。该数据不含图像解码、SQLite 和 OCR，像素工作量只限接受候选的裁片与标记盒。
 - `npm run test:renderer-components` 253/253。`npm run build -- --outDir test-results/build-kb-localized-marks-final` 通过。
 - `OMNI_EDU_TEST_BUILD_ROOT=test-results/build-kb-localized-marks-final`、`EDU_STRUCTURE_CHECK_CROPPED_NUMBER=1`，对单份 U16 PDF 执行 `node scripts/education/document-structure-electron.mjs`。7 项真实 Electron 检查通过，5/5 页完成，1 条原题自动草稿和 1 条教师修正确认后可冷启读回。模型调用为 0。
-- 从最终 SQLite 记录比对七个裁片及原页 8 份文件 SHA-256。原页符合此检测阈值的红像素共 24,744，七片各为 0。草稿未填答案或解析，`sourceChecked` 为 false。
+- 从最终 SQLite 记录比对七个裁片及原页 8 份文件 SHA-256。原页符合此检测阈值的红像素共 24,744，七片各为 0。逐张目视确认两行题干、A–D 和题图图注。草稿未填答案或解析，`sourceChecked` 为 false。
 - 完整电子桌面后台导入用时约 194 秒，前轮两次同原件试导分别约 170 秒和 71 秒。不同阶段的 OCR 与启动缓存差异明显，单次样本不构成吞吐回归结论。
 - `npm audit --omit=dev --audit-level=high --json` 报告现存 23 项通告，其中 8 项 high。依赖无变更。
 
+## 跨资料优先级
+
+既有试导快照实际登记了 223 份去重资料，约 314 MiB。按记录为 148 份 Word、68 份 PDF、7 份图片。863 条 PDF 页记录中有 558 条文字冲突。该快照没有新版结构任务，不能用来推断 v9 的自动通过率。
+
+题本 3,082 条旧规则初稿中有 2,995 条缺答案和 2,725 条缺解析。AI 终稿和教师编辑状态合计 18 条。仅凭状态无法证明这些题都能用于正式组卷。后续以有原页和完整题面的自然题为输入，从独立答案册先做配对，对缺答另做解题与验证，随后在同一批题上检索和组卷。按 KB-A03～A06 对来源、题型和版式分层，统计自然题完成率、错误归属和真实待核，单份材料只作回归样本。
+
 ## 未完成与回滚
 
-这一证明覆盖明确分离的红批与单页 A–D 扫描题。真实相互重叠、无独立选项、OCR 冲突或不同样式继续原有待核策略。第 6 题后续还需独立解题与答案证据，再接正式组卷。约 10 GB、迁移与检索质量留出验收继续推进。可撤销本次提交回退派生解析策略，旧原件、原图和教师已有记录继续保留。
+这一证明覆盖批注可隔离的单页扫描选择题。黑笔、正文与批注同色且无法安全区分、重叠、选项范围不明和 OCR 不一致继续待核。多种布局以合成证据核验，真实通过证据仍限本轮处理的 U16。第 6 题后续还需从无批注裁片独立解题并核对答案证据，再接正式组卷。原试导库同页两份历史模型稿的答案不一致，本轮未沿用任何一份。约 10 GB、迁移与检索质量留出验收继续推进。可撤销本次提交回退派生解析策略，旧原件、原图和教师已有记录继续保留。

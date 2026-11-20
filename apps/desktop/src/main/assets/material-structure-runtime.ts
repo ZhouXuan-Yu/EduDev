@@ -1,5 +1,6 @@
 import { nativePdfText } from "./material-native-text-host";
 import { recoverNativeGaps } from "./material-native-gap";
+import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
 import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
 import type { Quad } from "../../shared/material-layout";
@@ -418,24 +419,13 @@ export class MaterialStructureRuntime {
     try {
       const bytes = await this.assets.read(image, true, signal);
       const raster = nativeImage.createFromBuffer(bytes);
-      const measure = (box: PageBox) => {
-        signal.throwIfAborted();
-        const pixels = raster.crop(structureCropRect(image, box)).toBitmap();
-        let red = 0, otherDark = 0;
-        for (let i = 0; i < pixels.length; i += 4) {
-          const b = pixels[i], g = pixels[i + 1], r = pixels[i + 2];
-          if (r >= 95 && r - g >= 45 && r - b >= 45) red++;
-          else if (r + g + b <= 345) otherDark++;
+      function* pixels(boxes: PageBox[]) {
+        for (const box of boxes) {
+          signal.throwIfAborted();
+          yield raster.crop(structureCropRect(image, box)).toBitmap();
         }
-        return { red, otherDark, size: pixels.length / 4 };
-      };
-      return marks.every(box => {
-        const { red, otherDark, size } = measure(box);
-        return red >= Math.max(12, size * .04) && red >= otherDark * 2;
-      }) && slices.every(box => {
-        const { red, otherDark } = measure(box);
-        return red === 0 && otherDark >= 12;
-      });
+      }
+      return separatedMarkPixels(pixels(marks), pixels(slices));
     } catch (error) {
       signal.throwIfAborted();
       return false;
@@ -451,7 +441,7 @@ export class MaterialStructureRuntime {
     if (pages.length > 8 || q.anchors.length > 256 || q.stem.length > 12000)
       throw Error("question_too_large");
     const sliced = q.pdfSourceSlices;
-    if (sliced && (pages.length !== 1 || sliced.length < 6 || sliced.length > 8 ||
+    if (sliced && (pages.length !== 1 || sliced.length < 2 || sliced.length > 8 ||
         pages[0].page.page !== q.pageRange[0] || !sliced.every(validPageBox)))
       throw Error("structure_document_invalid");
     const blocks: QuestionDocument["blocks"] = [];
