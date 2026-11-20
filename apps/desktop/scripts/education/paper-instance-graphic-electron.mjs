@@ -7,8 +7,8 @@ import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
-import {enterPaper, choose} from '../acceptance/paper-basket-ui-driver.mjs';
-import {createInstanceBasket, instanceStage, readInstanceBasket, waitInstanceUi} from '../acceptance/paper-instance-ui-driver.mjs';
+import {enterPaper, choose, disclosureTrigger} from '../acceptance/paper-basket-ui-driver.mjs';
+import {instanceStage, readInstanceBasket, waitInstanceUi} from '../acceptance/paper-instance-ui-driver.mjs';
 import {questionVersion} from '../../src/main/education/question-context-provider.ts';
 import {relocateBackupDatabase} from '../../src/main/backup/restore-database.ts';
 
@@ -108,16 +108,29 @@ try{
  await initial.getByTestId('paper-practice-grade').fill(item.grade);
  await initial.getByTestId('paper-basket-create').click();
  await initial.waitFor({state:'hidden'});
+ const basketId=await page.getByTestId('paper-basket-workspace').getAttribute('data-basket-id');
+ await waitInstanceUi(page,owner,basketId,{stage:'select'});
  await page.getByTestId('paper-basket-configuration-toggle').click();
- const report={checks:[]};
- basket=await createInstanceBasket({page,report,prepareCreatedBasketUi:async({basketId})=>{
-   if(!await page.getByTestId('paper-basket-blueprint-fold').isVisible())await page.getByTestId('paper-basket-configuration-toggle').click();
-   const current=await readInstanceBasket(page,owner,basketId);
-   if(current.purpose!=='paper'){
-     await choose(page,page.getByTestId('paper-basket-purpose'),'paper');
-     await waitInstanceUi(page,owner,basketId,{stage:'select',revision:current.revision+1});
-   }
- }},owner,item,'图形选项编辑验证');
+ const fold=page.getByTestId('paper-basket-blueprint-fold');
+ await disclosureTrigger(fold,'蓝图与来源策略').click();
+ const setup=fold.getByTestId('paper-basket-blueprint');
+ const sections=setup.getByTestId('paper-basket-section-editor');
+ while(await sections.count()>1)await sections.last().getByRole('button',{name:'移除此分节',exact:true}).click();
+ await setup.getByTestId('paper-basket-section-type').fill(item.questionType);
+ await setup.getByTestId('paper-basket-section-count').fill('1');
+ await setup.getByTestId('paper-basket-section-points').fill('100');
+ await choose(page,setup.getByTestId('paper-basket-mode'),'source_only');
+ const setupRevision=(await readInstanceBasket(page,owner,basketId)).revision;
+ await setup.getByTestId('paper-basket-save-blueprint').click();
+ await waitInstanceUi(page,owner,basketId,{stage:'select',revision:setupRevision+1});
+ await page.getByTestId('paper-basket-configuration-toggle').click();
+ await page.getByTestId('paper-basket-search').fill(item.stem.slice(0,26));
+ await page.getByTestId('paper-basket-search-submit').click();
+ const candidate=page.locator('[data-testid="paper-basket-candidate"][data-question-id="'+item.id+'"]');
+ await candidate.getByTestId('paper-basket-add').click();
+ await waitInstanceUi(page,owner,basketId,{stage:'select',revision:setupRevision+2});
+ basket=await readInstanceBasket(page,owner,basketId);
+ assert.equal(basket.entries[0].questionId,item.id);
  await instanceStage({page},owner,basket.id,'organize');
  const entry=page.getByTestId('paper-basket-entry').filter({has:page.getByTestId('paper-instance-editor')});
  await entry.getByTestId('paper-instance-open').click();

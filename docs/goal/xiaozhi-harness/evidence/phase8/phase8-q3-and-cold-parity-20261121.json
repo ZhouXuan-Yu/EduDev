@@ -1,0 +1,68 @@
+{
+  "status": "PASS_SCOPED_OFFLINE",
+  "prior": "phase8-offline-candidate-20261121.json",
+  "builds": [
+    {
+      "version": "A",
+      "commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+      "outCount": 458,
+      "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+      "mainSha256": "e256923d46376b17f6492e22617566912c8758ad5240c0de03af2f7ba5863c"
+    },
+    {
+      "version": "B",
+      "commit": "70b19a8d4912897d3306eec6a13bbe5151853ec0",
+      "outCount": 481,
+      "outSha256": "9e5329f1cd47f9490b7547273a201fc0977e812ec239aab24c92a59591ba1db8",
+      "mainSha256": "a0e01d29aad05a4a8752d26a38cb427d80735fcaf8ecd3e41a3bd864f64efa42"
+    }
+  ],
+  "fixedSyntheticQuestion": {
+    "id": "question_e22e220c-6fda-45a4-9ab9-2310beff874d",
+    "version": "3afd9ecb10b18895d35ecb62d6aa94bc59e14928187667e24dc90df8a7921cb2",
+    "source": "local_bank",
+    "receiptSha256": "0e9edfcf21fa1f94af13a457070830b5964ceae233e5b141264b75468e53aecf",
+    "dataSha256": "7f6e3ed92b10aabc31f54deb58f31e46964052dff4d96a7292d550c6c377ce7b",
+    "check": "Offline collector reads both closed SQLite snapshots with immutable URI and compares exact seeded stem, answer, analysis and source kind. Paired Electron startup independently verifies the current archived version via typed readback."
+  },
+  "verify": {
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify \"E:/EduDev-Harness-Acceptance-20261121/phase8-temp/manifest-a-d50ef330-b-70b19a8.json\"",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/verified-question-seed-a-d50ef330-b-70b19a8.json",
+    "sha256": "a9718c0b068281b209915012527bc747ff292504c01dbedce3507e2ebb5dde52",
+    "exit": 0,
+    "openActualLedger": false
+  },
+  "regression": {
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+    "passed": 20,
+    "total": 20,
+    "exit": 0,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/xiaozhi-phase8-real-model-protocol-LJ2xb2/report.json",
+    "sha256": "8ad86ee6ba1d5c3030b1daf7668a6929f8f3a71bfcd660c979e90b9f6aa3e8ee",
+    "negativeTests": [
+      "Empty receipt rejected",
+      "Same exact expected question in both fixtures with no sidecar created",
+      "Different answer on B rejected",
+      "A sidecar appearing on B rejected"
+    ]
+  },
+  "cold": {
+    "command": "node \"E:/EduDev-Harness-Acceptance-20261121/phase8-temp/offline-cold-parity.mjs\" \"E:/EduDev-Harness-Acceptance-20261121/phase8-temp/manifest-a-d50ef330-b-70b19a8.json\"",
+    "driverSha256": "61dc150927c48a3e4c832f196a0af4795dc90d2e4da953e48a5ff5d52c760923",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/omni-edu-xiaozhi-phase8-boot-6cxcD3/report.json",
+    "sha256": "3b383591038f794cbde036c04a37958d903c23a76f136de517ec4262dc290b67",
+    "settings": {
+      "model": "deepseek-flash",
+      "thinking": "high",
+      "configured": true
+    },
+    "isolatedTemporaryCopies": true,
+    "sameFrozenDigestsBeforeAfter": true,
+    "submissions": 0,
+    "blockedNetworkRequests": 0,
+    "observedNetworkRequests": 0,
+    "pageErrors": 0
+  },
+  "paidCalls": 0,
+  "boundary": "B is provisional, now prior to the Skill focus correction. Neither offline verification nor cold startup asserts live wire configuration, real model quality or comparative time. Reselect final B after independent Gate 7 under the established contract."
+}

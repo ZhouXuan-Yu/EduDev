@@ -1,0 +1,197 @@
+{
+  "status": "PARTIAL",
+  "sourceCommit": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
+  "build": {
+    "sha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
+    "files": 481
+  },
+  "independentMap": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-applicable-state-map-20261121.md",
+    "sha256": "d192466495e78deb9e82b3c28b62b5ace8fe234e1734c4c38d5b3f77f38693f1"
+  },
+  "stream": {
+    "independent1920": {
+      "checks": 8,
+      "reportedReasoningChars": [
+        465,
+        2562
+      ],
+      "dialogueCharsDuringFinal": [
+        56914,
+        59042
+      ],
+      "report": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-1920-temp/omni-edu-xiaozhi-stream-C1eGLz/report.json",
+        "sha256": "31289a138a0c1784299c7f72af56b18a4b3a086101d28d5b0ad63f31ac5ecba7"
+      },
+      "driver": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-1920-temp/phase8-stream-performance-1920.mjs",
+        "sha256": "b7226d3760f4a9e7f08113b44e1fb87e9aeed62875b9d6a32c74472a829e8fcc"
+      },
+      "boundary": "Whole conversation length for final stage; actual native 1920 dimensions and same-session stop with SQLite readback."
+    },
+    "tracked": {
+      "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/goal/harness-gate7-main-b890dba-r3-20261121/build-isolated --expected-out-hash e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296 --expected-out-count 481 --label gate7-tracked-<viewport>-markers --viewport <viewport> --switch-session true --background true",
+      "runs": [
+        {
+          "viewport": "1366x768",
+          "checks": 8,
+          "reasoningChars": [
+            1397,
+            3494
+          ],
+          "finalMarkers": [
+            40,
+            85
+          ],
+          "report": {
+            "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-1920-temp/omni-edu-xiaozhi-stream-ZTzw5Z/report.json",
+            "sha256": "b12c1d2384d7aa8c5f2d9dcdb5275474558b4b2e08c65314f5d527c26d996cdd"
+          }
+        },
+        {
+          "viewport": "1920x1080",
+          "checks": 8,
+          "reasoningChars": [
+            1164,
+            3261
+          ],
+          "finalMarkers": [
+            30,
+            80
+          ],
+          "report": {
+            "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-1920-temp/omni-edu-xiaozhi-stream-u9ylud/report.json",
+            "sha256": "2ae9a155b32328012d802f4cd9b420a744a82aeae2d9e9309973a246a8b3f1db"
+          }
+        }
+      ],
+      "preservedFailure": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-1920-temp/omni-edu-xiaozhi-stream-ZZm2JI/report.json",
+        "sha256": "9b9940e3a33a6845c24d2d552690fbb2af1f703b9a16ebf9a151a55ffbeb4ef4",
+        "reason": "The driver waited for the final_answer classification, which is not guaranteed mid-stream. It now counts literal synthetic final text in the visible conversation."
+      }
+    },
+    "boundary": "Hidden renderer, one local request in each pass, no claim on visible-window latency or cold read. Both tracked runs return to the original active conversation before stopping it."
+  },
+  "keyboardWorkApproval": {
+    "status": "PASS_SCOPED",
+    "command": "Original workbench busy keyboard smoke in each viewport, and node w2-keyboard-fixed.mjs <1366x768|1920x1080> with the frozen build path",
+    "original": [
+      {
+        "viewport": "1366x768",
+        "checks": 3,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-wa-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-RjXZpI/evidence/keyboard-busy-report.json",
+        "sha256": "bd38ddc3dca12562f1e9343b52896f5140e70218126d09f296dac8f82faa4847"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": 3,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-wa-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-9zdU4S/evidence/keyboard-busy-report.json",
+        "sha256": "b7c8792848378aef98ddd43999547500f5043becdba4b283c7007f56c3395ff4"
+      }
+    ],
+    "w2": [
+      {
+        "viewport": "1366x768",
+        "checks": 2,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-wa-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-nSOIBl/evidence/w2-keyboard-report.json",
+        "sha256": "fe8d47e232ddb50766bc8d46f660d30980d087e817db6190dc8d3af48fc2ba5d"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": 2,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-wa-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-LTnFjo/evidence/w2-keyboard-report.json",
+        "sha256": "d30244e69171d04d0da57dbbae08ff518ee12255442afc227cb55e7621299ac1"
+      }
+    ],
+    "driverSha256": "9cb2ea0c28511d8956df80f4971b7f0538ecfad99f1c0aeb9dee4c8ebb9b7a9b",
+    "preservedFailure": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-wa-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-mAg9N9/evidence/w2-keyboard-report.json",
+      "sha256": "3804b3a8c1a62d03a1a31142de689ecee5f5aab4e971b7f116748fd9f492d83d",
+      "reason": "Original Run completed. Test clicked the toggle while already open and closed the panel."
+    },
+    "boundary": "Covers two-size forward keyboard paths, busy/late approval details, Escape focus, scrolling and same Task exactly one successful Run from Enter. Does not cover all reverse focus exits, A2 stale target details at 1920 or all page states."
+  },
+  "keyboardCapabilitiesSkills": {
+    "status": "PARTIAL_PRODUCT_FOCUS_DEFECT",
+    "viewport": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "completedAssertions": 8,
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-cs-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-le7WEZ/evidence/cs-report.json",
+      "sha256": "8eb5518df4d7c25c4f39dc6fad21902a61f9c34111c22366f25dc0995c19b973"
+    },
+    "driver": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-cs-keyboard-temp/cs.mjs",
+      "sha256": "5dd65102eede0ce590f006934bbf19f943159301adb73f05ffb3d410a20cdf41"
+    },
+    "defect": "Space on the Skill creation Cancel button closes the form and leaves activeElement at BODY in both viewports.",
+    "boundary": "Capability search and disclosure, Skill history and form controls, and MCP fields, checkbox and disabled save verified. No remote installs or fresh lifecycle. Errors/loading not injected in this batch.",
+    "preservedFixtureFailures": [
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-cs-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-48Nh1T/evidence/cs-report.json",
+        "sha256": "e87738d3c5c44476a8dce2744a8f3939dfd36044aa71ffbad0ab7a02dd81506f",
+        "reason": "Driver targeted checkbox wrapper as focus."
+      },
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-cs-keyboard-temp/omni-edu-xiaozhi-phase7-workbench-ui-6aXTke/evidence/cs-report.json",
+        "sha256": "286742eb66b6d52cad829d6e2c0802a42fb6626a621ef3b696a129d928b75c9e",
+        "reason": "Driver expected hit-test on a disabled pointer-events control."
+      }
+    ]
+  },
+  "addedPaidRequests": 0,
+  "focusFix": {
+    "status": "PASS_SCOPED",
+    "sourceBase": "2224589 (application changes in SkillGovernancePanel.tsx and SkillPublicationForm.tsx, before integration with 29d5462)",
+    "result": "Cancel returns the keyboard focus to the owning form trigger for personal and team publications. A successful personal publication also returns focus, after enabling the trigger. These do not force focus back if a different control owns focus.",
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-focus-build-temp/frozen-out",
+      "sha256": "29fa955afa08647b00718a4139aa93fa0da8d26d6d5158762060f23ebead3fab",
+      "files": 481,
+      "mainSha256": "65ba1c92432098e06915542004e3fe83af8c1fc09346c6ad699d0817e763e987",
+      "logSha256": "3d2f26289ad4f25d32d0681d9e2b8f2fca9bc6d6a645b1bc85df0342a024b947",
+      "inventorySha256": "65750e9ebf2d33ae5d5f588eafbeffb8cbbfc6d60929b06b4d7f4508742ea000"
+    },
+    "componentTest": {
+      "command": "npm run test:renderer-components",
+      "passed": 253,
+      "total": 253,
+      "exit": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-focus-build-temp/component-tests.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    "independent": {
+      "checks": 5,
+      "exit": 0,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "pageErrors": 0,
+      "fixtureModelRequests": 0,
+      "report": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-skill-focus-fixed-temp/omni-edu-xiaozhi-phase7-workbench-ui-PGirVz/evidence/focus-report.json",
+        "sha256": "45d0a87a941efeda029daade0ef477cac5375cd3c6a2108ce9022302e7188f74"
+      },
+      "priorGeometryRun": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-skill-focus-fixed-temp/omni-edu-xiaozhi-phase7-workbench-ui-d607zJ/evidence/focus-report.json",
+        "sha256": "044b1e545ae86d726c1cbd48e5bc44c435aabe7137ede550f78400707daaf5a7"
+      },
+      "command": "node \"E:/EduDev-Harness-Acceptance-20261121/gate7-skill-focus-fixed-temp/focus.mjs\"",
+      "driverSha256": "5d6b989f0db4d601d7878b75857fa6248f299d116417ea41079fc3c86286668a",
+      "environment": "TEMP/TMP set to driver parent, OMNI_EDU_TEST_BUILD_ROOT to feature desktop out, FOCUS_BUILD_SHA/COUNT and FOCUS_MAIN_SHA to fingerprints above."
+    },
+    "boundary": "Independent evidence only for two-size keyboard focus fix and one local personal success. Existing b890dba evidence was not relabeled as different build evidence. Phase 7 full approval remains open."
+  },
+  "next": [
+    "Rebuild integrated feature and concurrent KB changes, use current main candidate for final independent chapter.",
+    "Apply the original applicable-state map, including remaining error/loading and 1920 stale target details.",
+    "Formal ABBA after accepted phase 7. Real QG-09 still needs clean Windows installation."
+  ]
+}
