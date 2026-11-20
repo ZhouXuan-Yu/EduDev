@@ -111,6 +111,40 @@ function declaration(record: ToolGovernanceRecord) {
       evidence: [{requirementId: 'invoke', supported: true, kind: 'adapter_detected', reference: 'tool-contract:' + record.providerHash}]}};
   return {definition: definition(record.name, record.capabilityId), provider, binding};
 }
+type ToolDeclaration = Pick<ToolDefinition, 'name' | 'parameters'>;
+function verifyToolDeclarations(definitions: readonly ToolDeclaration[]) {
+  if (sourceManifest.schemaVersion !== 1 || !sourceManifest.sources.length
+      || createHash('sha256').update(JSON.stringify(sourceManifest.sources)).digest('hex') !== sourceManifest.sourceHash) throw Error('source_changed');
+  const names = definitions.map(tool => tool.name);
+  if (new Set(names).size !== names.length) throw Error('tool_manifest_conflict');
+}
+function toolGovernanceRecord(tool: ToolDeclaration, source: McpToolIdentity | null): ToolGovernanceRecord {
+  const scopePolicy = source ? 'mcp_tool_request' : policy(tool.name);
+  const manifest = toolManifest(tool.name, source ? new Set([tool.name]) : undefined);
+  const schemaHash = identityHash(tool.parameters);
+  const sourceHash = source ? protocolHash({sourceHash: source.sourceHash, schemaHash: source.schemaHash}) : sourceManifest.sourceHash;
+  const providerHash = protocolHash({sourceHash, schemaHash, name: tool.name, manifest, scopePolicy});
+  const key = source ? 't_' + identityHash([source.serverId, source.tool]).slice(0, 24) : tool.name;
+  return {schemaVersion: 1, name: tool.name, parameters: tool.parameters, manifest, ...(source ? {source} : {}),
+    capabilityId: source ? 'mcp.tool.' + key + '.invoke' : 'edu.core.tool.' + key,
+    providerId: source ? 'mcp.tool.' + key : coreProviderId(key), providerVersion: '1.0.0+' + providerHash.slice(0, 16),
+    providerHash, schemaHash, sourceHash, contractVersion: '1.0.0', effect: manifest.effect, scopePolicy,
+    classification: source || privateTools.has(tool.name) ? 'teacher_private' : 'public'};
+}
+export async function prewarmCoreToolGovernance(options: {
+  definitions: readonly ToolDeclaration[];
+  registry: CapabilityRegistry;
+  signal?: AbortSignal;
+}): Promise<number> {
+  options.signal?.throwIfAborted();
+  verifyToolDeclarations(options.definitions);
+  const registrations = options.definitions.map(tool => {
+    if (!CORE_TOOL_NAMES.includes(tool.name)) throw Error('tool_governance_missing');
+    return declaration(toolGovernanceRecord(tool, null));
+  });
+  return options.registry.registerMissingCore(registrations, options.signal);
+}
+
 /** All final Session definitions enter this same existing Registry. Named implementations remain the dispatch targets. */
 export async function registerSessionToolGovernance(options: {
   definitions: readonly ToolDefinition[];
@@ -118,34 +152,24 @@ export async function registerSessionToolGovernance(options: {
   mcp: (name: string) => Promise<McpToolIdentity | null>;
   signal?: AbortSignal;
 }) {
-  if (sourceManifest.schemaVersion !== 1 || !sourceManifest.sources.length
-      || createHash('sha256').update(JSON.stringify(sourceManifest.sources)).digest('hex') !== sourceManifest.sourceHash) throw Error('source_changed');
-  const names = options.definitions.map(tool => tool.name);
-  if (new Set(names).size !== names.length) throw Error('tool_manifest_conflict');
+  verifyToolDeclarations(options.definitions);
   const records = new Map<string, ToolGovernanceRecord>();
   for (const tool of options.definitions) {
     options.signal?.throwIfAborted();
     const source = CORE_TOOL_NAMES.includes(tool.name) ? null : await options.mcp(tool.name);
     options.signal?.throwIfAborted();
-    if (!source) policy(tool.name);
-    const manifest = toolManifest(tool.name, source ? new Set([tool.name]) : undefined);
-    const schemaHash = identityHash(tool.parameters);
-    const sourceHash = source ? protocolHash({sourceHash: source.sourceHash, schemaHash: source.schemaHash}) : sourceManifest.sourceHash;
-    const scopePolicy = source ? 'mcp_tool_request' : policy(tool.name);
-    const providerHash = protocolHash({sourceHash, schemaHash, name: tool.name, manifest, scopePolicy});
-    const key = source ? 't_' + identityHash([source.serverId, source.tool]).slice(0, 24) : tool.name;
-    const record: ToolGovernanceRecord = {schemaVersion: 1, name: tool.name, parameters: tool.parameters, manifest, ...(source ? {source} : {}),
-      capabilityId: source ? 'mcp.tool.' + key + '.invoke' : 'edu.core.tool.' + key,
-      providerId: source ? 'mcp.tool.' + key : coreProviderId(key), providerVersion: '1.0.0+' + providerHash.slice(0, 16),
-      providerHash, schemaHash, sourceHash, contractVersion: '1.0.0', effect: manifest.effect, scopePolicy,
-      classification: source || privateTools.has(tool.name) ? 'teacher_private' : 'public'};
-    const values = declaration(record);
-    const prior = await options.registry.providerVersion(record.providerId, record.providerVersion, record.capabilityId);
+    records.set(tool.name, toolGovernanceRecord(tool, source));
+  }
+  const entries = [...records.values()];
+  const versions = await options.registry.providerVersions(entries, options.signal);
+  for (const [index, record] of entries.entries()) {
     options.signal?.throwIfAborted();
-    if (prior?.revoked) throw Error('capability_revoked');
-    if (!prior) await options.registry.register(values.definition, values.provider, values.binding);
-    options.signal?.throwIfAborted();
-    records.set(tool.name, record);
+    if (versions[index]?.revoked) throw Error('capability_revoked');
+    if (!versions[index]) {
+      const {definition, provider, binding} = declaration(record);
+      await options.registry.register(definition, provider, binding);
+      options.signal?.throwIfAborted();
+    }
   }
   if (records.size !== options.definitions.length) throw Error('tool_governance_missing');
   return records;

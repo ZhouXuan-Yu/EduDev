@@ -10,11 +10,16 @@ export function unwrapTaskArguments(value:unknown):{stepId?:string;input:Record<
 }
 /** Preserve each original domain schema and execution implementation. Only the
  * SDK-facing additive contract sees the optional host task routing envelope. */
-export function taskEnvelope(def:ToolDefinition):ToolDefinition{
- if(TASK_CONTROL_TOOLS.has(def.name)||def.name==='exec_command')return def;
- if(def.name.startsWith('mcp_')||toolManifest(def.name).effect==='safe_read'&&!Object.values(taskToolKinds).some(names=>names?.includes(def.name)))return def;
- const schema=def.parameters as unknown as Record<string,unknown>;
+export function taskEnvelopeParameters(name:string,parameters:ToolDefinition['parameters']):ToolDefinition['parameters']{
+ if(TASK_CONTROL_TOOLS.has(name)||name==='exec_command')return parameters;
+ if(name.startsWith('mcp_')||toolManifest(name).effect==='safe_read'&&!Object.values(taskToolKinds).some(names=>names?.includes(name)))return parameters;
+ const schema=parameters as unknown as Record<string,unknown>;
  if(schema.type!=='object'||schema.properties!==undefined&&!taskObject(schema.properties))throw Error('configuration');
  const properties=schema.properties as Record<string,unknown>|undefined;if(properties&&'taskStepId'in properties)throw Error('configuration');
- return{...def,parameters:{...schema,properties:{...properties,taskStepId:{type:'string',minLength:1,maxLength:48}}} as unknown as ToolDefinition['parameters'],execute:(id,args,signal,update,context)=>def.execute(id,unwrapTaskArguments(args).input,signal,update,context)};
+ return {...schema,properties:{...properties,taskStepId:{type:'string',minLength:1,maxLength:48}}} as unknown as ToolDefinition['parameters'];
+}
+export function taskEnvelope(def:ToolDefinition):ToolDefinition{
+ const parameters=taskEnvelopeParameters(def.name,def.parameters);
+ if(parameters===def.parameters)return def;
+ return{...def,parameters,execute:(id,args,signal,update,context)=>def.execute(id,unwrapTaskArguments(args).input,signal,update,context)};
 }

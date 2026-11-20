@@ -5,12 +5,16 @@ import {AgentToolAbortedError,AgentToolTimeoutError,executeWithToolBound} from '
 // Main-only, opt-in scalar timings. No prompts, paths, payloads or error text.
 const lifecycleChannel = channel('omni-edu.xiaozhi.lifecycle.v1');
 const lifecycleContext = new AsyncLocalStorage<{runId?: string}>();
-export function observeLifecycle<T>(operation: string, action: () => Promise<T>, context?: {runId?: string}): Promise<T> {
+export function observeLifecycle<T>(operation: string, action: () => Promise<T>, context?: {runId?: string}, countResult?: (value:T)=>number): Promise<T> {
   if (!lifecycleChannel.hasSubscribers) return action();
   const measure = async (): Promise<T> => {
     const startedAt = performance.now(), startedEpochMs = performance.timeOrigin + startedAt;
+    let registrationCount:number|undefined;
     let outcome: 'success' | 'cancelled' | 'timeout' | 'error' = 'success';
-    try { return await action(); }
+    try { const result=await action();
+      const count=countResult?.(result);
+      if(typeof count==='number'&&Number.isSafeInteger(count)&&count>=0)registrationCount=count;
+      return result; }
     catch (error) {
       outcome = error instanceof LifecycleTimeoutError ? 'timeout'
         : error instanceof Error && error.message === 'cancelled' ? 'cancelled' : 'error';
@@ -19,7 +23,8 @@ export function observeLifecycle<T>(operation: string, action: () => Promise<T>,
       const endedAt = performance.now(), runId = lifecycleContext.getStore()?.runId;
       lifecycleChannel.publish({version: 1, operation: /^[a-z0-9_]{1,80}$/.test(operation) ? operation : 'unknown',
         ...(runId && /^run_[a-z0-9-]{1,80}$/i.test(runId) ? {runId} : {}), startedEpochMs,
-        endedEpochMs: performance.timeOrigin + endedAt, durationMs: endedAt - startedAt, outcome});
+        endedEpochMs: performance.timeOrigin + endedAt, durationMs: endedAt - startedAt, outcome,
+        ...(registrationCount===undefined?{}:{registrationCount})});
     }
   };
   return context ? lifecycleContext.run(context, measure) : measure();

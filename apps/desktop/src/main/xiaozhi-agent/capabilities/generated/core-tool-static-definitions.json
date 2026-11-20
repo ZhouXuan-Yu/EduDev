@@ -1,0 +1,3040 @@
+{
+  "schemaVersion": 1,
+  "sourceFingerprint": "b81581f76d7e703f77275f9720e0dc4e8fb99e028219af39f1588b4513c49648",
+  "definitions": [
+    {
+      "name": "analyze_geometry_figure",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "analysisId": {
+            "description": "可选本地错题图片分析 ID；为空时使用当前学生最近一条图片分析。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "commands": {
+            "description": "视觉模型草拟的 GeoGebra 命令数组；宿主只保留白名单命令。",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 24,
+            "type": "array"
+          },
+          "constraints": {
+            "description": "可选几何约束摘要。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "geometricRelations": {
+            "description": "可选几何关系摘要。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "questionText": {
+            "description": "脱敏题干或题干摘要；不要传入原图路径或学生隐私。",
+            "maxLength": 1200,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "analyze_learning_progress",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "endDate": {
+            "description": "包含结束日，格式 YYYY-MM-DD。",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "startDate": {
+            "description": "包含起始日，格式 YYYY-MM-DD。",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "studentId": {
+            "description": "可选学生 ID；必须与本轮已绑定学生一致。",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "subject": {
+            "description": "可选学科；“全部”表示不筛选。",
+            "maxLength": 80,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "analyze_notebook_context",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "description": "context 返回目录与有限细节；record_summary 返回单条摘要草稿。",
+            "enum": [
+              "context",
+              "record_summary"
+            ],
+            "type": "string"
+          },
+          "notebookId": {
+            "description": "可选备课本 ID；指定后只允许读取该备课本。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "query": {
+            "description": "笔记目录或内容查询；不会作为学生查询。",
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "recordId": {
+            "description": "record_summary 模式下的本地记录 ID。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "ask_teacher",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "options": {
+            "items": {
+              "maxLength": 200,
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 2,
+            "type": "array"
+          },
+          "question": {
+            "maxLength": 1000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "question",
+          "options"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "ask_user",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "description": "需要老师回答的单个问题。",
+            "maxLength": 2000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "capability_execute",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "input": {
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "maxLength": 500,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "path"
+            ],
+            "type": "object"
+          },
+          "requirement": {
+            "additionalProperties": false,
+            "properties": {
+              "capabilityId": {
+                "maxLength": 160,
+                "type": "string"
+              },
+              "conditions": {
+                "items": {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                "maxItems": 128,
+                "type": "array"
+              },
+              "contractVersion": {
+                "maxLength": 80,
+                "type": "string"
+              },
+              "optional": {
+                "items": {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                "maxItems": 128,
+                "type": "array"
+              },
+              "required": {
+                "items": {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                "maxItems": 128,
+                "type": "array"
+              }
+            },
+            "required": [
+              "capabilityId",
+              "contractVersion",
+              "required",
+              "optional",
+              "conditions"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "requirement",
+          "input"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "capability_inspect",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "capability_prepare",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "candidateId": {
+            "pattern": "^xicandidate_[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidateId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "capability_resolve",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "capabilityId": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "conditions": {
+            "items": {
+              "maxLength": 128,
+              "type": "string"
+            },
+            "maxItems": 128,
+            "type": "array"
+          },
+          "contractVersion": {
+            "maxLength": 80,
+            "type": "string"
+          },
+          "optional": {
+            "items": {
+              "maxLength": 128,
+              "type": "string"
+            },
+            "maxItems": 128,
+            "type": "array"
+          },
+          "refresh": {
+            "type": "boolean"
+          },
+          "required": {
+            "items": {
+              "maxLength": 128,
+              "type": "string"
+            },
+            "maxItems": 128,
+            "type": "array"
+          }
+        },
+        "required": [
+          "capabilityId",
+          "contractVersion",
+          "required",
+          "optional",
+          "conditions"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "capability_search",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "enum": [
+                "reviewed",
+                "official_mcp",
+                "github",
+                "community"
+              ],
+              "type": "string"
+            },
+            "maxItems": 4,
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "classify_error_patterns",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "endDate": {
+            "description": "包含结束日期，格式 YYYY-MM-DD。",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "startDate": {
+            "description": "包含起始日期，格式 YYYY-MM-DD。",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "studentId": {
+            "description": "可选学生 ID；必须与本轮绑定学生一致。",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "subject": {
+            "description": "可选学科；“全部”表示不筛选。",
+            "maxLength": 80,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "close_terminal",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "command_id": {
+            "pattern": "^xicmd_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "job_id": {
+            "pattern": "^term_[a-f0-9-]{36}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "draft_memory_summary",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多生成 1-8 条草稿",
+            "maximum": 8,
+            "minimum": 1,
+            "type": "number"
+          },
+          "runId": {
+            "description": "可选的本地 run ID；不填则使用最近一次 run",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "surface": {
+            "description": "L2 surface",
+            "enum": [
+              "chat",
+              "notebook",
+              "quiz",
+              "kb",
+              "book",
+              "partner",
+              "cowriter"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "surface"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "draft_memory_synthesis",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "number"
+          },
+          "slot": {
+            "enum": [
+              "recent",
+              "profile",
+              "scope",
+              "preferences"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "draft_teaching_book_markdown",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "description": "讲义 ID；必须显式指定，避免跨讲义读取。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "draft_teaching_book_patch",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "baseVersion": {
+            "description": "内容块当前版本。",
+            "maximum": 100000,
+            "minimum": 1,
+            "type": "number"
+          },
+          "blockId": {
+            "description": "内容块 ID；必须显式指定。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "bookId": {
+            "description": "讲义 ID；必须显式指定。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "payload": {
+            "description": "可选的新 payload，最大 12000 字符。",
+            "type": "object"
+          },
+          "reason": {
+            "description": "改写理由。",
+            "maxLength": 600,
+            "type": "string"
+          },
+          "title": {
+            "description": "可选新标题。",
+            "maxLength": 200,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookId",
+          "blockId",
+          "baseVersion"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "draft_teaching_book_selection_patch",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "baseVersion": {
+            "description": "内容块当前版本。",
+            "maximum": 100000,
+            "minimum": 1,
+            "type": "number"
+          },
+          "blockId": {
+            "description": "必须显式指定内容块 ID。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "bookId": {
+            "description": "必须显式指定讲义 ID。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "mode": {
+            "description": "局部改写或批注标记模式。",
+            "enum": [
+              "react_edit",
+              "automark"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "description": "改写理由。",
+            "maxLength": 600,
+            "type": "string"
+          },
+          "replacementText": {
+            "description": "模型生成的候选替换文本；必须先作为草稿审阅。",
+            "maxLength": 20000,
+            "type": "string"
+          },
+          "selectedText": {
+            "description": "客户端选中的原文，用于选区漂移校验。",
+            "maxLength": 20000,
+            "type": "string"
+          },
+          "selectionEnd": {
+            "description": "选区结束字符位置（不含）。",
+            "maximum": 20000,
+            "minimum": 1,
+            "type": "number"
+          },
+          "selectionStart": {
+            "description": "选区起始字符位置。",
+            "maximum": 20000,
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "bookId",
+          "blockId",
+          "baseVersion",
+          "selectionStart",
+          "selectionEnd",
+          "selectedText",
+          "replacementText"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_analyse_learning",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "includeAnswers": {
+            "description": "分析具体错因时设true，返回已保存实际作答的编号与行号；无作答只可说明证据不足。额外文字受原64KiB总预算约束。",
+            "type": "boolean"
+          },
+          "subject": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "trainingResultReference": {
+            "description": "教师从学习计划选定的作答引用，必须照原文传入。只读这次真实结果并优先返回其实际作答与观察；未知或变化时拒绝，不用其他结果替代。",
+            "pattern": "^[a-f0-9]{16}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_check_delivery",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "inspect",
+              "read"
+            ],
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                "rules": {
+                  "type": "object"
+                },
+                "version": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_compute",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 32768,
+            "minLength": 1,
+            "type": "string"
+          },
+          "input": {}
+        },
+        "required": [
+          "code",
+          "input"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_create_report",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "chart": {
+            "additionalProperties": false,
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "category",
+              "value"
+            ],
+            "type": "object"
+          },
+          "columns": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "key": {
+                  "pattern": "^[a-z][a-zA-Z0-9_]{0,47}$",
+                  "type": "string"
+                },
+                "label": {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "nullable": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "enum": [
+                    "text",
+                    "number"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "label",
+                "type"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "type": "array"
+          },
+          "outputs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "format": {
+                  "enum": [
+                    "csv",
+                    "html",
+                    "xlsx"
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format",
+                "path"
+              ],
+              "type": "object"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "type": "array"
+          },
+          "resultId": {
+            "pattern": "^xicompute_[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "resultId",
+          "title",
+          "columns",
+          "outputs"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_export_classroom",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "classroomId": {
+            "pattern": "^classroom_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "pptx",
+              "docx",
+              "pdf"
+            ],
+            "type": "string"
+          },
+          "includeAnswers": {
+            "type": "boolean"
+          },
+          "path": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "purpose": {
+            "enum": [
+              "handout",
+              "teacher_notes"
+            ],
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "classroomId",
+          "version",
+          "path",
+          "includeAnswers"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_export_paper",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "audience": {
+            "enum": [
+              "student",
+              "teacher"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "docx",
+              "pdf"
+            ],
+            "type": "string"
+          },
+          "path": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "template": {
+            "enum": [
+              "paper",
+              "answer_sheet"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "format",
+          "audience",
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_find_similar_questions",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "reference": {
+            "pattern": "^学习证据[1-9][0-9]{0,6}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "version"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_finish_classroom_plan",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_prepare_classroom_scene",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "maxLength": 3000,
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 160,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "slide",
+              "quiz"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "description"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_prepare_planned_scene",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "sceneId": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sceneId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_classroom",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "classroomId": {
+            "pattern": "^classroom_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_classroom_plan",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_material_page",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "box": {
+            "description": "可选局部补读范围：[左,上,右,下]，归一化0到1；不上传图片。",
+            "items": {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "type": "array"
+          },
+          "characterOffset": {
+            "maximum": 128000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "offset": {
+            "maximum": 2000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "page": {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "refresh": {
+            "type": "boolean"
+          },
+          "resourceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "resourceId",
+          "page"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_question",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "purpose": {
+            "enum": [
+              "answer_enrichment"
+            ],
+            "type": "string"
+          },
+          "reference": {
+            "pattern": "^题目[1-9][0-9]{0,2}$",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reference",
+          "version"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_student_context",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "offset": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "subject": {
+            "maxLength": 128,
+            "type": "string"
+          },
+          "type": {
+            "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_search_materials",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "resourceId": {
+            "maxLength": 45,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_search_questions",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "description": "原普通检索返回的nextCursor，与同一query和过滤一起使用；不能与purpose或offset混用。",
+            "pattern": "^qsearch_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
+            "type": "string"
+          },
+          "difficulty": {
+            "enum": [
+              "easy",
+              "medium",
+              "hard"
+            ],
+            "type": "string"
+          },
+          "grade": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "knowledgePoint": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "limit": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "maximum": 1000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "purpose": {
+            "enum": [
+              "answer_enrichment"
+            ],
+            "type": "string"
+          },
+          "query": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "questionType": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sourceKind": {
+            "enum": [
+              "local_bank",
+              "teacher_resource",
+              "generated"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_stage_classroom",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "scenes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "contentJson": {
+                  "maxLength": 80000,
+                  "type": "string"
+                },
+                "reference": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reference",
+                "contentJson"
+              ],
+              "type": "object"
+            },
+            "maxItems": 12,
+            "minItems": 2,
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "scenes"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_verify_equation",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "enum": [
+              "real",
+              "positive",
+              "nonnegative"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "equation"
+            ],
+            "type": "string"
+          },
+          "left": {
+            "description": "原方程左侧完整JSON AST，不能预先约分或平方",
+            "type": "object"
+          },
+          "right": {
+            "description": "原方程右侧完整JSON AST",
+            "type": "object"
+          },
+          "roots": {
+            "description": "待核验的全部候选解；无解提交空数组，不填模型信心",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 4,
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "left",
+          "right",
+          "domain",
+          "roots"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_verify_material_quote",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "offset": {
+            "maximum": 10000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "quote": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "resourceId": {
+            "maxLength": 45,
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^[a-fA-F0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resourceId",
+          "offset",
+          "version",
+          "quote"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_verify_quantity",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "expected": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "denominator": {
+                    "type": "string"
+                  },
+                  "numerator": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "numerator",
+                  "denominator"
+                ],
+                "type": "object"
+              }
+            ],
+            "description": "已推导的精确目标单位数值，或null仅计算；小数写精确分数，不默认四舍五入容差"
+          },
+          "expression": {
+            "description": "带单位的完整数量表达式AST；保留原单位及给定常数",
+            "type": "object"
+          },
+          "kind": {
+            "enum": [
+              "quantity"
+            ],
+            "type": "string"
+          },
+          "targetUnit": {
+            "description": "目标单位ASCII表达式，如Pa、km/h、kg/m^3、N；1表示无量纲",
+            "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "expression",
+          "targetUnit",
+          "expected"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_verify_solution",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "enum": [
+              "real",
+              "positive",
+              "nonnegative"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "solution"
+            ],
+            "type": "string"
+          },
+          "left": {
+            "description": "原方程左侧完整JSON AST，不能预先约分或平方",
+            "type": "object"
+          },
+          "right": {
+            "description": "原方程右侧完整JSON AST",
+            "type": "object"
+          },
+          "roots": {
+            "description": "待核验的全部候选解；无解提交空数组，不填模型信心",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 4,
+            "type": "array"
+          },
+          "steps": {
+            "description": "按推导顺序提交每步完整方程，不是独立计算列表。原定义域自动继承。",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "left": {
+                  "type": "object"
+                },
+                "relation": {
+                  "description": "equivalent等价；candidate_expansion显式可能增根的候选扩展；original_filter按原式代回筛除非原解。",
+                  "enum": [
+                    "equivalent",
+                    "candidate_expansion",
+                    "original_filter"
+                  ],
+                  "type": "string"
+                },
+                "right": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "left",
+                "right",
+                "relation"
+              ],
+              "type": "object"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "left",
+          "right",
+          "domain",
+          "roots",
+          "steps"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_web_answer",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "authorize",
+              "propose",
+              "status"
+            ],
+            "type": "string"
+          },
+          "analysisQuote": {
+            "maxLength": 12000,
+            "type": "string"
+          },
+          "analysisText": {
+            "maxLength": 12000,
+            "type": "string"
+          },
+          "answerQuote": {
+            "maxLength": 12000,
+            "type": "string"
+          },
+          "answerText": {
+            "maxLength": 12000,
+            "type": "string"
+          },
+          "grantId": {
+            "type": "string"
+          },
+          "observationId": {
+            "type": "string"
+          },
+          "origins": {
+            "items": {
+              "maxLength": 200,
+              "type": "string"
+            },
+            "maxItems": 5,
+            "minItems": 1,
+            "type": "array"
+          },
+          "questionQuote": {
+            "maxLength": 12000,
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "reference": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "reference",
+                "version"
+              ],
+              "type": "object"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "type": "array"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "environment_inspect",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "environment_repair",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "expectedHash": {
+            "anyOf": [
+              {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recipe": {
+            "enum": [
+              "workspace_text",
+              "permission_runtime"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "expectedHash"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "exec_command",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "cmd": {
+            "maxLength": 16384,
+            "minLength": 1,
+            "type": "string"
+          },
+          "timeout": {
+            "maximum": 120,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "workdir": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "cmd"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "explore_attached_sources",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "attachmentIds": {
+            "description": "可选附件 ID 白名单；只允许当前记录已经挂载的附件。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
+          "limit": {
+            "description": "最多返回 1-5 个来源片段。",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "number"
+          },
+          "query": {
+            "description": "要在脱敏附件片段中探索的关键词或问题；为空时只返回有限来源预览。",
+            "maxLength": 800,
+            "type": "string"
+          },
+          "studentId": {
+            "description": "可选学生 ID；必须与当前绑定学生一致。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "extension_inspect",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "extension_invoke",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "extensionId": {
+            "pattern": "^[a-z][a-z0-9_.-]{0,79}$",
+            "type": "string"
+          },
+          "hook": {
+            "enum": [
+              "context.transform",
+              "event.observe"
+            ],
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 8000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "extensionId",
+          "hook",
+          "text"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "extension_prepare",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "artifactId": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "artifactId",
+          "revision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "find_education_tools",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "generate_research_outline",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多使用的本地知识切片数",
+            "maximum": 8,
+            "minimum": 1,
+            "type": "number"
+          },
+          "query": {
+            "description": "研究主题或教研问题",
+            "maxLength": 240,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_review_queue",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多返回 1-20 个复习任务。",
+            "maximum": 20,
+            "minimum": 1,
+            "type": "number"
+          },
+          "studentId": {
+            "description": "学生 ID；为空时使用本轮已解析或当前选中的学生。",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "timezone": {
+            "description": "仅用于展示元数据，不改变 epoch due 判断。",
+            "maxLength": 80,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_student_profile",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "studentId": {
+            "description": "可选学生 ID。为空时使用本轮已解析或当前选中的学生。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_memory_governance",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_memory_graph",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 200,
+            "minimum": 1,
+            "type": "number"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_memory_summary",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "includeDeleted": {
+            "description": "是否包含已禁用/删除条目；默认 false",
+            "type": "boolean"
+          },
+          "surface": {
+            "description": "DeepTutor L2 surface：chat/notebook/quiz/kb/book/partner/cowriter",
+            "enum": [
+              "chat",
+              "notebook",
+              "quiz",
+              "kb",
+              "book",
+              "partner",
+              "cowriter"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_memory_synthesis",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "slot": {
+            "enum": [
+              "recent",
+              "profile",
+              "scope",
+              "preferences"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_memory_trace",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多返回事件数，1-50。",
+            "maximum": 50,
+            "minimum": 1,
+            "type": "number"
+          },
+          "runId": {
+            "description": "可选 run ID；为空时读取最近一次本地 run。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_teaching_book",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "description": "可选讲义 ID；未指定时按查询匹配最近讲义。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "query": {
+            "description": "可选页面/讲义查询关键词。",
+            "maxLength": 240,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_attachment_metadata",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_terminals",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    {
+      "name": "load_tools",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "groups": {
+            "description": "工具族：student/learning/knowledge/practice/attachments/notebook/book/memory。最多 4 组。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 4,
+            "type": "array"
+          },
+          "tools": {
+            "description": "可选的明确工具名；只会返回当前 route 已允许的工具。最多 12 个。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 12,
+            "type": "array"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "mastery_assess",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "feedback": {
+            "description": "简短证据说明。",
+            "maxLength": 600,
+            "type": "string"
+          },
+          "knowledgePointId": {
+            "description": "知识点 ID。",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "passed": {
+            "description": "解释是否足以证明掌握。",
+            "type": "boolean"
+          },
+          "studentId": {
+            "description": "学生 ID。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [
+          "studentId",
+          "knowledgePointId",
+          "passed"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "mastery_build",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "description": "replace 或 append。",
+            "enum": [
+              "replace",
+              "append"
+            ],
+            "type": "string"
+          },
+          "modules": {
+            "description": "模块数组，每个模块包含 name 和 knowledgePoints。",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "studentId": {
+            "description": "学生 ID。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [
+          "studentId",
+          "modules"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "mastery_grade",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "answer": {
+            "description": "老师或学生提交的选项答案。",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "questionId": {
+            "description": "可选题目 ID；省略时使用当前绑定学生最近一条已回答题目。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "mastery_quiz",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "knowledgePointId": {
+            "description": "可选知识点 ID；为空时自动选择最需要练习的点。",
+            "maxLength": 120,
+            "type": "string"
+          },
+          "questionCount": {
+            "description": "可选连续题数，1-5；每次只展示当前题，评分后可继续读取下一题。",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "number"
+          },
+          "studentId": {
+            "description": "学生 ID。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [
+          "studentId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "mastery_status",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "studentId": {
+            "description": "可选学生 ID。为空时使用本轮已解析或当前选中的学生。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_browser",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "enum": [
+              "navigate",
+              "snapshot",
+              "extract",
+              "click",
+              "type",
+              "select",
+              "key",
+              "scroll",
+              "wait",
+              "tabs",
+              "show",
+              "close",
+              "screenshot"
+            ],
+            "type": "string"
+          },
+          "amount": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "direction": {
+            "enum": [
+              "up",
+              "down"
+            ],
+            "type": "string"
+          },
+          "key": {
+            "enum": [
+              "Enter",
+              "Escape",
+              "Tab",
+              "Backspace",
+              "Delete",
+              "Space",
+              "ArrowDown",
+              "ArrowUp"
+            ],
+            "type": "string"
+          },
+          "newTab": {
+            "type": "boolean"
+          },
+          "ref": {
+            "maximum": 100000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "snapshotId": {
+            "type": "string"
+          },
+          "tabId": {
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 4000,
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2048,
+            "type": "string"
+          },
+          "value": {
+            "maxLength": 1000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_edit_text",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "checks": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                "rules": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "path",
+                "rules"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
+          "edits": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "newText": {
+                  "maxLength": 65536,
+                  "type": "string"
+                },
+                "oldText": {
+                  "maxLength": 65536,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "oldText",
+                "newText"
+              ],
+              "type": "object"
+            },
+            "maxItems": 16,
+            "minItems": 1,
+            "type": "array"
+          },
+          "path": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "edits"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_list_attachments",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_list_materials",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "offset": {
+            "maximum": 10000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "required": [
+          "query",
+          "offset"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_read_attachment",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "lineCount": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "revision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "startLine": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "revision"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_read_document",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "lineCount": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "path": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "startLine": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_read_material",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "characterOffset": {
+            "maximum": 64000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "offset": {
+            "maximum": 10000000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "resourceId": {
+            "maxLength": 45,
+            "type": "string"
+          },
+          "restoredSource": {
+            "additionalProperties": false,
+            "properties": {
+              "batchId": {
+                "maxLength": 44,
+                "type": "string"
+              },
+              "bodyVersion": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "chunkId": {
+                "maxLength": 42,
+                "type": "string"
+              },
+              "finalSha": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "offset": {
+                "maximum": 0,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "ordinal": {
+                "maximum": 100,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "page": {
+                "maximum": 10000,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "resourceId": {
+                "maxLength": 45,
+                "type": "string"
+              },
+              "schemaVersion": {
+                "enum": [
+                  "xiaozhi.material-ai-text-source.v1"
+                ],
+                "type": "string"
+              },
+              "version": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "resourceId",
+              "version",
+              "offset",
+              "chunkId",
+              "bodyVersion",
+              "batchId",
+              "ordinal",
+              "page",
+              "finalSha"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "resourceId",
+          "offset"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "office_view_public_image",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "purpose": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "purpose"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "plan_teaching_book",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "description": "必须显式指定讲义 ID。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "limit": {
+            "description": "知识片段上限，1-8。",
+            "maximum": 8,
+            "minimum": 1,
+            "type": "number"
+          },
+          "query": {
+            "description": "可选章节规划/来源探索主题。",
+            "maxLength": 240,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "prepare_education_tool",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "tool": {
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "query_knowledge_graph",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多返回节点数，不能超过当前 route 的 graphNodeLimit。",
+            "maximum": 20,
+            "minimum": 1,
+            "type": "number"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "read",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_effect_receipt",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "effectId": {
+            "pattern": "^xieffect_[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "limit": {
+            "maximum": 24000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "maximum": 1048576,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_teacher_request",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "maximum": 4000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "offset": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sourceVersion": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "refresh_teaching_book_health",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "description": "讲义 ID；必须显式指定。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookId"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "render_learning_mermaid",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多展示的节点数",
+            "maximum": 20,
+            "minimum": 1,
+            "type": "number"
+          },
+          "title": {
+            "description": "图标题",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "report_goal_progress",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "nextStep": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "readyForReview": {
+            "type": "boolean"
+          },
+          "summary": {
+            "maxLength": 2000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary",
+          "nextStep",
+          "readyForReview"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "resolve_student_reference",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "studentName": {
+            "description": "老师提到的学生显示名，例如“小A”。为空时从任务文本中解析。",
+            "maxLength": 40,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_learning_records",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "keyword": {
+            "description": "可选检索关键词，例如“方程”“计算粗心”。",
+            "maxLength": 80,
+            "type": "string"
+          },
+          "limit": {
+            "description": "最多读取记录数，不能超过当前 route 的 recordLimit。",
+            "maximum": 20,
+            "minimum": 1,
+            "type": "number"
+          },
+          "studentId": {
+            "description": "可选学生 ID。为空时使用本轮已解析或当前选中的学生。",
+            "maxLength": 120,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_question_notebook",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookmarked": {
+            "description": "是否只返回已收藏题目。",
+            "type": "boolean"
+          },
+          "categoryId": {
+            "description": "可选题目分类 ID。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "limit": {
+            "description": "最多返回题目数，1-20。",
+            "maximum": 20,
+            "minimum": 1,
+            "type": "number"
+          },
+          "offset": {
+            "description": "分页偏移量。",
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "number"
+          },
+          "query": {
+            "description": "题目收藏/分类检索关键词。",
+            "maxLength": 240,
+            "type": "string"
+          },
+          "sourceKind": {
+            "description": "题目来源类型。",
+            "enum": [
+              "local_bank",
+              "teacher_resource",
+              "generated"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_similar_questions",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "knowledgePoint": {
+            "description": "知识点，例如“一次函数”。",
+            "maxLength": 80,
+            "type": "string"
+          },
+          "limit": {
+            "description": "最多返回题目数，1-12。",
+            "maximum": 12,
+            "minimum": 1,
+            "type": "number"
+          },
+          "query": {
+            "description": "检索查询，例如“一次函数 k 值 图像”。为空时使用老师原始任务。",
+            "maxLength": 160,
+            "type": "string"
+          },
+          "subject": {
+            "description": "学科，例如“数学”。",
+            "maxLength": 40,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_teacher_knowledge",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "description": "最多返回知识片段数，不能超过当前 route 的 knowledgeLimit。",
+            "maximum": 12,
+            "minimum": 1,
+            "type": "number"
+          },
+          "query": {
+            "description": "知识库检索查询。为空时使用老师原始任务。",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "name": "skill_create",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "dependencies": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "capabilityId": {
+                  "type": "string"
+                },
+                "conditions": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 32,
+                  "type": "array"
+                },
+                "contractVersion": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "capabilityId",
+                "contractVersion",
+                "required"
+              ],
+              "type": "object"
+            },
+            "maxItems": 32,
+            "type": "array"
+          },
+          "description": {
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          },
+          "document": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 64,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "permissionRequirements": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 32,
+            "type": "array"
+          },
+          "version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "document",
+          "version",
+          "dependencies",
+          "permissionRequirements"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_plan",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "basisCallIds": {
+            "description": "只复制本轮工具结果中明确返回的planBasisCallId，宿主会核对实际已提交回执；不要用模型侧tool_call_id或猜ID。无工具依据用空数组。",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8,
+            "type": "array"
+          },
+          "expectedRevision": {
+            "description": "首次为0，后续必须使用上次成功回执revision。",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "reason": {
+            "description": "可给教师看的计划建立/调整原因，不提供私有推理。",
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "schemaVersion": {
+            "const": "xiaozhi.plan.v2",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "dependsOn": {
+                  "description": "本列表内前置步骤ID。",
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 7,
+                  "type": "array"
+                },
+                "id": {
+                  "description": "同一步骤更新/排序时保持ID；删除后不复用。",
+                  "pattern": "^[a-z][a-z0-9_-]{0,47}$",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "text": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "text",
+                "status",
+                "dependsOn"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "expectedRevision",
+          "reason",
+          "basisCallIds",
+          "steps"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_task_plan",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "capabilityRequirements": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "capabilityId": {
+                  "maxLength": 160,
+                  "type": "string"
+                },
+                "conditions": {
+                  "items": {
+                    "maxLength": 128,
+                    "type": "string"
+                  },
+                  "maxItems": 128,
+                  "type": "array"
+                },
+                "contractVersion": {
+                  "maxLength": 80,
+                  "type": "string"
+                },
+                "optional": {
+                  "items": {
+                    "maxLength": 128,
+                    "type": "string"
+                  },
+                  "maxItems": 128,
+                  "type": "array"
+                },
+                "required": {
+                  "items": {
+                    "maxLength": 128,
+                    "type": "string"
+                  },
+                  "maxItems": 128,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "capabilityId",
+                "contractVersion",
+                "required",
+                "optional",
+                "conditions"
+              ],
+              "type": "object"
+            },
+            "maxItems": 32,
+            "type": "array"
+          },
+          "expectedRevision": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "planningLevel": {
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "type": "integer"
+          },
+          "reason": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "requirementsVersion": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "schemaVersion": {
+            "enum": [
+              "xiaozhi.task-plan.v3"
+            ],
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "dependsOn": {
+                  "items": {
+                    "maxLength": 32,
+                    "type": "string"
+                  },
+                  "maxItems": 7,
+                  "type": "array"
+                },
+                "id": {
+                  "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "human",
+                    "file",
+                    "attachment",
+                    "web",
+                    "image",
+                    "saved_text",
+                    "saved_office",
+                    "saved_bundle",
+                    "saved_questions"
+                  ],
+                  "type": "string"
+                },
+                "reported": {
+                  "enum": [
+                    "pending",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "target": {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "text": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "text",
+                "dependsOn",
+                "reported",
+                "kind"
+              ],
+              "type": "object"
+            },
+            "maxItems": 8,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "expectedRevision",
+          "requirementsVersion",
+          "reason",
+          "steps"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "write_stdin",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "chars": {
+            "maxLength": 16384,
+            "minLength": 1,
+            "type": "string"
+          },
+          "command_id": {
+            "pattern": "^xicmd_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "job_id": {
+            "pattern": "^term_[a-f0-9-]{36}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id",
+          "chars"
+        ],
+        "type": "object"
+      }
+    }
+  ],
+  "skippedNames": [
+    "education_analyze_buoyancy",
+    "education_propose_classroom_outline",
+    "education_propose_learning_change",
+    "education_propose_original_question",
+    "education_propose_original_questions",
+    "education_propose_questions",
+    "education_save_classroom_scene",
+    "office_create_document",
+    "office_create_science_figure",
+    "office_create_text",
+    "office_deliver_files"
+  ],
+  "boundary": "Static metadata only. Ambiguous or dynamic schemas are omitted; actual per-run definitions and authority remain canonical."
+}
