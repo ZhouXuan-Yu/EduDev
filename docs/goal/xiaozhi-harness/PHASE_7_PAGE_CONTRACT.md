@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 W2/W3 原通知迟到和会话成果
+
+同一任务新运行持有时释放来自原 SQLite 日志的旧停止通知，独立会话 B 前台活跃时释放旧任务通知。新运行和另一会话不继承旧状态。实际回复保存、消息到 Run 的关联和冷启动读回补证。另有旧 Job 迟到完成和冷启 xterm 进度的独立验证。完整 Gate 7 继续沿原交互、两尺寸与证据合同。[实页证据](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json)
+
 ## 2026-11-19 三页面部分空态
 
 W1、A1、C1 的部分读取子场景已实现。独立复验用真实页面切换过滤和能力搜索，在两视口核对完整空、部分非空、部分空和刷新恢复。此项沿用已有的 W1 查询失败、冷启和真实停止证据。全阶段仍按冻结版本逐项验收。[实页对照](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json)

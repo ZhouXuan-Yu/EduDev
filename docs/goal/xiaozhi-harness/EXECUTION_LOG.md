@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 旧通知延迟与主线组合验证
+
+本批新增可重复的 Electron 回归，实际延迟转发旧停止和任务事件，快照和持久日志补读沿原生产行为；生产业务逻辑沿用已有实现。与知识库多栏修复 `dcaaafe` 同步后重新构建，提交该组合构建生成的能力清单。未调整锁文件、数据模式或模型配置。组件与知识库回归及实页记录见证据。该验证不产生可比较的前后性能样本，回滚测试及文档可使用普通 Git revert；能力清单随实际源码重建。[证据](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json)
+
 ## 2026-11-19 部分结果空态修复
 
 三个现有 renderer 消费原 `partial` 和 `items`。只在完整读取、没有可读结果时展示确定空态，部分空页复用原状态区域和刷新操作。主进程字节一致，原 IPC 和查询次数维持原行为。此处没有可比较的模型时延；实际读取阶段两版均新增 0 次模型请求。普通 Git revert 可回退页面和测试提交，无数据迁移。npm audit 29 项，低 8、中 13、高 8、严重 0，锁文件一致。[对照与失败样本](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json)

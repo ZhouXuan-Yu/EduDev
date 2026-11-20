@@ -1,0 +1,113 @@
+{
+  "status": "PASS_SCOPED",
+  "rows": [
+    "W2",
+    "W3",
+    "A2"
+  ],
+  "sourceParent": "dcaaafe8a48db22786676a12c43be334837a914c",
+  "combinedBuild": {
+    "mainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5",
+    "rendererEntrySha256": "f43f1370904e8e5bff08ef24da8ae06b0e51ac38fb6a6529548f9cba131467b5",
+    "coreToolManifestSha256": "e5a0cd33e38915eaf6f1d044b43c16bf5dbe6d613b568e03726995461fd4c787",
+    "sourceParityFiles": 3203,
+    "buildRoot": "test-results/harness-w3-main-dcaaafe/out"
+  },
+  "delayedEvents": [
+    {
+      "viewport": "1366x768",
+      "checks": "5/5",
+      "reviewer": "root",
+      "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-MbFaM6/evidence/delayed-events-report.json",
+      "sha256": "67e82caecb39c45214bae39e2af4a3db1f3b2e2a870beba5c07878db32828350"
+    },
+    {
+      "viewport": "1920x1080",
+      "checks": "5/5",
+      "reviewer": "Terra High",
+      "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-kU3w8y/evidence/delayed-events-report.json",
+      "sha256": "956a536b1eecc7a551a883c4655a92007458fc529c60982586f17b76b31f3b22"
+    }
+  ],
+  "delayedEventsScope": [
+    "实际生产通知与 SQLite 行逐字段相同，SHA256 重算一致，preload 已实际收到迟到通知",
+    "新 Run 运行中继续显示停止控件，原 binding 和 revision 保持；另一会话当前 Task 和正文未受旧 Task 通知影响",
+    "从实际回复菜单保存两份 Markdown，Artifact 通过助理消息关联各自 Run",
+    "冷启动后 SQLite 关联、文件摘要及原对话保持一致，模型重放 0，页面错误 0"
+  ],
+  "retainedFailures": [
+    {
+      "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-rf3PNt/evidence/delayed-events-report.json",
+      "sha256": "9836d2b932decb1e7573df9d748d6abcb4757379926f7a5843adbd18c66420ff",
+      "viewport": "1366x768"
+    },
+    {
+      "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-sdBr8X/evidence/delayed-events-report.json",
+      "sha256": "b07d3255df20f89a861634ba23a1c91f446100a9a34e5bc110dfe0aa5a431275",
+      "viewport": "1920x1080"
+    }
+  ],
+  "retainedFailureScope": "首次组合复验从已打开的工作台直接切换历史入口时，等待目标测试控件超时。截图可见目标会话标题。脚本改用明确关闭并等待工作台隐藏、再定位历史面板，保留原断言且加入文件摘要，双尺寸复跑通过。未修改导航生产源码。",
+  "nativePty": {
+    "productBase": "8af1926",
+    "mainSha256": "bfd26e6c62847a37d81ffc3aebddf70d0c10526c68057aa7c2200668bedb70e5",
+    "reviewer": "Terra High",
+    "live": {
+      "path": "%TEMP%/phase7-w3-late-current-f292bc6d/report.json",
+      "sha256": "c9298e4f34adc26969c6004f6a917f9af28be8df58e6ef468ed166a2785ab738"
+    },
+    "cold": {
+      "path": "%TEMP%/phase7-w3-cold-read-a633d97a/report.json",
+      "sha256": "87ef63a090c31fe334b618784ad6cc2df1ed216892658ccce416317933671da8"
+    },
+    "screenshot": {
+      "path": "%TEMP%/phase7-w3-cold-read-a633d97a/old-job-cold.png",
+      "sha256": "40e3e7f6bc00d6d9acad6b92bb57b9b611fb553569a5cfaa1bde3bff99498973"
+    },
+    "oldJobOutputSeq": 4,
+    "oldJobOutcome": "completed; exit 0; cleanup complete; original Job origin preserved",
+    "originalFileHash": "a491a636bb1c0e184abde6d61ed861c9912754cdecdb7ba720c12ce0f1b2df8c",
+    "scope": "旧 Job 跨新 Run 完成；原 xterm、typed 输出与 SQLite 输出包含原进度。另一会话无旧终端入口。冷读 SQLite Job/Run 和原输出文件不变，模型重放 0。"
+  },
+  "workspaceScope": {
+    "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-crggeh/evidence/workspace-scope-probe.json",
+    "sha256": "49c3c383acba82fef4de7550c5b33085354b070b25357716e04a7d60508141a9",
+    "checks": "2/2",
+    "scope": "实页验证已有绑定会话尝试换教学工作目录被拒，原选择器调用数为 0，原范围、审批和 Run 不变。新会话选择不同目录后，同操作创建独立待审批记录。测试目录响应由夹具提供，未验证原生目录选择器物理交互或此场景冷读。"
+  },
+  "checks": [
+    {
+      "command": "npm.cmd run build -- --outDir test-results/harness-w3-main-dcaaafe/out",
+      "result": "PASS，含 TypeScript"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/document-structure-boundaries.mjs",
+      "result": "36/36"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1366x768 / 1920x1080（分开运行）",
+      "result": "两尺寸各 5/5"
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "result": "退出 1；低 8、中 13、高 8、严重 0；锁文件未改"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "paidCalls": 0,
+  "ledgerUsed": 3,
+  "fixedMatrix": "88/89",
+  "pending": [
+    "Gate 7 完整独立页面验收",
+    "原生鼠标拖动和最大化还原",
+    "QG-09 干净 Windows 安装卸载",
+    "正式 32 任务模型对照与 Phase 8 最终独立验收"
+  ]
+}

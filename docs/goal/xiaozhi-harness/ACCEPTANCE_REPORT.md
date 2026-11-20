@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-20 W2/W3 旧事件和后台 Job 复验
+
+已实现。测试仅延迟真实主进程已经持久化的旧通知，核对完整载荷、SQLite 内容摘要和 preload 实际接收。旧停止通知到达时，新运行保留停止按钮和原绑定。旧任务通知在另一会话前台到达时，正文和任务保持各自归属。实际保存的两份 Markdown 按助理消息回查各自 Run，冷启动后保留两套关联。
+
+独立 Terra 另以原受控终端验证旧 Job 在同一任务的下一轮活跃时完成。冷启动后，实际 xterm 页面可见旧进度，和 typed 读取及 SQLite 对应输出一致；原文件摘要、Job、Run 不变。结果为 W2/W3 指定实页场景。[构建、来源和结果](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json)
+
 ## 2026-11-19 部分读取与真实空态
 
 已实现。相同的实际 Electron 和 SQLite 测试在旧版的三个页面、两种视口均复现误导空态。修复后独立验收确认有效行和未知计数保留、部分空页提示刷新、测试夹具恢复后正常空态出现。原任务、Run、审批与扩展记录逐行一致，读取新增模型请求和页面错误均为零。本条为适用状态子场景。[构建身份、截图和对照](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json)
