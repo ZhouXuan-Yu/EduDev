@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "dac290b15a8745ff7b1187d5aa91994b660f9e969e4d4ee9a335cb45f1b502e9",
+  "sourceHash": "075031d2183a94de4d65d344c1ee09d3d5c1887e91076c54a21fdf723f87631e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -260,7 +260,7 @@
     },
     {
       "file": "src/main/education/paper-selection.ts",
-      "sha256": "ed21d8efc2b7a1ea3f5b8c5acaf1de179ae9ea649bcf99cc25a901a5bf575927"
+      "sha256": "96a1d593d9c4712227570fcd0be3bdd897dae24a8778ca77db9c0258b0d56f3a"
     },
     {
       "file": "src/main/education/paper-table-blocks.ts",
@@ -2241,6 +2241,10 @@
     {
       "file": "src/shared/question-facts.ts",
       "sha256": "e6ffbb0e555873d873238013a17d4d1ef555d17e02b178cd23c3dcc79a2dbe0a"
+    },
+    {
+      "file": "src/shared/question-grade.ts",
+      "sha256": "433c27c666fc736f50afbaf3ceafa49600936ea3b6e55caf2989176edeb71404"
     },
     {
       "file": "src/shared/question-identity.ts",

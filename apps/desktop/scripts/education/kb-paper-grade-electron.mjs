@@ -1,0 +1,167 @@
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
+import {_electron as electron} from 'playwright';
+import {productEntry} from '../product-navigation.mjs';
+
+const previous=JSON.parse(fs.readFileSync('test-results/kb-grade-search-after-electron.log','utf8').trim().split(/\r?\n/).at(-1));
+assert(previous.ok && previous.baseline===false);
+const source=path.join(fs.realpathSync(previous.root),'data');
+assert(path.relative(fs.realpathSync(os.tmpdir()), source).startsWith('edudev-grade-search-'));
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'edudev-paper-grade-'));
+const data=path.join(root,'data');
+fs.cpSync(source,data,{recursive:true,filter:file=>!/(^app\.db(?:-wal|-shm)?$|\.lock$)/.test(path.basename(file))});
+const file=path.join(data,'app.db');
+const original=new DatabaseSync(path.join(source,'app.db'),{readOnly:true});
+try {original.exec("VACUUM INTO '"+file.replaceAll("'","''")+"'");} finally {original.close();}
+const writer=new DatabaseSync(file);
+const questionRows=[];
+try {
+  for(const {id,local_path} of writer.prepare('SELECT id,local_path FROM teacher_resources').all()){
+    const relative=path.relative(source,local_path);
+    assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
+    writer.prepare('UPDATE teacher_resources SET local_path=? WHERE id=?').run(path.join(data,relative),id);
+  }
+  for(const {term} of previous.results){
+    const rows=writer.prepare('SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND knowledge_point=?').all('物理','高三',term);
+    assert.equal(rows.length,1);
+    questionRows.push(rows[0]);
+  }
+} finally {writer.close();}
+
+const read=(query,...args)=>{
+  const db=new DatabaseSync(file,{readOnly:true});
+  try{return db.prepare(query).all(...args);}finally{db.close();}
+};
+const paid=()=>read('SELECT COALESCE(SUM(calls),0) total FROM material_ai_batches')[0].total;
+const beforeCalls=paid();
+const build=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out');
+const baseline=process.argv.includes('--baseline');
+const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:''};
+for(const key of ['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'])delete env[key];
+const title='年级别名原题验证 '+randomUUID().slice(0,8);
+let app,page;
+async function launch(){
+  app=await electron.launch({args:[path.join(build,'main/index.js'),'--user-data-dir='+path.join(root,'profile')],env,timeout:90000});
+  page=await app.firstWindow();
+  page.setDefaultTimeout(30000);
+}
+async function automatic(){
+  await productEntry(page,'teaching').click();
+  await page.getByTestId('hub-entry-paper').click();
+  const entry=page.getByTestId('paper-entry-automatic');
+  await page.getByTestId('paper-basket-workspace').waitFor();
+  if(!await entry.isVisible()){
+    await page.getByTestId('paper-basket-new').click();
+    const dialog=page.getByTestId('paper-basket-create-dialog');
+    await dialog.getByTestId('paper-practice-subject').fill('物理');
+    await dialog.getByTestId('paper-practice-grade').fill('高三');
+    await dialog.getByTestId('paper-basket-create').click();
+    await dialog.waitFor({state:'hidden'});
+  }
+  if(!await entry.isVisible())await page.getByRole('button',{name:'更多筛选',exact:true}).click();
+  await entry.click();
+  await page.getByTestId('paper-title').waitFor();
+}
+async function draft(grade,questions){
+  const rows=page.getByTestId('paper-section');
+  while(await rows.count()>questions.length)await rows.last().getByRole('button',{name:'移除此部分'}).click();
+  for(const [key,value] of Object.entries({title,subject:'物理',grade,duration:'20',total:'10'}))await page.getByTestId('paper-'+key).fill(value);
+  for(const [index,q] of questions.entries()){
+    const row=rows.nth(index);
+    for(const [key,value] of Object.entries({label:'原题 '+(index+1),type:q.question_type,count:'1',points:'5',kp:q.knowledge_point})){
+      await row.getByTestId('paper-section-'+key).fill(value);
+    }
+    await row.getByTestId('paper-section-difficulty').selectOption(q.difficulty);
+  }
+  const count=read('SELECT id FROM ai_confirmation_items WHERE title=?',title).length;
+  const started=performance.now();
+  await page.getByTestId('paper-generate').click();
+  await page.getByTestId('paper-review').waitFor();
+  const records=read('SELECT * FROM ai_confirmation_items WHERE title=? ORDER BY rowid',title);
+  assert.equal(records.length,count+1);
+  const record=records.at(-1),payload=JSON.parse(record.payload_json);
+  return {record,payload,milliseconds:Math.round(performance.now()-started)};
+}
+function assertOriginals(items,questions){
+  assert.deepEqual(items.map(item=>item.question.id),questions.map(q=>q.id));
+  assert(items.every(item=>item.question.grade==='高三'&&item.question.sourceKind==='local_bank'&&item.points===5));
+}
+
+try{
+  await launch();
+  await automatic();
+  const natural=await draft('高中三年级',questionRows);
+  assert.equal(natural.payload.selection.items.length,0);
+  assert.equal(natural.payload.selection.excluded.source_unavailable,baseline?0:2);
+  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),true);
+  await page.getByRole('button',{name:'返回修改蓝图',exact:true}).click();
+  const controlled=await page.evaluate(async title=>{
+    const records=[];
+    for(const [index,stem,answer,analysis] of [[1,'两个大小各 5 N 的同向力的合力是多少？','10 N','同向力的大小相加。'],[2,'物体静止时的速度是多少？','0 m/s','静止时位置不随时间变化。']]){
+      const saved=await window.omniEdu.createQuestionBankItem({subject:'物理',grade:'高三',knowledgePoint:title+' '+index,
+        questionType:'简答题',difficulty:'easy',stem,answer,analysis,sourceTitle:'教师录入测试题',sourceKind:'local_bank',tags:[]});
+      records.push({id:saved.id,question_type:saved.questionType,knowledge_point:saved.knowledgePoint,difficulty:saved.difficulty});
+    }
+    return records;
+  },title);
+  const precise=await draft(baseline?'高三':'高二',controlled);
+  assert.equal(precise.payload.selection.items.length,baseline?2:0);
+  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),!baseline);
+  await page.getByRole('button',{name:'返回修改蓝图',exact:true}).click();
+  const alias=await draft('高中三年级',controlled);
+  assert.equal(alias.payload.input.blueprint.grade,'高中三年级');
+  assert.equal(alias.payload.selection.items.length,baseline?0:2);
+  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),baseline);
+  const report={baseline,root,originals:alias.payload.selection.items.length,composeMs:alias.milliseconds,
+    naturalScanned:natural.payload.selection.scanned,naturalSourceUnavailable:natural.payload.selection.excluded.source_unavailable,paidCalls:0};
+  if(!baseline){
+    assertOriginals(alias.payload.selection.items,controlled);
+    assert.equal(alias.record.status,'pending');
+    await page.getByTestId('paper-confirm').click();
+    await page.getByTestId('paper-confirmed').waitFor();
+    const actual=read('SELECT status,result_json FROM ai_confirmation_items WHERE id=?',alias.record.id)[0];
+    assert.equal(actual.status,'confirmed');
+    const basket=await page.evaluate(async ({sessionId,blueprint,questionIds})=>{
+      const api=window.omniEdu,base={schemaVersion:'xiaozhi.paper-basket.v2',sessionId};
+      const result=await api.createPaperBasketV2({...base,requestId:crypto.randomUUID(),blueprint});
+      if(!result.ok)throw Error(result.error);
+      let view=result.value;
+      const identity={...base,basketId:view.id};
+      const sections=[];
+      for(const [index,questionId] of questionIds.entries()){
+        const candidate=await api.readPaperBasketCandidateV2({...identity,questionId});
+        if(!candidate.ok)throw Error(candidate.error);
+        const sectionId=blueprint.sections[index].id;
+        sections.push({expected:sectionId,options:candidate.value.matchingSectionIds});
+        const added=await api.mutatePaperBasketV2({...identity,requestId:crypto.randomUUID(),expectedRevision:view.revision,
+          operation:{type:'add',questionId,sectionId,expectedSourceVersion:candidate.value.contentVersion}});
+        if(!added.ok)throw Error(added.error);
+        view=added.value;
+      }
+      return {id:view.id,sections,entries:view.entries.length};
+    },{sessionId:alias.record.session_id,blueprint:alias.payload.input.blueprint,questionIds:controlled.map(q=>q.id)});
+    assert.equal(basket.entries,2);
+    for(const section of basket.sections)assert.deepEqual(section.options,[section.expected]);
+    await app.close();
+    app=undefined;
+    await launch();
+    const cold=await page.evaluate(({sessionId,id})=>window.omniEdu.reviewPaper({schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId,id}),
+      {sessionId:alias.record.session_id,id:alias.record.id});
+    assert(cold.ok && cold.value.state==='confirmed' && cold.value.sourceCurrent);
+    assertOriginals(cold.value.selection.items,controlled);
+    assert.deepEqual(read('SELECT status,result_json FROM ai_confirmation_items WHERE id=?',alias.record.id)[0],actual);
+    report.basketEntries=basket.entries;
+    report.coldReadback=true;
+  }
+  assert.equal(paid(),beforeCalls);
+  for(const question of questionRows)assert.deepEqual(read('SELECT * FROM question_bank_items WHERE id=?',question.id)[0],question);
+  console.log(JSON.stringify({ok:true,...report}));
+} catch(error){
+  console.error(JSON.stringify({ok:false,baseline,root,error:String(error)}));
+  await page?.screenshot({path:path.join(root,'failure.png')}).catch(()=>{});
+  throw error;
+} finally {await app?.close();}

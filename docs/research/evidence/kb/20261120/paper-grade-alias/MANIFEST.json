@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "c71eab12bfd6bfd83abd271f2946019609b07b954dc665c6fbeb00050dbb64aa"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "37df59dfdc185bb6502c4ec2febc6290fd22427c21ddd4f3cdbe679cfd34c358"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "5cb7b0e83e813946754ae6a0a5455cbcad5db21eac492152036e1904e6579758"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "3e7903bf628550ef4a997b49b899afe104596ca84e45e363e8a2724742521fd9"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-paper-grade-electron.mjs",
+      "sha256": "ae535cffebd76bd7c2898f0f12945168956f2661c5c70582ba7bfa24d42f5c5d"
+    },
+    {
+      "path": "apps/desktop/scripts/education/paper-basket-boundaries.mjs",
+      "sha256": "887acac933f1be44ae484979f6085bd061efc318cb896ccd96a78831df92939d"
+    },
+    {
+      "path": "apps/desktop/scripts/renderer-component-state-test.mjs",
+      "sha256": "2686ee7b6b053208b2dc69bf4f63ea9ba314dde285f9ac23e52ffb2507ae5221"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "13e41c513bf2c779609e57628f5d6ae79dbc1229397a18cf918d755b807fc253"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-selection.ts",
+      "sha256": "1fed4cff8b32026c3daec9934fe34bbcfc66a96128db8ffad5f17c340be7e617"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "a9630bb8b04d78428d87431e7b6de8c8136625efe314389a778cdec843c86314"
+    },
+    {
+      "path": "apps/desktop/src/shared/question-grade.ts",
+      "sha256": "14f1360df3968afea29e64d26f3902fb24593ada3646452fd968c124407b6b00"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "099366266ecf6e9ceafcf7f30c8bfaf8468ddaa87a04c560894f01049971034b"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "7b8c614bedfbc9e1b16ca11a9fb9155635a70eaf01b0315a86fbb57d2a9e0b1a"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "03e9b62d5d0946c5e801b0f43b0cb1d1b5e35c7ca0496939dcefa0630590d442"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "a2401d140734a34333b70dd375811e6b4df64ef0836ee69533097c58f4250a8d"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "05d929ee6e6024b4ed3d1c7e2d8d69cd3c0b720890103edc85e40b5557cfb981"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "9899faa2a0314e6f14186989683d274187c796ddd5539f5ef99ad3332b2c8f73"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "5522a177e8c03c8396e6da1d4b0f39b3365d80acdd0c539fb25649cc36624795"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "f6fb0ad9aae119912a6633c74709db7b33e7c5b91b8463f1c27f6956dceac366"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "86514eec17ab70d063951be8d6a4bcf77e438f663ec8d3d495eff8be2584f8bc"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "07a08ff0a6b7693412868f6c19753fdab13b156a53572b4fbf31ab46bdde56b6"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/paper-grade-alias/README.md",
+      "sha256": "ee0e931064f1ffa13236db7f93a2e2e31f5b6ee0036aaa6b068c41960aeeb28e"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/paper-grade-alias/summary.json",
+      "sha256": "3e4a10e4593e8f5d752c942238551acba84777ccc4265bde0d2ffa8bd0af3243"
+    }
+  ]
+}

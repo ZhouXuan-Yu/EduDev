@@ -42,6 +42,7 @@ import {RetrievalRepository} from './retrieval/repository';
 import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
 import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionKeywordOrder,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
+import {equivalentQuestionGradeLabels} from '../shared/question-grade';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
@@ -1112,16 +1113,16 @@ export class OmniEduStore {
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),map:row=>work.mapMistakeImageAnalysis(row),sanitize:(text,id)=>work.sanitizeProblemText(text,id),correct:(id,text)=>work.updateMistakeImageCorrection(id,{extractedText:text},true)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
-  private async questionCandidatePage(subject:string,grade:string,after:string){
-    const rows=await this.all(`SELECT q.* FROM question_bank_items q WHERE q.subject=? AND q.grade=? AND q.source_kind IN ('local_bank','teacher_resource') AND q.id>? AND NOT ${sourceCandidateHidden} ORDER BY q.id COLLATE BINARY ASC LIMIT 200`,[subject,grade,after]);
+  private async questionCandidatePage(subject:string,grades:readonly string[],after:string){
+    const rows=await this.all(`SELECT q.* FROM question_bank_items q WHERE q.subject=? AND q.grade IN (${grades.map(()=>'?').join(',')}) AND q.source_kind IN ('local_bank','teacher_resource') AND q.id>? AND NOT ${sourceCandidateHidden} ORDER BY q.id COLLATE BINARY ASC LIMIT 200`,[subject,...grades,after]);
     return rows.map(row=>{try{if(row.document_json&&!readQuestionDocument(row.document_json))return{id:String(row.id)};return{id:String(row.id),question:this.mapQuestionBankItem(row)};}catch{return{id:String(row.id)};}});
   }
   async findMistakeSimilar(input:MistakeSimilarInput,signal:AbortSignal){
-    const source=this.paperSql();return findMistakeSimilar({read:source.read,validate:source.validate,page:(subject,grade,after)=>this.questionCandidatePage(subject,grade,after),facts:(studentId,recordId,signal)=>this.mistakeFacts.forRecord(studentId,recordId,signal)},input,signal);
+    const source=this.paperSql();return findMistakeSimilar({read:source.read,validate:source.validate,page:(subject,grade,after)=>this.questionCandidatePage(subject,[grade],after),facts:(studentId,recordId,signal)=>this.mistakeFacts.forRecord(studentId,recordId,signal)},input,signal);
   }
   private paperSql():PaperSql{
     return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),templateMaterials:this.materials,
-      page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
+      page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,equivalentQuestionGradeLabels(blueprint.grade),after),
       validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }

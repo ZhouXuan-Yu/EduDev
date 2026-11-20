@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 正式组卷的同级原题
+
+自动蓝图与手选题篮的同级原题通过专项回归。自然样本仍在来源门禁缺额，KB-A06 的完整带图三套交付继续验收。 [本轮证据](../research/evidence/kb/20261120/paper-grade-alias/README.md)
+
 ## 2026-11-20 题库检索的年级别名
 
 SQLite 实际回读 7 道自然高三题。桌面题本和本地混合检索对两份试卷的相同知识点实测，另有相邻年级、字面值及向量旧候选回归。 [验收记录](../research/evidence/kb/20261120/question-grade-search/README.md)

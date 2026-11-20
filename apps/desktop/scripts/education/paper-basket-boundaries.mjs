@@ -11,6 +11,7 @@ const {
 } = await import('../../src/shared/paper-basket.ts');
 const {PAPER_SCHEMA} = await import('../../src/shared/paper-blueprint.ts');
 const {questionVersion} = await import('../../src/main/education/question-context-provider.ts');
+const {paperSectionMatches} = await import('../../src/main/education/paper-selection.ts');
 const {createPaperBasketApi, registerPaperBasketIpc} = await import('../../src/main/education/paper-basket-api.ts');
 const {compilePaperOffice, assertPaperOffice} = await import('../../src/main/education/paper-export.ts');
 const {paperGenerationBoundaries} = await import('./paper-generation-boundaries.mjs');
@@ -350,6 +351,34 @@ try {
     const confirmed = await papers.decide(decide(old), () => true);
     assert(compilePaperOffice(confirmed, 'teacher'));
     assert.equal((await papers.review(sid, confirmed.id)).digest, confirmed.digest);
+  });
+  await check('Originals match same-grade aliases through the basket and pending snapshot while neighboring grades, stages and generated approval retain scope', async () => {
+    const alias=await basketFixture(path.join(output,'grade-alias'));
+    try {
+    const section={id:'a',label:'年级原题',questionType:'解答题',count:1,points:5,knowledgePoint:'年级别名专用'};
+    const original=alias.question('年级原题',{knowledgePoint:section.knowledgePoint});
+    const b={...blueprint([section]),grade:'八年级'};
+    const [adjacent,stage]=['初三','初中'].map(grade=>({...original,grade}));
+    assert(paperSectionMatches(original,b,section));
+    assert(!paperSectionMatches(adjacent,b,section));
+    assert(!paperSectionMatches(stage,b,section));
+    assert(paperSectionMatches(stage,{...b,grade:'初级中学'},section));
+    assert(!paperSectionMatches(original,{...b,grade:'初中'},section));
+    const generated={...original,sourceKind:'generated'};
+    assert(!paperSectionMatches(generated,{...b,mode:'hybrid'},section));
+    assert(paperSectionMatches(generated,{...b,mode:'hybrid',grade:'初二'},section));
+    const base={...schema,sessionId:alias.sid,requestId:randomUUID()};
+    const created=await alias.baskets.create({...base,blueprint:b});
+    const basket=await alias.baskets.mutate({...base,requestId:randomUUID(),basketId:created.id,expectedRevision:created.revision,
+      operation:{type:'add',questionId:original.id,sectionId:section.id,expectedSourceVersion:questionVersion(original)}});
+    assert.equal(basket.entries[0].contentVersion,questionVersion(original));
+    const pending=await alias.baskets.createSnapshot({...snapshot(basket),sessionId:alias.sid});
+    assert.equal(pending.blueprint.grade,'八年级');
+    assert.equal(pending.selection.items[0].question.grade,'初二');
+    const confirmed=await alias.papers.decide({...decide(pending),sessionId:alias.sid},()=>true);
+    assert.equal(confirmed.state,'confirmed');
+    assert.equal((await alias.papers.review(alias.sid,confirmed.id)).digest,confirmed.digest);
+    } finally {alias.close();}
   });
   const generations = path.join(output, 'existing-generations');
   fs.mkdirSync(generations);

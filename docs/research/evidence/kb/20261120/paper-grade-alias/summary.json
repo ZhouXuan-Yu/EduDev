@@ -1,0 +1,23 @@
+{
+  "baseline": "33fa1c77ac2c51cfc3cbc3c35ee7b74a48c06b20",
+  "buildMainSha256": "edaf49d508950311a07ec85ac3a2aa08bd57fde60d898a8b07d93ed604989ed3",
+  "desktop": {
+    "controlledAliasSelection": [0,2],
+    "composeMs": [188,146],
+    "controlledBasketEntries": 2,
+    "confirmedPoints": 10,
+    "coldReadback": true,
+    "naturalAliasedScan": [0,17],
+    "naturalReadBlockedByRelocatedStamp": 2,
+    "newPaidRequests": 0
+  },
+  "readOnlyProvenance": {
+    "naturalOriginalShaMatches": 2,
+    "nativeReceiptReadPass": 2,
+    "originalPhysicalStampMatches": 2,
+    "relocatedPhysicalStampMatches": 0
+  },
+  "testsPassed": {"paperBasket":44,"paperFulfillment":6,"paperWholeEdit":8,"keywordGrade":8,"rendererComponents":253,"electronSmoke":207},
+  "npmAudit": {"existingAdvisories":23,"high":8,"dependencyChanges":false},
+  "fullKbA06": "open"
+}

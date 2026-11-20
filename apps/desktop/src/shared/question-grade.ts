@@ -26,16 +26,25 @@ for (const labels of [...primary, ...junior, ...senior, unqualifiedSix, juniorSi
   for (const label of labels) byLabel.set(label, labels);
 }
 
+const byStage = new Map<string, readonly string[]>();
 for (const {stage, grades} of [
   {stage: ['小学'], grades: primary},
   {stage: ['初中', '初级中学'], grades: [...junior, juniorSix]},
   {stage: ['高中', '高级中学'], grades: senior},
 ]) {
   const labels = [...stage, ...grades.flat()];
-  for (const label of stage) byLabel.set(label, labels);
+  for (const label of stage) {
+    byLabel.set(label, stage);
+    byStage.set(label, labels);
+  }
 }
 
-/** Expand an exact user filter to stored labels. Never change the saved evidence or guess from free text. */
-export function questionGradeLabels(filter: string): readonly string[] {
+/** Same level only, including equivalent stage labels for stage-labelled facts. */
+export function equivalentQuestionGradeLabels(filter: string): readonly string[] {
   return byLabel.get(filter) ?? [filter];
+}
+
+/** Discovery additionally lets an explicit stage query cover the grades within that stage. */
+export function questionGradeLabels(filter: string): readonly string[] {
+  return byStage.get(filter) ?? equivalentQuestionGradeLabels(filter);
 }

@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {archiveEligible} from '../../shared/question-archive';
+import {equivalentQuestionGradeLabels} from '../../shared/question-grade';
 import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {validPaperBlueprint,generatedPaperCount,type PaperBlueprint,type PaperSelection,type PaperSection,type PaperGeneration} from '../../shared/paper-blueprint';
 import {QUESTION_CONTEXT_SCHEMA} from '../../shared/question-context';
@@ -10,7 +11,13 @@ export type PaperSelectionHost={page:(blueprint:PaperBlueprint,after:string)=>Pr
 const types:Record<string,string>={选择题:'choice',填空题:'fill_in_blank',简答题:'short_answer',解答题:'written',计算题:'written',综合计算题:'written',判断题:'concept',编程题:'coding'};
 /** Match finite teacher-facing aliases without rewriting the source question or blueprint. */
 export const paperQuestionType=(type:string)=>types[type]||type;
-export function paperSectionMatches(q:QuestionBankItem,b:PaperBlueprint,s:PaperSection){return q.subject===b.subject&&q.grade===b.grade&&(q.sourceKind==='local_bank'||q.sourceKind==='teacher_resource'||b.mode!=='source_only'&&q.sourceKind==='generated')&&paperQuestionType(q.questionType)===paperQuestionType(s.questionType)&&(!s.difficulty||q.difficulty===s.difficulty)&&(!s.knowledgePoint||q.knowledgePoint.includes(s.knowledgePoint));}
+export function paperSectionMatches(q:QuestionBankItem,b:PaperBlueprint,s:PaperSection){
+ const original=q.sourceKind==='local_bank'||q.sourceKind==='teacher_resource';
+ const inScope=original?equivalentQuestionGradeLabels(b.grade).includes(q.grade):
+  b.mode!=='source_only'&&q.sourceKind==='generated'&&q.grade===b.grade;
+ return inScope&&q.subject===b.subject&&paperQuestionType(q.questionType)===paperQuestionType(s.questionType)
+  &&(!s.difficulty||q.difficulty===s.difficulty)&&(!s.knowledgePoint||q.knowledgePoint.includes(s.knowledgePoint));
+}
 export function paperShortages(b:PaperBlueprint,items:PaperSelection['items']):PaperSelection['shortages']{
  return b.sections.flatMap(s=>{if(b.mode==='source_only'){const selected=items.filter(q=>q.sectionId===s.id).length;return[{sectionId:s.id,label:s.label,required:s.count,selected,missing:s.count-selected}];}
  const generated=generatedPaperCount(b,s);return(['original','generated'] as const).map(sourceKind=>{const required=sourceKind==='generated'?generated:s.count-generated,selected=items.filter(q=>q.sectionId===s.id&&(q.question.sourceKind==='generated')===(sourceKind==='generated')).length;return{sectionId:s.id,label:s.label,required,selected,missing:required-selected,sourceKind};});}).filter(s=>s.missing>0);
