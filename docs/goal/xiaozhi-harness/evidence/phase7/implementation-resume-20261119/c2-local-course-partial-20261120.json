@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-20",
+  "status": "PARTIAL",
+  "reviewer": "GPT-6.1 Terra High",
+  "sourceCommit": "0fc5b6ab09c2401e2b2b440c96c204970648c300",
+  "build": {
+    "root": "apps/desktop/test-results/harness-startup-prewarm-production/out",
+    "files": 481,
+    "sha256": "30275025fc271b20c7f75413063cddf358850e2aaaac04b9a13dfe2754e4aab5"
+  },
+  "scope": "Isolated hidden Electron, typed material import, production Pi and SQLite, owned loopback MCP and scripted model. Startup times exclude source compilation. No foreground or real provider timing conclusion.",
+  "attempts": [
+    {
+      "report": "TEMP/omni-edu-c2-course-Etb5i4/report.json",
+      "sha256": "d63341ef21e95a46470179464bbee32e2b5e88f3ca89b68cb8c9eccbe2735a8f",
+      "exitCode": 1,
+      "failure": "First-window wait timed out after 30 seconds. No transport call. Cause undetermined."
+    },
+    {
+      "report": "TEMP/omni-edu-c2-course-HtlqD0/report.json",
+      "sha256": "34cac78673cd001766e95fe5750f519bf40ba5ed32b71d022ba4e2171e82ce19",
+      "exitCode": 1,
+      "firstWindowMs": 1883.53,
+      "workspaceUsableMs": 2312.98,
+      "failure": "Synthetic question format did not meet paste-preview requirements. No transport call."
+    },
+    {
+      "report": "TEMP/omni-edu-c2-course-yJrMTN/report.json",
+      "sha256": "dcbda4b30f10d35e42eace7af58f991e4bbba317a8ed3b61b29b77260392a229",
+      "exitCode": 1,
+      "firstWindowMs": 10282.15,
+      "workspaceUsableMs": 13718.59,
+      "failure": "The scripted continuation did not issue the material read step before its deadline."
+    }
+  ],
+  "observed": {
+    "externalCallsAfterGrant": 1,
+    "additionalExternalCallsAfterRevocation": 0,
+    "oldToolRejectedInNativeHistory": true,
+    "localSearchReceipt": {"tool": "education_search_materials", "admitted": true, "success": true, "nativeState": "matched", "hits": 1, "sourceOffset": 0},
+    "followupRunStatus": "failed"
+  },
+  "pending": ["Preserve failed requests in the scripted model fixture", "Read the matched source through office_read_material", "Verify the displayed citation and cold restart"],
+  "paidRequestsAdded": 0,
+  "fixedAcceptanceMatrixChanged": false
+}
