@@ -1,0 +1,201 @@
+{
+  "date": "2026-11-21",
+  "baseCommit": "9f18b584dde89d4fe54cf6f3a8a3530acb79dfc4",
+  "branch": "codex/harness-gate7-window-20261121",
+  "build": {
+    "command": "npm run build -- --outDir test-results/harness-gate7-20261121/long-path-out",
+    "exitCode": 0,
+    "path": "apps/desktop/test-results/harness-gate7-20261121/long-path-out",
+    "files": 481,
+    "sha256": "808fa65b152f13549a632eec45f456c7639d576b584114f56226a3c17d713deb",
+    "mainSha256": "2be5b38eb6bc75ef9785a1bc229b0e431a7823fea520b61914ff1935e9ef5e69"
+  },
+  "originalFailures": [
+    {
+      "phase": "compiler",
+      "report": "apps/desktop/test-results/harness-gate7-20261121/synthetic-temp/omni-edu-xiaozhi-phase7-workbench-ui-doNbbQ/evidence/ui-report.json",
+      "checksPassed": 7,
+      "stageChars": 232,
+      "tool": "exec_command",
+      "sqliteAudit": "permission_runtime_build_failed",
+      "compilerExit": 1,
+      "code": "CS1619",
+      "jobCount": 0
+    },
+    {
+      "phase": "reproduction",
+      "stageChars": 235,
+      "absoluteOutputExit": 1,
+      "relativeOutputExit": 1,
+      "relativeOutputWithDefaultTempExit": 1,
+      "shortStageExit": 0,
+      "helperLaunch": [
+        {
+          "pathChars": 252,
+          "processExit": 0
+        },
+        {
+          "pathChars": 255,
+          "processExit": 4294967295
+        },
+        {
+          "pathChars": 268,
+          "error": "ENOENT"
+        }
+      ],
+      "namespacedPrefixFixed255": false
+    },
+    {
+      "phase": "custom-temp-authorization",
+      "report": "apps/desktop/test-results/harness-gate7-20261121/synthetic-temp/omni-edu-xiaozhi-phase7-workbench-ui-0LEyjn/evidence/ui-report.json",
+      "sqliteAudit": "permission_runtime_health",
+      "code": "invalid_projection",
+      "nativeTrace": "projection_root_name_validated followed by a denied root handle",
+      "win32Error": 5,
+      "jobCount": 0
+    },
+    {
+      "phase": "compile-only-long-launch",
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepINGdwW/evidence/ui-report.json",
+      "checksPassed": 7,
+      "stageChars": 235,
+      "healthReceipt": false
+    },
+    {
+      "phase": "windows-foreground-ownership",
+      "report": "apps/desktop/test-results/harness-gate7-20261121/native-owned/xiaozhi-phase7-workbench-ui-PbjDzx/evidence/native-gestures-report.json",
+      "result": "Playwright wrapper PID differed from the verified Electron main; no OS click"
+    },
+    {
+      "phase": "windows-caption-dpi",
+      "report": "apps/desktop/test-results/harness-gate7-20261121/native-owned/xiaozhi-phase7-workbench-ui-Xrwei6/evidence/native-gestures-report.json",
+      "result": "1366 window actually moved; legacy offset hit minimize, no passing maximize evidence"
+    }
+  ],
+  "repairedLongStage": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs --long-stage",
+    "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepwWRW1b/evidence/ui-report.json",
+    "sha256": "2e48b158687661cbb91e93a63255ceab5ffed4e3e2f601566d4764dfddf9a516",
+    "exitCode": 0,
+    "passed": 9,
+    "total": 9,
+    "stageChars": 235,
+    "persistedHelperPathChars": 276,
+    "helperHealthReceipts": 1,
+    "inputSequence": 2,
+    "ackSequence": 2,
+    "outputVerified": true,
+    "cleanup": "complete",
+    "remainingCompilerOrLaunchScratch": 0
+  },
+  "independent": [
+    {
+      "scope": "Native window gestures on the repaired build; real pointer and OS caption hit-test, Playwright prompt input, Pi tool readback from SQLite",
+      "sizes": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "passed": 2,
+      "total": 2,
+      "report": "apps/desktop/test-results/harness-gate7-20261121/native-owned/xiaozhi-phase7-workbench-ui-6qnFND/evidence/native-gestures-report.json",
+      "sha256": "d5108556a97263de99de536b0a6e186fad47d6bac6b3aa529dade68d9ff4691a",
+      "exitCode": 0
+    },
+    {
+      "scope": "Cold approval and unreadable record isolation; same repaired build",
+      "command": "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs",
+      "passed": 3,
+      "total": 3,
+      "report": "apps/desktop/test-results/harness-gate7-20261121/native-owned/omni-edu-xiaozhi-phase7-workbench-ui-ZR3jld/cold-approval-report.json",
+      "sha256": "88a6607f8173e7e41a5ce748560534939581b3e555c7825796b674d1ce34239b",
+      "exitCode": 0
+    },
+    {
+      "scope": "C2 revocation, local fallback and cold readback on the repaired candidate",
+      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs",
+      "passed": 4,
+      "total": 4,
+      "exitCode": 0,
+      "report": "apps/desktop/test-results/harness-gate7-20261121/native-owned/omni-edu-c2-course-96sA81/report.json",
+      "sha256": "211eb4869297bac973e33b985fdcadeb673ccff6bc0288492f7d0d5cf6c1f84c"
+    }
+  ],
+  "supporting": {
+    "rendererComponents": {
+      "passed": 253,
+      "total": 253,
+      "scope": "Source renderer before native host-only fixes; same renderer asset filename on final build"
+    },
+    "blindReviewFixtures": {
+      "passed": 39,
+      "total": 39
+    },
+    "budgetFixtures": {
+      "passed": 12,
+      "total": 12
+    },
+    "npmAuditExisting": {
+      "total": 20,
+      "high": 5,
+      "critical": 0,
+      "dependenciesChanged": false
+    }
+  },
+  "acceptance": {
+    "phase7": "PARTIAL",
+    "fixedMatrix": {
+      "passed": 88,
+      "total": 89
+    },
+    "qg09": {
+      "status": "BLOCKED",
+      "host": "Windows 11 Home 10.0.26200 x64",
+      "sandboxAvailable": false,
+      "cleanGuestAvailable": false,
+      "verifiedEarlierNsisSHA256": "275bb10c95affa299772addb37dbf4d8b6ffb0a8320ef5b3eefb93cd2a537a64"
+    },
+    "modelBaselineA": {
+      "source": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+      "files": 458,
+      "sha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2"
+    },
+    "paidLedger": {
+      "limit": 200,
+      "used": 3,
+      "added": 0,
+      "unresolved": 0
+    },
+    "formalAbba": "NOT_RUN"
+  },
+  "limitations": [
+    "Current native fixture covers standard titlebar interaction and scoped synthetic tool readback, not physical keyboard or full FX09.",
+    "The prepared helper launch copy is deleted on child close. Abrupt host termination is not proven to remove this temporary copy.",
+    "The D volume fixture's temporary projection root was denied by the existing required ACL check. The passing deep-data fixture uses the default user TEMP.",
+    "The previously verified NSIS predates this repaired source. No clean install, shortcut launch or uninstall performed."
+  ],
+  "rollback": "Revert the launcher/runtime/test and their generated source manifests together. The persisted runtime version, grant and task schema are unchanged.",
+  "integration": {
+    "parents": [
+      "4426260c9f7d8f9716852aa283026c7589a000d5",
+      "1625264c5751faebc901c8b2b7bd4829979e5679"
+    ],
+    "build": "apps/desktop/test-results/harness-gate7-20261121/merged-out",
+    "buildExitCode": 0,
+    "files": 481,
+    "sha256": "9f66c352b0fa587df5c97359ac9b1e3a7a1647739d7a1d1b06ab97a10696b5d6",
+    "mainSha256": "fae741d03dbb3638cb3a0e21d5e71aaf430fd0cbe29839873409e1153885f586",
+    "workbench": {
+      "passed": 9,
+      "total": 9,
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeep2iTOhy/evidence/ui-report.json",
+      "sha256": "05f7318b2d6286b925055c9c11bcba7d8b08bee5848df22997d79aa3e9eccf3a"
+    },
+    "wordBoundary": {
+      "command": "node --experimental-transform-types scripts/education/kb-word-booklet-boundaries.mjs",
+      "passed": 14,
+      "total": 14,
+      "exitCode": 0
+    }
+  }
+}

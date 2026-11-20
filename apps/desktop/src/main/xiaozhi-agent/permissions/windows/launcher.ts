@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {spawn} from 'node:child_process';
 import {StringDecoder} from 'node:string_decoder';
@@ -83,11 +84,47 @@ export function verifySandboxBinary(manifest: SandboxManifest, directory: string
   return filename;
 }
 
+export function createPermissionScratch(prefix: 'xzc-' | 'xzs-') {
+  const temporary = fs.realpathSync(os.tmpdir());
+  const directory = fs.mkdtempSync(path.join(temporary, prefix));
+  const identity = fs.lstatSync(directory);
+  return {
+    directory,
+    release() {
+      const current = fs.lstatSync(directory, {throwIfNoEntry:false});
+      if (current?.isDirectory() && !current.isSymbolicLink() && current.dev === identity.dev && current.ino === identity.ino
+          && path.dirname(directory) === temporary && fs.realpathSync(directory) === directory) {
+        fs.rmSync(directory, {recursive:true, force:false});
+      }
+    },
+  };
+}
+
+function spawnPermissionHelper(manifest:SandboxManifest, directory:string, args:string[], env:NodeJS.ProcessEnv, detached=false) {
+  let executable = verifySandboxBinary(manifest, directory);
+  const launch = (file:string) => spawn(file, args, {detached, windowsHide:true, stdio:['pipe','pipe','pipe'], env});
+  // Legacy .NET executable startup fails near MAX_PATH even when Node can read the file.
+  if (executable.length < 250) return launch(executable);
+  const scratch = createPermissionScratch('xzs-');
+  try {
+    fs.copyFileSync(executable, path.join(scratch.directory, manifest.helperFile), fs.constants.COPYFILE_EXCL);
+    executable = verifySandboxBinary(manifest, scratch.directory);
+    const child = launch(executable);
+    child.once('close', () => {
+      try {scratch.release();} catch (error) {console.warn('Permission helper scratch cleanup failed:', (error as NodeJS.ErrnoException).code);}
+    });
+    return child;
+  } catch (error) {
+    scratch.release();
+    throw error;
+  }
+}
+
 export async function inspectPermissionPlatform(): Promise<PermissionPlatformInfo> {
-  const executable = verifySandboxBinary(baseManifest, builtinPermissionDirectory());
   const output = await new Promise<string>((resolve, reject) => {
-    const child = spawn(executable, ['--platform-info'], {windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
-      env: Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA)$/iu.test(name)))});
+    const child = spawnPermissionHelper(baseManifest, builtinPermissionDirectory(), ['--platform-info'],
+      Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA)$/iu.test(name))));
+    child.stdin.end();
     const chunks: Buffer[] = [];
     let size = 0, stderr = 0;
     const deadline = setTimeout(() => child.kill(), 10000);
@@ -143,15 +180,12 @@ export async function runNativeSandbox(options: {
   onSession?: (input: SandboxInput) => void;
   onResult?: (result: SandboxResult) => void;
 }) {
-  const executable = verifySandboxBinary(options.manifest, options.directory);
   if (options.start.session && options.manifest.sessionProtocolVersion !== 1) throw Error('unsupported_constraint');
   const pty = options.start.session?.mode === 'pty';
   if (pty && options.manifest.ptyProtocolVersion !== 1) throw Error('unsupported_constraint');
   options.signal.throwIfAborted();
-  const child = spawn(executable, [options.cleanupOnly ? '--cleanup-owned' : '--protocol-stdio'], {
-    detached: !pty, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'],
-    env: Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:SystemRoot|windir|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|SystemDrive)$/iu.test(name)))
-  });
+  const child = spawnPermissionHelper(options.manifest, options.directory, [options.cleanupOnly ? '--cleanup-owned' : '--protocol-stdio'],
+    Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:SystemRoot|windir|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|SystemDrive)$/iu.test(name))), !pty);
   const decoders = {stdout: new StringDecoder('utf8'), stderr: new StringDecoder('utf8'), pty: new StringDecoder('utf8')};
   const protocol = new StringDecoder('utf8');
   let pending = '', outputBytes = 0, stderrBytes = 0;

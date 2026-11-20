@@ -1,11 +1,11 @@
 {
   "goal": "GOAL_XIAOZHI_HARNESS.md",
   "worktree": "D:/WorkProject/EduProject-harness",
-  "branch": "codex/xiaozhi-harness-20261112",
+  "branch": "codex/harness-gate7-window-20261121",
   "base": "d50ef330",
-  "head": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
-  "headRole": "Integrated application source for the workbench read optimization. Independent desktop evidence is bound to the pre-merge candidate.",
-  "mainObserved": "3146aa1c34cfa04ca0a376b30fce707eb8c778e4",
+  "head": "4426260c9f7d8f9716852aa283026c7589a000d5",
+  "headRole": "Harness long-path repair commit. Independent native and page evidence is bound to the pre-merge repaired build.",
+  "mainObserved": "1625264c5751faebc901c8b2b7bd4829979e5679",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -26,7 +26,7 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "Phase7 full Gate7 remains partial. Consolidated renderer evidence and independent Skill/MCP paths have scoped results. Native mouse drag and maximize/restore remain untested following the stopped interaction.",
+    "Phase7 full Gate7 remains partial. Native mouse drag and maximize/restore passed independently at both required sizes on 2026-11-21. Complete the remaining independent page combinations on one frozen candidate.",
     "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall. Current Windows 11 Home host has no Sandbox or available clean guest.",
     "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build.",
     "Managed skill startup and the two original same-task Runs passed on 3781b5b. Preserve the prior timed-out Runs and the first candidate local-index read failure. Older Q5 causality remains unknown."
@@ -38,7 +38,16 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Complete the physical Gate7 and clean Windows QG-09 when their environments are available. Freeze the final candidate, run the formal 32-case ABBA, and obtain final independent acceptance.",
+  "next": "Use the 2026-11-21 repaired build as a scoped checkpoint. Finish remaining independent Gate7 page combinations on one frozen candidate before formal 32-case ABBA; QG-09 still requires clean Windows.",
+  "phase7WindowsDeepPath20261121": {
+    "status": "NATIVE_WINDOW_AND_PERSISTENT_TERMINAL_PASS_SCOPED",
+    "baseSource": "9f18b584dde89d4fe54cf6f3a8a3530acb79dfc4",
+    "buildSha256": "808fa65b152f13549a632eec45f456c7639d576b584114f56226a3c17d713deb",
+    "evidence": "evidence/phase7/implementation-resume-20261119/windows-helper-deep-path-20261121.json",
+    "nativeWindowSizesPassed": 2,
+    "longPathWorkbenchChecksPassed": 9,
+    "addedPaidRequests": 0
+  },
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",

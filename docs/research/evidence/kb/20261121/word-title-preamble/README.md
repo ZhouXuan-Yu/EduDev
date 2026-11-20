@@ -34,6 +34,8 @@
 - `node --experimental-transform-types scripts/education/kb-word-background-upgrade.mjs`，10/10。
 - `node --experimental-transform-types scripts/education/kb-folder-word-upgrade.mjs`，13/13。
 - `node --experimental-transform-types scripts/education/kb-word-printed-answer-electron.mjs <隔离目录> --preamble`。加 `--verify-existing` 复查最终构建和已保存的同一隔离库。
+- `node scripts/electron-smoke.mjs` 验证功能分支的最终构建，207 项前端检查通过。
+- 合入远端 `4b4ebe4` 后重新构建，主进程 SHA-256 为 `b916e3e8baff67615f430dc6cbc4898d428e41d3651bb1dfdee8c8e96dc5cb84`。此构建通过 253 项组件测试及真实 Word 专项，覆盖 6 道题、两页图稿、二次整理和冷启动。
 - `npm audit --omit=dev --audit-level=high` 报告既有 20 项依赖问题，其中高危 5 项。本轮无依赖改动。
 
 ## 回滚与后续
