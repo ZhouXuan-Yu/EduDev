@@ -1,0 +1,42 @@
+{
+  "status": "PARTIAL",
+  "candidateCommit": "d22537e56b3e4b31b558b825bc15bff2e63ae571",
+  "sourceCommit": "95f9172c4026dc7f684d01f5a122280da9f61865",
+  "build": {
+    "files": 481,
+    "sha256": "5795a91a90443fee9cf97b46de67c2d1816e6f8a5055526e25005158a262caad",
+    "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48",
+    "frozenOut": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/skill-frozen-out"
+  },
+  "independentEnvironment": {
+    "workingDirectory": "D:/WorkProject/EduProject-harness/apps/desktop",
+    "reportRoot": "E:/EduDev-Harness-Acceptance-20261121/gate7-d22537e",
+    "viewports": ["1366x768", "1920x1080"],
+    "paidRequests": 0
+  },
+  "reports": [
+    {
+      "report": "skill/omni-edu-skill-remaining-x6BhUG/report.json",
+      "sha256": "abefcbaae9e93753db2604cfc3729cb1d58e59449122a455ac01aa105bca3488",
+      "checks": 8,
+      "scope": "个人和待审空数据、受控保存与回滚错误、刷新恢复、团队副本实际来源和指纹折叠"
+    },
+    {
+      "report": "disclosure/omni-edu-xiaozhi-phase7-workbench-ui-iT4n5w/evidence/disclosure-report.json",
+      "sha256": "2aaa163148a5f17671aae204e6f1f46055805b828b9e67e2eb383168861cf993",
+      "checks": 4,
+      "scope": "内置终端能力的默认和详情、合成长来源可达、受控审批错误隐藏合成哨兵、读取不改业务记录"
+    },
+    {
+      "report": "disclosure/omni-edu-xiaozhi-phase7-workbench-ui-5xJbY6/evidence/risk-disclosure-report.json",
+      "sha256": "c7eb1ce8f9b8f7f076bf689be6f16e9800d3c43033d1f6f26801c2f8dfb4e275",
+      "checks": 6,
+      "scope": "工具目录、当前任务管理和本地依赖三项的默认中文说明及详情披露"
+    }
+  ],
+  "limits": [
+    "错误来自受控 typed IPC 响应，宿主写入中断和所有凭据来源不在本次验证范围内。",
+    "对应的旧工作台和审批证据须按构建及变更边界逐项判定。当前候选的长路径终端成功路径尚无新的实际回执，宿主系统盘可用空间为零。",
+    "固定矩阵仍为 88/89。QG-09 尚无干净 Windows x64 安装环境，正式模型对照等待 Gate 7。"
+  ]
+}
