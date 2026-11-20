@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-20",
+  "status": "ARCHIVE_IN_PROGRESS",
+  "packagingRepoHead": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
+  "productionBuildCommit": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
+  "compiledSource": "apps/desktop/test-results/harness-workbench-index-merge-ae8dca7/out",
+  "applicationFiles": 481,
+  "outSha256": "301327f31c748fb93e024326996f3dffd0263f4a8754a9243a3faa87e4ded76b",
+  "mainSha256": "56d1e5d34d27bf7df1522694f128ad005aff10f151392a539a9e1cd7870ebc22",
+  "stage": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c",
+  "command": "node node_modules/electron-builder/out/cli/cli.js --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+  "initialAttempt": {
+    "exitCode": 1,
+    "log": {
+      "path": "TEMP/edu-harness-workbench-nsis-620ded2-faf4f587/resource-preflight.log",
+      "sha256": "8874802d7abd579811561f96893e9b7f9a69706d70509884638e64991b478dba"
+    },
+    "failedFile": "ocr-runtime/_internal/base_library.zip",
+    "bytes": 1333490,
+    "expectedSha256": "a464e710c8cd8ddd385aa5a72edf3b2ed5c178daa2782795097c9dc54848833e",
+    "localResourceSha256": "882552373fcdeae8ea78ab9caca09e9754abaffb524e6dbee87c1167f1479ea4"
+  },
+  "verifiedResourceInput": {
+    "path": "TEMP/edu-harness-approval-save-package-5d28c10d/release/win-unpacked/resources",
+    "log": {
+      "path": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c/resource-preflight.log",
+      "sha256": "a587e0418f1083cf1c7f485609cfbcb29584fb453a7ce37bec189ee50476a587"
+    },
+    "localVerifyHelper": {
+      "path": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c/verify-existing-resources.cjs",
+      "sha256": "da5a8d34eca5b59c3a963eda520f7cfb1467ce2e285b68b41689d587046143df"
+    },
+    "packageConfig": {
+      "path": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c/packaging.cjs",
+      "sha256": "50b12ef14dc08c106e0dfe9c034eb15d43c3dd0140d817465f045acaa24ef034"
+    },
+    "verifiedResources": [
+      {
+        "resource": "ocr-runtime",
+        "files": 712,
+        "bytes": 279130853
+      },
+      {
+        "resource": "page-blocks-runtime",
+        "files": 767,
+        "bytes": 417644037
+      },
+      {
+        "resource": "education-runtime",
+        "files": 90,
+        "bytes": 40328642
+      },
+      {
+        "resource": "retrieval-runtime",
+        "files": 154,
+        "bytes": 126001951
+      },
+      {
+        "resource": "reranker-runtime",
+        "files": 155,
+        "bytes": 397959129
+      }
+    ],
+    "buildInputCount": 37,
+    "independentReviewer": "GPT-6.1 Sol High"
+  },
+  "unpackedDevelopmentBuildMatch": true,
+  "headlessPackagedWorker": {
+    "passed": 2,
+    "exitCodes": [
+      0,
+      0
+    ],
+    "closedWithoutError": true,
+    "systemPathEmpty": true,
+    "report": {
+      "path": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c/education-worker-probe.json",
+      "sha256": "c85dcbd90e6f7c772b386a2deb410f9d0c19a6dd11e977599472e2d782e083e9"
+    }
+  },
+  "installer": "PENDING",
+  "independentArtifactReview": "PENDING",
+  "existingDependencyAudit": {
+    "command": "npm.cmd audit --json --fetch-retries=0 --fetch-timeout=20000",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0
+  },
+  "remaining": {
+    "gate7": "PARTIAL; native caption drag and maximize/restore pending",
+    "qg09": "BLOCKED; clean Windows install, shortcuts and uninstall pending",
+    "formal32": "NOT_TESTED"
+  },
+  "liveBuildObservation": {
+    "observedAt": "2026-11-20T17:05:12.8893376+08:00",
+    "exitMarker": false,
+    "bytesRead": 1078185147,
+    "compressorPid": 45256,
+    "intermediateBytes": 296735619,
+    "builderPid": 38528,
+    "installerExists": false
+  },
+  "mainAndFeatureAtPackagingStart": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc"
+}
