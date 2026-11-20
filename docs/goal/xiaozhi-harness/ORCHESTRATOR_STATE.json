@@ -697,6 +697,17 @@
     "parallelMainProductionCommitAfterBuild": "0b015f9",
     "qg09": "BLOCKED"
   },
+  "integratedWorkbenchRetest": {
+    "status": "PASS_SCOPED",
+    "productionSource": "dcf273bf28e123cc0fa05cbe050ae88f5d3cc6cc",
+    "outputSha256": "8746795c9cda2ac503fff6c4b3ecc322bbbad26fba0a29950aeb7c0741e8f461",
+    "evidence": "evidence/phase7/implementation-resume-20261119/main-merge-retest-20261120.json",
+    "workbench": "9/9 with initial and cold renderer error observation",
+    "coldApprovals": "3/3",
+    "stream": "5/5 single synthetic background run",
+    "nativeWindowAcceptance": "NOT_TESTED",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",
