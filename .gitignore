@@ -11,3 +11,8 @@ __pycache__/
 *.py[cod]
 .local-ocr/
 .orca-forge/
+
+# 本地 UI 调试产物
+/.playwright-mcp/
+/agent-demo-*.png
+/template-chat-*.png
