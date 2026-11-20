@@ -38,6 +38,8 @@
 | `kb-chinese-question-recall.mjs` | 8/8，查题的学段展开回归通过 |
 | `npm audit --omit=dev --audit-level=high` | 存量 23 项，8 项 high。依赖文件无改动 |
 
+已合入 GitHub 主线协作者的 `1d4e8ad`。合并带入 Harness 验收脚本与项目记录，桌面产品源码和配置与受测构建一致。合并后的协作脚本另经语法检查。
+
 在 `apps/desktop` 用 `OMNI_EDU_TEST_BUILD_ROOT` 选择冻结构建并执行 `node scripts/education/kb-paper-grade-electron.mjs`。复用 `test-results/kb-grade-search-after-electron.log` 指定的临时验收副本，加 `--baseline` 执行旧版对照。TypeScript 回归使用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs`。
 
 可通过 Git revert 回退查询。已保存同义年级试卷使用支持本规则的版本回读，回退前保留数据库备份。三套真实整卷及导出、独立检索留出、约 10 GB 混合库和换机继续按 KB-A01～A10 验收。

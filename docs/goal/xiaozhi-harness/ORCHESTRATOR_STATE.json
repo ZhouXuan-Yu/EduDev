@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "110150e162c0d2e5255d053d770c6adc56e9eb26",
-  "headRole": "Source parent for the 2026-11-20 combined capability conditions candidate. Resolve remote refs for the evidence commit.",
-  "mainObserved": "110150e162c0d2e5255d053d770c6adc56e9eb26",
+  "head": "33fa1c77ac2c51cfc3cbc3c35ee7b74a48c06b20",
+  "headRole": "Source parent for the 2026-11-20 Q5 collector integration. Individual tested build identity is recorded in the evidence.",
+  "mainObserved": "33fa1c77ac2c51cfc3cbc3c35ee7b74a48c06b20",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -28,7 +28,8 @@
   "openFindings": [
     "Phase7 full Gate7 remains partial. Consolidated renderer evidence and independent Skill/MCP paths have scoped results. Native mouse drag and maximize/restore remain untested following the stopped interaction.",
     "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall. NSIS build and isolated unpacked startup are separately recorded.",
-    "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build."
+    "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build.",
+    "The 33fa1c7 Electron Q5 integration had successful and failed reruns. The failed continuations ended with event_persistence before model dispatch and before a committed native result respectively. Investigate bounded journal diagnostics before paid ABBA."
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 3,
@@ -37,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Prepare exact same-task approval continuation and attribution across both Runs for formal Q5 collection. Gate7 still needs physical native window evidence, and QG-09 needs a clean Windows install. Run the formal ABBA only after the page gate freezes the candidate.",
+  "next": "Use bounded main-process journal diagnostics to identify intermittent Q5 continuation persistence failure, and check the remaining formal scenarios. Keep physical Gate7 and clean Windows QG-09 evidence open. Run formal ABBA after the page gate freezes the candidate.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",

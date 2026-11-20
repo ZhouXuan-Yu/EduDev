@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-20",
+  "status": "PASS_SCOPED",
+  "scope": "Q5 collector and verifier with actual Electron, Pi, visible UI controls, original SQLite/Pi readback and the fixed public source. Model POSTs are served only by a TEMP loopback fixture. This is not the 32-row paid ABBA.",
+  "scriptChecks": {
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+    "passed": 17,
+    "total": 17,
+    "report": "TEMP/xiaozhi-phase8-real-model-protocol-0odJvg/report.json",
+    "reportSha256": "99811de1fcb19f9adbf6b3043d9a6bfbe2620b064024e7c2f9d514d3004b3b62",
+    "negativeControls": [
+      "An actual loopback POST reserved and prebound to the wrong Run stops the collector. The original reservation and used count remain after reopen.",
+      "A fixed website HTTP 200 without the original native receipt cannot be reported as a read.",
+      "Late or unknown Run IDs cannot dispatch across a newly activated segment.",
+      "An acknowledged terminal failure without a POST keeps the first Run's charged attempt attached. A zero-request segment cannot pass collection.",
+      "The schedule remains 32 task rows even when a Q5 row has two Run segments."
+    ]
+  },
+  "electronPair": {
+    "root": "TEMP/omni-edu-xiaozhi-phase8-collector-retest-dfb497df",
+    "driver": "verify.mjs",
+    "report": "driver-report.json",
+    "reportSha256": "8384fa68377b2a6e42cbbe0cbb688b0c7d291a92812fa9d2d1fadfb695006b8b",
+    "fixtureAdapter": "A TEMP copy replaces both fixed live upstream endpoints with 127.0.0.1, supplies a fake model key, blocks direct model requests, and points the B launcher at the tested production compile. The app code, counting proxy, ledger implementation and real public website path are unchanged.",
+    "a": {
+      "buildCommit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+      "mainSha256": "e256923d46376b17f6492e5500bf5b97a0071b700d2e3bce8477ebca715f157c",
+      "report": "run-A/collected.json",
+      "reportSha256": "513c3230e6a4c37e56351865c0d334fa5b7f71bec826705ca6dc9c65f93ebed8",
+      "runSegments": [{"id": "original", "modelAttempts": 2, "website": 200, "readback": "read"}],
+      "continued": false
+    },
+    "b": {
+      "buildCommit": "8ab1f2b7d9028ca543794ad1d07a1dc6ddf66522",
+      "mainSha256": "a2d7beb70ab5994827f1fcf15871ee3630f187b4437dee45a5b94a3001a12f21",
+      "rendererSha256": "cc352d86ce11482186da6fbc72f8b2a350597020262811c50735f23c737313f4",
+      "report": "run-B/collected.json",
+      "reportSha256": "38bff0da46a6a2a83f6dced444f22a59700bf2117ad7bf33ad8389563311e229",
+      "runSegments": [
+        {"id": "original", "modelAttempts": 2, "website": null, "readback": "not_read", "nativeToolError": "permission_denied"},
+        {"id": "continuation", "modelAttempts": 2, "website": 200, "readback": "read"}
+      ],
+      "sameTask": true,
+      "approvalConsumedOnce": true,
+      "nativeReceiptHashesMatchAfterClose": true
+    }
+  },
+  "mainIntegration": {
+    "buildCommit": "33fa1c77ac2c51cfc3cbc3c35ee7b74a48c06b20",
+    "mainSha256": "633238b16849f4db988fab684b84232abfb24d41c1b02d8df2acc13f44f5c4e3",
+    "rendererSha256": "cc352d86ce11482186da6fbc72f8b2a350597020262811c50735f23c737313f4",
+    "buildCommand": "npm.cmd run build -- --outDir test-results/harness-q5-collector-main-33fa1c7/out",
+    "buildStatus": "PASS",
+    "kbChineseQuestionRecall": "8/8",
+    "attempts": [
+      {
+        "status": "FAIL",
+        "report": "TEMP/omni-edu-xiaozhi-phase8-collector-main-33fa1c7-d030cb5c/run-B/collected.json",
+        "reportSha256": "1f06379bc24b99eed6cce73c4fd3a3269d5fc8f4a020060d51a3b6c3d6d84b7a",
+        "modelAttemptsByRun": [2, 0],
+        "finding": "Continuation ended before model dispatch with event_persistence. The first two fixture requests remained spent."
+      },
+      {
+        "status": "FAIL",
+        "report": "TEMP/omni-edu-xiaozhi-phase8-collector-main-33fa1c7-retry-52f8cfa2/run-B/collected.json",
+        "reportSha256": "a680e98b302f2ed690df1fa3c0f26ce394797b543ec518b5bb9effc17c2d4f72",
+        "modelAttemptsByRun": [2, 1],
+        "finding": "Continuation received HTTP 200, then event_persistence. The native tool recorded cancelled, no success receipt was committed, and approval was uncertain. The collector reports no source read."
+      },
+      {
+        "status": "PASS_SCOPED",
+        "report": "TEMP/omni-edu-xiaozhi-phase8-collector-diagnostic-effc94a8/run-B/collected.json",
+        "reportSha256": "19777aa1a163bc08fe51350c8f85b382b4050ee19f5bec9a4a2b1cb6ff570be1",
+        "modelAttemptsByRun": [2, 2],
+        "finding": "The same application build passed in a fresh profile. A stderr listener added to the diagnostic driver did not alter application behavior. Approval was consumed once, and the fixed source receipt matched after close."
+      },
+      {
+        "status": "PASS_SCOPED",
+        "report": "TEMP/omni-edu-xiaozhi-phase8-collector-integrated-a6b9b4dd/run-B/collected.json",
+        "reportSha256": "370a57824cb7ea1b682fad187229f6e8e795e5627a135ed7b0acb4eb1f38262e",
+        "driverReportSha256": "85b6f08ade2d945e86f6937c2c8951092fea1770da2a2ef91df6c894eaded601",
+        "modelAttemptsByRun": [2, 2],
+        "finding": "Final collector including failure preservation passed on the same app build. Same-task continuation received HTTP 200, with identical hot and cold native receipt hashes."
+      }
+    ],
+    "intermittentPersistenceRootCause": "UNVERIFIED"
+  },
+  "priorFailures": [
+    {"report": "TEMP/omni-edu-xiaozhi-phase8-collector-fixture-d2f9b0be/driver-report.json", "finding": "B was launched while its renderer build was still in progress; the first B attempt never reached model dispatch. A passed."},
+    {"report": "TEMP/omni-edu-xiaozhi-phase8-collector-final-e8ecae75/driver-report.json", "finding": "Electron's evaluation callback received the Electron module as its first argument. The initial per-Run diagnostic therefore lost the segment timestamp and did not recognize a real HTTP 200. Forward the explicit segment ID as the second argument; same fixture then passed."}
+  ],
+  "ledger": {"productionLimit": 200, "existingUsed": 3, "remaining": 197, "unresolved": 0, "paidRequestsInThisWork": 0},
+  "formalStatus": "NOT_RUN"
+}

@@ -8,15 +8,15 @@
     },
     {
       "path": "2.Memory.md",
-      "sha256": "37df59dfdc185bb6502c4ec2febc6290fd22427c21ddd4f3cdbe679cfd34c358"
+      "sha256": "940a61fdc09b0d894c422cf76fe581d9edefb4c42c7ae370ffc4b099cbfb5bf6"
     },
     {
       "path": "3.Learning.md",
-      "sha256": "5cb7b0e83e813946754ae6a0a5455cbcad5db21eac492152036e1904e6579758"
+      "sha256": "8356c07e68f72ea2d8df0a72577a2cd063f879aeea86ce72c5ce4d314f68e073"
     },
     {
       "path": "4.Wiki.md",
-      "sha256": "3e7903bf628550ef4a997b49b899afe104596ca84e45e363e8a2724742521fd9"
+      "sha256": "10c58a5b1f6e9eed010a323f183630a6f1283b5d870ebb006756abf49fbcea01"
     },
     {
       "path": "apps/desktop/scripts/education/kb-paper-grade-electron.mjs",
@@ -88,11 +88,11 @@
     },
     {
       "path": "docs/research/evidence/kb/20261120/paper-grade-alias/README.md",
-      "sha256": "ee0e931064f1ffa13236db7f93a2e2e31f5b6ee0036aaa6b068c41960aeeb28e"
+      "sha256": "2075ecd075afa0d9f7df8e6bf9bd3ba16e8f6f350fe171acb6f63866013d4f00"
     },
     {
       "path": "docs/research/evidence/kb/20261120/paper-grade-alias/summary.json",
-      "sha256": "3e4a10e4593e8f5d752c942238551acba84777ccc4265bde0d2ffa8bd0af3243"
+      "sha256": "c74784c90bd04044192760b35725b3cab03a2d6726c03fa18d7617eb6a69cd90"
     }
   ]
 }

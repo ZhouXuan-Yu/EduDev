@@ -7,12 +7,14 @@ import {pathToFileURL} from 'node:url';
 import {openBudgetLedger} from './phase8-budget-ledger.mjs';
 import {startCountingProxy} from './phase8-counting-proxy.mjs';
 import {actualDatabasePath, providerPaths, syntheticFiles, schedule, validateManifest, preparePlan, fingerprint, sha256} from './phase8-real-model-plan.mjs';
-import {readOriginalRecords, verifiedRunBinding, collectFiles, inspectOfficeArtifacts, exportBlindBundle} from './phase8-real-model-readback.mjs';
+import {readOriginalRecords, verifiedRunBinding, collectFiles, inspectOfficeArtifacts, exportBlindBundle,
+  q5ContinuationDecision, verifyQ5ApprovalConsumption, readQ5SourceEvidence} from './phase8-real-model-readback.mjs';
 
-export function rendererObservation() {
+export function rendererObservation(sessionId) {
   const point = () => performance.now();
   const data = {clock: {timeOrigin: performance.timeOrigin, dateCalibrationMs: Date.now() - (performance.timeOrigin + point())},
-    submissions: [], events: [], runId: null, terminalAt: null};
+    submissions: [], continuations: [], events: [], runId: null, runIds: [], terminalAt: null};
+  let continuationArmed = false;
   function submitted(event) {
     if (event.type === 'click' && event.target?.closest('[data-phase8-real-submit="true"]') || event.type === 'keydown' && event.key === 'Enter'
         && !event.shiftKey && event.target?.matches('[data-testid="office-prompt-input"]')) {
@@ -21,9 +23,13 @@ export function rendererObservation() {
   }
   document.addEventListener('click', submitted, true); document.addEventListener('keydown', submitted, true);
   const unsubscribe = window.omniEdu.onXiaozhiEvent(event => {
-    if (!data.submissions.length) return;
+    if (!data.submissions.length || sessionId && event.sessionId !== sessionId) return;
     if (event.kind === 'status' && event.status === 'running') data.runId ??= event.runId;
-    if (data.runId && event.runId !== data.runId) return;
+    if (event.kind === 'status' && event.status === 'running' && !data.runIds.includes(event.runId)) {
+      if (data.runIds.length && !continuationArmed) return;
+      data.runIds.push(event.runId);continuationArmed=false;
+    }
+    if (!data.runIds.includes(event.runId)) return;
     const row = {at: point(), kind: event.kind, runId: event.runId, sequence: event.sequence};
     if (event.kind === 'status') {row.status = event.status; if (event.status !== 'running') data.terminalAt = point();}
     if (['tool_start', 'tool_end'].includes(event.kind)) {row.tool = event.tool; row.callId = event.callId;
@@ -31,9 +37,30 @@ export function rendererObservation() {
     if (event.kind === 'model_request') row.request = {state: event.request.state, attempt: event.request.attempt, status: event.request.status};
     if (['status', 'tool_start', 'tool_end', 'model_request', 'approval'].includes(event.kind)) data.events.push(row);
   });
-  window.phase8RealObservation = {snapshot: () => structuredClone(data), dispose() {
+  window.phase8RealObservation = {snapshot: () => structuredClone(data), expectContinuation() {
+    if (data.runIds.length !== 1 || continuationArmed) throw Error('phase8_continuation_limit');
+    continuationArmed=true;data.continuations.push({at:point(),entry:'same_task_workbench'});
+  }, dispose() {
     unsubscribe(); document.removeEventListener('click', submitted, true); document.removeEventListener('keydown', submitted, true);
   }};
+}
+
+/** Only the existing visible same-task action may admit the one authorized continuation. */
+export async function continueApprovedQ5({task,original,webpageHttpTiming,page,record,beforeDispatch}) {
+  if (record.attempted) return record;
+  const decision=q5ContinuationDecision({task,binding:original.binding,records:original.records,webpageHttpTiming});
+  Object.assign(record,decision,{attempted:false});
+  if(decision.status!=='eligible')return record;
+  const unavailable=reason=>Object.assign(record,{status:'unavailable',reason});
+  const open=page.getByTestId('pi-workbench-open');
+  if(await open.count()!==1)return unavailable('workbench_entry_missing');
+  await open.click();
+  const row=page.locator(`[data-testid="pi-task-overview-row"][data-task-id="${original.binding.taskId}"]`);
+  try{await row.waitFor({timeout:5000});}catch{return unavailable('same_task_row_missing');}
+  const control=row.getByTestId('pi-task-overview-continue');
+  if(await row.count()!==1||await control.count()!==1||!await control.isEnabled())return unavailable('same_task_continuation_missing');
+  record.attempted=true;record.fromRunId=original.binding.runId;record.startedAt=performance.now();
+  await beforeDispatch();await control.click();record.status='dispatched';return record;
 }
 
 function isolatedEnvironment(desktop, dataRoot, model, background) {
@@ -79,6 +106,10 @@ async function handleVisibleApproval(page, task, decisions) {
   const button = card.locator(`[data-testid="pi-permission-${decision}"], [data-testid="pi-copy-${decision}"]`).first();
   if (!await button.count()) throw Error('phase8_visible_approval_control_missing');
   const startedAt = performance.now(); await button.click();
+  await page.waitForFunction(id => {
+    const node=[...document.querySelectorAll('[data-approval-id]')].find(node=>node.getAttribute('data-approval-id')===id);
+    return !node || node.getAttribute('data-state') !== 'pending';
+  },id,{timeout:10000});
   decisions.push({id, decision, startedAt, completedAt: performance.now(), clock: 'outer Node performance.now'});
 }
 
@@ -98,6 +129,24 @@ export function streamTransportComplete(request) {
     && request.firstByteAt <= request.terminalFrameAt && request.terminalFrameAt <= request.endAt;
 }
 
+/** Group by the acknowledged proxy dispatch boundary; request array positions carry no identity. */
+export function bindDispatchAttempts({ledger,evidenceRef,segments,transport}) {
+  const attempts=ledger.attempts().filter(item=>item.context.evidenceRef===evidenceRef||item.context.evidenceRef===evidenceRef+'/continuation');
+  const requests=transport?.chats || [];
+  for(const segment of segments){
+    const boundary=transport?.boundaries?.find(item=>item.id===segment.id);
+    const group=requests.filter(item=>item.dispatchBoundary===segment.id);
+    const reservations=attempts.filter(item=>item.context.evidenceRef===segment.evidenceRef);
+    const stoppedBeforeModel = ['failed','interrupted'].includes(segment.terminal) && Number.isFinite(boundary?.terminalAt);
+    if(boundary?.runId!==segment.binding.runId||boundary.conflict||(!group.length&&!stoppedBeforeModel)||group.length!==reservations.length
+      ||group.some(item=>item.runId!==segment.binding.runId))throw Error('phase8_attempt_binding_unverified');
+  }
+  if(attempts.some(item=>!segments.some(segment=>segment.evidenceRef===item.context.evidenceRef))
+    ||requests.some(item=>!segments.some(segment=>segment.id===item.dispatchBoundary)))throw Error('phase8_attempt_binding_unverified');
+  for(const segment of segments)for(const attempt of attempts.filter(item=>item.context.evidenceRef===segment.evidenceRef))ledger.bindRun(attempt.reservationId,segment.binding.runId);
+  return ledger.attempts().filter(item=>item.context.evidenceRef===evidenceRef||item.context.evidenceRef===evidenceRef+'/continuation');
+}
+
 function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
   if (result.cleanupError || result.bindingError) throw Error(result.cleanupError || result.bindingError);
   if (result.collectionStatus !== 'PASS') throw Error(result.error || 'phase8_collection_failed');
@@ -106,6 +155,21 @@ function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
     const checked = verifiedRunBinding({sessionId: result.binding.sessionId, runId: result.binding.runId,
       snapshot: result.snapshot, records});
     if (checked.taskId !== result.binding.taskId) throw Error('phase8_task_binding_unverified');
+  }
+  const segments=result.runSegments;
+  if(segments){
+    if(!segments.length||segments.length>2||segments[0].id!=='original'
+      ||segments.length===2&&(row.task!=='Q5'||segments[1].id!=='continuation'||result.continuation?.status!=='completed'
+        ||segments[1].binding.taskId!==segments[0].binding.taskId||segments[1].binding.runId===segments[0].binding.runId)
+      ||segments.at(-1).binding.runId!==result.binding.runId)throw Error('phase8_run_segments_unverified');
+    for(const segment of segments)for(const records of [segment.records,segment.coldRecords]){
+      const checked=verifiedRunBinding({...segment.binding,snapshot:segment.snapshot,records});
+      if(checked.taskId!==segment.binding.taskId)throw Error('phase8_task_binding_unverified');
+    }
+    if(segments.length===2){
+      verifyQ5ApprovalConsumption(segments[0].records,segments[1].records,segments[1].binding);
+      verifyQ5ApprovalConsumption(segments[0].records,segments[1].coldRecords,segments[1].binding);
+    }
   }
   if (result.transport?.rejected?.length) throw Error('phase8_provider_route_rejected');
   const chats = result.transport?.chats;
@@ -116,13 +180,19 @@ function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
   if (result.wireComparison.some(request => !request.expectedFieldsMatch)) throw Error('phase8_wire_configuration_mismatch');
   if (chats.some(request => !streamTransportComplete(request))) throw Error('phase8_provider_transport_incomplete');
   const evidenceRef = 'phase8-real/' + path.basename(path.dirname(result.output)) + '/' + row.id;
-  const attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef);
+  const attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef || attempt.context.evidenceRef === evidenceRef+'/continuation');
   if (!attempts.length || attempts.length !== chats.length || attempts.length !== result.attempts?.length) throw Error('phase8_metered_attempts_missing');
   for (const attempt of result.attempts) {
     const recorded = attempts.find(item => item.reservationId === attempt.reservationId);
-    if (!recorded || JSON.stringify(recorded) !== JSON.stringify(attempt) || attempt.context.runId !== result.binding.runId
+    const owner=segments?.find(segment=>segment.evidenceRef===attempt.context.evidenceRef)?.binding || (!segments?result.binding:null);
+    if (!recorded || JSON.stringify(recorded) !== JSON.stringify(attempt) || !owner || attempt.context.runId !== owner.runId
         || attempt.context.task !== row.task || attempt.context.version !== row.version || attempt.context.round !== row.round) throw Error('phase8_attempt_binding_unverified');
     if (attempt.state !== 'completed') throw Error('phase8_provider_transport_incomplete');
+  }
+  if(segments)for(const segment of segments){
+    const requests=chats.filter(request=>request.dispatchBoundary===segment.id);
+    const group=attempts.filter(attempt=>attempt.context.evidenceRef===segment.evidenceRef);
+    if(!requests.length||requests.length!==group.length||requests.some(request=>request.runId!==segment.binding.runId))throw Error('phase8_attempt_binding_unverified');
   }
   for (const request of chats) {
     const thinking = JSON.stringify({thinking: request.configuration.thinking ?? null, reasoning_effort: request.configuration.reasoning_effort ?? null});
@@ -142,10 +212,11 @@ async function collectRun(row, manifest, version, ledger, output, {background}) 
   const beforeFiles = collectFiles(workspace), beforeBudget = ledger.summary();
   const evidenceRef = 'phase8-real/' + path.basename(output) + '/' + row.id;
   const context = {task: row.task, version: row.version, round: row.round, evidenceRef};
-  const proxies = [], routes = {};
+  const proxies = [], routes = {}, dispatchGroups = [{id:'original',evidenceRef}];
   let application, page, snapshot, sessionId, runId;
   const result = {...row, collectionStatus: 'FAIL', qualityStatus: 'NOT_TESTED', output: root, decisions: [], beforeBudget, beforeFiles,
-    requestTimingBoundary: 'Main monotonic clock measures request/body consumption. Renderer clock measures trusted submission and terminal UI. Cross-process epoch differences are estimates with recorded calibration.',
+    runSegments: [],
+    requestTimingBoundary: 'Main monotonic clock measures request/body consumption. Renderer clock measures trusted submission and terminal UI. Each request captures its Run at the original main event-send and explicit proxy dispatch boundary. Cross-process epoch differences are estimates with recorded calibration.',
     webpageHttpTiming: null, failureRecoveryScenarios: 'NOT_TESTED_SEPARATE_PLANNED_SCENARIOS'};
   try {
     result.stage = 'proxy_setup';
@@ -160,6 +231,8 @@ async function collectRun(row, manifest, version, ledger, output, {background}) 
     fs.writeFileSync(bootstrap, `const {app,net}=require('electron');app.setPath('userData',${JSON.stringify(profile)});
 app.whenReady().then(async()=>{const {installProviderBridge}=await import(${JSON.stringify(transportModule)});
 globalThis.phase8RealBridge=installProviderBridge(net,${JSON.stringify({chatRoutes: routes})});
+const observed=[];const watch=(_event,contents)=>{const original=contents.send;const wrapped=function(channel,event,...rest){if(channel==='xiaozhi:event')globalThis.phase8RealBridge.observeRun(event);return original.call(this,channel,event,...rest);};contents.send=wrapped;observed.push({contents,original,wrapped});};
+app.on('web-contents-created',watch);globalThis.phase8RestoreRunObservation=()=>{app.removeListener('web-contents-created',watch);for(const item of observed)if(!item.contents.isDestroyed()&&item.contents.send===item.wrapped)item.contents.send=item.original;};
 ${row.task === 'Q5' ? `const {observeQ5WebTiming}=await import(${JSON.stringify(webTimingModule)});globalThis.phase8WebTiming=observeQ5WebTiming();` : ''}
 await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main/index.js')).href)});});`);
     result.stage = 'electron_launch';
@@ -191,26 +264,74 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     sessionId = await page.locator('.office-composer-container').getAttribute('data-session-id');
     await page.waitForFunction(async id => Boolean((await window.omniEdu.getXiaozhiSnapshot(id)).workspace), sessionId);
     await application.evaluate(({dialog}) => {dialog.showOpenDialog = globalThis.phase8OriginalPicker; delete globalThis.phase8OriginalPicker;});
-    await page.evaluate(rendererObservation);
+    await page.evaluate(rendererObservation,sessionId);
+    await application.evaluate((_electron,id)=>globalThis.phase8RealBridge.beginDispatch({id:'original',sessionId:id}),sessionId);
     result.stage = 'ui_submission';
     await page.getByTestId('office-prompt-input').fill(row.input);
     const submit = page.getByRole('button', {name: '发送消息', exact: true});
     await submit.evaluate(node => node.setAttribute('data-phase8-real-submit', 'true'));
     result.outerSubmitStartedAt = performance.now(); await submit.click();
-    const deadline = performance.now() + manifest.runTimeoutMs;
-    result.stage = 'terminal_wait';
-    while (performance.now() < deadline) {
-      await handleVisibleApproval(page, row.task, result.decisions);
-      const observation = await page.evaluate(() => window.phase8RealObservation.snapshot());
-      runId = observation.runId || runId;
-      snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
-      if (runId && !snapshot.running && snapshot.projection.turns.some(turn => turn.id === runId && turn.status !== 'running')) break;
-      await page.waitForTimeout(100);
-    }
-    if (!runId || snapshot.running) {
+    async function terminal(previousRunId) {
+      const deadline = performance.now() + manifest.runTimeoutMs;
+      result.stage = 'terminal_wait';
+      while (performance.now() < deadline) {
+        await handleVisibleApproval(page, row.task, result.decisions);
+        const observation = await page.evaluate(() => window.phase8RealObservation.snapshot());
+        const admitted=observation.runIds.find(id=>id!==previousRunId);
+        snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
+        if (admitted && !snapshot.running && snapshot.projection.turns.some(turn => turn.id === admitted && turn.status !== 'running')) {runId=admitted;return;}
+        await page.waitForTimeout(100);
+      }
       const stop = page.getByRole('button', {name: '停止本轮', exact: true});
-      if (await stop.isVisible()) await stop.click();
-      throw Error('phase8_run_deadline');
+      if (await stop.isVisible()) await stop.click();throw Error('phase8_run_deadline');
+    }
+    async function capture(dispatch) {
+      const records=readOriginalRecords(path.join(dataRoot,'app.db'),sessionId,runId);
+      const binding=verifiedRunBinding({sessionId,runId,snapshot,records});
+      const turn=snapshot.projection.turns.find(item=>item.id===runId);
+      const observation=await page.evaluate(()=>window.phase8RealObservation.snapshot());
+      const segment={...dispatch,binding,snapshot,records,terminal:turn.status,rendererEvents:observation.events.filter(event=>event.runId===runId),
+        answer:turn.items.filter(item=>item.role==='assistant').map(item=>item.text||'').join('\n')};
+      if(row.task==='Q5'){
+        const web=await application.evaluate((_electron,id)=>({timing:globalThis.phase8WebTiming?.snapshot(),
+          boundary:globalThis.phase8RealBridge.snapshot().boundaries.find(item=>item.id===id),observedAt:performance.now()}),dispatch.id);
+        segment.webpageHttpTiming={clock:web.timing?.clock || null,interval:{from:web.boundary?.at ?? null,through:web.observedAt,
+          definition:'Main performance.now; fixed-URL request creation belongs to this acknowledged dispatch interval'},
+          rows:(web.timing?.rows || []).filter(item=>Number.isFinite(web.boundary?.at)&&item.createdAt>=web.boundary.at&&item.createdAt<=web.observedAt),dropped:web.timing?.dropped ?? null};
+        segment.q5SourceEvidence=readQ5SourceEvidence({databasePath:path.join(dataRoot,'app.db'),binding,records,
+          events:segment.rendererEvents,webpageHttpTiming:segment.webpageHttpTiming});
+      }
+      result.runSegments.push(segment);return segment;
+    }
+    await terminal();
+    const original=await capture(dispatchGroups[0]);
+    const originalWebTiming=row.task==='Q5'?await application.evaluate(()=>globalThis.phase8WebTiming?.snapshot()):null;
+    result.continuation={};
+    await continueApprovedQ5({task:row.task,original,webpageHttpTiming:originalWebTiming,page,record:result.continuation,beforeDispatch:async()=>{
+      const continuationRoutes={},group={id:'continuation',evidenceRef:evidenceRef+'/continuation'};
+      // A distinct fixed proxy context is the durable grouping, not request position.
+      for(const providerPath of providerPaths){
+        const proxy=await startCountingProxy({ledger,providerEndpoint:'https://api.deepseek.com'+providerPath,
+          context:{...context,evidenceRef:group.evidenceRef},requestTimeoutMs:manifest.requestTimeoutMs});
+        proxies.push(proxy);continuationRoutes[providerPath]=proxy.url;
+      }
+      await application.evaluate((_electron,input)=>globalThis.phase8RealBridge.beginDispatch(input),
+        {id:group.id,sessionId,previousRunId:original.binding.runId,chatRoutes:continuationRoutes});
+      dispatchGroups.push(group);await page.evaluate(()=>window.phase8RealObservation.expectContinuation());
+    }});
+    if(result.continuation.attempted){
+      await terminal(original.binding.runId);const continued=await capture(dispatchGroups[1]);
+      if(continued.binding.taskId!==original.binding.taskId)throw Error('phase8_continuation_task_changed');
+      result.continuation.toRunId=continued.binding.runId;
+      if(continued.terminal!=='completed'){
+        result.continuation.status='run_failed';
+        result.continuation.terminal=continued.terminal;
+        result.continuation.errorCode=continued.snapshot.projection.turns.find(turn=>turn.id===continued.binding.runId)?.errorCode ?? null;
+        throw Error('phase8_approval_continuation_run_failed');
+      }
+      result.stage='continuation_readback';
+      result.continuation.consumedApprovalIds=verifyQ5ApprovalConsumption(original.records,continued.records,continued.binding);
+      result.continuation.status='completed';
     }
     result.stage = 'readback';
     result.observation = await page.evaluate(() => window.phase8RealObservation.snapshot());
@@ -255,19 +376,24 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     if (application) {
       await page?.evaluate(() => window.phase8RealObservation?.dispose()).catch(() => {});
       await application.evaluate(({dialog}) => {if (globalThis.phase8OriginalPicker) dialog.showOpenDialog = globalThis.phase8OriginalPicker;
-        globalThis.phase8RealBridge?.restore();globalThis.phase8WebTiming?.dispose();}).catch(() => {result.cleanupError = 'phase8_restore_failed';});
+        globalThis.phase8RestoreRunObservation?.();globalThis.phase8RealBridge?.restore();globalThis.phase8WebTiming?.dispose();}).catch(() => {result.cleanupError = 'phase8_restore_failed';});
       await application.close().catch(() => {result.cleanupError = 'phase8_close_failed';});
     }
     for (const proxy of proxies) await proxy.close().catch(() => {result.cleanupError = 'phase8_proxy_close_failed';});
+    result.afterBudget = ledger.summary();
     try {
-      result.attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef);
-      if (result.binding) {
-        for (const attempt of result.attempts) ledger.bindRun(attempt.reservationId, result.binding.runId);
-        result.attempts = ledger.attempts().filter(attempt => attempt.context.evidenceRef === evidenceRef);
-        result.coldRecords = readOriginalRecords(path.join(dataRoot, 'app.db'), sessionId, runId);
+      result.attempts = bindDispatchAttempts({ledger,evidenceRef,segments:result.runSegments,transport:result.transport});
+    } catch {result.bindingError = 'phase8_attempt_binding_unverified';}
+    try {
+      for(const segment of result.runSegments){
+        segment.coldRecords=readOriginalRecords(path.join(dataRoot,'app.db'),segment.binding.sessionId,segment.binding.runId);
+        verifiedRunBinding({...segment.binding,snapshot:segment.snapshot,records:segment.coldRecords});
+        if(row.task==='Q5')segment.coldQ5SourceEvidence=readQ5SourceEvidence({databasePath:path.join(dataRoot,'app.db'),binding:segment.binding,
+          records:segment.coldRecords,events:segment.rendererEvents,webpageHttpTiming:segment.webpageHttpTiming});
       }
-      result.afterBudget = ledger.summary();
-    } catch {result.bindingError = 'phase8_attempt_binding_or_readback_failed';}
+      if(result.binding)result.coldRecords=result.runSegments.at(-1)?.coldRecords;
+      if(row.task==='Q5')result.q5FixedSourceRead=result.runSegments.some(segment=>segment.coldQ5SourceEvidence?.status==='read');
+    } catch {result.bindingError ??= 'phase8_cold_readback_failed';}
     if (result.cleanupError || result.bindingError) result.collectionStatus = 'FAIL';
     result.httpAttemptCount = result.attempts?.length ?? null;
     result.wireComparison = compareWire(result.transport, manifest);
