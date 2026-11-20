@@ -319,6 +319,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     return prewarmCoreToolGovernance({definitions,registry:store.xiaozhiState.capabilities,signal});
   });
   let terminalService: TerminalService;
+  const toolPermissionProvider = (sessionId: string, name: string) => {
+    const record = active.get(sessionId)?.toolGovernance?.records.get(name);
+    return record ? {id: record.providerId, version: record.providerVersion, sourceHash: record.sourceHash, schemaHash: record.schemaHash} : null;
+  };
   const permissions = createPermissionService({store: store.xiaozhiState.permissions, dataRoot: options.dataRoot,
     jobCurrent: (binding, request) => terminalService?.permissionCurrent(binding, request) || false,
     requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1,
@@ -342,10 +346,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     needsRuntimeConfiguration: async () => (await permissionRuntime.inspect()).status === 'needs_configuration',
     process: async () => {const runtime = await permissionRuntime.systemRuntime(); return {executable: runtime.path, executableHash: runtime.sha256};},
     verifyProcess: async scope => await acquisition.verifyProcess(scope) || await extensionPackages.verifyProcess(scope),
-    toolProvider: (sessionId, name) => {
-      const record = active.get(sessionId)?.toolGovernance?.records.get(name);
-      return record ? {id: record.providerId, version: record.providerVersion, sourceHash: record.sourceHash, schemaHash: record.schemaHash} : null;
-    },
+    toolProvider: toolPermissionProvider,
     verifyProvider: async provider => {
       if (provider.id.startsWith('edu.native.tool.')) return validCorePermissionProvider(store.xiaozhiState.capabilities, provider);
       if (provider.id.startsWith('mcp.mcp-')) {
@@ -604,16 +605,23 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   });
   const legacyRequests = createLegacyApprovalRequests({permissions,
     workspace: sessionId => host.resolveFileWorkspace(sessionId),
+    provider: row => {
+      const run = active.get(row.sessionId);
+      if (!run?.publisher || !run.task || run.stopped
+          || run.runId !== row.runId && run.legacyApprovalId !== row.id) return null;
+      return toolPermissionProvider(row.sessionId, 'office_copy_file');
+    },
     binding: (sessionId, runId) => createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).ownerForRun(sessionId, runId),
     resumedOwner: row => {
       const run = active.get(row.sessionId);
       if (run?.legacyApprovalId !== row.id || !run.publisher || !run.task || run.stopped) return null;
       return {...run.publisher.owner, taskId: run.task.id, requirementsVersion: run.task.requirementsVersion};
     }});
+  const legacyBridge = createLegacyPermissionBridge({permissions, store: store.xiaozhiState.permissions, request: legacyRequests.request});
   const approvals = createPiApprovalCoordinator({ store, dataRoot: options.dataRoot,
     legacyValidate: legacyRequests.validate,
     resumedLegacyId: (sessionId, runId) => active.get(sessionId)?.runId === runId ? active.get(sessionId)?.legacyApprovalId : undefined,
-    legacyBridge: createLegacyPermissionBridge({permissions, store: store.xiaozhiState.permissions, request: legacyRequests.request}),
+    legacyBridge,
     isCurrent: (id, run) => !closing && active.get(id)?.runId === run && !active.get(id)?.stopped,
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); } });
   const textChanges = createTextChangeCoordinator({ state: store.xiaozhiState.changes,
@@ -1235,6 +1243,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             }, persist: (callId, name, receipt) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt)),
             beginEffect: (callId, expected) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.beginToolEffect(owner, callId, expected)),
             bindExecution: (callId, execution) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.bindToolEffectExecution(owner, callId, execution))});
+          if (run.legacyApprovalId) {
+            const legacy = await store.xiaozhiState.getApproval(run.legacyApprovalId);
+            if (!legacy || legacy.sessionId !== id || legacy.state !== 'approved') throw Error('permission_denied');
+            await legacyBridge(legacy);
+            signal.throwIfAborted();
+          }
           return run.toolGovernance;
         }}} : {}),
         capabilityAcquisitionTools: run.task ? createCapabilityAcquisitionTools(acquisition, callId => acquisitionContext(id, callId),

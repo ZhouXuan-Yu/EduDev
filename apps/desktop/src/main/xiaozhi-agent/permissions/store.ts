@@ -124,6 +124,18 @@ export function createPermissionStore(sql: Sql) {
       });
     },
     approvals: (sessionId: string) => readApprovals(sql, sessionId),
+    async legacyApprovalReceipts(sessionId: string, legacyId: string) {
+      const links = await sql.all(`SELECT reference,metadata_json FROM ${audit}
+        WHERE session_id=? AND kind='legacy_approval_linked' AND json_extract(metadata_json,'$.legacyId')=?`, [sessionId, legacyId]);
+      if (!links.length) return [];
+      const approvals = await readApprovals(sql, sessionId);
+      return links.map(link => {
+        const metadata = JSON.parse(String(link.metadata_json));
+        const approval = approvals.find(item => item.id === link.reference);
+        if (!approval || metadata.requestDigest !== approval.requestDigest) throw Error('permission_state_corrupt');
+        return approval;
+      });
+    },
     async view(sessionId: string) {
       return transaction(async work => ({schemaVersion: 1 as const, profile: await profile(work, sessionId),
         grants: await readGrants(work, sessionId), approvals: await readApprovals(work, sessionId)}));

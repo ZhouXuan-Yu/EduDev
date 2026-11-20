@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {workspaceHash} from '../workspace-authority';
 import type {PrivateApproval} from '../persistent-state';
-import type {PermissionOwner} from '../../../shared/xiaozhi-permissions';
+import type {PermissionOwner, PermissionRequest} from '../../../shared/xiaozhi-permissions';
 import type {PermissionService} from './service';
 import {filesystemScope, checkedFile, digest} from './resources';
 import {createToolPermissionRuntime} from './tool-runtime';
@@ -11,6 +11,7 @@ export function createLegacyApprovalRequests(options: {
   workspace: (sessionId: string) => Promise<{path: string}>;
   binding: (sessionId: string, runId: string) => Promise<(PermissionOwner & {requirementsVersion: number}) | null>;
   resumedOwner: (row: PrivateApproval) => (PermissionOwner & {requirementsVersion: number}) | null;
+  provider: (row: PrivateApproval) => PermissionRequest['provider'];
   permissions: PermissionService;
 }) {
   async function validate(row: PrivateApproval) {
@@ -26,12 +27,16 @@ export function createLegacyApprovalRequests(options: {
   return {
     validate,
     async request(row: PrivateApproval) {
-      const lease = await validate(row);
-      const binding = await options.binding(row.sessionId, row.runId) || options.resumedOwner(row);
+      const provider = options.provider(row);
+      if (!provider) throw Error('task_source_required');
+      const binding = options.resumedOwner(row) || await options.binding(row.sessionId, row.runId);
+      // The old native adapter identity cannot authorize a different registered
+      // tool contract. Keep v1 facts until the resumed Session registers it.
       if (!binding) throw Error('task_source_required');
+      const lease = await validate(row);
       const {requirementsVersion, ...owner} = binding;
       const runtime = createToolPermissionRuntime({engine: options.permissions.engine, owner: () => owner,
-        workspace: async () => lease, requirementsVersion: () => requirementsVersion});
+        workspace: async () => lease, requirementsVersion: () => requirementsVersion, provider: () => provider});
       const request = await runtime.request(row.callId, 'office_copy_file', {source: row.source, target: row.target});
       if (!request) throw Error('permission_denied');
       return request;
