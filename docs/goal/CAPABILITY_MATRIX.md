@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-20 M05/M06/M11 历史图片题的迁移验证
+
+资料页的已存选择题答案复核继续使用现有原图、裁图、SQLite 回执和教师保护。合法移动的历史图片可以参与检索及正式组选。 [本轮记录](../research/evidence/kb/20261120/image-receipt-choice-recovery/README.md)
+
 ## 2026-11-20 M02/M06 后台写入与自动组选
 
 自动组卷的候选扫描从写锁中拆出。正式确认、发布和导出继续检查选中题当前版本及既有权限。 [本轮记录](../research/evidence/kb/20261120/paper-scan-concurrency/README.md)

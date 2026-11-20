@@ -18,8 +18,8 @@ import {teacherOwnsRuleQuestion} from './material-rule-protection';
 
 type Row = Record<string, unknown>;
 type Value = string | number | null;
-type Proof = Awaited<ReturnType<typeof readAiPageReceipt>> & {bookReferences?: BookFinalReferences; bookAnswerPolicy?: typeof PRINTED_FILL_SLOTS};
-type Host = {all: (sql: string, values?: Value[]) => Promise<Row[]>; run: (sql: string, values?: Value[]) => Promise<void>; root?: () => string; proof: (batch: string, ordinal: number) => Promise<Proof>};
+type Proof = Awaited<ReturnType<typeof readAiPageReceipt>> & {originalStamp?: string; bookReferences?: BookFinalReferences; bookAnswerPolicy?: typeof PRINTED_FILL_SLOTS};
+type Host = {all: (sql: string, values?: Value[]) => Promise<Row[]>; run: (sql: string, values?: Value[]) => Promise<void>; root?: () => string; proof: (batch: string, ordinal: number, signal: AbortSignal) => Promise<Proof>};
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const CHOICE_RECHECK_TABLE = `CREATE TABLE IF NOT EXISTS material_ai_choice_rechecks(
   question_id TEXT PRIMARY KEY,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,
@@ -108,21 +108,22 @@ export class MaterialChoiceRechecks {
     const following = await followingPageStatus(this.host,source,proof.unit.pagePrompt&&'totalPages' in proof.unit.pagePrompt?proof.unit.pagePrompt.totalPages:source.page);
     return {batchId,ordinal,source,sources:proof.unit.sources,originalQuestions:[],firstRaw:row.first_json,finalRaw:row.final_json,first:proof.first,final:proof.final,review:proof.review,imageSha:proof.imageSha,title:'',model:proof.config.model,pagePrompt:proof.unit.pagePrompt,crops,following,bookReferences:proof.bookReferences,bookAnswerPolicy:proof.bookAnswerPolicy};
   }
-  private async applyNextParents(batchId:string,limit:number){
+  private async applyNextParents(batchId:string,limit:number,signal:AbortSignal){
     if(!limit||!nextParentWritesEnabled())return 0;
     const rows=await this.host.all(`SELECT q.*,m.ordinal recheck_ordinal,m.number recheck_number
       ${boundaryCandidates} ORDER BY m.ordinal,m.number,q.id LIMIT ?`,[batchId,limit]);
     let applied=0;
     for(const row of rows){
+      signal.throwIfAborted();
       const id=String(row.id),ordinal=Number(row.recheck_ordinal),number=String(row.recheck_number);
       if(await teacherOwnsRuleQuestion(this.host,id))continue;
-      const proof=await this.host.proof(batchId,ordinal),source=proof.unit.pageSource,base=proof.unit.pagePrompt;
+      const proof=await this.host.proof(batchId,ordinal,signal),source=proof.unit.pageSource,base=proof.unit.pagePrompt;
       const model=proof.final.questions.at(-1);
       if(!source||!base||!('totalPages'in base)||!model||model.number!==number||!sameFields(row,model))continue;
       const boundary=await readFollowingPageBoundary(this.host,source,base.totalPages,number);
       if(!boundary.nextParentSource)continue;
       const args=await this.args(batchId,ordinal,proof,[]);
-      const crops=await readPageCrops(this.host,batchId,ordinal,source,proof.first,args.firstRaw,proof.imageSha,new AbortController().signal,number,base);
+      const crops=await readPageCrops(this.host,batchId,ordinal,source,proof.first,args.firstRaw,proof.imageSha,signal,number,base);
       const archive=JSON.parse(String(row.archive_json)) as QuestionBankItem['archive'];
       const pagePrompt=await this.promptFor({id,archive},proof,crops,'unknown');
       const proposal={...args,pagePrompt,crops};
@@ -144,7 +145,8 @@ export class MaterialChoiceRechecks {
     return applied;
   }
   /** Called within the application's writer transaction, capped at twenty source candidates. */
-  async apply(batchId: string, action: 'choice' | 'layout' = 'choice') {
+  async apply(batchId: string, action: 'choice' | 'layout' = 'choice', signal = new AbortController().signal) {
+    signal.throwIfAborted();
     if (process.env.OMNI_EDU_AI_PRINTED_CHOICE_ANSWERS === '0' || action === 'layout' && process.env.OMNI_EDU_AI_SOURCE_LAYOUT === '0') throw Error('unsupported');
     const policyColumn = action === 'layout'
       ? `CASE WHEN ${markerLayout} THEN 'markers' ELSE 'layout' END`
@@ -157,14 +159,15 @@ export class MaterialChoiceRechecks {
     const contexts = new Map<number,{proof:Proof;crops:PageCrop[];args:AiPagePublishArgs}>();
     let applied = 0;
     for (const row of rows) {
+      signal.throwIfAborted();
       const mode = row.recheck_mode as Mode;
       const ordinal = Number(row.recheck_ordinal), number = String(row.recheck_number);
       let context = contexts.get(ordinal);
       if (!context) {
-        const proof = await this.host.proof(batchId,ordinal);
+        const proof = await this.host.proof(batchId,ordinal,signal);
         if (!proof.unit.pageSource || !originalPolicyAllowed(proof.unit.pagePrompt,mode)) continue;
         const raw = (await this.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?', [batchId,ordinal]))[0];
-        const crops = await readPageCrops(this.host,batchId,ordinal,proof.unit.pageSource,proof.first,String(raw.first_json),proof.imageSha,new AbortController().signal,undefined,proof.unit.pagePrompt);
+        const crops = await readPageCrops(this.host,batchId,ordinal,proof.unit.pageSource,proof.first,String(raw.first_json),proof.imageSha,signal,undefined,proof.unit.pagePrompt);
         context = {proof,crops,args:await this.args(batchId,ordinal,proof,crops)};
         contexts.set(ordinal,context);
       }
@@ -181,13 +184,14 @@ export class MaterialChoiceRechecks {
       applied++;
     }
     for (const [ordinal,context] of contexts) {
-      const current = await this.host.proof(batchId,ordinal);
-      const crops = await readPageCrops(this.host,batchId,ordinal,current.unit.pageSource!,current.first,context.args.firstRaw,current.imageSha,new AbortController().signal,undefined,current.unit.pagePrompt);
+      const current = await this.host.proof(batchId,ordinal,signal);
+      if (current.originalStamp !== context.proof.originalStamp) throw Error('source_changed');
+      const crops = await readPageCrops(this.host,batchId,ordinal,current.unit.pageSource!,current.first,context.args.firstRaw,current.imageSha,signal,undefined,current.unit.pagePrompt);
       for (const number of context.proof.final.questions.map(question => question.number)) {
         if (proofSha(current,number,crops) !== proofSha(context.proof,number,context.crops)) throw Error('source_changed');
       }
     }
-    return applied+(action==='layout'?await this.applyNextParents(batchId,20-rows.length):0);
+    return applied+(action==='layout'?await this.applyNextParents(batchId,20-rows.length,signal):0);
   }
   /** Audit absence preserves the old policy. An audited classification is independently rederived. */
   async promptFor(question: Pick<QuestionBankItem,'id'|'archive'>, proof: Proof, crops: PageCrop[], following: AiPagePublishArgs['following']) {

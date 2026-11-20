@@ -8,7 +8,7 @@ const {PRINTED_CHOICE_ANSWER,printedChoiceAnswerComparison}=await import('../../
 const {blindAnswerIssues}=await import('../../src/shared/material-ai-answer-review.ts');
 const {validAiAction,MATERIAL_AI_SCHEMA}=await import('../../src/shared/material-ai.ts');
 const {validAiPagePrompt}=await import('../../src/shared/material-ai-page.ts');
-const {MaterialChoiceRechecks,CHOICE_RECHECK_TABLE}=await import('../../src/main/assets/material-ai-choice-rechecks.ts');
+const {MaterialChoiceRechecks,CHOICE_RECHECK_TABLE,NEXT_PARENT_RECHECK_TABLE}=await import('../../src/main/assets/material-ai-choice-rechecks.ts');
 const {readAiPageReceipt}=await import('../../src/main/assets/material-ai-page-evidence.ts');
 const {validateAiPageSource}=await import('../../src/main/assets/material-ai-page-source.ts');
 const {readPageCrops}=await import('../../src/main/assets/material-ai-page-crops.ts');
@@ -58,7 +58,8 @@ if(root){
  host.proof=async(batch,ordinal)=>{const proof=await readAiPageReceipt(host,batch,ordinal);await validateAiPageSource(host,proof.unit.pageSource);return proof;};
  const repo=new MaterialChoiceRechecks(host);
  const batch=db.prepare("SELECT m.batch_id FROM material_ai_members m JOIN question_bank_items q ON q.id=m.question_id WHERE q.id=?").get('question_691d88d6-d7a8-4330-a96f-b8ba88e5467f')?.batch_id;
- assert(batch,'Use the saved natural Word-page batch');db.exec(CHOICE_RECHECK_TABLE);
+ assert(batch,'Use the historical fixture with frozen choice answer conflicts');
+ db.exec(CHOICE_RECHECK_TABLE);db.exec(NEXT_PARENT_RECHECK_TABLE);
  // Each check rolls back its independent copy, including any successful classifications.
  async function isolated(action){db.exec('BEGIN IMMEDIATE');try{await action();}finally{db.exec('ROLLBACK');}}
  try{
@@ -109,6 +110,25 @@ if(root){
    const failing=new MaterialChoiceRechecks({...host,run:async(sql,values)=>{if(sql.startsWith('UPDATE question_bank_items')&&++writes===2)throw Error('disk_full');await host.run(sql,values);}});
    db.exec('BEGIN IMMEDIATE');try{await assert.rejects(()=>failing.apply(batch),/disk_full/);}finally{db.exec('ROLLBACK');}
    assert.equal(writes,2);assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_choice_rechecks').get().n,0);assert.deepEqual(db.prepare('SELECT id,archive_json FROM question_bank_items ORDER BY id').all(),before);
+  });
+  await check('A change in physical identity during recheck rolls back all question and journal writes',async()=>{
+   const before=db.prepare('SELECT * FROM question_bank_items ORDER BY id').all();
+   let reads=0;
+   const moving=new MaterialChoiceRechecks({...host,proof:async(batchId,ordinal,signal)=>{
+    assert(!signal.aborted);
+    return {...await host.proof(batchId,ordinal),originalStamp:String(++reads)};
+   }});
+   await isolated(async()=>{
+    await assert.rejects(()=>moving.apply(batch),/source_changed/);
+    assert.equal(reads,2);
+    assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_choice_rechecks').get().n,3);
+   });
+   assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_choice_rechecks').get().n,0);
+   assert.deepEqual(db.prepare('SELECT * FROM question_bank_items ORDER BY id').all(),before);
+  });
+  await check('A cancelled historical recheck never reads or writes',async()=>{
+   const untouched=new MaterialChoiceRechecks({all:async()=>assert.fail('read'),run:async()=>assert.fail('write'),proof:async()=>assert.fail('proof')});
+   await assert.rejects(()=>untouched.apply(batch,'choice',AbortSignal.abort()),{name:'AbortError'});
   });
   await check('Source proof failure leaves all candidate archives untouched',()=>isolated(async()=>{
    const before=db.prepare('SELECT id,archive_json FROM question_bank_items ORDER BY id').all(),bad=new MaterialChoiceRechecks({...host,proof:async()=>{throw Error('source_changed');}});await assert.rejects(()=>bad.apply(batch),/source_changed/);assert.deepEqual(db.prepare('SELECT id,archive_json FROM question_bank_items ORDER BY id').all(),before);
