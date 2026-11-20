@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 扫描题旁红批的区域核对
+
+M03/M05 增加局部解消扫描选择题红批冲突。结构草稿保留分裁题面和原页溯源。缺答和教师质量门禁继续，整库目标未完成。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)
+
 ## 2026-11-20 裁缺题号的原页恢复
 
 M03 恢复原件裁去题号时的独立题干候选，修复编号图注截断选项和新例题串页。第 6 题仍有原生文字冲突，完整知识库验收继续。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)

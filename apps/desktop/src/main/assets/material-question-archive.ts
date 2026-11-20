@@ -177,7 +177,7 @@ export class MaterialQuestionArchive{
            this.controller.signal,
          );
          if(await target.structures!().archivedOwner(candidate.reference,q))continue;
-         if(!await target.structures!().permitsPdfQuestion(resource,q))throw Error("source_changed");
+         if(!await target.structures!().permitsPdfQuestion(resource,q,candidate.reference.generation,this.controller.signal))throw Error("source_changed");
          if (await hasIdenticalVisibleStructureDraft(target.host, legacyKey, candidate.reference)) continue;
          const {units}=await target.structureContext(candidate.reference,q.pageRange);
          if(!units.length)throw Error("source_changed");

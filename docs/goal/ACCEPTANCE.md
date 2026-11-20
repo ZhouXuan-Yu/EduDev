@@ -4,6 +4,10 @@
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
 
+## 2026-11-20 扫描题旁红批的区域核对
+
+检查真实扫描题草稿、原图完整、页级冲突保留、原像素分裁、无批注像素及答案留空。覆盖有意义文字伸入选项、OCR 不一致、原生漏字和跨页反例。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)
+
 ## 2026-11-20 裁缺题号的原页恢复
 
 以真实原图和 OCR 行逐项核对未知编号题的边界、教师来源确认与冷启。用原页检查有编号的相邻题保持 A–D、题图与图注，只在该页。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)

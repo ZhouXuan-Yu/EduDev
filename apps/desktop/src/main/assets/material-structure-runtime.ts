@@ -16,6 +16,7 @@ import { DOCUMENT_STRUCTURE_ENGINE } from "../../shared/material-document-struct
 import {
   PDF_PAGE_ENGINE,
   MATERIAL_PREVIEW_SCHEMA,
+  validPageBox,
   type PageBox,
 } from "../../shared/material-page-preview";
 import {
@@ -413,6 +414,34 @@ export class MaterialStructureRuntime {
     if (blanks.length || parents.length) input.printedRecovery = { blanks, parents };
   }
 
+  async verifyPdfMarks(image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal) {
+    try {
+      const bytes = await this.assets.read(image, true, signal);
+      const raster = nativeImage.createFromBuffer(bytes);
+      const measure = (box: PageBox) => {
+        signal.throwIfAborted();
+        const pixels = raster.crop(structureCropRect(image, box)).toBitmap();
+        let red = 0, otherDark = 0;
+        for (let i = 0; i < pixels.length; i += 4) {
+          const b = pixels[i], g = pixels[i + 1], r = pixels[i + 2];
+          if (r >= 95 && r - g >= 45 && r - b >= 45) red++;
+          else if (r + g + b <= 345) otherDark++;
+        }
+        return { red, otherDark, size: pixels.length / 4 };
+      };
+      return marks.every(box => {
+        const { red, otherDark, size } = measure(box);
+        return red >= Math.max(12, size * .04) && red >= otherDark * 2;
+      }) && slices.every(box => {
+        const { red, otherDark } = measure(box);
+        return red === 0 && otherDark >= 12;
+      });
+    } catch (error) {
+      signal.throwIfAborted();
+      return false;
+    }
+  }
+
   async document(
     resource: TeacherResource,
     q: StructureQuestion,
@@ -421,6 +450,10 @@ export class MaterialStructureRuntime {
   ): Promise<QuestionDocument> {
     if (pages.length > 8 || q.anchors.length > 256 || q.stem.length > 12000)
       throw Error("question_too_large");
+    const sliced = q.pdfSourceSlices;
+    if (sliced && (pages.length !== 1 || sliced.length < 6 || sliced.length > 8 ||
+        pages[0].page.page !== q.pageRange[0] || !sliced.every(validPageBox)))
+      throw Error("structure_document_invalid");
     const blocks: QuestionDocument["blocks"] = [];
     const options: Extract<QuestionBlock, { kind: "choices" }>["options"] = [];
     const captionIds = new Set(q.options.filter((part) => q.assets.some((a) => a.choiceLabel === part.label))
@@ -431,7 +464,9 @@ export class MaterialStructureRuntime {
       const pageAssets = q.assets.filter((asset) => asset.page === page.page);
       const regular = pageAssets.filter((asset) => !asset.choiceLabel);
       const columns = paragraphs.length ? [...new Set(paragraphs.map((p) => p.column))] : regular.length ? [-1] : [];
-      const crops: { boxes: PageBox[]; label?: string }[] = columns.map((column) => ({
+      const crops: { boxes: PageBox[]; label?: string }[] = sliced
+        ? sliced.map(box => ({ boxes: [box] }))
+        : columns.map((column) => ({
         boxes: [
           ...paragraphs.filter((p) => p.column === column).map((p) => p.anchor.box),
           ...regular.filter((a) => column < 0 ||
@@ -450,21 +485,14 @@ export class MaterialStructureRuntime {
       const bytes = await this.assets.read(image, true, signal);
       const full = nativeImage.createFromBuffer(bytes);
       for (const { boxes, label } of crops) {
-        const padX = label ? 0.002 : 0.008, padY = label ? 0.002 : 0.005;
+        const padX = sliced ? 0 : label ? 0.002 : 0.008, padY = sliced ? 0 : label ? 0.002 : 0.005;
         const box: PageBox = [
           Math.max(0, Math.min(...boxes.map((b) => b[0])) - padX),
           Math.max(0, Math.min(...boxes.map((b) => b[1])) - padY),
           Math.min(1, Math.max(...boxes.map((b) => b[2])) + padX),
           Math.min(1, Math.max(...boxes.map((b) => b[3])) + padY),
         ];
-        const x = Math.floor(box[0] * image.width),
-          y = Math.floor(box[1] * image.height);
-        const crop = full.crop({
-          x,
-          y,
-          width: Math.ceil(box[2] * image.width) - x,
-          height: Math.ceil(box[3] * image.height) - y,
-        });
+        const crop = full.crop(structureCropRect(image, box));
         const png = crop.toPNG({ scaleFactor: 1 }),
           size = crop.getSize(),
           sha256 = sha(png);
@@ -520,6 +548,11 @@ export class MaterialStructureRuntime {
       throw Error("structure_document_invalid");
     return document;
   }
+}
+
+function structureCropRect(image: OriginalImage, box: PageBox) {
+  const x = Math.floor(box[0] * image.width), y = Math.floor(box[1] * image.height);
+  return { x, y, width: Math.ceil(box[2] * image.width) - x, height: Math.ceil(box[3] * image.height) - y };
 }
 
 /** Bounded short-line normalization, preserving the untouched crop as the source asset. */

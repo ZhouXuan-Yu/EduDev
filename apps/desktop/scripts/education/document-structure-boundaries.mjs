@@ -2,7 +2,7 @@ import "../office-agent/register-source.mjs";
 import assert from "node:assert/strict";
 const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
-const { verifiedQuestionInPdfConflict } =
+const { localizedPdfMarkProof, verifiedQuestionInPdfConflict } =
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
 const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
@@ -103,6 +103,41 @@ await check("An isolated unnumbered prompt stays reviewable and a numbered figur
     assert(following.issues.includes("shared_material_scope"));
   }
   assert.equal(page([["第6题 图中有五个不同的小球，请计算它们的质量。"]]).paragraphs[0].marker.label,"6");
+});
+await check("PDF annotations must be complete, detached and backed by exact paged OCR", () => {
+  const y = [.3,.36,.42,.48];
+  const p = page([
+    ["6. 根据题图，选择符合两个摩擦力方向的选项。",.1,.1,.7],
+    ...Array.from("ABCD",(label,i)=>[label+". 选项内容各不相同 "+i,.12,y[i],.36]),
+  ],1,1,[{id:"figure",kind:"image",score:.98,box:[.76,.32,.92,.47],needsReview:true}]);
+  const [q] = questions([p]);
+  const items = ["α","√","√","√"].map((text,i)=>({
+    id:"native-item-"+(i+1),text,box:[.49,y[i]+.001,.515,y[i]+.017],
+    transform:[1,0,0,1,0,0],width:12,height:12,
+  }));
+  p.nativeRecovery = {policy:"pdf-native-crop-concordance.v1",rasterSha256:p.rasterSha256,
+    accepted:[],attempts:[],unresolved:[],native:{
+      schemaVersion:"xiaozhi.pdf-native-text.v1",engine:"unpdf-1.8.1/pdfjs-6.1.200-text.v1",
+      ok:true,version:p.version,page:1,total:1,readBytes:1,items,lines:[],
+    }};
+  const receipt = {status:"needs_review",error:"text_conflict",method:"ocr",
+    nativeText:"α √ √ √",text:p.rawText,ocrText:p.rawText,width:1000,height:1000,imageArea:.5,nativeBoxes:[]};
+  const positive=localizedPdfMarkProof(receipt,q,p);
+  assert.equal(positive.slices.length,6);
+  assert.equal(positive.marks.length,4);
+  assert.equal(localizedPdfMarkProof({...receipt,nativeText:"α √ √ √ +"},q,p),undefined);
+  assert.equal(localizedPdfMarkProof({...receipt,ocrText:receipt.ocrText.replace("3","4")},q,p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,pageRange:[1,2]},p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,stem:q.stem.replace("3","4")},p),undefined);
+  assert.equal(localizedPdfMarkProof(receipt,{...q,options:q.options.slice(0,3)},p),undefined);
+  for(const i of [0,2,3]){
+    const mixed=structuredClone(p);
+    mixed.nativeRecovery.native.items[i].box[0]=.47;
+    assert.equal(localizedPdfMarkProof(receipt,q,mixed),undefined);
+  }
+  const orphan=structuredClone(p);
+  orphan.nativeRecovery.unresolved=["native-line-1"];
+  assert.equal(localizedPdfMarkProof(receipt,q,orphan),undefined);
 });
 await check("Printed fill slots preserve literal OCR and require visible thin rules", () => {
   const width = 100, height = 60;
