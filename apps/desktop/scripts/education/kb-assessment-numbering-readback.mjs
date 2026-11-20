@@ -26,6 +26,7 @@ const v9=oldQuestions.map(row=>JSON.parse(row.body_json));
 const [resource]=read('SELECT id,content_hash,title,local_path FROM teacher_resources WHERE id=?',[before[0].resourceId]);
 assert.equal(sha(fs.readFileSync(resource.local_path)),resource.content_hash);
 const {recoverStructurePage,StructureQuestionAssembler}=await import('../../src/main/assets/material-document-structure.ts');
+const {DOCUMENT_STRUCTURE_ENGINE}=await import('../../src/shared/material-document-structure.ts');
 const after=before.map(page=>recoverStructurePage({...page,lines:page.lines.filter(line=>!line.origin).map(line=>({
  id:line.sourceId,text:line.text,score:line.score,kind:'text',normalizedQuad:line.quad,quad:line.quad,needsReview:true,
 }))}));
@@ -94,7 +95,7 @@ try{
  const published=await until(()=>['partial','complete'].includes(job().status)?job():false);
  report.publishMs=Date.now()-began;
  const current=questionRows(published.generation).map(row=>JSON.parse(row.body_json));
- assert.equal(published.engine,'layout-paragraph-question.v11');
+ assert.equal(published.engine,DOCUMENT_STRUCTURE_ENGINE);
  assert.deepEqual(labels(current),expected);
  assert.equal(summary(current).administration,0);
  assert.equal(current.find(q=>q.number==='5').status,'needs_review');

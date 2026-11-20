@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+M03 复用 PP 版面所有权与 OCR 坐标识别独立栏证据。M05 沿用原有 PDF 页源核验和教师确认门槛，页结构候选不能直接进入正式检索或组卷。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 M03/M05/M06 复用现有布局、原页栅格、题库图像存储及组卷权限，将有证明的独立题图交付到本卷编辑后的正式试卷。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

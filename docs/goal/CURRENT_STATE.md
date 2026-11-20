@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+上海数学题册 4 页的误分栏疑点已解除，保持原顺序和 20 个题组。8 组需要 PDF 页源核对，其余保有边界、区域或 OCR 置信度疑点，本轮未新增规则或正式题。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 真实跨页物理题编辑后保持独立装置图和四张原选项图，正式确认和两份 Word 已读回。版面无法独立认证的装置图仍按既有待核规则处理。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

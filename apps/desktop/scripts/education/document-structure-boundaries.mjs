@@ -594,6 +594,37 @@ await check("Parallel short stems and options remain pending if a gutter cannot 
   assert(p.issues.includes("ambiguous_columns"));
   assert(questions([p]).every(q => q.status === "needs_review"));
 });
+await check("A blocked gutter is uncertain only with independent lanes, including staggered distinct regions", () => {
+  const rows = [
+    ["1. 已知这些条件，计算结果。", .12, .07, .62],
+    ["左侧的一段条件", .16, .12, .24], ["右侧的一段条件", .54, .12, .24],
+    ["这条正文跨过候选栏缝。", .12, .16, .62],
+    ["左侧仍有一段条件", .16, .20, .24], ["右侧仍有一段条件", .54, .20, .24],
+    ["另一条正文跨过候选栏缝。", .12, .26, .62],
+  ];
+  const recover = (base, regions) => recoverStructurePage({...base, regions,
+    lines: base.lines.map(line => ({id: line.sourceId, text: line.text, score: line.score, normalizedQuad: line.quad})),
+  });
+  const replace = (base, ...blocks) => recover(base, [
+    ...base.regions.filter(region => !["block-2", "block-3", "block-5", "block-6"].includes(region.id)),
+    ...blocks.map((box, index) => ({id: `block-${20 + index}`, box, kind: "text", score: .99, needsReview: true})),
+  ]);
+  const base = page(rows);
+  assert.equal(base.columns.length, 1);
+  assert(base.issues.includes("ambiguous_columns"));
+  const fragmented = replace(base, [.16, .12, .78, .218]);
+  assert.deepEqual(fragmented.columns, base.columns);
+  assert.deepEqual(fragmented.issues, []);
+  assert.deepEqual(fragmented.lines.map(line => [line.text, line.quad]), base.lines.map(line => [line.text, line.quad]));
+  assert.equal(questions([fragmented])[0].status, "candidate");
+
+  const offset = page(rows.map((row, i) => i === 2 || i === 5 ? [row[0], row[1], row[2] + .021, row[3]] : row));
+  assert(offset.issues.includes("ambiguous_columns"), "Staggered independent line boxes still support two lanes");
+  const staggered = replace(offset, [.16, .12, .40, .218], [.54, .14, .78, .24]);
+  assert.equal(staggered.columns.length, 1);
+  assert(staggered.issues.includes("ambiguous_columns"));
+  assert(questions([staggered]).every(question => question.status === "needs_review"));
+});
 await check("An unresolved leading table keeps its text and marks both neighboring questions for review", () => {
   const p = page([
     ["1. 根据实验数据，选择结论。", .07, .26, .37],

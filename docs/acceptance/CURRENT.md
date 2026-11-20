@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+栏序专项比对同一冻结输入的新旧结构与真双栏疑点，且要求真实桌面重建、原图读回、旧世代与账户模型调用账目不变。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 自然跨页题的独立题图专项覆盖题本、题篮、新题干排版、正式确认、冷启和两份 Word 文件读回。受控边界覆盖重叠、题图归属及旧版图序。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

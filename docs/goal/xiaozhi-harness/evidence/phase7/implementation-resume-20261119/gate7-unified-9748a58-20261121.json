@@ -276,5 +276,9 @@
     "Full same-build independent Gate 7 verdict after A2.",
     "32 formal real model ABBA after Gate 7.",
     "QG-09 clean independent Windows x64 actual installer and uninstall."
-  ]
+  ],
+  "mainIntegration": {
+    "scope": "Independent KB column structure implementation and both documentation headings were merged. Only the frozen 9748a58 production bundle is covered by the reports. The combined KB/Harness sources need the next release build.",
+    "concurrentMain": "a73c409"
+  }
 }
