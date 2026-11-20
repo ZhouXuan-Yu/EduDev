@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 多页 PDF 的精确分块引用
+
+M03/M05 两页真实试卷已从分块误判恢复到后台建批和来源读取。自然题完整定稿、配答、检索、正式卷、规模和本地迁移继续按 KB-A01～A10。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)
+
 ## 2026-11-20 后台定稿等待版面发布
 
 M03/M05 已接通已授权后台批次对版面发布的等待与冷启续跑。下一步解决真实多页卷中的页分块定位。自然定稿、配答、检索、正式卷、规模和本地迁移继续按 KB-A01～A10。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)

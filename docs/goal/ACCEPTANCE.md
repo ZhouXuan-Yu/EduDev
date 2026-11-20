@@ -4,6 +4,10 @@
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
 
+## 2026-11-20 多页 PDF 的精确分块引用
+
+《风华》前两页的 35 个同页来源由实际桌面建批和读取验证。真实模型定稿与三套整卷继续按 KB-A03、A06 验收。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)
+
 ## 2026-11-20 后台定稿等待版面发布
 
 归档时序专项通过桌面前后对比与冷启动。真实风华卷的多代页分块仍需修复，KB-A03～A06 继续。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)

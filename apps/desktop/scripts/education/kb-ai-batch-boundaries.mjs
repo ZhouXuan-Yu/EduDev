@@ -30,12 +30,17 @@ const check=name=>{checks++;console.log('PASS '+name);};
 function fixture(){
   const db=new DatabaseSync(':memory:');
   // Production always creates the resource parent before AI migrations (including receipt cleanup triggers).
-  db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT);CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT);');
+  db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT);CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT,document_json TEXT NOT NULL DEFAULT \'\',created_at TEXT NOT NULL DEFAULT \'x\',updated_at TEXT NOT NULL DEFAULT \'x\');');
+  db.exec(`CREATE TABLE question_notebook_bookmarks(question_id TEXT PRIMARY KEY,bookmarked INTEGER);
+    CREATE TABLE question_notebook_category_links(question_id TEXT,category_id TEXT);
+    CREATE TABLE question_bank_usage(question_id TEXT);
+    CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,error TEXT);`);
   const id='resource_'+randomUUID(),version=sha(source),unit={resourceId:id,version,title:'本地习题',offset:0,chunk:{id:'chunk_'+randomUUID(),chunkIndex:0,contentMd:source,containsPersonalData:false,pageNumber:null}};
+  db.prepare('INSERT INTO teacher_resources(id,content_hash) VALUES(?,?)').run(id,version);
   const state={calls:0,images:0,version,stamp:'original-stamp',fileName:'习题.md',beforeCommitAbort:false,mode:'normal',saved:[],payload:question,cleanDraft:false};let repo,queue=Promise.resolve();
   const host={all:async(sql,p=[])=>db.prepare(sql).all(...p),run:async(sql,p=[])=>{db.prepare(sql).run(...p);},map:r=>r,
     materials:()=>({resource:async()=>({id,originalFileName:state.fileName,contentHash:state.version,title:'本地习题',parseEngine:'local-text-v1'}),originalStamp:async()=>state.stamp,verify:async()=>{},readingWindow:async(_id,offset)=>({units:offset===0?[unit]:[],hasMore:false}),source:async r=>{assert.equal(r.version,state.version);assert.deepEqual(r,materialSource(unit));return{};}}),
-    create:async q=>{const value={...q,id:'question_'+randomUUID()};db.prepare("INSERT INTO question_bank_items VALUES (?,'')").run(value.id);state.saved.push(value);return value;},
+    create:async q=>{const value={...q,id:'question_'+randomUUID()};db.prepare("INSERT INTO question_bank_items(id,archive_json) VALUES (?,'')").run(value.id);state.saved.push(value);return value;},
     writer:(action,beforeCommit)=>{const promise=queue.then(async()=>{db.exec('BEGIN IMMEDIATE');try{const value=await action(repo);if(state.beforeCommitAbort&&db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n){state.beforeCommitAbort=false;repo.active.controller.abort();}beforeCommit?.();db.exec('COMMIT');return value;}catch(e){db.exec('ROLLBACK');throw e;}});queue=promise.catch(()=>{});return promise;}
   };
   repo=new MaterialAiRepository(host);

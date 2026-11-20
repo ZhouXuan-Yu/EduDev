@@ -15,14 +15,16 @@ function fixture(status='blank'){
  CREATE TABLE question_notebook_bookmarks(question_id TEXT PRIMARY KEY,bookmarked INTEGER);
  CREATE TABLE question_notebook_category_links(question_id TEXT,category_id TEXT);
  CREATE TABLE question_bank_usage(question_id TEXT);
- CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER,contains_personal_data INTEGER,chunk_index INTEGER,content_md TEXT);
+ CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER,contains_personal_data INTEGER,chunk_index INTEGER,content_md TEXT,structure_search_hidden INTEGER NOT NULL DEFAULT 0);
  CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT,state TEXT);CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,error TEXT);`);
  const error=status==='failed'?'ocr_failed':status==='needs_review'?'ocr_unreliable':'',ocr=status==='complete'?'本地乱码#???':'';
  db.prepare("INSERT INTO teacher_resources VALUES(?,?,'原页.pdf','partial')").run(id,version);db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'partial')").run(id,version,generation);db.prepare('INSERT INTO material_pdf_pages VALUES(?,1,?,?,?)').run(generation,status,JSON.stringify({status,error,method:status==='blank'?'blank':status==='failed'?'failed':'ocr',nativeText:'',ocrText:ocr,text:ocr,width:status==='failed'?0:100,height:status==='failed'?0:100,imageArea:1,nativeBoxes:[]}),error);
- const bodyId='chunk_'+randomUUID();if(status==='complete')db.prepare('INSERT INTO resource_chunks VALUES(?,?,1,0,0,?)').run(bodyId,id,ocr);
- const unit=()=>{const row=db.prepare('SELECT * FROM resource_chunks WHERE id=?').get(bodyId);return row?{resourceId:id,version,title:'原页',offset:0,chunk:{id:bodyId,resourceId:id,chunkIndex:0,contentMd:row.content_md,pageNumber:row.page_number,containsPersonalData:!!row.contains_personal_data}}:undefined;};
- const materials={resource:async()=>({id,contentHash:version,originalFileName:'原页.pdf',title:'原页',parseStatus:'partial'}),originalStamp:async()=>state.stamp,verify:async()=>{},readingWindow:async(_id,offset)=>({units:offset===0&&unit()?[unit()]:[],hasMore:false}),source:async source=>{const u=unit();if(!u||JSON.stringify(materialSource(u))!==JSON.stringify(source))throw Error('source_changed');return{body:{chunks:[u.chunk]}};}};
- const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},materials:()=>materials,map:r=>r,create:async fields=>{const v={...fields,id:'question_'+randomUUID(),createdAt:'x',updatedAt:'x'};db.prepare("INSERT INTO question_bank_items(id,archive_json) VALUES(?,'')").run(v.id);saved.push(v);return v;},writer:async(action,before)=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);before?.();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new MaterialAiRepository(host);
+ const bodyId='chunk_'+randomUUID();if(status==='complete')db.prepare('INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,0,0,?)').run(bodyId,id,ocr);
+ const map=r=>({...r,resourceId:r.resource_id,chunkIndex:r.chunk_index,contentMd:r.content_md,pageNumber:r.page_number,containsPersonalData:!!r.contains_personal_data});
+ const window=(offset,limit)=>db.prepare('SELECT * FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id LIMIT ? OFFSET ?').all(id,limit,offset)
+  .map((r,i)=>({resourceId:id,version,title:'原页',offset:offset+i,chunk:map(r)}));
+ const materials={resource:async()=>({id,contentHash:version,originalFileName:'原页.pdf',title:'原页',parseStatus:'partial'}),originalStamp:async()=>state.stamp,verify:async()=>{},readingWindow:async(_id,offset,limit=1)=>({units:window(offset,limit),hasMore:false}),source:async source=>{const [u]=window(source.offset,1);if(!u||JSON.stringify(materialSource(u))!==JSON.stringify(source))throw Error('source_changed');return{body:{chunks:[u.chunk]}};}};
+ const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},materials:()=>materials,map,create:async fields=>{const v={...fields,id:'question_'+randomUUID(),createdAt:'x',updatedAt:'x'};db.prepare("INSERT INTO question_bank_items(id,archive_json) VALUES(?,'')").run(v.id);saved.push(v);return v;},writer:async(action,before)=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);before?.();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new MaterialAiRepository(host);
  materials.verifyOriginalVersion=async(resourceId,expected,signal)=>{
   signal.throwIfAborted();assert.equal(resourceId,id);assert.equal(expected,version);
   if(state.originalChanged)throw Error('source_changed');
@@ -67,6 +69,32 @@ async function imageFixture(status='blank'){
 let checks=0;const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
 async function completed(status='blank',mode='normal',total=1){const f=fixture(status);await f.init();f.db.prepare('UPDATE material_pdf_jobs SET total=?').run(total);f.state.mode=mode;f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();return f;}
 const query=f=>({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:f.batch,ordinal:1});
+await check('PDF preparation binds each current page chunk to its physical offset across older pages and hidden excerpts',async()=>{
+ const f=fixture('complete');
+ try{
+  await f.init();
+  const insert=f.db.prepare('INSERT INTO resource_chunks VALUES(?,?,?,0,?,?,?)');
+  insert.run('chunk_'+randomUUID(),f.id,2,1,'other page content',0);
+  insert.run('chunk_'+randomUUID(),f.id,1,2,'superseded page excerpt',1);
+  for(let i=0;i<20;i++)insert.run('chunk_'+randomUUID(),f.id,1,i+3,'derived page excerpt '+i,0);
+  for(const images of [true,false]){
+   const batch=await f.repo.create({...f.input,images});
+   const unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);
+   assert.deepEqual(unit.sources.map(s=>s.offset),[0,...Array.from({length:20},(_,i)=>i+3)]);
+   for(const source of unit.sources)assert.equal((await f.host.materials().source(source)).body.chunks[0].pageNumber,1);
+   if(!images){
+    assert(unit.text.includes('derived page excerpt 19'));
+    assert(!unit.text.includes('other page content')&&!unit.text.includes('superseded page excerpt'));
+   }
+  }
+  f.db.exec('UPDATE resource_chunks SET contains_personal_data=1 WHERE structure_search_hidden=1');
+  for(const images of [true,false])await assert.rejects(f.repo.create({...f.input,images}),/privacy_blocked/);
+  f.db.exec('UPDATE resource_chunks SET contains_personal_data=0');
+  for(let i=0;i<44;i++)insert.run('chunk_'+randomUUID(),f.id,1,i+23,'additional current excerpt',0);
+  for(const images of [true,false])await assert.rejects(f.repo.create({...f.input,images}),/unit_too_large/);
+  assert.equal(f.state.calls,0);
+ }finally{f.db.close();}
+});
 await check('Historical PDF pages accept reauthenticated bytes only while both the current original and the frozen receipts agree',async()=>{
  const f=await completed();
  try{
@@ -205,7 +233,7 @@ await check('Independent images with blank, failed or garbled OCR reuse the dura
 });
 await check('New image source cannot masquerade as PDF; malformed opt-in, stop flag and private images cannot dispatch',async()=>{
  assert(!validAiPageQuery({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:'aibatch_'+randomUUID(),ordinal:1,includeImage:false}));
- for(const mode of ['private','stop','pdf_alias']){const f=await imageFixture();try{if(mode==='private'){f.db.prepare('INSERT INTO resource_chunks VALUES(?,?,1,1,0,?)').run('chunk_'+randomUUID(),f.id,'private');await assert.rejects(f.repo.create(f.input),/privacy_blocked/);}
+ for(const mode of ['private','stop','pdf_alias']){const f=await imageFixture();try{if(mode==='private'){f.db.prepare('INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,1,0,?)').run('chunk_'+randomUUID(),f.id,'private');await assert.rejects(f.repo.create(f.input),/privacy_blocked/);}
  else if(mode==='stop'){process.env.OMNI_EDU_AI_PAGE_RESTORATION='0';await assert.rejects(f.repo.create(f.input),/source_incomplete/);delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;}
  else{f.batch=await f.repo.create(f.input);const r=f.db.prepare('SELECT input_json FROM material_ai_units').get(),unit=JSON.parse(r.input_json);unit.pageSource.schemaVersion='xiaozhi.material-page-source.v1';f.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));await f.repo.drain();assert.equal(await f.question(),undefined);}assert.equal(f.state.calls,0);}finally{delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;f.db.close();}}
 });
@@ -322,7 +350,7 @@ await check('A dense answer book freezes the whole original page, independently 
  try{
   await f.init();
   const chunk=f.db.prepare("INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,0,?,'检索切块')");
-  for(let i=1;i<48;i++)chunk.run('chunk_'+randomUUID(),f.id,i);
+  for(let i=1;i<65;i++)chunk.run('chunk_'+randomUUID(),f.id,i);
   await assert.rejects(f.repo.create(f.input),/unit_too_large/);
   const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.version,answerId:f.id,answerVersion:f.version,revision:1};
   f.repo.books.role=async()=>role;
@@ -332,7 +360,7 @@ await check('A dense answer book freezes the whole original page, independently 
   const page=JSON.parse(f.db.prepare('SELECT result_json FROM material_pdf_pages').get().result_json);
   assert.equal(unit.text,page.text);
   assert.equal(unit.pageSource.resourceId,f.id);
-  f.db.prepare('UPDATE resource_chunks SET contains_personal_data=1 WHERE chunk_index=47').run();
+  f.db.prepare('UPDATE resource_chunks SET contains_personal_data=1 WHERE chunk_index=64').run();
   await assert.rejects(f.repo.create(f.input),/privacy_blocked/);
   await f.repo.drain();
   assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'privacy_blocked');

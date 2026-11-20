@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "dcbc608d9cc53a47432d89fbd1d079aae6b4c25de8d88d4fe71d081defef7044"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "19a13113eb59c12132d5a090ab1b2c937f43f143546b9bb2261e96adad4840a0"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "8576a6f215cea2aba81dc312ec3e67a5f2d0015d506966101fcef08744d5e1e3"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "3457b903ea988e6a97df64aa381824348f5525e017127dd707c3ffbfe3ed8f3c"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-ai-batch-boundaries.mjs",
+      "sha256": "5405804a388a6e58d25c2f73500f9afff73f186a679979ac63e49056b2a03692"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-ai-page-boundaries.mjs",
+      "sha256": "f557a1029e161e7875ea693f062b48c607ca4ac4cad14cff1118618569991b15"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-folder-structure-wait-electron.mjs",
+      "sha256": "ade21f736915f9ec1d69969571b91fbc3f40b2dc84ab8087b3de5aea8bee9a35"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+      "sha256": "105ca2aa4e5eb391cf9aa2b17a2da54cc8b8ed44a2bd65a100674e5c3a9cf33a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "c964e1a4115ff97182b9e5fae71f7359a7e7d32e6febabc3f1cebecdffbdd653"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "1886b0e8b89be033ad003454c7154fe25154c59ff54e0eb26174f530e500c0b2"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "46ece5be3d910f4905e9cad44e60ebd08ac04a37fe9ba09e79631d5a47542a97"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "ffa966e57f47afe2610c8af3a97d350d5842255caf9e4401dad8da7c3609c569"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "8b78c69cf766a231483a252c3ba84a13adbfe098dcaac094519c0b5d6d42b018"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "38769470e60889d0a5b81177763f9b2f95a30f3b7230b6ac950626bb3c951fbd"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "edb60a662c39238c3cf2f0d7ccf1303344459a7ddf616180d3c42f361a8b9250"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "7958c7568dcf50d0ba956844fc9ed42624d697293518929390f819e408ebc7bc"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "cbb07e225851b08bb610b035f95c5089d86574e2f4e113bf17aed1c9bfd68b03"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "192a1ce0620ece5a38ff2bb5aa3a2225b0b361569aa7e7705ae264bf725312ad"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "d8baabaa60ed1934aa4dbcb212ae07ebfacfe8399f8a7f06cb73e4bad29450f7"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/exact-ai-pages/README.md",
+      "sha256": "585c5af8d6e70512eb9bf9542337cd2b4a4c74d73b4d60dc223d24472ebf2a66"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/exact-ai-pages/summary.json",
+      "sha256": "3696653e6b3d22e018e2bbf3038d0b9421bb412083585d7d1fc5546370ce0e3d"
+    }
+  ]
+}

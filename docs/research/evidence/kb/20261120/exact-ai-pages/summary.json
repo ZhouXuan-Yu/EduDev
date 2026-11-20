@@ -1,0 +1,23 @@
+{
+  "integratedMain": "37866ce722c7815680b4e204b937e90ad7540a26",
+  "mainBundleSha256": "5c3a50b43e9e9414a0ea9d71e0fe7b728aaa26be062059146468fd4790cbd829",
+  "naturalElectron": {
+    "name": "风华初三三模模拟测试卷",
+    "pages": [1, 2],
+    "beforeErrors": ["source_incomplete", "unit_too_large"],
+    "beforeAfterSubBatches": [0, 2],
+    "samePageReferences": [14, 21],
+    "coldReferenceReadback": true,
+    "coldRedispatches": 0,
+    "localTransportInterceptions": 2,
+    "externalRequests": 0,
+    "formalQuestionQuality": "open"
+  },
+  "localSql": {
+    "iterationsPerPage": 300,
+    "p95Ms": [1.8034, 1.678]
+  },
+  "tests": {"renderer":253,"electronSmokeIsolated":207,"page":251,"batch":31,"folderPdf":24,"folderAi":18,"answerReferences":53},
+  "historicalCorpusReadback": {"omittedQuestionPages":142,"omissionsWithFragmentReceipt":10,"omissionsWithoutPagePrompt":132,"incompleteContentPages":96,"sourceIncompleteWithChild":2,"matchingUnbilledFailures":0},
+  "nextDefect": "Reconcile missing natural questions against existing page images and immutable AI receipts."
+}
