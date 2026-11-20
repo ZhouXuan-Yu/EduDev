@@ -188,6 +188,7 @@ export class MaterialAiRepository{
     await this.books.migrate();
     for(const sql of [
       `CREATE TABLE IF NOT EXISTS material_ai_batches(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,title TEXT NOT NULL,config_json TEXT NOT NULL,status TEXT NOT NULL,calls INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL)`,
+      `CREATE INDEX IF NOT EXISTS material_ai_batches_resource ON material_ai_batches(resource_id,id)`,
       `CREATE TABLE IF NOT EXISTS material_ai_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,input_json TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',first_json TEXT NOT NULL DEFAULT '',final_json TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',owner_pid INTEGER NOT NULL DEFAULT 0,lease TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal))`,
       `CREATE INDEX IF NOT EXISTS material_ai_units_pending ON material_ai_units(status,batch_id,ordinal)`,
       `CREATE TABLE IF NOT EXISTS material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT NOT NULL,batch_id TEXT NOT NULL UNIQUE REFERENCES material_ai_batches(id),folder_id TEXT NOT NULL DEFAULT '',folder_revision INTEGER NOT NULL DEFAULT 0)`,

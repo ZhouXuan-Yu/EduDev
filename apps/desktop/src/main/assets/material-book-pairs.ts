@@ -33,6 +33,36 @@ export const answerRuleCandidateHidden=`q.id IN (SELECT aq.id FROM material_book
     WHERE COALESCE(json_extract(CASE WHEN s.type='object' THEN s.value ELSE '{}' END,'$.resourceId'),'')<>p.answer_id
      OR COALESCE(json_extract(CASE WHEN s.type='object' THEN s.value ELSE '{}' END,'$.version'),'')<>p.answer_version)
 )`;
+const frozenInput="CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END";
+const sameSavedAnswerRole=`u.status IN ('complete','review','no_questions')
+ AND json_extract(${frozenInput},'$.bookRole.kind') IS 'answers'
+ AND json_extract(${frozenInput},'$.bookRole.questionId') IS ?
+ AND json_extract(${frozenInput},'$.bookRole.questionVersion') IS ?
+ AND json_extract(${frozenInput},'$.bookRole.answerId') IS ?
+ AND json_extract(${frozenInput},'$.bookRole.answerVersion') IS ?`;
+
+// The scheduler sets dispatch evidence before transport. A settled preflight refusal
+// can coexist with a new role, but its old batch and folder reservation stay frozen.
+const terminalPrivacyRefusal=`b.status='attention' AND b.calls=0
+ AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id AND (
+  u.status IS NOT 'failed' OR u.error IS NOT 'privacy_blocked' OR u.dispatched_at IS NOT 0
+  OR u.owner_pid IS NOT 0 OR u.lease IS NOT '' OR u.first_json IS NOT '' OR u.final_json IS NOT ''
+  OR u.image_sha IS NOT '' OR NOT json_valid(u.input_json)
+  OR json_type(${frozenInput}) IS NOT 'object' OR json_type(${frozenInput},'$.bookRole') IS NOT NULL))
+ AND NOT EXISTS(SELECT 1 FROM material_ai_response_receipts e WHERE e.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_members m WHERE m.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=b.id
+  AND (p.first_sha IS NOT '' OR p.final_sha IS NOT '' OR p.image_sha IS NOT ''))
+ AND NOT EXISTS(SELECT 1 FROM material_ai_image_inputs i WHERE i.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_page_crops c WHERE c.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_page_verifications v WHERE v.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_bound_answers a WHERE a.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_book_references r WHERE r.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_native_inputs n WHERE n.batch_id=b.id)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k LEFT JOIN material_folder_ai f ON f.batch_id=k.folder_id
+  WHERE k.batch_id=b.id AND k.folder_id<>'' AND
+   (f.status IS NULL OR f.status NOT IN ('paused','attention','complete','configuration_changed')))`;
+
 /** Book identity/roles only. A link is neither an answer match nor permission to send data. */
 export class MaterialBookPairs{
  constructor(private host:Host){}
@@ -64,10 +94,11 @@ export class MaterialBookPairs{
    if(existing&&existing.questionId===input.resourceId&&existing.questionVersion===input.version&&existing.answerId===input.answerId&&existing.answerVersion===input.answerVersion&&[input.revision,input.revision+1].includes(existing.revision))return target.view(input.resourceId);
    if(existing?.kind==='answers'||Number(prior?.revision||0)!==input.revision||await target.role(input.answerId!))throw Error('conflict');
    // Local rule extraction is reversible derived data; existing teacher work remains canonical.
-   // Paid inputs freeze their role and cannot be reinterpreted by a later association.
-   // Restore only completed answer-role receipts for this exact pair, never unrelated or in-flight output.
-   const role="CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END";
-   const ai=await target.host.all(`SELECT 1 FROM material_ai_batches b WHERE b.resource_id=? AND (NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id) OR EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id AND (u.status NOT IN ('complete','review','no_questions') OR COALESCE(json_extract(${role},'$.bookRole.kind'),'')<>'answers' OR COALESCE(json_extract(${role},'$.bookRole.questionId'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.questionVersion'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.answerId'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.answerVersion'),'')<>?))) LIMIT 1`,[input.answerId!,input.resourceId,input.version,input.answerId!,input.answerVersion!]);
+   const ai=await target.host.all(`SELECT 1 FROM material_ai_batches b WHERE b.resource_id=? AND (
+    NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id)
+    OR (EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id AND NOT (${sameSavedAnswerRole}))
+        AND NOT (${terminalPrivacyRefusal})))
+    LIMIT 1`,[input.answerId!,input.resourceId,input.version,input.answerId!,input.answerVersion!]);
    if(ai.length)throw Error('answer_already_processed');
    await target.host.run(`INSERT INTO material_book_pairs VALUES(?,?,?,?,?,1) ON CONFLICT(question_id) DO UPDATE SET question_version=excluded.question_version,answer_id=excluded.answer_id,answer_version=excluded.answer_version,revision=excluded.revision,active=1`,[input.resourceId,input.version,input.answerId!,input.answerVersion!,input.revision+1]);
    return target.view(input.resourceId);
