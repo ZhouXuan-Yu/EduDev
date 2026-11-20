@@ -937,6 +937,16 @@
     "files": 481,
     "sha256": "380b3538faaea0a666e25175f10cb01345d31e3c3363c10b76dd7f924095aa42",
     "evidence": "evidence/phase7/implementation-resume-20261119/a2-runtime-races-20261121.json",
-    "next": "Reconcile remaining Gate 7 candidate evidence, then formal 32 ABBA. QG-09 needs clean Windows x64."
+    "next": "Reconcile remaining Gate 7 candidate evidence, then formal 32 ABBA. QG-09 needs clean Windows x64.",
+    "integrated": {
+      "sourceCommit": "bdad61b4db4209f308258beb3a631e2eaf3f36e4",
+      "build": {
+        "files": 481,
+        "outSha256": "0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272",
+        "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+      },
+      "tests": "A2 3/3 at 1366x768 and backup compatibility 7/7",
+      "reportSha256": "fe82feb041d23967d7b0222c5a8030a803777ae1e9141fb1d1eb6d1360fe69a4"
+    }
   }
 }
