@@ -74,6 +74,35 @@
     "archiveBytesAtObservation": 95147699, "installerExistsAtObservation": false,
     "resume": "Observe the same session and stage for terminal evidence. Independently read the archive only after settlement."
   },
+  "nsisFinal": {
+    "sameShellSessionId": 64114,
+    "exitCode": 0,
+    "file": "release/Xiaozhi-Setup-0.1.0-x64.exe",
+    "bytes": 877404023,
+    "sha256": "9cf7c13fc7261f98faaf2fdde58f6fd17e577c64dafc6268d9dda3b2ff169efa",
+    "blockMap": {"file": "release/Xiaozhi-Setup-0.1.0-x64.exe.blockmap", "bytes": 893382, "sha256": "71c9742499beff2d82a830c09d53bffebea33208543dd12641e5b417d2479763"},
+    "builderLogSha256": "5824afe02e8aee9074fab50bbf22d72eb5b0a7a8dd48aac6a91181bbb5f16275",
+    "signatureStatus": "NotSigned",
+    "published": false,
+    "installationAcceptance": "NOT_RUN",
+    "independentArchiveReview": {
+      "reviewer": "GPT-6.1 Terra High", "status": "PASS_SCOPED",
+      "report": "TEMP/omni-edu-nsis-readback-99be5131788f4ce29d814f960a9181af/archive-report.json", "sha256": "81535b21415572ebb0f8cd70c63f3393eac0bbb6acf12de346ae88ba5cbe809f",
+      "listingCommand": "7za.exe l -slt -sccUTF-8 <installer>",
+      "listingExitCode": 0, "installerSizeMtimeAndHashStable": true,
+      "archiveContainsPiWebAccess": false, "archiveContainsPhysicalMcpTypeScriptSdk": false,
+      "selectedByteMatches": 7, "selectedScope": "Four Pi license and provenance files, application main, direct Undici package.json and embedded application executable.",
+      "installerStubMachine": "0x014c", "embeddedAppMachine": "0x8664",
+      "observedWarning": "7za reported data after the end of the embedded archive. The listing and all selected reads exited 0. No installation behavior inference."
+    },
+    "allApplicationOutputs": {
+      "command": "7za.exe x <installer> resources/app/out/* -o<owned-readback> -sccUTF-8 -y",
+      "exitCode": 0, "fileCount": 481, "archiveOutputsMatchBuildByPathAndSha256": true,
+      "matchedOutSha256": "f48204af814e0cfb0ae9773f73c7128d60d5edb5acd0873b6c6b975422d5027b",
+      "report": "TEMP/omni-edu-harness-pruned-package-final-5e553613/readback-out-093a8cf6/report.json", "sha256": "f183d8d8fd721b6d28a91c3fa46820bccd093a21018ee3b7abe7f1d947f28afc",
+      "extractionLogSha256": "f2e513268c7cfce5d213c7fb332ca08e5ed213781f0940b39a102fa74c3cb1c6"
+    }
+  },
   "qg09Environment": {"host": "Windows 11 Home 26200", "hypervisorPresent": true, "availableManagedWindowsGuest": false, "observedWsl": ["docker-desktop (stopped, Linux)"]},
   "paidRequestsAdded": 0,
   "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST"

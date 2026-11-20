@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 Windows NSIS 归档完成回读
+
+原打包会话退出 0，生成 877,404,023 字节的本地候选。Terra 独立核对归档、四份许可及来源、内嵌应用和依赖；总控直接解取归档内 481 个构建文件，逐路径的 SHA-256 与原构建一致。归档中移出的完整 `pi-web-access` 依赖仍缺席。QG-09 的安装、两个快捷入口与卸载等待干净 Windows。 [归档及读回证据](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)
+
 ## 2026-11-20 恢复与待办的完整键盘循环
 
 Terra 在 `11357b1` 同一合并构建验证两种尺寸各 6/6。任务面板正向和反向各遍历 15 个焦点位置并循环，禁用分页被跳过，键盘筛选、刷新和关闭后归焦均通过。两尺寸面板无实测横向溢出。原生窗口与完整 Gate 7 继续按各自门槛验收。 [独立轨迹](evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json)

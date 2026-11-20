@@ -764,12 +764,14 @@
     "newPaidCalls": 0
   },
   "buildOnlyWebPackage20261120": {
-    "status": "UNPACKED_VERIFIED_NSIS_COMPRESSING",
+    "status": "NSIS_ARCHIVE_VERIFIED_QG09_OPEN",
     "packagingSourceCommit": "9e80732",
     "evidence": "evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json",
     "archiveProcessIdAtCheckpoint": 26832,
     "packagingShellSession": 64114,
-    "continueCondition": "Observe this same packager until it settles. Then obtain independent archive evidence. QG-09 still requires clean interactive Windows.",
+    "packagingExitCode": 0,
+    "installerSha256": "9cf7c13fc7261f98faaf2fdde58f6fd17e577c64dafc6268d9dda3b2ff169efa",
+    "continueCondition": "Independent archive and full application byte readback are recorded. QG-09 still requires clean interactive Windows, including two shortcut launches and uninstall.",
     "newPaidCalls": 0
   },
   "currentMainTaskFocus20261120": {
