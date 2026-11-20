@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 重启后复用已登记工具
+
+已实现。工作台用新进程重开同一隔离资料目录，首开登记 54 项固定工具，重开时新增 0 项。两条已停止的 Run 通过 typed preload 读回，既有 Registry、工具版本数、Run 和事件记录一致，重开产生 0 次模型请求。关闭前的两次发消息用合成流式服务。D 盘日常源码启动器仍每次编译，正式前台速度和干净 Windows 安装继续按原门槛。 [命令和读回证据](evidence/phase8/startup-prewarm-cold-reopen-20261120.json)
+
 ## 2026-11-20 Windows NSIS 归档完成回读
 
 原打包会话退出 0，生成 877,404,023 字节的本地候选。Terra 独立核对归档、四份许可及来源、内嵌应用和依赖；总控直接解取归档内 481 个构建文件，逐路径的 SHA-256 与原构建一致。归档中移出的完整 `pi-web-access` 依赖仍缺席。QG-09 的安装、两个快捷入口与卸载等待干净 Windows。 [归档及读回证据](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)

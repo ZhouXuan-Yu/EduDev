@@ -1,0 +1,197 @@
+{
+  "date": "2026-11-20",
+  "scope": "Reopen the same isolated workspace in a new Electron process after stopping two synthetic loopback prompts. First launch uses a fresh data root. Timing includes Playwright startup. These samples do not establish general desktop, installer, or provider latency. No effect receipts are asserted by this test.",
+  "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+  "independentSourceCommit": "11357b1d614a05ccc58cd239d9e895d3a03aa7df",
+  "rootOnFrozenBuild": {
+    "reviewer": "Root",
+    "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-runtime-dependency-scope-main/out --label main-prewarm-cold-reopen --expected-out-hash 039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6 --expected-out-count 481 --require-prewarm true --reopen true",
+    "exitCode": 0,
+    "report": "TEMP/omni-edu-startup-prewarm-xhVZ79/report.json",
+    "reportSha256": "91d30226efc345481703a73d4419cba1f5fafd26e2109b5b67dea7f5d58ad03a",
+    "buildBeforeAndAfter": {
+      "sha256": "039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6",
+      "files": 481
+    },
+    "processIds": [
+      56936,
+      42628
+    ],
+    "startupToEditableWorkspaceMs": [
+      3124.16,
+      1730.72
+    ],
+    "startupToPrewarmEndMs": [
+      2150.99,
+      1552.04
+    ],
+    "prewarmMs": [
+      85.9,
+      26.59
+    ],
+    "newRegistrations": [
+      54,
+      0
+    ],
+    "registryOnReopen": {
+      "revision": 31,
+      "hash": "5f5cda055302fa055b07dd3cc973907b5994435dab5065146af136fc230fcf07",
+      "definitions": 83,
+      "providers": 84,
+      "bindings": 84
+    },
+    "versionCountOnReopen": 84,
+    "restoredTypedStates": [
+      {
+        "running": false,
+        "status": "interrupted"
+      },
+      {
+        "running": false,
+        "status": "interrupted"
+      }
+    ],
+    "persistedRunAndEventRowsUnchanged": true,
+    "requestsBeforeReopen": 2,
+    "requestsAfterReopen": 0,
+    "rendererErrors": 0
+  },
+  "independentOnFrozenBuild": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-runtime-dependency-scope-main/out --label terra-main-prewarm-cold-reopen --expected-out-hash 039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6 --expected-out-count 481 --require-prewarm true --reopen true",
+    "exitCode": 0,
+    "report": "TEMP/omni-edu-startup-prewarm-ngjdPA/report.json",
+    "reportSha256": "f5a82afe4d8bb2cfc7a46ce20253cb92b26152fbf0fcce88f99db8e369aba5f2",
+    "buildBeforeAndAfter": {
+      "sha256": "039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6",
+      "files": 481
+    },
+    "processIds": [
+      24084,
+      28908
+    ],
+    "startupToEditableWorkspaceMs": [
+      2998.31,
+      1796.71
+    ],
+    "startupToPrewarmEndMs": [
+      1985.78,
+      1620.4
+    ],
+    "prewarmMs": [
+      61.46,
+      28.63
+    ],
+    "newRegistrations": [
+      54,
+      0
+    ],
+    "registryOnReopen": {
+      "revision": 31,
+      "hash": "bcf9188811abd4bdba2ca663ea8be3410347435473679724576f2f385b3ef20d",
+      "definitions": 83,
+      "providers": 84,
+      "bindings": 84
+    },
+    "versionCountOnReopen": 84,
+    "restoredTypedStates": [
+      {
+        "running": false,
+        "status": "interrupted"
+      },
+      {
+        "running": false,
+        "status": "interrupted"
+      }
+    ],
+    "persistedRunAndEventRowsUnchanged": true,
+    "requestsBeforeReopen": 2,
+    "requestsAfterReopen": 0,
+    "rendererErrors": 0
+  },
+  "realModelRequestsAdded": 0,
+  "currentIntegration": {
+    "sourceCommit": "65d0568477292e083eba1cb80892ce6436ba9ced",
+    "build": {
+      "command": "npm.cmd run build -- --outDir test-results/harness-prewarm-cold-current/out",
+      "exitCode": 0,
+      "includesTypecheck": true,
+      "mainSha256": "ff7d8d32dadcf75e759e571b74433ebb1f908362f1d1540c935b1e20359826ed",
+      "buildBeforeAndAfterUiTest": {
+        "sha256": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+        "files": 481
+      },
+      "generatedFiles": "The build regenerated capability metadata from this checkout; generated changes were kept out of the test-only commit."
+    },
+    "renderer": {
+      "command": "npm.cmd run test:renderer-components",
+      "exitCode": 0,
+      "passed": 253,
+      "total": 253
+    },
+    "scheduler": {
+      "command": "node apps/desktop/scripts/xiaozhi-agent/phase8-startup-prewarm-check.mjs",
+      "cwd": "repository root",
+      "exitCode": 0,
+      "passed": 5,
+      "total": 5
+    },
+    "dependencyAudit": {
+      "command": "npm.cmd audit --omit=dev --json",
+      "exitCode": 1,
+      "low": 8,
+      "moderate": 7,
+      "high": 7,
+      "critical": 0,
+      "dependenciesChanged": false
+    },
+    "desktop": {
+      "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-prewarm-cold-current/out --label integrated-prewarm-cold-reopen --expected-out-hash 8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311 --expected-out-count 481 --require-prewarm true --reopen true",
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-startup-prewarm-9H5XiB/report.json",
+      "reportSha256": "b9e19c67c05ef4f9e7d186fe1ff1cf81cf8cc737fc9baec1a6836159a57b8b3e",
+      "processIds": [
+        52536,
+        26720
+      ],
+      "startupToEditableWorkspaceMs": [
+        3427.72,
+        1861.32
+      ],
+      "startupToPrewarmEndMs": [
+        2556.98,
+        1682.95
+      ],
+      "prewarmMs": [
+        197.37,
+        27.34
+      ],
+      "newRegistrations": [
+        54,
+        0
+      ],
+      "registryOnReopen": {
+        "revision": 31,
+        "hash": "77c77520a6e978990650ef24660282aff53b24de73b2d816da6df78fd939fbde",
+        "definitions": 83,
+        "providers": 84,
+        "bindings": 84
+      },
+      "versionCountOnReopen": 84,
+      "restoredTypedStates": [
+        {
+          "running": false,
+          "status": "interrupted"
+        },
+        {
+          "running": false,
+          "status": "interrupted"
+        }
+      ],
+      "persistedRunAndEventRowsUnchanged": true,
+      "requestsBeforeReopen": 2,
+      "requestsAfterReopen": 0,
+      "rendererErrors": 0
+    }
+  }
+}

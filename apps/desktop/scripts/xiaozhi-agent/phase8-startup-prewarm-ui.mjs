@@ -11,7 +11,7 @@ import {preparationTiming, preparationBreakdown} from './phase8-stream-performan
 const args = new Map();
 assert.equal((process.argv.length - 2) % 2, 0, 'arguments must be key/value pairs');
 for (let i = 2; i < process.argv.length; i += 2) {
-  assert(['--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--require-prewarm'].includes(process.argv[i]), 'unknown argument');
+  assert(['--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--require-prewarm', '--reopen'].includes(process.argv[i]), 'unknown argument');
   args.set(process.argv[i], process.argv[i + 1]);
 }
 const desktop = fs.realpathSync(process.cwd());
@@ -23,6 +23,8 @@ const label = args.get('--label') || 'unlabeled';
 assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
 assert(['true', 'false'].includes(args.get('--require-prewarm')));
 const required = args.get('--require-prewarm') === 'true';
+const reopen = args.get('--reopen') ?? 'false';
+assert(['true', 'false'].includes(reopen) && (reopen !== 'true' || required), 'cold reopen requires the prewarm candidate');
 const output = fs.mkdtempSync(path.join(os.tmpdir(), 'omni-edu-startup-prewarm-'));
 const data = path.join(output, 'data'), profile = path.join(output, 'profile');
 const main = path.join(buildRoot, 'main/index.js');
@@ -50,6 +52,38 @@ function readDb() {
     return result;
   } finally {db.close();}
 }
+async function openWorkspace(bootstrap, env) {
+  const launchEpochMs = now();
+  application = await electron.launch({executablePath:requireDesktop('electron'),args:[bootstrap,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
+  page = await application.firstWindow();
+  page.on('pageerror', error => report.errors.push(error.message));
+  await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
+  await page.waitForFunction(() => {
+    const input = document.querySelector('[data-testid="office-prompt-input"]');
+    return input instanceof HTMLTextAreaElement && !input.disabled && !input.readOnly;
+  });
+  const workspaceUsableEpochMs = now();
+  assert.equal(await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isVisible()), false);
+  const isolation = await assertIsolatedPiMain(application, main, profile);
+  return {launchEpochMs,workspaceUsableEpochMs,isolation,pid:application.process().pid};
+}
+
+async function waitForPrewarm() {
+  const warm = await application.evaluate(async () => {
+    const end = performance.now() + 120000;
+    while (performance.now() < end) {
+      const result = observation.rows.find(row => row.operation === 'startup_registry_prewarm');
+      if (result) return result;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    return null;
+  });
+  assert(warm, 'startup prewarm event missing');
+  assert.equal(warm.outcome, 'success');
+  assert(Number.isSafeInteger(warm.registrationCount) && warm.registrationCount >= 0, 'invalid prewarm registrationCount');
+  return warm;
+}
+
 try {
   before = fingerprint(buildRoot);
   report.buildBefore = {sha256: before.sha256, files: before.files.length};
@@ -72,23 +106,9 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   for (const key of Object.keys(env)) if (/(API_KEY|ACCESS_TOKEN|SECRET|PASSWORD)$/i.test(key) || key.startsWith('OMNI_EDU_E2E_')) delete env[key];
   for (const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY']) delete env[key];
   Object.assign(env, {OMNI_EDU_DATA_ROOT:data, OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'), OMNI_EDU_XIAOZHI_PI:'1', OMNI_EDU_E2E_VISIBLE:'0', OMNI_EDU_E2E_DIALOG_MODE:'1', DEEPSEEK_API_KEY:'synthetic-stream-fixture-only', DEEPSEEK_MODEL:'deepseek-flash'});
-  report.launchEpochMs = now();
-  application = await electron.launch({executablePath:requireDesktop('electron'),args:[bootstrap,'--force-device-scale-factor=1'],cwd:desktop,env,timeout:60000});
-  page = await application.firstWindow();
-  page.on('pageerror', error => report.errors.push(error.message));
-  await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
-  await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
-  report.workspaceUsableEpochMs = now();
-  assert.equal(await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isVisible()), false);
-  report.isolation = await assertIsolatedPiMain(application, main, profile);
+  Object.assign(report, await openWorkspace(bootstrap, env));
   report.registryAtWorkspace = readDb();
-  if (required) {
-    await application.evaluate(async () => {const end=performance.now()+120000;while(!observation.rows.some(x=>x.operation==='startup_registry_prewarm')&&performance.now()<end) await new Promise(r=>setTimeout(r,50));});
-    const warm = await application.evaluate(() => observation.rows.find(x => x.operation === 'startup_registry_prewarm'));
-    report.prewarm = warm || null;
-    assert(warm, 'startup prewarm event missing'); assert.equal(warm.outcome, 'success');
-    assert(Number.isSafeInteger(warm.registrationCount) && warm.registrationCount >= 0, 'invalid prewarm registrationCount');
-  } else report.prewarm = null;
+  report.prewarm = required ? await waitForPrewarm() : null;
   report.beforeFirstPrompt = readDb();
   await page.evaluate(() => {window.__prewarmSubmissions=[];document.addEventListener('keydown',e=>{if(e.key==='Enter' && e.target?.matches('[data-testid="office-prompt-input"]')) window.__prewarmSubmissions.push({epochMs:performance.timeOrigin+performance.now(),trusted:e.isTrusted});},true);});
   for (let index=0; index<2; index++) {
@@ -128,6 +148,36 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   assert.equal(report.lifecycle.dropped,0); assert.equal(report.lifecycle.invalid,0); assert.equal(report.transport.blocked,0);
   assert.equal(fixture.requests.length,2); assert.equal(report.errors.length,0);
   assert(report.prompts.every(p=>p.readback.runs.some(row=>row.id===p.runId && row.status!=='running') && p.readback.events.some(row=>row.run_id===p.runId && row.status==='interrupted')));
+  if (reopen === 'true') {
+    await application.close();
+    application = undefined;
+    const beforeReopen = readDb();
+    const cold = {before:beforeReopen};
+    report.reopen = cold;
+    Object.assign(cold, await openWorkspace(bootstrap, env));
+    assert.notEqual(cold.pid, report.pid, 'reopen must start a new process');
+    cold.prewarm = await waitForPrewarm();
+    cold.restored = [];
+    for (const {sessionId,runId} of report.prompts) {
+      const restored = await page.evaluate(async ({sessionId,runId}) => {
+        const snapshot = await window.omniEdu.getXiaozhiSnapshot(sessionId);
+        return {running:snapshot.running,status:snapshot.projection.turns.find(turn => turn.id === runId)?.status};
+      }, {sessionId,runId});
+      cold.restored.push({sessionId,runId,...restored});
+      assert.deepEqual(restored, {running:false,status:'interrupted'});
+    }
+    cold.after = readDb();
+    cold.transport = await application.evaluate(() => transport);
+    assert.equal(cold.prewarm.registrationCount, 0, 'reopen must reuse the existing registry');
+    assert.deepEqual(cold.after.registry, beforeReopen.registry);
+    assert.equal(cold.after.versionCount, beforeReopen.versionCount);
+    assert.deepEqual(cold.after.runs, beforeReopen.runs);
+    assert.deepEqual(cold.after.events, beforeReopen.events);
+    assert.equal(cold.transport.blocked, 0);
+    assert.equal(cold.transport.calls.filter(call => call.path === '/v1/chat/completions').length, 0);
+    assert.equal(fixture.requests.length, 2);
+    assert.equal(report.errors.length, 0);
+  }
   report.success = true;
 } catch(error) {report.error=String(error.stack || error);}
 finally {

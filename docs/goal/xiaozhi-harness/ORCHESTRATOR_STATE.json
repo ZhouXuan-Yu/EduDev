@@ -732,6 +732,14 @@
     "timings": "Tool registration improved in both hidden fixture comparisons. Overall startup and request latency remain variable.",
     "newPaidCalls": 0
   },
+  "startupCoreToolColdReopen": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/startup-prewarm-cold-reopen-20261120.json",
+    "independentRegistrations": [54, 0],
+    "restoredInterruptedRuns": 2,
+    "coldStartModelCalls": 0,
+    "newPaidCalls": 0
+  },
   "promptSkillPreparation20261120": {
     "status": "IMPLEMENTED_VERIFIED_SOURCE_AND_BUILD",
     "evidence": "evidence/phase8/skill-prompt-preparation-20261120.json",
