@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-21 历史审批精确执行与冷启
+
+A1/A2、T-02、T-09 的历史复制子场景已实现。真实页面批准本身不启动运行或写文件。明确执行后同一 Task 从 Generation 1 到 2，只写入指定目标，当前工具权限回执与原历史行均为 executed。两种窗口各 3/3，第二次冷启无重放。真实 Host 中无原 Task 和原 Task 续跑均通过，完整 Host 8/8、异常退出恢复 1/1、组件 253/253。主线合并后的新构建 1366×768 同一路径另外通过 3/3。完成结论限于此子场景。 [独立报告和边界](evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)
+
 ## 2026-11-21 Windows 终端临时目录隔离
 
 同值 E TEMP/TMP 配合实际 Windows 用户目录的中间构建，两套工作台 9/9。最终构建独立接受两个不同的 E 临时目录和一个进程级隔离用户目录，真实输入、SQLite ACK 2、结束清理、普通冷启同 Job 读回通过。受管运行时 4/4、MCP 标准输入输出 5/5。C 盘空间不足和首次健康启动失败均有原始记录。宽范围 Phase 3 测试止于历史文件复制，实际冷启后无回放和历史复制被拒绝分别记录。 [验收边界](evidence/phase7/implementation-resume-20261119/windows-private-terminal-temp-20261121.json)

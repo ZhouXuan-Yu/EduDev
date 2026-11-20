@@ -1,0 +1,204 @@
+{
+  "scope": "Legacy approved copy resumed through the existing Pi Host, Permission Engine and approval inbox",
+  "status": "PASS_SCOPED",
+  "featureCommit": "c0ab0967d4dea4281edf20ef57e8be8ed8fb9c27",
+  "sourceBaseline": "f64745146f0cc49a7c8b0d3c95a63f40ad6a10b1",
+  "baseline": {
+    "oldHost": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/host-serial-SIYCan/report.json",
+      "sha256": "8afe23f5d7090bef8283a3313ff477c7be404629732e793cdd32554c938ce286",
+      "passed": 3,
+      "total": 8
+    },
+    "visibleRed": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/ui-red/omni-edu-xiaozhi-phase7-workbench-ui-iwVabE/evidence/legacy-copy-resume-report.json",
+      "sha256": "96bcf51baebc0ab680b706a0f3d2e9083c20255ed382007867df86f6e0a6dd41",
+      "paidCalls": 0,
+      "observed": "Approval persisted; the same Task gained a new generation with succeeded model turn. Copy failed; v1 remained approved and no file was created."
+    },
+    "mechanism": "The approved v2 bridge used edu.native.office-tools. The actual governed file-copy provider was edu.native.tool.office_copy_file. The same scopes, Task, current Run, inputs, file versions and grant revision yielded different canonical operation digests due to provider identity."
+  },
+  "changes": {
+    "databaseMigration": false,
+    "ipcChange": false,
+    "permissionsAdded": false,
+    "result": "Explicit resume acquires the actual registered provider identity after governance registration and uses the current Task/Run/generation. Global read paths do not migrate unrelated historical requests. Existing linked rejected, expired, invalidated or unsuitable terminal receipts fail closed.",
+    "rollback": "Revert the legacy-copy feature commit. Existing approved, executed and denied records and the file/Task histories remain."
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "files": 481,
+    "sha256": "1468dd58cda181771b0e7c5a7b8f58e46c737774c46a0f1862863ad64a64a096",
+    "mainSha256": "7ba9533c6b121c60fb52c8f3298b7a14f7eeb8ba358b74ed4b8750f01ec73f70",
+    "inventory": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/build-fingerprint.json",
+      "sha256": "a728a79a958945b24c3003b19552513a3fc0e1e2ff342d9e396ffb80a38bf5a5"
+    },
+    "log": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/build.log",
+      "sha256": "a6287677c4ed12ab2dfaba83b5aa277a84129d8a89e25d80cc9ed20eaea31e9c"
+    },
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/frozen-out-feature"
+  },
+  "checks": {
+    "readOnlyFixture": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/focused-permission-bounded-report.json",
+      "sha256": "0eb0bcb7a3a7aeb7cb7f41c4f3413487a4e35b3565833e8fac922618f53e7fcb",
+      "passed": 16,
+      "total": 16
+    },
+    "wideHost": {
+      "command": "node E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/phase3-host-e-serial.mjs",
+      "launcher": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/phase3-host-e-serial.mjs",
+        "sha256": "5b17d08d8bf3483e65927504d82296c1dc767439c1fbc499a8e9883343b697f9"
+      },
+      "combined": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/host-LgRUWI/combined-report.json",
+        "sha256": "274e87f99bfd21a23a9c71e978ce564334c4313ee220ae266ed66aa51b4a1f52"
+      },
+      "primary": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/host-LgRUWI/report.json",
+        "sha256": "a495cf79961c2e277f2582817fd8692668472073d23849241cf4e76d1b00b31b"
+      },
+      "restart": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/host-LgRUWI/restart-report.json",
+        "sha256": "a816708a2a8f7108e7bc99ccdc4c343a36afc7a2e2027ed584b5f91b1bf13c2e"
+      },
+      "passed": 8,
+      "coldCrashRecoveryPassed": 1,
+      "exitCode": 0,
+      "paidCalls": 0,
+      "launcherDifference": "Unchanged production and recovery workers. Production package metadata copied next to the bundles for the trusted dependency root, exact current checkout desktop dependencies resolved through a fixture junction and trace; E profile and DB only.",
+      "timingMs": {
+        "firstTerminal": 9097,
+        "sameTaskResume": 3748
+      }
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 253,
+      "total": 253,
+      "exitCode": 0,
+      "log": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/components.log",
+        "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+      }
+    },
+    "independentUi": {
+      "scope": "Actual Electron, both sizes on the same feature build. Exact original approval ID lookup only disambiguates two visible legacy-target rows; actions are through the visible inbox.",
+      "beforeAfterBuild": "1468dd58cda181771b0e7c5a7b8f58e46c737774c46a0f1862863ad64a64a096",
+      "paidCalls": 0,
+      "coldReplays": 0,
+      "runs": [
+        {
+          "size": "1366x768",
+          "command": "node scripts/xiaozhi-agent/phase7-legacy-copy-resume-ui.mjs 1366x768",
+          "exitCode": 0,
+          "passed": 3,
+          "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/terra-ui-exact/omni-edu-xiaozhi-phase7-workbench-ui-pcag0F/evidence/legacy-copy-resume-report.json",
+          "sha256": "8928ad05f9b9f27a2d33b0beba20e6e8a231453aec3d28fef14aa4bbe301e8d6"
+        },
+        {
+          "size": "1920x1080",
+          "command": "node scripts/xiaozhi-agent/phase7-legacy-copy-resume-ui.mjs 1920x1080",
+          "exitCode": 0,
+          "passed": 3,
+          "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/terra-ui-exact/omni-edu-xiaozhi-phase7-workbench-ui-golNQU/evidence/legacy-copy-resume-report.json",
+          "sha256": "0f905a7e29c9dbc104dcd9679015aa4b6edaa89e93267633ee09eaff2ddd6bc9"
+        }
+      ]
+    }
+  },
+  "preserved": {
+    "firstWideRun": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/host-sw6rsR/report.json",
+      "sha256": "dbeb96023411b2f4f9ef64883d14b6835ff033fd0127535be05e826e82516e33",
+      "passed": 1,
+      "problem": "Both fixed terminal-runtime health attempts returned launch_failed before any legacy-copy case. New wide run after C drive became writable passed. Correlation is not proven as underlying cause."
+    },
+    "testSelectionFailures": [
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/terra-ui/omni-edu-xiaozhi-phase7-workbench-ui-pBmsOB/evidence/legacy-copy-resume-report.json",
+        "sha256": "2683f6ee439a3c0ee26245a6d5e3774320897ec16b16446ef3b7f65b1012571c"
+      },
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/terra-ui-filtered/omni-edu-xiaozhi-phase7-workbench-ui-8mbWEM/evidence/legacy-copy-resume-report.json",
+        "sha256": "8d5e7dbcb7d51649b93a27b78efdcaad11ffdb43976c1285796487314aef6f13"
+      }
+    ]
+  },
+  "audit": {
+    "command": "npm audit --omit=dev --json",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 7,
+    "high": 5,
+    "critical": 0,
+    "total": 20,
+    "dependencyChanges": 0,
+    "result": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/audit.json",
+      "sha256": "c6788f1dab361819085f256b8b16e09557a92bdd655f3c5f19fe3c94bd1acf56"
+    }
+  },
+  "budget": {
+    "limit": 200,
+    "used": 3,
+    "unresolved": 0,
+    "newPaid": 0
+  },
+  "sourceIntegration": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
+  "remaining": [
+    "Original complete independent page matrix on one final candidate",
+    "Intermittent native health launch when system volume is exhausted, underlying Windows error unverified",
+    "Formal 32-row ABBA after Gate 7",
+    "QG-09 clean Windows x64 install and uninstall"
+  ],
+  "integration": {
+    "sourceCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
+    "latestMainParent": "0293f53395ef22eced4aabfa38e4559904cbe0ca",
+    "files": 481,
+    "sha256": "36ec81e5e980b68b30e750f324cee8e2f7e44b4bb062ef3bb3d37f62b45d59ce",
+    "mainSha256": "ad7adfc9d9ee9b55f2d66070c73428f3313bbbfcec2955559eb2ebc028dd0bb6",
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/frozen-out-integrated",
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/build-integrated.log",
+        "sha256": "04d9a6af3b0c17cb8a1458b09ef8c763f3eb3b865440cbe5b2a6d9c698008f3e"
+      },
+      "inventory": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/build-fingerprint-integrated.json",
+        "sha256": "88204b8312fb6107620bfe3354878f1acdf65f2ab6fac502f0c2314baacea100"
+      }
+    },
+    "ui": {
+      "size": "1366x768",
+      "command": "node scripts/xiaozhi-agent/phase7-legacy-copy-resume-ui.mjs 1366x768",
+      "passed": 3,
+      "exitCode": 0,
+      "review": "main integration cross-check",
+      "report": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/integrated-ui/omni-edu-xiaozhi-phase7-workbench-ui-tBMb40/evidence/legacy-copy-resume-report.json",
+        "sha256": "75e6de933efbe3ab6ba8cf1581c3f0458d80b47b3cc2db81f7238d4581bfb90b"
+      }
+    },
+    "phase8Offline": {
+      "status": "VERIFIED_LOCAL_INPUTS",
+      "planned": 32,
+      "paidRequests": 0,
+      "ledgerOpened": false,
+      "manifest": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/manifest-integrated.json",
+        "sha256": "f638d8915b4524a143f5b427fe90769d5d570a8334c791a83f36e61d0373e413"
+      },
+      "verify": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/verified-integrated-manifest.json",
+        "sha256": "d9384f4703f239c975450b5492e4a2646731d32b54b0d01f60c65e36d483bb79"
+      }
+    }
+  }
+}
