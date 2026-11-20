@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 Word 连续排印答案的真实验收
+
+旧源 0 条原印答案，新源 6 条。逐条核对原字符、对应题号和题干范围，真实桌面显示及应用重启读回通过。已有 Word AI 批次未重复派发。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)
+
 ## 2026-11-21 真实 PDF 和 Word 题型回填
 
 旧版复现 8 条缺失或错型。新构建后台更正 8 条，题本读回与冻结题文档一致，2 条已核记录保持，未完成草稿不会进入正式检索。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)

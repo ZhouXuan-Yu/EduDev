@@ -111,8 +111,8 @@
       "exitCode": 0
     },
     {
-      "scope": "C2 on the repaired build, revocation followed by read-only fallback, source click and cold readback; one local MCP call, no paid request",
-      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root <frozen> --expected-out-hash <sha> --expected-out-count 481 --expected-main-hash <sha>",
+      "scope": "C2 revocation, local fallback and cold readback on the repaired candidate",
+      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs",
       "passed": 4,
       "total": 4,
       "exitCode": 0,
@@ -173,5 +173,29 @@
     "The D volume fixture's temporary projection root was denied by the existing required ACL check. The passing deep-data fixture uses the default user TEMP.",
     "The previously verified NSIS predates this repaired source. No clean install, shortcut launch or uninstall performed."
   ],
-  "rollback": "Revert the launcher/runtime/test and their generated source manifests together. The persisted runtime version, grant and task schema are unchanged."
+  "rollback": "Revert the launcher/runtime/test and their generated source manifests together. The persisted runtime version, grant and task schema are unchanged.",
+  "integration": {
+    "parents": [
+      "4426260c9f7d8f9716852aa283026c7589a000d5",
+      "1625264c5751faebc901c8b2b7bd4829979e5679"
+    ],
+    "build": "apps/desktop/test-results/harness-gate7-20261121/merged-out",
+    "buildExitCode": 0,
+    "files": 481,
+    "sha256": "9f66c352b0fa587df5c97359ac9b1e3a7a1647739d7a1d1b06ab97a10696b5d6",
+    "mainSha256": "fae741d03dbb3638cb3a0e21d5e71aaf430fd0cbe29839873409e1153885f586",
+    "workbench": {
+      "passed": 9,
+      "total": 9,
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeepdeep2iTOhy/evidence/ui-report.json",
+      "sha256": "05f7318b2d6286b925055c9c11bcba7d8b08bee5848df22997d79aa3e9eccf3a"
+    },
+    "wordBoundary": {
+      "command": "node --experimental-transform-types scripts/education/kb-word-booklet-boundaries.mjs",
+      "passed": 14,
+      "total": 14,
+      "exitCode": 0
+    }
+  }
 }

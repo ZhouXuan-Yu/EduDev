@@ -17,7 +17,7 @@ import {validNativeAiContext,nativeMetadata,type NativeAiContext} from './materi
 import {completeMaterialAi,type AiCompletionInput} from './material-ai-provider';
 import {nativeChoiceAnswerConflict} from './word-booklet';
 import {nativeLayoutProof} from './material-ai-native-layout-proof';
-import {WORD_PREAMBLE_QUESTION_POLICY} from '../../shared/material-word';
+import {hasExpandedWordPreamble} from '../../shared/material-word';
 import {questionVersion} from '../education/question-context-provider';
 import type {AiRuntime} from './material-ai-repository';
 import type {MaterialSource} from '../../shared/materials';
@@ -37,7 +37,7 @@ async function nativeLayoutEvidence(host:NativeAiHost,q:QuestionBankItem,frozen:
  if(!first||signature(first)!==signature(final)||final.issues.length||archiveMissing(final).length||
     !nativeQuestionComplete(q.archive!.native!)||!['stem','answer','analysis'].every(field=>q[field as 'stem'|'answer'|'analysis']===final[field as 'stem'|'answer'|'analysis']))return;
  const document=await word.document(base.resourceId,base.resourceVersion,documentSha);
- if(document?.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY)return;
+ if(!document||!hasExpandedWordPreamble(document.questionPolicy))return;
  const digest=hash(JSON.stringify(document)),current=(await word.questions({
   schemaVersion:'xiaozhi.word-question-source.v1',resourceId:base.resourceId,version:base.resourceVersion,
   ordinal:frozen.ordinal,offset:frozen.ordinal-1,

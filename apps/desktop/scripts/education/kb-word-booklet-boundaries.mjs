@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {bookletWordFixture} from './word-question-fixtures.mjs';
 const {parseWord}=await import('../../src/main/assets/word-parser.ts');
 const {indexWordQuestions,verifyWordQuestionSource}=await import('../../src/main/assets/word-question-source.ts');
-const {WORD_BOOKLET_QUESTION_POLICY,validWordDocument}=await import('../../src/shared/material-word.ts');
+const {WORD_BOOKLET_QUESTION_POLICY,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY,validWordDocument}=await import('../../src/shared/material-word.ts');
 const {wordQuestionBlocks,wordQuestionText,validWordQuestionSource}=await import('../../src/shared/material-word-question.ts');
 const {nativeMetadata}=await import('../../src/main/assets/material-ai-native-context.ts');
 const {nativeChoiceAnswerConflict}=await import('../../src/main/assets/word-booklet.ts');
@@ -74,5 +74,71 @@ check('An ordinary question table is not treated as an answer section without an
 check('Both model passes must agree with a source-bound choice answer while old frozen policies retain their prior contract',()=>{
  const q=source(clone());assert(!nativeChoiceAnswerConflict(q,['B','Ｂ']));assert(nativeChoiceAnswerConflict(q,['C','C']));assert(nativeChoiceAnswerConflict(q,['C','B']));assert(nativeChoiceAnswerConflict(q,['B','']));
  const old=clone();delete old.questionPolicy;assert(!nativeChoiceAnswerConflict(source(old),['C','C']));
+});
+function printedFixture(text='1.Ｄ2．B'){
+ const doc=clone();
+ doc.questionPolicy=WORD_PREAMBLE_QUESTION_POLICY;
+ const answerAt=doc.blocks.findIndex(block=>block.kind==='table');
+ const paragraph=(value,n)=>({kind:'paragraph',id:'wb_'+String(n).repeat(32),
+  anchor:{part:'word/document.xml',path:'/document[0]/body[0]/p['+(80+n)+']'},inlines:[{kind:'text',text:value}]});
+ doc.blocks.splice(answerAt,1,paragraph('一.单项选择题',1),paragraph(text,2));
+ return {doc,answerAt,paragraph};
+}
+check('Printed answers in one paragraph bind exact literal letter ranges without changing v5 or the question identity',()=>{
+ const {doc,answerAt}=printedFixture(),older={...doc,questionPolicy:WORD_PREAMBLE_EXPANDED_QUESTION_POLICY};
+ const current=indexWordQuestions(doc),old=indexWordQuestions(older);
+ assert.equal(current.total,old.total);
+ for(const [n,answer,from]of [[1,'Ｄ',2],[2,'B',5]]){
+  const q=current.read(n),span=q.parts.answer[0];
+  assert.equal(current.bodyIdentity(n),old.bodyIdentity(n));
+  assert.equal(old.read(n).canonical.answer,'');
+  assert(verifyWordQuestionSource(old.read(n),older));
+  assert(verifyWordQuestionSource(q,doc));
+  assert.deepEqual(span,{blockId:doc.blocks[answerAt+1].id,from,to:from+1});
+  assert.equal(q.canonical.answer,answer);
+  assert.equal(wordQuestionText(wordQuestionBlocks(q,'answer')),answer);
+  assert(!q.issues.includes('separate_answers'));
+  assert(nativeChoiceAnswerConflict(q,['H','H']));
+ }
+});
+check('Mismatched sections, absent options and content outside a complete printed strip cannot pair',()=>{
+ for(const scenario of [
+  f=>{f.doc.blocks[f.answerAt].inlines[0].text='二、单项选择题';},
+  f=>{f.doc.blocks[f.answerAt].inlines[0].text='一、填空题';},
+  f=>{f.doc.blocks[f.answerAt+1].inlines[0].text='1.D2.B 另请参看题解';},
+  f=>{f.doc.blocks[f.answerAt+1].warnings=['field_or_symbol'];f.doc.warnings.push('field_or_symbol');},
+  f=>{f.doc.blocks[f.answerAt+1].inlines[0].text='1.AB2.B';},
+  f=>{f.doc.blocks[f.answerAt+1].inlines[0].text='1.H2.B';},
+  f=>{f.doc.blocks[5].inlines=f.doc.blocks[5].inlines.slice(0,1);f.doc.blocks[5].inlines[0].text='1. 未提供选项';},
+  f=>{f.doc.blocks[5].inlines=[{kind:'text',text:'1. 未提供选项\nA. B. C. D.'}];},
+ ]){const f=printedFixture();scenario(f);assert.equal(source(f.doc,1).canonical.answer,'');}
+});
+check('Competing questions, duplicate strips and table-paragraph answers stay ambiguous',()=>{
+ const duplicate=printedFixture('1.D1.D2.B');
+ assert.equal(source(duplicate.doc,1).canonical.answer,'');
+ assert.equal(source(duplicate.doc,2).canonical.answer,'B');
+ const repeated=printedFixture();
+ repeated.doc.blocks[6].inlines[0].text=repeated.doc.blocks[6].inlines[0].text.replace('2．','1．');
+ assert.equal(source(repeated.doc,1).canonical.answer,'');
+ assert(source(repeated.doc,1).issues.includes('ambiguous_number'));
+ const mixed=printedFixture();
+ mixed.doc.blocks.push(table(clone()));
+ assert.equal(source(mixed.doc,1).canonical.answer,'');
+ const tableFirst=printedFixture('1.A2.B');
+ tableFirst.doc.blocks.splice(tableFirst.answerAt+1,0,table(clone()));
+ assert.equal(source(tableFirst.doc,1).canonical.answer,'');
+ const annotated=printedFixture();
+ annotated.doc.blocks.push(annotated.paragraph('1.C 解析见后',3));
+ assert.equal(source(annotated.doc,1).canonical.answer,'');
+ assert.equal(source(annotated.doc,2).canonical.answer,'B');
+ const sections=printedFixture();
+ sections.doc.blocks.push(sections.paragraph('参考答案',3));
+ assert(source(sections.doc,1).issues.includes('separate_answers'));
+});
+check('An unclassified numbered section cannot inherit the preceding choice heading',()=>{
+ const fixture=printedFixture();
+ fixture.doc.blocks.splice(6,0,fixture.paragraph('二、开放题',4));
+ assert.equal(source(fixture.doc,1).canonical.answer,'Ｄ');
+ assert.equal(source(fixture.doc,2).canonical.answer,'');
 });
 console.log(JSON.stringify({passed:checks.length,checks,scope:'Real OOXML and production source indexing/role validation. Natural provider and teacher flow require separate evidence.'}));

@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 Word 排印答案预览和回执保护
+
+真实 Word 的 6 条原印答案经资料页按题查看和冷启动回读。正文块、媒体、原件与旧题源可追溯，冲突与旧批次隔离另有自动化覆盖。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)
+
 ## 2026-11-21 结构题型的真实回读
 
 同一隔离资料库比对 PDF 与 Word。8 条原始草稿的题型在真实桌面入口读回成功，原件引用、裁图和未核状态保持，冷启无重复写入。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)

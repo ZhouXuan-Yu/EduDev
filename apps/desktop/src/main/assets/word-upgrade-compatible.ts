@@ -1,9 +1,9 @@
-import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_QUESTION_POLICY,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_QUESTION_POLICY,hasExpandedWordPreamble,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 import {wordQuestionPlanCompatible} from './word-question-source';
 import {WORD_DRAWING_POLICY,WORD_DRAWING_ENGINE} from '../../shared/material-word-drawing';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_drawing_v2';
+export const WORD_UPGRADE_INDEX='idx_material_word_question_policy_v6';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
  (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
  CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}' OR
@@ -68,5 +68,5 @@ export function wordUpgradeCompatible(previous:WordDocument,next:WordDocument):b
   &&previous.assets.every(asset=>JSON.stringify(asset)===JSON.stringify(nextAssets.get(asset.id))||!nextAssets.has(asset.id)&&replaced.has(asset.id))
   &&next.assets.filter(asset=>!previousIds.has(asset.id)).every(asset=>completed.has(asset.id))
   &&JSON.stringify(previous.blocks.map(contentBlock))===JSON.stringify(normalized.map(contentBlock))
-  &&(next.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||wordQuestionPlanCompatible(previous,next));
+  &&(!hasExpandedWordPreamble(next.questionPolicy)||wordQuestionPlanCompatible(previous,next));
 }
