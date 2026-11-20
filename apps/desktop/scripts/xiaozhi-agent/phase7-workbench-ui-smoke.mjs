@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -6,7 +7,11 @@ import {startWorkbenchFixture} from './phase7-workbench-fixture.mjs';
 
 let fixture, application, page;
 const report = {success: false, paidCalls: 0, checks: [], errors: [], boundary: 'Actual built production main/preload/renderer with original typed actions. Synthetic metadata seeded through original domain APIs; all model traffic loopback. Independent visual/mouse acceptance remains Terra.'};
-const fixtureOptions = {background: true, onPageError: error => report.errors.push(error.message)};
+const mode = process.argv.slice(2);
+assert(mode.length === 0 || mode.length === 1 && mode[0] === '--long-stage', 'Use --long-stage for the deep Windows data directory regression');
+const base = path.join(os.tmpdir(), 'omni-edu-xiaozhi-phase7-workbench-ui-');
+const fixtureRoot = mode.length ? fs.mkdtempSync(base + 'deep'.repeat(Math.max(1, Math.ceil((141 - base.length - 6) / 4)))) : undefined;
+const fixtureOptions = {background: true, root: fixtureRoot, onPageError: error => report.errors.push(error.message)};
 async function until(action, timeout = 45000) {const end = Date.now() + timeout; do {if (await action()) return; await page.waitForTimeout(100);} while (Date.now() < end); throw Error('ui_readback_timeout');}
 async function check(name, action) {const started = performance.now(); await action(); report.checks.push({name, pass: true, durationMs: performance.now() - started}); console.log('PASS ' + name);}
 async function overview() {const button = page.getByTestId('pi-workbench-open'); await button.click(); await page.getByTestId('pi-workbench').waitFor();}

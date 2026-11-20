@@ -4,7 +4,7 @@ import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
-import {builtinPermissionDirectory, builtinSandboxManifest, verifySandboxBinary, runNativeSandbox, inspectPermissionPlatform, type PermissionPlatformInfo, type SandboxManifest, type SandboxStart} from './launcher';
+import {builtinPermissionDirectory, builtinSandboxManifest, createPermissionScratch, verifySandboxBinary, runNativeSandbox, inspectPermissionPlatform, type PermissionPlatformInfo, type SandboxManifest, type SandboxStart} from './launcher';
 import {digest, containsPath, scopeCovers} from '../resources';
 import {permissionHash} from '../validation';
 import type {PermissionScope} from '../../../../shared/xiaozhi-permissions';
@@ -14,6 +14,54 @@ import {removeOwnedProjection} from './projection';
 
 export type PermissionRuntime = {directory: string; manifest: SandboxManifest; version: string};
 const configuration = 'framework-csc5-x64-optimize-checked-v1';
+
+async function compilePermissionHelper(options: {
+  compiler: string; windowsDirectory: string; sources: {file:string; bytes:Buffer|string}[];
+  destination: string; signal: AbortSignal;
+}) {
+  // Framework csc synthesizes temporary filenames beside its output.
+  const {directory:scratch,release} = createPermissionScratch('xzc-');
+  const temporary = path.dirname(scratch);
+  try {
+    for (const entry of options.sources) {
+      fs.writeFileSync(path.join(scratch, entry.file), entry.bytes, {flag:'wx', mode:0o600});
+    }
+    const outputName = 'xiaozhi-sandbox.exe';
+    const args = ['/nologo', '/noconfig', '/target:exe', '/platform:x64', '/optimize+', '/checked+', '/warn:4',
+      '/r:System.dll', '/r:System.Core.dll', '/out:' + outputName, ...options.sources.map(entry => entry.file)];
+    options.signal.throwIfAborted();
+    let output = '', outputBytes = 0;
+    const exitCode = await new Promise<number | null>((resolve, reject) => {
+      const child = spawn(options.compiler, args, {cwd:scratch, windowsHide:true, stdio:['ignore','pipe','pipe'], signal:options.signal,
+        env:{SystemRoot:options.windowsDirectory, windir:options.windowsDirectory, TEMP:temporary, TMP:temporary}});
+      let processError: Error | undefined;
+      const deadline = setTimeout(() => child.kill(), 30000);
+      const bounded = (bytes: Buffer) => {
+        outputBytes += bytes.length;
+        if (outputBytes > 8192) child.kill();
+        else output += bytes.toString('utf8');
+      };
+      child.stdout.on('data', bounded);
+      child.stderr.on('data', bounded);
+      child.once('error', error => {processError = error;});
+      child.once('close', code => {
+        clearTimeout(deadline);
+        if (processError) reject(processError);
+        else resolve(code);
+      });
+    });
+    if (exitCode === 0) {
+      options.signal.throwIfAborted();
+      const executable = path.join(scratch, outputName);
+      const stat = fs.lstatSync(executable);
+      if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || stat.size === 0 || stat.size > 1048576) throw Error('configuration');
+      fs.copyFileSync(executable, options.destination, fs.constants.COPYFILE_EXCL);
+    }
+    return {exitCode,output};
+  } finally {
+    release();
+  }
+}
 
 /** Only this fixed built-in source recipe may compile a managed permission helper. */
 export function createPermissionRuntimeManager(options: {root: string; store: PermissionStore}) {
@@ -148,41 +196,25 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           return {changed: true, runtime: retained};
         } catch { /* A fresh fixed-source build is needed. */ }
         fs.mkdirSync(versions, {recursive: true});
-        // Framework csc creates additional temporary names below its output path.
-        // Keep staging short enough for its legacy Windows path APIs.
+        // Publish and verify the binary under the managed runtime root.
         const stage = path.join(versions, '.stage-' + randomUUID());
         fs.mkdirSync(stage);
         let preserveStage = false;
         try {
-          for (const entry of source) fs.writeFileSync(path.join(stage, entry.file), entry.bytes, {flag: 'wx'});
           const escapedPath = runtime.path.replaceAll('"', '""');
           const pins = 'namespace Xiaozhi.PermissionRuntime { internal sealed class TrustedRuntime { internal string Path, Hash; internal TrustedRuntime(string path, string hash) { Path=path; Hash=hash; } } internal static class TrustedRuntimes { internal static readonly TrustedRuntime[] Items = { new TrustedRuntime(@"'
             + escapedPath + '", "' + runtime.sha256 + '") }; } }';
-          fs.writeFileSync(path.join(stage, 'TrustedRuntimes.cs'), pins, {flag: 'wx'});
-          const arguments_ = ['/nologo', '/noconfig', '/target:exe', '/platform:x64', '/optimize+', '/checked+', '/warn:4',
-            '/r:System.dll', '/r:System.Core.dll', '/out:' + path.join(stage, 'xiaozhi-sandbox.exe'), ...source.map(entry => path.join(stage, entry.file)), path.join(stage, 'TrustedRuntimes.cs')];
           await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_build_intent', version,
             {owner: authority.request.owner, sourceHash, runtimeHash: runtime.sha256, compilerHash: digest(fs.readFileSync(compiler)), configuration, grantRefs: authority.decision.grantRefs});
           await authority.assert();
-          let compilerOutput = '';
-          const compilerResult = await new Promise<number | null>((resolve, reject) => {
-            const child = spawn(compiler, arguments_, {cwd: stage, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], signal: authority.signal,
-              env: {SystemRoot: platform.windowsDirectory, windir: platform.windowsDirectory, TEMP: os.tmpdir(), TMP: os.tmpdir()}});
-            let outputBytes = 0;
-            const deadline = setTimeout(() => child.kill(), 30000);
-            const bounded = (bytes: Buffer) => {outputBytes += bytes.length; if (outputBytes > 8192) child.kill();
-              else compilerOutput += bytes.toString('utf8');};
-            child.stdout.on('data', bounded);
-            child.stderr.on('data', bounded);
-            child.once('error', error => {clearTimeout(deadline); reject(error);});
-            child.once('close', code => {clearTimeout(deadline); resolve(code);});
-          });
-          if (compilerResult !== 0) {
+          const filename = path.join(stage, 'xiaozhi-sandbox.exe');
+          const compiled = await compilePermissionHelper({compiler, windowsDirectory:platform.windowsDirectory,
+            sources:[...source, {file:'TrustedRuntimes.cs',bytes:pins}], destination:filename, signal:authority.signal});
+          if (compiled.exitCode !== 0) {
             await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_build_failed', version,
-              {owner: authority.request.owner, exitCode: compilerResult, output: compilerOutput.slice(0, 8192)});
+              {owner: authority.request.owner, exitCode: compiled.exitCode, output: compiled.output});
             throw Error('configuration');
           }
-          const filename = path.join(stage, 'xiaozhi-sandbox.exe');
           const manifest: SandboxManifest = {...builtinSandboxManifest, helperSha256: digest(fs.readFileSync(filename)), helperBytes: fs.statSync(filename).size,
             sourceSha256: sourceHash, pinsSourceSha256: digest(Buffer.from(pins)), runtimes: [runtime], buildTime: new Date().toISOString()};
           fs.writeFileSync(path.join(stage, 'sandbox-manifest.json'), JSON.stringify(manifest, null, 2), {flag: 'wx'});

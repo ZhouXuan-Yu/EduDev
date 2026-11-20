@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 原生标题栏的双尺寸复验
+
+原生窗口子项已实现。Terra 在同一修复构建的两种内容尺寸确认窗口所属主进程，随后实际拖窗、点系统最大化按钮并拖拽还原。还原后的输入、工具调用与 SQLite 回执一致。输入与工具操作走 Playwright，窗口手势走真实 Windows 指针。仍按原合同核对完整页面状态及同构建角色路径。 [证据](evidence/phase7/implementation-resume-20261119/windows-helper-deep-path-20261121.json)
+
 ## 2026-11-20 任务总览只读快照复验
 
 任务总览按同一快照复用已审计任务文档。SQLite 验证历史指针缺失、目标损坏、跨会话和教师回执保留原处理，Terra 验证现行工作台入口、续跑与冷启。原生窗操作按本合同继续。[证据](evidence/phase7/implementation-resume-20261119/workbench-read-snapshot-20261120.json)
