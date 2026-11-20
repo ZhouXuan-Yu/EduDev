@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Button} from '@heroui/react';
 import {SKILL_GOVERNANCE_ERRORS, type SkillGovernanceMutation, type SkillGovernanceView} from '../../../../shared/xiaozhi-skill-governance';
 import {SkillPublicationForm} from './SkillPublicationForm';
@@ -19,6 +19,19 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
   const [officialSource, setOfficialSource] = useState('');
   const [license, setLicense] = useState('');
   const [tests, setTests] = useState('');
+  const createTriggerRef = useRef<HTMLButtonElement>(null);
+  const teamTriggerRef = useRef<HTMLButtonElement>(null);
+  const personalFormRef = useRef<HTMLFormElement>(null);
+  const teamFormRef = useRef<HTMLFormElement>(null);
+  const returnFocusRef = useRef<HTMLButtonElement | null>(null);
+  function closePublicationForm(team: boolean) {
+    const active = document.activeElement;
+    const form = team ? teamFormRef.current : personalFormRef.current;
+    returnFocusRef.current = active === document.body || form?.contains(active)
+      ? (team ? teamTriggerRef.current : createTriggerRef.current) : null;
+    if (team) setEditingTeam(false);
+    else setCreating(false);
+  }
   async function refresh() {
     const result = await window.omniEdu?.getXiaozhiSkillGovernance();
     if (result?.ok) setView(result.value);
@@ -35,7 +48,7 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
         setView(result.value);
         setNotice('变更已保存。版本状态和检查结果已更新。');
         if (input.action === 'create') {
-          setCreating(false);
+          closePublicationForm(false);
           const created = result.value.skills.find(skill => skill.scope === 'personal' && skill.name === input.draft.name);
           if (created) {
             setSelected(created.id);
@@ -43,7 +56,7 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
             if (version?.state === 'draft') setNotice('检查未通过，草稿已安全保存。请按下面的检查结果修正后重试。');
           }
         }
-        if (input.action === 'team_edit') setEditingTeam(false);
+        if (input.action === 'team_edit') closePublicationForm(true);
         await onChanged();
       }
     } catch { setNotice('操作暂时无法确认，请刷新后核对。'); }
@@ -52,14 +65,25 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
   const skill = view?.skills.find(item => item.id === selected);
   const versions = view?.versions.filter(item => item.skillId === selected) || [];
   const blocked = disabled || busy;
+  useLayoutEffect(() => {
+    const trigger = returnFocusRef.current;
+    if (!trigger) return;
+    if (!trigger.isConnected || (document.activeElement !== document.body && document.activeElement !== trigger)) {
+      returnFocusRef.current = null;
+      return;
+    }
+    if (blocked) return;
+    returnFocusRef.current = null;
+    trigger.focus();
+  }, [creating, editingTeam, blocked]);
   return <section data-testid="pi-skill-governance" aria-label="技能归属与版本">
     <div className="pi-skills-toolbar">
-      <Button size="sm" variant="secondary" data-testid="pi-skill-create" isDisabled={blocked} onPress={() => setCreating(true)}>保存工作方法</Button>
+      <Button ref={createTriggerRef} size="sm" variant="secondary" data-testid="pi-skill-create" isDisabled={blocked} onPress={() => setCreating(true)}>保存工作方法</Button>
       <Button size="sm" variant="ghost" data-testid="pi-skill-governance-refresh" isDisabled={busy} onPress={() => void refresh()}>刷新版本</Button>
     </div>
     {notice && <p role="status" data-testid="pi-skill-governance-notice">{notice}</p>}
     {!view && !notice && <p role="status">正在读取归属与版本…</p>}
-    {creating && <SkillPublicationForm disabled={blocked} close={() => setCreating(false)} publish={draft => mutate({action: 'create', draft})} />}
+    {creating && <SkillPublicationForm formRef={personalFormRef} disabled={blocked} close={() => closePublicationForm(false)} publish={draft => mutate({action: 'create', draft})} />}
     {view && <>
       <p>当前教师 {view.actor.displayName}。个人技能默认私有。</p>
       <label>版本与来源<select data-testid="pi-skill-governance-select" value={selected} onChange={event => setSelected(event.target.value)}>
@@ -70,11 +94,11 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
         <h3>{scopeLabels[skill.scope]} · {skill.title}</h3>
         <p>当前版本 {skill.activeVersion || '未激活'}{skill.autoActivate ? `，待安全点激活 ${skill.autoActivate}` : ''}</p>
         {skill.scope === 'team' && ['admin', 'maintainer'].includes(view.membership?.role || '') && <>
-          <Button size="sm" variant="secondary" data-testid="pi-skill-team-edit" isDisabled={blocked}
+          <Button ref={teamTriggerRef} size="sm" variant="secondary" data-testid="pi-skill-team-edit" isDisabled={blocked}
             onPress={() => setEditingTeam(true)}>提交团队新版本</Button>
-          {editingTeam && <SkillPublicationForm key={skill.id} disabled={blocked} team initialName={skill.name}
+          {editingTeam && <SkillPublicationForm key={skill.id} formRef={teamFormRef} disabled={blocked} team initialName={skill.name}
             initialVersion={`${Math.max(0, ...versions.map(version => Number(version.version.split('.')[0]))) + 1}.0.0`}
-            close={() => setEditingTeam(false)} publish={draft => mutate({action: 'team_edit', skillId: skill.id, revision: skill.revision, draft})} />}
+            close={() => closePublicationForm(true)} publish={draft => mutate({action: 'team_edit', skillId: skill.id, revision: skill.revision, draft})} />}
         </>}
         {versions.map(version => <article key={version.version} data-testid="pi-skill-version" data-version={version.version}>
           <p>v{version.version} · {stateLabels[version.state]}{skill.activeVersion === version.version ? ' · 当前' : ''}</p>

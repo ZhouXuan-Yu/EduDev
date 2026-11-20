@@ -38,10 +38,18 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Continue the b890dba frozen candidate checkpoint, see phase7FrozenB890dba20261121. Complete remaining independent page combinations before formal 32-case ABBA. QG-09 requires clean Windows.",
+  "next": "Rebuild and freeze the integrated Skill focus and KB candidate. Keep known state/keyboard gaps from phase7StreamKeyboard20261121 and the same-build verification rule. Formal model ABBA starts only after full independent Gate 7 approval. Clean Windows still required for QG-09.",
+  "phase7StreamKeyboard20261121": {
+    "status": "PARTIAL_FOCUS_FIX_VERIFIED",
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-stream-and-keyboard-20261121.json",
+    "baseline": "b890dba, 481 files, independent 1920 streaming and two-size workbench, approvals, capabilities and Skill keyboard paths",
+    "focusFixBuildSha256": "29fa955afa08647b00718a4139aa93fa0da8d26d6d5158762060f23ebead3fab",
+    "candidateStatus": "Pre-merge Skill focus evidence, two-size cancel and one personal success independently PASS 5/5"
+  },
   "phase8OfflineInputs20261121": {
     "status": "VERIFIED_LOCAL_INPUTS_PROVISIONAL_B",
     "evidence": "evidence/phase8/phase8-offline-candidate-20261121.json",
+    "questionSeedColdParityEvidence": "evidence/phase8/phase8-q3-and-cold-parity-20261121.json",
     "windowsMigrationEvidence": "evidence/phase8/windows-update-migration-local-20261121.json",
     "next": "Confirm final B after Gate 7 then dispatch fixed ABBA under the existing budget ledger. Migration has same-host backup, restore and rollback evidence only."
   },

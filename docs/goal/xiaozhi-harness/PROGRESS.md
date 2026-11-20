@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-21 两尺寸流式与 Skill 焦点
+
+已实现 Skill 个人与团队表单动作后归焦。b890dba 两个尺寸记录了焦点落到页面主体的反例，新构建独立 5/5。独立 1920×1080 流式 8/8，纳入仓库的同构建可重复脚本另在两尺寸各通过 8/8，覆盖最终正文增长、运行中换会话和返回、停止与 SQLite。独立工作台和审批两尺寸也完成定向检查。正式模型之前，两版合成题库及真实 Electron 冷启动读回一致，账本仍 3/200。 [页面与修复证据](evidence/phase7/implementation-resume-20261119/gate7-stream-and-keyboard-20261121.json) · [离线对照证据](evidence/phase8/phase8-q3-and-cold-parity-20261121.json)
+
 ## 2026-11-21 补齐授权状态、团队分享与流式检测
 
 封存版 b890dba 的独立复验已覆盖能力中心已安装及需授权 4/4、团队 Skill 分享及管理员审批 5/5、工作台 9/9、待审批目标变化及冷启 2/2、后台流式操作 7/7。保持完整 Gate 7 的独立判定。模型对照增加了不发请求的输入验证。旧版 458 文件和独立编译的新版 481 文件已通过，固定 32 轮协议回归 19/19。账本仍为 3/200。 [页面实测](evidence/phase7/implementation-resume-20261119/gate7-authorization-skill-stream-20261121.json) · [对照准备](evidence/phase8/phase8-offline-candidate-20261121.json)

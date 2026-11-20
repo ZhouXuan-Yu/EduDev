@@ -13,7 +13,8 @@ import {summarizeProbe, preparationTiming, preparationBreakdown} from './phase8-
 const argumentsMap = new Map();
 for (let index = 2; index < process.argv.length; index += 2) argumentsMap.set(process.argv[index], process.argv[index + 1]);
 for (const key of argumentsMap.keys()) {
-  if (!['--desktop-root', '--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--background', '--require-lifecycle'].includes(key)) throw Error('unknown_argument');
+  if (!['--desktop-root', '--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--background',
+    '--require-lifecycle', '--viewport', '--switch-session'].includes(key)) throw Error('unknown_argument');
 }
 const desktop = fs.realpathSync(argumentsMap.get('--desktop-root') || process.cwd());
 const buildRoot = fs.realpathSync(argumentsMap.get('--build-root') || path.join(desktop, 'out'));
@@ -28,6 +29,10 @@ const label = argumentsMap.get('--label') || 'unlabeled';
 assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
 const background = argumentsMap.get('--background') === 'true';
 const requireLifecycle = argumentsMap.get('--require-lifecycle') === 'true';
+const viewport = argumentsMap.get('--viewport') ?? '1366x768';
+assert(['1366x768', '1920x1080'].includes(viewport), 'Use a Gate 7 viewport');
+const [width, height] = viewport.split('x').map(Number);
+const switchSession = argumentsMap.get('--switch-session') === 'true';
 const workload = {...streamWorkload, intervalMs: background ? 100 : streamWorkload.intervalMs};
 const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-stream-' : 'xiaozhi-phase8-stream-performance-'));
 const dataRoot = path.join(output, 'data');
@@ -90,6 +95,42 @@ async function scrollDuring(phase) {
   await measure(phase + '-scroll', 'scroll', target, () => page.mouse.wheel(0, selected.direction), {beforeScrollTop: selected.before});
 }
 
+async function switchDuringFinal() {
+  const selectedSession = () => page.locator('.office-composer-container').getAttribute('data-session-id');
+  const originalId = await selectedSession();
+  const marker = workload.finalText.split('，')[0];
+  const readMarkers = async count => {
+    const found = await page.waitForFunction(({marker, count}) => {
+      const text = document.querySelector('[data-testid="office-conversation"]')?.innerText || '';
+      const matches = text.split(marker).length - 1;
+      return matches > count ? matches : false;
+    }, {marker, count}, {timeout:12000});
+    try {return await found.jsonValue();} finally {await found.dispose();}
+  };
+  const first = await readMarkers(0);
+  const later = await readMarkers(first);
+
+  await page.getByTestId('pi-new-session').click();
+  await page.waitForFunction(id => {
+    const selected = document.querySelector('.office-composer-container')?.getAttribute('data-session-id');
+    return selected && selected !== id;
+  }, originalId);
+  const otherId = await selectedSession();
+  const sidebar = page.getByTestId('pi-sidebar-toggle');
+  if (await sidebar.getAttribute('aria-expanded') !== 'true') await sidebar.click();
+  await page.getByTestId('edu-history-panel').getByTestId('ai-conversation-session-' + originalId).click();
+  await page.waitForFunction(id => document.querySelector('.office-composer-container')?.getAttribute('data-session-id') === id, originalId);
+  const backId = await selectedSession();
+  const snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), originalId);
+  report.sessionSwitch = {originalId, otherId, backId, runningAfterReturn:snapshot.running, firstFinalMarkers:first, laterFinalMarkers:later};
+  check('Final answer grows visibly and the original Run remains active when returning to its session', () => {
+    assert(first > 0 && later > first);
+    assert(otherId && otherId !== originalId);
+    assert.equal(backId, originalId);
+    assert.equal(snapshot.running, true);
+  });
+}
+
 try {
   assert(!fs.existsSync(path.join(dataRoot, 'app.db')));
   buildBefore = fingerprint(buildRoot);
@@ -144,18 +185,21 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   page.on('pageerror', error => report.errors.push(error.message));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
   await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
-  const visible = await application.evaluate(({BrowserWindow}, hidden) => {
+  const visible = await application.evaluate(({BrowserWindow}, {hidden, width, height}) => {
     const window = BrowserWindow.getAllWindows()[0];
-    window.setContentSize(1366, 768);
+    window.setContentSize(width, height);
     if (!hidden) { window.show(); window.focus(); }
     return window.isVisible();
-  }, background);
+  }, {hidden:background, width, height});
   assert.equal(visible, !background);
+  await page.waitForFunction(({width, height}) => innerWidth === width && innerHeight === height, {width, height});
   report.geometry = {main: await application.evaluate(({BrowserWindow}) => {
     const window = BrowserWindow.getAllWindows()[0];
     return {bounds: window.getBounds(), contentBounds: window.getContentBounds()};
   }), renderer: await page.evaluate(() => ({innerWidth, innerHeight, devicePixelRatio})),
     launchSwitch: '--force-device-scale-factor=1'};
+  assert.equal(report.geometry.main.contentBounds.width, width);
+  assert.equal(report.geometry.main.contentBounds.height, height);
   report.isolation = await assertIsolatedPiMain(application, main, profile);
   report.clocks = {main: await application.evaluate(() => ({timeOrigin: performance.timeOrigin,
     epochMs: performance.timeOrigin + performance.now(), dateCalibrationMs: Date.now() - (performance.timeOrigin + performance.now())})),
@@ -185,6 +229,7 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   await scrollDuring('reasoning');
   await page.screenshot({path: path.join(output, 'reasoning.png')});
   await waitPhase('final');
+  if (switchSession) await switchDuringFinal();
   await typeDuring('final');
   await togglePanel('final');
   await scrollDuring('final');

@@ -1,16 +1,16 @@
-import {useState} from 'react';
+import {useState, type Ref} from 'react';
 import {Button} from '@heroui/react';
 import type {SkillDraftInput} from '../../../../shared/xiaozhi-skill-governance';
 
-export function SkillPublicationForm({disabled, publish, close, initialName = '', initialVersion = '1.0.0', team = false}: {
+export function SkillPublicationForm({disabled, publish, close, formRef, initialName = '', initialVersion = '1.0.0', team = false}: {
   disabled: boolean; publish: (draft: SkillDraftInput) => Promise<void>; close: () => void;
-  initialName?: string; initialVersion?: string; team?: boolean;
+  formRef?: Ref<HTMLFormElement>; initialName?: string; initialVersion?: string; team?: boolean;
 }) {
   const [name, setName] = useState(initialName);
   const [description, setDescription] = useState('');
   const [document, setDocument] = useState('');
   const [version, setVersion] = useState(initialVersion);
-  return <form data-testid="pi-skill-publication-form" onSubmit={event => {
+  return <form ref={formRef} data-testid="pi-skill-publication-form" onSubmit={event => {
     event.preventDefault();
     void publish({name, description, document, version, dependencies: [], permissionRequirements: []});
   }}>
