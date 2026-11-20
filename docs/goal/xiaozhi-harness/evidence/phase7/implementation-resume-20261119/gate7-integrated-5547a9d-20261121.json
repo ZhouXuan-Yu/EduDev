@@ -1,0 +1,238 @@
+{
+  "status": "PARTIAL_INTEGRATED",
+  "sourceCommit": "5547a9dc032f660cef4cc75e67d14b0a2acdb2e9",
+  "build": {
+    "command": "npm run build",
+    "exit": 0,
+    "workspace": "D:/WorkProject/EduProject-harness/apps/desktop",
+    "files": 481,
+    "sha256": "322a9e69787c0a0e208dfd5329518af842a10a8b003878453a8a834457256510",
+    "mainSha256": "af77b0ac259795ce7916b609d9bf9d3c7e94866fc37833ff318437af757493b2",
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/frozen-out",
+    "log": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/build.log",
+      "sha256": "bebd05cdd7da71a7193a5e79bc85b0aa4fd9273e1c26a5d642f5b908da30b20d"
+    },
+    "checkpoint": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/source-build-checkpoint.json",
+      "sha256": "085bb33c4ac5e0ef44c63e7ec7f8f9933dd652ccabe7f17ea4d236c6e44f8334"
+    }
+  },
+  "offlinePhase8": {
+    "status": "PASS_SCOPED_INTEGRATED_PROVISIONAL_B",
+    "manifest": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/manifest-a-d50ef330-b-5547a9d.json",
+      "sha256": "ed577987fe5c43bc622cbc2b81e685219d90523ce3851e61bdbbea8218713d8d"
+    },
+    "verifyReceipt": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/verified-manifest.json",
+      "sha256": "5d631f8d0420f0aeb68166ef769b2e7d339b8bb77c77b522747a656107cf36e2"
+    },
+    "startup": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/omni-edu-xiaozhi-phase8-boot-v8S0Cx/report.json",
+      "sha256": "f2bf24fcf43c1d2cf924a1be041c1a98a45af1db1040dd13d595d0781f4a47c9",
+      "versionsPassed": 2,
+      "model": "deepseek-flash",
+      "thinking": "high",
+      "typedQuestionVersion": "3afd9ecb10b18895d35ecb62d6aa94bc59e14928187667e24dc90df8a7921cb2",
+      "observedRequests": 0,
+      "pageErrors": 0
+    }
+  },
+  "independentWorkApprovalCapability": {
+    "passed": 12,
+    "paidCalls": 0,
+    "buildValidatedBeforeAfter": true,
+    "runs": [
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1366x768",
+        "checks": 3,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-wa-c1/omni-edu-xiaozhi-phase7-workbench-ui-JcQjPa/evidence/keyboard-busy-report.json",
+        "sha256": "4b8b18356147ecffee49d247561df20da3b4f42321631583afa8a46c8ad6e2de"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1920x1080",
+        "checks": 3,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-wa-c1/omni-edu-xiaozhi-phase7-workbench-ui-qK0rae/evidence/keyboard-busy-report.json",
+        "sha256": "1306461c424fbd8a9957a733c42e89c6ee23d189cf35f7d58266ff92436c90e8"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-capability-center-ui.mjs",
+        "checks": 6,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-wa-c1/omni-edu-xiaozhi-phase7-workbench-ui-5g8cu0/evidence/capability-center-report.json",
+        "sha256": "cde699d1e7cb1bd01e9e14e3b7f5de67293cd85ddc8ed3926f215b1427bf603f"
+      }
+    ],
+    "boundary": "Approvals decision controls are checked for reachability. These keyboard checks do not trigger an actual decision. Capability assertions use built-in and synthetic required/optional states and verify unchanged SQLite facts."
+  },
+  "sharedLedger": {
+    "limit": 200,
+    "used": 3,
+    "remaining": 197,
+    "unresolved": 0,
+    "addedPaidRequests": 0
+  },
+  "next": "Preserve the 5547a9d candidate locally and remaining independent Gate 7 coverage. For arbitrary TEMP, prepare an owned private projection with expected minimum rights and consistent environment without weakening labels or path validation. Formal model exercise and clean Windows installation still pending.",
+  "independentSkill": {
+    "checks": 13,
+    "modelRequests": "Two synthetic loopback requests per version run, zero in focus",
+    "exit": 0,
+    "runs": [
+      {
+        "name": "Personal/team form cancel and personal success",
+        "checks": 5,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-skill/omni-edu-xiaozhi-phase7-workbench-ui-MFOENO/evidence/focus-report.json",
+        "sha256": "819ac66e3b7b4ecef8977bf49abdb45d5dd08a916e3eddd172d88c062127d757"
+      },
+      {
+        "name": "Skill version and rollback",
+        "viewport": "1366x768",
+        "checks": 4,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-skill/omni-edu-xiaozhi-phase7-workbench-ui-qlAzwJ/evidence/skill-run-version-report.json",
+        "sha256": "cf31697624b7ff4eb17e01f3788720a0629d1c5868806c1fd267c35a98b49ab6"
+      },
+      {
+        "name": "Skill version and rollback",
+        "viewport": "1920x1080",
+        "checks": 4,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-skill/omni-edu-xiaozhi-phase7-workbench-ui-dsVBva/evidence/skill-run-version-report.json",
+        "sha256": "b1cff5cdb975fd16f4c9c927524dd41644ef1937e1769e57c71c3a3ecf156b70"
+      }
+    ],
+    "commands": [
+      "node terra-skill/focus.mjs",
+      "node scripts/xiaozhi-agent/phase7-skill-run-version-ui.mjs 1366x768",
+      "node scripts/xiaozhi-agent/phase7-skill-run-version-ui.mjs 1920x1080"
+    ],
+    "focusDriverSha256": "5d6b989f0db4d601d7878b75857fa6248f299d116417ea41079fc3c86286668a",
+    "boundary": "Focus checks same original settings and both native content geometries. Version suite verifies an active Run retains its original version, only subsequent Run sees rollback, and SQLite/file/UI cold reads do not replay."
+  },
+  "independentTaskFocus": {
+    "driver": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-focus-cycle/test.mjs",
+    "driverSha256": "f55f6bd4421b3f05f6b4adf10c9c2c3d1d2b5a288f319c331c9a43911c2dcf34",
+    "command": "node <driver> <1366x768|1920x1080>; TEMP and TMP are the driver parent",
+    "runs": [
+      {
+        "viewport": "1366x768",
+        "checks": 6,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-focus-cycle/omni-edu-xiaozhi-phase7-workbench-ui-1Rve4r/evidence/task-focus-report-1366.json",
+        "sha256": "23a528cabc268eb6bca3f3b55fee2bbd84eacbd71b16f7fccd3bbd5a937d7a22"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": 6,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-focus-cycle/omni-edu-xiaozhi-phase7-workbench-ui-Cvn9c7/evidence/task-focus-report-1920.json",
+        "sha256": "68ce687720fcca21bf10f12d74324860c906108dade3ec88f6ef078f5bf0ec58"
+      }
+    ],
+    "focusStopsInEachDirection": 15,
+    "pageErrors": 0,
+    "addedPaidRequests": 0
+  },
+  "independentStream": {
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --expected-out-hash 322a9e69787c0a0e208dfd5329518af842a10a8b003878453a8a834457256510 --expected-out-count 481 --label gate7-5547-<width> --viewport <size> --switch-session true --background true",
+    "runs": [
+      {
+        "viewport": "1366x768",
+        "checks": 8,
+        "exit": 0,
+        "reasoningLength": [
+          931,
+          2795
+        ],
+        "finalTextMarkers": [
+          25,
+          70
+        ],
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-stream/omni-edu-xiaozhi-stream-QsV2AV/report.json",
+        "sha256": "16522ec47ffd7126f796abc9b4b2993d9d80976d5f199d21f10a77edc8758869"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": 8,
+        "exit": 0,
+        "reasoningLength": [
+          1630,
+          3727
+        ],
+        "finalTextMarkers": [
+          5,
+          50
+        ],
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-stream/omni-edu-xiaozhi-stream-3DE6PU/report.json",
+        "sha256": "f7493126e5da988076ec15fcc5f63c4faab99d3e369c288224a9841bdb907e2a"
+      }
+    ],
+    "boundary": "Actual Electron controlled synthetic stream. Returns to original active session, stops and reads same interrupted Run immediately. Hidden rendering background timing and cold read are excluded.",
+    "addedPaidRequests": 0
+  },
+  "rootWorkbenchLongTemp": {
+    "status": "FAIL_U08",
+    "passed": 7,
+    "total": 9,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/root-ui/omni-edu-xiaozhi-phase7-workbench-ui-vSPdLu/evidence/ui-report.json",
+    "sha256": "a084ea4e5f315fa1bcfbaef93bc826ba750b6b02b6606c7a1839385a44e747f3",
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "detail": "U08 timed out waiting for the terminal Job. Expected exec tool was admitted. Native permission_runtime_health failed invalid_projection with no Job rows; U09 not reached. Preserve this original synthetic run. Same terminal regression should be probed under standard owned user TEMP.",
+    "nativeProbe": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/pty-audit-analysis/projection-env-comparison.json",
+      "sha256": "cd5c83e34b5355457b2035a3c3880499b4e073052c548ad3778637392df49b69",
+      "narrow": "Matching E TEMP/TMP passes canonical parent/name but fails while holding ancestor handles, before owner and file checks. Separate unequal TEMP/TMP case fails at earlier parent match. No owned Job or remaining ACEs.",
+      "win32": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/pty-audit-analysis/win32-access-probe.json",
+        "sha256": "66e3b67c3a9998cedaddd99dc953bc1db127a223f03fcd273ca46b02839be95c",
+        "result": "Ancestor handles succeeded. Win32 denied WRITE_OWNER at the new projection root; read and WRITE_DAC without WRITE_OWNER succeeded. This root inherited Modify only."
+      },
+      "causalContrast": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/pty-audit-analysis/projection-after-probe-acl.json",
+        "sha256": "fedaf378556f3ca09685a441d08121ce282cb38b16bb67125b9958b8bd003c58",
+        "result": "After changing only a newly created probe directory's ACL, the same cleanup-only helper reached projection_validated. Its next missing-identity failure is expected and does not constitute starting the terminal."
+      },
+      "analysis": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/pty-audit-analysis/README.md",
+        "sha256": "076b4fcb861f86f318b17f9140019438d7d7cd7eaec7b4e25417bd7ef983157f",
+        "result": "The same-value E case was denied WRITE_OWNER by inherited Modify-only ACL, before validation of the projection owner. Controlled isolated ACE comparison reached projection_validated; the final missing private identity is expected for cleanup-only. Original ACE list restored, Windows auto-inheritance control flag remains on probe-only directory. No change to real/user ACLs or product security checks."
+      }
+    }
+  },
+  "rootPartial": {
+    "status": "PASS_SCOPED",
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-partial-ui.mjs",
+    "exit": 0,
+    "viewports": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "cases": 3,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/root-ui/omni-edu-xiaozhi-phase7-workbench-ui-6xgBpB/evidence/partial-empty-report.json",
+    "factsUnchanged": true,
+    "boundary": "Tasks, approvals and capability partial empty and refresh recovery. Zero new model calls.",
+    "sha256": "bcb28a55cc32ff3cdb936e67c8536b9a82d774f34d615967fad8363a4a12ecab"
+  },
+  "rootWorkbenchDefaultTemp": {
+    "status": "PASS_SCOPED",
+    "passed": 9,
+    "total": 9,
+    "exit": 0,
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-xiaozhi-phase7-workbench-ui-lCySzc/evidence/ui-report.json",
+    "sha256": "c83bd23288e2f78f8cba306a842602694753816814bd2d82c026f9fad21d7f9c",
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "result": "Built-in terminal launched, typed input yielded PHASE7_VALUE_41. Owned job cleanup completed and the approval/task record cold-read succeeded. Same source, build and test as rootWorkbenchLongTemp except locations."
+  },
+  "externalWindows": {
+    "status": "BLOCKED_QG09_ONLY",
+    "os": "Windows 11 Home x64",
+    "windowsSandboxExecutable": false,
+    "installedVmCommandsFound": [],
+    "scope": "No clean Windows system available for normal per-user installation, shortcut launch and uninstall. Current source-run evidence remains usable."
+  }
+}

@@ -38,7 +38,15 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Rebuild and freeze the integrated Skill focus and KB candidate. Keep known state/keyboard gaps from phase7StreamKeyboard20261121 and the same-build verification rule. Formal model ABBA starts only after full independent Gate 7 approval. Clean Windows still required for QG-09.",
+  "next": "Use the frozen 5547a9d candidate, see phase7Integrated5547a9d20261121. Resolve the alternate TEMP native terminal path issue, complete remaining independent Gate 7 combinations and then run the formal ABBA. QG-09 still needs clean Windows x64.",
+  "phase7Integrated5547a9d20261121": {
+    "status": "PARTIAL_INTEGRATED",
+    "sourceCommit": "5547a9dc032f660cef4cc75e67d14b0a2acdb2e9",
+    "buildSha256": "322a9e69787c0a0e208dfd5329518af842a10a8b003878453a8a834457256510",
+    "buildFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-integrated-5547a9d-20261121.json",
+    "remaining": "Original Gate 7 complete same-build evidence and independent approval, separate formal model ABBA and clean Windows. Alternate TEMP helper initialization issue recorded."
+  },
   "phase7StreamKeyboard20261121": {
     "status": "PARTIAL_FOCUS_FIX_VERIFIED",
     "evidence": "evidence/phase7/implementation-resume-20261119/gate7-stream-and-keyboard-20261121.json",
