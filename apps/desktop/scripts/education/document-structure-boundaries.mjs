@@ -6,6 +6,8 @@ const { localizedPdfMarkProof, separatedMarkPixels, verifiedQuestionInPdfConflic
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
 const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
+const { printedStructureQuestionType } =
+  await import("../../src/main/assets/material-structure-question-type.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -68,6 +70,30 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+await check("Printed type follows the question's own section across pages and refuses incompatible or ambiguous shapes", () => {
+  const first = page([
+    ["一、单项选择题：（本大题共2题）", .1, .08, .8, "paragraph_title"],
+    ["1. 下列选项正确的是", .1, .12],
+    ["A. 甲", .1, .16], ["B. 乙", .1, .20],
+  ], 1, 2);
+  const second = page([
+    ["2. 已知条件，选出正确结论", .1, .08],
+    ["A. 丙", .1, .12], ["B. 丁", .1, .16],
+    ["二、填空题：（每题4分）", .1, .22, .8, "paragraph_title"],
+    ["3. 已知多项式 3a-2a，合并同类项后的结果为▲", .1, .26],
+  ], 2, 2);
+  const [one, two, three] = questions([first, second]);
+  assert.equal(three.status, "candidate", JSON.stringify({section:three.section,issues:three.issues}));
+  assert.deepEqual([one, two, three].map(printedStructureQuestionType), ["单项选择题", "单项选择题", "填空题"]);
+  assert.equal(printedStructureQuestionType({...two, section: "选择题"}), "选择题");
+  assert.equal(printedStructureQuestionType({...two, section: "多项选择题"}), "多项选择题");
+  for (const changed of [
+    {...two, kind: "answer"}, {...two, status: "needs_review"},
+    {...two, options: two.options.slice(0, 1)}, {...two, options: [...two.options].reverse()},
+    {...two, section: "填空题"}, {...two, section: "选择题 答案"},
+    {...two, section: "（一）试卷结构"}, {...three, section: "选择题"},
+  ]) assert.equal(printedStructureQuestionType(changed), undefined);
+});
 await check("An isolated unnumbered prompt stays reviewable and a numbered figure caption cannot split the next question", () => {
   const stem = "已知一个物体以相同的速度连续经过两段水平轨道，求整个过程所用的时间是多少？（假设阻力忽略不计）";
   const withAnnotation = (text, next = .44) => page([

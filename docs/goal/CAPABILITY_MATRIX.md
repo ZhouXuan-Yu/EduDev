@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 M03/M05 结构题分小节归档
+
+新的 PDF、Word 和图片结构归档复用同一印刷小节证据判断题型。存量回填沿用题本足迹、SQLite 写事务、原件哈希及现有全文和索引更新通道。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)
+
 ## 2026-11-21 M03/M05 无标点印刷题号
 
 依原行坐标把题号接回既有结构、归档、待核和检索入口。结构完整性和答案门槛仍沿用原政策。 [本轮记录](../research/evidence/kb/20261121/assessment-numbering/README.md)

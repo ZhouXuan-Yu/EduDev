@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 真实 PDF 和 Word 题型回填
+
+旧版复现 8 条缺失或错型。新构建后台更正 8 条，题本读回与冻结题文档一致，2 条已核记录保持，未完成草稿不会进入正式检索。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)
+
 ## 2026-11-21 实际整卷的题界与原文
 
 同一五页真实卷逐页核对原始 OCR 与行框，比较有题号分组、考生说明和相邻公式归属。题本草稿检索与正式检索分别核对。 [本轮记录](../research/evidence/kb/20261121/assessment-numbering/README.md)

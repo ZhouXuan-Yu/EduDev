@@ -18,7 +18,10 @@ import type {QuestionContextEditInput} from '../../shared/question-context-edit'
 import type {QuestionContextSource} from '../../shared/question-context';
 import {DOCUMENT_STRUCTURE_ENGINE,type DocumentStructureReference} from '../../shared/material-document-structure';
 import {assertStructureDraftEditable,hasIdenticalVisibleStructureDraft,publishStructureDrafts,stageStructureDraft,structureDraftHidden,STRUCTURE_BANK_REVISION} from './material-structure-bank';
+import {printedStructureQuestionType} from './material-structure-question-type';
+import {teacherOwnsRuleQuestion} from './material-rule-protection';
 type Row=Record<string,unknown>;type Value=string|number|null;
+const printedTypeCursor='xiaozhi.structure-printed-question-types.cursor.v1';
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
 export class MaterialQuestionArchive{
@@ -52,7 +55,7 @@ export class MaterialQuestionArchive{
       AND s.engine=? AND s.status IN ('complete','partial')
       AND a.parse_token=s.engine||':'||s.generation`,[STRUCTURE_BANK_REVISION,DOCUMENT_STRUCTURE_ENGINE]);
  }
- start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
+ start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);if(!this.controller.signal.aborted)await this.reconcilePrintedTypes();})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
  async status():Promise<ArchiveStatus>{
   const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`))[0];
@@ -109,6 +112,93 @@ export class MaterialQuestionArchive{
    });cursor=nextCursor;
   }
  }
+ /** A bounded local upgrade of current, untouched structure drafts. */
+ async reconcilePrintedTypes() {
+  if(!this.structures)return;
+  const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',[printedTypeCursor]))[0];
+  let cursor='structure:';
+  try {
+   const stored=JSON.parse(String(state?.value_json??'null'));
+   if(typeof stored==='string'&&stored.startsWith('structure:'))cursor=stored;
+  }catch{/* Rebuild the derived cursor from its start. */}
+  const rows=await this.host.all(`WITH batch AS MATERIALIZED (
+    SELECT extraction_key,resource_id,question_id FROM material_question_members
+    WHERE extraction_key>? AND extraction_key<'structure;' ORDER BY extraction_key LIMIT 16
+  )
+  SELECT b.extraction_key,q.id FROM batch b LEFT JOIN material_structure_jobs s ON s.resource_id=b.resource_id
+    AND s.status IN ('complete','partial')
+  LEFT JOIN question_bank_items q ON q.id=b.question_id AND q.created_at=q.updated_at AND NOT ${structureDraftHidden}
+    AND CASE WHEN json_valid(q.archive_json) THEN
+      json_extract(q.archive_json,'$.state')='rule_extracted' AND json_type(q.archive_json,'$.sourceChecked')='false'
+      AND json_extract(q.archive_json,'$.structure.generation')=s.generation
+      AND json_extract(q.archive_json,'$.structure.version')=s.version
+      AND json_extract(q.archive_json,'$.structure.resourceId')=s.resource_id
+    ELSE 0 END
+  ORDER BY b.extraction_key`,[cursor]);
+  let scanned=cursor;
+  for(const row of rows) {
+   this.controller.signal.throwIfAborted();
+   if(row.id) {
+    try {
+     await this.reconcilePrintedType(String(row.id));
+    }catch(error) {
+     // An invalid or unavailable original cannot supply archival metadata.
+     // A transient failure leaves its cursor in place for the following pump.
+     if(!(error instanceof SyntaxError)&&
+       !['source_changed','material_not_found','missing','unavailable','invalid_input','question_archive_invalid','question_document_invalid']
+         .includes((error as Error).message)&&
+       !['ENOENT','ENOTDIR','EACCES','EPERM','EIO'].includes((error as NodeJS.ErrnoException).code??''))break;
+    }
+   }
+   scanned=String(row.extraction_key);
+  }
+  if(scanned!==cursor)await this.host.withWriter(async target=>{
+   this.controller.signal.throwIfAborted();
+   await target.host.run(`INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,datetime('now'))
+     ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at`,[printedTypeCursor,JSON.stringify(scanned)]);
+  });
+ }
+
+ private async reconcilePrintedType(id:string) {
+  const original=await this.host.read(id);
+  const archive=original?.archive;
+  const ref=archive?.structure;
+  if(!original||!archive||!ref||archive.state!=='rule_extracted'||archive.sourceChecked||
+     archive.structureReview||original.createdAt!==original.updatedAt)return;
+  const signal=this.controller.signal;
+  const {question}=await this.structures!().authenticate(ref,signal,false);
+  if(question.number!==archive.number||question.stem.trim()!==original.stem)return;
+  const type=printedStructureQuestionType(question);
+  if(!type||type===original.questionType)return;
+  const stamp=await this.host.materials().originalStamp(ref.resourceId,ref.version);
+  await this.host.materials().verifyOriginalVersion(ref.resourceId,ref.version,signal);
+  await this.host.withWriter(async target=>{
+   const active=(await target.host.all(`SELECT q.archive_json FROM question_bank_items q
+     JOIN material_question_members m ON m.question_id=q.id
+     JOIN material_structure_jobs s ON s.resource_id=m.resource_id
+     WHERE q.id=? AND q.created_at=q.updated_at AND s.resource_id=? AND s.version=? AND s.generation=?
+       AND s.status IN ('complete','partial') AND NOT ${structureDraftHidden}
+       AND NOT EXISTS(SELECT 1 FROM material_structure_reviews r WHERE r.question_id=q.id)`,
+     [id,ref.resourceId,ref.version,ref.generation]))[0];
+   if(!active||await teacherOwnsRuleQuestion(target.host,id)||
+     (await target.bookRole?.(ref.resourceId))?.kind==='answers')return;
+   const current=await target.host.read(id);
+   if(!current||questionVersion(current)!==questionVersion(original))return;
+   if(current.questionType) {
+    const resource=await target.host.materials().resource(ref.resourceId);
+    const [unit]=await target.host.materials().publishedPageSources(resource,question.pageRange);
+    // Replace a populated value only when it still matches the exact original chunk fallback.
+    if(!unit||unit.chunk.questionType!==current.questionType||
+       JSON.stringify(materialSource(unit))!==JSON.stringify(archive.sources[0]))return;
+   }
+   if(await target.host.materials().originalStamp(ref.resourceId,ref.version)!==stamp)throw Error('source_changed');
+   signal.throwIfAborted();
+   const revised={...archive,issues:archive.issues.filter(issue=>issue!=='missing_type')};
+   await target.host.run(`UPDATE question_bank_items SET question_type=?,archive_json=?,updated_at=?
+     WHERE id=? AND updated_at=? AND archive_json=?`,[type,JSON.stringify(revised),new Date().toISOString(),id,current.updatedAt,String(active.archive_json)]);
+  });
+ }
+
  async drain(){const row=(await this.host.all("SELECT * FROM material_question_jobs WHERE status='pending' ORDER BY updated_at,resource_id LIMIT 1"))[0];if(!row||this.controller.signal.aborted)return false;const id=String(row.resource_id),version=String(row.version),cursor=Number(row.cursor),token=String(row.parse_token),verification=id+version+token;
   try{
    const resource=await this.host.materials().resource(id);if(resource.contentHash!==version)throw new Error('source_changed');
@@ -190,7 +280,7 @@ export class MaterialQuestionArchive{
            subject: metadata.subject || "",
            grade: metadata.grade || "",
            knowledgePoint: metadata.knowledgePoint || "",
-           questionType: metadata.questionType || "",
+           questionType: printedStructureQuestionType(q) || metadata.questionType || "",
            difficulty: ["easy", "hard"].includes(metadata.difficulty)
              ? (metadata.difficulty as "easy" | "hard")
              : "medium",

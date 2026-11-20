@@ -8,7 +8,7 @@ type Candidate=Prefix&{index:number;row:Row;section:boolean;previous?:Candidate;
 const digit='[1-9１-９][0-9０-９]{0,2}';
 const looseNumber=new RegExp(`^(${digit})(?:[ \\t\\u3000]+(\\S.*))?$`,'u');
 const scoredStart=new RegExp(`^(${digit})[ \t\u3000]*([（(])(?:本题|本小题)[ \t]*(?:满分|共|计)[ \t]*[0-9０-９]{1,3}[ \t]*分`,'u');
-const questionSection=/^(?:(?:第[一二三四五六七八九十百\d]+[部分章]|[一二三四五六七八九十百]+[、．.]|[ⅠⅡⅢⅣⅤ]+[、．.]?)[ \t]*)?(?:单项选择题|多项选择题|不定项选择题|选择题|填空题|解答题|计算题|实验题|综合题|证明题|判断题|简答题|阅读理解)(?:$|[ \t（(:：])/u;
+export const questionSection=/^(?:(?:第[一二三四五六七八九十百\d]+[部分章]|[一二三四五六七八九十百]+[、．.]|[ⅠⅡⅢⅣⅤ]+[、．.]?)[ \t]*)?(单项选择题|多项选择题|不定项选择题|选择题|填空题|解答题|计算题|实验题|综合题|证明题|判断题|简答题|阅读理解)(?=$|[ \t（(:：])/u;
 const blank=/▲|_{2,}|[（(][ \t]*[）)]/u;
 const option=/^[、，。]?\s*(?:[（(][A-H][）)]|[A-H][.．、])/u;
 const units=/^(?:%|％|℃|°|千米|厘米|毫米|千克|毫克|公里|分钟|小时|万元|元[，。]|岁[，。]|[kcm]?m(?:\/s)?\b|kg\b|g\b|Hz\b|V\b|N\b)/u;
