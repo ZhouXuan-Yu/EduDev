@@ -25,8 +25,10 @@ const sql=(statement,params=[],write=false)=>{
   try{return write?db.prepare(statement).run(...params):db.prepare(statement).all(...params);}
   finally{db.close();}
 };
-const sample=sql("SELECT r.id,r.local_path,r.original_file_name,r.content_hash,j.status,j.generation FROM teacher_resources r JOIN material_structure_jobs j ON j.resource_id=r.id WHERE r.original_file_name='native-recovery-two-column.pdf'")[0];
-assert.equal(sample.status,'complete');
+const exactPages=process.argv.includes('--exact-pages');
+const sampleName=exactPages?'26年6月风华初三三模模拟测试卷(1).pdf':'native-recovery-two-column.pdf';
+const sample=sql('SELECT r.id,r.local_path,r.original_file_name,r.content_hash,j.status,j.generation FROM teacher_resources r JOIN material_structure_jobs j ON j.resource_id=r.id WHERE r.original_file_name=?',[sampleName])[0];
+assert(['complete','partial'].includes(sample.status));
 assert.equal(path.dirname(path.resolve(sample.local_path)),path.join(data,'teacher_resources'));
 assert.equal(createHash('sha256').update(fs.readFileSync(sample.local_path)).digest('hex'),sample.content_hash);
 const originalPage=sql('SELECT * FROM material_structure_pages WHERE generation=? AND page=1',[sample.generation])[0];
@@ -75,6 +77,56 @@ async function openCard(){
   card=page.getByTestId('folder-ai-'+batchId);
   await openMaterialDisclosure(card);
 }
+async function verifyExactPages(){
+  const queue=()=>sql(`SELECT f.unit,f.state,f.error,u.input_json,u.error transport_error FROM material_folder_ai_units f
+    LEFT JOIN material_ai_units u ON u.batch_id=f.ai_batch_id AND u.ordinal=1
+    WHERE f.batch_id=? AND f.unit IN (1,2) ORDER BY f.unit`,[batchId]);
+  const observed=await until(()=>{
+    const rows=queue();
+    return rows.length===2&&rows.every(row=>['complete','failed','review'].includes(row.state))?rows:undefined;
+  });
+  if(baseline){
+    const errors=observed.map(row=>row.error);
+    assert.deepEqual(errors,['source_incomplete','unit_too_large']);
+    assert(observed.every(row=>row.input_json===null));
+    return {blockedPages:2,errors};
+  }
+  assert.deepEqual(observed.map(row=>[row.error,row.transport_error]),[
+    ['outcome_unknown','authentication'],['outcome_unknown','authentication']
+  ]);
+  assert.deepEqual(await requests(),[{model:'deepseek-flash'},{model:'deepseek-flash'}]);
+  const chunks=sql('SELECT id,page_number,structure_search_hidden FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id',[sample.id]);
+  const inputs=observed.map(row=>JSON.parse(row.input_json));
+  async function verifySources(){
+    for(const [index,input] of inputs.entries()){
+      const pageNumber=index+1;
+      assert.equal(input.pageSource.page,pageNumber);
+      assert.equal(input.pageSource.version,sample.content_hash);
+      assert.equal(input.pagePrompt.structureContext.reference.generation,sample.generation);
+      const expected=chunks.flatMap((row,offset)=>row.page_number===pageNumber&&!row.structure_search_hidden?[[row.id,offset]]:[]);
+      assert.deepEqual(input.sources.map(source=>[source.chunkId,source.offset]),expected);
+      const readback=await page.evaluate(async sources=>{
+        const rows=[];
+        for(const source of sources){
+          const result=await window.omniEdu.getMaterialSource(source);
+          rows.push([result.body.chunks[0].id,result.body.chunks[0].pageNumber]);
+        }
+        return rows;
+      },input.sources);
+      assert.deepEqual(readback,expected.map(([id])=>[id,pageNumber]));
+    }
+  }
+  await verifySources();
+  assert.deepEqual(inputs.map(input=>input.sources.length),[14,21]);
+  await card.getByTestId('folder-ai-pause').click();
+  await until(async()=>(await view())?.status==='paused');
+  await app.close();app=undefined;
+  await launch();
+  await verifySources();
+  assert.deepEqual(queue(),observed);
+  assert.deepEqual(await requests(),[]);
+  return {preparedPages:2,references:inputs.map(input=>input.sources.length),coldReadback:true};
+}
 try{
   await launch();
   const saved=sql("SELECT value_json FROM app_settings WHERE key='xiaozhi.provider.v1'")[0];
@@ -85,54 +137,60 @@ try{
   batchId=batch.id;
   const entries=sql("SELECT resource_id FROM material_import_entries WHERE batch_id=? AND status='saved' AND kind='file'",[batchId]);
   assert.deepEqual(entries.map(e=>e.resource_id),[sample.id]);
-  assert.equal(sql("UPDATE material_structure_jobs SET status='running' WHERE resource_id=? AND generation=?",[sample.id,sample.generation],true).changes,1);
+  if(!exactPages)assert.equal(sql("UPDATE material_structure_jobs SET status='running' WHERE resource_id=? AND generation=?",[sample.id,sample.generation],true).changes,1);
   await openCard();
   await card.getByTestId('folder-ai-open-authorization').click();
-  await card.getByTestId('folder-ai-budget').fill('3');
+  await card.getByTestId('folder-ai-budget').fill(exactPages?'6':'3');
   await card.getByTestId('folder-ai-public').check();
   await card.getByTestId('folder-ai-consent').check();
   await card.getByTestId('folder-ai-authorize').click();
-  const waiting=await until(async()=>{const v=await view();return v&&(v.waiting||v.review)?v:undefined;});
-  if(baseline){
-    assert.equal(waiting.review,1);assert.equal(waiting.waiting,0);
-    assert.equal(waiting.issues[0].error,'source_incomplete');
+  if(exactPages){
+    const result=await verifyExactPages();
+    assert.deepEqual(sql('SELECT * FROM material_structure_pages WHERE generation=? AND page=1',[sample.generation])[0],originalPage);
+    console.log(JSON.stringify({ok:true,baseline,root,...result,externalRequests:0}));
   }else{
-    assert.equal(waiting.status,'running');assert.equal(waiting.waiting,1);assert.equal(waiting.review,0);
-    await until(async()=>/1 等待或处理中/.test(await card.getByTestId('folder-ai-counts').textContent()));
-    const materialSettings=await page.evaluate(()=>window.omniEdu.getMaterialAiSettings());
-    await assert.rejects(page.evaluate(input=>window.omniEdu.createMaterialAiBatch(input),{
-      schemaVersion:'xiaozhi.material-ai.v1',resourceId:sample.id,version:sample.content_hash,
-      start:1,count:1,maxCalls:3,settingsRevision:materialSettings.revision,
-      images:true,cloudConsent:true,publicMaterial:true,processingMode:'quality'
-    }),/structure_pending/);
+    const waiting=await until(async()=>{const v=await view();return v&&(v.waiting||v.review)?v:undefined;});
+    if(baseline){
+      assert.equal(waiting.review,1);assert.equal(waiting.waiting,0);
+      assert.equal(waiting.issues[0].error,'source_incomplete');
+    }else{
+      assert.equal(waiting.status,'running');assert.equal(waiting.waiting,1);assert.equal(waiting.review,0);
+      await until(async()=>/1 等待或处理中/.test(await card.getByTestId('folder-ai-counts').textContent()));
+      const materialSettings=await page.evaluate(()=>window.omniEdu.getMaterialAiSettings());
+      await assert.rejects(page.evaluate(input=>window.omniEdu.createMaterialAiBatch(input),{
+        schemaVersion:'xiaozhi.material-ai.v1',resourceId:sample.id,version:sample.content_hash,
+        start:1,count:1,maxCalls:3,settingsRevision:materialSettings.revision,
+        images:true,cloudConsent:true,publicMaterial:true,processingMode:'quality'
+      }),/structure_pending/);
+    }
+    assert.equal(waiting.calls,0);assert.equal(waiting.reserved,0);assert.equal((await requests()).length,0);
+    if(!baseline)await card.getByTestId('folder-ai-pause').click();
+    if(!baseline)await until(async()=>(await view())?.status==='paused');
+    await app.close();app=undefined;
+    assert.equal(sql("UPDATE material_structure_jobs SET status='complete' WHERE resource_id=? AND generation=?",[sample.id,sample.generation],true).changes,1);
+    await launch();
+    if(!baseline){
+      const cold=await view();
+      assert.equal(cold.status,'paused');assert.equal(cold.waiting,1);assert.equal(cold.reserved,0);
+      await openCard();
+      await card.getByTestId('folder-ai-resume').click();
+      await until(async()=>(await requests()).length===1);
+      const plan=sql('SELECT b.config_json,u.input_json FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id JOIN material_ai_units u ON u.batch_id=b.id WHERE k.folder_id=?',[batchId]);
+      assert.equal(plan.length,1);
+      const input=JSON.parse(plan[0].input_json),config=JSON.parse(plan[0].config_json);
+      assert.equal(config.start,1);assert.equal(input.pageSource.version,sample.content_hash);
+      assert.equal(input.pagePrompt.structureContext.reference.generation,sample.generation);
+      assert.equal(input.pagePrompt.structureContext.supplemental.length,1);
+      assert.deepEqual(await requests(),[{model:'deepseek-flash'}]);
+    }else{
+      await delay(3000);
+      assert.equal((await view()).review,1);
+      assert.equal((await requests()).length,0);
+    }
+    assert.deepEqual(sql('SELECT * FROM material_structure_pages WHERE generation=? AND page=1',[sample.generation])[0],originalPage);
+    console.log(JSON.stringify({ok:true,baseline,root,waiting:waiting.waiting,review:waiting.review,
+      coldResume:!baseline,localIntercepts:(await requests()).length,externalRequests:0}));
   }
-  assert.equal(waiting.calls,0);assert.equal(waiting.reserved,0);assert.equal((await requests()).length,0);
-  if(!baseline)await card.getByTestId('folder-ai-pause').click();
-  if(!baseline)await until(async()=>(await view())?.status==='paused');
-  await app.close();app=undefined;
-  assert.equal(sql("UPDATE material_structure_jobs SET status='complete' WHERE resource_id=? AND generation=?",[sample.id,sample.generation],true).changes,1);
-  await launch();
-  if(!baseline){
-    const cold=await view();
-    assert.equal(cold.status,'paused');assert.equal(cold.waiting,1);assert.equal(cold.reserved,0);
-    await openCard();
-    await card.getByTestId('folder-ai-resume').click();
-    await until(async()=>(await requests()).length===1);
-    const plan=sql('SELECT b.config_json,u.input_json FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id JOIN material_ai_units u ON u.batch_id=b.id WHERE k.folder_id=?',[batchId]);
-    assert.equal(plan.length,1);
-    const input=JSON.parse(plan[0].input_json),config=JSON.parse(plan[0].config_json);
-    assert.equal(config.start,1);assert.equal(input.pageSource.version,sample.content_hash);
-    assert.equal(input.pagePrompt.structureContext.reference.generation,sample.generation);
-    assert.equal(input.pagePrompt.structureContext.supplemental.length,1);
-    assert.deepEqual(await requests(),[{model:'deepseek-flash'}]);
-  }else{
-    await delay(3000);
-    assert.equal((await view()).review,1);
-    assert.equal((await requests()).length,0);
-  }
-  assert.deepEqual(sql('SELECT * FROM material_structure_pages WHERE generation=? AND page=1',[sample.generation])[0],originalPage);
-  console.log(JSON.stringify({ok:true,baseline,root,waiting:waiting.waiting,review:waiting.review,
-    coldResume:!baseline,localIntercepts:(await requests()).length,externalRequests:0}));
 }catch(error){
   console.error(JSON.stringify({ok:false,baseline,root,batchId,error:String(error)}));
   await page?.screenshot({path:path.join(root,'failure.png')}).catch(()=>{});

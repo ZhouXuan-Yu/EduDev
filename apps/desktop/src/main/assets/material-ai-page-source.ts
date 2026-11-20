@@ -4,8 +4,34 @@ import {validPdfFilePage} from '../../shared/material-pdf-file';
 import {readImageOcr} from './material-image-ocr';
 import {hasCaptionContinuationLead,hasSentenceContinuationLead,startsWithContinuationChoices,startsWithFirstSubquestion} from '../../shared/material-ai-continuation';
 import {sourceLayoutSignature} from '../../shared/material-ai-source-layout';
+import type {ResourceChunk,TeacherResource} from '../../shared/contracts';
+import type {MaterialReadingUnit} from './material-source';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
+const MAX_PAGE_SOURCES=64;
+
+/** Filter by page before calculating each citation's position in the entire
+ * physical body. Rebuilds append newer excerpts and leave old positions intact. */
+export async function readAiPageUnits(
+ host:Host&{map:(row:Record<string,unknown>)=>ResourceChunk},
+ resource:Pick<TeacherResource,'id'|'contentHash'|'originalFileName'|'title'>,
+ page:number,
+):Promise<MaterialReadingUnit[]>{
+ const rows=await host.all(`WITH page_chunks AS MATERIALIZED (
+   SELECT c.* FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id
+   WHERE c.resource_id=? AND r.content_hash=? AND c.page_number=? AND c.structure_search_hidden=0
+   ORDER BY c.chunk_index,c.id LIMIT ?
+ )
+ SELECT c.*, (SELECT COUNT(*) FROM resource_chunks earlier WHERE earlier.resource_id=c.resource_id
+   AND (earlier.chunk_index,earlier.id)<(c.chunk_index,c.id)) body_offset
+ FROM page_chunks c ORDER BY c.chunk_index,c.id`,[resource.id,resource.contentHash,page,MAX_PAGE_SOURCES+1]);
+ if(rows.length>MAX_PAGE_SOURCES)throw Error('unit_too_large');
+ return rows.map(row=>({
+  resourceId:resource.id,version:resource.contentHash,title:resource.originalFileName,
+  offset:Number(row.body_offset),chunk:host.map({...row,resource_title:resource.title}),
+ }));
+}
+
 /** A real original page and its local parser receipt; never a fabricated OCR body chunk. */
 export async function readAiPageSource(host:Host,resourceId:string,version:string,page:number){
  const resource=(await host.all('SELECT content_hash,original_file_name,parse_status FROM teacher_resources WHERE id=?',[resourceId]))[0];

@@ -12,6 +12,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 多页 PDF 的精确分块引用
+
+风华卷前两页从旧版未建批恢复为两页建批，逐个对照 35 条来源定位。自然题最终核验和正式组卷继续跟踪。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)
+
 ## 2026-11-20 后台定稿等待版面发布
 
 受控双栏 PDF 在真实桌面通过恢复等待、暂停和重启后继续相同单元。风华真卷精确分块仍失败并保留证据。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
