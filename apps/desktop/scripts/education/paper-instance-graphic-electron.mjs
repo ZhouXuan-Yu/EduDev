@@ -4,15 +4,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
 import {enterPaper, choose, disclosureTrigger} from '../acceptance/paper-basket-ui-driver.mjs';
 import {instanceStage, readInstanceBasket, waitInstanceUi} from '../acceptance/paper-instance-ui-driver.mjs';
 import {questionVersion} from '../../src/main/education/question-context-provider.ts';
+import {compilePaperOffice,assertPaperOffice} from '../../src/main/education/paper-export.ts';
+import {generateOfficeDocument} from '../../src/main/xiaozhi-agent/office-generator.ts';
 import {relocateBackupDatabase} from '../../src/main/backup/restore-database.ts';
 
-const original=fs.realpathSync(process.argv[2]);
+const original=fs.realpathSync(process.argv[2]),independent=process.argv.includes('--independent');
 assert(path.basename(original).startsWith('native-printed-body-ui-'));
 const out=fs.mkdtempSync(path.join(os.tmpdir(),'omni-edu-graphic-natural-'));
 const data=path.join(out,'data'), profile=path.join(out,'profile'), sourceRoot=path.join(original,'data');
@@ -55,6 +58,7 @@ async function visibleQuestion(){
  return card;
 }
 const labels=['A','B','C','D'];
+const figureLabel='本卷题面插图 2';
 const question=()=>page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),row.id);
 async function addFactsFromVisibleOriginal(){
  const card=await visibleQuestion();
@@ -88,8 +92,10 @@ async function addFactsFromVisibleOriginal(){
 async function verifiedPictures(card){
  const pictures=card.getByTestId('paper-instance-figure-image');
  await pictures.first().waitFor();
- assert.equal(await pictures.count(),4);
- assert.deepEqual(await pictures.evaluateAll(images=>images.map(img=>img.alt)),labels.map(label=>'选项 '+label+' 原图'));
+ const expected=labels.map(label=>'选项 '+label+' 原图');
+ if(independent)expected.unshift(figureLabel);
+ assert.equal(await pictures.count(),expected.length);
+ assert.deepEqual(await pictures.evaluateAll(images=>images.map(img=>img.alt)),expected);
  await pictures.evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
  return pictures.evaluateAll(images=>images.map(img=>img.src));
 }
@@ -115,6 +121,12 @@ try{
  await disclosureTrigger(fold,'蓝图与来源策略').click();
  const setup=fold.getByTestId('paper-basket-blueprint');
  const sections=setup.getByTestId('paper-basket-section-editor');
+ if(independent){
+   const purpose=await readInstanceBasket(page,owner,basketId);
+   await choose(page,page.getByTestId('paper-basket-purpose'),'paper');
+   await waitInstanceUi(page,owner,basketId,{stage:'select',revision:purpose.revision+1});
+   await setup.getByTestId('paper-basket-total').fill('100');
+ }
  while(await sections.count()>1)await sections.last().getByRole('button',{name:'移除此分节',exact:true}).click();
  await setup.getByTestId('paper-basket-section-type').fill(item.questionType);
  await setup.getByTestId('paper-basket-section-count').fill('1');
@@ -145,24 +157,92 @@ try{
  await editor.getByTestId('paper-instance-save').click();
  await waitInstanceUi(page,owner,basket.id,{stage:'organize',revision:revision+1});
  const saved=(await readInstanceBasket(page,owner,basket.id)).entries[0];
- assert.equal(saved.deliveryBlock,'image_dependency','The separate glass-tube diagram must stay required');
- assert(await editor.getByTestId('paper-instance-confirm').isDisabled());
+ assert.equal(saved.deliveryBlock,independent?'needs_review':'image_dependency');
+ if(!independent)assert(await editor.getByTestId('paper-instance-confirm').isDisabled());
  const snapshots=await verifiedPictures(entry);
  const gallery=await page.evaluate(input=>window.omniEdu.getOriginalQuestionGallery(input),
    {schemaVersion:'xiaozhi.education.original-review.v2',questionId:item.id,version});
  assert(gallery.ok);
- assert.deepEqual(snapshots,labels.map(label=>gallery.value.find(image=>image.choiceLabel===label).dataUrl));
+ const expectedGallery=labels.map(label=>gallery.value.find(image=>image.choiceLabel===label));
+ const rawBody=gallery.value.find(image=>image.kind!=='diagram');
+ let docx;
+ if(independent){
+   const separate=gallery.value.find(image=>image.kind==='diagram'&&!image.choiceLabel);
+   assert(separate&&separate.assetId!==rawBody.assetId);
+   expectedGallery.unshift(separate);
+   assert.equal(item.document.context.illustrations.schemaVersion,'xiaozhi.question-illustrations.structure.v1');
+   const block=item.document.blocks.find(b=>b.id===item.document.context.illustrations.blockIds[0]);
+   assert(block&&block.assetId===separate.assetId&&block.anchors[0].page===2);
+   const ref=item.archive.structure;
+   const candidate=sql('SELECT body_json FROM material_structure_questions WHERE generation=? AND id=?',ref.generation,ref.candidateId)[0];
+   const asset=JSON.parse(candidate.body_json).assets.filter(a=>a.page===2&&!a.choiceLabel&&a.kind==='image')[0];
+   assert.deepEqual(block.anchors,[{page:2,box:asset.box}]);
+   const pageRow=sql('SELECT image_json FROM material_structure_pages WHERE generation=? AND page=2',ref.generation)[0];
+   const parent=JSON.parse(pageRow.image_json);
+   const originalPng=path.join(data,'question-assets','v1',parent.assetId+'.png');
+   const childPng=path.join(data,'question-assets','v1',block.assetId+'.png');
+   // Decode immutable original and saved crop independently, comparing every pixel.
+   const result=await app.evaluate(({nativeImage},p)=>{
+     const fs=process.getBuiltinModule('node:fs');
+     const parent=nativeImage.createFromBuffer(fs.readFileSync(p.originalPng));
+     const child=nativeImage.createFromBuffer(fs.readFileSync(p.childPng));
+     const x=Math.floor(p.box[0]*p.width),y=Math.floor(p.box[1]*p.height);
+     return parent.crop({x,y,width:child.getSize().width,height:child.getSize().height})
+       .toBitmap({scaleFactor:1}).equals(child.toBitmap({scaleFactor:1}));
+   },{originalPng,childPng,box:asset.box,width:parent.width,height:parent.height});
+   assert(result,'Saved diagram pixels must be exactly the registered original region');
+ }
+ assert.deepEqual(snapshots,expectedGallery.map(image=>image.dataUrl));
  assert.equal(raw(),beforeEdit);
+ let approvedId;
+ if(independent){
+   const confirm=editor.getByTestId('paper-instance-confirm');
+   await confirm.and(page.locator(':enabled')).waitFor();
+   await confirm.click();
+   await page.waitForFunction(()=>document.querySelector('[data-testid="paper-instance-review-state"]')?.textContent.includes('当前修订已核对'));
+   await instanceStage({page},owner,basket.id,'preview');
+   const preview=page.getByTestId('paper-basket-preview-entry');
+   assert.deepEqual(await verifiedPictures(preview),snapshots);
+   assert.equal(await preview.getByTestId('paper-basket-answer').count(),0);
+   const approve=page.getByTestId('paper-basket-confirm-all');
+   await approve.and(page.locator(':enabled')).waitFor();
+   await approve.click();
+   await page.getByTestId('paper-export-entry').waitFor();
+   const [record]=sql("SELECT id FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' AND session_id=? AND status='confirmed' ORDER BY created_at DESC LIMIT 1",owner);
+   assert(record);
+   approvedId=record.id;
+   const reviewed=await page.evaluate(input=>window.omniEdu.reviewPaper(input),{schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:owner,id:approvedId});
+   assert(reviewed.ok&&reviewed.value.exportCurrent&&reviewed.value.purpose==='paper');
+   const images=new Map(expectedGallery.map(image=>[image.assetId,Buffer.from(image.dataUrl.split(',')[1],'base64')]));
+   docx=[];
+   for(const audience of ['student','teacher']){
+     const draft=compilePaperOffice(reviewed.value,audience);
+     assertPaperOffice(reviewed.value,draft);
+     assert.deepEqual(draft.sections.flatMap(section=>section.figures??[]).map(f=>f.sha256),expectedGallery.map(image=>image.sha256));
+     const bytes=await generateOfficeDocument('docx',draft,{dataRoot:data,images});
+     const file=path.join(out,audience+'.docx');
+     fs.writeFileSync(file,bytes);
+     const read=JSON.parse(execFileSync('python',['-c',"import sys,zipfile,hashlib,json;z=zipfile.ZipFile(sys.argv[1]);print(json.dumps({'text':z.read('word/document.xml').decode(),'media':[hashlib.sha256(z.read(n)).hexdigest() for n in z.namelist() if n.startswith('word/media/') and not n.endswith('/')]}))",file],{encoding:'utf8',windowsHide:true}));
+     assert.deepEqual(read.media.sort(),expectedGallery.map(i=>i.sha256).sort());
+     assert.equal(read.text.includes(item.analysis),audience==='teacher');
+     docx.push({audience,sha256:sha(bytes),images:read.media.length});
+   }
+ }
+ const finalInstance=(await readInstanceBasket(page,owner,basket.id)).entries[0].instance;
  await close();await launch();await enterPaper(page);
  await page.getByTestId('paper-basket-stage-saved').click();
  await page.getByTestId('paper-basket-owner-search').fill(owner);
  await choose(page,page.getByTestId('paper-basket-owner'),owner);
  const cold=await readInstanceBasket(page,owner,basket.id);
- assert.deepEqual(cold.entries[0].instance,saved.instance);
- assert.equal(cold.entries[0].deliveryBlock,'image_dependency');
+ assert.deepEqual(cold.entries[0].instance,finalInstance);
+ assert.equal(cold.entries[0].deliveryBlock,independent?undefined:'image_dependency');
+ if(independent){
+   const reviewed=await page.evaluate(input=>window.omniEdu.reviewPaper(input),{schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:owner,id:approvedId});
+   assert(reviewed.ok&&reviewed.value.exportCurrent);
+ }
  assert.equal(raw(),beforeEdit);
  await close();assert.deepEqual(errors,[]);assert(attempts.every(n=>n===0));
- console.log(JSON.stringify({ok:true,out,buildSha:sha(fs.readFileSync(main)),optionImages:4,cold:true,independentDiagramHeld:true,cloudRequests:0}));
+ console.log(JSON.stringify({ok:true,out,buildSha:sha(fs.readFileSync(main)),optionImages:4,cold:true,independentDiagramHeld:!independent,formalPaperId:approvedId,docx,cloudRequests:0}));
 } catch(error){
  console.error(JSON.stringify({out,owner,basketId:basket?.id,rendererErrors:errors}));
  throw error;

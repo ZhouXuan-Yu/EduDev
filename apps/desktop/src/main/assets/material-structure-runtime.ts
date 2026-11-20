@@ -26,6 +26,7 @@ import {
 } from "../../shared/material-layout";
 import {
   QUESTION_DOCUMENT_SCHEMA,
+  QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA,
   validQuestionDocument,
   type QuestionBlock,
   type QuestionDocument,
@@ -43,6 +44,7 @@ import {
 } from "../xiaozhi-agent/ocr-host";
 import type { MaterialRepository } from "./material-repository";
 import type { MaterialWordPagesRepository } from "./material-word-pages";
+import type {StructureIllustrationPlan, StructureIllustrationProof} from './material-structure-illustrations';
 import type { StructurePageReceipt } from "./material-structure-repository";
 import type { QuestionBankItem } from "../../shared/contracts";
 import type { AutomaticQuestionSource } from "../education/original-question-repository";
@@ -149,6 +151,9 @@ export class MaterialStructureRuntime {
     if (!q.document) throw Error("source_changed");
     const images: AutomaticQuestionSource["images"] = [];
     const source = q.document.source;
+    const illustrations=isCompleteQuestionDocument(q.document)&&q.document.context.illustrations;
+    const independent=illustrations&&illustrations.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA
+      ? new Set(illustrations.blockIds) : undefined;
     const total = Math.max(...q.document.blocks.flatMap((b) => b.anchors.map((a) => a.page)));
     type ImageBlock = Extract<QuestionBlock, { kind: "image" }>;
     const blocks = q.document.blocks.flatMap((block): { block: ImageBlock; choiceLabel?: string }[] => {
@@ -178,7 +183,7 @@ export class MaterialStructureRuntime {
       images.push({
         blockId: block.id,
         role: "question",
-        ...(choiceLabel ? { kind: "diagram", choiceLabel } : {}),
+        ...(choiceLabel ? { kind: "diagram", choiceLabel } : independent?.has(block.id) ? {kind:"diagram"} : {}),
         assetId: block.assetId,
         sha256: block.sha256,
         width: block.width,
@@ -430,6 +435,24 @@ export class MaterialStructureRuntime {
       signal.throwIfAborted();
       return false;
     }
+  }
+
+  async cropIllustration(plan:StructureIllustrationPlan, signal:AbortSignal):Promise<StructureIllustrationProof>{
+    const {parent,box,blockId,regionId}=plan;
+    const image=parent.image;
+    const bytes=await this.assets.read(image,true,signal);
+    const raster=nativeImage.createFromBuffer(bytes);
+    const size=raster.getSize(1);
+    if(size.width!==image.width||size.height!==image.height) throw Error('source_changed');
+    const area=structureCropRect(image,box);
+    const crop=raster.crop(area);
+    const png=crop.toPNG({scaleFactor:1}), sha256=sha(png);
+    const saved={...image,assetId:assetId(sha256),sha256,box,width:area.width,height:area.height};
+    await this.assets.put(saved,png,true,signal);
+    return {regionId,pageSha:parent.sha256,rasterSha:image.sha256,block:{
+      id:blockId,kind:'image',mime:'image/png',assetId:saved.assetId,sha256,width:saved.width,height:saved.height,
+      anchors:[{page:image.page,box}],
+    }};
   }
 
   async document(

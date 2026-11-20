@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 正式组卷保留独立题图
+
+M03/M05/M06 复用现有布局、原页栅格、题库图像存储及组卷权限，将有证明的独立题图交付到本卷编辑后的正式试卷。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)
+
 ## 2026-11-21 本卷编辑中的图形选项
 
 M06 支持在当前题篮修改题干和选项说明时保留图形选项，沿用原题图像版本、馆藏图库权限、正式核对和 Office 证据。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)
