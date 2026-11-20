@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {imageSize} from 'image-size';
 import type {QuestionBankItem} from '../../shared/contracts';
-import {validQuestionArchive,type ArchiveFields} from '../../shared/question-archive';
+import {validQuestionArchive,type ArchiveFields,type NativeLayoutProof} from '../../shared/question-archive';
 import {NATIVE_QUESTION_ROLES,validNativeQuestionDocument,nativeQuestionConflicts,nativeQuestionComplete,type NativeQuestionFigure,type NativeQuestionRole} from '../../shared/native-question';
 import type {QuestionProjection} from '../../shared/question-projection';
 import {validWordQuestionSource,type WordQuestionSource} from '../../shared/material-word-question';
@@ -18,7 +18,7 @@ import {validNativeAiContext,type NativeAiContext} from './material-ai-native-co
 
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type NativeSourceEvidence={source:WordQuestionSource;proof:WordProof;images:ReadonlyMap<string,Buffer>};
-export type NativeTranscription={projection:QuestionProjection;roles:Record<NativeQuestionRole,{text:string;origin:'source'|'ai_generated'|'missing'}>;imagesObserved:boolean};
+export type NativeTranscription={projection:QuestionProjection;roles:Record<NativeQuestionRole,{text:string;origin:'source'|'ai_generated'|'missing'}>;imagesObserved:boolean;layoutProof?:NativeLayoutProof};
 type Host={root:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;read:(id:string)=>Promise<QuestionBankItem|undefined>;
  /** Synchronous private connection state, never a BEGIN/ROLLBACK probe. Preparation hosts
   * must own a dedicated autocommit connection; caller publication uses its writer host. */

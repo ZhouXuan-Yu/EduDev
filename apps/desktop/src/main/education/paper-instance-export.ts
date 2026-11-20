@@ -32,7 +32,7 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
         if(native) {
           if(!validNativeQuestionDocument(native)||!nativeQuestionComplete(native))throw Error('unsupported');
           const body=native.roles[role];
-          if(body.figures.length) emit({heading:title,paragraphs:[],figures:body.figures.map(b=>figure(b,role))});
+          if(body.figures.length&&!(role==='question'&&q.archive?.nativeLayout)) emit({heading:title,paragraphs:[],figures:body.figures.map(b=>figure(b,role))});
           else text(body.text,title);
           text(title+'来源：'+roleOriginLabels[body.origin],'来源');
           return;

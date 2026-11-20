@@ -6,7 +6,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput} from '../../shared/contracts';
 import type {AiBatchInput,AiUnitInput,AiModel} from '../../shared/material-ai';
 import {parseNativeAiResponse,type NativeAiQuestion} from '../../shared/material-ai-native-response';
-import {QUESTION_NATIVE_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive} from '../../shared/question-archive';
+import {QUESTION_NATIVE_ARCHIVE_SCHEMA,NATIVE_LAYOUT_RECHECK_POLICY,archiveMissing,type QuestionArchive,type NativeLayoutProof} from '../../shared/question-archive';
 import {NATIVE_QUESTION_SCHEMA,NATIVE_QUESTION_ROLES,nativeQuestionComplete,type NativeQuestionDocument} from '../../shared/native-question';
 import {QUESTION_PROJECTION_FIELDS} from '../../shared/question-projection';
 import type {WordQuestionSource} from '../../shared/material-word-question';
@@ -16,6 +16,9 @@ import {nativeSourceRoleText,nativeTextContentDigest,wordRoleContentDigest,nativ
 import {validNativeAiContext,nativeMetadata,type NativeAiContext} from './material-ai-native-context';
 import {completeMaterialAi,type AiCompletionInput} from './material-ai-provider';
 import {nativeChoiceAnswerConflict} from './word-booklet';
+import {nativeLayoutProof} from './material-ai-native-layout-proof';
+import {WORD_PREAMBLE_QUESTION_POLICY} from '../../shared/material-word';
+import {questionVersion} from '../education/question-context-provider';
 import type {AiRuntime} from './material-ai-repository';
 import type {MaterialSource} from '../../shared/materials';
 
@@ -24,6 +27,24 @@ export type NativeAiHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:s
 export type NativeAiPreparation=<T>(action:(native:NativeQuestionRepository,word:MaterialWordRepository)=>Promise<T>)=>Promise<T>;
 const hash=(s:string|Buffer)=>createHash('sha256').update(s).digest('hex');
 const signature=(q:NativeAiQuestion)=>JSON.stringify([q.number,q.stem,q.answer,q.analysis,q.answerOrigin,q.analysisOrigin,q.requiresImage,[...q.issues].sort(),...QUESTION_PROJECTION_FIELDS.map(f=>[q.projection[f].state,q.projection[f].text])]);
+export const NATIVE_LAYOUT_RECHECK_TABLE=`CREATE TABLE IF NOT EXISTS material_ai_native_layout_rechecks(
+ question_id TEXT PRIMARY KEY,batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,policy TEXT NOT NULL,
+ before_archive_json TEXT NOT NULL,after_version TEXT NOT NULL,document_sha TEXT NOT NULL,source_sha TEXT NOT NULL,
+ created_at TEXT NOT NULL)`;
+async function nativeLayoutEvidence(host:NativeAiHost,q:QuestionBankItem,frozen:WordQuestionSource,
+ first:NativeAiQuestion|undefined,final:NativeAiQuestion,documentSha?:string):Promise<NativeLayoutProof|undefined>{
+ const base=q.archive!.native!.source,word=host.word();
+ if(!first||signature(first)!==signature(final)||final.issues.length||archiveMissing(final).length||
+    !nativeQuestionComplete(q.archive!.native!)||!['stem','answer','analysis'].every(field=>q[field as 'stem'|'answer'|'analysis']===final[field as 'stem'|'answer'|'analysis']))return;
+ const document=await word.document(base.resourceId,base.resourceVersion,documentSha);
+ if(document?.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY)return;
+ const digest=hash(JSON.stringify(document)),current=(await word.questions({
+  schemaVersion:'xiaozhi.word-question-source.v1',resourceId:base.resourceId,version:base.resourceVersion,
+  ordinal:frozen.ordinal,offset:frozen.ordinal-1,
+ },digest))?.source;
+ if(!current||!nativeLayoutProof(frozen,current,first,final))return;
+ return {policy:NATIVE_LAYOUT_RECHECK_POLICY,documentSha:digest,sourceSha:hash(JSON.stringify(current))};
+}
 
 /** A historical unit can use a v3 derived review only with its exact received response and audit. */
 async function finalReviewPolicy(host:NativeAiHost,row:Row,unit:AiUnitInput,raw:string,firstRaw:string){
@@ -39,7 +60,7 @@ async function finalReviewPolicy(host:NativeAiHost,row:Row,unit:AiUnitInput,raw:
 }
 
 /** Reconstructs authority from real committed (or same-writer uncommitted) receipts. */
-export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem,source:WordQuestionSource,validate:(config:AiBatchInput,unit:AiUnitInput)=>Promise<void>,signal:AbortSignal):Promise<NativeTranscription>{
+export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem,source:WordQuestionSource,validate:(config:AiBatchInput,unit:AiUnitInput)=>Promise<void>,signal:AbortSignal,recheckLayout=false):Promise<NativeTranscription>{
  const receipt=q.archive?.ai;if(!receipt||!['native-complete.v1',NATIVE_REVIEW_ARCHIVE,NATIVE_REVIEW_ARCHIVE_V3].includes(receipt.policy))throw Error('source_changed');
  const row=(await host.all('SELECT u.*,b.config_json FROM material_ai_members m JOIN material_ai_units u ON u.batch_id=m.batch_id AND u.ordinal=m.ordinal JOIN material_ai_batches b ON b.id=m.batch_id WHERE m.question_id=? AND m.batch_id=? AND m.ordinal=? AND m.number=?',[q.id,receipt.batchId,receipt.ordinal,q.archive!.number]))[0];
  if(!row||!['complete','review'].includes(String(row.status))||typeof row.first_json!=='string'||typeof row.final_json!=='string'||hash(row.first_json)!==receipt.firstSha||hash(row.final_json)!==receipt.finalSha||row.image_sha!==receipt.imageSha)throw Error('source_changed');
@@ -55,7 +76,24 @@ export async function nativeAiTranscription(host:NativeAiHost,q:QuestionBankItem
  if(q.archive!.state==='ai_final'&&nativeChoiceAnswerConflict(source,[item.answer,parseNativeAiResponse(row.first_json).questions[0]?.answer||'']))throw Error('source_incomplete');
  for(const role of ['answer','analysis'] as const)if(item[role+'Origin' as 'answerOrigin']==='source'&&!source.parts[role].length)throw Error('source_changed');
  if(q.archive!.state!=='teacher_edited')for(const field of ['subject','grade','knowledgePoint','questionType','difficulty'] as const)if(q[field]!==item[field])throw Error('source_changed');
- return{projection:nativeCheckedProjection(source,item.projection),roles:{question:{text:item.stem,origin:'source'},answer:{text:item.answer,origin:item.answerOrigin},analysis:{text:item.analysis,origin:item.analysisOrigin}},imagesObserved:true};
+ let layoutProof:NativeTranscription['layoutProof'];
+ if(first.outcome==='questions'&&final.outcome==='questions'&&recheckLayout&&q.archive!.state==='ai_needs_review'&&
+    JSON.stringify(q.archive!.issues)==='["incomplete_question"]'){
+  layoutProof=await nativeLayoutEvidence(host,q,source,first.questions[0],item);
+ }
+ if(q.archive!.state==='ai_final'&&(source.issues.length||q.archive!.nativeLayout)){
+  const saved=(await host.all('SELECT * FROM material_ai_native_layout_rechecks WHERE question_id=?',[q.id]))[0];
+  const {nativeLayout,...archive}=q.archive!;
+  const prior={...archive,state:'ai_needs_review',issues:['incomplete_question']};
+  if(!nativeLayout||!saved||saved.policy!==nativeLayout.policy||
+     saved.document_sha!==nativeLayout.documentSha||saved.source_sha!==nativeLayout.sourceSha||
+     saved.batch_id!==receipt.batchId||saved.ordinal!==receipt.ordinal||
+     saved.after_version!==questionVersion(q)||saved.before_archive_json!==JSON.stringify(prior)||
+     first.outcome!=='questions'||final.outcome!=='questions')throw Error('source_incomplete');
+  const recovered=await nativeLayoutEvidence(host,q,source,first.questions[0],item,nativeLayout.documentSha);
+  if(recovered?.documentSha!==nativeLayout.documentSha||recovered?.sourceSha!==nativeLayout.sourceSha)throw Error('source_changed');
+ }
+ return{projection:nativeCheckedProjection(source,item.projection),roles:{question:{text:item.stem,origin:'source'},answer:{text:item.answer,origin:item.answerOrigin},analysis:{text:item.analysis,origin:item.analysisOrigin}},imagesObserved:true,...(layoutProof?{layoutProof}:{})};
 }
 
 type Execution={complete?:(args:AiCompletionInput,beforeSend:()=>Promise<void>)=>Promise<string>;host:NativeAiHost;prepare:NativeAiPreparation;runtime:AiRuntime;row:Row;config:AiBatchInput&{model:AiModel};unit:AiUnitInput;signal:AbortSignal;

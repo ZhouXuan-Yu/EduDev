@@ -392,6 +392,7 @@ export class MaterialQuestionArchive{
   if(document&&'context'in document&&document.context.presentation?.mode==='needs_review'&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');
   if(document&&'context'in document&&document.context.presentation?.mode==='teacher_text'&&input.sourceChecked)archive.issues=archive.issues.filter(code=>code!=='incomplete_question');
   if(archive.native){
+   delete archive.nativeLayout;
    if(!permit||!target.host.reviseNative)throw Error('source_changed');archive.native=await target.host.reviseNative(q,fields,input.sourceChecked,permit);
    if(archive.native&&!nativeQuestionComplete(archive.native)&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');
    else if(archive.native&&nativeQuestionComplete(archive.native)&&input.sourceChecked)archive.issues=archive.issues.filter(code=>code!=='incomplete_question');

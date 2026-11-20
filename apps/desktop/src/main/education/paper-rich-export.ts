@@ -10,7 +10,7 @@ export const containsLatex=(text:string)=>/\\(?:frac|sqrt|begin|sum|int|left|rig
 const chunks=(text:string)=>{const values:string[]=[];let value='';for(const c of text){if(value.length+c.length>1000){values.push(value);value='';}value+=c;}if(value)values.push(value);return values;};
 /** Exact confirmed source crops, never the scalar/OCR summary of a rich question. */
 export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft{
- const math=paper.selection.items.some(i=>[...(i.question.document&&!hasTeacherTextPresentation(i.question.document)||i.question.archive?.native?.roles.question.figures.length?[]:[i.question.stem]),...(audience==='teacher'?(['answer','analysis'] as const).filter(role=>!(i.question.document?.[role].origin==='source'&&i.question.document.blocks.some(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_')))&&!i.question.archive?.native?.roles[role].figures.length).map(role=>i.question[role]):[])].some(containsOfficeMath));
+ const math=paper.selection.items.some(i=>[...(i.question.document&&!hasTeacherTextPresentation(i.question.document)||i.question.archive?.native?.roles.question.figures.length&&!i.question.archive.nativeLayout?[]:[i.question.stem]),...(audience==='teacher'?(['answer','analysis'] as const).filter(role=>!(i.question.document?.[role].origin==='source'&&i.question.document.blocks.some(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_')))&&!i.question.archive?.native?.roles[role].figures.length).map(role=>i.question[role]):[])].some(containsOfficeMath));
  const plainSplit=math?officeMathChunks:chunks;const split=(text:string)=>paperTextBlocks(text).some(b=>!!b.table)?[text]:plainSplit(text);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。',
@@ -40,7 +40,7 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
       }
      }
     }
-   }else if(native?.roles.question.figures.length){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}
+   }else if(native?.roles.question.figures.length&&!q.archive?.nativeLayout){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}
    else{if(!math&&containsLatex(q.stem))throw new Error('unsupported');paragraphs.push(...split(q.stem));}
    if(audience==='teacher'){
     for(const role of ['answer','analysis'] as const){
