@@ -6,6 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 import { _electron } from "playwright";
 import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
+const verifyCroppedNumber = process.env.EDU_STRUCTURE_CHECK_CROPPED_NUMBER === "1";
 const files = JSON.parse(process.env.EDU_STRUCTURE_FILES || "[]");
 const root = process.env.EDU_STRUCTURE_TEST_ROOT;
 assert(
@@ -185,7 +186,8 @@ try {
     chunks: query("SELECT COUNT(*) n FROM resource_chunks")[0].n,
     bank: query("SELECT COUNT(*) n FROM question_bank_items")[0].n,
   };
-  assert(report.counts.bank > 0);
+  if (verifyCroppedNumber) assert.equal(report.counts.bank, 0);
+  else assert(report.counts.bank > 0);
   const paragraphs = [],
     pages = query("SELECT * FROM material_structure_pages");
   for (const row of pages) {
@@ -239,7 +241,7 @@ try {
   const bank = query(
     "SELECT * FROM question_bank_items WHERE json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.structure.v1'",
   );
-  assert(bank.length > 0);
+  if (!verifyCroppedNumber) assert(bank.length > 0);
   for (const q of bank) {
     const archive = JSON.parse(q.archive_json),
       doc = JSON.parse(q.document_json);
@@ -264,6 +266,53 @@ try {
   const selected = resources.find((r) => /\.pdf$/i.test(r.original_file_name));
   let panel = await open({ id: selected.id, title: selected.title });
   await panel.getByTestId("structure-page").waitFor();
+  let unnumberedId;
+  if (verifyCroppedNumber) {
+    const restored = candidates.map(row => JSON.parse(row.body_json));
+    const held = restored.find(question => question.pageRange[0] === 2 && question.issues.includes("missing_question_number"));
+    const six = restored.filter(question => question.pageRange[0] === 2 && question.number === "6");
+    assert(held);
+    assert.equal(held.number, "0");
+    assert.equal(held.status, "needs_review");
+    assert.equal(held.paragraphIds.length, 1);
+    assert.equal(held.assets.length, 0);
+    assert.equal(six.length, 1);
+    assert.deepEqual(six[0].pageRange, [2, 2]);
+    assert.deepEqual(six[0].options.map(option => option.label), Array.from("ABCD"));
+    assert.equal(six[0].assets.length, 1);
+    assert.deepEqual(six[0].issues, ["pdf_text_conflict"]);
+    assert(!/例5|第6题图/u.test(six[0].stem));
+    const savedPage = JSON.parse(pages.find(row => row.page === 2).body_json);
+    assert.equal(savedPage.paragraphs.find(paragraph => paragraph.id === held.paragraphIds[0]).text, held.stem);
+    const caption = savedPage.paragraphs.find(part => part.text === "第6题图");
+    assert.equal(caption.role, "figure");
+    assert(six[0].paragraphIds.includes(caption.id));
+    await panel.getByTestId("structure-next").click();
+    const review = panel.getByTestId("structure-review-" + held.id);
+    await review.getByTestId("structure-review-open").click();
+    const form = review.getByTestId("structure-review-form");
+    assert.equal(await form.getByTestId("structure-review-stem").inputValue(), held.stem);
+    await form.getByTestId("structure-review-source-page-2").click();
+    await form.getByTestId("structure-review-source-image").waitFor();
+    assert(await form.getByTestId("structure-review-save").isDisabled());
+    await form.getByTestId("structure-review-difficulty").selectOption("medium");
+    assert(await form.getByTestId("structure-review-save").isDisabled());
+    await form.getByTestId("structure-review-checked").check();
+    await form.getByTestId("structure-review-save").click();
+    await panel.getByTestId("structure-reviewed-" + held.id).waitFor();
+    const saved = query("SELECT q.* FROM question_bank_items q JOIN material_structure_reviews r ON r.question_id=q.id WHERE r.candidate_id=?", [held.id])[0];
+    const archive = JSON.parse(saved.archive_json);
+    assert.equal(archive.state, "teacher_edited");
+    assert.equal(archive.number, "0");
+    assert.equal(archive.sourceChecked, true);
+    assert(archive.issues.includes("missing_answer"));
+    assert.equal(saved.stem, held.stem);
+    assert.equal(JSON.parse(saved.document_json).blocks.find(block => block.id === "transcription").text, held.stem);
+    assert.equal(query("SELECT COUNT(*) n FROM material_ai_units")[0].n, 0);
+    unnumberedId = held.id;
+    report.croppedNumber = { heldStatus: held.status, reviewedId: saved.id, nextNumber: six[0].number, optionLabels: "ABCD", nextPageRange: six[0].pageRange, modelCalls: 0 };
+    check("Original desktop review saves the isolated clipped-number prompt only after explicit source confirmation and preserves question 6");
+  }
   if (process.env.EDU_STRUCTURE_REQUIRE_PRINTED === "1") {
     const printed = panel.getByTestId("structure-printed-recovery");
     await printed.filter({hasText:/原页补识 1 行/}).waitFor();
@@ -299,6 +348,11 @@ try {
     ),
     before,
   );
+  if (unnumberedId) {
+    await panel.getByTestId("structure-next").click();
+    await panel.getByTestId("structure-reviewed-" + unnumberedId).waitFor();
+    assert.equal(query("SELECT COUNT(*) n FROM material_structure_reviews WHERE candidate_id=?", [unnumberedId])[0].n, 1);
+  }
   assert.equal(hash(fs.readFileSync(entry)), runtimeSha);
   assert.equal(treeIdentity(runtime).sha256,originalTree.sha256);
   assert.equal(report.errors.length, 0);

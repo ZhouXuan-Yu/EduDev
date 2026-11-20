@@ -4,6 +4,10 @@
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
 
+## 2026-11-20 裁缺题号的原页恢复
+
+以真实原图和 OCR 行逐项核对未知编号题的边界、教师来源确认与冷启。用原页检查有编号的相邻题保持 A–D、题图与图注，只在该页。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)
+
 ## 2026-11-20 课程提纲误报漏题
 
 真实 PDF 回执复读 10 页，两页漏题误报排除，真实漏题继续拦截。受控持久任务验证无题完结、重开读回和原文不变。完整自然题质量验收继续。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)

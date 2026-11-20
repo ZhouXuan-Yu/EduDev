@@ -12,6 +12,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 裁缺题号的原页恢复
+
+对原件无法识别题号的题，检查候选原文、真实页、核对入口和来源确认；题号图注不能切断选择题。回归验证同时覆盖后页显式新例题和模糊的近距离断点。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)
+
 ## 2026-11-20 课程提纲误报漏题
 
 课程提纲修复覆盖入库无题路径、真实漏题保留和旧回执重开校验。真实试导库 PDF 页和受控 SQLite 任务分别记录证据。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)

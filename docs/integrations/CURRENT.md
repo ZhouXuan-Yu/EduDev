@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-20 裁缺题号的原页恢复
+
+复用 PDFium 原页、RapidOCR 行框和 PP-DocLayoutV3 分块恢复裁缺题号的题干与邻题。没有新增 OCR、模型、服务或依赖。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)
+
 ## 2026-11-20 课程提纲误报漏题
 
 沿用 PDFium 页图、PP-DocLayoutV3 分块和既存 DeepSeek 回执，由生产证据读取器核对实际图片和摘要。模型和附属服务依赖未变化。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)

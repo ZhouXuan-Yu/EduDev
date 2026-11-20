@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 裁缺题号的原页恢复
+
+M03 恢复原件裁去题号时的独立题干候选，修复编号图注截断选项和新例题串页。第 6 题仍有原生文字冲突，完整知识库验收继续。 [专项报告](../research/evidence/kb/20261120/cropped-question-number/README.md)
+
 ## 2026-11-20 课程提纲误报漏题
 
 M03 已修复课程提纲的漏题误报，保留真实漏题与转写分歧。继续对 U16 习题课的真实漏收推进候选恢复，后续按原目标验收自然题、组卷与规模。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)

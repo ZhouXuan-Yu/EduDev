@@ -49,6 +49,8 @@ const questionCue =
   /[?？]|求|计算|解方程|选择|填空|判断|已知|证明|下列|回答|写出|如图|简述|说明|[（(]\s*[）)]|_{2,}/u;
 const sectionHeading =
   /^(?:[一二三四五六七八九十百]+[、．.]|第[一二三四五六七八九十百\d]+[章节单元])/u;
+const printedExampleLead = /^例(?:题)?[ \t]*\d{1,5}(?:[.．、:：][ \t]*|[ \t]+)\p{Script=Han}/u;
+const numberedFigureCaption = /^第\s*(\d{1,5})\s*题\s*(?:图|插图|示意图|表)[。．.]?$/u;
 const previousMaterial =
   /(?:上[述面]|前述|以上|所给|同一份)的?(?:材料|短文|文章|资料)|(?:根据|依据|结合|参照)\s*该?(?:材料|短文|文章)|上文|前文|文中|文意/u;
 const materialRange = /(?:回答|完成)?\s*(\d+)\s*[～~—–-]\s*(\d+)\s*题/u;
@@ -110,6 +112,7 @@ function lineRole(
       role: "option",
       marker: { kind: "option", label: option[1] || option[2] },
     };
+  if (numberedFigureCaption.test(text)) return { role: "figure" };
   const parent =
     /^(?:第\s*(\d{1,5})\s*题\s*[:：]?|(\d{1,5})[.．、](?!\d))[ \t]*/u.exec(
       text,
@@ -377,6 +380,35 @@ type Pending = {
   paragraphs: StructureParagraph[];
   pages: Map<number, StructurePage>;
 };
+/** A detached printed prompt can survive a cropped number. The neighboring
+ * marker defines a boundary only. Unassigned marks remain in the page receipt. */
+function isolatedUnnumberedPrompt(pending: Pending, page: StructurePage, next: StructureParagraph) {
+  const [lead, ...remainder] = pending.paragraphs;
+  if (pending.question.number !== "0" || pending.question.kind !== "question" ||
+      pending.question.sharedMaterialIds.length || pending.pages.size !== 1 ||
+      !pending.pages.has(page.page) || page.issues.length || lead?.role !== "body" ||
+      lead.issues.length || lead.confidence < 0.9 || lead.column < 0 ||
+      next.column !== lead.column || next.issues.length || next.confidence < 0.9 ||
+      page.paragraphs.find(p => !["heading", "header", "footer", "figure", "note"].includes(p.role)) !== lead ||
+      lead.anchor.box[1] > 0.2 || lead.text.length < 24 || lead.text.length > 1000 ||
+      !/\p{Script=Han}{5}/u.test(lead.text) ||
+      !/[?？](?:\s*[（(][^?？]{1,120}[）)])?$/u.test(lead.text) ||
+      previousMaterial.test(lead.text) || figureReference.test(lead.text) ||
+      /上题|前题|接上|续上|上页|同上|继续|如下图|如表|见表/u.test(lead.text) ||
+      remainder.some(p => !["body", "formula"].includes(p.role) ||
+        p.column !== lead.column || /\p{Script=Han}|[?？]/u.test(p.text))) return;
+  const ownedText = (p: StructureParagraph, minScore: number) => page.regions.find(region =>
+    region.kind === "text" && region.score >= minScore && p.regionIds.includes(region.id));
+  const a = ownedText(lead, 0.85), b = ownedText(next, 0.8);
+  if (!a || !b || a.id === b.id ||
+      overlap(a.box,b.box) > 0 || Math.abs(a.box[0] - b.box[0]) > 0.12 ||
+      a.box[2] - a.box[0] < (page.columns[lead.column][2] - page.columns[lead.column][0]) * 0.4 ||
+      b.box[1] - Math.max(a.box[3], ...remainder.map(p => p.anchor.box[3])) < 0.06 ||
+      page.regions.some(region => assetKinds.has(region.kind) &&
+        overlap(region.box, lead.anchor.box) > area(region.box) * 0.12)) return;
+  return lead;
+}
+
 /** An image-only continuation can end before the next parent marker.
  * Without a matching printed caption it is a lead for teacher review. */
 function leadingQuestionFigure(
@@ -483,6 +515,15 @@ export class StructureQuestionAssembler {
         } else pending.question.issues.push("missing_figure");
       }
     }
+    const pageLead = page.paragraphs.find(p =>
+      !["header", "footer", "figure", "note"].includes(p.role));
+    if (this.pending?.question.kind === "question" && this.pending.pages.size === 1 &&
+        this.pending.paragraphs[0].anchor.page + 1 === page.page && !page.issues.length &&
+        pageLead && pageLead.anchor.box[1] < 0.3 && !pageLead.issues.length &&
+        printedExampleLead.test(pageLead.text) &&
+        this.pending.paragraphs.filter(p => p.marker?.kind === "option")
+          .map(p => p.marker!.label).join("") === "ABCD")
+      output.push(this.finish());
     if (page.issues.includes("native_unconfirmed") && this.pending) {
       this.pending.question.issues.push("native_unconfirmed");
       this.pending.pages.set(page.page, page);
@@ -587,10 +628,14 @@ export class StructureQuestionAssembler {
           !!this.pending &&
           this.pending.question.number !== "0" &&
           Number(number) <= Number(this.pending.question.number);
-        const precedingOrphan = this.pending?.question.number === "0";
+        let precedingOrphan = false;
         if (numberingConflict)
           this.pending!.question.issues.push("numbering_conflict");
-        if (this.pending) output.push(this.finish({ page, next: paragraph }));
+        if (this.pending) {
+          const completed = this.finish({ page, next: paragraph });
+          precedingOrphan = completed.number === "0" && !completed.issues.includes("missing_question_number");
+          output.push(completed);
+        }
         if (this.unassigned.length) {
           // Preserve an ambiguous lead-in for the immediately following
           // question. A new parent marker does not extend its ownership.
@@ -657,7 +702,7 @@ export class StructureQuestionAssembler {
         !this.pending &&
         !this.instructions &&
         !this.shared.length &&
-        (questionCue.test(paragraph.text) ||
+        (questionCue.test(paragraph.text) || printedExampleLead.test(paragraph.text) ||
           ["option", "subquestion"].includes(paragraph.role))
       ) {
         this.pending = {
@@ -727,10 +772,16 @@ export class StructureQuestionAssembler {
     const pending = this.pending!,
       q = pending.question,
       shared = q.sharedMaterialIds.length ? this.shared : [];
+    const unnumbered = following && isolatedUnnumberedPrompt(pending, following.page, following.next);
+    if (unnumbered) {
+      q.paragraphIds = [unnumbered.id];
+      q.confidence = unnumbered.confidence;
+      q.issues = ["missing_question_number"];
+    }
     let role: "stem" | "answer" | "analysis" = "stem";
     let child: StructureQuestion["subquestions"][number] | undefined;
     let parentChild: typeof child;
-    for (const paragraph of pending.paragraphs) {
+    for (const paragraph of unnumbered ? [unnumbered] : pending.paragraphs) {
       q.anchors.push(paragraph.anchor);
       if (paragraph.marker?.kind === "child") {
         role = "stem";
@@ -809,7 +860,7 @@ export class StructureQuestionAssembler {
       /^(?:【|\[)?(?:解析|分析|解答)(?:】|\]|[:：])[ \t]*/u,
       "",
     );
-    for (const [number, page] of pending.pages) {
+    if (!unnumbered) for (const [number, page] of pending.pages) {
       const owned = [...pending.paragraphs, ...shared].filter(
           (p) => p.anchor.page === number,
         ),
@@ -836,6 +887,21 @@ export class StructureQuestionAssembler {
               (region.box[0] + region.box[2]) / 2 <= page.columns[p.column][2]),
         );
         if (compatible) attachStructureAsset(q, page, region);
+      }
+    }
+    for (const [number, page] of pending.pages) {
+      const figures = q.assets.filter(asset => asset.page === number && imageKinds.has(asset.kind));
+      if (!figures.length) continue;
+      for (const caption of page.paragraphs) {
+        if (caption.role !== "figure" || numberedFigureCaption.exec(caption.text)?.[1] !== q.number) continue;
+        const box = caption.anchor.box;
+        const matches = figures.filter(({box: image}) =>
+          Math.min(box[2], image[2]) - Math.max(box[0], image[0]) >= (box[2] - box[0]) * 0.6 &&
+          box[1] >= image[1] && box[1] - image[3] <= 0.04);
+        if (matches.length === 1 && !q.paragraphIds.includes(caption.id)) {
+          q.paragraphIds.push(caption.id);
+          q.anchors.push(caption.anchor);
+        }
       }
     }
     if (graphics) {
