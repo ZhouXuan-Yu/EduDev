@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-20 课程提纲误报漏题
+
+沿用 PDFium 页图、PP-DocLayoutV3 分块和既存 DeepSeek 回执，由生产证据读取器核对实际图片和摘要。模型和附属服务依赖未变化。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)
+
 ## 2026-11-20 多页 PDF 的精确分块引用
 
 PDF 页输入引用使用既有分块与内容摘要。选择同页、当前可见正文时保留其在全部历史正文中的原始位置。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)

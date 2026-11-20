@@ -12,6 +12,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 课程提纲误报漏题
+
+课程提纲修复覆盖入库无题路径、真实漏题保留和旧回执重开校验。真实试导库 PDF 页和受控 SQLite 任务分别记录证据。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)
+
 ## 2026-11-20 多页 PDF 的精确分块引用
 
 风华卷前两页从旧版未建批恢复为两页建批，逐个对照 35 条来源定位。自然题最终核验和正式组卷继续跟踪。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)

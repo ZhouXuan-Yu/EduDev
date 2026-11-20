@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 课程提纲误报漏题
+
+M03 已修复课程提纲的漏题误报，保留真实漏题与转写分歧。继续对 U16 习题课的真实漏收推进候选恢复，后续按原目标验收自然题、组卷与规模。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)
+
 ## 2026-11-20 多页 PDF 的精确分块引用
 
 M03/M05 两页真实试卷已从分块误判恢复到后台建批和来源读取。自然题完整定稿、配答、检索、正式卷、规模和本地迁移继续按 KB-A01～A10。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)

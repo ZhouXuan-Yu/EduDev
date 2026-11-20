@@ -4,6 +4,10 @@
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
 
+## 2026-11-20 课程提纲误报漏题
+
+真实 PDF 回执复读 10 页，两页漏题误报排除，真实漏题继续拦截。受控持久任务验证无题完结、重开读回和原文不变。完整自然题质量验收继续。 [专项报告](../research/evidence/kb/20261120/outline-omission/README.md)
+
 ## 2026-11-20 多页 PDF 的精确分块引用
 
 《风华》前两页的 35 个同页来源由实际桌面建批和读取验证。真实模型定稿与三套整卷继续按 KB-A03、A06 验收。 [本轮报告](../research/evidence/kb/20261120/exact-ai-pages/README.md)

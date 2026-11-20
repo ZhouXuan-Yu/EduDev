@@ -515,6 +515,59 @@ async function fragmentsFixture(mode='normal'){
  let inspected=0;f.repo.runtime.inspectCrop=async()=>({schemaVersion:'xiaozhi.material-ai-crop-quality.v1',engine:'rapidocr-3.9.2-onnxruntime-1.30.0.v1',text:++inspected%2?'如图所示物体移动，计算七加八的结果。':'图中标有七与八',clearEdges:[f.mode!=='clipped',true,true,true]});
  const {CROP_QUALITY_SCHEMA}=await import('../../src/main/assets/material-ai-crop-quality.ts'),{LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts'),inspect=f.repo.runtime.inspectCrop;f.repo.runtime.inspectCrop=async(...a)=>({...await inspect(...a),schemaVersion:CROP_QUALITY_SCHEMA,engine:LOCAL_OCR_ENGINE});return f;
 }
+const curriculumText='（一）能力目标\n1．基础技能\n1.1 能按照规则进行计算。\n1.2 会说明基本原理。\n1.3 能比较不同表示方法。';
+const emptyPage=pageText=>({schemaVersion:fragmentSchema,outcome:'no_questions',pageText,pageIssues:[],questions:[],fragments:[]});
+await check('A corroborated curriculum outline finishes the durable page job without creating questions',async()=>{
+ const f=await fragmentsFixture('hints');try{
+  const page=blocks();
+  page.blocks=page.blocks.slice(0,1);
+  f.repo.runtime.blocks=async()=>({blocks:page,blockTexts:[{blockId:'block-1',text:curriculumText}]});
+  f.db.prepare("UPDATE teacher_resources SET parse_status='ready'").run();
+  f.db.prepare("UPDATE material_pdf_pages SET status='complete',result_json=?").run(JSON.stringify({status:'complete',error:'',method:'ocr',nativeText:'',ocrText:curriculumText,text:curriculumText,width:100,height:100,imageArea:1,nativeBoxes:[]}));
+  f.db.prepare("INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,0,0,?)").run('chunk_'+randomUUID(),f.id,curriculumText);
+  const raw=JSON.stringify(emptyPage(curriculumText));
+  f.repo.runtime.complete=async({pagePrompt})=>{
+   assert.equal(pagePrompt.policy,'page-fragments.v3');
+   assert.equal(pagePrompt.ocrStatus,'complete');
+   f.state.calls++;
+   return raw;
+  };
+  f.batch=await f.repo.create(f.input);await f.repo.drain();
+  const persisted=f.db.prepare('SELECT status,error,first_json,final_json FROM material_ai_units').get();
+  assert.deepEqual({...persisted},{status:'no_questions',error:'',first_json:raw,final_json:raw});
+  const view=await new MaterialAiRepository(f.host).page(query(f));
+  assert.equal(view.status,'complete');
+  assert.equal(view.text,curriculumText);
+  assert.equal(view.ocrText,curriculumText);
+  assert.equal(await f.question(),undefined);
+  assert.equal(f.state.calls,2);
+ }finally{await f.dispose();}
+});
+await check('Curriculum evidence keeps mixed pages, incomplete OCR and contradictory drafts under review',async()=>{
+ const {assessAiPage}=await import('../../src/main/assets/material-ai-page-publish.ts');
+ const source={resourceId:'resource_'+randomUUID(),generation:randomUUID(),version:sha('source'),page:1};
+ const response=emptyPage(curriculumText),prompt={policy:'page-fragments.v3',ocrStatus:'complete',totalPages:1,blocks:blocks(),blockTexts:[{blockId:'block-1',text:curriculumText}]};
+ const assess=(first,final,evidence=prompt,originalFirst=first)=>assessAiPage(first,final,source,false,evidence,[],undefined,originalFirst);
+ const changed=assess(response,emptyPage(curriculumText.replace('规则','公式')));
+ assert.equal(changed.omitted,false);
+ assert.equal(changed.review,true);
+ const genuineOmission=emptyPage(curriculumText+'\n4. 矩形的面积为48，写出其长与宽的关系。');
+ for(const [first,final,evidence,originalFirst] of [
+  [genuineOmission,genuineOmission,prompt],
+  [response,emptyPage(curriculumText+'\n## 1234. 矩形的面积为48，写出其长与宽的关系。'),prompt],
+  [response,emptyPage(curriculumText+'\n## 第1234题 矩形的面积为48，写出其长与宽的关系。'),prompt],
+  [response,response,{...prompt,blockTexts:[{blockId:'block-1',text:genuineOmission.pageText}]}],
+  [response,response,{...prompt,ocrStatus:'needs_review'}],
+  [response,response,{...prompt,blockTexts:[{blockId:'block-1',text:'仅识别到标题'}]}],
+  [response,response,{...prompt,structureContext:{unresolved:[],supplemental:[],paragraphs:[{marker:{number:'4'}}]}}],
+  [response,response,prompt,{...response,outcome:'questions',questions:[q]}],
+  [{...response,pageIssues:['uncertain_ocr']},response,prompt],
+ ]){
+  const assessment=assess(first,final,evidence,originalFirst);
+  assert.equal(assessment.omitted,true);
+  assert.equal(assessment.review,true);
+ }
+});
 await check('Fragment schema rejects invented/shared/reordered/executable IDs and overlapping parent ownership',async()=>{
  const v=[{number:'1',blockIds:['block-1','block-2'],complete:true}],page=blocks();assert(validQuestionFragments(v,['1']));assert(fragmentsMatchPage(v,page));assert(validAiPagePrompt({policy:fragmentPolicy,ocrStatus:'blank',totalPages:1,resourceTitle:'公开试卷.pdf',blocks:page}));
  for(const blockIds of [[],['block-2','block-1'],['block-1','block-1'],['block-257'],new Array(1),Array.from({length:33},(_,i)=>'block-'+(i+1))])assert(!validQuestionFragments([{number:'1',blockIds,complete:true}],['1']));
