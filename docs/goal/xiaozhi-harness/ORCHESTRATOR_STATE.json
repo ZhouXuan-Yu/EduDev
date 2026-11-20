@@ -5,7 +5,7 @@
   "base": "d50ef330",
   "head": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
   "headRole": "Integrated application source for the workbench read optimization. Independent desktop evidence is bound to the pre-merge candidate.",
-  "mainObserved": "29a06396fadde39ac2cdb3d15bbbcfcbf7d1a31b",
+  "mainObserved": "3146aa1c34cfa04ca0a376b30fce707eb8c778e4",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -687,12 +687,33 @@
     "newPaidCalls": 0
   },
   "windowsCandidatePackaging": {
-    "status": "ARCHIVE_IN_PROGRESS",
+    "status": "LOCAL_NSIS_VERIFIED",
     "productionSource": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
     "packagingSource": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
     "evidence": "evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json",
+    "installerSha256": "36eae24c71a0e3f70a811bc6b6ce9d17bd582f86dc3c518e3634ca6435dc4f2c",
+    "installerBytes": 886091314,
     "unpackedResources": "PASS_SCOPED",
+    "parallelMainProductionCommitAfterBuild": "0b015f9",
     "qg09": "BLOCKED"
+  },
+  "integratedWorkbenchRetest": {
+    "status": "PASS_SCOPED",
+    "productionSource": "dcf273bf28e123cc0fa05cbe050ae88f5d3cc6cc",
+    "outputSha256": "8746795c9cda2ac503fff6c4b3ecc322bbbad26fba0a29950aeb7c0741e8f461",
+    "evidence": "evidence/phase7/implementation-resume-20261119/main-merge-retest-20261120.json",
+    "workbench": "9/9 with initial and cold renderer error observation",
+    "coldApprovals": "3/3",
+    "stream": "5/5 single synthetic background run",
+    "nativeWindowAcceptance": "NOT_TESTED",
+    "newPaidCalls": 0
+  },
+  "firstRequestPreparationProfile": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/first-model-request-local-preparation-20261120.json",
+    "longestObservedOperation": "pi_register_tool_contracts",
+    "operationMs": 7530.15,
+    "newPaidCalls": 0
   },
   "latestHandoff": {
     "progress": "PROGRESS.md",

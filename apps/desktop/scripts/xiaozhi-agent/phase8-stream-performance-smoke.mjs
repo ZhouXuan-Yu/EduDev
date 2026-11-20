@@ -8,12 +8,12 @@ import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import {installRendererProbe} from './phase8-stream-performance-probe.mjs';
 import {startStreamFixture, streamWorkload} from './phase8-stream-performance-fixture.mjs';
-import {summarizeProbe, preparationTiming} from './phase8-stream-performance-metrics.mjs';
+import {summarizeProbe, preparationTiming, preparationBreakdown} from './phase8-stream-performance-metrics.mjs';
 
 const argumentsMap = new Map();
 for (let index = 2; index < process.argv.length; index += 2) argumentsMap.set(process.argv[index], process.argv[index + 1]);
 for (const key of argumentsMap.keys()) {
-  if (!['--desktop-root', '--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--background'].includes(key)) throw Error('unknown_argument');
+  if (!['--desktop-root', '--build-root', '--label', '--expected-out-hash', '--expected-out-count', '--background', '--require-lifecycle'].includes(key)) throw Error('unknown_argument');
 }
 const desktop = fs.realpathSync(argumentsMap.get('--desktop-root') || process.cwd());
 const buildRoot = fs.realpathSync(argumentsMap.get('--build-root') || path.join(desktop, 'out'));
@@ -27,6 +27,7 @@ if (argumentsMap.has('--build-root')) {
 const label = argumentsMap.get('--label') || 'unlabeled';
 assert(/^[A-Za-z0-9_.-]{1,64}$/.test(label));
 const background = argumentsMap.get('--background') === 'true';
+const requireLifecycle = argumentsMap.get('--require-lifecycle') === 'true';
 const workload = {...streamWorkload, intervalMs: background ? 100 : streamWorkload.intervalMs};
 const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-stream-' : 'xiaozhi-phase8-stream-performance-'));
 const dataRoot = path.join(output, 'data');
@@ -101,8 +102,19 @@ try {
   fs.writeFileSync(bootstrap, `const {app,net}=require('electron');
 app.setPath('userData',${JSON.stringify(profile)});
 const originalFetch=net.fetch;
+const lifecycleChannel=require('node:diagnostics_channel').channel('omni-edu.xiaozhi.lifecycle.v1');
+globalThis.phase8Lifecycle={version:1,rows:[],dropped:0,invalid:0,limit:4096};
+const observeLifecycle=row=>{
+ if(!row||row.version!==1||!/^[a-z0-9_]{1,80}$/.test(row.operation)||!['success','cancelled','timeout','error'].includes(row.outcome)
+  ||![row.startedEpochMs,row.endedEpochMs,row.durationMs].every(Number.isFinite)
+  ||row.runId!==undefined&&!/^run_[a-z0-9-]{1,80}$/i.test(row.runId)){phase8Lifecycle.invalid++;return;}
+ if(phase8Lifecycle.rows.length>=phase8Lifecycle.limit){phase8Lifecycle.dropped++;return;}
+ phase8Lifecycle.rows.push({version:1,operation:row.operation,...(row.runId?{runId:row.runId}:{}),
+  startedEpochMs:row.startedEpochMs,endedEpochMs:row.endedEpochMs,durationMs:row.durationMs,outcome:row.outcome});
+};
+lifecycleChannel.subscribe(observeLifecycle);
 globalThis.phase8Transport={calls:[],blocked:0,timeOrigin:performance.timeOrigin,dateCalibrationMs:Date.now()-(performance.timeOrigin+performance.now())};
-globalThis.phase8RestoreTransport=()=>{net.fetch=originalFetch;};
+globalThis.phase8RestoreTransport=()=>{net.fetch=originalFetch;lifecycleChannel.unsubscribe(observeLifecycle);};
 net.fetch=async(input,init)=>{
  const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);
  if(url.protocol!=='https:'||url.hostname!=='api.deepseek.com'||url.port||!['/v1/models','/v1/chat/completions'].includes(url.pathname)){
@@ -186,13 +198,32 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   report.turn = {sessionId, runId: turn.id, status: turn.status, reasoningBlocks: turn.modelReasoning?.length,
     finalChars: turn.items.filter(item => item.role === 'assistant').reduce((sum, item) => sum + (item.text?.length || 0), 0),
     observedAssistantPhases: [...new Set(turn.items.filter(item => item.role === 'assistant').map(item => item.phase ?? 'unclassified'))]};
+  // Public terminal projection can precede the existing post-terminal audit/route seal.
+  // Wait only for its correlated observation; do not alter host settlement semantics.
+  await application.evaluate(async (_electron, runId) => {
+    if (!runId.required && !globalThis.phase8Lifecycle.rows.length) return;
+    const deadline = performance.now() + 5000;
+    while (!globalThis.phase8Lifecycle.rows.some(row => row.operation === 'host_execute' && row.runId === runId.id)
+      && performance.now() < deadline) await new Promise(resolve => setTimeout(resolve, 25));
+  }, {id: turn.id, required: requireLifecycle});
   report.transport = await application.evaluate(() => globalThis.phase8Transport);
+  report.lifecycle = await application.evaluate(() => globalThis.phase8Lifecycle);
   report.rendererRaw = await page.evaluate(() => window.phase8StreamProbe.dispose());
   report.metrics = summarizeProbe(report.rendererRaw);
   const submit = report.rendererRaw.submissions[0];
   const modelFetch = report.transport.calls.find(row => row.path === '/v1/chat/completions');
   report.preparation = preparationTiming({submitEpochMs: submit.epochMs,
     mainFetchEpochMs: modelFetch.epochMs, fixtureEpochMs: fixture.requests[0].epochMs});
+  report.preparation.breakdown = preparationBreakdown({lifecycle: report.lifecycle, runId: turn.id,
+    submitEpochMs: submit.epochMs, mainFetchEpochMs: modelFetch.epochMs, fixtureEpochMs: fixture.requests[0].epochMs});
+  report.preparation.lifecycleRequired = requireLifecycle;
+  report.preparation.instrumentation = report.lifecycle.rows.length ? 'observed' : 'unavailable';
+  if (requireLifecycle || report.lifecycle.rows.length || report.lifecycle.dropped || report.lifecycle.invalid) {
+    check('First request preparation has complete bounded correlated spans and ordered boundaries', () => {
+      assert.equal(report.preparation.breakdown.complete, true, JSON.stringify(report.preparation.breakdown.reasons));
+      assert(Math.abs(report.preparation.breakdown.accountedMs - report.preparation.submitToFixtureMs) < 0.05);
+    });
+  }
   check('Actual original Pi UI handles one fixture run and terminal stop', () => {assert.equal(turn.status, 'interrupted'); assert(report.turn.finalChars > 0);});
   check('Reasoning and final have live renderer RAF samples and trusted input expansion scroll events', () => {
     for (const phase of ['reasoning', 'final']) {
@@ -214,6 +245,17 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
     report.readback = {runs: database.prepare('SELECT id,status FROM ai_agent_runs').all(),
       eventRuns: database.prepare('SELECT run_id,generation,status,sequence FROM xiaozhi_event_runs').all(),
       nativeBindings: database.prepare('SELECT conversation_id,session_file FROM xiaozhi_pi_session_bindings').all()};
+    const savedMetrics = database.prepare("SELECT metadata_json FROM ai_conversation_messages WHERE session_id=? AND role='assistant'").all(sessionId)
+      .map(row => {try {return JSON.parse(row.metadata_json);} catch {return null;}})
+      .find(metadata => metadata?.agentRunId === turn.id)?.answerQuality;
+    const storedPreparationMs = Number.isFinite(savedMetrics?.preparationMs) ? savedMetrics.preparationMs : null;
+    const observedPreparationMs = report.preparation.breakdown.complete ? report.preparation.breakdown.hostPreparationMs : null;
+    report.preparation.alignment = {storedPreparationMs, observedPreparationMs,
+      differenceMs: storedPreparationMs === null || observedPreparationMs === null ? null : observedPreparationMs - storedPreparationMs,
+      boundary: 'Existing persisted execute-entry to pre-prompt duration versus the enclosing observation boundaries; tiny observer-call overhead remains.'};
+    if (storedPreparationMs !== null && observedPreparationMs !== null) check('Observed preparation agrees with the existing persisted boundary', () => {
+      assert(Math.abs(report.preparation.alignment.differenceMs) < 10, 'preparation_boundary_alignment_mismatch');
+    });
   } finally {database.close();}
   check('SQLite run identity and renderer error evidence are retained', () => {
     assert(report.readback.runs.some(row => row.id === turn.id && row.status !== 'running')); assert.deepEqual(report.errors, []);
@@ -225,6 +267,7 @@ app.whenReady().then(()=>import(${JSON.stringify(pathToFileURL(main).href)}));`)
   if (page) {
     report.rendererRaw ??= await page.evaluate(() => window.phase8StreamProbe?.snapshot()).catch(() => undefined);
     report.transport ??= await application.evaluate(() => globalThis.phase8Transport).catch(() => undefined);
+    report.lifecycle ??= await application.evaluate(() => globalThis.phase8Lifecycle).catch(() => undefined);
     await page.screenshot({path: path.join(output, 'failure.png')}).catch(() => undefined);
   }
 } finally {

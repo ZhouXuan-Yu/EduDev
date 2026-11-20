@@ -78,7 +78,9 @@ export async function startWorkbenchFixture(options = {}) {
     application = await electron.launch({args: [bootstrap, '--force-device-scale-factor=1'], env, timeout: 180000});
     application.process().stdout?.on('data', bytes => fs.appendFileSync(path.join(output, 'electron.log'), bytes));
     application.process().stderr?.on('data', bytes => fs.appendFileSync(path.join(output, 'electron.log'), bytes));
-    const page = await application.firstWindow({timeout: 180000}); await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
+    const page = await application.firstWindow({timeout: 180000});
+    if (options.onPageError) page.on('pageerror', options.onPageError);
+    await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout: 60000});
     if (options.background) assert.equal(await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isVisible()), false);
     await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
     await application.evaluate(({BrowserWindow}, title) => {BrowserWindow.getAllWindows()[0].setTitle(title);}, 'Phase7 Synthetic Workbench · ' + path.basename(root));

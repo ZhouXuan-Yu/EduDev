@@ -31,7 +31,7 @@ import { fileVersion } from './workspace-files';
 import { createHanaRunToolScope } from './hana-tool-scope';
 import {manifestForTools} from './tools/manifest';
 import {createToolExecutionBoundary} from './tools/execution-bound';
-import {LifecycleTimeoutError,waitForLifecycle} from './lifecycle-wait';
+import {LifecycleTimeoutError,waitForLifecycle,observeLifecycle} from './lifecycle-wait';
 import type {XiaozhiToolAttempt} from '../../shared/xiaozhi-tool-attempt';
 import {TOOL_EXECUTION_MESSAGES} from '../../shared/xiaozhi-tool-attempt';
 import { installToolOutcomeAdapter } from './vendor/hana/lib/pi-sdk/tool-outcome-adapter';
@@ -237,7 +237,7 @@ function classifyError(raw: unknown): XiaozhiAgentError {
 export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   let lease:NativeSessionLease|undefined,reusable=false;
   try {
-    const agent=await assemblePiXiaozhiSession(options,value=>{lease=value;});
+    const agent=await observeLifecycle('pi_assembly',()=>assemblePiXiaozhiSession(options,value=>{lease=value;}));
     return {...agent,
       async prompt(text:string){reusable=false;const result=await agent.prompt(text);reusable=result.ok;return result;},
       async compact(){reusable=false;const result=await agent.compact();reusable=result.ok;return result;},

@@ -6,6 +6,7 @@ import {startWorkbenchFixture} from './phase7-workbench-fixture.mjs';
 
 let fixture, application, page;
 const report = {success: false, paidCalls: 0, checks: [], errors: [], boundary: 'Actual built production main/preload/renderer with original typed actions. Synthetic metadata seeded through original domain APIs; all model traffic loopback. Independent visual/mouse acceptance remains Terra.'};
+const fixtureOptions = {background: true, onPageError: error => report.errors.push(error.message)};
 async function until(action, timeout = 45000) {const end = Date.now() + timeout; do {if (await action()) return; await page.waitForTimeout(100);} while (Date.now() < end); throw Error('ui_readback_timeout');}
 async function check(name, action) {const started = performance.now(); await action(); report.checks.push({name, pass: true, durationMs: performance.now() - started}); console.log('PASS ' + name);}
 async function overview() {const button = page.getByTestId('pi-workbench-open'); await button.click(); await page.getByTestId('pi-workbench').waitFor();}
@@ -38,8 +39,8 @@ async function verifyResumedRun(target, previous) {
   assert.equal(runs(target.sessionId).length, previous.size + 1);
 }
 try {
-  fixture = await startWorkbenchFixture({background: true}); application = fixture.application; page = fixture.page;
-  report.root = fixture.root; report.output = fixture.output; page.on('pageerror', error => report.errors.push(error.message));
+  fixture = await startWorkbenchFixture(fixtureOptions); application = fixture.application; page = fixture.page;
+  report.root = fixture.root; report.output = fixture.output;
   await check('U01_visible_cross_session_overview_matches_original_completed_facts', async () => {
     await overview(); const value = await summary({kind: 'tasks', filter: 'unfinished'}); assert(value.ok && value.value.kind === 'tasks');
     assert.equal(value.value.partial, false); assert.equal(value.value.total, 5); assert.equal(value.value.matched, 4); assert.equal(value.value.counts.completed, 1);
@@ -140,7 +141,7 @@ try {
   });
   await check('U09_cold_original_summary_and_inbox_decision_readback', async () => {
     const before = await summary({kind: 'tasks', filter: 'all'}); assert(before.ok); report.modelCalls = fixture.requests.length; await fixture.close();
-    fixture = await startWorkbenchFixture({root: fixture.root, background: true}); application = fixture.application; page = fixture.page;
+    fixture = await startWorkbenchFixture({...fixtureOptions, root: fixture.root}); application = fixture.application; page = fixture.page;
     const after = await summary({kind: 'tasks', filter: 'all'}); assert(after.ok); assert.equal(after.value.total, before.value.total); assert.deepEqual(after.value.counts, before.value.counts);
     const saved = await summary({kind: 'approvals', state: 'all'}); assert(saved.ok && saved.value.items.some(item => item.id === fixture.ids.permission.approvals[0].id && item.state === 'rejected'));
     assert(saved.value.items.some(item => item.id === fixture.ids.legacy.uncertainApprovalId && item.state === 'verified'));

@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "dcf273bf28e123cc0fa05cbe050ae88f5d3cc6cc",
+  "sourceBeforeGeneration": "d972001f01f0f678ded90fdb937d7b19a74516ba",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-main-d972001-gate7/out",
+    "exitCode": 0,
+    "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+    "output": "test-results/harness-main-d972001-gate7/out",
+    "outputSha256": "8746795c9cda2ac503fff6c4b3ecc322bbbad26fba0a29950aeb7c0741e8f461",
+    "outputFiles": 481,
+    "mainSha256": "c918439138ea45c4aa4a18a389d8928901289143d88bb0681f693ee2875813dc",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "rendererEntry": "renderer/assets/index-ChIt5eXI.js",
+    "rendererEntrySha256": "292f3caaa385c2f167c037dc1004f241daae3bbac5f12d3216f70bb0a58b779e",
+    "logSha256": "9c8c5a31a355054f52c7a9546b711bed14d47dc2e77e81aa249c6efb3531d2f5",
+    "typecheck": "PASS; tsc --noEmit is part of the command"
+  },
+  "coreToolManifest": {
+    "file": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "generationCommand": "node scripts/build-core-tool-manifest.mjs",
+    "sourceHash": "cea332e3f25e44d8145377e5a6d36f82c71f1006dd1deea63ee04d4a7e3af9ec",
+    "inputHashesVerified": 631,
+    "singleChangedInput": "src/shared/material-document-structure.ts"
+  },
+  "rendererComponents": {
+    "command": "npm.cmd run test:renderer-components",
+    "exitCode": 0,
+    "passed": 253,
+    "total": 253,
+    "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  },
+  "dailyLauncherPreflight": {
+    "commands": [
+      "node --check scripts/start-desktop.mjs",
+      "node scripts/start-desktop.mjs --check"
+    ],
+    "exitCodes": [0, 0],
+    "scope": "Launcher syntax, exact direct dependency versions, and the installed Electron runtime file/version."
+  },
+  "dependencyAudit": {
+    "command": "npm.cmd audit --json --fetch-retries=0 --fetch-timeout=20000",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0
+  },
+  "backgroundWorkbench": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "environment": "OMNI_EDU_TEST_BUILD_ROOT=<cwd>/test-results/harness-main-d972001-gate7/out",
+    "initial": {
+      "exitCode": 0,
+      "passed": 9,
+      "total": 9,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-ZvPf9W/evidence/ui-report.json",
+      "reportSha256": "6c09a7f0fea49e7e26ea365ba8cd3a5b86e782b79c87efe0a194db8d28b4b4f8",
+      "resumedRunsSucceeded": 2,
+      "sqliteSucceededRuns": 8,
+      "loopbackModelCalls": 11,
+      "coldReplayRequests": 0,
+      "rendererErrorCoverage": "The first launch registered the pageerror listener. U09 cold launch omitted it.",
+      "electronLog": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-ZvPf9W/evidence/electron.log",
+      "electronLogSha256": "6c662dc95e312becc5a7afb989a4b55f8625f25de85c8d8e447910a1584eff72",
+      "chromiumObservation": "One Chromium network service crash-or-termination/restart message; the suite passed. Cause unverified."
+    },
+    "coldPageErrorListenerRetest": {
+      "reviewer": "GPT-6.1 Terra High",
+      "exitCode": 0,
+      "passed": 9,
+      "total": 9,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-dXinER/evidence/ui-report.json",
+      "reportSha256": "b951b36c5631428d9072cdd1e9a0a99f0a4b4b88f6ca68fb7b36d917b931f0d1",
+      "closedReportSha256": "cadbf02d013050f7dc3ab9662aa2cd27af673d0e9447f960f5551e2a6a2ffbd8",
+      "electronLogSha256": "d8edc4070c1b60a635ed3c8d5bd1c996a7abc747d34e1bb27d9b6f397b3fb09c",
+      "resumedRunsSucceeded": 2,
+      "resumedRunIds": ["run_d1926e94-ced5-4132-8939-6ce6126a76e6", "run_a6458c06-ba93-4f03-9283-95628f926ab7"],
+      "rendererErrors": [],
+      "rendererErrorCoverage": "Both initial and cold launch windows are observed from firstWindow return through close.",
+      "chromiumRestartReproduced": false,
+      "loopbackModelCalls": 11,
+      "coldReplayRequests": 0
+    }
+  },
+  "backgroundColdApprovals": {
+    "command": "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs",
+    "exitCode": 0,
+    "passed": 3,
+    "total": 3,
+    "viewports": ["1366x768", "1920x1080"],
+    "sqliteRowsPreserved": 5,
+    "replayedModelRequests": 0,
+    "pageErrors": [],
+    "coldOpenMs": 4901,
+    "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-Sa8ivK/cold-approval-report.json",
+    "reportSha256": "46d1ad6e6c39fd70d29addc46c382de0c13931f526ad9f406baf958d3f10b0a5"
+  },
+  "backgroundStream": {
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/harness-main-d972001-gate7/out --label dcf273b-gate7-stream --expected-out-hash 8746795c9cda2ac503fff6c4b3ecc322bbbad26fba0a29950aeb7c0741e8f461 --expected-out-count 481 --background true",
+    "exitCode": 0,
+    "passed": 5,
+    "total": 5,
+    "viewport": "1366x768",
+    "visibleReasoningCharacters": [698, 2795],
+    "fixtureRequests": 1,
+    "submitToFixtureMs": 7651.97,
+    "terminalStatus": "interrupted",
+    "compatibilityRunStatus": "blocked",
+    "rendererErrors": [],
+    "buildUnchanged": true,
+    "scope": "Single synthetic background run. Reported preparation latency is not a foreground or real provider measurement.",
+    "report": "TEMP/omni-edu-xiaozhi-stream-iDJPVv/report.json",
+    "reportSha256": "0155a3f05fd7f111b0bebf7c5ecd8ae0158dfc1a4e6e278822d664afe4808cb6"
+  },
+  "paidRequestLedger": {
+    "limit": 200,
+    "used": 3,
+    "remaining": 197,
+    "unresolved": 0,
+    "newRequests": 0
+  },
+  "fixedMatrix": {"passed": 88, "total": 89, "onlyBlocked": "QG-09"},
+  "remaining": {
+    "gate7": "PARTIAL; native title-bar drag and maximize/restore remain unverified",
+    "qg09": "BLOCKED; no clean Windows guest available on this host",
+    "formal32": "NOT_TESTED",
+    "finalIndependent": "PENDING"
+  },
+  "previousInstallerBuild": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4"
+}

@@ -1,6 +1,6 @@
 {
   "date": "2026-11-20",
-  "status": "ARCHIVE_IN_PROGRESS",
+  "status": "LOCAL_NSIS_VERIFIED",
   "packagingRepoHead": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
   "productionBuildCommit": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
   "compiledSource": "apps/desktop/test-results/harness-workbench-index-merge-ae8dca7/out",
@@ -78,8 +78,53 @@
       "sha256": "c85dcbd90e6f7c772b386a2deb410f9d0c19a6dd11e977599472e2d782e083e9"
     }
   },
-  "installer": "PENDING",
-  "independentArtifactReview": "PENDING",
+  "installer": {
+    "path": "release/Xiaozhi-Setup-0.1.0-x64.exe",
+    "exitCode": 0,
+    "bytes": 886091314,
+    "sha256": "36eae24c71a0e3f70a811bc6b6ce9d17bd582f86dc3c518e3634ca6435dc4f2c",
+    "signature": "NotSigned",
+    "blockMap": {
+      "path": "release/Xiaozhi-Setup-0.1.0-x64.exe.blockmap",
+      "bytes": 902964,
+      "sha256": "d8686fe41ad4eb1c5d382346330c168111af5d2ad920aa9360b35ae3ce2676f3"
+    },
+    "log": {
+      "path": "electron-builder.log",
+      "sha256": "a2c4510ede92c2233a1751d5bb66ca4de3ff72dbb6e8095d1475b0e7a490b7ce"
+    },
+    "unpackedApplication": {
+      "path": "release/win-unpacked/小智.exe",
+      "peMachine": "0x8664",
+      "sha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481"
+    },
+    "published": false,
+    "executedInstaller": false
+  },
+  "installerArchiveReadback": {
+    "command": "7za.exe x <installer> resources/app/out/* 小智.exe -o<readback> -y",
+    "exitCode": 0,
+    "archiveOffset": 200116,
+    "archiveBytes": 885475102,
+    "applicationFiles": 481,
+    "matchesTestedBuildAndUnpackedByPathSizeAndSha256": true,
+    "applicationExeMatchesUnpacked": true,
+    "readbackRoot": "TEMP/edu-harness-workbench-nsis-verified-faf88f6c/archive-verify-4c43b717",
+    "extractionLogSha256": "5faccbb7dea41da66bd195000f027b94a7422017c7364bbba6bc28a43fcd651f",
+    "comparisonHelperSha256": "91aea7c2e0c9ed8987e295912cfa797892dc92dcc10d662c038beb8ce4f4f0a9"
+  },
+  "independentArtifactReview": {
+    "status": "PASS_SCOPED",
+    "reviewer": "GPT-6.1 Terra High",
+    "checks": [
+      "Packaging exit code and actual EXE size and SHA-256",
+      "Unpacked and tested application file counts and tree hashes",
+      "Unpacked executable x64 PE machine",
+      "Five runtime afterPack checks in the real builder log",
+      "Read-only 7za listing of the embedded application archive"
+    ],
+    "scope": "Artifact identity and archive listing. Clean Windows install, shortcut launch and uninstall remain untested."
+  },
   "existingDependencyAudit": {
     "command": "npm.cmd audit --json --fetch-retries=0 --fetch-timeout=20000",
     "exitCode": 1,
@@ -93,7 +138,7 @@
     "qg09": "BLOCKED; clean Windows install, shortcuts and uninstall pending",
     "formal32": "NOT_TESTED"
   },
-  "liveBuildObservation": {
+  "archiveObservationDuringBuild": {
     "observedAt": "2026-11-20T17:05:12.8893376+08:00",
     "exitMarker": false,
     "bytesRead": 1078185147,
@@ -102,5 +147,7 @@
     "builderPid": 38528,
     "installerExists": false
   },
-  "mainAndFeatureAtPackagingStart": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc"
+  "mainAndFeatureAtPackagingStart": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
+  "mainObservedAfterPackaging": "3146aa1c34cfa04ca0a376b30fce707eb8c778e4",
+  "mainProductionChangeAfterBuild": "0b015f9"
 }

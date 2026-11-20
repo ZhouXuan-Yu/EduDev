@@ -1652,7 +1652,7 @@ Store301文件4项、正式资料页151文件5项（暂停/两次冷启/长文�
 
 ## 2026-10-28 深度审计量化检查点
 
-完整26项整改与WP0限定证据见goal/DEEP_AUDIT_20261028_TODOLIST.md和DEEP_AUDIT_20261028_EVIDENCE.md。build/typecheck、240组件、15计量合同及真实Electron历史采样通过；同构建独立重复7/18候选预算失败，F24仍MEASURING，非稳定性能门禁或全审计完成。用户产品级约定保存在根CLAUDE.md。
+完整26项整改与WP0限定证据见goal/DEEP_AUDIT_20261028_TODOLIST.md和DEEP_AUDIT_20261028_EVIDENCE.md。build/typecheck、240组件、15计量合同及真实Electron历史采样通过；同构建独立重复7/18候选预算失败，F24仍MEASURING，非稳定性能门禁或全审计完成。用户产品级约定已并入根目录 [AGENTS.md](../../AGENTS.md)。
 
 ## 2026-10-28 原生AI生产链验收范围
 

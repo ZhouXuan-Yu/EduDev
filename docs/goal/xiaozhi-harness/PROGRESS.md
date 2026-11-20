@@ -1,8 +1,18 @@
 # Harness 执行进度
 
+## 2026-11-20 首个模型请求前的本地分段
+
+已实现。真实 Electron 后台样本的首个模型请求前耗时 12.74 秒。Pi 组装占 9.24 秒，其中工具契约登记 7.53 秒、受管 Skill 加载 1.31 秒。分段与同一 Run 的持久准备耗时相差 5.15 毫秒。Terra 单次通过 7 项，旧构建无诊断通道仍通过原 5 项。下一步核对登记路径中的重复目录读取和校验。正式模型和前台性能未测。 [命令、原始报告及粒度](evidence/phase8/first-model-request-local-preparation-20261120.json)
+
+## 2026-11-20 合并后工作台与流式复验
+
+已实现。核心工具清单随知识库合并刷新，631 个输入哈希校验通过。构建 `dcf273b`、类型检查、组件 253/253 及启动器依赖检查通过。Terra 用同一构建复测工作台 9/9，两个原任务各续跑成功一次，持久终端可操作，冷启保留汇总与审批。冷审批 3/3 和后台流式 5/5。固定矩阵 88/89，原生窗、独立 Windows 安装卸载及正式真实模型 A/B 继续待验。 [命令、构建指纹和分轮证据](evidence/phase7/implementation-resume-20261119/main-merge-retest-20261120.json)
+
 ## 2026-11-20 当前源码 Windows x64 候选
 
-构建 `ae8dca7` 的 481 个应用文件与当前 `win-unpacked` 逐字节匹配。包内五套运行时校验均通过，隔离环境运行随包教育 Worker 的允许及拒绝用例均通过。NSIS 正在压缩，最终安装包仍待产出。已记录 [打包进度](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json) 和 [独立 Windows 验收步骤](ACCEPTANCE_REPORT.md#qg-09-独立-windows-安装验收步骤)。固定矩阵 88/89，付费请求累计 3/200。
+NSIS 以退出码 0 生成未签名的 886,091,314 字节安装包，随包应用已核对 x64。直接解出 481 个应用文件，与构建 `ae8dca7` 及 `win-unpacked` 逐字节匹配。五套运行时校验均通过，隔离环境下随包教育 Worker 的允许及拒绝用例均通过。Terra 独立核对包文件、解包目录与归档列举。固定矩阵 88/89，付费请求累计 3/200。原生窗口操作、独立 Windows 安装卸载和正式 32 条模型对照仍待验收。[打包证据](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json)及[独立 Windows 验收步骤](ACCEPTANCE_REPORT.md#qg-09-独立-windows-安装验收步骤)
+
+同日主线已合入知识库裁缺题号修复 `0b015f9`。现有安装包冻结于该修复前的 `ae8dca7`，最终候选须在 Gate 7 完成后重新按源码和包文件指纹核对。[知识库回归证据](../../research/evidence/kb/20261120/cropped-question-number/README.md)
 
 ## 2026-11-20 Phase 8 独立盲评与配对汇总
 
