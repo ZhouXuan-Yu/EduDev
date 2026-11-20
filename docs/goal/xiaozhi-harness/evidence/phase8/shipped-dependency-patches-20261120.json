@@ -1,0 +1,153 @@
+{
+  "date": "2026-11-20",
+  "scope": "Two compatible transitive patch updates only. The original installer is pre-patch. The patched Windows output was verified as an unpacked image. Clean Windows installation, native pointer interaction and paid provider acceptance remain outstanding.",
+  "lock": {
+    "sha256": "5ad0a722590526c46f6567a6c0d71cf9d318ea952e886a7e02d77ba1e64b37b0",
+    "onlyChangedPackageEntries": [
+      "node_modules/source-map-js",
+      "node_modules/zod"
+    ],
+    "packageJsonChanged": false,
+    "newOverrides": false,
+    "dependencies": [
+      {
+        "name": "zod",
+        "before": "4.6.5",
+        "after": "4.6.6",
+        "license": "MIT",
+        "unpackedByteChange": 8633,
+        "advisory": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5"
+      },
+      {
+        "name": "source-map-js",
+        "before": "1.2.1",
+        "after": "1.2.2",
+        "license": "BSD-3-Clause",
+        "unpackedByteChange": 2851,
+        "advisory": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q"
+      }
+    ]
+  },
+  "codeReview": {
+    "reviewer": "GPT-6.1 Sol High",
+    "scope": "Checked app import paths and parent/peer compatibility. No app direct Zod import. The jsdom/css-tree source path uses source-map-js generation. Product reachability of the affected validation and source-map consumption paths was not established."
+  },
+  "install": {
+    "command": "npm.cmd install --ignore-scripts --no-audit --no-fund --prefer-offline",
+    "exitCode": 0,
+    "changedPackageCount": 2
+  },
+  "audit": {
+    "command": "npm.cmd audit --omit=dev --json",
+    "afterExitCode": 1,
+    "before": {
+      "total": 22,
+      "high": 7
+    },
+    "after": {
+      "total": 20,
+      "high": 5,
+      "moderate": 7,
+      "low": 8,
+      "critical": 0
+    },
+    "remainingHighPackageNames": [
+      "@modelcontextprotocol/sdk",
+      "body-parser",
+      "nanoid",
+      "undici",
+      "vite"
+    ],
+    "scope": "npm dependency-tree counts. Some packages in this list are not physically present in the unchanged shipping profile. Advisory severity is not evidence of reachable product behavior."
+  },
+  "preIntegration": {
+    "sourceParent": "eb1dcbd199d686c847c21a58a9142c02c17f11e0",
+    "build": {
+      "exitCode": 0,
+      "includesTypecheck": true,
+      "files": 481,
+      "sha256": "a8ceb9034d4dd17a661d596ea7385a0910b245b66151b33d87294d0448ac5f03",
+      "logSha256": "1846d4f2cb9c33173c1a0687e4346e74ace613af847fe615ff6e61871fcef8c0"
+    },
+    "renderer": {
+      "command": "npm.cmd run test:renderer-components",
+      "exitCode": 0,
+      "passed": 253
+    },
+    "web": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-web-boundary-smoke.mjs",
+      "exitCode": 0,
+      "passed": 15,
+      "logSha256": "9ad71aa16f77b84db2fe44cea00019315220ad671f554e49b9b4847cdc4a9baf"
+    },
+    "delivery": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+      "exitCode": 0,
+      "passed": 12,
+      "logSha256": "307948d2920ca262245cfe37b8fbb167ff5cfad7abfa50e7ce01850e8c95f85f",
+      "firstAttempt": {
+        "exitCode": 1,
+        "reason": "Standalone invocation did not load the repository's TypeScript source resolver.",
+        "logSha256": "ad8e18205eb7ac2fa33f21c1f121f8a35ae6212a9bc61e4056c99cd75a2b3281"
+      }
+    },
+    "normalLibraryCompatibilityChecks": {
+      "passed": 5,
+      "inputs": [
+        "small valid Zod object with bounded array",
+        "invalid object and collection item",
+        "small array length bound",
+        "ordinary source map",
+        "two-section indexed map"
+      ]
+    },
+    "desktop": {
+      "reviewer": "GPT-6.1 Terra High",
+      "exitCode": 0,
+      "passed": 4,
+      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root test-results/harness-dependency-patches/out --expected-out-hash a8ceb9034d4dd17a661d596ea7385a0910b245b66151b33d87294d0448ac5f03 --expected-out-count 481 --expected-main-hash 2d6911dbef14307863dcb6848cbfb04ffc2856eacb502fdbd5e3b6e28092a4fb",
+      "report": "TEMP/omni-edu-c2-course-YUtH4h/report.json",
+      "reportSha256": "37a2de1e226970a8a62eadfc9ea88f53f766bc7ca05cd298b4d9edc0a6ef064a"
+    },
+    "windowsDirectory": {
+      "command": "node node_modules/electron-builder/out/cli/cli.js --dir --win --x64 --publish never --config <stage>/packaging.cjs",
+      "exitCode": 0,
+      "reviewer": "GPT-6.1 Terra High",
+      "outFiles": 481,
+      "matchesOutSha256": "a8ceb9034d4dd17a661d596ea7385a0910b245b66151b33d87294d0448ac5f03",
+      "versions": {
+        "zod": "4.6.6",
+        "source-map-js": "1.2.2"
+      },
+      "verifiedRuntimeFiles": {
+        "page-blocks-runtime": 767,
+        "ocr-runtime": 712,
+        "education-runtime": 90,
+        "retrieval-runtime": 154,
+        "reranker-runtime": 155
+      },
+      "logSha256": "d1cb4b5a7c45d01da45960803b534130279d87ccd6a2a6dad9dc52ed7cec1c34"
+    }
+  },
+  "currentIntegration": {
+    "sourceParent": "95a1241bdc1fa70e4f63d0ec57eb889c466455f6",
+    "build": {
+      "command": "npm.cmd run build -- --outDir test-results/harness-dependency-patches-main/out",
+      "exitCode": 0,
+      "includesTypecheck": true,
+      "files": 481,
+      "sha256": "31017a15afae3c66392992d51d9f9df48118ddf844e434030464658fe989a735",
+      "logSha256": "3952dc380c374ef701f0c4692c1a659c09c74ab451c0dbf8a2d841b6c01ea996",
+      "coreToolSourceHash": "295fdd48a7401ae098921795bdf8289a36274a99c3edafeeebffe75bc8ce75c0"
+    },
+    "desktop": {
+      "reviewer": "Root",
+      "exitCode": 0,
+      "passed": 4,
+      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root test-results/harness-dependency-patches-main/out --expected-out-hash 31017a15afae3c66392992d51d9f9df48118ddf844e434030464658fe989a735 --expected-out-count 481 --expected-main-hash 5e46f4458618b447dcae34a6a6f40f529193d2b3d4c4e4b8ad6d7448b850c320",
+      "report": "TEMP/omni-edu-c2-course-3eHnG4/report.json",
+      "reportSha256": "3ab0dbf1d238d74ccca2a8a7db07d35873db4717e8ab0baee92ee41e93752772"
+    }
+  },
+  "realModelRequestsAdded": 0
+}

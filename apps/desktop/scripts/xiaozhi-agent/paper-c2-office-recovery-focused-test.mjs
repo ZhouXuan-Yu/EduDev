@@ -35,10 +35,13 @@ try{
   export {generateOfficeDocument} from './src/main/xiaozhi-agent/office-generator';
  `},bundle:true,write:false,packages:'external',platform:'node',format:'esm',plugins:[{name:'deny-electron',setup(b){
   b.onResolve({filter:/^electron$/},()=>({path:'electron',namespace:'denied'}));
-  b.onLoad({filter:/.*/,namespace:'denied'},()=>({contents:"const denied=new Proxy(function(){throw Error('Electron forbidden')},{get(){throw Error('Electron forbidden')}});export const app=denied,utilityProcess=denied,nativeImage=denied,safeStorage=denied,dialog=denied,BrowserWindow=denied,session=denied,ipcMain=denied,shell=denied,screen=denied;"}));
+  b.onLoad({filter:/.*/,namespace:'denied'},()=>({contents:"const denied=new Proxy(function(){throw Error('Electron forbidden')},{get(){throw Error('Electron forbidden')}});export const app=denied,net=denied,utilityProcess=denied,nativeImage=denied,safeStorage=denied,dialog=denied,BrowserWindow=denied,session=denied,ipcMain=denied,shell=denied,screen=denied;"}));
   b.onResolve({filter:/^[A-Za-z@]/},a=>({path:import.meta.resolve(a.path),external:true}));
  }}]});
- const bundle=path.join(output,'source.mjs');fs.writeFileSync(bundle,built.outputFiles[0].text);report.bundleSha256=sha(built.outputFiles[0].text);m=await import(pathToFileURL(bundle).href);
+ const testResults=path.join(desktop,'test-results');
+ fs.mkdirSync(testResults,{recursive:true});
+ const bundle=path.join(fs.mkdtempSync(path.join(testResults,'c2-office-recovery-build-')),'source.mjs');
+ fs.writeFileSync(bundle,built.outputFiles[0].text);report.bundleSha256=sha(built.outputFiles[0].text);m=await import(pathToFileURL(bundle).href);
  dataRoot=path.join(output,'data');workspace=path.join(output,'workspace');fs.mkdirSync(workspace);
  let connection=0;
  const connect=async()=>{

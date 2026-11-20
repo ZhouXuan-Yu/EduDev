@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "72b2b6b661fc2dd03c732ccb5e2226ac3da3db88a5a6dce68424edadeac1a973",
+  "sourceHash": "5af2f10690d4b81172ea5e9192fb17108bf1881f3eebbdbe6eaefdd41343ab70",
   "sources": [
     {
       "file": "package-lock.json",
-      "sha256": "8ff0c721eb6500836b8a3dac01517fafb62981b9ad7a03a1563f307206cadc9f"
+      "sha256": "5ad0a722590526c46f6567a6c0d71cf9d318ea952e886a7e02d77ba1e64b37b0"
     },
     {
       "file": "src/main/ai-harness/error-taxonomy.ts",
@@ -232,7 +232,7 @@
     },
     {
       "file": "src/main/education/paper-instance-export.ts",
-      "sha256": "2773ec3d7aec1fa425dec486f19f7883e887c96837a4ab29cefa34bb967b918d"
+      "sha256": "87d3c3d9342fc0b84180465e2696ecc97a6d1ddd32d960ac4e852fff1a7a1572"
     },
     {
       "file": "src/main/education/paper-instance.ts",
@@ -240,7 +240,7 @@
     },
     {
       "file": "src/main/education/paper-office-images.ts",
-      "sha256": "09bff14beb104be6139d6e9799b9c8e752a8e2a10cb9cb5354c1529a1fe1298d"
+      "sha256": "ab1deb5a5ef25b65e207ec7e9b7f450e2b062735325c4b9e0f5980dd1aa4c275"
     },
     {
       "file": "src/main/education/paper-reference-extract.ts",
@@ -256,7 +256,7 @@
     },
     {
       "file": "src/main/education/paper-rich-export.ts",
-      "sha256": "8310ea6c1c300d4a79e65615a359f92313289eef133a4cf8f3e92f4fea200bc3"
+      "sha256": "0db0faa10e01988d04372bb381756cf102ee98a88c1b42a6b28a19953674b0f6"
     },
     {
       "file": "src/main/education/paper-selection.ts",
@@ -676,7 +676,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "a72158fd9ea66c7206b14626f05c7afd1f48fe4006ab0b3662ece5881a839525"
+      "sha256": "5ebdb4ac5e2e677107eafc241a9db7b88afc4dc9c1831f062f3102a3d5146e75"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",

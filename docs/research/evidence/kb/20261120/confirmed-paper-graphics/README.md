@@ -8,6 +8,7 @@
 - `question-web-document-boundaries.mjs` 对比自动组卷与实例编译的同一文档。修复后学生与教师均得到题干图和 A–D 四张图，图按对应标签锚定。严格对照拦下旧缺图草稿。
 - `paper-print-electron.mjs` 复用原交付测试，可指定已有确认卷标题。在隔离副本从正式组卷历史验证导出，保留原库。
 - `paper-export-boundaries.mjs` 更新测试隔离模块的 Electron 导出名称，恢复 SQLite 竞争回归。生产运行时不使用该测试替身。
+- `paper-c2-office-recovery-focused-test.mjs` 同步测试隔离模块，测试构建放在应用测试目录以使用已安装的可信依赖。恢复的 SQLite 和文件仍在临时目录。
 
 ## 实际确认卷交付
 
@@ -34,6 +35,10 @@
 | 桌面构建、组件 | build 通过，组件 253/253 |
 | `electron-smoke.mjs` | 207/207，在图形选项修复的隔离构建运行 |
 | `paper-print-electron.mjs` | 8/8，六份文件、冷启和两种窗口尺寸。另用 Word XML、PDF 独立读取 |
+| `paper-c2-office-recovery-focused-test.mjs` | 15/15，真实 SQLite 恢复验证与文件效果校验 |
+| `paper-c2-office-focused-test.mjs` | 八份 Word/XML 校验通过。旧一体测试在恢复子阶段未传当前要求的闲置授权，返回 `permission_denied`。恢复行为由上一行的专用测试覆盖 |
+
+合入主线 Zod 4.6.6 和 source-map-js 1.2.2 后重新构建，同一自然确认卷及六份真实文件通过 8/8 和独立文件读回。最终保留主线锁文件原样（去掉安装过程生成的无关 peer 标记变化），刷新构建清单再 build，通过，主进程 SHA-256 为 `d626ee687527dc929fe8972108491166c7b778c5563b34a7e7cd22a567645dcd`。生产依赖审计仍有 20 项存量通告，5 项 high，0 项 critical。
 
 实测命令需设置 `PAPER_PRINT_EXISTING_ROOT` 为已通过的本机六题隔离试导目录，`PAPER_PRINT_CONFIRMED_TITLE` 为该目录中的精确卷标题，`OMNI_EDU_TEST_BUILD_ROOT` 为本轮构建目录。测试任务只在临时副本设置受控模型，不读出或使用该副本的旧模型凭证。重新运行时保留之前因副本凭证无法解封而中止的报告。
 
