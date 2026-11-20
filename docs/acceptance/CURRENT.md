@@ -8,6 +8,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 原生 Word 题迁移后的来源读取
+
+以同一真实资料库的备份目录副本验证原件、原图、确认卷和重启。负例为修改同长度原件、重新生产派发与编辑。 [专项证据](../research/evidence/kb/20261120/native-receipt-relocation/README.md)
+
 ## 2026-11-20 正式组卷的同级原题
 
 真实桌面验证同义年级蓝图、相邻年级缺额、教师确认与重启。自然题来源不可用和受控录入流程均留存证据。 [专项报告](../research/evidence/kb/20261120/paper-grade-alias/README.md)

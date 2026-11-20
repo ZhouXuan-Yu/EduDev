@@ -1,0 +1,21 @@
+{
+  "base": "66721305df6eec4f9000e2d80d489b6c907bbe35",
+  "buildMainSha256": "393eaafb16f39a82e8baa611466158b3fa1a358a2f29c540592979b851ded5ce",
+  "realElectron": {
+    "productionDatabaseRelocation": true,
+    "selectedFromRealNaturalPapers": [0,2],
+    "unavailableSources": [2,0],
+    "composeMs": [233,1453],
+    "confirmedPoints": 10,
+    "originalPngVerified": 2,
+    "sameLengthFileTamperBlocked": true,
+    "afterRelocationEditBlocked": true,
+    "coldConfirmedReadback": true,
+    "aiInputSnapshotsUnchanged": true,
+    "newPaidRequests": 0
+  },
+  "tests": {"renderer":253,"electronSmoke":207,"dispatch":17,"relocationBoundaries":2,"nativeLedger":20,"nativeBrain":5,"nativeOffice":3,"aiPage":249,"structureBook":17,"legacyBook":36,"backup":4},
+  "nextNaturalDefect": {"title":"欧姆定律与电功率","entry":"getMaterialAiPage","error":"source_changed","format":"PDF"},
+  "npmAudit": {"existingAdvisories":23,"high":8,"dependencyChanges":false},
+  "fullInstalledMigration": "open"
+}

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {randomUUID} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -17,13 +17,14 @@ fs.cpSync(source,data,{recursive:true,filter:file=>!/(^app\.db(?:-wal|-shm)?$|\.
 const file=path.join(data,'app.db');
 const original=new DatabaseSync(path.join(source,'app.db'),{readOnly:true});
 try {original.exec("VACUUM INTO '"+file.replaceAll("'","''")+"'");} finally {original.close();}
-const writer=new DatabaseSync(file);
+const {relocateBackupDatabase}=await import('../../src/main/backup/restore-database.ts');
+await relocateBackupDatabase(file,source,data,path.join(previous.root,'outputs'),path.join(root,'outputs'));
+const writer=new DatabaseSync(file,{readOnly:true});
 const questionRows=[];
 try {
-  for(const {id,local_path} of writer.prepare('SELECT id,local_path FROM teacher_resources').all()){
-    const relative=path.relative(source,local_path);
+  for(const {local_path} of writer.prepare('SELECT local_path FROM teacher_resources').all()){
+    const relative=path.relative(data,local_path);
     assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
-    writer.prepare('UPDATE teacher_resources SET local_path=? WHERE id=?').run(path.join(data,relative),id);
   }
   for(const {term} of previous.results){
     const rows=writer.prepare('SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND knowledge_point=?').all('物理','高三',term);
@@ -40,6 +41,9 @@ const paid=()=>read('SELECT COALESCE(SUM(calls),0) total FROM material_ai_batche
 const beforeCalls=paid();
 const build=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out');
 const baseline=process.argv.includes('--baseline');
+const stampBaseline=process.argv.includes('--stamp-baseline');
+const nativeRelocated=!baseline&&!stampBaseline;
+const gradeControl=baseline||process.argv.includes('--grade-control');
 const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:''};
 for(const key of ['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'])delete env[key];
 const title='年级别名原题验证 '+randomUUID().slice(0,8);
@@ -91,13 +95,65 @@ function assertOriginals(items,questions){
   assert(items.every(item=>item.question.grade==='高三'&&item.question.sourceKind==='local_bank'&&item.points===5));
 }
 
-try{
+async function verifyRelocatedPaper(natural){
+  const items=natural.payload.selection.items;
+  assert.deepEqual(items.map(item=>item.question.id),questionRows.map(q=>q.id));
+  assert(items.every(item=>item.question.grade==='高三'&&item.question.sourceKind==='teacher_resource'));
+  assert.equal(items.reduce((sum,item)=>sum+item.points,0),10);
+  const paper={schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:natural.record.session_id,id:natural.record.id};
+  const unit=receipt=>read('SELECT * FROM material_ai_units WHERE batch_id=? AND ordinal=?',receipt.batchId,receipt.ordinal)[0];
+  const evidence=items.map(item=>unit(item.question.archive.ai));
+  async function readOriginals(){
+    let images=0;
+    for(const item of items){
+      const input={schemaVersion:'xiaozhi.native-question-image.v1',questionId:item.question.id,version:item.source.version};
+      const original=await page.evaluate(input=>window.omniEdu.getNativeQuestionOriginal(input),input);
+      assert.equal(original.stem,item.question.stem);
+      for(const [index,figure] of item.question.archive.native.roles.question.figures.entries()){
+        const image=await page.evaluate(input=>window.omniEdu.getNativeQuestionImage(input),{...input,role:'question',index});
+        const bytes=Buffer.from(image.dataUrl.split(',')[1],'base64');
+        assert.equal(createHash('sha256').update(bytes).digest('hex'),figure.sha256);
+        images++;
+      }
+    }
+    assert(images>=2);
+    return images;
+  }
+  const imagesBefore=await readOriginals();
+  const q=items[0].question,version=items[0].source.version;
+  const local=read('SELECT local_path FROM teacher_resources WHERE id=?',q.archive.native.source.resourceId)[0].local_path;
+  assert.equal(path.dirname(path.resolve(local)),path.join(data,'teacher_resources'));
+  const bytes=fs.readFileSync(local),altered=Buffer.from(bytes);
+  altered[altered.length-1]^=1;
+  try{
+    fs.writeFileSync(local,altered);
+    const blocked=await page.evaluate(p=>window.omniEdu.reviewPaper(p),paper);
+    assert(blocked.ok&&!blocked.value.sourceCurrent);
+    const attempted=await page.evaluate(p=>window.omniEdu.decidePaper({...p,revision:1,action:'confirm'}),paper);
+    assert(!attempted.ok&&attempted.error==='source_changed');
+    await assert.rejects(page.evaluate(request=>window.omniEdu.getNativeQuestionImage(request),
+      {schemaVersion:'xiaozhi.native-question-image.v1',questionId:q.id,version,role:'question',index:0}),/source_changed/);
+  }finally{fs.writeFileSync(local,bytes);}
+  const edit={questionId:q.id,version,sourceChecked:true,fields:Object.fromEntries(
+    ['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'].map(field=>[field,q[field]]))};
+  await assert.rejects(page.evaluate(request=>window.omniEdu.editArchivedQuestion(request),edit),/source_changed/);
+  await page.getByTestId('paper-confirm').click();
+  await page.getByTestId('paper-confirmed').waitFor();
+  const approval=read('SELECT status,result_json FROM ai_confirmation_items WHERE id=?',paper.id)[0];
+  assert.equal(approval.status,'confirmed');
+  await app.close();
+  app=undefined;
   await launch();
-  await automatic();
-  const natural=await draft('高中三年级',questionRows);
-  assert.equal(natural.payload.selection.items.length,0);
-  assert.equal(natural.payload.selection.excluded.source_unavailable,baseline?0:2);
-  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),true);
+  const cold=await page.evaluate(request=>window.omniEdu.reviewPaper(request),paper);
+  assert(cold.ok&&cold.value.state==='confirmed'&&cold.value.sourceCurrent&&cold.value.exportCurrent);
+  assert.deepEqual(cold.value.selection.items.map(i=>i.source),items.map(i=>i.source));
+  assert.equal(await readOriginals(),imagesBefore);
+  assert.deepEqual(read('SELECT status,result_json FROM ai_confirmation_items WHERE id=?',paper.id)[0],approval);
+  assert.deepEqual(items.map(item=>unit(item.question.archive.ai)),evidence);
+  return {confirmed:true,images:imagesBefore,tamperBlocked:true,editBlocked:true,coldReadback:true};
+}
+
+async function verifyGradeControl(natural){
   await page.getByRole('button',{name:'返回修改蓝图',exact:true}).click();
   const controlled=await page.evaluate(async title=>{
     const records=[];
@@ -157,8 +213,26 @@ try{
     report.basketEntries=basket.entries;
     report.coldReadback=true;
   }
+  return report;
+}
+
+try{
+  await launch();
+  await automatic();
+  const natural=await draft('高中三年级',questionRows);
+  assert.equal(natural.payload.selection.items.length,nativeRelocated?2:0);
+  assert.equal(natural.payload.selection.excluded.source_unavailable,nativeRelocated||baseline?0:2);
+  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),!nativeRelocated);
+  let report;
+  if(!gradeControl){
+    const result=nativeRelocated?await verifyRelocatedPaper(natural):{};
+    report={root,stampBaseline,selected:natural.payload.selection.items.length,
+      sourceUnavailable:natural.payload.selection.excluded.source_unavailable,composeMs:natural.milliseconds,paidCalls:0,...result};
+  }else{
+    report=await verifyGradeControl(natural);
+  }
   assert.equal(paid(),beforeCalls);
-  for(const question of questionRows)assert.deepEqual(read('SELECT * FROM question_bank_items WHERE id=?',question.id)[0],question);
+  for(const q of questionRows)assert.deepEqual(read('SELECT * FROM question_bank_items WHERE id=?',q.id)[0],q);
   console.log(JSON.stringify({ok:true,...report}));
 } catch(error){
   console.error(JSON.stringify({ok:false,baseline,root,error:String(error)}));
