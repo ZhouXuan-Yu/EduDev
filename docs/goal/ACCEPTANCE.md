@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+保留 176 条真实 OCR 行、125 段和 20 个题组，用真实有疑点的双栏和合成并排、错行双栏验证防误放。桌面证据按版面与 PDF 核验两阶段记录。知识库 KB-A01～A10 仍在验收。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 专项覆盖真实跨页图文的题篮编辑、独立图原页像素比对、正式确认、冷启动及学生／教师 Word 的 5 张图和答案隔离。完整 Goal 与 KB-A01～A10 仍在验收。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

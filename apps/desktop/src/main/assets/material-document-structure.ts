@@ -142,12 +142,83 @@ function lineRole(
 type LineRole = ReturnType<typeof lineRole>;
 const centerY = (box: PageBox) => (box[1] + box[3]) / 2;
 const widthOf = (box: PageBox) => box[2] - box[0];
+const overlappingRuns = (left: StructureLine[], right: StructureLine[], height: number) =>
+  left.length >= 2 && right.length >= 2 &&
+  Math.min(Math.max(...left.map(l => l.box[3])), Math.max(...right.map(l => l.box[3]))) -
+    Math.max(Math.min(...left.map(l => l.box[1])), Math.min(...right.map(l => l.box[1]))) >= height * 1.5;
+
+/** Require distinct baseline pairs, even when a formula has several OCR boxes in one row. */
+function hasParallelRows(left: StructureLine[], right: StructureLine[], height: number) {
+  const byCenter = (a: StructureLine, b: StructureLine) => centerY(a.box) - centerY(b.box);
+  const a = left.sort(byCenter), b = right.sort(byCenter);
+  let i = 0, j = 0, lastBottom = 0, count = 0;
+  while (i < a.length && j < b.length) {
+    const x = a[i].box, y = b[j].box;
+    const delta = centerY(x) - centerY(y);
+    if (Math.abs(delta) <= height * 0.7 && Math.min(x[3], y[3]) > Math.max(x[1], y[1])) {
+      if (Math.min(x[1], y[1]) >= lastBottom) {
+        if (++count === 2) return true;
+        lastBottom = Math.max(x[3], y[3]);
+      }
+      i++;
+      j++;
+    } else if (delta < 0) i++;
+    else j++;
+  }
+  return false;
+}
+
+function alignedStarts(lane: StructureLine[], height: number) {
+  // Tall OCR boxes such as diagonal stamps do not establish a run of body text.
+  const ordered = lane.filter(line => line.box[3] - line.box[1] <= height * 2)
+    .sort((a, b) => a.box[0] - b.box[0]);
+  const aligned = new Set<StructureLine>();
+  for (let i = 1; i < ordered.length; i++) {
+    const current = ordered[i], previous = ordered[i - 1];
+    if (current.box[0] - previous.box[0] <= 0.025 && Math.abs(centerY(current.box) - centerY(previous.box)) >= height) {
+      aligned.add(previous);
+      aligned.add(current);
+    }
+  }
+  return [...aligned];
+}
+
+function hasIndependentLanes(
+  left: StructureLine[], right: StructureLine[], owners: Map<string, PageBlock | undefined>,
+  gutter: number, height: number,
+) {
+  // Fragments of a reliably recognized single text block cannot vote for a split through that block.
+  const independent = (line: StructureLine) => {
+    const owner = owners.get(line.id);
+    return !owner || owner.box[0] >= gutter - 0.008 || owner.box[2] <= gutter + 0.008;
+  };
+  const leftLane = left.filter(independent), rightLane = right.filter(independent);
+  if (!overlappingRuns(leftLane, rightLane, height)) return false;
+  if (hasParallelRows(leftLane, rightLane, height) ||
+    overlappingRuns(alignedStarts(leftLane, height), alignedStarts(rightLane, height), height)) return true;
+
+  // Separate detected text blocks can corroborate genuine lanes with staggered baselines.
+  const repeatedRegion = (lane: StructureLine[], onSide: (box: PageBox) => boolean) => {
+    const counts = new Map<PageBlock, number>();
+    for (const line of lane) {
+      const owner = owners.get(line.id);
+      if (owner && onSide(owner.box)) counts.set(owner, (counts.get(owner) ?? 0) + 1);
+    }
+    return lane.filter(line => {
+      const owner = owners.get(line.id);
+      return owner && (counts.get(owner) ?? 0) >= 2;
+    });
+  };
+  return overlappingRuns(repeatedRegion(leftLane, box => box[2] <= gutter),
+    repeatedRegion(rightLane, box => box[0] >= gutter), height);
+}
 
 /** Find gutters between neighboring text runs. Options affect gutter clearance,
  * but cannot create columns on their own. */
 function columnsFor(
   lines: StructureLine[],
   roles: Map<string, LineRole>,
+  regions: PageBlock[],
   height: number,
 ) {
   const ink = lines.filter(line =>
@@ -155,19 +226,21 @@ function columnsFor(
     widthOf(line.box) < 0.65,
   );
   const body = ink.filter(line => roles.get(line.id)!.role !== "option" && widthOf(line.box) >= Math.max(0.10, height * 4));
+  const byId = new Map(regions.map(region => [region.id, region]));
+  const textOwners = new Map(body.map(line => {
+    const owner = byId.get(line.regionIds[0]);
+    return [line.id, owner?.kind === "text" && owner.score >= 0.8 ? owner : undefined] as const;
+  }));
   const gutters: { x: number; strength: number; clearance: number }[] = [];
   let unresolved = false;
   for (let i = 32; i <= 168; i++) {
     const x = i / 200;
     const left = body.filter(({ box }) => box[2] <= x - 0.004 && box[2] >= x - 0.14);
     const right = body.filter(({ box }) => box[0] >= x + 0.004 && box[0] <= x + 0.14);
-    if (left.length < 2 || right.length < 2) continue;
-    const verticalOverlap = Math.min(Math.max(...left.map(l => l.box[3])), Math.max(...right.map(l => l.box[3]))) -
-      Math.max(Math.min(...left.map(l => l.box[1])), Math.min(...right.map(l => l.box[1])));
-    if (verticalOverlap < height * 1.5) continue;
+    if (!overlappingRuns(left, right, height)) continue;
     const crossings = ink.filter(({ box }) => box[0] < x - 0.008 && box[2] > x + 0.008).length;
     if (crossings > Math.max(1, Math.floor(ink.length * 0.025))) {
-      unresolved = true;
+      unresolved ||= hasIndependentLanes(left, right, textOwners, x, height);
       continue;
     }
     const clearance = Math.min(x - Math.max(...left.map(l => l.box[2])), Math.min(...right.map(l => l.box[0])) - x);
@@ -258,7 +331,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   });
   const height = median(lines.map((line) => line.box[3] - line.box[1]));
   const roles = new Map(lines.map(line => [line.id, lineRole(line, input.regions, input)]));
-  const layout = columnsFor(lines, roles, height);
+  const layout = columnsFor(lines, roles, input.regions, height);
   const { columns } = layout;
   const ordered = orderedLines(lines, columns, roles);
   applyAssessmentNumbers(ordered.rows, roles, height, questionCue);

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+v12 栏序判断结合原区域所有权、独立行及左右栏起点，保留原排序与正文。解析世代继续版本化，PDF 页源判断在数据库发布前独立发生。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 独立题图从原结构版本的登记坐标生成，核对记录保存页、原页栅格、独立 PNG 及位置，新派生图块与整段原题截图有各自的 ID。入库和正式组卷仍走既有事务、版本和权限。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

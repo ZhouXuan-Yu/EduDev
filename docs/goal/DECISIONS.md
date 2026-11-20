@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-21 栏序疑点与 PDF 页源核对
+
+继续保留可信栏缝和跨栏混合行疑点。仅在被拒绝的候选栏缝上核验证据，可靠正文区内碎行不支持拆栏。更改通过 v12 新世代发布。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 独立题图采用可选版本化核对证明。页内图像证据须属于原题且与正文、其他版面区域无冲突。旧答案册及网页补答沿用其冻结的题面与题图证明。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)
