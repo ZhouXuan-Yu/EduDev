@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "0a53570f39097fa89fc90884e16e11bd1caf5294",
+  "scope": "Move the reviewed pi-web-access package to build dependencies and distribute the license and provenance for its compiled code. Do not change its pin, compiled behavior, provider policy or runtime code.",
+  "source": {
+    "packageJsonSha256": "da81b3db2f6022f61eafafa73af65d65ef9eccc2aec7f9718ab495095ef6ebb1",
+    "packageLockSha256": "8ff0c721eb6500836b8a3dac01517fafb62981b9ad7a03a1563f307206cadc9f",
+    "packagingConfigSha256": "dadd7088df0917029f6506dcc13a180a2fa56023008c0948996734008847d330",
+    "piWebAccessPinnedVersion": "0.36.0",
+    "lockPackageChanges": "Versions, resolved URLs and integrity bytes unchanged. Only root dependency classification and 200 transitive dev/devOptional/peer markers change.",
+    "generatedVendorFilesByteIdentical": 8
+  },
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-runtime-dependency-scope/out",
+    "cwd": "apps/desktop", "exitCode": 0, "includesTypecheck": true, "outFiles": 481,
+    "outSha256": "f48204af814e0cfb0ae9773f73c7128d60d5edb5acd0873b6c6b975422d5027b",
+    "mainSha256": "a39e422ec8a1a49b278fb6b41114b65dd789d41281cca76821abb1434c662fa6",
+    "logSha256": "68968b6a268cfe48c73278debce3e05dd193ff7d88de35942063f002324ce06b"
+  },
+  "webRuntimeTests": {
+    "cwd": "apps/desktop",
+    "temporaryFixture": "TEMP/xiaozhi-webaccess-devonly-f5f2b4b51f6646ffb96ea9c64d2677e0",
+    "runtimeResolveDenialHook": "deny-webaccess-runtime.mjs",
+    "hookSha256": "35f89b7266c84a3748300a53b80552429ab755b0ef5710c92a1d0f20a19db198",
+    "commandPrefix": "node --experimental-transform-types --import file:///<temporary-fixture>/deny-webaccess-runtime.mjs",
+    "checks": [
+      {"entry": "scripts/xiaozhi-agent/pi-web-boundary-smoke.mjs", "passed": 15, "exitCode": 0, "report": "apps/desktop/test-results/xiaozhi-agent/pi-web-boundary-wz0Dvb/report.json", "sha256": "360493a6178cd2976f8c3937156913dc7ab3bd1dcae6c13a0b17f97c968bb808"},
+      {"entry": "<temporary-fixture>/package-boundary-runner.mjs", "passed": 7, "exitCode": 0, "report": "package-boundary-report.json", "sha256": "773c426532a1baafbbf15b6d0f33905c82710daec89c7a7e3d049f36149c3e73"}
+    ],
+    "vendorReadbackSha256": "dfbf0634655241dc6977a189c07e7d0a68c13e1529f9ab79fc2543c28fdd542c",
+    "initialExtraAssertionFailure": {"report": "failed-extra-assertion.json", "sha256": "6c1189790ce8cd643571a459acdc195354f76bfbb340f159aaa30123d18d9885", "cause": "The independent build regenerated the legitimate core manifest lock fingerprint during the initial whole-generated-tree comparison. The narrowed vendor byte check passed."}
+  },
+  "rendererComponents": {"command": "npm.cmd run test:renderer-components", "passed": 253, "exitCode": 0, "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"},
+  "dependencyAudit": {
+    "command": "npm audit --omit=dev --json", "before": {"total": 23, "high": 8}, "after": {"total": 22, "high": 7},
+    "beforeSha256": "cf73beca657a5a658b3b77c9f960302c3f5768a082122640adb7988d4ff3f7d6",
+    "afterSha256": "d2e31fdeb51bcc535d7f9da4bb15c3e186e92e5926920478fcfdfde4e87ed8c5",
+    "residual": "MCP SDK 1.27.1 remains via the optional @google/genai peer. The Pi SDK and node-gyp nested Undici instances remain. The pre-existing npm ls jszip range warning was preserved."
+  },
+  "resourceInput": {
+    "ordinaryLocalPreflight": {"excludedFile": "ocr-runtime/_internal/base_library.zip", "expectedSha256": "a464e710c8cd8ddd385aa5a72edf3b2ed5c178daa2782795097c9dc54848833e", "observedSha256": "882552373fcdeae8ea78ab9caca09e9754abaffb524e6dbee87c1167f1479ea4"},
+    "verifiedSource": "TEMP/edu-harness-approval-save-package-5d28c10d/release/win-unpacked/resources",
+    "referencePreflightSha256": "a587e0418f1083cf1c7f485609cfbcb29584fb453a7ce37bec189ee50476a587",
+    "firstPackagingAttempt": {"exitCode": -1, "state": "STOPPED_FOR_LICENSE_CONFIG", "stage": "TEMP/omni-edu-harness-pruned-package-5e553613", "logSha256": "57855059e9f2aafc477aa9db736aed4c1c4c09bc5347ef1c7050c82b9b9f5da9"}
+  },
+  "licenseConfigPreflight": {"passed": 4, "report": "TEMP/xiaozhi-pi-package-license-J2xz8k/report.json", "sha256": "9118b15a02f5141a0b16162e275eb640ba4860fa66287a77b02897841767493b"},
+  "paidRequestsAdded": 0,
+  "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST"
+}
