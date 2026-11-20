@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1658485d2681e3e09383852820d8238cf88550a4a64b970700c4a66e3d1fd8b7",
+  "sourceHash": "cafe53b9dfd6b9206922febd9440a6b264e577c752c0f56cfba3517771b867d8",
   "sources": [
     {
       "file": "package-lock.json",
@@ -232,15 +232,15 @@
     },
     {
       "file": "src/main/education/paper-instance-export.ts",
-      "sha256": "87d3c3d9342fc0b84180465e2696ecc97a6d1ddd32d960ac4e852fff1a7a1572"
+      "sha256": "9980bfcd54bd2e43176a55cf88b62f8d5502ba84bd69c2d16a05cb1cb4930d5b"
     },
     {
       "file": "src/main/education/paper-instance.ts",
-      "sha256": "9bd314ccabe7e9741312488fb52e94d432058d26886be8a7bafaac588e9590e4"
+      "sha256": "7962ec728177a1f4617df03d3b41d63d1e6fd4e5d3c8c16a8f630823941e4bf0"
     },
     {
       "file": "src/main/education/paper-office-images.ts",
-      "sha256": "ab1deb5a5ef25b65e207ec7e9b7f450e2b062735325c4b9e0f5980dd1aa4c275"
+      "sha256": "5ce707ff684256a014d4ba525387a480bc84348ad353b972e16f1a385ef1c06f"
     },
     {
       "file": "src/main/education/paper-reference-extract.ts",
@@ -680,11 +680,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "e65d125269823a40bdfef2173e654b3a00f76ea0af5bc49e858ca1a8ee373392"
+      "sha256": "722e61b778c8bc28f015241341e358e1de59b1e47773f9bc4a6fec951301b87a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
-      "sha256": "b4c24548b016839cbaa5ee39beaf6969269bc829db3951acdb7f13f879954539"
+      "sha256": "98196fd775bb40c677173f884fe6a5661b17350d4153b0463f3fc438f901df6a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
@@ -1328,11 +1328,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "8e937d7c2a43d8f3ee4a5d0a80f642b84ad7409afc4d2194b1088e40f0a1e79d"
+      "sha256": "42ae297d62a90669c4a9d609ef835631470423f4929496f2cd1e73542d8cb90f"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
-      "sha256": "26d3cfd279b940615dad49bc0fb29fd77350c891f88005363d1b4326ec5489b9"
+      "sha256": "166f0018cde35a591ab2dc2a7704bf9544ef65e9ae1c18830d45a93efe62ea53"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/operations.ts",
@@ -1340,11 +1340,19 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/projection.ts",
-      "sha256": "a48da818478df4ce59c6f3a43f3ff4f018b983745327a32de2a9922f014c2f7d"
+      "sha256": "749a0c923f56a8ae869ac39b5d99d79c66700102db4e75f4e28899d04074c81b"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/permissions/windows/runtime-health.ts",
+      "sha256": "1a279730600affcec3eb29b9de51655569af2d3da817691e52c660400a3e625e"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/runtime.ts",
-      "sha256": "7ee3dcb2d758bad9338ee7b438f0be24439c9c0ba7854a0aba006cad22e22192"
+      "sha256": "3cecce28703eb4f89c5f13ec0d6f5367d8f626bfff90c6d88ccf6d1171fad553"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/permissions/windows/temporary.ts",
+      "sha256": "e8b636d19e932e525a4af36b5cce6f5df70dd5956ecf5833e2945ba003e61b6a"
     },
     {
       "file": "src/main/xiaozhi-agent/persistent-state.ts",
@@ -1624,7 +1632,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/recovery.ts",
-      "sha256": "c2db74426ca768e6fa85040536a76be5af202f632739edfe6004a3d4d97b99cc"
+      "sha256": "ccb75ab7f7c8240a86554c2a1d24eaba739fd6e6bc4d5f0719ec8f5d1d474021"
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/service.ts",
@@ -1992,7 +2000,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "87bf6b72b1be5b257a7258fd32020d6631716168909cd0e2f978457de99f4375"
+      "sha256": "8bdb7e78f3a0a97f175297d85271ee5b09a8dfc74911473bbbe41f25ac629077"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
@@ -2024,7 +2032,7 @@
     },
     {
       "file": "src/shared/material-ai.ts",
-      "sha256": "a381ff121d649e282beccc7c24618efe4b82bfecc9e99cf510eef0810823f901"
+      "sha256": "e7f37d2ac39e4611a28f45b9e4725ae6c7ff123d21d81f2a9f9f05158a9b3694"
     },
     {
       "file": "src/shared/material-answer-slots.ts",
@@ -2172,7 +2180,7 @@
     },
     {
       "file": "src/shared/paper-instance.ts",
-      "sha256": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78"
+      "sha256": "b02dd0924a99b7be580ff1072d8fbb8c015d24e5411513d74d77548a9e4df088"
     },
     {
       "file": "src/shared/paper-layout.ts",
@@ -2256,7 +2264,7 @@
     },
     {
       "file": "src/shared/question-document.ts",
-      "sha256": "0e25f614a8dc8239db7855e4f18bade1ef1ea2f16a897e0a6c4b4747741b6b8f"
+      "sha256": "5a4e77c7e5862b709ebb7332d4e92a1bb0e07199253ac0cacbcb4a31ff225523"
     },
     {
       "file": "src/shared/question-draft.ts",
