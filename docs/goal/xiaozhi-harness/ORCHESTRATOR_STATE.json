@@ -715,6 +715,15 @@
     "operationMs": 7530.15,
     "newPaidCalls": 0
   },
+  "registrySnapshotReadOptimization": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/registry-snapshot-read-20261120.json",
+    "sqliteReadsFor84Registrations": [168, 84],
+    "isolatedRegistryMeanMs": [1901.54, 1378.13],
+    "backgroundSubmitToFetchMs": [12741.00, 17040.24],
+    "desktopLatencyImprovement": "UNVERIFIED",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

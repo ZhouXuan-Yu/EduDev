@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "5bfea2b5d77ab0968f4f9d12353dc9a3f37437688c33289a8ba59c2948a994f1",
+  "sourceHash": "380918badb0f355ed4936230a1b8a54e0f369a8528ddd22f848cfd48a577e4c2",
   "sources": [
     {
       "file": "package-lock.json",
@@ -704,7 +704,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/registry.ts",
-      "sha256": "10336b10036e42b48c2402b73a647f30a16e3b57b5753ae8ba1900a857f8ddb0"
+      "sha256": "eaffe99fb094686dcfbdc3592c24d055c6283806aafa01a2e2239b34bc2aaadd"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/resolver.ts",

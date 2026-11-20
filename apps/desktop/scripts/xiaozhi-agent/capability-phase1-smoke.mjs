@@ -21,10 +21,14 @@ const request = () => ({capabilityId:NATIVE_STAT_CAPABILITY.id,contractVersion:'
 async function open(filename = ':memory:') {
   const db = await new Promise((resolve,reject) => { const connection = new sqlite3.Database(filename,error => error ? reject(error) : resolve(connection)); });
   connections.add(db);
+  const counters = {singletonReads: 0};
   const sql = {
     run:(query,values=[]) => new Promise((resolve,reject) => db.run(query,values,error => error ? reject(error) : resolve(undefined))),
     change:(query,values=[]) => new Promise((resolve,reject) => db.run(query,values,function(error) { error ? reject(error) : resolve(this.changes); })),
-    all:(query,values=[]) => new Promise((resolve,reject) => db.all(query,values,(error,rows) => error ? reject(error) : resolve(rows))),
+    all:(query,values=[]) => {
+      if (query === 'SELECT revision,document_json,document_hash FROM xiaozhi_capability_registry_v1 WHERE id=1') counters.singletonReads++;
+      return new Promise((resolve,reject) => db.all(query,values,(error,rows) => error ? reject(error) : resolve(rows)));
+    },
   };
   sql.transaction = async action => {
     await sql.run('BEGIN IMMEDIATE');
@@ -35,7 +39,7 @@ async function open(filename = ':memory:') {
   const registry = createCapabilityRegistry(shared,{officialProviderIds:NATIVE_STAT_PROVIDER_IDS});
   await registry.migrate();
   await registerNativeStatProviders(registry);
-  return {registry,sql:shared,db};
+  return {registry,sql:shared,db,counters};
 }
 async function close(db) {
   await new Promise((resolve,reject) => db.close(error => error ? reject(error) : resolve()));
@@ -76,6 +80,28 @@ try {
     assert.deepEqual(await registry.snapshot(),before);
     const resolution = await createCapabilityResolver(registry,async () => true).resolve(request());
     assert(validCapabilityResolution(resolution)); assert.equal(resolution.selectedProviders.length+resolution.alternatives.length,2);
+  });
+  await check('Registry mutations read the validated singleton once while preserving no-op and security revisions',async () => {
+    const {registry,counters}=await open();
+    const before=await registry.snapshot(), first=nativeStatDeclarations()[0];
+    const counts=[];
+    const counted=async(name,action,revision)=>{
+      const reads=counters.singletonReads,result=await action();
+      counts.push({name,singletonReads:counters.singletonReads-reads,revision:result});
+      assert.equal(counters.singletonReads-reads,1,name);assert.equal(result,revision,name);
+    };
+    await counted('unchanged_registration',()=>registry.register(first.definition,first.provider,first.binding),before.revision);
+    const next=structuredClone(first);next.provider.version='9.0.0';next.binding.providerVersion='9.0.0';
+    await counted('new_provider_version',()=>registry.register(next.definition,next.provider,next.binding),before.revision+1);
+    assert(await registry.providerVersion(first.provider.id,first.provider.version,first.definition.id));
+    await counted('revoke_historical_version',()=>registry.revokeProviderVersion(first.provider.id,first.provider.version,first.definition.id),before.revision+2);
+    assert.equal((await registry.providerVersion(first.provider.id,first.provider.version,first.definition.id)).revoked,true);
+    await counted('unchanged_version_revocation',()=>registry.revokeProviderVersion(first.provider.id,first.provider.version,first.definition.id),before.revision+2);
+    await counted('revoke_provider',()=>registry.revokeProvider(first.provider.id),before.revision+3);
+    await counted('unchanged_provider_revocation',()=>registry.revokeProvider(first.provider.id),before.revision+3);
+    await counted('revoke_capability',()=>registry.revokeCapability(first.definition.id),before.revision+4);
+    await counted('unchanged_capability_revocation',()=>registry.revokeCapability(first.definition.id),before.revision+4);
+    report.singletonReadCounts=counts;
   });
   await check('C03 missing Required and self-declared evidence are hard exclusions',async () => {
     const {registry} = await open();
