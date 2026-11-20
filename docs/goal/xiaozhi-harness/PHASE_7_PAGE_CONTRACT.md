@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 历史审批从可见入口执行
+
+从持久审批收件箱批准旧复制后，只有明确点击执行才产生新 Run。实际复制仅使用原申请的来源和未占用目标，原 Task 不变。重启后按同一历史审批读取执行结果，既有复制不可重复执行。两个尺寸由 Terra 独立复验，完整页面矩阵继续。 [证据](evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)
+
 ## 2026-11-21 流中切会话与表单归焦
 
 两尺寸的原生内容窗口在推理和正文增量期间实测输入、滚动、展开，能切到新会话后切回原运行并停止。后台运行的帧数据不用于前台速度结论。个人和团队 Skill 内联表单取消归焦已独立复验；在旧版失败的焦点证据和新版 5/5 分开绑定构建。已验证范围、尚缺适用状态及旧构建证据详见记录。 [页面实测](evidence/phase7/implementation-resume-20261119/gate7-stream-and-keyboard-20261121.json)
