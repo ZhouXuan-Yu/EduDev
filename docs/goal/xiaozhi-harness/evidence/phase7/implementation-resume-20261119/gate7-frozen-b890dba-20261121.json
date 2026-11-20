@@ -1,0 +1,211 @@
+{
+  "date": "2026-11-21",
+  "sourceCommit": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
+  "root": "apps/desktop/test-results/goal/harness-gate7-main-b890dba-r3-20261121",
+  "build": {
+    "command": "node scripts/acceptance/harness-isolated-build.mjs harness-gate7-main-b890dba-r3-20261121",
+    "manifest": "build-isolated.json",
+    "scope": "Git-tracked desktop src/scripts/config/package manifests and direct OpenHanako license; generated inputs prepared before freeze",
+    "inputs": 3253,
+    "trackedInputsUnchanged": true,
+    "files": 481,
+    "sha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
+    "mainSha256": "98f2f7b43cf2686a6410b3a8e7b76de0b386bf35edd9528753023e573397b6c8",
+    "exitCode": 0,
+    "postSuiteMatch": true
+  },
+  "originalBuildFailures": [
+    {
+      "attempt": "harness-gate7-main-b890dba-20261121",
+      "exitCode": 1,
+      "reason": "Obsolete explicit pi-workspace-theme.css source path failed before Vite."
+    },
+    {
+      "attempt": "harness-gate7-main-b890dba-r2-20261121",
+      "exitCode": 1,
+      "viteExitCode": 0,
+      "reason": "Build reproduced identical output but rejected a before/after native-stat-manifest.json difference. Windows checkout text hashes are regenerated before the r3 freeze."
+    }
+  ],
+  "rootReports": [
+    {
+      "scope": "W2/W3",
+      "width": 1366,
+      "checks": 5,
+      "file": "root-delayed/omni-edu-xiaozhi-phase7-workbench-ui-bsf9jk/evidence/delayed-events-report.json",
+      "sha256": "7af1c032b6aa568b5dd732bace7c1680420a89a0b84a9cf3d3b6b63ac867ddba",
+      "exitCode": 0
+    },
+    {
+      "scope": "W2/W3",
+      "width": 1920,
+      "checks": 5,
+      "file": "root-delayed/omni-edu-xiaozhi-phase7-workbench-ui-J5k1fH/evidence/delayed-events-report.json",
+      "sha256": "3a4d943f61297fba68eb4b3ca3cd76353cab04be74f97ef083f7ec2b07bab4c6",
+      "exitCode": 0
+    },
+    {
+      "scope": "A1/A2",
+      "width": 1366,
+      "checks": 4,
+      "file": "root-approval/omni-edu-xiaozhi-phase7-workbench-ui-h7jWNi/evidence/decision-keyboard-report.json",
+      "sha256": "20e4390870420234e152360b7a682cb14dda04a3d661a8b70088fd8396635208",
+      "exitCode": 0
+    },
+    {
+      "scope": "A1/A2",
+      "width": 1920,
+      "checks": 4,
+      "file": "root-approval/omni-edu-xiaozhi-phase7-workbench-ui-uEKoq9/evidence/decision-keyboard-report.json",
+      "sha256": "6a20b164fe2d769402e847d078edad803e951b2d720ed6daad58ba096f8c68a7",
+      "exitCode": 0
+    },
+    {
+      "scope": "W1/A1/C1",
+      "width": null,
+      "checks": 6,
+      "file": "root-partial/omni-edu-xiaozhi-phase7-workbench-ui-OOm2JT/evidence/partial-empty-report.json",
+      "sha256": "56b721b14b5a9ccdd8ad96e2f9d35bc9764e8bca82062006f0a23144b138d6ab",
+      "exitCode": 0
+    },
+    {
+      "scope": "W1/A1/C1 duplicate invocation",
+      "width": null,
+      "checks": 6,
+      "file": "root-partial/omni-edu-xiaozhi-phase7-workbench-ui-NOyX8R/evidence/partial-empty-report.json",
+      "sha256": "5a75caddaf9c86685e43953b3dbde17db7d7bd12a3abe3ba63eac4f2057a51ba",
+      "exitCode": 0
+    },
+    {
+      "scope": "C2",
+      "width": null,
+      "checks": 4,
+      "file": "root-c2/omni-edu-c2-course-ZMFdoW/report.json",
+      "sha256": "f3ecf2be0312d20daf250167bf7620af008b373ebfbd02a73defd24b8bde2c96",
+      "exitCode": 0
+    },
+    {
+      "scope": "A1 cold recovery",
+      "width": null,
+      "checks": 3,
+      "file": "root-approval-cold/omni-edu-xiaozhi-phase7-workbench-ui-koG5qH/cold-approval-report.json",
+      "sha256": "54423436c5f06b8f650cd386001a52bd6b00323d09d997478caf9d61c404c69e",
+      "exitCode": 0
+    }
+  ],
+  "rootSuiteCommands": [
+    "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs <1366x768|1920x1080>",
+    "node scripts/xiaozhi-agent/phase7-approval-decision-keyboard-ui.mjs <1366x768|1920x1080>",
+    "node scripts/xiaozhi-agent/phase7-workbench-partial-ui.mjs",
+    "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root <root/build-isolated> --expected-out-hash <sha256> --expected-out-count 481 --expected-main-hash <mainSha256>",
+    "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs"
+  ],
+  "rootSuiteBoundary": "Isolated hidden Electron. Partial-state fixtures are controlled, and the runner itself covers both dimensions. C2 dispatched an actual loopback MCP tool once before revocation, then used a retained local material and source preview. Synthetic loopback model requests only.",
+  "independentS2": {
+    "checksPerSize": 4,
+    "localRequestsPerSize": 2,
+    "replayedOnColdStart": 0,
+    "reports": [
+      {
+        "size": "1366x768",
+        "file": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-44U20V/evidence/skill-run-version-report.json",
+        "sha256": "26a9e4dd6abab873b05328d5ab949dd14afc9458cb1ab78b351dc3f81b6abc32",
+        "exitCode": 0
+      },
+      {
+        "size": "1920x1080",
+        "file": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-yhWAy7/evidence/skill-run-version-report.json",
+        "sha256": "efbbc28b6a431ab3bf3e4453d4c8f3cd96c8a0b268ea19907d4ca5346bbec9fb",
+        "exitCode": 0
+      }
+    ]
+  },
+  "engineering": {
+    "typecheckExit": 0,
+    "rendererComponents": {
+      "pass": 253,
+      "total": 253,
+      "exitCode": 0
+    },
+    "productionNpmAudit": {
+      "total": 20,
+      "high": 5,
+      "critical": 0,
+      "exitCode": 1
+    }
+  },
+  "gate7": "PARTIAL",
+  "qg09": "BLOCKED",
+  "formalModel": "NOT_RUN",
+  "pay": {
+    "added": 0,
+    "used": 3,
+    "limit": 200,
+    "unresolved": 0
+  },
+  "independentNative": {
+    "checksPerSize": "drag, maximize, drag back to normal, input, and SQLite readback of a successful local tool",
+    "sizes": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "paidCalls": 0,
+    "loopbackCalls": 11,
+    "file": "independent-native-verification.json",
+    "sha256": "ab5eb43a60571c18ce6fe6de7b1d7a6fad5e0df7a3ec027a68ea915dd53bae1b",
+    "failed1920Attempts": 2,
+    "confirmation": "CUA native input at the adjusted titlebar location brought the window back to normal; same build, same size.",
+    "limitation": "No live Win32 hit-test or hardware mouse. Native input was generated via CUA; virtual fixture used real normal/maximize window transitions."
+  },
+  "independentS1": {
+    "total": 12,
+    "checksPerScenario": 2,
+    "roles": [
+      {
+        "role": "reviewer",
+        "size": "1366x768",
+        "file": "apps/desktop/test-results/t/edu-s1-reviewer-l82m4o/REPORT.json",
+        "sha256": "793717b05cfc70dce04e0ff62813c5226cf5d360146b461383eb18851df32f34",
+        "exitCode": 0
+      },
+      {
+        "role": "reviewer",
+        "size": "1920x1080",
+        "file": "apps/desktop/test-results/t/edu-s1-reviewer-vzcY6o/REPORT.json",
+        "sha256": "787389d47a35d831c1091dee3ef34b75fe265dec36222e182a945d6e6b9c10fb",
+        "exitCode": 0
+      },
+      {
+        "role": "member",
+        "size": "1366x768",
+        "file": "apps/desktop/test-results/t/edu-s1-member-7InEBE/REPORT.json",
+        "sha256": "5afb922ed06f2aa73d0b592b9e3889a5941c5a9ca5be4c4d9c2dbf4965c1654a",
+        "exitCode": 0
+      },
+      {
+        "role": "member",
+        "size": "1920x1080",
+        "file": "apps/desktop/test-results/t/edu-s1-member-rPwBZ3/REPORT.json",
+        "sha256": "3a83823821cd92ef4a986d4877924f34b9f9ae89be2fec63f41c0e4147b2a7be",
+        "exitCode": 0
+      },
+      {
+        "role": "private",
+        "size": "1366x768",
+        "file": "apps/desktop/test-results/t/edu-s1-private-16iPmp/REPORT.json",
+        "sha256": "ca0d0227438758973e87eb8ee402844ccce759f26fbfbf2862d7ea575f3b6258",
+        "exitCode": 0
+      },
+      {
+        "role": "private",
+        "size": "1920x1080",
+        "file": "apps/desktop/test-results/t/edu-s1-private-wQp9kI/REPORT.json",
+        "sha256": "1f083d050f3d2d5256292e85a135c9f2e78fe2bbc93da45511a616ab1ca1503d",
+        "exitCode": 0
+      }
+    ],
+    "boundary": "Independent first-start and cold UI and SQLite. Reviewer authority, team role and privacy sentinel are synthetic and local. No real official signer or external publication. Renderer observation is recorded; the evaluator did not independently capture main-process stderr.",
+    "command": "node test-results/t/s1-b890dba/<reviewer|member|private>.mjs",
+    "env": "TEMP/TMP point to test-results/t; G7_MAIN_SHA and G7_OUT_SHA contain the candidate digests; S1_VIEWPORT selects 1366x768 or 1920x1080."
+  }
+}

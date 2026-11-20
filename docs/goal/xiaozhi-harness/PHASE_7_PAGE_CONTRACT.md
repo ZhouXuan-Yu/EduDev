@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 统一候选的两尺寸实测
+
+在 b890dba 同一指纹上，已实测原生窗口两尺寸、独立 S1 三角色两尺寸及 S2 两尺寸，另有总控审批、迟到事件、三页部分态、C2 路径证据。该构建用于继续汇总其他独立场景，保留适用状态及例外。 [同构建证据](evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json)
+
 ## 2026-11-21 Skill 角色场景与版本接续证据
 
 4b4ebe4 封存构建已获得 S1 独立复验 6/6，并验证两个尺寸治理控件可达。S2 总控两尺寸 4/4 证明接续切换版本与历史不变，最终独立验收仍需在冻结候选补齐。 [复验记录](evidence/phase7/implementation-resume-20261119/skill-governance-main-20261121.json)
