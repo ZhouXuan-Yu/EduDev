@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "b204dfad3d5ba74bbcb89b4482b416b42ce2d18b1165d46c2caeec47a1d0969e",
+  "sourceHash": "5e3ac5310326589a69667faf3b062a0aa5bc54cab998909fad02324e9546d29e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -676,7 +676,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "6266d2d2d6da441b27fd2321601f7ff39b098773e277f2e1f4a199545bbe13bd"
+      "sha256": "f2a268d9b8264cf182a5a330375278fcd8f953332ef218c3c56b54437249831d"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1348,7 +1348,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "cc98c142ce5a91f664454371232ce429ad911cbe5b8a84f66dc3bb2b8dae938a"
+      "sha256": "ce6f9abfd64a5702eddc5e4e9bb28fd4c39b6320a06962afb8973db5844a1ffe"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -2028,7 +2028,7 @@
     },
     {
       "file": "src/shared/material-document-structure.ts",
-      "sha256": "f969e291995db8764fc12fb5faead8e6b046c6750a56554097cd027a44623b96"
+      "sha256": "f354e82b46c5e5ec2b0799ef7ba97e08e5373854c505d647607f7ddc97cbe73f"
     },
     {
       "file": "src/shared/material-layout.ts",

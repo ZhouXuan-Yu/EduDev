@@ -732,6 +732,22 @@
     "timings": "Tool registration improved in both hidden fixture comparisons. Overall startup and request latency remain variable.",
     "newPaidCalls": 0
   },
+  "promptSkillPreparation20261120": {
+    "status": "IMPLEMENTED_VERIFIED_SOURCE_AND_BUILD",
+    "evidence": "evidence/phase8/skill-prompt-preparation-20261120.json",
+    "buildMainSha256": "d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16",
+    "sourceReadsBeforeAndAfter": [4, 2],
+    "newPaidCalls": 0
+  },
+  "revokedMcpLocalCourse20261120": {
+    "status": "PASS_SCOPED",
+    "checksPassed": 4,
+    "evidence": "evidence/phase7/implementation-resume-20261119/c2-local-course-fallback-20261120.json",
+    "buildMainSha256": "d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16",
+    "rendererSourceAndColdReadback": true,
+    "externalCallsAfterRevocation": 0,
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

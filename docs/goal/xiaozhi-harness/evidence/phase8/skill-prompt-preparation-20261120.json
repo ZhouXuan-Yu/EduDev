@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "382b3317c3c297550955c54a6bd5461134bb2676",
+  "scope": "One bounded, fresh skill command proof before native prompt state is created. Before/after source capture count is measured at that boundary. Native expansion, memory, epoch and delivery proofs remain in place.",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-skill-proof-preparation/out",
+    "cwd": "apps/desktop",
+    "exitCode": 0,
+    "includesTypecheck": true,
+    "outFiles": 481,
+    "outSha256": "6839924cbdf3af7f2852ebef821e9f7cae195f77a65f3e3bdd522b23e8155aea",
+    "mainSha256": "d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16",
+    "logSha256": "803ab50f3f56c7771c5d900984e873bf4a7e2977db0941b256015cb35b8e5f4f",
+    "coreToolSourceHash": "5e3ac5310326589a69667faf3b062a0aa5bc54cab998909fad02324e9546d29e"
+  },
+  "baseline": {
+    "sourceCaptures": 4,
+    "running": true,
+    "answerPolicyEntries": 1,
+    "report": "TEMP/xiaozhi-pi-skill-authority-y5hSaJ/report.json",
+    "reportSha256": "3e783a22290b5fd742255006fdb2e13e4b44363bd6b78fe99bcf818a0e73b190",
+    "expectedFailure": "The observed pre-existing duplicate failed the new one-proof assertion."
+  },
+  "candidate": {
+    "command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs",
+    "cwd": "apps/desktop",
+    "productionSourceSha256": "ce6f9abfd64a5702eddc5e4e9bb28fd4c39b6320a06962afb8973db5844a1ffe",
+    "sourceCaptures": 2,
+    "running": false,
+    "answerPolicyEntries": 0,
+    "authorityPassed": 27,
+    "report": "TEMP/xiaozhi-pi-skill-authority-lkywYv/report.json",
+    "reportSha256": "c65bb64c0ea9ffeb4e6157895ca777af02c5ff4167db7e5c38c518a0485eba1a"
+  },
+  "regressions": [
+    {"command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs", "passed": 17, "report": "TEMP/omni-skill-runtime-io-JZePCW/report.json", "sha256": "7f6e97e59af9eb259d9c8d90e7cd26cae86369d33514c3a463c8fbca50e34677"},
+    {"command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-lifecycle-boundaries.mjs", "passed": 6, "report": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-19mTip/report.json", "sha256": "fe88636185d4419a43878edfa4729fd98511d2338052e91de53c627d77fd3f7b"},
+    {"command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-queue-boundary-smoke.mjs", "passed": 9, "report": "apps/desktop/test-results/xiaozhi-agent/pi-queue-boundary-PsuXMR/report.json", "sha256": "6dd09fde2404707f31037d0e4a320d94f12c2d5aea2aadb35a9ad79e063e10f5"},
+    {"command": "npm.cmd run test:renderer-components", "passed": 253, "exitCode": 0, "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"}
+  ],
+  "dependencyAudit": {"total": 29, "low": 8, "moderate": 13, "high": 8, "critical": 0, "lockfileChanged": false},
+  "limits": "The measurement is a source capture count, not an end-to-end duration comparison. No real model request was sent. No migration or dependency changes. Revert the code, test and generated metadata in the same commit to roll back."
+}

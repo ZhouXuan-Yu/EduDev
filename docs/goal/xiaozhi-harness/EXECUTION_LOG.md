@@ -1,5 +1,13 @@
 # 执行日志
 
+## 2026-11-20 发送前技能校验合并
+
+将 `pi_validate_skill_command` 的有界全量检查移到原提示入口，去掉同一轮内第二次同义检查。并发请求在已开始的技能读取真正结束前保持忙碌，取消后未发生原生对话或模型送达。有效的技能命令继续由 Pi 展开，发送前使用当前权限。源码专项和组件 253/253 通过。回退使用普通 Git revert，无数据迁移。 [测试命令及实测次数](evidence/phase8/skill-prompt-preparation-20261120.json)
+
+## 2026-11-20 独立 C2 正文续接和冷读
+
+修复测试模型读取多块工具结果的方式，以本次真实检索命中的 ID 和偏移驱动正文工具。修正跨工作区的测试返回入口后，在同一冻结构建完成引用点击和冷启。授权、撤销和替代运行使用同一 Task，每个 Run 单独核对。计入输入框存在且可用门槛后，新两次启动约 3.41 秒和 1.99 秒。追加真实模型用量 0。 [运行指纹及检查说明](evidence/phase7/implementation-resume-20261119/c2-local-course-fallback-20261120.json)
+
 ## 2026-11-20 独立 C2 查询补测
 
 隔离 Electron 使用 typed preload 导入合成题。授权 MCP 的真实请求一次，撤权后旧工具名由 Pi 拒绝，未新增外部调用。SQLite 与原生记录确认 `education_search_materials` 实际返回一条带资料来源和段落位置的命中。该轮在测试模型续接时超时，保留原始失败。启动样本仅计 Electron 进程和工作区。产品源码、依赖和固定验收矩阵未变。 [构建及运行记录](evidence/phase7/implementation-resume-20261119/c2-local-course-partial-20261120.json)

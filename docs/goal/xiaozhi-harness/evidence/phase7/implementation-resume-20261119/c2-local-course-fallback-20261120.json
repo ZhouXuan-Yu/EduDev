@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-20",
+  "status": "PASS_SCOPED",
+  "reviewer": "GPT-6.1 Terra High",
+  "testedSourceParent": "382b3317c3c297550955c54a6bd5461134bb2676",
+  "testedChange": "evidence/phase8/skill-prompt-preparation-20261120.json",
+  "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root test-results/harness-skill-proof-preparation/out --expected-out-hash 6839924cbdf3af7f2852ebef821e9f7cae195f77a65f3e3bdd522b23e8155aea --expected-out-count 481 --expected-main-hash d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16",
+  "cwd": "apps/desktop",
+  "driverSha256": "54c9564ec750f29188f3280d3f1a686196f09446b0c17f1bef8ff25bdf5b9263",
+  "build": {
+    "root": "apps/desktop/test-results/harness-skill-proof-preparation/out",
+    "files": 481,
+    "outSha256BeforeAndAfter": "6839924cbdf3af7f2852ebef821e9f7cae195f77a65f3e3bdd522b23e8155aea",
+    "mainSha256": "d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16"
+  },
+  "report": "TEMP/omni-edu-c2-course-ngbyBz/report.json",
+  "reportSha256": "75dc09e1010051625dac1b19eed6725b1cdd70d79204b2ac14a7c001a13ff7c9",
+  "exitCode": 0,
+  "checksPassed": 4,
+  "paidRequestsAdded": 0,
+  "pageErrors": [],
+  "task": {
+    "id": "xitask_21ec604a928cee9fd275ce48ad481fe20b3669aa5192a6c133eb01852bcd5767",
+    "authorizedRunId": "run_27370767-9b8c-4e2c-b345-6a5b4e44811c",
+    "localFallbackRunId": "run_5abfd928-ab82-456f-ade3-91d00c08e547",
+    "authorizedAndFallbackRunStatus": "succeeded"
+  },
+  "observations": [
+    "The actual settings and workbench allowed one authorized tools/call to the owned MCP fixture.",
+    "After revocation, the native Pi history recorded rejection of the old tool name. The MCP tools/call count stayed at one.",
+    "The same task used education_search_materials and office_read_material in a fresh run. Both SQLite receipts are admitted, successful and matched to native results.",
+    "The receipt and projection kept the source resource, version, chunk, offset and body version. The renderer opened the exact source version and displayed the cited text after clicking the reply citation.",
+    "After cold start the same source and receipts were present and no tool call was replayed."
+  ],
+  "sourceScreenshot": "TEMP/omni-edu-c2-course-ngbyBz/material-source-open.png",
+  "sourceScreenshotSha256": "c4c7fbfe82353a0d86f18308ed6054156abc5f8f2503e51b79b87074c1504d3b",
+  "earlierAttemptsOnStartupPrewarmBuild": [
+    {"status": "PASS_SCOPED_3_OF_3", "report": "TEMP/omni-edu-c2-course-sKGUUe/report.json", "sha256": "ce986cea2bbed188b998bbda80150610390a9e3e830ebeb2784151571e63b843", "scope": "Native and typed source, persisted receipts and cold restart. No renderer citation action."},
+    {"status": "FAIL", "report": "TEMP/omni-edu-c2-course-BQMEG0/report.json", "sha256": "690c9d31a8f38f3542fd94e881aa82436eeab8703363855eb09e6b1e6eedb7b4", "scope": "Renderer citation opened the correct document before the fixture failed to return via an inapplicable sidebar selector."}
+  ],
+  "previousPartial": "c2-local-course-partial-20261120.json",
+  "limits": "Hidden Electron with an isolated profile, synthetic material, an owned loopback MCP and a scripted model. Foreground native window, real-model choice and the remaining Gate 7 checks are outside this run."
+}

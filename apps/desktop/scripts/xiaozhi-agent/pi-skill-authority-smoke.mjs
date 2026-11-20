@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import {tmpdir} from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
+import {channel} from 'node:diagnostics_channel';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 import { createAssistantMessageEventStream } from '@earendil-works/pi-ai';
 const { createPiMemoryEpoch } = await import('../../src/main/xiaozhi-agent/native-memory-epoch.ts');
@@ -14,6 +15,7 @@ const { createManagedEducationSkills } = await import('../../src/main/xiaozhi-ag
 const { createPiSkillCatalogState } = await import('../../src/main/xiaozhi-agent/skill-catalog-state.ts');
 const { createManagedSkillRuntime } = await import('../../src/main/xiaozhi-agent/managed-skill-runtime.ts');
 const { createPiXiaozhiSession } = await import('../../src/main/xiaozhi-agent/pi-session.ts');
+const {createLifecycleWorkTracker}=await import('../../src/main/xiaozhi-agent/lifecycle-wait.ts');
 const { EDUCATION_SKILLS } = await import('../../src/main/xiaozhi-agent/education-skills.ts');
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), output = fs.mkdtempSync(path.join(tmpdir(), 'xiaozhi-pi-skill-authority-'));
 const checks = [], report = { suite: 'pi-skill-authority-native', success: false, checks, boundaries: [
@@ -102,7 +104,8 @@ try {
   fs.writeFileSync(path.join(sourceDir, 'SKILL.md'), customDoc); fs.writeFileSync(path.join(sourceDir, 'references/guide.md'), '引用规则，假手机号13800138000。');
   fs.writeFileSync(path.join(sourceDir, 'helper.py'), 'raise RuntimeError("must not execute")'); fs.writeFileSync(path.join(sourceDir, 'photo.bin'), Buffer.from([1, 2, 3]));
   catalog = await managed.importDirectory(sourceDir, catalog.revision); catalog = await managed.setEnabled('teacher-meeting', catalog.revision, true);
-  const source = { resources: () => managed.enabledResources(), sanitize: async text => text.replaceAll('13800138000', '[手机号]') };
+  let sourceReads=0;
+  const source = { resources: signal => {sourceReads++;return managed.enabledResources(signal);}, sanitize: async text => text.replaceAll('13800138000', '[手机号]') };
   const stateRoot = path.join(output, 'state'), workspace = path.join(output, 'workspace'), sessionDir = path.join(stateRoot, 'sessions'); fs.mkdirSync(sessionDir, { recursive: true }); fs.mkdirSync(workspace);
   const native = SessionManager.create(workspace, sessionDir), agentDir = path.join(stateRoot, 'agent');
   const runtime = await createManagedSkillRuntime(agentDir, native.getSessionFile(), source), descriptor = runtime.result.skills.find(item => item.name === 'teacher-meeting');
@@ -119,7 +122,21 @@ try {
   const captures = [], events = [], base = { stateRoot, workspace, apiKey: 'synthetic-test-only', model: 'deepseek-chat', educationSkills: true, managedSkills: source, onEvent: event => events.push(event) };
   agent = await createPiXiaozhiSession(base);
   const inject = target => { target.session.agent.streamFn = (_model, ctx) => { captures.push(JSON.parse(JSON.stringify(ctx))); const stream = createAssistantMessageEventStream(); stream.push({ type: 'done', reason: 'stop', message: message('技能任务已起草。') }); stream.end(); return stream; }; };
-  inject(agent); let result = await agent.prompt('/skill:teacher-meeting 写一段纪要'); assert(result.ok, JSON.stringify(result)); const sessionFile = agent.sessionFile;
+  await check('Invalid Skill name fails before a run, native policy or full source proof is created',async()=>{
+    const before=JSON.stringify(agent.session.sessionManager.getEntries()),eventCount=events.length;sourceReads=0;
+    const invalid=await agent.prompt('/skill:not-a-selected-skill 说明');
+    assert.deepEqual(invalid,{ok:false,runId:'',error:'invalid_input'});assert.equal(sourceReads,0);
+    assert.equal(events.length,eventCount);assert.equal(JSON.stringify(agent.session.sessionManager.getEntries()),before);
+  });
+  const preparationProofs=[],diagnostics=channel('omni-edu.xiaozhi.lifecycle.v1');
+  const proofObserver=row=>{if(row.operation==='pi_validate_skill_command')preparationProofs.push({sourceReads,running:agent.diagnostics().running,
+    policyEntries:agent.session.sessionManager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.answer-policy.v1').length,outcome:row.outcome});};
+  inject(agent);sourceReads=0;diagnostics.subscribe(proofObserver);let result;
+  try{result=await agent.prompt('/skill:teacher-meeting 写一段纪要');}finally{diagnostics.unsubscribe(proofObserver);}
+  assert(result.ok, JSON.stringify(result));const sessionFile=agent.sessionFile;report.commandPreparationProofs=preparationProofs;
+  await check('Prompt command preparation performs one fresh bounded proof before native run side effects',async()=>{
+    assert.deepEqual(preparationProofs,[{sourceReads:2,running:false,policyEntries:0,outcome:'success'}]);
+  });
   await check('Actual Pi explicit command expands the sanitized custom document and persists one native run', async () => {
     const user = captures.at(-1).messages.filter(item => item.role === 'user').at(-1); assert(JSON.stringify(user).includes('<skill name=\\"teacher-meeting\\"')); assert(!JSON.stringify(user).includes('13800138000'));
     const manager = SessionManager.open(sessionFile, sessionDir, workspace); assert.equal(manager.getBranch().filter(item => item.type === 'custom' && item.customType === 'xiaozhi.memory.run.v1').length, 1);
@@ -153,6 +170,37 @@ try {
     assert.equal((await agent.prompt('恢复后不能复活旧对象')).error, 'skill_scope_changed'); assert.equal(starts, 1);
   });
   await agent.dispose(); agent = undefined;
+  for(const mode of ['stop','dispose','timeout'])await check(`Skill preparation ${mode} preserves empty-run errors, ownership and actual-work drain`,async()=>{
+    const ownRoot=path.join(output,'prompt-prepare-'+mode),ownEvents=[],failures=[],tracker=createLifecycleWorkTracker();
+    fs.mkdirSync(ownRoot);let hold=false,entered=false,release,modelCalls=0;
+    const held=new Promise(resolve=>{release=resolve;});
+    const config={...base,stateRoot:ownRoot,lifecycleTimeoutMs:10000,trackLifecycleWork:tracker.track,
+      onEvent:event=>ownEvents.push(event),onCriticalToolFailure:error=>failures.push(error),
+      managedSkills:{...source,resources:async signal=>{if(hold){entered=true;await held;}return managed.enabledResources(signal);}}};
+    const own=await createPiXiaozhiSession(config);
+    const until=async condition=>{for(let i=0;i<1000;i++){if(condition())return;await new Promise(resolve=>setTimeout(resolve,5));}throw Error('owned preparation condition timeout');};
+    own.session.agent.streamFn=()=>{modelCalls++;const stream=createAssistantMessageEventStream();stream.push({type:'done',reason:'stop',message:message('合成准备已完成。')});stream.end();return stream;};
+    const before=JSON.stringify(own.session.sessionManager.getEntries());
+    try{
+      hold=true;if(mode==='timeout')config.lifecycleTimeoutMs=30;
+      const pending=own.prompt('/skill:teacher-meeting 合成准备');await until(()=>entered);
+      assert.equal((await own.prompt('另一请求')).error,'busy');assert.equal((await own.compact()).error,'busy');
+      await assert.rejects(own.queue('queued-during-prepare','追加内容','followUp'),/busy/);
+      if(mode==='stop')await own.abort();else if(mode==='dispose')await own.dispose();
+      const failed=await pending;
+      assert.deepEqual(failed,{ok:false,runId:'',error:mode==='timeout'?'event_persistence':'cancelled'});
+      assert.equal(ownEvents.length,0);assert.equal(modelCalls,0);assert.equal(JSON.stringify(own.session.sessionManager.getEntries()),before);
+      assert.equal(tracker.isPending(),true);
+      if(mode!=='dispose'){assert.equal((await own.prompt('不能越过旧准备')).error,'busy');assert.equal((await own.compact()).error,'busy');}
+      else assert.equal((await own.prompt('已处置对象')).error,'configuration');
+      release();await until(()=>!tracker.isPending());
+      assert.equal(modelCalls,0);assert.equal(JSON.stringify(own.session.sessionManager.getEntries()),before);
+      if(mode==='timeout'){assert.equal(failures.length,1);assert.equal(failures[0].operation,'pi_validate_skill_command');assert.equal(failures[0].timeoutMs,30);}
+      if(mode==='stop'){
+        hold=false;const resumed=await own.prompt('/skill:teacher-meeting 新请求');assert(resumed.ok,JSON.stringify(resumed));assert.equal(modelCalls,1);
+      }
+    }finally{release();await own.dispose();await until(()=>!tracker.isPending());}
+  });
   const versioned = await createManagedSkillRuntime(agentDir, native.getSessionFile(), source), authority = versioned.authority;
   catalog = await managed.edit('teacher-meeting', catalog.revision, customDoc); catalog = await managed.setEnabled('teacher-meeting', catalog.revision, true);
   const edited = await createManagedSkillRuntime(agentDir, native.getSessionFile(), source);

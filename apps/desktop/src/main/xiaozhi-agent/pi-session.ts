@@ -792,7 +792,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const executions = new SessionExecutionRegistry();
   const waitingListeners=new Set<(waiting:boolean)=>void>();
   const waitingChanged=(waiting:boolean)=>{for(const listener of waitingListeners)listener(waiting);};
-  let runId = '', running = false, disposed = false, interrupted = false, sequence = 0;
+  let runId = '', running = false, preparingPrompt = false, disposed = false, interrupted = false, sequence = 0;
   let budget:ReturnType<typeof createPiRunBudget>|undefined;
   let compacting = false;
   let automaticId = 0;
@@ -1283,7 +1283,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
   });
   async function abort() {
-    if (!running) return;
+    if (!running) { if(preparingPrompt)phaseController.abort();return; }
     reasoningTrace?.close('interrupted');
     phaseController.abort();
     budget?.finish('interrupted');
@@ -1313,11 +1313,26 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     reserveInstruction: instructions.reserve,
     async prompt(text: string): Promise<XiaozhiAgentResult> {
       if (disposed) return { ok: false, runId: '', error: 'configuration' };
-      if (running) return { ok: false, runId, error: 'busy' };
+      if (running || preparingPrompt) return { ok: false, runId, error: 'busy' };
       if (typeof text !== 'string' || !text.trim() || text.length > 32768 || text.includes('\0')) return { ok: false, runId: '', error: 'invalid_input' };
       if(options.lifecycleSignal?.aborted)return {ok:false,runId:'',error:'cancelled'};
       phaseController=new AbortController();
-      try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
+      // Reserve only preparation: invalid names/authority fail without a native Run or public status.
+      // Keep the reservation until actual validation settles, even if the bounded wait is cancelled.
+      preparingPrompt=true;let validation:Promise<void>|undefined;
+      try {
+        if (memoryFailure) throw new Error(memoryFailure);
+        await phase('pi_validate_skill_command',signal=>{
+          validation=Promise.resolve(skills?.validateCommand(text,signal));
+          return validation;
+        });
+      } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
+      finally {
+        const release=()=>{preparingPrompt=false;};
+        if(validation)void validation.then(release,release);else release();
+      }
+      if(disposed)return {ok:false,runId:'',error:'configuration'};
+      if(phaseController.signal.aborted||options.lifecycleSignal?.aborted)return {ok:false,runId:'',error:'cancelled'};
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
       assistantOutcome=undefined;
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text+'\n'+(options.toolTaskQuery||''));
@@ -1337,7 +1352,6 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       let failure: XiaozhiAgentError | undefined,outputLimited=false;
       try {
         if(memoryFailure)throw Error(memoryFailure);
-        await phase('pi_validate_skill_command', async signal => skills?.validateCommand(text, signal));
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
         if (skillEpoch) {
@@ -1380,7 +1394,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     },
     async compact(): Promise<XiaozhiAgentResult> {
       if (disposed) return { ok: false, runId: '', error: 'configuration' };
-      if (running) return { ok: false, runId, error: 'busy' };
+      if (running || preparingPrompt) return { ok: false, runId, error: 'busy' };
       if(options.lifecycleSignal?.aborted)return {ok:false,runId:'',error:'cancelled'};
       phaseController=new AbortController();
       runId = `run_${randomUUID()}`; running = true; compacting = true; interrupted = false;
