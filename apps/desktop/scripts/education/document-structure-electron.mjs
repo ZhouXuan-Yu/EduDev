@@ -264,6 +264,11 @@ try {
   const selected = resources.find((r) => /\.pdf$/i.test(r.original_file_name));
   let panel = await open({ id: selected.id, title: selected.title });
   await panel.getByTestId("structure-page").waitFor();
+  if (process.env.EDU_STRUCTURE_REQUIRE_PRINTED === "1") {
+    const printed = panel.getByTestId("structure-printed-recovery");
+    await printed.filter({hasText:/原页补识 1 行/}).waitFor();
+    assert(Number(/恢复 (\d+) 处印刷填空/u.exec(await printed.innerText())?.[1]) >= 2);
+  }
   assert(
     (await panel.getByTestId("structure-paragraphs").innerText()).length > 30,
   );

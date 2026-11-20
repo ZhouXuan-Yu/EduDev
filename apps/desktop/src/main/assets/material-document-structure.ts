@@ -219,7 +219,12 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   if (input.lines.length > 2000 || input.regions.length > 256)
     throw Error("unit_too_large");
   const recovered =
-    input.nativeRecovery?.accepted.map((item) => item.line) ?? [];
+    [
+      ...(input.nativeRecovery?.accepted.map((item) => item.line) ?? []),
+      ...(input.printedRecovery?.parents.map((item) => item.line) ?? []),
+    ];
+  const printedLines = new Map(input.printedRecovery?.parents.map(item => [item.line.id, item]));
+  const blankBefore = new Map(input.printedRecovery?.blanks.map(blank => [blank.afterId, blank.beforeId]));
   const lines: StructureLine[] = [...input.lines, ...recovered].map((line) => {
     const box: PageBox = [
       Math.min(...line.normalizedQuad.map((p) => p[0])),
@@ -235,7 +240,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       sourceId: line.id,
       ...(line.id.startsWith("native-crop-")
         ? { origin: "pdf_native_crop" as const }
-        : {}),
+        : printedLines.has(line.id) ? { origin: "local_ocr_crop" as const } : {}),
       text: line.text,
       box,
       quad: line.normalizedQuad,
@@ -304,6 +309,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       area(regions[0].box) / area(regions[1].box) > 0.85 &&
       regions[0].kind !== regions[1].kind;
     const issues: StructureIssue[] = [
+      ...(printedLines.get(line.sourceId)?.uncertain ? ["printed_crop_unconfirmed" as const] : []),
       ...(line.score < 0.85 ? ["low_ocr_score" as const] : []),
       ...(!line.regionIds.length || ambiguous || regions[0]?.score < 0.5
         ? ["ambiguous_region" as const]
@@ -313,9 +319,8 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       last.lineIds.push(line.id);
       last.regionIds = [...new Set([...last.regionIds, ...line.regionIds])];
       last.rawText += "\n" + line.text;
-      last.text = joinStructureLines(
-        last.lineIds.map((id) => byId.get(id)!.text),
-      );
+      last.text = joinStructureLines(last.lineIds.map((id, i) =>
+        (i > 0 && blankBefore.get(id) === last.lineIds[i - 1] ? "____" : "") + byId.get(id)!.text));
       last.anchor.box = union(last.anchor.box, line.box);
       last.confidence = Math.min(last.confidence, line.score);
       last.issues = [...new Set([...last.issues, ...issues])];
@@ -354,6 +359,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     ...(input.rasterSource ? { rasterSource: input.rasterSource } : {}),
     rawText: input.lines.map((line) => line.text).join("\n"),
     ...(input.nativeRecovery ? { nativeRecovery: input.nativeRecovery } : {}),
+    ...(input.printedRecovery ? { printedRecovery: input.printedRecovery } : {}),
     lines,
     regions: input.regions,
     columns,

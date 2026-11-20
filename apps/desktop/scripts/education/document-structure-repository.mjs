@@ -174,11 +174,11 @@ await check("PDF admission rechecks staged questions and fails closed during ret
   }
 });
 await check(
-  "Published v2 through v5 generations remain readable, while interrupted older work restarts with the current engine",
+  "Published v2 through v6 generations remain readable, while interrupted older work restarts with the current engine",
   async () => {
     const legacy = {...resource,id:"resource_22345678-1234-1234-1234-123456789abc"};
     const id=legacy.id;
-    for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3", "layout-paragraph-question.v4", "layout-paragraph-question.v5"]) {
+    for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3", "layout-paragraph-question.v4", "layout-paragraph-question.v5", "layout-paragraph-question.v6"]) {
       const generation = "legacy-" + engine;
       db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,pages,processed,updated_at) VALUES(?,?,?,?,?,?,?,?)")
         .run(id,version,engine,generation,"partial",2,2,new Date().toISOString());

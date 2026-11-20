@@ -77,7 +77,11 @@ function context(
         ocrSha256: digest(JSON.stringify(proof.ocr)),
       };
     }),
-    unresolved: recovery?.unresolved ?? [],
+    unresolved: [
+      ...(recovery?.unresolved ?? []),
+      ...(page.printedRecovery?.parents ?? []).filter((parent) => parent.uncertain)
+        .map((parent) => parent.line.id),
+    ],
   };
   if (!validAiStructureContext(result)) throw Error("unit_too_large");
   return result;

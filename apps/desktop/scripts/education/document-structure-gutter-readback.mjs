@@ -17,7 +17,7 @@ try {
   }
   const book = read('物理主书-原件第4页.pdf');
   assert.equal(book.page.columns.length, 3);
-  assert.equal(book.page.lines.length, 186);
+  assert.equal(book.page.lines.filter(line => !line.origin).length, 186);
   const owned = question => book.page.paragraphs.filter(part => question.paragraphIds.includes(part.id));
   const q7 = book.questions.find(q => q.number === '7');
   const q12 = book.questions.find(q => q.number === '12');
@@ -27,6 +27,19 @@ try {
   assert.equal(q12.options.length, 0);
   assert.equal(q12.assets.filter(asset => asset.kind === 'image' && asset.box[0] > book.page.columns[2][0]).length, 1);
   assert(owned(book.questions.find(q => q.number === '4')).every(p => p.role !== 'table'));
+  if (process.env.EDU_STRUCTURE_REQUIRE_PRINTED === '1') {
+    const q9 = book.questions.find(q => q.number === '9');
+    const q10 = book.questions.find(q => q.number === '10');
+    assert.deepEqual(q9.options.map(option => option.label), ['A', 'B', 'C', 'D']);
+    assert.deepEqual(q10.options.map(option => option.label), ['A', 'B', 'C', 'D']);
+    assert(owned(q10).every(p => p.column === 2));
+    assert(q10.assets.some(asset => asset.kind === 'image'));
+    assert(book.page.printedRecovery.parents.some(parent => parent.readings[0].startsWith('10.')));
+    assert.equal(q10.status, 'needs_review');
+    assert(q10.issues.includes('printed_crop_unconfirmed'));
+    assert.equal(q12.stem.match(/____/gu)?.length, 2);
+    assert(!book.page.rawText.includes('____'));
+  }
 
   const sat = read('SAT练习-原件第27页.pdf');
   assert.equal(sat.page.columns.length, 2);

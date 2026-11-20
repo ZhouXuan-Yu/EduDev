@@ -4,13 +4,15 @@ const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
 const { verifiedQuestionInPdfConflict } =
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
+const { printedBlanks, printedBlankStripe, readPrintedParent } =
+  await import("../../src/main/assets/material-printed-structure.ts");
 const results = [];
 async function check(name, run) {
   await run();
   results.push(name);
   console.log("PASS " + name);
 }
-function page(rows, number = 1, total = 1, extra = []) {
+function page(rows, number = 1, total = 1, extra = [], printedRecovery) {
   const lines = rows.map((row, index) => {
     const [
         text,
@@ -59,12 +61,77 @@ function page(rows, number = 1, total = 1, extra = []) {
     layoutEngine: "controlled-layout",
     lines,
     regions: [...regions, ...extra],
+    ...(printedRecovery && { printedRecovery }),
   });
 }
 function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+await check("Printed fill slots preserve literal OCR and require visible thin rules", () => {
+  const width = 100, height = 60;
+  const light = Buffer.alloc(width * height * 4, 255);
+  const box = [.2, .3, .6, .55];
+  const stripe = pixels => printedBlankStripe({width, height, pixels}, box);
+  assert.equal(stripe(light), undefined);
+  const ink = Buffer.from(light);
+  ink.fill(180, (26 * width + 20) * 4, (26 * width + 60) * 4);
+  assert.deepEqual(stripe(ink), [.2, 26/60, .6, 27/60]);
+  for (let y = 27; y <= 31; y++) ink.fill(180, (y * width + 20) * 4, (y * width + 60) * 4);
+  assert.equal(stripe(ink), undefined);
+  const p = page([
+    ["二、填空题", .10, .05],
+    ["1. 小球的速度为", .10, .10, .24],
+    ["米每秒。", .39, .10, .22],
+  ], 1, 1, [], {parents:[],blanks:[{beforeId:"p1-line-2",afterId:"p1-line-3",box:[.34,.116,.39,.117]}]});
+  const [q] = questions([p]);
+  assert.match(q.stem, /为____米/u);
+  assert(!p.rawText.includes("____"));
+  assert(!p.paragraphs.some(part => part.rawText.includes("____")));
+});
+await check("A crop can confirm exactly one numbered parent with original readings", () => {
+  const input = {text:"10.\n版式标签\n如图所示小球在水平轨道运动",scores:[.98,.99,.97]};
+  assert.deepEqual(readPrintedParent(input,10),{text:"10. 如图所示小球在水平轨道运动",score:.97,readings:input.text.split("\n"),uncertain:true});
+  const printed = readPrintedParent({...input,text:input.text.replace("版式标签","忽略摩擦")},10);
+  const quad = [[.1,.08],[.5,.08],[.5,.097],[.1,.097]];
+  const pageWithCrop = page([
+    ["下列关于小球运动的说法正确的是（　）",.1,.1,.4],
+    ["A. 甲",.1,.2,.2],["B. 乙",.1,.23,.2],
+    ["C. 丙",.1,.26,.2],["D. 丁",.1,.29,.2],
+  ],1,1,[],{blanks:[],parents:[{
+    line:{id:"printed-parent-10",kind:"text",text:printed.text,score:printed.score,needsReview:true,quad,normalizedQuad:quad},
+    crop:[.1,.08,.5,.097],cropSha256:"c".repeat(64),engine:"controlled-ocr",readings:printed.readings,uncertain:true,
+  }]});
+  assert(!pageWithCrop.rawText.includes("10."));
+  const [recovered] = questions([pageWithCrop]);
+  assert.equal(recovered.options.length, 4);
+  assert.equal(recovered.status, "needs_review");
+  assert(recovered.issues.includes("printed_crop_unconfirmed"));
+  assert.equal(readPrintedParent(input,11), undefined);
+  assert.equal(readPrintedParent({...input,scores:[.65,.99,.97]},10), undefined);
+  assert.equal(readPrintedParent({text:input.text+"\n另一段来自其他题目的连续文字",scores:[...input.scores,.99]},10), undefined);
+});
+await check("Fill detection excludes midline strokes and gaps between numbers", () => {
+  const region = {id:"fill-body",kind:"text",score:.99,box:[.08,.09,.65,.13],needsReview:true};
+  const make = (start, end) => page([
+    ["二、填空题",.10,.05],
+    [start,.10,.10,.24],
+    [end,.39,.10,.22],
+  ],1,1,[region]);
+  let requested;
+  const p = make("1. 长度为", "厘米。");
+  const width = 1000, height = 1000;
+  const read = y => box => {
+    requested = box;
+    const pixels = Buffer.alloc(width * height * 4,255);
+    pixels.fill(180,(y * width + 340) * 4,(y * width + 390) * 4);
+    return printedBlankStripe({width,height,pixels},box);
+  };
+  assert.deepEqual(printedBlanks(p,read(108)), []);
+  assert(requested[1] > .108);
+  assert.equal(printedBlanks(p,read(117)).length, 1);
+  assert.deepEqual(printedBlanks(make("1. 计算 12","5 的差。"),() => assert.fail("number-to-number gap")), []);
+});
 await check("A conflicted page can admit one exact bounded parent without releasing its damaged sibling", () => {
   const native = "3. 已知电阻 𝑅1 = 5Ω，电流保持不变，求电压的值。\n4. 另有电阻为 1\n2𝑅，求两端电压。";
   const [a,b] = questions([page([

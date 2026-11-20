@@ -22,7 +22,7 @@ export function structureOcrSourceKey(
     for (const asset of question.assets.filter((a) => a.page === page.page))
       for (const id of asset.lineIds ?? []) ids.add(id);
     const lines = page.lines
-      .filter((line) => ids.has(line.id) && line.origin !== "pdf_native_crop")
+      .filter((line) => ids.has(line.id) && !line.origin)
       .map((line) => [line.sourceId, line.text, line.quad])
       .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
     return [

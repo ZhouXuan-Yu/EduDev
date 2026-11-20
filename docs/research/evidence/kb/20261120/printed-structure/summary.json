@@ -1,0 +1,31 @@
+{
+  "module": "M03",
+  "engineBefore": "layout-paragraph-question.v6",
+  "engineAfter": "layout-paragraph-question.v7",
+  "buildMainSha256": "0beba13e60224b2b8027c6597f1cfb9ee052d5c8e88926418a965e3f72616fad",
+  "realPdfPages": [
+    { "sample": "五三物理主书", "sourcePage": 4, "columns": 3, "originalOcrLines": 186 },
+    { "sample": "SAT 练习", "sourcePage": 27, "columns": 2, "heldQuestions": 5 },
+    { "sample": "上海初中数学", "sourcePage": 3, "columns": 1 }
+  ],
+  "sampleQuestions": {
+    "9": { "optionsBefore": 8, "optionsAfter": 4, "archivedAfter": true },
+    "10": { "existsBefore": false, "optionsAfter": 4, "figuresAfter": 1, "statusAfter": "needs_review", "archivedAfter": false },
+    "12": { "blanksBefore": 0, "blanksAfter": 2, "figuresAfter": 1 }
+  },
+  "testsPassed": {
+    "documentStructure": 39,
+    "documentStructureRepository": 39,
+    "aiStructureSource": 17,
+    "structureAnswerBook": 8,
+    "rendererComponents": 253,
+    "electronImport": 5,
+    "realLayoutReadback": 3,
+    "electronSmoke": 207
+  },
+  "integratedBuild": true,
+  "legacyRebuild": { "oldGenerationPreserved": true, "answerReceiptsPreserved": 1, "existingQ12DraftsRetained": 2 },
+  "observedThreePageBackgroundMs": { "v6": 43886, "v7": 38840 },
+  "runtimeProviderCalls": 0,
+  "npmAudit": { "existingAdvisories": 23, "high": 8, "dependencyChanges": false }
+}

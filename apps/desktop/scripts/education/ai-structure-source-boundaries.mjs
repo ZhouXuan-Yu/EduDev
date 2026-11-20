@@ -141,7 +141,7 @@ const native = {
   ],
   lines: [nativeLine],
 };
-async function fixture(unresolved = false) {
+async function fixture(unresolved = false, printed = false) {
   const db = new DatabaseSync(":memory:"),
     generation = randomUUID();
   db.exec(
@@ -185,6 +185,14 @@ async function fixture(unresolved = false) {
     lines,
     regions: [region],
     nativeRecovery: recovery,
+    ...(printed && {printedRecovery:{blanks:[],parents:[{
+      line:line("printed-parent-2","2. 计算小球速度。",.4),
+      crop:[.1,.4,.8,.42],
+      cropSha256:hash("controlled printed crop"),
+      readings:["2.","除非忽略","计算小球速度。"],
+      engine:"controlled-ocr",
+      uncertain:true,
+    }]}}),
   });
   db.prepare("INSERT INTO material_structure_jobs VALUES(?,?,?,?,?)").run(
     resourceId,
@@ -515,10 +523,10 @@ try {
       }
     },
   );
-  await check(
-    "Unresolved native gaps are retained and force transcription and question review",
+  for (const printed of [false, true]) await check(
+    (printed ? "Unresolved printed crops" : "Unresolved native gaps") + " are retained and force transcription and question review",
     async () => {
-      const f = await fixture(true);
+      const f = await fixture(!printed, printed);
       try {
         const result = await withAiStructureSource(
             f.host,
@@ -527,8 +535,13 @@ try {
             signal,
           ),
           p = prompt(result);
-        assert.equal(result.structureContext.supplemental.length, 0);
+        assert.equal(result.structureContext.supplemental.length, printed ? 1 : 0);
         assert.equal(result.structureContext.unresolved.length, 1);
+        if (printed) {
+          assert.deepEqual(result.structureContext.unresolved, ["printed-parent-2"]);
+          assert(!result.structureContext.supplemental.some(line => line.lineId.includes("printed-parent-2")));
+          await validateAiStructureSource(f.host,f.source,result.structureContext,rasterSha256,signal,result);
+        }
         const response = {
           schemaVersion: "xiaozhi.material-ai-page-fragments.v1",
           outcome: "no_questions",

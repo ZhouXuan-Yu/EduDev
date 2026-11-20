@@ -5,14 +5,19 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v6" as const;
-export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3" | "layout-paragraph-question.v4" | "layout-paragraph-question.v5";
+  "layout-paragraph-question.v7" as const;
+export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3" | "layout-paragraph-question.v4" | "layout-paragraph-question.v5" | "layout-paragraph-question.v6";
 export function validDocumentStructureEngine(value: unknown): value is DocumentStructureEngine {
-  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v5" || value === "layout-paragraph-question.v4" || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
+  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v6" || value === "layout-paragraph-question.v5" || value === "layout-paragraph-question.v4" || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
 }
+export type PrintedStructureRecovery = {
+  parents: { line: MaterialLine; crop: PageBox; cropSha256: string; readings: string[]; engine: string; uncertain?: true }[];
+  blanks: { beforeId: string; afterId: string; box: PageBox }[];
+};
 export type StructureIssue =
   | "pdf_text_conflict"
   | "native_unconfirmed"
+  | "printed_crop_unconfirmed"
   | "low_ocr_score"
   | "ambiguous_region"
   | "ambiguous_columns"
@@ -42,7 +47,7 @@ export type StructureAnchor = { page: number; box: PageBox };
 export type StructureLine = {
   id: string;
   sourceId: string;
-  origin?: "pdf_native_crop";
+  origin?: "pdf_native_crop" | "local_ocr_crop";
   text: string;
   box: PageBox;
   quad: MaterialLine["normalizedQuad"];
@@ -76,6 +81,7 @@ export type StructurePage = {
   rasterSource?: { resourceId: string; version: string };
   rawText: string;
   nativeRecovery?: import("./material-native-text").NativeGapRecovery;
+  printedRecovery?: PrintedStructureRecovery;
   lines: StructureLine[];
   regions: PageBlock[];
   columns: PageBox[];
@@ -131,6 +137,7 @@ export type StructurePageInput = {
   layoutEngine: string;
   rasterSource?: { resourceId: string; version: string };
   nativeRecovery?: import("./material-native-text").NativeGapRecovery;
+  printedRecovery?: PrintedStructureRecovery;
   lines: MaterialLine[];
   regions: PageBlock[];
 };

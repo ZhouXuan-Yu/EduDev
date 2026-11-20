@@ -1,5 +1,8 @@
 import { nativePdfText } from "./material-native-text-host";
 import { recoverNativeGaps } from "./material-native-gap";
+import { recoverStructurePage } from "./material-document-structure";
+import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
+import type { Quad } from "../../shared/material-layout";
 import type { NativeGapRecovery } from "../../shared/material-native-text";
 import { createHash, randomUUID } from "node:crypto";
 import { deflateSync } from "node:zlib";
@@ -353,25 +356,61 @@ export class MaterialStructureRuntime {
         },
       );
     }
-    return {
-      input: {
-        resourceId: resource.id,
-        version: resource.contentHash,
-        page,
-        totalPages: layout.total,
-        rasterSha256: layout.rasterSha256,
-        sourceEngine: layout.engine,
-        layoutEngine: result.pageBlocks.receipt.engine,
-        rasterSource: {
-          resourceId: rasterResource.id,
-          version: layout.inputSha256,
-        },
-        ...(nativeRecovery ? { nativeRecovery } : {}),
-        lines: layout.lines,
-        regions: result.pageBlocks.receipt.blocks,
+    const input: StructurePageReceipt["input"] = {
+      resourceId: resource.id,
+      version: resource.contentHash,
+      page,
+      totalPages: layout.total,
+      rasterSha256: layout.rasterSha256,
+      sourceEngine: layout.engine,
+      layoutEngine: result.pageBlocks.receipt.engine,
+      rasterSource: {
+        resourceId: rasterResource.id,
+        version: layout.inputSha256,
       },
-      image,
+      ...(nativeRecovery ? { nativeRecovery } : {}),
+      lines: layout.lines,
+      regions: result.pageBlocks.receipt.blocks,
     };
+    await this.recoverPrinted(input, bytes, image, signal);
+    return { input, image };
+  }
+
+  private async recoverPrinted(input: StructurePageReceipt["input"], bytes: Buffer, image: OriginalImage, signal: AbortSignal) {
+    const structure = recoverStructurePage(input);
+    let raster: Electron.NativeImage | undefined;
+    const original = () => raster ??= nativeImage.createFromBuffer(bytes);
+    let pixels: Buffer | undefined;
+    signal.throwIfAborted();
+    const blanks = printedBlanks(structure, box => printedBlankStripe({
+      width: image.width, height: image.height, pixels: pixels ??= original().toBitmap(),
+    }, box));
+    const parents: NonNullable<StructurePageReceipt["input"]["printedRecovery"]>["parents"] = [];
+    for (const { number, crop } of printedParentProbes(structure)) {
+      signal.throwIfAborted();
+      const x = Math.floor(crop[0] * image.width), y = Math.floor(crop[1] * image.height);
+      const cut = original().crop({
+        x, y, width: Math.ceil(crop[2] * image.width) - x, height: Math.ceil(crop[3] * image.height) - y,
+      });
+      const size = cut.getSize();
+      const normalized = cut.resize({ width: size.width * 2, height: size.height * 2, quality: "best" });
+      try {
+        const receipt = await recognizeLocalImage(normalized.toPNG({ scaleFactor: 1 }), signal);
+        const found = readPrintedParent(receipt, number);
+        if (!found) continue;
+        const quad: Quad = [[crop[0], crop[1]], [crop[2], crop[1]], [crop[2], crop[3]], [crop[0], crop[3]]];
+        parents.push({
+          crop, cropSha256: sha(cut.toPNG({ scaleFactor: 1 })), readings: found.readings, engine: receipt.engine,
+          ...(found.uncertain && { uncertain: true }),
+          line: { id: "printed-parent-" + number, kind: "text", needsReview: true, text: found.text, score: found.score,
+            normalizedQuad: quad, quad: quad.map(([a, b]) => [a * image.width, b * image.height]) as Quad },
+        });
+      } catch {
+        signal.throwIfAborted();
+        // Failed retries leave the original structural review result available.
+      }
+    }
+    if (blanks.length || parents.length) input.printedRecovery = { blanks, parents };
   }
 
   async document(

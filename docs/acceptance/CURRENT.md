@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 印刷题号与填空恢复
+
+印刷题号与填空修复覆盖五三主书逐题读回和三种真实试卷的桌面导入。见 [专项验收](../research/evidence/kb/20261120/printed-structure/README.md)。
+
 ## 2026-11-20 审批忙碌时的焦点
 
 审批详情读取中可用 Escape 退出并恢复入口焦点。两尺寸、鼠标进入后用键盘退出、迟到响应以及原工作台九项回归通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
