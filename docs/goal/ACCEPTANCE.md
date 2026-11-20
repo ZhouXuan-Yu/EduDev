@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 同册 PDF 印刷选择题答案
+
+同册印刷答案专项核对真实导入、独立原图、冷启、答案冲突、题面修订和题库边界。跨页复杂印刷答案、真实留出集与 KB-A01～A10 整体继续验收。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)
+
 ## 2026-11-21 PDF 章节边界生成来源草稿
 
 章节边界专项要求真实候选 A–D 选项、原图、题本和冷启读回，并隔离正式检索及同页真实冲突。KB-A01～A10 继续验收。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)

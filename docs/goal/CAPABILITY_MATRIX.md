@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 同册 PDF 印刷选择题答案
+
+M03/M05 复用 Word 印刷答案行解析、PDF 原生坐标与 PDFium 原页预览。使用已有本地队列、QuestionDocument 原印角色和题本原图入口。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)
+
 ## 2026-11-21 PDF 章节边界生成来源草稿
 
 M03/M05 复用 PDF 页回执、原生坐标和布局标题区，证明冲突页上独立题组的正文范围。M05 继续沿原有题本身份与正式状态发布。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)

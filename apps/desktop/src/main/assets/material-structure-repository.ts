@@ -24,7 +24,7 @@ import {
 import type { MaterialParseLease } from "./material-parse-queue";
 import type { OriginalImage } from "./question-assets";
 import type { QuestionDocument } from "../../shared/question-document";
-import { QUESTION_DOCUMENT_SCHEMA, QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA, type CompleteQuestionDocument, isCompleteQuestionDocument, questionDocumentSchemaForRoles, validQuestionDocument } from "../../shared/question-document";
+import { QUESTION_DOCUMENT_SCHEMA, QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA, type CompleteQuestionDocument, detachedSourceAnswer, isCompleteQuestionDocument, questionDocumentSchemaForRoles, validQuestionDocument } from "../../shared/question-document";
 import { validQuestionContextEdit, type QuestionContextEditInput } from "../../shared/question-context-edit";
 import { QUESTION_CONTEXT_SCHEMA, validQuestionContextSource, type QuestionContextSource } from "../../shared/question-context";
 import { projectionFormulasInQuestion } from "../../shared/question-projection";
@@ -42,6 +42,10 @@ import {
   type StructureIllustrationPage, type StructureIllustrationPlan, type StructureIllustrationProof,
 } from './material-structure-illustrations';
 import { checkedStructureArchive, STRUCTURE_BANK_REVISION } from "./material-structure-bank";
+import {
+  alignPdfChoiceAnswers, isPrintedAnswerCoverPart, literalPrintedChoiceProjection, pdfChoiceHeadings, pdfPrintedAnswers,
+  type PdfChoiceHeading, type PdfPrintedAnswers,
+} from "./material-pdf-printed-answers";
 
 type Value = string | number | null;
 type Row = Record<string, unknown>;
@@ -370,6 +374,58 @@ export class MaterialStructureRepository {
     return proof.slices;
   }
 
+  private async readPrintedAnswers(resource: TeacherResource, page: StructurePage, image: OriginalImage) {
+    if (page.sourceEngine !== PDF_LAYOUT_ENGINE || page.rasterSource?.resourceId !== resource.id ||
+        page.rasterSource.version !== resource.contentHash || page.resourceId !== resource.id ||
+        page.version !== resource.contentHash || image.resourceId !== resource.id ||
+        image.version !== resource.contentHash || image.page !== page.page || image.total !== page.totalPages ||
+        image.sha256 !== page.rasterSha256 || JSON.stringify(image.box) !== "[0,0,1,1]") return;
+    const [stored] = await this.host.all(
+      `SELECT p.result_json FROM material_pdf_jobs j JOIN material_pdf_pages p ON p.generation=j.generation
+       WHERE j.resource_id=? AND j.version=? AND j.total=? AND j.state IN ('partial','complete') AND p.page=?`,
+      [resource.id, resource.contentHash, page.totalPages, page.page],
+    );
+    if (!stored || typeof stored.result_json !== "string") return;
+    const receipt: unknown = JSON.parse(stored.result_json);
+    if (validPdfFilePage(receipt) && receipt.width === image.width && receipt.height === image.height)
+      return pdfPrintedAnswers(page, receipt);
+  }
+
+  private async bindPrintedAnswers(
+    generation: string, key: PdfPrintedAnswers, headings: Map<string, PdfChoiceHeading | null>, signal: AbortSignal,
+  ) {
+    for (const section of key.sections) {
+      signal.throwIfAborted();
+      const heading = headings.get(section.scope.ordinal);
+      const boundary = key.cover.anchor;
+      if (!heading || heading.page > boundary.page) continue;
+      const rows = await this.host.all(
+        `SELECT id,body_json,document_json,sha256 FROM material_structure_questions
+         WHERE generation=? AND first_page>=? AND last_page<=?
+           AND json_extract(body_json,'$.kind')='question' AND json_extract(body_json,'$.section')=?
+         ORDER BY first_page,rowid LIMIT 201`,
+        [generation, heading.page, boundary.page, heading.text],
+      );
+      const questions = rows.map(row => JSON.parse(String(row.body_json)) as StructureQuestion);
+      if (questions.some(question => question.anchors.some(anchor => anchor.page === boundary.page &&
+          anchor.box[3] >= boundary.box[1]))) continue;
+      const aligned = alignPdfChoiceAnswers(heading, section, questions);
+      for (const [index, question] of questions.entries()) {
+        const source = aligned.get(question.id), row = rows[index];
+        if (!source || !row.document_json) continue;
+        const document = JSON.parse(String(row.document_json)) as QuestionDocument;
+        if (document.answer.origin !== "missing" || document.answer.text ||
+            hash({ question, document }) !== row.sha256) throw Error("source_changed");
+        document.answer = { origin: "source", text: source.text, anchors: [source.anchor] };
+        if (!validQuestionDocument(document)) throw Error("structure_document_invalid");
+        await this.host.run(
+          "UPDATE material_structure_questions SET document_json=?,sha256=? WHERE generation=? AND id=? AND sha256=?",
+          [JSON.stringify(document), hash({ question, document }), generation, question.id, String(row.sha256)],
+        );
+      }
+    }
+  }
+
   async complete(
     resource: TeacherResource,
     signal: AbortSignal,
@@ -383,6 +439,9 @@ export class MaterialStructureRepository {
       paragraphs = 0,
       count = 0,
       held = 0;
+    const printedHeadings = new Map<string, PdfChoiceHeading | null>();
+    const printedPdf = /\.pdf$/i.test(resource.originalFileName);
+    let coverCount = 0, printedAnswers: PdfPrintedAnswers | undefined;
     const save = async (question: StructureQuestion) => {
       signal.throwIfAborted();
       const rows = await this.host.all(
@@ -461,9 +520,10 @@ export class MaterialStructureRepository {
           [generation, page],
         )
       )[0];
-      let structure: StructurePage;
+      let structure: StructurePage, image: OriginalImage;
       if (cached) {
         structure = JSON.parse(String(cached.body_json));
+        image = JSON.parse(String(cached.image_json));
         if (
           hash(structure) !== cached.sha256 ||
           structure.engine !== DOCUMENT_STRUCTURE_ENGINE ||
@@ -474,6 +534,7 @@ export class MaterialStructureRepository {
       } else {
         const receipt = await this.host.page(resource, page, signal);
         structure = recoverStructurePage(receipt.input);
+        image = receipt.image;
         await this.host.writer(async (target) => {
           await target.guard(resource, generation, signal, lease);
           await target.host.run(
@@ -490,7 +551,20 @@ export class MaterialStructureRepository {
       }
       total = structure.totalPages;
       paragraphs += structure.paragraphs.length;
-      for (const question of assembler.push(structure)) await save(question);
+      let localAnswers: PdfPrintedAnswers | undefined;
+      if (printedPdf) {
+        const cover = structure.paragraphs.findIndex(isPrintedAnswerCoverPart);
+        for (const heading of pdfChoiceHeadings(structure, cover < 0 ? structure.paragraphs.length : cover)) {
+          if (printedHeadings.size >= 200 && !printedHeadings.has(heading.scope.ordinal)) break;
+          printedHeadings.set(heading.scope.ordinal, printedHeadings.has(heading.scope.ordinal) ? null : heading);
+        }
+        if (cover >= 0) {
+          coverCount += structure.paragraphs.filter(isPrintedAnswerCoverPart).length;
+          localAnswers = await this.readPrintedAnswers(resource, structure, image);
+          if (coverCount === 1) printedAnswers = localAnswers;
+        }
+      }
+      for (const question of assembler.push(structure, localAnswers?.cover.id)) await save(question);
       await this.host.run(
         `UPDATE material_structure_jobs SET pages=?,processed=?,paragraphs=?,questions=?,held=?,updated_at=? WHERE resource_id=? AND generation=? AND lease=?`,
         [
@@ -510,6 +584,8 @@ export class MaterialStructureRepository {
     await this.host.verify(resource.id, resource.contentHash, signal);
     await this.host.writer(async (target) => {
       await target.guard(resource, generation, signal, lease);
+      if (coverCount === 1 && printedAnswers)
+        await target.bindPrintedAnswers(generation, printedAnswers, printedHeadings, signal);
       await target.host.run(
         "DELETE FROM material_structure_chunks WHERE generation=?",
         [generation],
@@ -1072,6 +1148,8 @@ export class MaterialStructureRepository {
     if (!q.archive?.sourceChecked || q.archive.state !== "teacher_edited") throw Error("permission_denied");
     const { question } = await this.validate(q, signal);
     const p = input.projection;
+    if (detachedSourceAnswer(q.document) && !literalPrintedChoiceProjection(question,p.statement.text,p.choices.text))
+      throw Error("source_answer_question_changed");
     const frozen = question.stem + "\n" + p.statement.text;
     if (!projectionFormulasInQuestion(p) ||
         ((structureIllustrationAssets(question).length > 0 ||

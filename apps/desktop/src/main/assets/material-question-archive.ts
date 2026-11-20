@@ -19,6 +19,7 @@ import type {QuestionContextSource} from '../../shared/question-context';
 import {DOCUMENT_STRUCTURE_ENGINE,type DocumentStructureReference} from '../../shared/material-document-structure';
 import {assertStructureDraftEditable,hasIdenticalVisibleStructureDraft,publishStructureDrafts,stageStructureDraft,structureDraftHidden,STRUCTURE_BANK_REVISION} from './material-structure-bank';
 import {printedStructureQuestionType} from './material-structure-question-type';
+import {detachedSourceAnswer} from '../../shared/question-document';
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
 type Row=Record<string,unknown>;type Value=string|number|null;
 const printedTypeCursor='xiaozhi.structure-printed-question-types.cursor.v1';
@@ -275,8 +276,8 @@ export class MaterialQuestionArchive{
          const fields: QuestionBankItemInput &
            import("../../shared/question-archive").ArchiveFields = {
            stem: q.stem,
-           answer: q.answer,
-           analysis: q.analysis,
+           answer: candidate.document.answer.text,
+           analysis: candidate.document.analysis.text,
            subject: metadata.subject || "",
            grade: metadata.grade || "",
            knowledgePoint: metadata.knowledgePoint || "",
@@ -297,10 +298,8 @@ export class MaterialQuestionArchive{
            issues: [...archiveMissing(fields), "missing_difficulty"],
            sourceRisks: [],
            sourceChecked: false,
-           answerOrigin: q.answer ? ("source" as const) : ("missing" as const),
-           analysisOrigin: q.analysis
-             ? ("source" as const)
-             : ("missing" as const),
+           answerOrigin: candidate.document.answer.origin === "source" ? ("source" as const) : ("missing" as const),
+           analysisOrigin: candidate.document.analysis.origin === "source" ? ("source" as const) : ("missing" as const),
            structure: candidate.reference,
          };
          const saved = await target.host.create(fields);
@@ -473,6 +472,8 @@ export class MaterialQuestionArchive{
   await target.validate(q,false,true);
   if(q.archive.web&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.web!.roles[role]&&fields[role]===q[role]))throw new Error('web_answer_question_changed');
   if(q.archive.book&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.book!.roles[role]&&fields[role]===q[role]))throw Error('book_answer_question_changed');
+  if(q.archive.structure&&fields.stem!==q.stem&&fields.answer===q.answer&&detachedSourceAnswer(q.document))
+   throw Error('source_answer_question_changed');
   // A checkbox cannot restore a missing figure or expand an intentionally incomplete long-question placeholder.
   const issues=archiveIssuesAfterEdit(q.archive,q,fields,input.sourceChecked);
   const archive={...q.archive,state:'teacher_edited' as const,issues,sourceChecked:input.sourceChecked,answerOrigin:fields.answer===q.answer?q.archive.answerOrigin:fields.answer?'teacher':'missing',analysisOrigin:fields.analysis===q.analysis?q.archive.analysisOrigin:fields.analysis?'teacher':'missing'};

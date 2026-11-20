@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 同册 PDF 印刷选择题答案
+
+有据的同册 PDF 印刷选择答案专项覆盖独立导入和答案原图。核对跨版、错题号、数字冲突、低分框、题面修改及正式检索边界。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)
+
 ## 2026-11-21 PDF 章节边界生成来源草稿
 
 原生标题边界专项覆盖实际材料页重建、题本原图和启动读回，以及伪标题、偏离基线、重复题号和正式检索隔离。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)

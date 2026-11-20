@@ -29,6 +29,14 @@ export const QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA='xiaozhi.question-illustrat
 export type QuestionIllustrations={schemaVersion:typeof QUESTION_ILLUSTRATIONS_SCHEMA|typeof QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA;complete:boolean;blockIds:string[]};
 export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation;illustrations?:QuestionIllustrations;sourceContent?:QuestionSourceContent}});
 export type CompleteQuestionDocument=Extract<QuestionDocument,{context:unknown}>;
+/** An answer printed apart from the question's own crops has an independent source region. */
+export function detachedSourceAnswer(document:QuestionDocument|undefined):QuestionAnchor|undefined{
+ if(document?.answer.origin!=='source'||document.answer.anchors.length!==1)return;
+ const [anchor]=document.answer.anchors;
+ if(!document.blocks.some(block=>block.anchors.some(region=>region.page===anchor.page&&
+   region.box[0]<anchor.box[2]&&region.box[2]>anchor.box[0]&&region.box[1]<anchor.box[3]&&region.box[3]>anchor.box[1])))
+  return anchor;
+}
 export function isCompleteQuestionDocument(v:QuestionDocument|undefined):v is CompleteQuestionDocument{return !!v&&(v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA);}
 export function hasTeacherTextPresentation(v:QuestionDocument|undefined):v is CompleteQuestionDocument&{context:{presentation:QuestionTextPresentation&{mode:'teacher_text'}}}{return isCompleteQuestionDocument(v)&&v.context.presentation?.mode==='teacher_text';}
 /** Both forms require host source authentication; a bare image block grants nothing. */

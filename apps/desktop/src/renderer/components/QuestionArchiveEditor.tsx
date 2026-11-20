@@ -27,7 +27,7 @@ export function QuestionArchiveEditor({question,onSaved,openDisabled=false}:{que
   }catch(error){
    setError(written?'补正已提交，但重新读取题本失败。输入仍保留，请重新读取保存结果，或取消编辑后稍后查看。':
     error instanceof Error&&/structure_draft_superseded/.test(error.message)?'资料已重建，此草稿转为历史记录。请复制需要保留的文字，再刷新题本并打开新版题目。':
-    error instanceof Error&&/web_answer_question_changed|book_answer_question_changed/.test(error.message)?'题面已改变，请同时核对修改或清空原来源答案与解析后再保存；旧来源记录会保留。':'保存失败：题目或原资料可能已变化。请取消编辑并重新打开，检查原件后重试。');
+    error instanceof Error&&/web_answer_question_changed|book_answer_question_changed|source_answer_question_changed/.test(error.message)?'题面已改变，请同时核对修改或清空原来源答案与解析后再保存；旧来源记录会保留。':'保存失败：题目或原资料可能已变化。请取消编辑并重新打开，检查原件后重试。');
   }finally{setBusy(false);}
  }
  return <section ref={editRoot} data-testid={'question-archive-'+question.id} className="question-archive">

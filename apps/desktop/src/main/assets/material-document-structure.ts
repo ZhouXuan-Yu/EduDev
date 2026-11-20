@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
 import {applyAssessmentNumbers,restoreAssessmentFormulaOrder,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
+import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
   DOCUMENT_STRUCTURE_ENGINE,
@@ -608,8 +609,9 @@ export class StructureQuestionAssembler {
   private instructions = false;
   private answers = false;
   private sequence = 0;
-  push(page: StructurePage): StructureQuestion[] {
+  push(page: StructurePage, printedAnswerCoverId?: string): StructureQuestion[] {
     const output: StructureQuestion[] = [];
+    let printedAnswerPage = false;
     let choiceCaptions: Set<string> | undefined;
     let uncertainLeadingTableColumn: number | undefined;
     const pending = this.pending;
@@ -642,7 +644,9 @@ export class StructureQuestionAssembler {
       if (choiceCaptions?.has(paragraph.id)) continue;
       if (["header", "footer", "figure", "note"].includes(paragraph.role))
         continue;
-      if (paragraph.role === "heading") {
+      if (paragraph.id === printedAnswerCoverId || paragraph.role === "heading") {
+        if (paragraph.id === printedAnswerCoverId) printedAnswerPage = true;
+        else if (printedAnswerPage && isPrintedExamTitle(paragraph.rawText)) printedAnswerPage = false;
         if (paragraph.text === this.section) continue;
         if (this.pending) output.push(this.finish());
         this.section = paragraph.text;
@@ -656,7 +660,7 @@ export class StructureQuestionAssembler {
         this.instructions = /考生注意|注意事项|考试说明|作答要求/u.test(
           paragraph.text,
         );
-        this.answers = /参考答案|答案[及与和]解析|答案详解/u.test(
+        this.answers = printedAnswerPage || /参考答案|答案[及与和]解析|答案详解/u.test(
           paragraph.text,
         );
         continue;

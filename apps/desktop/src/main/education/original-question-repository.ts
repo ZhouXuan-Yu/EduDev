@@ -1,7 +1,7 @@
 import {appendContextRevision} from './question-context-revision';
 import {validQuestionContextEdit,type QuestionContextEditInput} from '../../shared/question-context-edit';
-import {isCompleteQuestionDocument} from '../../shared/question-document';
-import {ORIGINAL_MULTI_ACTION,ORIGINAL_MULTI_MAX_IMAGE_BYTES} from '../../shared/original-multi-review';
+import {detachedSourceAnswer,isCompleteQuestionDocument} from '../../shared/question-document';
+import {ORIGINAL_MULTI_ACTION,ORIGINAL_MULTI_MAX_IMAGE_BYTES,type OriginalGalleryImage} from '../../shared/original-multi-review';
 import {validQuestionProjection,type QuestionProjection} from '../../shared/question-projection';
 import {contextHistory,latestOriginalVersion,type ContextRevision} from './question-context-revision';
 import {createHash,randomUUID} from 'node:crypto';
@@ -100,7 +100,29 @@ export class OriginalQuestionRepository{
   const saved:QuestionContextSource={schemaVersion:QUESTION_CONTEXT_SCHEMA,questionId:q.id,version:questionVersion(savedQ)},effect:Effect={schemaVersion:ORIGINAL_REVIEW_SCHEMA,complete:true,draft,saved,digest:hash({id:r.id,sessionId:r.session_id,runId:r.run_id,proposal:p,draft,saved})};
   await sql.run(`UPDATE ai_confirmation_items SET status='confirmed',result_json=?,confirmed_at=?,updated_at=? WHERE id=? AND status='pending'`,[JSON.stringify(effect),at,at,input.id]);await afterWrite?.(current);await this.sourceCurrent(p,new AbortController().signal);await this.assets.read(p.image,true,new AbortController().signal);check();return summary((await this.get(sql,input.sessionId,input.id)).r,p);
  });}
- async questionImages(questionId:string,version:string){const q=await this.host.read(questionId);if(!q||questionVersion(q)!==version)throw Error('source_changed');const signal=new AbortController().signal,automatic=await this.host.automatic?.(q,signal),images=automatic?.images??await this.host.reviewImages?.(q,signal);if(!images)return this.multi.questionImages(questionId,version);const latest=await this.host.read(questionId);if(!latest||questionVersion(latest)!==version)throw Error('source_changed');return images.map(i=>({...(i.kind?{kind:i.kind}:{}),...(i.choiceLabel?{choiceLabel:i.choiceLabel}:{}),role:i.role,page:i.page,assetId:i.assetId,sha256:i.sha256,dataUrl:'data:image/png;base64,'+i.bytes.toString('base64')}));}
+ async questionImages(questionId:string,version:string):Promise<OriginalGalleryImage[]>{
+  const q=await this.host.read(questionId);
+  if(!q||questionVersion(q)!==version)throw Error('source_changed');
+  const signal=new AbortController().signal,automatic=await this.host.automatic?.(q,signal);
+  const images=automatic?.images??await this.host.reviewImages?.(q,signal);
+  if(!images)return this.multi.questionImages(questionId,version);
+  const gallery:OriginalGalleryImage[]=images.map(image=>({
+   ...(image.kind?{kind:image.kind}:{}),...(image.choiceLabel?{choiceLabel:image.choiceLabel}:{}),
+   role:image.role,page:image.page,assetId:image.assetId,sha256:image.sha256,dataUrl:'data:image/png;base64,'+image.bytes.toString('base64'),
+  }));
+  const anchor=detachedSourceAnswer(q.document);
+  // A detached source answer is available to the teacher's gallery only.
+  // Automatic question images used by student output remain unchanged.
+  if(automatic&&q.archive?.structure&&anchor&&q.document){
+   const source=q.document.source;
+   const image=await previewMaterialPage(this.materials(),{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),
+    resourceId:source.resourceId,version:source.resourceVersion,page:anchor.page,box:anchor.box},signal,this.render,this.fileRender);
+   gallery.push({role:'answer',page:image.page,assetId:image.assetId,sha256:image.sha256,dataUrl:image.dataUrl});
+  }
+  const latest=await this.host.read(questionId);
+  if(!latest||questionVersion(latest)!==version)throw Error('source_changed');
+  return gallery;
+ }
  async questionImage(questionId:string,version:string){const q=await this.host.read(questionId);if(!q||questionVersion(q)!==version)throw new Error('source_changed');const automatic=await this.host.automatic?.(q,new AbortController().signal);if(automatic){const latest=await this.host.read(questionId);if(!latest||questionVersion(latest)!==version||automatic.images.length!==1)throw Error('source_changed');return 'data:image/png;base64,'+automatic.images[0].bytes.toString('base64');}const rows=await this.host.all(`SELECT * FROM ai_confirmation_items WHERE action_type=? AND status='confirmed' AND json_extract(result_json,'$.saved.questionId')=?`,[ORIGINAL_REVIEW_ACTION,questionId]);
   // Main-frame teacher notebook owns approved canonical questions, including archived-chat history.
   // This local-only receipt is never a Pi/student/model context or authority to approve a pending item.

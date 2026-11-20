@@ -60,6 +60,7 @@ const unclassifiedSection=/^[一二三四五六七八九十百0-9]{1,4}[.、][\p
 const scoreInstruction=/^(?:本[大]?题共\d{1,3}题|共\d{1,3}(?:题|分)|满分\d{1,3}分|(?:\d{1,3}(?:至|~|—|-)\d{1,3}题)?每(?:小)?(?:题|个空格)\d{1,3}分|每(?:小)?题只有一个(?:正确(?:答案|选项)|选项是正确的))$/u;
 const compactHeading=(text:string)=>text.normalize('NFKC').replace(/[\p{Zs}\t]/gu,'').trim();
 const hasOnlyScoringNotes=(notes:string)=>notes.split(/[,。.;]/u).filter(Boolean).every(part=>scoreInstruction.test(part));
+export const isPrintedExamTitle=(text:string)=>examTitle.test(compactHeading(text));
 export function printedScoringHeading(text:string){
  const heading=printedSection.exec(compactHeading(text));
  return !!heading?.[3]&&hasOnlyScoringNotes(heading[3]);
@@ -79,24 +80,31 @@ export function printedChoiceSection(text:string):PrintedChoiceSection|null|unde
  return {ordinal:scope,mode};
 }
 
-function inlineAnswerSpans(block:Paragraph,section:PrintedChoiceSection,plain:boolean):Array<[string,PrintedAnswer|null]>{
- const original=wordParagraphMap(block),text=original.slice(0,4096);
+/** Retain the literal offsets and recognized numbers even when a strip is incomplete. */
+export function printedChoiceTokens(original:string){
+ const text=original.slice(0,4096);
  const separators=/^[\s,，、;；。]*$/u;
  const tokens=[...text.matchAll(/([0-9０-９]{1,5})[.．、:：][ \t\u3000]*([A-HＡ-Ｈ]{1,8})/gu)];
- if(!tokens.length||!separators.test(text.slice(0,tokens[0].index)))return [];
+ if(!tokens.length||!separators.test(text.slice(0,tokens[0].index)))return {items:[],complete:false};
  let end=0;
- let complete=plain&&original.length===text.length;
- const items:Array<[string,PrintedAnswer|null]>=[];
+ let complete=original.length===text.length;
+ const items:{number:string;letters:string|undefined;start:number;from:number;to:number}[]=[];
  for(const entry of tokens){
   if(!separators.test(text.slice(end,entry.index)))complete=false;
   end=entry.index+entry[0].length;
   const number=entry[1].normalize('NFKC'),letters=choiceLetters(entry[2]);
   if(!/^[1-9]\d{0,4}$/u.test(number)){complete=false;continue;}
-  items.push([number,letters?{block,section,letters,span:{blockId:block.id,from:end-entry[2].length,to:end}}:null]);
+  items.push({number,letters,start:entry.index,from:end-entry[2].length,to:end});
   if(!letters)complete=false;
  }
+ return {items,complete:complete&&separators.test(text.slice(end))};
+}
+
+function inlineAnswerSpans(block:Paragraph,section:PrintedChoiceSection,plain:boolean):Array<[string,PrintedAnswer|null]>{
+ const {items,complete}=printedChoiceTokens(wordParagraphMap(block));
  // An incomplete second strip is still conflicting evidence for its printed numbers.
- return complete&&separators.test(text.slice(end))?items:items.map(([number])=>[number,null]);
+ return items.map(({number,letters,from,to})=>[number,plain&&complete&&letters
+  ?{block,section,letters,span:{blockId:block.id,from,to}}:null]);
 }
 
 /** A complete printed answer strip contributes only each entry's literal letter span. */
