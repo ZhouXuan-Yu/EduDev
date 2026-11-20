@@ -87,7 +87,7 @@ function context(
   return result;
 }
 
-async function readPage(
+export async function readAiStructurePage(
   host: Host,
   source: MaterialPageSource,
   generation: string,
@@ -268,7 +268,7 @@ export async function withAiStructureSource(
   signal.throwIfAborted();
   const job = await readPublishedAiStructureJob(host, source);
   if (!job) return original;
-  const { page, image, sha256 } = await readPage(
+  const { page, image, sha256 } = await readAiStructurePage(
     host,
     source,
     String(job.generation),
@@ -321,7 +321,7 @@ export async function validateAiStructureSource(
     frozen.reference.rasterSha256 !== rasterSha256
   )
     throw Error("source_changed");
-  const { page, image, sha256 } = await readPage(
+  const { page, image, sha256 } = await readAiStructurePage(
     host,
     source,
     frozen.reference.generation,

@@ -15,10 +15,10 @@ function fixture(status='blank'){
  CREATE TABLE question_notebook_bookmarks(question_id TEXT PRIMARY KEY,bookmarked INTEGER);
  CREATE TABLE question_notebook_category_links(question_id TEXT,category_id TEXT);
  CREATE TABLE question_bank_usage(question_id TEXT);
- CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER,contains_personal_data INTEGER,chunk_index INTEGER,content_md TEXT,structure_search_hidden INTEGER NOT NULL DEFAULT 0);
+ CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT,title TEXT NOT NULL DEFAULT '原页');CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER,contains_personal_data INTEGER,chunk_index INTEGER,content_md TEXT,heading TEXT,structure_search_hidden INTEGER NOT NULL DEFAULT 0);
  CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT,state TEXT);CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,error TEXT);`);
  const error=status==='failed'?'ocr_failed':status==='needs_review'?'ocr_unreliable':'',ocr=status==='complete'?'本地乱码#???':'';
- db.prepare("INSERT INTO teacher_resources VALUES(?,?,'原页.pdf','partial')").run(id,version);db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'partial')").run(id,version,generation);db.prepare('INSERT INTO material_pdf_pages VALUES(?,1,?,?,?)').run(generation,status,JSON.stringify({status,error,method:status==='blank'?'blank':status==='failed'?'failed':'ocr',nativeText:'',ocrText:ocr,text:ocr,width:status==='failed'?0:100,height:status==='failed'?0:100,imageArea:1,nativeBoxes:[]}),error);
+ db.prepare("INSERT INTO teacher_resources(id,content_hash,original_file_name,parse_status) VALUES(?,?,'原页.pdf','partial')").run(id,version);db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'partial')").run(id,version,generation);db.prepare('INSERT INTO material_pdf_pages VALUES(?,1,?,?,?)').run(generation,status,JSON.stringify({status,error,method:status==='blank'?'blank':status==='failed'?'failed':'ocr',nativeText:'',ocrText:ocr,text:ocr,width:status==='failed'?0:100,height:status==='failed'?0:100,imageArea:1,nativeBoxes:[]}),error);
  const bodyId='chunk_'+randomUUID();if(status==='complete')db.prepare('INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,0,0,?)').run(bodyId,id,ocr);
  const map=r=>({...r,resourceId:r.resource_id,chunkIndex:r.chunk_index,contentMd:r.content_md,pageNumber:r.page_number,containsPersonalData:!!r.contains_personal_data});
  const window=(offset,limit)=>db.prepare('SELECT * FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id LIMIT ? OFFSET ?').all(id,limit,offset)
@@ -73,7 +73,7 @@ await check('PDF preparation binds each current page chunk to its physical offse
  const f=fixture('complete');
  try{
   await f.init();
-  const insert=f.db.prepare('INSERT INTO resource_chunks VALUES(?,?,?,0,?,?,?)');
+  const insert=f.db.prepare('INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md,structure_search_hidden) VALUES(?,?,?,0,?,?,?)');
   insert.run('chunk_'+randomUUID(),f.id,2,1,'other page content',0);
   insert.run('chunk_'+randomUUID(),f.id,1,2,'superseded page excerpt',1);
   for(let i=0;i<20;i++)insert.run('chunk_'+randomUUID(),f.id,1,i+3,'derived page excerpt '+i,0);
@@ -280,7 +280,6 @@ await check('New image source cannot masquerade as PDF; malformed opt-in, stop f
 async function indexedPage(mode='ordinary',total=1){
  const f=await completed('blank',mode,total);
   const {MaterialFullTextSearch}=await import('../../src/main/assets/material-full-text.ts'),{RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
-  f.db.exec("ALTER TABLE teacher_resources ADD COLUMN title TEXT NOT NULL DEFAULT '原页';");
   let rag;const map=r=>({id:r.id,resourceId:r.resource_id,chunkIndex:r.chunk_index||0,pageNumber:r.page_number,contentMd:r.content_md,containsPersonalData:!!r.contains_personal_data});
   const lexical=new MaterialFullTextSearch({...f.host,map,restored:()=>rag?.restoredText});await lexical.migrate();
   rag=new RetrievalRepository({...f.host,chunk:map,question:r=>r,fullText:()=>lexical,keyword:async()=>[],page:(batchId,ordinal)=>f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:async t=>t,writer:async action=>{f.db.exec('BEGIN IMMEDIATE');try{const v=await action(rag);f.db.exec('COMMIT');return v;}catch(e){f.db.exec('ROLLBACK');throw e;}}});await rag.migrate();

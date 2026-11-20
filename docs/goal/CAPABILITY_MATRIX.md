@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 独立答案册页眉遮盖
+
+M05/M10 在现有答案册两遍转录入口增加本地页眉遮盖，复用 PDFium、RapidOCR 和现有版面结构，保留原有答案索引与配答。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)
+
 ## 2026-11-21 M05/M10 答案册关联与原有授权
 
 独立答案册零派发隐私失败支持新角色关联。资料页和目录入口共用同一个 SQLite 事务。关联、答案来源和模型传输各按已有证据独立生效。 [本轮记录](../research/evidence/kb/20261121/book-zero-dispatch/README.md)
