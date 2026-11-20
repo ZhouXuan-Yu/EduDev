@@ -6,6 +6,7 @@ import {EmbeddingClient} from './embedding-client';
 import {materialId} from '../../shared/materials';
 import {CATALOG_VECTOR_IDS} from '../../shared/material-catalog';
 import {questionGradeLabels} from '../../shared/question-grade';
+import {questionTypeLabels} from '../../shared/question-type';
 import {IndexAccess} from './index-access';
 import {loadMaintenance,maintainTables,type MaintainedTables} from './vector-maintenance';
 import {RETRIEVAL_BATCH_OBJECTS,RETRIEVAL_BATCH_TEXT,RETRIEVAL_BATCH_BYTES,validGeneration,EMBEDDING_ID,EMBEDDING_MODEL,EMBEDDING_TOKENIZER,type GenerationSpec,type RetrievalFact,type VectorQuery,type VectorCandidate} from '../../shared/retrieval';
@@ -92,7 +93,12 @@ export class LocalVectorStore{
     if(!vector){vector=(await this.encoder.embed('query',[input.query]))[0][0].vector;if(this.queries.size>=32)this.queries.delete(this.queries.keys().next().value!);this.queries.set(cacheKey,vector);}
     const clauses=['kind = '+quoted(input.kind)];
     if(input.resourceIds)clauses.push('resource_id IN ('+input.resourceIds.map(quoted).join(',')+')');
-    for(const [key,column]of [['resourceId','resource_id'],['subject','subject'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){const value=input[key];if(value!==undefined){if(typeof value!=='string'||value.length>128)throw Error('invalid_input');clauses.push(column+' = '+quoted(value));}}
+    for(const [key,column]of [['resourceId','resource_id'],['subject','subject'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){const value=input[key];if(value!==undefined){if(typeof value!=='string'||value.length>128)throw Error('invalid_input');clauses.push(column+' = '+quoted(value));}}
+    if(input.questionType!==undefined){
+      if(typeof input.questionType!=='string'||input.questionType.length>128)throw Error('invalid_input');
+      const types=input.kind==='question'?questionTypeLabels(input.questionType):[input.questionType];
+      clauses.push(types.length===1?'question_type = '+quoted(types[0]):'question_type IN ('+types.map(quoted).join(',')+')');
+    }
     if(input.grade!==undefined){
       if(typeof input.grade!=='string'||input.grade.length>128)throw Error('invalid_input');
       const grades=input.kind==='question'?questionGradeLabels(input.grade):[input.grade];

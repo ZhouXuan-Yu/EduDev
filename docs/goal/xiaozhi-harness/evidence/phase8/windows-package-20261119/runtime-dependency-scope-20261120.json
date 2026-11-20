@@ -44,6 +44,37 @@
     "firstPackagingAttempt": {"exitCode": -1, "state": "STOPPED_FOR_LICENSE_CONFIG", "stage": "TEMP/omni-edu-harness-pruned-package-5e553613", "logSha256": "57855059e9f2aafc477aa9db736aed4c1c4c09bc5347ef1c7050c82b9b9f5da9"}
   },
   "licenseConfigPreflight": {"passed": 4, "report": "TEMP/xiaozhi-pi-package-license-J2xz8k/report.json", "sha256": "9118b15a02f5141a0b16162e275eb640ba4860fa66287a77b02897841767493b"},
+  "unpackedWorker": {"command": "node <stage>/probe-education.mjs", "passed": 2, "exitCode": 0, "reportedWorkerExitCodes": [0, 2], "systemPathEmpty": true, "report": "TEMP/omni-edu-harness-pruned-package-final-5e553613/education-worker-probe.json", "sha256": "d16bb076a178184a061db9ffa4fd673c6a90bf5a4ea0a3c6f3d8bd9386046638"},
+  "packagingSourceCommit": "9e80732",
+  "packagingCommand": "node node_modules/electron-builder/out/cli/cli.js --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+  "packagingStage": "TEMP/omni-edu-harness-pruned-package-final-5e553613",
+  "packagingConfigWrapperSha256": "39d77121fc20d3903a16c361c7d1040b045f41d29610ce6a05c0d1ddf1ee3a84",
+  "sealedUnpackedIndependent": {
+    "reviewer": "GPT-6.1 Terra High", "status": "PASS_SCOPED",
+    "report": "TEMP/omni-edu-package-independent-BbciQp/sealed-tree-report.json", "sha256": "38b4becf8b5eca42a8f9f57b85b60f97f2d9b1832266593f74946a47019a6ed2",
+    "outMatches481BuildFiles": true, "licenseAndProvenanceFilesMatch": 4,
+    "validatedRuntimeFiles": {"ocr-runtime": 712, "page-blocks-runtime": 767, "education-runtime": 90, "retrieval-runtime": 154, "reranker-runtime": 155},
+    "physicalDependencyDirsScoped": 2688, "piWebAccessPresent": false, "mcpTypeScriptSdkPresent": false, "rootUndici": "7.30.1", "otherUndiciVersions": ["8.10.2", "6.29.0"],
+    "exeMachine": "0x8664", "exeBytes": 239500288, "exeSha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+    "scope": "Physical npm package absence is a fact about the staged package tree. This does not establish the content of every bundled dependency or execute the application or installer."
+  },
+  "mainIntegration": {
+    "upstreamMain": "19cc837", "cwd": "apps/desktop", "buildCommand": "npm.cmd run build -- --outDir test-results/harness-runtime-dependency-scope-main/out",
+    "exitCode": 0, "includesTypecheck": true, "outFiles": 481, "outSha256": "039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6",
+    "mainSha256": "e6361b71c72f2d8a985e260b528a8977d960686868d19a38375a2091ae84edfc", "buildLogSha256": "2cd839f2eaf7c1d51ae2dc3ec2fc3d193171f567cafdd8ea1c509efd86010a8c",
+    "coreToolSourceHash": "ebdc1027d6bfd74538c3fc5a15101b7b2440f06fea93180fd7f1119a17773152",
+    "tests": [
+      {"command": "node --experimental-transform-types scripts/education/kb-chinese-question-recall.mjs", "passed": 9, "exitCode": 0, "logSha256": "7ff49fdc5d96a5340292bdbf5a9c89433f7db331591eb15cf65d57013db6e263"},
+      {"command": "node --experimental-transform-types scripts/education/paper-basket-boundaries.mjs", "passed": 45, "exitCode": 0, "logSha256": "b926926684d934e86ad9ab34ffb0eb71c23f29b21da8ca79034a7e33824ba200"}
+    ],
+    "scope": "Build and targeted regressions on merged source. The unpacked artifact source remains the earlier packagingSourceCommit."
+  },
+  "nsisAtCheckpoint": {
+    "state": "COMPRESSING", "observedUtc": "2026-11-20T11:58:59.8306271Z", "shellSessionId": 64114, "compressionPid": 26832,
+    "archiveBytesAtObservation": 95147699, "installerExistsAtObservation": false,
+    "resume": "Observe the same session and stage for terminal evidence. Independently read the archive only after settlement."
+  },
+  "qg09Environment": {"host": "Windows 11 Home 26200", "hypervisorPresent": true, "availableManagedWindowsGuest": false, "observedWsl": ["docker-desktop (stopped, Linux)"]},
   "paidRequestsAdded": 0,
   "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST"
 }

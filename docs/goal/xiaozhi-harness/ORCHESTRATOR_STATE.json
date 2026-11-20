@@ -763,6 +763,15 @@
     "evidence": "evidence/phase8/undici-network-runtime-patch-20261120.json",
     "newPaidCalls": 0
   },
+  "buildOnlyWebPackage20261120": {
+    "status": "UNPACKED_VERIFIED_NSIS_COMPRESSING",
+    "packagingSourceCommit": "9e80732",
+    "evidence": "evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json",
+    "archiveProcessIdAtCheckpoint": 26832,
+    "packagingShellSession": 64114,
+    "continueCondition": "Observe this same packager until it settles. Then obtain independent archive evidence. QG-09 still requires clean interactive Windows.",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

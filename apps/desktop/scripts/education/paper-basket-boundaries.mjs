@@ -380,6 +380,19 @@ try {
     assert.equal((await alias.papers.review(alias.sid,confirmed.id)).digest,confirmed.digest);
     } finally {alias.close();}
   });
+  await check('A generic choice section accepts labelled subtypes, and specific sections require the exact subtype', async () => {
+    const original={grade:'初二',subject:'数学',sourceKind:'teacher_resource'};
+    const section={id:'a',label:'选择题',questionType:'选择题',count:1,points:5};
+    const b={...blueprint([section]),grade:original.grade,subject:original.subject};
+    const matches=(actual,expected)=>paperSectionMatches({...original,questionType:actual},b,{...section,questionType:expected});
+    for(const actual of ['选择题','choice','单项选择题','多选题','不定项选择题'])assert(matches(actual,'选择题'),actual);
+    assert(matches('单项选择题','单选题'));
+    assert(matches('多选题','多项选择题'));
+    assert(!matches('选择题','单选题'));
+    assert(!matches('多选题','单选题'));
+    assert(!matches('不定项选择题','多选题'));
+    assert(!matches('填空题','选择题'));
+  });
   const generations = path.join(output, 'existing-generations');
   fs.mkdirSync(generations);
   await basketApprovalBoundaries(check, output);

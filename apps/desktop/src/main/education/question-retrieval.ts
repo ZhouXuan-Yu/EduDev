@@ -1,6 +1,7 @@
 /// <reference lib="es2022.intl" />
 import type {QuestionSearchFilters,QuestionNotebookFilters} from '../../shared/contracts';
 import {questionGradeLabels} from '../../shared/question-grade';
+import {questionTypeLabels} from '../../shared/question-type';
 import {sourceCandidateHidden} from '../assets/material-question-origins';
 
 type Value=string|number|null;
@@ -82,7 +83,12 @@ export function validatedQuestionFilters(raw:QuestionSearchFilters):QuestionSear
 /** One predicate for notebook and Pi. Every metadata filter is ANDed before LIMIT. No semantic claims. */
 export function questionRetrievalWhere(raw:QuestionSearchFilters,indexed:boolean){
  const filters=validatedQuestionFilters(raw),clauses:string[]=[],params:Value[]=[];
- for(const [key,column]of [['subject','subject'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){if(filters[key]){clauses.push(`q.${column} = ?`);params.push(filters[key]!);}}
+ for(const [key,column]of [['subject','subject'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){if(filters[key]){clauses.push(`q.${column} = ?`);params.push(filters[key]!);}}
+ if(filters.questionType){
+  const types=questionTypeLabels(filters.questionType);
+  clauses.push(types.length===1?'q.question_type = ?':`q.question_type IN (${types.map(()=>'?').join(',')})`);
+  params.push(...types);
+ }
  if(filters.grade){
   const grades=questionGradeLabels(filters.grade);
   clauses.push(grades.length===1?'q.grade = ?':`q.grade IN (${grades.map(()=>'?').join(',')})`);

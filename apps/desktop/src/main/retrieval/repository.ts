@@ -14,6 +14,7 @@ import type {AiPageView} from '../../shared/material-ai-page';
 import type {MaterialFullTextSearch} from '../assets/material-full-text';
 import {validatedQuestionFilters,questionRetrievalWhere} from '../education/question-retrieval';
 import {questionGradeLabels} from '../../shared/question-grade';
+import {questionTypeLabels} from '../../shared/question-type';
 import type {QuestionBlock} from '../../shared/question-document';
 import {RERANK_ID,RERANK_LIMIT,RERANK_CANDIDATE_LIMIT,RERANK_BUDGET_MS,type RerankCoverage} from '../../shared/reranker';
 import {rerankContext} from './rerank-context';
@@ -331,11 +332,13 @@ export class RetrievalRepository{
     for(const q of lexicalBefore){const current=await this.fact('question',q.id);if(!current.question||current.fact.deleted||current.fact.digest!==hash(questionFacts(q)))continue;lexical.push(current.question);found.set(q.id,current.question);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});}
     const semanticVisible=await this.visibleQuestions(semantic.hits.map(hit=>hit.id));
     const grades=filters.grade?questionGradeLabels(filters.grade):undefined;
+    const types=filters.questionType?questionTypeLabels(filters.questionType):undefined;
     for(const hit of semantic.hits){if(ids.includes(hit.id)||!semanticVisible.has(hit.id))continue;const current=await this.fact('question',hit.id),q=current.question;
       if(!q||current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest)continue;
       if (filters.questionNumber && q.archive?.number !== filters.questionNumber) continue;
       if(grades&&!grades.includes(q.grade))continue;
-      if(['subject','questionType','difficulty','sourceKind'].some(key=>filters[key as keyof QuestionSearchFilters]!==undefined&&q[key as keyof QuestionBankItem]!==filters[key as keyof QuestionSearchFilters]))continue;
+      if(types&&!types.includes(q.questionType))continue;
+      if(['subject','difficulty','sourceKind'].some(key=>filters[key as keyof QuestionSearchFilters]!==undefined&&q[key as keyof QuestionBankItem]!==filters[key as keyof QuestionSearchFilters]))continue;
       if(filters.knowledgePoint&&!q.knowledgePoint.includes(filters.knowledgePoint))continue;
       found.set(q.id,q);ids.push(q.id);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});
     }

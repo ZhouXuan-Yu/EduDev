@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 缩小 Windows 发行依赖范围
+
+已将完整 `pi-web-access` 移到构建依赖，保留原网页查找组件。网页和包边界回归 15/15、7/7。生产依赖审计从 23 项降至 22 项，high 从 8 降至 7。独立核对 `win-unpacked` 的 481 个构建文件、五套运行时和四份许可及来源文件，包内未发现完整 `pi-web-access`。真实随包教育助手两项通过。NSIS 在本记录时仍压缩，继续观察同一运行。QG-09 仍需干净 Windows。 [版本与证据](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)
+
 ## 2026-11-20 联网直接依赖修复
 
 直接网络运行时从 Undici `7.24.7` 更新至 `7.30.1`。MCP 传输 11/11、网络副作用 8/8，固定 NASA 公开网页返回 HTTP 200。构建、组件和新依赖下的独立 C2 4/4 通过。审计已排除直接实例，报告的 8 项 high 计数仍在。 [实际路径和测试](evidence/phase8/undici-network-runtime-patch-20261120.json)
