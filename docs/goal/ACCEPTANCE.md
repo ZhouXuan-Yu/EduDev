@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 PDF 裁题迁移后的原页与原图
+
+真实 PDF 源页重定位后可读，两题三图通过正式选题、确认与冷读专项。完整 KB-A09、配对答案册与 KB-A06 三套交付仍需验收。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)
+
 ## 2026-11-20 原生 Word 题迁移后的来源读取
 
 通过备份数据库重定位后的原生 Word 题桌面组卷和冷启动原图核验，覆盖同尺寸改动和生产派发。完整 KB-A09、PDF 回执和三套确认卷的导出仍继续。 [专项报告](../research/evidence/kb/20261120/native-receipt-relocation/README.md)

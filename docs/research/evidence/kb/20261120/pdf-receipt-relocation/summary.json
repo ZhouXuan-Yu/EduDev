@@ -1,0 +1,43 @@
+{
+  "previousDesktopBuild": "08f2b8eaff5b1a4245905b71e7ce46e6a75cdce4",
+  "integratedMain": "ad5217392c2083d25d234635841ee8b3c38c82cc",
+  "mainBundleSha256": "985ba92189b54611ebc6cbbd2c93fb28eda6927f935fafdff616be1426939830",
+  "realElectron": {
+    "productionDatabaseRelocation": true,
+    "pageTextReadableBeforeAfter": [false, true],
+    "selectedBeforeAfter": [0, 2],
+    "sourceUnavailableBeforeAfter": [2, 0],
+    "composeMsBeforeAfter": [504, 927],
+    "confirmed": true,
+    "originalCropsVerified": 3,
+    "originalPdfTamperBlocked": true,
+    "cropTamperBlocked": true,
+    "historicalEditBlocked": true,
+    "coldReadback": true,
+    "frozenUnitsAndQuestionRowsUnchanged": true,
+    "newPaidBatchCalls": 0
+  },
+  "tests": {
+    "renderer": 253,
+    "electronSmoke": 207,
+    "aiPage": 250,
+    "nativeDispatch": 17,
+    "nativeRelocation": 2,
+    "nativeLedger": 20,
+    "structureBook": 17,
+    "legacyBook": 36,
+    "backup": 4
+  },
+  "isolatedInventory": {
+    "ruleDrafts": 3082,
+    "ruleDraftsMissingSubjectGradeKnowledgePoint": 3082,
+    "ruleDraftsMissingAnswer": 2995,
+    "ruleDraftsMissingAnalysis": 2725,
+    "ruleDraftsWithAmbiguousNumber": 2833,
+    "aiFinal": 16,
+    "teacherEdited": 2
+  },
+  "npmAudit": {"existingAdvisories": 23, "high": 8, "dependencyChanges": false},
+  "fullCrossMachineRestore": "open",
+  "pairedAnswerBookRelocation": "open"
+}

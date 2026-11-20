@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 PDF 裁题迁移后的原页与原图
+
+M03/M05 读取归档 PDF 页可按原件内容和冻结回执恢复来源，M06 复用同一来源检查。教师编辑和后台补核使用生产文件身份。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)
+
 ## 2026-11-20 原生 Word 题迁移后的来源读取
 
 `MaterialAiRepository.nativeTranscription` 使用内部读、发布、编辑用途。只有历史读触发移动文件复核，完整来源认证复用原文件版本和持久 AI 输入、图像与结果证据。

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "7ac52d4b4e3b79cc47641e4c7c3e9371c987a0b22dac24644d185263968ef2f9"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "bac1b5a85d3a9c8eda87ef2297d58863819f0a4236f703dcb0db264ca4d35548"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "9d1b7162a1bb0d379e0d01b0aa39523f7856b633eefa146f72241b4dae4e5e89"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "bd433e140fa913817aefb092ba794cc55226d99cfe13d5f5202240a64dd49dff"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-ai-page-boundaries.mjs",
+      "sha256": "31bd44703ce5181033169fa95aa0d429296492180efb7ceec9283c39c59f47c4"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-paper-grade-electron.mjs",
+      "sha256": "7db3e8d1ebf953ac7a190cbf2f110b7f5f625ef99587348277eebd3238381943"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "46ea1c65baff0e47f957cb7a6752f930d6acfe5a3d747ee8a559639d1bf4c07e"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "922c57d8c573b374b843e025fe83f6ec27b7cadc901646b0c3870de74266e8c8"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "cf12c04af455e2b5c792e921008c30eeb7992a0a44cdd0de5be7e4dd13281291"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "30cce46d44dd5bb8609a39ca12f3274b112fbd8b3afbca18cf564acd4cab5eb2"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "2d4880b05a21c264e3d06e41cbe23b444ebc8084e8f1592c2ec04b4ecb48f6c1"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "52be7a9366462f17085d784d10a796b51878481418b4ed24e844db6c8f7a6168"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "b891482fc09f2c2a5db9dac7dc1a0f72c5329a3f95e4b5eeccfffe63e18a29b0"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "cde0aad49d57251b91b4e7eb5ccb5791c05a4d367b683354d2d74c6739793987"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "461a9d20e4a50975c6c5cac799397cdb64fa31a3a317a8e9ed9acd772c421a31"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "55d1d76aac278dad000b575024f1297ef04471e83565c1d51a699dad5fe19a6a"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "be1dfb728c998c32072af30cd5e159dd3b45aed32a05c5502bd74f33700219d4"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/pdf-receipt-relocation/README.md",
+      "sha256": "27998406cfb0b4bb1f5b2c0b37ecb0185f4843c77f4617d687c9f069be5affed"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/pdf-receipt-relocation/summary.json",
+      "sha256": "1d205c3067921388a0709d99b9a9542a3f94d8909d44fa5039370184d4d468e4"
+    }
+  ]
+}

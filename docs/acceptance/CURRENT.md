@@ -8,6 +8,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 PDF 裁题迁移后的原页与原图
+
+旧版 0/2、新版 2/2，真实页面、3 张题图、集中确认和重启读回通过。原件与裁图各自改动均阻止正式确认。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)
+
 ## 2026-11-20 原生 Word 题迁移后的来源读取
 
 以同一真实资料库的备份目录副本验证原件、原图、确认卷和重启。负例为修改同长度原件、重新生产派发与编辑。 [专项证据](../research/evidence/kb/20261120/native-receipt-relocation/README.md)

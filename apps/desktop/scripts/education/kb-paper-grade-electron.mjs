@@ -9,6 +9,10 @@ import {productEntry} from '../product-navigation.mjs';
 
 const previous=JSON.parse(fs.readFileSync('test-results/kb-grade-search-after-electron.log','utf8').trim().split(/\r?\n/).at(-1));
 assert(previous.ok && previous.baseline===false);
+const pdfBaseline=process.argv.includes('--pdf-stamp-baseline');
+const pdfRestored=pdfBaseline||process.argv.includes('--pdf-relocation');
+const grade=pdfRestored?'初中':'高中三年级';
+const topics=pdfRestored?['电功率','欧姆定律与电功率']:previous.results.map(({term})=>term);
 const source=path.join(fs.realpathSync(previous.root),'data');
 assert(path.relative(fs.realpathSync(os.tmpdir()), source).startsWith('edudev-grade-search-'));
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'edudev-paper-grade-'));
@@ -26,8 +30,8 @@ try {
     const relative=path.relative(data,local_path);
     assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
   }
-  for(const {term} of previous.results){
-    const rows=writer.prepare('SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND knowledge_point=?').all('物理','高三',term);
+  for(const term of topics){
+    const rows=writer.prepare('SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND knowledge_point=?').all('物理',pdfRestored?'初中':'高三',term);
     assert.equal(rows.length,1);
     questionRows.push(rows[0]);
   }
@@ -46,7 +50,7 @@ const nativeRelocated=!baseline&&!stampBaseline;
 const gradeControl=baseline||process.argv.includes('--grade-control');
 const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:''};
 for(const key of ['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'])delete env[key];
-const title='年级别名原题验证 '+randomUUID().slice(0,8);
+const title=(pdfRestored?'PDF 裁题迁移验证 ':'年级别名原题验证 ')+randomUUID().slice(0,8);
 let app,page;
 async function launch(){
   app=await electron.launch({args:[path.join(build,'main/index.js'),'--user-data-dir='+path.join(root,'profile')],env,timeout:90000});
@@ -62,7 +66,7 @@ async function automatic(){
     await page.getByTestId('paper-basket-new').click();
     const dialog=page.getByTestId('paper-basket-create-dialog');
     await dialog.getByTestId('paper-practice-subject').fill('物理');
-    await dialog.getByTestId('paper-practice-grade').fill('高三');
+    await dialog.getByTestId('paper-practice-grade').fill(grade);
     await dialog.getByTestId('paper-basket-create').click();
     await dialog.waitFor({state:'hidden'});
   }
@@ -216,20 +220,102 @@ async function verifyGradeControl(natural){
   return report;
 }
 
+async function withTamperedFile(file,action){
+  const original=fs.readFileSync(file),changed=Buffer.from(original);
+  changed[changed.length-1]^=1;
+  fs.writeFileSync(file,changed);
+  try{await action();}finally{fs.writeFileSync(file,original);}
+}
+
+async function verifyPdfRelocation(){
+  const archive=JSON.parse(questionRows[1].archive_json);
+  const {batchId,ordinal}=archive.ai;
+  assert.equal(archive.ai.policy,'page-crop-complete.v1');
+  const query={schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal};
+  const view=()=>page.evaluate(request=>window.omniEdu.getMaterialAiPage(request),query);
+  if(pdfBaseline)await assert.rejects(view(),/source_changed/);
+  else{
+    const result=await view();
+    assert.deepEqual(result.source,archive.pageSource);
+    assert(result.ocrText&&result.text);
+  }
+  await automatic();
+  const natural=await draft(grade,questionRows),items=natural.payload.selection.items;
+  assert.equal(items.length,pdfBaseline?0:2);
+  assert.equal(natural.payload.selection.excluded.source_unavailable,pdfBaseline?2:0);
+  const report={pdfBaseline,root,selected:items.length,sourceUnavailable:natural.payload.selection.excluded.source_unavailable,composeMs:natural.milliseconds};
+  if(pdfBaseline)return report;
+  assert.deepEqual(items.map(i=>i.question.id),questionRows.map(q=>q.id));
+  const {question,source}=items[1],paper={schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:natural.record.session_id,id:natural.record.id};
+  const unit=()=>read('SELECT * FROM material_ai_units WHERE batch_id=? AND ordinal=?',batchId,ordinal)[0];
+  const frozenUnit=unit();
+  const preview=()=>page.evaluate(input=>window.omniEdu.getMaterialAiPage(input),{...query,cropPreview:{number:archive.number,index:0}});
+  const gallery=item=>page.evaluate(input=>window.omniEdu.getOriginalQuestionGallery(input),
+    {schemaVersion:'xiaozhi.education.original-review.v2',questionId:item.question.id,version:item.source.version});
+  const sha=dataUrl=>createHash('sha256').update(Buffer.from(dataUrl.split(',')[1],'base64')).digest('hex');
+  async function checkCrops(){
+    let count=0;
+    for(const item of items){
+      const images=await gallery(item),expected=item.question.document.blocks.filter(b=>b.kind==='image');
+      assert(images.ok&&expected.length>0);
+      assert.deepEqual(images.value.map(i=>[i.assetId,i.page,sha(i.dataUrl)]),expected.map(b=>[b.assetId,b.anchors[0].page,b.sha256]));
+      count+=expected.length;
+    }
+    const {cropPreview}=await preview();
+    const first=question.document.blocks.find(b=>b.kind==='image');
+    assert.equal(sha(cropPreview.dataUrl),first.sha256);
+    return count;
+  }
+  const crops=await checkCrops();
+  const local=read('SELECT local_path FROM teacher_resources WHERE id=?',archive.pageSource.resourceId)[0].local_path;
+  assert.equal(path.dirname(path.resolve(local)),path.join(data,'teacher_resources'));
+  await withTamperedFile(local,async()=>{
+    await assert.rejects(view(),/source_changed/);
+    assert.deepEqual(await gallery(items[1]),{ok:false,error:'source_changed'});
+    const attempted=await page.evaluate(p=>window.omniEdu.decidePaper({...p,revision:1,action:'confirm'}),paper);
+    assert(!attempted.ok&&attempted.error==='source_changed');
+  });
+  const firstImage=question.document.blocks.find(b=>b.kind==='image');
+  assert.match(firstImage.assetId,/^asset_[a-f0-9-]{36}$/);
+  await withTamperedFile(path.join(data,'question-assets','v1',firstImage.assetId+'.png'),async()=>{
+    await assert.rejects(preview(),/unavailable|source_changed/);
+    assert.equal((await gallery(items[1])).ok,false);
+    const attempted=await page.evaluate(p=>window.omniEdu.decidePaper({...p,revision:1,action:'confirm'}),paper);
+    assert(!attempted.ok&&attempted.error==='source_changed');
+  });
+  const edit={questionId:question.id,version:source.version,sourceChecked:true,fields:Object.fromEntries(
+    ['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'].map(field=>[field,question[field]]))};
+  await assert.rejects(page.evaluate(request=>window.omniEdu.editArchivedQuestion(request),edit),/source_changed/);
+  await page.getByTestId('paper-confirm').click();
+  await page.getByTestId('paper-confirmed').waitFor();
+  await app.close();
+  app=undefined;
+  await launch();
+  const cold=await page.evaluate(request=>window.omniEdu.reviewPaper(request),paper);
+  assert(cold.ok&&cold.value.state==='confirmed'&&cold.value.sourceCurrent&&cold.value.exportCurrent);
+  assert.deepEqual(cold.value.selection.items.map(i=>i.source),items.map(i=>i.source));
+  assert.equal(await checkCrops(),crops);
+  assert.deepEqual(unit(),frozenUnit);
+  return {...report,confirmed:true,crops,coldReadback:true,pdfTamperBlocked:true,cropTamperBlocked:true,editBlocked:true};
+}
+
 try{
   await launch();
-  await automatic();
-  const natural=await draft('高中三年级',questionRows);
-  assert.equal(natural.payload.selection.items.length,nativeRelocated?2:0);
-  assert.equal(natural.payload.selection.excluded.source_unavailable,nativeRelocated||baseline?0:2);
-  assert.equal(await page.getByTestId('paper-confirm').isDisabled(),!nativeRelocated);
   let report;
-  if(!gradeControl){
-    const result=nativeRelocated?await verifyRelocatedPaper(natural):{};
-    report={root,stampBaseline,selected:natural.payload.selection.items.length,
-      sourceUnavailable:natural.payload.selection.excluded.source_unavailable,composeMs:natural.milliseconds,paidCalls:0,...result};
+  if(pdfRestored){
+    report=await verifyPdfRelocation();
   }else{
-    report=await verifyGradeControl(natural);
+    await automatic();
+    const natural=await draft(grade,questionRows);
+    assert.equal(natural.payload.selection.items.length,nativeRelocated?2:0);
+    assert.equal(natural.payload.selection.excluded.source_unavailable,nativeRelocated||baseline?0:2);
+    assert.equal(await page.getByTestId('paper-confirm').isDisabled(),!nativeRelocated);
+    if(gradeControl)report=await verifyGradeControl(natural);
+    else{
+      const result=nativeRelocated?await verifyRelocatedPaper(natural):{};
+      report={root,stampBaseline,selected:natural.payload.selection.items.length,
+        sourceUnavailable:natural.payload.selection.excluded.source_unavailable,composeMs:natural.milliseconds,paidCalls:0,...result};
+    }
   }
   assert.equal(paid(),beforeCalls);
   for(const q of questionRows)assert.deepEqual(read('SELECT * FROM question_bank_items WHERE id=?',q.id)[0],q);

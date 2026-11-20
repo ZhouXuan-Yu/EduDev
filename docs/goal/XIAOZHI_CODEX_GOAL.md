@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 PDF 裁题迁移后的原页与原图
+
+独立 PDF 页归档在恢复重定位后通过来源、原图与组卷核验。自然题定稿库存、三套整卷、独立检索、源题与答案册迁移、安装换机和混合规模继续按 KB-A01～A10 验收。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)
+
 ## 2026-11-20 原生 Word 题迁移后的来源读取
 
 已接通归档原生 Word 题在备份目录重定位后的主链读取与组卷。PDF 页回执、完整换机、独立检索、批量规模和三套整卷继续按 KB-A01～A10 验收。

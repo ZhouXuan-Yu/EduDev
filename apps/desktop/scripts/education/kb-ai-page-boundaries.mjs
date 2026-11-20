@@ -23,6 +23,10 @@ function fixture(status='blank'){
  const unit=()=>{const row=db.prepare('SELECT * FROM resource_chunks WHERE id=?').get(bodyId);return row?{resourceId:id,version,title:'原页',offset:0,chunk:{id:bodyId,resourceId:id,chunkIndex:0,contentMd:row.content_md,pageNumber:row.page_number,containsPersonalData:!!row.contains_personal_data}}:undefined;};
  const materials={resource:async()=>({id,contentHash:version,originalFileName:'原页.pdf',title:'原页',parseStatus:'partial'}),originalStamp:async()=>state.stamp,verify:async()=>{},readingWindow:async(_id,offset)=>({units:offset===0&&unit()?[unit()]:[],hasMore:false}),source:async source=>{const u=unit();if(!u||JSON.stringify(materialSource(u))!==JSON.stringify(source))throw Error('source_changed');return{body:{chunks:[u.chunk]}};}};
  const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},materials:()=>materials,map:r=>r,create:async fields=>{const v={...fields,id:'question_'+randomUUID(),createdAt:'x',updatedAt:'x'};db.prepare("INSERT INTO question_bank_items(id,archive_json) VALUES(?,'')").run(v.id);saved.push(v);return v;},writer:async(action,before)=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);before?.();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new MaterialAiRepository(host);
+ materials.verifyOriginalVersion=async(resourceId,expected,signal)=>{
+  signal.throwIfAborted();assert.equal(resourceId,id);assert.equal(expected,version);
+  if(state.originalChanged)throw Error('source_changed');
+ };
  repo.configure({codec:{available:()=>true,seal:v=>v,open:v=>v},clean:async v=>state.mode==='privacy'?v.replaceAll('张同学','[个人信息]'):v,image:async()=>{if(state.mode==='busy_image_once'){state.mode='normal';throw Error('busy');}return{mime:'image/png',data:Buffer.from('controlled-owned-image').toString('base64')};},complete:async input=>{
   state.calls++;(state.prompts??=[]).push(input.pagePrompt??null);assert(input.image);assert.equal(input.page,true);assert.equal(input.text,ocr);
   if(state.mode==='unknown')throw Error('outcome_unknown');
@@ -63,6 +67,27 @@ async function imageFixture(status='blank'){
 let checks=0;const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
 async function completed(status='blank',mode='normal',total=1){const f=fixture(status);await f.init();f.db.prepare('UPDATE material_pdf_jobs SET total=?').run(total);f.state.mode=mode;f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();return f;}
 const query=f=>({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:f.batch,ordinal:1});
+await check('Historical PDF pages accept reauthenticated bytes only while both the current original and the frozen receipts agree',async()=>{
+ const f=await completed();
+ try{
+  const question=await f.question(),frozen=f.db.prepare('SELECT * FROM material_ai_units').get();
+  f.state.stamp='new physical identity';
+  assert.equal((await f.repo.page(query(f))).text,text);
+  await f.repo.validate(question);
+  await assert.rejects(f.repo.validateForTeacherEdit(question),/source_changed/);
+  f.state.originalChanged=true;
+  await assert.rejects(f.repo.page(query(f)),/source_changed/);
+  f.state.originalChanged=false;
+  let observations=0;const materials=f.host.materials();
+  materials.originalStamp=async()=>++observations<=2?f.state.stamp:'replaced during read';
+  await assert.rejects(f.repo.page(query(f)),/source_changed/);
+  materials.originalStamp=async()=>f.state.stamp;
+  f.db.prepare('INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data) VALUES(?,?,1,1)').run('private',f.id);
+  await assert.rejects(f.repo.page(query(f)),/privacy_blocked/);
+  assert.deepEqual(f.db.prepare('SELECT * FROM material_ai_units').get(),frozen);
+  assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
 await check('Authorized blank/failed/needs-review OCR pages run both original-image phases, retain empty OCR and publish source-backed v5 questions',async()=>{for(const status of ['blank','failed','needs_review']){const f=await completed(status);try{assert.equal(f.state.calls,2,'An authorized blank OCR page cannot become zero-call no_questions');const question=await f.question();assert(question);assert(validQuestionArchive(question.archive));assert(archiveEligible(question));assert.equal(question.archive.schemaVersion,'xiaozhi.question-archive.v5');assert.equal(question.archive.sources.length,0);assert.equal(question.archive.pageSource.page,1);await f.repo.validate(question);const view=await f.repo.page(query(f));assert.equal(view.text,text);assert.equal(view.ocrText,'');assert.equal(f.db.prepare('SELECT COUNT(*) n FROM resource_chunks').get().n,0,'Do not fabricate an OCR body chunk');assert(!validQuestionArchive({...question.archive,schemaVersion:'xiaozhi.question-archive.v2'}));}finally{f.db.close();}}});
 await check('Ordinary textbook and truly blank pages retain two-pass full-page results without inventing questions',async()=>{for(const mode of ['ordinary','blank']){const f=await completed('blank',mode);try{assert.equal(f.state.calls,2);assert.equal(await f.question(),undefined);const view=await f.repo.page(query(f));assert.equal(view.status,mode==='blank'?'blank':'complete');assert.equal(!!view.text,mode!=='blank');assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'no_questions');}finally{f.db.close();}}});
 await check('Omitted questions, mismatched page transcripts, unclear pages, figure dependence and invented source answers stay held',async()=>{for(const mode of ['omitted','mismatch','unclear','figure','source_answer']){const f=await completed('blank',mode);try{assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'review',mode);const question=await f.question();if(question){assert(validQuestionArchive(question.archive));assert(!archiveEligible(question),mode);await f.repo.validate(question);if(mode==='source_answer')await assert.rejects(f.repo.validate({...question,archive:{...question.archive,state:'ai_final',issues:[]}}),/source_changed/);}assert.equal((await f.repo.page(query(f))).status,'needs_review');}finally{f.db.close();}}});
