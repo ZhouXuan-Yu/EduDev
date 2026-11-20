@@ -5,11 +5,13 @@ import {basketArray, validBasketEntryId, validBasketRevision} from './paper-bask
 export const PAPER_INSTANCE_SCHEMA = 'xiaozhi.paper-instance.v1' as const;
 export const PAPER_INSTANCE_CONTENT_BYTES = 128 * 1024;
 export type PaperInstanceRole = 'question' | 'answer' | 'analysis';
+export type PaperInstanceOptionImage = {blockId: string; sourceVersion: string};
+export type PaperInstanceOption = {label: string; text: string; sourceImages?: PaperInstanceOptionImage[]};
 export type PaperInstanceBlock =
   | {type: 'text'; text: string}
   | {type: 'formula'; latex: string}
   | {type: 'table'; rows: string[][]}
-  | {type: 'options'; items: {label: string; text: string}[]}
+  | {type: 'options'; items: PaperInstanceOption[]}
   | {type: 'subquestions'; items: {label: string; text: string}[]}
   | {type: 'sourceImage'; role: PaperInstanceRole; blockId: string; sourceVersion: string};
 export type PaperInstanceRoleContent = {mode: 'source'} | {mode: 'edited'; blocks: PaperInstanceBlock[]};
@@ -40,6 +42,16 @@ const safeText = (v: unknown): v is string => typeof v === 'string' && v.length 
   && !hasHtmlMarkup(v)
   && !/[\x00-\x08\x0b\x0c\x0e-\x1f]|(?:https?|file|data|javascript):|[a-z]:[\\/]|\\\\/i.test(v);
 const label = (v: unknown) => typeof v === 'string' && /^[\p{L}\p{N}()（）.、-]{1,24}$/u.test(v);
+const imageId = (v: unknown) => typeof v === 'string' && /^[a-zA-Z0-9_-]{1,120}$/.test(v);
+
+function validOption(item: unknown): boolean {
+  if (!plainStudentInput(item, ['label','text','sourceImages']) || !label(item.label) || !safeText(item.text)) return false;
+  if (!Object.hasOwn(item,'sourceImages')) return !!item.text.trim();
+  const images = item.sourceImages;
+  return basketArray(images, 8) && images.length > 0 && images.every(image =>
+    plainStudentInput(image, ['blockId','sourceVersion']) && imageId(image.blockId) && validInstanceDigest(image.sourceVersion)
+  ) && new Set(images.map(image => (image as PaperInstanceOptionImage).blockId)).size === images.length;
+}
 function validBlock(v: unknown): v is PaperInstanceBlock {
   if (!plainStudentInput(v, ['type','text','latex','rows','items','role','blockId','sourceVersion'])) return false;
   switch (v.type) {
@@ -49,7 +61,8 @@ function validBlock(v: unknown): v is PaperInstanceBlock {
       && v.rows.every(row => basketArray(row, 20) && row.length > 0 && row.every(safeText))
       && v.rows.every(row => (row as string[]).length === (v.rows as string[][])[0].length);
     case 'options': case 'subquestions': return plainStudentInput(v, ['type','items']) && basketArray(v.items, 30) && v.items.length > 0
-      && v.items.every(item => plainStudentInput(item, ['label','text']) && label(item.label) && safeText(item.text) && !!item.text.trim())
+      && v.items.every(item => v.type === 'options' ? validOption(item) :
+        plainStudentInput(item, ['label','text']) && label(item.label) && safeText(item.text) && !!item.text.trim())
       && new Set(v.items.map(item => (item as {label:string}).label)).size === v.items.length;
     case 'sourceImage': return plainStudentInput(v, ['type','role','blockId','sourceVersion'])
       && typeof v.role === 'string' && ['question','answer','analysis'].includes(v.role) && typeof v.blockId === 'string'
@@ -81,7 +94,8 @@ export function validPaperInstanceContent(v: unknown): v is PaperInstanceContent
     const role = v[key];
     if (!plainStudentInput(role, ['mode','blocks'])) return false;
     if (role.mode === 'source') { if (!plainStudentInput(role, ['mode'])) return false; }
-    else if (role.mode !== 'edited' || !basketArray(role.blocks, 200) || !role.blocks.length || !role.blocks.every(validBlock)) return false;
+    else if (role.mode !== 'edited' || !basketArray(role.blocks, 200) || !role.blocks.length || !role.blocks.every(validBlock) ||
+      key !== 'question' && role.blocks.some(block => block.type==='options' && block.items.some(item => item.sourceImages))) return false;
   }
   return new TextEncoder().encode(JSON.stringify(v)).length <= PAPER_INSTANCE_CONTENT_BYTES;
 }

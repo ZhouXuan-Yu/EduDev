@@ -1,15 +1,9 @@
 import {isRichPaperOfficeSchema} from '../../shared/paper-export';
-import type {QuestionBankItem} from '../../shared/contracts';
+export {structuredQuestionChoices as structuredPaperChoices} from '../../shared/question-document';
 import type {OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import type {OriginalQuestionRepository} from './original-question-repository';
 import type {NativeQuestionRepository} from '../assets/native-question-repository';
 
-/** Structure imports store option crops separately from the main source blocks. */
-export function structuredPaperChoices(q:QuestionBankItem) {
- return q.archive?.structure&&q.document
-  ? q.document.blocks.flatMap(block=>block.kind==='choices'?block.options:[])
-  : [];
-}
 /** Existing confirmed role ledger is the authority; document identifiers alone do not grant image access. */
 export async function resolvePaperOfficeImages(draft:OfficeDraft,originals:Pick<OriginalQuestionRepository,'officeImages'>,signal?:AbortSignal,natives?:Pick<NativeQuestionRepository,'officeImages'>):Promise<Map<string,Buffer>>{
  const result=new Map<string,Buffer>();if(!isRichPaperOfficeSchema(draft.schemaVersion))return result;

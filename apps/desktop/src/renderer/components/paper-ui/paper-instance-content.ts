@@ -1,6 +1,6 @@
-import {documentIllustrations,hasTeacherTextPresentation,isCompleteQuestionDocument} from '../../../shared/question-document';
+import {documentIllustrations,hasTeacherTextPresentation,isCompleteQuestionDocument,structuredQuestionChoices} from '../../../shared/question-document';
 import type {QuestionBlock} from '../../../shared/question-document';
-import type {PaperInstanceBlock, PaperInstanceContent, PaperInstanceRole} from '../../../shared/paper-instance';
+import type {PaperInstanceBlock, PaperInstanceOption, PaperInstanceContent, PaperInstanceRole} from '../../../shared/paper-instance';
 import type {PaperWorkspaceEntry} from './paper-basket-client';
 import {isChoiceQuestion, splitInstanceOptions} from './paper-instance-options';
 
@@ -31,6 +31,28 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
       case 'subquestion': return [{type: 'subquestions', items: [{label: block.label, text: text(block.blocks)}]}, ...figures(block.blocks)];
     }
   });
+  const sourceChoices = role === 'question' ? structuredQuestionChoices(q) : [];
+  if (sourceChoices.some(option => option.blocks.some(block => block.kind === 'image'))) {
+    const split = splitInstanceOptions(q.stem);
+    const savedChoices = isCompleteQuestionDocument(q.document) ? splitInstanceOptions(q.document.context.projection.choices.text) : undefined;
+    const textItems = (split ?? savedChoices)?.options.items ?? [];
+    const options: PaperInstanceOption[] = sourceChoices.map(option => {
+      const sourceImages = option.blocks.flatMap(block => block.kind === 'image' ? [{blockId:block.id,sourceVersion}] : []);
+      return {label:option.label,text:text(option.blocks) || textItems.find(item=>item.label===option.label)?.text || '',
+        ...(sourceImages.length?{sourceImages}:{})};
+    });
+    const order = textItems.filter(item=>options.some(option=>option.label===item.label)).map(item=>item.label);
+    const items = JSON.stringify(order)===JSON.stringify(options.map(item=>item.label))
+      ? textItems.map(item=>options.find(option=>option.label===item.label)??item) : options;
+    const statement = split?.statement || q.stem;
+    const context = isCompleteQuestionDocument(q.document) ? q.document.context.projection : undefined;
+    const extra = context ? (['formulas','tables','subquestions'] as const).flatMap(role => {
+      const content = context[role].text.trim();
+      return content && !statement.includes(content) ? [{type:'text' as const,text:content}] : [];
+    }) : [];
+    return [...(statement.trim()?[{type:'text' as const,text:statement}]:[]),...extra,{type:'options',items},
+      ...(documentIllustrations(q.document)?.blockIds.map(image) ?? [])];
+  }
   if (role === 'question' && q.document?.blocks.length && !isCompleteQuestionDocument(q.document)) return blocks(q.document.blocks);
   const native = q.archive?.native?.roles[role];
   const value = native?.text || q[role === 'question' ? 'stem' : role] || '';

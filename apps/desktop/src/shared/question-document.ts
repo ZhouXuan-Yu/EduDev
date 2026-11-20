@@ -39,6 +39,18 @@ export function independentQuestionImage(v:QuestionDocument|undefined,blockId:st
  if(!isCompleteQuestionDocument(v)||!documentIllustrations(v)?.blockIds.includes(blockId))return;
  const image=v.blocks.find(b=>b.id===blockId);return image?.kind==='image'?image:undefined;
 }
+/** Structured imports bind option crops separately from the body.
+ * Workspaces still need to verify the question version and gallery receipt. */
+export function structuredQuestionChoices(q: {archive?: {structure?: unknown}; document?: QuestionDocument}) {
+ return q.archive?.structure && q.document
+  ? q.document.blocks.flatMap(block => block.kind === 'choices' ? block.options : [])
+  : [];
+}
+export function structuredChoiceImage(q: Parameters<typeof structuredQuestionChoices>[0], label: string, id: string) {
+ const choices = structuredQuestionChoices(q).filter(option => option.label === label);
+ const image = choices.length === 1 && choices[0].blocks.find(block => block.id === id);
+ return image && image.kind === 'image' ? image : undefined;
+}
 /** Preserve both independent role sources; teacher removal of the last proof returns to the complete schema. */
 export function questionDocumentSchemaForRoles(v:Pick<QuestionDocument,'answer'|'analysis'>){return [v.answer,v.analysis].some(e=>e.origin==='web_extracted')?QUESTION_DOCUMENT_WEB_SCHEMA:[v.answer,v.analysis].some(e=>e.origin==='book_extracted')?QUESTION_DOCUMENT_BOOK_SCHEMA:QUESTION_DOCUMENT_COMPLETE_SCHEMA;}
 type ObjectValue=Record<string,unknown>;

@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 本卷编辑中的图形选项
+
+图形选项编辑专项覆盖原字母、图序、媒体哈希、学生/教师隔离、过期或错配图的拒绝和独立装置图保护。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)
+
 ## 2026-11-21 独立答案册页眉遮盖
 
 专项覆盖版面证据、原图关联、双遍输入和独立批次授权。详见单一证据报告。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)

@@ -15,18 +15,20 @@ const deliveryMessages: Record<string, string> = {
 
 function Blocks({blocks,entry,role,onReady}: {blocks: PaperInstanceBlock[];entry:PaperInstancePresentation;role:PaperInstanceRole;onReady?:(ready:boolean)=>void}) {
   const images=usePaperInstanceImages(entry,role,blocks,onReady);
+  const showImage=(blockId:string,label:string)=><figure key={blockId} data-testid="paper-instance-figure" data-block-id={blockId}>
+    {images.images[blockId]?<img src={images.images[blockId]} alt={label} style={{width:'auto',maxWidth:'100%'}}
+      data-testid="paper-instance-figure-image" onLoad={()=>images.onLoad(blockId)} onError={()=>images.onError(blockId)}/>:<p role="status">{images.loading?'正在读取本地配图…':'配图引用已保留，等待核实。'}</p>}
+  </figure>;
   return <>{blocks.map((block, index) => <div key={index} data-testid={`paper-instance-view-${block.type}`}>
     {block.type === 'text' && <QuestionMathText text={block.text}/>}
     {block.type === 'formula' && <QuestionMathText text={'$$' + block.latex + '$$'}/>}
     {block.type === 'table' && <table className="edu-paper-instance-display-table"><tbody>{block.rows.map((row, r) => <tr key={r}>
       {row.map((cell, c) => <td key={c}><QuestionMathText text={cell}/></td>)}</tr>)}</tbody></table>}
     {(block.type === 'options' || block.type === 'subquestions') && <div className="edu-paper-instance-items">
-      {block.items.map((item, i) => <div key={i}><strong>{item.label}.</strong><QuestionMathText text={item.text}/></div>)}
+      {block.items.map((item, i) => <div key={i}><strong>{item.label}.</strong>{item.text&&<QuestionMathText text={item.text}/>}
+        {block.type==='options'&&block.items[i].sourceImages?.map(ref=>showImage(ref.blockId,'选项 '+item.label+' 原图'))}</div>)}
     </div>}
-    {block.type === 'sourceImage' && <figure data-testid="paper-instance-figure" data-block-id={block.blockId}>
-      {images.images[block.blockId]?<img src={images.images[block.blockId]} alt={`本卷题面插图 ${index+1}`} style={{width:'auto',maxWidth:'100%'}}
-        data-testid="paper-instance-figure-image" onLoad={()=>images.onLoad(block.blockId)} onError={()=>images.onError(block.blockId)}/>:<p role="status">{images.loading?'正在读取本地配图…':'配图引用已保留，等待核实。'}</p>}
-    </figure>}
+    {block.type === 'sourceImage' && showImage(block.blockId,'本卷题面插图 '+(index+1))}
   </div>)}{images.error&&<p role="alert">{images.error}<Button variant="secondary" onPress={images.retry}>重新读取本卷配图</Button></p>}</>;
 }
 function Role({entry, role,onReady}: {entry: PaperInstancePresentation; role: PaperInstanceRole;onReady?:(ready:boolean)=>void}) {

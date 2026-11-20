@@ -120,5 +120,64 @@ try {
   check('late teacher-gallery reply cannot mount private role content after switching to student', () => {
     assert.equal(find('paper-basket-answer'), null); assert.equal(env.dom.window.document.querySelectorAll('img').length, 0);
   });
+  const graphic = structuredClone(shown);
+  const alternatives = ['A', 'B', 'C', 'D'].map((label, n) => ({label,
+    blocks: [image('choice_image_' + label, String(n + 4), String(n + 4))]}));
+  graphic.question.archive = {structure: {}};
+  graphic.question.questionType = '选择题'; graphic.question.stem = 'UNIT graphical choice statement';
+  graphic.question.document = {...structuredClone(document), blocks: [qImage,
+    {id: 'graphic_choices', kind: 'choices', anchors: qImage.anchors, options: alternatives}],
+    context: {...structuredClone(document.context), projection: {...structuredClone(document.context.projection),
+      statement: part(graphic.question.stem), choices: part('A. 图一 B. 图二 C. 图三 D. 图四')}}};
+  assert(validQuestionDocument(graphic.question.document));
+  const graphicSeed = seedInstanceRole(graphic, 'question');
+  graphic.instance.content = {...sourceContent(), question: {mode: 'edited', blocks: graphicSeed}};
+  const graphicGallery = alternatives.map(option => ({role: 'question', kind: 'diagram', choiceLabel: option.label,
+    page: 1, assetId: option.blocks[0].assetId, sha256: option.blocks[0].sha256,
+    dataUrl: 'data:image/png;base64,GRAPHIC_' + option.label}));
+  const graphicCalls = [];
+  f.api.getOriginalQuestionGallery = async input => {graphicCalls.push(input); return {ok: true, value: graphicGallery};};
+  await mountContent(graphic, false); await run();
+  check('student edited graphical choices render each nested source image under its exact original label', () => {
+    assert.equal(graphicCalls.length, 1);
+    assert.deepEqual(graphicCalls[0], {schemaVersion: 'xiaozhi.education.original-review.v2', questionId: graphic.questionId, version});
+    const rows = [...find('paper-instance-view-options').querySelectorAll('.edu-paper-instance-items > div')];
+    assert.equal(rows.length, 4);
+    rows.forEach((row, n) => {
+      assert.equal(row.querySelector('strong').textContent, alternatives[n].label + '.');
+      assert.equal(row.querySelectorAll('img').length, 1);
+      assert.equal(row.querySelector('figure').getAttribute('data-block-id'), alternatives[n].blocks[0].id);
+      assert.equal(row.querySelector('img').getAttribute('src'), graphicGallery[n].dataUrl);
+    });
+    assert.equal(find('paper-basket-answer'), null);
+    assert(!find('paper-instance-content').textContent.includes(document.answer.text));
+    assert(!find('paper-instance-content').textContent.includes(document.analysis.text));
+  });
+  f.api.getOriginalQuestionGallery = async () => ({ok: true, value: graphicGallery.map(item =>
+    ({...item, choiceLabel: item.choiceLabel === 'A' ? 'B' : item.choiceLabel === 'B' ? 'A' : item.choiceLabel}))});
+  await mountContent(graphic, false); await run();
+  check('gallery labels swapped despite matching asset hashes refuse all edited option images', () => {
+    assert.equal(find('paper-instance-content').querySelectorAll('img').length, 0);
+    assert(find('paper-instance-content').querySelector('[role="alert"]'));
+    assert.equal(find('paper-instance-view-options').querySelectorAll('strong').length, 4);
+  });
+  const {PaperInstanceBlockEditor} = await load('renderer/components/paper-ui/PaperInstanceBlockEditor.tsx');
+  let editorValue;
+  function GraphicalEditor() {
+    const [blocks, setBlocks] = React.useState(() => structuredClone(graphicSeed)); editorValue = blocks;
+    return React.createElement('div', null, blocks.map((block, n) => React.createElement(PaperInstanceBlockEditor,
+      {key: n, block, disabled: false, onChange: changed => setBlocks(old => old.map((value, i) => i === n ? changed : value))})));
+  }
+  await run(() => root.render(React.createElement(GraphicalEditor))); await run();
+  const graphicStem = find('paper-instance-text');
+  await fill(graphicStem, 'UNIT teacher edited graphical statement');
+  check('actual block editor locks source-image labels while statement changes preserve every bound option', () => {
+    const labels = [...env.dom.window.document.querySelectorAll('[data-testid="paper-instance-item-label"]')];
+    assert.deepEqual(labels.map(label => label.value), ['A', 'B', 'C', 'D']);
+    assert(labels.every(label => label.disabled)); assert.equal(graphicStem.disabled, false);
+    assert.equal(editorValue.find(block => block.type === 'text').text, 'UNIT teacher edited graphical statement');
+    assert.deepEqual(editorValue.find(block => block.type === 'options'), graphicSeed.find(block => block.type === 'options'));
+    assert.equal(env.dom.window.document.querySelectorAll('[data-testid="paper-instance-choice-images"]').length, 4);
+  });
   console.log(JSON.stringify({success: true, passed, scope: 'Actual renderer controls and saved/source-role rendering with typed unit DTOs; no actual Electron/Office or source fixture mutation'}));
 } finally {await env.close();}
