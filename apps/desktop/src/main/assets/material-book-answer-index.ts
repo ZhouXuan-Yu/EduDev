@@ -36,6 +36,21 @@ export class MaterialBookAnswerIndex{
   await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=4 WHERE id=1 AND section_policy<4');
  }
  async pending(){return !!(await this.host.all('SELECT 1 FROM material_book_answer_dirty_v1 UNION ALL SELECT 1 FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM material_book_answer_control_v1 WHERE id=1) LIMIT 1')).length;}
+ /** A saved proof waits for changes to its book version, including removals that lost their batch row. */
+ async bookPending(resourceId:string,version:string){
+  return !!(await this.host.all(`SELECT 1
+    FROM material_ai_batches b JOIN material_book_answer_dirty_v1 d ON d.batch_id=b.id
+    WHERE b.resource_id=? AND b.version=?
+    UNION ALL SELECT 1
+    FROM material_ai_batches b JOIN material_ai_page_units p ON p.batch_id=b.id
+    WHERE b.resource_id=? AND b.version=? AND p.rowid>(SELECT cursor FROM material_book_answer_control_v1 WHERE id=1)
+    UNION ALL SELECT 1
+    FROM material_book_answer_index_v1 e JOIN material_book_answer_dirty_v1 d ON d.batch_id=e.batch_id AND d.ordinal=e.ordinal
+    LEFT JOIN material_ai_batches b ON b.id=e.batch_id
+    WHERE e.resource_id=? AND e.version=? AND e.start=-1
+      AND (b.id IS NULL OR b.resource_id<>e.resource_id OR b.version<>e.version)
+    LIMIT 1`,[resourceId,version,resourceId,version,resourceId,version])).length;
+ }
  /** A dispatch dirties its unpublished current page. It cannot supersede a published title or answer. */
  async referencePending(source:{resourceId:string;version:string;page:number}){
   const unrelated=`NOT (b.resource_id=? AND b.version=? AND json_extract(u.input_json,'$.page')=? AND u.final_json='')`;

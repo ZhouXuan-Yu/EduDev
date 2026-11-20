@@ -80,6 +80,34 @@ await check('New empty/invalid and deleted newer receipts never revive an older 
   await assert.rejects(f.repo.validate(q),/source_changed/);const count=f.db.prepare('SELECT COUNT(*) n FROM material_book_answer_journal_v1 WHERE after_json<>\'\'').get().n;assert.equal(count,1);
  });
 });
+await check('Previously applied answers remain readable while another book or version is still being indexed',()=>use({},async f=>{
+ addPage(f,3,section);await init(f);await f.match();const q=await f.read();
+ addPage(f,3,'另一份资料。',{source:{resourceId:'resource_'+randomUUID()}});
+ addPage(f,3,'本册另一个版本。',{source:{version:sha('different-version')}});
+ assert(await f.repo.index.pending());
+ await f.repo.validate(q);
+ // Exercise the cursor-only backfill separately from dirty trigger claims.
+ f.db.exec('DELETE FROM material_book_answer_dirty_v1');
+ assert(await f.repo.index.pending());
+ await f.repo.validate(q);
+ f.db.prepare('UPDATE material_ai_units SET status=status WHERE batch_id=?').run(f.answerBatch);
+ await assert.rejects(f.repo.validate(q),/source_incomplete/);
+ // A rebuild of this book still blocks until its own source rows are rebuilt.
+ await f.repo.rebuild();
+ await assert.rejects(f.repo.validate(q),/source_incomplete/);
+ await index(f);
+ await f.repo.validate(q);
+}));
+await check('Pending removal of a previously indexed title is detected through the saved owner marker',()=>use({},async f=>{
+ const id=addPage(f,3,section);await init(f);await f.match();const q=await f.read();
+ f.db.prepare('DELETE FROM material_ai_page_units WHERE batch_id=?').run(id);
+ f.db.prepare('DELETE FROM material_ai_units WHERE batch_id=?').run(id);
+ f.db.prepare('DELETE FROM material_ai_batches WHERE id=?').run(id);
+ f.proofs.delete(id);
+ await assert.rejects(f.repo.validate(q),/source_incomplete/);
+ await index(f);
+ await assert.rejects(f.repo.validate(q),/source_changed/);
+}));
 await check('Stored context SHA/source/schema corruption is rejected while teacher roles and conflicting answers remain protected',async()=>{
  for(const field of ['firstSha','imageSha','generation','schemaVersion'])await use({},async f=>{
   addPage(f,3,section);await init(f);await f.match();const saved=f.db.prepare('SELECT id,evidence_json FROM material_book_answer_journal_v1').get(),e=JSON.parse(saved.evidence_json);

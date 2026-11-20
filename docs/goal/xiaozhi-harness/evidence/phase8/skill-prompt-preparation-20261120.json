@@ -39,5 +39,20 @@
     {"command": "npm.cmd run test:renderer-components", "passed": 253, "exitCode": 0, "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"}
   ],
   "dependencyAudit": {"total": 29, "low": 8, "moderate": 13, "high": 8, "critical": 0, "lockfileChanged": false},
+  "mainIntegration": {
+    "mainParent": "e802219",
+    "command": "npm.cmd run build -- --outDir test-results/harness-skill-proof-main/out",
+    "cwd": "apps/desktop",
+    "exitCode": 0,
+    "includesTypecheck": true,
+    "outFiles": 481,
+    "outSha256": "c06d9dbb51ebc1c36ab746d9351324c4e998ac0b5b7bd7ad08fc9ce3b84ec4c7",
+    "mainSha256": "92c8545e61057ed81c4511131e84414731b78fa8bf5e760e9a2d7f55adc94d49",
+    "logSha256": "431b1fb24cff747d39b3312b0f8d24676a2533cc2eb9195cdf53cc8628742b63",
+    "coreToolSourceHashUnchanged": true,
+    "upstreamRegressionCommandPrefix": "node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/education/",
+    "upstreamRegressionChecks": {"kb-folder-ai-boundaries.mjs": 19, "kb-section-inheritance-boundaries.mjs": 15, "kb-answer-section-boundaries.mjs": 17},
+    "scope": "C2 renderer and cold start evidence remains scoped to the pre-merge candidate. The combined build and upstream regressions above were verified after merge."
+  },
   "limits": "The measurement is a source capture count, not an end-to-end duration comparison. No real model request was sent. No migration or dependency changes. Revert the code, test and generated metadata in the same commit to roll back."
 }

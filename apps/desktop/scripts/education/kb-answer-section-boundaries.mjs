@@ -45,6 +45,14 @@ await check('The inherited parser stops at unsupported boundaries and explicit l
  const raw=bookAnswerPage({...p.first,pageText:text},{...p.final,pageText:text}),derived=bookAnswerPage({...p.first,pageText:text},{...p.final,pageText:text},section);
  assert.equal(raw.entries[0].section,'');assert.equal(derived.entries[0].section,section);assert.equal(derived.entries[1].section,'');assert.equal(derived.entries[2].section,'第十五章 素养基础测试卷');assert.equal(derived.entries[0].quote,text.slice(derived.entries[0].start,derived.entries[0].end).trim());assert.equal(derived.entries[0].start,raw.entries[0].start);assert(raw.entries[0].quote.endsWith('试卷二'),'Legacy raw spans keep their existing boundary semantics');
 }));
+await check('An inherited answer remains readable during unrelated indexing, but pending changes to the matching question book block it',()=>use({},async f=>{
+ add(f,1);await init(f);assert.equal((await f.match()).rows[0].state,'applied');const q=await f.read();
+ add(f,1,undefined,{source:{resourceId:'resource_'+randomUUID()}});
+ assert(await f.repo.index.pending());
+ await f.repo.validate(q);
+ f.db.prepare('UPDATE material_ai_units SET status=status WHERE batch_id=?').run(f.batch);
+ await assert.rejects(f.repo.validate(q),/source_incomplete/);
+}));
 await check('Local exact title uses no inherited journal proof, while a different chapter with the same number never pairs',async()=>{
  await use({answerText:section+'\n2. D 解析：这是答案册的完整解析。'},async f=>{add(f,1,'第十五章 素养基础测试卷');await init(f);assert.equal((await f.match()).rows[0].state,'applied');assert(!JSON.parse(f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get().evidence_json).answerSection);});
  await use({},async f=>{add(f,1,'第十五章 素养基础测试卷\n1. A 解析：另一章。');await init(f);await missing(f);});

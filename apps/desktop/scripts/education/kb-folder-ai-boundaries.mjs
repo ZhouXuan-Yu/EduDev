@@ -76,6 +76,35 @@ try{
    for(let i=0;i<10&&!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,question);i++)await repo.tick();assert(db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,question));
   }
  }
+ // A paired answer still being parsed must not block unrelated ready material.
+ {
+  const batchId='batch_'+randomUUID(),question='resource_'+randomUUID(),answer='resource_'+randomUUID(),independent='resource_'+randomUUID();
+  db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','答案等待与独立资料混合目录')").run(batchId);
+  for(const [rid,name,status]of [[question,'题本.pdf','ready'],[answer,'答案.pdf','needs_parser'],[independent,'独立练习.png','ready']]){
+   db.prepare("INSERT INTO teacher_resources VALUES(?,?,?,?,'local:pending','合成资料')").run(rid,version,name,status);
+   db.prepare("INSERT INTO material_import_entries VALUES(?,?,'file','saved',?)").run(db.prepare('SELECT MAX(seq)+1 n FROM material_import_entries').get().n,batchId,rid);
+  }
+  const questionGeneration=randomUUID();
+  db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'complete')").run(question,version,questionGeneration);
+  db.prepare("INSERT INTO material_pdf_pages VALUES(?,1,'blank','{}','')").run(questionGeneration);
+  db.prepare("INSERT INTO material_pdf_jobs VALUES(?,?,1,?,'processing')").run(answer,version,randomUUID());
+  db.prepare('INSERT INTO material_book_pairs VALUES(?,?,?,?,1,1)').run(question,version,answer,version);
+  await repo.authorize({...input,batchId,processingMode:'quality',maxCalls:9});
+  for(let i=0;i<4&&!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,independent);i++)await repo.tick();
+  assert(db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,independent),'A paired answer waiting for local parsing must not starve independent ready material');
+  assert(!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,question),'A paired question must wait for its own authorized answer');
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_task_keys WHERE folder_id=?').get(batchId).n,1);
+  assert.equal(db.prepare('SELECT cursor FROM material_folder_ai_resources WHERE batch_id=? AND resource_id=?').get(batchId,answer).cursor,0);
+  const independentChild=db.prepare('SELECT ai_batch_id FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,independent);
+  db.prepare("UPDATE material_ai_units SET status='no_questions' WHERE batch_id=?").run(independentChild.ai_batch_id);
+  const generation=db.prepare('SELECT generation FROM material_pdf_jobs WHERE resource_id=?').get(answer).generation;
+  db.prepare("UPDATE teacher_resources SET parse_status='ready' WHERE id=?").run(answer);
+  db.prepare("UPDATE material_pdf_jobs SET state='complete' WHERE resource_id=?").run(answer);
+  db.prepare("INSERT INTO material_pdf_pages VALUES(?,1,'blank','{}','')").run(generation);
+  for(let i=0;i<4&&!db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,answer);i++)await repo.tick();
+  assert(db.prepare('SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND resource_id=?').get(batchId,answer),'The same answer must retain priority after its local parser publishes');
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_task_keys WHERE folder_id=?').get(batchId).n,2);
+ }
  for(const processingMode of ['legacy','unknown',undefined,null,3])assert(!validFolderAiGrant({...input,processingMode}));
  const stale=db.prepare('SELECT ai_batch_id FROM material_folder_ai_units WHERE batch_id=? LIMIT 1').get(id);assert(stale?.ai_batch_id);
  db.prepare("UPDATE material_ai_units SET status='review',error='page_content_incomplete' WHERE batch_id=?").run(stale.ai_batch_id);
@@ -84,5 +113,5 @@ try{
  await repo.authorize(input);
  for(let i=0;i<100&&db.prepare('SELECT state FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id).state==='failed';i++)await repo.tick();
  const reconciled=db.prepare('SELECT state,error FROM material_folder_ai_units WHERE batch_id=? AND ai_batch_id=?').get(id,stale.ai_batch_id);assert.equal(reconciled.state,'review');assert.equal(reconciled.error,'page_content_incomplete');assert.equal(db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(stale.ai_batch_id).calls,paidCalls);
- console.log(JSON.stringify({success:true,checks:18,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+ console.log(JSON.stringify({success:true,checks:19,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
 }finally{db.close();}

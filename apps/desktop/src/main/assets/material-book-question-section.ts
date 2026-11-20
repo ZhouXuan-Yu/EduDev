@@ -55,14 +55,14 @@ export class MaterialBookQuestionSection{
   }
  }
  async validate(evidence:BookQuestionSectionEvidence,current:Proof,signal?:AbortSignal){
-  // Dirty or newly published pages must not let a stale title authorize a write/read.
-  if(await this.index.pending())throw Error('source_incomplete');
+  const source=current.unit.pageSource;if(!source)throw Error('source_changed');
+  if(await this.index.bookPending(source.resourceId,source.version))throw Error('source_incomplete');
   const actual=await this.resolve(current,signal);
   if(!actual||JSON.stringify(actual)!==JSON.stringify(evidence))throw Error('source_changed');
  }
  async validateAnswer(evidence:BookAnswerSectionEvidence,current:Proof,reference:{batchId:string;ordinal:number},signal?:AbortSignal){
-  if(await this.index.pending())throw Error('source_incomplete');
   const source=current.unit.pageSource;if(!source)throw Error('source_changed');
+  if(await this.index.bookPending(source.resourceId,source.version))throw Error('source_incomplete');
   const marker=await this.index.latestPage(source.resourceId,source.version,source.page);
   if(!marker?.proof_sha||marker.batch_id!==reference.batchId||Number(marker.ordinal)!==reference.ordinal)throw Error('source_changed');
   const actual=await this.resolveAnswer(current,signal);
