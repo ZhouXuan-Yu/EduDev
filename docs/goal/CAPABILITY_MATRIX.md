@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 联网选择题答析冲突拦截
+
+M05/M10 复用已有题面匹配、原印答案和候选日志，对选择题做字面结论一致性检查。 [专项报告](../research/evidence/kb/20261121/web-choice-conclusion/README.md)
+
 ## 2026-11-21 网页补解析核对完整选项
 
 M05/M10 复用 Pi、内置浏览器、Readability、已有补答授权和 SQLite 原子写回。分开保存的纯文字选项纳入网页题面核对。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)

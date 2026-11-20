@@ -99,6 +99,52 @@ await check('Split options reject a partial quote, reordered or changed cells, c
   assert.deepEqual(await f.read(),before);
  }
 },selection));
+await check('Explicit solution conclusions are checked against the exact printed choice before filling either missing role',()=>use(async f=>{
+ const before=await f.read();
+ for(const [answer,body] of [['C','由题面列式。综上，故选 Ｄ。'],['C．3','按原题求得结果，故选D。'],
+  ['Ｃ','由题面先列方程。\n〖详解〗故答案为D。'],['C','按题意计算，因此，故选D，其中D对应12。']]){
+  const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+  const input=await f.prepare({...quotes,analysisQuote:body},{},pageText.replace(analysis,body));
+  const c=await f.repo.propose(owner,input,signal);
+  assert.equal(c.state,'candidate');
+  assert.equal(c.reason,'web_choice_conclusion_conflict');
+  assert.deepEqual(await f.read(),before);
+  assert.equal(f.db.prepare('SELECT after_json FROM question_web_candidates WHERE id=?').get(c.id).after_json,'');
+ }
+ f.cold();
+ assert.equal((await f.repo.list(f.q.id)).length,4);
+},selection));
+await check('Missing roles remain untouched for a nonexistent option, mismatched option echo or contradictory multi-select conclusion',()=>use(async f=>{
+ const before=await f.read();
+ for(const [answer,body] of [['H','故选H。'],['H．3','故选H。'],['C．2','故选C。'],['C．30','故选C。'],['AA','故选A。'],['C、A','因此，应选 A、D。']]){
+  const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+  const c=await f.repo.propose(owner,await f.prepare({...quotes,answerQuote:answer,analysisQuote:body},{},pageText.replace(analysis,body)),signal);
+  assert.equal(c.reason,'web_choice_conclusion_conflict');
+  assert.deepEqual(await f.read(),before);
+ }
+ const answer='CA',body='排除D。因此，应选 A、C。';
+ const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+ assert.equal((await f.repo.propose(owner,await f.prepare({...quotes,answerQuote:answer,analysisQuote:body},{},pageText.replace(analysis,body)),signal)).state,'applied');
+ assert.equal((await f.read()).answer,answer);
+},q=>{
+ selection(q);q.questionType='多项选择题';q.answer='';q.document.answer={origin:'missing',text:'',anchors:[]};
+ q.archive.answerOrigin='missing';q.archive.issues.push('missing_answer');
+}));
+await check('Inline choices in a complete stem also preserve the conflicting webpage for review',()=>use(async f=>{
+ const body='因此，选 D。',text='题目：'+f.q.stem+'\n答案：C\n解析：'+body;
+ const c=await f.repo.propose(owner,await f.prepare({answerQuote:'C',analysisQuote:body},{},text),signal);
+ assert.equal(c.reason,'web_choice_conclusion_conflict');
+ assert.equal((await f.read()).analysis,'');
+},q=>{
+ selection(q);q.stem+='\n'+options;q.document.context.projection.statement.text=q.stem;q.document.blocks.at(-1).text=q.stem;
+}));
+await check('Consistent conclusions allow ordinary discussion or rejection of other options',()=>use(async f=>{
+ const body='A项不满足，排除D。错误解法：算得12，故选D。如果改为求错误选项；应选D。若条件改为8，应该选D。原题计算结果为3，故选 C。';
+ const {pageText,...quotes}=choicePage(f.q.stem);
+ const c=await f.repo.propose(owner,await f.prepare({...quotes,analysisQuote:body},{},pageText.replace(analysis,body)),signal);
+ assert.equal(c.state,'applied');
+ assert.equal((await f.read()).analysis,body);
+},selection));
 await check('A textual quote cannot account for a graphical option even when figure metadata omits it',()=>use(async f=>{
  const {pageText,...quotes}=choicePage(f.q.stem);
  const c=await f.repo.propose(owner,await f.prepare(quotes,{},pageText),signal);

@@ -46,6 +46,7 @@ const originals=originalHashes();
 const textOptions=stem=>stem.split('\n').slice(1).join('\n');
 const answer=split?'C':'B';
 const analysis=split?'正多边形旋转后重合时，顶点位置按一个整数步数移动。\n〖详解〗旋转90°移动 n/4 步，所以 n 是 4 的倍数。四个选项中只有 12 满足。':'阴极射线由电子组成，因此选择 B。';
+const conflictingAnalysis='题面条件相同。综上，故选 Ｄ，其中 Ｄ 对应 15。';
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
 let app,page;
 async function until(action,timeout=110000){
@@ -59,7 +60,7 @@ async function launch(cold=false){
   DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};
  for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
  app=await _electron.launch({args:[entry,'--user-data-dir='+profile],cwd:desktop,env,timeout:90000});
- await app.evaluate(({app,session,net},{cold,answer,analysis,split})=>{
+ await app.evaluate(({app,session,net},{cold,answer,analysis,split,conflictingAnalysis})=>{
   const state=globalThis.reviewedAnswerTest={requests:[],reads:[],failures:[],mode:'none',step:0,blocked:0,browserHits:0};
   const origin='https://fixture.invalid';
   const configured=new Set();
@@ -71,7 +72,8 @@ async function launch(cold=false){
     state.browserHits++;
     const escape=text=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
     const question=split?state.stem+'\n'+state.choices.replace(/^[A-D]\./gm,label=>label[0]+'．'):state.stem;
-    const solution=split?['〖答案〗C．12','〖分析〗'+analysis.split('\n')[0],analysis.split('\n')[1]]:['答案：'+answer,'解析：'+analysis];
+    const solution=split?(state.conflicting?['〖答案〗C．12','〖解析〗'+conflictingAnalysis]:
+     ['〖答案〗C．12','〖分析〗'+analysis.split('\n')[0],analysis.split('\n')[1]]):['答案：'+answer,'解析：'+analysis];
     const body=[...question.split('\n'),...solution].map(line=>'<p>'+escape(line)+'</p>').join('');
     return new Response('<!doctype html><meta charset="utf-8"><title>本机受控题解</title><article><h1>题目</h1>'+body+'</article>',{headers:{'content-type':'text/html; charset=utf-8'}});
    });
@@ -122,14 +124,21 @@ async function launch(cold=false){
    }else if(state.mode==='web'&&n===7){
     must(typeof receipt?.observationId==='string'&&receipt.extraction?.method==='readability','A real browser DOM receipt is required');
     const choices=state.choices?.replace(/^[A-D]\./gm,label=>label[0]+'．');
-    const analysisQuote=split?receipt.text.slice(receipt.text.indexOf('〖分析〗')+'〖分析〗'.length).trim():analysis;
-    if(split)must(analysisQuote.replace(/\s/g,'')===analysis.replace(/\s/g,''),'Complete analysis must be present in actual DOM');
+    const detailLabel=state.conflicting?'〖解析〗':'〖分析〗';
+    const analysisQuote=split?receipt.text.slice(receipt.text.indexOf(detailLabel)+detailLabel.length).trim():analysis;
+    if(split)must(analysisQuote.replace(/\s/g,'')===(state.conflicting?conflictingAnalysis:analysis).replace(/\s/g,''),'Complete analysis must be present in actual DOM');
     call('education_web_answer',{action:'propose',grantId:state.grantId,observationId:receipt.observationId,...state.binding,
      questionQuote:split?state.stem+'\n'+choices:state.stem,...(split?{}:{answerQuote:answer}),analysisQuote,taskStepId:'save'});
    }else if(state.mode==='web'&&n===8){
-    must(receipt?.state==='applied'&&receipt.readback?.success,'Actual web write and source readback required');
-    state.applied=true;
-    content='该原题的缺答已按受控页面证据补齐，来源已保存。';
+    if(state.conflicting){
+     must(receipt?.state==='candidate'&&receipt.reason==='web_choice_conclusion_conflict'&&!receipt.currentQuestion,'Conflicting answer must remain a candidate');
+     state.conflictCandidate=receipt.id;
+     content='网页答案和解析冲突，已保留候选。';
+    }else{
+     must(receipt?.state==='applied'&&receipt.readback?.success,'Actual web write and source readback required');
+     state.applied=true;
+     content='该原题的缺答已按受控页面证据补齐，来源已保存。';
+    }
    }else must(false,'Unexpected model request');
    state.requests.push({mode:state.mode,n,tool:action?.name??null});
    const chunk=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'reviewed-'+state.mode+'-'+n,object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
@@ -137,7 +146,7 @@ async function launch(cold=false){
   };
   net.fetch=transport;
   globalThis.fetch=transport;
- },{cold,answer,analysis,split});
+ },{cold,answer,analysis,split,conflictingAnalysis});
  page=await app.firstWindow();
  page.setDefaultTimeout(45000);
  page.on('pageerror',error=>report.rendererErrors.push(error.message));
@@ -211,13 +220,13 @@ async function complete(q,p){
  assert.deepEqual(JSON.parse(current.document_json).context.projection,p);
  return current;
 }
-async function run(mode,query,stem,choices){
+async function run(mode,query,stem,choices,conflicting=false){
  await productEntry(page,'ask').click();
  await page.getByTestId('xiaozhi-pi-workspace').waitFor();
  const prior=await page.locator('.office-composer-container').getAttribute('data-session-id');
  await page.getByTestId('pi-new-session').click();
  const sessionId=await until(async()=>{const now=await page.locator('.office-composer-container').getAttribute('data-session-id');return now&&now!==prior&&now;});
- await app.evaluate((_,values)=>Object.assign(globalThis.reviewedAnswerTest,values),{mode,query,stem,choices,step:0});
+ await app.evaluate((_,values)=>Object.assign(globalThis.reviewedAnswerTest,values),{mode,query,stem,choices,conflicting,step:0});
  await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
  const prev=read('SELECT id FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0]?.id;
  await page.getByTestId('office-prompt-input').fill(mode==='web'?'检索并实读本地缺答题，访问本机受控页面测试题解补全。':'请检索并实读本地题库的已核对原题。');
@@ -232,7 +241,7 @@ async function run(mode,query,stem,choices){
   }
   const current=read('SELECT id,status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0];
   if(current?.id!==prev&&['succeeded','failed','interrupted','blocked','cancelled','partial'].includes(current?.status)){
-   assert.equal(current.status,'succeeded');
+   assert((conflicting?['succeeded','partial']:['succeeded']).includes(current.status),current.status);
    return true;
   }
   return false;
@@ -253,6 +262,19 @@ try{
   p.statement.text=edited.stem.split('\n')[0];
   const prepared=await complete(edited,p);
   assert(!prepared.analysis&&prepared.stem!==original.stem);
+  const rejected=await run('web','自身重合',prepared.stem,p.choices.text,true);
+  assert(rejected.conflictCandidate);
+  assert.deepEqual(question(exam,'6'),prepared);
+  const rejectedRecord=read('SELECT id,state,after_json,payload_json FROM question_web_candidates WHERE id=?',[rejected.conflictCandidate])[0];
+  assert.equal(rejectedRecord.state,'candidate');assert.equal(rejectedRecord.after_json,'');
+  assert(JSON.parse(rejectedRecord.payload_json).observation.text.includes('故选 Ｄ'));
+  const rejectedCard=await notebook(prepared,'自身重合');
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-notebook-answer-fold-'+prepared.id));
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-web-evidence-fold-'+prepared.id));
+  await rejectedCard.getByTestId('question-web-evidence-load').click();
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-web-candidate').first());
+  await rejectedCard.getByText('网页答案与解析结论或选项内容存在冲突，待核对').waitFor();
+  check('The actual browser contradiction is recorded for teacher review without modifying the original question');
   const wire=await run('web','自身重合',prepared.stem,p.choices.text);
   assert(wire.applied&&wire.browserHits>0);
   const saved=question(exam,'6'),document=JSON.parse(saved.document_json);
@@ -268,6 +290,7 @@ try{
   assert(restored.ok);
   assert.equal(restored.value.question.analysis,saved.analysis);
   assert.deepEqual(question(exam,'6'),saved);
+  assert.deepEqual(read('SELECT id,state,after_json,payload_json FROM question_web_candidates WHERE id=?',[rejected.conflictCandidate])[0],rejectedRecord);
   assert.deepEqual(originalHashes(),originals);
   assert.deepEqual(report.rendererErrors,[]);
   check('Ordinary local search and cold readback authenticate the actual PDF and the separately stored web analysis');

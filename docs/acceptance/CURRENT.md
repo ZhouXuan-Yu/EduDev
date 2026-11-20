@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 联网选择题答析冲突拦截
+
+候选冲突专项检查题本显示原因、原题保持、相符补写、常规检索和冷读等路径。 [专项报告](../research/evidence/kb/20261121/web-choice-conclusion/README.md)
+
 ## 2026-11-21 网页补解析核对完整选项
 
 实际 Electron 覆盖一次批量授权、真实内置浏览器 DOM、缺解析写回，以及以原印答案和网页解析分离的普通检索与冷读。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
