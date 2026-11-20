@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
 import {fileURLToPath} from 'node:url';
 import {spawn} from 'node:child_process';
 import {StringDecoder} from 'node:string_decoder';
 import type {PermissionOwner} from '../../../../shared/xiaozhi-permissions';
 import {digest} from '../resources';
 import {plain, exact, hash, text} from '../validation';
+import {permissionTemporaryRoot, projectionTemporaryRoot} from './temporary';
 import baseManifest from './generated/sandbox-manifest.json' with {type: 'json'};
 
 export type SandboxManifest = typeof baseManifest & {ptyProtocolVersion?: number};
@@ -85,12 +85,13 @@ export function verifySandboxBinary(manifest: SandboxManifest, directory: string
 }
 
 export function createPermissionScratch(prefix: 'xzc-' | 'xzs-') {
-  const temporary = fs.realpathSync(os.tmpdir());
+  const temporary = permissionTemporaryRoot();
   const directory = fs.mkdtempSync(path.join(temporary, prefix));
   const identity = fs.lstatSync(directory);
   return {
     directory,
     release() {
+      if (permissionTemporaryRoot() !== temporary) throw Error('invalid_projection');
       const current = fs.lstatSync(directory, {throwIfNoEntry:false});
       if (current?.isDirectory() && !current.isSymbolicLink() && current.dev === identity.dev && current.ino === identity.ino
           && path.dirname(directory) === temporary && fs.realpathSync(directory) === directory) {
@@ -184,8 +185,9 @@ export async function runNativeSandbox(options: {
   const pty = options.start.session?.mode === 'pty';
   if (pty && options.manifest.ptyProtocolVersion !== 1) throw Error('unsupported_constraint');
   options.signal.throwIfAborted();
+  const temporary = projectionTemporaryRoot(options.start.projectionRoot, options.cleanupOnly === true);
   const child = spawnPermissionHelper(options.manifest, options.directory, [options.cleanupOnly ? '--cleanup-owned' : '--protocol-stdio'],
-    Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:SystemRoot|windir|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|SystemDrive)$/iu.test(name))), !pty);
+    {...Object.fromEntries(Object.entries(process.env).filter(([name]) => /^(?:SystemRoot|windir|USERPROFILE|LOCALAPPDATA|APPDATA|SystemDrive)$/iu.test(name))), TEMP: temporary, TMP: temporary}, !pty);
   const decoders = {stdout: new StringDecoder('utf8'), stderr: new StringDecoder('utf8'), pty: new StringDecoder('utf8')};
   const protocol = new StringDecoder('utf8');
   let pending = '', outputBytes = 0, stderrBytes = 0;

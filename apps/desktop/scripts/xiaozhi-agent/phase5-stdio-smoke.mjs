@@ -12,6 +12,7 @@ const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase5-stdio-'));
 const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/phase5-stdio-'));
 await build({stdin: {contents: `export {createControlledStdioTransport} from './src/main/xiaozhi-agent/mcp-controlled-transport.ts';
 export {createPermissionRuntimeManager} from './src/main/xiaozhi-agent/permissions/windows/runtime.ts';
+export {permissionTemporaryRoot} from './src/main/xiaozhi-agent/permissions/windows/temporary.ts';
 export {createPermissionStore} from './src/main/xiaozhi-agent/permissions/store.ts';
 export {createPermissionEngine} from './src/main/xiaozhi-agent/permissions/engine.ts';
 export {permissionHash} from './src/main/xiaozhi-agent/permissions/validation.ts';
@@ -21,7 +22,7 @@ export {createMcpPermissionContext} from './src/main/xiaozhi-agent/permissions/m
 export {createPermissionService} from './src/main/xiaozhi-agent/permissions/service.ts';
 export {filesystemScope, digest} from './src/main/xiaozhi-agent/permissions/resources.ts';`, resolveDir: process.cwd(), loader: 'ts'}, outfile: path.join(output, 'transport.mjs'),
   bundle: true, platform: 'node', format: 'esm', packages: 'external', target: 'node24'});
-const {createControlledStdioTransport, createPermissionRuntimeManager, createPermissionStore, createPermissionEngine, permissionHash,
+const {createControlledStdioTransport, createPermissionRuntimeManager, permissionTemporaryRoot, createPermissionStore, createPermissionEngine, permissionHash,
   createControlledMcpService, createMcpRuntime, createMcpPermissionContext, createPermissionService, filesystemScope, digest} = await import(pathToFileURL(path.join(output, 'transport.mjs')).href);
 const db = new DatabaseSync(path.join(root, 'authority.sqlite'));
 db.exec('CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,run_id TEXT,session_id TEXT,action_type TEXT,status TEXT,title TEXT,description TEXT,preview_md TEXT,payload_json TEXT,created_at TEXT,updated_at TEXT)');
@@ -49,7 +50,7 @@ const report = {success: false, root, output, checks, receipts, paidCalls: 0,
 function projection(script) {
   const executionId = 'xiexec_' + randomUUID();
   const owner = {sessionId: 'aisession_' + randomUUID(), taskId: 'xitask_fixture', runId: 'run_stdio', generation: 1};
-  const directory = path.join(os.tmpdir(), 'xiaozhi-permission-exec-' + randomUUID());
+  const directory = path.join(permissionTemporaryRoot(), 'xiaozhi-permission-exec-' + randomUUID());
   fs.mkdirSync(directory);
   fs.writeFileSync(path.join(directory, '.xiaozhi-projection.json'), JSON.stringify({schemaVersion: 1, executionId, grantHash: 'a'.repeat(64), owner}));
   fs.writeFileSync(path.join(directory, 'server.ps1'), '\ufeff' + script);

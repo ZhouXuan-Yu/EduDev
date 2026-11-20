@@ -97,7 +97,8 @@ try {
     const view = await host!.permissions.view(sessionId);
     assert.equal(view.profile.mode, 'request');
     assert(view.grants.every(grant => grant.scope.kind === 'filesystem' && grant.scope.actions.join(',') === 'read'));
-    assert.equal((await host!.environment.inspect(sessionId)).permissionRuntime?.status, 'ready');
+    const initial = (await host!.environment.inspect(sessionId)).permissionRuntime?.status;
+    assert(initial === 'ready' || initial === 'needs_configuration', 'The runtime must be available or repairable');
   });
   await check('Actual host Pi SSE invokes controlled terminal and commits authorized result through original Task', async () => {
     const view = await host!.permissions.view(sessionId);
@@ -115,6 +116,7 @@ try {
     assert.equal(rows.length, 1);
     const actual = JSON.parse(String(rows[0].metadata_json));
     assert.equal(actual.state, 'completed'); assert.equal(actual.cleanup.profileRemoved, true);
+    assert.equal((await host!.environment.inspect(sessionId)).permissionRuntime?.status, 'ready');
     assert.match(actual.owner.taskId, /^xitask_/u);
     assert.equal(actual.owner.runId, result.runId);
     terminalRunId = result.runId;

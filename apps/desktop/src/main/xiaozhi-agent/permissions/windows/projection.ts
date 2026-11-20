@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {fileVersion} from '../../workspace-files';
-import {filesystemScope, checkedFile, digest, containsPath} from '../resources';
+import {filesystemScope, checkedFile, digest} from '../resources';
 import {runWithPermission,type CurrentPermission} from '../current';
 import type {PermissionStore} from '../store';
 import {withOwnedFileStage} from '../../owned-file-stage';
+import {permissionTemporaryRoot, projectionTemporaryRoot} from './temporary';
 
 type Entry = {relative: string; kind: 'file' | 'directory'; version: string; hash: string | null; bytes: number};
 export type ExecutionProjection = {
@@ -61,7 +61,7 @@ export async function prepareExecutionProjection(originalRoot: string, workdir: 
   if (!fs.statSync(originalCwd).isDirectory()) throw Error('invalid_input');
   const snapshot = await readTree(originalRoot, authority.signal, authority.assert);
   const executionId = 'xiexec_' + randomUUID();
-  const root = path.join(os.tmpdir(), 'xiaozhi-permission-exec-' + randomUUID());
+  const root = path.join(permissionTemporaryRoot(), 'xiaozhi-permission-exec-' + randomUUID());
   fs.mkdirSync(root, {recursive: false, mode: 0o700});
   try {
     for (const entry of snapshot.entries) {
@@ -159,16 +159,14 @@ export async function commitExecutionProjection(projection: ExecutionProjection,
   }
 }
 
-export function assertOwnedProjection(root: string) {
-  const temp = fs.realpathSync(os.tmpdir());
-  if (!containsPath(temp, root) || path.dirname(root) !== temp || !/^xiaozhi-permission-exec-[a-f0-9-]{36}$/iu.test(path.basename(root))
-      || fs.lstatSync(root).isSymbolicLink()) throw Error('invalid_projection');
+export function assertOwnedProjection(root: string, allowLegacy = false) {
+  projectionTemporaryRoot(root, allowLegacy);
 }
 
 export function removeOwnedProjection(root: string) {
   const absolute = path.resolve(root);
   assertOwnedProjection(absolute);
   if (fs.realpathSync(absolute) !== absolute) throw Error('invalid_projection');
-  // Only a main-created direct child of the current TEMP execution root reaches here.
+  // Only a main-created direct child of the managed execution directory reaches here.
   fs.rmSync(absolute, {recursive: true, force: false});
 }

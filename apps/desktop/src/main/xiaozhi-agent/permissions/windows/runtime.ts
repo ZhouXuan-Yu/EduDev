@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -11,6 +10,7 @@ import type {PermissionScope} from '../../../../shared/xiaozhi-permissions';
 import type {PermissionStore} from '../store';
 import type {CurrentPermission} from '../current';
 import {removeOwnedProjection} from './projection';
+import {permissionTemporaryRoot} from './temporary';
 
 export type PermissionRuntime = {directory: string; manifest: SandboxManifest; version: string};
 const configuration = 'framework-csc5-x64-optimize-checked-v1';
@@ -218,7 +218,7 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           const manifest: SandboxManifest = {...builtinSandboxManifest, helperSha256: digest(fs.readFileSync(filename)), helperBytes: fs.statSync(filename).size,
             sourceSha256: sourceHash, pinsSourceSha256: digest(Buffer.from(pins)), runtimes: [runtime], buildTime: new Date().toISOString()};
           fs.writeFileSync(path.join(stage, 'sandbox-manifest.json'), JSON.stringify(manifest, null, 2), {flag: 'wx'});
-          const projection = path.join(os.tmpdir(), 'xiaozhi-permission-exec-' + randomUUID());
+          const projection = path.join(permissionTemporaryRoot(), 'xiaozhi-permission-exec-' + randomUUID());
           fs.mkdirSync(projection);
           const executionId = 'xiexec_' + randomUUID();
           fs.writeFileSync(path.join(projection, '.xiaozhi-projection.json'), JSON.stringify({schemaVersion: 1, executionId,

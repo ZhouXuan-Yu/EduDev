@@ -31,7 +31,7 @@ export async function recoverTerminalResources(options: {
       const until=Date.now()+5000;
       while((!exited(doc.pid)||!exited(doc.helperPid))&&Date.now()<until)await delay(50,undefined,{signal:options.signal});
       if(!exited(doc.pid)||!exited(doc.helperPid))continue;
-      assertOwnedProjection(doc.projection.root);
+      assertOwnedProjection(doc.projection.root, true);
       const runtime=await options.runtime.readVersion(doc.runtime.version);
       if(path.resolve(runtime.directory)!==path.resolve(doc.runtime.directory)||runtime.manifest.helperSha256!==doc.runtime.helperHash)throw Error('source_changed');
       const processScope=doc.request.scopes.find(scope=>scope.kind==='process');

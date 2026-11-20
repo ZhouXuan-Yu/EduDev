@@ -11,6 +11,7 @@ const {createPermissionStore} = await import('../../src/main/xiaozhi-agent/permi
 const {createPermissionEngine} = await import('../../src/main/xiaozhi-agent/permissions/engine.ts');
 const {permissionHash} = await import('../../src/main/xiaozhi-agent/permissions/validation.ts');
 const {runWithPermission} = await import('../../src/main/xiaozhi-agent/permissions/current.ts');
+const {permissionTemporaryRoot, projectionTemporaryRoot} = await import('../../src/main/xiaozhi-agent/permissions/windows/temporary.ts');
 const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/permission-phase3-runtime-'));
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase3-runtime-'));
 const modulePath = path.join(output, 'runtime.mjs');
@@ -67,6 +68,35 @@ try {
     const pointer = path.join(runtimeRoot, 'active.json'); const before = fs.readFileSync(pointer);
     await assert.rejects(execute(authority => manager.prepare(authority, '0'.repeat(64))), /permission_denied/);
     assert.deepEqual(fs.readFileSync(pointer), before);
+  });
+  await check('Managed cleanup works when the former TEMP is missing and legacy cannot admit a fresh execution', async () => {
+    const current = permissionTemporaryRoot();
+    const legacyRoot = path.join(root, 'legacy-temp');
+    fs.mkdirSync(legacyRoot);
+    const outside = fs.realpathSync(legacyRoot);
+    const managed = path.join(current, 'xiaozhi-permission-exec-' + randomUUID());
+    const legacy = path.join(outside, 'xiaozhi-permission-exec-' + randomUUID());
+    const original = {TEMP:process.env.TEMP, TMP:process.env.TMP};
+    fs.mkdirSync(managed);
+    fs.mkdirSync(legacy);
+    try {
+      process.env.TEMP = outside;
+      process.env.TMP = outside;
+      assert.equal(projectionTemporaryRoot(legacy, true), outside);
+      assert.throws(() => projectionTemporaryRoot(legacy), /invalid_projection/);
+      process.env.TEMP = path.join(root, 'not-created-legacy-temp');
+      process.env.TMP = path.join(root, 'not-created-other-temp');
+      assert.equal(projectionTemporaryRoot(managed, true), current);
+      assert.throws(() => projectionTemporaryRoot(legacy, true), /invalid_projection/);
+      assert(!fs.existsSync(process.env.TEMP) && !fs.existsSync(process.env.TMP));
+    } finally {
+      for (const [name, value] of Object.entries(original)) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+      fs.rmdirSync(managed);
+      fs.rmdirSync(legacy);
+    }
   });
   report.success = true;
 } catch (error) {report.error = error.stack; process.exitCode = 1; console.error(error);}
