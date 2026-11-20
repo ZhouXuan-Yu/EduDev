@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Reconcile remaining Gate 7 candidate evidence, then formal 32 ABBA. QG-09 needs clean Windows x64.",
+  "next": "Map the verified Windows profile disk full code to the actual tool and UI without replay; retest long-path PTY and same candidate gate. Preserve recorded failures.",
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
@@ -948,5 +948,14 @@
       "tests": "A2 3/3 at 1366x768 and backup compatibility 7/7",
       "reportSha256": "fe82feb041d23967d7b0222c5a8030a803777ae1e9141fb1d1eb6d1360fe69a4"
     }
+  },
+  "phase7Current3da4b2020261121": {
+    "status": "PARTIAL_TERMINAL_ACTUAL_LAUNCH_FAILED",
+    "sourceCommit": "3da4b2031e4e0262bd85c127da011a68484e860e",
+    "outSha256": "0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272",
+    "outFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json",
+    "paidRequestCount": 3,
+    "terminalDiagnostic": "CreateAppContainerProfile HRESULT 0x80070070 reproduced independently in synthetic native health and PTY probes"
   }
 }

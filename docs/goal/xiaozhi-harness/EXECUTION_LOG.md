@@ -618,3 +618,11 @@ Phase6功能2376c84与主线09d7937正常整合为5938c31，atomic push后main�
 ## 2026-11-21 A2 审批前置与冷启复验
 
 原 skill_source_changed 的确切历史交错保留为推断。确定性反例分别复现合法修订触发误判和取消后晚写。只读快照校验当前 Run、任务和方案要求版本；原写 CAS 不变。合同队列在登记前核对取消，真实日志错误仍保留。固定构建结果与历史一并归档。 [指纹与证据](evidence/phase7/implementation-resume-20261119/a2-runtime-races-20261121.json)
+
+## 2026-11-21 合并候选的独立同构建复验
+
+同构建普通目录 9/9。首次长目录使用继承 ACL 的新 LOCALAPPDATA，宿主在健康检查报 invalid_projection，未创建 Job。随后 Terra 用已验证的私有目录，固定健康检查第二次通过，实际 Job 仍在启动时失败，输入与输出均为零，系统清理完成。保留两份失败和控制样本，尚未取得原生操作及错误码。 [证据和指纹](evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json)
+
+## 2026-11-21 原生终端启动的系统盘证据
+
+受控诊断助手在 Windows 系统盘可用为 0 时，两次捕获 CreateAppContainerProfile 的 0x80070070，Win32 112。固定健康探针和合成 PTY 均在创建命令进程前停止。原失败的产品回执只保存 launch_failed，不能追认其具体错误码。已归档 8 个旧合成测试的可重建编译种子至 E 盘并逐一核对哈希，原报告、数据库、用户资料和安装保持原位置。 [原始证据](evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json)

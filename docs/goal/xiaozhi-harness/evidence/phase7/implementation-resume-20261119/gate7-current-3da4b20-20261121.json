@@ -1,0 +1,454 @@
+{
+  "status": "PARTIAL_TERMINAL_ACTUAL_LAUNCH_FAILED",
+  "sourceCommit": "3da4b2031e4e0262bd85c127da011a68484e860e",
+  "candidate": {
+    "files": 481,
+    "outSha256": "0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272",
+    "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7",
+    "desktop": "E:/EduDev-Harness-Acceptance-20261121/backup-compatibility/apps/desktop",
+    "compiled": "test-results/backup-integrated-out"
+  },
+  "windowAndStream": [
+    {
+      "label": "Independent actual Win32 drag, maximize, restore at both resolutions",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/native/xiaozhi-phase7-workbench-ui-aQrHsg/evidence/native-gestures-report.json",
+      "sha256": "6c679f26028257fce65c064135780a9ec5f3df3d9195b3ec027d66f88370754a",
+      "success": true,
+      "paidCalls": 0,
+      "errors": [],
+      "checks": 0,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent foreground synthetic stream 1366x768, 7/7",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/stream-1366/xiaozhi-phase8-stream-performance-22AWGD/report.json",
+      "sha256": "d7fadbe91acd0f87ba979ddd6960e8b8388a8a3f0ae68b0d2a4488d99013c885",
+      "success": true,
+      "errors": [],
+      "checks": 7
+    },
+    {
+      "label": "Independent foreground synthetic stream 1920x1080, 7/7",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/stream-1920/xiaozhi-phase8-stream-performance-THKVfu/report.json",
+      "sha256": "28d02e573b13891c11ed02a4ebf083e9bfae3b0b7bea7ab21e656733fa2a4a5d",
+      "success": true,
+      "errors": [],
+      "checks": 7
+    }
+  ],
+  "workbench": [
+    {
+      "label": "Independent W1 through W3 and ordinary-root terminal, 9/9",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-IFEQm0/evidence/ui-report.json",
+      "sha256": "4ba2437cfd928f7f223c6bed3023109d6df2518b491231694d68da01d2e6d7e9",
+      "success": true,
+      "paidCalls": 0,
+      "errors": [],
+      "terminalProjection": {
+        "jobId": "term_96b221df-fa2a-4e0b-a357-b56fcd7e7545",
+        "sessionId": "aisession_1d631c24-5df7-4bfe-8039-44280f66c687",
+        "projectionParent": "C:\\Users\\ZhouXuan\\AppData\\Local\\OmniEdu\\PermissionRuntime\\temp-v1",
+        "configuredTemp": {
+          "TEMP": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval",
+          "TMP": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval"
+        },
+        "cleanup": "complete",
+        "acknowledgedInputSequence": 2
+      },
+      "checks": 9
+    },
+    {
+      "label": "Independent W2 exact-once real file, 4/4",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-phase7-terra-w2-run-BBNRTT/report.json",
+      "sha256": "4fc0d670dfb0d299ecbb26cc365c8e7e7bf7c42584970ed1c0837ab9e99a03c7",
+      "success": true,
+      "paidCalls": 0,
+      "errors": [],
+      "checks": 4
+    },
+    {
+      "label": "Root W3 delayed generation, separate artifacts, cold readback, 5/5 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/root-w3/temp/omni-edu-xiaozhi-phase7-workbench-ui-BK7IFL/evidence/delayed-events-report.json",
+      "sha256": "17ff8c477ddf366ea5cad38a132db21afccf3f49a65a1aa6907288f59f00842b",
+      "success": true,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 5,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Root W3 delayed generation, separate artifacts, cold readback, 5/5 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/root-w3/temp/omni-edu-xiaozhi-phase7-workbench-ui-ydShcz/evidence/delayed-events-report.json",
+      "sha256": "c61e6d0311db2e5a8c5337843d397f3c21d2063810ddb6e6c71f827bcebcd7f6",
+      "success": true,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 5,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Root three page partial/empty/retry groups; both viewports and no durable writes",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/root-w3/temp/omni-edu-xiaozhi-phase7-workbench-ui-4dsuFR/evidence/partial-empty-report.json",
+      "sha256": "5c5dec8f3ef12e1879db7543ef9b795d6a33899d46a0265600f089071adf60a5",
+      "success": true,
+      "paidCalls": 0,
+      "checks": 3
+    },
+    {
+      "label": "Independent workbench full modal focus 1366, 6/6",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-gYqi4c/evidence/task-focus-report-1366.json",
+      "sha256": "12273eb2da16c417c88b046e762b15bf8aff292753fc5fc325085635a7b0b6df",
+      "success": true
+    },
+    {
+      "label": "Independent workbench full modal focus 1920, 6/6",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-yJrqYR/evidence/task-focus-report-1920.json",
+      "sha256": "16dff69d57c6c37968b2eabed9614432461f704669d7da13e7405de4fd6d7ec2",
+      "success": true
+    }
+  ],
+  "approvals": [
+    {
+      "label": "Independent A2 workspace isolation and cold, 3/3 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-62nA3m/evidence/workspace-scope-probe.json",
+      "sha256": "04d98d2b8e18c82ec134b9c5b42f4750e35567b06cc9cc7f4fd4b68fd2bbd54c",
+      "success": true,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 3,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent A2 workspace isolation and cold, 3/3 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-xPER3A/evidence/workspace-scope-probe.json",
+      "sha256": "ffc86d2a19762cf7ac009d7e26d5926a1254aec49723f46eac23189050c7d4d8",
+      "success": true,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 3,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent A1 approval decision focus, 4/4 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-5TFTgc/evidence/decision-keyboard-report.json",
+      "sha256": "ce517889fb2a54f598d06e38299d3738744128383c7eecd68f81b7fdfb1a343e",
+      "success": true,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 4,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent A1 approval decision focus, 4/4 each",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-QnNkJL/evidence/decision-keyboard-report.json",
+      "sha256": "0de6f6dc1d09608045ad1c4311b9d1e42907a5cd757749da14117b9e772053c7",
+      "success": true,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 4,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent workbench keyboard/busy, both viewports",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-e0msYV/evidence/keyboard-busy-report.json",
+      "sha256": "be808d47073e522234e0c84b6e6dc27bfb8cff4f056be67aef81df3e3073b5ee",
+      "success": true,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 3,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent workbench keyboard/busy, both viewports",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-zIpTG8/evidence/keyboard-busy-report.json",
+      "sha256": "fb4fbb8360a5b7453dda1b1ddb336a49be1e583d6389cbd934761017a4975d6d",
+      "success": true,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 3,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent explicit historical-copy approval resume",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-xiaozhi-phase7-workbench-ui-bPPbtB/evidence/legacy-copy-resume-report.json",
+      "sha256": "15b6ed2542c2d90d27dead316886ee5ac24b37dcf0c137c4052df45f4f041331",
+      "success": true,
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 3
+    },
+    {
+      "label": "Independent A2 actual changed target, no overwrite/new Run and cold invalidation without replay",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/work-approval/omni-edu-a2-stale-EqYWHO/report.json",
+      "sha256": "84d0ed3b82d914b949e9f59c19089209c0b357ac9be5547b124818c211aac474",
+      "success": true,
+      "paidCalls": 0,
+      "checks": 2
+    }
+  ],
+  "capabilitySkill": [
+    {
+      "label": "Independent C1 classification and required/optional gaps",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-xiaozhi-phase7-workbench-ui-uMAZMO/evidence/capability-center-report.json",
+      "sha256": "88ebbecbc51b8c621659c754b4202029436c8cb0c833c956c0e1e140ff8ee46c",
+      "success": true,
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 6
+    },
+    {
+      "label": "Independent C2 actual MCP call, revoke and local fallback",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-c2-course-dgoc4h/report.json",
+      "sha256": "f80f7b9d92791ed6d7eaed12f3f072ad564e3e39d7ca228a84df9b8ed6e70519",
+      "paidCalls": 0,
+      "errors": [],
+      "checks": 4,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent Skill version pin and rollback, both viewports",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-xiaozhi-phase7-workbench-ui-F8u7GF/evidence/skill-run-version-report.json",
+      "sha256": "eeb1123bb2558b498fed0fc243fe6e561d76885d4d796ebb21d7d4b55cfcaa61",
+      "success": true,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 4,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent Skill version pin and rollback, both viewports",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-xiaozhi-phase7-workbench-ui-KhRme4/evidence/skill-run-version-report.json",
+      "sha256": "a03749e328b906ed81e950d68ea06abbb77e75b2e4e4281740f83de719a4d022",
+      "success": true,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 4,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent Skill focus",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-xiaozhi-phase7-workbench-ui-eRs8p3/evidence/focus-report.json",
+      "sha256": "42e4cecf59538aa8026c4d0327922abf7eff6a333d8521468d4844ef645b3773",
+      "success": true,
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 5,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent Capability and Skill keyboard traversal",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/omni-edu-xiaozhi-phase7-workbench-ui-tR3oms/evidence/cs-report.json",
+      "sha256": "c2529b19188d1869e1f6676ce4b0913636dd496a5daa6944acf7820141a55e7d",
+      "success": true,
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 8,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent team share and exact administrator approval",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill/s1-run-fty7Ju/report.json",
+      "sha256": "3c25fd2735f81360682d55fd10942138e332ee78de5d5de6299efd46c57b8302",
+      "success": true,
+      "paidCalls": 0,
+      "pageErrors": [],
+      "checks": 5,
+      "mainSha256": "61d5b1275f9c73b985271a300edc6e940bc06ffe95bc3d3d0e95dfd9da1a35e7"
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-reviewer-3BFXAF/REPORT.json",
+      "sha256": "9b0386c462f944c6ff49680e6bf429ad1581318fbdfe614c5cc4c70cd10d8d33",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-reviewer-tBYVuG/REPORT.json",
+      "sha256": "796d08299d0ac5ab83c45b56c8237953f228f4ccd2b4a158d8488d929954fdbd",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-member-EnpMiS/REPORT.json",
+      "sha256": "96b7b48908e651fc3373dedd90a9d4a7ba5274c96e414b6419d9c6f80a6b80a6",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-member-OO1s0U/REPORT.json",
+      "sha256": "afeddc2f6ea3fef2a746b0beadf33514c5bd7f9c5f505094af438f0ab34056f0",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-private-BhU3ep/REPORT.json",
+      "sha256": "326d1504151db736b430ad3a72127e9156ef501bc5ca81aa356ea7fc551e4b49",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent additional S1 role evidence, all two viewport pairs",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-s1-private-qD1gMo/REPORT.json",
+      "sha256": "599342284c9e94806c19b344d35c3076154fcc0139f1f016f66b8c867f9a4666",
+      "success": true,
+      "checks": 2
+    },
+    {
+      "label": "Independent C1 installed, grant required, denial and cold, 4/4",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-phase7-pending-output-soPl2v/terra-pending-v3-ui-report.json",
+      "sha256": "42a8a7d434bf8522bcc4ffca0bcf7462e8ddb0ee3e1c78ab4586f4b0fd1ce15c",
+      "success": true
+    },
+    {
+      "label": "Independent C2 exact schema change, re-trust, revoke and cold, 4/4",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/capability-skill-more/omni-edu-phase7-c2-9748a58/report.json",
+      "sha256": "9bb4a2e363eabaf62e4a0863268102594a40b1a1419bf5fca0c2971593e1ea42",
+      "success": true
+    }
+  ],
+  "longPathFailures": {
+    "initialFixture": {
+      "label": "Ordinary E LOCALAPPDATA inherited ACL; health invalid_projection, no Job",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/root-terminal/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepYCjEUa/evidence/ui-report.json",
+      "sha256": "e96ec333f6613001aca68a6e3b257c6a97117ea00f302241a74e4ab7dd24f411",
+      "success": false,
+      "paidCalls": 0,
+      "errors": [],
+      "checks": 7
+    },
+    "actualTerminalLaunch": {
+      "label": "Independent private E LOCALAPPDATA. Health attempt 2 succeeded, actual Job launch failed",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/terra-long-terminal/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeep4DlsEF/evidence/ui-report.json",
+      "sha256": "ee1375c1557470cc71cf707c484890fc474cdcde78ba20b6040113ebca09c628",
+      "success": false,
+      "paidCalls": 0,
+      "errors": [],
+      "checks": 7
+    },
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs --long-stage",
+    "readback": {
+      "health": [
+        {
+          "attempt": 1,
+          "error": "launch_failed",
+          "started": false
+        },
+        {
+          "attempt": 2,
+          "state": "completed",
+          "exitCode": 0,
+          "started": true
+        }
+      ],
+      "jobId": "term_0b780f00-5e5c-41fe-b3ef-29c5ae0bca23",
+      "jobState": "failed",
+      "error": "launch_failed",
+      "inputAcknowledged": 0,
+      "outputSequence": 0,
+      "cleanup": "complete",
+      "U09": "NOT_TESTED"
+    },
+    "scope": "Ordinary passing fixture used actual Windows C LOCALAPPDATA and a 109-character data fixture root. Failing fixture used the verified E private anchor and a 144-character fixture root. Length, working condition and temp anchor were not isolated by this comparison.",
+    "initialExternalDiagnostic": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/pty-start-diagnostic-3da4b20/raw-session-report.json",
+      "sha256": "f5dfcfebe15eef2534698f5d39d07418eda3f66aa4ed2040a3902bc07e1894a0",
+      "scope": "One fixed health and three unique synthetic PTYs succeeded in a standalone helper probe. It did not reproduce the failed actual production Job or determine the failing Win32 stage."
+    },
+    "nativeDiagnostic": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/pty-stage-diagnostic-3da4b20/raw-session-report.json",
+      "sha256": "aa2946315eb8ee417e0dd87b53c80514bb477b88b13d5e20cd979886697ea9a4",
+      "stage": "CreateAppContainerProfile",
+      "hresult": "0x80070070",
+      "win32": 112,
+      "scope": "Instrumented copied native helper separately reproduced disk full for fixed health and a unique synthetic PTY, before any user process or Job. The original failed production Job did not emit a numeric error."
+    }
+  },
+  "commands": {
+    "rootW3": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs <1366x768|1920x1080>",
+    "stream": "node scripts/xiaozhi-agent/phase8-stream-performance-probe.mjs",
+    "workbench": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "offline": "node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify <manifest>"
+  },
+  "phase8": {
+    "paidThisCheckpoint": 0,
+    "budget": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/phase8-budget-readonly.json",
+      "sha256": "1fdc4ee99957df066b814ed2b87144739fc7e6ade8c2012e5c7ae68af4630f01"
+    },
+    "manifest": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/manifest-a-d50ef330-b-3da4b20.json",
+      "sha256": "374fc8a112278aa8a3ce4e5ea347085bf6cd854141c1be7ad39d676238dc1a34"
+    },
+    "verify": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/phase8-verify.json",
+      "sha256": "df8d72d0ae1b68c2826b62308a387a53e7dbb40e97243d38a48bd819639ff0d0"
+    },
+    "coldParity": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/omni-edu-xiaozhi-phase8-boot-RMHuBk/report.json",
+      "sha256": "bb32deb0e43b78ec772c815453ed483e6a8f9a517695ef74da467b1078e5b37d"
+    },
+    "formalRuns": "NOT_STARTED_GATE7"
+  },
+  "qg09": {
+    "state": "BLOCKED_NO_KNOWN_AUTHORIZED_GUEST",
+    "host": "Windows 11 Home 25H2 x64",
+    "vmwareRunningVMs": 0,
+    "scope": "VMAuthdService and vmcompute active. No known authorized clean guest or registered fixture found. Windows Optional Features query requires elevation. No VM or host setting changed."
+  },
+  "storage": {
+    "archivedOwnedHistoricOutput": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/archived-harness-lifecycle-final-ad52173/archive-receipt.json",
+      "sha256": "5c232527d74cc5846a35dd8ccaeeb13369295011deccd427b2b09123b5181040"
+    },
+    "archivedOwnedCompiledSeeds": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/archived-owned-C-fixture-seeds/receipt.json",
+      "sha256": "8fa6ab5797e43625043f0e6962b7c35ee3504768f6a2dae7c2be80631f3d9f92"
+    },
+    "systemVolumeFreeAfterSeedArchiveBytes": 31584256
+  },
+  "next": "Map the verified Windows profile disk full code to the actual tool and UI without replay; retest long-path PTY and same candidate gate. Preserve recorded failures."
+}
