@@ -12,6 +12,37 @@ import type {PageCrop} from './material-ai-page-crops';
 import {validCropQuality} from './material-ai-crop-quality';
 import {MATERIAL_OWNED_CROP_GEOMETRY} from '../../shared/material-ai-owned-crops';
 
+const exerciseLabel=/[?？]|_{2,}|□|(?:^|\n)[ \t]*(?:#{1,6}[ \t]*)?(?:第[ \t]*\d+[ \t]*题|[A-H][.、)]|【(?:答案|解析)】|选择题|填空题|解答题|练习题|例题|课后练习|巩固练习|随堂练习|本节练习|自测)/mu;
+const taskLead=/^(?:[ \t]*\d{1,5}[.、)](?!\d)[ \t]*(?:请|试)?(?:计算|证明|判断|比较|写出|回答|作图)|[ \t]*(?:\d{1,5}[.、)](?!\d)[ \t]*)?(?:请|试[ \t]*(?:求|证|解|计算)|已知|如图|下列|求(?:出|证|解|下列)|解方程))/mu;
+const detachedNumber=/^[ \t]*(?:#{1,6}[ \t]*)?\d{1,5}[.、)][ \t]*$/mu;
+const objectiveHeading=/^[ \t]*(?:(?:[一二三四五六七八九十]+[、.]|\([一二三四五六七八九十]+\))[ \t]*)?(?:能力目标|评价标准|内容要求|知识内容|学习目标|教学目标)[ \t]*[:：]?[ \t]*$/mu;
+const numberedOutline=/^[ \t]*(?:#{1,6}[ \t]*)?(\d{1,5})[.、)](?!\d)[ \t]*([^\r\n]+)(?:\r?\n[ \t]*)+/gmu;
+const decimalOutline=/^[ \t]*(?:\|[ \t]*)?(\d{1,2}\.\d{1,2}(?:\.\d{1,2})?)[ \t]*\p{L}/gmu;
+
+function hasCurriculumOutline(text:string){
+ const normalized=text.normalize('NFKC');
+ if(!objectiveHeading.test(normalized)||exerciseLabel.test(normalized)||taskLead.test(normalized)||detachedNumber.test(normalized))return false;
+ const subentries=Array.from(normalized.matchAll(decimalOutline),match=>match[1]);
+ if(new Set(subentries).size<3)return false;
+ // A mixed page can include an ordinary numbered exercise after a syllabus.
+ // Ignore a numbered heading only when its next line is its own child entry.
+ return [...(normalized+'\n').matchAll(numberedOutline)].every(match=>{
+  const child=normalized.slice(match.index+match[0].length);
+  return !/[。；;：:]/u.test(match[2])&&child.startsWith(match[1]+'.');
+ });
+}
+
+/** A numbered curriculum outline can look like omitted exercises to the fallback parser.
+ * Require affirmative layout OCR and transcript evidence. Any locally held
+ * problem marker or supplemental line keeps the independent omission check. */
+export function corroboratedCurriculumOutline(responses:readonly AiPageResponse[],prompt:AiPagePrompt|undefined){
+ if(prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||prompt.ocrStatus!=='complete')return false;
+ const structure=prompt.structureContext;
+ if(structure&&(structure.unresolved.length||structure.supplemental.length||structure.paragraphs.some(p=>p.marker)))return false;
+ return responses.every(r=>r.outcome==='no_questions'&&!r.questions.length&&!r.pageIssues.length&&hasCurriculumOutline(r.pageText))
+  &&hasCurriculumOutline(prompt.blockTexts.map(block=>block.text).join('\n'));
+}
+
 /** Source-owned layout metadata stays in the raw transcript and original images. Never fold body symbols. */
 export function restoredResponseQuestions(response:AiPageResponse,source:MaterialPageSource,prompt?:AiPagePrompt,crops:PageCrop[]=[]){
  if(!isFragmentPageResponse(response)||prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!fragmentsMatchPage(response.fragments,prompt.blocks))return restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);

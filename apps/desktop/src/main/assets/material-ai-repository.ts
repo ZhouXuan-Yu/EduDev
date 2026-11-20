@@ -563,7 +563,7 @@ export class MaterialAiRepository{
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
     if(!validAiPageQuery(input))throw Error('invalid_input');
-    const signal=new AbortController().signal,proof=await this.pageEvidence(input.batchId,input.ordinal,signal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt,[],proof.unit.bookPagePolicy);
+    const signal=new AbortController().signal,proof=await this.pageEvidence(input.batchId,input.ordinal,signal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.review||proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers',proof.unit.pagePrompt,[],proof.unit.bookPagePolicy,proof.first);
     const answers=proof.unit.bookRole?.kind==='answers'?await this.bookAnswers.pageView(proof,input):undefined;
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true,input.batchId);
