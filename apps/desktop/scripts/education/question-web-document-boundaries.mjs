@@ -25,7 +25,7 @@ function fixture(change=()=>{}){
  const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},read,validate:async x=>{if(questionFactConflicts(x).length)throw Error('source_changed');const base=await repo.validatedSourceDocument(x);assert.deepEqual(base,q.document,'Original source validators must receive the authenticated pre-web representation');},writer:async(action,before)=>{db.exec('BEGIN IMMEDIATE');try{const out=await action(repo);atCommit?.();before?.();db.exec('COMMIT');return out;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new QuestionWebAnswerRepository(host);
  const source=x=>({schemaVersion:'xiaozhi.education.question-context.v1',questionId:id,version:questionVersion(x)});
  const receipt=(text,flags={})=>({tabId:'pibrowser_'+randomUUID(),url:'https://fixture.invalid/solution',title:'受控方程题解',observedAt:new Date().toISOString(),text,untrusted:true,extraction:{engine:'mozilla-readability-0.6.0',method:'dom_region',sourceChars:text.length,truncated:false,lossy:false,figures:0,canvas:0,formulas:0,accessHint:'none',contentSha:sha(text),...flags}});
- return{db,q,read,put,host,get repo(){return repo;},cold(){repo=new QuestionWebAnswerRepository(host);},set atCommit(v){atCommit=v;},async prepare(extra={},flags={}){await repo.migrate();const current=await read(),grant=await repo.authorize(owner,[source(current)],['https://fixture.invalid'],signal),text=`题目：${current.stem}\n答案：x=3\n解析：等式两边减去2，得到x=3。`,obs=await repo.observe(owner,randomUUID(),receipt(text,flags),signal);return{grantId:grant.id,source:source(current),observationId:obs.id,questionQuote:current.stem,answerQuote:'x=3',analysisQuote:'等式两边减去2，得到x=3。',...extra};}};
+ return{db,q,read,put,host,get repo(){return repo;},cold(){repo=new QuestionWebAnswerRepository(host);},set atCommit(v){atCommit=v;},async prepare(extra={},flags={},pageText){await repo.migrate();const current=await read(),grant=await repo.authorize(owner,[source(current)],['https://fixture.invalid'],signal),text=pageText??`题目：${current.stem}\n答案：x=3\n解析：等式两边减去2，得到x=3。`,obs=await repo.observe(owner,randomUUID(),receipt(text,flags),signal);return{grantId:grant.id,source:source(current),observationId:obs.id,questionQuote:current.stem,answerQuote:'x=3',analysisQuote:'等式两边减去2，得到x=3。',...extra};}};
 }
 let passed=0;const check=async(name,fn)=>{await fn();passed++;console.log('PASS '+name);};const use=async(fn,change)=>{const f=fixture(change);try{await fn(f);}finally{f.db.close();}};
 await check('Complete source-backed document fills both missing mirrors atomically and unwraps the unchanged original source',()=>use(async f=>{const input=await f.prepare(),c=await f.repo.propose(owner,input,signal,'web-write'),q=await f.read();assert.equal(c.state,'applied');assert.equal(q.document.schemaVersion,QUESTION_DOCUMENT_WEB_SCHEMA);assert(validQuestionDocument(q.document));assert(validQuestionArchive(q.archive));assert.deepEqual(questionFactConflicts(q),[]);assert.equal(q.document.answer.text,q.answer);assert.equal(q.document.answer.origin,'web_extracted');assert.deepEqual(q.document.answer.web,q.archive.web.roles.answer);assert.deepEqual(q.document.blocks,f.q.document.blocks);assert.deepEqual(await f.repo.validatedSourceDocument(q),f.q.document);await f.repo.verificationSnapshot(owner,'web-write',c.id,c.afterVersion);assert.equal((await f.repo.propose(owner,input,signal)).id,c.id);f.cold();await f.repo.validate(q);assert.equal((await f.repo.list(q.id)).length,1);}));
@@ -48,6 +48,114 @@ function structuredArchive(q){
  return {...base,schemaVersion:'xiaozhi.question-archive.structure.v1',extractor:'layout-question.v1',
   state:'teacher_edited',sourceChecked:true,sources:[source],structure:reference};
 }
+const options='A. 2\nB. -3\nC. 3\nD. 12';
+const analysis='从题面得到一元一次方程。\n〖详解〗等式两边减去2，得到x=3。';
+const selection=(q)=>{
+ q.archive=structuredArchive(q);
+ q.archive.issues=['missing_analysis'];q.archive.answerOrigin='source';q.answer='C';q.questionType='选择题';
+ q.document.answer={origin:'source',text:'C',anchors:[{page:2,box:[.1,.2,.3,.4]}]};
+ q.document.context.projection.choices={state:'provided',text:options};
+};
+const choicePage=(stem,choices='A．2 B．-3 C．3 D．12',answer='C．3',tail='')=>{
+ const questionQuote=stem+'\n'+choices;
+ return {questionQuote,answerQuote:undefined,analysisQuote:analysis,pageText:'题目：'+questionQuote+'\n〖答案〗'+answer+'\n〖分析〗'+analysis+tail};
+};
+await check('A verified option list participates in matching and only the missing explanation is stored',()=>use(async f=>{
+ const {pageText,...quotes}=choicePage(f.q.stem);
+ const c=await f.repo.propose(owner,await f.prepare(quotes,{},pageText),signal,'detached-choice');
+ assert.equal(c.state,'applied',c.reason);
+ const saved=await f.read();
+ assert.deepEqual(saved.document.answer,f.q.document.answer);
+ assert.equal(saved.archive.answerOrigin,'source');
+ assert.equal(saved.analysis,analysis);
+ assert.equal(saved.document.analysis.origin,'web_extracted');
+ assert.deepEqual(saved.document.context,f.q.document.context);
+ f.cold();
+ await f.repo.validate(saved);
+ assert.deepEqual(await f.repo.validatedSourceDocument(saved),f.q.document);
+ await f.repo.verificationSnapshot(owner,'detached-choice',c.id,c.afterVersion);
+},selection));
+await check('Split options reject a partial quote, reordered or changed cells, collapsed digits, another question and conflicting answer',()=>use(async f=>{
+ const stem=f.q.stem;
+ const baseline=choicePage(stem);
+ const attempts=[
+  {...baseline,questionQuote:stem},
+  choicePage(stem,'A.2 B.-3 C.3'),
+  choicePage(stem,'A.2 C.3 B.-3 D.12'),
+  choicePage(stem,'A.2 B.-3 C.3 D.21'),
+  choicePage(stem,'A.2 B.3 C.3 D.12'),
+  choicePage(stem,'A.2 B.-3 C.3 D.1 2'),
+  {...baseline,pageText:baseline.pageText.replace('题目：','题目：若 x 为负数，')},
+  {...baseline,pageText:baseline.pageText.replace('D．12','D．12-')},
+  choicePage(stem,'A.2 B.-3 C.3 D.12','C','\n〖变式训练7〗 另题'),
+  choicePage(stem,'A.2 B.-3 C.3 D.12','B'),
+  choicePage(stem,'A.2 B.-3 C.3 D.12','C.30'),
+  choicePage(stem.replace('5','6')),
+ ];
+ const before=await f.read();
+ for(const {pageText,...quotes} of attempts){
+  const c=await f.repo.propose(owner,await f.prepare(quotes,{},pageText),signal);
+  assert.equal(c.state,'candidate');
+  assert.deepEqual(await f.read(),before);
+ }
+},selection));
+await check('Explicit solution conclusions are checked against the exact printed choice before filling either missing role',()=>use(async f=>{
+ const before=await f.read();
+ for(const [answer,body] of [['C','由题面列式。综上，故选 Ｄ。'],['C．3','按原题求得结果，故选D。'],
+  ['Ｃ','由题面先列方程。\n〖详解〗故答案为D。'],['C','按题意计算，因此，故选D，其中D对应12。']]){
+  const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+  const input=await f.prepare({...quotes,analysisQuote:body},{},pageText.replace(analysis,body));
+  const c=await f.repo.propose(owner,input,signal);
+  assert.equal(c.state,'candidate');
+  assert.equal(c.reason,'web_choice_conclusion_conflict');
+  assert.deepEqual(await f.read(),before);
+  assert.equal(f.db.prepare('SELECT after_json FROM question_web_candidates WHERE id=?').get(c.id).after_json,'');
+ }
+ f.cold();
+ assert.equal((await f.repo.list(f.q.id)).length,4);
+},selection));
+await check('Missing roles remain untouched for a nonexistent option, mismatched option echo or contradictory multi-select conclusion',()=>use(async f=>{
+ const before=await f.read();
+ for(const [answer,body] of [['H','故选H。'],['H．3','故选H。'],['C．2','故选C。'],['C．30','故选C。'],['AA','故选A。'],['C、A','因此，应选 A、D。']]){
+  const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+  const c=await f.repo.propose(owner,await f.prepare({...quotes,answerQuote:answer,analysisQuote:body},{},pageText.replace(analysis,body)),signal);
+  assert.equal(c.reason,'web_choice_conclusion_conflict');
+  assert.deepEqual(await f.read(),before);
+ }
+ const answer='CA',body='排除D。因此，应选 A、C。';
+ const {pageText,...quotes}=choicePage(f.q.stem,undefined,answer);
+ assert.equal((await f.repo.propose(owner,await f.prepare({...quotes,answerQuote:answer,analysisQuote:body},{},pageText.replace(analysis,body)),signal)).state,'applied');
+ assert.equal((await f.read()).answer,answer);
+},q=>{
+ selection(q);q.questionType='多项选择题';q.answer='';q.document.answer={origin:'missing',text:'',anchors:[]};
+ q.archive.answerOrigin='missing';q.archive.issues.push('missing_answer');
+}));
+await check('Inline choices in a complete stem also preserve the conflicting webpage for review',()=>use(async f=>{
+ const body='因此，选 D。',text='题目：'+f.q.stem+'\n答案：C\n解析：'+body;
+ const c=await f.repo.propose(owner,await f.prepare({answerQuote:'C',analysisQuote:body},{},text),signal);
+ assert.equal(c.reason,'web_choice_conclusion_conflict');
+ assert.equal((await f.read()).analysis,'');
+},q=>{
+ selection(q);q.stem+='\n'+options;q.document.context.projection.statement.text=q.stem;q.document.blocks.at(-1).text=q.stem;
+}));
+await check('Consistent conclusions allow ordinary discussion or rejection of other options',()=>use(async f=>{
+ const body='A项不满足，排除D。错误解法：算得12，故选D。如果改为求错误选项；应选D。若条件改为8，应该选D。原题计算结果为3，故选 C。';
+ const {pageText,...quotes}=choicePage(f.q.stem);
+ const c=await f.repo.propose(owner,await f.prepare({...quotes,analysisQuote:body},{},pageText.replace(analysis,body)),signal);
+ assert.equal(c.state,'applied');
+ assert.equal((await f.read()).analysis,body);
+},selection));
+await check('A textual quote cannot account for a graphical option even when figure metadata omits it',()=>use(async f=>{
+ const {pageText,...quotes}=choicePage(f.q.stem);
+ const c=await f.repo.propose(owner,await f.prepare(quotes,{},pageText),signal);
+ assert.equal(c.state,'candidate');
+ assert.equal(c.reason,'question_or_role_mismatch');
+},q=>{
+ selection(q);const image=q.document.blocks[0];
+ q.document.blocks.push({id:'graphic_choices',kind:'choices',anchors:image.anchors,options:[
+  {label:'A',blocks:[{...image,id:'choice_image_A',assetId:'asset_'+randomUUID()}]},
+  {label:'B',blocks:[{...image,id:'choice_image_B',assetId:'asset_'+randomUUID()}]}]});
+}));
 await check('Reviewed rule structures keep the structure reference through an exact web application and unwrap to the original evidence',()=>use(async f=>{
  const input=await f.prepare(),c=await f.repo.propose(owner,input,signal,'structure-write');
  assert.equal(c.state,'applied');const saved=await f.read();

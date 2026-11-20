@@ -1,5 +1,17 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 存量目录升级旧版结构
+
+M02/M03/M05 复用资料目录、现有本地解析队列和结构版本仓储升级历史结果。老师从原处理队列操作，题本沿用已有来源核验入口。 [专项报告](../research/evidence/kb/20261121/batch-structure-upgrade/README.md)
+
+## 2026-11-21 联网选择题答析冲突拦截
+
+M05/M10 复用已有题面匹配、原印答案和候选日志，对选择题做字面结论一致性检查。 [专项报告](../research/evidence/kb/20261121/web-choice-conclusion/README.md)
+
+## 2026-11-21 网页补解析核对完整选项
+
+M05/M10 复用 Pi、内置浏览器、Readability、已有补答授权和 SQLite 原子写回。分开保存的纯文字选项纳入网页题面核对。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
+
 ## 2026-11-21 同册 PDF 印刷选择题答案
 
 M03/M05 复用 Word 印刷答案行解析、PDF 原生坐标与 PDFium 原页预览。使用已有本地队列、QuestionDocument 原印角色和题本原图入口。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)

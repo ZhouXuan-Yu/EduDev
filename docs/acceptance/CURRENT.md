@@ -1,5 +1,17 @@
 # 当前验收入口
 
+## 2026-11-21 存量目录升级旧版结构
+
+真实桌面流程从选择含子目录的资料文件夹开始，核对原件去重、后台更新、题本修订、旧页证据、冷启队列和原印答案出处。 [专项报告](../research/evidence/kb/20261121/batch-structure-upgrade/README.md)
+
+## 2026-11-21 联网选择题答析冲突拦截
+
+候选冲突专项检查题本显示原因、原题保持、相符补写、常规检索和冷读等路径。 [专项报告](../research/evidence/kb/20261121/web-choice-conclusion/README.md)
+
+## 2026-11-21 网页补解析核对完整选项
+
+实际 Electron 覆盖一次批量授权、真实内置浏览器 DOM、缺解析写回，以及以原印答案和网页解析分离的普通检索与冷读。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
+
 ## 2026-11-21 同册 PDF 印刷选择题答案
 
 有据的同册 PDF 印刷选择答案专项覆盖独立导入和答案原图。核对跨版、错题号、数字冲突、低分框、题面修改及正式检索边界。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)

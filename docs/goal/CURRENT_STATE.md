@@ -1,5 +1,17 @@
 # 当前状态与恢复入口
 
+## 2026-11-21 存量目录升级旧版结构
+
+真实上海数学 PDF 的两个目录路径归并为一个原件。旧引擎 v14 升至 v15，恢复原印答案，原始文件、8 页旧证据和教师修订均可读回。 [专项报告](../research/evidence/kb/20261121/batch-structure-upgrade/README.md)
+
+## 2026-11-21 联网选择题答析冲突拦截
+
+受控浏览器实读在真实 PDF 题目上保留答析冲突候选，题本原答和缺失解析状态维持。结论一致后只补解析，冷启可核对原件与两次网页记录。 [专项报告](../research/evidence/kb/20261121/web-choice-conclusion/README.md)
+
+## 2026-11-21 网页补解析核对完整选项
+
+真实 PDF 原印答案的题本记录经教师完整转写后，可从受控网页实读补解析。保留原印答案、网页角色和冷启检索证据。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
+
 ## 2026-11-21 同册 PDF 印刷选择题答案
 
 真实 8 页 PDF 的 3 道可入草稿选择题从第 7 页获得原印答案，题本可打开单题对应区域。分析解释和教师核对仍分开。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)

@@ -1,5 +1,6 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {createHash, randomUUID} from 'node:crypto';
@@ -11,9 +12,13 @@ const {questionVersion}=await import('../../src/main/education/question-context-
 
 const desktop=process.cwd();
 const seed=fs.realpathSync(process.argv[2]);
-const seedReport=JSON.parse(fs.readFileSync(path.join(seed,'summary.json')));
-assert(seedReport.success&&seedReport.checks.some(x=>x.includes('four labeled original crops')));
-const output=fs.mkdtempSync(path.resolve('test-results','reviewed-answer-ui-'));
+const split=process.argv.includes('--split-choices');
+if(split)assert(path.basename(seed).startsWith('kb-section-replay-'));
+else{
+ const seedReport=JSON.parse(fs.readFileSync(path.join(seed,'summary.json')));
+ assert(seedReport.success&&seedReport.checks.some(x=>x.includes('four labeled original crops')));
+}
+const output=fs.mkdtempSync(path.join(split?os.tmpdir():path.resolve('test-results'),'reviewed-answer-ui-'));
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const entry=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out','main/index.js');
 const sha=v=>createHash('sha256').update(v).digest('hex');
@@ -32,14 +37,16 @@ function read(sql,args=[]){
  const db=new DatabaseSync(database,{readOnly:true});
  try{return db.prepare(sql).all(...args);}finally{db.close();}
 }
-const exam='图形选项跨页练习.pdf',circuit='可核对的物理电路.pdf';
+const exam=split?'2022年上海中考数学.pdf':'图形选项跨页练习.pdf',circuit='可核对的物理电路.pdf';
 const resource=name=>read('SELECT * FROM teacher_resources WHERE original_file_name=?',[name])[0];
 const question=(name,number)=>read("SELECT * FROM question_bank_items WHERE source_title=? AND json_extract(archive_json,'$.number')=?",[name,number])[0];
 const candidates=(name,number)=>read("SELECT q.body_json FROM material_structure_jobs j JOIN material_structure_questions q ON q.generation=j.generation WHERE j.resource_id=? AND json_extract(q.body_json,'$.number')=?",[resource(name).id,number]).map(r=>JSON.parse(r.body_json));
 const originalHashes=()=>read('SELECT id,local_path FROM teacher_resources ORDER BY id').map(r=>[r.id,sha(fs.readFileSync(r.local_path))]);
 const originals=originalHashes();
 const textOptions=stem=>stem.split('\n').slice(1).join('\n');
-const answer='B',analysis='阴极射线由电子组成，因此选择 B。';
+const answer=split?'C':'B';
+const analysis=split?'正多边形旋转后重合时，顶点位置按一个整数步数移动。\n〖详解〗旋转90°移动 n/4 步，所以 n 是 4 的倍数。四个选项中只有 12 满足。':'阴极射线由电子组成，因此选择 B。';
+const conflictingAnalysis='题面条件相同。综上，故选 Ｄ，其中 Ｄ 对应 15。';
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
 let app,page;
 async function until(action,timeout=110000){
@@ -49,11 +56,11 @@ async function until(action,timeout=110000){
 }
 async function launch(cold=false){
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,
-  OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',
+  OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',
   DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};
  for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
  app=await _electron.launch({args:[entry,'--user-data-dir='+profile],cwd:desktop,env,timeout:90000});
- await app.evaluate(({app,session,net},{cold,answer,analysis})=>{
+ await app.evaluate(({app,session,net},{cold,answer,analysis,split,conflictingAnalysis})=>{
   const state=globalThis.reviewedAnswerTest={requests:[],reads:[],failures:[],mode:'none',step:0,blocked:0,browserHits:0};
   const origin='https://fixture.invalid';
   const configured=new Set();
@@ -63,8 +70,12 @@ async function launch(cold=false){
    wc.session.protocol.handle('https',request=>{
     if(new URL(request.url).origin!==origin||cold){state.blocked++;return new Response('Unavailable',{status:403});}
     state.browserHits++;
-    const escaped=state.stem.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-    return new Response('<!doctype html><meta charset="utf-8"><title>本机受控题解</title><article><h1>题目</h1><p>'+escaped+'</p><p>答案：'+answer+'</p><p>解析：'+analysis+'</p></article>',{headers:{'content-type':'text/html; charset=utf-8'}});
+    const escape=text=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    const question=split?state.stem+'\n'+state.choices.replace(/^[A-D]\./gm,label=>label[0]+'．'):state.stem;
+    const solution=split?(state.conflicting?['〖答案〗C．12','〖解析〗'+conflictingAnalysis]:
+     ['〖答案〗C．12','〖分析〗'+analysis.split('\n')[0],analysis.split('\n')[1]]):['答案：'+answer,'解析：'+analysis];
+    const body=[...question.split('\n'),...solution].map(line=>'<p>'+escape(line)+'</p>').join('');
+    return new Response('<!doctype html><meta charset="utf-8"><title>本机受控题解</title><article><h1>题目</h1>'+body+'</article>',{headers:{'content-type':'text/html; charset=utf-8'}});
    });
   });
   const transport=async(input,init)=>{
@@ -87,8 +98,9 @@ async function launch(cold=false){
    }else if(n===3){
     must(receipt?.success&&receipt.teacherConfirmationKnown&&receipt.contextComplete&&receipt.originalImagesIncluded===false,'Authenticated teacher transcription required');
     must(receipt.question.stem===state.stem,'Wrong question source');
-    if(state.mode==='ordinary')must(receipt.question.answerOrigin==='web_extracted'&&receipt.question.answer===answer,'Authenticated web answer required');
-    else must(receipt.missingRoles?.includes('answer')&&receipt.writebackAuthorized===false,'Protected missing roles required');
+    if(split)must(receipt.question.context.choices.text===state.choices&&receipt.question.answerOrigin==='source','Original letter and all choices must be returned separately');
+    if(state.mode==='ordinary')must((split?receipt.question.analysisOrigin==='web_extracted':receipt.question.answerOrigin==='web_extracted')&&receipt.question.answer===answer,'Authenticated web role required');
+    else must(receipt.missingRoles?.includes(split?'analysis':'answer')&&receipt.writebackAuthorized===false,'Protected missing roles required');
     state.reads.push({mode:state.mode,version:receipt.version,number:receipt.question.originalNumber,contextComplete:receipt.contextComplete});
     if(state.mode==='web')call('education_web_answer',{action:'authorize',questions:[state.binding],origins:[origin]});
     else content='已实读教师核对过的原题。';
@@ -111,12 +123,22 @@ async function launch(cold=false){
     call('office_browser',{action:'extract',tabId:receipt.tabId,taskStepId:'web'});
    }else if(state.mode==='web'&&n===7){
     must(typeof receipt?.observationId==='string'&&receipt.extraction?.method==='readability','A real browser DOM receipt is required');
+    const choices=state.choices?.replace(/^[A-D]\./gm,label=>label[0]+'．');
+    const detailLabel=state.conflicting?'〖解析〗':'〖分析〗';
+    const analysisQuote=split?receipt.text.slice(receipt.text.indexOf(detailLabel)+detailLabel.length).trim():analysis;
+    if(split)must(analysisQuote.replace(/\s/g,'')===(state.conflicting?conflictingAnalysis:analysis).replace(/\s/g,''),'Complete analysis must be present in actual DOM');
     call('education_web_answer',{action:'propose',grantId:state.grantId,observationId:receipt.observationId,...state.binding,
-     questionQuote:state.stem,answerQuote:answer,analysisQuote:analysis,taskStepId:'save'});
+     questionQuote:split?state.stem+'\n'+choices:state.stem,...(split?{}:{answerQuote:answer}),analysisQuote,taskStepId:'save'});
    }else if(state.mode==='web'&&n===8){
-    must(receipt?.state==='applied'&&receipt.readback?.success,'Actual web write and source readback required');
-    state.applied=true;
-    content='该原题的缺答已按受控页面证据补齐，来源已保存。';
+    if(state.conflicting){
+     must(receipt?.state==='candidate'&&receipt.reason==='web_choice_conclusion_conflict'&&!receipt.currentQuestion,'Conflicting answer must remain a candidate');
+     state.conflictCandidate=receipt.id;
+     content='网页答案和解析冲突，已保留候选。';
+    }else{
+     must(receipt?.state==='applied'&&receipt.readback?.success,'Actual web write and source readback required');
+     state.applied=true;
+     content='该原题的缺答已按受控页面证据补齐，来源已保存。';
+    }
    }else must(false,'Unexpected model request');
    state.requests.push({mode:state.mode,n,tool:action?.name??null});
    const chunk=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'reviewed-'+state.mode+'-'+n,object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
@@ -124,7 +146,7 @@ async function launch(cold=false){
   };
   net.fetch=transport;
   globalThis.fetch=transport;
- },{cold,answer,analysis});
+ },{cold,answer,analysis,split,conflictingAnalysis});
  page=await app.firstWindow();
  page.setDefaultTimeout(45000);
  page.on('pageerror',error=>report.rendererErrors.push(error.message));
@@ -198,13 +220,13 @@ async function complete(q,p){
  assert.deepEqual(JSON.parse(current.document_json).context.projection,p);
  return current;
 }
-async function run(mode,query,stem){
+async function run(mode,query,stem,choices,conflicting=false){
  await productEntry(page,'ask').click();
  await page.getByTestId('xiaozhi-pi-workspace').waitFor();
  const prior=await page.locator('.office-composer-container').getAttribute('data-session-id');
  await page.getByTestId('pi-new-session').click();
  const sessionId=await until(async()=>{const now=await page.locator('.office-composer-container').getAttribute('data-session-id');return now&&now!==prior&&now;});
- await app.evaluate((_,values)=>Object.assign(globalThis.reviewedAnswerTest,values),{mode,query,stem,step:0});
+ await app.evaluate((_,values)=>Object.assign(globalThis.reviewedAnswerTest,values),{mode,query,stem,choices,conflicting,step:0});
  await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
  const prev=read('SELECT id FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0]?.id;
  await page.getByTestId('office-prompt-input').fill(mode==='web'?'检索并实读本地缺答题，访问本机受控页面测试题解补全。':'请检索并实读本地题库的已核对原题。');
@@ -219,7 +241,7 @@ async function run(mode,query,stem){
   }
   const current=read('SELECT id,status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0];
   if(current?.id!==prev&&['succeeded','failed','interrupted','blocked','cancelled','partial'].includes(current?.status)){
-   assert.equal(current.status,'succeeded');
+   assert((conflicting?['succeeded','partial']:['succeeded']).includes(current.status),current.status);
    return true;
   }
   return false;
@@ -231,6 +253,49 @@ async function run(mode,query,stem){
 }
 try{
  await launch();
+ if(split){
+  const original=question(exam,'6');
+  assert(original&&original.answer==='C');
+  const beforeAnswer=JSON.parse(original.document_json).answer;
+  const edited=await editArchive(original,{analysis:'',grade:'九年级',knowledgePoint:'正多边形旋转'});
+  const p=projection(edited.stem);
+  p.statement.text=edited.stem.split('\n')[0];
+  const prepared=await complete(edited,p);
+  assert(!prepared.analysis&&prepared.stem!==original.stem);
+  const rejected=await run('web','自身重合',prepared.stem,p.choices.text,true);
+  assert(rejected.conflictCandidate);
+  assert.deepEqual(question(exam,'6'),prepared);
+  const rejectedRecord=read('SELECT id,state,after_json,payload_json FROM question_web_candidates WHERE id=?',[rejected.conflictCandidate])[0];
+  assert.equal(rejectedRecord.state,'candidate');assert.equal(rejectedRecord.after_json,'');
+  assert(JSON.parse(rejectedRecord.payload_json).observation.text.includes('故选 Ｄ'));
+  const rejectedCard=await notebook(prepared,'自身重合');
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-notebook-answer-fold-'+prepared.id));
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-web-evidence-fold-'+prepared.id));
+  await rejectedCard.getByTestId('question-web-evidence-load').click();
+  await openMaterialDisclosure(rejectedCard.getByTestId('question-web-candidate').first());
+  await rejectedCard.getByText('网页答案与解析结论或选项内容存在冲突，待核对').waitFor();
+  check('The actual browser contradiction is recorded for teacher review without modifying the original question');
+  const wire=await run('web','自身重合',prepared.stem,p.choices.text);
+  assert(wire.applied&&wire.browserHits>0);
+  const saved=question(exam,'6'),document=JSON.parse(saved.document_json);
+  assert.equal(saved.analysis.replace(/\s/g,''),analysis.replace(/\s/g,''));
+  assert.deepEqual(document.answer,beforeAnswer);
+  assert.equal(document.analysis.origin,'web_extracted');
+  check('Teacher-authorized real DOM extraction matches all separately stored options, preserves the printed answer and stores only the missing analysis');
+  await run('ordinary','自身重合',saved.stem,p.choices.text);
+  const version=await typed(saved);
+  await app.close();app=undefined;
+  await launch(true);
+  const restored=await page.evaluate(input=>window.omniEdu.getQuestionContextSource(input),version);
+  assert(restored.ok);
+  assert.equal(restored.value.question.analysis,saved.analysis);
+  assert.deepEqual(question(exam,'6'),saved);
+  assert.deepEqual(read('SELECT id,state,after_json,payload_json FROM question_web_candidates WHERE id=?',[rejected.conflictCandidate])[0],rejectedRecord);
+  assert.deepEqual(originalHashes(),originals);
+  assert.deepEqual(report.rendererErrors,[]);
+  check('Ordinary local search and cold readback authenticate the actual PDF and the separately stored web analysis');
+  report.success=true;report.variant='split_choices';
+ }else{
  let a=await confirmOriginal();
  let b=question(circuit,'10');
  const graphic=question(exam,'13');
@@ -280,6 +345,7 @@ try{
  assert.deepEqual(report.rendererErrors,[]);
  check('Cold source readback preserves both proof layers and the original file hashes');
  report.success=true;
+ }
 }catch(error){
  report.success=false;
  report.error=String(error.stack||error);process.exitCode=1;

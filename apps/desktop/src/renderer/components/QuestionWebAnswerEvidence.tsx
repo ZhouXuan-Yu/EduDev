@@ -6,6 +6,7 @@ import {DisclosureCard} from './ui/DisclosureCard';
 const reasonLabels:Record<string,string>={
  existing_analysis_mismatch:'网页解析未与现有解析一致，只保留候选，未补写答案。',
  existing_answer_conflict:'网页答案与现有答案不同，未补写解析',
+ web_choice_conclusion_conflict:'网页答案与解析结论或选项内容存在冲突，待核对',
  question_or_role_mismatch:'题目或答案区不能唯一匹配',
  incomplete_web_evidence:'网页提取不完整或访问受限',
  visual_web_evidence:'含未核对图像',
