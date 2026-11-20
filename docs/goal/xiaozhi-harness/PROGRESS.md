@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 处理两项随包依赖告警
+
+已实现。更新 Zod 4.6.6 与 `source-map-js` 1.2.2，生产审计高危条目从 7 项到 5 项。独立确认两版依赖进入 Windows 解包目录，C2 在该源码及合并后的构建各通过 4 项。前次 NSIS 保留归档证据，补丁版尚未生成新 NSIS。原生窗口、干净 Windows 安装与正式模型对照继续按原门槛。 [独立与合并证据](evidence/phase8/shipped-dependency-patches-20261120.json)
+
 ## 2026-11-20 当前主线候选封存与双尺寸隔离复验
 
 已在最新集成构建补齐 W2/W3 的迟到事件、产物分别保存及冷读证据。两尺寸各 5 项实页检查及延迟流顺序通过，保留旧夹具触发请求期限的失败。当前 Windows 候选的五套运行时、许可及实际教育助手已核对。NSIS 顺利退出，直接从安装包解出的 481 个文件逐一匹配构建。原生前台、干净 Windows 安装和正式模型对照继续按完整门槛。 [页面证据](evidence/phase7/implementation-resume-20261119/workbench-late-stream-frozen-20261120.json) · [候选回读](evidence/phase8/windows-package-20261119/current-main-package-5f4b0ca-20261120.json)

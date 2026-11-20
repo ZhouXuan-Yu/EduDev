@@ -819,5 +819,13 @@
     "archiveReadbackExitCode": 0,
     "installerSha256": "3dc4d9f8bf8da081cae2ff9e6d4b395748f634a1536865de5701c16b31128124",
     "newPaidCalls": 0
+  },
+  "shippedDependencyPatches20261120": {
+    "status": "PATCHED_WINDOWS_DIRECTORY_AND_INTEGRATED_C2_VERIFIED",
+    "evidence": "evidence/phase8/shipped-dependency-patches-20261120.json",
+    "dependencyVersions": {"zod": "4.6.6", "source-map-js": "1.2.2"},
+    "highNpmAuditPackageEntries": [7, 5],
+    "cleanWindowsInstall": "NOT_RUN",
+    "newPaidCalls": 0
   }
 }
