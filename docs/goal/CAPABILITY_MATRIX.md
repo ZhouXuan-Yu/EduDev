@@ -4,6 +4,10 @@
 
 M10 本地活动超时已有操作级主进程诊断。安全恢复等待原操作结束后开放现有入口。
 
+## 2026-11-20 后台定稿等待版面发布
+
+M03/M05 后台定稿支持等待已归档 PDF 的结构发布。未完成的原题、题答匹配及正式组选继续按 KB-A03～A06。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 M03/M05 归档 PDF 页与裁图可重定位回读。M06 已验收两题集中确认，安装迁移和三套正式卷仍需完整验证。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)

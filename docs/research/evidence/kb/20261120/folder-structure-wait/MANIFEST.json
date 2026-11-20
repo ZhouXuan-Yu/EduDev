@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "0120f8a219922c8f3cc6587f16f640b7faad628601562a8b398c54527379c64e"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "bfd5d6aa31c48a72e36dee0a1c6a5e20a70be1f574e1f63c311ca1c6b5109cb6"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "9c58ca2417a6c02d9b6da78b15f36b562f6816900199805095d4ead89ccb7521"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "84e2582fc038a7595f78f516d107ba8af7278a31c35e1068d0b633f36748ac66"
+    },
+    {
+      "path": "apps/desktop/scripts/education/ai-structure-source-boundaries.mjs",
+      "sha256": "460cc0987d07a91d81a65a6f077ea62dc2baf68f6db26137c7da098ba96c68c9"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-folder-pdf-publication-boundaries.mjs",
+      "sha256": "1c980b7f7d6d1b053f432d5178c6bcb4005992dc382edb3c91148224d14f40d7"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-folder-structure-wait-electron.mjs",
+      "sha256": "7e9c75331afb7e073142dac2e52e5ef4cd7000277ca79b4d5ee4ed41b234894c"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-ipc.ts",
+      "sha256": "256dd81d7f262c04dc05d5f087efe83795c4cca20179c49ed8bffcdf8b69d2ff"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "7fb1097ecbf501ddaa40770624f5a1048eb8aeda75b157d41a6749cf8e42d5de"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-structure-source.ts",
+      "sha256": "733728571840aa69361c9f404741730ceedd9c03c3d1a9715c37933c4934f8d5"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-folder-ai.ts",
+      "sha256": "c1ddc6d0903179607b669c860eb12a17d933225dcbcd74d251199b157376e4ec"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialAiPanel.tsx",
+      "sha256": "cb376bf214442798ee4078f0c4d3c6a584a1c1d5a27b198077a163e0f4aa0fab"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "d6cfecc3f1be1cc6d688c9c3202a95e07ca0b14679608b1e3783e33aa56cee9c"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "a5f9e4b6e41e37671691027dee98e0b22b59a1d3ca18c949bac26e104d93dd0f"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "5a2511747f2dfb8d54cb39f2006d8b60d03facdcd1b756e7a131d4a6ef977e70"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "9f70c2342c54457b98a026eb764c6230756db78c862ecab119fa2cff82c877fa"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "a490eda02995abf4e5753f8004b32d1660cb7960f2feba2d309dfb51c95e8716"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "8346a4d9c4a579bcd0f9116fb56892131670d95b03b9698a6a4ab58032bc167e"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "045b6ed5cb7f1651bc8245ecaeef2c731baa31a385b82356939c191e8b40a6ea"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "fadfba337ec2cbfba9ebe9768f53baa76643d65c7ef1d0fd58ad1bc383ddc6eb"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "494a9ad17944b5441c461c749b002be45409adc2e41389c588af8c434d588b69"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "bde37b6b1ae92b43b31edc737428f5a904a7b3b3bbbf3a8622a3c72e8c30f1ce"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/folder-structure-wait/README.md",
+      "sha256": "030bbdd4eb95867cc2ceea1e7f4ef139b93ec80cd51f3b19f4010939c3685ba6"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/folder-structure-wait/summary.json",
+      "sha256": "f46f27df11539ad178894a8cb5b916c2101c1bc9ab5ebcd57fb8a0eb15de89cf"
+    }
+  ]
+}

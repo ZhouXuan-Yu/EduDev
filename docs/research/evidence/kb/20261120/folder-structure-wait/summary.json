@@ -1,0 +1,24 @@
+{
+  "baselineBuild": "9d045431b5d385825f7bbeeb8a1e377f64592316",
+  "integratedMain": "0a117fa657b5d6d989039670bfeedb698b744e0f",
+  "integratedBuildSha256": "01657760d40570c60db15db9e083741fa88874ea137a26c775078fab98203408",
+  "desktop": {
+    "controlledStructurePublicationWithRealOcrAndImages": true,
+    "waitingBeforeAfter": [0, 1],
+    "reviewBeforeAfter": [1, 0],
+    "reservedWhileWaiting": 0,
+    "afterReleaseLocalDispatchBeforeAfter": [0, 1],
+    "pausePreservedAcrossRestart": true,
+    "originalPageUnchanged": true,
+    "externalRequests": 0
+  },
+  "tests": {"renderer":253,"electronSmoke":207,"folderPdfPublication":24,"aiStructureSource":18,"aiPage":250,"folderAi":18,"folderWordUpgrade":13},
+  "nextNaturalDefect": {
+    "sample": "风华初三三模模拟测试卷",
+    "page": 1,
+    "pageReceiptReadable": true,
+    "samePageChunkOffsets": [0,1,10,11,12,13,14,15,16,17,18,19,20,21],
+    "failure": "source_incomplete",
+    "nextPageFailure": "unit_too_large"
+  }
+}

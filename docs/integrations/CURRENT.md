@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-20 后台定稿等待版面发布
+
+AI 发布前识别同版本结构工作是否仍运行。完成后按原引擎协议认证图、原文和段落，上云仍沿原授权与安全检查。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 PDF 复用现有全文件 SHA、OCR 页回执与裁图账本。历史只读回读在返回前核对原件当前身份，不改写归档。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)

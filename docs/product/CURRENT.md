@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-11-20 后台定稿等待版面发布
+
+教师可在处理队列看到当前页等待版面，继续同一批次使用之前的授权。来源实际缺失时仍显示待核。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 恢复知识库后已可查看历史题页与原图，并将这类 PDF 裁题选入试卷。证据不一致时试卷确认被拦截。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)

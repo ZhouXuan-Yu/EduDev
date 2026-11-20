@@ -229,13 +229,14 @@ async function authenticate(
     throw Error("source_changed");
 }
 
-/** Called only while constructing a new non-legacy input. Historical prompts stay frozen. */
-export async function withAiStructureSource(
+export const AI_STRUCTURE_PENDING = "structure_pending";
+
+/** Legacy resources have no managed structure. An active generation is a
+ * scheduling dependency, while a failed or stale one is a source error. */
+export async function readPublishedAiStructureJob(
   host: Host,
   source: MaterialPageSource,
-  original: FragmentPageSource,
-  signal: AbortSignal,
-): Promise<FragmentPageSource> {
+) {
   if (
     !(
       await host.all(
@@ -243,19 +244,30 @@ export async function withAiStructureSource(
       )
     ).length
   )
-    return original;
+    return;
   const job = (
     await host.all(
       "SELECT generation,version,engine,status FROM material_structure_jobs WHERE resource_id=?",
       [source.resourceId],
     )
   )[0];
-  if (!job || !validDocumentStructureEngine(job.engine)) return original;
-  if (
-    job.version !== source.version ||
-    !["complete", "partial"].includes(String(job.status))
-  )
-    throw Error("source_incomplete");
+  if (!job || !validDocumentStructureEngine(job.engine)) return;
+  if (job.version !== source.version) throw Error("source_incomplete");
+  if (job.status === "pending" || job.status === "running") throw Error(AI_STRUCTURE_PENDING);
+  if (!["complete", "partial"].includes(String(job.status))) throw Error("source_incomplete");
+  return job;
+}
+
+/** Called only while constructing a new non-legacy input. Historical prompts stay frozen. */
+export async function withAiStructureSource(
+  host: Host,
+  source: MaterialPageSource,
+  original: FragmentPageSource,
+  signal: AbortSignal,
+): Promise<FragmentPageSource> {
+  signal.throwIfAborted();
+  const job = await readPublishedAiStructureJob(host, source);
+  if (!job) return original;
   const { page, image, sha256 } = await readPage(
     host,
     source,
