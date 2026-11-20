@@ -28,5 +28,18 @@ try{
   assert.deepEqual(ids(await gradeQuery('高级中学')),[plain.id,alternate.id,adjacent.id,stage.id].sort());
   assert.deepEqual(ids(await gradeQuery("高中' OR 1=1 --")),[]);
   note('Native Lance prefilters specific aliases and stage scope before object limits while preserving raw stored labels');
+  await store.applyMany(spec,[
+    {...plain,seq:211,questionType:'单项选择题'},
+    {...alternate,seq:212,questionType:'多选题'},
+    {...adjacent,seq:213,questionType:'不定项选择题'},
+    {...stage,seq:214,questionType:'选择题'},
+  ]);
+  const typeQuery=questionType=>store.query(spec,{generation:spec.id,kind:'question',query:'光子的能量和频率',questionType,limit:10});
+  assert.deepEqual(ids(await typeQuery('选择题')),[plain.id,alternate.id,adjacent.id,stage.id].sort());
+  assert.deepEqual(ids(await typeQuery('单选题')),[plain.id]);
+  assert.deepEqual(ids(await typeQuery('多项选择题')),[alternate.id]);
+  assert.deepEqual(ids(await typeQuery('不定项选择题')),[adjacent.id]);
+  assert.deepEqual(ids(await typeQuery("选择题' OR 1=1 --")),[]);
+  note('Native Lance keeps generic choice filters inclusive and specific choice variants isolated');
   console.log(JSON.stringify({success:true,checks,root,bulkMilliseconds:Date.now()-before,counts:await store.counts(spec),scope:'Real fixed CPU ONNX EXE, tokenizer, local Lance Node native SDK; small own data, no cloud, no large-scale or holdout-quality claim'}));
 }finally{store.close();}

@@ -47,6 +47,23 @@ try{
    assert.deepEqual(result.rows.map(row=>row.id).sort(),expected,grade);
   }
  });
+ await check('Choice filters retain the different source subtypes before ranking and LIMIT',async()=>{
+  for(const [id,question_type] of [['generic','选择题'],['single','单项选择题'],['multiple','多选题'],['indeterminate','不定项选择题'],['other','判断题']]){
+   put(id,{question_type,knowledge_point:'题型过滤对照',stem:'定向题型练习'});
+  }
+  const cases=[
+   ['选择题',['generic','indeterminate','multiple','single']],
+   ['单选题',['single']],
+   ['多项选择题',['multiple']],
+   ['不定项选择题',['indeterminate']],
+   ['判断题',['other']],
+   ["选择题' OR 1=1 --",[]],
+  ];
+  for(const [questionType,expected] of cases)for(const indexed of [true,false])for(const query of ['', '定向题型练习']){
+   const result=await searchQuestionRows(sql,{query,subject:'物理',questionType,knowledgePoint:'题型过滤对照',limit:50},indexed);
+   assert.deepEqual(result.rows.map(row=>row.id).sort(),expected,questionType);
+  }
+ });
  put('literal',{stem:'保留20%、a_b、2.5的字面含义。',analysis:'',knowledge_point:'量纲'});
  await check('Literal percent, underscore, slashes, punctuation and single characters retain existing behavior',async()=>{
   for(const query of ['20%','a_b','2.5'])assert.deepEqual((await searchQuestionRows(sql,{...scope,query},true)).rows.map(r=>r.id),['literal']);

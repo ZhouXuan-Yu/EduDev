@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {archiveEligible} from '../../shared/question-archive';
 import {equivalentQuestionGradeLabels} from '../../shared/question-grade';
+import {questionTypeLabels} from '../../shared/question-type';
 import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity as questionContentIdentity} from '../../shared/question-selection-identity';
 import {validPaperBlueprint,generatedPaperCount,type PaperBlueprint,type PaperSelection,type PaperSection,type PaperGeneration} from '../../shared/paper-blueprint';
 import {QUESTION_CONTEXT_SCHEMA} from '../../shared/question-context';
@@ -15,7 +16,9 @@ export function paperSectionMatches(q:QuestionBankItem,b:PaperBlueprint,s:PaperS
  const original=q.sourceKind==='local_bank'||q.sourceKind==='teacher_resource';
  const inScope=original?equivalentQuestionGradeLabels(b.grade).includes(q.grade):
   b.mode!=='source_only'&&q.sourceKind==='generated'&&q.grade===b.grade;
- return inScope&&q.subject===b.subject&&paperQuestionType(q.questionType)===paperQuestionType(s.questionType)
+ const matchingType=paperQuestionType(q.questionType)===paperQuestionType(s.questionType)
+  ||original&&questionTypeLabels(s.questionType).includes(q.questionType);
+ return inScope&&q.subject===b.subject&&matchingType
   &&(!s.difficulty||q.difficulty===s.difficulty)&&(!s.knowledgePoint||q.knowledgePoint.includes(s.knowledgePoint));
 }
 export function paperShortages(b:PaperBlueprint,items:PaperSelection['items']):PaperSelection['shortages']{
