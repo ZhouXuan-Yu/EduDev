@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { namedPageFooter } from "./material-document-structure";
 import type {
   StructurePage,
   StructureQuestion,
@@ -8,7 +9,9 @@ import type {
 export function structureOcrSourceKey(
   question: StructureQuestion,
   pages: StructurePage[],
+  ignoreProvenNamedPageFooters = false,
 ) {
+  let droppedFooter = false, retainsOriginalText = false;
   const records = pages.map((page) => {
     const paragraphIds = new Set([
       ...question.paragraphIds,
@@ -21,9 +24,15 @@ export function structureOcrSourceKey(
     );
     for (const asset of question.assets.filter((a) => a.page === page.page))
       for (const id of asset.lineIds ?? []) ids.add(id);
-    const lines = page.lines
-      .filter((line) => ids.has(line.id) && !line.origin)
-      .map((line) => [line.sourceId, line.text, line.quad])
+    const lines = page.lines.flatMap(line => {
+      if (!ids.has(line.id) || line.origin) return [];
+      if (ignoreProvenNamedPageFooters && namedPageFooter(line, page.regions, page)) {
+        droppedFooter = true;
+        return [];
+      }
+      retainsOriginalText ||= !!line.text.trim();
+      return [[line.sourceId, line.text, line.quad]];
+    })
       .sort((a, b) => String(a[0]).localeCompare(String(b[0])));
     return [
       page.resourceId,
@@ -34,6 +43,7 @@ export function structureOcrSourceKey(
       lines,
     ];
   });
+  if (ignoreProvenNamedPageFooters && (!droppedFooter || !retainsOriginalText)) return;
   return createHash("sha256")
     .update(
       JSON.stringify([

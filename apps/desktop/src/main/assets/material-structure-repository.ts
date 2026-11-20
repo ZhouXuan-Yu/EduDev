@@ -768,7 +768,8 @@ export class MaterialStructureRepository {
         )
           sourcePages.push(await readPage(String(row.generation), page));
         if (
-          structureOcrSourceKey(original, sourcePages) === question.ocrSourceKey
+          structureOcrSourceKey(original, sourcePages) === question.ocrSourceKey ||
+          structureOcrSourceKey(original, sourcePages, true) === question.ocrSourceKey
         )
           return String(row.id);
       }

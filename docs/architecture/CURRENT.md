@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 页码行从题干和索引分离
+
+v13 按原版面和 OCR 证据判断页脚并通过既有角色链排除索引。旧教师题比较兼容同版原件中已证页脚的变化，SQLite 结构沿用既有版本。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)
+
 ## 2026-11-21 栏序疑点与 PDF 页源核对
 
 v12 栏序判断结合原区域所有权、独立行及左右栏起点，保留原排序与正文。解析世代继续版本化，PDF 页源判断在数据库发布前独立发生。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)

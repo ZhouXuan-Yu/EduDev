@@ -847,6 +847,33 @@ await check('A printed page count is removed from stems only with bottom geometr
  for(const [text,y,kind] of [['第 2 页共 2 页',.94,'number'],['第 1 页共 7 页',.94,'number'],['第 1 页共 2 页',.5,'number'],['第 1 页共 2 页',.94,'text'],['3/7',.4,'number'],['2/2',.94,'number']])
   assert.equal(page([[text,.42,y,.16,kind]],1,2).paragraphs[0].role,'body');
 });
+await check('Named folios use adjoining physical regions and retain the exact OCR line without polluting the question',()=>{
+ const name='学期练习（B卷） 第 ４ 页 共 ４ 页';
+ const label={id:'block-70',kind:'footer',score:.83,box:[.393,.921,.467,.937],needsReview:true};
+ const number={id:'block-71',kind:'number',score:.84,box:[.474,.921,.609,.937],needsReview:true};
+ function fixture(text=name,regions=[label,number],y=.92){
+  const seed=page([['21. 已知条件，求答案。',.1,.60],['(1) 计算第一问。',.11,.64],[text,.392,y,.216]],4,4);
+  return recoverStructurePage({...seed,regions:[...seed.regions.slice(0,2),...regions],
+   lines:seed.lines.map(line=>({id:line.sourceId,text:line.text,score:line.score,normalizedQuad:line.quad}))});
+ }
+ const fixed=fixture(), footer=fixed.paragraphs.at(-1), corrected=questions([fixed])[0];
+ assert.equal(footer.role,'footer');
+ assert.equal(footer.rawText,name);
+ assert.equal(fixed.lines.at(-1).text,name);
+ assert.deepEqual(footer.anchor,{page:4,box:fixed.lines.at(-1).box});
+ assert(!corrected.stem.includes(name)&&!corrected.subquestions[0].text.includes(name));
+ assert(!corrected.paragraphIds.includes(footer.id));
+
+ const negatives=[fixture(name,[number]),fixture(name,[{...label,score:.79},number]),
+  fixture(name,[label,{...number,box:[.474,.951,.609,.969]}]),
+  fixture(name,[label,{...number,box:[.506,.921,.609,.937]}]),
+  fixture(name,[label,{...number,box:[.40,.921,.59,.937]}]),
+  fixture(name,[label,number,{id:'block-72',kind:'text',score:.99,box:[.37,.9,.64,.95]}]),
+  fixture(name.replace('４ 页 共','３ 页 共')),fixture(name.replace('共 ４','共 ５')),
+  fixture('如需查看资料，请参阅第4页共4页'),fixture(name,[label,number],.85)];
+ assert(negatives.every(p=>p.paragraphs.at(-1).role!=='footer'));
+ assert.equal(page([['第3页共4页',.39,.92,.21,'footer']],4,4).paragraphs.at(-1).role,'footer');
+});
 await check('A declared material range excludes questions both before and after it',()=>{
  const rows=[['阅读材料，完成3～4题。',.1,.08],['背景材料内容。',.1,.13],['2. 已知条件，求结果。',.1,.23],['3. 根据材料一求结果。',.1,.32],['4. 根据材料计算差值。',.1,.40],['5. 已知功率，求耗电量。',.1,.49]];
  const [before,first,last,after]=questions([page(rows)]);
