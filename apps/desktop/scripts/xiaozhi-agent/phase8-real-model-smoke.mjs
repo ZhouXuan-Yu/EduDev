@@ -20,7 +20,8 @@ async function check(name, action) {
   console.log(JSON.stringify(report.checks.at(-1)));
 }
 try {
-  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source, sha256} = await import('./phase8-real-model-plan.mjs');
+  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source, question, sha256} = await import('./phase8-real-model-plan.mjs');
+  const {readFrozenQuestionSeed} = await import('./phase8-question-seed.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
   const {verifiedRunBinding, collectFiles, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
   const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete, continueApprovedQ5, bindDispatchAttempts} = await import('./phase8-real-model-run.mjs');
@@ -516,7 +517,42 @@ try {
     assert.throws(()=>validateManifest({...value,versions:{A:fixture,B:fixture}}),/phase8_comparison_versions_invalid/);
     assert.throws(()=>validateManifest({...value,versions:{A:value.versions.B,B:fixture}}),/phase8_comparison_versions_invalid/);
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 19 && report.checks.every(row => row.pass);
+  await check('Q3 uses the same verified teaching question in both closed databases', () => {
+    const root = path.join(output, '题库证据');
+    const commit = 'd50ef330f0f9c4995cc7e096e85bd8fd93629c83';
+    const questionId = 'question_e22e220c-6fda-45a4-9ab9-2310beff874d';
+    const evidence = {schemaVersion:1, commit, questionId, stemSha256:sha256(question), beforeVersion:'1'.repeat(64),
+      afterVersion:'2'.repeat(64), sourceKind:'local_bank', modelRequests:0,
+      actions:['createQuestionBankItem', 'getArchivedQuestionVersion', 'editArchivedQuestion', 'getArchivedQuestionVersion']};
+    const versions = Object.fromEntries(['A','B'].map(version => [version, {commit, dataSnapshot:path.join(root, version)}]));
+    const filenames = Object.values(versions).map(({dataSnapshot}) => {
+      fs.mkdirSync(dataSnapshot, {recursive:true});
+      const filename = path.join(dataSnapshot, 'app.db');
+      const db = new DatabaseSync(filename);
+      try {
+        db.exec('CREATE TABLE question_bank_items(id TEXT PRIMARY KEY, stem TEXT, source_kind TEXT, answer TEXT, analysis TEXT); PRAGMA journal_mode=WAL;');
+        db.prepare('INSERT INTO question_bank_items VALUES (?,?,?,?,?)').run(questionId,question,'local_bank',
+          '重力12 N；静止时漂浮；浸入水中体积1.2 L。',
+          '2 L=0.002 m³，质量600×0.002=1.2 kg，重力为12 N。物体漂浮，浸入体积12/(1000×10)=0.0012 m³=1.2 L。');
+      } finally {db.close();}
+      return filename;
+    });
+    const questionSeedEvidence=path.join(root,'seed.json');
+    const manifest = {versions, questionSeedEvidence};
+    fs.writeFileSync(questionSeedEvidence, '{}');
+    assert.throws(() => readFrozenQuestionSeed(manifest), /phase8_question_seed_evidence_invalid/);
+    fs.writeFileSync(questionSeedEvidence, JSON.stringify(evidence));
+    const verified = readFrozenQuestionSeed(manifest);
+    assert.equal(verified.seedVersion,evidence.afterVersion);
+    assert.equal(verified.receiptSha256,sha256(fs.readFileSync(questionSeedEvidence)));
+    for (const {dataSnapshot} of Object.values(versions)) assert.deepEqual(fs.readdirSync(dataSnapshot),['app.db']);
+    const db = new DatabaseSync(filenames[1]);
+    try {db.exec("UPDATE question_bank_items SET answer='incorrect'");} finally {db.close();}
+    assert.throws(() => readFrozenQuestionSeed(manifest), /phase8_question_seed_snapshot_mismatch/);
+    fs.writeFileSync(filenames[1] + '-wal', '');
+    assert.throws(() => readFrozenQuestionSeed(manifest), /phase8_question_seed_snapshot_not_closed/);
+  });
+  report.budget = ledger.summary(); report.success = report.checks.length === 20 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();
