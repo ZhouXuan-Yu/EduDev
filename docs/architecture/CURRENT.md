@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 正式组卷保留独立题图
+
+独立题图从原结构版本的登记坐标生成，核对记录保存页、原页栅格、独立 PNG 及位置，新派生图块与整段原题截图有各自的 ID。入库和正式组卷仍走既有事务、版本和权限。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)
+
 ## 2026-11-21 本卷编辑中的图形选项
 
 题篮选项增加可选的来源图像引用，不改原题文档和 SQLite 表。主进程双向核对源图标签和顺序，教师/学生 Office 编译复用同一题面。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)

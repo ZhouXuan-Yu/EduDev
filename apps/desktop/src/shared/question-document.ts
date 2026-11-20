@@ -25,7 +25,8 @@ type QuestionDocumentBase={source:{resourceId:string;resourceVersion:string;pars
 export const QUESTION_TEXT_PRESENTATION_SCHEMA='xiaozhi.question-text-presentation.v1' as const;
 export type QuestionTextPresentation={schemaVersion:typeof QUESTION_TEXT_PRESENTATION_SCHEMA;mode:'teacher_text'|'needs_review';figureBlockIds:string[]};
 export const QUESTION_ILLUSTRATIONS_SCHEMA='xiaozhi.question-illustrations.v1' as const;
-export type QuestionIllustrations={schemaVersion:typeof QUESTION_ILLUSTRATIONS_SCHEMA;complete:boolean;blockIds:string[]};
+export const QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA='xiaozhi.question-illustrations.structure.v1' as const;
+export type QuestionIllustrations={schemaVersion:typeof QUESTION_ILLUSTRATIONS_SCHEMA|typeof QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA;complete:boolean;blockIds:string[]};
 export type QuestionDocument=QuestionDocumentBase&({schemaVersion:typeof QUESTION_DOCUMENT_SCHEMA}|{schemaVersion:typeof QUESTION_DOCUMENT_COMPLETE_SCHEMA|typeof QUESTION_DOCUMENT_BOOK_SCHEMA|typeof QUESTION_DOCUMENT_WEB_SCHEMA;context:{schemaVersion:typeof QUESTION_PROJECTION_SCHEMA;projection:QuestionProjection;sourceBlockIds:string[];presentation?:QuestionTextPresentation;illustrations?:QuestionIllustrations;sourceContent?:QuestionSourceContent}});
 export type CompleteQuestionDocument=Extract<QuestionDocument,{context:unknown}>;
 export function isCompleteQuestionDocument(v:QuestionDocument|undefined):v is CompleteQuestionDocument{return !!v&&(v.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA||v.schemaVersion===QUESTION_DOCUMENT_WEB_SCHEMA);}
@@ -135,7 +136,13 @@ export function validQuestionDocument(v:unknown):v is QuestionDocument{
    if(Object.hasOwn(c,'sourceContent')&&!validQuestionSourceContent(c.sourceContent,(v.blocks as QuestionBlock[]).filter((b):b is Extract<QuestionBlock,{kind:'image'}>=>b.kind==='image')))return false;
    if(Object.hasOwn(c,'illustrations')){
     const f=c.illustrations;
-    if(!keys(f,['schemaVersion','complete','blockIds'])||f.schemaVersion!==QUESTION_ILLUSTRATIONS_SCHEMA||typeof f.complete!=='boolean'||!Array.isArray(f.blockIds)||f.blockIds.length>8||new Set(f.blockIds).size!==f.blockIds.length||!f.blockIds.every(id=>(c.sourceBlockIds as string[]).includes(id))||((c.projection as QuestionProjection).figures.state==='not_applicable'&&f.blockIds.length)||f.complete&&(c.projection as QuestionProjection).figures.state==='provided'&&!f.blockIds.length)return false;
+    if(!keys(f,['schemaVersion','complete','blockIds'])||typeof f.complete!=='boolean'||!Array.isArray(f.blockIds)||f.blockIds.length>8||
+        new Set(f.blockIds).size!==f.blockIds.length||((c.projection as QuestionProjection).figures.state==='not_applicable'&&f.blockIds.length)||
+        f.complete&&(c.projection as QuestionProjection).figures.state==='provided'&&!f.blockIds.length)return false;
+    if(f.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA){
+     if(f.complete!==true||!f.blockIds.length||!f.blockIds.every((id,index)=>id==='structure_figure_'+(index+1)&&!(c.sourceBlockIds as string[]).includes(id)&&
+        (v.blocks as QuestionBlock[]).some(b=>b.id===id&&b.kind==='image'&&b.mime==='image/png')))return false;
+    }else if(f.schemaVersion!==QUESTION_ILLUSTRATIONS_SCHEMA||!f.blockIds.every(id=>(c.sourceBlockIds as string[]).includes(id)))return false;
    }
    if(Object.hasOwn(c,'presentation')){
     const p=c.presentation;

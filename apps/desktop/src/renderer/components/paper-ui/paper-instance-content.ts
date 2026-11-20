@@ -1,4 +1,4 @@
-import {documentIllustrations,hasTeacherTextPresentation,isCompleteQuestionDocument,structuredQuestionChoices} from '../../../shared/question-document';
+import {documentIllustrations,hasTeacherTextPresentation,isCompleteQuestionDocument,QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA,structuredQuestionChoices} from '../../../shared/question-document';
 import type {QuestionBlock} from '../../../shared/question-document';
 import type {PaperInstanceBlock, PaperInstanceOption, PaperInstanceContent, PaperInstanceRole} from '../../../shared/paper-instance';
 import type {PaperWorkspaceEntry} from './paper-basket-client';
@@ -50,8 +50,12 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
       const content = context[role].text.trim();
       return content && !statement.includes(content) ? [{type:'text' as const,text:content}] : [];
     }) : [];
-    return [...(statement.trim()?[{type:'text' as const,text:statement}]:[]),...extra,{type:'options',items},
-      ...(documentIllustrations(q.document)?.blockIds.map(image) ?? [])];
+    const illustrationSource=documentIllustrations(q.document);
+    const illustrations=illustrationSource?.blockIds.map(image)??[];
+    const choiceBlock:PaperInstanceBlock={type:'options',items};
+    const body=illustrationSource?.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA
+      ? [...illustrations,choiceBlock] : [choiceBlock,...illustrations];
+    return [...(statement.trim()?[{type:'text' as const,text:statement}]:[]),...extra,...body];
   }
   if (role === 'question' && q.document?.blocks.length && !isCompleteQuestionDocument(q.document)) return blocks(q.document.blocks);
   const native = q.archive?.native?.roles[role];

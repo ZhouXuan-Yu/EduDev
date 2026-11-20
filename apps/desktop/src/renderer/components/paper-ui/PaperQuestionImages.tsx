@@ -4,7 +4,7 @@ import type {QuestionBankItem} from '../../../shared/contracts';
 import {NATIVE_IMAGE_SCHEMA} from '../../../shared/native-question-image';
 import {ORIGINAL_MULTI_SCHEMA} from '../../../shared/original-multi-review';
 import {ORIGINAL_REVIEW_SCHEMA} from '../../../shared/original-question-review';
-import {hasTeacherTextPresentation,isCompleteQuestionDocument} from '../../../shared/question-document';
+import {hasTeacherTextPresentation,isCompleteQuestionDocument,QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA} from '../../../shared/question-document';
 
 type Image = {src: string; label: string; diagram?: boolean};
 
@@ -49,6 +49,11 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
             if (!image) throw Error('missing figure');
             return image;
           });
+        }
+        if(isCompleteQuestionDocument(question.document)&&
+            question.document.context.illustrations?.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA){
+          // The source-mode body crop already contains the independent figures.
+          pictures=pictures.filter(image=>image.kind!=='diagram'||!!image.choiceLabel);
         }
         return pictures.map(image => ({src: image.dataUrl, diagram: image.kind==='diagram', label: image.choiceLabel ? `选项 ${image.choiceLabel} 原图` : `第 ${image.page} 页${image.kind==='diagram'?'题面插图':'题面图'}`}));
       }

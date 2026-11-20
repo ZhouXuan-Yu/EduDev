@@ -431,9 +431,9 @@ export class MaterialQuestionArchive{
    }
    if(questionVersion(q)!==input.version)throw Error('source_changed');
    await assertStructureDraftEditable(target.host,q.id);
-   const next=await structures.completeContext(q,input,signal);
-   await verify(q,signal);check();
-   const saved=await structures.recordContext(input,next,questionVersion(next));
+   const {next,illustrations}=await structures.completeContext(q,input,signal);
+   await verify(next,signal);check();
+   const saved=await structures.recordContext(input,next,questionVersion(next),illustrations);
    await target.host.run('UPDATE question_bank_items SET stem=?,document_json=?,updated_at=? WHERE id=?',
     [next.stem,JSON.stringify(next.document),next.updatedAt,next.id]);
    await afterWrite?.(current);check();

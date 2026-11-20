@@ -24,18 +24,23 @@ import {
 import type { MaterialParseLease } from "./material-parse-queue";
 import type { OriginalImage } from "./question-assets";
 import type { QuestionDocument } from "../../shared/question-document";
-import { QUESTION_DOCUMENT_SCHEMA, isCompleteQuestionDocument, questionDocumentSchemaForRoles, validQuestionDocument } from "../../shared/question-document";
+import { QUESTION_DOCUMENT_SCHEMA, QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA, type CompleteQuestionDocument, isCompleteQuestionDocument, questionDocumentSchemaForRoles, validQuestionDocument } from "../../shared/question-document";
 import { validQuestionContextEdit, type QuestionContextEditInput } from "../../shared/question-context-edit";
 import { QUESTION_CONTEXT_SCHEMA, validQuestionContextSource, type QuestionContextSource } from "../../shared/question-context";
 import { projectionFormulasInQuestion } from "../../shared/question-projection";
 import { completeQuestion } from "../education/question-context-revision";
 import type { ArchiveFields } from "../../shared/question-archive";
 import { PDF_LAYOUT_ENGINE } from "../../shared/material-layout";
-import type { PageBox } from "../../shared/material-page-preview";
+import { MATERIAL_PREVIEW_SCHEMA, PDF_PAGE_ENGINE, pageSha, type PageBox } from "../../shared/material-page-preview";
 import { validPdfFilePage } from "../../shared/material-pdf-file";
 import { localizedPdfMarkProof, verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
 import { structureBookScope } from "./material-structure-book-scope";
+import {
+  assertStructureIllustrationPlan, attachStructureIllustrations, planStructureIllustrations,
+  structureIllustrationAssets, validStructureIllustrationProof,
+  type StructureIllustrationPage, type StructureIllustrationPlan, type StructureIllustrationProof,
+} from './material-structure-illustrations';
 import { checkedStructureArchive, STRUCTURE_BANK_REVISION } from "./material-structure-bank";
 
 type Value = string | number | null;
@@ -66,6 +71,7 @@ type StructureContextReceipt = {
   reference: DocumentStructureReference;
   contextSha: string;
   saved: QuestionContextSource;
+  illustrations?: StructureIllustrationProof[];
 };
 type Host = {
   all: (sql: string, values?: Value[]) => Promise<Row[]>;
@@ -85,6 +91,7 @@ type Host = {
     pages: { page: StructurePage; image: OriginalImage }[],
     signal: AbortSignal,
   ) => Promise<QuestionDocument>;
+  cropIllustration?: (plan:StructureIllustrationPlan, signal:AbortSignal)=>Promise<StructureIllustrationProof>;
   verifyPdfMarks?: (
     image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal,
   ) => Promise<boolean>;
@@ -992,7 +999,8 @@ export class MaterialStructureRepository {
     if (hash(body) !== row.sha256 || !validQuestionContextEdit(body.input) ||
         !validStructureReference(body.reference) || !validQuestionContextSource(body.saved) ||
         body.input.questionId !== row.question_id || body.saved.questionId !== row.question_id ||
-        body.input.requestId !== row.request_id || body.contextSha !== row.context_sha)
+        body.input.requestId !== row.request_id || body.contextSha !== row.context_sha ||
+        body.illustrations !== undefined && !validStructureIllustrationProof(body.illustrations))
       throw Error("source_changed");
     return body;
   }
@@ -1005,7 +1013,15 @@ export class MaterialStructureRepository {
     return this.readContextReceipt(row);
   }
 
-  async recordContext(input: QuestionContextEditInput, q: QuestionBankItem, version: string) {
+  private async contextReceipt(questionId: string, context: CompleteQuestionDocument['context']) {
+    const [row] = await this.host.all(
+      'SELECT * FROM material_structure_context_edits WHERE question_id=? AND context_sha=? ORDER BY rowid DESC LIMIT 1',
+      [questionId, hash(context)],
+    );
+    return this.readContextReceipt(row);
+  }
+
+  async recordContext(input: QuestionContextEditInput, q: QuestionBankItem, version: string, illustrations?:StructureIllustrationProof[]) {
     if (!q.archive?.structure || !isCompleteQuestionDocument(q.document)) throw Error("source_changed");
     const contextSha = hash(q.document.context);
     const body: StructureContextReceipt = {
@@ -1013,6 +1029,7 @@ export class MaterialStructureRepository {
       reference: q.archive.structure,
       contextSha,
       saved: { schemaVersion: QUESTION_CONTEXT_SCHEMA, questionId: q.id, version },
+      ...(illustrations ? {illustrations} : {}),
     };
     await this.host.run(
       "INSERT INTO material_structure_context_edits(question_id,request_id,context_sha,body_json,sha256) VALUES(?,?,?,?,?)",
@@ -1021,13 +1038,40 @@ export class MaterialStructureRepository {
     return body.saved;
   }
 
+  private async illustrationPlan(
+    reference:DocumentStructureReference, q:StructureQuestion, document:CompleteQuestionDocument, signal:AbortSignal,
+  ) {
+    const assets = structureIllustrationAssets(q);
+    if(!assets.length || assets.length>8 || document.context.projection.figures.state!=='provided') return;
+    const pages = new Map<number,StructureIllustrationPage>();
+    for(const number of new Set(assets.map(asset=>asset.page))){
+      signal.throwIfAborted();
+      const [row] = await this.host.all(
+        'SELECT body_json,image_json,sha256 FROM material_structure_pages WHERE generation=? AND page=?',
+        [reference.generation, number],
+      );
+      if(!row || typeof row.body_json!=='string' || Buffer.byteLength(row.body_json)>4*1048576 ||
+          typeof row.image_json!=='string' || Buffer.byteLength(row.image_json)>4096 || !pageSha(row.sha256)) throw Error('source_changed');
+      const page=JSON.parse(row.body_json) as StructurePage, image=JSON.parse(row.image_json) as OriginalImage;
+      if(hash(page)!==row.sha256 || !validDocumentStructureEngine(page.engine) ||
+          page.resourceId!==reference.resourceId || page.version!==reference.version || page.page!==number ||
+          image.schemaVersion!==MATERIAL_PREVIEW_SCHEMA || image.ok!==true || image.engine!==PDF_PAGE_ENGINE ||
+          image.resourceId!==reference.resourceId || image.version!==reference.version || image.page!==number ||
+          !pageSha(image.sha256) || image.sha256!==page.rasterSha256 || image.total!==page.totalPages ||
+          JSON.stringify(image.box)!=='[0,0,1,1]' ||
+          ![image.width,image.height].every(n=>Number.isInteger(n)&&n>=1&&n<=2401)) throw Error('source_changed');
+      pages.set(number,{page,image,sha256:row.sha256});
+    }
+    return planStructureIllustrations(q,document,pages);
+  }
+
   async completeContext(q: QuestionBankItem, input: QuestionContextEditInput, signal: AbortSignal) {
     if (!q.archive?.sourceChecked || q.archive.state !== "teacher_edited") throw Error("permission_denied");
     const { question } = await this.validate(q, signal);
     const p = input.projection;
     const frozen = question.stem + "\n" + p.statement.text;
     if (!projectionFormulasInQuestion(p) ||
-        ((question.assets.some(a => a.kind === "image" || a.kind === "chart") ||
+        ((structureIllustrationAssets(question).length > 0 ||
           /如图|见图|附图|[上下左右]图|图中/u.test(frozen)) && p.figures.state !== "provided") ||
         ((question.assets.some(a => a.kind === "table") ||
           /如表|见表|[上下]表|表中/u.test(frozen)) && p.tables.state !== "provided") ||
@@ -1041,7 +1085,36 @@ export class MaterialStructureRepository {
     if (question.options.length &&
         JSON.stringify(labels) !== JSON.stringify(question.options.map(option => option.label)))
       throw Error("invalid_input");
-    return completeQuestion(q, p, now());
+    // Rebuild from the legacy body even when this is a correction of a
+    // previous projection that already has separate diagram blocks.
+    const source = q.document;
+    const completeSource=isCompleteQuestionDocument(source)?source:undefined;
+    const previous=completeSource?.context.illustrations;
+    const derived=previous?.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA ? previous.blockIds : undefined;
+    const base=derived&&completeSource
+      ? {...q,document:{...completeSource,blocks:completeSource.blocks.filter(b=>!derived.includes(b.id))}} : q;
+    const next=completeQuestion(base,p,now());
+    if(!isCompleteQuestionDocument(next.document)) throw Error('source_changed');
+    let illustrations:StructureIllustrationProof[]|undefined;
+    if(q.archive.book||q.archive.web){
+      // Supplement receipts freeze the question body and context at their own version.
+      if(derived&&completeSource){
+        illustrations=(await this.contextReceipt(q.id,completeSource.context))?.illustrations;
+        if(!illustrations) throw Error('source_changed');
+      }
+    }else if(this.host.cropIllustration){
+      const plan=await this.illustrationPlan(q.archive.structure!,question,next.document,signal);
+      if(plan){
+        illustrations=[];
+        for(const figure of plan) illustrations.push(await this.host.cropIllustration(figure,signal));
+        assertStructureIllustrationPlan(plan,illustrations);
+      }
+    }
+    if(illustrations){
+      attachStructureIllustrations(next.document,illustrations);
+      if(!validQuestionDocument(next.document)) throw Error('source_changed');
+    }
+    return {next,illustrations};
   }
 
   async bookScope(q: QuestionBankItem, signal: AbortSignal) {
@@ -1096,16 +1169,18 @@ export class MaterialStructureRepository {
     let document = expected;
     if (isCompleteQuestionDocument(source)) {
       const context = source.context;
-      const contextSha = hash(context);
-      const [row] = await this.host.all(
-        "SELECT * FROM material_structure_context_edits WHERE question_id=? AND context_sha=? ORDER BY rowid DESC LIMIT 1",
-        [q.id, contextSha],
-      );
-      const receipt = this.readContextReceipt(row);
+      const receipt = await this.contextReceipt(q.id,context);
       if (!receipt || JSON.stringify(receipt.reference) !== JSON.stringify(q.archive.structure) ||
           JSON.stringify(receipt.input.projection) !== JSON.stringify(context.projection))
         throw Error("source_changed");
       document = completeQuestion({ ...q, document: expected }, context.projection, q.updatedAt).document!;
+      if(receipt.illustrations){
+        if(!isCompleteQuestionDocument(document)) throw Error('source_changed');
+        const plan=await this.illustrationPlan(q.archive.structure,candidate.question,document,signal);
+        if(!plan) throw Error('source_changed');
+        assertStructureIllustrationPlan(plan,receipt.illustrations);
+        attachStructureIllustrations(document,receipt.illustrations);
+      }
     }
     if (JSON.stringify(source) !== JSON.stringify(document) ||
         !q.document.blocks.some(b => b.id === "transcription" && b.kind === "text" && b.text === q.stem))
@@ -1120,8 +1195,10 @@ export function reviseStructureDocument(
 ): QuestionDocument {
   let next = structuredClone(document);
   if (isCompleteQuestionDocument(next) && next.context.projection.statement.text !== fields.stem) {
-    const { context: _context, ...original } = next;
-    next = { ...original, schemaVersion: QUESTION_DOCUMENT_SCHEMA };
+    const { context, ...original } = next;
+    const derived=context.illustrations?.schemaVersion===QUESTION_STRUCTURE_ILLUSTRATIONS_SCHEMA
+      ? context.illustrations.blockIds : [];
+    next = { ...original, blocks:original.blocks.filter(b=>!derived.includes(b.id)), schemaVersion: QUESTION_DOCUMENT_SCHEMA };
   }
   next.blocks = next.blocks.map((block) =>
     block.id === "transcription" && block.kind === "text"

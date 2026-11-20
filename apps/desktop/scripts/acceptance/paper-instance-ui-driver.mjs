@@ -19,7 +19,9 @@ export async function instanceUiReady({reference, expected}) {
   const sample = () => {
     const roots = document.querySelectorAll('[data-testid="paper-basket-workspace"]');
     if (roots.length !== 1) return;
-    const root = roots[0], stage = root.querySelector(`[data-testid="paper-basket-stage-${expected.stage}"]`);
+    const root = roots[0];
+    const stageControl = expected.stage === 'preview' ? 'paper-basket-preview-back' : `paper-basket-stage-${expected.stage}`;
+    const stage = root.querySelector(`[data-testid="${stageControl}"]`);
     const refresh = root.querySelector('[data-testid="paper-basket-refresh-candidates"]');
     const discard = expected.unsavedEntryId && document.querySelector(`[data-testid="paper-instance-dialog"][data-entry-id="${expected.unsavedEntryId}"] [data-testid="paper-instance-discard"]`);
     const recoveredEntry = expected.unsavedEntryId && root.querySelector(`[data-testid="paper-instance-editor"][data-entry-id="${expected.unsavedEntryId}"] [data-testid="paper-instance-open"]`);
