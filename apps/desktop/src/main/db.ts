@@ -1123,6 +1123,7 @@ export class OmniEduStore {
   private paperSql():PaperSql{
     return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),templateMaterials:this.materials,
       page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,equivalentQuestionGradeLabels(blueprint.grade),after),
+      visibleOriginalQuestionIds:ids=>visibleQuestionIds({all:(sql,params)=>this.all(sql,params)},ids),
       validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }

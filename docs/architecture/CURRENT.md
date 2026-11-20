@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 自动蓝图的读取和发布
+
+自动组卷复用 WAL 只读连接扫描原题。写事务只处理请求复用、已选内容复核与原子发布。题目和旧卷照常定版，既有快照格式与审批不变。 [本轮记录](../research/evidence/kb/20261120/paper-scan-concurrency/README.md)
+
 ## 2026-11-20 结构题原图选项
 
 结构选项图位于题文档的 choices 子块。自动组卷和卷内实例通过共享遍历绑定题面原图，Office 按图的题目版本、角色、摘要和尺寸核对。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)

@@ -156,20 +156,68 @@ export class PaperRepository{
   const rows=await this.host.all(`SELECT c.* FROM ai_confirmation_items c JOIN ai_conversation_sessions s ON s.id=c.session_id WHERE c.action_type=? AND s.archived_at IS NULL ${sessionId?'AND c.session_id=?':''} ORDER BY c.created_at DESC,c.id DESC`,sessionId?[PAPER_ACTION,sessionId]:[PAPER_ACTION]);
   const result:PaperSummary[]=[];for(const r of rows){const p=this.payload(r);await this.authorize(this.host,String(r.session_id),p.studentId);if(r.status==='confirmed')this.effect(r,p);const supersededBy=r.status==='rejected'?await this.successorId(this.host,String(r.session_id),String(r.id)):undefined;result.push({...this.summary(r,p),...('purpose'in p.input&&p.input.purpose?{purpose:p.input.purpose}:{}),...(supersededBy?{supersededBy}:{})});}return result;
  }
- async create(input:PaperCreateInput,runId:string,callId:string,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
-  if(!validPaperCreate(input)||typeof callId!=='string'||callId.length>128)throw new Error('invalid_input');
-  return this.host.transaction(async sql=>{
-   const lease=()=>{if(!current())throw new Error('cancelled');};lease();const studentId=await this.authorize(sql,input.sessionId);
-   if(runId){const run=(await sql.all('SELECT student_id FROM ai_agent_runs WHERE id=? AND session_id=?',[runId,input.sessionId]))[0];if(!run||run.student_id&&run.student_id!==studentId)throw new Error('permission_denied');}
-   const prior=(await sql.all(`SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND json_extract(payload_json,'$.input.requestId')=?`,[input.sessionId,PAPER_ACTION,input.requestId]))[0];
-   if(prior){const p=this.payload(prior);if(prior.run_id!==runId||JSON.stringify(p.input)!==JSON.stringify(input)||p.studentId!==studentId)throw new Error('conflict');lease();return this.view(sql,prior,p);}
-   if(input.replace){const old=await this.get(sql,input.sessionId,input.replace.id);if(old.r.status!=='pending'||input.replace.revision!==1)throw new Error('conflict');}
-   const generations=input.blueprint.mode==='source_only'?undefined:await this.generations(sql,input.sessionId,input.blueprint);lease();
+ private async checkCreate(sql:PaperSql,input:PaperCreateInput,runId:string,expectedStudent?:string){
+  const studentId=await this.authorize(sql,input.sessionId,expectedStudent);
+  if(runId){const run=(await sql.all('SELECT student_id FROM ai_agent_runs WHERE id=? AND session_id=?',[runId,input.sessionId]))[0];if(!run||run.student_id&&run.student_id!==studentId)throw new Error('permission_denied');}
+  const prior=(await sql.all(`SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND json_extract(payload_json,'$.input.requestId')=?`,[input.sessionId,PAPER_ACTION,input.requestId]))[0];
+  if(prior){
+   const payload=this.payload(prior);
+   if(prior.run_id!==runId||JSON.stringify(payload.input)!==JSON.stringify(input)||payload.studentId!==studentId)throw new Error('conflict');
+   return{studentId,prior:{row:prior,payload}};
+  }
+  if(input.replace){const old=await this.get(sql,input.sessionId,input.replace.id);if(old.r.status!=='pending'||input.replace.revision!==1)throw new Error('conflict');}
+  return{studentId};
+ }
+ async create(raw:PaperCreateInput,runId:string,callId:string,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
+  if(!validPaperCreate(raw)||typeof callId!=='string'||callId.length>128)throw new Error('invalid_input');
+  const input=structuredClone(raw);
+  const lease=()=>{if(!current())throw new Error('cancelled');};
+  const replay=async(sql:PaperSql,prior:{row:Row;payload:Payload})=>{
+   const view=await this.view(sql,prior.row,prior.payload);
+   lease();
+   return view;
+  };
+  const prepare=async(sql:PaperSql):Promise<{payload:Payload}|{view:PaperView}>=>{
+   lease();
+   const {studentId,prior}=await this.checkCreate(sql,input,runId);
+   if(prior)return{view:await replay(sql,prior)};
+   const generations=input.blueprint.mode==='source_only'?undefined:await this.generations(sql,input.sessionId,input.blueprint);
+   lease();
    const selectionHost:PaperSelectionHost=generations?{...sql,page:async(b,after)=>{const original=b.mode==='ai_original'?[]:await sql.page(b,after),last=original.at(-1)?.id,generated=generations.questions.filter(q=>q.id>after&&(!last||q.id<=last)).map(question=>({id:question.id,question}));return Array.from(new Map([...original,...generated].map(q=>[q.id,q])).values()).sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0).slice(0,200);}}:sql;
-   const selection=await selectPaper(selectionHost,input.blueprint,current,generations?.refs);lease();const at=new Date().toISOString(),p:Payload={schemaVersion:input.schemaVersion,input:JSON.parse(JSON.stringify(input)),studentId,callId,selection};
+   const selection=await selectPaper(selectionHost,input.blueprint,current,generations?.refs);
+   lease();
+   return{payload:{schemaVersion:input.schemaVersion,input,studentId,callId,selection}};
+  };
+  const publish=async(sql:PaperSql,p:Payload)=>{
+   lease();
    const id=await this.insertPending(sql,runId,p);
-   if(input.replace)await sql.run("UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND session_id=? AND action_type=? AND status='pending'",[at,at,input.replace.id,input.sessionId,PAPER_ACTION]);
-   await afterWrite?.();lease();await this.authorize(sql,input.sessionId,studentId);const saved=await this.get(sql,input.sessionId,id);const view=await this.view(sql,saved.r,saved.p);lease();return view;
+   if(input.replace){
+    const at=new Date().toISOString();
+    await sql.run("UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND session_id=? AND action_type=? AND status='pending'",[at,at,input.replace.id,input.sessionId,PAPER_ACTION]);
+   }
+   await afterWrite?.();
+   lease();
+   const saved=await this.get(sql,input.sessionId,id);
+   const view=await this.view(sql,saved.r,saved.p);
+   if(!view.sourceCurrent)throw new Error('source_changed');
+   const originals=p.selection.items.filter(item=>item.question.sourceKind!=='generated').map(item=>item.source.questionId);
+   if(originals.length&&sql.visibleOriginalQuestionIds&&(await sql.visibleOriginalQuestionIds(originals)).size!==originals.length)throw new Error('source_changed');
+   lease();
+   return view;
+  };
+  // Only the selected versions are checked under the publication writer.
+  // Import, index and teacher edits can commit while the WAL snapshot is scanned.
+  if(!this.host.readTransaction)return this.host.transaction(async sql=>{
+   const plan=await prepare(sql);
+   return 'view'in plan?plan.view:publish(sql,plan.payload);
+  });
+  const plan=await this.host.readTransaction(prepare);
+  lease();
+  if('view'in plan)return plan.view;
+  return this.host.transaction(async sql=>{
+   lease();
+   const {prior}=await this.checkCreate(sql,input,runId,plan.payload.studentId);
+   return prior?replay(sql,prior):publish(sql,plan.payload);
   });
  }
  async review(sessionId:string,id:string):Promise<PaperView>{const read=this.host.readTransaction??this.host.transaction;return read.call(this.host,async sql=>{const {r,p}=await this.get(sql,sessionId,id);return this.view(sql,r,p);}) as Promise<PaperView>;}

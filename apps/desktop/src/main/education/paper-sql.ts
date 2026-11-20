@@ -6,6 +6,7 @@ export type PaperRow = Record<string, unknown>;
 export type PaperSql = PaperSelectionHost & {
   all: (sql: string, params?: (string | number | null)[]) => Promise<PaperRow[]>;
   run: (sql: string, params?: (string | number | null)[]) => Promise<unknown>;
+  visibleOriginalQuestionIds?: (ids: string[]) => Promise<Set<string>>;
   /** Main-only source reader bound to this SQL connection, never the outer store. */
   templateMaterials?: TemplateMaterials;
 };

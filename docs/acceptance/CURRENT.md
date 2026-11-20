@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 原题库自动组卷容量
+
+隔离复制已导入资料，验证 6 道选择题正常确认和冷启回读，三个 20 题蓝图分别核算缺额。并发故障由实际 SQLite 写连接复现和验证。 [本轮记录](../research/evidence/kb/20261120/paper-scan-concurrency/README.md)
+
 ## 2026-11-20 确认卷交付
 
 本轮用已有确认物理卷核对六种导出与历史保存。图形选项的结构回归另用受控完稿校验，三份正式卷仍按 KB-A06 验收。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)

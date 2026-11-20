@@ -28,6 +28,62 @@ export async function paperBoundaries(check,output,options,prime){
  await check('Overlapping quota and duplicate-record metadata use augmenting assignment rather than a greedy false shortage',async()=>{const b={...blueprint,totalPoints:10,sections:[{id:'all',label:'不限知识点',questionType:'解答题',count:1,points:5},{id:'a',label:'知识点A',questionType:'解答题',knowledgePoint:'A',count:1,points:5}]};const qs=[q(100,{knowledgePoint:'A'}),q(101,{knowledgePoint:'B'})];const h={...sql,page:async(_b,after)=>qs.filter(q=>q.id>after).map(q=>({id:q.id,question:q})),read:async id=>qs.find(q=>q.id===id),validate:async()=>{}};const s=await selectPaper(h,b,()=>true);assert.equal(s.shortages.length,0);assert.equal(s.items[1].question.knowledgePoint,'A');const duplicate={...qs[0],id:q(102).id,knowledgePoint:'B'};qs[1]={...qs[1],knowledgePoint:'A'};qs.push(duplicate);const b2={...b,sections:[{...b.sections[0],knowledgePoint:'A'},{...b.sections[1],knowledgePoint:'B'}]};assert.equal((await selectPaper(h,b2,()=>true)).shortages.length,0);});
  await check('Exhausted wrong grade/type or insufficient local bank reports exact deficits and never synthesizes questions',async()=>{const b={...blueprint,grade:'不存在年级'},s=await selectPaper(sql,b,()=>true);assert(s.scanComplete);assert.equal(s.items.length,0);assert.deepEqual(s.shortages.map(x=>x.missing),[10,6,4]);const before=rows().length,p=await repo.create(input(b),'','',()=>true);assert.equal(rows().length,before+1);assert(!p.complete);await assert.rejects(repo.decide(decide(p),()=>true),/shortage/);});
  await check('Cancellation before/after candidate page returns no late selection',async()=>{await assert.rejects(selectPaper(sql,blueprint,()=>false),/cancelled/);let lease=true;await assert.rejects(selectPaper({...sql,page:async(...args)=>{const p=await sql.page(...args);lease=false;return p;}},blueprint,()=>lease),/cancelled/);});
+ await check('An unrelated import can commit during candidate selection, with exact paper publication after the scan',async()=>{
+  db.exec("PRAGMA journal_mode=WAL; CREATE TABLE import_progress(processed INTEGER NOT NULL); INSERT INTO import_progress VALUES(0)");
+  const rival=new DatabaseSync(file);
+  rival.exec('PRAGMA busy_timeout=0');
+  let scanned=false,backgroundWrite,afterPlanning;
+  const hidden=new Set();
+  const observe=page=>async(...args)=>{
+   const batch=await page(...args);
+   if(!scanned){
+    scanned=true;
+    try{rival.prepare('UPDATE import_progress SET processed=processed+1').run();backgroundWrite='committed';}
+    catch(error){backgroundWrite=error.message;}
+   }
+   return batch;
+  };
+  const routed=new PaperRepository({...host,
+   transaction:work=>host.transaction(writer=>work({...writer,page:observe(writer.page),
+    visibleOriginalQuestionIds:async ids=>new Set(ids.filter(id=>!hidden.has(id)))})),
+   readTransaction:async work=>{
+    const reader=new DatabaseSync(file,{readOnly:true});
+    reader.exec('BEGIN');
+    try{
+     const all=async(s,p=[])=>reader.prepare(s).all(...p);
+     const page=async(_b,after)=>(await all('SELECT id,body FROM questions WHERE id>? ORDER BY id LIMIT 3',[after])).map(row=>({id:row.id,question:JSON.parse(row.body)}));
+     const read=async id=>{const [row]=await all('SELECT body FROM questions WHERE id=?',[id]);return row&&JSON.parse(row.body);};
+     const plan=await work({...sql,all,read,page:observe(page),run:async()=>{throw Error('unexpected write during scan');}});
+     await afterPlanning?.();
+     return plan;
+    }finally{reader.close();}
+   },
+  });
+  try{
+   const req=input(),draft=await routed.create(req,'','',()=>true);
+   assert.equal(backgroundWrite,'committed');
+   assert.equal(rival.prepare('SELECT processed FROM import_progress').get().processed,1);
+   assert.equal(draft.selection.items.length,20);
+   assert(draft.complete&&draft.sourceCurrent);
+   assert.equal((await routed.create(req,'','',()=>true)).id,draft.id);
+   const next=input(blueprint,randomUUID(),{id:draft.id,revision:1}),before=rows();
+   const selected=draft.selection.items[0].question;
+   afterPlanning=async()=>{rival.prepare('UPDATE questions SET body=? WHERE id=?').run(JSON.stringify({...selected,answer:'候选扫描结束时已有新答案'}),selected.id);};
+   try{
+    await assert.rejects(routed.create(next,'','',()=>true),/source_changed/);
+    assert.deepEqual(rows(),before,'A changed fact cannot replace the prior pending snapshot');
+   }finally{put(selected);}
+   afterPlanning=async()=>{hidden.add(selected.id);};
+   await assert.rejects(routed.create(next,'','',()=>true),/source_changed/);
+   assert.deepEqual(rows(),before,'A newly hidden source cannot replace the prior snapshot');
+   hidden.clear();
+   let competing;
+   afterPlanning=async()=>{competing=await repo.create(next,'','',()=>true);};
+   const replay=await routed.create(next,'','',()=>true);
+   assert.equal(replay.id,competing.id);
+   assert.equal(rows().length,before.length+1);
+  }finally{rival.close();}
+ });
  await check('Teacher UI creates a real-session snapshot without student or fake Agent run; same request is idempotent and conflicting payload refuses',async()=>{const req=input();saved=await repo.create(req,'','',()=>true);assert(saved.complete&&saved.sourceCurrent);assert.equal(saved.runId,'');assert.equal((await repo.create(req,'','',()=>true)).id,saved.id);await assert.rejects(repo.create({...req,blueprint:{...blueprint,title:'改名'}},'','',()=>true),/conflict/);assert.equal(db.prepare('SELECT COUNT(*) n FROM students').get().n,0);});
  await check('Cross-session, archived session, wrong run and changed student binding cannot grant paper authority',async()=>{await assert.rejects(repo.review(other,saved.id),/permission_denied/);await assert.rejects(repo.create(input(),'missing-run','call',()=>true),/permission_denied/);db.prepare('UPDATE ai_conversation_sessions SET archived_at=? WHERE id=?').run('archived',sid);await assert.rejects(repo.review(sid,saved.id),/permission_denied/);db.prepare('UPDATE ai_conversation_sessions SET archived_at=NULL,student_id=? WHERE id=?').run('student_'+randomUUID(),sid);await assert.rejects(repo.review(sid,saved.id),/permission_denied/);db.prepare("UPDATE ai_conversation_sessions SET student_id='' WHERE id=?").run(sid);});
  await check('Source answer change blocks old confirmation; precise restore re-enables current snapshot',async()=>{const item=saved.selection.items[0],original=await sql.read(item.question.id);put({...original,answer:'改变保存答案'});assert(!(await repo.review(sid,saved.id)).sourceCurrent);await assert.rejects(repo.decide(decide(saved),()=>true),/source_changed/);put(original);assert((await repo.review(sid,saved.id)).sourceCurrent);});

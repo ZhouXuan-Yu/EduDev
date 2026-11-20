@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-20 M02/M06 后台写入与自动组选
+
+自动组卷的候选扫描从写锁中拆出。正式确认、发布和导出继续检查选中题当前版本及既有权限。 [本轮记录](../research/evidence/kb/20261120/paper-scan-concurrency/README.md)
+
 ## 2026-11-20 M06/M09 结构题图形选项
 
 卷内实例保留原题时，DOCX/PDF 两种交付均按原顺序和同一版本绑定结构题选项原图。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)

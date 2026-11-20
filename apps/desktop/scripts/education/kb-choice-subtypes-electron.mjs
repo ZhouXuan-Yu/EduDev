@@ -132,6 +132,34 @@ try {
   await page.getByTestId('paper-confirm').click();
   await page.getByTestId('paper-confirmed').waitFor();
   report.checks.push('Stored original types, collection scope and source authority survive automatic selection and confirmation');
+  if (process.argv.includes('--capacity')) {
+    report.capacity = [];
+    for (const grade of ['初中','高中','高三']) {
+      const checked = await page.evaluate(async ({grade,title}) => {
+        const owner = await window.omniEdu.createAiConversationSession({title});
+        const input = {schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:owner.session.id,requestId:crypto.randomUUID(),
+          blueprint:{title,subject:'物理',grade,durationMinutes:45,totalPoints:100,mode:'source_only',
+            sections:[{id:'choices',label:'选择题',questionType:'选择题',count:20,points:5}]}};
+        const paper = await window.omniEdu.createPaper(input);
+        if (!paper.ok) return {paper};
+        const decision = paper.value.complete ? null : await window.omniEdu.decidePaper({
+          schemaVersion:input.schemaVersion,sessionId:input.sessionId,id:paper.value.id,revision:paper.value.revision,action:'confirm'});
+        return {paper,decision};
+      }, {grade,title:'存量原题容量 · '+grade});
+      assert(checked.paper.ok,JSON.stringify(checked));
+      const { value } = checked.paper, {items,shortages,scanned,scanComplete,excluded,duplicateRecords} = value.selection;
+      assert(value.sourceCurrent);
+      const missing = shortages.reduce((total,section)=>total+section.missing,0);
+      assert.equal(items.length+missing,20);
+      assert.equal(new Set(items.map(item=>item.source.questionId)).size,items.length);
+      if (missing) {
+        assert(scanComplete);
+        assert.deepEqual(checked.decision,{ok:false,error:'shortage'});
+      }
+      report.capacity.push({grade,selected:items.length,missing,scanned,scanComplete,excluded,duplicateRecords});
+    }
+    report.checks.push('Three real local 100-point blueprints report exact verified shortages and refuse incomplete confirmation');
+  }
   await close();
   await launch();
   const paper = await page.evaluate(query => window.omniEdu.reviewPaper(query),
