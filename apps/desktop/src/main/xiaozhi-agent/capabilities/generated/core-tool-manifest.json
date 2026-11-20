@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "7702f5667130919427a12a09885ad7fe083634067a7a2e7c0778df4c329653d9",
+  "sourceHash": "97426f5d7aa7ba5731dab0509a2a68eadb4f1b9e52135b37ea19811ff6f4c17b",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "c7554297a8d918dd8502d3dd23185a5e86bba90e0302d2a4839cab179f9eaa1a"
+      "sha256": "cdedf10cbeecb2ad66ac7e2c6cb4d852799c488d1f13bfccf39d8e46b337b9e7"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2024,7 +2024,7 @@
     },
     {
       "file": "src/shared/material-ai.ts",
-      "sha256": "2a7fd029a3614e67a3e33fe1dfcabc3a02aee83e4714be53e313e5d6cfb40154"
+      "sha256": "a381ff121d649e282beccc7c24618efe4b82bfecc9e99cf510eef0810823f901"
     },
     {
       "file": "src/shared/material-answer-slots.ts",

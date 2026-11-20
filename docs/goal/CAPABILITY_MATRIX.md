@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-20 M03/M05/M10 PDF 已存首稿
+
+复用资料页、typed IPC、页证据验证及本地响应审计。可恢复同源的 PDF 和图片首稿，沿原定稿链路控制正式题输出。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)
+
 ## 2026-11-20 M05/M06/M11 历史图片题的迁移验证
 
 资料页的已存选择题答案复核继续使用现有原图、裁图、SQLite 回执和教师保护。合法移动的历史图片可以参与检索及正式组选。 [本轮记录](../research/evidence/kb/20261120/image-receipt-choice-recovery/README.md)

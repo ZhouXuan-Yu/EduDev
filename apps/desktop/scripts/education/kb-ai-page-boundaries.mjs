@@ -163,6 +163,46 @@ await check('Invalid, forged or changed prompt metadata is rejected before a pai
  assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:{toString(){invoked=true;return 'complete';}}}));assert(!invoked,'Validation must not coerce or execute nested values');assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:new String('complete')}));
  for(const value of [{policy:'future',ocrStatus:'complete'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'failed'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete',force:true},...[0,2,1.5,10001,'1'].map(totalPages=>({policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:'complete',totalPages}))]){const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);unit.pagePrompt=value;f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify(unit),batch);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'source_changed');}finally{f.db.close();}}
 });
+await check('Offline first receipt recovery rolls back on failure and resumes only the original second pass after approval',async()=>{
+ const f=fixture();
+ try{
+  await f.init();
+  f.batch=await f.repo.create(f.input);
+  f.state.mode='unknown';await f.repo.drain();await f.repo.drain();
+  const firstRaw=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]});
+  const response=f.db.prepare('SELECT id FROM material_ai_response_receipts WHERE batch_id=?').get(f.batch);
+  await f.repo.responses.receive(response.id,Buffer.from(firstRaw),'completion-content.v1');
+  f.db.prepare("UPDATE material_ai_units SET error='invalid_response' WHERE batch_id=?").run(f.batch);
+  const recovery={schemaVersion:f.input.schemaVersion,batchId:f.batch,action:'recover_response'};
+  const run=f.host.run;
+  try{
+   f.host.run=async(sql,params)=>{if(sql.startsWith("UPDATE material_ai_units SET status='first_saved'"))throw Error('disk_full');await run(sql,params);};
+   await assert.rejects(()=>f.repo.action(recovery),/disk_full/);
+  }finally{f.host.run=run;}
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_response_recoveries').get().n,0);
+  assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,'');
+  await f.repo.action(recovery);
+  assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,firstRaw);
+  await f.repo.drain();
+  assert.equal(f.state.calls,1);
+  assert.equal(f.db.prepare('SELECT status FROM material_ai_batches').get().status,'paused');
+  assert.equal(f.saved.length,0);
+  f.state.mode='normal';
+  f.state.stamp='moved after first receipt';
+  await assert.rejects(()=>f.repo.action({...recovery,action:'resume'}),/source_changed/);
+  assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,firstRaw);
+  assert.equal(f.db.prepare('SELECT status FROM material_ai_batches').get().status,'paused');
+  assert.equal(f.state.calls,1);
+  f.state.stamp='owned-stamp';
+  await f.repo.action({...recovery,action:'resume'});
+  await f.repo.drain();
+  assert.equal(f.state.calls,2);
+  assert.deepEqual(f.db.prepare('SELECT phase FROM material_ai_response_receipts ORDER BY rowid').all().map(r=>r.phase),['first','final']);
+  assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'complete');
+  assert.equal(f.saved.length,1);
+  assert.equal((await f.repo.page(query(f))).text,text);
+ }finally{f.db.close();}
+});
 await check('A legacy stored first pass resumes without silently changing its prompt policy; saved v2 receipts retain strict provenance',async()=>{
  const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);delete unit.pagePrompt;const first=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]}),image=Buffer.from('controlled-owned-image'),imageSha=sha(image);f.db.prepare("UPDATE material_ai_units SET input_json=?,status='first_saved',first_json=?,image_sha=? WHERE batch_id=?").run(JSON.stringify(unit),first,imageSha,batch);f.db.prepare('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64) VALUES(?,1,?,?,?)').run(batch,imageSha,'image/png',image.toString('base64'));f.db.prepare('UPDATE material_ai_batches SET calls=1 WHERE id=?').run(batch);await f.repo.drain();assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(batch).status,'complete');assert.deepEqual(f.state.prompts,[null]);assert.equal(f.state.calls,1);assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units WHERE batch_id=?').get(batch).first_json,first);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,2);await f.repo.validate(await f.question());}finally{f.db.close();}
  const v=await completed('complete');try{await v.repo.validate(await v.question());const row=v.db.prepare('SELECT input_json FROM material_ai_units').get(),unit=JSON.parse(row.input_json);unit.pagePrompt={policy:'forged',ocrStatus:'complete'};v.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));await assert.rejects(v.repo.page(query(v)),/source_changed/);}finally{v.db.close();}

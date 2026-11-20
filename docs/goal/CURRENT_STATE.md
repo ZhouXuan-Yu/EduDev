@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-20 PDF 首稿离线恢复
+
+旧资料页的本地恢复入口接通。3 个真实页任务从无首稿恢复到暂停且留存首稿，调用次数、原始响应和已发布题均保持不变。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)
+
 ## 2026-11-20 图片回执的迁移恢复
 
 在已有 Word 恢复的隔离副本上，图片批次的 3 道原题完成来源读取、检索、原题组选、确认及重启回读。2 道实质冲突仍待核，已有回执和批次调用数保持一致。 [本轮记录](../research/evidence/kb/20261120/image-receipt-choice-recovery/README.md)

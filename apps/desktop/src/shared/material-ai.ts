@@ -18,7 +18,7 @@ export type AiBatchView={id:string;resourceId:string;title:string;model:string;s
   status:string;calls:number;maxCalls:number;complete:number;review:number;failed:number;unknown:number;pending:number;questions:number;
   localOcr?:AiLocalOcrView;
   answerComparison?:{candidates:number;applied:number;layoutCandidates:number;layoutApplied:number};
-  units:{ordinal:number;status:string;error:string;questions:number;pageSource?:boolean;correctionVerification?:true;responseRecoverable?:true}[]};
+  units:{ordinal:number;status:string;error:string;questions:number;pageSource?:boolean;correctionVerification?:true;responseRecoverable?:true;responseRecoveredFirst?:true}[]};
 export type AiOrigin='source'|'ai_generated'|'missing';
 export const AI_ISSUES=['uncertain_ocr','cross_page','requires_image','incomplete_question','answer_conflict'] as const;
 export type AiIssue=typeof AI_ISSUES[number];

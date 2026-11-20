@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 页级响应的本地恢复
+
+页级首稿和实时请求共用响应、冻结提示及来源读取规则。原响应不改动，恢复摘要、状态和目录进度在同一 SQLite 写事务提交。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)
+
 ## 2026-11-20 迁移后的图片回执
 
 本地历史页凭据复用现有原文件、页块、已存模型输入图及裁题证据。重定位后用完整文件摘要认证当前文件，复核事务检测进行中的变更。无数据迁移、模型派发或新依赖。 [本轮记录](../research/evidence/kb/20261120/image-receipt-choice-recovery/README.md)
