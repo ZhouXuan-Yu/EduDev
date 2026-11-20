@@ -8,37 +8,14 @@ import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
 import {QUESTION_DOCUMENT_WEB_SCHEMA,isCompleteQuestionDocument,validQuestionDocument,questionDocumentSchemaForRoles,type QuestionDocument} from '../../shared/question-document';
 import {questionFactConflicts} from '../../shared/question-facts';
 import {questionVersion} from './question-context-provider';
+import {agreesWithWebAnswer,exactWebSolution,normalizedWebQuote} from './question-web-solution';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem,signal:AbortSignal)=>Promise<void>;writer:<T>(action:(repo:QuestionWebAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
 const ownerKey=(owner:WebAnswerOwner)=>{if(!owner||![owner.sessionId,owner.runId].every(v=>typeof v==='string'&&v.length>0&&v.length<=128))throw Error('invalid_input');return hash(JSON.stringify(owner));};
-const normalized=(text:string)=>text.normalize('NFC').replace(/\s+/gu,'');
 const roles=['answer','analysis'] as const;
 const now=()=>new Date().toISOString();
 function canonicalReceipt(receipt:XiaozhiBrowserReceipt){return JSON.stringify([receipt.url,receipt.title,receipt.text,receipt.extraction]);}
-/** Strict labelled single-solution region. Similarity and model confidence never grant automatic writes. */
-function solutionMatch(q:QuestionBankItem,input:WebAnswerProposal,text:string){
- const needle=normalized(q.stem),quote=normalized(input.questionQuote);
- if(!needle||quote!==needle)return false;
- const body=normalized(text);if(body.split(needle).length!==2)return false;
- const markers=[...text.matchAll(/(?:^|\n)\s*(?:【(参考答案|答案|解析|分析|解答)】|(?:参考答案|答案|解析|分析|解答)\s*[:：])\s*/g)];
- const answer=markers.find(m=>/答案/.test(m[0])),analysis=markers.find(m=>/解析|分析|解答/.test(m[0]));
- if(!answer||!normalized(text.slice(0,answer.index)).includes(needle)||markers.filter(m=>/答案/.test(m[0])).length!==1||markers.filter(m=>/解析|分析|解答/.test(m[0])).length>1)return false;
- const beforeAnswer=normalized(text.slice(0,answer.index)),between=beforeAnswer.slice(beforeAnswer.indexOf(needle)+needle.length);
- if(between.replace(/[：:。？！?!【】\[\]()（）\-—]/gu,''))return false;
- if(analysis&&analysis.index!<=answer.index!)return false;
- const answerText=text.slice(answer.index!+answer[0].length,analysis?.index??text.length).trim(),analysisText=analysis?text.slice(analysis.index!+analysis[0].length).trim():'';
- if(input.answerQuote!==undefined&&normalized(input.answerQuote)!==normalized(answerText)||input.analysisQuote!==undefined&&normalized(input.analysisQuote)!==normalized(analysisText))return false;
- // Another question after the matched stem invalidates the association, even inside one selected region.
- if(/(?:^|\n)\s*(?:第\d+题|\d+[.、．])/.test(text.slice(answer.index)))return false;
- return {answer:answerText,analysis:analysisText};
-}
-/** A matching stem must contain every textual condition; an unseen diagram/table cannot supply an answer. */
-function structuredTextMatch(q:QuestionBankItem){
- const d=q.document;if(!d)return true;if(!isCompleteQuestionDocument(d))return false;
- const p=d.context.projection,stem=normalized(q.stem);
- return p.figures.state==='not_applicable'&&p.tables.state==='not_applicable'&&Object.values(p).every(part=>part.state==='not_applicable'||part.state==='provided'&&!!normalized(part.text)&&stem.includes(normalized(part.text)));
-}
 export class QuestionWebAnswerRepository{
  constructor(private readonly host:Host){}
  async migrate(){
@@ -80,12 +57,12 @@ export class QuestionWebAnswerRepository{
    const q=await target.host.read(input.source.questionId);if(!q)throw Error('source_changed');
    const candidate:WebAnswerCandidate={id:'webanswer_'+randomUUID(),callId,grantId:input.grantId,questionId:q.id,state:'candidate',reason:'',beforeVersion:input.source.version,afterVersion:'',createdAt:now(),roles:{},observation:{id:input.observationId,url:receipt.url,title:receipt.title,observedAt:receipt.observedAt,text:receipt.text!}};
    for(const role of roles){const quote=input[`${role}Quote`],derived=input[`${role}Text`];if(quote)candidate.roles[role]={text:derived??quote,kind:derived!==undefined&&derived!==quote?'ai_derived':'web_extracted'};}
-   const missing=answerEnrichmentRoles(q),e=receipt.extraction!,matched=solutionMatch(q,input,receipt.text!);
+   const missing=answerEnrichmentRoles(q),e=receipt.extraction!,matched=exactWebSolution(q,input,receipt.text!);
    if(matched)for(const role of roles)if(candidate.roles[role]?.kind==='web_extracted')candidate.roles[role]!.text=matched[role];
    if(questionVersion(q)!==input.source.version){candidate.state='conflict';candidate.reason='source_changed';}
    else{
     await target.host.validate(q,signal);
-    candidate.reason=q.archive?.native||q.document&&(!isCompleteQuestionDocument(q.document)||q.archive?.ai?.policy!=='page-crop-complete.v1'&&!q.archive?.structure)?'presentation_revision_required':!missing.length?'no_missing_roles':e.truncated||e.lossy||e.accessHint!=='none'?'incomplete_web_evidence':receipt.text!.includes('[公式文本]')?'formula_web_evidence':e.figures||e.canvas?'visual_web_evidence':!matched||!structuredTextMatch(q)?'question_or_role_mismatch':q.answer.trim()&&normalized(q.answer)!==normalized(matched.answer)?'existing_answer_conflict':q.analysis.trim()&&normalized(q.analysis)!==normalized(matched.analysis)?'existing_analysis_mismatch':Object.values(candidate.roles).some(r=>r.kind==='ai_derived')?'derived_verification_required':'';
+    candidate.reason=q.archive?.native||q.document&&(!isCompleteQuestionDocument(q.document)||q.archive?.ai?.policy!=='page-crop-complete.v1'&&!q.archive?.structure)?'presentation_revision_required':!missing.length?'no_missing_roles':e.truncated||e.lossy||e.accessHint!=='none'?'incomplete_web_evidence':receipt.text!.includes('[公式文本]')?'formula_web_evidence':e.figures||e.canvas?'visual_web_evidence':!matched?'question_or_role_mismatch':q.answer.trim()&&!agreesWithWebAnswer(q.answer,matched.answer,matched.options)?'existing_answer_conflict':q.analysis.trim()&&normalizedWebQuote(q.analysis)!==normalizedWebQuote(matched.analysis)?'existing_analysis_mismatch':Object.values(candidate.roles).some(r=>r.kind==='ai_derived')?'derived_verification_required':'';
    }
    // Publish the immutable candidate before any business mutation, in the same transaction.
    await target.host.run('INSERT INTO question_web_candidates(id,request_key,owner,question_id,observation_id,state,payload_json,before_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)',[candidate.id,request,key,q.id,input.observationId,candidate.state,JSON.stringify(candidate),JSON.stringify(q),candidate.createdAt]);
