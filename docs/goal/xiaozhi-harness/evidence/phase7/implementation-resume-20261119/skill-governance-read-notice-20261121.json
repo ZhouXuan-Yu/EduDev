@@ -1,0 +1,53 @@
+{
+  "status": "PASS_SCOPED",
+  "sourceCommit": "95f9172c4026dc7f684d01f5a122280da9f61865",
+  "build": {
+    "files": 481,
+    "outSha256": "5795a91a90443fee9cf97b46de67c2d1816e6f8a5055526e25005158a262caad",
+    "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48",
+    "changed": [
+      "renderer/assets/highlighted-body-OFNGDK62-DxZerwOt.js",
+      "renderer/assets/index-CJR0Owqk.js",
+      "renderer/index.html",
+      "renderer/assets/highlighted-body-OFNGDK62-DU2ZAcU6.js",
+      "renderer/assets/index-DnYxg8oV.js"
+    ],
+    "prior": "088061f572909de68f37085db85afc607eda88df805e231ac8045325945fc7dc",
+    "mainAndPreloadUnchanged": true
+  },
+  "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/skill-frozen-out",
+  "originalFailure": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/coverage/omni-edu-read-state-b5lrBO/report.json",
+    "sha256": "af6e638fce977f494d7e855622315e7f232d2049581e7089ce7a3bdfd17fd6b4",
+    "otherPanels": "18/18 state assertions at two sizes; capability returned a valid partial summary",
+    "failed": "Two Skill retry states left stale read error after successful original refresh.",
+    "network": "Blocked startup attempt not classified by original driver. The structured disposition was also treated as failed by that driver."
+  },
+  "regression": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/coverage/skill-read-notice-VgAP9l/report.json",
+    "sha256": "c2d2b529dafb0de3940f813f6f6e5d7ee59c1782d2d53d901f5bb13bd525db10",
+    "command": "node scripts/xiaozhi-agent/skill-governance-read-notice-smoke.mjs",
+    "checks": "5/5"
+  },
+  "independent": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/coverage/omni-edu-read-state-osE5n5/report.json",
+    "sha256": "04adbbecad5874c27ef7a8d9b0ca9128296f2ccaabd58bcc616c054d54615e11",
+    "command": "node <coverage>/skill-read-retest.mjs",
+    "driver": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/coverage/skill-read-retest.mjs",
+      "sha256": "f4825f6c89ecf1ddb119f9f050b9d714f19efd1e5f7ab395b60ec8dde1593f96"
+    },
+    "checks": "6/6, actual Electron, 1366x768 and 1920x1080",
+    "scope": "One official synthetic profile version source visible and content fingerprint collapsed/expanded at 1366. Prior skill ID unavailable; not generalized.",
+    "network": "8 blocked GET /v1/models, no chat dispatch or external provider traffic"
+  },
+  "buildCommands": [
+    "npm run build exit 0 including TypeScript",
+    "npm run test:renderer-components 253/253 exit 0, pre-existing Vite port warning in concurrent test"
+  ],
+  "remaining": [
+    "Independent applicable status and full disclosure scope beyond named proofs.",
+    "Formal 32 real-model ABBA after Gate 7.",
+    "QG-09 clean Windows installer and uninstall."
+  ]
+}

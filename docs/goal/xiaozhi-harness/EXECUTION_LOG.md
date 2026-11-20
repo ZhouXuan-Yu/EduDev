@@ -630,3 +630,7 @@ Phase6功能2376c84与主线09d7937正常整合为5938c31，atomic push后main�
 ## 2026-11-21 Windows 系统盘不足的终端反馈
 
 首次映射修复在真实低盘 Electron 仍显示 unknown。SQLite 表明编译准备早于原生健康，合成终端没有 Job。最终候选在相同系统盘零空间下显示 system_disk_full，未进入编译和健康，保存一次尝试回执。真实宿主定向验证保留渲染截图、审计和原报告。 [核对命令和原报告](evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json)
+
+## 2026-11-21 Skill 刷新后清理旧错误
+
+受控故障首次使 Skill 在恢复列表后仍残留旧提示。任务、审批和能力的两尺寸共 18 项通过。改为区分操作反馈与读错，并限制迟到读取覆盖新状态。最终构建的主进程及 preload 逐文件一致，仅改 renderer 入口和关联块。独立复验中阻断 8 个 /v1/models 查询尝试，无模型派发。原失败保持。 [候选指纹和原证据](evidence/phase7/implementation-resume-20261119/skill-governance-read-notice-20261121.json)

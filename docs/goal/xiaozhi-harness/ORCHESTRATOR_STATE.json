@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Gate 7 still needs review of applicable statuses on the final build and UI disclosure across the remaining pages. Phase 8 formal ABBA and clean Windows installer still pending.",
+  "next": "Close the original remaining independent Gate 7 disclosure and applicable status evidence on the latest candidate. Then execute the fixed metered ABBA. QG-09 still needs an authorized clean Windows x64 guest.",
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
@@ -967,6 +967,25 @@
       "files": 481,
       "outSha256": "088061f572909de68f37085db85afc607eda88df805e231ac8045325945fc7dc",
       "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48"
+    }
+  },
+  "skillGovernanceReadNotice20261121": {
+    "sourceCommit": "95f9172c4026dc7f684d01f5a122280da9f61865",
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase7/implementation-resume-20261119/skill-governance-read-notice-20261121.json",
+    "build": {
+      "files": 481,
+      "outSha256": "5795a91a90443fee9cf97b46de67c2d1816e6f8a5055526e25005158a262caad",
+      "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48",
+      "changed": [
+        "renderer/assets/highlighted-body-OFNGDK62-DxZerwOt.js",
+        "renderer/assets/index-CJR0Owqk.js",
+        "renderer/index.html",
+        "renderer/assets/highlighted-body-OFNGDK62-DU2ZAcU6.js",
+        "renderer/assets/index-DnYxg8oV.js"
+      ],
+      "prior": "088061f572909de68f37085db85afc607eda88df805e231ac8045325945fc7dc",
+      "mainAndPreloadUnchanged": true
     }
   }
 }
