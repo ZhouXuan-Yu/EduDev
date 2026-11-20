@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-20",
+  "launchHead": "5f4b0caaefa309c372a83d8e9a94da546702c7d3",
+  "productionBuildSource": "65d0568477292e083eba1cb80892ce6436ba9ced",
+  "build": {
+    "sha256": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+    "files": 481
+  },
+  "stage": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec",
+  "command": "node node_modules/electron-builder/out/cli/cli.js --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+  "configSha256": "bb5043e62d7db6ed51560481390308fa5a81db321c16661b1378b173a2a7c119",
+  "runtimeInput": "TEMP/edu-harness-approval-save-package-5d28c10d/release/win-unpacked/resources",
+  "lockConfigAndFiveRuntimeManifestsUnchangedSince": "9e80732",
+  "electronBuilderRuntimeChecks": {
+    "page-blocks-runtime": 767,
+    "ocr-runtime": 712,
+    "education-runtime": 90,
+    "retrieval-runtime": 154,
+    "reranker-runtime": 155
+  },
+  "unpackedIndependent": {
+    "reviewer": "GPT-6.1 Terra High",
+    "report": "TEMP/omni-edu-release-readback-8d5d446e-d727-4f82-91e3-78f39f2c472d.json",
+    "reportSha256": "7c149ec761f92bb8b1a4412981b4e05626aabfbbf805dbaafafc5eb5de40a62b",
+    "applicationFiles": 481,
+    "applicationOutSha256": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+    "appExe": {
+      "bytes": 239500288,
+      "sha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+      "dos": "MZ",
+      "signature": "50450000",
+      "machine": "8664"
+    },
+    "licenseAndProvenanceMatched": 4,
+    "physicalPackageDirsScanned": 2688,
+    "piWebAccessPaths": [],
+    "directUndiciVersion": "7.30.1"
+  },
+  "educationRuntime": {
+    "command": "node <stage>/probe-education.mjs",
+    "exitCode": 0,
+    "checks": 2,
+    "actualWorkerExitCodes": [
+      0,
+      2
+    ],
+    "report": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec/education-worker-probe.json",
+    "reportSha256": "07b52f9d61f65d6493f18cf8dc4d615e95eb7e555c5cdf209f2085e617f33411"
+  },
+  "nsis": {
+    "status": "COMPRESSING_AT_CHECKPOINT",
+    "builderSession": 90292,
+    "readbackSession": 21353,
+    "builderPid": 38876,
+    "compressorPid": 20344,
+    "archiveBytes": 569800795,
+    "terminalMarker": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec/electron-builder.exit",
+    "resume": "Observe the same builder and archive verification sessions. Preserve any nonzero exit. Verify archive and embedded out after a terminal exit 0."
+  },
+  "installationAcceptance": "NOT_RUN",
+  "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST",
+  "realModelRequestsAdded": 0
+}
