@@ -32,6 +32,21 @@ try{
  await check('Indexed and explicit scan paths produce identical ordered Chinese candidates',async()=>{
   for(const query of ['单摆周期与振幅','周期','单摆 周期'])assert.deepEqual((await searchQuestionRows(sql,{...scope,query},true)).rows,(await searchQuestionRows(sql,{...scope,query},false)).rows);
  });
+ await check('Grade aliases share the indexed, scan and no-text predicates, with directional stage matching',async()=>{
+  for(const [id,grade] of [['long','高中三年级'],['numeric','高中３年级'],['near','高二'],['stage','高中'],['middle','九年级'],['six','六年级'],['pre-junior','初中六年级'],['primary-six','小学六年级']]){
+   put(id,{grade,knowledge_point:'年级过滤对照',stem:'定向筛选练习'});
+  }
+  const labels=[
+   ['高三',['long','numeric']],['高中3年级',['long','numeric']],[' 高３ ',['long','numeric']],
+   ['高级中学',['long','near','numeric','stage']],['初三',['middle']],['初中三年级',['middle']],
+   ['六年级',['six']],['预初',['pre-junior']],['小学6年级',['primary-six']],['初中',['middle','pre-junior']],
+   ['高中三年级（选修）',[]],["高中' OR 1=1 --",[]],
+  ];
+  for(const [grade,expected] of labels)for(const indexed of [true,false])for(const query of ['', '筛选练习']){
+   const result=await searchQuestionRows(sql,{query,subject:'物理',grade,knowledgePoint:'年级过滤对照',limit:50},indexed);
+   assert.deepEqual(result.rows.map(row=>row.id).sort(),expected,grade);
+  }
+ });
  put('literal',{stem:'保留20%、a_b、2.5的字面含义。',analysis:'',knowledge_point:'量纲'});
  await check('Literal percent, underscore, slashes, punctuation and single characters retain existing behavior',async()=>{
   for(const query of ['20%','a_b','2.5'])assert.deepEqual((await searchQuestionRows(sql,{...scope,query},true)).rows.map(r=>r.id),['literal']);

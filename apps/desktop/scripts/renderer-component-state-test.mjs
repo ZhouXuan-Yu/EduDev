@@ -7,7 +7,8 @@ import { createServer } from 'vite';
 const server = await createServer({
   appType: 'custom',
   optimizeDeps: { noDiscovery: true },
-  server: { middlewareMode: true },
+  // SSR assertions load a fixed source tree. Skip watching all frozen desktop test builds.
+  server: { middlewareMode: true, watch: null, hmr: false },
 });
 
 try {

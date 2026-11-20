@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 题库检索的年级别名
+
+SQLite 实际回读 7 道自然高三题。桌面题本和本地混合检索对两份试卷的相同知识点实测，另有相邻年级、字面值及向量旧候选回归。 [验收记录](../research/evidence/kb/20261120/question-grade-search/README.md)
+
 ## 2026-11-20 结构重建后的正文检索
 
 M04 覆盖旧库启动、目录关键词、真实本地混合检索、手动重建、历史引用和重启。独立留出检索和约 10 GB 仍待验收。见 [真实样本及回归证据](../research/evidence/kb/20261120/structure-search-visibility/README.md)。

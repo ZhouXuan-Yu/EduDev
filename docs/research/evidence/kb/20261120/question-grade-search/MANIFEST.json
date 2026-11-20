@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "60df89067a27db2c75fd280e5cdc96fbeb9e090cecda4a848843e62e08686b3e"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "f7da90108e7947de443b9218b234ee97522bc434f7772aeab6c6c2e61a98893a"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "6b57285f3ff1e82e8f2ebf3e1d53635e8d536d4ee71da4458082e9e06e8a8f42"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "b2e8b15d6510bb8c1cb44b775f554170d64752aa8c53a90a3e91481727e260ea"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-chinese-question-recall.mjs",
+      "sha256": "ff09cb42cae209a3f7591d3abf4027112a99757515f00f99c6bfb316cd047322"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-grade-search-electron.mjs",
+      "sha256": "6c2ff5f912b7f4fe05cf60bb8eedc9ad012f945c41bc93b4d379371a984bd06f"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-retrieval-boundaries.mjs",
+      "sha256": "2725f3d80b604e370cc4a8976d0120342550fd8129c7bac290627420b13bbadc"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-semantic-native.mjs",
+      "sha256": "e538772072bdce1f52412ba36407b5da13e4926dd872ede92050a35432d1a8e4"
+    },
+    {
+      "path": "apps/desktop/scripts/renderer-component-state-test.mjs",
+      "sha256": "6e0537c98927cd01e0e35f2c4e513827120137c6806e3fcd591e77206c0eb52d"
+    },
+    {
+      "path": "apps/desktop/src/main/education/question-retrieval.ts",
+      "sha256": "e20077844029a1e3978d544126c586be6baee84a802964026ab47a0c10abdce9"
+    },
+    {
+      "path": "apps/desktop/src/main/retrieval/repository.ts",
+      "sha256": "be2866da34d564708e18127e7a9c67a8b83478a4bfbd3f6c1589b0b920dd82a7"
+    },
+    {
+      "path": "apps/desktop/src/main/retrieval/vector-store.ts",
+      "sha256": "6aa91ca6739429b2536fce4da8d442f14f99b985113d56786a42f8959caaebea"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+      "sha256": "50a5b125d7ea651c903468f5beea49dc19175e525c8a8b5e14afb8b323148094"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "sha256": "f8fd83a38e57e497660d9980603755d057c7fe26d2386ad27d36812319657d1b"
+    },
+    {
+      "path": "apps/desktop/src/shared/question-grade.ts",
+      "sha256": "2411d7e8a16b94ab8a268ab75b2afc73c497f34d022425b0e34e8e92cda9308b"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "9e3b345603e6cc36f78d2a6052f0e0347cc8a6ab9e275cbcc0b714a09ff33794"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "93cd61e9d47ca61697765effae9e62d14322066e143c31e3b3175b8c8e4afd93"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "b776ea8725831007262cefddfff6c4bd7e75cd7083d7d51b362c3b9e2f646b03"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "17327fec13529560c4d4455266ff2627d5d1579c899bba585b0ba5c81e0606f7"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "092bd7644173cf096a6fc3fc95e3cc69e4f78e3adc0feab8656b773893a4d525"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "9132a22fa30c448945cb8b19658b419d9ae198744d3c8dc2736c2c8f700d379a"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "6bd3f3092acb198c75e0187a30585a191f1213c8068f576e41287e18a822bd41"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "b273eadbfc58e0f518ec239e71e008fab51e7d0a1097bf44a0e78fa5a6a4063a"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "064b49904cdb8e04f617d09689bd0d03fae8502eede42771f29588d19e660deb"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "6ae67a3e6f2ec32b7550a47ca404d259412e84ecb0366d484bdfead2021505c7"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/question-grade-search/README.md",
+      "sha256": "e9aa7fef949d4f9a06319f4c5b9920e8d0535ce8f72d8af817c4bc388ce5431d"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/question-grade-search/summary.json",
+      "sha256": "ac23945a46a41802cad747b5975903251515792cbdf565688adb8d363441ae0d"
+    }
+  ]
+}

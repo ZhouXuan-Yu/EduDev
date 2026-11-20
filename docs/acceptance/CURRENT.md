@@ -8,6 +8,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 题库检索的年级别名
+
+题本年级别名由两份自然资料的真实桌面流程和既有自然库只读候选验证。年级分类块测了相邻年级、全半角与阶段边界。 [专项证据](../research/evidence/kb/20261120/question-grade-search/README.md)
+
 ## 2026-11-20 结构重建后的正文检索
 
 真实排印 PDF 旧库副本通过关键词、混合、界面打开原文、重建、重启及旧引用回读。详见 [专项记录](../research/evidence/kb/20261120/structure-search-visibility/README.md)。

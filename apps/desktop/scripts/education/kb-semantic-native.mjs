@@ -18,5 +18,15 @@ try{
   const batch=Array.from({length:16},(_,i)=>fact('批量教学资料：第'+i+'份，讨论直角三角形与勾股定理。',20+i));const before=Date.now(),bulkResult=await store.applyMany(spec,batch);assert.equal(bulkResult.applied,16);assert.equal((await store.applyMany(spec,[...batch].reverse())).skipped,16);const native=store.generations.get(spec.id);for(const table of [native.objects,native.vectors])assert((await table.listIndices()).some(index=>index.columns.includes('object_id')));assert.equal((await store.counts(spec)).objects,20);note('Actual native sixteen-object commit writes all members, replays idempotently and persists object-id scalar indexes');
   const deleted={...batch[0],seq:100,deleted:true,text:'',digest:''};await store.applyMany(spec,[batch[0],deleted,{...batch[0],seq:99}]);await store.applyMany(spec,[{...batch[0],seq:100}]);assert(!(await store.query(spec,{generation:spec.id,kind:'material',query:'批量教学资料',limit:100})).hits.some(h=>h.id===batch[0].id));
   const count=(await store.counts(spec)).objects;await assert.rejects(store.applyMany(spec,[...batch,batch[0]]),/invalid_input/);await assert.rejects(store.applyMany(spec,[fact('字'.repeat(128000),200),fact('字'.repeat(72001),201)]),/invalid_input/);assert.equal((await store.counts(spec)).objects,count);note('Unordered duplicate batch receipts retain the highest tombstone and over-budget batches leave native data unchanged');
+  const plain=fact('求光子的能量',201,'question'),alternate=fact('估算光子的频率',202,'question');
+  const adjacent=fact('求光子的能量和频率',203,'question'),stage=fact('光子的能量和频率',204,'question');
+  await store.applyMany(spec,[{...plain,grade:'高三'},{...alternate,grade:'高中３年级'},{...adjacent,grade:'高二'},{...stage,grade:'高中'}]);
+  const gradeQuery=grade=>store.query(spec,{generation:spec.id,kind:'question',query:'光子的能量和频率',grade,limit:4});
+  const ids=result=>result.hits.map(hit=>hit.id).sort();
+  assert.deepEqual(ids(await gradeQuery('高中三年级')),[plain.id,alternate.id].sort());
+  assert.deepEqual(ids(await gradeQuery('高3')),[plain.id,alternate.id].sort());
+  assert.deepEqual(ids(await gradeQuery('高级中学')),[plain.id,alternate.id,adjacent.id,stage.id].sort());
+  assert.deepEqual(ids(await gradeQuery("高中' OR 1=1 --")),[]);
+  note('Native Lance prefilters specific aliases and stage scope before object limits while preserving raw stored labels');
   console.log(JSON.stringify({success:true,checks,root,bulkMilliseconds:Date.now()-before,counts:await store.counts(spec),scope:'Real fixed CPU ONNX EXE, tokenizer, local Lance Node native SDK; small own data, no cloud, no large-scale or holdout-quality claim'}));
 }finally{store.close();}

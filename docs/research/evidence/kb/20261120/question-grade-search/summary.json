@@ -1,0 +1,29 @@
+{
+  "baseline": "8ab1f2b7d9028ca543794ad1d07a1dc6ddf66522",
+  "buildMainSha256": "b1730e8141f2157f6eb3fd8b333c3d61bc942b1822196e180326f4e523dda6b1",
+  "naturalSql": {
+    "archivedQuestions": 7,
+    "sourcePapers": 6,
+    "sameOrderedIdsUnderEquivalentGrades": 7
+  },
+  "realElectron": {
+    "paidCalls": 0,
+    "originalFactReadbackUnchanged": true,
+    "cases": [
+      {"term":"光子能量与光的频率","keywordMatches":[0,1],"hybridMatches":[0,1],"keywordMs":[65,111],"hybridMs":[1396,1400],"nativeCandidate":true},
+      {"term":"静电场中的等势面","keywordMatches":[0,1],"hybridMatches":[0,1],"keywordMs":[69,72],"hybridMs":[310,61],"nativeCandidate":true}
+    ]
+  },
+  "testsPassed": {
+    "questionKeyword": 8,
+    "retrievalRepository": 19,
+    "numberScope": 9,
+    "nativeSemantic": 9,
+    "continuationAndPi": 50,
+    "rendererComponents": 253,
+    "desktopSmoke": 207
+  },
+  "paperSectionNextIssue": {"cases":2,"storedGradePass":2,"equivalentGradePass":0},
+  "npmAudit": {"existingAdvisories":23,"high":8,"dependencyChanges":false},
+  "kbA05IndependentHoldout": "open"
+}

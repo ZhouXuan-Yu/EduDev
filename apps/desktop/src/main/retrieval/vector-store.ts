@@ -5,6 +5,7 @@ import {Schema,Field,Utf8,Float64,Float32,FixedSizeList} from 'apache-arrow';
 import {EmbeddingClient} from './embedding-client';
 import {materialId} from '../../shared/materials';
 import {CATALOG_VECTOR_IDS} from '../../shared/material-catalog';
+import {questionGradeLabels} from '../../shared/question-grade';
 import {IndexAccess} from './index-access';
 import {loadMaintenance,maintainTables,type MaintainedTables} from './vector-maintenance';
 import {RETRIEVAL_BATCH_OBJECTS,RETRIEVAL_BATCH_TEXT,RETRIEVAL_BATCH_BYTES,validGeneration,EMBEDDING_ID,EMBEDDING_MODEL,EMBEDDING_TOKENIZER,type GenerationSpec,type RetrievalFact,type VectorQuery,type VectorCandidate} from '../../shared/retrieval';
@@ -91,7 +92,12 @@ export class LocalVectorStore{
     if(!vector){vector=(await this.encoder.embed('query',[input.query]))[0][0].vector;if(this.queries.size>=32)this.queries.delete(this.queries.keys().next().value!);this.queries.set(cacheKey,vector);}
     const clauses=['kind = '+quoted(input.kind)];
     if(input.resourceIds)clauses.push('resource_id IN ('+input.resourceIds.map(quoted).join(',')+')');
-    for(const [key,column]of [['resourceId','resource_id'],['subject','subject'],['grade','grade'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){const value=input[key];if(value!==undefined){if(typeof value!=='string'||value.length>128)throw Error('invalid_input');clauses.push(column+' = '+quoted(value));}}
+    for(const [key,column]of [['resourceId','resource_id'],['subject','subject'],['questionType','question_type'],['difficulty','difficulty'],['sourceKind','source_kind']]as const){const value=input[key];if(value!==undefined){if(typeof value!=='string'||value.length>128)throw Error('invalid_input');clauses.push(column+' = '+quoted(value));}}
+    if(input.grade!==undefined){
+      if(typeof input.grade!=='string'||input.grade.length>128)throw Error('invalid_input');
+      const grades=input.kind==='question'?questionGradeLabels(input.grade):[input.grade];
+      clauses.push(grades.length===1?'grade = '+quoted(grades[0]):'grade IN ('+grades.map(quoted).join(',')+')');
+    }
     if(input.knowledgePoint!==undefined){if(typeof input.knowledgePoint!=='string'||input.knowledgePoint.length>128)throw Error('invalid_input');clauses.push('strpos(knowledge_point,'+quoted(input.knowledgePoint)+') > 0');}
     return table.access.read(async()=>{
     let query=(table.readVectors||table.vectors).vectorSearch(vector).distanceType('cosine').where(clauses.join(' AND ')).select(['object_id','seq','digest','start','end','_distance']).limit(input.limit);

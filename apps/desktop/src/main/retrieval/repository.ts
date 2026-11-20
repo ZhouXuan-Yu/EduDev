@@ -13,6 +13,7 @@ import {MaterialAiTextIndex} from './material-ai-text-index';
 import type {AiPageView} from '../../shared/material-ai-page';
 import type {MaterialFullTextSearch} from '../assets/material-full-text';
 import {validatedQuestionFilters,questionRetrievalWhere} from '../education/question-retrieval';
+import {questionGradeLabels} from '../../shared/question-grade';
 import type {QuestionBlock} from '../../shared/question-document';
 import {RERANK_ID,RERANK_LIMIT,RERANK_CANDIDATE_LIMIT,RERANK_BUDGET_MS,type RerankCoverage} from '../../shared/reranker';
 import {rerankContext} from './rerank-context';
@@ -241,26 +242,26 @@ export class RetrievalRepository{
     if(filters.resourceIds&&filters.resourceIds.length>CATALOG_VECTOR_IDS){coverage.reason='scope_candidate_limit';return {hits:[],coverage};}
     if(filters.resourceIds&&!filters.resourceIds.length){coverage.reason='empty_scope';return {hits:[],coverage};}
     if(!this.port||!g)return{hits:[],coverage};
-    const numberScope = kind === 'question' && filters.questionNumber
-      ? questionRetrievalWhere({ questionNumber: filters.questionNumber }, false) : undefined;
+    const questionScope = kind === 'question' && (filters.questionNumber || filters.grade)
+      ? questionRetrievalWhere({questionNumber:filters.questionNumber,grade:filters.grade}, false) : undefined;
     try{const began=Date.now();let result;let valid=new Set<string>();
       while(true){result=await this.port.query(this.spec(g),{generation:id,kind,query,limit,...Object.fromEntries(Object.entries(filters).filter(([key,value])=>['resourceId','resourceIds','subject','grade','knowledgePoint','questionType','difficulty','sourceKind'].includes(key)&&value!==undefined))});
         const unique=[...new Set(result.hits.map(h=>h.id))];
         const rows = unique.length ? await this.host.all(
           `SELECT r.object_id,r.seq FROM retrieval_current r
-           ${numberScope ? 'JOIN question_bank_items q ON q.id=r.object_id' : ''}
+           ${questionScope ? 'JOIN question_bank_items q ON q.id=r.object_id' : ''}
            ${kind==='material' ? 'LEFT JOIN resource_chunks c ON c.id=r.object_id' : ''}
            WHERE r.kind=? AND r.object_id IN (${unique.map(() => '?').join(',')})
            ${kind==='material' ? 'AND COALESCE(c.structure_search_hidden,0)=0' : ''}
-           ${numberScope ? 'AND '+numberScope.clauses.join(' AND ') : ''}`,
-          [kind, ...unique, ...(numberScope?.params ?? [])],
+           ${questionScope ? 'AND '+questionScope.clauses.join(' AND ') : ''}`,
+          [kind, ...unique, ...(questionScope?.params ?? [])],
         ) : [];
         const revisions=new Map(rows.map(r=>[String(r.object_id),Number(r.seq)]));
         valid=new Set(result.hits.filter(h=>revisions.get(h.id)===h.seq).map(h=>h.id));
         if(valid.size>=desired||!result.exhausted||limit>=1000||Date.now()-began>1500)break;limit=Math.min(1000,limit*2);
       }
       coverage.candidateLimit=limit;
-      coverage.available=true;coverage.complete=!!g.backfill_done&&coverage.pending===0&&coverage.failed===0;coverage.reason=coverage.complete?'':coverage.backfilling?'backfilling':coverage.failed?'failed_objects':'pending_changes';coverage.exhausted=result.exhausted;return{hits:numberScope||kind==='material'?result.hits.filter(hit=>valid.has(hit.id)):result.hits,coverage};
+      coverage.available=true;coverage.complete=!!g.backfill_done&&coverage.pending===0&&coverage.failed===0;coverage.reason=coverage.complete?'':coverage.backfilling?'backfilling':coverage.failed?'failed_objects':'pending_changes';coverage.exhausted=result.exhausted;return{hits:questionScope||kind==='material'?result.hits.filter(hit=>valid.has(hit.id)):result.hits,coverage};
     }catch(error){coverage.reason=issue(error);return{hits:[],coverage};}
   }
   private async refresh(coverage:SemanticCoverage){if(!coverage.generation)return;const g=await this.generation(coverage.generation);coverage.pending=Math.max(0,await this.maximum()-Number(g.applied_seq));coverage.backfilling=!g.backfill_done;coverage.failed=await this.failed(coverage.generation);coverage.complete=coverage.available&&!coverage.pending&&!coverage.failed&&!coverage.backfilling;coverage.reason=coverage.complete?'':coverage.backfilling?'backfilling':coverage.failed?'failed_objects':coverage.pending?'pending_changes':coverage.reason;}
@@ -329,10 +330,12 @@ export class RetrievalRepository{
     const revisions=new Map<string,ResultReceipt>();
     for(const q of lexicalBefore){const current=await this.fact('question',q.id);if(!current.question||current.fact.deleted||current.fact.digest!==hash(questionFacts(q)))continue;lexical.push(current.question);found.set(q.id,current.question);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});}
     const semanticVisible=await this.visibleQuestions(semantic.hits.map(hit=>hit.id));
+    const grades=filters.grade?questionGradeLabels(filters.grade):undefined;
     for(const hit of semantic.hits){if(ids.includes(hit.id)||!semanticVisible.has(hit.id))continue;const current=await this.fact('question',hit.id),q=current.question;
       if(!q||current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest)continue;
       if (filters.questionNumber && q.archive?.number !== filters.questionNumber) continue;
-      if(['subject','grade','questionType','difficulty','sourceKind'].some(key=>filters[key as keyof QuestionSearchFilters]!==undefined&&q[key as keyof QuestionBankItem]!==filters[key as keyof QuestionSearchFilters]))continue;
+      if(grades&&!grades.includes(q.grade))continue;
+      if(['subject','questionType','difficulty','sourceKind'].some(key=>filters[key as keyof QuestionSearchFilters]!==undefined&&q[key as keyof QuestionBankItem]!==filters[key as keyof QuestionSearchFilters]))continue;
       if(filters.knowledgePoint&&!q.knowledgePoint.includes(filters.knowledgePoint))continue;
       found.set(q.id,q);ids.push(q.id);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});
     }

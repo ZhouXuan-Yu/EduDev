@@ -3,6 +3,7 @@ import {DatabaseSync} from 'node:sqlite';import {randomUUID} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 const {RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
 const {materialSource}=await import('../../src/main/assets/material-source.ts');
+const {questionGradeLabels}=await import('../../src/shared/question-grade.ts');
 let checks=0;const note=s=>{checks++;console.log('PASS '+s);};
 export async function fixture(n=2){
  const db=new DatabaseSync(':memory:');db.exec(`CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,original_file_name TEXT,content_hash TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT PRIMARY KEY,resource_id TEXT,chunk_index INTEGER,heading TEXT,content_md TEXT,contains_personal_data INTEGER,subject TEXT,grade TEXT,knowledge_point TEXT,question_type TEXT,difficulty TEXT,page_number INTEGER);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,stem TEXT,answer TEXT,analysis TEXT,subject TEXT,grade TEXT,knowledge_point TEXT,question_type TEXT,difficulty TEXT,source_title TEXT,source_kind TEXT,tags TEXT,created_at TEXT,updated_at TEXT,archive_json TEXT NOT NULL DEFAULT '',document_json TEXT NOT NULL DEFAULT '');`);
@@ -13,7 +14,7 @@ export async function fixture(n=2){
  const state={unavailable:false,queries:[],duringQuery:null,duplicateWindows:false,crashAck:false,brokenGeneration:''},generations=new Map();let repo,queue=Promise.resolve();
  const port={ensure:async s=>{if(state.unavailable)throw Error('embedding_unavailable');if(state.brokenGeneration===s.id)throw Error('generation_mismatch');if(!generations.has(s.id))generations.set(s.id,new Map());},apply:async(s,f)=>{if(state.unavailable)throw Error('embedding_unavailable');const map=generations.get(s.id),old=map.get(f.kind+f.id);if(!old||old.seq<f.seq)map.set(f.kind+f.id,structuredClone(f));},query:async(s,q)=>{
    if(state.unavailable)throw Error('embedding_unavailable');if(state.brokenGeneration===s.id)throw Error('generation_mismatch');state.queries.push(q);if(state.duringQuery){const cb=state.duringQuery;state.duringQuery=null;cb();}
-   let facts=[...generations.get(s.id).values()].filter(f=>!f.deleted&&f.kind===q.kind&&['resourceId','subject','grade','questionType','difficulty','sourceKind'].every(k=>q[k]===undefined||f[k]===q[k])&&(q.knowledgePoint===undefined||f.knowledgePoint.includes(q.knowledgePoint)));
+   let facts=[...generations.get(s.id).values()].filter(f=>!f.deleted&&f.kind===q.kind&&['resourceId','subject','questionType','difficulty','sourceKind'].every(k=>q[k]===undefined||f[k]===q[k])&&(q.grade===undefined||state.ignoreVectorGrade||(q.kind==='question'?questionGradeLabels(q.grade).includes(f.grade):f.grade===q.grade))&&(q.knowledgePoint===undefined||f.knowledgePoint.includes(q.knowledgePoint)));
    if(state.duplicateWindows&&facts.length>=2)facts=[...Array(500).fill(facts[0]),...facts.slice(1)];
    const hits=facts.slice(0,q.limit).map(f=>({id:f.id,seq:f.seq,digest:f.digest,start:0,end:1,distance:0.3}));return{hits,exhausted:facts.length>=q.limit,ann:false};},counts:async s=>({objects:[...generations.get(s.id).values()].filter(f=>!f.deleted).length,vectors:1,ann:false}),optimize:async()=>{},close:async()=>{}};
  state.batches=[];port.applyMany=async(spec,facts)=>{state.batches.push(structuredClone(facts));for(const fact of facts)await port.apply(spec,fact);};
@@ -49,6 +50,24 @@ const replaced=await fixture();try{
  assert.equal(replaced.db.prepare('SELECT content_md FROM resource_chunks WHERE id=?').get(old).content_md,'勾股定理用于直角三角形。');
  note('Publication invalidates in-flight and persisted semantic hits while retaining original physical offsets');
 }finally{replaced.db.close();}
+const gradeScope=await fixture(0);try{
+ const update=gradeScope.db.prepare('UPDATE question_bank_items SET grade=? WHERE id=?');
+ for(let index=0;index<110;index++)update.run('高二',gradeScope.addQuestion('相邻年级对照 '+index));
+ const saved=gradeScope.addQuestion('原课程的定向题');
+ update.run('高三',saved);
+ await gradeScope.ready();
+ const indexed=gradeScope.generations.get((await gradeScope.repo.status()).generation),key='question'+saved;
+ const fact=indexed.get(key);
+ indexed.delete(key);
+ indexed.set(key,fact);
+ const query={query:'语义检索近似题意',grade:'高中３年级',limit:1};
+ assert.deepEqual((await gradeScope.repo.questions(query)).questions.map(q=>[q.id,q.grade]),[[saved,'高三']]);
+ gradeScope.state.ignoreVectorGrade=true;
+ const result=await gradeScope.repo.questions(query);
+ assert.deepEqual(result.questions.map(q=>q.id),[saved]);
+ assert.deepEqual(gradeScope.state.queries.slice(-2).map(q=>q.limit),[100,200]);
+ note('Equivalent grade filters retain the stored grade and skip a window crowded with off-grade vector hits');
+}finally{gradeScope.db.close();}
 const b=await fixture(251);try{await b.ready();b.state.unavailable=true;const r=await b.repo.materials('关键词',undefined,200,200);assert.equal(r.units.length,20);assert.equal(r.units[0].offset,201);assert(r.hasMore);assert(!r.semantic.available);note('Keyword fallback preserves real offset pagination beyond the first 200 hits');}finally{b.db.close();}
 const c=await fixture(0);try{const id=c.addQuestion('已知条件。'.repeat(2400)+'末尾条件不能丢失。'),id2=c.addQuestion('正常后续题');await c.ready();const active=c.generations.get((await c.repo.status()).generation);assert([...active.values()].some(f=>f.id===id&&f.text.length>12000));assert([...active.values()].some(f=>f.id===id2));note('A legal 12000-character question plus metadata does not block later outbox facts');
  c.state.duplicateWindows=true;const found=await c.repo.questions({query:'不同的表述',limit:2,knowledgePoint:'勾股'});assert.equal(found.questions.length,2);assert(c.state.queries.some(q=>q.limit>=800));assert(c.state.queries.every(q=>q.knowledgePoint==='勾股'));note('Hard knowledge filtering reaches native query and duplicate windows trigger bounded expansion to valid object count');
