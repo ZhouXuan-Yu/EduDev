@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "31206dbf240e826647a19bd801110cd9524bceb5c68b3acd0c7bf928ce621ae5",
+  "sourceHash": "f9c5289c929e322d781fff257a567065e8e367610c6c458a6ae1d0c41516aee0",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1568,7 +1568,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/task-state.ts",
-      "sha256": "178cae9eab8d3cd1e16d0a1e4cbf95f22e3fe9d911061736a36c53aad9ee9b34"
+      "sha256": "ef0ff565f9a564372ea23bf17e0b91b23c4b6266aa5b0ea806d414ec5e31ea51"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/teacher-actions.ts",
