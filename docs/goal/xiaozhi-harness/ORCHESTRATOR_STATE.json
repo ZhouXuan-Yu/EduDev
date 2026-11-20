@@ -995,5 +995,26 @@
     "passedScopedChecks": 18,
     "newPaidCalls": 0,
     "remaining": "Current candidate successful long-path terminal run when system space is available and item-level independent page evidence reconciliation. QG-09 and live model comparison remain open."
+  },
+  "phase7CurrentDe87189720261121": {
+    "status": "PASS",
+    "sourceCommit": "de871897c5f176d8176fbbd1ead96af6206b86a6",
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-current-de871897-20261121.json",
+    "outFiles": 481,
+    "outSha256": "28c2c96b95192c3b4228f43310b3b63f7178adb53e093942a22d2558e5b5fda6",
+    "paidRequestCount": 3,
+    "newPaidCalls": 0,
+    "remaining": "Formal 32-run collection and independent blind review, clean Windows QG-09, and final Phase 8 acceptance."
+  },
+  "phase8FormalFirstAttempt20261121": {
+    "status": "FAIL",
+    "evidence": "evidence/phase8/formal-collection-first-stop-20261121.json",
+    "collected": 18,
+    "planned": 32,
+    "failedRow": "Q5-r2-B",
+    "blockerCode": "phase8_approval_consumption_unverified",
+    "paidRequestCount": 139,
+    "remainingPaidRequests": 61,
+    "next": "Independent blind review of collected rows and local deterministic fix for active-Run permission approval. Preserve all prior reports, then verify only missing or affected cases under the original budget."
   }
 }

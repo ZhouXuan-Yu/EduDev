@@ -1531,6 +1531,7 @@
       "status": "PASS",
       "scope": "已实现。独立页面、汇总与 SQLite 同一批五个当前 Task 状态一致，完成一项。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-matrix-tasks.json"
       ]
@@ -1542,6 +1543,7 @@
       "status": "PASS",
       "scope": "已实现。最终候选的独立后台页面验证完成样本只出现在完成筛选。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
       ]
@@ -1553,6 +1555,7 @@
       "status": "PASS",
       "scope": "已实现。独立合成样本从页面读到待核对、待审批和已确认原因。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-matrix-retest-report.json"
       ]
@@ -1562,8 +1565,9 @@
       "priority": "P1",
       "expected": "点击继续只启动一个新 Run，不重复创建 Task。",
       "status": "PASS",
-      "scope": "已实现。独立后台页面与 SQLite 证实一次新 Run、同一 Task；实施专项补充双击与明确继续。W2 跨重启及迟到结果仍待完整复验。",
+      "scope": "已实现。独立实页双击继续只形成同一 Task 的一个新 Run，已保存文件、迟到事件与冷启分别读回。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/background-ui-report.json"
       ]
@@ -1573,8 +1577,9 @@
       "priority": "P1",
       "expected": "说明操作目的、资源、数据范围、持续时间和拒绝后果。",
       "status": "PASS",
-      "scope": "已实现。两项真实现代审批样本在原详情展示上述字段。A1 全类型安全检查仍待完成。",
+      "scope": "已实现。双尺寸核对现代审批普通信息、长资源与展开详情，并验证历史核对入口。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-matrix-retest-report.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
@@ -1597,8 +1602,9 @@
       "priority": "P1",
       "expected": "可批准/拒绝；状态持久化。",
       "status": "PASS",
-      "scope": "已实现。独立 Electron 批准及拒绝，原状态读回并核对冷启。A2 权限变更和替代流程仍待完整复验。",
+      "scope": "已实现。独立验收已批准效果与两类拒绝、目标变化失效、冷读及忙时关闭后的原审批结果。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-matrix-reject-cold.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
@@ -1623,6 +1629,7 @@
       "status": "PASS",
       "scope": "已实现。独立合成 Provider 密钥哨兵在已配置的设置投影、实际审批汇总及展开详情中均未露出。范围为原审批页面。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-secret-canary.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
       ],
@@ -1646,6 +1653,7 @@
       "status": "PASS",
       "scope": "已实现。独立验证审批与技能的教师侧名称及折叠详情，并在最新构建复验能力卡中文名称和范围、中文检索、展开后的原标识。范围为工作台、能力和审批样本。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-final-ui-scoped.md",
         "evidence/phase7/implementation-resume-20261119/terra-chinese-retest-report.json"
       ]
@@ -1655,8 +1663,9 @@
       "priority": "P1",
       "expected": "区分已安装、可用、待验证、需授权、不可用。",
       "status": "PASS",
-      "scope": "已实现。独立 Electron 在同一冻结构建的真实页面和 typed summary 核对五种状态。在当前 Task 的真实待审依赖上，页面拒绝、无新增授权、能力投影刷新及重启读回一致。范围为合成能力样本的五种状态，完整 C1/C2 的 Provider 条件更新仍待验。",
+      "scope": "已实现。当前能力中心核对各状态、候选隔离、必需和可选条件，并验证部分、加载和刷新。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
         "evidence/phase7/pending-dependency-20261119/terra-pending-conclusion.md"
       ]
@@ -1668,6 +1677,7 @@
       "status": "PASS",
       "scope": "已实现。独立能力卡读到来源、当前版本、风险提示与可展开核验详情。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-matrix-capabilities.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
@@ -1678,8 +1688,9 @@
       "priority": "P1",
       "expected": "市场候选不能显示为已验证能力。",
       "status": "PASS",
-      "scope": "已实现。独立页面核对两个候选均显示真实隔离或过期状态，且不可用。C2 撤销、Schema 变更仍待完整复验。",
+      "scope": "已实现。未验证候选保持隔离。独立复验 Schema 变更及撤销的旧信任清理，从本地替代取证。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-current-completion.json",
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md"
@@ -1692,6 +1703,7 @@
       "status": "PASS",
       "scope": "已实现。最终候选独立页面显示个人、团队、官方三类。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
       ]
@@ -1703,6 +1715,7 @@
       "status": "PASS",
       "scope": "已实现。最终候选独立验证待审批状态和操作入口，早期实施候选独立验证批准与冷启状态。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-independent-supplement.md"
       ]
@@ -1712,8 +1725,9 @@
       "priority": "P1",
       "expected": "版本历史、回滚和来源可查。",
       "status": "PASS",
-      "scope": "已实现。最终候选独立验证两项历史版本、来源、页面切换并冷启读回。S2 的运行任务版本绑定等场景仍待完整复验。",
+      "scope": "已实现。双尺寸核对版本来源、运行锁定、回滚、冷读与受控失败时的旧版本字节。",
       "evidence": [
+        "evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md",
         "evidence/phase7/implementation-resume-20261119/terra-phase7-scoped-conclusion.md",
         "evidence/phase7/implementation-resume-20261119/terra-current-completion.json"
       ]

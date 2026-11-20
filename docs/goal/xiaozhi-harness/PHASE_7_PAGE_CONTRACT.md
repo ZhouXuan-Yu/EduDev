@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 Gate 7 独立通过
+
+Terra 独立验收确认 de87189 冻结构建的 W1–W3、A1–A2、C1–C2、S1–S2 及双尺寸真实原生窗口、流式和长路径终端通过原合同的隔离场景。保留首次 Skill 7/8 报告，并用同构建的定向键盘复验核对折叠。 [UI-01 至 UI-14 逐项证据](evidence/phase7/implementation-resume-20261119/gate7-de871897-ui-coverage.md)
+
 ## 2026-11-21 Gate 7 同一构建集中复验
 
 本轮的实际操作均绑定 481 文件同一指纹。课件成果和运行分属原会话，终端继续和冷读有原子回执，原生操作分别核对实际内容尺寸。Skill 取消及个人发布可以返回键盘焦点，团队场景的可见性未被该驱动核对。A2 目标变化正等待首次工具与日志冲突修复，独立终审仍待完成。 [范围](evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json)
