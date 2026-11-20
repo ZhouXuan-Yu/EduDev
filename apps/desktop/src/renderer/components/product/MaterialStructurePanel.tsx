@@ -34,6 +34,7 @@ const issueLabels: Record<string, string> = {
   ambiguous_columns: "分栏待核对",
   uncertain_boundary: "题目边界待核对",
   numbering_conflict: "编号关系不明确",
+  missing_question_number: "原页题号未确认",
   missing_question_start: "未定位题目起点",
   missing_figure: "题图未完整定位",
   ambiguous_asset: "图表归属待核对",
@@ -316,7 +317,7 @@ export function MaterialStructurePanel({
                 view.questions.map((question) => (
                   <article key={question.id}>
                     <p>
-                      题 {question.number} · 第 {question.pageRange.join("–")}{" "}
+                      {question.number === "0" ? "题号未确认" : "题 " + question.number} · 第 {question.pageRange.join("–")}{" "}
                       页 ·{" "}
                       {view.reviewed?.[question.id]
                         ? "已核对入题本"

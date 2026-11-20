@@ -68,6 +68,42 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+await check("An isolated unnumbered prompt stays reviewable and a numbered figure caption cannot split the next question", () => {
+  const stem = "已知一个物体以相同的速度连续经过两段水平轨道，求整个过程所用的时间是多少？（假设阻力忽略不计）";
+  const withAnnotation = (text, next = .44) => page([
+    [text,.1,.08,.76],
+    ['x="20" N',.45,.18,.14,"display_formula"],
+    ["6. 如图所示，以下哪些说法正确？",.1,next,.78],
+    ["A. 甲",.12,next+.04,.35], ["B. 乙",.12,next+.08,.35],
+    ["C. 丙",.12,next+.12,.35], ["第6题图",.75,next+.13,.12],
+    ["D. 丁",.12,next+.16,.35],
+  ], 1, 2, [{id:"figure",kind:"image",score:.98,box:[.73,next+.04,.91,next+.12],needsReview:true}]);
+  const second = page([
+    ["例7 物体改变方向后，计算它的速度。",.1,.08,.8],
+  ], 2, 2);
+  const first = withAnnotation(stem);
+  const [held, six, example] = questions([first,second]);
+  assert.equal(held.number,"0");
+  assert.equal(held.stem,stem);
+  assert.deepEqual(held.issues,["missing_question_number"]);
+  assert.equal(held.status,"needs_review");
+  assert.deepEqual(held.assets,[]);
+  assert(first.rawText.includes('x="20"'));
+  assert.equal(six.number,"6");
+  assert.deepEqual(six.pageRange,[1,1]);
+  assert.deepEqual(six.options.map(part=>part.label),Array.from("ABCD"));
+  assert.equal(six.assets[0]?.regionId,"figure");
+  assert(six.paragraphIds.includes(first.paragraphs.find(p=>p.text==="第6题图").id));
+  assert.equal(six.issues.includes("shared_material_scope"),false);
+  assert(!six.stem.includes("例7"));
+  assert(example.stem.startsWith("例7"));
+  for (const input of [withAnnotation(stem,.24),withAnnotation("根据上题所给的条件，" + stem)]) {
+    const [ambiguous, following] = questions([input]);
+    assert(ambiguous.issues.includes("missing_question_start"));
+    assert(following.issues.includes("shared_material_scope"));
+  }
+  assert.equal(page([["第6题 图中有五个不同的小球，请计算它们的质量。"]]).paragraphs[0].marker.label,"6");
+});
 await check("Printed fill slots preserve literal OCR and require visible thin rules", () => {
   const width = 100, height = 60;
   const light = Buffer.alloc(width * height * 4, 255);

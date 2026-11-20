@@ -147,5 +147,7 @@
     "builderPid": 38528,
     "installerExists": false
   },
-  "mainAndFeatureAtPackagingStart": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc"
+  "mainAndFeatureAtPackagingStart": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
+  "mainObservedAfterPackaging": "3146aa1c34cfa04ca0a376b30fce707eb8c778e4",
+  "mainProductionChangeAfterBuild": "0b015f9"
 }

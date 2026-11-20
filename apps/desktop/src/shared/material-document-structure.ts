@@ -5,10 +5,10 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v7" as const;
-export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v2" | "layout-paragraph-question.v3" | "layout-paragraph-question.v4" | "layout-paragraph-question.v5" | "layout-paragraph-question.v6";
+  "layout-paragraph-question.v8" as const;
+export type DocumentStructureEngine = typeof DOCUMENT_STRUCTURE_ENGINE | "layout-paragraph-question.v7" | "layout-paragraph-question.v2" | "layout-paragraph-question.v3" | "layout-paragraph-question.v4" | "layout-paragraph-question.v5" | "layout-paragraph-question.v6";
 export function validDocumentStructureEngine(value: unknown): value is DocumentStructureEngine {
-  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v6" || value === "layout-paragraph-question.v5" || value === "layout-paragraph-question.v4" || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
+  return value === DOCUMENT_STRUCTURE_ENGINE || value === "layout-paragraph-question.v7" || value === "layout-paragraph-question.v6" || value === "layout-paragraph-question.v5" || value === "layout-paragraph-question.v4" || value === "layout-paragraph-question.v3" || value === "layout-paragraph-question.v2";
 }
 export type PrintedStructureRecovery = {
   parents: { line: MaterialLine; crop: PageBox; cropSha256: string; readings: string[]; engine: string; uncertain?: true }[];
@@ -23,6 +23,7 @@ export type StructureIssue =
   | "ambiguous_columns"
   | "uncertain_boundary"
   | "numbering_conflict"
+  | "missing_question_number"
   | "missing_question_start"
   | "missing_figure"
   | "ambiguous_asset"

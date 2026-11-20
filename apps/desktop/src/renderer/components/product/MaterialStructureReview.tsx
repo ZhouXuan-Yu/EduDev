@@ -74,6 +74,7 @@ export function MaterialStructureReview({
     return (
       <p>题图、题目起点或完整范围仍需重新切题整理，原页和识别记录已保留。</p>
     );
+  const missingNumber = question.issues.includes("missing_question_number");
   async function save() {
     if (!fields || !checked || !difficultyChosen || busy) return;
     setBusy(true);
@@ -140,7 +141,10 @@ export function MaterialStructureReview({
             请对照本题涉及的原始页面，补齐题干、选项、小问及公式。原始 OCR
             与结构候选会保留，修正内容记录为教师编辑。
           </p>
-          {question.pageRange[0] !== question.pageRange[1] && (
+          {missingNumber && (
+            <p>原页题号未确认。请在原图中核对独立题干，以及同一区域的公式和手写内容，再保存教师修正。</p>
+          )}
+          {(missingNumber || question.pageRange[0] !== question.pageRange[1]) && (
             <>
               <div className="toolbar-row">
                 {[...new Set(question.anchors.map((anchor) => anchor.page))]

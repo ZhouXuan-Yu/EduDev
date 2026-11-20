@@ -4,6 +4,8 @@
 
 NSIS 以退出码 0 生成未签名的 886,091,314 字节安装包，随包应用已核对 x64。直接解出 481 个应用文件，与构建 `ae8dca7` 及 `win-unpacked` 逐字节匹配。五套运行时校验均通过，隔离环境下随包教育 Worker 的允许及拒绝用例均通过。Terra 独立核对包文件、解包目录与归档列举。固定矩阵 88/89，付费请求累计 3/200。原生窗口操作、独立 Windows 安装卸载和正式 32 条模型对照仍待验收。[打包证据](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json)及[独立 Windows 验收步骤](ACCEPTANCE_REPORT.md#qg-09-独立-windows-安装验收步骤)
 
+同日主线已合入知识库裁缺题号修复 `0b015f9`。现有安装包冻结于该修复前的 `ae8dca7`，最终候选须在 Gate 7 完成后重新按源码和包文件指纹核对。[知识库回归证据](../../research/evidence/kb/20261120/cropped-question-number/README.md)
+
 ## 2026-11-20 Phase 8 独立盲评与配对汇总
 
 已实现。采集时保存原始每轮报告、匿名样本及 A/B 映射指纹。独立验收者填写五项评分、证据与四类硬问题后，汇总保留固定 32 条、采集失败和未运行状态，并给出具备完整评分的轮次差值。正式模型采集仍依赖 Gate 7 冻结构建。[证据](evidence/phase8/offline-blind-review-20261120.json)
