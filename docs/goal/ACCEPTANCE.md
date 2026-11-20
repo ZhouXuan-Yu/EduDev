@@ -4,6 +4,10 @@
 
 专项覆盖版面证据、原图关联、双遍输入和独立批次授权。详见单一证据报告。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)
 
+## 2026-11-21 同机恢复证据
+
+70b19a8 在隔离 Windows 源码版复验教学成果、备份完整性、独立目录恢复、冷启及切回。两套 Electron 验证均退出 0。只计入 UM-03、UM-04、UM-05 的同机子场景。 [升级换机矩阵](WINDOWS_UPDATE_AND_MIGRATION.md#固定验收)
+
 ## 2026-11-21 独立答案册零派发与已派发反例
 
 真实隔离库的零派发隐私失败从旧版关联拒绝恢复到新版本地关联。另一份有 4 次调用历史的答案册维持拒绝，旧任务和回执保持。 [本轮记录](../research/evidence/kb/20261121/book-zero-dispatch/README.md)

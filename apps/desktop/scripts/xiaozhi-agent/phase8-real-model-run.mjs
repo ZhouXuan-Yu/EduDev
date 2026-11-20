@@ -467,16 +467,35 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
   return collection;
 }
 
+function loadFrozenPlan(manifestPath) {
+  const manifest = validateManifest(JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
+  if (!fs.existsSync(manifest.questionSeedEvidence)) throw Error('phase8_question_seed_evidence_missing');
+  if (fs.realpathSync(manifest.versions.A.desktopRoot) === fs.realpathSync(manifest.versions.B.desktopRoot)) {
+    throw Error('phase8_comparison_worktrees_not_independent');
+  }
+  const versions = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
+  return {manifest, versions};
+}
+
+export function verifyFrozenPlan(manifestPath) {
+  const {manifest, versions} = loadFrozenPlan(manifestPath);
+  return {
+    status:'VERIFIED_LOCAL_INPUTS', planned:schedule.length, paidRequests:0, actualGoalLedgerOpened:false,
+    versions:Object.fromEntries(Object.entries(versions).map(([side,item])=>[side,{
+      commit:item.commit, outSha256:item.out.sha256, outCount:item.out.files.length,
+      dataSha256:manifest.versions[side].dataSha256, profileSha256:manifest.versions[side].profileSha256,
+    }])),
+  };
+}
+
 export async function executePlan(manifestPath, output, mode = 'execute', {background = false} = {}) {
   if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
   if (background && (mode !== 'preflight' || !path.basename(output).startsWith('omni-edu-xiaozhi-phase8-real-model-')
       || fs.realpathSync(path.dirname(path.resolve(output))) !== fs.realpathSync(os.tmpdir()))) {
     throw Error('phase8_background_preflight_only');
   }
-  const manifest = validateManifest(JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
   if (!fs.existsSync(actualDatabasePath)) throw Error('phase8_actual_goal_ledger_missing');
-  if (!fs.existsSync(manifest.questionSeedEvidence)) throw Error('phase8_question_seed_evidence_missing');
-  const versions = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
+  const {manifest, versions} = loadFrozenPlan(manifestPath);
   fs.mkdirSync(output, {recursive: true});
   fs.copyFileSync(manifestPath, path.join(output, 'execution-manifest.json'));
   fs.writeFileSync(path.join(output, 'builds.json'), JSON.stringify(versions, null, 2));
@@ -510,14 +529,19 @@ export async function executePlan(manifestPath, output, mode = 'execute', {backg
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const [action, manifest, option, ...extra] = process.argv.slice(2);
   const background = option === '--background';
-  const output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-phase8-real-model-' : 'xiaozhi-phase8-real-model-'));
+  let output;
   try {
     if (extra.length || option && !background || background && action !== 'preflight') throw Error('phase8_invalid_collection_mode');
-    if (action === 'prepare') console.log(JSON.stringify(preparePlan(output)));
-    else if (['execute', 'preflight'].includes(action) && manifest) {
-      const result = await executePlan(manifest, output, action, {background}); console.log(JSON.stringify(result));
-      if (result.collectionStatus === 'FAIL') process.exitCode = 1;
-    } else throw Error('phase8_usage_prepare_or_preflight_or_execute_manifest');
+    if (action === 'verify' && manifest) {
+      console.log(JSON.stringify(verifyFrozenPlan(manifest)));
+    } else if (action === 'prepare' || ['execute', 'preflight'].includes(action) && manifest) {
+      output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-phase8-real-model-' : 'xiaozhi-phase8-real-model-'));
+      if (action === 'prepare') console.log(JSON.stringify(preparePlan(output)));
+      else {
+        const result = await executePlan(manifest, output, action, {background}); console.log(JSON.stringify(result));
+        if (result.collectionStatus === 'FAIL') process.exitCode = 1;
+      }
+    } else throw Error('phase8_usage_prepare_or_verify_or_preflight_or_execute_manifest');
   } catch (error) {console.error(JSON.stringify({status: 'NOT_TESTED', output,
     code: /^phase8_[a-z_]+$/.test(error.message) ? error.message : 'phase8_preparation_failed'})); process.exitCode = 1;}
 }

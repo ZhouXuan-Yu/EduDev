@@ -1,0 +1,55 @@
+{
+  "status": "PASS_SCOPED_SAME_HOST",
+  "requirements": [
+    "UM-03",
+    "UM-04",
+    "UM-05",
+    "UM-07"
+  ],
+  "sourceCommit": "70b19a8d4912897d3306eec6a13bbe5151853ec0",
+  "buildFiles": 481,
+  "buildSha256": "9e5329f1cd47f9490b7547273a201fc0977e812ec239aab24c92a59591ba1db8",
+  "host": "Windows, independent source-built Electron 43.8.3, temporary data/profile",
+  "checks": [
+    {
+      "command": "node scripts/xiaozhi-agent/conversation-output-backup-electron.mjs",
+      "checks": 9,
+      "exit": 0,
+      "report": "E:/EduDev-Harness-Acceptance-20261121/migration-local-temp/xiaozhi-output-backup-ui-yoRXPc/report.json",
+      "sha256": "7859de7b311c169819839dd9ec8bc8cadd9e96890d84522a9229a3e1beb1b854",
+      "logSha256": "12825bae990e6c941139c80091f8690c503f363b1bd42e00e9355f89819f60f2"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-electron.mjs \"E:/EduDev-Harness-Acceptance-20261121/migration-local-temp/xiaozhi-output-backup-ui-yoRXPc\"",
+      "checks": 5,
+      "exit": 0,
+      "report": "E:/EduDev-Harness-Acceptance-20261121/migration-local-temp/omni-edu-restore-ui-DNDijG/report.json",
+      "sha256": "b74e12a7275e33ecd5061695a79102bb8aa72dbb15d4d185c68d03fdc7e980a7",
+      "logSha256": "b1a3fe17c2df5e15a2867348fd0df0e4338f49ea9c1824165ef33711f524ec5c"
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920
+    }
+  ],
+  "fixtureSetupFailure": "Initial restore invocation lacked the seed-root argument and was rejected before application launch. Both correct commands then succeeded.",
+  "results": [
+    "Known-good editable PPTX and HTML copied into verified backup; tamper detected and legacy v1 still accepted.",
+    "Native session bindings and hashes, original event journal values, output byte hashes and retained source SQLite checked.",
+    "Two cold starts, no replay, safe visible selection back to the original retained data profile."
+  ],
+  "boundaries": [
+    "Both data roots on one Windows host and one drive. No firmware/installer, version upgrade, per-machine migration of settings, Office/WPS, or user data tested.",
+    "Manually cold relaunches Electron after using actual activation handler via renderer. Synthetic dialog path selection and synthetic model responses only.",
+    "PPTX product preview and restored HTML/version record; PDF, file-tree discovery and Save As not covered."
+  ],
+  "paidRequests": 0
+}

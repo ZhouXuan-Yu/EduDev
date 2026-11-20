@@ -4,6 +4,7 @@ import path from 'node:path';
 import http from 'node:http';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
+import {spawnSync} from 'node:child_process';
 import {channel} from 'node:diagnostics_channel';
 import {JSDOM} from 'jsdom';
 import {openBudgetLedger} from './phase8-budget-ledger.mjs';
@@ -493,7 +494,29 @@ try {
     assert.equal(empty.calls.length, 0); assert.equal(empty.budget.summary().used, 1); assert(exhausted.stoppedAt);
     report.stopControl = {cases: observations, thinkingParityCalls: parity.calls, exhaustedDispatches: empty.calls.length};
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 18 && report.checks.every(row => row.pass);
+  await check('Offline verification aborts a template without creating run output or opening the real ledger', () => {
+    const root = path.join(output, 'offline-verify');
+    fs.mkdirSync(root);
+    const {output:prepared} = preparePlan(path.join(root, 'prepared'));
+    const manifest = path.join(prepared, 'manifest-template.json');
+    const result = spawnSync(process.execPath, [path.resolve('scripts/xiaozhi-agent/phase8-real-model-run.mjs'), 'verify', manifest],
+      {encoding:'utf8', env:{...process.env,TEMP:root,TMP:root,TMPDIR:root}});
+    assert.equal(result.status,1);
+    assert.deepEqual(JSON.parse(result.stderr.trim().split(/\r?\n/).at(-1)),{status:'NOT_TESTED',code:'phase8_version_not_frozen'});
+    assert.equal(result.stdout,'');
+    assert.deepEqual(fs.readdirSync(root),['prepared']);
+    const value = JSON.parse(fs.readFileSync(manifest,'utf8'));
+    const fixture = {
+      desktopRoot:root, commit:'d50ef330f0f9c4995cc7e096e85bd8fd93629c83',
+      outSha256:'1'.repeat(64), outCount:1, dataSnapshot:root, dataSha256:'2'.repeat(64),
+      profileSnapshot:root, profileSha256:'3'.repeat(64),
+    };
+    value.versions = {A:fixture, B:{...fixture,commit:'4'.repeat(40)}};
+    assert.doesNotThrow(()=>validateManifest(value));
+    assert.throws(()=>validateManifest({...value,versions:{A:fixture,B:fixture}}),/phase8_comparison_versions_invalid/);
+    assert.throws(()=>validateManifest({...value,versions:{A:value.versions.B,B:fixture}}),/phase8_comparison_versions_invalid/);
+  });
+  report.budget = ledger.summary(); report.success = report.checks.length === 19 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();

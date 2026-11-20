@@ -16,6 +16,10 @@ The plan module freezes synthetic facts.txt, scores.csv, the question text and e
 
 Only the existing shared absolute Goal database is accepted for future real execution. It must already exist. No execution path resets its limit or used count. Fixture validation uses a separately named TEMP database. The final B build, local credential setup, seeded question-bank snapshots, actual settings equality, real UI/provider/TLS coverage and quality scores remain NOT_TESTED until root supplies the actual frozen inputs and executes the coordinated gates.
 
+## Offline input verification
+
+From the harness desktop directory, run `node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify "<absolute manifest path>"`. This uses the same manifest and build/snapshot fingerprint validation as the live collector. The original A commit must match and the two desktop roots must be distinct. The verification reports evidence digests without creating an output directory, opening the goal ledger or starting Electron. It does not establish provider setup, runtime behavior or quality. The initial 32-row manifest verified offline with A d50ef330 and provisional B 70b19a8. Use only an accepted final B for formal dispatch.
+
 ## Scope and rollback
 
 Only new phase8-real-model-* scripts and owned TEMP evidence are written. Existing budget, stream-performance, production and frozen UI files remain untouched. Removing these new helper files rolls back this preparation. The budget schema and existing Goal database require no migration.

@@ -31,6 +31,7 @@ PDF 本地解析保留原生定位文本和 OCR 转录。旧答案册处理将�
 - `node --experimental-transform-types scripts/education/kb-answer-page-mask-boundaries.mjs` 通过 18 组。覆盖多栏、重复联系方式、非法区域、正文隐私、源标签及摘要变更。
 - 运行 `node --experimental-transform-types --test` 的 6 份专项脚本，覆盖页回执、单图、批次、答案册及目录，Node 报告 15/15。测试文件另在各自输出中记录组合用例数。
 - `node scripts/education/kb-answer-page-mask-electron.mjs <既有隔离库>` 通过真实文件的请求拦截、像素保留、冷启和正文隐私反例，0 个渲染错误。
+- `node scripts/electron-smoke.mjs` 通过 207 项 Electron 前端检查。构建在隔离盘复制并核对主进程摘要一致，合并主线后应用源码、依赖锁定和构建配置与已测版本一致。
 - `npm audit --omit=dev --audit-level=high` 报告既有依赖问题 20 项，其中高危 5 项、严重 0 项。本轮没有变更依赖。
 
 ## 回滚和适用范围

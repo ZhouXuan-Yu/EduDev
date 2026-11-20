@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 
 export const actualDatabasePath = 'D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite';
+const baselineCommit = 'd50ef330f0f9c4995cc7e096e85bd8fd93629c83';
 export const providerPaths = ['/v1/chat/completions', '/chat/completions'];
 export const syntheticFiles = Object.freeze({
   'facts.txt': '水在标准大气压下约100℃沸腾。蒸发可在不同温度下发生。植物光合作用需要光、水和二氧化碳。',
@@ -61,6 +62,9 @@ export function validateManifest(value) {
   }
   for (const key of ['runTimeoutMs', 'requestTimeoutMs']) {
     if (!Number.isSafeInteger(value[key]) || value[key] < 1000 || value[key] > 3600000) throw Error('phase8_invalid_deadline');
+  }
+  if (value.versions.A.commit !== baselineCommit || value.versions.B.commit === baselineCommit) {
+    throw Error('phase8_comparison_versions_invalid');
   }
   if (value.versions.A.dataSha256 !== value.versions.B.dataSha256) throw Error('phase8_initial_data_snapshots_differ');
   return value;

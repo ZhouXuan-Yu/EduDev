@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-21",
+  "productionCandidate": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
+  "build": {
+    "files": 481,
+    "sha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
+    "mainSha256": "98f2f7b43cf2686a6410b3a8e7b76de0b386bf35edd9528753023e573397b6c8",
+    "matchedAfterSuites": true
+  },
+  "sameCandidateProof": "gate7-frozen-b890dba-20261121.json",
+  "commands": {
+    "cwd": "apps/desktop",
+    "build": "test-results/goal/harness-gate7-main-b890dba-r3-20261121/build-isolated",
+    "env": "OMNI_EDU_TEST_BUILD_ROOT points to frozen build; isolated TEMP/TMP roots under test-results/g7t or test-results/t.",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit"
+  },
+  "reports": [
+    {
+      "scope": "W1",
+      "report": "apps/desktop/test-results/g7t/omni-edu-xiaozhi-phase7-workbench-ui-dtYeZ1/evidence/cold-overview-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-workbench-cold-ui.mjs",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "passed": 5,
+      "sha256": "cd627b5df66257e18b98e9376601cde333436e72df328edce9ca542644775e3e",
+      "exitCode": 0
+    },
+    {
+      "scope": "W2/W3",
+      "report": "apps/desktop/test-results/g7t/omni-edu-xiaozhi-phase7-workbench-ui-b1Hjvw/evidence/delayed-events-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs",
+      "viewports": [
+        "1366x768"
+      ],
+      "passed": 5,
+      "sha256": "8e3783612cf33a1e0969aa19e3adcbc7f7fcd1464822a84a5330a163906cae0f",
+      "exitCode": 0
+    },
+    {
+      "scope": "W2/W3",
+      "report": "apps/desktop/test-results/g7t/omni-edu-xiaozhi-phase7-workbench-ui-dgVvUA/evidence/delayed-events-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs",
+      "viewports": [
+        "1920x1080"
+      ],
+      "passed": 5,
+      "sha256": "ff14c08991e56d63523a30bfa780d0b2df275946b10ffd36c67b39375164ff09",
+      "exitCode": 0
+    },
+    {
+      "scope": "A1/A2",
+      "report": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-OuVgJa/evidence/decision-keyboard-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-approval-decision-keyboard-ui.mjs",
+      "viewports": [
+        "1366x768"
+      ],
+      "passed": 4,
+      "sha256": "7288abe23c1bd9c5f2495f69d4161e68c778b9db3fab5a79fbbebd3420eae494",
+      "exitCode": 0
+    },
+    {
+      "scope": "A1/A2",
+      "report": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-VUJG7L/evidence/decision-keyboard-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-approval-decision-keyboard-ui.mjs",
+      "viewports": [
+        "1920x1080"
+      ],
+      "passed": 4,
+      "sha256": "2e87eaf904e38081a01c94fa7be88d6fce27d2174f410b6c3cafa8e313f81f9c",
+      "exitCode": 0
+    },
+    {
+      "scope": "A2",
+      "report": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-FYYCnd/evidence/workspace-scope-probe.json",
+      "script": "scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs",
+      "viewports": [
+        "1366x768"
+      ],
+      "passed": 3,
+      "sha256": "04b05cfb830e72026a702030ca0beece3df2808d37926351392cffc61a7dbe03",
+      "exitCode": 0
+    },
+    {
+      "scope": "A2",
+      "report": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-5w8hVP/evidence/workspace-scope-probe.json",
+      "script": "scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs",
+      "viewports": [
+        "1920x1080"
+      ],
+      "passed": 3,
+      "sha256": "3fee3b194c26eacf1484b0044b4886958261178383d192b6f0a2924fd370562e",
+      "exitCode": 0
+    },
+    {
+      "scope": "C1",
+      "report": "apps/desktop/test-results/g7t/omni-edu-xiaozhi-phase7-workbench-ui-cnxydW/evidence/capability-center-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-capability-center-ui.mjs",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "passed": 6,
+      "sha256": "7b2799e520dc7a175291ffc9415e763adfe01892f0571b00392ae0a9b99abec8",
+      "exitCode": 0
+    },
+    {
+      "scope": "C1 (root)",
+      "report": "apps/desktop/test-results/t/c1-root/omni-edu-xiaozhi-phase7-workbench-ui-KnoMxl/evidence/capability-center-report.json",
+      "script": "scripts/xiaozhi-agent/phase7-capability-center-ui.mjs",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "passed": 6,
+      "sha256": "baf3928148f11a69cf51ea16767ffbae11ece32ac5951988c69d0943b22e7124",
+      "exitCode": 0
+    },
+    {
+      "scope": "A2 positive approval",
+      "report": "apps/desktop/test-results/t/omni-edu-xiaozhi-phase7-workbench-ui-GVaZRj/evidence/visible-approval-cold-report.json",
+      "script": "test-results/t/terra-visible-approval.mjs",
+      "viewports": [
+        "default fixture viewport"
+      ],
+      "passed": 2,
+      "sha256": "09cfd9faa0add4f4f2d8c4143d80ae8edb236bd887d5743501f41bbcad4e2427",
+      "exitCode": 0
+    },
+    {
+      "scope": "W2 committed effect",
+      "report": "apps/desktop/test-results/g7t/phase7-terra-w2-run-25utb4/report.json",
+      "script": "test-results/g7t/committed-effect-r3.mjs",
+      "scriptSha256": "a255915f989e74860467d1c68eb1fe14d832ed0e5f47137dc15b1589065f1a53",
+      "viewports": [
+        "1366x768"
+      ],
+      "passed": 4,
+      "sha256": "21712f93d2bd08dc743c483c62254224ebc04e07c4dd9f8f0b2a3ef7abfd1055",
+      "exitCode": 0
+    },
+    {
+      "scope": "C2 Schema change and cold revocation",
+      "report": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase7-c2-r3-v4/report.json",
+      "script": "test-results/t/terra-c2-schema-r3-v4.mjs",
+      "scriptSha256": "e70475797a4cf5c7041bd960588496ec33345ea835b7f89f1148299ebf823eff",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "viewportScope": "Both dimensions for the enabled Save connection button hit and scrolling. Full lifecycle executed once in the same profile.",
+      "passed": 4,
+      "sha256": "b1c1b70bf1d902cab369c6c5f29863b53de3f5d8bd67dd89a10e69f707c8f6c2",
+      "exitCode": 0
+    }
+  ],
+  "independentScopedPasses": 45,
+  "scope": {
+    "W1": "Actual UI stop, cold task status and counts, filter reachability, completed-row exclusion, original Task/Run/Effect/approval unchanged and zero cold replay.",
+    "W2_W3": "At both sizes, same Task A added one Run; original late status and task events were held and delivered through a test hook during actual new Runs. Separate outputs and cold association were verified. Does not prove all committed effects are rejected on attempted duplicate replay. The independent committed-effect replay test at 1366x768 separately verified selection of the exact one-time grant, positive file completion, double-click deduplication (2 to 3 Runs), duplicate effect denied before dispatch (admitted=0, success=0), same 83-byte file and one applied record across cold open, zero model replay. The file replay assertion itself was exercised at 1366x768.",
+    "A1_A2": "Actual keyboard actions rejected the modern and historical requests with focus restoration and delayed settlement. A/B chosen directory scopes, original records and cold reads remained separate. These batches do not include a positive approval. Separate actual Inbox positive approval retained its exact ID and operation scope, updated the payload revision from 1 to 2, and preserved the same five grants after cold readback. No post-approval tool run in this scenario.",
+    "C1": "Native capabilities for current Windows and two synthetic registry conformance controls; original resolver excludes missing required and permits missing optional. Read-only page search and keyboard disclosure preserves six table hashes and model request count. Cached reviewed metadata remains pending, uninstalled and blocked. No real market access, installation, or external provider verification.",
+    "C2": "Root's previous same-build scenario covers an actual loopback registered MCP call, revocation, fallback to local course evidence and restart. The Schema mutation edge requires its own current-candidate evidence. Independent inspection verified report/source match on revocation and readback, not an independent rerun. Independent C2 on the same build then used a separate owned loopback service with a real changed Schema. Actual settings inspection cleared old trust, cold startup retained schema_changed, new trust was explicitly set, revocation was visible and persisted through a second restart with zero tool calls. This demonstrates the trust lifecycle. The earlier root C2 dispatch/fallback result complements it."
+  },
+  "firstRunnerFailure": {
+    "command": "node scripts/xiaozhi-agent/phase7-capability-center-ui.mjs",
+    "exitCode": 1,
+    "reason": "Initial top-level import used @playwright/test, not installed in this worktree. Switched to playwright/test exported by the existing dependency; no dependency changes."
+  },
+  "remaining": [
+    "Independent scope audit of installed and live pending-authorization capability states on this exact candidate",
+    "QG-09 clean Windows x64 install, both shortcuts, uninstall",
+    "Phase 8 formal 32-case real-model ABBA and final independent assessment"
+  ],
+  "npmAudit": {
+    "total": 20,
+    "high": 5,
+    "critical": 0,
+    "exitCode": 1
+  },
+  "typecheckExitCode": 0,
+  "paid": {
+    "added": 0,
+    "used": 3,
+    "limit": 200,
+    "unresolved": 0
+  },
+  "gate7": "PARTIAL",
+  "c2FixtureFailures": [
+    {
+      "report": "apps/desktop/test-results/t/phase7-terra-c2-b890dba-r3/report.json",
+      "sha256": "aa6559fffecbc37c0d13c9b4ced67b02bca55522661cbd6dc80128d1fbeded27",
+      "exitCode": 1,
+      "reason": "Preflight measured Save Connection before scrolling it into the viewport."
+    },
+    {
+      "report": "apps/desktop/test-results/t/phase7-terra-c2-b890dba-r3-scroll/report.json",
+      "sha256": "e61aeeff7bb99af36f9c9efa333b884d0ffbda759587dcad4eb21663c69648e5",
+      "exitCode": 1,
+      "reason": "Hit-test ran before filling name/address or checking acknowledgment; production intentionally disabled Save Connection."
+    },
+    {
+      "report": "C:/Users/ZhouXuan/AppData/Local/Temp/phase7-terra-c2-b890dba-r3-enabled/report.json",
+      "sha256": "8fa56953ad68424e56eb35bac1204990573591104a2ca0b6c498df1eb99a33fc",
+      "exitCode": 1,
+      "reason": "The temp folder name did not meet the production owned acceptance profile rule (omni-edu prefix); the window appeared and immediately closed without page action."
+    }
+  ]
+}

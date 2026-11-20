@@ -8,8 +8,9 @@ import {workspaceHash} from '../../src/main/xiaozhi-agent/workspace-authority';
 import {createAcquisitionState} from '../../src/main/xiaozhi-agent/capabilities/acquisition/state';
 import {protocolHash} from '../../src/main/xiaozhi-agent/capabilities/validation';
 import type {CapabilityCandidate} from '../../src/shared/xiaozhi-acquisition';
+import {seedCapabilityControls} from './phase7-capability-fixture-seed';
 
-export async function seedWorkbenchFixture(root: string, control: string, token: string) {
+export async function seedWorkbenchFixture(root: string, control: string, token: string, capabilityControls = false) {
   const dataRoot = path.join(root, 'data'), workspace = path.join(root, 'owned-workspace'); fs.mkdirSync(workspace, {recursive: true});
   const source = Buffer.from('Synthetic teaching note. No personal or student information.'); fs.writeFileSync(path.join(workspace, 'source.txt'), source);
   const store = new OmniEduStore(dataRoot); await store.init();
@@ -59,6 +60,7 @@ export async function seedWorkbenchFixture(root: string, control: string, token:
       candidate.id = 'xicandidate_' + protocolHash({source: candidate.source, externalId: candidate.externalId, version: candidate.version}); candidates.push(candidate);
     }
     await acquisition.cache(candidates); ids.candidates = candidates;
+    if (capabilityControls) ids.capabilityControls = await seedCapabilityControls(store);
     for (const version of ['1.0.0', '2.0.0']) await host.skillGovernanceMutate({action: 'create', draft: {name: 'phase7-review-flow', description: '合成教学核对流程', version,
       document: '# 合成核对流程 ' + version + '\n核对教师要求，保留来源，按实际结果检查。', dependencies: [], permissionRequirements: []}});
     await host.skillGovernanceMutate({action: 'team_create', name: '合成教研组'});

@@ -39,13 +39,22 @@
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
   "next": "Continue the b890dba frozen candidate checkpoint, see phase7FrozenB890dba20261121. Complete remaining independent page combinations before formal 32-case ABBA. QG-09 requires clean Windows.",
+  "phase8OfflineInputs20261121": {
+    "status": "VERIFIED_LOCAL_INPUTS_PROVISIONAL_B",
+    "evidence": "evidence/phase8/phase8-offline-candidate-20261121.json",
+    "windowsMigrationEvidence": "evidence/phase8/windows-update-migration-local-20261121.json",
+    "next": "Confirm final B after Gate 7 then dispatch fixed ABBA under the existing budget ledger. Migration has same-host backup, restore and rollback evidence only."
+  },
   "phase7FrozenB890dba20261121": {
     "status": "PARTIAL",
     "sourceCommit": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
     "buildSha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
     "buildFiles": 481,
     "evidence": "evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json",
-    "next": "Complete remaining independent W1-W3, A1-A2 and C1-C2 page states on this exact build. Formal paid ABBA starts after the Gate 7 acceptance decision. QG-09 still requires a clean Windows x64 environment."
+    "workbenchPermissionCapabilityEvidence": "evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json",
+    "authorizationSkillStreamEvidence": "evidence/phase7/implementation-resume-20261119/gate7-authorization-skill-stream-20261121.json",
+    "independentReview": "PARTIAL",
+    "next": "Map applicable status and keyboard evidence by page and size. Finish 1920x1080 in-flight reasoning and output interaction including session switching. Keep remaining A2 and C2 scope explicit. QG-09 requires a clean Windows x64 environment."
   },
   "phase7WindowsDeepPath20261121": {
     "status": "NATIVE_WINDOW_AND_PERSISTENT_TERMINAL_PASS_SCOPED",
