@@ -33,7 +33,7 @@ import type { ArchiveFields } from "../../shared/question-archive";
 import { PDF_LAYOUT_ENGINE } from "../../shared/material-layout";
 import { MATERIAL_PREVIEW_SCHEMA, PDF_PAGE_ENGINE, pageSha, type PageBox } from "../../shared/material-page-preview";
 import { validPdfFilePage } from "../../shared/material-pdf-file";
-import { localizedPdfMarkProof, verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
+import { localizedPdfMarkProof, verifiedQuestionBeforeNativeSection, verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
 import { structureBookScope } from "./material-structure-book-scope";
 import {
@@ -346,7 +346,7 @@ export class MaterialStructureRepository {
     }
     if (!validPdfFilePage(receipt) || receipt.status !== "needs_review" || receipt.error !== "text_conflict") return false;
     if (verifiedQuestionInPdfConflict(receipt.nativeText, question, Number(row.page))) return true;
-    if (!this.host.verifyPdfMarks) return false;
+    if (typeof generation !== "string" || !generation) return false;
     const [stored] = await this.host.all(
       "SELECT body_json,image_json,sha256 FROM material_structure_pages WHERE generation=? AND page=?",
       [generation, first],
@@ -363,6 +363,8 @@ export class MaterialStructureRepository {
         image.page !== first || image.total !== structure.totalPages || image.sha256 !== structure.rasterSha256 ||
         JSON.stringify(image.box) !== "[0,0,1,1]" ||
         image.width !== receipt.width || image.height !== receipt.height) return false;
+    if (!question.pdfSourceSlices && verifiedQuestionBeforeNativeSection(receipt, question, structure)) return true;
+    if (!this.host.verifyPdfMarks) return false;
     const proof = localizedPdfMarkProof(receipt, question, structure);
     if (!proof || !await this.host.verifyPdfMarks(image, proof.marks, proof.slices, signal)) return false;
     return proof.slices;

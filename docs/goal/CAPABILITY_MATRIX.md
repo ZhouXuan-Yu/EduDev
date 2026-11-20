@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 PDF 章节边界生成来源草稿
+
+M03/M05 复用 PDF 页回执、原生坐标和布局标题区，证明冲突页上独立题组的正文范围。M05 继续沿原有题本身份与正式状态发布。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)
+
 ## 2026-11-21 页码行从题干和索引分离
 
 M03 复用现有 PP 页脚、页码区与原 OCR 坐标。M04/M05 沿用段落角色和旧教师题物理来源证明，排除页脚对正文召回及题库归档的污染。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)

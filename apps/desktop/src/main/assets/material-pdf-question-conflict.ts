@@ -22,19 +22,22 @@ function samePrintedTokens(expected:string,actual:string,minLength=1){
 
 /** A conflicted page can still independently prove a fully bounded question.
  * Shared material, open last questions and cross-page spans require review. */
-export function verifiedQuestionInPdfConflict(nativeText:string,question:StructureQuestion,page:number){
+function boundedPrintedQuestion(nativeText:string,question:StructureQuestion,page:number){
  if(question.kind!=='question'||question.pageRange[0]!==page||question.pageRange[1]!==page||
     question.sharedMaterialIds.length||question.subquestions.length||question.answer||question.analysis||
-    question.assets.some(asset=>['inline_formula','display_formula','table'].includes(asset.kind))||question.stem.length>12000)return false;
+    question.assets.some(asset=>['inline_formula','display_formula','table'].includes(asset.kind))||question.stem.length>12000)return;
  const boundaries=[...nativeText.matchAll(parents)];
  const number=(boundary:RegExpMatchArray)=>boundary[1]||boundary[2];
  const owned=boundaries.filter(boundary=>number(boundary)===question.number);
- if(owned.length!==1)return false;
+ if(owned.length!==1)return;
  const first=owned[0],next=boundaries[boundaries.indexOf(first)+1];
- if(!next||Number(number(next))!==Number(question.number)+1)return false;
- const expected=nativeText.slice(first.index+first[0].length,next.index);
- if(!samePrintedTokens(expected,question.stem,12))return false;
- return literalChoicesAgree(question);
+ if(!next||Number(number(next))!==Number(question.number)+1)return;
+ return {body:nativeText.slice(first.index+first[0].length,next.index),nextNumber:number(next)};
+}
+
+export function verifiedQuestionInPdfConflict(nativeText:string,question:StructureQuestion,page:number){
+ const span=boundedPrintedQuestion(nativeText,question,page);
+ return !!span&&samePrintedTokens(span.body,question.stem,12)&&literalChoicesAgree(question);
 }
 
 function literalChoicesAgree(question:StructureQuestion){
@@ -104,6 +107,71 @@ function sourceRows(paragraphs:StructurePage['paragraphs'],page:StructurePage){
   else rows.push(box);
  }
  return rows;
+}
+
+function isPrintedExamHeading(text:string){
+ const heading=/^[一二三四五六七八九十百]+[.、](?:(?:单项|多项|不定项)?选择题|填空题|判断题|解答题|计算题|证明题|实验题)(?:\(([^()]{1,120})\))?$/u
+   .exec(text.normalize('NFKC').replace(/\s/gu,''));
+ if(!heading)return false;
+ const points=/^(?:(?:本大题|本节|本部分|本题组)?共\d{1,4}(?:小)?题|每(?:小?题|空)\d{1,3}分|(?:满分|共|合计)\d{1,4}分)$/u;
+ return !heading[1]||heading[1].split(/[,、;。]/u).every(clause=>points.test(clause));
+}
+
+/** A separately positioned, literal exam heading can end the preceding printed question. */
+export function verifiedQuestionBeforeNativeSection(receipt:PdfFilePage,question:StructureQuestion,page:StructurePage){
+ const recovery=page.nativeRecovery,native=recovery?.native;
+ if(receipt.status!=='needs_review'||receipt.error!=='text_conflict'||receipt.method!=='ocr'||
+    receipt.ocrText!==page.rawText||!recovery||recovery.rasterSha256!==page.rasterSha256||recovery.unresolved.length||
+    !validNativeTextResult(native)||!native.ok||native.version!==page.version||native.page!==page.page||native.total!==page.totalPages||
+    compactGlyphs(native.items.map(item=>item.text).join(''))!==compactGlyphs(receipt.nativeText)||
+    page.issues.length||question.status!=='candidate'||question.issues.length||question.assets.length)return false;
+ const span=boundedPrintedQuestion(receipt.nativeText,question,page.page);
+ if(!span||!literalChoicesAgree(question))return false;
+ const literal=contentLines(span.body),terminal=literal.pop();
+ if(!terminal||!isPrintedExamHeading(terminal)||!samePrintedTokens(literal.join('\n'),question.stem,12))return false;
+
+ const start=page.paragraphs.findIndex(part=>part.id===question.paragraphIds[0]);
+ if(start<0)return false;
+ const parts=page.paragraphs.slice(start,start+question.paragraphIds.length);
+ const [first]=parts,heading=page.paragraphs[start+parts.length],next=page.paragraphs[start+parts.length+1];
+ const column=page.columns[first.column];
+ if(!validPageBox(column)||first.marker?.kind!=='parent'||first.marker.label!==question.number||
+    parts.length!==question.paragraphIds.length||parts.some((part,i)=>part.id!==question.paragraphIds[i]||
+      part.anchor.page!==page.page||part.column!==first.column||part.issues.length||
+      !validPageBox(part.anchor.box)||!(i===0?part.role==='question':['body','option'].includes(part.role)))||
+    !heading||heading.role!=='heading'||heading.anchor.page!==page.page||heading.issues.length||heading.column!==first.column||
+    !samePrintedTokens(terminal,heading.rawText)||!validPageBox(heading.anchor.box)||
+    !next||next.anchor.page!==page.page||next.marker?.kind!=='parent'||next.marker.label!==span.nextNumber||next.column!==first.column||
+    !validPageBox(next.anchor.box))return false;
+ const owned=joinBoxes(parts.map(part=>part.anchor.box)), title=heading.anchor.box;
+ if(owned[3]>=title[1]||title[3]>=next.anchor.box[1]||!page.regions.some(region=>
+    region.score>=.8&&['paragraph_title','doc_title'].includes(region.kind)&&heading.regionIds.includes(region.id)&&
+    overlapX(title,region.box)>=(title[2]-title[0])*.85&&overlapY(title,region.box)>=(title[3]-title[1])*.75))return false;
+
+ const aligned=(box:PageBox,target:PageBox)=>Math.abs(box[0]-target[0])<=.025&&
+   overlapY(box,target)>=Math.min(box[3]-box[1],target[3]-target[1])*.65;
+ const firstNative=native.lines.filter(line=>aligned(line.box,first.anchor.box)&&printedNumber(line.text)===question.number);
+ const titleNative=native.lines.filter(line=>aligned(line.box,title)&&samePrintedTokens(line.text,terminal));
+ const nextNative=native.lines.filter(line=>aligned(line.box,next.anchor.box)&&printedNumber(line.text)===span.nextNumber);
+ if(firstNative.length!==1||titleNative.length!==1||nextNative.length!==1||
+    firstNative[0].box[3]>=titleNative[0].box[1]||titleNative[0].box[3]>=nextNative[0].box[1])return false;
+ const band:PageBox=[column[0],Math.max(0,firstNative[0].box[1]-.002),column[2],titleNative[0].box[1]];
+ const body=native.lines.filter(line=>touches(line.box,band));
+ if(body[0]!==firstNative[0]||body.some(line=>line.box[0]<column[0]||line.box[2]>column[2]||line.box[3]>band[3]))return false;
+ const marker=[...body[0].text.matchAll(parents)][0];
+ const positioned=[body[0].text.slice(marker[0].length),...body.slice(1).map(line=>line.text)].join('\n');
+ if(/[\p{Co}\uFFFD]/u.test(positioned)||!samePrintedTokens(positioned,question.stem,12))return false;
+
+ // Check the physical OCR rows as well as the words. Raised or lowered native items are not flattened.
+ const rawIds=new Set(parts.flatMap(part=>part.lineIds));
+ const raw=page.lines.filter(line=>rawIds.has(line.id));
+ if(raw.length!==rawIds.size||raw.some(line=>line.origin||!validPageBox(line.box)))return false;
+ const rows=sourceRows(parts,page);
+ const itemIds=body.flatMap(line=>line.itemIds), ids=new Set(itemIds);
+ const items=native.items.filter(item=>touches(item.box,band));
+ return !!rows?.length&&ids.size===itemIds.length&&items.length===ids.size&&items.every(({id,box})=>
+   ids.has(id)&&rows.some(row=>box[0]>=row[0]-.012&&box[2]<=row[2]+.012&&
+     box[3]-box[1]>=(row[3]-row[1])*.7&&Math.abs(box[3]-row[3])<=(row[3]-row[1])*.28&&touches(box,row)));
 }
 
 function fitSourceSlices(rows:PageBox[],figures:PageBox[],marks:PageBox[],foreign:PageBox[]){

@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 PDF 章节边界生成来源草稿
+
+章节边界专项要求真实候选 A–D 选项、原图、题本和冷启读回，并隔离正式检索及同页真实冲突。KB-A01～A10 继续验收。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)
+
 ## 2026-11-21 页码行从题干和索引分离
 
 自然页码专项覆盖真实桌面重建、原图读回、题干和正文索引、旧世代及教师题同源保护。KB-A01～A10 继续验收。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)
