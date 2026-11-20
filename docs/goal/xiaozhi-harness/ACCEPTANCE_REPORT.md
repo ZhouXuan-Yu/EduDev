@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-20 任务总览只读快照独立复验
+
+Terra 在代码候选 `a8afd15` 的实际后台 Electron 完成 9/9。双击只启动一轮，原任务两条持久 Run 均成功，审批、终端直接输入和冷启读回通过。本次无需触发刷新。结果归属独立实测的构建，后续合并的课纲定稿另有构建及 SQLite 专项。[证据](evidence/phase7/implementation-resume-20261119/workbench-read-snapshot-20261120.json)
+
 ## 2026-11-20 受管 Skill 修复后的工作台复验
 
 修复版工作台原入口 9/9。续跑新 Run 成功、同任务归属、一次执行、终端保持变量及关闭清理有实际读回。第一次在 U04 显示本地索引未读取，尚未发起该任务，保留失败。两视口 Terra 独立键盘通过和实时推理来自单独标明的先前构建。整套 Gate 7 仍待原生窗口验收。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

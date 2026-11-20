@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "3781b5b1f8f2d6fb6acc15a5d21165609545d4c7",
-  "headRole": "Integrated application source retested for managed skill startup and the Workbench.",
-  "mainObserved": "97d4f2db12620584012cf4fc2f5539c2c374acc9",
+  "head": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
+  "headRole": "Integrated application source for the workbench read optimization. Independent desktop evidence is bound to the pre-merge candidate.",
+  "mainObserved": "2be8605658e3fd626be4f811b5898d6a2e6762e7",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -669,6 +669,14 @@
     "baselineEvidence": "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
     "repairEvidence": "evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json",
     "newPaidCalls": 0
+  },
+  "workbenchReadSnapshot": {
+    "status": "PASS_SCOPED",
+    "independentSource": "a8afd155a4b1e899e43ecff42a03c1de8f146bfc",
+    "integratedSource": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
+    "evidence": "evidence/phase7/implementation-resume-20261119/workbench-read-snapshot-20261120.json",
+    "sqliteReads": "232 to 118 for same 57 synthetic tasks",
+    "independentElectron": "9/9"
   },
   "latestHandoff": {
     "progress": "PROGRESS.md",

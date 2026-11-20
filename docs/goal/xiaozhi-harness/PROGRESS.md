@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 工作台任务总览复用快照
+
+已实现。同一份 57 条合成任务的 SQLite 只读快照中，任务总览查询从 232 次降到 118 次。省去 114 次任务文档点查，最新索引和外部操作记录读取数量一致。历史索引损坏、跨会话指针和教师回执验证专项通过。Terra 在对应构建完成工作台 9/9，两条同任务续跑成功。首次索引读取失败的原因仍未确定，完整 Gate 7 保持部分通过。[证据](evidence/phase7/implementation-resume-20261119/workbench-read-snapshot-20261120.json)
+
 ## 2026-11-20 受管 Skill 修复通过桌面复跑
 
 已实现。并行源码 `3781b5b` 的实际 Electron 工作台复跑 9/9，包括同任务双击只启动一轮、继续核对的 Run 成功、审批、能力搜索、持久终端输入与冷启动。两个新增 Run 的 SQLite 状态均为 `succeeded`。首次 U04 索引读取失败仍保留，本次没有触发刷新。固定矩阵 88/89，物理窗、QG-09、正式 32 条对照及最终独立验收继续按原合同。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
