@@ -1,5 +1,21 @@
 # Harness 执行进度
 
+## 2026-11-20 受管 Skill 修复通过桌面复跑
+
+已实现。并行源码 `3781b5b` 的实际 Electron 工作台复跑 9/9，包括同任务双击只启动一轮、继续核对的 Run 成功、审批、能力搜索、持久终端输入与冷启动。两个新增 Run 的 SQLite 状态均为 `succeeded`。首次 U04 索引读取失败仍保留，本次没有触发刷新。固定矩阵 88/89，物理窗、QG-09、正式 32 条对照及最终独立验收继续按原合同。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 受管 Skill 超时后的第二次修复
+
+合并构建 `09b257d` 再次超时，工作台 U03 未成功。保留此次失败。新候选把相互独立的源包和缓存证明合并到最多四路的批次，并保持原输出顺序。测试先等待新增 Run 的持久终态，随后再查完整页面快照。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 受管 Skill 准备可取消
+
+已实现取消贯通和初始化减载。15 秒上限与权限、原包及派生缓存证明继续生效。启动主动取消、篡改检测和快照事务回滚专项已通过，合并后仍要复验真正同任务续跑及终端。[测试命令与构建指纹](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 Gate 7 同构建复验
+
+主线构建 `37866ce` 的三处部分与空态在两尺寸共 6 个视口场景通过，异常审批冷启动 3/3。Terra 的 1920×1080 混合输入和 1366×768 键盘复试各 3/3，保留 1366 首次夹具启动超时。工作台同任务续跑 U04 实际失败，SQLite 和主日志定位到 `pi_load_managed_skills` 超时，U08 随后无法发送，U09 未执行。后台合成流推理实时增长、输入、滚动和停止 5/5。固定矩阵仍为 88/89。[同构建证据](evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json)
+
 ## 2026-11-20 A/B 失败恢复的六项桌面复验
 
 已实现补充验收。冻结 A 与当前 B 均通过生成中取消 Q4、拒绝 Q7 和隔离端点断连。取消产生了实际 HTTP 连接中止，Q7 分别记录文本草稿拒绝与写入权限拒绝，两个版本均未创建 `practice.txt`。断连时两边各尝试一次，实际 TCP 连接复位，零自动重试。六例均通过关闭、原 SQLite 读回和重启。正式 32 条模型对照、原生窗、独立 Windows 安装和最终验收仍按原门禁。[证据](evidence/phase8/failure-recovery-pairs-20261120.json)

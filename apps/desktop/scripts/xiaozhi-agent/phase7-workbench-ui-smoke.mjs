@@ -12,7 +12,31 @@ async function overview() {const button = page.getByTestId('pi-workbench-open');
 const summary = query => page.evaluate(query => window.omniEdu.getXiaozhiWorkbenchSummary({schemaVersion: 1, ...query}), query);
 function database() {return new DatabaseSync(path.join(fixture.root, 'data', 'app.db'), {readOnly: true});}
 function approvals() {const db = database(); try {return db.prepare("SELECT id,action_type,payload_json FROM ai_confirmation_items").all().map(row => ({id: row.id, action: row.action_type, value: JSON.parse(row.payload_json)}));} finally {db.close();}}
-function runCount(sessionId) {const db = database(); try {return db.prepare('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?').get(sessionId).n;} finally {db.close();}}
+function runs(sessionId) {
+  const db = database();
+  try {return db.prepare('SELECT id,status,error_message FROM ai_agent_runs WHERE session_id=?').all(sessionId);}
+  finally {db.close();}
+}
+async function verifyResumedRun(target, previous) {
+  let run;
+  // The full renderer snapshot reads multiple projections. While Pi is
+  // preparing a Run, wait for its terminal row to keep the runtime unburdened.
+  await until(() => {
+    const created = runs(target.sessionId).filter(item => !previous.has(item.id));
+    if (!created.length) return false;
+    assert.equal(created.length, 1);
+    run = created[0];
+    return run.status !== 'running';
+  }, 90000);
+  report.resumedRuns ??= [];
+  report.resumedRuns.push({taskId: target.task.id, sessionId: target.sessionId, ...run});
+  assert.equal(run.status, 'succeeded', run.error_message || 'The resumed Run must succeed');
+  await until(async () => {
+    const state = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), target.sessionId);
+    return state.running === false && state.task?.id === target.task.id;
+  });
+  assert.equal(runs(target.sessionId).length, previous.size + 1);
+}
 try {
   fixture = await startWorkbenchFixture({background: true}); application = fixture.application; page = fixture.page;
   report.root = fixture.root; report.output = fixture.output; page.on('pageerror', error => report.errors.push(error.message));
@@ -33,20 +57,28 @@ try {
     }
   });
   await check('U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run', async () => {
-    const target = fixture.ids.remaining, before = runCount(target.sessionId);
+    const target = fixture.ids.remaining, before = new Set(runs(target.sessionId).map(run => run.id));
     const row = page.getByTestId('pi-task-overview-row').filter({hasText: '恢复样本 · 尚有剩余步骤'});
     await row.getByTestId('pi-task-overview-resume').click({clickCount: 2});
-    await until(async () => runCount(target.sessionId) === before + 1);
-    await until(async () => {const state = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), target.sessionId); return state.running === false && state.task?.id === target.task.id;}, 90000);
-    assert.equal(runCount(target.sessionId), before + 1);
+    await verifyResumedRun(target, before);
     assert.equal(await page.locator('.office-composer-container').getAttribute('data-session-id'), target.sessionId);
   });
   await check('U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop', async () => {
     if (!await page.getByTestId('pi-workbench').isVisible()) await overview(); await page.getByTestId('pi-workbench-tasks').click();
-    const target = fixture.ids.continuation, before = runCount(target.sessionId), row = page.getByTestId('pi-task-overview-row').filter({hasText: '核对样本 · 同任务继续'});
-    await row.getByTestId('pi-task-overview-continue').click(); await until(async () => runCount(target.sessionId) === before + 1);
-    await until(async () => {const state = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), target.sessionId); return state.running === false && state.task?.id === target.task.id;}, 90000);
-    assert.equal(runCount(target.sessionId), before + 1);
+    const target = fixture.ids.continuation, before = new Set(runs(target.sessionId).map(run => run.id));
+    const row = page.getByTestId('pi-task-overview-row').filter({hasText: '核对样本 · 同任务继续'});
+    const continueTask = row.getByTestId('pi-task-overview-continue');
+    const unreadIndex = page.getByTestId('pi-workbench').getByRole('alert')
+      .filter({hasText: '本地索引未读取，请重试。'});
+    await continueTask.or(unreadIndex).first().waitFor();
+    if (await unreadIndex.isVisible()) {
+      report.continuationIndexRefresh = {reason: await unreadIndex.innerText()};
+      await page.getByTestId('pi-task-overview-refresh').click();
+      await continueTask.waitFor();
+      report.continuationIndexRefresh.recovered = true;
+    }
+    await continueTask.click();
+    await verifyResumedRun(target, before);
   });
   await check('U05_inbox_modern_rejection_uses_original_permission_CAS', async () => {
     if (!await page.getByTestId('pi-workbench').isVisible()) await overview(); await page.getByTestId('pi-workbench-approvals').click();

@@ -32,8 +32,8 @@ PDFium 页图与 RapidOCR 结果进入 PP-DocLayoutV3 分块及页级定稿任�
 - `npm run test:renderer-components` 通过 253/253。
 - `node --experimental-transform-types scripts/education/kb-page-omission-readback.mjs <已有试导库数据根>` 核验 10/10 份已保存回执。历史试导库未修改。
 - `npm audit --omit=dev --audit-level=high --json` 报告 23 项依赖通告，其中 8 项 high。本轮无依赖变更。
-- `npm run build -- --outDir test-results/build-kb-outline-final` 通过。
-- Electron 全量冒烟首轮在首次建窗超时，Windows 清理临时目录时提示占用。隔离复跑已进入题本路径，完整结果待记录。
+- `npm run build -- --outDir test-results/build-kb-outline-final` 通过。 合并协作者 `1c85784` 后，`npm run build -- --outDir test-results/build-kb-outline-integrated` 通过。
+- Electron 全量冒烟首轮在首次建窗超时，Windows 清理临时目录时提示占用。以 `97d4f2d` 为基线、包含本轮修复的最终构建，设置 `OMNI_EDU_TEST_BUILD_ROOT=test-results/build-kb-outline-final` 后执行 `node scripts/electron-smoke.mjs`，隔离复跑 207/207。
 
 ## 未完成与回滚
 

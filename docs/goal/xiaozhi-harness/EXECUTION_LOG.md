@@ -1,5 +1,21 @@
 # 执行日志
 
+## 2026-11-20 受管 Skill 修复交付
+
+当前合入 PDF 精确来源修复后的构建及 TypeScript 通过，工作台 9/9。独立 Skill I/O 17/17、权限 22/22、阶段状态 21/21、隐私竞态 8/8。七份固定合成文件包的同读法样本，串行为 117.9／118.9 ms，批次为 32.9／44.4 ms，指纹与输出次序一致。样本范围为文件证明。当前无数据库迁移或新依赖，普通 Git revert 可回退两次修复。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 受管 Skill 批次验证
+
+同一 15 秒上限和完整权限、包内容、链接、脱敏证明继续生效。每批最多四个文件包证明，失败或取消时先等已发起的读操作退出。合并构建 `09b257d` 的失败对应七项已选 Skill 和实际 SQLite 失败 Run，仍无旧 Q5 同因结论。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 受管 Skill 超时修复
+
+生命周期信号传给加载、治理检查、注册快照和原生命令校验。移除一次重复派生缓存全扫，每包启动扫描 4 次降到 3 次。源文件重读和权限检查次数维持原值。完整构建与组件 253/253，Skill 专项 13/13、权限 22/22、阶段状态 21/21 和隐私竞态 8/8。普通 Git revert 可回退，无数据库迁移。[测试命令与构建指纹](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
+## 2026-11-20 Gate 7 构建与续跑超时定点
+
+对 `37866ce` 完整构建并运行原 Electron 工作台、部分与空态、异常审批冷启、Terra 两视口和合成流。U04 原断言只等到任务停下来，持久新 Run 实际为 `failed`。主进程同 Run 记录 `pi_load_managed_skills` 等待 15,169 ms 后报告超时。与此前 Q5 的关系仍未确定。浏览器后台单样本可证明推理可见增长。当前 Windows 11 家庭版缺少可用 Sandbox 或干净来宾，QG-09 继续阻塞。[指纹、命令和逐项读回](evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json)
+
 ## 2026-11-20 验证取消、拒绝和连接中断
 
 新增单独的 Phase 8 桌面补充验收入口，复用固定任务输入、真实运行归属和 SQLite 读回。前两次试跑保留计划校验失败与会话选取时序。两版的回环探针在 Chromium 离线模拟下仍返回 HTTP 200，最后使用真实 TCP 关闭，并以在线、故障、恢复三个阶段观察。专项 6/6，原采集协议 17/17，新增付费 0。只有验收代码和证据变更，可普通 Git revert。[命令及原始报告](evidence/phase8/failure-recovery-pairs-20261120.json)

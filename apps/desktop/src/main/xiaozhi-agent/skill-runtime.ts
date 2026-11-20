@@ -43,9 +43,9 @@ export async function createEducationSkillRuntime(agentDir: string, sessionFile:
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
     signal?.throwIfAborted();
   }
-  function validateCommand(text: string) {
+  function validateCommand(text: string, signal?: AbortSignal) {
     if (text.startsWith('/skill:') && !result.skills.some(item => item.name === text.slice(7).split(' ')[0])) throw new Error('invalid_input');
-    check();
+    check(signal);
   }
   // Pi expands queued /skill commands before message_start. Match that pinned
   // native public message to the original offered instruction, without replacing

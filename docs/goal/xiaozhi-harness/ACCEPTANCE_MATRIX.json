@@ -1883,7 +1883,8 @@
       "status": "BLOCKED",
       "evidence": [
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
-        "evidence/phase8/current-quality-checkpoint-20261119.md"
+        "evidence/phase8/current-quality-checkpoint-20261119.md",
+        "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json"
       ],
       "history": [
         {

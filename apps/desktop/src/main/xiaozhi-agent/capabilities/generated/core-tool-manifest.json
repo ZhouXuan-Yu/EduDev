@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "65892801893b624a10f2127d000e9d63dfea0efaf25b883c71e89b1c32db9bc8",
+  "sourceHash": "31206dbf240e826647a19bd801110cd9524bceb5c68b3acd0c7bf928ce621ae5",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1072,11 +1072,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skill-runtime.ts",
-      "sha256": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00"
+      "sha256": "3c00c4ea4ca10a6c5de21e8625657b645da5b9f829b11e12b4089c14dac2d84e"
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skills.ts",
-      "sha256": "85e38023aaad231c1f9082cad7cae7ab81c4c22b20b4b1b786162c6c98d388aa"
+      "sha256": "f3640e310a91c62cb8ca5b9e434aa2914f99f01a5825a54f267ad75f1243ec26"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
@@ -1340,7 +1340,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "954ec19f678964633b55e7db388a46a09de49bf4eb54dc9242e7830805200011"
+      "sha256": "d6c25e955192c21a60733c2656e9cc65f24e51259df8fe2d8c350095fb2cf073"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1447,8 +1447,12 @@
       "sha256": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5"
     },
     {
+      "file": "src/main/xiaozhi-agent/skill-package-batch.ts",
+      "sha256": "83f194c1e25a18db8d87406fd1aa83727ae0bb3e51576185c1e5b291fa811ee8"
+    },
+    {
       "file": "src/main/xiaozhi-agent/skill-runtime.ts",
-      "sha256": "0650de9bdc46c0f6a5d59277ae632f01291ffb56dc46afc59226095c47f15612"
+      "sha256": "543387d8cd0216862f8362551fb47f855dc991de45f6b212155ff26e38269c8a"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/catalog.ts",
@@ -1476,11 +1480,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/skills/runtime.ts",
-      "sha256": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833"
+      "sha256": "be5a4a8d3855864a463d6977019ed42ec182d56ad79e083ca27f950fbdc80d01"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/service.ts",
-      "sha256": "520c14c17afad7aed4b3bab8b179bad130ac915e724f5833b85d818930cdcb98"
+      "sha256": "36730ee4193e8a33f296566981f7fb981da1f89f057cdd69ada5ffed83ef3d55"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/state.ts",
