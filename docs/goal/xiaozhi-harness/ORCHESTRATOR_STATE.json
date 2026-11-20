@@ -5,7 +5,7 @@
   "base": "d50ef330",
   "head": "8eb3f261d40db3adeed578e084c8300a64483b97",
   "headRole": "Source parent for the 2026-11-20 combined approval save candidate. Resolve remote refs for the evidence commit.",
-  "mainObserved": "8eb3f261d40db3adeed578e084c8300a64483b97",
+  "mainObserved": "38e5a70930edc13cae41ab1915036f98d730a70d",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",

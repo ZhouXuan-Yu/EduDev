@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 重建后切换结构题版本
+
+已验证旧 v7 归档迁移、新版题上线、旧草稿只读、失败重试和重复重建 ID 稳定。见 [本轮验收](../research/evidence/kb/20261120/structure-bank-handoff/README.md)。
+
 ## 2026-11-20 印刷题号与填空恢复
 
 三种真实试卷摘页继续通过默认导入验收。结构域验收分别检查原行覆盖、题干选项归属、题图、印刷留空与待核门禁。见 [证据](../research/evidence/kb/20261120/printed-structure/README.md)。

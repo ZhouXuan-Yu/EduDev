@@ -1,0 +1,33 @@
+{
+  "buildMainSha256": "c1754d170300f2e170ac6b9512d6d62ad735c440556b4c07cd4d3fd0579f4008",
+  "frozenBuild": true,
+  "realOldLibrary": {
+    "sample": "五三物理主书",
+    "question": 12,
+    "defaultOldDraftsBefore": 2,
+    "currentDraftsAfter": 1,
+    "derivedBlanksAfter": 2,
+    "readOnlyHistoricalDraftsAfter": 2,
+    "identicalRebuildKeptQuestionId": true,
+    "preservedAnswerReceipts": 1,
+    "coldRestartPassed": true
+  },
+  "testsPassed": {
+    "structureReview": 18,
+    "documentStructureRepository": 39,
+    "keywordAndVectorOrigins": 19,
+    "structureAnswerBook": 8,
+    "rendererComponents": 253,
+    "finalElectronLibrary": 3,
+    "generalElectronBeforeIndependentReviewFixes": 207
+  },
+  "firstGeneralElectronFailure": "mastery_quiz checkpoint submission; isolated retry passed 207",
+  "sqliteVisibilityP95Ms": {
+    "ids": 200,
+    "iterations": 300,
+    "originalPredicate": 0.4522,
+    "withStructureVisibility": 0.4845
+  },
+  "externalModelCalls": 0,
+  "npmAudit": { "existingAdvisories": 23, "high": 8, "dependencyChanges": false }
+}

@@ -295,6 +295,7 @@ export type QuestionNotebookCategory = {
 };
 
 export type QuestionNotebookEntry = QuestionBankItem & {
+  historicalStructure?: true;
   bookmarked: boolean;
   version: number;
   categories: QuestionNotebookCategory[];

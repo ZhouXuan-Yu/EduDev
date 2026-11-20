@@ -51,7 +51,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:question-status',event=>{check(event);return store.materialQuestions.status();});
  ipcMain.handle('materials:question-retry',event=>{check(event);return store.materialQuestions.retry();});
  ipcMain.handle('materials:question-edit',(event,input)=>{check(event);if(!validArchiveEdit(input))throw new Error('invalid_input');return store.materialQuestions.edit(structuredClone(input));});
- ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q||!q.archive&&!plainTeacherQuestion(q))throw new Error('invalid_input');return {question:q,version:questionVersion(q)};});
+ ipcMain.handle('materials:question-version',async(event,id)=>{check(event);if(typeof id!=='string'||!/^question_[a-f0-9-]{36}$/i.test(id))throw new Error('invalid_input');const q=await store.getQuestionNotebookEntry(id);if(!q||!q.archive&&!plainTeacherQuestion(q))throw new Error('invalid_input');if(q.historicalStructure)throw Error('structure_draft_superseded');return {question:q,version:questionVersion(q)};});
  ipcMain.handle('materials:search',async(event,input):Promise<MaterialTextPage>=>{
   check(event);if(!validMaterialTextQuery(input))throw new Error('invalid_input');
   const hybrid=input.mode==='keyword'?undefined:await store.retrieval.materials(input.query,undefined,200,input.offset);

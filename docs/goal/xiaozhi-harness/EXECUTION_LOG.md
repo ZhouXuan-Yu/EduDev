@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 合入题库结构版本交接
+
+将 `38e5a70` 与本轮审批修复合并，四份协作文档的并行章节同时保留。使用 `npm.cmd run build -- --outDir test-results/harness-approval-kb-main-38e5a70-20261120/out` 完成构建及类型检查。用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs` 执行结构题事务专项，结果 18/18。日志在同一测试目录的 `build.log` 和 `structure-review.log`。
+
 ## 2026-11-20 保存审批时的焦点修复
 
 基于远端 `8eb3f26`，只调整审批卡与收件箱的焦点及对应的界面忙碌状态。数据库、依赖和 IPC 决定沿用原流程。组合构建重生成核心工具清单，629 项输入与构建前源文件摘要一致。npm audit 29 项，低 8、中 13、高 8、严重 0，锁文件无变化。延迟探针在两版使用同一固定延迟，未采集实际模型时延。可用普通 Git revert 撤回。[命令与证据](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)

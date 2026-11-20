@@ -7,12 +7,14 @@ import {answerRuleCandidateHidden,migrateMaterialBookPairs} from './material-boo
 import {ensureRuleDuplicates,ruleDuplicateHidden} from './material-rule-duplicates';
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
 import {migrateWordPageSources,wordPageRuleCandidateHidden} from './material-word-page-source';
+import {migrateStructureBank,structureDraftHidden} from './material-structure-bank';
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
 const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every((s,i)=>validMaterialSource(s)&&s.resourceId===origin.sources[0].resourceId&&s.version===origin.sources[0].version&&(!origin.risks.includes('cross_chunk')||!i||s.offset===origin.sources[i-1].offset+1))&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>!['visual_unchecked','cross_chunk'].includes(r));
 const key=(origin:RuleOrigin)=>createHash('sha256').update(JSON.stringify(['source-question.v1',origin.sources.map(s=>[s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion]),origin.number,normalizeMaterialStem(origin.stem)])).digest('hex');
 export async function migrateQuestionOrigins(host:OriginHost){
+ await migrateStructureBank(host);
  await migrateWordPageSources(host);
  await migrateMaterialBookPairs(host);
  await host.run('CREATE TABLE IF NOT EXISTS material_question_origin_dirty_v1(question_id TEXT PRIMARY KEY,revision INTEGER NOT NULL DEFAULT 1)');
@@ -72,7 +74,7 @@ export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:R
  if(!coverage.length||coverage.length>64||coverage.some(s=>!validMaterialSource(s)||s.resourceId!==a.sources[0]?.resourceId||s.version!==a.sources[0]?.version)||a.sources.some(s=>!coverage.some(t=>same(s,t)))||origin.sources.some(s=>!coverage.some(t=>same(s,t))))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'ai',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
-export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0) OR ${ruleDuplicateHidden} OR ${wordPageRuleCandidateHidden})`;
+export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0) OR ${ruleDuplicateHidden} OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`;
 export async function visibleQuestionIds(host:Pick<OriginHost,'all'>,ids:string[]){
  if(!ids.length)return new Set<string>();if(ids.length>200)throw Error('too_many_questions');
  return new Set((await host.all(`SELECT q.id FROM question_bank_items q WHERE q.id IN (${ids.map(()=>'?').join(',')}) AND NOT ${sourceCandidateHidden}`,ids)).map(r=>String(r.id)));
