@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-20 受管 Skill 修复后的工作台复验
+
+修复版工作台原入口 9/9。续跑新 Run 成功、同任务归属、一次执行、终端保持变量及关闭清理有实际读回。第一次在 U04 显示本地索引未读取，尚未发起该任务，保留失败。两视口 Terra 独立键盘通过和实时推理来自单独标明的先前构建。整套 Gate 7 仍待原生窗口验收。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
 ## 2026-11-20 受管 Skill 修复专项
 
 Sol 实测新取消用例旧版失败，修复后验证取消时不生成缓存、被修改的派生缓存仍被拒绝、SQLite 快照事务取消后回滚。该证据确认取消与完整性，正式时延对照继续按原合同。[测试命令与构建指纹](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

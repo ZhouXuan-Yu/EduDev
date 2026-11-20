@@ -67,7 +67,17 @@ try {
     if (!await page.getByTestId('pi-workbench').isVisible()) await overview(); await page.getByTestId('pi-workbench-tasks').click();
     const target = fixture.ids.continuation, before = new Set(runs(target.sessionId).map(run => run.id));
     const row = page.getByTestId('pi-task-overview-row').filter({hasText: '核对样本 · 同任务继续'});
-    await row.getByTestId('pi-task-overview-continue').click();
+    const continueTask = row.getByTestId('pi-task-overview-continue');
+    const unreadIndex = page.getByTestId('pi-workbench').getByRole('alert')
+      .filter({hasText: '本地索引未读取，请重试。'});
+    await continueTask.or(unreadIndex).first().waitFor();
+    if (await unreadIndex.isVisible()) {
+      report.continuationIndexRefresh = {reason: await unreadIndex.innerText()};
+      await page.getByTestId('pi-task-overview-refresh').click();
+      await continueTask.waitFor();
+      report.continuationIndexRefresh.recovered = true;
+    }
+    await continueTask.click();
     await verifyResumedRun(target, before);
   });
   await check('U05_inbox_modern_rejection_uses_original_permission_CAS', async () => {

@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 受管 Skill 修复交付
+
+当前合入 PDF 精确来源修复后的构建及 TypeScript 通过，工作台 9/9。独立 Skill I/O 17/17、权限 22/22、阶段状态 21/21、隐私竞态 8/8。七份固定合成文件包的同读法样本，串行为 117.9／118.9 ms，批次为 32.9／44.4 ms，指纹与输出次序一致。样本范围为文件证明。当前无数据库迁移或新依赖，普通 Git revert 可回退两次修复。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
 ## 2026-11-20 受管 Skill 批次验证
 
 同一 15 秒上限和完整权限、包内容、链接、脱敏证明继续生效。每批最多四个文件包证明，失败或取消时先等已发起的读操作退出。合并构建 `09b257d` 的失败对应七项已选 Skill 和实际 SQLite 失败 Run，仍无旧 Q5 同因结论。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

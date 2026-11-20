@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 受管 Skill 修复通过桌面复跑
+
+已实现。并行源码 `3781b5b` 的实际 Electron 工作台复跑 9/9，包括同任务双击只启动一轮、继续核对的 Run 成功、审批、能力搜索、持久终端输入与冷启动。两个新增 Run 的 SQLite 状态均为 `succeeded`。首次 U04 索引读取失败仍保留，本次没有触发刷新。固定矩阵 88/89，物理窗、QG-09、正式 32 条对照及最终独立验收继续按原合同。[复验证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
 ## 2026-11-20 受管 Skill 超时后的第二次修复
 
 合并构建 `09b257d` 再次超时，工作台 U03 未成功。保留此次失败。新候选把相互独立的源包和缓存证明合并到最多四路的批次，并保持原输出顺序。测试先等待新增 Run 的持久终态，随后再查完整页面快照。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

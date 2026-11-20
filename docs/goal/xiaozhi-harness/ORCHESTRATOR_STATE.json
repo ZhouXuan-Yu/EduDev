@@ -3,8 +3,8 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "37866ce722c7815680b4e204b937e90ad7540a26",
-  "headRole": "Source of the Gate7 background baseline. The managed skill repair is tracked separately with its own validation.",
+  "head": "3781b5b1f8f2d6fb6acc15a5d21165609545d4c7",
+  "headRole": "Integrated application source retested for managed skill startup and the Workbench.",
   "mainObserved": "97d4f2db12620584012cf4fc2f5539c2c374acc9",
   "phase": 7,
   "phase0": "ACCEPTED",
@@ -29,7 +29,7 @@
     "Phase7 full Gate7 remains partial. Consolidated renderer evidence and independent Skill/MCP paths have scoped results. Native mouse drag and maximize/restore remain untested following the stopped interaction.",
     "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall. Current Windows 11 Home host has no Sandbox or available clean guest.",
     "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build.",
-    "Gate7 background Run on 37866ce reached lifecycle_timeout in pi_load_managed_skills. The next module verifies startup cancellation and requires new same-task Run success. Older Q5 failures are not attributed to this run."
+    "Managed skill startup and the two original same-task Runs passed on 3781b5b. Preserve the prior timed-out Runs and the first candidate local-index read failure. Older Q5 causality remains unknown."
   ],
   "paidRequestLimit": 200,
   "paidRequestCount": 3,
@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Retest same-task completion and the teacher terminal on the managed skill startup repair after integrating main. Keep the physical Gate7 and clean Windows QG-09 open until their environments are available. Freeze the final candidate before formal ABBA and independent grading.",
+  "next": "Complete the physical Gate7 and clean Windows QG-09 when their environments are available. Freeze the final candidate, run the formal 32-case ABBA, and obtain final independent acceptance.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",
@@ -663,7 +663,9 @@
     "paidCalls": 0
   },
   "managedSkillStartupRetest": {
-    "status": "BUILT_SOURCE_CHECKS_PASS",
+    "status": "PASS_SCOPED",
+    "testedSource": "3781b5b1f8f2d6fb6acc15a5d21165609545d4c7",
+    "workbench": "9/9",
     "baselineEvidence": "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
     "repairEvidence": "evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json",
     "newPaidCalls": 0

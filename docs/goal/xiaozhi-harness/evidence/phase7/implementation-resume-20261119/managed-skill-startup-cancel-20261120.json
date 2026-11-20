@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
   "baseSourceCommit": "37866ce722c7815680b4e204b937e90ad7540a26",
-  "status": "CANCELLATION_PROVEN_LATENCY_STILL_FAILS",
+  "status": "RUNTIME_REPAIR_PASS_SCOPED",
   "observedFailure": "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
   "updatedPaths": [
     "apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
@@ -131,7 +131,7 @@
     "buildLogSha256": "6f8e9a55ffa0aa1fa67615310e3a9c66925b2c30de02d36245709116f56757e2"
   },
   "batchedVerification": {
-    "status": "SOURCE_CHECKS_PASS",
+    "status": "PASS_SCOPED",
     "sourceBase": "09b257daf58b725f4f25df18c2ebfefc3b0842f4",
     "maxConcurrentPackageProofs": 4,
     "orderPreserved": true,
@@ -168,6 +168,156 @@
         "sha256": "ce4c4fe850916ba4072b2a94ec97d899fcdf419961ee46a2f2328b72f01a1e79"
       }
     ],
-    "backgroundElectron": "PENDING"
+    "backgroundElectron": {
+      "status": "PASS_SCOPED",
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "testScriptSha256": "588c49670788d87f60e5456b0793f08bcc1e36f76a5c7fcc9bcddac732c5bf8e",
+      "buildRoot": "apps/desktop/test-results/harness-managed-skill-batches-20261120/out",
+      "testExitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-Y0wFRO/evidence/ui-report.json",
+      "reportSha256": "05c1d72ab40b0a40047b47b98ee53c8d44bc8961c4d04ef03441bf010c283ff6",
+      "closedReport": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-Y0wFRO/STOPPED.json",
+      "closedReportSha256": "cadbf02d013050f7dc3ab9662aa2cd27af673d0e9447f960f5551e2a6a2ffbd8",
+      "checks": [
+        {
+          "name": "U01_visible_cross_session_overview_matches_original_completed_facts",
+          "pass": true,
+          "durationMs": 2396.065599999998
+        },
+        {
+          "name": "U02_both_actual_sizes_keep_global_actions_pointer_reachable",
+          "pass": true,
+          "durationMs": 9246.991299999998
+        },
+        {
+          "name": "U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run",
+          "pass": true,
+          "durationMs": 1961.611499999999
+        },
+        {
+          "name": "U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop",
+          "pass": true,
+          "durationMs": 5030.618499999997
+        },
+        {
+          "name": "U05_inbox_modern_rejection_uses_original_permission_CAS",
+          "pass": true,
+          "durationMs": 9313.743799999997
+        },
+        {
+          "name": "U06_legacy_uncertain_verifies_existing_owned_copy_without_replay",
+          "pass": true,
+          "durationMs": 3852.4573999999993
+        },
+        {
+          "name": "U07_capability_center_true_metadata_search_and_original_management_navigation",
+          "pass": true,
+          "durationMs": 9174.4375
+        },
+        {
+          "name": "U08_original_idle_terminal_remains_controllable_with_global_navigation",
+          "pass": true,
+          "durationMs": 27490.584299999995
+        },
+        {
+          "name": "U09_cold_original_summary_and_inbox_decision_readback",
+          "pass": true,
+          "durationMs": 3199.055500000002
+        }
+      ],
+      "resumedRuns": [
+        {
+          "taskId": "xitask_82068a90908bc7f29ab644a7d75fe42a739ebe676b33d491b0648930a88227e7",
+          "sessionId": "aisession_d771d639-3d99-48b4-bccb-a3ead11568c0",
+          "id": "run_d1a14c36-7cd4-44aa-b1d3-0d03606d19fa",
+          "status": "succeeded",
+          "error_message": ""
+        },
+        {
+          "taskId": "xitask_b0ea78e46460b3d67f6306bf46adbe36acae40eb36909e25264d8931415f036c",
+          "sessionId": "aisession_0372b711-e5db-48aa-bd3a-73a2c8734d07",
+          "id": "run_92820086-7387-43a7-9ad2-d056dd48c28f",
+          "status": "succeeded",
+          "error_message": ""
+        }
+      ],
+      "rendererErrors": [],
+      "fixtureRequestsIncludingSeed": 11,
+      "coldModelRequests": 0,
+      "lifecycleTimeoutObserved": false,
+      "localIndexRefreshUsed": false,
+      "terminal": "Actual teacher PowerShell PTY accepted an input, preserved the process variable and exited with cleanup complete.",
+      "paidCalls": 0,
+      "boundary": "One original production Electron suite using an isolated synthetic model. The first local-index read failure remains separate. This does not grade foreground latency, widespread reliability or model output quality."
+    },
+    "packageIoSample": {
+      "source": "same seven synthetic packages selected in the preserved failing run",
+      "scope": "Filesystem content/links only, during host build. Samples do not measure full startup or foreground responsiveness.",
+      "results": [
+        {
+          "mode": "serial",
+          "ms": 117.9
+        },
+        {
+          "mode": "batched",
+          "ms": 32.9
+        },
+        {
+          "mode": "batched",
+          "ms": 44.4
+        },
+        {
+          "mode": "serial",
+          "ms": 118.9
+        }
+      ],
+      "equalOrderedProofs": true,
+      "path": "apps/desktop/test-results/harness-managed-skill-batches-20261120/skill-package-io-sample.json",
+      "sha256": "e29c2d6a0709b6c8d08e1c1ab1175b074f5b5dbca88393248e64a0d670adf5e6"
+    },
+    "build": {
+      "sourceCommit": "3781b5b1f8f2d6fb6acc15a5d21165609545d4c7",
+      "command": "npm.cmd run build -- --outDir test-results/harness-managed-skill-batches-20261120/out",
+      "exitCode": 0,
+      "outputFileCount": 481,
+      "outputSha256": "6f4900a5e84cbceea6634a6dcd0b7bb5329533b7c4751a3b289ee85023f82143",
+      "mainSha256": "1a7801d09a996ed27de4301466faeaf9e0358fd294ce5cd86d3d632727cfaf83",
+      "rendererEntrySha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+      "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+      "buildLogSha256": "051c9e0fea76776c209f67ff01811cceb7795d0bf898e28db67f0709fbe008da"
+    },
+    "backgroundElectronFirst": {
+      "status": "FAIL",
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-oQJXXN/evidence/ui-report.json",
+      "reportSha256": "9e3070001efcc535598548bbf4cb03714bdad71fab91c1694eae5a91cfe6ea0e",
+      "checksPassed": [
+        "U01",
+        "U02",
+        "U03"
+      ],
+      "failed": [
+        "U04"
+      ],
+      "notRun": [
+        "U05",
+        "U06",
+        "U07",
+        "U08",
+        "U09"
+      ],
+      "successfulResumedRuns": [
+        {
+          "taskId": "xitask_39d3851efcda65297b51eaf55c275be204e57cdae2eb0af43e24c76d5c5a6821",
+          "sessionId": "aisession_52e03b33-dd30-4a91-8bdd-a8e5d9a5a61c",
+          "id": "run_940a0815-2012-44ce-b646-66d74240ae2d",
+          "status": "succeeded",
+          "error_message": ""
+        }
+      ],
+      "u04Reason": "Workbench reported 本地索引未读取，请重试。 before the continuation button was available. No new U04 Run started.",
+      "screenshot": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-oQJXXN/evidence/failure.png",
+      "screenshotSha256": "ef2bda0cdebf2c9028a0d072f3023a52386eb9e4ecaed410bdb6a83fe59a014d",
+      "paidCalls": 0
+    }
   }
 }
