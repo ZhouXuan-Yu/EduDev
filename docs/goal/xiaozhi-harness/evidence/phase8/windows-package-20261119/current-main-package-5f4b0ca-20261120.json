@@ -48,6 +48,33 @@
     "reportSha256": "07b52f9d61f65d6493f18cf8dc4d615e95eb7e555c5cdf209f2085e617f33411"
   },
   "nsis": {
+    "status": "ARCHIVE_VERIFIED",
+    "builderSession": 90292,
+    "builderExit": 0,
+    "readbackSession": 21353,
+    "readbackExit": 0,
+    "archive": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec/release/Xiaozhi-Setup-0.1.0-x64.exe",
+    "archiveBytes": 877406551,
+    "archiveSha256": "3dc4d9f8bf8da081cae2ff9e6d4b395748f634a1536865de5701c16b31128124",
+    "blockMapSha256": "8360bd8a7f1c0c0074d723dbf0a05e259e8df0cb201a6d96a565c0778816cd61",
+    "builderLogSha256": "4bf844ed26e5eed8a1457d4d492be7fbf1347135800ac9f8696a9aa94a354dba",
+    "signatureStatus": "NotSigned",
+    "published": false,
+    "readbackReport": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec/archive-readback/report.json",
+    "readbackReportSha256": "1c172519bc9555c148b336eb045875832deb4b2efbbb5792a9e84c9a30ad5a53",
+    "readbackScriptSha256": "0bd2e3ee202f8a6f1b6b1c8db33ad726d3f9538a5d078d4c49b10b261f022768",
+    "applicationFiles": 481,
+    "applicationFingerprint": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+    "mainSha256": "ff7d8d32dadcf75e759e571b74433ebb1f908362f1d1540c935b1e20359826ed",
+    "matchedAllPathsAndFileHashes": true,
+    "archiveStable": true,
+    "extractionLogSha256": "e7c362dfed07c5717aa37a4efb4e67b500e7bf0e56e00cfd5669813abbec73f6",
+    "extractWarning": "7za reported data after the end of the embedded archive; extraction exited 0."
+  },
+  "installationAcceptance": "NOT_RUN",
+  "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST",
+  "realModelRequestsAdded": 0,
+  "nsisCheckpoint": {
     "status": "COMPRESSING_AT_CHECKPOINT",
     "builderSession": 90292,
     "readbackSession": 21353,
@@ -56,8 +83,5 @@
     "archiveBytes": 569800795,
     "terminalMarker": "apps/desktop/test-results/harness-release-main-5f4b0ca-ca5174ec/electron-builder.exit",
     "resume": "Observe the same builder and archive verification sessions. Preserve any nonzero exit. Verify archive and embedded out after a terminal exit 0."
-  },
-  "installationAcceptance": "NOT_RUN",
-  "qg09": "BLOCKED_NO_CLEAN_INTERACTIVE_WINDOWS_GUEST",
-  "realModelRequestsAdded": 0
+  }
 }

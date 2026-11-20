@@ -809,12 +809,15 @@
     "approvalFinalMainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e"
   },
   "currentReleaseFrozen20261120": {
-    "status": "PACKAGED_TREE_VERIFIED_NSIS_COMPRESSING",
+    "status": "NSIS_ARCHIVE_VERIFIED_QG09_OPEN",
     "processEvidence": "evidence/phase8/windows-package-20261119/current-main-package-5f4b0ca-20261120.json",
     "pageEvidence": "evidence/phase7/implementation-resume-20261119/workbench-late-stream-frozen-20261120.json",
     "buildSha256": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
     "packagingSession": 90292,
     "archiveReadbackSession": 21353,
+    "packagingExitCode": 0,
+    "archiveReadbackExitCode": 0,
+    "installerSha256": "3dc4d9f8bf8da081cae2ff9e6d4b395748f634a1536865de5701c16b31128124",
     "newPaidCalls": 0
   }
 }
