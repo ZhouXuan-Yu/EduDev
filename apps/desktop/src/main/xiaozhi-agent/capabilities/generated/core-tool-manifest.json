@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "25c066796ec74f5de72bc8a7bcfb54cb273ab1047f326a2797bde1e502e5b5df",
+  "sourceHash": "8631c04fc0db27a7ee468ed2da380cede6411a31a2c560f560606eefe41081f9",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "e2c1e114a4696624945ecac9b272198d1e6cb157992c97c64f0e1a165220b420"
+      "sha256": "b87978a4ac96cfdfbd66c8b73e8fd7c16b805e711a57b3522ff0dc97a7708939"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1332,7 +1332,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "6ca32bc1f264969e1bd70c1141d607b49197b12f7bac1e695134692ab00ad75d"
+      "sha256": "27ed51a5158e746eb786422b1d9a0acb06cd688567be8fe5e7332f58e8686918"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
@@ -1348,11 +1348,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/runtime-health.ts",
-      "sha256": "ffd1dc44857e3a9fdfaa5eb1818f99b2c076b1d5bb1b34be5b9b793db53982dc"
+      "sha256": "97aa0b668d6773ef53430e97187caa45ee69edbf491cb9ae3fb8b079863b30bf"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/runtime.ts",
-      "sha256": "3cecce28703eb4f89c5f13ec0d6f5367d8f626bfff90c6d88ccf6d1171fad553"
+      "sha256": "46f2eb3d71f8c971119392f788b353cbc4b3fdb54307e772125289372e7a2357"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/temporary.ts",

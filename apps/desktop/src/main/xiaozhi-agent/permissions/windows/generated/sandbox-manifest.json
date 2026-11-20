@@ -100,11 +100,11 @@
     },
     {
       "file": "windows/runtime.ts",
-      "sha256": "3cecce28703eb4f89c5f13ec0d6f5367d8f626bfff90c6d88ccf6d1171fad553"
+      "sha256": "46f2eb3d71f8c971119392f788b353cbc4b3fdb54307e772125289372e7a2357"
     },
     {
       "file": "windows/runtime-health.ts",
-      "sha256": "ffd1dc44857e3a9fdfaa5eb1818f99b2c076b1d5bb1b34be5b9b793db53982dc"
+      "sha256": "97aa0b668d6773ef53430e97187caa45ee69edbf491cb9ae3fb8b079863b30bf"
     },
     {
       "file": "current.ts",
@@ -135,7 +135,7 @@
       "sha256": "a67b6276ff79a2be41d05ac1c060d1d964a6cd551bd442d4dca054b00236cc29"
     }
   ],
-  "adapterSourceSha256": "7cf1688b9ccefa3d9195773e7690bf817605548890839579256d04714c538daf",
+  "adapterSourceSha256": "a7b504e9544e9d3c47c564ed84dda1ea58020d42aeb5169078876b542730bf7f",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1

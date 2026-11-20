@@ -9,7 +9,7 @@ import {permissionHash} from '../validation';
 import type {PermissionScope} from '../../../../shared/xiaozhi-permissions';
 import type {PermissionStore} from '../store';
 import type {CurrentPermission} from '../current';
-import {checkCompiledPermissionRuntime} from './runtime-health';
+import {checkCompiledPermissionRuntime, permissionSystemDiskFreeBytes} from './runtime-health';
 
 export type PermissionRuntime = {directory: string; manifest: SandboxManifest; version: string};
 const configuration = 'framework-csc5-x64-optimize-checked-v1';
@@ -175,11 +175,20 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
       const work = tail.then(async () => {
         await authority.assert();
         if (expectedSourceHash !== builtinSandboxManifest.sourceSha256 || !authority.request.scopes.some(scope => scopeCovers(scope, recipe()))) throw Error('permission_denied');
+        const platform = await trustedPlatform();
+        const availableBytes = await permissionSystemDiskFreeBytes(platform.windowsDirectory);
+        await authority.assert();
+        // AppContainer profiles use the Windows volume even when managed scratch is elsewhere.
+        // Check before compilation and every retained/built-in reuse path; native HRESULTs cover later races.
+        if (availableBytes === 0n) {
+          await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_system_disk_full', expectedSourceHash,
+            {owner: authority.request.owner, error: 'system_disk_full', availableBytes: '0'});
+          throw Error('system_disk_full');
+        }
         const current = await inspect();
         if (current.status === 'ready') return {changed: false, runtime: current.selected || await preserveBuiltin(authority)};
         const runtime = await systemRuntime();
         const source = sources();
-        const platform = await trustedPlatform();
         const compilerInfo = platform.runtimes.find(item => item.kind === 'framework_csc');
         if (!compilerInfo || compilerInfo.trust !== 'verified' || !compilerInfo.sha256) throw Error('unsupported_constraint');
         const compiler = compilerInfo.path;

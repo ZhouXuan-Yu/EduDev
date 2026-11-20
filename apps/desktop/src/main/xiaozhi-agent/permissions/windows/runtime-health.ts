@@ -10,6 +10,20 @@ import {permissionTemporaryRoot} from './temporary';
 
 const healthMarker = 'XIAOZHI_SANDBOX_READY';
 
+/** Unknown capacity preserves the native diagnostic path; only exact zero is conclusive. */
+export async function permissionSystemDiskFreeBytes(windowsDirectory: string): Promise<bigint | null> {
+  const root = path.win32.parse(windowsDirectory).root;
+  if (!/^[a-z]:\\$/iu.test(root)) return null;
+  try {
+    const stats = await fs.promises.statfs(root, {bigint: true});
+    if (typeof stats.bavail !== 'bigint' || stats.bavail < 0n
+        || typeof stats.bsize !== 'bigint' || stats.bsize <= 0n) return null;
+    return stats.bavail * stats.bsize;
+  } catch {
+    return null;
+  }
+}
+
 export async function checkCompiledPermissionRuntime(options: {
   authority: CurrentPermission;
   store: PermissionStore;
