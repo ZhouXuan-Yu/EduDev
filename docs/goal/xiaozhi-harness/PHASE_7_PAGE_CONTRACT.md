@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 Gate 7 同一构建集中复验
+
+本轮的实际操作均绑定 481 文件同一指纹。课件成果和运行分属原会话，终端继续和冷读有原子回执，原生操作分别核对实际内容尺寸。Skill 取消及个人发布可以返回键盘焦点，团队场景的可见性未被该驱动核对。A2 目标变化正等待首次工具与日志冲突修复，独立终审仍待完成。 [范围](evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json)
+
 ## 2026-11-21 历史审批从可见入口执行
 
 从持久审批收件箱批准旧复制后，只有明确点击执行才产生新 Run。实际复制仅使用原申请的来源和未占用目标，原 Task 不变。重启后按同一历史审批读取执行结果，既有复制不可重复执行。两个尺寸由 Terra 独立复验，完整页面矩阵继续。 [证据](evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)

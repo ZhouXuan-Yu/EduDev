@@ -38,7 +38,17 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Use the frozen 9748a58 build to consolidate the original independent Gate 7 rows. Historical approved copy passed Host and the inbox. Follow the formal ABBA after Gate 7 and QG-09 in clean Windows x64; continue UM-01 to UM-09 separately.",
+  "next": "Resolve the real A2 first-tool skill_source_changed and late tool_receipt_conflict on the 9748a58 evidence. Reproduce and fix, retest the exact changed-target and cold path, then independently close Gate 7. Formal 32 ABBA remains after Gate 7; QG-09 needs clean Windows x64.",
+  "phase7Unified9748a5820261121": {
+    "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
+    "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
+    "sourceAlignmentCommit": "b7d8110dc60ef97c0e67d2413dcef70ceb475b1f",
+    "outSha256": "36ec81e5e980b68b30e750f324cee8e2f7e44b4bb062ef3bb3d37f62b45d59ce",
+    "outFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json",
+    "workbenchAndTerminal": "Independent actual OS caption on two sizes, native terminal 9/9, W2 committed effect 4/4, W/A/C/S independent indexes.",
+    "open": "A2 actual changed-target case stops before approval on skill_source_changed then tool_receipt_conflict. Reproduce and fix first, then formal 32 real model and QG-09."
+  },
   "phase7LegacyApprovalCurrentProvider20261121": {
     "status": "PASS_SCOPED",
     "sourceCommit": "c0ab0967d4dea4281edf20ef57e8be8ed8fb9c27",

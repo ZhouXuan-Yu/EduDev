@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-21 Gate 7 同一构建集中复验
+
+独立通过原生拖窗两尺寸、长路径工作台 9/9、已提交文件去重 4/4、工作台模态焦点两尺寸各 6/6、实际审批拒绝与目录隔离、Capability/MCP 和 Skill 角色与回滚用例。两尺寸合成流式各 8/8，另有单份独立前台 7/7。目标变化 A2 未达原审批操作，首个计划工具返回 skill_source_changed 后出现 tool_receipt_conflict。初次清单错配和后台目录前缀失败保留。完整 Gate 7、正式模型对照和干净 Windows 安装继续按原标准。 [逐项原始报告](evidence/phase7/implementation-resume-20261119/gate7-unified-9748a58-20261121.json)
+
 ## 2026-11-21 历史审批精确执行与冷启
 
 A1/A2、T-02、T-09 的历史复制子场景已实现。真实页面批准本身不启动运行或写文件。明确执行后同一 Task 从 Generation 1 到 2，只写入指定目标，当前工具权限回执与原历史行均为 executed。两种窗口各 3/3，第二次冷启无重放。真实 Host 中无原 Task 和原 Task 续跑均通过，完整 Host 8/8、异常退出恢复 1/1、组件 253/253。主线合并后的新构建 1366×768 同一路径另外通过 3/3。完成结论限于此子场景。 [独立报告和边界](evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)
