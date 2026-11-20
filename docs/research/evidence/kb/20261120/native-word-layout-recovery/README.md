@@ -26,6 +26,7 @@
 | `paper-basket-boundaries.mjs` | 45/45 |
 | `npm run build -- --outDir test-results/build-kb-native-layout-release` | 通过。最终实际桌面构建 SHA-256 `daad2761a1b93ecf64f846c70d4b90f2a81c9fc6b3d935acfef23d22ebc70f76` |
 | `npm run test:renderer-components` | 253/253 |
+| `node scripts/electron-smoke.mjs` | 整合构建 207/207，1366×768 与 1920×1080，构建 SHA-256 `78ff20b16dade3cfab4fe693c0c152fc87de447f2838e798d1cd7533ac6e9622`。最后的卷内题号及数字空白约束由上表最终构建实页覆盖 |
 | `npm audit --omit=dev --audit-level=high` | 最新整合锁文件 22 项存量通告，high 7 项、critical 0 项。本功能没有增加依赖 |
 
 脚本从 `apps/desktop` 运行，使用 `node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/education/<脚本>`。真实桌面版式操作一次约 2.444 秒，包括原件、SQLite 写回及界面更新。旧版本没有 Word 复核入口，无法对同一路径测时。正式卷实测到选题、确认和办公室稿编译，当前未重做纸面 DOCX/PDF 导出、独立自然答案和约 10 GB 压力测试。
