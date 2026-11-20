@@ -45,7 +45,8 @@
     "buildSha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
     "buildFiles": 481,
     "evidence": "evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json",
-    "next": "Complete remaining independent W1-W3, A1-A2 and C1-C2 page states on this exact build. Formal paid ABBA starts after the Gate 7 acceptance decision. QG-09 still requires a clean Windows x64 environment."
+    "workbenchPermissionCapabilityEvidence": "evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json",
+    "next": "Continue from the independent workbench, approvals and capability report. The narrow committed-effect replay is verified at 1366x768. Finish the C2 Schema and C1 remaining state scope, then formally audit Gate 7. QG-09 requires a clean Windows x64 environment."
   },
   "phase7WindowsDeepPath20261121": {
     "status": "NATIVE_WINDOW_AND_PERSISTENT_TERMINAL_PASS_SCOPED",

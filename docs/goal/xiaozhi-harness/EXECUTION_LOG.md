@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-21 能力中心专项与测试边界
+
+先保留错误引用 @playwright/test 导致的启动失败，再改用项目现有 playwright/test 入口。总控和独立 Agent 在同一 Electron 构建各通过 6/6。产品浏览期间六类 SQLite 表哈希一致，模型请求增量为零。前后构建指纹一致。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
+
 ## 2026-11-21 冻结构建输入与验收范围
 
 旧冻结脚本列举了已迁移 CSS，首轮无法开始。接入 Git 源码清单后，r2 发现生成的 Native Stat 元数据在编译时重算，按漂移处理并拒绝。r3 先生成再冻结，3,253 项输入前后一致，481 个输出在验收前后复验一致。源代码类型检查通过、组件 253/253；生产依赖审计仍有 20 项报告，其中高危 5 项、严重 0 项。 [同构建证据](evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json)

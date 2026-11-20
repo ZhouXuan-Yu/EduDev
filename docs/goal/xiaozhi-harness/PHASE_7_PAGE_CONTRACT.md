@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 同构建工作台和权限分项
+
+本轮独立覆盖 W1–W3 19 项、A1/A2 16 项、C1 6 项。两尺寸采用实际 Electron 与 typed IPC，状态和效果读回 SQLite。外部候选只使用本地缓存合成元数据。保持完整范围的 Gate 7 判定。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
+
 ## 2026-11-21 统一候选的两尺寸实测
 
 在 b890dba 同一指纹上，已实测原生窗口两尺寸、独立 S1 三角色两尺寸及 S2 两尺寸，另有总控审批、迟到事件、三页部分态、C2 路径证据。该构建用于继续汇总其他独立场景，保留适用状态及例外。 [同构建证据](evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json)
