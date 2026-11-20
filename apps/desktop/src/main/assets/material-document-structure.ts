@@ -72,6 +72,33 @@ export function joinStructureLines(lines: string[]) {
   return text;
 }
 
+export function namedPageFooter(
+  line: StructureLine, regions: PageBlock[], page: Pick<StructurePageInput, "page" | "totalPages">,
+) {
+  const [x0, y0, x1, y1] = line.box;
+  if (y0 < 0.88 || x1 - x0 > 0.50 || y1 - y0 > 0.04) return false;
+  const count = /^[\p{L}][\p{L}\p{M}\p{N}\p{Zs}()·—-]{0,39}?\s*第\s*(\d{1,5})\s*页\s*共\s*(\d{1,5})\s*页$/u
+    .exec(line.text.trim().normalize("NFKC"));
+  if (!count || Number(count[1]) !== page.page || Number(count[2]) !== page.totalPages) return false;
+  const owned = regions.filter(region => line.regionIds.includes(region.id));
+  const kind = owned.sort((a, b) => area(a.box) - area(b.box))[0]?.kind;
+  if (kind && kind !== "number" || owned.some(region => region.score >= 0.8 && !furnitureKinds.has(region.kind))) return false;
+
+  // Layout may box the label and the counter separately while OCR returns one line.
+  const reliable = regions.filter(region => region.score >= 0.8 && region.box[1] >= 0.88 &&
+    Math.min(y1, region.box[3]) - Math.max(y0, region.box[1]) >= (y1 - y0) * 0.7);
+  const size = area(line.box);
+  const labels = reliable.filter(region => region.kind === "footer" && overlap(region.box, line.box) >= size * 0.15);
+  const counters = reliable.filter(region => region.kind === "number" && overlap(region.box, line.box) >= size * 0.4);
+  return labels.some(({box: label}) => counters.some(({box: counter}) => {
+    const gap = counter[0] - label[2];
+    if (label[0] >= counter[0] || label[2] >= counter[2] || gap < -0.01 || gap > 0.025) return false;
+    const shared: PageBox = [Math.max(label[0], counter[0]), Math.max(label[1], counter[1]),
+      Math.min(label[2], counter[2]), Math.min(label[3], counter[3])];
+    return overlap(label, line.box) + overlap(counter, line.box) - overlap(shared, line.box) >= size * 0.85;
+  }));
+}
+
 function lineRole(
   line: StructureLine,
   regions: PageBlock[],
@@ -80,6 +107,7 @@ function lineRole(
   const text = line.text.trim(),
     owned = regions.filter((region) => line.regionIds.includes(region.id));
   const kind = owned.sort((a, b) => area(a.box) - area(b.box))[0]?.kind;
+  if ((kind === "number" || !kind) && namedPageFooter(line, regions, page)) return { role: "footer" };
   if (kind === "number" && line.box[1] >= 0.88) {
     const counter = /^(?:第[ \t]*(\d{1,5})[ \t]*页(?:[ \t]*共[ \t]*(\d{1,5})[ \t]*页)?|(\d{1,5})(?:\s*[/／]\s*(\d{1,5}))?)$/u.exec(text);
     const sheet = counter?.[1] || counter?.[3], total = counter?.[2] || counter?.[4];

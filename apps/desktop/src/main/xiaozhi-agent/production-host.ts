@@ -1,4 +1,6 @@
 import {createStartupPrewarm} from './startup-prewarm';
+import {persistCurrentToolContract} from './capabilities/queued-contract';
+import type {PermissionOwner} from '../../shared/xiaozhi-permissions';
 import {coreToolStartupDefinitions} from './core-tool-startup-definitions';
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createTerminalService, type TerminalService} from './terminal/service';
@@ -323,19 +325,23 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const record = active.get(sessionId)?.toolGovernance?.records.get(name);
     return record ? {id: record.providerId, version: record.providerVersion, sourceHash: record.sourceHash, schemaHash: record.schemaHash} : null;
   };
+  const taskOwnerCurrent = async (owner: PermissionOwner) => {
+    const run = active.get(owner.sessionId);
+    if (closing || !run || run.stopped || run.runId !== owner.runId || run.task?.id !== owner.taskId
+        || run.publisher?.owner.generation !== owner.generation) return false;
+    const requirementsVersion = run.task.requirementsVersion;
+    try {
+      await createTaskState(store.xiaozhiState.sql, {sanitize: async text => text})
+        .validateCurrentOwner({sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation}, owner.taskId, requirementsVersion);
+      return !closing && active.get(owner.sessionId) === run && !run.stopped
+        && run.task.requirementsVersion === requirementsVersion;
+    } catch {return false;}
+  };
   const permissions = createPermissionService({store: store.xiaozhiState.permissions, dataRoot: options.dataRoot,
     jobCurrent: (binding, request) => terminalService?.permissionCurrent(binding, request) || false,
     requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1,
     task: taskId => createTaskState(store.xiaozhiState.sql, {sanitize: async text => text}).get(taskId),
-    validateTaskOwner: async owner => {
-      try {
-        const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
-        const task = await state.get(owner.taskId);
-        if (!task) return false;
-        await state.validateCurrent({sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation}, owner.taskId, task.revision);
-        return true;
-      } catch {return false;}
-    },
+    validateTaskOwner: taskOwnerCurrent,
     runtimeScope: () => permissionRuntime.recipe(),
     sanitizeSummary: text => sanitizeOfficeDocumentText(store, text),
     legacyApprovals: async sessionId => {
@@ -403,18 +409,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     permission: createSkillPermissionCheck({permissions, workspace: sessionId => host.resolveFileWorkspace(sessionId),
       process: async () => {const runtime = await permissionRuntime.systemRuntime(); return {executable: runtime.path, executableHash: runtime.sha256};},
       requirementsVersion: sessionId => active.get(sessionId)?.task?.requirementsVersion || 1}),
-    current: async owner => {
-      const run = active.get(owner.sessionId);
-      if (closing || !run || run.stopped || run.runId !== owner.runId || run.task?.id !== owner.taskId
-        || run.publisher?.owner.generation !== owner.generation) return false;
-      const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
-      const task = await state.get(owner.taskId);
-      if (!task) return false;
-      try {
-        await state.validateCurrent({sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation}, task.id, task.revision);
-        return true;
-      } catch { return false; }
-    },
+    current: taskOwnerCurrent,
     dependency: async (dependency, owner) => {
       if (owner) {
         const run = active.get(owner.sessionId);
@@ -1240,7 +1235,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
                 selection: {providerId: record.providerId, providerVersion: record.providerVersion, contractVersion: '1.0.0', level: 'full', missingRequirements: [], limitations: []},
                 providerHash: record.providerHash, evidenceRefs: version.binding.conformance.evidence.map(item => item.reference),
                 previousSnapshotId: existing?.snapshotId || null, refreshReason: existing ? 'explicit_refresh' : 'initial'}));
-            }, persist: (callId, name, receipt) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt)),
+            }, persist: (callId, name, receipt, signal) => persistCurrentToolContract({signal: signal || run.abort.signal,
+              current: () => !closing && active.get(id) === run && !run.stopped,
+              enqueue: (current, write) => run.publisher!.persistIfCurrent(current, write),
+              write: owner => store.xiaozhiState.eventJournal.recordToolContract(owner, callId, name, receipt)}),
             beginEffect: (callId, expected) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.beginToolEffect(owner, callId, expected)),
             bindExecution: (callId, execution) => run.publisher!.persist(owner => store.xiaozhiState.eventJournal.bindToolEffectExecution(owner, callId, execution))});
           if (run.legacyApprovalId) {

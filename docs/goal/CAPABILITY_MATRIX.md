@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 页码行从题干和索引分离
+
+M03 复用现有 PP 页脚、页码区与原 OCR 坐标。M04/M05 沿用段落角色和旧教师题物理来源证明，排除页脚对正文召回及题库归档的污染。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)
+
 ## 2026-11-21 栏序疑点与 PDF 页源核对
 
 M03 复用 PP 版面所有权与 OCR 坐标识别独立栏证据。M05 沿用原有 PDF 页源核验和教师确认门槛，页结构候选不能直接进入正式检索或组卷。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)

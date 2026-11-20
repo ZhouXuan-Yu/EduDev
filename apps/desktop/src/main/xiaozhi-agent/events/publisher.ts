@@ -66,6 +66,22 @@ export function createEventPublisher(options: { journal: ReturnType<typeof creat
     }).catch(error => { fail(error); throw error; });
     void chain.catch(() => undefined);
   }
+  async function persist<T>(action:(owner:JournalOwner)=>Promise<T>,current?:()=>boolean) {
+    if(current&&!current())return{written:false as const};
+    if(failure||sealed)throw failure||Error('event_run_settled');
+    drain();queued=undefined;let value:T|undefined,written=false;
+    chain=chain.then(async()=>{
+      if(current&&!current())return;
+      if(failure)throw failure;
+      try {await options.journal.assertOwner(options.owner);}
+      catch(error){if(current&&!current())return;throw error;}
+      if(current&&!current())return;
+      if(failure)throw failure;
+      value=await action(options.owner);written=true;
+      if(failure)throw failure;
+    }).catch(error=>{fail(error);throw error;});
+    void chain.catch(()=>undefined);await chain;return{written,value};
+  }
   return {
     enqueue,
     owner:options.owner,
@@ -87,9 +103,11 @@ export function createEventPublisher(options: { journal: ReturnType<typeof creat
     },
     /** All private critical writes share the event queue and permanent failure gate. */
     async persist<T>(action:(owner:JournalOwner)=>Promise<T>):Promise<T>{
-      if(failure||sealed)throw failure||Error('event_run_settled');
-      drain();queued=undefined;let value:T;
-      chain=chain.then(async()=>{if(failure)throw failure;await options.journal.assertOwner(options.owner);if(failure)throw failure;value=await action(options.owner);if(failure)throw failure;}).catch(error=>{fail(error);throw error;});void chain.catch(()=>undefined);await chain;return value!;
+      return(await persist(action)).value!;
+    },
+    /** A cancelled queued admission never reaches the journal or its failure gate. */
+    async persistIfCurrent(current:()=>boolean,action:(owner:JournalOwner)=>Promise<void>):Promise<boolean>{
+      return(await persist(action,current)).written;
     },
     async flush() { if(failure)throw failure;do { drain(); await chain; } while (pending.length); if (failure) throw failure; },
     async barrier() { if(failure)throw failure;do { drain(); await chain; } while (pending.length); if (failure) throw failure; await options.journal.assertOwner(options.owner);if(failure)throw failure; },

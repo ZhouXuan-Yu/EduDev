@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 页码行从题干和索引分离
+
+页脚专项要求真实原件、原 OCR 和四个题干剥离前后逐项比对，同时检查错误页计数、正文冲突和旧世代复用。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)
+
 ## 2026-11-21 栏序疑点与 PDF 页源核对
 
 栏序专项比对同一冻结输入的新旧结构与真双栏疑点，且要求真实桌面重建、原图读回、旧世代与账户模型调用账目不变。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
