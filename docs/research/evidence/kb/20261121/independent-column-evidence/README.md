@@ -8,8 +8,8 @@
 
 ## 修改范围
 
-- `material-document-structure.ts` 调整被拒栏缝的独立证据判断。
-- `material-document-structure.ts` 共享契约递增引擎版本，保留 v2 至 v11 的历史认证和来源引用。
+- `apps/desktop/src/main/assets/material-document-structure.ts` 调整被拒栏缝的独立证据判断。
+- `apps/desktop/src/shared/material-document-structure.ts` 递增引擎版本，保留 v2 至 v11 的历史认证和来源引用。
 - `document-structure-boundaries.mjs`、`document-structure-repository.mjs` 覆盖正文碎行、异步基线、独立栏区和历史重建。
 - `kb-column-structure-readback.mjs` 比对真实冻结数据，并通过材料页在隔离副本上重建。历史题号回放脚本改用当前版本常量。
 
@@ -19,10 +19,23 @@
 
 材料页重建会进一步核验实际 PDF 页源。上述 8 组仍因 `pdf_text_conflict` 暂缓入库。对照原图后可继续教师核对。实际新增规则草稿和正式题均为 0，原始页、旧版回执、教师事实、配对关系及模型调用账目保留。
 
+同一冻结库的 92 个 v11 页做新旧重放。8 页的待核标记发生变化，栏边界均保持一致。9 次交替内存运行的中位用时为旧版 13.71 ms、新版 15.82 ms，范围仅为页结构恢复。桌面从当前隔离副本已有缓存重建 4 页并发布，用时约 2.2 秒，旧版同缓存路径无可对照耗时。
+
 ## 验收与回滚
 
 首次桌面回归预期把版面阶段放行的 8 组算入草稿，实际被页源检查拒绝。回归现分别校验两个阶段。独立审查发现逐行版面区域的错行双栏反例，已将栏起始位置纳入证据并增加回归。长期复杂版式、公式和原生 PDF 文字互证仍需独立覆盖。
 
+合入 `cd80e4f` 的历史审批修复，保留四份协作文档两侧记录。合并构建主进程 SHA-256 为 `5edf163cdfc9a15598c499afebd68e66462ac5dd19dbe940ae0190fa5d933da3`。
+
+| 验证 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir <隔离构建目录>` | 通过，执行 TypeScript 检查 |
+| `npm run test:renderer-components` | 253/253 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs --test <专项脚本>` | 4/4 个脚本通过。结构恢复 49 组，仓库 39 组，独立配答 17 组，答案册遮盖 18 组 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-column-structure-readback.mjs <隔离资料目录> --desktop` | 4 页重建、12 个版面待核、8 个 PDF 页源待核。界面可读取原页图。原库留存，正式检索命中 0，外发 0 |
+| `node <隔离桌面目录>/scripts/electron-smoke.mjs` | 同一合并构建的桌面通用回归 207/207，测试脚本及主进程摘要已与工作树和构建核对 |
+| `npm audit --omit=dev --audit-level=high` | 既有依赖问题 20 项，其中高危 5 项、严重 0 项 |
+
 SQLite 表结构未变化。重建使用新派生世代，原文件及既有世代可以独立核验。若需回滚，先备份并使用原有世代重新验证。已采用新世代的来源使用支持 v12 的应用读取。
 
-下一步核对原生 PDF 和 OCR 的题号、正文及公式差异，从真实来源证明可入库的范围。独立答案册配答、120 道自然题留出、200 条检索、三套正式卷、约 10 GB 和异机迁移继续按原门槛验收。
+只读复核这 8 组，5 组的 OCR 与 PDF 文字在数学符号、指数或表格内容上有实质差异，2 组的 PDF 原文有重复题号或缺少可证明的闭合边界，另 1 组存在排版差异且尚未证明等价。已确认一种独立的题干污染，页底带试卷名称的页码行会被归入最后一题。下一轮按原页坐标、正确页码和独立区域核对页脚归属，再逐类建设正文与公式互证。独立答案册配答、120 道自然题留出、200 条检索、三套正式卷、约 10 GB 和异机迁移继续按原门槛验收。

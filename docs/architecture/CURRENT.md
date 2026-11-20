@@ -4,6 +4,10 @@
 
 v12 栏序判断结合原区域所有权、独立行及左右栏起点，保留原排序与正文。解析世代继续版本化，PDF 页源判断在数据库发布前独立发生。 [专项报告](../research/evidence/kb/20261121/independent-column-evidence/README.md)
 
+## 2026-11-21 历史审批接续的当轮工具身份
+
+显式继续的旧复制审批只在相关 Run 完成工具注册后生成当前权限请求，注册身份与实际核心工具共用同一路径。已失效、到期、拒绝或已消耗的旧关联回执按现行状态拒绝重新授权。原审批、源文件和 Task 谱系继续保留，无迁移表和 IPC 变化。 [执行证据](../goal/xiaozhi-harness/evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)
+
 ## 2026-11-21 正式组卷保留独立题图
 
 独立题图从原结构版本的登记坐标生成，核对记录保存页、原页栅格、独立 PNG 及位置，新派生图块与整段原题截图有各自的 ID。入库和正式组卷仍走既有事务、版本和权限。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)

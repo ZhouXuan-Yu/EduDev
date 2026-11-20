@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-21 历史复制审批同任务续跑
+
+已实现。历史复制在教师明确继续后，按当轮实际注册工具绑定原批准，使用同一任务的新运行或为尚无任务的旧记录创建原任务。两尺寸独立实页各 3/3，实际宿主 8/8，异常退出冷恢复 1/1。Gate 7 全部页面和正式对照按原合同继续。 [实测记录](evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json)
+
 ## 2026-11-21 Windows 终端专用临时目录
 
 已实现。终端与受控 MCP 的投影和助手检查使用当前 Windows 用户的专用目录，助手收到同一处 TEMP/TMP。分开的 E 盘 TEMP/TMP 下，Terra 在真实 Electron 验证工作台 9/9、终端输入确认及重启后读回。受管运行时 4/4、原生 MCP 标准输入输出 5/5。宽范围权限宿主测试的历史新任务复制仍未过，记录保留。正式模型对照、完整 Gate 7 和干净 Windows 安装继续按原门槛。 [实现与实测](evidence/phase7/implementation-resume-20261119/windows-private-terminal-temp-20261121.json)

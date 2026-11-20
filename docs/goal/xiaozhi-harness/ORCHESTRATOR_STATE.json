@@ -38,7 +38,18 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Complete the original same-build Gate 7 matrix on frozen a983962, preserve the 0ae8331 launch failure and investigate the broad legacy-copy permission denial. Continue with formal ABBA after Gate 7. QG-09 needs independent clean Windows x64 and the update/migration track uses UM-01 to UM-09.",
+  "next": "Use the frozen 9748a58 build to consolidate the original independent Gate 7 rows. Historical approved copy passed Host and the inbox. Follow the formal ABBA after Gate 7 and QG-09 in clean Windows x64; continue UM-01 to UM-09 separately.",
+  "phase7LegacyApprovalCurrentProvider20261121": {
+    "status": "PASS_SCOPED",
+    "sourceCommit": "c0ab0967d4dea4281edf20ef57e8be8ed8fb9c27",
+    "mainCodeCandidate": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
+    "outSha256": "36ec81e5e980b68b30e750f324cee8e2f7e44b4bb062ef3bb3d37f62b45d59ce",
+    "outFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/legacy-copy-resume-current-provider-20261121.json",
+    "independent": "3/3 each at 1366x768 and 1920x1080 (feature build)",
+    "integrated": "Build exit 0, focused page 3/3 (1366x768), actual Host 8+1 on feature build",
+    "next": "Complete the fixed page rows on the final integrated candidate. Keep the broad first-run native launch failure and QG-09 external environment separate."
+  },
   "phase7WindowsPrivateTemp20261121": {
     "status": "PARTIAL_GATE7_WORKBENCH_PASS",
     "sourceCommit": "a98396228c27dc6a4c3310d4210a5ce6e30fb814",
