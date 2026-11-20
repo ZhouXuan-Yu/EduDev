@@ -1,4 +1,4 @@
-export const TOOL_EXECUTION_CODES=['invalid_input','invalid_output','permission_denied','authentication','cancelled','timeout','network','rate_limited','service_error','conflict','not_found','resource_busy','task_blocked','source_required','source_changed','not_confirmed','configuration','missing_dependency','unsupported','execution_failed','unknown'] as const;
+export const TOOL_EXECUTION_CODES=['invalid_input','invalid_output','permission_denied','authentication','cancelled','timeout','network','rate_limited','service_error','conflict','not_found','resource_busy','task_blocked','source_required','source_changed','not_confirmed','configuration','missing_dependency','unsupported','execution_failed','system_disk_full','unknown'] as const;
 export type ToolExecutionCode=typeof TOOL_EXECUTION_CODES[number];
 export type XiaozhiToolAttempt={schemaVersion:1;callId:string;tool:string;attempt:number;maxAttempts:number;state:'queued'|'started'|'retrying'|'succeeded'|'failed';code?:ToolExecutionCode;effect:'none'|'unknown';delivery?:'not_delivered';queueWaitMs?:number;executionMs?:number;teacherWaitMs?:number};
 export function validToolAttempt(value:unknown):value is XiaozhiToolAttempt{
@@ -18,6 +18,7 @@ export function validToolAttempt(value:unknown):value is XiaozhiToolAttempt{
   &&(v.state!=='succeeded'||v.code===undefined&&v.effect==='none');
 }
 export const TOOL_EXECUTION_MESSAGES:Record<ToolExecutionCode,string> = {
+  system_disk_full: 'Windows 系统盘空间不足，终端启动失败。释放系统盘空间后，请手动重试。',
   source_required: '缺少本次所需的资料、证据或学生上下文，请先选择对应来源再调用。',
   source_changed: '本次使用的来源版本已变化，请重新读取当前版本再继续。',
   not_confirmed: '对应内容尚待教师确认，请先完成当前结果卡的确认。',

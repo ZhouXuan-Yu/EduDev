@@ -14,8 +14,8 @@
   },
   "privateIdentityPath": ".runtime/.helper-state/identity.json",
   "helperFile": "xiaozhi-sandbox.exe",
-  "helperSha256": "fb2aed5bbd7c9dbec023f54f3291eda0bb31f711e74a4c1c68626949d798f102",
-  "sourceSha256": "c5f2df82df5b85a025ed53b2123aa3dfe8c0694179c7ad88a1c522dc7e21feb1",
+  "helperSha256": "b244cf4c3cfb137c935e858bffdd9dc07c70c325a127f8d79bb8b7e67b7d165d",
+  "sourceSha256": "bc79c826a8b81bd75bae8abdb42d144158f580843683e5e7ff3447fb445a517b",
   "pinsSourceSha256": "dd5d906eb27868382cbf9cd28c6ac335eaec96faf16beb30612707721d230926",
   "helperBytes": 58880,
   "architecture": "x64",
@@ -38,11 +38,11 @@
   ],
   "invalidExecutionId": "xiexec_00000000-0000-0000-0000-000000000000",
   "outputLimitError": "output_limit",
-  "buildTime": "2026-11-19T07:19:34.169Z",
+  "buildTime": "2026-11-20T22:13:52.753Z",
   "sourceFiles": [
     {
       "file": "NativeSandbox.cs",
-      "sha256": "01694d0291bb2ed12e44181e5be7d878cd7670390cd00b290a1dd4bf1d665b7d"
+      "sha256": "f4b6d8896b0dca337fc14b33c56ce3ecd04bef83311625d0a6d39f932350b351"
     },
     {
       "file": "PlatformInfo.cs",
@@ -104,7 +104,7 @@
     },
     {
       "file": "windows/runtime-health.ts",
-      "sha256": "1a279730600affcec3eb29b9de51655569af2d3da817691e52c660400a3e625e"
+      "sha256": "ffd1dc44857e3a9fdfaa5eb1818f99b2c076b1d5bb1b34be5b9b793db53982dc"
     },
     {
       "file": "current.ts",
@@ -132,10 +132,10 @@
     },
     {
       "file": "../tools/terminal.ts",
-      "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
+      "sha256": "a67b6276ff79a2be41d05ac1c060d1d964a6cd551bd442d4dca054b00236cc29"
     }
   ],
-  "adapterSourceSha256": "160a71b39963691e818bac31f7fc7b04035776ba980d08b2f4065fed64c4343f",
+  "adapterSourceSha256": "7cf1688b9ccefa3d9195773e7690bf817605548890839579256d04714c538daf",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1

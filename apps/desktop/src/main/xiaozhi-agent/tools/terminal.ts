@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {TOOL_EXECUTION_MESSAGES} from '../../../shared/xiaozhi-tool-attempt';
 import { createBashToolDefinition, createPowerShellToolDefinition, type ToolDefinition, type PowerShellOperations } from '@earendil-works/pi-coding-agent';
 import { TERMINAL_OUTPUT_LIMIT, type XiaozhiTerminalOutput } from '../../../shared/xiaozhi-terminal';
 import {currentPermission} from '../permissions/current';
@@ -97,9 +98,9 @@ export function createTerminalTool(options: Options): ToolDefinition {
         const state = signal?.aborted || /Command aborted$/.test(message) ? 'cancelled'
           : /Command timed out/.test(message) ? 'timed_out' : 'failed';
         const terminal: XiaozhiTerminalOutput = { ...current, state, durationMs: Math.round(performance.now() - started),
-          output: (await clean(message)).slice(-TERMINAL_OUTPUT_LIMIT) };
+          output: (await clean(message === 'system_disk_full' ? TOOL_EXECUTION_MESSAGES.system_disk_full : message)).slice(-TERMINAL_OUTPUT_LIMIT) };
         emit(terminal);
-        const code = ['permission_pending', 'permission_denied', 'source_changed', 'unsupported_constraint', 'needs_configuration', 'resource_budget'].includes(message) ? message : undefined;
+        const code = ['permission_pending', 'permission_denied', 'source_changed', 'unsupported_constraint', 'needs_configuration', 'resource_budget', 'system_disk_full'].includes(message) ? message : undefined;
         return receipt(terminal, code);
       }
     },

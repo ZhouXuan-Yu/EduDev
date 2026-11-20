@@ -137,7 +137,8 @@ export function createTerminalLifecycle(options: {
           doc.projectionState = projectionState; doc.committed = committed;
           if (result?.exitCode !== null && result?.exitCode !== undefined) doc.exitCode = result.exitCode;
           if (result) doc.durationMs = result.durationMs;
-          if (failure) doc.notice = 'needs_check';
+          if (result?.error === 'system_disk_full') doc.notice = 'system_disk_full';
+          else if (failure) doc.notice = 'needs_check';
           doc.leaseRevision++; doc.controllerRevision++;
         });
         notify(record);

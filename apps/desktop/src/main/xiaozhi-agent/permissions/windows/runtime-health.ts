@@ -41,6 +41,7 @@ export async function checkCompiledPermissionRuntime(options: {
     // The launcher returns only after the helper has confirmed complete native cleanup.
     removeOwnedProjection(projection);
     if (ready) return;
+    if (result.error === 'system_disk_full') throw Error('system_disk_full');
     if (attempt === 2 || started || result.state !== 'failed' || result.error !== 'launch_failed') throw Error('configuration');
     // Only the fixed host probe can retry. Each attempt has its own projection and execution ID.
     await delay(150, undefined, {signal: authority.signal});
