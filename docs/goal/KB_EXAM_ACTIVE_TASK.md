@@ -2,7 +2,7 @@
 
 ## 2026-11-20 结构重建后的正文检索
 
-已发布的结构版本进入全文、混合检索及新版题源，旧引用仍精确回读。下一轮用未参与本轮开发的出版物与教师查询复现一个影响召回的缺陷并修复，记录 Recall@K、错配和延迟。随后继续混合目录规模、正式组卷与迁移。详见 [专项记录](../research/evidence/kb/20261120/structure-search-visibility/README.md)。
+已发布的结构版本进入全文、混合检索及新版题源，旧引用仍精确回读。独立只读核对发现同一学科和知识点下，「高三」命中 7 道可用自然物理题，「高中三年级」零命中。下一轮先从正式教师检索入口复现同级别名漏召回，修复词法、向量及结果复查中的年级筛选，区分具体年级与整个学段。复用 [上海题源清单](../research/evidence/kb/20261111/shanghai-corpus/README.md) 与 [自然召回复现入口](../research/evidence/kb/20261111/chinese-question-recall/README.md)，再独立积累标注查询；当前探针不计入 KB-A05 留出集。随后继续混合目录规模、正式组卷与迁移。详见 [本轮专项记录](../research/evidence/kb/20261120/structure-search-visibility/README.md)。
 
 ## 2026-11-20 已核对结构题后台配答
 

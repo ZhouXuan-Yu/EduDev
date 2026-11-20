@@ -47,7 +47,7 @@ export type WorkbenchCapabilityRow = {
   verification: 'verified' | 'pending' | 'expired' | 'failed' | 'revoked' | 'quarantined' | 'unknown';
   authorization: 'allowed' | 'required' | 'revoked' | 'task_check_required';
   availability: 'full' | 'partial' | 'blocked' | 'task_check_required';
-  requiredMissing: string[]; optionalMissing: string[]; reasons: string[]; risk: string[];
+  requiredMissing: string[]; optionalMissing: string[]; conditionalMissing?: string[]; reasons: string[]; risk: string[];
   verifiedAt: string | null; expiresAt: string | null;
 };
 export type WorkbenchTaskContext = {

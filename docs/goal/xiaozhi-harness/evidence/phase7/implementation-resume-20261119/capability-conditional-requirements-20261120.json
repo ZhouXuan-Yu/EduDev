@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-20",
+  "contract": {
+    "schema": 1,
+    "before": "Read-only catalog conformance simulates all declared conditions and folds missingConditional into requiredMissing, although runtime only requires each condition when triggered by a specific task.",
+    "after": "The catalog keeps conditionalMissing separate, preserves requiredMissing and optionalMissing, and still uses task_check_required for the conditional-only case. The renderer labels each list independently. Older v1 summaries can omit conditionalMissing.",
+    "scope": "Resolver dispatch, task conditions, pending authorization, SQLite schema and provider eligibility retain their existing semantics."
+  },
+  "red": {
+    "sourceCommit": "082d179214bd6ae249c85e4a704841a9f8a4e475",
+    "realProvider": "edu.native.workspace-file-stat",
+    "reportedAsRequired": ["mime_required"],
+    "optionalMissing": ["mime"],
+    "condition": "require_mime",
+    "realUi": "TEMP/gate7-c1-detail-0337d380/report.json",
+    "noProviderControl": "TEMP/gate7-c1-missing-16632eb6/report.json"
+  },
+  "localCandidate": {
+    "build": "apps/desktop/test-results/harness-capability-conditional-20261120/out",
+    "mainSha256": "624e25539439521e093ef550923e8de227a418c9929aca526dcd1c9840b61c27",
+    "rendererAsset": "index-DBYUJwAg.js",
+    "rendererSha256": "6ccb40eeb05437cc1ba17f173c7b1955d19ee8f3f6f3c865653081671f892eac",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "workbenchReadChecks": 12,
+    "workbenchRendererChecks": 18,
+    "resolverChecks": 32,
+    "rendererComponentChecks": 253,
+    "buildWithTypecheck": "PASS",
+    "notes": "The first passing renderer assertion set was reported false because the runner's expected count was still 17. The count was updated for the added assertion and the suite reran successfully at 18."
+  },
+  "independentElectron": {
+    "report": "TEMP/gate7-c1-conditional-1f1dd969/report.json",
+    "viewports": ["1366x768", "1920x1080"],
+    "realProviderReadback": {"requiredMissing": [], "conditionalMissing": ["mime_required"], "optionalMissing": ["mime"]},
+    "noProviderControl": "Still blocked with separate genuine required_fixture and optional_fixture gaps.",
+    "controlBoundary": "The real-page control is an isolated definition with no provider binding. The focused Resolver suite separately verifies exclusion of a provider missing a true required implementation.",
+    "databaseReadOnly": ["registry", "runs", "approvals", "grants"],
+    "addedModelRequests": 0,
+    "pageErrors": 0
+  },
+  "mainIntegration": {
+    "sourceParent": "110150e162c0d2e5255d053d770c6adc56e9eb26",
+    "build": "apps/desktop/test-results/harness-capability-conditional-main-110150e-20261120/out",
+    "mainSha256": "8a9d33d40552f8934c75382204c816a119426c4c4d5cc550526d48f8609edc55",
+    "rendererSha256": "cc352d86ce11482186da6fbc72f8b2a350597020262811c50735f23c737313f4",
+    "coreToolSourceHash": "f9b0c43b59a467576fb83da6dbd5a52661ad88eecdfe2bad76f0ab0418a63e9b",
+    "buildWithTypecheck": "PASS",
+    "structureQuestionChecks": 17,
+    "realElectronReport": "TEMP/gate7-c1-main-110150e-e7fc63ff/report.json",
+    "realElectronReportSha256": "8d3c5df999bdc0d65f7c412e4c363436740ff173aba0bb470da646758a62caf8",
+    "viewportsPassed": ["1366x768", "1920x1080"]
+  },
+  "paidModelRequests": 0,
+  "gate7": "PARTIAL"
+}

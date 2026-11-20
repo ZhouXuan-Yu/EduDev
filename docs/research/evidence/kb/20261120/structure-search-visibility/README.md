@@ -18,7 +18,7 @@
 | 关键词与混合检索的原文精确命中 | 各 3 个 | 各 1 个，包含原有两处印刷填空 |
 | 旧正文摘录 | 有两个旧版本 | 两条旧引用均按原 ID、内容和偏移回读 |
 | 正文索引记录 | 3 条 | 1 条，重建、重启均保持 |
-| 启动后一次桌面 IPC 查询 | 关键词 126 ms，混合 1,895 ms | 关键词 13 ms，混合 614 ms。重启后分别为 13 ms 和 1,719 ms |
+| 启动后一次桌面 IPC 查询 | 关键词 126 ms，混合 1,895 ms | 关键词 10 ms，混合 712 ms。重启后分别为 12 ms 和 842 ms |
 
 计时使用上一版与新版本的独立旧库副本，混合查询均启用本地语义分支。每次只测一个实物题干，耗时受启动、索引和计算负载影响。整库性能仍以独立规模验收为准。
 
@@ -26,15 +26,16 @@
 
 | 命令或脚本 | 结果 |
 | --- | --- |
-| `npm run build -- --outDir test-results/build-structure-search-release` | 最终冻结构建通过 |
-| `npm run test:renderer-components` | 253/253 |
-| `node scripts/education/structure-bank-handoff-electron.mjs` | 最终构建 5/5。教师使用目录查题并打开新版正文、触发重建，随后验证冷启动、旧版引用、历史题本草稿、结构快照和答案回执原始数据。本轮新增模型请求 0 |
+| `npm run build -- --outDir test-results/build-structure-search-main` | 合入协作者 `c5de00c` 后的最终冻结构建通过 |
+| `npm run test:renderer-components` | 整合后 253/253 |
+| `node scripts/education/structure-bank-handoff-electron.mjs` | 整合后 5/5。教师使用目录查题并打开新版正文、触发重建，随后验证冷启动、旧版引用、历史题本草稿、结构快照和答案回执原始数据。本轮新增模型请求 0 |
 | `node scripts/material-catalog-focused-test.mjs` | 17/17。真实 SQLite、FTS 和向量范围校验 |
 | `kb-search-statistics-boundaries.mjs` 与 `kb-retrieval-boundaries.mjs` | 7/7 与 18/18。覆盖旧 FTS 残留、失败发布、原生 Word、隐私计数、查询中切换以及向量删除记录 |
 | `structure-review-boundaries.mjs` 与 `document-structure-repository.mjs` | 18/18 与 39/39 |
 | `kb-ai-page-boundaries.mjs` 与 `kb-structure-book-boundaries.mjs` | 249/249，结构配答 17/17、兼容配答 36/36 |
 | `kb-semantic-native.mjs` | 8/8。实际 BGE ONNX 与 Lance 验证 |
-| `node scripts/electron-smoke.mjs` | 发布候选构建 207/207。最终归档写事务额外校验由最终冻结构建的专项及真实界面覆盖 |
+| `node scripts/electron-smoke.mjs` | 合并前的发布候选构建 207/207。最终归档写事务额外校验由整合构建的专项及真实界面覆盖 |
+| `phase7-workbench-read-smoke.mjs` 与 `phase7-workbench-renderer-smoke.mjs` | 整合后协作者工作台读回 12/12 与渲染 18/18 |
 | `npm audit --omit=dev --audit-level=high` | 23 项现有依赖通告，含 8 项 high。依赖文件无变更 |
 
 脚本在 `apps/desktop` 执行。TypeScript 专项用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/<脚本>`。真实桌面专项将 `EDU_HANDOFF_SEED` 指向旧验收临时库，用 `OMNI_EDU_TEST_BUILD_ROOT` 选择冻结构建，复制文件和 SQLite 快照至独立临时目录运行。检索专项核对答案回执的存储内容，复制后的回执仍受原文件物理身份约束。

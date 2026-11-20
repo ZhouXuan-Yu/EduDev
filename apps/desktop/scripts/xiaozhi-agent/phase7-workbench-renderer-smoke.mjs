@@ -181,8 +181,22 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
   });
   await check('C01','Capability axes distinguish installed, quarantined, authorization and missing requirements without Task authority',async()=>{
     const calls=[],navigation=[];await mount(C.PiCapabilityCenter,{onNavigate:tab=>navigation.push(tab)},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('capabilities',[capability()],{context:{state:'none',sessionId:null,taskId:null,requirementsVersion:null},registryRevision:1}));}});
-    const text=document.body.textContent;for(const expected of ['已安装','隔离待审核','需任务核对','当前不可用','许可证 未知','缺少 1 项必需能力','缺少 1 项可选能力','需核对权限详情'])assert(text.includes(expected),expected);assert(!('taskId'in calls[0]));assert.equal(calls.length,1);
+    const text=document.body.textContent;for(const expected of ['已安装','隔离待审核','需任务核对','当前不可用','许可证 未知','缺少 1 项必需能力','缺少 1 项可选能力','需核对权限详情'])assert(text.includes(expected),expected);assert(!element('pi-capability-conditional'));assert(!('taskId'in calls[0]));assert.equal(calls.length,1);
     await settle(()=>{Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value').set.call(element('pi-capability-search'),'导出');element('pi-capability-search').dispatchEvent(new Event('input',{bubbles:true}));});await click('pi-capability-search-submit');assert.equal(calls.at(-1).query,'导出');const count=calls.length;await click('pi-capability-manage-skills');assert.deepEqual(navigation,['skills']);assert.equal(calls.length,count);
+  });
+  await check('C01a','Conditional checks stay separate from genuine required and optional gaps, including legacy schema 1 responses',async()=>{
+    const conditional=capability({id:'native-workspace',sourceKind:'registry',origin:'registered',providerId:'edu.native.workspace-file-stat',requiredMissing:[],conditionalMissing:['mime_required'],optionalMissing:['mime'],availability:'task_check_required',reasons:['conditional_task_check']});
+    const required=capability({id:'required-and-conditional',requiredMissing:['file_metadata'],conditionalMissing:['mime_required'],optionalMissing:['mime'],reasons:['missing_required','conditional_task_check']});
+    const legacy=capability({id:'legacy-optional-only',requiredMissing:[],optionalMissing:['mime'],availability:'partial',reasons:[]});
+    await mount(C.PiCapabilityCenter,{onNavigate(){}},{getXiaozhiWorkbenchSummary:async()=>ok(page('capabilities',[conditional,required,legacy],{context:{state:'none',sessionId:null,taskId:null,requirementsVersion:null},registryRevision:1}))});
+    const rows=[...document.querySelectorAll('[data-testid="pi-capability-row"]')];assert.equal(rows.length,3);
+    assert.match(rows[0].textContent,/按任务核对 1 项条件要求/);assert.match(rows[0].textContent,/缺少 1 项可选能力/);assert(!rows[0].textContent.includes('缺少 1 项必需能力'));
+    const detail=rows[0].querySelector('[data-slot="disclosure-trigger"]')||[...rows[0].querySelectorAll('button')].find(button=>button.textContent.includes('来源与核验详情'));
+    assert(detail);await settle(()=>detail.click());assert.equal(detail.getAttribute('aria-expanded'),'true');
+    assert.equal(rows[0].querySelector('[data-testid="pi-capability-conditional-detail"]').textContent,'按任务核对的条件项 mime_required');
+    for(const expected of ['缺少 1 项必需能力','缺少 1 项可选能力','按任务核对 1 项条件要求','当前不可用'])assert(rows[1].textContent.includes(expected),expected);
+    assert(!rows[2].querySelector('[data-testid="pi-capability-conditional"]'));assert(!rows[2].querySelector('[data-testid="pi-capability-conditional-detail"]'));
+    assert.match(rows[2].textContent,/缺少 1 项可选能力/);assert.match(rows[2].textContent,/部分能力可用/);
   });
   await check('C02','Capability query binds the legitimate selected Task and stale/partial sources stay explicit',async()=>{
     const calls=[];await mount(C.PiCapabilityCenter,{sessionId:T,task:{id:task().id,requirementsVersion:1},onNavigate(){}},{getXiaozhiWorkbenchSummary:async query=>{calls.push(query);return ok(page('capabilities',[],{total:null,matched:null,counts:null,partial:true,unavailableCount:1,sourceFailures:[{source:'registry',code:'corrupt',records:1}],context:{state:'stale',sessionId:T,taskId:task().id,requirementsVersion:1},registryRevision:null}));}});assert.equal(calls[0].taskId,task().id);assert.equal(calls[0].requirementsVersion,1);assert(element('pi-capability-context').textContent.includes('已变化'));assert.match(element('pi-capability-partial').textContent,/刷新记录/);assert(!element('pi-capability-empty'));
@@ -201,7 +215,7 @@ export {validTaskView} from ${JSON.stringify(path.join(desktop,'src/shared/xiaoz
     assert(element('pi-workbench'),'panel must stay open across keyed remount');assert.equal(element('office-prompt-input').value,'第二会话未发送草稿');assert.equal(calls.filter(value=>value[0]==='resume').length,1);await click('pi-task-overview-resume');assert.equal(calls.filter(value=>value[0]==='resume').length,1);
     await settle(()=>gate.resolve({ok:true}));assert(element('pi-workbench-action-notice').textContent.includes('同一任务'));assert(calls.findIndex(value=>value[0]==='snapshot'&&value[1]===T)<calls.findIndex(value=>value[0]==='get'));report.calls.push(...calls);
   });
-  report.success=report.checks.every(value=>value.pass)&&report.checks.length===17;
+  report.success=report.checks.every(value=>value.pass)&&report.checks.length===18;
 }catch(error){report.fatal=String(error.stack||error);console.error(error);}
 finally{
   if(root&&act)await act(async()=>root.unmount());dom?.window.close();for(const channel of channels){channel.port1.close();channel.port2.close();}if(NativeMessageChannel)globalThis.MessageChannel=NativeMessageChannel;

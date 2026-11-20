@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "082d179214bd6ae249c85e4a704841a9f8a4e475",
+  "compiledMainSha256": "6c6139716d5d5c70f570d91cb6269cbe228b71a2f20657a5c5d3f598981c6be9",
+  "fixedSource": "https://starchild.gsfc.nasa.gov/docs/StarChild/teachers/densities.html",
+  "status": "PASS_SCOPED",
+  "boundary": "The selected web tool runs through the original Electron and Pi host with an actual public HTTP response. Model choices and answer text are scripted loopback responses. This does not grade answer quality, the baselines, formal ABBA, or final product latency.",
+  "earlierAttempts": [
+    {"report": "TEMP/harness-q5-public-source-f3d08ad9/probe.log", "reason": "Temporary probe regex did not compile. No app was launched."},
+    {"report": "TEMP/harness-q5-public-source-3676f27e/report.json", "reason": "Unrelated optional fixture seed failed Skill review before the first window. The focused probe instead launched on a new empty profile."},
+    {"report": "TEMP/harness-q5-public-source-e5aa72a4/report.json", "reason": "The inspector did not accept dynamic import for instrumentation. The completed probe used the same local observer through createRequire."},
+    {"report": "TEMP/harness-q5-public-source-8d890170/report.json", "reason": "A pending one-time approval stopped dispatch; no page HTTP request."},
+    {"report": "TEMP/harness-q5-approved-763bec96/report.json", "reason": "The visible approval persisted as approved. The original Run had already ended with a failed tool; approval alone did not start a new Run or send a page request."}
+  ],
+  "successfulProbe": {
+    "report": "TEMP/harness-q5-continue-2c936265/report.json",
+    "reportSha256": "9062aeaa079d7602edb0cd5c039996cfe608b9d8f40c9d192b5c237682304aa2",
+    "steps": ["Submit through Composer", "Approve the exact GET using the visible one-time approval", "Open Workbench", "Select Continue checking this same task", "Observe the original tool receipt and read back SQLite and native tool result"],
+    "approval": {"state": "executed", "revision": 4, "scope": "operation", "unchangedTaskId": true, "differentAdmittedRun": true},
+    "http": {"requestsObservedForFixedTarget": 1, "status": 200, "headersSentToResponseHeadersMs": 466.4541, "createdToResponseEndMs": 2936.1693},
+    "rendererToolStartToEndMs": 4670.9,
+    "nativeSourceAndDensityRulePresent": true,
+    "syntheticModelRequests": 4,
+    "paidModelRequests": 0
+  },
+  "nextAcceptanceDependency": "The formal runner currently exits on the first terminal Run after clicking approval. Before formal sampling, cover the exact same-task continuation path where applicable. Keep the original failed tool and separately bind and meter the admitted continuation Run, with one bounded authorized continuation for the row. Check frozen A separately before comparing behavior."
+}

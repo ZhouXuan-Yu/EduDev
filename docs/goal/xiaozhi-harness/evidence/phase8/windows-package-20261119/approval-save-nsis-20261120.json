@@ -34,6 +34,21 @@
     "pageErrors": 0,
     "paidCalls": 0
   },
+  "unpackedWorkerAndComposer": {
+    "command": "node scripts/xiaozhi-agent/pi-windows-installer-ui.mjs --package-dir <stage>/release/win-unpacked",
+    "report": "apps/desktop/test-results/xiaozhi-agent/pi-windows-installer-ui-rMDxPA/report.json",
+    "reportSha256": "f95e72829952c8500fdf8340af6f41fec140bc51240ae73f556fff8cb4a40602",
+    "checksPassed": 6,
+    "checksTotal": 6,
+    "workerSchema": "xiaozhi.education.quote.v1",
+    "systemPathEmpty": true,
+    "configuredSystemPythonPath": "intentionally nonexistent",
+    "draftCreatedTurn": false,
+    "observedNetworkRequests": 0,
+    "pageErrors": 0,
+    "paidCalls": 0,
+    "coverage": "Uses the unpacked product executable and an owned profile. The script checks the four base workers; the optional fifth resource was checked by the assembly log. Installer and shortcuts remain outside this run."
+  },
   "qg08": "PASS_SCOPED",
   "qg09": "BLOCKED",
   "scope": "This packaged approval candidate predates the separate 38e5a70 knowledge-base handoff. Clean Windows installation, shortcut launch and uninstall still require the independent environment."

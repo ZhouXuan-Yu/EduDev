@@ -8,15 +8,15 @@
     },
     {
       "path": "2.Memory.md",
-      "sha256": "df12205760caf36b7286fcd6e15ea388771a6edc4f4822db18444eb3696bd135"
+      "sha256": "47f75d9dafa521e699459b306db2cf331f7618e6485dc7f972a22b61d139fbbb"
     },
     {
       "path": "3.Learning.md",
-      "sha256": "67f86f80587430b2f72cf4e3ccc5aa1451245d9513484bb7bf3c95a67cc63596"
+      "sha256": "8ab775bcfdfe01bd3439b565a7c4a739b7ad193719e84204ce1f94cd7f20bb1e"
     },
     {
       "path": "4.Wiki.md",
-      "sha256": "ecbe704a1cd598d16faa88ad6fd527ca1232eb7303b8fea1b7e2585bebfdad68"
+      "sha256": "a8e934ca26bfcdaca9bd0e3634c8b99ee55bc698f7582efb2b630634f2c85851"
     },
     {
       "path": "apps/desktop/scripts/education/kb-ai-page-boundaries.mjs",
@@ -76,7 +76,7 @@
     },
     {
       "path": "docs/acceptance/CURRENT.md",
-      "sha256": "03f39bc397b858efe373b4f79805ebfe4f83479d58d626daa8ecf53c7e46946e"
+      "sha256": "a7516214e28a41211623e84917d048617049982192d45747e59b51303276e50e"
     },
     {
       "path": "docs/architecture/CURRENT.md",
@@ -100,7 +100,7 @@
     },
     {
       "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
-      "sha256": "115b13c11032cd36f3987788cbf90b309caec31ae34264549c405880aa75c389"
+      "sha256": "f20fd76721e9b877405583cc1f32f5109080d5866096e97c8977859ebfcfbd12"
     },
     {
       "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
@@ -116,11 +116,11 @@
     },
     {
       "path": "docs/research/evidence/kb/20261120/structure-search-visibility/README.md",
-      "sha256": "75f98b7e061c73773af4e466f0aaa65bfe4ffe98776ab946779fcc206d4b2ebf"
+      "sha256": "e3161aca271a26df2481b280c5b7c6391d2704edd4dadb8a83608bb5bdf20f78"
     },
     {
       "path": "docs/research/evidence/kb/20261120/structure-search-visibility/summary.json",
-      "sha256": "36f3f4febd36ffaf57504f84ea1a601ff458e37de3c720bac9bde4ae72173311"
+      "sha256": "6a9e35bf3f99ff5eecae14cce4324d8e30dceab6cdb0d02f5d075c7282be25bb"
     }
   ]
 }

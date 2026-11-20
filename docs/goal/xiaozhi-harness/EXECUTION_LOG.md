@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 能力条件投影和独立复验
+
+只读能力清单的 schemaVersion 1 增加可选 `conditionalMissing`，缺字段的旧响应按空处理。原 Resolver、授权判断、数据库和依赖不变。两种构建分别保留摘要和原始失败记录。与后到的知识库代码组合时重生成 629 项核心工具清单。npm audit 检出原有 29 项，低 8、中 13、高 8、严重 0，锁文件无变更。无新增网络派发或模型请求，本轮没采集可横比的模型时延。可用普通 Git revert 回退。[构建与命令记录](evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)
+
 ## 2026-11-20 合入题库结构版本交接
 
 将 `38e5a70` 与本轮审批修复合并，四份协作文档的并行章节同时保留。使用 `npm.cmd run build -- --outDir test-results/harness-approval-kb-main-38e5a70-20261120/out` 完成构建及类型检查。用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/structure-review-boundaries.mjs` 执行结构题事务专项，结果 18/18。日志在同一测试目录的 `build.log` 和 `structure-review.log`。
