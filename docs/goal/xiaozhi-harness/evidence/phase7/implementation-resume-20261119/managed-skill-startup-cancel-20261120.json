@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
   "baseSourceCommit": "37866ce722c7815680b4e204b937e90ad7540a26",
-  "status": "BUILT_SOURCE_CHECKS_PASS",
+  "status": "CANCELLATION_PROVEN_LATENCY_STILL_FAILS",
   "observedFailure": "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
   "updatedPaths": [
     "apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
@@ -61,7 +61,45 @@
     }
   ],
   "newPaidCalls": 0,
-  "backgroundElectron": "PENDING",
+  "backgroundElectron": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "sourceCommit": "09b257daf58b725f4f25df18c2ebfefc3b0842f4",
+    "status": "FAIL",
+    "testExitCode": 1,
+    "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-eKHeBb/evidence/ui-report.json",
+    "reportSha256": "f580991401f39605ed9121976668bdeebd81a24b2a6e169e834b6a9f0564ff43",
+    "passed": [
+      "U01",
+      "U02"
+    ],
+    "failed": [
+      "U03"
+    ],
+    "notRun": [
+      "U04",
+      "U05",
+      "U06",
+      "U07",
+      "U08",
+      "U09"
+    ],
+    "persistedRun": {
+      "taskId": "xitask_a18c266abb78ff63f2e02f477600a343a80c484689029c16ff0f544eacc697d5",
+      "sessionId": "aisession_626496b7-593a-4511-bcd6-74cea4372690",
+      "id": "run_ba9daf92-c65a-4f39-9996-7b269c7adfa6",
+      "status": "failed",
+      "error_message": "本轮的本地准备或校验超时，执行已停止。已保存的成果会保留，请核对后继续。"
+    },
+    "journalOperation": "pi_load_managed_skills",
+    "journalElapsedMs": 15130,
+    "journalTimeoutMs": 15000,
+    "journalLog": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-eKHeBb/evidence/electron.log",
+    "journalLogSha256": "64244b1f0b15e8b08a6f0f4131b2d69013d2d84b87f404ec044d847bfdd07164",
+    "fixtureRequests": 7,
+    "rendererErrors": [],
+    "paidCalls": 0,
+    "persistedSkillSnapshotSelections": 7
+  },
   "build": {
     "command": "npm.cmd run build -- --outDir test-results/harness-managed-skill-cancel-20261120/out",
     "exitCode": 0,
@@ -78,5 +116,58 @@
     "total": 253,
     "exitCode": 0,
     "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  },
+  "integratedBuild": {
+    "sourceCommit": "09b257daf58b725f4f25df18c2ebfefc3b0842f4",
+    "repairCommit": "818fd40a42407145ae7cff3ad63f9f7791d94657",
+    "upstreamMain": "97d4f2db12620584012cf4fc2f5539c2c374acc9",
+    "command": "npm.cmd run build -- --outDir test-results/harness-managed-skill-merge-09b257d/out",
+    "exitCode": 0,
+    "outputSha256": "fe82e7413dd7e49ade3fbb92b0af9a22543cc134e30f48dfe354bca43dae76b1",
+    "outputFileCount": 481,
+    "mainSha256": "811ba5cdda81665204d00335638636d726cb21b7e8f648309212481bb3f6e54c",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "rendererEntrySha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+    "buildLogSha256": "6f8e9a55ffa0aa1fa67615310e3a9c66925b2c30de02d36245709116f56757e2"
+  },
+  "batchedVerification": {
+    "status": "SOURCE_CHECKS_PASS",
+    "sourceBase": "09b257daf58b725f4f25df18c2ebfefc3b0842f4",
+    "maxConcurrentPackageProofs": 4,
+    "orderPreserved": true,
+    "settlesStartedProofsOnCancelOrFailure": true,
+    "nativeParserPreparationOrderChanged": false,
+    "addedSourcePaths": [
+      "apps/desktop/src/main/xiaozhi-agent/skill-package-batch.ts",
+      "apps/desktop/src/main/xiaozhi-agent/managed-skills.ts"
+    ],
+    "terminalReadback": "Poll only new durable Run rows during preparation; check original task and runtime inactivity after terminal success.",
+    "tests": [
+      {
+        "command": "node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs",
+        "checks": 17,
+        "path": "TEMP/omni-skill-runtime-io-EcMiBs/report.json",
+        "sha256": "f4118ad030e4d7a4247f1691e4d1605722931bcb5c14b6fb83fea3eddb45b4bd"
+      },
+      {
+        "command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs",
+        "checks": 22,
+        "path": "TEMP/xiaozhi-pi-skill-authority-0CEctG/report.json",
+        "sha256": "687f4316d2168ccb3daf346d9b0b17a46a61629903e8d9e9277cab3f31f3a752"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+        "checks": 21,
+        "path": "TEMP/xiaozhi-skill-phase4-state-1Mcdc6/report.json",
+        "sha256": "1ea26a1d6ef16aa0ec98e0e56d7ea19c47563dc2758fc1302f3f177557e503e2"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/skill-phase4-privacy-race-smoke.mjs",
+        "checks": 8,
+        "path": "TEMP/xiaozhi-phase4-privacy-race-HSEpBL/report.json",
+        "sha256": "ce4c4fe850916ba4072b2a94ec97d899fcdf419961ee46a2f2328b72f01a1e79"
+      }
+    ],
+    "backgroundElectron": "PENDING"
   }
 }

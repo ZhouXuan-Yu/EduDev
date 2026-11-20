@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {mapSkillPackages} from './skill-package-batch';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import {answerQualityEnabled} from './answer-quality';
@@ -213,12 +214,11 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     verifyItem(item: PrivateManagedSkill) { return verify(item); },
     verifyItemAsync(item: PrivateManagedSkill, signal?: AbortSignal) { return verifyRuntime(item, signal); },
     async resourcesForItems(items: PrivateManagedSkill[], signal?: AbortSignal) {
-      const resources = [];
-      for (const item of items) {
+      const resources = await mapSkillPackages(items, async item => {
         signal?.throwIfAborted();
         const {loaded, bytes, directory} = await verifyRuntime(item, signal);
-        resources.push({item: structuredClone(item), directory, skill: loaded.skills[0], bytes});
-      }
+        return {item: structuredClone(item), directory, skill: loaded.skills[0], bytes};
+      }, signal);
       return {revision: 0, resources};
     },
     initialize() { return mutate(async () => {
@@ -303,11 +303,10 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     /** Main-only runtime descriptors; UI never receives local source paths. */
     async enabledResources(signal?:AbortSignal) {
       const catalog = await readCatalog();
-      const resources=[];
-      for(const item of catalog.skills.filter(item=>item.enabled&&!item.archived)){
+      const resources=await mapSkillPackages(catalog.skills.filter(item=>item.enabled&&!item.archived),async item=>{
         signal?.throwIfAborted();const {loaded,bytes,directory}=await verifyRuntime(item,signal);
-        resources.push({item:structuredClone(item),directory,skill:loaded.skills[0],bytes});
-      }
+        return {item:structuredClone(item),directory,skill:loaded.skills[0],bytes};
+      },signal);
       return { revision: catalog.revision, resources };
     },
   };

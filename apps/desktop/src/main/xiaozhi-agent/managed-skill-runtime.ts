@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { loadSkillsFromDir, stripFrontmatter, parseFrontmatter, type LoadSkillsResult, type ToolDefinition } from '@earendil-works/pi-coding-agent';
 import { noLinks, type createManagedEducationSkills } from './managed-skills';
 import {noLinksAsync,readPackageAsync} from './skill-package-async';
+import {mapSkillPackages} from './skill-package-batch';
 import { SKILL_LIMITS, validSkillName } from './skill-catalog-state';
 import { skillAuthority, type SkillAuthorityIdentity } from './native-skill-epoch';
 import { snapshotSkillsForSession, resolveSessionSkillsForRuntime } from './vendor/hana/lib/skills/session-skill-snapshot';
@@ -81,7 +82,7 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       await noLinksAsync(root,signal);
       // The complete package proof already verifies every exact-sized file and
       // rejects extra entries, aliases and links; do not reread the same files.
-      for (const item of initial.prepared) await verifyDirectory(path.join(root, item.name), item.texts,signal);
+      await mapSkillPackages(initial.prepared,item=>verifyDirectory(path.join(root, item.name), item.texts,signal),signal);
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
   // The final check below proves every cache file after native parsing and

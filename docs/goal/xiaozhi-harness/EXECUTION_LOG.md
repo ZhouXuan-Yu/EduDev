@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 受管 Skill 批次验证
+
+同一 15 秒上限和完整权限、包内容、链接、脱敏证明继续生效。每批最多四个文件包证明，失败或取消时先等已发起的读操作退出。合并构建 `09b257d` 的失败对应七项已选 Skill 和实际 SQLite 失败 Run，仍无旧 Q5 同因结论。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
 ## 2026-11-20 受管 Skill 超时修复
 
 生命周期信号传给加载、治理检查、注册快照和原生命令校验。移除一次重复派生缓存全扫，每包启动扫描 4 次降到 3 次。源文件重读和权限检查次数维持原值。完整构建与组件 253/253，Skill 专项 13/13、权限 22/22、阶段状态 21/21 和隐私竞态 8/8。普通 Git revert 可回退，无数据库迁移。[测试命令与构建指纹](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

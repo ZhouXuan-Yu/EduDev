@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 受管 Skill 超时后的第二次修复
+
+合并构建 `09b257d` 再次超时，工作台 U03 未成功。保留此次失败。新候选把相互独立的源包和缓存证明合并到最多四路的批次，并保持原输出顺序。测试先等待新增 Run 的持久终态，随后再查完整页面快照。[上一次失败及构建证据](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)
+
 ## 2026-11-20 受管 Skill 准备可取消
 
 已实现取消贯通和初始化减载。15 秒上限与权限、原包及派生缓存证明继续生效。启动主动取消、篡改检测和快照事务回滚专项已通过，合并后仍要复验真正同任务续跑及终端。[测试命令与构建指纹](evidence/phase7/implementation-resume-20261119/managed-skill-startup-cancel-20261120.json)

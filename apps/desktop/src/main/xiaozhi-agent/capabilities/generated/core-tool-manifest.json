@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "468e97ebee08b76314d82dace9a5db0ad89c642c5618f4e66426f78de0324617",
+  "sourceHash": "31206dbf240e826647a19bd801110cd9524bceb5c68b3acd0c7bf928ce621ae5",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1072,11 +1072,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skill-runtime.ts",
-      "sha256": "82631ef460695332b21d74771aa117db53f78bf1cc9b389c92377bc1f77d48c9"
+      "sha256": "3c00c4ea4ca10a6c5de21e8625657b645da5b9f829b11e12b4089c14dac2d84e"
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skills.ts",
-      "sha256": "85e38023aaad231c1f9082cad7cae7ab81c4c22b20b4b1b786162c6c98d388aa"
+      "sha256": "f3640e310a91c62cb8ca5b9e434aa2914f99f01a5825a54f267ad75f1243ec26"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
@@ -1445,6 +1445,10 @@
     {
       "file": "src/main/xiaozhi-agent/skill-package-async.ts",
       "sha256": "68db22b8d499b955664c69b01f4d9b26f00c73d69b913fea6ab93ecb97a8e3f5"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/skill-package-batch.ts",
+      "sha256": "83f194c1e25a18db8d87406fd1aa83727ae0bb3e51576185c1e5b291fa811ee8"
     },
     {
       "file": "src/main/xiaozhi-agent/skill-runtime.ts",

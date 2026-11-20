@@ -18,21 +18,24 @@ function runs(sessionId) {
   finally {db.close();}
 }
 async function verifyResumedRun(target, previous) {
-  await until(() => runs(target.sessionId).length === previous.size + 1);
-  await until(async () => {
-    const state = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), target.sessionId);
-    return state.running === false && state.task?.id === target.task.id;
-  }, 90000);
   let run;
+  // The full renderer snapshot reads multiple projections. While Pi is
+  // preparing a Run, wait for its terminal row to keep the runtime unburdened.
   await until(() => {
     const created = runs(target.sessionId).filter(item => !previous.has(item.id));
+    if (!created.length) return false;
     assert.equal(created.length, 1);
     run = created[0];
     return run.status !== 'running';
-  });
+  }, 90000);
   report.resumedRuns ??= [];
   report.resumedRuns.push({taskId: target.task.id, sessionId: target.sessionId, ...run});
   assert.equal(run.status, 'succeeded', run.error_message || 'The resumed Run must succeed');
+  await until(async () => {
+    const state = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), target.sessionId);
+    return state.running === false && state.task?.id === target.task.id;
+  });
+  assert.equal(runs(target.sessionId).length, previous.size + 1);
 }
 try {
   fixture = await startWorkbenchFixture({background: true}); application = fixture.application; page = fixture.page;
