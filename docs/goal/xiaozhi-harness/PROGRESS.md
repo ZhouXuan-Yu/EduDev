@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-20 联网直接依赖修复
+
+直接网络运行时从 Undici `7.24.7` 更新至 `7.30.1`。MCP 传输 11/11、网络副作用 8/8，固定 NASA 公开网页返回 HTTP 200。构建、组件和新依赖下的独立 C2 4/4 通过。审计已排除直接实例，报告的 8 项 high 计数仍在。 [实际路径和测试](evidence/phase8/undici-network-runtime-patch-20261120.json)
+
 ## 2026-11-20 主线同构建独立验收
 
 Terra 在主线 `b4919c6` 的同一构建完成 13 项检查。撤销 MCP 后的本地资料阅读、页面来源和冷读 4/4，工作台键盘两尺寸各 3/3，冷启动审批 3/3。运行前后 481 个构建文件指纹一致，新增真实模型请求 0。原生窗口、干净 Windows 安装和正式模型对照仍按原门槛。 [四次运行及证据](evidence/phase7/implementation-resume-20261119/current-main-c2-keyboard-approval-20261120.json)
