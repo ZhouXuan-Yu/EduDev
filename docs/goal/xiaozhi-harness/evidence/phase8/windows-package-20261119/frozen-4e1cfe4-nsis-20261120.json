@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "4e1cfe474e2a16743487a594385eb8a944bf248e",
+  "stage": "TEMP/edu-harness-frozen-4e1cfe4-package-29a947db",
+  "command": "electron-builder --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+  "pageBlocksEnabled": true,
+  "electron": "43.8.3",
+  "runtimeResourcesVerified": {
+    "page-blocks-runtime": 767,
+    "ocr-runtime": 712,
+    "education-runtime": 90,
+    "retrieval-runtime": 154,
+    "reranker-runtime": 155
+  },
+  "installer": {
+    "path": "release/Xiaozhi-Setup-0.1.0-x64.exe",
+    "bytes": 886080654,
+    "sha256": "bd69c0754d362c5efe446e7c043ce8bb97ee702f18c60c28a828347ed32b899b",
+    "signed": false,
+    "published": false
+  },
+  "packagedBuild": {
+    "fileCount": 481,
+    "byteIdenticalToDevelopmentBuild": true,
+    "outSha256": "86ad93c7fe2a4cdcf031f0c17490c9cb8b3551b81ed1c8ca0abc47f241cfc40f",
+    "mainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5"
+  },
+  "startup": {
+    "command": "node <stage>/boot-retest.cjs",
+    "report": "startup-bCmZiO/report.json",
+    "appIsPackaged": true,
+    "viewportsPassed": ["1366x768", "1920x1080"],
+    "isolatedProfileAndDatabase": true,
+    "pageErrors": 0,
+    "paidCalls": 0
+  },
+  "qg08": "PASS_SCOPED",
+  "qg09": "BLOCKED",
+  "limitation": "The unpacked executable started. The NSIS installer, desktop and Start menu shortcuts, and uninstall require a clean isolated Windows system. Setup was not executed on the daily host."
+}

@@ -58,7 +58,9 @@ export function PiApprovalInbox({activeSessionId,onOpenSession,onChanged}: {
     finally {if(current(ticket)){lock.current=false;setBusy(false);}}
   }
   async function changed(sessionId:string) {
-    if(!alive.current)return;setSelection(undefined);state.reload();await onChanged(sessionId);
+    if(!alive.current)return;
+    if(selectedDetail.current?.contains(document.activeElement))heading.current?.focus({preventScroll:true});
+    setSelection(undefined);state.reload();await onChanged(sessionId);
   }
   async function legacy(decision:'approve'|'reject'|'verify'|'resume') {
     if(lock.current||!selection||selection.detail.kind!=='legacy_copy')return;

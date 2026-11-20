@@ -3,9 +3,9 @@
   "worktree": "D:/WorkProject/EduProject-harness",
   "branch": "codex/xiaozhi-harness-20261112",
   "base": "d50ef330",
-  "head": "dcaaafe8a48db22786676a12c43be334837a914c",
-  "headRole": "Source parent of the 2026-11-20 combined W2/W3 build. Resolve remote refs for the evidence commit.",
-  "mainObserved": "dcaaafe8a48db22786676a12c43be334837a914c",
+  "head": "8eb3f261d40db3adeed578e084c8300a64483b97",
+  "headRole": "Source parent for the 2026-11-20 combined approval save candidate. Resolve remote refs for the evidence commit.",
+  "mainObserved": "8eb3f261d40db3adeed578e084c8300a64483b97",
   "phase": 7,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -26,8 +26,8 @@
     "ACCEPTANCE_MATRIX.json"
   ],
   "openFindings": [
-    "Phase7 full Gate7 remains partial. Approval keyboard focus and A2 same-task Grant, exact target change and provider Schema cold invalidation have scoped evidence. Complete applicable snapshot/runtime states at both sizes and physical mouse drag and maximize/restore.",
-    "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall.",
+    "Phase7 full Gate7 remains partial. Consolidated renderer evidence and independent Skill/MCP paths have scoped results. Native mouse drag and maximize/restore remain untested following the stopped interaction.",
+    "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall. NSIS build and isolated unpacked startup are separately recorded.",
     "Phase8 formal real-model ABBA, foreground timing and independent final acceptance require an accepted frozen build."
   ],
   "paidRequestLimit": 200,
@@ -37,7 +37,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Continue exact Gate7 evidence for A2 workspace scope cold readback and remaining applicable keyboard/page states. Physical window interaction, clean Windows installer and frozen Phase8 acceptance remain open.",
+  "next": "Use the consolidated Gate7 evidence for remaining final-review scope. Native window interaction and an isolated Windows guest remain pending. Run the formal ABBA only after the page gate freezes the candidate.",
   "phase2": "ACCEPTED",
   "phaseCount": 9,
   "phase3": "ACCEPTED",

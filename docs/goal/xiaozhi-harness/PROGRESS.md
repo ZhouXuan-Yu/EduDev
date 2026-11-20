@@ -1,5 +1,21 @@
 # Harness 执行进度
 
+## 2026-11-20 审批决定保存期间退出
+
+现行权限申请和历史复制审批在保存期间可用 Escape 关闭收件箱并回到入口。已提交的拒绝由原主进程处理一次，迟到响应不会替换重开后选中的申请。独立 Terra 通过历史复制路径，原批准范围、Run 和文件保持一致。[前后对照](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+本批已纳入主线的印刷题号与填空恢复。固定矩阵仍为 88/89，Gate 7 保持部分通过。原生拖窗、最大化还原和独立 Windows 的安装、快捷方式与卸载待验，正式模型对照等待冻结候选。模型账本仍是 3/200，本批新增 0。
+
+组合构建与类型检查通过，组件 253/253，桌面主流程重跑 207/207。恢复读取期间退出的实页确认未新建 Run。首轮主流程的第二次 Electron 启动断开，原日志保留。安装包解包后与该构建的 481 个输出逐文件一致，独立运行两种视口通过。[本地安装包记录](evidence/phase8/windows-package-20261119/approval-save-nsis-20261120.json)
+
+现行审批在两视口完成保存中 Escape、重开隔离和行内卡焦点核对。保存完成后的首个 Tab 能到达状态筛选。随后再按 Escape 的整段用例仍有未通过记录，单列到 A1 终验。[页面记录](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+## 2026-11-20 统一候选复验与 Windows 安装包
+
+在 `4e1cfe4` 同一构建完成七组实页测试。初次并发通过 6/7，1920×1080 的目录隔离遇到 Electron 调试接口错误，原样保留。该项单独复跑通过 3/3。Terra 独立核对团队 Skill 分享及审核、版本回滚、MCP 撤销后回到本地能力。分别记录场景边界与报告路径。[桌面实测](evidence/phase7/implementation-resume-20261119/frozen-candidate-4e1cfe4-20261120.json)
+
+同一构建已生成本地 NSIS x64 安装包，五组托管资源校验和两种视口的解包程序启动通过。需独立 Windows 实际验证安装、快捷方式和卸载。文件未发布。[包摘要](evidence/phase8/windows-package-20261119/frozen-4e1cfe4-nsis-20261120.json)
+
 ## 2026-11-20 审批详情读取期间的键盘关闭
 
 旧构建在两个尺寸均复现审批详情加载期间按 Escape 无反应。读取开始后审阅按钮被禁用，测试观察到焦点离开对话框。修复将焦点留在收件箱内，恢复查看时仍可关闭并返回触发入口。等待中的原请求可以正常结束，重开收件箱只显示当前选择。[实页对照](evidence/phase7/implementation-resume-20261119/approval-busy-escape-20261120.json)

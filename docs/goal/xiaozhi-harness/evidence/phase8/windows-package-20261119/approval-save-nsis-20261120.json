@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "8eb3f261d40db3adeed578e084c8300a64483b97",
+  "sourceDelta": "Approval decision focus changes described by ../../phase7/implementation-resume-20261119/approval-save-escape-20261120.json",
+  "stage": "TEMP/edu-harness-approval-save-package-5d28c10d",
+  "command": "electron-builder --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+  "runtimeResourcesVerified": {
+    "page-blocks-runtime": 767,
+    "ocr-runtime": 712,
+    "education-runtime": 90,
+    "retrieval-runtime": 154,
+    "reranker-runtime": 155
+  },
+  "installer": {
+    "name": "Xiaozhi-Setup-0.1.0-x64.exe",
+    "bytes": 886082896,
+    "sha256": "02750de98d6dd459d8820e94b91035907c5f395f492af56443f50c3cbd05d50c",
+    "signed": false,
+    "published": false
+  },
+  "packagedBuild": {
+    "byteIdenticalToDevelopmentBuild": true,
+    "fileCount": 481,
+    "outSha256": "66900f67d2b424f4c1f68cd46bc0d897d2929014299f2f72f840ffcb5adba956",
+    "mainSha256": "5eacd4a8a0d0811ec65622f3daf88ec6406dc0525c128cbddb69c982057bd9ac",
+    "rendererSha256": "e78e8eecf6ff8113b44a634c807524fb9dac7d8f560aecb6fdba4a7618254c4b"
+  },
+  "startup": {
+    "report": "startup-2AInRe/report.json",
+    "appIsPackaged": true,
+    "electron": "43.8.3",
+    "viewportsPassed": ["1366x768", "1920x1080"],
+    "isolatedProfileAndDatabase": true,
+    "pageErrors": 0,
+    "paidCalls": 0
+  },
+  "qg08": "PASS_SCOPED",
+  "qg09": "BLOCKED",
+  "scope": "This packaged approval candidate predates the separate 38e5a70 knowledge-base handoff. Clean Windows installation, shortcut launch and uninstall still require the independent environment."
+}

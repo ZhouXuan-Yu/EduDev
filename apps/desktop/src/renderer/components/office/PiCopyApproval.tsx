@@ -1,5 +1,6 @@
 import { Button } from '@heroui/react';
 import { FileCheck2 } from 'lucide-react';
+import { useRef } from 'react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import type { XiaozhiApproval, XiaozhiApprovalState, XiaozhiDecisionInput } from '../../../shared/xiaozhi-agent';
 import { useOfficeControlState } from './OfficeComposerState';
@@ -11,9 +12,15 @@ const labels: Record<XiaozhiApprovalState, string> = { pending: '需要你的确
 export function PiCopyApproval({ approval, onDecision }: { approval: XiaozhiApproval; onDecision: (id: string, decision: XiaozhiDecisionInput['decision']) => Promise<void> }) {
   const {draft,update,lock:locked}=useOfficeControlState(`approval:${approval.id}`);
   const {busy,error:failed}=draft;
+  const triggerLabel=useRef<HTMLElement>(null);
   if (approval.permission) return <PiPermissionApproval approval={approval.permission}/>;
-  async function decide(decision: XiaozhiDecisionInput['decision']) {
-    if (locked.current) return; locked.current = true; update({busy:true,error:''});
+  async function decide(decision: XiaozhiDecisionInput['decision'], press: {target:Element;pointerType:string}) {
+    if (locked.current) return;
+    locked.current = true;
+    if(press.pointerType==='keyboard'||press.pointerType==='virtual'||document.activeElement===press.target){
+      triggerLabel.current?.closest<HTMLButtonElement>('button')?.focus({preventScroll:true});
+    }
+    update({busy:true,error:''});
     try { await onDecision(approval.id, decision); } catch { update({error:'确认没有完成，请刷新后重试。'}); }
     finally { locked.current = false; update({busy:false}); }
   }
@@ -22,7 +29,7 @@ export function PiCopyApproval({ approval, onDecision }: { approval: XiaozhiAppr
     : ['executed', 'verified'].includes(approval.state) ? 'output-available' : 'output-error';
   const expanded = !['executed','verified','rejected','interrupted'].includes(approval.state);
   return <ChatTool key={`${approval.id}:${expanded}`} state={state} defaultExpanded={expanded} className="pi-copy-approval" data-testid="pi-copy-approval" data-approval-id={approval.id} data-state={approval.state}>
-    <ChatTool.Trigger><FileCheck2 size={16} aria-hidden="true"/><strong>复制教学资料</strong><span>{labels[approval.state]}</span></ChatTool.Trigger>
+    <ChatTool.Trigger><FileCheck2 size={16} aria-hidden="true"/><strong ref={triggerLabel}>复制教学资料</strong><span>{labels[approval.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
       <div className="pi-copy-preview">
         <p>来源：<strong>{approval.source}</strong></p>
@@ -31,8 +38,8 @@ export function PiCopyApproval({ approval, onDecision }: { approval: XiaozhiAppr
         {pending && <p>拒绝后，这次复制不会执行。</p>}
       </div>
       <ChatTool.Approval><ChatTool.ApprovalActions>
-        {pending && <><ChatTool.Approve isDisabled={busy} onPress={() => void decide('approve')} data-testid="pi-copy-approve">批准这一次</ChatTool.Approve><ChatTool.Reject isDisabled={busy} onPress={() => void decide('reject')} data-testid="pi-copy-reject">拒绝</ChatTool.Reject></>}
-        {approval.state === 'uncertain' && <Button isDisabled={busy} onPress={() => void decide('verify')} data-testid="pi-copy-verify">核验现有文件</Button>}
+        {pending && <><ChatTool.Approve isDisabled={busy} onPress={event => void decide('approve', event)} data-testid="pi-copy-approve">批准这一次</ChatTool.Approve><ChatTool.Reject isDisabled={busy} onPress={event => void decide('reject', event)} data-testid="pi-copy-reject">拒绝</ChatTool.Reject></>}
+        {approval.state === 'uncertain' && <Button isDisabled={busy} onPress={event => void decide('verify', event)} data-testid="pi-copy-verify">核验现有文件</Button>}
       </ChatTool.ApprovalActions></ChatTool.Approval>
       {busy && <p role="status">正在提交…</p>}{failed && <p role="alert">确认没有完成，请刷新后重试。</p>}
     </ChatTool.Content>

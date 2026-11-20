@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "4e1cfe474e2a16743487a594385eb8a944bf248e",
+  "compiledMainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5",
+  "rendererAsset": "index-DNC-qf8A.js",
+  "rendererSha256": "1286137273085a7d59adfcbde5ff04f8bfeefb57d05d5d170b25af83fd0173b5",
+  "launch": "OMNI_EDU_TEST_BUILD_ROOT points to the same compiled directory in each root run. Real Electron and isolated SQLite, synthetic local fixtures, no paid requests.",
+  "batchDirectory": "TEMP/edu-main-harness-87-c77734b2/apps/desktop/test-results/harness-approval-escape-6830389/final-candidate-batch",
+  "initialBatch": {
+    "passed": 6,
+    "total": 7,
+    "report": "summary.json",
+    "failedCase": "scope-1920",
+    "failure": "electronApplication.evaluate: Resulting promise was garbage collected. The initial check for the immutable A workspace passed; B model and cold checks had not started.",
+    "failureLog": "scope-1920.log"
+  },
+  "isolatedRetry": {
+    "case": "scope-1920",
+    "checksPassed": 3,
+    "log": "scope-1920-isolated-retest.log",
+    "pageErrors": 0
+  },
+  "scopedPasses": [
+    ["node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1366x768", 5],
+    ["node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1920x1080", 5],
+    ["node scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs 1366x768", 3],
+    ["node scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs 1920x1080", 3],
+    ["node scripts/xiaozhi-agent/phase7-workbench-partial-ui.mjs", 3],
+    ["node scripts/xiaozhi-agent/phase7-workbench-cold-ui.mjs", 5],
+    ["node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs", 3]
+  ],
+  "independentTerraRuns": [
+    {
+      "case": "S1",
+      "status": "PASS_SCOPED",
+      "report": "TEMP/phase7-unified-s1-af8848a7/report.json",
+      "scope": "Personal Skill shares as an independent Team copy, Admin review, a non-reviewer cannot approve an Official item, and readback after cold start."
+    },
+    {
+      "case": "S2",
+      "status": "PASS_SCOPED",
+      "report": "TEMP/phase7-unified-s2-4eff0fab/report.json",
+      "scope": "Rollback from 2.0.0 to 1.0.0, both version rows and file hashes preserved, ended Run remains bound to 2.0.0, cold UI and SQLite agree. Creation and active Run binding were outside this run.",
+      "reportCorrection": "The historical candidateFingerprint and networkCalls fields are carried over from the template. Use runtime.appPath for source identity. The test removed credentials, intercepted net.fetch, and did not request a model action."
+    },
+    {
+      "case": "C2",
+      "status": "PASS_SCOPED",
+      "report": "TEMP/phase7-terra-c2-candidate-run-Su5Ef2/report.json",
+      "scope": "Registered synthetic loopback MCP executed once with authority receipt, revoke in settings, actual Pi rejects the stale tool, built-in local discovery works, cold revoke and audit persist. Live marketplace and provider quality were outside this run.",
+      "loopbackProtocolRequests": 11,
+      "loopbackToolCalls": 1
+    }
+  ],
+  "paidCalls": 0,
+  "gate7": "PARTIAL",
+  "limitations": [
+    "There is a separate real failure for Escape during a submitted decision on this build.",
+    "This source has since advanced on main. Screenshots and results remain scoped to the recorded build.",
+    "No native mouse drag or maximize/restore was performed."
+  ]
+}

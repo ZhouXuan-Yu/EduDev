@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1357c4f7e520640795aa67d1bc873073ab99e0b83b2a25e2490c147f0a2fdaa0",
+  "sourceHash": "6ca2e6f62853e1baa6a0f0b348b8960c99b6991e4575c9fb86e776464b4155d6",
   "sources": [
     {
       "file": "package-lock.json",
@@ -640,7 +640,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/prepare-receipts.ts",
-      "sha256": "ce793a0b2bead3d5dfbc33a2e92a4d46127005f01200cc615d7c10bfd8cf7fd7"
+      "sha256": "bffe5e757c990a29b57beda69f90d1efe900c3f487d34dae104f8373f4b35786"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/public-fetch.ts",
@@ -928,7 +928,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/effects/non-dispatch.ts",
-      "sha256": "9ed7f520dacba29a1f7d0e4fa40470759d7e6e7bfb7e00ef552d3fca63ed7d6b"
+      "sha256": "a410dd00e45777a86d8dc25ec3fddcbd48cec2284e18724e28ee4a17bda520eb"
     },
     {
       "file": "src/main/xiaozhi-agent/effects/readback.ts",
@@ -980,7 +980,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
-      "sha256": "1d482d603a912ec1484cc028e8965d30dda615f7b394cb147036725bd0cbb011"
+      "sha256": "6213970f9ce5a56244544eb09d47eb0efaf0e7dc6c6db807784692c80c1ab372"
     },
     {
       "file": "src/main/xiaozhi-agent/events/terminal-cancellation.ts",
@@ -1024,7 +1024,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/file-references.ts",
-      "sha256": "2093515f2c9a717ea8a99ddd82cc891f90378b50c111a994c4d04639938dd43c"
+      "sha256": "31690e4656a78533638150b28697bdbc66a79cdf41a8d45fba99868eebdb037b"
     },
     {
       "file": "src/main/xiaozhi-agent/file-write-policy.ts",
@@ -1128,7 +1128,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/model-tool-privacy.ts",
-      "sha256": "df78e394f0c385534e627eadaa7e696fe60097b9ca65627358b2101bd31ffc79"
+      "sha256": "e00a9774f7ffb684c68e5ee7e59bad3e31f39f0df5248368dc2a973fbbf4c83d"
     },
     {
       "file": "src/main/xiaozhi-agent/native-authority-epoch.ts",
@@ -2012,7 +2012,7 @@
     },
     {
       "file": "src/shared/material-document-structure.ts",
-      "sha256": "32b85bc05a8ad69df75c6e7f4930d721d775a550fc1596a037eba1138c41f2d3"
+      "sha256": "c71e06b7b923cb528f45bb6cbfc2645ddb379fad9b15213375557f443c90b348"
     },
     {
       "file": "src/shared/material-layout.ts",

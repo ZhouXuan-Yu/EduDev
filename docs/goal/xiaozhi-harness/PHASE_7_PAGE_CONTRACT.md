@@ -1,5 +1,15 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 A1 提交决定与重新选择
+
+现行权限和历史复制的决定保存期间均保留焦点。已发决定由原处理结算。关闭收件箱后，后来打开的另一条申请保持原内容。历史复制路径由 Terra 独立核对原请求、SQLite 和触发器焦点。全阶段继续按原生窗口与冻结构建标准验收。[对应证据](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+W2 在同一工作台实测读取原任务快照时按 Escape。关闭后焦点恢复，原查询返回，没有创建新 Run 或调用模型。[恢复探针](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+## 2026-11-20 同一构建的集中回归
+
+W1 的停止与冷读、W2/W3 的迟到事件、A1 异常审批冷启、A2 两视口的目录归属、三页部分态，以及 Terra 独立 S1、S2、C2 有实页限定通过。目录隔离并发首轮异常保留，独立重跑通过。各场景只证明报告列出的范围，按实际运行的构建身份引用。[集中结果](evidence/phase7/implementation-resume-20261119/frozen-candidate-4e1cfe4-20261120.json)
+
 ## 2026-11-20 审批忙碌时的键盘退出
 
 A1 详情加载时按 Escape 可退出，焦点返回入口。重开后即使收到上一次读取结果也不会填入当前详情，重新查看可用。纯键盘两尺寸及鼠标进入、键盘退出的组合均实际通过。能力搜索、Skill 导航与 SQLite 无副作用另有证据。[两版实页](evidence/phase7/implementation-resume-20261119/approval-busy-escape-20261120.json)

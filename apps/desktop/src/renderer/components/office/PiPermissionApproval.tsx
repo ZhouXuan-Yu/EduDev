@@ -18,14 +18,32 @@ export function PiPermissionApproval({approval, onRefresh, disabled = false}: {
   const request = item.request;
   const identity = `${approval.request.owner.sessionId}:${approval.id}:${approval.revision}`;
   const live = useRef({identity, mounted:true});live.current.identity=identity;
+  const triggerLabel=useRef<HTMLElement>(null);
+  const trigger=()=>triggerLabel.current?.closest<HTMLButtonElement>('button');
+  const decisionFocus=useRef<{identity:string;origin:HTMLElement}|undefined>(undefined);
   useEffect(()=>{live.current.mounted=true;return()=>{live.current.mounted=false;};},[]);
+  useEffect(()=>{
+    const focus=decisionFocus.current;
+    if(draft.busy||!focus)return;
+    decisionFocus.current=undefined;
+    if(focus.identity===identity&&item.state==='pending'&&draft.error&&document.activeElement===trigger()&&focus.origin.isConnected){
+      focus.origin.focus({preventScroll:true});
+    }
+  },[draft.busy,draft.error,identity,item.state]);
   const expired = !Number.isFinite(Date.parse(request.expiresAt)) || Date.parse(request.expiresAt)<=Date.now();
   const acquisitionRequest = request.action === 'capability_prepare' || request.action === 'mcp_stdio_start'
     || request.action === 'mcp_call' && request.callId.startsWith('acquisition_health_');
-  async function decide(decision: PermissionApprovalInput['decision'], scope: 'operation' | 'task' = 'operation') {
+  async function decide(decision: PermissionApprovalInput['decision'], scope: 'operation' | 'task' = 'operation', press?:{target:Element;pointerType:string}) {
     if (lock.current || disabled || expired) return;
     const own = identity, current = () => live.current.mounted && live.current.identity===own;
-    lock.current = true; update({busy: true, error: ''});
+    lock.current = true;
+    if(press?.target instanceof HTMLElement&&(press.pointerType==='keyboard'||press.pointerType==='virtual'||document.activeElement===press.target)){
+      decisionFocus.current={identity,origin:press.target};
+      // The decision buttons become disabled. Keep keyboard events and the next
+      // Tab inside this card instead of letting browser focus fall onto body.
+      trigger()?.focus({preventScroll:true});
+    }
+    update({busy: true, error: ''});
     try {
       const result = await window.omniEdu?.decideXiaozhiPermission({sessionId: request.owner.sessionId,
         approvalId: item.id, revision: item.revision, decision, scope});
@@ -44,13 +62,15 @@ export function PiPermissionApproval({approval, onRefresh, disabled = false}: {
       setResolved(result.value);
       await onRefresh?.();
     } catch {if(current())update({error: '授权没有完成，请刷新当前申请后重试。'});}
-    finally {lock.current = false; if(current())update({busy: false});}
+    // The draft and lock belong to this exact approval ID. A closed view must
+    // still release its busy state once the already-sent decision has settled.
+    finally {lock.current = false; update({busy: false});}
   }
   const state = item.state === 'pending' ? 'requires-action' : ['approved', 'executing'].includes(item.state) ? 'input-available'
     : item.state === 'executed' ? 'output-available' : 'output-error';
   return <ChatTool state={state} defaultExpanded className="pi-copy-approval" data-testid="pi-permission-approval"
     data-approval-id={item.id} data-revision={item.revision} data-request-digest={item.requestDigest} data-state={item.state}>
-    <ChatTool.Trigger><ShieldCheck size={16} aria-hidden="true"/><strong>{permissionAction(request.action)}</strong><span>{labels[item.state]}</span></ChatTool.Trigger>
+    <ChatTool.Trigger><ShieldCheck size={16} aria-hidden="true"/><strong ref={triggerLabel}>{permissionAction(request.action)}</strong><span>{labels[item.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
       <div className="pi-copy-preview" style={{minWidth: 0, overflowWrap: 'anywhere'}}>
         <p>{request.purpose}</p>
@@ -71,9 +91,9 @@ export function PiPermissionApproval({approval, onRefresh, disabled = false}: {
         {expired && item.state==='pending' && <p role="status">申请已过期，请重新读取并由当前任务重新申请。</p>}
       </div>
       {item.state === 'pending' && <ChatTool.Approval><ChatTool.ApprovalActions>
-        <ChatTool.Approve isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-approve" onPress={() => void decide('approve')}>批准本次操作</ChatTool.Approve>
-        {acquisitionRequest && <ChatTool.Approve isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-approve-task" onPress={() => void decide('approve', 'task')}>授权当前任务</ChatTool.Approve>}
-        <ChatTool.Reject isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-reject" onPress={() => void decide('reject')}>拒绝</ChatTool.Reject>
+        <ChatTool.Approve isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-approve" onPress={event => void decide('approve','operation',event)}>批准本次操作</ChatTool.Approve>
+        {acquisitionRequest && <ChatTool.Approve isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-approve-task" onPress={event => void decide('approve','task',event)}>授权当前任务</ChatTool.Approve>}
+        <ChatTool.Reject isDisabled={draft.busy||disabled||expired} data-testid="pi-permission-reject" onPress={event => void decide('reject','operation',event)}>拒绝</ChatTool.Reject>
       </ChatTool.ApprovalActions></ChatTool.Approval>}
       {draft.busy && <p role="status">正在保存决定…</p>}
       {draft.error && <p role="alert">{draft.error}</p>}

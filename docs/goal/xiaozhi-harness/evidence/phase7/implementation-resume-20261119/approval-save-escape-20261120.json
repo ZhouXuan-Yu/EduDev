@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-20",
+  "scope": "Real Electron on isolated synthetic profiles, delayed original typed IPC handlers, exact SQLite readback, no native pointer and zero paid requests.",
+  "previousBuild": {
+    "sourceCommit": "4e1cfe474e2a16743487a594385eb8a944bf248e",
+    "mainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5",
+    "rendererSha256": "1286137273085a7d59adfcbde5ff04f8bfeefb57d05d5d170b25af83fd0173b5",
+    "results": [
+      {
+        "case": "Modern permission",
+        "report": "TEMP/gate7-approval-decision-focus-d80ffc79b2d64815a8e6f30ac73550a1/report.json",
+        "reportSha256": "974dafadf97bfde40b324cdb25b8eebe88e9c3300109d920c44c55c58ab6a679",
+        "outcome": "Escape left the workbench open with focus on BODY. The original rejection completed and was persisted once."
+      },
+      {
+        "case": "Historical copy",
+        "report": "TEMP/gate7-legacy-decision-1855f1c9013946d9bc01606038d52297/report.json",
+        "reportSha256": "f229a98698e1a3ab71c454d9088687a2a08a744b34d19e9ee29c128529690ed2",
+        "outcome": "Escape left the workbench open with focus on BODY. The exact historical rejection was saved, with the original run and grants unchanged."
+      }
+    ]
+  },
+  "combinedBuild": {
+    "sourceParent": "8eb3f261d40db3adeed578e084c8300a64483b97",
+    "path": "apps/desktop/test-results/harness-approval-save-integrated-20261120/out",
+    "buildCommand": "npm.cmd run build -- --outDir test-results/harness-approval-save-integrated-20261120/out",
+    "buildWithTypecheck": "PASS",
+    "mainSha256": "5eacd4a8a0d0811ec65622f3daf88ec6406dc0525c128cbddb69c982057bd9ac",
+    "rendererAsset": "index-6NLiRDUa.js",
+    "rendererSha256": "e78e8eecf6ff8113b44a634c807524fb9dac7d8f560aecb6fdba4a7618254c4b",
+    "coreManifest": {
+      "inputs": 629,
+      "hash": "6ca2e6f62853e1baa6a0f0b348b8960c99b6991e4575c9fb86e776464b4155d6",
+      "inputDrift": 0
+    },
+    "rendererComponents": {"passed": 253, "total": 253},
+    "educationDesktopSmoke": {
+      "command": "node scripts/electron-smoke.mjs with OMNI_EDU_TEST_BUILD_ROOT pointing to this out",
+      "initialLog": "apps/desktop/test-results/harness-approval-save-integrated-20261120/electron-smoke.log",
+      "initialFailure": "The first session reached the data backup and persisted its fixtures. The subsequent Electron launch disconnected before readback.",
+      "retryLog": "apps/desktop/test-results/harness-approval-save-integrated-20261120/electron-smoke-isolated-retry.log",
+      "passed": 207,
+      "total": 207
+    }
+  },
+  "independentHistoricalCopy": {
+    "result": "PASS_SCOPED",
+    "report": "TEMP/gate7-legacy-escape-7a83ae84/report.json",
+    "screenshot": "TEMP/gate7-legacy-escape-7a83ae84/legacy-escape.png",
+    "initialLocatorFailure": "TEMP/gate7-legacy-escape-f045059a/report.json",
+    "checks": "Escape closes and restores trigger focus while the exact historical refusal is being saved. A newly opened modern approval is unaffected. The original typed handler completes once, SQLite is rejected, no grant or Run changes and no extra model calls."
+  },
+  "modernPermission": {
+    "command": "node scripts/xiaozhi-agent/phase7-approval-decision-keyboard-ui.mjs <viewport>",
+    "result": "PASS_SCOPED",
+    "viewports": ["1366x768", "1920x1080"],
+    "reports": [
+      "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-PeIjBH/evidence/decision-keyboard-report.json",
+      "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-u44dVR/evidence/decision-keyboard-report.json"
+    ],
+    "checks": "Escape during the submitted decision restores entry focus and a newly selected historical approval survives the original result. Inline focus remains in the proper card. After an in-place result removes the details, focus goes to the inbox heading and Tab reaches the status filter.",
+    "separateOpenFinding": "The broader reports failed when pressing Escape after that post-save Tab sequence. This does not establish general Escape behavior for the status filter or nearby controls after a completed decision."
+  },
+  "recoveryReadCancellation": {
+    "result": "PASS_SCOPED",
+    "viewport": "1366x768",
+    "report": "TEMP/gate7-recovery-read-close-7526211cc5344d8aae75f18b6560067f/report.json",
+    "firstAttempt": "TEMP/gate7-recovery-close-14151e4f919e497aa29d8eb5d874b027/report.json",
+    "checks": "Escape closed the Workbench during the exact in-flight task snapshot and restored entry focus. The original read finished, no new Run or model dispatch occurred. The first probe closed before the selected task read began and did not cover the intended timing."
+  },
+  "actualProviderPaidRequests": 0,
+  "nativePointer": "NOT_TESTED",
+  "phase7": "PARTIAL"
+}

@@ -1,5 +1,17 @@
 # 独立验收记录
 
+## 2026-11-20 A1 审批决定忙碌期间退出
+
+旧构建在现行权限和历史复制两条路径均复现按键无响应。修复将焦点先移到仍可操作的申请卡标题。独立验证从历史复制拒绝保存中按 Escape 退出，重开后选择现行申请。迟到的本次拒绝按精确 ID 只保存一次，新选项和原 Run、Grant 一致，无额外模型请求。[构建、失败与独立结果](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+现行审批在两尺寸通过保存中 Escape、重开换选及行内审批焦点子项。详情卸载后焦点进入收件箱标题，Tab 到状态筛选。此前整段用例在此之后的 Escape 未关闭面板，保留为单独待核观察。[原失败位置](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
+## 2026-11-20 统一构建页面和打包
+
+在 `4e1cfe4` 的同一 Electron 构建验证迟到事件、教学目录、部分读取、停止及审批冷启动。并发首轮 6/7，失败发生在 Electron 远程求值。该场景使用同一构建单独执行后 3/3。Terra 独立通过 S1、S2、C2 的分享审核、版本回滚和撤销后的本地替代场景。原始失败和限定覆盖保留。[页面报告](evidence/phase7/implementation-resume-20261119/frozen-candidate-4e1cfe4-20261120.json)
+
+NSIS 生成和解包程序启动通过。安装与卸载等待干净的 Windows 环境。正式模型对照仍待 Gate 7 完成后运行。[包与启动](evidence/phase8/windows-package-20261119/frozen-4e1cfe4-nsis-20261120.json)
+
 ## 2026-11-20 审批详情忙碌时的键盘退出
 
 适用范围为 A1 的详情加载、取消与重试，以及 W1 的入口焦点。旧版在真实 Electron 两尺寸复现 Escape 不关闭。新版关闭后焦点回到工作台入口，原响应返回后不会填充重开的收件箱，重新选择可查看详情。设置页的能力搜索和键盘进入 Skill 治理另实际核对。[结果与边界](evidence/phase7/implementation-resume-20261119/approval-busy-escape-20261120.json)

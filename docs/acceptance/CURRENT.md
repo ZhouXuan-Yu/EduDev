@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 审批决定保存期间的焦点
+
+加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-20 印刷题号与填空恢复
 
 印刷题号与填空修复覆盖五三主书逐题读回和三种真实试卷的桌面导入。见 [专项验收](../research/evidence/kb/20261120/printed-structure/README.md)。
