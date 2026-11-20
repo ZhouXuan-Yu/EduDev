@@ -1,5 +1,13 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 统一候选的两尺寸实测
+
+在 b890dba 同一指纹上，已实测原生窗口两尺寸、独立 S1 三角色两尺寸及 S2 两尺寸，另有总控审批、迟到事件、三页部分态、C2 路径证据。该构建用于继续汇总其他独立场景，保留适用状态及例外。 [同构建证据](evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json)
+
+## 2026-11-21 Skill 角色场景与版本接续证据
+
+4b4ebe4 封存构建已获得 S1 独立复验 6/6，并验证两个尺寸治理控件可达。S2 总控两尺寸 4/4 证明接续切换版本与历史不变，最终独立验收仍需在冻结候选补齐。 [复验记录](evidence/phase7/implementation-resume-20261119/skill-governance-main-20261121.json)
+
 ## 2026-11-21 原生标题栏的双尺寸复验
 
 原生窗口子项已实现。Terra 在同一修复构建的两种内容尺寸确认窗口所属主进程，随后实际拖窗、点系统最大化按钮并拖拽还原。还原后的输入、工具调用与 SQLite 回执一致。输入与工具操作走 Playwright，窗口手势走真实 Windows 指针。仍按原合同核对完整页面状态及同构建角色路径。 [证据](evidence/phase7/implementation-resume-20261119/windows-helper-deep-path-20261121.json)

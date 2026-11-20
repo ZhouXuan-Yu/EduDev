@@ -4,6 +4,10 @@
 
 真实零派发答案册桌面关联及重启成功，真实有模型历史的答案册保持拒绝。旧任务的失败类型、预约、回执及模型调用计数一致。 [本轮记录](../research/evidence/kb/20261121/book-zero-dispatch/README.md)
 
+## 2026-11-21 更新与换机的验收入口
+
+本地备份及外选成果恢复底层回归通过 15 项。覆盖升级、回滚以及不同 Windows 用户和盘符下的恢复按 [固定验收](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#固定验收) 逐项执行。
+
 ## 2026-11-21 真实 Word 卷首与题面图稿
 
 同一份 Word 的 6 道题保留印刷答案并解除卷首误报。一个两角色本地图稿通过，正式题库仍按既有定稿与核对门槛处理。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)

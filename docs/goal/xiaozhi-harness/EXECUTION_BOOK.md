@@ -162,6 +162,7 @@ Phase3确认锁定Pi StdioTransport没有可替换spawn接口，临时守卫返�
 - 页面验收 Agent 使用 6.1 Terra High 检查工作台、审批、能力中心、恢复体验。
 - 最终验收 Agent 独立检查代码证据和测试结果。
 - 输出最终变更清单、迁移说明、回滚说明、已知限制和未完成项。
+- 同一 Windows 交付候选记录覆盖升级与换机接续证据，按 [Windows 更新与换机接续](../WINDOWS_UPDATE_AND_MIGRATION.md) 排期和复查。QG-09 保留自己的完成条件与结果。
 
 ## 每个任务的完成定义
 

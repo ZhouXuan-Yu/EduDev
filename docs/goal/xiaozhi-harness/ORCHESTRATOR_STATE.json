@@ -38,7 +38,15 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Use the 2026-11-21 repaired build as a scoped checkpoint. Finish remaining independent Gate7 page combinations on one frozen candidate before formal 32-case ABBA; QG-09 still requires clean Windows.",
+  "next": "Continue the b890dba frozen candidate checkpoint, see phase7FrozenB890dba20261121. Complete remaining independent page combinations before formal 32-case ABBA. QG-09 requires clean Windows.",
+  "phase7FrozenB890dba20261121": {
+    "status": "PARTIAL",
+    "sourceCommit": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
+    "buildSha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
+    "buildFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json",
+    "next": "Complete remaining independent W1-W3, A1-A2 and C1-C2 page states on this exact build. Formal paid ABBA starts after the Gate 7 acceptance decision. QG-09 still requires a clean Windows x64 environment."
+  },
   "phase7WindowsDeepPath20261121": {
     "status": "NATIVE_WINDOW_AND_PERSISTENT_TERMINAL_PASS_SCOPED",
     "baseSource": "9f18b584dde89d4fe54cf6f3a8a3530acb79dfc4",

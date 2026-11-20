@@ -1,5 +1,7 @@
 # Windows 安装包发布合同（2026-10-23）
 
+覆盖升级、兼容性预检、旧版回滚以及异机资料恢复另按 [小智 Windows 更新与换机接续](WINDOWS_UPDATE_AND_MIGRATION.md) 验收。
+
 ## 目标
 
 生成可由普通 Windows 用户安装、启动和卸载的小智桌面安装包。安装后不要求预装 Python；OCR、教育 Worker、Pi 主循环、SQLite 数据和教师审批边界保持现有实现。

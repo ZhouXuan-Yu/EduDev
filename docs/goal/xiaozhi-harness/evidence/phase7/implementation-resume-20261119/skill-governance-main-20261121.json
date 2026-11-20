@@ -1,0 +1,84 @@
+{
+  "sourceCommit": "4b4ebe445eb1c68e99b3cf27acc2b655768c6d39",
+  "build": {
+    "root": "apps/desktop/test-results/harness-gate7-20261121/merged-out",
+    "files": 481,
+    "sha256": "9f66c352b0fa587df5c97359ac9b1e3a7a1647739d7a1d1b06ab97a10696b5d6",
+    "mainSha256": "fae741d03dbb3638cb3a0e21d5e71aaf430fd0cbe29839873409e1153885f586"
+  },
+  "root": "apps/desktop/test-results/harness-gate7-20261121",
+  "s1": {
+    "status": "PASS_SCOPED_INDEPENDENT",
+    "checksPassed": 6,
+    "roles": [
+      {
+        "role": "reviewer",
+        "report": "s1-owned/edu-s1-reviewer-R49G43/REPORT.json",
+        "sha256": "726703e758f8131e24d23fe49478868751ffb93257c4582e873adfd70e70fcbc"
+      },
+      {
+        "role": "member",
+        "report": "s1-owned/edu-s1-member-mSQ4yH/REPORT.json",
+        "sha256": "34195eb73e5ab81395f197614ad8219ea11b135af64db0342cacdf71902aace8"
+      },
+      {
+        "role": "privacy",
+        "report": "s1-owned/edu-s1-private-X1vysi/REPORT.json",
+        "sha256": "91727f2a394439bd6474dc6bf2c0e2bac0383f69e3f69734a1478f28a7eb8b16"
+      }
+    ],
+    "sizes": "1366×768 and 1920×1080 geometry checks at initial and cold UI; governance actions executed once per isolated scenario",
+    "boundary": "Synthetic local roles, grant and privacy markers. No real official signed release or remote marketplace."
+  },
+  "s2": {
+    "status": "PASS_SCOPED_ROOT",
+    "command": "node scripts/xiaozhi-agent/phase7-skill-run-version-ui.mjs <1366x768|1920x1080>",
+    "cwd": "apps/desktop",
+    "env": "OMNI_EDU_TEST_BUILD_ROOT points to merged-out and TEMP/TMP point to an isolated fixture parent.",
+    "runs": [
+      {
+        "size": "1366x768",
+        "checksPassed": 4,
+        "localRequests": 2,
+        "report": "s2-owned/omni-edu-xiaozhi-phase7-workbench-ui-Jw2Zq6/evidence/skill-run-version-report.json",
+        "sha256": "db709df70a80ed92055723e876ef60a505f3c5df2bae76003f83d691014c585e"
+      },
+      {
+        "size": "1920x1080",
+        "checksPassed": 4,
+        "localRequests": 2,
+        "report": "s2-owned/omni-edu-xiaozhi-phase7-workbench-ui-MD931f/evidence/skill-run-version-report.json",
+        "sha256": "9336f31e58d2f70975e66884f3cc3d93ad711d39e84c67d78a6ab46bbdcc5b17"
+      }
+    ],
+    "facts": [
+      "The publication form creates 3.0.0, the details show provenance and fingerprint, and older stored versions and their bytes match.",
+      "The first active Run pins 3.0.0 and disables rollback while its real loopback reply is held open.",
+      "After settlement, keyboard rollback selects 2.0.0; the next Run pins it while the old Run keeps its 3.0.0 snapshot.",
+      "Cold restart shows matching histories and file bytes and emits zero model requests."
+    ],
+    "boundary": "Real Electron and Pi orchestration, synthetic provider. This is a root-run regression, pending independent S2 recheck on the final candidate."
+  },
+  "failedAttempts": [
+    {
+      "scope": "S1 reviewer first attempt",
+      "reason": "Report sampled SQLite before the exact UI review settled.",
+      "report": "s1-owned/edu-s1-reviewer-aXGQ5I/REPORT.json",
+      "sha256": "45276da7dec8cec6600ce517a14c0171a24934026b2692610c14e06eb0dc0ea4"
+    },
+    {
+      "scope": "S1 member first attempt",
+      "reason": "Report sampled the new pending review before the settings update settled.",
+      "report": "s1-owned/edu-s1-member-N9SCEB/REPORT.json",
+      "sha256": "85677fc5837e858893582a7cd486aa9477494a7770d4255917d21a02b63efc55"
+    },
+    {
+      "scope": "S2 first attempt at 1366x768",
+      "reason": "Picker was not opened after returning to the conversation. Replaced the menu opener with an actionable click and retained keyboard rollback.",
+      "report": "s2-owned/omni-edu-xiaozhi-phase7-workbench-ui-wl3dUW/evidence/skill-run-version-report.json",
+      "sha256": "207d4290e17fd25fbc80141d635f6eee059e9a6f2f612269e17f76ff6be6b9ac"
+    }
+  ],
+  "addedPaidRequests": 0,
+  "gate7": "PARTIAL"
+}
