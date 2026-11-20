@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 真实 Word 卷首与题面图稿
+
+同一份 Word 的 6 道题保留印刷答案并解除卷首误报。一个两角色本地图稿通过，正式题库仍按既有定稿与核对门槛处理。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)
+
 ## 2026-11-21 Word 排印答案预览和回执保护
 
 真实 Word 的 6 条原印答案经资料页按题查看和冷启动回读。正文块、媒体、原件与旧题源可追溯，冲突与旧批次隔离另有自动化覆盖。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)

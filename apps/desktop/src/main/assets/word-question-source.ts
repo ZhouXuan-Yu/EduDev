@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,hasExpandedWordPreamble,isWordPreamblePolicy,isWordBookletPolicy,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
+import {WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,hasPrintedWordAnswers,hasExpandedWordPreamble,isWordPreamblePolicy,isWordBookletPolicy,validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {bookletMetadataLine,bookletSectionHeading,bookletChoiceAnswers,bookletPrintedChoiceAnswers,printedChoiceSection,printedAnswerMatches,type PrintedChoiceSection} from './word-booklet';
 import {preambleWindow,plainPreambleText,administrativeLine,partitionWordPreamble,explicitGlobalParameters,globalParameterText} from './word-preamble';
 import {WORD_SCOPED_QUESTION_POLICY,WORD_QUESTION_SCHEMA,WORD_QUESTION_BYTES,WORD_QUESTION_ROLES,wordParagraphMap,wordSourceBlocks,wordQuestionBlocks,wordQuestionText,validWordQuestionSource,type WordQuestionSource,type WordQuestionRole,type WordSourceSpan,type WordQuestionIssue,type WordQuestionSummary} from '../../shared/material-word-question';
@@ -38,7 +38,7 @@ export function indexWordQuestions(document:WordDocument){
  const scoped=document.parser===WORD_PARSER&&document.unscopedWarnings!==undefined;
  const bookletPolicy=isWordBookletPolicy(document.questionPolicy)?document.questionPolicy:undefined,booklet=!!bookletPolicy;
  const modern=isWordPreamblePolicy(document.questionPolicy),expanded=hasExpandedWordPreamble(document.questionPolicy),intro=modern?preambleWindow(document.blocks,expanded):undefined;
- const printedAnswers=document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY;
+ const printedAnswers=hasPrintedWordAnswers(document.questionPolicy);
  const mainParts=new Set(document.blocks.filter(b=>/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\//u.test(b.anchor.path)).map(b=>b.anchor.part));
  if(mainParts.size>1)throw Error('source_changed');
  const documentSha=digest(document),mainPart=[...mainParts][0],builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
@@ -101,7 +101,8 @@ export function indexWordQuestions(document:WordDocument){
   if(cursor<text.length)append(block,cursor,text.length);
  }
  const preambleBlocks=[...new Map(preamble.map(p=>[p.block.id,p.block])).values()];
- const partition=modern?partitionWordPreamble(preamble,intro!.hasTitle,expanded):undefined;
+ const partition=modern?partitionWordPreamble(preamble,intro!.hasTitle,expanded,
+  document.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY?{blank:document.preambleBlank}:undefined):undefined;
  const context=partition?partition.context:wordQuestionText(wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question'));
  const preambleSelected=wordSourceBlocks(preambleBlocks,preamble.map(p=>p.span),'question');
  const common=partition?partition.common:scoped&&metadataPreamble(preambleSelected,context,booklet)?[]:preamble.filter(p=>wordSourceBlocks([p.block],[p.span],'question').some(b=>b.kind==='table'||b.inlines.some(i=>i.kind!=='text')||wordQuestionText([b]).split('\n').some(line=>line.trim()&&!/^\s*(?:学科|科目|年级|知识点|题型|难度)[：:]/u.test(line))));

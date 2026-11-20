@@ -9,7 +9,7 @@ import {wordFixture} from './word-fixtures.mjs';
 const {parseWord}=await import('../../src/main/assets/word-parser.ts');
 const {MaterialWordRepository}=await import('../../src/main/assets/material-word-repository.ts');
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
-const {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
+const {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PRINTED_ANSWER_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
 const {wordUpgradeCompatible,WORD_UPGRADE_INDEX,WORD_UPGRADE_PREDICATE}=await import('../../src/main/assets/word-upgrade-compatible.ts');
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=await parseWord(await wordFixture());
@@ -70,12 +70,14 @@ await check('An existing v2 representation upgrades its question policy while th
   assert.notEqual((await f.word.questions(f.query)).source.documentSha,before.documentSha);
  }finally{f.close();}
 });
-await check('Existing v5 SQLite indexes and frozen Word sources coexist with the v6 policy-only upgrade',async()=>{
+await check('Existing v5 and v6 SQLite indexes coexist with the v7 policy-only upgrade',async()=>{
  const f=await fixture();try{
   const previous={...payload.document,questionPolicy:WORD_PREAMBLE_EXPANDED_QUESTION_POLICY};
   await f.word.commit(f.id,f.state.version,previous);
   f.db.exec(`CREATE INDEX idx_material_word_drawing_v2 ON material_word_documents(resource_id,version)
-    WHERE json_extract(document_json,'$.questionPolicy')<>'${WORD_PREAMBLE_EXPANDED_QUESTION_POLICY}'`);
+    WHERE json_extract(document_json,'$.questionPolicy')<>'${WORD_PREAMBLE_EXPANDED_QUESTION_POLICY}';
+   CREATE INDEX idx_material_word_question_policy_v6 ON material_word_documents(resource_id,version)
+    WHERE json_extract(document_json,'$.questionPolicy')<>'${WORD_PRINTED_ANSWER_QUESTION_POLICY}'`);
   const targets=()=>f.db.prepare(`SELECT resource_id FROM material_word_documents INDEXED BY ${WORD_UPGRADE_INDEX}
     WHERE ${WORD_UPGRADE_PREDICATE}`).all().map(row=>row.resource_id);
   const before=(await f.word.questions(f.query)).source,previousSha=hash(previous);
@@ -86,6 +88,32 @@ await check('Existing v5 SQLite indexes and frozen Word sources coexist with the
   assert.deepEqual((await f.reopen().questions(f.query,previousSha)).source,before);
   assert.deepEqual(targets(),[]);
  }finally{f.close();}
+});
+await check('A v6 legacy Word image is never classified from mismatched cached bytes',async()=>{
+ for(const corrupt of [false,true]){
+  const f=await fixture();try{
+   const prior=structuredClone(payload.document);
+   prior.questionPolicy=WORD_PRINTED_ANSWER_QUESTION_POLICY;
+   const asset=prior.assets[0],header=prior.blocks[0];
+   header.inlines=[
+    {kind:'image',assetId:asset.id,alt:'',part:asset.part,relationshipId:'rId1',issue:''},
+    {kind:'text',text:'高三数学试卷'},
+   ];
+   header.warnings=[];
+   await f.word.commit(f.id,f.state.version,prior);
+   const before=JSON.stringify(await f.word.document(f.id,f.state.version));
+   const exact=Buffer.from(payload.images[0].data);
+   if(corrupt)await fs.writeFile(path.join(f.root,'word-assets',asset.sha256),Buffer.alloc(exact.length));
+   let inspected=0;
+   f.host.inspectPreamblePng=async (_asset,bytes)=>{inspected++;assert.deepEqual(bytes,exact);return true;};
+   assert(await f.word.upgrade(f.id,f.state.version,new AbortController().signal));
+   const next=await f.word.document(f.id,f.state.version);
+   assert.equal(inspected,corrupt?0:1);
+   assert.deepEqual(next.preambleBlank,corrupt?undefined:{blockId:header.id,assetId:asset.id});
+   assert.equal(JSON.stringify(await f.word.document(f.id,f.state.version,hash(prior))),before);
+   assert.equal(f.state.parses,0);
+  }finally{f.close();}
+ }
 });
 await check('Unknown and corrupted historical digests cannot fall through to the latest representation',async()=>{
  const f=await fixture();try{

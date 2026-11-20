@@ -13,6 +13,7 @@ import {textVersionCatalog} from './xiaozhi-agent/text-version-catalog';
 import type {TeachingFileCatalogEntry} from '../shared/contracts';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
+import {inspectBlankWordPng} from './assets/word-preamble-image';
 import {MaterialWordPagesRepository} from './assets/material-word-pages';
 import {WORD_PARSER,isWordParser,wordText,type WordPayload} from '../shared/material-word';
 import {extractWord} from './assets/word-host';
@@ -1266,7 +1267,7 @@ export class OmniEduStore {
     structure:{begin:(r,s,l)=>this.materialStructures.begin(r,s,l),complete:(r,s,l)=>this.materialStructures.complete(r,s,l),fail:(id,e,l)=>this.materialStructures.fail(id,e,l)},
   });
     this.materialCurriculum=new MaterialCurriculumRepository({all:(sql,p)=>this.all(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p))},this.materials);
-    this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),parse:async(id,version,signal)=>{
+    this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),inspectPreamblePng:inspectBlankWordPng,parse:async(id,version,signal)=>{
       const bytes=await this.materials.original(id,version,signal),result=await extractWord(bytes,signal);
       if(!result.ok)throw Error(result.error);return result.payload;
     },verify:(id,version,signal)=>this.materials.verify(id,version,signal),stamp:(id,version)=>this.materials.originalStamp(id,version),writer:async(action,beforeCommit)=>{
@@ -2173,8 +2174,9 @@ export class OmniEduStore {
     const text=wordText(result.payload.document.blocks);if(!text.trim())throw Error('empty');await this.materials.verify(id,version,signal);
     const previous=await this.materialWord.document(id,version).catch(()=>undefined);
     if(isWordParser(resource.parseEngine)&&previous&&wordText(previous.blocks)===text&&wordUpgradeCompatible(previous,result.payload.document)){
-      const upgraded=await this.materialWord.upgrade(id,version,signal,result.payload);
-      if(upgraded)return this.materials.resource(id);
+      await this.materialWord.upgrade(id,version,signal,result.payload);
+      if((await this.wordBodySnapshot(id)).digest!==expected.digest)throw Error('source_changed');
+      return this.materials.resource(id);
     }
     if(isWordParser(resource.parseEngine)&&previous&&JSON.stringify(previous)===JSON.stringify(result.payload.document)){
       await this.materialWord.prepare(result.payload,signal);await this.materials.verify(id,version,signal);if((await this.wordBodySnapshot(id)).digest!==expected.digest)throw Error('source_changed');return this.materials.resource(id);
