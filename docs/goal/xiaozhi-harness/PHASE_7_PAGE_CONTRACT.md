@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 主线构建 `37866ce` 的后台复验
+
+Terra 在两个视口完成审批忙碌期间的 Escape、焦点恢复与延迟详情隔离，另通过能力搜索和 Skill 导航。总控通过三处部分与空态、异常审批冷启和终态前流式推理，另保留同任务续跑准备超时和终端用例中断。该组为后台 Electron 实页，原生鼠标合同仍待执行。[同构建记录](evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json)
+
 ## 2026-11-20 能力缺口与审批结果后的键盘退出
 
 C1 将固定必需项、可选项及只有任务条件触发才需要的项分别展示。读取注册表时可列出待核对条件，实际任务的选择仍按 Resolver 中的具体条件执行。真实内建提供方在两个视口通过。[变更与实测](evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)

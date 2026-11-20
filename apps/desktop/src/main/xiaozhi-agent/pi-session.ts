@@ -373,7 +373,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const skillSnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.skills.'));
   if (skillSnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.skills.v1' && (entry.customType !== 'xiaozhi.education.skills.v2' || !options.managedSkills))
     || skillSnapshots.length && !options.educationSkills || options.managedSkills && !options.educationSkills) throw new Error('configuration');
-  const skills = options.educationSkills ? options.managedSkills ? await phase('pi_load_managed_skills',()=>createManagedSkillRuntime(agentDir, manager.getSessionFile() || '', options.managedSkills!))
+  const skills = options.educationSkills ? options.managedSkills ? await phase('pi_load_managed_skills', signal => createManagedSkillRuntime(agentDir, manager.getSessionFile() || '', options.managedSkills!, signal))
     : await phase('pi_load_education_skills',()=>createEducationSkillRuntime(agentDir, manager.getSessionFile() || '')) : undefined;
   const skillEpoch = options.managedSkills && skills ? createPiSkillEpoch(manager, skills.identity) : undefined;
   if (skills) {
@@ -1337,7 +1337,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       let failure: XiaozhiAgentError | undefined,outputLimited=false;
       try {
         if(memoryFailure)throw Error(memoryFailure);
-        await phase('pi_validate_skill_command',async()=>skills?.validateCommand(text));
+        await phase('pi_validate_skill_command', async signal => skills?.validateCommand(text, signal));
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
         if (skillEpoch) {

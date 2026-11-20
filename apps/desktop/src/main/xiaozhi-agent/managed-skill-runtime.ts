@@ -16,9 +16,10 @@ const sha = (value: string | Buffer) => createHash('sha256').update(value).diges
 const key = (value: string) => process.platform === 'win32' ? path.resolve(value).toLowerCase() : path.resolve(value);
 const MAX_REFERENCE = 65536;
 /** Model resources contain only authorized necessary text; original packages remain local. */
-export async function createManagedSkillRuntime(agentDir: string, sessionFile: string, source: ManagedSkillSource) {
+export async function createManagedSkillRuntime(agentDir: string, sessionFile: string, source: ManagedSkillSource, startupSignal?: AbortSignal) {
   async function capture(signal?:AbortSignal) {
     signal?.throwIfAborted();const current = await source.resources(signal), identities: SkillAuthorityIdentity[] = [];
+    signal?.throwIfAborted();
     const prepared: { name: string; title: string; texts: Map<string, string> }[] = [];
     for (const { item, bytes } of current.resources) {
       if (!validSkillName(item.name)) throw new Error('configuration');
@@ -45,10 +46,12 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
     }
     identities.sort((a, b) => a.name.localeCompare(b.name));
     const after = await source.resources(signal);
+    signal?.throwIfAborted();
     if (JSON.stringify(current.resources.map(resource => resource.item)) !== JSON.stringify(after.resources.map(resource => resource.item))) throw new Error('skill_scope_changed');
     return { identity: identities, authority: skillAuthority(identities), prepared };
   }
-  const initial = await capture(), root = path.join(agentDir, 'managed-skills-v2', initial.authority);
+  const initial = await capture(startupSignal), root = path.join(agentDir, 'managed-skills-v2', initial.authority);
+  startupSignal?.throwIfAborted();
   noLinks(root, true); fs.mkdirSync(root, { recursive: true }); noLinks(root);
   const expected = new Map<string, { filePath: string; text: string; name: string; title: string; sha256: string }>();
   const loaded: LoadSkillsResult = { skills: [], diagnostics: [] };
@@ -59,6 +62,7 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
   for (const item of initial.prepared) {
+    startupSignal?.throwIfAborted();
     const directory = path.join(root, item.name); noLinks(directory, true); fs.mkdirSync(directory, { recursive: true });
     for (const [relative, text] of item.texts) {
       const filePath = path.join(directory, relative); noLinks(filePath, true);
@@ -67,7 +71,7 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       expected.set(key(filePath), { filePath, text, name: item.name, title: item.title, sha256: sha(text) });
     }
     // Check the complete cache before the native parser reads files/ignore rules.
-    await verifyDirectory(directory, item.texts);
+    await verifyDirectory(directory, item.texts, startupSignal);
     const result = loadSkillsFromDir({ dir: directory, source: 'path' });
     if (result.diagnostics.length || result.skills.length !== 1 || result.skills[0].name !== item.name) throw new Error('configuration');
     loaded.skills.push(result.skills[0]);
@@ -80,8 +84,11 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       for (const item of initial.prepared) await verifyDirectory(path.join(root, item.name), item.texts,signal);
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
-  await checkFiles();
+  // The final check below proves every cache file after native parsing and
+  // before/after fresh source capture; another pre-snapshot sweep is redundant.
+  startupSignal?.throwIfAborted();
   const result = resolveSessionSkillsForRuntime(await snapshotSkillsForSession(loaded, sessionFile)) as LoadSkillsResult;
+  startupSignal?.throwIfAborted();
   if (result.diagnostics.length || result.skills.length !== initial.identity.length) throw new Error('skill_source_changed');
   async function check(signal?:AbortSignal) {
     await checkFiles(signal);
@@ -89,9 +96,9 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
     if (current.authority !== initial.authority) throw new Error('skill_scope_changed');
     await checkFiles(signal);
   }
-  async function validateCommand(text: string) {
+  async function validateCommand(text: string, signal?: AbortSignal) {
     if (text.startsWith('/skill:') && !result.skills.some(item => item.name === text.slice(7).split(' ')[0])) throw new Error('invalid_input');
-    await check();
+    await check(signal);
   }
   function matchesCommand(original: string, delivered: string) {
     if (!original.startsWith('/skill:')) return false;
@@ -109,12 +116,12 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       const supplied = (args as { path: string }).path;
       if (supplied.length > 4096 || supplied.includes('\0') || !path.isAbsolute(supplied)) throw new Error('invalid_input');
       const item = expected.get(key(supplied)); if (!item) throw new Error('permission_denied');
-      signal?.throwIfAborted(); await check(); signal?.throwIfAborted();
+      signal?.throwIfAborted(); await check(signal); signal?.throwIfAborted();
       // Exact validated in-memory text matches the native immutable model resource.
       const text = item.text;
-      await check(); signal?.throwIfAborted();
+      await check(signal); signal?.throwIfAborted();
       return { content: [{ type: 'text', text }], details: { success: true, data: { source: `教育技能：${item.title}` } } };
     } };
-  await check();
+  await check(startupSignal);
   return { result, identity: initial.identity, authority: initial.authority, check, validateCommand, matchesCommand, tool };
 }

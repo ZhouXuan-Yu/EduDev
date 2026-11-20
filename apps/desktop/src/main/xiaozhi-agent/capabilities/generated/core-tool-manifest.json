@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "65892801893b624a10f2127d000e9d63dfea0efaf25b883c71e89b1c32db9bc8",
+  "sourceHash": "468e97ebee08b76314d82dace9a5db0ad89c642c5618f4e66426f78de0324617",
   "sources": [
     {
       "file": "package-lock.json",
@@ -1072,7 +1072,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skill-runtime.ts",
-      "sha256": "84204fb0b78fb5249d68d7c7e66d9c93f6c78db81cf1731c58962e745fab6e00"
+      "sha256": "82631ef460695332b21d74771aa117db53f78bf1cc9b389c92377bc1f77d48c9"
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skills.ts",
@@ -1340,7 +1340,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "954ec19f678964633b55e7db388a46a09de49bf4eb54dc9242e7830805200011"
+      "sha256": "d6c25e955192c21a60733c2656e9cc65f24e51259df8fe2d8c350095fb2cf073"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/skill-runtime.ts",
-      "sha256": "0650de9bdc46c0f6a5d59277ae632f01291ffb56dc46afc59226095c47f15612"
+      "sha256": "543387d8cd0216862f8362551fb47f855dc991de45f6b212155ff26e38269c8a"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/catalog.ts",
@@ -1476,11 +1476,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/skills/runtime.ts",
-      "sha256": "cb8b74b6a37e539de6e0dbf4d9b9e7fd5e242b682792b060f45ea1107965e833"
+      "sha256": "be5a4a8d3855864a463d6977019ed42ec182d56ad79e083ca27f950fbdc80d01"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/service.ts",
-      "sha256": "520c14c17afad7aed4b3bab8b179bad130ac915e724f5833b85d818930cdcb98"
+      "sha256": "36730ee4193e8a33f296566981f7fb981da1f89f057cdd69ada5ffed83ef3d55"
     },
     {
       "file": "src/main/xiaozhi-agent/skills/state.ts",

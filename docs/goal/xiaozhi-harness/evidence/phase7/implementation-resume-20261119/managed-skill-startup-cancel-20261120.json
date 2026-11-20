@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-20",
+  "baseSourceCommit": "37866ce722c7815680b4e204b937e90ad7540a26",
+  "status": "BUILT_SOURCE_CHECKS_PASS",
+  "observedFailure": "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
+  "updatedPaths": [
+    "apps/desktop/src/main/xiaozhi-agent/managed-skill-runtime.ts",
+    "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+    "apps/desktop/src/main/xiaozhi-agent/skill-runtime.ts",
+    "apps/desktop/src/main/xiaozhi-agent/skills/runtime.ts",
+    "apps/desktop/src/main/xiaozhi-agent/skills/service.ts",
+    "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "apps/desktop/scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs"
+  ],
+  "scope": {
+    "phaseTimeoutMs": 15000,
+    "sourceCapturesBeforeAndAfter": 4,
+    "completeDerivedCacheChecksPerPackage": {
+      "before": 4,
+      "after": 3
+    },
+    "rollback": "Normal Git revert of the single module change; no database migration, dependency, model setting or teacher permission changes.",
+    "earlierQ5Causality": "UNVERIFIED"
+  },
+  "sourceChecks": [
+    {
+      "command": "node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs",
+      "success": false,
+      "checks": 0,
+      "path": "TEMP/omni-skill-runtime-io-5AfG23/report.json",
+      "sha256": "7b8a580cf1e8a3e33a1e8b7f0dd96bb5435fd529ec5c7ac360fa2e3722515086"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs",
+      "success": true,
+      "checks": 13,
+      "path": "TEMP/omni-skill-runtime-io-zhaRSq/report.json",
+      "sha256": "5bd3a5a87973793edde79af2c3aff791f7dedf08ba736976165acdfe4b428894"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs",
+      "success": true,
+      "checks": 22,
+      "path": "TEMP/xiaozhi-pi-skill-authority-LfDAns/report.json",
+      "sha256": "687f4316d2168ccb3daf346d9b0b17a46a61629903e8d9e9277cab3f31f3a752"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-state-smoke.mjs",
+      "success": true,
+      "checks": 21,
+      "path": "TEMP/xiaozhi-skill-phase4-state-Vfo2HJ/report.json",
+      "sha256": "d0f2dbcdf5325da30980687dfae228509394b832baadd219aa607c6114ea6778"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/skill-phase4-privacy-race-smoke.mjs",
+      "success": true,
+      "checks": 8,
+      "path": "TEMP/xiaozhi-phase4-privacy-race-ix5Irl/report.json",
+      "sha256": "ac5e95396eb55c2b625acd93f7761822eb0982523ca0dce122f4546489cd527a"
+    }
+  ],
+  "newPaidCalls": 0,
+  "backgroundElectron": "PENDING",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-managed-skill-cancel-20261120/out",
+    "exitCode": 0,
+    "outputSha256": "593ab1586e80d742381d8215512b4f802685856c25d38a2c9c46a49fb065af53",
+    "outputFileCount": 481,
+    "mainSha256": "e48586b073d5e9eab6800cd9355b88460721421a5d84bca42cc567479ced89fe",
+    "rendererEntrySha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+    "coreToolSourceHash": "468e97ebee08b76314d82dace9a5db0ad89c642c5618f4e66426f78de0324617",
+    "buildLogSha256": "1b0e0f38080d13f4fa8c12fb24cd03b2adf7b1be0f8fd98a8ebe7467233b1b7c"
+  },
+  "rendererComponents": {
+    "command": "npm.cmd run test:renderer-components",
+    "passed": 253,
+    "total": 253,
+    "exitCode": 0,
+    "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  }
+}

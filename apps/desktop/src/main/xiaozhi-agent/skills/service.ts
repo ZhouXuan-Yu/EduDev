@@ -31,21 +31,29 @@ export function createSkillGovernance(options: SkillGovernanceOptions) {
   const {state, managed} = options;
   const actor = options.actor || state.actor;
   const validate: SkillValidator = createSkillValidator({...options, permission: undefined});
-  const validatorFor = (owner?: PermissionOwner, execution = false) => createSkillValidator({...options,
-    privateContext: () => options.privateContext?.(owner) || Promise.resolve(undefined),
-    permission: execution ? requirement => options.permission?.(requirement, owner) || Promise.resolve(false) : undefined,
-    dependency: dependency => options.dependency(dependency, execution ? owner : undefined)});
+  const validatorFor = (owner?: PermissionOwner, execution = false, signal?: AbortSignal) => {
+    const checked = async <T>(action: () => Promise<T>) => {signal?.throwIfAborted();const value = await action();signal?.throwIfAborted();return value;};
+    return createSkillValidator({...options,
+      sanitize: text => checked(() => options.sanitize(text)),
+      privateContext: () => checked(() => options.privateContext?.(owner) || Promise.resolve(undefined)),
+      permission: execution ? requirement => checked(() => options.permission?.(requirement, owner) || Promise.resolve(false)) : undefined,
+      dependency: dependency => checked(() => options.dependency(dependency, execution ? owner : undefined))});
+  };
   const officialReviewers = options.officialReviewers || state.officialAuthority.reviewers;
   const assertCurrent = async (owner: PermissionOwner) => {
     if (!await options.current(owner)) throw new Error('permission_denied');
   };
-  async function transaction<T>(action: (work: Sql) => Promise<T>, owner?: PermissionOwner): Promise<T> {
+  async function transaction<T>(action: (work: Sql) => Promise<T>, owner?: PermissionOwner, signal?: AbortSignal): Promise<T> {
+    signal?.throwIfAborted();
     return state.transaction(async work => {
+      signal?.throwIfAborted();
       if (options.open?.() === false) throw new Error('busy');
       if (owner) await assertCurrent(owner);
+      signal?.throwIfAborted();
       const result = await action(work);
       if (options.open?.() === false) throw new Error('busy');
       if (owner) await assertCurrent(owner);
+      signal?.throwIfAborted();
       return result;
     });
   }
@@ -66,9 +74,12 @@ export function createSkillGovernance(options: SkillGovernanceOptions) {
     managed.verifyItem(record.package);
     return record;
   }
-  async function checkVersion(version: VersionRecord, owner?: PermissionOwner) {
-    const {bytes} = await managed.verifyItemAsync(version.package);
-    const result = await validatorFor(owner, Boolean(owner))(bytes, version.dependencies, version.permissionRequirements);
+  async function checkVersion(version: VersionRecord, owner?: PermissionOwner, signal?: AbortSignal) {
+    signal?.throwIfAborted();
+    const {bytes} = await managed.verifyItemAsync(version.package, signal);
+    signal?.throwIfAborted();
+    const result = await validatorFor(owner, Boolean(owner), signal)(bytes, version.dependencies, version.permissionRequirements);
+    signal?.throwIfAborted();
     if (!result.passed) {
       if (result.checks.some(check => check.kind === 'dependencies' && !check.passed)) throw new Error('missing_dependency');
       if (result.checks.some(check => check.kind === 'permissions' && !check.passed)) throw new Error('permission_denied');

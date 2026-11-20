@@ -1,0 +1,209 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "37866ce722c7815680b4e204b937e90ad7540a26",
+  "gate7": "PARTIAL",
+  "fixedMatrix": {
+    "pass": 88,
+    "blocked": 1,
+    "total": 89
+  },
+  "build": {
+    "cwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+    "command": "npm.cmd run build -- --outDir test-results/harness-gate7-consolidated-37866ce/out",
+    "exitCode": 0,
+    "outputSha256": "8d176905aadf22667d6d6db8c2ce9598b18fe8fb73655a96f91d07752ebb8916",
+    "outputFileCount": 481,
+    "buildLogSha256": "d37824951f66efe756954799cfc8d1c932e3f07a844cabe344272ec9b666e40f",
+    "mainSha256": "caa5e24593540b2279e0ab51c5d6ea50f808aeab0f063cba4c1f86ca6b5e8959",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "rendererEntry": "out/renderer/assets/index-CDVsTtU1.js",
+    "rendererEntrySha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+    "suiteBuildOverride": "OMNI_EDU_TEST_BUILD_ROOT=<cwd>/test-results/harness-gate7-consolidated-37866ce/out"
+  },
+  "workbench": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "status": "FAIL",
+    "report": {
+      "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-lJUIXk/evidence/ui-report.json",
+      "sha256": "4a2b2b7dd86266242ae6c6bee25d35c391fe48aa4630ea08b9fbd9aa90f635ce"
+    },
+    "rendererErrors": [],
+    "fixtureRequests": 8,
+    "passedAfterReadbackCorrection": [
+      "U01",
+      "U02",
+      "U03",
+      "U05",
+      "U06",
+      "U07"
+    ],
+    "failed": [
+      "U04",
+      "U08"
+    ],
+    "notRun": [
+      "U09"
+    ],
+    "failure": {
+      "fixtureCase": "continuation",
+      "runId": "run_70cff460-1f6e-491c-84c8-846999dedef4",
+      "sessionId": "aisession_037b8194-4fa3-4833-b4fe-3358a9ea5f48",
+      "sqliteRunStatus": "failed",
+      "sqliteRun": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-lJUIXk/data/app.db",
+      "sqliteTable": "ai_agent_runs",
+      "journalOperation": "pi_load_managed_skills",
+      "journalCode": "lifecycle_timeout",
+      "timeoutMs": 15000,
+      "elapsedMs": 15169,
+      "journalLog": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-lJUIXk/evidence/electron.log",
+      "journalLogSha256": "0d5577716c50503af7769838c95d2bf0026ac27aac9605222467fb9f767da706",
+      "reasonU04WasOriginallyCounted": "The old assertion accepted an inactive same-task Run without checking persisted success.",
+      "reasonU08Failed": "The send control stayed disabled after the preceding journal timeout. No terminal action was dispatched.",
+      "rootCauseScope": "The timeout operation and failed Run are confirmed. Within-operation cost and the cause of older Q5 failures are unverified."
+    }
+  },
+  "partialAndEmpty": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-partial-ui.mjs",
+    "status": "PASS_SCOPED",
+    "report": {
+      "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-0GfbI5/evidence/partial-empty-report.json",
+      "sha256": "baab60d6294a9db854584fd5da3a0a67b647f56113984ff1f7ae0a428770f223"
+    },
+    "surfaceCount": 3,
+    "viewportRuns": 6,
+    "durableFactsUnchanged": true,
+    "additionalFixtureRequests": 0,
+    "rendererErrors": []
+  },
+  "coldApprovals": {
+    "command": "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs",
+    "status": "PASS_SCOPED",
+    "report": {
+      "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-3WB5qa/cold-approval-report.json",
+      "sha256": "b638632d17e3230374ee0f33a94ebdb43099e539b6327d28b3a821af3119b4ec"
+    },
+    "checks": [
+      {
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "unavailable": 1,
+        "validApprovalDetail": true
+      },
+      {
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "unavailable": 1,
+        "validApprovalDetail": true
+      },
+      {
+        "affectedConversation": true,
+        "rowsPreserved": 5,
+        "replayedModelRequests": 0
+      }
+    ],
+    "rendererErrors": []
+  },
+  "independentTerra": {
+    "status": "PASS_SCOPED_AFTER_RETRY",
+    "attempts": [
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1366x768 keyboard",
+        "status": "SETUP_TIMEOUT",
+        "detail": "Electron firstWindow timed out at 180000 ms before the fixture returned. No page checks ran and no UI report was emitted. Terminal trace identified scripts/xiaozhi-agent/phase7-workbench-fixture.mjs:81:36. No redirected log for that attempt.",
+        "exitCode": 1
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1920x1080 mixed",
+        "status": "PASS_SCOPED",
+        "report": {
+          "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-VCsXqB/evidence/keyboard-busy-report.json",
+          "sha256": "7ace9c9f48f26c7e66885b26ae7b25823c944b34a35b15a6d64bfa0069a53157"
+        },
+        "checks": [
+          "Escape while detail is in flight cancels the opened panel; late detail never populates the reopened inbox",
+          "Workbench Enter/Space, approval detail busy disable, reachable approval decisions, and Escape focus restoration",
+          "Settings Enter, actual capability search, and keyboard activation of Skill governance navigation"
+        ],
+        "rendererErrors": []
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1366x768 keyboard",
+        "status": "PASS_SCOPED",
+        "report": {
+          "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-1cyKOd/evidence/keyboard-busy-report.json",
+          "sha256": "1dbb8b4c07361218f60084c95870496aa26762da255ed3a38205ff3ba0ed29c6"
+        },
+        "checks": [
+          "Escape while detail is in flight cancels the opened panel; late detail never populates the reopened inbox",
+          "Workbench Enter/Space, approval detail busy disable, reachable approval decisions, and Escape focus restoration",
+          "Settings Enter, actual capability search, and keyboard activation of Skill governance navigation"
+        ],
+        "rendererErrors": [],
+        "windowHidden": true
+      }
+    ]
+  },
+  "stream": {
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/harness-gate7-consolidated-37866ce/out --label 37866ce-gate7-live-reasoning --expected-out-hash 8d176905aadf22667d6d6db8c2ce9598b18fe8fb73655a96f91d07752ebb8916 --expected-out-count 481 --background true",
+    "status": "PASS_SCOPED",
+    "report": {
+      "path": "TEMP/omni-edu-xiaozhi-stream-XsslwP/report.json",
+      "sha256": "c9d9db292a8c27d9ff9529676a4b44a7ae6aef55128a9667893f42b8c59fa182"
+    },
+    "checks": 5,
+    "viewport": {
+      "innerWidth": 1366,
+      "innerHeight": 768,
+      "devicePixelRatio": 1
+    },
+    "visibleReasoningCharsBeforeTerminal": {
+      "first": 1630,
+      "later": 3727
+    },
+    "fixtureRequests": 1,
+    "terminalStatus": "interrupted",
+    "rendererErrors": [],
+    "submitToFixtureMs": 12790.11,
+    "scope": "Single hidden Electron run under concurrent fixture load. Verifies visible growth and controls with synthetic SSE. Foreground responsiveness, live provider quality and native window caption interaction are outside its scope."
+  },
+  "windowsInstallEnvironment": {
+    "matrixId": "QG-09",
+    "status": "BLOCKED",
+    "host": "Windows 11 Home China (CoreCountrySpecific), build 26200",
+    "windowsSandboxExecutablePresent": false,
+    "virtualMachinePlatformServiceRunning": true,
+    "hyperVManagerServicePresent": false,
+    "localGuestAvailable": false,
+    "microsoftRequirement": "https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/",
+    "pending": [
+      "clean installation",
+      "Start menu and desktop shortcut launch",
+      "uninstall and cleanup"
+    ]
+  },
+  "dependencyAudit": {
+    "command": "npm.cmd audit --json",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0
+  },
+  "realModelBudget": {
+    "thisRun": 0,
+    "used": 3,
+    "remaining": 197,
+    "unresolved": 0
+  },
+  "pending": [
+    "physical caption drag and maximize/restore",
+    "approved final candidate freeze",
+    "clean Windows target install lifecycle",
+    "formal 32-case model comparison",
+    "final independent acceptance"
+  ]
+}
