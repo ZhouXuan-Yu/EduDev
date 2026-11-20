@@ -827,5 +827,14 @@
     "highNpmAuditPackageEntries": [7, 5],
     "cleanWindowsInstall": "NOT_RUN",
     "newPaidCalls": 0
+  },
+  "currentPatchedInstaller20261120": {
+    "status": "NSIS_ARCHIVE_VERIFIED_QG09_OPEN",
+    "productionSource": "60b1f79913de493e4d47e3ea0671c0b46f153307",
+    "evidence": "evidence/phase8/windows-package-20261119/dependency-patched-nsis-60b1f79-20261120.json",
+    "installerSha256": "275bb10c95affa299772addb37dbf4d8b6ffb0a8320ef5b3eefb93cd2a537a64",
+    "packagingSession": 1929,
+    "packagingAndReadbackExitCode": 0,
+    "newPaidCalls": 0
   }
 }

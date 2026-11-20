@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-20",
+  "scope": "Frozen Windows candidate using the main-integrated dependency-patch build. Unpacked worker and archive readback only. Full installation, OS shortcut launch and uninstall require an independent clean Windows host.",
+  "sourceCommit": "60b1f79913de493e4d47e3ea0671c0b46f153307",
+  "build": {
+    "root": "apps/desktop/test-results/harness-dependency-patches-main/out",
+    "sha256": "31017a15afae3c66392992d51d9f9df48118ddf844e434030464658fe989a735",
+    "files": 481,
+    "mainSha256": "5e46f4458618b447dcae34a6a6f40f529193d2b3d4c4e4b8ad6d7448b850c320"
+  },
+  "buildTestEvidence": "evidence/phase8/shipped-dependency-patches-20261120.json",
+  "stage": "TEMP/edudev-harness-60b1f79-91f13fe9",
+  "packaging": {
+    "session": 1929,
+    "command": "node node_modules/electron-builder/out/cli/cli.js --win nsis --x64 --publish never --config <stage>/packaging.cjs",
+    "exitCode": 0,
+    "configSha256": "5991ff6300b24bedba6121efd9af935c42bc8e989458e0ba4e195aaf87e8b059",
+    "logSha256": "b4c2ad9bfe75aa5e98532d1c548675f57e040a40ea57d6dcc99d0350248c7053",
+    "runtimeInput": "TEMP/edu-harness-approval-save-package-5d28c10d/release/win-unpacked/resources",
+    "verifiedRuntimeFiles": {
+      "page-blocks-runtime": 767,
+      "ocr-runtime": 712,
+      "education-runtime": 90,
+      "retrieval-runtime": 154,
+      "reranker-runtime": 155
+    }
+  },
+  "independentUnpacked": {
+    "reviewer": "GPT-6.1 Terra High",
+    "report": "TEMP/edudev-dependency-package-check-b5a964ac-b637-4964-8eef-e87490bb6748.json",
+    "reportSha256": "e9f74ab2ef92fc0867ef3c0faaac3ed724439029d657ec92da17e392d2f68e67",
+    "applicationFiles": 481,
+    "applicationFingerprint": "31017a15afae3c66392992d51d9f9df48118ddf844e434030464658fe989a735",
+    "applicationExecutable": {
+      "bytes": 239500288,
+      "sha256": "6fd8d202acc5c4064eacdcbfc319d12e72a5a0b5bb35122940995b09e54bc481",
+      "dos": "MZ",
+      "pe": "50450000",
+      "machine": "8664"
+    },
+    "dependencyVersions": {
+      "zod": "4.6.6",
+      "source-map-js": "1.2.2"
+    },
+    "removedManifestMetadata": {
+      "zod": [
+        "keywords",
+        "bugs",
+        "scripts"
+      ],
+      "source-map-js": [
+        "contributors",
+        "scripts"
+      ]
+    },
+    "manifestNote": "Packaged manifests are byte-distinct from npm-installed copies. Remaining fields agreed in the independent comparison."
+  },
+  "unpackedWorker": {
+    "exitCode": 0,
+    "checks": 2,
+    "report": "TEMP/edudev-harness-60b1f79-91f13fe9/education-worker-probe.json",
+    "sha256": "4d1af704a544cc7f61013833af933cfde0f36fdb1007ae9fd56c428fb2058ad7"
+  },
+  "nsis": {
+    "exitCode": 0,
+    "archive": "TEMP/edudev-harness-60b1f79-91f13fe9/release/Xiaozhi-Setup-0.1.0-x64.exe",
+    "sha256": "275bb10c95affa299772addb37dbf4d8b6ffb0a8320ef5b3eefb93cd2a537a64",
+    "bytes": 877410202,
+    "signature": "NotSigned",
+    "published": false,
+    "archiveStable": true,
+    "blockMapSha256": "e7354a27b18ae7a5a3aaec872a9b207acc32ca2ce1b952ad326fdaa901c98626",
+    "readback": {
+      "scriptSha256": "b40529e3eba550c08838d08f3f9d32af5aadf4d600f7ae15dcc5362327d79989",
+      "report": "TEMP/edudev-harness-60b1f79-91f13fe9/archive-readback/report.json",
+      "reportSha256": "e0837e70b56f6e113f534873271aa886bf0e9eddbadf70cc874d325742b65d71",
+      "extractionExitCode": 0,
+      "extractionLogSha256": "2772a0d67b130baa91dfa7fea9a7e6d6ddf9a18d8ff3b99a98c14123447dd850",
+      "warning": "7za reported trailing data.",
+      "filePathsAndBytesAgreed": true,
+      "outputFiles": 481,
+      "outputSha256": "31017a15afae3c66392992d51d9f9df48118ddf844e434030464658fe989a735",
+      "embeddedDependencyManifestBytesAgreedWithUnpacked": true,
+      "versions": {
+        "zod": "4.6.6",
+        "source-map-js": "1.2.2"
+      }
+    }
+  },
+  "modelBaselineA": {
+    "worktree": "C:/Users/ZhouXuan/.codex/worktrees/harness-baseline-20261117/EduProject",
+    "commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+    "outFiles": 458
+  },
+  "paidRequestLedger": {
+    "readback": 3,
+    "newCalls": 0
+  },
+  "qualityGate": {
+    "QG-09": "BLOCKED",
+    "gate7": "PARTIAL",
+    "formalModelComparison": "NOT_RUN"
+  }
+}
