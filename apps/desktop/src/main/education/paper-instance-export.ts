@@ -6,7 +6,7 @@ import type {PaperView} from '../../shared/paper-blueprint';
 import type {PaperInstanceBlock, PaperInstanceRole} from '../../shared/paper-instance';
 import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBlockText} from './paper-instance';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
-import {validNativeQuestionDocument, nativeQuestionComplete} from '../../shared/native-question';
+import {validNativeQuestionDocument, nativeQuestionComplete, withoutNativeQuestionNumber} from '../../shared/native-question';
 import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
 const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',web_extracted:'网页原文摘取（待核验）',missing:'缺失'} as const;
 /** Compile ordered role blocks directly. Parent QuestionDocuments remain untouched. */
@@ -33,7 +33,7 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
           if(!validNativeQuestionDocument(native)||!nativeQuestionComplete(native))throw Error('unsupported');
           const body=native.roles[role];
           if(body.figures.length&&!(role==='question'&&q.archive?.nativeLayout)) emit({heading:title,paragraphs:[],figures:body.figures.map(b=>figure(b,role))});
-          else text(body.text,title);
+          else text(role==='question'&&q.archive?.nativeLayout?withoutNativeQuestionNumber(body.text,q.archive.number):body.text,title);
           text(title+'来源：'+roleOriginLabels[body.origin],'来源');
           return;
         }

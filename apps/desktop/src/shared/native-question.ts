@@ -59,6 +59,11 @@ export function nativeQuestionConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|
  for(const role of ['answer','analysis'] as const)if(q[role]!==document.roles[role].text)conflicts.push(role);
  return conflicts;
 }
+/** Drop only an exact printed parent marker. A decimal remains part of the question. */
+export function withoutNativeQuestionNumber(text:string,number:string){
+ const prefix=text.match(/^[ \t\r\n\u3000]*(\d{1,5})(?:[.．](?![0-9０-９])|[、)）])[ \t\u3000]*/u);
+ return prefix?.[1]===number?text.slice(prefix[0].length):text;
+}
 /** One presentation boundary. AI coverage remains AI coverage, including after a routine teacher edit. */
 export function questionPresentation(q:QuestionBankItem){
  if(q.archive?.native){if(q.document||!validNativeQuestionDocument(q.archive.native)||nativeQuestionConflicts(q,q.archive.native).length)throw Error('question_fact_conflict');return{kind:'ai_native' as const,authority:'ai' as const,document:q.archive.native,projection:q.archive.native.projection};}

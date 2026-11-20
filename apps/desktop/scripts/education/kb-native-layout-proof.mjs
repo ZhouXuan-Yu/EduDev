@@ -51,6 +51,10 @@ check('does not merge distinct numeric tokens into one quantity',f=>{
  for(const source of [f.frozen,f.current]){const b=source.blocks.find(b=>b.id===block(3,'').id);b.inlines[0].text='（A）10 N\t（B）50 N\n';source.parts.question=source.parts.question.map(s=>s.blockId===b.id?span(b):s);canonical(source);}
  for(const result of [f.first,f.final]){result.projection.choices.text='（A）1 0 N\n（B）50 N';result.stem=result.stem.split('\n')[0]+'\n'+result.projection.choices.text;result.projection.statement.text=result.stem;}
 });
+check('preserves spaces inside decimal and operator sequences',f=>{
+ for(const source of [f.frozen,f.current]){const b=source.blocks.find(b=>b.id===block(3,'').id);b.inlines[0].text='（A）1 . 0\t（B）x + + y\n';source.parts.question=source.parts.question.map(s=>s.blockId===b.id?span(b):s);canonical(source);}
+ for(const result of [f.first,f.final]){result.projection.choices.text='（A）1.0\n（B）x++y';result.stem=result.stem.split('\n')[0]+'\n'+result.projection.choices.text;result.projection.statement.text=result.stem;}
+});
 check('rejects projection choice omission',f=>{f.final.projection.choices.text='（B）电场强度';});
 check('rejects reordered projection choices',f=>{f.final.projection.choices.text='（B）电场强度（A）温度';});
 check('rejects additional projection content',f=>{f.final.projection.figures={state:'provided',text:'示意图'};});

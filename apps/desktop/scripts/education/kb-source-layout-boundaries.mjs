@@ -7,7 +7,7 @@ import os from 'node:os';
 const {sourceLayoutSignature,sourceLayoutQuestion,SOURCE_LAYOUT_TEXT}=await import('../../src/shared/material-ai-source-layout.ts');
 const {printedChoiceAnswerComparison}=await import('../../src/shared/material-ai-choice-answer.ts');
 const {validAiPagePrompt}=await import('../../src/shared/material-ai-page.ts');
-const {MaterialChoiceRechecks}=await import('../../src/main/assets/material-ai-choice-rechecks.ts');
+const {MaterialChoiceRechecks,NEXT_PARENT_RECHECK_TABLE}=await import('../../src/main/assets/material-ai-choice-rechecks.ts');
 const {readAiPageReceipt}=await import('../../src/main/assets/material-ai-page-evidence.ts');
 const {readPageCrops}=await import('../../src/main/assets/material-ai-page-crops.ts');
 const {validateAiPageSource}=await import('../../src/main/assets/material-ai-page-source.ts');
@@ -24,9 +24,13 @@ await check('Comparison copies preserve original text and literal figure and tab
  const before=JSON.stringify(q),legacy=sourceLayoutQuestion(q,{policy:'page-fragments.v3'}),copy=sourceLayoutQuestion(q,{policy:'page-fragments.v3',sourceLayoutPolicy:SOURCE_LAYOUT_TEXT});assert.equal(legacy,q);assert.equal(copy.stem,'振子');assert.equal(copy.projection.figures.text,'甲 乙');assert.equal(copy.projection.tables.text,'甲 乙');assert.equal(JSON.stringify(q),before);
 });
 const root=process.argv[2];assert(root,'Pass the authorized test root');
+// This historical fixture measures the dedicated crop/layout strategy. The
+// independently tested next-page strategy can also recover a question here.
+process.env.OMNI_EDU_AI_NEXT_PARENT_BOUNDARY='0';
 const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'kb-source-layout-'));
 const original=new DatabaseSync(process.argv[3]||path.join(root,'data/app.db'),{readOnly:true});await backup(original,path.join(temporary,'copy.db'));original.close();
 const db=new DatabaseSync(path.join(temporary,'copy.db'));
+db.exec(NEXT_PARENT_RECHECK_TABLE);
 const host={root:()=>path.join(root,'data'),all:async(sql,values=[])=>db.prepare(sql).all(...values),run:async(sql,values=[])=>{db.prepare(sql).run(...values);}};
 host.proof=async(batch,ordinal)=>{const proof=await readAiPageReceipt(host,batch,ordinal);await validateAiPageSource(host,proof.unit.pageSource);return proof;};
 const batch='aibatch_9d9e3e37-8cb6-4ab3-a87f-d72e02d813d3',repo=new MaterialChoiceRechecks(host);

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 旧 Word 回执重认证
+
+新版 Word 源文档摘要与旧模型输入保持各自历史身份。题目版式复核凭据和新题版引用同事务发布，读回核对两个版本以及原答案和审计。 [专项证据](../research/evidence/kb/20261120/native-word-layout-recovery/README.md)
+
 ## 2026-11-20 选择题子类
 
 共享选择题标签规则共用于 SQLite 关键词筛选、Lance 筛选、候选读回比较和原题分区，沿用已有索引和题库记录。 [专项实测](../research/evidence/kb/20261120/choice-subtypes/README.md)

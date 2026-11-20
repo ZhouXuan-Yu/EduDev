@@ -52,7 +52,7 @@ const before=canonical(),modelBefore=model(),calls=()=>read('SELECT sum(calls) n
 const callsBefore=calls();
 const entry=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out','main/index.js');
 const report={destination,buildSha256:createHash('sha256').update(fs.readFileSync(entry)).digest('hex'),
- recovered:0,held:0,sourceReads:0,selectedInPapers:0,newRequests:0,rendererErrors:[]};
+ recovered:0,held:0,sourceReads:0,searchHits:0,selectedInPapers:0,newRequests:0,rendererErrors:[]};
 let app,page;
 async function launch(){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_SKIP_DOTENV:'1'};
@@ -102,7 +102,7 @@ try{
  assert.deepEqual(applied.map(row=>row.question_id),safe.map(row=>row.id).sort());
  for(const [index,row] of canonical().entries()){
   const old=before[index];
-  assert.deepEqual({...row,archive_json:old.archive_json},old);
+  assert.deepEqual({...row,archive_json:old.archive_json},{...old});
   if(held.some(candidate=>candidate.id===row.id))assert.deepEqual(row,old);
  }
  report.recovered=applied.length;report.held=held.length;
@@ -116,6 +116,9 @@ try{
   assert.equal(archive.state,'ai_final');
   assert(archive.nativeLayout);
   const evidence=await readSource(q);assert(evidence.ok,JSON.stringify(evidence));report.sourceReads++;
+  const matches=await page.evaluate(filters=>window.omniEdu.searchQuestionBank(filters),
+   {query:q.knowledgePoint,subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:'选择题',limit:10});
+  assert(matches.some(item=>item.id===q.id));report.searchHits++;
   const query={schemaVersion:'xiaozhi.native-question-image.v1',questionId:q.id,version:questionVersion(q)};
   const image=await page.evaluate(input=>window.omniEdu.getNativeQuestionImage({...input,role:'question',index:0}),query);
   assert.equal(createHash('sha256').update(Buffer.from(image.dataUrl.split(',')[1],'base64')).digest('hex'),archive.native.roles.question.figures[0].sha256);
@@ -130,7 +133,8 @@ try{
   }),paper.value);
   assert(confirmed.ok,JSON.stringify(confirmed));
   const student=compilePaperOffice(confirmed.value,'student');
-  assert(student.sections.some(section=>section.paragraphs.some(text=>text.includes(q.stem.split('\n')[0]))));
+  const expectedStem=q.stem.split('\n')[0].replace(new RegExp('^'+archive.number+'[.．、)）]\\s*'),'');
+  assert(student.sections.some(section=>section.paragraphs.some(text=>text.startsWith(expectedStem))));
   assert(!student.sections.some(section=>section.figures?.length));
   assert(!student.sections.some(section=>section.paragraphs.some(text=>text.includes('参考答案：'))));
   report.selectedInPapers++;

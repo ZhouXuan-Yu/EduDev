@@ -5,7 +5,7 @@ import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocum
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,type PaperOfficeFigure,type PaperExportInput} from '../../shared/paper-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {containsOfficeMath,officeMathChunks,officeMathHtml,officeMathParts} from '../../shared/office-math';
-import {validNativeQuestionDocument,nativeQuestionComplete,type NativeQuestionRole} from '../../shared/native-question';
+import {validNativeQuestionDocument,nativeQuestionComplete,withoutNativeQuestionNumber,type NativeQuestionRole} from '../../shared/native-question';
 export const containsLatex=(text:string)=>/\\(?:frac|sqrt|begin|sum|int|left|right)|\$[^$]+\$/.test(text);
 const chunks=(text:string)=>{const values:string[]=[];let value='';for(const c of text){if(value.length+c.length>1000){values.push(value);value='';}value+=c;}if(value)values.push(value);return values;};
 /** Exact confirmed source crops, never the scalar/OCR summary of a rich question. */
@@ -41,7 +41,11 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
      }
     }
    }else if(native?.roles.question.figures.length&&!q.archive?.nativeLayout){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}
-   else{if(!math&&containsLatex(q.stem))throw new Error('unsupported');paragraphs.push(...split(q.stem));}
+   else{
+    const stem=q.archive?.nativeLayout?withoutNativeQuestionNumber(q.stem,q.archive.number):q.stem;
+    if(!math&&containsLatex(stem))throw new Error('unsupported');
+    paragraphs.push(...split(stem));
+   }
    if(audience==='teacher'){
     for(const role of ['answer','analysis'] as const){
      if(native){const body=native.roles[role],title=role==='answer'?'参考答案':'解析';if(body.figures.length){paragraphs.push(title+'（原文图稿，尚未独立核验）：');addNative(role);}else paragraphs.push(...split(title+'：'+body.text));paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',web_extracted:'网页原文摘取（待核验）',missing:'缺失'}[body.origin]));continue;}

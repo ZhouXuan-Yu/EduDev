@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 旧 Word 原题
+
+已存回执通过试导库隔离副本验收，覆盖原界面触发、疑点隔离、正式选题、无卷首的题面编译、冷启和证据篡改反例。 [专项证据](../research/evidence/kb/20261120/native-word-layout-recovery/README.md)
+
 ## 2026-11-20 选择题条件与正式选题
 
 使用已有自然试导库，以原题及其标签跟踪题本筛选、通用选择题蓝图、来源读回、集中确认和冷启。SQLite 与 Lance 反例检查不同子类不会串入指定分区。 [专项实测](../research/evidence/kb/20261120/choice-subtypes/README.md)

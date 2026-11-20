@@ -1,18 +1,15 @@
 import type {NativeAiQuestion} from '../../shared/material-ai-native-response';
 import {validWordQuestionSource,wordQuestionBlocks,wordQuestionText,wordParagraphMap,type WordQuestionSource,type WordSourceSpan} from '../../shared/material-word-question';
+import {withoutNativeQuestionNumber} from '../../shared/native-question';
 import {administrativeLine,plainPreambleText,preambleWindow} from './word-preamble';
 
 const equal=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
+const mathOrWordToken=/[\p{Script=Latin}\p{Script=Greek}\p{Number}\p{Math}.\-/:^]/u;
 const compact=(text:string)=>text.replace(/[ \t\r\n\u3000]+/gu,(space,at:number)=>{
- // Keep a separator between non-Han word/number tokens. In particular, 1 0 and 10
- // or two adjacent Latin variables cannot be treated as a presentation difference.
- const token=/[\p{Script=Latin}\p{Script=Greek}\p{Number}]/u;
- return token.test(text[at-1]??'')&&token.test(text[at+space.length]??'')?' ':'';
+ // Keep gaps inside word/number/operator sequences, including decimal points.
+ return mathOrWordToken.test(text[at-1]??'')&&mathOrWordToken.test(text[at+space.length]??'')?' ':'';
 });
-function body(text:string,number:string){
- const prefix=text.match(/^[ \t\r\n\u3000]*(\d{1,5})(?:[.．](?![0-9０-９])|[、)）])[ \t\u3000]*/u);
- return compact(prefix?.[1]===number?text.slice(prefix[0].length):text);
-}
+const body=(text:string,number:string)=>compact(withoutNativeQuestionNumber(text,number));
 function sameRanges(before:WordQuestionSource,after:WordQuestionSource,spans:WordSourceSpan[]){
  return spans.every(span=>{
   const left=before.blocks.find(block=>block.id===span.blockId),right=after.blocks.find(block=>block.id===span.blockId);

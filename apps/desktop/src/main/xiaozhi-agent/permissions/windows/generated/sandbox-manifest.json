@@ -80,7 +80,7 @@
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "f44c9a65cffece16dfe632a67e475c7daff38b97809080a877758214c085e8ba"
+      "sha256": "bd1075615b57f1f093a8ce4edb6e448117f649f6da765f53c9e0044392bccfc8"
     },
     {
       "file": "windows/projection.ts",
@@ -88,11 +88,11 @@
     },
     {
       "file": "windows/operations.ts",
-      "sha256": "da9d0e59c7d7eac5a85e9c533bf1c61ec6956b71992f48c0e9e483599548d994"
+      "sha256": "3fe56b95cbe17ffdc7406c0a651bca569e3848d62cbce9713c59f1813fb4e246"
     },
     {
       "file": "windows/broker.ts",
-      "sha256": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf"
+      "sha256": "431dfc87f1d66af640e1e3f1b21bd7a7389911af7757c355d8425c92a6e0a04c"
     },
     {
       "file": "windows/runtime.ts",
@@ -100,34 +100,34 @@
     },
     {
       "file": "current.ts",
-      "sha256": "7b42076d262cf1801c9d051e61a43013b502c679347f7314d40c78c91ab6186f"
+      "sha256": "593f918ca32804e15209b5c9bf2a5ff28a33e4c92574b1222bec2a82452e080e"
     },
     {
       "file": "engine.ts",
-      "sha256": "0117bc5657a4b47e4b23b15336b77c8d75d394fe23a38d92bb2dc9e44857bb8e"
+      "sha256": "6d735d3bb03e6a6f548e24f10e6168c6427971b4e502315f93b29564c1a099b8"
     },
     {
       "file": "grant-snapshot.ts",
-      "sha256": "6f26322a02370bfaef706b42b7e66d9696d9f79e234f8d7a43c08271e69a51bf"
+      "sha256": "58091ad5a3ede0e064a1cb46e75e5a3337b16c668a108b3659ca6f08d7bd1a54"
     },
     {
       "file": "resources.ts",
-      "sha256": "087721c94e09b3d0944e3339497964d5f210ed9d9c098a985eedb47d213264b4"
+      "sha256": "c37d6166e8b5e7add4af2425415f3346b5aafce828e623c1f4cb4fbeff0b02f7"
     },
     {
       "file": "summary.ts",
-      "sha256": "b1cb22a47125db5d24970e93e225e82ec6103fd50516fc32dd5f6aa1c1b36f6f"
+      "sha256": "3fbeb02dc79b99e8120c65dafaef2b3ec1b9bc8bf317b9a2fd86d278a8ccfbfa"
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "96a99a32098d168803910f7fcd3353da895d4c1b00b8157c5099e2909cc89e33"
+      "sha256": "39d819fa5881cb98b458e3b396e9ed3ba0f8275e20f0038a3e6400a289c32011"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "47ac6b99dc61505a4e709ef53f49bf8c24b54ac728e7e9447321fd1e83477ac2",
+  "adapterSourceSha256": "ef848a0fdb13e8fe7ee5ddce288932689baad868abde67b79ed5b3e90a08c0fe",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1
