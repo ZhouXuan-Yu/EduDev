@@ -18,6 +18,7 @@
 
 ## 2026-11-21 本地备份、恢复与切回
 
+
 70b19a8 以真实 Electron 页面完成备份与成果保护 9/9、独立副本恢复与切回 5/5。已验证重启后文件、会话、事件及原数据一致性。独立 Windows 安装、覆盖升级、异机和可迁移偏好按原矩阵判定。 [迁移验收和证据](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)
 
 ## 2026-11-21 真实答案册关联与重启读回
@@ -3590,3 +3591,9 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 ## 2026-10-16 BoardUI 复用复核
 
 验收记录：当前工作区 `npx tsc --noEmit` exit0、`npm run test:renderer-components` 217/217、BoardUI SSR 边界 8/8。该证据只接受展示层复用，真实站点和完整联网用户路径继续保持 OPEN。
+
+## 2026-11-21 备份版本预检
+
+执行于 apps/desktop。npm run build 通过并完成 TypeScript 检查。npm run test:renderer-components 为 253/253。node scripts/xiaozhi-agent/backup-compatibility-electron.mjs 为 7/7，未见 renderer 错误。node scripts/xiaozhi-agent/backup-restore-smoke.mjs 为 8/8。node scripts/xiaozhi-agent/artifact-file-actions-ui-smoke.mjs 为 6/6，含两个预览分辨率。实际选择 Windows 打开应用仍待手动核对。
+
+备份预检的初次构建包含 481 个文件，SHA-256 b2ee09802da8e53c98a037fee67ea9f36c1af53aa2ded7dda8f21f5ec235ac96。专项报表 SHA-256 b6d58943de0df7075daf6c3cfc74f5d9d7f1a37cd293e5b4a7035c63cec7da8a。无新付费请求。npm audit --omit=dev 报既有 20 项，5 高、7 中、8 低。UI 合同检查的 Prompt Input 原厂文件哈希与固定快照存在基线差异，本次没有修改其源文件或锁文件。未执行不同电脑、程序 N−1 到 N 覆盖升级和回滚。 [换机专项](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)
