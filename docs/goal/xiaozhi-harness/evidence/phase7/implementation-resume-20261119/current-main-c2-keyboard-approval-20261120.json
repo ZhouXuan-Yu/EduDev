@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "b4919c6785e417b3f92058f56ec3c4f0391ce914",
+  "reviewer": "GPT-6.1 Terra High",
+  "status": "PASS_SCOPED",
+  "build": {"root": "apps/desktop/test-results/harness-skill-proof-main/out", "outFiles": 481, "outSha256BeforeAndAfter": "c06d9dbb51ebc1c36ab746d9351324c4e998ac0b5b7bd7ad08fc9ce3b84ec4c7", "mainSha256": "92c8545e61057ed81c4511131e84414731b78fa8bf5e760e9a2d7f55adc94d49"},
+  "cwd": "apps/desktop",
+  "workbenchAndApprovalEnv": {"OMNI_EDU_TEST_BUILD_ROOT": "test-results/harness-skill-proof-main/out"},
+  "runs": [
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root test-results/harness-skill-proof-main/out --expected-out-hash c06d9dbb51ebc1c36ab746d9351324c4e998ac0b5b7bd7ad08fc9ce3b84ec4c7 --expected-out-count 481 --expected-main-hash 92c8545e61057ed81c4511131e84414731b78fa8bf5e760e9a2d7f55adc94d49",
+      "passed": 4, "exitCode": 0,
+      "report": "TEMP/omni-edu-c2-course-qVZo3g/report.json", "sha256": "0b0b2c8004b1222e11e40a2ef6fcf0a59d5ba2ee8d1032bd3956a8c552fb52e1",
+      "scope": "Authorized loopback MCP dispatch exactly once. After revocation, Pi rejects the old tool, retrieves and opens the local material in a continuation of the same task, then cold reads identical receipts with no replay."
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1366x768 keyboard",
+      "passed": 3, "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-VFY3CH/evidence/keyboard-busy-report.json", "sha256": "65b7da0996ed807c58aba9dcc806c23fb50926360497adeb7465e518e813a6c9"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1920x1080 keyboard",
+      "passed": 3, "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-sYIQD5/evidence/keyboard-busy-report.json", "sha256": "ed750824dac2312b375c5139378cab4ddd94cd9a1c19c7d94b6f0605ea8f9a47"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-approval-cold-ui.mjs",
+      "passed": 3, "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-FPmnlr/cold-approval-report.json", "sha256": "8a03e78861c382573fe8425e4ff7db44874ec23e3de9a2d9a31e73bfc634d389",
+      "scope": "Valid approvals remain accessible at both sizes while one unreadable record is disclosed. Refresh and cold restart preserve all five persisted rows without model replay."
+    }
+  ],
+  "keyboardScope": "Busy approval drawer Escape, focus restoration, late detail isolation and keyboard navigation to approval, settings and Skill entry.",
+  "evidenceLimits": "Hidden Electron with synthetic data and automated input. No captured page errors from attachment of each listener. Workbench startup before listener attachment has no coverage. Native mouse, full Gate 7 and teacher visual acceptance remain open.",
+  "fixedAcceptanceMatrix": "88/89",
+  "paidRequestsAdded": 0
+}
