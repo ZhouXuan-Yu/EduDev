@@ -8,6 +8,7 @@ import {parseAiPageResponse,validMaterialPageSource,validAiPagePrompt,validMater
 import {validMaterialBookRole} from '../../shared/material-book-pair';
 import {validAiBatch,type AiUnitInput} from '../../shared/material-ai';
 import {validMaterialSource} from '../../shared/materials';
+import {validAnswerPageHeaderMask} from '../../shared/material-ai-answer-page-mask';
 import {readAiImageInput} from './material-ai-image-files';
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
@@ -23,7 +24,9 @@ export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number)
  if(!config||typeof config!=='object')throw Error('source_changed');const {model,...batch}=config;
  if(model!=='deepseek-flash'||!validAiBatch(batch)||!batch.images||ordinal>batch.count||!validMaterialPageSource(unit.pageSource)||unit.native||!Array.isArray(unit.sources)||unit.sources.length>64||!unit.sources.every(s=>validMaterialSource(s)&&s.resourceId===batch.resourceId&&s.version===batch.version)||unit.pageSource.resourceId!==batch.resourceId||unit.pageSource.version!==batch.version||unit.pageSource.page!==batch.start+ordinal-1||unit.page!==unit.pageSource.page||typeof unit.text!=='string'||Buffer.byteLength(unit.text)>64000||typeof unit.stamp!=='string'||JSON.stringify(unit.pageSource)!==row.source_json)throw Error('source_changed');
  const image=(await host.all('SELECT * FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
- if(!image||image.image_sha!==row.image_sha)throw Error('source_changed');await readAiImageInput(host,image);
+ if(!image||image.image_sha!==row.image_sha)throw Error('source_changed');
+ if(unit.answerPageMask!==undefined&&(!validAnswerPageHeaderMask(unit)||unit.answerPageMask.imageSha!==row.image_sha||image.mime!=='image/png'))throw Error('source_changed');
+ await readAiImageInput(host,image);
  const first=parseAiPageResponse(String(row.first_json)),final=parseAiPageResponse(String(row.final_json));if(![first,final].every(r=>pageResponseMatchesPolicy(r,unit.bookPagePolicy,unit.bookRole?.kind==='answers',unit.pagePrompt)))throw Error('source_changed');
  if(sourceReadingEnabled(unit.pagePrompt)&&!validSourceReadingStage(first,undefined,false))throw Error('source_changed');
  const verification=await readPageVerification(host,batchId,ordinal,unit.pageSource,unit.pagePrompt,String(row.first_json),row.image_sha,String(row.final_json));

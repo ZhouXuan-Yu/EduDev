@@ -21,9 +21,9 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
   if(!open)return;let current=true;setBusy(true);setView(undefined);setError('');setImageOpen(false);setQuestionBookRevision(0);setBookError('');
   const reading=reference?window.omniEdu!.getMaterialSource(reference).then(r=>{if(!r.restored)throw Error('source_changed');return r.restored;}):window.omniEdu!.getMaterialAiPage({schemaVersion:MATERIAL_AI_PAGE,batchId,ordinal:selected});
   void reading.then(async r=>{
-   if(r.source.schemaVersion===MATERIAL_IMAGE_SOURCE){
+   if(r.source.schemaVersion===MATERIAL_IMAGE_SOURCE||r.headerMasked){
     const pictured=await window.omniEdu!.getMaterialAiPage({schemaVersion:MATERIAL_AI_PAGE,batchId,ordinal:selected,includeImage:true});
-    if(JSON.stringify(pictured.source)!==JSON.stringify(r.source)||pictured.text!==r.text)throw Error('source_changed');r=pictured;
+    if(JSON.stringify(pictured.source)!==JSON.stringify(r.source)||pictured.text!==r.text||pictured.headerMasked!==r.headerMasked)throw Error('source_changed');r=pictured;
    }
    if(current)setView(r);
    if(questionId&&!bookRevision){
@@ -45,6 +45,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
     {view.status==='needs_review'&&view.transcriptionStatus==='complete'&&<p data-testid="material-ai-page-transcription-status">正文双遍转录一致，可检索；本页题目仍有待核项，未经教师逐字核验。</p>}
     {view.structureContext&&<p role="note" data-testid="material-ai-structure-source">已对照本地恢复的{view.structureContext.paragraphs.length}段内容，补充识别{view.structureContext.supplemental.length}行{view.structureContext.unresolved.length?`，另有${view.structureContext.unresolved.length}行待核对`:'。'}</p>}
     {view.continuation&&<p role="note" data-testid="material-ai-page-continuation">已合并第{view.continuation.source.page}页的续题区域；完整题目仍须通过来源与质量核对。可在原件预览中切换到该页查看。</p>}
+    {view.headerMasked&&<p role="note" data-testid="material-ai-page-header-masked">两遍核对都使用已遮盖页眉联系方式的副本。原图和本地识别文字可继续核对。</p>}
     <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} onDraftDirty={setDraftDirty} resource={view.resource} initialPage={view.source.page} busy={busy}/>
     {view.inputImage&&<div>
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>

@@ -33,23 +33,35 @@ export async function readAiPageUnits(
 }
 
 /** A real original page and its local parser receipt; never a fabricated OCR body chunk. */
-export async function readAiPageSource(host:Host,resourceId:string,version:string,page:number){
- const resource=(await host.all('SELECT content_hash,original_file_name,parse_status FROM teacher_resources WHERE id=?',[resourceId]))[0];
+export function readAiPageSource(host:Host,resourceId:string,version:string,page:number){
+ return readPage(host,resourceId,version,page,false);
+}
+/** Local evidence for a prospective answers-only projection. No ordinary
+ * image, citation or unprojected dispatch may use this read. */
+export function readAiAnswerPageMaskSource(host:Host,resourceId:string,version:string,page:number){
+ return readPage(host,resourceId,version,page,true);
+}
+async function readPage(host:Host,resourceId:string,version:string,page:number,answerMask:boolean){
+ const resource=(await host.all(answerMask?'SELECT content_hash,original_file_name,parse_status,title FROM teacher_resources WHERE id=?':'SELECT content_hash,original_file_name,parse_status FROM teacher_resources WHERE id=?',[resourceId]))[0];
  if(resource&&/\.(?:png|jpe?g|webp)$/i.test(String(resource.original_file_name))){
-  if(page!==1||resource.content_hash!==version||!['ready','partial','parsed','chunked','indexed','graph_extracted','failed'].includes(String(resource.parse_status)))throw Error('source_incomplete');
+  if(answerMask||page!==1||resource.content_hash!==version||!['ready','partial','parsed','chunked','indexed','graph_extracted','failed'].includes(String(resource.parse_status)))throw Error('source_incomplete');
   if((await host.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1',[resourceId])).length)throw Error('privacy_blocked');
   const receipt=await readImageOcr(host,resourceId,version),source:MaterialPageSource={schemaVersion:MATERIAL_IMAGE_SOURCE,resourceId,version,page:1,generation:receipt.generation,receiptSha:receipt.receiptSha};
-  if(!validMaterialPageSource(source))throw Error('source_changed');return{source,text:receipt.text,selectedText:receipt.text,status:receipt.status,totalPages:1};
+  if(!validMaterialPageSource(source))throw Error('source_changed');return{source,text:receipt.text,textStreams:[receipt.text],selectedText:receipt.text,ocrText:receipt.text,width:undefined,height:undefined,privacyRows:[] as Record<string,unknown>[],resourceLabels:'',status:receipt.status,totalPages:1};
  }
  const r=(await host.all('SELECT j.generation,j.state,j.total,p.status,p.result_json,p.error,r.content_hash,r.parse_status,r.original_file_name FROM material_pdf_jobs j JOIN material_pdf_pages p ON p.generation=j.generation JOIN teacher_resources r ON r.id=j.resource_id WHERE j.resource_id=? AND j.version=? AND p.page=?',[resourceId,version,page]))[0];
  if(!r||r.content_hash!==version||!/\.pdf$/i.test(String(r.original_file_name))||!['complete','partial'].includes(String(r.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(r.parse_status))||!['complete','blank','failed','needs_review'].includes(String(r.status))||!Number.isSafeInteger(Number(r.total))||page>Number(r.total)||Number(r.total)>10000||typeof r.result_json!=='string'||Buffer.byteLength(r.result_json)>1048576)throw Error('source_incomplete');
- if((await host.all("SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 AND (page_number IS NULL OR typeof(page_number)<>'integer' OR page_number NOT BETWEEN 1 AND 10000 OR page_number=?) LIMIT 1",[resourceId,page])).length)throw Error('privacy_blocked');
+ const restricted = "resource_id=? AND contains_personal_data<>0 AND (page_number IS NULL OR typeof(page_number)<>'integer' OR page_number NOT BETWEEN 1 AND 10000 OR page_number=?)";
+ const privacyRows = answerMask
+   ? await host.all("SELECT id,page_number,heading,CASE WHEN length(CAST(content_md AS BLOB))<=64000 THEN content_md END AS content_md FROM resource_chunks WHERE "+restricted+" ORDER BY id LIMIT 33",[resourceId,page])
+   : await host.all("SELECT 1 FROM resource_chunks WHERE "+restricted+" LIMIT 1",[resourceId,page]);
+ if(privacyRows.length&&(!answerMask||privacyRows.length>32||privacyRows.some(row=>row.page_number!==page||typeof row.content_md!=='string'||typeof row.heading==='string'&&row.heading.length>500)))throw Error('privacy_blocked');
  const source:MaterialPageSource={schemaVersion:MATERIAL_PAGE_SOURCE,resourceId,version,page,generation:String(r.generation),receiptSha:hash([r.generation,page,r.status,r.result_json,r.error])};if(!validMaterialPageSource(source))throw Error('source_changed');
  let raw:Record<string,unknown>={};try{if(r.result_json)raw=JSON.parse(r.result_json);}catch{throw Error('source_changed');}
  if(r.result_json&&(!validPdfFilePage(raw)||raw.status!==r.status||raw.error!==r.error)||!r.result_json&&r.status!=='failed')throw Error('source_changed');
  if(!raw||typeof raw!=='object'||Array.isArray(raw)||['text','nativeText','ocrText'].some(k=>raw[k]!==undefined&&typeof raw[k]!=='string'))throw Error('source_changed');
- const text=[...new Set([raw.text,raw.nativeText,raw.ocrText].filter((v):v is string=>typeof v==='string'&&v.length>0))].join('\n');if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
- return{source,text,selectedText:typeof raw.text==='string'?raw.text:'',status:String(r.status) as AiPagePrompt['ocrStatus'],totalPages:Number(r.total),
+ const textStreams=[...new Set([raw.text,raw.nativeText,raw.ocrText].filter((v):v is string=>typeof v==='string'&&v.length>0))];const text=textStreams.join('\n');if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
+ return{source,text,textStreams,ocrText:typeof raw.ocrText==='string'?raw.ocrText:'',width:raw.width,height:raw.height,privacyRows,resourceLabels:answerMask?[resource?.title,resource?.original_file_name].join('\n'):'',selectedText:typeof raw.text==='string'?raw.text:'',status:String(r.status) as AiPagePrompt['ocrStatus'],totalPages:Number(r.total),
   ...(r.error==='text_conflict'&&typeof raw.nativeText==='string'&&typeof raw.ocrText==='string'?{conflictingText:{native:raw.nativeText,ocr:raw.ocrText}}:{})};
 }
 export async function validateAiPageSource(host:Host,source:MaterialPageSource){
