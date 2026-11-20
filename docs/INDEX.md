@@ -1,12 +1,12 @@
 # 文档地图：先读入口，再按任务取用
 
-本轮只整理 AI 默认入口和当前状态，不批量分类、移动或删除整个 `docs/`。文档路径存在不代表内容全部现行；历史命令、授权转述和“下一步”须结合日期、适用版本与当前用户请求判断。
+通过当前入口找任务与证据。历史命令、授权和“下一步”按各自的日期和适用版本理解。
 
 ## 默认最小阅读集
 
 1. [AGENTS](../AGENTS.md)：协作规则、数据/权限保护、验证与文档更新方式。
 2. [当前状态](goal/CURRENT_STATE.md)：当前事实、边界与工作线。
-3. 当前任务对应的一项路由，以及实际源码/证据。Claude 另有薄入口 [CLAUDE](../CLAUDE.md)。
+3. 从下面选当前任务的路线，再核对相应源码和证据。
 
 ## 任务路由
 
@@ -19,11 +19,13 @@
 | 历史决策与原因 | [决策台账](goal/DECISIONS.md)相关条目 | [进度记录](goal/WORK_PROGRESS.md)、旧编号文档、对应证据 |
 | 启动/环境 | [启动说明](../启动.md) | 实际 package 脚本、锁文件和本机环境 |
 
-## 本轮没有重写的历史型入口
+## 协作与历史资料
 
-`1.Agent.md`、`2.Memory.md`、`3.Learning.md`、`4.Wiki.md`、Master、领域 `CURRENT.md` 与 Goal 台账仍保留原路径和全文；它们混有稳定约束和历史日志。检索相关章节后核对证据，不每轮全读，也不再机械地全部追加更新。不能因为某规则在旧文件中就擅自放宽它，遇到真正冲突报告并请求当前决定。
-
-`28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md` 是历史基线，旧 P04/P05 排程不是当前状态。`docs/design/**/source/` 等冻结快照不是可随意删除的冗余文件，本阶段不处理。
+- 项目规则统一维护在根目录 [AGENTS.md](../AGENTS.md)。[恢复入口](../2.Memory.md)、[教训](../3.Learning.md) 和 [稳定事实](../4.Wiki.md) 各自记录对应内容。
+- [2026-08-30 AI 路由实施记录](archive/ai-routing-20260830/progress.md) 与 [2026-10-05 架构审计](archive/architecture-review-20261005/XIAOZHI_THREE_REPO_DEEP_AUDIT_2026-10-05.md) 为历史资料。历史脚本中的文件路径对应各自的原构建和仓库版本。
+- [旧根目录执行约定](https://github.com/ZhouXuan-Yu/EduDev/blob/dcf273bf28e123cc0fa05cbe050ae88f5d3cc6cc/1.Agent.md) 和 [旧 Claude 项目约定](https://github.com/ZhouXuan-Yu/EduDev/blob/dcf273bf28e123cc0fa05cbe050ae88f5d3cc6cc/CLAUDE.md) 可从 Git 查阅。
+- [2026-07-28 早期规划与 UI 预览](archive/legacy-product-planning-20260728/README.md) 保留 MVP、中控台和旧多用户方案。
+- `28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md`、旧 P04/P05 排程及 `docs/design/**/source/` 记录冻结时的架构、计划与证据。
 
 ## 维护方式
 
