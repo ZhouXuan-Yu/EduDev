@@ -1,8 +1,12 @@
 # Harness 执行进度
 
+## 2026-11-20 补丁版 Windows 安装候选已封存
+
+当前补丁版的构建、NSIS 与归档回读已有对应指纹。实际解出 481 个应用文件和两个补丁包清单，文件与封存构建一致。模型对照 A 基线的 458 个文件指纹仍一致，真实模型账本保持 3/200。固定矩阵 88/89，待独立 Windows、原生窗口和正式模型验收。 [候选回读](evidence/phase8/windows-package-20261119/dependency-patched-nsis-60b1f79-20261120.json)
+
 ## 2026-11-20 处理两项随包依赖告警
 
-已实现。更新 Zod 4.6.6 与 `source-map-js` 1.2.2，生产审计高危条目从 7 项到 5 项。独立确认两版依赖进入 Windows 解包目录，C2 在该源码及合并后的构建各通过 4 项。前次 NSIS 保留归档证据，补丁版尚未生成新 NSIS。原生窗口、干净 Windows 安装与正式模型对照继续按原门槛。 [独立与合并证据](evidence/phase8/shipped-dependency-patches-20261120.json)
+已实现。更新 Zod 4.6.6 与 `source-map-js` 1.2.2，生产审计高危条目从 7 项到 5 项。独立确认两版依赖进入 Windows 解包目录，C2 在该源码及合并后的构建各通过 4 项。NSIS 成品及归档核对见本页封存记录。原生窗口、干净 Windows 安装与正式模型对照继续按原门槛。 [独立与合并证据](evidence/phase8/shipped-dependency-patches-20261120.json)
 
 ## 2026-11-20 当前主线候选封存与双尺寸隔离复验
 
