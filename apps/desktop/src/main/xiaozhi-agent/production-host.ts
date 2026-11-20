@@ -227,7 +227,7 @@ import type { XiaozhiActionResult, XiaozhiQueueInput } from '../../shared/xiaozh
 import type { OfficeProjectedTurn, OfficeProjection } from '../../shared/office-agent';
 import { createEventPublisher } from './events/publisher';
 import {repairCancelledRun} from './events/terminal-cancellation';
-import {createLifecycleWorkTracker,LifecycleTimeoutError,waitForLifecycle} from './lifecycle-wait';
+import {createLifecycleWorkTracker,LifecycleTimeoutError,waitForLifecycle,observeLifecycle} from './lifecycle-wait';
 import { officeBlankFieldError } from './office-blank-fields';
 import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-events';
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
@@ -1069,9 +1069,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (!settings.apiKey) throw new Error('authentication');
       const apiKey=settings.apiKey;
       if (run.stopped) throw new Error('cancelled');
-      const preparing=<T>(action:(signal:AbortSignal)=>Promise<T>)=>waitForLifecycle('host_preparation',action,{signal:run.abort.signal,timeoutMs:options.lifecycleTimeoutMs??15000});
-      const cleanPrompt = await preparing(async signal=>{const sanitize=await createStudentContextSanitizer(store);signal.throwIfAborted();return sanitize(prompt);});
-      const selected=(await preparing(()=>store.getAiConversationSession(id))).session.studentId;
+      const preparing=<T>(action:(signal:AbortSignal)=>Promise<T>,label='host_preparation')=>waitForLifecycle('host_preparation',action,{signal:run.abort.signal,timeoutMs:options.lifecycleTimeoutMs??15000,label});
+      const cleanPrompt = await preparing(async signal=>{const sanitize=await createStudentContextSanitizer(store);signal.throwIfAborted();return sanitize(prompt);},'host_sanitize_prompt');
+      const selected=(await preparing(()=>store.getAiConversationSession(id),'host_read_session')).session.studentId;
       if(selected){try{await preparing(()=>store.studentContext.snapshot(selected));}catch(error){if(run.stopped)throw Error('cancelled');throw new Error('permission_denied');}}
       const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run)):{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none'};
       run.teacherPreferenceRevision=preference.snapshot.revision;
@@ -1079,14 +1079,14 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         try{await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:Object.keys(preference.snapshot.values).length>0,action:preference.action,trial:Boolean('trial'in preference&&preference.trial)}));}
         catch{decisions.unavailable(id);}
       }
-      const capabilities = await preparing(signal=>resolveDeepSeekCapabilities(root, settings.model, apiKey, signal));
-      const { createPiXiaozhiSession } = await import('./pi-session');
+      const capabilities = await preparing(signal=>resolveDeepSeekCapabilities(root, settings.model, apiKey, signal),'host_resolve_model');
+      const { createPiXiaozhiSession } = await observeLifecycle('host_pi_import',()=>import('./pi-session'));
       if (run.stopped) throw new Error('cancelled');
-      if(run.operation==='prompt'){run.computationScope=await preparing(()=>managedTools.freeze());run.computationResults=createComputationResults({sessionId:id,runId:run.runId});}
+      if(run.operation==='prompt'){run.computationScope=await preparing(()=>managedTools.freeze(),'host_freeze_computation');run.computationResults=createComputationResults({sessionId:id,runId:run.runId});}
       run.skillPrivateContext ||= createSkillPrivateContext();
-      await preparing(()=>captureRetiredPrivateHistory(store.xiaozhiState.sql,root,id,run.skillPrivateContext!));
+      await preparing(()=>captureRetiredPrivateHistory(store.xiaozhiState.sql,root,id,run.skillPrivateContext!),'host_read_retired_history');
       if(run.recoveryInspection?.canRebuildSession)run.skillPrivateContext.unavailableHistory();
-      const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt));
+      const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt),'host_session_configuration');
       if(base.thinkingPolicy)await preparing(()=>store.xiaozhiState.modelSettings.saveThinkingRun(id,{...base.thinkingPolicy!,runId:run.runId,model:settings.model}));
       const priorProtectedContext=base.protectedContext,preferenceText=teacherPreferenceContext(preference.snapshot,preference.action)+('trial'in preference&&preference.trial?teacherPreferenceTrialContext(preference.trial):'')+(preference.action==='observed'?teacherPreferenceCorrectionContext(implicitTeacherCorrection(cleanPrompt)):'');
       // Freeze one evaluated version for this run; stable system/tool prefix is unchanged.
@@ -1312,7 +1312,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         deliveredPrompt+=recovery;
       }
       preparationMs=performance.now()-executionStarted;
-      const result = await (run.operation === 'compact' ? run.agent.compact() : run.agent.prompt(deliveredPrompt));
+      const result = await observeLifecycle('host_prompt',()=>run.operation === 'compact' ? run.agent!.compact() : run.agent!.prompt(deliveredPrompt));
       sdkEndedMs=performance.now()-executionStarted;
       if(result.ok&&taskRuntime&&!run.stopped)await taskRuntime.refresh();
       if (run.operation === 'compact' && result.ok) await options.afterCompactCommit?.();
@@ -1968,7 +1968,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         }
         if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask));else await phase(()=>tasks.compact(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
-        run.done = execute(id, input.prompt.trim(), run, settings);
+        run.done = observeLifecycle('host_execute',()=>execute(id, input.prompt.trim(), run, settings),{runId:run.runId});
         executions.set(run.runId, {sessionId: id, done: run.done});
         const completed = () => {executions.delete(run.runId);};
         void run.done.then(completed, completed);

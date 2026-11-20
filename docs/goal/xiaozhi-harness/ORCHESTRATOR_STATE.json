@@ -708,6 +708,13 @@
     "nativeWindowAcceptance": "NOT_TESTED",
     "newPaidCalls": 0
   },
+  "firstRequestPreparationProfile": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/first-model-request-local-preparation-20261120.json",
+    "longestObservedOperation": "pi_register_tool_contracts",
+    "operationMs": 7530.15,
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

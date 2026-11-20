@@ -1,4 +1,29 @@
+import {channel} from 'node:diagnostics_channel';
+import {AsyncLocalStorage} from 'node:async_hooks';
 import {AgentToolAbortedError,AgentToolTimeoutError,executeWithToolBound} from './vendor/openmaic/tool-timeout';
+
+// Main-only, opt-in scalar timings. No prompts, paths, payloads or error text.
+const lifecycleChannel = channel('omni-edu.xiaozhi.lifecycle.v1');
+const lifecycleContext = new AsyncLocalStorage<{runId?: string}>();
+export function observeLifecycle<T>(operation: string, action: () => Promise<T>, context?: {runId?: string}): Promise<T> {
+  if (!lifecycleChannel.hasSubscribers) return action();
+  const measure = async (): Promise<T> => {
+    const startedAt = performance.now(), startedEpochMs = performance.timeOrigin + startedAt;
+    let outcome: 'success' | 'cancelled' | 'timeout' | 'error' = 'success';
+    try { return await action(); }
+    catch (error) {
+      outcome = error instanceof LifecycleTimeoutError ? 'timeout'
+        : error instanceof Error && error.message === 'cancelled' ? 'cancelled' : 'error';
+      throw error;
+    } finally {
+      const endedAt = performance.now(), runId = lifecycleContext.getStore()?.runId;
+      lifecycleChannel.publish({version: 1, operation: /^[a-z0-9_]{1,80}$/.test(operation) ? operation : 'unknown',
+        ...(runId && /^run_[a-z0-9-]{1,80}$/i.test(runId) ? {runId} : {}), startedEpochMs,
+        endedEpochMs: performance.timeOrigin + endedAt, durationMs: endedAt - startedAt, outcome});
+    }
+  };
+  return context ? lifecycleContext.run(context, measure) : measure();
+}
 
 export class LifecycleTimeoutError extends Error {
   constructor(readonly operation: string, readonly timeoutMs: number, readonly elapsedMs: number) {
@@ -19,7 +44,8 @@ export function createLifecycleWorkTracker() {
 }
 
 /** Host await adapter, using the already audited OpenMAIC primitive, not an executor. */
-export async function waitForLifecycle<T>(name:string,action:(signal:AbortSignal)=>Promise<T>,options:{signal?:AbortSignal;timeoutMs?:number;late?:(value:T)=>void|Promise<void>;track?:(work:Promise<unknown>)=>void}={}):Promise<T>{
+export async function waitForLifecycle<T>(name:string,action:(signal:AbortSignal)=>Promise<T>,options:{signal?:AbortSignal;timeoutMs?:number;late?:(value:T)=>void|Promise<void>;track?:(work:Promise<unknown>)=>void;label?:string}={}):Promise<T>{
+  return observeLifecycle(options.label || name, async () => {
   let value:T;
   const timeoutMs = options.timeoutMs ?? 15000;
   const startedAt = performance.now();
@@ -37,4 +63,5 @@ export async function waitForLifecycle<T>(name:string,action:(signal:AbortSignal
     throw error;
   });
   return value!;
+  });
 }

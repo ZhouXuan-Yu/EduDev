@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-20",
+  "status": "SYNTHETIC_BACKGROUND_MEASURED",
+  "sourceParent": "8c33877346c7c7f5ee01c19b036c7ce49c0ee3de",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-preparation-observation/out",
+    "exitCode": 0,
+    "includesTypecheck": true,
+    "runtimeSourceHash": "5bfea2b5d77ab0968f4f9d12353dc9a3f37437688c33289a8ba59c2948a994f1",
+    "mainSha256": "4bc85b2fd6cbd0bfbcb1f442c1c8f57843d9df85570f2ad89dacc4dee967442c",
+    "outputSha256": "449197192476c5cfbd7255cbe074467af7f1b3cf5446c24f26b4e76f58eec2e5",
+    "files": 481,
+    "logSha256": "56f8acf2075a7aef39d4e9e774278b719023696aae8b31195981a9b189875939"
+  },
+  "historicalSample": {
+    "report": "TEMP/omni-edu-xiaozhi-stream-iDJPVv/report.json",
+    "reportSha256": "0155a3f05fd7f111b0bebf7c5ecd8ae0158dfc1a4e6e278822d664afe4808cb6",
+    "submitToFixtureMs": 7651.97,
+    "submitToRunRowMs": 16.70,
+    "runRowToMainFetchMs": 7626.51,
+    "sqlitePreparationMs": 5877.6582,
+    "sqliteReadback": "Read only. Match assistant metadata.agentRunId to the report turn; preparation measures execute start to before agent.prompt.",
+    "scope": "Earlier background sample with different host load and no operation spans. Not a performance comparison to the new sample."
+  },
+  "tests": {
+    "metricsAndObserver": {
+      "command": "node scripts/xiaozhi-agent/phase8-stream-performance-check.mjs",
+      "passed": 7,
+      "exitCode": 0,
+      "report": "TEMP/xiaozhi-phase8-stream-metrics-nG6WqH/report.json",
+      "reportSha256": "40aa7e192acd82c5c40d07aafc8ffa7e93011f6aa8e76c1210a1a25f1914cd8b"
+    },
+    "lifecycleBoundaries": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/pi-lifecycle-boundaries.mjs",
+      "passed": 6,
+      "exitCode": 0,
+      "report": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-ggYuzR/report.json",
+      "reportSha256": "fe88636185d4419a43878edfa4729fd98511d2338052e91de53c627d77fd3f7b"
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "passed": 253,
+      "exitCode": 0,
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    "legacyWithoutChannel": {
+      "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/harness-main-d972001-gate7/out --label dcf273b-legacy-stream --expected-out-hash 8746795c9cda2ac503fff6c4b3ecc322bbbad26fba0a29950aeb7c0741e8f461 --expected-out-count 481 --background true",
+      "exitCode": 0,
+      "passed": 5,
+      "instrumentation": "unavailable",
+      "report": "TEMP/omni-edu-xiaozhi-stream-u8Q7xD/report.json",
+      "reportSha256": "89a91a17a6a5a272c6ce5ae1883e5c2e7841f60f185fa9df34724742cd20339e"
+    }
+  },
+  "independentCurrentSample": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/harness-preparation-observation/out --label harness-first-request-profile --expected-out-hash 449197192476c5cfbd7255cbe074467af7f1b3cf5446c24f26b4e76f58eec2e5 --expected-out-count 481 --background true --require-lifecycle true",
+    "exitCode": 0,
+    "passed": 7,
+    "report": "TEMP/omni-edu-xiaozhi-stream-WMxDe3/report.json",
+    "reportSha256": "48021e2c13e6c49609d6ec6b378c4f571e760a47bbe56f2fd9317c75334a39af",
+    "buildUnchanged": true,
+    "lifecycleRows": 233,
+    "dropped": 0,
+    "invalid": 0,
+    "submitToMainFetchMs": 12741.00,
+    "submitToFixtureMs": 12755.20,
+    "hostPreparationMs": 9737.90,
+    "sqlitePreparationMs": 9732.7544,
+    "boundaryDifferenceMs": 5.1499,
+    "piAssemblyMs": 9244.72,
+    "piPromptToMainFetchMs": 2821.09,
+    "toolContractRegistrationMs": 7530.15,
+    "managedSkillLoadingMs": 1313.53,
+    "paidModelCalls": 0,
+    "projectedAndEventStatus": "interrupted",
+    "compatibilityRunStatus": "blocked",
+    "scope": "Single background Electron run, real Pi/main/renderer/SQLite with loopback synthetic SSE, original stopped turn. No foreground, provider or before/after performance claim."
+  },
+  "dependencyAudit": {
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0,
+    "dependencyChanges": false
+  },
+  "next": "Target validated snapshot reuse in the cold registry hot path. Prove the saved work and preserve revocation, per-call transaction behavior and cancellation. The sample establishes the expensive stage, not a breakdown within the registry.",
+  "fixedMatrix": {"passed": 88, "total": 89, "onlyBlocked": "QG-09"}
+}
