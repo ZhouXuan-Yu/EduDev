@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 PDF 章节边界生成来源草稿
+
+v14 在既有 PDF 页冲突及归档门内验证章节标题、正文基线及连续下一题号。原生页、OCR 与教师数据仍分别版本化保存。 [专项报告](../research/evidence/kb/20261121/native-section-boundary/README.md)
+
 ## 2026-11-21 页码行从题干和索引分离
 
 v13 按原版面和 OCR 证据判断页脚并通过既有角色链排除索引。旧教师题比较兼容同版原件中已证页脚的变化，SQLite 结构沿用既有版本。 [专项报告](../research/evidence/kb/20261121/named-page-footer/README.md)

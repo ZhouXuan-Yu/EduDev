@@ -2,7 +2,7 @@ import "../office-agent/register-source.mjs";
 import assert from "node:assert/strict";
 const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
-const { localizedPdfMarkProof, separatedMarkPixels, verifiedQuestionInPdfConflict } =
+const { localizedPdfMarkProof, separatedMarkPixels, verifiedQuestionInPdfConflict, verifiedQuestionBeforeNativeSection } =
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
 const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
@@ -218,6 +218,71 @@ function fixtureWithNativeMarks(p, marks) {
   return {status:"needs_review",error:"text_conflict",method:"ocr",text,ocrText:text,
     nativeText:items.map(item=>item.text).join(" "),width:1000,height:1000,imageArea:.5,nativeBoxes:[]};
 }
+function beforeNativeSectionFixture(title = "二、填空题（每空2分）") {
+  const p = page([
+    ["1. 已知电阻为 5Ω，电流保持不变，计算两端电压并说明理由。", .1, .12, .78],
+    [title, .1, .30, .65, "paragraph_title"],
+    ["2. 已知另一电路条件，计算电流。", .1, .42, .78],
+  ]);
+  const [q] = questions([p]);
+  const receipt = fixtureWithNativeMarks(p, p.lines.map(line => [line.text, [...line.box]]));
+  const native = p.nativeRecovery.native;
+  native.lines = native.items.map((item, index) => ({id: "native-line-" + (index + 1), text: item.text,
+    box: [...item.box], itemIds: [item.id]}));
+  receipt.nativeText = p.lines.map(line => line.text).join("\n");
+  return {p, q, receipt};
+}
+await check("A positioned literal exam-section title can bound an independently matching native question", () => {
+  for (const title of ["二、填空题", "二、填空题（每空2分）", "三、计算题（共2题，每题5分）"]) {
+    const {p, q, receipt} = beforeNativeSectionFixture(title);
+    assert.equal(q.status, "candidate");
+    assert(p.regions.some(region => region.kind === "paragraph_title"));
+    assert(verifiedQuestionBeforeNativeSection(receipt, q, p), title);
+    const docTitle = structuredClone(p);
+    docTitle.regions.find(region => region.kind === "paragraph_title").kind = "doc_title";
+    assert(verifiedQuestionBeforeNativeSection(receipt, q, docTitle), "doc_title: " + title);
+  }
+});
+await check("Native section recovery refuses pseudo headings, wrong positions, lost tokens and raised/lowered components", () => {
+  for (const title of ["二、填空题答案", "二、填空题（答案为5）", "二、填空题（每空2分，附加条件）", "二、参考答案"]) {
+    const {p, q, receipt} = beforeNativeSectionFixture(title);
+    assert.equal(verifiedQuestionBeforeNativeSection(receipt, q, p), false, title);
+  }
+  const variations = [
+    f => {f.p.paragraphs[1].anchor.box = [.1,.11,.75,.128];},
+    f => {f.p.nativeRecovery.native.lines[1].box = [.4,.30,.9,.318];},
+    f => {f.p.regions.find(region => region.kind === "paragraph_title").kind = "text";},
+    f => {f.p.regions.find(region => region.kind === "paragraph_title").score = .79;},
+    f => {f.p.nativeRecovery.native.items[0].box = [.1,.113,.88,.124];},
+    f => {f.p.nativeRecovery.native.items[0].box = [.1,.125,.88,.132];},
+    f => {f.p.nativeRecovery.native.items[0].box = [.1,.12,.88,.126];},
+    f => {f.p.nativeRecovery.rasterSha256 = "c".repeat(64);},
+    f => {f.p.nativeRecovery.native.version = "c".repeat(64);},
+    f => {f.p.nativeRecovery.native.page = 2; f.p.nativeRecovery.native.total = 2;},
+    f => {f.receipt.ocrText += "遗漏文字";},
+    f => {f.receipt.nativeText = f.receipt.nativeText.replace("5Ω", "15Ω");},
+    f => {f.q.stem = f.q.stem.replace("5Ω", "15Ω");},
+    f => {f.p.nativeRecovery.unresolved.push("native-line-1");},
+    f => {f.q.pageRange = [1,2];},
+    f => {f.p.paragraphs[2].marker.label = "3";},
+    f => {
+      // The PDF item exists physically in the source band but its grouping
+      // line omits it. Keep the whole-page native glyph digest in agreement.
+      const native = f.p.nativeRecovery.native;
+      native.items.push({...structuredClone(native.items[0]), id: "native-item-4", text: "+", box: [.45,.20,.47,.218]});
+      f.receipt.nativeText += "\n+";
+    },
+    f => {
+      const native = f.p.nativeRecovery.native;
+      native.items.push({...structuredClone(native.items[0]), id: "native-item-4", text: "1. 重复题号", box: [.1,.7,.4,.718]});
+      f.receipt.nativeText += "\n1. 重复题号";
+    },
+  ];
+  for (const [index, alter] of variations.entries()) {
+    const f = beforeNativeSectionFixture(); alter(f);
+    assert.equal(verifiedQuestionBeforeNativeSection(f.receipt, f.q, f.p), false, "unsafe native-section variant " + index);
+  }
+});
 await check("PDF annotations must be complete, detached and backed by exact paged OCR", () => {
   const y = [.3,.36,.42,.48];
   const p = page([
