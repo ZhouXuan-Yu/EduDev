@@ -18,9 +18,10 @@ import type {AiPageView} from '../../shared/material-ai-page';
 import {EDUCATION_SEARCH_MAX_BYTES,EDUCATION_SEARCH_MAX_UNITS} from '../../shared/education-capabilities';
 import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
 import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pdf-ocr';
-import {readMaterialOriginal,verifyMaterialOriginal} from './material-original';
+import {readMaterialOriginal,verifyMaterialOriginal,verifyStampedOriginal} from './material-original';
 import type {MaterialParseLease} from './material-parse-queue';
 import {saveImageOcr} from './material-image-ocr';
+
 export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
 type Row=Record<string,unknown>;
@@ -66,6 +67,10 @@ export class MaterialRepository {
  }
  async verify(id:string,version:string,signal:AbortSignal){const resource=await this.resource(id);if(resource.contentHash!==version)throw new Error('source_changed');await verifyMaterialOriginal(this.host.root,resource.localPath,version,signal);const after=await this.resource(id);if(after.contentHash!==version||after.localPath!==resource.localPath)throw new Error('source_changed');}
  async originalStamp(id:string,version:string){const resource=await this.resource(id),root=path.resolve(this.host.root),file=path.resolve(resource.localPath);if(resource.contentHash!==version||path.dirname(file)!==root)throw new Error('source_changed');const stat=await fs.lstat(file,{bigint:true});if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1n||(await fs.realpath(file)).toLowerCase()!==file.toLowerCase()||(await fs.realpath(root)).toLowerCase()!==root.toLowerCase())throw new Error('missing');return[stat.dev,stat.ino,stat.size,stat.mtimeNs,stat.ctimeNs].map(String).join(':');}
+ verifyBookOriginal(id:string,version:string,signal:AbortSignal){
+  const key=JSON.stringify([path.resolve(this.host.root),id,version]);
+  return verifyStampedOriginal(key,()=>this.originalStamp(id,version),()=>this.verify(id,version,signal),signal);
+ }
  async list(input:MaterialQuery):Promise<MaterialPage>{
   // instr treats %, _ and backslashes literally; all user terms are bound parameters.
   const terms=materialTerms(input.query),params:SqlValue[]=[];

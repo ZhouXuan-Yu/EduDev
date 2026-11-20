@@ -70,6 +70,7 @@ type Host = {
   run: (sql: string, values?: Value[]) => Promise<void>;
   resource: (id: string) => Promise<TeacherResource>;
   verify: (id: string, version: string, signal: AbortSignal) => Promise<void>;
+  verifyBookOriginal?: (id: string, version: string, signal: AbortSignal) => Promise<void>;
   lease: (lease: MaterialParseLease) => Promise<boolean>;
   page: (
     resource: TeacherResource,
@@ -975,7 +976,8 @@ export class MaterialStructureRepository {
   async bookScope(q: QuestionBankItem, signal: AbortSignal) {
     const reference = q.archive?.structure;
     if (!reference) throw Error("source_changed");
-    const { question } = await this.sourceCandidate(reference, signal);
+    await this.host.verifyBookOriginal?.(reference.resourceId,reference.version,signal);
+    const { question } = await this.sourceCandidate(reference, signal, !this.host.verifyBookOriginal);
     if (question.number !== q.archive!.number) throw Error("source_changed");
     const first = question.pageRange[0];
     const start = Math.max(1, first - BOOK_SECTION_LOOKBACK);
@@ -991,6 +993,13 @@ export class MaterialStructureRepository {
           page.version !== reference.version || hash(page) !== row.sha256) throw Error("source_changed");
       return { page, sha: String(row.sha256) };
     }));
+  }
+
+  async validateForBook(q: QuestionBankItem, signal: AbortSignal) {
+    const reference=q.archive?.structure;
+    if(!reference)throw Error("source_changed");
+    await this.host.verifyBookOriginal?.(reference.resourceId,reference.version,signal);
+    return this.validate(q,signal,!this.host.verifyBookOriginal);
   }
 
   async validate(q: QuestionBankItem, signal = new AbortController().signal, verifyOriginal = true) {

@@ -1,0 +1,23 @@
+{
+  "base": "9b34bdb",
+  "buildMainSha256": "e014fcbc4f2af7bffb7d17e08713eac9eddfe4e163f469df5bfa80bc654d2059",
+  "testsPassed": {
+    "structureBook": 17,
+    "legacyBookMatch": 36,
+    "bookDocuments": 7,
+    "aiPage": 249,
+    "rendererComponents": 253,
+    "finalElectron": 3,
+    "desktopSmokeBeforeIndependentReviewFixes": 207
+  },
+  "realElectron": {
+    "source": "Controlled printed PDF pair with saved original page receipts",
+    "restartToVisibleMs": 2145,
+    "durableWorkTicket": true,
+    "answerPage": 1,
+    "rawReceiptsAndOriginalPresentationRetained": true,
+    "newProviderRequests": 0
+  },
+  "stableIdentityControlledProbe": { "checks": 100, "wholeFileVerifications": 1 },
+  "npmAudit": { "existingAdvisories": 23, "high": 8, "dependencyChanges": false }
+}

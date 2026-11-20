@@ -8,7 +8,7 @@ import type {readAiPageReceipt} from './material-ai-page-evidence';
 type Row=Record<string,unknown>;type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Row[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;receipt:(batch:string,ordinal:number)=>ReturnType<typeof readAiPageReceipt>};
 /** B-tree lookup cache only. Every selected entry is reopened from immutable receipts before use. */
 export class MaterialBookAnswerIndex{
- constructor(private host:Host){}
+ constructor(private host:Host,private structuresEnabled=()=>false){}
  async migrate(){
   for(const sql of [
    'CREATE TABLE IF NOT EXISTS material_book_answer_index_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,start INTEGER NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,page INTEGER NOT NULL,seq INTEGER NOT NULL,section_key TEXT NOT NULL,number TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal,start))',
@@ -72,9 +72,15 @@ export class MaterialBookAnswerIndex{
   const after=await this.host.all('SELECT * FROM material_book_answer_index_v1 WHERE batch_id=? AND ordinal=? ORDER BY start',[batch,ordinal]);
   const marker=after.find(r=>Number(r.start)===-1);
   if(marker&&JSON.stringify(before)!==JSON.stringify(after)&&!(await this.host.all('SELECT 1 FROM material_book_answer_index_v1 WHERE resource_id=? AND version=? AND page=? AND seq>? LIMIT 1',[String(marker.resource_id),String(marker.version),Number(marker.page),Number(marker.seq)])).length){
-   const work=new MaterialBookAnswerWork(this.host);
+   const work=new MaterialBookAnswerWork(this.host,this.structuresEnabled);
    if(marker.book_role==='answers'){
-    await work.answerChanged(String(marker.resource_id),String(marker.version));
+    const resource=String(marker.resource_id),version=String(marker.version);
+    const previous=this.structuresEnabled()?await this.host.all(`SELECT number FROM material_book_answer_index_v1
+      WHERE resource_id=? AND version=? AND page=? AND start>=0 AND seq=(SELECT MAX(seq)
+        FROM material_book_answer_index_v1 WHERE resource_id=? AND version=? AND page=? AND start=-1 AND seq<?)`,
+     [resource,version,Number(marker.page),resource,version,Number(marker.page),Number(marker.seq)]):[];
+    const numbers=[...new Set([...before,...after,...previous].map(row=>String(row.number)).filter(number=>/^\d{1,5}$/.test(number)))];
+    await work.answerChanged(resource,version,numbers);
     // Raw changes fan out once. Context-only rebuilds never recurse or erase a pending raw invalidation.
     if(!dirty?.context_only)await this.invalidateFollowing(String(marker.resource_id),String(marker.version),Number(marker.page));
    }else await work.questionChanged(String(marker.resource_id),String(marker.version),Number(marker.page));

@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 已核对结构题后台配答
+
+已覆盖答案先到、后到、重启、解绑重联、工作令牌更新和保护教师答案解析。见 [桌面及 SQLite 证据](../research/evidence/kb/20261120/structure-auto-book/README.md)。
+
 ## 2026-11-20 重建后切换结构题版本
 
 已验证旧 v7 归档迁移、新版题上线、旧草稿只读、失败重试和重复重建 ID 稳定。见 [本轮验收](../research/evidence/kb/20261120/structure-bank-handoff/README.md)。

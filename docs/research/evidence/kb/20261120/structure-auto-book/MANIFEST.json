@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "02f93eab3de6a428890867c8fb1519a3fd40d2baf00f90158bbc50e2743bd6a0"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "88df08c46152364fd25d6bcaca5ab56bb5b617552b1a20b38caf4630805cc547"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "807d9e648912f02fd6c41a72d5ae29a792480b4d62635bcef0353a8195c5e877"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "c593bde57a7896c5bde8ef25346fbcef3425ee7e8d58733ab453609378e6ffa8"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-structure-auto-book-electron.mjs",
+      "sha256": "a97fa5e1975254632edf5fded86d883ef3de709e18177ad57d6f0ecc5809aa51"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-structure-book-boundaries.mjs",
+      "sha256": "d7f52e9ee8d73a7d7d97960fb7cb24db783b628b9f0f652c792198d15b3b6700"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "sha256": "065e34c43eb920227c995dbc661d729acc25b5835d080bc8781bf706c8b1b129"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-index.ts",
+      "sha256": "ee173bee5a30bbc2ea162090f4339cd67046549f5db1641fef2140dcd1056fcb"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-repository.ts",
+      "sha256": "9f8afcdb04bf9939ef98a9105d88e0d865854e4a75bed9c8e7c8aa9a7443892a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-book-answer-work.ts",
+      "sha256": "2a8882abc9360ce4c34fe2c8cd10dba00c45774401a23d1fb01d65195d8d7671"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-original.ts",
+      "sha256": "ffff2ef56c71e9caebafa19b7ec601c5fa7594695fb8c14c11982b02ef31ea48"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-repository.ts",
+      "sha256": "e22cf33eec464cf7983e6b8bdad8f1c40a3df7b95a0fb3282d8d018cadcd15d4"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-book-work.ts",
+      "sha256": "a893af9b4fc5c20a7defe3504f784cfc04c46eda9ee9d232a79707b81f569671"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "6e106d8d298c02c72bf8c3abc7443d0e9548dbef914e8b247ab66cb06402cb25"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "f588a8c0c76d6e5b1f4614c635b0179eb606fe8edf082b9d1fd9313a3752a7d2"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionStructureBookMatch.tsx",
+      "sha256": "d0ee8c71266609b7428a5b845eec12c9a23d483baff12457c96c9d0482bc513a"
+    },
+    {
+      "path": "apps/desktop/src/shared/question-book-answer.ts",
+      "sha256": "78383f234922f7e4d3c5f67e75c619b977589c73cfd238054cf0350a14fda8e4"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "7133ec4b694ef5b2904e66902225e1afd87b5f7723033974634bf2a3e3130810"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "194c84b35e101ea3526acfc35bb9675d35c4775aa6fb4b35cbe27f1cb0bcb9cb"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "950394425c711053f940ffa95848db91d6dac8eccec548060b9f1d59474c93d3"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "ffa23fea1b019203d2c753112339d7c14a1d7fb1c0389ffb308293e9e17c4d9f"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "01a71f67dbafd78195d002569c54ce30f75d39a47bbe202f173ab03f48d76504"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "482ab42a477b6e87fd70d3a01dbc633bccd04939cb1b1c4a1b3c7c373a5b28c7"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "c4115ad42c45b7506f3e1f9ae560711457dc3d1a0d895be704e1599cf425c812"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "04973edf6f78683e164ed12bd250708e4634389490755c051c69fa52b2477f6a"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "e94e5e5591c1f17b263c6ac1cb094637f237a104072937f0a536934e15c6da59"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "588a655e38eda6f3c702b972468ee458250002cbfc5ef6698307d13be6f0fb72"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/structure-auto-book/README.md",
+      "sha256": "c01224f065ad15810cff84bb1fd21d595d5e283ba60599201aa17ded826ecfa0"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/structure-auto-book/summary.json",
+      "sha256": "5b145c80ec6481712a364fac3070c9a0f2d5718a8b065e57bfb734e115ea7da9"
+    }
+  ]
+}

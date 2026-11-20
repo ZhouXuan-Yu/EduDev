@@ -1,6 +1,21 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+
+// Reopen the physical identity on each operation. Rehash once for an unchanged identity.
+const verifiedOriginalStamps = new Map<string,string>();
+export async function verifyStampedOriginal(key:string,readStamp:()=>Promise<string>,verify:()=>Promise<void>,signal:AbortSignal){
+ signal.throwIfAborted();
+ const stamp=await readStamp();
+ signal.throwIfAborted();
+ if(verifiedOriginalStamps.get(key)===stamp)return;
+ await verify();
+ if(await readStamp()!==stamp)throw Error('source_changed');
+ signal.throwIfAborted();
+ if(verifiedOriginalStamps.size>=32)verifiedOriginalStamps.delete(verifiedOriginalStamps.keys().next().value!);
+ verifiedOriginalStamps.set(key,stamp);
+}
+
 /** Archive integrity is independent of the parser's in-memory input limit. */
 export async function verifyMaterialOriginal(rootPath:string,file:string,version:string,signal:AbortSignal):Promise<void>{
  signal.throwIfAborted();const root=path.resolve(rootPath),target=path.resolve(file);

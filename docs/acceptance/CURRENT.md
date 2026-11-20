@@ -4,6 +4,10 @@
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
 
+## 2026-11-20 已核对结构题后台配答
+
+已核对结构题通过桌面后台配答、重启和独立原页回读验收。见 [专项记录](../research/evidence/kb/20261120/structure-auto-book/README.md)。
+
 ## 2026-11-20 重建后切换结构题版本
 
 真实旧库副本通过迁移、题本默认检索和历史查看、再次重建与冷启动。见 [专项验收](../research/evidence/kb/20261120/structure-bank-handoff/README.md)。

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { QuestionNotebookEntry } from '../../shared/contracts';
 import { STRUCTURE_BOOK_MATCH_SCHEMA, type BookMatchView } from '../../shared/question-book-answer';
 import { isCompleteQuestionDocument } from '../../shared/question-document';
@@ -11,7 +11,38 @@ export function QuestionStructureBookMatch({question, onReadback}:{
   const [view, setView] = useState<BookMatchView>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  if (!question.archive?.structure || !question.archive.sourceChecked || !isCompleteQuestionDocument(question.document)) return null;
+  const section = useRef<HTMLElement>(null);
+  const readback = useRef(onReadback);
+  const eligible=!!question.archive?.structure && question.archive.sourceChecked && isCompleteQuestionDocument(question.document);
+  const questionId=question.id;
+  useEffect(()=>{readback.current=onReadback;},[onReadback]);
+  useEffect(()=>{
+    const node=section.current,api=window.omniEdu;
+    if(!eligible||!node||!api)return;
+    let active=true,visible=false,inFlight=false,version='',published='';
+    setView(undefined);
+    async function load(){
+      if(!active||!visible||inFlight||!api)return;
+      inFlight=true;
+      try {
+        version ||= (await api.getArchivedQuestionVersion(questionId)).version;
+        const current=await api.getMaterialBookMatches({schemaVersion:STRUCTURE_BOOK_MATCH_SCHEMA,questionId,version});
+        if(!active)return;
+        setView(current);
+        const applied=current.rows.find(row=>row.afterVersion&&row.state==='applied');
+        if(applied&&applied.afterVersion!==published){
+          const saved=await api.getQuestionNotebookEntry(questionId);
+          if(active&&saved){published=applied.afterVersion;readback.current(saved);}
+        }
+      }catch{/* A manual match still exposes a failed refresh. */}
+      finally{inFlight=false;}
+    }
+    const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)void load();});
+    observer.observe(node);
+    const timer=setInterval(()=>void load(),3000);
+    return ()=>{active=false;observer.disconnect();clearInterval(timer);};
+  },[eligible,questionId]);
+  if (!eligible) return null;
 
   async function match() {
     const api = window.omniEdu!;
@@ -35,12 +66,14 @@ export function QuestionStructureBookMatch({question, onReadback}:{
     }
   }
 
-  return <section data-testid="structure-book-matches">
+  return <section ref={section} data-testid="structure-book-matches">
     <button type="button" className="secondary-action" data-testid="structure-book-match" disabled={busy} onClick={()=>void match()}>
       {busy?'正在核对题册和答案册…':'匹配独立答案册'}
     </button>
     {error&&<p role="alert">{error}</p>}
-    {view?.indexPending&&<p role="status">答案目录正在后台建立，完成后可重试。</p>}
+    {view?.indexPending&&<p role="status">答案目录正在后台建立，完成后会自动匹配。</p>}
+    {view?.automaticPending&&<p role="status" data-testid="structure-book-match-pending">正在等待后台配答。</p>}
+    {view?.automaticError&&<p role="alert">后台配答未完成。请核对原件和关联后重试。</p>}
     <MaterialBookMatchRows rows={view?.rows??[]}/>
   </section>;
 }
