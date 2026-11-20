@@ -104,6 +104,81 @@ await check("An isolated unnumbered prompt stays reviewable and a numbered figur
   }
   assert.equal(page([["第6题 图中有五个不同的小球，请计算它们的质量。"]]).paragraphs[0].marker.label,"6");
 });
+await check("Printed space-separated and separately boxed question numbers use section, alignment and option evidence", () => {
+  const p=page([
+    ["考生注意：",.1,.08,.8,"paragraph_title"],
+    ["1. 用 2B 铅笔作答选择题。",.1,.11],
+    ["一、选择题",.1,.17],
+    ["1 如果 a＞b，下列正确的是",.1,.22],
+    ["A. 甲",.14,.25,.2],["B. 乙",.42,.25,.2],
+    ["２",.1,.30,.018],["已知 y=2x，正确结论为",.14,.301,.7],
+    ["A. 丙",.14,.33,.2],["B. 丁",.42,.33,.2],
+    ["三、解答题",.1,.40],
+    ["3（本题满分10分，第（1）小题4分）",.1,.43,.6,"paragraph_title"],
+    ["如图，在直角坐标系中解方程。",.14,.46,.65],
+    ["（1）求 x。",.14,.49],
+    ["（2）求 y。",.14,.52],
+  ]);
+  const recovered=questions([p]);
+  assert.deepEqual(recovered.map(q=>q.number),["1","2","3"]);
+  assert.match(recovered[0].stem,/^如果/);
+  assert.match(recovered[1].stem,/^已知/);
+  assert.deepEqual(recovered.slice(0,2).map(q=>q.options.map(o=>o.label)),[["A","B"],["A","B"]]);
+  assert.match(recovered[2].stem,/^如图/);
+  assert.deepEqual(recovered[2].subquestions.map(q=>q.label),["1","2"]);
+  assert(!recovered.some(q=>q.stem.includes("铅笔")||q.stem.includes("满分")));
+  assert(p.rawText.includes("２\n已知"));
+  assert(p.rawText.includes("铅笔"));
+  assert.equal(p.paragraphs.flatMap(paragraph=>paragraph.lineIds).length,p.lines.length);
+});
+await check("A running fill sequence continues across missing headings and closes before a scored heading", () => {
+  const p=page([
+    ["10 展品有四个，其中合格的是▲个",.1,.10,.74],
+    ["11 另一个样本记录的值为▲",.1,.14,.72],
+    ["12 原图所示还有一个条件",.1,.18,.72],
+    ["三、解答题",.1,.22],
+    ["13（本题共10分）",.1,.26,.42,"paragraph_title"],
+    ["求整个系统的功率。",.14,.29,.72],
+  ]);
+  const result=questions([p]);
+  assert.deepEqual(result.map(q=>q.number),["10","11","12","13"]);
+  assert.equal(result[2].status,"needs_review");
+  assert(!result[1].stem.includes("原图所示"));
+  assert.equal(result[3].stem,"求整个系统的功率。");
+});
+await check("Quantities, decimals, chart values, and a lone unproven numeral do not become parent questions", () => {
+  const p=page([
+    ["二、填空题",.10,.08],
+    ["3 kg 的砝码如图所示",.11,.12,.76],
+    ["4 m/s 的速度变化如下",.11,.16,.74],
+    ["4.5 cm 的长度",.11,.20,.75],
+    ["15 没有原件边界证据的文字",.40,.25,.40],
+    ["7",.60,.29,.02],["30 m",.14,.29,.2],
+    ["8 已知原先内容",.11,.36,.70],
+  ]);
+  assert.deepEqual(p.paragraphs.filter(q=>q.marker?.kind==="parent").map(q=>q.marker.label),[]);
+  assert(p.rawText.includes("4.5 cm"));
+});
+await check("A stacked formula beside the next question never changes the preceding complete choice question", () => {
+  const p=page([
+    ["一、选择题",.10,.18],
+    ["1 以下正确的结论是",.10,.24,.46],
+    ["A. 甲",.14,.28,.11],["B. 乙",.28,.28,.11],["C. 丙",.42,.28,.11],["D. 丁",.56,.28,.11],
+    ["2 − x",.26,.306,.055],
+    ["2",.10,.317,.020],["如果 f(x) =",.15,.316,.11],["现计算函数的值",.33,.316,.2],
+    ["x − 3",.26,.324,.055],
+    ["A. 甲",.14,.36,.11],["B. 乙",.28,.36,.11],["C. 丙",.42,.36,.11],["D. 丁",.56,.36,.11],
+  ]);
+  const [first,second]=questions([p]);
+  assert.equal(first.number,"1");
+  assert.equal(second.number,"2");
+  assert(!first.stem.includes("2 − x"));
+  assert(second.stem.includes("2 − x"));
+  assert(second.stem.includes("x − 3"));
+  assert(second.issues.includes("ambiguous_asset"));
+  assert(!second.stem.includes("\\frac"));
+  assert.equal(p.paragraphs.flatMap(paragraph=>paragraph.lineIds).length,p.lines.length);
+});
 function fixtureWithNativeMarks(p, marks) {
   const items = marks.map(([text,box],i)=>({
     id:"native-item-"+(i+1),text,box,transform:[1,0,0,1,0,0],width:12,height:12,

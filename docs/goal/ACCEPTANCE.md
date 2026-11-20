@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 实际整卷的题界与原文
+
+同一五页真实卷逐页核对原始 OCR 与行框，比较有题号分组、考生说明和相邻公式归属。题本草稿检索与正式检索分别核对。 [本轮记录](../research/evidence/kb/20261121/assessment-numbering/README.md)
+
 ## 2026-11-20 既有目录后台结构恢复
 
 旧构建没有可用目录入口。新构建真实登记 221 份、暂停重启并继续发布 PDF 结构，保留已核题。全目录跑完和自然题质量仍按原标准验收。 [本轮记录](../research/evidence/kb/20261120/batch-structure-recovery/README.md)

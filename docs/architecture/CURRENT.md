@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 印刷题号与堆叠公式
+
+页行分类后、段落合并前验证无标点题首；同列上下公式片和等式题干形成可定位关系并保持待核。新派生版本 v11，原件和原 OCR 字符保留。 [本轮记录](../research/evidence/kb/20261121/assessment-numbering/README.md)
+
 ## 2026-11-20 既有目录的结构恢复调度
 
 轻量批次与文件协调表记录资源版本、状态及世代，最多 4 项交给现有 `resource_parse` 队列。解析租约、结构快照、发布、索引和题库入库门槛共用现有实现。 [本轮记录](../research/evidence/kb/20261120/batch-structure-recovery/README.md)

@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
+import {applyAssessmentNumbers,restoreAssessmentFormulaOrder,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
   DOCUMENT_STRUCTURE_ENGINE,
@@ -47,6 +48,8 @@ const furnitureKinds = new Set([
 ]);
 const questionCue =
   /[?？]|求|计算|解方程|选择|填空|判断|已知|证明|下列|回答|写出|如图|简述|说明|[（(]\s*[）)]|_{2,}/u;
+const examAdministration =
+  /答题[纸卡]|姓名|报名号|考场|座位|条形码|考试时间|试卷上作答|填涂|(?:用|使用)[^，。；]{0,22}(?:铅笔|钢笔|水笔|圆珠笔|墨水)[^。；]{0,28}(?:作答|填写|书写)|(?:本卷|本场考试|试卷)(?:共|满分|时间)/u;
 const sectionHeading =
   /^(?:[一二三四五六七八九十百]+[、．.]|第[一二三四五六七八九十百\d]+[章节单元])/u;
 const printedExampleLead = /^例(?:题)?[ \t]*\d{1,5}(?:[.．、:：][ \t]*|[ \t]+)\p{Script=Han}/u;
@@ -122,6 +125,8 @@ function lineRole(
       role: "question",
       marker: { kind: "parent", label: parent[1] || parent[2] },
     };
+  const scored = scoredAssessmentNumber(text);
+  if (scored) return { role: "question", marker: { kind: "parent", label: scored } };
   if (/^(?:阅读\s*(?:下列|下面|以下)?|(?:根据|依据)\s*(?:下列|下面|以下))(?:材料|短文|文章)/u.test(text) ||
       /(?:回答|完成)/u.test(text) && materialRange.test(text)) return { role:"material" };
   if (kind === "doc_title" || kind === "paragraph_title")
@@ -256,9 +261,11 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   const layout = columnsFor(lines, roles, height);
   const { columns } = layout;
   const ordered = orderedLines(lines, columns, roles);
+  applyAssessmentNumbers(ordered.rows, roles, height, questionCue);
+  const formulas = restoreAssessmentFormulaOrder(ordered.rows, roles, height);
   const paragraphs: StructureParagraph[] = [];
   const byId = new Map(lines.map((line) => [line.id, line]));
-  for (const { line, column } of ordered.rows) {
+  for (const { line, column } of formulas.rows) {
     const detected = roles.get(line.id)!,
       last = [...paragraphs]
         .reverse()
@@ -312,6 +319,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       area(regions[0].box) / area(regions[1].box) > 0.85 &&
       regions[0].kind !== regions[1].kind;
     const issues: StructureIssue[] = [
+      ...(formulas.uncertain.has(line.id) ? ["ambiguous_asset" as const] : []),
       ...(printedLines.get(line.sourceId)?.uncertain ? ["printed_crop_unconfirmed" as const] : []),
       ...(line.score < 0.85 ? ["low_ocr_score" as const] : []),
       ...(!line.regionIds.length || ambiguous || regions[0]?.score < 0.5
@@ -618,12 +626,10 @@ export class StructureQuestionAssembler {
           );
           continue;
         }
-        if (this.instructions && !questionCue.test(paragraph.text)) continue;
-        if (
-          this.instructions &&
-          /姓名|考场|座位|答题纸|条形码|满分|考试时间/u.test(paragraph.text)
-        )
-          continue;
+        if (this.instructions) {
+          if (!questionCue.test(paragraph.text) || examAdministration.test(paragraph.text)) continue;
+          this.instructions = false;
+        }
         const numberingConflict =
           !!this.pending &&
           this.pending.question.number !== "0" &&
@@ -693,7 +699,7 @@ export class StructureQuestionAssembler {
         if (uncertainLeadingTableColumn === paragraph.column)
           this.pending.question.issues.push("ambiguous_columns");
         uncertainLeadingTableColumn = undefined;
-        if (!questionCue.test(paragraph.text) && !this.answers)
+        if (!questionCue.test(paragraph.text) && !this.answers && !scoredAssessmentNumber(paragraph.rawText))
           this.pending.question.issues.push("uncertain_boundary");
         this.append(paragraph, page);
         continue;
@@ -837,6 +843,13 @@ export class StructureQuestionAssembler {
       /^(?:第\s*\d+\s*题\s*[:：]?|\d+[.．、])[ \t]*/u,
       "",
     );
+    const first = pending.paragraphs[0];
+    if (first.marker?.kind === "parent" && first.marker.label === q.number) {
+      const scored = scoredAssessmentNumber(first.rawText);
+      q.stem = stripAssessmentNumber(q.stem, first, q.number);
+      if (scored && !q.stem.trim() && !q.subquestions.length)
+        q.issues.push("uncertain_boundary");
+    }
     if (shared.length) {
       for (const paragraph of shared) {
         q.confidence = Math.min(q.confidence, paragraph.confidence);
