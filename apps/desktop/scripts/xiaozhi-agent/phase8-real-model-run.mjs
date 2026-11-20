@@ -438,7 +438,7 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
   for (const [index, row] of rows.entries()) {
     if (!ledger.summary().remaining) {
       stoppedAt = {id: row.id, code: 'phase8_budget_exhausted'};
-      results.push(...rows.slice(index).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: stoppedAt.code})));
+      results.push(...rows.slice(index).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: stoppedAt.code, receiptSha256: null})));
       break;
     }
     const root = path.join(output, row.id);
@@ -453,10 +453,11 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
       stoppedAt = {id: row.id, code};
     }
     fs.mkdirSync(root, {recursive: true});
-    fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(result, null, 2));
-    results.push(result);
+    const receipt = JSON.stringify(result, null, 2);
+    fs.writeFileSync(path.join(root, 'report.json'), receipt);
+    results.push({...result, receiptSha256: sha256(receipt)});
     if (stoppedAt) {
-      results.push(...rows.slice(index + 1).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: 'phase8_collection_stopped'})));
+      results.push(...rows.slice(index + 1).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: 'phase8_collection_stopped', receiptSha256: null})));
       break;
     }
     fs.writeFileSync(path.join(output, 'progress.json'), JSON.stringify({mode, stoppedAt, budget: ledger.summary(), results}, null, 2));
@@ -489,14 +490,15 @@ export async function executePlan(manifestPath, output, mode = 'execute', {backg
     collection = await collectScheduledRuns({mode, manifest, versions, ledger, output,
       collect: (...args) => collectRun(...args, {background})});
     const {results} = collection;
-    exportBlindBundle(path.join(output, 'blind-samples'), results.filter(row => row.collectionStatus === 'PASS'));
+    const blind = exportBlindBundle(path.join(output, 'blind-samples'), results.filter(row => row.collectionStatus === 'PASS'));
     const buildsAfter = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
     fs.writeFileSync(path.join(output, 'builds-after.json'), JSON.stringify(buildsAfter, null, 2));
     fs.writeFileSync(path.join(output, 'summary.json'), JSON.stringify({mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS',
-      stoppedAt: collection.stoppedAt, plannedRunIds: collection.plannedRunIds, qualityStatus: 'NOT_TESTED_INDEPENDENT_BLIND_REVIEW',
+      stoppedAt: collection.stoppedAt, plannedRunIds: collection.plannedRunIds,
+      identityMapSha256: blind.identityMapSha256, qualityStatus: 'NOT_TESTED_INDEPENDENT_BLIND_REVIEW',
       budget: ledger.summary(), results: results.map(row => ({id: row.id, collectionStatus: row.collectionStatus, terminal: row.terminal,
         qualityStatus: row.qualityStatus, error: row.error, infrastructureFailure: row.infrastructureFailure,
-        reason: row.reason, httpAttemptCount: row.httpAttemptCount, output: row.output})),
+        reason: row.reason, httpAttemptCount: row.httpAttemptCount, output: row.output, receiptSha256: row.receiptSha256})),
       limits: ['Q3 interactive HTML browser tests and all quality scoring remain independent.',
         'Q5 exact URL transport timings, renderer tool events and exact-once file writes require original source/receipt review.',
         'The separately planned cancel/reject/network failure runs are outside this fixed32 collector.']}, null, 2));

@@ -19,9 +19,9 @@ async function check(name, action) {
   console.log(JSON.stringify(report.checks.at(-1)));
 }
 try {
-  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source} = await import('./phase8-real-model-plan.mjs');
+  const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source, sha256} = await import('./phase8-real-model-plan.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
-  const {verifiedRunBinding, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
+  const {verifiedRunBinding, collectFiles, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
   const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete, continueApprovedQ5, bindDispatchAttempts} = await import('./phase8-real-model-run.mjs');
   const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
   await check('Q5 records exact URL timings without storing unrelated requests, headers or credentials', () => {
@@ -191,6 +191,30 @@ try {
     const sample = JSON.parse(fs.readFileSync(path.join(output, 'blind', result.samples[0].id, 'sample.json')));
     assert.equal(sample.task, 'Q1'); assert(!Object.hasOwn(sample, 'version')); assert(!Object.hasOwn(sample, 'runId'));
     assert.equal(fs.readFileSync(path.join(output, 'blind', result.samples[0].id, 'artifacts/synthetic.txt'), 'utf8'), 'synthetic artifact');
+  });
+  await check('Blind export binds copied artifact bytes and shares only bounded readback facts', () => {
+    const workspace = path.join(output, 'blinded-q8-fixture');
+    fs.mkdirSync(workspace);
+    const artifact = path.join(workspace, 'facts.txt');
+    fs.writeFileSync(artifact, 'owned synthetic facts');
+    const file = collectFiles(workspace)[0];
+    const row = {id: 'Q8-r1-B', task: 'Q8', version: 'B', round: 1, answer: '未复制。', terminal: 'completed',
+      binding: {runId: 'unblinded-run', sessionId: 'unblinded-session'}, artifacts: [file, {unsupported: 'symlink', relativePath: 'ignored'}],
+      coldRecords: {runs: [{id: 'unblinded-run', session_id: 'unblinded-session', status: 'succeeded', model: 'unblinded-model'}]},
+      explicitChecks: {copyAbsent: true, refusalObserved: true}, decisions: [{id: 'unblinded-approval', decision: 'reject'}]};
+    const directory = path.join(output, 'blind-observations');
+    const result = exportBlindBundle(directory, [row]);
+    const raw = fs.readFileSync(path.join(directory, result.samples[0].id, 'sample.json'), 'utf8');
+    assert(!raw.includes('unblinded-')); assert(!raw.includes('Q8-r1-B'));
+    const sample = JSON.parse(raw);
+    assert.deepEqual(sample.observations, {terminal: 'completed', persistedRunStatus: 'succeeded', omittedArtifacts: 1,
+      copyAbsent: true, refusalObserved: true});
+    assert.equal(sample.artifacts[0].sha256, file.sha256);
+    assert.equal(result.identities[0].sampleSha256, sha256(raw));
+    const identityMap = fs.readFileSync(path.join(output, 'blind-identity-map.json'));
+    assert.equal(result.identityMapSha256, sha256(identityMap));
+    fs.appendFileSync(artifact, ' changed after readback');
+    assert.throws(() => exportBlindBundle(path.join(output, 'blind-modified-source'), [row]), /phase8_blind_artifact_changed/);
   });
   await check('Q5 continuation requires the exact original approved NASA operation and consumes it once in the same Task', () => {
     assert.equal(typeof q5ContinuationDecision, 'function');
@@ -447,8 +471,10 @@ try {
         output: fixture.directory, collect: async (...args) => mutate(await fixture.collect(...args))});
       assert.equal(fixture.calls.length, 1, name); assert.equal(result.stoppedAt.id, schedule[0].id, name);
       assert.equal(result.results.length, 32); assert.equal(result.results[0].collectionStatus, 'FAIL');
-      assert(result.results.slice(1).every(row => row.collectionStatus === 'NOT_TESTED'));
-      assert.equal(JSON.parse(fs.readFileSync(path.join(fixture.directory, schedule[0].id, 'report.json'))).collectionStatus, 'FAIL');
+      assert(result.results.slice(1).every(row => row.collectionStatus === 'NOT_TESTED' && row.receiptSha256 === null));
+      const receipt = fs.readFileSync(path.join(fixture.directory, schedule[0].id, 'report.json'));
+      assert.equal(JSON.parse(receipt).collectionStatus, 'FAIL');
+      assert.equal(result.results[0].receiptSha256, sha256(receipt));
       const used = fixture.budget.summary().used; assert.equal(used, 1);
       fixture.budget.close(); const reopened = openBudgetLedger({databasePath: fixture.databasePath});
       try {assert.equal(reopened.summary().used, used);} finally {reopened.close();}
@@ -467,7 +493,7 @@ try {
     assert.equal(empty.calls.length, 0); assert.equal(empty.budget.summary().used, 1); assert(exhausted.stoppedAt);
     report.stopControl = {cases: observations, thinkingParityCalls: parity.calls, exhaustedDispatches: empty.calls.length};
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 17 && report.checks.every(row => row.pass);
+  report.budget = ledger.summary(); report.success = report.checks.length === 18 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();

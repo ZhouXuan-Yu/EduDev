@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-20",
+  "base": "29a06396fadde39ac2cdb3d15bbbcfcbf7d1a31b",
+  "status": "OFFLINE_REVIEW_PREPARATION_INDEPENDENT_PASS",
+  "scriptCwd": "D:/WorkProject/EduProject-harness/apps/desktop",
+  "files": [
+    "scripts/xiaozhi-agent/phase8-real-model-readback.mjs",
+    "scripts/xiaozhi-agent/phase8-real-model-run.mjs",
+    "scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+    "scripts/xiaozhi-agent/phase8-real-model-review.mjs",
+    "scripts/xiaozhi-agent/phase8-real-model-review-smoke.mjs"
+  ],
+  "contract": {
+    "samples": "Anonymous sample receipts and original artifact bytes with bounded observations.",
+    "sealedIdentity": "Each identity maps an exact execution slot to its sample receipt SHA-256. Collection summary seals exact identity map bytes.",
+    "scoreSource": "Independent reviewer supplies scores, reasons, evidence references and four hard-defect checks.",
+    "exactSchedule": 32,
+    "retainFailures": true,
+    "preflightAcceptedAsFormal": false,
+    "originalRunReportSeal": "Collection receipt SHA-256 is computed when progress writes each run report, including failed runs. Pending rows retain null."
+  },
+  "collector": {
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+    "exitCode": 0,
+    "passed": 18,
+    "report": {
+      "path": "TEMP/xiaozhi-phase8-real-model-protocol-3EWDw0/report.json",
+      "sha256": "d5552256a1bf1c45baa9d4a471ce3e75a07f90755bfd56008196cde99f2166c5"
+    },
+    "initialAttempt": {
+      "exitCode": 1,
+      "report": {
+        "path": "TEMP/xiaozhi-phase8-real-model-protocol-6iVj75/report.json",
+        "sha256": "17b854adcf43bae3c1ffb8a4e9262fe21c7936889361d7c9ac718ac7dc78a317"
+      },
+      "observed": "All 18 case assertions passed, but the test still required exactly 17 cases. Updated expected count and reran."
+    }
+  },
+  "reviewSmoke": {
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-review-smoke.mjs",
+    "exitCode": 0,
+    "passed": 39,
+    "report": {
+      "path": "TEMP/xiaozhi-phase8-independent-review-V2BODG/report.json",
+      "sha256": "c94c67d17bb621dd23830266bae519213e8994c64e6c518fb294d4a6a6cc12e5"
+    }
+  },
+  "independent": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-review-smoke.mjs",
+    "passed": 39,
+    "exitCode": 0,
+    "report": {
+      "path": "TEMP/xiaozhi-phase8-independent-review-XYZmEh/report.json",
+      "sha256": "31647c33368338c5665bdc2af5eb60ffc92403bf1fa329baf1865810fa953108"
+    },
+    "initialFinding": "Identity map and samples were sealed. Changes to an uninspected raw report field were not bound to a collection-time hash.",
+    "repaired": "Compare recorded receipt SHA-256 with the entire original report before parsing. Mutating an otherwise unused observation now fails; pending row receipt seal is null.",
+    "limits": "Local SHA-256 seals use the collector summary as the trust anchor. Formal model scoring and native acceptance remain pending."
+  },
+  "validation": {
+    "paidCalls": 0,
+    "actualLedgerStatus": {
+      "used": 3,
+      "limit": 200,
+      "remaining": 197,
+      "unresolved": 0
+    },
+    "audit": {
+      "exitCode": 1,
+      "low": 8,
+      "moderate": 13,
+      "high": 8,
+      "critical": 0
+    },
+    "productionBuildNeeded": false,
+    "sourceRuntimeChanged": false
+  },
+  "finalAcceptance": {
+    "gate7": "PARTIAL",
+    "qg09": "BLOCKED_CURRENT_HOST",
+    "formalModelRuns": "NOT_TESTED",
+    "independentActualScores": "NOT_TESTED",
+    "q3InteractiveArtifactReview": "NOT_TESTED",
+    "fixedMatrix": "88/89"
+  },
+  "environment": {
+    "windowsEdition": "CoreCountrySpecific",
+    "windowsSandboxExecutable": false,
+    "cleanGuestExposed": false,
+    "vmms": false,
+    "vmcompute": "Running"
+  }
+}

@@ -170,6 +170,30 @@ export function collectFiles(directory) {
   visit(''); return files;
 }
 
+function blindReadbackObservations(row) {
+  const persistedRun = row.coldRecords?.runs?.find(run => run.id === row.binding?.runId
+    && run.session_id === row.binding?.sessionId);
+  const booleanOrNull = value => typeof value === 'boolean' ? value : null;
+  const observed = {
+    terminal: ['completed', 'interrupted', 'failed'].includes(row.terminal) ? row.terminal : null,
+    persistedRunStatus: ['succeeded', 'failed', 'blocked', 'waiting_confirmation', 'waiting_input'].includes(persistedRun?.status)
+      ? persistedRun.status : null,
+    omittedArtifacts: row.artifacts.filter(file => !file.path || file.unsupported).length,
+  };
+  const checks = row.explicitChecks;
+  if (row.task === 'Q4') observed.scoresUnchanged = booleanOrNull(checks?.scoresUnchanged);
+  if (row.task === 'Q5') observed.fixedSourceRead = booleanOrNull(row.q5FixedSourceRead);
+  if (row.task === 'Q7') {
+    observed.practiceBytesExact = booleanOrNull(checks?.practiceBytesExact);
+    observed.approvalObserved = Array.isArray(row.decisions) ? row.decisions.some(item => item.decision === 'approve') : null;
+  }
+  if (row.task === 'Q8') {
+    observed.copyAbsent = booleanOrNull(checks?.copyAbsent);
+    observed.refusalObserved = booleanOrNull(checks?.refusalObserved);
+  }
+  return observed;
+}
+
 export function exportBlindBundle(directory, rows) {
   fs.mkdirSync(directory, {recursive: true});
   const samples = [], identities = [];
@@ -180,15 +204,24 @@ export function exportBlindBundle(directory, rows) {
       if (!file.path || file.unsupported) continue;
       const relative = file.relativePath.replaceAll('\\', '/');
       if (relative.startsWith('/') || relative.split('/').some(part => part === '..' || part === '') || path.isAbsolute(relative)) throw Error('phase8_blind_path_invalid');
-      const dest = path.join(target, 'artifacts', relative); fs.mkdirSync(path.dirname(dest), {recursive: true}); fs.copyFileSync(file.path, dest);
-      artifacts.push({relativePath: 'artifacts/' + relative, sha256: sha256(fs.readFileSync(dest))});
+      const bytes = fs.readFileSync(file.path);
+      const digest = sha256(bytes);
+      if (file.sha256 !== undefined && file.sha256 !== digest) throw Error('phase8_blind_artifact_changed');
+      const dest = path.join(target, 'artifacts', relative);
+      fs.mkdirSync(path.dirname(dest), {recursive: true});
+      fs.writeFileSync(dest, bytes, {flag: 'wx'});
+      artifacts.push({relativePath: 'artifacts/' + relative, sha256: digest});
     }
-    fs.writeFileSync(path.join(target, 'sample.json'), JSON.stringify({id, task: row.task, answer: row.answer, artifacts,
-      scoringStatus: 'NOT_TESTED', limitation: 'Artifact bytes are preserved. Embedded identifying content can limit blinding and must be disclosed by the reviewer.'}, null, 2));
-    samples.push({id, task: row.task}); identities.push({sampleId: id, executionId: row.id, version: row.version, round: row.round});
+    const sample = JSON.stringify({id, task: row.task, answer: row.answer, artifacts,
+      observations: blindReadbackObservations(row), scoringStatus: 'NOT_TESTED',
+      limitation: 'Observations are collector facts for independent review. Artifact and answer bytes can reveal identifying content.'}, null, 2);
+    fs.writeFileSync(path.join(target, 'sample.json'), sample);
+    samples.push({id, task: row.task});
+    identities.push({sampleId: id, executionId: row.id, version: row.version, round: row.round, sampleSha256: sha256(sample)});
   }
-  fs.writeFileSync(path.join(path.dirname(directory), 'blind-identity-map.json'), JSON.stringify(identities, null, 2));
-  return {samples, identities};
+  const encodedIdentities = JSON.stringify(identities, null, 2);
+  fs.writeFileSync(path.join(path.dirname(directory), 'blind-identity-map.json'), encodedIdentities);
+  return {samples, identities, identityMapSha256: sha256(encodedIdentities)};
 }
 
 export async function inspectOfficeArtifacts(files, desktopRoot) {
