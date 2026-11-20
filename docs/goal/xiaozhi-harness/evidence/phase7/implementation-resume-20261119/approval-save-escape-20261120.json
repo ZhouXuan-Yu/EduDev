@@ -68,6 +68,30 @@
     "firstAttempt": "TEMP/gate7-recovery-close-14151e4f919e497aa29d8eb5d874b027/report.json",
     "checks": "Escape closed the Workbench during the exact in-flight task snapshot and restored entry focus. The original read finished, no new Run or model dispatch occurred. The first probe closed before the selected task read began and did not cover the intended timing."
   },
+  "scopedKeyboardRegression": {
+    "command": "node scripts/xiaozhi-agent/phase7-approval-decision-keyboard-ui.mjs <viewport>",
+    "passes": [
+      {"viewport": "1366x768", "passed": 4, "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-vg4FQn/evidence/decision-keyboard-report.json"},
+      {"viewport": "1920x1080", "passed": 4, "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-Y6dzXD/evidence/decision-keyboard-report.json"}
+    ],
+    "afterSaving": "Tab reaches the status filter and keyboard traversal can return to the original close button and close with Enter. The prior post-save Escape observation remains open.",
+    "addedModelCallsDuringDecisions": 0,
+    "pageErrors": 0
+  },
+  "mainIntegration": {
+    "sourceCommit": "082d179214bd6ae249c85e4a704841a9f8a4e475",
+    "buildFolder": "apps/desktop/test-results/harness-approval-kb-main-38e5a70-20261120",
+    "mainSha256": "6c6139716d5d5c70f570d91cb6269cbe228b71a2f20657a5c5d3f598981c6be9",
+    "rendererAsset": "index-Dola2jpz.js",
+    "rendererSha256": "60b5e6564a98d96fd839c40ecdd9d8ca3aa9573b73dd179181953aeec2fc5c8a",
+    "typecheckAndBuild": "PASS",
+    "structureTransactionsPassed": 18,
+    "approvalChecksPassed": 4,
+    "approvalViewport": "1366x768",
+    "approvalReport": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-2we0xe/evidence/decision-keyboard-report.json",
+    "pageErrors": 0,
+    "paidCalls": 0
+  },
   "actualProviderPaidRequests": 0,
   "nativePointer": "NOT_TESTED",
   "phase7": "PARTIAL"

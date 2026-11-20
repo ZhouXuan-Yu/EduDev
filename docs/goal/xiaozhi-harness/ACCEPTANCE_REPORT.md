@@ -6,6 +6,8 @@
 
 现行审批在两尺寸通过保存中 Escape、重开换选及行内审批焦点子项。详情卸载后焦点进入收件箱标题，Tab 到状态筛选。此前整段用例在此之后的 Escape 未关闭面板，保留为单独待核观察。[原失败位置](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
 
+限定审批专项在同一审批组合构建的两尺寸各通过四项。保存结束后可用键盘返回原关闭按钮并按 Enter 退出。后续与题库变更合并的实际构建再次通过 1366×768 四项。通过的键盘操作和保留的 Escape 观察分列记录。[结果及构建摘要](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)
+
 ## 2026-11-20 统一构建页面和打包
 
 在 `4e1cfe4` 的同一 Electron 构建验证迟到事件、教学目录、部分读取、停止及审批冷启动。并发首轮 6/7，失败发生在 Electron 远程求值。该场景使用同一构建单独执行后 3/3。Terra 独立通过 S1、S2、C2 的分享审核、版本回滚和撤销后的本地替代场景。原始失败和限定覆盖保留。[页面报告](evidence/phase7/implementation-resume-20261119/frozen-candidate-4e1cfe4-20261120.json)
