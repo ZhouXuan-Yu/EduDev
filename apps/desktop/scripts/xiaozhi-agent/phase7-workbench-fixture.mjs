@@ -11,6 +11,10 @@ import {testMain} from '../acceptance/build-root.mjs';
 
 export async function startWorkbenchFixture(options = {}) {
   const main = testMain(process.cwd());
+  // The seed bundles source, while the app runs the selected frozen build.
+  const manifest = JSON.parse(fs.readFileSync('src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json', 'utf8'));
+  assert(typeof manifest.sourceHash === 'string' && /^[a-f0-9]{64}$/u.test(manifest.sourceHash)
+    && fs.readFileSync(main).includes(manifest.sourceHash), 'Workbench seed and selected build have different core provider manifests');
   const prefix = options.background ? 'omni-edu-xiaozhi-phase7-workbench-ui-' : 'xiaozhi-phase7-workbench-ui-';
   const root = options.root || fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   assert(path.resolve(root).startsWith(path.resolve(os.tmpdir()) + path.sep), 'Owned C TEMP fixture only');
