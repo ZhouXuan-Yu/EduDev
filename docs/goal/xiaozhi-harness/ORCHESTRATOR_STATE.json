@@ -772,6 +772,13 @@
     "continueCondition": "Observe this same packager until it settles. Then obtain independent archive evidence. QG-09 still requires clean interactive Windows.",
     "newPaidCalls": 0
   },
+  "currentMainTaskFocus20261120": {
+    "status": "PASS_SCOPED_12_OF_12",
+    "buildCommit": "11357b1d614a05ccc58cd239d9e895d3a03aa7df",
+    "evidence": "evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json",
+    "scope": "Recovery and task overview modal only. Verified full keyboard focus loops at both contracted sizes and focus restoration.",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

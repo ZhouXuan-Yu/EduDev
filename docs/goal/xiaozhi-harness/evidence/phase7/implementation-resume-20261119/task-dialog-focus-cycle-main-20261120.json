@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-20",
+  "sourceCommit": "11357b1d614a05ccc58cd239d9e895d3a03aa7df",
+  "reviewer": "GPT-6.1 Terra High",
+  "status": "PASS_SCOPED",
+  "build": {
+    "root": "apps/desktop/test-results/harness-runtime-dependency-scope-main/out",
+    "files": 481,
+    "outSha256BeforeAndAfter": "039e95db32f000ce82071dbce79e68c3ffd1a772019b10287db0b76ee4ab52f6",
+    "mainSha256": "e6361b71c72f2d8a985e260b528a8977d960686868d19a38375a2091ae84edfc"
+  },
+  "commands": ["node <runner> 1366x768", "node <runner> 1920x1080"],
+  "cwd": "apps/desktop",
+  "runner": "TEMP/phase7-task-focus-ebcecdd112e8431eadc7136de05fb09f/test.mjs",
+  "runnerSha256": "3dcfeaec29d4fa53f18f4cfd56a963058dc8f83f363a1bedd1d07ff8365197a3",
+  "dialog": {"label": "恢复与待办", "role": "dialog", "ariaModal": true, "focusContract": "EduPanel history mode contains and restores focus."},
+  "checksPerViewport": [
+    "Forward Tab passes 15 focus stops within the dialog and wraps.",
+    "Reverse Shift+Tab wraps and visits the same 15 focus stops in reverse.",
+    "Disabled previous and next buttons are skipped.",
+    "Keyboard selection changes the task filter to all.",
+    "Space activates refresh.",
+    "Escape closes the dialog and restores focus to its opener."
+  ],
+  "runs": [
+    {"viewport": "1366x768", "passed": 6, "exitCode": 0, "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-v2D9FJ/evidence/task-focus-report-1366.json", "sha256": "7bd6311f39d580d8fe9c4e7a05f6c36271af4b0a3ad0fa2309ddec5bade3a0ef"},
+    {"viewport": "1920x1080", "passed": 6, "exitCode": 0, "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-lE5qTU/evidence/task-focus-report-1920.json", "sha256": "aa80635da5814ecbb1e67eff6f5f6bfcfcc63c4ebd240a818e2cbbb748375e07"}
+  ],
+  "geometry": "Native content and viewport match the stated dimensions at DPR 1 with no horizontal overflow in the measured task panel.",
+  "rendererErrors": [],
+  "paidRequestsAdded": 0,
+  "scope": "Hidden Electron and isolated synthetic seed. Full forward and reverse traces are in the reports. Physical window interaction, foreground performance, teacher visual acceptance and full Gate 7 remain separate."
+}
