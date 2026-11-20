@@ -17,6 +17,10 @@ export function serializeStateWrites(source: Sql): Sql {
     return pending;
   }
   return {
+    ...(source.readTransaction ? {readTransaction: <T>(action: (work: Sql) => Promise<T>) => {
+      const work = currentWork();
+      return work ? action(work) : source.readTransaction!(action);
+    }} : {}),
     all: (...args) => {
       const work = currentWork();
       if (work) return work.all(...args);

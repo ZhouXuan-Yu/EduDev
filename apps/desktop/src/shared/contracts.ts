@@ -1,3 +1,5 @@
+import type { BackupCompatibility } from './backup-compatibility';
+
 import type {QuestionDocument} from './question-document';
 export type StudentStatus = 'active' | 'archived';
 
@@ -718,6 +720,7 @@ export type ExportDataRootResult = {
   excludedRebuildablePaths?:string[];
   conversationOutputs?:ConversationOutputsBackup;
   externalOutputs?:ExternalOutputsBackup;
+  compatibility?: BackupCompatibility;
 };
 
 export type ConversationOutputsBackup={schemaVersion:1;sourceDataRoot:string;sourceOutputRoot:string;scope:string;backupPrefix:string;fileCount:number};
@@ -734,6 +737,7 @@ export type DataBackupVerificationResult = {
   errorMessage?: string;
   conversationOutputs?:ConversationOutputsBackup;
   externalOutputs?:ExternalOutputsBackup;
+  compatibility?: BackupCompatibility;
 };
 
 export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx' | 'xlsx' | 'pptx';

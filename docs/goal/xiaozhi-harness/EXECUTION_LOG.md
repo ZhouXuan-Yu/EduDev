@@ -614,3 +614,7 @@ Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。�
 ## 2026-11-18 Harness Phase7正式实施
 
 Phase6功能2376c84与主线09d7937正常整合为5938c31，atomic push后main及功能分支逐项验证一致。合并后493/493回归通过。当前Phase7按PHASE_7_IMPLEMENTATION.md补跨会话任务总览、持久审批Inbox及统一只读能力中心，core与UI两个Sol分域实施，Terra独立准备页面验收。原89项57项阶段范围通过，真实付费0/200，Goal继续ACTIVE。大体积测试和打包采用C盘owned TEMP，原验收缓存已逐文件归档到Goal证据压缩包。
+
+## 2026-11-21 A2 审批前置与冷启复验
+
+原 skill_source_changed 的确切历史交错保留为推断。确定性反例分别复现合法修订触发误判和取消后晚写。只读快照校验当前 Run、任务和方案要求版本；原写 CAS 不变。合同队列在登记前核对取消，真实日志错误仍保留。固定构建结果与历史一并归档。 [指纹与证据](evidence/phase7/implementation-resume-20261119/a2-runtime-races-20261121.json)

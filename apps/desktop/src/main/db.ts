@@ -18,6 +18,7 @@ import {MaterialWordPagesRepository} from './assets/material-word-pages';
 import {WORD_PARSER,isWordParser,wordText,type WordPayload} from '../shared/material-word';
 import {extractWord} from './assets/word-host';
 import {wordUpgradeCompatible} from './assets/word-upgrade-compatible';
+import { backupCompatibility, readBackupDataVersion, readBackupVersion } from './backup/compatibility';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
 import {assertOutputBackupDestination,copyConversationOutputs,readConversationOutputsBackup} from './backup/conversation-outputs';
 import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-outputs';
@@ -1212,7 +1213,18 @@ export class OmniEduStore {
   readonly materialWord: MaterialWordRepository;
   readonly materialWordPages: MaterialWordPagesRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
-  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values), transaction: async action => {
+  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values),
+    readTransaction: async action => {
+      const work = new OmniEduStore(this.dataRoot);work.db = await this.openDatabase(this.dbPath);
+      try {
+        await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA query_only=ON; BEGIN;');
+        try {
+          const result = await action({all: (sql, values) => work.all(sql, values), run: async () => {throw Error('read_only_transaction');}});
+          await work.exec('COMMIT;');return result;
+        } catch (error) {await work.exec('ROLLBACK;').catch(() => undefined);throw error;}
+      } finally {await work.close();}
+    },
+    transaction: async action => {
     const deadline=Date.now()+stateTransactionalLockWindowMs;
     for(let attempt=0;;attempt++){
       const work = new OmniEduStore(this.dataRoot);
@@ -4844,7 +4856,7 @@ export class OmniEduStore {
     return { exportPath, fileCount };
   }
 
-  async exportDataRoot(destinationRoot: string): Promise<ExportDataRootResult> {
+  async exportDataRoot(destinationRoot: string, appVersion?: string): Promise<ExportDataRootResult> {
     const destination = destinationRoot.trim();
     if (!destination) throw new Error('备份目标目录不能为空');
     if (await isInsideRoot(this.dataRoot, destination)) {
@@ -4854,19 +4866,22 @@ export class OmniEduStore {
     const exportPath = join(destination, `OmniEduData-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`);
     mkdirSync(exportPath,{recursive:true});
     await snapshotDataBackupSqlite(this.db,join(exportPath,'app.db'));
+    const compatibility = appVersion ? {
+      appVersion, dataVersion: await readBackupDataVersion(join(exportPath, 'app.db')),
+    } : undefined;
     const copied = await copyDataBackupFiles(this.dataRoot, exportPath);
     const conversationOutputs=await copyConversationOutputs(this.dataRoot,exportPath);
     const externalOutputs=await copyExternalOutputs(this.dataRoot,exportPath);
     const fileCount=copied+1+conversationOutputs.fileCount+externalOutputs.fileCount;
     const manifestPath = join(exportPath, 'omni-edu-backup-manifest.v1.json');
     const entries = await this.collectBackupManifestEntries(exportPath);
-    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
-    const verification = await this.verifyDataBackup(exportPath);
+    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, compatibility, excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
+    const verification = await this.verifyDataBackup(exportPath, appVersion);
     if (!verification.verified) throw new Error(`备份完整性验证失败：${verification.errorMessage || '文件校验不一致'}`);
-    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
+    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, compatibility: verification.compatibility, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
   }
 
-  async verifyDataBackup(backupPath: string): Promise<DataBackupVerificationResult> {
+  async verifyDataBackup(backupPath: string, appVersion?: string): Promise<DataBackupVerificationResult> {
     const resolvedBackup = backupPath.trim();
     const manifestPath = join(resolvedBackup, 'omni-edu-backup-manifest.v1.json');
     const base: DataBackupVerificationResult = {
@@ -4880,7 +4895,7 @@ export class OmniEduStore {
     };
     try {
       if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
-      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
       if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
       const expected = new Map(parsed.files.flatMap((item) => {
         const relativePath = String(item.path ?? '').replace(/\\/g, '/');
@@ -4901,7 +4916,13 @@ export class OmniEduStore {
         if (actualItem && (actualItem.size !== expectedItem.size || actualItem.sha256 !== expectedItem.sha256)) changedFiles.push(path);
       }
       const unexpectedFiles = [...actualMap.keys()].filter((path) => !expected.has(path));
-      return { ...base, ...(conversationOutputs?{conversationOutputs}:{}),...(externalOutputs?{externalOutputs}:{}),verified: !missingFiles.length && !changedFiles.length && !unexpectedFiles.length, fileCount: expected.size, missingFiles, changedFiles, unexpectedFiles, errorMessage: missingFiles.length || changedFiles.length || unexpectedFiles.length ? '备份文件与清单不一致' : undefined };
+      const verified = !missingFiles.length && !changedFiles.length && !unexpectedFiles.length;
+      const result = { ...base, conversationOutputs, externalOutputs, verified, fileCount: expected.size,
+        missingFiles, changedFiles, unexpectedFiles, errorMessage: verified ? undefined : '备份文件与清单不一致' };
+      if (!verified || !appVersion || !expected.has('app.db')) return result;
+      const dataVersion = await readBackupDataVersion(join(resolvedBackup, 'app.db'));
+      const sourceVersion = readBackupVersion(parsed.compatibility, dataVersion);
+      return { ...result, compatibility: backupCompatibility(sourceVersion, dataVersion, appVersion) };
     } catch (error) {
       return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
     }

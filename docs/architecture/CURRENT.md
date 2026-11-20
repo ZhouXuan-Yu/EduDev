@@ -3006,3 +3006,7 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 ## 2026-10-16 BoardUI 复用复核
 
 当前架构中的 BoardUI 代码只承担只读联网过程展示；`OfficeToolProcess` 负责条件分支，`OfficeWebSearchProcess` 负责状态/来源映射，typed IPC 负责来源打开。其专项 8/8 与通用 217/217 均不替代真实 provider 或用户路径验收。
+
+## 2026-11-21 备份版本预检
+
+M11 沿用 SQLite 在线备份和已有 typed IPC。新清单在原 v1 结构加入应用版本与实际 SQLite user_version。恢复开始和复制完成均检查兼容性。文件 Hash 及原数据选择保持原路径，无新表、依赖或通道。撤销本提交可恢复此前行为，现有备份可按原路径读取。 [换机专项](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)

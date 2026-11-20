@@ -1,0 +1,66 @@
+{
+  "base": "09c75225b12d20b479d198954176e72bdb346b24",
+  "status": "A2_PASS_SCOPED",
+  "build": {
+    "files": 481,
+    "outSha256": "380b3538faaea0a666e25175f10cb01345d31e3c3363c10b76dd7f924095aa42",
+    "mainSha256": "5c5a097b1518a78d8aa44979a5a2183f457d8a74745a0af1ddd9b42fcccd3c6e"
+  },
+  "driver": {
+    "path": "E:\\EduDev-Harness-Acceptance-20261121\\a2-runtime-races\\a2-stale-and-cold.mjs",
+    "sha256": "f600296b004ddd8285e8254076152f08c986604eba2e1e429d44d1f09174570c"
+  },
+  "sourceChecks": {
+    "targeted": 7,
+    "journal": 23,
+    "skillIo": 17,
+    "typecheckExit": 0,
+    "directory": "E:/EduDev-Harness-Acceptance-20261121/skill-journal-audit"
+  },
+  "independent": [
+    {
+      "viewport": "1366×768",
+      "report": "E:\\EduDev-Harness-Acceptance-20261121\\a2-runtime-races\\a2-ui-1366\\omni-edu-a2-stale-r132Lu\\report.json",
+      "sha256": "6654893246ff03278c16aa70a3e8fb098b87bd06df70fd28589d5a4643ce1671",
+      "cases": [
+        {
+          "name": "Changed target invalidates the exact approval without overwrite or new Run",
+          "pass": true
+        },
+        {
+          "name": "First governed plan step settled once and matched the Pi native history",
+          "pass": true
+        },
+        {
+          "name": "Cold UI and SQLite preserve invalidation without replay",
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "paid": 0
+    },
+    {
+      "viewport": "1920×1080",
+      "report": "E:\\EduDev-Harness-Acceptance-20261121\\a2-runtime-races\\a2-ui-1920\\omni-edu-a2-stale-wzmz9N\\report.json",
+      "sha256": "9d723363fef7e922811275ef708d88f59b04f8b430e1bd3035b4b4075a02aa9c",
+      "cases": [
+        {
+          "name": "Changed target invalidates the exact approval without overwrite or new Run",
+          "pass": true
+        },
+        {
+          "name": "First governed plan step settled once and matched the Pi native history",
+          "pass": true
+        },
+        {
+          "name": "Cold UI and SQLite preserve invalidation without replay",
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "paid": 0
+    }
+  ],
+  "failedOriginal": "gate7-unified-9748a58-20261121.json",
+  "boundary": "Actual Electron UI, Pi tools and SQLite with synthetic SSE. This run does not reclose the other Gate 7 rows on the rebuilt candidate. Previous actual failure is retained."
+}

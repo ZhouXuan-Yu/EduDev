@@ -6,6 +6,7 @@ type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
   change?: (sql: string, values?: SqlValue[]) => Promise<number>;
   transaction?: <T>(action: (work: Sql) => Promise<T>) => Promise<T>;
+  readTransaction?: <T>(action: (work: Sql) => Promise<T>) => Promise<T>;
   all: (sql: string, values?: SqlValue[]) => Promise<Record<string, unknown>[]> };
 import { createPiPersistentState } from './persistent-state';
 import { createPiControlState } from './control-state';

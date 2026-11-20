@@ -1,3 +1,4 @@
+import type { BackupCompatibility } from '../../shared/backup-compatibility';
 import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore,type BackupRestoreStatus} from '../../shared/backup-restore';
 import { CheckCircle2, HardDrive, LoaderCircle, ShieldCheck, TriangleAlert, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -45,6 +46,18 @@ function ExternalBackupSummary({value}:{value?:{externalOutputs?:ExportDataRootR
  </div>;
 }
 
+function BackupCompatibilitySummary({ value }: { value?: BackupCompatibility }) {
+  if (!value) return null;
+  const versions = value.sourceAppVersion
+    ? '备份版本 ' + value.sourceAppVersion + ' · 当前版本 ' + value.currentAppVersion
+    : '此旧备份未记录应用版本 · 当前版本 ' + value.currentAppVersion;
+  return <div data-testid="data-backup-compatibility">
+    <p>{versions}</p>
+    {value.status === 'newer_app' && <p role="alert">恢复前请安装与备份相同或更新版本的小智。</p>}
+    {value.status === 'newer_data' && <p role="alert">当前小智无法读取此数据库格式，请升级后再恢复。</p>}
+  </div>;
+}
+
 export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   if (state.status === 'idle') {
     return <div className="backup-feedback neutral" data-testid="data-backup-idle">选择数据目录之外的位置创建完整备份，或选择已有备份进行只读校验。</div>;
@@ -62,7 +75,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-export-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}<ExternalBackupSummary value={state.exportResult}/></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}<ExternalBackupSummary value={state.exportResult}/><BackupCompatibilitySummary value={state.exportResult.compatibility}/></div>
       </div>
     );
   }
@@ -71,7 +84,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-verify-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small><ExternalBackupSummary value={result}/></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small><ExternalBackupSummary value={result}/><BackupCompatibilitySummary value={result.compatibility}/></div>
       </div>
     );
   }
@@ -170,7 +183,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   };
   const restoreControls=<div className="pi-settings-actions" data-testid="data-backup-restore-controls">
     <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('prepare')} data-testid="data-backup-restore">恢复备份到新目录</Button>
-    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
+    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><BackupCompatibilitySummary value={state.restoreResult.compatibility}/><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
     {restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('revert')} data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
   </div>;
 
@@ -186,6 +199,8 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
           <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
           <ExternalBackupSummary value={state.exportResult||state.verificationResult}/>
+          <BackupCompatibilitySummary value={(state.exportResult||state.verificationResult)?.compatibility}/>
+          {state.status === "verification_failed" && state.verificationResult?.errorMessage && <p>{state.verificationResult.errorMessage}</p>}
         </div>}
     </div>
     {disabled && <p>任务结束后可创建或检查备份。</p>}

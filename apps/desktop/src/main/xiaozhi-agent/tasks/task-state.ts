@@ -143,6 +143,21 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    if(!taskText(input.reason,500)||!validTaskSteps(input.steps))throw Error('task_plan_invalid');doc.view.criteria.push(...clone(criteria));applyPlan(doc,input);decode(JSON.stringify(doc),id);
   },
   async validateCurrent(owner:TaskOwner,id:string,revision:number){await load(sql,id,revision,owner);},
+  /** Authority reads observe one current snapshot. A legitimate planning write
+   * must not turn a cached mutation-CAS revision into lost Run authority. */
+  async validateCurrentOwner(owner:TaskOwner,id:string,requirementsVersion:number){
+    if(!taskNatural(requirementsVersion)||requirementsVersion<1)throw Error('invalid_input');
+    const check=async(work:Sql)=>{
+      const record=await read(work,id);if(!record)throw Error('task_missing');
+      await current(work,owner);
+      if(record.doc.view.state!=='active'||!matches(owner,record.doc.view.binding)
+        ||await latestId(work,owner.sessionId)!==id)throw Error('task_owner_stale');
+      if(record.doc.view.requirementsVersion!==requirementsVersion)throw Error('task_source_changed');
+      await sources(work,record.doc);
+    };
+    if(sql.readTransaction)await sql.readTransaction(check);
+    else await transaction(check);
+  },
   async recordPlanning(owner:TaskOwner,id:string,revision:number,planning:TaskPlanning){
     return mutate(owner,id,revision,doc=>{
       if(!validTaskPlanning(planning)||planning.requirementsVersion!==doc.view.requirementsVersion||planning.planRevision!==doc.view.planRevision)throw Error('task_plan_invalid');

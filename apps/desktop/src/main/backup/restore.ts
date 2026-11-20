@@ -5,6 +5,7 @@ import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore} from '../../shared/bac
 import type {DataBackupVerificationResult} from '../../shared/contracts';
 import {hashFileSha256} from '../local-file-security';
 import {conversationOutputLocation} from '../xiaozhi-agent/conversation-output-path';
+import {assertBackupCompatibility} from './compatibility';
 import {relocateBackupDatabase} from './restore-database';
 import {EXTERNAL_OUTPUT_PREFIX,RESTORED_EXTERNAL_DIRECTORY,readExternalOutputsBackup} from './external-outputs';
 const receiptName='xiaozhi-recovery.v1.json';
@@ -21,6 +22,7 @@ export async function prepareBackupRestore(options:{backupPath:string;parent:str
  const backup=await fs.realpath(options.backupPath),parent=await fs.realpath(options.parent),current=await fs.realpath(options.currentDataRoot);
  if(inside(backup,parent)||inside(current,parent)||inside(conversationOutputLocation(current).path,parent))throw Error('恢复位置须在当前数据、生成文件和备份目录之外');
  const verification=await options.verify(backup);if(!verification.verified)throw Error(verification.errorMessage||'备份校验失败，未创建恢复目录');
+ assertBackupCompatibility(verification.compatibility);
  const manifestPath=path.join(backup,'omni-edu-backup-manifest.v1.json');const manifestBytes=await fs.readFile(manifestPath),manifest=JSON.parse(manifestBytes.toString('utf8')) as {files:{path:string;size:number;sha256:string}[]};
  const source=verification.conversationOutputs;if(!source)throw Error('此旧备份缺少原数据目录信息，不能猜测文件位置；请在原版本创建包含生成文件信息的新备份。原备份仍可校验。');
  const originalScope=createHash('sha256').update(source.sourceDataRoot.toLowerCase()).digest('hex').slice(0,16);
@@ -44,10 +46,11 @@ export async function prepareBackupRestore(options:{backupPath:string;parent:str
    copied.push({file:to,size:entry.size,sha256:entry.sha256});
   }
   const again=await options.verify(backup);if(!again.verified||!manifestBytes.equals(await fs.readFile(manifestPath)))throw Error('备份在恢复期间变化，未激活恢复');
+  assertBackupCompatibility(again.compatibility);
   const warnings=await relocateBackupDatabase(path.join(root,'app.db'),source.sourceDataRoot,root,source.sourceOutputRoot,outputs.path,externalRoots);
   if(external?.omittedCount)warnings.push(`备份时有 ${external.omittedCount} 项外选目录成果未能纳入；请查看备份清单中的遗漏说明。`);
   const database=copied.find(f=>f.file===path.join(root,'app.db'))!;database.sha256=await hashFileSha256(database.file);database.size=(await fs.stat(database.file)).size;
-  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings};
+  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings,compatibility:again.compatibility};
   await fs.writeFile(path.join(root,receiptName),JSON.stringify(receipt,null,2),'utf8');
   await fs.writeFile(path.join(instance,'restoration-files.v1.json'),JSON.stringify({schemaVersion:BACKUP_RESTORE_SCHEMA,id,sourceManifestSha256:createHash('sha256').update(manifestBytes).digest('hex'),files:copied,boundary:'Verified new-copy files after address migration; original events/native/check reports stay unchanged.'},null,2),'utf8');
   return receipt;

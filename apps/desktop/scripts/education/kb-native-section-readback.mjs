@@ -4,13 +4,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {backup, DatabaseSync} from 'node:sqlite';
+import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {verifiedQuestionBeforeNativeSection, verifiedQuestionInPdfConflict} from '../../src/main/assets/material-pdf-question-conflict.ts';
-import {relocateBackupDatabase} from '../../src/main/backup/restore-database.ts';
 import {DOCUMENT_STRUCTURE_ENGINE} from '../../src/shared/material-document-structure.ts';
 import {productEntry} from '../product-navigation.mjs';
-import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 
 const root=fs.realpathSync(process.argv[2]);
 assert(path.basename(root).startsWith('kb-structure-batch-'));
@@ -25,10 +23,10 @@ const pages=(db,generation)=>db('SELECT * FROM material_structure_pages WHERE ge
 const questions=(db,generation)=>db('SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid',generation);
 const bodies=rows=>rows.map(row=>JSON.parse(row.body_json));
 const originalPages=pages(read,old), originalQuestions=questions(read,old);
-const firstPage=JSON.parse(originalPages[0].body_json), resourceId=firstPage.resourceId;
+const firstPage=JSON.parse(originalPages[0].body_json), originalId=firstPage.resourceId;
 const question=bodies(originalQuestions).find(q=>q.number==='6'&&q.pageRange[0]===1);
 assert(question.issues.includes('pdf_text_conflict'));
-const [pdf]=read('SELECT generation FROM material_pdf_jobs WHERE resource_id=?',resourceId);
+const [pdf]=read('SELECT generation FROM material_pdf_jobs WHERE resource_id=?',originalId);
 const receipt=JSON.parse(read('SELECT result_json FROM material_pdf_pages WHERE generation=? AND page=1',pdf.generation)[0].result_json);
 const ready={...question,status:'candidate',issues:question.issues.filter(issue=>issue!=='pdf_text_conflict')};
 assert.deepEqual(ready.issues,[]);
@@ -41,21 +39,19 @@ assert(neighbors.length>=4&&neighbors.every(q=>!verifiedQuestionBeforeNativeSect
 if(!process.argv.includes('--desktop')){console.log(JSON.stringify({ok:true,sectionDraft:ready.id,unchangedConflicts:neighbors.length}));process.exit(0);}
 
 const work=fs.mkdtempSync(path.join(os.tmpdir(),'kb-section-replay-')), data=path.join(work,'data');
-fs.cpSync(source,data,{recursive:true,filter:file=>!/^app\.db(?:-wal|-shm)?$/.test(path.basename(file))});
-const snapshot=new DatabaseSync(path.join(source,'app.db'),{readOnly:true});
-try{await backup(snapshot,path.join(data,'app.db'));}finally{snapshot.close();}
-await relocateBackupDatabase(path.join(data,'app.db'),source,data,path.join(root,'XiaozhiOutputs'),path.join(work,'XiaozhiOutputs'));
 const query=reader(data), sha=value=>createHash('sha256').update(value).digest('hex');
-const [resource]=query('SELECT title,local_path,content_hash FROM teacher_resources WHERE id=?',resourceId);
-assert.equal(sha(fs.readFileSync(resource.local_path)),resource.content_hash);
+const [original]=read('SELECT local_path,content_hash FROM teacher_resources WHERE id=?',originalId);
+const originalSha=sha(fs.readFileSync(original.local_path));
+assert.equal(originalSha,original.content_hash);
+const incoming=path.join(work,'2022年上海中考数学.pdf');
+fs.copyFileSync(original.local_path,incoming,fs.constants.COPYFILE_EXCL);
 const protectedFacts=()=>query(`SELECT * FROM question_bank_items WHERE json_valid(archive_json)
  AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id`);
 const budget=()=>query('SELECT id,calls FROM material_ai_batches ORDER BY id');
-const before=[protectedFacts(),budget()];
 const main=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out','main/index.js');
 const env={...process.env};
 for(const name of Object.keys(env)) if(/KEY|TOKEN|SECRET|CREDENTIAL/i.test(name)||name.startsWith('OMNI_EDU_')||['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'].includes(name)) delete env[name];
-Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_E2E_VISIBLE:'0'});
+Object.assign(env,{OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0'});
 let app;
 const errors=[];
 async function launch(){
@@ -73,7 +69,6 @@ const until=async predicate=>{
   while(Date.now()<deadline){const value=await predicate();if(value)return value;await new Promise(resolve=>setTimeout(resolve,500));}
   throw Error('Timed out waiting for the printed section draft');
 };
-const job=()=>query('SELECT * FROM material_structure_jobs WHERE resource_id=?',resourceId)[0];
 const keyword='自身重合';
 async function showQuestion(renderer,id){
   await productEntry(renderer,'teaching').click();
@@ -87,19 +82,24 @@ async function showQuestion(renderer,id){
 }
 try{
   const renderer=await launch();
+  const before=[protectedFacts(),budget()];
   await productEntry(renderer,'materials').click();
-  await renderer.getByTestId('materials-search').fill(resource.title);
-  await renderer.getByTestId('material-'+resourceId).getByRole('button').click();
-  await renderer.getByTestId('materials-section-questions').click();
-  const panel=renderer.getByTestId('material-structure-panel');
-  await openMaterialDisclosure(panel);
+  await app.evaluate(({dialog},file)=>{
+    const old=dialog.showOpenDialog;
+    dialog.showOpenDialog=async()=>{dialog.showOpenDialog=old;return {canceled:false,filePaths:[file]};};
+  },incoming);
   const start=performance.now();
-  await panel.getByTestId('structure-rebuild').click();
-  await until(()=>job()?.generation&&job().generation!==old);
-  await renderer.evaluate(input=>window.omniEdu.controlMaterialTask(input),{
-    schemaVersion:'xiaozhi.material-parse-task.v1',resourceId,version:resource.content_hash,action:'prioritize',
+  await renderer.getByTestId('materials-import').click();
+  const resource=await until(()=>query('SELECT id,local_path FROM teacher_resources WHERE content_hash=?',originalSha)[0]);
+  assert.notEqual(resource.id,originalId);
+  assert.equal(sha(fs.readFileSync(resource.local_path)),originalSha);
+  assert.equal(query('SELECT * FROM material_word_page_sources WHERE pdf_resource_id=?',resource.id).length,0);
+  const job=()=>query('SELECT * FROM material_structure_jobs WHERE resource_id=?',resource.id)[0];
+  const current=await until(()=>{
+    const latest=job();
+    if(latest?.status==='failed')throw Error(`Printed section processing failed: ${latest.error??'unknown'}`);
+    return ['partial','complete'].includes(latest?.status)?latest:false;
   });
-  const current=await until(()=>['partial','complete'].includes(job()?.status)?job():false);
   const publishMs=Math.round(performance.now()-start);
   assert.equal(current.engine,DOCUMENT_STRUCTURE_ENGINE);
   const rebuilt=bodies(questions(query,current.generation));
@@ -117,8 +117,9 @@ try{
   await showQuestion(renderer,archive.id);
   const results=await renderer.evaluate(query=>window.omniEdu.searchQuestionBank({query,limit:30}),keyword);
   assert(!results.some(q=>q.id===archive.id));
-  assert.deepEqual(pages(query,old),originalPages);
-  assert.deepEqual(questions(query,old),originalQuestions);
+  assert.deepEqual(pages(read,old),originalPages);
+  assert.deepEqual(questions(read,old),originalQuestions);
+  assert.equal(sha(fs.readFileSync(original.local_path)),originalSha);
   assert.deepEqual([protectedFacts(),budget()],before);
   assert.equal(await app.evaluate(()=>globalThis.externalRequests),0);
   await app.close();app=undefined;

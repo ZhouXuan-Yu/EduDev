@@ -324,7 +324,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      const exported = await store.exportDataRoot(result.filePaths[0]);
+      const exported = await store.exportDataRoot(result.filePaths[0], app.getVersion());
       if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
       return exported;
     };
@@ -337,7 +337,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      return store.verifyDataBackup(result.filePaths[0]);
+      return store.verifyDataBackup(result.filePaths[0], app.getVersion());
     });
   });
   ipcMain.handle('students:list', (_event, query: string) => store.listStudents(query));
