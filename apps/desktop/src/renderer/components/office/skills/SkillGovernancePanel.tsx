@@ -11,6 +11,8 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
   const [view, setView] = useState<SkillGovernanceView>();
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
+  const [readNotice, setReadNotice] = useState('');
+  const readRevisionRef = useRef(0);
   const [creating, setCreating] = useState(false);
   const [editingTeam, setEditingTeam] = useState(false);
   const [selected, setSelected] = useState('');
@@ -33,19 +35,27 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
     else setCreating(false);
   }
   async function refresh() {
-    const result = await window.omniEdu?.getXiaozhiSkillGovernance();
-    if (result?.ok) setView(result.value);
-    else setNotice(result ? SKILL_GOVERNANCE_ERRORS[result.error] : '技能治理数据暂时无法读取。');
+    const revision = ++readRevisionRef.current;
+    try {
+      const result = await window.omniEdu?.getXiaozhiSkillGovernance();
+      if (revision !== readRevisionRef.current) return;
+      if (result?.ok) { setView(result.value); setReadNotice(''); }
+      else setReadNotice(result ? SKILL_GOVERNANCE_ERRORS[result.error] : '技能治理数据暂时无法读取。');
+    } catch {
+      if (revision === readRevisionRef.current) setReadNotice('技能治理数据暂时无法读取。');
+    }
   }
-  useEffect(() => { void refresh(); }, []);
+  useEffect(() => { void refresh(); return () => { readRevisionRef.current++; }; }, []);
   async function mutate(input: SkillGovernanceMutation) {
     if (busy || disabled) return;
+    readRevisionRef.current++;
     setBusy(true); setNotice('');
     try {
       const result = await window.omniEdu?.mutateXiaozhiSkillGovernance(input);
       if (!result?.ok) setNotice(result ? SKILL_GOVERNANCE_ERRORS[result.error] : '操作暂时无法确认。');
       else {
         setView(result.value);
+        setReadNotice('');
         setNotice('变更已保存。版本状态和检查结果已更新。');
         if (input.action === 'create') {
           closePublicationForm(false);
@@ -81,8 +91,8 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
       <Button ref={createTriggerRef} size="sm" variant="secondary" data-testid="pi-skill-create" isDisabled={blocked} onPress={() => setCreating(true)}>保存工作方法</Button>
       <Button size="sm" variant="ghost" data-testid="pi-skill-governance-refresh" isDisabled={busy} onPress={() => void refresh()}>刷新版本</Button>
     </div>
-    {notice && <p role="status" data-testid="pi-skill-governance-notice">{notice}</p>}
-    {!view && !notice && <p role="status">正在读取归属与版本…</p>}
+    {(readNotice || notice) && <p role="status" data-testid="pi-skill-governance-notice">{readNotice || notice}</p>}
+    {!view && !readNotice && !notice && <p role="status">正在读取归属与版本…</p>}
     {creating && <SkillPublicationForm formRef={personalFormRef} disabled={blocked} close={() => closePublicationForm(false)} publish={draft => mutate({action: 'create', draft})} />}
     {view && <>
       <p>当前教师 {view.actor.displayName}。个人技能默认私有。</p>

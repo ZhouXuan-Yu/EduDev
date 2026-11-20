@@ -455,3 +455,7 @@ Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。�
 ## 2026-11-21 Windows 系统盘不足的终端反馈
 
 两轮专项各 6/6，原生映射编译、最终构建及类型检查通过，前一错误候选 renderer 253/253。在系统盘实际为零的 Electron 合成任务中可展开工具过程看到具体恢复提示。两尺寸 W3 与 A2 各由 Terra 在第一版错误映射候选独立复验通过，合成密钥哨兵和现代审批长资源披露也通过。保留各候选指纹和最早失败。Gate 7 完整状态与 QG-09 保持未结项。 [核对命令和原报告](evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json)
+
+## 2026-11-21 Skill 刷新后清理旧错误
+
+已实现。真实组件 5/5，最终构建与 TypeScript 通过，renderer 253/253。Terra 独立 Electron 双尺寸加载、错误及刷新三项各通过。额外核对一个官方 Skill 的来源和内容指纹折叠，原技能标识字段不存在，未实测。该结论仅覆盖所列原合同条款。 [候选指纹和原证据](evidence/phase7/implementation-resume-20261119/skill-governance-read-notice-20261121.json)

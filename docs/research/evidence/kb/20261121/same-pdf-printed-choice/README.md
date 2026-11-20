@@ -33,6 +33,7 @@ SQLite 与接口沿用现行格式，v14 及先前支持的解析世代仍可读
 | 最终功能构建与组件回归 | 通过 `npm run build`、`npm run test:renderer-components`，253/253 |
 | 桌面综合冒烟 | 初版功能候选 207/207。最终候选另外验证了改题拦截与重建 |
 | 合入主线 Windows 终端修复后的构建 | 构建通过，真实题本冷启读回原印答案 C、原图及已保存的教师解析 |
+| 合入后续技能页刷新修复后的推送构建 | 构建与组件回归通过，253/253 |
 | `npm audit --json` | 返回 27 项存量告警，其中 6 项 high、0 项 critical。此切片不修改依赖 |
 
 真实链路由 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-native-section-readback.mjs <隔离样本目录> --desktop` 驱动。最终功能构建主进程 SHA-256 为 `89ff53249d5a0912a2aa3593f947991ecf7f05a0a54755fc10f93d5e64d062b6`，初始导入解析世代为 `65044d8e-9745-45bf-bf3a-87f75353fab2`。合并构建主进程 SHA-256 为 `06d529216695e657bcdf8dcb00769e4c80c8a54007cb2e1887c506ce8a10ef6a`。

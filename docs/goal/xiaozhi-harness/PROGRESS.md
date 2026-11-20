@@ -702,3 +702,7 @@ Terra 已保存实际桌面操作中止证据，拖窗/最大化保持待验。�
 ## 2026-11-21 Windows 系统盘不足的终端反馈
 
 已实现。使用授权运行时识别可信 Windows 系统卷，空间为零时在编译和启动前保留清楚的系统盘提示。保留真实 Native 磁盘不足错误映射。实际 Electron 在系统盘为零时只尝试一次，无 Job。相同范围继续收口独立页面验收和正式模型对照。 [核对命令和原报告](evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json)
+
+## 2026-11-21 Skill 刷新后清理旧错误
+
+已实现。读取和操作分别记录反馈，刷新成功后清除旧读取错误。保留批准等操作消息与焦点。独立 Electron 两尺寸各 3/3。Gate 7 仍按适用状态与披露范围继续审核。 [候选指纹和原证据](evidence/phase7/implementation-resume-20261119/skill-governance-read-notice-20261121.json)
