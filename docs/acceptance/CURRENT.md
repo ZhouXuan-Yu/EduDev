@@ -3603,3 +3603,5 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 备份预检的初次构建包含 481 个文件，SHA-256 b2ee09802da8e53c98a037fee67ea9f36c1af53aa2ded7dda8f21f5ec235ac96。专项报表 SHA-256 b6d58943de0df7075daf6c3cfc74f5d9d7f1a37cd293e5b4a7035c63cec7da8a。无新付费请求。npm audit --omit=dev 报既有 20 项，5 高、7 中、8 低。UI 合同检查的 Prompt Input 原厂文件哈希与固定快照存在基线差异，本次没有修改其源文件或锁文件。未执行不同电脑、程序 N−1 到 N 覆盖升级和回滚。 [换机专项](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)
 
 合并候选 bdad61b 的两个完整模块共同构建及 TypeScript 检查通过。真实设置页预检 7/7，审批目标变更与冷启 3/3。481 个文件的指纹为 0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272。备份原报告 SHA-256 2345d1708fe782fa7dcef8e6eddb082d162075082c49cfd387d49b0e0bec3bdd，审批 fe82feb041d23967d7b0222c5a8030a803777ae1e9141fb1d1eb6d1360fe69a4。
+
+合并前的版本预检构建另运行完整历史教师桌面回归 node scripts/electron-smoke.mjs，退出码 0，包含 12 项备份检查。原始日志 SHA-256 362598ac8ce7a2210e17d426467c032ab80d462ea7668f43ea6d6050d7f1d5c9。
