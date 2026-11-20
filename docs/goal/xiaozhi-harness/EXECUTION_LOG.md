@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 审批读取的焦点修复
+
+仅修改审批收件箱的焦点路径，保留原对话框 Escape、IPC、权限与请求结果防串线。测试夹具在真实详情处理前加入固定延迟并记录原处理完成，避免通过估算时间断言迟到响应。主进程产物 SHA256 不变；无公开模型调用、无数据迁移和依赖变更。普通 Git revert 可撤回本轮。GitHub 直连时保留 TLS 证书验证，上一目录隔离提交已正常推送。[命令与构建身份](evidence/phase7/implementation-resume-20261119/approval-busy-escape-20261120.json)
+
 ## 2026-11-20 教学目录隔离冷启回归
 
 新增可重复 Electron 用例，沿原目录选择、Pi、权限与审批收件箱测试。运行使用合成任务和独立 SQLite，不改变产品逻辑、锁文件或数据模式。测试和证据可通过普通 Git revert 撤回。本轮没有与生产变更对应的延时比较，复用上一组合构建的准确产物。[命令及范围](evidence/phase7/implementation-resume-20261119/workspace-scope-cold-20261120.json)

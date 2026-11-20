@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 审批忙碌时的键盘退出
+
+A1 详情加载时按 Escape 可退出，焦点返回入口。重开后即使收到上一次读取结果也不会填入当前详情，重新查看可用。纯键盘两尺寸及鼠标进入、键盘退出的组合均实际通过。能力搜索、Skill 导航与 SQLite 无副作用另有证据。[两版实页](evidence/phase7/implementation-resume-20261119/approval-busy-escape-20261120.json)
+
 ## 2026-11-20 当前实页证据索引
 
 | 场景 | 已有可复用证据 | 最终复核 |

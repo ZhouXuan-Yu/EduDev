@@ -48,8 +48,21 @@ export async function startWorkbenchFixture(options = {}) {
   const bundle = path.join(root, 'seed.mjs');
   await build({entryPoints: ['scripts/xiaozhi-agent/phase7-workbench-fixture-seed.ts'], outfile: bundle, bundle: true, platform: 'node', target: 'node24', format: 'esm', packages: 'external', logLevel: 'warning'});
   fs.copyFileSync('package.json', path.join(root, 'package.json')); if (!fs.existsSync(path.join(root, 'node_modules'))) fs.symlinkSync(path.resolve('node_modules'), path.join(root, 'node_modules'), 'junction');
+  const approvalDetailDelayMs = options.approvalDetailDelayMs ?? 0;
+  assert(Number.isInteger(approvalDetailDelayMs) && approvalDetailDelayMs >= 0 && approvalDetailDelayMs <= 5000);
+  const delayApprovalDetail = approvalDetailDelayMs ? `
+    const handle = ipcMain.handle.bind(ipcMain);
+    ipcMain.handle = (channel, original) => handle(channel, channel === 'xiaozhi:workbench-summary'
+      ? async (event, query) => {
+        if (query?.kind !== 'approval_detail') return original(event, query);
+        await new Promise(resolve => setTimeout(resolve, ${approvalDetailDelayMs}));
+        try { return await original(event, query); }
+        finally { globalThis.phase7ApprovalDetailsSettled = (globalThis.phase7ApprovalDetailsSettled || 0) + 1; }
+      }
+      : original);
+  ` : '';
   const bootstrap = path.join(root, 'bootstrap.cjs');
-  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net}=require('electron');app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{if(!fs.existsSync(${JSON.stringify(path.join(root, 'FIXTURE_IDS.json'))})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)});}await import(${JSON.stringify(pathToFileURL(main).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
+  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net,ipcMain}=require('electron');${delayApprovalDetail}app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{if(!fs.existsSync(${JSON.stringify(path.join(root, 'FIXTURE_IDS.json'))})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)});}await import(${JSON.stringify(pathToFileURL(main).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
   const env = {...process.env, OMNI_EDU_DATA_ROOT: path.join(root, 'data'), OMNI_EDU_REPO_ROOT: path.resolve('../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: 'synthetic-phase7-loopback', DEEPSEEK_MODEL: 'deepseek-flash'};
   if (options.background) {
     fs.mkdirSync(env.OMNI_EDU_DATA_ROOT, {recursive: true});

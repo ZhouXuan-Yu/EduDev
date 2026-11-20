@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 审批忙碌时的焦点
+
+审批详情读取中可用 Escape 退出并恢复入口焦点。两尺寸、鼠标进入后用键盘退出、迟到响应以及原工作台九项回归通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-20 小智旧运行隔离
 
 真实旧通知晚到时保留新运行、独立会话及成果归属。独立复验冷启动后终端进度与 SQLite 一致，另一会话仍独立。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

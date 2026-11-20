@@ -1,0 +1,134 @@
+{
+  "status": "PASS_SCOPED",
+  "rows": [
+    "W1",
+    "A1",
+    "C1",
+    "S1"
+  ],
+  "base": "68303895d25eaa12def97c511a89e12640908925",
+  "red": [
+    {
+      "viewport": "1366x768",
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-8pobHH/evidence/keyboard-busy-report.json",
+        "sha256": "5d01d5592d38234a2e7765aca4b0fdf46162fb4d191cbddfc0cd5e24b4112f28"
+      }
+    },
+    {
+      "viewport": "1920x1080",
+      "focusInsideDuringBusy": false,
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-BwvLti/evidence/keyboard-busy-report.json",
+        "sha256": "08cfb616b4073f26f77ad312d0488f3dd619cea7f56e11245e78fd374a40266f"
+      }
+    }
+  ],
+  "oldRendererSha256": "f43f1370904e8e5bff08ef24da8ae06b0e51ac38fb6a6529548f9cba131467b5",
+  "greenBuild": {
+    "root": "test-results/harness-approval-escape-6830389/out",
+    "mainSha256": "a9600f37d203f9bee0862a1d67e1a58131315a84d453545cb3e9588aced0d1b5",
+    "mainSameAsOld": true,
+    "rendererSha256": "1286137273085a7d59adfcbde5ff04f8bfeefb57d05d5d170b25af83fd0173b5"
+  },
+  "green": [
+    {
+      "reviewer": "root",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "inputMode": "keyboard",
+      "focusInsideDuringBusy": true,
+      "checks": [
+        "Escape while detail is in flight cancels the opened panel; late detail never populates the reopened inbox",
+        "Workbench Enter/Space, approval detail busy disable, reachable approval decisions, and Escape focus restoration",
+        "Settings Enter, actual capability search, and keyboard activation of Skill governance navigation"
+      ],
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-FvVmou/evidence/keyboard-busy-report.json",
+        "sha256": "4a3dbab7fc72b12dce898f7dbc41d4aede8e12377321f5008ae0ba5b6e6e8bd4"
+      },
+      "busyScreenshot": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-FvVmou/evidence/keyboard-detail-busy.png",
+        "sha256": "ffecd3ee35ec6b6a398c605253d9ba2eae6093a01ca04c72f091f78d177b06a8"
+      }
+    },
+    {
+      "reviewer": "Terra High",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "inputMode": "keyboard",
+      "focusInsideDuringBusy": true,
+      "checks": [
+        "Escape while detail is in flight cancels the opened panel; late detail never populates the reopened inbox",
+        "Workbench Enter/Space, approval detail busy disable, reachable approval decisions, and Escape focus restoration",
+        "Settings Enter, actual capability search, and keyboard activation of Skill governance navigation"
+      ],
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-djWjL3/evidence/keyboard-busy-report.json",
+        "sha256": "2d11026e054be463e85e939a70c17d84e72455e19021eb627eaee6bd4d3038ad"
+      },
+      "busyScreenshot": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-djWjL3/evidence/keyboard-detail-busy.png",
+        "sha256": "f572ef8f0d6125036d0d5933444c7772aa952fed630485834ea78b194e042c95"
+      }
+    },
+    {
+      "reviewer": "root",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "inputMode": "mixed",
+      "focusInsideDuringBusy": true,
+      "checks": [
+        "Escape while detail is in flight cancels the opened panel; late detail never populates the reopened inbox",
+        "Workbench Enter/Space, approval detail busy disable, reachable approval decisions, and Escape focus restoration",
+        "Settings Enter, actual capability search, and keyboard activation of Skill governance navigation"
+      ],
+      "report": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-Iu6jE8/evidence/keyboard-busy-report.json",
+        "sha256": "4e660bb5c1694200bad9d28bcfa2d3b649389a1a5768801945bbb850fa0412d9"
+      },
+      "busyScreenshot": {
+        "path": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-Iu6jE8/evidence/keyboard-detail-busy.png",
+        "sha256": "080d34bfe1aa654893db05b7765b68108953103c8bc6a22de5bfbc3952ee24f9"
+      }
+    }
+  ],
+  "scope": "真实隐藏 Electron、Pi、原 SQLite、真实审批详情处理和工作台 Escape。只在隔离测试入口为审批详情加入 1800ms 等待，记录原 handler 结束，不改返回值；全程未批准或拒绝合成申请。页面读取未新增模型调用。此结果不含系统鼠标拖窗或最终 Gate 7 全项。",
+  "checks": [
+    {
+      "command": "npm.cmd run build -- --outDir test-results/harness-approval-escape-6830389/out",
+      "result": "PASS，包括 TypeScript"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node --max-old-space-size=2048 --experimental-transform-types scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs",
+      "result": "17/17"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-keyboard-ui.mjs 1366x768 / 1920x1080 / 1920x1080 mixed（分开运行）",
+      "result": "各 3/3"
+    },
+    {
+      "command": "npm.cmd audit --json --fetch-retries=0 --fetch-timeout=20000",
+      "result": "既有 29 项：低 8、中 13、高 8、严重 0；退出 1，锁文件一致"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "result": "9/9",
+      "report": "%TEMP%/omni-edu-xiaozhi-phase7-workbench-ui-BgBe2j/evidence/ui-report.json",
+      "sha256": "76c2b2e901a28fb01e25f360d126dc77072955f0871bcc5852b3abd28660ac20"
+    }
+  ],
+  "paidCalls": 0,
+  "ledgerUsed": 3,
+  "matrix": "88/89"
+}
