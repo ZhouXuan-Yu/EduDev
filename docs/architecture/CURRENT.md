@@ -4,6 +4,12 @@
 
 独立题图从原结构版本的登记坐标生成，核对记录保存页、原页栅格、独立 PNG 及位置，新派生图块与整段原题截图有各自的 ID。入库和正式组卷仍走既有事务、版本和权限。 [专项报告](../research/evidence/kb/20261121/standalone-structure-diagram/README.md)
 
+## 2026-11-21 Windows 终端投影目录
+
+宿主在当前 Windows 用户 LocalAppData 下建立经路径和身份校验的专用目录。运行时检查与执行使用统一目录，编译来源清单记录新的目录规则。旧投影仍须从现有已验证路径经原生身份检查后清理。 [实现与实测](../goal/xiaozhi-harness/evidence/phase7/implementation-resume-20261119/windows-private-terminal-temp-20261121.json)
+
+受管 helper 编译后的宿主固定自检，在明确无启动、清理已确认的 `launch_failed` 时最多再试一次，校验当轮权限。SQLite 审计记录每次自检。原生协议保持兼容。
+
 ## 2026-11-21 本卷编辑中的图形选项
 
 题篮选项增加可选的来源图像引用，不改原题文档和 SQLite 表。主进程双向核对源图标签和顺序，教师/学生 Office 编译复用同一题面。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)

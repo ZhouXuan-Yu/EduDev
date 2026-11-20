@@ -1,16 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
-import {builtinPermissionDirectory, builtinSandboxManifest, createPermissionScratch, verifySandboxBinary, runNativeSandbox, inspectPermissionPlatform, type PermissionPlatformInfo, type SandboxManifest, type SandboxStart} from './launcher';
+import {builtinPermissionDirectory, builtinSandboxManifest, createPermissionScratch, verifySandboxBinary, inspectPermissionPlatform, type PermissionPlatformInfo, type SandboxManifest} from './launcher';
 import {digest, containsPath, scopeCovers} from '../resources';
 import {permissionHash} from '../validation';
 import type {PermissionScope} from '../../../../shared/xiaozhi-permissions';
 import type {PermissionStore} from '../store';
 import type {CurrentPermission} from '../current';
-import {removeOwnedProjection} from './projection';
+import {checkCompiledPermissionRuntime} from './runtime-health';
 
 export type PermissionRuntime = {directory: string; manifest: SandboxManifest; version: string};
 const configuration = 'framework-csc5-x64-optimize-checked-v1';
@@ -218,21 +217,7 @@ export function createPermissionRuntimeManager(options: {root: string; store: Pe
           const manifest: SandboxManifest = {...builtinSandboxManifest, helperSha256: digest(fs.readFileSync(filename)), helperBytes: fs.statSync(filename).size,
             sourceSha256: sourceHash, pinsSourceSha256: digest(Buffer.from(pins)), runtimes: [runtime], buildTime: new Date().toISOString()};
           fs.writeFileSync(path.join(stage, 'sandbox-manifest.json'), JSON.stringify(manifest, null, 2), {flag: 'wx'});
-          const projection = path.join(os.tmpdir(), 'xiaozhi-permission-exec-' + randomUUID());
-          fs.mkdirSync(projection);
-          const executionId = 'xiexec_' + randomUUID();
-          fs.writeFileSync(path.join(projection, '.xiaozhi-projection.json'), JSON.stringify({schemaVersion: 1, executionId,
-            grantHash: authority.decision.permissionSnapshotHash, owner: authority.request.owner}), {flag: 'wx'});
-          const start: SandboxStart = {schemaVersion: 1, type: 'start', executionId, owner: authority.request.owner,
-            grantHash: authority.decision.permissionSnapshotHash, executable: runtime.path, executableHash: runtime.sha256,
-            projectionRoot: projection, cwd: projection, command: 'Write-Output XIAOZHI_SANDBOX_READY', env: {XIAOZHI_WORKSPACE: projection},
-            timeoutMs: 5000, maxOutputBytes: 8192, maxProcesses: 4};
-          let health = '';
-          const tested = await runNativeSandbox({manifest, directory: stage, start, signal: authority.signal, onData: bytes => {health += bytes.toString('utf8');}});
-          await options.store.audit(authority.request.owner.sessionId, 'permission_runtime_health', version,
-            {owner: authority.request.owner, result: tested.result, ready: health.includes('XIAOZHI_SANDBOX_READY')});
-          removeOwnedProjection(projection);
-          if (tested.result.state !== 'completed' || tested.result.exitCode !== 0 || !health.includes('XIAOZHI_SANDBOX_READY')) throw Error('configuration');
+          await checkCompiledPermissionRuntime({authority, store: options.store, version, manifest, directory: stage, runtime});
           await authority.assert();
           const directory = path.join(versions, version);
           if (fs.existsSync(directory)) throw Error('source_changed');

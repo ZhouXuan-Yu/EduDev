@@ -1,0 +1,277 @@
+{
+  "status": "PARTIAL_GATE7",
+  "featureCommit": "0e0772b",
+  "baseline": {
+    "commit": "5547a9d",
+    "problem": "The process inherited custom E TEMP; helper denied WRITE_OWNER at a new projection's inherited Modify-only ACL and failed before allocating a Job.",
+    "acceptance": "gate7-integrated-5547a9d-20261121.json",
+    "retainedBaselineCase": "rootWorkbenchLongTemp"
+  },
+  "implementation": {
+    "managedRelativeRoot": "OmniEdu/PermissionRuntime/temp-v1",
+    "perUserAnchor": "LOCALAPPDATA",
+    "nativeChecksPreserved": true,
+    "actualLaunchNormalizesTempAliases": true,
+    "diagnosisCreatesManagedRoot": false,
+    "legacy": "Current canonical former OS TEMP can only be used for native cleanup with retained identity. New managed cleanup does not depend on the continued existence of an old TEMP.",
+    "resourceTrace": "Sandbox adapterFiles includes windows/temporary.ts; compile, health, long helper copy, launch and recovery share the same directory policy.",
+    "ddlOrWireMigration": false
+  },
+  "firstPositiveActualUserRoot": {
+    "buildSha256": "5f353300bff1e4666ebba1db1f4e14cdc94f97715c39e21e90fd90e4acd254a7",
+    "outCount": 481,
+    "workbench": [
+      {
+        "review": "root",
+        "checks": 9,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/matched-temp/omni-edu-xiaozhi-phase7-workbench-ui-46qytV/evidence/ui-report.json",
+        "sha256": "49f44c18f60c92a96900a4f04d342b2d30f2d1db84cdf0aa12ee519e43f43da5"
+      },
+      {
+        "review": "independent",
+        "checks": 9,
+        "exit": 0,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/terra/omni-edu-xiaozhi-phase7-workbench-ui-TbT3s6/evidence/ui-report.json",
+        "sha256": "73c405be0c50764192143bb35a06f50e02f57c6d24d0182b7a3560847b895cdd"
+      }
+    ],
+    "boundary": "Same-value E TEMP and TMP with unchanged real Windows login LOCALAPPDATA. The later build adds explicit source manifest binding and a missing legacy TEMP guard."
+  },
+  "build": {
+    "count": 481,
+    "sha256": "fd2668fb5a482aefd80b5a334ef79b3b554847a88b74cf7b26c7f0a0f7321af1",
+    "mainSha256": "a5629be15a3de413a9e8811516efe2f3fc4718a36a355b79fad532a2ac66951d",
+    "adapterSourceSha256": "d71296a5faa725bf246ebfbd273255031d2ba40fc4a736a9cb269883d0cdf4ad",
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/frozen-out-final",
+    "command": "npm run build",
+    "exit": 0,
+    "log": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/build-final.log",
+      "sha256": "e49c8888cb778b85577338ff07835f52dce01f1932912ff5880ba0c756bc163f"
+    },
+    "inventory": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/build-fingerprint-final.json",
+      "sha256": "c55fe87a21a3162ac1ffc729cd046bb29d7bbbcb6be5fd85bab3e1289c10b708"
+    }
+  },
+  "independentFinal": {
+    "checks": 9,
+    "exit": 0,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/terra-final-temp/omni-edu-xiaozhi-phase7-workbench-ui-m1NmcZ/evidence/ui-report.json",
+    "sha256": "27492f85066f37935604338aab826175b249dd6dd6d34d99260a2651ee9b19e6",
+    "buildBeforeAfter": "fd2668fb5a482aefd80b5a334ef79b3b554847a88b74cf7b26c7f0a0f7321af1",
+    "scenario": "Process TEMP=terra-final-temp and TMP=terra-final-other on E, isolated process LOCALAPPDATA=verify-user-home on E. Typed terminal actual output PHASE7_VALUE_41, persisted ACK 2 and completed cleanup. Same Job output ordinary close and restart; cold controls.write=false and zero replay.",
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs with OMNI_EDU_TEST_EXPECT_PROJECTION_PARENT set to LOCALAPPDATA/OmniEdu/PermissionRuntime/temp-v1 and OMNI_EDU_TEST_BUILD_ROOT set to the frozen checkout out."
+  },
+  "terminalRuntime": {
+    "checks": 4,
+    "exit": 0,
+    "command": "node scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs",
+    "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/permission-phase3-runtime-rVpAyw/report.json",
+    "sha256": "7fcd3e4058f01f8963d660138eab5c233a9eb9851b8716b6e8d49b92fa03f209",
+    "boundary": "Real pinned PowerShell/AppContainer helper fallback, healthy compiled tool, stable cold reuse and deny incorrect recipe, plus managed and former TEMP checks."
+  },
+  "controlledMcp": {
+    "checks": 5,
+    "exit": 0,
+    "command": "node scripts/xiaozhi-agent/phase5-stdio-smoke.mjs",
+    "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase5-stdio-Jdnki1/report.json",
+    "sha256": "eab69dfa471d41b3c09305fc77c5cdd161001bcebc588f100c080828dc3ea5d",
+    "boundary": "Actual controlled AppContainer stdio lifecycle including model-free transport, lease and typed CPU timeout. Synthetic local MCP server."
+  },
+  "isolatedPathTests": {
+    "checks": 6,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/private-root-boundary-final.json",
+    "sha256": "be608dd2de7e3462d9e19c1b33b3badf0238941cd7af95846838aaff58893ba3"
+  },
+  "readonlyPlatformTests": {
+    "checks": 3,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/pty-audit-analysis/readonly-platform-private-root.json",
+    "sha256": "301fe7e9b51fc00e0eb35745eaacfbcf7ce5c5731f10a84a3cf351d9017f31dc"
+  },
+  "nativeStandalone": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/standalone-helper-diagnostic/raw-helper-report.json",
+    "sha256": "2bed6ee1d0a357efdbac370613198cef5fd889811223bc3bddc01e6ec255d40f",
+    "summary": "Direct AppContainer Job start and success marker, 636ms, normal exit, zero remaining Job processes and ACEs. Separate fixed helper test."
+  },
+  "components": {
+    "command": "npm run test:renderer-components",
+    "passed": 253,
+    "total": 253,
+    "exit": 0,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/renderer-components.log",
+    "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  },
+  "preservedFailures": {
+    "systemVolumeFull": {
+      "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/permission-phase3-runtime-vTKz4i/report.json",
+      "sha256": "1940318d925fa61b5cb692be63c68384b608399b53a9d1303a95050e6ffaba21",
+      "reason": "ENOSPC while writing owned helper compile inputs under real LocalAppData. No test prerequisite removed."
+    },
+    "isolatedConcurrentLaunch": [
+      {
+        "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/permission-phase3-runtime-Kf2jbs/report.json",
+        "sha256": "93beb40d2ec6c35ff0f2024ac13a63532e8cd713008a0907bb3c59d1042e4691"
+      },
+      {
+        "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase5-stdio-nSp0Vu/report.json",
+        "sha256": "793d5b3170fe6e3cea28981a3830c4470faa3ba6abd8dca6be8cd4d311ce3397"
+      }
+    ],
+    "isolatedConcurrentDetail": "After switching to E the first health launch returned launch_failed; the raw helper, real UI, and serial native and MCP suites passed later. The earlier Win32 error was not available, so do not infer cause from disk status alone.",
+    "broadPermissionHost": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/host-serial-SIYCan/report.json",
+      "passed": 3,
+      "exit": 1,
+      "reason": "Native noninteractive file write and cold permission read succeeded. The first legacy new-Task copy was denied; the expected file was absent. Later host and crash-cut cases were not reached. Do not equate this with normal closed terminal history.",
+      "sha256": "8afe23f5d7090bef8283a3313ff477c7be404629732e793cdd32554c938ce286",
+      "launchReceiptSha256": "0d317b9891bc5a32516d1285bbf8073b69a5149d264583546ea6c8f3eb9b4640"
+    },
+    "relocatedTestBundle": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/host-source-MJobYn/report.json",
+      "checks": 0,
+      "reason": "Alternate E bundling with a dependency junction was correctly refused by native Stat source trust; it does not count as a product path rerun.",
+      "sha256": "e68b6f989f401803fd18b5cb86451dedf84bba2958149eb936ac292f8241e540"
+    }
+  },
+  "storageControl": {
+    "testProfileSetup": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/test-appdata-setup.json",
+      "sha256": "6440981d81a8922415b9508babc5c589ee31b4cc493e1fcdd7c0f99b542f739b"
+    },
+    "globalAclChanged": false,
+    "profileArchive": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/owned-profile-cache-archive",
+    "archivedFiles": 108,
+    "archivedBytes": 8805210,
+    "detail": "An attempted copy-and-remove archive was blocked by command policy before launch. The later individually hashed Move-Item operation archived only two stopped synthetic Chromium profiles, keeping their actual reports and SQLite in place. System volume continued to report 0 free bytes."
+  },
+  "budget": {
+    "added": 0,
+    "used": 3,
+    "limit": 200,
+    "remaining": 197
+  },
+  "npmAudit": {
+    "total": 20,
+    "high": 5,
+    "critical": 0
+  },
+  "scope": "Windows terminal private-path fix and scoped live verification. Final Gate 7 independent decision, broad original Phase3 legacy path, formal ABBA and clean Windows packaging remain open.",
+  "integratedCommit": "0ae8331851452f25de291fb115c091af13383eca",
+  "integratedBuild": {
+    "sourceCommit": "0ae8331851452f25de291fb115c091af13383eca",
+    "count": 481,
+    "sha256": "951fb09b6e755bbef722ae2006fcc95ec1205bf380709239047e01c239451d1f",
+    "mainSha256": "553c2ec9df2857b4076f08ca582f9b73337695767ad81e705a67b1d433453a7d",
+    "adapterSourceSha256": "d71296a5faa725bf246ebfbd273255031d2ba40fc4a736a9cb269883d0cdf4ad",
+    "buildCommand": "npm run build",
+    "buildExit": 0,
+    "buildLog": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/build-integrated.log",
+    "offlineReplayManifest": {
+      "status": "VERIFIED_LOCAL_INPUTS",
+      "planned": 32,
+      "actualGoalLedgerOpened": false,
+      "paidRequests": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/manifest-integrated.json",
+      "sha256": "1bc7b332aa35879ed97417efde02b79e5ce2764ee9c69a028e0717ef5f500589",
+      "verification": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/verified-integrated-manifest.json",
+      "verificationSha256": "6fd94ed375a0efcda77fe91b454792cfafca08b9c93d01c275dbb6bfd8e71094"
+    },
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/frozen-out-integrated-0ae8331",
+    "workbench": {
+      "passed": 7,
+      "failed": "U08",
+      "notRun": "U09",
+      "exit": 1,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/merged-temp/omni-edu-xiaozhi-phase7-workbench-ui-yjH7PF/evidence/ui-report.json",
+      "sha256": "f2cce56cab951640bed89d9a771540ee2b34999073281832b6f4410ccccb43b7",
+      "buildBeforeAfter": "951fb09b6e755bbef722ae2006fcc95ec1205bf380709239047e01c239451d1f",
+      "paidRequests": 0,
+      "healthMs": 442,
+      "terminalJobs": 0,
+      "diagnosis": "Model dispatch and admission persisted. Native runtime health returned launch_failed before allocating a terminal job. The original helper has no available underlying Windows error for this result."
+    }
+  },
+  "launchDiagnostic": {
+    "scope": "Separate diagnostic-only helper compiled with line and numeric error logging, exact system runtime pin verified, synthetic fixed health marker only. No production changes to the native helper.",
+    "reportPathPrefix": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/cpp-start-diagnostic-1e5e7a/raw-helper-report-",
+    "count": 8,
+    "passed": 8,
+    "conclusion": "Standalone serial probes did not reproduce the Electron launch failure."
+  },
+  "recoveredCandidate": {
+    "sourceCommit": "a98396228c27dc6a4c3310d4210a5ce6e30fb814",
+    "count": 481,
+    "sha256": "0ca837db534859a3cc75b5849b83d55ff148866539e82447de9677249b974ddc",
+    "mainSha256": "a8883bc97bce5472ebfffea1efe4da7826ff5de5dc5f4952957530d4d2378a3c",
+    "adapterSourceSha256": "160a71b39963691e818bac31f7fc7b04035776ba980d08b2f4065fed64c4343f",
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "log": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/build-retry-health.log",
+      "sha256": "d49a600772296a6db60c448dd5afc69f5592b510047171fd6a152f78a5c43458"
+    },
+    "runtimeProbe": {
+      "command": "node scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs",
+      "passed": 5,
+      "exit": 0,
+      "path": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/permission-phase3-runtime-rxVkcz/report.json",
+      "sha256": "9be0cc984531f4142e464e03c23f0cea251307e11e2d9cc571966fd637b00729",
+      "scope": "One real compiled AppContainer health check and deterministic pre-start retry, distinct projections, never retry past started, finite failure."
+    },
+    "offlineModelInput": {
+      "status": "VERIFIED_LOCAL_INPUTS",
+      "planned": 32,
+      "actualGoalLedgerOpened": false,
+      "paidRequests": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/manifest-retry-health.json",
+      "sha256": "ebe445355388b9106f22e93447cb07491f19e6bb52ab100422103e7dc0a74111",
+      "verification": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/verified-retry-health-manifest.json",
+      "verificationSha256": "1b2f2618d1775f7a212c2d1f23f1f9b463f1ffb13db31d0261cb931e63fb5150"
+    },
+    "restriction": "Single retry only for compiled runtime fixed marker health probe, with valid clean receipt, no started frame and no caller action; requires live authority before new projection.",
+    "frozenCopy": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/frozen-out-retry-health",
+    "workbench": {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "review": "independent Terra",
+      "passed": 9,
+      "exit": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/retry-terra-temp/omni-edu-xiaozhi-phase7-workbench-ui-bm2nBQ/evidence/ui-report.json",
+      "sha256": "688978169b6a5de3dd5011990f867520c3aa7e1b7c82572aec5f6f93aefc7feb",
+      "buildBeforeAfter": "0ca837db534859a3cc75b5849b83d55ff148866539e82447de9677249b974ddc",
+      "terminalAcknowledgedSequence": 2,
+      "terminalCleanup": "complete",
+      "coldOutput": "PHASE7_VALUE_41",
+      "coldWritable": false,
+      "coldReplayedRequests": 0,
+      "requestsAreSynthetic": true,
+      "paidRequests": 0,
+      "pageErrors": 0,
+      "healthAttempts": [
+        {
+          "attempt": 1,
+          "started": true,
+          "ready": true,
+          "elapsedMs": 1205
+        }
+      ],
+      "scope": "Different E TEMP and TMP with isolated process LOCALAPPDATA on E. The actual health check passed first attempt. The retry is verified only by separate deterministic fault injection."
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 253,
+      "total": 253,
+      "exit": 0,
+      "path": "E:/EduDev-Harness-Acceptance-20261121/private-terminal-temp/renderer-components-retry-health.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  },
+  "open": [
+    "Original independent full Gate 7 same-candidate matrix",
+    "Broad Phase 3 legacy new-Task copy permission denial",
+    "Formal 32-row model ABBA and independent final product acceptance",
+    "QG-09 clean Windows install/start/uninstall",
+    "Version upgrade and independent cross-machine migration using WINDOWS_UPDATE_AND_MIGRATION.md"
+  ]
+}

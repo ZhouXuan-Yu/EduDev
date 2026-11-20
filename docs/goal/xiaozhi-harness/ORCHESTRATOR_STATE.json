@@ -38,7 +38,17 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Use the frozen 5547a9d candidate, see phase7Integrated5547a9d20261121. Resolve the alternate TEMP native terminal path issue, complete remaining independent Gate 7 combinations and then run the formal ABBA. QG-09 still needs clean Windows x64.",
+  "next": "Complete the original same-build Gate 7 matrix on frozen a983962, preserve the 0ae8331 launch failure and investigate the broad legacy-copy permission denial. Continue with formal ABBA after Gate 7. QG-09 needs independent clean Windows x64 and the update/migration track uses UM-01 to UM-09.",
+  "phase7WindowsPrivateTemp20261121": {
+    "status": "PARTIAL_GATE7_WORKBENCH_PASS",
+    "sourceCommit": "a98396228c27dc6a4c3310d4210a5ce6e30fb814",
+    "buildSha256": "0ca837db534859a3cc75b5849b83d55ff148866539e82447de9677249b974ddc",
+    "buildFiles": 481,
+    "evidence": "evidence/phase7/implementation-resume-20261119/windows-private-terminal-temp-20261121.json",
+    "firstMergeFailure": "0ae8331 U08 native health launch_failed, U09 not run",
+    "currentWorkbench": "Independent 9/9; fixed probe passed on attempt 1, retry covered separately by fault injection",
+    "remaining": "Original full Gate 7, legacy new-task permission, formal ABBA and QG-09 clean Windows."
+  },
   "phase7Integrated5547a9d20261121": {
     "status": "PARTIAL_INTEGRATED",
     "sourceCommit": "5547a9dc032f660cef4cc75e67d14b0a2acdb2e9",

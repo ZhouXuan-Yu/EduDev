@@ -21,7 +21,7 @@
 
 验证首次在已经进入预览时超时，原因是测试沿用一个进入预览后卸载的编辑按钮作为就绪条件。实际保存的预览状态已通过 SQLite 读回确认。后续测试改为使用预览中的返回编辑按钮并同时要求 SQLite 状态一致。
 
-最终构建的主进程 SHA-256 为 `2449a559e6cf6c55522ef9a86cd29b1a2d14e3ca255bbc2db5c82ce43bddc2de`。验证从 `apps/desktop` 运行，构建、临时数据和测试文件放在隔离盘。
+知识库分支功能构建的主进程 SHA-256 为 `2449a559e6cf6c55522ef9a86cd29b1a2d14e3ca255bbc2db5c82ce43bddc2de`。验证从 `apps/desktop` 运行，构建、临时数据和测试文件放在隔离盘。
 
 | 验证 | 结果 |
 | --- | --- |
@@ -29,9 +29,12 @@
 | `npm run test:renderer-components` | 253/253 |
 | `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs --test <专项脚本>` | 6/6 个脚本通过，覆盖结构配答、网页补答、旧题读回、组卷图像和独立题图。新增独立题图脚本 8/8 组通过 |
 | `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/paper-instance-graphic-electron.mjs <隔离资料目录> --independent` | 正式确认和冷启动通过，两个 Word 文件共 10 张图源一致，渲染错误和模型请求均为 0 |
+| `node <隔离桌面目录>/scripts/electron-smoke.mjs` | 知识库分支的已构建应用 207/207。前两次从隔离盘目录启动找不到测试用 Python sidecar，使用项目桌面目录作工作目录后通过 |
 | `npm audit --omit=dev --audit-level=high` | 既有依赖问题 20 项，5 项高危、0 项严重 |
 
 自然样本已从桌面完成正式题篮确认，随后用该确认版本和生产 Word 生成器读回文件。Office/WPS 原生打开、自然样本 PDF 导出和小智会话内的文件导出审批需独立验收。
+
+合入 GitHub 主线 `f647451` 的 Windows 终端变更后，四份协作文档分别保留两侧记录。合并构建 SHA-256 为 `d8d239ec762ccd07b2517951a3aa5b76c84655e1c4255a3ca419f9f98761670a`，组件再过 253/253。该构建重新通过自然题正式确认、冷启和两份 Word 媒体读回。207 项通用 Electron 回归使用合并前的知识库功能构建。
 
 ## 数据和回滚
 

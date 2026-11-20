@@ -143,6 +143,19 @@ try {
     assert.equal(fixture.requests.length, modelCalls); await console.getByTestId('terminal-close').click();
     await until(async () => {const listed = await page.evaluate(id => window.omniEdu.listXiaozhiTerminals(id), sessionId); return listed.ok && listed.data.jobs.find(item => item.jobId === jobId)?.cleanup === 'complete';});
     assert.equal(fs.existsSync(path.join(fixture.ids.workspace, 'Microsoft', 'Windows', 'PowerShell', 'ModuleAnalysisCache')), false);
+    const db = database();
+    let row;
+    try {row = db.prepare('SELECT document_json, acknowledged_input_sequence FROM xiaozhi_jobs_v1 WHERE job_id = ?').get(jobId);}
+    finally {db.close();}
+    const job = JSON.parse(row.document_json);
+    const projectionParent = path.dirname(job.projection.root);
+    const configuredTemp = await application.evaluate(() => ({TEMP: process.env.TEMP, TMP: process.env.TMP}));
+    report.terminalProjection = {jobId, sessionId, projectionParent, configuredTemp, cleanup: job.cleanup,
+      acknowledgedInputSequence: row.acknowledged_input_sequence};
+    const expectedParent = process.env.OMNI_EDU_TEST_EXPECT_PROJECTION_PARENT;
+    if (expectedParent) assert.equal(projectionParent.toLowerCase(), fs.realpathSync(expectedParent).toLowerCase());
+    assert.equal(job.cleanup, 'complete');
+    assert(row.acknowledged_input_sequence > 0);
   });
   await check('U09_cold_original_summary_and_inbox_decision_readback', async () => {
     const before = await summary({kind: 'tasks', filter: 'all'}); assert(before.ok); report.modelCalls = fixture.requests.length; await fixture.close();
@@ -150,6 +163,11 @@ try {
     const after = await summary({kind: 'tasks', filter: 'all'}); assert(after.ok); assert.equal(after.value.total, before.value.total); assert.deepEqual(after.value.counts, before.value.counts);
     const saved = await summary({kind: 'approvals', state: 'all'}); assert(saved.ok && saved.value.items.some(item => item.id === fixture.ids.permission.approvals[0].id && item.state === 'rejected'));
     assert(saved.value.items.some(item => item.id === fixture.ids.legacy.uncertainApprovalId && item.state === 'verified'));
+    const {jobId, sessionId} = report.terminalProjection;
+    const restored = await page.evaluate(input => window.omniEdu.readXiaozhiTerminal(input), {sessionId, jobId, sinceSequence: 0});
+    assert(restored.ok && restored.data.output.includes('PHASE7_VALUE_41'));
+    assert.equal(restored.data.job.cleanup, 'complete');
+    assert.equal(restored.data.job.controls.write, false);
     assert.equal(fixture.requests.length, 0);
   });
   assert.deepEqual(report.errors, []); report.success = true;

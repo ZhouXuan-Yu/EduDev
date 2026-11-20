@@ -80,11 +80,11 @@
   "adapterFiles": [
     {
       "file": "windows/launcher.ts",
-      "sha256": "26d3cfd279b940615dad49bc0fb29fd77350c891f88005363d1b4326ec5489b9"
+      "sha256": "166f0018cde35a591ab2dc2a7704bf9544ef65e9ae1c18830d45a93efe62ea53"
     },
     {
       "file": "windows/projection.ts",
-      "sha256": "a48da818478df4ce59c6f3a43f3ff4f018b983745327a32de2a9922f014c2f7d"
+      "sha256": "749a0c923f56a8ae869ac39b5d99d79c66700102db4e75f4e28899d04074c81b"
     },
     {
       "file": "windows/operations.ts",
@@ -95,8 +95,16 @@
       "sha256": "458c9d1daaf9d650984cee3c8ed55dee9087c19b4fcdc4ad7848e52609fa08cf"
     },
     {
+      "file": "windows/temporary.ts",
+      "sha256": "e8b636d19e932e525a4af36b5cce6f5df70dd5956ecf5833e2945ba003e61b6a"
+    },
+    {
       "file": "windows/runtime.ts",
-      "sha256": "7ee3dcb2d758bad9338ee7b438f0be24439c9c0ba7854a0aba006cad22e22192"
+      "sha256": "3cecce28703eb4f89c5f13ec0d6f5367d8f626bfff90c6d88ccf6d1171fad553"
+    },
+    {
+      "file": "windows/runtime-health.ts",
+      "sha256": "1a279730600affcec3eb29b9de51655569af2d3da817691e52c660400a3e625e"
     },
     {
       "file": "current.ts",
@@ -127,7 +135,7 @@
       "sha256": "acab0103579d1dd8aa41cab0960ba10fd8e14f19f82f06d391cc06eb1df73a8d"
     }
   ],
-  "adapterSourceSha256": "ea709e39ae51c6336c66504357c16c44194c7d1be137ac234ddabfaeada88362",
+  "adapterSourceSha256": "160a71b39963691e818bac31f7fc7b04035776ba980d08b2f4065fed64c4343f",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1

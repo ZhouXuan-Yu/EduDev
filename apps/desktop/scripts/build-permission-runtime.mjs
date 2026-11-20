@@ -14,8 +14,8 @@ export function buildPermissionRuntime() {
   const sourceFiles = ['NativeSandbox.cs', 'PlatformInfo.cs', 'SessionOptions.cs', 'SessionInput.cs', 'SessionPackage.cs', 'JobLimits.cs', 'ConPtyNative.cs', 'ConPtySession.cs', 'PtyRunner.cs']
     .map(file => ({file, sha256: sha256(fs.readFileSync(path.join(source, file)))}));
   const sourceHash = sha256(JSON.stringify(sourceFiles));
-  const adapterFiles = ['windows/launcher.ts', 'windows/projection.ts', 'windows/operations.ts', 'windows/broker.ts',
-    'windows/runtime.ts', 'current.ts', 'engine.ts', 'grant-snapshot.ts', 'resources.ts', 'summary.ts', 'tool-runtime.ts', '../tools/terminal.ts']
+  const adapterFiles = ['windows/launcher.ts', 'windows/projection.ts', 'windows/operations.ts', 'windows/broker.ts', 'windows/temporary.ts',
+    'windows/runtime.ts', 'windows/runtime-health.ts', 'current.ts', 'engine.ts', 'grant-snapshot.ts', 'resources.ts', 'summary.ts', 'tool-runtime.ts', '../tools/terminal.ts']
     .map(file => ({file, sha256: sha256(fs.readFileSync(path.join(source, '..', file)))}));
   const adapterSourceSha256 = sha256(JSON.stringify(adapterFiles));
   const pins = fs.readFileSync(path.join(source, 'TrustedRuntimes.cs'));
