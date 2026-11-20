@@ -9,8 +9,8 @@ import {wordFixture} from './word-fixtures.mjs';
 const {parseWord}=await import('../../src/main/assets/word-parser.ts');
 const {MaterialWordRepository}=await import('../../src/main/assets/material-word-repository.ts');
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
-const {WORD_PARSER,WORD_LEGACY_PARSER}=await import('../../src/shared/material-word.ts');
-const {wordUpgradeCompatible}=await import('../../src/main/assets/word-upgrade-compatible.ts');
+const {WORD_PARSER,WORD_LEGACY_PARSER,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
+const {wordUpgradeCompatible,WORD_UPGRADE_INDEX,WORD_UPGRADE_PREDICATE}=await import('../../src/main/assets/word-upgrade-compatible.ts');
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=await parseWord(await wordFixture());
 function legacyDocument(){
@@ -68,6 +68,23 @@ await check('An existing v2 representation upgrades its question policy while th
   assert.equal((await f.word.document(f.id,f.state.version)).questionPolicy,payload.document.questionPolicy);
   assert.deepEqual((await f.reopen().questions(f.query,previousSha)).source,before);
   assert.notEqual((await f.word.questions(f.query)).source.documentSha,before.documentSha);
+ }finally{f.close();}
+});
+await check('Existing v5 SQLite indexes and frozen Word sources coexist with the v6 policy-only upgrade',async()=>{
+ const f=await fixture();try{
+  const previous={...payload.document,questionPolicy:WORD_PREAMBLE_EXPANDED_QUESTION_POLICY};
+  await f.word.commit(f.id,f.state.version,previous);
+  f.db.exec(`CREATE INDEX idx_material_word_drawing_v2 ON material_word_documents(resource_id,version)
+    WHERE json_extract(document_json,'$.questionPolicy')<>'${WORD_PREAMBLE_EXPANDED_QUESTION_POLICY}'`);
+  const targets=()=>f.db.prepare(`SELECT resource_id FROM material_word_documents INDEXED BY ${WORD_UPGRADE_INDEX}
+    WHERE ${WORD_UPGRADE_PREDICATE}`).all().map(row=>row.resource_id);
+  const before=(await f.word.questions(f.query)).source,previousSha=hash(previous);
+  assert.deepEqual(targets(),[f.id]);
+  assert(await f.word.upgrade(f.id,f.state.version,new AbortController().signal));
+  assert.equal(f.state.parses,0);
+  assert.deepEqual(await f.word.document(f.id,f.state.version),{...previous,questionPolicy:WORD_PREAMBLE_QUESTION_POLICY});
+  assert.deepEqual((await f.reopen().questions(f.query,previousSha)).source,before);
+  assert.deepEqual(targets(),[]);
  }finally{f.close();}
 });
 await check('Unknown and corrupted historical digests cannot fall through to the latest representation',async()=>{

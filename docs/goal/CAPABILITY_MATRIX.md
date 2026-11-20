@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 M03/M05 同册 Word 答案定位
+
+原生 Word 题源既支持两行答案表格，也支持显式参考答案区的连续排印选择题答案。后台兼容准备、新导入、资料页原文预览和后续 AI 输入复用版本化题源。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)
+
 ## 2026-11-21 M03/M05 结构题分小节归档
 
 新的 PDF、Word 和图片结构归档复用同一印刷小节证据判断题型。存量回填沿用题本足迹、SQLite 写事务、原件哈希及现有全文和索引更新通道。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)

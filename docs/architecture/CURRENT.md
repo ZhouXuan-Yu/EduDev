@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 Word 同册答案的版本化读取
+
+解析策略 v6 在冻结段落选出单题答案原文范围。已有媒体策略当前的 v5 可只升题源策略，兼容事务保存旧摘要及文档。后台 Word 准备使用独立的 v6 部分索引。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)
+
 ## 2026-11-21 题型在结构归档时落库
 
 归档用冻结的题目小节、题干与选项结构确定印刷题型。既有草稿升级按结构成员索引分批接续，并在 SQLite 写事务内复查版本与教师归属。 [本轮记录](../research/evidence/kb/20261121/printed-question-type/README.md)
