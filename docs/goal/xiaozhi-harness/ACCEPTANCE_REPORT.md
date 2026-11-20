@@ -1,5 +1,11 @@
 # 独立验收记录
 
+## 2026-11-20 条件缺口和审批退出复核
+
+已实现 C1 条件缺口单列。独立真实 Electron 在 1366×768、1920×1080 核对内建提供方的 typed 结果、收起摘要和展开条件。合成无提供方保留必需与可选缺口，界面仍显示不可用。原注册表、Run、审批和授权记录一致。真实待触发条件的 Provider 排除由 Resolver 专项验证。此证据覆盖对应子项。[报告](evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)
+
+A1 旧失败在当前两个视口均未复现。原键盘事件进入顶层审批面板，正常关闭与恢复焦点。已发决定只结算一次；旧失败和未确认根因保留。[事件轨迹](evidence/phase7/implementation-resume-20261119/approval-result-escape-diagnostic-20261120.json)
+
 ## 2026-11-20 A1 审批决定忙碌期间退出
 
 旧构建在现行权限和历史复制两条路径均复现按键无响应。修复将焦点先移到仍可操作的申请卡标题。独立验证从历史复制拒绝保存中按 Escape 退出，重开后选择现行申请。迟到的本次拒绝按精确 ID 只保存一次，新选项和原 Run、Grant 一致，无额外模型请求。[构建、失败与独立结果](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)

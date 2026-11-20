@@ -1,5 +1,11 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 能力缺口与审批结果后的键盘退出
+
+C1 将固定必需项、可选项及只有任务条件触发才需要的项分别展示。读取注册表时可列出待核对条件，实际任务的选择仍按 Resolver 中的具体条件执行。真实内建提供方在两个视口通过。[变更与实测](evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)
+
+A1 的保存结果后键盘退出在合并构建的两个视口均未复现。按 Esc 时焦点在审批分类按钮，事件到达唯一顶层面板，面板关闭且恢复入口焦点。旧失败及未知根因保留。[事件轨迹](evidence/phase7/implementation-resume-20261119/approval-result-escape-diagnostic-20261120.json)
+
 ## 2026-11-20 A1 提交决定与重新选择
 
 现行权限和历史复制的决定保存期间均保留焦点。已发决定由原处理结算。关闭收件箱后，后来打开的另一条申请保持原内容。历史复制路径由 Terra 独立核对原请求、SQLite 和触发器焦点。全阶段继续按原生窗口与冻结构建标准验收。[对应证据](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)

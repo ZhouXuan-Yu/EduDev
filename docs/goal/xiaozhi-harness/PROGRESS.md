@@ -1,5 +1,13 @@
 # Harness 执行进度
 
+## 2026-11-20 能力中心的条件缺口
+
+已实现。能力中心把“按任务核对”的条件与固定必需缺口、可选缺口分开。内建文件元信息提供方在两视口显示 `mime_required` 为条件项、`mime` 为可选项。无提供方反例保留真正的必需缺口和“当前不可用”。Resolver 仍根据每次任务的实际条件选择提供方。专项 12/12、18/18、32/32，组件 253/253。与题库配答 `110150e` 合并后构建和类型检查通过，知识库结构题专项 17/17，能力中心在两视口复验通过。[实测和合同](evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)
+
+审批结果后的 Esc 在合并候选的两个尺寸均完成原失败路径，面板关闭、入口焦点恢复。原失败保留，原因未证实。审批测试包解包后真实执行教育 Worker 和草稿检验 6/6，系统 PATH 为空。固定矩阵 88/89，原生窗口、独立 Windows 安装卸载与正式模型对照待完成。[审批观察](evidence/phase7/implementation-resume-20261119/approval-result-escape-diagnostic-20261120.json) · [安装包证据](evidence/phase8/windows-package-20261119/approval-save-nsis-20261120.json)
+
+Q5 已用真实网页工具验证同任务一次性审批续接。点击批准后从工作台继续同一任务，原工具以 HTTP 200 读取固定公开网页，有原生来源证据。正式采集器还要覆盖首轮结束后打开同任务继续，并准确绑定两次 Run 的请求。模型合成，新增付费 0。[网页与模型验收前置](evidence/phase8/q5-public-tool-approved-continuation-20261120.json)
+
 ## 2026-11-20 审批模块与题库版本切换合并
 
 审批修复 `8e4a452` 与知识库 `38e5a70` 合并为 `082d179`。合并构建含类型检查，知识库结构题事务专项 18/18，1366×768 审批实页 4/4。审批原候选的同组行为在两视口各通过四项。上一步本地安装包对应审批组合构建，尚未包含后到的题库版本切换。[按构建记录的结果](evidence/phase7/implementation-resume-20261119/approval-save-escape-20261120.json)

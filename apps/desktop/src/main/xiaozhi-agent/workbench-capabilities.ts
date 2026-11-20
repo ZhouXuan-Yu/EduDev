@@ -15,7 +15,7 @@ import {workbenchFailure, workbenchRows, workbenchSource, workbenchText, type Wo
 function base(id: string, name: string, sourceKind: WorkbenchCapabilityRow['sourceKind']): WorkbenchCapabilityRow {
   return {id, name: workbenchText(name), sourceKind, capabilityId: null, providerId: null, version: '', origin: 'candidate',
     source: '', sourceHash: null, schemaHash: null, license: null, installed: 'unknown', verification: 'unknown',
-    authorization: 'task_check_required', availability: 'task_check_required', requiredMissing: [], optionalMissing: [], reasons: [], risk: [],
+    authorization: 'task_check_required', availability: 'task_check_required', requiredMissing: [], optionalMissing: [], conditionalMissing: [], reasons: [], risk: [],
     verifiedAt: null, expiresAt: null};
 }
 export async function workbenchTaskContext(read: WorkbenchRead, query: {sessionId?: string; taskId?: string; requirementsVersion?: number}): Promise<WorkbenchTaskContext> {
@@ -126,7 +126,7 @@ export async function readWorkbenchCapabilities(read: WorkbenchRead, context: Wo
             verification: provider.health === 'revoked' || version?.revoked || artifact?.status === 'revoked' ? 'revoked'
               : expired ? 'expired' : provider.source.verification === 'verified' ? 'verified' : provider.source.verification === 'failed' ? 'failed' : 'unknown',
             availability: blocked ? 'blocked' : conformance.missingConditional.length ? 'task_check_required' : conformance.level,
-            requiredMissing: [...conformance.missingRequired, ...conformance.missingConditional], optionalMissing: conformance.missing,
+            requiredMissing: conformance.missingRequired, optionalMissing: conformance.missing, conditionalMissing: conformance.missingConditional,
             reasons: [...new Set(reasons)], risk: [...provider.permissions], verifiedAt: binding.verifiedAt, expiresAt: artifact?.expiresAt || null});
         }
       }

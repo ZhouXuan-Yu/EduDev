@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 能力中心条件缺口
+
+真实内建提供方的条件项和可选项已在两种尺寸验收。无提供方的合成反例保留必需缺口并显示不可用。实际条件触发时的选择由原 Resolver 专项覆盖。[能力中心实测](../goal/xiaozhi-harness/evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)
+
 ## 2026-11-20 审批决定保存期间的焦点
 
 加入现行审批和历史复制在保存期间使用 Escape 的实页回归，按精确申请核对迟到结果与 SQLite。独立历史审批关闭、回到入口和重开换选通过。[专项验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

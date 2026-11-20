@@ -110,6 +110,43 @@ try {
     assert.equal((await query(capabilityQuery)).items[0].authorization, 'task_check_required');
     return {total: page.total, counts: page.counts, taskApprovalRequired: true};
   });
+  await check('R06a_native_conditional_required_optional_stay_distinct', async () => {
+    const before = await registry.snapshot(), hana = declarations[0], workspace = declarations[1];
+    const providerRow = async id => {
+      const page = await query({kind: 'capabilities', query: id});
+      assert.equal(page.partial, false); assert.equal(page.items.length, 1);
+      assert.equal(page.items[0].providerId, id); return page.items[0];
+    };
+    const conditional = await providerRow(workspace.provider.id);
+    assert.deepEqual(conditional.requiredMissing, []);
+    assert.deepEqual(conditional.conditionalMissing, ['mime_required']);
+    assert.deepEqual(conditional.optionalMissing, ['mime']);
+    assert.equal(conditional.availability, 'task_check_required');
+    assert.equal(conditional.authorization, 'task_check_required');
+    assert(conditional.reasons.includes('conditional_task_check'));
+    assert(!conditional.reasons.includes('missing_required'));
+    assert.deepEqual(await registry.snapshot(), before, 'Reading conditions must not change registry facts');
+    try {
+      const requiredBinding = structuredClone(workspace.binding);
+      requiredBinding.conformance.evidence = [];
+      await registry.register(workspace.definition, workspace.provider, requiredBinding);
+      const required = await providerRow(workspace.provider.id);
+      assert.deepEqual(required.requiredMissing, ['file_metadata']);
+      assert.deepEqual(required.conditionalMissing, ['mime_required']);
+      assert.deepEqual(required.optionalMissing, ['mime']);
+      assert.equal(required.availability, 'blocked'); assert(required.reasons.includes('missing_required'));
+      const optionalBinding = structuredClone(hana.binding);
+      optionalBinding.conformance.evidence = optionalBinding.conformance.evidence.filter(item => item.requirementId !== 'mime');
+      await registry.register(hana.definition, hana.provider, optionalBinding);
+      const optional = await providerRow(hana.provider.id);
+      assert.deepEqual(optional.requiredMissing, []); assert.deepEqual(optional.conditionalMissing, []);
+      assert.deepEqual(optional.optionalMissing, ['mime']); assert.equal(optional.availability, 'partial');
+      assert(!optional.reasons.includes('missing_required')); assert(!optional.reasons.includes('conditional_task_check'));
+      return {conditional: conditional.providerId, required: required.requiredMissing, optional: optional.optionalMissing};
+    } finally {
+      for (const item of declarations) await registry.register(item.definition, item.provider, item.binding);
+    }
+  });
   await check('R07_corrupt_row_partial_keeps_verified_rows', async () => {
     const row = f.db.prepare('SELECT * FROM ai_confirmation_items WHERE id=?').get(copy.id);
     f.db.prepare('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?').run('{broken', copy.id);

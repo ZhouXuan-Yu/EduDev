@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-20",
+  "result": "NOT_REPRODUCED_ON_CURRENT_BUILD",
+  "sourceCommit": "082d179214bd6ae249c85e4a704841a9f8a4e475",
+  "integratedOnMain": "9b34bdbb67a623cd2db78977184ef11580a09f17",
+  "mainSha256": "6c6139716d5d5c70f570d91cb6269cbe228b71a2f20657a5c5d3f598981c6be9",
+  "rendererSha256": "60b5e6564a98d96fd839c40ecdd9d8ca3aa9573b73dd179181953aeec2fc5c8a",
+  "scope": "Real isolated Electron with the original decision handler and keyboard events sent through Playwright. No physical keyboard or mouse interaction.",
+  "procedure": "Complete the first two scenarios of the earlier approval regression. After the third actual rejection, let the selected detail close, Tab from the inbox heading to its native status filter, Shift+Tab to the approvals category button and press Escape.",
+  "runs": [
+    {"viewport": "1366x768", "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-Kn8mA2/evidence/context-select-escape-diagnostic-report.json", "sha256": "742c2588d1accd045667ffe564841b4aa433470d76d2c620175a24bf3a8b77a6"},
+    {"viewport": "1920x1080", "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-BzlAhm/evidence/context-select-escape-diagnostic-report.json", "sha256": "915dbcf9b3b531c9b2f37484aae4e88e756f573a07563fc7c5bdb9fdf898dd38"}
+  ],
+  "additionalControl": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-EMMdqc/evidence/select-escape-diagnostic-report.json",
+  "observed": {
+    "escapeTarget": "pi-workbench-approvals",
+    "eventPath": ["document capture", "aside capture", "aside bubble"],
+    "finalDefaultPrevented": true,
+    "documentHasFocus": true,
+    "visibleOverlayCountAtDismiss": 1,
+    "workbenchIsTopOverlay": true,
+    "closed": true,
+    "focusRestoredToEntry": true,
+    "decisionsPersistedOnce": true,
+    "runsAndGrantsUnchanged": true,
+    "pageErrors": 0,
+    "paidModelRequests": 0
+  },
+  "previousFailure": "approval-save-escape-20261120.json records the unchanged 1366 and 1920 failures on the earlier build.",
+  "remainingUncertainty": "The earlier failure's cause was not confirmed. This observation neither establishes a fix nor completes Gate 7 or the physical window checks."
+}

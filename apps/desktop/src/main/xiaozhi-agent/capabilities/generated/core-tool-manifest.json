@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "6ca2e6f62853e1baa6a0f0b348b8960c99b6991e4575c9fb86e776464b4155d6",
+  "sourceHash": "f9b0c43b59a467576fb83da6dbd5a52661ad88eecdfe2bad76f0ab0418a63e9b",
   "sources": [
     {
       "file": "package-lock.json",
@@ -88,7 +88,7 @@
     },
     {
       "file": "src/main/assets/material-original.ts",
-      "sha256": "7bc48a6b5092c4edc85a48c9c10bab962412a32bdd00f89c2b047e20b9176e7a"
+      "sha256": "4552fcb051a80a88c18493721a970cf81fd3f39e1f89780ff2b834048fdec795"
     },
     {
       "file": "src/main/assets/material-page-preview.ts",
@@ -2204,7 +2204,7 @@
     },
     {
       "file": "src/shared/question-book-answer.ts",
-      "sha256": "1c483d8e8a85f54f6182bf2a55aca2a749c809590d4604b09894cc5835fd4e44"
+      "sha256": "c16b21dac2926d229c030dd266ea734f393409ac710e5f26c3d0489890e8288d"
     },
     {
       "file": "src/shared/question-book-document.ts",

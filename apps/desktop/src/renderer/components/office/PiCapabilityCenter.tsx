@@ -30,6 +30,7 @@ function CapabilityCard({row}: {row: WorkbenchCapabilityRow}) {
   const version = coreTool ? row.version.split('+', 1)[0] : row.version;
   const permissions = row.risk.map(item => factLabels[item] || scopeLabels[item]);
   const reasons = row.reasons.map(item => factLabels[item]);
+  const conditionalMissing = row.conditionalMissing ?? [];
   return <article className={styles.card} data-testid="pi-capability-row" data-verification={row.verification}>
     <h3>{name} <span className={styles.meta}>{version}</span></h3>
     <p className={styles.meta}>来源 {source} · {sourceLabels[row.sourceKind]}{!coreTool && ` · 许可证 ${row.license || '未知，需核对'}`}</p>
@@ -41,6 +42,7 @@ function CapabilityCard({row}: {row: WorkbenchCapabilityRow}) {
     </dl>
     {row.requiredMissing.length > 0 && <p>缺少 {row.requiredMissing.length} 项必需能力</p>}
     {row.optionalMissing.length > 0 && <p className={styles.meta}>缺少 {row.optionalMissing.length} 项可选能力</p>}
+    {conditionalMissing.length > 0 && <p className={styles.meta} data-testid="pi-capability-conditional">按任务核对 {conditionalMissing.length} 项条件要求</p>}
     {permissions.length > 0 && <p>调用范围 {permissions.map(label => label || '需核对权限详情').join('；')}</p>}
     {reasons.length > 0 && <p className={styles.meta}>{reasons.map(label => label || '请查看核验详情').join('；')}</p>}
     <DisclosureCard title="来源与核验详情">
@@ -51,6 +53,7 @@ function CapabilityCard({row}: {row: WorkbenchCapabilityRow}) {
       <p>接口指纹 <code>{row.schemaHash || '未提供'}</code></p>
       {row.requiredMissing.length > 0 && <p>必需项 {row.requiredMissing.join('、')}</p>}
       {row.optionalMissing.length > 0 && <p>可选项 {row.optionalMissing.join('、')}</p>}
+      {conditionalMissing.length > 0 && <p data-testid="pi-capability-conditional-detail">按任务核对的条件项 {conditionalMissing.join('、')}</p>}
       {row.risk.length > 0 && <p>权限记录 <code>{row.risk.join('、')}</code></p>}
       {row.reasons.length > 0 && <p>核验记录 <code>{row.reasons.join('、')}</code></p>}
       <p>核验时间 {row.verifiedAt ? new Date(row.verifiedAt).toLocaleString() : '未核验'} · 有效至 {row.expiresAt ? new Date(row.expiresAt).toLocaleString() : '未提供'}</p>
