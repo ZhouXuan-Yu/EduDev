@@ -64,6 +64,53 @@ await check('A write failure rolls back canonical facts and the immutable journa
 await check('A teacher edit racing the proposal is retained and reported as a conflict',()=>withFixture({},async f=>{let reads=0;f.state.onRead=()=>{if(++reads===2)f.db.prepare("UPDATE question_bank_items SET analysis='教师刚刚更新的解析。'").run();};assert.equal((await f.match()).rows[0].state,'conflict');assert.equal((await f.read()).analysis,'教师刚刚更新的解析。');}));
 await check('Newer empty or invalid answer receipts prevent fallback to an older cached answer',async()=>{for(const invalid of [false,true])await withFixture({},async f=>{const id='aibatch_'+randomUUID(),p=structuredClone(f.proofs.get(f.answerBatch));p.first={...p.first,pageText:''};p.final={...p.final,pageText:''};p.finalSha=sha('new-empty');if(!invalid)f.proofs.set(id,p);f.db.prepare('INSERT INTO material_ai_batches VALUES(?,?,?)').run(id,f.pair.answerId,f.pair.answerVersion);f.db.prepare('INSERT INTO material_ai_units VALUES(?,1,?,?)').run(id,JSON.stringify({page:3}),'no_questions');f.db.prepare('INSERT INTO material_ai_page_units VALUES(?,1,?)').run(id,p.finalSha);while(await f.repo.indexOne()){}assert.equal((await f.match()).rows[0].reason,'answer_not_found');});});
 await check('Background matching resumes from the durable queue, makes no provider requests, and completes idempotently',()=>withFixture({},async f=>{await f.queue();assert((await f.repo.list(f.input)).automaticPending);assert(await f.drain());assert.equal((await f.repo.list(f.input)).rows[0].state,'applied');assert(!(await f.repo.list(f.input)).automaticPending);await f.queue();await f.drain();assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_book_answer_journal_v1').get().n,1);}));
+await check('Completing an old page match preserves same-pair work published before acknowledgment',()=>withFixture({},async f=>{
+ const match=f.repo.match.bind(f.repo);
+ f.repo.match=async(...args)=>{
+  const view=await match(...args);
+  await f.queue();
+  return view;
+ };
+ assert(await f.drain());
+ assert((await f.repo.list(f.input)).automaticPending);
+ f.repo.match=match;
+ assert(await f.drain());
+ assert(!(await f.repo.list(f.input)).automaticPending);
+ assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_book_answer_journal_v1').get().n,1);
+}));
+await check('A new answer index update at page claim leaves the match pending',()=>withFixture({},async f=>{
+ const next=f.repo.work.next.bind(f.repo.work);
+ f.repo.work.next=async()=>{
+  const job=await next();
+  f.db.prepare('UPDATE material_ai_page_units SET final_sha=final_sha WHERE batch_id=?').run(f.answerBatch);
+  return job;
+ };
+ await assert.rejects(f.drain(),/busy/);
+ assert((await f.repo.list(f.input)).automaticPending);
+ f.repo.work.next=next;
+ while(await f.repo.indexOne()){}
+ assert(await f.drain());
+ assert.equal((await f.repo.list(f.input)).rows[0].state,'applied');
+}));
+await check('An existing work table keeps pending and failed rows across migration; stale errors cannot mark a retry failed',async()=>{
+ const f=fixture();
+ try{
+  f.db.exec("CREATE TABLE material_book_answer_work_v1(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL,error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal))");
+  f.db.prepare('INSERT INTO material_book_answer_work_v1 VALUES(?,1,1,?)').run(f.batch,'');
+  f.db.prepare('INSERT INTO material_book_answer_work_v1 VALUES(?,2,1,?)').run(f.batch,'privacy_blocked');
+  await f.repo.migrate();
+  const old=await f.repo.work.next();
+  assert.equal(old.ordinal,1);
+  assert.equal((await f.repo.work.state(f.batch,2)).error,'privacy_blocked');
+  await f.queue();
+  const retry=await f.repo.work.next();
+  assert.notEqual(old.ticket,retry.ticket);
+  await f.repo.work.finish(old,'source_changed');
+  assert.deepEqual(await f.repo.work.next(),retry);
+  await f.repo.migrate();
+  assert.deepEqual(await f.repo.work.next(),retry);
+ }finally{f.db.close();}
+});
 await check('Cancellation and the stop-production switch retain work for retry and preserve historical reads',()=>withFixture({},async f=>{await f.queue();const controller=new AbortController();controller.abort();await assert.rejects(f.repo.drain(controller.signal));assert((await f.repo.list(f.input)).automaticPending);const old=process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK;try{process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK='0';assert.equal(await f.drain(),false);await assert.rejects(f.match(),/book_writeback_disabled/);}finally{if(old===undefined)delete process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK;else process.env.OMNI_EDU_BOOK_ANSWER_WRITEBACK=old;}assert(await f.drain());await f.repo.validate(await f.read());}));
 await check('Rebuilding the derived answer index restores exact lookups without changing source receipts or question facts',()=>withFixture({},async f=>{await f.match();const before=questionVersion(await f.read());await f.repo.index.rebuild();assert((await f.repo.list(f.input)).indexPending);while(await f.repo.indexOne()){}await f.drain();assert.equal(questionVersion(await f.read()),before);await f.repo.validate(await f.read());}));
 await check('A restored association and a newly published question both enqueue the existing local matcher',()=>withFixture({},async f=>{f.db.prepare('UPDATE material_book_pairs SET revision=2').run();assert.equal(f.db.prepare('SELECT revision FROM material_book_answer_work_v1').get().revision,2);f.db.exec('DELETE FROM material_book_answer_work_v1');f.db.prepare('INSERT INTO material_ai_members VALUES(?,1,?,?)').run(f.batch,'2','question_'+randomUUID());assert.equal(f.db.prepare('SELECT revision FROM material_book_answer_work_v1').get().revision,2);}));

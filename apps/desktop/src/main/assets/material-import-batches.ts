@@ -3,10 +3,10 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import type {KnowledgeImportResult} from '../../shared/contracts';
 import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles,type MaterialBatch,type MaterialBatchAction,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchState,type MaterialBatchFileFilter,type MaterialBatchContentState} from '../../shared/material-import-batch';
+import {isSupportedMaterialFile} from './material-folder-import';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
 const DISCOVERY_SLICE=128;
-const supported=/\.(pdf|docx|pptx|xlsx|jpg|jpeg|png|webp|md|txt)$/i;
 const now=()=>new Date().toISOString();
 const inside=(root:string,target:string)=>{const p=path.relative(root,target);return p===''||p!=='..'&&!p.startsWith('..'+path.sep)&&!path.isAbsolute(p);};
 const same=(a:string,b:string)=>process.platform==='win32'?a.toLowerCase()===b.toLowerCase():a===b;
@@ -145,7 +145,7 @@ export class MaterialImportBatches{
      signal.throwIfAborted();const child=path.join(relative,entry.name),file=path.join(root,child);let stat:Awaited<ReturnType<typeof fs.lstat>>;
      try{stat=await fs.lstat(file);}catch(error){signal.throwIfAborted();await this.host.run(`INSERT OR IGNORE INTO material_import_entries(batch_id,relative_path,kind,status,error) VALUES (?,?,'file','failed',?)`,[id,child,errorText(error)]);continue;}
      const managed=inside(path.resolve(this.host.root()),file),kind=stat.isDirectory()&&!stat.isSymbolicLink()?'directory':'file';
-     const skipped=managed||stat.isSymbolicLink()||kind==='file'&&(!stat.isFile()||!supported.test(entry.name));
+     const skipped=managed||stat.isSymbolicLink()||kind==='file'&&(!stat.isFile()||!isSupportedMaterialFile(entry.name));
      await this.host.run(`INSERT OR IGNORE INTO material_import_entries(batch_id,relative_path,kind,status,source_version,file_size,error) VALUES (?,?,?,?,?,?,?)`,[id,child,kind,skipped?'skipped':'pending',stat.isFile()?fileVersion(stat):'',stat.isFile()?stat.size:0,skipped?'非支持格式、链接或应用资料目录，已跳过。':'']);
      if(++discovered>=DISCOVERY_SLICE){
       await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);

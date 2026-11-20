@@ -4,6 +4,7 @@ import type {KnowledgeImportResult} from '../../shared/contracts';
 import type {MaterialFolderProgress,MaterialFolderResult} from '../../shared/materials';
 type Host={getDataRoot:()=>string;getKnowledgeOverview:()=>Promise<KnowledgeImportResult['overview']>;importKnowledgeResources:(paths:string[],signal:AbortSignal,background:boolean)=>Promise<KnowledgeImportResult>};
 const supported=/\.(pdf|docx|pptx|xlsx|jpg|jpeg|png|webp|bmp|md|txt)$/i;
+export const isSupportedMaterialFile=(name:string)=>supported.test(name);
 /** Native-selected root only; bounded async traversal feeding the existing importer/queue. */
 export async function importMaterialFolder(host:Host,selected:string,signal:AbortSignal,progress:(state:MaterialFolderProgress)=>void):Promise<MaterialFolderResult>{
  const root=path.resolve(selected),managed=await fs.realpath(host.getDataRoot()),counts:MaterialFolderProgress={scanned:0,imported:0,reused:0,failed:0,skipped:0};
@@ -28,7 +29,7 @@ export async function importMaterialFolder(host:Host,selected:string,signal:Abor
    const entries=await fs.opendir(dir);for await(const entry of entries){if(signal.aborted)break;const file=path.join(dir,entry.name);
     if(entry.isSymbolicLink()){counts.skipped++;emit();continue;}
     if(entry.isDirectory()){await walk(file,depth+1);continue;}
-    counts.scanned++;if(!entry.isFile()||!supported.test(entry.name)){counts.skipped++;emit();continue;}
+    counts.scanned++;if(!entry.isFile()||!isSupportedMaterialFile(entry.name)){counts.skipped++;emit();continue;}
     batch.push(file);if(batch.length===20)await flush();emit();
    }
   }catch(error){if(!signal.aborted)issue(dir,error instanceof Error?'无法读取这个目录':'目录读取失败');}

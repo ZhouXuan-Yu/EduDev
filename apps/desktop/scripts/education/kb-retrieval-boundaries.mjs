@@ -4,6 +4,9 @@ import {pathToFileURL} from 'node:url';
 const {RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
 const {materialSource}=await import('../../src/main/assets/material-source.ts');
 const {questionGradeLabels}=await import('../../src/shared/question-grade.ts');
+const {questionTypeLabels}=await import('../../src/shared/question-type.ts');
+const {questionRetrievalWhere}=await import('../../src/main/education/question-retrieval.ts');
+const {paperSectionMatches}=await import('../../src/main/education/paper-selection.ts');
 let checks=0;const note=s=>{checks++;console.log('PASS '+s);};
 export async function fixture(n=2){
  const db=new DatabaseSync(':memory:');db.exec(`CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,original_file_name TEXT,content_hash TEXT,parse_status TEXT);CREATE TABLE resource_chunks(id TEXT PRIMARY KEY,resource_id TEXT,chunk_index INTEGER,heading TEXT,content_md TEXT,contains_personal_data INTEGER,subject TEXT,grade TEXT,knowledge_point TEXT,question_type TEXT,difficulty TEXT,page_number INTEGER);CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,stem TEXT,answer TEXT,analysis TEXT,subject TEXT,grade TEXT,knowledge_point TEXT,question_type TEXT,difficulty TEXT,source_title TEXT,source_kind TEXT,tags TEXT,created_at TEXT,updated_at TEXT,archive_json TEXT NOT NULL DEFAULT '',document_json TEXT NOT NULL DEFAULT '');`);
@@ -14,7 +17,7 @@ export async function fixture(n=2){
  const state={unavailable:false,queries:[],duringQuery:null,duplicateWindows:false,crashAck:false,brokenGeneration:''},generations=new Map();let repo,queue=Promise.resolve();
  const port={ensure:async s=>{if(state.unavailable)throw Error('embedding_unavailable');if(state.brokenGeneration===s.id)throw Error('generation_mismatch');if(!generations.has(s.id))generations.set(s.id,new Map());},apply:async(s,f)=>{if(state.unavailable)throw Error('embedding_unavailable');const map=generations.get(s.id),old=map.get(f.kind+f.id);if(!old||old.seq<f.seq)map.set(f.kind+f.id,structuredClone(f));},query:async(s,q)=>{
    if(state.unavailable)throw Error('embedding_unavailable');if(state.brokenGeneration===s.id)throw Error('generation_mismatch');state.queries.push(q);if(state.duringQuery){const cb=state.duringQuery;state.duringQuery=null;cb();}
-   let facts=[...generations.get(s.id).values()].filter(f=>!f.deleted&&f.kind===q.kind&&['resourceId','subject','questionType','difficulty','sourceKind'].every(k=>q[k]===undefined||f[k]===q[k])&&(q.grade===undefined||state.ignoreVectorGrade||(q.kind==='question'?questionGradeLabels(q.grade).includes(f.grade):f.grade===q.grade))&&(q.knowledgePoint===undefined||f.knowledgePoint.includes(q.knowledgePoint)));
+   let facts=[...generations.get(s.id).values()].filter(f=>!f.deleted&&f.kind===q.kind&&['resourceId','subject','difficulty','sourceKind'].every(k=>q[k]===undefined||f[k]===q[k])&&(q.questionType===undefined||(q.kind==='question'?questionTypeLabels(q.questionType).includes(f.questionType):f.questionType===q.questionType))&&(q.grade===undefined||state.ignoreVectorGrade||(q.kind==='question'?questionGradeLabels(q.grade).includes(f.grade):f.grade===q.grade))&&(q.knowledgePoint===undefined||f.knowledgePoint.includes(q.knowledgePoint)));
    if(state.duplicateWindows&&facts.length>=2)facts=[...Array(500).fill(facts[0]),...facts.slice(1)];
    const hits=facts.slice(0,q.limit).map(f=>({id:f.id,seq:f.seq,digest:f.digest,start:0,end:1,distance:0.3}));return{hits,exhausted:facts.length>=q.limit,ann:false};},counts:async s=>({objects:[...generations.get(s.id).values()].filter(f=>!f.deleted).length,vectors:1,ann:false}),optimize:async()=>{},close:async()=>{}};
  state.batches=[];port.applyMany=async(spec,facts)=>{state.batches.push(structuredClone(facts));for(const fact of facts)await port.apply(spec,fact);};
@@ -28,6 +31,22 @@ export async function fixture(n=2){
  return{db,repo,state,port,generations,rid,chunks,ready,addQuestion};
 }
 if(process.argv[1]&&pathToFileURL(process.argv[1]).href===import.meta.url){
+const typeScope=new DatabaseSync(':memory:');try{
+ typeScope.exec('CREATE TABLE question_bank_items(question_type TEXT)');
+ const labels=['填空题','fill_in_blank','简答题','short_answer','解答题','计算题','综合计算题','written','判断题','concept','编程题','coding','单选题','single_choice','多选题','multiple_choice','自定义题'];
+ for(const label of labels)typeScope.prepare('INSERT INTO question_bank_items VALUES(?)').run(label);
+ const found=filter=>{const w=questionRetrievalWhere({questionType:filter},false);return typeScope.prepare('SELECT question_type FROM question_bank_items q WHERE '+w.clauses.join(' AND ')).all(...w.params).map(r=>r.question_type);};
+ for(const group of [['填空题','fill_in_blank'],['简答题','short_answer'],['解答题','计算题','综合计算题','written'],['判断题','concept'],['编程题','coding']])for(const label of group){assert.deepEqual(found(label),group);assert.deepEqual(questionTypeLabels(label),group);for(const questionType of group)assert(paperSectionMatches({sourceKind:'local_bank',subject:'数学',grade:'初二',questionType},{subject:'数学',grade:'初二',mode:'source_only'},{questionType:label}));}
+ assert.deepEqual(found('单选题'),['单选题','single_choice']);assert.deepEqual(found('multiple_choice'),['多选题','multiple_choice']);
+ assert.deepEqual(found('选择题'),['单选题','single_choice','多选题','multiple_choice']);assert.deepEqual(found('自定义题'),['自定义题']);assert.deepEqual(found('未知题'),[]);
+ note('Production keyword predicates share finite Chinese/internal type aliases, retain custom labels and keep explicit choice subtypes separate');
+}finally{typeScope.close();}
+const typeRetrieval=await fixture(0);try{
+ const id=typeRetrieval.addQuestion('勾股填空别名');typeRetrieval.db.prepare('UPDATE question_bank_items SET question_type=? WHERE id=?').run('fill_in_blank',id);await typeRetrieval.ready();
+ for(const query of ['勾股填空别名','完全不同的语义措辞'])assert.deepEqual((await typeRetrieval.repo.questions({query,questionType:'填空题'})).questions.map(q=>[q.id,q.questionType]),[[id,'fill_in_blank']]);
+ typeRetrieval.state.unavailable=true;assert.deepEqual((await typeRetrieval.repo.questions({query:'勾股填空别名',questionType:'填空题'})).questions.map(q=>q.id),[id]);
+ note('Actual repository returns stored internal types through semantic and keyword fallback without rewriting facts');
+}finally{typeRetrieval.db.close();}
 const a=await fixture();try{await a.ready();const status=await a.repo.status();assert(status.generation);const result=await a.repo.materials('改写题意');assert(result.units.length);assert(result.units.every(u=>u.offset>=0));note('Historical facts backfill and activate a complete generation with real source offsets');
  const clock=a.db.prepare('SELECT MAX(seq) n FROM retrieval_changes').get().n;await a.repo.action('rebuild');await a.repo.drain();assert.equal(a.db.prepare('SELECT MAX(seq) n FROM retrieval_changes').get().n,clock);assert.equal((await a.repo.status()).generation,status.generation);assert((await a.repo.materials('改写题意')).units.length);note('Rebuild snapshot does not advance fact time or invalidate still-current old generation hits');
  a.db.prepare("UPDATE resource_chunks SET content_md='新版勾股定理' WHERE id=?").run(a.chunks[0]);await a.repo.drain();assert((await a.repo.materials('改写题意')).units.some(u=>u.chunk.contentMd==='新版勾股定理'));await a.ready();assert.notEqual((await a.repo.status()).generation,status.generation);note('Old active generation consumes live changes during rebuild; caught-up new generation switches atomically');

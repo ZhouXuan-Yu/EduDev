@@ -68,7 +68,7 @@ await check('Unrecognised exam headers and a reset/repeated parent number block 
  });
 });
 await check('A late previous page wakes already-held work through the existing local queue with no model replay',()=>use({},async f=>{
- await init(f);await held(f);await f.repo.work.finish(f.batch,1,1);assert(!await f.repo.work.next());
+ await init(f);await held(f);await f.repo.work.finish(await f.repo.work.next());assert(!await f.repo.work.next());
  addPage(f,3,section);await index(f);assert(await f.repo.work.next());assert(await f.drain());assert.equal((await f.read()).archive.answerOrigin,'book_extracted');
 }));
 await check('New empty/invalid and deleted newer receipts never revive an older title; dirty pages revoke stale reads',async()=>{

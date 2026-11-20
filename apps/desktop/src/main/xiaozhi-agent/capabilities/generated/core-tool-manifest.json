@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "faa06309fe7f59418494df29751e6a00b39903f9ab3d39cfd6682749d8cbb374",
+  "sourceHash": "72b2b6b661fc2dd03c732ccb5e2226ac3da3db88a5a6dce68424edadeac1a973",
   "sources": [
     {
       "file": "package-lock.json",
@@ -676,7 +676,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "efe953e929afff42fe9f6eb6b9788de6124da9783a93642ffe6db18a433f17e1"
+      "sha256": "a72158fd9ea66c7206b14626f05c7afd1f48fe4006ab0b3662ece5881a839525"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2304,7 +2304,7 @@
     },
     {
       "file": "src/shared/question-type.ts",
-      "sha256": "b694ed1db11d4489301a1e523ca3e3166ea02a8ff21441451fba2941c7e6036b"
+      "sha256": "c68096d64fea498046cda19cd556b32e92a393acea56e35eaabafef2d1e7ecb9"
     },
     {
       "file": "src/shared/question-web-answer.ts",

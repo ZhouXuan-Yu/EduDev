@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 现有题库主链路
+
+复用已导入批次和原件。专项覆盖真实 SQLite 旧版升级、并发再入队、混合检索与关键词回退，以及临时子目录的 BMP 调度。 [本轮记录](../research/evidence/kb/20261120/reuse-mainline/README.md)
+
 ## 2026-11-20 旧 Word 原题
 
 已存回执通过试导库隔离副本验收，覆盖原界面触发、疑点隔离、正式选题、无卷首的题面编译、冷启和证据篡改反例。 [专项证据](../research/evidence/kb/20261120/native-word-layout-recovery/README.md)
