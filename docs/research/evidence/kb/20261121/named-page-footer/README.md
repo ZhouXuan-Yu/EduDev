@@ -23,4 +23,15 @@ v13 继续按原流程恢复段落。短标题和完整页计数须与当前页�
 
 专项覆盖联合区、错误页数、间距、重叠、低置信度、正文冲突、旧教师题复用与正文实际改变。SQLite 表结构未变化。回滚前备份，旧世代可用支持其引擎的版本读取，新版派生世代可重建。页源正文、公式和题号核验继续按原合同执行。
 
+合入主线 `09c7522` 后保留协作记录。完整重建、功能候选与桌面测试副本各 481 个运行时文件，按相对路径及 SHA-256 逐项一致。主进程 SHA-256 为 `c428e482bfde1f8a5d80cd28ecbb41b213302a7e12dd31eb5ada96f9ff9d115b`。
+
+| 验证 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir <隔离构建目录>` | 功能及合并构建通过，含 TypeScript 检查 |
+| `npm run test:renderer-components` | 253/253 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs --test <专项脚本>` | 4/4 份专项。结构 50 组、仓库 40 组、配答 17 组、页眉遮盖 18 组 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-column-structure-readback.mjs <隔离目录> --desktop` | 4 条页脚和 4 个题干剥离，正文索引及原页读回，20 个待核题组保持，模型外发 0 |
+| `node <隔离桌面目录>/scripts/electron-smoke.mjs` | 桌面通用回归 207/207 |
+| `npm audit --omit=dev --audit-level=high` | 既有依赖提示 20 项，5 项高危、0 项严重，无依赖更新 |
+
 下一处页源核验已定位到具体安全边界。试卷说明与正文共用一个印刷题号时，原生文字框可按坐标隔离，但真实同一题内的集合符号还有私用区字符与 OCR 普通字符差异。将放行范围限定在能证明版面归属和数学内容等价的题目，继续核对原图而保留现有独立 PDF 页源闸门。独立答案册、检索、组卷、约 10 GB 和异机迁移仍待整体验收。

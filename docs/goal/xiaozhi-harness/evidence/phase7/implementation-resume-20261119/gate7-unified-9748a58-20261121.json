@@ -1,0 +1,304 @@
+{
+  "candidate": {
+    "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
+    "alignedSourceCommit": "b7d8110dc60ef97c0e67d2413dcef70ceb475b1f",
+    "testChange": "da7324731f68a52b1268d2bb7c9cd8ff3237e1fd",
+    "localProductionPath": "D:/WorkProject/EduProject-harness/apps/desktop/out",
+    "archive": "E:/EduDev-Harness-Acceptance-20261121/legacy-approval-resume/frozen-out-integrated",
+    "files": 481,
+    "sha256": "36ec81e5e980b68b30e750f324cee8e2f7e44b4bb062ef3bb3d37f62b45d59ce",
+    "mainSha256": "ad7adfc9d9ee9b55f2d66070c73428f3313bbbfcec2955559eb2ebc028dd0bb6",
+    "preservation": "Original tested production build retained byte-for-byte. Commit da73247 adds a test guard and synchronizes metadata already used in that build."
+  },
+  "seedAlignment": {
+    "failure": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-owned-terminal/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepd1hDZA/evidence/ui-report.json",
+      "sha256": "5c8cc9f50fe1c3bb60b4136b7c352a82ee555d2fa61b556a27f59bbb18fc4e10"
+    },
+    "passedBeforeFailure": 4,
+    "at": "U05 current modern approval reject",
+    "expectedState": "rejected",
+    "actualState": "invalidated",
+    "reason": "permission_changed_or_expired",
+    "evidence": "The test seed used 94297503… persisted in the action created at 20:57:34.811 UTC. The unchanged integrated bundle contains be037f80…, not the seed identity. Approval clicked ~34s later, expiry next day. The engine did not grant or consume the mismatched request.",
+    "sourceHashBefore": "94297503dd1fe19cf02b39121e426b3d10e3fce5036b040d11f4c144e88f897f",
+    "expectedCoreHash": "be037f80d440b61c7c55884d2eb34da7943294352acefcbeeaa72009353228e5",
+    "guard": "Test fixture validates the current core manifest before seed or launch. Tested stale negative, regenerated exact prior core/native static artifacts, reran with same binary.",
+    "counterexample": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/seed-manifest-counterexample.log",
+      "sha256": "3196a7c2a4107af00f7e8e1aca1ef0bd0597ec9c191c915e510246ed38ba6cbc"
+    },
+    "receipt": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/seed-manifest-aligned.json",
+      "sha256": "7462303b2bb0889d63b6d28743423116f54a08ca0c618cc9e81898d858bcc908"
+    },
+    "generators": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/seed-manifest-regenerate.log",
+      "sha256": "2b350b987a0d7a0c955744fee7176d9236efada3ea85ce82334f778a9ab1abd2"
+    }
+  },
+  "nativeWindow": {
+    "reviewer": "independent Terra High",
+    "exitCode": 0,
+    "paidCalls": 0,
+    "modelTraffic": "11 synthetic loopback requests",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-native-window/xiaozhi-phase7-workbench-ui-NZzskR/evidence/native-gestures-report.json",
+    "sha256": "988251f2077a99b7bd2987a6929722771f96660cf17906391f2ca27f9b42c4c3",
+    "command": "node E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-native-window/native-gestures.mjs",
+    "driver": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-native-window/native-gestures.mjs",
+      "sha256": "f4104e732b8542a8a4e7c403bcbe6b484e7eaab3a5918656d82091c00a0ae2af"
+    },
+    "pointer": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-native-window/native-caption-pointer-safe.ps1",
+      "sha256": "20e6a07d00609fe29bc416a2df62d17d6501a5d92303660865c5d8b7783edc4e"
+    },
+    "sizes": [
+      {
+        "content": "1366x768",
+        "dragged": [
+          249,
+          168,
+          1366,
+          768
+        ],
+        "restored": [
+          664,
+          199,
+          1366,
+          768
+        ]
+      },
+      {
+        "content": "1920x1080",
+        "dragged": [
+          249,
+          168,
+          1920,
+          1080
+        ],
+        "restored": [
+          538,
+          199,
+          1920,
+          1080
+        ]
+      }
+    ],
+    "physicalDisplay": "2560x1600"
+  },
+  "terminal": {
+    "reviewer": "independent Terra High",
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs --long-stage",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-terminal/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeephu24tp/evidence/ui-report.json",
+    "sha256": "055e6c61c4e677205c891127e52cd6d463e9ff4c6ea2107ee6869aa0c08eb521",
+    "checks": "9/9",
+    "exitCode": 0,
+    "inputsAcknowledged": 2,
+    "verifiedOutput": "PHASE7_VALUE_41",
+    "ownedProjectionRemoved": true,
+    "coldWritable": false,
+    "coldReplay": 0,
+    "paidCalls": 0
+  },
+  "committedEffect": {
+    "reviewer": "independent Terra High",
+    "command": "node E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-committed-effect/committed-effect.mjs",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-committed-effect/omni-edu-phase7-terra-w2-run-vmfoHn/report.json",
+    "sha256": "afb16f44b127f4c4e6f0aaea90dcf59116a18a48fcad261f64edff9d4e3669fc",
+    "checks": "4/4",
+    "exitCode": 0,
+    "coldReplay": 0,
+    "approvedCopyEffect": "Teacher-confirmed file written once, one applied record. New Run repeated target, admitted 0 and file unchanged.",
+    "paidCalls": 0
+  },
+  "stream": {
+    "allSynthetic": true,
+    "runs": [
+      {
+        "reviewer": "root",
+        "viewport": "1366x768",
+        "mode": "background",
+        "checks": 8,
+        "exitCode": 0,
+        "reasoning": [
+          2096,
+          4193
+        ],
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-stream/omni-edu-xiaozhi-stream-ksrCsn/report.json",
+        "sha256": "105abe7d54c0b66a1d71420b7aac504f12204a0161015e3f4d119f740b85c84c"
+      },
+      {
+        "reviewer": "root",
+        "viewport": "1920x1080",
+        "mode": "background",
+        "checks": 8,
+        "exitCode": 0,
+        "reasoning": [
+          1630,
+          3727
+        ],
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/root-stream/omni-edu-xiaozhi-stream-mBNr8B/report.json",
+        "sha256": "f4f7881832a513f80afd2f06b7fad3ce735a35eec3e404bc6d5a8582d64d7238"
+      },
+      {
+        "reviewer": "independent Terra High",
+        "viewport": "1366x768",
+        "mode": "foreground",
+        "checks": 7,
+        "exitCode": 0,
+        "oneSyntheticSample": true,
+        "submitToLocalFixtureMs": 1385.79,
+        "rafMedianMs": 6.1,
+        "longTasksObserved": 0,
+        "stopToTerminalMs": 107.4,
+        "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-visible-stream/xiaozhi-phase8-stream-performance-Woc3Ea/report.json",
+        "sha256": "b6843ea909e4cb887afa68ddf3ca6c6f66c27ee75933d19a3862a7e1ae8ec9d7"
+      }
+    ]
+  },
+  "storage": {
+    "reason": "D Git index write initially failed with ENOSPC. Moved only two owned synthetic previous host bundles to E and verified exact SHA. Teaching data and reports kept.",
+    "receipt": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/archived-own-older-host-bundles/archive-receipts.json",
+      "sha256": "d21fece4456a88f15a5b3312e49d83557ce53e5f7d6d44491345ec7a73971ae8"
+    },
+    "movedBytes": 13705354
+  },
+  "rendererComponents": {
+    "passed": 253,
+    "total": 253,
+    "exitCode": 0,
+    "command": "npm run test:renderer-components",
+    "log": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/renderer-components.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  },
+  "audit": {
+    "command": "npm audit --omit=dev --json",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 7,
+    "high": 5,
+    "critical": 0,
+    "total": 20,
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/npm-audit.json",
+      "sha256": "c6788f1dab361819085f256b8b16e09557a92bdd655f3c5f19fe3c94bd1acf56"
+    }
+  },
+  "realModel": {
+    "state": "OFFLINE_INPUTS_ONLY",
+    "newPaidCalls": 0,
+    "totalPaidUsed": 3,
+    "budget": 200,
+    "manifest": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/phase8-provisional-manifest.json",
+      "sha256": "ae62a174bec75c2f23363a2994d5bf025af8da9a84bbdeeaaad7209dd887c84f"
+    },
+    "verify": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/phase8-provisional-verify.json",
+      "sha256": "d42186c13412629754ac920671081a9aaf9ca03e814809ac62f06e9e1a0095f7"
+    }
+  },
+  "qg09": {
+    "state": "BLOCKED_NO_CLEAN_X64_GUEST",
+    "boundary": "No actual install, both shortcuts or uninstall demonstrated by a development build sample."
+  },
+  "pageGate": "PARTIAL",
+  "skillKeyboard": {
+    "reviewer": "independent Terra High",
+    "mode": "hidden Electron, trusted Playwright keyboard",
+    "checks": "5/5",
+    "exitCode": 0,
+    "paidCalls": 0,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-skill-focus/omni-edu-xiaozhi-phase7-workbench-ui-Bqrw5r/evidence/focus-report.json",
+    "sha256": "e1ac660e3c4e07be250a4e50cf4af4b4debd103cb33b3b649bd0431a858839a2",
+    "command": "node E:/EduDev-Harness-Acceptance-20261121/gate7-integrated-5547a9d/terra-skill/focus.mjs with FOCUS_BUILD_SHA/FOCUS_MAIN_SHA/FOCUS_BUILD_COUNT, owned TEMP/TMP and isolated LOCALAPPDATA"
+  },
+  "capabilitySkill": {
+    "reviewer": "independent Terra High",
+    "index": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-capability-skill-evidence.json",
+      "sha256": "b520ed725eecc5dfe9c0abb8d3737d3ff563fbc5ca700dd58b71dfcd2960e286"
+    },
+    "cases": [
+      "C1 both sizes 6/6 and pending/install/reject cold 4/4",
+      "C2 actual MCP dispatch/revoke/fallback 4/4 and schema change/retrust/revoke cold 4/4",
+      "S1 three roles at both sizes 12/12, team share and administrator 5/5",
+      "S2 version rollback at both sizes 8/8"
+    ],
+    "paidCalls": 0,
+    "boundary": "Before launch six old S1 role runners used a temp prefix which did not establish background; verified as failures prior to UI interaction. Updated prefix satisfied actual runtime, and corrected role runs assert hidden. Team functionality uses SQLite and operated actual page; its launch visibility was not verified. C2 schema lifecycle at one primary size and save reachability at both, per raw report."
+  },
+  "relocatedA2Finding": {
+    "status": "OPEN",
+    "runId": "run_c377402a-d441-4ea3-ad4a-3cb84d640c30",
+    "tool": "update_task_plan",
+    "callId": "resume_plan",
+    "failure": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-work-approval-aligned/omni-edu-a2-stale-ZN8MOA/report.json",
+      "sha256": "ffc529b0918ff461cfff13139b5cab01fee1c9107b6036d222e3b8b74c3c7d6e"
+    },
+    "observed": "An admitted tool started at journal sequence 12, then native toolResult returned skill_source_changed with isError. Settled tool_end at sequence 14 was matched to the native outcome, contract_json remained null, and the journal then reported tool_receipt_conflict at late recordToolContract. No approval or overwrite action was reached, so the changed-target case has no pass evidence on this run.",
+    "filePostmortem": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/failed-a2-skill-readonly-check.json",
+      "sha256": "55981804f30db33f3150528daf2d6b8c5fab283e187a7914264273ad0825ba17"
+    },
+    "boundary": "All five cached package reads completed after shutdown, and every file matched its packaged SHA, so file lengths or actual source changes are unproven as the cause.",
+    "deterministicReproduction": {
+      "isolated": "E only, exact worker behavior, owned failure database copied and original hash preserved",
+      "passed": 2,
+      "status": "REPRODUCED_TWO_BOUNDARY_RACES",
+      "script": {
+        "sha256": "fea00934e16e028787502e2ed203bcf0e799f31f6cfc59ab492a78442efdd3e7",
+        "path": "E:/EduDev-Harness-Acceptance-20261121/skill-journal-audit/counterexample.mjs"
+      },
+      "tests": 2,
+      "outcome": [
+        "The exact present Skill owner callback returns false when an unrelated same Task and Run planning revision updates between its read and revision assertion.",
+        "After signal abort and actual receipt settlement, delayed unmodified core governance still tries to write the contract and hits the expected settled receipt fence."
+      ],
+      "report": {
+        "sha256": "d7d49c816e39d5247b383209bf484a49882fa2a2c4036f7f456b1a65d2be31a7",
+        "path": "E:/EduDev-Harness-Acceptance-20261121/skill-journal-audit/counterexample-report.json"
+      },
+      "fixBoundary": "Separate current owner/source read validation from revision CAS for actual mutations. Recheck the active Run and signal in queued contract persistence. Keep all settled receipt protection.",
+      "scope": "These synthetic counterexamples establish the current races. The exact interleaving of the historic 148 ms production outcome was not captured."
+    }
+  },
+  "workbenchApprovals": {
+    "reviewer": "independent Terra High",
+    "index": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-9748a58/terra-work-approval-aligned/terra-evidence-index.json",
+      "sha256": "802335e82cc04ffea6e4a5d08b1cc15e2eca0d17ea4963aa36171ad33d3576e7"
+    },
+    "cases": [
+      "cold overview 5/5",
+      "delayed events and real split artifacts 5/5 per size",
+      "full modal focus 6/6 per size",
+      "keyboard explicit same-task resume 2/2 at 1366",
+      "modern rejection and focus 4/4 per size",
+      "workspace scope 3/3 per size",
+      "approval cold 3/3",
+      "three partial/empty/retry pages at both sizes",
+      "same bound legacy approval resume 3/3 at 1920, prior integrated 1366 matched candidate"
+    ],
+    "paidCalls": 0,
+    "open": [
+      "The actual A2 stale target path stopped before the approval existed. See relocatedA2Finding.",
+      "Prior seeded mismatch failures are retained in consolidated index. Two stopped coordinator exit codes explicitly not observed."
+    ]
+  },
+  "open": [
+    "A2 actual first-tool failure and secondary journal conflict need production reproduction and repair, followed by the exact changed-target and cold check.",
+    "Full same-build independent Gate 7 verdict after A2.",
+    "32 formal real model ABBA after Gate 7.",
+    "QG-09 clean independent Windows x64 actual installer and uninstall."
+  ],
+  "mainIntegration": {
+    "scope": "Independent KB column structure implementation and both documentation headings were merged. Only the frozen 9748a58 production bundle is covered by the reports. The combined KB/Harness sources need the next release build.",
+    "concurrentMain": "a73c409"
+  }
+}
