@@ -1,7 +1,9 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron as electron} from 'playwright';
+import {testMain} from '../acceptance/build-root.mjs';
 const {conversationOutputLocation}=await import('../../src/main/xiaozhi-agent/conversation-output-path.ts');
-const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-record-recovery-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile');
+const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(os.tmpdir(),'omni-edu-xiaozhi-record-recovery-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile');
+fs.mkdirSync(data);fs.mkdirSync(profile);
 const report={ok:false,checks:[],errors:[],boundary:'Owned formal Electron/Pi composer, actual local text generation/teacher publication, SQLite storage fault, explicit refresh/continuation and cold readback; synthetic local SSE only, zero real provider calls. Not full E07 AT.'};let app,page,id;
 const until=async(fn,ms=60000)=>{const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,50));}throw Error('Record recovery condition timed out');};
 const check=name=>{report.checks.push(name);console.log('PASS '+name);fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));};
@@ -10,7 +12,7 @@ function sql(q,p=[],write=false){const db=new DatabaseSync(path.join(data,'app.d
 const calls=()=>app.evaluate(()=>globalThis.recordRecovery.calls),sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 async function launch(){
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'owned-synthetic-not-a-real-key',DEEPSEEK_MODEL:'deepseek-flash'};for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[key];
- app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+ app=await electron.launch({args:[testMain(desktop),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
  await app.evaluate(({net})=>{
   const state=globalThis.recordRecovery={mode:'create',stage:0,calls:[],blocked:[]};
   net.fetch=async(input,init)=>{
@@ -31,7 +33,7 @@ try{
  await launch();await input().fill('创建浮力恢复.html离线演示，说明浮力方向，并继续讲解浮力大小。先检查后保存。');await page.getByRole('button',{name:'发送消息',exact:true}).click();
  const approve=page.getByTestId('pi-text-approve');await approve.waitFor({timeout:60000});const original=(await snapshot()).task;assert(original);await input().fill('尚未发送的教师补充必须保留');
  sql("CREATE TRIGGER owned_record_failure BEFORE INSERT ON xiaozhi_event_journal WHEN json_extract(NEW.event_json,'$.kind') IN ('text_delta','verification') BEGIN SELECT RAISE(ABORT,'owned persistent journal failure'); END",[],true);
- await approve.click();const failed=await until(async()=>{const s=await snapshot();return s.eventPersistence==='unavailable'?s:undefined;});const turn=failed.projection.turns.at(-1);report.failedRun=turn.id;assert.equal(turn.errorCode,'event_persistence');await page.getByTestId('pi-event-refresh').waitFor();
+ await approve.click();const failed=await until(async()=>{const s=await snapshot();return s.eventPersistence==='unavailable'?s:undefined;});const turn=failed.projection.turns.at(-1);report.failedRun=turn.id;assert.equal(turn.errorCode,'event_persistence');assert.equal(failed.eventPersistenceError,undefined);await page.getByTestId('pi-event-refresh').waitFor();
  const saved=sql("SELECT relative_path,after_bytes FROM xiaozhi_pi_text_changes WHERE state='applied'");assert.equal(saved.length,1);
  const actual=path.join(conversationOutputLocation(data).path,id,saved[0].relative_path);assert(fs.readFileSync(actual).equals(Buffer.from(saved[0].after_bytes)));
  assert(actual,'Original publication must have an actual local file');report.file=actual;const originalHash=sha(actual),wire=(await calls()).length;assert(await page.getByRole('button',{name:'发送消息',exact:true}).isDisabled());assert.equal(await input().inputValue(),'尚未发送的教师补充必须保留');check('Actual teacher approval saves original HTML before a real SQLite journal failure; failed turn and unsent draft remain visible');

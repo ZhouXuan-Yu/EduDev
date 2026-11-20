@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "075031d2183a94de4d65d344c1ee09d3d5c1887e91076c54a21fdf723f87631e",
+  "sourceHash": "65892801893b624a10f2127d000e9d63dfea0efaf25b883c71e89b1c32db9bc8",
   "sources": [
     {
       "file": "package-lock.json",
@@ -668,7 +668,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/core-governance.ts",
-      "sha256": "3744d4d1d61d33a389c77651c0363702cf1232e1297680242849f3db3d66939c"
+      "sha256": "b9dbd35d58304a3a95b5444d558c6935b96b2862c6b700329874e0a37551c3ec"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/dispatcher.ts",
@@ -1064,7 +1064,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/lifecycle-wait.ts",
-      "sha256": "f3959f9d0f3d44c0b2204e3f1a92d1581adbc512fd9641d5af51fa04e5013fb9"
+      "sha256": "558a3daf0266c681dde739ad5dc5722978a51933094f79f2c53270e966b3fa40"
     },
     {
       "file": "src/main/xiaozhi-agent/local-utility-host.ts",
@@ -1340,7 +1340,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "03cf4cf7da821f442fe0f3763682d1e30436850a98e52aeb6e42b44b7520aac2"
+      "sha256": "954ec19f678964633b55e7db388a46a09de49bf4eb54dc9242e7830805200011"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1372,7 +1372,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "51027448313e80f0aa845da193e9284e1562ac0d41c8ab6292cc3f9818803194"
+      "sha256": "d3f7317d86856835d979a7100e9ea7ffd0364ce312a4b89b4ffe754e36047887"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2356,7 +2356,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "14d44d4978b105b743fc2891294b9880da73c9d16436556a90ede760c10540f6"
+      "sha256": "dec0c804373db3c034daea22bb3c90a0d426286dd0ae222c8d6a040246228593"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2456,7 +2456,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "d121f4abe9dc36e7823516131a283973d0ea8c72c3041806a94b50ff701bd3df"
+      "sha256": "a85bf12d44ae354ecd046549a41dee4ff339afda9174034990520d6344e100d0"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

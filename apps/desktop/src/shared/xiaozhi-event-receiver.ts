@@ -7,7 +7,7 @@ export type XiaozhiEventSynchronization = 'ready' | 'catching_up' | 'unavailable
  * promise is not proof that the view is current. No effect/approval API here. */
 export function createEventReceiver(options: {
   list: (input: XiaozhiEventsInput) => Promise<XiaozhiEventsPage>;
-  apply: (event: XiaozhiAgentEvent) => void; unavailable: () => void; gapFailure: () => void;
+  apply: (event: XiaozhiAgentEvent) => void; unavailable: (event: XiaozhiAgentEvent) => void; gapFailure: () => void;
   syncChanged?: (state: XiaozhiEventSynchronization) => void;
 }) {
   const cursors = new Map<string, XiaozhiEventCursor>();
@@ -88,7 +88,7 @@ export function createEventReceiver(options: {
       }
     },
     accept(event: XiaozhiAgentEvent) {
-      if (event.durability === 'unavailable') { persistenceFailed = true; publish(); options.unavailable(); return; }
+      if (event.durability === 'unavailable') { persistenceFailed = true; publish(); options.unavailable(event); return; }
       const state = eventDisposition(cursors.get(event.runId), event);
       if (state === 'apply') { apply(event); return; }
       if (state !== 'gap') return;

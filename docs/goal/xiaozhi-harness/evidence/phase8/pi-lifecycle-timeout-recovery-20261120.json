@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "ad5217392c2083d25d234635841ee8b3c38c82cc",
+  "scope": "Named main-process Pi lifecycle deadline, teacher-visible distinction, cancellation of further core registrations, explicit record recovery and cold readback. Model responses are synthetic. No paid request.",
+  "historicalQ5": {
+    "evidence": "q5-collector-dispatch-and-readback-20261120.json",
+    "known": "Frozen A logged lifecycle_timeout after the fixed source returned HTTP 200. No successful native receipt was committed in that run.",
+    "unknown": "Which wait on frozen A expired, and whether the earlier B failures had the same cause. The new controlled fixture does not infer the historical cause."
+  },
+  "controlledElectron": {
+    "report": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-timeout-ui-WEXCVC/report.json",
+    "sha256": "797c772852badaec31e92412c9ebb220f54a313499266f477a7a53409a2026ff",
+    "passed": 5,
+    "diagnostic": {"code": "lifecycle_timeout", "operation": "pi_before_model_delivery", "timeoutMs": 15000, "elapsedMs": 15010},
+    "checks": [
+      "Earlier completed turn is committed in SQLite and identical after recovery and cold launch.",
+      "The timed-out turn explains local preparation or validation in the rendered UI. The operation identifier remains in main-process logs.",
+      "The teacher can keep a draft, but cannot send or clear the recovery barrier while the old callback is pending.",
+      "After the old callback and cleanup finish, visible record refresh restores the normal send control and preserves the draft.",
+      "No model POST for the timed-out turn, refresh, or cold launch."
+    ],
+    "recovery": "Current projection has lifecycle_timeout. Recovered durable terminal uses existing event_recovered. No schema migration."
+  },
+  "regressions": {
+    "lifecycle": {"passed": 6, "report": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-tnBm1L/report.json", "sha256": "fe88636185d4419a43878edfa4729fd98511d2338052e91de53c627d77fd3f7b"},
+    "eventJournal": {"passed": 23, "report": "apps/desktop/test-results/xiaozhi-agent/pi-event-journal-z4DmZp/report.json", "sha256": "56a2df2b1d4aa2441f4831a5f9049008968d78fd49a883a0d0ac0b68f54cb35d"},
+    "toolGovernance": {"passed": 13, "report": "apps/desktop/test-results/xiaozhi-agent/phase5-governance-tLozzM/report.json", "sha256": "989b160ea5a6204e995208489cfc4191c7ac55b7317fbfb3d792272363492706"},
+    "rendererComponents": {"passed": 253, "total": 253}
+  },
+  "combinedMain": {
+    "sourceParent": "9d045431b5d385825f7bbeeb8a1e377f64592316",
+    "buildCommand": "npm.cmd run build -- --outDir test-results/harness-lifecycle-main-9d04543/out",
+    "typecheckAndBuild": "PASS",
+    "buildLogSha256": "c718f75b0d84ebe2da9156cfe41564daa0ab1e6a577186416fb5e05aedd9b687",
+    "mainSha256": "13721476d79bb9a63cde3df327aa56486c07787478386065f153662283efe718",
+    "rendererSha256": "e7877d5f402598549be213382928ac81ce63538588f1526b9da7bc9930a30cea6",
+    "controlledDeadline": {
+      "command": "node scripts/xiaozhi-agent/pi-lifecycle-timeout-ui.mjs",
+      "passed": 5,
+      "report": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-timeout-ui-vF7rQG/report.json",
+      "sha256": "81d5ceaf7414519b03177de3f742eab7d01c7cf4eda4eef0b1d4ba2b6f5f2ee6",
+      "diagnostic": {"code": "lifecycle_timeout", "operation": "pi_before_model_delivery", "timeoutMs": 15000, "elapsedMs": 15003}
+    },
+    "sqliteWriteFailure": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/record-recovery-electron.mjs",
+      "passed": 7,
+      "report": "TEMP/omni-edu-xiaozhi-record-recovery-ui-5zEoPn/report.json",
+      "sha256": "c417a1e10e5f957701f92d922fa7101501a7d8b897a81c02367657599919521a",
+      "finding": "A genuine injected SQLite write failure retains event_persistence, preserves previously saved HTML, and recovers explicitly without replay. Both required viewport sizes and cold readback passed."
+    },
+    "normalQ5": {
+      "status": "PASS_SCOPED",
+      "report": "TEMP/omni-edu-xiaozhi-q5-lifecycle-main-c8f4bd78/run-B/collected.json",
+      "sha256": "429df761948daa087bb542e52cba66f20692959ad22966bac37e2f549b0e7df9",
+      "driverReportSha256": "f9f24379182d381783f4e3c898afe0e6d60ecd3d00e841000a2bb2714270a254",
+      "fixturePostsByRun": [2, 2],
+      "original": "permission_denied until approved",
+      "continuation": "HTTP 200 and exact original Pi receipt retained after close",
+      "journalErrorObserved": false
+    }
+  },
+  "dependencyAudit": {"low": 8, "moderate": 13, "high": 8, "critical": 0, "dependenciesChanged": false},
+  "paidLedger": {"limit": 200, "used": 3, "remaining": 197, "unresolved": 0, "new": 0},
+  "retainedPriorFailures": [
+    {"artifact": "apps/desktop/test-results/harness-lifecycle-diagnostic-ad52173/build-initial-failure.log", "detail": "The first rename of the lifecycle calls did not preserve the Pi session late disposer and one history call had no operation label. Both were corrected before build and rerun."},
+    {"artifact": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-timeout-ui-pWAdZ8/report.json", "detail": "An assertion expected the input element to be disabled; the supported behavior allows draft entry but blocks sending."},
+    {"artifact": "apps/desktop/test-results/xiaozhi-agent/pi-lifecycle-timeout-ui-91Qng8/report.json", "detail": "A fixture observed the completed view before the separate direct event-journal read was terminal. The fixture now waits for both views before proceeding."}
+  ]
+}

@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 小智生命周期超时
+
+专项以原 Electron、Pi 和真实 SQLite 执行故障、释放、重新读取及冷启。正式冻结与真实模型继续按整体 Harness 门禁。[验收索引](../goal/xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
+
 ## 2026-11-20 能力中心条件缺口
 
 真实内建提供方的条件项和可选项已在两种尺寸验收。无提供方的合成反例保留必需缺口并显示不可用。实际条件触发时的选择由原 Resolver 专项覆盖。[能力中心实测](../goal/xiaozhi-harness/evidence/phase7/implementation-resume-20261119/capability-conditional-requirements-20261120.json)

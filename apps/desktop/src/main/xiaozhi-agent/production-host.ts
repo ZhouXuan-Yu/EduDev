@@ -227,7 +227,7 @@ import type { XiaozhiActionResult, XiaozhiQueueInput } from '../../shared/xiaozh
 import type { OfficeProjectedTurn, OfficeProjection } from '../../shared/office-agent';
 import { createEventPublisher } from './events/publisher';
 import {repairCancelledRun} from './events/terminal-cancellation';
-import {waitForLifecycle} from './lifecycle-wait';
+import {createLifecycleWorkTracker,LifecycleTimeoutError,waitForLifecycle} from './lifecycle-wait';
 import { officeBlankFieldError } from './office-blank-fields';
 import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-events';
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
@@ -240,7 +240,7 @@ type Active = {
   toolGovernance?: RunToolGovernance;
   skillPrivateContext?: SkillPrivateContext;
   legacyApprovalId?: string;
-  hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+  hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; lifecycleWork?:ReturnType<typeof createLifecycleWorkTracker>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -289,7 +289,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if(recoveryCards.size>=128)recoveryCards.delete(recoveryCards.keys().next().value!);
     recoveryCards.set(task.id,{revision:task.revision,time:Date.now(),value});return value;
   }
-  const journalFailures = new Map<string, {runId:string;run:Active}>();
+  const journalFailures = new Map<string, {runId:string;run:Active;error?:'lifecycle_timeout'}>();
   const starting = new Map<string, { sessionId: string; hash: string; result: Promise<XiaozhiStartResult> }>();
   const admissions=new Map<string,Set<AbortController>>();
   // A late idle decision must not regain authority after a start/stop cycle.
@@ -474,13 +474,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const type=error instanceof Error&&['Error','TypeError','RangeError','AgentToolTimeoutError','AgentToolAbortedError'].includes(error.name)?error.name:'unknown';
         const tool=error&&typeof error==='object'&&'toolName'in error&&typeof error.toolName==='string'&&/^[a-z_]{1,128}$/.test(error.toolName)?error.toolName:undefined;
         const timeoutMs=error&&typeof error==='object'&&'timeoutMs'in error&&Number.isSafeInteger(error.timeoutMs)&&Number(error.timeoutMs)>0?Number(error.timeoutMs):undefined;
-        console.error('[xiaozhi-journal]',JSON.stringify({code,type,nativeCode,tool,timeoutMs,locations}));
+        const lifecycle=error instanceof LifecycleTimeoutError;
+        const operation=lifecycle&&/^[a-z][a-z0-9_]{0,63}$/.test(error.operation)?error.operation:undefined;
+        console.error('[xiaozhi-journal]',JSON.stringify({code,type,nativeCode,tool,timeoutMs,operation,elapsedMs:lifecycle?error.elapsedMs:undefined,locations}));
         console.error('[xiaozhi-cancel]',JSON.stringify({source:'journal',runId:run.runId,code}));
-        journalFailures.set(id, {runId:run.runId,run}); run.stopped = true; run.abort.abort();
+        const publicError = lifecycle ? 'lifecycle_timeout' : 'event_persistence';
+        journalFailures.set(id, {runId:run.runId,run,...(lifecycle?{error:'lifecycle_timeout' as const}:{})}); run.stopped = true; run.abort.abort();
         void run.agent?.abort().catch(() => undefined);
         // Transient failure notification, never a committed journal event.
         try { options.emit({ sessionId: id, runId: run.runId, sequence: run.sequence, generation: owner.generation,
-          durability: 'unavailable', kind: 'status', status: 'failed', error: 'event_persistence' }); } catch { /* Snapshot retains the local failure overlay. */ }
+          durability: 'unavailable', kind: 'status', status: 'failed', error: publicError }); } catch { /* Snapshot retains the local failure overlay. */ }
       },
     });
     for (const payload of run.pendingEvents || []) run.publisher.enqueue(payload);
@@ -817,9 +820,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     // The same committed turn is used for both inline plans and snapshot controls.
     storedControls=storedControls.filter(control=>!control.plan);
     for(const turn of projection.turns)for(const item of turn.items)if(validVersionedPlan(item.plan))storedControls.push(structuredClone(item.plan));
-    if (journalFailures.has(id)) {
-      const index = projection.turns.findIndex(turn => turn.id === journalFailures.get(id)?.runId);
-      if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index], { sessionId: id, runId: projection.turns[index].id, sequence: 0, kind: 'status', status: 'failed', error: 'event_persistence' });
+    const journalFailure = journalFailures.get(id);
+    if (journalFailure) {
+      const index = projection.turns.findIndex(turn => turn.id === journalFailure.runId);
+      if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index], { sessionId: id, runId: journalFailure.runId, sequence: 0, kind: 'status', status: 'failed', error: journalFailure.error ?? 'event_persistence' });
     }
     for (const metrics of usage) {
       const index = projection.turns.findIndex(turn => turn.id === metrics.runId);
@@ -828,7 +832,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
     // Derive the public view after journal/history hydration; persisted audit remains untouched.
     projection.turns = projection.turns.map(publicProviderTurn);
-    return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailures.has(id)?{eventPersistence:'unavailable' as const}:{}), running: Boolean(current)&&!journalFailures.has(id), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
+    return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailure?{eventPersistence:'unavailable' as const,eventPersistenceError:journalFailure.error}:{}), running: Boolean(current)&&!journalFailure, ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
@@ -1187,9 +1191,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         persist: action => run.publisher!.persist(() => action()),
       }) : undefined;
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
-      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,
-        ...(run.task && run.publisher ? {toolGovernance: {register: async definitions => {
-          const records = await registerSessionToolGovernance({definitions, registry: store.xiaozhiState.capabilities, mcp: name => mcp.describeTool(name)});
+      const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
+      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
+        ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
+          const records = await registerSessionToolGovernance({definitions, registry: store.xiaozhiState.capabilities, mcp: name => mcp.describeTool(name),signal});
+          signal.throwIfAborted();
           run.toolGovernance = createRunToolGovernance({owner: {...run.publisher!.owner, taskId: run.task!.id}, records,
             assertEffect: (callId, name, receipt) => store.xiaozhiState.eventJournal.assertToolEffect(run.publisher!.owner, callId, name, receipt),
             preflight: (callId, name, input, enforce) => planningRuntime?.before(callId, name, input, enforce) || Promise.resolve(),
@@ -1348,7 +1354,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (deliveryText) text=deliveryText;
       await run.publisher?.flush().catch(()=>{failure='event_persistence';});
       if(run.hasToolEvents&&run.publisher&&!run.publisher.failed){try{const recovery=await run.publisher.persist(owner=>store.xiaozhiState.eventJournal.reconcile(owner));if(recovery.receipts.length){publicEvent(id,run,{kind:'recovery',recovery});await run.publisher.flush();}}catch{failure='event_persistence';}}
-      if(run.publisher?.failed)failure='event_persistence';
+      if(run.publisher?.failed){
+        const journalFailure=journalFailures.get(id);
+        failure=(journalFailure?.runId===run.runId&&journalFailure.error)||'event_persistence';
+      }
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
       const terminal = { kind: 'status' as const, status, finishedAt:Date.now(),...(failure ? { error: failure } : {}) };
       const finalTurn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
@@ -1600,6 +1609,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if((await store.getAiConversationSession(id)).session.archivedAt)return{ok:false,error:'permission_denied'};
         if(failure.run.done)try{await waitForLifecycle('record_recovery',()=>failure.run.done!,{timeoutMs:5000});}catch{return{ok:false,error:'busy'};}
         if(failure.run.publisher)try{await waitForLifecycle('record_writer_recovery',()=>failure.run.publisher!.settled(),{timeoutMs:5000});}catch{return{ok:false,error:'busy'};}
+        if(failure.run.lifecycleWork?.isPending())return{ok:false,error:'busy'};
         if(closing||active.has(id)||admissions.get(id)?.size||failure.run.agent?.diagnostics().executing)return{ok:false,error:'busy'};
         if(journalFailures.get(id)!==failure)return{ok:false,error:'busy'};
         if((await store.getAiConversationSession(id)).session.archivedAt)return{ok:false,error:'permission_denied'};

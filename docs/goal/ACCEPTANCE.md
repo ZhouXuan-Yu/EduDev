@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 小智生命周期故障
+
+通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 真实 PDF 源页重定位后可读，两题三图通过正式选题、确认与冷读专项。完整 KB-A09、配对答案册与 KB-A06 三套交付仍需验收。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)

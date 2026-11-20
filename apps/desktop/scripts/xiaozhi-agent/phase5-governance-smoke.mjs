@@ -49,6 +49,29 @@ const runtime = () => createRunToolGovernance({owner, registry, records, current
   persist: async (callId, name, receipt) => {persisted.push({callId, name, receipt: structuredClone(receipt)});}});
 const signal = new AbortController().signal;
 try {
+  await check('Cancellation after an admitted registry write prevents any further tool registrations', async () => {
+    const controller = new AbortController();
+    const entered = Promise.withResolvers();
+    const release = Promise.withResolvers();
+    const writes = [];
+    const pausedRegistry = {...registry, async register(...args) {
+      writes.push(args[1].id);
+      const value = await registry.register(...args);
+      entered.resolve();
+      await release.promise;
+      return value;
+    }};
+    const registering = registerSessionToolGovernance({
+      definitions: definitions.slice(0, 2), registry: pausedRegistry, mcp, signal: controller.signal,
+    });
+    try {
+      await Promise.race([entered.promise, registering.then(()=>assert.fail('No registry write reached the controlled gate'))]);
+      controller.abort();
+    } finally {release.resolve();}
+    await assert.rejects(registering, {name: 'AbortError'});
+    assert.equal(writes.length, 1);
+    assert((await registry.snapshot()).providers.some(provider => provider.id === writes[0]));
+  });
   await check('Every declared core identity plus selected MCP identity is registered without changing original names or input schemas', async () => {
     const before = definitions.map(tool => JSON.stringify(tool.parameters));
     records = await registerSessionToolGovernance({definitions, registry, mcp});

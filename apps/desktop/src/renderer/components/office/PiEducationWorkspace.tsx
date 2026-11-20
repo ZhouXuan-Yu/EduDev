@@ -155,7 +155,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       if (settings?.ok) setModels(settings.value);
       if (!current.eventPersistence && !current.projection.needsHydration) eventReceiver.current?.seed(current.eventCursors || [],true);
       for (const cursor of current.eventCursors || []) sequences.current.set(cursor.runId, Math.max(sequences.current.get(cursor.runId) || 0, cursor.sequence));
-      if (current.eventPersistence === 'unavailable') setNotice(XIAOZHI_ERRORS.event_persistence);
+      if (current.eventPersistence === 'unavailable') setNotice(XIAOZHI_ERRORS[current.eventPersistenceError ?? 'event_persistence']);
       const turn = current.projection.turns.at(-1);
       if (turn && current.running) sequences.current.set(turn.id, Math.max(sequences.current.get(turn.id) || 0, current.projection.sourceSequence));
       setRefreshFailed(false);
@@ -324,7 +324,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       list: input => { if (!window.omniEdu) return Promise.reject(Error('configuration')); return window.omniEdu.listXiaozhiEvents(input); },
       apply: applyEvent,
       syncChanged: state=>{if(live)setEventSync(state);},
-      unavailable: () => { if (live) { viewBuffer.current!.flush(); setNotice(XIAOZHI_ERRORS.event_persistence); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
+      unavailable: event => { if (live) { viewBuffer.current!.flush(); setNotice(XIAOZHI_ERRORS[event.kind==='status'&&event.error==='lifecycle_timeout'?'lifecycle_timeout':'event_persistence']); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
       gapFailure: () => { if (live) { viewBuffer.current!.flush(); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
     });
     eventReceiver.current = receiver;

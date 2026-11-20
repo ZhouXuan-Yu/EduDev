@@ -31,7 +31,7 @@ import { fileVersion } from './workspace-files';
 import { createHanaRunToolScope } from './hana-tool-scope';
 import {manifestForTools} from './tools/manifest';
 import {createToolExecutionBoundary} from './tools/execution-bound';
-import {waitForLifecycle} from './lifecycle-wait';
+import {LifecycleTimeoutError,waitForLifecycle} from './lifecycle-wait';
 import type {XiaozhiToolAttempt} from '../../shared/xiaozhi-tool-attempt';
 import {TOOL_EXECUTION_MESSAGES} from '../../shared/xiaozhi-tool-attempt';
 import { installToolOutcomeAdapter } from './vendor/hana/lib/pi-sdk/tool-outcome-adapter';
@@ -125,7 +125,7 @@ export interface PiXiaozhiOptions {
   capabilityAcquisitionTools?: ToolDefinition[];
   extensionTools?: ToolDefinition[];
   effectTools?: ToolDefinition[];
-  toolGovernance?: {register: (definitions: readonly ToolDefinition[]) => Promise<RunToolGovernance>};
+  toolGovernance?: {register: (definitions: readonly ToolDefinition[], signal: AbortSignal) => Promise<RunToolGovernance>};
   skillCreatorTools?: ToolDefinition[];
   environmentTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
@@ -178,6 +178,7 @@ export interface PiXiaozhiOptions {
   onCriticalToolFailure?:(error?:unknown)=>void;
   /** Host run cancellation and main-only shortened deadline for isolated acceptance. */
   lifecycleSignal?:AbortSignal;
+  trackLifecycleWork?: (work: Promise<unknown>) => void;
   lifecycleTimeoutMs?:number;
   beforeModelDelivery?:()=>Promise<void>;
   onInstructionDispatching?: (id: string) => Promise<boolean>;
@@ -251,10 +252,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let metrics:ReturnType<typeof createQualityMetrics>|undefined,evidence:ReturnType<typeof createAnswerEvidence>|undefined;
   const repetition=createRepeatToolReminder();
   let phaseController=new AbortController();
-  const phase=async<T>(action:(signal:AbortSignal)=>Promise<T>,signal?:AbortSignal,late?:(value:T)=>void|Promise<void>):Promise<T>=>{
+  const phase=async<T>(operation:string,action:(signal:AbortSignal)=>Promise<T>,signal?:AbortSignal,late?:(value:T)=>void|Promise<void>):Promise<T>=>{
     const signals=[phaseController.signal,...(options.lifecycleSignal?[options.lifecycleSignal]:[]),...(signal?[signal]:[])];
-    try{return await waitForLifecycle('pi_preparation',action,{signal:AbortSignal.any(signals),timeoutMs:options.lifecycleTimeoutMs??15000,late});}
-    catch(error){if(error instanceof Error&&error.message==='lifecycle_timeout'){options.onCriticalToolFailure?.(error);phaseController.abort();throw Error('event_persistence');}throw error;}
+    try{return await waitForLifecycle(operation,action,{signal:AbortSignal.any(signals),timeoutMs:options.lifecycleTimeoutMs??15000,late,track:options.trackLifecycleWork});}
+    catch(error){if(error instanceof LifecycleTimeoutError){options.onCriticalToolFailure?.(error);phaseController.abort();throw Error('event_persistence');}throw error;}
   };
   if (!path.isAbsolute(options.stateRoot) || !path.isAbsolute(options.workspace)
     || !fs.statSync(options.stateRoot).isDirectory() || !fs.statSync(options.workspace).isDirectory()
@@ -296,7 +297,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
   }
   const sessionId = manager.getSessionId();
-  const modelIdentity=await phase(async()=>options.modelHistory?.authorize(manager));
+  const modelIdentity=await phase('pi_authorize_model_history',async()=>options.modelHistory?.authorize(manager));
   if (modelIdentity && modelIdentity.model!==options.model) throw new Error('configuration');
   const educational = options.educationTools || [];
   if (educational.some(def => def.name !== 'search_teacher_knowledge') || educational.length > 1) throw new Error('configuration');
@@ -328,7 +329,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
 
   const memorySnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.memory.'));
   if (memorySnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.memory.v1') || memorySnapshots.length && !options.memory) throw new Error('configuration');
-  const initialAuthority = await phase(async()=>options.memory?.authority());
+  const initialAuthority = await phase('pi_read_memory_authority',async()=>options.memory?.authority());
   const memoryEpoch = initialAuthority ? createPiMemoryEpoch(manager, initialAuthority.fingerprint) : undefined;
   if (options.memory) {
     names.push('read_education_memory', 'read_session_process');
@@ -372,8 +373,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const skillSnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.skills.'));
   if (skillSnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.skills.v1' && (entry.customType !== 'xiaozhi.education.skills.v2' || !options.managedSkills))
     || skillSnapshots.length && !options.educationSkills || options.managedSkills && !options.educationSkills) throw new Error('configuration');
-  const skills = options.educationSkills ? options.managedSkills ? await phase(()=>createManagedSkillRuntime(agentDir, manager.getSessionFile() || '', options.managedSkills!))
-    : await phase(()=>createEducationSkillRuntime(agentDir, manager.getSessionFile() || '')) : undefined;
+  const skills = options.educationSkills ? options.managedSkills ? await phase('pi_load_managed_skills',()=>createManagedSkillRuntime(agentDir, manager.getSessionFile() || '', options.managedSkills!))
+    : await phase('pi_load_education_skills',()=>createEducationSkillRuntime(agentDir, manager.getSessionFile() || '')) : undefined;
   const skillEpoch = options.managedSkills && skills ? createPiSkillEpoch(manager, skills.identity) : undefined;
   if (skills) {
     const data = { version: 1, identity: skills.identity };
@@ -723,7 +724,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   names.push(...mcpNames);
   ensureNativePlanContract(manager,controls,controlFingerprint);
   const taskRuntime=options.taskRuntime;
-  if(taskRuntime){ensureNativeTaskContract(manager,controlFingerprint,taskRuntime.tools);names.push(...taskRuntime.tools.map(t=>t.name));prompt+=await phase(()=>taskRuntime.context());}
+  if(taskRuntime){ensureNativeTaskContract(manager,controlFingerprint,taskRuntime.tools);names.push(...taskRuntime.tools.map(t=>t.name));prompt+=await phase('pi_read_task_context',()=>taskRuntime.context());}
   const capabilities = options.capabilities;
   if (capabilities && capabilities.id !== options.model) throw new Error('configuration');
   const providerWindow = capabilities?.contextWindow || 32768;
@@ -753,11 +754,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   // Fixed full-control SDK example, with explicit education prompt and no discovery.
   const getProtectedContext = async () => {
     const excluded = [...new Set([...(memoryEpoch?.blockedRunIds() || []), ...(skillEpoch?.blockedRunIds() || [])])];
-    const facts = (await phase(async()=>options.protectedContext?.(excluded)) || '')+(taskRuntime?await phase(()=>taskRuntime.context()):'');
+    const facts = (await phase('pi_read_protected_context',async()=>options.protectedContext?.(excluded)) || '')+(taskRuntime?await phase('pi_read_task_context',()=>taskRuntime.context()):'');
     // Protect only facts already delivered by the explicit model tool. Rebuild from
     // the current main authority; never keep a second copy or revive revoked text.
     if (!options.memory || !memoryEpoch?.hasDelivery()) return facts;
-    const memories = await phase(signal=>options.memory!.readSelected(initialAuthority!.fingerprint,signal));
+    const memories = await phase('pi_read_selected_memory',signal=>options.memory!.readSelected(initialAuthority!.fingerprint,signal));
     if (!memories.length) return facts;
     const necessary = memories.map(({ reference, source, version, text, provenance, sourceDocuments }) => ({ reference, source, version, text, provenance, sourceDocuments }));
     return facts + '\n[本会话已读取且仍获授权的必要教育记忆，非新权限或教师确认]\n' + JSON.stringify(necessary);
@@ -779,7 +780,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       finally{autoAbort=undefined;compacting=false;}
     });pi.on('session_compact',async event=>{await checkMemory();if(event.reason!=='manual')await options.afterAutoCompactCommit?.();});
     if(options.goal)pi.on('turn_end',async event=>{await checkMemory();if(interrupted)return;return options.goal!.boundary(event);});} ]});
-  await phase(()=>nativeResources.reload());
+  await phase('pi_reload_resources',()=>nativeResources.reload());
   let providerPrompt=prompt;
   const resourceLoader: ResourceLoader = {
     getExtensions: () => nativeResources.getExtensions(),
@@ -935,7 +936,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
-  const governance = options.toolGovernance ? await phase(() => options.toolGovernance!.register(taskDefinitions)) : undefined;
+  const governance = options.toolGovernance ? await phase('pi_register_tool_contracts',signal => options.toolGovernance!.register(taskDefinitions,signal)) : undefined;
   if (governance) manager.appendCustomEntry('xiaozhi.tool-governance.v1', {schemaVersion: 1,
     registeredNames: taskDefinitions.map(tool => tool.name),
     tools: [...governance.records.values()].map(record => ({name: record.name, capabilityId: record.capabilityId, providerId: record.providerId,
@@ -986,8 +987,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     },
   }));
   const modelAuthorities={memory:initialAuthority?.fingerprint,skills:skillEpoch?.authority};
-  await phase(async()=>options.modelHistory?.beforeLoad(manager,modelAuthorities));
-  const { session, modelFallbackMessage } = await phase(()=>createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'low',
+  await phase('pi_prepare_model_history',async()=>options.modelHistory?.beforeLoad(manager,modelAuthorities));
+  const { session, modelFallbackMessage } = await phase('pi_create_session',()=>createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'low',
     modelRuntime: auth, settingsManager: settings, sessionManager: manager,
     resourceLoader, tools: names, customTools: dispatchers, noTools: 'builtin' }),undefined,async result=>{result.session.dispose();await auth.removeRuntimeApiKey(PROVIDER);});
   if(options.goal){
@@ -1005,13 +1006,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     || session.getActiveToolNames().some(name => !names.includes(name))) { session.dispose(); throw new Error('configuration'); }
   const previousTransform=session.agent.transformContext;
   session.agent.transformContext=async(messages,signal)=>{
-    const transformed=await phase(async()=>previousTransform?.(messages,signal),signal)||messages;
+    const transformed=await phase('pi_transform_history',async()=>previousTransform?.(messages,signal),signal)||messages;
     const filtered=transformed.filter(message=>!(message.role==='custom'&&message.customType==='xiaozhi.goal-context.v1'));
-    if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase(()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
-    const files=options.fileReferences?await phase(()=>options.fileReferences!.history(filtered,signal),signal):filtered;
-    return options.modelToolPrivacy?phase(()=>options.modelToolPrivacy!.context(files,signal),signal):files;
+    if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase('pi_read_goal_context',()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
+    const files=options.fileReferences?await phase('pi_read_file_history',()=>options.fileReferences!.history(filtered,signal),signal):filtered;
+    return options.modelToolPrivacy?phase('pi_filter_model_tool_history',()=>options.modelToolPrivacy!.context(files,signal),signal):files;
   };
-  try { await phase(async()=>options.modelHistory?.align(session,modelAuthorities)); }
+  try { await phase('pi_align_model_history',async()=>options.modelHistory?.align(session,modelAuthorities)); }
   catch(error) { session.dispose(); auth.removeRuntimeApiKey(PROVIDER); throw error; }
   // Existing native histories may contain an earlier off setting. Record the new policy natively.
   session.setThinkingLevel('low');
@@ -1025,7 +1026,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     authorityChecks++;
     try {
     if (memoryFailure) throw new Error(memoryFailure);
-    try { await phase(async signal=>skills?.check(signal)); }
+    try { await phase('pi_verify_skill_scope',async signal=>skills?.check(signal)); }
     catch (error) {
       if(phaseController.signal.aborted||options.lifecycleSignal?.aborted)throw error;
       memoryFailure = classifyError(error) === 'skill_scope_changed' ? 'skill_scope_changed' : 'skill_source_changed'; autoAbort?.abort(); manualAbort?.abort(); session.abortCompaction();
@@ -1035,7 +1036,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (!options.memory || !memoryEpoch) return;
     if (interrupted) throw new Error('cancelled');
     try {
-      const current = await phase(()=>options.memory!.authority());
+      const current = await phase('pi_verify_memory_scope',()=>options.memory!.authority());
       memoryEpoch.check(current.fingerprint);
       if (!current.valid) throw new Error('memory_scope_changed');
     } catch (error) {
@@ -1082,8 +1083,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     // Final complete-request gate also applies to native summarization requests.
     args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
-    await phase(async()=>options.beforeModelDelivery?.(),args[2]?.signal);
-    await phase(async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
+    await phase('pi_before_model_delivery',async()=>options.beforeModelDelivery?.(),args[2]?.signal);
+    await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
     skillEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
@@ -1128,7 +1129,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const raw = message.content.filter(part => part.type === 'text').map(part => part.text).join('\n');
         if (!raw.trim() || raw.length > 24000) throw new Error('model_error');
         const clean = options.sanitizeFileText ? await options.sanitizeFileText(raw) : raw;
-        const facts = await phase(()=>getProtectedContext(),args[2]?.signal);
+        const facts = await phase('pi_prepare_model_context',()=>getProtectedContext(),args[2]?.signal);
         await checkMemory();
         if (interrupted || budget!.snapshot().exhausted || args[2]?.signal?.aborted) throw new Error('cancelled');
         if (!clean.trim()) throw new Error('model_error');
@@ -1212,7 +1213,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const decision = await previousFinish?.(turn, signal);
     if (decision?.action === 'end') return decision;
     const hasTools = turn.message.content.some(part => part.type === 'toolCall');
-    await phase(()=>instructions.prepare(hasTools, signal),signal);
+    await phase('pi_prepare_instructions',()=>instructions.prepare(hasTools, signal),signal);
     return decision || undefined;
   };
   let streamedLength = 0;
@@ -1336,7 +1337,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       let failure: XiaozhiAgentError | undefined,outputLimited=false;
       try {
         if(memoryFailure)throw Error(memoryFailure);
-        await phase(async()=>skills?.validateCommand(text));
+        await phase('pi_validate_skill_command',async()=>skills?.validateCommand(text));
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
         if (skillEpoch) {
@@ -1348,7 +1349,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         await checkMemory();
         // Dynamic same-session facts belong after the stable instruction/tool prefix.
         // Rebuild only current authorized facts; neither snapshots nor summaries grant permissions.
-        const facts=await phase(()=>getProtectedContext());await checkMemory();
+        const facts=await phase('pi_prepare_turn_context',()=>getProtectedContext());await checkMemory();
         // Read-only local context precedes the current request. A historical
         // task index must not become the last instruction after compaction.
         const subjectInstructions=quality?resolveSubjectAnswerInstructions(text,options.toolTaskQuery):'';

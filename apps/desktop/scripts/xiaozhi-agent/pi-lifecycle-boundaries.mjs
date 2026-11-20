@@ -1,6 +1,6 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {setTimeout as sleep} from 'node:timers/promises';
-const {waitForLifecycle}=await import('../../src/main/xiaozhi-agent/lifecycle-wait.ts');
+const {createLifecycleWorkTracker,LifecycleTimeoutError,waitForLifecycle}=await import('../../src/main/xiaozhi-agent/lifecycle-wait.ts');
 const {createPiXiaozhiSession}=await import('../../src/main/xiaozhi-agent/pi-session.ts');
 const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-lifecycle-')),checks=[],report={success:false,checks,scope:'Real Pi session/SDK and current lifecycle await adapter; deliberately hung callbacks, no model/provider/UI/daily claim.'};
 let agent;
@@ -13,13 +13,22 @@ try{
  await check('Hung await cancellation settles promptly, late owned value disposed once and no continuation dispatch',async()=>{
   const d=deferred(),c=new AbortController();let late=0,dispatch=0;const result=waitForLifecycle('owned',()=>d.promise,{signal:c.signal,timeoutMs:500,late:()=>late++}).then(()=>dispatch++);await sleep(5);c.abort();await assert.rejects(result,/cancelled/);d.resolve({owned:true});await sleep(10);assert.equal(late,1);assert.equal(dispatch,0);
  });
- await check('Fixed await timeout is not success and late completion is drained',async()=>{const d=deferred();await assert.rejects(waitForLifecycle('owned',()=>d.promise,{timeoutMs:20}),/lifecycle_timeout/);d.resolve('late');await sleep(10);});
+ await check('Fixed await timeout reports its operation, limit and elapsed duration while late completion is drained',async()=>{const d=deferred();await assert.rejects(waitForLifecycle('owned',()=>d.promise,{timeoutMs:20}),error=>{
+  assert(error instanceof LifecycleTimeoutError);assert.equal(error.message,'lifecycle_timeout');assert.equal(error.operation,'owned');assert.equal(error.timeoutMs,20);assert(error.elapsedMs>=19);return true;
+ });d.resolve('late');await sleep(10);});
+ await check('Recovery waits for actual work and delayed cleanup after the deadline has already failed',async()=>{
+  const action=deferred(),cleanup=deferred(),tracker=createLifecycleWorkTracker();
+  await assert.rejects(waitForLifecycle('owned',()=>action.promise,{timeoutMs:20,late:()=>cleanup.promise,track:tracker.track}),/lifecycle_timeout/);
+  assert.equal(tracker.isPending(),true);
+  action.resolve('late');await sleep(10);assert.equal(tracker.isPending(),true);
+  cleanup.resolve();await until(()=>!tracker.isPending());
+ });
  await check('Already cancelled setup does not invoke authority or create a usable session',async()=>{const c=new AbortController();c.abort();let calls=0;await assert.rejects(createPiXiaozhiSession({...config(),lifecycleSignal:c.signal,modelHistory:{authorize:async()=>{calls++;},beforeLoad:async()=>{},align:async()=>{}}}),/cancelled/);assert.equal(calls,0);});
  await check('Real Pi protected-context stop returns cancelled and late old facts cannot reach model or native messages',async()=>{
   let entered=false;const d=deferred();agent=await createPiXiaozhiSession({...config(),protectedContext:async()=>{entered=true;return d.promise;}});const calls=model(agent),task=agent.prompt('合成停止准备');await until(()=>entered);await agent.abort();const result=await task;assert(!result.ok&&result.error==='cancelled');assert.equal(calls(),0);d.resolve('OLD-CONTEXT');await sleep(10);assert.equal(calls(),0);assert(!JSON.stringify(agent.session.messages).includes('OLD-CONTEXT'));await agent.dispose();agent=undefined;
  });
  await check('Real Pi protected context timeout seals critical gate before model invocation',async()=>{
-  const d=deferred();let failures=0;agent=await createPiXiaozhiSession({...config(),protectedContext:()=>d.promise,onCriticalToolFailure:()=>failures++});const calls=model(agent),result=await agent.prompt('合成权限挂起');assert(!result.ok);assert.equal(result.error,'event_persistence');assert.equal(failures,1);assert.equal(calls(),0);d.resolve('LATE');await sleep(10);assert.equal(calls(),0);await agent.dispose();agent=undefined;
+  const d=deferred(),failures=[];agent=await createPiXiaozhiSession({...config(),protectedContext:()=>d.promise,onCriticalToolFailure:error=>failures.push(error)});const calls=model(agent),result=await agent.prompt('合成权限挂起');assert(!result.ok);assert.equal(result.error,'event_persistence');assert.equal(failures.length,1);assert(failures[0] instanceof LifecycleTimeoutError);assert.match(failures[0].operation,/^pi_(prepare_turn|read_protected)_context$/);assert.equal(failures[0].timeoutMs,200);assert.equal(calls(),0);d.resolve('LATE');await sleep(10);assert.equal(calls(),0);await agent.dispose();agent=undefined;
  });
  report.success=true;
 }catch(error){report.error=error.stack;process.exitCode=1;}finally{await agent?.dispose().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}

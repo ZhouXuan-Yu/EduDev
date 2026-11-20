@@ -116,6 +116,7 @@ export async function registerSessionToolGovernance(options: {
   definitions: readonly ToolDefinition[];
   registry: CapabilityRegistry;
   mcp: (name: string) => Promise<McpToolIdentity | null>;
+  signal?: AbortSignal;
 }) {
   if (sourceManifest.schemaVersion !== 1 || !sourceManifest.sources.length
       || createHash('sha256').update(JSON.stringify(sourceManifest.sources)).digest('hex') !== sourceManifest.sourceHash) throw Error('source_changed');
@@ -123,7 +124,9 @@ export async function registerSessionToolGovernance(options: {
   if (new Set(names).size !== names.length) throw Error('tool_manifest_conflict');
   const records = new Map<string, ToolGovernanceRecord>();
   for (const tool of options.definitions) {
+    options.signal?.throwIfAborted();
     const source = CORE_TOOL_NAMES.includes(tool.name) ? null : await options.mcp(tool.name);
+    options.signal?.throwIfAborted();
     if (!source) policy(tool.name);
     const manifest = toolManifest(tool.name, source ? new Set([tool.name]) : undefined);
     const schemaHash = identityHash(tool.parameters);
@@ -138,8 +141,10 @@ export async function registerSessionToolGovernance(options: {
       classification: source || privateTools.has(tool.name) ? 'teacher_private' : 'public'};
     const values = declaration(record);
     const prior = await options.registry.providerVersion(record.providerId, record.providerVersion, record.capabilityId);
+    options.signal?.throwIfAborted();
     if (prior?.revoked) throw Error('capability_revoked');
     if (!prior) await options.registry.register(values.definition, values.provider, values.binding);
+    options.signal?.throwIfAborted();
     records.set(tool.name, record);
   }
   if (records.size !== options.definitions.length) throw Error('tool_governance_missing');
