@@ -1,5 +1,11 @@
 # Phase3 Windows helper wire contract v1
 
+## 2026-11-21 宿主专用临时目录
+
+宿主将新投影、助手健康检查和执行所需临时文件放在规范化的当前用户 LocalAppData 私有路径。助手的实际执行子进程收到同一个 TEMP 和 TMP。只读平台诊断继续使用原路径，读取不会创建执行目录。旧记录只可从当前已验证的原 OS 临时目录进行清理，并核对原生身份回执。原临时目录已经迁移或缺失时，旧任务保持待核对。现有路径、目录身份、权限、完整性标签与回执验证照常。 [真实操作证据](evidence/phase7/implementation-resume-20261119/windows-private-terminal-temp-20261121.json)
+
+首次启动固定检查且原生回执确认已清理时，`launch_failed` 允许在重新核验授权后使用新投影再试一次。已发送开始回执、撤权、清理不确定及再次失败均停止。审计保留两次结果。
+
 2026-11-12 冻结，供自有 TEMP 候选实现与唯一生产 writer 集成。候选仅写自己的 TEMP，不写 repo/out。生产接线沿 Pi 1.0.2 公开 operations.exec，helper 单次启动执行一个脚本，主进程保持 Grant、Task 与审批权威。
 
 ## 传输和命名
