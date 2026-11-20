@@ -687,10 +687,12 @@
     "newPaidCalls": 0
   },
   "windowsCandidatePackaging": {
-    "status": "ARCHIVE_IN_PROGRESS",
+    "status": "LOCAL_NSIS_VERIFIED",
     "productionSource": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
     "packagingSource": "620ded25bb7d026ccfb154c067c7d020d2c9a5bc",
     "evidence": "evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json",
+    "installerSha256": "36eae24c71a0e3f70a811bc6b6ce9d17bd582f86dc3c518e3634ca6435dc4f2c",
+    "installerBytes": 886091314,
     "unpackedResources": "PASS_SCOPED",
     "qg09": "BLOCKED"
   },

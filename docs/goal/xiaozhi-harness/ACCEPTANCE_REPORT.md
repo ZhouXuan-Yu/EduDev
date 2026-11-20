@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-20 当前 Windows 安装包文件核验
+
+Terra 独立核对 NSIS 退出码、安装包大小和 SHA-256、随包应用的 x64 PE 架构、五套运行时封装校验和归档列举。总控从同一安装程序内直接解出应用可执行文件与 481 个编译文件，逐项比对路径、大小和 SHA-256，均与用于测试的构建和 `win-unpacked` 对应。安装、两个快捷入口和卸载尚待独立 Windows 环境实做。QG-09 保持 `BLOCKED`。[包文件、核对命令及证据](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json)
+
 ## QG-09 独立 Windows 安装验收步骤
 
 在可还原的干净 Windows x64 环境，使用普通用户和冻结候选的原始 NSIS 安装文件。记录 Windows 版本、安装候选提交、安装包字节数和 `Get-FileHash -Algorithm SHA256` 输出。安装前确认当前用户的已安装应用、桌面和开始菜单均无小智，记录空白基线。只使用合成资料，无需模型密钥。

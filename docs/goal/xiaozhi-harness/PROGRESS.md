@@ -2,7 +2,7 @@
 
 ## 2026-11-20 当前源码 Windows x64 候选
 
-构建 `ae8dca7` 的 481 个应用文件与当前 `win-unpacked` 逐字节匹配。包内五套运行时校验均通过，隔离环境运行随包教育 Worker 的允许及拒绝用例均通过。NSIS 正在压缩，最终安装包仍待产出。已记录 [打包进度](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json) 和 [独立 Windows 验收步骤](ACCEPTANCE_REPORT.md#qg-09-独立-windows-安装验收步骤)。固定矩阵 88/89，付费请求累计 3/200。
+NSIS 以退出码 0 生成未签名的 886,091,314 字节安装包，随包应用已核对 x64。直接解出 481 个应用文件，与构建 `ae8dca7` 及 `win-unpacked` 逐字节匹配。五套运行时校验均通过，隔离环境下随包教育 Worker 的允许及拒绝用例均通过。Terra 独立核对包文件、解包目录与归档列举。固定矩阵 88/89，付费请求累计 3/200。原生窗口操作、独立 Windows 安装卸载和正式 32 条模型对照仍待验收。[打包证据](evidence/phase8/windows-package-20261119/workbench-finalization-nsis-620ded2-20261120.json)及[独立 Windows 验收步骤](ACCEPTANCE_REPORT.md#qg-09-独立-windows-安装验收步骤)
 
 ## 2026-11-20 Phase 8 独立盲评与配对汇总
 
