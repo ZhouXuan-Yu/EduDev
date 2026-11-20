@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_TERMINAL_ACTUAL_LAUNCH_FAILED",
+  "status": "PARTIAL_REMAINING_INDEPENDENT_PAGE_COVERAGE_AND_LOW_DISK_UX",
   "sourceCommit": "3da4b2031e4e0262bd85c127da011a68484e860e",
   "candidate": {
     "files": 481,
@@ -405,6 +405,17 @@
       "hresult": "0x80070070",
       "win32": 112,
       "scope": "Instrumented copied native helper separately reproduced disk full for fixed health and a unique synthetic PTY, before any user process or Job. The original failed production Job did not emit a numeric error."
+    },
+    "subsequentIndependentPass": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/terra-long-after-room/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepMDsS5T/evidence/ui-report.json",
+      "sha256": "28db8a5b5e7bdedb0dc75371da776e1e35df1d7a7b17631f37536652c421f603",
+      "checks": 9,
+      "parent": "E:\\EduDev-Harness-Acceptance-20261121\\private-terminal-temp\\verify-user-home\\OmniEdu\\PermissionRuntime\\temp-v1",
+      "inputAcknowledged": 2,
+      "paidCalls": 0,
+      "systemVolumeBytesBefore": 31121408,
+      "systemVolumeBytesAfter": 324706304,
+      "scope": "Same original build. No change to the native executable. Both historical failures retained."
     }
   },
   "commands": {
@@ -450,5 +461,17 @@
     },
     "systemVolumeFreeAfterSeedArchiveBytes": 31584256
   },
-  "next": "Map the verified Windows profile disk full code to the actual tool and UI without replay; retest long-path PTY and same candidate gate. Preserve recorded failures."
+  "next": "Resolve low space at compiler preparation, then rerun the real UI failure path and map remaining UI-01 through UI-14 scope.",
+  "coverageAudit": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/coverage/UI-01-14-coverage-3da4b20.md",
+    "sha256": "e28e0e67dd9200de7a2d010755c9cfde376e6a74537cb8f34e44e5c79585cf55",
+    "verdict": "PARTIAL",
+    "missingOnThisCandidate": [
+      "W3 later generation and artifacts independently at both sizes",
+      "A2 changed target explicitly two sizes",
+      "synthetic secret exclusion under UI-07",
+      "UI-08 advanced disclosure and long resources",
+      "applicable status matrix exact evidence"
+    ]
+  }
 }

@@ -698,3 +698,7 @@ Terra 已保存实际桌面操作中止证据，拖窗/最大化保持待验。�
 ## 2026-11-21 合并候选的独立同构建复验
 
 合并候选 3da4b20 复验了双尺寸原生拖窗、前台流式、常规工作台和审批，以及能力中心和 Skill。独立长路径终端在健康检查重试成功后，实际会话仍返回 launch_failed，Gate 7 继续部分完成。已封存该候选 A/B 离线清单与冷读，真实对照待此缺陷修复。 [证据和指纹](evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json)
+
+## 2026-11-21 Windows 系统盘不足的终端反馈
+
+已实现。使用授权运行时识别可信 Windows 系统卷，空间为零时在编译和启动前保留清楚的系统盘提示。保留真实 Native 磁盘不足错误映射。实际 Electron 在系统盘为零时只尝试一次，无 Job。相同范围继续收口独立页面验收和正式模型对照。 [核对命令和原报告](evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json)

@@ -626,3 +626,7 @@ Phase6功能2376c84与主线09d7937正常整合为5938c31，atomic push后main�
 ## 2026-11-21 原生终端启动的系统盘证据
 
 受控诊断助手在 Windows 系统盘可用为 0 时，两次捕获 CreateAppContainerProfile 的 0x80070070，Win32 112。固定健康探针和合成 PTY 均在创建命令进程前停止。原失败的产品回执只保存 launch_failed，不能追认其具体错误码。已归档 8 个旧合成测试的可重建编译种子至 E 盘并逐一核对哈希，原报告、数据库、用户资料和安装保持原位置。 [原始证据](evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json)
+
+## 2026-11-21 Windows 系统盘不足的终端反馈
+
+首次映射修复在真实低盘 Electron 仍显示 unknown。SQLite 表明编译准备早于原生健康，合成终端没有 Job。最终候选在相同系统盘零空间下显示 system_disk_full，未进入编译和健康，保存一次尝试回执。真实宿主定向验证保留渲染截图、审计和原报告。 [核对命令和原报告](evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json)
