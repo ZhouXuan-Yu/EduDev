@@ -44,6 +44,8 @@ export function installProviderBridge(net, options) {
   const original = net.fetch;
   const clock = {timeOrigin: performance.timeOrigin, dateCalibrationMs: Date.now() - (performance.timeOrigin + performance.now())};
   const chats = [], models = [], rejected = [];
+  const boundaries = [];
+  let boundary;
   const at = () => performance.now();
   function configuration(bytes) {
     let body;
@@ -80,7 +82,12 @@ export function installProviderBridge(net, options) {
         at: at(), code: 'provider_route_rejected'});
       throw Error('phase8_provider_route_rejected');
     }
+    const owner = boundary;
+    if (owner && (!owner.runId || owner.conflict || owner.terminalAt !== null)) {
+      rejected.push({at:at(),code:'run_dispatch_boundary_unverified'});throw Error('phase8_run_dispatch_boundary_unverified');
+    }
     const row = {index: chats.length + 1, path: url.pathname, method, at: at(), headersAt: null, firstByteAt: null,
+      ...(owner ? {dispatchBoundary:owner.id,runId:owner.runId} : {}),
       endAt: null, terminalFrameAt: null, httpStatus: null, responseBytes: 0, state: 'preparing', configuration: {}};
     chats.push(row);
     try {
@@ -90,7 +97,8 @@ export function installProviderBridge(net, options) {
       const headers = new Headers();
       for (const key of ['authorization', 'content-type', 'accept']) if (request.headers.has(key)) headers.set(key, request.headers.get(key));
       row.requestBytes = bytes.byteLength; row.state = 'dispatching'; row.dispatchAt = at();
-      const response = await original.call(net, routes[url.pathname], {method: 'POST', headers, body: bytes,
+      if (owner && (owner !== boundary || owner.conflict)) throw Error('phase8_run_dispatch_boundary_unverified');
+      const response = await original.call(net, (owner?.chatRoutes || routes)[url.pathname], {method: 'POST', headers, body: bytes,
         signal: request.signal, credentials: 'omit', redirect: 'error'});
       row.headersAt = at(); row.httpStatus = response.status; row.state = 'response';
       if (!response.body) {row.endAt = at(); row.state = 'completed'; return response;}
@@ -113,7 +121,25 @@ export function installProviderBridge(net, options) {
   }
   net.fetch = wrapped;
   return {
-    snapshot: () => structuredClone({schemaVersion: 1, clock, chats, models, rejected}),
+    beginDispatch({id,sessionId,previousRunId,chatRoutes = routes}) {
+      if (!['original','continuation'].includes(id) || typeof sessionId !== 'string' || !/^[A-Za-z0-9_.:-]{1,128}$/.test(sessionId)
+          || boundaries.some(item=>item.id===id) || id === 'original' && boundaries.length
+          || id === 'continuation' && (!boundary || boundary.id !== 'original' || boundary.runId !== previousRunId || boundary.terminalAt === null)
+          || chats.some(item=>item.endAt === null) || !allowed.every(key=>{
+            try {const url=new URL(chatRoutes[key]);return url.protocol==='http:'&&url.hostname==='127.0.0.1'&&url.port&&!url.username&&!url.password&&!url.search&&!url.hash&&allowed.includes(url.pathname);}catch{return false;}
+          })) throw Error('phase8_dispatch_boundary_invalid');
+      boundary={id,sessionId,previousRunId:previousRunId || null,runId:null,at:at(),terminalAt:null,conflict:false,chatRoutes};boundaries.push(boundary);
+    },
+    observeRun(event) {
+      if (!boundary || event?.sessionId !== boundary.sessionId || event.kind !== 'status'
+          || typeof event.runId !== 'string' || !/^[A-Za-z0-9_.:-]{1,128}$/.test(event.runId)) return;
+      if (event.status === 'running') {
+        if (event.runId === boundary.previousRunId || boundary.runId && boundary.runId !== event.runId) {boundary.conflict=true;return;}
+        boundary.runId ??= event.runId;
+      } else if (boundary.runId === event.runId) boundary.terminalAt ??= at();
+    },
+    snapshot: () => structuredClone({schemaVersion: 1, clock, chats, models, rejected,
+      boundaries:boundaries.map(({chatRoutes,...item})=>item)}),
     restore() {if (net.fetch !== wrapped) throw Error('phase8_transport_restore_conflict'); net.fetch = original;},
   };
 }

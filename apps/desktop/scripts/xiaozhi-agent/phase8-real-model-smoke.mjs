@@ -21,8 +21,8 @@ async function check(name, action) {
 try {
   const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source} = await import('./phase8-real-model-plan.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
-  const {verifiedRunBinding, exportBlindBundle, readOriginalRecords} = await import('./phase8-real-model-readback.mjs');
-  const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete} = await import('./phase8-real-model-run.mjs');
+  const {verifiedRunBinding, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
+  const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete, continueApprovedQ5, bindDispatchAttempts} = await import('./phase8-real-model-run.mjs');
   const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
   await check('Q5 records exact URL timings without storing unrelated requests, headers or credentials', () => {
     const target = new URL(q5Source);
@@ -182,6 +182,92 @@ try {
     assert.equal(sample.task, 'Q1'); assert(!Object.hasOwn(sample, 'version')); assert(!Object.hasOwn(sample, 'runId'));
     assert.equal(fs.readFileSync(path.join(output, 'blind', result.samples[0].id, 'artifacts/synthetic.txt'), 'utf8'), 'synthetic artifact');
   });
+  await check('Q5 continuation requires the exact original approved NASA operation and consumes it once in the same Task', () => {
+    assert.equal(typeof q5ContinuationDecision, 'function');
+    const file = path.join(output, 'q5-original.sqlite'), db = new DatabaseSync(file);
+    db.exec(`CREATE TABLE ai_agent_runs(id TEXT,session_id TEXT,status TEXT,model TEXT);
+      CREATE TABLE ai_confirmation_items(id TEXT,session_id TEXT,run_id TEXT,action_type TEXT,payload_json TEXT);
+      CREATE TABLE xiaozhi_permission_audit_v1(session_id TEXT,kind TEXT,reference TEXT,metadata_json TEXT);`);
+    for (const id of ['run_original','run_continued']) db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(id,'session_q5','failed','fixture-model');
+    const approval = {schemaVersion:2,id:'approval_q5',revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner:{sessionId:'session_q5',taskId:'task_q5',runId:'run_original',generation:1},summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:[{kind:'network',origin:new URL(q5Source).origin,methods:['GET']}]}};
+    db.prepare('INSERT INTO ai_confirmation_items VALUES(?,?,?,?,?)').run(approval.id,'session_q5','run_original','xiaozhi_permission_v2',JSON.stringify(approval));
+    const records = readOriginalRecords(file,'session_q5','run_original'), binding={sessionId:'session_q5',taskId:'task_q5',runId:'run_original'};
+    const input={task:'Q5',binding,records,webpageHttpTiming:{rows:[]}};
+    assert.equal(q5ContinuationDecision(input).status,'eligible');
+    assert.equal(q5ContinuationDecision({...input,task:'Q4'}).status,'not_applicable');
+    assert.equal(q5ContinuationDecision({...input,records:{...records,approvals:[]}}).reason,'no_matching_modern_approved_operation');
+    assert.equal(q5ContinuationDecision({...input,webpageHttpTiming:{rows:[{status:503}]}}).reason,'web_request_already_observed');
+    for(const patch of [{state:'pending'},{scope:'task'},{owner:{...records.approvals[0].owner,taskId:'other_task'}},{owner:{...records.approvals[0].owner,runId:'other_run'}},{fixedQ5Get:false}]){
+      assert.notEqual(q5ContinuationDecision({...input,records:{...records,approvals:[{...records.approvals[0],...patch}]}}).status,'eligible');
+    }
+    const continued={...binding,runId:'run_continued'};
+    const executing={...approval,state:'executed',revision:4,admittedOwner:{...approval.request.owner,runId:continued.runId,generation:2}};
+    db.prepare('UPDATE ai_confirmation_items SET payload_json=?').run(JSON.stringify(executing));
+    for(const kind of ['approval_executing','approval_executed'])db.prepare('INSERT INTO xiaozhi_permission_audit_v1 VALUES(?,?,?,?)').run('session_q5',kind,approval.id,JSON.stringify({owner:executing.admittedOwner}));
+    const final=readOriginalRecords(file,'session_q5',continued.runId);
+    assert.equal(verifyQ5ApprovalConsumption(records,final,continued).length,1);
+    assert.throws(()=>verifyQ5ApprovalConsumption(records,final,{...continued,taskId:'other_task'}));
+    db.prepare('INSERT INTO xiaozhi_permission_audit_v1 VALUES(?,?,?,?)').run('session_q5','approval_executing',approval.id,JSON.stringify({owner:executing.admittedOwner}));
+    assert.throws(()=>verifyQ5ApprovalConsumption(records,readOriginalRecords(file,'session_q5',continued.runId),continued));db.close();
+  });
+  await check('Fixed NASA read evidence needs both a completed HTTP 200 and the same Run native tool receipt without body disclosure',()=>{
+    const root=path.join(output,'q5-source-evidence'),data=path.join(root,'data');fs.mkdirSync(data,{recursive:true});
+    const file=path.join(data,'app.sqlite'),db=new DatabaseSync(file),relative='session_q5/sessions/native.jsonl';
+    db.exec(`CREATE TABLE ai_agent_runs(id TEXT,session_id TEXT,status TEXT,model TEXT);
+      CREATE TABLE xiaozhi_tool_receipts(run_id TEXT,call_id TEXT,tool TEXT,success INTEGER,native_entry_id TEXT,native_digest TEXT,contract_json TEXT);
+      CREATE TABLE xiaozhi_pi_session_bindings(conversation_id TEXT,session_file TEXT);`);
+    db.prepare('INSERT INTO xiaozhi_pi_session_bindings VALUES(?,?)').run('session_q5',relative);
+    const native=[];
+    for(const [runId,callId,success] of [['run_original','call_denied',false],['run_continued','call_read',true]]){
+      db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(runId,'session_q5','succeeded','fixture-model');
+      db.prepare('INSERT INTO xiaozhi_tool_receipts VALUES(?,?,?,?,?,?,?)').run(runId,callId,'office_web_fetch',Number(success),'entry_'+callId,'a'.repeat(64),'{}');
+      native.push({id:'request_'+callId,message:{role:'assistant',content:[{type:'toolCall',id:callId,name:'office_web_fetch',arguments:{url:q5Source,find:['private-body-canary']}}]}});
+      native.push({id:'entry_'+callId,message:{role:'toolResult',toolName:'office_web_fetch',toolCallId:callId,isError:!success,content:[{type:'text',text:'private-body-canary credential-canary'}],
+        details:success?{success:true,data:{sources:[{url:q5Source,kind:'read',title:'private-body-canary'}]}}:{success:false,error:{code:'permission_denied'}}}});
+    }db.close();
+    const nativeFile=path.join(data,'xiaozhi-pi',relative);fs.mkdirSync(path.dirname(nativeFile),{recursive:true});fs.writeFileSync(nativeFile,native.map(item=>JSON.stringify(item)).join('\n')+'\n');
+    const evidence=(runId,rows)=>readQ5SourceEvidence({databasePath:file,binding:{runId,sessionId:'session_q5'},records:readOriginalRecords(file,'session_q5',runId),webpageHttpTiming:{rows}});
+    const denied=evidence('run_original',[]),read=evidence('run_continued',[{createdAt:1,status:200,responseEndAt:5}]);
+    assert.equal(denied.status,'not_read');assert.equal(denied.httpDispatchCount,0);assert.equal(denied.receipts[0].callId,'call_denied');assert.equal(denied.receipts[0].error,'permission_denied');
+    assert.equal(read.status,'read');assert.equal(read.receipts[0].readSource,q5Source);assert.equal(read.receipts[0].sqlite.receipt.callId,'call_read');assert.equal(read.receipts[0].pi.entryId,'entry_call_read');assert.equal(read.receipts[0].pi.line,4);
+    assert.equal(evidence('run_original',[{status:200,responseEndAt:5}]).status,'not_read');
+    assert.equal(evidence('run_continued',[]).status,'not_read');
+    assert.equal(evidence('run_continued',[{status:503,responseEndAt:5}]).status,'not_read');
+    assert(!JSON.stringify({denied,read}).includes('private-body-canary'));assert(!JSON.stringify({denied,read}).includes('credential-canary'));
+    fs.writeFileSync(nativeFile,'{invalid');assert.equal(evidence('run_continued',[{status:200,responseEndAt:5}]).nativeStatus,'readback_unavailable');
+  });
+  await check('Q5 uses one visible exact-task continuation and records unavailable legacy UI without another Composer command', async () => {
+    assert.equal(typeof continueApprovedQ5,'function');
+    const binding={sessionId:'session_q5',runId:'run_original',taskId:'task_q5'};
+    const original={binding,records:{approvals:[{id:'approval_q5',state:'approved',scope:'operation',fixedQ5Get:true,owner:binding}]}};
+    let clicks=0,armed=0,hasEntry=true;
+    const control={count:async()=>hasEntry?1:0,isEnabled:async()=>true,click:async()=>{clicks++;}};
+    const row={waitFor:async()=>{},count:async()=>1,getByTestId:id=>{assert.equal(id,'pi-task-overview-continue');return control;}};
+    const page={getByTestId:id=>{assert.equal(id,'pi-workbench-open');return {count:async()=>hasEntry?1:0,click:async()=>{}};},locator:selector=>{assert(selector.includes('task_q5'));return row;}};
+    const record={};const args={task:'Q5',original,webpageHttpTiming:{rows:[]},page,record,beforeDispatch:async()=>{armed++;}};
+    await continueApprovedQ5(args);await continueApprovedQ5(args);assert.equal(clicks,1);assert.equal(armed,1);assert.equal(record.status,'dispatched');
+    hasEntry=false;const missing={};await continueApprovedQ5({...args,record:missing});assert.equal(missing.status,'unavailable');assert.equal(clicks,1);
+    const legacy={};await continueApprovedQ5({...args,original:{binding,records:{approvals:[]}},record:legacy});assert.equal(legacy.status,'not_applicable');assert.equal(clicks,1);
+  });
+  await check('HTTP Run ownership follows observed dispatch boundaries, including delayed bodies and stale requests', async () => {
+    const localNet={fetch:async()=>new Response('data: [DONE]\n\n',{status:200,headers:{'content-type':'text/event-stream'}})};
+    const measured=installProviderBridge(localNet,{chatRoutes:{'/v1/chat/completions':proxy.url,'/chat/completions':proxy.url}});
+    try{
+      measured.beginDispatch({id:'original',sessionId:'session_q5'});
+      measured.observeRun({sessionId:'session_q5',runId:'run_original',kind:'status',status:'running'});
+      await (await localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'})).text();
+      assert.throws(()=>measured.beginDispatch({id:'continuation',sessionId:'session_q5',previousRunId:'run_original'}));
+      measured.observeRun({sessionId:'session_q5',runId:'run_original',kind:'status',status:'failed'});
+      measured.beginDispatch({id:'continuation',sessionId:'session_q5',previousRunId:'run_original'});
+      await assert.rejects(()=>localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'}));
+      measured.observeRun({sessionId:'session_q5',runId:'run_continued',kind:'status',status:'running'});
+      await (await localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'})).text();
+      const owned=measured.snapshot().chats.filter(row=>row.dispatchAt);
+      assert.deepEqual(owned.map(row=>[row.dispatchBoundary,row.runId]),[['original','run_original'],['continuation','run_continued']]);
+      measured.observeRun({sessionId:'session_q5',runId:'run_original',kind:'status',status:'running'});
+      await assert.rejects(()=>localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'}));
+    }finally{measured.restore();}
+  });
   function collectionFixture(name, {limit = 64, initialUsed = 0} = {}) {
     const directory = path.join(output, name); fs.mkdirSync(directory);
     const databasePath = path.join(directory, 'protocol-budget.sqlite');
@@ -214,6 +300,57 @@ try {
     }
     return {directory, databasePath, budget, calls, manifest, collect};
   }
+  await check('Real loopback reservations bind by explicit original/continuation routes even when request rows are reordered',async()=>{
+    const evidenceRef='fixture/q5-boundaries', budget=openBudgetLedger({databasePath:path.join(output,'q5-boundaries.sqlite'),limit:3});resources.push(()=>budget.close());
+    const original=await startCountingProxy({ledger:budget,providerEndpoint:origin+'/chat',fixtureHttp:true,context:{task:'Q5',version:'B',round:1,evidenceRef}});
+    const continued=await startCountingProxy({ledger:budget,providerEndpoint:origin+'/chat',fixtureHttp:true,context:{task:'Q5',version:'B',round:1,evidenceRef:evidenceRef+'/continuation'}});
+    resources.push(()=>original.close(),()=>continued.close());
+    const routes=url=>({'/v1/chat/completions':url,'/chat/completions':url});
+    const localNet={fetch},measured=installProviderBridge(localNet,{chatRoutes:routes(original.url)});resources.push(()=>measured.restore());
+    const file=path.join(output,'q5-boundary-app.sqlite'),db=new DatabaseSync(file);
+    db.exec('CREATE TABLE ai_agent_runs(id TEXT,session_id TEXT,status TEXT,model TEXT); CREATE TABLE app_settings(key TEXT,value_json TEXT);');
+    for(const id of ['run_original','run_continued'])db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(id,'session_q5','succeeded','fixture-model');
+    db.prepare('INSERT INTO app_settings VALUES(?,?)').run('xiaozhi.task.v1:xitask_fixture',JSON.stringify({view:{id:'task_q5',sessionId:'session_q5',origin:{runId:'run_original'},lastRunId:'run_continued'}}));db.close();
+    const snapshot={projection:{turns:[{id:'run_original'},{id:'run_continued'}]},task:{id:'task_q5'}};
+    const segments=['original','continuation'].map((id,index)=>({id,evidenceRef:evidenceRef+(index?'/continuation':''),binding:verifiedRunBinding({sessionId:'session_q5',runId:index?'run_continued':'run_original',snapshot,records:readOriginalRecords(file,'session_q5',index?'run_continued':'run_original')})}));
+    const post=async()=>{await(await localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'})).text();};
+    measured.beginDispatch({id:'original',sessionId:'session_q5'});measured.observeRun({sessionId:'session_q5',runId:'run_original',kind:'status',status:'running'});await post();
+    measured.observeRun({sessionId:'session_q5',runId:'run_original',kind:'status',status:'failed'});
+    measured.beginDispatch({id:'continuation',sessionId:'session_q5',previousRunId:'run_original',chatRoutes:routes(continued.url)});
+    measured.observeRun({sessionId:'session_q5',runId:'run_continued',kind:'status',status:'running'});
+    const stoppedTransport=measured.snapshot();
+    const stoppedSegments=[segments[0],{...segments[1],terminal:'failed'}];
+    assert.throws(()=>bindDispatchAttempts({ledger:budget,evidenceRef,segments:stoppedSegments,transport:stoppedTransport}));
+    stoppedTransport.boundaries[1].terminalAt=performance.now();
+    assert.deepEqual(bindDispatchAttempts({ledger:budget,evidenceRef,segments:stoppedSegments,transport:stoppedTransport}).map(item=>item.context.runId),['run_original']);
+    assert.throws(()=>bindDispatchAttempts({ledger:budget,evidenceRef,segments,transport:stoppedTransport}));
+    await post();await post();
+    const transport=measured.snapshot();transport.chats.reverse();
+    const attempts=bindDispatchAttempts({ledger:budget,evidenceRef,segments,transport});
+    assert.equal(attempts.filter(item=>item.context.runId==='run_original').length,1);assert.equal(attempts.filter(item=>item.context.runId==='run_continued').length,2);
+    const before=JSON.stringify(budget.attempts());transport.chats[0].runId='run_original';
+    assert.throws(()=>bindDispatchAttempts({ledger:budget,evidenceRef,segments,transport}));assert.equal(JSON.stringify(budget.attempts()),before);assert.equal(budget.summary().used,3);
+  });
+  await check('A real charged loopback attempt prebound to the wrong Run stops the shared collector and remains spent after reopen',async()=>{
+    const directory=path.join(output,'prebound-wrong-run');fs.mkdirSync(directory);const databasePath=path.join(directory,'fixture-budget.sqlite');
+    const budget=openBudgetLedger({databasePath,limit:4});resources.push(()=>budget.close());
+    const evidenceRef='phase8-real/'+path.basename(directory)+'/Q1-r1-A';
+    const proxy=await startCountingProxy({ledger:budget,providerEndpoint:origin+'/chat',fixtureHttp:true,context:{task:'Q1',version:'A',round:1,evidenceRef}});resources.push(()=>proxy.close());
+    const localNet={fetch},bridge=installProviderBridge(localNet,{chatRoutes:{'/v1/chat/completions':proxy.url,'/chat/completions':proxy.url}});resources.push(()=>bridge.restore());
+    const app=path.join(directory,'app.sqlite'),db=new DatabaseSync(app);db.exec('CREATE TABLE ai_agent_runs(id TEXT,session_id TEXT,status TEXT,model TEXT)');db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run('run_correct','session_wrong_case','succeeded','fixture-model');db.close();
+    const binding=verifiedRunBinding({sessionId:'session_wrong_case',runId:'run_correct',snapshot:{projection:{turns:[{id:'run_correct'}]}},records:readOriginalRecords(app,'session_wrong_case','run_correct')});
+    let calls=0;
+    const stopped=await collectScheduledRuns({manifest:{model:{id:'fixture-model'}},versions:{},ledger:budget,output:directory,collect:async()=>{
+      calls++;bridge.beginDispatch({id:'original',sessionId:binding.sessionId});bridge.observeRun({...binding,kind:'status',status:'running'});
+      await(await localNet.fetch('https://api.deepseek.com/chat/completions',{method:'POST',body:'{}'})).text();
+      const charged=budget.attempts()[0];assert.equal(charged.state,'completed');budget.bindRun(charged.reservationId,'run_wrong');
+      bindDispatchAttempts({ledger:budget,evidenceRef,segments:[{id:'original',evidenceRef,binding}],transport:bridge.snapshot()});
+      throw Error('Wrong binding was accepted');
+    }});
+    assert.equal(calls,1);assert.equal(stopped.stoppedAt.id,'Q1-r1-A');assert.equal(stopped.results[0].collectionStatus,'FAIL');assert.equal(stopped.results.filter(row=>row.collectionStatus==='NOT_TESTED').length,31);
+    assert.equal(budget.summary().used,1);assert.equal(budget.attempts()[0].context.runId,'run_wrong');budget.close();
+    const reopened=openBudgetLedger({databasePath});try{assert.equal(reopened.summary().used,1);assert.equal(reopened.attempts()[0].context.runId,'run_wrong');assert.equal(reopened.attempts()[0].state,'completed');}finally{reopened.close();}
+  });
   await check('Executable preflight dispatches only fixed Q1 A/B and full collection preserves 32 quality failures', async () => {
     assert.equal(typeof collectScheduledRuns, 'function');
     const beforeHttp = received.length, pair = collectionFixture('preflight-pair');
@@ -234,6 +371,51 @@ try {
     report.collectionControl = {preflightCalls: pair.calls, fullCalls: full.calls, qualityFailuresPreserved: all.results.length,
       boundary: 'Same actual serial loop as executePlan. Collector callbacks produce synthetic rows using owned SQLite original Run validation and real TEMP budget reservations. These reservations simulate dispatch and make no HTTP request.'};
     assert.equal(received.length, beforeHttp);
+  });
+  await check('The fixed 32-row collector preserves both Q5 Runs and rejects continuation cold-readback or request ownership conflicts',async()=>{
+    async function doubleRun(fixture,args){
+      const value=await fixture.collect(...args);if(value.task!=='Q5')return value;
+      const firstId=value.binding.runId,sessionId=value.binding.sessionId,taskId='task_'+value.id.replaceAll('-','_'),nextId=firstId+'_continued';
+      const db=new DatabaseSync(path.join(value.output,'app-fixture.sqlite'));
+      db.exec(`CREATE TABLE app_settings(key TEXT,value_json TEXT);
+        CREATE TABLE ai_confirmation_items(id TEXT,session_id TEXT,run_id TEXT,action_type TEXT,payload_json TEXT);
+        CREATE TABLE xiaozhi_permission_audit_v1(session_id TEXT,kind TEXT,reference TEXT,metadata_json TEXT);`);
+      db.prepare('INSERT INTO app_settings VALUES(?,?)').run('xiaozhi.task.v1:xitask_fixture',JSON.stringify({view:{id:taskId,sessionId,origin:{runId:firstId},lastRunId:nextId}}));
+      const owner={sessionId,taskId,runId:firstId,generation:1};
+      const approval={schemaVersion:2,id:'approval_'+value.id,revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner,summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:[{kind:'network',origin:new URL(q5Source).origin,methods:['GET']}]}};
+      db.prepare('INSERT INTO ai_confirmation_items VALUES(?,?,?,?,?)').run(approval.id,sessionId,firstId,'xiaozhi_permission_v2',JSON.stringify(approval));
+      const snapshot={...value.snapshot,task:{id:taskId}},file=path.join(value.output,'app-fixture.sqlite');
+      const first=readOriginalRecords(file,sessionId,firstId),originalBinding=verifiedRunBinding({sessionId,runId:firstId,snapshot,records:first});
+      const admittedOwner={...owner,runId:nextId,generation:2};
+      db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(nextId,sessionId,'succeeded','fixture-model');
+      db.prepare('UPDATE ai_confirmation_items SET payload_json=?').run(JSON.stringify({...approval,state:'executed',revision:4,admittedOwner}));
+      for(const kind of ['approval_executing','approval_executed'])db.prepare('INSERT INTO xiaozhi_permission_audit_v1 VALUES(?,?,?,?)').run(sessionId,kind,approval.id,JSON.stringify({owner:admittedOwner}));db.close();
+      const finalSnapshot={...snapshot,projection:{turns:[...snapshot.projection.turns,{id:nextId,status:'completed'}]}},records=readOriginalRecords(file,sessionId,nextId);
+      const binding=verifiedRunBinding({sessionId,runId:nextId,snapshot:finalSnapshot,records});
+      const evidenceRef=value.attempts[0].context.evidenceRef,context={...value.attempts[0].context,evidenceRef:evidenceRef+'/continuation'};delete context.runId;delete context.attempt;
+      const attempt=fixture.budget.reserve(context);fixture.budget.markDispatching(attempt.reservationId,1);fixture.budget.markResponse(attempt.reservationId,200);fixture.budget.finish(attempt.reservationId,{state:'completed',elapsedMs:1,responseBytes:1});fixture.budget.bindRun(attempt.reservationId,nextId);
+      const chat=value.transport.chats[0];
+      return {...value,binding,snapshot:finalSnapshot,records,coldRecords:readOriginalRecords(file,sessionId,nextId),terminal:'completed',
+        continuation:{status:'completed',attempted:true},
+        runSegments:[{id:'original',evidenceRef,binding:originalBinding,snapshot,records:first,coldRecords:readOriginalRecords(file,sessionId,firstId),terminal:'failed'},
+          {id:'continuation',evidenceRef:evidenceRef+'/continuation',binding,snapshot:finalSnapshot,records,coldRecords:readOriginalRecords(file,sessionId,nextId),terminal:'completed'}],
+        transport:{...value.transport,chats:[{...chat,runId:firstId,dispatchBoundary:'original'},{...chat,index:2,runId:nextId,dispatchBoundary:'continuation'}]},
+        attempts:fixture.budget.attempts().filter(item=>item.context.evidenceRef===evidenceRef||item.context.evidenceRef===evidenceRef+'/continuation')};
+    }
+    const fixture=collectionFixture('q5-two-runs');
+    const collected=await collectScheduledRuns({manifest:fixture.manifest,versions:{},ledger:fixture.budget,output:fixture.directory,collect:(...args)=>doubleRun(fixture,args)});
+    assert.equal(collected.stoppedAt,null);assert.equal(collected.results.length,32);assert.equal(fixture.budget.summary().used,36);
+    assert(collected.results.filter(row=>row.task==='Q5').every(row=>row.runSegments.length===2&&row.runSegments[0].terminal==='failed'&&row.runSegments[1].terminal==='completed'));
+    for(const conflict of ['cold_run','request_run']){
+      const bad=collectionFixture('q5-conflict-'+conflict);
+      const stopped=await collectScheduledRuns({manifest:bad.manifest,versions:{},ledger:bad.budget,output:bad.directory,collect:async(...args)=>{
+        const row=await doubleRun(bad,args);if(row.task==='Q5'){
+          if(conflict==='cold_run')row.runSegments[1].coldRecords.runs[0].id='wrong_run';else row.transport.chats[1].runId=row.runSegments[0].binding.runId;
+        }return row;
+      }});
+      assert.equal(stopped.stoppedAt.id,'Q5-r1-A');assert.equal(bad.calls.length,17);assert.equal(bad.budget.summary().used,18);
+      assert(stopped.results.filter(row=>row.collectionStatus==='NOT_TESTED').length===15);
+    }
   });
   await check('Executable collection stops dispatch on infrastructure/binding/wire errors and preserves spent allowance', async () => {
     assert.equal(typeof collectScheduledRuns, 'function');
@@ -275,7 +457,7 @@ try {
     assert.equal(empty.calls.length, 0); assert.equal(empty.budget.summary().used, 1); assert(exhausted.stoppedAt);
     report.stopControl = {cases: observations, thinkingParityCalls: parity.calls, exhaustedDispatches: empty.calls.length};
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 10 && report.checks.every(row => row.pass);
+  report.budget = ledger.summary(); report.success = report.checks.length === 17 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();

@@ -23,5 +23,22 @@
     "syntheticModelRequests": 4,
     "paidModelRequests": 0
   },
+  "frozenBaselineA": {
+    "result": "PASS_SCOPED",
+    "sourceCommit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "outputFiles": 458,
+    "outputSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+    "mainSha256": "e256923d46376b17f6492e5500bf5b97a0071b700d2e3bce8477ebca715f157c",
+    "report": "TEMP/omni-edu-xiaozhi-phase8-baseline-q5-a9cb9355/report.json",
+    "reportSha256": "6f3c76ef781555aaba6ea7eea879af728a4316e4f1f5e3306eb135e44ccaf6f9",
+    "actualPublicHttpStatus": 200,
+    "nativeSourceAndDensityRulePresent": true,
+    "persistedRuns": 1,
+    "persistedApprovals": 0,
+    "visibleModernApprovalCount": 0,
+    "visibleWorkbenchEntryCount": 0,
+    "syntheticModelRequests": 2,
+    "paidModelRequests": 0
+  },
   "nextAcceptanceDependency": "The formal runner currently exits on the first terminal Run after clicking approval. Before formal sampling, cover the exact same-task continuation path where applicable. Keep the original failed tool and separately bind and meter the admitted continuation Run, with one bounded authorized continuation for the row. Check frozen A separately before comparing behavior."
 }
