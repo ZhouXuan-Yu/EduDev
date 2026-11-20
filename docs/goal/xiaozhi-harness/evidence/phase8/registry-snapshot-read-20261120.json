@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "4987c448159004a6bfa072c489d3710a4fa0f60e",
+  "change": "Within the original registry transaction, retain the verified opening snapshot hash and compare the mutated snapshot to it. Four private actions leave the singleton row untouched until the original CAS writer.",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-registry-snapshot-read/out",
+    "exitCode": 0,
+    "includesTypecheck": true,
+    "runtimeSourceHash": "380918badb0f355ed4936230a1b8a54e0f369a8528ddd22f848cfd48a577e4c2",
+    "outputSha256": "fcd32417af895efa111a47ccb3652a3110fd600aa333ff42280dca5effe31887",
+    "mainSha256": "5432b09cf29a15f35ccf9ca5bb95167c001f6b26b3c2da71b0ed584f1671bfd1",
+    "files": 481,
+    "logSha256": "050c52440df75f4bcb51a261b67c2948b9af833deec971647594bc1428cc05cd"
+  },
+  "sqliteControlledComparison": {
+    "result": "PASS",
+    "command": "node --experimental-transform-types <TEMP>/xiaozhi-registry-single-read-5nfl2ty_/compare.mjs",
+    "cwd": "apps/desktop",
+    "runner": "TEMP/xiaozhi-registry-single-read-5nfl2ty_/compare.mjs",
+    "runnerSha256": "fa0f30e9269c6ced792f1823477e2bb083c0d2f2e8cd93c6998f7cb17ba624e1",
+    "report": "TEMP/xiaozhi-registry-single-read-5nfl2ty_/report.json",
+    "reportSha256": "1f23509d43f94b83599be7ca6c2f52edb40890795c05cffbcabeca9c00db3c53",
+    "variants": "Exact pre-edit and post-edit registry sources, two isolated real SQLite stores, identical 84 synthetic declarations.",
+    "coldSingletonReads": {"before": 168, "after": 84},
+    "identicalRegistrationSingletonReads": {"before": 168, "after": 84},
+    "singleMutationOrNoOpReads": {"before": 2, "after": 1},
+    "staleRevisionRejectionReads": {"before": 1, "after": 1},
+    "equivalentStages": 10,
+    "equivalentFacts": ["operation results", "revision", "singleton snapshot hash", "version archive hash"]
+  },
+  "isolatedRegistryTiming": {
+    "command": "node --experimental-transform-types <TEMP>/xiaozhi-registry-abba-h65t_0eg/compare-abba.mjs",
+    "cwd": "apps/desktop",
+    "exitCode": 0,
+    "report": "TEMP/xiaozhi-registry-abba-h65t_0eg/report.json",
+    "reportSha256": "c7ce190a03eef001603eb8ee5906f2f3653b0770b5a506a11afb24051600179b",
+    "runnerSha256": "43649f118204acdea195fb1730c708c5660af5365088ddef4a952b42dc594610",
+    "baselineSourceSha256": "dddd2288b3faf05104324944c4db233502f35ff0bf8fbc81c0de7f3ea6e0033b",
+    "candidateSourceSha256": "0a6d1d35c95617240a55d13a4c9c1fe57686bd20d79737ec7023662a60381cc8",
+    "order": ["A", "B", "B", "A"],
+    "cold84RegistrationsWallMs": [1887.95, 1359.67, 1396.60, 1915.13],
+    "processCpuMs": [1624, 1312, 1280, 1501],
+    "singletonReads": [168, 84, 84, 168],
+    "meanWallMs": {"before": 1901.54, "after": 1378.13},
+    "relativeWallReductionPercent": 27.53,
+    "scope": "Four isolated SQLite stores with identical synthetic workloads and persistent state. Two small samples per variant establish the observed registry operation costs. Desktop latency is recorded separately."
+  },
+  "regressions": {
+    "registryResolverNative": {
+      "command": "node --experimental-transform-types apps/desktop/scripts/xiaozhi-agent/capability-phase1-smoke.mjs",
+      "cwd": "repository root",
+      "passed": 33,
+      "report": "TEMP/xiaozhi-capability-phase1-PNjq73/report.json",
+      "reportSha256": "e5b934c37dc3da43b94a78d3adadc363f1c031ca94fa90fae28383b8461b1ae8"
+    },
+    "contractVersionAndRollback": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs",
+      "cwd": "apps/desktop",
+      "passed": 10,
+      "report": "TEMP/xiaozhi-capability-phase2-contract-wdtZzf/report.json",
+      "reportSha256": "962104cb1366af2713fc982fd40beacf3970a012bc5b39c1c83a34d858cb1208"
+    },
+    "components": {"command": "npm.cmd run test:renderer-components", "passed": 253, "exitCode": 0, "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"}
+  },
+  "candidateBackgroundSample": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/harness-registry-snapshot-read/out --label harness-registry-single-read --expected-out-hash fcd32417af895efa111a47ccb3652a3110fd600aa333ff42280dca5effe31887 --expected-out-count 481 --background true --require-lifecycle true",
+    "exitCode": 0,
+    "passed": 7,
+    "report": "TEMP/omni-edu-xiaozhi-stream-VRRKNy/report.json",
+    "reportSha256": "967a42465014e9039272467dc6ff3bc4b5eccc2fc7cc6b9c19687f13967c0f0e",
+    "lifecycleRows": 213,
+    "dropped": 0,
+    "invalid": 0,
+    "sqlitePreparationBoundaryDifferenceMs": 6.9741,
+    "buildUnchanged": true,
+    "paidCalls": 0,
+    "projectedAndEventStatus": "interrupted",
+    "compatibilityRunStatus": "blocked"
+  },
+  "backgroundLatencyComparison": {
+    "samplesPerVersion": 1,
+    "submitToMainFetchMs": {"before": 12741.00, "after": 17040.24},
+    "toolContractRegistrationMs": {"before": 7530.15, "after": 7989.23},
+    "executeToPiImportStartMs": {"before": 217.19, "after": 2193.19},
+    "outcome": "The after sample was slower. Different timings outside registry work are retained. These data do not establish a desktop latency improvement or a causal regression."
+  },
+  "baselineEvidence": "first-model-request-local-preparation-20261120.json",
+  "realModelAdded": 0,
+  "remaining": ["native caption drag and maximize/restore", "QG-09 clean Windows install shortcut launch and uninstall", "formal 32-task real model and final independent acceptance"]
+}

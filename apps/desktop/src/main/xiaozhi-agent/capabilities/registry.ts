@@ -76,12 +76,13 @@ export function createCapabilityRegistry(sql: Sql, options: {
             provider.id, provider.version, binding.capabilityId, JSON.stringify(record), protocolHash(record)
         ]);
     }
-    async function read(work: Sql): Promise<RegistrySnapshot> {
+    async function readValidated(work: Sql): Promise<{snapshot: RegistrySnapshot; hash: string}> {
         const row = (await work.all(`SELECT revision,document_json,document_hash FROM ${table} WHERE id=1`))[0];
         if (!row) {
-            return empty();
+            const snapshot = empty();
+            return {snapshot, hash: protocolHash(snapshot)};
         }
-        let snapshot: RegistrySnapshot;
+        let snapshot: RegistrySnapshot, hash: string;
         try {
             const raw: unknown = JSON.parse(String(row.document_json));
             if (!raw || typeof raw !== 'object' || Array.isArray(raw) || Object.keys(raw).sort().join(',') !== 'bindings,definitions,providers,revision') {
@@ -92,14 +93,18 @@ export function createCapabilityRegistry(sql: Sql, options: {
                 throw Error();
             }
             validate(snapshot);
-            if (snapshot.revision !== Number(row.revision) || protocolHash(snapshot) !== row.document_hash) {
+            hash = protocolHash(snapshot);
+            if (snapshot.revision !== Number(row.revision) || hash !== row.document_hash) {
                 throw Error();
             }
         }
         catch {
             throw Error('capability_registry_corrupt');
         }
-        return snapshot;
+        return {snapshot, hash};
+    }
+    async function read(work: Sql): Promise<RegistrySnapshot> {
+        return (await readValidated(work)).snapshot;
     }
     async function mutate(action: (snapshot: RegistrySnapshot, work: Sql) => void | Promise<void>, expectedRevision?: number) {
         if (!sql.transaction || !sql.change) {
@@ -109,16 +114,16 @@ export function createCapabilityRegistry(sql: Sql, options: {
             if (!work.change) {
                 throw Error('capability_registry_transaction_required');
             }
-            const snapshot = await read(work);
+            const {snapshot, hash: previousHash} = await readValidated(work);
             if (expectedRevision !== undefined && snapshot.revision !== expectedRevision) {
                 throw Error('capability_registry_revision_conflict');
             }
             const previous = snapshot.revision;
             await action(snapshot, work);
-            // Idempotent registration preserves the revision when metadata is unchanged.
-            const current = await read(work);
-            if (protocolHash(snapshot) === protocolHash(current)) {
-                return current.revision;
+            // These private actions only edit this snapshot and the separate version archive.
+            // The singleton stays unchanged inside this serialized transaction until the CAS below.
+            if (protocolHash(snapshot) === previousHash) {
+                return previous;
             }
             snapshot.revision = previous + 1;
             validate(snapshot);
