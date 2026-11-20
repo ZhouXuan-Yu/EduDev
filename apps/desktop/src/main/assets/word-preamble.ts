@@ -1,6 +1,6 @@
-import type {WordBlock} from '../../shared/material-word';
+import type {WordBlock,WordPreambleBlank} from '../../shared/material-word';
 import {wordParagraphMap,wordSourceBlocks,type WordSourceSpan} from '../../shared/material-word-question';
-import {bookletMetadataLine,bookletSectionHeading} from './word-booklet';
+import {bookletMetadataLine,bookletSectionHeading,printedScoringHeading} from './word-booklet';
 
 export type PreambleEntry={block:WordBlock;span:WordSourceSpan};
 const subjects='语文|数学|英语|物理|化学|生物|历史|地理|科学';
@@ -31,6 +31,10 @@ function educationalHeading(text:string):boolean{
 export function administrativeTitle(line:string):boolean{
  const text=compact(line);
  return examTitle.test(text)||subjectTitle.test(text)||paperTitle.test(text);
+}
+export function decoratedPreambleTitle(block:Extract<WordBlock,{kind:'paragraph'}>):string|undefined{
+ const text=block.inlines.map(inline=>inline.kind==='text'?inline.text:'').join('').trim();
+ if(!text.includes('\n')&&(administrativeTitle(text)||educationalHeading(compact(text))))return text;
 }
 function calendarDate(text:string):boolean{
  const match=text.match(/^(\d{4})(?:年|[./-])(\d{1,2})(?:(?:月|[./-])(\d{1,2})日?|月)?$/u);
@@ -77,10 +81,15 @@ export function preambleWindow(blocks:WordBlock[],expanded=false){
 }
 
 /** Split only plain text at original UTF16 line boundaries. Atomic media stays whole. */
-export function partitionWordPreamble(entries:PreambleEntry[],hasTitle:boolean,expanded=false){
+export function partitionWordPreamble(entries:PreambleEntry[],hasTitle:boolean,expanded=false,policy?:{blank?:WordPreambleBlank}){
  const metadata:string[]=[],common:PreambleEntry[]=[];
  for(const entry of entries){
   const selected=wordSourceBlocks([entry.block],[entry.span],'question')[0];
+  if(policy?.blank?.blockId===selected?.id&&selected?.kind==='paragraph'&&
+     (entry.span.from??0)===0&&entry.block.kind==='paragraph'&&entry.span.to===wordParagraphMap(entry.block).length){
+   const title=decoratedPreambleTitle(selected);
+   if(title){metadata.push(title);continue;}
+  }
   if(!selected||plainPreambleText(selected)===undefined){common.push(entry);continue;}
   const original=entry.block;if(original.kind!=='paragraph')continue;
   const start=entry.span.from??0,end=entry.span.to??wordParagraphMap(original).length,text=wordParagraphMap(original).slice(start,end);
@@ -88,7 +97,7 @@ export function partitionWordPreamble(entries:PreambleEntry[],hasTitle:boolean,e
   for(const match of text.matchAll(/[^\n]*(?:\n|$)/gu)){
    const line=match[0],from=at;at+=line.length;
    if(!line.trim())continue;
-   if(administrativeLine(line,hasTitle,expanded)){metadata.push(line.trim());continue;}
+   if(administrativeLine(line,hasTitle,expanded)||policy&&printedScoringHeading(line)){metadata.push(line.trim());continue;}
    const last=common.at(-1);
    if(last?.block.id===original.id&&last.span.to===from)last.span.to=at;
    else common.push({block:original,span:{blockId:original.id,from,to:at}});

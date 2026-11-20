@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 Word 卷首图稿与保留证据
+
+真实桌面完成兼容升级、按题读回及本地图稿生成，重复整理与重启稳定。新策略回归覆盖有笔画、透明图、动画、错位置和篡改缓存。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)
+
 ## 2026-11-21 Word 连续排印答案的真实验收
 
 旧源 0 条原印答案，新源 6 条。逐条核对原字符、对应题号和题干范围，真实桌面显示及应用重启读回通过。已有 Word AI 批次未重复派发。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)

@@ -7,9 +7,11 @@ export const WORD_LEGACY_PARSER='word-ooxml.v1' as const;
 export const WORD_BOOKLET_QUESTION_POLICY='word-question-booklet.v3' as const;
 export const WORD_PREAMBLE_LEGACY_QUESTION_POLICY='word-question-preamble.v4' as const;
 export const WORD_PREAMBLE_EXPANDED_QUESTION_POLICY='word-question-preamble.v5' as const;
-export const WORD_PREAMBLE_QUESTION_POLICY='word-question-preamble.v6' as const;
-export type WordQuestionPolicy=typeof WORD_BOOKLET_QUESTION_POLICY|typeof WORD_PREAMBLE_QUESTION_POLICY|typeof WORD_PREAMBLE_LEGACY_QUESTION_POLICY|typeof WORD_PREAMBLE_EXPANDED_QUESTION_POLICY;
-export const hasExpandedWordPreamble=(value:unknown)=>value===WORD_PREAMBLE_QUESTION_POLICY||value===WORD_PREAMBLE_EXPANDED_QUESTION_POLICY;
+export const WORD_PRINTED_ANSWER_QUESTION_POLICY='word-question-preamble.v6' as const;
+export const WORD_PREAMBLE_QUESTION_POLICY='word-question-preamble.v7' as const;
+export type WordQuestionPolicy=typeof WORD_BOOKLET_QUESTION_POLICY|typeof WORD_PREAMBLE_QUESTION_POLICY|typeof WORD_PREAMBLE_LEGACY_QUESTION_POLICY|typeof WORD_PREAMBLE_EXPANDED_QUESTION_POLICY|typeof WORD_PRINTED_ANSWER_QUESTION_POLICY;
+export const hasPrintedWordAnswers=(value:unknown)=>value===WORD_PREAMBLE_QUESTION_POLICY||value===WORD_PRINTED_ANSWER_QUESTION_POLICY;
+export const hasExpandedWordPreamble=(value:unknown)=>hasPrintedWordAnswers(value)||value===WORD_PREAMBLE_EXPANDED_QUESTION_POLICY;
 export const isWordPreamblePolicy=(value:unknown)=>hasExpandedWordPreamble(value)||value===WORD_PREAMBLE_LEGACY_QUESTION_POLICY;
 export const isWordBookletPolicy=(value:unknown):value is WordQuestionPolicy=>value===WORD_BOOKLET_QUESTION_POLICY||isWordPreamblePolicy(value);
 export type WordParser=typeof WORD_PARSER|typeof WORD_LEGACY_PARSER;
@@ -21,7 +23,10 @@ export type WordAnchor={part:string;path:string};
 export type WordInline={kind:'text';text:string}|{kind:'formula';latex:string;omml:string;complete:boolean}|{kind:'image';assetId:string;alt:string;issue:string;relationshipId:string;part:string;metafile?:{sha256:string;engine:MetafileReadEngine};drawing?:WordDrawingProof};
 export type WordBlock=({id:string;anchor:WordAnchor;kind:'paragraph';inlines:WordInline[];numbering?:{level:number;label:string}}|{id:string;anchor:WordAnchor;kind:'table';rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>})&{warnings?:string[]};
 export type WordAsset={id:string;sha256:string;mime:'image/png'|'image/jpeg'|'image/webp';bytes:number;width:number;height:number;part:string};
-export type WordDocument={schemaVersion:typeof WORD_SCHEMA;parser:WordParser;blocks:WordBlock[];assets:WordAsset[];warnings:string[];unscopedWarnings?:string[];questionPolicy?:WordQuestionPolicy;imagePolicy?:typeof WORD_IMAGE_POLICY|typeof WORD_IMAGE_LEGACY_POLICY;drawingPolicy?:typeof WORD_DRAWING_POLICY|typeof WORD_DRAWING_LEGACY_POLICY};
+export type WordPreambleBlank={blockId:string;assetId:string};
+export const WORD_PREAMBLE_MAX_DIMENSION=64;
+export const WORD_PREAMBLE_MAX_IMAGE_BYTES=64*1024;
+export type WordDocument={schemaVersion:typeof WORD_SCHEMA;parser:WordParser;blocks:WordBlock[];assets:WordAsset[];warnings:string[];unscopedWarnings?:string[];questionPolicy?:WordQuestionPolicy;imagePolicy?:typeof WORD_IMAGE_POLICY|typeof WORD_IMAGE_LEGACY_POLICY;drawingPolicy?:typeof WORD_DRAWING_POLICY|typeof WORD_DRAWING_LEGACY_POLICY;preambleBlank?:WordPreambleBlank};
 export type WordMetafile={part:string;sha256:string;data:Uint8Array};
 export type WordPayload={document:WordDocument;images:Array<{id:string;data:Uint8Array}>;metafiles?:WordMetafile[];drawings?:WordDrawingRequest[]};
 export type WordRequest={schemaVersion:typeof WORD_SCHEMA;requestId:string;bytes:Uint8Array};
@@ -37,6 +42,19 @@ const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v
 const string=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n;
 const part=(v:unknown):v is string=>string(v,512)&&!!v&&!v.includes('..')&&!v.startsWith('/')&&!/[\\\x00-\x1f]/.test(v);
 export function validWordRequest(v:unknown):v is WordRequest{return obj(v)&&Object.keys(v).length===3&&v.schemaVersion===WORD_SCHEMA&&typeof v.requestId==='string'&&/^word_[a-f0-9-]{36}$/.test(v.requestId)&&v.bytes instanceof Uint8Array&&v.bytes.length>0&&v.bytes.length<=WORD_INPUT;}
+
+/** Only an untitled inline raster in the first native body paragraph can qualify. */
+export function wordPreambleBlankCandidate(document:Pick<WordDocument,'blocks'|'assets'>){
+ const block=document.blocks[0];
+ if(block?.kind!=='paragraph'||block.numbering||block.warnings?.length||
+    !/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\/p(?:\[\d+\])?$/u.test(block.anchor.path))return;
+ const [image,other]=block.inlines.filter(inline=>inline.kind!=='text');
+ if(!image||other||image.kind!=='image'||image.alt||image.issue||image.metafile||image.drawing||!image.part||!image.relationshipId)return;
+ const asset=document.assets.find(candidate=>candidate.id===image.assetId);
+ if(!asset||asset.id!=='wa_'+asset.sha256||asset.mime!=='image/png'||asset.bytes>WORD_PREAMBLE_MAX_IMAGE_BYTES||
+    asset.width>WORD_PREAMBLE_MAX_DIMENSION||asset.height>WORD_PREAMBLE_MAX_DIMENSION)return;
+ return {block,asset};
+}
 export function validWordDocument(v:unknown):v is WordDocument{
  if(!obj(v)||v.schemaVersion!==WORD_SCHEMA||!isWordParser(v.parser)||!Array.isArray(v.assets)||v.assets.length>512||!Array.isArray(v.blocks)||v.blocks.length>20000||!Array.isArray(v.warnings)||v.warnings.length>64||!v.warnings.every(x=>string(x,120)))return false;
  const documentWarnings=v.warnings,imagePolicy=v.imagePolicy;
@@ -75,7 +93,12 @@ export function validWordDocument(v:unknown):v is WordDocument{
    if(text>WORD_TEXT)return false;
   }return true;
  }
- return blocks(v.blocks,0);
+ if(!blocks(v.blocks,0))return false;
+ if(v.preambleBlank===undefined)return true;
+ const proof=v.preambleBlank;
+ if(v.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||!obj(proof)||Object.keys(proof).length!==2)return false;
+ const candidate=wordPreambleBlankCandidate({blocks:v.blocks as WordBlock[],assets:v.assets as WordAsset[]});
+ return !!candidate&&proof.blockId===candidate.block.id&&proof.assetId===candidate.asset.id;
 }
 export function validWordResult(v:unknown,id:string):v is WordResult{
  if(!obj(v)||v.schemaVersion!==WORD_SCHEMA||v.requestId!==id)return false;
