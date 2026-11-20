@@ -18,7 +18,7 @@ export {CORE_TOOL_NAMES} from './src/main/xiaozhi-agent/tools/manifest.ts';
 export {createSkillPrivateContext,captureSkillPrivateContext} from './src/main/xiaozhi-agent/skills/private-context.ts';`,
   resolveDir: process.cwd(), loader: 'ts'}, outfile: path.join(output, 'worker.mjs'), bundle: true, format: 'esm',
   platform: 'node', target: 'node24', packages: 'external', logLevel: 'warning'});
-const {createCapabilityRegistry, registerSessionToolGovernance, createRunToolGovernance, CORE_TOOL_NAMES, CORE_TOOL_PROVIDER_IDS,
+const {createCapabilityRegistry, prewarmCoreToolGovernance, registerSessionToolGovernance, createRunToolGovernance, CORE_TOOL_NAMES, CORE_TOOL_PROVIDER_IDS,
   validProviderResult, validProviderResultContext, createSkillPrivateContext, captureSkillPrivateContext} = await import(pathToFileURL(path.join(output, 'worker.mjs')).href);
 const db = new DatabaseSync(path.join(root, 'authority.sqlite'));
 const sql = {all: async (query, params = []) => db.prepare(query).all(...params), run: async (query, params = []) => {db.prepare(query).run(...params);}};
@@ -72,12 +72,49 @@ try {
     assert.equal(writes.length, 1);
     assert((await registry.snapshot()).providers.some(provider => provider.id === writes[0]));
   });
+  await check('Startup registers only known core metadata, atomically and once per persisted version', async () => {
+    const candidates = definitions.slice(2, 4).map(({name, parameters}) => ({name, parameters}));
+    const before = await registry.snapshot();
+    const controller = new AbortController();
+    const run = sql.run;
+    sql.run = async (query, params) => {
+      await run(query, params);
+      if (query.startsWith('INSERT INTO xiaozhi_capability_provider_versions_v1')) controller.abort();
+    };
+    try {
+      await assert.rejects(prewarmCoreToolGovernance({definitions: candidates, registry, signal: controller.signal}), {name: 'AbortError'});
+    } finally { sql.run = run; }
+    assert.deepEqual(await registry.snapshot(), before);
+    await assert.rejects(prewarmCoreToolGovernance({definitions: [definitions.at(-1)], registry}), /tool_governance_missing/u);
+    assert.equal(await prewarmCoreToolGovernance({definitions: candidates, registry}), candidates.length);
+    const prepared = await registry.snapshot();
+    assert.equal(prepared.revision, before.revision + 1);
+    const reused = await registerSessionToolGovernance({definitions: definitions.slice(2, 4),
+      registry: {...registry, register: () => assert.fail('An exact startup version was inserted again')}, mcp});
+    assert.equal(reused.size, candidates.length);
+    assert.equal(await prewarmCoreToolGovernance({definitions: candidates, registry}), 0);
+    assert.deepEqual(await registry.snapshot(), prepared);
+  });
   await check('Every declared core identity plus selected MCP identity is registered without changing original names or input schemas', async () => {
     const before = definitions.map(tool => JSON.stringify(tool.parameters));
     records = await registerSessionToolGovernance({definitions, registry, mcp});
     assert.equal(records.size, definitions.length); assert.deepEqual([...records.keys()], definitions.map(tool => tool.name));
     assert.deepEqual(definitions.map(tool => JSON.stringify(tool.parameters)), before);
     const catalog = await registry.snapshot(); for (const record of records.values()) {assert(catalog.providers.some(provider => provider.id === record.providerId)); assert(record.scopePolicy);}
+  });
+  await check('A recurring turn resolves all current versions in one query without re-registering any tool', async () => {
+    const all = sql.all;
+    let versionQueries = 0;
+    sql.all = async (query, params) => {
+      if (query.includes('xiaozhi_capability_provider_versions_v1')) versionQueries++;
+      return all(query, params);
+    };
+    try {
+      const refreshed = await registerSessionToolGovernance({definitions,
+        registry: {...registry, register: () => assert.fail('An unchanged version was registered again')}, mcp});
+      assert.deepEqual(refreshed, records);
+      assert.equal(versionQueries, 1);
+    } finally { sql.all = all; }
   });
   await check('Only validated browser DOM extraction may be a local cache operation',async()=>{
     const tool=runtime(),signal=new AbortController().signal,tabId='pibrowser_'+randomUUID();
@@ -149,6 +186,14 @@ try {
   await check('Revoked core Provider blocks direct named execution through the same Registry', async () => {
     const record = records.get('office_read_text'); await registry.revokeProvider(record.providerId);
     await assert.rejects(runtime().before('call_revoked', record.name, {}, signal), /capability_revoked/u);
+    await registry.revokeProviderVersion(record.providerId, record.providerVersion, record.capabilityId);
+    const [gone, current, duplicate] = await registry.providerVersions([
+      {...record, providerVersion: '0.0.0'}, record, record,
+    ]);
+    assert.equal(gone, null);
+    assert.equal(current.revoked, true);
+    assert.deepEqual(current, duplicate);
+    await assert.rejects(registerSessionToolGovernance({definitions, registry, mcp}), /capability_revoked/u);
   });
   await check('Intrinsic Task controls also require the current main-owned Task generation', async () => {
     current = false; await assert.rejects(runtime().before('call_stale', 'ask_teacher', {}, signal), /permission_denied/u); current = true;

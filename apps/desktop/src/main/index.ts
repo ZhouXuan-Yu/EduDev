@@ -565,6 +565,12 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();
+  const startupWindow=mainWindow;
+  if(startupWindow){
+    const prewarm=()=>{if(!shutdown&&!startupWindow.isDestroyed())xiaozhi.prewarm();};
+    if(startupWindow.webContents.isLoadingMainFrame())startupWindow.webContents.once('did-finish-load',prewarm);
+    else setImmediate(prewarm);
+  }
   materialQueueStartup=store.materialQueue.start().catch(()=>console.error('[materials] startup_recovery_failed'));
   store.materialImports.start();
   store.materialSearch.start();

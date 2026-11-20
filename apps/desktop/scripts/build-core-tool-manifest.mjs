@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
+import {buildStaticCoreToolDefinitions} from './build-static-core-tool-definitions.mjs';
 
 export async function buildCoreToolManifest() {
   const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -13,6 +14,7 @@ export async function buildCoreToolManifest() {
     bundle: true, platform: 'node', target: 'node24', format: 'esm', packages: 'external', write: false, metafile: true, logLevel: 'silent'});
   const inputs = [...new Set([...Object.keys(result.metafile.inputs).map(file => file.replace(/ with \{.*\}$/u, ''))
     .filter(file => file !== reference), 'package-lock.json'])].sort();
+  buildStaticCoreToolDefinitions(desktop, inputs);
   const sources = inputs.map(file => ({file, sha256: createHash('sha256').update(fs.readFileSync(path.resolve(desktop, file))).digest('hex')}));
   const sourceHash = createHash('sha256').update(JSON.stringify(sources)).digest('hex');
   const manifest = {schemaVersion: 1, sourceHash, sources};

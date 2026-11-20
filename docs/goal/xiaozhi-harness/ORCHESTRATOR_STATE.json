@@ -724,6 +724,14 @@
     "desktopLatencyImprovement": "UNVERIFIED",
     "newPaidCalls": 0
   },
+  "startupCoreToolPrewarm": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/startup-prewarm-20261120.json",
+    "prewarmedCoreVersions": 54,
+    "secondRunRegistryUnchanged": true,
+    "timings": "Tool registration improved in both hidden fixture comparisons. Overall startup and request latency remain variable.",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

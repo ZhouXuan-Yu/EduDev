@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "b3dda5618db8b5c9b2dffdc87f235b79a7884446",
+  "scope": "Startup prepares build-derived core tool metadata only. Original Pi run supplies actual schemas; the registry reads live versions and original run/tool permission gates remain in place.",
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-startup-prewarm-production/out",
+    "exitCode": 0,
+    "includesTypecheck": true,
+    "outSha256": "30275025fc271b20c7f75413063cddf358850e2aaaac04b9a13dfe2754e4aab5",
+    "mainSha256": "4c6ee2eb5277ea7a5c0f8d2488a400d8fd7e5f786ee65ecfaed6597e0eb65145",
+    "logSha256": "0f45bb8c6aa5d6eace5a3ec0e43a0723c1dca416646c88acfe136bbcf0dfe5e8",
+    "coreSourceHash": "b204dfad3d5ba74bbcb89b4482b416b42ce2d18b1165d46c2caeec47a1d0969e",
+    "files": 481
+  },
+  "regressions": {
+    "prewarmScheduler": {
+      "command": "node apps/desktop/scripts/xiaozhi-agent/phase8-startup-prewarm-check.mjs",
+      "cwd": "repository root",
+      "passed": 5,
+      "staticCandidates": 54,
+      "report": "TEMP/xiaozhi-startup-prewarm-check-oVCeFk/report.json",
+      "reportSha256": "c89a51a5881c75e3bb6e38d4e93f7f00f4b0f7135eef5c254938a9a8a771975f"
+    },
+    "originalToolGovernance": {
+      "command": "node scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+      "passed": 15,
+      "report": "apps/desktop/test-results/xiaozhi-agent/phase5-governance-nu4pPU/report.json",
+      "reportSha256": "6c2023d8d55f6cae4bec69a6d8d6b87e012336bf514444aea451af5f4be6adb1",
+      "newChecks": ["atomic abort rollback", "persisted startup version reuse", "one query on a recurring turn", "fresh version revocation and ordered missing/duplicate keys"]
+    },
+    "registryResolver": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/capability-phase1-smoke.mjs",
+      "passed": 33,
+      "report": "TEMP/xiaozhi-capability-phase1-0doDq9/report.json",
+      "reportSha256": "494477ada44168e06b2bd5b6f02c1a5542c49f6b43f108e18138b5e8b680b320"
+    },
+    "contractsAndRollback": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/capability-phase2-contract-smoke.mjs",
+      "passed": 10,
+      "report": "TEMP/xiaozhi-capability-phase2-contract-IGmtDX/report.json",
+      "reportSha256": "a4c3194ba3421896a20e9fa36c6e4c5fb5a388fc40c169b89345e6af69c31d8b"
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "passed": 253,
+      "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    }
+  },
+  "independentDesktopBaseline": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-registry-snapshot-read/out --label prewarm-baseline-repair --expected-out-hash fcd32417af895efa111a47ccb3652a3110fd600aa333ff42280dca5effe31887 --expected-out-count 481 --require-prewarm false",
+    "exitCode": 0,
+    "report": "TEMP/omni-edu-startup-prewarm-z2aSV0/report.json",
+    "reportSha256": "fa23b7210fab4041c912d45e0ce866dafd4c771f8a4b070be1ceca589ee8344f",
+    "workspaceUsableMs": 3025.30,
+    "submitToMainFetchMs": [3939.11, 802.17],
+    "toolRegistrationMs": [2604.80, 16.26],
+    "versionCounts": [2, 84, 84],
+    "retainedFailedAttempt": {
+      "exitCode": 1,
+      "report": "TEMP/omni-edu-startup-prewarm-zP6Kvq/report.json",
+      "reportSha256": "d78bbbed5034cd2d7f1d55fcd64dee6f9cd1514d9c74d5ddf152bbf5d32cad84",
+      "finding": "The fixture read the interrupted projection before settlement and omitted the diagnostic wrapper version. The final fixture waits for the same Run to settle and preserves the expected schema version."
+    }
+  },
+  "independentDesktopCandidate": {
+    "reviewer": "GPT-6.1 Terra High",
+    "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-startup-prewarm-production/out --label startup-prewarm-production --expected-out-hash 30275025fc271b20c7f75413063cddf358850e2aaaac04b9a13dfe2754e4aab5 --expected-out-count 481 --require-prewarm true",
+    "exitCode": 0,
+    "report": "TEMP/omni-edu-startup-prewarm-eHZAql/report.json",
+    "reportSha256": "1043dd591feb5f74f833caa8582b73f3af4421333e4df50f17569bc68d81f400",
+    "registeredBeforeFirstPrompt": 54,
+    "workspaceUsableMs": 32415.13,
+    "launchToPrewarmStartMs": 31286.46,
+    "prewarmDurationMs": 107.95,
+    "submitToMainFetchMs": [5130.12, 785.94],
+    "toolRegistrationMs": [863.89, 9.24],
+    "versionCounts": [56, 84, 84],
+    "sqliteRegistryIdSetsIdenticalToBaseline": {"definitions": 83, "providers": 84, "bindings": 84},
+    "registryRevisionHashAndVersionCountUnchangedOnSecondRun": true,
+    "projectedAndEventStatus": "interrupted",
+    "compatibilityRunStatus": "blocked",
+    "realModelCalls": 0,
+    "isolatedSyntheticLoopbackRequests": 2,
+    "scope": "The job completed before workspace usability in this run. Most of this slow launch occurred before prewarming started."
+  },
+  "supersededDesktopCandidate": {
+    "report": "TEMP/omni-edu-startup-prewarm-iNZ7ot/report.json",
+    "reportSha256": "a597febe525859d1f694c4f57dffc20f59ac268100f96021b48ad30f014cc728",
+    "outSha256": "4f5426d27b447c71212e70dda442074d8d94c9440a33a25c05098c262bf0d718",
+    "mainSha256": "81b20ae97ad0214a4991aa4257ac2af46915d861902c702a3c1b524ed1d344ca",
+    "exitCode": 0,
+    "registeredBeforeFirstPrompt": 55,
+    "workspaceUsableMs": 6158.67,
+    "prewarmDurationMs": 59.62,
+    "submitToMainFetchMs": [2149.59, 974.49],
+    "toolRegistrationMs": [927.06, 7.34],
+    "scopeMismatch": "The default chat registry also gained the optional Goal-only report_goal_progress definition, provider and binding. The production selector excludes it and retains the live Goal path."
+  },
+  "boundedStartupRecheck": {
+    "reviewer": "GPT-6.1 Terra High",
+    "order": ["final candidate", "baseline"],
+    "candidate": {
+      "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-startup-prewarm-production/out --label startup-prewarm-production-repeat --expected-out-hash 30275025fc271b20c7f75413063cddf358850e2aaaac04b9a13dfe2754e4aab5 --expected-out-count 481 --require-prewarm true",
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-startup-prewarm-cZyELN/report.json",
+      "reportSha256": "077fc9d94ba7cecda5624b559ee688b8cdd6513fae6f2c72b03842e2cae8e6ad",
+      "workspaceUsableMs": 3212.10,
+      "launchToPrewarmStartMs": 2135.86,
+      "prewarmDurationMs": 76.67,
+      "registeredBeforeFirstPrompt": 54,
+      "submitToMainFetchMs": [6477.61, 3369.38],
+      "toolRegistrationMs": [2277.88, 46.28],
+      "versionCounts": [56, 84, 84]
+    },
+    "baseline": {
+      "command": "node scripts/xiaozhi-agent/phase8-startup-prewarm-ui.mjs --build-root test-results/harness-registry-snapshot-read/out --label prewarm-baseline-repeat --expected-out-hash fcd32417af895efa111a47ccb3652a3110fd600aa333ff42280dca5effe31887 --expected-out-count 481 --require-prewarm false",
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-startup-prewarm-Z2RkUv/report.json",
+      "reportSha256": "24bedc79c07e1d216d9ae4c4c33efcae0b52eef217fae03c0a1ea3fd17c60dac",
+      "workspaceUsableMs": 3847.97,
+      "submitToMainFetchMs": [7799.08, 2899.76],
+      "toolRegistrationMs": [4132.45, 78.44],
+      "versionCounts": [2, 84, 84]
+    },
+    "interpretation": "The 32-second launch did not recur. Both final samples show shorter tool registration before first dispatch. Full request and launch times varied. In both candidate samples the prewarm finished before the workspace was usable; the samples do not prove paint-before-prewarm or stable startup gains."
+  },
+  "dependencyAudit": {"exitCode": 1, "low": 8, "moderate": 13, "high": 8, "critical": 0, "dependenciesChanged": false},
+  "realModelAdded": 0
+}

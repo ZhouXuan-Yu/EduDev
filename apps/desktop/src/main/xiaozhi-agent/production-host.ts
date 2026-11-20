@@ -1,3 +1,5 @@
+import {createStartupPrewarm} from './startup-prewarm';
+import {coreToolStartupDefinitions} from './core-tool-startup-definitions';
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createTerminalService, type TerminalService} from './terminal/service';
 import {createFileReferenceProjection} from './file-references';
@@ -129,7 +131,7 @@ import type {AcquisitionSearch, AcquisitionMutation, AcquisitionView} from '../.
 import {createExtensionPackageManager} from './extensions/package-manager';
 import {createExtensionService} from './extensions/service';
 import {createExtensionHost} from './extensions/host';
-import {registerSessionToolGovernance, createRunToolGovernance, validCorePermissionProvider, type RunToolGovernance} from './capabilities/core-governance';
+import {registerSessionToolGovernance, prewarmCoreToolGovernance, createRunToolGovernance, validCorePermissionProvider, type RunToolGovernance} from './capabilities/core-governance';
 import {net} from 'electron';
 import {createSkillGovernance} from './skills/service';
 import {createSkillTeamService} from './skills/teams';
@@ -307,6 +309,14 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const memory = createPiMemoryScope(store, { modelAccess: 'available' });
   let closing = false;
+  const startupPrewarm=createStartupPrewarm(async signal=>{
+    signal.throwIfAborted();
+    const definitions=coreToolStartupDefinitions();
+    // Import the actual Pi module, but never construct a Session, read private context or contact a model.
+    await import('./pi-session');
+    signal.throwIfAborted();
+    return prewarmCoreToolGovernance({definitions,registry:store.xiaozhiState.capabilities,signal});
+  });
   let terminalService: TerminalService;
   const permissions = createPermissionService({store: store.xiaozhiState.permissions, dataRoot: options.dataRoot,
     jobCurrent: (binding, request) => terminalService?.permissionCurrent(binding, request) || false,
@@ -1194,6 +1204,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
+          await startupPrewarm.wait();signal.throwIfAborted();
           const records = await registerSessionToolGovernance({definitions, registry: store.xiaozhiState.capabilities, mcp: name => mcp.describeTool(name),signal});
           signal.throwIfAborted();
           run.toolGovernance = createRunToolGovernance({owner: {...run.publisher!.owner, taskId: run.task!.id}, records,
@@ -1422,6 +1433,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    prewarm:()=>{if(enabled&&!closing)startupPrewarm.schedule();},
     permissions,
     terminal: terminalService.api,
     acquisitionView,
@@ -2026,7 +2038,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },
     async close() {
-      closing = true;for(const pending of admissions.values())for(const controller of pending)controller.abort();
+      closing = true;const prewarmStopped=startupPrewarm.close();for(const pending of admissions.values())for(const controller of pending)controller.abort();
       for (const run of active.values()) { run.stopped = true; run.abort.abort('app_shutdown'); }
       for(const run of active.values())void run.agent?.abort().catch(()=>undefined);
       for(const controller of balanceQueries)controller.abort();
@@ -2048,6 +2060,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await Promise.allSettled([...executions.values()].map(execution => execution.done));
       },{timeoutMs:options.shutdownTimeoutMs??5000});}
       catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}
+      await prewarmStopped;
     },
 
   };

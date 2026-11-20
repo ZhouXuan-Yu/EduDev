@@ -26,7 +26,7 @@
 
 - `node --experimental-transform-types scripts/education/document-structure-boundaries.mjs` 43/43。
 - 原真实 OCR 回执的内存判定各运行 1,200 次。旧定位失败的 P95 约 0.0021 ms，通用的文本和几何证明约 0.244 ms。该数据不含图像解码、SQLite 和 OCR，像素工作量只限接受候选的裁片与标记盒。
-- `npm run test:renderer-components` 253/253。通用版 `npm run build -- --outDir test-results/build-kb-localized-general` 通过。合入协作者 `b3dda56` 后，`npm run build -- --outDir test-results/build-kb-localized-general-integrated` 通过。
+- `npm run test:renderer-components` 253/253。通用版 `npm run build -- --outDir test-results/build-kb-localized-general` 通过。合入协作者 `b3dda56` 后，`npm run build -- --outDir test-results/build-kb-localized-general-integrated` 通过。随后合入 `0fc5b6a`，重新执行启动预热边界 5/5 和知识库结构回归 43/43。最终合并提交尚未重跑完整桌面构建。
 - `OMNI_EDU_TEST_BUILD_ROOT=test-results/build-kb-localized-general`、`EDU_STRUCTURE_CHECK_CROPPED_NUMBER=1`，对单份 U16 PDF 执行 `node scripts/education/document-structure-electron.mjs`。7 项真实 Electron 检查通过，5/5 页完成，1 条原题自动草稿和 1 条教师修正确认后可冷启读回。模型调用为 0。
 - 从最终 SQLite 记录比对七个裁片及原页 8 份文件 SHA-256。原页符合此检测阈值的红像素共 24,744，七片各为 0。逐张目视确认两行题干、A–D 和题图图注。草稿未填答案或解析，`sourceChecked` 为 false。
 - 完整电子桌面后台导入用时约 294 秒，通用化前本轮同原件约 194 秒，前轮两次分别约 170 秒和 71 秒。不同阶段的 OCR 与启动缓存差异明显，单次样本不构成吞吐回归结论。
