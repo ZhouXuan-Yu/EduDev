@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-20",
+  "status": "PASS_SCOPED",
+  "scenarioCount": 6,
+  "scope": "Actual A/B Electron, Pi, typed IPC, SQLite and loopback Chromium transport. Model output is scripted and uses only synthetic tasks. The transport outage is scoped to the owned endpoint.",
+  "command": {
+    "cwd": "apps/desktop",
+    "testBuildRoot": "test-results/harness-lifecycle-main-9d04543/out",
+    "script": "node scripts/xiaozhi-agent/phase8-failure-recovery-electron.mjs <frozen-A-desktop>",
+    "scriptSha256": "4b99b9ff14d5fb71d2df8ecca96d68f86030db6af0f2e8a28b345d33a6832578"
+  },
+  "report": "TEMP/omni-edu-xiaozhi-phase8-failure-NfVqTd/report.json",
+  "reportSha256": "6a6cd770d9369581a50ede764c0208f8b8dba0bdadf6282638540c0d47036339",
+  "versions": {
+    "A": {"commit": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83", "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2", "files": 458},
+    "B": {"commit": "0a117fa657b5d6d989039670bfeedb698b744e0f", "outSha256": "bd0c233c1499ba3fb4dbe534be332821a1cdf31672ae9cbe5006da4580745a3c", "files": 481}
+  },
+  "electron": "43.8.3",
+  "verifiedPairs": {
+    "Q4Cancel": {
+      "A": {"runId": "run_61f3662b-2dcc-453f-8211-7e4a19faa718", "mainAttempts": 1, "receivedPosts": 1},
+      "B": {"runId": "run_e60f0ffe-6aa7-41d7-af48-ed45a70057d7", "mainAttempts": 1, "receivedPosts": 1},
+      "coldTerminal": "interrupted",
+      "sqliteRunStatus": "blocked",
+      "wireProof": "The loopback server had begun HTTP 200 streaming and the UI showed partial text before Stop. The server observed its open response disconnect before Electron closed, with no second request.",
+      "scoresSha256BeforeAndAfter": "73eb847768043b2a6e0f9f50eb302983f9c34ebee03879114d2871727e44100c"
+    },
+    "Q7Decline": {
+      "A": {"runId": "run_9f8e9210-cabc-4577-969c-aafc8add42d3", "control": "pi-text-reject", "decisionSource": "xiaozhi_pi_text_changes", "state": "rejected", "mainAttempts": 3},
+      "B": {"runId": "run_4ca38473-b687-4253-94ba-5e407fa3cbd4", "control": "pi-permission-reject", "decisionSource": "ai_confirmation_items", "state": "rejected", "mainAttempts": 3},
+      "coldTerminal": "completed",
+      "savedTargetPresent": false,
+      "modelPosts": "Plan, attempted text-tool call, then scripted acknowledgement. A declined a text draft. B declined a write-operation permission before a draft existed."
+    },
+    "ProviderEndpointUnavailable": {
+      "A": {"runId": "run_c65d0b8d-feca-42a1-b561-1b243e6965e3", "mainAttempts": 1, "closedModelSockets": 1, "receivedHttpPosts": 0},
+      "B": {"runId": "run_b1bb67d8-8c44-4b03-bed4-a2fb860178b7", "mainAttempts": 1, "closedModelSockets": 1, "receivedHttpPosts": 0},
+      "coldTerminal": "failed",
+      "publicError": "transport",
+      "nativeError": "net::ERR_CONNECTION_RESET",
+      "path": "A real owned 127.0.0.1 TCP listener accepted and closed newly opened sockets before HTTP parsing. Independent Chromium probes returned HTTP 200 before and after the fault. The device network was unchanged.",
+      "automaticModelRetry": false
+    }
+  },
+  "commonProof": [
+    "Real user-facing composer, stop and applicable rejection controls.",
+    "Closed database and fresh Electron readback preserve the matching Run, task, file hashes and decision. All six cold launches issued zero model requests.",
+    "The initial owned input tree contained facts.txt and scores.csv. No practice.txt appeared anywhere under the isolated case root."
+  ],
+  "independentReadback": "An independent reviewer verified the raw report hash, all six final SQLite run states after cold launch, Q4 original event sequences and server disconnection, A's rejected text draft, B's rejected operation approval, and the absence of practice.txt. No exact foreground cancellation timing is claimed.",
+  "retainedRuns": [
+    {"report": "TEMP/omni-edu-xiaozhi-phase8-failure-NDDdrK/report.json", "sha256": "9094172234b2d58cc90363a022c5e6b887d800a4fb27423701def84eb069bc63", "finding": "Early session identity race and missing Q7 plan. The actual tool rejected dispatch with task_plan_required."},
+    {"report": "TEMP/omni-edu-xiaozhi-phase8-failure-9u8x3C/report.json", "sha256": "ea45994d3136ce2b7270a037a63673ad226be88dc9bc3b6ff1b1ff1ae072c8d5", "finding": "The plan lacked its mandatory human review step. Stable Composer identity also had to be observed before creating the fresh session and selecting its workspace."},
+    {"report": "TEMP/omni-edu-xiaozhi-phase8-failure-sXIFZv/report.json", "sha256": "a88f8fd2ca61643ab7a106c23416dab7fd6658ca5243329a915de4476bb7b465", "finding": "Both cancellation and both rejection paths passed. Session-level offline emulation left the loopback probe reachable at HTTP 200 on both builds. The endpoint-disconnect cases ran after switching to real socket closure.", "apiReference": "https://www.electronjs.org/docs/latest/api/session#sesenablenetworkemulationoptions"}
+  ],
+  "protocolSmoke": {"passed": 17, "total": 17, "report": "TEMP/xiaozhi-phase8-real-model-protocol-my33lO/report.json", "sha256": "a34bc676c48d989746f54797c75659aea9405880d5a3cc6ed628b58d868f14e3"},
+  "dependencyAudit": {"low": 8, "moderate": 13, "high": 8, "critical": 0, "dependencyChanges": false},
+  "formalAbba": "NOT_RUN",
+  "paidRequestsAdded": 0
+}
