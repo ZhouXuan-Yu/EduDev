@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 知识库批量依赖
+
+继续使用已有资料和回执。定向验收独立资料调度、配对依赖、已归档题读回和同册修改隔离。试导库存按实际登记与正式选题门槛报告。 [本轮证据](../research/evidence/kb/20261120/batch-mainline/README.md)
+
 ## 2026-11-20 小智生命周期超时
 
 专项以原 Electron、Pi 和真实 SQLite 执行故障、释放、重新读取及冷启。正式冻结与真实模型继续按整体 Harness 门禁。[验收索引](../goal/xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)

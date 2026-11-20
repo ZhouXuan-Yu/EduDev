@@ -326,10 +326,24 @@ export class MaterialFolderAiRepository{
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
     // Prioritize only an authorized, already discovered paired answer resource.
     // The existing single-unit budget/pause machinery still owns every dispatch.
-    const pairedAnswer=grant.processing_mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0'?(await this.host.all(`SELECT a.rowid plan_rowid,a.* FROM material_book_pairs p JOIN material_folder_ai_resources q ON q.resource_id=p.question_id AND q.version=p.question_version JOIN material_folder_ai_resources a ON a.batch_id=q.batch_id AND a.resource_id=p.answer_id AND a.version=p.answer_version WHERE p.active=1 AND q.batch_id=? AND q.status IN ('waiting','running') AND a.status IN ('waiting','running') ORDER BY a.rowid LIMIT 1`,[String(grant.batch_id)]))[0]:undefined;
-    if(pairedAnswer){await this.plan(grant,pairedAnswer);continue;}
-    const rows=await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8",[String(grant.batch_id),Number(grant.plan_cursor)]);
-    if(rows.length<8)rows.push(...await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid<=? ORDER BY rowid LIMIT ?",[String(grant.batch_id),Number(grant.plan_cursor),8-rows.length]));
+    const preferAnswers=grant.processing_mode==='quality'&&process.env.OMNI_EDU_AI_BOOK_FINAL_REFERENCE!=='0';
+    const pairedAnswer=preferAnswers?(await this.host.all(`SELECT a.rowid plan_rowid,a.* FROM material_book_pairs p JOIN material_folder_ai_resources q ON q.resource_id=p.question_id AND q.version=p.question_version JOIN material_folder_ai_resources a ON a.batch_id=q.batch_id AND a.resource_id=p.answer_id AND a.version=p.answer_version WHERE p.active=1 AND q.batch_id=? AND q.status IN ('waiting','running') AND a.status IN ('waiting','running') ORDER BY a.rowid LIMIT 1`,[String(grant.batch_id)]))[0]:undefined;
+    if(pairedAnswer){
+     await this.plan(grant,pairedAnswer);
+     const current=(await this.host.all("SELECT status,EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.state IN ('pending','running')) active FROM material_folder_ai f WHERE batch_id=?",[String(grant.batch_id)]))[0];
+     // A local parse/structure wait or a busy answer is not an active child.
+     // Keep answer priority without starving other ready material in this directory.
+     if(!current||current.status!=='running'||current.active)continue;
+    }
+    // A ready question book still waits for its own authorized answer book.
+    const pick=`SELECT fr.rowid plan_rowid,fr.* FROM material_folder_ai_resources fr
+      WHERE fr.batch_id=? AND fr.status IN ('waiting','running') AND fr.resource_id<>?
+      ${preferAnswers?`AND NOT EXISTS(SELECT 1 FROM material_book_pairs p
+        JOIN material_folder_ai_resources a ON a.batch_id=fr.batch_id AND a.resource_id=p.answer_id AND a.version=p.answer_version
+        WHERE p.active=1 AND p.question_id=fr.resource_id AND p.question_version=fr.version AND a.status IN ('waiting','running'))`:''}`;
+    const pickParams=[String(grant.batch_id),String(pairedAnswer?.resource_id??''),Number(grant.plan_cursor)];
+    const rows=await this.host.all(pick+' AND fr.rowid>? ORDER BY fr.rowid LIMIT 8',pickParams);
+    if(rows.length<8)rows.push(...await this.host.all(pick+' AND fr.rowid<=? ORDER BY fr.rowid LIMIT ?',[...pickParams,8-rows.length]));
     for(const row of rows){
      await this.host.run('UPDATE material_folder_ai SET plan_cursor=? WHERE batch_id=?',[Number(row.plan_rowid),String(grant.batch_id)]);await this.plan(grant,row);
      const current=(await this.host.all("SELECT status,EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.state IN ('pending','running')) active FROM material_folder_ai f WHERE batch_id=?",[String(grant.batch_id)]))[0];

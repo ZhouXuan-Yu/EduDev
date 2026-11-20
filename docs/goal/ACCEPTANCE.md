@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 知识库后台隔离
+
+专项核对独立资料继续调度、配对题本等待、答案发布后恢复优先、已归档题读回及相关原件变更继续拦截。试导盘点按静态选题门槛核算，正式选题仍需原件和蓝图验证。 [本轮验收](../research/evidence/kb/20261120/batch-mainline/README.md)
+
 ## 2026-11-20 小智生命周期故障
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)

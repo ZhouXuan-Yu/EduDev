@@ -235,6 +235,9 @@ export class MaterialBookAnswerRepository{
    const saved=(await this.host.all('SELECT * FROM material_book_answer_journal_v1 WHERE id=? AND question_id=?',[proof.candidateId,q.id]))[0];if(!saved||!saved.after_json||hash(q.stem)!==proof.questionSha||hash(q[role])!==proof.textSha)throw Error('source_changed');
    const row=JSON.parse(String(saved.payload_json)) as BookMatchRow,e=JSON.parse(String(saved.evidence_json)) as Evidence,before=JSON.parse(String(saved.before_json)) as QuestionBankItem,after=JSON.parse(String(saved.after_json)) as QuestionBankItem;
    if(row.state!=='applied'||row.beforeVersion!==questionVersion(before)||row.afterVersion!==questionVersion(after)||row[role]!==q[role]||JSON.stringify(after.archive?.book?.roles[role])!==JSON.stringify(proof))throw Error('source_changed');
+   // A title inherited on either side depends on the same pair. The section validator checks its side.
+   if(e.questionSection&&!e.answerSection&&await this.index.bookPending(e.pair.answerId,e.pair.answerVersion)||
+      e.answerSection&&!e.questionSection&&await this.index.bookPending(e.pair.questionId,e.pair.questionVersion))throw Error('source_incomplete');
    const receipt=await this.host.receipt(e.answer.batchId,e.answer.ordinal);
    if(e.answerSection){const key=JSON.stringify([e.answer.batchId,e.answer.ordinal,e.answerSection]);if(!checkedSections.has(key)){await this.sections.validateAnswer(e.answerSection,receipt,e.answer);checkedSections.add(key);}}
    const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section,receipt.unit.bookPagePolicy).entries.find(x=>x.start===e.answer.start);
