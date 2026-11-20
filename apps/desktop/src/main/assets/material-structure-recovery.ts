@@ -1,6 +1,7 @@
 import type {MaterialStructureRecoveryAction,MaterialStructureRecoveryState,MaterialStructureRecoveryView} from '../../shared/material-import-batch';
 import {MATERIAL_STRUCTURE_EXTENSIONS,type MaterialStructureRepository} from './material-structure-repository';
 import type {MaterialParseQueue} from './material-parse-queue';
+import {DOCUMENT_STRUCTURE_ENGINE,PREVIOUS_DOCUMENT_STRUCTURE_ENGINES} from '../../shared/material-document-structure';
 
 type Value=string|number|null;
 type Row=Record<string,unknown>;
@@ -16,6 +17,12 @@ const windowSize=4;
 const supportedFiles=`FROM material_import_entries e JOIN teacher_resources r ON r.id=e.resource_id
   WHERE e.batch_id=? AND e.kind='file' AND e.status='saved'
   AND (${MATERIAL_STRUCTURE_EXTENSIONS.map(extension=>`lower(r.original_file_name) LIKE '%${extension}'`).join(' OR ')})`;
+const savedResources=`SELECT DISTINCT e.batch_id,r.id resource_id,r.content_hash version ${supportedFiles}`;
+const olderEngines=['layout-paragraph-question.v1',...PREVIOUS_DOCUMENT_STRUCTURE_ENGINES].map(engine=>"'"+engine+"'").join(',');
+const upgradeJoins=`LEFT JOIN material_structure_jobs j ON j.resource_id=saved.resource_id AND j.version=saved.version
+  LEFT JOIN material_structure_recovery_items s ON s.batch_id=saved.batch_id AND s.resource_id=saved.resource_id`;
+const needsUpgrade=`j.engine IN (${olderEngines}) AND j.status IN ('complete','partial') AND
+  (s.state IS NULL OR s.state<>'active' AND (s.state<>'pending' OR s.upgrade_legacy=0))`;
 
 const liveClaim=`EXISTS(SELECT 1 FROM material_structure_jobs j JOIN ai_tasks t
   ON t.id=json_extract(CASE WHEN json_valid(j.lease) THEN j.lease ELSE '{}' END,'$.taskId')
@@ -55,7 +62,10 @@ export class MaterialStructureRecovery {
     await this.host.run(`CREATE TABLE IF NOT EXISTS material_structure_recovery_items(
       batch_id TEXT NOT NULL REFERENCES material_structure_recovery_batches(batch_id),resource_id TEXT NOT NULL,version TEXT NOT NULL,
       state TEXT NOT NULL CHECK(state IN ('pending','active','complete','partial','failed')),generation TEXT NOT NULL DEFAULT '',
-      error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,resource_id))`);
+      error TEXT NOT NULL DEFAULT '',upgrade_legacy INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(batch_id,resource_id))`);
+    const columns=await this.host.all('PRAGMA table_info(material_structure_recovery_items)');
+    if(!columns.some(column=>column.name==='upgrade_legacy'))
+      await this.host.run('ALTER TABLE material_structure_recovery_items ADD COLUMN upgrade_legacy INTEGER NOT NULL DEFAULT 0');
     await this.host.run('CREATE INDEX IF NOT EXISTS material_structure_recovery_work ON material_structure_recovery_items(state,batch_id)');
   }
 
@@ -94,6 +104,16 @@ export class MaterialStructureRecovery {
           throw Error('unsupported');
         return;
       }
+      if(action==='structure_upgrade'){
+        if(!(await target.coverage(batchId)).upgradeable)return;
+        // An existing manual or restore pause applies to new work as well.
+        await target.host.run('INSERT OR IGNORE INTO material_structure_recovery_batches(batch_id,enabled) VALUES(?,1)',[batchId]);
+        await target.host.run(`WITH saved AS (${savedResources})
+          INSERT INTO material_structure_recovery_items(batch_id,resource_id,version,state,upgrade_legacy)
+          SELECT saved.batch_id,saved.resource_id,saved.version,'pending',1 FROM saved ${upgradeJoins} WHERE ${needsUpgrade}
+          ON CONFLICT(batch_id,resource_id) DO UPDATE SET version=excluded.version,state='pending',generation='',error='',upgrade_legacy=1`,[batchId]);
+        return;
+      }
       if(!(await target.host.all('SELECT 1 FROM material_structure_recovery_batches WHERE batch_id=?',[batchId])).length)
         throw Error('invalid_input');
       if(action==='structure_retry'){
@@ -106,9 +126,11 @@ export class MaterialStructureRecovery {
     this.wake();
   }
 
-  async available(batchId:string){
-    const [row]=await this.host.all(`SELECT COUNT(DISTINCT r.id) n ${supportedFiles}`,[batchId]);
-    return Number(row.n);
+  async coverage(batchId:string){
+    const [row]=await this.host.all(`WITH saved AS (${savedResources})
+      SELECT COUNT(*) available,COALESCE(SUM(CASE WHEN ${needsUpgrade} THEN 1 ELSE 0 END),0) upgradeable
+      FROM saved ${upgradeJoins}`,[batchId]);
+    return {available:Number(row.available),upgradeable:Number(row.upgradeable)};
   }
 
   async view(batchId:string):Promise<MaterialStructureRecoveryView|undefined>{
@@ -151,13 +173,13 @@ export class MaterialStructureRecovery {
 
   private async admit(row:Row){
     const keys=[String(row.batch_id),String(row.resource_id),String(row.version)];
-    const [intent]=await this.host.all(`SELECT 1 FROM material_structure_recovery_items s
+    const [intent]=await this.host.all(`SELECT s.upgrade_legacy FROM material_structure_recovery_items s
       JOIN material_structure_recovery_batches b USING(batch_id) WHERE s.batch_id=? AND s.resource_id=? AND s.version=?
       AND s.state='pending' AND b.enabled=1 AND
       (SELECT COUNT(*) FROM material_structure_recovery_items WHERE state='active')<?`,[...keys,windowSize]);
     if(!intent)return;
     const [,id,version]=keys;
-    const job=await this.host.structures().prepareFolderRecovery(id,version);
+    const job=await this.host.structures().prepareFolderRecovery(id,version,intent.upgrade_legacy===1);
     if(job.state==='pending'){
       const status=await this.host.queue().state(id,version);
       if(status!=='pending'&&status!=='running')await this.host.queue().enqueue(id,version,0,true);
@@ -172,8 +194,9 @@ export class MaterialStructureRecovery {
       await this.update(row,'active','failed','source_changed');
       return;
     }
-    const [job]=await this.host.all('SELECT generation,version,status,error FROM material_structure_jobs WHERE resource_id=?',[id]);
-    if(job?.version===version&&(job.status==='complete'||job.status==='partial')){
+    const [job]=await this.host.all('SELECT generation,version,engine,status,error FROM material_structure_jobs WHERE resource_id=?',[id]);
+    if(job?.version===version&&(row.upgrade_legacy!==1||job.engine===DOCUMENT_STRUCTURE_ENGINE)&&
+      (job.status==='complete'||job.status==='partial')){
       await this.update(row,'active',job.status,'',String(job.generation));
       return;
     }

@@ -14,7 +14,7 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
  const signature=useRef(''),onChanged=useRef(changed);onChanged.current=changed;
  useEffect(()=>{let current=true,reading=false;async function refresh(){if(reading)return;reading=true;try{
   const next=await window.omniEdu?.listMaterialBatches({schemaVersion:schema,offset});if(!current||!next)return;setPage(next);
-  const state=JSON.stringify(next.batches.map(b=>[b.id,b.status,b.archived,b.readable,b.failed,b.parseFailed,b.empty,b.structureAvailable,b.structureRecovery]));
+  const state=JSON.stringify(next.batches.map(b=>[b.id,b.status,b.archived,b.readable,b.failed,b.parseFailed,b.empty,b.structureAvailable,b.structureUpgradeable,b.structureRecovery]));
   if(signature.current&&state!==signature.current)onChanged.current();signature.current=state;
   if(expanded){const detail=await window.omniEdu?.getMaterialBatchFiles({schemaVersion:schema,batchId:expanded,offset:fileOffset,filter:fileFilter});if(current)setFiles(detail);}
   if(current)setLoadError('');
@@ -37,6 +37,7 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
    {((batch.structureAvailable??0)>0||batch.structureRecovery)&&<div data-testid={'batch-structure-'+batch.id}>
     <div className="teacher-library-toolbar">
      <strong>本地文档结构</strong>
+     {!!batch.structureUpgradeable&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'structure_upgrade')} data-testid={'batch-structure-upgrade-'+batch.id}>升级 {batch.structureUpgradeable} 份旧版结构</Button>}
      {batch.structureRecovery?<><span role="status">{structureLabels[batch.structureRecovery.state]}</span>
       {batch.structureRecovery.state==='running'&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'structure_pause')} data-testid={'batch-structure-pause-'+batch.id}>暂停结构恢复</Button>}
       {batch.structureRecovery.state==='paused'&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'structure_resume')} data-testid={'batch-structure-resume-'+batch.id}>继续结构恢复</Button>}

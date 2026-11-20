@@ -205,14 +205,16 @@ export class MaterialStructureRepository {
   }
 
   /** Called by the folder coordinator on its writer connection, before it enqueues the parser. */
-  async prepareFolderRecovery(id: string, version: string) {
+  async prepareFolderRecovery(id: string, version: string, upgradeLegacy = false) {
     const resource = await this.host.resource(id);
     if (resource.contentHash !== version) throw Error("source_changed");
     if (!supported(resource)) throw Error("unsupported");
     const old = await this.job(id);
-    if (old?.version === version &&
-        (validDocumentStructureEngine(old.engine) || old.engine === "layout-paragraph-question.v1") &&
-        (old.status === "complete" || old.status === "partial")) {
+    const knownEngine = validDocumentStructureEngine(old?.engine) || old?.engine === "layout-paragraph-question.v1";
+    if (upgradeLegacy && old?.version === version && !knownEngine) throw Error("unsupported");
+    if (old?.version === version && knownEngine &&
+        (old.status === "complete" || old.status === "partial") &&
+        (!upgradeLegacy || old.engine === DOCUMENT_STRUCTURE_ENGINE)) {
       return { state: old.status, generation: String(old.generation) } as const;
     }
     const same = old?.version === version && old.engine === DOCUMENT_STRUCTURE_ENGINE;
