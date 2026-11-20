@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 网页补解析核对完整选项
+
+网页题解匹配使用完整结构题陈述和分离的纯文字选项。复用证据日志及题目版本校验，来源与补答各自保存，SQLite 沿用原格式。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
+
 ## 2026-11-21 同册 PDF 印刷选择题答案
 
 结构 v15 在已经验证的 SQLite 解析世代事务内补充独立答案锚点，并随着题目文档哈希保存。题本读取当前题目版本和原 PDF 区域，不新增表。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)

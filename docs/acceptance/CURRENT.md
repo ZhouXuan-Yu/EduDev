@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 网页补解析核对完整选项
+
+实际 Electron 覆盖一次批量授权、真实内置浏览器 DOM、缺解析写回，以及以原印答案和网页解析分离的普通检索与冷读。 [专项报告](../research/evidence/kb/20261121/web-split-choices/README.md)
+
 ## 2026-11-21 同册 PDF 印刷选择题答案
 
 有据的同册 PDF 印刷选择答案专项覆盖独立导入和答案原图。核对跨版、错题号、数字冲突、低分框、题面修改及正式检索边界。 [专项报告](../research/evidence/kb/20261121/same-pdf-printed-choice/README.md)
@@ -40,6 +44,8 @@
 ## 2026-11-21 更新与换机的验收入口
 
 本地备份及外选成果恢复底层回归通过 15 项。覆盖升级、回滚以及不同 Windows 用户和盘符下的恢复按 [固定验收](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#固定验收) 逐项执行。
+
+在主线 `8916819` 的 `apps/desktop` 用独立合成资料复核，`node scripts/xiaozhi-agent/backup-restore-smoke.mjs` 通过 8 项，`node scripts/xiaozhi-agent/external-output-backup-smoke.mjs` 通过 7 项。双机验收另行比较索引重建中与就绪后的首开可用范围、模型与思考偏好、旧成果树定位和另存去向。 [新机首开](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#新电脑第一次打开的状态)
 
 ## 2026-11-21 真实 Word 卷首与题面图稿
 
