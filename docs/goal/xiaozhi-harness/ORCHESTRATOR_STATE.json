@@ -748,6 +748,21 @@
     "externalCallsAfterRevocation": 0,
     "newPaidCalls": 0
   },
+  "currentMainPageChecks20261120": {
+    "status": "PASS_SCOPED",
+    "checkedSource": "b4919c6785e417b3f92058f56ec3c4f0391ce914",
+    "checksPassed": 13,
+    "evidence": "evidence/phase7/implementation-resume-20261119/current-main-c2-keyboard-approval-20261120.json",
+    "newPaidCalls": 0
+  },
+  "directNetworkPatch20261120": {
+    "status": "IMPLEMENTED_VERIFIED_SCOPE",
+    "directUndici": "7.30.1",
+    "independentC2": "PASS_SCOPED_4_OF_4",
+    "productionAuditHighPackageEntries": 8,
+    "evidence": "evidence/phase8/undici-network-runtime-patch-20261120.json",
+    "newPaidCalls": 0
+  },
   "latestHandoff": {
     "progress": "PROGRESS.md",
     "testedProductionBase": "377d5dc95ee0000d6a40dcb4e4b7a2edd9851137",

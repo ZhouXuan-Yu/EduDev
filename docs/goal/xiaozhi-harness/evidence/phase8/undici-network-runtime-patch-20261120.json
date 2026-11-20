@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-20",
+  "sourceParent": "22f91ab10ebe14971d60a0753033adf11ff49e01",
+  "scope": "Update the direct outbound HTTP dependency used by the Office public reader, HTTP MCP and permission broker. Preserve network policy, Pi SDK and nested dependency versions.",
+  "dependency": {
+    "name": "undici", "from": "7.24.7", "to": "7.30.1", "license": "MIT", "nodeFloorUnchanged": ">=20.18.1",
+    "registryUnpackedBytesBeforeAfter": [1609243, 1670065],
+    "installCommand": "npm.cmd install --ignore-scripts --no-audit --no-fund",
+    "packageJsonSha256": "69dfd5b0eb516af77e26deedbbc0a8d4c9b2086fde3a1cee9743f11aa244e2b1",
+    "lockSha256": "dd40544b8f530193cc713c9f6aff3397423d742c0aec895ce626056cb60d0e3f",
+    "advisory": "https://github.com/nodejs/undici/security/advisories/GHSA-qrxm-fqhp-jwvm",
+    "release": "https://github.com/nodejs/undici/releases/tag/v7.30.1"
+  },
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-undici-7301/out",
+    "cwd": "apps/desktop", "exitCode": 0, "includesTypecheck": true, "outFiles": 481,
+    "outSha256": "da9de54379f723ba8adccbcc390f768288d3d2ef206947bab1f7d23b8d70ba32",
+    "mainSha256": "0d87d454454b847738b153ca6ff734f77ee492acdb6d941e452af20b7d6d5b5a",
+    "logSha256": "bb745fcf8d5294b13996e1117b4f706231305e3ac92961453b960a31cf89d681",
+    "coreToolSourceHash": "3c66dbbc97a43dc91809e5c1a4e694f39191e49b01846ba113071856035f2dbd",
+    "resolvedDirectDependencyFromMain": "7.30.1"
+  },
+  "reachability": {
+    "direct": ["src/main/office-agent/office-network.ts", "src/main/xiaozhi-agent/permissions/mcp-http.ts", "src/main/xiaozhi-agent/permissions/network.ts"],
+    "residual": [
+      "Pi SDK 1.0.2 pins its nested Undici 8.10.2. It is module-loaded, but its ambient dispatcher configuration is on CLI/RPC/interactive entry points. Desktop DeepSeek uses provider-scoped Electron net.fetch. Remaining package use stays open for final review.",
+      "pi-web-access has nested Undici 8.11.2 and MCP SDK 1.27.1. The reviewed application extracts only content-find logic; the desktop MCP client uses @earendil-works/pi-mcp. The advisory entries remain in the package tree.",
+      "node-gyp retains Undici 6.29.0 in its build/install dependency path. LangChain also retains Zod 4.6.5; its audited triplet-graph inference entry is limited to legacy-test authority. Reachability of the declared oversized collection issue in product schemas has not been established."
+    ]
+  },
+  "tests": [
+    {"command": "node --experimental-transform-types scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs", "passed": 11, "exitCode": 0, "report": "TEMP/xiaozhi-mcp-transports-DxUarH/report.json", "sha256": "349170ca31bc0e207249c552e5324f26a8bd001cf314159ae463641120e96ace"},
+    {"command": "node --experimental-transform-types scripts/xiaozhi-agent/phase6-network-effects-smoke.mjs", "passed": 8, "exitCode": 0, "report": "TEMP/xiaozhi-phase6-network-effects-DELauE/report.json", "sha256": "459c6d19f35183c9043c25451acaea4159f1871c8347aa59004a0c66bea57e95"},
+    {"command": "npm.cmd run test:renderer-components", "passed": 253, "exitCode": 0, "logSha256": "aa7b80c536916a12fa5b3d53787efd31e56406c36c6a0a3919ba27366097e336"},
+    {"command": "node scripts/start-desktop.mjs --check", "exitCode": 0, "scope": "Current local direct dependencies and Electron files."}
+  ],
+  "publicHttpsRead": {"commandPrefix": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs --input-type=module -e", "operation": "Call fetchOfficePublicUrl with the frozen q5Source, a 15000 ms AbortSignal, and a beforeRequest callback asserting the exact URL and GET. Assert 200 and a body containing the density marker.", "source": "https://starchild.gsfc.nasa.gov/docs/StarChild/teachers/densities.html", "method": "GET", "httpStatus": 200, "bytes": 3687, "sha256": "250bd5cbc3c5509e1725e43f3764f218c8dc8ef5e2a9c06640898258c5856eeb", "authorizationChecks": 2, "elapsedMs": 8282, "exitCode": 0},
+  "independentDesktop": {
+    "reviewer": "GPT-6.1 Terra High", "status": "PASS_SCOPED", "passed": 4, "exitCode": 0,
+    "command": "node scripts/xiaozhi-agent/phase7-c2-local-course-ui.mjs --build-root test-results/harness-undici-7301/out --expected-out-hash da9de54379f723ba8adccbcc390f768288d3d2ef206947bab1f7d23b8d70ba32 --expected-out-count 481 --expected-main-hash 0d87d454454b847738b153ca6ff734f77ee492acdb6d941e452af20b7d6d5b5a",
+    "report": "TEMP/omni-edu-c2-course-TGw5iO/report.json", "sha256": "09bc168318bdfe4daa1d58876db8a8c55038b02ccd2b8cb14cb9e1eec33a7355",
+    "outFingerprintAndLockUnchanged": true, "resolvedUndiciBeforeAndAfter": "7.30.1", "loopbackMcpCalls": 1, "additionalExternalCallsAfterRevocation": 0, "pageErrors": [],
+    "scope": "Hidden Electron with independent synthetic data, local material source action and cold readback. No new independent keyboard or cold approval runs on this dependency update."
+  },
+  "audit": {
+    "command": "npm.cmd audit --omit=dev --json --fetch-retries=0 --fetch-timeout=20000",
+    "exitCodeBeforeAndAfter": 1, "low": 8, "moderate": 7, "high": 8, "critical": 0,
+    "beforeReport": "TEMP/xiaozhi-runtime-audit-39eed240-86ed-4e92-bb64-4cd8d7b62e63.json",
+    "beforeSha256": "a853fa26348b29b9985cb6f13a4f47d0f8c5c3ced893d25980c5817345c2b2b7",
+    "afterReport": "TEMP/xiaozhi-undici-patch-6efb71bf0956430ba9752448e1976b58/audit-after.json",
+    "afterSha256": "cf73beca657a5a658b3b77c9f960302c3f5768a082122640adb7988d4ff3f7d6",
+    "result": "The direct node_modules/undici path was removed from the reported affected instances. All three nested paths remain, and the reported package-level counts are unchanged."
+  },
+  "paidRequestsAdded": 0,
+  "rollback": "Revert both desktop package manifests together and reinstall from their matching lockfile. No data migration."
+}
