@@ -1,5 +1,9 @@
 # 独立验收记录
 
+## 2026-11-20 发行依赖缩小后的 NSIS 回读
+
+独立验收读取最终归档，七项指定文件哈希与封存树相同。总控另从安装程序直接提取 `out`，481 个文件逐路径和 SHA-256 匹配构建。安装程序外壳为 x86，携带的应用为 x64。7za 的尾随数据警告留存，提取退出 0。候选为本机未签名产物，实际安装和卸载仍需独立 Windows。 [原始证据与文件指纹](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)
+
 ## 2026-11-20 任务总览双向焦点循环
 
 1366×768 与 1920×1080 分别运行一次并退出 0。实际进入“恢复与待办”模态，Tab 与 Shift+Tab 的两端循环、有键盘焦点的筛选、Space 刷新、跳过禁用按钮及 Escape 归焦均通过。原生窗口和真实前台输入按原门槛继续，完整 Gate 7 状态未变。 [命令、构建及原始轨迹](evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json)

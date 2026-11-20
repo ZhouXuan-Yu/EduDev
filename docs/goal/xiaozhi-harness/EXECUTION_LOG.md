@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-20 原 NSIS 会话结束后验证
+
+从原会话收到退出码 0 后读取产物，保留构建日志、EXE、blockmap 和两套压缩文件回读报告的指纹。证据绑定打包源码 `9e80732`，合并版另有独立构建证据。此次运行保持原安装方式，未计入 QG-09 的实际安装。 [命令和范围](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)
+
 ## 2026-11-20 同一合并版的任务焦点回归
 
 保持合并构建 481 个文件指纹，独立检查实际模态和双向 15 个焦点位置。两种尺寸一共 12 项通过。模型只用于合成夹具，新增付费请求 0。沿原脚本的隐藏 Electron 验收。 [步骤、限制和证据](evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json)
