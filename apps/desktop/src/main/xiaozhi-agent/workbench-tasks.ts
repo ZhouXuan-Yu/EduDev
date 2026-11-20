@@ -12,11 +12,10 @@ export async function readWorkbenchTasks(read: WorkbenchRead, approvals: Workben
   for await (const row of workbenchRows(read, 'app_settings', 'tasks', "key GLOB 'xiaozhi.task.v1:xitask_*' AND length(key)=?", ['xiaozhi.task.v1:xitask_'.length + 64])) {
     const id = String(row.key).slice('xiaozhi.task.v1:'.length);
     try {
-      const record = await tasks.summaryRecord(id);
-      if (!record) throw Error('task_corrupt');
+      const record = await tasks.summaryRecordFromRow(id, row);
       const task = record.view, session = read.sessions.get(task.sessionId);
       if (!session) continue;
-      if (!latest.has(task.sessionId)) latest.set(task.sessionId, await tasks.latest(task.sessionId));
+      if (!latest.has(task.sessionId)) latest.set(task.sessionId, await record.latest());
       const isLatestForSession = latest.get(task.sessionId)?.id === task.id;
       const taskApprovals = approvals.filter(item => item.sessionId === session.id && (item.taskId === task.id
         || item.kind === 'legacy_copy' && record.runIds.includes(item.runId)));

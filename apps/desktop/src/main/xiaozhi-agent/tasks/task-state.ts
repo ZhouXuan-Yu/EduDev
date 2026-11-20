@@ -77,11 +77,23 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   return proved;
  }
  async function transaction<T>(action:(work:Sql)=>Promise<T>){if(!sql.transaction)throw Error('task_transaction_required');return sql.transaction(action);}
- async function read(work:Sql,id:string,auditChecks=true){if(!/^xitask_[a-f0-9]{64}$/u.test(id))throw Error('invalid_input');const row=(await work.all('SELECT value_json FROM app_settings WHERE key=?',[key(id)]))[0];if(!row)return null;const result={raw:String(row.value_json),doc:decode(String(row.value_json),id)};if(auditChecks)await auditTaskTeacherChecks(work,result.doc);return result;}
+ async function recordFromRow(work:Sql,id:string,row:Record<string,unknown>,auditChecks=true){
+  const raw=String(row.value_json),result={raw,doc:decode(raw,id)};
+  if(auditChecks)await auditTaskTeacherChecks(work,result.doc);
+  return result;
+ }
+ async function read(work:Sql,id:string,auditChecks=true){if(!/^xitask_[a-f0-9]{64}$/u.test(id))throw Error('invalid_input');const row=(await work.all('SELECT value_json FROM app_settings WHERE key=?',[key(id)]))[0];return row?recordFromRow(work,id,row,auditChecks):null;}
  async function latestId(work:Sql,sessionId:string):Promise<string|null>{
   const row=(await work.all('SELECT value_json FROM app_settings WHERE key=?',[latestKey(sessionId)]))[0];if(!row)return null;
   let v;try{v=JSON.parse(String(row.value_json));}catch{throw Error('task_corrupt');}
   if(!taskObject(v)||Object.keys(v).length!==2||v.schema!==TASK_SCHEMA||typeof v.taskId!=='string'||!/^xitask_[a-f0-9]{64}$/u.test(v.taskId))throw Error('task_corrupt');return v.taskId;
+ }
+ async function latestView(sessionId:string,audited?:TaskRecord){
+  if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');
+  const id=await latestId(sql,sessionId);if(!id)return null;
+  const row=audited?.doc.view.id===id?audited:await read(sql,id);
+  if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');
+  return clone(row.doc.view);
  }
  async function current(work:Sql,owner:TaskOwner){
   if(!validTaskOwner(owner))throw Error('invalid_input');
@@ -148,6 +160,15 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
   async summaryRecord(id:string){const record=await read(sql,id);return record?clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}):null;},
+  /** Main-only isolated snapshot reader: audit the scanned row once and reuse
+   * that same document only while checking its original session's latest index. */
+  async summaryRecordFromRow(id:string,row:Record<string,unknown>){
+   if(!/^xitask_[a-f0-9]{64}$/u.test(id))throw Error('invalid_input');
+   if(row.key!==key(id))throw Error('task_corrupt');
+   const record=await recordFromRow(sql,id,row);
+   return{...clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}),
+    latest:()=>latestView(record.doc.view.sessionId,record)};
+  },
   async inspection(id:string){
     const record=await read(sql,id);
     if(!record)return null;
@@ -195,7 +216,7 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    bindGoalRequirements(next.view,goal);const saved=await save(work,before,next);
    await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[goalTaskKey(goalId),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),stamp()]);return saved;
   });},
-  async latest(sessionId:string){if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');const id=await latestId(sql,sessionId);if(!id)return null;const row=await read(sql,id);if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');return clone(row.doc.view);},
+  latest:(sessionId:string)=>latestView(sessionId),
   async requirements(sessionId:string){
    if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');const id=await latestId(sql,sessionId);if(!id)return null;
    const row=await read(sql,id);if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');await sources(sql,row.doc);return clone(row.doc.view);

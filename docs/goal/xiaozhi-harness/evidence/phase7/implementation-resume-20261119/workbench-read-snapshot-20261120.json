@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-20",
+  "status": "WORKBENCH_PASS_SCOPED",
+  "source": "a8afd155a4b1e899e43ecff42a03c1de8f146bfc",
+  "base": "1c85784d5844808f56951f288710e4bb82138754",
+  "previousIndexReadFailure": "managed-skill-startup-cancel-20261120.json",
+  "historicalAlertCause": "UNVERIFIED; renderer catch covers timeout, rejected IPC and unexpected result kind.",
+  "change": "Reuse the existing SQLite scan row and run its original decoder and teacher-action audit. The same verified document is reused only if the latest index points to it. Other targets keep the original validated lookup.",
+  "measure": {
+    "taskCount": 57,
+    "before": {
+      "all": 232,
+      "taskDocuments": 114,
+      "latestIndexes": 57,
+      "effects": 57
+    },
+    "after": {
+      "all": 118,
+      "taskDocuments": 0,
+      "latestIndexes": 57,
+      "effects": 57
+    },
+    "baselineEvidence": {
+      "path": "TEMP/xiaozhi-phase7-workbench-read-ZHsc86/read-count-baseline.json",
+      "sha256": "f9051a56cb7d2a8e62203326c0dcf827a03c2cd56914ef84a00697c949eec57c"
+    },
+    "scope": "HEAD workbench-tasks.ts loaded in-memory with Node registerHooks and git show. Actual sqlite3 READONLY handle over the unchanged 57-task synthetic database; original task reader method semantics preserved by current refactor. No production file restored or edited."
+  },
+  "workbenchReadSmoke": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-read-smoke.mjs",
+    "passed": 16,
+    "evidence": {
+      "path": "TEMP/xiaozhi-phase7-workbench-read-ZHsc86/report.json",
+      "sha256": "385a67cec2092b6faff7f3e486a50173bc8812274530ffb34b435794a3115828"
+    },
+    "connectionsOpened": 42,
+    "connectionsClosed": 42
+  },
+  "taskStateRegression": {
+    "command": "node scripts/xiaozhi-agent/phase6-state-foundation-smoke.mjs",
+    "passed": 8,
+    "evidence": {
+      "path": "TEMP/xiaozhi-phase6-state-MSYIrd/report.json",
+      "sha256": "fd02ac5023a6986c094be1c6ad3d0c3ef099b8b4dda19a79e1801aed38884498"
+    }
+  },
+  "migrations": false,
+  "newDependencies": false,
+  "paidCalls": 0,
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exitCode": 1,
+    "low": 8,
+    "moderate": 13,
+    "high": 8,
+    "critical": 0
+  },
+  "build": {
+    "command": "npm.cmd run build -- --outDir test-results/harness-workbench-index-read-20261120/out",
+    "exitCode": 0,
+    "sourceCommit": "a8afd155a4b1e899e43ecff42a03c1de8f146bfc",
+    "outputSha256": "3131e69b101c5005f1dad2851b5798daa8b92217ce2d0b2ee4d30c462ce14ef6",
+    "outputFileCount": 481,
+    "mainSha256": "678da526b7451d7fb14b33ff3978fa40da9ab6acf1c14cece839fe1813c8f05f",
+    "preloadSha256": "750b99553ae140021ac9b7190c535cbd7fa388ca2027ed897b793f7507f42db7",
+    "rendererSha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+    "buildLogSha256": "44e273cdd13205c8187a6e3302bdf9c1c9a7499b23f822f42361b08616813244"
+  },
+  "independentElectron": {
+    "reviewer": "GPT-6.1 Terra High",
+    "status": "PASS_SCOPED",
+    "testExitCode": 0,
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "outputRoot": "apps/desktop/test-results/harness-workbench-index-read-20261120/out",
+    "baseAtBuildStart": "1c85784d5844808f56951f288710e4bb82138754",
+    "compiledCandidateSource": "a8afd155a4b1e899e43ecff42a03c1de8f146bfc",
+    "mainSha256": "678da526b7451d7fb14b33ff3978fa40da9ab6acf1c14cece839fe1813c8f05f",
+    "report": {
+      "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-j1xaJr/evidence/ui-report.json",
+      "sha256": "35830f4508de83b4d3e87873577032ff53c6940618fdfaf803485a2ef981c971"
+    },
+    "closedReport": {
+      "path": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-j1xaJr/STOPPED.json",
+      "sha256": "cadbf02d013050f7dc3ab9662aa2cd27af673d0e9447f960f5551e2a6a2ffbd8"
+    },
+    "checks": [
+      {
+        "name": "U01_visible_cross_session_overview_matches_original_completed_facts",
+        "pass": true,
+        "durationMs": 2473.868499999997
+      },
+      {
+        "name": "U02_both_actual_sizes_keep_global_actions_pointer_reachable",
+        "pass": true,
+        "durationMs": 8864.777900000001
+      },
+      {
+        "name": "U03_cross_session_remaining_double_click_starts_one_original_same_Task_Run",
+        "pass": true,
+        "durationMs": 7094.419199999989
+      },
+      {
+        "name": "U04_explicit_continue_rechecks_same_Task_in_original_Pi_loop",
+        "pass": true,
+        "durationMs": 8562.174400000004
+      },
+      {
+        "name": "U05_inbox_modern_rejection_uses_original_permission_CAS",
+        "pass": true,
+        "durationMs": 9811.615099999995
+      },
+      {
+        "name": "U06_legacy_uncertain_verifies_existing_owned_copy_without_replay",
+        "pass": true,
+        "durationMs": 3956.6185000000114
+      },
+      {
+        "name": "U07_capability_center_true_metadata_search_and_original_management_navigation",
+        "pass": true,
+        "durationMs": 10060.0533
+      },
+      {
+        "name": "U08_original_idle_terminal_remains_controllable_with_global_navigation",
+        "pass": true,
+        "durationMs": 35756.753800000006
+      },
+      {
+        "name": "U09_cold_original_summary_and_inbox_decision_readback",
+        "pass": true,
+        "durationMs": 37129.096900000004
+      }
+    ],
+    "resumedRuns": [
+      {
+        "taskId": "xitask_86b6c27a80680ca237942dd2049893ab3cf2527a946750e5a4c20d1a67620b37",
+        "sessionId": "aisession_e6d0874b-2dd6-4b46-8052-f8b3a6bcf0bc",
+        "id": "run_8357883c-12ea-4805-9da5-296481d89ce0",
+        "status": "succeeded",
+        "error_message": ""
+      },
+      {
+        "taskId": "xitask_8345a62b2689c7ea773432bb4617de8a1712be6262c4293b0ef4b8ce390c4b43",
+        "sessionId": "aisession_e981ba11-b322-4327-87cc-31270a3fc2d6",
+        "id": "run_554f548d-d179-408f-95aa-95fdeb19aedc",
+        "status": "succeeded",
+        "error_message": ""
+      }
+    ],
+    "indexRefreshUsed": false,
+    "loopbackModelCalls": 11,
+    "paidCalls": 0,
+    "openModelRequestsAfterColdRestart": 0,
+    "rendererErrors": [],
+    "physicalMouse": "NOT_TESTED"
+  },
+  "gate7": "PARTIAL",
+  "rendererComponents": {
+    "command": "npm.cmd run test:renderer-components",
+    "exitCode": 0,
+    "passed": 253,
+    "total": 253,
+    "logSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  },
+  "integration": {
+    "sourceCommit": "ae8dca73d36d9609cb2143070e50fe53ca9b4fe4",
+    "upstreamMain": "2be8605658e3fd626be4f811b5898d6a2e6762e7",
+    "peerScope": "Knowledge base PDF outline classification and finalization",
+    "harnessRendererAndPreloadChangedDuringMerge": false,
+    "build": {
+      "command": "npm.cmd run build -- --outDir test-results/harness-workbench-index-merge-ae8dca7/out",
+      "exitCode": 0,
+      "outputSha256": "301327f31c748fb93e024326996f3dffd0263f4a8754a9243a3faa87e4ded76b",
+      "outputFileCount": 481,
+      "mainSha256": "56d1e5d34d27bf7df1522694f128ad005aff10f151392a539a9e1cd7870ebc22",
+      "rendererSha256": "9bab8f95d69a9082b9661ce2acdb813dfecb4fc27654b300f68523e320a3fb70",
+      "buildLogSha256": "9de1a5179b68adb3bddc4dad2947d626d967c06fd03f4b814ae73d94d6f338b6"
+    },
+    "readSmoke": {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-read-smoke.mjs",
+      "exitCode": 0,
+      "passed": 16,
+      "reads": {
+        "all": 118,
+        "taskDocuments": 0,
+        "latestIndexes": 57,
+        "effects": 57
+      },
+      "evidence": {
+        "path": "TEMP/xiaozhi-phase7-workbench-read-R7DCeR/report.json",
+        "sha256": "0ae228d36a57e35af54afacf1f0ee73302867a2808fb9260fa30c03362d0a3bd"
+      }
+    }
+  }
+}

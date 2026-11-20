@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-20 任务总览只读快照复验
+
+任务总览按同一快照复用已审计任务文档。SQLite 验证历史指针缺失、目标损坏、跨会话和教师回执保留原处理，Terra 验证现行工作台入口、续跑与冷启。原生窗操作按本合同继续。[证据](evidence/phase7/implementation-resume-20261119/workbench-read-snapshot-20261120.json)
+
 ## 2026-11-20 主线构建 `37866ce` 的后台复验
 
 Terra 在两个视口完成审批忙碌期间的 Escape、焦点恢复与延迟详情隔离，另通过能力搜索和 Skill 导航。总控通过三处部分与空态、异常审批冷启和终态前流式推理，另保留同任务续跑准备超时和终端用例中断。该组为后台 Electron 实页，原生鼠标合同仍待执行。[同构建记录](evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json)

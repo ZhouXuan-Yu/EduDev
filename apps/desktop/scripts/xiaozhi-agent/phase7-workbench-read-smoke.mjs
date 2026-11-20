@@ -8,6 +8,7 @@ import sqlite3 from 'sqlite3';
 import {openFixture} from './phase6-state-foundation-worker.mjs';
 const {readWorkbenchSnapshot} = await import('../../src/main/xiaozhi-agent/workbench-read.ts');
 const {createWorkbenchSummary} = await import('../../src/main/xiaozhi-agent/workbench-summary.ts');
+const {createTaskState} = await import('../../src/main/xiaozhi-agent/tasks/task-state.ts');
 const {createPiPersistentState} = await import('../../src/main/xiaozhi-agent/persistent-state.ts');
 const {createPermissionStore} = await import('../../src/main/xiaozhi-agent/permissions/store.ts');
 const {requestDigest} = await import('../../src/main/xiaozhi-agent/permissions/validation.ts');
@@ -63,6 +64,78 @@ try {
       assert.equal(page.partial, false); assert.equal(page.total, 57); assert.equal(page.counts.paused, 57); counts.push(page.items.length); ids.push(...page.items.map(item => item.taskId)); cursor = page.nextCursor;
     } while (cursor);
     assert.equal(new Set(ids).size, 57); assert.deepEqual(counts, [20, 20, 17]); return {counts, distinct: ids.length};
+  });
+  await check('R02a_scanned_latest_tasks_avoid_duplicate_document_reads', async () => {
+    const reads = {all: 0, taskDocuments: 0, latestIndexes: 0, effects: 0};
+    const measured = createWorkbenchSummary({read: action => ro(sql => action({...sql, all: (statement, values = []) => {
+      reads.all++;
+      if (statement === 'SELECT value_json FROM app_settings WHERE key=?') {
+        if (/^xiaozhi\.task\.v1:xitask_[a-f0-9]{64}$/u.test(String(values[0]))) reads.taskDocuments++;
+        if (String(values[0]).startsWith('xiaozhi.task.v1:session:')) reads.latestIndexes++;
+      }
+      if (statement.startsWith('SELECT document_json FROM xiaozhi_effects_v1 WHERE session_id=? AND task_id=?')) reads.effects++;
+      return sql.all(statement, values);
+    }}))});
+    const result = await measured({schemaVersion: 1, kind: 'tasks', filter: 'all', limit: 50});
+    assert(result.ok); assert.equal(result.value.partial, false); assert.equal(result.value.total, 57);
+    assert.equal(reads.taskDocuments, 0); assert.equal(reads.latestIndexes, 57); assert.equal(reads.effects, 57);
+    assert.equal(report.opened, report.closed);
+    console.log('READ COUNTS ' + JSON.stringify(reads)); return reads;
+  });
+  await check('R02b_latest_index_absent_invalid_missing_and_cross_session_keep_original_semantics', async () => {
+    const key = 'xiaozhi.task.v1:session:' + origin.sessionId;
+    const saved = f.db.prepare('SELECT * FROM app_settings WHERE key=?').get(key), pointer = JSON.parse(saved.value_json);
+    const scoped = () => query({kind: 'tasks', filter: 'all', sessionId: origin.sessionId});
+    const details = [];
+    try {
+      f.db.prepare('DELETE FROM app_settings WHERE key=?').run(key);
+      const absent = await scoped(); assert.equal(absent.partial, false); assert.equal(absent.items.length, 1);
+      assert.equal(absent.items[0].isLatestForSession, false); assert.equal(absent.items[0].continuationCandidate, false);
+      f.db.prepare('INSERT INTO app_settings VALUES(?,?,?)').run(saved.key, saved.value_json, saved.updated_at);
+      for (const [name, raw] of [['invalid', '{broken'], ['missing', JSON.stringify({...pointer, taskId: 'xitask_' + '0'.repeat(64)})],
+        ['cross_session', JSON.stringify({...pointer, taskId: runs[1].task.id})]]) {
+        f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(raw, key);
+        const page = await scoped(); assert.equal(page.partial, true); assert.equal(page.total, null);
+        assert.equal(page.items.length, 0); assert.equal(page.unavailableCount, 1);
+        details.push({name, unavailableCount: page.unavailableCount});
+      }
+      return {absentIndex: 'visible_without_resume', invalidIndexes: details};
+    } finally {f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(saved.value_json, key);}
+  });
+  await check('R02c_latest_fallback_still_audits_corrupt_target', async () => {
+    const indexKey = 'xiaozhi.task.v1:session:' + origin.sessionId, taskKey = 'xiaozhi.task.v1:' + runs[1].task.id;
+    const index = f.db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(indexKey).value_json;
+    const target = f.db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(taskKey).value_json;
+    try {
+      f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(JSON.stringify({...JSON.parse(index), taskId: runs[1].task.id}), indexKey);
+      f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run('{broken', taskKey);
+      const page = await query({kind: 'tasks', filter: 'all', sessionId: origin.sessionId});
+      assert.equal(page.partial, true); assert.equal(page.items.length, 0); assert.equal(page.unavailableCount, 2);
+      return {unavailableCount: page.unavailableCount};
+    } finally {
+      f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(index, indexKey);
+      f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(target, taskKey);
+    }
+  });
+  await check('R02d_scanned_document_preserves_teacher_receipt_audit', async () => {
+    const key = 'xiaozhi.task.v1:' + origin.task.id, raw = f.db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(key).value_json;
+    const document = JSON.parse(raw), criterion = document.view.criteria[0];
+    document.view.checks.push({criterionId: criterion.id, criterionVersion: criterion.version, state: 'failed',
+      runId: origin.runId, generation: origin.owner.generation, callId: '', checkedAt: new Date().toISOString(), digest: 'a'.repeat(64),
+      authority: 'teacher', confirmationId: 'xitact_' + randomUUID(),
+      candidate: {messageId: 'aimsg_' + randomUUID(), runId: origin.runId, digest: 'b'.repeat(64)}});
+    try {
+      f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(JSON.stringify(document), key);
+      await ro(async sql => {
+        const tasks = createTaskState(sql, {sanitize: async text => text});
+        await assert.rejects(tasks.summaryRecord(origin.task.id), /task_action_corrupt/u);
+        const row = (await sql.all('SELECT * FROM app_settings WHERE key=?', [key]))[0];
+        await assert.rejects(tasks.summaryRecordFromRow(origin.task.id, row), /task_action_corrupt/u);
+      });
+      const page = await query({kind: 'tasks', filter: 'all', sessionId: origin.sessionId});
+      assert.equal(page.partial, true); assert.equal(page.items.length, 0); assert.equal(page.unavailableCount, 1);
+      return {missingTeacherReceipt: 'rejected_by_original_and_scanned_readers'};
+    } finally {f.db.prepare('UPDATE app_settings SET value_json=? WHERE key=?').run(raw, key);}
   });
   await check('R03_session_filter_exact_and_invalid_cursor', async () => {
     const page = await query({kind: 'tasks', filter: 'all', sessionId: origin.sessionId}); assert.equal(page.items.length, 1); assert.equal(page.counts.paused, 1);
