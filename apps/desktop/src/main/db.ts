@@ -35,6 +35,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import {isCompleteQuestionDocument,readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
 import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins,visibleQuestionIds} from './assets/material-question-origins';
+import {structureDraftHidden,structureDraftStaged} from './assets/material-structure-bank';
 import {NativeQuestionRepository} from './assets/native-question-repository';
 import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
@@ -4340,7 +4341,7 @@ export class OmniEduStore {
     const {clauses,params,filters:validated,method}=questionRetrievalWhere(filters,this.questionRetrievalIndexed);
     const {ranking,rankParams}=questionKeywordOrder(validated.query);
     if(filters.showSourceCandidates!==undefined&&typeof filters.showSourceCandidates!=='boolean')throw Error('题目来源筛选参数不正确');
-    if(!filters.showSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
+    clauses.push('NOT '+(filters.showSourceCandidates ? structureDraftStaged : sourceCandidateHidden));
     if(filters.offset!==undefined&&(!Number.isSafeInteger(filters.offset)||filters.offset<0))throw new Error('题目分页参数不正确');
     if(filters.bookmarked!==undefined&&typeof filters.bookmarked!=='boolean')throw new Error('收藏筛选参数不正确');
     if(filters.categoryId!==undefined&&(typeof filters.categoryId!=='string'||filters.categoryId.length>240||/[\x00-\x1f]/.test(filters.categoryId)))throw new Error('分类筛选参数不正确');
@@ -4358,7 +4359,8 @@ export class OmniEduStore {
     const limit = Math.max(1, Math.min(Math.trunc(filters.limit ?? 20), 50));
     const offset = Math.max(0, Math.trunc(filters.offset ?? 0));
     const rows = await this.all(
-      `SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked,
+      `SELECT q.*, ${structureDraftHidden} AS historical_structure,
+              COALESCE(b.bookmarked, 0) AS notebook_bookmarked,
               COALESCE(b.version, 0) AS notebook_version,
               COALESCE(u.usage_count, 0) AS usage_count,
               COALESCE(u.last_used_at, '') AS last_used_at
@@ -4378,6 +4380,7 @@ export class OmniEduStore {
       const categories = await this.listQuestionNotebookCategoriesForQuestion(item.id);
       return {
         ...item,
+        ...(row.historical_structure === 1 && {historicalStructure:true}),
         bookmarked: Number(row.notebook_bookmarked ?? 0) === 1,
         version: Math.max(0, Number(row.notebook_version ?? 0)),
         categories,
@@ -4390,16 +4393,17 @@ export class OmniEduStore {
 
   async getQuestionNotebookEntry(questionId: string): Promise<QuestionNotebookEntry | undefined> {
     const id = requireNonEmpty(questionId, '题目 ID 不能为空');
-    const rows = await this.all(`SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked, COALESCE(b.version, 0) AS notebook_version, COALESCE(u.usage_count, 0) AS usage_count, COALESCE(u.last_used_at, '') AS last_used_at
+    const rows = await this.all(`SELECT q.*, ${structureDraftHidden} AS historical_structure, COALESCE(b.bookmarked, 0) AS notebook_bookmarked, COALESCE(b.version, 0) AS notebook_version, COALESCE(u.usage_count, 0) AS usage_count, COALESCE(u.last_used_at, '') AS last_used_at
       FROM question_bank_items q
       LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
       LEFT JOIN (SELECT question_id, COUNT(*) AS usage_count, MAX(created_at) AS last_used_at FROM question_bank_usage WHERE question_id=? GROUP BY question_id) u ON u.question_id = q.id
-      WHERE q.id = ?`, [id,id]);
+      WHERE q.id = ? AND NOT ${structureDraftStaged}`, [id,id]);
     const row = rows[0];
     if (!row) return undefined;
     const item = this.mapQuestionBankItem(row);
     return {
       ...item,
+      ...(row.historical_structure === 1 && {historicalStructure:true}),
       bookmarked: Number(row.notebook_bookmarked ?? 0) === 1,
       version: Math.max(0, Number(row.notebook_version ?? 0)),
       categories: await this.listQuestionNotebookCategoriesForQuestion(item.id),
@@ -6227,6 +6231,7 @@ export class OmniEduStore {
     await this.materialQuestions.migrateMembers();
     await this.materialPdf.migrate();
     await this.materialStructures.migrate();
+    await this.materialQuestions.requeueLegacyStructureArchives();
     await this.materialWord.migrate();
     await this.materialWordPages.migrate();
     await this.materialAi.migrate();

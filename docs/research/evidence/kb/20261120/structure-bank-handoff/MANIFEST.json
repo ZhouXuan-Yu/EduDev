@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "xiaozhi.delivery-file-manifest.v1",
+  "representation": "Git blob bytes",
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "954592e5063abb029c5869e15e4a1f4631a6d8061bc7342443e293d61490866b"
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "b62393f182f3ac88c5bff2b5fe4e7a3a98f0f323d5c031afe3dd56376d6ff8af"
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "1265079af757541d7392a376808439e99c15f640b2eb39d8cb4d4a987a677206"
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "25d8555a8718aa3cd057f504319f95b59488503bf56036327aa4637b1750ef9d"
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-bank-handoff-electron.mjs",
+      "sha256": "283cf7ed5a348f72c58b2de7c791216993baea35c06ae476e18f020b7b0c03e6"
+    },
+    {
+      "path": "apps/desktop/scripts/education/structure-review-boundaries.mjs",
+      "sha256": "dc7513a1b52417ee5ff304d34d079cfdcae2d0c7ce1ecc2a556fe28d941988de"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ipc.ts",
+      "sha256": "76b2266666436d782de3a8372d8db0eedefbc4f15f251aca8a3dbe8f361cf36f"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-archive.ts",
+      "sha256": "d0f9ba1eb7baf5d6a63e2e99573297f7cdd4444b6d82c422fa05ce5352a8e18a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-question-origins.ts",
+      "sha256": "1dfee2b1af377f485a0312feac48ce3f09844204b872cb42617eb9ed3cbcab55"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-bank.ts",
+      "sha256": "ca476178d1ea756771ff59b1203a7a0a2ef9afd60eea19ef692b07e201096ad0"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-structure-repository.ts",
+      "sha256": "9208f27bcadd28f57e734f2207a495c97fe09a0e651d294d02370a5b5c9ff7b3"
+    },
+    {
+      "path": "apps/desktop/src/main/db.ts",
+      "sha256": "7514bef4a0e494cc0fd71359daedd8b228878f79f3b899b32c115fd7733dabd3"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionArchiveEditor.tsx",
+      "sha256": "5a0b846d8faeb5b16d0880123ec9fbabca10acb6663884d50e2ebfbf365384f8"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "sha256": "ed1ccedff3bd0f684c5160fb2d9beded05365abac54d2a2e39594a61e25100f6"
+    },
+    {
+      "path": "apps/desktop/src/shared/contracts.ts",
+      "sha256": "ef94d8f62620febffa2a9f230fd5f07fabd385a54e931e8ca1207b6071fee480"
+    },
+    {
+      "path": "docs/acceptance/CURRENT.md",
+      "sha256": "9e496d9ec8c7181f514d526bb8323972fb08045dd667f11ad74791327244062e"
+    },
+    {
+      "path": "docs/architecture/CURRENT.md",
+      "sha256": "545dada0eca1a073b56d98348f5458dec1d3a49f713a4702882bfa0f1ce31f84"
+    },
+    {
+      "path": "docs/goal/ACCEPTANCE.md",
+      "sha256": "97b58414ec102cb8b8cac2c8b08822e1147e3ceeef667c76bf1bbc6691073a41"
+    },
+    {
+      "path": "docs/goal/CAPABILITY_MATRIX.md",
+      "sha256": "ff49a57976c55ac86f3f6a008daf7bc5b5c44222da5eed900810f1a202cb38aa"
+    },
+    {
+      "path": "docs/goal/CURRENT_STATE.md",
+      "sha256": "dc2abe9b66db1588de8a60f84b3e625c2f1af0665a7a4146bb0c7005340c4e2d"
+    },
+    {
+      "path": "docs/goal/DECISIONS.md",
+      "sha256": "e4eb0d5fbeb11ed8cbfc8e0ccd1b777f4e3aa285ebd524d1b8289cf28e74451e"
+    },
+    {
+      "path": "docs/goal/KB_EXAM_ACTIVE_TASK.md",
+      "sha256": "c879f9bf6f5fb0d1c468434be97713cb1f7b93ca838f633cf3d09c30fe5a529d"
+    },
+    {
+      "path": "docs/goal/XIAOZHI_CODEX_GOAL.md",
+      "sha256": "b4fd25dedee785ffcc828f0d7631a611a54639c766950d79400b28f659fab556"
+    },
+    {
+      "path": "docs/integrations/CURRENT.md",
+      "sha256": "3721ef82ea2564d9e415bff95e737f5897d27c16ae279fe64d94d456fe8143d7"
+    },
+    {
+      "path": "docs/product/CURRENT.md",
+      "sha256": "6346194f333a4e121d512cc9c20c1a0c557ae469a7c0f90a62e53b3c8f1eefa4"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/structure-bank-handoff/README.md",
+      "sha256": "713812aef554eb490f61ed819ac39ca4aeb370836c36795fb8c99e69662a2951"
+    },
+    {
+      "path": "docs/research/evidence/kb/20261120/structure-bank-handoff/summary.json",
+      "sha256": "65031ba469b8e122117571dae4b45cc7a4da852b51933a44b837fda4937eb9e7"
+    }
+  ]
+}

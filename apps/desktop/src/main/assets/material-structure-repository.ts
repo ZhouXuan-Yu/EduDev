@@ -34,6 +34,7 @@ import { validPdfFilePage } from "../../shared/material-pdf-file";
 import { verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
 import { structureBookScope } from "./material-structure-book-scope";
+import { checkedStructureArchive, STRUCTURE_BANK_REVISION } from "./material-structure-bank";
 
 type Value = string | number | null;
 type Row = Record<string, unknown>;
@@ -463,7 +464,7 @@ export class MaterialStructureRepository {
       await target.host.enqueue(
         resource.id,
         resource.contentHash,
-        DOCUMENT_STRUCTURE_ENGINE + ":" + generation,
+        DOCUMENT_STRUCTURE_ENGINE + ":" + generation + STRUCTURE_BANK_REVISION,
       );
       signal.throwIfAborted();
     });
@@ -510,10 +511,10 @@ export class MaterialStructureRepository {
         String(row.question_id),
       ]),
     );
-    if (reviewed.length) {
+    {
       for (const row of questions) {
         const q = JSON.parse(String(row.body_json)) as StructureQuestion;
-        if (q.ocrSourceKey && !reviewedMap[q.id]) {
+        if (q.status === "needs_review" && q.ocrSourceKey && !reviewedMap[q.id]) {
           const owner = await this.archivedOwner(
             {
               schemaVersion: DOCUMENT_STRUCTURE_SCHEMA,
@@ -550,12 +551,7 @@ export class MaterialStructureRepository {
           ];
         }),
       ),
-      reviewed: Object.fromEntries(
-        reviewed.map((row) => [
-          String(row.candidate_id),
-          String(row.question_id),
-        ]),
-      ),
+      reviewed: reviewedMap,
     };
   }
 
@@ -588,13 +584,14 @@ export class MaterialStructureRepository {
     // Frozen older structures remain readable and reviewable. Automatic
     // publishing uses the current ownership rules after an explicit rebuild.
     if (job.engine !== DOCUMENT_STRUCTURE_ENGINE)
-      return {generation:String(job.generation),hasMore:false,items:[]};
+      return { generation: String(job.generation), archiveable: false, hasMore: false, items: [] };
     const rows = await this.host.all(
       "SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid LIMIT 17 OFFSET ?",
       [String(job.generation), offset],
     );
     return {
       generation: String(job.generation),
+      archiveable: true,
       hasMore: rows.length > 16,
       items: rows.slice(0, 16).map((row) => ({
         question: JSON.parse(String(row.body_json)) as StructureQuestion,
@@ -652,7 +649,14 @@ export class MaterialStructureRepository {
     let cursor = 0;
     for (;;) {
       const rows = await this.host.all(
-        `SELECT m.rowid cursor,b.id,b.archive_json,q.generation,q.body_json,q.document_json,q.sha256 FROM material_question_members m JOIN question_bank_items b ON b.id=m.question_id JOIN material_structure_questions q ON q.generation=json_extract(b.archive_json,'$.structure.generation') AND q.id=json_extract(b.archive_json,'$.structure.candidateId') WHERE m.resource_id=? AND m.rowid>? AND json_extract(b.archive_json,'$.structure.version')=? AND json_extract(q.body_json,'$.number')=? AND q.first_page=? AND q.last_page=? AND (?=0 OR json_extract(b.archive_json,'$.state')='teacher_edited') ORDER BY m.rowid LIMIT 32`,
+        `SELECT m.rowid cursor,b.id,b.archive_json,q.generation,q.body_json,q.document_json,q.sha256
+          FROM material_question_members m JOIN question_bank_items b ON b.id=m.question_id
+          JOIN material_structure_questions q ON q.generation=json_extract(b.archive_json,'$.structure.generation')
+            AND q.id=json_extract(b.archive_json,'$.structure.candidateId')
+          WHERE m.resource_id=? AND m.rowid>? AND json_extract(b.archive_json,'$.structure.version')=?
+            AND json_extract(q.body_json,'$.number')=? AND q.first_page=? AND q.last_page=?
+            AND ((?=0 AND q.generation=?) OR ${checkedStructureArchive("b.archive_json")})
+          ORDER BY m.rowid LIMIT 32`,
         [
           reference.resourceId,
           cursor,
@@ -660,6 +664,7 @@ export class MaterialStructureRepository {
           question.number,
           ...question.pageRange,
           teacherOnly ? 1 : 0,
+          reference.generation,
         ],
       );
       if (!rows.length) return;

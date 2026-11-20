@@ -7,6 +7,8 @@ import {
   reviseStructureDocument,
 } from "../../src/main/assets/material-structure-repository.ts";
 import { MaterialQuestionArchive } from "../../src/main/assets/material-question-archive.ts";
+import { migrateStructureBank, publishStructureDrafts, structureDraftHidden, structureDraftStaged } from "../../src/main/assets/material-structure-bank.ts";
+import { migrateWordPageSources } from "../../src/main/assets/material-word-page-source.ts";
 import {
   validQuestionArchive,
   readQuestionArchive,
@@ -31,7 +33,8 @@ async function fixture(options = {}) {
   db.exec(`CREATE TABLE ai_tasks(task_type TEXT,input_hash TEXT,status TEXT);
  CREATE TABLE resource_chunks(id TEXT PRIMARY KEY,resource_id TEXT,chunk_index INTEGER,page_number INTEGER,content_md TEXT);
  CREATE TABLE question_bank_items(id TEXT PRIMARY KEY,subject TEXT,grade TEXT,knowledge_point TEXT,question_type TEXT,difficulty TEXT,stem TEXT,answer TEXT,analysis TEXT,source_kind TEXT,source_title TEXT,archive_json TEXT DEFAULT '',document_json TEXT DEFAULT '',updated_at TEXT);
- CREATE TABLE material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT,question_id TEXT UNIQUE,needs_attention INTEGER);`);
+ CREATE TABLE material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT,question_id TEXT UNIQUE,needs_attention INTEGER);
+ CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,parse_status TEXT);`);
   const resource = {
     id: "resource_" + randomUUID(),
     contentHash: "a".repeat(64),
@@ -76,6 +79,7 @@ async function fixture(options = {}) {
     : "1. 小车每秒前进两米，求五秒内的路程。 A. 两米 B. 四米 C. 六米 D. 十米";
   const materials = {
     resource: async () => resource,
+    originalStamp: async () => "controlled original",
     verify,
     readingWindow: async () => ({
       units: [
@@ -241,6 +245,8 @@ async function fixture(options = {}) {
   };
   archive = new MaterialQuestionArchive(archiveHost);
   archive.configureStructures(() => structures);
+  await migrateStructureBank(archiveHost);
+  await archive.migrate();
   await structures.migrate();
   await structures.migrate();
   await structures.begin(resource, new AbortController().signal);
@@ -280,6 +286,7 @@ async function fixture(options = {}) {
     input,
     resource,
     read,
+    archiveHost,
     originals,
     setSourceChanged: (value) => (sourceChanged = value),
     setFailWrite: (value) => (failWrite = value),
@@ -640,5 +647,131 @@ await check('A resource assigned as an answer book cannot be admitted as a quest
   await assert.rejects(()=>f.archive.reviewStructure(f.input),/structure_source_incomplete/);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,0);
  }finally{f.close();}
+});
+await check("Publishing the last structure batch atomically changes visibility and protects historical facts", async () => {
+  const f = await fixture();
+  try {
+    const { db, archive, archiveHost } = f;
+    await migrateWordPageSources(archiveHost);
+    const id = f.resource.id, version = f.resource.contentHash, generation = f.input.reference.generation;
+    const oldGeneration = randomUUID();
+    const oldFields = {...f.input.fields,sourceKind:"teacher_resource",sourceTitle:f.resource.title};
+    const oldDraft = await archiveHost.create(oldFields);
+    const confirmed = await archiveHost.create(oldFields);
+    const oldStructure = { ...f.input.reference, generation: oldGeneration };
+    for (const [item, state, sourceChecked] of [[oldDraft,"rule_extracted",false],[confirmed,"book_enriched",true]]) {
+      db.prepare("UPDATE question_bank_items SET archive_json=? WHERE id=?").run(
+        JSON.stringify({ structure:oldStructure, state, sourceChecked }), item.id);
+      db.prepare("INSERT INTO material_question_members VALUES(?,?,?,1)").run("legacy:"+item.id,id,item.id);
+    }
+    const facts = id => db.prepare("SELECT * FROM question_bank_items WHERE id=?").get(id);
+    const oldFacts = facts(oldDraft.id), confirmedFacts = facts(confirmed.id);
+    const visible = (predicate = structureDraftHidden) =>
+      new Set(db.prepare(`SELECT q.id FROM question_bank_items q WHERE NOT ${predicate}`).all().map(row=>row.id));
+    const [question] = (await f.structures.view({resourceId:id,version,page:1})).questions;
+    let current = true, failPublication = false, missingSource = false;
+    const materials = archiveHost.materials();
+    const originalWindow = materials.readingWindow;
+    materials.readingWindow = async () => missingSource ? {units:[]} : originalWindow();
+    const writerRun = archiveHost.run;
+    archiveHost.run = async (sql, params) => {
+      if (failPublication && sql.startsWith("DELETE FROM material_structure_hidden_questions")) throw Error("disk_full");
+      await writerRun(sql,params);
+    };
+    archive.configureStructures(() => ({
+      candidates: async (_id,_version,offset) => ({
+        generation,archiveable:true,hasMore:offset===0,
+        items:offset===0?[{
+          question:{...question,status:"candidate",stem:"新版题面 ____"},
+          reference:f.input.reference,
+          document:{schemaVersion:"controlled"},
+        }]:missingSource?[{
+          question:{...question,id:"extra-question",status:"candidate",stem:"缺少来源"},
+          reference:f.input.reference,
+          document:{schemaVersion:"controlled"},
+        }]:[],
+      }),
+      currentPublication:async()=>current,
+      authenticate:async()=>{},
+      archivedOwner:async()=>undefined,
+      permitsPdfQuestion:async()=>true,
+    }));
+    await archive.enqueue(id,version,DOCUMENT_STRUCTURE_ENGINE+":"+generation);
+    const job = () => db.prepare("SELECT * FROM material_question_jobs WHERE resource_id=?").get(id);
+    await archive.requeueLegacyStructureArchives();
+    assert.match(job().parse_token, /:archive\.v2$/);
+    await archive.drain();
+    const newId = db.prepare("SELECT id FROM question_bank_items WHERE stem='新版题面 ____'").get().id;
+    assert.deepEqual(visible(),new Set([oldDraft.id,confirmed.id]));
+    assert(!visible(structureDraftStaged).has(newId));
+    await archive.requeueLegacyStructureArchives();
+    assert.equal(job().cursor,1,"a restart resumes the migration cursor");
+    current = false;
+    await archive.drain();
+    assert.deepEqual(visible(),new Set([oldDraft.id,confirmed.id]));
+    assert.equal(job().status,"pending","a stale writer cannot publish even an empty final batch");
+    current = true;
+    failPublication = true;
+    await archive.drain();
+    assert.equal(job().status,"failed");
+    assert.deepEqual(visible(),new Set([oldDraft.id,confirmed.id]));
+    failPublication = false;
+    missingSource = true;
+    await archive.retry();
+    await archive.drain();
+    assert.equal(job().status,"failed");
+    assert.equal(job().error,"source_changed");
+    assert.deepEqual(visible(),new Set([oldDraft.id,confirmed.id]));
+    missingSource = false;
+    await archive.retry();
+    await archive.drain();
+    assert.equal(job().status,"complete");
+    assert.equal(job().question_count,2);
+    assert.deepEqual(visible(),new Set([confirmed.id,newId]));
+    assert(visible(structureDraftStaged).has(oldDraft.id));
+    assert.deepEqual(facts(oldDraft.id),oldFacts);
+    assert.deepEqual(facts(confirmed.id),confirmedFacts);
+  } finally {
+    f.close();
+  }
+});
+await check("Identical drafts retain one stable owner and never publish staged answer-book drafts", async () => {
+  const f = await fixture();
+  try {
+    const { db, archiveHost, input } = f;
+    const reference = input.reference;
+    db.prepare("UPDATE material_structure_questions SET status='candidate',document_json='{}' WHERE generation=?").run(reference.generation);
+    const old = await archiveHost.create({...input.fields,sourceKind:"teacher_resource",sourceTitle:"exam.pdf"});
+    const duplicate = await archiveHost.create({...input.fields,sourceKind:"teacher_resource",sourceTitle:"exam.pdf"});
+    for (const item of [old,duplicate]) {
+      db.prepare("UPDATE question_bank_items SET archive_json=? WHERE id=?").run(
+        JSON.stringify({structure:{...reference,generation:randomUUID()},state:"rule_extracted",sourceChecked:false}),item.id);
+      db.prepare("INSERT INTO material_question_members VALUES(?,?,?,1)").run(item.id,reference.resourceId,item.id);
+    }
+    await publishStructureDrafts(archiveHost,reference.resourceId,reference.generation,true);
+    const visible = db.prepare(`SELECT q.id FROM question_bank_items q WHERE NOT ${structureDraftHidden}`).all().map(row=>row.id);
+    assert.deepEqual(visible,[old.id]);
+    db.prepare("INSERT INTO material_structure_hidden_questions VALUES(?,?,?,'staged')").run(old.id,reference.resourceId,reference.generation);
+    await publishStructureDrafts(archiveHost,reference.resourceId,reference.generation,false);
+    assert.equal(db.prepare("SELECT state FROM material_structure_hidden_questions WHERE question_id=?").get(old.id).state,"staged");
+  } finally {
+    f.close();
+  }
+});
+await check("Withdrawing confirmation on an older owner requeues the current generation for replacement", async () => {
+  const f = await fixture();
+  try {
+    const checked = await f.archive.reviewStructure(f.input);
+    const resource = f.resource;
+    const token = DOCUMENT_STRUCTURE_ENGINE+":"+randomUUID()+":archive.v2";
+    await f.archive.enqueue(resource.id,resource.contentHash,token);
+    f.db.exec("UPDATE material_question_jobs SET status='complete',cursor=20");
+    const saved = await f.archive.edit({questionId:checked.id,version:questionVersion(checked),fields:f.input.fields,sourceChecked:false});
+    assert.equal(saved.archive.sourceChecked,false);
+    const job = f.db.prepare("SELECT status,cursor,parse_token FROM material_question_jobs").get();
+    assert.deepEqual({...job},{status:"pending",cursor:0,parse_token:token});
+  } finally {
+    f.close();
+  }
 });
 console.log(JSON.stringify({ success: true, count: checks.length, checks }));

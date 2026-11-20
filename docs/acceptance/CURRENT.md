@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 重建后切换结构题版本
+
+真实旧库副本通过迁移、题本默认检索和历史查看、再次重建与冷启动。见 [专项验收](../research/evidence/kb/20261120/structure-bank-handoff/README.md)。
+
 ## 2026-11-20 印刷题号与填空恢复
 
 印刷题号与填空修复覆盖五三主书逐题读回和三种真实试卷的桌面导入。见 [专项验收](../research/evidence/kb/20261120/printed-structure/README.md)。

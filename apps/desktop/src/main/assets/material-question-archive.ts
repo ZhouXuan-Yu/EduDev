@@ -16,7 +16,8 @@ import {reviseStructureDocument,type MaterialStructureRepository} from './materi
 import {validStructureReviewInput,type StructureReviewInput} from '../../shared/material-structure-review';
 import type {QuestionContextEditInput} from '../../shared/question-context-edit';
 import type {QuestionContextSource} from '../../shared/question-context';
-import type {DocumentStructureReference} from '../../shared/material-document-structure';
+import {DOCUMENT_STRUCTURE_ENGINE,type DocumentStructureReference} from '../../shared/material-document-structure';
+import {assertStructureDraftEditable,hasIdenticalVisibleStructureDraft,publishStructureDrafts,stageStructureDraft,structureDraftHidden,STRUCTURE_BANK_REVISION} from './material-structure-bank';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
@@ -40,10 +41,17 @@ export class MaterialQuestionArchive{
   await this.host.run("INSERT OR IGNORE INTO material_question_jobs(resource_id,version,updated_at) SELECT id,content_hash,datetime('now') FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')");
  }
  async enqueue(id:string,version:string,parseToken=''){await this.host.run("INSERT INTO material_question_jobs(resource_id,version,parse_token,updated_at) VALUES(?,?,?,datetime('now')) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,parse_token=excluded.parse_token,cursor=CASE WHEN material_question_jobs.version<>excluded.version OR material_question_jobs.parse_token<>excluded.parse_token THEN 0 ELSE material_question_jobs.cursor END,status=CASE WHEN material_question_jobs.version<>excluded.version OR material_question_jobs.parse_token<>excluded.parse_token THEN 'pending' ELSE material_question_jobs.status END,updated_at=excluded.updated_at",[id,version,parseToken]);}
+ async requeueLegacyStructureArchives(){
+  await this.host.run(`UPDATE material_question_jobs AS a
+    SET parse_token=a.parse_token||?,status='pending',cursor=0,error='',updated_at=datetime('now')
+    FROM material_structure_jobs s WHERE a.resource_id=s.resource_id AND a.version=s.version
+      AND s.engine=? AND s.status IN ('complete','partial')
+      AND a.parse_token=s.engine||':'||s.generation`,[STRUCTURE_BANK_REVISION,DOCUMENT_STRUCTURE_ENGINE]);
+ }
  start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
  async status():Promise<ArchiveStatus>{
-  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden})`))[0];
+  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`))[0];
   const duplicates=(await this.host.all(`SELECT COUNT(*) n,SUM(CASE WHEN m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden}) THEN 1 ELSE 0 END) attention FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.duplicate_of<>'' AND ${ruleDuplicateHidden}`))[0];
   const associated=(await this.host.all('SELECT COUNT(*) n FROM material_question_origins WHERE covered=1'))[0];
   const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;try{const v=JSON.parse(String(state?.value_json||'{}'));if(v.schema===2)cursor=Number(v.cursor)||0;}catch{}
@@ -108,8 +116,8 @@ export class MaterialQuestionArchive{
      .catch(async (error) => {
        if (error instanceof Error && error.message === "source_incomplete") {
          await this.host.run(
-           "UPDATE material_question_jobs SET updated_at=?,error='structure_pending' WHERE resource_id=? AND version=?",
-           [new Date().toISOString(), id, version],
+           "UPDATE material_question_jobs SET updated_at=?,error='structure_pending' WHERE resource_id=? AND version=? AND parse_token=? AND cursor=? AND status='pending'",
+           [new Date().toISOString(), id, version, token, cursor],
          );
          return null;
        }
@@ -134,24 +142,28 @@ export class MaterialQuestionArchive{
          return;
        if (JSON.stringify(await target.bookRole?.(id)) !== JSON.stringify(role))
          return;
-       if (structured.items.length &&
+       if (structured.archiveable &&
          !(await target.structures!().currentPublication(id,version,structured.generation))) return;
+       const canArchive = structured.archiveable && role?.kind !== "answers" &&
+         !(await isWordPageSource(target.host, resource));
        for (const candidate of structured.items) {
          const q = candidate.question;
          if (
-           role?.kind === "answers" ||
-           (await isWordPageSource(target.host, resource)) ||
+           !canArchive ||
            q.kind !== "question" ||
            q.status !== "candidate" ||
            !candidate.document
          )
            continue;
-         const key = "structure:" + id + ":" + version + ":" + q.id;
+         const legacyKey = "structure:" + id + ":" + version + ":" + q.id;
+         const key = legacyKey + ":" + structured.generation;
          if (
            (
              await target.host.all(
-               "SELECT 1 FROM material_question_members WHERE extraction_key=?",
-               [key],
+               `SELECT 1 FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id
+                 WHERE m.extraction_key=? OR (m.extraction_key=? AND
+                   CASE WHEN json_valid(q.archive_json) THEN json_extract(q.archive_json,'$.structure.generation')=? ELSE 0 END)`,
+               [key, legacyKey, structured.generation],
              )
            ).length
          )
@@ -161,9 +173,10 @@ export class MaterialQuestionArchive{
            this.controller.signal,
          );
          if(await target.structures!().archivedOwner(candidate.reference,q))continue;
-         if(!await target.structures!().permitsPdfQuestion(resource,q))continue;
+         if(!await target.structures!().permitsPdfQuestion(resource,q))throw Error("source_changed");
+         if (await hasIdenticalVisibleStructureDraft(target.host, legacyKey, candidate.reference)) continue;
          const {units}=await target.structureContext(candidate.reference,q.pageRange);
-         if(!units.length)continue;
+         if(!units.length)throw Error("source_changed");
          const metadata = units[0].chunk;
          const fields: QuestionBankItemInput &
            import("../../shared/question-archive").ArchiveFields = {
@@ -209,13 +222,21 @@ export class MaterialQuestionArchive{
            "INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,1)",
            [key, id, saved.id],
          );
+         await stageStructureDraft(target.host, saved.id, id, structured.generation);
          this.controller.signal.throwIfAborted();
        }
+       if (structured.archiveable && !structured.hasMore)
+         await publishStructureDrafts(target.host, id, structured.generation, canArchive);
+       this.controller.signal.throwIfAborted();
        await target.host.run(
-         "UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=? WHERE resource_id=? AND version=? AND parse_token=?",
+         `UPDATE material_question_jobs SET status=?,cursor=?,question_count=CASE WHEN ? THEN question_count ELSE (
+            SELECT COUNT(*) FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id
+            WHERE m.resource_id=? AND NOT ${structureDraftHidden}
+          ) END,error='',updated_at=? WHERE resource_id=? AND version=? AND parse_token=?`,
          [
            structured.hasMore ? "pending" : "complete",
            cursor + structured.items.length,
+           structured.hasMore ? 1 : 0,
            id,
            new Date().toISOString(),
            id,
@@ -277,7 +298,7 @@ export class MaterialQuestionArchive{
    if((await target.bookRole?.(input.reference.resourceId))?.kind==='answers')throw Error('structure_source_incomplete');
    const {resource,units}=await target.structureContext(input.reference,prepared.question.pageRange);
    if(!units.length)throw Error('source_incomplete');
-   const key='structure:'+resource.id+':'+resource.contentHash+':'+prepared.question.id;
+   const key='structure:'+resource.id+':'+resource.contentHash+':'+prepared.question.id+':'+input.reference.generation;
    if((await target.host.all('SELECT 1 FROM material_question_members WHERE extraction_key=?',[key])).length)throw Error('structure_already_reviewed');
    const saved=await target.host.create({...fields,sourceKind:'teacher_resource',sourceTitle:resource.originalFileName,tags:['教师结构核对']});
    const receipt=await target.structures().recordReview(prepared,fields,saved.id);
@@ -316,6 +337,7 @@ export class MaterialQuestionArchive{
     await structures.validate(q,signal);await verify(q,signal);check();return retry.saved;
    }
    if(questionVersion(q)!==input.version)throw Error('source_changed');
+   await assertStructureDraftEditable(target.host,q.id);
    const next=await structures.completeContext(q,input,signal);
    await verify(q,signal);check();
    const saved=await structures.recordContext(input,next,questionVersion(next));
@@ -348,6 +370,7 @@ export class MaterialQuestionArchive{
  }
  private async editWriter(input:ArchiveEdit,permit?:object){return this.host.withWriter(async target=>{
   const q=await target.host.read(input.questionId);if(!q||questionVersion(q)!==input.version)throw new Error('source_changed');
+  if(q.archive?.structure)await assertStructureDraftEditable(target.host,q.id);
   const fields=Object.fromEntries(Object.entries(input.fields).map(([k,v])=>[k,v.trim()])) as typeof input.fields;
   if(!q.archive){
    if(!plainTeacherQuestion(q))throw Error('source_changed');
@@ -373,6 +396,15 @@ export class MaterialQuestionArchive{
   if(archive.book){archive.book=structuredClone(archive.book);for(const role of ['answer','analysis'] as const)if(fields[role]!==q[role]||fields.stem!==q.stem)delete archive.book.roles[role];}
   if(archive.web){archive.web=structuredClone(archive.web);for(const role of ['answer','analysis'] as const)if(fields[role]!==q[role]||fields.stem!==q.stem)delete archive.web.roles[role];}
   await target.host.run('UPDATE question_bank_items SET subject=?,grade=?,knowledge_point=?,question_type=?,difficulty=?,stem=?,answer=?,analysis=?,archive_json=?,document_json=COALESCE(?,document_json),updated_at=? WHERE id=?',[fields.subject,fields.grade,fields.knowledgePoint,fields.questionType,fields.difficulty,fields.stem,fields.answer,fields.analysis,JSON.stringify(archive),document?JSON.stringify(document):null,new Date().toISOString(),q.id]);
-  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible({...fields,archive})?0:1,q.id]);const saved=await target.host.read(q.id);if(archive.native){if(!saved||!permit||!target.host.publishNative)throw Error('source_changed');await target.host.publishNative(saved,permit);}return saved;
+  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible({...fields,archive})?0:1,q.id]);
+  if (archive.structure && q.archive.sourceChecked && !input.sourceChecked) {
+   // This older record may have blocked a new archive while it was verified.
+   const {resourceId,version,generation}=archive.structure;
+   await target.host.run(`UPDATE material_question_jobs SET status='pending',cursor=0,error='',updated_at=datetime('now')
+     WHERE resource_id=? AND version=? AND parse_token LIKE ? AND parse_token<>?`,
+    [resourceId,version,DOCUMENT_STRUCTURE_ENGINE + ":%" + STRUCTURE_BANK_REVISION,
+      DOCUMENT_STRUCTURE_ENGINE + ":" + generation + STRUCTURE_BANK_REVISION]);
+  }
+  const saved=await target.host.read(q.id);if(archive.native){if(!saved||!permit||!target.host.publishNative)throw Error('source_changed');await target.host.publishNative(saved,permit);}return saved;
  });}
 }
