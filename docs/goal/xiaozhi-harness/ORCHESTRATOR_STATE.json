@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Resolve the real A2 first-tool skill_source_changed and late tool_receipt_conflict on the 9748a58 evidence. Reproduce and fix, retest the exact changed-target and cold path, then independently close Gate 7. Formal 32 ABBA remains after Gate 7; QG-09 needs clean Windows x64.",
+  "next": "Reconcile remaining Gate 7 candidate evidence, then formal 32 ABBA. QG-09 needs clean Windows x64.",
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
@@ -791,9 +791,18 @@
   "registrySnapshotReadOptimization": {
     "status": "PASS_SCOPED",
     "evidence": "evidence/phase8/registry-snapshot-read-20261120.json",
-    "sqliteReadsFor84Registrations": [168, 84],
-    "isolatedRegistryMeanMs": [1901.54, 1378.13],
-    "backgroundSubmitToFetchMs": [12741.00, 17040.24],
+    "sqliteReadsFor84Registrations": [
+      168,
+      84
+    ],
+    "isolatedRegistryMeanMs": [
+      1901.54,
+      1378.13
+    ],
+    "backgroundSubmitToFetchMs": [
+      12741.0,
+      17040.24
+    ],
     "desktopLatencyImprovement": "UNVERIFIED",
     "newPaidCalls": 0
   },
@@ -808,7 +817,10 @@
   "startupCoreToolColdReopen": {
     "status": "PASS_SCOPED",
     "evidence": "evidence/phase8/startup-prewarm-cold-reopen-20261120.json",
-    "independentRegistrations": [54, 0],
+    "independentRegistrations": [
+      54,
+      0
+    ],
     "restoredInterruptedRuns": 2,
     "coldStartModelCalls": 0,
     "newPaidCalls": 0
@@ -817,7 +829,10 @@
     "status": "IMPLEMENTED_VERIFIED_SOURCE_AND_BUILD",
     "evidence": "evidence/phase8/skill-prompt-preparation-20261120.json",
     "buildMainSha256": "d544fde61222fc973988c55cc700ee16868fccc1c5df92fa39cb391b45409f16",
-    "sourceReadsBeforeAndAfter": [4, 2],
+    "sourceReadsBeforeAndAfter": [
+      4,
+      2
+    ],
     "newPaidCalls": 0
   },
   "revokedMcpLocalCourse20261120": {
@@ -896,8 +911,14 @@
   "shippedDependencyPatches20261120": {
     "status": "PATCHED_WINDOWS_DIRECTORY_AND_INTEGRATED_C2_VERIFIED",
     "evidence": "evidence/phase8/shipped-dependency-patches-20261120.json",
-    "dependencyVersions": {"zod": "4.6.6", "source-map-js": "1.2.2"},
-    "highNpmAuditPackageEntries": [7, 5],
+    "dependencyVersions": {
+      "zod": "4.6.6",
+      "source-map-js": "1.2.2"
+    },
+    "highNpmAuditPackageEntries": [
+      7,
+      5
+    ],
     "cleanWindowsInstall": "NOT_RUN",
     "newPaidCalls": 0
   },
@@ -909,5 +930,13 @@
     "packagingSession": 1929,
     "packagingAndReadbackExitCode": 0,
     "newPaidCalls": 0
+  },
+  "phase7A2RuntimeRaces20261121": {
+    "status": "PASS_SCOPED",
+    "branch": "codex/harness-a2-runtime-races-20261121",
+    "files": 481,
+    "sha256": "380b3538faaea0a666e25175f10cb01345d31e3c3363c10b76dd7f924095aa42",
+    "evidence": "evidence/phase7/implementation-resume-20261119/a2-runtime-races-20261121.json",
+    "next": "Reconcile remaining Gate 7 candidate evidence, then formal 32 ABBA. QG-09 needs clean Windows x64."
   }
 }

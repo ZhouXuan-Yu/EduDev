@@ -180,7 +180,7 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
   task: (callId: string) => Promise<{planRevision: number; requirementsVersion: number; stepId: string | null; target: string | null}>;
   snapshot: (record: ToolGovernanceRecord) => Promise<ProviderSnapshot>;
   mcp: (name: string) => Promise<McpToolIdentity | null>;
-  persist: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
+  persist: (callId: string, name: string, receipt: ToolContractReceipt, signal?: AbortSignal) => Promise<void>;
   preflight?: (callId: string, name: string, input: unknown, enforce: boolean) => Promise<unknown>;
   assertEffect?: (callId: string, name: string, receipt: ToolContractReceipt) => Promise<void>;
   beginEffect?: (callId: string, expected?: {tool: string; inputDigest: string}) => Promise<void>;
@@ -243,9 +243,12 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
       pending.state = 'ready';
     },
     async before(callId: string, name: string, input: unknown, signal: AbortSignal) {
-      const record = await assert(name, signal); const task = await options.task(callId);
+      const fence = () => {signal.throwIfAborted(); if (!options.current()) throw Error('cancelled');};
+      const record = await assert(name, signal); fence();
+      const task = await options.task(callId); fence();
       await options.preflight?.(callId, name, input, false);
-      const snapshot = await options.snapshot(record); snapshots.set(callId, snapshot);
+      fence();
+      const snapshot = await options.snapshot(record); fence(); snapshots.set(callId, snapshot);
       // Extract reads the DOM of an already authorized browser tab and may cache
       // evidence locally. It must not replay or be fenced as a second navigation.
       let effect = record.effect;
@@ -260,7 +263,8 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
         inputDigest: identityHash(input), effect, scopePolicy: record.scopePolicy,
         classification: record.classification, grantRefs: [], authorityRefs: []};
       await options.assertEffect?.(callId, name, receipt);
-      await options.persist(callId, name, receipt); calls.set(callId, receipt); names.set(callId, name);
+      fence();
+      await options.persist(callId, name, receipt, signal); fence(); calls.set(callId, receipt); names.set(callId, name);
     },
     async execute(callId: string, name: string, input: unknown, signal: AbortSignal, perform: (signal: AbortSignal) => Promise<Result>): Promise<Result> {
       const record = await assert(name, signal);

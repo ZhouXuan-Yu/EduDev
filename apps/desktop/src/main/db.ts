@@ -1212,7 +1212,18 @@ export class OmniEduStore {
   readonly materialWord: MaterialWordRepository;
   readonly materialWordPages: MaterialWordPagesRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
-  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values), transaction: async action => {
+  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values),
+    readTransaction: async action => {
+      const work = new OmniEduStore(this.dataRoot);work.db = await this.openDatabase(this.dbPath);
+      try {
+        await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA query_only=ON; BEGIN;');
+        try {
+          const result = await action({all: (sql, values) => work.all(sql, values), run: async () => {throw Error('read_only_transaction');}});
+          await work.exec('COMMIT;');return result;
+        } catch (error) {await work.exec('ROLLBACK;').catch(() => undefined);throw error;}
+      } finally {await work.close();}
+    },
+    transaction: async action => {
     const deadline=Date.now()+stateTransactionalLockWindowMs;
     for(let attempt=0;;attempt++){
       const work = new OmniEduStore(this.dataRoot);

@@ -439,3 +439,7 @@ Task、检查点、Effect核对与持久终端已实现并独立Gate6验收。�
 功能提交2376c84与origin/main09d7937正常整合，16处冲突保留双方完整文档、typed preload及各自业务实现。完整493/493 PASS，失败0、skipped0，build/全src类型检查、renderer253、Electron207、正常JobHost2、实际双尺寸UI10、native-reader6/native-gap15全部exit0。新主线教师资料结构与局部OCR实现保留，测试采用合成资料。
 
 最终1711生产文件/481输出及73依赖manifest前后零漂移，core618输入sourceHash99dd134fc454b0856f3e6595f8506092091d6e876c701700fb03b2892bd1dfeb。build重算core与native-stat源清单，helper58880B/f68e8cb7、sandbox及native-stat bundle保持受测字节。41份精确整合证据归档evidence/phase6/integration-20261118。root接续正常merge提交与atomic push，再自动进入Phase7。真实付费0/200，原89项57项阶段验收通过。
+
+## 2026-11-21 A2 审批前置与冷启复验
+
+旧 A2 失败保持记录。新冻结构建上，首次计划回执原生匹配，外部改目标使原审批失效，原文件和 Run 数量保持，冷启动无重放。Terra 独立 1366×768 与 1920×1080 各 3/3。源码专项 7/7、原日志 23/23、原 Skill IO 17/17。无新增付费。此结果限定 A2，独立原生窗口和其他组合需按原 Gate 7 候选完成核对。 [指纹与证据](evidence/phase7/implementation-resume-20261119/a2-runtime-races-20261121.json)
