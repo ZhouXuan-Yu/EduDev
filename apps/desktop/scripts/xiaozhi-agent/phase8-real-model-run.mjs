@@ -7,6 +7,7 @@ import {pathToFileURL} from 'node:url';
 import {openBudgetLedger} from './phase8-budget-ledger.mjs';
 import {startCountingProxy} from './phase8-counting-proxy.mjs';
 import {actualDatabasePath, providerPaths, syntheticFiles, schedule, validateManifest, preparePlan, fingerprint, sha256} from './phase8-real-model-plan.mjs';
+import {readFrozenQuestionSeed} from './phase8-question-seed.mjs';
 import {readOriginalRecords, verifiedRunBinding, collectFiles, inspectOfficeArtifacts, exportBlindBundle,
   q5ContinuationDecision, verifyQ5ApprovalConsumption, readQ5SourceEvidence} from './phase8-real-model-readback.mjs';
 
@@ -469,18 +470,18 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
 
 function loadFrozenPlan(manifestPath) {
   const manifest = validateManifest(JSON.parse(fs.readFileSync(manifestPath, 'utf8')));
-  if (!fs.existsSync(manifest.questionSeedEvidence)) throw Error('phase8_question_seed_evidence_missing');
   if (fs.realpathSync(manifest.versions.A.desktopRoot) === fs.realpathSync(manifest.versions.B.desktopRoot)) {
     throw Error('phase8_comparison_worktrees_not_independent');
   }
   const versions = {A: verifyVersion(manifest.versions.A), B: verifyVersion(manifest.versions.B)};
-  return {manifest, versions};
+  const questionSeed = readFrozenQuestionSeed(manifest);
+  return {manifest, versions, questionSeed};
 }
 
 export function verifyFrozenPlan(manifestPath) {
-  const {manifest, versions} = loadFrozenPlan(manifestPath);
+  const {manifest, versions, questionSeed} = loadFrozenPlan(manifestPath);
   return {
-    status:'VERIFIED_LOCAL_INPUTS', planned:schedule.length, paidRequests:0, actualGoalLedgerOpened:false,
+    status:'VERIFIED_LOCAL_INPUTS', planned:schedule.length, paidRequests:0, actualGoalLedgerOpened:false, questionSeed,
     versions:Object.fromEntries(Object.entries(versions).map(([side,item])=>[side,{
       commit:item.commit, outSha256:item.out.sha256, outCount:item.out.files.length,
       dataSha256:manifest.versions[side].dataSha256, profileSha256:manifest.versions[side].profileSha256,
@@ -495,10 +496,11 @@ export async function executePlan(manifestPath, output, mode = 'execute', {backg
     throw Error('phase8_background_preflight_only');
   }
   if (!fs.existsSync(actualDatabasePath)) throw Error('phase8_actual_goal_ledger_missing');
-  const {manifest, versions} = loadFrozenPlan(manifestPath);
+  const {manifest, versions, questionSeed} = loadFrozenPlan(manifestPath);
   fs.mkdirSync(output, {recursive: true});
   fs.copyFileSync(manifestPath, path.join(output, 'execution-manifest.json'));
   fs.writeFileSync(path.join(output, 'builds.json'), JSON.stringify(versions, null, 2));
+  fs.writeFileSync(path.join(output, 'question-seed-readback.json'), JSON.stringify(questionSeed, null, 2));
   fs.writeFileSync(path.join(output, 'machine.json'), JSON.stringify({node: process.version, platform: os.platform(), release: os.release(), arch: os.arch(),
     cpus: os.cpus().map(cpu => cpu.model), totalMemory: os.totalmem(), conditions: manifest.conditions,
     launchMode: background ? 'hidden automated preflight, fresh Electron and cloned synthetic snapshots'

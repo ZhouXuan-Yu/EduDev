@@ -1,5 +1,9 @@
 # Phase 8 真实模型质量与时延验收方案
 
+## 2026-11-21 核对固定题目与两版冷启
+
+`verify` 和执行器共用固定题目的预检。清单须引用完整的本地题库回执，两版关闭后的 SQLite 必须含同一题干、答案、解析和来源。只读检查不生成 SQLite 附属文件，存在 SQLite 日志的快照先拒绝。真实旧版和暂定新版在各自 Electron 进程冷启，原生读回均为 `deepseek-flash`、思考档 `high` 及同一题目版本。此轮无网络请求、模型提交或账本写入。最终 B 重选后需按同样路径准备。 [回执、命令和对照环境](evidence/phase8/phase8-q3-and-cold-parity-20261121.json)
+
 ## 2026-11-21 离线冻结输入检查
 
 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify "<清单绝对路径>"` 可在任何付费请求前检查 Q1–Q8、32 轮顺序、旧版 A 固定提交、独立 A/B 工作树、构建及合成快照 SHA-256。校验无输出目录创建、账本操作或模型派发。
