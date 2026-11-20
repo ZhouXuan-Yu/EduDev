@@ -4,8 +4,10 @@ import {randomUUID} from 'node:crypto';
 import type {KnowledgeImportResult} from '../../shared/contracts';
 import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles,type MaterialBatch,type MaterialBatchAction,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchState,type MaterialBatchFileFilter,type MaterialBatchContentState} from '../../shared/material-import-batch';
 import {isSupportedMaterialFile} from './material-folder-import';
+import {structureRecoveryFileState,structureRecoveryFailure,type MaterialStructureRecovery} from './material-structure-recovery';
+import type {MaterialStructureRecoveryAction,MaterialStructureRecoveryState} from '../../shared/material-import-batch';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
+type Host={structureRecovery?:MaterialStructureRecovery;root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
 const DISCOVERY_SLICE=128;
 const now=()=>new Date().toISOString();
 const inside=(root:string,target:string)=>{const p=path.relative(root,target);return p===''||p!=='..'&&!p.startsWith('..'+path.sep)&&!path.isAbsolute(p);};
@@ -37,10 +39,10 @@ export class MaterialImportBatches{
   `CREATE TABLE IF NOT EXISTS material_import_entries(seq INTEGER PRIMARY KEY AUTOINCREMENT,batch_id TEXT NOT NULL REFERENCES material_import_batches(id),relative_path TEXT NOT NULL,kind TEXT NOT NULL,status TEXT NOT NULL,source_version TEXT NOT NULL DEFAULT '',file_size INTEGER NOT NULL DEFAULT 0,resource_id TEXT NOT NULL DEFAULT '',reused INTEGER NOT NULL DEFAULT 0,error TEXT NOT NULL DEFAULT '',UNIQUE(batch_id,relative_path))`,
   `CREATE INDEX IF NOT EXISTS idx_material_import_work ON material_import_entries(batch_id,kind,status,seq)`,
   `CREATE INDEX IF NOT EXISTS idx_material_import_resource ON material_import_entries(resource_id)`,
- ])await this.host.run(q);}
- start(){if(this.timer)return;this.closing=false;this.timer=setInterval(()=>this.wake(),700);this.timer.unref();this.wake();}
- async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;}
- async pauseAll(){await this.host.run(`UPDATE material_import_batches SET status='paused',updated_at=? WHERE schema_version=? AND status='queued' AND owner_pid=0`,[now(),schema]);if(this.active){this.active.pause=true;this.active.controller.abort();await this.pumping;}}
+ ])await this.host.run(q);await this.host.structureRecovery?.migrate();}
+ start(){if(this.timer)return;this.host.structureRecovery?.start();this.closing=false;this.timer=setInterval(()=>this.wake(),700);this.timer.unref();this.wake();}
+ async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;await this.host.structureRecovery?.close();}
+ async pauseAll(){await this.host.structureRecovery?.pauseAll();await this.host.run(`UPDATE material_import_batches SET status='paused',updated_at=? WHERE schema_version=? AND status='queued' AND owner_pid=0`,[now(),schema]);if(this.active){this.active.pause=true;this.active.controller.abort();await this.pumping;}}
  private wake(){if(this.closing||this.pumping)return;this.pumping=this.pump().catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
  private async root(row:Row){
   const root=String(row.root_path),managed=await fs.realpath(this.host.root()),stat=await fs.lstat(root);
@@ -60,6 +62,11 @@ export class MaterialImportBatches{
  async action(input:MaterialBatchAction){
   if(!validBatchAction(input))throw new Error('invalid_input');
   const row=(await this.host.all('SELECT * FROM material_import_batches WHERE id=? AND schema_version=?',[input.batchId,schema]))[0];if(!row)throw new Error('invalid_input');
+  if(input.action.startsWith('structure_')){
+   if(!this.host.structureRecovery)throw Error('unsupported');
+   await this.host.structureRecovery.action(input.batchId,input.action as MaterialStructureRecoveryAction);
+   return this.list(0);
+  }
   if(input.relativePath!==undefined){
    const entry=(await this.host.all(`SELECT e.*,${contentState} content_state FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.relative_path=?`,[input.batchId,input.relativePath]))[0];
    if(!entry)throw new Error('invalid_input');
@@ -101,18 +108,26 @@ export class MaterialImportBatches{
    const parse=(await this.host.all(`SELECT SUM(r.parse_status IN (${readableStatuses}) AND EXISTS (SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) readable,SUM(r.parse_status='partial' AND EXISTS (SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) partial_readable,SUM(${failedParse}) failed,SUM(r.parse_status IN (${readableStatuses}) AND NOT EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) empty,COUNT(*) n FROM teacher_resources r WHERE r.id IN (SELECT resource_id FROM material_import_entries WHERE batch_id=? AND status='saved')`,[String(row.id)]))[0];
    const failures=Number((await this.host.all(`SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND kind='directory' AND status='failed'`,[String(row.id)]))[0]?.n||0);
    const readable=Number(parse?.readable||0),parseFailed=Number(parse?.failed||0),empty=Number(parse?.empty||0);
-   batches.push({id:String(row.id),name:String(row.name),status:row.status as MaterialBatchState,phase:row.phase as MaterialBatch['phase'],createdAt:String(row.created_at),updatedAt:String(row.updated_at),error:String(row.error),scanned:Number(sums.scanned),archived:Number(sums.archived||0),imported:Number(sums.imported||0),reused:Number(sums.reused||0),failed:Number(sums.failed||0)+failures,skipped:Number(sums.skipped||0),bytes:Number(sums.bytes),archivedBytes:Number(sums.archived_bytes),readable,partialReadable:Number(parse?.partial_readable||0),empty,parseFailed,waiting:Math.max(0,Number(parse?.n||0)-readable-parseFailed-empty)});
+   const structureRecovery=await this.host.structureRecovery?.view(String(row.id));
+   const structureAvailable=sums.archived?await this.host.structureRecovery?.available(String(row.id)):undefined;
+   batches.push({...(structureAvailable===undefined?{}:{structureAvailable}),...(structureRecovery?{structureRecovery}:{}),id:String(row.id),name:String(row.name),status:row.status as MaterialBatchState,phase:row.phase as MaterialBatch['phase'],createdAt:String(row.created_at),updatedAt:String(row.updated_at),error:String(row.error),scanned:Number(sums.scanned),archived:Number(sums.archived||0),imported:Number(sums.imported||0),reused:Number(sums.reused||0),failed:Number(sums.failed||0)+failures,skipped:Number(sums.skipped||0),bytes:Number(sums.bytes),archivedBytes:Number(sums.archived_bytes),readable,partialReadable:Number(parse?.partial_readable||0),empty,parseFailed,waiting:Math.max(0,Number(parse?.n||0)-readable-parseFailed-empty)});
   }
   return {schemaVersion:schema,batches,total,offset,hasMore:offset+rows.length<total};
  }
  async files(id:string,offset:number,filter:MaterialBatchFileFilter='all'):Promise<MaterialBatchFiles>{
   if(!validBatchFiles({schemaVersion:schema,batchId:id,offset,filter}))throw new Error('invalid_input');
-  const from=`FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND (e.kind='file' OR e.status='failed')${filter==='issues'?` AND ${fileIssue}`:''}`;
+  const recovery=this.host.structureRecovery;
+  const issue=recovery?`(${fileIssue} OR s.state IN ('partial','failed'))`:fileIssue;
+  const joined=recovery?`LEFT JOIN material_structure_recovery_items s ON s.batch_id=e.batch_id AND s.resource_id=e.resource_id AND e.status='saved'`:'';
+  const from=`FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id ${joined}
+    WHERE e.batch_id=? AND (e.kind='file' OR e.status='failed')${filter==='issues'?` AND ${issue}`:''}`;
   const total=Number((await this.host.all(`SELECT COUNT(*) n ${from}`,[id]))[0]?.n||0);
-  const rows=await this.host.all(`SELECT e.*,${contentState} content_state ${from} ORDER BY CASE WHEN ${fileIssue} THEN 0 WHEN e.status='pending' THEN 1 ELSE 2 END,e.seq LIMIT 20 OFFSET ?`,[id,offset]);
+  const rows=await this.host.all(`SELECT e.*,${contentState} content_state ${recovery?`,${structureRecoveryFileState} structure_status,s.error structure_error`:''}
+    ${from} ORDER BY CASE WHEN ${issue} THEN 0 WHEN e.status='pending' THEN 1 ELSE 2 END,e.seq LIMIT 20 OFFSET ?`,[id,offset]);
   return {schemaVersion:schema,files:rows.map(r=>{
    const state=r.content_state as MaterialBatchContentState,saved=r.status==='saved';
-   return{relativePath:String(r.relative_path),status:r.status as 'pending'|'saved'|'failed'|'skipped',resourceId:String(r.resource_id),bytes:Number(r.file_size),error:saved?'':String(r.error),...(saved?{contentState:state,contentError:contentError(r,state)}:{}),retryable:String(r.relative_path)!==''&&(r.status==='failed'||saved&&['failed','partial'].includes(state))};
+   const structureStatus=r.structure_status as MaterialStructureRecoveryState|undefined;
+   return{...(structureStatus?{structureStatus}:{}),...(structureStatus==='failed'?{structureError:structureRecoveryFailure(String(r.structure_error))}:{}),relativePath:String(r.relative_path),status:r.status as 'pending'|'saved'|'failed'|'skipped',resourceId:String(r.resource_id),bytes:Number(r.file_size),error:saved?'':String(r.error),...(saved?{contentState:state,contentError:contentError(r,state)}:{}),retryable:String(r.relative_path)!==''&&(r.status==='failed'||saved&&['failed','partial'].includes(state))};
   }),total,offset,hasMore:offset+rows.length<total};
  }
  private async pump(){

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 既有目录的结构恢复调度
+
+轻量批次与文件协调表记录资源版本、状态及世代，最多 4 项交给现有 `resource_parse` 队列。解析租约、结构快照、发布、索引和题库入库门槛共用现有实现。 [本轮记录](../research/evidence/kb/20261120/batch-structure-recovery/README.md)
+
 ## 2026-11-20 页级响应的本地恢复
 
 页级首稿和实时请求共用响应、冻结提示及来源读取规则。原响应不改动，恢复摘要、状态和目录进度在同一 SQLite 写事务提交。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)

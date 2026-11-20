@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-20 旧存量资料进入结构恢复队列
+
+教师可对已有目录一次发起本地文档结构恢复。真实批次 221 份纳入，首份 PDF 部分完成，可回到资料原件核对其候选。 [本轮记录](../research/evidence/kb/20261120/batch-structure-recovery/README.md)
+
 ## 2026-11-20 PDF 首稿离线恢复
 
 旧资料页的本地恢复入口接通。3 个真实页任务从无首稿恢复到暂停且留存首稿，调用次数、原始响应和已发布题均保持不变。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)

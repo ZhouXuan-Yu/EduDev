@@ -40,6 +40,8 @@ export async function relocateBackupDatabase(file:string,fromData:string,toData:
   for(const table of ['xiaozhi_pi_text_changes','xiaozhi_pi_office_drafts'])if(tables.has(table))for(const [before,after]of hashes)await run(`UPDATE "${table}" SET workspace_hash=? WHERE workspace_hash=?`,[after,before]);
   // Keep schedulers usable for new explicit work, but never dispatch the copied backlog.
   if(tables.has('ai_tasks'))await run("UPDATE ai_tasks SET status='cancelled',error_message='cancelled' WHERE task_type='resource_parse' AND status IN ('pending','running')");
+  if(tables.has('material_structure_recovery_batches'))await run("UPDATE material_structure_recovery_batches SET enabled=0 WHERE enabled=1");
+  if(tables.has('material_structure_recovery_items'))await run("UPDATE material_structure_recovery_items SET state='pending' WHERE state='active'");
   if(tables.has('material_import_batches'))await run("UPDATE material_import_batches SET status='paused',owner_pid=0,owner_nonce='' WHERE status IN ('queued','running')");
   if(tables.has('material_folder_ai'))await run("UPDATE material_folder_ai SET status='paused' WHERE status='running'");
   if(tables.has('material_ai_batches'))await run("UPDATE material_ai_batches SET status='paused' WHERE status='running'");

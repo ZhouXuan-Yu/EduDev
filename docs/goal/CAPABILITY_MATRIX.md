@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-20 M02/M03/M05 目录结构恢复
+
+原目录同批已归档、同版本资源可复用段落与题目结构恢复，支持暂停、追加新归档文件、重试失败、冷启接续和文件级待核提示。 [本轮记录](../research/evidence/kb/20261120/batch-structure-recovery/README.md)
+
 ## 2026-11-20 M03/M05/M10 PDF 已存首稿
 
 复用资料页、typed IPC、页证据验证及本地响应审计。可恢复同源的 PDF 和图片首稿，沿原定稿链路控制正式题输出。 [本轮记录](../research/evidence/kb/20261120/page-first-response-recovery/README.md)

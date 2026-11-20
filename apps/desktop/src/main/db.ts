@@ -51,6 +51,7 @@ import {MaterialCurriculumRepository,ensureMaterialCurriculum} from './assets/ma
 import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
 import {MaterialImportBatches} from './assets/material-import-batches';
+import {MaterialStructureRecovery} from './assets/material-structure-recovery';
 import {MaterialFolderAiRepository} from './assets/material-folder-ai';
 import {copyMaterialFile} from './assets/material-copy';
 import {MaterialFullTextSearch} from './assets/material-full-text';
@@ -1193,6 +1194,7 @@ export class OmniEduStore {
   readonly materialCurriculum: MaterialCurriculumRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly materialImports: MaterialImportBatches;
+  private readonly materialStructureRecovery: MaterialStructureRecovery;
   readonly materialFolderAi: MaterialFolderAiRepository;
   readonly materialSearch: MaterialFullTextSearch;
   readonly materialQuestions: MaterialQuestionArchive;
@@ -1272,7 +1274,19 @@ export class OmniEduStore {
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
     this.materialQueue=new MaterialParseQueue({structureReady:r=>this.materialStructures.published(r),structureRequired:id=>this.materialStructures.required(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
-    this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
+    this.materialStructureRecovery=new MaterialStructureRecovery({
+      all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),
+      structures:()=>this.materialStructures,queue:()=>this.materialQueue,writer:async action=>{
+        const work=new OmniEduStore(this.dataRoot);
+        work.db=await this.openDatabase(this.dbPath);
+        try{
+          await beginMaterialWrite(sql=>work.exec(sql));
+          try{const result=await action(work.materialStructureRecovery);await work.exec('COMMIT;');return result;}
+          catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}
+        }finally{await work.close();}
+      }
+    });
+    this.materialImports=new MaterialImportBatches({structureRecovery:this.materialStructureRecovery,root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
     this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,wordPages:async(input,signal)=>{
       const {renderWordPdf}=await import('./assets/word-pdf-runtime');
       return this.materialWordPages.prepare(input,renderWordPdf,signal);

@@ -99,8 +99,9 @@ type Host = {
 const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const now = () => new Date().toISOString();
+export const MATERIAL_STRUCTURE_EXTENSIONS = [".pdf", ".docx", ".png", ".jpg", ".jpeg", ".webp"] as const;
 const supported = (r: TeacherResource) =>
-  /\.(pdf|docx|png|jpe?g|webp)$/i.test(r.originalFileName);
+  MATERIAL_STRUCTURE_EXTENSIONS.some(extension => r.originalFileName.toLowerCase().endsWith(extension));
 
 /** Versioned source derivatives. A parse lease owns writes, published generations remain immutable. */
 export class MaterialStructureRepository {
@@ -192,6 +193,47 @@ export class MaterialStructureRepository {
     });
   }
 
+  /** Called by the folder coordinator on its writer connection, before it enqueues the parser. */
+  async prepareFolderRecovery(id: string, version: string) {
+    const resource = await this.host.resource(id);
+    if (resource.contentHash !== version) throw Error("source_changed");
+    if (!supported(resource)) throw Error("unsupported");
+    const old = await this.job(id);
+    if (old?.version === version &&
+        (validDocumentStructureEngine(old.engine) || old.engine === "layout-paragraph-question.v1") &&
+        (old.status === "complete" || old.status === "partial")) {
+      return { state: old.status, generation: String(old.generation) } as const;
+    }
+    const same = old?.version === version && old.engine === DOCUMENT_STRUCTURE_ENGINE;
+    if (same && ["pending", "running"].includes(String(old.status))) {
+      return { state: "pending", generation: String(old.generation) } as const;
+    }
+    const running = await this.host.all(
+      "SELECT 1 FROM ai_tasks WHERE task_type='resource_parse' AND input_hash=? AND status='running' LIMIT 1",
+      [createHash("sha256").update(id).digest("hex")],
+    );
+    if (running.length) throw Error("busy");
+    const generation = same ? String(old.generation) : randomUUID();
+    if (same) {
+      await this.host.run(
+        "UPDATE material_structure_jobs SET status='pending',lease='',error='',updated_at=? WHERE resource_id=?",
+        [now(), id],
+      );
+    } else {
+      await this.replaceJob(id, version, generation);
+    }
+    return { state: "pending", generation } as const;
+  }
+
+  private replaceJob(id: string, version: string, generation: string) {
+    return this.host.run(
+      `INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,updated_at) VALUES(?,?,?,?,'pending',?)
+       ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,engine=excluded.engine,generation=excluded.generation,status='pending',
+         pages=0,processed=0,paragraphs=0,questions=0,held=0,error='',lease='',updated_at=excluded.updated_at`,
+      [id, version, DOCUMENT_STRUCTURE_ENGINE, generation, now()],
+    );
+  }
+
   async request(input: DocumentStructureQuery) {
     if (!validStructureQuery(input)) throw Error("invalid_input");
     const resource = await this.host.resource(input.resourceId);
@@ -203,16 +245,7 @@ export class MaterialStructureRepository {
         [createHash("sha256").update(resource.id).digest("hex")],
       );
       if (running.length) throw Error("busy");
-      await target.host.run(
-        `INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,updated_at) VALUES(?,?,?,?,'pending',?) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,engine=excluded.engine,generation=excluded.generation,status='pending',pages=0,processed=0,paragraphs=0,questions=0,held=0,error='',lease='',updated_at=excluded.updated_at`,
-        [
-          resource.id,
-          input.version,
-          DOCUMENT_STRUCTURE_ENGINE,
-          randomUUID(),
-          now(),
-        ],
-      );
+      await target.replaceJob(resource.id, input.version, randomUUID());
     });
   }
 

@@ -54,6 +54,10 @@ export class MaterialParseQueue {
   }
   return {schemaVersion:MATERIAL_TASK_SCHEMA,tasks,pending,running,invalid};
  }
+ async state(resourceId:string,version:string){
+  const row=(await this.byResource(resourceId))[0],payload=row&&parse(row);
+  if(payload?.version===version)return String(row.status);
+ }
  async enqueue(resourceId:string,version:string,priority:0|100=0,retry=false){
   if(!materialId(resourceId)||!materialVersion(version))throw new Error('invalid_input');
   const resource=await this.host.resource(resourceId);if(resource.contentHash!==version)throw new Error('source_changed');
