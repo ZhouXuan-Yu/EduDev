@@ -43,7 +43,9 @@ await check('Plain edited choice is saved unchanged but options_required blocks 
     const before=facts();await assert.rejects(f.review(b),/conflict/);assert.deepEqual(facts(),before);
     await assert.rejects(f.snapshot(b),/conflict/);assert.deepEqual(facts(),before);
     const cold=new PaperBasketV2Repository({...f.host,saveSnapshot:(...a)=>f.papers.createBasketSnapshotInTransaction(...a),readSnapshot:(...a)=>f.papers.reviewInTransaction(...a)},f.papers);
-    const reread=await cold.read({...f.schema,basketId:b.id});assert.deepEqual(reread,b);
+    const reread=await cold.read({...f.schema,basketId:b.id}),{operationReceipt,...persisted}=b;
+    assert.equal(operationReceipt.basketId,b.id);assert.equal(operationReceipt.basketRevision,b.revision);
+    assert.deepEqual(reread,persisted);
     assert.deepEqual(await f.v2.read({...f.schema,basketId:other.id}),other);assert.deepEqual(f.db.prepare('SELECT * FROM questions ORDER BY id').all(),bank);
     const rejected=await f.review(b,'reject');assert.equal(rejected.entries[0].instance.review.action,'reject');assert.equal(rejected.entries[0].deliveryBlock,'options_required');
     return {basketId:b.id,instanceRevision:b.entries[0].instance.instanceRevision,deliveryBlock:b.entries[0].deliveryBlock};

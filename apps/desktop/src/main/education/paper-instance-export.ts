@@ -5,7 +5,7 @@ import {validOfficeDraft, type OfficeDraft, type OfficeSection} from '../../shar
 import {practiceOfficeIntroduction,PAPER_TABLE_OFFICE_SCHEMA, PAPER_OFFICE_SCHEMA, PAPER_RICH_OFFICE_SCHEMA, type PaperOfficeFigure, type PaperExportInput} from '../../shared/paper-export';
 import type {PaperView} from '../../shared/paper-blueprint';
 import type {PaperInstanceBlock, PaperInstanceRole} from '../../shared/paper-instance';
-import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBlockText} from './paper-instance';
+import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceChoiceImage, instanceBlockText} from './paper-instance';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validNativeQuestionDocument, nativeQuestionComplete, withoutNativeQuestionNumber} from '../../shared/native-question';
 import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument,type QuestionBlock} from '../../shared/question-document';
@@ -77,6 +77,19 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
         const title=role==='question'?heading:role==='answer'?'参考答案（本卷编辑）':'解析（本卷编辑）';
         for(const b of content.blocks) {
           if(b.type==='sourceImage') {const image=instanceSourceImage(q,i,role,b);emit({heading:title,paragraphs:[],figures:[figure({...image,blockId:image.id},role)]});}
+          else if(b.type==='options'&&b.items.some(item=>item.sourceImages)){
+            for(const item of b.items){
+              text(item.text.trim()?item.label+'. '+item.text:item.label+'.',title);
+              if(!item.sourceImages)continue;
+              const figures=item.sourceImages.map(ref=>{
+                const image=instanceChoiceImage(q,i,item.label,ref);
+                return figure({...image,blockId:image.id},'question');
+              });
+              const last=sections.at(-1)!;
+              if(last.table)emit({heading:title,paragraphs:[],figures});
+              else last.figures=figures.map(image=>({...image,afterParagraph:last.paragraphs.length}));
+            }
+          }
           else if(b.type==='table') {if(b.rows.length<2) text(b.rows[0].join('　'),title);else emit({heading:title,paragraphs:[],table:{columns:b.rows[0],rows:b.rows.slice(1)}});}
           else text(instanceBlockText(b),title);
         }

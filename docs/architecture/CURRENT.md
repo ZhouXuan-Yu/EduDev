@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 本卷编辑中的图形选项
+
+题篮选项增加可选的来源图像引用，不改原题文档和 SQLite 表。主进程双向核对源图标签和顺序，教师/学生 Office 编译复用同一题面。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)
+
 ## 2026-11-21 独立答案册页眉遮盖
 
 在本地结构和模型执行输入之间增加版本化答案册遮盖副本。实际请求只引用派生图文，答案回执和资料页保留本地原图来源。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)

@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 本卷编辑中的图形选项
+
+M06 支持在当前题篮修改题干和选项说明时保留图形选项，沿用原题图像版本、馆藏图库权限、正式核对和 Office 证据。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)
+
 ## 2026-11-21 独立答案册页眉遮盖
 
 M05/M10 在现有答案册两遍转录入口增加本地页眉遮盖，复用 PDFium、RapidOCR 和现有版面结构，保留原有答案索引与配答。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)

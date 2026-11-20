@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react';
-import type {PaperInstanceBlock,PaperInstanceRole} from '../../../shared/paper-instance';
-import {independentQuestionImage} from '../../../shared/question-document';
+import type {PaperInstanceBlock,PaperInstanceRole,PaperInstanceOptionImage} from '../../../shared/paper-instance';
+import {independentQuestionImage,structuredChoiceImage} from '../../../shared/question-document';
 import {ORIGINAL_MULTI_SCHEMA} from '../../../shared/original-multi-review';
 import type {PaperWorkspaceEntry} from './paper-basket-client';
 
@@ -8,22 +8,27 @@ type Entry=Pick<PaperWorkspaceEntry,'question'|'questionId'|'contentVersion'>;
 type State={key:string;images:Record<string,string>;loaded:Record<string,boolean>;error:string;loading:boolean};
 /** One bounded gallery read for the edited role, not one read per image block. */
 export function usePaperInstanceImages(entry:Entry,role:PaperInstanceRole,blocks:PaperInstanceBlock[],onReady?:(ready:boolean)=>void){
- const refs=blocks.flatMap(b=>b.type==='sourceImage'?[b]:[]),signature=JSON.stringify(refs);
+ const refs=blocks.flatMap((b): (PaperInstanceOptionImage&{role:PaperInstanceRole;label?:string})[]=>{
+  if(b.type==='sourceImage')return [b];
+  if(b.type!=='options')return [];
+  return b.items.flatMap(item=>(item.sourceImages??[]).map(ref=>({...ref,role:'question',label:item.label})));
+ });
+ const signature=JSON.stringify(refs);
  const [attempt,setAttempt]=useState(0),[state,setState]=useState<State>({key:'',images:{},loaded:{},error:'',loading:true});
  const key=entry.questionId+':'+entry.contentVersion+':'+role+':'+signature+':'+attempt;
  useEffect(()=>{
   let live=true;onReady?.(false);setState({key,images:{},loaded:{},error:'',loading:!!refs.length});
   if(!refs.length){onReady?.(true);return;}
   async function read(){
-   if(role!=='question'||refs.length>8||new Set(refs.map(r=>r.blockId)).size!==refs.length)throw Error('unsupported');
+   if(role!=='question'||refs.length>32||new Set(refs.map(r=>r.blockId)).size!==refs.length)throw Error('unsupported');
    const images=refs.map(r=>{
-    const image=independentQuestionImage(entry.question.document,r.blockId);
-    if(r.role!==role||r.sourceVersion!==entry.contentVersion||!image)throw Error('unsupported');return image;
+    const image=r.label===undefined?independentQuestionImage(entry.question.document,r.blockId):structuredChoiceImage(entry.question,r.label,r.blockId);
+    if(r.role!==role||r.sourceVersion!==entry.contentVersion||!image)throw Error('unsupported');return {image,label:r.label};
    });
    const gallery=await window.omniEdu!.getOriginalQuestionGallery({schemaVersion:ORIGINAL_MULTI_SCHEMA,questionId:entry.questionId,version:entry.contentVersion});
    if(!gallery.ok)throw Error('source_changed');
-   return Object.fromEntries(images.map(image=>{
-    const found=gallery.value.filter(i=>i.role===role&&i.kind==='diagram'&&i.assetId===image.assetId&&i.sha256===image.sha256);
+   return Object.fromEntries(images.map(({image,label})=>{
+    const found=gallery.value.filter(i=>i.role===role&&i.kind==='diagram'&&i.choiceLabel===label&&i.assetId===image.assetId&&i.sha256===image.sha256);
     if(found.length!==1||!found[0].dataUrl)throw Error('source_changed');return [image.id,found[0].dataUrl];
    }));
   }

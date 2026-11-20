@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-21 本卷编辑中的图形选项
+
+图形选项引用存于相应选项，复用题目版本绑定。在本卷编辑时锁定原图标签；错配、遗漏或失去独立题图的修订保留为草稿。 [专项报告](../research/evidence/kb/20261121/edited-graphic-choices/README.md)
+
 ## 2026-11-21 独立答案册页眉遮盖
 
 遮盖仅适用于能独立证明的页眉区域。允许生成经过本地复查的传输副本，原件和 OCR 保持不变，证据不足继续拒绝发送。 [专项报告](../research/evidence/kb/20261121/answer-page-header-mask/README.md)
