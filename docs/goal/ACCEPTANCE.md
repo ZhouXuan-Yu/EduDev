@@ -4,6 +4,10 @@
 
 通过受控超时的桌面刷新和冷启回读 5 项，保留历史 Q5 的未知原因。[实页证据](xiaozhi-harness/evidence/phase8/pi-lifecycle-timeout-recovery-20261120.json)
 
+## 2026-11-20 后台定稿等待版面发布
+
+归档时序专项通过桌面前后对比与冷启动。真实风华卷的多代页分块仍需修复，KB-A03～A06 继续。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 真实 PDF 源页重定位后可读，两题三图通过正式选题、确认与冷读专项。完整 KB-A09、配对答案册与 KB-A06 三套交付仍需验收。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)

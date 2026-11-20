@@ -28,6 +28,7 @@ import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../.
 import {validAiPageQuery} from '../../shared/material-ai-page';
 import {validMaterialBookPairInput} from '../../shared/material-book-pair';
 import {validMaterialFolderBooksQuery} from '../../shared/material-folder-books';
+import {AI_STRUCTURE_PENDING} from './material-ai-structure-source';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
@@ -73,7 +74,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     }
   });
   const check=(event:Electron.IpcMainInvokeEvent)=>{const w=window();if(!w||w.isDestroyed()||event.sender!==w.webContents||event.senderFrame!==w.webContents.mainFrame)throw new Error('permission_denied');};
-  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['invalid_response','busy','cancelled','timeout','unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','non_question_content','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','budget_exhausted','book_writeback_disabled','book_pair_required'].includes(code)?code:'unavailable');});
+  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error([AI_STRUCTURE_PENDING,'invalid_response','busy','cancelled','timeout','unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','non_question_content','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','budget_exhausted','book_writeback_disabled','book_pair_required'].includes(code)?code:'unavailable');});
   ipcMain.handle('materials:book-pair-get',(event,id)=>{check(event);if(!materialId(id))throw Error('invalid_input');return safe(()=>store.materialAi.books.view(id));});
   ipcMain.handle('materials:folder-books',(event,input)=>{check(event);if(!validMaterialFolderBooksQuery(input))throw Error('invalid_input');return safe(()=>store.materialAi.books.folderCandidates(structuredClone(input)));});
   ipcMain.handle('materials:book-pair-set',(event,input)=>{check(event);if(!validMaterialBookPairInput(input))throw Error('invalid_input');return store.materialAi.books.change(structuredClone(input)).catch(error=>{const code=error instanceof Error?error.message:'';throw Error(['invalid_input','source_changed','conflict','unsupported','answer_already_processed'].includes(code)?code:'unavailable');});});

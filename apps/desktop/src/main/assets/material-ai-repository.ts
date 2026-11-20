@@ -1,6 +1,6 @@
 import {FIGURE_LABEL_SPACING} from '../../shared/material-ai-figure-spacing';
 import {SOURCE_LAYOUT_MARKERS} from '../../shared/material-ai-source-markers';
-import {withAiStructureSource,validateAiStructureSource} from './material-ai-structure-source';
+import {withAiStructureSource,validateAiStructureSource,readPublishedAiStructureJob} from './material-ai-structure-source';
 import {SOURCE_LAYOUT_TEXT} from '../../shared/material-ai-source-layout';
 import {PRINTED_CHOICE_ANSWER,PRINTED_CHOICE_LITERAL_ANSWER} from '../../shared/material-ai-choice-answer';
 import {folderResourceAuthorized} from './material-folder-word-pages';
@@ -124,6 +124,7 @@ export class MaterialAiRepository{
     const controller=new AbortController();this.layoutControllers.add(controller);
     try{
       const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]);
+      if(structure)await readPublishedAiStructureJob(this.host,source);
       let blocks=await this.runtime.blocks(source,signal);
       if(structure&&blocks&&'blockTexts'in blocks)blocks=await withAiStructureSource(this.host,source,blocks,signal);
       signal.throwIfAborted();return lineRegions&&blocks&&'blockTexts'in blocks?refinePageLineBlocks(blocks):blocks;

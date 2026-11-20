@@ -10,6 +10,7 @@ import type {MaterialWordRepository} from './material-word-repository';
 import {WORD_UPGRADE_PREDICATE as wordNeedsUpgrade,WORD_UPGRADE_INDEX} from './word-upgrade-compatible';
 import {FOLDER_WORD_PAGES,migrateFolderWordPages,nextFolderWordPage,attachFolderWordPage,type PrepareFolderWordPages} from './material-folder-word-pages';
 import {migrateWordPageSources} from './material-word-page-source';
+import {AI_STRUCTURE_PENDING} from './material-ai-structure-source';
 type Row=Record<string,unknown>;type Value=string|number|null;
 const folderTaskKey=(grant:Row,resource:Row,unit:number)=>createHash('sha256').update(JSON.stringify([schema,grant.batch_id,grant.revision,resource.resource_id,resource.version,unit])).digest('hex');
 function verifiedCover(page:Row){
@@ -129,6 +130,15 @@ export class MaterialFolderAiRepository{
  private async finishUnit(resource:Row,unit:number,state:string,error='',aiBatch=''){
   await this.host.run("INSERT INTO material_folder_ai_units(batch_id,resource_id,version,unit,state,ai_batch_id,error) VALUES(?,?,?,?,?,?,?) ON CONFLICT(batch_id,resource_id,unit) DO UPDATE SET state=excluded.state,ai_batch_id=excluded.ai_batch_id,error=excluded.error",[String(resource.batch_id),String(resource.resource_id),String(resource.version),unit,state,aiBatch,error]);
   await this.host.run("UPDATE material_folder_ai_resources SET cursor=MAX(cursor,?),status=CASE WHEN ?>=total THEN 'complete' ELSE 'running' END WHERE batch_id=? AND resource_id=?",[unit,unit,String(resource.batch_id),String(resource.resource_id)]);
+ }
+ private async waitForStructure(grant:Row,resource:Row,unit:number){
+  await this.host.run(`INSERT INTO material_folder_ai_units(batch_id,resource_id,version,unit,state,ai_batch_id,error)
+   SELECT f.batch_id,r.resource_id,r.version,?,'pending_local','',''
+   FROM material_folder_ai f JOIN material_folder_ai_resources r ON r.batch_id=f.batch_id
+   WHERE f.batch_id=? AND f.status='running' AND f.revision=? AND f.settings_revision=?
+   AND r.resource_id=? AND r.version=? AND r.cursor=? AND r.status IN ('waiting','running')
+   ON CONFLICT(batch_id,resource_id,unit) DO NOTHING`,
+   [unit,String(grant.batch_id),Number(grant.revision),Number(grant.settings_revision),String(resource.resource_id),String(resource.version),unit-1]);
  }
  private async recoverLocalWait(grant:Row){
   const id=String(grant.batch_id);
@@ -295,11 +305,12 @@ export class MaterialFolderAiRepository{
   const key=folderTaskKey(grant,resource,unit);
   try{const child=await this.host.ai().create(input,{key,folderId:String(grant.batch_id),revision:Number(grant.revision)});await this.finishUnit({...resource,total},unit,'running','',child);}
   catch(error){const code=this.error(error);
+   if(code===AI_STRUCTURE_PENDING){await this.waitForStructure(grant,resource,unit);return;}
    if(['budget_exhausted','configuration','configuration_changed','paused'].includes(code)){await this.host.run('UPDATE material_folder_ai SET status=?,error=? WHERE batch_id=?',[code==='paused'?'paused':code==='budget_exhausted'?'budget_exhausted':'configuration_changed',code,String(grant.batch_id)]);return;}
    if(['busy','index_busy'].includes(code))return;await this.finishUnit({...resource,total},unit,'review',code);
   }
  }
- private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response','processing_mode_invalid'].includes(code)?code:'unavailable';}
+ private error(error:unknown){const code=(error as Error)?.message;return [AI_STRUCTURE_PENDING,'budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response','processing_mode_invalid'].includes(code)?code:'unavailable';}
  async tick(){
   // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
   const eligible=`error<>'scope_changed' AND (status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable}) OR EXISTS(SELECT 1 ${parseRecoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${parseRecoverable})))`;

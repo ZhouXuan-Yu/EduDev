@@ -334,8 +334,15 @@ try {
         f.db.exec("UPDATE material_structure_jobs SET status='running'");
         await assert.rejects(
           () => withAiStructureSource(f.host, f.source, f.original, signal),
-          /source_incomplete/,
+          /structure_pending/,
         );
+        for (const status of ["failed", "cancelled"]) {
+          f.db.prepare("UPDATE material_structure_jobs SET status=?").run(status);
+          await assert.rejects(
+            () => withAiStructureSource(f.host, f.source, f.original, signal),
+            /source_incomplete/,
+          );
+        }
       } finally {
         f.close();
       }
@@ -886,6 +893,21 @@ try {
             page.rasterSha256,
             signal,
           );
+          const holdingHost = {
+            ...host,
+            all: async (sql, args) => {
+              const rows = await host.all(sql, args);
+              return sql.startsWith("SELECT generation,version,engine,status FROM material_structure_jobs")
+                ? rows.map(row => ({ ...row, status: "running" }))
+                : rows;
+            },
+          };
+          await assert.rejects(
+            withAiStructureSource(holdingHost, source, original, signal),
+            /structure_pending/,
+          );
+          const released = await withAiStructureSource(host, source, original, signal);
+          assert.deepEqual(released.structureContext, result.structureContext);
           console.log(
             JSON.stringify({
               actualContextBytes: Buffer.byteLength(

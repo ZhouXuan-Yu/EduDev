@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-20 后台定稿等待版面发布
+
+M03/M05 已接通已授权后台批次对版面发布的等待与冷启续跑。下一步解决真实多页卷中的页分块定位。自然定稿、配答、检索、正式卷、规模和本地迁移继续按 KB-A01～A10。 [本轮报告](../research/evidence/kb/20261120/folder-structure-wait/README.md)
+
 ## 2026-11-20 PDF 裁题迁移后的原页与原图
 
 独立 PDF 页归档在恢复重定位后通过来源、原图与组卷核验。自然题定稿库存、三套整卷、独立检索、源题与答案册迁移、安装换机和混合规模继续按 KB-A01～A10 验收。 [本轮报告](../research/evidence/kb/20261120/pdf-receipt-relocation/README.md)
