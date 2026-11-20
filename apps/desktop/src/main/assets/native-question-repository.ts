@@ -27,7 +27,7 @@ type Host={root:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:
  /** Private producer, not an IPC/model-supplied proof or pixel map. */
  attest:(proof:WordProof,signal:AbortSignal)=>Promise<NativeSourceEvidence>;
  /** Exact real AI-unit first/final receipt binding; never infer text authority from q.ai hashes alone. */
- transcription:(q:QuestionBankItem,source:WordQuestionSource,phase:'publish'|'read',signal:AbortSignal)=>Promise<NativeTranscription>;
+ transcription:(q:QuestionBankItem,source:WordQuestionSource,phase:'publish'|'read'|'edit',signal:AbortSignal)=>Promise<NativeTranscription>;
  validate:(q:QuestionBankItem)=>Promise<void>};
 export type NativeAiInputKey={batchId:string;ordinal:number;inputSha:string};
 type Prepared=NativeSourceEvidence&{root:string;active:boolean;input?:NativeAiInputKey&{digest:string}};
@@ -121,7 +121,7 @@ export class NativeQuestionRepository{
  async reviseDocument(q:QuestionBankItem,fields:ArchiveFields,checked:boolean,permit:object,signal:AbortSignal){
   if(!this.host.inTransaction())throw Error('native_transaction_boundary');const evidence=permits.get(permit);
   if(!evidence?.active||evidence.root!==path.resolve(this.host.root()).toLowerCase()||!q.archive?.native)throw Error('permission_denied');
-  const original=await this.host.transcription(q,evidence.source,'read',signal),document=structuredClone(q.archive.native);
+  const original=await this.host.transcription(q,evidence.source,'edit',signal),document=structuredClone(q.archive.native);
   for(const role of NATIVE_QUESTION_ROLES){const field=role==='question'?'stem':role;if(fields[field]===q[field])continue;const text=fields[field];document.roles[role]={text,origin:role==='question'||text?'teacher':'missing',contentSha:nativeTextContentDigest(text),figures:[]};}
   if(fields.stem===original.roles.question.text){
    document.projection=structuredClone(original.projection);document.roles.question={text:fields.stem,origin:'source',contentSha:wordRoleContentDigest(evidence.source,'question'),figures:evidence.proof.pages.filter(p=>p.role==='question').map((p,i)=>({blockId:`native_question_${i}`,assetId:p.assetId,sha256:p.sha256,bytes:p.bytes,width:p.width,height:p.height}))};

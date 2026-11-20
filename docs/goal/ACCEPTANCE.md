@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 原生 Word 题迁移后的来源读取
+
+通过备份数据库重定位后的原生 Word 题桌面组卷和冷启动原图核验，覆盖同尺寸改动和生产派发。完整 KB-A09、PDF 回执和三套确认卷的导出仍继续。 [专项报告](../research/evidence/kb/20261120/native-receipt-relocation/README.md)
+
 ## 2026-11-20 正式组卷的同级原题
 
 自动蓝图与手选题篮的同级原题通过专项回归。自然样本仍在来源门禁缺额，KB-A06 的完整带图三套交付继续验收。 [本轮证据](../research/evidence/kb/20261120/paper-grade-alias/README.md)

@@ -20,7 +20,13 @@ try{
 
  db.exec('BEGIN IMMEDIATE');try{await assert.rejects(prepared(e=>{db.prepare('INSERT OR REPLACE INTO question_bank_items(id,question_json) VALUES(?,?)').run(q.id,JSON.stringify(q));return repo.publish(q,e,signal());}),/native_transaction_boundary/);}finally{db.exec('ROLLBACK');}const pngCount=async()=>{try{return(await fs.readdir(path.join(root,'question-ai-assets/v1'))).filter(n=>n.endsWith('.png')).length;}catch(e){if(e.code==='ENOENT')return 0;throw e;}};assert.equal(await pngCount(),0);pass('Preparing evidence inside an already open SQLite transaction is refused before any managed PNG is created');
  try{await assert.rejects(prepared(async e=>{db.exec('BEGIN IMMEDIATE');db.prepare('INSERT INTO question_bank_items(id,question_json) VALUES(?,?)').run(q.id,JSON.stringify(q));await repo.publish(q,e,signal());}),/native_transaction_boundary/);}finally{if(db.isTransaction)db.exec('ROLLBACK');}assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_native_pending').get().n,3);await prepared(async()=>{});assert.equal(await pngCount(),0);assert.equal(db.prepare('SELECT COUNT(*) n FROM material_ai_native_pending').get().n,0);pass('An uncommitted caller keeps a durable recovery journal, and the next owned preparation reclaims the rolled-back PNGs');
- const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');await new MaterialAiRepository(host).migrate();
+ const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
+ const ai=new MaterialAiRepository({...host,writer:(action,beforeCommit)=>transaction(async()=>{
+  const result=await action(ai);
+  beforeCommit?.();
+  return result;
+ })});
+ await ai.migrate();
  const batchId='aibatch_'+randomUUID(),config={schemaVersion:'xiaozhi.material-ai.v1',resourceId:base.resourceId,version:base.version,settingsRevision:1,start:1,count:1,maxCalls:2,images:true,cloudConsent:true,publicMaterial:true,model:'qwen3-vl-plus'},unit={sources:[],text:source.canonical.question,visualRisk:true,stamp:'native-ledger-fixture',native:{schemaVersion:'xiaozhi.material-ai-native-input.v1',base,sourceDigest}},inputJson=JSON.stringify(unit),inputKey={batchId,ordinal:1,inputSha:hash(inputJson)};
  db.prepare('INSERT INTO material_ai_batches(id,resource_id,version,title,config_json,status,created_at) VALUES(?,?,?,?,?,?,?)').run(batchId,base.resourceId,base.version,'native fixture',JSON.stringify(config),'running',new Date().toISOString());db.prepare('INSERT INTO material_ai_units(batch_id,ordinal,input_json) VALUES(?,?,?)').run(batchId,1,inputJson);
  assert.equal(typeof repo.stageInput,'function','Native first_saved recovery needs durable selected-role input bytes before the first billable dispatch');

@@ -67,7 +67,7 @@ export class MaterialRepository {
  }
  async verify(id:string,version:string,signal:AbortSignal){const resource=await this.resource(id);if(resource.contentHash!==version)throw new Error('source_changed');await verifyMaterialOriginal(this.host.root,resource.localPath,version,signal);const after=await this.resource(id);if(after.contentHash!==version||after.localPath!==resource.localPath)throw new Error('source_changed');}
  async originalStamp(id:string,version:string){const resource=await this.resource(id),root=path.resolve(this.host.root),file=path.resolve(resource.localPath);if(resource.contentHash!==version||path.dirname(file)!==root)throw new Error('source_changed');const stat=await fs.lstat(file,{bigint:true});if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1n||(await fs.realpath(file)).toLowerCase()!==file.toLowerCase()||(await fs.realpath(root)).toLowerCase()!==root.toLowerCase())throw new Error('missing');return[stat.dev,stat.ino,stat.size,stat.mtimeNs,stat.ctimeNs].map(String).join(':');}
- verifyBookOriginal(id:string,version:string,signal:AbortSignal){
+ verifyOriginalVersion(id:string,version:string,signal:AbortSignal){
   const key=JSON.stringify([path.resolve(this.host.root),id,version]);
   return verifyStampedOriginal(key,()=>this.originalStamp(id,version),()=>this.verify(id,version,signal),signal);
  }
