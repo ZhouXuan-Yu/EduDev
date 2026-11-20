@@ -1,5 +1,13 @@
 # 独立验收记录
 
+## 2026-11-20 任务总览双向焦点循环
+
+1366×768 与 1920×1080 分别运行一次并退出 0。实际进入“恢复与待办”模态，Tab 与 Shift+Tab 的两端循环、有键盘焦点的筛选、Space 刷新、跳过禁用按钮及 Escape 归焦均通过。原生窗口和真实前台输入按原门槛继续，完整 Gate 7 状态未变。 [命令、构建及原始轨迹](evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json)
+
+## 2026-11-20 缩小发行包后的解包核验
+
+Terra 核对同一构建的 481 个文件、五套运行时及四份许可与来源文件。实际打包依赖树没有完整 `pi-web-access`，直接 Undici 为 `7.30.1`，两个嵌套版本仍在。`win-unpacked` 内实际教育助手的允许与拒绝用例也通过。归档压缩继续，安装、快捷方式和卸载仍按 QG-09 执行。 [解包、命令与环境](evidence/phase8/windows-package-20261119/runtime-dependency-scope-20261120.json)
+
 ## 2026-11-20 直接联网依赖更新复验
 
 更新后完成构建、类型检查、组件 253/253、联网专项 19/19 和固定公开 HTTPS 读取。Terra 独立在可解析到 `7.30.1` 的开发构建中验证 C2 4/4，保留调用、引用和冷启。审计移除了根 Undici 实例，三条嵌套实例仍报告。依赖安装包和原生前台继续按各自门槛。 [审计与桌面证据](evidence/phase8/undici-network-runtime-patch-20261120.json)

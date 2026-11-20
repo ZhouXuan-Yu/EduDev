@@ -4,6 +4,7 @@ module.exports={
  afterPack:'scripts/release/verify-packaged-resources.cjs',
  files:['out/**/*','package.json'],
  extraResources:[
+  {from:'src/main/xiaozhi-agent/vendor/pi-packages',to:'licenses/pi-packages',filter:['*.LICENSE','source-manifest.json']},
   {from:'.local-ocr/file-v3-dist/omni-edu-ocr',to:'ocr-runtime'},
   ...(process.env.OMNI_EDU_BUNDLE_PAGE_BLOCKS==='1'?[{from:'.local-ocr/blocks-v1-dist/omni-edu-ocr',to:'page-blocks-runtime'}]:[]),
   {from:'.local-education/dist/omni-edu-education',to:'education-runtime'},

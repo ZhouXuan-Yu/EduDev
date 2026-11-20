@@ -32,7 +32,7 @@ A1 详情加载时按 Escape 可退出，焦点返回入口。重开后即使收
 
 | 场景 | 已有可复用证据 | 最终复核 |
 | --- | --- | --- |
-| W1 任务总览 | [冷启、停止与查询重试](evidence/phase7/implementation-resume-20261119/approval-cold-recovery-retest.json) · [三页部分状态](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json) | 以最终候选校对键盘、可达性与各状态入口 |
+| W1 任务总览 | [冷启、停止与查询重试](evidence/phase7/implementation-resume-20261119/approval-cold-recovery-retest.json) · [三页部分状态](evidence/phase7/implementation-resume-20261119/workbench-partial-empty-retest.json) · [两尺寸完整键盘循环](evidence/phase7/implementation-resume-20261119/task-dialog-focus-cycle-main-20261120.json) | 恢复与待办模态在已测主线构建可双向循环 15 个焦点位置，跳过禁用分页，关闭回到入口。原生窗口按完整门槛继续。 |
 | W2 同任务继续 | [双击去重与重启](evidence/phase7/implementation-resume-20261119/workbench-double-resume-retest.json) · [已提交文件不重写](evidence/phase7/implementation-resume-20261119/workbench-committed-effect-retest.json) · [旧事件迟到](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json) | 核对冻结版本的恢复操作与记录 |
 | W3 跨会话隔离 | [独立成果、迟到事件与隐藏窗口中的原终端](evidence/phase7/implementation-resume-20261119/workbench-late-events-current-20261120.json) | 核对冻结版本的运行、文件和工具归属 |
 | A1 审批可读性 | [审批键盘与授权核对](evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json) · [秘密值哨兵](evidence/phase7/implementation-resume-20261119/terra-secret-canary.json) · [不同审批类型](evidence/phase7/implementation-resume-20261119/legacy-copy-refusal-retest.json) | 核对聚焦、忙碌、禁用和详情 |
