@@ -58,15 +58,21 @@ type PrintedAnswer={block:Paragraph;span:WordSourceSpan;section:PrintedChoiceSec
 const printedSection=/^(?:([一二三四五六七八九十百0-9]{1,4})[.、])?(单项选择题|多项选择题|不定项选择题|单选题|多选题|选择题|填空题|计算题|实验题|解答题|综合题|证明题|判断题|简答题|阅读理解)\s*[:：]?(?:\(([^()]*)\))?$/u;
 const unclassifiedSection=/^[一二三四五六七八九十百0-9]{1,4}[.、][\p{Script=Han}]{1,12}题[:：]?(?:\([^()]*\))?$/u;
 const scoreInstruction=/^(?:本[大]?题共\d{1,3}题|共\d{1,3}(?:题|分)|满分\d{1,3}分|(?:\d{1,3}(?:至|~|—|-)\d{1,3}题)?每(?:小)?(?:题|个空格)\d{1,3}分|每(?:小)?题只有一个(?:正确(?:答案|选项)|选项是正确的))$/u;
+const compactHeading=(text:string)=>text.normalize('NFKC').replace(/[\p{Zs}\t]/gu,'').trim();
+const hasOnlyScoringNotes=(notes:string)=>notes.split(/[,。.;]/u).filter(Boolean).every(part=>scoreInstruction.test(part));
+export function printedScoringHeading(text:string){
+ const heading=printedSection.exec(compactHeading(text));
+ return !!heading?.[3]&&hasOnlyScoringNotes(heading[3]);
+}
 
 /** undefined is body text, null is a section boundary without choice authority. */
 export function printedChoiceSection(text:string):PrintedChoiceSection|null|undefined{
- const title=text.normalize('NFKC').replace(/[\p{Zs}\t]/gu,'').trim();
+ const title=compactHeading(text);
  if(examTitle.test(title))return null;
  const match=printedSection.exec(title);
  if(!match)return unclassifiedSection.test(title)?null:undefined;
  const [,ordinal='',label,notes='']=match;
- if(!/(?:选择题|选题)$/u.test(label)||notes.split(/[,。.;]/u).filter(Boolean).some(part=>!scoreInstruction.test(part)))return null;
+ if(!/(?:选择题|选题)$/u.test(label)||!hasOnlyScoringNotes(notes))return null;
  const chinese='一二三四五六七八九十'.indexOf(ordinal);
  const scope=ordinal.length===1&&chinese>=0?String(chinese+1):ordinal;
  const mode=label==='选择题'?'generic':label.startsWith('单')?'single':label.startsWith('多')?'multiple':'indeterminate';

@@ -1,12 +1,14 @@
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';
+import {Document,ImageRun,Packer,Paragraph,TextRun} from 'docx';
 import {preambleFixture} from './word-fixtures.mjs';
 const {parseWord}=await import('../../src/main/assets/word-parser.ts');
 const {indexWordQuestions,wordQuestionPlanCompatible,verifyWordQuestionSource}=await import('../../src/main/assets/word-question-source.ts');
-const {WORD_BOOKLET_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
+const {WORD_BOOKLET_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY,WORD_PRINTED_ANSWER_QUESTION_POLICY,validWordDocument,wordPreambleBlankCandidate}=await import('../../src/shared/material-word.ts');
 const {partitionWordPreamble,administrativeLine,preambleWindow}=await import('../../src/main/assets/word-preamble.ts');
 const {wordParagraphMap,wordQuestionText,wordQuestionBlocks}=await import('../../src/shared/material-word-question.ts');
 const {nativeMetadata}=await import('../../src/main/assets/material-ai-native-context.ts');
+const {isBlankWordBitmap,isStaticWordPreamblePng}=await import('../../src/main/assets/word-preamble-image.ts');
 const payload=await parseWord(await preambleFixture()),checks=[];
 function check(name,run){run();checks.push(name);console.log('PASS '+name);}
 const legacy=()=>{const d=structuredClone(payload.document);d.questionPolicy=WORD_BOOKLET_QUESTION_POLICY;return d;};
@@ -64,5 +66,63 @@ check('A real numbered question after the first section or without attention rem
 });
 check('Historical v3 source identity and physical content remain stable after v4 indexing',()=>{
  const d=legacy(),before=JSON.stringify(indexWordQuestions(d).read(4));indexWordQuestions(current()).read(4);assert.equal(JSON.stringify(indexWordQuestions(d).read(4)),before);assert(verifyWordQuestionSource(JSON.parse(before),d));assert(wordQuestionText(wordQuestionBlocks(JSON.parse(before),'question')).includes('小球'));
+});
+const blankRaster=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR4nGP8///ffwY8gAmf5PBRAAAaaQQLvXXyNQAAAABJRU5ErkJggg==','base64');
+const picture=()=>new ImageRun({type:'png',data:blankRaster,transformation:{width:8,height:8}});
+const printed=await parseWord(await Packer.toBuffer(new Document({sections:[{children:[
+ new Paragraph({children:[picture(),new TextRun('2025年初中数学试卷')]}),
+ new Paragraph('一、选择题（本大题共2题，每题3分，满分6分）'),
+ new Paragraph('1. 求下列算式的值。\nA. 甲 B. 乙'),
+ new Paragraph({children:[new TextRun('2. 如图选择。'),picture(),new TextRun('\nA. 甲 B. 乙')]}),
+ new Paragraph('参考答案'),new Paragraph('一、选择题'),new Paragraph('1.A2.B'),
+]}]})));
+const decorated=()=>{const next=structuredClone(printed.document),candidate=wordPreambleBlankCandidate(next);
+ return {...next,preambleBlank:{blockId:candidate.block.id,assetId:candidate.asset.id}};};
+check('Blankness requires every BGRA pixel to be near white and fully opaque',()=>{
+ const bitmap=Buffer.from([254,255,255,255,255,255,255,255]);
+ assert(isBlankWordBitmap(bitmap,2,1));
+ for(const [at,value] of [[0,253],[4,0],[7,254],[7,0]]){
+  const mutated=Buffer.from(bitmap);mutated[at]=value;assert(!isBlankWordBitmap(mutated,2,1));
+ }
+ assert(!isBlankWordBitmap(bitmap,8,1));
+});
+check('A blank first frame does not qualify an animated or damaged PNG',()=>{
+ const dimensions={width:8,height:8};
+ assert(isStaticWordPreamblePng(dimensions,blankRaster));
+ assert(!isStaticWordPreamblePng(dimensions,blankRaster.subarray(0,-1)));
+ assert(!isStaticWordPreamblePng({width:64,height:8},blankRaster));
+ const animationChunk=Buffer.alloc(20);animationChunk.writeUInt32BE(8);animationChunk.write('acTL',4);
+ assert(!isStaticWordPreamblePng(dimensions,Buffer.concat([blankRaster.subarray(0,33),animationChunk,blankRaster.subarray(33)])));
+});
+check('A frozen blank-title proof releases only the heading and exact scoring note',()=>{
+ const next=decorated();
+ const prior={...printed.document,questionPolicy:WORD_PRINTED_ANSWER_QUESTION_POLICY};
+ const earlier=indexWordQuestions(prior),current=indexWordQuestions(next);
+ assert(wordQuestionPlanCompatible(prior,next));
+ assert(earlier.read(1).issues.includes('shared_context'));
+ assert(indexWordQuestions(printed.document).read(1).issues.includes('shared_context'));
+ const first=current.read(1),later=current.read(2);
+ assert.deepEqual(first.issues,[]);assert.equal(first.canonical.answer,'A');
+ assert.match(first.context,/本大题共2题/);
+ assert(first.parts.question.every(span=>span.blockId!==next.preambleBlank.blockId));
+ assert.equal(later.assets[0].id,next.preambleBlank.assetId);
+ assert(verifyWordQuestionSource(earlier.read(1),prior));
+ assert(!validWordDocument({...prior,preambleBlank:next.preambleBlank}));
+});
+check('A live physical condition, an unknown image paragraph and misplaced or forged claims stay protected',()=>{
+ const mixed=decorated();
+ mixed.blocks[1].inlines=[{kind:'text',text:'一、选择题（本大题共2题，小球质量为2kg）'}];
+ const result=indexWordQuestions(mixed).read(1);
+ assert(result.issues.includes('shared_context'));
+ assert.match(result.canonical.question,/小球质量为2kg/);
+ const unknown=decorated();
+ unknown.blocks[0].inlines.find(inline=>inline.kind==='text').text='已知图示小球质量';
+ assert(indexWordQuestions(unknown).read(1).issues.includes('shared_context'));
+ const wrong=decorated();
+ wrong.preambleBlank.blockId=wrong.blocks[3].id;
+ assert(!validWordDocument(wrong));
+ const warned=decorated();
+ warned.blocks[0].warnings=['tracked_changes'];
+ assert(!validWordDocument(warned));
 });
 console.log(JSON.stringify({passed:checks.length,checks,scope:'Exact source and preamble policy regression. No model-quality claim.'}));

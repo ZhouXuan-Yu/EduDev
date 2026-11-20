@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 Word 卷首分类与历史快照
+
+v7 在 Word 仓库保存阶段从已认证的小图字节取得可重算像素证据。改进只影响派生角色；后台准备复用本地图片，保留 v6 及更早版本。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)
+
 ## 2026-11-21 Word 同册答案的版本化读取
 
 解析策略 v6 在冻结段落选出单题答案原文范围。已有媒体策略当前的 v5 可只升题源策略，兼容事务保存旧摘要及文档。后台 Word 准备使用独立的 v6 部分索引。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)

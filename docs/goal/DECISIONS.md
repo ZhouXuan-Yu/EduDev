@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-21 Word 卷首近白图证据
+
+新归属限首段单图、已知标题、静态 PNG 和所有通道阈值验证。旧摘要保留，图像缺失或像素存疑时不改变原图角色。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)
+
 ## 2026-11-21 Word 答案策略分代
 
 保留 v5 及更早版本的定位和摘要。v6 使用同类选择小节、唯一题号、连续选项及可核对的原文范围；答案不一致、题号重复和跨小节时留待核。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)

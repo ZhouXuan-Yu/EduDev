@@ -8,13 +8,16 @@ import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
 const {indexWordQuestions}=await import('../../src/main/assets/word-question-source.ts');
-const {WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
+const {WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,WORD_PRINTED_ANSWER_QUESTION_POLICY,WORD_PREAMBLE_QUESTION_POLICY}=await import('../../src/shared/material-word.ts');
 
 const root=fs.realpathSync(process.argv[2]),isolated=path.relative(fs.realpathSync(os.tmpdir()),root);
 assert(isolated.startsWith('kb-structure-batch-')&&!isolated.includes(path.sep),'Use the cumulative isolated test directory');
 const data=path.join(root,'data'),dbFile=path.join(data,'app.db');
 const entry=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out','main/index.js');
 const verifyExisting=process.argv.includes('--verify-existing');
+const preamble=process.argv.includes('--preamble');
+const beforePolicy=preamble?WORD_PRINTED_ANSWER_QUESTION_POLICY:WORD_PREAMBLE_EXPANDED_QUESTION_POLICY;
+const currentPolicy=preamble?WORD_PREAMBLE_QUESTION_POLICY:WORD_PRINTED_ANSWER_QUESTION_POLICY;
 const read=(sql,...args)=>{
  const db=new DatabaseSync(dbFile,{readOnly:true,timeout:5000});
  try{return db.prepare(sql).all(...args).map(row=>({...row}));}finally{db.close();}
@@ -27,11 +30,11 @@ assert(path.dirname(originalPath).toLowerCase()===path.join(data,'teacher_resour
 assert.equal(hash(fs.readFileSync(originalPath)),resource.version);
 const current=()=>read('SELECT digest,document_json FROM material_word_documents WHERE resource_id=?',resource.id)[0];
 const historical=()=>read(`SELECT digest,document_json FROM material_word_document_versions
- WHERE resource_id=? AND version=? AND json_extract(document_json,'$.questionPolicy')=?`,resource.id,resource.version,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY)[0];
+ WHERE resource_id=? AND version=? AND json_extract(document_json,'$.questionPolicy')=?`,resource.id,resource.version,beforePolicy)[0];
 const before=verifyExisting?historical():current();
 assert(before);
 const baseline=JSON.parse(before.document_json),beforeIndex=indexWordQuestions(baseline);
-assert.equal(baseline.questionPolicy,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY);
+assert.equal(baseline.questionPolicy,beforePolicy);
 assert.equal(beforeIndex.questionTotal,25);
 const expected=['B','D','B','D','A','C'];
 const status=()=>({
@@ -65,11 +68,19 @@ async function recall(page){
   const ordinal=index+1,item=await query(page,ordinal);
   const {source}=item;
   assert.equal(item.questionTotal,25);
-  assert.equal(source.indexPolicy,WORD_PREAMBLE_QUESTION_POLICY);
+  assert.equal(source.indexPolicy,currentPolicy);
   assert.equal(source.number,String(ordinal));
   assert.equal(source.canonical.answer,answer);
   assert.equal(source.canonical.analysis,'');
-  assert.deepEqual(source.parts.question,beforeIndex.read(ordinal).parts.question);
+  const priorQuestion=beforeIndex.read(ordinal);
+  const headerIds=new Set(baseline.blocks.slice(0,2).map(block=>block.id));
+  assert.deepEqual(source.parts.question,preamble?priorQuestion.parts.question.filter(span=>!headerIds.has(span.blockId)):priorQuestion.parts.question);
+  if(preamble){
+   assert.deepEqual(priorQuestion.issues,['shared_context']);
+   assert.deepEqual(source.issues,[]);
+   assert.match(source.context,/本大题共6题/);
+   assert.deepEqual(source.parts.answer,priorQuestion.parts.answer);
+  }
   const [span]=source.parts.answer;
   assert.equal(source.parts.answer.length,1);
   const block=baseline.blocks.find(item=>item.id===span.blockId);
@@ -80,12 +91,23 @@ async function recall(page){
  }
  assert.equal((await query(page,7)).source.canonical.answer,'');
 }
+async function rebuild(page){
+ const request={schemaVersion:'xiaozhi.word-source.v1',resourceId:resource.id,version:resource.version};
+ const prior=await page.evaluate(input=>window.omniEdu.getMaterialWordJob(input),request);
+ await page.getByTestId('word-source-rebuild').click();
+ await page.waitForFunction(async ({request,previous})=>{
+  const next=await window.omniEdu.getMaterialWordJob(request);
+  return next.jobId!==previous&&next.status==='complete';
+ },{request,previous:prior.jobId},{timeout:240000});
+ await page.getByTestId('word-source-rebuild-status').filter({hasText:'Word 图文已整理'}).waitFor({timeout:240000});
+}
 try{
  let page=await launch();
  if(!verifyExisting){
-  assert.equal((await query(page,1)).source.canonical.answer,'');
-  await page.getByTestId('word-source-rebuild').click();
-  await page.getByTestId('word-source-rebuild-status').filter({hasText:'Word 图文已整理'}).waitFor({timeout:240000});
+  const beforeQuestion=(await query(page,1)).source;
+  if(preamble)assert.deepEqual(beforeQuestion.issues,['shared_context']);
+  else assert.equal(beforeQuestion.canonical.answer,'');
+  await rebuild(page);
  }
  await recall(page);
  await page.getByTestId('word-question-toggle').click();
@@ -100,6 +122,22 @@ try{
   assert.equal(hash(JSON.stringify(updated[field])),hash(JSON.stringify(baseline[field])),field);
  assert.deepEqual(status(),saved);
  const migrated=current().digest;
+ let proofPages=0;
+ if(preamble){
+  const image=updated.blocks[0].inlines.find(inline=>inline.kind==='image');
+  assert.deepEqual(updated.preambleBlank,{blockId:updated.blocks[0].id,assetId:image.assetId});
+  const asset=updated.assets.find(item=>item.id===image.assetId);
+  assert.equal(hash(fs.readFileSync(path.join(data,'word-assets',asset.sha256))),asset.sha256);
+  await page.getByTestId('word-proof-start').click();
+  await page.getByTestId('word-proof-image').waitFor({timeout:90000});
+  const [proof]=read('SELECT proof_json FROM material_word_proofs WHERE resource_id=? AND ordinal=1 ORDER BY last_access DESC LIMIT 1',resource.id);
+  const pages=JSON.parse(proof.proof_json).pages;
+  assert(pages.some(page=>page.role==='question')&&pages.some(page=>page.role==='answer'));
+  proofPages=pages.length;
+  await rebuild(page);
+  assert.equal(current().digest,migrated);
+  assert.deepEqual(status(),saved);
+ }
  assert.equal(hash(fs.readFileSync(originalPath)),resource.version);
  await app.close();app=undefined;
  page=await launch();
@@ -107,7 +145,7 @@ try{
  assert.equal(current().digest,migrated);
  assert.deepEqual(historical(),before);
  assert.deepEqual(status(),saved);
- console.log(JSON.stringify({ok:true,total:25,withPrintedAnswers:expected.length,frozenOld:true,coldRead:true,
+ console.log(JSON.stringify({ok:true,total:25,withPrintedAnswers:expected.length,clearedPreamble:preamble?expected.length:0,proofPages,frozenOld:true,coldRead:true,
   providerCalls:0,buildSha256:hash(fs.readFileSync(entry))}));
 }finally{
  await app?.close();

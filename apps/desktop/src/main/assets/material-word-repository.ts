@@ -3,15 +3,17 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
-import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,WORD_PREAMBLE_EXPANDED_QUESTION_POLICY,isWordPreamblePolicy,isWordParser,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_SCHEMA,WORD_PARSER,WORD_PREAMBLE_QUESTION_POLICY,hasExpandedWordPreamble,isWordPreamblePolicy,isWordParser,validWordDocument,wordPreambleBlankCandidate,type WordDocument,type WordAsset,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
+import {decoratedPreambleTitle} from './word-preamble';
 import {WordQuestionProofRepository} from './word-question-proof-repository';
 import {wordUpgradeCompatible,WORD_UPGRADE_INDEX_SQL} from './word-upgrade-compatible';
 import {WORD_IMAGE_POLICY} from '../../shared/material-metafile';
 import {WORD_DRAWING_POLICY} from '../../shared/material-word-drawing';
 type Value=string|number|null;type Row=Record<string,unknown>;
 type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;parse?:(id:string,version:string,signal:AbortSignal)=>Promise<WordPayload>;
+ inspectPreamblePng?:(asset:WordAsset,bytes:Buffer)=>Promise<boolean>;
  verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>;stamp:(id:string,version:string)=>Promise<string>;writer:<T>(action:(target:MaterialWordRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 const sha=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex');
 /** Rebuildable Word representation; resource/chunk facts use the existing writer. */
@@ -30,6 +32,23 @@ export class MaterialWordRepository{
   await this.proofs.migrate();
  }
  private async folder(){const folder=path.resolve(this.host.root(),'word-assets');await fs.mkdir(folder,{recursive:true});if((await fs.realpath(folder)).toLowerCase()!==folder.toLowerCase())throw Error('source_changed');return folder;}
+ private async provePreamble(document:WordDocument,signal:AbortSignal,read:(asset:WordAsset)=>Promise<Buffer|undefined>){
+  if(document.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY)return document;
+  const next={...document};
+  delete next.preambleBlank;
+  const candidate=wordPreambleBlankCandidate(next);
+  if(!candidate||!decoratedPreambleTitle(candidate.block)||!this.host.inspectPreamblePng)return next;
+  signal.throwIfAborted();
+  const {asset,block}=candidate;
+  try{
+   const bytes=await read(asset);
+   if(bytes?.length===asset.bytes&&sha(bytes)===asset.sha256&&await this.host.inspectPreamblePng(asset,bytes)){
+    next.preambleBlank={blockId:block.id,assetId:asset.id};
+   }
+  }catch{/* Leave the original image in the question context if it cannot be proved blank. */}
+  signal.throwIfAborted();
+  return next;
+ }
  async prepare(payload:WordPayload,signal:AbortSignal){
   if(payload.metafiles?.length||payload.drawings?.length||!validWordDocument(payload.document)||payload.images.length!==payload.document.assets.length)throw Error('parse_failed');const root=await this.folder();
   for(const asset of payload.document.assets){signal.throwIfAborted();const image=payload.images.find(i=>i.id===asset.id);if(!image||image.data.length!==asset.bytes||sha(image.data)!==asset.sha256)throw Error('parse_failed');
@@ -37,7 +56,11 @@ export class MaterialWordRepository{
    try{handle=await fs.open(temporary,'wx',0o600);await handle.writeFile(image.data);await handle.sync();await handle.close();handle=undefined;signal.throwIfAborted();await fs.rename(temporary,target);}
    finally{await handle?.close();await fs.unlink(temporary).catch(error=>{if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;});}
    if((await readMaterialOriginal(root,target,asset.sha256,signal,asset.bytes)).length!==asset.bytes)throw Error('source_changed');
-  }return payload.document;
+  }
+  return this.provePreamble(payload.document,signal,async asset=>{
+   const image=payload.images.find(value=>value.id===asset.id);
+   return image&&Buffer.from(image.data);
+  });
  }
  async commit(resourceId:string,version:string,document:WordDocument){
   if(!validWordDocument(document))throw Error('parse_failed');const text=JSON.stringify(document);if(Buffer.byteLength(text)>16*1024*1024)throw Error('too_large');
@@ -59,14 +82,17 @@ export class MaterialWordRepository{
   if(!previous)throw Error('source_incomplete');
   const currentMedia=previous.parser===WORD_PARSER&&previous.imagePolicy===WORD_IMAGE_POLICY&&previous.drawingPolicy===WORD_DRAWING_POLICY;
   if(!prepared&&currentMedia&&previous.questionPolicy===WORD_PREAMBLE_QUESTION_POLICY)return false;
-  const policyOnly=!prepared&&currentMedia&&previous.questionPolicy===WORD_PREAMBLE_EXPANDED_QUESTION_POLICY;
+  const policyOnly=!prepared&&currentMedia&&hasExpandedWordPreamble(previous.questionPolicy);
   if(!prepared&&!policyOnly&&!this.host.parse)throw Error('unavailable');
   const previousSha=sha(JSON.stringify(previous));
   const payload=prepared||(!policyOnly?await this.host.parse!(resourceId,version,signal):undefined);
-  const next=payload?.document??{...previous,questionPolicy:WORD_PREAMBLE_QUESTION_POLICY};
+  const proposed=payload?.document??{...previous,questionPolicy:WORD_PREAMBLE_QUESTION_POLICY};
   signal.throwIfAborted();
-  if(next.parser!==WORD_PARSER||next.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||next.imagePolicy!==WORD_IMAGE_POLICY||next.drawingPolicy!==WORD_DRAWING_POLICY||!wordUpgradeCompatible(previous,next))throw Error('word_plan_changed');
-  if(payload)await this.prepare(payload,signal);
+  if(proposed.parser!==WORD_PARSER||proposed.questionPolicy!==WORD_PREAMBLE_QUESTION_POLICY||proposed.imagePolicy!==WORD_IMAGE_POLICY||proposed.drawingPolicy!==WORD_DRAWING_POLICY||!wordUpgradeCompatible(previous,proposed))throw Error('word_plan_changed');
+  const next=payload?await this.prepare(payload,signal):await this.provePreamble(proposed,signal,async asset=>{
+   const root=await this.folder();
+   return readMaterialOriginal(root,path.join(root,asset.sha256),asset.sha256,signal,asset.bytes);
+  });
   await this.host.verify(resourceId,version,signal);
   return this.host.writer(async target=>{
    const current=await target.document(resourceId,version);

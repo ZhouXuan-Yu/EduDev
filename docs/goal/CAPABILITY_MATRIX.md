@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 M03/M05 Word 卷首范围分类
+
+本地 Word 兼容升级以原图摘要、完整像素和标题证据解决首段误报，完整计分条款进入资料上下文，物理常数和不确定图表继续随题保留。 [本轮记录](../research/evidence/kb/20261121/word-title-preamble/README.md)
+
 ## 2026-11-21 M03/M05 同册 Word 答案定位
 
 原生 Word 题源既支持两行答案表格，也支持显式参考答案区的连续排印选择题答案。后台兼容准备、新导入、资料页原文预览和后续 AI 输入复用版本化题源。 [本轮记录](../research/evidence/kb/20261121/word-printed-answers/README.md)

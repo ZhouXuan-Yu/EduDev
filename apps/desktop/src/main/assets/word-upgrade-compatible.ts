@@ -3,7 +3,7 @@ import {METAFILE_ENGINE,WORD_IMAGE_POLICY} from '../../shared/material-metafile'
 import {wordQuestionPlanCompatible} from './word-question-source';
 import {WORD_DRAWING_POLICY,WORD_DRAWING_ENGINE} from '../../shared/material-word-drawing';
 
-export const WORD_UPGRADE_INDEX='idx_material_word_question_policy_v6';
+export const WORD_UPGRADE_INDEX='idx_material_word_question_policy_v7';
 export const WORD_UPGRADE_PREDICATE=`parser IN ('${WORD_LEGACY_PARSER}','${WORD_PARSER}') AND
  (CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.questionPolicy'),'') ELSE '' END<>'${WORD_PREAMBLE_QUESTION_POLICY}' OR
  CASE WHEN json_valid(document_json) THEN COALESCE(json_extract(document_json,'$.imagePolicy'),'') ELSE '' END<>'${WORD_IMAGE_POLICY}' OR
