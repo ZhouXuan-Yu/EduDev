@@ -46,6 +46,12 @@ export function createControlledTerminalBackend(options: ControlledTerminalBacke
         resolvePort(port);
       },
     });
+  }).then(receipt => {
+    if (!started && receipt.result.error === 'system_disk_full') {
+      const error = Error('system_disk_full');
+      rejectReady(error);rejectEnded(error);
+    }
+    return receipt;
   }).finally(() => {
     ended = true;
     const error = Error('closed');

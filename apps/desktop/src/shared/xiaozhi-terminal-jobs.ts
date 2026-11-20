@@ -1,8 +1,10 @@
 import type {XiaozhiTerminalOutput} from './xiaozhi-terminal';
+import {TOOL_EXECUTION_MESSAGES} from './xiaozhi-tool-attempt';
 
 export const TERMINAL_JOB_SCHEMA = 1 as const;
 export const TERMINAL_INPUT_FRAME_BYTES = 16384;
 export const TERMINAL_ERRORS = {
+  system_disk_full: TOOL_EXECUTION_MESSAGES.system_disk_full,
   invalid_input: '终端操作参数无效。',
   not_found: '此终端已不可用，请刷新作业列表。',
   permission_denied: '当前任务没有此终端操作的授权。',

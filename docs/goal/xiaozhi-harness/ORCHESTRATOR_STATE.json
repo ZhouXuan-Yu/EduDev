@@ -38,7 +38,7 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Map the verified Windows profile disk full code to the actual tool and UI without replay; retest long-path PTY and same candidate gate. Preserve recorded failures.",
+  "next": "Gate 7 still needs review of applicable statuses on the final build and UI disclosure across the remaining pages. Phase 8 formal ABBA and clean Windows installer still pending.",
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",
@@ -950,12 +950,23 @@
     }
   },
   "phase7Current3da4b2020261121": {
-    "status": "PARTIAL_TERMINAL_ACTUAL_LAUNCH_FAILED",
+    "status": "PARTIAL_REMAINING_INDEPENDENT_PAGE_COVERAGE_AND_LOW_DISK_UX",
     "sourceCommit": "3da4b2031e4e0262bd85c127da011a68484e860e",
     "outSha256": "0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272",
     "outFiles": 481,
     "evidence": "evidence/phase7/implementation-resume-20261119/gate7-current-3da4b20-20261121.json",
     "paidRequestCount": 3,
-    "terminalDiagnostic": "CreateAppContainerProfile HRESULT 0x80070070 reproduced independently in synthetic native health and PTY probes"
+    "terminalDiagnostic": "CreateAppContainerProfile HRESULT 0x80070070 reproduced independently in synthetic native health and PTY probes",
+    "independentLongPathAfterRoom": "PASS 9/9 after Windows system volume had usable space"
+  },
+  "terminalSystemDisk20261121": {
+    "sourceCommit": "f83bae5b2716fa1855bd74f4d66312e8f9633941",
+    "status": "ACTUAL_ZERO_DISK_ACTIONABLE_FEEDBACK_PASS_SCOPED",
+    "evidence": "evidence/phase7/implementation-resume-20261119/terminal-system-disk-20261121.json",
+    "build": {
+      "files": 481,
+      "outSha256": "088061f572909de68f37085db85afc607eda88df805e231ac8045325945fc7dc",
+      "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48"
+    }
   }
 }

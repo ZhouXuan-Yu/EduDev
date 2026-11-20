@@ -1,0 +1,122 @@
+{
+  "status": "ACTUAL_ZERO_DISK_ACTIONABLE_FEEDBACK_PASS_SCOPED",
+  "firstFixCommit": "85d6bfde244f7165c79dd38347f915483d1b0efe",
+  "firstFixBuild": {
+    "files": 481,
+    "outSha256": "bbb236bf53870c7e96d687e0c9c15250d4a42ef5d1386c48be67e73f64d0a83e",
+    "mainSha256": "9adee720eacc2f1e27c69d050365aa5b31144985109ecf62a4936757245e5b92"
+  },
+  "nativeDiagnosis": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/pty-stage-diagnostic-3da4b20/raw-session-report.json",
+    "sha256": "aa2946315eb8ee417e0dd87b53c80514bb477b88b13d5e20cd979886697ea9a4",
+    "stage": "CreateAppContainerProfile",
+    "win32": 112,
+    "hresult": "0x80070070",
+    "scope": "Standalone diagnostic helper reproduced in fixed health and synthetic PTY before process launch. No numeric HRESULT was available from the historical production helper."
+  },
+  "afterRoomIndependentLongPath": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-3da4b20/terra-long-after-room/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepMDsS5T/evidence/ui-report.json",
+    "sha256": "28db8a5b5e7bdedb0dc75371da776e1e35df1d7a7b17631f37536652c421f603",
+    "checks": "9/9",
+    "oldCandidate": "3da4b20",
+    "paid": 0
+  },
+  "firstFixValidation": {
+    "build": "npm run build exit 0, includes TypeScript and production helper binary",
+    "components": "npm run test:renderer-components 253/253",
+    "scoped": {
+      "checks": "6/6",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/pty-stage-diagnostic-3da4b20/terminal-system-disk-c7UCMY/report.json",
+      "sha256": "6dacfac5d5f5d8d08a5d8caa23de376a50ff0dbb67b951db477c293a65f80f56"
+    },
+    "firstRealUI": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/disk-ui-temp/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeeptvtKvX/evidence/disk-ui-report.json",
+      "sha256": "91f88f08eb8871b1bad42c7b8d27ca974dcdd551d1ca026a1c8e2912a9651e6e",
+      "systemFreeBytes": 0,
+      "stage": "permission_runtime_build_intent followed by execution_failed before health, no Job",
+      "actualToolAttempt": "unknown"
+    },
+    "independentW3": {
+      "checks": "5/5 on both dimensions",
+      "reports": [
+        {
+          "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/terra-w3/omni-edu-xiaozhi-phase7-workbench-ui-djXu5e/evidence/delayed-events-report.json",
+          "sha256": "c447cd335e0a93297e48fd153c266bd4ea5c0381667e2822bd93d4c8a1453828"
+        },
+        {
+          "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/terra-w3/omni-edu-xiaozhi-phase7-workbench-ui-Lhp0eR/evidence/delayed-events-report.json",
+          "sha256": "826b9e8cecc5bbd2c86edfb3f02b6c40632fcf12fd36a5b8a654466fe5a25dd7"
+        }
+      ]
+    },
+    "independentA2": {
+      "checks": "3/3 on both dimensions",
+      "reports": [
+        {
+          "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/approval-contract/omni-edu-a2-stale-lNM1nw/report.json",
+          "sha256": "08dbe767c518ba33e98ea94a7b98ba09b053f148e3671013bf1692bdc6378c47"
+        },
+        {
+          "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/approval-contract/omni-edu-a2-stale-Lt0Qqm/report.json",
+          "sha256": "f34da285b77f33ed347ba5482c7e65a53952511b9d57903751a0ed4a8997548c"
+        }
+      ]
+    },
+    "independentApprovalPrivacyAndDisclosure": {
+      "scope": "Two sizes, synthetic provider key and modern approval long resource. No actual key, no external model, did not generalize to all settings",
+      "report": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/approval-contract/omni-edu-ui-contract-IvvKLM/approval-contract-report.json",
+        "sha256": "d706e2a97e7d2a4eba56b3bb238b6580ed1993a54b958504f5f58e346e1dd715"
+      }
+    },
+    "audit": {
+      "total": 20,
+      "high": 5,
+      "moderate": 7,
+      "low": 8,
+      "critical": 0,
+      "dependencyLockUnchanged": true
+    }
+  },
+  "remaining": "Gate 7 still needs review of applicable statuses on the final build and UI disclosure across the remaining pages. Phase 8 formal ABBA and clean Windows installer still pending.",
+  "finalFixCommit": "f83bae5b2716fa1855bd74f4d66312e8f9633941",
+  "finalFixBuild": {
+    "files": 481,
+    "outSha256": "088061f572909de68f37085db85afc607eda88df805e231ac8045325945fc7dc",
+    "mainSha256": "944f5366309d4e2324ac7056a03b93b8e7bf55b40032f977f2213c36f95fae48"
+  },
+  "finalFixEvidence": {
+    "build": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/build-v2.log",
+      "sha256": "f182ddb4fcba7766ce51566c2b89898a57ef358f9e29a1366edccd8b447fca46",
+      "command": "npm run build",
+      "exit": 0
+    },
+    "prepareSmoke": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/terminal-disk-prepare-PMCGS2/report.json",
+      "sha256": "b181a09b99c4a100fd4a6bdeb9c20c5eaf85877de93b2f7d0e8836ab1d8f20a8",
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/terminal-system-disk-prepare-smoke.mjs",
+      "checks": "6/6"
+    },
+    "actualZeroDisk": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/disk-ui-v2-temp/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepllPhgD/evidence/disk-ui-report.json",
+      "sha256": "c0aa1e898a952825243df8447379a5f8653dcc1d06bc37a74bdb50c87a1fcf57",
+      "runner": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/disk-ui-v2.mjs",
+        "sha256": "332785616e731c1420c1ae8a7a4b73068188d403043402f81db3bb19053b541c"
+      },
+      "systemFreeBytes": 0,
+      "attempts": 1,
+      "newJobs": 0,
+      "reported": "system_disk_full",
+      "compiledRuntimePreparationStarted": false,
+      "teacherVisible": "本次操作尝试 1 次。Windows 系统盘空间不足，终端启动失败。释放系统盘空间后，请手动重试。操作可能已经产生效果，请先核对，不要重复执行。",
+      "paidCalls": 0,
+      "capture": {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/terminal-disk-final/disk-ui-v2-temp/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepllPhgD/evidence/disk-full-visible.png",
+        "sha256": "0fb65678590d76ea3124dc8f7b7e5b4b01f3514bd166b3ac427f97e86b85f9b1"
+      }
+    },
+    "generalTypes": "TypeScript passed. Renderer not modified since 253/253 on the initial error candidate."
+  }
+}

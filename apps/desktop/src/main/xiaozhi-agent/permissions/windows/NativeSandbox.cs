@@ -1849,17 +1849,23 @@ namespace Xiaozhi.PermissionRuntime
             }
         }
 
+        internal static string ProfileFailure(int result)
+        {
+            return result == unchecked((int)0x80070070) ? "system_disk_full" : "launch_failed";
+        }
+
         private void CreateProfile()
         {
-            if (Native.CreateAppContainerProfile(
+            int profileResult = Native.CreateAppContainerProfile(
                 profileName,
                 profileName,
                 "Xiaozhi owned permission execution",
                 IntPtr.Zero,
                 0,
                 out appSid
-            ) != 0)
-                throw new SandboxException("launch_failed");
+            );
+            if (profileResult != 0)
+                throw new SandboxException(ProfileFailure(profileResult));
             profileCreated = true;
         }
 
