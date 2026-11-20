@@ -28,6 +28,7 @@ import { createXiaozhiProductionHost } from './production-host';
 import { registerSkillManagementIpc } from './skill-management-api';
 import {registerSkillGovernanceIpc} from './skills/api';
 import { registerWorkspaceFileIpc } from './workspace-file-api';
+import { registerArtifactFileActions } from './artifact-file-actions';
 import { registerModelSettingsIpc } from './model-settings-api';
 import { registerTextChangeIpc } from './text-change-api';
 import {registerOfficeArtifactIpc} from './office-artifact-api';
@@ -132,6 +133,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerStudentTrainingIpc({ipcMain:options.ipcMain,allowed:fromMain,repository:options.store.learningReviews});
   registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
+  registerArtifactFileActions({ipcMain:options.ipcMain,allowed:fromMain,workspace:host.resolveFileWorkspace,saved:host.resolveArtifactFile});
   registerDeliveryCheckIpc({ipcMain:options.ipcMain,allowed:fromMain,service:host.deliveryChecks});
   registerDiagnosticsIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerScienceExportIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});

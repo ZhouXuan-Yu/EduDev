@@ -18,7 +18,7 @@ globalThis.savedPreviewUtility={fork(entry,_args,options){
     execArgv:['--experimental-transform-types','--import',pathToFileURL(path.resolve('scripts/office-agent/register-source.mjs')).href],stdio:['ignore','pipe','pipe','ipc']});
   children.add(child);child.once('exit',()=>children.delete(child));child.postMessage=value=>child.send(value);return child;
 }};
-registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess=globalThis.savedPreviewUtility;export const shell={};export const session={};export const app={isPackaged:false};export class BrowserWindow{constructor(){throw Error("ELECTRON_FORBIDDEN");}}',shortCircuit:true};return next(specifier,context);},
+registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess=globalThis.savedPreviewUtility;export const net={fetch:()=>{throw Error("NO_NETWORK");}};export const shell={};export const session={};export const app={isPackaged:false};export class BrowserWindow{constructor(){throw Error("ELECTRON_FORBIDDEN");}}',shortCircuit:true};return next(specifier,context);},
   load(url,context,next){if(url.endsWith('/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8'),shortCircuit:true};return next(url,context);}});
 const {createSavedArtifactPreview}=await import('../../src/main/xiaozhi-agent/saved-artifact-preview.ts');
 const {extractLocalDocument}=await import('../../src/main/xiaozhi-agent/document-host.ts');
@@ -99,10 +99,17 @@ try{
   await check('Actual production host requires matching paper-output grant without ordinary workspace fallback',async()=>{
     const fullState=createXiaozhiSessionState(sql);await fullState.init();await fullState.setPaperOutput(sessionId,workspace,'owned paper',sha(workspace));
     const store={xiaozhiState:fullState,questionReviews:{collections:{}},getDocumentArtifact:artifact,getAiConversationSession:async()=>({session:{archivedAt:archived?'owned':'',studentId:'student_owned'}}),listStudents:async()=>[{id:'student_owned',status:active?'active':'archived'}],sanitizeProblemText:async text=>({sanitizedText:text})};
-    host=createXiaozhiProductionHost({store,dataRoot,emit:()=>assert.fail('No provider event')});await host.skillCatalog();
+    host=createXiaozhiProductionHost({store,dataRoot,emit:()=>assert.fail('No provider event')});
     const good=await host.previewSavedArtifact(address());assert(good.ok,JSON.stringify(good));
+    const beforeResolve=forks;
+    const bound=await host.resolveArtifactFile(sessionId,artifactId);
+    assert.equal(bound.path,file);
+    assert.equal(bound.version,good.value.fileVersion);
+    assert.equal(forks,beforeResolve,'OS file operations must not start the document parser');
+    await assert.rejects(host.resolveArtifactFile(otherId,artifactId),/permission_denied/);
     db.prepare('DELETE FROM xiaozhi_pi_paper_outputs WHERE conversation_id=?').run(sessionId);await fullState.setWorkspace(sessionId,workspace,'ordinary same directory');
     assert.equal((await host.previewSavedArtifact(address())).error,'permission_denied');
+    await assert.rejects(host.resolveArtifactFile(sessionId,artifactId),/permission_denied/);
     await fullState.setPaperOutput(sessionId,workspace,'owned paper',sha(workspace));active=false;assert.equal((await host.previewSavedArtifact(address())).error,'permission_denied');active=true;
     archived=true;assert.equal((await host.previewSavedArtifact(address())).error,'permission_denied');archived=false;await host.close();assert.equal((await host.previewSavedArtifact(address())).error,'permission_denied');host=undefined;
   });

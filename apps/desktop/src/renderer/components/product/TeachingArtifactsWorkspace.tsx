@@ -9,6 +9,7 @@ import type {TeachingFileCatalogEntry} from '../../../shared/contracts';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiWorkspaceFiles} from '../office/PiWorkspaceFiles';
 import {SavedArtifactPreview} from '../office/SavedArtifactPreview';
+import {ArtifactFileActions} from '../office/ArtifactFileActions';
 import {PiOfficeVersions,PiOfficeCurrent} from '../office/PiOfficeVersions';
 import {PiDeliveryCheck} from '../office/PiDeliveryCheck';
 import {PiArtifactSources} from '../office/PiArtifactSources';
@@ -56,7 +57,9 @@ function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}
       <ResourceTable className={alignment.catalogue} label="教学文件列表" rows={filtered.map(row=>({id:row.id,title:row.title,description:(row.htmlVersion?(row.htmlVersion.savedAt?libraryDate(row.htmlVersion.savedAt):row.htmlVersion.verifiedAt?'保存时间未知 · 已核验':'保存时间未知'):libraryDate(row.updatedAt))+' · '+libraryFileSize(row.fileSize)+(row.officeVersion?` · 当前第 ${row.officeVersion.version} 版`:''),type:row.type.toUpperCase(),state:row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}))} selected={artifact?.id} onSelect={select} testPrefix="artifact" empty={loading?<p role="status">正在读取教学文件…</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}/>
       <section className={alignment.detail} hidden={!artifact} data-testid="artifacts-detail" aria-label="教学文件内容">
         <Button variant="ghost" onPress={()=>{setSelected('');setReveal(undefined);}} data-testid="artifacts-back">返回文件列表</Button>
-        {artifact?<><header><div><h2>{artifact.title}</h2><p>{artifact.fileName}</p></div></header><div className={alignment.actions}>
+        {artifact?<><header className="artifact-file-header" data-artifact-file-header=""><div><h2>{artifact.title}</h2><p>{artifact.fileName}</p></div>
+          {!reveal&&artifact.status==='exported'&&artifact.sessionId&&<ArtifactFileActions key={artifact.id} target={{kind:'saved',sessionId:artifact.sessionId,artifactId:artifact.id}}/>}
+        </header><div className={alignment.actions}>
           {artifact.officeVersion?<PiOfficeCurrent key={artifact.id+'preview'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={path=>setReveal({id:crypto.randomUUID(),path})} label="预览当前文件" testId="artifacts-preview"/>:<Button variant="secondary" isDisabled={artifact.status!=='exported'||!artifact.sessionId} onPress={()=>setReveal({id:crypto.randomUUID(),path:artifact.fileName})} data-testid="artifacts-preview">预览文件</Button>}
           {artifact.officeVersion?<><PiOfficeCurrent key={artifact.id+'open'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="open" label="系统打开" testId="artifacts-open"/><PiOfficeCurrent key={artifact.id+'locate'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="locate" label="定位当前文件" testId="artifacts-locate"/></>:<Button variant="ghost" isDisabled={busy||artifact.status!=='exported'} onPress={()=>void locate()} data-testid="artifacts-locate"><FolderOpen size={16}/>定位文件</Button>}
           <Button variant="ghost" isDisabled={!artifact.sessionId} onPress={()=>navigation.navigate({view:'ai',sessionId:artifact.sessionId})} data-testid="artifacts-conversation"><MessageSquare size={16}/>查看来源对话</Button></div>

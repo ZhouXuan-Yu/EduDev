@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "5af2f10690d4b81172ea5e9192fb17108bf1881f3eebbdbe6eaefdd41343ab70",
+  "sourceHash": "7702f5667130919427a12a09885ad7fe083634067a7a2e7c0778df4c329653d9",
   "sources": [
     {
       "file": "package-lock.json",
@@ -459,6 +459,10 @@
       "sha256": "0e4242fc8b9879a39cc036bca9c071ac9c9bd76b89d15331bb3b4c36c5656bf3"
     },
     {
+      "file": "src/main/local-file-security.ts",
+      "sha256": "eaba792b38b34cfc98400d4b868aab222ab49bf787c3198c6571cac75a6a2eba"
+    },
+    {
       "file": "src/main/managed-tools/manifest.ts",
       "sha256": "11cff474ff6a09cc13e4ca1bb27f4a3b351c932ab3300e889988f1a8bf31f09e"
     },
@@ -676,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "5ebdb4ac5e2e677107eafc241a9db7b88afc4dc9c1831f062f3102a3d5146e75"
+      "sha256": "c7554297a8d918dd8502d3dd23185a5e86bba90e0302d2a4839cab179f9eaa1a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -725,6 +729,10 @@
     {
       "file": "src/main/xiaozhi-agent/capabilities/validation.ts",
       "sha256": "7bf280208e6bc720fe7f31a5ed23daa1a9487d79013dd862a643525829d2d8c8"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/catalog-artifact-file.ts",
+      "sha256": "80f7031e3af14a0fbe6b65275aac7a87c6ab552a8074d0c1e2005fd1ee104925"
     },
     {
       "file": "src/main/xiaozhi-agent/checks/evaluate.ts",
@@ -1224,7 +1232,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-versions.ts",
-      "sha256": "2aacae98da75cacd44cad9de5b4050f0128922585c2673384d952bc77d681d60"
+      "sha256": "ef2ad02b929ff6995acd6db7dee291bb5f46c3247a465e2a3e97066475bd4f2d"
     },
     {
       "file": "src/main/xiaozhi-agent/owned-file-stage.ts",
@@ -1380,7 +1388,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "a3128e814c8a9fb6f7ae8d40af4eae0dea2527aabc415667765636277655079f"
+      "sha256": "3902f26bceeeb67b90fd8d1b08c42bd1f63ec7229564e0c61e8eb3ea3038a094"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1420,7 +1428,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/saved-artifact-preview.ts",
-      "sha256": "371f571fc41609e771fb157598fc4b255ca9b6e8a8b1ea5fe837969c9474ff8b"
+      "sha256": "6ac02a98d901571f4f77d0d488066b79f084d3d0e544c8e3b97983a8946e6580"
     },
     {
       "file": "src/main/xiaozhi-agent/science-demo.ts",
@@ -1656,7 +1664,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/text-versions.ts",
-      "sha256": "0dd5e82f0a8d7e2a0966926c02cd22078130989ba02f860dfd5ffc39c3ebdc89"
+      "sha256": "bd0849885f7a870a50ddbd03f642384fe3bb94e695804e5b07459db357d9bc64"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/execution-bound.ts",
@@ -1841,6 +1849,10 @@
     {
       "file": "src/shared/artifact-check.ts",
       "sha256": "5b01212432631f82ae3556ea6c77dd2286bd0af952b3dbe31b1eab81a6b03ef8"
+    },
+    {
+      "file": "src/shared/artifact-file-actions.ts",
+      "sha256": "7cfa3081cc5fc28b61e85c073ebd300a3e136e920b81675c2bd2198549ceb733"
     },
     {
       "file": "src/shared/artifact-sources.ts",

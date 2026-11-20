@@ -37,4 +37,6 @@
 | `OMNI_EDU_TEST_BUILD_ROOT=test-results/build-kb-paper-scan node scripts/education/kb-choice-subtypes-electron.mjs <试导库 data> --capacity` | 六题正式确认，三个不足蓝图核算与拒绝确认，独立冷启 |
 | `npm audit --omit=dev --audit-level=high` | 20 项存量通告，5 项 high，0 项 critical。依赖无变化 |
 
+同时合入主线的教学文件操作更新。合并版桌面构建通过，主进程 SHA-256 为 `eeb279acfec14e80d5670aca453255954cb3178070b013a62b43ba34981c32af`。组件 253/253，保存成果预览边界 12/12，真实六题确认和三个容量数字复测一致。
+
 本次修改针对自动蓝图扫描。题篮补额仍沿原事务，后续按实际候选扫描规模评估。三套正式卷、自然题质量、独立检索留出、约 10 GB 持续后台和换机迁移仍待验收。回滚采用普通 revert，保留数据库及已确认产物。

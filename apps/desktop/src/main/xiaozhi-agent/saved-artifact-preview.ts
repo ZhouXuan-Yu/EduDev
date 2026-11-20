@@ -30,7 +30,9 @@ export function createSavedArtifactPreview(options:Options){
   const jobs=new Map<string,{input:SavedArtifactPreviewInput;abort:AbortController;done:Promise<SavedArtifactPreviewResult>}>();
   let closed=false;
   const key=(input:SavedArtifactPreviewInput)=>[input.sessionId,input.artifactId,input.requestId].join(':');
-  async function read(input:SavedArtifactPreviewInput,signal:AbortSignal):Promise<SavedArtifactPreviewResult>{
+  async function withVerifiedFile<T>(input:SavedArtifactPreviewInput,signal:AbortSignal,use:(file:{
+    path:string;relative:string;bytes:Buffer;format:string;hash:string;version:string;
+  },recheck:()=>Promise<void>)=>Promise<T>):Promise<T>{
     const current=()=>{signal.throwIfAborted();if(closed||!options.current(input.sessionId))fail('permission_denied');};
     async function binding(){
       current();await options.authorize(input.sessionId);current();
@@ -62,16 +64,34 @@ export function createSavedArtifactPreview(options:Options){
       current();stat=await handle.stat();
       if(count!==before.stat.size||fileVersion(stat)!==version||stat.nlink!==1||fileVersion(safeStat(bound.root,bound.row.path).stat)!==version)fail('changed');
       const bytes=buffer.subarray(0,count);if(sha(bytes)!==bound.row.outputHash)fail('changed');
-      const parsed=await options.extract({schemaVersion:DOCUMENT_SCHEMA,requestId:input.requestId,filename:path.basename(bound.row.path),bytes},signal);
-      current();if(!validDocumentResult(parsed,input.requestId))fail('parse_failed');
-      const final=await binding();current();
-      const post=await handle.stat();if(final.token!==bound.token||post.nlink!==1||fileVersion(post)!==version||fileVersion(safeStat(final.root,final.row.path).stat)!==version)fail('changed');
-      if(!parsed.ok)fail(parsed.error);if(parsed.format!==bound.row.format)fail('parse_failed');
-      current();return {ok:true,requestId:input.requestId,value:{artifactId:input.artifactId,name:path.basename(bound.row.path),format:parsed.format,
-        sha256:bound.row.outputHash!,fileVersion:version,markdown:parsed.markdown,parser:parsed.parser,warnings:parsed.warnings}};
+      const recheck=async()=>{
+        const final=await binding();current();
+        const post=await handle.stat();
+        if(final.token!==bound.token||post.nlink!==1||fileVersion(post)!==version||fileVersion(safeStat(final.root,final.row.path).stat)!==version)fail('changed');
+        current();
+      };
+      return await use({path:bound.file,relative:bound.row.path,bytes,format:bound.row.format,hash:bound.row.outputHash!,version},recheck);
     }finally{await handle.close();}
   }
+  async function read(input:SavedArtifactPreviewInput,signal:AbortSignal):Promise<SavedArtifactPreviewResult>{
+    return withVerifiedFile(input,signal,async(file,recheck)=>{
+      const name=path.basename(file.relative);
+      const parsed=await options.extract({schemaVersion:DOCUMENT_SCHEMA,requestId:input.requestId,filename:name,bytes:file.bytes},signal);
+      if(!validDocumentResult(parsed,input.requestId))fail('parse_failed');
+      await recheck();
+      if(!parsed.ok)fail(parsed.error);if(parsed.format!==file.format)fail('parse_failed');
+      return {ok:true,requestId:input.requestId,value:{artifactId:input.artifactId,name,format:parsed.format,
+        sha256:file.hash,fileVersion:file.version,markdown:parsed.markdown,parser:parsed.parser,warnings:parsed.warnings}};
+    });
+  }
   return {
+    async resolveFile(input:SavedArtifactPreviewInput){
+      if(!validSavedArtifactPreviewInput(input))fail('invalid_input');
+      return withVerifiedFile(input,AbortSignal.timeout(DOCUMENT_TIMEOUT),async(file,recheck)=>{
+        await recheck();
+        return {path:file.path,version:file.version};
+      });
+    },
     async preview(raw:unknown):Promise<SavedArtifactPreviewResult>{
       if(!validSavedArtifactPreviewInput(raw))return {ok:false,requestId:'',error:'invalid_input'};
       const input={...raw},id=key(input);if(closed||!options.current(input.sessionId))return {ok:false,requestId:input.requestId,error:'permission_denied'};
