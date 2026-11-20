@@ -16,19 +16,23 @@ export class MaterialSearchStatistics {
 
   async migrate(resetIndex: boolean) {
     for (const sql of [
+      'DROP TRIGGER IF EXISTS material_search_counts_insert_v1',
+      'DROP TRIGGER IF EXISTS material_search_counts_delete_v1',
+      'DROP TRIGGER IF EXISTS material_search_counts_update_v1',
       `CREATE TABLE IF NOT EXISTS ${MATERIAL_SEARCH_COUNTS}(resource_id TEXT PRIMARY KEY,total INTEGER NOT NULL DEFAULT 0,private INTEGER NOT NULL DEFAULT 0,ready INTEGER NOT NULL DEFAULT 0)`,
       `CREATE INDEX IF NOT EXISTS material_search_counts_pending_v1 ON ${MATERIAL_SEARCH_COUNTS}(ready,resource_id)`,
       `CREATE TABLE IF NOT EXISTS ${control}(id INTEGER PRIMARY KEY CHECK(id=1),resource_cursor INTEGER NOT NULL DEFAULT 0,indexed INTEGER NOT NULL DEFAULT 0,index_ready INTEGER NOT NULL DEFAULT 0)`,
       `INSERT OR IGNORE INTO ${control}(id) VALUES(1)`,
-      `CREATE TRIGGER IF NOT EXISTS material_search_counts_insert_v1 AFTER INSERT ON resource_chunks BEGIN
+      `CREATE TRIGGER IF NOT EXISTS material_search_counts_insert_v2 AFTER INSERT ON resource_chunks WHEN new.structure_search_hidden=0 BEGIN
         INSERT INTO ${MATERIAL_SEARCH_COUNTS}(resource_id,total,private) VALUES(new.resource_id,1,new.contains_personal_data<>0)
         ON CONFLICT(resource_id) DO UPDATE SET total=total+1,private=private+(new.contains_personal_data<>0); END`,
-      `CREATE TRIGGER IF NOT EXISTS material_search_counts_delete_v1 AFTER DELETE ON resource_chunks BEGIN
+      `CREATE TRIGGER IF NOT EXISTS material_search_counts_delete_v2 AFTER DELETE ON resource_chunks WHEN old.structure_search_hidden=0 BEGIN
         UPDATE ${MATERIAL_SEARCH_COUNTS} SET total=total-1,private=private-(old.contains_personal_data<>0) WHERE resource_id=old.resource_id; END`,
-      `CREATE TRIGGER IF NOT EXISTS material_search_counts_update_v1 AFTER UPDATE OF resource_id,contains_personal_data ON resource_chunks
-        WHEN old.resource_id<>new.resource_id OR old.contains_personal_data<>new.contains_personal_data BEGIN
-        UPDATE ${MATERIAL_SEARCH_COUNTS} SET total=total-1,private=private-(old.contains_personal_data<>0) WHERE resource_id=old.resource_id;
-        INSERT INTO ${MATERIAL_SEARCH_COUNTS}(resource_id,total,private) VALUES(new.resource_id,1,new.contains_personal_data<>0)
+      `CREATE TRIGGER IF NOT EXISTS material_search_counts_update_v2 AFTER UPDATE OF resource_id,contains_personal_data,structure_search_hidden ON resource_chunks
+        WHEN old.resource_id<>new.resource_id OR old.contains_personal_data<>new.contains_personal_data OR old.structure_search_hidden<>new.structure_search_hidden BEGIN
+        UPDATE ${MATERIAL_SEARCH_COUNTS} SET total=total-1,private=private-(old.contains_personal_data<>0)
+          WHERE resource_id=old.resource_id AND old.structure_search_hidden=0;
+        INSERT INTO ${MATERIAL_SEARCH_COUNTS}(resource_id,total,private) SELECT new.resource_id,1,new.contains_personal_data<>0 WHERE new.structure_search_hidden=0
         ON CONFLICT(resource_id) DO UPDATE SET total=total+1,private=private+(new.contains_personal_data<>0); END`,
       `CREATE TRIGGER IF NOT EXISTS material_search_counts_resource_delete_v1 AFTER DELETE ON teacher_resources BEGIN
         DELETE FROM ${MATERIAL_SEARCH_COUNTS} WHERE resource_id=old.id; END`
@@ -43,7 +47,7 @@ export class MaterialSearchStatistics {
     const rows = remaining ? await this.host.all(`SELECT rowid,id AS resource_id FROM teacher_resources WHERE rowid>(SELECT resource_cursor FROM ${control} WHERE id=1) ORDER BY rowid LIMIT ?`, [remaining]) : [];
     for (const row of [...pending, ...rows]) {
       await this.host.run(`INSERT INTO ${MATERIAL_SEARCH_COUNTS}(resource_id,total,private,ready)
-        SELECT ?,COUNT(*),COALESCE(SUM(contains_personal_data<>0),0),1 FROM resource_chunks WHERE resource_id=?
+        SELECT ?,COUNT(*),COALESCE(SUM(contains_personal_data<>0),0),1 FROM resource_chunks WHERE resource_id=? AND structure_search_hidden=0
         ON CONFLICT(resource_id) DO UPDATE SET total=excluded.total,private=excluded.private,ready=1`, [String(row.resource_id), String(row.resource_id)]);
     }
     if (rows.length) await this.host.run(`UPDATE ${control} SET resource_cursor=? WHERE id=1`, [Number(rows.at(-1)!.rowid)]);

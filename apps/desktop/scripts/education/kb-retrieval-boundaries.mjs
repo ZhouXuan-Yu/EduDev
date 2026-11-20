@@ -33,6 +33,22 @@ const a=await fixture();try{await a.ready();const status=await a.repo.status();a
  a.state.duringQuery=()=>a.db.prepare('UPDATE resource_chunks SET contains_personal_data=1 WHERE id=?').run(a.chunks[0]);const privateResult=await a.repo.materials('新版勾股定理');assert(!privateResult.units.some(u=>u.chunk.id===a.chunks[0]));assert.equal(privateResult.semantic.complete,false);assert(privateResult.semantic.pending>0);note('Privacy changes during query remove stale lexical and semantic hits and refresh the actual pending watermark');
  await a.ready();a.db.prepare('DELETE FROM resource_chunks WHERE id=?').run(a.chunks[1]);await a.ready();assert.equal((await a.repo.materials('改写题意')).units.length,0);note('Deletes are durable tombstones and cannot reappear through old vector receipts');
 }finally{a.db.close();}
+const replaced=await fixture();try{
+ await replaced.ready();
+ const [old,current]=replaced.chunks;
+ assert((await replaced.repo.materials('改写题意')).units.some(u=>u.chunk.id===old));
+ replaced.state.duringQuery=()=>replaced.db.prepare('UPDATE resource_chunks SET structure_search_hidden=1 WHERE id=?').run(old);
+ const switching=await replaced.repo.materials('改写题意');
+ assert.deepEqual(switching.units.map(u=>[u.chunk.id,u.offset]),[[current,1]]);
+ assert(switching.semantic.pending>0);
+ assert((await replaced.repo.fact('material',old)).fact.deleted);
+ await replaced.ready();
+ const vectors=replaced.generations.get((await replaced.repo.status()).generation);
+ assert(vectors.get('material'+old).deleted);
+ assert.deepEqual((await replaced.repo.materials('改写题意')).units.map(u=>[u.chunk.id,u.offset]),[[current,1]]);
+ assert.equal(replaced.db.prepare('SELECT content_md FROM resource_chunks WHERE id=?').get(old).content_md,'勾股定理用于直角三角形。');
+ note('Publication invalidates in-flight and persisted semantic hits while retaining original physical offsets');
+}finally{replaced.db.close();}
 const b=await fixture(251);try{await b.ready();b.state.unavailable=true;const r=await b.repo.materials('关键词',undefined,200,200);assert.equal(r.units.length,20);assert.equal(r.units[0].offset,201);assert(r.hasMore);assert(!r.semantic.available);note('Keyword fallback preserves real offset pagination beyond the first 200 hits');}finally{b.db.close();}
 const c=await fixture(0);try{const id=c.addQuestion('已知条件。'.repeat(2400)+'末尾条件不能丢失。'),id2=c.addQuestion('正常后续题');await c.ready();const active=c.generations.get((await c.repo.status()).generation);assert([...active.values()].some(f=>f.id===id&&f.text.length>12000));assert([...active.values()].some(f=>f.id===id2));note('A legal 12000-character question plus metadata does not block later outbox facts');
  c.state.duplicateWindows=true;const found=await c.repo.questions({query:'不同的表述',limit:2,knowledgePoint:'勾股'});assert.equal(found.questions.length,2);assert(c.state.queries.some(q=>q.limit>=800));assert(c.state.queries.every(q=>q.knowledgePoint==='勾股'));note('Hard knowledge filtering reaches native query and duplicate windows trigger bounded expansion to valid object count');

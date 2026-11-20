@@ -53,6 +53,7 @@ import {MaterialImportBatches} from './assets/material-import-batches';
 import {MaterialFolderAiRepository} from './assets/material-folder-ai';
 import {copyMaterialFile} from './assets/material-copy';
 import {MaterialFullTextSearch} from './assets/material-full-text';
+import {publishStructureSearchVisibility,seedStructureSearchBackfill,type StructureSearchPublication} from './assets/material-structure-search';
 import {MaterialCatalogRepository} from './assets/material-catalog';
 import {MaterialPdfRepository} from './assets/material-pdf-repository';
 import {MaterialQuestionArchive} from './assets/material-question-archive';
@@ -219,6 +220,7 @@ import type {
   SearchResult,
   Student,
   StudentInput,
+  TeacherResource,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -1276,7 +1278,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql),undefined,false);try{const result=await action(work.materialFolderAi);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialSearch=new MaterialFullTextSearch({restored:()=>this.retrieval.restoredText,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
+    this.materialSearch=new MaterialFullTextSearch({restored:()=>this.retrieval.restoredText,reconcileStructure:publication=>this.reconcileStructureSearch(publication),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql),undefined,false);try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -1324,7 +1326,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialStructures);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQuestions.configureStructures(()=>this.materialStructures);
+    this.materialQuestions.configureStructures(()=>this.materialStructures,publication=>this.reconcileStructureSearch(publication));
     this.materialPdf=new MaterialPdfRepository({structureRequired:id=>this.materialStructures.required(id),root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),lease:lease=>this.materialLeaseCurrent(lease),infer:inferResourceChunkMetadata,enqueueQuestions:(id,hash,generation)=>this.materialQuestions.enqueue(id,hash,generation),withWriter:async (action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialPdf);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
@@ -2014,6 +2016,7 @@ export class OmniEduStore {
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
+        WHERE c.structure_search_hidden=0
         ORDER BY c.quality_score DESC, c.created_at DESC, c.chunk_index ASC
         LIMIT 24`,
     )).map(this.mapResourceChunk);
@@ -2221,7 +2224,7 @@ export class OmniEduStore {
         `SELECT c.*, r.title AS resource_title
            FROM resource_chunks c
            JOIN teacher_resources r ON r.id = c.resource_id
-          WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')
+          WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND c.structure_search_hidden=0
           ORDER BY c.quality_score DESC, c.created_at DESC, c.chunk_index ASC
           LIMIT ?`,
         [boundedLimit],
@@ -2248,7 +2251,7 @@ export class OmniEduStore {
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
-        WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND (${clauses.join(' OR ')})
+        WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND c.structure_search_hidden=0 AND (${clauses.join(' OR ')})
         ORDER BY
           CASE WHEN c.contains_personal_data = 1 THEN 1 ELSE 0 END,
           c.quality_score DESC,
@@ -6231,6 +6234,7 @@ export class OmniEduStore {
     await this.materialQuestions.migrateMembers();
     await this.materialPdf.migrate();
     await this.materialStructures.migrate();
+    await seedStructureSearchBackfill({run:(sql,p)=>this.run(sql,p)});
     await this.materialQuestions.requeueLegacyStructureArchives();
     await this.materialWord.migrate();
     await this.materialWordPages.migrate();
@@ -6389,7 +6393,46 @@ export class OmniEduStore {
     );
   }
 
-  private async publishMaterialStructure(resource:import('../shared/contracts').TeacherResource,generation:string){
+  private async reconcileStructureSearch(publication:StructureSearchPublication){
+    const {resourceId,version,generation}=publication;
+    const [entry]=await this.all(`SELECT EXISTS(SELECT 1 FROM material_structure_jobs s
+      JOIN teacher_resources r ON r.id=s.resource_id AND r.content_hash=s.version
+      WHERE s.resource_id=p.resource_id AND s.version=p.version AND s.generation=p.generation
+        AND r.parse_status='ready' AND s.status IN ('complete','partial') AND s.processed=s.pages) AS current
+      FROM material_structure_search_publications p
+      WHERE p.resource_id=? AND p.version=? AND p.generation=? AND p.pending=1`,[resourceId,version,generation]);
+    if(!entry)return;
+    if(!entry.current){
+      await this.run("DELETE FROM material_structure_search_publications WHERE resource_id=? AND version=? AND generation=? AND pending=1",[resourceId,version,generation]);
+      return;
+    }
+    await this.run("SAVEPOINT structure_search_backfill");
+    try {
+      // Old publications may change discovery only. Missing canonical excerpts require a fresh rebuild.
+      const resource=await this.materials.resource(resourceId);
+      const nativeWordBody=this.hasNativeWordBody(resource);
+      if(!nativeWordBody&&!(await this.all("SELECT 1 FROM material_structure_chunks WHERE generation=? LIMIT 1",[generation])).length)
+        throw Error("source_changed");
+      await publishStructureSearchVisibility(this.structureSearchHost(),publication,nativeWordBody);
+      await this.materialSearch.indexResource(resourceId);
+    } catch(error) {
+      if(!(error instanceof Error)||error.message!=="source_changed")throw error;
+      await this.run("ROLLBACK TO structure_search_backfill");
+      await this.run("UPDATE material_structure_search_publications SET pending=0,error='source_incomplete' WHERE resource_id=? AND version=? AND generation=?",[resourceId,version,generation]);
+    }
+    await this.run("RELEASE structure_search_backfill");
+  }
+
+  private structureSearchHost(){
+    return {all:(sql:string,p?:SqlValue[])=>this.all(sql,p),run:(sql:string,p?:SqlValue[])=>this.run(sql,p)};
+  }
+
+  private hasNativeWordBody(resource:TeacherResource){
+    return /\.docx$/i.test(resource.originalFileName) && resource.chunkCount>0 &&
+      isWordParser(resource.parseEngine.split(':')[0]);
+  }
+
+  private async publishMaterialStructure(resource:TeacherResource,generation:string){
     const current = await this.materials.resource(resource.id);
     if (current.contentHash !== resource.contentHash) throw Error('source_changed');
     // Append recovered units without moving historical source offsets or replacing native Word paragraphs.
@@ -6421,13 +6464,15 @@ export class OmniEduStore {
       await this.createResourceChunksAndGraph(resource.id,resource.title,'',now(),[],missing,chunkOffset);
       chunkOffset += missing.length;
     };
-    if (!/\.docx$/i.test(current.originalFileName) || !current.chunkCount) {
-      let cursor = 0;
+    const nativeWordBody=this.hasNativeWordBody(current);
+    if (!nativeWordBody) {
+      let page = -1, cursor = 0;
       for (;;) {
-        const rows = await this.all('SELECT body_json FROM material_structure_chunks WHERE generation=? ORDER BY page,rowid LIMIT 50 OFFSET ?', [generation,cursor]);
+        const rows = await this.all('SELECT page,rowid,body_json FROM material_structure_chunks WHERE generation=? AND (page,rowid)>(?,?) ORDER BY page,rowid LIMIT 50', [generation,page,cursor]);
         if (!rows.length) break;
         await append(rows.map(row => JSON.parse(String(row.body_json))));
-        cursor += rows.length;
+        page=Number(rows.at(-1)!.page);
+        cursor=Number(rows.at(-1)!.rowid);
       }
     }
     // Furniture removal must not remove page-level privacy authority used by existing cloud/OCR tools.
@@ -6446,6 +6491,8 @@ export class OmniEduStore {
         }
       }
     }
+    await publishStructureSearchVisibility(this.structureSearchHost(),
+      {resourceId:resource.id,version:resource.contentHash,generation},nativeWordBody);
     await this.materialSearch.indexResource(resource.id);
     await this.run("UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?",[current.parseEngine.split(':')[0],now(),resource.id]);
   }

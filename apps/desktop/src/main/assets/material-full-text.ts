@@ -6,8 +6,9 @@ import type {MaterialAiTextIndex} from '../retrieval/material-ai-text-index';
 import {validAiTextSource} from '../../shared/material-ai-text';
 import type {CatalogScope} from '../../shared/material-catalog';
 import {catalogPredicate} from './material-catalog';
+import {migrateMaterialSearchVisibility,migrateStructureSearchPublications,nextStructureSearchPublication,type StructureSearchPublication} from './material-structure-search';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;map:(r:Row)=>ResourceChunk;withWriter?:(action:(index:MaterialFullTextSearch)=>Promise<void>)=>Promise<void>;restored?:()=>MaterialAiTextIndex|undefined};
+type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;map:(r:Row)=>ResourceChunk;withWriter?:(action:(index:MaterialFullTextSearch)=>Promise<void>)=>Promise<void>;restored?:()=>MaterialAiTextIndex|undefined;reconcileStructure?:(publication:StructureSearchPublication)=>Promise<void>};
 const index='material_body_fts_v1',dirty='material_body_dirty_v1';
 /** Shared normalisation, explicit version via v1 tables. No model/SQLite extension dependency. */
 const characters=(s:string)=>Array.from(s.normalize('NFKC').toLowerCase().replace(/\s+/gu,''));
@@ -26,6 +27,8 @@ export class MaterialFullTextSearch{
  private host:Host;
  constructor(host:Host){this.host=host;this.statistics=new MaterialSearchStatistics(host);}
  async migrate(){
+  await migrateMaterialSearchVisibility(this.host);
+  await migrateStructureSearchPublications(this.host);
   const prior=await this.host.all(`SELECT name FROM sqlite_master WHERE name IN ('${index}','${dirty}','material_body_ai_v1','material_body_au_v1','material_body_ad_v1')`);
   this.recreated=!prior.some(r=>r.name===index);this.columns=(await this.host.all('PRAGMA table_info(resource_chunks)')).map(r=>String(r.name));
   try{await this.host.run(`CREATE VIRTUAL TABLE IF NOT EXISTS ${index} USING fts5(tokens,normalised UNINDEXED)`);}catch(e){if(/no such module: fts5/i.test(String(e)))return;throw e;}
@@ -39,19 +42,31 @@ export class MaterialFullTextSearch{
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;await this.pumping;}
  private async indexRow(row:Row){
   const id=Number(row.chunk_rowid);
-  await writeMaterialFtsRow(this.host,id,row.id&&!row.contains_personal_data?{tokens:materialSearchTokens(String(row.content_md)),normalised:characters(String(row.content_md)).join('')}:undefined);
+  await writeMaterialFtsRow(this.host,id,row.id&&!row.contains_personal_data&&!row.structure_search_hidden?{tokens:materialSearchTokens(String(row.content_md)),normalised:characters(String(row.content_md)).join('')}:undefined);
   await this.host.run(`DELETE FROM ${dirty} WHERE chunk_rowid=? AND revision=?`,[id,Number(row.revision)]);
  }
  async indexResource(resourceId:string){
   // Called in the same writer transaction as source publication, including on another store connection.
   if(!(await this.host.all(`SELECT name FROM sqlite_master WHERE name=?`,[index])).length)return;
-  const rows=await this.host.all(`SELECT c.*,d.chunk_rowid,d.revision FROM ${dirty} d JOIN resource_chunks c ON c.rowid=d.chunk_rowid WHERE c.resource_id=?`,[resourceId]);for(const row of rows)await this.indexRow(row);
+  let cursor=0;
+  for(;;){
+   const rows=await this.host.all(`SELECT c.*,d.chunk_rowid,d.revision FROM ${dirty} d JOIN resource_chunks c ON c.rowid=d.chunk_rowid
+    WHERE c.resource_id=? AND d.chunk_rowid>? ORDER BY d.chunk_rowid LIMIT 200`,[resourceId,cursor]);
+   for(const row of rows)await this.indexRow(row);
+   if(rows.length<200)return;
+   cursor=Number(rows.at(-1)!.chunk_rowid);
+  }
  }
  async drain(limit=50){
   if(!this.available)return;
   const pending=(await this.host.all(`SELECT 1 FROM ${dirty} LIMIT 1`)).length;
-  if(!pending&&(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'||!await this.statistics.pending()))return;
-  const action=async(target:MaterialFullTextSearch)=>{await target.applyPending(limit);if(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS!=='0')await target.statistics.backfill();};
+  const legacy=this.host.reconcileStructure?await nextStructureSearchPublication(this.host):undefined;
+  if(!legacy&&!pending&&(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'||!await this.statistics.pending()))return;
+  const action=async(target:MaterialFullTextSearch)=>{
+   if(legacy)await target.host.reconcileStructure?.(legacy);
+   await target.applyPending(limit);
+   if(process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS!=='0')await target.statistics.backfill();
+  };
   if(this.host.withWriter)await this.host.withWriter(action);else await action(this);
  }
  async applyPending(limit:number){const rows=await this.host.all(`SELECT c.*,d.chunk_rowid,d.revision FROM ${dirty} d LEFT JOIN resource_chunks c ON c.rowid=d.chunk_rowid ORDER BY d.chunk_rowid LIMIT ?`,[limit]);for(const row of rows)await this.indexRow(row);}
@@ -64,15 +79,15 @@ export class MaterialFullTextSearch{
   const predicate=scope?catalogPredicate(scope):{sql:'1',params:[]};
   const scopeSql=`${resourceId?'AND r.id=?':''} AND (${predicate.sql})`,scopeArgs=[...(resourceId?[resourceId]:[]),...predicate.params];
   const restored=!!this.host.restored?.(),condition=`${index} MATCH ? AND (${literals.map(()=>`instr(f.normalised,?)>0`).join(' OR ')}) ${scopeSql}`,args=[expression,...literals,...scopeArgs];
-  const original=`SELECT c.*,r.original_file_name AS source_name,r.content_hash AS source_version,r.title AS resource_title,${resolveOffsets?'(SELECT COUNT(*) FROM resource_chunks p WHERE p.resource_id=c.resource_id AND (p.chunk_index<c.chunk_index OR p.chunk_index=c.chunk_index AND p.id<c.id))':'-1'} AS source_offset,'' AS restored_json,bm25(${index}) AS search_rank FROM ${index} f JOIN resource_chunks c ON c.rowid=f.rowid JOIN teacher_resources r ON r.id=c.resource_id WHERE ${condition} AND ${sourceState} AND c.contains_personal_data=0`;
+  const original=`SELECT c.*,r.original_file_name AS source_name,r.content_hash AS source_version,r.title AS resource_title,${resolveOffsets?'(SELECT COUNT(*) FROM resource_chunks p WHERE p.resource_id=c.resource_id AND (p.chunk_index<c.chunk_index OR p.chunk_index=c.chunk_index AND p.id<c.id))':'-1'} AS source_offset,'' AS restored_json,bm25(${index}) AS search_rank FROM ${index} f JOIN resource_chunks c ON c.rowid=f.rowid JOIN teacher_resources r ON r.id=c.resource_id WHERE ${condition} AND ${sourceState} AND c.contains_personal_data=0 AND c.structure_search_hidden=0`;
   const values:Record<string,string>={id:'a.id',resource_id:'a.resource_id',chunk_index:'0',heading:"'AI还原正文'",content_md:'a.content_md',page_number:'a.page_number',contains_personal_data:'0',source_trust:"'unverified'",evidence_strength:"'background'",quality_score:'0',embedding_status:"'pending'",created_at:"''"};
   const ai=restored?` UNION ALL SELECT ${this.columns.map(c=>(values[c]||'NULL')+' AS "'+c.replaceAll('"','""')+'"').join(',')},r.original_file_name source_name,r.content_hash source_version,r.title resource_title,0 source_offset,a.source_json restored_json,bm25(${index}) search_rank FROM ${index} f JOIN material_ai_text_documents_v1 a ON a.rowid=-f.rowid JOIN teacher_resources r ON r.id=a.resource_id AND r.content_hash=a.version WHERE ${condition} AND (${sourceState} OR r.parse_status='failed') AND a.active=1`:'';
   const rows=await this.host.all(`${original}${ai} ORDER BY search_rank,id LIMIT ? OFFSET ?`,[...args,...(restored?args:[]),limit+1,offset]);
   const countSql=process.env.OMNI_EDU_MATERIAL_COVERAGE_STATS==='0'
-   ?`SELECT COUNT(DISTINCT r.id) resources,COUNT(*) total_chunks,COALESCE(SUM(c.contains_personal_data<>0),0) excluded FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE ${sourceState} ${scopeSql}`
+   ?`SELECT COUNT(DISTINCT r.id) resources,COUNT(*) total_chunks,COALESCE(SUM(c.contains_personal_data<>0),0) excluded FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE ${sourceState} ${scopeSql} AND c.structure_search_hidden=0`
    :`WITH resource_counts AS MATERIALIZED (
-     SELECT CASE WHEN s.ready=1 THEN s.total ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) END total,
-      CASE WHEN s.ready=1 THEN s.private ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id AND c.contains_personal_data<>0) END private
+     SELECT CASE WHEN s.ready=1 THEN s.total ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id AND c.structure_search_hidden=0) END total,
+      CASE WHEN s.ready=1 THEN s.private ELSE (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id AND c.structure_search_hidden=0 AND c.contains_personal_data<>0) END private
      FROM teacher_resources r LEFT JOIN ${MATERIAL_SEARCH_COUNTS} s ON s.resource_id=r.id WHERE ${sourceState} ${scopeSql}
     ) SELECT COALESCE(SUM(total>0),0) resources,COALESCE(SUM(total),0) total_chunks,COALESCE(SUM(private),0) excluded FROM resource_counts`;
   const count=(await this.host.all(countSql,scopeArgs))[0];
@@ -80,7 +95,7 @@ export class MaterialFullTextSearch{
   const complete=hasPdfJobs?"r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND CASE WHEN lower(r.original_file_name) LIKE '%.pdf' THEN EXISTS(SELECT 1 FROM material_pdf_jobs p WHERE p.resource_id=r.id AND p.version=r.content_hash AND p.state='complete') ELSE EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id) END":"r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)";
   const unparsed=Number((await this.host.all(`SELECT COUNT(*) n FROM teacher_resources r WHERE NOT (${complete}) ${scopeSql}`,scopeArgs))[0]?.n||0);
   const units:MaterialReadingUnit[]=rows.slice(0,limit).flatMap(r=>{let reference;try{if(r.restored_json){reference=JSON.parse(String(r.restored_json));if(!validAiTextSource(reference))return[];}}catch{return[];}return[{resourceId:String(r.resource_id),version:String(r.source_version),title:String(r.source_name),offset:Number(r.source_offset),chunk:this.host.map(r),...(reference?{restored:reference}:{})}];});
-  const aiCount=restored?(await this.host.all(`SELECT COUNT(*) total_chunks,COUNT(DISTINCT CASE WHEN NOT EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=a.resource_id) THEN a.resource_id END) resources FROM material_ai_text_documents_v1 a JOIN teacher_resources r ON r.id=a.resource_id AND r.content_hash=a.version WHERE a.active=1 AND a.content_md<>'' ${scopeSql}`,scopeArgs))[0]:undefined;
+  const aiCount=restored?(await this.host.all(`SELECT COUNT(*) total_chunks,COUNT(DISTINCT CASE WHEN NOT EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=a.resource_id AND c.structure_search_hidden=0) THEN a.resource_id END) resources FROM material_ai_text_documents_v1 a JOIN teacher_resources r ON r.id=a.resource_id AND r.content_hash=a.version WHERE a.active=1 AND a.content_md<>'' ${scopeSql}`,scopeArgs))[0]:undefined;
   return {units,hasMore:rows.length>limit,index:await this.status(),coverage:{resources:Number(count.resources)+Number(aiCount?.resources||0),totalChunks:Number(count.total_chunks)+Number(aiCount?.total_chunks||0),excludedPrivateChunks:Number(count.excluded),unparsedResources:unparsed}};
  }
 }

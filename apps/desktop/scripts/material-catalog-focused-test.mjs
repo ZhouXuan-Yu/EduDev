@@ -2,8 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { build } from 'esbuild';
 import sqlite3 from 'sqlite3';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -53,16 +52,24 @@ try {
     await build({
         stdin: {
             contents: `export * from './src/shared/material-catalog';export * from './src/shared/retrieval';export * from './src/shared/materials';export * from './src/main/assets/material-catalog';export * from './src/main/assets/material-catalog-ipc';export * from './src/main/assets/material-full-text';export * from './src/main/assets/material-repository';export * from './src/main/retrieval/repository';export * from './src/main/retrieval/vector-store';`, resolveDir: root, loader: 'ts'
-        }, outfile: path.join(out, 'runtime.cjs'), bundle: true, platform: 'node', format: 'cjs', packages: 'external', logLevel: 'silent', plugins: [{
+        }, outfile: path.join(out, 'runtime.mjs'), bundle: true, platform: 'node', format: 'esm', packages: 'external', logLevel: 'silent',
+        banner: {js: "import {createRequire as createCatalogRequire} from 'node:module';const require = createCatalogRequire(import.meta.url);"},
+        plugins: [{
                 name: 'unused-electron', setup(b) {
                     b.onResolve({ filter: /^electron$/ }, () => ({ path: 'electron', namespace: 'unused' }));
                     b.onLoad({ filter: /.*/, namespace: 'unused' }, () => ({
-                        contents: `export const utilityProcess={fork(){throw Error('ELECTRON_FORBIDDEN')}}; export const app={isPackaged:false}; export const nativeImage={createFromPath(){throw Error('ELECTRON_FORBIDDEN')}};`, loader: 'js'
+                        contents: `const denied = () => { throw Error('ELECTRON_FORBIDDEN') };
+                            export const utilityProcess = {fork: denied};
+                            export const app = {isPackaged: false};
+                            export const nativeImage = {createFromPath: denied};
+                            export const net = {fetch: denied};
+                            export const session = {fromPartition: denied};
+                            export class BrowserWindow { constructor() { denied() } }`, loader: 'js'
                     }));
                 }
             }]
     });
-    const api = createRequire(import.meta.url)(path.join(out, 'runtime.cjs'));
+    const api = await import(pathToFileURL(path.join(out, 'runtime.mjs')).href);
     const { MaterialCatalogRepository, MaterialFullTextSearch, MaterialRepository, RetrievalRepository, LocalVectorStore, MATERIAL_CATALOG_SCHEMA: schema, emptyCatalogScope, catalogKey, validCatalogQuery, validCatalogSave, validMaterialQuery, registerMaterialCatalogIpc } = api;
     const file = path.join(out, 'app.db');
     main = await open(file);
@@ -106,7 +113,7 @@ try {
         const status = i % 10 === 0 ? 'failed' : i % 10 === 1 ? 'partial' : 'ready';
         await sql.run('INSERT INTO teacher_resources VALUES(?,?,?,?,?,?,?,?,?,?,?)', [id(i), '资料' + i, 'document', `lesson.${i % 2 ? 'txt' : 'pdf'}`, path.join(out, 'original-' + i), 24, hash, status, 'synthetic', 'created', String(10000 - i)]);
         if (i % 10 !== 2) {
-            await sql.run('INSERT INTO resource_chunks VALUES(?,?,?,?,?,?,?)', [chunk(i), id(i), 0, '正文', '浮力 SYNTHETIC ' + i, 1, 0]);
+            await sql.run('INSERT INTO resource_chunks(id,resource_id,chunk_index,heading,content_md,page_number,contains_personal_data) VALUES(?,?,?,?,?,?,?)', [chunk(i), id(i), 0, '正文', '浮力 SYNTHETIC ' + i, 1, 0]);
             await sql.run('INSERT INTO retrieval_current VALUES(?,?,?)', ['material', chunk(i), 1]);
         }
         if (i !== 329) {
@@ -115,7 +122,7 @@ try {
                 await sql.run('INSERT INTO material_catalog_tags_v1 VALUES(?,?,?)', [id(i), catalogKey(tag), tag]);
         }
     }
-    await sql.run('INSERT INTO resource_chunks VALUES(?,?,?,?,?,?,?)', [chunk(999), id(304), 9, 'private', 'PRIVATEONLY 浮力', 1, 1]);
+    await sql.run('INSERT INTO resource_chunks(id,resource_id,chunk_index,heading,content_md,page_number,contains_personal_data) VALUES(?,?,?,?,?,?,?)', [chunk(999), id(304), 9, 'private', 'PRIVATEONLY 浮力', 1, 1]);
     await sql.exec('COMMIT;');
     const sourceRows = sha(JSON.stringify(await sql.all('SELECT * FROM teacher_resources ORDER BY id')));
     const materials = new MaterialRepository({

@@ -114,6 +114,7 @@ export class MaterialStructureRepository {
       `CREATE TABLE IF NOT EXISTS material_structure_context_edits(question_id TEXT NOT NULL,request_id TEXT NOT NULL,context_sha TEXT NOT NULL,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(question_id,request_id))`,
       `CREATE INDEX IF NOT EXISTS material_structure_context_hash ON material_structure_context_edits(question_id,context_sha)`,
       `CREATE TABLE IF NOT EXISTS material_structure_chunks(generation TEXT NOT NULL,id TEXT NOT NULL,page INTEGER NOT NULL,body_json TEXT NOT NULL,PRIMARY KEY(generation,id))`,
+      `CREATE INDEX IF NOT EXISTS material_structure_chunk_pages ON material_structure_chunks(generation,page)`,
     ])
       await this.host.run(sql);
   }

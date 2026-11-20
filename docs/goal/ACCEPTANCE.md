@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-20 结构重建后的正文检索
+
+M04 覆盖旧库启动、目录关键词、真实本地混合检索、手动重建、历史引用和重启。独立留出检索和约 10 GB 仍待验收。见 [真实样本及回归证据](../research/evidence/kb/20261120/structure-search-visibility/README.md)。
+
 ## 2026-11-20 已核对结构题后台配答
 
 已覆盖答案先到、后到、重启、解绑重联、工作令牌更新和保护教师答案解析。见 [桌面及 SQLite 证据](../research/evidence/kb/20261120/structure-auto-book/README.md)。

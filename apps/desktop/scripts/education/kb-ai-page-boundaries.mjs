@@ -261,7 +261,7 @@ await check('Rebuilding derived indexes restores a corrupted AI text cache from 
 await check('A chunk moved into a resource as private during reranking revokes both restored-page hits before the asynchronous search returns',async()=>{
  const f=await indexedPage('ordinary',2);try{
   const generation=f.db.prepare('SELECT generation FROM material_pdf_jobs').get().generation;const receipt=f.db.prepare('SELECT result_json FROM material_pdf_pages WHERE page=1').get().result_json;f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'blank',?,'')").run(generation,receipt);await f.repo.create({...f.input,start:2});await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,2);
-  const other='resource_'+randomUUID(),chunk='chunk_'+randomUUID();f.db.prepare("INSERT INTO teacher_resources VALUES(?,?,'other.pdf','partial','other')").run(other,'c'.repeat(64));f.db.prepare("INSERT INTO resource_chunks VALUES(?,?,1,1,0,'private')").run(chunk,other);
+  const other='resource_'+randomUUID(),chunk='chunk_'+randomUUID();f.db.prepare("INSERT INTO teacher_resources VALUES(?,?,'other.pdf','partial','other')").run(other,'c'.repeat(64));f.db.prepare("INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,1,0,'private')").run(chunk,other);
   f.rag.configure({rerank:async(_q,items)=>{f.db.prepare('UPDATE resource_chunks SET resource_id=?,page_number=NULL WHERE id=?').run(f.id,chunk);return{scores:items.map(i=>({id:i.id,score:1,complete:true}))};}});
   const result=await f.rag.materials('均匀介质');assert.equal(result.units.length,0,'Late privacy changes at the new parent cannot escape the source fence');assert.equal(result.semantic.reason,'source_changed');
  }finally{f.db.close();}
@@ -296,7 +296,7 @@ await check('A dense answer book freezes the whole original page, independently 
  const f=fixture('complete');
  try{
   await f.init();
-  const chunk=f.db.prepare("INSERT INTO resource_chunks VALUES(?,?,1,0,?,'检索切块')");
+  const chunk=f.db.prepare("INSERT INTO resource_chunks(id,resource_id,page_number,contains_personal_data,chunk_index,content_md) VALUES(?,?,1,0,?,'检索切块')");
   for(let i=1;i<48;i++)chunk.run('chunk_'+randomUUID(),f.id,i);
   await assert.rejects(f.repo.create(f.input),/unit_too_large/);
   const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.version,answerId:f.id,answerVersion:f.version,revision:1};

@@ -1,0 +1,32 @@
+{
+  "base": "110150e162c0d2e5255d053d770c6adc56e9eb26",
+  "releaseBuildMainSha256": "21bf541b3391e97a3bcf3e4f4119fdc94d09c23baf1573d6a926cde215949490",
+  "testsPassed": {
+    "realElectron": 5,
+    "rendererComponents": 253,
+    "catalog": 17,
+    "fullTextStatistics": 7,
+    "retrieval": 18,
+    "structureReview": 18,
+    "structureRepository": 39,
+    "aiPage": 249,
+    "structureBook": 17,
+    "legacyBookMatch": 36,
+    "nativeSemantic": 8,
+    "desktopSmokeCandidate": 207
+  },
+  "realElectron": {
+    "query": "用橡胶塞塞紧筒口",
+    "originalBodyMatchesBefore": 3,
+    "originalBodyMatchesAfter": 1,
+    "historicalCitationsReadable": 2,
+    "newArchiveSourcesOmitOldExcerpts": true,
+    "keywordMs": {"before":126,"after":13,"afterRestart":13},
+    "hybridMs": {"before":1895,"after":614,"afterRestart":1719},
+    "semanticAvailable": true,
+    "preservedAnswerReceiptRows": 1,
+    "newProviderRequests": 0
+  },
+  "npmAudit": {"existingAdvisories":23,"high":8,"dependencyChanges":false},
+  "overallKnowledgeBaseAcceptance": "active"
+}

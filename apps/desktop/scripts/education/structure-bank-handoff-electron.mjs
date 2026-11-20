@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -31,7 +32,7 @@ const read = (sql, args = []) => {
   const db = new DatabaseSync(file, {readOnly:true});
   try { return db.prepare(sql).all(...args); } finally {db.close();}
 };
-const [source] = read("SELECT id,title FROM teacher_resources WHERE original_file_name='主书.pdf'");
+const [source] = read("SELECT id,title,content_hash FROM teacher_resources WHERE original_file_name='主书.pdf'");
 const questionRows = () => read(`SELECT * FROM question_bank_items WHERE json_valid(archive_json)
   AND json_extract(archive_json,'$.structure.resourceId')=? AND json_extract(archive_json,'$.number')='12'
   ORDER BY rowid`,[source.id]);
@@ -47,6 +48,28 @@ const frozenAnswers = () => read("SELECT batch_id,first_json,final_json FROM mat
 const pages = frozenPages(), answers = frozenAnswers();
 assert(pages.length && answers.some(row=>row.final_json));
 const stemNeedle = "用橡胶塞塞紧筒口";
+const searchSchema = "xiaozhi.material-search.v1";
+const matchingChunks = () => read(`SELECT id,chunk_index,heading,content_md,page_number,contains_personal_data
+  FROM resource_chunks WHERE resource_id=? AND instr(content_md,?)>0 ORDER BY chunk_index,id`,[source.id,stemNeedle]);
+const originalExcerpts = matchingChunks();
+const currentExcerpt = originalExcerpts.find(row=>row.content_md.includes("____"));
+const historicalExcerpts = originalExcerpts.filter(row=>row.id!==currentExcerpt?.id);
+assert.equal(originalExcerpts.length,3);
+assert(currentExcerpt);
+const beforeSearch = read(`SELECT count(*) count FROM material_body_fts_v1 f JOIN resource_chunks c ON c.rowid=f.rowid
+  WHERE c.resource_id=? AND instr(c.content_md,?)>0`,[source.id,stemNeedle])[0].count;
+assert.equal(beforeSearch,3);
+function originalCitation(chunk) {
+  const [{offset}] = read(`SELECT count(*) offset FROM resource_chunks
+    WHERE resource_id=? AND (chunk_index<? OR chunk_index=? AND id<?)`,
+    [source.id,chunk.chunk_index,chunk.chunk_index,chunk.id]);
+  const bodyVersion = createHash("sha256").update(JSON.stringify([
+    chunk.id,chunk.chunk_index,chunk.content_md,Boolean(chunk.contains_personal_data),{pageNumber:chunk.page_number},
+  ])).digest("hex");
+  return {schemaVersion:"xiaozhi.material-source.v1",resourceId:source.id,version:source.content_hash,
+    chunkId:chunk.id,offset,bodyVersion};
+}
+const historicalCitations = historicalExcerpts.map(originalCitation);
 const build = path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT || "out");
 let app;
 async function launch() {
@@ -88,6 +111,54 @@ function latestQuestion(generation) {
   assert.equal(matching[0].stem.match(/____/gu)?.length,2);
   return matching[0];
 }
+async function checkSearch(page,generation,withUi=false) {
+  const end = Date.now()+20000;
+  let publication;
+  do {
+    [publication] = read("SELECT generation,pending,error FROM material_structure_search_publications WHERE resource_id=?",[source.id]);
+    if (publication?.generation===generation && !publication.pending) break;
+    await delay(150);
+  } while(Date.now()<end);
+  assert.deepEqual({...publication},{generation,pending:0,error:""});
+  const timings = {};
+  for (const mode of ["keyword","hybrid"]) {
+    const began = performance.now();
+    const result = await page.evaluate(input=>window.omniEdu.searchMaterialText(input),
+      {schemaVersion:searchSchema,query:stemNeedle,offset:0,mode});
+    timings[mode] = Math.round(performance.now()-began);
+    if(mode==="hybrid") timings.semanticAvailable=Boolean(result.semantic?.available);
+    const direct = result.hits.filter(hit=>hit.excerpt.includes(stemNeedle) && hit.source.resourceId===source.id
+      && hit.source.schemaVersion==="xiaozhi.material-source.v1");
+    assert.deepEqual(direct.map(hit=>hit.source.chunkId),[currentExcerpt.id]);
+    assert(result.hits.every(hit=>historicalExcerpts.every(old=>old.id!==hit.source.chunkId)));
+  }
+  const after = read(`SELECT count(*) count FROM material_body_fts_v1 f JOIN resource_chunks c ON c.rowid=f.rowid
+    WHERE c.resource_id=? AND instr(c.content_md,?)>0`,[source.id,stemNeedle])[0].count;
+  assert.equal(after,1);
+  const stableIds = originalExcerpts.map(row=>row.id);
+  assert.deepEqual(matchingChunks().filter(row=>stableIds.includes(row.id)),originalExcerpts);
+  for (const [index,citation] of historicalCitations.entries()) {
+    const view = await page.evaluate(ref=>window.omniEdu.getMaterialSource(ref),citation);
+    assert.deepEqual(view.source,citation);
+    assert.equal(view.body.chunks[0].id,citation.chunkId);
+    assert.equal(view.body.chunks[0].contentMd,historicalExcerpts[index].content_md);
+  }
+  if(withUi) {
+    await productEntry(page,"materials").click();
+    await page.getByTestId("materials-mode-text").click();
+    await page.getByTestId("materials-search-mode").selectOption("keyword");
+    await page.getByTestId("materials-text-query").fill(stemNeedle);
+    await page.getByTestId("materials-text-submit").click();
+    const result = page.getByTestId("material-text-hit-"+currentExcerpt.id);
+    await result.waitFor();
+    for (const id of historicalExcerpts.map(row=>row.id))
+      assert.equal(await page.getByTestId("material-text-hit-"+id).count(),0);
+    await result.click();
+    await page.getByTestId("materials-body-location").waitFor();
+    await page.getByTestId("materials-mode-catalog").click();
+  }
+  return {before:beforeSearch,after,historicalReadable:historicalCitations.length,...timings};
+}
 try {
   let page = await launch();
   const migrated = await waitForArchive(null);
@@ -103,6 +174,11 @@ try {
   }
   console.log("PASS Startup repairs an old archive and real notebook search defaults to its new two-blank question");
   console.log("PASS Historical drafts are available explicitly and rejected by the editor");
+  const firstSearch = await checkSearch(page,migrated,true);
+  const newSources = JSON.parse(newest.archive_json).sources;
+  assert(newSources.length);
+  assert(newSources.every(ref=>historicalCitations.every(old=>old.chunkId!==ref.chunkId)));
+  console.log("PASS Startup switches full-text, hybrid and the teacher's catalog view to the current excerpt; old citations open");
   await productEntry(page,"materials").click();
   await page.getByTestId("materials-search").fill(source.title);
   await page.getByTestId("materials-refresh").click();
@@ -119,11 +195,13 @@ try {
   app = undefined;
   page = await launch();
   await openNotebook(page,newest,originalRows);
+  const restartSearch = await checkSearch(page,rebuilt);
   assert.deepEqual(questionRows(),[...originalRows,newest]);
   assert.deepEqual(frozenPages(),pages);
   assert.deepEqual(frozenAnswers(),answers);
   console.log("PASS An identical rebuild and cold start preserve question IDs, page snapshots and answer receipts");
-  console.log(JSON.stringify({ok:true,checks:3,root,olderQuestionRows:2,currentQuestionRows:1,preservedAnswerReceipts:answers.length}));
+  console.log("PASS Rebuild and cold start keep one discoverable excerpt and both historical citations");
+  console.log(JSON.stringify({ok:true,checks:5,root,olderQuestionRows:2,currentQuestionRows:1,preservedAnswerReceipts:answers.length,firstSearch,restartSearch}));
 } finally {
   await app?.close();
 }

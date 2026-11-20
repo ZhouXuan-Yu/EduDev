@@ -23,7 +23,11 @@ type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
 export class MaterialQuestionArchive{
  private structures?:()=>MaterialStructureRepository;
- configureStructures(structures:()=>MaterialStructureRepository){this.structures=structures;}
+ private reconcileStructureSearch?:(reference:DocumentStructureReference)=>Promise<void>;
+ configureStructures(structures:()=>MaterialStructureRepository,reconcileSearch?:(reference:DocumentStructureReference)=>Promise<void>){
+  this.structures=structures;
+  this.reconcileStructureSearch=reconcileSearch;
+ }
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private host:Host;
  private controller=new AbortController();private verified=new Map<string,string>();
  constructor(host:Host){this.host=host;}
@@ -276,10 +280,9 @@ export class MaterialQuestionArchive{
  private async structureContext(reference:DocumentStructureReference,pageRange:[number,number]) {
   const resource=await this.host.materials().resource(reference.resourceId);
   if(resource.contentHash!==reference.version)throw Error('source_changed');
-  const first=(await this.host.all('SELECT MIN(chunk_index) n FROM resource_chunks WHERE resource_id=? AND (page_number BETWEEN ? AND ? OR page_number IS NULL)',[reference.resourceId,...pageRange]))[0];
-  if(first?.n===null||first?.n===undefined)return {resource,units:[]};
-  const window=await this.host.materials().readingWindow(reference.resourceId,Number(first.n),64);
-  return {resource,units:window.units.filter(unit=>unit.chunk.pageNumber==null||(unit.chunk.pageNumber>=pageRange[0]&&unit.chunk.pageNumber<=pageRange[1]))};
+  // Legacy archive catch-up and search migration may start together. Resolve visibility under this writer.
+  await this.reconcileStructureSearch?.(reference);
+  return {resource,units:await this.host.materials().publishedPageSources(resource,pageRange)};
  }
 
  async reviewStructure(input:StructureReviewInput) {

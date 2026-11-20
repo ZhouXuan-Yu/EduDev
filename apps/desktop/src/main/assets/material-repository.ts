@@ -142,6 +142,20 @@ export class MaterialRepository {
   return{units,hasMore:rows.length>limit,fingerprint:createHash('sha256').update(JSON.stringify(units)).digest('hex')};
  }
 
+ async publishedPageSources(resource:TeacherResource,pages:[number,number]):Promise<MaterialReadingUnit[]>{
+  const rows=await this.host.all(`SELECT c.*,r.title AS resource_title,
+    (SELECT COUNT(*) FROM resource_chunks p WHERE p.resource_id=c.resource_id
+      AND (p.chunk_index<c.chunk_index OR p.chunk_index=c.chunk_index AND p.id<c.id)) source_offset
+    FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id
+    WHERE r.id=? AND r.content_hash=? AND c.structure_search_hidden=0
+      AND (c.page_number BETWEEN ? AND ? OR c.page_number IS NULL)
+    ORDER BY c.chunk_index,c.id LIMIT 64`,[resource.id,resource.contentHash,...pages]);
+  return rows.map(row=>({
+    resourceId:resource.id,version:resource.contentHash,title:resource.originalFileName,
+    offset:Number(row.source_offset),chunk:this.host.mapChunk(row),
+  }));
+ }
+
 
  async readingPage(input:MaterialBodyQuery):Promise<MaterialStudyPage>{
   const body=await this.body(input),chunk=body.chunks[0];

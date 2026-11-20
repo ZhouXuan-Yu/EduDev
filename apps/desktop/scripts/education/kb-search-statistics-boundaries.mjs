@@ -8,6 +8,8 @@ const { MaterialFullTextSearch } =
   await import("../../src/main/assets/material-full-text.ts");
 const { writeMaterialFtsRow } =
   await import("../../src/main/assets/material-search-statistics.ts");
+const { publishStructureSearchVisibility } =
+  await import("../../src/main/assets/material-structure-search.ts");
 let checks = 0;
 async function check(name, action) {
   await action();
@@ -34,7 +36,7 @@ async function fixture(old = false) {
   ])
     resource.run(id, id, name);
   const put = db.prepare(
-    "INSERT INTO resource_chunks VALUES(?,?,?,'物理沸点来源',?,1)",
+    "INSERT INTO resource_chunks(id,resource_id,chunk_index,content_md,contains_personal_data,page_number) VALUES(?,?,?,'物理沸点来源',?,1)",
   );
   if (old)
     for (let i = 0; i < 8; i++)
@@ -282,6 +284,47 @@ await check(
       await cold.migrate();
       await f.compare();
       await f.drain();
+      await f.compare();
+    } finally {
+      await f.close();
+    }
+  },
+);
+await check(
+  "Structure publication hides superseded FTS rows immediately and preserves stable excerpts and native Word",
+  async () => {
+    const f = await fixture();
+    try {
+      f.put.run("original", "a", 0, 0);
+      f.put.run("private", "a", 1, 1);
+      f.put.run("canonical", "a", 2, 0);
+      f.put.run("duplicate", "a", 3, 0);
+      f.put.run("native", "b", 0, 0);
+      f.db.exec(`UPDATE resource_chunks SET content_md='物理沸点修订'
+        WHERE id IN ('canonical','duplicate');
+        CREATE TABLE material_structure_chunks(generation TEXT,page INTEGER,id TEXT,body_json TEXT);
+        INSERT INTO material_structure_chunks VALUES('g1',1,'s1','{"content":"物理沸点修订"}'),
+          ('broken',1,'s2','{"content":"缺少对应来源"}'),('invalid',1,'s3','damaged');`);
+      await f.drain();
+      assert.deepEqual((await f.compare()).units.map(u => u.chunk.id).sort(),
+        ["canonical","duplicate","native","original"]);
+      for (const generation of ["broken","invalid"]) await assert.rejects(
+        publishStructureSearchVisibility(f.host, {resourceId:"a",version:"hash",generation},false),
+        /source_changed/,
+      );
+      assert.equal((await f.compare()).units.length,4);
+      await publishStructureSearchVisibility(f.host, {resourceId:"a",version:"hash",generation:"g1"},false);
+      await publishStructureSearchVisibility(f.host, {resourceId:"b",version:"hash",generation:"word"},true);
+      const beforeDrain = await f.compare();
+      assert.deepEqual(beforeDrain.units.map(u => u.chunk.id).sort(),["canonical","native"]);
+      assert.equal(beforeDrain.coverage.totalChunks,3);
+      assert.equal(beforeDrain.coverage.excludedPrivateChunks,1);
+      const [excerpt] = (await f.search.candidates("沸点修订","a",20,0,true)).units;
+      assert.equal(excerpt.offset,2);
+      const historical = f.db.prepare("SELECT content_md,chunk_index FROM resource_chunks WHERE id='original'").get();
+      assert.deepEqual({...historical},{content_md:"物理沸点来源",chunk_index:0});
+      await f.drain();
+      assert.equal((await f.search.status()).indexed,2);
       await f.compare();
     } finally {
       await f.close();

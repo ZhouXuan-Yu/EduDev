@@ -81,6 +81,7 @@ async function fixture(options = {}) {
     resource: async () => resource,
     originalStamp: async () => "controlled original",
     verify,
+    publishedPageSources: async () => (await materials.readingWindow()).units,
     readingWindow: async () => ({
       units: [
         {
