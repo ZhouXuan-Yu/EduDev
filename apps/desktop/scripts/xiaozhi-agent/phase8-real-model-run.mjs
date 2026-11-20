@@ -14,6 +14,7 @@ export function rendererObservation(sessionId) {
   const point = () => performance.now();
   const data = {clock: {timeOrigin: performance.timeOrigin, dateCalibrationMs: Date.now() - (performance.timeOrigin + point())},
     submissions: [], continuations: [], events: [], runId: null, runIds: [], terminalAt: null};
+  const terminalRuns = new Set();
   let continuationArmed = false;
   function submitted(event) {
     if (event.type === 'click' && event.target?.closest('[data-phase8-real-submit="true"]') || event.type === 'keydown' && event.key === 'Enter'
@@ -31,13 +32,19 @@ export function rendererObservation(sessionId) {
     }
     if (!data.runIds.includes(event.runId)) return;
     const row = {at: point(), kind: event.kind, runId: event.runId, sequence: event.sequence};
-    if (event.kind === 'status') {row.status = event.status; if (event.status !== 'running') data.terminalAt = point();}
+    if (event.kind === 'status') {
+      row.status = event.status;
+      if (event.status !== 'running') { terminalRuns.add(event.runId); data.terminalAt = point(); }
+    }
     if (['tool_start', 'tool_end'].includes(event.kind)) {row.tool = event.tool; row.callId = event.callId;
       if (event.kind === 'tool_end') {row.success = event.success; row.durationMs = event.durationMs;}}
     if (event.kind === 'model_request') row.request = {state: event.request.state, attempt: event.request.attempt, status: event.request.status};
     if (['status', 'tool_start', 'tool_end', 'model_request', 'approval'].includes(event.kind)) data.events.push(row);
   });
-  window.phase8RealObservation = {snapshot: () => structuredClone(data), expectContinuation() {
+  window.phase8RealObservation = {snapshot: () => structuredClone(data), runSignal(previousRunId) {
+    const runId = data.runIds.find(id => id !== previousRunId);
+    return runId ? {runId, terminal: terminalRuns.has(runId)} : null;
+  }, expectContinuation() {
     if (data.runIds.length !== 1 || continuationArmed) throw Error('phase8_continuation_limit');
     continuationArmed=true;data.continuations.push({at:point(),entry:'same_task_workbench'});
   }, dispose() {
@@ -273,13 +280,28 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     result.outerSubmitStartedAt = performance.now(); await submit.click();
     async function terminal(previousRunId) {
       const deadline = performance.now() + manifest.runTimeoutMs;
+      // A snapshot reads the entire session. Use the live Run event as the prompt
+      // to confirm it, with a bounded fallback for a missed terminal event.
+      let nextFallback = performance.now() + 5000, nextTerminalRead = 0;
+      const reads = {terminal: 0, fallback: 0};
+      (result.terminalSnapshotReads ??= []).push(reads);
       result.stage = 'terminal_wait';
       while (performance.now() < deadline) {
         await handleVisibleApproval(page, row.task, result.decisions);
-        const observation = await page.evaluate(() => window.phase8RealObservation.snapshot());
-        const admitted=observation.runIds.find(id=>id!==previousRunId);
-        snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
-        if (admitted && !snapshot.running && snapshot.projection.turns.some(turn => turn.id === admitted && turn.status !== 'running')) {runId=admitted;return;}
+        const signal = await page.evaluate(id => window.phase8RealObservation.runSignal(id), previousRunId);
+        const now = performance.now();
+        const readKind = signal?.terminal ? (now >= nextTerminalRead ? 'terminal' : null)
+          : (signal && now >= nextFallback ? 'fallback' : null);
+        if (readKind) {
+          reads[readKind]++;
+          snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
+          if (!snapshot.running && snapshot.projection.turns.some(turn => turn.id === signal.runId && turn.status !== 'running')) {
+            runId = signal.runId;
+            return;
+          }
+          nextTerminalRead = performance.now() + 500;
+          nextFallback = performance.now() + 5000;
+        }
         await page.waitForTimeout(100);
       }
       const stop = page.getByRole('button', {name: '停止本轮', exact: true});
@@ -346,9 +368,11 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     result.officeReadback = await inspectOfficeArtifacts(result.artifacts, version.desktop);
     result.outerReadbackCompletedAt = performance.now();
     const submittedAt = result.observation.submissions[0]?.at;
+    const terminalAt = result.observation.events.findLast(event => event.kind === 'status'
+      && event.runId === result.binding.runId && event.status !== 'running')?.at;
     const firstRequest = result.transport.chats[0];
-    result.timings = {rendererSubmitToTerminalMs: Number.isFinite(submittedAt) && result.observation.terminalAt !== null
-      ? result.observation.terminalAt - submittedAt : null,
+    result.timings = {rendererSubmitToTerminalMs: Number.isFinite(submittedAt) && Number.isFinite(terminalAt)
+      ? terminalAt - submittedAt : null,
     outerAutomationAndReadbackMs: result.outerReadbackCompletedAt - result.outerSubmitStartedAt,
     preparationCrossClockEstimateMs: Number.isFinite(submittedAt) && firstRequest
       ? result.transport.clock.timeOrigin + firstRequest.at - result.observation.clock.timeOrigin - submittedAt : null,

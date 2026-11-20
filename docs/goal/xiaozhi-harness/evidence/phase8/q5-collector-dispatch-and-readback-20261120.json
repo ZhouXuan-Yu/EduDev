@@ -89,6 +89,87 @@
     {"report": "TEMP/omni-edu-xiaozhi-phase8-collector-fixture-d2f9b0be/driver-report.json", "finding": "B was launched while its renderer build was still in progress; the first B attempt never reached model dispatch. A passed."},
     {"report": "TEMP/omni-edu-xiaozhi-phase8-collector-final-e8ecae75/driver-report.json", "finding": "Electron's evaluation callback received the Electron module as its first argument. The initial per-Run diagnostic therefore lost the segment timestamp and did not recognize a real HTTP 200. Forward the explicit segment ID as the second argument; same fixture then passed."}
   ],
+  "terminalObservation": {
+    "status": "PASS_SCOPED",
+    "root": "TEMP/omni-edu-xiaozhi-q5-live-wait-26e466b7",
+    "preChangeCommit": "1d4e8ad8a997c0ccebc56c3028fa7ff9ae219726",
+    "sameBAppBuild": "33fa1c77ac2c51cfc3cbc3c35ee7b74a48c06b20",
+    "protocol": {"passed": 17, "total": 17, "report": "TEMP/xiaozhi-phase8-real-model-protocol-t62laB/report.json", "sha256": "1d5843419cad9433e5fdddd40499f46335aae6bc69c520990e683c16db531aad"},
+    "previousB": {
+      "status": "PASS_SCOPED",
+      "report": "previous-B/run-B/collected.json",
+      "sha256": "d2181e21b3b6b531eb0fec645a4c16fde008a7cf39d8fef993da21705bf045ba",
+      "fullSnapshotReadsDuringTerminalWait": 128,
+      "rendererSubmitThroughFinalRunMs": 32133.6,
+      "fixturePosts": 4
+    },
+    "candidateB": {
+      "status": "PASS_SCOPED",
+      "report": "candidate-B/run-B/collected.json",
+      "sha256": "fd6a7c084e4f4e0c70ca35a4f8ecca1095034ad98d4c92ea076ff0de041a8929",
+      "fullSnapshotReadsDuringTerminalWait": 13,
+      "readsByRun": [{"terminal": 1, "fallback": 6}, {"terminal": 1, "fallback": 5}],
+      "rendererSubmitThroughFinalRunMs": 77061,
+      "fixturePosts": 4
+    },
+    "missingTerminalEvent": {
+      "status": "PASS_SCOPED",
+      "report": "drop-B-continuation-terminal/run-B/collected.json",
+      "sha256": "63371a5c5aafe485b874e4335a3ec4ae409a94de1515b94d4d4eaae2eceb3843",
+      "injection": "The TEMP driver drops only the continuation terminal event from the collector's renderer listener. Production renderer, main transport observation, Pi and SQLite are unchanged.",
+      "continuationFallbackReads": 4,
+      "continuationTerminalReads": 0,
+      "nativeSourceAndColdReadbackVerified": true,
+      "rendererSubmitThroughFinalRunMs": null
+    },
+    "frozenABaselineFailure": {
+      "status": "FAIL",
+      "orderedPair": "A ended before B was dispatched. B was run separately.",
+      "report": "candidate-AB/run-A/collected.json",
+      "sha256": "c71c1931e989703ebea3895ebc54a1a147c29f55d9b5170a1ed6c3b4cd2f6f7b",
+      "diagnostics": "candidate-AB/run-A/Q5-r1-A/journal-diagnostics.jsonl",
+      "diagnosticsSha256": "98e2c8474410768558c68168a914c17dfaf782044ed8d4fd99d12bea9b542a12",
+      "finding": "Main logged lifecycle_timeout through waitForLifecycle after a real fixed-source HTTP 200. No committed successful receipt and no second synthetic model request. A run in which the teacher operation failed can still be collected for review.",
+      "unverified": "The specific lifecycle step and whether earlier B event_persistence had the same cause."
+    },
+    "frozenABaselineRetest": {
+      "status": "PASS_SCOPED",
+      "report": "candidate-A-retest/run-A/collected.json",
+      "sha256": "235512a586d172183d352e33eabd75f541479846208b9b657e635fa2aacc4967",
+      "fixturePosts": 2,
+      "fullSnapshotReadsDuringTerminalWait": 3,
+      "nativeSourceAndColdReadbackVerified": true
+    },
+    "combinedMainBuild": {
+      "sourceCommit": "66721305df6eec4f9000e2d80d489b6c907bbe35",
+      "buildCommand": "npm.cmd run build -- --outDir test-results/harness-q5-observation-main-6672130/out",
+      "buildStatus": "PASS",
+      "buildLogSha256": "4bda0bc6155d2528c22d45e4e87d3699a1c27b5a6214748a68bfaeb5e628f565",
+      "mainSha256": "a1d46aa54e51d3805b2083b3460c2b3fdd53c4562dba90741c40a08a994f85ab",
+      "rendererSha256": "cc352d86ce11482186da6fbc72f8b2a350597020262811c50735f23c737313f4",
+      "rendererComponentStates": "253/253",
+      "electronB": {
+        "status": "PASS_SCOPED",
+        "report": "TEMP/omni-edu-xiaozhi-q5-6672130-2354e526/run-B/collected.json",
+        "reportSha256": "443d29685e3d3581e9cc3fda628916d3be8617ad1528d5b433416c67785f32b8",
+        "driverReportSha256": "32004e79c8c7fa540131e6e4a71b7b3caf6d6e7760c194115163a8d43d019576",
+        "fullSnapshotReadsDuringTerminalWait": 7,
+        "fixturePostsByRun": [2, 2],
+        "nativeSourceAndColdReadbackVerified": true
+      },
+      "paperBasket": {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/paper-basket-boundaries.mjs",
+        "result": "44/44",
+        "report": "TEMP/omni-paper-basket-xuO1tt/report.json",
+        "sha256": "65656fb16bbe2d64d15eb23b6953f276273f84b40516a426c3114b2c64862e70"
+      }
+    },
+    "bounds": [
+      "The read-count observation is a two-run workload check. Elapsed time was slower in this candidate sample, so it gives no product latency improvement or stability claim.",
+      "Fallback is only for an already observed running Run. A missing running event still fails safely at the deadline rather than inferring identity from a session snapshot.",
+      "Three preliminary diagnostic B trials passed without triggering the existing main diagnostic. A failed bootstrap probe did not enter the application and is excluded from reliability evidence."
+    ]
+  },
   "ledger": {"productionLimit": 200, "existingUsed": 3, "remaining": 197, "unresolved": 0, "paidRequestsInThisWork": 0},
   "formalStatus": "NOT_RUN"
 }

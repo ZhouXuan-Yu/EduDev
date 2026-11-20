@@ -62,9 +62,10 @@ try {
     const previousWindow = globalThis.window, previousDocument = globalThis.document;
     try {
       globalThis.window = dom.window; globalThis.document = dom.window.document;
-      window.omniEdu = {onXiaozhiEvent: () => () => {}};
+      let publish;
+      window.omniEdu = {onXiaozhiEvent: callback => {publish=callback;return () => {};}};
       assert.equal(document.querySelector('[data-testid="office-prompt-send"]'), null);
-      rendererObservation();
+      rendererObservation('test-session');
       document.querySelector('[aria-label="发送消息"]').dispatchEvent(new window.KeyboardEvent('keydown', {key: 'Tab', bubbles: true}));
       document.querySelector('span').dispatchEvent(new window.MouseEvent('click', {bubbles: true}));
       document.querySelector('[aria-label="其他操作"]').click();
@@ -72,6 +73,15 @@ try {
       report.submitObservation = {count: observed.submissions.length, trusted: observed.submissions[0]?.trusted ?? null,
         boundary: 'Actual DOM marker matching in JSDOM. DOM event is untrusted. Actual Electron trusted click remains NOT_TESTED.'};
       assert.equal(observed.submissions.length, 1); assert.equal(observed.submissions[0].trusted, false);
+      const observer = window.phase8RealObservation;
+      const status = (runId, state, sessionId='test-session') => publish({kind:'status',sessionId,runId,status:state});
+      status('unrelated','running','other-session');assert.equal(observer.runSignal(),null);
+      status('original','running');assert.deepEqual(observer.runSignal(),{runId:'original',terminal:false});
+      status('original','completed');assert.deepEqual(observer.runSignal(),{runId:'original',terminal:true});
+      observer.expectContinuation();
+      status('original','completed');assert.equal(observer.runSignal('original'),null);
+      status('continued','running');assert.deepEqual(observer.runSignal('original'),{runId:'continued',terminal:false});
+      status('continued','failed');assert.deepEqual(observer.runSignal('original'),{runId:'continued',terminal:true});
     } finally {
       window.phase8RealObservation?.dispose(); dom.window.close();
       if (previousWindow === undefined) delete globalThis.window; else globalThis.window = previousWindow;
