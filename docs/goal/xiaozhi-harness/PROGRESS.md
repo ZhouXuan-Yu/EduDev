@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-21 补齐授权状态、团队分享与流式检测
+
+封存版 b890dba 的独立复验已覆盖能力中心已安装及需授权 4/4、团队 Skill 分享及管理员审批 5/5、工作台 9/9、待审批目标变化及冷启 2/2、后台流式操作 7/7。保持完整 Gate 7 的独立判定。模型对照增加了不发请求的输入验证。旧版 458 文件和独立编译的新版 481 文件已通过，固定 32 轮协议回归 19/19。账本仍为 3/200。 [页面实测](evidence/phase7/implementation-resume-20261119/gate7-authorization-skill-stream-20261121.json) · [对照准备](evidence/phase8/phase8-offline-candidate-20261121.json)
+
 ## 2026-11-21 工作台、审批与能力中心独立复验
 
 封存 b890dba 构建继续复验。W1–W3 共 19 项，含 1366×768 的同任务重复写入拦截，审批与工作区范围两尺寸 14 项，另有批准与冷启 2 项，能力中心两尺寸 6 项，MCP Schema 变化与撤销 4 项，均独立通过。新加能力中心专项覆盖真实内置能力、必需和可选缺口、候选状态及 SQLite 只读。剩余证据按验收台账逐项关闭。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)

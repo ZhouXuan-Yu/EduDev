@@ -1,5 +1,9 @@
 # XiaoZhi Harness Phase 7 独立页面验收合同
 
+## 2026-11-21 真实授权状态与团队 Skill
+
+同构建补齐 C1 的已安装、需授权、拒绝及冷启。S1 完成个人版本、独立团队分享副本及管理员同版本审批。A2 在待审批文件出现后拒绝旧授权，冷启保留原 Run 及失效原因。报告给出分别实做的尺寸、工作台恢复和流式交互范围。 [实页及持久证据](evidence/phase7/implementation-resume-20261119/gate7-authorization-skill-stream-20261121.json)
+
 ## 2026-11-21 同构建工作台和权限分项
 
 本轮独立覆盖 W1–W3 19 项、A1/A2 16 项、C1 6 项、C2 4 项。两尺寸采用实际 Electron 与 typed IPC，状态和效果读回 SQLite。外部候选只使用本地缓存合成元数据。保持完整范围的 Gate 7 判定。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)

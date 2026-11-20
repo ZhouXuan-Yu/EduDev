@@ -1,0 +1,78 @@
+{
+  "status": "VERIFIED_LOCAL_INPUTS_PROVISIONAL_B",
+  "order": "Q1–Q8, A→B then B→A, 32 rows. Formal dispatch remains gated by independent Gate 7 and the final B identity.",
+  "manifest": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/manifest-a-d50ef330-b-70b19a8.json",
+    "sha256": "1f0d35c26a79d97a2523c8ec8e1f582a8fd8e1f45a5137e53fc6faf52c4dbcca"
+  },
+  "receipt": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/verified-manifest-a-d50ef330-b-70b19a8.json",
+    "sha256": "f2e2c67ab49cf2428c26ed9b45865ebe1021f4ceb464866aa3a550d503a4ef65"
+  },
+  "commands": [
+    "node scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+    "node scripts/xiaozhi-agent/phase8-real-model-run.mjs prepare",
+    "node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify <absolute manifest>"
+  ],
+  "regression": {
+    "passed": 19,
+    "total": 19,
+    "exit": 0,
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/xiaozhi-phase8-real-model-protocol-kcCcsb/report.json",
+    "sha256": "9d176e5e64d3c2aaec4556c743e6699cd93c202a79699a117d5ce4cacc1080ca",
+    "preservedFailure": {
+      "passed": 18,
+      "total": 19,
+      "reason": "Test tried to parse the SQLite experimental warning with the CLI error JSON. The assertion now reads the final diagnostic line.",
+      "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/xiaozhi-phase8-real-model-protocol-P4NI0E/report.json",
+      "sha256": "61145ae07058ec719fd2ff020bc1bf3e33f22f165591f5a16ff6ffa5e649fab0"
+    }
+  },
+  "A": {
+    "source": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+    "outFiles": 458,
+    "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2",
+    "lockSha256": "539328b91e79b02f7cd903f2bf92f24d5ae779f64f63ded01d60be861a6b47be"
+  },
+  "B": {
+    "source": "70b19a8d4912897d3306eec6a13bbe5151853ec0",
+    "outFiles": 481,
+    "outSha256": "9e5329f1cd47f9490b7547273a201fc0977e812ec239aab24c92a59591ba1db8",
+    "lockSha256": "5ad0a722590526c46f6567a6c0d71cf9d318ea952e886a7e02d77ba1e64b37b0",
+    "workspace": "E:/EduDev-Harness-Acceptance-20261121/b-70b19a8",
+    "install": "npm ci --no-audit --no-fund, own lock and cache, 1178 packages",
+    "electron": "43.8.3",
+    "build": {
+      "exit": 0,
+      "command": "npm run build",
+      "sha256": "1c5a2a55cc991d6a76cd5a453d616c998aa97d09cb3d56f8147987b3319a08b9"
+    }
+  },
+  "seededData": {
+    "path": "E:/EduDev-Harness-Acceptance-20261121/phase8-temp/canonical-data-7f6e3ed9",
+    "sha256": "7f6e3ed92b10aabc31f54deb58f31e46964052dff4d96a7292d550c6c377ce7b",
+    "files": 9,
+    "sqliteQuickCheck": "ok",
+    "seedQuestionId": "question_e22e220c-6fda-45a4-9ab9-2310beff874d",
+    "seedStem": "matches preset stem digest",
+    "seedSourceKind": "local_bank",
+    "previousSyntheticRootAfterReadOnlyProbeSha256": "154ca0f6749bbd4841ca0846e1f1f12ef6f1723cc7039457beb688e766bf1d98",
+    "correction": "SQLite read-only probe generated a zero-byte WAL and a 32768-byte SHM on the previous synthetic snapshot. Files excluding those two matched old seal exactly. Previous directory preserved and a separate verified copy restored the original digest."
+  },
+  "budget": {
+    "paidRequestsThisCheckpoint": 0,
+    "used": 3,
+    "limit": 200,
+    "remaining": 197,
+    "unresolved": 0,
+    "verifyOpensLedger": false
+  },
+  "npmAudit": {
+    "low": 8,
+    "moderate": 7,
+    "high": 5,
+    "critical": 0,
+    "total": 20,
+    "unchangedLock": true
+  }
+}

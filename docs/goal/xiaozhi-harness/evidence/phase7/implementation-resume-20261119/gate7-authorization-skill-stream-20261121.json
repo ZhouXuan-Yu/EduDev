@@ -1,0 +1,137 @@
+{
+  "status": "PARTIAL",
+  "frozenBuild": {
+    "commit": "b890dba41b540d5fd9d6c8ab9e3466eb68520e22",
+    "files": 481,
+    "sha256": "e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296",
+    "mainSha256": "98f2f7b43cf2686a6410b3a8e7b76de0b386bf35edd9528753023e573397b6c8"
+  },
+  "capabilities": {
+    "id": "C1",
+    "status": "PASS_SCOPED",
+    "checks": 4,
+    "viewports": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "action": "Synthetic package prepared through local runtime. Installed, verified and requires authorization readbacks confirmed. Reject creates no task grant and persists through cold start.",
+    "commands": [
+      "node E:/EduDev-Harness-Acceptance-20261121/c1-temp/snapshot-run.mjs",
+      "node E:/EduDev-Harness-Acceptance-20261121/c1-temp/pending-ui-v3.mjs <seedRoot>"
+    ],
+    "seed": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/c1-temp/omni-edu-phase7-pending-output-l1wrFC/report.json",
+      "sha256": "7f5fb3b723507de22d42fdd4e33adba272c4b36c67528e138483bd6009aee519"
+    },
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/c1-temp/omni-edu-phase7-pending-output-l1wrFC/terra-pending-v3-ui-report.json",
+      "sha256": "df558b276bdf5e2380f630c7177f08b2b386f0c51560c3a1941409db1a157edb"
+    },
+    "preservedFailure": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/c1-temp/omni-edu-phase7-pending-output-l1wrFC/terra-pending-ui-report.json",
+      "sha256": "e28a98c3f7462e7a862550b4085eebd273d3aa2bcf5809b4a4cba067800f2d3d",
+      "reason": "Fixture required the entire card to fit inside the viewport. Individual control reachability was then confirmed with scrolling."
+    },
+    "boundary": "State and authorization; existing fixture package copied and verified; no new package installation."
+  },
+  "skillTeam": {
+    "id": "S1",
+    "status": "PASS_SCOPED",
+    "checks": 5,
+    "viewports": [
+      "1366x768",
+      "1920x1080"
+    ],
+    "action": "Product UI created private v1 and independent team share, team administrator approved exact pending version, distinct file and version identities retained on restart.",
+    "command": "node E:/EduDev-Harness-Acceptance-20261121/s1-team-temp/s1-team.mjs",
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/s1-team-temp/s1-run-LXNlJO/report.json",
+      "sha256": "b719d26c3a338eef5bd0f102911557d9aa954ea952d75b5fc6400532d91156a2"
+    },
+    "driverSha256": "1298a44424be165ed05c25534054f44f07620873d6065ad2c333a2775ce5c49c",
+    "boundary": "Action performed at 1920x1080. Controls also checked at 1366x768. Initial Windows module path fixture setup failure preserved."
+  },
+  "workbench": {
+    "id": "A1/W",
+    "status": "PASS_SCOPED",
+    "checks": 9,
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "report": {
+      "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-xiaozhi-phase7-workbench-ui-icgnzc/evidence/ui-report.json",
+      "sha256": "269bd7a2f36309b1103d58eb6720f29e94cd8bac4c91fa5327733997554e212e"
+    },
+    "action": "Real typed renderer paths included approval, rejection, same-task resume, known uncertain recovery, persistent terminal input/ACK and cold SQLite readback.",
+    "boundary": "The cold second window did not have the first window page-error listener; Chromium reported a GPU invalid-state line."
+  },
+  "staleApproval": {
+    "id": "A2",
+    "status": "PASS_SCOPED",
+    "preservedFailures": [
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/a2-temp/omni-edu-a2-stale-snucWz/report.json",
+        "sha256": "c2fc23507288397c7b20f878d0872a38c416d98a6cb5b938ce581a957102db0c",
+        "reason": "Fixture selected reason instead of invalidatedReason."
+      },
+      {
+        "path": "E:/EduDev-Harness-Acceptance-20261121/a2-temp/omni-edu-a2-stale-8SQvI9/report.json",
+        "sha256": "117e74aa2ebd61e036d16d4bb754d669adf77834df5e3110155147002dee1036",
+        "reason": "Fixture required the Run status to remain running after restart. The same ID legitimately recovered to blocked."
+      }
+    ],
+    "observed": "Target appeared after pending approval. Clicking approve did not overwrite it or add a Run. Cold UI and SQLite show the same approval invalidated and the same Run blocked. No model replay.",
+    "checks": 2,
+    "viewports": [
+      "1366x768"
+    ],
+    "command": "node E:/EduDev-Harness-Acceptance-20261121/a2-temp/a2-stale-r3-cold.mjs",
+    "driverSha256": "0cc3aecad72f241a37adf9a9cf325bb262dd2d8d53192eba53447f763ee22611",
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/a2-temp/omni-edu-a2-stale-CBsAUP/report.json",
+      "sha256": "3d4d4f2531b8678234a73ba81b6ff7210bd5faead0be831e4b5ee8facf0f510a"
+    },
+    "boundary": "Four synthetic SSE requests; zero real or paid requests. Cold check covers the exact stale target scenario at 1366×768."
+  },
+  "stream": {
+    "status": "PASS_SCOPED",
+    "checks": 7,
+    "viewports": [
+      "1366x768"
+    ],
+    "command": "node scripts/xiaozhi-agent/phase8-stream-performance-smoke.mjs --build-root test-results/goal/harness-gate7-main-b890dba-r3-20261121/build-isolated --expected-out-hash e70c445b2d594aaade897b50e168f450de8830ef7a15d9d9982a53dc0dc95296 --expected-out-count 481 --label gate7-b890dba --background true",
+    "report": {
+      "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-stream-temp/omni-edu-xiaozhi-stream-aedYzx/report.json",
+      "sha256": "a611ebf36c1d9660a8b6dcc30ce45de104f998006775bf95b8786fd2cfec00b8"
+    },
+    "reasoningChars": [
+      698,
+      3028
+    ],
+    "outputChars": 43684,
+    "network": "One local synthetic request",
+    "action": "Input, task/source panel, scroll during reasoning and answer, stop and immediate same-Run SQLite readback.",
+    "boundary": "Hidden-window renderer path, zero page errors. Chromium throttles background animation frames. Cold read and foreground interactive latency are separate."
+  },
+  "addedPaidRequests": 0,
+  "independentReview": {
+    "status": "PARTIAL",
+    "path": "E:/EduDev-Harness-Acceptance-20261121/gate7-final-review-20261121.md",
+    "sha256": "f1f04fcb501dc2ead44ac1c1b68c61867d14ecabd24d4661f048ae273a316612",
+    "verifiedCoreCases": [
+      "W1",
+      "W2",
+      "W3",
+      "A1",
+      "A2",
+      "C1",
+      "C2",
+      "S1",
+      "S2",
+      "native window"
+    ],
+    "openEvidence": [
+      "Map applicable status, reachability and keyboard results by page and viewport. Record inapplicable cases with the original contract.",
+      "Reproduce complete in-flight stream interactions at 1920x1080 including session switching, retaining the distinct W3 isolation evidence.",
+      "A2 stale target through cold restart is scoped to 1366x768. C2 actual local dispatch/revocation/fallback is rooted evidence. Independent schema lifecycle was a single run with two-size control reachability."
+    ]
+  }
+}

@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-21 流式、授权与双版本输入验证
+
+在同一 b890dba 构建保留 C1 整卡可见性断言失败、A2 字段名及冷启终态两个夹具失败，修正夹具后完成原场景。流式通过 7/7，窗口在后台，保留其节流边界。E 盘分别存放判定输出和 70b19a8 对照候选。候选独立安装 1,178 个锁定包并完成构建。SQLite 只读核对曾在合成快照旁生成零字节 WAL 和 SHM，保留原目录并重建逐文件等同的副本。真实输入通过 `verify`，未打开付费账本。 [页面及失败回读](evidence/phase7/implementation-resume-20261119/gate7-authorization-skill-stream-20261121.json) · [双版本指纹](evidence/phase8/phase8-offline-candidate-20261121.json)
+
 ## 2026-11-21 能力中心专项与测试边界
 
 先保留错误引用 @playwright/test 导致的启动失败，再改用项目现有 playwright/test 入口。总控和独立 Agent 在同一 Electron 构建各通过 6/6。产品浏览期间六类 SQLite 表哈希一致，模型请求增量为零。前后构建指纹一致。C2 保留三次夹具失败，最终用合法的隔离目录命名，在表单已启用后核对控件并完成原 4 项断言。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
