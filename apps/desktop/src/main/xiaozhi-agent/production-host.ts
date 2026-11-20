@@ -204,7 +204,8 @@ import {createOfficeArtifactCoordinator} from './office-artifact-coordinator';
 import {createOfficeArtifactService} from './office-artifact-service';
 import {createOfficeVersions} from './office-versions';
 import {createSavedArtifactPreview} from './saved-artifact-preview';
-import type {OfficeVersionInput,OfficeVersionResult} from '../../shared/xiaozhi-office-versions';
+import {OFFICE_VERSIONS_SCHEMA,type OfficeVersionInput,type OfficeVersionResult} from '../../shared/xiaozhi-office-versions';
+import {verifyCatalogArtifactFile,type ResolvedArtifactFile} from './catalog-artifact-file';
 import {officeSummary} from './office-artifact-state';
 import {createOfficePaperRecovery} from './office-paper-recovery';
 import {createOfficeDeliveryPresentation,officeDeliveryText} from './office-delivery-presentation';
@@ -1660,6 +1661,27 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
+    async resolveArtifactFile(sessionId:string, artifactId:string):Promise<ResolvedArtifactFile>{
+      if(closing||choosing.has(sessionId))throw Error('busy');
+      await authorizePaperConversation(sessionId);
+      const row=await store.xiaozhiState.officeArtifacts.byArtifact(sessionId,artifactId);
+      if(row&&isPaperOfficeDraft(row.draft)) {
+        return savedArtifactPreview.resolveFile({sessionId,artifactId,requestId:'xifile_'+randomUUID()});
+      }
+      if(row||artifactId.startsWith('xichange_')){
+        let file:ResolvedArtifactFile|undefined;
+        const result=await host.officeVersion({schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,artifactId,action:'open'},
+          async (path,_action,version)=>{file={path,version};},true);
+        if(!result.ok)throw Error(result.error==='missing'?'not_found':result.error);
+        if(!file||result.value.currentArtifactId!==artifactId||result.value.integrity!=='same')throw Error('changed');
+        await authorizePaperConversation(sessionId);
+        return file;
+      }
+      return verifyCatalogArtifactFile(sessionId,()=>store.getDocumentArtifact(artifactId),async()=>{
+        if(closing||choosing.has(sessionId))throw Error('busy');
+        await authorizePaperConversation(sessionId);
+      });
+    },
     previewSavedArtifact:savedArtifactPreview.preview,
     cancelSavedArtifactPreview:savedArtifactPreview.cancel,
     artifactCheck:createArtifactCheck({changes:store.xiaozhiState.changes,office:store.xiaozhiState.officeArtifacts,inspections:store.xiaozhiState.inspections,checks:fileChecks,authorize:authorizePaperConversation,workspace:(id):Promise<import('./workspace-files').WorkspaceLease>=>host.resolveFileWorkspace(id)}),
@@ -1667,12 +1689,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       authorize:authorizePaperConversation,workspace:id=>host.resolveFileWorkspace(id),paper:(id,paperId)=>store.papers.review(id,paperId),current:()=>!closing,
       producer:async(id,recordId,runId,callId)=>{const bundle=await store.xiaozhiState.deliveries.owner(id,recordId);return bundle&&bundle.runId===runId&&bundle.files.some(file=>file.draftId===recordId&&file.runId===runId&&file.callId===callId)?bundle.callId:callId;}
     }).read(input),
-    async officeVersion(input:OfficeVersionInput,useFile?:(file:string,action:'open'|'locate')=>Promise<void>):Promise<OfficeVersionResult>{
+    async officeVersion(input:OfficeVersionInput,useFile?:(file:string,action:'open'|'locate',version:string)=>Promise<void>,currentOnly=false):Promise<OfficeVersionResult>{
       const versions=typeof input?.artifactId==='string'&&input.artifactId.startsWith('xichange_')
         ?createTextVersions({state:store.xiaozhiState.changes,dataRoot:options.dataRoot,workspace:async id=>(await host.resolveFileWorkspace(id)).path,afterStage:options.afterTextChangeStage})
         :createOfficeVersions({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,workspace:async id=>(await host.resolveFileWorkspace(id)).path,afterStage:options.afterOfficeArtifactStage});
       if(input?.action==='view')return versions.execute(input,()=>{if(closing)throw Error('busy');});
-      try{return await host.withLocalSettingsJob(assertCurrent=>versions.execute(input,assertCurrent,useFile));}catch{return {ok:false,error:'busy'};}
+      try{return await host.withLocalSettingsJob(assertCurrent=>versions.execute(input,assertCurrent,useFile,currentOnly));}catch{return {ok:false,error:'busy'};}
     },
     async reviseOfficeArtifact(input:Parameters<typeof officeArtifacts.revise>[0]){
       return await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.draftId)?deliveries.revise(input):officeArtifacts.revise(input);

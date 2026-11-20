@@ -25,7 +25,7 @@
 .pi-file-reading .tabs__tab span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pi-file-breadcrumb { display: flex; align-items: center; padding: 8px 12px; min-height: 48px; font-size: 14px; color: #828a85; gap: 8px; }
 .pi-file-breadcrumb > span { border: 1px solid #eceeed; border-radius: 20px; padding: 6px 12px; }
-.pi-file-breadcrumb span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pi-file-breadcrumb > span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pi-file-outline { flex: 0 0 auto; padding: 8px 14px 10px; border-bottom: 1px solid var(--pi-line, #eceeed); color: var(--pi-ink, #434946); background: var(--pi-paper, #fff); }
 .pi-file-outline summary { cursor: pointer; font-size: 13px; font-weight: 500; }
 .pi-file-outline-list { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 8px; }

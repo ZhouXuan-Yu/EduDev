@@ -5,6 +5,7 @@ import type {TeachingFileCatalogEntry} from '../../../shared/contracts';
 import {ListView} from '../../heroui-pro/components/list-view';
 import {SavedArtifactPreview} from './SavedArtifactPreview';
 import {PiOfficeCurrent} from './PiOfficeVersions';
+import {ArtifactFileActions} from './ArtifactFileActions';
 
 /** A catalogue projection, never a filesystem grant. Stale sessions cannot publish. */
 export function useConversationSavedFiles(sessionId:string,revision:string){
@@ -41,7 +42,9 @@ export function ConversationSavedPreview({artifact,onClose,onOpenPath}:{artifact
   if(artifact.savedArtifactKind==='paper'&&!artifact.officeVersion&&!artifact.htmlVersion&&['docx','pdf'].includes(artifact.type))
     return <SavedArtifactPreview key={artifact.sessionId+':'+artifact.id} sessionId={artifact.sessionId} artifactId={artifact.id} onClose={onClose}/>;
   return <Card data-heroui-native="" data-theme="light" aria-label="已保存成果预览">
-    <Card.Header><Card.Title>{artifact.fileName}</Card.Title><Card.Description>核对当前版本后打开原本地文件。</Card.Description></Card.Header>
+    <Card.Header className="artifact-file-header"><div><Card.Title>{artifact.fileName}</Card.Title></div>
+      <ArtifactFileActions key={artifact.id} target={{kind:'saved',sessionId:artifact.sessionId,artifactId:artifact.id}}/>
+    </Card.Header>
     <Card.Content>{artifact.officeVersion?<PiOfficeCurrent sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={onOpenPath} label="预览当前文件"/>:
       <Button variant="secondary" onPress={()=>onOpenPath(artifact.fileName)}>预览文件</Button>}</Card.Content>
     <Card.Footer><Button variant="ghost" onPress={onClose}>返回文件列表</Button></Card.Footer>

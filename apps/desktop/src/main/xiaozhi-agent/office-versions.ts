@@ -88,15 +88,16 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
   if(saved.state!=='saved'||!saved.artifactId)throw Error('configuration');return view(input.sessionId,saved.artifactId);
  }
  return {
-  async execute(raw:unknown,assertCurrent:()=>void,useFile?:(file:string,action:'open'|'locate')=>Promise<void>):Promise<OfficeVersionResult>{
+  async execute(raw:unknown,assertCurrent:()=>void,useFile?:(file:string,action:'open'|'locate',version:string)=>Promise<void>,currentOnly=false):Promise<OfficeVersionResult>{
    if(!validOfficeVersionInput(raw))return {ok:false,error:'invalid_input'};
    try{
     assertCurrent();if(raw.action==='restore')return {ok:true,value:await restore(raw,assertCurrent)};
     const value=await view(raw.sessionId,raw.artifactId);assertCurrent();
     if(raw.action!=='view'){
+     if(currentOnly&&value.currentArtifactId!==raw.artifactId)throw Error('changed');
      if(value.integrity!=='same')throw Error(value.integrity);
      const row=(await records(raw.sessionId)).find(row=>row.artifactId===raw.artifactId)!;const root=await workspace(raw.sessionId,row),status=await inspect(root,row);assertCurrent();
-     if(status.integrity!=='same')throw Error(status.integrity);if(!useFile||!status.file)throw Error('open_failed');await useFile(status.file,raw.action);assertCurrent();
+     if(status.integrity!=='same')throw Error(status.integrity);if(!useFile||!status.file)throw Error('open_failed');await useFile(status.file,raw.action,status.version);assertCurrent();
     }
     return {ok:true,value};
    }catch(rawError){return {ok:false,error:error(rawError)};}

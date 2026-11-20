@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,Card} from '@heroui/react';
+import {ArtifactFileActions} from './ArtifactFileActions';
 import {SAVED_ARTIFACT_PREVIEW_ERRORS,type SavedArtifactPreviewInput,type SavedArtifactPreviewResult} from '../../../shared/saved-artifact-preview';
 
 /** Read only. Plain parser text cannot load remote links/images or execute HTML. */
@@ -19,7 +20,9 @@ export function SavedArtifactPreview({sessionId,artifactId,onClose}:{sessionId:s
   },[sessionId,artifactId,generation]);
   function stop(){const requestId=pending.current?.requestId??'';cancel();setReading(false);setResult({ok:false,requestId,error:'cancelled'});}
   return <Card aria-label="已保存试卷预览" data-testid="saved-artifact-preview">
-    <Card.Header><Card.Title>已保存试卷</Card.Title><Card.Description>只读本地保存文件；文字预览不代表原文件分页或排版。</Card.Description></Card.Header>
+    <Card.Header className="artifact-file-header"><div><Card.Title>已保存试卷</Card.Title><Card.Description>文字预览 · 原件保留排版</Card.Description></div>
+      <ArtifactFileActions key={sessionId+':'+artifactId} target={{kind:'saved',sessionId,artifactId}}/>
+    </Card.Header>
     <Card.Content>
       <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:12}}>
         {reading?<Button variant="ghost" onPress={stop} data-testid="saved-artifact-cancel">停止读取</Button>:<Button variant="ghost" onPress={()=>setGeneration(v=>v+1)} data-testid="saved-artifact-refresh">重新读取</Button>}

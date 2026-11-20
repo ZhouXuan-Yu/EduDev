@@ -7,6 +7,7 @@ import {createTextChangeService} from './text-change-service';
 import {textVersionFamilies} from './text-version-family';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {assertFileWritesEnabled} from './file-write-policy';
+import {fileVersion} from './workspace-files';
 
 /** HTML history is a view of the original edit ledger; preview copies are disposable. */
 export function createTextVersions(options:{state:ReturnType<typeof createTextChangeState>;dataRoot:string;workspace:(id:string)=>Promise<string>;afterStage?:Parameters<typeof createTextChangeService>[0]['afterStage']}) {
@@ -19,17 +20,19 @@ export function createTextVersions(options:{state:ReturnType<typeof createTextCh
   const latest=await state.get(family.currentId||family.versions.at(-1)!.id);if(!latest)throw Error('configuration');
   return {selected,latest,root,records,family};
  }
- function integrity(root:string,row:PrivateTextChange):'same'|'changed'|'missing' {
+ function inspect(root:string,row:PrivateTextChange):{file:string;version:string}|'changed'|'missing' {
   try {const file=approvedFile(root,row.path),stat=fs.lstatSync(file);
    if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||stat.size!==row.after.length)return 'changed';
    const fd=fs.openSync(file,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0));try {
     const bytes=Buffer.alloc(row.after.length+1);let count=0;
     while(count<bytes.length){const read=fs.readSync(fd,bytes,count,bytes.length-count,count);if(!read)break;count+=read;}
     const post=fs.fstatSync(fd),last=fs.lstatSync(approvedFile(root,row.path));
-    return count===row.after.length&&changeHash(bytes.subarray(0,count))===row.afterSha256&&post.mtimeMs===stat.mtimeMs&&post.ctimeMs===stat.ctimeMs&&last.ino===post.ino&&last.mtimeMs===post.mtimeMs?'same':'changed';
+    const version=fileVersion(stat);
+    return count===row.after.length&&changeHash(bytes.subarray(0,count))===row.afterSha256&&fileVersion(post)===version&&fileVersion(last)===version?{file,version}:'changed';
    }finally{fs.closeSync(fd);}
   } catch(error) {if(['ENOENT','ENOTDIR'].includes((error as NodeJS.ErrnoException).code||''))return 'missing';throw error;}
  }
+ function integrity(root:string,row:PrivateTextChange){const result=inspect(root,row);return typeof result==='string'?result:'same';}
  async function view(sessionId:string,id:string):Promise<OfficeVersionView> {
   const c=await context(sessionId,id),status=c.family.currentId?integrity(c.root,c.latest):'missing';
   if(authorizedWorkspace(await options.workspace(sessionId),options.dataRoot)!==c.root)throw Error('permission_denied');
@@ -62,21 +65,25 @@ export function createTextVersions(options:{state:ReturnType<typeof createTextCh
   if(row.state!=='approved')throw Error('conflict');row=await service.apply(input.sessionId,row.id);assertCurrent();
   if(row.state!=='applied')throw Error('conflict');return view(input.sessionId,row.id);
  }
- return {async execute(raw:unknown,assertCurrent:()=>void,useFile?:(file:string,action:'open'|'locate')=>Promise<void>):Promise<OfficeVersionResult> {
+ return {async execute(raw:unknown,assertCurrent:()=>void,useFile?:(file:string,action:'open'|'locate',version:string)=>Promise<void>,currentOnly=false):Promise<OfficeVersionResult> {
   if(!validOfficeVersionInput(raw))return {ok:false,error:'invalid_input'};
   try {assertCurrent();if(raw.action==='restore')return {ok:true,value:await restore(raw,assertCurrent)};
    const value=await view(raw.sessionId,raw.artifactId);assertCurrent();
    if(raw.action!=='view') {
-    const c=await context(raw.sessionId,raw.artifactId);assertCurrent();let file:string;
-    if(c.selected.id===c.latest.id) {const status=integrity(c.root,c.selected);if(status!=='same')throw Error(status);file=approvedFile(c.root,c.selected.path);}
-    else {
+    const c=await context(raw.sessionId,raw.artifactId);assertCurrent();let file:string,version:string;
+    if(currentOnly&&c.selected.id!==c.family.currentId)throw Error('changed');
+    if(c.selected.id===c.latest.id) {
+     const source=inspect(c.root,c.selected);if(typeof source==='string')throw Error(source);
+     ({file,version}=source);
+    } else {
      // Historical same-path edits have no separate original disk file. Materialize exact ledger bytes only on explicit OS use.
      const relative=path.join('derived','html-versions',raw.sessionId,raw.artifactId+'.html');file=approvedFile(options.dataRoot,relative);
      fs.mkdirSync(path.dirname(file),{recursive:true});file=approvedFile(options.dataRoot,relative);
      try{fs.writeFileSync(file,c.selected.after,{flag:'wx',mode:0o600});}catch(error){if((error as NodeJS.ErrnoException).code!=='EEXIST')throw error;}
      const stat=fs.lstatSync(file);if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||stat.size!==c.selected.after.length||changeHash(fs.readFileSync(file))!==c.selected.afterSha256)throw Error('changed');
+     version=fileVersion(stat);
     }
-    assertCurrent();if(!useFile)throw Error('open_failed');await useFile(file,raw.action);assertCurrent();
+    assertCurrent();if(!useFile)throw Error('open_failed');await useFile(file,raw.action,version);assertCurrent();
    }
    return {ok:true,value};
   }catch(error) {const code=error instanceof Error?error.message:'';return {ok:false,error:(['invalid_input','permission_denied','busy','changed','missing','conflict','unsupported','file_writes_disabled','open_failed'].includes(code)?code:'configuration') as OfficeVersionError};}
