@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-20 确认卷交付
+
+本轮用已有确认物理卷核对六种导出与历史保存。图形选项的结构回归另用受控完稿校验，三份正式卷仍按 KB-A06 验收。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)
+
 ## 2026-11-20 现有题库主链路
 
 复用已导入批次和原件。专项覆盖真实 SQLite 旧版升级、并发再入队、混合检索与关键词回退，以及临时子目录的 BMP 调度。 [本轮记录](../research/evidence/kb/20261120/reuse-mainline/README.md)

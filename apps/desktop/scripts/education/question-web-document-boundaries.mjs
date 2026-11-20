@@ -9,6 +9,8 @@ import {questionFactConflicts} from '../../src/shared/question-facts.ts';
 import {validQuestionArchive} from '../../src/shared/question-archive.ts';
 import {editedPageCropDocument} from '../../src/main/assets/material-ai-page-crops.ts';
 import {compileRichPaperOffice} from '../../src/main/education/paper-rich-export.ts';
+import {assertPaperOffice,compilePaperOffice} from '../../src/main/education/paper-export.ts';
+import {newPaperInstance} from '../../src/main/education/paper-instance.ts';
 import {ensureQuestionRetrievalIndex} from '../../src/main/education/question-retrieval.ts';
 import {fixture as bookFixture} from './kb-book-match-boundaries.mjs';
 import {pageFragmentsDocument} from '../../src/main/assets/material-ai-page-fragments.ts';
@@ -59,7 +61,7 @@ await check('Reviewed rule structures keep the structure reference through an ex
  const proof=await f.repo.verificationSnapshot(owner,'structure-write',c.id,c.afterVersion);
  assert.equal(proof.version,c.afterVersion);
 },q=>{q.archive=structuredArchive(q);}));
-await check('Rich paper compilation preserves original structured option crops in labeled order',()=>use(async f=>{
+await check('Confirmed papers with and without source-mode instances retain structured option crops in labeled order',()=>use(async f=>{
  const q=await f.read();
  q.document.blocks.push({id:'graphic_choices',kind:'choices',anchors:q.document.blocks[0].anchors,
   options:['A','B','C','D'].map(label=>({label,blocks:[{...q.document.blocks[0],id:'choice_image_'+label,assetId:'asset_'+randomUUID()}]}))});
@@ -70,6 +72,24 @@ await check('Rich paper compilation preserves original structured option crops i
  assert.deepEqual(office.sections.flatMap(s=>s.figures||[]).map(x=>x.blockId),
   ['source_question_0','choice_image_A','choice_image_B','choice_image_C','choice_image_D']);
  assert(office.sections.flatMap(s=>s.paragraphs).includes('选项 D'));
+ const item=paper.selection.items[0];
+ const instance=newPaperInstance({entryId:'xientry_'+randomUUID(),questionId:q.id,contentVersion:item.source.version});
+ instance.review={eventId:'xireview_'+randomUUID(),action:'confirm',instanceRevision:instance.instanceRevision,
+  contentDigest:instance.contentDigest,sourceBinding:instance.sourceBinding,reviewedAt:new Date().toISOString()};
+ const confirmed={...paper,state:'confirmed',complete:true,sourceCurrent:true,selection:{items:[{...item,source:{questionId:q.id,version:item.source.version},instance}]}};
+ for(const audience of ['student','teacher']){
+  const draft=compilePaperOffice(confirmed,audience);
+  assert.doesNotThrow(()=>assertPaperOffice(confirmed,draft));
+  assert.deepEqual(draft.sections.flatMap(s=>s.figures||[]).map(x=>x.blockId),
+   ['source_question_0','choice_image_A','choice_image_B','choice_image_C','choice_image_D']);
+  const question=draft.sections.find(s=>s.figures?.some(f=>f.blockId==='choice_image_D'));
+  assert.deepEqual(question.paragraphs,['选项 A','选项 B','选项 C','选项 D']);
+  assert.deepEqual(question.figures.map(f=>[f.role,f.afterParagraph]),[['question',0],['question',1],['question',2],['question',3],['question',4]]);
+  const old=structuredClone(draft),oldQuestion=old.sections.find(s=>s.heading===question.heading);
+  oldQuestion.paragraphs=[];
+  oldQuestion.figures.splice(1);
+  assert.throws(()=>assertPaperOffice(confirmed,old),/conflict/);
+ }
 },q=>{q.archive=structuredArchive(q);}));
 await check('A later independent answer book preserves a protected web answer, upgrades only the AI analysis and authenticates both source layers',async()=>{
  const f=bookFixture({currentAnswer:'',origin:'missing'});try{

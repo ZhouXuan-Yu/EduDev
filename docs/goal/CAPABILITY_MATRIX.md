@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-20 M06/M09 结构题图形选项
+
+卷内实例保留原题时，DOCX/PDF 两种交付均按原顺序和同一版本绑定结构题选项原图。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)
+
 ## 2026-11-20 目录与存量题复用
 
 M02 两种目录入口共用文件类型判断。M05 的本地答案册匹配区分配对版本与入队轮次。M04/M06 对填空、解答等题型沿用现有选题语义。 [本轮记录](../research/evidence/kb/20261120/reuse-mainline/README.md)

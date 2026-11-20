@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-20 结构题原图选项
+
+结构选项图位于题文档的 choices 子块。自动组卷和卷内实例通过共享遍历绑定题面原图，Office 按图的题目版本、角色、摘要和尺寸核对。 [本轮记录](../research/evidence/kb/20261120/confirmed-paper-graphics/README.md)
+
 ## 2026-11-20 持久配答与题型复用
 
 按批次页处理的旧配答队列使用入队凭据区分同一配对版本的多次触发，复用结构题队列的完成校验方式。SQLite 与向量检索按共享题型表解释中文和内部编码。 [本轮记录](../research/evidence/kb/20261120/reuse-mainline/README.md)

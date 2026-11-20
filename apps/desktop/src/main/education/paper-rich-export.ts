@@ -1,4 +1,5 @@
 import {paperTextBlocks} from './paper-table-blocks';
+import {structuredPaperChoices} from './paper-office-images';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import type {PaperView} from '../../shared/paper-blueprint';
 import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument,type QuestionBlock} from '../../shared/question-document';
@@ -32,12 +33,9 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
     }else{
      paragraphs.push('完整题面（原图，按顺序阅读）：');
      for(const id of doc.context.sourceBlockIds)addImage(id,'question');
-     if(q.archive?.structure)for(const block of doc.blocks){
-      if(block.kind!=='choices')continue;
-      for(const option of block.options){
-       paragraphs.push('选项 '+option.label);
-       for(const image of option.blocks)addBlockImage(image,'question');
-      }
+     for(const option of structuredPaperChoices(q)){
+      paragraphs.push('选项 '+option.label);
+      for(const image of option.blocks)addBlockImage(image,'question');
      }
     }
    }else if(native?.roles.question.figures.length&&!q.archive?.nativeLayout){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}

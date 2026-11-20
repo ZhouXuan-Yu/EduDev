@@ -1,4 +1,5 @@
 import {paperTextBlocks} from './paper-table-blocks';
+import {structuredPaperChoices} from './paper-office-images';
 import {containsOfficeMath, officeMathChunks} from '../../shared/office-math';
 import {validOfficeDraft, type OfficeDraft, type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {practiceOfficeIntroduction,PAPER_TABLE_OFFICE_SCHEMA, PAPER_OFFICE_SCHEMA, PAPER_RICH_OFFICE_SCHEMA, type PaperOfficeFigure, type PaperExportInput} from '../../shared/paper-export';
@@ -7,7 +8,7 @@ import type {PaperInstanceBlock, PaperInstanceRole} from '../../shared/paper-ins
 import {instanceReviewed, instanceDeliveryBlock, instanceSourceImage, instanceBlockText} from './paper-instance';
 import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validNativeQuestionDocument, nativeQuestionComplete, withoutNativeQuestionNumber} from '../../shared/native-question';
-import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument} from '../../shared/question-document';
+import {hasTeacherTextPresentation,isCompleteQuestionDocument,validQuestionDocument,type QuestionBlock} from '../../shared/question-document';
 const roleOriginLabels={source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',book_extracted:'独立答案册原文',web_extracted:'网页原文摘取（待核验）',missing:'缺失'} as const;
 /** Compile ordered role blocks directly. Parent QuestionDocuments remain untouched. */
 export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft {
@@ -43,8 +44,18 @@ export function compileInstancePaperOffice(paper:PaperView,audience:PaperExportI
             if(doc.context.presentation?.mode==='needs_review')throw Error('unsupported');
             const corrected=hasTeacherTextPresentation(doc);
             if(corrected)text(q.stem,title);
-            const figures=(corrected?doc.context.presentation!.figureBlockIds:doc.context.sourceBlockIds).map(id=>{const b=doc.blocks.find(b=>b.id===id);if(!b||b.kind!=='image'||b.mime!=='image/png')throw Error('unsupported');return figure({...b,blockId:b.id},role);});
-            if(figures.length)emit({heading:title,paragraphs:[],figures});return;
+            const paragraphs:string[]=[];
+            const image=(block:QuestionBlock|undefined)=>{
+              if(block?.kind!=='image'||block.mime!=='image/png')throw Error('unsupported');
+              return {...figure({...block,blockId:block.id},role),afterParagraph:paragraphs.length};
+            };
+            const ids=corrected?doc.context.presentation!.figureBlockIds:doc.context.sourceBlockIds;
+            const figures=ids.map(id=>image(doc.blocks.find(block=>block.id===id)));
+            if(!corrected)for(const option of structuredPaperChoices(q)){
+              paragraphs.push('选项 '+option.label);
+              figures.push(...option.blocks.map(image));
+            }
+            if(figures.length)emit({heading:title,paragraphs,figures});return;
           }
           const evidence=doc[role];
           const images=doc.blocks.filter(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_'));
