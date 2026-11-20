@@ -174,12 +174,12 @@ await check("PDF admission rechecks staged questions and fails closed during ret
   }
 });
 await check(
-  "Published v2 through v11 generations remain readable, while interrupted older work restarts with the current engine",
+  "Published v2 through v12 generations remain readable, while interrupted older work restarts with the current engine",
   async () => {
     const legacy = {...resource,id:"resource_22345678-1234-1234-1234-123456789abc"};
     const id=legacy.id;
     for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3", "layout-paragraph-question.v4", "layout-paragraph-question.v5", "layout-paragraph-question.v6",
-      "layout-paragraph-question.v7", "layout-paragraph-question.v8", "layout-paragraph-question.v9", "layout-paragraph-question.v10", "layout-paragraph-question.v11"]) {
+      "layout-paragraph-question.v7", "layout-paragraph-question.v8", "layout-paragraph-question.v9", "layout-paragraph-question.v10", "layout-paragraph-question.v11", "layout-paragraph-question.v12"]) {
       const generation = "legacy-" + engine;
       db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,pages,processed,updated_at) VALUES(?,?,?,?,?,?,?,?)")
         .run(id,version,engine,generation,"partial",2,2,new Date().toISOString());
@@ -514,5 +514,63 @@ await check(
   },
 );
 await materialQueueBoundaries(check);
+await check("Archived v12 teacher owners survive only removal of a proven named page footer, never fake counters or changed body text", async () => {
+  const {createHash} = await import("node:crypto");
+  const {structureOcrSourceKey} = await import("../../src/main/assets/material-structure-identity.ts");
+  const hash = value => createHash("sha256").update(JSON.stringify(value)).digest("hex");
+  db.exec("CREATE TABLE IF NOT EXISTS question_bank_items(id TEXT PRIMARY KEY,archive_json TEXT); CREATE TABLE IF NOT EXISTS material_question_members(resource_id TEXT,question_id TEXT)");
+  const oldGeneration = "footer-legacy-v12", newGeneration = "footer-current-v13", bankId = "footer-teacher-owner";
+  const line = (id, text, box) => ({id, sourceId: "ocr-" + id, text, score: .99, box,
+    quad: [[box[0],box[1]],[box[2],box[1]],[box[2],box[3]],[box[0],box[3]]], regionIds: []});
+  const body = line("line-body", "1. 已知电流保持不变，计算两端电压。", [.1,.1,.8,.12]);
+  const footer = line("line-footer", "物理练习 第1页 共2页", [.3,.93,.7,.95]);
+  const oldPage = {resourceId: id, version, page: 1, totalPages: 2, engine: "layout-paragraph-question.v12",
+    rasterSha256: "b".repeat(64), sourceEngine: "fixture-ocr", lines: [body, footer],
+    regions: [{id: "footer-label", kind: "footer", score: .99, box: [.3,.93,.42,.95]},
+      {id: "footer-count", kind: "number", score: .99, box: [.42,.93,.7,.95]}],
+    paragraphs: [{id: "p-body", lineIds: [body.id, footer.id], role: "body"}]};
+  const newPage = {...structuredClone(oldPage), engine: "layout-paragraph-question.v13",
+    paragraphs: [{id: "p-body", lineIds: [body.id], role: "body"}, {id: "p-footer", lineIds: [footer.id], role: "footer"}]};
+  const oldQuestion = {id: "footer-source", kind: "question", number: "1", pageRange: [1,1], status: "candidate", issues: [],
+    paragraphIds: ["p-body"], sharedMaterialIds: [], assets: [], options: [], subquestions: [],
+    anchors: [{page: 1, box: [.1,.1,.8,.95]}], stem: body.text + "\n" + footer.text, answer: "", analysis: ""};
+  const newQuestion = {...structuredClone(oldQuestion), stem: body.text};
+  newQuestion.ocrSourceKey = structureOcrSourceKey(newQuestion, [newPage]);
+  const reference = {schemaVersion: "xiaozhi.document-structure.v1", resourceId: id, version,
+    generation: newGeneration, candidateId: "footer-new", sha256: "c".repeat(64)};
+  function saveOld(page) {
+    const sourceDocument = document({id, contentHash: version}, oldQuestion), digest = hash({question: oldQuestion, document: sourceDocument});
+    const archive = {state: "teacher_edited", sourceChecked: true, structure: {...reference, generation: oldGeneration, candidateId: oldQuestion.id, sha256: digest}};
+    db.prepare("INSERT OR REPLACE INTO material_structure_pages(generation,page,body_json,image_json,sha256) VALUES(?,?,?,?,?)")
+      .run(oldGeneration, 1, JSON.stringify(page), "{}", hash(page));
+    db.prepare("INSERT OR REPLACE INTO material_structure_questions(generation,id,first_page,last_page,status,body_json,document_json,sha256) VALUES(?,?,?,?,?,?,?,?)")
+      .run(oldGeneration, oldQuestion.id, 1, 1, "candidate", JSON.stringify(oldQuestion), JSON.stringify(sourceDocument), digest);
+    db.prepare("INSERT OR REPLACE INTO question_bank_items(id,archive_json) VALUES(?,?)").run(bankId, JSON.stringify(archive));
+  }
+  db.prepare("INSERT INTO material_question_members(resource_id,question_id) VALUES(?,?)").run(id, bankId);
+  try {
+    saveOld(oldPage);
+    assert.notEqual(structureOcrSourceKey(oldQuestion, [oldPage]), newQuestion.ocrSourceKey);
+    assert.equal(await repo.archivedOwner(reference, newQuestion, true), bankId);
+    const savedArchive = db.prepare("SELECT archive_json FROM question_bank_items WHERE id=?").get(bankId).archive_json;
+    for (const alter of [
+      page => {page.lines[1].text = "物理练习 第2页 共2页";},
+      page => {page.lines[1].text = "物理练习 第1页 共3页";},
+      page => {page.regions[1].score = .79;},
+      page => {page.regions[1].box[2] = .60;},
+      page => {page.lines[0].text = body.text.replace("不变", "增大");},
+    ]) {
+      const changed = structuredClone(oldPage); alter(changed); saveOld(changed);
+      assert.equal(await repo.archivedOwner(reference, newQuestion, true), undefined);
+    }
+    saveOld(oldPage); assert.equal(await repo.archivedOwner(reference, newQuestion, true), bankId);
+    assert.equal(db.prepare("SELECT archive_json FROM question_bank_items WHERE id=?").get(bankId).archive_json, savedArchive);
+  } finally {
+    db.prepare("DELETE FROM material_question_members WHERE question_id=?").run(bankId);
+    db.prepare("DELETE FROM question_bank_items WHERE id=?").run(bankId);
+    db.prepare("DELETE FROM material_structure_questions WHERE generation=?").run(oldGeneration);
+    db.prepare("DELETE FROM material_structure_pages WHERE generation=?").run(oldGeneration);
+  }
+});
 db.close();
 console.log(JSON.stringify({ success: true, count: results.length, results }));

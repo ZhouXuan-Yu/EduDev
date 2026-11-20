@@ -35,24 +35,43 @@ const labels=groups=>groups.filter(q=>q.status==='candidate').map(q=>q.number).s
 const preserved=({status,issues,ocrSourceKey,...content})=>content;
 const paperRows=pageRows(read,paperGeneration), oldQuestions=questionRows(read,paperGeneration);
 const frozen=bodies(paperRows), old=bodies(oldQuestions);
+const lastQuestionByPage=['10','17','19','21'];
+const footerLines=frozen.map(page=>page.paragraphs.at(-1));
+assert(footerLines.every(footer=>footer.role==='body'&&footer.rawText.startsWith('数学试题')));
+function checkFooters(pages,questions){
+  assert.equal(pages.length,frozen.length);
+  assert.deepEqual(questions.map(q=>q.number),old.map(q=>q.number));
+  for(const [i,page] of pages.entries()){
+    assert(!page.issues.includes('ambiguous_columns'));
+    for(const field of ['rawText','lines','columns']) assert.deepEqual(page[field],frozen[i][field]);
+    const expected=footerLines[i], actual=page.paragraphs.at(-1);
+    assert.deepEqual(actual,{...expected,role:'footer'});
+    assert.deepEqual(page.paragraphs.slice(0,-1),frozen[i].paragraphs.slice(0,-1));
+    const tail=questions.find(q=>q.number===lastQuestionByPage[i]);
+    const prior=old.find(q=>q.number===tail.number);
+    assert(prior.stem.includes(expected.rawText));
+    assert.equal(tail.stem,prior.stem.replace('\n'+expected.rawText,''));
+    assert.deepEqual(tail.paragraphIds,prior.paragraphIds.filter(id=>id!==expected.id));
+    assert.deepEqual(tail.anchors,prior.anchors.filter(a=>JSON.stringify(a)!==JSON.stringify(expected.anchor)));
+    assert(!JSON.stringify(tail.subquestions).includes(expected.rawText));
+  }
+  const unaffected=q=>!lastQuestionByPage.includes(q.number);
+  assert.deepEqual(questions.filter(unaffected).map(preserved),old.filter(unaffected).map(preserved));
+}
 assert.equal(frozen.length,4);
 assert.equal(old.length,20);
 assert(old.every(q=>q.status==='needs_review'&&q.issues.includes('ambiguous_columns')));
 const reconstructed=frozen.map(replay), assembler=new StructureQuestionAssembler();
 const groups=[...reconstructed.flatMap(page=>assembler.push(page)),...assembler.end()];
 assert.deepEqual(labels(groups),drafts);
-assert.deepEqual(groups.map(preserved),old.map(preserved));
-for(const [i,page] of reconstructed.entries()){
-  assert(!page.issues.includes('ambiguous_columns'));
-  for(const key of ['rawText','lines','columns','paragraphs']) assert.deepEqual(page[key],frozen[i][key]);
-}
+checkFooters(reconstructed,groups);
 const other=bodies(pageRows(read,answerGeneration))[1];
 assert.equal(other.columns.length,2);
 assert(other.issues.includes('ambiguous_columns'));
 assert.deepEqual(replay(other).columns,other.columns);
 assert(replay(other).issues.includes('ambiguous_columns'));
 const report={replayedPages:frozen.length,groups:groups.length,layoutHeld:groups.length-drafts.length,
-  layoutEligible:drafts,uncertainNaturalDoubleColumn:true};
+  layoutEligible:drafts,uncertainNaturalDoubleColumn:true,footersRecovered:footerLines.length,cleanedQuestionNumbers:lastQuestionByPage};
 if(!process.argv.includes('--desktop')){console.log(JSON.stringify({ok:true,...report}));process.exit(0);}
 
 const work=fs.mkdtempSync(path.join(os.tmpdir(),'kb-column-replay-'));
@@ -107,10 +126,14 @@ try{
   assert(published.every(q=>q.status==='needs_review'&&!q.issues.includes('ambiguous_columns')));
   const sourceConflicts=published.filter(q=>q.issues.includes('pdf_text_conflict')).map(q=>q.number).sort(compareNumbers);
   assert.deepEqual(sourceConflicts,drafts);
-  for(const page of bodies(pageRows(query,current.generation))) assert(!page.issues.includes('ambiguous_columns'));
+  checkFooters(bodies(pageRows(query,current.generation)),published);
+  const indexed=query('SELECT body_json FROM material_structure_chunks WHERE generation=?',current.generation);
+  assert(indexed.length>0&&indexed.every(row=>footerLines.every(footer=>!JSON.parse(row.body_json).content.includes(footer.rawText))));
   const candidates=panel.getByTestId('structure-questions');
   await candidates.getByText('PDF 页源待核对，请对照原页检查').first().waitFor();
   assert.equal(await candidates.getByText('分栏待核对').count(),0);
+  assert.equal(await candidates.getByText(footerLines[0].rawText).count(),0);
+  assert.equal(await panel.getByTestId('structure-paragraphs').getByText(footerLines[0].rawText,{exact:true}).first().isVisible(),true);
   await panel.getByRole('button',{name:'对照原始页图'}).click();
   await panel.getByTestId('structure-source-image').evaluate(img=>img.decode());
   const archived=query(`SELECT id FROM question_bank_items WHERE json_valid(archive_json)
