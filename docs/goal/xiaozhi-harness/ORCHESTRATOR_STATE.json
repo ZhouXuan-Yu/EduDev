@@ -807,5 +807,14 @@
     "approvalEvidence": "evidence/phase7/implementation-resume-20261119/approval-focus-authority-retest.json",
     "approvalBaseline": "16bc186424f9b63a4e4b198c37f4d938c47362dc",
     "approvalFinalMainSha256": "c42888efece14adf3063cbc3f904804567a6aeedd7913dd24ef416c3fd11ac6e"
+  },
+  "currentReleaseFrozen20261120": {
+    "status": "PACKAGED_TREE_VERIFIED_NSIS_COMPRESSING",
+    "processEvidence": "evidence/phase8/windows-package-20261119/current-main-package-5f4b0ca-20261120.json",
+    "pageEvidence": "evidence/phase7/implementation-resume-20261119/workbench-late-stream-frozen-20261120.json",
+    "buildSha256": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+    "packagingSession": 90292,
+    "archiveReadbackSession": 21353,
+    "newPaidCalls": 0
   }
 }

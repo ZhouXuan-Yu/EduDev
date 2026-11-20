@@ -117,22 +117,46 @@ try {
     const fallback=net.fetch.bind(net);
     const queue=new Map();
     globalThis.workbenchHolds=queue;
+    const frames=[];
+    globalThis.workbenchHoldFrames=frames;
     net.fetch=async(input,init)=>{
-      const url=typeof input==='string'?input:input instanceof URL?input.href:input.url;
-      if(!url.endsWith('/chat/completions'))return fallback(input,init);
+      const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);
+      if(url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')return fallback(input,init);
       const body=JSON.parse(init.body);
       const messages=JSON.stringify(body.messages);
       const key=messages.includes('W3-B-ISOLATED')?'B':'A';
-      return new Promise(resolve=>queue.set(key,answer=>{
-        const event={id:'fixture-'+key,object:'chat.completion.chunk',created:1,model:body.model};
-        const parts=[{delta:{role:'assistant',content:answer},finish_reason:null},{delta:{},finish_reason:'stop'}];
-        const text=parts.map(item=>'data: '+JSON.stringify({...event,choices:[{index:0,...item}]})+'\n\n').join('')+'data: [DONE]\n\n';
-        resolve(new Response(text,{status:200,headers:{'content-type':'text/event-stream'}}));
-      }));
+      const signal=init.signal;
+      signal?.throwIfAborted();
+      if(queue.has(key))throw Error('Duplicate held model request: '+key);
+      let abort;
+      const clear=()=>{queue.delete(key);signal?.removeEventListener('abort',abort);};
+      // Resolve the headers now. Only the body is held while the old IPC events are delivered.
+      const stream=new ReadableStream({
+        start(controller){
+          abort=()=>{
+            clear();
+            frames.push({key,stage:'aborted',at:Date.now()});
+            controller.error(signal.reason);
+          };
+          signal?.addEventListener('abort',abort,{once:true});
+          queue.set(key,answer=>{
+            clear();
+            const event={id:'fixture-'+key,object:'chat.completion.chunk',created:1,model:body.model};
+            const parts=[{delta:{role:'assistant',content:answer},finish_reason:null},{delta:{},finish_reason:'stop'}];
+            const text=parts.map(item=>'data: '+JSON.stringify({...event,choices:[{index:0,...item}]})+'\n\n').join('')+'data: [DONE]\n\n';
+            controller.enqueue(new TextEncoder().encode(text));
+            controller.close();
+            frames.push({key,stage:'released',at:Date.now()});
+          });
+          frames.push({key,stage:'headers',at:Date.now()});
+        },
+        cancel(){clear();}
+      });
+      return new Response(stream,{status:200,headers:{'content-type':'text/event-stream'}});
     };
   });
   const pending=key=>fixture.application.evaluate((_,key)=>globalThis.workbenchHolds.has(key),key);
-  const release=(key,answer)=>fixture.application.evaluate((_,input)=>{const queue=globalThis.workbenchHolds;const done=queue.get(input.key);if(!done)throw Error('Model not suspended');queue.delete(input.key);done(input.answer);},{key,answer});
+  const release=(key,answer)=>fixture.application.evaluate((_,input)=>{const done=globalThis.workbenchHolds.get(input.key);if(!done)throw Error('Model not suspended: '+input.key);done(input.answer);},{key,answer});
   const b=await newSession();
   await send('W3-B-ISOLATED 请给另外一个合成课堂答案。');
   await until(()=>pending('B'),'B did not start its own model request');
@@ -199,10 +223,14 @@ try {
   const answerA='ONLY-A-GENERATION-TWO';
   await release('B',answerB);
   await until(async()=>!(await snapshot(b)).running,'B did not settle');
+  assert.equal((await snapshot(b)).projection.turns.find(turn=>turn.id===bRun)?.status,'completed','B must finish before saving');
   const artifactB=await save('W3会话B讲义',answerB,b,bRun);
   await select(a);
   await release('A',answerA);
   await until(async()=>!(await snapshot(a)).running,'A did not settle');
+  assert.equal((await snapshot(a)).projection.turns.find(turn=>turn.id===newRun)?.status,'completed','A must finish before saving');
+  report.delayedTransport=await fixture.application.evaluate(()=>globalThis.workbenchHoldFrames);
+  assert.deepEqual(report.delayedTransport.map(({key,stage})=>[key,stage]),[['B','headers'],['A','headers'],['B','released'],['A','released']]);
   const artifactA=await save('W3恢复讲义',answerA,a,newRun);
   assert.notEqual(artifactA.artifact,artifactB.artifact);
   assert.notEqual(artifactA.hash,artifactB.hash);
@@ -234,6 +262,7 @@ try {
   report.success=true;
 } catch(error) {
   report.error=String(error.stack||error);
+  if (fixture) report.delayedTransport ??= await fixture.application.evaluate(()=>globalThis.workbenchHoldFrames).catch(()=>undefined);
   await page.screenshot({path:path.join(output,'delayed-events-failure.png')}).catch(()=>{});
 } finally {
   if(fixture)await fixture.close().catch(error=>{report.closeError=String(error);report.success=false;});

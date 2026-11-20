@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-20",
+  "scope": "Hidden Electron with isolated synthetic teaching data and the same frozen application bytes. Original failures preserved. Revised test holds SSE body after immediate HTTP headers, observes cancellations, and requires persisted completion before saving. No change to production request deadline or parser.",
+  "sourceCommit": "65d0568477292e083eba1cb80892ce6436ba9ced",
+  "build": {
+    "root": "apps/desktop/test-results/harness-prewarm-cold-current/out",
+    "sha256BeforeAndAfter": "8a1e41d30990f6db2415f56e1c74fcd5c33132ea67eb60c792fad7f6df9ea311",
+    "files": 481
+  },
+  "reviewer": "GPT-6.1 Terra High",
+  "cwd": "apps/desktop",
+  "environmentVariable": "OMNI_EDU_TEST_BUILD_ROOT points to the absolute path for build.root",
+  "originalFailures": [
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1366x768",
+      "exitCode": 1,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-DCf6Y6/evidence/delayed-events-report.json",
+      "reportSha256": "1c41a518d8e23abaf9a87e4d079ecf99755f82505adcf04933836e0c2f7a7681",
+      "namedChecks": [
+        "The held status and task are genuine generation 1 events from the original durable journal",
+        "Old interrupted status delivered in A while its newer generation is running; current binding, revision, and stop control remain",
+        "Old task notification delivered with session B foreground and active; no task or turn changed"
+      ],
+      "paidCalls": 0,
+      "rendererErrors": 0,
+      "bSendToAcceptedMs": 31438,
+      "nativeError": "Stream ended without finish_reason"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1920x1080",
+      "exitCode": 1,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-DGLIdy/evidence/delayed-events-report.json",
+      "reportSha256": "de15554dca4c96d0a0891f5bfd6c8cfcbd9b65d1857bb7410c88337a61362cd7",
+      "namedChecks": [
+        "The held status and task are genuine generation 1 events from the original durable journal",
+        "Old interrupted status delivered in A while its newer generation is running; current binding, revision, and stop control remain",
+        "Old task notification delivered with session B foreground and active; no task or turn changed"
+      ],
+      "paidCalls": 0,
+      "rendererErrors": 0,
+      "bSendToAcceptedMs": 30093,
+      "nativeError": "Stream ended without finish_reason"
+    }
+  ],
+  "sourceAudit": {
+    "reviewer": "GPT-6.1 Sol High",
+    "providerTimeoutMs": 30000,
+    "finding": "The original fixture held the entire Response and ignored abort. The OpenAI client's internal timeout aborted while awaiting headers. The iterator terminates without parsing data on that abort, and Pi reports a missing finish_reason. The original 200 and no-content native errors are retained."
+  },
+  "retest": [
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1366x768",
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-ddvukU/evidence/delayed-events-report.json",
+      "reportSha256": "3555036cf284191e8e4135d675140f94aaeac27485c190745a358b45a78e685d",
+      "namedChecks": [
+        "The held status and task are genuine generation 1 events from the original durable journal",
+        "Old interrupted status delivered in A while its newer generation is running; current binding, revision, and stop control remain",
+        "Old task notification delivered with session B foreground and active; no task or turn changed",
+        "Teacher saves separate artifacts through their actual reply menus",
+        "Cold reopen retains both conversations, original Task and artifact links, with zero model replay"
+      ],
+      "paidCalls": 0,
+      "rendererErrors": 0,
+      "frames": [
+        {
+          "key": "B",
+          "stage": "headers",
+          "at": 1795179239171
+        },
+        {
+          "key": "A",
+          "stage": "headers",
+          "at": 1795179248258
+        },
+        {
+          "key": "B",
+          "stage": "released",
+          "at": 1795179254922
+        },
+        {
+          "key": "A",
+          "stage": "released",
+          "at": 1795179265142
+        }
+      ],
+      "journalAcceptanceEpochMs": {
+        "B": 1795179239172,
+        "A": 1795179248258
+      }
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-delayed-events-ui.mjs 1920x1080",
+      "exitCode": 0,
+      "report": "TEMP/omni-edu-xiaozhi-phase7-workbench-ui-usOrMz/evidence/delayed-events-report.json",
+      "reportSha256": "ae6e9800f61ca33875b2ac7a8ecb65900a9d6017491eaaa8783a4a5800e0bd65",
+      "namedChecks": [
+        "The held status and task are genuine generation 1 events from the original durable journal",
+        "Old interrupted status delivered in A while its newer generation is running; current binding, revision, and stop control remain",
+        "Old task notification delivered with session B foreground and active; no task or turn changed",
+        "Teacher saves separate artifacts through their actual reply menus",
+        "Cold reopen retains both conversations, original Task and artifact links, with zero model replay"
+      ],
+      "paidCalls": 0,
+      "rendererErrors": 0,
+      "frames": [
+        {
+          "key": "B",
+          "stage": "headers",
+          "at": 1795179320838
+        },
+        {
+          "key": "A",
+          "stage": "headers",
+          "at": 1795179330227
+        },
+        {
+          "key": "B",
+          "stage": "released",
+          "at": 1795179337839
+        },
+        {
+          "key": "A",
+          "stage": "released",
+          "at": 1795179348017
+        }
+      ],
+      "journalAcceptanceEpochMs": {
+        "B": 1795179320839,
+        "A": 1795179330227
+      }
+    }
+  ],
+  "unchangedGate": "Gate 7 is partial. Both runs were hidden and used synthetic model responses. Native input and formal live-provider latency remain outside this report."
+}
