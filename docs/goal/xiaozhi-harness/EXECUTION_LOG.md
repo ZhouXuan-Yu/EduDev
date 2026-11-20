@@ -2,7 +2,7 @@
 
 ## 2026-11-21 能力中心专项与测试边界
 
-先保留错误引用 @playwright/test 导致的启动失败，再改用项目现有 playwright/test 入口。总控和独立 Agent 在同一 Electron 构建各通过 6/6。产品浏览期间六类 SQLite 表哈希一致，模型请求增量为零。前后构建指纹一致。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
+先保留错误引用 @playwright/test 导致的启动失败，再改用项目现有 playwright/test 入口。总控和独立 Agent 在同一 Electron 构建各通过 6/6。产品浏览期间六类 SQLite 表哈希一致，模型请求增量为零。前后构建指纹一致。C2 保留三次夹具失败，最终用合法的隔离目录命名，在表单已启用后核对控件并完成原 4 项断言。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
 
 ## 2026-11-21 冻结构建输入与验收范围
 

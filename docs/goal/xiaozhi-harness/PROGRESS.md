@@ -2,7 +2,7 @@
 
 ## 2026-11-21 工作台、审批与能力中心独立复验
 
-封存 b890dba 构建继续复验。W1–W3 共 19 项，含 1366×768 的同任务重复写入拦截，审批与工作区范围两尺寸 14 项，另有批准与冷启 2 项，能力中心两尺寸 6 项，均独立通过。新加能力中心专项覆盖真实内置能力、必需和可选缺口、候选状态及 SQLite 只读。剩余证据按验收台账逐项关闭。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
+封存 b890dba 构建继续复验。W1–W3 共 19 项，含 1366×768 的同任务重复写入拦截，审批与工作区范围两尺寸 14 项，另有批准与冷启 2 项，能力中心两尺寸 6 项，MCP Schema 变化与撤销 4 项，均独立通过。新加能力中心专项覆盖真实内置能力、必需和可选缺口、候选状态及 SQLite 只读。剩余证据按验收台账逐项关闭。 [独立证据](evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json)
 
 ## 2026-11-21 统一构建进入独立复验
 

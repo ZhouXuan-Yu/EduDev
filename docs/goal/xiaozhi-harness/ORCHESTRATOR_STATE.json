@@ -46,7 +46,7 @@
     "buildFiles": 481,
     "evidence": "evidence/phase7/implementation-resume-20261119/gate7-frozen-b890dba-20261121.json",
     "workbenchPermissionCapabilityEvidence": "evidence/phase7/implementation-resume-20261119/gate7-workbench-permissions-capabilities-20261121.json",
-    "next": "Continue from the independent workbench, approvals and capability report. The narrow committed-effect replay is verified at 1366x768. Finish the C2 Schema and C1 remaining state scope, then formally audit Gate 7. QG-09 requires a clean Windows x64 environment."
+    "next": "Continue from the independent workbench, approvals and capability report. The narrow committed-effect replay is verified at 1366x768. C2 Schema drift, renewed trust and cold revocation have separate independent evidence. Verify the remaining installed and live pending authorization C1 states, then formally audit Gate 7. QG-09 requires a clean Windows x64 environment."
   },
   "phase7WindowsDeepPath20261121": {
     "status": "NATIVE_WINDOW_AND_PERSISTENT_TERMINAL_PASS_SCOPED",

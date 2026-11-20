@@ -139,15 +139,29 @@
       "passed": 4,
       "sha256": "21712f93d2bd08dc743c483c62254224ebc04e07c4dd9f8f0b2a3ef7abfd1055",
       "exitCode": 0
+    },
+    {
+      "scope": "C2 Schema change and cold revocation",
+      "report": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-phase7-c2-r3-v4/report.json",
+      "script": "test-results/t/terra-c2-schema-r3-v4.mjs",
+      "scriptSha256": "e70475797a4cf5c7041bd960588496ec33345ea835b7f89f1148299ebf823eff",
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ],
+      "viewportScope": "Both dimensions for the enabled Save connection button hit and scrolling. Full lifecycle executed once in the same profile.",
+      "passed": 4,
+      "sha256": "b1c1b70bf1d902cab369c6c5f29863b53de3f5d8bd67dd89a10e69f707c8f6c2",
+      "exitCode": 0
     }
   ],
-  "independentScopedPasses": 41,
+  "independentScopedPasses": 45,
   "scope": {
     "W1": "Actual UI stop, cold task status and counts, filter reachability, completed-row exclusion, original Task/Run/Effect/approval unchanged and zero cold replay.",
     "W2_W3": "At both sizes, same Task A added one Run; original late status and task events were held and delivered through a test hook during actual new Runs. Separate outputs and cold association were verified. Does not prove all committed effects are rejected on attempted duplicate replay. The independent committed-effect replay test at 1366x768 separately verified selection of the exact one-time grant, positive file completion, double-click deduplication (2 to 3 Runs), duplicate effect denied before dispatch (admitted=0, success=0), same 83-byte file and one applied record across cold open, zero model replay. The file replay assertion itself was exercised at 1366x768.",
     "A1_A2": "Actual keyboard actions rejected the modern and historical requests with focus restoration and delayed settlement. A/B chosen directory scopes, original records and cold reads remained separate. These batches do not include a positive approval. Separate actual Inbox positive approval retained its exact ID and operation scope, updated the payload revision from 1 to 2, and preserved the same five grants after cold readback. No post-approval tool run in this scenario.",
     "C1": "Native capabilities for current Windows and two synthetic registry conformance controls; original resolver excludes missing required and permits missing optional. Read-only page search and keyboard disclosure preserves six table hashes and model request count. Cached reviewed metadata remains pending, uninstalled and blocked. No real market access, installation, or external provider verification.",
-    "C2": "Root's previous same-build scenario covers an actual loopback registered MCP call, revocation, fallback to local course evidence and restart. The Schema mutation edge requires its own current-candidate evidence. Independent inspection verified report/source match on revocation and readback, not an independent rerun."
+    "C2": "Root's previous same-build scenario covers an actual loopback registered MCP call, revocation, fallback to local course evidence and restart. The Schema mutation edge requires its own current-candidate evidence. Independent inspection verified report/source match on revocation and readback, not an independent rerun. Independent C2 on the same build then used a separate owned loopback service with a real changed Schema. Actual settings inspection cleared old trust, cold startup retained schema_changed, new trust was explicitly set, revocation was visible and persisted through a second restart with zero tool calls. This demonstrates the trust lifecycle. The earlier root C2 dispatch/fallback result complements it."
   },
   "firstRunnerFailure": {
     "command": "node scripts/xiaozhi-agent/phase7-capability-center-ui.mjs",
@@ -155,8 +169,7 @@
     "reason": "Initial top-level import used @playwright/test, not installed in this worktree. Switched to playwright/test exported by the existing dependency; no dependency changes."
   },
   "remaining": [
-    "C1 installed or awaiting live authorization on this candidate",
-    "C2 independent same-candidate Schema change",
+    "Independent scope audit of installed and live pending-authorization capability states on this exact candidate",
     "QG-09 clean Windows x64 install, both shortcuts, uninstall",
     "Phase 8 formal 32-case real-model ABBA and final independent assessment"
   ],
