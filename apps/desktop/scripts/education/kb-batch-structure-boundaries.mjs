@@ -146,12 +146,14 @@ const seedStructure=async(id,engine,status='complete',sourceVersion=version)=>{
  return generation;
 };
 const legacyEngine=n=>`layout-paragraph-question.v${n}`;
+const lastExpectedLegacy=15;
+const supportedResources=lastExpectedLegacy+8;
 const selection=await addBatch();
-for(let n=1;n<=14;n++){
+for(let n=1;n<=lastExpectedLegacy;n++){
  const id=await addItem(selection,`legacy-${n}.pdf`);
- await seedStructure(id,legacyEngine(n),n===14?'partial':'complete');
+ await seedStructure(id,legacyEngine(n),n===15?'partial':'complete');
 }
-for(const engine of [DOCUMENT_STRUCTURE_ENGINE,'unknown-engine',legacyEngine(0),legacyEngine(16),'layout-paragraph-question.v14-extra']){
+for(const engine of [DOCUMENT_STRUCTURE_ENGINE,'unknown-engine',legacyEngine(0),legacyEngine(17),'layout-paragraph-question.v15-extra']){
  await seedStructure(await addItem(selection,'excluded.pdf'),engine);
 }
 await seedStructure(await addItem(selection,'failed.pdf'),legacyEngine(14),'failed');
@@ -159,7 +161,7 @@ await seedStructure(await addItem(selection,'wrong-version.pdf'),legacyEngine(14
 await seedStructure(await addItem(selection,'unarchived.pdf','pending'),legacyEngine(14));
 await seedStructure(await addItem(selection,'unsupported.txt'),legacyEngine(14));
 await addItem(selection,'no-structure.pdf');
-assert.deepEqual(await recovery.coverage(selection),{available:22,upgradeable:14});
+assert.deepEqual(await recovery.coverage(selection),{available:supportedResources,upgradeable:lastExpectedLegacy});
 assert.equal(await recovery.view(selection),undefined);
 checks++;
 
@@ -233,9 +235,9 @@ checks++;
 await resume(selection,'structure_upgrade');
 const selected=await all(`SELECT j.engine FROM material_structure_recovery_items s
  JOIN material_structure_jobs j ON j.resource_id=s.resource_id WHERE s.batch_id=?`,[selection]);
-assert.deepEqual(selected.map(row=>row.engine).sort(),Array.from({length:14},(_,n)=>legacyEngine(n+1)).sort());
-assert.equal((await recovery.view(selection)).pending,14);
-assert.deepEqual(await recovery.coverage(selection),{available:22,upgradeable:0});
+assert.deepEqual(selected.map(row=>row.engine).sort(),Array.from({length:lastExpectedLegacy},(_,n)=>legacyEngine(n+1)).sort());
+assert.equal((await recovery.view(selection)).pending,lastExpectedLegacy);
+assert.deepEqual(await recovery.coverage(selection),{available:supportedResources,upgradeable:0});
 const emptyBatch=await addBatch();await resume(emptyBatch,'structure_upgrade');
 assert.deepEqual(await recovery.coverage(emptyBatch),{available:0,upgradeable:0});
 assert.equal(await recovery.view(emptyBatch),undefined);

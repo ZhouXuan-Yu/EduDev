@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 折行大题标题与题型归属
+
+折行标题专项检查同一原 PDF 的标题段、题组归属、布局不确定性和原页读回。原卷 PDF 验证继续单独核对页源门槛。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)
+
 ## 2026-11-21 独立答案册续页速查表
 
 续页速查表验证从目录导入、两遍转录和已保存的标题证据推进至题本来源及冷读。待核路径覆盖缺页、错卷、跳号和不完整列。 [专项报告](../research/evidence/kb/20261121/continued-answer-keys/README.md)

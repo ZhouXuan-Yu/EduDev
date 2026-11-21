@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 折行大题标题与题型归属
+
+文档结构 v16 从共用标题区域恢复大题标题折行，供题号、段落和题型识别共用；旧结构世代仍可读。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)
+
 ## 2026-11-21 独立答案册续页速查表
 
 答案册续页对每个继承页核对原件版本、发布代、配对和连续题号。索引保存派生范围，源页更新后沿用已有的反向失效机制。 [专项报告](../research/evidence/kb/20261121/continued-answer-keys/README.md)
