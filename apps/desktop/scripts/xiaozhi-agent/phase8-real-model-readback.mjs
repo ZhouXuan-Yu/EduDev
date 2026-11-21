@@ -4,6 +4,18 @@ import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {DatabaseSync} from 'node:sqlite';
 import {sha256, q5Source} from './phase8-real-model-plan.mjs';
+import {toolResultDigest} from '../../src/main/xiaozhi-agent/events/native-tail.ts';
+
+const q5Origin = new URL(q5Source).origin;
+export const q5PermissionScopes = Object.freeze([
+  {kind: 'network', origin: q5Origin, methods: ['GET'], purpose: 'public_research'},
+  {kind: 'egress', origin: q5Origin, classifications: ['public','redacted']},
+]);
+function exactQ5Scopes(scopes) {
+  return Array.isArray(scopes) && scopes.length === q5PermissionScopes.length && q5PermissionScopes.every(expected =>
+    scopes.some(scope => scope && typeof scope === 'object' && Object.keys(scope).length === Object.keys(expected).length
+      && Object.entries(expected).every(([key, value]) => JSON.stringify(scope[key]) === JSON.stringify(value))));
+}
 
 export function readOriginalRecords(databasePath, sessionId, runId, {workspace} = {}) {
   const database = new DatabaseSync(databasePath, {readOnly: true});
@@ -42,9 +54,7 @@ export function readOriginalRecords(databasePath, sessionId, runId, {workspace} 
         if (request.owner.runId !== runId && value.admittedOwner?.runId !== runId) continue;
         let input;
         try {input = JSON.parse(request.summary?.slice(request.summary.indexOf('\n') + 1));} catch {}
-        const fixedQ5Get = request.action === 'office_web_fetch' && input?.url === q5Source
-          && request.scopes?.some(scope => scope.kind === 'network' && scope.origin === new URL(q5Source).origin
-            && Array.isArray(scope.methods) && scope.methods.length === 1 && scope.methods[0] === 'GET');
+        const fixedQ5Get = request.action === 'office_web_fetch' && input?.url === q5Source && exactQ5Scopes(request.scopes);
         const syntheticFileScope = workspace && request.scopes?.length > 0 && request.scopes.every(scope =>
           scope.kind === 'filesystem' && path.relative(workspace, scope.root) === ''
           && scope.actions?.includes('write') && scope.actions.every(action => ['read','write'].includes(action)));
@@ -89,12 +99,13 @@ export function readQ5SourceEvidence({databasePath,binding,records,events=[],web
       const message=entry.value.message;
       if(message?.role!=='toolResult'||message.toolName!=='office_web_fetch'||!ownedCalls.has(message.toolCallId))continue;
       const persisted=records.receipts.find(item=>item.tool==='office_web_fetch'&&item.callId===message.toolCallId);
-      if(persisted?.nativeEntryId&&persisted.nativeEntryId!==entry.value.id)continue;
+      const persistedMatched = Boolean(persisted?.nativeEntryId && persisted.nativeEntryId === entry.value.id
+        && persisted.nativeDigest === toolResultDigest(message.toolName,message.content,message.isError));
       const source=message.details?.data?.sources?.some(item=>item.url===q5Source&&item.kind==='read')?q5Source:null;
       if(!requested.has(message.toolCallId)&&!source)continue;
       const rawCode=message.details?.error?.code || message.details?.execution?.code;
       const error=['permission_denied','dns_blocked','invalid_input','cancelled','timeout','network','rate_limited','service_error','too_large','unsupported'].includes(rawCode)?rawCode:message.isError?'native_tool_error':null;
-      evidence.receipts.push({callId:message.toolCallId,success:message.details?.success===true&&!message.isError,error,
+      evidence.receipts.push({callId:message.toolCallId,success:message.details?.success===true&&!message.isError,error,persistedMatched,
         requestedSource:requested.has(message.toolCallId)?q5Source:null,readSource:source,
         sqlite:{run:{table:'ai_agent_runs',id:binding.runId,sessionId:binding.sessionId},
           receipt:persisted?{table:'xiaozhi_tool_receipts',runId:binding.runId,callId:persisted.callId,success:persisted.success,nativeEntryId:persisted.nativeEntryId,nativeDigest:persisted.nativeDigest}:null},
@@ -102,7 +113,7 @@ export function readQ5SourceEvidence({databasePath,binding,records,events=[],web
     }
     evidence.nativeStatus='readback_complete';
     if(evidence.http200Complete&&evidence.receipts.some(item=>item.success&&item.readSource===q5Source
-      &&(!item.sqlite.receipt||item.sqlite.receipt.success===1||item.sqlite.receipt.success===true)))evidence.status='read';
+      &&item.persistedMatched&&(item.sqlite.receipt.success===1||item.sqlite.receipt.success===true)))evidence.status='read';
     return evidence;
   }catch{
     evidence.nativeStatus='readback_unavailable';return evidence;

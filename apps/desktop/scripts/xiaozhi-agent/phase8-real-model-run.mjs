@@ -319,7 +319,7 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
               : row.task === 'Q7' ? ['office_create_text'] : [];
             return {decision: exact && match.syntheticFileScope && allowed.includes(match.action) ? 'approve' : 'reject'};
           } : undefined);
-        if (syntheticDraftCorrection) await confirmSyntheticArtifact(page, row.task, workspace, result.draftDecisions);
+        if (syntheticDraftCorrection) await confirmSyntheticArtifact(page, row.task, workspace, result.draftDecisions, sessionId);
         const now = performance.now();
         const readKind = signal?.terminal ? (now >= nextTerminalRead ? 'terminal' : null)
           : (signal && now >= nextFallback ? 'fallback' : null);

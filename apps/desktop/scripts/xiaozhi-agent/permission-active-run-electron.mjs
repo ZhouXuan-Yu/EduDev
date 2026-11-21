@@ -109,7 +109,7 @@ try {
   if (practiceDraft) {
     const decisions = [];
     await page.getByTestId('pi-text-diff').waitFor();
-    await confirmSyntheticArtifact(page, 'Q7', workspace, decisions);
+    await confirmSyntheticArtifact(page, 'Q7', workspace, decisions, sessionId);
     assert.equal(decisions.length, 1);
     assert.deepEqual(decisions[0].files, [filename]);
     report.draftConfirmations = decisions;

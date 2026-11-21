@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "6c335af65d49b3803138a156584d1e08076dda37e7a30e0d8af27efb09bcca1d",
+  "sourceHash": "6e3d1d29df2526561a9d3996250f9b8bd17614db4afa17a3c4734d1169f287b2",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "914953ed8d877755e292e29659dacf143dcfdc379b3ed5b40305266b6918520a"
+      "sha256": "7830a2fe3eca58875b63b3152c48c2ce68b734ee051257030bb4bdbad394d879"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1568,7 +1568,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/plan-runtime.ts",
-      "sha256": "c0eb975a97f11126e9424a38a9a89983215b043b814cd9391b8ff2c7eae9c30a"
+      "sha256": "3b7a599d12c9146c670b00de87ab6ed07b9dff71362233c01c396f9d34afa95a"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/planning-policy.ts",
@@ -1656,7 +1656,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/text-change-coordinator.ts",
-      "sha256": "1489d9da407d6792052476a108a8d5aa34bfe13fdfe3784d9ceb9f5851ef086f"
+      "sha256": "02c0da2969755917f2bfe226c91776486dc82172c67fa5e7f3bdbbde5a496569"
     },
     {
       "file": "src/main/xiaozhi-agent/text-change-service.ts",
