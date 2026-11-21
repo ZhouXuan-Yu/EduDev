@@ -4,19 +4,21 @@ import {fixture} from './kb-book-match-boundaries.mjs';
 import {MaterialBookAnswerRepository} from '../../src/main/assets/material-book-answer-repository.ts';
 import {bookAnswerPage} from '../../src/main/assets/material-book-answer-content.ts';
 import {questionVersion} from '../../src/main/education/question-context-provider.ts';
+import {MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY,MATERIAL_BOOK_PAGE_LABEL_POLICY} from '../../src/shared/material-ai-page.ts';
 const sha=x=>createHash('sha256').update(x).digest('hex'),section='第十三、十四章 素养基础测试卷';
 export function fixture2(options={}){
  const f=fixture({...options,answerText:options.answerText??'2. D 解析：这是答案册的完整解析。'});
  const q=f.proofs.get(f.batch),a=f.proofs.get(f.answerBatch);
- for(const pass of ['first','final']){q[pass]=structuredClone(q[pass]);q[pass].pageText=section+'\n2. '+q[pass].questions[0].stem;q[pass].questions[0].number='2';}
+ const number=options.number??'2';
+ for(const pass of ['first','final']){q[pass]=structuredClone(q[pass]);q[pass].pageText=section+'\n'+number+'. '+q[pass].questions[0].stem;q[pass].questions[0].number=number;}
  for(const pass of ['first','final'])q[pass+'Sha']=sha(JSON.stringify(q[pass]));
- a.unit.pageSource.page=2;
+ a.unit.pageSource.page=options.answerPage??2;
  for(const [id,p]of [[f.batch,q],[f.answerBatch,a]]){
   f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify({page:p.unit.pageSource.page,bookRole:p.unit.bookRole}),id);
   f.db.prepare('UPDATE material_ai_page_units SET final_sha=? WHERE batch_id=?').run(p.finalSha,id);
  }
- const saved=f.db.prepare('SELECT archive_json FROM question_bank_items').get(),archive=JSON.parse(saved.archive_json);archive.number='2';archive.ai.firstSha=q.firstSha;archive.ai.finalSha=q.finalSha;
- f.db.prepare('UPDATE question_bank_items SET archive_json=?').run(JSON.stringify(archive));f.db.prepare("UPDATE material_ai_members SET number='2'").run();
+ const saved=f.db.prepare('SELECT archive_json FROM question_bank_items').get(),archive=JSON.parse(saved.archive_json);archive.number=number;archive.ai.firstSha=q.firstSha;archive.ai.finalSha=q.finalSha;
+ f.db.prepare('UPDATE question_bank_items SET archive_json=?').run(JSON.stringify(archive));f.db.prepare('UPDATE material_ai_members SET number=?').run(number);
  return f;
 }
 export function add(f,page,text=section+'\n1. A 解析：前题的完整解析。',options={}){
@@ -34,6 +36,64 @@ async function init(f){await f.repo.migrate();await f.repo.migrate();await index
 async function use(options,fn){const f=fixture2(options);try{await fn(f);}finally{f.db.close();}}
 async function missing(f){const before=questionVersion(await f.read()),v=await f.match();assert.equal(v.rows[0].reason,'answer_not_found');assert.equal(questionVersion(await f.read()),before);}
 let checks=0;async function check(name,fn){await fn();checks++;console.log('PASS '+name);}
+const continuedKey='答案速查\n2 3\nD B';
+function tablePolicy(f,policy=MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY){
+ const p=f.proofs.get(f.answerBatch);
+ p.unit.bookPagePolicy=policy;
+ return p;
+}
+await check('A bare three-line key waits for its prior title, writes only the exact answer, and preserves cold proof',()=>use({answerText:continuedKey,answerIssues:[]},async f=>{
+ const current=tablePolicy(f);
+ current.status='review';
+ await init(f);await missing(f);
+ const raw=(await f.repo.sections.answerPage(current)).page;
+ assert(raw.leadingKeyContinuation&&raw.entries.every(e=>e.issues.includes('missing_section')));
+ const before=await f.read(),prior=add(f,1),receipts=JSON.stringify([...f.proofs]);
+ await index(f);
+ assert.equal(f.db.prepare('SELECT review_state FROM material_book_answer_index_v1 WHERE batch_id=? AND start=-1').get(f.answerBatch).review_state,'section-resolved.v1');
+ const [row]=(await f.match()).rows;
+ assert.equal(row.state,'applied');assert.equal(row.source.page,2);assert.equal(row.source.sectionPage,1);
+ const saved=await f.read();
+ assert.equal(saved.archive.answerOrigin,'book_extracted');
+ assert.equal(saved.analysis,before.analysis);assert.equal(saved.archive.analysisOrigin,before.archive.analysisOrigin);
+ const journal=JSON.parse(f.db.prepare("SELECT evidence_json FROM material_book_answer_journal_v1 WHERE after_json<>''").get().evidence_json);
+ assert.equal(journal.answerSection.pages[0].batchId,prior);
+ assert.equal(journal.answer.start,continuedKey.indexOf('2'));
+ await new MaterialBookAnswerRepository(f.host).validate(saved);
+ assert.equal(JSON.stringify([...f.proofs]),receipts);
+ add(f,1,'第十五章 素养基础测试卷\n1. A 解析：相同编号不同试卷。');
+ await index(f);await assert.rejects(f.repo.validate(saved),/source_changed/);
+}));
+await check('A continued key holds across version, source, page gaps, label drift, changed cells and unknown exam boundaries',async()=>{
+ for(const mode of ['legacy','gap','source','seam','malformed','extra','drift','unknown-exam'])await use({answerText:continuedKey,answerIssues:[]},async f=>{
+  const current=tablePolicy(f,mode==='legacy'?MATERIAL_BOOK_PAGE_LABEL_POLICY:undefined);
+  if(mode==='gap')current.unit.pageSource.page=3;
+  if(mode==='malformed')current.final={...current.final,pageText:'答案速查\n2 3\nD'};
+  if(mode==='extra')for(const pass of ['first','final'])current[pass]={...current[pass],pageText:continuedKey+'\n另一处内容'};
+  if(mode==='drift')current.first={...current.first,pageText:continuedKey.replace('D B','A B')};
+  if(mode==='source')add(f,1,undefined,{source:{generation:randomUUID()}});
+  else add(f,1,mode==='seam'?section+'\n3. A 解析：标题后的前题。':
+   mode==='unknown-exam'?section+'\n2025年普通高等学校招生全国统一考试(上海卷)\n1. A 解析：可能是另一套题。':undefined);
+  await init(f);
+  assert.equal(await f.repo.sections.resolveAnswer(current),undefined,mode);
+  assert.notEqual((await f.match()).rows[0].state,'applied',mode);
+ });
+});
+await check('Chained bare keys need a real contiguous title path and invalidate every dependent cached scope',async()=>{
+ await use({answerText:'选择题答案\n5 6\nD B',answerIssues:[],number:'5',answerPage:3},async f=>{
+  tablePolicy(f);
+  add(f,1,section+'\n1. A 详解：第一条。\n2. B 详解：第二条。');
+  const middle=add(f,2,'参考答案\n3 4\nC A');
+  await init(f);
+  const applied=(await f.match()).rows[0];
+  assert.equal(applied.state,'applied');assert.equal(applied.source.page,3);assert.equal(applied.source.sectionPage,1);
+  const e=JSON.parse(f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get().evidence_json);
+  assert.equal(e.answerSection.pages.length,2);assert.equal(e.answerSection.pages[0].batchId,middle);
+  const q=await f.read();await f.repo.validate(q);
+  add(f,2,'参考答案\n2 3\nC A');
+  await index(f);await assert.rejects(f.repo.validate(q),/source_changed/);
+ });
+});
 await check('Titleless answer pages inherit exact preceding scope across batches, retain literal offsets and remain valid after cold construction',()=>use({},async f=>{
  const prior=add(f,1),original=JSON.stringify([...f.proofs]);await init(f);const view=await f.match();assert.equal(view.rows[0].state,'applied');assert.equal(view.rows[0].source.page,2);assert.equal(view.rows[0].source.sectionPage,1);
  const journal=f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get(),e=JSON.parse(journal.evidence_json);assert.equal(e.answerSection.schemaVersion,'xiaozhi.book-answer-section-context.v1');assert.equal(e.answerSection.pages[0].batchId,prior);assert.equal(e.answer.start,0);

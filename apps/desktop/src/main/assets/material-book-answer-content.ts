@@ -1,5 +1,5 @@
 import {MATERIAL_BOOK_ANSWER_SCHEMA,bookSectionKey,type BookAnswerEntry,type BookAnswerIssue,type BookAnswerPage} from '../../shared/material-book-answer';
-import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,pageTranscriptionAgrees,type AiPageResponse,type MaterialBookPagePolicy} from '../../shared/material-ai-page';
+import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY,MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,pageTranscriptionAgrees,type AiPageResponse,type MaterialBookPagePolicy} from '../../shared/material-ai-page';
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
@@ -106,11 +106,11 @@ function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>
  */
 // The one-code-unit width conversion keeps every raw source offset intact.
 const width=(value:string)=>value.replace(/[０-９Ａ-Ｈ]/gu,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0));
-function readAnswerKeyTables(text:string){
+function readAnswerKeyTables(text:string,continuation?:{section?:string}){
  const lines=[...text.matchAll(/[^\n]+(?:\n|$)/g)].filter(line=>line[0].trim());
  const accepted:Entry[]=[], boundaries=new Set<number>();
- let unresolved=0,section:string|undefined,previous='';
- if(nonQuestionPagePurpose(text))return {accepted,boundaries,unresolved};
+ let unresolved=0,section:string|undefined,previous='',leadingKey=false;
+ if(nonQuestionPagePurpose(text))return {accepted,boundaries,unresolved,leadingKey};
  for(let i=0;i<lines.length;i++){
   const value=headingText(lines[i][0]);
   section=sectionBoundary(value,previous)??section;
@@ -127,7 +127,10 @@ function readAnswerKeyTables(text:string){
   }
   const nums=[...numberLine.matchAll(/[0-9]+/g)];
   const values=/^[A-H]{1,8}(?:[ \t\u3000]+[A-H]{1,8})*$/u.test(answerLine.trim())?[...answerLine.matchAll(/[A-H]+/g)]:[];
-  if(!section||nums.length>100||values.length!==nums.length||
+  // Borrow a title only for a self-contained three-line key, never through extra prose or headings.
+  const leading=!!continuation&&i===0&&lines.length===3&&section===undefined;
+  const entrySection=leading?continuation.section??'':section;
+  if((!entrySection&&!leading)||nums.length>100||values.length!==nums.length||
     nums.some((n,j)=>!(/^[1-9][0-9]{0,4}$/u.test(n[0]))||j>0&&Number(n[0])!==Number(nums[j-1][0])+1)||
     values.some(v=>new Set(v[0]).size!==v[0].length)){
    unresolved++;
@@ -135,16 +138,18 @@ function readAnswerKeyTables(text:string){
   }
   for(const [j,n] of nums.entries()){
    const v=values[j],start=numbers.index!+n.index!,end=answers.index!+v.index!+v[0].length;
-   accepted.push({number:n[0],section,sectionKey:bookSectionKey(section),start,end,quote:text.slice(start,end),answer:v[0],analysis:'',issues:['missing_analysis']});
+   const title=entrySection??'';
+   accepted.push({number:n[0],section:title,sectionKey:bookSectionKey(title),start,end,quote:text.slice(start,end),answer:v[0],analysis:'',issues:title?['missing_analysis']:['missing_analysis','missing_section']});
   }
+  leadingKey||=leading;
   i+=2;
   if(accepted.length>200)break;
  }
- return {accepted,boundaries,unresolved};
+ return {accepted,boundaries,unresolved,leadingKey};
 }
 
-function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false){
- const {accepted,boundaries,unresolved}=readAnswerKeyTables(text);
+function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false,continuedTable=false){
+ const {accepted,boundaries,unresolved,leadingKey}=readAnswerKeyTables(text,continuedTable?{section:initialSection}:undefined);
  const detailed=entries(text,initialSection,boundaries,printedLabels);
  const key=(entry:Entry)=>entry.sectionKey+'\0'+entry.number;
  const known=new Map<string,Entry[]>();
@@ -166,19 +171,21 @@ function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=
    detailed.push(...cells);
   }
  }
- return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200};
+ return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200,leadingKey};
 }
 
 export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy):BookAnswerPage{
  const scoped=first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&final.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;
  const base:Omit<BookAnswerPage,'status'>={schemaVersion:MATERIAL_BOOK_ANSWER_SCHEMA,policy:initialSection!==undefined?'section-number-inherited.v1':scoped?'section-number-two-pass.v2':'section-number-two-pass.v1',pageUncertain:!!(first.pageIssues.length||final.pageIssues.length)||first.schemaVersion!==final.schemaVersion,entries:[],firstOnly:[]};
  if(Buffer.byteLength(first.pageText)>64000||Buffer.byteLength(final.pageText)>64000)return{...base,status:'too_large'};
- const printedLabels=policy===MATERIAL_BOOK_PAGE_LABEL_POLICY;
+ const continuedTable=policy===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY;
+ const printedLabels=continuedTable||policy===MATERIAL_BOOK_PAGE_LABEL_POLICY;
  const extract=(text:string)=>scoped&&(printedLabels||policy===MATERIAL_BOOK_PAGE_TABLE_POLICY)
-  ?entriesWithAnswerKeys(text,initialSection,printedLabels):{entries:entries(text,initialSection),unresolved:0,tooLarge:false};
+  ?entriesWithAnswerKeys(text,initialSection,printedLabels,continuedTable):{entries:entries(text,initialSection),unresolved:0,tooLarge:false,leadingKey:false};
  const left=extract(first.pageText),right=extract(final.pageText),a=left.entries,b=right.entries;
  if(left.tooLarge||right.tooLarge||a.length>200||b.length>200)return{...base,status:'too_large'};
  if(left.unresolved||right.unresolved)base.unresolvedTables=Math.max(left.unresolved,right.unresolved);
+ if(left.leadingKey||right.leadingKey)base.leadingKeyContinuation=true;
  // Scope is usable only when it resolves uniquely in that pass's actual transcript.
  // Unknown or ambiguous scopes cannot silently remove whole-page uncertainty.
  const local=new Map<string,Set<AiIssue>>();
