@@ -1,0 +1,120 @@
+{
+  "sourceParent": "ec95aded89d8d7d90ae3d65fc13ca5813e095a53",
+  "changes": [
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/undici",
+      "from": "8.10.2",
+      "to": "8.12.2",
+      "license": "MIT",
+      "registryUnpackedBytes": [
+        1904976,
+        2163430
+      ],
+      "advisory": "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    },
+    {
+      "path": "node_modules/node-gyp/node_modules/undici",
+      "from": "6.29.0",
+      "to": "6.29.1",
+      "license": "MIT",
+      "registryUnpackedBytes": [
+        1200906,
+        1205968
+      ],
+      "advisory": "https://github.com/advisories/GHSA-xjj6-f33q-929c"
+    },
+    {
+      "path": "node_modules/vite",
+      "from": "6.4.3",
+      "to": "6.4.4",
+      "license": "MIT",
+      "registryUnpackedBytes": [
+        2657552,
+        2663435
+      ],
+      "advisory": "https://github.com/advisories/GHSA-587h-7wmj-h5pm"
+    }
+  ],
+  "classification": "electron-vite 5.0.0 and its Vite build chain are dev dependencies. No new runtime dependency or schema. Scoped overrides keep the existing Pi and node-gyp versions. The production root and OpenAI still resolve Undici 7.30.1.",
+  "resolver": {
+    "method": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefer-offline, then npm install --ignore-scripts --no-audit --no-fund --prefer-offline",
+    "actualChangedPackages": 3,
+    "lockSha256": "58add9271409a59b15e2c578aaa427664ee821bf084577aa9a8d4edebfd5b13f",
+    "loggedWarning": "npm warns about the OpenAI optional peer during override resolution. Physical resolution independently reads OpenAI and application root as 7.30.1, Pi 8.12.2, node-gyp 6.29.1."
+  },
+  "audit": {
+    "command": "npm audit --omit=dev --json",
+    "before": {
+      "total": 20,
+      "high": 5,
+      "critical": 0
+    },
+    "after": {
+      "total": 17,
+      "low": 8,
+      "moderate": 7,
+      "high": 2,
+      "critical": 0
+    },
+    "afterExit": 1,
+    "sha256": "9d65c2f6319cb7ed7045d81105456ff26ec85873d8f16d1f9e0f3d5631639a9b",
+    "remainingHigh": [
+      "@modelcontextprotocol/sdk",
+      "body-parser"
+    ]
+  },
+  "packageSelection": {
+    "method": "Installed electron-builder 26.18.0 NPM and traversal collectors, recursively flatten nodeModules by exact package name",
+    "entriesPerCollector": 472,
+    "expectedUndici": [
+      "6.29.1",
+      "7.30.1",
+      "8.12.2"
+    ],
+    "excluded": [
+      "electron-vite",
+      "vite",
+      "postcss",
+      "nanoid@3.3.16",
+      "@modelcontextprotocol/sdk",
+      "body-parser"
+    ],
+    "includedDocumentNanoid": [
+      "5.1.16",
+      "6.0.1"
+    ],
+    "sha256": "fe88f7bf3109e3a0e8b34520ddacd246152ced5fb87837fbd3ab2b16454183ce",
+    "scope": "Observed packaging input graph, independently rerun via electron-builder traversal. No new installer or asar inspection. Do not infer absence from third-party bundles, arbitrary reachability or universal model transport security."
+  },
+  "proof": {
+    "root": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Dependency-20261121",
+    "build": {
+      "command": "npm run build",
+      "files": 481,
+      "sha256": "382004d434e27533bbdba90499d33f8970c4abb508d72ee5c5709efbaffcafcb",
+      "logSha256": "621687dffd5894354f757631725515f27fcfe6a6711b703abc0ba918372fa3f0"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": "253/253",
+      "logSha256": "5836592c7fc0ce14407cc47e589229137df34688de8d2003b94bf2ba7537b632"
+    },
+    "web": {
+      "command": "node scripts/xiaozhi-agent/pi-web-boundary-smoke.mjs",
+      "passed": "15/15",
+      "logSha256": "ae0186c800fc8a42dfaa3b0eee12a9a61d614674c2b109d7a23d0f745eb1b10e"
+    },
+    "workbench": {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+      "passed": "9/9",
+      "reportSha256": "cc8daab86f229476220a4ccf3c47284af3c680a2c8c3fb46b9a3fd1e3f66bec5",
+      "previousFailure": "The fixture rejected the initial external TEMP build root before UI launch; an app-owned build passed.",
+      "previousLogSha256": "e1df364b46d417d7d2dc7d152abe526d6e94a7c8235a3022b9bdd5c7eb0cde42"
+    },
+    "nestedPiHttp": "Actual Pi HTTP dispatcher processed one successful normal compressed loopback response using its nested Undici 8.12.2.",
+    "nestedPiHttpSha256": "f2b4fc28ee7608ff305824caf39c8087ce18ef9c0d0613929f43affc8f6db7d7"
+  },
+  "impact": "Vite moves out of packaging inputs. The two Undici distributions' upstream unpacked sizes grow 263516 bytes combined; installer size and startup latency are unmeasured. No app behavior migration.",
+  "remaining": "Clean Windows QG-09 and three formal model rows remain. VMware running guests 0, host and historical archive were not used to certify QG-09. No new paid request or installer distribution.",
+  "rollback": "Revert package manifest, lock and regenerated tool identity together. Restore locked dependencies before rebuilding, no business migration."
+}
