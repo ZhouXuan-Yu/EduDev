@@ -8,6 +8,8 @@
 
 已启用的换机副本通过现有选择记录与恢复回执投影到设置页。接续页读取原模型、MCP 目录与索引状态，使用原设置表单完成变更。 [冷启动及切回证据](../goal/xiaozhi-harness/evidence/phase8/windows-portable-recovery-checklist-20261121.json)
 
+Windows 更新准备复用已有本地设置任务和备份链路。候选须通过 Windows 签名验证并匹配固定公开发行的摘要、大小和兼容来源。备份清单格式保持不变，更新对应关系单独保存在同级文件。 [更新接续契约](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)
+
 ## 2026-11-21 与正文数字连写的题号
 
 v17 在段落生成前核对连写题号的原生交叉证据，并用原行保留标记。现有旧世代继续有效，可通过原队列重建。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

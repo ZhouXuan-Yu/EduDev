@@ -503,6 +503,8 @@ const api = {
   previewBackupRestore:()=>ipcRenderer.invoke('app:previewBackupRestore') as Promise<import('../shared/backup-restore').BackupRestorePreview|null>,
   prepareBackupRestore:(id?:string)=>ipcRenderer.invoke('app:prepareBackupRestore',id) as Promise<import('../shared/backup-restore').PreparedBackupRestore|null>,
   backupRestoreStatus:()=>ipcRenderer.invoke('app:backupRestoreStatus') as Promise<import('../shared/backup-restore').BackupRestoreStatus>,
+  inspectWindowsUpdate:()=>ipcRenderer.invoke('app:inspectWindowsUpdate') as Promise<import('../shared/windows-update').WindowsUpdateCandidate|null>,
+  prepareWindowsUpdate:(id:string)=>ipcRenderer.invoke('app:prepareWindowsUpdate',id) as Promise<import('../shared/windows-update').WindowsUpdateSnapshot|null>,
   activateBackupRestore:(input:import('../shared/backup-restore').BackupRestoreAction)=>ipcRenderer.invoke('app:activateBackupRestore',input) as Promise<import('../shared/backup-restore').BackupRestoreStatus>,
   listStudents: (query = '') => ipcRenderer.invoke('students:list', query),
   createStudent: (input: StudentInput) => ipcRenderer.invoke('students:create', input),

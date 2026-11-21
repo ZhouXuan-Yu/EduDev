@@ -1,0 +1,85 @@
+{
+  "date": "2026-11-21",
+  "base": "022a1b9515b4b90f5789bbffa56314824e065926",
+  "milestone": "UM-01/02 pre-install checks and rollback snapshot preparation",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "evidenceRoot": "E:/EduDev-Harness-Windows-Update-20261121",
+  "mainSha256": "36ded6586b71d3b2f16cad6f9d840593ebb5d64778ec87a506894226b23c1ed9",
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "file": "build-final.log",
+      "sha256": "7ea39c4e6a4ef7e9d72b0db5ca3c29f3ebc7cbbc5acd261f79d03137d96614ae"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253",
+      "file": "components.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/windows-update-electron.mjs",
+      "result": "5/5",
+      "rendererErrors": 0,
+      "file": "xiaozhi-windows-update-bjT0MQ/report.json",
+      "sha256": "ba6d97c6830cd81eba085f2642bd17bd64a76daa254ac3d78b441beadce821d2"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "result": "19/19",
+      "rendererErrors": 0,
+      "file": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Update-Regression-20261121/xiaozhi-backup-compatibility-2iak6o/report.json",
+      "sha256": "d15883fa390e3bfb6c2a124999430b3d3ad9f42feed7bbed66cd0d38e4b57a87"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing findings, dependency tree unchanged",
+      "file": "audit.json",
+      "sha256": "1049725637b3708a89a928224e8ed1777bf575b662a150a4e9eef1056438a6e4",
+      "counts": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 10,
+        "low": 8
+      }
+    }
+  ],
+  "retainedBuildFailure": {
+    "file": "build.log",
+    "sha256": "cd05560c9ececa19307b343b09fbb2e5dbe001936b5adc07d4d00710136f00e5",
+    "reason": "Initial Electron fetch type and optional preload guard corrected before rerun."
+  },
+  "runtime": {
+    "trust": "An owned copy of Windows whoami.exe exercised the real Windows catalogue-signature path. The test intercepted the fixed GitHub release endpoint and did not execute the fixture.",
+    "actualPublicProbe": "The unauthenticated GET to https://api.github.com/repos/ZhouXuan-Yu/EduDev/releases/latest returned HTTP 403 on this host. No genuine signed Xiaozhi candidate was validated in this run.",
+    "signatureFixtureSha256": "23240ef9f8b0a9a324110b1c2331de31dc1b0e08f5359cb707e51a939af56cd3",
+    "backupManifestSha256": "614c3e7f95c5b21775bb61ae664bb62ce5ae4ba1d957632a981531fe5c70239e",
+    "matchedBackupFiles": 8,
+    "proof": "A real full backup includes a synthetic teaching file and is readable through the original backup verifier. The update receipt lives next to the backup so the prepared backup can still be reverified."
+  },
+  "independent": {
+    "reviewer": "Terra",
+    "performed": "Matched the final main SHA-256, installer fixture digest, receipt version fields, backup manifest and all eight file digests. Both viewports show the update actions; button operations are proved by the Electron run.",
+    "screenshots": [
+      {
+        "file": "xiaozhi-windows-update-bjT0MQ/update-ready-1366.png",
+        "sha256": "123acc907fe50bae57f8f8e1e463c5e8401ec8b7c24b354d18f1ca766ca628b9"
+      },
+      {
+        "file": "xiaozhi-windows-update-bjT0MQ/update-ready-1920.png",
+        "sha256": "5f92f6133b6e3de66767907bc5047d6a2678e35fe0d6f1fe9d423d6226fe099e"
+      }
+    ]
+  },
+  "performance": {
+    "change": "Uses streamed SHA-256. Candidate file is never copied by the update workflow. Backup uses the existing SQLite online snapshot and file verification.",
+    "fullSizeInstallerTiming": "Not measured."
+  },
+  "limits": [
+    "No installer execution or release publication was performed.",
+    "A genuine signed Xiaozhi candidate and clean independent Windows environment are still needed for QG-09 and installation/upgrade/rollback evidence.",
+    "Three original model comparison rows remain unsealed. No new paid calls."
+  ],
+  "rollback": "Revert the code if necessary. Original backup format and selected data root are unchanged; generated snapshots use the existing restore entry."
+}

@@ -10,6 +10,7 @@ import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
 import { XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
 import type { XiaozhiMemoryScopeInput } from '../../../shared/xiaozhi-memory';
 import { DataBackupPanel } from '../DataBackupPanel';
+import {WindowsUpdatePanel} from '../WindowsUpdatePanel';
 import type {RecoveryModelSettings} from '../PortableRecoveryChecklist';
 import { PiModelSettings } from './PiModelSettings';
 import { PiSkillSettings } from './PiSkillSettings';
@@ -72,9 +73,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   const [preferences, setPreferences] = useState(readWorkspacePreferences), [preferenceNotice, setPreferenceNotice] = useState('');
   const navigationPreferences = useWorkbenchPreferences();
   const [actionBusy, setActionBusy] = useState(false), [childBusy, setChildBusy] = useState(false);
+  const [updateBusy, setUpdateBusy] = useState(false);
   const [archive, setArchive] = useState<{ title: string; value: XiaozhiWorkspaceSnapshot }>(), [archiveLoading, setArchiveLoading] = useState(false), [archiveNotice, setArchiveNotice] = useState('');
   const live = useRef(true), request = useRef(0), archiveRequest = useRef(0), action = useRef(false), target = useRef('');
-  const busy = actionBusy || childBusy;
+  const busy = actionBusy || childBusy || updateBusy;
   const results = useMemo(() => searchSettings(query, XIAOZHI_SETTINGS_SEARCH_ENTRIES, key => key), [query]);
   async function reload() {
     const own = ++request.current;
@@ -197,8 +199,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             {archiveLoading && <p role="status">正在读取归档记录…</p>}{archiveNotice && <p role="alert">{archiveNotice}</p>}
             {archive && <section className="pi-settings-archive-reader" data-testid="pi-settings-archive-reader"><h2 className={layoutStyles.subheading}>{archive.title}</h2><p>只读记录</p><OfficeConversation projection={archive.value.projection}/></section>}
           </SettingsStack></SettingsPage>}
-          {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}
-            recoveryModel={recoveryModel} onOpenRecoverySetting={setting => open(setting)}/></SettingsSection></SettingsStack></SettingsPage>}
+          {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy || updateBusy} onBusyChange={setChildBusy}
+            recoveryModel={recoveryModel} onOpenRecoverySetting={setting => open(setting)}/></SettingsSection>
+            <WindowsUpdatePanel disabled={locked || actionBusy || childBusy} onBusyChange={setUpdateBusy}/>
+          </SettingsStack></SettingsPage>}
         </main>
       </div>
   </div></EduShell>;

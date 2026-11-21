@@ -75,6 +75,8 @@
 
 接续清单同机 Electron 19 项通过，核对显式切换后冷启、设置直达、合成模型目录下的明确换模及切回。独立检查两个尺寸和最终选择文件。 [本轮证据](../goal/xiaozhi-harness/evidence/phase8/windows-portable-recovery-checklist-20261121.json)
 
+更新前准备通过真实 Electron 5 项，换机恢复回归 19 项。签名由 Windows 验证，发行元数据受控，备份可从原入口复验。独立 Windows 的签名安装版、覆盖和回退待验。 [更新前快照证据](../goal/xiaozhi-harness/evidence/phase8/windows-update-preparation-20261121.json)
+
 发布候选使用实际旧版安装包及其生成的快照。覆盖升级与换机后复跑历史成果入口、文件树、打开方式及另存为，对齐文件版本、文件摘要和新位置。首轮和热轮分别记录，区分索引准备、模型登录和工具依赖。 [发版与换机的交付门槛](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#发版与换机的交付门槛)
 
 本轮复跑 `backup-restore-smoke.mjs` 8/8、`external-output-backup-smoke.mjs` 7/7。测试在 `e990e3c` 工作树使用隔离合成资料，备份目录源码及两份测试脚本与本轮文档基线 `f8381db` 一致。用例未运行安装包或独立 Windows。

@@ -1,4 +1,5 @@
 import {registerBackupRestore} from './backup/restore-api';
+import {registerWindowsUpdate} from './updates/windows-update-api';
 import {backupApplicationVersion} from './backup/compatibility';
 import {selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
@@ -545,6 +546,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
   registerBackupRestore({ipcMain,store,baseRoot:baseDataRoot,profile:app.getPath('userData'),allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),restart:()=>{app.relaunch();app.quit();}});
+  registerWindowsUpdate({ipcMain,store,allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work)});
   const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});
