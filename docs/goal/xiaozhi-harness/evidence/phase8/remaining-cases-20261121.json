@@ -87,5 +87,12 @@
     "firstFixtureFailure": {"fact": "实际拒绝、最终说明及文件检查已通过，随后调用了夹具不存在的 restart，冷读未运行。修正夹具后用同一构建通过。", "reportSha256": "a3f3877363d2755d483e971f9913d1785b84f9728b939ebeaf9abfda95da9d0c"},
     "behavior": "同一 Run 的拒绝以持久审批为准。较早的准入错误明确为历史尝试，保留具体文件状态。未执行该修复后的付费 Q8 样本。"
   },
+  "integration": {
+    "source": "1a87482",
+    "build": {"files": 481, "sha256": "2c634e67e175fefcbc06f5de01d5ea48f1545cf9a2fb426e42a52dc39fcb28d0", "logSha256": "3c6b9dc0fdd13d315d7460c4ad13f4f92791352d52c0333710e9eee773acbd82"},
+    "knowledgeBase": {"result": "54/54", "logSha256": "ea9eb90abdcd095dce0b712b4215a7c913bdcdd776a82355151d802bf260b233"},
+    "copyStatusElectron": {"result": "2/2", "reportSha256": "c88e22922f3b97e1e0c5ddb49ee795e80f5f8eebed34e2459f77a581164463a5", "scope": "后来拒绝、源文件保持、未生成目标及重启后原 Run 读回。无付费请求。"},
+    "firstBuildAttempt": "C 盘无法写合并日志，原尝试未计为通过；改用 E 盘隔离目录后完整构建通过。"
+  },
   "budget": {"used": 188, "remaining": 12, "unresolved": 0}
 }
