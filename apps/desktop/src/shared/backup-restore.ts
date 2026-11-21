@@ -1,7 +1,8 @@
 import type { BackupCompatibility } from './backup-compatibility';
+import type {BackupContinuity} from './backup-continuity';
 
 export const BACKUP_RESTORE_SCHEMA='xiaozhi.backup-restore.v1';
-export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];compatibility?: BackupCompatibility};
+export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];compatibility?: BackupCompatibility;continuity?: BackupContinuity};
 export type BackupRestoreStatus={dataRoot:string;previousRoot?:string};
 export type BackupRestoreAction={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'activate';id:string}|{schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'revert'};
 export function validBackupRestoreAction(x:unknown):x is BackupRestoreAction {

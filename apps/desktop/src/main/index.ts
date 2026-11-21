@@ -1,4 +1,5 @@
 import {registerBackupRestore} from './backup/restore-api';
+import {backupApplicationVersion} from './backup/compatibility';
 import {selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
@@ -324,7 +325,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      const exported = await store.exportDataRoot(result.filePaths[0], app.getVersion());
+      const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app));
       if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
       return exported;
     };
@@ -337,7 +338,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      return store.verifyDataBackup(result.filePaths[0], app.getVersion());
+      return store.verifyDataBackup(result.filePaths[0], backupApplicationVersion(app));
     });
   });
   ipcMain.handle('students:list', (_event, query: string) => store.listStudents(query));

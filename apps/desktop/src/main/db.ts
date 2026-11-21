@@ -19,6 +19,7 @@ import {WORD_PARSER,isWordParser,wordText,type WordPayload} from '../shared/mate
 import {extractWord} from './assets/word-host';
 import {wordUpgradeCompatible} from './assets/word-upgrade-compatible';
 import { backupCompatibility, readBackupDataVersion, readBackupVersion } from './backup/compatibility';
+import {readBackupContinuity} from './backup/continuity';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
 import {assertOutputBackupDestination,copyConversationOutputs,readConversationOutputsBackup} from './backup/conversation-outputs';
 import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-outputs';
@@ -4875,10 +4876,10 @@ export class OmniEduStore {
     const fileCount=copied+1+conversationOutputs.fileCount+externalOutputs.fileCount;
     const manifestPath = join(exportPath, 'omni-edu-backup-manifest.v1.json');
     const entries = await this.collectBackupManifestEntries(exportPath);
-    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, compatibility, excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
+    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, compatibility, ...(compatibility ? {compatibilityAppVersionSource:'desktop'} : {}), excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
     const verification = await this.verifyDataBackup(exportPath, appVersion);
     if (!verification.verified) throw new Error(`备份完整性验证失败：${verification.errorMessage || '文件校验不一致'}`);
-    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, compatibility: verification.compatibility, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
+    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, compatibility: verification.compatibility, continuity: verification.continuity, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
   }
 
   async verifyDataBackup(backupPath: string, appVersion?: string): Promise<DataBackupVerificationResult> {
@@ -4895,7 +4896,7 @@ export class OmniEduStore {
     };
     try {
       if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
-      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown;compatibilityAppVersionSource?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
       if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
       const expected = new Map(parsed.files.flatMap((item) => {
         const relativePath = String(item.path ?? '').replace(/\\/g, '/');
@@ -4922,7 +4923,10 @@ export class OmniEduStore {
       if (!verified || !appVersion || !expected.has('app.db')) return result;
       const dataVersion = await readBackupDataVersion(join(resolvedBackup, 'app.db'));
       const sourceVersion = readBackupVersion(parsed.compatibility, dataVersion);
-      return { ...result, compatibility: backupCompatibility(sourceVersion, dataVersion, appVersion) };
+      const compatibility = backupCompatibility(sourceVersion, dataVersion, appVersion, parsed.compatibilityAppVersionSource);
+      const continuity = compatibility.status === 'ready' || compatibility.status === 'legacy'
+        ? await readBackupContinuity(join(resolvedBackup, 'app.db')) : undefined;
+      return { ...result, compatibility, continuity };
     } catch (error) {
       return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
     }

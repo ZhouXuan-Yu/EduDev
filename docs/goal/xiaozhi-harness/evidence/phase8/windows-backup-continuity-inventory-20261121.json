@@ -1,0 +1,63 @@
+{
+  "sourceParent": "5e3511f5ca5877bf8bb3f02b230c04767b9164f0",
+  "scope": "Existing Windows Settings > Backup, verified export and selected backup preflight and prepared copy. No activation of an arbitrary backup or change to user data.",
+  "version": {
+    "actualDirectLaunchReported": "43.8.3",
+    "buildProduct": "0.1.0",
+    "cause": "Scripts start an Electron executable with the compiled main entry. Electron getVersion returns its own version in that launch.",
+    "writtenManifest": "compatibilityAppVersionSource=desktop; appVersion=0.1.0; SQLite user_version=0",
+    "legacy": "Historical unmarked 43.8.3 produced by the affected launcher is treated as a legacy runtime marker. It still needs matching file bytes and supported SQLite format. A version explicitly marked desktop is subject to the normal version gate."
+  },
+  "inventory": {
+    "inspects": "Verified compatible app.db read-only, known model/thinking settings, actual session joins, saved workspace counts, personal skill records and current template heads. Optional packages/behavior are not certified by counts.",
+    "rendererPayload": "Only presence flags and counts for the new inventory. Known credential values and paths are excluded from the inventory. The ordinary file/backup path display remains.",
+    "copyPolicy": "Full local backup retains its previous contents. No credential extraction, scrub, upload or cross-machine migration package."
+  },
+  "tests": {
+    "root": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Continuity-20261121/xiaozhi-backup-compatibility-cnrI7T",
+    "build": {
+      "command": "npm run build",
+      "mainSha256": "8cf8df82582a8edc243b895dec4416841b705d2c550e9fb7fe79401320561aef",
+      "outSha256": "78e9ac84c916b1f80f655637edce9e7a3e2567495dd92e92ddccd7567069b442",
+      "files": 481,
+      "logSha256": "cdd194e4c9091a2764b503735a9f23b03188803417d2de66eff96105dc629f7c"
+    },
+    "ui": {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "passed": "12/12",
+      "reportSha256": "6fc1898a86d9d4a1f64a75a75106360251525d888a168f06f206da9a6eb002b1",
+      "rendererErrors": 0,
+      "screenshots": [
+        {
+          "size": "1366x768",
+          "sha256": "6bb2b5cf6d7bb1b1afe071651207906c2869c5ea7d85c11ecb371a7314233635"
+        },
+        {
+          "size": "1920x1080",
+          "sha256": "947cbf3a2a2a16fd90185496e235b7ba474cdddbc10a005ee2f14650e1541442"
+        }
+      ]
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": "253/253"
+    },
+    "source": {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "passed": "8/8",
+      "logSha256": "48bed1babbfe29a53d01a72f2eb7742781e325d64ad5162c2ef2862081d1df1c"
+    },
+    "uiContract": {
+      "command": "npm run test:ui-contracts",
+      "status": "FAIL existing framework file fingerprint",
+      "file": "src/renderer/heroui-pro/components/prompt-input/index.ts",
+      "currentSha256": "1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644",
+      "logSha256": "e7503e726147e91e48b0497044cd89870c51000bfcf6cf249332eb0409bd6e5e",
+      "fact": "No change to the protected file or its baseline in this turn."
+    }
+  },
+  "independent": "Terra High observed final build identity, both screenshots have version 0.1.0, confirmed new manifest 7 input hashes, prepared legacy runtime receipt and counts. Tagged future rejection is supported by the actual E2E report rather than a separate independent rerun. Smaller viewport needs vertical scrolling, all material text is readable.",
+  "performance": "Inventory runs only after a verified backup or preflight. No startup query, schema changes or new dependencies. No measured large-backup latency comparison.",
+  "remaining": "No paid calls. ABBA three unsealed rows (198/200 used), QG-09 independent clean Windows, actual packaged update and portable credential-cleaned package and new-machine behavior remain.",
+  "rollback": "Revert this commit to remove the inventory and development version correction. The original v1 backup schema stays readable. New optional top-level provenance can be ignored by earlier readers; new saves contain the product version."
+}

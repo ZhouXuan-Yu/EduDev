@@ -1,4 +1,5 @@
 import type { BackupCompatibility } from './backup-compatibility';
+import type {BackupContinuity} from './backup-continuity';
 
 import type {QuestionDocument} from './question-document';
 export type StudentStatus = 'active' | 'archived';
@@ -721,6 +722,7 @@ export type ExportDataRootResult = {
   conversationOutputs?:ConversationOutputsBackup;
   externalOutputs?:ExternalOutputsBackup;
   compatibility?: BackupCompatibility;
+  continuity?: BackupContinuity;
 };
 
 export type ConversationOutputsBackup={schemaVersion:1;sourceDataRoot:string;sourceOutputRoot:string;scope:string;backupPrefix:string;fileCount:number};
@@ -738,6 +740,7 @@ export type DataBackupVerificationResult = {
   conversationOutputs?:ConversationOutputsBackup;
   externalOutputs?:ExternalOutputsBackup;
   compatibility?: BackupCompatibility;
+  continuity?: BackupContinuity;
 };
 
 export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx' | 'xlsx' | 'pptx';

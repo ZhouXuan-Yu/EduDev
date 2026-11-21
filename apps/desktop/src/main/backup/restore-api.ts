@@ -3,6 +3,7 @@ import type {OmniEduStore} from '../db';
 import {validBackupRestoreAction,type PreparedBackupRestore} from '../../shared/backup-restore';
 import {prepareBackupRestore,verifyPreparedBackupRestore} from './restore';
 import {selectedBackupRoot,selectBackupRoot} from './activation';
+import {backupApplicationVersion} from './compatibility';
 export function registerBackupRestore(options:{ipcMain:Pick<Electron.IpcMain,'handle'>;store:OmniEduStore;baseRoot:string;profile:string;allowed:(event:IpcMainInvokeEvent)=>boolean;job:<T>(work:(assertCurrent:()=>void)=>Promise<T>)=>Promise<T>;restart:()=>void}){
  const prepared=new Map<string,PreparedBackupRestore>(),queues=new Map<string,string[]>();
  async function choose(kind:'source'|'target'){
@@ -18,7 +19,7 @@ export function registerBackupRestore(options:{ipcMain:Pick<Electron.IpcMain,'ha
  options.ipcMain.handle('app:prepareBackupRestore',async event=>{guard(event);return options.job(async current=>{
   const backupPath=await choose('source');current();guard(event);if(!backupPath)return null;
   const parent=await choose('target');current();guard(event);if(!parent)return null;
-  const result=await prepareBackupRestore({backupPath,parent,currentDataRoot:options.store.getDataRoot(),verify:root=>options.store.verifyDataBackup(root,app.getVersion())});current();guard(event);prepared.set(result.id,result);return result;
+  const result=await prepareBackupRestore({backupPath,parent,currentDataRoot:options.store.getDataRoot(),verify:root=>options.store.verifyDataBackup(root,backupApplicationVersion(app))});current();guard(event);prepared.set(result.id,result);return result;
  });});
  options.ipcMain.handle('app:activateBackupRestore',async(event,input)=>{guard(event);if(!validBackupRestoreAction(input))throw Error('invalid_input');return options.job(async current=>{
   let target:string;

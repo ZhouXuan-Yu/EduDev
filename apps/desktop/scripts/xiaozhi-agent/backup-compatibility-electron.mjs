@@ -76,7 +76,9 @@ try {
   page = await app.firstWindow();
   page.on('pageerror', error => rendererErrors.push(String(error)));
   await assertIsolatedPiMain(app, main, profile);
-  const applicationVersion = await app.evaluate(({ app }) => app.getVersion());
+  const runtimeVersion = await app.evaluate(({ app }) => app.getVersion());
+  const applicationVersion = JSON.parse(fs.readFileSync(path.join(desktop,'package.json'),'utf8')).version;
+  assert.notEqual(runtimeVersion, applicationVersion, 'Fixture must exercise direct development launch version distinction');
 
   await page.getByRole('button', { name: '设置', exact: true }).click();
   await page.getByTestId('pi-settings-workspace').waitFor();
@@ -87,6 +89,7 @@ try {
   exported = await page.getByTestId('data-backup-export-path').innerText();
   const manifest = JSON.parse(fs.readFileSync(path.join(exported, manifestFile), 'utf8'));
   assert.deepEqual(manifest.compatibility, { appVersion: applicationVersion, dataVersion: 0 });
+  assert.equal(manifest.compatibilityAppVersionSource,'desktop');
   const originalDatabase = sha(fs.readFileSync(path.join(exported, 'app.db')));
   assert((await page.getByTestId('data-backup-compatibility').innerText()).includes(applicationVersion));
   checks.push('Settings exports verified files with the actual Electron app version and SQLite user_version.');
@@ -97,11 +100,101 @@ try {
   assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
   checks.push('A same-version backup creates an independent restore copy and displays versions before activation.');
 
+  const syntheticKey = 'synthetic-migration-model-credential-never-display';
+  const settingsBackup = copyBackup('saved-settings', (manifest, folder) => {
+    const dbPath = path.join(folder, 'app.db');
+    const db = new DatabaseSync(dbPath);
+    try {
+      db.exec('PRAGMA journal_mode=DELETE');
+      const put = db.prepare('INSERT OR REPLACE INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)');
+      put.run('xiaozhi.provider.v1', JSON.stringify({schema:1, revision:1, defaultModel:'deepseek-flash', sealedKey:syntheticKey}), '2026-11-21');
+      put.run('deepseek', JSON.stringify({model:'deepseek-flash', apiKey:'synthetic-legacy-token-never-display'}), '2026-11-21');
+      put.run('xiaozhi.thinking.default', JSON.stringify({schema:1, revision:1, choice:'high'}), '2026-11-21');
+      db.prepare('INSERT INTO ai_conversation_sessions(id,title,created_at,updated_at) VALUES(?,?,?,?)')
+        .run('aisession_backup_fixture', '合成备课', '2026-11-21', '2026-11-21');
+      put.run('xiaozhi.model.aisession_backup_fixture', JSON.stringify({schema:1, revision:1, model:'deepseek-pro'}), '2026-11-21');
+      put.run('xiaozhi.thinking.aisession_backup_fixture', JSON.stringify({schema:1, revision:1, choice:'low'}), '2026-11-21');
+      put.run('xiaozhi.model.aisession_missing', JSON.stringify({schema:1, revision:1, model:'unused-model'}), '2026-11-21');
+      db.prepare('INSERT INTO xiaozhi_pi_workspaces(conversation_id,path,label,updated_at) VALUES(?,?,?,?)')
+        .run('aisession_backup_fixture', path.join(root,'synthetic-external'), '合成外选目录', '2026-11-21');
+      for (const scope of ['personal','team']) {
+        const id = 'synthetic-' + scope;
+        const payload=JSON.stringify({id,scope,revision:1});
+        db.prepare('INSERT INTO xiaozhi_skill_governance_v1(id,revision,payload_json,payload_hash) VALUES(?,?,?,?)')
+          .run(id, 1, payload, sha(payload));
+      }
+      db.prepare('INSERT INTO paper_template_heads(template_id,student_id,head_version) VALUES(?,?,?)')
+        .run('synthetic-template','synthetic-student',1);
+      db.prepare('INSERT INTO paper_template_versions(template_id,version,digest,name,data_json,created_at) VALUES(?,?,?,?,?,?)')
+        .run('synthetic-template',1,sha('{}'),'合成模板','{}','2026-11-21');
+    } finally { db.close(); }
+    const bytes = fs.readFileSync(dbPath);
+    Object.assign(manifest.files.find(item => item.path === 'app.db'), { size: bytes.length, sha256: sha(bytes) });
+  });
+  const settingsDb = path.join(settingsBackup, 'app.db');
+  const settingsHash = sha(fs.readFileSync(settingsDb));
+  await pick(settingsBackup);
+  await page.getByTestId('data-backup-verify').click();
+  await expectVisible('data-backup-verify-success');
+  const summary = await expectVisible('data-backup-continuity');
+  await summary.getByText('换机前核对', {exact:true}).click();
+  assert.match(await summary.innerText(), /有默认模型记录，会话覆盖 1 项/);
+  assert.match(await summary.innerText(), /有全局思考档次记录，会话覆盖 1 项/);
+  assert.match(await summary.innerText(), /会话工作目录：1 项/);
+  assert.match(await summary.innerText(), /个人技能：1 条记录/);
+  assert.match(await summary.innerText(), /组卷模板：1 份/);
+  await expectVisible('data-backup-credential-notice', /重新配置凭据/);
+  assert.doesNotMatch(await summary.innerHTML(), /synthetic-migration-model-credential-never-display|synthetic-legacy-token-never-display|unused-model|synthetic-external/u);
+  for (const size of [{width:1366,height:768}, {width:1920,height:1080}]) {
+    await page.setViewportSize(size);
+    await summary.scrollIntoViewIfNeeded();
+    assert(await summary.isVisible());
+    assert(await summary.evaluate(element => element.scrollWidth <= element.clientWidth + 1));
+    await page.screenshot({path:path.join(root, 'continuity-' + size.width + '.png')});
+  }
+  assert.equal(sha(fs.readFileSync(settingsDb)), settingsHash);
+  checks.push('A verified backup discloses model, thinking and workspace records without exposing saved credential, orphan settings or filesystem paths in either viewport.');
+
+  await page.getByTestId('data-backup-restore').click();
+  const ready = await expectVisible('data-backup-restore-ready');
+  await ready.getByText('换机前核对', {exact:true}).click();
+  assert.match(await ready.getByTestId('data-backup-continuity').innerText(), /会话覆盖 1 项/);
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
+  assert.equal(sha(fs.readFileSync(settingsDb)), settingsHash);
+  checks.push('The prepared-copy view carries the same read-only inventory and keeps the original active.');
+
+  const olderSettings = copyBackup('unknown-settings', (manifest, folder) => {
+    const dbPath = path.join(folder, 'app.db');
+    const db = new DatabaseSync(dbPath);
+    try { db.exec('PRAGMA journal_mode=DELETE; DROP TABLE app_settings'); } finally { db.close(); }
+    const bytes = fs.readFileSync(dbPath);
+    Object.assign(manifest.files.find(item => item.path === 'app.db'), { size: bytes.length, sha256: sha(bytes) });
+  });
+  await pick(olderSettings);
+  await page.getByTestId('data-backup-verify').click();
+  await expectVisible('data-backup-verify-success');
+  await expectVisible('data-backup-continuity', /暂时无法读取换机设置清单/);
+  checks.push('A verified old backup without settings tables shows a distinct inventory-unavailable state.');
+
   const legacy = copyBackup('legacy', manifest => delete manifest.compatibility);
   await pick(legacy);
   await page.getByTestId('data-backup-restore').click();
   await expectVisible('data-backup-restore-ready', /旧备份未记录应用版本/);
   checks.push('A legacy v1 backup with restorable paths still prepares successfully.');
+
+  const legacyRuntime = copyBackup('legacy-runtime', manifest => {
+    manifest.compatibility.appVersion = runtimeVersion;
+    delete manifest.compatibilityAppVersionSource;
+  });
+  await pick(legacyRuntime);
+  await page.getByTestId('data-backup-restore').click();
+  await expectVisible('data-backup-restore-ready', /旧备份记录的是运行时版本/);
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
+  checks.push('The known legacy launcher runtime version remains restorable as an older backup with no explicit app version.');
+
+  const taggedRuntimeNumber = copyBackup('tagged-new-app', manifest => { manifest.compatibility.appVersion = runtimeVersion; });
+  await verifyAndReject(taggedRuntimeNumber, /恢复前请安装/, /请先在新电脑安装/);
+  checks.push('An explicitly recorded application version matching the former runtime number remains subject to the newer-app gate.');
 
   const newerApp = copyBackup('newer-app', manifest => { manifest.compatibility.appVersion = '999.0.0'; });
   await verifyAndReject(newerApp, /恢复前请安装/, /请先在新电脑安装/);
