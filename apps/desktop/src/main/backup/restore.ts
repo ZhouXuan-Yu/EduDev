@@ -2,41 +2,30 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore} from '../../shared/backup-restore';
-import type {DataBackupVerificationResult} from '../../shared/contracts';
 import {hashFileSha256} from '../local-file-security';
 import {conversationOutputLocation} from '../xiaozhi-agent/conversation-output-path';
 import {assertBackupCompatibility} from './compatibility';
 import {relocateBackupDatabase} from './restore-database';
-import {EXTERNAL_OUTPUT_PREFIX,RESTORED_EXTERNAL_DIRECTORY,readExternalOutputsBackup} from './external-outputs';
-const receiptName='xiaozhi-recovery.v1.json';
-const inside=(a:string,b:string)=>{const r=path.relative(a,b);return !r||!path.isAbsolute(r)&&r!=='..'&&!r.startsWith('..'+path.sep);};
-async function noLinks(file:string){let cursor=path.resolve(file);while(true){const s=await fs.lstat(cursor);if(s.isSymbolicLink())throw Error('恢复路径包含链接，请选择实际目录');const next=path.dirname(cursor);if(next===cursor)break;cursor=next;}}
+import {EXTERNAL_OUTPUT_PREFIX,RESTORED_EXTERNAL_DIRECTORY} from './external-outputs';
+import {inspectBackupRestore,inside,noLinks,recheckRestorePlan,recoveryReceiptName as receiptName,
+  type RestoreSelection,type BackupRestorePlan} from './restore-plan';
 export async function readRecoveryReceipt(root:string):Promise<PreparedBackupRestore|null>{
  try{await noLinks(root);const p=path.join(root,receiptName),s=await fs.lstat(p);if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1||s.size>16384)throw Error('恢复记录无效');const v=JSON.parse(await fs.readFile(p,'utf8')) as PreparedBackupRestore;
   if(v.schemaVersion!==BACKUP_RESTORE_SCHEMA||!/^restore_[a-f0-9-]{36}$/.test(v.id)||v.dataRoot!==await fs.realpath(root)||!path.isAbsolute(v.backupPath)||!Array.isArray(v.warnings))throw Error('恢复记录无效');return v;
  }catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return null;throw e;}
 }
 /** A new owned instance only. Never replace source data, a selected existing directory or another output scope. */
-export async function prepareBackupRestore(options:{backupPath:string;parent:string;currentDataRoot:string;verify:(root:string)=>Promise<DataBackupVerificationResult>;copy?:(from:string,to:string)=>Promise<void>}):Promise<PreparedBackupRestore>{
- await noLinks(options.backupPath);await noLinks(options.parent);
- const backup=await fs.realpath(options.backupPath),parent=await fs.realpath(options.parent),current=await fs.realpath(options.currentDataRoot);
- if(inside(backup,parent)||inside(current,parent)||inside(conversationOutputLocation(current).path,parent))throw Error('恢复位置须在当前数据、生成文件和备份目录之外');
- const verification=await options.verify(backup);if(!verification.verified)throw Error(verification.errorMessage||'备份校验失败，未创建恢复目录');
- assertBackupCompatibility(verification.compatibility);
- const manifestPath=path.join(backup,'omni-edu-backup-manifest.v1.json');const manifestBytes=await fs.readFile(manifestPath),manifest=JSON.parse(manifestBytes.toString('utf8')) as {files:{path:string;size:number;sha256:string}[]};
- const source=verification.conversationOutputs;if(!source)throw Error('此旧备份缺少原数据目录信息，不能猜测文件位置；请在原版本创建包含生成文件信息的新备份。原备份仍可校验。');
- const originalScope=createHash('sha256').update(source.sourceDataRoot.toLowerCase()).digest('hex').slice(0,16);
- if(source.scope!==originalScope||path.resolve(source.sourceOutputRoot)!==path.join(path.dirname(source.sourceDataRoot),'XiaozhiOutputs',originalScope))throw Error('备份原目录信息不一致，未创建恢复目录');
- if(!manifest.files.some(f=>f.path==='app.db'))throw Error('备份缺少数据库，未创建恢复目录');
- const names=new Set<string>();for(const entry of manifest.files){const parts=entry.path.split('/');if(!entry.path||entry.path.includes('\\')||parts.some(p=>!p||p==='.'||p==='..'||/[\x00-\x1f:]/.test(p))||names.has(entry.path.toLowerCase())||!Number.isSafeInteger(entry.size)||entry.size<0||!/^[a-f0-9]{64}$/.test(entry.sha256))throw Error('备份包含不能恢复的路径或重复文件');names.add(entry.path.toLowerCase());}
- const required=manifest.files.reduce((n,f)=>n+f.size,0),space=await fs.statfs(parent);if(required>Number(space.bavail)*Number(space.bsize)-16*1024*1024)throw Error('恢复位置空间不足，原数据未更改');
- const external=readExternalOutputsBackup(verification.externalOutputs,manifest.files.map(f=>f.path));
+export async function prepareBackupRestore(options:RestoreSelection & {
+  plan?:BackupRestorePlan;copy?:(from:string,to:string)=>Promise<void>;
+}):Promise<PreparedBackupRestore>{
+ const plan=options.plan ?? await inspectBackupRestore(options);
+ await recheckRestorePlan(plan,options.currentDataRoot);
+ const {backup,parent,manifestPath,manifestBytes,files,source,external}=plan;
  const id='restore_'+randomUUID(),instance=path.join(parent,'XiaozhiRecovered-'+id.slice(8)),root=path.join(instance,'OmniEduData');
  await fs.mkdir(instance);await fs.mkdir(root);const outputs=conversationOutputLocation(root),copied:{file:string;size:number;sha256:string}[]=[];
- const externalRoots=(external?.roots||[]).map(r=>({sourceRoot:r.sourceRoot,targetRoot:path.join(outputs.path,RESTORED_EXTERNAL_DIRECTORY,r.prefix),files:manifest.files.filter(f=>f.path.startsWith(EXTERNAL_OUTPUT_PREFIX+'/'+r.prefix+'/')).map(f=>f.path.slice(EXTERNAL_OUTPUT_PREFIX.length+r.prefix.length+2))}));
+ const externalRoots=(external?.roots||[]).map(r=>({sourceRoot:r.sourceRoot,targetRoot:path.join(outputs.path,RESTORED_EXTERNAL_DIRECTORY,r.prefix),files:files.filter(f=>f.path.startsWith(EXTERNAL_OUTPUT_PREFIX+'/'+r.prefix+'/')).map(f=>f.path.slice(EXTERNAL_OUTPUT_PREFIX.length+r.prefix.length+2))}));
  try{
-  for(const entry of manifest.files){
-   if(entry.path===receiptName)continue; // A previous restoration receipt is superseded by this new instance.
+  for(const entry of files){
    const prefix=source.backupPrefix+'/',output=entry.path.startsWith(prefix),relative=output?entry.path.slice(prefix.length):entry.path;
    const extra=external?.roots.find(r=>entry.path.startsWith(EXTERNAL_OUTPUT_PREFIX+'/'+r.prefix+'/'));
    const from=path.join(backup,entry.path),to=extra?path.join(outputs.path,RESTORED_EXTERNAL_DIRECTORY,extra.prefix,entry.path.slice(EXTERNAL_OUTPUT_PREFIX.length+extra.prefix.length+2)):path.join(output?outputs.path:root,relative);await noLinks(from);const stat=await fs.lstat(from);

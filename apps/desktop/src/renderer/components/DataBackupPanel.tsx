@@ -1,6 +1,6 @@
 import type { BackupCompatibility } from '../../shared/backup-compatibility';
 import type { BackupPurpose } from '../../shared/backup-purpose';
-import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore,type BackupRestoreStatus} from '../../shared/backup-restore';
+import {BACKUP_RESTORE_SCHEMA,type BackupRestorePreview,type PreparedBackupRestore,type BackupRestoreStatus} from '../../shared/backup-restore';
 import { CheckCircle2, HardDrive, LoaderCircle, ShieldCheck, TriangleAlert, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
@@ -12,6 +12,7 @@ export type DataBackupPanelStatus =
   | 'exporting'
   | 'verifying'
   | 'restoring'
+  | 'restore_preview'
   | 'restore_ready'
   | 'restarting'
   | 'export_success'
@@ -25,6 +26,7 @@ export type DataBackupPanelState = {
   message: string;
   exportResult?: ExportDataRootResult;
   restoreResult?:PreparedBackupRestore;
+  restorePreview?: BackupRestorePreview;
   verificationResult?: DataBackupVerificationResult;
 };
 
@@ -66,6 +68,32 @@ function BackupPurposeSummary({ purpose }: { purpose?: BackupPurpose }) {
   return purpose === 'portable' ? (
     <p data-testid="data-backup-portable">换机包。请在新电脑配置模型密钥和 MCP 连接，重新确认需要的工具授权。</p>
   ) : null;
+}
+
+function displaySize(bytes: number) {
+  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+  const unit = Math.max(0, Math.min(units.length - 1, Math.floor(Math.log2(bytes || 1) / 10)));
+  return new Intl.NumberFormat('zh-CN', {maximumFractionDigits: 2}).format(bytes / 1024 ** unit) + ' ' + units[unit];
+}
+
+function RestorePreview({value, disabled, onPrepare}: {
+  value: BackupRestorePreview; disabled: boolean; onPrepare: () => void;
+}) {
+  const insufficient = value.spaceStatus === 'insufficient';
+  return <div data-testid="data-backup-restore-preview">
+    <p><strong>恢复前核对</strong></p>
+    <p className="pi-settings-location">备份目录 {value.backupPath}</p>
+    <p className="pi-settings-location">目标文件夹 {value.destination}</p>
+    <p>{value.fileCount} 个待恢复文件 · 备份文件合计 {displaySize(value.packageBytes)}</p>
+    <p data-testid="data-backup-restore-space">预计至少需要 {displaySize(value.requiredBytes)} · 目标盘可用 {displaySize(value.availableBytes)}</p>
+    <BackupPurposeSummary purpose={value.purpose}/>
+    <BackupCompatibilitySummary value={value.compatibility}/>
+    <BackupContinuitySummary value={value.continuity}/>
+    {value.omittedOutputs > 0 && <p>备份时有 {value.omittedOutputs} 项外选目录成果未纳入。</p>}
+    {insufficient && <p role="alert">目标盘空间不足。请释放空间，或重新选择保存位置。</p>}
+    <Button variant="primary" isDisabled={disabled || insufficient} onPress={onPrepare}
+      data-testid="data-backup-restore-prepare">创建恢复副本</Button>
+  </div>;
 }
 
 export function DataBackupState({ state }: { state: DataBackupPanelState }) {
@@ -179,13 +207,23 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
     } finally { lock.current = false; }
   };
 
-  const restoreBackup=async(action:'prepare'|'activate'|'revert')=>{
-    if(disabled||lock.current)return;const prepared=state.restoreResult;lock.current=true;
-    setState({status:action==='prepare'?'restoring':'restarting',message:action==='prepare'?'正在校验备份并创建独立恢复副本…':'正在切换数据目录，应用即将重启…'});
+  const restoreBackup=async(action:'preview'|'prepare'|'activate'|'revert')=>{
+    if(disabled||lock.current)return;
+    const {restoreResult:prepared,restorePreview:preview}=state;lock.current=true;
+    const preparing=action==='preview'||action==='prepare';
+    const message=action==='preview'?'正在核对备份和目标盘空间…'
+      : action==='prepare'?'正在创建并校验独立恢复副本…':'正在切换数据目录，应用即将重启…';
+    setState({status:preparing?'restoring':'restarting',message});
     try{
-      const api=window.omniEdu;if(!api?.prepareBackupRestore||!api.activateBackupRestore)throw Error('恢复接口不可用，请重新启动应用。');
-      if(action==='prepare'){
-        const result=await api.prepareBackupRestore();
+      const api=window.omniEdu;
+      if(!api?.previewBackupRestore||!api.prepareBackupRestore||!api.activateBackupRestore)throw Error('恢复接口不可用，请重新启动应用。');
+      if(action==='preview'){
+        const result=await api.previewBackupRestore();
+        setState(result?{status:'restore_preview',message:'备份核对完成。',restorePreview:result}
+          :{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
+      }else if(action==='prepare'){
+        if(!preview||preview.spaceStatus!=='ready')throw Error('请先核对备份和恢复位置');
+        const result=await api.prepareBackupRestore(preview.id);
         setState(result?{status:'restore_ready',message:'独立恢复副本已准备好。使用前请切换并重启，当前数据仍在原目录。',restoreResult:result}:{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
       }else{
         if(action==='activate'&&!prepared)throw Error('请先准备恢复副本');
@@ -196,7 +234,9 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
     finally{lock.current=false;}
   };
   const restoreControls=<div className="pi-settings-actions" data-testid="data-backup-restore-controls">
-    <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('prepare')} data-testid="data-backup-restore">恢复备份到新目录</Button>
+    <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('preview')} data-testid="data-backup-restore">{state.restorePreview?'重新选择备份和位置':'恢复备份到新目录'}</Button>
+    {state.restorePreview&&<RestorePreview value={state.restorePreview} disabled={busy||disabled}
+      onPrepare={()=>void restoreBackup('prepare')}/>}
     {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><BackupPurposeSummary purpose={state.restoreResult.purpose}/><BackupCompatibilitySummary value={state.restoreResult.compatibility}/><BackupContinuitySummary value={state.restoreResult.continuity}/><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
     {restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('revert')} data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
   </div>;
@@ -209,7 +249,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
     {restoreControls}
     <div aria-live="polite">
-      {state.status === 'restore_ready' ? null : state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
+      {['restore_preview','restore_ready'].includes(state.status) ? null : state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
         : <div role={['error','verification_failed'].includes(state.status) ? 'alert' : 'status'} data-testid={`data-backup-${state.status === 'export_success' ? 'export-success' : state.status === 'verify_success' ? 'verify-success' : state.status === 'verification_failed' ? 'verify-failed' : busy ? 'loading' : state.status}`}>
           <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}

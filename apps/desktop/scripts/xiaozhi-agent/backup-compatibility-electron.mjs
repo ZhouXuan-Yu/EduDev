@@ -170,6 +170,7 @@ try {
 
   await pick(exported);
   await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
   await expectVisible('data-backup-restore-ready', /备份版本/);
   assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
   checks.push('A same-version backup creates an independent restore copy and displays versions before activation.');
@@ -230,6 +231,7 @@ try {
   checks.push('A verified backup discloses model, thinking and workspace records without exposing saved credential, orphan settings or filesystem paths in either viewport.');
 
   await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
   const ready = await expectVisible('data-backup-restore-ready');
   await ready.getByText('换机前核对', {exact:true}).click();
   assert.match(await ready.getByTestId('data-backup-continuity').innerText(), /会话覆盖 1 项/);
@@ -253,6 +255,7 @@ try {
   const legacy = copyBackup('legacy', manifest => delete manifest.compatibility);
   await pick(legacy);
   await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
   await expectVisible('data-backup-restore-ready', /旧备份未记录应用版本/);
   checks.push('A legacy v1 backup with restorable paths still prepares successfully.');
 
@@ -262,6 +265,7 @@ try {
   });
   await pick(legacyRuntime);
   await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
   await expectVisible('data-backup-restore-ready', /旧备份记录的是运行时版本/);
   assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
   checks.push('The known legacy launcher runtime version remains restorable as an older backup with no explicit app version.');
@@ -320,7 +324,30 @@ try {
   await page.getByTestId('data-backup-verify').click();
   await expectVisible('data-backup-verify-success');
   await expectVisible('data-backup-portable');
+  const beforePreview = fs.readdirSync(restoreRoot);
+  await app.evaluate(async (electron, target) => {
+    const fs = process.getBuiltinModule('node:fs/promises');
+    const statfs = fs.statfs;
+    globalThis.restoreSpaceProbe = () => {fs.statfs = statfs;};
+    fs.statfs = (file, options) => file === target
+      ? Promise.resolve({bavail: 1n, bsize: 4096n})
+      : statfs(file, options);
+  }, restoreRoot);
   await page.getByTestId('data-backup-restore').click();
+  const blocked = await expectVisible('data-backup-restore-preview', /目标盘空间不足/);
+  assert(await blocked.getByTestId('data-backup-restore-prepare').isDisabled());
+  assert.deepEqual(fs.readdirSync(restoreRoot), beforePreview);
+  await app.evaluate(() => globalThis.restoreSpaceProbe());
+  await page.getByTestId('data-backup-restore').click();
+  const preview = await expectVisible('data-backup-restore-preview', /新电脑配置模型密钥/);
+  assert.match(await preview.getByTestId('data-backup-restore-space').innerText(), /预计至少需要 .*目标盘可用/);
+  assert.match(await preview.innerText(), /备份文件合计/);
+  assert.deepEqual(fs.readdirSync(restoreRoot), beforePreview);
+  await page.setViewportSize({width:1366,height:768});
+  await preview.getByTestId('data-backup-restore-prepare').scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(root, 'restore-preflight-1366.png')});
+  checks.push('Restore previews real capacity with no copy, and disables preparation in the controlled insufficient-space branch.');
+  await preview.getByTestId('data-backup-restore-prepare').click();
   const portableReady = await expectVisible('data-backup-restore-ready', /新电脑配置模型密钥/);
   const migratedRoot = await portableReady.locator('.pi-settings-location').innerText();
   checkPortableDatabase(path.join(migratedRoot, 'app.db'), markers[2], sessionId, true);

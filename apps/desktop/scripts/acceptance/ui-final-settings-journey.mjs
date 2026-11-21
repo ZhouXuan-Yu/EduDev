@@ -80,7 +80,7 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
     await shot('11-restore-cancel');
   });
   await check('X07-restore-preview','Prepare real separate restore copy, preview impact and leave without activation',async()=>{
-    await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
+    await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-prepare').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
     const text=await page.getByTestId('data-backup-restore-ready').innerText();assert.match(text,/原目录保留/);assert.match(text,/旧任务不会自动继续/);assert(await page.getByTestId('data-backup-restore-activate').isVisible());
     const dirs=fs.readdirSync(path.join(output,'restore'));assert.equal(dirs.length,1);
     report.restoreCopy=await page.getByTestId('data-backup-restore-ready').locator('.pi-settings-location').innerText();
@@ -121,7 +121,7 @@ export async function settingsJourney({get,output,data,profile,restoreActivation
       const target=path.join(output,'restore-activation');fs.mkdirSync(target);
       assert.equal(await app.evaluate(()=>process.env.OMNI_EDU_E2E_RESTORE_RELAUNCH),'manual');
       await app.evaluate((_e,{backup,target})=>{process.env.OMNI_EDU_E2E_RESTORE_SOURCE_QUEUE=JSON.stringify([backup]);process.env.OMNI_EDU_E2E_RESTORE_TARGET_QUEUE=JSON.stringify([target]);},{backup:backupPath,target});
-      await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
+      await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-prepare').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
       activatedRoot=fs.realpathSync(await page.getByTestId('data-backup-restore-ready').locator('.pi-settings-location').innerText());
       const relative=path.relative(fs.realpathSync(target),activatedRoot);assert(relative&&!path.isAbsolute(relative)&&relative!=='..'&&!relative.startsWith('..'+path.sep));
       await captureRestoreLedger(activatedRoot,backupPath);

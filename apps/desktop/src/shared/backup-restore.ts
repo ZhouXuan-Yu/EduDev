@@ -3,6 +3,20 @@ import type {BackupContinuity} from './backup-continuity';
 import type {BackupPurpose} from './backup-purpose';
 
 export const BACKUP_RESTORE_SCHEMA='xiaozhi.backup-restore.v1';
+export type BackupRestorePreview = {
+  id: string;
+  backupPath: string;
+  destination: string;
+  fileCount: number;
+  packageBytes: number;
+  requiredBytes: number;
+  availableBytes: number;
+  spaceStatus: 'ready' | 'insufficient';
+  purpose?: BackupPurpose;
+  compatibility?: BackupCompatibility;
+  continuity?: BackupContinuity;
+  omittedOutputs: number;
+};
 export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];purpose?:BackupPurpose;compatibility?: BackupCompatibility;continuity?: BackupContinuity};
 export type BackupRestoreStatus={dataRoot:string;previousRoot?:string};
 export type BackupRestoreAction={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'activate';id:string}|{schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'revert'};

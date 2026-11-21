@@ -1,6 +1,7 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs/promises';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash,randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';
 const {prepareBackupRestore,verifyPreparedBackupRestore}=await import('../../src/main/backup/restore.ts');
+const {inspectBackupRestore}=await import('../../src/main/backup/restore-plan.ts');
 const {selectedBackupRoot,selectBackupRoot}=await import('../../src/main/backup/activation.ts');
 const {collectDataBackupEntries}=await import('../../src/main/backup/data-root-files.ts');
 const {conversationOutputLocation}=await import('../../src/main/xiaozhi-agent/conversation-output-path.ts');
@@ -16,6 +17,27 @@ const files=await collectDataBackupEntries(backup),meta={schemaVersion:1,sourceD
 const verify=async folder=>{const manifest=JSON.parse(await fs.readFile(path.join(folder,'omni-edu-backup-manifest.v1.json'))),actual=await collectDataBackupEntries(folder);return{verified:JSON.stringify(manifest.files)===JSON.stringify(actual),conversationOutputs:manifest.conversationOutputs,errorMessage:'受控清单实际文件不符'};};
 const report={ok:false,root,checks:[],boundary:'Actual isolated SQLite/files/manifest/copy/address migration/profile selection; source fixture rows are contract data, not teacher actions. Actual original Pi/settings restore is tested separately.'};const check=n=>{report.checks.push(n);console.log('PASS '+n);};
 try{
+ const selection={backupPath:backup,parent:target,currentDataRoot:source,verify};
+ const plan=await inspectBackupRestore(selection);
+ assert.equal(plan.preview.packageBytes,files.reduce((total,file)=>total+file.size,0));
+ assert.equal(plan.preview.requiredBytes,plan.preview.packageBytes+16*1024*1024);
+ assert(plan.preview.availableBytes>=plan.preview.requiredBytes);
+ assert.deepEqual(await fs.readdir(target),[]);
+ const statfs=fs.statfs;
+ try{
+  fs.statfs=(file,options)=>file===target?Promise.resolve({bavail:1n,bsize:1024n}):statfs(file,options);
+  const blocked=await inspectBackupRestore(selection);
+  assert.equal(blocked.preview.spaceStatus,'insufficient');
+  await assert.rejects(prepareBackupRestore({...selection,plan}),/空间不足/);
+  assert.deepEqual(await fs.readdir(target),[]);
+ }finally{fs.statfs=statfs;}
+ const manifestCandidate=path.join(backup,'omni-edu-backup-manifest.v1.json');
+ const candidateBytes=await fs.readFile(manifestCandidate);
+ await fs.appendFile(manifestCandidate,'\n');
+ await assert.rejects(prepareBackupRestore({...selection,plan}),/变化/);
+ assert.deepEqual(await fs.readdir(target),[]);
+ await fs.writeFile(manifestCandidate,candidateBytes);
+ check('Read-only preview reports actual bytes; lower capacity or a changed manifest blocks preparation before creating an instance');
  const before=sha(await fs.readFile(path.join(source,'app.db'))),prepared=await prepareBackupRestore({backupPath:backup,parent:target,currentDataRoot:source,verify});await verifyPreparedBackupRestore(prepared);const destination=conversationOutputLocation(prepared.dataRoot);
  assert.equal(await fs.readFile(path.join(destination.path,id,'浮力.html'),'utf8'),html);const cold=new DatabaseSync(path.join(prepared.dataRoot,'app.db'),{readOnly:true});
  try{assert.equal(cold.prepare('SELECT file_path FROM document_artifacts').get().file_path,path.join(destination.path,id,'浮力.html'));assert.equal(cold.prepare('SELECT local_path FROM teacher_resources').get().local_path,path.join(prepared.dataRoot,'originals','teacher.txt'));assert.equal(cold.prepare('SELECT workspace_hash FROM xiaozhi_pi_text_changes').get().workspace_hash,sha(path.join(destination.path,id)));assert.equal(Buffer.from(cold.prepare('SELECT after_bytes FROM xiaozhi_pi_text_changes').get().after_bytes).toString(),Buffer.from(html).toString());assert.equal(cold.prepare('SELECT report_json FROM xiaozhi_delivery_inspections').get().report_json,originalReport);assert.equal(cold.prepare('SELECT count(*) n FROM xiaozhi_pi_workspaces').get().n,0);assert.equal(cold.prepare('SELECT status FROM ai_tasks').get().status,'cancelled');}finally{cold.close();}

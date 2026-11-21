@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-21",
+  "base": "a777ff4a8b3af730ac48c8ec24c9708158965453",
+  "module": "M11, restore preview and capacity checks",
+  "commandRoot": "D:/WorkProject/EduProject-harness/apps/desktop",
+  "evidenceRoot": "E:/EduDev-Harness-Restore-Preflight-20261121",
+  "mainSha256": "58bc24812db89aa7514842ec486f4aeb3347f1a6b4b2ee0254a6fb4a96745ccd",
+  "checks": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "file": "build-final.log",
+      "sha256": "5d8095c268ed6774ce65ca1be02924c2a26694cbaead53cc166be27937724303"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253",
+      "file": "components.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "result": "17/17",
+      "file": "xiaozhi-backup-compatibility-xoWhYZ/report.json",
+      "sha256": "58f23f6cc9edebe7368d22edcbe40a49b28c15b4abe076071cc5ef86a2a4fbc1"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "result": "9/9",
+      "file": "backup-source-final.log",
+      "sha256": "dda01adc1de5a104c46787a8547d7ce8ed2b17deb279edffd79d232e9180f52b"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/external-output-backup-ui.mjs D:/WorkProject/EduProject-harness/apps/desktop/out",
+      "result": "4/4",
+      "file": "xiaozhi-external-backup-ui-PaNdtc/report.json",
+      "sha256": "2ecdcd70967045055e922a7da49cb4eb0c6f9721870a1e03d5b94a3af048ad64",
+      "observations": [
+        "Actual Pi created the sample HTML and PPTX using intercepted synthetic SSE; the fixture approved the current document permission and the actual bundle.",
+        "Explicit restore activation and cold launch kept source files, original DB bytes, and session/event bindings intact.",
+        "The restored PPTX preview opened and the offline HTML control still worked."
+      ]
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing reports, no dependency changes",
+      "file": "audit-final.json",
+      "sha256": "a7e6a80ea1bb4260feadb76b8537abb2b169ca64a98d06cedcaf105ae1bd3718",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 7,
+        "low": 8
+      }
+    }
+  ],
+  "retainedAttempts": [
+    {
+      "file": "external-backup-ui.log",
+      "sha256": "bfe07ce3a12a1616dcf1f14fa37f2e8bdaf40bccd648148551e66badf7c2ea40",
+      "result": "Command omitted the required build directory and exited before launch."
+    },
+    {
+      "file": "external-backup-ui-retry.log",
+      "sha256": "177deb2fa30a889bcd651cc74d7e858855031ec9531e065e54e457e93e7912d7",
+      "result": "Fixture waited for a bundle while the original runtime was waiting for its visible one-time filesystem approval. The test was updated to make that approval; production permission behavior is unchanged."
+    }
+  ],
+  "independent": {
+    "reviewer": "Terra",
+    "result": "Matched the main artifact hash, read the 1366×768 screenshot and both full/portable restore receipts. The screenshot showed 8 files, 2.8 MiB logical bytes, 18.8 MiB minimum and 120.39 MiB at that observation. Button visibility was verified in the screenshot; actual interaction is covered in the Electron test.",
+    "screenshot": "xiaozhi-backup-compatibility-xoWhYZ/restore-preflight-1366.png",
+    "sha256": "5775c842bf02a1e695ee0d6e2e4029b32917df581482a39d7ce9bc16471bdc69"
+  },
+  "performance": {
+    "mode": "One same-worktree isolated run, 2,920,448-byte synthetic DB",
+    "fullExportMs": 230,
+    "portableExportMs": 234,
+    "restoreAtScale": "not measured"
+  },
+  "limitations": [
+    "Real capacity on the target-volume ready branch; simulated capacity for the insufficient branch; no deliberate full-disk test.",
+    "The local host is CoreCountrySpecific build 26200; no clean independent Windows guest or installed candidate was used. QG-09, signed release, program upgrade/rollback and cross-PC migration remain open.",
+    "The minimum estimate includes file lengths and 16 MiB headroom. It does not account for post-restore indexing, filesystem allocation or all future SQLite writes."
+  ],
+  "newPaidRequests": 0,
+  "formalPaidLedgerUnchanged": "198/200",
+  "rollback": "Revert the commit. Existing backup and recovery receipt formats, the previously selected workspace, and copies already prepared remain readable."
+}

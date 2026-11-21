@@ -2,10 +2,12 @@ import {app,dialog,type IpcMainInvokeEvent} from 'electron';
 import type {OmniEduStore} from '../db';
 import {validBackupRestoreAction,type PreparedBackupRestore} from '../../shared/backup-restore';
 import {prepareBackupRestore,verifyPreparedBackupRestore} from './restore';
+import {inspectBackupRestore,type BackupRestorePlan} from './restore-plan';
 import {selectedBackupRoot,selectBackupRoot} from './activation';
 import {backupApplicationVersion} from './compatibility';
 export function registerBackupRestore(options:{ipcMain:Pick<Electron.IpcMain,'handle'>;store:OmniEduStore;baseRoot:string;profile:string;allowed:(event:IpcMainInvokeEvent)=>boolean;job:<T>(work:(assertCurrent:()=>void)=>Promise<T>)=>Promise<T>;restart:()=>void}){
  const prepared=new Map<string,PreparedBackupRestore>(),queues=new Map<string,string[]>();
+ let pendingPreview:{senderId:number;plan:BackupRestorePlan}|undefined;
  async function choose(kind:'source'|'target'){
   if(!app.isPackaged&&process.env.OMNI_EDU_E2E_DIALOG_MODE==='1'){
    const name='OMNI_EDU_E2E_RESTORE_'+kind.toUpperCase()+'_QUEUE';let queue=queues.get(kind);
@@ -15,11 +17,33 @@ export function registerBackupRestore(options:{ipcMain:Pick<Electron.IpcMain,'ha
   const result=await dialog.showOpenDialog({title:kind==='source'?'选择要恢复的小智备份':'选择独立恢复副本的保存位置',properties:kind==='source'?['openDirectory']:['openDirectory','createDirectory']});return result.canceled?'':result.filePaths[0]||'';
  }
  const guard=(e:IpcMainInvokeEvent)=>{if(!options.allowed(e))throw Error('permission_denied');};
- options.ipcMain.handle('app:backupRestoreStatus',async event=>{guard(event);return selectedBackupRoot(options.profile,options.baseRoot);});
- options.ipcMain.handle('app:prepareBackupRestore',async event=>{guard(event);return options.job(async current=>{
+ const verify=(root:string)=>options.store.verifyDataBackup(root,backupApplicationVersion(app));
+ async function chooseSelection(event:IpcMainInvokeEvent,current:()=>void){
   const backupPath=await choose('source');current();guard(event);if(!backupPath)return null;
   const parent=await choose('target');current();guard(event);if(!parent)return null;
-  const result=await prepareBackupRestore({backupPath,parent,currentDataRoot:options.store.getDataRoot(),verify:root=>options.store.verifyDataBackup(root,backupApplicationVersion(app))});current();guard(event);prepared.set(result.id,result);return result;
+  return {backupPath,parent,currentDataRoot:options.store.getDataRoot(),verify};
+ }
+ options.ipcMain.handle('app:backupRestoreStatus',async event=>{guard(event);return selectedBackupRoot(options.profile,options.baseRoot);});
+ options.ipcMain.handle('app:previewBackupRestore',async event=>{guard(event);return options.job(async current=>{
+  pendingPreview=undefined;
+  const selection=await chooseSelection(event,current);if(!selection)return null;
+  const plan=await inspectBackupRestore(selection);current();guard(event);
+  pendingPreview={senderId:event.sender.id,plan};
+  return plan.preview;
+ });});
+ options.ipcMain.handle('app:prepareBackupRestore',async(event,id:unknown)=>{guard(event);return options.job(async current=>{
+  let selection;
+  if(id===undefined){
+   pendingPreview=undefined;
+   selection=await chooseSelection(event,current);if(!selection)return null;
+  }else{
+   const pending=pendingPreview;
+   if(typeof id!=='string'||pending?.senderId!==event.sender.id||pending.plan.preview.id!==id)throw Error('恢复预检已失效，请重新核对');
+   pendingPreview=undefined;
+   const {plan}=pending;
+   selection={backupPath:plan.backup,parent:plan.parent,currentDataRoot:options.store.getDataRoot(),verify,plan};
+  }
+  const result=await prepareBackupRestore(selection);current();guard(event);prepared.set(result.id,result);return result;
  });});
  options.ipcMain.handle('app:activateBackupRestore',async(event,input)=>{guard(event);if(!validBackupRestoreAction(input))throw Error('invalid_input');return options.job(async current=>{
   let target:string;

@@ -40,6 +40,8 @@ try{
  await app.evaluate(({dialog},dir)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[dir]});},external);
  await page.getByTestId('pi-permission-picker').click();await page.getByRole('menuitem',{name:'选择教学工作目录',exact:true}).click();await until(async()=>(await snap()).workspace);
  await page.getByTestId('office-prompt-input').fill('合成备份验证：在所选教学目录保存HTML演示和8页可编辑PPT，每页含教师讲解备注，整包确认。');await page.getByTestId('office-prompt-input').press('Enter');
+ const permission=page.locator('[data-testid="pi-permission-approval"][data-state="pending"]');
+ await permission.getByTestId('pi-permission-approve').click({timeout:60000});
  const bundle=page.getByTestId('pi-delivery-bundle').last();await bundle.waitFor({timeout:60000});await until(async()=>!await bundle.getByTestId('pi-delivery-approve').isDisabled());await bundle.getByTestId('pi-delivery-approve').click();
  await until(async()=>!(await snap()).running);
  }
@@ -52,7 +54,7 @@ try{
  const manifest=JSON.parse(fs.readFileSync(path.join(backupPath,'omni-edu-backup-manifest.v1.json')));assert.equal(manifest.externalOutputs.fileCount,2);assert.equal(manifest.externalOutputs.omittedCount,0);assert((await page.getByTestId('data-backup-external-summary').innerText()).includes('2 个另选目录成果'));
  assert(!manifest.files.some(f=>f.path.includes('不在账本中的资料')));for(const file of report.sourceFiles){const m=manifest.files.find(f=>f.path.endsWith('/'+file.name));assert(m);assert.equal(m.sha256,file.sha256);}check('Visible original settings backup includes two exact external files, reports their count and excludes unregistered teacher-workspace files');
  // The restore source queue is fixed at process launch, so normal cold launch binds this just-created backup.
- await close();await launch();assert.equal(current,data);await settings();await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
+ await close();await launch();assert.equal(current,data);await settings();await page.getByTestId('data-backup-restore').click();await page.getByTestId('data-backup-restore-prepare').click();await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
  for(const [width,height]of [[1366,768],[1920,1080]]){await app.evaluate(({BrowserWindow},v)=>{const w=BrowserWindow.getAllWindows()[0];w.webContents.setZoomFactor(1);w.setContentSize(v.width,v.height);},{width,height});await page.waitForFunction(w=>innerWidth===w,width);await page.getByTestId('data-backup-restore-activate').scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await screenshot('restore-ready-'+width+'.png');}
  await page.getByTestId('data-backup-restore-activate').click();await until(()=>fs.existsSync(path.join(profile,'xiaozhi-data-selection.v1.json')));report.restoredDataRoot=JSON.parse(fs.readFileSync(path.join(profile,'xiaozhi-data-selection.v1.json'))).dataRoot;assert.notEqual(report.restoredDataRoot,data);await close();const originalDbHash=sha256(fs.readFileSync(path.join(data,'app.db')));await launch();assert.equal(current,report.restoredDataRoot);
  const restoredWorkspace=sql(current,'SELECT path FROM xiaozhi_pi_workspaces')[0].path;assert(restoredWorkspace.startsWith(path.join(path.dirname(current),'XiaozhiOutputs')+path.sep));assert.notEqual(restoredWorkspace,external);

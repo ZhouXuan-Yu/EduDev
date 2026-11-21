@@ -500,7 +500,8 @@ const api = {
   exportDataRoot: (purpose?: import('../shared/backup-purpose').BackupPurpose) =>
     ipcRenderer.invoke('app:exportDataRoot', purpose) as Promise<ExportDataRootResult | null>,
   verifyDataBackup: () => ipcRenderer.invoke('app:verifyDataBackup') as Promise<DataBackupVerificationResult | null>,
-  prepareBackupRestore:()=>ipcRenderer.invoke('app:prepareBackupRestore') as Promise<import('../shared/backup-restore').PreparedBackupRestore|null>,
+  previewBackupRestore:()=>ipcRenderer.invoke('app:previewBackupRestore') as Promise<import('../shared/backup-restore').BackupRestorePreview|null>,
+  prepareBackupRestore:(id?:string)=>ipcRenderer.invoke('app:prepareBackupRestore',id) as Promise<import('../shared/backup-restore').PreparedBackupRestore|null>,
   backupRestoreStatus:()=>ipcRenderer.invoke('app:backupRestoreStatus') as Promise<import('../shared/backup-restore').BackupRestoreStatus>,
   activateBackupRestore:(input:import('../shared/backup-restore').BackupRestoreAction)=>ipcRenderer.invoke('app:activateBackupRestore',input) as Promise<import('../shared/backup-restore').BackupRestoreStatus>,
   listStudents: (query = '') => ipcRenderer.invoke('students:list', query),
