@@ -1,0 +1,115 @@
+{
+  "date": "2026-11-21",
+  "localEvidenceRoot": "D:/WorkProject/EduDev-Harness-Unlimited-20261121",
+  "productionCommit": "a65d1b141de68359614ba6133459deffb6ba2255",
+  "closedBuild": {
+    "sha256": "ad63b3bd2b1bf33a3a957c004ae805d7f635845a331c73d8e647a40905485ab5",
+    "files": 481
+  },
+  "changed": [
+    "answer-quality.ts",
+    "answer-evidence.ts",
+    "generated core-tool manifests",
+    "Phase 8 targeted retest fixtures"
+  ],
+  "amendment": "Basic subject answers preserve material conditions and counts. Registered local citations include actual line spans. Use only observed filenames and source locations. Confirm speaker-note presence before claiming every slide has notes.",
+  "results": [
+    {
+      "id": "Q1-r2-B",
+      "collected": "PASS",
+      "requests": 1,
+      "receiptSha256": "b5387053f01fba5e66319e723f7d1da97c1f6828423494333b934cfb3d610ac9",
+      "rendererSubmitToTerminalMs": 4301.9,
+      "beforeBlindScore": 7,
+      "afterBlindScore": 10,
+      "hardFailure": false,
+      "unresolved": [
+        "permissionViolation",
+        "privacyLeak"
+      ],
+      "answer": "蒸发是液体在任何温度下都能在表面悄悄进行的汽化，比如湿衣服晾干；沸腾则要等液体被加热到沸点，液体内部和表面一起剧烈冒泡汽化，比如水烧开时翻滚冒泡。因此，蒸发缓慢且不受温度限制，沸腾必须达到沸点，并且比蒸发剧烈得多。"
+    },
+    {
+      "id": "Q2-r2-B",
+      "collected": "PASS",
+      "requests": 2,
+      "receiptSha256": "09c38cda33c8d76fdaa3b8717d7670a2ffc68f67bdda9060b40d0a0dee07c48b",
+      "rendererSubmitToTerminalMs": 6489.1,
+      "beforeBlindScore": 5,
+      "afterBlindScore": 10,
+      "hardFailure": false,
+      "unresolved": [
+        "permissionViolation",
+        "privacyLeak"
+      ],
+      "answer": "我先直接读取工作区的 facts.txt，再严格依据文件内容回答。\n根据工作区文件 facts.txt，植物光合作用需要**光、水和二氧化碳**。\n\n来源文件：facts.txt（该文件正文明确写有“植物光合作用需要光、水和二氧化碳”）。文件中没有提到其他条件，因此这里不补充温度、叶绿体、氧气等其他内容。"
+    }
+  ],
+  "collection": "PASS",
+  "review": "REVIEW_INCOMPLETE",
+  "quality": "REVIEW_INCOMPLETE",
+  "ledger": {
+    "historicalAttempts": 198,
+    "authorization": "unlimited",
+    "total": 262,
+    "addedThisTurn": 64,
+    "unresolved": 0,
+    "latestTargetedRequests": 3,
+    "latestSequences": [
+      260,
+      261,
+      262
+    ],
+    "integrity": "ok",
+    "historicalAttemptsAndEventsUnchanged": true
+  },
+  "phases": {
+    "archivedCoverage": 32,
+    "firstFormal": "FAIL",
+    "sameCandidateRepeat": "FAIL after 8/32, legacy courseware deadline",
+    "qg09": "BLOCKED: current Windows installer not built; independent clean Windows missing",
+    "currentReleaseBuildVerifiedInCleanWindows": false
+  },
+  "independentReviewer": "GPT-6.1 Terra High",
+  "evidence": {
+    "quality-fix/xiaozhi-phase8-correction-807caX/summary.json": "90cca2bbe5c37f045c148a273734cb45bb0c26298ce8b9a9fb4fe1ef2ca87410",
+    "quality-fix/xiaozhi-phase8-correction-807caX/execution-manifest.json": "78dacfd73c903782923b3b412bf8c7ef593277eafc40909b057e0919b2afbae1",
+    "quality-fix/xiaozhi-phase8-correction-807caX/builds-after.json": "4dfd8ee0521f7d2a99f68b859917c330bca24971427d5e7f11857f526cd43a7e",
+    "quality-fix/blind-review/readback.json": "2c06f43921dcce61ef578d5025aae5242534c13265f302f9ba3839f4ce9b6339",
+    "quality-fix/blind-review/review-terra.json": "cf267b7de3c652f5e31d766fa91a03313e6480e369008a8f04df9cf8dff45a10",
+    "quality-fix/blind-review/paired-report.json": "696c94f28bac1a9c8720bd5fb4e90f32907102408f814d6ac573090b112dd680",
+    "quality-fix/build.log": "fe2e2902cb63d136875bfd140f79acedfd3411e9f1bccc86c111fcce32122fe6",
+    "quality-fix/renderer.log": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a",
+    "quality-fix/answer-transform.log": "864d787329f5427c15eec07095b51d4aea601ede4862ff024cd07ca4d77801f2",
+    "quality-fix/protocol.log": "dde3c82b009f89c5b2693f83dd0150b1589869ce51d1864a089b0455d95193ee",
+    "quality-fix/electron-smoke.log": "6e27a451c572340cd86f02692256c0b76d11e5ee5e4ce116193509815d92495b"
+  },
+  "tests": {
+    "build": "PASS (main, preload, renderer and tsc)",
+    "rendererComponents": "253/253",
+    "phase8Budget": "12/12",
+    "phase8Protocol": "24/24",
+    "answerActualPiWire": "12/12 (--experimental-transform-types)",
+    "productionAudit": {
+      "exit": 1,
+      "total": 20,
+      "high": 2,
+      "moderate": 10,
+      "low": 8,
+      "critical": 0
+    },
+    "electronSmoke": {
+      "result": "PASS",
+      "exit": 0,
+      "command": "node scripts/electron-smoke.mjs",
+      "passed": 207,
+      "total": 207,
+      "viewports": [
+        "1366x768",
+        "1920x1080"
+      ]
+    }
+  },
+  "scopeLimit": "Targeted observations use different samples/builds and are not paired estimates of general quality or speed. Archive records keep original failures.",
+  "rollback": "Revert the two answer-specific source changes and regenerate manifests if needed. Preserve the authorization and full paid-request history in the SQLite ledger."
+}

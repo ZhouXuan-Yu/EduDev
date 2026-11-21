@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 小智短答条件和资料引用
+
+两条原失败的合成题通过真实 Electron 重新采集。独立评审确认两句解释保留适用范围，并确认读取单行文件时能按题意只给出文件来源与原文条件。仍按独立报告保留权限和外发证据缺口，整体正式对照和 Windows QG-09 状态见专项。 [本轮验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)
+
 ## 2026-11-21 已保存文件与后续未写入尝试
 
 实际桌面流程核对审批、精确文件字节、前后拦截的尝试及同一 Run 的冷启读回。专项使用合成文本和本地模型夹具。 [证据](../goal/xiaozhi-harness/evidence/phase8/q7-scoped-delivery-attempts-20261121.json)

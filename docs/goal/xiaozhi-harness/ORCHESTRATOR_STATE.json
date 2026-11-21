@@ -33,13 +33,13 @@
     "Current local Windows NSIS packaging failed with ENOSPC after five frozen resource checks; clean Windows QG-09 remains blocked."
   ],
   "paidRequestLimit": null,
-  "paidRequestCount": 259,
+  "paidRequestCount": 262,
   "paidRequestLedger": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite",
-  "paidRequestLedgerStatus": "UNCAPPED_259_USED_0_UNRESOLVED",
+  "paidRequestLedgerStatus": "UNCAPPED_262_USED_0_UNRESOLVED",
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Freeze the new short-answer and source-locator patch, collect only Q1-r2-B and Q2-r2-B under the existing ledger, then independently check the observed failures. Do not repeat the complete 32-row block again in this run. QG-09 requires a matching package and a clean Windows environment.",
+  "next": "Retain the fixed 32 archived rows and the separate failed full candidate run. The Q3 legacy failure and incomplete independent model evidence remain. Continue external QG-09 once a matching release can be packaged and a clean recoverable Windows x64 target is available.",
   "phase8BlockingAudit20261121": {
     "status": "BLOCKED_EXTERNAL_PREREQUISITES",
     "evidence": "evidence/phase8/final-blocking-audit-20261121.json",
@@ -1038,7 +1038,7 @@
     "next": "Targeted real-model retests, incomplete formal rows, and independent QG-09 remain."
   },
   "phase8Uncapped20261121": {
-    "status": "ARCHIVE_COVERAGE_COMPLETE_FORMAL_RETEST_FAILED_QUALITY_REPAIR",
+    "status": "TARGETED_QUALITY_RETEST_COMPLETE_QG09_BLOCKED_FORMAL_FAIL",
     "evidence": "evidence/phase8/uncapped-targeted-readback-20261121.json",
     "currentFrozenB": "07fa1359cacbabc525e7f50e82a3e94bcee4a3cc",
     "targetedCapture": "3/3, 18 real HTTP attempts, 3 cold matches",
@@ -1050,6 +1050,12 @@
     "latestFormal": "8/32 captured. Legacy Q3-r1-A exceeded fifteen minutes, 22 HTTP attempts, no courseware, Run binding unverified.",
     "latestFormalQuality": "Independent blind grades show two factual defects in the candidate. New general prompt and real source locators ready for targeted retest.",
     "focusedCourseware": "1/1 current candidate collected. Independent HTML input/reset and PPTX four-slide math PASS scoped; 7/10, missing two pages of speaker notes.",
-    "formalAndCoursewareEvidence": "evidence/phase8/frozen-retest-courseware-20261121.json"
+    "formalAndCoursewareEvidence": "evidence/phase8/frozen-retest-courseware-20261121.json",
+    "groundedAnswerFix": "a65d1b141de68359614ba6133459deffb6ba2255",
+    "groundedAnswerRetest": {
+      "evidence": "evidence/phase8/grounded-short-answer-retest-20261121.json",
+      "collection": "2/2",
+      "blindQuality": "10/10 in both, permission and privacy still UNKNOWN"
+    }
   }
 }
