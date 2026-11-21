@@ -23,7 +23,7 @@ try {
   const {schedule, tasks, syntheticFiles, validateManifest, preparePlan, q5Source, question, sha256} = await import('./phase8-real-model-plan.mjs');
   const {readFrozenQuestionSeed} = await import('./phase8-question-seed.mjs');
   const {installProviderBridge} = await import('./phase8-real-model-transport.mjs');
-  const {verifiedRunBinding, collectFiles, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
+  const {verifiedRunBinding, collectFiles, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence,q5PermissionScopes} = await import('./phase8-real-model-readback.mjs');
   const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete, continueApprovedQ5, bindDispatchAttempts} = await import('./phase8-real-model-run.mjs');
   const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
   const {selectCorrectionRows, correctionBudget} = await import('./phase8-correction-plan.mjs');
@@ -227,7 +227,7 @@ try {
       CREATE TABLE ai_confirmation_items(id TEXT,session_id TEXT,run_id TEXT,action_type TEXT,payload_json TEXT);
       CREATE TABLE xiaozhi_permission_audit_v1(session_id TEXT,kind TEXT,reference TEXT,metadata_json TEXT);`);
     for (const id of ['run_original','run_continued']) db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(id,'session_q5','failed','fixture-model');
-    const approval = {schemaVersion:2,id:'approval_q5',revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner:{sessionId:'session_q5',taskId:'task_q5',runId:'run_original',generation:1},summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:[{kind:'network',origin:new URL(q5Source).origin,methods:['GET']}]}};
+    const approval = {schemaVersion:2,id:'approval_q5',revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner:{sessionId:'session_q5',taskId:'task_q5',runId:'run_original',generation:1},summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:q5PermissionScopes}};
     db.prepare('INSERT INTO ai_confirmation_items VALUES(?,?,?,?,?)').run(approval.id,'session_q5','run_original','xiaozhi_permission_v2',JSON.stringify(approval));
     const records = readOriginalRecords(file,'session_q5','run_original'), binding={sessionId:'session_q5',taskId:'task_q5',runId:'run_original'};
     const input={task:'Q5',binding,records,webpageHttpTiming:{rows:[]}};
@@ -258,10 +258,12 @@ try {
     const native=[];
     for(const [runId,callId,success] of [['run_original','call_denied',false],['run_continued','call_read',true]]){
       db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(runId,'session_q5','succeeded','fixture-model');
-      db.prepare('INSERT INTO xiaozhi_tool_receipts VALUES(?,?,?,?,?,?,?)').run(runId,callId,'office_web_fetch',Number(success),'entry_'+callId,'a'.repeat(64),'{}');
       native.push({id:'request_'+callId,message:{role:'assistant',content:[{type:'toolCall',id:callId,name:'office_web_fetch',arguments:{url:q5Source,find:['private-body-canary']}}]}});
       native.push({id:'entry_'+callId,message:{role:'toolResult',toolName:'office_web_fetch',toolCallId:callId,isError:!success,content:[{type:'text',text:'private-body-canary credential-canary'}],
         details:success?{success:true,data:{sources:[{url:q5Source,kind:'read',title:'private-body-canary'}]}}:{success:false,error:{code:'permission_denied'}}}});
+      const message = native.at(-1).message;
+      const digest = sha256(JSON.stringify([message.toolName,message.content,message.isError]));
+      db.prepare('INSERT INTO xiaozhi_tool_receipts VALUES(?,?,?,?,?,?,?)').run(runId,callId,'office_web_fetch',Number(success),'entry_'+callId,digest,'{}');
     }db.close();
     const nativeFile=path.join(data,'xiaozhi-pi',relative);fs.mkdirSync(path.dirname(nativeFile),{recursive:true});fs.writeFileSync(nativeFile,native.map(item=>JSON.stringify(item)).join('\n')+'\n');
     const evidence=(runId,rows)=>readQ5SourceEvidence({databasePath:file,binding:{runId,sessionId:'session_q5'},records:readOriginalRecords(file,'session_q5',runId),webpageHttpTiming:{rows}});
@@ -272,6 +274,10 @@ try {
     assert.equal(evidence('run_continued',[]).status,'not_read');
     assert.equal(evidence('run_continued',[{status:503,responseEndAt:5}]).status,'not_read');
     assert(!JSON.stringify({denied,read}).includes('private-body-canary'));assert(!JSON.stringify({denied,read}).includes('credential-canary'));
+    const tampered = new DatabaseSync(file);
+    tampered.prepare('UPDATE xiaozhi_tool_receipts SET native_digest=? WHERE run_id=?').run('a'.repeat(64),'run_continued');tampered.close();
+    const changed=evidence('run_continued',[{status:200,responseEndAt:5}]);
+    assert.equal(changed.receipts[0].persistedMatched,false);assert.equal(changed.status,'not_read');
     fs.writeFileSync(nativeFile,'{invalid');assert.equal(evidence('run_continued',[{status:200,responseEndAt:5}]).nativeStatus,'readback_unavailable');
   });
   await check('Q5 uses one visible exact-task continuation and records unavailable legacy UI without another Composer command', async () => {
@@ -391,9 +397,9 @@ try {
     assert.throws(() => verifyQ5ActiveApproval({...records,approvalAudit:[...approvalAudit,approvalAudit[0]]},binding,decision), /phase8_active_approval/u);
   });
   await check('Synthetic draft review rejects replacement, unrelated names and changes beyond the approved outputs', () => {
-    const practice = {task:'Q7', kind:'text', names:['practice.txt'], existing:[], diff:'+1 合成练习：3/4 + 1/4 = 1', isEdit:false, previous:[]};
+    const practice = {task:'Q7', kind:'text', names:['practice.txt'], existing:[], after:'合成练习：3/4 + 1/4 = 1', isEdit:false, previous:[]};
     assert(plannedSyntheticSave(practice));
-    for (const bad of [{existing:practice.names},{names:['other.txt']},{diff:practice.diff+'\n+2 extra'},{isEdit:true}]) {
+    for (const bad of [{existing:practice.names},{names:['other.txt']},{after:practice.after+'\n'},{isEdit:true}]) {
       assert(!plannedSyntheticSave({...practice,...bad}));
     }
     const bundle = {...practice,task:'Q3',kind:'bundle',names:['浮力课件.pptx','互动.html']};
@@ -487,7 +493,7 @@ try {
         CREATE TABLE xiaozhi_permission_audit_v1(session_id TEXT,kind TEXT,reference TEXT,metadata_json TEXT);`);
       db.prepare('INSERT INTO app_settings VALUES(?,?)').run('xiaozhi.task.v1:xitask_fixture',JSON.stringify({view:{id:taskId,sessionId,origin:{runId:firstId},lastRunId:nextId}}));
       const owner={sessionId,taskId,runId:firstId,generation:1};
-      const approval={schemaVersion:2,id:'approval_'+value.id,revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner,summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:[{kind:'network',origin:new URL(q5Source).origin,methods:['GET']}]}};
+      const approval={schemaVersion:2,id:'approval_'+value.id,revision:2,state:'approved',scope:'operation',requestDigest:'a'.repeat(64),request:{action:'office_web_fetch',owner,summary:'office_web_fetch\n'+JSON.stringify({url:q5Source}),scopes:q5PermissionScopes}};
       db.prepare('INSERT INTO ai_confirmation_items VALUES(?,?,?,?,?)').run(approval.id,sessionId,firstId,'xiaozhi_permission_v2',JSON.stringify(approval));
       const snapshot={...value.snapshot,task:{id:taskId}},file=path.join(value.output,'app-fixture.sqlite');
       const first=readOriginalRecords(file,sessionId,firstId),originalBinding=verifiedRunBinding({sessionId,runId:firstId,snapshot,records:first});

@@ -9,11 +9,11 @@ const draftCards = {
 };
 
 /** Changes outside these named synthetic outputs require a human decision. */
-export function plannedSyntheticSave({task, kind, names, existing, diff, isEdit, previous}) {
+export function plannedSyntheticSave({task, kind, names, existing, after, isEdit, previous}) {
   if (names.some(name => !name || /[\\/:\x00-\x1f]/u.test(name) || name.includes('..') || name.trim() !== name)) return false;
   if (task === 'Q7') {
     return kind === 'text' && names.length === 1 && names[0] === 'practice.txt' && !isEdit && !existing.length
-      && diff.trim() === '+1 ' + practice;
+      && after === practice;
   }
   if (task !== 'Q3') return false;
   const extensions = names.map(name => path.extname(name).toLowerCase()).sort().join(',');
@@ -33,7 +33,7 @@ async function visibleFileNames(card, kind) {
   }));
 }
 
-export async function confirmSyntheticArtifact(page, task, workspace, decisions) {
+export async function confirmSyntheticArtifact(page, task, workspace, decisions, sessionId) {
   const kinds = task === 'Q3' ? ['bundle','office','text'] : task === 'Q7' ? ['text'] : [];
   for (const kind of kinds) {
     const [testId, idAttribute, approve] = draftCards[kind];
@@ -49,11 +49,16 @@ export async function confirmSyntheticArtifact(page, task, workspace, decisions)
       const revision = await card.getAttribute('data-revision');
       const names = await visibleFileNames(card, kind);
       const existing = names.filter(name => name && !/[\\/:]/u.test(name) && fs.existsSync(path.join(workspace, name)));
-      const diffNode = card.getByTestId('pi-text-diff');
-      const diff = task === 'Q7' && await diffNode.count() === 1 ? await diffNode.innerText() : '';
+      const review = task === 'Q7' && id ? await page.evaluate(async ({sessionId, changeId}) => {
+        const response = await window.omniEdu.reviewXiaozhiChange({sessionId, changeId});
+        if (!response?.ok) return null;
+        const {id, revision, after} = response.value;
+        return {id, revision, after};
+      }, {sessionId, changeId:id}) : null;
       const isEdit = kind === 'text' && await card.getByText('修改文件', {exact:true}).count() === 1;
       if (!id || !/^[A-Za-z0-9_-]+$/u.test(id)
-          || !plannedSyntheticSave({task,kind,names,existing,diff,isEdit,previous:decisions})) throw Error('phase8_unexpected_correction_draft');
+          || task === 'Q7' && (!review || review.id !== id || String(review.revision) !== revision)
+          || !plannedSyntheticSave({task,kind,names,existing,after:review?.after,isEdit,previous:decisions})) throw Error('phase8_unexpected_correction_draft');
       const startedAt = performance.now();
       await button.click({timeout:5000});
       decisions.push({id,kind,revision,files:names,edit:isEdit,startedAt,completedAt:performance.now()});

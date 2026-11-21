@@ -1,0 +1,52 @@
+{
+  "candidate": "8b2d4de7a674d3cffdf9f47870df96dcb6614a9b",
+  "candidateBuildSha256": "ff24cabc3cdd9da7c0172abba3282bf0b502bf08ef13a11195823c2d189015d4",
+  "originalComparison": "formal-collection-first-stop-20261121.json",
+  "webCorrection": "q5-bounded-correction-20261121.json",
+  "batches": [
+    {
+      "location": "C:/Users/ZhouXuan/AppData/Local/Temp/edudev-harness-phase8-remaining-20261121/xiaozhi-phase8-correction-8DIJHe",
+      "collected": ["Q5-r2-A","Q6-r1-A","Q6-r1-B"],
+      "cap": 8,
+      "requests": 4,
+      "summarySha256": "52a6cbe07ecb81933f2ac2987d2693ed1983ced3ecead3b30aca5dd82b884b48",
+      "joinedReviewSha256": "459d21e9488adfeefc4da68683eda51475bcbf7e211cc51d949e8c78e6707ebe"
+    },
+    {
+      "location": "C:/Users/ZhouXuan/AppData/Local/Temp/edudev-harness-phase8-remaining-20261121/xiaozhi-phase8-correction-DoVLXT",
+      "collected": ["Q6-r2-B","Q6-r2-A","Q7-r1-A"],
+      "failed": "Q7-r1-B",
+      "stopReason": "phase8_correction_budget_exhausted",
+      "cap": 12,
+      "requests": 12,
+      "summarySha256": "0fc94db59ecc6b315b9c8a97a0f38b47c77db15175e7f078713f951be6fa7451",
+      "joinedReviewSha256": "faa6398122cae1ffb7b8ad69ec936dec609cb994cf0c33806c2003363cf33b93"
+    },
+    {
+      "location": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-SfgDhW",
+      "collected": ["Q8-r1-A","Q8-r1-B"],
+      "failed": "Q8-r2-B",
+      "notExecuted": "Q8-r2-A",
+      "stopReason": "phase8_correction_budget_exhausted",
+      "cap": 12,
+      "requests": 12,
+      "summarySha256": "7c3e7b514e35f10ed76fe4b0095c6713f9cbc7e271634fdf2b111d11c1150d6e",
+      "joinedReviewSha256": "33e41ecd9137effcd8bb63189684cbca2e0432e2402686cbb32c6a20b38c1149"
+    }
+  ],
+  "findings": {
+    "Q6": "四个已独立盲评样本都没有用一次分数推断趋势。盲包没有独立的会话读回，权限和隐私完整性保持未知。",
+    "Q7": "旧版 Q7-r1-A 原 UI 确认后写出 29 字节，末尾多 0A，预期 28 字节。差异视图的加行相同，现改用原 typed 审阅的完整文本逐字比较。新版原样本在规划参数尝试后达子额度，尚未保存。观察到模型把只属于 update_plan 的 basisCallIds 放进 update_task_plan。",
+    "Q8": "两个首轮各有一次实际拒绝，均未生成 copy.txt，原文件摘要保留。新版最终说明选择了先前步骤准入错误，未清楚反映后来拒绝。独立盲评权限历史与完整隐私不足，保持未知。",
+    "Q5": "两份新版本归档只读重核全部已批准范围、SQLite native_digest 和原生工具结果摘要，均匹配完整 GET 200。原始报告保持封存。"
+  },
+  "checks": {
+    "protocol": "24/24",
+    "reviewProtocol": "39/39",
+    "reviewJoin": "三份独立评审通过样本、产物、账本子额度和原报告摘要校验，结果仍属部分验收。",
+    "exactPracticeElectron": {"result": "4/4", "sha256": "94447dbd5711d2c08d7cc04332c2daa417a7ce2e2b01467247f982e9e39e7eb8"},
+    "renderer": "253/253",
+    "build": {"files": 481, "sha256": "9a9d8475987c017dd5dc60c1eee96a614df84b6c285e3e31b9ef57dee8a76c98", "logSha256": "00e8741e7a066292f3619a720892d6ad9912fa6c98dc0d51fb8ecc60c8f9c8cd"}
+  },
+  "budget": {"used": 171, "remaining": 29, "unresolved": 0}
+}

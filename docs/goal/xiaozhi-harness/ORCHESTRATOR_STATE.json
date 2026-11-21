@@ -32,13 +32,13 @@
     "Managed skill startup and the two original same-task Runs passed on 3781b5b. Preserve the prior timed-out Runs and the first candidate local-index read failure. Older Q5 causality remains unknown."
   ],
   "paidRequestLimit": 200,
-  "paidRequestCount": 143,
+  "paidRequestCount": 171,
   "paidRequestLedger": "D:/WorkProject/EduProject-harness/apps/desktop/test-results/xiaozhi-agent/phase8-real-model-budget/goal.sqlite",
-  "paidRequestLedgerStatus": "143_USED_57_REMAINING_0_UNRESOLVED",
+  "paidRequestLedgerStatus": "171_USED_29_REMAINING_0_UNRESOLVED",
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Preserve both Q5 correction samples, gather independent readback evidence and continue bounded Q3, Q6–Q8 and other missing or affected cases. QG-09 still needs a clean Windows x64 guest.",
+  "next": "Validate exact Q7 with the updated write-tool wording. Repair Q8 final reporting of a later rejection. Continue bounded Q3 and missing Q7–Q8 rows. QG-09 still needs a clean Windows x64 guest.",
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",

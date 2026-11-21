@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {schedule, sha256} from './phase8-real-model-plan.mjs';
+import {schedule, sha256, validateManifest} from './phase8-real-model-plan.mjs';
+import {loadCorrectionPlan} from './phase8-correction-plan.mjs';
 
 export const criteria = Object.freeze([
   {id: 'factualCorrectness', name: '事实/计算正确'},
@@ -140,15 +141,30 @@ function validateReview(review, samples) {
   return grades;
 }
 
-export function summarizeReviews(collectionDirectory, gradedReviewFile, newReportFile) {
+export function summarizeReviews(collectionDirectory, gradedReviewFile, newReportFile, {correction = false} = {}) {
   const root = directory(collectionDirectory), summaryFile = confined(root, 'summary.json'), summary = json(summaryFile);
-  requireThat(summary.mode === 'execute', 'execute_collection_required');
-  requireThat(same(summary.plannedRunIds, schedule.map(row => row.id)) && Array.isArray(summary.results)
-    && same(summary.results.map(row => row.id), schedule.map(row => row.id)), 'exact32_schedule_required');
+  requireThat(summary.mode === (correction ? 'correct' : 'execute'), correction ? 'correction_collection_required' : 'execute_collection_required');
+  let planned = schedule;
+  let correctionProof;
+  if (correction) {
+    const selectionFile = confined(root, 'correction-selection.json'), selection = json(selectionFile);
+    const manifestFile = confined(root, 'execution-manifest.json'), manifest = validateManifest(json(manifestFile));
+    const selected = loadCorrectionPlan(manifest, summary.plannedRunIds, selection.maxRequests);
+    requireThat(same(selected.rows, selection.rows) && same(selected.original, selection.original), 'correction_selection_mismatch');
+    const usage = summary.correctionUsage;
+    requireThat(usage?.maxRequests === selected.maxRequests && Number.isSafeInteger(usage.used)
+      && usage.used >= 0 && usage.used <= selected.maxRequests && usage.remaining === selected.maxRequests - usage.used
+      && summary.budget?.used - selection.budgetBefore?.used >= usage.used, 'correction_usage_mismatch');
+    planned = selected.rows;
+    correctionProof = {original: selected.original, candidate: manifest.versions.B.commit,
+      selectionSha256: sha256(fs.readFileSync(selectionFile)), manifestSha256: sha256(fs.readFileSync(manifestFile)), usage};
+  }
+  requireThat(same(summary.plannedRunIds, planned.map(row => row.id)) && Array.isArray(summary.results)
+    && same(summary.results.map(row => row.id), planned.map(row => row.id)), correction ? 'correction_schedule_mismatch' : 'exact32_schedule_required');
   requireThat(['PASS', 'FAIL', 'NOT_TESTED', 'BLOCKED'].includes(summary.collectionStatus), 'invalid_collection_status');
   const firstUncollected = summary.results.findIndex(row => row.collectionStatus !== 'PASS');
   if (summary.collectionStatus === 'PASS') requireThat(firstUncollected === -1 && summary.stoppedAt === null, 'collection_status_contradiction');
-  else requireThat(firstUncollected >= 0 && summary.stoppedAt?.id === schedule[firstUncollected].id
+  else requireThat(firstUncollected >= 0 && summary.stoppedAt?.id === planned[firstUncollected].id
     && summary.results.slice(firstUncollected + 1).every(row => row.collectionStatus === 'NOT_TESTED'), 'collection_stop_contradiction');
   const {samples} = loadSamples(confined(root, 'blind-samples', 'directory'));
   const bySample = new Map(samples.map(item => [item.sample.id, item]));
@@ -158,7 +174,7 @@ export function summarizeReviews(collectionDirectory, gradedReviewFile, newRepor
   requireThat(Array.isArray(identityMap), 'invalid_identity_map');
   const byExecution = new Map(), usedSamples = new Set();
   for (const item of identityMap) {
-    const expected = schedule.find(row => row.id === item.executionId), sample = bySample.get(item.sampleId)?.sample;
+    const expected = planned.find(row => row.id === item.executionId), sample = bySample.get(item.sampleId)?.sample;
     requireThat(exactKeys(item, ['sampleId', 'executionId', 'version', 'round', 'sampleSha256']) && expected && sample
       && item.version === expected.version && item.round === expected.round && sample.task === expected.task
       && item.sampleSha256 === bySample.get(item.sampleId).evidence[0].sha256
@@ -167,7 +183,7 @@ export function summarizeReviews(collectionDirectory, gradedReviewFile, newRepor
   }
   requireThat(usedSamples.size === samples.length, 'unpaired_sample');
   const review = json(gradedReviewFile), grades = validateReview(review, samples), rows = [];
-  for (const [index, expected] of schedule.entries()) {
+  for (const [index, expected] of planned.entries()) {
     const collected = summary.results[index];
     requireThat(['PASS', 'FAIL', 'NOT_TESTED', 'BLOCKED'].includes(collected.collectionStatus), 'invalid_collection_status');
     requireThat(collected.collectionStatus === 'NOT_TESTED' ? collected.receiptSha256 === null
@@ -216,16 +232,17 @@ export function summarizeReviews(collectionDirectory, gradedReviewFile, newRepor
     return {task, rows: taskRows, pairs: [1, 2].map(round => {
       const a = taskRows.find(row => row.round === round && row.version === 'A');
       const b = taskRows.find(row => row.round === round && row.version === 'B');
-      return {round, A: a.id, B: b.id, scoreDeltaBMinusA: a.grade?.reviewComplete && b.grade?.reviewComplete
+      return {round, A: a?.id ?? null, B: b?.id ?? null, scoreDeltaBMinusA: a?.grade?.reviewComplete && b?.grade?.reviewComplete
         ? b.grade.total - a.grade.total : null,
-      AResult: a.result, BResult: b.result};
+      AResult: a?.result ?? 'NOT_SELECTED', BResult: b?.result ?? 'NOT_SELECTED'};
     })};
   });
   const bRows = rows.filter(row => row.version === 'B');
-  const report = {schemaVersion: 1, kind: 'phase8-independent-review-join', mode: summary.mode,
+  const report = {schemaVersion: 1, kind: correction ? 'phase8-independent-correction-review-join' : 'phase8-independent-review-join', mode: summary.mode,
+    ...(correction ? {correction: correctionProof} : {}),
     collectionStatus: summary.collectionStatus, stoppedAt: summary.stoppedAt ?? null,
     reviewStatus: rows.every(row => row.grade?.reviewComplete) ? 'COMPLETE' : 'REVIEW_INCOMPLETE',
-    bPresetQuality: bRows.some(row => row.result === 'FAIL') ? 'FAIL'
+    bPresetQuality: !bRows.length ? 'NOT_TESTED' : bRows.some(row => row.result === 'FAIL') ? 'FAIL'
       : bRows.every(row => row.result === 'MEETS_PRESET_QUALITY') ? 'MEETS_PRESET_QUALITY' : 'REVIEW_INCOMPLETE',
     reviewer: review.reviewer, groups,
     fingerprints: {summarySha256: sha256(fs.readFileSync(summaryFile)), identityMapSha256: sha256(fs.readFileSync(mapFile)),
@@ -234,14 +251,15 @@ export function summarizeReviews(collectionDirectory, gradedReviewFile, newRepor
       'Preset quality results do not establish product acceptance, performance acceptance, or the separately required failure/recovery runs.',
       'A failures and original collection failures remain visible. UNKNOWN hard defects remain unresolved regardless of totals.',
       'SHA seals detect changes relative to the supplied collection receipt; they are not signatures or proof of reviewer independence.']};
-  newJson(newReportFile, report, path.join(root, 'blind-samples')); return report;
+  newJson(newReportFile, report, correction ? root : path.join(root, 'blind-samples')); return report;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   try {
     const [action, first, second, third, ...extra] = process.argv.slice(2);
-    requireThat(!extra.length && first && second && (action === 'template' ? !third : action === 'summarize' && third), 'usage_template_blindDir_newFile_or_summarize_collectionDir_reviewFile_newReport');
-    const result = action === 'template' ? createReviewTemplate(first, second) : summarizeReviews(first, second, third);
+    requireThat(!extra.length && first && second && (action === 'template' ? !third : ['summarize', 'summarize-correction'].includes(action) && third), 'usage_template_blindDir_newFile_or_summarize_collectionDir_reviewFile_newReport');
+    const result = action === 'template' ? createReviewTemplate(first, second)
+      : summarizeReviews(first, second, third, {correction: action === 'summarize-correction'});
     console.log(JSON.stringify(action === 'template' ? {action, samples: result.samples.length, output: path.resolve(second)}
       : {action, collectionStatus: result.collectionStatus, reviewStatus: result.reviewStatus, bPresetQuality: result.bPresetQuality, output: path.resolve(third)}));
   } catch (error) {console.error(error.message); process.exitCode = 1;}
