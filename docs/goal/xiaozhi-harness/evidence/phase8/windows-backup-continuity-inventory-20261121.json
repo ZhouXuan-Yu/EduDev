@@ -54,6 +54,17 @@
       "currentSha256": "1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644",
       "logSha256": "e7503e726147e91e48b0497044cd89870c51000bfcf6cf249332eb0409bd6e5e",
       "fact": "No change to the protected file or its baseline in this turn."
+    },
+    "npmAudit": {
+      "command": "npm audit --omit=dev --json",
+      "exitCode": 1,
+      "sha256": "78fcc8880419ad66e74b32809609291ee7f5b1f715851f559c0ac473302d7047",
+      "total": 20,
+      "low": 8,
+      "moderate": 10,
+      "high": 2,
+      "critical": 0,
+      "scope": "Package manifest and lock unchanged since 5e3511f. Compared with that audit response, the refresh included three additional moderate propagated npm findings for @narumitw/pi-tui-kit, @narumitw/pi-usage and pi-goal-x. Neither result certifies the final installer."
     }
   },
   "independent": "Terra High observed final build identity, both screenshots have version 0.1.0, confirmed new manifest 7 input hashes, prepared legacy runtime receipt and counts. Tagged future rejection is supported by the actual E2E report rather than a separate independent rerun. Smaller viewport needs vertical scrolling, all material text is readable.",
