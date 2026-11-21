@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-21",
+  "base": "8cb1fb8d20a2f8c0496005ce29451bf2708e375b",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "evidenceRoot": "E:/EduDev-Harness-Delivery-Attempts-20261121",
+  "checkpoint": "Q7 final reply scopes a blocked follow-up to its own attempt",
+  "buildSha256": "a1ef69eea98e06bda406e0692eb772b55608b01675f75d9641b6374bf2c97d3e",
+  "rationale": "A previous real Q7 sample correctly wrote the requested 28 bytes yet its reply paired a saved file record with an unqualified no-saved-output message. The real Electron fixture reproduces a blocked create before a teacher-confirmed exact save and another blocked create after that save.",
+  "reproduced": [
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+      "result": "Expected FAIL for message scope before the targeted fix.",
+      "file": "source-before.log",
+      "sha256": "0e61b93adbb64adea467281bc8a92465750c10f15eb24784b09ab0ae52a502bf"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs --practice-draft --failed-file-attempts",
+      "result": "Expected FAIL after an exact saved file and two blocked requests. Final display incorrectly says no confirmable saved output.",
+      "buildSha256": "6de8351936d9a1b8a608b8c4d2d88bb5d0348e08f30b0c2b2513664b410aee1d",
+      "file": "omni-edu-xiaozhi-phase7-workbench-ui-03ySv3/evidence/permission-active-run-report.json",
+      "sha256": "f0cb597060b004487babf5996817a85c03b701c073f8e84f89a27a93d7768a01",
+      "processLog": {
+        "file": "before.log",
+        "sha256": "35eeba4f7c22a5a1376199d7a40cd662f169efab076cf6074050bc074e92acc7"
+      }
+    }
+  ],
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "file": "build-final.log",
+      "sha256": "58d5568380dc65cfa034b4075b6dc59dac844098d400855e5d96073fa1ea925a"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+      "result": "19/19",
+      "file": "source-final.log",
+      "sha256": "276b475ea458c18fd83a59a9b129a42ede808683984c2e7d31364b5f21e6b76f"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs (same output after npm.cmd run build)",
+      "result": "PASS",
+      "frontendScenarioAssertions": 207,
+      "file": "electron-smoke.log",
+      "sha256": "c0bdd7ea729803a39280ca7dad8d98e1b48b81b62dd8ba5b6aa79190b1c48efa"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs --practice-draft --failed-file-attempts",
+      "result": "5/5",
+      "file": "omni-edu-xiaozhi-phase7-workbench-ui-WcwXqb/evidence/permission-active-run-report.json",
+      "sha256": "da6041eb38b0f28982872bd087989f44fe8cf14b2857f87c02f5d035c75403b7",
+      "processLog": {
+        "file": "after.log",
+        "sha256": "18c19501b5a450d5b3f1117599e25f2dfff0b6d3576893b4a9f6d3bb3d011d4e"
+      }
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase8-copy-rejection-electron.mjs",
+      "result": "2/2",
+      "file": "copy-rejection.log",
+      "sha256": "3a063e8cc061e2724a70358747b63e1a4f05c2a760848fea211cc7e51b487f7d"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing advisory counts; no package metadata changed",
+      "counts": {
+        "low": 8,
+        "moderate": 10,
+        "high": 2,
+        "critical": 0
+      },
+      "file": "audit.json",
+      "sha256": "78fcc8880419ad66e74b32809609291ee7f5b1f715851f559c0ac473302d7047"
+    }
+  ],
+  "observed": {
+    "activeRun": "run_7e7dcd1c-3cc8-4411-9d5e-c974146c1585",
+    "writes": [
+      "task_blocked with no effect",
+      "completed under the original approval and content confirmation",
+      "task_blocked with no effect"
+    ],
+    "savedFile": {
+      "file": "omni-edu-xiaozhi-phase7-workbench-ui-WcwXqb/approval-effect/practice.txt",
+      "bytes": 28,
+      "sha256": "b5b313602e51fe5d37b934b2a1ccea154f2ff339f81da7ece7cc8e9bb8effe85"
+    },
+    "verification": "Only one approval was executed. The visible reply separates the original save from each blocked attempt. The final reply, exact contents and approval agree after cold launch with zero model replay.",
+    "uncertainty": "Unknown effects still show a check-required state. The source fixture also covers a retained earlier version after a later version conflict.",
+    "paidRequests": 0
+  },
+  "independent": {
+    "reviewer": "Terra",
+    "observed": "Read the original 28-byte file and opened the closed SQLite with mode=ro&immutable=1. integrity_check=ok. The one confirmed and executed permission-v2 approval is owned by the same Run at revision 4. Directly checked archived final wording and the before/after reports.",
+    "limit": "Electron cold-start operation was recorded by the fixture. The reviewer did not replay a model or restart the app."
+  },
+  "externalPrerequisites": {
+    "ledger": {
+      "limit": 200,
+      "used": 198,
+      "remaining": 2,
+      "unresolved": 0,
+      "verification": "Immutable local ledger read after the focused tests."
+    },
+    "realModelRowsMissing": [
+      "Q7-r2-A",
+      "Q7-r2-B",
+      "Q8-r2-A"
+    ],
+    "previousFormalResult": "FAIL; historical score and hard defect records preserved",
+    "historicalPackageReadback": {
+      "sourceCommit": "60b1f79913de493e4d47e3ea0671c0b46f153307",
+      "bytes": 877410202,
+      "sha256": "275bb10c95affa299772addb37dbf4d8b6ffb0a8320ef5b3eefb93cd2a537a64",
+      "signature": "NotSigned",
+      "scope": "Matches retained installer digest. Predates current source and recovery shortcut. No installation attempted."
+    },
+    "fixedMatrix": "88/89",
+    "QG09": "Independent clean Windows installation, shortcut operations and uninstall still require an eligible test host."
+  },
+  "performance": {
+    "productChange": "In-memory final wording from records already loaded. No extra model calls, tool launches or file lookups."
+  },
+  "rollback": "Revert the wording and generated manifest commit together. No migration or saved-file changes are required."
+}

@@ -6,7 +6,8 @@ import {startWorkbenchFixture} from './phase7-workbench-fixture.mjs';
 import {confirmSyntheticArtifact} from './phase8-correction-artifacts.mjs';
 
 const report = {success: false, paidCalls: 0, checks: [], errors: []};
-const practiceDraft = process.argv[2] === '--practice-draft';
+const failedFileAttempts = process.argv.includes('--failed-file-attempts');
+const practiceDraft = failedFileAttempts || process.argv.includes('--practice-draft');
 const filename = practiceDraft ? 'practice.txt' : 'approval-wait.txt';
 const contents = practiceDraft ? '合成练习：3/4 + 1/4 = 1' : '合成课堂记录，核对一次权限批准和原文件保存。';
 let fixture;
@@ -69,12 +70,14 @@ try {
   }
 
   fixture.scenario([
+    ...(failedFileAttempts ? [{name:'office_create_text', input:{path:filename,content:contents}}] : []),
     {name: 'update_task_plan', input: {schemaVersion: 'xiaozhi.task-plan.v3', expectedRevision: 0,
       requirementsVersion: 1, reason: '合成课堂记录需要核对并确认保存', steps: [
         {id: 'record', text: '准备合成课堂记录', dependsOn: [], reported: 'pending', kind: 'saved_text', target: filename},
         {id: 'review', text: '教师核对记录', dependsOn: [], reported: 'pending', kind: 'human'},
       ]}},
     {name: 'office_create_text', input: {path: filename, content: contents, taskStepId: 'record'}},
+    ...(failedFileAttempts ? [{name:'office_create_text', input:{path:filename,content:'必须拦截的另一次尝试',taskStepId:'absent-step'}}] : []),
   ]);
   await page.getByTestId('office-prompt-input').fill(`请用当前工作目录把合成教学记录保存为 ${filename}。`);
   await page.getByRole('button', {name: '发送消息', exact: true}).click();
@@ -129,11 +132,40 @@ try {
   assert.equal(JSON.parse(finalApproval.payload_json).state, 'executed');
   report.checks.push('Teacher-approved draft saves exact bytes, leaving one durable Run and a consumed approval');
 
+  const readTurn = async () => fixture.page.evaluate(async ({sessionId, runId}) => {
+    const snapshot = await window.omniEdu.getXiaozhiSnapshot(sessionId);
+    return snapshot.projection.turns.find(turn => turn.id === runId);
+  }, {sessionId, runId: run.id});
+  let finalText;
+  if (failedFileAttempts) {
+    const turn = await readTurn();
+    const writes = turn.items.filter(item => item.kind === 'tool' && item.toolName === 'office_create_text');
+    const outcomes = writes.map(item => ({status:item.status,code:item.toolAttempt?.code ?? null,effect:item.toolAttempt?.effect}));
+    const final = turn.items.find(item => item.kind === 'message' && item.phase === 'final_answer');
+    finalText = final.text;
+    report.fileAttemptOrder = outcomes;
+    report.finalText = finalText;
+    assert.deepEqual(outcomes.map(item => item.status), ['failed','completed','failed']);
+    assert(outcomes.filter(item => item.status === 'failed').every(item => item.code === 'task_blocked' && item.effect === 'none'));
+    assert.equal(completed.approvals.filter(item => JSON.parse(item.payload_json).state === 'executed').length, 1);
+    assert.deepEqual(fs.readdirSync(workspace),[filename]);
+    assert.match(finalText,/practice\\\.txt：已保存/);
+    assert.match(finalText,/早先的文件操作未完成/);
+    assert.match(finalText,/这次尝试未写入文件。已有保存记录见上方。/);
+    assert.doesNotMatch(finalText,/未生成可确认保存的成果/);
+    await page.getByTestId('agent-reply-body').filter({hasText:'已有保存记录见上方'}).waitFor();
+    report.checks.push('Final reply keeps the saved file separate from blocked attempts before and after it');
+  }
+
   await fixture.close();
   fixture = null;
   fixture = await startWorkbenchFixture({...options, root});
   assert.deepEqual(facts(sessionId), completed);
   assert.equal(fs.readFileSync(target, 'utf8'), contents);
+  if (failedFileAttempts) {
+    const restored = await readTurn();
+    assert.equal(restored.items.find(item => item.kind === 'message' && item.phase === 'final_answer').text, finalText);
+  }
   assert.equal(fixture.requests.length, 0);
   assert.deepEqual(report.errors, []);
   report.checks.push('Cold Electron readback retains the original approval and file without model replay');

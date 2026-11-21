@@ -96,11 +96,14 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
  }
  const failedCalls=new Map((options.failedFileCalls||[]).filter(a=>!recordedCalls.has(a.callId)).map(a=>[a.callId,a]));
  const latestRecorded=options.callOrder.findLastIndex(id=>recordedCalls.has(id));
+ const hasSavedRecord=[...entries.values()].some(entry=>entry.saved);
  for(const a of failedCalls.values()){
   incomplete=true;
   const earlier=(order.get(a.callId)??Infinity)<latestRecorded;
   lines.push('- '+(earlier?'早先的文件操作':'文件操作')+'未完成：'+TOOL_EXECUTION_MESSAGES[a.code||'unknown']);
-  lines.push(a.effect==='none'?(earlier?'  该次尝试未执行；后续文件状态见上方记录。':'  本次操作未执行，未生成可确认保存的成果。')
+  const noWrite=earlier?'  该次尝试未执行；后续文件状态见上方记录。'
+    :hasSavedRecord?'  这次尝试未写入文件。已有保存记录见上方。':'  本次操作未执行，未生成可确认保存的成果。';
+  lines.push(a.effect==='none'?noWrite
     :'  该次尝试未取得保存回执，文件是否已写入仍待核验；请先查看现有文件，避免重复生成或覆盖。');
  }
  if(!lines.length){incomplete=true;lines.push('本轮文件记录未能完整读回；已保存成果保留，请查看原文件面板，不能据此报告全部完成。');}

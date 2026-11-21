@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 已保存文件与后续未写入尝试
+
+实际桌面流程核对审批、精确文件字节、前后拦截的尝试及同一 Run 的冷启读回。专项使用合成文本和本地模型夹具。 [证据](../goal/xiaozhi-harness/evidence/phase8/q7-scoped-delivery-attempts-20261121.json)
+
 ## 2026-11-21 启动前工作区恢复
 
 从真实 Electron 入口读取已验证快照，损坏的合成工作区仍保留，正常冷启使用独立副本。已验证原生选择窗口取消，并独立核对 SQLite。正式安装快捷方式、签名覆盖更新及第二台 Windows 保持待验。 [本轮证据](../goal/xiaozhi-harness/evidence/phase8/windows-startup-recovery-20261121.json)

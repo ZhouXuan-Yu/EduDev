@@ -61,6 +61,19 @@ assert(r.text.includes('讲解\\.html：已保存'));
 assert.match(r.text,/该次尝试未执行；后续文件状态见上方记录/);
 assert(!r.text.includes('未生成可确认保存的成果'));
 pass('A recovered admission failure stays in the result as history without contradicting a later saved file');
+r=await deliveryFinal({sessionId,runId,callOrder:['a','later-blocked'],observed:true,ports:ports({changes:async()=>[text]}),
+ failedFileCalls:[{callId:'later-blocked',code:'task_blocked',effect:'none'}]});
+assert(r.incomplete);
+assert(r.text.includes('讲解\\.html：已保存'));
+assert.match(r.text,/这次尝试未写入文件。已有保存记录见上方。/);
+assert(!r.text.includes('未生成可确认保存的成果'));
+r=await deliveryFinal({sessionId,runId,callOrder:['a','conflict','later-blocked'],observed:true,
+ ports:ports({changes:async()=>[text,{...text,id:'conflict',callId:'conflict',state:'conflict'}]}),
+ failedFileCalls:[{callId:'later-blocked',code:'task_blocked',effect:'none'}]});
+assert.match(r.text,/此前已保存的版本仍保留/);
+assert.match(r.text,/这次尝试未写入文件。已有保存记录见上方。/);
+assert(!r.text.includes('未生成可确认保存的成果'));
+pass('A later undispatched write does not describe the already-saved run as producing no file');
 const root=path.resolve('test-results','copy-refusal-synthetic');
 const copyTarget={root,path:'copy.txt',kind:'write_target'};
 const binding={sessionId,runId,generation:1},taskId='task-refusal';
