@@ -114,6 +114,9 @@ try{
       {kind:'attachment',id:'xiat_00000000-0000-0000-0000-000000000001',revision:2,version:'b'.repeat(64),locator:'ocr_lines',ocrRevision:3,startLine:1,endLine:2}]){
       assert(validLocalAnswerSource(local));const result=registry.attach(local.kind==='workspace'?'office_read_text':'office_read_attachment',{content:[{type:'text',text:'已实读'}],details:{success:true,data:{sources:[{title:'合成讲义',local}]}}});
       assert(result.details.data.sources[0].citationId);assert.deepEqual(result.details.data.sources[0].local,local);
+      const expected = local.locator === 'text_lines' ? '实读文本行 1–2' : `提取行 ${local.startLine}–${local.endLine}`;
+      assert(result.content.at(-1).text.includes(expected));
+      assert.match(result.content.at(-1).text, /按实际换行计数/u);
       assert(!validLocalAnswerSource({...local,startLine:0}));
     }
     assert(!validLocalAnswerSource({kind:'workspace',path:'../private.txt',version:'a'.repeat(64),locator:'text_lines',startLine:1,endLine:1}));
@@ -138,6 +141,8 @@ try{
     agent=await createPiXiaozhiSession({...base,onEvent:event=>oldEvents.push(event)});
     const result=await agent.prompt('详细证明 1+1=2');assert(result.ok,JSON.stringify(result));assert.equal(captures.length,3);
     assert(captures[1].tools.length>captures[0].tools.length);
+    const system = captures[0].messages.filter(message => message.role === 'system').map(message => message.content).join('\n');
+    for (const rule of ['条件决定结论、数值或阈值', '指定句数', '给出实际文件名或来源链接']) assert(system.includes(rule));
     assert.equal(captures[0].max_tokens,16384);assert.equal(captures[0].reasoning_effort,'high');assert(captures[0].tools.length<33);
     const next=await agent.prompt('你好');assert(next.ok);assert.equal(next.truncated,true,'provider output limit must be visible to the host');assert.equal(next.text,'本轮回答被截断，第二段尚未输出。','A filtered SDK projection must not substitute the previous complete answer');assert.equal(captures.at(-1).max_tokens,4096);assert.equal(captures.at(-1).thinking.type,'disabled');assert.equal(captures.at(-1).reasoning_effort,'none');
     assert.equal(agent.session.sessionManager.getEntries().filter(e=>e.customType==='xiaozhi.answer-metrics.v1').length,2);
@@ -151,6 +156,8 @@ try{
     assert.equal(agent.qualityMetrics().nativeSessionCacheHit,1);assert.equal(oldEvents.length,beforeEvents);assert.equal(oldCalls,beforeCalls);assert.equal(newCalls,1);
     const read=newEvents.find(event=>event.kind==='tool_end'&&event.tool==='office_read_text');
     assert(read?.sources?.[0]?.citationId);assert.equal(read.sources[0].local.kind,'workspace');assert.equal(read.sources[0].local.endLine,2);
+    const toolText = captures.flatMap(capture => capture.messages.filter(message => message.role === 'tool')).map(message => message.content).join('\n');
+    assert(toolText.includes('实读文本行 1–2'));
     report.metrics.wire.nativeSessionCacheHit=1;report.metrics.wire.freshRunTools=true;
     await agent.dispose();agent=undefined;
   });

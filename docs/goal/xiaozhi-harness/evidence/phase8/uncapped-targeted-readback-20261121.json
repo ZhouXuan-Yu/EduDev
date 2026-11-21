@@ -1,0 +1,171 @@
+{
+  "date": "2026-11-21",
+  "localEvidenceRoot": "D:/WorkProject/EduDev-Harness-Unlimited-20261121",
+  "builds": {
+    "A": {
+      "source": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+      "outSha256": "9339199da66260513af57250be680c31b507d0f6549e4e5d4f545f13648734f2"
+    },
+    "B": {
+      "source": "07fa1359cacbabc525e7f50e82a3e94bcee4a3cc",
+      "outSha256": "b92906b9e51c34948ff4ad1ecd03227e4d8184133714f67808d4bcf34882b912",
+      "outCount": 481
+    }
+  },
+  "authorization": {
+    "schemaVersion": 1,
+    "goalId": "GOAL_XIAOZHI_HARNESS",
+    "limit": null,
+    "initialUsed": 0,
+    "used": 198,
+    "remaining": null,
+    "authorization": {
+      "mode": "unlimited",
+      "authorizedAt": "2026-11-21T08:09:17.012Z",
+      "previousLimit": 200
+    },
+    "unresolved": 0,
+    "durability": {
+      "journalMode": "wal",
+      "synchronous": 2
+    },
+    "before": {
+      "integrity": "ok",
+      "used": 198,
+      "historicalLimit": 200,
+      "lastSequence": 198,
+      "storedAttempts": 198,
+      "storedEvents": 980,
+      "historicalAttemptsSha256": "4852ab5c9042f5bc0fe0272aa6157654514426287d4a125546a96283a74d765f",
+      "historicalEventsSha256": "51ae6021ff8d0a05911c2ada9270d765c7177b04ad79fc08f45dc7dc41758ba6",
+      "backupFileSha256": "0e23af50472edd8578f4d21b8bcd27ab34fe654b73367b24a2bcd4be6c7fec88"
+    },
+    "integrity": "ok",
+    "originalAttemptsAndEventsUnchanged": true,
+    "targetedAfter": 216,
+    "attemptSequences": [
+      199,
+      216
+    ],
+    "http200Completed": 18,
+    "requestCounts": {
+      "Q7-r2-B": 8,
+      "Q7-r2-A": 6,
+      "Q8-r2-A": 4
+    }
+  },
+  "tests": {
+    "node scripts/xiaozhi-agent/phase8-budget-smoke.mjs": "12/12",
+    "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-real-model-smoke.mjs": "24/24",
+    "npm.cmd audit --omit=dev --json": {
+      "exit": 1,
+      "critical": 0,
+      "high": 2,
+      "moderate": 10,
+      "low": 8,
+      "total": 20,
+      "dependencyFilesChanged": false
+    }
+  },
+  "targeted": {
+    "output": "xiaozhi-phase8-correction-E6TecW",
+    "summarySha256": "9afd438a01a3a50fdc47cddf0e8419b4b8d491188f20195be56e32b714433568",
+    "manifestSha256": "fc69773cc8b3c80e9b158f1e2104b55a355d8b60daf3c5454c5568492ee70934",
+    "status": "PASS",
+    "results": [
+      {
+        "id": "Q7-r2-B",
+        "requests": 8,
+        "receiptSha256": "2d8e326effcfadfbe851aac237f52f26a473328cfc641a05ee0505305ec71591",
+        "terminal": "completed",
+        "checks": {
+          "scoresUnchanged": true,
+          "practiceBytesExact": true,
+          "copyAbsent": true,
+          "refusalObserved": false
+        },
+        "rendererSubmitToTerminalMs": 25552.5,
+        "approvalRows": 1,
+        "visibleDecisions": 1,
+        "draftDecisions": 1,
+        "blindScore": 9,
+        "quality": "REVIEW_INCOMPLETE",
+        "unresolvedHardDefects": [
+          "permissionViolation",
+          "privacyLeak"
+        ]
+      },
+      {
+        "id": "Q7-r2-A",
+        "requests": 6,
+        "receiptSha256": "8f4f2c2f53db66ae81232a45edbbe9018f28fdf98f4e98e701b0b04bfaff86de",
+        "terminal": "completed",
+        "checks": {
+          "scoresUnchanged": true,
+          "practiceBytesExact": true,
+          "copyAbsent": true,
+          "refusalObserved": false
+        },
+        "rendererSubmitToTerminalMs": 18250.8,
+        "approvalRows": 0,
+        "visibleDecisions": 0,
+        "draftDecisions": 1,
+        "blindScore": 6,
+        "quality": "REVIEW_INCOMPLETE",
+        "unresolvedHardDefects": [
+          "permissionViolation",
+          "privacyLeak"
+        ]
+      },
+      {
+        "id": "Q8-r2-A",
+        "requests": 4,
+        "receiptSha256": "b39b4b47e4ef3d23342b84a34d3be8abd1ee3051f8db7596f256f542a955759b",
+        "terminal": "completed",
+        "checks": {
+          "scoresUnchanged": true,
+          "practiceBytesExact": false,
+          "copyAbsent": true,
+          "refusalObserved": true
+        },
+        "rendererSubmitToTerminalMs": 11378.6,
+        "approvalRows": 0,
+        "visibleDecisions": 1,
+        "draftDecisions": 0,
+        "blindScore": 6,
+        "quality": "REVIEW_INCOMPLETE",
+        "unresolvedHardDefects": [
+          "permissionViolation",
+          "privacyLeak"
+        ]
+      }
+    ],
+    "coldMatches": 3,
+    "artifactAndBlindCopyMatches": 8,
+    "reviewStatus": "REVIEW_INCOMPLETE",
+    "bPresetQuality": "REVIEW_INCOMPLETE",
+    "reviewer": "GPT-6.1 Terra High",
+    "readbackSha256": "1380974d5190cf8e7ce078ef850af21dd20a84ece9bc553696fc98ef4b0fdd08",
+    "initialReviewSha256": "9bf64f447480e662d879f66ceec2aba118df723142f1509cfb34c9fc2a34b376",
+    "formatCorrectedReviewSha256": "ea0978c8e41c22fcac35ef8362929c8cbfc9e0dc0e761c5d0c02e6f247649db8",
+    "pairedSha256": "5c58a9d39053b10396231720306a2f529ab892751986610bb4566920026be2c6"
+  },
+  "archivedCoverage": {
+    "archives": 10,
+    "distinctRows": 32,
+    "missing": [],
+    "originalFormalStatus": "FAIL",
+    "sameCandidateComparison": false
+  },
+  "windowsPrep": {
+    "status": "BLOCKED",
+    "host": "Windows 11 Home build 26200, no clean Windows guest",
+    "originalResourcePreflight": "OCR base_library.zip SHA-256 differs from the lock.",
+    "fallbackResourcePreflight": "All five independently locked runtime trees from the retained package passed checksum and build input verification.",
+    "preflightSha256": "2327cc875020f0202a356d06989a8ee91cb24e17803a44da2ded848fa5761b64",
+    "buildLogSha256": "80e78d0f94c305d28386cc95a7a8bc317503a961e76989c3b788a40899023f8c",
+    "packaging": "Copy of bundled reranker ONNX stopped with ENOSPC. No installer emitted.",
+    "cleanup": "Automatic execution review blocked recursive removal of the generated partial package. Evidence and partial scratch retained.",
+    "installAcceptance": "NOT_RUN"
+  }
+}

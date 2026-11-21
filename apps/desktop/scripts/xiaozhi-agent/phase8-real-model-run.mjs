@@ -467,7 +467,7 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
   const results = [];
   let stoppedAt = null, thinkingBaseline;
   for (const [index, row] of rows.entries()) {
-    if (!ledger.summary().remaining || ledger.correctionUsage?.().remaining === 0) {
+    if (ledger.summary().remaining === 0 || ledger.correctionUsage?.().remaining === 0) {
       stoppedAt = {id: row.id, code: 'phase8_budget_exhausted'};
       results.push(...rows.slice(index).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: stoppedAt.code, receiptSha256: null})));
       break;

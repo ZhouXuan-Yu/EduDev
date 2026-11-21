@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-21",
+  "localEvidenceRoot": "D:/WorkProject/EduDev-Harness-Unlimited-20261121",
+  "official": {
+    "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-real-model-run.mjs execute <frozen-manifest>",
+    "relativeOutput": "formal-final\\xiaozhi-phase8-real-model-YH52K1",
+    "files": {
+      "summary.json": "5286b511f6b22931c6a47c43dda1096c7035d109ee9ccbfae0640ecebad5bc16",
+      "execution-manifest.json": "0a8c1d437bdf41475c4d709b71a63615650b67e3e43078c587c8ca73c2aa17ea",
+      "builds-after.json": "7f8582b56238e3196ad39c9505a27d73a0b3e6cfbb45242beaed1282cc2968e2"
+    },
+    "reviewFiles": {
+      "review-terra.json": "31e35f4c63e692b2ae5aef7133b8b29919ac6410a35fb5815b0eec610bc0d102",
+      "readback.json": "7bce5b999534edf47aa68ebcce9777d33bdad98acac189ff0bda895e2a1f88f2",
+      "paired-report.json": "fba9221b4ed3cdbe2ea7edde9d0c12ea831977c2ee3574f2eeb8c5bd1b99428e"
+    },
+    "collection": "FAIL",
+    "planned": 32,
+    "passed": 8,
+    "failed": 1,
+    "untested": 23,
+    "partialQuality": "FAIL",
+    "review": "REVIEW_INCOMPLETE",
+    "requestSequence": [
+      217,
+      252
+    ],
+    "requests": 36,
+    "beforeLedger": 216,
+    "afterLedger": 252,
+    "stoppedAt": {
+      "id": "Q3-r1-A",
+      "code": "phase8_attempt_binding_unverified"
+    },
+    "baselineCourseware": {
+      "afterDeadlineMs": 900000,
+      "error": "phase8_run_deadline",
+      "attemptBinding": "phase8_attempt_binding_unverified",
+      "requests": 22,
+      "toolErrors": [
+        "delivery_check_failed",
+        "repair_budget_exhausted",
+        "changed"
+      ],
+      "askedTeacher": true,
+      "generatedTeachingFiles": 0,
+      "nativeTraceSha256": "0b0a1247ca898268878b0e4a2ea746c6ba00446fed4b5c693ac91954db1b898f",
+      "summaryDoesNotClaimRunBindingForDeadline": true
+    },
+    "observedRows": [
+      {
+        "id": "Q1-r1-A",
+        "score": 9,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 1,
+        "rendererSubmitToTerminalMs": 4004.4
+      },
+      {
+        "id": "Q1-r1-B",
+        "score": 9,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 1,
+        "rendererSubmitToTerminalMs": 4992
+      },
+      {
+        "id": "Q1-r2-B",
+        "score": 7,
+        "gradeStatus": "FAIL",
+        "hardFailure": true,
+        "requests": 1,
+        "rendererSubmitToTerminalMs": 4910.2
+      },
+      {
+        "id": "Q1-r2-A",
+        "score": 9,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 1,
+        "rendererSubmitToTerminalMs": 5832
+      },
+      {
+        "id": "Q2-r1-A",
+        "score": 10,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 3,
+        "rendererSubmitToTerminalMs": 6740.5
+      },
+      {
+        "id": "Q2-r1-B",
+        "score": 10,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 3,
+        "rendererSubmitToTerminalMs": 7590.5
+      },
+      {
+        "id": "Q2-r2-B",
+        "score": 5,
+        "gradeStatus": "FAIL",
+        "hardFailure": true,
+        "requests": 2,
+        "rendererSubmitToTerminalMs": 7142.5
+      },
+      {
+        "id": "Q2-r2-A",
+        "score": 10,
+        "gradeStatus": "REVIEW_INCOMPLETE",
+        "hardFailure": false,
+        "requests": 2,
+        "rendererSubmitToTerminalMs": 4043.1
+      }
+    ],
+    "bQualityFindings": [
+      {
+        "id": "Q1-r2-B",
+        "finding": "100°C missing standard atmospheric pressure. Unrequested mnemonic made the answer longer."
+      },
+      {
+        "id": "Q2-r2-B",
+        "finding": "Incorrect third-line claim for the one-line facts.txt and extraneous terms."
+      }
+    ]
+  },
+  "courseware": {
+    "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-real-model-run.mjs correct <frozen-manifest> 22 Q3-r1-B",
+    "relativeOutput": "courseware-current\\xiaozhi-phase8-correction-MYuKkC",
+    "files": {
+      "summary.json": "4982e525275ac0a00a6aef690e9ea7dbb691ae366c285a2b8de8952e1ba4b73d",
+      "execution-manifest.json": "fc69773cc8b3c80e9b158f1e2104b55a355d8b60daf3c5454c5568492ee70934",
+      "builds-after.json": "7f8582b56238e3196ad39c9505a27d73a0b3e6cfbb45242beaed1282cc2968e2"
+    },
+    "reviewFiles": {
+      "review-terra.json": "469f14d3b271ff2efe294f6de397bc3b2d06977536d4b49c6fd2da784ff5d5a0",
+      "readback.json": "bcbb7737a7c8ea1593be225aa0994051a92ef341a69c3580d12c583b7c4fdd00",
+      "paired-report.json": "09e82f2cebc6be2d34093a3211f5eaf8d5d5a1315bc37c633060dc5b3046ce4b",
+      "browser-evidence.json": "b1561ac71a7e427793af78bb2763f10feecca4131705f75a10a18ab3ec3018bb"
+    },
+    "collection": "PASS",
+    "requests": 7,
+    "requestSequence": [
+      253,
+      259
+    ],
+    "afterLedger": 259,
+    "rendererSubmitToTerminalMs": 93167.9,
+    "artifacts": [
+      {
+        "name": "浮力与漂浮-互动练习.html",
+        "bytes": 8643,
+        "sha256": "2247023a809a6ad4e640b131afe352daef3c4bd3b5b9317f25e079c6e5f8d95d"
+      },
+      {
+        "name": "浮力与漂浮-讲解课件.pptx",
+        "bytes": 86906,
+        "sha256": "1bd033585a901b5aada6a29239e2751dba0fa230fe30f3de98abb40d36bf9543"
+      }
+    ],
+    "browser": "Independent offline Chromium: wrong and correct inputs, correct solution, and reset passed.",
+    "presentation": "Four slides, arithmetic and source verified. Two slides have page-number-only notes. Native Office/WPS rendering not verified.",
+    "quality": "REVIEW_INCOMPLETE",
+    "review": "REVIEW_INCOMPLETE",
+    "score": 7,
+    "comparisonScope": "A stopped on the full collection. B used a bounded correction and verified synthetic draft approval. Report each independently."
+  }
+}

@@ -274,6 +274,24 @@ try {
     const binding = await run(['bind-run', file, reservation.reservationId, 'xirun_cli']);
     assert.equal(binding.code, 0); assert.equal(JSON.parse(binding.stdout).attempts[0].context.runId, 'xirun_cli');
     const status = await run(['status', file]); assert.equal(status.code, 0); assert.equal(JSON.parse(status.stdout).budget.used, 1);
+    const denied = await run(['authorize-unlimited', file]);
+    assert.equal(denied.code, 1);
+    assert.match(denied.stderr, /budget_explicit_authorization_required/u);
+    const authorized = await run(['authorize-unlimited', file, '--user-authorized']);
+    assert.equal(authorized.code, 0);
+    const budget = JSON.parse(authorized.stdout).budget;
+    assert.equal(budget.used, 1);
+    assert.equal(budget.limit, null);
+    assert.equal(budget.remaining, null);
+    assert.equal(budget.authorization.previousLimit, 1);
+    const reopened = openBudgetLedger({databasePath: file, limit: 1});
+    try {
+      assert.equal(reopened.reserve().sequence, 2);
+      reopened.authorizeUnlimited();
+      assert.deepEqual(reopened.summary().authorization, budget.authorization);
+      assert.equal(reopened.attempts()[0].reservationId, reservation.reservationId);
+      assert.equal(reopened.summary().used, 2);
+    } finally {reopened.close();}
     const missingFile = databasePath('missing-status');
     const missing = await run(['status', missingFile]); assert.equal(missing.code, 1); assert(!fs.existsSync(missingFile));
   });

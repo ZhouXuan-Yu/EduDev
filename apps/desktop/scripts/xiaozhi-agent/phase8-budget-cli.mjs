@@ -24,6 +24,13 @@ try {
     }
     process.once('SIGINT', () => {void shutdown();});
     process.once('SIGTERM', () => {void shutdown();});
+  } else if (action === 'authorize-unlimited') {
+    if (second !== '--user-authorized' || third !== undefined) throw budgetError('budget_explicit_authorization_required');
+    if (!first || !fs.existsSync(first)) throw budgetError('budget_missing_database');
+    ledger = openBudgetLedger({databasePath: first});
+    ledger.authorizeUnlimited();
+    console.log(JSON.stringify({budget: ledger.summary()}));
+    ledger.close();
   } else if (action === 'status' || action === 'bind-run') {
     if (!fs.existsSync(first)) throw budgetError('budget_missing_database');
     ledger = openBudgetLedger({databasePath: first});
@@ -31,7 +38,7 @@ try {
     console.log(JSON.stringify({budget: ledger.summary(), attempts: ledger.attempts()}));
     ledger.close();
   } else {
-    throw budgetError('usage_serve_config_or_status_database_or_bind_run_database_reservation_run');
+    throw budgetError('usage_serve_config_or_status_database_or_bind_run_or_authorize_unlimited_database');
   }
 } catch (error) {
   ledger?.close();

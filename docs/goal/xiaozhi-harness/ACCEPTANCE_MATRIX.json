@@ -1899,7 +1899,8 @@
         "evidence/phase5/final/GATE_5_REVIEW_FINAL.md",
         "evidence/phase8/current-quality-checkpoint-20261119.md",
         "evidence/phase7/implementation-resume-20261119/gate7-unified-background-20261120.json",
-        "evidence/phase8/windows-package-20261119/dependency-patched-nsis-60b1f79-20261120.json"
+        "evidence/phase8/windows-package-20261119/dependency-patched-nsis-60b1f79-20261120.json",
+        "evidence/phase8/uncapped-targeted-readback-20261121.json"
       ],
       "history": [
         {
@@ -1910,7 +1911,7 @@
           ]
         }
       ],
-      "scope": "历史 Windows 实包启动与合成资料验证通过。60b1f79 补丁版 Windows x64 NSIS 已生成并回读匹配 481 个应用文件。当前主机不可提供干净可还原的 Windows，待独立完成实际安装、两个快捷方式启动与卸载。"
+      "scope": "历史 Windows 实包启动与合成资料验证通过。60b1f79 补丁版 Windows x64 NSIS 已生成并回读匹配 481 个应用文件。当前候选打包因 D 盘空间不足中止。仍需在独立、干净可还原的 Windows 完成当前候选的实际安装、两个快捷方式启动与卸载。"
     },
     {
       "id": "QG-10",

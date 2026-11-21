@@ -353,12 +353,14 @@ try {
     const order = ['Q3-r1-B','Q5-r2-B','Q7-r1-B'];
     assert.deepEqual(selectCorrectionRows(original, [...order].reverse()).map(row => [row.id, row.correctionReason]),
       [[order[0],'affected_candidate'],[order[1],'capture_failure'],[order[2],'not_executed']]);
-    for (const invalid of [[], ['Q1-r1-B'], ['Q7-r1-B','Q7-r1-B'], ['Q9-r1-B']]) {
+    assert.deepEqual(selectCorrectionRows(original, ['Q2-r2-B', 'Q1-r2-B']).map(row => row.id), ['Q1-r2-B', 'Q2-r2-B']);
+    for (const invalid of [[], ['Q1-r1-B'], ['Q2-r1-B'], ['Q7-r1-B','Q7-r1-B'], ['Q9-r1-B']]) {
       assert.throws(() => selectCorrectionRows(original, invalid), /phase8_correction_row/u);
     }
     assert.throws(() => selectCorrectionRows({...original, plannedRunIds: order}, [order[0]]), /phase8_correction_original_invalid/u);
     const fixture = collectionFixture('correction-order');
     const rows = selectCorrectionRows(original, ['Q7-r1-A','Q6-r1-A']);
+    fixture.budget.authorizeUnlimited();
     const capped = correctionBudget(fixture.budget, 1);
     const result = await collectScheduledRuns({mode:'correct', correction:{rows}, manifest:fixture.manifest, versions:{},
       ledger:capped, output:fixture.directory, collect:fixture.collect});
@@ -369,6 +371,9 @@ try {
   await check('Correction request limit applies to both real loopback proxy routes before upstream dispatch', async () => {
     const fixture = collectionFixture('correction-allowance', {limit: 10, initialUsed: 3});
     const before = received.length;
+    assert.throws(() => correctionBudget(fixture.budget, 8), /phase8_correction_budget_invalid/u);
+    fixture.budget.authorizeUnlimited();
+    assert.equal(fixture.budget.summary().remaining, null);
     const limited = correctionBudget(fixture.budget, 2);
     const proxies = await Promise.all(['original','continuation'].map(name => startCountingProxy({
       ledger: limited, providerEndpoint: origin + '/chat', fixtureHttp: true,

@@ -14,7 +14,7 @@ export function selectCorrectionRows(original, rowIds) {
       || original.results.some((row, index) => row.id !== planned[index])) throw Error('phase8_correction_original_invalid');
   if (!Array.isArray(rowIds) || !rowIds.length || new Set(rowIds).size !== rowIds.length) throw Error('phase8_correction_rows_invalid');
   const eligible = new Map(original.results.map(row => {
-    const affected = /^Q[35]-r[12]-B$/.test(row.id);
+    const affected = /^Q[35]-r[12]-B$/.test(row.id) || ['Q1-r2-B', 'Q2-r2-B'].includes(row.id);
     const reason = row.collectionStatus === 'NOT_TESTED' ? 'not_executed'
       : original.stoppedAt?.id === row.id && row.collectionStatus === 'FAIL' ? 'capture_failure'
       : affected && row.collectionStatus === 'PASS' ? 'affected_candidate' : null;
@@ -52,7 +52,8 @@ export function loadCorrectionPlan(manifest, rowIds, maxRequests) {
 
 export function correctionBudget(ledger, maxRequests) {
   const initial = ledger.summary();
-  if (!Number.isSafeInteger(maxRequests) || maxRequests < 1 || maxRequests > initial.remaining || initial.unresolved) {
+  if (!Number.isSafeInteger(maxRequests) || maxRequests < 1 || initial.unresolved
+      || initial.remaining !== null && maxRequests > initial.remaining) {
     throw Error('phase8_correction_budget_invalid');
   }
   let used = 0;

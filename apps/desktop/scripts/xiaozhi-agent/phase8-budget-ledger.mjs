@@ -59,7 +59,7 @@ function configuration(options) {
   }
 }
 
-/** Dedicated acceptance ledger. Every committed reservation permanently consumes one allowance. */
+/** Dedicated acceptance ledger. Every committed reservation is permanently counted. */
 export function openBudgetLedger(options) {
   configuration(options);
   fs.mkdirSync(path.dirname(options.databasePath), {recursive: true});
@@ -82,7 +82,10 @@ export function openBudgetLedger(options) {
       .run(reservationId, kind, new Date().toISOString(), JSON.stringify(details));
   }
   function metadata() {
-    const row = database.prepare('SELECT * FROM phase8_budget_meta WHERE id=1').get();
+    const row = database.prepare(`SELECT meta.*, authorization.mode, authorization.authorized_at,
+      (SELECT count(*) FROM phase8_http_attempts) AS attempts
+      FROM phase8_budget_meta AS meta LEFT JOIN phase8_budget_authorization AS authorization USING(id)
+      WHERE meta.id=1`).get();
     if (!row || row.schema_version !== 1 || !safeLabel(row.goal_id)
         || !Number.isInteger(row.allowance) || row.allowance < 1 || row.allowance > MAXIMUM
         || !Number.isInteger(row.initial_used) || row.initial_used < 0 || row.initial_used > row.allowance) {
@@ -91,8 +94,8 @@ export function openBudgetLedger(options) {
     return row;
   }
   function used(meta) {
-    const total = meta.initial_used + Number(database.prepare('SELECT count(*) AS count FROM phase8_http_attempts').get().count);
-    if (total > meta.allowance) throw budgetError('budget_corrupt');
+    const total = meta.initial_used + meta.attempts;
+    if (meta.mode !== 'unlimited' && total > meta.allowance) throw budgetError('budget_corrupt');
     return total;
   }
   function attempt(reservationId) {
@@ -126,7 +129,10 @@ export function openBudgetLedger(options) {
         elapsed_ms REAL,request_bytes INTEGER NOT NULL DEFAULT 0,response_bytes INTEGER NOT NULL DEFAULT 0);
         CREATE TABLE IF NOT EXISTS phase8_attempt_events(
         sequence INTEGER PRIMARY KEY AUTOINCREMENT,reservation_id TEXT NOT NULL REFERENCES phase8_http_attempts(reservation_id),
-        kind TEXT NOT NULL,created_at TEXT NOT NULL,details_json TEXT NOT NULL);`);
+        kind TEXT NOT NULL,created_at TEXT NOT NULL,details_json TEXT NOT NULL);
+        CREATE TABLE IF NOT EXISTS phase8_budget_authorization(
+        id INTEGER PRIMARY KEY CHECK(id=1) REFERENCES phase8_budget_meta(id),
+        mode TEXT NOT NULL CHECK(mode='unlimited'),authorized_at TEXT NOT NULL);`);
       const previous = database.prepare('SELECT * FROM phase8_budget_meta WHERE id=1').get();
       if (!previous) {
         if (Number(database.prepare('SELECT count(*) AS count FROM phase8_http_attempts').get().count) !== 0) {
@@ -153,11 +159,21 @@ export function openBudgetLedger(options) {
   }
 
   return {
+    authorizeUnlimited() {
+      return transaction(() => {
+        const meta = metadata();
+        if (meta.goal_id !== GOAL) throw budgetError('budget_configuration_conflict');
+        used(meta);
+        database.prepare("INSERT INTO phase8_budget_authorization VALUES(1,'unlimited',?) ON CONFLICT(id) DO NOTHING")
+          .run(new Date().toISOString());
+      });
+    },
     reserve(rawContext = {}) {
       const context = validateBudgetContext(rawContext);
       return transaction(() => {
         const meta = metadata();
-        if (used(meta) >= meta.allowance) throw budgetError('budget_exhausted');
+        const consumed = used(meta);
+        if (meta.mode !== 'unlimited' && consumed >= meta.allowance) throw budgetError('budget_exhausted');
         const reservationId = 'p8_' + randomUUID();
         const createdAt = new Date().toISOString();
         const insertion = database.prepare("INSERT INTO phase8_http_attempts(reservation_id,context_json,state,reserved_at) VALUES(?,?,'reserved',?)")
@@ -226,8 +242,10 @@ export function openBudgetLedger(options) {
     summary() {
       const meta = metadata();
       const consumed = used(meta);
-      return {schemaVersion: 1, goalId: meta.goal_id, limit: meta.allowance, initialUsed: meta.initial_used,
-        used: consumed, remaining: meta.allowance - consumed,
+      const unlimited = meta.mode === 'unlimited';
+      return {schemaVersion: 1, goalId: meta.goal_id, limit: unlimited ? null : meta.allowance, initialUsed: meta.initial_used,
+        used: consumed, remaining: unlimited ? null : meta.allowance - consumed,
+        ...(unlimited ? {authorization: {mode: meta.mode, authorizedAt: meta.authorized_at, previousLimit: meta.allowance}} : {}),
         unresolved: Number(database.prepare("SELECT count(*) AS count FROM phase8_http_attempts WHERE finished_at IS NULL").get().count),
         durability: {journalMode: database.prepare('PRAGMA journal_mode').get().journal_mode,
           synchronous: database.prepare('PRAGMA synchronous').get().synchronous}};

@@ -30,8 +30,15 @@ export function createAnswerEvidence(runId:string) {
         return entry||source;
       });
       if(!added.length)return result;
+      const citations = added.map(source => {
+        const link = `[${source.title.replace(/[\[\]\r\n]/g, ' ')}](#${source.citationId})`;
+        if (!source.local) return link;
+        const {locator, startLine, endLine} = source.local;
+        const range = startLine === endLine ? String(startLine) : `${startLine}–${endLine}`;
+        return `${link}（${locator === 'text_lines' ? '实读文本行' : '提取行'} ${range}）`;
+      });
       return {...result,details:{...details,data:{...details.data,sources}},content:[...result.content,{type:'text' as const,
-        text:'本轮实际读取的引用登记（只证明来源已读取，不证明结论正确）。相关结论可用以下 Markdown 链接引用；未覆盖内容须明确说明：\n'+added.map(s=>`[${s.title.replace(/[\[\]\r\n]/g,' ')}](#${s.citationId})`).join('\n')}]};
+        text:'本轮实际读取的引用登记（只证明来源已读取，不证明结论正确）。相关结论可用以下 Markdown 链接引用；未覆盖内容须明确说明。只有需要定位且能核实时才注明实际位置，文本行按实际换行计数。\n'+citations.join('\n')}]};
     },
     normalize:(text:string)=>normalizeAnswerCitations(text,[...entries.values()]),
     sources:()=>[...entries.values()],
