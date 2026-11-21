@@ -11,19 +11,35 @@ import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
 
 const source=fs.realpathSync(process.argv[2]);
+const verifyJoinedNumber=process.argv.includes("--joined-number");
+const readbackOption=process.argv.indexOf("--readback");
+const readback=readbackOption>=0;
 assert.equal(path.extname(source).toLowerCase(),".pdf");
-const root=fs.mkdtempSync(path.join(os.tmpdir(),"kb-wrapped-heading-"));
+const root=readback?fs.realpathSync(process.argv[readbackOption+1]):fs.mkdtempSync(path.join(os.tmpdir(),"kb-wrapped-heading-"));
+assert(path.basename(root).startsWith("kb-wrapped-heading-"));
 const data=path.join(root,"data"),profile=path.join(root,"profile"),folder=path.join(root,"资料");
 const file=path.join(data,"app.db");
-fs.mkdirSync(folder);
 const input=path.join(folder,path.basename(source));
-fs.copyFileSync(source,input);
 const sha=filePath=>createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+if(readback){
+  assert(fs.statSync(file).isFile());
+  assert.equal(sha(input),sha(source));
+}else{
+  fs.mkdirSync(folder);
+  fs.copyFileSync(source,input);
+}
 const main=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||"out","main/index.js");
-const report={root,buildSha:sha(main),inputSha:sha(input),externalRequests:0,rendererErrors:[]};
+const report={root,mode:readback?"readback":"fresh-import",buildSha:sha(main),inputSha:sha(input),externalRequests:0,rendererErrors:[]};
 function read(query,...args){
   const db=new DatabaseSync(file,{readOnly:true,timeout:5000});
   try{return db.prepare(query).all(...args);}finally{db.close();}
+}
+function terminalImport(){
+  const batch=read("SELECT status,error FROM material_import_batches WHERE root_path=?",folder)[0];
+  if(batch?.status==="failed")throw Error(batch.error);
+  const job=read("SELECT * FROM material_structure_jobs WHERE version=?",report.inputSha)[0];
+  if(job?.status==="failed")throw Error(job.error);
+  return ["partial","complete"].includes(job?.status)?job:undefined;
 }
 async function until(check){
   const deadline=Date.now()+240000;
@@ -66,22 +82,25 @@ async function inspect(resourceId,heading,image){
   const structure=page.getByTestId("material-structure-panel");
   await openMaterialDisclosure(structure);
   await structure.getByTestId("structure-paragraphs").getByText(heading.text,{exact:true}).waitFor();
+  if(verifyJoinedNumber){
+    const ninth=structure.getByTestId("structure-questions").locator("article")
+      .filter({hasText:/题 9 · 第 1–1 页 · 暂缓入库/u});
+    await ninth.getByText(/^4个家长/u).waitFor();
+  }
   if(image){
     await structure.getByRole("button",{name:"对照原始页图"}).click();
     await structure.getByTestId("structure-source-image").evaluate(img=>img.decode());
   }
 }
 try{
+  const previous=readback?terminalImport():undefined;
+  if(readback)assert.equal(previous?.engine,DOCUMENT_STRUCTURE_ENGINE);
   await launch(1366,768);
-  await app.evaluate(({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});},folder);
-  await page.getByTestId("materials-import-folder").click();
-  const parsed=await until(()=>{
-    const batch=read("SELECT status,error FROM material_import_batches WHERE root_path=?",folder)[0];
-    if(batch?.status==="failed")throw Error(batch.error);
-    const job=read("SELECT * FROM material_structure_jobs WHERE version=?",report.inputSha)[0];
-    if(job?.status==="failed")throw Error(job.error);
-    return ["partial","complete"].includes(job?.status)?job:undefined;
-  });
+  if(!readback){
+    await app.evaluate(({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});},folder);
+    await page.getByTestId("materials-import-folder").click();
+  }
+  const parsed=previous??await until(terminalImport);
   assert.equal(parsed.engine,DOCUMENT_STRUCTURE_ENGINE);
   const pages=read("SELECT body_json FROM material_structure_pages WHERE generation=? ORDER BY page",parsed.generation).map(row=>JSON.parse(row.body_json));
   const groups=read("SELECT body_json FROM material_structure_questions WHERE generation=? ORDER BY rowid",parsed.generation).map(row=>JSON.parse(row.body_json));
@@ -94,6 +113,21 @@ try{
     assert(groups.every(q=>!q.paragraphIds.includes(h.id)));
     assert(groups.some(q=>q.section===h.text));
     assert.equal(h.rawText,h.lineIds.map(id=>physical.find(l=>l.id===id).text).join("\n"));
+  }
+  if(verifyJoinedNumber){
+    const original=pages[0].lines.find(line=>line.text.startsWith("9.4个家长"));
+    assert(original);
+    const ninth=pages[0].paragraphs.find(h=>h.marker?.kind==="parent"&&h.marker.label==="9");
+    const after=groups.find(q=>q.number==="9"),before=groups.find(q=>q.number==="8");
+    assert(ninth.lineIds.includes(original.id));
+    assert(after.stem.startsWith("4个家长"));
+    assert(after.paragraphIds.includes(ninth.id)&&!before.paragraphIds.includes(ninth.id));
+    assert(!before.stem.includes("9.4个家长"));
+    assert.equal(after.status,"needs_review");
+    assert(after.issues.includes("pdf_text_conflict"));
+    report.separatedQuestion=true;
+    report.extractedGroups=groups.length;
+    report.heldGroups=groups.filter(question=>question.status==="needs_review").length;
   }
   await inspect(parsed.resource_id,headings[0],true);
   await close();
@@ -108,10 +142,10 @@ try{
   Object.assign(report,{ok:true,pages:pages.length,headings:headings.length,assignedGroups:groups.filter(q=>headings.some(h=>q.section===h.text)).length});
 }catch(error){
   report.error=String(error.stack||error);
-  if(page)await page.screenshot({path:path.join(root,"failure.png")}).catch(()=>{});
+  if(page)await page.screenshot({path:path.join(root,readback?"readback-failure.png":"failure.png")}).catch(()=>{});
   process.exitCode=1;
 }finally{
   await close();
-  fs.writeFileSync(path.join(root,"report.json"),JSON.stringify(report,null,2));
+  fs.writeFileSync(path.join(root,readback?"readback-report.json":"report.json"),JSON.stringify(report,null,2));
   console.log(JSON.stringify(report));
 }

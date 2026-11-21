@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 与正文数字连写的题号
+
+M03 使用原 PDF 的 PDF.js 原生位置、RapidOCR 行框、PP-DocLayoutV3 区域及既有试题切分来恢复题号，M05 沿用原资料审查。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 M03/M05 复用布局区域、原 OCR 行与现有题型归档，从同一标题区恢复折行大题名称和评分说明。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

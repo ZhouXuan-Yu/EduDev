@@ -1,4 +1,5 @@
-import type {ParagraphRole,StructureLine,StructureParagraph} from '../../shared/material-document-structure';
+import type {ParagraphRole,StructureLine,StructurePageInput,StructureParagraph} from '../../shared/material-document-structure';
+import {validNativeTextResult} from '../../shared/material-native-text';
 
 type Role={role:ParagraphRole;marker?:StructureParagraph['marker']};
 type Row={line:StructureLine;column:number};
@@ -7,6 +8,8 @@ type Candidate=Prefix&{index:number;row:Row;section:boolean;previous?:Candidate;
 
 const digit='[1-9１-９][0-9０-９]{0,2}';
 const looseNumber=new RegExp(`^(${digit})(?:[ \\t\\u3000]+(\\S.*))?$`,'u');
+const joinedNumber=/^([1-9１-９][0-9０-９]{0,4})[.．、](?=[0-9０-９])/u;
+const spacedNumber=/^([1-9１-９][0-9０-９]{0,4})[.．、][ \t\u3000]+([0-9０-９].*)$/u;
 const scoredStart=new RegExp(`^(${digit})[ \t\u3000]*([（(])(?:本题|本小题)[ \t]*(?:满分|共|计)[ \t]*[0-9０-９]{1,3}[ \t]*分`,'u');
 export const questionSection=/^(?:(?:第[一二三四五六七八九十百\d]+[部分章]|[一二三四五六七八九十百]+[、．.]|[ⅠⅡⅢⅣⅤ]+[、．.]?)[ \t]*)?(单项选择题|多项选择题|不定项选择题|选择题|填空题|解答题|计算题|实验题|综合题|证明题|判断题|简答题|阅读理解)(?=$|[ \t（(:：])/u;
 const blank=/▲|_{2,}|[（(][ \t]*[）)]/u;
@@ -33,9 +36,73 @@ export function stripAssessmentNumber(stem:string,first:StructureParagraph,numbe
   const raw=first.rawText.split('\n',1)[0].trim();
   const score=scoredPrefix(raw);
   if(score?.number===number&&stem.startsWith(raw.slice(0,score.length)))return stem.slice(score.length).trimStart();
+  const joined=joinedNumber.exec(raw);
+  if(joined?.[1].normalize('NFKC')===number&&stem.startsWith(joined[0]))return stem.slice(joined[0].length).trimStart();
   const prefix=looseNumber.exec(raw);
   if(prefix?.[1].normalize('NFKC')===number&&stem.startsWith(prefix[1]))return stem.slice(prefix[1].length).trimStart();
   return stem;
+}
+
+/** A decimal-looking OCR prefix needs independently positioned print and two neighboring parents. */
+export function restoreJoinedAssessmentNumbers(rows:Row[],roles:Map<string,Role>,input:StructurePageInput,height:number,questionCue:RegExp){
+  const recovery=input.nativeRecovery,native=recovery?.native;
+  if(!native?.ok||recovery?.rasterSha256!==input.rasterSha256||
+     native.version!==input.version||native.page!==input.page||native.total!==input.totalPages)return;
+  const candidates=rows.flatMap((row,index)=>{
+    const text=row.line.text.trim(),match=joinedNumber.exec(text);
+    return match&&row.column>=0&&roles.get(row.line.id)?.role==='body'&&row.line.score>=.9&&questionCue.test(text)
+      ?[{row,index,match,text}]:[];
+  });
+  if(!candidates.length||!validNativeTextResult(native))return;
+  const items=new Map(native.items.map(item=>[item.id,item]));
+  const regions=new Map(input.regions.map(region=>[region.id,region]));
+  const literal=(text:string)=>text.normalize('NFC').replace(/\s+/gu,'');
+  const spaced=native.lines.flatMap(line=>{
+    const match=spacedNumber.exec(line.text.trim());
+    const first=items.get(line.itemIds[0]),next=items.get(line.itemIds[1]);
+    if(!match||!first)return [];
+    const marker=match[0].slice(0,match[1].length+1);
+    const itemMatch=spacedNumber.exec(first.text.trim());
+    const separatelySet=first.text.trim()===marker&&next&&/^[0-9０-９]/u.test(next.text.trim())&&
+      next.box[0]-first.box[2]>=(first.box[3]-first.box[1])*.15;
+    if(!separatelySet&&(!itemMatch||itemMatch[1]!==match[1]||itemMatch[2][0]!==match[2][0]))return [];
+    return [{line,number:match[1].normalize('NFKC'),body:literal(match[2])}];
+  });
+  const proposals=new Map<string,{row:Row;label:string}|null>();
+  for(const {row,index,match,text} of candidates){
+    const {line,column}=row,label=match[1].normalize('NFKC'),number=Number(label);
+    const stop=({line, column:lane}:Row)=>{
+      const role=roles.get(line.id)!;
+      return role.role==='heading'&&(lane===column||lane===-1)||
+        lane===column&&role.marker?.kind==='parent';
+    };
+    const before=rows.slice(Math.max(0,index-24),index).findLast(stop);
+    const after=rows.slice(index+1,index+25).find(stop);
+    if(!before||!after||Number(roles.get(before.line.id)?.marker?.label)!==number-1||
+       Number(roles.get(after.line.id)?.marker?.label)!==number+1||
+       [before,after].some(neighbor=>neighbor.line.score<.9||
+         Math.abs(neighbor.line.box[0]-line.box[0])>Math.min(.025,height*1.5)))continue;
+    const region=line.regionIds.map(id=>regions.get(id)).find(region=>region?.kind==='text'&&region.score>=.8&&
+      line.box[1]-region.box[1]>=-.006&&line.box[1]-region.box[1]<=height*.8&&
+      !before.line.regionIds.includes(region.id)&&!after.line.regionIds.includes(region.id));
+    if(!region)continue;
+    const body=literal(text.slice(match[0].length));
+    const witnesses=spaced.filter(({line:source,number,body:printed})=>{
+      const length=Math.min(10,body.length,printed.length);
+      const vertical=Math.min(source.box[3],line.box[3])-Math.max(source.box[1],line.box[1]);
+      return number===label&&length>=7&&body.slice(0,length)===printed.slice(0,length)&&
+        Math.abs(source.box[0]-line.box[0])<=Math.min(.018,height)&&
+        vertical>=Math.min(line.box[3]-line.box[1],source.box[3]-source.box[1])*.75;
+    });
+    if(witnesses.length===1){
+      const gap=before.line.id+'\0'+after.line.id;
+      proposals.set(gap,proposals.has(gap)?null:{row,label});
+    }
+  }
+  for(const proposal of proposals.values()){
+    if(proposal)
+      roles.set(proposal.row.line.id,{role:'question',marker:{kind:'parent',label:proposal.label}});
+  }
 }
 
 function centered(line:StructureLine){return (line.box[1]+line.box[3])/2;}

@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 与正文数字连写的题号
+
+连写题号新增独立印刷证据、行框位置、相邻题号、原始文字和小数反例。正式收录仍需通过既有页源门槛。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 新增跨行标题的共区、括号、题号防吞、标题互不合并、新旧引擎回读及真实原页对照边界。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

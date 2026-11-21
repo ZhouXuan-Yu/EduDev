@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 与正文数字连写的题号
+
+真实 PDF 的连写题号验证覆盖分题、前后内容归属、小数原文、桌面原图和冷启。新版结构的可用稿继续通过原页核验。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 折行标题专项检查同一原 PDF 的标题段、题组归属、布局不确定性和原页读回。原卷 PDF 验证继续单独核对页源门槛。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)
@@ -62,6 +66,10 @@
 真实零派发答案册桌面关联及重启成功，真实有模型历史的答案册保持拒绝。旧任务的失败类型、预约、回执及模型调用计数一致。 [本轮记录](../research/evidence/kb/20261121/book-zero-dispatch/README.md)
 
 ## 2026-11-21 更新与换机的验收入口
+
+发布候选使用实际旧版安装包及其生成的快照。覆盖升级与换机后复跑历史成果入口、文件树、打开方式及另存为，对齐文件版本、文件摘要和新位置。首轮和热轮分别记录，区分索引准备、模型登录和工具依赖。 [发版与换机的交付门槛](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#发版与换机的交付门槛)
+
+本轮复跑 `backup-restore-smoke.mjs` 8/8、`external-output-backup-smoke.mjs` 7/7。测试在 `e990e3c` 工作树使用隔离合成资料，备份目录源码及两份测试脚本与本轮文档基线 `f8381db` 一致。用例未运行安装包或独立 Windows。
 
 本地备份及外选成果恢复底层回归通过 15 项。覆盖升级、回滚以及不同 Windows 用户和盘符下的恢复按 [固定验收](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#固定验收) 逐项执行。
 

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
-import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
+import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
@@ -420,6 +420,8 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   const ordered = orderedLines(lines, columns, roles);
   const wrappedHeadings = wrappedAssessmentHeadings(ordered.rows, roles, input.regions, height);
   applyAssessmentNumbers(ordered.rows, roles, height, questionCue, wrappedHeadings);
+  if (!layout.unresolved && !ordered.unresolved)
+    restoreJoinedAssessmentNumbers(ordered.rows, roles, input, height, questionCue);
   const formulas = restoreAssessmentFormulaOrder(ordered.rows, roles, height);
   const paragraphs: StructureParagraph[] = [];
   const byId = new Map(lines.map((line) => [line.id, line]));
@@ -1001,14 +1003,13 @@ export class StructureQuestionAssembler {
             .trim(),
         });
     }
-    q.stem = q.stem.replace(
-      /^(?:第\s*\d+\s*题\s*[:：]?|\d+[.．、])[ \t]*/u,
-      "",
-    );
     const first = pending.paragraphs[0];
     if (first.marker?.kind === "parent" && first.marker.label === q.number) {
       const scored = scoredAssessmentNumber(first.rawText);
-      q.stem = stripAssessmentNumber(q.stem, first, q.number);
+      const derived = stripAssessmentNumber(q.stem, first, q.number);
+      q.stem = derived === q.stem
+        ? q.stem.replace(/^(?:第\s*\d+\s*题\s*[:：]?|\d+[.．、])[ \t]*/u, "")
+        : derived;
       if (scored && !q.stem.trim() && !q.subquestions.length)
         q.issues.push("uncertain_boundary");
     }
