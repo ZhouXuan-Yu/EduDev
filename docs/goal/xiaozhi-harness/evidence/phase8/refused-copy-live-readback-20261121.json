@@ -1,0 +1,115 @@
+{
+  "candidate": "e990e3c",
+  "candidateRole": "Frozen real-model candidate before the final-answer wording follow-up",
+  "buildSha256": "4931dc0f183bc95b6ea386b8be01dce52094cb1fef29d70a4e8ef37bc9b9a2bc",
+  "acquisition": {
+    "id": "Q8-r2-B",
+    "status": "PASS",
+    "attempts": 5,
+    "overallBudget": {
+      "used": 198,
+      "limit": 200,
+      "remaining": 2,
+      "unresolved": 0
+    },
+    "rendererSubmitToTerminalMs": 16248.2,
+    "outerAutomationAndReadbackMs": 16389.97,
+    "firstCandidate": "phase8_run_deadline; 120000 ms cap; 5 requests",
+    "output": "E:/EduDev-Harness-Acceptance-20261121/phase8-tail/xiaozhi-phase8-correction-nTJ9tH",
+    "summarySha256": "ddb574ee507bbfbef1c98c9a84b46163b1c08793723e9b9596212058519f6bc2",
+    "reportSha256": "d7fb2cfe0af06fc77fec4edbc9439730248210085cd2569b32a862fd95ad90de"
+  },
+  "independentBlind": {
+    "status": "REVIEW_INCOMPLETE",
+    "scores": [
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "total": 6,
+    "hardChecks": [
+      "UNKNOWN",
+      "UNKNOWN",
+      "UNKNOWN",
+      "UNKNOWN"
+    ],
+    "reviewSha256": "0425827011288516c2af7d14d13ccdfa90bdb29f53f5c9c2584bf99f22e76a4c",
+    "summarySha256": "da9689beffa508a939d9bf592b2cfb4d88addd8cee5a31d3501588023f3c3089",
+    "finding": "已如实报告拒绝和未复制。末尾仍要求继续处理。盲样缺少拒绝前后完整核验。"
+  },
+  "independentPostBlind": {
+    "sameRun": "run_887b1d29-c93e-4deb-9581-8ba80ef9f86a",
+    "hot": "completed",
+    "cold": "succeeded",
+    "task": "review_required",
+    "approvalCount": 1,
+    "approvalState": "rejected",
+    "copyCalls": 1,
+    "copySuccess": 0,
+    "modelAskCallsAfterRejection": 1,
+    "hostAskResult": "already_declined; asked=false",
+    "persistedQuestionCards": 0,
+    "targetAbsent": true,
+    "factsBytes": 129,
+    "factsSha256": "59fcee567acbe15b8e12c2ade806fd8b1752e98254f18c8ba21a3b4b61c14a9e",
+    "dbSha256": "e3cfa6420c1a7dece3b515d334d47740c6d5691929d998e2f5b2e1f0b8ec36e3",
+    "piSha256": "1664be79a3d6e49dd7fafacf852e10dc417214836272be77dd39624000fd21f7",
+    "limit": "运行前 SHA 由原报告与同轮审批记录提供，运行后由独立复算。未再次启动真实模型或 UI，不改变盲评分。"
+  },
+  "remaining": {
+    "uniqueSealedRows": 29,
+    "formalRows": 32,
+    "notAcquired": [
+      "Q7-r2-A",
+      "Q7-r2-B",
+      "Q8-r2-A"
+    ],
+    "originalFormal": "Preserved, 18 collected, 1 failed, 13 untested; separately sealed rows use different candidates.",
+    "latency": "One timing pair, no fleet-wide or aggregate latency conclusion.",
+    "qg09": "Independent clean Windows x64 install, shortcut launch and uninstall not run. 0 current VMware guests."
+  },
+  "currentPrivacy": {
+    "foreground": {
+      "passed": "4/6",
+      "status": "FAIL",
+      "sha256": "72cd974f298612b01ebece967e8b84c022dd9be0949220168d6da9f779f024f4",
+      "fact": "实发到回环模型的原终端结果显示 system_disk_full。四种文本读取权限模式通过。"
+    },
+    "persistent": {
+      "passed": "5/8",
+      "status": "FAIL",
+      "sha256": "3cca99016657e0db6126524040a0873e2ae36c8834efa84b4fac0a412a914858",
+      "fact": "隔离 LOCALAPPDATA 后仍未取得可读 Job；该次 native 失败原因尚未定位。受依赖的成果与冷读留红。"
+    },
+    "audit": {
+      "low": 8,
+      "moderate": 7,
+      "high": 5,
+      "critical": 0
+    }
+  },
+  "integratedWordingFix": {
+    "sha256": "70709ec5ff32538d69cf8a563081e81e1dc9835567586deeb3ffe46254089556",
+    "files": 481,
+    "buildLogSha256": "6d5938993b4d5a92f301bdc9b17ef0d097bf318308bd9011b4265f71106719f3",
+    "source": {
+      "result": "18/18",
+      "sha256": "766a6d2de8a7a2bda07eb6c62a115996cee43f0984198410cab867cd270a53c4"
+    },
+    "renderer": {
+      "result": "253/253",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a",
+      "scope": "After main merge, before final main-process-only wording follow-up"
+    },
+    "electron": {
+      "result": "2/2",
+      "sha256": "62924ab407dc51dcb4cc514291508f483c2ea1ddd0d41025dc7c2065613e7edf",
+      "firstFailureSha256": "21a38048a717df85e3a57e8f0002474e849e2ec88cbec1249aa489a1daffce38",
+      "firstFailure": "Earlier task_blocked outcome caused generic retry footer. Retained as history without misleading footer after same Task explicit refusal.",
+      "scope": "Final integrated production Desktop with loopback provider, actual rejection and cold readback; zero further paid calls."
+    },
+    "rollback": "Revert wording and guard commits to recover the previous behavior. No database or data files need conversion."
+  }
+}

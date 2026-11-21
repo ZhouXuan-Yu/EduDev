@@ -37,14 +37,24 @@ const rejected={state:'rejected',request:{action:'office_copy_file',owner:{sessi
 const foreign={...rejected,request:{...rejected.request,owner:{sessionId,runId:'other'}}};
 const copyRejections=rejectedCopyDecisions([rejected,foreign,{...rejected,state:'invalidated'}],sessionId,runId);
 assert.deepEqual(copyRejections,[{callId:'copy-denied',path:'copy.txt'}]);
+r=await deliveryFinal({sessionId,runId,callOrder:['copy-denied'],observed:true,
+ failedFileCalls:[{callId:'copy-denied',code:'permission_denied',effect:'none'}],
+ ports:ports({copyRejections:async()=>({decisions:copyRejections})})});
+assert(r.incomplete);assert.equal(r.text,'copy\\.txt：已拒绝复制，本次未写入副本。');
+pass('An isolated explicit refusal reports the resolved decision without asking the teacher to retry');
 r=await deliveryFinal({sessionId,runId,callOrder:['before-draft','copy-denied'],observed:true,
  failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'},{callId:'copy-denied',code:'permission_denied',effect:'none'}],
- ports:ports({copyRejections:async()=>copyRejections})});
+ ports:ports({copyRejections:async()=>({decisions:copyRejections})})});
 assert.match(r.text,/copy\\\.txt：已拒绝复制，本次未写入副本/);
 assert.match(r.text,/早先的文件操作未完成/);
 assert(!r.text.includes('操作未获授权或授权已失效'));
 assert(!r.text.includes('未生成可确认保存的成果'));
 pass('Later exact rejection reads the original approval and explains an earlier rejected-admission attempt without implying a copy occurred');
+r=await deliveryFinal({sessionId,runId,callOrder:['before-draft','copy-denied'],observed:true,
+ failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'}],
+ ports:ports({copyRejections:async()=>({decisions:copyRejections,singleTaskDeclined:true})})});
+assert.match(r.text,/早先的文件操作未完成/);assert.doesNotMatch(r.text,/请根据上方实际失败原因继续处理|仍有未完成或未核验项/);
+pass('An earlier undispatched attempt remains visible without a retry prompt after the sole task was declined');
 r=await deliveryFinal({sessionId,runId,callOrder:['before-draft','a'],observed:true,ports:ports({changes:async()=>[text]}),
  failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'}]});
 assert(r.text.includes('讲解\\.html：已保存'));

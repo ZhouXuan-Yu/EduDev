@@ -1,5 +1,11 @@
 # 执行日志
 
+## 2026-11-21 真实拒绝复验及回归
+
+核对账本 193/200 后执行 `phase8-real-model-run.mjs verify-correction <manifest> 7 Q8-r2-B` 和一次 `correct`。实际 5 次全部结算，剩余 2 次保留。Terra 先盲评再读回原审批、Pi 和文件。旧报告及中间失败完整保留。终端文本隐私复验中查明前台失败返回系统盘空间不足，持久终端和两项依赖仍未通过。 [本轮证据](evidence/phase8/refused-copy-live-readback-20261121.json)
+
+首次文案收窄后，实际桌面仍发现早先未派发的操作带回通用重试引导。复用同一任务精确拒绝判断，保留该操作历史。再次用 `npm run build`、`delivery-terminal-smoke.mjs` 和 `phase8-copy-rejection-electron.mjs` 通过构建、源码 18 项与桌面热冷读回 2 项。两份 Electron 原报告摘要均已登记。
+
 ## 2026-11-21 补采与验收读回
 
 依固定顺序执行三个有界批次。独立评分和原始报告分开生成，评审汇总能按原清单核对每一选中项及缺席的对照方。零付费重验两份 Q5 的原生结果摘要、只读权限范围和 HTTP 证明。确认 Q7 的差异算法省略末尾换行，读草稿改用原审阅接口核对完整字节。 [命令、结果与已知缺口](evidence/phase8/remaining-cases-20261121.json)

@@ -1380,7 +1380,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           text:changeId=>store.xiaozhiState.changes.get(changeId),artifact:artifactId=>store.xiaozhiState.officeArtifacts.get(artifactId),inspections:()=>fileChecks.forRun(id,run.runId),
           ...(run.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')?{copyRejections:async()=>{
             const approvals=await store.xiaozhiState.permissions.approvalSnapshot(id);
-            return rejectedCopyDecisions(approvals.items,id,run.runId);
+            const decisions=rejectedCopyDecisions(approvals.items,id,run.runId);
+            const singleTaskDeclined=decisions.length===1&&singleCopyWasDeclined(await tasks.committed(id),run.runId,approvals.items);
+            return {decisions,singleTaskDeclined};
           }}:{})}});
         deliveryText=fileFinal?.text;
       } catch { failure ||= 'configuration'; }

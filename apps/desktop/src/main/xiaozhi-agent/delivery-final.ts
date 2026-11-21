@@ -15,7 +15,7 @@ export type DeliveryFinalPorts={
  changes:()=>Promise<TextFact[]>;office:()=>Promise<OfficeFact[]>;bundles:()=>Promise<DeliveryRow[]>;
  text:(id:string)=>Promise<TextFact|null>;artifact:(id:string)=>Promise<OfficeFact|null>;
  inspections:()=>Promise<{reports:DeliveryCheckReport[];unavailable:boolean}>;
- copyRejections?:()=>Promise<CopyRejection[]>;
+ copyRejections?:()=>Promise<{decisions:CopyRejection[];singleTaskDeclined?:boolean}>;
 };
 const literal=(s:string)=>s.replace(/[\\`*_{}[\]()<>#+.!|~-]/g,'\\$&');
 const kinds:Record<CheckClass,string>={structure:'结构',content:'内容',visual:'视觉',interaction:'交互',numbers:'数值',consistency:'跨文件一致性'};
@@ -36,7 +36,7 @@ export function rejectedCopyDecisions(approvals:PermissionApproval[],sessionId:s
 /** Derived public presentation only. Original ledgers own effects; no model text can certify files. */
 export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;unchangedEdits?:{callId:string;path:string}[];failedFileCalls?:DeliveryFailure[];failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
  if(!options.observed&&!options.callOrder.length&&!options.failedFileCalls?.length)return undefined;
- const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections(),p.copyRejections?.()??[]] as const);
+ const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections(),p.copyRejections?.()] as const);
  const changes=loaded[0].status==='fulfilled'?loaded[0].value:[],office=loaded[1].status==='fulfilled'?loaded[1].value:[],bundles=loaded[2].status==='fulfilled'?loaded[2].value:[];
  const inspection=loaded[3].status==='fulfilled'?loaded[3].value:{reports:[],unavailable:true};
  let unavailable=loaded.some(r=>r.status==='rejected')||inspection.unavailable;
@@ -81,10 +81,12 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
   if(f.state!=='passed'||failures.length||unchecked.length)incomplete=true;
  }
  const recordedCalls=new Set([...entries.values()].map(e=>e.callId));
- const rejectedCopies=loaded[4].status==='fulfilled'?loaded[4].value:[];
- for(const copy of rejectedCopies){
+ const copyRejections=loaded[4].status==='fulfilled'?loaded[4].value:undefined;
+ let declinedOrder:number|undefined;
+ for(const copy of copyRejections?.decisions??[]){
   if(!order.has(copy.callId)||recordedCalls.has(copy.callId))continue;
   recordedCalls.add(copy.callId);
+  declinedOrder=order.get(copy.callId);
   lines.push('- '+literal(copy.path)+'：已拒绝复制，本次未写入副本。');
   incomplete=true;
  }
@@ -104,6 +106,13 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
  if(!lines.length){incomplete=true;lines.push('本轮文件记录未能完整读回；已保存成果保留，请查看原文件面板，不能据此报告全部完成。');}
  if(requirementsUnchecked)lines.push('尚待核对：是否完整满足你的教学要求'+(unmapped?'，其中有要求尚未关联具体检查':'')+'。');
  if(unavailable)lines.push('部分记录暂时无法核验，不能判断全部要求已满足。');
+ if(!options.failure&&!unavailable&&declinedOrder!==undefined&&lines.length===1)return{text:lines[0].slice(2),incomplete};
+ if(!options.failure&&!unavailable&&copyRejections?.singleTaskDeclined&&copyRejections.decisions.length===1&&declinedOrder!==undefined
+   &&!groups.size&&!options.unchangedEdits?.length
+   &&[...failedCalls.values()].every(a=>a.effect==='none'&&a.code==='task_blocked'
+     &&(order.get(a.callId)??Infinity)<declinedOrder)) {
+  return{text:lines.join('\n'),incomplete};
+ }
  const title=options.failure==='stopped'?'本轮已停止，已保存成果保留。':options.failure==='failed'?'本轮未全部完成。':'本轮文件结果：';
  return{text:[title,...(incomplete?[entries.size?'仍有未完成或未核验项，保存成功不代表检查全部通过。':'仍有未完成或未核验项，不能报告全部完成。']:[]),'',...lines,'',entries.size?'可在上方文件卡打开已有成果，在本地文件面板重新检查或继续修改。':options.unchangedEdits?.length?'可从已有成果卡或教学文件打开原文件；本次比对不代表重新完成交付检查。':'请根据上方实际失败原因继续处理；没有保存回执的操作不能视为文件已交付。'].join('\n'),incomplete};
 }

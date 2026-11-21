@@ -73,6 +73,7 @@ try {
   assert(run,'The exact copy Run did not publish its completed refusal result');
   const answer = run.items.filter(item => item.role === 'assistant').map(item => item.text || '').join('\n');
   assert.match(answer,/已拒绝复制，本次未写入副本/u);
+  assert.doesNotMatch(answer,/请根据上方实际失败原因继续处理/u);
   assert(!answer.includes('未生成可确认保存的成果'));
   assert(!fs.existsSync(target));
   assert(fs.readFileSync(source).equals(bytes));
