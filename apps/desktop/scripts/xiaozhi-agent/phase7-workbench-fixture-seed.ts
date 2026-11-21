@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {randomUUID, createHash} from 'node:crypto';
+import {setTimeout as delay} from 'node:timers/promises';
 import {OmniEduStore} from '../../src/main/db';
 import {createXiaozhiProductionHost} from '../../src/main/xiaozhi-agent/production-host';
 import {workspaceHash} from '../../src/main/xiaozhi-agent/workspace-authority';
@@ -17,12 +18,21 @@ export async function seedWorkbenchFixture(root: string, control: string, token:
   const host = createXiaozhiProductionHost({store, dataRoot, enabled: true, emit() {}});
   const ids: Record<string, unknown> = {dataRoot, workspace, notes: 'All sessions and teaching text are synthetic. Legacy records are explicit original-state compatibility fixtures, not evidence that a historical tool was executed.'};
   const scenario = async (tools: unknown[]) => {const result = await fetch(control, {method: 'POST', headers: {'content-type': 'application/json', 'x-fixture-token': token}, body: JSON.stringify({tools})}); assert(result.ok);};
-  async function run(name: string, tools: unknown[] = []) {
+  async function run(name: string, tools: unknown[] = [], retainPendingApproval = false) {
     const sessionId = (await store.createAiConversationSession({title: name, folderId: null})).session.id;
     await store.xiaozhiState.setWorkspace(sessionId, workspace, 'owned-workspace');
     await scenario(tools);
     const started = await host.start({sessionId, commandId: 'xicmd_' + randomUUID(), prompt: '这是独立的合成教学核对任务。只按提供的合成步骤操作；无需真实外部资料。'});
-    assert(started.ok, JSON.stringify(started)); await host.waitForRun(sessionId, started.runId);
+    assert(started.ok, JSON.stringify(started));
+    if (retainPendingApproval) {
+      const deadline = Date.now() + 30_000;
+      while (!(await host.permissions.view(sessionId)).approvals.some(approval => approval.state === 'pending')) {
+        assert(Date.now() < deadline, 'The approval fixture did not reach a pending operation');
+        await delay(50);
+      }
+      assert((await host.stop(sessionId)).ok, 'Stop the active fixture, preserving the pending approval for cold readback');
+    }
+    await host.waitForRun(sessionId, started.runId);
     const snapshot = await host.taskSnapshot({sessionId}); assert(snapshot.ok && snapshot.value.task, JSON.stringify(snapshot));
     return {sessionId, runId: started.runId, task: snapshot.value.task, candidate: snapshot.value.candidate, canAccept: snapshot.value.canAccept};
   }
@@ -38,7 +48,7 @@ export async function seedWorkbenchFixture(root: string, control: string, token:
       reason: '保留一项明确尚未执行的合成成果，供教师选择继续', planningLevel: 2, capabilityRequirements: [],
       steps: [{id: 'owned_output', text: '准备本地合成教案', dependsOn: [], reported: 'pending', kind: 'saved_text', target: 'remaining-output.txt'},
         {id: 'teacher_check', text: '教师核对', dependsOn: ['owned_output'], reported: 'pending', kind: 'human'}]}}]);
-    const pending = await run('审批样本 · 现代权限申请', [{name: 'exec_command', input: {cmd: "Write-Output 'SYNTHETIC_PERMISSION_ONLY'"}}]);
+    const pending = await run('审批样本 · 现代权限申请', [{name: 'exec_command', input: {cmd: "Write-Output 'SYNTHETIC_PERMISSION_ONLY'"}}], true);
     ids.permission = {...pending, approvals: (await host.permissions.view(pending.sessionId)).approvals};
     assert((ids.permission as {approvals: unknown[]}).approvals.length, 'Actual original tool must create a permission request');
     const legacy = await run('兼容样本 · 历史复制申请');

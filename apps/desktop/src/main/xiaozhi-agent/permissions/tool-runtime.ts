@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { PermissionOwner, PermissionRequest, PermissionScope } from '../../../shared/xiaozhi-permissions';
-import type { PermissionEngine } from './engine';
+import type { PermissionEngine, PermissionWait } from './engine';
 import { filesystemScope, checkedFile, digest } from './resources';
 import { permissionHash } from './validation';
 import { runWithPermission } from './current';
@@ -13,7 +13,7 @@ import {unwrapTaskArguments} from '../tasks/tool-envelope';
 
 type Result = Awaited<ReturnType<ToolDefinition['execute']>>;
 export type PermissionToolExecution = (callId: string, name: string, input: unknown, signal: AbortSignal,
-  execute: (signal: AbortSignal) => Promise<Result>) => Promise<Result>;
+  execute: (signal: AbortSignal) => Promise<Result>, wait?: PermissionWait) => Promise<Result>;
 const reads = new Set(['office_read_text', 'office_file_stat', 'office_list_files', 'office_read_document', 'capability_execute', 'environment_inspect']);
 const writes = new Set(['office_copy_file', 'office_create_text', 'office_edit_text', 'office_create_science_figure',
   'office_create_document', 'office_deliver_files', 'education_create_report', 'exec_command', 'environment_repair']);
@@ -94,10 +94,10 @@ export function createToolPermissionRuntime(options: {
       purpose: name === 'exec_command' ? '在已授工作区运行受控脚本并提交文件变动' : '使用已授资源完成当前教学任务',
       scopes, files, provider: options.provider ? options.provider(name) : nativePermissionProvider(name), classification: 'redacted', expiresAt: new Date(Date.now() + 86400000).toISOString()};
   }
-  const execute: PermissionToolExecution = async (callId, name, input, signal, perform) => {
+  const execute: PermissionToolExecution = async (callId, name, input, signal, perform, wait) => {
     const frozen = await request(callId, name, input);
     if (!frozen) return perform(signal);
-    return options.engine.run(frozen, signal, async context => runWithPermission({request: frozen, ...context}, () => perform(context.signal)));
+    return options.engine.run(frozen, signal, async context => runWithPermission({request: frozen, ...context}, () => perform(context.signal)), undefined, wait);
   };
   return {request, execute};
 }

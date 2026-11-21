@@ -3635,3 +3635,5 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 合并候选 bdad61b 的两个完整模块共同构建及 TypeScript 检查通过。真实设置页预检 7/7，审批目标变更与冷启 3/3。481 个文件的指纹为 0f357d3d0cd855f6dd6724102c3bd0563db08d11b5617d7b166b1ca5d5887272。备份原报告 SHA-256 2345d1708fe782fa7dcef8e6eddb082d162075082c49cfd387d49b0e0bec3bdd，审批 fe82feb041d23967d7b0222c5a8030a803777ae1e9141fb1d1eb6d1360fe69a4。
 
 合并前的版本预检构建另运行完整历史教师桌面回归 node scripts/electron-smoke.mjs，退出码 0，包含 12 项备份检查。原始日志 SHA-256 362598ac8ce7a2210e17d426467c032ab80d462ea7668f43ea6d6050d7f1d5c9。
+
+合并候选 4d1a89a 中，真实设置页备份版本预检复验 7/7。构建与类型检查通过，481 个输出及原报告摘要已登记。此次复验使用同机隔离工作区，安装版覆盖升级和异机恢复继续按 UM-01～UM-09 执行。 [构建和复验](../goal/xiaozhi-harness/evidence/phase8/active-approval-wait-20261121.json)

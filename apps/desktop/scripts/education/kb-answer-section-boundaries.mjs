@@ -44,11 +44,13 @@ function tablePolicy(f,policy=MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY){
 }
 await check('A bare three-line key waits for its prior title, writes only the exact answer, and preserves cold proof',()=>use({answerText:continuedKey,answerIssues:[]},async f=>{
  const current=tablePolicy(f);
+ current.status='review';
  await init(f);await missing(f);
  const raw=(await f.repo.sections.answerPage(current)).page;
  assert(raw.leadingKeyContinuation&&raw.entries.every(e=>e.issues.includes('missing_section')));
  const before=await f.read(),prior=add(f,1),receipts=JSON.stringify([...f.proofs]);
  await index(f);
+ assert.equal(f.db.prepare('SELECT review_state FROM material_book_answer_index_v1 WHERE batch_id=? AND start=-1').get(f.answerBatch).review_state,'section-resolved.v1');
  const [row]=(await f.match()).rows;
  assert.equal(row.state,'applied');assert.equal(row.source.page,2);assert.equal(row.source.sectionPage,1);
  const saved=await f.read();

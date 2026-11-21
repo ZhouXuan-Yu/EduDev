@@ -134,6 +134,7 @@ export function createPermissionService(options: {
         }
         await options.store.issue(raw.sessionId, scopes, {kind: 'teacher', reference: 'profile:' + profile.revision});
       }
+      await engine.changed(raw.sessionId);
       return options.store.view(raw.sessionId);
     },
     async issue(raw: PermissionGrantInput) {
@@ -145,7 +146,9 @@ export function createPermissionService(options: {
       }
       await checkSession(raw.sessionId);
       const scopes = await Promise.all(raw.scopes.map(normalize));
-      return options.store.issue(raw.sessionId, scopes, {kind: 'teacher', reference: 'explicit:' + permissionHash(scopes)}, raw.taskId, raw.expiresAt);
+      const grants = await options.store.issue(raw.sessionId, scopes, {kind: 'teacher', reference: 'explicit:' + permissionHash(scopes)}, raw.taskId, raw.expiresAt);
+      await engine.changed(raw.sessionId);
+      return grants;
     },
     async decide(raw: PermissionApprovalInput) {
       if (!plain(raw) || !exact(raw, ['sessionId', 'approvalId', 'revision', 'decision', 'scope'])

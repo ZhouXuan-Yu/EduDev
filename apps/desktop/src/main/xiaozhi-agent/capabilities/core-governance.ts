@@ -177,7 +177,7 @@ export async function registerSessionToolGovernance(options: {
 
 export function createRunToolGovernance(options: {owner: PermissionOwner; registry: CapabilityRegistry;
   records: ReadonlyMap<string, ToolGovernanceRecord>; current: () => boolean;
-  task: (callId: string) => Promise<{planRevision: number; requirementsVersion: number; stepId: string | null; target: string | null}>;
+  task: (callId: string, currentPlan?: boolean) => Promise<{planRevision: number; requirementsVersion: number; stepId: string | null; target: string | null}>;
   snapshot: (record: ToolGovernanceRecord) => Promise<ProviderSnapshot>;
   mcp: (name: string) => Promise<McpToolIdentity | null>;
   persist: (callId: string, name: string, receipt: ToolContractReceipt, signal?: AbortSignal) => Promise<void>;
@@ -188,6 +188,7 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
   const calls = new Map<string, ToolContractReceipt>();
   const snapshots = new Map<string, ProviderSnapshot>();
   const names = new Map<string, string>();
+  const waitedCalls = new Set<string>();
   const authorityWrites = new Map<string, Promise<void>>();
   // HTTP MCP authorizes inside the original adapter. Its outer invocation is
   // not a transport dispatch; only that adapter may cross this one-shot gate.
@@ -219,9 +220,23 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
     signal.throwIfAborted(); if (!options.current()) throw Error('permission_denied');
     return record;
   }
+  async function assertWaitingTask(callId: string, name: string, input: unknown, signal: AbortSignal) {
+    signal.throwIfAborted();
+    const receipt = calls.get(callId);
+    if (!options.current() || !receipt || names.get(callId) !== name || receipt.inputDigest !== identityHash(input)) throw new TaskAdmissionError('task_owner_stale');
+    const task = await options.task(callId, true);
+    signal.throwIfAborted();
+    if (!options.current() || task.planRevision !== receipt.planRevision || task.requirementsVersion !== receipt.requirementsVersion
+        || task.stepId !== receipt.stepId || task.target !== receipt.target) throw new TaskAdmissionError('task_owner_stale');
+  }
   return {
     records: options.records,
     recordAuthority,
+    async assertWaitingCall(callId: string, name: string, input: unknown, signal: AbortSignal) {
+      await assert(name, signal);
+      await assertWaitingTask(callId, name, input, signal);
+      waitedCalls.add(callId);
+    },
     async beginMcpCall(callId: string, source: McpToolIdentity, input: unknown, signal: AbortSignal) {
       const pending = pendingMcp.get(callId), receipt = calls.get(callId);
       if (!pending || pending.state !== 'waiting' || !receipt || source.transport !== 'http'
@@ -270,6 +285,9 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
       const record = await assert(name, signal);
       await options.preflight?.(callId, name, input, true);
       const receipt = calls.get(callId); if (!receipt) throw Error('permission_denied');
+      // Only a call that actually waited receives this additional fence.
+      // A change after approval consumption cannot reach the native effect.
+      if (waitedCalls.has(callId)) await assertWaitingTask(callId, name, input, signal);
       const authority = currentPermission();
       if (authority) await recordAuthority(callId, authority.decision.grantRefs, 'permission-request:' + authority.decision.requestDigest);
       const deferred = record.source?.transport === 'http';
