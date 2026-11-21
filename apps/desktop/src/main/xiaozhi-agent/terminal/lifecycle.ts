@@ -21,6 +21,7 @@ import type {TerminalJobRecord} from './job-types';
 import {terminalShellArguments} from './shell-startup';
 import {terminalJobView} from './presentation';
 import {recoverTerminalResources} from './recovery';
+import {sealTerminalNotStarted, TerminalNotStartedError} from './not-started';
 
 export type TerminalEntry = {
   jobId: string;
@@ -169,7 +170,20 @@ export function createTerminalLifecycle(options: {
       const jobId='term_'+randomUUID();
       pendingStarts.set(jobId,sessionId);
       try{
-      if ((await options.runtime.inspect()).status !== 'ready') await options.runtime.prepare(authority, options.runtime.recipe().sha256);
+      if ((await options.runtime.inspect()).status !== 'ready') {
+        try {
+          await options.runtime.prepare(authority, options.runtime.recipe().sha256);
+        } catch (error) {
+          if (error instanceof Error && error.message === 'system_disk_full') {
+            const sealed = await context.persist(async () => {
+              await authority.assert();
+              return sealTerminalNotStarted(options.sql, context.owner, callId);
+            });
+            if (sealed) throw new TerminalNotStartedError();
+          }
+          throw error;
+        }
+      }
       const runtime = await options.runtime.resolve(authority);
       const projection = await prepareExecutionProjection(context.workspace, input.workdir || '.', authority);
       const effect = await effects.byCall(context.owner.runId, callId);

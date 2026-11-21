@@ -1,5 +1,9 @@
 # 执行日志
 
+## 2026-11-21 验证终端隐私及失败收尾
+
+独立审计区分 `system_disk_full` 错误、`unknown` 效果和另一份确实无法分类的原生失败。以同一调用的执行回执、契约和序列永久记录教师命令未启动。测试覆盖真实 Host、回环模型输入、SQLite、终端和原生记录。构建、253 组件、10 条日志、9 条实际工作台及隐私专项通过。受控容量测试与原实际盘满样本分别保存，本轮无新增付费。 [精确命令及报告](evidence/phase8/terminal-disk-privacy-20261121.json)
+
 ## 2026-11-21 真实拒绝复验及回归
 
 核对账本 193/200 后执行 `phase8-real-model-run.mjs verify-correction <manifest> 7 Q8-r2-B` 和一次 `correct`。实际 5 次全部结算，剩余 2 次保留。Terra 先盲评再读回原审批、Pi 和文件。旧报告及中间失败完整保留。终端文本隐私复验中查明前台失败返回系统盘空间不足，持久终端和两项依赖仍未通过。 [本轮证据](evidence/phase8/refused-copy-live-readback-20261121.json)

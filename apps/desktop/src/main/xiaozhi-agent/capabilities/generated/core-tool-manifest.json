@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "3f37180ef1633f7eb0ae40da0e26ddd3fe67867d5d753f4da6cdce4c4de01598",
+  "sourceHash": "16feac234b3f14c1b886d9a8264d31d4df38a9463e6ea596d3632f27442b52a3",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "bb6441bed38d3903f0fd554bf2a498311f5f3a5a6e629805916670071c948754"
+      "sha256": "047322b8a22c88a605898c16c59ef9cd7fd6d85b4303581ca9778becde00507b"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -996,7 +996,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/receipts.ts",
-      "sha256": "c98a9c4523b4dff1449e9a5bb36bc9a1982b9602ddae853abbe0003db3fe46f0"
+      "sha256": "1bff51f8383c98f8d14b7deafd75d6c482af60c0f845c5eb1b9adfb13d79d93b"
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
@@ -1632,7 +1632,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/lifecycle.ts",
-      "sha256": "df21d746e743be77425cd07a14638e90ba4b001cd3f5a30777f4a6056641c6bb"
+      "sha256": "27ee9879e314997d09b15b123b86e11f1a9d22699e4e0349d1c8c48d63d588fc"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/terminal/not-started.ts",
+      "sha256": "d07bc84e1b8b921c44dea7b987a034dd2b1debae01cc3a2b1bb7ea191e275c83"
     },
     {
       "file": "src/main/xiaozhi-agent/terminal/presentation.ts",
@@ -1684,7 +1688,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tools/execution-bound.ts",
-      "sha256": "898ef680493e38cbab92fcdb3d479aed1a20e111d0a63a83a19b3f2a36a667cc"
+      "sha256": "b62f071aece7d447724d3fbf475703a298d5887aaa7fa10be9516f58975925c2"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/manifest.ts",

@@ -1,0 +1,72 @@
+{
+  "baselineCommit": "6ca576f667afeb6c2bbf22a423bae405d6e3e2f8",
+  "failure": {
+    "actualZeroSpace": "Prior H0OD64 and fQIM99 real Host SQLite recorded permission_runtime_system_disk_full availableBytes=0, no Job; native code was system_disk_full and effect was unknown.",
+    "distinctOlderUnknown": "fIkh0a records permission_runtime_build_intent and native code unknown. The exact error for that run remains unresolved; it is preserved separately.",
+    "repair": "Before projection and Job creation, the same admitted call can persist a failed effect with a domain proof bound to Run, generation, Task, tool contract, execution identity and receipt sequence. Other failures preserve conservative effects, and the original permission grant, explicit retry and absence of automatic replay remain."
+  },
+  "compiled": {
+    "files": 481,
+    "sha256": "5dbfd28300fe6f90fed5da30d2617b707cc50c18306ec6c9cfd8c125f5679d34",
+    "buildLogSha256": "9ef8b5b46c2e6c21620076eb697928f0827052e7d10c84310ff6a31b3f091ae8",
+    "renderer": {
+      "passed": 253,
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    "visibleDesktop": {
+      "passed": 9,
+      "path": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Terminal-20261121/omni-edu-xiaozhi-phase7-workbench-ui-lBlFRt/evidence/ui-report.json",
+      "sha256": "25cc21790fe5876070dc3407d73a37a9a5888c82497bf62bbe4799b8c2905e0b",
+      "scope": "Actual compiled Electron through workbench, interactive terminal, permission and cold readback. Local provider fixture."
+    }
+  },
+  "terminalPrivacy": {
+    "passed": "8/8",
+    "root": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Terminal-20261121/mp-host-U7U0Kc",
+    "summarySha256": "bd806433ef8c16dc41dbee18a0ef7cc1b126684574abd3f84aee95d5d0d62da8",
+    "sourcesSha256": "b9a1b01df33d59ca36c842ee2e08ab904b6fcb37cd11fd3133d5f630afd76a4f",
+    "independent": "Terra matched 823 source entries. 27 captured loopback requests across eight cases, no selected synthetic private markers. Real persistent terminal one Job with three output segments. Terminal case four requests, three contained safe teaching marker. Actual generated artifact hash and three cold Pi history prefixes independently matched. Local raw evidence retains protected context; only model transport is scoped here."
+  },
+  "fileTextPrivacy": {
+    "passed": "6/6",
+    "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-file-text-privacy-Q1otfN",
+    "summarySha256": "b690e401ac54486e5cb1e14805903d0a078a0fe89af05ce63d800ece124c9a65",
+    "independent": "Ten captured model requests, four authorization modes and foreground terminal. Safe marker present in each scenario, source first-line private sentinels absent. Original file retained."
+  },
+  "controlledFull": {
+    "passed": "1/1",
+    "root": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Terminal-20261121/mp-host-oXActp",
+    "summarySha256": "042374f2fae96a4e0fac86ed7eefb7604098437ef1192d03f69a1a0f8dcea5a2",
+    "nativeReportSha256": "7f81401e08743a89ef105e7f8d14ae66eea254d9600dfad898e155be2199683f",
+    "independent": "One admitted failed exec_command, native matched, one domain proof, no Job. Restored disposition not_delivered, effect not_checked, no replay. Wrong generation, negative sequence, native conflict, altered contract and successful receipt do not qualify.",
+    "scope": "Actual Terminal Host and local SQLite/Pi, only available-space statfs return injected. Archive of actual Windows no-space originals remains separate."
+  },
+  "supporting": {
+    "nativeDiskMapper": "6/6 at base before the no-start proof changes; first direct run failed because fixture used a slash-normalized URL style env path instead of actual Windows canonical path.",
+    "nativeDiskMapperSha256": "888164c7a599e7a64d0bb8b4fa15d08fe658e17de92235489e57fab2505b11de",
+    "journal": "10/10",
+    "journalLogSha256": "7dbd5d50d0614c7f5ffab3a9e67543a158840789c18aa713a262e0fa5ab1d7b5",
+    "npmAudit": {
+      "low": 8,
+      "moderate": 7,
+      "high": 5,
+      "critical": 0
+    },
+    "archive": "One closed synthetic browser cache file was temporarily moved to E with SHA-256 validation and returned byte-for-byte to the original C path. No user data or test reports were touched."
+  },
+  "commands": [
+    "npm run build",
+    "npm run test:renderer-components",
+    "node scripts/xiaozhi-agent/model-tool-privacy-host-smoke.mjs",
+    "OMNI_EDU_TEST_TERMINAL_DISK_FULL=1 node scripts/xiaozhi-agent/model-tool-privacy-host-smoke.mjs",
+    "node scripts/xiaozhi-agent/file-text-privacy-host-smoke.mjs",
+    "node scripts/xiaozhi-agent/pi-tool-attempt-journal.mjs",
+    "node scripts/xiaozhi-agent/terminal-system-disk-smoke.mjs",
+    "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs",
+    "npm audit --omit=dev --json",
+    "git diff --check"
+  ],
+  "performance": "The proof adds a bounded SQLite lookup/transaction only for the known failed launch. Physical storage changed between the blocked and positive tests; no product speed or full-suite aggregation claim.",
+  "remaining": "No new paid calls, ledger remains 198/200 with three original unsealed rows. QG-09 isolated Windows installation and the version upgrade/real migration gates remain. No installed package was altered.",
+  "rollback": "Revert this change to return to generic unknown effect reporting for new disk-full attempts. No schema changes. Previously sealed audit records remain in existing SQLite; prior binaries may display them conservatively."
+}

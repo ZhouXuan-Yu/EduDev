@@ -12,6 +12,7 @@ import {TOOL_EXECUTION_CODES,TOOL_EXECUTION_MESSAGES,type ToolExecutionCode,type
 import {taskAdmissionFailure} from '../tasks/admission-error';
 import type {PermissionToolExecution} from '../permissions/tool-runtime';
 import {nonDispatchFileTools} from '../effects/non-dispatch';
+import {TerminalNotStartedError} from '../terminal/not-started';
 type Result=Awaited<ReturnType<ToolDefinition['execute']>>;
 type Options={notDispatched?:(callId:string,tool:string,input:unknown,signal:AbortSignal)=>Promise<void>;resolveInput?:(tool:string,input:unknown,signal?:AbortSignal)=>Promise<unknown>;trustedMcpNames?:ReadonlySet<string>;sessionId:string;workspaceKey:string;outputWorkspaceKey?:string;registry:SessionExecutionRegistry;epoch:()=>string;current:(epoch:string)=>boolean;waiting:()=>boolean;onWaiting:(fn:(waiting:boolean)=>void)=>()=>void;beforeDelivery:(callId:string,tool:string,signal:AbortSignal,input:unknown)=>Promise<void>;attempt:(attempt:XiaozhiToolAttempt,signal:AbortSignal)=>Promise<void>;criticalFailure?:(error:unknown)=>void;timeout?: (manifest:ToolManifest)=>number};
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
@@ -183,7 +184,8 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
     }catch(error){executionError=error;code=toolExecutionCode(error);}
     // This intrinsic tool only prepares local image bytes. Upload happens later
     // in the provider stream and is tracked by its separate delivery receipt.
-    const effect=code&&invoked&&manifest.effect!=='safe_read'&&def.name!=='office_view_public_image'?'unknown':'none';
+    const terminalNotStarted=def.name==='exec_command'&&executionError instanceof TerminalNotStartedError;
+    const effect=code&&invoked&&manifest.effect!=='safe_read'&&def.name!=='office_view_public_image'&&!terminalNotStarted?'unknown':'none';
     const admissionError=preparationError??executionError;
     if(code==='task_blocked'&&!invoked&&taskAdmissionFailure(admissionError)){
      const state:XiaozhiToolAttempt={...summary(n,'failed',code,'none',timing()),delivery:'not_delivered'},result=failed(code,state);
