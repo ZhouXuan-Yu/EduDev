@@ -73,7 +73,7 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_BOOK_PAGE_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,MATERIAL_BOOK_PAGE_LABEL_POLICY,validMaterialBookPagePolicy,pageResponseMatchesPolicy,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,MATERIAL_PAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_BOOK_PAGE_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY,validMaterialBookPagePolicy,pageResponseMatchesPolicy,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,MATERIAL_PAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiAnswerPageMaskSource,readAiPageSource,readAiPageUnits,validateAiPageSource,followingPageStatus,readFollowingPageBoundary} from './material-ai-page-source';
 import {restoredResponseQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
@@ -312,7 +312,8 @@ export class MaterialAiRepository{
             const unit:AiUnitInput={sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,bookRole,
               pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:original.status},
               bookPagePolicy:process.env.OMNI_EDU_BOOK_ANSWER_TABLES==='0'?MATERIAL_BOOK_PAGE_POLICY:
-                process.env.OMNI_EDU_BOOK_ANSWER_LABELS==='0'?MATERIAL_BOOK_PAGE_TABLE_POLICY:MATERIAL_BOOK_PAGE_LABEL_POLICY};
+                process.env.OMNI_EDU_BOOK_ANSWER_LABELS==='0'?MATERIAL_BOOK_PAGE_TABLE_POLICY:
+                process.env.OMNI_EDU_BOOK_CONTINUED_KEYS==='0'?MATERIAL_BOOK_PAGE_LABEL_POLICY:MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY};
             if(allowMask&&this.runtime&&(original.privacyRows.length||await this.runtime.clean(original.text)!==original.text)){
               const controller=new AbortController();
               this.layoutControllers.add(controller);

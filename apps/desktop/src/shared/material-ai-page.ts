@@ -33,9 +33,10 @@ export const MATERIAL_AI_BOOK_PAGE_RESPONSE='xiaozhi.material-ai-book-page-respo
 export const MATERIAL_BOOK_PAGE_POLICY='answer-entry-uncertainty.v2' as const;
 export const MATERIAL_BOOK_PAGE_TABLE_POLICY='answer-entry-topology.v3' as const;
 export const MATERIAL_BOOK_PAGE_LABEL_POLICY='answer-entry-printed-labels.v4' as const;
-export type MaterialBookPagePolicy=typeof MATERIAL_BOOK_PAGE_POLICY|typeof MATERIAL_BOOK_PAGE_TABLE_POLICY|typeof MATERIAL_BOOK_PAGE_LABEL_POLICY;
+export const MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY='answer-entry-continued-table.v5' as const;
+export type MaterialBookPagePolicy=typeof MATERIAL_BOOK_PAGE_POLICY|typeof MATERIAL_BOOK_PAGE_TABLE_POLICY|typeof MATERIAL_BOOK_PAGE_LABEL_POLICY|typeof MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY;
 export const validMaterialBookPagePolicy=(value:unknown):value is MaterialBookPagePolicy=>
- value===MATERIAL_BOOK_PAGE_POLICY||value===MATERIAL_BOOK_PAGE_TABLE_POLICY||value===MATERIAL_BOOK_PAGE_LABEL_POLICY;
+ value===MATERIAL_BOOK_PAGE_POLICY||value===MATERIAL_BOOK_PAGE_TABLE_POLICY||value===MATERIAL_BOOK_PAGE_LABEL_POLICY||value===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY;
 export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;

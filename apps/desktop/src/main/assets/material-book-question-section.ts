@@ -2,6 +2,8 @@ import {bookAnswerPage,bookSectionAt,bookSectionKey} from './material-book-answe
 import type {readAiPageReceipt} from './material-ai-page-evidence';
 import type {MaterialBookAnswerIndex} from './material-book-answer-index';
 import {sameMaterialBookIdentity} from '../../shared/material-book-pair';
+import {MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY,pageTranscriptionAgrees} from '../../shared/material-ai-page';
+import type {BookAnswerPage} from '../../shared/material-book-answer';
 
 type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
 export const BOOK_SECTION_CONTEXT='xiaozhi.book-section-context.v1' as const;
@@ -15,6 +17,16 @@ function numbers(proof:Proof,section:string|undefined){
  const read=(response:Proof['first'])=>bookAnswerPage(response,response,undefined,proof.unit.bookPagePolicy).entries.filter(e=>section===undefined?!e.section:e.sectionKey===bookSectionKey(section)).map(e=>Number(e.number));
  const a=read(proof.first),b=read(proof.final);
  return JSON.stringify(a)===JSON.stringify(b)&&b.every((n,i)=>n>0&&(!i||n>b[i-1]))?b:undefined;
+}
+function cleanContinuityPage(proof:Proof,page:BookAnswerPage){
+ return proof.first.outcome==='no_questions'&&proof.final.outcome==='no_questions'&&
+  pageTranscriptionAgrees(proof.first,proof.final)&&page.status==='compared'&&
+  !page.pageUncertain&&!page.unresolvedTables&&!page.firstOnly.length&&
+  !proof.final.pageText.split('\n').some(line=>{
+   const text=line.trim().replace(/^#{1,6}\s*/u,'').normalize('NFKC');
+   return /^(?:[^。！？?]{0,15})\d{4}(?:年|学年|年度)[^。！？?]{1,64}(?:考试|试卷|试题|真题)[^。！？?]{0,20}$/u.test(text)&&bookSectionAt(text)===undefined;
+  })&&page.entries.every(entry=>
+   entry.agrees&&entry.issues.every(issue=>issue==='missing_section'||issue==='missing_analysis'));
 }
 /** Derived context only. Original paid transcripts and canonical question text are untouched. */
 export class MaterialBookQuestionSection{
@@ -32,6 +44,10 @@ export class MaterialBookQuestionSection{
  }
  private async resolveRole(current:Proof,answers:boolean,signal:AbortSignal):Promise<BookQuestionSectionEvidence|BookAnswerSectionEvidence|undefined>{
   const source=current.unit.pageSource;if(!source||source.page<=1||(current.unit.bookRole?.kind==='answers')!==answers)return;
+  const raw=answers&&current.unit.bookPagePolicy===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY?
+   bookAnswerPage(current.first,current.final,undefined,current.unit.bookPagePolicy):undefined;
+  const continuedKey=raw?.leadingKeyContinuation===true;
+  if(raw?.leadingKeyContinuation&&!cleanContinuityPage(current,raw))return;
   const leading=numbers(current,undefined);if(!leading?.length)return;let nextNumber=leading[0];
   const markers=await this.index.sectionPages(source.resourceId,source.version,source.page,BOOK_SECTION_LOOKBACK),pages:Page[]=[];
   let expected=source.page-1;
@@ -47,6 +63,11 @@ export class MaterialBookQuestionSection{
    if(first===''||final===''||(first===undefined)!==(final===undefined))return;
    const previousNumbers=numbers(proof,final);
    if(!previousNumbers||previousNumbers.length&&previousNumbers.at(-1)!>=nextNumber)return;
+   if(continuedKey||answers&&proof.unit.bookPagePolicy===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY){
+    const previousPage=bookAnswerPage(proof.first,proof.final,undefined,proof.unit.bookPagePolicy);
+    if(continuedKey&&(!cleanContinuityPage(proof,previousPage)||previousNumbers.at(-1)!==nextNumber-1)||
+      !continuedKey&&previousPage.leadingKeyContinuation)return;
+   }
    if(previousNumbers.length)nextNumber=previousNumbers[0];
    if(first!==undefined&&final!==undefined){
     if(bookSectionKey(first)!==bookSectionKey(final))return;
