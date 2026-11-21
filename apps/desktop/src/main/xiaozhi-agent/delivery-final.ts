@@ -3,16 +3,19 @@ import type {PrivateOfficeArtifact} from './office-artifact-state';
 import type {DeliveryRow} from './delivery-state';
 import type {DeliveryCheckReport,CheckClass} from '../../shared/xiaozhi-delivery-checks';
 import {TOOL_EXECUTION_MESSAGES,type XiaozhiToolAttempt} from '../../shared/xiaozhi-tool-attempt';
+import type {PermissionApproval} from '../../shared/xiaozhi-permissions';
 
 type TextFact=Pick<PrivateTextChange,'id'|'sessionId'|'runId'|'callId'|'path'|'state'|'afterSha256'>;
 type OfficeFact=Pick<PrivateOfficeArtifact,'id'|'sessionId'|'runId'|'callId'|'path'|'state'|'outputHash'>;
 type Entry={id:string;path:string;callId:string;saved:boolean;state:string;hash:string|null;carried?:boolean;write:boolean};
 export type DeliveryFinal={text:string;incomplete:boolean};
 export type DeliveryFailure=Pick<XiaozhiToolAttempt,'callId'|'code'|'effect'>;
+type CopyRejection={callId:string;path:string};
 export type DeliveryFinalPorts={
  changes:()=>Promise<TextFact[]>;office:()=>Promise<OfficeFact[]>;bundles:()=>Promise<DeliveryRow[]>;
  text:(id:string)=>Promise<TextFact|null>;artifact:(id:string)=>Promise<OfficeFact|null>;
  inspections:()=>Promise<{reports:DeliveryCheckReport[];unavailable:boolean}>;
+ copyRejections?:()=>Promise<CopyRejection[]>;
 };
 const literal=(s:string)=>s.replace(/[\\`*_{}[\]()<>#+.!|~-]/g,'\\$&');
 const kinds:Record<CheckClass,string>={structure:'结构',content:'内容',visual:'视觉',interaction:'交互',numbers:'数值',consistency:'跨文件一致性'};
@@ -21,10 +24,19 @@ const officeState:Record<OfficeFact['state'],string>={pending:'尚未确认，�
 const textEntry=(r:TextFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:r.state==='applied',state:textState[r.state],hash:r.afterSha256,write:true});
 const officeEntry=(r:OfficeFact):Entry=>({id:r.id,path:r.path,callId:r.callId,saved:r.state==='saved',state:officeState[r.state],hash:r.outputHash,write:true});
 
+export function rejectedCopyDecisions(approvals:PermissionApproval[],sessionId:string,runId:string):CopyRejection[]{
+ return approvals.flatMap(item=>{
+  const {request}=item;
+  if(item.state!=='rejected'||request.action!=='office_copy_file'||request.owner.sessionId!==sessionId||request.owner.runId!==runId)return [];
+  const targets=request.files.filter(file=>file.kind==='write_target');
+  return targets.length===1?[{callId:request.callId,path:targets[0].path}]:[];
+ });
+}
+
 /** Derived public presentation only. Original ledgers own effects; no model text can certify files. */
 export async function deliveryFinal(options:{sessionId:string;runId:string;callOrder:string[];observed:boolean;unchangedEdits?:{callId:string;path:string}[];failedFileCalls?:DeliveryFailure[];failure?:'stopped'|'failed';ports:DeliveryFinalPorts}):Promise<DeliveryFinal|undefined>{
  if(!options.observed&&!options.callOrder.length&&!options.failedFileCalls?.length)return undefined;
- const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections()] as const);
+ const p=options.ports,loaded=await Promise.allSettled([p.changes(),p.office(),p.bundles(),p.inspections(),p.copyRejections?.()??[]] as const);
  const changes=loaded[0].status==='fulfilled'?loaded[0].value:[],office=loaded[1].status==='fulfilled'?loaded[1].value:[],bundles=loaded[2].status==='fulfilled'?loaded[2].value:[];
  const inspection=loaded[3].status==='fulfilled'?loaded[3].value:{reports:[],unavailable:true};
  let unavailable=loaded.some(r=>r.status==='rejected')||inspection.unavailable;
@@ -69,15 +81,25 @@ export async function deliveryFinal(options:{sessionId:string;runId:string;callO
   if(f.state!=='passed'||failures.length||unchecked.length)incomplete=true;
  }
  const recordedCalls=new Set([...entries.values()].map(e=>e.callId));
+ const rejectedCopies=loaded[4].status==='fulfilled'?loaded[4].value:[];
+ for(const copy of rejectedCopies){
+  if(!order.has(copy.callId)||recordedCalls.has(copy.callId))continue;
+  recordedCalls.add(copy.callId);
+  lines.push('- '+literal(copy.path)+'：已拒绝复制，本次未写入副本。');
+  incomplete=true;
+ }
  for(const edit of options.unchangedEdits||[]){
   recordedCalls.add(edit.callId);
   if(!groups.has(edit.path.toLowerCase()))lines.push('- '+literal(edit.path)+'：所提局部修改与原内容一致，保留原成果；本次未生成新版本或新文件，无需再次确认。');
  }
  const failedCalls=new Map((options.failedFileCalls||[]).filter(a=>!recordedCalls.has(a.callId)).map(a=>[a.callId,a]));
+ const latestRecorded=options.callOrder.findLastIndex(id=>recordedCalls.has(id));
  for(const a of failedCalls.values()){
   incomplete=true;
-  lines.push('- 文件操作未完成：'+TOOL_EXECUTION_MESSAGES[a.code||'unknown']);
-  lines.push(a.effect==='none'?'  本次操作未执行，未生成可确认保存的成果。':'  本次操作未取得保存回执，文件是否已写入仍待核验；请先查看现有文件，避免重复生成或覆盖。');
+  const earlier=(order.get(a.callId)??Infinity)<latestRecorded;
+  lines.push('- '+(earlier?'早先的文件操作':'文件操作')+'未完成：'+TOOL_EXECUTION_MESSAGES[a.code||'unknown']);
+  lines.push(a.effect==='none'?(earlier?'  该次尝试未执行；后续文件状态见上方记录。':'  本次操作未执行，未生成可确认保存的成果。')
+    :'  该次尝试未取得保存回执，文件是否已写入仍待核验；请先查看现有文件，避免重复生成或覆盖。');
  }
  if(!lines.length){incomplete=true;lines.push('本轮文件记录未能完整读回；已保存成果保留，请查看原文件面板，不能据此报告全部完成。');}
  if(requirementsUnchecked)lines.push('尚待核对：是否完整满足你的教学要求'+(unmapped?'，其中有要求尚未关联具体检查':'')+'。');

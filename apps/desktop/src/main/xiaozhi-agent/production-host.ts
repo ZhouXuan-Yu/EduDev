@@ -31,7 +31,7 @@ import {createSolutionTools} from '../education/solution-tools';
 import {createBuoyancyTools} from '../education/buoyancy-tools';
 import {admitClassroomOrTaskTool} from '../education/classroom-plan-admission';
 import type {ClassroomPlanStart} from '../../shared/classroom-plan';
-import {deliveryFinal,type DeliveryFinal} from './delivery-final';
+import {deliveryFinal,rejectedCopyDecisions,type DeliveryFinal} from './delivery-final';
 import {presentationUnchangedReceipt} from '../../shared/xiaozhi-presentation-edit';
 import {isFileDeliveryTool} from './tools/manifest';
 import {deliveryRequirements} from './checks/requirements';
@@ -1372,7 +1372,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           failedFileCalls:run.turn.items.filter(item=>item.kind==='tool'&&item.status==='failed'&&isFileDeliveryTool(item.toolName||'')).map(item=>({callId:item.id,code:item.toolAttempt?.code,effect:item.toolAttempt?.effect||'unknown'})),
           failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
           changes:()=>store.xiaozhiState.changes.list(id,run.runId),office:()=>store.xiaozhiState.officeArtifacts.list(id,run.runId),bundles:()=>store.xiaozhiState.deliveries.list(id,run.runId),
-          text:changeId=>store.xiaozhiState.changes.get(changeId),artifact:artifactId=>store.xiaozhiState.officeArtifacts.get(artifactId),inspections:()=>fileChecks.forRun(id,run.runId)}});
+          text:changeId=>store.xiaozhiState.changes.get(changeId),artifact:artifactId=>store.xiaozhiState.officeArtifacts.get(artifactId),inspections:()=>fileChecks.forRun(id,run.runId),
+          ...(run.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')?{copyRejections:async()=>{
+            const approvals=await store.xiaozhiState.permissions.approvalSnapshot(id);
+            return rejectedCopyDecisions(approvals.items,id,run.runId);
+          }}:{})}});
         deliveryText=fileFinal?.text;
       } catch { failure ||= 'configuration'; }
       if (deliveryText) text=deliveryText;
