@@ -50,6 +50,12 @@
     "counts": {"low": 8, "moderate": 13, "high": 6, "critical": 0},
     "scope": "同一既有 lockfile，切片未更改依赖。发布安全审查仍待处理。"
   },
+  "integration": {
+    "sourceCommit": "4d1a89a",
+    "build": {"command": "npm run build", "exitCode": 0, "files": 481, "sha256": "3c77640e1293b558a63f193c35547a1735c8a7476934005d9c7a5076c3ab1230", "mainSha256": "07fc9cdeeb8b643cb18ec8c4f5ae9428d04ae54feff922ad9be63fc0b660d64d", "report": "integration/build.log", "reportSha256": "72e467f9c7aa5077b98f67d4ba4b488e9f1e4aeff199d3c10bbae50a12749cba"},
+    "backupElectron": {"command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs", "result": "7/7", "report": "integration/backup/xiaozhi-backup-compatibility-m2MA3B/report.json", "reportSha256": "5fd0df72dbf693aebe1f19cfaf831d56818170794a3025e29a2115246265b8cb"},
+    "approvalElectron": {"command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs", "result": "4/4", "report": "integration/approval/omni-edu-xiaozhi-phase7-workbench-ui-beBtHM/evidence/permission-active-run-report.json", "reportSha256": "14f4fd3f4b6fda4a52db33cb0fa817f0cacd7b10ff98d271942dbabae5e95094"}
+  },
   "recordedFailures": [
     ["lease-settlement-red.log", "dea3db83688d702eea32db4be62b44d5f096cdaf571802530bc51fff45394562", "实际审批已消费，所有者失效后卡 executing。两条新增测试通过后关闭该独立 P1。"],
     ["electron/omni-edu-xiaozhi-phase7-workbench-ui-pDaVRq/evidence/permission-active-run-report.json", "a8d959454471f03e3365ec83b5bfd65f727d03cb480251040eaef160e4e0e2e0", "首次驱动用兼容列 confirmed 当作原权限状态。"],

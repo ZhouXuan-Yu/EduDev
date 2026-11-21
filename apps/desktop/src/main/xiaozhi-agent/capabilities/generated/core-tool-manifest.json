@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "db43c05e59c53939d644a0ff165d950122bf9f35ec11f162ad98ce17812832ae",
+  "sourceHash": "1f42fdbec01acbe31cb2031d3dc11aaa75e30ca582f9a671bd4f2304f510142e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "630e7127761ea4a82675c3e867ef28c300c643184ed4496cfefe3a3b1726f731"
+      "sha256": "88f40c1a995f7c51a4ee1e58c03d74e3c1bdbeaf3cf2ffd538f0d2a7f6a0b6ca"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2004,7 +2004,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "8bdb7e78f3a0a97f175297d85271ee5b09a8dfc74911473bbbe41f25ac629077"
+      "sha256": "25e1573f616957183d22c6eef343bb5adcac9444987a90baa6c72b72396b5b1f"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
