@@ -5,9 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v15" as const;
+  "layout-paragraph-question.v16" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
-  "layout-paragraph-question.v14", "layout-paragraph-question.v13", "layout-paragraph-question.v12",
+  "layout-paragraph-question.v15", "layout-paragraph-question.v14", "layout-paragraph-question.v13", "layout-paragraph-question.v12",
   "layout-paragraph-question.v11", "layout-paragraph-question.v10", "layout-paragraph-question.v9",
   "layout-paragraph-question.v8", "layout-paragraph-question.v7", "layout-paragraph-question.v6",
   "layout-paragraph-question.v5", "layout-paragraph-question.v4", "layout-paragraph-question.v3",

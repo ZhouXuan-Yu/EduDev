@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
-import {applyAssessmentNumbers,restoreAssessmentFormulaOrder,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
+import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
@@ -169,6 +169,61 @@ function lineRole(
 }
 
 type LineRole = ReturnType<typeof lineRole>;
+type OrderedLine = { line: StructureLine; column: number };
+
+function headingRemarkDepth(text: string, depth: number) {
+  for (let index = 0; index < text.length; index++) {
+    const char = text[index];
+    if (char === "(" || char === "（") depth++;
+    if (char !== ")" && char !== "）") continue;
+    if (--depth === 0) return /^[\s。．.;；]*$/u.test(text.slice(index + 1)) ? 0 : -1;
+  }
+  return depth;
+}
+
+/** Join a printed scoring or administration note only within its detected title. */
+function wrappedAssessmentHeadings(rows: OrderedLine[], roles: Map<string, LineRole>, regions: PageBlock[], height: number) {
+  const titles = new Set(regions.filter(region => region.kind === "paragraph_title" && region.score >= 0.8)
+    .map(region => region.id));
+  const roots = new Map<string, string>();
+  for (const [index, lead] of rows.entries()) {
+    if (roles.get(lead.line.id)?.role !== "heading" || lead.line.score < 0.85) continue;
+    const text = lead.line.text.trim();
+    const section = questionSection.exec(text);
+    if (!section) continue;
+    const remark = text.slice(section[0].length).replace(/^\s*[:：]?\s*/u, "");
+    if (!/^[（(](?:本(?:大|小)?题|共|满分|计分|每(?:小)?题|请在|答题)/u.test(remark)) continue;
+    let depth = headingRemarkDepth(remark, 0);
+    if (depth <= 0) continue;
+    let owners = lead.line.regionIds.filter(id => titles.has(id));
+    if (!owners.length) continue;
+
+    const tails: StructureLine[] = [];
+    let above = lead.line;
+    for (const { line, column } of rows.slice(index + 1, index + 5)) {
+      const role = roles.get(line.id)!;
+      const part = line.text.trim();
+      const gap = line.box[1] - above.box[3];
+      owners = owners.filter(id => line.regionIds.includes(id));
+      if (column !== lead.column || role.marker || !["heading", "body"].includes(role.role) ||
+          line.score < 0.85 || !owners.length ||
+          line.box[1] <= above.box[1] || gap < -height * 0.25 || gap > height * 0.8 ||
+          Math.abs(line.box[0] - lead.line.box[0]) > 0.075 ||
+          /^[0-9０-９]{1,5}\s+\S/u.test(part) ||
+          sectionHeading.test(part) || questionSection.test(part) || isPrintedExamTitle(part)) break;
+      depth = headingRemarkDepth(part, depth);
+      if (depth < 0) break;
+      tails.push(line);
+      if (depth === 0) {
+        for (const tail of tails) roots.set(tail.id, lead.line.id);
+        break;
+      }
+      above = line;
+    }
+  }
+  return roots;
+}
+
 const centerY = (box: PageBox) => (box[1] + box[3]) / 2;
 const widthOf = (box: PageBox) => box[2] - box[0];
 const overlappingRuns = (left: StructureLine[], right: StructureLine[], height: number) =>
@@ -363,7 +418,8 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   const layout = columnsFor(lines, roles, input.regions, height);
   const { columns } = layout;
   const ordered = orderedLines(lines, columns, roles);
-  applyAssessmentNumbers(ordered.rows, roles, height, questionCue);
+  const wrappedHeadings = wrappedAssessmentHeadings(ordered.rows, roles, input.regions, height);
+  applyAssessmentNumbers(ordered.rows, roles, height, questionCue, wrappedHeadings);
   const formulas = restoreAssessmentFormulaOrder(ordered.rows, roles, height);
   const paragraphs: StructureParagraph[] = [];
   const byId = new Map(lines.map((line) => [line.id, line]));
@@ -373,6 +429,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
         .reverse()
         .find((p) => !["figure", "header", "footer"].includes(p.role)),
       previous = last && byId.get(last.lineIds.at(-1)!);
+    const titleRoot = wrappedHeadings.get(line.id);
     const compatible =
       detected.role === "body" &&
       last &&
@@ -428,7 +485,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
         ? ["ambiguous_region" as const]
         : []),
     ];
-    if (merge) {
+    if (last && (merge || titleRoot !== undefined && last.lineIds[0] === titleRoot)) {
       last.lineIds.push(line.id);
       last.regionIds = [...new Set([...last.regionIds, ...line.regionIds])];
       last.rawText += "\n" + line.text;

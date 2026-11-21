@@ -38,6 +38,55 @@ const frozen=bodies(paperRows), old=bodies(oldQuestions);
 const lastQuestionByPage=['10','17','19','21'];
 const footerLines=frozen.map(page=>page.paragraphs.at(-1));
 assert(footerLines.every(footer=>footer.role==='body'&&footer.rawText.startsWith('数学试题')));
+// Pin the only intentional v16 merges to physical OCR lines. All other
+// paragraph content remains exact, even when its derived ordinal ID changes.
+const headingMerges=[['p1-line-14','p1-line-15'],['p2-line-22','p2-line-23']];
+const paragraphIdMap=new Map();
+const expectedParagraphs=frozen.map(page=>{
+  const expected=[];
+  for(let i=0;i<page.paragraphs.length;i++){
+    const original=page.paragraphs[i], paragraph=structuredClone(original);
+    const merge=headingMerges.find(lines=>lines[0]===original.lineIds[0]);
+    const sources=[original];
+    if(merge){
+      const continuation=page.paragraphs[++i];
+      assert.deepEqual([...original.lineIds,...continuation.lineIds],merge);
+      assert.equal(original.role,'heading');
+      assert.equal(continuation.role,'heading');
+      assert.equal(original.column,continuation.column);
+      sources.push(continuation);
+      paragraph.lineIds=[...merge];
+      paragraph.regionIds=[...new Set(sources.flatMap(p=>p.regionIds))];
+      paragraph.rawText=sources.map(p=>p.rawText).join('\n');
+      paragraph.text=sources.map(p=>p.text).join('');
+      paragraph.anchor.box=original.anchor.box.map((value,index)=>(index<2?Math.min:Math.max)(value,continuation.anchor.box[index]));
+      paragraph.confidence=Math.min(...sources.map(p=>p.confidence));
+      paragraph.issues=[...new Set(sources.flatMap(p=>p.issues))];
+    }
+    paragraph.id=`p${page.page}-paragraph-${expected.length+1}`;
+    for(const source of sources)paragraphIdMap.set(source.id,paragraph.id);
+    if(original===page.paragraphs.at(-1))paragraph.role='footer';
+    expected.push(paragraph);
+  }
+  return expected;
+});
+const remapIds=ids=>ids.map(id=>{
+  assert(paragraphIdMap.has(id),`Unknown physical paragraph: ${id}`);
+  return paragraphIdMap.get(id);
+});
+const remapOptions=options=>options.map(option=>({...option,paragraphIds:remapIds(option.paragraphIds)}));
+const remapQuestion=q=>{
+  const expected={...q,paragraphIds:remapIds(q.paragraphIds),
+    options:remapOptions(q.options),
+    subquestions:q.subquestions.map(sub=>({...sub,paragraphIds:remapIds(sub.paragraphIds),options:remapOptions(sub.options)}))};
+  for(const lines of headingMerges){
+    const page=frozen.find(p=>p.paragraphs.some(part=>part.lineIds.includes(lines[0])));
+    const continuation=page.paragraphs.find(part=>part.lineIds.includes(lines[1]));
+    if(q.section===continuation.text)expected.section=expectedParagraphs[frozen.indexOf(page)].find(part=>part.lineIds.includes(lines[0])).text;
+  }
+  expected.id='sq_'+sha(JSON.stringify([frozen[0].resourceId,frozen[0].version,expected.section,expected.number,expected.paragraphIds,expected.stem])).slice(0,40);
+  return expected;
+};
 function checkFooters(pages,questions){
   assert.equal(pages.length,frozen.length);
   assert.deepEqual(questions.map(q=>q.number),old.map(q=>q.number));
@@ -45,18 +94,18 @@ function checkFooters(pages,questions){
     assert(!page.issues.includes('ambiguous_columns'));
     for(const field of ['rawText','lines','columns']) assert.deepEqual(page[field],frozen[i][field]);
     const expected=footerLines[i], actual=page.paragraphs.at(-1);
-    assert.deepEqual(actual,{...expected,role:'footer'});
-    assert.deepEqual(page.paragraphs.slice(0,-1),frozen[i].paragraphs.slice(0,-1));
+    assert.deepEqual(actual,{...expected,id:paragraphIdMap.get(expected.id),role:'footer'});
+    assert.deepEqual(page.paragraphs,expectedParagraphs[i]);
     const tail=questions.find(q=>q.number===lastQuestionByPage[i]);
     const prior=old.find(q=>q.number===tail.number);
     assert(prior.stem.includes(expected.rawText));
     assert.equal(tail.stem,prior.stem.replace('\n'+expected.rawText,''));
-    assert.deepEqual(tail.paragraphIds,prior.paragraphIds.filter(id=>id!==expected.id));
+    assert.deepEqual(tail.paragraphIds,remapQuestion(prior).paragraphIds.filter(id=>id!==paragraphIdMap.get(expected.id)));
     assert.deepEqual(tail.anchors,prior.anchors.filter(a=>JSON.stringify(a)!==JSON.stringify(expected.anchor)));
     assert(!JSON.stringify(tail.subquestions).includes(expected.rawText));
   }
   const unaffected=q=>!lastQuestionByPage.includes(q.number);
-  assert.deepEqual(questions.filter(unaffected).map(preserved),old.filter(unaffected).map(preserved));
+  assert.deepEqual(questions.filter(unaffected).map(preserved),old.filter(unaffected).map(remapQuestion).map(preserved));
 }
 assert.equal(frozen.length,4);
 assert.equal(old.length,20);
@@ -71,7 +120,8 @@ assert(other.issues.includes('ambiguous_columns'));
 assert.deepEqual(replay(other).columns,other.columns);
 assert(replay(other).issues.includes('ambiguous_columns'));
 const report={replayedPages:frozen.length,groups:groups.length,layoutHeld:groups.length-drafts.length,
-  layoutEligible:drafts,uncertainNaturalDoubleColumn:true,footersRecovered:footerLines.length,cleanedQuestionNumbers:lastQuestionByPage};
+  layoutEligible:drafts,uncertainNaturalDoubleColumn:true,footersRecovered:footerLines.length,cleanedQuestionNumbers:lastQuestionByPage,
+  mergedHeadingSourceLines:headingMerges};
 if(!process.argv.includes('--desktop')){console.log(JSON.stringify({ok:true,...report}));process.exit(0);}
 
 const work=fs.mkdtempSync(path.join(os.tmpdir(),'kb-column-replay-'));

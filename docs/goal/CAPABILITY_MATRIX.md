@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-21 折行大题标题与题型归属
+
+M03/M05 复用布局区域、原 OCR 行与现有题型归档，从同一标题区恢复折行大题名称和评分说明。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)
+
 ## 2026-11-21 独立答案册续页速查表
 
 M03/M05 复用配答索引、相邻页回执、资料关联及题本写回。续页无需重跑已保存的两遍原始响应。 [专项报告](../research/evidence/kb/20261121/continued-answer-keys/README.md)

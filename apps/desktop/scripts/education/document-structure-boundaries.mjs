@@ -70,6 +70,38 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+const titleRegion={id:"shared-assessment-title",kind:"paragraph_title",score:.95,box:[.08,.07,.93,.141],needsReview:true};
+await check("Wrapped scoring headings retain all OCR lines and govern unpunctuated question numbers", () => {
+  const input=[
+    ["一、填空题（本大题共2题，", .10, .075, .78, "paragraph_title"],
+    ["按要求在指定的（答题纸）", .13, .097, .45, "paragraph_title"],
+    ["相应位置填写结果。)", .13, .119, .31, "paragraph_title"],
+    ["1 已知x为2，求x的平方。", .10, .16],
+    ["2 已知y为3，求y的平方。", .10, .20],
+  ];
+  const recovered=page(input,1,1,[titleRegion]);
+  const [heading]=recovered.paragraphs;
+  assert.equal(heading.role,"heading");
+  assert.deepEqual(heading.lineIds,recovered.lines.slice(0,3).map(line=>line.id));
+  assert.equal(heading.rawText,input.slice(0,3).map(row=>row[0]).join("\n"));
+  assert.deepEqual(heading.anchor.box,[.1,.075,recovered.lines[0].box[2],recovered.lines[2].box[3]]);
+  assert.equal(recovered.rawText,input.map(row=>row[0]).join("\n"));
+  assert.deepEqual(questions([recovered]).map(q=>[q.number,q.section]),[["1",heading.text],["2",heading.text]]);
+});
+await check("A wrapped heading never takes an independent title, a question marker or an unclosed continuation", () => {
+  const lead=["一、填空题（本大题共2题，",.1,.075,.78,"paragraph_title"];
+  for(const [tail,regions] of [
+    [["相应位置填写结果。)",.13,.097,.40,"paragraph_title"],[]],
+    [["2 求右图三角形的面积。)",.13,.097,.40,"text"],[titleRegion]],
+    [["二、选择题（共2题）",.13,.097,.40,"paragraph_title"],[titleRegion]],
+    [["后续说明仍没有结束。",.13,.097,.40,"paragraph_title"],[titleRegion]],
+    [["相应位置填写结果。)2. 新题。",.13,.097,.4,"paragraph_title"],[titleRegion]],
+  ]) {
+    const recovered=page([lead,tail],1,1,regions);
+    assert.equal(recovered.paragraphs[0].lineIds.length,1,tail[0]);
+    assert.equal(recovered.rawText,lead[0]+"\n"+tail[0]);
+  }
+});
 await check("Printed type follows the question's own section across pages and refuses incompatible or ambiguous shapes", () => {
   const first = page([
     ["一、单项选择题：（本大题共2题）", .1, .08, .8, "paragraph_title"],

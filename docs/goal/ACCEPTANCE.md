@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-21 折行大题标题与题型归属
+
+新增跨行标题的共区、括号、题号防吞、标题互不合并、新旧引擎回读及真实原页对照边界。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)
+
 ## 2026-11-21 独立答案册续页速查表
 
 补充一页和多页速查表、迟到前页、替换或删失前页、跨版本、跳号、短表以及冲突写回验证。 [专项报告](../research/evidence/kb/20261121/continued-answer-keys/README.md)

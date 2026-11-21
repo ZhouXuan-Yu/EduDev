@@ -63,7 +63,7 @@ function aligned(a:Candidate,b:Candidate,height:number){
 
 /** Numeric prefixes without punctuation require same-column numbering and worksheet evidence.
  * A separate digit box is paired only with a nearby, same-row text box. Original text is untouched. */
-export function applyAssessmentNumbers(rows:Row[],roles:Map<string,Role>,height:number,questionCue:RegExp){
+export function applyAssessmentNumbers(rows:Row[],roles:Map<string,Role>,height:number,questionCue:RegExp,wrappedHeadings:ReadonlyMap<string,string>){
   const columns=new Map<number,Row[]>();
   for(const row of rows){
     const own=columns.get(row.column);
@@ -76,6 +76,7 @@ export function applyAssessmentNumbers(rows:Row[],roles:Map<string,Role>,height:
     const candidates:Candidate[]=[];
     let section:StructureLine|undefined;
     for(const [index,row] of ordered.entries()){
+      if(wrappedHeadings.has(row.line.id))continue;
       const role=roles.get(row.line.id)!;
       if(role.role==='heading'&&!looseNumber.test(row.line.text.trim())){
         section=questionSection.test(row.line.text.trim())?row.line:undefined;
