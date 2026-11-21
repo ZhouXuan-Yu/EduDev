@@ -5,6 +5,10 @@ import {approvedFile} from '../workspace-authority';
 import {taskHash,taskToolKinds} from './task-evidence';
 import {TaskAdmissionError} from './admission-error';
 
+export function workspaceTaskResource(root:string,target:string):string {
+ return taskHash(['workspace-file',path.resolve(approvedFile(root,target)).toLowerCase()]);
+}
+
 /** Identity only; does not grant permissions or read/execute a model proposal. */
 export function createTaskResources(options:{sessionId:string;resolveFile?:(target:string)=>Promise<string>;workspace:()=>Promise<WorkspaceLease>;officeOutput?:()=>Promise<string|null>;studentId:()=>Promise<string>;attachment:(id:string)=>Promise<boolean>}){
  async function resource(kind:TaskCriterionKind,target:string):Promise<string>{
@@ -17,8 +21,7 @@ export function createTaskResources(options:{sessionId:string;resolveFile?:(targ
     if(kind!=='saved_office'||!(error instanceof Error)||error.message!=='no_workspace'||!options.officeOutput)throw error;
     const output=await options.officeOutput();if(!output)throw error;root=output;
    }
-   const file=approvedFile(root,target);
-   return taskHash(['workspace-file',path.resolve(file).toLowerCase()]);
+   return workspaceTaskResource(root,target);
   }
   if(kind==='web'){const url=new URL(target);if(!['http:','https:'].includes(url.protocol)||url.username||url.password)throw new TaskAdmissionError('task_target_invalid');url.hash='';return taskHash(['web',url.href]);}
   if(kind==='attachment'||kind==='image'){if(!await options.attachment(target))throw new TaskAdmissionError('task_source_changed');return taskHash(['attachment',options.sessionId,target]);}
@@ -41,7 +44,7 @@ export function createTaskResources(options:{sessionId:string;resolveFile?:(targ
   const target=kind==='web'?args.url:kind==='attachment'||kind==='image'?args.id:kind==='saved_questions'||kind==='saved_bundle'?'current':tool==='office_copy_file'?args.target:args.path;
   if(typeof target!=='string')throw new TaskAdmissionError('task_target_invalid');
   if(kind==='saved_office'&&tool==='office_create_document'){
-   const lease=await options.workspace();return taskHash(['workspace-file',path.resolve(approvedFile(lease.path,target)).toLowerCase()]);
+   const lease=await options.workspace();return workspaceTaskResource(lease.path,target);
   }
   return resource(kind,target);
  }

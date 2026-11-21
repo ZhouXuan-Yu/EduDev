@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "66954298a088b239434f04ef484593d65a16f7c28bfeeb617c922e0e617c040d",
+  "sourceHash": "6b1bcc3d5c138ce8bf33e3be9376c9c631aa6cafd9b8380387058f4f57cffc1e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "2efc2f0780a48759ea23f5698ef774360014702aa90587c134853008dde24979"
+      "sha256": "8288820b51cd4d5b33d81a2901441ac0012902bae8e67ec7001aad9f54089652"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -836,7 +836,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/control-tools.ts",
-      "sha256": "e4b4dfd54fec72a6900458828835d2f523493ac4d7a31b81912de350ce192b7c"
+      "sha256": "23345cdf950ed90d15012ce1a25eb535959622eba9836acc4d8d07be4548a73d"
     },
     {
       "file": "src/main/xiaozhi-agent/conversation-output-path.ts",
@@ -1400,7 +1400,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "ef08c1e67cce5faba467e63107a8122c639b09b3417e1392f963eb15737fb5b9"
+      "sha256": "18ad76fdf39dc6635522f564274cb879f2721117a11af6fdf8951f188fb9e6aa"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1551,6 +1551,10 @@
       "sha256": "121379efffc63443403989c4bb985b01a0ecdd34023a2d32a23d2bdb45327d32"
     },
     {
+      "file": "src/main/xiaozhi-agent/tasks/declined-copy.ts",
+      "sha256": "eee6c967cc5e3e9bcb044ef91542522864c1b8d110ed717f36cffb5b801a7042"
+    },
+    {
       "file": "src/main/xiaozhi-agent/tasks/goal-binding.ts",
       "sha256": "0d523f6c4cdc158b453dbbe1ebfe95650c4dfd5549e917e1b6d287c4e1f436b2"
     },
@@ -1584,7 +1588,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/resources.ts",
-      "sha256": "e09c2c4bb2231281f38c71cfe85ac185a5f2cc89c478b34e187aa284de0388e6"
+      "sha256": "79855b5708ed327fb3675ab9a7e70f9f5eda091c9b32f02b88573eacf7c292bd"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/result-recheck.ts",

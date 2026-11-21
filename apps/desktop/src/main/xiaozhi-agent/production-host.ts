@@ -96,6 +96,7 @@ import {createTaskResultRecheck} from './tasks/result-recheck';
 import {validTaskResume,type TaskResumeInput} from '../../shared/xiaozhi-task';
 import {createTaskPlanRuntime} from './tasks/plan-runtime';
 import {createTaskResources} from './tasks/resources';
+import {singleCopyWasDeclined} from './tasks/declined-copy';
 import {createAttachmentCoordinator} from './attachment-coordinator';
 import {createAttachmentImportService} from './attachment-import-service';
 import {publicAttachment} from './attachment-state';
@@ -1030,7 +1031,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
-      educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
+      educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,async()=>{
+        if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;
+        const [task,approvals]=await Promise.all([tasks.committed(id),store.xiaozhiState.permissions.approvalSnapshot(id)]);
+        return singleCopyWasDeclined(task,runId,approvals.items);
+      }),
       questionContextTools:questionContext.tools,
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
       questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),

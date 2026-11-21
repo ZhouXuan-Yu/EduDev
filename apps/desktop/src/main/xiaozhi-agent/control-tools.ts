@@ -30,7 +30,7 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
   }
   return {
     cancel, finish,planHistory:plans.history,
-    tools(sessionId: string, runId: string): ToolDefinition[] {
+    tools(sessionId: string, runId: string, checkCopyRefusal?:()=>Promise<boolean>): ToolDefinition[] {
       return [
         { name: 'update_plan', label: '更新任务计划', description: '公开提出/调整任务计划。使用xiaozhi.plan.v2；首次expectedRevision=0，后续用上次回执revision。每步稳定id，前置dependsOn必须先报告完成；删除的id不能复用。reason写公开调整原因，basisCallIds只引用本轮已返回的真实工具callId，没有则空数组。宿主仅采用计划结构/版本；completed仅报告进度，不等于教学或交付核验通过。最多8步、1步进行中。',
           parameters: PLAN_UPDATE_SCHEMA as unknown as ToolDefinition['parameters'],
@@ -38,12 +38,18 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
             const saved=await plans.propose(sessionId,runId,callId,args,signal);
             return result({success:true,adopted:true,scope:'plan_structure',revision:saved.control.plan.revision,planId:saved.control.id,steps:saved.control.steps,duplicate:saved.duplicate,stepVerification:'not_checked'});
           } },
-        { name: 'ask_teacher', label: '请教师补充', description: '教师任务有必要歧义时提一个问题，给2–3个建议选项，等待教师选择或自由回答后继续。不要反复询问已明确事项。',
+        { name: 'ask_teacher', label: '请教师补充', description: '教师任务有必要歧义时提一个问题，给2–3个建议选项，等待教师选择或自由回答后继续。教师已拒绝的操作不能用这个工具再次请求批准。不要反复询问已明确事项。',
           parameters: { type:'object', properties:{ question:{type:'string',maxLength:1000}, options:{type:'array',minItems:2,maxItems:3,items:{type:'string',maxLength:200}} },required:['question','options'],additionalProperties:false } as ToolDefinition['parameters'],
           execute: async (callId,args,signal) => {
             signal?.throwIfAborted();
             if (!options.isCurrent(sessionId,runId) || !object(args) || Object.keys(args).some(key => !['question','options'].includes(key)) || !short(args.question,1000)
               || !Array.isArray(args.options) || args.options.length < 2 || args.options.length > 3 || args.options.some(value => !short(value,200)) || new Set(args.options).size !== args.options.length) throw new Error('invalid_input');
+            if (await checkCopyRefusal?.()) {
+              signal?.throwIfAborted();
+              if (!options.isCurrent(sessionId,runId)) throw new Error('cancelled');
+              return result({success:true,state:'already_declined',asked:false,
+                guidance:'教师已明确拒绝本轮复制。请报告未复制并结束本轮；等待教师主动提出新任务。'});
+            }
             const item: PrivateControl = { id:`pictrl_${randomUUID()}`,sessionId,runId,callId,kind:'question',state:'pending',text:await clean(args.question),options:await Promise.all(args.options.map(clean)) };
             signal?.throwIfAborted(); if (!options.isCurrent(sessionId,runId)) throw new Error('cancelled');
             let resolve!: (value: string | undefined) => void;

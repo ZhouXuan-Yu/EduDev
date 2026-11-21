@@ -1,0 +1,56 @@
+{
+  "firstQ8RoundTwo": {
+    "candidate": "f117d4b33a5ce5f44e1e4c4217052a9e508c8460",
+    "buildSha256": "2c634e67e175fefcbc06f5de01d5ea48f1545cf9a2fb426e42a52dc39fcb28d0",
+    "output": "E:/EduDev-Harness-Acceptance-20261121/phase8-tail/xiaozhi-phase8-correction-NfeiUG",
+    "execution": "Q8-r2-B",
+    "collection": "FAIL",
+    "observedFailure": "phase8_run_deadline",
+    "sealFailure": "phase8_attempt_binding_unverified",
+    "fact": "原 SQLite 审批为 rejected，未执行复制。原生记录在拒绝后又调用 ask_teacher，要求重新发起相同复制并批准，直至采集器停止。中止后的持久 Run 为 blocked。",
+    "paidRequests": 5,
+    "nextRow": {"id": "Q8-r2-A", "status": "NOT_TESTED"},
+    "summarySha256": "7620ed5250328d2b6b40fd5ec9ac90575d9537ff8f232ad68dafc5fe1b34363e",
+    "receiptSha256": "dbccb9831df2a994681d5ac52888ef39f5d8bba24c173ac9906512f51360b511"
+  },
+  "postBlindIndependentReadback": {
+    "role": "Terra High independent evidence audit",
+    "Q3": {
+      "html": {"bytes": 8179, "sha256": "28c07af505540a2ce511f5ec973d4272199a8cb92bd4787ccd0eb65ec3dea2b3", "matches": "applied change afterSha256"},
+      "pptx": {"bytes": 83690, "sha256": "5873ffac32a2b0f9bb16a9ec95843eda37ddc47ad532d693520c20fc519a7183", "matches": "same-run SQLite xiaozhi_pi_office_drafts saved output_hash and length(output_bytes)"},
+      "approval": "同一 Run 的 office_deliver_files 单次批准已执行。文件范围为工作区读写，原审批 files 未列出两项结构化目标。"
+    },
+    "Q5": {
+      "nativeDigest": "553c4c087d7b75d0695eb0dbc6d424cd95d085e3fa5664c578428bb62abd64a8",
+      "fact": "固定网页 GET 200 完成，同一 call 的 SQLite result_digest、native_digest 与报告一致，native_state=matched。"
+    },
+    "Q7": {
+      "bytes": 28,
+      "sha256": "b5b313602e51fe5d37b934b2a1ccea154f2ff339f81da7ece7cc8e9bb8effe85",
+      "fact": "实际字节匹配 applied change afterSha256、采集报告和明确的本次已执行批准。"
+    },
+    "scope": "原盲评分保持。有限的单条回执和文件终态无法证明全局恰好一次、完整授权或完整隐私外发。"
+  },
+  "repair": {
+    "implementation": "宿主只有在同一 Run、同一要求版本和完全匹配的唯一复制目标已被拒绝时，才让模型提出的重复问题直接返回无需确认的结果。其他实际任务步骤、不同目标、新 Run 和内部宿主确认保留各自原有路径。",
+    "scope": "Pi 运行时及权限合同保持，仅读取现有 Task 和审批。回退本提交可以恢复旧问题收尾逻辑，不涉及数据库迁移。",
+    "sourceCheck": "16/16",
+    "buildSha256": "4931dc0f183bc95b6ea386b8be01dce52094cb1fef29d70a4e8ef37bc9b9a2bc",
+    "buildLogSha256": "1fe3d31546f2e4b2d4f91938c310d87fc005f3be9212b389dcc638a7f8af136c",
+    "compiledElectron": {"result":"2/2","reportSha256":"24ecb5f63228b9eacdc5cf40999d07890fa32d1e0fb5b1de1a3b4391465ae7f4","fact":"实际拒绝后，合成模型再次问同一复制。没有持久问题卡、目标写入或重启后模型重放。原 Run 正常显示拒绝结果。"},
+    "firstFixtureFailures": [
+      {"sha256": "37d795487c468689f67468939f4111b92f4420559dcfa377c910747c6ba98711", "fact": "禁止重复询问已经触发，未创建问题卡。最初夹具在准确终态前关闭。"},
+      {"sha256": "1a6cba357bcf2ba6686e3276517c62cd13629b7f7a08edf5d84c772f8a8ee0ce", "fact": "异步条件函数提前返回，后改为按审批绑定的准确 Run 等待终态。"}
+    ]
+  },
+  "currentPrivacyChecks": {
+    "pureSource": {"passed": "8/8", "scope": "模型上下文副本", "logSha256": "f137401410c22b6f2f981ee72ff024eebb5309a5d97083685b29055270622a2a"},
+    "firstCurrentHost": {"passed": "5/8", "status": "FAIL", "summarySha256": "8793edaef9f3a6b69102f4232ac7609cf4339c78a7a47e6b6ea376e4ed82787f", "fact": "Office 两项、附件三项通过。终端实际返回 system_disk_full，其后受依赖失败影响的两项未通过。"},
+    "currentFileTextHost": {"passed": "4/6", "status": "FAIL", "summarySha256": "ff67945fb226bee4bb919870a48c591bb63c14298f3e34b8bdb5123d613e639e", "fact": "未取得后续允许教学内容的模型捕获，原因仍待确认。"},
+    "afterSpaceRecheck": {"passed":"5/8","status":"FAIL","summarySha256":"51d0a31d3bf0da8e42eeca6604f03b68e470bdeae3a6b5ed27a9cacb941e42a3","fact":"重复测试中终端返回 unknown，无法读取 jobId；两项依赖场景仍失败。该次不能仅归因于磁盘。"},
+    "audit": {"scope": "npm audit --omit=dev", "high": 5, "moderate": 7, "low": 8, "critical": 0}
+  },
+  "archiveCapacity": {"sha256":"cf1dcd97b8ca33b0bc1c6c9bd3f1e3bbac703e17c64961f3c488a0e8c55363cd","scope":"仅对两份已结束的合成测试归档中的 Node 文件做 NTFS 压缩，逐文件复核前后 SHA-256。"},
+  "budget": {"used": 193, "remaining": 7, "unresolved": 0},
+  "cleanWindows": "Windows 11 家庭版 x64 当前开发机，VMware 运行实例为 0。独立干净环境的实际安装、快捷方式及卸载仍未执行。"
+}
