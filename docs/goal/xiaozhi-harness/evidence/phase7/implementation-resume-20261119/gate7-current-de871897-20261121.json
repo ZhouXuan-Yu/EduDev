@@ -1,0 +1,154 @@
+{
+  "status": "PASS",
+  "candidateCommit": "de871897c5f176d8176fbbd1ead96af6206b86a6",
+  "independentDecision": {
+    "reviewer": "Terra High",
+    "scope": "原页面合同的合成隔离场景，覆盖 W1–W3、A1–A2、C1–C2、S1–S2、两尺寸 Win32 窗口、流式和实际长路径终端。",
+    "matrix": "gate7-de871897-ui-coverage.md",
+    "historicalFailure": "保留 Skill 首次 7/8，另以同构建 1920 定向复核覆盖 Space 折叠。真实模型、干净 Windows 安装与实际教师体验分别验收。"
+  },
+  "build": {
+    "path": "D:/WorkProject/EduProject-harness/apps/desktop/out",
+    "archive": "E:/EduDev-Harness-Acceptance-20261121/main-b4fcf7a/out",
+    "files": 481,
+    "sha256": "28c2c96b95192c3b4228f43310b3b63f7178adb53e093942a22d2558e5b5fda6",
+    "mainSha256": "f9a730ea7283dae1294bddc4d8c1b3d44b3b799b387c86857a8b1aac0afc269d",
+    "preloadSha256": "ace5f6fa8a761008f8dc60cc5be4a5521ebce3779bf3869f6cd3239fd3c0e806",
+    "coreSourceCount": 641,
+    "coreSourceHash": "5caefe38e097072588705925a0556485b567e814e935f517c6281390c8aebc36",
+    "buildLog": "main-b4fcf7a/build-worktree.log",
+    "buildLogSha256": "d79e8753c883650800cc190892eaae20f2c19df272c8630bb3933c2ae3e70766",
+    "rendererComponents": "253/253",
+    "rendererLog": "main-b4fcf7a/components.log",
+    "rendererLogSha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+  },
+  "reportBase": "E:/EduDev-Harness-Acceptance-20261121",
+  "independent": {
+    "longPath": {
+      "command": "node scripts/xiaozhi-agent/phase7-workbench-ui-smoke.mjs --long-stage",
+      "checks": "9/9",
+      "result": "真实长路径 Job、2 笔输入确认、已结束清理、冷启读回和无模型重放",
+      "report": "gate7-main-28c2/terra-long/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeepdeepL2jtxM/evidence/ui-report.json",
+      "sha256": "a09acb1c6980ac7ffdb24eb27597675569f6aeec27354066c0af194cc2232528"
+    },
+    "w2SavedEffect": {
+      "checks": "4/4",
+      "result": "同任务只增一 Run、已保存文件防重复、冷启关联不变",
+      "report": "gate7-b4fcf7a/w2-effect/omni-edu-phase7-terra-w2-run-Cwjiky/report.json",
+      "sha256": "cbb0e287159cbde994b533a46c2134e1160d8194afce9b26e460fbbacbcf9ec8"
+    },
+    "w3": [
+      {
+        "viewport": "1366x768",
+        "checks": "5/5",
+        "report": "gate7-b4fcf7a/w3/omni-edu-xiaozhi-phase7-workbench-ui-Z2OE45/evidence/delayed-events-report.json",
+        "sha256": "8dc12dd9f37cf5d5fcaf2d6ba12d3a6da51ce970281d1a166edadf32d3342159"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": "5/5",
+        "report": "gate7-b4fcf7a/w3/omni-edu-xiaozhi-phase7-workbench-ui-SqQVYl/evidence/delayed-events-report.json",
+        "sha256": "eecfbd52fb6a9eebf06b0bc16c7e23391cba851f74017ff098e197989b2b7e18"
+      }
+    ],
+    "a2Target": [
+      {
+        "viewport": "1366x768",
+        "checks": "2/2",
+        "report": "gate7-b4fcf7a/a2-target/omni-edu-a2-stale-DdOOnG/report.json",
+        "sha256": "461839618ff9b28b1c2bcac20524ff23c5a7226a99df67fd9d25280b5162e5c6"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": "2/2",
+        "report": "gate7-b4fcf7a/a2-target/omni-edu-a2-stale-6ye8ki/report.json",
+        "sha256": "17af59503c6ae48eb9cd1796f94c50562a471c094185707cf2fa2c859b295714"
+      }
+    ],
+    "approvalCanary": {
+      "checks": "3/3",
+      "scope": "两种尺寸，现代审批及一个合成模型密钥，设置、摘要、收件箱、展开详情",
+      "report": "gate7-b4fcf7a/canary/omni-edu-ui-contract-2vkFbw/approval-contract-report.json",
+      "sha256": "14dc9af8bbacaabceb9aaa35d816955ebc25eb18fa9149fc0910af7644d5789b"
+    },
+    "approvalSafeErrorAndLongSources": {
+      "checks": "4/4",
+      "report": "gate7-b4fcf7a/disclosure/omni-edu-xiaozhi-phase7-workbench-ui-lttHnY/evidence/disclosure-report.json",
+      "sha256": "1a1a6cb546728a7995d396adf6b75b91576a4630e3b8f05641ef32871b62b8fa"
+    },
+    "capabilityRiskDisclosure": {
+      "checks": "6/6",
+      "report": "gate7-b4fcf7a/disclosure/omni-edu-xiaozhi-phase7-workbench-ui-tun3rW/evidence/risk-disclosure-report.json",
+      "sha256": "e7439a0ac1e4a12fdf9149dd53fa35a9ec37d797800c449badbfb98d264d6d96"
+    },
+    "keyboard": {
+      "workbench1366": ["gate7-main-28c2/terra-keyboard/omni-edu-xiaozhi-phase7-workbench-ui-QEGjLY/evidence/keyboard-busy-report.json", "ac1e37c74b5cdc08b1290eb23f8727a4758a40c7471da1b3823759628602da7f", "3/3"],
+      "workbench1920": ["gate7-main-28c2/terra-keyboard/omni-edu-xiaozhi-phase7-workbench-ui-gtZ4s4/evidence/keyboard-busy-report.json", "5690915d1fd43b48f7960c8980307f28837c62c393bcc59207bccff9071ecdb7", "3/3"],
+      "approval1366": ["gate7-main-28c2/terra-keyboard/omni-edu-xiaozhi-phase7-workbench-ui-BajdcJ/evidence/decision-keyboard-report.json", "abc1eec8fd118a5e26f8f83b455139dee6e1d54bc51568aed6fd55f791e1643f", "4/4"],
+      "approval1920": ["gate7-main-28c2/terra-keyboard/omni-edu-xiaozhi-phase7-workbench-ui-L843mw/evidence/decision-keyboard-report.json", "4af23ee84df03ff68429e2de117b1db59d89a41d5c0de2a95832609503a7ac61", "4/4"]
+    },
+    "c2SchemaAndTrust": {
+      "checks": "4/4",
+      "scope": "本地 MCP 的 Schema 变更、重新信任、撤销及两次冷启。两个尺寸分别核对添加控件，完整写入流程执行一次。",
+      "report": "gate7-main-28c2/terra-c2/omni-edu-phase7-c2-9748a58/report.json",
+      "sha256": "7b3061988dc08f7e215199ab030d3bc6e7d9df983de2017ff49c4976d89a4b6a"
+    },
+    "nativeWindows": {
+      "scope": "两尺寸实际 Win32 指针拖窗、最大化、拖拽还原及回执",
+      "report": "gate7-main-28c2/native/xiaozhi-phase7-workbench-ui-xfw8ux/evidence/native-gestures-report.json",
+      "sha256": "ed9d941bdf02aa71c8d5cff6c0a2e47e5bbdce918cd036828575c4a6efa5d332"
+    },
+    "visibleStreaming": [
+      {
+        "viewport": "1366x768",
+        "checks": "7/7",
+        "report": "gate7-main-28c2/stream-1366/xiaozhi-phase8-stream-performance-6gdpJ9/report.json",
+        "sha256": "1af92070b43bdd4c2b7fa30efa1c08e5d2f16e1f67a79457ff6c023e3439ba40"
+      },
+      {
+        "viewport": "1920x1080",
+        "checks": "7/7",
+        "report": "gate7-main-28c2/stream-1920/xiaozhi-phase8-stream-performance-0W0Nqn/report.json",
+        "sha256": "b4d77f18226c87b593cb890fe2d7d22d45e7e38f218d06c7256978bb37ea3aec"
+      }
+    ],
+    "skill": {
+      "base": "main-b4fcf7a/terra-skill",
+      "member1366": ["omni-edu-s1-member-AAQjRR/REPORT.json", "3d19b83e68da7a28b753a40e748afd924e0e9ccc715ccb0d44c4f2de8d75b8e7", "2/2"],
+      "member1920": ["omni-edu-s1-member-8t27xT/REPORT.json", "5dc85856e8fb0d639fc6a92995b6e88a654e2e0d8617867a70d09faabc008145", "2/2"],
+      "privacy1366": ["omni-edu-s1-private-qHWjCK/REPORT.json", "95ffdd17f9d181cc5e0a5ff02e593a21287580e3bc6d9fd087e143c892ec5a4e", "2/2"],
+      "privacy1920": ["omni-edu-s1-private-a0VHK3/REPORT.json", "2d6c656d3d569b045717995d66f2a05a6cfae0b67ec2aa77904a197b0de51328", "2/2"],
+      "teamAdmin": ["omni-edu-s1-team-FcWzki/report.json", "632bd9db37c663cb92ea164c0a5e20caccb4a35b311df73e4740fbe75f9b4e46", "5/5"],
+      "version1366": ["omni-edu-xiaozhi-phase7-workbench-ui-eOPImg/evidence/skill-run-version-report.json", "2573248e9c8d693e4ecf30dae6d0c382475970b602e7f21e6c19f8eaaac232da", "4/4"],
+      "version1920": ["omni-edu-xiaozhi-phase7-workbench-ui-HmXriw/evidence/skill-run-version-report.json", "8c94a0311b6cdeaa5a523596c2b1446806c273d17fd0caa8b6a2693b4421b30b", "4/4"],
+      "initialErrorAndDisclosure": ["omni-edu-skill-remaining-NXj584/report.json", "327193bae32c0d377e6dba3ed8fac5d30581a4f112fbd655ebe064c722b5999d", "7/8"],
+      "foldDiagnostic1920": ["omni-edu-skill-fold-kyIHM1/report.json", "b9912e3c345b822115d0efaddfd6afba8f56075c4218f476f72483c235551f2b", "focused Space toggle and hidden details observed at 17.4 ms"],
+      "officialReviewer1920": ["omni-edu-s1-reviewer-7qhx2K/REPORT.json", "58bd54fd0a45870865405811b63093f67e9d752aa19c01e0ba386c12054f2867", "2/2 exact review and cold read using synthetic local reviewer"],
+      "officialReviewer1366": ["omni-edu-s1-reviewer-uCnLCW/REPORT.json", "89e320b8a5df250e946718ebaafd940507f67fc478afcbe7e43805fd3440a60e", "2/2 same check on independent 1366 viewport"]
+    }
+  },
+  "supplementary": {
+    "c1": ["main-b4fcf7a/root-capability/omni-edu-xiaozhi-phase7-workbench-ui-i7XlBd/evidence/capability-center-report.json", "5fa443a63fe91ee3a435ad3ca1f703612ba83387db677a7e8cee4626e5bdf2b6", "6/6"],
+    "c2": ["main-b4fcf7a/root-c2/omni-edu-c2-course-qrm3iu/report.json", "0375bfb18b078bb33f8845dd34d6dc7711b8ca5eac0be1e266e190124e0ae298", "4/4"],
+    "readFailureAndRetry": ["main-b4fcf7a/root-state/omni-edu-read-state-S5Zq1q/report.json", "a634099c1e4b4f16fc6442728e293f35b119d2cd26eb27feff7f0414adb5840d", "24/24"],
+    "partialEmptyStates": ["main-b4fcf7a/root-partial/omni-edu-xiaozhi-phase7-workbench-ui-TPaYWu/evidence/partial-empty-report.json", "19aa028bad2ceda6bd41250a0c7a3f00018f3778528387ff1d0148a946ab876e", "6 viewports"],
+    "audit": ["main-b4fcf7a/npm-audit.json", "984ddbe1405a84bfe04a721ec6b56a252237d41203a64bf8a1fd7d776740fa4f", "20 listed: high 5, moderate 7, low 8"]
+  },
+  "previousCandidateDiagnostics": {
+    "commit": "d22537e56b3e4b31b558b825bc15bff2e63ae571",
+    "root": "gate7-d22537e/terra-long-final/main/omni-edu-xiaozhi-phase7-workbench-ui-deepdeepdeepdeepdeepdeep6Ylsjh/evidence",
+    "first": ["ui-report.json", "edc4749e753951f15ffc21906488f49a1fe61cedc4acec34a01e6eb43b4448c3", "8/9"],
+    "targetedColdRead": ["cold-targeted-report.json", "3a102e1587f5dce8ec67cae0ecab6a3ed8c9b7fdec8ee40c0d3bf88b5ee431b5", "3/3"],
+    "cause": "并行主线编译刷新了夹具二次启动前读取的源码清单。恢复原清单后定向冷读同一已存在终端 Job，保留原失败。"
+  },
+  "phase8": {
+    "planVerification": ["main-b4fcf7a/phase8-offline-verify.json", "1e78a1fddeac676ab1b4b3d1e9c501511e866dd33885e0f780008763b1548bce"],
+    "plannedRuns": 32,
+    "budgetUsed": 3,
+    "budgetLimit": 200,
+    "newPaidRequests": 0,
+    "actualCollection": "READY_AFTER_STORAGE_PREFLIGHT",
+    "cleanWindowsInstall": "BLOCKED",
+    "fixedMatrix": "88/89"
+  }
+}

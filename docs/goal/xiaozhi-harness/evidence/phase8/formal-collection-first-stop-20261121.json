@@ -1,0 +1,47 @@
+{
+  "status": "FAIL",
+  "candidate": "de871897c5f176d8176fbbd1ead96af6206b86a6",
+  "candidateBuildSha256": "28c2c96b95192c3b4228f43310b3b63f7178adb53e093942a22d2558e5b5fda6",
+  "baseline": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+  "command": "node scripts/xiaozhi-agent/phase8-real-model-run.mjs execute <manifest-a-d50ef330-b-de871897.json>",
+  "reportBase": "E:/EduDev-Harness-Acceptance-20261121/phase8-formal-28c2",
+  "reportDirectory": "xiaozhi-phase8-real-model-s3ICkS",
+  "summarySha256": "3cc18acea3b89a03205db612f89fe84b1783d11208514125860e44e07b2a640d",
+  "buildsAfterSha256": "810210da485d9e9fe96ef5cba65ea9c915cdd9048ae20e0630e2256d06b752f7",
+  "rows": {
+    "planned": 32,
+    "collected": 18,
+    "collectionFailed": 1,
+    "notExecuted": 13,
+    "blindReview": "PENDING_18_COLLECTED_SAMPLES"
+  },
+  "budget": {
+    "limit": 200,
+    "before": 3,
+    "after": 139,
+    "unresolved": 0,
+    "remaining": 61
+  },
+  "stop": {
+    "row": "Q5-r2-B",
+    "reason": "phase8_approval_consumption_unverified",
+    "reportSha256": "e5e8ed8ac838cd6fe77374e3be79ca1882cf20c8e1aaf97f987db6138449ffa1",
+    "facts": "原申请是固定 GET 的单次批准。继续保持同一 Task，产生新 Run，原申请未证实消费，新轮没有目标网页原生读回。保留失败，不重写为联网成功。"
+  },
+  "q3": {
+    "firstCandidateRowSha256": "67203665bbc40c04ca541ecbf5a83b49e832e859c2164fb05e703dcb80206cb5",
+    "secondCandidateRowSha256": "57b7c3b4ff52637fb9097d189e9181fc0cfecb421d5da4c669235e83248fcaeb",
+    "firstCandidateFacts": "六个精确请求均获批准且未被执行者消费。运行时将 permission_pending 投影为不可重试的 permission_denied，冻结输入随模型重写发生变化。最终没有 PPTX 或 HTML。",
+    "secondCandidateFacts": "真实保存两类产物。41 次 HTTP 请求，内容质量待独立核对。",
+    "operatorConfirmation": "采集器未覆盖草稿保存按钮。操作员从原 Electron 页面确认合成整包、单独文件和一次已有合成 HTML 修订。实际操作时间在相关行的 operator-confirmation.jsonl。",
+    "operatorHelperSha256": "c6b495467e3148d95a952b9655f4012b883f4e9cfb54ab7aa0d0ed96c90cba68",
+    "timingCaveat": "人工等待和磁盘空间波动影响课件端到端时延。保留原始秒数、操作时间和独立的网络请求拆分。"
+  },
+  "coldParity": {
+    "status": "PASS",
+    "report": "omni-edu-xiaozhi-phase8-boot-jURv7A/report.json",
+    "sha256": "5902e444d27a94a40de746c383cbed76b9aa9967787f4a07598fb84b76f2976b",
+    "scope": "两套实际 Electron 的模型偏好、同题合成快照读回，冷启不发模型。"
+  },
+  "next": "先修复活跃 Run 的精确审批等待，完成零付费确定性及真实 Electron 测试。保留已采集原件和原失败，剩余额度只用于尚缺或受影响的验证。"
+}

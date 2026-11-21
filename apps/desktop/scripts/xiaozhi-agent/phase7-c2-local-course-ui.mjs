@@ -21,8 +21,12 @@ for (let i = 2; i < process.argv.length; i += 2) {
 for (const key of ['--build-root', '--expected-out-hash', '--expected-out-count', '--expected-main-hash']) assert(args.has(key), 'missing ' + key);
 assert(/^[a-f0-9]{64}$/.test(args.get('--expected-out-hash')) && /^[a-f0-9]{64}$/.test(args.get('--expected-main-hash')));
 const buildRoot = fs.realpathSync(path.resolve(desktop, args.get('--build-root')));
-const relative = path.relative(fs.realpathSync(path.join(desktop, 'test-results')), buildRoot);
-assert(relative && relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative), 'build outside test-results');
+const standardOut = path.join(fs.realpathSync(desktop), 'out');
+if (buildRoot !== standardOut) {
+  const relative = path.relative(fs.realpathSync(path.join(desktop, 'test-results')), buildRoot);
+  assert(relative && relative !== '..' && !relative.startsWith('..' + path.sep) && !path.isAbsolute(relative),
+    'build outside desktop out or test-results');
+}
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'omni-edu-c2-course-')),
   data = path.join(dir, 'data'),
   profile = path.join(dir, 'profile'),
