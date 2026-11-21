@@ -8,8 +8,10 @@ import {openBudgetLedger} from './phase8-budget-ledger.mjs';
 import {startCountingProxy} from './phase8-counting-proxy.mjs';
 import {actualDatabasePath, providerPaths, syntheticFiles, schedule, validateManifest, preparePlan, fingerprint, sha256} from './phase8-real-model-plan.mjs';
 import {readFrozenQuestionSeed} from './phase8-question-seed.mjs';
+import {correctionBudget, loadCorrectionPlan} from './phase8-correction-plan.mjs';
+import {confirmSyntheticArtifact} from './phase8-correction-artifacts.mjs';
 import {readOriginalRecords, verifiedRunBinding, collectFiles, inspectOfficeArtifacts, exportBlindBundle,
-  q5ContinuationDecision, verifyQ5ApprovalConsumption, readQ5SourceEvidence} from './phase8-real-model-readback.mjs';
+  q5ContinuationDecision, verifyQ5ApprovalConsumption, verifyQ5ActiveApproval, readQ5SourceEvidence} from './phase8-real-model-readback.mjs';
 
 export function rendererObservation(sessionId) {
   const point = () => performance.now();
@@ -104,13 +106,16 @@ function verifyVersion(item) {
   return {desktop, commit, out, dependencies, lockfiles};
 }
 
-async function handleVisibleApproval(page, task, decisions) {
+async function handleVisibleApproval(page, task, decisions, authorize) {
   const pending = page.locator('[data-testid="pi-permission-approval"][data-state="pending"], [data-testid="pi-copy-approval"][data-state="pending"]');
   if (!await pending.count()) return;
-  const card = pending.first(); await card.scrollIntoViewIfNeeded();
+  const card = pending.first();
+  if (authorize && !await card.isVisible()) return;
+  await card.scrollIntoViewIfNeeded();
   const id = await card.getAttribute('data-approval-id');
   if (decisions.some(item => item.id === id)) return;
-  const decision = task === 'Q8' ? 'reject' : 'approve';
+  const authorization = authorize ? await authorize(card, id) : null;
+  const decision = authorization?.decision ?? (task === 'Q8' ? 'reject' : 'approve');
   const button = card.locator(`[data-testid="pi-permission-${decision}"], [data-testid="pi-copy-${decision}"]`).first();
   if (!await button.count()) throw Error('phase8_visible_approval_control_missing');
   const startedAt = performance.now(); await button.click();
@@ -118,7 +123,7 @@ async function handleVisibleApproval(page, task, decisions) {
     const node=[...document.querySelectorAll('[data-approval-id]')].find(node=>node.getAttribute('data-approval-id')===id);
     return !node || node.getAttribute('data-state') !== 'pending';
   },id,{timeout:10000});
-  decisions.push({id, decision, startedAt, completedAt: performance.now(), clock: 'outer Node performance.now'});
+  decisions.push({id, decision, ...authorization, startedAt, completedAt: performance.now(), clock: 'outer Node performance.now'});
 }
 
 function compareWire(transport, manifest) {
@@ -179,6 +184,12 @@ function verifyCollection(result, row, manifest, ledger, thinkingBaseline) {
       verifyQ5ApprovalConsumption(segments[0].records,segments[1].coldRecords,segments[1].binding);
     }
   }
+  if (row.correctionReason && row.task === 'Q5' && row.version === 'B') {
+    if (segments?.length !== 1 || !result.q5FixedSourceRead || !segments[0].q5SourceEvidence ||
+        segments[0].q5SourceEvidence.status !== 'read') throw Error('phase8_corrected_web_source_unverified');
+    if (result.decisions.length !== 1) throw Error('phase8_active_approval_consumption_unverified');
+    for (const records of [result.records, result.coldRecords]) verifyQ5ActiveApproval(records, result.binding, result.decisions[0]);
+  }
   if (result.transport?.rejected?.length) throw Error('phase8_provider_route_rejected');
   const chats = result.transport?.chats;
   if (!chats?.length) throw Error('phase8_provider_wire_missing');
@@ -226,6 +237,9 @@ async function collectRun(row, manifest, version, ledger, output, {background}) 
     runSegments: [],
     requestTimingBoundary: 'Main monotonic clock measures request/body consumption. Renderer clock measures trusted submission and terminal UI. Each request captures its Run at the original main event-send and explicit proxy dispatch boundary. Cross-process epoch differences are estimates with recorded calibration.',
     webpageHttpTiming: null, failureRecoveryScenarios: 'NOT_TESTED_SEPARATE_PLANNED_SCENARIOS'};
+  const exactActiveWebApproval = row.correctionReason && row.task === 'Q5' && row.version === 'B';
+  const syntheticDraftCorrection = row.correctionReason && ['Q3','Q7'].includes(row.task);
+  if (syntheticDraftCorrection) result.draftDecisions = [];
   try {
     result.stage = 'proxy_setup';
     for (const providerPath of providerPaths) {
@@ -288,8 +302,24 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
       (result.terminalSnapshotReads ??= []).push(reads);
       result.stage = 'terminal_wait';
       while (performance.now() < deadline) {
-        await handleVisibleApproval(page, row.task, result.decisions);
         const signal = await page.evaluate(id => window.phase8RealObservation.runSignal(id), previousRunId);
+        if (!row.correctionReason || signal?.runId) await handleVisibleApproval(page, row.task, result.decisions,
+          row.correctionReason ? async (card, id) => {
+            const records = readOriginalRecords(path.join(dataRoot, 'app.db'), sessionId, signal.runId, {workspace});
+            const match = records.approvals.find(item => item.id === id && item.state === 'pending'
+              && item.owner.sessionId === sessionId && item.owner.runId === signal.runId);
+            const digest = await card.getAttribute('data-request-digest');
+            const revision = await card.getAttribute('data-revision');
+            const exact = match && match.requestDigest === digest && String(match.revision) === revision;
+            if (exactActiveWebApproval) {
+              if (!exact || !match.fixedQ5Get || result.decisions.length) throw Error('phase8_unexpected_correction_approval');
+              return {requestDigest: match.requestDigest, revision: match.revision};
+            }
+            const allowed = row.task === 'Q3' ? ['office_create_text','office_edit_text','office_create_document','office_deliver_files']
+              : row.task === 'Q7' ? ['office_create_text'] : [];
+            return {decision: exact && match.syntheticFileScope && allowed.includes(match.action) ? 'approve' : 'reject'};
+          } : undefined);
+        if (syntheticDraftCorrection) await confirmSyntheticArtifact(page, row.task, workspace, result.draftDecisions);
         const now = performance.now();
         const readKind = signal?.terminal ? (now >= nextTerminalRead ? 'terminal' : null)
           : (signal && now >= nextFallback ? 'fallback' : null);
@@ -330,7 +360,7 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
     const original=await capture(dispatchGroups[0]);
     const originalWebTiming=row.task==='Q5'?await application.evaluate(()=>globalThis.phase8WebTiming?.snapshot()):null;
     result.continuation={};
-    await continueApprovedQ5({task:row.task,original,webpageHttpTiming:originalWebTiming,page,record:result.continuation,beforeDispatch:async()=>{
+    if (!exactActiveWebApproval) await continueApprovedQ5({task:row.task,original,webpageHttpTiming:originalWebTiming,page,record:result.continuation,beforeDispatch:async()=>{
       const continuationRoutes={},group={id:'continuation',evidenceRef:evidenceRef+'/continuation'};
       // A distinct fixed proxy context is the durable grouping, not request position.
       for(const providerPath of providerPaths){
@@ -429,15 +459,15 @@ await import(${JSON.stringify(pathToFileURL(path.join(version.desktop, 'out/main
 }
 
 /** The CLI and Node protocol regression share this exact serial dispatch loop. */
-export async function collectScheduledRuns({mode = 'execute', manifest, versions, ledger, output, collect}) {
-  if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
+export async function collectScheduledRuns({mode = 'execute', manifest, versions, ledger, output, collect, correction}) {
+  if (!['execute', 'preflight', 'correct'].includes(mode) || (mode === 'correct') !== Boolean(correction)) throw Error('phase8_invalid_collection_mode');
   if (typeof collect !== 'function') throw Error('phase8_collector_required');
-  const rows = mode === 'preflight' ? schedule.filter(row => row.task === 'Q1' && row.round === 1) : schedule;
+  const rows = correction?.rows ?? (mode === 'preflight' ? schedule.filter(row => row.task === 'Q1' && row.round === 1) : schedule);
   fs.mkdirSync(output, {recursive: true});
   const results = [];
   let stoppedAt = null, thinkingBaseline;
   for (const [index, row] of rows.entries()) {
-    if (!ledger.summary().remaining) {
+    if (!ledger.summary().remaining || ledger.correctionUsage?.().remaining === 0) {
       stoppedAt = {id: row.id, code: 'phase8_budget_exhausted'};
       results.push(...rows.slice(index).map(pending => ({...pending, collectionStatus: 'NOT_TESTED', reason: stoppedAt.code, receiptSha256: null})));
       break;
@@ -446,6 +476,7 @@ export async function collectScheduledRuns({mode = 'execute', manifest, versions
     let result;
     try {
       result = {...await collect(row, manifest, versions[row.version], ledger, output), ...row, output: root};
+      if (ledger.correctionUsage?.().rejected) throw Error('phase8_correction_budget_exhausted');
       thinkingBaseline = verifyCollection(result, row, manifest, ledger, thinkingBaseline);
     } catch (error) {
       const code = /^phase8_[a-z_]+$/.test(error.message) ? error.message : 'phase8_collection_failed';
@@ -489,15 +520,17 @@ export function verifyFrozenPlan(manifestPath) {
   };
 }
 
-export async function executePlan(manifestPath, output, mode = 'execute', {background = false} = {}) {
-  if (!['execute', 'preflight'].includes(mode)) throw Error('phase8_invalid_collection_mode');
+export async function executePlan(manifestPath, output, mode = 'execute', {background = false, rowIds, maxRequests} = {}) {
+  if (!['execute', 'preflight', 'correct'].includes(mode)) throw Error('phase8_invalid_collection_mode');
   if (background && (mode !== 'preflight' || !path.basename(output).startsWith('omni-edu-xiaozhi-phase8-real-model-')
       || fs.realpathSync(path.dirname(path.resolve(output))) !== fs.realpathSync(os.tmpdir()))) {
     throw Error('phase8_background_preflight_only');
   }
   if (!fs.existsSync(actualDatabasePath)) throw Error('phase8_actual_goal_ledger_missing');
   const {manifest, versions, questionSeed} = loadFrozenPlan(manifestPath);
+  const correction = mode === 'correct' ? loadCorrectionPlan(manifest, rowIds, maxRequests) : undefined;
   fs.mkdirSync(output, {recursive: true});
+  if (correction && fs.readdirSync(output).length) throw Error('phase8_correction_output_not_empty');
   fs.copyFileSync(manifestPath, path.join(output, 'execution-manifest.json'));
   fs.writeFileSync(path.join(output, 'builds.json'), JSON.stringify(versions, null, 2));
   fs.writeFileSync(path.join(output, 'question-seed-readback.json'), JSON.stringify(questionSeed, null, 2));
@@ -505,10 +538,13 @@ export async function executePlan(manifestPath, output, mode = 'execute', {backg
     cpus: os.cpus().map(cpu => cpu.model), totalMemory: os.totalmem(), conditions: manifest.conditions,
     launchMode: background ? 'hidden automated preflight, fresh Electron and cloned synthetic snapshots'
       : 'visible Electron and cloned synthetic snapshots per run'}, null, 2));
-  const ledger = openBudgetLedger({databasePath: actualDatabasePath});
+  const goalLedger = openBudgetLedger({databasePath: actualDatabasePath});
   let collection;
   try {
-    collection = await collectScheduledRuns({mode, manifest, versions, ledger, output,
+    const ledger = correction ? correctionBudget(goalLedger, maxRequests) : goalLedger;
+    if (correction) fs.writeFileSync(path.join(output, 'correction-selection.json'),
+      JSON.stringify({ ...correction, budgetBefore: ledger.summary() }, null, 2), {flag: 'wx'});
+    collection = await collectScheduledRuns({mode, manifest, versions, ledger, output, correction,
       collect: (...args) => collectRun(...args, {background})});
     const {results} = collection;
     const blind = exportBlindBundle(path.join(output, 'blind-samples'), results.filter(row => row.collectionStatus === 'PASS'));
@@ -517,13 +553,13 @@ export async function executePlan(manifestPath, output, mode = 'execute', {backg
     fs.writeFileSync(path.join(output, 'summary.json'), JSON.stringify({mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS',
       stoppedAt: collection.stoppedAt, plannedRunIds: collection.plannedRunIds,
       identityMapSha256: blind.identityMapSha256, qualityStatus: 'NOT_TESTED_INDEPENDENT_BLIND_REVIEW',
-      budget: ledger.summary(), results: results.map(row => ({id: row.id, collectionStatus: row.collectionStatus, terminal: row.terminal,
+      budget: ledger.summary(), correctionUsage: ledger.correctionUsage?.(), results: results.map(row => ({id: row.id, collectionStatus: row.collectionStatus, terminal: row.terminal,
         qualityStatus: row.qualityStatus, error: row.error, infrastructureFailure: row.infrastructureFailure,
         reason: row.reason, httpAttemptCount: row.httpAttemptCount, output: row.output, receiptSha256: row.receiptSha256})),
       limits: ['Q3 interactive HTML browser tests and all quality scoring remain independent.',
         'Q5 exact URL transport timings, renderer tool events and exact-once file writes require original source/receipt review.',
         'The separately planned cancel/reject/network failure runs are outside this fixed32 collector.']}, null, 2));
-  } finally {ledger.close();}
+  } finally {goalLedger.close();}
   return {output, mode, collectionStatus: collection.stoppedAt ? 'FAIL' : 'PASS', stoppedAt: collection.stoppedAt,
     collected: collection.results.filter(row => row.collectionStatus === 'PASS').length, planned: collection.plannedRunIds.length};
 }
@@ -533,8 +569,20 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
   const background = option === '--background';
   let output;
   try {
-    if (extra.length || option && !background || background && action !== 'preflight') throw Error('phase8_invalid_collection_mode');
-    if (action === 'verify' && manifest) {
+    if (['correct', 'verify-correction'].includes(action) && manifest && /^[1-9][0-9]{0,2}$/.test(option ?? '') && extra.length === 1) {
+      const maxRequests = Number(option);
+      const rowIds = extra[0].split(',');
+      if (action === 'verify-correction') {
+        const {manifest: plan} = loadFrozenPlan(manifest);
+        console.log(JSON.stringify(loadCorrectionPlan(plan, rowIds, maxRequests)));
+      } else {
+        output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-correction-'));
+        const result = await executePlan(manifest, output, 'correct', {rowIds, maxRequests});
+        console.log(JSON.stringify(result));
+        if (result.collectionStatus === 'FAIL') process.exitCode = 1;
+      }
+    } else if (extra.length || option && !background || background && action !== 'preflight') throw Error('phase8_invalid_collection_mode');
+    else if (action === 'verify' && manifest) {
       console.log(JSON.stringify(verifyFrozenPlan(manifest)));
     } else if (action === 'prepare' || ['execute', 'preflight'].includes(action) && manifest) {
       output = fs.mkdtempSync(path.join(os.tmpdir(), background ? 'omni-edu-xiaozhi-phase8-real-model-' : 'xiaozhi-phase8-real-model-'));

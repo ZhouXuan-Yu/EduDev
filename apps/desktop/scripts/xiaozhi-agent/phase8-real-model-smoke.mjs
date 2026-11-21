@@ -26,6 +26,8 @@ try {
   const {verifiedRunBinding, collectFiles, exportBlindBundle, readOriginalRecords, q5ContinuationDecision, verifyQ5ApprovalConsumption,readQ5SourceEvidence} = await import('./phase8-real-model-readback.mjs');
   const {executePlan, rendererObservation, collectScheduledRuns, streamTransportComplete, continueApprovedQ5, bindDispatchAttempts} = await import('./phase8-real-model-run.mjs');
   const {observeQ5WebTiming} = await import('./phase8-web-timing.mjs');
+  const {selectCorrectionRows, correctionBudget} = await import('./phase8-correction-plan.mjs');
+  const {plannedSyntheticSave} = await import('./phase8-correction-artifacts.mjs');
   await check('Q5 records exact URL timings without storing unrelated requests, headers or credentials', () => {
     const target = new URL(q5Source);
     const matched = {method: 'GET', origin: target.origin, path: target.pathname};
@@ -336,6 +338,73 @@ try {
     }
     return {directory, databasePath, budget, calls, manifest, collect};
   }
+  await check('Correction selects only affected, failed and unreached entries in the fixed schedule', async () => {
+    const plannedRunIds = schedule.map(row => row.id);
+    const stoppedAt = {id: 'Q5-r2-B', code: 'phase8_approval_consumption_unverified'};
+    const original = {mode: 'execute', collectionStatus: 'FAIL', plannedRunIds, stoppedAt, results: plannedRunIds.map((id, index) => ({
+      id, collectionStatus: index < 18 ? 'PASS' : index === 18 ? 'FAIL' : 'NOT_TESTED',
+    }))};
+    const order = ['Q3-r1-B','Q5-r2-B','Q7-r1-B'];
+    assert.deepEqual(selectCorrectionRows(original, [...order].reverse()).map(row => [row.id, row.correctionReason]),
+      [[order[0],'affected_candidate'],[order[1],'capture_failure'],[order[2],'not_executed']]);
+    for (const invalid of [[], ['Q1-r1-B'], ['Q7-r1-B','Q7-r1-B'], ['Q9-r1-B']]) {
+      assert.throws(() => selectCorrectionRows(original, invalid), /phase8_correction_row/u);
+    }
+    assert.throws(() => selectCorrectionRows({...original, plannedRunIds: order}, [order[0]]), /phase8_correction_original_invalid/u);
+    const fixture = collectionFixture('correction-order');
+    const rows = selectCorrectionRows(original, ['Q7-r1-A','Q6-r1-A']);
+    const capped = correctionBudget(fixture.budget, 1);
+    const result = await collectScheduledRuns({mode:'correct', correction:{rows}, manifest:fixture.manifest, versions:{},
+      ledger:capped, output:fixture.directory, collect:fixture.collect});
+    assert.deepEqual(fixture.calls, ['Q6-r1-A']);
+    assert.deepEqual(result.results.map(row => row.collectionStatus), ['PASS', 'NOT_TESTED']);
+    assert.equal(capped.summary().used, 1);
+  });
+  await check('Correction request limit applies to both real loopback proxy routes before upstream dispatch', async () => {
+    const fixture = collectionFixture('correction-allowance', {limit: 10, initialUsed: 3});
+    const before = received.length;
+    const limited = correctionBudget(fixture.budget, 2);
+    const proxies = await Promise.all(['original','continuation'].map(name => startCountingProxy({
+      ledger: limited, providerEndpoint: origin + '/chat', fixtureHttp: true,
+      context: {task:'Q5',version:'B',round:2,evidenceRef:'fixture/correction/'+name},
+    })));
+    resources.push(...proxies.map(proxy => () => proxy.close()));
+    const responses = await Promise.all([...proxies, ...proxies].map(async proxy => {
+      const result = await fetch(proxy.url, {method:'POST',body:'{}'}); await result.text(); return result.status;
+    }));
+    assert.deepEqual(responses.sort(), [200,200,429,429]);
+    assert.equal(received.length - before, 2);
+    assert.deepEqual(limited.correctionUsage(), {used:2,rejected:2,maxRequests:2,remaining:0});
+    assert.equal(fixture.budget.summary().used, 5);
+  });
+  await check('Correction verifies one original NASA GET approval, execution and owner after cold readback', async () => {
+    const {verifyQ5ActiveApproval} = await import('./phase8-real-model-readback.mjs');
+    const binding = {runId:'run_original',sessionId:'session_q5',taskId:'task_q5'};
+    const decision = {id:'approval_one',revision:1,requestDigest:'digest'};
+    const approval = {...decision,revision:4,state:'executed',scope:'operation',fixedQ5Get:true,owner:binding,admittedOwner:binding};
+    const approvalAudit = ['approval_executing','approval_executed'].map(kind=>({id:decision.id,kind,owner:binding}));
+    const records = {approvals:[approval],approvalAudit};
+    verifyQ5ActiveApproval(records,binding,decision);
+    for (const bad of [{scope:'task'},{fixedQ5Get:false},{revision:5},{admittedOwner:{...binding,runId:'new_run'}},{requestDigest:'different'}]) {
+      assert.throws(() => verifyQ5ActiveApproval({...records,approvals:[{...approval,...bad}]},binding,decision), /phase8_active_approval/u);
+    }
+    assert.throws(() => verifyQ5ActiveApproval({...records,approvalAudit:[...approvalAudit,approvalAudit[0]]},binding,decision), /phase8_active_approval/u);
+  });
+  await check('Synthetic draft review rejects replacement, unrelated names and changes beyond the approved outputs', () => {
+    const practice = {task:'Q7', kind:'text', names:['practice.txt'], existing:[], diff:'+1 合成练习：3/4 + 1/4 = 1', isEdit:false, previous:[]};
+    assert(plannedSyntheticSave(practice));
+    for (const bad of [{existing:practice.names},{names:['other.txt']},{diff:practice.diff+'\n+2 extra'},{isEdit:true}]) {
+      assert(!plannedSyntheticSave({...practice,...bad}));
+    }
+    const bundle = {...practice,task:'Q3',kind:'bundle',names:['浮力课件.pptx','互动.html']};
+    assert(plannedSyntheticSave(bundle));
+    assert(!plannedSyntheticSave({...bundle,names:['../课件.pptx','互动.html']}));
+    assert(!plannedSyntheticSave({...bundle,names:['互动.html','双份.html']}));
+    const edit = {...bundle,kind:'text',names:['互动.html'],existing:['互动.html'],isEdit:true,previous:[{files:bundle.names,edit:false}]};
+    assert(plannedSyntheticSave(edit));
+    assert(!plannedSyntheticSave({...edit,previous:[]}));
+    assert(!plannedSyntheticSave({...edit,previous:[...edit.previous,{files:edit.names,edit:true}]}));
+  });
   await check('Real loopback reservations bind by explicit original/continuation routes even when request rows are reordered',async()=>{
     const evidenceRef='fixture/q5-boundaries', budget=openBudgetLedger({databasePath:path.join(output,'q5-boundaries.sqlite'),limit:3});resources.push(()=>budget.close());
     const original=await startCountingProxy({ledger:budget,providerEndpoint:origin+'/chat',fixtureHttp:true,context:{task:'Q5',version:'B',round:1,evidenceRef}});
@@ -552,7 +621,7 @@ try {
     fs.writeFileSync(filenames[1] + '-wal', '');
     assert.throws(() => readFrozenQuestionSeed(manifest), /phase8_question_seed_snapshot_not_closed/);
   });
-  report.budget = ledger.summary(); report.success = report.checks.length === 20 && report.checks.every(row => row.pass);
+  report.budget = ledger.summary(); report.success = report.checks.length === 24 && report.checks.every(row => row.pass);
 } catch (error) {report.error = error.stack;}
 finally {
   for (const close of resources.reverse()) await close();

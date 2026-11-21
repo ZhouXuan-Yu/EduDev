@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 import {DatabaseSync} from 'node:sqlite';
 import {sha256, q5Source} from './phase8-real-model-plan.mjs';
 
-export function readOriginalRecords(databasePath, sessionId, runId) {
+export function readOriginalRecords(databasePath, sessionId, runId, {workspace} = {}) {
   const database = new DatabaseSync(databasePath, {readOnly: true});
   try {
     const tables = new Set(database.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row => row.name));
@@ -45,7 +45,11 @@ export function readOriginalRecords(databasePath, sessionId, runId) {
         const fixedQ5Get = request.action === 'office_web_fetch' && input?.url === q5Source
           && request.scopes?.some(scope => scope.kind === 'network' && scope.origin === new URL(q5Source).origin
             && Array.isArray(scope.methods) && scope.methods.length === 1 && scope.methods[0] === 'GET');
+        const syntheticFileScope = workspace && request.scopes?.length > 0 && request.scopes.every(scope =>
+          scope.kind === 'filesystem' && path.relative(workspace, scope.root) === ''
+          && scope.actions?.includes('write') && scope.actions.every(action => ['read','write'].includes(action)));
         approvals.push({id:value.id,revision:value.revision,state:value.state,scope:value.scope,requestDigest:value.requestDigest,
+          ...(workspace ? {action:request.action, syntheticFileScope} : {}),
           owner:request.owner,admittedOwner:value.admittedOwner || null,fixedQ5Get});
         if (tables.has('xiaozhi_permission_audit_v1')) {
           for (const audit of database.prepare('SELECT kind,metadata_json FROM xiaozhi_permission_audit_v1 WHERE session_id=? AND reference=?').all(sessionId,value.id)) {
@@ -137,6 +141,18 @@ export function verifyQ5ApprovalConsumption(original,continued,binding) {
     }
   }
   return selected;
+}
+
+export function verifyQ5ActiveApproval(records, binding, decision) {
+  const sameOwner = owner => owner?.sessionId === binding.sessionId && owner?.taskId === binding.taskId && owner?.runId === binding.runId;
+  const approval = records.approvals.find(item => item.id === decision?.id);
+  if (!approval || !approval.fixedQ5Get || approval.state !== 'executed' || approval.scope !== 'operation'
+      || approval.requestDigest !== decision.requestDigest || approval.revision !== decision.revision + 3
+      || !sameOwner(approval.owner) || !sameOwner(approval.admittedOwner)) throw Error('phase8_active_approval_consumption_unverified');
+  const audit = records.approvalAudit.filter(item => item.id === approval.id);
+  if (audit.length !== 2 || audit.filter(item => item.kind === 'approval_executing').length !== 1
+      || audit.filter(item => item.kind === 'approval_executed').length !== 1
+      || !audit.every(item => sameOwner(item.owner))) throw Error('phase8_active_approval_consumption_unverified');
 }
 
 export function verifiedRunBinding({sessionId, runId, snapshot, records}) {

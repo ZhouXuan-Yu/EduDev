@@ -1,5 +1,16 @@
 # Phase 8 真实模型质量与时延验收方案
 
+## 使用既有账本定向复验
+
+在桌面端目录先离线核对新候选和原冻结快照，再执行指定的行。行 ID 用逗号分隔。执行顺序沿原 ABBA 表。
+
+```powershell
+node scripts/xiaozhi-agent/phase8-real-model-run.mjs verify-correction <manifest> <max-http-requests> <row-ids>
+node scripts/xiaozhi-agent/phase8-real-model-run.mjs correct <manifest> <max-http-requests> <row-ids>
+```
+
+同一总账本继续计量每笔真实请求。原 32 行汇总和输入清单通过 SHA-256 核对，定向采集只选未执行、采集失败或已知受影响的 B 行，不写入原报告。子额度在两条模型代理共同使用，SDK 重试也计量，超出上限不派发。Q5 复验须取得同一 Run 的原单次批准、原生读取回执及完整 GET。Q3 和 Q7 仅确认受控合成目录里符合题意的草稿，独立评审继续核对内容与互动。定向结果与原盲评分别存档。 [首次定向复验](evidence/phase8/q5-bounded-correction-20261121.json)
+
 ## 2026-11-21 首次正式采集停止
 
 Gate 7 通过后以原 32 轮计划运行。成功封存 18 轮，Q5-r2-B 在核验原批准消费时失败并停止，后续 13 轮未执行。账本 139/200。Q3-r1-B 无产物，实际权限请求显示获批准，原工具受 `permission_pending` 误映射影响且未派发。第二轮新版实际保存两类文件，付费请求 41 次。人工为漏识别的草稿保存提供原界面操作，时间单列。独立评分与配对汇总保留未执行项和未知项，原候选预设质量 **FAIL**。后续按原预算对未执行及受影响用例作定向复验并单独保留候选身份。 [正式采集和评分](evidence/phase8/formal-collection-first-stop-20261121.json)

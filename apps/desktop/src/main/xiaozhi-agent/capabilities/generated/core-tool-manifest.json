@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1f42fdbec01acbe31cb2031d3dc11aaa75e30ca582f9a671bd4f2304f510142e",
+  "sourceHash": "d5e0e0bf993d23c1723602cd5ed6dfaf34c831f57f89303abb907a1850cd4576",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "88f40c1a995f7c51a4ee1e58c03d74e3c1bdbeaf3cf2ffd538f0d2a7f6a0b6ca"
+      "sha256": "78a52e7fb78dedecd7e2024fd9c73d1b1a2c46a923f6ee1dab441a901b22a407"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1368,7 +1368,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "bfac5c6d6bc561b12285ec7506fafce1ac9c9dec1af66ff4206e3ec9618bb4f6"
+      "sha256": "3a35daf2ccdfcb562b0c5960678002959a5b5ce9c6d99bbbcf331f3fc2269de6"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",

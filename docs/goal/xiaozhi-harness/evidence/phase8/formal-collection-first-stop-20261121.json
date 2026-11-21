@@ -7,6 +7,7 @@
   "reportBase": "E:/EduDev-Harness-Acceptance-20261121/phase8-formal-28c2",
   "reportDirectory": "xiaozhi-phase8-real-model-s3ICkS",
   "summarySha256": "3cc18acea3b89a03205db612f89fe84b1783d11208514125860e44e07b2a640d",
+  "executionManifestSha256": "0827b36e459ff95ae87b9bd4fed5b2c62a0d8410e4ef2ab255f561ef96a08c06",
   "buildsAfterSha256": "810210da485d9e9fe96ef5cba65ea9c915cdd9048ae20e0630e2256d06b752f7",
   "rows": {
     "planned": 32,
