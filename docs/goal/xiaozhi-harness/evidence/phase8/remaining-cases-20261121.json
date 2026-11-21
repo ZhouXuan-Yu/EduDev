@@ -48,5 +48,51 @@
     "renderer": "253/253",
     "build": {"files": 481, "sha256": "9a9d8475987c017dd5dc60c1eee96a614df84b6c285e3e31b9ef57dee8a76c98", "logSha256": "00e8741e7a066292f3619a720892d6ad9912fa6c98dc0d51fb8ecc60c8f9c8cd"}
   },
-  "budget": {"used": 171, "remaining": 29, "unresolved": 0}
+  "realCandidateRetests": {
+    "candidate": "a259d845cf530299d99ce59abcf275166a6ad2bb",
+    "buildSha256": "9a9d8475987c017dd5dc60c1eee96a614df84b6c285e3e31b9ef57dee8a76c98",
+    "practice": {
+      "row": "Q7-r1-B",
+      "location": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-LsMM6Z",
+      "collection": "PASS_SCOPED",
+      "requests": 8,
+      "exactBytes": 28,
+      "fileSha256": "b5b313602e51fe5d37b934b2a1ccea154f2ff339f81da7ece7cc8e9bb8effe85",
+      "receiptSha256": "9660ccc557782047d96d3d47f901095d3f22ff5fa8da03acfe98ff3e0b69b9f8",
+      "summarySha256": "55265110703c73f600477e2fb5cf5aa15b0ea2083989906edb1c69693d3e9d9f",
+      "joinedReviewSha256": "b1598c67d3db538d4b618aab29a753fb6a45d767898f133ff66b23b66bc12778",
+      "quality": "REVIEW_INCOMPLETE",
+      "fact": "独立读到准确字节；最终说明同时陈述保存结果和较早的未执行尝试，仍需区分。"
+    },
+    "lesson": {
+      "row": "Q3-r1-B",
+      "location": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-04Xl1f",
+      "collection": "PASS_SCOPED",
+      "requests": 9,
+      "confirmedBundles": 1,
+      "receiptSha256": "e8563feac2a3fe29972606884a6f5c70d314c48558f055057c8401c285584525",
+      "summarySha256": "07d4c3a42e9bd48f7dc257eedd89d39f4ba63a5d858164380b622ae4fcf4208d",
+      "joinedReviewSha256": "5df63bbba15f8a42135b529b58edfacf5b67e629bad6879620c693c347a64c67",
+      "quality": "REVIEW_INCOMPLETE",
+      "fact": "原题链路产生四页实质内容 PPTX 和可互动 HTML。独立核对关键计算及实际浏览器错误输入、正确输入、解法、重做，均通过。完整授权、隐私及 Office 原生视觉仍待验。"
+    }
+  },
+  "uniqueAcquisitionCoverage": {"collected": 28, "planned": 32, "scope": "原始采集与定向不同候选共同覆盖。既有失效样本保持原结果，不等于固定候选已通过。", "remainingRows": ["Q7-r2-B","Q7-r2-A","Q8-r2-B","Q8-r2-A"]},
+  "copyStatusRepair": {
+    "status": "PASS_SCOPED",
+    "buildSha256": "d8d355fce892b04e12dc22ef1310db271508bb98805dbae2575fab5fc27a317d",
+    "buildLogSha256": "64e0c33e63fa1a6ceefaf86ddcd65b7e8fce23d9447062e2caa0b5f7cb4eb64f",
+    "sourceCheck": {"command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs", "result": "15/15"},
+    "electron": {"command": "node scripts/xiaozhi-agent/phase8-copy-rejection-electron.mjs", "result": "2/2", "reportSha256": "5d8905539da1c4e8a78bab9d58152c1435b459765a14be6788bc860761eee78d"},
+    "firstFixtureFailure": {"fact": "实际拒绝、最终说明及文件检查已通过，随后调用了夹具不存在的 restart，冷读未运行。修正夹具后用同一构建通过。", "reportSha256": "a3f3877363d2755d483e971f9913d1785b84f9728b939ebeaf9abfda95da9d0c"},
+    "behavior": "同一 Run 的拒绝以持久审批为准。较早的准入错误明确为历史尝试，保留具体文件状态。未执行该修复后的付费 Q8 样本。"
+  },
+  "integration": {
+    "source": "1a87482",
+    "build": {"files": 481, "sha256": "2c634e67e175fefcbc06f5de01d5ea48f1545cf9a2fb426e42a52dc39fcb28d0", "logSha256": "3c6b9dc0fdd13d315d7460c4ad13f4f92791352d52c0333710e9eee773acbd82"},
+    "knowledgeBase": {"result": "54/54", "logSha256": "ea9eb90abdcd095dce0b712b4215a7c913bdcdd776a82355151d802bf260b233"},
+    "copyStatusElectron": {"result": "2/2", "reportSha256": "c88e22922f3b97e1e0c5ddb49ee795e80f5f8eebed34e2459f77a581164463a5", "scope": "后来拒绝、源文件保持、未生成目标及重启后原 Run 读回。无付费请求。"},
+    "firstBuildAttempt": "C 盘无法写合并日志，原尝试未计为通过；改用 E 盘隔离目录后完整构建通过。"
+  },
+  "budget": {"used": 188, "remaining": 12, "unresolved": 0}
 }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {deliveryFinal} from '../../src/main/xiaozhi-agent/delivery-final.ts';
+import {deliveryFinal,rejectedCopyDecisions} from '../../src/main/xiaozhi-agent/delivery-final.ts';
 import {createOfficeDeliveryPresentation} from '../../src/main/xiaozhi-agent/office-delivery-presentation.ts';
 import {isFileDeliveryTool} from '../../src/main/xiaozhi-agent/tools/manifest.ts';
 const checks=[],pass=s=>{checks.push(s);console.log('PASS '+s);},sessionId='session',runId='run',hash='a'.repeat(64),other='b'.repeat(64);
@@ -30,4 +30,22 @@ r=await deliveryFinal({sessionId,runId,callOrder:['a','interrupted'],observed:tr
 pass('Unknown failed write effects remain uncertain and preserve a separate already-saved result');
 r=await deliveryFinal({sessionId,runId,callOrder:['a'],observed:true,failedFileCalls:[{callId:'a',code:'conflict',effect:'unknown'},{callId:'a',code:'conflict',effect:'unknown'}],ports:ports({changes:async()=>[{...text,state:'conflict'}]})});assert(r.text.includes('内容或来源已变化'));assert(!r.text.includes('文件操作未完成'));
 pass('An original ledger outcome takes precedence over duplicate failure fallbacks for the same call');
+const rejected={state:'rejected',request:{action:'office_copy_file',owner:{sessionId,runId},callId:'copy-denied',files:[{path:'document.txt'},{path:'copy.txt',kind:'write_target'}]}};
+const foreign={...rejected,request:{...rejected.request,owner:{sessionId,runId:'other'}}};
+const copyRejections=rejectedCopyDecisions([rejected,foreign,{...rejected,state:'invalidated'}],sessionId,runId);
+assert.deepEqual(copyRejections,[{callId:'copy-denied',path:'copy.txt'}]);
+r=await deliveryFinal({sessionId,runId,callOrder:['before-draft','copy-denied'],observed:true,
+ failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'},{callId:'copy-denied',code:'permission_denied',effect:'none'}],
+ ports:ports({copyRejections:async()=>copyRejections})});
+assert.match(r.text,/copy\\\.txt：已拒绝复制，本次未写入副本/);
+assert.match(r.text,/早先的文件操作未完成/);
+assert(!r.text.includes('操作未获授权或授权已失效'));
+assert(!r.text.includes('未生成可确认保存的成果'));
+pass('Later exact rejection reads the original approval and explains an earlier rejected-admission attempt without implying a copy occurred');
+r=await deliveryFinal({sessionId,runId,callOrder:['before-draft','a'],observed:true,ports:ports({changes:async()=>[text]}),
+ failedFileCalls:[{callId:'before-draft',code:'task_blocked',effect:'none'}]});
+assert(r.text.includes('讲解\\.html：已保存'));
+assert.match(r.text,/该次尝试未执行；后续文件状态见上方记录/);
+assert(!r.text.includes('未生成可确认保存的成果'));
+pass('A recovered admission failure stays in the result as history without contradicting a later saved file');
 console.log(JSON.stringify({ok:true,passed:checks.length,checks,boundary:'Source contracts and presentation; actual original Pi/file/SQLite/cold restart covered separately.'},null,2));
