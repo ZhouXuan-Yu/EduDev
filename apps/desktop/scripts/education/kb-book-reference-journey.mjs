@@ -5,26 +5,32 @@ const {prepareQuestionAliases}=await import('../../src/main/education/question-a
 const {basketQuestionAvailability}=await import('../../src/main/education/paper-basket-source.ts');
 const publishConflict=process.argv.includes('--publish-conflict');
 const compact=process.argv.includes('--compact-answer-key');
-const desktop=process.cwd(),output=fs.mkdtempSync(path.join(os.tmpdir(),'omni-book-reference-ui-')),folder=path.join(output,'资料','子目录'),data=path.join(output,'data'),profile=path.join(output,'profile'),ledger=path.join(output,'requests.json');fs.mkdirSync(folder,{recursive:true});
+const printed=process.argv.includes('--printed-labels');
+assert(!printed||!compact&&!publishConflict);
+const entry=path.resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT||'out','main/index.js');
+const output=fs.mkdtempSync(path.join(os.tmpdir(),'omni-book-reference-ui-')),folder=path.join(output,'资料','子目录'),data=path.join(output,'data'),profile=path.join(output,'profile'),ledger=path.join(output,'requests.json');fs.mkdirSync(folder,{recursive:true});
 const sha=b=>createHash('sha256').update(b).digest('hex'),section='第九章 素养基础测试卷';
 const numbers=compact?['1','3']:['1','2'],answers=compact?['B','100℃']:['100℃','100℃'];
 const stems=[compact?'按题意用字母表示状态，平静的水为 A，沸腾的水为 B。水沸腾时应该填什么字母？':'标准大气压下水的沸点是多少摄氏度？','在标准大气压下，纯水沸腾时的温度是多少摄氏度？'];
 const details='答案：100℃\n解析：纯水在标准大气压下沸腾时温度为100℃。';
-const answerText=compact
+const analysis='标准大气压下水的沸点为100℃。';
+const answerText=printed
+ ?section+'\n1. '+stems[0]+'\n【答案】100℃\n【解析】'+analysis+'\n2. '+stems[1]+'\n【参考答案】100℃\n【详解】纯水在标准大气压下沸腾时温度为100℃。'
+ :compact
  ?section+'\n答案速查\n1 2\nB C\n3. '+details+'\n第十章 素养提优测试卷\n参考答案\n1 2 3\nA D'
  :section+'\n1. 答案：100℃\n解析：标准大气压下水的沸点为100℃。\n2. '+details;
-const report={output,buildSha256:sha(fs.readFileSync('out/main/index.js')),checks:[],rendererErrors:[],cloudRequests:0,naturalQualityPassed:false,scope:'Actual two-page PDF question book plus independent answer PDF, recursive folder UI/role authorization/local OCR-layout-crops/typed source/SQLite/dual viewports/cold start. Eight controlled provider responses; not natural reasoning, held-out extraction, 40GiB, installation or migration acceptance.'};let app,page;
+const report={output,buildSha256:sha(fs.readFileSync(entry)),checks:[],rendererErrors:[],cloudRequests:0,naturalQualityPassed:false,scope:'Actual two-page PDF question book plus independent answer PDF, recursive folder UI/role authorization/local OCR-layout-crops/typed source/SQLite/dual viewports/cold start. Eight controlled provider responses; not natural reasoning, held-out extraction, 40GiB, installation or migration acceptance.'};let app,page;
 const sql=(s,p=[])=>{const d=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return d.prepare(s).all(...p);}finally{d.close();}};
 const until=async(fn,ms=240000)=>{const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,400));}throw Error('Inspect retained book-reference state before any rerun');};
 async function launch(cold=false){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1',...(publishConflict?{OMNI_EDU_BOOK_ANSWER_WRITEBACK:'0'}:{})};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
- app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],env,cwd:output,timeout:60000});
+ app=await _electron.launch({args:[entry,'--user-data-dir='+profile],env,cwd:output,timeout:60000});
  await app.evaluate(({net},{cold,ledger,section,stems,numbers,answers,answerText,publishConflict})=>{
   const fs=process.getBuiltinModule('fs'),crypto=process.getBuiltinModule('crypto');for(const owner of [net,globalThis])owner.fetch=async(url,o)=>{
    if(/\/models$/.test(String(url)))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',input_modalities:['text','image'],context_window:1048576,max_output_tokens:65536}]}));
    if(cold||!String(url).includes('/chat/completions'))throw Error('No external network in controlled book-reference journey');
    try { const request=JSON.parse(o.body),p=JSON.parse(request.messages[1].content[0].text),rows=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];if(rows.length>=8)throw Error('Unexpected extra request');
-   const answerBook=['answer-entry-uncertainty.v2','answer-entry-topology.v3'].includes(p.answerContext?.policy),sourceOnly=p.phase==='仅转录原图来源，不解题',final=!!p.knownAnswers;
+   const answerBook=['answer-entry-uncertainty.v2','answer-entry-topology.v3','answer-entry-printed-labels.v4'].includes(p.answerContext?.policy),sourceOnly=p.phase==='仅转录原图来源，不解题',final=!!p.knownAnswers;
    let value;
    if(answerBook){if(p.knownAnswers)throw Error('Answer extraction cannot consume another answer context');value={schemaVersion:'xiaozhi.material-ai-book-page-response.v2',outcome:'no_questions',questions:[],pageText:answerText,pageIssues:[],answerIssues:[]};}
    else{
@@ -66,7 +72,7 @@ try{
  for(const q of entries)await inspect(q,false);if(publishConflict){await readiness(entries);report.checks.push('Production Pi reader and paper basket immediately refuse the complete-but-conflicting candidate while the correct sibling stays usable');}report.checks.push('Teacher notebook displays actually used answers at both viewport sizes and can read the original source for ready and conflicted questions');
  async function checkCompact(){
   const unit=sql("SELECT batch_id,ordinal,status,json_extract(input_json,'$.bookPagePolicy') policy FROM material_ai_units WHERE json_extract(input_json,'$.bookRole.kind')='answers'")[0];
-  assert.equal(unit.policy,'answer-entry-topology.v3');
+  assert.equal(unit.policy,'answer-entry-printed-labels.v4');
   assert.equal(unit.status,'review');
   const view=await page.evaluate(input=>window.omniEdu.getMaterialAiPage(input),
    {schemaVersion:'xiaozhi.material-ai-page.v1',batchId:unit.batch_id,ordinal:unit.ordinal,includeImage:true});
@@ -86,6 +92,22 @@ try{
   assert.equal(entries[0].analysis,'原题以 B 表示沸腾。');
   report.checks.push('Compact key indexes exact answer cells and writes back its authenticated answer once without substituting an analysis; a short second table stays held');
  }
- const frozen=sha(JSON.stringify({units:sql('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal'),refs:sql('SELECT * FROM material_ai_book_references ORDER BY batch_id,ordinal'),questions:sql('SELECT * FROM question_bank_items ORDER BY id')}));await app.close();app=undefined;await launch(true);if(compact)await checkCompact();for(const q of entries)await inspect(q,true);if(publishConflict)await readiness(entries);assert.equal(sha(JSON.stringify({units:sql('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal'),refs:sql('SELECT * FROM material_ai_book_references ORDER BY batch_id,ordinal'),questions:sql('SELECT * FROM question_bank_items ORDER BY id')})),frozen);assert.deepEqual(Object.fromEntries(fs.readdirSync(folder).map(n=>[n,sha(fs.readFileSync(path.join(folder,n)))])),originals);assert.equal(JSON.parse(fs.readFileSync(ledger,'utf8')).length,8);assert.equal(report.rendererErrors.length,0);report.checks.push('Cold launch revalidates saved reference and question receipts, preserves conflict/source/book attribution and performs no additional model requests');report.success=true;
+ async function checkPrinted(){
+  const unit=sql("SELECT * FROM material_ai_units WHERE json_extract(input_json,'$.bookRole.kind')='answers'")[0];
+  assert.equal(JSON.parse(unit.input_json).bookPagePolicy,'answer-entry-printed-labels.v4');
+  for(const receipt of [unit.first_json,unit.final_json])assert.equal(JSON.parse(receipt).pageText,answerText);
+  const view=await page.evaluate(input=>window.omniEdu.getMaterialAiPage(input),
+   {schemaVersion:'xiaozhi.material-ai-page.v1',batchId:unit.batch_id,ordinal:unit.ordinal,includeImage:true});
+  assert.deepEqual(view.bookAnswers.entries.map(e=>[e.number,e.answer,e.issues]),[['1','100℃',[]],['2','100℃',[]]]);
+  assert.equal(view.bookAnswers.entries[0].analysis,analysis);
+  assert(view.bookAnswers.entries[0].quote.includes(stems[0]));
+  for(const e of view.bookAnswers.entries)assert.equal(view.text.slice(e.start,e.end).trim(),e.quote);
+  const saved=await page.evaluate(id=>window.omniEdu.getQuestionNotebookEntry(id),entries[0].id);
+  assert.equal(saved.archive.book.roles.answer.number,'1');
+  assert.equal(saved.archive.book.roles.analysis.number,'1');
+  assert.equal(saved.analysis,analysis);
+ }
+ if(printed){await checkPrinted();report.checks.push('Print role markers and reprinted stems remain in both receipts; only matched literal answer and analysis enter the notebook');}
+ const frozen=sha(JSON.stringify({units:sql('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal'),refs:sql('SELECT * FROM material_ai_book_references ORDER BY batch_id,ordinal'),questions:sql('SELECT * FROM question_bank_items ORDER BY id')}));await app.close();app=undefined;await launch(true);if(compact)await checkCompact();if(printed)await checkPrinted();for(const q of entries)await inspect(q,true);if(publishConflict)await readiness(entries);assert.equal(sha(JSON.stringify({units:sql('SELECT * FROM material_ai_units ORDER BY batch_id,ordinal'),refs:sql('SELECT * FROM material_ai_book_references ORDER BY batch_id,ordinal'),questions:sql('SELECT * FROM question_bank_items ORDER BY id')})),frozen);assert.deepEqual(Object.fromEntries(fs.readdirSync(folder).map(n=>[n,sha(fs.readFileSync(path.join(folder,n)))])),originals);assert.equal(JSON.parse(fs.readFileSync(ledger,'utf8')).length,8);assert.equal(report.rendererErrors.length,0);report.checks.push('Cold launch revalidates saved reference and question receipts, preserves conflict/source/book attribution and performs no additional model requests');report.success=true;
 }catch(e){report.success=false;report.error=String(e.stack||e);process.exitCode=1;if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{if(app)await app.close();report.requests=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];if(fs.existsSync(path.join(data,'app.db')))report.units=sql('SELECT status,error FROM material_ai_units');fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}
