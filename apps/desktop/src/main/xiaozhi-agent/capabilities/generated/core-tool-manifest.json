@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1f42fdbec01acbe31cb2031d3dc11aaa75e30ca582f9a671bd4f2304f510142e",
+  "sourceHash": "6c335af65d49b3803138a156584d1e08076dda37e7a30e0d8af27efb09bcca1d",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "88f40c1a995f7c51a4ee1e58c03d74e3c1bdbeaf3cf2ffd538f0d2a7f6a0b6ca"
+      "sha256": "914953ed8d877755e292e29659dacf143dcfdc379b3ed5b40305266b6918520a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1368,7 +1368,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "bfac5c6d6bc561b12285ec7506fafce1ac9c9dec1af66ff4206e3ec9618bb4f6"
+      "sha256": "3a35daf2ccdfcb562b0c5960678002959a5b5ce9c6d99bbbcf331f3fc2269de6"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -2004,7 +2004,7 @@
     },
     {
       "file": "src/shared/material-ai-page.ts",
-      "sha256": "25e1573f616957183d22c6eef343bb5adcac9444987a90baa6c72b72396b5b1f"
+      "sha256": "0996e1ed69dbedf06ca51d1ef96bf13cfca4cc138293f1213418e6faffeb88b7"
     },
     {
       "file": "src/shared/material-ai-printed-choice.ts",
@@ -2044,7 +2044,7 @@
     },
     {
       "file": "src/shared/material-book-answer.ts",
-      "sha256": "3c22db5a0a1b54d5719e5520f0849afb9ac02b428973825402f33f3769af6dc3"
+      "sha256": "d54a64b5cabf535971a91387432fb19fcf8d24eeb55fbf3e57ddc377a310bfd6"
     },
     {
       "file": "src/shared/material-curriculum.ts",

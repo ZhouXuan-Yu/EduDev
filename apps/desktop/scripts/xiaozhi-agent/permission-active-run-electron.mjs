@@ -3,10 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {startWorkbenchFixture} from './phase7-workbench-fixture.mjs';
+import {confirmSyntheticArtifact} from './phase8-correction-artifacts.mjs';
 
 const report = {success: false, paidCalls: 0, checks: [], errors: []};
-const filename = 'approval-wait.txt';
-const contents = '合成课堂记录，核对一次权限批准和原文件保存。';
+const practiceDraft = process.argv[2] === '--practice-draft';
+const filename = practiceDraft ? 'practice.txt' : 'approval-wait.txt';
+const contents = practiceDraft ? '合成练习：3/4 + 1/4 = 1' : '合成课堂记录，核对一次权限批准和原文件保存。';
 let fixture;
 let root;
 
@@ -104,7 +106,16 @@ try {
   assert.equal(consumption.admittedOwner.runId, run.id);
   report.checks.push('The exact approval enters executing for the same Run before the second, content-review decision');
 
-  await draft.getByTestId('pi-text-approve').click();
+  if (practiceDraft) {
+    const decisions = [];
+    await page.getByTestId('pi-text-diff').waitFor();
+    await confirmSyntheticArtifact(page, 'Q7', workspace, decisions);
+    assert.equal(decisions.length, 1);
+    assert.deepEqual(decisions[0].files, [filename]);
+    report.draftConfirmations = decisions;
+  } else {
+    await draft.getByTestId('pi-text-approve').click();
+  }
   await until(() => facts(sessionId).runs[0]?.status === 'succeeded', 'The original Run did not finish after saving');
   await page.waitForFunction(async ({sessionId: session, runId}) => {
     const snapshot = await window.omniEdu.getXiaozhiSnapshot(session);

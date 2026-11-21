@@ -1,0 +1,70 @@
+{
+  "previousFormalCollection": {
+    "status": "FAIL",
+    "path": "formal-collection-first-stop-20261121.json",
+    "collected": 18,
+    "planned": 32
+  },
+  "correction": {
+    "collectionStatus": "PASS_SCOPED",
+    "row": "Q5-r2-B",
+    "buildCommit": "b0c1b536339ef2bd6d2973e5c7ca962df424459e",
+    "buildSha256": "3c77640e1293b558a63f193c35547a1735c8a7476934005d9c7a5076c3ab1230",
+    "workingDirectory": "E:/EduDev-Harness-Acceptance-20261121/phase8-correction",
+    "output": "xiaozhi-phase8-correction-Ct5gXh",
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-run.mjs correct <manifest-q5-b.json> 8 Q5-r2-B",
+    "summarySha256": "70a19ac8b6259a688eb389db9d1e514d832fbc8154c854496886dfc1ecb849b2",
+    "manifestSha256": "85828d57f1b634fefb169ff235b1d7145ae47d124095a8045c105e924fe08dc1",
+    "receiptSha256": "0938994bc81de1f854faa7e3171a137c546dba54690e1776f4e3cc5f57d751cf",
+    "runCount": 1,
+    "exactApprovalCount": 1,
+    "confirmedHttp200Count": 1,
+    "result": "冷读同一 Run 的原申请已执行，操作范围只含原批准；存在一个完整 GET 200 及对应原生读回。",
+    "requestCount": 2,
+    "previousFailedRowRequestCount": 13,
+    "rendererSubmitToTerminalMs": 16756.8
+  },
+  "independentReview": {
+    "candidatePresetQuality": "FAIL",
+    "sampleSha256": "6f98b164e5f7ac0d3693826aaca953404df7118275d6c280658b8e45a6dc3c71",
+    "criterionScores": [0, 1, 1, 1, 0],
+    "hardDefects": {"falseFacts": true, "unauthorized": "UNKNOWN", "falseSaved": "UNKNOWN", "disclosure": "UNKNOWN"},
+    "fact": "答案把 1 g/cm³ 同时写成 1000 kg/cm³ 和 1000 kg/m³。事实错误未被后续正确单位抵消。"
+  },
+  "localOnly": {
+    "protocol": {"command": "node scripts/xiaozhi-agent/phase8-real-model-smoke.mjs", "result": "24/24", "sha256": "f785845bc62d419b2cf4d38ad28ab6a9144727074ecbb514df0794c10dd5207d"},
+    "blindReviewProtocol": {"command": "node scripts/xiaozhi-agent/phase8-real-model-review-smoke.mjs", "result": "39/39", "sha256": "e4fec9b2cf0cab2dad5615967174820177dc0ee0491a0461a76ec9ec6a39c60a"},
+    "practiceDraftElectron": {"command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs --practice-draft", "result": "4/4", "sha256": "8a0cd03f803936ef0d9588e04a656c368e486581ebbdd9e0267df33cf7dbee26"},
+    "protocolRed": "首次 23 项均通过但仍用旧的 20 项计数判定，退出 1，保留 xiaozhi-phase8-real-model-protocol-9i2iQ0/report.json。",
+    "quantitativePromptBuild": {"result": "PASS", "files": 481, "sha256": "24b37ffa5df1c9a4fcf90762f54f23aa14728a767943e3379204e159b0652b98", "logSha256": "0c6ddbc0281b72740b900998fc9fd705da8d33a752b0cc2d3f0faa6700af0b35"},
+    "renderer": {"command": "npm run test:renderer-components", "result": "253/253"},
+    "dependencyAudit": {"existingHigh": 6, "existingCritical": 0, "lockfileChanged": false}
+  },
+  "quantitativePromptRetest": {
+    "collectionStatus": "PASS_SCOPED",
+    "buildCommit": "690b66b3fb19f37c3aecd7143b4881e2208c8c2a",
+    "buildSha256": "24b37ffa5df1c9a4fcf90762f54f23aa14728a767943e3379204e159b0652b98",
+    "output": "xiaozhi-phase8-correction-f7AO0n",
+    "command": "node scripts/xiaozhi-agent/phase8-real-model-run.mjs correct <manifest-q5-units.json> 6 Q5-r2-B",
+    "manifestSha256": "2b7a9a9fffa1717fb458ba71a512ef45065395d4e8d3867bea4b0074c142fc72",
+    "summarySha256": "0ecef42c43498ed86538070b6b30317d7f11606cadde8d1c71abb12453ef31b4",
+    "receiptSha256": "63229940af70a7660fa13637f69076996ad858092d646d2bd263f3eb062be773",
+    "sampleSha256": "b3b7f6c6bb88b68c4563dc967612acead98a26db0acd2e358fbc9591b16cee14",
+    "requestCount": 2,
+    "rendererSubmitToTerminalMs": 17974.5,
+    "independentReview": {
+      "status": "REVIEW_INCOMPLETE",
+      "criterionScores": [2, 1, 1, 2, "UNKNOWN"],
+      "fact": "第二个样本写对 1 g/cm³ = 1000 kg/m³。独立验收未从盲包核实网页表格、所有网络工具的排他性及独立读回。",
+      "hardDefects": {"falseFacts": false, "unauthorized": "UNKNOWN", "falseSaved": false, "disclosure": "UNKNOWN"}
+    }
+  },
+  "integration": {
+    "source": "cf25706076851bcdf05e35111235e8a8f77c3593",
+    "build": {"status": "PASS", "files": 481, "sha256": "ff24cabc3cdd9da7c0172abba3282bf0b502bf08ef13a11195823c2d189015d4", "logSha256": "e42ae432bb62530be27d0fe44c8d16dddb4492d47a521f2c2ba84222eaa959e6"},
+    "knowledgeBase": {"command": "node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/education/kb-answer-section-boundaries.mjs", "result": "20/20", "logSha256": "6e77c84eca70cdce19a78c4ef6c5dbcdbad29cc2868356bd27318613716b4d35"},
+    "retests": "真实模型两轮已绑定各自候选，未在合并候选重发。"
+  },
+  "budget": {"used": 143, "limit": 200, "remaining": 57, "unresolved": 0},
+  "scope": "此样本证明审批和真实网页链路。原完整对照、答案质量、Q3/Q7 真实产物与 QG-09 分别接受验收。"
+}
