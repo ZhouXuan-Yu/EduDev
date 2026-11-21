@@ -85,6 +85,10 @@ function RestorePreview({value, disabled, onPrepare}: {
   const insufficient = value.spaceStatus === 'insufficient';
   return <div data-testid="data-backup-restore-preview">
     <p><strong>恢复前核对</strong></p>
+    {value.rollback && <p data-testid="data-backup-rollback-version">
+      将升级到 {value.rollback.targetVersion} 前的数据交给小智 {value.rollback.sourceVersion} 使用。
+      快照时间 {new Date(value.rollback.preparedAt).toLocaleString('zh-CN')}
+    </p>}
     <p className="pi-settings-location">备份目录 {value.backupPath}</p>
     <p className="pi-settings-location">目标文件夹 {value.destination}</p>
     <p>{value.fileCount} 个待恢复文件 · 备份文件合计 {displaySize(value.packageBytes)}</p>
@@ -211,38 +215,67 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
     } finally { lock.current = false; }
   };
 
-  const restoreBackup=async(action:'preview'|'prepare'|'activate'|'revert')=>{
+  const restoreBackup=async(action:'preview'|'preview_update'|'prepare'|'activate'|'revert'|'cancel_rollback')=>{
     if(disabled||lock.current)return;
     const {restoreResult:prepared,restorePreview:preview}=state;lock.current=true;
-    const preparing=action==='preview'||action==='prepare';
-    const message=action==='preview'?'正在核对备份和目标盘空间…'
-      : action==='prepare'?'正在创建并校验独立恢复副本…':'正在切换数据目录，应用即将重启…';
+    const previewing=action==='preview'||action==='preview_update';
+    const scheduling=action==='activate'&&Boolean(prepared?.rollback);
+    const preparing=previewing||action==='prepare'||scheduling||action==='cancel_rollback';
+    const message=previewing?'正在核对备份和目标盘空间…'
+      :action==='prepare'?'正在创建并校验独立恢复副本…'
+      :scheduling?'正在校验并安排回退…'
+      :action==='cancel_rollback'?'正在取消回退安排…':'正在切换数据目录，应用即将重启…';
     setState({status:preparing?'restoring':'restarting',message});
     try{
       const api=window.omniEdu;
       if(!api?.previewBackupRestore||!api.prepareBackupRestore||!api.activateBackupRestore)throw Error('恢复接口不可用，请重新启动应用。');
-      if(action==='preview'){
-        const result=await api.previewBackupRestore();
+      if(action==='preview'||action==='preview_update'){
+        const result=await api.previewBackupRestore(action==='preview_update'?'update':undefined);
         setState(result?{status:'restore_preview',message:'备份核对完成。',restorePreview:result}
           :{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
       }else if(action==='prepare'){
         if(!preview||preview.spaceStatus!=='ready')throw Error('请先核对备份和恢复位置');
         const result=await api.prepareBackupRestore(preview.id);
-        setState(result?{status:'restore_ready',message:'独立恢复副本已准备好。使用前请切换并重启，当前数据仍在原目录。',restoreResult:result}:{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
+        setState(result?{status:'restore_ready',message:result.rollback
+          ?'回退副本已准备好，可以安排旧版在启动时使用。'
+          :'独立恢复副本已准备好。使用前请切换并重启，当前数据仍在原目录。',restoreResult:result}:{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
       }else{
         if(action==='activate'&&!prepared)throw Error('请先准备恢复副本');
-        const result=await api.activateBackupRestore(action==='activate'?{schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:prepared!.id}:{schemaVersion:BACKUP_RESTORE_SCHEMA,action:'revert'});
+        const result=await api.activateBackupRestore(action==='activate'
+          ?{schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:prepared!.id}
+          :{schemaVersion:BACKUP_RESTORE_SCHEMA,action});
         setRestoreStatus(result);
+        if(scheduling||action==='cancel_rollback')setState({status:'idle',message:''});
       }
     }catch(error){setState({status:'error',message:error instanceof Error?error.message:'恢复未完成；当前数据未切换。'});}
     finally{lock.current=false;}
   };
+  const pendingRollback=restoreStatus?.pendingRollback;
+  const restoreDisabled=busy||disabled||Boolean(pendingRollback);
   const restoreControls=<div className="pi-settings-actions" data-testid="data-backup-restore-controls">
-    <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('preview')} data-testid="data-backup-restore">{state.restorePreview?'重新选择备份和位置':'恢复备份到新目录'}</Button>
-    {state.restorePreview&&<RestorePreview value={state.restorePreview} disabled={busy||disabled}
+    <Button variant="outline" isDisabled={restoreDisabled||!dataRoot} onPress={()=>void restoreBackup('preview')} data-testid="data-backup-restore">{state.restorePreview&&!state.restorePreview.rollback?'重新选择备份和位置':'恢复备份到新目录'}</Button>
+    <Button variant="outline" isDisabled={restoreDisabled||!dataRoot} onPress={()=>void restoreBackup('preview_update')}
+      data-testid="data-backup-update-rollback">按更新记录准备回退</Button>
+    {pendingRollback&&<div data-testid="data-backup-pending-rollback">
+      <p role="status">已安排小智 {pendingRollback.sourceVersion} 下次启动时启用回退副本。当前工作区保留。</p>
+      <Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('cancel_rollback')}
+        data-testid="data-backup-cancel-rollback">取消回退安排</Button>
+    </div>}
+    {state.restorePreview&&<RestorePreview value={state.restorePreview} disabled={restoreDisabled}
       onPrepare={()=>void restoreBackup('prepare')}/>}
-    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><BackupPurposeSummary purpose={state.restoreResult.purpose}/><BackupCompatibilitySummary value={state.restoreResult.compatibility}/><BackupContinuitySummary value={state.restoreResult.continuity}/><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
-    {restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('revert')} data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
+    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready">
+      <p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p>
+      <BackupPurposeSummary purpose={state.restoreResult.purpose}/><BackupCompatibilitySummary value={state.restoreResult.compatibility}/>
+      <BackupContinuitySummary value={state.restoreResult.continuity}/>
+      <p>原目录保留。恢复后请重新核对旧任务和运行记录。</p>
+      {state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}
+      <Button variant="primary" isDisabled={restoreDisabled} onPress={()=>void restoreBackup('activate')}
+        data-testid="data-backup-restore-activate">{state.restoreResult.rollback?'安排旧版启动时启用':'使用恢复数据并重启'}</Button>
+    </div>}
+    {restoreStatus?.returnRequiresVersion
+      ?<p data-testid="data-backup-return-version">若要重新使用升级后的工作区，请先启动小智 {restoreStatus.returnRequiresVersion}。</p>
+      :restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={restoreDisabled} onPress={()=>void restoreBackup('revert')}
+        data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
   </div>;
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">

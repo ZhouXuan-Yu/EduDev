@@ -500,7 +500,7 @@ const api = {
   exportDataRoot: (purpose?: import('../shared/backup-purpose').BackupPurpose) =>
     ipcRenderer.invoke('app:exportDataRoot', purpose) as Promise<ExportDataRootResult | null>,
   verifyDataBackup: () => ipcRenderer.invoke('app:verifyDataBackup') as Promise<DataBackupVerificationResult | null>,
-  previewBackupRestore:()=>ipcRenderer.invoke('app:previewBackupRestore') as Promise<import('../shared/backup-restore').BackupRestorePreview|null>,
+  previewBackupRestore:(kind?:'update')=>ipcRenderer.invoke('app:previewBackupRestore',kind) as Promise<import('../shared/backup-restore').BackupRestorePreview|null>,
   prepareBackupRestore:(id?:string)=>ipcRenderer.invoke('app:prepareBackupRestore',id) as Promise<import('../shared/backup-restore').PreparedBackupRestore|null>,
   backupRestoreStatus:()=>ipcRenderer.invoke('app:backupRestoreStatus') as Promise<import('../shared/backup-restore').BackupRestoreStatus>,
   inspectWindowsUpdate:()=>ipcRenderer.invoke('app:inspectWindowsUpdate') as Promise<import('../shared/windows-update').WindowsUpdateCandidate|null>,

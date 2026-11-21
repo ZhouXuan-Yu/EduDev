@@ -18,3 +18,6 @@ export type WindowsUpdateSnapshot = {
   currentVersion: string;
   targetVersion: string;
 };
+
+export const WINDOWS_UPDATE_RECORD = 'xiaozhi.windows-update-preparation.v1';
+export type UpdateRollback = {sourceVersion:string; targetVersion:string; preparedAt:string};

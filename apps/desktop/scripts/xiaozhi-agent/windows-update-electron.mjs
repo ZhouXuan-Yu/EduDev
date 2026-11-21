@@ -11,7 +11,8 @@ const desktop = path.resolve(import.meta.dirname, '../..');
 const main = testMain(desktop);
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-windows-update-'));
 const data = path.join(root, 'data'), profile = path.join(root, 'profile'), snapshots = path.join(root, 'snapshots');
-for (const directory of [data, profile, snapshots]) fs.mkdirSync(directory);
+const rollbackParent = path.join(root, 'rollbacks');
+for (const directory of [data, profile, snapshots, rollbackParent]) fs.mkdirSync(directory);
 const currentVersion = JSON.parse(fs.readFileSync(path.join(desktop, 'package.json'), 'utf8')).version;
 const targetVersion = inc(currentVersion, 'patch');
 assert(targetVersion);
@@ -35,11 +36,13 @@ const release = {
 
 const checks = [], rendererErrors = [];
 let app, page, error;
-async function useFixture({file = installer, body = release, status = 200, destination = snapshots, verifyRoot = ''} = {}) {
+async function useFixture({file = installer, body = release, status = 200, destination = snapshots, verifyRoot = '', rollbackRecord = ''} = {}) {
   await app.evaluate(({dialog,net},fixture) => {
     dialog.showOpenDialog = async options => {
       const picked = options.title.includes('更新前快照') ? fixture.destination
-        : options.title.includes('完整性校验') ? fixture.verifyRoot : fixture.file;
+        : options.title.includes('完整性校验') ? fixture.verifyRoot
+        : options.title === '选择小智更新记录' ? fixture.rollbackRecord
+        : options.title === '选择独立恢复副本的保存位置' ? fixture.rollbackParent : fixture.file;
       return picked ? {canceled:false,filePaths:[picked]} : {canceled:true,filePaths:[]};
     };
     net.fetch = async (input, options) => {
@@ -49,7 +52,7 @@ async function useFixture({file = installer, body = release, status = 200, desti
         options.redirect !== 'error' || options.credentials !== 'omit') throw Error('Unexpected fixture traffic');
       return new Response(JSON.stringify(fixture.body), {status:fixture.status,headers:{'content-type':'application/json'}});
     };
-  }, {file,body,status,destination,verifyRoot});
+  }, {file,body,status,destination,verifyRoot,rollbackParent,rollbackRecord});
 }
 
 async function inspect(check) {
@@ -115,7 +118,8 @@ try {
   const entries = fs.readdirSync(snapshots);
   assert.equal(entries.length,2);
   const backup = path.join(snapshots, entries.find(value => value.startsWith('OmniEduData-backup-')));
-  const record = JSON.parse(fs.readFileSync(path.join(snapshots, entries.find(value => value.startsWith('Xiaozhi-update-'))), 'utf8'));
+  const recordPath = path.join(snapshots, entries.find(value => value.startsWith('Xiaozhi-update-')));
+  const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
   assert.equal(record.sha256,digest);
   assert.equal(record.snapshotPath,backup);
   assert.equal(record.targetVersion,targetVersion);
@@ -130,6 +134,65 @@ try {
   assert.equal(await app.evaluate(() => globalThis.updateFixtureRequests.length),4);
   assert.deepEqual(rendererErrors,[]);
   checks.push('A signature-valid SHA-matching candidate with a compatible synthetic release creates a real verified backup and adjacent update receipt, preserving the active workspace.');
+
+  const badRecord = path.join(snapshots,'mismatched-update.json');
+  fs.writeFileSync(badRecord,JSON.stringify({...record,manifestSha256:'0'.repeat(64)}));
+  await useFixture({rollbackRecord:badRecord});
+  const rollbackButton = page.getByTestId('data-backup-update-rollback');
+  await rollbackButton.click();
+  await page.getByTestId('data-backup-error').filter({hasText:'当前备份与更新记录不匹配'}).waitFor({timeout:30000});
+  assert.deepEqual(fs.readdirSync(rollbackParent),[]);
+  checks.push('A record with the wrong snapshot digest fails before making a copy.');
+
+  const note = '合成备课.txt';
+  fs.writeFileSync(path.join(data,note),'升级后新增的内容');
+  // Moving the snapshot and record together must not require its original absolute path.
+  const relocated = path.join(root,'moved-update');
+  fs.renameSync(snapshots,relocated);
+  await useFixture({rollbackRecord:path.join(relocated,path.basename(recordPath))});
+  const pendingFile = path.join(profile,'xiaozhi-pending-rollback.v1.json');
+  const pendingPanel = page.getByTestId('data-backup-pending-rollback');
+  async function scheduleRollback() {
+    await rollbackButton.click();
+    const info = page.getByTestId('data-backup-rollback-version');
+    await info.filter({hasText:currentVersion}).filter({hasText:targetVersion}).waitFor({timeout:30000});
+    await page.getByTestId('data-backup-restore-prepare').click();
+    const activate = page.getByTestId('data-backup-restore-activate');
+    await activate.filter({hasText:'安排旧版启动时启用'}).click({timeout:30000});
+    await pendingPanel.filter({hasText:currentVersion}).waitFor({timeout:30000});
+    const pending = JSON.parse(fs.readFileSync(pendingFile,'utf8'));
+    assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), data);
+    assert.equal(pending.previousRoot,data);
+    assert.equal(pending.rollback.sourceVersion,currentVersion);
+    assert.equal(fs.readFileSync(path.join(pending.dataRoot,note),'utf8'),'升级前的备课记录');
+    return pending;
+  }
+  await page.setViewportSize({width:1366,height:768});
+  const cancelled = await scheduleRollback();
+  await pendingPanel.scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(root,'update-rollback-pending-1366.png')});
+  await page.getByTestId('data-backup-cancel-rollback').click();
+  await pendingPanel.waitFor({state:'hidden'});
+  assert(!fs.existsSync(pendingFile));
+  assert(fs.existsSync(path.join(cancelled.dataRoot,'app.db')));
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()),data);
+  checks.push('The UI prepares a relocated snapshot, schedules it without switching, and cancels the handoff while preserving the recovery copy.');
+
+  await page.setViewportSize({width:1920,height:1080});
+  const pending = await scheduleRollback();
+  await pendingPanel.scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(root,'update-rollback-pending.png')});
+  await app.close();
+  app = await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+  page = await app.firstWindow();
+  page.on('pageerror',value => rendererErrors.push(String(value)));
+  await assertIsolatedPiMain(app,main,profile);
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()),pending.dataRoot);
+  assert(!fs.existsSync(pendingFile));
+  assert.equal(fs.readFileSync(path.join(data,note),'utf8'),'升级后新增的内容');
+  assert.equal(fs.readFileSync(path.join(pending.dataRoot,note),'utf8'),'升级前的备课记录');
+  assert.deepEqual(rendererErrors,[]);
+  checks.push('On cold launch the matching real source build activates the scheduled copy and retains both sets of lesson notes.');
 } catch (failure) {
   error = failure.stack;
   process.exitCode = 1;

@@ -2,7 +2,7 @@ import {app,dialog,net,type IpcMainInvokeEvent} from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import type {OmniEduStore} from '../db';
-import type {WindowsUpdateCandidate,WindowsUpdateSnapshot} from '../../shared/windows-update';
+import {WINDOWS_UPDATE_RECORD,type WindowsUpdateCandidate,type WindowsUpdateSnapshot} from '../../shared/windows-update';
 import {backupApplicationVersion,readBackupDataVersion} from '../backup/compatibility';
 import {hashFileSha256} from '../local-file-security';
 import {assertUnchangedUpdateFile,inspectWindowsInstaller} from './windows-update-candidate';
@@ -60,7 +60,7 @@ export function registerWindowsUpdate(options: {
       current(); check(event);
       const recordPath = path.join(path.dirname(snapshot.exportPath), `Xiaozhi-update-${candidate.id}.json`);
       await fs.writeFile(recordPath, JSON.stringify({
-        schemaVersion:'xiaozhi.windows-update-preparation.v1', preparedAt:new Date().toISOString(),
+        schemaVersion:WINDOWS_UPDATE_RECORD, preparedAt:new Date().toISOString(),
         currentVersion:candidate.currentVersion, dataVersion:candidate.dataVersion,
         targetVersion, targetDataVersion, fileName:candidate.fileName, sha256,
         snapshotPath:snapshot.exportPath, manifestSha256,

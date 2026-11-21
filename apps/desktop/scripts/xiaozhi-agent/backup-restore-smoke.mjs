@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';import path from 'node:path';import os from 'n
 const {prepareBackupRestore,verifyPreparedBackupRestore}=await import('../../src/main/backup/restore.ts');
 const {inspectBackupRestore}=await import('../../src/main/backup/restore-plan.ts');
 const {selectedBackupRoot,selectBackupRoot}=await import('../../src/main/backup/activation.ts');
+const {stageUpdateRollback,applyPendingUpdateRollback,readPendingRollback}=await import('../../src/main/updates/pending-rollback.ts');
 const {collectDataBackupEntries}=await import('../../src/main/backup/data-root-files.ts');
 const {conversationOutputLocation}=await import('../../src/main/xiaozhi-agent/conversation-output-path.ts');
 const {validBackupRestoreAction,BACKUP_RESTORE_SCHEMA}=await import('../../src/shared/backup-restore.ts');
@@ -49,5 +50,30 @@ try{
  const count=(await fs.readdir(target)).length;await assert.rejects(prepareBackupRestore({backupPath:backup,parent:target,currentDataRoot:source,verify,copy:async()=>{const e=Error('fixture ENOSPC');e.code='ENOSPC';throw e;}}),/ENOSPC/);assert.equal((await fs.readdir(target)).length,count+1);assert.equal(sha(await fs.readFile(path.join(source,'app.db'))),before);check('Actual copy-phase space failure leaves a diagnosed owned incomplete instance and preserves source/profile selection');
  const manifestFile=path.join(backup,'omni-edu-backup-manifest.v1.json'),originalManifest=await fs.readFile(manifestFile),mismatched=JSON.parse(originalManifest);mismatched.conversationOutputs.scope='0'.repeat(16);await fs.writeFile(manifestFile,JSON.stringify(mismatched));await assert.rejects(prepareBackupRestore({backupPath:backup,parent:target,currentDataRoot:source,verify}),/原目录信息不一致/);delete mismatched.conversationOutputs;await fs.writeFile(manifestFile,JSON.stringify(mismatched));await assert.rejects(prepareBackupRestore({backupPath:backup,parent:target,currentDataRoot:source,verify}),/旧备份缺少/);await fs.writeFile(manifestFile,originalManifest);check('Mismatched origin metadata and old manifests without origin cannot silently redirect files; original verifier remains separate');
  assert(validBackupRestoreAction({schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:prepared.id}));assert(!validBackupRestoreAction({schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:prepared.id,path:source}));assert(!validBackupRestoreAction({schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:'../../other'}));check('Versioned activation accepts only a prepared opaque identity, not arbitrary renderer file paths');
+
+ const rollbackPlan=await inspectBackupRestore(selection);
+ rollbackPlan.preview.rollback={sourceVersion:'0.1.0',targetVersion:'0.1.1',preparedAt:new Date().toISOString()};
+ const rollback=await prepareBackupRestore({...selection,plan:rollbackPlan});
+ const stagedDb=path.join(rollback.dataRoot,'app.db'),stagedBytes=await fs.readFile(stagedDb);
+ await assert.rejects(stageUpdateRollback(profile,source,source,'0.1.2',rollback,()=>{}),/不匹配/);
+ await stageUpdateRollback(profile,source,source,'0.1.1',rollback,()=>{});
+ await assert.rejects(stageUpdateRollback(profile,source,source,'0.1.1',rollback,()=>{}),/先取消/);
+ await applyPendingUpdateRollback(profile,source,'0.1.1');
+ assert.equal((await selectedBackupRoot(profile,source,'0.1.1')).dataRoot,source);
+ assert(await readPendingRollback(profile,source));
+ await fs.appendFile(stagedDb,'changed');
+ await assert.rejects(applyPendingUpdateRollback(profile,source,'0.1.0'),/变化/);
+ assert.equal((await selectedBackupRoot(profile,source,'0.1.1')).dataRoot,source);
+ assert(await readPendingRollback(profile,source));
+ await fs.writeFile(stagedDb,stagedBytes);
+ await applyPendingUpdateRollback(profile,source,'0.1.0');
+ const activated=await selectedBackupRoot(profile,source,'0.1.0');
+ assert.equal(activated.dataRoot,rollback.dataRoot);
+ assert.equal(activated.previousAppVersion,'0.1.1');
+ assert.equal(await readPendingRollback(profile,source),undefined);
+ assert.equal((await selectedBackupRoot(profile,source,'0.1.1')).dataRoot,source);
+ await assert.rejects(selectedBackupRoot(profile,source,'0.1.2'),/对应版本/);
+ assert.equal(sha(await fs.readFile(path.join(source,'app.db'))),before);
+ check('Version-gated rollback skips the target runtime, rejects changed bytes, activates only for the source version and keeps the upgraded workspace separate');
  report.prepared=prepared;report.ok=true;
 }catch(e){report.error=e.stack;console.error(e.stack);process.exitCode=1;}finally{await fs.writeFile(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,root}));}

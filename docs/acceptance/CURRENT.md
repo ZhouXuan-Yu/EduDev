@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 版本回退准备
+
+实际设置页完成快照核对、独立恢复副本、安排、取消与本机构建冷启动。新版和旧版的目录选择还通过独立 SQLite 和文件用例检查。UM-02 正式覆盖安装及 QG-09 保持待验。 [命令和原始证据](../goal/xiaozhi-harness/evidence/phase8/windows-update-rollback-20261121.json)
+
 ## 2026-11-21 与正文数字连写的题号
 
 真实 PDF 的连写题号验证覆盖分题、前后内容归属、小数原文、桌面原图和冷启。新版结构的可用稿继续通过原页核验。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

@@ -1,7 +1,8 @@
 import {registerBackupRestore} from './backup/restore-api';
 import {registerWindowsUpdate} from './updates/windows-update-api';
+import {applyPendingUpdateRollback} from './updates/pending-rollback';
 import {backupApplicationVersion} from './backup/compatibility';
-import {selectedBackupRoot} from './backup/activation';
+import {BackupRestoreVersionError,selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
 import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTheme } from 'electron';
@@ -250,8 +251,11 @@ else app.on('second-instance', () => {
 if (ownsDesktop) app.whenReady().then(async () => {
   loadLocalEnv();
   const baseDataRoot = process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData');
+  const appVersion=backupApplicationVersion(app);
+  try { await applyPendingUpdateRollback(app.getPath('userData'),baseDataRoot,appVersion); }
+  catch(error) { dialog.showErrorBox('版本回退未启用',error instanceof Error ? error.message : '无法核对回退副本'); app.quit(); return; }
   let dataRoot=baseDataRoot;
-  try{dataRoot=(await selectedBackupRoot(app.getPath('userData'),baseDataRoot)).dataRoot;}catch(error){dialog.showErrorBox('恢复目录不可用',error instanceof Error?error.message:'仍使用原数据目录');if(!existsSync(join(baseDataRoot,'app.db'))){app.quit();return;}}
+  try{dataRoot=(await selectedBackupRoot(app.getPath('userData'),baseDataRoot,appVersion)).dataRoot;}catch(error){dialog.showErrorBox('恢复目录不可用',error instanceof Error?error.message:'仍使用原数据目录');if(error instanceof BackupRestoreVersionError||!existsSync(join(baseDataRoot,'app.db'))){app.quit();return;}}
   const authority = resolveRuntimeAuthority({ packaged: app.isPackaged, env: process.env, dataRoot, profileRoot: app.getPath('userData') });
   store = new OmniEduStore(dataRoot);
   await store.init();

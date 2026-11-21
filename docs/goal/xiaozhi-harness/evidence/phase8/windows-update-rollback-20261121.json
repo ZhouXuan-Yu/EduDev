@@ -1,0 +1,136 @@
+{
+  "date": "2026-11-21",
+  "base": "a8043692cfd8ab3406ac9177b1d5682ac3897bbe",
+  "milestone": "UM-02 update-record verification, isolated rollback preparation and version-bound startup",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "evidenceRoot": "E:/EduDev-Harness-Update-Rollback-20261121",
+  "mainSha256": "2f88b7104dc554c723ae84271a992002315f722dcc1ad51fd46a95ecde27a078",
+  "sourceBuildVersion": "0.1.0",
+  "candidateFixtureVersion": "0.1.1",
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "mainSha256": "2f88b7104dc554c723ae84271a992002315f722dcc1ad51fd46a95ecde27a078"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/windows-update-electron.mjs",
+      "result": "8/8",
+      "rendererErrors": 0,
+      "file": "xiaozhi-windows-update-8FXqLT/report.json",
+      "sha256": "24ee2a7a0e3b2eee172e0744a1e60379d85528bb3f0bd1cd652f50497b038ffe"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/windows-update-electron.mjs",
+      "result": "8/8",
+      "qualification": "UI handoff rerun at 1366×768 and 1920×1080 on the identical main bundle",
+      "rendererErrors": 0,
+      "file": "xiaozhi-windows-update-jug8bz/report.json",
+      "sha256": "6a65dc64cb390c6fecac858b2c20282c912b9e8aba2adce542998932e28698df"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "result": "10/10",
+      "file": "omni-edu-restore-L12Rvy/report.json",
+      "sha256": "b23b4711e746751401de2a267c8199e5dd7d7b87a188eccdab281c84c5078538"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "result": "19/19",
+      "rendererErrors": 0,
+      "file": "compatibility-regression/xiaozhi-backup-compatibility-iBf1jt/report.json",
+      "sha256": "7e2ca9a9646c260ea976a597b678f1ddfa907f90b7741070c6a50be7935d06d5"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing dependency findings, no changes to package metadata or lockfile",
+      "counts": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 7,
+        "low": 8
+      }
+    },
+    {
+      "command": "npm.cmd run test:smoke",
+      "result": "PASS",
+      "frontendScenarioAssertions": 207,
+      "file": "smoke/electron-smoke-final.log",
+      "sha256": "cb3cf3cbb901bb911a8f32d9e7f278453f69438c296b2e36705157e4574993f5"
+    }
+  ],
+  "runtime": {
+    "verified": [
+      "The real Settings path rejects a mismatched manifest, prepares the original verified backup after moving its directory alongside the update record, cancels without deleting the prepared copy, and enables a newly prepared copy on a cold launch of the matching local build.",
+      "The original and rollback directories contain different expected synthetic lesson notes after activation.",
+      "The file and SQLite test passes explicit source and target version values through the actual selector, checks that a changed copy cannot be activated, and verifies both version-specific paths after the selected data root changes."
+    ],
+    "scope": "Authenticode uses a real signed Windows system fixture and the release response is synthetic. Only the 0.1.0 application build was launched. No installer was executed.",
+    "snapshotManifestSha256": "28bb551b0a4d51968bb615949ef2974912a9debee28b56c85c945f9112fa2fc8",
+    "matchedSnapshotFiles": 8,
+    "paidRequests": 0
+  },
+  "independent": {
+    "reviewer": "Terra",
+    "performed": "Matched the current build fingerprint, moved update record, all eight snapshot file hashes, final selection, and both synthetic lesson notes. Reviewed the pending-state screenshot and the controlled version-boundary test report.",
+    "screenshots": [
+      {
+        "file": "xiaozhi-windows-update-8FXqLT/update-rollback-pending.png",
+        "sha256": "d23b6fa26e21e642d9b51331f2e1426fd7f2ea6adf7909f2280a1b6101284db6"
+      }
+    ],
+    "selection": {
+      "file": "xiaozhi-windows-update-8FXqLT/profile/xiaozhi-data-selection.v1.json",
+      "sha256": "7e2e796bb6a333b8dee3a23f0402cfd8bea436f6b2f9cc48f9e4ddf39a283843"
+    }
+  },
+  "performance": {
+    "change": "The pending-record lookup is bounded and runs before SQLite initialization. Only the matching, explicitly scheduled startup hashes the recovery copy before opening it.",
+    "unmeasured": "Real cross-version startup overhead and large-library revalidation remain in the release acceptance plan.",
+    "sampleMs": {
+      "sameMachineFullExport": 343,
+      "portableExport": 338,
+      "sampleDatabaseBytes": 2920448,
+      "baselineComparison": "These are two operations on the same final build, not a speed change compared with the previous version."
+    }
+  },
+  "remaining": [
+    "Actual signed Xiaozhi N-1/N installers, in-place update and failed migration recovery on an independent Windows instance.",
+    "Recovery entry before startup when the updated application cannot open and no handoff has been scheduled.",
+    "Second computer restore with no access to the source disk, real reconnects and teaching experience timing.",
+    "Harness fixed acceptance remains 88/89."
+  ],
+  "recovery": "Cancel a pending handoff in Settings before cold startup. The original snapshot, prepared copy and both teaching folders remain separately available. Source rollback can use Git revert after resolving any pending handoff with a build that supports it. No SQLite schema change.",
+  "retainedAttempts": [
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "result": "Stopped after 5 passing cases because the test volume fell below the restore capacity floor. The prepare button was disabled as designed. Repeated on sufficient space.",
+      "file": "compatibility-regression/xiaozhi-backup-compatibility-XiYde9/report.json",
+      "sha256": "30891142ab2e74925219742faeb1f203a216d5471fd4dc3c58b492664beb5d18"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-cold-electron.mjs",
+      "result": "Invocation rejected because this continuation helper requires a prior restore fixture argument. Subsequent cold-launch coverage uses the main update and backup compatibility Electron suites."
+    },
+    {
+      "command": "npm.cmd run test:smoke",
+      "result": "First invocation stopped with ENOSPC writing to the system npm cache. The rerun uses the existing test cache on E:."
+    }
+  ],
+  "viewports": [
+    {
+      "viewport": "1366×768",
+      "file": "xiaozhi-windows-update-jug8bz/update-rollback-pending-1366.png",
+      "sha256": "f4c86f6c1568251008474bf7694134cf92b3b85fc8886697bbcf709fbb34d9d7"
+    },
+    {
+      "viewport": "1920×1080",
+      "file": "xiaozhi-windows-update-jug8bz/update-rollback-pending.png",
+      "sha256": "786607aaf4cb8991026146201adfe9b30628aecb3ef58002cfe3833355e14935"
+    }
+  ]
+}

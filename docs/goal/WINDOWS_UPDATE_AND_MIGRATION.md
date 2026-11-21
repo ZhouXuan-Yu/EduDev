@@ -12,7 +12,13 @@
 -->
 ```
 
-当前设置入口负责准备和保存快照，实际覆盖安装及旧版程序回退须在安装候选和独立 Windows 环境上复验。 [本轮测试](xiaozhi-harness/evidence/phase8/windows-update-preparation-20261121.json) · [Windows 签名验证](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature) · [GitHub 发行记录及摘要](https://docs.github.com/en/rest/releases/releases#get-the-latest-release)
+当前设置入口负责准备和保存快照。正式覆盖安装须在独立 Windows 上用签名小智安装候选实测。 [本轮测试](xiaozhi-harness/evidence/phase8/windows-update-preparation-20261121.json) · [Windows 签名验证](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.security/get-authenticodesignature) · [GitHub 发行记录及摘要](https://docs.github.com/en/rest/releases/releases#get-the-latest-release)
+
+## 已实现的版本回退准备
+
+在「设置 → 备份与归档」选择「按更新记录准备回退」。将更新记录和对应快照放在同一个文件夹，然后选择记录与独立副本的存放位置。小智核对两个版本、快照时间、原数据库格式和清单摘要。确认创建副本后，可选择「安排旧版启动时启用」。安排生效前可以取消，当前工作区和副本均保留。
+
+对应旧版冷启时先复核副本，再打开 SQLite。升级期间的工作区继续保留。若回退是在新版安排的，之后启动该新版可继续使用升级后的工作区。两份资料分别保存。安排和启用回退的版本都需要支持此协议。升级后应用完全无法启动且尚未安排回退时，仍需补齐并实测启动前恢复入口。签名安装包覆盖、实际迁移失败回退和异机验证仍按 UM-01～UM-09 执行。 [回退测试和证据](xiaozhi-harness/evidence/phase8/windows-update-rollback-20261121.json)
 
 ## 已实现的换机入口
 
@@ -131,7 +137,7 @@ B 上选择备份后应先看版本和内容，再准备独立副本。新机从
 | 编号 | 操作与判定 | 当前状态 |
 | --- | --- | --- |
 | UM-01 | Windows 上使用已发布的 N−1 安装候选创建合成工作区，用 N 候选覆盖升级。在相同资料目录冷启两次，SQLite 完整性通过，业务记录 ID、来源地址及生成文件 SHA-256 一致。保留程序版本、schema 版本及开始菜单启动路径。 | 更新前本地文件核对和快照已实现。正式覆盖和两次冷启待安装版实测。 |
-| UM-02 | 模拟升级中断、迁移失败和较新库被旧版本打开。原快照可复验，旧程序能使用旧快照打开，失败的副本不成为当前资料库；新版已写入的资料可独立保留。 | 更新前快照和失效文件拦截已实现。实际跨版本回退仍待实施和实测。 |
+| UM-02 | 模拟升级中断、迁移失败和较新库被旧版本打开。原快照可复验，旧程序能使用旧快照打开，失败的副本不成为当前资料库；新版已写入的资料可独立保留。 | 设置页已实现回退副本校验、安排、取消和匹配版本冷启。真实两版安装及实际迁移错误仍待验。 |
 | UM-03 | 在 A 通过产品操作备份，通过本地介质复制到 B。B 从不同用户和盘符导入，恢复和冷启时 A 的数据根不可访问。检查清单、页码引用、原件、题目、试卷、学情及错题。B 原有合成记录仍能通过切回访问。 | 已有同机底层证据；待异机 |
 | UM-04 | B 打开备份带来的 HTML、PPTX、PDF，核对预览及历史、定位树及另存去向。另选目录包含一项已登记成果、一项未登记文件和一项缺失成果，逐项核对提示、路径和字节。 | 已有同机底层证据；待异机 |
 | UM-05 | 迁移一条已完成对话、一条待接续 Run 和一条历史审批。在 B 核对相同记录与检查点，冷启期间外部调用和重复副作用均为零。教师确认后只接续目标 Run，原会话未被覆盖。 | 待异机 |

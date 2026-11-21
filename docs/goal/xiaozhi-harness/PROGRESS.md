@@ -1,5 +1,9 @@
 # Harness 执行进度
 
+## 2026-11-21 更新记录与版本回退
+
+设置页已接通更新记录核对、独立副本、安排和取消。实际 Electron 合成资料冷启保留两份备课记录。真实两版签名安装、独立 Windows 与正式模型余项仍待验，固定矩阵不变。 [本轮证据](evidence/phase8/windows-update-rollback-20261121.json)
+
 ## 2026-11-21 Windows 更新前准备
 
 设置页可核对本地候选、Windows 签名及公开发行记录并创建可复验快照。正式桌面 5/5，实际 Windows 签名验证与备份创建通过，发行响应使用受控数据。当前真实公开查询返回 403。独立 Windows、签名小智安装候选、实际覆盖和程序回退保持待验。 [证据](evidence/phase8/windows-update-preparation-20261121.json)
