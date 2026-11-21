@@ -384,23 +384,105 @@ try {
   await verifyAndReject(mislabeled, undefined, /未通过凭据和授权核对/, false);
   checks.push('Full backups retain same-machine settings, and a full database mislabeled as portable fails verification and restore.');
 
-  await app.close();
-  const targetProfile = path.join(root, 'recovered-profile');
-  app = await electron.launch({args: [main, '--user-data-dir=' + targetProfile], cwd: desktop,
-    env: {...env, OMNI_EDU_DATA_ROOT: migratedRoot}, timeout: 60000});
-  page = await app.firstWindow();
-  page.on('pageerror', error => rendererErrors.push(String(error)));
-  await assertIsolatedPiMain(app, main, targetProfile);
-  await page.getByRole('button', {name:'设置', exact:true}).waitFor();
-  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), migratedRoot);
+  await pick(portable);
+  await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
+  const toActivate = await expectVisible('data-backup-restore-ready');
+  assert.equal(await page.getByTestId('portable-recovery-checklist').count(), 0);
+  const activeCopy = await toActivate.locator('.pi-settings-location').innerText();
+  const selectionFile = path.join(profile, 'xiaozhi-data-selection.v1.json');
+  await app.evaluate(() => {
+    process.env.OMNI_EDU_E2E_DIALOG_MODE = '1';
+    process.env.OMNI_EDU_E2E_RESTORE_RELAUNCH = 'manual';
+  });
+  await toActivate.getByTestId('data-backup-restore-activate').click();
+  const selected = async expected => {
+    const end = Date.now() + 30000;
+    while (Date.now() < end) {
+      if (fs.existsSync(selectionFile) && JSON.parse(fs.readFileSync(selectionFile, 'utf8')).dataRoot === expected) return;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    assert.fail('Data selection did not reach the expected root');
+  };
+  await selected(activeCopy);
+  const relaunch = async () => {
+    await app.close();
+    app = await electron.launch({args: [main, '--user-data-dir=' + profile], cwd: desktop, env, timeout: 60000});
+    page = await app.firstWindow();
+    page.on('pageerror', error => rendererErrors.push(String(error)));
+    await assertIsolatedPiMain(app, main, profile);
+    await page.getByRole('button', {name:'设置', exact:true}).click();
+    await page.getByTestId('pi-settings-tab-backup').click();
+    await expectVisible('data-backup-panel');
+  };
+  await relaunch();
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), activeCopy);
   const settings = await page.evaluate(() => window.omniEdu.getXiaozhiSettings());
   assert.equal(settings.ok, true);
   const restoredModel = settings.value;
   assert.equal(restoredModel.configured, false);
   assert.equal(restoredModel.defaultModel, 'deepseek-pro');
   assert.equal(restoredModel.thinking.global.choice, 'high');
+  const checklist = await expectVisible('portable-recovery-checklist', /已启用换机副本/);
+  await expectVisible('portable-recovery-model-status', /默认模型 deepseek-pro.*需要配置本机密钥/);
+  await expectVisible('portable-recovery-tool-status', /尚未配置本机连接/);
+  await expectVisible('portable-recovery-index-status');
+  for (const size of [{width:1366,height:768}, {width:1920,height:1080}]) {
+    await page.setViewportSize(size);
+    const button = checklist.getByTestId('portable-recovery-models');
+    await button.scrollIntoViewIfNeeded();
+    const box = await button.boundingBox();
+    assert(box && box.x >= 0 && box.x + box.width <= size.width && box.y >= 0 && box.y + box.height <= size.height);
+    await page.screenshot({path:path.join(root, `portable-recovery-${size.width}.png`)});
+  }
+  for (const [destination, testId] of [['tools','pi-mcp-empty'], ['permissions','pi-settings-workspace-choose'], ['capabilities','pi-capability-manage-tools']]) {
+    await checklist.getByTestId('portable-recovery-' + destination).click();
+    assert.equal(await page.getByTestId('pi-settings-workspace').getAttribute('data-tab'), destination);
+    await expectVisible(testId);
+    await page.getByTestId('pi-settings-tab-backup').click();
+    await expectVisible('portable-recovery-checklist');
+  }
+  checks.push('A portable copy is selected using the real Settings action. After a cold restart the checklist reflects the restored default model and directs teachers to the existing settings.');
+
+  await app.evaluate(({net}) => {
+    globalThis.recoveryNetwork = [];
+    net.fetch = async input => {
+      const url = new URL(typeof input === 'string' ? input : input.url);
+      globalThis.recoveryNetwork.push(url.pathname);
+      if (url.hostname !== 'api.deepseek.com' || !url.pathname.endsWith('/models')) throw Error('Fixture forbids external traffic');
+      return new Response(JSON.stringify({object:'list',data:[{
+        id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,
+      }]}), {headers:{'content-type':'application/json'}});
+    };
+  });
+  await checklist.getByTestId('portable-recovery-models').click();
+  await page.getByTestId('pi-settings-key').fill('synthetic-new-device-key');
+  await page.getByTestId('pi-settings-verify').click();
+  await expectVisible('pi-settings-feedback', /密钥验证通过/);
+  await expectVisible('pi-settings-model-unavailable', /deepseek-pro/);
+  assert.match(await page.getByTestId('pi-settings-default-model').innerText(), /deepseek-pro/);
+  assert(await page.getByTestId('pi-settings-save').isDisabled());
+  await page.getByTestId('pi-settings-default-model').click();
+  await page.getByRole('menuitemradio', {name:'deepseek-flash',exact:true}).click();
+  await page.getByTestId('pi-settings-save').click();
+  await expectVisible('pi-settings-feedback', /已保存/);
+  await page.getByTestId('pi-settings-tab-backup').click();
+  await expectVisible('portable-recovery-model-status', /deepseek-flash.*已配置本机密钥/);
+  assert.deepEqual(await app.evaluate(() => globalThis.recoveryNetwork.map(path => path.endsWith('/models'))), [true,true]);
+  checks.push('An unlisted preference stays selected until the teacher explicitly chooses a supported model. Saving via the original form refreshes the checklist, with a synthetic local catalogue.');
+
+  await app.evaluate(() => {
+    process.env.OMNI_EDU_E2E_DIALOG_MODE = '1';
+    process.env.OMNI_EDU_E2E_RESTORE_RELAUNCH = 'manual';
+  });
+  await page.getByTestId('data-backup-restore-revert').click();
+  await selected(dataRoot);
+  await relaunch();
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
+  assert.equal(await page.getByTestId('portable-recovery-checklist').count(), 0);
+  assert(fs.existsSync(path.join(activeCopy, '换机资料.md')));
   assert.deepEqual(rendererErrors, []);
-  checks.push('A fresh Electron profile cold-starts from the restored copy with the chosen model and thinking level, awaiting its own credential.');
+  checks.push('Returning to the original workspace after restart removes the checklist and preserves the portable copy.');
 } catch (error) {
   reportError = error.stack;
   process.exitCode = 1;

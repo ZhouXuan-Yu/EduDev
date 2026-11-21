@@ -11,9 +11,13 @@ export async function selectedBackupRoot(profile:string,baseRoot:string):Promise
  catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')return fallback;throw e;}
  if(!v||typeof v!=='object'||Array.isArray(v)||v.schemaVersion!==BACKUP_RESTORE_SCHEMA||typeof v.baseRoot!=='string'||typeof v.dataRoot!=='string'||typeof v.previousRoot!=='string'||!path.isAbsolute(v.baseRoot)||!path.isAbsolute(v.dataRoot)||!path.isAbsolute(v.previousRoot))throw Error('数据目录选择记录无效');
  if(path.resolve(v.baseRoot)!==path.resolve(baseRoot))return fallback; // Another launcher/data instance keeps its own root.
- if(v.dataRoot!==baseRoot){const receipt=await readRecoveryReceipt(v.dataRoot);if(!receipt||receipt.id!==v.restoreId)throw Error('恢复目录不存在或记录不匹配，仍使用原数据');}
+ const receipt=v.dataRoot===baseRoot?null:await readRecoveryReceipt(v.dataRoot);
+ if(v.dataRoot!==baseRoot&&(!receipt||receipt.id!==v.restoreId))throw Error('恢复目录不存在或记录不匹配，仍使用原数据');
  const s=await fs.lstat(path.join(v.dataRoot,'app.db'));if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1)throw Error('恢复数据库不可用，仍使用原数据');
- return{dataRoot:v.dataRoot,previousRoot:v.previousRoot};
+ const portable=receipt?.purpose==='portable'&&Number.isSafeInteger(receipt.fileCount)&&receipt.fileCount>=1
+  &&Number.isSafeInteger(receipt.generatedFiles)&&receipt.generatedFiles>=0&&receipt.warnings.every(warning=>typeof warning==='string');
+ return{dataRoot:v.dataRoot,previousRoot:v.previousRoot,
+  ...(portable?{portableRestore:{fileCount:receipt.fileCount,generatedFiles:receipt.generatedFiles,warnings:receipt.warnings}}:{})};
 }
 export async function selectBackupRoot(profile:string,baseRoot:string,dataRoot:string,previousRoot:string){
  const database=await fs.lstat(path.join(dataRoot,'app.db'));if(!database.isFile()||database.isSymbolicLink()||database.nlink!==1)throw Error('目标数据目录不可用，未切换数据');

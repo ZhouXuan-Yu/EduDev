@@ -6,6 +6,8 @@
 
 恢复预检由主进程读取备份和目标卷的空间，向设置页返回大小和选定路径。已核对的清单留在主进程，创建副本前重新确认清单、路径和空间。复制后继续逐文件核验，激活时沿用现有的恢复副本校验和资料目录指针。 [恢复预检证明](../goal/xiaozhi-harness/evidence/phase8/windows-restore-preflight-20261121.json)
 
+已启用的换机副本通过现有选择记录与恢复回执投影到设置页。接续页读取原模型、MCP 目录与索引状态，使用原设置表单完成变更。 [冷启动及切回证据](../goal/xiaozhi-harness/evidence/phase8/windows-portable-recovery-checklist-20261121.json)
+
 ## 2026-11-21 与正文数字连写的题号
 
 v17 在段落生成前核对连写题号的原生交叉证据，并用原行保留标记。现有旧世代继续有效，可通过原队列重建。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

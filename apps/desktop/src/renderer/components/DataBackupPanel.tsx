@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
 import type { DataBackupVerificationResult, ExportDataRootResult } from '../../shared/contracts';
 import {BackupContinuitySummary} from './BackupContinuitySummary';
+import {PortableRecoveryChecklist,type RecoveryModelSettings,type RecoverySetting} from './PortableRecoveryChecklist';
 
 export type DataBackupPanelStatus =
   | 'idle'
@@ -36,6 +37,8 @@ type DataBackupPanelProps = {
   modern?: boolean;
   disabled?: boolean;
   onBusyChange?: (busy: boolean) => void;
+  recoveryModel?: RecoveryModelSettings;
+  onOpenRecoverySetting?: (setting: RecoverySetting) => void;
 };
 
 function issueList(label: string, items: string[]) {
@@ -145,7 +148,8 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   return null;
 }
 
-export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled = false, onBusyChange }: DataBackupPanelProps) {
+export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled = false, onBusyChange,
+  recoveryModel, onOpenRecoverySetting }: DataBackupPanelProps) {
   const [restoreStatus,setRestoreStatus]=useState<BackupRestoreStatus|null>(null);
   useEffect(()=>{let current=true;void window.omniEdu?.backupRestoreStatus?.().then(value=>{if(current)setRestoreStatus(value);}).catch(()=>undefined);return()=>{current=false;};},[]);
   const [state, updateState] = useState<DataBackupPanelState>({ status: 'idle', message: '' });
@@ -242,6 +246,9 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   </div>;
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
+    {restoreStatus?.dataRoot === dataRoot && restoreStatus.portableRestore && onOpenRecoverySetting &&
+      <PortableRecoveryChecklist restore={restoreStatus.portableRestore} model={recoveryModel}
+        disabled={busy || disabled} onOpen={onOpenRecoverySetting}/>}
     <p>换机包带走教学资料、题库、对话、已登记的成果和偏好。模型密钥、MCP 连接和工具授权在新电脑重新配置。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>创建本地备份</Button>

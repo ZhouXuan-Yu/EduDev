@@ -18,7 +18,8 @@ export type BackupRestorePreview = {
   omittedOutputs: number;
 };
 export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];purpose?:BackupPurpose;compatibility?: BackupCompatibility;continuity?: BackupContinuity};
-export type BackupRestoreStatus={dataRoot:string;previousRoot?:string};
+export type PortableRestoreSummary = {fileCount:number; generatedFiles:number; warnings:string[]};
+export type BackupRestoreStatus={dataRoot:string;previousRoot?:string;portableRestore?:PortableRestoreSummary};
 export type BackupRestoreAction={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'activate';id:string}|{schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'revert'};
 export function validBackupRestoreAction(x:unknown):x is BackupRestoreAction {
  if(!x||typeof x!=='object'||Array.isArray(x))return false;const v=x as Record<string,unknown>;

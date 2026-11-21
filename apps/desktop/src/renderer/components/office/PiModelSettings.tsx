@@ -10,15 +10,18 @@ import {PiWebSettings} from './PiWebSettings';
 import {PiProviderBalance} from './PiProviderBalance';
 import {PiThinkingPicker} from './PiThinkingPicker';
 
-export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
+export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSaved }: {
+  onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void; onSaved?: (view: XiaozhiSettingsView) => void;
+}) {
   const [view, setView] = useState<XiaozhiSettingsView>(), [model, setModel] = useState(''), [key, setKey] = useState('');
   const [busy, setBusy] = useState(false), [verifying,setVerifying]=useState(false), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const live = useRef(true), lock = useRef(false), stamp = useRef(0);
   const [webBusy,setWebBusy]=useState(false);
   const [balanceBusy,setBalanceBusy]=useState(false);
   const disabled = loading || busy || webBusy || balanceBusy || !view || view.locked;
+  const modelUnavailable = !!view?.models.length && !view.models.some(item => item.id === model);
   useEffect(() => { onBusyChange?.(busy||webBusy||balanceBusy); return () => onBusyChange?.(false); }, [busy,webBusy,balanceBusy, onBusyChange]);
-  function accept(next: XiaozhiSettingsView) { setView(next); setModel(next.models.length && !next.models.some(item => item.id === next.defaultModel) ? (next.models.find(item=>item.id==='deepseek-flash')?.id||next.models[0].id) : next.defaultModel); }
+  function accept(next: XiaozhiSettingsView) { setView(next); setModel(next.defaultModel); }
   async function reload(refresh = false) {
     if (lock.current) return;
     setLoading(true); setNotice(''); const request = ++stamp.current;
@@ -32,7 +35,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
   useEffect(() => { live.current = true; void reload(); const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (event.kind === 'status') void reload(); });
     return () => { live.current = false; stamp.current++; unsubscribe?.(); }; }, []);
   async function save() {
-    if (disabled || lock.current || !view) return;
+    if (disabled || lock.current || !view || modelUnavailable) return;
     lock.current = true; setBusy(true); setNotice(''); stamp.current++;
     const input = { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: view.version, defaultModel: model, ...(key.trim() ? { apiKey: key.trim() } : {}) };
     // The form drops its copy as soon as the teacher submits, including failed saves.
@@ -40,7 +43,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
     try {
       const result = await window.omniEdu?.saveXiaozhiSettings(input);
       if (!live.current) return;
-      if (result?.ok) { accept(result.value); setNotice('已保存。默认模型用于新对话，已有对话继续使用原模型。'); }
+      if (result?.ok) { accept(result.value); onSaved?.(result.value); setNotice('已保存。默认模型用于新对话，已有对话继续使用原模型。'); }
       else setNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '设置没有保存，请重试。');
     } catch { if (live.current) setNotice('设置没有保存，请重试。'); }
     finally { lock.current = false; if (live.current) setBusy(false); }
@@ -53,7 +56,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
       if(!live.current)return;
       if(result?.ok){
         const next={...view,models:result.value.models,catalogue:'official' as const,catalogueError:undefined};
-        setView(next);setModel(next.models.some(item=>item.id===model)?model:(next.models.find(item=>item.id==='deepseek-flash')?.id||next.models[0]?.id||''));
+        setView(next);
         setNotice('密钥验证通过。请选择新对话的默认模型，再点击保存；当前密钥尚未保存。');
       }else setNotice(result?XIAOZHI_SETTINGS_ERRORS[result.error]:'验证没有完成，请重试。');
     }catch{if(live.current)setNotice('验证没有完成，请重试。');}
@@ -91,8 +94,8 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
                 </Dropdown>
               </div>
             </div>
-            {view !== undefined && view.models.length > 0 && !view.models.some(item => item.id === view.defaultModel) && (
-              <p role="status" data-testid="pi-settings-model-unavailable">原默认模型 {view.defaultModel} 已不在当前目录。请选择可用模型，保存后用于新对话。</p>
+            {modelUnavailable && (
+              <p role="status" data-testid="pi-settings-model-unavailable">模型 {model} 已不在当前目录。请选择可用模型，保存后用于新对话。</p>
             )}
             <div className={`${styles.row} ${styles.thinkingRow}`}>
               <div className={styles.rowText}><span className={styles.rowLabel}>默认思考强度</span><p className={styles.hint}>选择后即保存，没有会话覆盖的对话从下一轮生效。</p></div>
@@ -128,7 +131,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
                 }}/>
               </div>
             </div>
-            <div className={styles.save}><Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button></div>
+            <div className={styles.save}><Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button></div>
           </form>
           {view?.locked && <p role="status">小智正在处理任务，结束后可修改配置。</p>}
           {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}

@@ -10,6 +10,7 @@ import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
 import { XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
 import type { XiaozhiMemoryScopeInput } from '../../../shared/xiaozhi-memory';
 import { DataBackupPanel } from '../DataBackupPanel';
+import type {RecoveryModelSettings} from '../PortableRecoveryChecklist';
 import { PiModelSettings } from './PiModelSettings';
 import { PiSkillSettings } from './PiSkillSettings';
 import { PiMcpSettings } from './PiMcpSettings';
@@ -66,6 +67,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   const [tab, setTab] = useState<Tab>('models'), [query, setQuery] = useState('');
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>(), [sessionId, setSessionId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>(), [dataRoot, setDataRoot] = useState('');
+  const [recoveryModel, setRecoveryModel] = useState<RecoveryModelSettings>();
   const [locked, setLocked] = useState(true), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const [preferences, setPreferences] = useState(readWorkspacePreferences), [preferenceNotice, setPreferenceNotice] = useState('');
   const navigationPreferences = useWorkbenchPreferences();
@@ -86,6 +88,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
       const current = id ? await api.getXiaozhiSnapshot(id) : undefined;
       if (!live.current || request.current !== own) return;
       setWorkspace(list); setSessionId(id); setSnapshot(current); setDataRoot(root);
+      setRecoveryModel(settings.ok ? settings.value : undefined);
       setLocked(!settings.ok || settings.value.locked); setNotice(settings.ok ? '' : '暂时无法读取任务状态，请刷新。');
     } catch { if (live.current && request.current === own) { setLocked(true); setNotice('设置状态未读取，请刷新重试。'); } }
     finally { if (live.current && request.current === own) setLoading(false); }
@@ -162,7 +165,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>
           </nav>}
           {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
-          {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
+          {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy} onSaved={setRecoveryModel}/>}
           {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
           {tab === 'capabilities' && <SettingsPage tab={tab}><PiCapabilityCenter sessionId={sessionId||undefined} task={snapshot?.task&&snapshot.task.sessionId===sessionId?{id:snapshot.task.id,requirementsVersion:snapshot.task.requirementsVersion}:undefined} onNavigate={open}/></SettingsPage>}
           {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings sessionId={sessionId} running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
@@ -194,7 +197,8 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             {archiveLoading && <p role="status">正在读取归档记录…</p>}{archiveNotice && <p role="alert">{archiveNotice}</p>}
             {archive && <section className="pi-settings-archive-reader" data-testid="pi-settings-archive-reader"><h2 className={layoutStyles.subheading}>{archive.title}</h2><p>只读记录</p><OfficeConversation projection={archive.value.projection}/></section>}
           </SettingsStack></SettingsPage>}
-          {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsSection></SettingsStack></SettingsPage>}
+          {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}
+            recoveryModel={recoveryModel} onOpenRecoverySetting={setting => open(setting)}/></SettingsSection></SettingsStack></SettingsPage>}
         </main>
       </div>
   </div></EduShell>;

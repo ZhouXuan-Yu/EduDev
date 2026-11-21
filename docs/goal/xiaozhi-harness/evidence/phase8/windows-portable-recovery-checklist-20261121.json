@@ -1,0 +1,91 @@
+{
+  "date": "2026-11-21",
+  "base": "4e237e679a8f0aed6141eb71809f0b66c0654d15",
+  "module": "M11 portable restore follow-through",
+  "commandRoot": "D:/WorkProject/EduProject-harness/apps/desktop",
+  "evidenceRoot": "E:/EduDev-Harness-Recovery-Checklist-20261121",
+  "mainSha256": "9abfb8ddfd282bc4c37c22d96a99c6214afb0a9d132893d8382a7b41df3c7956",
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "file": "build.log",
+      "sha256": "d03b02adb918d586d359e569c7dbd1ffa83d19806923219f0c510ca11f20bdb0"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253",
+      "file": "components.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "result": "9/9",
+      "file": "backup-source.log",
+      "sha256": "e3b56b249b80bf6e7fb16e5d7c04f5390c4e711bb27aecd5a570d48166522501"
+    },
+    {
+      "command": "node scripts/acceptance/pi-model-settings-test.mjs",
+      "result": "7/7",
+      "file": "model-components-final.log",
+      "sha256": "fb5a2260e62bf224e1b596c09746269eea1afd930add549ab1c6712a2466ba14"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "result": "19/19",
+      "rendererErrors": 0,
+      "file": "xiaozhi-backup-compatibility-7cbQV8/report.json",
+      "sha256": "659453bca11eca110af07c7c41f4ae7c52bcb6f543ef92c057a6212b2fd1e974"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing findings; dependency tree unchanged",
+      "file": "audit.json",
+      "sha256": "1049725637b3708a89a928224e8ed1777bf575b662a150a4e9eef1056438a6e4",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 10,
+        "low": 8
+      }
+    }
+  ],
+  "priorFailure": {
+    "file": "model-components.log",
+    "sha256": "84f3d8574440939a3726d5246ca26362d1545546ebda70bb3fea5752352a1947",
+    "reason": "An old standalone component test expected class names and headings removed before this change. The test now checks the current accessible sections and also exercises the unavailable-model submission guard."
+  },
+  "workflow": [
+    "Before activation the source settings show no portable checklist. The test clicks the actual restore selection action and relaunches under the same isolated Windows Electron profile.",
+    "The portable checklist reads the active receipt, the default model, actual local connection records and the semantic index state. The navigation actions open the existing model, tools, permissions and capability pages.",
+    "With an intercepted synthetic DeepSeek catalogue the workflow verifies a new fixture credential, retains the unlisted original model as the visible preference and blocks save until a model is explicitly chosen. The original save path writes the local setting and the card reflects it. Two intercepted requests were both to the catalogue endpoint.",
+    "Returning to the previous root and relaunching hides the card. The original workspace and portable copy both remain on disk."
+  ],
+  "performance": {
+    "dataBytes": 2920448,
+    "fullExportMs": 241,
+    "portableExportMs": 359,
+    "scope": "One synthetic local run; no independent throughput or large-library claim. UI entry reuses the existing receipt and local reads."
+  },
+  "independent": {
+    "reviewer": "Terra",
+    "description": "Matched the build SHA-256, read both screenshots, verified the final selected root and that the original and portable SQLite files still exist. The 1366×768 viewport requires scrolling to the return button. The recorded Electron run covers the interactions.",
+    "screenshots": [
+      {
+        "file": "xiaozhi-backup-compatibility-7cbQV8/portable-recovery-1366.png",
+        "sha256": "5fe1203a37dd68529de34a1d7853e6fd64849b9c5990c1148895b7fd29a8f2ac"
+      },
+      {
+        "file": "xiaozhi-backup-compatibility-7cbQV8/portable-recovery-1920.png",
+        "sha256": "ba6fb424e7c841ab1b201a3d8d52f8e360c94bda195078e0b50bff40e763e23b"
+      }
+    ]
+  },
+  "next": [
+    "Actual reconnect and tool execution from a second Windows machine.",
+    "Signed release candidate, QG-09 clean install, and application upgrade/rollback.",
+    "Three unsealed official model comparison rows at 198/200 budget used."
+  ],
+  "newPaidRequests": 0,
+  "rollback": "Revert the source change. Existing receipts, workspaces, and layout or configuration formats remain readable."
+}

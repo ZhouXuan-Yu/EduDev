@@ -53,9 +53,12 @@ try {
     assert(node('pi-settings-default-model').disabled);
   });
   await check('section headings remain separately named and source/refresh privacy hints are retained', async () => {
-    assert.deepEqual([...document.querySelectorAll('.pi-model-settings-section h2')].map(el => el.textContent), ['DeepSeek', '可用模型', '默认思考强度']);
+    for (const heading of ['模型与连接', '联网资料', '可用模型', '账户余额']) {
+      assert([...node('pi-model-settings').querySelectorAll('h2')].some(element => element.textContent === heading));
+    }
+    assert.match(text(), /默认思考强度/);
     assert.match(text(), /不发送教学问题或继续旧任务/);
-    assert.match(text(), /原始文件和学生图片保留在本机/);
+    assert.match(text(), /原始文件与学生图片保留本机/);
     assert.match(text(), /不修改系统网络设置/);
     assert(node('pi-web-settings')); assert(node('pi-provider-balance'));
     assert.equal(node('pi-settings-key').type, 'password');
@@ -70,9 +73,16 @@ try {
     assert(!node('pi-settings-model-unavailable'));
   });
   await check('removed default model still shows the original actionable warning', async () => {
-    await mount({ ...base, models: [model], defaultModel: 'removed-model', catalogue: 'cache' });
+    const saves = [];
+    await mount({ ...base, models: [model], defaultModel: 'removed-model', catalogue: 'cache' }, {
+      saveXiaozhiSettings: async input => { saves.push(input); },
+    });
     assert.match(node('pi-settings-model-unavailable').textContent, /removed-model/);
     assert.match(node('pi-settings-model-unavailable').textContent, /请选择可用模型/);
+    assert.match(node('pi-settings-default-model').textContent, /removed-model/);
+    assert(node('pi-settings-save').disabled);
+    await React.act(async () => node('pi-settings-save').closest('form').dispatchEvent(new Event('submit', {bubbles:true,cancelable:true})));
+    assert.deepEqual(saves, []);
   });
   await check('running task still locks model/key/save and retains the task-lock notice', async () => {
     await mount({ ...base, models: [model], locked: true });
