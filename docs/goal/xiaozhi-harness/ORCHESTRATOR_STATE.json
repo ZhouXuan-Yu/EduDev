@@ -1,11 +1,11 @@
 {
   "goal": "GOAL_XIAOZHI_HARNESS.md",
   "worktree": "D:/WorkProject/EduProject-harness",
-  "branch": "codex/harness-gate7-window-20261121",
+  "branch": "codex/harness-phase8-tail-evidence-20261121",
   "base": "d50ef330",
-  "head": "4426260c9f7d8f9716852aa283026c7589a000d5",
-  "headRole": "Harness long-path repair commit. Independent native and page evidence is bound to the pre-merge repaired build.",
-  "mainObserved": "1625264c5751faebc901c8b2b7bd4829979e5679",
+  "head": "9657e6ef62dc98af43b8bc25b6a142c9d4033d97",
+  "headRole": "Last verified production change before the Phase 8 external blocking audit. Scoped historical evidence retains its original build identities.",
+  "mainObserved": "9657e6ef62dc98af43b8bc25b6a142c9d4033d97",
   "phase": 8,
   "phase0": "ACCEPTED",
   "phase1": "ACCEPTED",
@@ -28,7 +28,7 @@
   "openFindings": [
     "Phase7 Gate7 passed scoped independent review on the frozen de871897 candidate. Maintain the original evidence when tracking newer candidates.",
     "Phase8 QG-09 requires clean isolated Windows install, shortcut launch and uninstall. Current Windows 11 Home host has no Sandbox or available clean guest.",
-    "Phase8 first formal capture stopped after 18/32. Targeted Q5 tool recovery passed but independent blind review found a hard unit error. Complete missing or affected rows and independent quality review.",
+    "Phase8 formal capture originally failed after 18/32. Across nine sealed archives 29 distinct rows exist. Q7-r2-A, Q7-r2-B and Q8-r2-A remain uncollected. The 200-request ledger has 2 remaining, insufficient even for the first dispatch of each missing row.",
     "Managed skill startup and the two original same-task Runs passed on 3781b5b. Preserve the prior timed-out Runs and the first candidate local-index read failure. Older Q5 causality remains unknown."
   ],
   "paidRequestLimit": 200,
@@ -38,7 +38,15 @@
   "dependencies": "own npm ci complete; Electron43.8.3 explicit official install complete",
   "graph": "2026-11-17 skill domain fast index130nodes/401edges successful; full worktree graph still unavailable; use focused graph and verified source anchors",
   "previousWip": "D:/WorkProject/EduProject-agent-stream-tools frozen; snapshot TEMP/xiaozhi-harness-pre-goal-wip",
-  "next": "Terminal privacy and the refreshed packaging dependency selection are verified within their documented scopes. Three formal model rows and QG-09 clean Windows installation remain. Freeze a fresh installer when space and an isolated host are available. Do not exceed the remaining two model requests.",
+  "next": "Resume after the clean Windows environment or sufficient new paid-model authorization is available. Preserve the original failures and use the verified resumption record.",
+  "phase8BlockingAudit20261121": {
+    "status": "BLOCKED_EXTERNAL_PREREQUISITES",
+    "evidence": "evidence/phase8/final-blocking-audit-20261121.json",
+    "fixedMatrixPassed": 88,
+    "fixedMatrixTotal": 89,
+    "archivedDistinctModelRows": 29,
+    "plannedModelRows": 32
+  },
   "phase7Unified9748a5820261121": {
     "status": "PARTIAL_A2_HOST_AND_JOURNAL_FINDING",
     "productionCommit": "9748a586985ef0369fa0e119f210a4c4fe1b3515",

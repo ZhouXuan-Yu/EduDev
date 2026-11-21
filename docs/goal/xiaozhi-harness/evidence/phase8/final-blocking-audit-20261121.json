@@ -1,0 +1,142 @@
+{
+  "date": "2026-11-21",
+  "evidenceType": "Phase 8 blocking audit and resumption record",
+  "sourceCommit": "9657e6ef62dc98af43b8bc25b6a142c9d4033d97",
+  "currentBuildSha256": "a1ef69eea98e06bda406e0692eb772b55608b01675f75d9641b6374bf2c97d3e",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "disposition": "BLOCKED_EXTERNAL_PREREQUISITES",
+  "previousTurn": "Progress. Commit 9657e6e addressed the real Q7 saved-file wording defect. Local Electron, independent read-only verification and the 207-check desktop smoke passed on that build.",
+  "directReadback": {
+    "fixedMatrix": {
+      "pass": 88,
+      "blocked": 1,
+      "blockedItem": "QG-09",
+      "items": 89,
+      "evidenceReferences": 41,
+      "missingReferences": []
+    },
+    "formalArchive": {
+      "batchMatches": [
+        18,
+        1,
+        1,
+        1,
+        2,
+        1,
+        3,
+        3,
+        1
+      ],
+      "distinct": 29,
+      "missing": [
+        "Q7-r2-A",
+        "Q7-r2-B",
+        "Q8-r2-A"
+      ],
+      "originalStatus": "FAIL",
+      "quality": "FAIL",
+      "blindReview": "REVIEW_INCOMPLETE"
+    },
+    "latestLocalBuild": {
+      "sameBuild": true,
+      "checks": [
+        {
+          "command": "npm.cmd run build",
+          "matched": true
+        },
+        {
+          "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+          "matched": true
+        },
+        {
+          "command": "node scripts/electron-smoke.mjs (same output after npm.cmd run build)",
+          "matched": true
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs --practice-draft --failed-file-attempts",
+          "matched": true
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/phase8-copy-rejection-electron.mjs",
+          "matched": true
+        },
+        {
+          "command": "npm.cmd audit --omit=dev --json",
+          "matched": true
+        }
+      ]
+    },
+    "paidLedger": {
+      "limit": 200,
+      "used": 198,
+      "remaining": 2,
+      "unresolved": 0,
+      "integrity": "ok",
+      "access": "read-only SQLite with zero-length WAL"
+    },
+    "liveExecution": "No matching Electron smoke, real-model collector or archive-reader process returned by the Windows process check.",
+    "host": {
+      "edition": "Windows 11 Home",
+      "build": "26200",
+      "windowsSandbox": false,
+      "hyperVManager": false,
+      "hyperVGuestProvider": false,
+      "vmwareVmrun": false,
+      "virtualBoxManager": false,
+      "wslDistributions": "One stopped Docker Desktop WSL2 Linux distribution",
+      "cleanWindowsGuestAvailable": false
+    },
+    "retainedInstaller": {
+      "sourceCommit": "60b1f79913de493e4d47e3ea0671c0b46f153307",
+      "SHA256": "275bb10c95affa299772addb37dbf4d8b6ffb0a8320ef5b3eefb93cd2a537a64",
+      "Bytes": 877410202,
+      "Authenticode": "NotSigned",
+      "scope": "Earlier unsigned NSIS artifact aligned to the legacy build. The current checkout had no final NSIS artifact under .release."
+    }
+  },
+  "consecutiveObservations": [
+    {
+      "turn": "Archived readback and independent blind review",
+      "change": "8cb1fb8d20a2f8c0496005ce29451bf2708e375b",
+      "record": "archived-readback-supplement-20261121.json",
+      "classification": "progress",
+      "unchangedExternalConditions": "No independent clean Windows, 198 of 200 paid requests used, three required rows without sealed results."
+    },
+    {
+      "turn": "Q7 saved-file report repair and actual Electron regression",
+      "change": "9657e6ef62dc98af43b8bc25b6a142c9d4033d97",
+      "record": "q7-scoped-delivery-attempts-20261121.json",
+      "classification": "progress",
+      "unchangedExternalConditions": "Existing historical package only, no clean Windows install path, ledger still 198 of 200 and same three missing rows."
+    },
+    {
+      "turn": "Current independent prerequisite check",
+      "change": "Documentation handoff",
+      "classification": "external_blocking_audit",
+      "unchangedExternalConditions": "No clean Windows guest/runner exposed, identical ledger and three missing rows confirmed from nine sealed archive summaries."
+    }
+  ],
+  "prerequisites": [
+    {
+      "gate": "QG-09",
+      "required": "A clean recoverable Windows x64 test environment with real Desktop and Start menu, sufficient disk, a fresh frozen candidate matching the current source, and independent verification of install, both launch routes and uninstall."
+    },
+    {
+      "gate": "Formal real-model comparison",
+      "required": "New authorization sufficient for the remaining fixed rows, subsequent tool calls and any required quantified retests, under the original comparison contract. Three HTTP requests is only the lower bound to start the three missing rows; present budget permits two. Independently review the completed evidence and keep the original failed comparison."
+    },
+    {
+      "gate": "Windows upgrade and device migration",
+      "required": "Matching supported signed releases and independent Windows environments to exercise real covering upgrade, startup recovery and second-machine teaching continuity."
+    }
+  ],
+  "stopReason": "The remaining mandatory claims require actual environment and paid-model authorization changes. The completed implementation and recorded regression scopes remain available. More local synthetic repetitions or preparation would not supply these missing observations.",
+  "records": {
+    "matrix": "../../ACCEPTANCE_MATRIX.json",
+    "initialFormal": "formal-collection-first-stop-20261121.json",
+    "archived": "archived-readback-supplement-20261121.json",
+    "savedDelivery": "q7-scoped-delivery-attempts-20261121.json",
+    "startupRecovery": "windows-startup-recovery-20261121.json",
+    "installer": "windows-package-20261119/dependency-patched-nsis-60b1f79-20261120.json"
+  }
+}
