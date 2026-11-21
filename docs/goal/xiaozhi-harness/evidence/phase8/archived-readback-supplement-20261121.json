@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-21",
+  "base": "b15b0ebf46f4b2460693b9dfbc783250f5a4b41c",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "checkpoint": "Phase 8 archived evidence and anonymous supplement, no new collection",
+  "evidenceRoot": "E:/EduDev-Harness-Archived-Readback-20261121",
+  "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-archived-readback.mjs <collection-dir> <trusted-summary-SHA-256> <new-output-file>",
+  "batches": [
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-formal-28c2/xiaozhi-phase8-real-model-s3ICkS",
+      "summarySha256": "3cc18acea3b89a03205db612f89fe84b1783d11208514125860e44e07b2a640d",
+      "output": "sealed-facts/formal.json",
+      "sha256": "00290b1d78c10d9dace44e30f1c44e871ba895d4c258dc2d7517061e36b8d8f3"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-tail/xiaozhi-phase8-correction-nTJ9tH",
+      "summarySha256": "ddb574ee507bbfbef1c98c9a84b46163b1c08793723e9b9596212058519f6bc2",
+      "output": "sealed-facts/refused.json",
+      "sha256": "98efc5fc35387c332c2da98974785f5d145a0c288bf7df3520dd3b1c6e35f415"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-correction/xiaozhi-phase8-correction-f7AO0n",
+      "summarySha256": "0ecef42c43498ed86538070b6b30317d7f11606cadde8d1c71abb12453ef31b4",
+      "output": "sealed-facts/fixed-source.json",
+      "sha256": "dff552fe928a0c66cae0e0a33c9f16fcc3f42e0d6b8da8c3057b2ee796672750"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-LsMM6Z",
+      "summarySha256": "55265110703c73f600477e2fb5cf5aa15b0ea2083989906edb1c69693d3e9d9f",
+      "output": "sealed-facts/practice.json",
+      "sha256": "961ad8f70eb4e331869b1e6bcc0ef27eaf1ac630a4749616f1aa8875983559fc"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-SfgDhW",
+      "summarySha256": "7c3e7b514e35f10ed76fe4b0095c6713f9cbc7e271634fdf2b111d11c1150d6e",
+      "output": "sealed-facts/first-refusals.json",
+      "sha256": "9554476fda605552dfc06776db81f33010e627ece0a1de8b207093caff26a0b6"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-correction/xiaozhi-phase8-correction-Ct5gXh",
+      "summarySha256": "70a19ac8b6259a688eb389db9d1e514d832fbc8154c854496886dfc1ecb849b2",
+      "output": "sealed-facts/first-source-correction.json",
+      "sha256": "c4cf8c89edc0fd6d9857c0b856b46803352ccfcf71bdfe886cd0426e57dceca6"
+    },
+    {
+      "archive": "C:/Users/ZhouXuan/AppData/Local/Temp/edudev-harness-phase8-remaining-20261121/xiaozhi-phase8-correction-8DIJHe",
+      "summarySha256": "52a6cbe07ecb81933f2ac2987d2693ed1983ced3ecead3b30aca5dd82b884b48",
+      "output": "sealed-facts/lower-budget-a.json",
+      "sha256": "52520e693549b1cb5e2d78fb363f2aa4a21bb5eddc93eb3ca9d3f1fe4441bb91"
+    },
+    {
+      "archive": "C:/Users/ZhouXuan/AppData/Local/Temp/edudev-harness-phase8-remaining-20261121/xiaozhi-phase8-correction-DoVLXT",
+      "summarySha256": "0fc94db59ecc6b315b9c8a97a0f38b47c77db15175e7f078713f951be6fa7451",
+      "output": "sealed-facts/lower-budget-b.json",
+      "sha256": "da82e7799faa17dfeaa587a5d1a5469f36baf8e3a0fa33aca774d1075afb94a0"
+    },
+    {
+      "archive": "E:/EduDev-Harness-Acceptance-20261121/phase8-remaining/xiaozhi-phase8-correction-04Xl1f",
+      "summarySha256": "07d4c3a42e9bd48f7dc257eedd89d39f4ba63a5d858164380b622ae4fcf4208d",
+      "output": "sealed-facts/courseware.json",
+      "sha256": "f7e20f15c742ca94872ae259f951e451fe407329509948262bf7d8b676c7a46d"
+    }
+  ],
+  "scope": {
+    "archives": 9,
+    "sealedCollectionsIncludingRetests": 31,
+    "closedSqliteMatches": 31,
+    "artifactAndBlindCopyMatches": 72,
+    "fixedGetAndNativeReceiptMatches": 4,
+    "distinctPlannedRows": 29,
+    "scheduledRows": 32,
+    "missing": [
+      "Q7-r2-A",
+      "Q7-r2-B",
+      "Q8-r2-A"
+    ],
+    "privateInventory": {
+      "file": "inventory.json",
+      "sha256": "e3fe0489516c35ba047242aaeb9b932bbde4f367f8ebf17df599dea7e761322d"
+    }
+  },
+  "independent": {
+    "reviewer": "Fresh Terra High",
+    "inputs": "Seven detached anonymous samples and artifacts in anonymous-review. No original run paths, identity map, grades or model label was supplied.",
+    "matchedSampleDigests": 7,
+    "matchedArtifactDigests": 16,
+    "facts": [
+      {
+        "sampleSuffix": "75680ccc",
+        "task": "Q5",
+        "finding": "Readback verified the fixed page. The answer includes both 1000 kg/cm³ and the correct 1000 kg/m³. The former is a factual hard error."
+      },
+      {
+        "sampleSuffix": "20fe387e",
+        "task": "Q5",
+        "finding": "Readback verified the fixed page. The explanation includes the source and correct 1 g/cm³ = 1000 kg/m³ conversion."
+      },
+      {
+        "sampleSuffix": "61edc6b8",
+        "task": "Q7",
+        "finding": "The target was absent at capture start. The final file contains 29 bytes, with an extra 0A line ending. The archived record does not establish a required or executed approval for this write."
+      },
+      {
+        "sampleSuffix": "e177d5e8",
+        "task": "Q7",
+        "finding": "The target was absent at capture start. The final file contains the exact 28 bytes. One visible approval and one executed approval are recorded. The answer mixes a save result with wording about a prior unexecuted attempt. Start and end do not establish the number of intermediate writes."
+      },
+      {
+        "sampleSuffix": "6427c2b8",
+        "task": "Q8",
+        "finding": "Original file matches its initial digest, target absent, one visible refusal and zero executed approvals. The answer does not explicitly report the refusal. Two tool receipts do not prove two teacher requests."
+      },
+      {
+        "sampleSuffix": "2929f263",
+        "task": "Q8",
+        "finding": "Original file matches its initial digest, target absent, one visible refusal and zero modern persisted approval rows. The answer does not clearly report either the refusal or the missing copy."
+      },
+      {
+        "sampleSuffix": "6e9ee15a",
+        "task": "Q8",
+        "finding": "Original file matches its initial digest, target absent, one rejected approval and zero executed approvals. Final text gives the refusal and explicitly reports no copy."
+      }
+    ],
+    "limits": "Complete upstream request bodies, full permission interactions and potential repeated teacher prompts remain unverified by these detached facts."
+  },
+  "originalRecomputation": {
+    "collectionStatus": "FAIL",
+    "reviewStatus": "REVIEW_INCOMPLETE",
+    "bPresetQuality": "FAIL",
+    "exactOriginalRankingBytes": true,
+    "file": "original-review-recomputed.json",
+    "sha256": "7e7c17f48b248723e7ee49e474681d7f775f3214dbe4d0645d49b4d31f6810a2"
+  },
+  "ledger": {
+    "used": 198,
+    "limit": 200,
+    "remaining": 2,
+    "unresolved": 0,
+    "newPaidRequests": 0,
+    "mode": "immutable read-only with zero-length WAL",
+    "sha256": "04374144ed5fabae649c71fecfdb4a8c12d0ee6b294e09dd3e738b0d20eecdc4"
+  },
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "mainUnchangedSha256": "6de8351936d9a1b8a608b8c4d2d88bb5d0348e08f30b0c2b2513664b410aee1d",
+      "file": "build.log",
+      "sha256": "1979175d8d93a4b403cae9c16ff6f33d27b1b21478dae61a454b1b58e071e942"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/phase8-real-model-review-smoke.mjs",
+      "result": "42/42",
+      "file": "review-sealed-facts.log",
+      "sha256": "a41ad4f454559eed589f8225559ccaa9687b615843875316def14d4f0b59fda1"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-real-model-smoke.mjs",
+      "result": "24/24",
+      "file": "xiaozhi-phase8-real-model-protocol-LP6CyB/report.json",
+      "sha256": "ddbc442e04d8cf8c6074dc7ff24a84f48df0ba6594fe8e8ab3b0921c6a681927"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing advisories; dependency metadata unchanged",
+      "counts": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 10,
+        "low": 8
+      },
+      "file": "audit.json",
+      "sha256": "1049725637b3708a89a928224e8ed1777bf575b662a150a4e9eef1056438a6e4"
+    }
+  ],
+  "retainedFindings": [
+    "An initial Q5 full-object comparison flagged the later persistedMatched field, absent from the historical receipt. Comparison now allows only that historical omission. It independently verifies the native digest, entry, source and HTTP 200 observations, and requires current positive readback.",
+    "Do not reallocate the two remaining requests to partial replays and claim all three missing rows. The original 200-request limit and study design remain in force."
+  ],
+  "remaining": {
+    "fixedMatrix": "88/89",
+    "QG09": "Current host inventory did not find Windows Sandbox, Hyper-V management, a VMware run tool in the installed-program locations or VirtualBox. No independent clean Windows install/shortcut/uninstall performed.",
+    "modelStudy": "Three existing planned rows need real-model collection. One HTTP request per row already exceeds the current quota, before multi-tool turns and retries.",
+    "migration": "Signed two-version and a second isolated Windows migration exercise remain pending."
+  },
+  "performance": {
+    "productMinimum": "Desktop main fingerprint is unchanged. The new code applies to archive review only."
+  },
+  "rollback": "Revert the evidence-tool commit if needed. Archived source data, original scores, ledger and application schema were unchanged."
+}

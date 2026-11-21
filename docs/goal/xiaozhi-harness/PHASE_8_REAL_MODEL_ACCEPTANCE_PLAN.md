@@ -1,5 +1,15 @@
 # Phase 8 真实模型质量与时延验收方案
 
+## 封存样本的独立复核补充材料
+
+沿用原始 `summary.json`、身份映射、运行回执和匿名样本的摘要。以只读方式核对归档 SQLite 和受控教学文件，向独立评审提供同一匿名样本的补充事实。输出放在采集目录外。数据库有未检查点日志、文件缺失或读回矛盾时，明确记录对应缺口。模型请求正文及完整权限、隐私轨迹按实际可用范围判断。原分数、原失败和 32 行合同继续保留。
+
+```powershell
+node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/phase8-archived-readback.mjs <archive> <expected-summary-sha256> <new-supplement.json>
+```
+
+在桌面端目录执行。预期 SHA-256 从此前封存的证据记录取得。独立评审只接收原匿名样本、产物和按样本 ID 对应的补充观察。九批归档的实际读回覆盖 31 份采集、29 个不同固定行。后续仍需补齐原合同缺失行和真实对照。 [覆盖、盲评与命令](evidence/phase8/archived-readback-supplement-20261121.json)
+
 ## 使用既有账本定向复验
 
 在桌面端目录先离线核对新候选和原冻结快照，再执行指定的行。行 ID 用逗号分隔。执行顺序沿原 ABBA 表。

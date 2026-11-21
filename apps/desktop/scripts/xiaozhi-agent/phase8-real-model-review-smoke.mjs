@@ -4,9 +4,11 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {schedule, sha256} from './phase8-real-model-plan.mjs';
+import {DatabaseSync} from 'node:sqlite';
+import {schedule, sha256, syntheticFiles} from './phase8-real-model-plan.mjs';
 import {createReviewTemplate, summarizeReviews} from './phase8-real-model-review.mjs';
-import {exportBlindBundle} from './phase8-real-model-readback.mjs';
+import {exportBlindBundle, readOriginalRecords} from './phase8-real-model-readback.mjs';
+import {createArchivedSupplement} from './phase8-archived-readback.mjs';
 
 const output = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase8-independent-review-'));
 const checks = [];
@@ -198,6 +200,67 @@ check('CLI template/summarize operate locally, return review status and refuse i
   assert.equal(bad.status, 1); assert.match(bad.stderr, /usage/);
   const template = spawnSync(process.execPath, [script, 'template', f.blind, path.join(output, 'cli-blank.json')], {encoding: 'utf8'});
   assert.equal(template.status, 0, template.stderr); assert.equal(JSON.parse(template.stdout).samples, 32);
+});
+
+function archivedFixture(name) {
+  const root = path.join(output, name), row = schedule.find(item => item.id === 'Q8-r2-B');
+  const run = path.join(root, row.id), workspace = path.join(run, 'workspace'), data = path.join(run, 'data');
+  fs.mkdirSync(workspace, {recursive:true}); fs.mkdirSync(data);
+  const file = path.join(workspace, 'facts.txt'); fs.writeFileSync(file, syntheticFiles['facts.txt']);
+  const databasePath = path.join(data, 'app.db'), database = new DatabaseSync(databasePath);
+  database.exec('CREATE TABLE ai_agent_runs (id, session_id, status, model)');
+  database.prepare('INSERT INTO ai_agent_runs VALUES (?,?,?,?)').run('fixture.run', 'fixture.session', 'succeeded', 'fixture-model');
+  database.close();
+  const binding = {sessionId:'fixture.session', runId:'fixture.run', taskId:null};
+  const receiptFile = path.join(run, 'report.json');
+  const relative = {relativePath:'facts.txt',bytes:fs.statSync(file).size,sha256:sha256(fs.readFileSync(file))};
+  const receipt = {...row, collectionStatus:'PASS', answer:'Anonymous synthetic answer', binding,
+    snapshot:{projection:{turns:[{id:binding.runId}]}}, beforeFiles:[relative], artifacts:[{...relative,path:file}],
+    coldRecords:readOriginalRecords(databasePath,binding.sessionId,binding.runId,{immutable:true}), decisions:[]};
+  write(receiptFile,receipt);
+  const blind = exportBlindBundle(path.join(root,'blind-samples'),[receipt]);
+  const summaryFile = path.join(root,'summary.json');
+  write(summaryFile,{mode:'correct',plannedRunIds:[row.id],identityMapSha256:blind.identityMapSha256,
+    results:[{id:row.id,collectionStatus:'PASS',receiptSha256:sha256(fs.readFileSync(receiptFile))}]});
+  const sampleRoot = path.join(root,'blind-samples',blind.samples[0].id);
+  return {root,run,receiptFile,databasePath,sampleRoot,summaryHash:sha256(fs.readFileSync(summaryFile)),
+    outputFile:path.join(output,name+'-supplement.json')};
+}
+
+check('Archive supplement reads the sealed sample and physical SQLite while hiding run identity and leaving privacy unverified', () => {
+  const f = archivedFixture('archive-match');
+  const original = sha256(fs.readFileSync(f.databasePath));
+  const supplement = createArchivedSupplement(f.root,f.summaryHash,f.outputFile);
+  const sample = supplement.samples[0];
+  assert.equal(sample.observations.cold.status,'MATCHED');
+  assert.equal(sample.observations.workspace['facts.txt'].matchesInitial,true);
+  assert.equal(sample.observations.workspace['facts.txt'].presentAtCollectionStart,true);
+  assert.equal(sample.observations.workspace['copy.txt'].present,false);
+  assert.equal(sample.observations.workspace['copy.txt'].presentAtCollectionStart,false);
+  assert.equal(sample.observations.artifacts.matched,1);
+  assert.equal(sample.observations.upstreamPrivacyEvidence,'UNAVAILABLE_REQUEST_BODY_NOT_CAPTURED');
+  assert.deepEqual(Object.keys(sample),['sampleId','task','sampleSha256','observations']);
+  assert.doesNotMatch(fs.readFileSync(f.outputFile,'utf8'), /Q8-r2-B|fixture\.run|fixture-model/);
+  assert.equal(sha256(fs.readFileSync(f.databasePath)),original);
+});
+
+check('Archive supplement refuses a wrong summary digest, changed original report and a write inside sealed evidence', () => {
+  const f = archivedFixture('archive-seals');
+  assert.throws(() => createArchivedSupplement(f.root,'0'.repeat(64),f.outputFile),/summary_seal/);
+  assert.throws(() => createArchivedSupplement(f.root,f.summaryHash,path.join(f.run,'unwanted.json')),/output_inside_evidence/);
+  fs.appendFileSync(f.receiptFile,' ');
+  assert.throws(() => createArchivedSupplement(f.root,f.summaryHash,f.outputFile),/receipt_seal/);
+  assert(!fs.existsSync(f.outputFile));
+});
+
+check('Archive supplement preserves a live journal boundary and flags a changed blind artifact', () => {
+  const f = archivedFixture('archive-partial');
+  fs.writeFileSync(f.databasePath+'-wal','fixture active WAL');
+  fs.appendFileSync(path.join(f.sampleRoot,'artifacts','facts.txt'),'changed');
+  const sample = createArchivedSupplement(f.root,f.summaryHash,f.outputFile).samples[0];
+  assert.deepEqual(sample.observations.cold,{status:'UNAVAILABLE',reason:'uncheckpointed_database'});
+  assert.equal(sample.observations.artifacts.matched,0);
+  assert.equal(fs.readFileSync(f.databasePath+'-wal','utf8'),'fixture active WAL');
 });
 
 const report = {success: checks.every(check => check.pass), output, checks,

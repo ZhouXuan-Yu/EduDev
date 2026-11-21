@@ -23,7 +23,7 @@ function exactKeys(value, keys) {
 }
 
 // Reject links at every component, even links resolving within the owned directory.
-function confined(root, relative, kind = 'file') {
+export function confined(root, relative, kind = 'file') {
   requireThat(typeof relative === 'string' && relative.length && !relative.includes('\\')
     && !path.isAbsolute(relative) && !relative.includes(':')
     && relative.split('/').every(part => part && part !== '.' && part !== '..'), 'unsafe_path');
@@ -38,12 +38,12 @@ function confined(root, relative, kind = 'file') {
   requireThat(resolved.startsWith(root + path.sep), 'path_escape');
   return resolved;
 }
-function directory(input) {
+export function directory(input) {
   requireThat(!fs.lstatSync(path.resolve(input)).isSymbolicLink(), 'symlink');
   const root = fs.realpathSync(input); requireThat(fs.statSync(root).isDirectory(), 'directory_required'); return root;
 }
 function json(file) {return JSON.parse(fs.readFileSync(file, 'utf8'));}
-function newJson(file, value, protectedRoot) {
+export function newJson(file, value, protectedRoot) {
   const target = path.resolve(file), parent = fs.realpathSync(path.dirname(target));
   requireThat(!fs.existsSync(target), 'output_exists');
   requireThat(!protectedRoot || (parent !== protectedRoot && !parent.startsWith(protectedRoot + path.sep)), 'output_inside_evidence');

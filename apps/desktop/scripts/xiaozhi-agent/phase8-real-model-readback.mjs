@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import {sha256, q5Source} from './phase8-real-model-plan.mjs';
 import {toolResultDigest} from '../../src/main/xiaozhi-agent/events/native-tail.ts';
@@ -17,8 +18,16 @@ function exactQ5Scopes(scopes) {
       && Object.entries(expected).every(([key, value]) => JSON.stringify(scope[key]) === JSON.stringify(value))));
 }
 
-export function readOriginalRecords(databasePath, sessionId, runId, {workspace} = {}) {
-  const database = new DatabaseSync(databasePath, {readOnly: true});
+function openReadbackDatabase(databasePath, immutable) {
+  if (!immutable) return new DatabaseSync(databasePath, {readOnly: true});
+  const uri = pathToFileURL(databasePath);
+  uri.searchParams.set('mode', 'ro');
+  uri.searchParams.set('immutable', '1');
+  return new DatabaseSync(uri.href, {readOnly: true});
+}
+
+export function readOriginalRecords(databasePath, sessionId, runId, {workspace, immutable = false} = {}) {
+  const database = openReadbackDatabase(databasePath, immutable);
   try {
     const tables = new Set(database.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row => row.name));
     if (!tables.has('ai_agent_runs')) throw Error('phase8_original_runs_missing');
@@ -74,11 +83,11 @@ export function readOriginalRecords(databasePath, sessionId, runId, {workspace} 
 }
 
 /** Supplemental fixed-public-source evidence. Missing native evidence never certifies a read. */
-export function readQ5SourceEvidence({databasePath,binding,records,events=[],webpageHttpTiming}) {
+export function readQ5SourceEvidence({databasePath,binding,records,events=[],webpageHttpTiming,immutable=false}) {
   const evidence={source:q5Source,status:'not_read',httpDispatchCount:webpageHttpTiming?.rows?.length || 0,
     http200Complete:Boolean(webpageHttpTiming?.rows?.some(row=>row.status===200&&Number.isFinite(row.responseEndAt))),
     nativeStatus:'unavailable',receipts:[]};
-  const database=new DatabaseSync(databasePath,{readOnly:true});
+  const database=openReadbackDatabase(databasePath,immutable);
   try{
     const present=database.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='xiaozhi_pi_session_bindings'").get();
     if(!present)return evidence;
