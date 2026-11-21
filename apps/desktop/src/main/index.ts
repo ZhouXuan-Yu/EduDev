@@ -1,6 +1,7 @@
 import {registerBackupRestore} from './backup/restore-api';
 import {registerWindowsUpdate} from './updates/windows-update-api';
 import {applyPendingUpdateRollback} from './updates/pending-rollback';
+import {runStartupRecovery} from './updates/startup-recovery';
 import {backupApplicationVersion} from './backup/compatibility';
 import {BackupRestoreVersionError,selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
@@ -252,6 +253,11 @@ if (ownsDesktop) app.whenReady().then(async () => {
   loadLocalEnv();
   const baseDataRoot = process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData');
   const appVersion=backupApplicationVersion(app);
+  if (app.commandLine.hasSwitch('xiaozhi-recover')) {
+    try { await runStartupRecovery(app.getPath('userData'),baseDataRoot,appVersion); }
+    finally { app.quit(); }
+    return;
+  }
   try { await applyPendingUpdateRollback(app.getPath('userData'),baseDataRoot,appVersion); }
   catch(error) { dialog.showErrorBox('版本回退未启用',error instanceof Error ? error.message : '无法核对回退副本'); app.quit(); return; }
   let dataRoot=baseDataRoot;

@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 启动前工作区恢复
+
+从真实 Electron 入口读取已验证快照，损坏的合成工作区仍保留，正常冷启使用独立副本。已验证原生选择窗口取消，并独立核对 SQLite。正式安装快捷方式、签名覆盖更新及第二台 Windows 保持待验。 [本轮证据](../goal/xiaozhi-harness/evidence/phase8/windows-startup-recovery-20261121.json)
+
 ## 2026-11-21 版本回退准备
 
 实际设置页完成快照核对、独立恢复副本、安排、取消与本机构建冷启动。新版和旧版的目录选择还通过独立 SQLite 和文件用例检查。UM-02 正式覆盖安装及 QG-09 保持待验。 [命令和原始证据](../goal/xiaozhi-harness/evidence/phase8/windows-update-rollback-20261121.json)

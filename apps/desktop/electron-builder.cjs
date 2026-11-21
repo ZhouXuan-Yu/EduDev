@@ -16,7 +16,7 @@ module.exports={
   {from:'../../python/omni_edu_education/SOURCE.md',to:'licenses/education/SOURCE.md'},
  ],
  win:{target:[{target:'nsis',arch:['x64']}],icon:'build/icon.ico',requestedExecutionLevel:'asInvoker',signAndEditExecutable:false},
- nsis:{oneClick:false,perMachine:false,allowToChangeInstallationDirectory:true,
+ nsis:{oneClick:false,perMachine:false,allowToChangeInstallationDirectory:true,include:'build/installer.nsh',
   createDesktopShortcut:true,createStartMenuShortcut:true,shortcutName:'小智',runAfterFinish:false,deleteAppDataOnUninstall:false,
   artifactName:'Xiaozhi-Setup-${version}-${arch}.${ext}'},
 };

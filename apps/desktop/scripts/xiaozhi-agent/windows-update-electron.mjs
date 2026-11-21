@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {once} from 'node:events';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -193,6 +194,121 @@ try {
   assert.equal(fs.readFileSync(path.join(pending.dataRoot,note),'utf8'),'升级前的备课记录');
   assert.deepEqual(rendererErrors,[]);
   checks.push('On cold launch the matching real source build activates the scheduled copy and retains both sets of lesson notes.');
+
+  await app.close();
+  app = undefined;
+  const startupData = path.join(root,'startup-damaged-data');
+  const startupProfile = path.join(root,'startup-profile');
+  const startupCopies = path.join(root,'startup-copies');
+  for (const directory of [startupData,startupProfile,startupCopies]) fs.mkdirSync(directory);
+  const damaged = path.join(startupData,'app.db');
+  fs.writeFileSync(damaged,'synthetic upgrade failure: database cannot open');
+  const damagedDigest = sha(fs.readFileSync(damaged));
+  const startupSelection = path.join(startupProfile,'xiaozhi-data-selection.v1.json');
+  const startupLog = path.join(root,'startup-dialogs.json');
+  const fixtureMain = path.join(root,'startup-fixture.mjs');
+  fs.writeFileSync(fixtureMain, `
+    import {dialog} from 'electron';
+    import {readFileSync, writeFileSync} from 'node:fs';
+    import {pathToFileURL} from 'node:url';
+    const fixture = JSON.parse(process.env.RECOVERY_TEST_DIALOGS);
+    const events = [];
+    const ready = new Promise(resolve => { globalThis.beginRecovery = resolve; });
+    const report = event => {
+      events.push(event);
+      writeFileSync(fixture.log, JSON.stringify(events));
+    };
+    dialog.showOpenDialog = async options => {
+      await ready;
+      report({title: options.title});
+      const file = options.properties.includes('openFile') ? fixture.record : fixture.destination;
+      return {canceled: !file, filePaths: file ? [file] : []};
+    };
+    dialog.showMessageBox = async options => {
+      report({type: options.type, message: options.message, detail: options.detail, buttons: options.buttons,
+        cancelId: options.cancelId, defaultId: options.defaultId});
+      if (options.type === 'warning' && fixture.changeManifest) {
+        const manifest = readFileSync(fixture.changeManifest);
+        writeFileSync(fixture.changeManifest, Buffer.concat([manifest, Buffer.from(' ')]));
+      }
+      return {response: options.type === 'warning' && fixture.confirm ? 1 : 0, checkboxChecked: false};
+    };
+    await import(pathToFileURL(fixture.main));
+  `);
+  const movedRecord = path.join(relocated, path.basename(recordPath));
+  const movedManifest = path.join(relocated,path.basename(backup),'omni-edu-backup-manifest.v1.json');
+  const startupEnv = {...env, OMNI_EDU_DATA_ROOT: startupData};
+  async function launchRecovery({record = movedRecord, confirm = false, changeManifest = ''} = {}) {
+    const dialogs = JSON.stringify({main, log:startupLog, record, destination:startupCopies, confirm, changeManifest});
+    app = await electron.launch({args:[fixtureMain,'--user-data-dir='+startupProfile,'--xiaozhi-recover'],
+      cwd:desktop,env:{...startupEnv,RECOVERY_TEST_DIALOGS:dialogs},timeout:60000});
+    await assertIsolatedPiMain(app,main,startupProfile);
+    const child = app.process();
+    const finished = once(child,'exit',{signal:AbortSignal.timeout(30000)});
+    const triggered = app.evaluate(() => {setTimeout(globalThis.beginRecovery,100);});
+    const [[code]] = await Promise.all([finished,triggered]);
+    assert.equal(code,0);
+    app = undefined;
+    assert.equal(sha(fs.readFileSync(damaged)),damagedDigest);
+    return JSON.parse(fs.readFileSync(startupLog,'utf8'));
+  }
+
+  const cancelledStartup = await launchRecovery();
+  const confirmation = cancelledStartup.find(event => event.type === 'warning');
+  assert.equal(confirmation.defaultId,0);
+  assert.deepEqual(confirmation.buttons,['取消','创建并启用副本']);
+  assert(confirmation.detail.includes(currentVersion) || confirmation.message.includes(currentVersion));
+  assert(confirmation.detail.includes(targetVersion) && confirmation.detail.includes('MiB'));
+  assert.deepEqual(fs.readdirSync(startupCopies),[]);
+  assert(!fs.existsSync(startupSelection));
+  const malformed = await launchRecovery({record:path.join(relocated,path.basename(badRecord)),confirm:true});
+  assert.match(malformed.at(-1).detail,/不匹配/);
+  assert.deepEqual(fs.readdirSync(startupCopies),[]);
+  assert(!fs.existsSync(startupSelection));
+  checks.push('Startup recovery skips the unreadable working SQLite, defaults to cancel, and rejects a mismatched update record without writing a copy or selection.');
+
+  const wrongVersionRecord = path.join(relocated,'wrong-startup-version.json');
+  fs.writeFileSync(wrongVersionRecord,JSON.stringify({...record,currentVersion:'0.0.0',targetVersion:currentVersion,fileName:name(currentVersion)}));
+  const newerProgram = await launchRecovery({record:wrongVersionRecord,confirm:true});
+  assert.match(newerProgram.at(-1).detail,/需要小智 0\.0\.0/);
+  const alreadyPending = path.join(startupProfile,'xiaozhi-pending-rollback.v1.json');
+  const pendingBytes = JSON.stringify({...pending,baseRoot:startupData,previousRoot:startupData});
+  fs.writeFileSync(alreadyPending,pendingBytes);
+  try {
+    const occupied = await launchRecovery({confirm:true});
+    assert.match(occupied.at(-1).detail,/已有回退安排/);
+    assert.equal(fs.readFileSync(alreadyPending,'utf8'),pendingBytes);
+    assert.deepEqual(fs.readdirSync(startupCopies),[]);
+    assert(!fs.existsSync(startupSelection));
+  } finally {
+    fs.unlinkSync(alreadyPending);
+  }
+  checks.push('Startup recovery rejects even the recorded newer program and retains an existing scheduled rollback without preparing a copy.');
+
+  const manifestBytes = fs.readFileSync(movedManifest);
+  try {
+    const changed = await launchRecovery({confirm:true,changeManifest:movedManifest});
+    assert.match(changed.at(-1).detail,/变化/);
+    assert.deepEqual(fs.readdirSync(startupCopies),[]);
+    assert(!fs.existsSync(startupSelection));
+  } finally {
+    fs.writeFileSync(movedManifest,manifestBytes);
+  }
+  checks.push('Startup recovery rechecks the snapshot after confirmation and refuses a changed manifest before selecting any data.');
+
+  const recovered = await launchRecovery({confirm:true});
+  assert.equal(recovered.at(-1).message,'恢复副本已启用');
+  const startupPointer = JSON.parse(fs.readFileSync(startupSelection,'utf8'));
+  assert.equal(startupPointer.activeAppVersion,currentVersion);
+  assert.equal(startupPointer.previousAppVersion,targetVersion);
+  assert.equal(startupPointer.previousRoot,startupData);
+  assert.equal(fs.readFileSync(path.join(startupPointer.dataRoot,note),'utf8'),'升级前的备课记录');
+  app = await electron.launch({args:[main,'--user-data-dir='+startupProfile],cwd:desktop,env:startupEnv,timeout:60000});
+  page = await app.firstWindow();
+  await assertIsolatedPiMain(app,main,startupProfile);
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()),startupPointer.dataRoot);
+  assert.equal(sha(fs.readFileSync(damaged)),damagedDigest);
+  checks.push('The real startup entry creates and activates a verified copy without a readable upgraded database or pending rollback, then a normal launch reads it with the original bytes intact.');
 } catch (failure) {
   error = failure.stack;
   process.exitCode = 1;

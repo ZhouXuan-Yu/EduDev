@@ -14,8 +14,13 @@ foreach ($key in $registryRoots) {
     $existing = Get-ItemProperty $key -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '小智|omni.edu|edudev' }
     if ($existing) { throw 'Existing product found; install probe must not replace it' }
 }
-foreach ($folder in @([Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('CommonDesktopDirectory'), [Environment]::GetFolderPath('Programs'))) {
-    if (Test-Path -LiteralPath (Join-Path $folder '小智.lnk')) { throw 'Existing shortcut found; preserve it' }
+$programs = [Environment]::GetFolderPath('Programs')
+$recoveryName = '小智 · 恢复工作区.lnk'
+$recoveryLink = Join-Path $programs $recoveryName
+foreach ($folder in @([Environment]::GetFolderPath('Desktop'), [Environment]::GetFolderPath('CommonDesktopDirectory'), $programs, [Environment]::GetFolderPath('CommonPrograms'))) {
+    foreach ($name in @('小智.lnk', $recoveryName)) {
+        if (Test-Path -LiteralPath (Join-Path $folder $name)) { throw 'Existing shortcut found; preserve it' }
+    }
 }
 New-Item -ItemType Directory -Path $output | Out-Null
 $report = @{ success = $false; installer = $installer; destination = $destination; boundary = 'Per-user install on this Windows host; no clean VM, OS upgrade or signed release acceptance.' }
@@ -29,6 +34,12 @@ try {
     $installed = $true
     $executable = Join-Path $destination '小智.exe'
     if (-not (Test-Path -LiteralPath $executable)) { throw 'Installed executable missing' }
+    if (-not (Test-Path -LiteralPath $recoveryLink -PathType Leaf)) { throw 'Start menu recovery shortcut missing' }
+    $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut($recoveryLink)
+    if ($shortcut.TargetPath -ine $executable -or $shortcut.Arguments -cne '--xiaozhi-recover') {
+        throw 'Start menu recovery shortcut points to the wrong application or mode'
+    }
+    $report.recoveryShortcut = @{ path = $recoveryLink; target = $shortcut.TargetPath; arguments = $shortcut.Arguments }
     $env:OMNI_EDU_PACKAGED_EXE = $executable
     & (Get-Command node).Source (Join-Path $PSScriptRoot 'packaged-smoke.mjs') *> (Join-Path $output 'installed-smoke.log')
     $report.smokeExit = $LASTEXITCODE
@@ -46,7 +57,8 @@ try {
             $uninstall.WaitForExit()
             $report.uninstallExit = $uninstall.ExitCode
             $report.executableRemoved = -not (Test-Path -LiteralPath (Join-Path $destination '小智.exe'))
-            if ($uninstall.ExitCode -ne 0 -or -not $report.executableRemoved) { $report.success = $false }
+            $report.recoveryShortcutRemoved = -not (Test-Path -LiteralPath $recoveryLink)
+            if ($uninstall.ExitCode -ne 0 -or -not $report.executableRemoved -or -not $report.recoveryShortcutRemoved) { $report.success = $false }
             # _?= runs the uninstaller in place. Remove only that known leftover in our previously absent probe directory.
             $remaining = @(Get-ChildItem -LiteralPath $destination -Force)
             if ($report.executableRemoved -and $remaining.Count -eq 1 -and $remaining[0].FullName -eq $uninstallers[0].FullName) {

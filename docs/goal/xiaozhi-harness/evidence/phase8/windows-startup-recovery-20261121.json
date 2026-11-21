@@ -1,0 +1,111 @@
+{
+  "date": "2026-11-21",
+  "base": "7d0d9f749f197d88c7b88a679a1c3984f27267c3",
+  "milestone": "UM-02 native startup recovery before opening the current workspace",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "evidenceRoot": "E:/EduDev-Harness-Startup-Recovery-20261121",
+  "mainSha256": "6de8351936d9a1b8a608b8c4d2d88bb5d0348e08f30b0c2b2513664b410aee1d",
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "result": "PASS",
+      "file": "build.log",
+      "sha256": "312844029e9e527561618a9ff404d30e97bf2aa02ec12681a126179cd9278258"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "result": "253/253"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/windows-update-electron.mjs",
+      "result": "12/12",
+      "rendererErrors": 0,
+      "file": "xiaozhi-windows-update-27DmNS/report.json",
+      "sha256": "665d52f756d7226d41adee5d8fa880eefc8634cf9f27f56817e8caec27411186"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs (after npm.cmd run build)",
+      "result": "PASS",
+      "frontendScenarioAssertions": 207,
+      "file": "electron-smoke.log",
+      "sha256": "c8a3fbd03942700800d0829f9e97398811b9536623fdf1e42c1dd5d05d24fe5e"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "result": "10/10",
+      "file": "omni-edu-restore-jVV6ij/report.json",
+      "sha256": "6e58e985802d0bc2eab2da3d405c3a6e80c468043f5c27a5ff4479d4d44fc63d"
+    },
+    {
+      "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File <evidenceRoot>/native-cancel.ps1",
+      "result": "PASS. Real Windows picker found by its title and owned Electron PID, then closed with WM_CLOSE. The process exited with code 0 and left the source database and active selection unchanged.",
+      "file": "native-cancel/report.json",
+      "sha256": "f90d0e4d3f6a6b6474766e74f4ebee6cb0a439a1ee92f8589b54f8d28bcc34d7",
+      "scriptSha256": "d0018a68c8737287f0434f0e90252b577a4ebb46dd1f9c95da470619eabbf065"
+    },
+    {
+      "command": "makensis -V3 -INPUTCHARSET UTF8 <evidenceRoot>/recovery-shortcut-check.nsi",
+      "result": "PASS. NSIS 3.04 compiles the production create/remove shortcut macros into a small Unicode fixture. It was not installed.",
+      "file": "shortcut-compile.log",
+      "sha256": "bf4f018a562e053b0bdeebb92a53b88b5451dc6349e3d2cdbc91bec636db287b"
+    },
+    {
+      "command": "[System.Management.Automation.Language.Parser]::ParseFile(test-nsis-install.ps1, ...)",
+      "result": "PASS. The actual install probe now checks shortcut name, process target, mode argument and uninstall removal. This probe was not run on the current host."
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "result": "Existing advisories; dependency and lock files unchanged",
+      "counts": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 10,
+        "low": 8
+      },
+      "file": "audit.json",
+      "sha256": "78fcc8880419ad66e74b32809609291ee7f5b1f715851f559c0ac473302d7047"
+    }
+  ],
+  "retainedAttempts": [
+    {
+      "result": "First startup-focused run passed 11/11 and was independently checked. The run on the same compiled main subsequently passed the wrong-version and existing pending branch.",
+      "file": "xiaozhi-windows-update-y34pJ2/report.json",
+      "sha256": "6cd68f55fb79a8fef9c48a08b2627c3c068bc4e7dafe9dbb1af471d2879fcbd0"
+    },
+    {
+      "result": "The real native picker exposed no cancel-button UIA element in the initial probe. The final probe closed the original native window after verifying its HWND process owner."
+    }
+  ],
+  "runtime": {
+    "commands": "The real Electron entry receives --xiaozhi-recover and a unique profile. File-picker and message-box responses are controlled in the repeatable startup-path test. The separate native probe uses the unmodified real platform dialog.",
+    "unreadableOriginalSha256": "5023ac66dcce81138186e5e561f354b95246732425efab2a47a43d6d4a40b716",
+    "restoredLessonSha256": "42ce7b416bbdb5268e7c30ed50a68fed33b7a6a7baddb48229daab3b21aa2b50",
+    "flow": [
+      "Default is cancel. Wrong version, wrong manifest SHA, a snapshot changed after confirmation and an already scheduled rollback leave the selection untouched.",
+      "The authorized run creates and verifies an independent copy before binding it to the old version. A normal cold launch reads the independent copy, and the original damaged database remains byte-identical."
+    ],
+    "selection": {
+      "file": "xiaozhi-windows-update-27DmNS/startup-profile/xiaozhi-data-selection.v1.json",
+      "sha256": "2347f724f4b237423b7fc000885a423e2d727aeb420a6f11e8691574c7fdb72b"
+    },
+    "dialogs": {
+      "file": "xiaozhi-windows-update-27DmNS/startup-dialogs.json",
+      "sha256": "12bd9f501806a32f6dbd1b196d56ef64b97f961dbf021864a51aeab3d4bf572f"
+    },
+    "paidRequests": 0
+  },
+  "independent": {
+    "reviewer": "Terra",
+    "result": "Matched the same main fingerprint to the original 11-case run. Checked the damaged SQLite bytes, the source and target version pointer, the backup receipt and the expected teaching note. Opened the restored SQLite read-only with immutable=1 and verified integrity_check=ok and user_version=0. Cold-launch behavior is documented by Electron; the independent check reads files directly."
+  },
+  "performance": {
+    "change": "The normal startup path checks one command-line switch and continues existing initialization. Startup recovery performs the same preflight, copy and verification as an ordinary restore without initializing or loading the old profile into the renderer.",
+    "unmeasured": "Cold start and recovery duration on different released installers and real teacher libraries."
+  },
+  "remaining": [
+    "Install genuine signed previous and current builds and exercise the installed shortcut, overwrite, migration failure, recovery and uninstall on independent Windows. The matching old build must include the startup recovery entry.",
+    "Restore on a second Windows environment without access to the source drive and check teaching continuity.",
+    "Formal model comparison and fixed Harness 88/89 acceptance remain at their previous scope."
+  ],
+  "rollback": "Keep both workspace directories and the snapshot. If reverting the source commit, save the active selection and retain a compatible executable before changing launch behaviour. No SQLite structure was changed."
+}
