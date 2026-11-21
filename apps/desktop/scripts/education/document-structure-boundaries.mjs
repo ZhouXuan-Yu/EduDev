@@ -14,7 +14,7 @@ async function check(name, run) {
   results.push(name);
   console.log("PASS " + name);
 }
-function page(rows, number = 1, total = 1, extra = [], printedRecovery) {
+function page(rows, number = 1, total = 1, extra = [], printedRecovery, nativeRecovery) {
   const lines = rows.map((row, index) => {
     const [
         text,
@@ -64,12 +64,70 @@ function page(rows, number = 1, total = 1, extra = [], printedRecovery) {
     lines,
     regions: [...regions, ...extra],
     ...(printedRecovery && { printedRecovery }),
+    ...(nativeRecovery && { nativeRecovery }),
   });
 }
 function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+const numberRows=[
+  ["1. 已知数轴上的两个点，求它们的距离。",.10,.10],
+  ["2.2.5的倒数是多少？",.10,.16,.60],
+  ["3. 已知三条边，求三角形的周长。",.10,.23],
+];
+function nativeNumber(text,mode){
+  const box=mode==="wrong-row"?[.10,.185,.68,.203]:[.10,.16,.68,.178];
+  const native={
+    schemaVersion:"xiaozhi.pdf-native-text.v1",engine:"unpdf-1.8.1/pdfjs-6.1.200-text.v1",
+    ok:true,version:"a".repeat(64),page:1,total:1,readBytes:1024,items:[],lines:[],
+  };
+  const addItem=(value,region)=>{
+    const id="native-item-"+(native.items.length+1);
+    native.items.push({id,text:value,box:region,transform:[1,0,0,1,0,0],width:12,height:12});
+    return id;
+  };
+  const ids=mode==="split"
+    ?[addItem("2.",[.10,.16,.12,.178]),addItem("2.5的倒数是多少？",[.126,.16,.68,.178])]
+    :[addItem(text,box)];
+  native.lines.push({id:"native-line-1",text,box,itemIds:ids});
+  if(mode==="duplicate")native.lines.push({id:"native-line-2",text,box,itemIds:ids});
+  return {policy:"pdf-native-crop-concordance.v1",rasterSha256:(mode==="wrong-raster"?"c":"b").repeat(64),
+    native,attempts:[],accepted:[],unresolved:[]};
+}
+await check("Positioned PDF whitespace restores a joined parent without stripping a decimal in its stem", () => {
+  for(const [rows,printed,mode,stem] of [
+    [numberRows,"2. 2.5的倒数是多少？","single","2.5的倒数是多少？"],
+    [numberRows,"2. 2.5的倒数是多少？","split","2.5的倒数是多少？"],
+    [numberRows.map((row,i)=>i===1?["２．２.5的倒数是多少？",...row.slice(1)]:row),
+      "２． ２.5的倒数是多少？","single","２.5的倒数是多少？"],
+  ]){
+    const recovered=page(rows,1,1,[],undefined,nativeNumber(printed,mode));
+    const groups=questions([recovered]),parent=recovered.paragraphs.find(p=>p.marker?.label==="2");
+    assert.deepEqual(groups.map(q=>q.number),["1","2","3"]);
+    assert.equal(groups[1].stem,stem);
+    assert.equal(parent.rawText,rows[1][0]);
+    assert.equal(recovered.rawText,rows.map(row=>row[0]).join("\n"));
+    assert(!groups[0].paragraphIds.includes(parent.id));
+  }
+});
+await check("Joined numbers need unique bound native evidence, the same text, and adjacent question numbers", () => {
+  for(const [rows,printed,mode] of [
+    [numberRows,"2.2.5的倒数是多少？","no-space"],
+    [numberRows,"2. 2.6的倒数是多少？","different-text"],
+    [numberRows,"2. 2.5的倒数是多少？","wrong-row"],
+    [numberRows,"2. 2.5的倒数是多少？","wrong-raster"],
+    [numberRows,"2. 2.5的倒数是多少？","duplicate"],
+    [[...numberRows.slice(0,2),["4. 已知三条边，求三角形的周长。",.10,.23]],"2. 2.5的倒数是多少？","number-gap"],
+    [[...numberRows.slice(0,2),["二、填空题",.10,.20],numberRows[2]],"2. 2.5的倒数是多少？","section"],
+  ]){
+    const recovered=page(rows,1,1,[],undefined,nativeNumber(printed,mode));
+    assert.equal(recovered.paragraphs.some(p=>p.marker?.label==="2"),false,mode);
+    assert(recovered.rawText.includes(rows[1][0]));
+  }
+  const genuine=page([["2.5千克的物体受力如图，求其加速度？",.1,.11]]);
+  assert(questions([genuine]).some(q=>q.stem.startsWith("2.5千克")));
+});
 const titleRegion={id:"shared-assessment-title",kind:"paragraph_title",score:.95,box:[.08,.07,.93,.141],needsReview:true};
 await check("Wrapped scoring headings retain all OCR lines and govern unpunctuated question numbers", () => {
   const input=[

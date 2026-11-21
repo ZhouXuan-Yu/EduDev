@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-21 与正文数字连写的题号
+
+数字连写的恢复由原生文字和本地版面共同确认。在明确的同栏邻题范围内只剥离一次已核对的题号。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 跨行标题合并在题号恢复前完成归属证明。仅为同一可信标题区中的紧邻印刷评分或作答说明合并，保留所有原行和原框。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

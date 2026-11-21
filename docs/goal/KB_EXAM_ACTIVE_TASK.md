@@ -1,5 +1,9 @@
 # 知识库与智能组卷：当前活动索引
 
+## 2026-11-21 与正文数字连写的题号
+
+M03/M05 已恢复有原页证据的连写题号。继续完成自然题页源核对、独立配答、正式检索与组卷，规模和换机按 KB-A01～A10 验收。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 M03/M05 已恢复折行的大题标题和题型归属。继续处理源页核对、复杂栏序、自然配答与可用题库存，整体验收仍按 KB-A01～A10。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

@@ -146,14 +146,14 @@ const seedStructure=async(id,engine,status='complete',sourceVersion=version)=>{
  return generation;
 };
 const legacyEngine=n=>`layout-paragraph-question.v${n}`;
-const lastExpectedLegacy=15;
+const lastExpectedLegacy=16;
 const supportedResources=lastExpectedLegacy+8;
 const selection=await addBatch();
 for(let n=1;n<=lastExpectedLegacy;n++){
  const id=await addItem(selection,`legacy-${n}.pdf`);
- await seedStructure(id,legacyEngine(n),n===15?'partial':'complete');
+ await seedStructure(id,legacyEngine(n),n===lastExpectedLegacy?'partial':'complete');
 }
-for(const engine of [DOCUMENT_STRUCTURE_ENGINE,'unknown-engine',legacyEngine(0),legacyEngine(17),'layout-paragraph-question.v15-extra']){
+for(const engine of [DOCUMENT_STRUCTURE_ENGINE,'unknown-engine',legacyEngine(0),legacyEngine(lastExpectedLegacy+2),'layout-paragraph-question.v16-extra']){
  await seedStructure(await addItem(selection,'excluded.pdf'),engine);
 }
 await seedStructure(await addItem(selection,'failed.pdf'),legacyEngine(14),'failed');

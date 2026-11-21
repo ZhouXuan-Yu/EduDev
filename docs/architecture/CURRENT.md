@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-21 与正文数字连写的题号
+
+v17 在段落生成前核对连写题号的原生交叉证据，并用原行保留标记。现有旧世代继续有效，可通过原队列重建。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 文档结构 v16 从共用标题区域恢复大题标题折行，供题号、段落和题型识别共用；旧结构世代仍可读。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

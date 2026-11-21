@@ -11,6 +11,7 @@ import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
 
 const source=fs.realpathSync(process.argv[2]);
+const verifyJoinedNumber=process.argv.includes("--joined-number");
 assert.equal(path.extname(source).toLowerCase(),".pdf");
 const root=fs.mkdtempSync(path.join(os.tmpdir(),"kb-wrapped-heading-"));
 const data=path.join(root,"data"),profile=path.join(root,"profile"),folder=path.join(root,"资料");
@@ -66,6 +67,8 @@ async function inspect(resourceId,heading,image){
   const structure=page.getByTestId("material-structure-panel");
   await openMaterialDisclosure(structure);
   await structure.getByTestId("structure-paragraphs").getByText(heading.text,{exact:true}).waitFor();
+  if(verifyJoinedNumber)
+    await structure.getByTestId("structure-questions").getByText(/^题 9 · 第 1 页/).waitFor();
   if(image){
     await structure.getByRole("button",{name:"对照原始页图"}).click();
     await structure.getByTestId("structure-source-image").evaluate(img=>img.decode());
@@ -94,6 +97,18 @@ try{
     assert(groups.every(q=>!q.paragraphIds.includes(h.id)));
     assert(groups.some(q=>q.section===h.text));
     assert.equal(h.rawText,h.lineIds.map(id=>physical.find(l=>l.id===id).text).join("\n"));
+  }
+  if(verifyJoinedNumber){
+    const original=pages[0].lines.find(line=>line.text.startsWith("9.4个家长"));
+    assert(original);
+    const ninth=pages[0].paragraphs.find(h=>h.marker?.kind==="parent"&&h.marker.label==="9");
+    const after=groups.find(q=>q.number==="9"),before=groups.find(q=>q.number==="8");
+    assert(ninth.lineIds.includes(original.id));
+    assert(after.stem.startsWith("4个家长"));
+    assert(after.paragraphIds.includes(ninth.id)&&!before.paragraphIds.includes(ninth.id));
+    assert(!before.stem.includes("9.4个家长"));
+    report.separatedQuestion=true;
+    report.extractedGroups=groups.length;
   }
   await inspect(parsed.resource_id,headings[0],true);
   await close();

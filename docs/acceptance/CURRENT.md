@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-21 与正文数字连写的题号
+
+真实 PDF 的连写题号验证覆盖分题、前后内容归属、小数原文、桌面原图和冷启。新版结构的可用稿继续通过原页核验。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)
+
 ## 2026-11-21 折行大题标题与题型归属
 
 折行标题专项检查同一原 PDF 的标题段、题组归属、布局不确定性和原页读回。原卷 PDF 验证继续单独核对页源门槛。 [专项报告](../research/evidence/kb/20261121/wrapped-assessment-heading/README.md)

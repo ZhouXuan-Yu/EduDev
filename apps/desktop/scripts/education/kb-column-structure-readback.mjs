@@ -17,7 +17,7 @@ assert(path.basename(root).startsWith('kb-structure-batch-'));
 const sourceRoot=path.join(root,'data');
 const paperGeneration='ae432b2e-4e7a-4d82-a8b1-b5ba81276f91';
 const answerGeneration='090c7035-8e3b-4f00-bc67-e904ce8d468f';
-const drafts=['1','3','6','7','10','12','14','15'];
+const drafts=['1','3','6','7','9','10','12','14','15'];
 const compareNumbers=(a,b)=>Number(a)-Number(b);
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const reader=directory=>(sql,...args)=>{
@@ -38,9 +38,14 @@ const frozen=bodies(paperRows), old=bodies(oldQuestions);
 const lastQuestionByPage=['10','17','19','21'];
 const footerLines=frozen.map(page=>page.paragraphs.at(-1));
 assert(footerLines.every(footer=>footer.role==='body'&&footer.rawText.startsWith('数学试题')));
-// Pin the only intentional v16 merges to physical OCR lines. All other
-// paragraph content remains exact, even when its derived ordinal ID changes.
+// Pin the v16 heading merges and v17 question boundary to physical OCR
+// lines. Other paragraph content stays exact when ordinal IDs change.
 const headingMerges=[['p1-line-14','p1-line-15'],['p2-line-22','p2-line-23']];
+const joinedSourceLines=['p1-line-53','p1-line-54'];
+const joinedOriginal=frozen[0].paragraphs.find(p=>JSON.stringify(p.lineIds)===JSON.stringify(joinedSourceLines));
+assert(joinedOriginal);
+assert.equal(joinedOriginal.role,'body');
+assert(joinedOriginal.text.startsWith('9.4个家长和2个儿童'));
 const paragraphIdMap=new Map();
 const expectedParagraphs=frozen.map(page=>{
   const expected=[];
@@ -63,6 +68,7 @@ const expectedParagraphs=frozen.map(page=>{
       paragraph.confidence=Math.min(...sources.map(p=>p.confidence));
       paragraph.issues=[...new Set(sources.flatMap(p=>p.issues))];
     }
+    if(original===joinedOriginal){paragraph.role='question';paragraph.marker={kind:'parent',label:'9'};}
     paragraph.id=`p${page.page}-paragraph-${expected.length+1}`;
     for(const source of sources)paragraphIdMap.set(source.id,paragraph.id);
     if(original===page.paragraphs.at(-1))paragraph.role='footer';
@@ -84,12 +90,32 @@ const remapQuestion=q=>{
     const continuation=page.paragraphs.find(part=>part.lineIds.includes(lines[1]));
     if(q.section===continuation.text)expected.section=expectedParagraphs[frozen.indexOf(page)].find(part=>part.lineIds.includes(lines[0])).text;
   }
+  if(q.number==='8'){
+    assert.equal(q.paragraphIds.at(-1),joinedOriginal.id);
+    assert(q.stem.endsWith('\n'+joinedOriginal.text));
+    expected.paragraphIds=expected.paragraphIds.filter(id=>id!==paragraphIdMap.get(joinedOriginal.id));
+    expected.anchors=q.anchors.filter(anchor=>JSON.stringify(anchor)!==JSON.stringify(joinedOriginal.anchor));
+    expected.stem=q.stem.slice(0,-('\n'+joinedOriginal.text).length);
+  }
   expected.id='sq_'+sha(JSON.stringify([frozen[0].resourceId,frozen[0].version,expected.section,expected.number,expected.paragraphIds,expected.stem])).slice(0,40);
   return expected;
 };
 function checkFooters(pages,questions){
   assert.equal(pages.length,frozen.length);
-  assert.deepEqual(questions.map(q=>q.number),old.map(q=>q.number));
+  const expectedNumbers=old.map(q=>q.number);
+  expectedNumbers.splice(expectedNumbers.indexOf('8')+1,0,'9');
+  assert.deepEqual(questions.map(q=>q.number),expectedNumbers);
+  const joined=pages[0].paragraphs.find(p=>JSON.stringify(p.lineIds)===JSON.stringify(joinedSourceLines));
+  const ninth=questions.find(q=>q.number==='9'), eighth=questions.find(q=>q.number==='8');
+  assert.equal(ninth.stem,joinedOriginal.text.slice(2));
+  assert(ninth.stem.startsWith('4个家长和2个儿童'));
+  assert.deepEqual(ninth.paragraphIds,[joined.id]);
+  assert.deepEqual(ninth.anchors,[joinedOriginal.anchor]);
+  assert(!eighth.paragraphIds.includes(joined.id));
+  assert(!eighth.stem.includes(joinedOriginal.text));
+  assert.equal(ninth.section,eighth.section);
+  assert.deepEqual(ninth.options,[]);
+  assert.deepEqual(ninth.subquestions,[]);
   for(const [i,page] of pages.entries()){
     assert(!page.issues.includes('ambiguous_columns'));
     for(const field of ['rawText','lines','columns']) assert.deepEqual(page[field],frozen[i][field]);
@@ -104,7 +130,7 @@ function checkFooters(pages,questions){
     assert.deepEqual(tail.anchors,prior.anchors.filter(a=>JSON.stringify(a)!==JSON.stringify(expected.anchor)));
     assert(!JSON.stringify(tail.subquestions).includes(expected.rawText));
   }
-  const unaffected=q=>!lastQuestionByPage.includes(q.number);
+  const unaffected=q=>q.number!=='9'&&!lastQuestionByPage.includes(q.number);
   assert.deepEqual(questions.filter(unaffected).map(preserved),old.filter(unaffected).map(remapQuestion).map(preserved));
 }
 assert.equal(frozen.length,4);
@@ -121,7 +147,7 @@ assert.deepEqual(replay(other).columns,other.columns);
 assert(replay(other).issues.includes('ambiguous_columns'));
 const report={replayedPages:frozen.length,groups:groups.length,layoutHeld:groups.length-drafts.length,
   layoutEligible:drafts,uncertainNaturalDoubleColumn:true,footersRecovered:footerLines.length,cleanedQuestionNumbers:lastQuestionByPage,
-  mergedHeadingSourceLines:headingMerges};
+  mergedHeadingSourceLines:headingMerges,joinedQuestionSourceLines:joinedSourceLines};
 if(!process.argv.includes('--desktop')){console.log(JSON.stringify({ok:true,...report}));process.exit(0);}
 
 const work=fs.mkdtempSync(path.join(os.tmpdir(),'kb-column-replay-'));
@@ -172,7 +198,7 @@ try{
   const publishMs=Math.round(performance.now()-began);
   assert.equal(current.engine,DOCUMENT_STRUCTURE_ENGINE);
   const published=bodies(questionRows(query,current.generation));
-  assert.equal(published.length,20);
+  assert.equal(published.length,old.length+1);
   assert(published.every(q=>q.status==='needs_review'&&!q.issues.includes('ambiguous_columns')));
   const sourceConflicts=published.filter(q=>q.issues.includes('pdf_text_conflict')).map(q=>q.number).sort(compareNumbers);
   assert.deepEqual(sourceConflicts,drafts);
