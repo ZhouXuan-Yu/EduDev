@@ -81,6 +81,24 @@ export function createPermissionStore(sql: Sql) {
       {requestDigest: next.requestDigest, revision: next.revision, owner: next.admittedOwner || next.request.owner});
   }
 
+  async function writeProfile(work: Sql, previous: PermissionProfile, mode: PermissionMode) {
+    const next: PermissionProfile = {...previous, revision: previous.revision + 1, mode, updatedAt: now()};
+    if (!validProfile(next)) throw Error('invalid_input');
+    await work.run(`INSERT INTO ${profiles}(session_id,revision,document_json,document_hash) VALUES(?,?,?,?)
+      ON CONFLICT(session_id) DO UPDATE SET revision=excluded.revision,document_json=excluded.document_json,document_hash=excluded.document_hash`,
+      [next.sessionId, next.revision, JSON.stringify(next), permissionHash(next)]);
+    await append(work, next.sessionId, 'profile_changed', next.sessionId, {mode, revision: next.revision});
+    return next;
+  }
+
+  async function revokeGrant(work: Sql, previous: ScopeGrant) {
+    if (!work.change) throw Error('configuration');
+    const next = {...previous, revision: previous.revision + 1, revokedAt: now()};
+    if (await work.change(`UPDATE ${grants} SET revision=?,revoked=1,document_json=?,document_hash=? WHERE grant_id=? AND revision=?`,
+      [next.revision, JSON.stringify(next), permissionHash(next), next.grantId, previous.revision]) !== 1) throw Error('permission_revision_conflict');
+    return next;
+  }
+
   async function issue(work: Sql, sessionId: string, scopes: PermissionScope[], provenance: ScopeGrant['provenance'], taskId: string | null, expiresAt: string | null) {
     const created: ScopeGrant[] = [];
     for (const scope of scopes) {
@@ -144,13 +162,7 @@ export function createPermissionStore(sql: Sql) {
       return transaction(async work => {
         const previous = await profile(work, sessionId);
         if (previous.revision !== revision) throw Error('permission_revision_conflict');
-        const next: PermissionProfile = {...previous, revision: revision + 1, mode, updatedAt: now()};
-        if (!validProfile(next)) throw Error('invalid_input');
-        await work.run(`INSERT INTO ${profiles}(session_id,revision,document_json,document_hash) VALUES(?,?,?,?)
-          ON CONFLICT(session_id) DO UPDATE SET revision=excluded.revision,document_json=excluded.document_json,document_hash=excluded.document_hash`,
-          [sessionId, next.revision, JSON.stringify(next), permissionHash(next)]);
-        await append(work, sessionId, 'profile_changed', sessionId, {mode, revision: next.revision});
-        return next;
+        return writeProfile(work, previous, mode);
       });
     },
     async issue(sessionId: string, scopes: PermissionScope[], provenance: ScopeGrant['provenance'], taskId: string | null = null, expiresAt: string | null = null) {
@@ -177,9 +189,7 @@ export function createPermissionStore(sql: Sql) {
         if (!previous) throw Error('permission_denied');
         if (previous.revokedAt) return previous;
         if (previous.revision !== revision || !work.change) throw Error('permission_revision_conflict');
-        const next = {...previous, revision: previous.revision + 1, revokedAt: now()};
-        if (await work.change(`UPDATE ${grants} SET revision=?,revoked=1,document_json=?,document_hash=? WHERE grant_id=? AND revision=?`,
-          [next.revision, JSON.stringify(next), permissionHash(next), grantId, revision]) !== 1) throw Error('permission_revision_conflict');
+        const next = await revokeGrant(work, previous);
         for (const approval of await readApprovals(work, sessionId)) {
           if (['pending', 'approved'].includes(approval.state) && approval.grantRefs.some(ref => ref.grantId === grantId)) {
             await writeApproval(work, approval, {...approval, revision: approval.revision + 1, state: 'invalidated', invalidatedReason: 'grant_revoked', updatedAt: now()});
@@ -286,6 +296,31 @@ export function createPermissionStore(sql: Sql) {
           await writeApproval(work, current, {...current, state: 'uncertain', revision: current.revision + 1, updatedAt: now()});
         });
       }
+    },
+    /** Run only on a detached copy before passing it to another Windows account. */
+    async resetDeviceAuthority() {
+      return transaction(async work => {
+        for (const row of await work.all(`SELECT session_id FROM ${profiles}`)) {
+          const saved = await profile(work, String(row.session_id));
+          if (saved.mode !== 'request') await writeProfile(work, saved, 'request');
+        }
+        for (const row of await work.all(`SELECT DISTINCT session_id FROM ${grants} WHERE revoked=0`)) {
+          for (const saved of await readGrants(work, String(row.session_id))) {
+            if (saved.revokedAt) continue;
+            const next = await revokeGrant(work, saved);
+            await append(work, saved.sessionId, 'grant_revoked', saved.grantId, {revision: next.revision, reason: 'device_migration'});
+          }
+        }
+        const open = await work.all(`SELECT * FROM ai_confirmation_items WHERE action_type=?
+          AND status IN ('pending','confirmed')`, [approvalAction]);
+        for (const row of open) {
+          const saved = availableApproval(row);
+          if (!saved || !['pending', 'approved', 'executing'].includes(saved.state)) continue;
+          const state = saved.state === 'executing' ? 'uncertain' : 'invalidated';
+          await writeApproval(work, saved, {...saved, state, revision: saved.revision + 1,
+            invalidatedReason: 'device_migration', updatedAt: now()});
+        }
+      });
     },
     async auditOnce(sessionId: string, kind: string, reference: string, metadata: unknown) {
       const id = 'xiaudit_' + permissionHash({sessionId, kind, reference, metadata});

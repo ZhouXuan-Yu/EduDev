@@ -37,11 +37,13 @@ export function validThinkingInput(value:unknown):value is ThinkingInput {
 export function createModelSettings(options: { store: OmniEduStore; root: string; codec?: SettingsKeyCodec; busy: () => boolean; assertMutation?: () => void;
   switchBound?: (input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) => Promise<void> }) {
   const { store, root, codec } = options;
+  const legacyModel = (legacy: {model: string; apiKey?: string; updatedAt: string}) =>
+    legacy.updatedAt || legacy.apiKey ? legacy.model : 'deepseek-flash';
   async function model(id?: string) {
     const saved = await store.xiaozhiState.modelSettings.configuration(), legacy = await store.getDeepSeekRuntimeSettings('deepseek');
     const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
     const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return binding?.model || selection?.model || saved.defaultModel || (legacy.apiKey ? legacy.model : 'deepseek-flash');
+    return binding?.model || selection?.model || saved.defaultModel || legacyModel(legacy);
   }
   async function runtime(id?: string) {
     const saved = await store.xiaozhiState.modelSettings.configuration();
@@ -54,7 +56,7 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     }
     const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
     const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return { provider: 'deepseek' as const, apiKey, model: binding?.model || selection?.model || saved.defaultModel || (legacy.apiKey ? legacy.model : 'deepseek-flash') };
+    return { provider: 'deepseek' as const, apiKey, model: binding?.model || selection?.model || saved.defaultModel || legacyModel(legacy) };
   }
   async function sessionModel(id: string, includeBusy = true): Promise<XiaozhiSessionModel> {
     const detail = await store.getAiConversationSession(id);

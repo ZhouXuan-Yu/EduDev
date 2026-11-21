@@ -718,6 +718,7 @@ export type ExportDataRootResult = {
   fileCount: number;
   manifestPath: string;
   verified: boolean;
+  purpose?: import('./backup-purpose').BackupPurpose;
   excludedRebuildablePaths?:string[];
   conversationOutputs?:ConversationOutputsBackup;
   externalOutputs?:ExternalOutputsBackup;
@@ -732,6 +733,7 @@ export type DataBackupVerificationResult = {
   backupPath: string;
   manifestPath: string;
   verified: boolean;
+  purpose?: import('./backup-purpose').BackupPurpose;
   fileCount: number;
   missingFiles: string[];
   changedFiles: string[];

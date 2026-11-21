@@ -137,11 +137,11 @@ function consumeE2eDataBackupDirectorySelection(kind: 'export' | 'verify') {
   return { canceled: !folderPath, filePaths: folderPath ? [folderPath] : [] };
 }
 
-async function selectDataBackupExportRoot() {
+async function selectDataBackupExportRoot(purpose?: import('../shared/backup-purpose').BackupPurpose) {
   const controlledSelection = consumeE2eDataBackupDirectorySelection('export');
   if (controlledSelection) return controlledSelection;
   return dialog.showOpenDialog({
-    title: '选择完整数据目录备份位置',
+    title: purpose === 'portable' ? '选择换机包目录' : '选择完整数据目录备份位置',
     properties: ['openDirectory', 'createDirectory'],
   });
 }
@@ -318,14 +318,15 @@ if (ownsDesktop) app.whenReady().then(async () => {
     }
     shell.showItemInFolder(filePath);
   });
-  ipcMain.handle('app:exportDataRoot', async event => {
+  ipcMain.handle('app:exportDataRoot', async (event, purpose: unknown) => {
     if (!settingsSender(event)) throw new Error('permission_denied');
+    if (purpose !== undefined && purpose !== 'full' && purpose !== 'portable') throw new Error('备份用途无法识别');
     const action = async (assertCurrent: () => void) => {
-      const result = await selectDataBackupExportRoot();
+      const result = await selectDataBackupExportRoot(purpose);
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app));
+      const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app), purpose);
       if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
       return exported;
     };

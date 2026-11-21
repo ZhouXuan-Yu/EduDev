@@ -2,11 +2,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import sqlite3 from 'sqlite3';
 import {hashFileSha256} from '../local-file-security';
+import {PORTABLE_LOCAL_ENV_FILE, type BackupPurpose} from '../../shared/backup-purpose';
 
 /** Disposable vectors and Word layout PNGs are rebuilt from retained source facts. */
 export const REBUILDABLE_BACKUP_PATHS=['cache/semantic-v1','cache/word-question-pages'] as const;
 const liveSqlite=new Set(['app.db','app.db-wal','app.db-shm','app.db-journal']);
-export async function copyDataBackupFiles(root:string,destination:string):Promise<number>{
+export async function copyDataBackupFiles(root:string,destination:string,purpose:BackupPurpose='full'):Promise<number>{
  let count=0;
  async function visit(relative:string){
   const source=path.join(root,relative),target=path.join(destination,relative);
@@ -15,6 +16,7 @@ export async function copyDataBackupFiles(root:string,destination:string):Promis
   for await(const entry of directory){
    const next=relative?relative+'/'+entry.name:entry.name,canonical=next.toLowerCase();
    if(REBUILDABLE_BACKUP_PATHS.some(p=>canonical===p)||!relative&&liveSqlite.has(canonical))continue;
+   if (purpose === 'portable' && canonical === PORTABLE_LOCAL_ENV_FILE) continue;
    if(entry.isSymbolicLink())throw Error('备份源包含链接，请先核对数据目录');
    if(entry.isDirectory())await visit(next);
    else if(entry.isFile()){await fs.copyFile(path.join(root,next),path.join(destination,next));count++;}

@@ -497,7 +497,8 @@ const api = {
   importKnowledgeResources: () => ipcRenderer.invoke('knowledge:import') as Promise<KnowledgeImportResult>,
   importKnowledgeResourcePaths: (sourcePaths: string[]) => ipcRenderer.invoke('knowledge:importPaths', sourcePaths) as Promise<KnowledgeImportResult>,
   showKnowledgeResource: (filePath: string) => ipcRenderer.invoke('knowledge:showResource', filePath),
-  exportDataRoot: () => ipcRenderer.invoke('app:exportDataRoot') as Promise<ExportDataRootResult | null>,
+  exportDataRoot: (purpose?: import('../shared/backup-purpose').BackupPurpose) =>
+    ipcRenderer.invoke('app:exportDataRoot', purpose) as Promise<ExportDataRootResult | null>,
   verifyDataBackup: () => ipcRenderer.invoke('app:verifyDataBackup') as Promise<DataBackupVerificationResult | null>,
   prepareBackupRestore:()=>ipcRenderer.invoke('app:prepareBackupRestore') as Promise<import('../shared/backup-restore').PreparedBackupRestore|null>,
   backupRestoreStatus:()=>ipcRenderer.invoke('app:backupRestoreStatus') as Promise<import('../shared/backup-restore').BackupRestoreStatus>,

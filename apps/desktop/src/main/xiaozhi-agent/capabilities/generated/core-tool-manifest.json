@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "c3a37a8c1f6f9e1e4eb32d9a335088a5e47d3af6d9a167e498a3317ed15242da",
+  "sourceHash": "7371f230c0f20c279b544abbe33481b679c224972898e2732c703fe65eb64987",
   "sources": [
     {
       "file": "package-lock.json",
@@ -680,7 +680,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "e72b7f268f5f5b89ba6ab1ab7edc6ab00759db2849cb1226079f2a3d81266d3a"
+      "sha256": "7c0677ba8df4b00ae60a18cd06152e2bc5c86821276f30c307614a55f5303205"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1140,7 +1140,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/model-settings.ts",
-      "sha256": "4bbdffe89b5854f80b143828c0e9fdd657d4b9742093c1fb00b618019c67fdc0"
+      "sha256": "96d96294a3de6dbf62a5689eaeb060d44cac74360b0513de667dd7f3943bbf3b"
     },
     {
       "file": "src/main/xiaozhi-agent/model-switch-state.ts",
@@ -1312,7 +1312,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/store.ts",
-      "sha256": "754612927f659a61182afa1851775c5de9307a839049143c7e56c55a188a0aa9"
+      "sha256": "f2a54db42a6431a7edee4e04e87e7aafec355e7dd79ef5072d798cd79f840e3b"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/summary.ts",

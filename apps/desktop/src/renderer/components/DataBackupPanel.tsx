@@ -1,4 +1,5 @@
 import type { BackupCompatibility } from '../../shared/backup-compatibility';
+import type { BackupPurpose } from '../../shared/backup-purpose';
 import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore,type BackupRestoreStatus} from '../../shared/backup-restore';
 import { CheckCircle2, HardDrive, LoaderCircle, ShieldCheck, TriangleAlert, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -61,6 +62,12 @@ function BackupCompatibilitySummary({ value }: { value?: BackupCompatibility }) 
   </div>;
 }
 
+function BackupPurposeSummary({ purpose }: { purpose?: BackupPurpose }) {
+  return purpose === 'portable' ? (
+    <p data-testid="data-backup-portable">换机包。请在新电脑配置模型密钥和 MCP 连接，重新确认需要的工具授权。</p>
+  ) : null;
+}
+
 export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   if (state.status === 'idle') {
     return <div className="backup-feedback neutral" data-testid="data-backup-idle">选择数据目录之外的位置创建完整备份，或选择已有备份进行只读校验。</div>;
@@ -78,7 +85,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-export-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}<ExternalBackupSummary value={state.exportResult}/><BackupCompatibilitySummary value={state.exportResult.compatibility}/><BackupContinuitySummary value={state.exportResult.continuity}/></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}<ExternalBackupSummary value={state.exportResult}/><BackupPurposeSummary purpose={state.exportResult.purpose}/><BackupCompatibilitySummary value={state.exportResult.compatibility}/><BackupContinuitySummary value={state.exportResult.continuity}/></div>
       </div>
     );
   }
@@ -87,7 +94,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-verify-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small><ExternalBackupSummary value={result}/><BackupCompatibilitySummary value={result.compatibility}/><BackupContinuitySummary value={result.continuity}/></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small><ExternalBackupSummary value={result}/><BackupPurposeSummary purpose={result.purpose}/><BackupCompatibilitySummary value={result.compatibility}/><BackupContinuitySummary value={result.continuity}/></div>
       </div>
     );
   }
@@ -120,20 +127,24 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   const busy = ['exporting','verifying','restoring','restarting'].includes(state.status);
   useEffect(() => { onBusyChange?.(busy); return () => onBusyChange?.(false); }, [busy, onBusyChange]);
 
-  const exportBackup = async () => {
+  const exportBackup = async (purpose: BackupPurpose = 'full') => {
     if (disabled || lock.current) return;
     lock.current = true;
-    setState({ status: 'exporting', message: modern ? '正在创建本地备份…' : '正在复制本地数据并生成 SHA-256 manifest…' });
+    const label = purpose === 'portable' ? '换机包' : '完整数据备份';
+    setState({ status: 'exporting', message: `正在创建${label}…` });
     try {
       if (!window.omniEdu?.exportDataRoot) throw new Error('完整备份接口不可用，请重新启动应用。');
-      const result = await window.omniEdu.exportDataRoot();
+      const result = await window.omniEdu.exportDataRoot(purpose === 'portable' ? purpose : undefined);
       if (!result) {
-        const message = '已取消完整数据备份，未创建新备份目录。';
+        const message = `已取消创建${label}，未创建新目录。`;
         setState({ status: 'cancelled', message });
         setStatus?.(message);
         return;
       }
-      const message = result.verified ? result.externalOutputs?.omittedCount ? `备份已生成并通过文件校验；${result.externalOutputs.omittedCount} 项成果未纳入，请查看遗漏说明。` : '完整数据备份已生成并通过校验。' : '备份已生成，但完整性校验未通过。';
+      const omissions = result.externalOutputs?.omittedCount || 0;
+      const message = result.verified
+        ? `${label}已生成并通过校验。${omissions ? `${omissions} 项成果未纳入，请查看遗漏说明。` : ''}`
+        : `${label}未通过完整性校验。`;
       setState({ status: result.verified ? 'export_success' : 'error', message, exportResult: result });
       setStatus?.(message);
     } catch (error) {
@@ -186,14 +197,15 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   };
   const restoreControls=<div className="pi-settings-actions" data-testid="data-backup-restore-controls">
     <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('prepare')} data-testid="data-backup-restore">恢复备份到新目录</Button>
-    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><BackupCompatibilitySummary value={state.restoreResult.compatibility}/><BackupContinuitySummary value={state.restoreResult.continuity}/><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
+    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><BackupPurposeSummary purpose={state.restoreResult.purpose}/><BackupCompatibilitySummary value={state.restoreResult.compatibility}/><BackupContinuitySummary value={state.restoreResult.continuity}/><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
     {restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('revert')} data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
   </div>;
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
-    <p>备份本机资料、题库、对话、默认生成文件及已登记的另选目录成果；另选目录中的其他文件不扫描。</p>
+    <p>换机包带走教学资料、题库、对话、已登记的成果和偏好。模型密钥、MCP 连接和工具授权在新电脑重新配置。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
-    <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
+    <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>创建本地备份</Button>
+      <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup('portable')} data-testid="data-backup-portable-export">创建换机包</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
     {restoreControls}
     <div aria-live="polite">
@@ -202,6 +214,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
           <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
           <ExternalBackupSummary value={state.exportResult||state.verificationResult}/>
+          <BackupPurposeSummary purpose={(state.exportResult||state.verificationResult)?.purpose}/>
           <BackupCompatibilitySummary value={(state.exportResult||state.verificationResult)?.compatibility}/>
           <BackupContinuitySummary value={(state.exportResult||state.verificationResult)?.continuity}/>
           {state.status === "verification_failed" && state.verificationResult?.errorMessage && <p>{state.verificationResult.errorMessage}</p>}
@@ -214,8 +227,9 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
       <div className="path-box" data-testid="data-root-path">{dataRoot}</div>
       <div className="quick-actions">
         <button className="secondary-action" disabled={busy} onClick={() => void exportBackup()} data-testid="data-backup-export">
-          <HardDrive size={17} />{state.status === 'exporting' ? '备份中…' : '备份完整数据目录'}
+          <HardDrive size={17} />备份完整数据目录
         </button>
+        <button className="secondary-action" disabled={busy || disabled || !dataRoot} onClick={() => void exportBackup('portable')} data-testid="data-backup-portable-export">创建换机包</button>
         <button className="secondary-action" disabled={busy} onClick={() => void verifyBackup()} data-testid="data-backup-verify">
           <ShieldCheck size={17} />{state.status === 'verifying' ? '校验中…' : '校验备份完整性'}
         </button>

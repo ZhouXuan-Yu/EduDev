@@ -20,6 +20,8 @@ import {extractWord} from './assets/word-host';
 import {wordUpgradeCompatible} from './assets/word-upgrade-compatible';
 import { backupCompatibility, readBackupDataVersion, readBackupVersion } from './backup/compatibility';
 import {readBackupContinuity} from './backup/continuity';
+import {assertPortableBackupDatabase, snapshotPortableBackup} from './backup/portable';
+import {PORTABLE_BACKUP_PURPOSE, PORTABLE_LOCAL_ENV_FILE, type BackupPurpose} from '../shared/backup-purpose';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
 import {assertOutputBackupDestination,copyConversationOutputs,readConversationOutputsBackup} from './backup/conversation-outputs';
 import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-outputs';
@@ -4857,29 +4859,33 @@ export class OmniEduStore {
     return { exportPath, fileCount };
   }
 
-  async exportDataRoot(destinationRoot: string, appVersion?: string): Promise<ExportDataRootResult> {
+  async exportDataRoot(destinationRoot: string, appVersion?: string, purpose: BackupPurpose = 'full'): Promise<ExportDataRootResult> {
     const destination = destinationRoot.trim();
     if (!destination) throw new Error('备份目标目录不能为空');
     if (await isInsideRoot(this.dataRoot, destination)) {
       throw new Error('备份目标不能位于当前数据目录内，避免递归覆盖源数据');
     }
     await assertOutputBackupDestination(this.dataRoot,destination);
-    const exportPath = join(destination, `OmniEduData-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`);
-    mkdirSync(exportPath,{recursive:true});
-    await snapshotDataBackupSqlite(this.db,join(exportPath,'app.db'));
+    const portable = purpose === PORTABLE_BACKUP_PURPOSE;
+    const label = portable ? 'OmniEduData-transfer' : 'OmniEduData-backup';
+    const exportPath = join(destination, `${label}-${new Date().toISOString().replace(/[:.]/g, '-')}`);
+    mkdirSync(destination, {recursive: true});
+    mkdirSync(exportPath);
+    const snapshot = portable ? snapshotPortableBackup : snapshotDataBackupSqlite;
+    await snapshot(this.db, join(exportPath, 'app.db'));
     const compatibility = appVersion ? {
       appVersion, dataVersion: await readBackupDataVersion(join(exportPath, 'app.db')),
     } : undefined;
-    const copied = await copyDataBackupFiles(this.dataRoot, exportPath);
+    const copied = await copyDataBackupFiles(this.dataRoot, exportPath, purpose);
     const conversationOutputs=await copyConversationOutputs(this.dataRoot,exportPath);
     const externalOutputs=await copyExternalOutputs(this.dataRoot,exportPath);
     const fileCount=copied+1+conversationOutputs.fileCount+externalOutputs.fileCount;
     const manifestPath = join(exportPath, 'omni-edu-backup-manifest.v1.json');
     const entries = await this.collectBackupManifestEntries(exportPath);
-    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, compatibility, ...(compatibility ? {compatibilityAppVersionSource:'desktop'} : {}), excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
+    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, compatibility, ...(compatibility ? {compatibilityAppVersionSource:'desktop'} : {}), ...(portable ? {purpose} : {}), excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
     const verification = await this.verifyDataBackup(exportPath, appVersion);
     if (!verification.verified) throw new Error(`备份完整性验证失败：${verification.errorMessage || '文件校验不一致'}`);
-    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, compatibility: verification.compatibility, continuity: verification.continuity, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
+    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, purpose: verification.purpose, compatibility: verification.compatibility, continuity: verification.continuity, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
   }
 
   async verifyDataBackup(backupPath: string, appVersion?: string): Promise<DataBackupVerificationResult> {
@@ -4896,8 +4902,9 @@ export class OmniEduStore {
     };
     try {
       if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
-      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown;compatibilityAppVersionSource?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;purpose?:unknown;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown;compatibilityAppVersionSource?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
       if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
+      if (parsed.purpose !== undefined && parsed.purpose !== PORTABLE_BACKUP_PURPOSE) return { ...base, errorMessage: '备份用途无法识别，请用原电脑的小智核对该备份。' };
       const expected = new Map(parsed.files.flatMap((item) => {
         const relativePath = String(item.path ?? '').replace(/\\/g, '/');
         const sha256 = String(item.sha256 ?? '');
@@ -4920,13 +4927,26 @@ export class OmniEduStore {
       const verified = !missingFiles.length && !changedFiles.length && !unexpectedFiles.length;
       const result = { ...base, conversationOutputs, externalOutputs, verified, fileCount: expected.size,
         missingFiles, changedFiles, unexpectedFiles, errorMessage: verified ? undefined : '备份文件与清单不一致' };
-      if (!verified || !appVersion || !expected.has('app.db')) return result;
-      const dataVersion = await readBackupDataVersion(join(resolvedBackup, 'app.db'));
-      const sourceVersion = readBackupVersion(parsed.compatibility, dataVersion);
-      const compatibility = backupCompatibility(sourceVersion, dataVersion, appVersion, parsed.compatibilityAppVersionSource);
-      const continuity = compatibility.status === 'ready' || compatibility.status === 'legacy'
-        ? await readBackupContinuity(join(resolvedBackup, 'app.db')) : undefined;
-      return { ...result, compatibility, continuity };
+      if (!verified) return result;
+      const databasePath = join(resolvedBackup, 'app.db');
+      const hasDatabase = expected.has('app.db');
+      let compatibility: DataBackupVerificationResult['compatibility'];
+      if (appVersion && hasDatabase) {
+        const dataVersion = await readBackupDataVersion(databasePath);
+        compatibility = backupCompatibility(readBackupVersion(parsed.compatibility, dataVersion), dataVersion,
+          appVersion, parsed.compatibilityAppVersionSource);
+        if (compatibility.status === 'newer_app' || compatibility.status === 'newer_data') return {...result, compatibility};
+      }
+      if (parsed.purpose === PORTABLE_BACKUP_PURPOSE) {
+        try {
+          if (!hasDatabase || [...expected.keys()].some(file => file.toLowerCase() === PORTABLE_LOCAL_ENV_FILE)) throw Error('configuration');
+          await assertPortableBackupDatabase(databasePath);
+        } catch {
+          return {...result, verified: false, errorMessage: '换机包未通过凭据和授权核对，请重新创建换机包。'};
+        }
+      }
+      const continuity = compatibility ? await readBackupContinuity(databasePath) : undefined;
+      return { ...result, purpose: parsed.purpose, compatibility, continuity };
     } catch (error) {
       return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
     }

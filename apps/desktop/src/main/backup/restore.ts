@@ -50,7 +50,7 @@ export async function prepareBackupRestore(options:{backupPath:string;parent:str
   const warnings=await relocateBackupDatabase(path.join(root,'app.db'),source.sourceDataRoot,root,source.sourceOutputRoot,outputs.path,externalRoots);
   if(external?.omittedCount)warnings.push(`备份时有 ${external.omittedCount} 项外选目录成果未能纳入；请查看备份清单中的遗漏说明。`);
   const database=copied.find(f=>f.file===path.join(root,'app.db'))!;database.sha256=await hashFileSha256(database.file);database.size=(await fs.stat(database.file)).size;
-  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings,compatibility:again.compatibility,continuity:again.continuity};
+  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings,purpose:again.purpose,compatibility:again.compatibility,continuity:again.continuity};
   await fs.writeFile(path.join(root,receiptName),JSON.stringify(receipt,null,2),'utf8');
   await fs.writeFile(path.join(instance,'restoration-files.v1.json'),JSON.stringify({schemaVersion:BACKUP_RESTORE_SCHEMA,id,sourceManifestSha256:createHash('sha256').update(manifestBytes).digest('hex'),files:copied,boundary:'Verified new-copy files after address migration; original events/native/check reports stay unchanged.'},null,2),'utf8');
   return receipt;

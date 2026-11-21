@@ -1,0 +1,116 @@
+{
+  "verifiedAtLocalDate": "2026-11-21",
+  "base": "eaf1fe145c8a801c043f3ebed5d24c9ea394ba53",
+  "worktree": "D:/WorkProject/EduProject-harness",
+  "desktopVersion": "0.1.0",
+  "builtMainSha256": "c115e91635203d7f292794268c6f4e27877733dbe35fd2319b2746e2f3c60597",
+  "testOutputRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/EduDev-Harness-Continuity-20261121",
+  "windowReportRoot": "xiaozhi-backup-compatibility-LFPC8K",
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "status": "PASS",
+      "log": "build-portable-delivery.log",
+      "sha256": "f8487176733ab674bce5d7db798ce2f31168cfd6350cc0ee65a387432af6c82e"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "status": "PASS",
+      "passed": 253,
+      "total": 253,
+      "log": "components-portable-final.log",
+      "sha256": "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-compatibility-electron.mjs",
+      "status": "PASS",
+      "passed": 16,
+      "total": 16,
+      "rendererErrors": 0,
+      "log": "xiaozhi-backup-compatibility-LFPC8K/report.json",
+      "sha256": "dca019d650400406806e12ce32e19d4c039e4e028908333bb650e161bfebe5d9"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "status": "PASS",
+      "passed": 207,
+      "total": 207,
+      "log": "electron-general-portable.log",
+      "testedMainSha256": "18ac5f10ec811985f7dc599fbb1f0b33dc8f79079ed224d8a80cd25cead474b4",
+      "scope": "Regression run preceded the final dialog title and button text change. The final compiled candidate passed the dedicated Electron and renderer suites.",
+      "sha256": "c6cdeb1971fdfff3ec25c05ca68d2aa7a19f2c617ea45f1db056e15fddb9c5bf"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "status": "PASS",
+      "passed": 8,
+      "total": 8,
+      "log": "portable-source.log",
+      "sha256": "1ff572c83368f292a224bdb4f7528e0fc5b7b6d2ddf02d422a8910e3316129d6"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs",
+      "status": "PASS",
+      "passed": 15,
+      "total": 15,
+      "log": "portable-permissions.log",
+      "sha256": "c380a2cfd8666d22ed47a1768e06f8eb1fbe819d451cd42991fa3fc0a0b5e4b6"
+    },
+    {
+      "command": "npm.cmd audit --omit=dev --json",
+      "status": "EXISTING_FINDINGS",
+      "findings": {
+        "critical": 0,
+        "high": 2,
+        "moderate": 10,
+        "low": 8
+      },
+      "log": "audit-portable.json",
+      "sha256": "1049725637b3708a89a928224e8ed1777bf575b662a150a4e9eef1056438a6e4"
+    }
+  ],
+  "package": {
+    "mode": "portable",
+    "databaseSha256": "0e1dc168e99dd302dbd1285a6aa8ccbb3c5c52e668eaf3755459e0e1634b02ef",
+    "manifestSha256": "da4a21ac415d0f33098d5e162d0ce851ca61390ebd0fc6c806995e15f3828be2"
+  },
+  "screenshots": [
+    {
+      "viewport": "1366×768",
+      "file": "portable-1366.png",
+      "sha256": "84a0e2fb7b1c213838d57b95fa27f30654224fb443fca0102f3a772c3d045839"
+    },
+    {
+      "viewport": "1920×1080",
+      "file": "portable-1920.png",
+      "sha256": "0b785f90311f451912c8c85efe0033809e460c0bc590bccc5bf884c6baabfcd9"
+    }
+  ],
+  "timing": {
+    "metric": "Elapsed UI click to verified export state, one warm synthetic fixture per mode",
+    "databaseBytes": 2920448,
+    "fullMs": 227,
+    "portableMs": 362,
+    "note": "Small local sample; no claim for large libraries."
+  },
+  "independent": {
+    "role": "Terra",
+    "finalCandidate": "Matched build SHA-256, checked both screenshots and read the final SQLite with an immutable connection.",
+    "findings": [
+      "Rowid 999 retained",
+      "Both inherited grants revoked",
+      "Permission mode request",
+      "Pending and approved converted to invalidated, executing to uncertain, executed retained"
+    ],
+    "previousCandidate": "Also compared four databases and searched both portable files for eight explicit synthetic credential markers. No markers found in those files. Restored instance can acquire a new grant scoped to its own generated-output directory."
+  },
+  "retains": "Source database, existing full backup path, registered local teaching data and versioned approvals.",
+  "limits": [
+    "Same physical Windows host, separate Electron profile; no independent machine or installation package.",
+    "No actual update and rollback, actual provider/MCP rebinding, PDF/Office migration or large-library timing in this slice.",
+    "Known app-managed account records were checked. Teachers’ free-form documents and conversation content remain part of the snapshot.",
+    "The first build ran out of disk space. Closed synthetic test artifacts were compacted in place and checked byte-for-byte before rerunning."
+  ],
+  "paidProviderRequests": 0,
+  "rollback": "The original workspace and verified full backups remain available. Restore to a new directory, then return to the previous data root from Settings if needed. If reverting this change, use a normal Git revert. There is no source database format migration."
+}

@@ -18,9 +18,83 @@ for (const directory of [dataRoot, profile, exportsRoot, restoreRoot]) fs.mkdirS
 
 const manifestFile = 'omni-edu-backup-manifest.v1.json';
 const checks = [];
+const timings = {};
 const rendererErrors = [];
 const sha = buffer => createHash('sha256').update(buffer).digest('hex');
+const canonical = value => Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']'
+  : value && typeof value === 'object'
+    ? '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}'
+    : JSON.stringify(value);
+const protocolHash = value => sha(canonical(value));
 let app, page, exported, reportError;
+
+function seedPortableFixture() {
+  const at = '2026-11-21T00:00:00.000Z';
+  const sessionId = 'aisession_aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+  const profile = {schemaVersion: 1, sessionId, revision: 4, mode: 'fullAccess', updatedAt: at};
+  const scope = {kind: 'filesystem', root: path.join(root, 'old-computer'), identity: sha('directory'), actions: ['read']};
+  const grant = {schemaVersion: 1, grantId: 'xigrant_fixture', revision: 1, sessionId, taskId: null, scope,
+    provenance: {kind: 'teacher', reference: 'fixture'}, createdAt: at, expiresAt: null, revokedAt: null};
+  const markers = ['fixture-deepseek-token', 'fixture-glm-token', 'fixture-shared-token', 'fixture-material-token',
+    'fixture-mcp-token', 'fixture-mcp-argument-credential', 'fixture-env-credential', 'fixture-previous-model-token'];
+  const db = new DatabaseSync(path.join(dataRoot, 'app.db'));
+  try {
+    const put = db.prepare('INSERT OR REPLACE INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)');
+    const save = (key, value) => put.run(key, JSON.stringify(value), at);
+    save('deepseek', {model:'deepseek-pro', apiKey: markers[0]});
+    save('glm', {model:'glm-4', apiKey: markers[1]});
+    save('xiaozhi.provider.v1', {schema:1, revision:4, defaultModel:'deepseek-pro', sealedKey:markers[7]});
+    save('xiaozhi.provider.v1', {schema:1, revision:5, defaultModel:'deepseek-pro', sealedKey:markers[2]});
+    save('xiaozhi.material-ai.v1', {revision:1, model:'qwen3-vl-plus', sealedKey:markers[3]});
+    save('xiaozhi.mcp.v1', {schemaVersion:1, revision:1, servers: [{sealedSecret:markers[4], args:[markers[5]]}]});
+    save('xiaozhi.thinking.default', {schema:1, revision:1, choice:'high'});
+    db.exec("CREATE TABLE migration_fixture_cursor (label TEXT); INSERT INTO migration_fixture_cursor (rowid,label) VALUES (999,'保留索引位置')");
+    db.prepare('INSERT INTO ai_conversation_sessions(id,title,created_at,updated_at) VALUES(?,?,?,?)').run(sessionId, '合成换机对话', at, at);
+    db.prepare('INSERT INTO xiaozhi_permission_profiles_v1 VALUES(?,?,?,?)').run(sessionId, profile.revision, JSON.stringify(profile), protocolHash(profile));
+    db.prepare('INSERT INTO xiaozhi_permission_grants_v1 VALUES(?,?,?,?,?,?,?,?)').run(grant.grantId, sessionId, null, 1, 0,
+      JSON.stringify(grant), protocolHash(grant), at);
+    for (const state of ['pending','approved','executing','executed']) {
+      const action = 'local-read-' + state, taskId = 'task_fixture', runId = 'run_fixture';
+      const common = {requirementsVersion: 1, action, inputDigest: sha(action), scopes: [scope], files: [],
+        provider: null, classification: 'teacher_private'};
+      const request = {...common, schemaVersion: 2, owner: {sessionId, taskId, runId, generation: 1},
+        callId: action, purpose: '换机审批', expiresAt: '2099-01-01T00:00:00.000Z'};
+      const id = 'confirm_' + state;
+      const approval = {schemaVersion: 2, id, revision: 1, request, requestDigest: protocolHash({...common, sessionId, taskId}),
+        permissionSnapshotHash: sha('fixture'), grantRefs: [{grantId: grant.grantId, revision: 1}], state,
+        scope: 'operation', createdAt: at, updatedAt: at};
+      db.prepare(`INSERT INTO ai_confirmation_items(id,run_id,session_id,action_type,status,title,payload_json,created_at,updated_at)
+        VALUES(?,?,?,'xiaozhi_permission_v2',?,?,?,?,?)`).run(id, runId, sessionId, state === 'pending' ? 'pending' : 'confirmed',
+        '合成审批', JSON.stringify(approval), at, at);
+    }
+  } finally { db.close(); }
+  fs.writeFileSync(path.join(dataRoot, '.env.local'), 'DEEPSEEK_API_KEY=' + markers[6]);
+  fs.writeFileSync(path.join(dataRoot, '换机资料.md'), '# 合成备课资料\n');
+  return {markers, sessionId};
+}
+
+function checkPortableDatabase(file, marker, sessionId, portable) {
+  const db = new DatabaseSync(file, {readOnly: true});
+  try {
+    const setting = key => {
+      const row = db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(key);
+      return row && JSON.parse(row.value_json);
+    };
+    assert.equal(setting('xiaozhi.provider.v1').defaultModel, 'deepseek-pro');
+    assert.equal(setting('xiaozhi.provider.v1').sealedKey, portable ? undefined : marker);
+    assert.equal(setting('xiaozhi.thinking.default').choice, 'high');
+    assert.equal(db.prepare('SELECT rowid FROM migration_fixture_cursor').get().rowid, 999);
+    assert.equal(setting('deepseek').model, 'deepseek-pro');
+    assert.equal(Boolean(setting('xiaozhi.mcp.v1')), !portable);
+    assert.equal(db.prepare('SELECT title FROM ai_conversation_sessions WHERE id=?').get(sessionId).title, '合成换机对话');
+    const profile = db.prepare('SELECT document_json FROM xiaozhi_permission_profiles_v1 WHERE session_id=?').get(sessionId);
+    assert.equal(JSON.parse(profile.document_json).mode, portable ? 'request' : 'fullAccess');
+    assert.equal(db.prepare('SELECT revoked FROM xiaozhi_permission_grants_v1 WHERE session_id=?').get(sessionId).revoked, portable ? 1 : 0);
+    const approvals = db.prepare("SELECT payload_json FROM ai_confirmation_items WHERE session_id=? AND action_type='xiaozhi_permission_v2' ORDER BY id").all(sessionId);
+    assert.deepEqual(approvals.map(row => JSON.parse(row.payload_json).state),
+      portable ? ['invalidated','executed','uncertain','invalidated'] : ['approved','executed','executing','pending']);
+  } finally { db.close(); }
+}
 
 function copyBackup(name, edit) {
   const folder = path.join(root, name);
@@ -37,7 +111,7 @@ async function pick(source) {
     dialog.showOpenDialog = async options => {
       const title = options.title;
       const directory = title.includes('保存位置') ? restoreRoot
-        : title.includes('完整数据目录备份位置') ? exportsRoot
+        : /完整数据目录备份位置|换机包目录/u.test(title) ? exportsRoot
         : source;
       return directory ? { canceled: false, filePaths: [directory] } : { canceled: true, filePaths: [] };
     };
@@ -222,13 +296,91 @@ try {
   assert.equal(sha(fs.readFileSync(path.join(exported, 'app.db'))), originalDatabase);
   assert.deepEqual(rendererErrors, []);
   checks.push('Cancel and failed preflight preserve the active data root and original backup bytes.');
+
+  const {markers, sessionId} = seedPortableFixture();
+  const portableStart = performance.now();
+  await page.getByTestId('data-backup-portable-export').click();
+  await expectVisible('data-backup-export-success', /换机包已生成并通过校验/);
+  await expectVisible('data-backup-portable', /新电脑配置模型密钥/);
+  const portable = await page.getByTestId('data-backup-export-path').innerText();
+  const portableDb = path.join(portable, 'app.db');
+  const portableBytes = fs.readFileSync(portableDb);
+  timings.portableExportMs = Math.round(performance.now() - portableStart);
+  timings.portableDatabaseBytes = portableBytes.length;
+  assert.equal(JSON.parse(fs.readFileSync(path.join(portable, manifestFile), 'utf8')).purpose, 'portable');
+  assert(!fs.existsSync(path.join(portable, '.env.local')));
+  assert(!fs.existsSync(portableDb + '-wal'));
+  assert.equal(fs.readFileSync(path.join(portable, '换机资料.md'), 'utf8'), '# 合成备课资料\n');
+  for (const mark of markers) assert(!portableBytes.includes(mark), 'Portable bytes contain a fixture credential');
+  checkPortableDatabase(portableDb, markers[2], sessionId, true);
+  checkPortableDatabase(path.join(dataRoot, 'app.db'), markers[2], sessionId, false);
+  checks.push('The portable Settings export preserves teaching data and preferences, removes registered credentials from SQLite bytes and resets prior authority without changing the source.');
+
+  await pick(portable);
+  await page.getByTestId('data-backup-verify').click();
+  await expectVisible('data-backup-verify-success');
+  await expectVisible('data-backup-portable');
+  await page.getByTestId('data-backup-restore').click();
+  const portableReady = await expectVisible('data-backup-restore-ready', /新电脑配置模型密钥/);
+  const migratedRoot = await portableReady.locator('.pi-settings-location').innerText();
+  checkPortableDatabase(path.join(migratedRoot, 'app.db'), markers[2], sessionId, true);
+  assert.equal(fs.readFileSync(path.join(migratedRoot, '换机资料.md'), 'utf8'), '# 合成备课资料\n');
+  for (const size of [{width:1366,height:768}, {width:1920,height:1080}]) {
+    await page.setViewportSize(size);
+    await portableReady.scrollIntoViewIfNeeded();
+    const button = page.getByTestId('data-backup-restore-activate');
+    assert(await button.isVisible());
+    assert(await button.evaluate(element => element.getBoundingClientRect().right <= innerWidth));
+    await page.screenshot({path:path.join(root, 'portable-' + size.width + '.png')});
+  }
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), dataRoot);
+  assert.equal(sha(fs.readFileSync(portableDb)), sha(portableBytes));
+  checks.push('Verification and restore show the reconfiguration notice and leave the original workspace selected.');
+
+  const fullStart = performance.now();
+  await page.getByTestId('data-backup-export').click();
+  await expectVisible('data-backup-export-success', /完整数据备份已生成/);
+  const full = await page.getByTestId('data-backup-export-path').innerText();
+  timings.fullExportMs = Math.round(performance.now() - fullStart);
+  timings.fullDatabaseBytes = fs.statSync(path.join(full, 'app.db')).size;
+  checkPortableDatabase(path.join(full, 'app.db'), markers[2], sessionId, false);
+  assert(fs.existsSync(path.join(full, '.env.local')));
+  const mislabeled = path.join(root, 'mislabeled-transfer');
+  fs.cpSync(full, mislabeled, {recursive: true});
+  fs.unlinkSync(path.join(mislabeled, '.env.local'));
+  const wrongManifest = path.join(mislabeled, manifestFile);
+  const wrong = JSON.parse(fs.readFileSync(wrongManifest, 'utf8'));
+  wrong.purpose = 'portable';
+  wrong.files = wrong.files.filter(entry => entry.path !== '.env.local');
+  wrong.fileCount = wrong.files.length;
+  fs.writeFileSync(wrongManifest, JSON.stringify(wrong));
+  await verifyAndReject(mislabeled, undefined, /未通过凭据和授权核对/, false);
+  checks.push('Full backups retain same-machine settings, and a full database mislabeled as portable fails verification and restore.');
+
+  await app.close();
+  const targetProfile = path.join(root, 'recovered-profile');
+  app = await electron.launch({args: [main, '--user-data-dir=' + targetProfile], cwd: desktop,
+    env: {...env, OMNI_EDU_DATA_ROOT: migratedRoot}, timeout: 60000});
+  page = await app.firstWindow();
+  page.on('pageerror', error => rendererErrors.push(String(error)));
+  await assertIsolatedPiMain(app, main, targetProfile);
+  await page.getByRole('button', {name:'设置', exact:true}).waitFor();
+  assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), migratedRoot);
+  const settings = await page.evaluate(() => window.omniEdu.getXiaozhiSettings());
+  assert.equal(settings.ok, true);
+  const restoredModel = settings.value;
+  assert.equal(restoredModel.configured, false);
+  assert.equal(restoredModel.defaultModel, 'deepseek-pro');
+  assert.equal(restoredModel.thinking.global.choice, 'high');
+  assert.deepEqual(rendererErrors, []);
+  checks.push('A fresh Electron profile cold-starts from the restored copy with the chosen model and thinking level, awaiting its own credential.');
 } catch (error) {
   reportError = error.stack;
   process.exitCode = 1;
   if (page) await page.screenshot({ path: path.join(root, 'failure.png') }).catch(() => {});
 } finally {
   await app?.close();
-  const report = { ok: !reportError, root, mainSha256: sha(fs.readFileSync(main)), checks, rendererErrors, error: reportError };
+  const report = { ok: !reportError, root, mainSha256: sha(fs.readFileSync(main)), checks, timings, rendererErrors, error: reportError };
   fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report, null, 2));
 }
