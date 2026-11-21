@@ -110,6 +110,7 @@ try {
   assert(request.request.scopes.some(scope=>scope.kind==='filesystem'&&scope.root===alternate));
   assert.deepEqual(state(a),before);
   report.checks.push('New B can select B workspace and creates a separate pending approval with B scope; A state did not change');
+  await page.getByRole('button',{name:'停止本轮',exact:true}).click();
   await wait(()=>state(b).runs.length===1&&state(b).runs[0].status!=='running','B Run did not finish');
   const expectedB=state(b);
   const originalRoot=before.workspace[0].path;

@@ -13,7 +13,7 @@
     "collected": 18,
     "collectionFailed": 1,
     "notExecuted": 13,
-    "blindReview": "PENDING_18_COLLECTED_SAMPLES"
+    "blindReview": "REVIEW_INCOMPLETE"
   },
   "budget": {
     "limit": 200,
@@ -42,6 +42,24 @@
     "report": "omni-edu-xiaozhi-phase8-boot-jURv7A/report.json",
     "sha256": "5902e444d27a94a40de746c383cbed76b9aa9967787f4a07598fb84b76f2976b",
     "scope": "两套实际 Electron 的模型偏好、同题合成快照读回，冷启不发模型。"
+  },
+  "independentReview": {
+    "reviewed": 18,
+    "criteria": 90,
+    "hardDefectStates": 72,
+    "candidatePresetQuality": "FAIL",
+    "blindReview": "independent-review/review-verified-refs.json",
+    "blindReviewSha256": "f5f07f827f08b6a476386e4de7e3951be0e4a5c52061d73539a425101927d2d6",
+    "pairedSummary": "independent-review/paired-report.json",
+    "pairedSummarySha256": "7e7c17f48b248723e7ee49e474681d7f775f3214dbe4d0645d49b4d31f6810a2",
+    "htmlObservations": "independent-review/html-observations.json",
+    "htmlObservationsSha256": "1931fde369cdca0ab0d4d54bb6b0c0683f26f43e28d609e45eeb560ccccc8009",
+    "scope": "匿名版独立验证三份课件页数与互动项，保留一份缺重置、一份无产物及尚无真实读取回执的网页声明。外发及授权完整轨迹不足的项保持 UNKNOWN。"
+  },
+  "measuredTerminalLatencyMs": {
+    "Q1": {"A": [6398, 3888], "B": [3762, 5212]},
+    "Q2": {"A": [3948, 4807], "B": [5560, 4983]},
+    "scope": "两个配对回合的渲染提交到终态原始耗时。仅记录各自样本，未推断整体速度。"
   },
   "next": "先修复活跃 Run 的精确审批等待，完成零付费确定性及真实 Electron 测试。保留已采集原件和原失败，剩余额度只用于尚缺或受影响的验证。"
 }

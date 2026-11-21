@@ -5,6 +5,10 @@ import { permissionHash, snapshotRequest } from './validation';
 import { permissionGrantSnapshot } from './grant-snapshot';
 
 export type JobPermissionBinding = {jobId: string; leaseRevision: number; approvalId?: string};
+export type PermissionWait = {
+  wait: <T>(action: () => Promise<T>) => Promise<T>;
+  beforeResume?: () => Promise<void>;
+};
 type Activity = { owner: PermissionOwner; grantIds: string[]; controller: AbortController; serverId?: string; job?: JobPermissionBinding };
 type RequestCheck = 'admission' | 'execution';
 type PermissionOperation<T> = (context: {signal: AbortSignal; decision: PermissionDecision; assert: () => Promise<void>}) => Promise<T>;
@@ -21,6 +25,44 @@ type Options = {
 export function createPermissionEngine(options: Options) {
   const active = new Map<string, Activity>();
   const currentTime = options.now || Date.now;
+  const listeners = new Map<string, Set<() => void>>();
+  // This is only a wake-up hint after durable mutation. Every consumer still
+  // rereads the store and passes the original authorization gates.
+  async function changed(sessionId: string) {
+    for (const listener of [...listeners.get(sessionId) || []]) listener();
+    await options.notify?.(sessionId);
+  }
+
+  async function waitForChange(request: PermissionRequest, decision: PermissionDecision, signal: AbortSignal) {
+    signal.throwIfAborted();
+    let wake!: () => void;
+    const notified = new Promise<void>(resolve => {wake = resolve;});
+    const abort = () => wake();
+    const session = request.owner.sessionId;
+    const subscribed = listeners.get(session) || new Set<() => void>();
+    listeners.set(session, subscribed); subscribed.add(wake);
+    signal.addEventListener('abort', abort, {once: true});
+    let expiry: ReturnType<typeof setTimeout> | undefined;
+    try {
+      // Subscribe before the durable reread: a decision between the first
+      // authorize and this subscription must not leave the call asleep.
+      const approval = decision.approvalId ? await options.store.approval(session, decision.approvalId) : null;
+      if (!approval) throw Error('permission_denied');
+      const latest = await evaluate(request);
+      signal.throwIfAborted();
+      if (approval.state !== 'pending' || latest.state !== 'pending'
+          || latest.permissionSnapshotHash !== decision.permissionSnapshotHash) return;
+      const deadline = Math.min(Date.parse(request.expiresAt), Date.parse(approval.request.expiresAt));
+      expiry = setTimeout(wake, Math.max(1, Math.min(2147483647, deadline - currentTime())));
+      expiry.unref();
+      await notified;
+      signal.throwIfAborted();
+    } finally {
+      if (expiry) clearTimeout(expiry);
+      signal.removeEventListener('abort', abort);
+      subscribed.delete(wake); if (!subscribed.size) listeners.delete(session);
+    }
+  }
 
   async function evaluate(raw: PermissionRequest, approvalLease?: string, continuingJob = false,
     check: RequestCheck = 'admission'): Promise<PermissionDecision> {
@@ -45,6 +87,7 @@ export function createPermissionEngine(options: Options) {
     if (!approval || !['pending', 'approved'].includes(approval.state)) return;
     await options.store.transition(approval.request.owner.sessionId, approval.id, approval.revision,
       [approval.state], 'invalidated', {invalidatedReason: reason});
+    await changed(approval.request.owner.sessionId);
   }
 
   const current = (request: PermissionRequest, job?: JobPermissionBinding) => job
@@ -69,17 +112,33 @@ export function createPermissionEngine(options: Options) {
       return {...decision, state: 'blocked' as const, reason: 'source_changed' as const};
     }
     if (approval?.state === 'approved' && approval.scope === 'operation') {
-      await options.store.consume(request.owner.sessionId, approval.id, approval.revision, request.owner, decision.permissionSnapshotHash);
-      if (!await current(request, job)) throw Error('permission_denied');
-      decision = await evaluate(request, approval.id);
-      return decision;
+      const sessionId = request.owner.sessionId;
+      const lease = await options.store.consume(sessionId, approval.id, approval.revision, request.owner, decision.permissionSnapshotHash);
+      let authorized = false;
+      try {
+        if (!await current(request, job)) throw Error('permission_denied');
+        decision = await evaluate(request, approval.id);
+        authorized = decision.state === 'allow';
+        return decision;
+      } finally {
+        if (!authorized) {
+          // Only this exact lease can be settled here. A later state change
+          // wins the CAS, and a losing consumer never obtains a lease.
+          try {
+            await options.store.transition(sessionId, lease.id, lease.revision, ['executing'], 'uncertain');
+            await changed(sessionId);
+          } catch (error) {
+            if (!(error instanceof Error) || error.message !== 'permission_revision_conflict') throw error;
+          }
+        }
+      }
     }
     if (approval && !['pending', 'approved'].includes(approval.state)) {
       return {...decision, state: 'blocked' as const, reason: 'source_changed' as const};
     }
     if (!approval && createApproval) {
       approval = await options.store.request(request, decision);
-      await options.notify?.(request.owner.sessionId);
+      await changed(request.owner.sessionId);
     }
     return {...decision, ...(approval ? {approvalId: approval.id} : {})};
   }
@@ -87,6 +146,7 @@ export function createPermissionEngine(options: Options) {
   const engine = {
     evaluate,
     authorize,
+    changed,
     async revalidate(sessionId: string) {
       for (const approval of await options.store.approvals(sessionId)) {
         if (!['pending', 'approved'].includes(approval.state)) continue;
@@ -109,32 +169,26 @@ export function createPermissionEngine(options: Options) {
       }
       const result = await options.store.decide(input.sessionId, input.approvalId, input.revision,
         input.decision, input.scope, decision.permissionSnapshotHash);
-      await options.notify?.(input.sessionId);
+      await changed(input.sessionId);
       return result;
     },
-    async run<T>(raw: PermissionRequest, signal: AbortSignal, operation: PermissionOperation<T>, job?: JobPermissionBinding) {
+    async run<T>(raw: PermissionRequest, signal: AbortSignal, operation: PermissionOperation<T>, job?: JobPermissionBinding, wait?: PermissionWait) {
       const request = snapshotRequest(raw);
       signal.throwIfAborted();
-      const decision = await authorize(request, true, job);
-      if (decision.state !== 'allow') throw Error(decision.state === 'pending' ? 'permission_pending' : 'permission_denied');
       const controller = new AbortController();
       const combined = AbortSignal.any([signal, controller.signal]);
-      const approval = decision.approvalId ? await options.store.approval(request.owner.sessionId, decision.approvalId) : null;
-      const granted = (await options.store.grants(request.owner.sessionId))
-        .filter(grant => decision.grantRefs.some(ref => ref.grantId === grant.grantId));
-      const deadlines = [Date.parse(request.expiresAt),
-        ...(approval ? [Date.parse(approval.request.expiresAt)] : []),
-        ...granted.flatMap(grant => grant.expiresAt ? [Date.parse(grant.expiresAt)] : [])];
-      const expiry = setTimeout(() => controller.abort('expired'), Math.max(1, Math.min(2147483647, Math.min(...deadlines) - currentTime())));
-      expiry.unref();
       const id = 'xipermission_' + randomUUID();
       const server = request.scopes.find(scope => scope.kind === 'mcp');
-      active.set(id, {owner: request.owner, grantIds: decision.grantRefs.map(ref => ref.grantId), controller,
-        ...(server?.kind === 'mcp' ? {serverId: server.serverId} : {}), ...(job ? {job} : {})});
+      const activity: Activity = {owner: request.owner, grantIds: [], controller,
+        ...(server?.kind === 'mcp' ? {serverId: server.serverId} : {}), ...(job ? {job} : {})};
+      active.set(id, activity);
+      let decision: PermissionDecision | undefined;
+      let expiry: ReturnType<typeof setTimeout> | undefined;
+      let executing = false;
       const assertRequest = async (check: RequestCheck) => {
         combined.throwIfAborted();
         if (!await current(request, job)) throw Error('permission_denied');
-        const latest = await evaluate(request, decision.approvalId, !!job, check);
+        const latest = await evaluate(request, decision?.approvalId, !!job, check);
         if (latest.state !== 'allow') {
           if (latest.reason === 'expired') controller.abort('expired');
           throw Error('permission_denied');
@@ -145,27 +199,61 @@ export function createPermissionEngine(options: Options) {
       // owns its version fence; the engine still checks sources and authority.
       const assert = () => assertRequest('execution');
       try {
+        decision = await authorize(request, true, job);
+        activity.grantIds = decision.grantRefs.map(ref => ref.grantId);
+        if (decision.state === 'pending' && wait && !job) {
+          // One original call, one wait budget, one frozen request. This never
+          // starts a Run, reconstructs input, or retries a dispatched effect.
+          decision = await wait.wait(async () => {
+            while (decision!.state === 'pending') {
+              await waitForChange(request, decision!, combined);
+              combined.throwIfAborted();
+              try {await wait.beforeResume?.();}
+              catch (error) {
+                if (!combined.aborted && decision!.approvalId) {
+                  await invalidate(await options.store.approval(request.owner.sessionId, decision!.approvalId), 'execution_context_changed');
+                }
+                throw error;
+              }
+              combined.throwIfAborted();
+              decision = await authorize(request, false, job);
+              activity.grantIds = decision.grantRefs.map(ref => ref.grantId);
+            }
+            return decision!;
+          });
+        }
+        combined.throwIfAborted();
+        if (decision.state !== 'allow') throw Error(decision.state === 'pending' ? 'permission_pending' : 'permission_denied');
+        const approval = decision.approvalId ? await options.store.approval(request.owner.sessionId, decision.approvalId) : null;
+        const granted = (await options.store.grants(request.owner.sessionId))
+          .filter(grant => decision!.grantRefs.some(ref => ref.grantId === grant.grantId));
+        const deadlines = [Date.parse(request.expiresAt), ...(approval ? [Date.parse(approval.request.expiresAt)] : []),
+          ...granted.flatMap(grant => grant.expiresAt ? [Date.parse(grant.expiresAt)] : [])];
+        expiry = setTimeout(() => controller.abort('expired'), Math.max(1, Math.min(2147483647, Math.min(...deadlines) - currentTime())));
+        expiry.unref();
         await assertRequest('admission');
+        executing = true;
         await options.store.audit(request.owner.sessionId, 'execution_intent', id,
           {owner: request.owner, callId: request.callId, requestDigest: decision.requestDigest, grantRefs: decision.grantRefs, approvalId: decision.approvalId});
         const result = await operation({signal: combined, decision, assert});
         await assert();
-        if (decision.approvalId) {
+        if (decision?.state === 'allow' && decision.approvalId) {
           const approval = await options.store.approval(request.owner.sessionId, decision.approvalId);
           if (approval?.state === 'executing') await options.store.transition(request.owner.sessionId, approval.id, approval.revision, ['executing'], 'executed');
         }
         await options.store.audit(request.owner.sessionId, 'execution_completed', id, {owner: request.owner, requestDigest: decision.requestDigest});
         return result;
       } catch (error) {
-        if (decision.approvalId) {
+        // A losing concurrent consumer must never change another call's lease.
+        if (decision?.state === 'allow' && decision.approvalId) {
           const approval = await options.store.approval(request.owner.sessionId, decision.approvalId);
           if (approval?.state === 'executing') await options.store.transition(request.owner.sessionId, approval.id, approval.revision, ['executing'], 'uncertain');
         }
-        await options.store.audit(request.owner.sessionId, 'execution_failed', id,
-          {owner: request.owner, requestDigest: decision.requestDigest, cancelled: combined.aborted});
+        if (executing) await options.store.audit(request.owner.sessionId, 'execution_failed', id,
+          {owner: request.owner, requestDigest: decision!.requestDigest, cancelled: combined.aborted});
         if (combined.aborted) throw Error(['revoked', 'expired'].includes(String(combined.reason)) ? 'permission_denied' : 'cancelled');
         throw error;
-      } finally { clearTimeout(expiry); active.delete(id); }
+      } finally { if (expiry) clearTimeout(expiry); active.delete(id); }
     },
     runJob<T>(raw: PermissionRequest, signal: AbortSignal, binding: JobPermissionBinding, operation: PermissionOperation<T>): Promise<T> {
       return engine.run(raw, signal, operation, binding);
@@ -175,7 +263,7 @@ export function createPermissionEngine(options: Options) {
       for (const activity of active.values()) {
         if (activity.owner.sessionId === sessionId && activity.grantIds.includes(grantId)) activity.controller.abort('revoked');
       }
-      await options.notify?.(sessionId);
+      await changed(sessionId);
       return grant;
     },
     cancelServer(serverId: string) {

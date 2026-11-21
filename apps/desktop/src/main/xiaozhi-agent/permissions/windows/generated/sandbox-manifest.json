@@ -112,7 +112,7 @@
     },
     {
       "file": "engine.ts",
-      "sha256": "0117bc5657a4b47e4b23b15336b77c8d75d394fe23a38d92bb2dc9e44857bb8e"
+      "sha256": "fc467395d06e7cdea60ee39c226db675bdcc6ff975503611e407de92c48273c9"
     },
     {
       "file": "grant-snapshot.ts",
@@ -128,14 +128,14 @@
     },
     {
       "file": "tool-runtime.ts",
-      "sha256": "96a99a32098d168803910f7fcd3353da895d4c1b00b8157c5099e2909cc89e33"
+      "sha256": "a04e8905671e1ad820010e97edb4bb98c8ba24b9c59ee76189a704042e8a348f"
     },
     {
       "file": "../tools/terminal.ts",
       "sha256": "a67b6276ff79a2be41d05ac1c060d1d964a6cd551bd442d4dca054b00236cc29"
     }
   ],
-  "adapterSourceSha256": "a7b504e9544e9d3c47c564ed84dda1ea58020d42aeb5169078876b542730bf7f",
+  "adapterSourceSha256": "e003ab6aa53c95fdfa04e5f6eef21109e920b697f791db1f576e4b173c4fcb60",
   "sessionProtocolVersion": 1,
   "jobResourceProtocolVersion": 1,
   "ptyProtocolVersion": 1

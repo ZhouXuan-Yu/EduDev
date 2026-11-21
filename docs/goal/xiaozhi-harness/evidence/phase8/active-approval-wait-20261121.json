@@ -1,0 +1,61 @@
+{
+  "status": "PASS_SCOPED",
+  "parent": "e79b5e95faa2af418bdbc81774fdd6ad4e6efc54",
+  "localEvidenceRoot": "E:/EduDev-Harness-Acceptance-20261121/active-approval-fix",
+  "build": {
+    "command": "npm run build",
+    "files": 481,
+    "sha256": "6506c97cec25b0da241570c8fb455041f1c09c24065bdc1fc75ef65310563e36",
+    "mainSha256": "e04180f584281f95a2cdf24f1e5f661aa520f76f5281dccaaf31e6fc7c076b4d",
+    "report": "final-build.log",
+    "reportSha256": "b7769f4fec1a529574a266fb717163c919e67aa4c94aa9f1e7365aaf820590ce"
+  },
+  "implementation": {
+    "scope": "同一活跃 Run 在原工具内等待已持久化的精确审批，重新核对原请求及 Task。认证通过后只派发一次，源文档草稿仍需单独确认保存。",
+    "revisionRace": "消费后停止或所有者变化时，只有已取得真实租约的执行者通过准确 ID 和 revision CAS 结算。另保留 beforeResume 与原生副作用之间的二次 Task 栅栏。",
+    "restart": "重启不恢复内存等待器。原持久审批和 Task 继续按当前工作台入口读取并由教师明确继续。",
+    "rollback": "回退本切片恢复原等待处理，无迁移或依赖变化。"
+  },
+  "sourceChecks": [
+    ["node scripts/xiaozhi-agent/permission-active-run-wait-smoke.mjs", "20/20", "final-active-approval-unit.log", "21fee797077daf5ac5ad92f3192660267e026dd4db80d5359ad3dbda94eaa52c"],
+    ["node scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs", "15/15", "old-permission-store.log", "c16ef561239fbbcf188deeeb2a0ec4ba94b27cde3c2609d7ae9babaf8223ba4d"],
+    ["node scripts/xiaozhi-agent/pi-tool-execution-boundaries.mjs", "21/21", "boundaries.log", "6f174bb32a0906a563e08c0932ca1cd6fa06dad1da57a46f61ace8b09bc785a0"],
+    ["npm run test:renderer-components", "253/253", "renderer-components.log", "c6b59ef3e06dc84128911457abe7dbad328391add888a325ff9f1220b8bdf43a"]
+  ],
+  "electron": {
+    "command": "node scripts/xiaozhi-agent/permission-active-run-electron.mjs",
+    "result": "4/4",
+    "report": "electron/omni-edu-xiaozhi-phase7-workbench-ui-J6ToTq/evidence/permission-active-run-report.json",
+    "sha256": "b68bdaec35d9144c6f5ebad6c7e75641b432e660e9521ab43f37c6269d8656d6",
+    "scope": "合成回环模型和受控教学目录，独立 profile。真实审批、草稿和精确落盘；只产生原 Run，同一批准状态为 executed，冷启无模型重放。"
+  },
+  "generalSmoke": {
+    "command": "npm run test:smoke",
+    "result": "207/207",
+    "exitCode": 0,
+    "report": "general-smoke.log",
+    "reportSha256": "4dc3169ce76cd15f51ed0f82dc9f6ad757621008ac938ad07bf81edb7f68a973",
+    "rebuiltSha256": "6506c97cec25b0da241570c8fb455041f1c09c24065bdc1fc75ef65310563e36"
+  },
+  "workspaceScope": {
+    "command": "node scripts/xiaozhi-agent/phase7-workbench-workspace-scope-ui.mjs 1366x768",
+    "result": "3/3",
+    "report": "workspace-scope/omni-edu-xiaozhi-phase7-workbench-ui-ZLmpTf/evidence/workspace-scope-probe.json",
+    "reportSha256": "0b2f9e6b93a8a1f4095a2ca9e3408804af5fef5312390958a101e6e50441108f",
+    "scope": "隔离窗口内设置第二工作区，停止等待中的原任务，各自的授权在冷启后保持原范围与持久等待状态。无付费请求。"
+  },
+  "dependencyAudit": {
+    "command": "npm audit --audit-level=high --json",
+    "exitCode": 1,
+    "counts": {"low": 8, "moderate": 13, "high": 6, "critical": 0},
+    "scope": "同一既有 lockfile，切片未更改依赖。发布安全审查仍待处理。"
+  },
+  "recordedFailures": [
+    ["lease-settlement-red.log", "dea3db83688d702eea32db4be62b44d5f096cdaf571802530bc51fff45394562", "实际审批已消费，所有者失效后卡 executing。两条新增测试通过后关闭该独立 P1。"],
+    ["electron/omni-edu-xiaozhi-phase7-workbench-ui-pDaVRq/evidence/permission-active-run-report.json", "a8d959454471f03e3365ec83b5bfd65f727d03cb480251040eaef160e4e0e2e0", "首次驱动用兼容列 confirmed 当作原权限状态。"],
+    ["electron/omni-edu-xiaozhi-phase7-workbench-ui-aKiKRv/evidence/permission-active-run-report.json", "9f0d9db4ed97498ecaea9c8a3c13f34087e11d34ea63005611b679aef11b77c1", "SQLite 无原型行与 JS 普通对象比较失败，实际原 Run 已保存文件。"],
+    ["electron/omni-edu-xiaozhi-phase7-workbench-ui-YGUP3h/evidence/permission-active-run-report.json", "43c5c92d495bf689a2a91e8036bfca8f08ff3cbc19baf9ec9fe49d991034bb93", "只有 SQLite 写入成功、运行仍在结算，驱动过早关闭。冻结验证同时等待运行闲置和匹配投影终态。"]
+  ],
+  "modelBudget": {"newPaidRequests": 0, "used": 139, "remaining": 61},
+  "pending": "当前修复尚未做真实模型复验。原正式采集结果、未经证实的网页来源声明和 QG-09 状态继续保留。"
+}

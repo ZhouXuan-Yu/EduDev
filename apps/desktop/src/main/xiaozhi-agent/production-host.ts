@@ -1215,12 +1215,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             assertEffect: (callId, name, receipt) => store.xiaozhiState.eventJournal.assertToolEffect(run.publisher!.owner, callId, name, receipt),
             preflight: (callId, name, input, enforce) => planningRuntime?.before(callId, name, input, enforce) || Promise.resolve(),
             registry: store.xiaozhiState.capabilities, current: () => !closing && active.get(id) === run && !run.stopped,
-            mcp: name => mcp.describeTool(name), task: async callId => {
+            mcp: name => mcp.describeTool(name), task: async (callId, currentPlan = false) => {
               const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
               const task = await state.get(run.task!.id);
               if (!task || task.binding?.runId !== run.runId || task.binding.generation !== run.publisher!.owner.generation) throw Error('permission_denied');
               const admitted = await state.admission(run.publisher!.owner, task.id, task.revision, callId);
-              return {planRevision: admitted?.planRevision ?? task.planRevision, requirementsVersion: task.requirementsVersion,
+              return {planRevision: currentPlan ? task.planRevision : admitted?.planRevision ?? task.planRevision, requirementsVersion: task.requirementsVersion,
                 stepId: admitted?.stepId || null, target: admitted?.resource || null};
             }, snapshot: async record => {
               const existing = await store.xiaozhiState.capabilitySnapshots.current(run.publisher!.owner, run.task!.id, record.capabilityId);

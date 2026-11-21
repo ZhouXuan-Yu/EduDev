@@ -948,10 +948,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
   const toolBoundary=createToolExecutionBoundary({notDispatched:options.onToolNonDispatch,resolveInput:options.fileReferences?.input,trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
-    executeAuthorized: governance ? (callId, name, input, signal, perform) => {
-      const operation = (authorizedSignal: AbortSignal) => governance.execute(callId, name, input, authorizedSignal, perform);
-      return options.executeAuthorized ? options.executeAuthorized(callId, name, input, signal, operation) : operation(signal);
-    } : options.executeAuthorized,
+    executeAuthorized: (callId, name, input, signal, perform) => {
+      const operation = governance ? (authorizedSignal: AbortSignal) => governance.execute(callId, name, input, authorizedSignal, perform) : perform;
+      return options.executeAuthorized ? options.executeAuthorized(callId, name, input, signal, operation, {
+        wait: action => budget!.wait(action),
+        beforeResume: () => governance?.assertWaitingCall(callId, name, input, signal) || Promise.resolve(),
+      }) : operation(signal);
+    },
     epoch:()=>runId,current:epoch=>epoch===runId&&running&&!interrupted&&!disposed&&!memoryFailure,
     waiting:()=>budget?.snapshot().state==='waiting',onWaiting:fn=>{waitingListeners.add(fn);return()=>waitingListeners.delete(fn);},
     beforeDelivery:async(callId,tool,signal,input)=>{await checkMemory();signal.throwIfAborted();await options.beforeDelivery?.({kind:'tool',callId,tool,input},signal);signal.throwIfAborted();await checkMemory();signal.throwIfAborted();budget!.tool(callId);},

@@ -1015,6 +1015,17 @@
     "blockerCode": "phase8_approval_consumption_unverified",
     "paidRequestCount": 139,
     "remainingPaidRequests": 61,
-    "next": "Independent blind review of collected rows and local deterministic fix for active-Run permission approval. Preserve all prior reports, then verify only missing or affected cases under the original budget."
+    "blindReviewed": 18,
+    "blindReviewStatus": "REVIEW_INCOMPLETE",
+    "candidatePresetQuality": "FAIL",
+    "next": "Preserve all prior reports, then verify only missing or affected cases under the original budget."
+  },
+  "activeRunApprovalWait20261121": {
+    "status": "PASS_SCOPED",
+    "evidence": "evidence/phase8/active-approval-wait-20261121.json",
+    "outSha256": "6506c97cec25b0da241570c8fb455041f1c09c24065bdc1fc75ef65310563e36",
+    "checks": "source 20/20; previous grant store 15/15; tool boundary 21/21; actual Electron 4/4",
+    "newPaidCalls": 0,
+    "next": "Targeted real-model retests, incomplete formal rows, and independent QG-09 remain."
   }
 }
