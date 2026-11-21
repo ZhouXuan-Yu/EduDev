@@ -1,5 +1,5 @@
 import {MATERIAL_BOOK_ANSWER_SCHEMA,bookSectionKey,type BookAnswerEntry,type BookAnswerIssue,type BookAnswerPage} from '../../shared/material-book-answer';
-import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_TABLE_POLICY,pageTranscriptionAgrees,type AiPageResponse,type MaterialBookPagePolicy} from '../../shared/material-ai-page';
+import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY,pageTranscriptionAgrees,type AiPageResponse,type MaterialBookPagePolicy} from '../../shared/material-ai-page';
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
@@ -43,11 +43,44 @@ function roles(body:string){
  const answer=(marker?body.slice(0,marker.index):/^答案\s*[:：]?/.test(body)?body:'').replace(/^答案\s*[:：]?\s*/,'').trim();
  return{answer,analysis:marker?body.slice(marker.index+marker[0].length).trim():''};
 }
+
+const roleNames='参考答案|参考解析|参考解答|答案|解析|分析|解答|详解|答|解';
+const namedRoles=new Set(roleNames.split('|'));
+const rolePrefix=new RegExp('(?:【|\\[|［)(?:'+roleNames+')','gu');
+const bracketWord='([\\p{Script=Han}]{1,16})';
+const printedRoleLabels=new RegExp('【'+bracketWord+'】|\\['+bracketWord+'\\]|［'+bracketWord+'］|^[ \\t\\u3000]*('+roleNames+')[ \\t\\u3000]*[:：]','gmu');
+
+/** Printed role labels are part of a numbered entry, even when the book repeats its stem. */
+function printedRoles(body:string):{answer:string;analysis:string;conflict?:true}{
+ const prefixes=body.match(rolePrefix);
+ if(!prefixes)return roles(body);
+ const labels=[...body.matchAll(printedRoleLabels)].map(match=>({
+  role:match[1]||match[2]||match[3]||match[4],start:match.index!,end:match.index!+match[0].length,bracketed:!match[4],
+ }));
+ const conflict={answer:'',analysis:'',conflict:true} as const;
+ if(labels.filter(label=>label.bracketed&&namedRoles.has(label.role)).length!==prefixes.length)return conflict;
+ const fields=labels.slice(labels.findIndex(label=>namedRoles.has(label.role)));
+ if(fields.length>2||fields.some(label=>!namedRoles.has(label.role)))return conflict;
+ const [first,second]=fields;
+ const isAnswer=(label:typeof first)=>label.role==='答案'||label.role==='参考答案'||label.role==='答';
+ const field=(start:typeof first,end?:typeof first)=>body
+  .slice(start.end,end?.start).replace(/^[ \t\u3000]*[:：]/u,'').trim();
+ const before=body.slice(0,first.start);
+ const isolatedLabel=!before.slice(before.lastIndexOf('\n')+1).trim();
+ const inlineChoice=/^[A-H]{1,8}$/u.test(before.trim());
+ if(!isolatedLabel&&!(inlineChoice&&!isAnswer(first)))return conflict;
+ if(!isAnswer(first))return second?conflict:{answer:inlineChoice?before.trim():'',analysis:field(first)};
+ if(second&&isAnswer(second))return conflict;
+ const answer=field(first,second);
+ const refersToAnalysis=/(?:^|[（(）)；;。\s])(?:详见|见)(?:本题)?(?:解析|解答|详解)(?:过程|步骤|部分)?(?=$|[（(）)；;。\s])/u.test(answer);
+ return{answer:refersToAnalysis?'':answer,analysis:second?field(second):''};
+}
 /** Deterministic derived spans into the stored transcript; never supplies missing text or solves a problem. */
-function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>):Entry[]{
+function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>,printedLabels=false):Entry[]{
  if(nonQuestionPagePurpose(text))return[];
  const lines=[...text.matchAll(/[^\n]+(?:\n|$)/g)];let section=initialSection||'',previous='',open:{start:number;bodyStart:number;section:string;number:string}|undefined;const out:Entry[]=[];
- const finish=(end:number,last=false)=>{if(!open)return;const body=text.slice(open.bodyStart,end).trim(),value=roles(body),issues:BookAnswerIssue[]=[];
+ const finish=(end:number,last=false)=>{if(!open)return;const body=text.slice(open.bodyStart,end).trim(),value=(printedLabels?printedRoles:roles)(body),issues:BookAnswerIssue[]=[];
+  if('conflict' in value)issues.push('answer_conflict');
   if(!open.section)issues.push('missing_section');if(!value.answer)issues.push('missing_answer');if(!value.analysis)issues.push('missing_analysis');
   if(last&&value.analysis&&!/[。.!！?？；;）)\]}]$/.test(body))issues.push('cross_page');
   out.push({...value,quote:text.slice(open.start,end).trim(),section:open.section,sectionKey:bookSectionKey(open.section),number:open.number,start:open.start,end,issues});open=undefined;
@@ -110,9 +143,9 @@ function readAnswerKeyTables(text:string){
  return {accepted,boundaries,unresolved};
 }
 
-function entriesWithAnswerKeys(text:string,initialSection?:string){
+function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false){
  const {accepted,boundaries,unresolved}=readAnswerKeyTables(text);
- const detailed=entries(text,initialSection,boundaries);
+ const detailed=entries(text,initialSection,boundaries,printedLabels);
  const key=(entry:Entry)=>entry.sectionKey+'\0'+entry.number;
  const known=new Map<string,Entry[]>();
  for(const e of detailed){
@@ -140,7 +173,9 @@ export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initial
  const scoped=first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&final.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;
  const base:Omit<BookAnswerPage,'status'>={schemaVersion:MATERIAL_BOOK_ANSWER_SCHEMA,policy:initialSection!==undefined?'section-number-inherited.v1':scoped?'section-number-two-pass.v2':'section-number-two-pass.v1',pageUncertain:!!(first.pageIssues.length||final.pageIssues.length)||first.schemaVersion!==final.schemaVersion,entries:[],firstOnly:[]};
  if(Buffer.byteLength(first.pageText)>64000||Buffer.byteLength(final.pageText)>64000)return{...base,status:'too_large'};
- const extract=(text:string)=>scoped&&policy===MATERIAL_BOOK_PAGE_TABLE_POLICY?entriesWithAnswerKeys(text,initialSection):{entries:entries(text,initialSection),unresolved:0,tooLarge:false};
+ const printedLabels=policy===MATERIAL_BOOK_PAGE_LABEL_POLICY;
+ const extract=(text:string)=>scoped&&(printedLabels||policy===MATERIAL_BOOK_PAGE_TABLE_POLICY)
+  ?entriesWithAnswerKeys(text,initialSection,printedLabels):{entries:entries(text,initialSection),unresolved:0,tooLarge:false};
  const left=extract(first.pageText),right=extract(final.pageText),a=left.entries,b=right.entries;
  if(left.tooLarge||right.tooLarge||a.length>200||b.length>200)return{...base,status:'too_large'};
  if(left.unresolved||right.unresolved)base.unresolvedTables=Math.max(left.unresolved,right.unresolved);
