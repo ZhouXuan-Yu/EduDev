@@ -67,6 +67,10 @@
 
 ## 2026-11-21 更新与换机的验收入口
 
+发布候选使用实际旧版安装包及其生成的快照。覆盖升级与换机后复跑历史成果入口、文件树、打开方式及另存为，对齐文件版本、文件摘要和新位置。首轮和热轮分别记录，区分索引准备、模型登录和工具依赖。 [发版与换机的交付门槛](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#发版与换机的交付门槛)
+
+本轮复跑 `backup-restore-smoke.mjs` 8/8、`external-output-backup-smoke.mjs` 7/7。测试在 `e990e3c` 工作树使用隔离合成资料，备份目录源码及两份测试脚本与本轮文档基线 `f8381db` 一致。用例未运行安装包或独立 Windows。
+
 本地备份及外选成果恢复底层回归通过 15 项。覆盖升级、回滚以及不同 Windows 用户和盘符下的恢复按 [固定验收](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#固定验收) 逐项执行。
 
 在主线 `8916819` 的 `apps/desktop` 用独立合成资料复核，`node scripts/xiaozhi-agent/backup-restore-smoke.mjs` 通过 8 项，`node scripts/xiaozhi-agent/external-output-backup-smoke.mjs` 通过 7 项。双机验收另行比较索引重建中与就绪后的首开可用范围、模型与思考偏好、旧成果树定位和另存去向。 [新机首开](../goal/WINDOWS_UPDATE_AND_MIGRATION.md#新电脑第一次打开的状态)
