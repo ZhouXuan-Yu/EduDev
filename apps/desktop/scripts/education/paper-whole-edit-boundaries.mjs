@@ -71,5 +71,39 @@ try{
  assert.deepEqual(snapshot(),changedSources);
  updateBody.run(witness.body,witness.id);
  check('Historical question bytes are readable for provenance but cannot seed an edit after the underlying source changes');
+
+ const {readPaperExportIntent}=await import('../../src/main/education/paper-export-intent.ts');
+ const {assertPaperOffice}=await import('../../src/main/education/paper-export.ts');
+ const {PAPER_EXPORT_INTENT_SCHEMA,SELECTED_PAPER_EXPORT_INTENT_SCHEMA,SELECTED_PAPER_VERSION,validPaperOfficeSource}=await import('../../src/shared/paper-export.ts');
+ const unrelated=await create();
+ await papers.decide({schemaVersion:'xiaozhi.paper-blueprint.v1',sessionId:sid,id:unrelated.id,revision:1,action:'confirm'},()=>true);
+ const binding={schemaVersion:SELECTED_PAPER_EXPORT_INTENT_SCHEMA,paperId:restored.paper.id,digest:restored.paper.digest,audience:'teacher',format:'docx',template:'paper'};
+ const selected=await readPaperExportIntent(papers,sid,binding);
+ assert.equal(selected.exportCurrent,false);
+ assert.equal(selected.totalPoints,restored.paper.totalPoints);
+ await assert.rejects(readPaperExportIntent(papers,sid,{...binding,schemaVersion:PAPER_EXPORT_INTENT_SCHEMA}),/paper_export_source_changed/);
+ const delivery=compilePaperOffice(selected,'teacher','paper',SELECTED_PAPER_VERSION);
+ assert(validPaperOfficeSource(delivery.paperSource));
+ assert(!validPaperOfficeSource({...delivery.paperSource,printLayout:undefined}));
+ assert(!validPaperOfficeSource({...delivery.paperSource,selection:'invalid'}));
+ await assert.rejects(papers.withConfirmedSource(sid,selected.id,selected.digest,()=>{throw Error('unexpected_install');}),/conflict/);
+ await papers.withConfirmedSource(sid,selected.id,selected.digest,paper=>assertPaperOffice(paper,delivery),{selection:SELECTED_PAPER_VERSION});
+ check('Selected confirmed version passes preparation and file transaction while legacy intents retain the most-recent confirmation rule');
+
+ updateBody.run(JSON.stringify({...JSON.parse(witness.body),answer:'预览后变更的题源'}),witness.id);
+ try{
+  await assert.rejects(readPaperExportIntent(papers,sid,binding),/paper_export_source_changed/);
+  const changed=await papers.review(sid,selected.id);
+  assert.throws(()=>assertPaperOffice(changed,delivery),/conflict/);
+  await assert.rejects(papers.withConfirmedSource(sid,selected.id,selected.digest,()=>{throw Error('unexpected_install');},{selection:SELECTED_PAPER_VERSION}),/conflict/);
+ }finally{updateBody.run(witness.body,witness.id);}
+ check('Changes to a frozen question after preview invalidate the selected request and prevent file installation');
+
+ await v2.confirm(intent(existingDraft));
+ await assert.rejects(readPaperExportIntent(papers,sid,binding),/paper_export_source_changed/);
+ const replaced=await papers.review(sid,selected.id);
+ assert.throws(()=>assertPaperOffice(replaced,delivery),/conflict/);
+ await assert.rejects(papers.withConfirmedSource(sid,selected.id,selected.digest,()=>{throw Error('unexpected_install');},{selection:SELECTED_PAPER_VERSION}),/conflict/);
+ check('A successor in the selected lineage invalidates the exact request, preview verification and file install');
  report.ok=true;report.paper=final.paper;report.counters=f.counters();assert.equal(report.counters.peakWriters,1);
 }catch(e){report.error=String(e.stack);process.exitCode=1;}finally{f.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output,error:report.error}));}

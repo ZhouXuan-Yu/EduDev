@@ -670,7 +670,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       commitLessonDraft:async(id,draft,install)=>{if(!('lessonSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classroomPlans.withConfirmedLessonSource(id,draft.lessonSource.id,draft.lessonSource.version,item=>{assertTeachingLessonOffice(item,draft);install();});},
       validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
       resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal,store.nativeQuestions);},
-      commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();},String(draft.schemaVersion)==='xiaozhi.office-paper-draft.v7'?{c2:true}:undefined);},
+      commitPaperDraft:async(id,draft,install)=>{
+        if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');
+        await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();},
+          {...(String(draft.schemaVersion)==='xiaozhi.office-paper-draft.v7'?{c2:true as const}:{}),selection:draft.paperSource.selection});
+      },
       recoverPaperDraft:createOfficePaperRecovery(store),
       workspace:async id=>(await host.resolveFileWorkspace(id)).path,
       paperWorkspace:resolvePaperOutput,

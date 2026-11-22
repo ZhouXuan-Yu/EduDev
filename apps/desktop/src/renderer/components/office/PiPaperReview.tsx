@@ -20,7 +20,7 @@ export function PiPaperReview({sessionId,review,reviews=[],onRefresh,running=fal
    <Modal.Dialog className="pi-themed-surface" data-testid="pi-paper-dialog" data-paper-id={view.id}>
     <Modal.Header><Modal.Heading>{historical?'历史版试卷':'试卷预览与核对'}</Modal.Heading></Modal.Header>
     <Modal.Body><OfficeMutationBoundary><PaperReviewPanel view={view} historical={historical} restoreHead={restoreHead} allowConfirm={!historical} onEditing={()=>setView(undefined)} onChanged={next=>{setView(next);void onRefresh();}}/>
-      {!historical&&<PaperExportEntry view={view} disabled={busy||running} onPrepared={()=>setView(undefined)}/>}
+      {!historical&&<PaperExportEntry view={view} selectedVersion disabled={busy||running} onPrepared={()=>setView(undefined)}/>}
     </OfficeMutationBoundary></Modal.Body>
     <Modal.Footer><Button variant="secondary" onPress={()=>setView(undefined)}>关闭</Button></Modal.Footer>
    </Modal.Dialog>

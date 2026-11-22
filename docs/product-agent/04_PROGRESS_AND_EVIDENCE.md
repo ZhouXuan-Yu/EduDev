@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷专业编辑回接和历史版本恢复。精确导出与其他领域编辑继续实施。 |
+| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷专业编辑回接、历史恢复和同会话精确试卷导出。其他领域编辑继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -269,3 +269,18 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | `node scripts/electron-smoke.mjs` | 同一构建 207/207，退出码 0，`electron-smoke.log`。 |
 
 证据根在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-restore`。手测 `manual-phase2-paper-restore/启动-D3-试卷历史恢复.cmd`。当前专项使用常规题库卷，模板来源复杂卷的恢复专项继续验收。同会话的精确导出为下一片。依赖审计保留原 20 项报告，其中 2 项 high。
+
+## Phase 2 同会话多份试卷精确导出
+
+教师从原任务试卷卡或右栏选择试卷时，预览显示卷名、题数和分值。选定版本属于自己的编辑链，同会话另一份较晚确认的独立卷可以继续并存。保存前重新核对所选卷、题源、当前版本和目标文件夹。旧请求继续按原规则执行。无 SQLite 迁移。
+
+| 验收 | 最终构建结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-selected-export-final` | 通过，`build.log`。主进程 SHA-256 `f95ca6227657be5112ae9ee55d06e9dca8048504aba5ac92a6dc301a1a93e48e`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --export-selected` | 6/6，`electron-export-final.log`、`paper-edit-sync-9qs5D2/report.json`。同会话先编辑并确认 7 分目标卷，再确认 5 分独立卷。两个窗口尺寸可操作导出。预览和存档指向同一快照，实际审批后生成两份 Word，教师卷含答案解析，重启后文件目录可读。渲染错误和付费调用均为 0。 |
+| `paper-whole-edit-boundaries.mjs`、`paper-export-intent-test.mjs`、`paper-export-boundaries.mjs` | 15/15、8/8、21/21。覆盖旧请求兼容、审批前题源变化、同链后继、保存目录和 Office 文件。使用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs`，日志为 `source-boundaries-final.log`、`intent-compat.log`、`office-formats.log`。 |
+| `node scripts/xiaozhi-agent/paper-c2-office-recovery-focused-test.mjs` | 15/15，`c2-recovery.log`。使用生产 SQLite、Office 文件及源事务复核，覆盖已写文件和来源变化后的恢复。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同一构建 207/207，`electron-smoke.log`。32 张截图已归档到 `electron-smoke-screenshots`。 |
+
+全部测试产物和原始日志在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-selected-export`。启动入口 `manual-phase2-paper-selected-export/启动-D3-精确试卷导出.cmd`，同目录有操作步骤和实际窗口记录。第一次导出自动化等错目录，第二次比较冷读记录时依赖顺序，原日志均保留。旧 C2 综合夹具未注入现行恢复租约，在旧恢复断言处报 `permission_denied`，保留 `c2-compat.log`，专用恢复测试已通过。精确选择的 Electron 路径覆盖普通题库卷的 Word。PDF、答题卡和模板题卷精确选择的用户路径待集中覆盖。依赖审计有原 20 项警报，其中 2 项 high。

@@ -18,6 +18,7 @@ import {PAPER_BASKET_SNAPSHOT_SCHEMA,validPaperBasketBinding,validPaperBasketSna
 import {plainStudentInput} from '../../shared/student-context';
 import {authorizePaperOwner,basketBindingCurrent} from './paper-basket-state';
 import type {PaperSql,ApprovedPaperGroup,PaperStoreHost} from './paper-sql';
+import {paperExportVersionCurrent,type PaperOfficeSource} from '../../shared/paper-export';
 export type {PaperSql,ApprovedPaperGroup} from './paper-sql';
 export const PAPER_ACTION='pi_paper_candidate';
 type Row=Record<string,unknown>;
@@ -240,10 +241,10 @@ export class PaperRepository{
  }
  /** Holds the existing BEGIN IMMEDIATE source lease across a synchronous file installation.
   * The action must not call the separate Office SQLite connection while this lease is held. */
- async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T,options?:{c2:true}):Promise<T>{
+ async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T,options?:{c2?:true;selection?:PaperOfficeSource['selection']}):Promise<T>{
   return this.host.transaction(async sql=>{const {r,p}=await this.get(sql,sessionId,id),paper=await this.view(sql,r,p);
    if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&options?.c2!==true)throw new Error('c2_export_unavailable');
-   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.exportCurrent!==true||paper.digest!==digest)throw new Error('conflict');
+   if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||!paperExportVersionCurrent(paper,options?.selection)||paper.digest!==digest)throw new Error('conflict');
    const result=action(paper);if(result&&typeof (result as {then?:unknown}).then==='function')throw new Error('configuration');if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&!await this.current(sql,p))throw new Error('source_changed');return result;
   });
  }

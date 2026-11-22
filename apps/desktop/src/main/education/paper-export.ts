@@ -1,7 +1,7 @@
 import {PAPER_SNAPSHOT_C2_SCHEMA} from '../../shared/paper-basket-c2';
 import {parsePaperLayout} from '../../shared/paper-layout';
 import {validC2SnapshotExtension} from './paper-template-snapshot';
-import {practiceOfficeIntroduction,PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
+import {paperExportVersionCurrent,practiceOfficeIntroduction,PAPER_C2_OFFICE_SCHEMA,SELECTED_PAPER_EXPORT_INTENT_SCHEMA,SELECTED_PAPER_VERSION,type PaperOfficeSource} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from './paper-export-intent';
 import {compileInstancePaperOffice} from './paper-instance-export';
 import {editedInstanceChoiceLabels} from './paper-instance';
@@ -61,9 +61,10 @@ function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'
  if(!validOfficeDraft(draft))throw new Error('too_large');return draft;
 }
 /** Deterministic compilation. Rich documents stay fail-closed until image/math delivery is accepted. */
-export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate='paper'):OfficeDraft{
+export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate='paper',selection?:PaperOfficeSource['selection']):OfficeDraft{
  const c2=paper.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA;
- if(c2&&(!paper.basket||paper.exportCurrent!==true||!validC2SnapshotExtension({c2:paper.c2,templateSources:paper.templateSources},paper.blueprint,paper.selection)))throw Error('conflict');
+ if((c2||selection)&&!paperExportVersionCurrent(paper,selection))throw Error('conflict');
+ if(c2&&(!paper.basket||!validC2SnapshotExtension({c2:paper.c2,templateSources:paper.templateSources},paper.blueprint,paper.selection)))throw Error('conflict');
  const draft=compileLegacyPaperOffice(paper,audience,template);
  const practiceIntroduction=practiceOfficeIntroduction(paper,audience);
  if(practiceIntroduction&&template==='paper'){
@@ -72,6 +73,7 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
  }
  if(!('paperSource' in draft))throw Error('configuration');
  draft.paperSource.printLayout=PAPER_PRINT_LAYOUT;
+ if(selection)draft.paperSource.selection=selection;
  if(template==='answer_sheet'){
   const grouped:OfficeSection[]=[];
   for(const section of draft.sections){
@@ -119,14 +121,14 @@ function compileLegacyPaperOffice(paper:PaperView,audience:PaperExportInput['aud
 export function assertPaperOffice(paper:PaperView,draft:OfficeDraft){
  if(paper.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA||draft.schemaVersion===PAPER_C2_OFFICE_SCHEMA){
   if(paper.snapshotSchema!==PAPER_SNAPSHOT_C2_SCHEMA||draft.schemaVersion!==PAPER_C2_OFFICE_SCHEMA||!('paperSource'in draft)||!validOfficeDraft(draft))throw Error('conflict');
-  const expected=compilePaperOffice(paper,draft.paperSource.audience,draft.paperSource.template);
+  const expected=compilePaperOffice(paper,draft.paperSource.audience,draft.paperSource.template,draft.paperSource.selection);
   if(JSON.stringify(expected)!==JSON.stringify(draft))throw Error('conflict');return;
  }
  if(!isPaperOfficeSchema(draft.schemaVersion)||!('paperSource'in draft)||paper.id!==draft.paperSource.paperId||paper.digest!==draft.paperSource.digest)throw new Error('conflict');
  if(draft.paperSource.printLayout!==undefined&&draft.paperSource.printLayout!==PAPER_PRINT_LAYOUT)throw Error('conflict');
  const template=draft.paperSource.template??'paper';
  if((template==='answer_sheet')!==(draft.schemaVersion===PAPER_ANSWER_SHEET_OFFICE_SCHEMA)||template==='answer_sheet'&&draft.paperSource.audience!=='student')throw new Error('conflict');
- const expected=draft.paperSource.printLayout===undefined?compileLegacyPaperOffice(paper,draft.paperSource.audience,template):compilePaperOffice(paper,draft.paperSource.audience,template);
+ const expected=draft.paperSource.printLayout===undefined?compileLegacyPaperOffice(paper,draft.paperSource.audience,template):compilePaperOffice(paper,draft.paperSource.audience,template,draft.paperSource.selection);
  if(expected.schemaVersion!==draft.schemaVersion||JSON.stringify(expected.sections)!==JSON.stringify(draft.sections))throw new Error('conflict');
 }
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
@@ -150,7 +152,8 @@ export function createPaperExportTool(options:{papers:Pick<PaperRepository,'late
     if(intent&&!options.papers.review)throw new Error('configuration');
     const paper=intent?await readPaperExportIntent(options.papers as Pick<PaperRepository,'review'>,options.sessionId,intent):await options.papers.latest(options.sessionId);
     current();if(!paper)throw new Error('not_found');
-    const draft=compilePaperOffice(paper,raw.audience,raw.template??'paper');current();
+    const selection=intent?.schemaVersion===SELECTED_PAPER_EXPORT_INTENT_SCHEMA?SELECTED_PAPER_VERSION:undefined;
+    const draft=compilePaperOffice(paper,raw.audience,raw.template??'paper',selection);current();
     const result=await options.runOffice(options.sessionId,options.runId,options.wait,callId,{path:raw.path,format:raw.format,draft,sources:[]},signal);
     if(intent&&officeConflict(result)){
      // Classify only a proven changed binding. A target-file conflict or teacher rejection stays an Office outcome.

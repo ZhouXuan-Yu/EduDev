@@ -24,10 +24,15 @@ export const isPaperOfficeSchema=(v:unknown)=>v===PAPER_OFFICE_SCHEMA||isRichPap
 export type PaperExportTemplate='paper'|'answer_sheet';
 export type PaperExportInput={format:'docx'|'pdf';audience:'student'|'teacher';path:string;template?:PaperExportTemplate};
 export const PAPER_EXPORT_INTENT_SCHEMA='xiaozhi.paper-export-intent.v1' as const;
+export const SELECTED_PAPER_EXPORT_INTENT_SCHEMA='xiaozhi.paper-export-intent.v2' as const;
+export const SELECTED_PAPER_VERSION='selected_version' as const;
 /** Exact snapshot/specification hint. Never a file grant or teacher approval. */
-export type PaperExportIntent={schemaVersion:typeof PAPER_EXPORT_INTENT_SCHEMA;paperId:string;digest:string;
+export type PaperExportIntent={schemaVersion:typeof PAPER_EXPORT_INTENT_SCHEMA|typeof SELECTED_PAPER_EXPORT_INTENT_SCHEMA;paperId:string;digest:string;
  audience:PaperExportInput['audience'];format:PaperExportInput['format'];template:PaperExportTemplate};
-export type PaperOfficeSource={paperId:string;digest:string;audience:PaperExportInput['audience'];template?:PaperExportTemplate;printLayout?:typeof PAPER_PRINT_LAYOUT;snapshotSchema?:typeof PAPER_SNAPSHOT_C2_SCHEMA;layout?:PaperLayout};
+export type PaperOfficeSource={paperId:string;digest:string;audience:PaperExportInput['audience'];template?:PaperExportTemplate;printLayout?:typeof PAPER_PRINT_LAYOUT;snapshotSchema?:typeof PAPER_SNAPSHOT_C2_SCHEMA;layout?:PaperLayout;selection?:typeof SELECTED_PAPER_VERSION};
+export function paperExportVersionCurrent(paper:Pick<PaperView,'exportCurrent'|'supersededBy'>,selection?:PaperOfficeSource['selection']):boolean{
+ return !paper.supersededBy&&(selection===SELECTED_PAPER_VERSION||paper.exportCurrent===true);
+}
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>{
  if(!v||typeof v!=='object'||Array.isArray(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))return false;
  const descriptors=Object.getOwnPropertyDescriptors(v),names=Reflect.ownKeys(descriptors);
@@ -35,7 +40,7 @@ const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>{
 };
 const template=(v:unknown)=>v===undefined||v==='paper'||v==='answer_sheet';
 export function validPaperExportIntent(v:unknown):v is PaperExportIntent{
- return exact(v,['schemaVersion','paperId','digest','audience','format','template'])&&v.schemaVersion===PAPER_EXPORT_INTENT_SCHEMA
+ return exact(v,['schemaVersion','paperId','digest','audience','format','template'])&&(v.schemaVersion===PAPER_EXPORT_INTENT_SCHEMA||v.schemaVersion===SELECTED_PAPER_EXPORT_INTENT_SCHEMA)
   &&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
   &&typeof v.digest==='string'&&/^[a-f0-9]{64}$/.test(v.digest)
   &&(v.format==='docx'||v.format==='pdf')&&(v.audience==='student'||v.audience==='teacher')
@@ -56,13 +61,16 @@ export function validPaperOutput(v:unknown):v is PaperOutputInput{
  return exact(v,['schemaVersion','sessionId'])&&v.schemaVersion===PAPER_OUTPUT_SCHEMA&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId);
 }
 export function validPaperOfficeSource(v:unknown):v is PaperOfficeSource{
- if(v&&typeof v==='object'&&Object.getOwnPropertyDescriptor(v,'snapshotSchema')){
-  if(!exact(v,['paperId','digest','audience','template','printLayout','snapshotSchema',...(Object.hasOwn(v,'layout')?['layout']:[])]))return false;
-  const {snapshotSchema,layout,...legacy}=v;return snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA&&v.printLayout===PAPER_PRINT_LAYOUT&&validPaperOfficeSource(legacy)&&(!Object.hasOwn(v,'layout')||validPaperLayout(layout));
- }
- return (exact(v,['paperId','digest','audience'])||exact(v,['paperId','digest','audience','template'])||exact(v,['paperId','digest','audience','printLayout'])||exact(v,['paperId','digest','audience','template','printLayout']))&&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
+ if(!v||typeof v!=='object')return false;
+ const c2=Object.hasOwn(v,'snapshotSchema');
+ const fields=['paperId','digest','audience',...['template','printLayout','selection'].filter(key=>Object.hasOwn(v,key)),
+  ...(c2?['snapshotSchema',...(Object.hasOwn(v,'layout')?['layout']:[])]:[])];
+ return exact(v,fields)&&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
   &&typeof v.digest==='string'&&/^[a-f0-9]{64}$/.test(v.digest)&&['student','teacher'].includes(String(v.audience))
-  &&template(v.template)&&(v.template!=='answer_sheet'||v.audience==='student')&&(v.printLayout===undefined||v.printLayout===PAPER_PRINT_LAYOUT);
+  &&template(v.template)&&(v.template!=='answer_sheet'||v.audience==='student')&&(v.printLayout===undefined||v.printLayout===PAPER_PRINT_LAYOUT)
+  &&(!Object.hasOwn(v,'selection')||v.selection===SELECTED_PAPER_VERSION&&v.printLayout===PAPER_PRINT_LAYOUT)
+  &&(!c2||v.snapshotSchema===PAPER_SNAPSHOT_C2_SCHEMA&&Object.hasOwn(v,'template')&&v.printLayout===PAPER_PRINT_LAYOUT
+   &&(!Object.hasOwn(v,'layout')||validPaperLayout(v.layout)));
 }
 export function validPaperOfficeFigure(v:unknown,paragraphs:number):v is PaperOfficeFigure{
  return exact(v,['questionId','version','blockId','role','assetId','sha256','width','height','afterParagraph'])

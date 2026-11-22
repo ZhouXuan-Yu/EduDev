@@ -1,5 +1,5 @@
 import type {PaperRepository} from './paper-repository';
-import type {PaperExportIntent} from '../../shared/paper-export';
+import {paperExportVersionCurrent,SELECTED_PAPER_EXPORT_INTENT_SCHEMA,SELECTED_PAPER_VERSION,type PaperExportIntent} from '../../shared/paper-export';
 
 export const PAPER_EXPORT_SOURCE_CHANGED='paper_export_source_changed' as const;
 /** Re-read the named snapshot through the existing owner/source checks; never select latest. */
@@ -11,6 +11,7 @@ export async function readPaperExportIntent(papers:Pick<PaperRepository,'review'
   throw error;
  });
  if(paper.sessionId!==sessionId||paper.id!==intent.paperId||paper.digest!==intent.digest
-  ||paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||paper.exportCurrent!==true)throw Error(PAPER_EXPORT_SOURCE_CHANGED);
+  ||paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent
+  ||!paperExportVersionCurrent(paper,intent.schemaVersion===SELECTED_PAPER_EXPORT_INTENT_SCHEMA?SELECTED_PAPER_VERSION:undefined))throw Error(PAPER_EXPORT_SOURCE_CHANGED);
  return paper;
 }

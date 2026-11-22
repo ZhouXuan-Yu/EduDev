@@ -14,6 +14,8 @@
 
 试卷恢复使用历史确认卷的内容，并以同一编辑链的当前确认卷作为保存前置版本。原题篮收据记录恢复来源。正式恢复通过原题篮确认事务保存，已存在的各版保持可读。 [恢复合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-恢复试卷历史版本)
 
+试卷卡的 v2 导出请求携带卷 ID 与摘要。宿主用该卷的编辑链判断当前版本，文件审批及安装复核来源和目录权限。未绑定请求与 v1 请求保留原最近确认卷规则。 [导出合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-同会话多份试卷精确导出)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

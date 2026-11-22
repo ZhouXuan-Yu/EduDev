@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "ae00c6fc68b1ea2103b614b1cd944ea343031497b08da41768ab9b67d735aa2e",
+  "sourceHash": "dca907913ed30dee22e165f8da7e2816bb6f1c4ddba144fa49a7a2c6b7a511c4",
   "sources": [
     {
       "file": "package-lock.json",
@@ -224,11 +224,11 @@
     },
     {
       "file": "src/main/education/paper-export-intent.ts",
-      "sha256": "242c28a7de4898a005fd3a40faf61c09a5975f4d57273e644ed24cccfd4016a9"
+      "sha256": "36b25449024b29e1e621e9d42575226a610c20d2650b6b3466c97ba99d8356a3"
     },
     {
       "file": "src/main/education/paper-export.ts",
-      "sha256": "c35ebf7c5aa642fb9573f8367a7df75b060f448308b1f4502db72b4f52af9fe4"
+      "sha256": "c2c2c7c89f79caa464d983b918d00691d8d0fcee7035da158da630f76154a854"
     },
     {
       "file": "src/main/education/paper-instance-export.ts",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "5e75c8041bf003bcb84e697cb456ee7a18e4b83eadf4b3cae70448917edf816e"
+      "sha256": "597e1a293c2e9e34130f4d0537a08a93bd52f541369f1d5b7b8678c7491f460e"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1436,7 +1436,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "4b1848ab33d72410c14e46c7016856e4545927f889690102040db32858dd8a99"
+      "sha256": "f4d2c39a78c32f9f7acfbf48f2eddba0c92f5b119f0ba48689f58a7f0898cdfa"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2228,7 +2228,7 @@
     },
     {
       "file": "src/shared/paper-export.ts",
-      "sha256": "f2f21025eb567c28e14c9453742340142f413b0f875e080105f23eb950575423"
+      "sha256": "f813388bcf1729c565fe3b1b74eb8f797854b0d8707fd73d0c3f683cdb744940"
     },
     {
       "file": "src/shared/paper-fulfillment-plan.ts",

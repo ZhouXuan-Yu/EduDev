@@ -106,7 +106,8 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
         <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm" isDisabled={disabled || !current || !imagesReady} onPress={() => onDecide('confirm')}>确认并保存试卷</Button>
         <Button variant="secondary" isDisabled={disabled || !current} onPress={() => onDecide('reject')}>拒绝此快照</Button>
       </div>}
-      {current && snapshot.state === 'confirmed' && snapshot.exportCurrent === true && <PaperExportEntry view={snapshot} disabled={disabled}/>}
+      {current && snapshot.state === 'confirmed' && (basket.editSourcePaperId||snapshot.exportCurrent===true) &&
+        <PaperExportEntry view={snapshot} selectedVersion={Boolean(basket.editSourcePaperId)} disabled={disabled}/>}
     </section></Card.Content></Card>}
     </div>
     </Tabs>

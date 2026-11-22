@@ -5,6 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
+import {exportSelectedPaper} from './paper-selected-export-scenario.mjs';
 
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance,'Use an owned acceptance directory');
@@ -12,6 +13,9 @@ const output=fs.mkdtempSync(path.join(acceptance,'paper-edit-sync-'));
 const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const restoreMode=process.argv.includes('--restore');
+const exportMode=process.argv.includes('--export-selected');
+const destination=path.join(output,'delivered');
+if(exportMode)fs.mkdirSync(destination);
 const report={ok:false,output,main,checks:[],errors:[],paidRequests:0};
 const blueprint={title:'等式课堂练习卷',subject:'数学',grade:'初二',durationMinutes:20,totalPoints:5,mode:'source_only',
   sections:[{id:'one',label:'一元一次方程',questionType:'解答题',count:1,points:5}]};
@@ -35,7 +39,8 @@ async function launch(cold=false){
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-paper-edit-only',DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,`--user-data-dir=${profile}`],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{blueprint,cold})=>{
+  await app.evaluate(({net,dialog},{blueprint,cold,exportMode,destination})=>{
+    if(exportMode)dialog.showOpenDialog=async()=>({canceled:false,filePaths:[destination]});
     globalThis.paperEditRequests=[];
     net.fetch=async(raw,init)=>{
       const url=new URL(typeof raw==='string'?raw:raw.url);
@@ -43,15 +48,28 @@ async function launch(cold=false){
       if(url.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text'],effort:{supported_levels:['low','high','max'],default_level:'high'}}]}),{headers:{'content-type':'application/json'}});
       if(cold||url.pathname!=='/v1/chat/completions')throw Error('Unexpected model dispatch');
       const index=globalThis.paperEditRequests.length;
-      const tools=JSON.parse(init.body).tools?.map(tool=>tool.function.name);
-      const offer=index===0?{name:'find_education_tools',args:{query:'education_propose_paper 按蓝图题库组卷'}}:index===1?{name:'education_propose_paper',args:blueprint}:undefined;
+      const body=JSON.parse(init.body),tools=body.tools?.map(tool=>tool.function.name);
+      let offer=index===0?{name:'find_education_tools',args:{query:'education_propose_paper 按蓝图题库组卷'}}:index===1?{name:'education_propose_paper',args:blueprint}:undefined;
+      if(exportMode&&index>=3){
+        const step=(index-3)%4,audience=index<7?'teacher':'student',file=`${blueprint.title}-${audience}.docx`;
+        if(step===0)offer={name:'find_education_tools',args:{query:'education_export_paper 导出确认试卷'}};
+        if(step===1){
+          const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');
+          const line=system.split('\n').findLast(l=>l.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'));
+          const task=line?JSON.parse(line):{requirementsVersion:1,revision:0};
+          offer={name:'update_task_plan',args:{schemaVersion:'xiaozhi.task-plan.v3',expectedRevision:task.revision,requirementsVersion:task.requirementsVersion,reason:'导出教师点选的试卷版本',
+            steps:[{id:'save',text:'保存点选的试卷',dependsOn:[],reported:'pending',kind:'saved_office',target:file},
+              {id:'review',text:'教师核对文件',dependsOn:['save'],reported:'pending',kind:'human'}]}};
+        }
+        if(step===2)offer={name:'education_export_paper',args:{taskStepId:'save',format:'docx',audience,path:file}};
+      }
       globalThis.paperEditRequests.push(offer?.name??'reply');
-      if(index>2||(offer&&!tools?.includes(offer.name)))throw Error(`Unexpected paper route: ${offer?.name??index}`);
+      if(index>(exportMode?10:2)||(offer&&!tools?.includes(offer.name)))throw Error(`Unexpected paper route: ${offer?.name??index}`);
       const chunk=(delta,finish_reason=null)=>`data: ${JSON.stringify({id:'owned-paper-edit',object:'chat.completion.chunk',created:0,model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})}\n\n`;
       const delta=offer?{tool_calls:[{index:0,id:`owned-paper-${index}`,type:'function',function:{name:offer.name,arguments:JSON.stringify(offer.args)}}]}:{content:'试卷已按教师确认保存在本机。'};
       return new Response(chunk({role:'assistant'})+chunk(delta)+chunk({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
     };
-  },{blueprint,cold});
+  },{blueprint,cold,exportMode,destination});
   page=await app.firstWindow();page.on('pageerror',error=>report.errors.push(String(error)));
   await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
   await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
@@ -161,8 +179,21 @@ try{
   }
   await closeReview();
 
+  if(exportMode){
+    assert(!restoreMode);
+    report.files=await exportSelectedPaper({page,app,open:()=>openCard(card()),edited,sessionId,snapshot,query,until,check,destination,output});
+  }
+
   await app.close();app=undefined;await launch(true);
   assert((await snapshot()).paperReviews.some(paper=>paper.id===sameSession.value.id));
+  if(exportMode){
+    const persisted=query("SELECT file_name,file_size,file_path FROM document_artifacts WHERE status='exported' ORDER BY file_name");
+    const catalog=Object.fromEntries(persisted.map(row=>[row.file_name,{size:row.file_size,path:row.file_path}]));
+    assert.deepEqual(catalog,Object.fromEntries(report.files.map(file=>[file.name,{size:file.size,path:path.join(destination,file.name)}])));
+    assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),[]);
+    assert.deepEqual(report.errors,[]);
+    check('Both exact exports remain in the artifact catalog after cold restart without model replay');
+  }else{
   await page.getByTestId('pi-aside-toggle').click();
   const aside=page.getByTestId('pi-context-paper');await aside.waitFor();
   assert.equal(await aside.getAttribute('data-paper-id'),currentId);
@@ -178,6 +209,7 @@ try{
   assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),[]);
   assert.deepEqual(report.errors,[]);
   check('Cold task context follows the actual edit lineage despite a later unrelated confirmed paper and without replay');
+  }
   report.ok=true;
 }catch(error){report.error=String(error.stack);console.error(report.error);process.exitCode=1;await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output}));}
