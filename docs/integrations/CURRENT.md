@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-22 小智 Harness D1
+
+原 Pi 执行、SQLite 目录、版本快照与许可证和权限链路已接入统一 Adapter 边界。社区下载页另有设计，拟复用原 Skill 导入及 Managed MCP 托管。 [D1 架构](../architecture/HARNESS_D1.md) · [社区扩展页](../architecture/COMMUNITY_CATALOG_DESIGN.md)
+
 ## 2026-11-20 扫描题旁批注的区域核对
 
 沿用 PDFium、PDF.js、RapidOCR、PP-DocLayoutV3 和本地原像素裁剪。单页按实际列和标记颜色复核来源，不新增依赖或外部调用。 [专项报告](../research/evidence/kb/20261120/localized-pdf-marks/README.md)

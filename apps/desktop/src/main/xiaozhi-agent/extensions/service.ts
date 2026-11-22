@@ -127,7 +127,7 @@ export function createExtensionService(options: {
           versions: existing ? view.versions : [...view.versions, {manifest, healthAt: new Date().toISOString(), revokedAt: null}]})));
       } finally {await session.close();}
     },
-    async select(extensionId: string, version: string, revision: number, context: ExtensionContext) {
+    async select(extensionId: string, version: string, revision: number, context: ExtensionContext, verify?: (session: ExtensionSession) => Promise<void>) {
       const previous = await state.read(extensionId);
       if (previous.revision !== revision) throw Error('extension_revision_conflict');
       const chosen = previous.versions.find(item => item.manifest.version === version && !item.revokedAt);
@@ -136,6 +136,7 @@ export function createExtensionService(options: {
         if ((await state.read(extensionId)).revision !== revision) throw Error('extension_revision_conflict');
       });
       try {
+        await verify?.(session);
         const next = await persist(context, () => state.update(extensionId, revision, view => ({...view, revision: revision + 1, enabled: true, activeVersion: version})));
         await stop(extensionId);
         return next;
@@ -154,10 +155,10 @@ export function createExtensionService(options: {
       });
       await stop(extensionId); return next;
     },
-    async open(extensionId: string, context: ExtensionContext) {
+    async open(extensionId: string, context: ExtensionContext, expectedArtifact?: string) {
       const view = await state.read(extensionId);
       const chosen = view.versions.find(item => item.manifest.version === view.activeVersion && !item.revokedAt);
-      if (!view.enabled || !chosen) throw Error('extension_disabled');
+      if (!view.enabled || !chosen || expectedArtifact && chosen.manifest.artifactId !== expectedArtifact) throw Error('extension_disabled');
       return launch(chosen.manifest, context, ['run'], selection(chosen.manifest));
     },
     async dispose() {await Promise.all([...sessions.keys()].map(stop));},

@@ -7,23 +7,55 @@ import type {createExtensionPackageManager} from './package-manager';
 import type {createExtensionService} from './service';
 import type {createProviderSnapshotStore} from '../capabilities/provider-snapshots';
 import type {CapabilityRegistry} from '../capabilities/registry';
+import {createAdapterRegistry, type AdapterRegistry} from '../capabilities/adapters/registry';
+import {ADAPTER_CONTRACT} from '../capabilities/adapters/contract';
 import {providerResult, validProviderResult} from '../capabilities/provider-contract';
 import {protocolHash} from '../capabilities/validation';
 import {assessConformance} from '../capabilities/resolver';
-import {extensionCapabilityId, extensionDeclaration, extensionProviderId, registerExtension} from './registry';
+import {extensionCapabilityId, extensionDeclaration, extensionProviderId, hasExtensionHookEvidence, registerExtension} from './registry';
+import {validTransformOutput, verifyExtensionHooks} from './conformance';
 import {noLinksAsync} from '../skill-package-async';
 import {authorizedWorkspace} from '../workspace-authority';
 import {conversationOutputLocation} from '../conversation-output-path';
-import type {ExtensionContext, ExtensionHook} from './types';
+import type {ExtensionContext, ExtensionHook, ExtensionManifest, ExtensionSession} from './types';
 
 export const EXTENSION_TOOL_NAMES = ['extension_inspect', 'extension_prepare', 'extension_invoke'] as const;
+function validHookOutcome(value: unknown) {
+  if (!value || typeof value !== 'object') return false;
+  const result = value as {classification?: unknown; text?: unknown; hook?: unknown; source?: unknown};
+  return result.classification === 'untrusted' && typeof result.text === 'string' && result.text.length <= 8000
+    && (result.hook === 'context.transform' || result.hook === 'event.observe') && typeof result.source === 'string';
+}
 type Mutation = Extract<AcquisitionMutation, {action: 'extension_prepare' | 'extension_cancel' | 'extension_select' | 'extension_disable' | 'extension_revoke'}>;
 export function createExtensionHost(options: {
   dataRoot: string; packages: ReturnType<typeof createExtensionPackageManager>; service: ReturnType<typeof createExtensionService>;
-  registry: CapabilityRegistry; snapshots: ReturnType<typeof createProviderSnapshotStore>;
+  registry: CapabilityRegistry; snapshots: ReturnType<typeof createProviderSnapshotStore>; adapters?: AdapterRegistry;
   current: (sessionId: string, callId?: string) => Promise<AcquisitionContext>;
   privateText: (sessionId: string, text: string) => boolean; sanitize: (text: string) => Promise<string>;
 }) {
+  const adapters = options.adapters ?? createAdapterRegistry();
+  function adapterIdentity(manifest: ExtensionManifest) {
+    return {id:'community.' + manifest.extensionId, version:manifest.version};
+  }
+  async function admitAdapter(manifest: ExtensionManifest) {
+    const identity = adapterIdentity(manifest);
+    await adapters.admit({...identity, contractVersion:ADAPTER_CONTRACT, kind:'community', transport:'extension_rpc',
+      publisher:'local-import', artifactHash:manifest.artifactId}, async () => {
+      await options.packages.binding(manifest);
+      return true;
+    });
+    return identity.version;
+  }
+  function suspendAdapter(manifest: ExtensionManifest, state: 'suspended'|'revoked') {
+    const {id, version} = adapterIdentity(manifest);
+    const adapter = adapters.find(id, version);
+    if (adapter && (adapter.state === 'available' || state === 'revoked' && adapter.state !== 'revoked')) adapters.transition(id, version, state);
+  }
+  async function verifyAndRegister(session: ExtensionSession, healthAt: string, context: AcquisitionContext, signal: AbortSignal) {
+    const verified = await verifyExtensionHooks(session, signal);
+    await context.persist(() => registerExtension(options.registry, session.manifest, healthAt, verified));
+    if (!verified.size) throw Error('extension_hook_conformance');
+  }
   const preparing = new Map<string, {sessionId: string; abort: AbortController; done: Promise<void>}>();
   const lifecycle = new AbortController();
   const jobs = new Set<Promise<unknown>>();
@@ -86,8 +118,9 @@ export function createExtensionHost(options: {
         const state = await options.service.view(prepared.manifest.extensionId);
         const installed = await options.service.install(prepared.manifest, state.revision, current);
         const version = installed.versions.find(item => item.manifest.artifactId === prepared.artifactId)!;
-        await current.acquisition.persist(() => registerExtension(options.registry, version.manifest, version.healthAt));
-        await options.service.select(prepared.manifest.extensionId, prepared.manifest.version, installed.revision, current);
+        await options.service.select(prepared.manifest.extensionId, prepared.manifest.version, installed.revision, current,
+          session => verifyAndRegister(session, version.healthAt, current.acquisition, current.signal));
+        await admitAdapter(prepared.manifest);
       } finally {preparing.delete(input.artifactId); release();}
       return;
     }
@@ -98,16 +131,22 @@ export function createExtensionHost(options: {
       const version = state.versions.find(item => item.manifest.version === input.version && !item.revokedAt);
       if (!version) throw Error('extension_unavailable');
       await options.packages.binding(version.manifest);
-      await current.acquisition.persist(() => registerExtension(options.registry, version.manifest, version.healthAt));
-      await options.service.select(input.extensionId, input.version, input.revision, current);
+      await options.service.select(input.extensionId, input.version, input.revision, current,
+        session => verifyAndRegister(session, version.healthAt, current.acquisition, current.signal));
+      await admitAdapter(version.manifest);
       return;
     }
-    if (input.action === 'extension_disable') {await options.service.disable(input.extensionId, input.revision); return;}
+    if (input.action === 'extension_disable') {
+      const state = await options.service.disable(input.extensionId, input.revision);
+      for (const entry of state.versions) suspendAdapter(entry.manifest, 'suspended');
+      return;
+    }
     if (input.action !== 'extension_revoke') throw Error('invalid_input');
     const state = await options.service.revoke(input.extensionId, input.version, input.revision);
     const version = state.versions.find(item => item.manifest.version === input.version)!;
+    suspendAdapter(version.manifest, 'revoked');
     for (const hook of version.manifest.hooks) {
-      const declaration = extensionDeclaration(version.manifest, hook, version.healthAt);
+      const declaration = extensionDeclaration(version.manifest, hook, version.healthAt, false);
       if (await options.registry.providerVersion(declaration.provider.id, declaration.provider.version, declaration.definition.id)) {
         await options.registry.revokeProviderVersion(declaration.provider.id, declaration.provider.version, declaration.definition.id);
       }
@@ -118,38 +157,64 @@ export function createExtensionHost(options: {
     if (await options.sanitize(input.text) !== input.text) throw Error('permission_denied');
     const current = await context(sessionId, callId);
     const scope = {...current, signal: AbortSignal.any([current.signal, ...(signal ? [signal] : [])])};
-    const session = await options.service.open(input.extensionId, scope);
-    try {
-      const manifest = session.manifest;
-      if (!manifest.hooks.includes(input.hook)) throw Error('unsupported_extension_hook');
-      const capabilityId = extensionCapabilityId(input.hook);
-      const catalog = await options.registry.snapshot();
-      const provider = await options.registry.providerVersion(extensionProviderId(manifest), manifest.version + '+' + manifest.artifactId.slice(0, 12), capabilityId);
-      if (!provider || provider.revoked) throw Error('capability_revoked');
-      const owner = current.acquisition.owner;
-      const journalOwner = {sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation};
-      const prior = await options.snapshots.current(journalOwner, owner.taskId, capabilityId);
-      const requirement = {capabilityId, contractVersion: '1.0.0', required: ['invoke'], optional: [], conditions: [], localOnly: true,
-        platform: 'win32', budget: {latencyMs: 10000, resourceUnits: 1}};
-      const assessment = assessConformance(catalog.definitions.find(item => item.id === capabilityId)!, provider.binding, requirement);
-      const snapshot = await current.acquisition.persist(() => options.snapshots.save(journalOwner, owner.taskId, {capabilityId, registryRevision: catalog.revision,
-        requirement,
-        selection: {providerId: provider.provider.id, providerVersion: provider.provider.version, contractVersion: '1.0.0', level: assessment.level, missingRequirements: assessment.missing, limitations: assessment.limitations},
-        providerHash: manifest.artifactId, evidenceRefs: provider.binding.conformance.evidence.map(item => item.reference),
-        previousSnapshotId: prior?.snapshotId || null, refreshReason: prior ? 'explicit_refresh' : 'initial'}));
-      const result = await session.invoke(input.hook, input.hook === 'context.transform' ? {text: input.text} : {event: 'task.notice', text: input.text}, scope.signal);
-      if (input.hook === 'context.transform' && (!result || typeof result !== 'object' || Array.isArray(result)
-          || Object.keys(result).join(',') !== 'text' || typeof (result as {text?: unknown}).text !== 'string'
-          || (result as {text: string}).text.length > 8000)) throw Error('invalid_output');
-      const text = input.hook === 'context.transform' ? await options.sanitize((result as {text: string}).text) : '';
-      const envelope = providerResult({...owner, stepId: null, callId, signal: scope.signal, snapshot,
-        grantRef: 'extension-lease:' + manifest.artifactId, idempotencyKey: protocolHash([owner, callId, manifest.artifactId]),
-        budget: {timeoutMs: 10000, resourceUnits: 1}}, {status: 'completed', data: {hook: input.hook, text, classification: 'untrusted', source: manifest.source},
-        sideEffects: {status: 'known', references: ['extension-hook:' + callId]}}, undefined,
-      value => !!value && typeof value === 'object' && (value as {classification?: unknown}).classification === 'untrusted');
-      if (!validProviderResult(envelope)) throw Error('invalid_output');
-      return {content: [{type: 'text' as const, text: JSON.stringify(envelope)}], details: {success: true, provider: envelope, untrusted: true}};
-    } finally {await session.close();}
+    const extensions = await options.service.view(input.extensionId);
+    const selected = extensions.versions.find(item => item.manifest.version === extensions.activeVersion && !item.revokedAt);
+    if (!selected || !extensions.enabled) throw Error('extension_disabled');
+    const manifest = selected.manifest;
+    if (!manifest.hooks.includes(input.hook)) throw Error('unsupported_extension_hook');
+    const capabilityId = extensionCapabilityId(input.hook);
+    const providerId = extensionProviderId(manifest);
+    const providerVersion = manifest.version + '+' + manifest.artifactId.slice(0, 12);
+    let provider = await options.registry.providerVersion(providerId, providerVersion, capabilityId);
+    if (!provider?.revoked && (!provider || !hasExtensionHookEvidence(provider.binding))) {
+      // Old installs only proved guest health. Upgrade their evidence under the existing run lease.
+      const session = await options.service.open(input.extensionId, scope, manifest.artifactId);
+      try {await verifyAndRegister(session, selected.healthAt, current.acquisition, scope.signal);}
+      finally {await session.close();}
+      provider = await options.registry.providerVersion(providerId, providerVersion, capabilityId);
+    }
+    if (!provider || provider.revoked) throw Error('capability_revoked');
+    const target = await options.registry.executionBinding(capabilityId, provider.provider.id, provider.provider.version, manifest.artifactId);
+    const catalog = await options.registry.snapshot();
+    const owner = current.acquisition.owner;
+    const journalOwner = {sessionId: owner.sessionId, runId: owner.runId, generation: owner.generation};
+    const prior = await options.snapshots.current(journalOwner, owner.taskId, capabilityId);
+    const requirement = {capabilityId, contractVersion: '1.0.0', required: ['invoke'], optional: [], conditions: [], localOnly: true,
+      platform: 'win32', budget: {latencyMs: 10000, resourceUnits: 1}};
+    const assessment = assessConformance(catalog.definitions.find(item => item.id === capabilityId)!, provider.binding, requirement);
+    const snapshot = await current.acquisition.persist(() => options.snapshots.save(journalOwner, owner.taskId, {capabilityId, registryRevision: catalog.revision,
+      requirement,
+      selection: {providerId: provider.provider.id, providerVersion: provider.provider.version, contractVersion: '1.0.0', level: assessment.level, missingRequirements: assessment.missing, limitations: assessment.limitations},
+      providerHash: manifest.artifactId, evidenceRefs: provider.binding.conformance.evidence.map(item => item.reference),
+      previousSnapshotId: prior?.snapshotId || null, refreshReason: prior ? 'explicit_refresh' : 'initial'}));
+    const version = await admitAdapter(manifest);
+    const envelope = await adapters.execute(target, version, {
+      context: {...owner, stepId:null, callId, signal:scope.signal, snapshot,
+        grantRef:'extension-lease:' + manifest.artifactId, idempotencyKey:protocolHash([owner, callId, manifest.artifactId]),
+        // This covers broker startup and shutdown as well as the separately bounded RPC.
+        budget:{timeoutMs:30000, resourceUnits:1}},
+      input: input.text,
+      schemas: {input:'edudev:extension.' + input.hook + '.input.v1', output:'edudev:extension.' + input.hook + '.output.v1',
+        validateInput: value => typeof value === 'string' && value.length <= 8000, validateOutput: validHookOutcome},
+      authorize: async () => {
+        if (!await current.acquisition.current()) throw Error('permission_denied');
+        await options.registry.executionBinding(capabilityId, provider.provider.id, provider.provider.version, manifest.artifactId);
+      },
+      connect: async execution => {
+        const session = await options.service.open(input.extensionId, {...scope, signal:execution.signal}, manifest.artifactId);
+        return {close:session.close, execute: async text => {
+          await options.registry.executionBinding(capabilityId, provider.provider.id, provider.provider.version, manifest.artifactId);
+          const result = await session.invoke(input.hook, input.hook === 'context.transform' ? {text} : {event:'task.notice', text}, execution.signal);
+          if (input.hook === 'context.transform' && !validTransformOutput(result)) throw Error('invalid_output');
+          const output = validTransformOutput(result) ? await options.sanitize(result.text) : '';
+          return providerResult(execution, {status:'completed', data:{hook:input.hook, text:output, classification:'untrusted', source:manifest.source},
+            sideEffects:{status:'known', references:['extension-hook:' + callId]}}, undefined,
+          validHookOutcome);
+        }};
+      },
+    });
+    if (!validProviderResult(envelope)) throw Error('invalid_output');
+    return {content: [{type: 'text' as const, text: JSON.stringify(envelope)}], details: {success: true, provider: envelope, untrusted: true}};
   }
   return {view, mutate: (input: Mutation) => track(() => mutate(input)),
     importCandidate: (directory: string) => track(() => options.packages.importCandidate(directory, {signal: lifecycle.signal})),

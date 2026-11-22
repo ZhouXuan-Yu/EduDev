@@ -122,6 +122,7 @@ import {validQuestionReview,type QuestionReviewDecision,type QuestionReviewResul
 import type {XiaozhiWebInput} from '../../shared/xiaozhi-web';
 import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-document-tools';
 import {createNativeStatService} from './capabilities/native-stat';
+import {createAdapterRegistry} from './capabilities/adapters/registry';
 import {createCapabilityTaskRuntime} from './capabilities/runtime';
 import {createCapabilityDispatcher} from './capabilities/dispatcher';
 import {createControlledMcpService} from './mcp-controlled-service';
@@ -504,6 +505,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'learning_review',review});}
   });
   const mcp = createMcpRuntime(store.xiaozhiState.sql, options.settingsCodec, { sanitize: text => sanitizeOfficeDocumentText(store, text) });
+  const capabilityAdapters = createAdapterRegistry({audit: async (context, adapterId, code) => {
+    await store.xiaozhiState.permissions.audit(context.sessionId, 'capability_adapter_denied', adapterId,
+      {code, taskId: context.taskId, runId: context.runId, callId: context.callId});
+  }});
   const extensionPackages = createExtensionPackageManager({sql: store.xiaozhiState.sql,
     root: path.join(options.dataRoot, 'managed-tools/extensions'), permissions,
     fetcher: createPublicSourceFetch({fetch: (input, init) => net.fetch(input instanceof URL ? input.href : input, init)}),
@@ -512,7 +517,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const extensions = createExtensionService({sql: store.xiaozhiState.sql, permissions, store: store.xiaozhiState.permissions,
     runtime: permissionRuntime, binding: extensionPackages.binding});
   const extensionHost = createExtensionHost({dataRoot: options.dataRoot, packages: extensionPackages, service: extensions,
-    registry: store.xiaozhiState.capabilities, snapshots: store.xiaozhiState.capabilitySnapshots, current: (id, callId) => acquisitionContext(id, callId, false),
+    registry: store.xiaozhiState.capabilities, snapshots: store.xiaozhiState.capabilitySnapshots, adapters: capabilityAdapters, current: (id, callId) => acquisitionContext(id, callId, false),
     privateText: (id, text) => active.get(id)?.skillPrivateContext?.contains(text) === true,
     sanitize: text => sanitizeOfficeDocumentText(store, text)});
   const controlledMcp = createControlledMcpService({permissions, store: store.xiaozhiState.permissions, runtime: permissionRuntime,
@@ -1201,6 +1206,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         snapshots: store.xiaozhiState.capabilitySnapshots,
         native: host.capabilities,
         adapters: run.dynamicCapabilities,
+        adapterRegistry: capabilityAdapters,
         current: () => !closing && active.get(id) === run && !run.stopped,
         canRefresh: async capabilityId => run.agent?.canRefreshCapabilities() === true
           && !(await store.xiaozhiState.effects.forTask(id, run.task!.id)).some(effect =>

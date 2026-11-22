@@ -77,7 +77,8 @@ function packageDirectory(version: string) {
   fs.writeFileSync(path.join(directory, 'edudev.extension.json'), JSON.stringify({schemaVersion: 1, extensionId: 'synthetic.context', version,
     entry: 'entry.cjs', hooks: ['context.transform', 'event.observe'], license: 'MIT'}));
   fs.writeFileSync(path.join(directory, 'LICENSE'), 'MIT synthetic local acceptance license');
-  fs.writeFileSync(path.join(directory, 'entry.cjs'), `exports.contextTransform=async({text})=>({text:${JSON.stringify('extension-' + version + ':')}+text});exports.observeEvent=async()=>null;`);
+  const observe = version === '2.0.0' ? "throw Error('synthetic hook conformance failure');" : 'return null;';
+  fs.writeFileSync(path.join(directory, 'entry.cjs'), `exports.contextTransform=async({text})=>({text:${JSON.stringify('extension-' + version + ':')}+text});exports.observeEvent=async()=>{${observe}};`);
   return directory;
 }
 let taskId = '';
@@ -138,6 +139,11 @@ try {
     for (const row of invocations) {const value = JSON.parse(String(row.contract_json)); assert.equal(value.effect, 'external_effect');
       assert(value.grantRefs.length); assert(value.authorityRefs.length); assert.equal(value.taskId, taskId);}
     const catalog = await store.xiaozhiState.capabilities.snapshot(); assert(catalog.providers.some(row => row.type === 'extension' && row.runtime === 'isolated'));
+    const first = catalog.providers.find(row => row.source.packageHash === firstArtifact)!;
+    for (const hook of ['context.transform','event.observe'] as const) {
+      const binding = await store.xiaozhiState.capabilities.verifyBinding(extensionCapabilityId(hook), first.id);
+      assert.equal('verified' in binding && binding.verified, true);
+    }
   });
   await check('Teacher-private original tool result is rejected before external extension dispatch', async () => {
     const scenario: ToolCall[] = [{name: 'office_read_text', input: {path: 'private.txt'}},
@@ -178,6 +184,12 @@ try {
     assert(texts.some(text => text.includes('extension-2.0.0:updated public text')), texts.join('\n').slice(-8000));
     assert(texts.some(text => text.includes('extension-1.0.0:rollback public text')));
     assert.equal((await host!.acquisitionView(sessionId)).extensions!.find(row => row.active)!.version, '1.0.0');
+    const updated = (await store.xiaozhiState.capabilities.snapshot()).providers.find(row => row.source.packageHash === secondArtifact)!;
+    const accepted = await store.xiaozhiState.capabilities.verifyBinding(extensionCapabilityId('context.transform'), updated.id);
+    assert.equal('verified' in accepted && accepted.verified, true);
+    const rejected = await store.xiaozhiState.capabilities.verifyBinding(extensionCapabilityId('event.observe'), updated.id);
+    assert.equal('verified' in rejected && rejected.verified, false);
+    assert.equal(rejected.state, 'disabled');
   });
   await check('Idle revocation survives cold main and takes priority over archived provider snapshots', async () => {
     const first = (await host!.acquisitionView(sessionId)).extensions!.find(row => row.artifactId === firstArtifact)!;

@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-22 小智 Harness D1
+
+原 Provider 与 Binding 版本归档接入独立实例和逐配对控制。原 Native、Managed MCP 和社区钩子经统一 Adapter 运行。D1 交付自检后等待独立验收。 [实施记录](xiaozhi-harness/D1_IMPLEMENTATION.md) · [验收自检](xiaozhi-harness/D1_SELF_CHECK.md)
+
 ## 2026-11-21 与正文数字连写的题号
 
 真实上海高考数学试卷的第 9 题从上一题中独立恢复，原题干数字及其他 19 道题干保持。整库目标继续执行。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

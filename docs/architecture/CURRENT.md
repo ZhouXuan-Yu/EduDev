@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-22 小智 Harness D1
+
+Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)
+
 ## 2026-11-21 换机包的 SQLite 副本
 
 备份 v1 清单以可选 `purpose: "portable"` 标记换机包。临时一致快照清除已知凭据，使用原权限存储结算可执行授权，再由 SQLite 写出保留隐式行 ID 的新文件。核验恢复前同时检查文件摘要和旧凭据及授权状态，沿原独立副本和切回路径使用。 [备份与恢复边界](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)

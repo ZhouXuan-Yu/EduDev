@@ -1,5 +1,6 @@
 import type { CapabilityRequirement, ProviderSelection } from './types';
-import { validStatOutput, type NativeStatOutput, type NativeStatResult } from './native-stat';
+import { validStatOutput, type NativeStatOutput } from './native-stat-contract';
+import type {NativeStatResult} from './native-stat';
 import { snapshotProtocolInput } from './validation';
 export const PROVIDER_RESULT_SCHEMA = 'xiaozhi.provider-result.v1' as const;
 export const PROVIDER_ERROR_CODES = [

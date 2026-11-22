@@ -5,6 +5,9 @@ import type { createNativeStatService } from './native-stat';
 import type { CapabilityRequirement, CapabilityResolution } from './types';
 import { protocolHash, snapshotProtocolInput, validCapabilityRequirement } from './validation';
 import { providerResult, validProviderResultContext, type ProviderExecutionContext, type ProviderSnapshot, type CapabilityExecutionResult } from './provider-contract';
+import {createAdapterRegistry, type AdapterRegistry} from './adapters/registry';
+import {CORE_ADAPTER_VERSION, nativeStatAdapterSchemas, registerCoreAdapters} from './adapters/core';
+import type {AdapterExecution} from './adapters/contract';
 import type { WorkspaceLease } from '../workspace-files';
 type ResolutionView = {
     resolution: CapabilityResolution;
@@ -13,6 +16,7 @@ type ResolutionView = {
 };
 export type CapabilityAdapterRuntime = {
     supports: (capabilityId: string) => boolean;
+    schemas: AdapterExecution<unknown>['schemas'];
     resolve: (sessionId: string, requirement: CapabilityRequirement) => Promise<CapabilityResolution>;
     resolveVersion: (sessionId: string, requirement: CapabilityRequirement, providerId: string, version: string, hash: string) => Promise<CapabilityResolution>;
     hasExecutable: (providerId: string, version: string, hash: string) => boolean;
@@ -25,12 +29,14 @@ export function createCapabilityTaskRuntime(options: {
     snapshots: ProviderSnapshotStore;
     native: ReturnType<typeof createNativeStatService>;
     adapters?: CapabilityAdapterRuntime;
+    adapterRegistry?: AdapterRegistry;
     current: () => boolean;
     canRefresh: (capabilityId?: string) => boolean | Promise<boolean>;
     workspace: () => Promise<WorkspaceLease>;
     persist: <T>(action: () => Promise<T>) => Promise<T>;
 }) {
     const { owner } = options;
+    const adapters = options.adapterRegistry ?? createAdapterRegistry();
     const resolverFor = (capabilityId: string) => options.adapters?.supports(capabilityId) ? options.adapters : options.native;
     const calls = new Map<string, {
         signature: string;
@@ -188,30 +194,34 @@ export function createCapabilityTaskRuntime(options: {
                 }
             };
             try {
-                if (options.adapters?.supports(request.capabilityId)) {
-                    const result = await options.adapters.execute(context, input);
-                    if (!validProviderResultContext(result, context)) throw Error('invalid_output');
+                const target = await options.registry.executionBinding(request.capabilityId, snapshot.selection.providerId,
+                    snapshot.selection.providerVersion, snapshot.providerHash);
+                await registerCoreAdapters(adapters, target.provider.adapterId);
+                const authorize = async () => {
                     fence(combined);
                     if ((await options.workspace()).version !== lease.version) throw Error('source_changed');
-                    return {success: true as const, result};
-                }
-                const native = await options.native.execute({
-                    sessionId: owner.sessionId,
-                    runId: owner.runId,
-                    callId,
-                    signal: combined
-                }, snapshot.selection.providerId, request, input, {
-                    version: snapshot.selection.providerVersion,
-                    hash: snapshot.providerHash
-                });
-                fence(combined);
-                if ((await options.workspace()).version !== lease.version) {
-                    throw Error('source_changed');
-                }
-                return {
-                    success: true as const,
-                    result: providerResult(context, native)
+                    await options.registry.executionBinding(request.capabilityId, snapshot.selection.providerId,
+                        snapshot.selection.providerVersion, snapshot.providerHash);
                 };
+                const schemas = target.provider.adapterId === 'edu.adapter.mcp' ? options.adapters?.schemas : nativeStatAdapterSchemas;
+                if (!schemas) throw Error('provider_unavailable');
+                const result = await adapters.execute(target, CORE_ADAPTER_VERSION, {
+                    context, input, schemas, authorize,
+                    connect: async scoped => ({execute: async value => {
+                        if (target.provider.adapterId === 'edu.adapter.mcp' && options.adapters) return options.adapters.execute(scoped, value);
+                        if (target.provider.adapterId !== 'edu.adapter.native') throw Error('provider_unavailable');
+                        const native = await options.native.execute({sessionId: owner.sessionId, runId: owner.runId, callId,
+                            signal: scoped.signal}, snapshot.selection.providerId, request, value, {
+                            version: snapshot.selection.providerVersion,
+                            hash: snapshot.providerHash
+                        });
+                        return providerResult(scoped, native);
+                    }}),
+                });
+                if (!validProviderResultContext(result, context)) throw Error('invalid_output');
+                fence(combined);
+                if ((await options.workspace()).version !== lease.version) throw Error('source_changed');
+                return {success: true as const, result};
             }
             catch (error) {
                 const failure = combined.aborted ? Error('cancelled') : error;

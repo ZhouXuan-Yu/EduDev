@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-22 小智 Harness D1
+
+D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)
+
 ## 2026-11-21 小智短答条件和资料引用
 
 两条原失败的合成题通过真实 Electron 重新采集。独立评审确认两句解释保留适用范围，并确认读取单行文件时能按题意只给出文件来源与原文条件。仍按独立报告保留权限和外发证据缺口，整体正式对照和 Windows QG-09 状态见专项。 [本轮验收](../goal/xiaozhi-harness/ACCEPTANCE_REPORT.md)

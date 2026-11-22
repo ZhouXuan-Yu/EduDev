@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-22 小智 Harness D1
+
+复用原 Registry 和版本快照，增量管理 Provider Instance 与 Binding 控制。Core 与 Community 在可信宿主中统一接入，通过已存在的许可服务和 Windows 隔离执行。 [D1 架构](../architecture/HARNESS_D1.md)
+
 ## 2026-11-21 与正文数字连写的题号
 
 数字连写的恢复由原生文字和本地版面共同确认。在明确的同栏邻题范围内只剥离一次已核对的题号。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

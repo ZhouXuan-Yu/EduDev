@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-22 小智 Harness D1
+
+第一轮对象和适配器改造的实现、移交流程与独立验收入口见专项。待独立验收后另行启动下一阶段。 [D1 实施](xiaozhi-harness/D1_IMPLEMENTATION.md)
+
 ## 2026-11-21 联合验证备份、恢复和切回
 
 已有本地备份的换机核对入口 **已实现**。直接启动的版本记录修正。桌面设置专项 12/12、组件 253/253、底层 8/8。继续去凭据换机包、实际覆盖更新和不同机器恢复。 [精确证据](xiaozhi-harness/evidence/phase8/windows-backup-continuity-inventory-20261121.json)

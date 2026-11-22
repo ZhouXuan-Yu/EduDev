@@ -55,14 +55,19 @@ const calls=new Map<string,string>();
 let stopStarted:()=>void=()=>{};
 const stopToolStarted=new Promise<void>(resolve=>{stopStarted=resolve;});
 async function task(){return createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}).latest(sessionId);}
-async function snapshots(){const current=await task();assert(current);return store.xiaozhiState.capabilitySnapshots.history(current.id);}
+async function snapshots(){
+  const current=await task();assert(current);
+  return (await store.xiaozhiState.capabilitySnapshots.history(current.id)).filter(value=>value.capabilityId===request.capabilityId);
+}
 async function verifyActualPhase1Migration(){
   const parent=path.resolve('test-results/xiaozhi-agent');
   const candidates=fs.readdirSync(parent).filter(name=>name.startsWith('pi-goal-task-store-')||name.startsWith('capability-phase1-production-'));
   candidates.sort((left,right)=>Number(right.startsWith('pi-goal-task-store-'))-Number(left.startsWith('pi-goal-task-store-'))||left.localeCompare(right));
+  const fixtures=process.env.OMNI_EDU_PHASE1_FIXTURE ? [path.resolve(process.env.OMNI_EDU_PHASE1_FIXTURE)]
+    : candidates.map(name=>path.join(parent,name,'data/app.db'));
   let source='';
-  for(const name of candidates){
-    const filename=path.join(parent,name,'data/app.db');if(!fs.existsSync(filename))continue;
+  for(const filename of fixtures){
+    if(!fs.existsSync(filename))continue;
     const db=new DatabaseSync(filename,{readOnly:true});
     try{
       const tables=db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row=>String(row.name));
@@ -164,7 +169,7 @@ async function initialFlow(body:any,response:http.ServerResponse){
       send(response,'capability_execute',{requirement:request,input:{path:'资料.txt'}});return;
     }
     case 6:{
-      const blocked=lastTool(messages,'capability_execute');assert.equal(blocked.success,false);assert.equal(blocked.error.code,'needs_refresh');assert(blocked.resolution.excludedProviders.some((item:any)=>item.reasons.includes('missing_required')));
+      const blocked=lastTool(messages,'capability_execute');assert.equal(blocked.success,false,JSON.stringify(blocked));assert.equal(blocked.error.code,'needs_refresh');assert(blocked.resolution.excludedProviders.some((item:any)=>item.reasons.includes('missing_required')));
       assert.equal(host!.capabilities.executionHistory().length,callsBeforeRequiredLoss);assert.equal((await snapshots()).length,1);
       check('Required proof withdrawal blocks the existing Snapshot before any new artifact execution');
       await updateHana((provider,binding)=>{binding.conformance.evidence=['file_metadata','mime','mime_required'].map(requirementId=>({requirementId,supported:true,kind:'adapter_detected',reference:provider.source.evidenceRef}));});
@@ -227,7 +232,7 @@ const fixture=http.createServer(async(incoming,response)=>{
     const result=lastTool(body.messages,'capability_execute');assert(validProviderResult(result));
     assert.equal(result.provenance.providerVersion,scenario==='resume'?fixtures.v3.manifest.version:fixtures.v2.manifest.version);
     assert.equal(result.data.mime,scenario==='resume'?'text/plain':'application/x-native-stat-v2');send(response);
-  } catch(error) {fixtureFailure=error;console.error(error);if(!response.headersSent)response.writeHead(500);response.end();}
+  } catch(error) {fixtureFailure??=error;console.error(error);if(!response.headersSent)response.writeHead(500);response.end();}
 });
 async function start(prompt:string){assert(host);stage=0;const result=await host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt});assert(result.ok,JSON.stringify(result));return result.runId;}
 try {

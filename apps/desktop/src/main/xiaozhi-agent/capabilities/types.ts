@@ -51,3 +51,22 @@ export type CapabilityResolution = {
   excludedProviders: {providerId: string; reasons: ExclusionCode[]; missingRequirements: string[]}[];
   blockedReasons: string[]; registryRevision: number;
 };
+
+// Definitions and instances are views of the existing provider catalog and its
+// installation state. The v1 manifest remains the compatible wire/storage shape.
+export type ProviderDefinition = Omit<ProviderManifest, 'health'|'cost'|'dependencies'> & {
+  adapterId: string;
+  dependencies: string[];
+};
+export type ProviderInstance = {
+  id: string;
+  providerId: string;
+  providerVersion: string;
+  providerHash: string;
+  configurationRef: string | null;
+  connectionRef: string | null;
+  authorityRef: string | null;
+  state: 'enabled'|'disabled'|'revoked';
+  health: ProviderManifest['health'];
+  revision: number;
+};

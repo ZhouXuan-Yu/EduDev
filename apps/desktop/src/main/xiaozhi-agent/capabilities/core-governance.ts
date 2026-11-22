@@ -216,6 +216,8 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
     const version = await options.registry.providerVersion(record.providerId, record.providerVersion, record.capabilityId);
     if (!provider || provider.health !== 'ready' || !capability || capability.lifecycle.status === 'revoked' || !binding?.enabled
         || !version || version.revoked || version.provider.source.packageHash !== record.providerHash) throw new TaskAdmissionError('capability_revoked');
+    const instance = await options.registry.defaultInstance(provider);
+    if (instance.state !== 'enabled' || instance.health !== 'ready') throw new TaskAdmissionError('capability_revoked');
     if (record.source && protocolHash(await options.mcp(name)) !== protocolHash(record.source)) throw new TaskAdmissionError('source_changed');
     signal.throwIfAborted(); if (!options.current()) throw Error('permission_denied');
     return record;

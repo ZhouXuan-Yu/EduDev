@@ -4,6 +4,7 @@ import {CAPABILITY_SCHEMA, type CapabilityDefinition, type CapabilityRequirement
 import type {CapabilityRegistry} from '../registry';
 import {createCapabilityResolver} from '../resolver';
 import type {CapabilityAdapterRuntime} from '../runtime';
+import {validStatInput} from '../native-stat-contract';
 import {providerResult, type ProviderExecutionContext} from '../provider-contract';
 import {protocolHash} from '../validation';
 import type {createMcpRuntime} from '../../mcp-runtime';
@@ -176,6 +177,8 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
   }
   return {
     supports: capabilityId => capabilityId === MANAGED_READ_CAPABILITY.id,
+    schemas: {input:MANAGED_READ_CAPABILITY.inputSchemaRef, output:MANAGED_READ_CAPABILITY.outputSchemaRef,
+      validateInput:validStatInput, validateOutput:readData},
     resolve: (_sessionId: string, requirement: CapabilityRequirement) => resolver().resolve(requirement),
     resolveVersion: (_sessionId, requirement, id, version, hash) => resolver().resolveVersion(requirement, id, version, hash),
     hasExecutable: (id, version, hash) => available.has(key(id, version, hash)),
@@ -183,8 +186,9 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
       if (disposed || !await options.context.current() || !input || typeof input !== 'object' || Array.isArray(input)
           || Object.keys(input).join(',') !== 'path' || typeof (input as {path?: unknown}).path !== 'string') throw Error('invalid_input');
       const artifact = await artifactFor(context.snapshot.selection.providerId, context.snapshot.selection.providerVersion, context.snapshot.providerHash);
-      if (!artifact || !await authorized((await options.registry.providerVersion(context.snapshot.selection.providerId,
-        context.snapshot.selection.providerVersion, MANAGED_READ_CAPABILITY.id))!.provider)) throw Error('permission_denied');
+      const record = await options.registry.providerVersion(context.snapshot.selection.providerId,
+        context.snapshot.selection.providerVersion, MANAGED_READ_CAPABILITY.id);
+      if (!artifact || !record || record.revoked || !await authorized(record.provider)) throw Error('permission_denied');
       const relative = path.relative(options.context.workspace, path.resolve(options.context.workspace, (input as {path: string}).path));
       const filename = checkedFile(filesystemScope(options.context.workspace, ['read']), path.resolve(options.context.workspace, relative), 'read');
       const before = await fs.lstat(filename);

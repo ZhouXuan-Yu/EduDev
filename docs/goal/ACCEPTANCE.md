@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-22 小智 Harness D1
+
+D1-001 至 D1-017 单列自检与原始运行证据。 [专项自检](xiaozhi-harness/D1_SELF_CHECK.md)
+
 ## 2026-11-21 与正文数字连写的题号
 
 连写题号新增独立印刷证据、行框位置、相邻题号、原始文字和小数反例。正式收录仍需通过既有页源门槛。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

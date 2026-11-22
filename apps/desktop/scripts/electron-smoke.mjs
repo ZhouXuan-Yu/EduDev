@@ -36,7 +36,9 @@ const tripletSuccessReply = JSON.stringify({
   },
 });
 writeFileSync(controlledAttachmentPath, controlledAttachmentBytes);
-const artifactRoot = join(appRoot, 'test-results', 'electron-e2e');
+const artifactRoot = process.env.OMNI_EDU_ACCEPTANCE_ROOT
+  ? resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT, 'electron-e2e')
+  : join(appRoot, 'test-results', 'electron-e2e');
 mkdirSync(artifactRoot, { recursive: true });
 const activeApps = new Set();
 

@@ -142,7 +142,9 @@ export function createProviderSnapshotStore(sql: Sql) {
                 if (!definition || !provider || !binding || !currentProvider || !currentBinding) {
                     throw Error('capability_invalid_snapshot');
                 }
-                const active = definition.lifecycle.status !== 'revoked'
+                const instance = await registry.defaultInstance(currentProvider);
+                const active = instance.state === 'enabled' && instance.health === 'ready'
+                    && definition.lifecycle.status !== 'revoked'
                     && currentProvider.health === 'ready'
                     && currentBinding.enabled && provider.health === 'ready' && binding.enabled;
                 const matchesSelection = provider.version === snapshot.selection.providerVersion

@@ -1,5 +1,6 @@
 node_modules/
 apps/desktop/test-results/
+/acceptance/
 dist/
 out/
 coverage/

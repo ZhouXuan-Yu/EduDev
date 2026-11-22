@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-22 小智 Harness D1
+
+原 Native、Managed MCP 和 Windows 社区扩展使用适配器执行合同。宿主现能独立核对能力配对、实例、制品版本和权限。 [D1 能力和隔离表](../architecture/HARNESS_D1.md#生产装配)
+
 ## 2026-11-21 与正文数字连写的题号
 
 M03 使用原 PDF 的 PDF.js 原生位置、RapidOCR 行框、PP-DocLayoutV3 区域及既有试题切分来恢复题号，M05 沿用原资料审查。 [专项报告](../research/evidence/kb/20261121/joined-assessment-number/README.md)

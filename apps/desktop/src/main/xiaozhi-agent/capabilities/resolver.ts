@@ -1,5 +1,7 @@
 import type { CapabilityRegistry } from './registry';
 import type { CapabilityRequirement, CapabilityResolution, ProviderManifest, ProviderSelection, ExclusionCode, CapabilityDefinition, CapabilityBinding } from './types';
+import {instanceCanRun} from './provider-instances';
+import type {ProviderInstance} from './types';
 import { protocolHash, snapshotProtocolInput, validCapabilityRequirement, validCapabilityResolution } from './validation';
 /** Main-only callback consults existing grants. No authorized flag exists in requests. */
 export type CapabilityAuthorization = (provider: Readonly<ProviderManifest>, requirement: Readonly<CapabilityRequirement>) => Promise<boolean>;
@@ -20,6 +22,10 @@ export function assessConformance(definition: CapabilityDefinition, binding: Cap
         limitations,
         level
     };
+}
+function instanceFingerprint(instance: ProviderInstance) {
+    const {providerVersion: _version, providerHash: _hash, ...authority} = instance;
+    return protocolHash(authority);
 }
 export function createCapabilityResolver(registry: CapabilityRegistry, authorize: CapabilityAuthorization, options: {
     verifySource?: (provider: Readonly<ProviderManifest>) => boolean;
@@ -50,6 +56,7 @@ export function createCapabilityResolver(registry: CapabilityRegistry, authorize
             return result;
         }
         let pinnedState: string | undefined;
+        let pinnedInstance: unknown;
         if (pinned) {
             const current = snapshot.providers.find(item => item.id === pinned.providerId);
             const currentBinding = snapshot.bindings.find(item => item.providerId === pinned.providerId && item.capabilityId === request.capabilityId);
@@ -77,6 +84,8 @@ export function createCapabilityResolver(registry: CapabilityRegistry, authorize
         for (const binding of snapshot.bindings.filter(item => item.capabilityId === request.capabilityId)) {
             const provider = snapshot.providers.find(item => item.id === binding.providerId)!;
             const reasons: ExclusionCode[] = [];
+            const instance = await registry.defaultInstance(provider);
+            if (pinned) pinnedInstance = instanceFingerprint(instance);
             if (definition.lifecycle.status === 'revoked') {
                 reasons.push('capability_revoked');
             }
@@ -105,14 +114,14 @@ export function createCapabilityResolver(registry: CapabilityRegistry, authorize
             if (provider.dependencies.some(item => !item.available) || provider.health === 'blocked_dependency') {
                 reasons.push('missing_dependency');
             }
-            if (provider.health !== 'ready') {
+            if (provider.health !== 'ready' || !instanceCanRun(instance, provider)) {
                 reasons.push('unhealthy');
             }
             if (provider.cost.latencyMs > request.budget.latencyMs || provider.cost.resourceUnits > request.budget.resourceUnits) {
                 reasons.push('budget_exceeded');
             }
             const { missingRequired, missingConditional, missing, limitations, level } = assessConformance(definition, binding, request);
-            if (missingRequired.length) {
+            if (missingRequired.length || binding.conformance.level === 'incompatible') {
                 reasons.push('missing_required');
             }
             if (missingConditional.length) {
@@ -132,7 +141,7 @@ export function createCapabilityResolver(registry: CapabilityRegistry, authorize
             if (reasons.length) {
                 result.excludedProviders.push({
                     providerId: provider.id,
-                    reasons,
+                    reasons: [...new Set(reasons)],
                     missingRequirements: [...new Set([...missingRequired, ...missingConditional])]
                 });
                 continue;
@@ -183,7 +192,8 @@ export function createCapabilityResolver(registry: CapabilityRegistry, authorize
             });
             // A fixed executable survives unrelated catalog revisions and normal
             // upgrades. Changes to its actual safety/conformance state fail closed.
-            if (currentState !== pinnedState) {
+            const instance = await registry.defaultInstance(provider);
+            if (currentState !== pinnedState || instanceFingerprint(instance) !== pinnedInstance) {
                 throw Error('capability_registry_changed');
             }
         }

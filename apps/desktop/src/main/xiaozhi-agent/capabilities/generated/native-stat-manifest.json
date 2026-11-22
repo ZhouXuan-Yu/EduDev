@@ -50,7 +50,7 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/types.ts",
-      "sha256": "a8fae7760f582b7773bad7dab12f46ce282fcf4e31d33dafa876d0e08e72750b"
+      "sha256": "2ddadb15277af44de1988de7a24823d920bd7bea9348df4382d40e2051fd2a43"
     },
     {
       "reference": "src/main/xiaozhi-agent/document-host.ts",

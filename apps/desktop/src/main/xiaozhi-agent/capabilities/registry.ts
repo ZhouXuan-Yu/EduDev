@@ -1,6 +1,8 @@
 import type { Sql } from '../session-state';
-import type { CapabilityDefinition, ProviderManifest, CapabilityBinding, RegistrySnapshot, ProviderVersionRecord } from './types';
+import type { CapabilityDefinition, ProviderManifest, CapabilityBinding, RegistrySnapshot, ProviderVersionRecord, ProviderDefinition, ProviderInstance } from './types';
 import { protocolHash, snapshotProtocolInput, validCapabilityDefinition, validProviderManifest, validCapabilityBinding } from './validation';
+import {bindingMatches, bindingVerification, createBindingControls} from './bindings';
+import {createProviderInstanceStore, defaultProviderInstance, instanceCanRun, providerDefinition, providerManifest, type InitialProviderRuntime} from './provider-instances';
 import { isVerifiedNativeStatExecutable, type NativeStatExecutable } from './native-stat-executable';
 const empty = (): RegistrySnapshot => ({
     revision: 0,
@@ -12,6 +14,29 @@ const table = 'xiaozhi_capability_registry_v1';
 const versionsTable = 'xiaozhi_capability_provider_versions_v1';
 type ProviderVersionKey = {providerId: string; providerVersion: string; capabilityId: string};
 type Registration = {definition: CapabilityDefinition; provider: ProviderManifest; binding: CapabilityBinding};
+type InstanceInput = Omit<ProviderInstance, 'providerId'|'providerVersion'|'providerHash'|'revision'>;
+function replace<T>(items: T[], value: T, match: (item: T) => boolean) {
+    const index = items.findIndex(match);
+    if (index < 0) items.push(value);
+    else items[index] = value;
+}
+function registerDefinition(snapshot: RegistrySnapshot, definition: CapabilityDefinition) {
+    const previous = snapshot.definitions.find(item => item.id === definition.id);
+    if (previous?.lifecycle.status === 'revoked') throw Error('capability_revoked');
+    if (previous && protocolHash(previous) !== protocolHash(definition)) throw Error('capability_definition_immutable');
+    replace(snapshot.definitions, definition, item => item.id === definition.id);
+}
+function registerProvider(snapshot: RegistrySnapshot, provider: ProviderManifest, revalidatedCapability?: string) {
+    const previous = snapshot.providers.find(item => item.id === provider.id);
+    if (previous?.health === 'revoked') throw Error('capability_revoked');
+    if (previous?.version === provider.version && (provider.source.packageHash !== previous.source.packageHash
+        || provider.source.reference !== previous.source.reference)) throw Error('capability_provider_version_immutable');
+    if (previous && previous.version !== provider.version) {
+        // Keep immutable archives. Only fresh, individually verified edges are published for the new version.
+        snapshot.bindings = snapshot.bindings.filter(binding => binding.providerId !== provider.id || binding.capabilityId === revalidatedCapability);
+    }
+    replace(snapshot.providers, provider, item => item.id === provider.id);
+}
 function validate(snapshot: RegistrySnapshot) {
     if (!Number.isSafeInteger(snapshot.revision) || snapshot.revision < 0
         || snapshot.definitions.length > 128 || snapshot.providers.length > 128 || snapshot.bindings.length > 128
@@ -24,8 +49,7 @@ function validate(snapshot: RegistrySnapshot) {
     for (const binding of snapshot.bindings) {
         const definition = snapshot.definitions.find(item => item.id === binding.capabilityId);
         const provider = snapshot.providers.find(item => item.id === binding.providerId);
-        if (!definition || !provider || binding.contractVersion !== definition.contractVersion
-            || binding.providerVersion !== provider.version || binding.providerHash !== provider.source.packageHash) {
+        if (!definition || !provider || !bindingMatches(definition, provider, binding)) {
             throw Error('capability_registry_contract_mismatch');
         }
     }
@@ -165,48 +189,50 @@ export function createCapabilityRegistry(sql: Sql, options: {
             return snapshot.revision;
         });
     }
+    function trustedProvider(provider: ProviderManifest, executable?: NativeStatExecutable) {
+        if (!provider.publisher.official || options.officialProviderIds.includes(provider.id)) return;
+        if (!isVerifiedNativeStatExecutable(executable) || provider.version !== executable.version
+            || provider.source.packageHash !== executable.hash || provider.source.reference !== executable.reference) {
+            throw Error('capability_source_untrusted');
+        }
+    }
     function validatedRegistration(input: Registration, executable?: NativeStatExecutable) {
         // Clone before awaiting SQL so a caller cannot mutate a validated declaration in flight.
         const values = snapshotProtocolInput(input) as Registration;
         if (!validCapabilityDefinition(values.definition) || !validProviderManifest(values.provider) || !validCapabilityBinding(values.binding)) {
             throw Error('capability_invalid_metadata');
         }
-        if (values.provider.publisher.official && !options.officialProviderIds.includes(values.provider.id)) {
-            const matchesVerifiedArtifact = isVerifiedNativeStatExecutable(executable)
-                && values.provider.version === executable.version
-                && values.provider.source.packageHash === executable.hash
-                && values.provider.source.reference === executable.reference;
-            if (!matchesVerifiedArtifact) {
-                throw Error('capability_source_untrusted');
-            }
-        }
+        trustedProvider(values.provider, executable);
         if (values.binding.capabilityId !== values.definition.id || values.binding.providerId !== values.provider.id) {
             throw Error('capability_registry_contract_mismatch');
         }
         return values;
     }
+    async function publishBinding(snapshot: RegistrySnapshot, work: Sql, definition: CapabilityDefinition, provider: ProviderManifest, binding: CapabilityBinding) {
+        if (!bindingMatches(definition, provider, binding)) throw Error('capability_registry_contract_mismatch');
+        const control = await createBindingControls(work).read(definition.id, provider.id);
+        if (control === 'revoked') throw Error('capability_revoked');
+        const current = control === 'disabled' ? {...binding, enabled: false} : binding;
+        await archive(work, provider, current);
+        replace(snapshot.bindings, current, item => item.capabilityId === definition.id && item.providerId === provider.id);
+    }
     async function registerInSnapshot(snapshot: RegistrySnapshot, work: Sql, values: Registration) {
-        const oldDefinition = snapshot.definitions.find(item => item.id === values.definition.id);
-        const oldProvider = snapshot.providers.find(item => item.id === values.provider.id);
-        if (oldDefinition?.lifecycle.status === 'revoked' || oldProvider?.health === 'revoked') {
-            throw Error('capability_revoked');
-        }
-        // A new provider cannot redefine a published capability.
-        if (oldDefinition && protocolHash(oldDefinition) !== protocolHash(values.definition)) {
-            throw Error('capability_definition_immutable');
-        }
-        if (values.binding.contractVersion !== values.definition.contractVersion || values.binding.providerVersion !== values.provider.version || values.binding.providerHash !== values.provider.source.packageHash) {
-            throw Error('capability_registry_contract_mismatch');
-        }
-        await archive(work, values.provider, values.binding);
-        const replace = <T>(items: T[], value: T, match: (item: T) => boolean) => {
-            const index = items.findIndex(match);
-            if (index < 0) items.push(value);
-            else items[index] = value;
-        };
-        replace(snapshot.definitions, structuredClone(values.definition), item => item.id === values.definition.id);
-        replace(snapshot.providers, structuredClone(values.provider), item => item.id === values.provider.id);
-        replace(snapshot.bindings, structuredClone(values.binding), item => item.capabilityId === values.binding.capabilityId && item.providerId === values.binding.providerId);
+        registerDefinition(snapshot, values.definition);
+        registerProvider(snapshot, values.provider, values.binding.capabilityId);
+        await publishBinding(snapshot, work, values.definition, values.provider, values.binding);
+    }
+    function entries(snapshot: RegistrySnapshot, capabilityId: string, providerId: string) {
+        const definition = snapshot.definitions.find(item => item.id === capabilityId);
+        if (!definition) throw Error('capability_missing');
+        const provider = snapshot.providers.find(item => item.id === providerId);
+        if (!provider) throw Error('capability_provider_missing');
+        const binding = snapshot.bindings.find(item => item.capabilityId === capabilityId && item.providerId === providerId);
+        return {definition, provider, binding};
+    }
+    async function instances(work: Sql, provider: ProviderManifest) {
+        const stored = await createProviderInstanceStore(work).list(provider.id);
+        if (!stored.some(instance => instance.id === 'default')) stored.unshift(defaultProviderInstance(provider));
+        return stored;
     }
     return {
         async migrate() {
@@ -216,6 +242,8 @@ export function createCapabilityRegistry(sql: Sql, options: {
                 throw Error('capability_registry_transaction_required');
             }
             await sql.transaction(async (work) => {
+                await createBindingControls(work).migrate();
+                await createProviderInstanceStore(work).migrate();
                 const snapshot = await read(work);
                 for (const binding of snapshot.bindings) {
                     if (await versionRecord(work, binding.providerId, binding.providerVersion, binding.capabilityId)) {
@@ -226,6 +254,99 @@ export function createCapabilityRegistry(sql: Sql, options: {
             });
         },
         snapshot: () => read(sql),
+        async providerDefinitions() {
+            return (await read(sql)).providers.map(providerDefinition);
+        },
+        async defaultInstance(provider: ProviderManifest) {
+            return await createProviderInstanceStore(sql).find(provider.id, 'default') ?? defaultProviderInstance(provider);
+        },
+        async providerInstances(providerId: string) {
+            const provider = (await read(sql)).providers.find(item => item.id === providerId);
+            if (!provider) throw Error('capability_provider_missing');
+            return instances(sql, provider);
+        },
+        registerDefinition(raw: CapabilityDefinition, expectedRevision?: number) {
+            const definition = snapshotProtocolInput(raw);
+            if (!validCapabilityDefinition(definition)) throw Error('capability_invalid_metadata');
+            return mutate(snapshot => registerDefinition(snapshot, definition), expectedRevision);
+        },
+        registerProviderDefinition(raw: ProviderDefinition, runtime: InitialProviderRuntime, expectedRevision?: number) {
+            const definition = snapshotProtocolInput(raw) as ProviderDefinition;
+            const initial = snapshotProtocolInput(runtime) as InitialProviderRuntime;
+            if (!definition || !initial || !Array.isArray(definition.dependencies) || !Array.isArray(initial.availableDependencies)
+                || Object.keys(initial).sort().join(',') !== 'availableDependencies,cost,health'
+                || initial.availableDependencies.some(id => !definition.dependencies.includes(id))) throw Error('capability_invalid_metadata');
+            const provider = providerManifest(definition, initial);
+            if (!validProviderManifest(provider) || protocolHash(providerDefinition(provider)) !== protocolHash(definition)) {
+                throw Error('capability_invalid_metadata');
+            }
+            trustedProvider(provider);
+            return mutate(snapshot => registerProvider(snapshot, provider), expectedRevision);
+        },
+        registerBinding(raw: CapabilityBinding, expectedRevision?: number) {
+            const binding = snapshotProtocolInput(raw);
+            if (!validCapabilityBinding(binding)) throw Error('capability_invalid_metadata');
+            return mutate(async (snapshot, work) => {
+                const {definition, provider} = entries(snapshot, binding.capabilityId, binding.providerId);
+                await publishBinding(snapshot, work, definition, provider, binding);
+            }, expectedRevision);
+        },
+        async verifyBinding(capabilityId: string, providerId: string) {
+            const {definition, provider, binding} = entries(await read(sql), capabilityId, providerId);
+            if (!binding) {
+                const control = await createBindingControls(sql).read(capabilityId, providerId);
+                return {state: control === 'revoked' ? 'revoked' as const : 'needs_review' as const};
+            }
+            const record = await versionRecord(sql, providerId, binding.providerVersion, capabilityId);
+            return {...bindingVerification(definition, provider, binding),
+                state: record?.revoked ? 'revoked' as const : binding.enabled ? 'enabled' as const : 'disabled' as const};
+        },
+        setBindingState(capabilityId: string, providerId: string, state: 'enabled'|'disabled'|'revoked', expectedRevision?: number) {
+            if (!['enabled','disabled','revoked'].includes(state)) throw Error('capability_invalid_metadata');
+            return mutate(async (snapshot, work) => {
+                const {definition, provider, binding} = entries(snapshot, capabilityId, providerId);
+                if (!binding && state === 'enabled') throw Error('capability_binding_missing');
+                const controls = createBindingControls(work);
+                const previous = await controls.read(capabilityId, providerId);
+                const record = binding && await versionRecord(work, providerId, binding.providerVersion, capabilityId);
+                if (previous === 'revoked' || record?.revoked) throw Error('capability_revoked');
+                if (state === 'enabled' && (!binding || !bindingVerification(definition, provider, binding).verified)) throw Error('capability_binding_unverified');
+                await controls.set(capabilityId, providerId, state);
+                if (binding) {
+                    binding.enabled = state === 'enabled';
+                    await archive(work, provider, binding);
+                }
+                if (state === 'revoked') await work.run(`UPDATE ${versionsTable} SET revoked=1 WHERE provider_id=? AND capability_id=?`, [providerId, capabilityId]);
+                if (previous !== (state === 'enabled' ? undefined : state)) snapshot.revision++;
+            }, expectedRevision);
+        },
+        async putProviderInstance(providerId: string, raw: InstanceInput, expectedRevision: number) {
+            const input = snapshotProtocolInput(raw) as InstanceInput;
+            let result: ProviderInstance | undefined;
+            await mutate(async (snapshot, work) => {
+                const provider = snapshot.providers.find(item => item.id === providerId);
+                if (!provider) throw Error('capability_provider_missing');
+                result = await createProviderInstanceStore(work).put(provider, input, expectedRevision);
+                snapshot.revision++;
+            });
+            return result!;
+        },
+        async executionBinding(capabilityId: string, providerId: string, version: string, hash: string, instanceId = 'default') {
+            const check = async (work: Sql) => {
+                const {definition, provider, binding} = entries(await read(work), capabilityId, providerId);
+                const record = await versionRecord(work, providerId, version, capabilityId);
+                const instance = await createProviderInstanceStore(work).find(providerId, instanceId)
+                    ?? (instanceId === 'default' ? defaultProviderInstance(provider) : null);
+                if (definition.lifecycle.status === 'revoked' || provider.health === 'revoked' || record?.revoked) throw Error('capability_revoked');
+                if (!binding?.enabled || !instance || !record || !record.binding.enabled || record.provider.source.packageHash !== hash
+                    || !bindingMatches(definition, record.provider, record.binding) || !bindingVerification(definition, record.provider, record.binding).verified
+                    || !instanceCanRun(instance, record.provider) || provider.health !== 'ready'
+                    || !definition.platforms.includes(process.platform) || !record.provider.platforms.includes(process.platform)
+                    || record.provider.dependencies.some(dependency => !dependency.available)) throw Error('provider_unavailable');
+                return {definition, provider: providerDefinition(record.provider), instance, binding: record.binding};
+            };
+            return sql.readTransaction ? sql.readTransaction(check) : check(sql);
+        },
         providerVersion: (providerId: string, version: string, capabilityId: string) => versionRecord(sql, providerId, version, capabilityId),
         providerVersions: (keys: readonly ProviderVersionKey[], signal?: AbortSignal) => versionRecords(sql, keys, signal),
         async registerMissingCore(registrations: readonly Registration[], signal?: AbortSignal) {
@@ -251,6 +372,15 @@ export function createCapabilityRegistry(sql: Sql, options: {
                 signal?.throwIfAborted();
             });
             return registered;
+        },
+        registerAll(registrations: readonly Registration[], expectedRevision?: number) {
+            const values = registrations.map(item => validatedRegistration(item));
+            if (!values.length || values.length > 128 || new Set(values.map(({binding}) => binding.capabilityId + ':' + binding.providerId)).size !== values.length) {
+                throw Error('capability_invalid_metadata');
+            }
+            return mutate(async (snapshot, work) => {
+                for (const entry of values) await registerInSnapshot(snapshot, work, entry);
+            }, expectedRevision);
         },
         async register(definition: CapabilityDefinition, provider: ProviderManifest, binding: CapabilityBinding, expectedRevision?: number, executable?: NativeStatExecutable) {
             const values = validatedRegistration({definition, provider, binding}, executable);
