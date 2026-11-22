@@ -5,7 +5,7 @@
 | 阶段 | 状态 | 当前进展 |
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
-| 1 | PARTIAL | 已实现问答分流、原任务修订、暂停取消、教师澄清、多份文本资料子任务和跨会话成果引用。多附件子任务和真实模型仍待验收。 |
+| 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
 | 2 | NOT_STARTED | 以现有对话、恢复工作台与成果域为底座。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
@@ -148,3 +148,31 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 `artifact-reference.log` 保留首次合成夹具错误解析带有宿主说明的工具回执，`artifact-reference-final.log` 保留首次真实 HTML 读取被格式校验拒绝的结果。最终把 HTML 源码交给已有文本行读取合同，原生受限预览继续呈现 HTML。旧附件表增加一个可空来源字段。回退应用时可沿用原附件记录，旧界面省略来源信息；无须删除字段或改动原件。
 
 手测可在「教学文件」选择「浮力练习（手测样例）」，点击「在新对话中引用」。输入框上方应出现「浮力练习-验收.md · 引用教学文件」。点击文件可预览本机内容。发送「根据附件出一道同类浮力题，并给出答案」后查看本轮已发送附件和资料读取记录。历史版本入口继续单独用于比较、预览与恢复。其它 Office 格式沿现有附件路径，逐格式专项及真实模型回答质量仍待验收。
+
+## 已发送附件作为资料子任务
+
+首次桌面联测中，两个附件工具都有成功回执，汇总时只带上第一份核验结果。原任务计划只把纯读取认作成组读。附件读取会使用本地解析缓存，第二份结束后没有触发汇总前的核验刷新。现将已登记的资料读取和缓存型资料读取都纳入原任务步骤核验。模型先列出已提交的附件，再将实际附件 ID 作为步骤目标，调用时使用对应的当前 revision。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-attachment-subtasks-release` | TypeScript、Electron 构建通过。`attachment-subtasks/build.log`。主入口 SHA-256 `4925f7d3276afa549d92a3a5c5b5330a122a3ec85954d8428f9ae09dbdf716f4`。 |
+| `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --source-subtasks --attachment-subtasks` | 12/12，渲染错误 0。`attachment-subtasks/phase1-intent-JLvqFu/report.json`。两种来源分别验证实际双工具回执、双尺寸任务卡、两份核验结果进汇总、中断后同任务续做、模拟 503 后续做及一份资料版本变化。 |
+| `node --experimental-transform-types scripts/xiaozhi-agent/pi-task-plan-boundaries.mjs` | 20/20，`attachment-subtasks/plan-boundaries.log`。覆盖实际来源绑定、依赖和权限、效果去重及事务回滚。 |
+| 失败证据 | `attachment-subtasks/source-and-attachment-subtasks.log`，原始合成数据 `phase1-intent-Cpr0sF/data/app.db`。两份原生回执都成功，原模型汇总的主任务只带第一份核验结果。 |
+| 手测入口 | `manual-attachment-subtasks/启动-D3-附件子任务.cmd`，两份合成资料放在同目录的 `测试资料`。 |
+
+## Phase 1 退出核对
+
+| 原验收项 | 已实现并验收的工程场景 |
+| --- | --- |
+| 1、2 | 普通知识问答与明确的教学目标沿同一 Pi 走各自准入，分别核对模型工具和 SQLite Task。见最新资料子任务专项。 |
+| 3 | 自然语言补充递增原 Task 要求版本，新任务保留旧任务。见 `phase1-amend-ui.log`。 |
+| 4 | 实际修改指定 HTML，另一同文本文件的哈希保持。见 `artifact-reference/artifact-reference-release.log`。 |
+| 5、6 | 独立资料步骤的身份、核验状态与回执进入主任务和模型汇总。授权目录文件及已提交附件均完成。见 `attachment-subtasks/source-and-attachment-subtasks-recheck.log`。 |
+| 7 | 运行中以及异常或正常退出后，教师澄清接回原 Task。见本页「中断的教师澄清」和「正常退出后的教师澄清」。 |
+| 8 | 暂停可续做，取消后保持终态。见 `phase1-control-ui-rc.log`。 |
+| 9、10 | 本地合成 503 与关闭重启均保留原检查点，新 Run 读取当前核验结果。见最新资料子任务专项。 |
+| 11 | 原审批及冷启效果记录不自动重放。独立计划边界测试也拒绝相同效果再次调用。见 `phase1-original-task-recovery.log`、`phase1-approval-cold.log` 和 `attachment-subtasks/plan-boundaries.log`。 |
+| 12 | 旧成果引用到新对话，教师发送后读取选定字节，冷启保留精确来源。见 17 项跨会话引用专项。 |
+
+Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、原 Pi、文件与 SQLite，新增付费调用 0。真实模型的自主规划与回答质量纳入后续集中验收。下一阶段从现有小智首页、任务入口和教学工作台的真实数据装配开始。

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "4e0352a6b519594970f025f46cc6186efe933a218ec2dd48336b1372cd45773f",
+  "sourceHash": "98a360528892059890bc5fd0efe80163285a759e9942875ae3945f8bb015ba6a",
   "sources": [
     {
       "file": "package-lock.json",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "f630bcf6bf7bbc60b17ef96192080b743c79b95c6d7f6dd1962c53628551fa9f"
+      "sha256": "daac5ce77df4d9125f2740dd34b875000f3931d3b866d08e1ade73813d81d777"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1612,7 +1612,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/plan-runtime.ts",
-      "sha256": "76169c0c99e4dca2e0bf6803e14d0e21232cdf47a7588dc45682e22447bc3bc4"
+      "sha256": "b0987e2486329773dfa1f2c137f81d63edb5e8432f6ba67d18159fbe74f57393"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/planning-policy.ts",

@@ -56,18 +56,32 @@ const fixture=http.createServer(async(request,response)=>{
   }
   if(sourceFixture&&toolNames.includes('update_task_plan')){
     sourceFixture.records.push({context:sourceContext(body.messages),sources:['先画等分方格','再比较分数大小'].map(fragment=>body.messages.some(message=>modelText(message.content).includes(fragment)))});
+    if(sourceFixture.stage===-1){
+      sourceFixture.stage++;
+      return toolReply([['d3_attachment_directory','office_list_attachments',{}]]);
+    }
     if(sourceFixture.stage===0){
+      if(sourceFixture.kind==='attachment'){
+        const directory=modelText(body.messages.findLast(message=>message.role==='tool')?.content);
+        const listing=JSON.parse(directory.split('\n')[0]);
+        sourceFixture.targets=['source-a.txt','source-b.txt'].map(name=>listing.items.find(item=>item.name===name));
+        assert(sourceFixture.targets.every(item=>item?.id&&item.revision>0));
+      }
       sourceFixture.stage++;
       return toolReply([['d3_background_plan','update_task_plan',{
         schemaVersion:'xiaozhi.task-plan.v3',expectedRevision:0,requirementsVersion:1,reason:'分别读取两份已授权的备课资料后汇总',steps:[
-          {id:'source_a',text:'读取第一份备课资料',dependsOn:[],reported:'pending',kind:'file',target:'source-a.txt'},
-          {id:'source_b',text:'读取第二份备课资料',dependsOn:[],reported:'pending',kind:'file',target:'source-b.txt'},
+          {id:'source_a',text:'读取第一份备课资料',dependsOn:[],reported:'pending',kind:sourceFixture.kind,target:sourceFixture.targets?.[0].id??'source-a.txt'},
+          {id:'source_b',text:'读取第二份备课资料',dependsOn:[],reported:'pending',kind:sourceFixture.kind,target:sourceFixture.targets?.[1].id??'source-b.txt'},
           {id:'synthesis',text:'对照两份资料并供老师确认',dependsOn:['source_a','source_b'],reported:'pending',kind:'human'},
         ],
       }]]);
     }
     if(sourceFixture.stage===1){
       sourceFixture.stage++;
+      if(sourceFixture.kind==='attachment')return toolReply(sourceFixture.targets.map(({id,revision},index)=>{
+        const key=index===0?'a':'b';
+        return [`d3_background_${key}`,'office_read_attachment',{taskStepId:`source_${key}`,id,revision}];
+      }));
       return toolReply([['d3_background_a','office_read_text',{taskStepId:'source_a',path:'source-a.txt'}],['d3_background_b','office_read_text',{taskStepId:'source_b',path:'source-b.txt'}]]);
     }
     if(sourceFixture.stage===2){sourceFixture.stage++;holdNextReply=true;}
@@ -167,7 +181,7 @@ function sourceReceipts(){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
   try{return db.prepare(`SELECT tool.call_id,tool.phase,tool.admitted,tool.success
     FROM xiaozhi_tool_receipts tool JOIN xiaozhi_event_runs run ON run.run_id=tool.run_id
-    WHERE run.session_id=? AND tool.tool='office_read_text' ORDER BY tool.call_id`).all(sessionId);}
+    WHERE run.session_id=? AND tool.tool=? ORDER BY tool.call_id`).all(sessionId,sourceFixture?.kind==='attachment'?'office_read_attachment':'office_read_text');}
   finally{db.close();}
 }
 try{
@@ -404,21 +418,26 @@ try{
       check('教师主动停止后，正常重启保留旧题卡且禁止其恢复执行');
     }
   }
-  if(process.argv.includes('--source-subtasks')){
+  for(const kind of ['file','attachment'].filter(kind=>process.argv.includes(kind==='file'?'--source-subtasks':'--attachment-subtasks'))){
     await freshConversation();
-    const workspace=path.join(output,'source-workspace');
+    const workspace=path.join(output,`${kind}-source-workspace`);
     fs.mkdirSync(workspace);
-    const a=path.join(workspace,'source-a.txt');
+    const a=path.join(workspace,'source-a.txt'),b=path.join(workspace,'source-b.txt');
     fs.writeFileSync(a,'先画等分方格，帮助学生理解等值分数。');
-    fs.writeFileSync(path.join(workspace,'source-b.txt'),'再比较分数大小，用同一单位解释。');
-    await app.evaluate(({dialog},dir)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[dir]});},workspace);
-    await page.getByTestId('pi-permission-picker').click();
-    await page.getByRole('menuitem',{name:'选择教学工作目录',exact:true}).click();
-    const grantDeadline=Date.now()+15_000;
-    while(!(await snapshot()).workspace&&Date.now()<grantDeadline)await new Promise(resolve=>setTimeout(resolve,80));
-    assert((await snapshot()).workspace);
-    sourceFixture={stage:0,records:[]};
-    await submit('新建教学任务，请阅读已授权目录的 source-a.txt 和 source-b.txt，对照后整理等值分数课堂导入。');
+    fs.writeFileSync(b,'再比较分数大小，用同一单位解释。');
+    if(kind==='attachment'){
+      await page.locator('[data-testid="office-composer"] input[type=file]').setInputFiles([a,b]);
+      await page.getByRole('button',{name:'预览附件 source-b.txt',exact:true}).waitFor();
+    }else{
+      await app.evaluate(({dialog},dir)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[dir]});},workspace);
+      await page.getByTestId('pi-permission-picker').click();
+      await page.getByRole('menuitem',{name:'选择教学工作目录',exact:true}).click();
+      const grantDeadline=Date.now()+15_000;
+      while(!(await snapshot()).workspace&&Date.now()<grantDeadline)await new Promise(resolve=>setTimeout(resolve,80));
+      assert((await snapshot()).workspace);
+    }
+    sourceFixture={kind,stage:kind==='attachment'?-1:0,records:[]};
+    await submit(`新建教学任务，请分别读取${kind==='attachment'?'已发送的附件':'已授权目录的文件'} source-a.txt 和 source-b.txt，对照后整理等值分数课堂导入。`);
     const deadline=Date.now()+35_000;
     while(sourceFixture.stage<3&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,80));
     assert.equal(sourceFixture.stage,3,'Pi did not reach the parent synthesis request');
@@ -441,7 +460,7 @@ try{
       await rows.nth(1).scrollIntoViewIfNeeded();
       const box=await rows.nth(1).boundingBox();
       assert(box&&box.x>=0&&box.y>=0&&box.x+box.width<=width+1&&box.y+box.height<=height+1);
-      await page.screenshot({path:path.join(output,`source-subtasks-before-aggregation-${width}.png`)});
+      await page.screenshot({path:path.join(output,`${kind}-source-subtasks-before-aggregation-${width}.png`)});
     }
     check('两份授权资料在同一任务执行，Pi 汇总请求、任务卡和 SQLite 均看到已核验子任务');
 
@@ -468,7 +487,16 @@ try{
     assert.deepEqual(sourceReceipts(),receipts);
     check('模型提供方暂时不可用时保留子任务检查点，显式续做复用原结果');
 
-    fs.writeFileSync(a,'更新后的来源内容，旧证据失效。');
+    let file=a;
+    if(kind==='attachment'){
+      const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+      try{
+        const row=db.prepare("SELECT relative_path FROM xiaozhi_pi_attachments WHERE conversation_id=? AND id=? AND state='submitted'").get(sessionId,sourceFixture.targets[0].id);
+        file=path.join(data,'xiaozhi-pi','attachments',sessionId,row.relative_path);
+      }finally{db.close();}
+      fs.chmodSync(file,0o600);
+    }
+    fs.writeFileSync(file,'更新后的来源内容，旧证据失效。');
     const updated=await send('继续');
     assert.equal(updated.turn.task?.id,task.id);
     const results=sourceFixture.records.at(-1).context?.sourceSubtasks;
