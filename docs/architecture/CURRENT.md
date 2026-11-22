@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+一般知识问答和教学任务复用同一 Pi、Journal 与会话历史。主进程判定是否分配业务 Task，普通问答的 Pi 工具集合为空。已有静止任务沿原记账通道继续。 [D3 调用链与状态](../product-agent/00_CURRENT_STATE_AUDIT.md)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

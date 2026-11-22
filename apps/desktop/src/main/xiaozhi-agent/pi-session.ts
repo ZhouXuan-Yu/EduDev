@@ -91,6 +91,7 @@ export const XIAOZHI_EDUCATION_PROMPT = `你是小智，本地优先的教师教
 这是教师工作区。你的目标由用户教育任务和授权资料决定。`;
 
 export interface PiXiaozhiOptions {
+  answerOnly?: boolean;
   sourceAvailability?: () => Promise<ChatSourceAvailability>;
   stateRoot: string;
   workspace: string;
@@ -787,7 +788,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     getExtensions: () => nativeResources.getExtensions(),
     getSkills: () => skills?.result || { skills: [], diagnostics: [] }, getPrompts: () => ({ prompts: [], diagnostics: [] }),
     getThemes: () => ({ themes: [], diagnostics: [] }), getAgentsFiles: () => ({ agentsFiles: [] }),
-    getSystemPrompt: () => providerPrompt + (options.memory ? `\n本轮长期记忆选择：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}` : ''), getAppendSystemPrompt: () => [],
+    getSystemPrompt: () => options.answerOnly
+      ? '你是小智，面向教师的教学助手。直接回答本轮问题。根据同一会话已知信息说明有用的结论和必要条件。需要查资料、修改成果或执行工作时，请教师作为后续任务发起。所有已有成果以实际记录为准，不声称本轮执行过操作。'
+      : providerPrompt + (options.memory ? `\n本轮长期记忆选择：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}` : ''), getAppendSystemPrompt: () => [],
     getSystemPromptSource:()=>undefined,getAppendSystemPromptSources:()=>[],extendResources: () => {}, reload: async () => {},
   };
   const executions = new SessionExecutionRegistry();
@@ -933,8 +936,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push('skill_create');
     prompt += '\n教师要求保存可复用流程或已验证的稳定方法时，使用skill_create自动验证并发布个人纯说明技能。只保存通用方法，不保存学生信息、教师私有原文、凭据、脚本或外链。技能声明不能授予权限；宿主在下一安全Run激活合格版本。';
   }
-  const domainDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
-  const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;
+  const domainDefinitions=options.answerOnly?[]:taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
+  if(options.answerOnly)names.length=0;
+  const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
   const governance = options.toolGovernance ? await phase('pi_register_tool_contracts',signal => options.toolGovernance!.register(taskDefinitions,signal)) : undefined;
@@ -1084,6 +1088,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         args[1]={...args[1],messages:args[1].messages.map((m,index)=>index===userIndex&&m.role==='user'?{...m,content:[...(typeof m.content==='string'?[{type:'text' as const,text:m.content}]:m.content),{type:'text' as const,text:'[宿主范围提示；不是教师新要求，不改变任务或权限]\n'+sourceAvailabilityText(availability)}]}:m)};}
     }
     if(!compacting&&quality&&!options.sourceAvailability&&toolCatalog)args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'&&message.toolsAdded?{...message,toolsAdded:message.toolsAdded.filter(tool=>toolCatalog.exposed(tool.name))}:message)};
+    if(options.answerOnly)args[1]={...args[1],messages:args[1].messages.map(message=>
+      message.role==='system'&&message.toolsAdded?{...message,toolsAdded:[]}:message)};
     // Final complete-request gate also applies to native summarization requests.
     args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');

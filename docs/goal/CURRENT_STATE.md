@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 Phase 0 已完成。Phase 1 的问答/任务分流已有生产实现与桌面验证，仍需自然语言修改、子任务、暂停、失败和副作用恢复。 [阶段记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Provider 与 Binding 版本归档接入独立实例和逐配对控制。原 Native、Managed MCP 和社区钩子经统一 Adapter 运行。D1 交付自检后等待独立验收。 [实施记录](xiaozhi-harness/D1_IMPLEMENTATION.md) · [验收自检](xiaozhi-harness/D1_SELF_CHECK.md)

@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 用本机合成服务跑实际 Electron，读取消息与原 Task，证明一问一目标和冷启动续做的差异。整体验收仍按逐阶段合同推进。 [证据和人工步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

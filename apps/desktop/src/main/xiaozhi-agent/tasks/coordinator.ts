@@ -95,7 +95,7 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   async finish(task:TaskView,publisher:ReturnType<typeof createEventPublisher>,failed:boolean){return publisher.checkpointTask(async work=>{
    const tasks=state(inline(work)),actual=await tasks.get(task.id);if(!actual)throw Error('task_missing');return tasks.settle(publisher.owner,actual.id,actual.revision,failed);
   });},
-  async compact(sessionId:string,publisher:ReturnType<typeof createEventPublisher>){const current=await state().latest(sessionId);if(!current)return;return publisher.checkpointTask(work=>state(inline(work)).bindEventOwner(publisher.owner,current.id,current.revision));},
+  async bindSessionEventOwner(sessionId:string,publisher:ReturnType<typeof createEventPublisher>){const current=await state().latest(sessionId);if(!current)return;return publisher.checkpointTask(work=>state(inline(work)).bindEventOwner(publisher.owner,current.id,current.revision));},
   prepareResume,
   async prepareGoal(sessionId:string,goalId:string){await allowed(sessionId);const prior=await state().forGoal(sessionId,goalId);if(prior)await state().previewGoalResume(sessionId,prior.id,prior.revision,goalId);},
   async resume(input:TaskResumeInput,publisher:ReturnType<typeof createEventPublisher>){await prepareResume(input);return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,input.taskId,input.revision,input.commandId));},

@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 当前在 Phase 1。审计、设计规范映射与首个闭环已登记。下一切片是明确追加和修改时保留原任务与来源。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+
 ## 2026-11-22 小智 Harness D1
 
 第一轮对象和适配器改造的实现、移交流程与独立验收入口见专项。待独立验收后另行启动下一阶段。 [D1 实施](xiaozhi-harness/D1_IMPLEMENTATION.md)

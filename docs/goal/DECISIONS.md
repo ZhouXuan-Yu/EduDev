@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 的 D11 由主进程先识别明确的答复型输入，不产生业务 Task 或任务工具权限。其余输入继续经原 Task 治理和单 Pi。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md)
+
 ## 2026-11-22 小智 Harness D1
 
 复用原 Registry 和版本快照，增量管理 Provider Instance 与 Binding 控制。Core 与 Community 在可信宿主中统一接入，通过已存在的许可服务和 Windows 隔离执行。 [D1 架构](../architecture/HARNESS_D1.md)

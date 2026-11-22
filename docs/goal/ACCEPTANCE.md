@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 首轮核对普通问题、明确成果目标、插入问答、退出后继续。已确定的范围与未验证的教师体验分开留证。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+
 ## 2026-11-22 小智 Harness D1
 
 D1-001 至 D1-017 单列自检与原始运行证据。 [专项自检](xiaozhi-harness/D1_SELF_CHECK.md)

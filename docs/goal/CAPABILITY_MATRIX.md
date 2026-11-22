@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+一般知识问答只走已有会话和 Pi。需要文件、题库、成果、技能或已有任务时沿现有工作入口获得对应能力。 [D3 能力映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Native、Managed MCP 和 Windows 社区扩展使用适配器执行合同。宿主现能独立核对能力配对、实例、制品版本和权限。 [D1 能力和隔离表](../architecture/HARNESS_D1.md#生产装配)

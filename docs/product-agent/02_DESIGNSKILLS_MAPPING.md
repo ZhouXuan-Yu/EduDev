@@ -1,0 +1,12 @@
+# DesignSkills 在 EduDev 的约束映射
+
+指定本地目录 `D:/WorkProject/DesignUIstandard/DesignSkills` 已读取。总入口 `SKILL.md` 为 v0.3.0，另有 `使用说明.md`、`interface.json`、`tokens.json`、`references/` 和本地样张。冻结 D3 决策决定任务路径。DesignSkills 的行为和排版原则用于 EduDev 当前 React/HeroUI 组件，保留项目已确认的 `OfficeComposer` 和浅色外壳。
+
+| 页面 | 本地规范与取舍 | 验证 |
+| --- | --- | --- |
+| 首页、导航 | `DESIGN`、`FOUNDATIONS`、`NAVIGATION`、CMP12/14/15。对话主操作优先，待办和续做按真实结果显现，新对话始终可达，使用既有图标和路由。 | Electron 找到新建、任务、成果、原资料与学生入口。测试窄窗口、焦点和键盘。 |
+| 对话和任务卡 | `CORE_STATES`、CMP07/10。空态、等待、失败、已完成、重试分明，审批和提交显示真实状态，低频细节渐进展开。 | 核对真实执行、空态、出错、回复以及旧任务继续。 |
+| 教学工作台和成果 | CMP12/15，筛选/表格按 CMP02/03/04，详情按 CMP10、导出按 CMP11。以进行中和待处理任务为先，成果不以重复文件分类建账。 | 验证筛选、版本、返回保留上下文、导出和 SQLite/文件读回。 |
+| 右侧上下文 | CMP12/15。沿原本可收起面板，优先显示当前任务/成果，宽度不足时保持输入可用。 | 1366×768 与 1920×1080 截图及操作，记录渲染错误和滚动可达性。 |
+
+真实运行证据集中于 `D:/WorkProject/EduProject/acceptance/D3-20261122`。页面采用前按入口继续读对应组件细则。首个 Phase 1 切片修改宿主行为，沿现行组件渲染和交互验证。

@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-11-22 小智长期个人教学 Agent D3
+
+D3 采用长期个人教学 Agent 的冻结决策。Phase 1 已区分普通问答与教学目标，后续工作仍沿任务连续性、任务与成果中心、教师记忆、四类业务推进。 [D3 实施映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)
+
 ## 2026-11-21 存量目录升级旧版结构
 
 在资料工作区的处理队列中，老师可批量升级某个目录的旧版结构，继续使用队列的暂停、恢复和重试。已有教师修订可继续使用。 [专项报告](../research/evidence/kb/20261121/batch-structure-upgrade/README.md)

@@ -16,6 +16,7 @@
 | UI/交互 | [设计技能](../.agents/skills/edudev-design/SKILL.md)、[设计系统](design/system/README.md) | 技能指向的决策台账、目标目录 [renderer 规则](../apps/desktop/src/renderer/AGENTS.md)、相关真实界面证据 |
 | 跨模块产品/架构边界 | [Master](goal/XIAOZHI_CODEX_GOAL.md)相关合同章节 | [产品](product/CURRENT.md)、[架构](architecture/CURRENT.md)、[集成](integrations/CURRENT.md)相关章节 |
 | 验收与发布判断 | [验收入口](acceptance/CURRENT.md) | [能力矩阵](goal/CAPABILITY_MATRIX.md)、[验收台账](goal/ACCEPTANCE.md)、[前端 E2E 矩阵](26_FRONTEND_E2E_COVERAGE_MATRIX.md)、具体冻结构建报告 |
+| 小智长期个人教学 Agent D3 | [当前代码审计](product-agent/00_CURRENT_STATE_AUDIT.md)、[冻结需求映射](product-agent/01_IMPLEMENTATION_MAPPING.md) | [设计规范映射](product-agent/02_DESIGNSKILLS_MAPPING.md)、[实施合同](product-agent/03_TECHNICAL_EXECUTION_PLAN.md)、[阶段证据](product-agent/04_PROGRESS_AND_EVIDENCE.md)、[风险](product-agent/05_RISK_REGISTER.md) |
 | 历史决策与原因 | [决策台账](goal/DECISIONS.md)相关条目 | [进度记录](goal/WORK_PROGRESS.md)、旧编号文档、对应证据 |
 | 启动/环境 | [启动说明](../启动.md) | 实际 package 脚本、锁文件和本机环境 |
 

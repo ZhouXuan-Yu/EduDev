@@ -22,6 +22,7 @@ import {createScienceLessonSource,prepareScienceLessonRefresh} from '../educatio
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation} from './tasks/continuation';
+import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
 import {createClassroomPlanTools} from '../education/classroom-plan-tools';
@@ -241,6 +242,7 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
+  answerOnly?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
   rebuildFile?: string;
   dynamicCapabilities?: ReturnType<typeof createManagedMcpProviderRuntime>;
@@ -917,7 +919,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       workspace:()=>host.resolveFileWorkspace(id),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped),
       sanitize:async text=>(await createStudentContextSanitizer(store))(text),sanitizer:()=>createStudentContextSanitizer(store),
       fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText}):undefined;
-    const mcpTools = owner ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
+    const mcpTools = owner?.task ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
       beforeCall: async (source, tool, input, signal, callId) => {
         if (!owner.toolGovernance) throw Error('permission_denied');
         await owner.toolGovernance.beginMcpCall(callId, {serverId: source.serverId, tool, transport: source.transport,
@@ -1218,6 +1220,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
+        ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
           await startupPrewarm.wait();signal.throwIfAborted();
           const records = await registerSessionToolGovernance({definitions, registry: store.xiaozhiState.capabilities, mcp: name => mcp.describeTool(name),signal});
@@ -1273,6 +1276,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
         if(run.stopped||active.get(id)!==run)throw Error('cancelled');
         if(delivery.kind==='tool'){
+          if(run.answerOnly)throw Error('permission_denied');
           if(delivery.tool===PAPER_TOOLS[0]){
             if(!taskRuntime||!run.task)throw new TaskAdmissionError('task_owner_stale');
             await taskRuntime.refresh();
@@ -1422,7 +1426,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         run.verification ??= createRunVerification(run.runId);
         finalTurn.verification=run.verification.finish({failed:Boolean(failure),stopped:run.stopped,
           teacherCriteria:taskGoal?.sessionId===id&&taskGoal.runId===run.runId?taskGoal.criteria
-            :currentTask?.id===run.task?.id?currentTask!.criteria.filter(criterion=>criterion.kind==='human').map(criterion=>criterion.text):undefined});
+            :currentTask&&currentTask.id===run.task?.id?currentTask.criteria.filter(criterion=>criterion.kind==='human').map(criterion=>criterion.text):undefined});
         if(run.results&&run.readResults)finalTurn.verification=await run.results.finish(finalTurn.verification,run.readResults);
         if(fileFinal?.incomplete&&finalTurn.verification.state==='verified'){finalTurn.verification={...finalTurn.verification,state:'partial',reason:'evidence_missing',checks:finalTurn.verification.checks.some(c=>c.id==='coverage:unknown')?finalTurn.verification.checks:[...finalTurn.verification.checks.slice(0,63),{id:'coverage:unknown',state:'unknown',evidenceIds:[]}]};}
         for (const item of finalTurn.items.filter(item => item.kind === 'tool')) {
@@ -1966,7 +1970,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume));
       await phase(()=>tasks.recover(id));
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
+      const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
       const run: Active = { ...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+        ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
@@ -2029,7 +2035,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
-        if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask));else await phase(()=>tasks.compact(id,run.publisher!));
+        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask));
+        else await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
         run.done = observeLifecycle('host_execute',()=>execute(id, input.prompt.trim(), run, settings),{runId:run.runId});
         executions.set(run.runId, {sessionId: id, done: run.done});
