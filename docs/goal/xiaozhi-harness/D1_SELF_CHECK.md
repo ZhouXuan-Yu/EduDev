@@ -54,4 +54,16 @@
 
 T1 通用执行器、其他平台 T2、完整社区下载页和生产 Pi 多实例选择界面暂未实施。Windows T2 的较强隔离限于现有沙箱、受控投影、禁止联网和任务健康检查。两条 high 依赖告警涉及既有 `@modelcontextprotocol/sdk` 与 `body-parser`。本轮未改动依赖版本。生产候选构建不覆盖日常安装，也未进行干净 Windows 安装或真实教师操作。
 
+## 用户桌面验收
+
+已启动并核对 `2b2db55` 的 Electron 窗口。临时配置、资料库和样本统一保存在 `D:/WorkProject/EduProject/acceptance/D1-20261122/manual`。启动路径、窗口和数据库核对记录见该目录的 `launch.json`。
+
+| 操作 | 通过标准 |
+| --- | --- |
+| 在「设置 → 能力中心」搜索 `edu.workspace.file.stat`。展开两条记录的「来源与核验详情」。 | 同一能力有两条提供方记录。提供方 ID 分别为 `edu.native.hana-file-stat` 和 `edu.native.workspace-file-stat`。安装、核验、任务授权和可用性可分别查看。 |
+| 在「问小智」开启新对话，点「+ → 选择教学工作目录」，选择验收目录内的 `manual/workspace`。在文件面板打开 `d1-验收样本.txt`。 | 能看到「D1 验收：乙班有 12 本教材。」。可选的对话检查需要先在「设置 → 模型与连接」配置模型，再请小智只读该文件并引用原句。 |
+| 在「设置 → 外部工具 → 本地扩展」选择「导入本地扩展」，选中 `manual/extension-1.0.0`。 | 出现 `synthetic.context · 1.0.0`，显示「隔离待准备」「未启用」。 |
+| 配置模型后，回到导入时的对话，请小智准备 `synthetic.context`，使用它的 `context.transform` 转换公开示例“验收测试”。仅在需要时确认当前任务的扩展权限。 | 扩展变为「已启用」「当前版本」，成功调用时返回 `extension-1.0.0:验收测试`。可再导入 `manual/extension-2.0.0`，准备该版本后检查文本转换可用，事件观察的失败不会停用文本转换。 |
+| 回到「本地扩展」点击「停用」，再回对话请求同一转换。 | 状态显示「未启用」，该版本无法再执行转换。 |
+
 [D1 实施及文件清单](D1_IMPLEMENTATION.md) · [技术架构和恢复](../../architecture/HARNESS_D1.md)
