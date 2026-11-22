@@ -18,11 +18,14 @@ import {newPaperInstance, instanceReviewed, instanceDeliveryBlock} from './paper
 import {paperSectionMatches} from './paper-selection';
 import type {PaperSql} from './paper-sql';
 import type {PaperRepository} from './paper-repository';
+import {paperEditLineage,paperPrecedes} from './paper-edit-lineage';
+
+type BasketPapers=Pick<PaperRepository,'createBasketSnapshotInTransaction'|'reviewInTransaction'|'decideInTransaction'|'restoreSourceInTransaction'>;
 
 export class PaperBasketV2Repository {
   private readonly host: BasketHost;
-  private readonly papers: Pick<PaperRepository,'createBasketSnapshotInTransaction'|'reviewInTransaction'|'decideInTransaction'>;
-  constructor(host: BasketHost, papers: Pick<PaperRepository,'createBasketSnapshotInTransaction'|'reviewInTransaction'|'decideInTransaction'>) {this.host=host;this.papers=papers;}
+  private readonly papers: BasketPapers;
+  constructor(host: BasketHost, papers: BasketPapers) {this.host=host;this.papers=papers;}
   private readTx<T>(work: (sql: PaperSql) => Promise<T>): Promise<T> { return (this.host.readTransaction || this.host.transaction).call(this.host, work) as Promise<T>; }
   private tx<T>(current: () => boolean, work: (sql: PaperSql) => Promise<T>) {
     return this.host.transaction(async sql => { this.lease(current); const result = await work(sql); this.lease(current); return result; });
@@ -55,10 +58,12 @@ export class PaperBasketV2Repository {
       });
     }).filter(g => g.missing || g.excess);
     const paperOperations=await sql.all(`SELECT operation_kind,paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=?
-      AND operation_kind IN ('domain:confirm-paper','domain:import-paper') ORDER BY rowid DESC`,[basket.sessionId,basket.id]);
+      AND operation_kind IN ('domain:confirm-paper','domain:import-paper','domain:restore-paper-source') ORDER BY rowid DESC`,[basket.sessionId,basket.id]);
     const confirmed=paperOperations.find(row=>row.operation_kind==='domain:confirm-paper'),origin=paperOperations.find(row=>row.operation_kind==='domain:import-paper');
+    const restored=paperOperations.find(row=>row.operation_kind==='domain:restore-paper-source');
     return {...basketSummary(basket), studentId:basket.studentId, schemaVersion:PAPER_BASKET_V2_SCHEMA, persistedSchemaVersion:basket.schemaVersion,...(confirmed?.paper_id?{confirmedPaperId:String(confirmed.paper_id)}:{}),
       ...(origin?.paper_id?{editSourcePaperId:String(origin.paper_id)}:{}),
+      ...(restored?.paper_id?{restoredFromPaperId:String(restored.paper_id)}:{}),
       ...(basket.data.purpose?{purpose:basket.data.purpose}:{}),...(basket.data.paperRequirements?{paperRequirements:basket.data.paperRequirements}:{}),...(basket.data.fulfillment?{fulfillment:structuredClone(basket.data.fulfillment)}:{}),
       blueprint:basket.data.blueprint,entries,gaps:basket.data.purpose==='practice'?[]:gaps,complete:basket.state==='active' && (basket.data.purpose==='practice'||!gaps.length) && !fulfillmentBlocksConfirmation(basket) && !(basket.data.purpose==='paper'&&basket.data.paperRequirements==='required') && templateSourceCurrent
         && !basket.data.c2?.retainedSections.some(s=>!s.released) && !basket.data.c2?.unknownRetainedSections?.some(s=>!s.released) && !basketC2Conflicts(basket.data).length
@@ -253,8 +258,16 @@ export class PaperBasketV2Repository {
       const studentId=await authorizePaperOwner(sql,input.sessionId);
       const prior=await previousBasketOperation(sql,input.sessionId,input.requestId,'import',input,studentId);
       if(prior)return this.view(sql,await readStoredBasket(sql,input.sessionId,prior.basketId,true));
-      const paper=await this.papers.reviewInTransaction(sql,input.sessionId,input.paperId);
-      if(paper.revision!==input.paperRevision||paper.state==='rejected'||paper.supersededBy)throw Error('conflict');
+      const head=await this.papers.reviewInTransaction(sql,input.sessionId,input.paperId);
+      if(head.revision!==input.paperRevision||head.state==='rejected'||head.supersededBy)throw Error('conflict');
+      let paper=head;
+      if(input.restoreFrom){
+        if(head.state!=='confirmed')throw Error('conflict');
+        const {successors}=await paperEditLineage(sql,input.sessionId);
+        if(!paperPrecedes(successors,input.restoreFrom.paperId,head.id))throw Error('conflict');
+        paper=await this.papers.restoreSourceInTransaction(sql,input.sessionId,input.restoreFrom.paperId);
+        if(paper.revision!==input.restoreFrom.paperRevision)throw Error('conflict');
+      }
       if(!paper.sourceCurrent)throw Error('source_changed');
       await checkBasketCapacity(sql,input.sessionId);
       const id='xibasket_'+randomUUID(),at=new Date().toISOString();
@@ -267,7 +280,8 @@ export class PaperBasketV2Repository {
       const importedC2=paper.c2?structuredClone(paper.c2):undefined;
       if(importedC2){importedC2.entryPoints=Object.fromEntries(entries.map((e,i)=>[e.entryId,paper.selection.items[i].points]));for(const r of importedC2.retainedSections)r.entryIds=[];for(const r of importedC2.unknownRetainedSections||[])r.entryIds=[];}
       await sql.run("INSERT INTO paper_baskets(id,session_id,student_id,schema_version,revision,state,data_json,created_at,updated_at) VALUES(?,?,?,?,1,'active',?,?,?)",[id,input.sessionId,studentId,importedC2?PAPER_BASKET_C2_SCHEMA:PAPER_BASKET_V2_SCHEMA,encodeBasket({blueprint:structuredClone(paper.blueprint),entries,...(paper.purpose?{purpose:paper.purpose,paperRequirements:paper.purpose==='practice'?'required' as const:'provided' as const}:{}),...(importedC2?{c2:importedC2}:{}),uiState:{stage:'organize',filters:{},offset:0,scrollTop:0}}),at,at]);
-      await recordBasketOperation(sql,input.sessionId,input.requestId,'import',input,studentId,{basketId:id,revision:1,paperId:paper.id});
+      await recordBasketOperation(sql,input.sessionId,input.requestId,'import',input,studentId,{basketId:id,revision:1,paperId:head.id});
+      if(input.restoreFrom)await recordBasketOperation(sql,input.sessionId,`restore-source:${input.requestId}`,'restore_source',input,studentId,{basketId:id,revision:1,paperId:paper.id});
       await this.host.afterWrite?.();await authorizePaperOwner(sql,input.sessionId,studentId);
       const imported=await readStoredBasket(sql,input.sessionId,id,true);if(imported.data.c2){if(!this.host.verifyTemplates)throw Error('unavailable');await this.host.verifyTemplates(sql,imported);}
       return this.view(sql,imported);

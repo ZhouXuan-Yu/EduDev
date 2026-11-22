@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台、任务与成果双向定位、右侧上下文和试卷专业编辑回接。历史卷还原和其他领域编辑继续实施。 |
+| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷专业编辑回接和历史版本恢复。精确导出与其他领域编辑继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -255,3 +255,17 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | `npm.cmd run test:renderer-components`、`node scripts/electron-smoke.mjs` | 253/253、207/207，`renderer.log`、`electron-smoke.log`。 |
 
 证据根在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-edit-sync`。隔离手测 `manual-phase2-paper-edit-sync/启动-D3-试卷编辑回接.cmd`，同目录记录验收步骤和 Windows 窗口证据。保留前三次专项日志，分别修正了分值控件所在区域、冷启动页面句柄及等待试卷卡挂载的先后顺序。依赖审计有原 20 项警报，其中 2 项 high。历史试卷恢复为新版本、同会话精确导出和其他专业成果编辑仍待实施或验收。
+
+## Phase 2 恢复试卷历史版本
+
+在历史确认卷点「从此版建立恢复草稿」，沿现有题篮预览、核对和保存。试卷卡及右栏打开新恢复版，可以单独查看原版和中间版。恢复用原题篮收据记录版本来源并核对前置版本，旧草稿或变化的原题会阻止确认。无 SQLite 迁移。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-restore-final` | 退出码 0。主进程 SHA-256 `6d34d2318fbcf3c025f9eb85c56bd249b37ecaded22553ccac0c5c79b8c69132`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --restore` | 5/5。实际原卷 5 分、编辑卷 7 分，恢复草稿在确认前不增加正式卷，确认后生成新 5 分版。旧版可读，右栏冷启定位新版本，同时保存双尺寸截图。`electron-restore.log`、`paper-edit-sync-rluzRu/report.json`，付费请求 0。 |
+| `paper-whole-edit-boundaries.mjs`、`paper-basket-boundaries.mjs` | 12/12、45/45。核对历史版本资格、同请求幂等、并发冲突，并验证变更题源会阻止建立新草稿及确认已存在的草稿。`source-boundaries-confirm-recheck.log`、`source-basket.log`。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同一构建 207/207，退出码 0，`electron-smoke.log`。 |
+
+证据根在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-restore`。手测 `manual-phase2-paper-restore/启动-D3-试卷历史恢复.cmd`。当前专项使用常规题库卷，模板来源复杂卷的恢复专项继续验收。同会话的精确导出为下一片。依赖审计保留原 20 项报告，其中 2 项 high。

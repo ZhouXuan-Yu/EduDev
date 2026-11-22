@@ -22,7 +22,7 @@ const MAX_STATE_BYTES = 32 * 1024 * 1024;
 const MAX_OWNER_BASKETS = 200;
 const MAX_OWNER_OPERATIONS = 10000;
 const MAX_OWNER_UI_OPERATIONS = 10000;
-export type BasketOperationKind = 'create' | 'mutate' | 'snapshot' | 'ui_state' | 'import' | 'confirm';
+export type BasketOperationKind = 'create' | 'mutate' | 'snapshot' | 'ui_state' | 'import' | 'confirm' | 'restore_source';
 const RECEIPT_KINDS = {
   create: 'domain:create',
   mutate: 'domain:mutate',
@@ -30,6 +30,7 @@ const RECEIPT_KINDS = {
   ui_state: 'ui:state',
   import:'domain:import-paper',
   confirm:'domain:confirm-paper',
+  restore_source:'domain:restore-paper-source',
 } as const;
 
 export async function migratePaperBaskets(sql: Pick<PaperSql, 'run'>) {
@@ -194,7 +195,7 @@ function basketInputHash(input: unknown) {
 export async function recordBasketOperation(sql: PaperSql, sessionId: string, requestId: string, kind: BasketOperationKind, input: unknown, studentId: string, receipt: BasketReceipt) {
   const scopeKinds = kind === 'ui_state'
     ? [RECEIPT_KINDS.ui_state]
-    : [RECEIPT_KINDS.create, RECEIPT_KINDS.mutate, RECEIPT_KINDS.snapshot,RECEIPT_KINDS.import,RECEIPT_KINDS.confirm];
+    : [RECEIPT_KINDS.create, RECEIPT_KINDS.mutate, RECEIPT_KINDS.snapshot,RECEIPT_KINDS.import,RECEIPT_KINDS.confirm,RECEIPT_KINDS.restore_source];
   const placeholders = scopeKinds.map(() => '?').join(',');
   const count = Number((await sql.all(`SELECT COUNT(*) AS count FROM paper_basket_operations
     WHERE session_id=? AND operation_kind IN (${placeholders})`, [sessionId, ...scopeKinds]))[0]?.count || 0);

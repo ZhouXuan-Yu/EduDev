@@ -84,6 +84,7 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
     </Tabs.Panel>
     <div className={styles.review}>
     <Card><Card.Content>
+    {basket.restoredFromPaperId&&<p data-testid="paper-basket-restore-note">此草稿从历史版建立。确认会保存为新的试卷版本，保留之前的各版。</p>}
     {onConfirmAll&&(basket.schemaVersion==='xiaozhi.paper-basket.v2')&&!(current&&snapshot?.state==='confirmed')&&<section data-testid="paper-basket-whole-confirmation">
       <p>核对上方最终题目、分值与解析后，可一次确认整卷，无需逐题点击核对。确认保存不等于文件已导出。</p>
       <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm-all" isDisabled={disabled||dirty||!bulkReady||basket.state!=='active'} onPress={onConfirmAll}>确认全部当前修订并保存试卷</Button>

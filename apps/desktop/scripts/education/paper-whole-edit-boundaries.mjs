@@ -34,5 +34,42 @@ try{
  assert.equal((await v2.confirm(nextRequest)).paper.id,secondEdit.paper.id);
  assert.deepEqual(rows('questions'),sourceRows);
  check('Another save in the same editor appends a new successor without dropping intermediate versions');
+
+ const restoreInput={...base,paperId:secondEdit.paper.id,paperRevision:1,requestId:randomUUID(),
+   restoreFrom:{paperId:firstEdit.paper.id,paperRevision:1}};
+ assert.equal((await papers.review(sid,firstEdit.paper.id)).sourceCurrent,false);
+ const beforeRestore=snapshot();
+ await assert.rejects(v2.importPaper({...restoreInput,restoreFrom:{paperId:final.paper.id,paperRevision:1}}),/conflict/);
+ await assert.rejects(v2.importPaper({...restoreInput,paperId:firstEdit.paper.id,restoreFrom:{paperId:oldFormal.id,paperRevision:1}}),/conflict/);
+ assert.deepEqual(snapshot(),beforeRestore);
+ const restoreDraft=await v2.importPaper(restoreInput);
+ assert.equal(restoreDraft.editSourcePaperId,secondEdit.paper.id);
+ assert.equal(restoreDraft.restoredFromPaperId,firstEdit.paper.id);
+ assert.equal(restoreDraft.blueprint.totalPoints,firstEdit.paper.totalPoints);
+ assert.equal((await v2.importPaper(restoreInput)).id,restoreDraft.id);
+ const lateRestore=await v2.importPaper({...restoreInput,requestId:randomUUID()});
+ const restoreCommand=intent(restoreDraft),restored=await v2.confirm(restoreCommand);
+ assert.equal((await v2.confirm(restoreCommand)).paper.id,restored.paper.id);
+ await assert.rejects(v2.confirm(intent(lateRestore)),/conflict/);
+ const restoredList=new Map((await papers.list(sid)).map(paper=>[paper.id,paper]));
+ assert.equal(restoredList.get(secondEdit.paper.id).supersededBy,restored.paper.id);
+ assert.equal(restoredList.get(restored.paper.id).restoredFrom,firstEdit.paper.id);
+ assert.equal(restored.paper.totalPoints,firstEdit.paper.totalPoints);
+ assert.deepEqual(rows('questions'),sourceRows);
+ check('Restoring an intermediate confirmed version verifies ancestry, preserves current sources, and commits once with explicit provenance');
+
+ const witness=sourceRows.find(row=>row.id===firstEdit.paper.selection.items[0].question.id);
+ assert(witness);
+ const nextRestore={...restoreInput,paperId:restored.paper.id,requestId:randomUUID()};
+ const existingDraft=await v2.importPaper(nextRestore);
+ const updateBody=db.prepare('UPDATE questions SET body=? WHERE id=?');
+ updateBody.run(JSON.stringify({...JSON.parse(witness.body),answer:'已修订的原题答案'}),witness.id);
+ const changedSources=snapshot();
+ assert(!validPaperBasketV2Import({...nextRestore,restoreFrom:{...nextRestore.restoreFrom,extra:true}}));
+ await assert.rejects(v2.importPaper({...nextRestore,requestId:randomUUID()}),/source_changed/);
+ await assert.rejects(v2.confirm(intent(existingDraft)),/source_changed/);
+ assert.deepEqual(snapshot(),changedSources);
+ updateBody.run(witness.body,witness.id);
+ check('Historical question bytes are readable for provenance but cannot seed an edit after the underlying source changes');
  report.ok=true;report.paper=final.paper;report.counters=f.counters();assert.equal(report.counters.peakWriters,1);
 }catch(e){report.error=String(e.stack);process.exitCode=1;}finally{f.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output,error:report.error}));}

@@ -17,7 +17,8 @@ export type PaperBasketV2ListInput = V2<PaperBasketListInput>;
 export type PaperBasketV2CandidateInput = V2<PaperBasketCandidateInput>;
 export type PaperBasketV2CreateInput = (V2<PaperBasketCreateInput>&{purpose?:'paper'})|{schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;purpose:'practice';practice:PaperPracticeSetup};
 export type PaperBasketV2SnapshotInput = V2<PaperBasketSnapshotInput>;
-export type PaperBasketV2ImportInput = {schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;paperId:string;paperRevision:number};
+export type PaperBasketV2ImportInput = {schemaVersion:typeof PAPER_BASKET_V2_SCHEMA;sessionId:string;requestId:string;paperId:string;paperRevision:number;
+  restoreFrom?:{paperId:string;paperRevision:number}};
 export type PaperBasketV2Confirmation = {basket:PaperBasketV2View;paper:PaperView;replacedPaperIds:string[]};
 export type PaperBasketV2Operation = PaperBasketOperation | PaperFulfillmentOperation | {type:'setPurpose';purpose:PaperPurpose}
   | {type:'setEntryPoints';entryId:string;points:number}
@@ -46,6 +47,7 @@ export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries
   entries: PaperBasketV2EntryView[];
   confirmedPaperId?: string;
   editSourcePaperId?: string;
+  restoredFromPaperId?: string;
 };
 export type PaperBasketV2Api = {
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => Promise<PaperBasketResult<PaperBasketPage>>;
@@ -88,8 +90,11 @@ export function validPaperBasketV2Create(v:unknown):v is PaperBasketV2CreateInpu
 }
 export const validPaperBasketV2Snapshot = (v: unknown): v is PaperBasketV2SnapshotInput => validPaperBasketSnapshot(adapt(v, ['schemaVersion','sessionId','basketId','requestId','expectedRevision']));
 export function validPaperBasketV2Import(v:unknown):v is PaperBasketV2ImportInput {
- return !!adapt(v,['schemaVersion','sessionId','requestId','paperId','paperRevision']) && plainStudentInput(v,['schemaVersion','sessionId','requestId','paperId','paperRevision'])
+ const keys=['schemaVersion','sessionId','requestId','paperId','paperRevision','restoreFrom'];
+ return !!adapt(v,keys) && plainStudentInput(v,keys)
   && validPaperReview({schemaVersion:PAPER_SCHEMA,sessionId:v.sessionId,id:v.paperId,revision:v.paperRevision,action:'confirm'},true)
+  && (v.restoreFrom===undefined||plainStudentInput(v.restoreFrom,['paperId','paperRevision'])&&v.restoreFrom.paperId!==v.paperId
+    &&validPaperReview({schemaVersion:PAPER_SCHEMA,sessionId:v.sessionId,id:v.restoreFrom.paperId,revision:v.restoreFrom.paperRevision,action:'confirm'},true))
   && typeof v.requestId==='string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v.requestId);
 }
 export function validPaperBasketV2Mutation(v: unknown): v is PaperBasketV2MutationInput {

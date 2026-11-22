@@ -11,6 +11,7 @@ assert(acceptance,'Use an owned acceptance directory');
 const output=fs.mkdtempSync(path.join(acceptance,'paper-edit-sync-'));
 const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
+const restoreMode=process.argv.includes('--restore');
 const report={ok:false,output,main,checks:[],errors:[],paidRequests:0};
 const blueprint={title:'等式课堂练习卷',subject:'数学',grade:'初二',durationMinutes:20,totalPoints:5,mode:'source_only',
   sections:[{id:'one',label:'一元一次方程',questionType:'解答题',count:1,points:5}]};
@@ -127,14 +128,44 @@ try{
   assert.equal(await dialog.getAttribute('data-paper-id'),source.id);
   assert.match(await dialog.getByTestId('paper-summary').innerText(),/5\s*\/\s*5 分/);
   assert.equal(await dialog.getByTestId('paper-edit-whole').count(),0);
-  await closeReview();
   check('Returning to the original conversation opens the exact edited paper and the independent read-only original');
+  let currentId=edited;
+  if(restoreMode){
+    const confirmed=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' AND status='confirmed' ORDER BY rowid");
+    const before=confirmed();
+    await dialog.getByTestId('paper-restore-draft').click();
+    await page.getByTestId('paper-basket-organizer').waitFor();
+    await page.getByTestId('paper-basket-stage-preview').click();
+    await page.getByTestId('paper-basket-restore-note').waitFor();
+    assert.deepEqual(confirmed(),before);
+    await page.getByTestId('paper-basket-confirm-all').click();
+    await page.getByTestId('paper-basket-source-chat').waitFor();
+    const restored=await until(()=>confirmed().length===before.length+1&&confirmed().at(-1));
+    currentId=restored.id;report.restoredId=currentId;
+    assert.equal(JSON.parse(restored.payload_json).input.blueprint.totalPoints,5);
+    assert.deepEqual(confirmed().slice(0,-1),before);
+    await page.getByTestId('paper-basket-source-chat').click();
+    await until(async()=>await card().getAttribute('data-current-paper-id')===currentId);
+    assert.equal((await snapshot()).paperReviews.find(paper=>paper.id===currentId)?.restoredFrom,source.id);
+    await openCard(card());
+    await dialog.waitFor();assert.equal(await dialog.getAttribute('data-paper-id'),currentId);
+    assert.match(await dialog.getByTestId('paper-summary').innerText(),/5\s*\/\s*5 分/);
+    await closeReview();
+    const versions=card().getByTestId('pi-paper-versions');
+    if(!await versions.getByTestId('pi-paper-restored').isVisible())await versions.locator('summary').click();
+    assert.match(await versions.getByTestId('pi-paper-restored').innerText(),/原版/);
+    await versions.locator(`[data-paper-id="${edited}"]`).click();
+    await dialog.getByTestId('paper-review-historical').waitFor();
+    assert.match(await dialog.getByTestId('paper-summary').innerText(),/7\s*\/\s*7 分/);
+    check('A historical paper returns as a teacher-confirmed new version; both earlier papers stay unchanged and readable');
+  }
+  await closeReview();
 
   await app.close();app=undefined;await launch(true);
   assert((await snapshot()).paperReviews.some(paper=>paper.id===sameSession.value.id));
   await page.getByTestId('pi-aside-toggle').click();
   const aside=page.getByTestId('pi-context-paper');await aside.waitFor();
-  assert.equal(await aside.getAttribute('data-paper-id'),edited);
+  assert.equal(await aside.getAttribute('data-paper-id'),currentId);
   for(const [width,height] of [[1366,768],[1920,1080]]){
     await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),[width,height]);
     await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
@@ -143,7 +174,7 @@ try{
   }
   await aside.getByTestId('pi-context-paper-preview').click();
   const coldDialog=page.getByTestId('pi-paper-dialog');
-  await coldDialog.waitFor();assert.equal(await coldDialog.getAttribute('data-paper-id'),edited);
+  await coldDialog.waitFor();assert.equal(await coldDialog.getAttribute('data-paper-id'),currentId);
   assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),[]);
   assert.deepEqual(report.errors,[]);
   check('Cold task context follows the actual edit lineage despite a later unrelated confirmed paper and without replay');

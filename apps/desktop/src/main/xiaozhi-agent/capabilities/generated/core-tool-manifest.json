@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "5df96e57bf3b2d25faacc6e098273d9e0cbd19f9c9a37e731526a070b2f7071c",
+  "sourceHash": "ae00c6fc68b1ea2103b614b1cd944ea343031497b08da41768ab9b67d735aa2e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -216,7 +216,7 @@
     },
     {
       "file": "src/main/education/paper-basket-state.ts",
-      "sha256": "d49e1a43ca4f4b67e81e8ec9a4854eb1e692ecb7e7c67b2d38a4f7ae08c63d59"
+      "sha256": "89852bdf3d6773ec4f35feabd7aed2d3d8c8dccc9483facd3a9615e450d0db10"
     },
     {
       "file": "src/main/education/paper-coordinator.ts",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "d8b1aaa72531cdb4056a0bd46bf8c53889416ea305260d0cf9d1697cafe7574e"
+      "sha256": "5e75c8041bf003bcb84e697cb456ee7a18e4b83eadf4b3cae70448917edf816e"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2216,7 +2216,7 @@
     },
     {
       "file": "src/shared/paper-basket-v2.ts",
-      "sha256": "26d02117d74566cedbf75865c7af4b328f78ccd7ad8c368a7a004cfa085d8c3e"
+      "sha256": "89cefab454f9af039bbe30cc598b57e79f59c65b892e756153e38fb37a7b40cd"
     },
     {
       "file": "src/shared/paper-basket.ts",
@@ -2224,7 +2224,7 @@
     },
     {
       "file": "src/shared/paper-blueprint.ts",
-      "sha256": "b2fcc8c78591d2bbc215d37bef2a2f47569546eb5ae13ecf17279eda26de87d8"
+      "sha256": "6930743f12aeeacfd09c3b1dd1a92b51c9c5995a1586b3ce852ec44a2b5d66a6"
     },
     {
       "file": "src/shared/paper-export.ts",
