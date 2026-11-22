@@ -1,4 +1,4 @@
-import {containsOfficeMath} from '../../shared/office-math';
+import {containsOfficeMath,officeMathParts} from '../../shared/office-math';
 import {paperLayoutDocxSections,paperLayoutDocxStyles} from './paper-layout-docx';
 import {paperLayoutGeometry,paperLayoutImageSize,paperLayoutTableWidths,paperLayoutMathSize} from '../../shared/paper-layout';
 import {PAPER_C2_OFFICE_SCHEMA,isMathPaperOfficeSchema} from '../../shared/paper-export';
@@ -8,7 +8,7 @@ import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,Head
 import {PAPER_PRINT_LAYOUT,PAPER_A4,paperContentWidthTwips,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
 import ExcelJS from 'exceljs';import PptxGenJS from 'pptxgenjs';
 import {wrapTextWithAnsi} from '@earendil-works/pi-tui/dist/utils.js';
-import {validOfficeDraft,isPresentationDraft,isMathOfficeSchema,validOfficeDraftFormat,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,isPresentationDraft,isMathOfficeSchema,isTeachingHandoutOfficeDraft,validOfficeDraftFormat,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 const check=(signal?:AbortSignal)=>{if(signal?.aborted)throw new Error('cancelled');};
 /** Pi chooses Unicode/grapheme wrap boundaries; retain spaces that terminal wrapping trims. */
@@ -22,10 +22,25 @@ function officeLines(text:string,width:number):string[]{
   });
  });
 }
+function handoutWordRuns(text:string,key:string,images:ReadonlyMap<string,OfficeMathImage>):(TextRun|ImageRun)[]{
+ return officeMathParts(text).flatMap((part,index):(TextRun|ImageRun)[]=>{
+  if(part.kind==='text')return part.raw.replace(/\\\$/gu,'$').split('\n').map((line,i)=>new TextRun({
+   text:line,...(i>0?{break:1}:{}),
+  }));
+  const name=`${key}:atom:${index}`;
+  const image=images.get(name);
+  if(!image)throw Error('generation_failed');
+  const scale=Math.min(1,560/image.width);
+  const run=new ImageRun({type:'png',data:image.bytes,transformation:{width:image.width*scale,height:image.height*scale},
+   altText:{title:'排版公式',description:part.tex,name}});
+  return part.display?[new TextRun({break:1}),run,new TextRun({break:1})]:[run];
+ });
+}
 async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImages:ReadonlyMap<string,OfficeMathImage>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()){
  const layout='paperSource'in draft?draft.paperSource.layout:undefined,g=layout?paperLayoutGeometry(layout):undefined;
  let headerEnd=1;
  const printed='paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT;
+ const handout=isTeachingHandoutOfficeDraft(draft);
  const role='paperSource'in draft?paperPrintRole(draft.paperSource):'';
  const paragraphStyle=printed?{widowControl:true,spacing:{after:PAPER_A4.after,line:PAPER_A4.line}}:{};
  const children:(Paragraph|Table)[]=[new Paragraph({heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,children:[new TextRun(draft.title)]})];
@@ -34,7 +49,11 @@ async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImag
   const page=classroomPages.get(String(sectionIndex));if(page)children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:page.bytes,transformation:{width:page.width,height:page.height},altText:{title:'已确认课堂完整课页（不可编辑）',description:section.heading,name:`classroom-page-${sectionIndex}`}})]}));
   for(let i=0;i<=section.paragraphs.length;i++){
    for(const f of section.figures?.filter(f=>f.afterParagraph===i)||[])children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:images.get(f.assetId)!,transformation:layout?paperLayoutImageSize(layout,f.width,f.height):officeFigureSize(f),altText:{title:'原题'+f.role,description:'教师确认的本地原图；公式非可编辑对象',name:f.blockId}})]}));
-   if(i<section.paragraphs.length){const math=mathImages.get(`${sectionIndex}:${i}`);children.push(math?new Paragraph({...paragraphStyle,children:[new ImageRun({type:'png',data:math.bytes,transformation:layout?paperLayoutMathSize(layout,math.width,math.height):{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:section.paragraphs[i],name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({...paragraphStyle,...(printed&&(paperAnswerNumber(section.paragraphs[i])||section.printKind==='answer_area'&&i<section.paragraphs.length-1)?{keepNext:true}:{}),children:section.paragraphs[i].split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));}
+   if(i>=section.paragraphs.length)continue;
+   const key=`${sectionIndex}:${i}`,text=section.paragraphs[i];
+   if(handout){children.push(new Paragraph({widowControl:true,children:handoutWordRuns(text,key,mathImages)}));continue;}
+   const math=mathImages.get(key);
+   children.push(math?new Paragraph({...paragraphStyle,children:[new ImageRun({type:'png',data:math.bytes,transformation:layout?paperLayoutMathSize(layout,math.width,math.height):{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:text,name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({...paragraphStyle,...(printed&&(paperAnswerNumber(text)||section.printKind==='answer_area'&&i<section.paragraphs.length-1)?{keepNext:true}:{}),children:text.split('\n').flatMap((line,index)=>index?[new TextRun({break:1}),new TextRun(line)]:[new TextRun(line)])}));
   }
   if(section.table)children.push(new Table({width:{size:g?g.columnWidth.twip:printed?paperContentWidthTwips:100,type:printed?WidthType.DXA:WidthType.PERCENTAGE},...(printed?{layout:TableLayoutType.FIXED,columnWidths:section.table.columns.map(()=>layout?paperLayoutTableWidths(layout,section.table!.columns.length).cellTwip:Math.floor(paperContentWidthTwips/section.table!.columns.length))}:{}),rows:[section.table.columns,...section.table.rows].map((row,index)=>new TableRow({tableHeader:index===0,...(printed?{cantSplit:true}:{}),children:row.map((value,column)=>{const math=mathImages.get(`${sectionIndex}:table:${index}:${column}`);return new TableCell({...(printed?{margins:{top:80,bottom:80,left:layout?120:PAPER_A4.cellMargin,right:layout?120:PAPER_A4.cellMargin},width:{size:layout?paperLayoutTableWidths(layout,row.length).cellTwip:Math.floor(paperContentWidthTwips/row.length),type:WidthType.DXA}}:{}),children:[math?new Paragraph({...paragraphStyle,children:[new ImageRun({type:'png',data:math.bytes,transformation:layout?paperLayoutMathSize(layout,math.width,math.height):{width:math.width,height:math.height},altText:{title:'表格公式（非可编辑）',description:String(value),name:`table-${sectionIndex}-${index}-${column}`}})]}):new Paragraph({...paragraphStyle,text:String(value)})]});})}))}));
   if(sectionIndex===0)headerEnd=children.length;

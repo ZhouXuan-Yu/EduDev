@@ -1,4 +1,5 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
+import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 export type ToolEffect='safe_read'|'local_cache'|'local_write'|'external_effect';
 export type ToolManifest={version:1;name:string;effect:ToolEffect;timeoutMs:number;maxAttempts:1|2;resource:'none'|'workspace'|'output'|'session';lock:'read'|'write';cancel:'signal_and_wait_bound';input:'sdk_and_domain';output:'bounded_pi_result_and_domain';teacherWait:'pause_active_deadline'};
 const safe=['education_read_classroom_plan','education_compute','education_read_classroom','office_read_text','office_file_stat','office_list_files','office_list_materials','office_list_attachments','office_web_fetch','office_web_search','read','read_education_memory','read_session_process','read_teacher_request','search_teacher_knowledge','education_search_materials','education_verify_material_quote','education_search_questions','education_read_question','education_read_student_context','education_analyse_learning','education_read_paper','education_read_practice','education_find_similar_questions'];
@@ -12,6 +13,8 @@ safe.push('find_education_tools');
 safe.push('education_verify_equation');
 safe.push('education_read_teaching_lesson');
 writes.push('education_export_teaching_lesson');
+safe.push(READ_TEACHING_HANDOUT);
+writes.push(EXPORT_TEACHING_HANDOUT);
 writes.push('education_create_teaching_handout');
 safe.push('education_verify_quantity');
 safe.push('education_verify_solution');
@@ -36,7 +39,7 @@ export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new
  const effect=(name==='update_task_plan'?'local_write':categories.get(name)) || (name.startsWith('mcp_') && trustedMcpNames.has(name) ? 'external_effect' : undefined);if(!effect)throw Error('tool_manifest_missing');
  const web=name==='office_web_fetch'||name==='office_web_search';
  const files=['exec_command','education_check_delivery','education_create_report','office_read_text','office_file_stat','office_list_files','office_copy_file','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','office_read_document'].includes(name);
- const output=name==='education_export_paper'||name==='education_export_classroom'||name==='education_export_teaching_lesson';
+ const output=name==='education_export_paper'||name==='education_export_classroom'||name==='education_export_teaching_lesson'||name===EXPORT_TEACHING_HANDOUT;
  const localRead=['office_read_text','office_file_stat','office_list_files'].includes(name);
  return Object.freeze({version:1,name,effect,timeoutMs:web?45000:effect==='safe_read'?60000:300000,maxAttempts:web||localRead?2:1,resource:output?'output':files?'workspace':web||effect==='safe_read'?'none':'session',lock:effect==='safe_read'?'read':'write',cancel:'signal_and_wait_bound',input:'sdk_and_domain',output:'bounded_pi_result_and_domain',teacherWait:'pause_active_deadline'});
 }

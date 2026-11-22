@@ -55,6 +55,8 @@ const labels: Record<string, string> = {
   education_analyze_buoyancy:'核对浮力条件与双方法',
   education_search_materials:'查找资料正文',
   education_create_teaching_handout:'保存可编辑讲义草稿',
+  education_read_teaching_handout:'读取讲义确认版本',
+  education_export_teaching_handout:'导出确认讲义 Word',
   education_search_questions:'检索本地题库',education_read_question:'读取题目与解析',
   education_read_student_context:'读取当前学生学习记录',
   education_analyse_learning:'核对学习证据与复习顺序',

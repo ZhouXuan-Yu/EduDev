@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "2a5fe82ac9b4b8cb202ab36e341d458e8550b71e208d866f07b8a75e1de096f7",
+  "sourceFingerprint": "0790f677ac8eebed44e1c4e87ca54ee635e52028f97f2c4810374f1f0fffff86",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -856,6 +856,60 @@
       }
     },
     {
+      "name": "education_export_teaching_handout",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "pattern": "^teaching_book_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "digest": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "outputs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "audience": {
+                  "enum": [
+                    "student",
+                    "teacher"
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "audience",
+                "path"
+              ],
+              "type": "object"
+            },
+            "maxItems": 2,
+            "minItems": 1,
+            "type": "array"
+          },
+          "versionId": {
+            "pattern": "^teaching_version_[a-f0-9-]{36}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookId",
+          "versionId",
+          "digest",
+          "outputs"
+        ],
+        "type": "object"
+      }
+    },
+    {
       "name": "education_find_similar_questions",
       "parameters": {
         "additionalProperties": false,
@@ -1055,6 +1109,24 @@
           },
           "type": {
             "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_teaching_handout",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "bookId": {
+            "pattern": "^teaching_book_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
             "type": "string"
           }
         },

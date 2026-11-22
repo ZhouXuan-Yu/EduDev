@@ -8,6 +8,7 @@ import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
+const wordRequest=process.argv.includes('--word-request');
 const output=fs.mkdtempSync(path.join(acceptance,'teaching-handout-'));
 const data=path.join(output,'data'), profile=path.join(output,'profile');
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
@@ -40,7 +41,7 @@ async function launch(cold=false){
     OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-teaching-handout',DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop});
-  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,original})=>{
+  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,original,wordRequest})=>{
     const wire=globalThis.handoutWire={requests:[],results:[]};
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[original]});
     net.fetch=async(raw,init)=>{
@@ -58,6 +59,11 @@ async function launch(cold=false){
         try{return JSON.parse(text.split('\n')[0]);}catch{return {unparsed:text};}
       };
       const expect=(condition,message)=>{if(!condition){wire.error=message;throw Error(message);}};
+      if(wordRequest&&phase===0){
+        const names=body.tools.map(tool=>tool.function.name);
+        expect(names.includes(modelTool)&&!names.includes('education_export_teaching_handout'),
+          'New Word handout request must route to draft creation');
+      }
       const document=(citation)=>({schemaVersion:'xiaozhi.teaching-handout.v1',title,targetLevel:'七年级',
         chapters:[{title:'等式两边同做一种运算',objectives:['用等式性质解一元一次方程'],
           focus:'保持等式两侧同步运算。',difficulty:'除法步骤必须说明除数非零。',
@@ -104,7 +110,7 @@ async function launch(cold=false){
       return new Response(event({role:'assistant'})+event(delta)+event({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',
         {headers:{'content-type':'text/event-stream'}});
     };
-  },{cold,title,quote,modelTool,original});
+  },{cold,title,quote,modelTool,original,wordRequest});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
@@ -127,7 +133,8 @@ try{
   await until(()=>sql("SELECT id FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')")[0]);
   await page.getByTestId('desktop-back').click();
   const input=page.getByTestId('office-prompt-input');
-  await input.fill('请根据资料库里《等式性质参考》制作一份七年级一元一次方程的可编辑学案，包含重点难点、分步例题和分层练习。');
+  await input.fill('请根据资料库里《等式性质参考》制作一份七年级一元一次方程的可编辑'+
+    (wordRequest?' Word ':'')+'学案，包含重点难点、分步例题和分层练习。');
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   sessionId=await until(async()=>{
     const id=await page.locator('.office-composer-container').getAttribute('data-session-id');

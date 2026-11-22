@@ -475,3 +475,22 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-versions`。早期复测保留 SQLite 夹具写锁和模态预览列表样式问题，已分别通过等待写锁和 UI 样式边界修正。独立验收窗口、启动与操作步骤在 `manual-phase4-handout-versions`。样本为合成讲义，本次确认和恢复过程无模型派发，不计付费请求。生产依赖审计维持 20 项，其中 2 项 high，本轮没有修改依赖。
 
 对话指定讲义后提交局部修改、章节与题目精细修改和两种受众 Word 交付仍待贯通。历史快照在界面展示正文与补丁数量，补丁详情保存在快照。真实教师采用率留给集中验收。
+
+## Phase 4.2 对话导出已确认讲义
+
+从原对话指定已确认讲义，选择学生版、教师版或两份一并保存。文件使用同一确认版本；学生版含例题和分层练习题面，独立练习答案、解析与参考资料在教师版。教师写入学生可见内容块的授课提示随正文导出。Word 正文可以编辑，公式单独排版为图片。在拟内容的「来源」可以核对受众，正文修订从讲义编辑器进行。
+
+现有 Office 审批负责预览、教师决策、生成、磁盘安装和文件账本。成组文件只审批一次。发布前复核讲义及引用摘要，审批时资料变动会结算为冲突。任务从实际文件回执核验，失败仍保留历史与原先的文件。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-handout-export-routing` | 最终构建与 TypeScript 检查通过。主进程 SHA-256 `6372e7584a87405f0efdf2067a9978661f2560e90875aad336ddd10d1e23be95`，Preload `dacbfb955b343901bbc5fd68aa3d6ce140e563cc8f810e0b56f2afe1274bfae0`。 |
+| `node scripts/education/teaching-handout-export-electron.mjs` | 4/4。1366×768 两份一次审批，1920×1080 单份审批，候选之后资料漂移拦截，冷启文件与事实读回。文件摘要、公式和截图见 `handout-export-ouYVZS/report.json`。SQLite 两种保存核验通过，过期来源保留待核对回执，见 `task-journal-routing.json`。 |
+| `node scripts/education/teaching-handout-electron.mjs --word-request` | 6/6。带 Word 字样的新编请求仍生成可编辑草稿。顺带回归精确引文、重复提交、编辑与冷启。报告 `teaching-handout-41DPb0/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253。最终审批和路由修复均在主进程。 |
+| `node scripts/electron-smoke.mjs` | 审批修复构建 207/207，覆盖双尺寸，见 `electron-smoke-final.log`。最后的工具选择规则通过最终构建的两个专项验证。 |
+| 本机 Office 只读打开 | Word 16.0 与 WPS 12.0 各打开最终构建产生的学生版及教师版，4/4。核对 A4、分层练习、公式数量及答案隔离，文件摘要保持一致。见 `native-office-readback-routing.json`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-export`。初次合成模型测试的旧回执解析问题、受众断言误把正文内授课提示当独立答案、确认后资料漂移导致挂起均留有原日志。最终测试使用合成模型响应，0 付费请求。生产依赖审计仍有 20 项，其中 2 项 high。无依赖变化和新数据库迁移。本小项 **已实现**。
+
+手工验收窗口、启动 CMD 与操作说明在 `manual-phase4-handout-export`，使用独立数据。旧构建可继续读取原讲义及其历史，在磁盘打开新生成的 DOCX；回退后的旧构建可能无法识别新 Office 草稿及审批记录。下一项是通过对话细化修改同一份讲义，上海模考汇编、教案与自然模型质量仍待继续。

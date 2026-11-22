@@ -4,6 +4,7 @@ import type {WorkspaceLease} from '../workspace-files';
 import {approvedFile} from '../workspace-authority';
 import {taskHash,taskToolKinds} from './task-evidence';
 import {TaskAdmissionError} from './admission-error';
+import {structuredOfficeExport,structuredOutputTool} from '../../../shared/xiaozhi-computation';
 
 export function workspaceTaskResource(root:string,target:string):string {
  return taskHash(['workspace-file',path.resolve(approvedFile(root,target)).toLowerCase()]);
@@ -31,10 +32,10 @@ export function createTaskResources(options:{sessionId:string;resolveFile?:(targ
  }
  async function invocation(kind:TaskCriterionKind,tool:string,args:Record<string,unknown>,expectedResource?:string){
   if(!taskToolKinds[kind]?.includes(tool))throw new TaskAdmissionError('task_tool_scope');
-  if(tool==='education_create_report'||tool==='education_export_teaching_lesson'){
+  if(structuredOutputTool(tool)){
    const outputs=args.outputs as {format?:unknown;path?:unknown}[];
    if(!Array.isArray(outputs)||!outputs.length||outputs.length>3)throw new TaskAdmissionError('task_target_invalid');
-   const actual=outputs.length>1?'saved_bundle':tool==='education_export_teaching_lesson'||outputs[0]?.format==='xlsx'?'saved_office':'saved_text';
+   const actual=outputs.length>1?'saved_bundle':structuredOfficeExport(tool)||outputs[0]?.format==='xlsx'?'saved_office':'saved_text';
    if(kind!==actual)throw new TaskAdmissionError('task_tool_scope');args={...args,path:outputs[0]?.path};
   }
   if(kind==='web'&&tool==='office_browser'&&args.action!=='navigate'){

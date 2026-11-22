@@ -7,6 +7,7 @@ import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
+import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import fs from 'node:fs';
 import {ensureNativePlanContract,ensureNativeTaskContract,withPlanBasisReference} from './plan-native';
 import {taskEnvelope} from './tasks/tool-envelope';
@@ -124,6 +125,7 @@ export interface PiXiaozhiOptions {
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
   teachingHandoutTool?: ToolDefinition;
+  handoutExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   capabilityTools?: ToolDefinition[];
   capabilityAcquisitionTools?: ToolDefinition[];
   extensionTools?: ToolDefinition[];
@@ -584,6 +586,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(options.teachingHandoutTool.name);
     prompt+='\n老师本轮要求制作可编辑教学讲义或学案。先检索并实读相关本地资料，再以 education_create_teaching_handout 保存讲义草稿。重心是结构化内容、逐步例题和不同难度练习。缺资料应说明待核对范围，不编造引用。草稿成功后指引老师打开讲义核对与编辑。';
   }
+  if(options.handoutExportTools){
+    names.push(READ_TEACHING_HANDOUT,EXPORT_TEACHING_HANDOUT);
+    prompt+='\n老师要求导出已有讲义时，先用 education_read_teaching_handout 核对其当前已确认版本，再用 education_export_teaching_handout 提交 Word。老师要求新编讲义后导出时，先制作新草稿，等待老师确认该稿，再导出。一个受众用 saved_office，学生版加教师版用 saved_bundle。仅根据实际文件回执报告结果。';
+  }
   const capabilityEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.deeptutor-reading.'));
   const exportIdentity={version:1,tools:[CLASSROOM_EXPORT_TOOL],source:'confirmed-classroom-office-v1'};
   const lessonExportIdentity={version:1,tools:[...TEACHING_LESSON_EXPORT_TOOLS],source:'confirmed-teaching-lesson-office-v1'};
@@ -900,6 +906,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
+  if(options.handoutExportTools){
+    const exportTools=options.handoutExportTools(action=>budget!.wait(action));
+    if(exportTools.length!==2||exportTools[0].name!==READ_TEACHING_HANDOUT||exportTools[1].name!==EXPORT_TEACHING_HANDOUT)throw Error('configuration');
+    definitions.push(...exportTools);
+  }
   if (options.capabilityTools) {
     const capabilityNames = options.capabilityTools.map(tool => tool.name);
     if (capabilityNames.join(',') !== 'capability_inspect,capability_resolve,capability_execute') {

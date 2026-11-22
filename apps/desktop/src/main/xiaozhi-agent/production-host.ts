@@ -56,6 +56,8 @@ import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
 import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
+import {createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
+import {assertHandoutOffice} from '../education/teaching-handout-office';
 import {TEACHING_HANDOUT_TOOL} from '../../shared/teaching-handout';
 import {assertTeachingLessonOffice} from '../education/teaching-lesson-office';
 import {createClassroomContext} from '../education/classroom-context';
@@ -81,7 +83,7 @@ import {validVersionedPlan,validPlanHistoryInput,type PlanHistoryResult} from '.
 import {createPaperCoordinator} from '../education/paper-coordinator';
 import {createPaperBasketApi} from '../education/paper-basket-api';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
-import {isPaperOfficeDraft,isPresentationDraft} from '../../shared/xiaozhi-office-draft';
+import {isPaperOfficeDraft,isPresentationDraft,isTeachingHandoutOfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
 import {PAPER_TOOLS,validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
 import {TaskAdmissionError} from './tasks/admission-error';
@@ -673,6 +675,19 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     sanitize:text=>sanitizeOfficeDocumentText(store,text),
     service:createOfficeArtifactService({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,
+      validateHandoutDraft:async(id,draft)=>{
+        if(!isTeachingHandoutOfficeDraft(draft))throw Error('invalid_input');
+        const item=await store.teachingBookVersions.forExport(id,'',draft.handoutSource);
+        if(item.kind!=='found')throw Error('conflict');
+        assertHandoutOffice(item,draft);
+      },
+      commitHandoutDraft:async(id,draft,install)=>{
+        if(!isTeachingHandoutOfficeDraft(draft))throw Error('invalid_input');
+        await store.teachingBookVersions.withConfirmedExport(id,draft.handoutSource,item=>{
+          assertHandoutOffice(item,draft);
+          install();
+        });
+      },
       validateClassroomDraft:async(id,draft)=>{if(!('classroomSource'in draft))throw Error('invalid_input');assertClassroomOffice(await store.xiaozhiState.classrooms.readConfirmed(id,draft.classroomSource.classroomId,draft.classroomSource.version),draft);},
       commitClassroomDraft:async(id,draft,install)=>{if(!('classroomSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classrooms.withConfirmedSource(id,draft.classroomSource.classroomId,draft.classroomSource.version,item=>{assertClassroomOffice(item,draft);install();});},
       validateLessonDraft:async(id,draft)=>{if(!('lessonSource'in draft))throw Error('invalid_input');assertTeachingLessonOffice(await store.xiaozhiState.classroomPlans.readConfirmedLesson(id,draft.lessonSource.id,draft.lessonSource.version),draft);},
@@ -1062,6 +1077,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const {fileId:_fileId,kind:_kind,...proposal}=files[0];
           return officeArtifacts.tools(id,runId,wait)[0].execute(args[0],proposal,args[2],args[3],args[4]);
         }}),
+      ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
+        handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,state:store.teachingBookVersions,
+          current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
+          publish:(files,args)=>{
+            if(files.length>1)return deliveries.publishHandout(id,runId,wait,args[0],files,args[2]);
+            const {fileId:_fileId,kind:_kind,...proposal}=files[0];
+            return officeArtifacts.runOffice(id,runId,wait,args[0],proposal,args[2]);
+          }}),
+      }:{}),
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],

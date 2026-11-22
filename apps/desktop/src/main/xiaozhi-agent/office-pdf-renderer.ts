@@ -5,7 +5,7 @@ import {BrowserWindow,session} from 'electron';
 import {renderHanaPdfJob} from './vendor/hana/office-pdf/render-job';
 import {isMathPaperOfficeSchema} from '../../shared/paper-export';
 import {officeMathHtml,officeMathParts} from '../../shared/office-math';
-import {isMathOfficeSchema,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {isMathOfficeSchema,isTeachingHandoutOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA} from '../../shared/classroom-export';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 import {PAPER_PRINT_LAYOUT,paperContentWidthTwips,paperContentHeightPx,paperMathCellWidth,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
@@ -106,7 +106,11 @@ export type OfficeMathImage={bytes:Buffer;width:number;height:number};
  * Only fixed MathML from approved text is rasterized. No file/URL/asset identifiers are accepted. */
 export async function renderOfficeMathImages(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;cropMath?:boolean}):Promise<Map<string,OfficeMathImage>>{
  const layout='paperSource'in draft?draft.paperSource.layout:undefined,g=layout?paperLayoutGeometry(layout):undefined;
- const paragraphs=draft.sections.flatMap((s,si)=>s.paragraphs.flatMap((p,pi)=>officeMathParts(p).some(v=>v.kind==='math')?[{key:`${si}:${pi}`,text:p,width:g?Math.floor(g.safeColumnPx):1240}]:[]).concat(s.table?[s.table.columns,...s.table.rows].flatMap((row,ri)=>row.flatMap((cell,ci)=>officeMathParts(String(cell)).some(v=>v.kind==='math')?[{key:`${si}:table:${ri}:${ci}`,text:String(cell),width:layout?Math.floor(paperLayoutTableWidths(layout,s.table!.columns.length).innerPx):'paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT?paperMathCellWidth(s.table!.columns.length):Math.floor(1200/s.table!.columns.length)}]:[])):[]));
+ const handout=isTeachingHandoutOfficeDraft(draft);
+ const cropMath=options.cropMath||handout;
+ const paragraphs=handout?draft.sections.flatMap((section,si)=>section.paragraphs.flatMap((paragraph,pi)=>
+  officeMathParts(paragraph).flatMap((part,index)=>part.kind==='math'?[{key:`${si}:${pi}:atom:${index}`,text:part.raw,width:1240}]:[]))):
+  draft.sections.flatMap((s,si)=>s.paragraphs.flatMap((p,pi)=>officeMathParts(p).some(v=>v.kind==='math')?[{key:`${si}:${pi}`,text:p,width:g?Math.floor(g.safeColumnPx):1240}]:[]).concat(s.table?[s.table.columns,...s.table.rows].flatMap((row,ri)=>row.flatMap((cell,ci)=>officeMathParts(String(cell)).some(v=>v.kind==='math')?[{key:`${si}:table:${ri}:${ci}`,text:String(cell),width:layout?Math.floor(paperLayoutTableWidths(layout,s.table!.columns.length).innerPx):'paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT?paperMathCellWidth(s.table!.columns.length):Math.floor(1200/s.table!.columns.length)}]:[])):[]));
  if(paragraphs.length>200)throw Error('too_large');const result=new Map<string,OfficeMathImage>();if(!paragraphs.length)return result;
  const html=`<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none';style-src 'unsafe-inline';script-src 'none';font-src 'none';base-uri 'none'"><style>body{margin:0;background:white;color:black;font:${g?'11pt':'32px'}/1.6 SimSun,"Microsoft YaHei",sans-serif}.paragraph{width:1240px;padding:${g?0:16}px;box-sizing:border-box;overflow-wrap:anywhere}math{font-family:"Cambria Math",math}math[display="block"]{margin:16px 0}</style></head><body>${paragraphs.map((p,i)=>`<div class="paragraph" style="width:${p.width}px" id="p${i}">${officeMathHtml(p.text)}</div>`).join('')}</body></html>`;
  return withStaticOfficePage(html,options,async({Window,htmlPath})=>{
@@ -116,8 +120,8 @@ export async function renderOfficeMathImages(draft:OfficeDraft,options:{dataRoot
    options.signal?.throwIfAborted();
    // DOM geometry updates before Chromium presents its new frame. Without a paint barrier,
    // capturePage can return the preceding formula in the current formula's rectangle.
-   const geometry=await win.webContents.executeJavaScript(`(async()=>{document.querySelectorAll('.paragraph').forEach((e,j)=>{e.hidden=j!==${i};});window.scrollTo(0,0);await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const e=document.getElementById('p${i}');const target=${options.cropMath?'e.querySelector("math")':'e'};if(!target)throw new Error('unsupported');const r=target.getBoundingClientRect();return{x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.right)-Math.floor(r.x),height:Math.ceil(r.bottom)-Math.floor(r.y),scrollWidth:e.scrollWidth};})()`);
-   if((!options.cropMath&&geometry.width!==paragraphs[i].width)||geometry.scrollWidth>paragraphs[i].width||geometry.height<1||geometry.height>1760||geometry.y<0)throw Error('too_large');
+   const geometry=await win.webContents.executeJavaScript(`(async()=>{document.querySelectorAll('.paragraph').forEach((e,j)=>{e.hidden=j!==${i};});window.scrollTo(0,0);await document.fonts.ready;await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const e=document.getElementById('p${i}');const target=${cropMath?'e.querySelector("math")':'e'};if(!target)throw new Error('unsupported');const r=target.getBoundingClientRect();return{x:Math.floor(r.x),y:Math.floor(r.y),width:Math.ceil(r.right)-Math.floor(r.x),height:Math.ceil(r.bottom)-Math.floor(r.y),scrollWidth:e.scrollWidth};})()`);
+   if((!cropMath&&geometry.width!==paragraphs[i].width)||geometry.scrollWidth>paragraphs[i].width||geometry.height<1||geometry.height>1760||geometry.y<0)throw Error('too_large');
    if(layout)paperLayoutImageSize(layout,geometry.width,geometry.height);
    const image=await win.webContents.capturePage({x:geometry.x,y:geometry.y,width:geometry.width,height:geometry.height},{stayHidden:true,stayAwake:true});
    const bytes=image.toPNG();total+=bytes.length;if(bytes.length>4*1048576||total>16*1048576)throw Error('too_large');

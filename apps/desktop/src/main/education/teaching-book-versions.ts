@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import type {TeachingBookPatch} from '../../shared/contracts';
 import {CLASSROOM_CONTEXT_SCHEMA} from '../../shared/classroom-context';
 import type {TeachingBookConfirm,TeachingBookRestore,TeachingBookVersion,TeachingBookVersionHistory,TeachingBookVersionKind,TeachingBookVersionPreview,TeachingBookVersionRead} from '../../shared/teaching-book-version';
+import type {TeachingHandoutVersionRef} from '../../shared/teaching-handout-export';
 import {renderTeachingBookMarkdown} from '../ai-harness/teaching-book-renderer';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
@@ -54,6 +55,24 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
     const [row]=await work.all(`SELECT ${summaries} FROM teaching_book_versions WHERE book_id=? AND kind='confirmed' ORDER BY revision DESC LIMIT 1`,[bookId]);
     return row?summary(row):undefined;
   }
+  async function sessionBooks(work:Sql,sessionId:string) {
+    const rows=await work.all(`SELECT origin.book_id,origin.task_id,book.title
+      FROM teaching_handout_origins origin JOIN teaching_books book ON book.id=origin.book_id
+      JOIN ai_conversation_sessions chat ON chat.id=origin.session_id
+      WHERE origin.session_id=? AND book.deleted_at='' AND COALESCE(chat.student_id,'')='' AND COALESCE(chat.archived_at,'')=''
+      ORDER BY origin.created_at DESC,origin.book_id`,[sessionId]);
+    return rows.map(row=>({bookId:String(row.book_id),taskId:String(row.task_id),title:String(row.title)}));
+  }
+  async function confirmedContent(work:Sql,bookId:string,expected?:TeachingHandoutVersionRef) {
+    const content=await current(work,bookId);
+    const version=await latestConfirmation(work,bookId);
+    if(!version)throw Error('not_confirmed');
+    if(expected&&(version.id!==expected.versionId||version.digest!==expected.digest))throw Error('version_conflict');
+    if(teachingBookDigest(content)!==version.digest)throw Error('not_confirmed');
+    const saved=await historical(work,bookId,version.id);
+    await assertTeachingBookSources(work,saved.image.content);
+    return {version:saved.version,content:saved.image.content};
+  }
   async function append(work:Sql,content:TeachingBookContent,kind:TeachingBookVersionKind,time:string,restoredFrom?:string) {
     const bookId=content.book.id, id='teaching_version_'+randomUUID(), digest=teachingBookDigest(content);
     const [counter]=await work.all('SELECT COALESCE(MAX(revision),0) AS tip FROM teaching_book_versions WHERE book_id=?',[bookId]);
@@ -98,14 +117,30 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
         if(teachingBookDigest(content)!==digest)throw Error('version_conflict');
         if(!content.chapters.length||!content.pages.length||!content.blocks.some(block=>block.status==='ready')||
             content.blocks.some(block=>!['ready','hidden'].includes(block.status)))throw Error('draft_incomplete');
-        if(content.materialSources?.length){
-          await assertClassroomContext(work,{schemaVersion:CLASSROOM_CONTEXT_SCHEMA,preferenceRevision:0,
-            materials:content.materialSources.map(source=>({source,title:'讲义引用段落',characters:1,truncated:false,recognition:'saved_text'}))});
-        }
-        await assertCurrentBookSourceRows(work,content);
+        await assertTeachingBookSources(work,content);
         const previous=await latestConfirmation(work,bookId);
         if(previous?.digest===digest)return previous;
         return append(work,content,'confirmed',new Date().toISOString());
+      });
+    },
+    async forExport(sessionId:string,taskId:string,target:{title?:string;bookId?:string}|TeachingHandoutVersionRef={}) {
+      return read(async work=>{
+        const rows=await sessionBooks(work,sessionId);
+        const normalized=(text:string)=>text.trim().normalize('NFKC').toLowerCase();
+        const byTask=rows.filter(row=>row.taskId===taskId);
+        const candidates=target.bookId?rows.filter(row=>row.bookId===target.bookId):
+          'title'in target&&target.title!==undefined?rows.filter(row=>normalized(row.title)===normalized(target.title!)):
+          byTask.length?byTask:rows;
+        if(!candidates.length)throw Error('book_unavailable');
+        if(candidates.length>1)return {kind:'ambiguous' as const,choices:candidates.slice(0,8).map(({bookId,title})=>({bookId,title}))};
+        return {kind:'found' as const,...await confirmedContent(work,candidates[0].bookId,'versionId'in target?target:undefined)};
+      });
+    },
+    async withConfirmedExport<T>(sessionId:string,source:TeachingHandoutVersionRef,
+      action:(item:{version:TeachingBookVersion;content:TeachingBookContent})=>T):Promise<T> {
+      return write(async work=>{
+        if(!(await sessionBooks(work,sessionId)).some(row=>row.bookId===source.bookId))throw Error('book_unavailable');
+        return action(await confirmedContent(work,source.bookId,source));
       });
     },
     async restore(input:TeachingBookRestore) {
@@ -123,7 +158,11 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
   };
 }
 
-async function assertCurrentBookSourceRows(work:Sql,content:TeachingBookContent) {
+async function assertTeachingBookSources(work:Sql,content:TeachingBookContent) {
+  if(content.materialSources?.length){
+    await assertClassroomContext(work,{schemaVersion:CLASSROOM_CONTEXT_SCHEMA,preferenceRevision:0,
+      materials:content.materialSources.map(source=>({source,title:'讲义引用段落',characters:1,truncated:false,recognition:'saved_text'}))});
+  }
   const queries={
     knowledge_resource:'SELECT content_hash AS fingerprint FROM teacher_resources WHERE id=?',
     knowledge_chunk:'SELECT r.content_hash AS fingerprint FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.id=? AND c.contains_personal_data=0',

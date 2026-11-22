@@ -1,4 +1,5 @@
-import {computationEffectTool} from '../../../shared/xiaozhi-computation';
+import {computationEffectTool,structuredOutputTool} from '../../../shared/xiaozhi-computation';
+import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -19,6 +20,7 @@ const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).d
 const hex=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const effects=new Set(['education_create_report','education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','education_propose_questions','education_propose_practice']);
 effects.add('education_export_teaching_lesson');
+effects.add(EXPORT_TEACHING_HANDOUT);
 const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',office_deliver_files:'saved_bundle',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
 async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
  let timer:ReturnType<typeof setTimeout>|undefined;
@@ -126,7 +128,7 @@ export function createRunResultReadback(options:{runId:string;canonicalize?:(too
   try{const payload=JSON.parse(text);if(payload?.success===false&&payload.code==='quality_blocked'&&payload.submittedForTeacherReview===true&&validRepairReference(payload.repairReference)&&Number.isInteger(payload.repairAttempt)&&payload.repairAttempt>=0&&payload.repairAttempt<3)return{payload,digest:hash(payload),observedAt:new Date().toISOString()};}catch{/* A malformed or generic failure has no recoverable lineage. */}
  }
  function captureCanonical(callId:string,tool:string,result:unknown,failed:boolean){
-  if(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report'&&tool!=='education_export_teaching_lesson')return;
+  if(!Object.prototype.hasOwnProperty.call(kinds,tool)&&!structuredOutputTool(tool))return;
   if(failed){if(tool==='education_propose_questions'){const failure=questionFailure((result as {content?:unknown})?.content,callId);if(failure){if(!callId||callId.length>90||failedQuestions.has(callId)||failedQuestions.size>=30)overflow=true;else failedQuestions.set(callId,failure);}}return;}
   if(captured.has(callId)||captured.size>=30||!callId||callId.length>90){overflow=true;return;}
   const c=normalize(tool,(result as {content?:unknown})?.content,callId);if(c){

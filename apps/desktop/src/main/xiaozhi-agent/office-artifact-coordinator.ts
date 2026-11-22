@@ -1,4 +1,5 @@
 import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
+import {TEACHING_HANDOUT_OFFICE_SCHEMA} from '../../shared/teaching-handout-export';
 import {validPresentationEditProposal,PRESENTATION_EDIT_PARAMETERS,PRESENTATION_EDIT_INSTRUCTIONS} from '../../shared/xiaozhi-presentation-edit';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {OFFICE_ARTIFACT_SCHEMA,type OfficeArtifactDecision,type OfficeArtifactError,type OfficeArtifactReview,type OfficeArtifactReviewInput,type OfficeArtifactReviseInput,type OfficeArtifactResult,type OfficeArtifactSummary} from '../../shared/xiaozhi-office-artifacts';
@@ -82,7 +83,21 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
    try{
     const lease=value.action==='verify'?recoveryLease:undefined;lease?.();
     const waiting=value.action==='verify'?undefined:currentWait(value);
-    if(value.action==='approve'&&waiting){const draft=await options.state.get(value.draftId);if(!draft)throw Error('conflict');const blocked=await options.preflight?.(value.sessionId,waiting.runId,draft.callId,[{kind:'office',id:draft.id}],undefined);if(blocked)return{ok:false,error:'configuration'};}
+    if(value.action==='approve'&&waiting){
+     const draft=await options.state.get(value.draftId);
+     if(!draft)throw Error('conflict');
+     try{
+      const blocked=await options.preflight?.(value.sessionId,waiting.runId,draft.callId,[{kind:'office',id:draft.id}],undefined);
+      if(blocked)return{ok:false,error:'configuration'};
+     }catch(raw){
+      if(draft.draft.schemaVersion!==TEACHING_HANDOUT_OFFICE_SCHEMA||!(raw instanceof Error)||raw.message!=='source_changed')throw raw;
+      if(draft.revision!==value.revision||draft.state!=='pending')throw Error('conflict');
+      await options.state.transition(draft,['pending'],'conflict');
+      const summary=await publish(value.sessionId,value.draftId);
+      waiting.finish(false);
+      return {ok:true,value:summary};
+     }
+    }
     const decided=await options.service.decide(value,lease);
     if(value.action==='verify'&&lease){
      // The service returned a committed outcome. Closing may suppress the event,

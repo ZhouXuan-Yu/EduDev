@@ -13,6 +13,10 @@ import {createExecutionEffectReader} from '../effects/readback';
 import {createAcquisitionPrepareEffectReader} from '../capabilities/acquisition/prepare-receipts';
 import {readTeachingHandoutEffect} from '../../education/teaching-handout-state';
 import {TEACHING_HANDOUT_TOOL} from '../../../shared/teaching-handout';
+import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
+import {isTeachingHandoutOfficeDraft} from '../../../shared/xiaozhi-office-draft';
+import {createDeliveryState,deliveryHash} from '../delivery-state';
+import {createDeliveryReadback} from '../verification/delivery-readback';
 
 /** Reuse independent teacher-confirmed ledger/disk readback. No grants are revived. */
 export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof createPiPersistentState>;changes:ReturnType<typeof createTextChangeState>;artifacts:ReturnType<typeof createOfficeArtifactState>;dataRoot?:()=>string;sql?:Sql}){
@@ -22,7 +26,7 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
   if(tool===TEACHING_HANDOUT_TOOL)return state.sql?readTeachingHandoutEffect(state.sql,owner,callId):'uncertain';
   if(acquisitionReader){const checked=await acquisitionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(executionReader){const checked=await executionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
-  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document'].includes(tool))return'not_checked';
+  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document',EXPORT_TEACHING_HANDOUT].includes(tool))return'not_checked';
   try{
    const workspace=async()=>{
     const grant=tool==='office_create_document'?await state.persistent.paperOutput(owner.sessionId):null;
@@ -33,6 +37,31 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
     return state.dataRoot?authorizedWorkspace(root,state.dataRoot()):root;
    };
    const expectedWorkspace=await workspace();
+   if(tool===EXPORT_TEACHING_HANDOUT){
+    const files={sessionId:owner.sessionId,runId:owner.runId,current:()=>true,workspace:async()=>{
+     const current=await workspace();if(current!==expectedWorkspace)throw Error('evidence_missing');return current;
+    },fileLabel:async(_tool:string,label:string)=>label,changes:state.changes,artifacts:state.artifacts};
+    const row=await state.artifacts.call(owner.sessionId,owner.runId,callId);
+    if(row){
+     if(row.state!=='saved'||!isTeachingHandoutOfficeDraft(row.draft))return'uncertain';
+     const binding=await createEffectReadback(files)(callId,'office_create_document',
+      {success:true,outcome:'saved',format:row.format,artifactId:row.artifactId,file:row.path});
+     const read=await binding.read();
+     return read.version===binding.version&&read.digest===binding.digest?'matched':'uncertain';
+    }
+    if(!state.sql)return'uncertain';
+    const deliveries=createDeliveryState(state.sql);
+    const bundle=await deliveries.get('xidelivery_'+deliveryHash([owner.sessionId,owner.runId,callId]));
+    if(!bundle||bundle.files.length!==2||bundle.files.some(file=>file.kind!=='office'||file.carried||!file.draftId))return'uncertain';
+    const saved=await Promise.all(bundle.files.map(file=>state.artifacts.get(file.draftId!)));
+    const drafts=saved.flatMap(item=>item&&isTeachingHandoutOfficeDraft(item.draft)?[item.draft.handoutSource]:[]);
+    if(drafts.length!==2||drafts[0].bookId!==drafts[1].bookId||drafts[0].versionId!==drafts[1].versionId||
+      drafts[0].digest!==drafts[1].digest||drafts[0].audience===drafts[1].audience)return'uncertain';
+    const binding=await createDeliveryReadback({...files,state:deliveries}).bind(callId,{bundleId:bundle.id,outcome:'saved',
+     files:bundle.files.map(file=>({fileId:file.fileId,file:file.path,carried:file.carried}))});
+    const read=await binding.read();
+    return read.version===binding.version&&read.digest===binding.digest?'matched':'uncertain';
+   }
    let payload:Record<string,unknown>,label:string;
    if(tool==='office_create_document'){
     const row=await state.artifacts.call(owner.sessionId,owner.runId,callId);

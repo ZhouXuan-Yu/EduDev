@@ -10,6 +10,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 同会话精确导出验证了从教师选定的当前卷生成学生和教师 Word、选定目录、文件审批、题源变化拦截及冷启动读回。 [精确导出证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-同会话多份试卷精确导出)
 
+已确认讲义的 Word 导出核对真实审批、A4 和受众内容、审批前来源变动以及重启后的文件摘要。 [讲义导出证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-对话导出已确认讲义)
+
 教案编辑回接已核验真实 Pi 草稿、同会话两份教案、准确的编辑器跳转、修改冲突、确认、恢复以及冷启动。 [教案编辑验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-教案与课堂大纲编辑回接)
 
 课堂设计历史预览已核对旧版原文、关闭焦点、撤回来源及恢复存档。工作台与成果工程条目已对照执行包完成退出验收。 [历史与阶段退出](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-课堂设计历史正文与恢复)
