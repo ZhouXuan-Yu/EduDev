@@ -2,6 +2,7 @@ import { Button, TextArea } from '@heroui/react';
 import { CircleHelp, CornerDownRight } from 'lucide-react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import type { XiaozhiControl, XiaozhiQueueMutationInput } from '../../../shared/xiaozhi-agent';
+import {XIAOZHI_ERRORS} from '../../../shared/xiaozhi-projection';
 import { useOfficeControlState } from './OfficeComposerState';
 import './pi-control-surfaces.css';
 
@@ -42,7 +43,11 @@ function Question({item,onAnswer}:{item:XiaozhiControl;onAnswer:(id:string,answe
   async function submit(value:string) {
     if (!editable || lock.current || !value.trim()) return;
     lock.current=true;update({busy:true,error:''});
-    try {await onAnswer(item.id,value.trim());}catch{update({error:'回答未提交，请重试。'});}finally{lock.current=false;update({busy:false});}
+    try {await onAnswer(item.id,value.trim());}
+    catch(error){
+      const code=error instanceof Error?error.message:'';
+      update({error:code==='task_context_changed'||code==='task_ended'?XIAOZHI_ERRORS[code]:'回答未提交，请重试。'});
+    }finally{lock.current=false;update({busy:false});}
   }
   return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable || item.state === 'answered'} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} data-testid="pi-teacher-question" data-control-id={item.id} data-state={item.state}>
     <ChatTool.Trigger><CircleHelp size={16} aria-hidden="true"/><span>{item.state === 'pending' ? '问题' : item.state === 'answered' ? '已回答' : item.canResume ? '上次提问已中断' : '提问已停止'}</span></ChatTool.Trigger>
@@ -51,6 +56,6 @@ function Question({item,onAnswer}:{item:XiaozhiControl;onAnswer:(id:string,answe
       <div className="pi-question-options" role="group" aria-label="建议回答">{item.options?.map((option,index)=><Button key={index} variant="ghost" className="pi-question-option" isDisabled={busy} aria-pressed={answer===option} data-testid={`pi-question-option-${index}`} onPress={()=>update({answer:option,error:''})}><span className="pi-option-number">{index+1}</span><span>{option}</span></Button>)}</div>
       <label className="pi-question-answer"><span className="pi-question-free-label">或自行填写回答</span><TextArea rows={1} aria-label="回答小智的问题" placeholder="或自行填写回答" data-testid="pi-question-answer" value={answer} maxLength={4000} disabled={busy} onChange={event=>update({answer:event.target.value,error:''})}/></label>
       <div className="pi-question-footer"><span><CornerDownRight size={14} aria-hidden="true"/>选择后发送回答</span><Button size="sm" data-testid="pi-question-submit" isDisabled={busy || !answer.trim()} onPress={()=>void submit(answer)}>{busy?'正在提交…':'发送回答'}</Button></div>
-    </> : item.answer && <p>你的回答：{item.answer}</p>}{error && <p role="alert">回答未提交，请重试。</p>}</ChatTool.Content>
+    </> : item.answer && <p>你的回答：{item.answer}</p>}{error && <p role="alert">{error}</p>}</ChatTool.Content>
   </ChatTool>;
 }

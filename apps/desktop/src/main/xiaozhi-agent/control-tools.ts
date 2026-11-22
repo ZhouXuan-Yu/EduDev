@@ -74,9 +74,8 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
         if (!item || item.sessionId !== input.sessionId || item.kind !== 'question') return {ok:false,error:'permission_denied'};
         const answer = await clean(input.answer.trim());
         const live = waits.get(item.id);
-        if (item.state === 'answered' && !item.canResume) return item.answer === answer ? {ok:true} : {ok:false,error:'command_conflict'};
+        if (item.state === 'answered') return item.answer === answer ? {ok:true} : {ok:false,error:'command_conflict'};
         if (live && options.isCurrent(item.sessionId,item.runId)) {
-          if (item.state === 'answered') return item.answer === answer ? {ok:true} : {ok:false,error:'command_conflict'};
           if (!await store.xiaozhiState.changeControl(item.id,['pending'],{state:'answered',answer})) {
             const committed=await store.xiaozhiState.control(item.id);
             return committed?.state === 'answered' && committed.answer === answer ? {ok:true} : {ok:false,error:'permission_denied'};
@@ -85,7 +84,7 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
           notify({...item,state:'answered',answer}); live.resolve(answer); return {ok:true};
         }
         // Only a recovered question starts a new explicit run; a stopped live run never resumes.
-        if (!item.canResume || !['interrupted','resuming','answered'].includes(item.state) || (item.answer !== undefined && item.answer !== answer)) return {ok:false,error:'permission_denied'};
+        if (!item.canResume || !['interrupted','resuming'].includes(item.state) || (item.answer !== undefined && item.answer !== answer)) return {ok:false,error:'permission_denied'};
         if (item.state === 'interrupted' && !await store.xiaozhiState.changeControl(item.id,['interrupted'],{state:'resuming',answer})) {
           const committed=await store.xiaozhiState.control(item.id);
           if (!committed?.canResume || committed.answer !== answer || !['resuming','answered'].includes(committed.state)) return {ok:false,error:'busy'};

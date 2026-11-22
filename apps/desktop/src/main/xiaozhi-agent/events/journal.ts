@@ -43,10 +43,15 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
     const row=(await work.all("SELECT o.generation,o.run_id,r.status FROM xiaozhi_event_owners o JOIN xiaozhi_event_runs r ON r.run_id=o.run_id WHERE o.session_id=?",[owner.sessionId]))[0];
     if(!row||row.run_id!==owner.runId||Number(row.generation)!==owner.generation||row.status!=='running')throw Error('event_owner_stale');
   }
-  async function append(work: Sql, owner: JournalOwner, revision: number, events: XiaozhiAgentEvent[], finalTurn?: OfficeProjectedTurn,captures:ReceiptCapture[]=[], cancellationCorrection=false,taskMutation=false) {
+  function recoveredTaskFence(owner:JournalOwner,row:Record<string,unknown>,fence:Record<string,unknown>){
+    return row.status==='interrupted'&&fence.run_id===''&&Number(fence.generation)===owner.generation+1;
+  }
+  async function append(work: Sql, owner: JournalOwner, revision: number, events: XiaozhiAgentEvent[], finalTurn?: OfficeProjectedTurn,captures:ReceiptCapture[]=[], cancellationCorrection=false,taskMutation=false,recoveredTaskCancellation=false) {
     const row = (await work.all('SELECT * FROM xiaozhi_event_runs WHERE run_id=? AND session_id=?', [owner.runId, owner.sessionId]))[0];
     const fence = (await work.all('SELECT * FROM xiaozhi_event_owners WHERE session_id=?', [owner.sessionId]))[0];
-    if (!row || !fence || Number(row.generation) !== owner.generation || Number(fence.generation) !== owner.generation || fence.run_id !== owner.runId) throw Error('event_owner_stale');
+    if (!row || !fence || Number(row.generation) !== owner.generation) throw Error('event_owner_stale');
+    const recovered=recoveredTaskCancellation&&taskMutation&&events.length===1&&events[0].kind==='task'&&events[0].task.state==='ended'&&recoveredTaskFence(owner,row,fence);
+    if(!recovered&&(Number(fence.generation)!==owner.generation||fence.run_id!==owner.runId))throw Error('event_owner_stale');
     if (!events.length || events.length > 128) throw Error('event_journal_bounds');
     const encoded = events.map(event => {
       if (event.sessionId !== owner.sessionId || event.runId !== owner.runId || event.generation !== owner.generation || event.durability !== 'committed' || !Number.isSafeInteger(event.sequence) || !kinds.has(event.kind)) throw Error('invalid_input');
@@ -171,11 +176,14 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
     }),
     /** State/action receipt and public task checkpoint share one SQLite commit.
      * A terminal run keeps its status; this cannot dispatch any model/tool. */
-    changeTask:(owner:JournalOwner,revision:number,sequence:number,mutate:(work:Sql)=>Promise<TaskView>)=>transaction(async work=>{
+    changeTask:(owner:JournalOwner,revision:number,sequence:number,mutate:(work:Sql)=>Promise<TaskView>,allowRecoveredCancellation=false)=>transaction(async work=>{
       const row=(await work.all('SELECT * FROM xiaozhi_event_runs WHERE session_id=? AND run_id=? AND generation=?',[owner.sessionId,owner.runId,owner.generation]))[0],fence=(await work.all('SELECT run_id,generation FROM xiaozhi_event_owners WHERE session_id=?',[owner.sessionId]))[0];
-      if(!row||!fence||fence.run_id!==owner.runId||Number(fence.generation)!==owner.generation)throw Error('event_owner_stale');
+      if(!row||!fence)throw Error('event_owner_stale');
+      const recovered=allowRecoveredCancellation&&recoveredTaskFence(owner,row,fence);
+      if(!recovered&&(fence.run_id!==owner.runId||Number(fence.generation)!==owner.generation))throw Error('event_owner_stale');
       if(Number(row.revision)!==revision||Number(row.sequence)+1!==sequence)throw Error('event_revision_conflict');
       const task=await mutate(work);if(!validTaskView(task)||task.sessionId!==owner.sessionId)throw Error('invalid_input');
+      if(recovered&&(task.state!=='ended'||task.goal))throw Error('permission_denied');
       const record=(await work.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.task.v1:'+task.id]))[0];let stored;
       try{stored=JSON.parse(String(record?.value_json));}catch{throw Error('task_record_uncommitted');}
       const lineage=stored?.eventOwner||stored?.lineage?.at(-1);
@@ -184,7 +192,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       if(JSON.stringify(previous.task)===JSON.stringify(task))return{cursor:cursor(row),turn:previous,events:[] as XiaozhiAgentEvent[],task};
       const goal=await taskGoalProjection(work,task);
       const event:XiaozhiAgentEvent={...owner,schemaVersion:1,durability:'committed',sequence,revision:revision+1,kind:'task',task:structuredClone(task),...(goal?{goal}:{})};
-      return{...await append(work,owner,revision,[event],undefined,[],false,true),events:[event],task};
+      return{...await append(work,owner,revision,[event],undefined,[],false,true,recovered),events:[event],task};
     }),
     bindNative:(owner:JournalOwner,binding:NativeRunBinding,beforeBind?:(work:Sql)=>Promise<void>)=>transaction(async work=>{
       await assertOwned(work,owner);await beforeBind?.(work);await receipts.bind(work,owner,binding);

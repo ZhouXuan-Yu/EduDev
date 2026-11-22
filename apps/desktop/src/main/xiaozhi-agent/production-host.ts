@@ -112,6 +112,7 @@ import {resolveThinkingPolicy,isThinkingContinuation} from './answer-quality';
 import {teachingReference} from './teaching-presentation';
 import {isTaskAmendment} from './tasks/continuation';
 import {taskControlState,validTaskControl,type TaskControlAction} from '../../shared/xiaozhi-task-control';
+import {teacherQuestionContinuation} from './tasks/teacher-question-continuation';
 import type {TaskApiResult,TaskView} from '../../shared/xiaozhi-task';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
@@ -710,8 +711,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     emit:(id,runId,payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id,run,payload); },
     flush:async(id,runId)=>{const run=active.get(id);if(!run||run.runId!==runId||run.stopped||!run.publisher)throw Error('cancelled');await run.publisher.flush();},
     resume:async (item,answer):Promise<XiaozhiActionResult> => {
+      const target=await teacherQuestionContinuation(store.xiaozhiState.sql,item.sessionId,item.runId);
+      if(!target)return{ok:false,error:'task_context_changed'};
       const outcome = await host.start({ sessionId:item.sessionId,commandId:item.id.replace('pictrl_','xicmd_'),
-        prompt:`继续上次中断的教师澄清。上次问题：${item.text}\n教师回答：${answer}\n只按本次回答继续任务；旧复制、旧审批及未完成效果不要自动重放，所有文件效果需要新确认。` });
+        prompt:`继续上次中断的教师澄清。上次问题：${item.text}\n教师回答：${answer}\n只按本次回答继续任务；旧复制、旧审批及未完成效果不要自动重放，所有文件效果需要新确认。`,continueTask:target },'prompt',undefined,undefined,undefined,item.runId);
       return outcome.ok ? {ok:true} : outcome;
     } });
   async function authorizePaperConversation(id:string){
@@ -1937,7 +1940,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => !['sessionId','commandId'].includes(key))) return { ok: false, error: 'invalid_input' };
       return host.start({ sessionId: input.sessionId, commandId: input.commandId, prompt: '压缩当前会话的较早上下文，保留原对话与本地事实。' }, 'compact');
     },
-    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput,legacyApprovalId?:string): Promise<XiaozhiStartResult> {
+    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput,legacyApprovalId?:string,recoveredQuestionRunId?:string): Promise<XiaozhiStartResult> {
       if (!enabled || closing) return { ok: false, error: 'configuration' };
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
       if(!validXiaozhiStart(input)||input.classroomPlan&&(operation!=='prompt'||Boolean(goalId)||Boolean(taskResume))||(operation==='compact'&&(input.attachments||input.continueTask))||input.continueTask&&(Boolean(goalId)||Boolean(taskResume)))return {ok:false,error:'invalid_input'};
@@ -1957,6 +1960,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       let recoveryInspection:TaskRecoveryInspection|undefined;
       if(operation==='prompt'&&(taskResume||input.continueTask||isTaskContinuation(input.prompt)||allowNaturalAmendment&&isBoundTaskAmendment(input.prompt))){
         const task=await phase(()=>createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}).latest(id));
+        if(input.continueTask&&(task?.id!==input.continueTask.taskId||task.requirementsVersion!==input.continueTask.requirementsVersion))return{ok:false,error:'task_context_changed'};
         if(task&&task.state!=='active'&&task.state!=='ended'){
           await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
           await phase(()=>effectReconciler.recheck(id,task.id));
@@ -1989,8 +1993,14 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       // A continuation inherits its authority from the original task source, not this new prompt.
       // Refuse before task recovery can append an event, or admission reserves an Active/run.
       if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume,allowNaturalAmendment));
+      if(recoveredQuestionRunId){
+        const current=await phase(()=>tasks.committed(id));
+        if(!current||(current.lastRunId??current.origin.runId)!==recoveredQuestionRunId)return{ok:false,error:'task_context_changed'};
+      }
       await phase(()=>tasks.recover(id));
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
+      if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
+      if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
       const run: Active = { ...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),

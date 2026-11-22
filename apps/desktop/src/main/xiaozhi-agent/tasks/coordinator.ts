@@ -32,9 +32,15 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
  const inline=(work:Sql):Sql=>({...work,transaction:action=>action(work)});
  async function allowed(id:string){if(options.closing())throw Error('busy');if((await options.store.getAiConversationSession(id)).session.archivedAt)throw Error('permission_denied');}
  async function owner(id:string):Promise<TaskOwner>{const row=(await sql.all('SELECT run_id,generation FROM xiaozhi_event_owners WHERE session_id=?',[id]))[0];if(!row)throw Error('permission_denied');return{sessionId:id,runId:String(row.run_id),generation:Number(row.generation)};}
- async function checkpoint(id:string,change:(work:Sql)=>Promise<TaskView>){
-  const own=await owner(id),row=(await sql.all('SELECT revision,sequence FROM xiaozhi_event_runs WHERE session_id=? AND run_id=? AND generation=?',[id,own.runId,own.generation]))[0];if(!row)throw Error('permission_denied');
-  const saved=await journal.changeTask(own,Number(row.revision),Number(row.sequence)+1,work=>change(inline(work)));
+ async function checkpoint(id:string,change:(work:Sql)=>Promise<TaskView>,allowRecoveredCancellation=false){
+  let own=await owner(id);
+  if(allowRecoveredCancellation&&!own.runId){
+   const candidates=await sql.all("SELECT run_id FROM xiaozhi_event_runs WHERE session_id=? AND generation=? AND status='interrupted'",[id,own.generation-1]);
+   if(candidates.length!==1)throw Error('permission_denied');
+   own={sessionId:id,runId:String(candidates[0].run_id),generation:own.generation-1};
+  }
+  const [row]=await sql.all('SELECT revision,sequence FROM xiaozhi_event_runs WHERE session_id=? AND run_id=? AND generation=?',[id,own.runId,own.generation]);if(!row)throw Error('permission_denied');
+  const saved=await journal.changeTask(own,Number(row.revision),Number(row.sequence)+1,work=>change(inline(work)),allowRecoveredCancellation);
   let delivered=true;for(const event of saved.events){try{options.emit(event);}catch{delivered=false;}}
   if(delivered)await journal.notified(own.runId,saved.cursor.sequence).catch(()=>undefined);return saved.task;
  }
@@ -114,7 +120,7 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
     await allowed(id);if(options.busy(id))throw Error('busy');
     return{ok:true,value:await checkpoint(id,work=>{
      if(options.busy(id)||options.closing())throw Error('busy');return state(work).cancelInactive(input);
-    })};
+    },true)};
    }catch(e){return{ok:false,error:errorCode(e)};}finally{locked.delete(id);}
   },
   async acceptGoal(goal:PrivateGoal,checked:number[]){

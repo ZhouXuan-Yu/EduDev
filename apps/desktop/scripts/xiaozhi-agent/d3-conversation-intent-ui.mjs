@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
 import {once} from 'node:events';
 import fs from 'node:fs';
 import http from 'node:http';
@@ -27,7 +28,8 @@ const fixture=http.createServer(async(request,response)=>{
   let raw='';for await(const part of request)raw+=part;
   const body=JSON.parse(raw);
   requests.push({tools:body.tools?.map(tool=>tool.function?.name).filter(Boolean)??[],messages:body.messages.length,
-    teacherAnswer:body.messages.some(message=>message.role==='tool'&&typeof message.content==='string'&&message.content.includes('五年级'))});
+    teacherAnswer:body.messages.some(message=>message.role==='tool'&&typeof message.content==='string'&&message.content.includes('五年级')),
+    recoveredTeacherAnswer:body.messages.some(message=>message.role==='user'&&/教师回答:\s*五年级/u.test(JSON.stringify(message.content??'').normalize('NFKC')))});
   response.setHeader('content-type','text/event-stream');
   const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-d3',object:'chat.completion.chunk',created:1,
     model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})+'\n\n';
@@ -85,12 +87,26 @@ async function send(text){
   const previous=(await snapshot()).projection.turns.length;
   await submit(text);return terminal(previous);
 }
-async function restart(){
-  await app.close();app=undefined;await launch();
+async function restart(crash=false){
+  if(crash){
+    await assertIsolatedPiMain(app,main,profile);
+    execFileSync('taskkill',['/PID',String(app.process().pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});
+    await app.close().catch(()=>undefined);
+  }else await app.close();
+  app=undefined;await launch();
   if(await activeSession()===sessionId)return;
   if(!await page.getByTestId('edu-history-panel').isVisible())await page.getByTestId('pi-sidebar-toggle').click();
   await page.getByTestId('ai-conversation-session-'+sessionId).click();
   await page.waitForFunction(id=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===id,sessionId);
+}
+async function freshConversation(){
+  if(!await page.getByTestId('ai-conversation-new').isVisible())await page.getByTestId('pi-sidebar-toggle').click();
+  await page.getByTestId('ai-conversation-new').click();
+  await page.waitForFunction(id=>{
+    const visible=document.querySelector('.office-composer-container')?.getAttribute('data-session-id');
+    return visible?.startsWith('aisession_')&&visible!==id;
+  },sessionId);
+  sessionId=await activeSession();
 }
 function taskRecords(){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -100,6 +116,13 @@ function taskRecords(){
       AND json_extract(value_json,'$.view.sessionId')=?`)
     .all(sessionId).map(row=>JSON.parse(row.value_json).view);}
   finally{db.close();}
+}
+function runAuthority(){
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{return {
+    owner:db.prepare('SELECT run_id,generation FROM xiaozhi_event_owners WHERE session_id=?').get(sessionId),
+    runs:db.prepare('SELECT run_id,status,generation FROM xiaozhi_event_runs WHERE session_id=? ORDER BY generation').all(sessionId)
+  };}finally{db.close();}
 }
 try{
   await launch();sessionId=await activeSession();
@@ -254,8 +277,75 @@ try{
     assert.equal(answered.state.controls.find(item=>item.id===controlId).state,'answered');
     check('真实澄清卡等待教师输入，选择答案后同一 Run 和 Task 继续，请求携带经过宿主记录的回答');
   }
+  if(process.argv.includes('--teacher-cold')){
+    async function interruptedQuestion(prompt){
+      askNextReply=true;await submit(prompt);
+      const pending=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]');
+      await pending.waitFor({state:'visible',timeout:30_000});
+      const controlId=await pending.getAttribute('data-control-id'),task=(await snapshot()).task;
+      assert(task?.id&&controlId);
+      const count=requests.length;await restart(true);
+      assert.equal(requests.length,count);
+      const question=page.locator(`[data-testid="pi-teacher-question"][data-control-id="${controlId}"][data-state="interrupted"]`);
+      await question.getByTestId('pi-question-option-1').waitFor({state:'visible',timeout:15_000});
+      return{task,controlId,question,count};
+    }
+    await freshConversation();
+    const recovered=await interruptedQuestion('请新建一个分数教学任务，先问我年级再给导入方案。');
+    const ids=taskRecords().map(task=>task.id),before=(await snapshot()).projection.turns.length;
+    await recovered.question.getByTestId('pi-question-option-1').click();
+    await recovered.question.getByTestId('pi-question-submit').click();
+    const result=await terminal(before);
+    assert.equal(result.turn.status,'completed',result.turn.error);
+    assert.equal(result.turn.task?.id,recovered.task.id);
+    assert.equal(result.turn.task?.requirementsVersion,recovered.task.requirementsVersion);
+    assert.notEqual(result.turn.id,recovered.task.origin.runId);
+    assert.deepEqual(taskRecords().map(task=>task.id),ids);
+    const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+    try{
+      const latest=db.prepare("SELECT id,content FROM ai_conversation_messages WHERE role='user' AND json_extract(metadata_json,'$.agentRunId')=?").get(result.turn.id);
+      assert(latest?.content.includes('教师回答：五年级'));
+      assert(taskRecords().find(task=>task.id===recovered.task.id).sources.some(source=>source.messageId===latest.id));
+    }finally{db.close();}
+    assert.equal(requests.length,recovered.count+1);assert(requests.at(-1).recoveredTeacherAnswer);
+    const repeat=await page.evaluate(input=>window.omniEdu.answerXiaozhi(input),{sessionId,controlId:recovered.controlId,answer:'五年级'});
+    assert.deepEqual(repeat,{ok:true});assert.equal(requests.length,recovered.count+1);
+    check('意外关闭后回答原澄清卡，回到原 Task，重复回答保持零新增请求');
+
+    await freshConversation();
+    const cancelled=await interruptedQuestion('新建另一个教案任务，请先询问教师目标年级。');
+    const frozenAuthority=runAuthority();
+    assert.equal(frozenAuthority.owner.run_id,'');
+    const cancelledCard=page.locator(`[data-testid="pi-task-review"][data-task-id="${cancelled.task.id}"]`);
+    await cancelledCard.getByTestId('pi-task-review-toggle').click();
+    await cancelledCard.getByTestId('pi-task-cancel').click();
+    await cancelledCard.getByTestId('pi-task-confirm-cancel').click();
+    await cancelledCard.getByTestId('pi-task-control-notice').filter({hasText:'任务已取消'}).waitFor({state:'visible'});
+    await cancelled.question.getByTestId('pi-question-option-1').click();
+    await cancelled.question.getByTestId('pi-question-submit').click();
+    await cancelled.question.getByRole('alert').filter({hasText:'这项任务已结束'}).waitFor({state:'visible'});
+    assert.equal(requests.length,cancelled.count);
+    assert.equal(taskRecords().find(task=>task.id===cancelled.task.id).state,'ended');
+    assert.deepEqual(runAuthority(),frozenAuthority);
+    check('已取消任务的历史澄清卡保留，回复无法启动任何新模型请求');
+
+    const newer=await send('另开一个新任务，给我一个五年级分数导入方案。');
+    assert(newer.turn.task?.id&&newer.turn.task.id!==cancelled.task.id);
+    const latestCount=requests.length;
+    await cancelled.question.getByTestId('pi-question-submit').click();
+    await cancelled.question.getByRole('alert').filter({hasText:'原任务或要求已变化'}).waitFor({state:'visible'});
+    assert.equal(requests.length,latestCount);
+    assert.equal(taskRecords().find(task=>task.id===cancelled.task.id).state,'ended');
+    check('原任务被替换后，历史问题不能串到当前任务');
+  }
   assert.deepEqual(rendererErrors,[]);
-}catch(error){failure=error;process.exitCode=1;console.error(error.stack);}
+}catch(error){
+  failure=error;process.exitCode=1;console.error(error.stack);
+  if(page){
+    console.error(await page.getByTestId('pi-task-review').allTextContents().catch(()=>[]));
+    await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>undefined);
+  }
+}
 finally{
   await app?.close().catch(()=>undefined);
   fixture.closeAllConnections();await new Promise(resolve=>fixture.close(resolve));

@@ -5,7 +5,7 @@
 | 阶段 | 状态 | 当前进展 |
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
-| 1 | PARTIAL | 已实现普通问答分流、当前任务修订、暂停、取消和运行中的教师澄清。继续核对冷启动后的澄清回接并实施后台子任务。 |
+| 1 | PARTIAL | 已实现普通问答分流、当前任务修订、暂停、取消和教师澄清。异常关闭后，历史澄清回接原任务已通过专项。后台子任务与完整恢复矩阵仍待完成。 |
 | 2 | NOT_STARTED | 以现有对话、恢复工作台与成果域为底座。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
@@ -65,5 +65,24 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 | `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --amend --control --teacher-wait` | `phase1-control-ui-rc.log` 与 `phase1-intent-hZQwI5/report.json`，真实 Electron 与 SQLite，12/12，渲染错误 0。包含 1366×768 和 1920×1080 控件可达、旧所有者/非法动作、暂停后冷启续做、运行中和待核对取消、取消后禁止继续及实时教师澄清。 |
 | `npm.cmd audit --omit=dev --json` | `phase1-control-audit.json`，告警 20，其中 2 项 high。此切片无依赖变更。 |
 | 手测候选 | `manual-task-controls/启动-D3-任务控制.cmd`，隔离运行数据与窗口记录放在同目录。 |
+| `node scripts/electron-smoke.mjs` | `phase1-control-rc-electron-regression.log`，207/207。任务暂停与取消已推送至 `main` 的 `70ed28d`，完整核验见 `phase1-control-main-delivery.json`。 |
 
-接下来需实现中断后的历史澄清回到原任务，防止回复已取消或已被替换的题卡启动另一项任务。后台子任务及主任务汇总仍需实施。
+后台子任务及主任务汇总仍需实施。
+
+## 中断的教师澄清
+
+旧版复现日志 `phase1-teacher-question-before.log` 显示恢复后生成了另一项任务。改造读取原询问 Run 的已提交任务检查点，再走原任务续跑和效果对账。实时回答、相同回答的重试、过期历史题卡和取消状态分别核对。
+
+长会话合成联测 `phase1-teacher-question-ui-final.log` 完成了原任务恢复和重复回答验证，后续另一项测试触发自动整理失败，旧数据保留。按独立会话分别测量冷启场景。长历史自动整理保留为单独未验收项。
+
+`phase1-teacher-question-cold-only.log` 复现了异常退出后，运行所有者撤销也阻止人工取消的问题。修复仅允许教师对原会话里仍未结束的任务提交原 Run 的取消检查点。该路径不恢复执行所有权，运行状态及所有者记录保持原值。旧模型、工具和审批不能经此入口重放。
+
+| 命令或证据 | 当前结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-teacher-recovery-cancel` | `phase1-teacher-recovery-cancel-build.log`，编译通过。主入口 SHA-256 `ec8bd12b2204eab66c919d827e8d3375ea0632996b5b6757fec9788e2736aeb5`。 |
+| `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --teacher-cold` | `phase1-teacher-recovery-cancel-ui.log` 与 `phase1-intent-Ez5cBg/report.json`，7/7。异常退出后回答恢复原 Task，核对持久化回答来源、重复请求、取消权限撤销以及历史问题隔离。 |
+| `node --experimental-transform-types scripts/xiaozhi-agent/phase6-startup-recovery-smoke.mjs` | `phase1-teacher-recovery-cancel-startup.log`，2/2，保留原启动恢复契约。 |
+| `node scripts/xiaozhi-agent/phase7-workbench-cold-ui.mjs` | `phase1-teacher-recovery-cancel-previous.log`，5/5，实际普通停止和冷启，审批、效果和任务事实读回，零重放。 |
+| 手测候选 | `manual-teacher-recovery/启动-D3-澄清恢复.cmd`。窗口已验证可见、可响应，指纹见同目录 `launch.json`。 |
+
+待验证从仍在等待教师输入时正常退出的题卡回接，以及长会话自动整理。旧历史题卡在当前版本保留，可显示任务已取消或要求已变化的反馈。
