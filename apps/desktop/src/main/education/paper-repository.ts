@@ -12,7 +12,8 @@ import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity} from '../.
 import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
 import {comparePaperViews} from './paper-compare';
-import {paperEditLineage} from './paper-edit-lineage';
+import {paperEditLineage,paperLineageHead} from './paper-edit-lineage';
+import {paperConfirmedCandidates,type PaperAgentRead,type PaperAgentTarget} from './paper-agent-read';
 import {selectPaper,paperSectionMatches,paperShortages,type PaperSelectionHost} from './paper-selection';
 import {PAPER_BASKET_SNAPSHOT_SCHEMA,validPaperBasketBinding,validPaperBasketSnapshot,type PaperBasketBinding,type PaperBasketSnapshotInput} from '../../shared/paper-basket';
 import {plainStudentInput} from '../../shared/student-context';
@@ -249,6 +250,29 @@ export class PaperRepository{
   });
  }
  async latest(sessionId:string){await this.authorize(this.host,sessionId);const row=(await this.host.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[sessionId,PAPER_ACTION]))[0];return row?this.review(sessionId,String(row.id)):undefined;}
+ async readForAgent(sessionId:string,runId:string,taskRuns:readonly string[],target:PaperAgentTarget):Promise<PaperAgentRead>{
+  const read=this.host.readTransaction??this.host.transaction;
+  return read.call(this.host,async(sql:PaperSql):Promise<PaperAgentRead>=>{
+   const studentId=await this.authorize(sql,sessionId);
+   const {successors}=await paperEditLineage(sql,sessionId);
+   if(target&&'paperId' in target){
+    const anchor=await this.get(sql,sessionId,target.paperId);
+    const head=target.digest?target.paperId:paperLineageHead(successors,target.paperId);
+    const saved=head===target.paperId?anchor:await this.get(sql,sessionId,head);
+    if(saved.r.status!=='confirmed')return {kind:'not_confirmed'};
+    const paper=await this.view(sql,saved.r,saved.p,Boolean(target.digest&&successors.has(head)));
+    if(target.digest&&target.digest!==paper.digest)return {kind:'digest_mismatch'};
+    return {kind:'found',paper};
+   }
+   const {candidates,hasSelected}=await paperConfirmedCandidates(sql,sessionId,studentId,PAPER_ACTION,successors,runId,taskRuns,target?.title);
+   if(!candidates.size)return {kind:hasSelected?'not_confirmed':'missing'};
+   if(candidates.size>1){
+    return {kind:'ambiguous',choices:Array.from(candidates.values()).slice(0,8).map(row=>({paperId:String(row.id),title:String(row.title)}))};
+   }
+   const {r,p}=await this.get(sql,sessionId,candidates.keys().next().value!);
+   return {kind:'found',paper:await this.view(sql,r,p)};
+  }) as Promise<PaperAgentRead>;
+ }
  async decide(input:PaperDecision,current:()=>boolean,afterWrite?:()=>Promise<void>):Promise<PaperView>{
   if(!validPaperReview(input,true))throw new Error('invalid_input');return this.host.transaction(sql=>this.decideInTransaction(sql,input,current,afterWrite));
  }

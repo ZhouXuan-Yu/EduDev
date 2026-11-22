@@ -58,6 +58,13 @@ async function launch(cold=false){
         if(!JSON.stringify(body.messages.at(-1)).includes('task_paper_requirements_points'))throw Error('Missing recoverable task admission reason');
         offer={name:'education_propose_paper',args:blueprint};
       }
+      if(index===(requirementsMode?3:2)){
+        const previous=body.messages.filter(message=>message.role==='tool').at(-1);
+        const content=typeof previous?.content==='string'?previous.content:previous?.content?.map(part=>part.text||'').join('\n');
+        const confirmed=JSON.parse(content.split('\n')[0]);
+        if(!confirmed.success||!/^xipaper_[a-f0-9-]{36}$/.test(confirmed.paperId)||!/^[a-f0-9]{64}$/.test(confirmed.digest))throw Error('Confirmation omitted the stable paper reference');
+        globalThis.paperConfirmedReference={paperId:confirmed.paperId,digest:confirmed.digest};
+      }
       if(exportMode&&index>=3){
         const step=(index-3)%4,audience=index<7?'teacher':'student',file=`${blueprint.title}-${audience}.docx`;
         if(step===0)offer={name:'find_education_tools',args:{query:'education_export_paper 导出确认试卷'}};
@@ -129,6 +136,7 @@ try{
   await closeReview();await until(async()=>!(await snapshot()).running);
   const original=candidate(source.id);
   assert.equal(original.status,'confirmed');
+  assert.deepEqual(await app.evaluate(()=>globalThis.paperConfirmedReference),{paperId:source.id,digest:JSON.parse(original.result_json).digest});
   assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),['find_education_tools','education_propose_paper',...(requirementsMode?['education_propose_paper']:[]),'reply']);
   check('Original Pi task and explicit teacher approval save the five-point source paper');
 

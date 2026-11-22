@@ -401,3 +401,24 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-paper-blueprint`。前一版边界用例因新增题型题数核对改变了预期，更新断言后复跑；失败报告 `xiaozhi-paper-fulfillment-xidi8r/report.json` 保留。依赖未变，审计现有 20 项提示，其中 2 项 high。模型响应为本地合成，0 付费调用。不同学科的真实题目答案抽样及正式教师使用体验留待集中验收。
 
 最终构建已在 `manual-phase4-paper-blueprint` 启动。启动器为 `启动-D3-自动组卷核对.cmd`，文档提供查看、修改、恢复和可选模型试用步骤。
+
+## Phase 4.1 试卷版本的模型读回
+
+组卷确认后，Pi 收到与本机确认快照一致的试卷 ID 和摘要。读卷可沿 ID 跟随同一份卷的编辑链，或在同时给出原确认摘要时读取指定历史版。按老师给出的完整标题也可定位。无参数优先核对当前 Run 与任务记录，只有一个可确认的会话结果时才直接读取。多份独立卷会返回选择，未确认、摘要不符与无法找到的引用都有独立提示。
+
+读取在原试卷事务上核对会话归属、版本和题源。源题变化时仍可查看确切历史记录，回执明确标记来源变化。卷名等文本先脱敏再序列化，宿主生成的引用可无损回传。旧 SQLite 和教师编辑记录无需迁移。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-read-identity-verified` | 通过。主进程 SHA-256 `1ac54a29124a307f65f798016ec10a9bab730da1ed87a5ef9d3a42dbdbbd25f2`。 |
+| `node scripts/education/paper-agent-read-electron.mjs` 及 `--source-changed` | 最终构建 8/8。另一独立卷晚于编辑版时，无参数返回歧义。原 ID 获取 7 分编辑版，原摘要获取 5 分版，完整标题命中独立卷。错误摘要和未知 ID 拒绝，变更合成题源后仍读到确切快照并标记题源变化。两次冷启无重放，试卷记录逐字保留。报告 `paper-agent-read-8Ay8IN/report.json`、`paper-agent-read-aWHbmX/report.json`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --requirements --restore` | 最终构建 6/6。真实确认回执的试卷 ID 和摘要与 SQLite 一致，候选纠错、编辑和历史恢复继续通过。报告 `paper-edit-sync-NZxHgk/report.json`。 |
+| 组卷履约、宿主准入、渲染组件 | 11/11、12/12、253/253。覆盖任务归属优先、同一编辑链合并、待确认隔离、引用脱敏、原教师确认和旧组件。 |
+| `node scripts/education/paper-fulfillment-electron.mjs` | 最终构建 5/5。通过实际题本录入，先报缺 2 题，再生成 6 题 30 分的完整组卷。三个知识点各 2 题，三档难度各 2 题，6 条题源版本无重复。用独立算式复核 6 道合成题答案，保留原解析。实际 Pi 读回和桌面预览一致，冷启保留数据库、原生日志和工具记录。报告 `xiaozhi-paper-fulfillment-ui-Y0Fxdb/report.json`。 |
+| `node scripts/electron-smoke.mjs` | 首个读卷构建 207/207，`electron-smoke.log` 与 `electron-e2e/`。最终构建文字脱敏变更已通过上述同构建专项。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-paper-read-identity`。六题早期复测在旧夹具找不到已折叠的题本和组卷入口，修正定位器后复跑，两个失败报告保留。本轮无依赖更新，审计记录原有 20 项，其中 2 项 high。模型响应为本地合成，0 付费调用。独立运行窗口、重启脚本和步骤在 `manual-phase4-paper-read-identity`。
+
+确认回执与精确版本读回、同会话双卷歧义、题源变化和冷启保持均已实现。六题结果证明所测试的知识点配额和答案算式，真实教学样本仍按集中验收处理。
+
+试卷卡已具备精确版本导出。纯对话导出若没有试卷卡选择，工具仍会默认取最近确认版。下一项复用模型读回的 ID 与摘要校验该路径，随后推进独立讲义工作区接入。

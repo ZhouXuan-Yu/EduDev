@@ -646,7 +646,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(...educationIdentity.paper.data.tools);
     prompt+='\n教师说题本中已核对的题时，优先education_search_questions逐题用短关键词检索，再education_read_question读取；不要先重读扫描OCR把已核对题面降级未校对。年级筛选支持初三和九年级、高三和高中三年级等同级名称；保留教师指定的年级。检索为空可缩短关键词或去掉非必需筛选，核对实际年级、题型和知识点后再组卷。一次空结果不代表题库没有题。';
     prompt+='\n按教师点名的题库原题组卷时，先分别实读，原题section使用实读questionType和knowledgePoint筛选；label只是标题，不是筛选条件，不能凭口语把原题改成填空或选择。蓝图points是每题分值，非该节总分；不等分原题分别设section，原题与新题分别设配额。生成计算题的item.questionType用written，简答用short_answer；中文计算题/综合计算题蓝图对应written。遇题型错误按工具expected.itemQuestionTypes修正items，不反复改蓝图。';
-    prompt+='\n教师要求整卷时使用education_propose_paper按教师指定的真实来源模式蓝图组卷（source_only只用本地原题；hybrid/ai_original先补齐集中审核的生成配额）并等待教师审核，再education_read_paper复读最终已保存蓝图。缺题不调用AI补原题；未确认、被拒绝或停止不能声称正式卷完成。整卷快照不是文件导出，不代表答案已经正确或学生已经作答。';
+    prompt+='\n教师要求整卷时使用education_propose_paper按教师指定的真实来源模式蓝图组卷（source_only只用本地原题；hybrid/ai_original先补齐集中审核的生成配额）并等待教师审核，再用确认回执的paperId调用education_read_paper核对对应试卷。要读取指定历史版本时同时传digest。遇到多份试卷按原请求定位，仍不明确时请教师选择。缺题不调用AI补原题；未确认、被拒绝或停止不能声称正式卷完成。整卷快照不是文件导出，不代表答案已经正确或学生已经作答。';
   }
   if(options.practiceReview){
     if(!educationIdentity.practice.present)manager.appendCustomEntry('xiaozhi.education.practice-review.v1',educationIdentity.practice.data);

@@ -588,6 +588,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     assertIdle:()=>{if(closing||!configuring.has('provider')||active.size||starting.size)throw Error('busy');}});
   const candidates=createTeacherCandidateCatalog(store.xiaozhiState.sql);
   const paperReviews=createPaperCoordinator({store,
+    taskRuns:async(id,runId)=>{
+      const activeTask=active.get(id);
+      if(activeTask?.runId!==runId||!activeTask.task)return [];
+      const record=await tasks.committedRecord(id);
+      if(!record||record.view.id!==activeTask.task.id||!record.runIds.includes(runId))throw Error('conflict');
+      return record.runIds;
+    },
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canWrite:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'paper_review',review});}

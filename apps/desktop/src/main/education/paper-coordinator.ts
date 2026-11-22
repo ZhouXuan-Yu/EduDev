@@ -1,19 +1,25 @@
-import {plainStudentInput} from '../../shared/student-context';
 import {paperFulfillment} from '../../shared/paper-fulfillment';
 import {createHash} from 'node:crypto';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {admitPaperProposal,type PaperProposalBinding} from './paper-admission';
+import {paperAgentReadProperties,paperAgentResultJson,parsePaperAgentTarget} from './paper-agent-read';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,PAPER_TOOLS,PAPER_ERRORS,validPaperCreate,validPaperReview,validPaperCancel,validPaperBlueprint,validPaperGenerationQuery,type PaperCreateInput,type PaperReviewInput,type PaperCancelInput,type PaperDecision,type PaperSummary,type PaperView,type PaperResult,type PaperError,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
-type Options={store:OmniEduStore;isCurrent:(sessionId:string,runId:string)=>boolean;canWrite:(sessionId:string,runId:string)=>boolean;emit:(sessionId:string,runId:string,value:PaperSummary)=>void;afterWrite?:()=>Promise<void>};
+type Options={store:OmniEduStore;isCurrent:(sessionId:string,runId:string)=>boolean;canWrite:(sessionId:string,runId:string)=>boolean;emit:(sessionId:string,runId:string,value:PaperSummary)=>void;afterWrite?:()=>Promise<void>;taskRuns?:(sessionId:string,runId:string)=>Promise<readonly string[]>};
 const failure=(e:unknown):PaperError=>Object.prototype.hasOwnProperty.call(PAPER_ERRORS,(e as Error)?.message)?(e as Error).message as PaperError:'unavailable';
 const requestId=(session:string,run:string,call:string)=>{const h=createHash('sha256').update(JSON.stringify([session,run,call])).digest('hex');return`${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20,32)}`;};
 export function createPaperCoordinator(options:Options){
  const jobs=new Map<string,{sessionId:string;runId:string;cancelled:boolean;input:string;promise:Promise<PaperResult<PaperView>>}>(),waits=new Map<string,{runId:string;finish:()=>void}>();let closing=false;
  const key=(input:Pick<PaperCancelInput,'sessionId'|'requestId'>)=>input.sessionId+':'+input.requestId;
  const publish=async(sessionId:string,id:string)=>{const row=(await options.store.papers.list(sessionId)).find(r=>r.id===id);if(!row)throw new Error('permission_denied');options.emit(sessionId,row.runId,row);return row;};
- const receipt=async(sessionId:string,value:unknown,isError=false,lease?:()=>boolean)=>{const clean=await createStudentContextSanitizer(options.store),text=await clean(JSON.stringify(value));if(lease&&!lease())throw new Error('cancelled');return{content:[{type:'text' as const,text}],details:{success:!isError},isError};};
+ // Keep host-issued identifiers outside redaction. Only validated IDs and digests
+ // are attached here. All teacher-originated text goes through the sanitizer.
+ const receipt=async(sessionId:string,value:Record<string,unknown>,isError=false,lease?:()=>boolean,reference?:{paperId:string;digest:string;supersededBy?:string})=>{
+  const clean=await createStudentContextSanitizer(options.store),text=await paperAgentResultJson({...value,...reference},clean);
+  if(lease&&!lease())throw new Error('cancelled');
+  return{content:[{type:'text' as const,text}],details:{success:!isError},isError};
+ };
  const create=async(input:PaperCreateInput,runId='',callId='',lease:()=>boolean=()=>true):Promise<PaperResult<PaperView>>=>{
   if(!validPaperCreate(input))return{ok:false,error:'invalid_input'};const id=key(input),existing=jobs.get(id);if(existing)return existing.runId===runId&&existing.input===JSON.stringify(input)?existing.promise:{ok:false,error:'conflict'};
   const job={sessionId:input.sessionId,runId,cancelled:false,input:JSON.stringify(input),promise:Promise.resolve({ok:false,error:'unavailable'} as PaperResult<PaperView>)};
@@ -42,10 +48,44 @@ export function createPaperCoordinator(options:Options){
      const result=await create(input,runId,callId,current);if(!result.ok)throw new Error(result.error);const pending=result.value;
      if(!pending.complete)return receipt(sessionId,{success:false,code:'shortage',shortages:pending.selection.shortages,count:pending.count,fulfillment:paperFulfillment(pending.blueprint,pending.selection),message:'当前来源配额不足，未确认正式试卷；请调整蓝图或先补齐并审核指定题组，不得静默更换来源配额。'},true,current);
      if(pending.state==='pending')await new Promise<void>(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;waits.delete(pending.id);abort.removeEventListener('abort',finish);resolve();};waits.set(pending.id,{runId,finish});abort.addEventListener('abort',finish,{once:true});if(!current())finish();else void publish(sessionId,pending.id).catch(finish);});
-     abort.throwIfAborted();if(!current())throw new Error('cancelled');const original=await publish(sessionId,pending.id),edited=original.state==='rejected'?await options.store.papers.editedSuccessor(sessionId,pending.id):undefined,row=edited||original;return receipt(sessionId,{success:row.state==='confirmed',state:row.state,count:row.count,totalPoints:row.totalPoints,fulfillment:paperFulfillment(edited?.blueprint||pending.blueprint,edited?.selection||pending.selection),...(edited?{paperId:edited.id,modifiedFrom:pending.id}:{}),answerVerified:false,message:row.state==='confirmed'?'教师已确认保存最终整卷快照，请读取最终试卷后报告；未导出文件。':'教师已拒绝，未确认正式试卷，不要自动重提。'},row.state!=='confirmed',current);
+     abort.throwIfAborted();if(!current())throw new Error('cancelled');
+     const original=await publish(sessionId,pending.id);
+     const read=await options.store.papers.readForAgent(sessionId,runId,[],{paperId:pending.id});
+     const paper=read.kind==='found'?read.paper:undefined;
+     if(!paper&&original.state==='confirmed')throw Error('unavailable');
+     return receipt(sessionId,{success:!!paper,state:paper?.state||original.state,count:paper?.count??original.count,totalPoints:paper?.totalPoints??original.totalPoints,
+      fulfillment:paperFulfillment(paper?.blueprint||pending.blueprint,paper?.selection||pending.selection),
+      ...(paper&&paper.id!==pending.id?{modifiedFrom:pending.id}:{}),answerVerified:false,
+      message:paper?'教师已确认保存整卷。请用回执的 paperId 读取对应试卷，再报告结果。':'教师未确认正式试卷，请勿自动重提。'},
+      !paper,current,paper?{paperId:paper.id,digest:paper.digest!}:undefined);
     }catch(e){if(abort.aborted)throw new Error('cancelled');const code=failure(e);return receipt(sessionId,{success:false,code,message:PAPER_ERRORS[code]},true);}}},
-   {name:PAPER_TOOLS[1],label:'读取已确认试卷',description:'读取当前对话最近一份教师已确认整卷的实际蓝图/题数/分数摘要。没有正式卷就返回空结果；来源变化会明确标记，不自动改题、不宣称文件已导出或答案已核验。',parameters:{type:'object',additionalProperties:false,properties:{}},
-    async execute(_callId,raw,signal){const abort=signal||new AbortController().signal;try{if(!plainStudentInput(raw,[]))throw new Error('invalid_input');abort.throwIfAborted();if(!options.isCurrent(sessionId,runId))throw new Error('cancelled');const view=await options.store.papers.latest(sessionId);abort.throwIfAborted();if(!options.isCurrent(sessionId,runId))throw new Error('cancelled');return receipt(sessionId,view?{success:true,found:true,title:view.title,blueprint:view.blueprint,count:view.count,totalPoints:view.totalPoints,fulfillment:paperFulfillment(view.blueprint,view.selection),sourceCurrent:view.sourceCurrent,answerVerified:false,message:'实际已确认保存的整卷快照，参考答案仍未独立验证；文件未导出。'}:{success:true,found:false,message:'当前对话暂无教师已确认的试卷。'},false,()=>!abort.aborted&&options.isCurrent(sessionId,runId));}catch(e){if(abort.aborted)throw new Error('cancelled');const code=failure(e);return receipt(sessionId,{success:false,code,message:PAPER_ERRORS[code]},true);}}}
+   {name:PAPER_TOOLS[1],label:'读取已确认试卷',
+    description:'读取本会话的已确认试卷。传组卷回执 paperId 跟随该卷的编辑后继；同时传 paperId 和摘要 digest 精确读取指定历史快照。也可仅传教师明确给出的完整 title。无参数时优先当前任务，同会话有多份无法唯一定位时请教师指定。结果是保存的蓝图和选题摘要，来源变化会标记。',
+    parameters:{type:'object',additionalProperties:false,properties:paperAgentReadProperties},
+    async execute(_callId,raw,signal){
+     const current=()=>!signal?.aborted&&options.isCurrent(sessionId,runId);
+     try{
+      const target=parsePaperAgentTarget(raw);if(!current())throw Error('cancelled');
+      const taskRuns=target?[]:await options.taskRuns?.(sessionId,runId)??[];
+      if(!current())throw Error('cancelled');
+      const result=await options.store.papers.readForAgent(sessionId,runId,taskRuns,target);
+      if(!current())throw Error('cancelled');
+      if(result.kind==='ambiguous')return receipt(sessionId,{success:false,code:'ambiguous_paper',found:false,
+       choices:result.choices,message:'找到多份已确认试卷。请按教师指定的卷名或已知 paperId 再读取。'},true,current);
+      if(result.kind==='digest_mismatch')return receipt(sessionId,{success:false,code:'paper_digest_mismatch',found:false,
+       message:'摘要与这份试卷的快照不一致。请核对所选试卷版本。'},true,current);
+      if(result.kind!=='found')return receipt(sessionId,{success:true,found:false,state:result.kind,
+       message:result.kind==='missing'?'没有找到所请求的正式试卷。':'所请求的卷尚未确认。'},false,current);
+      const view=result.paper;
+      return receipt(sessionId,{success:true,found:true,title:view.title,blueprint:view.blueprint,count:view.count,totalPoints:view.totalPoints,
+       fulfillment:paperFulfillment(view.blueprint,view.selection),sourceCurrent:view.sourceCurrent,answerVerified:false,
+       message:view.sourceCurrent?'这是已确认的整卷快照。参考答案仍需核对。':'这是已确认的历史快照。题目、原件或编辑范围已变化，请核对来源。'},
+       false,current,{paperId:view.id,digest:view.digest!,...(view.supersededBy?{supersededBy:view.supersededBy}:{})});
+     }catch(e){
+      if(!current())throw Error('cancelled');
+      const code=failure(e);return receipt(sessionId,{success:false,code,message:PAPER_ERRORS[code]},true,current);
+     }
+    }}
   ];}
  };
 }

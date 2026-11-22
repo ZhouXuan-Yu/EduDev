@@ -6,6 +6,7 @@ import {paperFulfillment} from '../../src/shared/paper-fulfillment.ts';
 import {selectPaper} from '../../src/main/education/paper-selection.ts';
 import {createPaperCoordinator} from '../../src/main/education/paper-coordinator.ts';
 import {compareTeacherPaperConstraints} from '../../src/main/education/paper-request-constraints.ts';
+import {paperAgentResultJson,paperConfirmedCandidates,parsePaperAgentTarget} from '../../src/main/education/paper-agent-read.ts';
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-paper-fulfillment-'));
 const report={ok:false,checks:[],paidRequests:0,boundary:'Actual deterministic selection, shared derivation and existing coordinator tools; no model quality or formal UI claim.'};
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
@@ -65,7 +66,35 @@ try{
   assert.equal(compareTeacherPaperConstraints(prompt,explicit),undefined,prompt);
  }
  check('Explicit teacher totals, topic labels and difficulty ratios constrain a model blueprint without inventing targets');
- const view={id:'xipaper_fixture',state:'confirmed',complete:true,blueprint,selection:full,count:6,totalPoints:30,title:blueprint.title,sourceCurrent:true};const store={papers:{latest:async()=>view},listStudents:async()=>[],sanitizeProblemText:async text=>({sanitizedText:text})};
+ const anchor='xipaper_00000000-0000-0000-0000-000000000001';
+ assert.deepEqual(parsePaperAgentTarget({paperId:anchor,digest:'a'.repeat(64)}),{paperId:anchor,digest:'a'.repeat(64)});
+ assert.deepEqual(parsePaperAgentTarget({title:' 练习卷 '}),{title:'练习卷'});
+ assert.equal(parsePaperAgentTarget({}),undefined);
+ for(const input of [{paperId:anchor,title:'重名'},{digest:'a'.repeat(64)},{paperId:'xipaper_invalid'},{title:'\n安全'},{sessionId:'other'}]){
+  assert.throws(()=>parsePaperAgentTarget(input),/invalid_input/);
+ }
+ const paperRows=[
+  {id:'random',run_id:'independent',status:'confirmed',title:'独立卷'},
+  {id:'edited',run_id:'edit',status:'confirmed',title:'历史卷'},
+  {id:'source',run_id:'original',status:'confirmed',title:'历史卷'},
+  {id:'pending',run_id:'new',status:'pending',title:'待确认'},
+ ];
+ const links=new Map([['source','edited']]);
+ const lookup=(run,taskRuns,title)=>paperConfirmedCandidates({all:async(_query,args)=>{
+  assert.deepEqual(args,['session','student','paper']);return paperRows;
+ }},'session','student','paper',links,run,taskRuns,title);
+ assert.deepEqual([...((await lookup('continued',['original','continued'])).candidates.keys())],['edited']);
+ assert.deepEqual([...((await lookup('standalone',[])).candidates.keys())],['random','edited']);
+ assert.deepEqual([...((await lookup('continued',['original'],'独立卷')).candidates.keys())],['random']);
+ const pending=await lookup('new',['original','new']);
+ assert.equal(pending.candidates.size,0);assert.equal(pending.hasSelected,true);
+ assert.deepEqual([...((await lookup('standalone',[],'历史卷')).candidates.keys())],['edited']);
+ check('Paper selection follows current and earlier task runs, deduplicates one lineage and preserves unresolved confirmation');
+ const projection=JSON.parse(await paperAgentResultJson({title:'合成试卷 C:\\demo\\paper',paperId:anchor,digest:'a'.repeat(64),choices:[{title:'合成私名',paperId:anchor}]},
+  async text=>text.replace(/C:[^ ]+/g,'[本地路径]').replaceAll('合成私名','[私人]').replaceAll(anchor,'[屏蔽]').replaceAll('a','_')));
+ assert.deepEqual(projection,{title:'合成试卷 [本地路径]',paperId:anchor,digest:'a'.repeat(64),choices:[{title:'[私人]',paperId:anchor}]});
+ check('Paper text is sanitized before JSON encoding, and the exact host references remain usable');
+ const view={id:'xipaper_fixture',digest:'a'.repeat(64),state:'confirmed',complete:true,blueprint,selection:full,count:6,totalPoints:30,title:blueprint.title,sourceCurrent:true};const store={papers:{readForAgent:async()=>({kind:'found',paper:view})},listStudents:async()=>[],sanitizeProblemText:async text=>({sanitizedText:text})};
  const coordinator=createPaperCoordinator({store,isCurrent:()=>true,canWrite:()=>true,emit:()=>{}}),read=coordinator.tools('session','run').find(t=>t.name==='education_read_paper');const response=await read.execute('read',{},new AbortController().signal);const body=JSON.parse(response.content[0].text);assert.deepEqual(body.fulfillment,summary);assert.equal(body.answerVerified,false);coordinator.close();check('Existing read-paper tool returns the same derived facts as the UI without new snapshot writes or answer claims');
  report.ok=true;report.example={full:summary,partial:short,hybrid:mix};
 }catch(error){report.error=String(error.stack);process.exitCode=1;}finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output,error:report.error}));}

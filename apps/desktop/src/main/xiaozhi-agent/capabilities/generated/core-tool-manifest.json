@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "accc2b617fbc23fa5a4a0ba2a6c435c07eaba10e40b052fb6b6015927769ef67",
+  "sourceHash": "958521141428f27d5019a034ff79369d258b3d4ec657916580991d714fbc24d9",
   "sources": [
     {
       "file": "package-lock.json",
@@ -195,6 +195,10 @@
       "sha256": "a42268021dc5ac1fbd188f4de4f71388ef9ffd3b6a3e9dadce1f8e2002c37f27"
     },
     {
+      "file": "src/main/education/paper-agent-read.ts",
+      "sha256": "bc971e98399647e903ef280f61efdfbb63748b8a71e671d6086ea727bdf8d689"
+    },
+    {
       "file": "src/main/education/paper-basket-adaptation-context.ts",
       "sha256": "651f0159e6bf199af1450c4533d00b807d2f831526355844f71d1ea17069b8dc"
     },
@@ -220,7 +224,11 @@
     },
     {
       "file": "src/main/education/paper-coordinator.ts",
-      "sha256": "b57a2b26fbaab04bbd3bfb3ddffc726d387690c8a44258203c83ab2f06e06e72"
+      "sha256": "701402a84bb369ae5d0fc968336c0271b2dd4f6e2f8d07db90ec9e90ea05b69d"
+    },
+    {
+      "file": "src/main/education/paper-edit-lineage.ts",
+      "sha256": "b4e15a70ea502ae3c0d1c4316c2704e893033a02e8a2c30443cc356f47a7c67b"
     },
     {
       "file": "src/main/education/paper-export-intent.ts",
@@ -724,7 +732,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "53a18abc4220893c72a7fcfdd503e2d1c70567c2ad445a6f4353b4349b6b078b"
+      "sha256": "56bd8e9e027064967947b8ad7eb52155c20c0f66d1066671f84c876055e81bac"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1420,7 +1428,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "64f2a44dbabd25d3bd1578ac20d5140dd915877d52446aa1d58d8b747adee01d"
+      "sha256": "e95a6e575de03191160e119790ef2a65d6a4e5715ceaecd05105b1b10c910eda"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1456,7 +1464,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "1a3c0aeba85d93ed10fc36c1fc3d8808b7961884381bcaa7e0b42db8e618742c"
+      "sha256": "f8cdfa8745eb9f953459f5b22ca7564b6fa207bc953c5afb3abc320781049ffb"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",

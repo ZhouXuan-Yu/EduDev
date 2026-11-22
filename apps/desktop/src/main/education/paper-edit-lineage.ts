@@ -40,3 +40,14 @@ export function paperPrecedes(successors:ReadonlyMap<string,string>,historical:s
   }
   return false;
 }
+
+export function paperLineageHead(successors:ReadonlyMap<string,string>, anchor:string):string {
+  const seen = new Set<string>();
+  let head = anchor;
+  while (successors.has(head)) {
+    if (seen.has(head)) throw Error('unavailable');
+    seen.add(head);
+    head = successors.get(head)!;
+  }
+  return head;
+}

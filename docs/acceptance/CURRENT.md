@@ -20,6 +20,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 自动组卷专项已验证模型错误蓝图被拦截、修正进入原任务、题型与难度快照核对、教师确认、局部编辑与恢复，以及学生版和教师版 Word 读回。 [组卷专项验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-组卷蓝图与实际选题)
 
+读卷专项使用同会话两卷与原题源和已变更题源，验证回执 ID 和摘要、编辑后继、标题和历史选择。 [试卷版本证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-试卷版本的模型读回)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

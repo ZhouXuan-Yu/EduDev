@@ -26,6 +26,8 @@
 
 对话组卷通过原任务准入核对老师原话中的明确约束。蓝图与逐题结果的匹配规则由选题器和快照投影共用。既有 SQLite 试卷快照和版本摘要无需迁移。 [组卷合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-自动组卷约束与核对)
 
+模型读卷在既有 SQLite 读事务下复核会话、任务执行记录、编辑链、确认摘要与题源。快照回执提供原样 ID 和摘要，文本按现有隐私机制脱敏。 [读卷合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-试卷的任务级读回)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

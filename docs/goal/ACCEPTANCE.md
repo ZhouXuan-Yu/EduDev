@@ -8,6 +8,8 @@ D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄�
 
 自动组卷的蓝图核对已通过桌面测试。旧版试卷在新构建中可读，模型错误提议经原准入拒绝并修正。教师确认、编辑恢复及精确导出均已核对。 [Phase 4.1 组卷证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-组卷蓝图与实际选题)
 
+实际 Pi 请求已核对确认回执、确定版本读卷、同会话双卷歧义、题源变化和冷启无重放。 [版本读回证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-试卷版本的模型读回)
+
 ## 2026-11-22 小智 Harness D1
 
 D1-001 至 D1-017 单列自检与原始运行证据。 [专项自检](xiaozhi-harness/D1_SELF_CHECK.md)
