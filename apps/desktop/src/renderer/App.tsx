@@ -71,6 +71,7 @@ import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
 import { TeachingArtifactsWorkspace } from './components/product/TeachingArtifactsWorkspace';
+import { TeachingTaskWorkspace } from './components/product/TeachingTaskWorkspace';
 import { isProductView } from './components/product/product-spaces';
 import { AiRunInspector } from './components/AiRunInspector';
 import { ReviewReportWorkspace } from './components/ReviewReportWorkspace';
@@ -155,7 +156,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'teaching' | 'student_workbench' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'paper' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'my_tasks' | 'knowledge' | 'teaching' | 'student_workbench' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'paper' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -2815,7 +2816,8 @@ export function App() {
   }
 
   function renderCurrentView() {
-    if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingArtifactsWorkspace /></WorkbenchHub>;
+    if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingTaskWorkspace /></WorkbenchHub>;
+    if (activeView === 'my_tasks') return <TeachingTaskWorkspace personal/>;
     if (activeView === 'student_workbench') return <WorkbenchHub kind="students"><StudentWorkbench student={activeStudent} creating={studentFormMode !== 'closed'} createAction={<StudentCreateAction onCreate={startNewStudent}/>} directory={onSelected => renderStudentDirectory(onSelected, 'list-only')} profile={renderStudentsView(false, 'profile')} records={renderStudentsView(false, 'records')}/></WorkbenchHub>;
     if (activeView === 'today') return renderTodayView();
     if (activeView === 'ai') return renderAIConsoleViewV2();

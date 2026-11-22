@@ -346,7 +346,7 @@ try {
         await ui('student-context-tab-records').click();
         assert.equal(await ui('hub-entry-search').isVisible(), true);
         assert.equal(await ui('hub-entry-intake').isVisible(), true);
-      } else assert.equal(await navigation.locator('[data-testid^="hub-entry-"]').count(), entries.length);
+      } else assert.equal(await navigation.locator('[data-testid^="hub-entry-"]').count(), entries.length+1);
       for (const child of entries) {
         await navigate(child); await active(child);
         if (kind === 'teaching' && child !== 'paper') {
@@ -557,7 +557,7 @@ try {
     assert.equal(await shell().locator('.wb-start-shortcuts .wb-start-shortcut').count(), 4);
     for (const element of await shell().locator('.wb-start-shortcut,.wb-start-example').all()) assert.equal(await element.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
     await navigate('teaching');
-    assert.equal(await ui('teaching-page-navigation').locator('[data-testid^="hub-entry-"]').count(),teaching.length);
+    assert.equal(await ui('teaching-page-navigation').locator('[data-testid^="hub-entry-"]').count(),teaching.length+1);
     for (const element of await ui('teaching-page-navigation').getByRole('button').all()) await assertTarget(element);
     await shot('reduced-motion-hub'); await navigate('ai');
   });

@@ -12,7 +12,7 @@ export function sameApprovalRef(a: WorkbenchApprovalRef, b: WorkbenchApprovalRef
   return a.kind===b.kind && a.sessionId===b.sessionId && a.id===b.id && (a.kind==='permission_v2'&&b.kind==='permission_v2'?a.revision===b.revision:a.kind==='legacy_copy'&&b.kind==='legacy_copy'&&a.etag===b.etag);
 }
 export function PiApprovalInbox({activeSessionId,onOpenSession,onChanged}: {
-  activeSessionId:string;onOpenSession:(id:string)=>Promise<boolean>;onChanged:(id:string)=>Promise<void>;
+  activeSessionId:string;onOpenSession:(id:string)=>Promise<boolean>;onChanged?:(id:string)=>Promise<void>;
 }) {
   const [filter,setFilter]=useState<WorkbenchApprovalState|'all'>('pending'),[currentOnly,setCurrentOnly]=useState(false),[cursors,setCursors]=useState<string[]>([]);
   const [selection,setSelection]=useState<{row:WorkbenchApprovalRow;detail:WorkbenchApprovalDetail}>(),[busy,setBusy]=useState(false),[notice,setNotice]=useState('');
@@ -60,7 +60,7 @@ export function PiApprovalInbox({activeSessionId,onOpenSession,onChanged}: {
   async function changed(sessionId:string) {
     if(!alive.current)return;
     if(selectedDetail.current?.contains(document.activeElement))heading.current?.focus({preventScroll:true});
-    setSelection(undefined);state.reload();await onChanged(sessionId);
+    setSelection(undefined);state.reload();await onChanged?.(sessionId);
   }
   async function legacy(decision:'approve'|'reject'|'verify'|'resume') {
     if(lock.current||!selection||selection.detail.kind!=='legacy_copy')return;

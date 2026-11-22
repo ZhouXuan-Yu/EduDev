@@ -18,8 +18,10 @@ export function WorkbenchPageNavigation({view}: {view: string}) {
   const navigation = useDesktopNavigation();
   if (view === 'teaching' || isTeachingPage(view)) {
     return <nav className={teachingStyles.navigation} aria-label="教学工作台页内导航" data-testid="teaching-page-navigation">
+      <button type="button" className={teachingStyles.item} aria-current={view==='teaching'?'page':undefined}
+        data-testid="hub-entry-teaching" onClick={()=>navigation.navigate({view:'teaching'})}>教学任务</button>
       {teachingPages.map(([id, label]) => <button key={id} type="button" className={teachingStyles.item}
-        aria-current={view === id || view === 'teaching' && id === 'artifacts' ? 'page' : undefined}
+        aria-current={view === id ? 'page' : undefined}
         data-testid={`hub-entry-${id}`} onClick={() => navigation.navigate({view: id})}>{label}</button>)}
     </nav>;
   }

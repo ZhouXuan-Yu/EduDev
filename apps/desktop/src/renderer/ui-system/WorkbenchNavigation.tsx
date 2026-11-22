@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button, Modal } from '@heroui/react';
-import { BookOpen, ChevronRight, Folder, FolderPlus, Library, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus, Search, Settings, SlidersHorizontal, Users, type LucideIcon } from 'lucide-react';
+import { BookOpen, ChevronRight, Folder, FolderPlus, Library, ListTodo, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus, Search, Settings, SlidersHorizontal, Users, type LucideIcon } from 'lucide-react';
 import { useDesktopCommands, useDesktopNavigation } from '../components/desktop/DesktopFrame';
 import { PAGE_CONTRACTS } from './page-contracts';
 import { useWorkbenchState, useWorkbenchPreferences } from './WorkbenchState';
@@ -103,6 +103,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
       {navItem('ai', '问小智', MessageSquare)}
       <button type="button" className="wb-item" disabled={unavailable} title="新建对话" aria-label="新建对话" data-testid="workbench-new-session" onClick={() => showDialog('new')}><Plus size={19} /><span className="wb-label">新建对话</span></button>
       <button type="button" className="wb-item" disabled={unavailable} title="搜索对话" aria-label="搜索对话" data-testid="workbench-search" onClick={() => showDialog('search')}><Search size={19} /><span className="wb-label">搜索对话</span></button>
+      {navItem('my_tasks', '我的任务', ListTodo)}
       <section className="wb-conversations" aria-label="教学空间">
         <div className="wb-section-heading"><span>教学空间</span><button type="button" className="wb-icon-button" disabled={unavailable} aria-label="新建教学空间" title="新建教学空间" data-testid="workbench-new-folder" onClick={() => showDialog('folder')}><FolderPlus size={16} /></button></div>
         {folders.map(folder => <div key={folder.id}>

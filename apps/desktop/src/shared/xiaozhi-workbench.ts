@@ -10,7 +10,7 @@ export type WorkbenchApprovalRef =
 type PageQuery = {schemaVersion: 1; sessionId?: string; cursor?: string; limit?: number};
 export type WorkbenchQuery =
   | {schemaVersion: 1; kind: 'home'}
-  | PageQuery & {kind: 'tasks'; filter: 'unfinished' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'}
+  | PageQuery & {kind: 'tasks'; filter: 'overview' | 'unfinished' | 'active' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'}
   | PageQuery & {kind: 'approvals'; state?: WorkbenchApprovalState | 'all'}
   | {schemaVersion: 1; kind: 'approval_detail'; ref: WorkbenchApprovalRef}
   | PageQuery & {kind: 'capabilities'; taskId?: string; requirementsVersion?: number; query?: string};
@@ -31,7 +31,11 @@ export type WorkbenchTaskRow = {
   resumeCandidate: boolean; continuationCandidate: boolean; blockedReasons: string[];
   pendingApprovalCount: number | null; unknownEffectCount: number | null;
   planningLevel: 1 | 2 | 3 | null; nativeInspection: 'not_checked';
+  goalExcerpt?: string; steps?: {total: number; verified: number};
 };
+export function workbenchTaskGroup(state: WorkbenchTaskRow['state']) {
+  return state === 'active' ? 'active' : state === 'completed' ? 'completed' : 'attention';
+}
 export type WorkbenchApprovalRow = {
   ref: WorkbenchApprovalRef; kind: WorkbenchApprovalRef['kind']; id: string;
   revision: number | null; etag: string | null; sessionId: string; sessionTitle: string;
@@ -94,7 +98,7 @@ export function validWorkbenchQuery(value: unknown): value is WorkbenchQuery {
       || value.limit !== undefined && (!positive(value.limit) || value.limit > 50)) return false;
   const common = ['schemaVersion', 'kind', 'sessionId', 'cursor', 'limit'];
   if (value.kind === 'tasks') return keys(value, [...common, 'filter'])
-    && ['unfinished', 'resumable', 'blocked', 'completed', 'ended', 'all'].includes(String(value.filter));
+    && ['overview', 'unfinished', 'active', 'resumable', 'blocked', 'completed', 'ended', 'all'].includes(String(value.filter));
   if (value.kind === 'approvals') return keys(value, [...common, 'state'])
     && (value.state === undefined || approvalStates.includes(String(value.state)));
   if (value.kind !== 'capabilities' || !keys(value, [...common, 'taskId', 'requirementsVersion', 'query'])) return false;

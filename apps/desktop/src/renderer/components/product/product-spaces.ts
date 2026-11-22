@@ -1,6 +1,7 @@
 /** Teacher navigation only. These keys grant no file, model or business authority. */
 export const PRODUCT_SPACES = [
   { id: 'ask', label: '问小智', view: 'ai' },
+  { id: 'tasks', label: '我的任务', view: 'my_tasks' },
   { id: 'materials', label: '我的资料', view: 'knowledge' },
   { id: 'teaching', label: '教学内容', view: 'artifacts' },
   { id: 'students', label: '学生', view: 'students' },
@@ -29,9 +30,10 @@ export const PRODUCT_PAGES = {
   ],
 } as const;
 export type ProductPageSpace = keyof typeof PRODUCT_PAGES;
-export type ProductView = 'ai' | 'settings' | 'teaching' | 'student_workbench' | typeof PRODUCT_PAGES[ProductPageSpace][number]['view'];
+export type ProductView = 'ai' | 'settings' | 'my_tasks' | 'teaching' | 'student_workbench' | typeof PRODUCT_PAGES[ProductPageSpace][number]['view'];
 export function productSpaceFor(view: string): ProductSpace | undefined {
   if (view === 'ai') return 'ask';
+  if (view === 'my_tasks') return 'tasks';
   if (view === 'settings') return 'settings';
   if (view === 'teaching') return 'teaching';
   if (view === 'student_workbench') return 'students';

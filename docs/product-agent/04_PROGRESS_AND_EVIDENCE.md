@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 对话首页已显示真实待办、任务和最近成果。独立任务与成果中心、关联和编辑继续实施。 |
+| 2 | PARTIAL | 动态首页、独立「我的任务」和以任务为默认的教学工作台已实现。继续任务与成果关联、右侧动态面板及编辑同步。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -191,3 +191,21 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | 手测入口 | `manual-phase2-home/启动-D3-动态首页.cmd`，独立验收数据包含浮力练习示例。 |
 
 失败证据保留在 `phase2-home/home-electron/run.log` 和 `recheck.log`。首轮夹具启动期间工具注册超时。第二轮等到了面板外壳，审批索引仍加载，已改成等待真实审批行。`workbench-ui/run.log` 保留原三项快捷入口断言，复测使用四项教学入口及独立学情示例。
+
+## Phase 2 我的任务与教学工作台
+
+左栏「我的任务」从原 Workbench 查询跨会话任务和审批。任务列表显示保存的要求摘要、核验步骤、状态与时间，可切换执行中、未完成、需处理、可恢复及已确认等状态。教学工作台默认分组展示进行中、待处理和最近完成，并保留教学文件、备课本、讲义、题本及组卷入口。点击任务进入原会话，继续和停止在原任务界面执行。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-task-workbench-final` | 已实现。TypeScript 及 Electron 通过。`phase2-task-workbench/build-final.log`。主入口 SHA-256 `1d8af1ee7b8dcb5ba94de479b3f1f12362e62f3eff6f1251f8901617e90464dd`。 |
+| `node scripts/xiaozhi-agent/d3-home-activity-electron.mjs --task-workbench` | 已实现。7/7，渲染错误 0。`phase2-task-workbench/teaching-tasks-verified.log` 与 `omni-edu-xiaozhi-phase7-workbench-ui-u6O9m8/evidence/home-activity-report.json`。实际查看 SQLite 的任务、筛选、默认分组、切换教学成果、原会话恢复，覆盖两种窗口大小和原 Pi 执行中返回与停止。 |
+| 停止后 SQLite 读回 | 已实现。原 Run 已进入终态，原 Task 保存为 `interrupted`。证据 `phase2-task-workbench/live-stop-readback.json`。 |
+| `node scripts/workbench-ui.mjs` | 已实现。25/25，`phase2-task-workbench/navigation/workbench-FcUzNN/report.json`。原教学与学生路径、侧栏导航、纸卷约束、输入框和冷启数据通过。 |
+| `npm.cmd run test:renderer-components` | 已实现。253/253，`phase2-task-workbench/components/run.log`。 |
+| `node scripts/electron-smoke.mjs` | 已实现。同构建 207/207，`phase2-task-workbench/smoke/run.log`。 |
+| 手测入口 | `manual-phase2-task-workbench/启动-D3-任务工作台.cmd`。可见响应窗口已实测，数据包含合成教案任务和浮力成果。 |
+
+早期专项日志保留了两个工作台外壳的同名按钮以及导航夹具仅查询第一组导航的问题。复测按实际可见侧栏操作。导航回归保留了旧五入口的数量断言，更新为任务入口和原五个领域后通过。没有付费模型调用。依赖审计为原有 20 项警报，其中 2 项 high，本切片未改依赖或锁文件。
+
+下一切片已读回上一轮实际产物库。两个同会话的 HTML 版本归属两个不同 Task，第三个还原版本可追溯到被还原的版本及其任务。跨会话引用稳定落在提交附件的目标 Run 对应 Task。结果记录于 `phase2/task-artifact-projection-audit.json`，用于实现跨任务的成果关系。

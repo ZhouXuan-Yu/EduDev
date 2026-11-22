@@ -1,4 +1,4 @@
-import {validWorkbenchQuery, type WorkbenchPage, type WorkbenchQuery, type WorkbenchResult, type WorkbenchTaskRow} from '../../shared/xiaozhi-workbench';
+import {validWorkbenchQuery, workbenchTaskGroup, type WorkbenchPage, type WorkbenchQuery, type WorkbenchResult, type WorkbenchTaskRow} from '../../shared/xiaozhi-workbench';
 import type {Sql} from './session-state';
 import {protocolHash} from './capabilities/validation';
 import {readWorkbenchApprovals, readWorkbenchApprovalDetail} from './workbench-approvals';
@@ -47,6 +47,13 @@ function taskMatches(task: WorkbenchTaskRow, filter: Extract<WorkbenchQuery, {ki
       || task.blockedReasons.some(reason => ['not_latest', 'goal_controls', 'needs_new_candidate'].includes(reason)));
   return task.state === filter;
 }
+const overviewGroups = {active: {rank: 3, limit: 5}, attention: {rank: 2, limit: 5}, completed: {rank: 1, limit: 3}} as const;
+function recentTasks(items: WorkbenchTaskRow[]) {
+  const recent = items.filter(item => item.state !== 'ended')
+    .sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt)||a.taskId.localeCompare(b.taskId));
+  return (Object.keys(overviewGroups) as (keyof typeof overviewGroups)[]).flatMap(group =>
+    recent.filter(item => workbenchTaskGroup(item.state) === group).slice(0, overviewGroups[group].limit));
+}
 function stateCounts<T>(items: T[], state: (item: T) => string, initial: string[]) {
   const result: Record<string, number> = Object.fromEntries(initial.map(key => [key, 0]));
   for (const item of items) {const key = state(item); result[key] = (result[key] || 0) + 1;}
@@ -80,9 +87,10 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
           detail: await readWorkbenchApprovalDetail(read, input.ref)};
         if (input.kind === 'tasks') {
           const approvals = await readWorkbenchApprovals(read), items = await readWorkbenchTasks(read, approvals);
-          return {...page(read, input, items, items.filter(item => taskMatches(item, input.filter)),
+          const overview = input.filter === 'overview';
+          return {...page(read, input, items, overview ? recentTasks(items) : items.filter(item => taskMatches(item, input.filter)),
             stateCounts(items, item => item.state, ['active', 'review_required', 'paused', 'interrupted', 'completed', 'ended']),
-            item => ({key: item.updatedAt, id: item.taskId})), kind: input.kind};
+            item => ({key: overview ? overviewGroups[workbenchTaskGroup(item.state)].rank + ':' + item.updatedAt : item.updatedAt, id: item.taskId})), kind: input.kind};
         }
         if (input.kind === 'approvals') {
           const items = await readWorkbenchApprovals(read), state = input.state || 'pending';

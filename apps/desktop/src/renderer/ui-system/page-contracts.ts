@@ -24,9 +24,15 @@ export const COMMON_STATES = [
 export const PAGE_CONTRACTS: PageContract[] = [
   {
     id: 'teaching', title: '教学工作台', group: '教学', layout: 'overview',
-    purpose: '聚合现有教学内容及真实教学文件。', primaryAction: '新建备课',
-    constraints: ['复用五个教学原页面，不创建第二份事实', '列表只展示真实已保存文件', '文件的打开、来源及审核沿原入口'],
-    acceptance: ['全部五个领域入口可达', '真实教学文件仍可打开'],
+    purpose: '查看教学任务及其进展，进入成果和专业教学页面。', primaryAction: '查看任务',
+    constraints: ['复用原任务总览与五个教学原页面', '文件的打开、来源及审核沿原入口'],
+    acceptance: ['默认显示真实任务', '全部五个领域入口可达', '真实教学文件仍可打开'],
+  },
+  {
+    id: 'my_tasks', title: '我的任务', group: '工作', layout: 'overview',
+    purpose: '跨对话查看任务状态与待处理审批。', primaryAction: '打开原会话',
+    constraints: ['任务与审批读取原本地记录', '打开任务保留原会话'],
+    acceptance: ['执行中、需处理和已确认筛选一致', '进入原对话不自动发起任务'],
   },
   {
     id: 'student_workbench', title: '学生工作台', group: '学生', layout: 'overview',

@@ -93,6 +93,72 @@ try {
   assert.equal(hash(JSON.stringify(tasks())),taskFingerprint);
   check('首页入口进入原收件箱和原任务会话，导航期间没有运行模型或变更任务');
 
+  if(process.argv.includes('--task-workbench')){
+    const currentRail=page.locator('[data-testid="edu-navigation"]:visible');
+    await currentRail.getByTestId('nav-my_tasks').click();
+    const mine=page.getByTestId('my-tasks-workspace');await mine.waitFor();
+    const taskRows=mine.getByTestId('pi-task-overview-row');
+    const countFor=state=>tasks().filter(row=>JSON.parse(row.value_json).view.state===state).length;
+    await taskRows.first().waitFor();
+    assert.equal(await taskRows.count(),tasks().length-countFor('completed')-countFor('ended'));
+    const planned=mine.locator(`[data-task-id="${ids.remaining.task.id}"]`);
+    assert.match(await planned.getByTestId('pi-task-overview-goal').innerText(),/合成教学/);
+    assert.match(await planned.getByTestId('pi-task-overview-steps').innerText(),/0\/2/);
+    const filter=mine.getByTestId('pi-task-filter');
+    await filter.selectOption('active');await mine.getByTestId('pi-task-overview-empty').waitFor();
+    assert.equal(countFor('active'),0);
+    await filter.selectOption('completed');await taskRows.first().waitFor();
+    assert.equal(await taskRows.count(),countFor('completed'));
+    check('全局我的任务可筛选执行中和已确认，要求与步骤直接读回原任务');
+
+    await currentRail.getByTestId('nav-teaching').click();
+    const teaching=page.getByTestId('teaching-tasks-workspace');await teaching.waitFor();
+    assert.equal(await page.getByTestId('hub-entry-teaching').getAttribute('aria-current'),'page');
+    await teaching.getByTestId('pi-task-overview-row').first().waitFor();
+    assert.deepEqual(await teaching.getByTestId('pi-task-overview-group').allTextContents(),['待处理','最近完成']);
+    for(const size of [{width:1366,height:768},{width:1920,height:1080}]) {
+      await application.evaluate(({BrowserWindow},next)=>BrowserWindow.getAllWindows()[0].setContentSize(next.width,next.height),size);
+      await page.setViewportSize(size);
+      const taskControl=teaching.getByTestId('pi-task-filter');await taskControl.scrollIntoViewIfNeeded();
+      assert(await taskControl.evaluate(element=>{const box=element.getBoundingClientRect();return element.contains(document.elementFromPoint(box.x+box.width/2,box.y+box.height/2));}));
+      await page.screenshot({path:path.join(output,`teaching-tasks-${size.width}x${size.height}.png`),animations:'disabled'});
+    }
+    await page.getByTestId('hub-entry-artifacts').click();
+    await page.getByTestId('teaching-artifacts-workspace').waitFor();
+    await page.getByTestId('artifact-'+artifacts[2].id).getByRole('button').click();
+    await detail.getByRole('heading',{name:artifacts[2].title,exact:true}).waitFor();
+    await page.getByTestId('hub-entry-teaching').click();await teaching.waitFor();
+    const row=teaching.locator(`[data-task-id="${ids.remaining.task.id}"]`);
+    await row.getByTestId('pi-task-open-session').click();
+    await page.waitForFunction(target=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===target,ids.remaining.sessionId);
+    assert.equal(requests.length,startsBefore);
+    assert.equal(hash(JSON.stringify(tasks())),taskFingerprint);
+    check('教学工作台默认显示任务，可切换真实成果并回到原任务，无模型自动启动');
+
+    const prompt='请为五年级分数制作一份新教案，用于 D3 任务状态验收。';
+    const hold=fixture.holdNextReply(prompt);
+    try {
+      await page.getByTestId('pi-new-session').click();
+      await page.waitForFunction(previous=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')!==previous,ids.remaining.sessionId);
+      await page.getByTestId('workbench-home').waitFor();
+      const activeSession=await currentId();
+      await composer.fill(prompt);await page.getByRole('button',{name:'发送消息',exact:true}).click();
+      let timeout;
+      try {await Promise.race([hold.arrived,new Promise((_,reject)=>{timeout=setTimeout(()=>reject(Error('新任务模型未开始')),30000);})]);}
+      finally {clearTimeout(timeout);}
+      await currentRail.getByTestId('nav-teaching').click();await teaching.waitFor();
+      await teaching.getByTestId('pi-task-overview-group').filter({hasText:'进行中'}).waitFor();
+      const active=tasks().map(row=>JSON.parse(row.value_json).view).find(row=>row.sessionId===activeSession);
+      assert.equal(active.state,'active');
+      const activeRow=teaching.locator(`[data-task-id="${active.id}"]`);
+      assert.match(await activeRow.getByTestId('pi-task-overview-goal').innerText(),/五年级/);
+      await activeRow.getByTestId('pi-task-open-session').click();
+      await page.waitForFunction(target=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===target,activeSession);
+      await page.getByRole('button',{name:'停止本轮',exact:true}).click();
+      check('运行中的原 Pi 教学任务在教学工作台位于进行中分组，打开后仍可在同一会话停止');
+    } finally {hold.release();}
+  }
+
   assert.deepEqual(report.errors,[]);report.success=true;
 } catch(error) {
   report.error=String(error.stack);console.error(report.error);process.exitCode=1;

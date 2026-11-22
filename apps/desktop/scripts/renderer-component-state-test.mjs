@@ -203,7 +203,7 @@ try {
   assert.doesNotMatch(renderToStaticMarkup(React.createElement(OfficeComposer,{...composerProps,showQuickStarts:false})),/teacher-quick-starts/);
   const teacherQuickStartCases=6;
   const { PRODUCT_SPACES, productSpaceFor, isProductView } = await server.ssrLoadModule('/src/renderer/components/product/product-spaces.ts');
-  assert.deepEqual(PRODUCT_SPACES.map(item => item.label), ['问小智', '我的资料', '教学内容', '学生', '设置']);
+  assert.deepEqual(PRODUCT_SPACES.map(item => item.label), ['问小智', '我的任务', '我的资料', '教学内容', '学生', '设置']);
   for (const view of ['memory', 'team', 'checkpoint', 'today', '', '__proto__']) assert.equal(isProductView(view), false);
   assert.equal(productSpaceFor('search'), 'students'); // The current search indexes students/records, not materials.
   for (const item of PRODUCT_SPACES) assert.equal(productSpaceFor(item.view), item.id);

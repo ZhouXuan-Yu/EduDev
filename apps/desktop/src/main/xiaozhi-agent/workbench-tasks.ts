@@ -1,8 +1,8 @@
 import type {WorkbenchApprovalRow, WorkbenchTaskRow} from '../../shared/xiaozhi-workbench';
-import {taskHasRemainingSteps, type TaskView} from '../../shared/xiaozhi-task';
+import {taskHasRemainingSteps, taskStepState, type TaskView} from '../../shared/xiaozhi-task';
 import {createTaskState} from './tasks/task-state';
 import {createEffectState} from './effects/state';
-import {workbenchFailure, workbenchRows, type WorkbenchRead} from './workbench-state';
+import {workbenchFailure, workbenchRows, workbenchText, type WorkbenchRead} from './workbench-state';
 
 export async function readWorkbenchTasks(read: WorkbenchRead, approvals: WorkbenchApprovalRow[]): Promise<WorkbenchTaskRow[]> {
   const tasks = createTaskState(read.sql, {sanitize: async text => text});
@@ -40,7 +40,9 @@ export async function readWorkbenchTasks(read: WorkbenchRead, approvals: Workben
       items.push({sessionId: session.id, sessionTitle: session.title, taskId: task.id, revision: task.revision,
         requirementsVersion: task.requirementsVersion, state: task.state, updatedAt: task.updatedAt,
         lastRunId: task.lastRunId || task.origin.runId, isLatestForSession, resumeCandidate, continuationCandidate,
-        blockedReasons, pendingApprovalCount, unknownEffectCount, planningLevel: task.planning?.level || null, nativeInspection: 'not_checked'});
+        blockedReasons, pendingApprovalCount, unknownEffectCount, planningLevel: task.planning?.level || null, nativeInspection: 'not_checked',
+        goalExcerpt: workbenchText(task.criteria.find(criterion=>criterion.id==='teacher_request')?.text,160),
+        steps: {total: task.steps.length, verified: task.steps.filter(step=>taskStepState(task,step.id)==='verified').length}});
     } catch {workbenchFailure(read, 'tasks', 'corrupt');}
   }
   return items;
