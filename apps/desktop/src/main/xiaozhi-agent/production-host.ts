@@ -55,6 +55,8 @@ import {readChatPresentation} from '../../shared/chat-presentation';
 import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
+import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
+import {TEACHING_HANDOUT_TOOL} from '../../shared/teaching-handout';
 import {assertTeachingLessonOffice} from '../education/teaching-lesson-office';
 import {createClassroomContext} from '../education/classroom-context';
 import {teacherPreferenceForRequest} from '../education/teacher-preference-request';
@@ -807,6 +809,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const storedPaperReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.papers.list(id):[];
     const classroomPlanReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')
       ?await store.xiaozhiState.classroomPlans.reviews(id).catch(()=>undefined):[];
+    const teachingHandouts=!detail.session.archivedAt&&!detail.session.studentId
+      ?await store.xiaozhiState.teachingHandouts.list(id).catch(()=>undefined):[];
     const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
     const storedQuestionCollections=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.collections.list(id):[];
     const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?[...await store.questionReviews.list(id),...await store.originalQuestions.list(id)]:[];
@@ -878,6 +882,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     projection.turns = projection.turns.map(publicProviderTurn);
     return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailure?{eventPersistence:'unavailable' as const,eventPersistenceError:journalFailure.error}:{}), running: Boolean(current)&&!journalFailure, ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       ...(classroomPlanReviews?{classroomPlanReviews}:{classroomPlanReviewsUnavailable:true as const}),
+      ...(teachingHandouts?{teachingHandouts}:{teachingHandoutsUnavailable:true as const}),
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
@@ -1075,6 +1080,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);}),
       materialPageTools:createMaterialPageTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observedMaterials),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
+      ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&handoutRequest(cleanPrompt)?{
+        teachingHandoutTool:createTeachingHandoutTool({
+          state:store.xiaozhiState.teachingHandouts,context:()=>classroomContext.snapshot(),prompt:cleanPrompt,
+          current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
+          owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,requirementsVersion:owner.task!.requirementsVersion}),
+        }),
+      }:{}),
       equationTools:createEquationTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       quantityTools:createQuantityTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       solutionTools:createSolutionTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
@@ -1308,6 +1320,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             if(!taskRuntime||!run.task)throw new TaskAdmissionError('task_owner_stale');
             await taskRuntime.refresh();
             await paperReviews.admitProposal({sessionId:id,runId:run.runId,commandId:run.commandId,generation:run.publisher.owner.generation,callId:delivery.callId,taskId:run.task.id,requirementsVersion:run.task.requirementsVersion},delivery.input,signal);
+          }else if(delivery.tool===TEACHING_HANDOUT_TOOL){
+            if(!taskRuntime||!base.teachingHandoutTool)throw new TaskAdmissionError('task_owner_stale');
+            await taskRuntime.refresh();
           }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
           await run.toolGovernance?.before(delivery.callId, delivery.tool, delivery.input, signal || run.abort.signal);

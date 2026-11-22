@@ -4028,13 +4028,14 @@ export class OmniEduStore {
     const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
     const bookRow = (await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
     if (!bookRow) return undefined;
-    const [chapterRows, pageRows, blockRows, sourceRows] = await Promise.all([
+    const [chapterRows, pageRows, blockRows, sourceRows, materialSources] = await Promise.all([
       this.all(`SELECT * FROM teaching_book_chapters WHERE book_id = ? ORDER BY sort_order, created_at`, [bookId]),
       this.all(`SELECT p.*, COUNT(b.id) AS block_count FROM teaching_book_pages p LEFT JOIN teaching_book_blocks b ON b.page_id = p.id WHERE p.book_id = ? GROUP BY p.id ORDER BY p.sort_order, p.created_at`, [bookId]),
       this.all(`SELECT b.* FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ? ORDER BY b.sort_order, b.created_at`, [bookId]),
       this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ? ORDER BY created_at`, [bookId]),
+      this.xiaozhiState.teachingHandouts.materialSources(bookId),
     ]);
-    const health = await this.getTeachingBookHealth(bookId);
+    const health = await this.getTeachingBookHealth(bookId,materialSources);
     return {
       book: this.mapTeachingBook(bookRow),
       chapters: chapterRows.map((row) => this.mapTeachingBookChapter(row)),
@@ -4042,6 +4043,7 @@ export class OmniEduStore {
       blocks: blockRows.map((row) => this.mapTeachingBookBlock(row)),
       sources: sourceRows.map((row) => this.mapTeachingSource(row)),
       health,
+      materialSources,
     };
   }
 
@@ -4132,11 +4134,13 @@ export class OmniEduStore {
     return this.mapTeachingBookPage(row);
   }
 
-  async getTeachingBookHealth(id: string): Promise<TeachingBookHealth> {
+  async getTeachingBookHealth(id: string, exactSources?: import('../shared/materials').MaterialSource[]): Promise<TeachingBookHealth> {
     const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
     const sources = await this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ?`, [bookId]);
     const staleSourceRefs: string[] = [];
     const missingSourceRefs: string[] = [];
+    const sourceByChunk=new Map((exactSources??await this.xiaozhiState.teachingHandouts.materialSources(bookId)??[])
+      .map(source=>[source.chunkId,source]));
     for (const row of sources) {
       const kind = String(row.kind);
       const ref = String(row.ref);
@@ -4147,6 +4151,11 @@ export class OmniEduStore {
       } else if (kind === 'knowledge_chunk') {
         const source = (await this.all(`SELECT r.content_hash FROM resource_chunks c INNER JOIN teacher_resources r ON r.id = c.resource_id WHERE c.id = ?`, [ref]))[0];
         current = source ? String(source.content_hash ?? '') : '';
+        const expected=sourceByChunk.get(ref);
+        if (expected&&current===expected.version) {
+          try {await this.materials.source(expected);}
+          catch {staleSourceRefs.push(ref);continue;}
+        }
       } else if (kind === 'teacher_notebook') {
         const source = (await this.all(`SELECT updated_at FROM teacher_notebook_records WHERE id = ? AND deleted_at = ''`, [ref]))[0];
         current = source ? String(source.updated_at ?? '') : '';

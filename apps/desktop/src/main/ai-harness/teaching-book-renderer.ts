@@ -25,6 +25,8 @@ function renderBlock(block: TeachingBookBlock): { markdown: string; fallback: bo
   if (block.status === 'pending' || block.status === 'generating') return { markdown: `\n> 内容块“${text(block.title, 160)}”正在生成，当前仅展示占位。\n`, fallback: true };
   if (block.status === 'error') return { markdown: `\n> ⚠️ 内容块“${text(block.title, 160)}”生成失败：${text(block.error, 400) || '未知错误'}\n`, fallback: true };
   const payload = block.payload ?? {};
+  if (block.type==='text'&&typeof block.metadata?.handoutRole==='string'&&typeof payload.text==='string')
+    return {markdown:'#### '+text(block.title,160)+'\n\n'+payload.text,fallback:false};
   switch (block.type) {
     case 'text':
     case 'chapter':
@@ -129,6 +131,6 @@ export function renderTeachingBookMarkdown(detail: TeachingBookDetail): { schema
       }
     }
   }
-  const markdown = sections.filter(Boolean).join('\n\n').replace(/\n{4,}/g, '\n\n').slice(0, MAX_MARKDOWN);
+  const markdown = sections.filter(Boolean).join('\n\n').replace(/\n{4,}/g, '\n\n').slice(0, detail.materialSources?56000:MAX_MARKDOWN);
   return { schemaVersion: TEACHING_BOOK_MARKDOWN_SCHEMA_VERSION, markdown, fallbackCount, blockCount: detail.blocks.length, sourceRefs: [...sourceRefs].slice(0, 100) };
 }

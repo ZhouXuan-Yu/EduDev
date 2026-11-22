@@ -12,6 +12,7 @@ safe.push('find_education_tools');
 safe.push('education_verify_equation');
 safe.push('education_read_teaching_lesson');
 writes.push('education_export_teaching_lesson');
+writes.push('education_create_teaching_handout');
 safe.push('education_verify_quantity');
 safe.push('education_verify_solution');
 safe.push('education_analyze_buoyancy');

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "870d1a8d4f72bad401b42910c0795d539b0589676454019a7e0054130381b1ad",
+  "sourceHash": "d97034164b3577944cb01df7a0418fd1d35ea88b255cc19458990136789cffff",
   "sources": [
     {
       "file": "package-lock.json",
@@ -52,7 +52,7 @@
     },
     {
       "file": "src/main/ai-harness/teaching-book-renderer.ts",
-      "sha256": "b53353ac9aa8df72d953f037a4556e8b72874c6bea4c2b7d46e77946d4d1c221"
+      "sha256": "c5524a19548c2c87e537709413f8501ef11ac7217ad7dbe64888e9d05b3d77cb"
     },
     {
       "file": "src/main/ai-harness/teaching-book.ts",
@@ -427,6 +427,14 @@
       "sha256": "11b345af60be851dd3b9ad0b6ebffec486dfcc661ac8ab8cbb258c257d70e971"
     },
     {
+      "file": "src/main/education/teaching-handout-state.ts",
+      "sha256": "7d7b1b6281385e33fe1a2271adb0a198271d5fae09f6b98c14a53d23950df44d"
+    },
+    {
+      "file": "src/main/education/teaching-handout-tool.ts",
+      "sha256": "9d65e98475c04f58846084c330d0cac9389311f26afc9d604e72ca3faee6871c"
+    },
+    {
       "file": "src/main/education/teaching-lesson-export-tools.ts",
       "sha256": "d617676d46a21cbb9e12f98f858bb4a85013c326186450f663dce1118b160efd"
     },
@@ -732,7 +740,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "49ce4f93305578bfdd2abbe618d9320d533ebf2c115f85048ee3c245d2cba871"
+      "sha256": "c1630b1a39c8ed4d2bfcaa0bdea53f6b2c206ef0b8e2db637de18e08e7495e74"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -980,7 +988,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/education-tool-catalog.ts",
-      "sha256": "f6f3d9338709b63746c0a78daf460d12255d66c10d11bbfbea8d8a27a5c2c634"
+      "sha256": "170401c5b40a118b0807c2e2a5f2633a35587ff40df12e21af0976143855a7da"
     },
     {
       "file": "src/main/xiaozhi-agent/education-tools.ts",
@@ -1056,7 +1064,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
-      "sha256": "6213970f9ce5a56244544eb09d47eb0efaf0e7dc6c6db807784692c80c1ab372"
+      "sha256": "284165f5b47781e1a7ba1c9eed5c0d8a18fbf08151f1ce541b89aa2c85619fd5"
     },
     {
       "file": "src/main/xiaozhi-agent/events/terminal-cancellation.ts",
@@ -1428,7 +1436,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "9652e524ecf91fa0294ed4fbb2283e7020cd42261fd8bdadfaa290a9b63a50bc"
+      "sha256": "1c34cb17d759f37bfd9db47e4aa378c08975465e3d6e4c6608f0efb4cbda2b5d"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1464,7 +1472,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "b1f8f4041b24c0061eb545d8f289560793a83a30b8596312b549b2f1fc70d2e8"
+      "sha256": "4ef23e5cb44bdc530ea8cbe578f018721fe25b3c194138a82d6513af5bd779a6"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1768,7 +1776,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tools/manifest.ts",
-      "sha256": "f8baa55ced6e8ccc84b294889bf18a00dbf6df31957c708d4e01f60c72c27c45"
+      "sha256": "a897e4f4c86a7d132ccd11aba7e187aab41dcb5590904108e33c6086170b89c2"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/read-scheduler.ts",
@@ -2467,6 +2475,10 @@
       "sha256": "6dacf2c83bc3ba47d41753381a77fbe75ad89c469b58e88f970526e3fd37d58a"
     },
     {
+      "file": "src/shared/teaching-handout.ts",
+      "sha256": "ebefc007a1a213d18851e83e0daaefd6b3370fd9c52c0920aeabab04f8ea2706"
+    },
+    {
       "file": "src/shared/teaching-lesson-export.ts",
       "sha256": "5558f7c298965dd703efb76b3d7a8559dbc0175169eb8b830bf0d0a963ba77ee"
     },
@@ -2496,7 +2508,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "febb92d20b3805fcbd76707a4412e29dd3ce3e06ba1471d56365f82cb4ffb0b9"
+      "sha256": "da989ccb4b371132b85d02bb83044c57634aaed04d9e744ea94a888b9ff02c19"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2596,7 +2608,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "dced20f1926065e26bf2cb05fabd2c5cb8c975eefc48625eef3a7e5a8d43b15b"
+      "sha256": "615ac3929f99ddf65874caff52198b8330e90488b1dfc5333aaf8acdfdba1aeb"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

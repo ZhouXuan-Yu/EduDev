@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "b9b980393ebf09ac089970e83ed123011771f2c308a3cfd29a1fa06934afce2f",
+  "sourceFingerprint": "0db4be3ed59b50fd8f9cbd4e0b307a87fe7fdad33de6ab2b1b370c15df233ad5",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -3033,6 +3033,7 @@
   ],
   "skippedNames": [
     "education_analyze_buoyancy",
+    "education_create_teaching_handout",
     "education_propose_classroom_outline",
     "education_propose_learning_change",
     "education_propose_original_question",

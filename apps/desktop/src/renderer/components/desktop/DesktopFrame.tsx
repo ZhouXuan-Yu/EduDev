@@ -8,11 +8,12 @@ import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type 
 import {readComposerDraft} from '../office/composer-drafts';
 import type {ClassroomPlanReference} from '../../../shared/classroom-plan';
 
-type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;classroomPlan?:ClassroomPlanReference;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;classroomPlan?:ClassroomPlanReference;bookId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
   a.classroomPlan?.rootId===b.classroomPlan?.rootId&&a.classroomPlan?.sessionId===b.classroomPlan?.sessionId &&
   (a.view !== 'artifacts' || a.artifactId === b.artifactId && a.artifactVersionId === b.artifactVersionId) &&
   (a.view !== 'my_tasks' || a.taskId === b.taskId) &&
+  (a.view !== 'book' || a.bookId === b.bookId) &&
   samePaperReturn(a.paperReturn, b.paperReturn) &&
   (a.view !== 'paper' || (a.paper?.mode === b.paper?.mode &&
     a.paper?.basketId === b.paper?.basketId && a.paper?.stage === b.paper?.stage));

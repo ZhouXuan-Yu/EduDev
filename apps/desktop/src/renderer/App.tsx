@@ -2592,7 +2592,8 @@ export function App() {
   }
 
   function renderTeachingBookView() {
-    return <TeachingBookWorkspace setStatus={setStatus} />;
+    const bookId=desktopNavigation.target.view==='book'?desktopNavigation.target.bookId:undefined;
+    return <TeachingBookWorkspace key={bookId||'list'} initialBookId={bookId} setStatus={setStatus} />;
   }
 
   function renderTeacherNotebookView() {

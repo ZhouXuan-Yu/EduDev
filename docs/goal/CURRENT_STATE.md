@@ -6,6 +6,8 @@ D3 Phase 0–3 个人版工程验收已完成。教师可在设置管理画像�
 
 自动组卷已接通教师约束、选题核对、版本读回、局部编辑、恢复及对话和试卷卡精确导出。Phase 4.1 工程路径已通过，先进入 Phase 4.2 可编辑讲义。真实教师与题集效果继续在集中验收报告。 [组卷证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-对话精确导出与自动组卷工程退出)
 
+可编辑讲义草稿已接入对话、来源和原编辑器，精确引用、局部保存、事务回执与冷启已核对。Phase 4.2 继续讲义确认、历史与精确交付，再开始上海模考汇编。 [讲义证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-可编辑讲义草稿)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Provider 与 Binding 版本归档接入独立实例和逐配对控制。原 Native、Managed MCP 和社区钩子经统一 Adapter 运行。D1 交付自检后等待独立验收。 [实施记录](xiaozhi-harness/D1_IMPLEMENTATION.md) · [验收自检](xiaozhi-harness/D1_SELF_CHECK.md)

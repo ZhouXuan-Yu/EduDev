@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import styles from '../ui-system/teaching-editors-alignment.module.css';
 import {TeachingPageAction} from './product/TeachingPageLayout';
+import {MaterialSourceLink} from './product/MaterialSourceNavigation';
+import {TeachingHandoutPreview} from './TeachingHandoutPreview';
 import {useDesktopNavigationGuard} from './desktop/DesktopFrame';
 import {emptyBookDraft, emptyChapterDraft, emptyPageDraft, emptyBlockDraft, emptySourceDraft, emptyPatchDraft, emptySelectionPatchDraft, teachingBookDraftBaseline, teachingBookDirtyScopes, preserveTeachingBookDraftVersions} from './teaching-book-draft-state';
 import type {
@@ -17,7 +19,7 @@ import type {
   TeachingContentType,
 } from '../../shared/contracts';
 
-type Props = { setStatus: (message: string) => void };
+type Props = { setStatus: (message: string) => void; initialBookId?:string };
 
 const contentTypes: TeachingContentType[] = ['theory', 'derivation', 'history', 'practice', 'concept', 'overview'];
 const blockTypes: TeachingBlockType[] = ['text', 'section', 'callout', 'quiz', 'card', 'figure', 'concept_graph', 'timeline', 'code', 'deep_explanation', 'interactive', 'animation', 'user_note'];
@@ -40,10 +42,10 @@ function formatTime(value: string) {
   return value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '未完成';
 }
 
-export function TeachingBookWorkspace({ setStatus }: Props) {
+export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
   const [books, setBooks] = useState<TeachingBook[]>([]);
   const [selectedId, setSelectedId] = useState('');
-  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(Boolean(initialBookId));
   const [query, setQuery] = useState('');
   const [detail, setDetail] = useState<TeachingBookDetail | null>(null);
   const [preview, setPreview] = useState<TeachingBookMarkdownPreview | null>(null);
@@ -163,12 +165,16 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
     setBlockPageId((current) => nextDetail.pages.some((item) => item.id === current) ? current : nextDetail.pages[0]?.id ?? '');
   }
 
-  async function loadBooks(preferredId = selectedId, showArchived = includeArchived) {
+  async function loadBooks(preferredId = selectedId, showArchived = includeArchived, exact = false) {
     const stamp = ++requests.current.list; setLoading(true);
     try {
       const next = await window.omniEdu?.listTeachingBooks(showArchived) ?? [];
       if (stamp !== requests.current.list) return;
       setBooks(next);
+      if (exact&&!next.some(book=>book.id===preferredId)) {
+        setEditorOpen(false);
+        throw new Error('这份讲义已归档或暂时不可用，请从列表核对。');
+      }
       const nextId = next.some((book) => book.id === preferredId) ? preferredId : Object.values(latest.current.scopes).some(Boolean) ? activeBookId.current : next.find((book) => !book.deletedAt)?.id ?? next[0]?.id ?? '';
       activeBookId.current = nextId;
       await loadBook(nextId);
@@ -177,7 +183,7 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
     finally { if (stamp === requests.current.list) setLoading(false); }
   }
 
-  useEffect(() => { void loadBooks(); return () => { ++requests.current.book; ++requests.current.list; }; }, []);
+  useEffect(() => { void loadBooks(initialBookId,false,Boolean(initialBookId)); return () => { ++requests.current.book; ++requests.current.list; }; }, [initialBookId]);
   useEffect(() => {
     if (!dirty && !saving) return;
     const guard = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
@@ -274,9 +280,12 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
     setSaving(true);
     try {
       const sourceAnchor = detail.sources.find((source) => source.ref === blockDraft.sourceRef);
+      const anchors = blockDraft.sourceRef===editingBlock?.sourceAnchors[0]?.ref
+        ? editingBlock?.sourceAnchors ?? [] : sourceAnchor ? [sourceAnchor] : [];
       await window.omniEdu?.upsertTeachingBookBlock({
         pageId: blockPageId, title: blockDraft.title.trim(), type: blockDraft.type, status: blockDraft.status,
-        payload: { text: blockDraft.text }, sourceAnchors: sourceAnchor ? [sourceAnchor] : editingBlock?.sourceAnchors ?? [],
+        payload: { text: blockDraft.text }, sourceAnchors: anchors,
+        params:editingBlock?.params,metadata:editingBlock?.metadata,
         order: editingBlock?.order ?? detail.blocks.filter((block) => block.pageId === blockPageId).length,
       }, editingBlock?.id, editingBlock?.version);
       setEditingBlockId(''); setBlockDraft(emptyBlockDraft);
@@ -446,14 +455,24 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
         <section className="work-panel teaching-book-sources" data-testid="teaching-book-sources">
           <div className="panel-heading"><div><h3>来源健康</h3><p className="muted">刷新只更新健康元数据与失效队列，不改讲义正文。</p></div><button className="secondary-action" onClick={() => void refreshHealth()} disabled={saving} data-testid="teaching-book-health-refresh"><RefreshCw size={16} />刷新健康</button></div>
           <div className={`teaching-book-health health-${detail.health.status}`} data-testid="teaching-book-health"><ShieldCheck size={18} /><strong>{detail.health.status}</strong><span>{detail.health.sourceCount} 个来源 · {detail.health.staleBlockIds.length} 个受影响块</span></div>
-          <div className="teaching-book-source-list">{detail.sources.map((source) => <article key={`${source.kind}:${source.ref}`} data-testid={`teaching-book-source-${source.ref}`}><strong>{source.title}</strong><span>{source.kind} · {source.status}</span><p>{source.snippet || source.ref}</p></article>)}</div>
+          <div className="teaching-book-source-list">{detail.sources.map(source=>{
+            const material=detail.materialSources?.find(item=>item.chunkId===source.ref);
+            const status=detail.health.missingSourceRefs.includes(source.ref)?'原文不可用':
+              detail.health.staleSourceRefs.includes(source.ref)?'原文已变化':'原文可核对';
+            return <article key={`${source.kind}:${source.ref}`} data-testid={`teaching-book-source-${source.ref}`}>
+              {material?<ul aria-label="资料原文"><MaterialSourceLink source={{title:source.title,material}}/></ul>:<strong>{source.title}</strong>}
+              <span>{material?status:`${source.kind} · ${source.status}`}</span><p>{source.snippet||source.ref}</p>
+            </article>;
+          })}</div>
           <div className="teaching-book-source-form"><h4>绑定手工来源</h4><label>引用键<input value={sourceDraft.ref} onChange={(event) => setSourceDraft({ ...sourceDraft, ref: event.target.value })} data-testid="teaching-book-source-ref" /></label><label>标题<input value={sourceDraft.title} onChange={(event) => setSourceDraft({ ...sourceDraft, title: event.target.value })} data-testid="teaching-book-source-title" /></label><label>摘要<textarea value={sourceDraft.snippet} onChange={(event) => setSourceDraft({ ...sourceDraft, snippet: event.target.value })} data-testid="teaching-book-source-snippet" /></label><button className="secondary-action" onClick={() => void addManualSource()} disabled={saving} data-testid="teaching-book-source-add"><Plus size={16} />绑定来源</button></div>
           <div className="teaching-book-invalidation-list" data-testid="teaching-book-invalidations">{invalidations.map((item) => <article key={item.id}><strong>{item.ref}</strong><span>{item.status} · {formatTime(item.detectedAt)}</span><small>{item.stalePageIds.length} 页 / {item.staleBlockIds.length} 块</small></article>)}{!invalidations.length ? <div className="empty-state">没有来源失效记录。</div> : null}</div>
         </section>
 
         <section className="work-panel teaching-book-preview-panel" data-testid="teaching-book-preview-panel">
           <div className="panel-heading"><div><h3>安全预览与导出</h3><p className="muted">预览不写文件；只有教师点击导出后才产生 document_artifact。</p></div><div className="toolbar-row"><button className="secondary-action" onClick={() => { if (allowDraftChange()) void loadBook(detail.book.id).catch(error => showError(error, '读取预览失败，请重试。')); }} data-testid="teaching-book-preview-refresh"><Sparkles size={16} />重新编译</button><button className="primary-action" onClick={() => void exportMarkdown()} disabled={!preview || saving} data-testid="teaching-book-export"><FileDown size={16} />导出 Markdown</button></div></div>
-          {preview ? <><div className="teaching-book-preview" data-testid="teaching-book-preview"><Markdown>{preview.markdown}</Markdown></div><small data-testid="teaching-book-preview-meta">schema={preview.schemaVersion} · blocks={preview.blockCount} · fallback={preview.fallbackCount} · writesFile={String(preview.writesFile)} · requiresTeacherReview={String(preview.requiresTeacherReview)}</small></> : <div className="empty-state">尚未生成预览。</div>}
+          {preview ? <><div className="teaching-book-preview" data-testid="teaching-book-preview">
+            {detail.materialSources?<TeachingHandoutPreview markdown={preview.markdown}/>:<Markdown>{preview.markdown}</Markdown>}
+          </div><small data-testid="teaching-book-preview-meta">schema={preview.schemaVersion} · blocks={preview.blockCount} · fallback={preview.fallbackCount} · writesFile={String(preview.writesFile)} · requiresTeacherReview={String(preview.requiresTeacherReview)}</small></> : <div className="empty-state">尚未生成预览。</div>}
         </section>
       </> : null}
 

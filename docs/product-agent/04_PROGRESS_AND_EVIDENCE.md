@@ -440,3 +440,22 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-paper-conversation-export`。使用本地合成模型响应，0 付费调用。依赖未更新，审计仍为既有 20 项，其中 2 项 high。独立验收窗口和操作文档见 `manual-phase4-paper-conversation-export`。
 
 Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分值核对、明确缺额、教师确认与来源、局部修改、版本读回与恢复、对话和试卷卡精确导出均已实现。真实教师使用效果及多个真实题集的学科质量仍留给集中验收。继续 Phase 4.2 可编辑教学讲义。
+
+## Phase 4.2 可编辑讲义草稿
+
+教师在「问小智」要求制作讲义或学案后，可从原对话进入讲义编辑器。草稿按章保存学习目标、重点难点、分步例题与不同难度的练习。实际采用的内容附本轮读取过的段落和引文。资料列表打开对应原文，教师可以改一个内容块，原稿其他块和来源保留。
+
+原 SQLite 讲义表仍保存正文。新表关联任务、工具调用和段落版本。同一个 Run 的重复相同提交返回同一份讲义，变更参数试图再保存一份会被拒绝。判定已提交的副作用使用独立的事务回执。保存草稿等待老师核对。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-teaching-handout` | 构建和 TypeScript 检查通过。主进程 SHA-256 `102fcd55b78965f34afbf42397752da7bb1babbce9aeeac94281bafbb9435bb9`，Preload `899483414ab804a8a8cb4d8a32c7885a14cc9c40f0c388206e4470839631095a`。 |
+| `node scripts/education/teaching-handout-electron.mjs` | 6/6。正式 Electron 与 Pi，从资料库正常导入本地 Markdown，在对话核对错误引文、真实保存与日志回执、精确打开、双尺寸和本地公式排版、跳到引用段、局部保存、冷启无模型重放、资料同摘要下段落变化。报告 `teaching-handout-lJsTgQ/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253。 |
+| 旧讲义存储和 Markdown 预览测试 | 26/26、28/28。两条旧脚本需 Node ESM 兼容启动参数以供打包进测试的 Electron 入口使用，见 `book-workspace-node-compat.log` 与 `book-renderer-node-compat.log`。原失败日志保留。 |
+| 上一版 SQLite 副本启动 | 1/1。上一轮实际 Electron 组卷数据从无讲义关联表升级，三份旧试卷确认记录逐字段相同，原对话卡可见，两张新表初始化且完整性检查通过。报告 `migration-from-paper-kECttd/report.json`。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，覆盖 1366×768 与 1920×1080，总结果为 `ok: true`，见 `electron-smoke-final.log`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-editable-handout`。独立启动、教师操作步骤及已核对窗口在 `manual-phase4-editable-handout`。本切片使用合成资料与本地模型响应，0 付费请求。生产依赖审计仍有 20 项，其中 2 项 high，本轮没有修改依赖。
+
+后续验证讲义历史恢复、对话细化修改、确认与精确的学生/教师 Office 交付。真实学科质量和教师采用率仍待集中验收。

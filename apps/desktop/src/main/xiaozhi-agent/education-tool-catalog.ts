@@ -2,6 +2,7 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {createToolCatalog} from './vendor/hana/quality/core/tool-catalog';
 import {ANSWER_QUALITY_PROMPT} from './answer-quality';
 import {scienceResourceChoices} from '../../shared/science-resources';
+import {TEACHING_HANDOUT_TOOL} from '../../shared/teaching-handout';
 
 // Local question search/read form the core knowledge path, like material search/read.
 // Pin definitions already granted by the host. Complex delivery schemas load for file tasks.
@@ -11,6 +12,7 @@ PINNED.add('capability_resolve');
 PINNED.add('capability_execute');
 PINNED.add('environment_inspect');
 PINNED.add('environment_repair');
+PINNED.add(TEACHING_HANDOUT_TOOL);
 const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
   'office_edit_text', 'office_create_document', 'office_deliver_files'];
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;

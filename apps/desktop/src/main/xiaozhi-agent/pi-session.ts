@@ -123,6 +123,7 @@ export interface PiXiaozhiOptions {
   materialPageTools?: ToolDefinition[];
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
+  teachingHandoutTool?: ToolDefinition;
   capabilityTools?: ToolDefinition[];
   capabilityAcquisitionTools?: ToolDefinition[];
   extensionTools?: ToolDefinition[];
@@ -579,6 +580,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(...pageIdentity.tools);
     prompt+='\n整理PDF原题时，office_read_material实读后用education_read_material_page读取必要原页的本地文字和位置，按next续读完整页；跨页题继续读相邻页。自行从实际识别文字整理候选，不要求教师先转写整题。保留全部条件、选项和小问；不能用OCR文字猜图形读数、公式或答案。仅得到文字位置不等于看过原图；完整裁剪范围不确定时用整页或相邻整页暂存，让教师直接校正。多题用原stage/review集中核对，不逐题等待、不默默跳过未识别内容；报告哪些部分需要对照原图。工具未成功不得称已识别。';
   }
+  if(options.teachingHandoutTool){
+    names.push(options.teachingHandoutTool.name);
+    prompt+='\n老师本轮要求制作可编辑教学讲义或学案。先检索并实读相关本地资料，再以 education_create_teaching_handout 保存讲义草稿。重心是结构化内容、逐步例题和不同难度练习。缺资料应说明待核对范围，不编造引用。草稿成功后指引老师打开讲义核对与编辑。';
+  }
   const capabilityEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.deeptutor-reading.'));
   const exportIdentity={version:1,tools:[CLASSROOM_EXPORT_TOOL],source:'confirmed-classroom-office-v1'};
   const lessonExportIdentity={version:1,tools:[...TEACHING_LESSON_EXPORT_TOOLS],source:'confirmed-teaching-lesson-office-v1'};
@@ -894,6 +899,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
+  if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
   if (options.capabilityTools) {
     const capabilityNames = options.capabilityTools.map(tool => tool.name);
     if (capabilityNames.join(',') !== 'capability_inspect,capability_resolve,capability_execute') {
