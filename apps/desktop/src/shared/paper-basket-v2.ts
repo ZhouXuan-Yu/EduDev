@@ -45,6 +45,7 @@ export type PaperBasketV2View = Omit<PaperBasketView, 'schemaVersion' | 'entries
   operationReceipt?:{requestId:string;basketId:string;basketRevision:number;fulfillment?:PaperFulfillmentReport};
   entries: PaperBasketV2EntryView[];
   confirmedPaperId?: string;
+  editSourcePaperId?: string;
 };
 export type PaperBasketV2Api = {
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => Promise<PaperBasketResult<PaperBasketPage>>;

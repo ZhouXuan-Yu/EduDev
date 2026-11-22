@@ -13,6 +13,7 @@ export type PaperWorkspaceBasket = Omit<PaperBasketView, 'schemaVersion' | 'entr
   schemaVersion: typeof PAPER_BASKET_SCHEMA | typeof PAPER_BASKET_V2_SCHEMA;
   entries: PaperWorkspaceEntry[];
   confirmedPaperId?: string;
+  editSourcePaperId?: string;
   studentId?:string;purpose?:PaperPurpose;paperRequirements?:PaperRequirements;fulfillment?:PaperFulfillmentPlan;
   c2?:PaperBasketC2Binding;
   c2Digest?:string;

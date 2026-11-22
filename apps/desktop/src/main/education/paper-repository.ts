@@ -12,6 +12,7 @@ import {QUESTION_SELECTION_IDENTITY_POLICY,questionSelectionIdentity} from '../.
 import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
 import {comparePaperViews} from './paper-compare';
+import {paperEditSuccessors} from './paper-edit-lineage';
 import {selectPaper,paperSectionMatches,paperShortages,type PaperSelectionHost} from './paper-selection';
 import {PAPER_BASKET_SNAPSHOT_SCHEMA,validPaperBasketBinding,validPaperBasketSnapshot,type PaperBasketBinding,type PaperBasketSnapshotInput} from '../../shared/paper-basket';
 import {plainStudentInput} from '../../shared/student-context';
@@ -98,7 +99,7 @@ export class PaperRepository{
    }return contexts;
   }) as Promise<PaperGenerationContext[]>;
  }
- private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const supersededBy=r.status==='rejected'?await this.successorId(sql,String(r.session_id),String(r.id)):undefined;const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),...('purpose'in p.input&&p.input.purpose?{purpose:p.input.purpose}:{}),...(supersededBy?{supersededBy}:{}),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA||p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA)?{basket:p.input.basket}:{}),...(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA?{snapshotSchema:PAPER_SNAPSHOT_C2_SCHEMA,c2:p.input.c2,templateSources:p.input.templateSources}:{})};}
+ private async view(sql:PaperSql,r:Row,p:Payload):Promise<PaperView>{const supersededBy=r.status==='pending'?undefined:await this.successorId(sql,String(r.session_id),String(r.id));const latest=r.status==='confirmed'?(await sql.all("SELECT id FROM ai_confirmation_items WHERE session_id=? AND action_type=? AND status='confirmed' ORDER BY confirmed_at DESC,id DESC LIMIT 1",[String(r.session_id),PAPER_ACTION]))[0]:undefined;return{...this.summary(r,p),...('purpose'in p.input&&p.input.purpose?{purpose:p.input.purpose}:{}),...(supersededBy?{supersededBy}:{}),blueprint:p.input.blueprint,selection:p.selection,sourceCurrent:await this.current(sql,p),exportCurrent:latest?.id===r.id,answerVerified:false,...(r.status==='confirmed'?{digest:this.effect(r,p)}:{}),...((p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_SCHEMA||p.input.schemaVersion===PAPER_BASKET_SNAPSHOT_V2_SCHEMA||p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA)?{basket:p.input.basket}:{}),...(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA?{snapshotSchema:PAPER_SNAPSHOT_C2_SCHEMA,c2:p.input.c2,templateSources:p.input.templateSources}:{})};}
  private async insertPending(sql: PaperSql, runId: string, payload: Payload): Promise<string> {
   if (!validSelection(payload.selection, payload)) throw new Error('unavailable');
   const id = 'xipaper_' + randomUUID();
@@ -154,7 +155,8 @@ export class PaperRepository{
  async list(sessionId?:string):Promise<PaperSummary[]>{
   if(sessionId!==undefined)await this.authorize(this.host,sessionId);
   const rows=await this.host.all(`SELECT c.* FROM ai_confirmation_items c JOIN ai_conversation_sessions s ON s.id=c.session_id WHERE c.action_type=? AND s.archived_at IS NULL ${sessionId?'AND c.session_id=?':''} ORDER BY c.created_at DESC,c.id DESC`,sessionId?[PAPER_ACTION,sessionId]:[PAPER_ACTION]);
-  const result:PaperSummary[]=[];for(const r of rows){const p=this.payload(r);await this.authorize(this.host,String(r.session_id),p.studentId);if(r.status==='confirmed')this.effect(r,p);const supersededBy=r.status==='rejected'?await this.successorId(this.host,String(r.session_id),String(r.id)):undefined;result.push({...this.summary(r,p),...('purpose'in p.input&&p.input.purpose?{purpose:p.input.purpose}:{}),...(supersededBy?{supersededBy}:{})});}return result;
+  const edits=rows.length?await paperEditSuccessors(this.host,sessionId):undefined;
+  const result:PaperSummary[]=[];for(const r of rows){const p=this.payload(r);await this.authorize(this.host,String(r.session_id),p.studentId);if(r.status==='confirmed')this.effect(r,p);const supersededBy=r.status==='pending'?undefined:edits?.get(String(r.id));result.push({...this.summary(r,p),...('purpose'in p.input&&p.input.purpose?{purpose:p.input.purpose}:{}),...(supersededBy?{supersededBy}:{})});}return result;
  }
  private async checkCreate(sql:PaperSql,input:PaperCreateInput,runId:string,expectedStudent?:string){
   const studentId=await this.authorize(sql,input.sessionId,expectedStudent);
@@ -250,10 +252,7 @@ export class PaperRepository{
    await afterWrite?.();lease();const saved=await this.get(sql,input.sessionId,input.id),view=await this.view(sql,saved.r,saved.p);lease();if(p.input.schemaVersion===PAPER_SNAPSHOT_C2_SCHEMA&&input.action==='confirm'&&!view.sourceCurrent)throw new Error('source_changed');return view;
  }
  private async successorId(sql:PaperSql,sessionId:string,id:string):Promise<string|undefined>{
-  // Older source-only databases have no basket tables; their rejection semantics stay unchanged.
-  if(!(await sql.all("SELECT name FROM sqlite_master WHERE type='table' AND name='paper_basket_operations'")).length)return undefined;
-  const rows=await sql.all("SELECT c.paper_id FROM paper_basket_operations i JOIN paper_basket_operations c ON c.session_id=i.session_id AND c.basket_id=i.basket_id WHERE i.session_id=? AND i.operation_kind='domain:import-paper' AND i.paper_id=? AND c.operation_kind='domain:confirm-paper' ORDER BY c.created_at DESC,c.rowid DESC LIMIT 1",[sessionId,id]);
-  return rows[0]?.paper_id?String(rows[0].paper_id):undefined;
+  return (await paperEditSuccessors(sql,sessionId)).get(id);
  }
  async editedSuccessor(sessionId:string,id:string):Promise<PaperView|undefined>{
   const read=this.host.readTransaction??this.host.transaction;

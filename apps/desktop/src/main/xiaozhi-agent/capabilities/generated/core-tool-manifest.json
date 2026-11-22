@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "abf48dba578a1b00d5a2d7b5182cb498a8ca8946c501fa8ded206aedd070e10c",
+  "sourceHash": "5df96e57bf3b2d25faacc6e098273d9e0cbd19f9c9a37e731526a070b2f7071c",
   "sources": [
     {
       "file": "package-lock.json",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "878049b6ab008b81c3dc85e4c1781d906fe3efba6602beb4d83c62172fe00fa9"
+      "sha256": "d8b1aaa72531cdb4056a0bd46bf8c53889416ea305260d0cf9d1697cafe7574e"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2216,7 +2216,7 @@
     },
     {
       "file": "src/shared/paper-basket-v2.ts",
-      "sha256": "5aa35224c03a0ad93f32f4de2376a0cb6345702da4b1197e048e0a45a8864ba9"
+      "sha256": "26d02117d74566cedbf75865c7af4b328f78ccd7ad8c368a7a004cfa085d8c3e"
     },
     {
       "file": "src/shared/paper-basket.ts",

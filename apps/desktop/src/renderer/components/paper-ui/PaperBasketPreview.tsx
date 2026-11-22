@@ -88,9 +88,9 @@ export function PaperBasketPreview({basket, snapshot, disabled, dirty, onSnapsho
       <p>核对上方最终题目、分值与解析后，可一次确认整卷，无需逐题点击核对。确认保存不等于文件已导出。</p>
       <Button className="edu-primary-action-contrast" data-testid="paper-basket-confirm-all" isDisabled={disabled||dirty||!bulkReady||basket.state!=='active'} onPress={onConfirmAll}>确认全部当前修订并保存试卷</Button>
     </section>}
-    <Button variant="secondary" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !imagesReady || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
+    {!basket.editSourcePaperId&&<Button variant="secondary" data-testid="paper-basket-snapshot" isDisabled={disabled || dirty || !imagesReady || !basket.complete || basket.state !== 'active'} onPress={onSnapshot}>
       创建确切选题的待确认快照
-    </Button>
+    </Button>}
     <PaperQuestionDisclosure title="版本与预览说明" data-testid="paper-preview-version-details">
       <p>题篮修订 {basket.revision}。仅核对手选成员与当前来源；未扫描或自动补选整个题库。预览不等于教师确认，也不等于文件已导出。</p>
       {basket.c2 && <p data-testid="paper-c2-output-status">此卷绑定确切模板版本；确认后使用同一快照准备导出，导出前再次核对来源。</p>}

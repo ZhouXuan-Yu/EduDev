@@ -4,6 +4,7 @@ import {LESSON_ROLES} from '../../../shared/science-lesson';
 import {TaskArtifactRelations} from './workbench/TaskArtifactRelations';
 import type {workspaceTaskScope} from './workspace-task-context';
 import {PiPaperReview} from './PiPaperReview';
+import {paperReviewVersions} from './paper-review-versions';
 
 const stepLabels:Record<TaskStepState,string>={pending:'待执行',executing:'执行中',waiting_dependency:'等待前置步骤',needs_check:'待核对',verified:'已核验',needs_fix:'需修正'};
 const taskLabels={active:'执行中',review_required:'待教师核对',paused:'已暂停',interrupted:'未完成',completed:'教师已确认',ended:'已结束'};
@@ -11,7 +12,9 @@ const taskLabels={active:'执行中',review_required:'待教师核对',paused:'�
 export function PiTaskContextSummary({snapshot,scope,onRefresh}:{snapshot:XiaozhiWorkspaceSnapshot;scope:NonNullable<ReturnType<typeof workspaceTaskScope>>;onRefresh:()=>Promise<void>}) {
   const {task,runIds}=scope;
   const title=task.criteria.find(criterion=>criterion.id==='teacher_request')?.text;
-  const paper=snapshot.paperReviews?.findLast(item=>runIds.has(item.runId)&&!item.supersededBy);
+  const reviews=snapshot.paperReviews??[];
+  const anchor=[...runIds].reverse().map(runId=>reviews.find(item=>item.runId===runId)).find(Boolean);
+  const paper=anchor?paperReviewVersions(anchor,reviews).latest:undefined;
   const lesson=snapshot.deliveries?.findLast(item=>runIds.has(item.runId)&&item.lesson)?.lesson;
   const collection=snapshot.questionCollections?.findLast(item=>runIds.has(item.runId));
   const steps=task.steps.map(step=>({step,state:taskStepState(task,step.id)}));
@@ -24,10 +27,10 @@ export function PiTaskContextSummary({snapshot,scope,onRefresh}:{snapshot:Xiaozh
         <span>{step.text}</span><small>{stepLabels[state]}</small>
       </li>)}</ol>}
     </section>
-    {paper&&<section data-testid="pi-context-paper" data-paper-id={paper.id}>
+    {anchor&&paper&&<section data-testid="pi-context-paper" data-paper-id={paper.id}>
       <h4>试卷</h4><p>{paper.title}</p>
       <p>{paper.count} 题 · {paper.totalPoints} 分 · {paper.state==='confirmed'?'教师已确认':paper.state==='rejected'?'已拒绝':paper.complete?'待教师核对':'题目尚未配齐'}</p>
-      <PiPaperReview key={paper.id} sessionId={task.sessionId} review={paper} running={snapshot.running} onRefresh={onRefresh} compact/>
+      <PiPaperReview key={anchor.id} sessionId={task.sessionId} review={anchor} reviews={reviews} running={snapshot.running} onRefresh={onRefresh} compact/>
     </section>}
     {lesson&&<section data-testid="pi-context-lesson">
       <h4>备课成果</h4><p>{lesson.title} · 第 {lesson.revision} 版 · {lesson.minutes} 分钟</p>

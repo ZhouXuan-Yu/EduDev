@@ -31,6 +31,7 @@ import {PaperBasketLibrary} from './PaperBasketLibrary';
 import {PaperWorkspaceSaveStatus} from './PaperWorkspaceSaveStatus';
 import {PaperEditorToolbar} from './PaperEditorToolbar';
 import {PaperEditorSettings} from './PaperEditorSettings';
+import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import styles from '../../ui-system/paper-studio/paper-studio.module.css';
 import previewStyles from '../../ui-system/paper-studio/paper-preview.module.css';
 import editorStyles from '../../ui-system/paper-studio/paper-editor.module.css';
@@ -44,6 +45,7 @@ const studioTabs = [
 type StudioTab = typeof studioTabs[number]['id'];
 
 export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: string}) {
+  const navigation=useDesktopNavigation();
   const state = usePaperBasketWorkspace(initialSessionId);
   const selection = usePaperLibrarySelection(state);
   const title = useRef<HTMLHeadingElement>(null);
@@ -307,8 +309,11 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
                 onMutate={state.mutate} drafts={state.instanceDrafts} onPointsDirty={state.setPointsDirty} pointsDirty={state.pointsDirty} onReload={() => void state.reload()}
                 onReplace={entry => {void state.stage('select').then(ok => {if (ok) setReplaceEntryId(entry.entryId);});}}/>}
               {(ui.stage === 'preview' || basket.state === 'archived') && <PaperBasketPreview basket={basket} snapshot={state.snapshot}
-                backAction={basket.state === 'active' ? <Button variant="secondary" data-testid="paper-basket-preview-back"
-                  isDisabled={disabled || inputDirty} onPress={() => void showStage('organize')}>返回编辑</Button> : undefined}
+                backAction={<>{basket.state === 'active' && <Button variant="secondary" data-testid="paper-basket-preview-back"
+                  isDisabled={disabled || inputDirty} onPress={() => void showStage('organize')}>返回编辑</Button>}
+                  {basket.editSourcePaperId&&basket.confirmedPaperId&&<Button variant="ghost" data-testid="paper-basket-source-chat"
+                    isDisabled={disabled||inputDirty} onPress={()=>navigation.navigate({view:'ai',sessionId:basket.sessionId})}>查看来源对话</Button>}
+                </>}
                 disabled={readonly} dirty={inputDirty} onSnapshot={() => void state.takeSnapshot()} onConfirmAll={()=>void state.confirmAll()} onDecide={action => void state.decide(action)}/>}
             </section>
           </main>

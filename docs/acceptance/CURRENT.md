@@ -4,6 +4,8 @@
 
 D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、跨会话引用和版本、任务与成果双向定位，以及右栏按任务切换来源和文件、普通问答收起、历史版本跳转和双尺寸。手测入口和剩余场景见本阶段记录。 [证据和人工步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
+试卷专业编辑已验证正式原卷、题篮确认、编辑版本回接、原卷可读、并行草稿冲突和重启后的任务右栏。 [版本验收证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-试卷专业编辑回接)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

@@ -10,6 +10,8 @@
 
 右侧任务上下文由已提交 Task 和同一记录的 Run 谱系确定。普通问答可持有会话事件发布权，仍不会进入该任务的 Run 谱系。计划报告、核验进度、读取来源及试卷核对沿现有公开记录和服务。 [上下文执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-右侧上下文和专业编辑衔接)
 
+试卷专业编辑的后继从题篮导入收据、确认收据和确认卷的题篮版本绑定共同推导。原 Run 和确认卷保留；同一题篮多次确认按提交顺序形成版本。并行草稿在确认前核对来源版本。 [编辑回接合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-试卷专业编辑回接)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

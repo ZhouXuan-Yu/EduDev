@@ -54,8 +54,11 @@ export class PaperBasketV2Repository {
         return {sectionId:section.id,sourceKind,required,selected:count,missing:Math.max(0,required-count),excess:Math.max(0,count-required)};
       });
     }).filter(g => g.missing || g.excess);
-    const confirmed=(await sql.all("SELECT paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=? AND operation_kind='domain:confirm-paper' ORDER BY created_at DESC,rowid DESC LIMIT 1",[basket.sessionId,basket.id]))[0];
+    const paperOperations=await sql.all(`SELECT operation_kind,paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=?
+      AND operation_kind IN ('domain:confirm-paper','domain:import-paper') ORDER BY rowid DESC`,[basket.sessionId,basket.id]);
+    const confirmed=paperOperations.find(row=>row.operation_kind==='domain:confirm-paper'),origin=paperOperations.find(row=>row.operation_kind==='domain:import-paper');
     return {...basketSummary(basket), studentId:basket.studentId, schemaVersion:PAPER_BASKET_V2_SCHEMA, persistedSchemaVersion:basket.schemaVersion,...(confirmed?.paper_id?{confirmedPaperId:String(confirmed.paper_id)}:{}),
+      ...(origin?.paper_id?{editSourcePaperId:String(origin.paper_id)}:{}),
       ...(basket.data.purpose?{purpose:basket.data.purpose}:{}),...(basket.data.paperRequirements?{paperRequirements:basket.data.paperRequirements}:{}),...(basket.data.fulfillment?{fulfillment:structuredClone(basket.data.fulfillment)}:{}),
       blueprint:basket.data.blueprint,entries,gaps:basket.data.purpose==='practice'?[]:gaps,complete:basket.state==='active' && (basket.data.purpose==='practice'||!gaps.length) && !fulfillmentBlocksConfirmation(basket) && !(basket.data.purpose==='paper'&&basket.data.paperRequirements==='required') && templateSourceCurrent
         && !basket.data.c2?.retainedSections.some(s=>!s.released) && !basket.data.c2?.unknownRetainedSections?.some(s=>!s.released) && !basketC2Conflicts(basket.data).length
@@ -251,7 +254,7 @@ export class PaperBasketV2Repository {
       const prior=await previousBasketOperation(sql,input.sessionId,input.requestId,'import',input,studentId);
       if(prior)return this.view(sql,await readStoredBasket(sql,input.sessionId,prior.basketId,true));
       const paper=await this.papers.reviewInTransaction(sql,input.sessionId,input.paperId);
-      if(paper.revision!==input.paperRevision||paper.state==='rejected')throw Error('conflict');
+      if(paper.revision!==input.paperRevision||paper.state==='rejected'||paper.supersededBy)throw Error('conflict');
       if(!paper.sourceCurrent)throw Error('source_changed');
       await checkBasketCapacity(sql,input.sessionId);
       const id='xibasket_'+randomUUID(),at=new Date().toISOString();
@@ -279,6 +282,16 @@ export class PaperBasketV2Repository {
       const imports=await sql.all("SELECT paper_id FROM paper_basket_operations WHERE session_id=? AND basket_id=? AND operation_kind='domain:import-paper'",[b.sessionId,b.id]);
       if(prior?.paperId)return {basket:await this.view(sql,b),paper:await this.papers.reviewInTransaction(sql,b.sessionId,prior.paperId),replacedPaperIds:imports.map(r=>String(r.paper_id))};
       if(b.state!=='active'||b.revision!==input.expectedRevision||fulfillmentBlocksConfirmation(b)||b.data.purpose==='paper'&&b.data.paperRequirements==='required')throw Error('conflict');
+      if(imports.length){
+        const priorEdit=(await sql.all(`SELECT paper_id,result_revision FROM paper_basket_operations WHERE session_id=? AND basket_id=?
+          AND operation_kind='domain:confirm-paper' ORDER BY rowid DESC LIMIT 1`,[b.sessionId,b.id]))[0];
+        if(priorEdit?.result_revision===b.revision)throw Error('conflict');
+        const bases=priorEdit?[priorEdit]:imports;
+        for(const row of bases){
+          const base=await this.papers.reviewInTransaction(sql,b.sessionId,String(row.paper_id));
+          if(base.supersededBy||base.state==='rejected')throw Error('conflict');
+        }
+      }
       const initial=await this.view(sql,b);
       if(initial.entries.some(e=>!e.availability.available))throw Error('source_changed');
       if(!initial.entries.length||initial.gaps.length)throw Error('shortage');

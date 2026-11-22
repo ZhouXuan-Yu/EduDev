@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台、任务与成果双向定位及右侧当前任务上下文。专业编辑同步和业务专属上下文继续实施。 |
+| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台、任务与成果双向定位、右侧上下文和试卷专业编辑回接。历史卷还原和其他领域编辑继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -241,3 +241,17 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | `node scripts/electron-smoke.mjs` | 207/207，退出码 0，`electron-smoke.log`。 |
 
 前两次专项日志保留。第一轮定位器包含隐藏原对话中的版本组件，修正为教学文件详情内查询。第二轮在 Electron 自动化读取合成模型回执时返回临时垃圾回收错误，复测原进程读回或在同一次等待中重试该瞬时错误。后续继续核验试卷和备课包专项的右栏路径，以及上海模考的专属字段。本轮 `npm audit` 有原 20 项警报，其中 2 high。
+
+## Phase 2 试卷专业编辑回接
+
+从原对话预览试卷并进入题篮，修改分值或解析后确认整卷。确认页提供「查看来源对话」。原试卷卡和右栏根据持久化导入与确认记录打开当前编辑版，原版与中间版可读。独立的同会话试卷不影响这条版本关系。不同编辑草稿竞争确认时，历史与已保存的版本保留。无 SQLite 迁移。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-edit-sync-final` | 退出码 0，`phase2-paper-edit-sync/build.log`。主进程 SHA-256 `768f8d0c98374cda93f7f167ecb37c0c051620497f178582649b65d7fb028c8e`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs` | 4/4，`electron-sync-verified.log`、`paper-edit-sync-GoR9kw/report.json`。真实发送、正式确认原版、在题篮把 5 分改为 7 分、并发拦截、回接原对话、历史版、同会话无关卷、冷启右栏、两种尺寸。渲染错误 0，付费请求 0。 |
+| `paper-whole-edit-boundaries.mjs` | 10/10，`source-boundaries-final.log`。SQLite 冻结源、事务故障回滚、并发和幂等，以及同一题篮再次修改保存时保留中间版。 |
+| `paper-basket-boundaries.mjs`、`paper-fulfillment-boundaries.mjs` | 45/45、6/6，`basket-boundaries.log`、`fulfillment-boundaries.log`。三个源码测试使用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs`。 |
+| `npm.cmd run test:renderer-components`、`node scripts/electron-smoke.mjs` | 253/253、207/207，`renderer.log`、`electron-smoke.log`。 |
+
+证据根在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-edit-sync`。隔离手测 `manual-phase2-paper-edit-sync/启动-D3-试卷编辑回接.cmd`，同目录记录验收步骤和 Windows 窗口证据。保留前三次专项日志，分别修正了分值控件所在区域、冷启动页面句柄及等待试卷卡挂载的先后顺序。依赖审计有原 20 项警报，其中 2 项 high。历史试卷恢复为新版本、同会话精确导出和其他专业成果编辑仍待实施或验收。

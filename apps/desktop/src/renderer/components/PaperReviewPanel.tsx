@@ -7,12 +7,12 @@ import {paperFulfillment} from '../../shared/paper-fulfillment';
 import {PaperFulfillmentDetails} from './paper-ui/PaperFulfillmentDetails';
 import {PAPER_BASKET_V2_SCHEMA} from '../../shared/paper-basket-v2';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
-type PaperReviewProps={view:PaperView;onChanged:(view:PaperView)=>void;onEditing?:()=>void;allowConfirm?:boolean};
+type PaperReviewProps={view:PaperView;onChanged:(view:PaperView)=>void;onEditing?:()=>void;allowConfirm?:boolean;historical?:boolean};
 /** A decision belongs to one snapshot; changing papers must also replace its request state. */
 export function PaperReviewPanel(props:PaperReviewProps){
  return <PaperSnapshotReview key={props.view.sessionId+':'+props.view.id} {...props}/>;
 }
-function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true}:PaperReviewProps){
+function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true,historical=false}:PaperReviewProps){
  const navigation=useDesktopNavigation(),importRequest=useRef(crypto.randomUUID());
  const fulfillment=paperFulfillment(view.blueprint,view.selection);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),generation=useRef(0),lock=useRef(false);
@@ -32,10 +32,11 @@ function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true}:PaperR
  return <section className="paper-review" data-testid="paper-review">
   <header><h2>{view.title}</h2><p data-testid="paper-summary">已选 {fulfillment.selectedCount} / {fulfillment.requiredCount} 题 · {fulfillment.selectedPoints} / {fulfillment.requiredPoints} 分 · 预计 {view.blueprint.durationMinutes} 分钟 · {{pending:'待教师核对',confirmed:'已确认保存',rejected:'已拒绝'}[view.state]}</p></header>
   <PaperFulfillmentDetails value={fulfillment}/>
-  {view.state!=='rejected'&&<Button variant="secondary" data-testid="paper-edit-whole" isDisabled={busy||!allowConfirm||!view.sourceCurrent} onPress={()=>void edit()}>编辑这份卷</Button>}
+  {historical&&<p data-testid="paper-review-historical">正在查看历史版本。可关闭预览后打开当前修订。</p>}
+  {!historical&&view.state!=='rejected'&&<Button variant="secondary" data-testid="paper-edit-whole" isDisabled={busy||!allowConfirm||!view.sourceCurrent} onPress={()=>void edit()}>编辑这份卷</Button>}
   <p data-testid="paper-mode-summary">{{source_only:'纯题库组卷，保留原题保存版本。',hybrid:'混合组卷，原题和教师已确认生成题分别满足配额。',ai_original:'AI原创组卷，不标为教材原题。'}[view.blueprint.mode]}参考答案未独立核验；确认试卷不代表答案已经正确，也不代表已导出文件。</p>{view.blueprint.mode!=='source_only'&&<p data-testid="paper-source-counts">原题 {view.selection.items.filter(i=>!i.generation).length} 道 · 已确认生成题 {view.selection.items.filter(i=>!!i.generation).length} 道；保存审批来源和当前版本。</p>}
 
-  {!allowConfirm&&<p role="alert" data-testid="paper-blueprint-dirty">蓝图已修改，请重新生成后核对；旧预览不能直接确认。</p>}
+  {!allowConfirm&&!historical&&<p role="alert" data-testid="paper-blueprint-dirty">蓝图已修改，请重新生成后核对；旧预览不能直接确认。</p>}
   {!view.sourceCurrent&&<p role="alert" data-testid="paper-source-changed">题目或原件已变化，请重新生成并核对。</p>}
   {view.selection.shortages.length>0&&<div role="alert" data-testid="paper-shortages"><strong>题库不足，不能确认</strong>{view.selection.shortages.map(s=><p key={s.sectionId+(s.sourceKind||'')}>{s.label}{s.sourceKind?' · '+(s.sourceKind==='original'?'原题':'生成题'):''}：需要 {s.required} 题，找到 {s.selected} 题，缺 {s.missing} 题。</p>)}</div>}
   <DisclosureCard

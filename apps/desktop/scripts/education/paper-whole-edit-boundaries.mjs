@@ -13,5 +13,26 @@ try{
  const final=await v2.confirm(confirmInput);assert.equal(final.paper.state,'confirmed');assert.equal((await v2.read({...base,basketId:final.basket.id})).confirmedPaperId,final.paper.id);assert.equal(final.paper.totalPoints,17);assert.equal(final.paper.selection.items[1].points,7);assert(final.basket.entries.every(e=>e.reviewCurrent));assert.equal((await papers.review(sid,pending.id)).state,'rejected');assert.equal((await papers.editedSuccessor(sid,pending.id)).id,final.paper.id);assert.equal((await papers.list(sid)).find(p=>p.id===pending.id).supersededBy,final.paper.id);assert.deepEqual(rows('questions'),sourceRows);assert.deepEqual(rows('ai_confirmation_items').find(r=>r.id===oldFormal.id),oldFormalRow);const after=snapshot();assert.equal((await v2.confirm(confirmInput)).paper.id,final.paper.id);assert.deepEqual(snapshot(),after);check('One explicit confirmation approves current instances and final exact paper once, preserves prior formal paper and supports retry');
  const student=JSON.stringify(compilePaperOffice(final.paper,'student')),teacher=JSON.stringify(compilePaperOffice(final.paper,'teacher'));assert(!student.includes('本卷修改解析哨兵'));assert(teacher.includes('本卷修改解析哨兵'));assert(teacher.includes('7 分'));check('Existing export compiler uses final score and edited analysis with student and teacher content separation');
  const runId='owned-wait-'+randomUUID();db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?)').run(runId,sid,f.student);const events=[];const coordinator=createPaperCoordinator({store:{papers,listStudents:async()=>[],sanitizeProblemText:async text=>({sanitizedText:text})},isCurrent:()=>true,canWrite:()=>true,emit:(_s,_r,e)=>events.push(e)});const promise=coordinator.tools(sid,runId)[0].execute('owned-propose',blueprint,new AbortController().signal);let waiting;for(let n=0;n<100;n++){waiting=(await papers.list(sid)).find(p=>p.runId===runId);if(waiting&&coordinator.waiting(sid,runId))break;await new Promise(r=>setTimeout(r,10));}assert(waiting&&coordinator.waiting(sid,runId));let edit=await imported(waiting);edit=await mutate(edit,{type:'setEntryPoints',entryId:edit.entries[1].entryId,points:8});const settled=await v2.confirm(intent(edit));await coordinator.changed(sid,[settled.paper.id,...settled.replacedPaperIds]);const receipt=JSON.parse((await promise).content[0].text);assert(receipt.success);assert.equal(receipt.paperId,settled.paper.id);assert.equal(receipt.modifiedFrom,waiting.id);assert.equal(receipt.fulfillment.selectedPoints,18);assert(!coordinator.waiting(sid,runId));coordinator.close();check('Actual original tool wait resolves to the teacher-edited confirmed successor and returns the real final fulfillment');
+ let editOfFormal=await imported(oldFormal);
+ const competing=await imported(oldFormal);
+ editOfFormal=await mutate(editOfFormal,{type:'setEntryPoints',entryId:editOfFormal.entries[0].entryId,points:6});
+ const firstEdit=await v2.confirm(intent(editOfFormal)),afterFirstEdit=snapshot();
+ assert.equal((await papers.review(sid,oldFormal.id)).supersededBy,firstEdit.paper.id);
+ assert.deepEqual(rows('ai_confirmation_items').find(row=>row.id===oldFormal.id),oldFormalRow);
+ await assert.rejects(v2.confirm(intent(competing)),/conflict/);
+ await assert.rejects(v2.confirm(intent(firstEdit.basket)),/conflict/);
+ await assert.rejects(imported(oldFormal),/conflict/);
+ assert.deepEqual(snapshot(),afterFirstEdit);
+ check('Confirmed source remains immutable and a competing draft, stale import or duplicate revision cannot fork the saved edit');
+
+ const later=await mutate(firstEdit.basket,{type:'setEntryPoints',entryId:firstEdit.basket.entries[0].entryId,points:9});
+ const nextRequest=intent(later),secondEdit=await v2.confirm(nextRequest);
+ const byId=new Map((await papers.list(sid)).map(paper=>[paper.id,paper]));
+ assert.equal(byId.get(oldFormal.id).supersededBy,firstEdit.paper.id);
+ assert.equal(byId.get(firstEdit.paper.id).supersededBy,secondEdit.paper.id);
+ assert.equal(byId.get(secondEdit.paper.id).supersededBy,undefined);
+ assert.equal((await v2.confirm(nextRequest)).paper.id,secondEdit.paper.id);
+ assert.deepEqual(rows('questions'),sourceRows);
+ check('Another save in the same editor appends a new successor without dropping intermediate versions');
  report.ok=true;report.paper=final.paper;report.counters=f.counters();assert.equal(report.counters.peakWriters,1);
 }catch(e){report.error=String(e.stack);process.exitCode=1;}finally{f.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output,error:report.error}));}
