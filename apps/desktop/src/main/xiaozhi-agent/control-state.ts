@@ -2,7 +2,7 @@ import type { Sql } from './session-state';
 import type { XiaozhiControl } from '../../shared/xiaozhi-agent';
 import {validVersionedPlan,planStepId,type VersionedPlan} from '../../shared/xiaozhi-plan';
 
-export type PrivateControl = XiaozhiControl & { sessionId: string; callId?: string; requestHash?: string;appliedOrder?:number;planRetiredIds?:string[] };
+export type PrivateControl = XiaozhiControl & { sessionId: string; callId?: string; requestHash?: string;appliedOrder?:number;planRetiredIds?:string[]; recoverableQuestion?:boolean };
 export const publicControl = ({ id, runId, kind, state, text, revision, steps,plan, options, answer, mode, canResume, callId }: PrivateControl): XiaozhiControl =>
   ({ id, runId, kind, state, text, ...(kind === 'instruction'||plan ? {revision:revision ?? 0} : {}), ...(plan?{plan}:{}), ...(steps ? { steps } : {}), ...(options ? { options } : {}), ...(answer !== undefined ? { answer } : {}), ...(mode ? { mode } : {}), ...(canResume ? { canResume:true } : {}), ...(callId ? {callId} : {}) });
 const time = () => new Date().toISOString();
@@ -18,6 +18,7 @@ function parse(row: Record<string, unknown>): PrivateControl {
     || (version === 1 && ['dispatching','withdrawn'].includes(value.state))
     || (value.revision !== undefined && (!Number.isSafeInteger(value.revision) || value.revision < 0))
     || (value.appliedOrder!==undefined&&(!Number.isSafeInteger(value.appliedOrder)||value.appliedOrder<1||value.kind!=='instruction'||value.state!=='applied'))
+    || (value.recoverableQuestion!==undefined&&(value.kind!=='question'||typeof value.recoverableQuestion!=='boolean'))
     || typeof value.text !== 'string' || value.text.length > 8192) throw new Error('configuration');
   return { ...value, id: String(row.id), sessionId: String(row.conversation_id), runId: String(row.run_id) };
 }
@@ -43,7 +44,7 @@ export function createPiControlState(sql: Sql) {
       const rows = await sql.all("SELECT * FROM xiaozhi_pi_controls WHERE state IN ('pending','queued','dispatching','resuming') AND schema_version IN (1,2)");
       for (const row of rows) {
         let item: PrivateControl; try { item = parse(row); } catch { continue; }
-        await changeControl(item.id, [item.state], { state: 'interrupted', canResume:item.kind === 'question' });
+        await changeControl(item.id, [item.state], { state: 'interrupted', canResume:item.kind==='question'&&item.recoverableQuestion!==false });
       }
     },
     control, changeControl,

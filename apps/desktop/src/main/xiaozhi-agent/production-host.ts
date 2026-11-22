@@ -1045,11 +1045,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
-      educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,async()=>{
+      educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;
         const [task,approvals]=await Promise.all([tasks.committed(id),store.xiaozhiState.permissions.approvalSnapshot(id)]);
         return singleCopyWasDeclined(task,runId,approvals.items);
-      }),
+      }}),
       questionContextTools:questionContext.tools,
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
       questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),
@@ -1377,7 +1377,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       delete run.skillPrivateContext;
       run.computationResults?.clear();
       if(run.classroomPlan?.mode==='generate')await store.xiaozhiState.classroomPlans.finishRun(run.runId).catch(()=>{failure||='configuration';});
-      await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
+      await controls.finish(id,run.runId,run.abort.signal.reason==='app_shutdown').catch(() => { failure ||= 'configuration'; });
       if(run.hasToolEvents){
       await approvals.cancel(run.runId, closing).catch(() => { failure ||= 'configuration'; });
       await textChanges.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
@@ -2148,7 +2148,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
-      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId, true); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
+      for (const [id,run] of active) { await controls.finish(id,run.runId,run.abort.signal.reason==='app_shutdown'); await approvals.cancel(run.runId, true); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...executions.values()].map(execution => execution.done));
       },{timeoutMs:options.shutdownTimeoutMs??5000});}
       catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}

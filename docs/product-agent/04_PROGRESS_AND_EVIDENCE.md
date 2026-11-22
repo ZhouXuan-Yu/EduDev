@@ -96,6 +96,16 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 4. 在任务卡点「取消任务」并确认，再发「继续」。预期显示该任务已结束，旧回复和已保存成果仍可查看。
 5. 发「我还没有确定年级，请先问我再写分数课导入」。在澄清卡里选择年级并发送。预期原轮继续，任务列表没有因填写答案多出一项。进程意外退出的场景由专项用例在独立资料根验证。
 
-待验证从仍在等待教师输入时正常退出的题卡回接，以及真实模型上的长会话整理。旧历史题卡在当前版本保留，可显示任务已取消或要求已变化的反馈。
+正常退出前等待中的教学澄清可以在重开后原位续答。基线 `phase1-graceful-before.log` 复现了历史卡缺少回复入口。宿主按题卡用途和关闭原因持久化恢复资格，教师主动停止和操作确认继续按原流程结算。
+
+| 退出续答验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-graceful-question` | TypeScript 与 Electron 构建通过，日志 `phase1-graceful-build.log`。主入口 SHA-256 `1dacc84da32438b31d49780fc9bb3527f8f48e1266bb3bdb18cc8a809e90f1ab`。 |
+| `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --amend --control --teacher-wait --teacher-cold --teacher-graceful-shutdown` | `phase1-graceful-ui.log` 与 `phase1-intent-SAOOzP/report.json`，16/16，渲染错误 0。正常退出和主动停止都从真实 Electron 操作，核对原 Task、零自动重放及持久化回答。 |
+| 异常退出与审批回归 | `phase1-graceful-abrupt-regression.log` 7/7，`phase1-graceful-approval-cold.log` 3/3。 |
+| 组件回归 | `phase1-graceful-renderer-components.log`，253/253。 |
+| 手测入口 | `manual-graceful-question/启动-D3-退出续答.cmd`。让小智先问年级，等待出现题卡后正常退出。重开原会话，选择年级并发送，原任务继续。 |
+
+真实模型上的长会话整理待验。旧历史题卡仍可查看，并在尝试提交时显示任务已取消或要求已变化的反馈。
 
 后台子任务的源码入口已定位。`tasks/plan-runtime.ts` 负责现有 Task 步骤、依赖和操作准入，`events/receipts.ts` 核对执行与原生结果，`verification/result-readback.ts` 核对正式结果。Phase 1 仍缺明确的子任务组织、主任务接收结构化结果以及未汇总时重启的实际场景。后续从受控只读教学步骤切入，并沿现有 Task 和结果回执实施。

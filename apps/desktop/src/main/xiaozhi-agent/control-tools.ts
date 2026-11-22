@@ -22,15 +22,17 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
   async function cancel(run: string) {
     for (const [id, entry] of waits) if (entry.item.runId === run) { waits.delete(id); entry.resolve(undefined); }
   }
-  async function finish(session: string, run: string) {
+  async function finish(session: string, run: string, shuttingDown=false) {
     await cancel(run);
     for (const item of await store.xiaozhiState.controls(session)) if (item.runId === run && ['pending','queued','dispatching'].includes(item.state)) {
-      if (await store.xiaozhiState.changeControl(item.id, [item.state], { state: 'interrupted' })) notify({ ...item, state: 'interrupted' });
+      const canResume=shuttingDown&&item.state==='pending'&&item.recoverableQuestion===true;
+      const update={state:'interrupted' as const,canResume};
+      if (await store.xiaozhiState.changeControl(item.id, [item.state], update)) notify({ ...item,...update });
     }
   }
   return {
     cancel, finish,planHistory:plans.history,
-    tools(sessionId: string, runId: string, checkCopyRefusal?:()=>Promise<boolean>): ToolDefinition[] {
+    tools(sessionId: string, runId: string, settings?:{recoverableQuestion:boolean;checkCopyRefusal:()=>Promise<boolean>}): ToolDefinition[] {
       return [
         { name: 'update_plan', label: '更新任务计划', description: '公开提出/调整任务计划。使用xiaozhi.plan.v2；首次expectedRevision=0，后续用上次回执revision。每步稳定id，前置dependsOn必须先报告完成；删除的id不能复用。reason写公开调整原因，basisCallIds只引用本轮已返回的真实工具callId，没有则空数组。宿主仅采用计划结构/版本；completed仅报告进度，不等于教学或交付核验通过。最多8步、1步进行中。',
           parameters: PLAN_UPDATE_SCHEMA as unknown as ToolDefinition['parameters'],
@@ -44,13 +46,13 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
             signal?.throwIfAborted();
             if (!options.isCurrent(sessionId,runId) || !object(args) || Object.keys(args).some(key => !['question','options'].includes(key)) || !short(args.question,1000)
               || !Array.isArray(args.options) || args.options.length < 2 || args.options.length > 3 || args.options.some(value => !short(value,200)) || new Set(args.options).size !== args.options.length) throw new Error('invalid_input');
-            if (await checkCopyRefusal?.()) {
+            if (await settings?.checkCopyRefusal()) {
               signal?.throwIfAborted();
               if (!options.isCurrent(sessionId,runId)) throw new Error('cancelled');
               return result({success:true,state:'already_declined',asked:false,
                 guidance:'教师已明确拒绝本轮复制。请报告未复制并结束本轮；等待教师主动提出新任务。'});
             }
-            const item: PrivateControl = { id:`pictrl_${randomUUID()}`,sessionId,runId,callId,kind:'question',state:'pending',text:await clean(args.question),options:await Promise.all(args.options.map(clean)) };
+            const item: PrivateControl = { id:`pictrl_${randomUUID()}`,sessionId,runId,callId,kind:'question',state:'pending',recoverableQuestion:settings?.recoverableQuestion===true,text:await clean(args.question),options:await Promise.all(args.options.map(clean)) };
             signal?.throwIfAborted(); if (!options.isCurrent(sessionId,runId)) throw new Error('cancelled');
             let resolve!: (value: string | undefined) => void;
             const answer = new Promise<string | undefined>(done => { resolve = done; });
