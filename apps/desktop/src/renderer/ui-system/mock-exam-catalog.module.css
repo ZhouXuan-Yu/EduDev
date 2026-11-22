@@ -92,3 +92,17 @@
   border: 1px solid var(--border);
   border-radius: .55rem;
 }
+.diffList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.diffList > li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem .9rem;
+  color: var(--muted);
+}
+.diffList > li > strong {
+  color: var(--foreground);
+}

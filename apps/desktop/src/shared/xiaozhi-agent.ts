@@ -59,6 +59,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind:'question_review';review:import('./question-review').QuestionReviewSummary }
   | { kind:'handout_edit';review:import('./teaching-handout-edit').HandoutEditSummary }
   | { kind:'mock_exam_catalog';catalog:import('./mock-exam-compilation').MockExamCatalogSummary }
+  | { kind:'mock_exam_edit';review:import('./mock-exam-edit').MockExamEditSummary }
   | { kind:'paper_review';review:import('./paper-blueprint').PaperSummary }
   | { kind:'practice_review';review:import('./practice-review').PracticeReviewSummary }
   | { kind: 'control'; control: XiaozhiControl }
@@ -82,6 +83,8 @@ export type XiaozhiWorkspaceSnapshot = { fileWritesEnabled?:boolean; deliveries?
   teachingHandoutsUnavailable?:boolean;
   handoutEdits?:import('./teaching-handout-edit').HandoutEditSummary[];
   handoutEditsUnavailable?:boolean;
+  mockExamEdits?:import('./mock-exam-edit').MockExamEditSummary[];
+  mockExamEditsUnavailable?:boolean;
   mockExamCatalogs?:import('./mock-exam-compilation').MockExamCatalogSummary[];
   mockExamCatalogsUnavailable?:boolean;
 };

@@ -61,6 +61,8 @@ import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teac
 import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {createMockExamCatalog,mockExamRequest} from '../education/mock-exam-catalog';
 import {BUILD_MOCK_EXAM_CATALOG} from '../../shared/mock-exam-compilation';
+import {createMockExamEditCoordinator,mockExamEditRequest} from '../education/mock-exam-edit-tools';
+import {PROPOSE_MOCK_EXAM_EDIT} from '../../shared/mock-exam-edit';
 import {assertHandoutOffice} from '../education/teaching-handout-office';
 import {TEACHING_HANDOUT_TOOL} from '../../shared/teaching-handout';
 import {assertTeachingLessonOffice} from '../education/teaching-lesson-office';
@@ -674,6 +676,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     verify:(id,version,signal)=>store.materials.verifyOriginalVersion(id,version,signal),
     notify:(id,runId,catalog)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'mock_exam_catalog',catalog});},
   });
+  const mockExamEdits=createMockExamEditCoordinator({state:store.xiaozhiState.mockExamEdits,catalogs:store.xiaozhiState.mockExamCatalogs,
+    sanitize:()=>createStudentContextSanitizer(store),
+    verify:(id,version,signal)=>store.materials.verifyOriginalVersion(id,version,signal),
+    publish:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'mock_exam_edit',review});},
+  });
   const officeArtifacts=createOfficeArtifactCoordinator({state:store.xiaozhiState.officeArtifacts,
     preflight:(...args)=>preflight(...args),
     checkReceipt:(...args)=>checkReceipt(...args),
@@ -842,6 +849,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       ?await store.xiaozhiState.handoutEdits.list(id).catch(()=>undefined):[];
     const mockExamHistory=!detail.session.archivedAt&&!detail.session.studentId
       ?await store.xiaozhiState.mockExamCatalogs.list(id).catch(()=>undefined):[];
+    const mockExamEditHistory=!detail.session.archivedAt&&!detail.session.studentId
+      ?await store.xiaozhiState.mockExamEdits.list(id).catch(()=>undefined):[];
     const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
     const storedQuestionCollections=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.collections.list(id):[];
     const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?[...await store.questionReviews.list(id),...await store.originalQuestions.list(id)]:[];
@@ -916,6 +925,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       ...(teachingHandouts?{teachingHandouts}:{teachingHandoutsUnavailable:true as const}),
       ...(handoutEditHistory?{handoutEdits:handoutEditHistory}:{handoutEditsUnavailable:true as const}),
       ...(mockExamHistory?{mockExamCatalogs:mockExamHistory}:{mockExamCatalogsUnavailable:true as const}),
+      ...(mockExamEditHistory?{mockExamEdits:mockExamEditHistory}:{mockExamEditsUnavailable:true as const}),
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
@@ -1111,7 +1121,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
         },wait),
       }:{}),
-      ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&mockExamRequest(cleanPrompt)?{
+      ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&mockExamEditRequest(cleanPrompt)?{
+        mockExamEditTools:mockExamEdits.tools(()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
+          requirementsVersion:owner.task!.requirementsVersion}),()=>!closing&&active.get(id)===owner&&!owner.stopped),
+      }:{}),
+      ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&mockExamRequest(cleanPrompt)&&!mockExamEditRequest(cleanPrompt)?{
         mockExamTool:mockExam.tool(()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
           requirementsVersion:owner.task!.requirementsVersion}),()=>!closing&&active.get(id)===owner&&!owner.stopped),
       }:{}),
@@ -1382,6 +1396,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }else if(delivery.tool===BUILD_MOCK_EXAM_CATALOG){
             if(!taskRuntime||!base.mockExamTool)throw new TaskAdmissionError('task_owner_stale');
             await taskRuntime.refresh();
+          }else if(delivery.tool===PROPOSE_MOCK_EXAM_EDIT){
+            if(!taskRuntime||!base.mockExamEditTools)throw new TaskAdmissionError('task_owner_stale');
+            await taskRuntime.refresh();
           }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
           await run.toolGovernance?.before(delivery.callId, delivery.tool, delivery.input, signal || run.abort.signal);
@@ -1506,6 +1523,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const journalFailure=journalFailures.get(id);
         failure=(journalFailure?.runId===run.runId&&journalFailure.error)||'event_persistence';
       }
+      if(run.hasToolEvents&&failure)await store.xiaozhiState.mockExamEdits.interrupt(run.runId).catch(()=>undefined);
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
       const terminal = { kind: 'status' as const, status, finishedAt:Date.now(),...(failure ? { error: failure } : {}) };
       const finalTurn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
@@ -1616,6 +1634,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     deliveryChecks:fileChecks,
     handoutEdits:{view:handoutEdits.view,decide:handoutEdits.decide},
     mockExam:{view:mockExam.view,history:mockExam.history,restore:mockExam.restore,confirm:mockExam.confirm,original:mockExam.original},
+    mockExamEdits:{view:mockExamEdits.view,decide:mockExamEdits.decide},
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
     listPaperGenerationContexts:paperReviews.generationContexts,

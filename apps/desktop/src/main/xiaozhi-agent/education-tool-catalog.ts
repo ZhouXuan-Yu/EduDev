@@ -6,6 +6,7 @@ import {TEACHING_HANDOUT_TOOL} from '../../shared/teaching-handout';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {PROPOSE_HANDOUT_EDIT,READ_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {BUILD_MOCK_EXAM_CATALOG} from '../../shared/mock-exam-compilation';
+import {READ_MOCK_EXAM_EDIT,PROPOSE_MOCK_EXAM_EDIT} from '../../shared/mock-exam-edit';
 
 // Local question search/read form the core knowledge path, like material search/read.
 // Pin definitions already granted by the host. Complex delivery schemas load for file tasks.
@@ -21,6 +22,8 @@ PINNED.add(EXPORT_TEACHING_HANDOUT);
 PINNED.add(READ_HANDOUT_EDIT);
 PINNED.add(PROPOSE_HANDOUT_EDIT);
 PINNED.add(BUILD_MOCK_EXAM_CATALOG);
+PINNED.add(READ_MOCK_EXAM_EDIT);
+PINNED.add(PROPOSE_MOCK_EXAM_EDIT);
 const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
   'office_edit_text', 'office_create_document', 'office_deliver_files'];
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;

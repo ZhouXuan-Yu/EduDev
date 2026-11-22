@@ -33,7 +33,7 @@ async function allowed(work:Sql,sessionId:string) {
     WHERE id=? AND COALESCE(student_id,'')='' AND COALESCE(archived_at,'')=''`,[sessionId]);
   if(!row)throw Error('permission_denied');
 }
-async function activeOwner(work:Sql,owner:HandoutOwner) {
+export async function assertMockExamRun(work:Sql,owner:HandoutOwner) {
   const tasks=createTaskState(work,{sanitize:async value=>value});
   const binding=await tasks.ownerForRun(owner.sessionId,owner.runId);
   const task=await tasks.get(owner.taskId);
@@ -87,7 +87,7 @@ function restoreSnapshot(target:MockExamCatalog,current:MockExamCatalog):Snapsho
   return {...snapshot,entries,restoredFrom:summary.revision};
 }
 
-async function verifyOriginals(entries:MockExamEntry[],verify:Verify,signal:AbortSignal){
+export async function verifyMockExamOriginals(entries:MockExamEntry[],verify:Verify,signal:AbortSignal){
   for(const entry of entries){
     try {
       await verify(entry.resourceId,entry.version,signal);
@@ -120,6 +120,12 @@ export function createMockExamState(sql:Sql) {
     await work.run(`INSERT INTO mock_exam_compilation_versions(catalog_id,revision,state,entry_count,digest,image_json,created_at)
       VALUES(?,?,?,?,?,?,?)`,[id,revision,state,snapshot.entries.filter(item=>item.include).length,digest,JSON.stringify(snapshot),new Date().toISOString()]);
   }
+  async function install(work:Sql,sessionId:string,id:string,priorRevision:number,state:MockExamCatalogSummary['state'],snapshot:Snapshot){
+    const revision=priorRevision+1;
+    await append(work,id,revision,state,snapshot);
+    await work.run('UPDATE mock_exam_compilations SET revision=? WHERE id=? AND revision=?',[revision,id,priorRevision]);
+    return view(work,sessionId,id);
+  }
   return {
     async migrate() {
       await sql.run(`CREATE TABLE IF NOT EXISTS mock_exam_compilations (
@@ -135,7 +141,17 @@ export function createMockExamState(sql:Sql) {
     async list(sessionId:string){
       return (await sql.all('SELECT '+snapshotColumns+' '+currentJoin+' WHERE c.session_id=? ORDER BY c.created_at DESC,c.id DESC LIMIT 100',[sessionId])).map(summary);
     },
+    async editTargets(sessionId:string,taskId:string,title?:string){
+      await allowed(sql,sessionId);
+      const bucket=async(condition:string,value?:string)=>(await sql.all(`SELECT ${snapshotColumns} ${currentJoin}
+        WHERE c.session_id=?${condition} ORDER BY v.created_at DESC,c.id LIMIT 12`,value===undefined?[sessionId]:[sessionId,value])).map(summary);
+      if(title!==undefined)return bucket(' AND c.title=?',title);
+      const inTask=await bucket(' AND c.task_id=?',taskId);
+      return inTask.length?inTask:bucket('');
+    },
     view:(sessionId:string,id:string,revision?:number)=>view(sql,sessionId,id,revision),
+    viewWithin:view,
+    installDraft:(work:Sql,sessionId:string,id:string,priorRevision:number,snapshot:Snapshot)=>install(work,sessionId,id,priorRevision,'draft',snapshot),
     async history(sessionId:string,id:string):Promise<MockExamHistoryEntry[]> {
       const read=async(work:Sql)=>{
         await view(work,sessionId,id);
@@ -157,7 +173,7 @@ export function createMockExamState(sql:Sql) {
       return write(async work=>{
         fence();
         await allowed(work,owner.sessionId);
-        await activeOwner(work,owner);
+        await assertMockExamRun(work,owner);
         const [prior]=await work.all('SELECT id,call_id FROM mock_exam_compilations WHERE run_id=? AND session_id=?',[owner.runId,owner.sessionId]);
         if(prior){
           const previous=await view(work,owner.sessionId,String(prior.id));
@@ -178,17 +194,14 @@ export function createMockExamState(sql:Sql) {
       if(initial.summary.revision!==expectedRevision||initial.summary.digest!==digest)throw Error('version_conflict');
       const next=corrected(initial,changes), included=next.entries.filter(item=>item.include);
       const signal=AbortSignal.timeout(80_000);
-      await verifyOriginals(included,verify,signal);
+      await verifyMockExamOriginals(included,verify,signal);
       return write(async work=>{
         const current=await view(work,sessionId,id);
         if(current.summary.digest!==digest||current.summary.revision!==initial.summary.revision)throw Error('version_conflict');
         for(const entry of included)await assertMockExamSource(work,entry);
         signal.throwIfAborted();
         if(current.summary.state==='confirmed'&&protocolHash(next)===digest)return current;
-        const revision=current.summary.revision+1;
-        await append(work,id,revision,'confirmed',next);
-        await work.run('UPDATE mock_exam_compilations SET revision=? WHERE id=? AND revision=?',[revision,id,revision-1]);
-        return view(work,sessionId,id);
+        return install(work,sessionId,id,current.summary.revision,'confirmed',next);
       });
     },
     async restore(sessionId:string,id:string,expectedRevision:number,digest:string,sourceRevision:number,sourceDigest:string,verify:Verify) {
@@ -198,16 +211,13 @@ export function createMockExamState(sql:Sql) {
       if(source.summary.digest!==sourceDigest)throw Error('version_conflict');
       const snapshot=restoreSnapshot(source,initial),included=snapshot.entries.filter(entry=>entry.include);
       const signal=AbortSignal.timeout(80_000);
-      await verifyOriginals(included,verify,signal);
+      await verifyMockExamOriginals(included,verify,signal);
       return write(async work=>{
         const current=await view(work,sessionId,id);
         if(current.summary.digest!==digest||current.summary.revision!==expectedRevision)throw Error('version_conflict');
         for(const entry of included)await assertMockExamSource(work,entry);
         signal.throwIfAborted();
-        const revision=expectedRevision+1;
-        await append(work,id,revision,'draft',snapshot);
-        await work.run('UPDATE mock_exam_compilations SET revision=? WHERE id=? AND revision=?',[revision,id,expectedRevision]);
-        return view(work,sessionId,id);
+        return install(work,sessionId,id,expectedRevision,'draft',snapshot);
       });
     },
   };

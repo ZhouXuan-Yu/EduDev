@@ -551,3 +551,21 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 上轮 `configuration` 由隔离开发工作树中 `omni-edu-ocr.exe` 和 `_internal/base_library.zip` 摘要不匹配引起。原件已在验收根备份。替换件按仓库锁定清单复核，712 个文件校验一致，见 `ocr-recovery.json`。应用源代码的校验逻辑未改。首次工作台测试的冷启定位器仍引用旧窗口，失败记录保留，最终用新窗口定位完成。使用本地合成模型，0 付费请求。生产依赖审计仍为既有 20 项，其中 2 项 high，无依赖变更。
 
 本小项 **已实现**。验收证据集中于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-workbench`，验收窗口、CMD 及步骤在 `manual-phase4-mock-exam-workbench`。对话局部修订、实际导出以及真实 PDF 的缺页、扫描、分栏、公式和图表仍待完成。
+
+## Phase 4.3 从对话精确修订目录
+
+老师在原对话可以要求修正某份卷的分类或收录状态。小智先读明确目录与原件身份，再提交受限的字段差异。原轮成功结束后老师核对，应用时生成同一目录的新待核对版本。源文件、答案册配对、解析信息、使用许可和无关条目保持各自原来的记录。同名目录交给老师选择。
+
+`mock_exam_edit_reviews` 为增量表。提案与会话、任务、Run、generation、原工具调用和摘要绑定。教师决定与目录新版本同事务保存。拒绝、停止、来源变化和旧版本提案不产生新目录版本。成功轮次的待核建议在重启后仍可处理。回退到旧构建，已保存的目录新版本仍可查看。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-edit-routing` | 构建及 TypeScript 检查通过。主进程 SHA-256 `bfe42162e302ede72aef4f9111ec437a27cce5e44f4d3c1c326a9e3420008ab5`。 |
+| `node scripts/education/mock-exam-edit-electron.mjs` | 最终构建 6/6。基于上一版已验证的真实 SQLite 和七份合成 PDF，修改从真实桌面对话发起，保留原任务，1366×768 可核对差异，1920×1080 冷启应用。核对其他条目、旧版本、重复应用、拒绝、提权拦截、原件和版本冲突、停止、同名目录歧义。见 `mock-exam-edit-Rm2ytY/report.json`。 |
+| `node scripts/education/mock-exam-catalog-electron.mjs --pdf-text` | 最终构建 7/7。实际 PDF 解析、确认、工作台、任务跳转、右栏和历史恢复回归，见 `mock-exam-catalog-MMjoRS/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253，见 `renderer.log`。路由定向修正在主进程，最终构建的组件产物与组件测试时使用的修订样式相同。 |
+| `node scripts/electron-smoke.mjs` | 207/207，`electron-smoke.log` 的 `ok` 为 `true`。综合回归使用路由定向修正前的构建，最终修订与目录两个专项使用修正后的同一构建。 |
+
+验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-edit`。手动验收窗口、CMD 和步骤在 `manual-phase4-mock-exam-edit`，已保留待核对建议。首轮克隆测试打开了另一条会话。复测发现「只改」命中创建而非修订，已修正。Pi 对越权字段的原生文本错误加入测试断言。失败报告保留。使用本地合成模型响应，0 付费请求。生产依赖审计为既有 20 项，其中 2 项 high，无依赖变更。
+
+对话精确修订 **已实现**。继续 Phase 4.3 的实际文件导出，以及真实扫描、缺页、分栏、公式与图表质量验收。

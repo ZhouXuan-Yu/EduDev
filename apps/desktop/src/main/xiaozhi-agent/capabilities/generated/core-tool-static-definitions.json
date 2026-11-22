@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "2f702ea304279d63846d53ec248309a2af5a0ccea62e7c07c2b0be3ff5e17160",
+  "sourceFingerprint": "32825122d44268bfe47c754f0809fb3af4bdfc820cb497c8806efce79544e700",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -1030,6 +1030,155 @@
       }
     },
     {
+      "name": "education_propose_mock_exam_edit",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "catalogId": {
+            "pattern": "^mock_catalog_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "additionalProperties": false,
+              "minProperties": 2,
+              "properties": {
+                "district": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "黄浦区",
+                        "徐汇区",
+                        "长宁区",
+                        "静安区",
+                        "普陀区",
+                        "虹口区",
+                        "杨浦区",
+                        "闵行区",
+                        "宝山区",
+                        "嘉定区",
+                        "浦东新区",
+                        "金山区",
+                        "松江区",
+                        "青浦区",
+                        "奉贤区",
+                        "崇明区"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "grade": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "六年级",
+                        "七年级",
+                        "八年级",
+                        "九年级",
+                        "高一",
+                        "高二",
+                        "高三"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "include": {
+                  "type": "boolean"
+                },
+                "resourceId": {
+                  "maxLength": 128,
+                  "type": "string"
+                },
+                "round": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "一模",
+                        "二模",
+                        "三模",
+                        "四模",
+                        "其他模拟"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "subject": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "语文",
+                        "数学",
+                        "英语",
+                        "物理",
+                        "化学",
+                        "生物",
+                        "历史",
+                        "地理",
+                        "政治",
+                        "道德与法治",
+                        "信息技术",
+                        "科学"
+                      ],
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "year": {
+                  "anyOf": [
+                    {
+                      "maximum": 2100,
+                      "minimum": 1990,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "resourceId"
+              ],
+              "type": "object"
+            },
+            "maxItems": 6,
+            "minItems": 1,
+            "type": "array"
+          },
+          "digest": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "catalogId",
+          "revision",
+          "digest",
+          "changes"
+        ],
+        "type": "object"
+      }
+    },
+    {
       "name": "education_read_classroom",
       "parameters": {
         "additionalProperties": false,
@@ -1105,6 +1254,24 @@
           "resourceId",
           "page"
         ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_mock_exam_for_edit",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "catalogId": {
+            "pattern": "^mock_catalog_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
         "type": "object"
       }
     },

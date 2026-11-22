@@ -9,6 +9,7 @@ import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {PROPOSE_HANDOUT_EDIT,READ_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
+import {PROPOSE_MOCK_EXAM_EDIT,READ_MOCK_EXAM_EDIT} from '../../shared/mock-exam-edit';
 import fs from 'node:fs';
 import {ensureNativePlanContract,ensureNativeTaskContract,withPlanBasisReference} from './plan-native';
 import {taskEnvelope} from './tasks/tool-envelope';
@@ -127,6 +128,7 @@ export interface PiXiaozhiOptions {
   educationCapabilityTools?: ToolDefinition[];
   teachingHandoutTool?: ToolDefinition;
   mockExamTool?:ToolDefinition;
+  mockExamEditTools?:ToolDefinition[];
   handoutExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   handoutEditTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   capabilityTools?: ToolDefinition[];
@@ -593,6 +595,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(options.mockExamTool.name);
     prompt+='\n上海年度模考汇编使用 education_build_mock_exam_catalog 整理本地原件。确认年份再调用，有明确学科年级时使用范围。目录保存后请教师从当轮卡片核对。不要声称已确认、题目已核验或已经导出。';
   }
+  if(options.mockExamEditTools){
+    if(options.mockExamEditTools.map(tool=>tool.name).join(',')!==[READ_MOCK_EXAM_EDIT,PROPOSE_MOCK_EXAM_EDIT].join(','))throw Error('configuration');
+    names.push(READ_MOCK_EXAM_EDIT,PROPOSE_MOCK_EXAM_EDIT);
+    prompt+='\n修订老师指定的模考目录时，先 education_read_mock_exam_for_edit 读当前目录及条目，再 education_propose_mock_exam_edit 提交明确的局部字段。目标不唯一先问老师。提交成功后告知去本轮审阅卡，不得声称已应用、确认或获得使用许可。';
+  }
   if(options.handoutExportTools){
     names.push(READ_TEACHING_HANDOUT,EXPORT_TEACHING_HANDOUT);
     prompt+='\n老师要求导出已有讲义时，先用 education_read_teaching_handout 核对其当前已确认版本，再用 education_export_teaching_handout 提交 Word。老师要求新编讲义后导出时，先制作新草稿，等待老师确认该稿，再导出。一个受众用 saved_office，学生版加教师版用 saved_bundle。仅根据实际文件回执报告结果。';
@@ -918,6 +925,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
   if(options.mockExamTool)definitions.push(options.mockExamTool);
+  if(options.mockExamEditTools)definitions.push(...options.mockExamEditTools);
   if(options.handoutEditTools){
     const editTools=options.handoutEditTools(action=>budget!.wait(action));
     if(editTools.length!==2||editTools[0].name!==READ_HANDOUT_EDIT||editTools[1].name!==PROPOSE_HANDOUT_EDIT)throw Error('configuration');

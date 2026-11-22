@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考修订由 Pi 读取当前目录并提交定向提案。`mock_exam_edit_reviews` 保存提案与审阅结果，Journal 依原任务 Run、generation、调用及摘要核对副作用。应用追加原目录表的新版本并同事务记录决定。 [修订合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-从对话精确修订目录)
+
 模考目录使用 Pi 原任务调用宿主的本地候选查询。SQLite 追加目录快照及原工具回执，原件、结构和答案册关系继续使用资料库事实。教师确认绑定当前目录摘要并复查被收录原件及其答案册。 [模考目录合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-上海模考年度目录)
 
 工作台从目录的当前版本派生列表及来源任务关联。历史快照可只读打开，恢复检查目标和当前摘要并追加待核对版本，许可沿当前版本保留。 [模考版本合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-成果工作台与目录版本)
