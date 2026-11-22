@@ -9,6 +9,7 @@ import {xiaozhiToolLabel} from '../../shared/xiaozhi-projection';
 import {readWorkbenchHome} from './workbench-home';
 import type {TeachingFileCatalogEntry} from '../../shared/contracts';
 import {readWorkbenchArtifactLinks} from './workbench-artifact-links';
+import {mockExamWorkbenchRows} from '../education/mock-exam-state';
 
 type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail' | 'home' | 'task_artifacts' | 'artifact_tasks'}>;
 type Cursor = {v: 1; query: string; key: string; id: string};
@@ -100,6 +101,13 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
           return {...page(read, input, items, items.filter(item => state === 'all' || item.state === state),
             stateCounts(items, item => item.state, ['pending', 'approved', 'executing', 'executed', 'rejected', 'invalidated', 'uncertain', 'failed', 'interrupted', 'verified']),
             item => ({key: item.updatedAt, id: item.kind + ':' + item.sessionId + ':' + item.id})), kind: input.kind};
+        }
+        if (input.kind === 'mock_exam_catalogs') {
+          const items=await mockExamWorkbenchRows(read.sql,input.sessionId);
+          const terms=(input.query||'').trim().toLocaleLowerCase().split(/\s+/u).filter(Boolean);
+          const matches=items.filter(item=>terms.every(term=>item.title.toLocaleLowerCase().includes(term)));
+          return {...page(read,input,items,matches,stateCounts(items,item=>item.state,['draft','confirmed']),
+            item=>({key:item.updatedAt,id:item.id})),kind:input.kind};
         }
         const context = await workbenchTaskContext(read, input), {items, registryRevision} = await readWorkbenchCapabilities(read, context);
         const search = (input.query || '').trim().toLocaleLowerCase();

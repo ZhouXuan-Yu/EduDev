@@ -136,6 +136,8 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     ? host.handoutEdits.decide(input) : {ok:false,error:'permission_denied',message:handoutEditErrors.permission_denied});
   const mockExamDenied={ok:false,error:'permission_denied',message:mockExamErrors.permission_denied};
   options.ipcMain.handle('xiaozhi:mock-exam-review',(event,input)=>fromMain(event)?host.mockExam.view(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-history',(event,input)=>fromMain(event)?host.mockExam.history(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-restore',(event,input)=>fromMain(event)?host.mockExam.restore(input):mockExamDenied);
   options.ipcMain.handle('xiaozhi:mock-exam-confirm',(event,input)=>fromMain(event)?host.mockExam.confirm(input):mockExamDenied);
   options.ipcMain.handle('xiaozhi:mock-exam-original',async(event,input)=>{
     if(!fromMain(event))return mockExamDenied;

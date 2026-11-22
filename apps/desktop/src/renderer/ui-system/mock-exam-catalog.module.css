@@ -67,3 +67,28 @@
   justify-items: start;
   align-content: center;
 }
+.versions {
+  padding-block-start: .6rem;
+  border-block-start: 1px solid var(--border);
+}
+.versions summary {
+  cursor: pointer;
+}
+.versions ol {
+  margin-block: .5rem;
+  padding-inline: 0;
+  list-style: none;
+}
+.versions ol > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .4rem;
+  padding: .3rem .15rem;
+}
+.historyPreview {
+  padding: .65rem;
+  border: 1px solid var(--border);
+  border-radius: .55rem;
+}

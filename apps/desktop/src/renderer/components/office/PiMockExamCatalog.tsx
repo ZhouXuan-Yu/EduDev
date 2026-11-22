@@ -2,6 +2,8 @@ import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {LibraryBig} from 'lucide-react';
 import {DisclosureCard} from '../ui/DisclosureCard';
+import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/DesktopFrame';
+import {PiMockExamVersions} from './PiMockExamVersions';
 import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
@@ -43,17 +45,35 @@ function ExamFields({entry,change,update}:{entry:MockExamEntry;change:MockExamCa
   </div>;
 }
 
-export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh}:{
+export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialCatalog,startOpen=false,showHistory=false,anchor=false,revealIntent}:{
   summary:MockExamCatalogSummary;sessionId:string;disabled:boolean;onRefresh:()=>Promise<void>;
+  initialCatalog?:MockExamCatalog;startOpen?:boolean;showHistory?:boolean;anchor?:boolean;revealIntent?:number;
 }){
-  const [open,setOpen]=useState(false),[catalog,setCatalog]=useState<MockExamCatalog>();
-  const [edits,setEdits]=useState<MockExamCatalogChange[]>([]),[active,setActive]=useState('');
+  const navigation=useDesktopNavigation();
+  const [open,setOpen]=useState(startOpen),[catalog,setCatalog]=useState(initialCatalog);
+  const [edits,setEdits]=useState<MockExamCatalogChange[]>(()=>initialCatalog?draftOf(initialCatalog):[]),[active,setActive]=useState('');
   const [revising,setRevising]=useState(false),[reading,setReading]=useState(false),[saving,setSaving]=useState(false);
   const [issue,setIssue]=useState(''),[retry,setRetry]=useState(0);
   const lock=useRef(false);
-  const loaded=useRef('');
+  const loaded=useRef(initialCatalog?[sessionId,summary.id,summary.revision,0].join('|'):'');
   const current=catalog?.summary??summary;
   const canEdit=current.state==='draft'||revising;
+  const dirty=Boolean(catalog&&JSON.stringify(edits)!==JSON.stringify(draftOf(catalog)));
+  useDesktopNavigationGuard(startOpen&&(dirty||saving),'先确认或放弃当前目录修改，再离开。');
+  const identity={schemaVersion:MOCK_EXAM_SCHEMA,sessionId,id:summary.id} as const;
+  const domId=anchor?`catalog-${summary.id}`:undefined;
+
+  useEffect(()=>{
+    if(revealIntent===undefined||!domId)return;
+    setOpen(true);
+    const frame=requestAnimationFrame(()=>document.getElementById(domId)?.scrollIntoView({block:'nearest'}));
+    return()=>cancelAnimationFrame(frame);
+  },[domId,revealIntent]);
+
+  async function sync(next:MockExamCatalog){
+    setCatalog(next);setEdits(draftOf(next));setRevising(false);setActive('');
+    await onRefresh();
+  }
   useEffect(()=>{
     if(!open)return;
     const key=[sessionId,summary.id,summary.revision,retry].join('|');
@@ -84,13 +104,13 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh}:{
     try{
       const result=await window.omniEdu?.confirmMockExamCatalog({schemaVersion:MOCK_EXAM_SCHEMA,sessionId,id:summary.id,
         revision:catalog.summary.revision,digest:catalog.summary.digest,changes:edits});
-      if(result?.ok){setCatalog(result.value);setEdits(draftOf(result.value));setRevising(false);setActive('');await onRefresh();}
+      if(result?.ok)await sync(result.value);
       else setIssue(result?.message||'目录确认未提交。');
     }catch{setIssue('暂时无法核对保存状态，请重新读取。');}
     finally{lock.current=false;setSaving(false);}
   }
 
-  return <DisclosureCard isExpanded={open} onExpandedChange={setOpen} data-testid="pi-mock-exam-catalog" title={
+  return <DisclosureCard id={domId} isExpanded={open} onExpandedChange={setOpen} data-testid="pi-mock-exam-catalog" title={
     <span className={styles.heading}>
       <LibraryBig size={17} aria-hidden="true"/>
       <span>
@@ -118,6 +138,7 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh}:{
                 {entry.structure.pages?(' '+entry.structure.processed+'/'+entry.structure.pages+' 页'):''}
                 {entry.structure.held?(' · '+entry.structure.held+' 处待核'):''} · {answers[entry.answer.state]} · {permissions[edit.permission]}</span>
               {entry.copies>1&&<span>{entry.copies} 份同内容文件已合为一条</span>}
+              {entry.answer.title&&<span>答案册　{entry.answer.title}</span>}
               {!edit.include&&<span>未收录</span>}
               {edit.include&&key&&duplicates.has(key)&&<span>有另一份同轮次文件</span>}
               {entry.conflicts.length>0&&<span>待核对字段　{entry.conflicts.map(field=>labels[field]).join('、')}</span>}
@@ -135,10 +156,14 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh}:{
           })}
         </ul>
         <div className={styles.actions}>
+          {anchor&&<Button variant="ghost" size="sm" isDisabled={saving} data-testid="mock-exam-open-workbench" onPress={()=>navigation.navigate({view:'artifacts',mockExam:{id:summary.id,sessionId}})}>在教学工作台打开</Button>}
+          {canEdit&&dirty&&<Button variant="ghost" size="sm" isDisabled={saving} onPress={()=>{setEdits(draftOf(catalog));setActive('');setIssue('');}}>放弃本次修改</Button>}
           {canEdit?<Button variant="primary" size="sm" isDisabled={disabled||saving||reading} data-testid="mock-exam-confirm"
             onPress={()=>void save()}>{saving?'正在复核原件…':'确认目录'}</Button>:
             <Button variant="secondary" size="sm" isDisabled={disabled||reading} data-testid="mock-exam-revise" onPress={()=>setRevising(true)}>修订目录</Button>}
         </div>
+        {catalog.restoredFrom&&<p role="status">当前内容恢复自第 {catalog.restoredFrom} 版。</p>}
+        {showHistory&&<PiMockExamVersions identity={identity} current={current} blocked={disabled||dirty||saving||reading} onRestore={sync}/>}
       </>}
       {issue&&<p role="alert" data-testid="mock-exam-error">{issue} <Button size="sm" variant="ghost" isDisabled={saving}
         onPress={()=>setRetry(value=>value+1)}>重新读取</Button></p>}

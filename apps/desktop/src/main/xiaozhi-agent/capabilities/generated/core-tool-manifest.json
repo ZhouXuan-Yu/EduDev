@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "06bfcc02f5fc8f500832ccdcaaceb1390cbac9f343145e122c33707633ce4086",
+  "sourceHash": "d6a030b274a13d533bcb9469191819272445326cdcb8f2568e2855abd15947eb",
   "sources": [
     {
       "file": "package-lock.json",
@@ -184,7 +184,7 @@
     },
     {
       "file": "src/main/education/mock-exam-catalog.ts",
-      "sha256": "5144581f97b7d962810e0cd936d897521e77eda8f29c9113dd0c0e17922d46cd"
+      "sha256": "ebcc794b285a66c593977ab827963c77cb125fba2e2308705b609e3ab0aac910"
     },
     {
       "file": "src/main/education/mock-exam-metadata.ts",
@@ -196,7 +196,7 @@
     },
     {
       "file": "src/main/education/mock-exam-state.ts",
-      "sha256": "1854875b38a94df1fcd6d7a9aa951e2f9c6dd7bd9ba270da9ad1fe4dfc685ff4"
+      "sha256": "b19ed9e2d31036785aeaa8e392aa60e0d526d65ebc67ddaa10d14100124eb56c"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -780,7 +780,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "d8a24f82b695ece07719fa294bb7be7c8115db439289a4b0f73ba57dba84d359"
+      "sha256": "d7ebfa9aa0d0b1cae16cbc2df6064986bf61ff465408600689d9f70af021a405"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1512,7 +1512,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "6fb9f3b23af21f3fddd8fab17309b752558c10cf6b2de6c712df579d6b404553"
+      "sha256": "0cdac63135dfda61588d0258cc955d01461d93737054475875cfffa599b05d2a"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2256,7 +2256,7 @@
     },
     {
       "file": "src/shared/mock-exam-compilation.ts",
-      "sha256": "eb17e34cc703a0be186bd9c0dd35923d368d41001b6103e00dfcc50d772888f7"
+      "sha256": "1cd7313f756a3cc9c4becb21361dd65839cc50bcc2f8753d574ce6e4e09df451"
     },
     {
       "file": "src/shared/model-reasoning.ts",

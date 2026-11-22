@@ -48,7 +48,8 @@ import type {LearningHistoryInput,LearningHistoryPage,LearningReviewInput,Learni
 import type {QuestionCollectionInput,QuestionCollectionDecision,QuestionCollectionResult,QuestionCollectionView} from '../shared/question-collection';
 import type {QuestionReviewInput,QuestionReviewDecision,QuestionReviewResult,QuestionReviewSummary,QuestionReviewView} from '../shared/question-review';
 import type {HandoutEditDecision,HandoutEditRequest,HandoutEditResult,HandoutEditReview,HandoutEditSummary} from '../shared/teaching-handout-edit';
-import type {MockExamCatalog,MockExamCatalogConfirm,MockExamCatalogKey,MockExamCatalogOriginal,MockExamResult} from '../shared/mock-exam-compilation';
+import type {MockExamCatalog,MockExamCatalogConfirm,MockExamCatalogKey,MockExamCatalogOriginal,MockExamCatalogRead,
+  MockExamCatalogRestore,MockExamHistoryEntry,MockExamResult} from '../shared/mock-exam-compilation';
 import type {PaperGenerationQuery,PaperGenerationContext,PaperCreateInput,PaperReviewInput,PaperDecision,PaperCancelInput,PaperCompareInput,PaperCompareView,PaperResult,PaperSummary,PaperView} from '../shared/paper-blueprint';
 import type {PracticeReviewInput,PracticeReviewDecision,PracticeReviewResult,PracticeReviewSummary,PracticeReviewView,PracticeSourceInput} from '../shared/practice-review';
 import type {StudentTrainingInput,StudentTrainingSource,StudentTrainingResultInput,StudentTrainingView,StudentTrainingEvidence,StudentTrainingReceipt} from '../shared/student-training';
@@ -328,7 +329,9 @@ const api = {
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
   reviewHandoutEdit:(input:HandoutEditRequest)=>ipcRenderer.invoke('xiaozhi:handout-edit-review',input) as Promise<HandoutEditResult<HandoutEditReview>>,
   decideHandoutEdit:(input:HandoutEditDecision)=>ipcRenderer.invoke('xiaozhi:handout-edit-decide',input) as Promise<HandoutEditResult<HandoutEditSummary>>,
-  reviewMockExamCatalog:(input:MockExamCatalogKey)=>ipcRenderer.invoke('xiaozhi:mock-exam-review',input) as Promise<MockExamResult<MockExamCatalog>>,
+  reviewMockExamCatalog:(input:MockExamCatalogRead)=>ipcRenderer.invoke('xiaozhi:mock-exam-review',input) as Promise<MockExamResult<MockExamCatalog>>,
+  listMockExamHistory:(input:MockExamCatalogKey)=>ipcRenderer.invoke('xiaozhi:mock-exam-history',input) as Promise<MockExamResult<MockExamHistoryEntry[]>>,
+  restoreMockExamVersion:(input:MockExamCatalogRestore)=>ipcRenderer.invoke('xiaozhi:mock-exam-restore',input) as Promise<MockExamResult<MockExamCatalog>>,
   confirmMockExamCatalog:(input:MockExamCatalogConfirm)=>ipcRenderer.invoke('xiaozhi:mock-exam-confirm',input) as Promise<MockExamResult<MockExamCatalog>>,
   revealMockExamOriginal:(input:MockExamCatalogOriginal)=>ipcRenderer.invoke('xiaozhi:mock-exam-original',input) as Promise<MockExamResult<true>>,
   listPaperBasketsV2: (input: PaperBasketV2ListInput) => ipcRenderer.invoke('education:paper-basket-v2-list', input) as ReturnType<PaperBasketV2Api['listPaperBasketsV2']>,

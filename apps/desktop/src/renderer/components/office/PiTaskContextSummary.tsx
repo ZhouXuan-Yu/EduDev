@@ -7,6 +7,7 @@ import {PiPaperReview} from './PiPaperReview';
 import {paperReviewVersions} from './paper-review-versions';
 import {PiClassroomPlanReview} from './PiClassroomPlanReview';
 import {PiTeachingHandout} from './PiTeachingHandout';
+import {PiMockExamCatalog} from './PiMockExamCatalog';
 
 const stepLabels:Record<TaskStepState,string>={pending:'待执行',executing:'执行中',waiting_dependency:'等待前置步骤',needs_check:'待核对',verified:'已核验',needs_fix:'需修正'};
 const taskLabels={active:'执行中',review_required:'待教师核对',paused:'已暂停',interrupted:'未完成',completed:'教师已确认',ended:'已结束'};
@@ -43,6 +44,9 @@ export function PiTaskContextSummary({snapshot,scope,onRefresh}:{snapshot:Xiaozh
     {classroomPlans.map(review=><PiClassroomPlanReview key={review.rootId} review={review} compact/>)}
     {snapshot.teachingHandouts?.filter(item=>item.taskId===task.id&&runIds.has(item.runId))
       .map(handout=><PiTeachingHandout key={handout.bookId} handout={handout} compact/>)}
+    {snapshot.mockExamCatalogs?.filter(item=>item.taskId===task.id&&runIds.has(item.runId))
+      .map(catalog=><PiMockExamCatalog key={catalog.id} summary={catalog} sessionId={task.sessionId}
+        disabled={snapshot.running} onRefresh={onRefresh}/>)}
     {collection&&<section data-testid="pi-context-questions" data-collection-id={collection.id}>
       <h4>{collection.purpose==='explanation'?'讲解题目':'题目收集'}</h4><p>{collection.title}</p>
       <p>{collection.count}/{collection.required} 题 · {collection.state==='confirmed'?'已确认':collection.state==='rejected'?'已拒绝':collection.phase==='drafting'?'整理中':'待教师核对'}</p>

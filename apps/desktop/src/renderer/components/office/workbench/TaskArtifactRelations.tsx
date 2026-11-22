@@ -29,7 +29,8 @@ function RelationList({query,refreshKey}:{query:Query;refreshKey?:number}) {
       {relations.kind==='task_artifacts'?relations.items.map(link=><li key={link.relation+':'+link.artifactId}>
         <span>{link.relation==='produced'?'产出':'引用'}{link.restored?' · 历史版本还原':''}</span>
         <Button size="sm" variant="ghost" data-testid="task-related-artifact" data-artifact-id={link.artifactId} isDisabled={!link.currentArtifactId}
-          onPress={()=>navigation.navigate({view:'artifacts',artifactId:link.currentArtifactId!,artifactVersionId:link.version===null?undefined:link.artifactId})}>
+          onPress={()=>navigation.navigate(link.kind==='mock_exam'?{view:'artifacts',mockExam:{id:link.artifactId,sessionId:link.sessionId}}:
+            {view:'artifacts',artifactId:link.currentArtifactId!,artifactVersionId:link.version===null?undefined:link.artifactId})}>
           {link.title||'未命名成果'}{link.version===null?'':` · 第 ${link.version} 版`}
         </Button>
       </li>):relations.items.map(link=><li key={link.relation+':'+link.taskId}>

@@ -17,8 +17,12 @@ export type MockExamEntry={resourceId:string;version:string;title:string;evidenc
 };
 export type MockExamCatalogSummary={schemaVersion:typeof MOCK_EXAM_SCHEMA;id:string;runId:string;taskId:string;title:string;
   revision:number;state:'draft'|'confirmed';count:number;digest:string};
-export type MockExamCatalog={summary:MockExamCatalogSummary;scope:MockExamScope;entries:MockExamEntry[];unlinkedAnswers:number;limited:boolean};
-export type MockExamCatalogKey={schemaVersion:typeof MOCK_EXAM_SCHEMA;sessionId:string;id:string};
+export type MockExamCatalog={summary:MockExamCatalogSummary;scope:MockExamScope;entries:MockExamEntry[];unlinkedAnswers:number;limited:boolean;restoredFrom?:number};
+export type MockExamCatalogRef={sessionId:string;id:string};
+export type MockExamCatalogKey=MockExamCatalogRef&{schemaVersion:typeof MOCK_EXAM_SCHEMA};
+export type MockExamCatalogRead=MockExamCatalogKey&{revision?:number};
+export type MockExamHistoryEntry=Pick<MockExamCatalogSummary,'revision'|'state'|'count'|'digest'>&{savedAt:string;restoredFrom?:number};
+export type MockExamCatalogRestore=MockExamCatalogKey&{revision:number;digest:string;sourceRevision:number;sourceDigest:string};
 export type MockExamCatalogChange={resourceId:string;metadata:MockExamMetadata;include:boolean;permission:MockExamEntry['permission']};
 export type MockExamCatalogConfirm=MockExamCatalogKey&{revision:number;digest:string;changes:MockExamCatalogChange[]};
 export type MockExamCatalogOriginal=MockExamCatalogKey&{resourceId:string};
@@ -37,6 +41,8 @@ export function validMockExamMetadata(value:unknown):value is MockExamMetadata {
     (data.grade===null||member(MOCK_EXAM_GRADES,data.grade))&&(data.round===null||member(MOCK_EXAM_ROUNDS,data.round));
 }
 export const catalogId=(value:unknown):value is string=>typeof value==='string'&&/^mock_catalog_[a-f0-9-]{36}$/u.test(value);
+export const mockExamRevision=(value:unknown):value is number=>typeof value==='number'&&Number.isSafeInteger(value)&&value>0;
+export const mockExamDigest=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
 export const mockExamParameters={type:'object',additionalProperties:false,required:['year'],properties:{
   year:{type:'integer',minimum:1990,maximum:2100},subject:{type:'string',enum:MOCK_EXAM_SUBJECTS},grade:{type:'string',enum:MOCK_EXAM_GRADES},
 }};
@@ -48,6 +54,7 @@ export const mockExamErrors:Record<string,string>={
   scope_changed:'保留的试卷超出当前目录范围，请核对元数据或取消收录。',
   source_changed:'原件、页面状态或答案册配对发生变化。请重新生成目录后核对。',
   version_conflict:'目录版本已变化，请重新读取。',
+  history_missing:'找不到这份历史版本，请重新读取。',
   permission_denied:'当前窗口或会话无法操作这份目录。',
   configuration:'暂时无法处理模考目录，请重新读取。',
 };

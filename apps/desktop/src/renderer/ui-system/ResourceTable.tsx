@@ -17,6 +17,7 @@ export function ResourceTable({
   empty,
   testPrefix,
   className,
+  typeLabel = '格式',
 }: {
   label: string;
   rows: ResourceTableRow[];
@@ -27,6 +28,7 @@ export function ResourceTable({
   testPrefix: string;
   /** Optional layout owned by this caller; never affects the other catalogues. */
   className?: string;
+  typeLabel?: string;
 }) {
   return (
     <div className={['edu-resource-table', className].filter(Boolean).join(' ')}>
@@ -34,7 +36,7 @@ export function ResourceTable({
         <thead>
           <tr>
             <th>名称</th>
-            <th>格式</th>
+            <th>{typeLabel}</th>
             <th>处理状态</th>
           </tr>
         </thead>

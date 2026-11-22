@@ -1,7 +1,7 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
-import {BUILD_MOCK_EXAM_CATALOG,MOCK_EXAM_SCHEMA,catalogId,mockExamErrors,mockExamParameters,
+import {BUILD_MOCK_EXAM_CATALOG,MOCK_EXAM_SCHEMA,catalogId,mockExamDigest,mockExamErrors,mockExamParameters,mockExamRevision,
   validMockExamMetadata,validMockExamScope,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
-  type MockExamResult} from '../../shared/mock-exam-compilation';
+  type MockExamHistoryEntry,type MockExamResult} from '../../shared/mock-exam-compilation';
 import {materialId} from '../../shared/materials';
 import {plainStudentInput} from '../../shared/student-context';
 import type {createMockExamState} from './mock-exam-state';
@@ -27,15 +27,28 @@ export function createMockExamCatalog(options:{state:ReturnType<typeof createMoc
   verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>}) {
   return {
     async view(input:unknown):Promise<MockExamResult<MockExamCatalog>> {
+      if(!plainStudentInput(input,['schemaVersion','sessionId','id','revision'])||input.schemaVersion!==MOCK_EXAM_SCHEMA||
+        !validSession(input.sessionId)||!catalogId(input.id)||input.revision!==undefined&&!mockExamRevision(input.revision))return failure(Error('invalid_input'));
+      try{return {ok:true,value:await options.state.view(input.sessionId,input.id,input.revision as number|undefined)};}
+      catch(error){return failure(error);}
+    },
+    async history(input:unknown):Promise<MockExamResult<MockExamHistoryEntry[]>> {
       if(!plainStudentInput(input,['schemaVersion','sessionId','id'])||input.schemaVersion!==MOCK_EXAM_SCHEMA||
         !validSession(input.sessionId)||!catalogId(input.id))return failure(Error('invalid_input'));
-      try{return {ok:true,value:await options.state.view(input.sessionId,input.id)};}
+      try{return {ok:true,value:await options.state.history(input.sessionId,input.id)};}
+      catch(error){return failure(error);}
+    },
+    async restore(input:unknown):Promise<MockExamResult<MockExamCatalog>> {
+      if(!plainStudentInput(input,['schemaVersion','sessionId','id','revision','digest','sourceRevision','sourceDigest'])||input.schemaVersion!==MOCK_EXAM_SCHEMA||
+        !validSession(input.sessionId)||!catalogId(input.id)||!mockExamRevision(input.revision)||!mockExamRevision(input.sourceRevision)||
+        input.sourceRevision>=input.revision||!mockExamDigest(input.digest)||!mockExamDigest(input.sourceDigest))return failure(Error('invalid_input'));
+      try{return {ok:true,value:await options.state.restore(input.sessionId,input.id,input.revision,input.digest,input.sourceRevision,input.sourceDigest,options.verify)};}
       catch(error){return failure(error);}
     },
     async confirm(input:unknown):Promise<MockExamResult<MockExamCatalog>> {
       if(!plainStudentInput(input,['schemaVersion','sessionId','id','revision','digest','changes'])||input.schemaVersion!==MOCK_EXAM_SCHEMA||
-        !validSession(input.sessionId)||!catalogId(input.id)||typeof input.revision!=='number'||!Number.isSafeInteger(input.revision)||input.revision<1||
-        typeof input.digest!=='string'||!/^[a-f0-9]{64}$/u.test(input.digest)||!Array.isArray(input.changes)||input.changes.length<1||
+        !validSession(input.sessionId)||!catalogId(input.id)||!mockExamRevision(input.revision)||
+        !mockExamDigest(input.digest)||!Array.isArray(input.changes)||input.changes.length<1||
         input.changes.length>72||!input.changes.every(validChange))return failure(Error('invalid_input'));
       try{return {ok:true,value:await options.state.confirm(input.sessionId,input.id,input.revision,input.digest,input.changes,options.verify)};}
       catch(error){return failure(error);}

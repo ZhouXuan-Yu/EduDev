@@ -1615,7 +1615,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }, store.paperBasketsV2,paperReviews.changed),
     deliveryChecks:fileChecks,
     handoutEdits:{view:handoutEdits.view,decide:handoutEdits.decide},
-    mockExam:{view:mockExam.view,confirm:mockExam.confirm,original:mockExam.original},
+    mockExam:{view:mockExam.view,history:mockExam.history,restore:mockExam.restore,confirm:mockExam.confirm,original:mockExam.original},
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
     listPaperGenerationContexts:paperReviews.generationContexts,

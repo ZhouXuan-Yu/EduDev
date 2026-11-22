@@ -532,3 +532,22 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-catalog`。验收窗口、启动 CMD 及步骤在 `manual-phase4-mock-exam-catalog`。首轮 PDF 正文解析返回 `configuration`，首轮保留。复测用成功解析的 Markdown 测正文冲突，PDF 用于原件、未解析状态及配对检查。原件定位以实际 IPC 校验，到达操作系统调用时捕获所选路径。模型使用本地合成响应，付费请求 0 次。原有生产依赖审计 20 项，其中 2 项 high，无依赖变更。
 
 年度目录、独立版本和教师确认 **已实现**。回退到旧构建仍能读原资料、题本和讲义，新增目录使用新构建读取。成果工作台、对话修订、历史恢复、实际导出，以及真实 PDF 缺页、扫描和分栏专项继续在 Phase 4.3 执行。
+
+## Phase 4.3 模考成果工作台与目录版本
+
+教师可以从「教学工作台 → 教学文件 → 模考汇编」查找按实际目录版本显示的成果。从目录打开来源任务及原对话，从任务回到同一目录。当前任务右栏可查看试卷、答案册、地区、年份和解析状态。工作台使用既有只读查询，按目录 ID 和原 Run 关联，现有文件目录及版本链继续使用文件自己的身份。
+
+历史按原来保存的条目只读审阅。恢复把所选历史分类及收录选择保存为新待核对版本，保留恢复前版本以及当时的确认。当前禁止使用的条目不会重新收录。原件或答案册变化拒绝写入，当前或所选历史摘要不匹配也拒绝写入。没有新增表和数据迁移，回退构建时旧对象和快照仍保留。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-workbench-final` | 编译与 TypeScript 检查通过。主进程 SHA-256 `390ba9305b510ba25722f707968164926830c974a212d438532e5b5647038fc4`。 |
+| `node scripts/education/mock-exam-catalog-electron.mjs --pdf-text` | 最终构建 7/7，见 `mock-exam-catalog-EdR9Up/report.json`。七份合成 PDF 从资料库实际导入并解析。验证 PDF 正文和文件名冲突、工作台检索、双向任务关联、来源对话与右栏、历史只读、未保存保护、过期恢复、旧许可限制、原件已变拒绝恢复、冷启动。含 1366×768 和 1920×1080 截图。 |
+| `npm.cmd run test:renderer-components` | 253/253，见 `renderer-final.log`。 |
+| `node scripts/xiaozhi-agent/phase7-workbench-read-smoke.mjs` | 16/16。真实 SQLite 只读、任务、审批、能力查询及现有合同回归，见 `workbench-read.log`。 |
+| `node scripts/electron-smoke.mjs` | 本切片首个构建综合回归 207/207，双尺寸通过，见 `electron-smoke.log`。最终构建仅再改了导航提示清除及答案册名称展示，最终专项复验覆盖两处。 |
+| `node scripts/xiaozhi-agent/html-versions-electron.mjs --relations` | FAIL。当前构建与前一模块构建都在第一次 HTML 审批停于 `executing`，两次都未到达关联查询。见 `html-relations.log` 和 `html-relations-baseline.log`。保留为现有 HTML 专项未通过。 |
+
+上轮 `configuration` 由隔离开发工作树中 `omni-edu-ocr.exe` 和 `_internal/base_library.zip` 摘要不匹配引起。原件已在验收根备份。替换件按仓库锁定清单复核，712 个文件校验一致，见 `ocr-recovery.json`。应用源代码的校验逻辑未改。首次工作台测试的冷启定位器仍引用旧窗口，失败记录保留，最终用新窗口定位完成。使用本地合成模型，0 付费请求。生产依赖审计仍为既有 20 项，其中 2 项 high，无依赖变更。
+
+本小项 **已实现**。验收证据集中于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-workbench`，验收窗口、CMD 及步骤在 `manual-phase4-mock-exam-workbench`。对话局部修订、实际导出以及真实 PDF 的缺页、扫描、分栏、公式和图表仍待完成。

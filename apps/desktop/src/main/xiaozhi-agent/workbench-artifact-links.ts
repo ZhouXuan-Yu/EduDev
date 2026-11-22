@@ -6,6 +6,7 @@ import {createTextChangeState} from './text-change-state';
 import {textVersionFamilies} from './text-version-family';
 import {createTaskState} from './tasks/task-state';
 import {workbenchText, type WorkbenchRead} from './workbench-state';
+import {mockExamWorkbenchRows} from '../education/mock-exam-state';
 
 type Query = Extract<WorkbenchQuery, {kind: 'task_artifacts'|'artifact_tasks'}>;
 type Version = Omit<WorkbenchArtifactLink,'relation'> & {hash: string; producerRunId: string | null};
@@ -65,6 +66,12 @@ async function versions(read:WorkbenchRead, sessionId:string) {
   const legacy=await read.sql.all("SELECT id,title,content_hash FROM document_artifacts WHERE session_id=? AND status='exported'",[sessionId]);
   for(const row of legacy)if(typeof row.id==='string'&&typeof row.content_hash==='string'&&digest(row.content_hash)&&!result.has(row.id)) {
     result.set(row.id,{sessionId,artifactId:row.id,currentArtifactId:row.id,title:workbenchText(row.title),version:null,hash:row.content_hash,restored:false,producerRunId:null});
+  }
+  if(read.tables.has('mock_exam_compilation_versions')){
+    for(const row of await mockExamWorkbenchRows(read.sql,sessionId)){
+      result.set(row.id,{kind:'mock_exam',sessionId,artifactId:row.id,currentArtifactId:row.id,title:row.title,version:row.revision,
+        hash:row.digest,restored:false,producerRunId:row.runId});
+    }
   }
   return result;
 }
@@ -139,6 +146,7 @@ export async function readWorkbenchArtifactLinks(read:WorkbenchRead,input:Query)
     seen.add(key);items.push({relation,sessionId,taskId:task.view.id,title,restored:version!.restored});
   }
   if(version.producerRunId)await add(input.sessionId,version.producerRunId,'produced');
+  if(version.kind==='mock_exam')return {schemaVersion:1,kind:input.kind,items,partial};
   const refs=await read.sql.all(`${attachmentQuery} AND CASE WHEN json_valid(a.artifact_origin_json) THEN
     json_extract(a.artifact_origin_json,'$.artifactId') END=? AND a.content_sha256=? ORDER BY a.rowid LIMIT 257`,[input.artifactId,version.hash]);
   for(const ref of refs.slice(0,256)) {

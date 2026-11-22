@@ -3,6 +3,7 @@ import {Button,SearchField} from '@heroui/react';
 import {TeachingPageAction} from './TeachingPageLayout';
 import {ClassroomWorkspace} from './ClassroomWorkspace';
 import {TeachingDeliveryWorkspace} from './TeachingDeliveryWorkspace';
+import {MockExamWorkspace} from './MockExamWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
 import {ResourceTable} from '../../ui-system/ResourceTable';
 import type {TeachingFileCatalogEntry} from '../../../shared/contracts';
@@ -26,26 +27,31 @@ export function TeachingArtifactsWorkspace() {
   const artifactId=navigation.target.view==='artifacts'?navigation.target.artifactId:undefined;
   const artifactVersionId=navigation.target.view==='artifacts'?navigation.target.artifactVersionId:undefined;
   const planReference=navigation.target.view==='artifacts'?navigation.target.classroomPlan:undefined;
-  const [view,setView]=useState<'files'|'deliveries'|'classrooms'>(planReference?'classrooms':'files');
+  const examReference=navigation.target.view==='artifacts'?navigation.target.mockExam:undefined;
+  const [view,setView]=useState<'files'|'deliveries'|'classrooms'|'mockExams'>(examReference?'mockExams':planReference?'classrooms':'files');
   const [visited,setVisited]=useState({deliveries:false,classrooms:Boolean(planReference)});
   useEffect(()=>{
-    if(planReference){setView('classrooms');setVisited(old=>old.classrooms?old:{...old,classrooms:true});}
+    if(examReference)setView('mockExams');
+    else if(planReference){setView('classrooms');setVisited(old=>old.classrooms?old:{...old,classrooms:true});}
     else if(artifactId)setView('files');
-  },[artifactId,planReference,navigation.intent]);
+  },[artifactId,planReference,examReference,navigation.intent]);
   function show(next:typeof view){
+    if(view==='mockExams'&&next!=='mockExams'&&examReference&&!navigation.navigate({view:'artifacts'},{replace:true}))return;
     setView(next);
-    if(next!=='files')setVisited(current=>({...current,[next]:true}));
+    if(next==='deliveries'||next==='classrooms')setVisited(current=>({...current,[next]:true}));
   }
   const links=<nav className={alignment.links} aria-label="教学内容">
     {view!=='files'&&<Button variant="ghost" onPress={()=>show('files')} data-testid="teaching-files-tab">返回教学文件</Button>}
     <Button variant="ghost" aria-current={view==='deliveries'?'page':undefined} onPress={()=>show('deliveries')} data-testid="teaching-deliveries-tab">整包任务</Button>
     <Button variant="ghost" aria-current={view==='classrooms'?'page':undefined} onPress={()=>show('classrooms')} data-testid="teaching-classrooms-tab">课堂设计与预演</Button>
+    <Button variant="ghost" aria-current={view==='mockExams'?'page':undefined} onPress={()=>show('mockExams')} data-testid="teaching-mock-exams-tab">模考汇编</Button>
   </nav>;
   return <div className={alignment.frame}>
     {view!=='files'&&links}
     <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace artifactId={artifactId} artifactVersionId={artifactVersionId} auxiliaryActions={view==='files'?links:undefined}/></div>
     {visited.deliveries&&<div className={alignment.pane} hidden={view!=='deliveries'}><TeachingDeliveryWorkspace/></div>}
     {visited.classrooms&&<div className={alignment.pane} hidden={view!=='classrooms'}><ClassroomWorkspace planReference={planReference}/></div>}
+    {view==='mockExams'&&<MockExamWorkspace reference={examReference}/>}
   </div>;
 }
 function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:{auxiliaryActions?:ReactNode;artifactId?:string;artifactVersionId?:string}) {

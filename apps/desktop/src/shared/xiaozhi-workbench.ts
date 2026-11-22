@@ -1,6 +1,7 @@
 import type {PermissionApproval} from './xiaozhi-permissions';
 import type {XiaozhiApproval, XiaozhiApprovalState} from './xiaozhi-agent';
 import type {TaskView} from './xiaozhi-task';
+import type {MockExamCatalogSummary} from './mock-exam-compilation';
 
 export const WORKBENCH_SCHEMA = 1 as const;
 export type WorkbenchApprovalState = PermissionApproval['state'] | XiaozhiApprovalState;
@@ -13,6 +14,7 @@ export type WorkbenchQuery =
   | PageQuery & {kind: 'tasks'; filter: 'overview' | 'unfinished' | 'active' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'; taskId?: string}
   | {schemaVersion: 1; kind: 'task_artifacts'; sessionId: string; taskId: string}
   | {schemaVersion: 1; kind: 'artifact_tasks'; sessionId: string; artifactId: string}
+  | PageQuery & {kind: 'mock_exam_catalogs'; query?: string}
   | PageQuery & {kind: 'approvals'; state?: WorkbenchApprovalState | 'all'}
   | {schemaVersion: 1; kind: 'approval_detail'; ref: WorkbenchApprovalRef}
   | PageQuery & {kind: 'capabilities'; taskId?: string; requirementsVersion?: number; query?: string};
@@ -67,6 +69,7 @@ export type WorkbenchSummary =
   | WorkbenchHomeSummary
   | {schemaVersion: 1; kind: 'task_artifacts'; items: WorkbenchArtifactLink[]; partial: boolean}
   | {schemaVersion: 1; kind: 'artifact_tasks'; items: WorkbenchArtifactTaskLink[]; partial: boolean}
+  | WorkbenchPage<WorkbenchMockExamRow> & {kind: 'mock_exam_catalogs'}
   | WorkbenchPage<WorkbenchTaskRow> & {kind: 'tasks'}
   | WorkbenchPage<WorkbenchApprovalRow> & {kind: 'approvals'}
   | WorkbenchPage<WorkbenchCapabilityRow> & {kind: 'capabilities'; context: WorkbenchTaskContext; registryRevision: number | null}
@@ -83,8 +86,9 @@ export type WorkbenchHomeSummary = {
 
 export type WorkbenchArtifactLink = {
   relation: 'produced' | 'referenced'; sessionId: string; artifactId: string; currentArtifactId: string | null;
-  title: string; version: number | null; restored: boolean;
+  title: string; version: number | null; restored: boolean; kind?: 'mock_exam';
 };
+export type WorkbenchMockExamRow=MockExamCatalogSummary&{sessionId:string;updatedAt:string};
 export type WorkbenchArtifactTaskLink = {
   relation: WorkbenchArtifactLink['relation']; taskId: string; sessionId: string; title: string; restored: boolean;
 };
@@ -97,6 +101,7 @@ const keys = (value: Record<string, unknown>, allowed: string[]) => Object.keys(
 const taskId = (value: unknown) => typeof value === 'string' && /^xitask_[a-f0-9]{64}$/u.test(value);
 const artifactSessionId = (value: unknown) => typeof value === 'string' && /^aisession_[a-f0-9-]{36}$/iu.test(value);
 const approvalStates = ['pending', 'approved', 'executing', 'executed', 'rejected', 'invalidated', 'uncertain', 'failed', 'interrupted', 'verified', 'all'];
+const searchText=(value:unknown)=>value===undefined||typeof value==='string'&&value.length<=200&&!/[\u0000-\u001f\u007f]/u.test(value);
 export function validWorkbenchApprovalRef(value: unknown): value is WorkbenchApprovalRef {
   if (!object(value) || !text(value.sessionId, 128) || !text(value.id, 160)) return false;
   return value.kind === 'permission_v2' ? keys(value, ['kind', 'sessionId', 'id', 'revision']) && positive(value.revision)
@@ -120,8 +125,9 @@ export function validWorkbenchQuery(value: unknown): value is WorkbenchQuery {
     && (value.taskId === undefined || artifactSessionId(value.sessionId) && taskId(value.taskId));
   if (value.kind === 'approvals') return keys(value, [...common, 'state'])
     && (value.state === undefined || approvalStates.includes(String(value.state)));
+  if (value.kind === 'mock_exam_catalogs') return keys(value, [...common, 'query']) && searchText(value.query);
   if (value.kind !== 'capabilities' || !keys(value, [...common, 'taskId', 'requirementsVersion', 'query'])) return false;
-  return (value.query === undefined || typeof value.query === 'string' && value.query.length <= 200 && !/[\u0000-\u001f\u007f]/u.test(value.query))
+  return searchText(value.query)
     && (value.taskId === undefined && value.requirementsVersion === undefined
       || text(value.sessionId, 128) && typeof value.taskId === 'string' && /^xitask_[a-f0-9]{64}$/u.test(value.taskId) && positive(value.requirementsVersion));
 }

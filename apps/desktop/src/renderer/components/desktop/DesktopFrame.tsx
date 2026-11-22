@@ -7,10 +7,12 @@ import {samePaperReturn, type PaperReturnReference} from '../paper-ui/paper-mate
 import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {readComposerDraft} from '../office/composer-drafts';
 import type {ClassroomPlanReference} from '../../../shared/classroom-plan';
+import type {MockExamCatalogRef} from '../../../shared/mock-exam-compilation';
 
-type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;classroomPlan?:ClassroomPlanReference;bookId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;classroomPlan?:ClassroomPlanReference;mockExam?:MockExamCatalogRef;bookId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
   a.classroomPlan?.rootId===b.classroomPlan?.rootId&&a.classroomPlan?.sessionId===b.classroomPlan?.sessionId &&
+  a.mockExam?.id===b.mockExam?.id&&a.mockExam?.sessionId===b.mockExam?.sessionId &&
   (a.view !== 'artifacts' || a.artifactId === b.artifactId && a.artifactVersionId === b.artifactVersionId) &&
   (a.view !== 'my_tasks' || a.taskId === b.taskId) &&
   (a.view !== 'book' || a.bookId === b.bookId) &&
@@ -21,14 +23,15 @@ type Handler=(command:DesktopCommand)=>boolean;
 type NavigationGuard=()=>string|undefined;
 type NavigationOptions={replace?:boolean;ifCurrent?:Target;ifIntent?:number};
 type DraftSeed={text:string;paperExportIntent?:PaperExportIntent};
-type Navigation={target:Target;intent:number;isCurrent:(intent:number)=>boolean;canBack:boolean;canForward:boolean;navigate:(target:Target,options?:NavigationOptions)=>boolean;consumeDraft:(sessionId:string,seed?:DraftSeed)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
+type Navigation={target:Target;intent:number;isCurrent:(intent:number)=>boolean;canBack:boolean;canForward:boolean;navigate:(target:Target,options?:NavigationOptions)=>boolean;consumeDraft:(sessionId:string,seed?:DraftSeed)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;clearGuardNotice?:(message:string)=>void;flush:()=>void};
 const empty:Navigation={target:{view:'ai'},intent:0,isCurrent:()=>true,canBack:false,canForward:false,navigate:()=>true,consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},registerGuard:()=>()=>{},flush:()=>{}};
 const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
 /** Shared by draft owners. Blocking consumes native commands instead of replaying them later. */
 export function useDesktopNavigationGuard(dirty:boolean,message:string) {
-  const {registerGuard}=useDesktopNavigation(),latest=useRef({dirty,message});latest.current={dirty,message};
+  const {registerGuard,clearGuardNotice}=useDesktopNavigation(),latest=useRef({dirty,message});latest.current={dirty,message};
   useLayoutEffect(()=>registerGuard(()=>latest.current.dirty?latest.current.message:undefined),[registerGuard]);
+  useEffect(()=>{if(!dirty)clearGuardNotice?.(message);},[dirty,message,clearGuardNotice]);
 }
 export function useDesktopCommands(handler:Handler,priority=0) {
   const {register}=useDesktopNavigation(),latest=useRef(handler);latest.current=handler;
@@ -50,6 +53,9 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   },[]);
   const guards=useRef(new Map<symbol,NavigationGuard>());
   const registerGuard=useCallback((guard:NavigationGuard)=>{const id=Symbol();guards.current.set(id,guard);return()=>{guards.current.delete(id);};},[]);
+  const clearGuardNotice=useCallback((message:string)=>{
+    if(![...guards.current.values()].some(guard=>guard()===message))setNotice(current=>current===message?'':current);
+  },[]);
   const allowNavigation=useCallback(()=>{
     for(const guard of guards.current.values()){const reason=guard();if(reason){setNotice(reason);return false;}}
     setNotice('');return true;
@@ -123,7 +129,7 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     try{const result=await window.omniEdu?.openDesktopMenu(group,box.left,box.bottom);if(!result?.ok)throw new Error();setNotice('');}
     catch{setNotice('无法打开窗口菜单，请重试。');}
   }
-  const navigation={target:history.entries[history.index],intent:intent.current,isCurrent,canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,registerGuard,flush};
+  const navigation={target:history.entries[history.index],intent:intent.current,isCurrent,canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,registerGuard,clearGuardNotice,flush};
   return <NavigationContext.Provider value={navigation}>
     {chrome?.enabled?<div className="edu-desktop-frame desktop-native-frame" data-testid="desktop-native-frame" style={{'--edu-chrome-height':`${Math.max(44,chrome.height)}px`} as React.CSSProperties}>
       <header className="edu-chrome-bar" data-heroui-native="" data-theme="light" data-testid="desktop-titlebar" style={{height:Math.max(44,chrome.height)}}>

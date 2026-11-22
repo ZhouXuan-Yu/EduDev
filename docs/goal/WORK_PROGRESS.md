@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-Phase 4.3 完成年度目录首个切片。后续沿已确认目录接入成果工作台、修订恢复和实际导出，继续跑真实 PDF 质量样本。 [进度和证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-上海模考年度目录)
+Phase 4.3 已接通年度目录的工作台、任务定位、历史预览与恢复。继续按原对话修订、实际导出和真实 PDF 质量样本推进。 [进度和证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考成果工作台与目录版本)
 
 D3 完成 Phase 0–3 个人版、Phase 4.1 组卷和 Phase 4.2 讲义工程路径。讲义支持对话精准修改、老师核对应用、单独确认版本、历史恢复及学生和教师版 Word。继续 Phase 4.3 上海各区模考资料和年度汇编。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 

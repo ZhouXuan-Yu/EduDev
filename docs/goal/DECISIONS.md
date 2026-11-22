@@ -4,6 +4,8 @@
 
 模考目录按区、年份、年级、学科、轮次核对。相同内容按摘要归并，同分类下的不同卷保留给教师选择。目录版本独立保存并绑定原会话，解析、答案正确性和使用许可各自核对。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-上海模考年度目录)
 
+模考目录恢复历史只追加新待核版本。恢复原分类和收录选择时继续使用最新的许可，当前禁止使用的原件保持未收录。 [恢复合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-成果工作台与目录版本)
+
 D3 的 D11 由主进程先识别明确的答复型输入，不产生业务 Task 或任务工具权限。其余输入继续经原 Task 治理和单 Pi。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md)
 
 引用成果时，宿主核对当前成果身份和摘要，保留来源会话的学生范围。由现有附件协议登记本地副本，由教师在新会话中提交。 [跨会话引用合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#跨会话引用既有教学成果)
