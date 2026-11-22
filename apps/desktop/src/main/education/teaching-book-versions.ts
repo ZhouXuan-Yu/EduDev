@@ -3,11 +3,13 @@ import type {TeachingBookPatch} from '../../shared/contracts';
 import {CLASSROOM_CONTEXT_SCHEMA} from '../../shared/classroom-context';
 import type {TeachingBookConfirm,TeachingBookRestore,TeachingBookVersion,TeachingBookVersionHistory,TeachingBookVersionKind,TeachingBookVersionPreview,TeachingBookVersionRead} from '../../shared/teaching-book-version';
 import type {TeachingHandoutVersionRef} from '../../shared/teaching-handout-export';
+import type {HandoutEditInput} from '../../shared/teaching-handout-edit';
 import {renderTeachingBookMarkdown} from '../ai-harness/teaching-book-renderer';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import {assertClassroomContext} from './classroom-context';
 import {restoreTeachingBook,type TeachingBookContent} from './teaching-book-restore';
+import {handoutEditPlan,writeHandoutEdits} from './teaching-handout-edit-plan';
 
 type VersionImage = {schema:1; content:TeachingBookContent; patches:TeachingBookPatch[]};
 type Row = Record<string,unknown>;
@@ -63,6 +65,17 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
       ORDER BY origin.created_at DESC,origin.book_id`,[sessionId]);
     return rows.map(row=>({bookId:String(row.book_id),taskId:String(row.task_id),title:String(row.title)}));
   }
+  async function chooseBook(work:Sql,sessionId:string,taskId:string,target:{title?:string;bookId?:string}) {
+    const rows=await sessionBooks(work,sessionId);
+    const normalized=(value:string)=>value.trim().normalize('NFKC').toLowerCase();
+    const byTask=rows.filter(row=>row.taskId===taskId);
+    const matches=target.bookId?rows.filter(row=>row.bookId===target.bookId):
+      target.title!==undefined?rows.filter(row=>normalized(row.title)===normalized(target.title!)):
+      byTask.length?byTask:rows;
+    if(!matches.length)throw Error('book_unavailable');
+    if(matches.length>1)return {kind:'ambiguous' as const,choices:matches.slice(0,8).map(({bookId,title})=>({bookId,title}))};
+    return {kind:'found' as const,bookId:matches[0].bookId};
+  }
   async function confirmedContent(work:Sql,bookId:string,expected?:TeachingHandoutVersionRef) {
     const content=await current(work,bookId);
     const version=await latestConfirmation(work,bookId);
@@ -84,6 +97,13 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
     await work.run(`INSERT INTO teaching_book_versions (id,book_id,revision,digest,title,kind,created_at,restored_from,image_json)
       VALUES (?,?,?,?,?,?,?,?,?)`,[id,bookId,revision,digest,title,kind,time,restoredFrom??'',encoded]);
     return {id,bookId,revision,digest,title,kind,createdAt:time,...(restoredFrom?{restoredFrom}:{})};
+  }
+  async function editBase(work:Sql,sessionId:string,input:HandoutEditInput) {
+    await chooseBook(work,sessionId,'',{bookId:input.bookId});
+    const content=await current(work,input.bookId);
+    if(teachingBookDigest(content)!==input.digest)throw Error('version_conflict');
+    await assertTeachingBookSources(work,content);
+    return content;
   }
   return {
     async migrate() {
@@ -125,16 +145,34 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
     },
     async forExport(sessionId:string,taskId:string,target:{title?:string;bookId?:string}|TeachingHandoutVersionRef={}) {
       return read(async work=>{
-        const rows=await sessionBooks(work,sessionId);
-        const normalized=(text:string)=>text.trim().normalize('NFKC').toLowerCase();
-        const byTask=rows.filter(row=>row.taskId===taskId);
-        const candidates=target.bookId?rows.filter(row=>row.bookId===target.bookId):
-          'title'in target&&target.title!==undefined?rows.filter(row=>normalized(row.title)===normalized(target.title!)):
-          byTask.length?byTask:rows;
-        if(!candidates.length)throw Error('book_unavailable');
-        if(candidates.length>1)return {kind:'ambiguous' as const,choices:candidates.slice(0,8).map(({bookId,title})=>({bookId,title}))};
-        return {kind:'found' as const,...await confirmedContent(work,candidates[0].bookId,'versionId'in target?target:undefined)};
+        const selected=await chooseBook(work,sessionId,taskId,target);
+        if(selected.kind==='ambiguous')return selected;
+        return {kind:'found' as const,...await confirmedContent(work,selected.bookId,'versionId'in target?target:undefined)};
       });
+    },
+    async forEdit(sessionId:string,taskId:string,target:{title?:string;bookId?:string}) {
+      return read(async work=>{
+        const selected=await chooseBook(work,sessionId,taskId,target);
+        if(selected.kind==='ambiguous')return selected;
+        const content=await current(work,selected.bookId);
+        return {kind:'found' as const,digest:teachingBookDigest(content),content};
+      });
+    },
+    async previewEdit(work:Sql,sessionId:string,input:HandoutEditInput) {
+      const content=await editBase(work,sessionId,input);
+      return handoutEditPlan(content,input.changes).diffs;
+    },
+    async applyEdit(work:Sql,sessionId:string,reviewId:string,input:HandoutEditInput,diffHash:string,fence:()=>void) {
+      const content=await editBase(work,sessionId,input);
+      const plan=handoutEditPlan(content,input.changes);
+      if(protocolHash(plan.diffs)!==diffHash)throw Error('version_conflict');
+      fence();
+      const time=new Date().toISOString();
+      await append(work,content,'before_edit',time);
+      await writeHandoutEdits(work,input.bookId,reviewId,time,plan);
+      const version=await append(work,await current(work,input.bookId),'edited_draft',time);
+      fence();
+      return version;
     },
     async withConfirmedExport<T>(sessionId:string,source:TeachingHandoutVersionRef,
       action:(item:{version:TeachingBookVersion;content:TeachingBookContent})=>T):Promise<T> {

@@ -79,6 +79,8 @@ import {renderLocalPdfPage} from './xiaozhi-agent/ocr-host';
 import {PracticeReviewRepository} from './education/practice-review-repository';
 import { createXiaozhiSessionState,type Sql } from './xiaozhi-agent/session-state';
 import {createTeachingBookVersions,teachingBookDigest} from './education/teaching-book-versions';
+import {insertTeachingBookPatch} from './education/teaching-book-patch-writes';
+import {handoutEditPatchReview} from '../shared/teaching-handout-edit';
 import type {TeachingBookContent} from './education/teaching-book-restore';
 import {insertConversationSession} from './xiaozhi-agent/artifact-reference-state';
 import {readWorkbenchSnapshot} from './xiaozhi-agent/workbench-read';
@@ -4274,7 +4276,7 @@ export class OmniEduStore {
       createdAt: timestamp, appliedAt: '', undoneAt: '',
       selectionStart: 0, selectionEnd: 0, selectedTextHash: '', selectedText: '',
     };
-    await this.run("INSERT INTO teaching_book_patches (id, book_id, page_id, block_id, base_version, result_version, operation, before_title, after_title, before_payload_json, after_payload_json, reason, status, error, created_at, applied_at, undone_at, selection_start, selection_end, selected_text_hash, selected_text) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 'draft', '', ?, '', '', 0, 0, '', '')", [patch.id, patch.bookId, patch.pageId, patch.blockId, patch.baseVersion, patch.operation, patch.beforeTitle, patch.afterTitle, JSON.stringify(patch.beforePayload), JSON.stringify(patch.afterPayload), patch.reason, timestamp]);
+    await insertTeachingBookPatch({run:(sql,values)=>this.run(sql,values)},patch);
     return patch;
   }
 
@@ -4307,7 +4309,7 @@ export class OmniEduStore {
       createdAt: timestamp, appliedAt: '', undoneAt: '', selectionStart: start, selectionEnd: end,
       selectedTextHash: createHash('sha256').update(selectedText).digest('hex'), selectedText: selectedText.slice(0, 20_000),
     };
-    await this.run("INSERT INTO teaching_book_patches (id, book_id, page_id, block_id, base_version, result_version, operation, before_title, after_title, before_payload_json, after_payload_json, reason, status, error, created_at, applied_at, undone_at, selection_start, selection_end, selected_text_hash, selected_text) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 'draft', '', ?, '', '', ?, ?, ?, ?)", [patch.id, patch.bookId, patch.pageId, patch.blockId, patch.baseVersion, patch.operation, patch.beforeTitle, patch.afterTitle, JSON.stringify(patch.beforePayload), JSON.stringify(patch.afterPayload), patch.reason, timestamp, start, end, patch.selectedTextHash, patch.selectedText]);
+    await insertTeachingBookPatch({run:(sql,values)=>this.run(sql,values)},patch);
     return patch;
   }
 
@@ -4347,6 +4349,9 @@ export class OmniEduStore {
     const patchId = requireNonEmpty(id, 'patch ID 不能为空');
     const patchRow = (await this.all("SELECT * FROM teaching_book_patches WHERE id = ?", [patchId]))[0];
     if (!patchRow || String(patchRow.status) !== 'applied') throw new Error('只能撤销已应用且未撤销的 patch');
+    const editReview=handoutEditPatchReview(String(patchRow.reason??''));
+    if(editReview&&(await this.all("SELECT id FROM teaching_handout_edit_reviews WHERE id=? AND book_id=? AND state='applied'",
+      [editReview,String(patchRow.book_id)])).length)throw new Error('请在讲义历史恢复这组对话修改前的版本');
     const patchBlockId = String(patchRow.block_id ?? '');
     const patchPageId = String(patchRow.page_id ?? '');
     const patchResultVersion = Number(patchRow.result_version ?? 0);

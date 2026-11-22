@@ -21,3 +21,9 @@
 | 教案 | `classroom-plan-state.ts`、`classroom-plan-tools.ts` 保存课时/教学依据和教师确认。`classroom-export-tools.ts` 沿实际 `planId/version` 导出。 | 验证目标—活动—评价关联、时间约束、自然语言可定位修改及同版本冷启恢复。 |
 
 Phase 0 源码缺口和实施边界已形成，进入 Phase 1。教师可用性、真实模型质量与运行基准本条目尚未采集。
+
+## Phase 4.3 模考汇编开工基线
+
+资料版本由 `MaterialRepository` 中的原件摘要和实际文件校验确定。版面及题目证据沿 `MaterialStructureRepository` 和 `MaterialQuestionArchive` 读取。独立答案册沿 `MaterialBookPairs` 绑定两侧资源版本，已有真实试卷和答案结构恢复证据。模考汇编应引用现存资料、结构记录和配对，不另存试卷或重做 OCR。
+
+当前主线缺少从对话把区、年份、年级、学科和模考轮次登记为可复核目录的专项入口，也缺少汇编级版本和导出。已有真实上海高考试卷的结构证据仅用于确认底层可复用，模考缺页、重版、缺答案及许可仍按专项验证。 [知识库底层证据](../research/evidence/kb/20261121/book-zero-dispatch/README.md)

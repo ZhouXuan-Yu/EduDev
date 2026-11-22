@@ -1,4 +1,4 @@
-export type TeachingBookVersionKind = 'confirmed' | 'before_restore' | 'restored_draft';
+export type TeachingBookVersionKind = 'confirmed' | 'before_restore' | 'restored_draft' | 'before_edit' | 'edited_draft';
 export type TeachingBookVersion = {
   id:string; bookId:string; revision:number; digest:string; title:string;
   kind:TeachingBookVersionKind; createdAt:string; restoredFrom?:string;

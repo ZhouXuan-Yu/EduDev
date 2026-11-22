@@ -7,8 +7,8 @@
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
 | 2 | DONE | 工程验收覆盖首页、工作台、任务与成果、右侧上下文、专业编辑、版本、只读历史和恢复。各教学业务另按 Phase 4 验收。 |
-| 3 | IN_PROGRESS | 已实现按请求选择适用偏好、本轮覆盖、旧原生日志兼容与撤销冷启。继续画像、停用和可编辑范围。 |
-| 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
+| 3 | DONE | 个人版工程验收覆盖画像、偏好范围、纠正、停用、请求最小化与冷启。 |
+| 4 | IN_PROGRESS | 自动组卷和讲义已通过工程验收。接下来是上海模考汇编及教案。 |
 | 5 | DEFERRED | 冻结范围之外。 |
 
 ## Phase 1 初始验证
@@ -494,3 +494,23 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-export`。初次合成模型测试的旧回执解析问题、受众断言误把正文内授课提示当独立答案、确认后资料漂移导致挂起均留有原日志。最终测试使用合成模型响应，0 付费请求。生产依赖审计仍有 20 项，其中 2 项 high。无依赖变化和新数据库迁移。本小项 **已实现**。
 
 手工验收窗口、启动 CMD 与操作说明在 `manual-phase4-handout-export`，使用独立数据。旧构建可继续读取原讲义及其历史，在磁盘打开新生成的 DOCX；回退后的旧构建可能无法识别新 Office 草稿及审批记录。下一项是通过对话细化修改同一份讲义，上海模考汇编、教案与自然模型质量仍待继续。
+
+## Phase 4.2 从对话精准修改讲义
+
+老师可以在原对话指定讲义和章节、唯一选区或练习。审阅卡并排展示修改前后，支持不修改题干的独立难度调整。更换题干须给出答案和解析，老师核对后同次存入。应用只改变约定范围，保留原来源和已有确认记录，修改后的草稿等待确认。撤销整次审阅从讲义历史里选择「修改前保留」。
+
+沿原 Pi、同一任务和确认流程保存。增量迁移新增 `teaching_handout_edit_reviews`，正文仍在原讲义表。单事务完成版本及段落补丁，教师拒绝、停止、原文或引用变化都不写正文。重启时待审批项结算为中断。旧构建仍能读取讲义及其正文，旧界面可能不显示新增版本标签与审批记录。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-handout-edit-targeted` | 构建和 TypeScript 检查通过。主进程 SHA-256 `060b450e2a3a4c36b16528904e9d693e12e905207e656e7c272ebb0246f1ede3`，Preload `c2317212460176b53e4e4fb3d7731a39ef632b4fd5fae8ac60eb53a27ecc2681`。 |
+| `node scripts/education/teaching-handout-edit-electron.mjs` | 最终构建 7/7。覆盖单块定向读取、错误选区、待审批无写入、正确章节和练习差异、重复确认、拒绝、并发冲突、来源漂移、停止、冷启及历史恢复。报告 `handout-edit-vBCtqf/report.json`。 |
+| `node scripts/education/teaching-handout-export-electron.mjs` | 最终构建 4/4。学生及教师版、审批、来源漂移和文件读回回归通过。报告 `handout-export-y4UCAR/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253。最终差异列表另由 Electron 验证滚动高度、对照排版、公式及实际审批。 |
+| `node scripts/electron-smoke.mjs` | 双尺寸 207/207，见 `electron-smoke.log`。综合回归所用构建与最终构建的差别是读取单个内容块的工具参数，最终构建专项覆盖该参数。 |
+| 真实模型单场景 | 最终构建 1/1。DeepSeek 独立定位第 2 道练习，从巩固改为拓展。预览只有这一处差异，批准后题面、答案、解析和其他块保持原值。最终版 4 次模型请求，前一轮同场景 3 次，合计 7 次，均为合成资料。报告 `natural-routing-3pNsjR/report.json` 和 `natural-routing-lLXwOV/report.json`。 |
+| 持久化 Journal 读回 | 连续记录待审批与已应用，已应用效果在恢复回执中为 `recorded`。见 `durable-edit-journal.json`。 |
+
+验收证据存放于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-edit`。最初编译缺少可选 preload 检查，首轮历史测试读到加载中状态，两项原记录保留。差异列表已修正为 CSS 模块，最终截图说明内容与操作可达。手动验收窗口使用最终构建，独立合成数据、启动 CMD 和操作步骤在 `manual-phase4-handout-edit`。依赖审计仍有既有 20 项，其中 2 项 high，本轮未改依赖。
+
+本小项 **已实现**。Phase 4.2 从会话生成、精细修订、审核确认、可编辑 Word、版本与历史恢复的工程路径通过。真实模型单样本不支持对整体学科质量和教师采用率下结论。下一阶段为上海各区模考汇编，后续继续教案生成与集中验收。

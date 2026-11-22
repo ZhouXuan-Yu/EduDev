@@ -5,7 +5,8 @@ import {TeachingHandoutPreview} from './TeachingHandoutPreview';
 import {DisclosureCard} from './ui/DisclosureCard';
 import styles from '../ui-system/teaching-book-version.module.css';
 
-const versionLabels={confirmed:'教师已确认',before_restore:'恢复前保留',restored_draft:'恢复草稿'};
+const versionLabels={confirmed:'教师已确认',before_restore:'恢复前保留',restored_draft:'恢复草稿',
+  before_edit:'修改前保留',edited_draft:'对话修改草稿'};
 const unavailable='讲义版本暂时无法读取，请重试。';
 function value<T>(result:TeachingBookVersionResult<T>|undefined):T {
   if(!result?.ok)throw Error(result?.message??unavailable);

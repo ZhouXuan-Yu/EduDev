@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 完成 Phase 0–3 个人版和 Phase 4.1 组卷工程路径。Phase 4.2 已完成对话生成可编辑讲义、原文引用、编辑器局部保存、教师确认、历史读回、恢复和学生及教师版 Word 导出。接下来完成对话细化修改，随后进入上海模考汇编与教案。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 完成 Phase 0–3 个人版、Phase 4.1 组卷和 Phase 4.2 讲义工程路径。讲义支持对话精准修改、老师核对应用、单独确认版本、历史恢复及学生和教师版 Word。继续 Phase 4.3 上海各区模考资料和年度汇编。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

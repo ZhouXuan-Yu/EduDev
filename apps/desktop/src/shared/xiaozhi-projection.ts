@@ -57,6 +57,8 @@ const labels: Record<string, string> = {
   education_create_teaching_handout:'保存可编辑讲义草稿',
   education_read_teaching_handout:'读取讲义确认版本',
   education_export_teaching_handout:'导出确认讲义 Word',
+  education_read_handout_for_edit:'读取讲义修改位置',
+  education_propose_handout_edit:'提交讲义改动审阅',
   education_search_questions:'检索本地题库',education_read_question:'读取题目与解析',
   education_read_student_context:'读取当前学生学习记录',
   education_analyse_learning:'核对学习证据与复习顺序',
@@ -147,6 +149,12 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     const item=next.items.find(item=>item.kind==='tool'&&item.id===event.review.callId);
     if(item)item.status=event.review.state==='pending'?'waiting_approval':event.review.state==='rejected'?'declined':'completed';
     if(event.review.state==='pending')next.status='waiting_approval';
+    else if(next.status==='waiting_approval')next.status='running';
+  } else if(event.kind==='handout_edit'){
+    const item=next.items.find(item=>item.kind==='tool'&&item.id===event.review.callId);
+    const state=event.review.state;
+    if(item)item.status=state==='pending'?'waiting_approval':state==='applied'?'completed':state==='rejected'?'declined':'failed';
+    if(state==='pending')next.status='waiting_approval';
     else if(next.status==='waiting_approval')next.status='running';
   } else if (event.kind === 'approval') {
     const item = next.items.find(item => item.kind === 'tool' && item.id === event.approval.callId);

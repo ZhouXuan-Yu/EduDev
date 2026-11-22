@@ -1,0 +1,30 @@
+.diffs {
+  display: grid;
+  gap: .75rem;
+  list-style: none;
+  margin: 0;
+  max-block-size: min(46vh, 30rem);
+  overflow: auto;
+  padding: .25rem;
+}
+
+.diffs h4, .diffs h5 {
+  font: inherit;
+  font-weight: 600;
+  margin: 0 0 .35rem;
+}
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: .75rem;
+}
+
+.comparison > div {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  padding: .55rem .75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

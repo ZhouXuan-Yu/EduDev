@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "0790f677ac8eebed44e1c4e87ca54ee635e52028f97f2c4810374f1f0fffff86",
+  "sourceFingerprint": "278ed0653e19fa9ceac3c9e15aa7f16e69f15ee1204ad9bdd87ccb5bd183a23b",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -3107,10 +3107,12 @@
     "education_analyze_buoyancy",
     "education_create_teaching_handout",
     "education_propose_classroom_outline",
+    "education_propose_handout_edit",
     "education_propose_learning_change",
     "education_propose_original_question",
     "education_propose_original_questions",
     "education_propose_questions",
+    "education_read_handout_for_edit",
     "education_save_classroom_scene",
     "office_create_document",
     "office_create_science_figure",

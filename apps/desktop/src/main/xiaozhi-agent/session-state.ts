@@ -1,5 +1,6 @@
 import {createClassroomPlanState} from '../education/classroom-plan-state';
 import {createTeachingHandoutState} from '../education/teaching-handout-state';
+import {createTeachingHandoutEditState} from '../education/teaching-handout-edit-state';
 import path from 'node:path';
 import {createInspectionState} from './checks/state';
 import {createFileReferenceState} from './file-references';
@@ -70,6 +71,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const classrooms=createClassroomState(sql);
   const classroomPlans=createClassroomPlanState(sql);
   const teachingHandouts=createTeachingHandoutState(sql);
+  const handoutEdits=createTeachingHandoutEditState(sql);
   return {
     sql,
     capabilities,
@@ -102,8 +104,10 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     classrooms,
     classroomPlans,
     teachingHandouts,
+    handoutEdits,
     async recover() {
       await permissions.recover();
+      await handoutEdits.recover();
       await classroomPlans.recover(); await eventJournal.recover(); await terminalJobs.recover(); await persistent.recover(); await controls.recoverControls();
       await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover();
       await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover();
@@ -137,6 +141,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await eventJournal.migrate();
       await terminalJobs.migrate();
       await teachingHandouts.migrate();
+      await handoutEdits.migrate();
     },
     async getBinding(id: string) {
       const row = (await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]))[0];

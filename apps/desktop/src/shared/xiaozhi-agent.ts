@@ -57,6 +57,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind:'learning_review';review:import('./learning-review').LearningReviewSummary }
   | { kind:'question_collection';review:import('./question-collection').QuestionCollectionSummary }
   | { kind:'question_review';review:import('./question-review').QuestionReviewSummary }
+  | { kind:'handout_edit';review:import('./teaching-handout-edit').HandoutEditSummary }
   | { kind:'paper_review';review:import('./paper-blueprint').PaperSummary }
   | { kind:'practice_review';review:import('./practice-review').PracticeReviewSummary }
   | { kind: 'control'; control: XiaozhiControl }
@@ -78,6 +79,8 @@ export type XiaozhiStartResult = { ok: true; runId: string } | { ok: false; erro
 export type XiaozhiWorkspaceSnapshot = { fileWritesEnabled?:boolean; deliveries?:import('./xiaozhi-delivery').DeliverySummary[]; task?:import('./xiaozhi-task').TaskView;taskRunIds?:string[];taskUnavailable?:boolean;approvalRecordsUnavailable?:number; eventCursors?:import('./xiaozhi-events').XiaozhiEventCursor[]; eventPersistence?:'unavailable'; eventPersistenceError?:'lifecycle_timeout'; enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; paperOutput?: {label:string}; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[];classroomPlanReviews?:import('./classroom-plan').ClassroomPlanReview[];classroomPlanReviewsUnavailable?:boolean;paperReviews?:import('./paper-blueprint').PaperSummary[];practiceReviews?:import('./practice-review').PracticeReviewSummary[];questionCollections?:import('./question-collection').QuestionCollectionSummary[];questionReviews?:import('./question-review').QuestionReviewSummary[];learningReviews?:import('./learning-review').LearningReviewSummary[];studentContext?:import('./student-context').StudentContextSelection;
   teachingHandouts?:import('./teaching-handout').TeachingHandoutSummary[];
   teachingHandoutsUnavailable?:boolean;
+  handoutEdits?:import('./teaching-handout-edit').HandoutEditSummary[];
+  handoutEditsUnavailable?:boolean;
 };
 export type XiaozhiHistoryPageInput = { sessionId: string; before: string; limit?: number };
 export type XiaozhiHistoryPage = {

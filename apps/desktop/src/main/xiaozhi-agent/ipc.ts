@@ -38,6 +38,7 @@ import {registerClassroomIpc} from '../education/classroom-api';
 import {registerQuestionReviewIpc} from '../education/question-review-api';
 import {registerQuestionContextIpc} from '../education/question-context-api';
 import {registerStudentTrainingIpc} from '../education/student-training-api';
+import {handoutEditErrors} from '../../shared/teaching-handout-edit';
 import type { RuntimeAuthority } from './runtime-authority';
 import {isBackgroundAcceptance} from './runtime-authority';
 
@@ -128,6 +129,10 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  options.ipcMain.handle('xiaozhi:handout-edit-review',(event,input)=>fromMain(event)
+    ? host.handoutEdits.view(input) : {ok:false,error:'permission_denied',message:handoutEditErrors.permission_denied});
+  options.ipcMain.handle('xiaozhi:handout-edit-decide',(event,input)=>fromMain(event)
+    ? host.handoutEdits.decide(input) : {ok:false,error:'permission_denied',message:handoutEditErrors.permission_denied});
   registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerClassroomIpc({ipcMain:options.ipcMain,allowed:fromMain,state:options.store.xiaozhiState.classrooms,plans:options.store.xiaozhiState.classroomPlans});
   registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

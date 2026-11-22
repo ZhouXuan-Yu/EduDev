@@ -12,6 +12,8 @@ import type {Sql} from '../session-state';
 import {createExecutionEffectReader} from '../effects/readback';
 import {createAcquisitionPrepareEffectReader} from '../capabilities/acquisition/prepare-receipts';
 import {readTeachingHandoutEffect} from '../../education/teaching-handout-state';
+import {readHandoutEditEffect} from '../../education/teaching-handout-edit-state';
+import {PROPOSE_HANDOUT_EDIT} from '../../../shared/teaching-handout-edit';
 import {TEACHING_HANDOUT_TOOL} from '../../../shared/teaching-handout';
 import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import {isTeachingHandoutOfficeDraft} from '../../../shared/xiaozhi-office-draft';
@@ -24,6 +26,7 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
  const executionReader=state.sql?createExecutionEffectReader(state.sql):undefined;
  return async(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry):Promise<'matched'|'uncertain'|'not_checked'>=>{
   if(tool===TEACHING_HANDOUT_TOOL)return state.sql?readTeachingHandoutEffect(state.sql,owner,callId):'uncertain';
+  if(tool===PROPOSE_HANDOUT_EDIT)return state.sql?readHandoutEditEffect(state.sql,owner,callId):'uncertain';
   if(acquisitionReader){const checked=await acquisitionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(executionReader){const checked=await executionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document',EXPORT_TEACHING_HANDOUT].includes(tool))return'not_checked';
