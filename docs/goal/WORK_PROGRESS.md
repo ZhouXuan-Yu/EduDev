@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-11-22 小智 Harness D2
+
+D2-A 落地影子观察与健康记账。D2-B 为现有 Pi 请求与整理增加保护事务和模型前缀用量账。下一步按专项未完成项，不启动 D3。 [进度与证据](xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 第一轮对象和适配器改造的实现、移交流程与独立验收入口见专项。待独立验收后另行启动下一阶段。 [D1 实施](xiaozhi-harness/D1_IMPLEMENTATION.md)

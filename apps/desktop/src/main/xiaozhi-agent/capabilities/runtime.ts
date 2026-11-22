@@ -9,10 +9,14 @@ import {createAdapterRegistry, type AdapterRegistry} from './adapters/registry';
 import {CORE_ADAPTER_VERSION, nativeStatAdapterSchemas, registerCoreAdapters} from './adapters/core';
 import type {AdapterExecution} from './adapters/contract';
 import type { WorkspaceLease } from '../workspace-files';
+import type {ResolverObservation} from './intelligence/shadow';
+import {capabilityGap} from './intelligence/selection';
 type ResolutionView = {
     resolution: CapabilityResolution;
     snapshot: ProviderSnapshot | null;
     blockedReason?: 'provider_version_unavailable' | 'capability_revoked' | 'permission_denied' | 'needs_refresh';
+    gap?: ReturnType<typeof capabilityGap>;
+    revalidated?: true;
 };
 export type CapabilityAdapterRuntime = {
     supports: (capabilityId: string) => boolean;
@@ -34,6 +38,8 @@ export function createCapabilityTaskRuntime(options: {
     canRefresh: (capabilityId?: string) => boolean | Promise<boolean>;
     workspace: () => Promise<WorkspaceLease>;
     persist: <T>(action: () => Promise<T>) => Promise<T>;
+    observeResolution?: (observation: ResolverObservation) => void;
+    maySwitchProvider?: (request:CapabilityRequirement,previous:ProviderSnapshot) => Promise<boolean>;
 }) {
     const { owner } = options;
     const adapters = options.adapterRegistry ?? createAdapterRegistry();
@@ -84,11 +90,12 @@ export function createCapabilityTaskRuntime(options: {
                         evidenceRefs: prior.evidenceRefs, previousSnapshotId: prior.snapshotId, refreshReason: 'resume_revalidate',
                     }));
                     fence(signal);
-                    return {resolution, snapshot};
+                    return {resolution, snapshot, revalidated:true};
                 }
                 return {
                     resolution,
-                    snapshot: prior
+                    snapshot: prior,
+                    revalidated:true
                 };
             }
             const reasons = resolution.excludedProviders.flatMap(item => item.reasons);
@@ -129,6 +136,9 @@ export function createCapabilityTaskRuntime(options: {
             if (!await options.canRefresh(request.capabilityId)) {
                 throw Error('capability_refresh_busy');
             }
+            if (prior && protocolHash(prior.requirement)===protocolHash(request)
+                && (selection.providerId!==prior.selection.providerId || selection.providerVersion!==prior.selection.providerVersion)
+                && options.maySwitchProvider && !await options.maySwitchProvider(request,prior)) throw Error('provider_unavailable');
             const saved = await options.snapshots.save(owner, options.taskId, {
                 capabilityId: request.capabilityId,
                 registryRevision: resolution.registryRevision,
@@ -149,7 +159,12 @@ export function createCapabilityTaskRuntime(options: {
     }
     function resolve(raw: unknown, signal?: AbortSignal, refresh = false): Promise<ResolutionView> {
         const request = requirement(raw);
-        const pending = refreshTail.then(() => resolveCurrent(request, signal, refresh));
+        const pending = refreshTail.then(async () => {
+            const {revalidated,...view} = await resolveCurrent(request, signal, refresh);
+            options.observeResolution?.({request,resolution:view.resolution,snapshot:view.snapshot,cached:revalidated===true});
+            const gap = capabilityGap(view.resolution);
+            return gap ? {...view,gap} : view;
+        });
         refreshTail = pending.then(() => undefined, () => undefined);
         return pending;
     }

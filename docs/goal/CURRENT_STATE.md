@@ -1,5 +1,9 @@
 # 当前状态与恢复入口
 
+## 2026-11-22 小智 Harness D2
+
+D2-A 运行影子选择，D2-B 运行 Pi 原生整理事务。保留 D1 独立有条件通过的结论。D2 结论、测量范围和余项详见专项。 [D2 验收与复跑](xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Provider 与 Binding 版本归档接入独立实例和逐配对控制。原 Native、Managed MCP 和社区钩子经统一 Adapter 运行。D1 交付自检后等待独立验收。 [实施记录](xiaozhi-harness/D1_IMPLEMENTATION.md) · [验收自检](xiaozhi-harness/D1_SELF_CHECK.md)

@@ -9,8 +9,10 @@ import type {createEventPublisher} from '../events/publisher';
 import {createTaskState} from './task-state';
 import {evaluateTaskPlanning, type PlanningCheck} from './planning-policy';
 import {TaskAdmissionError} from './admission-error';
+import {createCapabilityReplanGuard} from '../capabilities/intelligence/replan';
 
 type Proposal = {steps: TaskView['steps']; planningLevel?: 1 | 2 | 3; capabilityRequirements?: TaskCapabilityRequirement[]};
+const CAPABILITY_EDGE=/^capability:([A-Za-z0-9_.:-]{1,160})->([A-Za-z0-9_.:-]{1,160})$/u;
 export function createTaskPlanningRuntime(options: {
   sql: Sql;
   publisher: ReturnType<typeof createEventPublisher>;
@@ -30,6 +32,14 @@ export function createTaskPlanningRuntime(options: {
     const resolutions = await Promise.all(requirements.map(options.resolve));
     const selected = resolutions.flatMap(resolution => resolution.selectedProviders.map(provider => provider.providerId));
     const missing = resolutions.filter(resolution => resolution.selectedProviders.length === 0 || resolution.blockedReasons.length > 0);
+    const missingCapabilities=new Set(missing.map(resolution=>resolution.capabilityId));
+    // Existing checkpoint readers already allow typed dependency references. Keep the persisted requirement rows in their legacy shape.
+    const declaredEdges=proposal?.capabilityRequirements
+      ? requirements.flatMap(row=>(row.dependsOn??[]).map(dependency=>({from:dependency,to:row.capabilityId})))
+      : (task.planning?.preflight.checks.dependencies.references??[]).flatMap(reference=>{
+        const match=CAPABILITY_EDGE.exec(reference);
+        return match?[{from:match[1],to:match[2]}]:[];
+      });
     const tools = [...new Set([...(task.planning?.observedTools || []), ...(invocation ? [invocation.tool] : [])])];
     const steps = proposal?.steps || task.steps;
     const raw = invocation?.input && typeof invocation.input === 'object' && !Array.isArray(invocation.input)
@@ -45,9 +55,11 @@ export function createTaskPlanningRuntime(options: {
         throw error;
       }
     }
-    const dependencies = invocation ? await options.dependencies(invocation.tool, invocation.input)
+    const hostDependencies = invocation ? await options.dependencies(invocation.tool, invocation.input)
       : {state: missing.some(resolution => resolution.excludedProviders.some(provider => provider.reasons.includes('missing_dependency'))) ? 'blocked' as const : 'ready' as const,
         references: [...new Set(resolutions.map(resolution => 'registry:' + resolution.registryRevision))]};
+    const dependencies:PlanningCheck={state:declaredEdges.some(edge=>missingCapabilities.has(edge.from))?'blocked':hostDependencies.state,
+      references:[...new Set([...hostDependencies.references,...declaredEdges.map(edge=>`capability:${edge.from}->${edge.to}`)])]};
     const workspace = await options.workspace();
     const checkpoint = await tasks.checkpoint(task.id);
     const effects = await options.sql.all(`SELECT effect_id FROM xiaozhi_effects_v1 WHERE session_id=? AND task_id=? AND state='unknown'
@@ -57,7 +69,7 @@ export function createTaskPlanningRuntime(options: {
     const permissionBlocked = permission && permission.state !== 'allow'
       || resolutions.some(resolution => resolution.status === 'blocked_permission');
     const facts = {
-      stepCount: Math.max(steps.length, tools.length), dependencyEdges: steps.reduce((sum, step) => sum + step.dependsOn.length, 0),
+      stepCount: Math.max(steps.length, tools.length), dependencyEdges: steps.reduce((sum, step) => sum + step.dependsOn.length, declaredEdges.length),
       longRunning, requiredCapabilities: requirements.length, unresolvedCapabilities: missing.length,
       selectedProviders: new Set(selected).size,
       requestedLevel: proposal?.planningLevel ?? (task.planning?.reasons.includes('requested_level_3') ? 3
@@ -76,12 +88,18 @@ export function createTaskPlanningRuntime(options: {
     };
     const decision = evaluateTaskPlanning(facts);
     fence();
-    return {schemaVersion: 1, ...decision, observedTools: tools, capabilityRequirements: structuredClone(requirements),
+    const persistedRequirements=requirements.map(({dependsOn:_plannerDependencies,...requirement})=>requirement);
+    return {schemaVersion: 1, ...decision, observedTools: tools, capabilityRequirements: structuredClone(persistedRequirements),
       requirementsVersion: task.requirementsVersion, planRevision: proposal ? task.planRevision + 1 : task.planRevision, checkedAt: new Date().toISOString()};
   }
   let lane: Promise<unknown> = Promise.resolve();
+  const allowReplan=createCapabilityReplanGuard();
   return {
-    proposal: (task: TaskView, value: Proposal) => inspect(task, value),
+    async proposal(task:TaskView,value:Proposal) {
+      const proposed=await inspect(task,value);
+      if(!allowReplan(proposed))throw new TaskAdmissionError('task_preflight_blocked');
+      return proposed;
+    },
     before(callId: string, tool: string, input: unknown, enforce = false) {
       const pending = lane.then(async () => {
       const task = await tasks.get(options.taskId);

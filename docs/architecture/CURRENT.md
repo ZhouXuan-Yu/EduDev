@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-22 小智 Harness D2
+
+D1 继续决定生产 Provider。D2 记录影子排序、按范围采集健康和明确切换依据。Pi 原生压缩使用唯一事务租约，先校验权威状态及原史范围，再追加摘要和恢复引用。 [D2 架构与迁移](HARNESS_D2.md)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

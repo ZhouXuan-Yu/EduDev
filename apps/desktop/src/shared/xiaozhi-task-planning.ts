@@ -1,5 +1,6 @@
 export type TaskCapabilityRequirement = {
   capabilityId: string; contractVersion: string; required: string[]; optional: string[]; conditions: string[];
+  dependsOn?: string[];
 };
 export const TASK_PREFLIGHT_FACETS = ['capabilities', 'dependencies', 'permissions', 'risk', 'artifacts', 'recovery'] as const;
 export type TaskPreflightFacet = typeof TASK_PREFLIGHT_FACETS[number];
@@ -24,12 +25,27 @@ const strings = (value: unknown, count: number, length: number): value is string
   && value.every(text => typeof text === 'string' && text.trim().length > 0 && text.length <= length && !/[\x00-\x1f]/u.test(text))
   && new Set(value).size === value.length;
 export function validTaskCapabilityRequirements(value: unknown): value is TaskCapabilityRequirement[] {
-  return Array.isArray(value) && value.length <= 32 && value.every(row => object(row)
-    && keys(row, ['capabilityId', 'contractVersion', 'required', 'optional', 'conditions'])
+  if (!Array.isArray(value) || value.length > 32 || !value.every(row => object(row)
+    && keys(row, ['capabilityId', 'contractVersion', 'required', 'optional', 'conditions', ...(Object.hasOwn(row,'dependsOn')?['dependsOn']:[])])
     && typeof row.capabilityId === 'string' && /^[A-Za-z0-9_.:-]{1,160}$/u.test(row.capabilityId)
     && typeof row.contractVersion === 'string' && /^[A-Za-z0-9_.-]{1,80}$/u.test(row.contractVersion)
-    && strings(row.required, 128, 128) && strings(row.optional, 128, 128) && strings(row.conditions, 128, 128))
-    && new Set(value.map(row => row.capabilityId)).size === value.length;
+    && strings(row.required, 128, 128) && strings(row.optional, 128, 128) && strings(row.conditions, 128, 128)
+    && (!Object.hasOwn(row,'dependsOn') || strings(row.dependsOn,31,160)))) return false;
+  const requirements = value as TaskCapabilityRequirement[];
+  const edges = new Map(requirements.map(row=>[row.capabilityId,row.dependsOn??[]]));
+  if(edges.size!==requirements.length||requirements.reduce((count,row)=>count+(row.dependsOn?.length??0),0)>64)return false;
+  const active=new Set<string>(), complete=new Set<string>();
+  function visit(id:string):boolean {
+    if(complete.has(id))return true;
+    const dependencies=edges.get(id);
+    if(!dependencies||active.has(id))return false;
+    active.add(id);
+    if(!dependencies.every(visit))return false;
+    active.delete(id);
+    complete.add(id);
+    return true;
+  }
+  return requirements.every(row=>visit(row.capabilityId));
 }
 export function validTaskPlanning(value: unknown): value is TaskPlanning {
   if (!object(value) || !keys(value, ['schemaVersion', 'level', 'reasons', 'observedTools', 'capabilityRequirements', 'preflight', 'requirementsVersion', 'planRevision', 'checkedAt'])

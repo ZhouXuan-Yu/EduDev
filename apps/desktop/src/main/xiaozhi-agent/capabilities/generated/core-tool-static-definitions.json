@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "88cc9624492ba27157c5158e938430017b8102b8356ad896260be381ef157e9a",
+  "sourceFingerprint": "808ec26e732339f20086ff31d8aade29fd60847f346b649ddec2a55afb1bd7ca",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -2464,6 +2464,7 @@
         "additionalProperties": false,
         "properties": {
           "limit": {
+            "description": "查询最多返回20条。读取单条原文时按字计，最多4000字。",
             "maximum": 4000,
             "minimum": 1,
             "type": "integer"
@@ -2471,6 +2472,11 @@
           "offset": {
             "minimum": 0,
             "type": "integer"
+          },
+          "query": {
+            "maxLength": 120,
+            "minLength": 2,
+            "type": "string"
           },
           "sourceId": {
             "maxLength": 128,
@@ -2866,6 +2872,14 @@
                 "contractVersion": {
                   "maxLength": 80,
                   "type": "string"
+                },
+                "dependsOn": {
+                  "items": {
+                    "maxLength": 160,
+                    "type": "string"
+                  },
+                  "maxItems": 31,
+                  "type": "array"
                 },
                 "optional": {
                   "items": {

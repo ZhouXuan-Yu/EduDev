@@ -1,7 +1,7 @@
 import {ADAPTER_CONTRACT, type AdapterDefinition, type AdapterExecution, type AdapterState, type AdapterTarget} from './contract';
 import {adapterAdmissionOrder, assertAdapterTransition} from './lifecycle';
 import {adapterIsolation, assertDeveloperAdapterPolicy} from './security';
-import {validProviderResultContext} from '../provider-contract';
+import {validProviderResultContext,type CapabilityExecutionResult} from '../provider-contract';
 import {protocolHash, snapshotProtocolInput} from '../validation';
 
 type Entry = {
@@ -11,9 +11,11 @@ type Entry = {
     attested: boolean;
 };
 
-export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audit?: (execution: AdapterExecution<unknown>['context'], adapterId: string, code: string) => Promise<void>} = {}) {
+export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audit?: (execution: AdapterExecution<unknown>['context'], adapterId: string, code: string) => Promise<void>;
+    observe?: (target: AdapterTarget, version: string, latencyMs: number, outcome: {ok:true}|{ok:false;error:unknown}) => void} = {}) {
     const platform = options.platform ?? process.platform;
     const entries = new Map<string, Entry>();
+    let revision=0;
     const key = (id: string, version: string) => id + '@' + version;
     const get = (id: string, version: string) => entries.get(key(id, version));
     const view = (entry: Entry) => ({...entry.definition, state: entry.state, isolation: adapterIsolation(entry.definition, platform)});
@@ -24,6 +26,7 @@ export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audi
         if (state === 'validated' && !entry.attested) throw Error('capability_adapter_unverified');
         if ((state === 'activated' || state === 'available') && adapterIsolation(entry.definition, platform).tier === 'T3') throw Error('permission_denied');
         entry.state = state;
+        revision++;
         if (state === 'suspended' || state === 'revoked' || state === 'uninstalled') {
             for (const controller of entry.active) controller.abort('adapter_' + state);
         }
@@ -51,6 +54,7 @@ export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audi
         if (entries.size >= 128) throw Error('capability_registry_capacity');
         const entry: Entry = {definition, state:'discovered', active:new Set(), attested:false};
         entries.set(key(definition.id, definition.version), entry);
+        revision++;
         return view(entry);
     }
     async function admit(definition: AdapterDefinition, verifyArtifact: () => Promise<boolean>) {
@@ -69,6 +73,8 @@ export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audi
     }
     return {
         register, admit, transition,
+        revision:()=>revision,
+        stateOf:(id:string,version:string)=>get(id,version)?.state,
         find(id: string, version: string) {
             const entry = get(id, version);
             return entry && entry.state !== 'uninstalled' ? view(entry) : null;
@@ -95,6 +101,7 @@ export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audi
             const signal = AbortSignal.any([context.signal, controller.signal, AbortSignal.timeout(context.budget.timeoutMs)]);
             const scoped = {...context, signal};
             entry.active.add(controller);
+            let started: number|undefined;
             try {
                 signal.throwIfAborted();
                 await request.authorize();
@@ -102,16 +109,24 @@ export function createAdapterRegistry(options: {platform?: NodeJS.Platform; audi
                 const {schemas} = request;
                 if (schemas.input !== target.definition.inputSchemaRef || schemas.output !== target.definition.outputSchemaRef) throw Error('source_changed');
                 if (!schemas.validateInput(request.input)) throw Error('invalid_input');
+                started = performance.now();
                 const connection = await request.connect(scoped, Object.freeze({...target.instance}));
+                let output: CapabilityExecutionResult;
                 try {
                     signal.throwIfAborted();
                     const result = await connection.execute(request.input);
                     if (!validProviderResultContext(result, context)
                         || ['completed','partial'].includes(result.status) && !schemas.validateOutput(result.data)) throw Error('invalid_output');
                     signal.throwIfAborted();
-                    return result;
+                    output = result;
                 } finally {await connection.close?.();}
+                options.observe?.(target,version,performance.now()-started,output.status==='completed'||output.status==='partial'
+                    ? {ok:true} : {ok:false,error:output.error});
+                return output;
             } catch (error) {
+                if (started !== undefined && (!signal.aborted || signal.reason?.name==='TimeoutError')) {
+                    options.observe?.(target,version,performance.now()-started,{ok:false,error:signal.aborted ? Error('timeout') : error});
+                }
                 if (signal.aborted) throw Error(signal.reason?.name === 'TimeoutError' ? 'timeout' : 'cancelled');
                 if (error instanceof Error && error.message === 'permission_denied') await options.audit?.(context, id, error.message);
                 throw error;

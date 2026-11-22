@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-11-22 小智 Harness D2
+
+D2-A、D2-B 分别按用户提供的明细检查。独立模拟、教师操作步骤及本机原始证据入口见专项。 [验收与复跑](../goal/xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)
