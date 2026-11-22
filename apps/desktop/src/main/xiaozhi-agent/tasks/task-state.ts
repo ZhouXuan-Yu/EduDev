@@ -90,13 +90,15 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   let v;try{v=JSON.parse(String(row.value_json));}catch{throw Error('task_corrupt');}
   if(!taskObject(v)||Object.keys(v).length!==2||v.schema!==TASK_SCHEMA||typeof v.taskId!=='string'||!/^xitask_[a-f0-9]{64}$/u.test(v.taskId))throw Error('task_corrupt');return v.taskId;
  }
- async function latestView(sessionId:string,audited?:TaskRecord){
+ async function latestRecord(sessionId:string,audited?:TaskRecord){
   if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');
   const id=await latestId(sql,sessionId);if(!id)return null;
   const row=audited?.doc.view.id===id?audited:await read(sql,id);
   if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');
-  return clone(row.doc.view);
+  return row;
  }
+ async function latestView(sessionId:string,audited?:TaskRecord){return clone((await latestRecord(sessionId,audited))?.doc.view||null);}
+ function summary(record:TaskRecord){return clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)});}
  async function current(work:Sql,owner:TaskOwner){
   if(!validTaskOwner(owner))throw Error('invalid_input');
   const row=(await work.all('SELECT o.run_id,o.generation,r.status,s.archived_at FROM xiaozhi_event_owners o JOIN xiaozhi_event_runs r ON r.run_id=o.run_id AND r.generation=o.generation JOIN ai_conversation_sessions s ON s.id=o.session_id WHERE o.session_id=?',[owner.sessionId]))[0];
@@ -176,14 +178,15 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await nonDispatchProofs(sql,doc,owner,resource,stepId,humanEffect));decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
-  async summaryRecord(id:string){const record=await read(sql,id);return record?clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}):null;},
+  async summaryRecord(id:string){const record=await read(sql,id);return record?summary(record):null;},
+  async latestSummary(sessionId:string){const record=await latestRecord(sessionId);return record?summary(record):null;},
   /** Main-only isolated snapshot reader: audit the scanned row once and reuse
    * that same document only while checking its original session's latest index. */
   async summaryRecordFromRow(id:string,row:Record<string,unknown>){
    if(!/^xitask_[a-f0-9]{64}$/u.test(id))throw Error('invalid_input');
    if(row.key!==key(id))throw Error('task_corrupt');
    const record=await recordFromRow(sql,id,row);
-   return{...clone({view:record.doc.view,runIds:record.doc.lineage.map(owner=>owner.runId)}),
+   return{...summary(record),
     latest:()=>latestView(record.doc.view.sessionId,record)};
   },
   async inspection(id:string){

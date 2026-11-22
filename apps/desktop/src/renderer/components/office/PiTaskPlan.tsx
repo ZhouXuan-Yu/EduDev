@@ -18,7 +18,7 @@ export function PiTaskPlan({plan,compact=false,sessionId}:{plan:XiaozhiControl;c
   if(plan.plan&&!versioned)return <p role="alert">计划记录暂时无法核对，请重新读取会话。</p>;
   return <ChainOfThought key={plan.id} isExpanded={expanded} onExpandedChange={value=>setChoice({scope,expanded:value})} className={compact?'pi-live-task-strip':'office-plan pi-native-plan'}
     data-testid={compact?'pi-live-task':'pi-task-plan'} data-control-id={plan.id} data-state={plan.state} data-plan-revision={plan.plan?.revision}>
-    <ChainOfThought.Trigger><ListTodo size={16} aria-hidden="true"/><span className="pi-plan-title">{compact?'进行中的任务':'任务计划'}</span>
+    <ChainOfThought.Trigger><ListTodo size={16} aria-hidden="true"/><span className="pi-plan-title">{compact?'小智计划报告':'任务计划'}</span>
       {(compact||versioned)&&<span className="pi-plan-current" title={current?.text||plan.text}>{current?.text||plan.text}</span>}
       <span className="pi-plan-count">{completed}/{steps.length} {versioned?'已报告完成':'已完成'}</span>
     </ChainOfThought.Trigger>

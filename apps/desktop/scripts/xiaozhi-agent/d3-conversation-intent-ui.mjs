@@ -15,6 +15,7 @@ const output=fs.mkdtempSync(path.join(root,'phase1-intent-'));
 const desktop=process.cwd(),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const requests=[],checks=[],rendererErrors=[];
+const contextMode=process.argv.includes('--context');
 let holdNextReply=false,askNextReply=false,sourceFixture;
 function modelText(content){
   if(typeof content==='string')return content;
@@ -184,6 +185,21 @@ function sourceReceipts(){
     WHERE run.session_id=? AND tool.tool=? ORDER BY tool.call_id`).all(sessionId,sourceFixture?.kind==='attachment'?'office_read_attachment':'office_read_text');}
   finally{db.close();}
 }
+async function visibleContext(taskId){
+  const inspector=page.getByTestId('xiaozhi-pi-inspector');
+  if(!await inspector.isVisible())await page.getByTestId('pi-aside-toggle').click();
+  await inspector.waitFor({state:'visible'});
+  const task=inspector.getByTestId('pi-context-task');
+  if(taskId){
+    await inspector.locator(`[data-testid="pi-context-task"][data-task-id="${taskId}"]`).waitFor();
+    assert.equal(await inspector.getAttribute('data-scope'),'task');
+  }else{
+    await task.waitFor({state:'hidden'});
+    assert.equal(await inspector.getAttribute('data-scope'),'reply');
+    assert.equal(await inspector.getByTestId('task-artifact-relations').count(),0);
+  }
+  return inspector;
+}
 try{
   await launch();sessionId=await activeSession();
   const first=await send('什么是等值分数？');
@@ -201,6 +217,10 @@ try{
   assert.equal(created[0].id,task.turn.task.id);
   assert(requests[1].tools.length>0);
   check('明确成果目标经相同对话建立原 Task，工具与检查点链路正常');
+  if(contextMode){
+    const inspector=await visibleContext(created[0].id);
+    assert.match(await inspector.getByTestId('pi-context-task').innerText(),/五年级等值分数讲义/);
+  }
 
   const second=await send('为什么分母变大时单位分数变小？');
   assert.equal(second.turn.status,'completed',second.turn.error);
@@ -211,9 +231,18 @@ try{
   assert.equal(kept[0].requirementsVersion,created[0].requirementsVersion);
   assert.equal(kept[0].state,created[0].state);
   check('插入独立问答保留原任务 ID、要求版本和业务状态');
+  if(contextMode){
+    await page.getByTestId('edu-context-panel').waitFor({state:'hidden'});
+    const view=await snapshot();
+    assert(view.taskRunIds.includes(task.turn.id));
+    assert(!view.taskRunIds.includes(second.turn.id));
+    await visibleContext();
+    check('任务面板在普通问答后自动收起，手动展开仅显示本轮内容，原任务谱系独立');
+  }
 
   await restart();
   assert((await snapshot()).projection.turns.some(turn=>turn.id===first.turn.id&&turn.status==='completed'));
+  if(contextMode)await page.getByTestId('edu-context-panel').waitFor({state:'hidden'});
   const resumed=await send('继续');
   assert.equal(resumed.turn.status,'completed',resumed.turn.error);
   assert.equal(resumed.turn.task?.id,created[0].id);
@@ -221,6 +250,12 @@ try{
   assert.deepEqual(rendererErrors,[]);
   await page.screenshot({path:path.join(output,'conversation-after-restart.png')});
   check('重启后普通问答可读，教师继续时恢复原任务');
+  if(contextMode){
+    const view=await snapshot();
+    assert.deepEqual(view.taskRunIds,[task.turn.id,resumed.turn.id]);
+    await visibleContext(created[0].id);
+    check('冷启动保持问答默认收起，继续时只恢复原任务及真实的两轮谱系');
+  }
   if(process.argv.includes('--amend')){
     const amended=await send('请把刚才的讲义改为八年级，其他要求照旧。');
     assert.equal(amended.turn.status,'completed',amended.turn.error);
@@ -237,6 +272,23 @@ try{
     assert.notEqual(separate.turn.task?.id,created[0].id);
     assert.equal(taskRecords().length,2);
     check('明确新建目标生成独立任务，不覆盖旧任务');
+    if(contextMode){
+      const inspector=await visibleContext(separate.turn.task.id);
+      assert.match(await inspector.getByTestId('pi-context-task').innerText(),/六年级小数复习教案/);
+      assert.doesNotMatch(await inspector.getByTestId('pi-context-task').innerText(),/等值分数/);
+      assert.deepEqual((await snapshot()).taskRunIds,[separate.turn.id]);
+      check('同会话创建另一任务后，面板标题与 SQLite 谱系切换到新任务');
+      const previousSession=sessionId;
+      await freshConversation();
+      await page.getByTestId('edu-context-panel').waitFor({state:'hidden'});
+      await visibleContext();
+      if(!await page.getByTestId('edu-history-panel').isVisible())await page.getByTestId('pi-sidebar-toggle').click();
+      await page.getByTestId('ai-conversation-session-'+previousSession).click();
+      await page.waitForFunction(id=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===id,previousSession);
+      sessionId=previousSession;
+      await visibleContext(separate.turn.task.id);
+      check('新会话的右栏保持空态，切回旧会话恢复该会话的当前任务');
+    }
   }
   if(process.argv.includes('--control')){
     const before=(await snapshot()).projection.turns.length;

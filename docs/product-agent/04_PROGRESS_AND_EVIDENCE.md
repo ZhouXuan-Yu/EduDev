@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台及任务与成果双向定位。右侧动态面板和专业编辑同步继续实施。 |
+| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台、任务与成果双向定位及右侧当前任务上下文。专业编辑同步和业务专属上下文继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -225,3 +225,19 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | 现场窗口 | `manual-phase2-artifact-links/window-verification.json`，独立 SQLite 样例，窗口响应且可见。 |
 
 保留先前失败日志。修正测试夹具中已更换的教学工作台入口、冷启动后返回对话的入口，以及合成计划缺少教师核对步骤的问题。付费调用 0。Office 关系使用原已保存版本账本，本轮新增关联路径的完整闭环以 HTML 验证，其他格式及超出原教学文件目录范围的旧成果另列覆盖。依赖审计有原 20 项警报，其中 2 项 high。下一步推进右侧上下文和编辑同步。
+
+## Phase 2 右侧当前任务上下文
+
+右栏按当前任务 Run 显示教师要求、核验步骤、已读来源及关联成果。已有试卷摘要、备课包目标与题目收集状态按真实记录出现，试卷入口复用原蓝图、题目、答案和确认面板。“继续”沿原任务归属。普通问答默认收起右栏，手动打开可查看本轮资料。无新增 SQLite 表或迁移。无付费调用。
+
+验收固定在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-task-context`。隔离手测入口 `manual-phase2-task-context/启动-D3-右侧任务上下文.cmd`，同目录有 `验收步骤.md` 与 `window-verification.json`。实际窗口已核对，主进程 SHA-256 `d4faff093a822b44cdb790cb14934df94078924ae05dc95a67d82366bd0d41b7`。
+
+| 验收 | 最终构建结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-task-context-verified` | 通过，退出码 0，`build-verified.log`。 |
+| `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --amend --context` | 10/10，退出码 0。实际发送普通问答、建任务、冷启继续、修改、同会话另建任务、切换会话。`conversation-context.log`、`phase1-intent-9DuTTH/report.json`。渲染错误 0。 |
+| `node scripts/xiaozhi-agent/html-versions-electron.mjs --context --reference` | 16/16，退出码 0。实际读原文件、保存及恢复版本、在右栏核对当前任务范围、点击第 2 版、切到另一会话核对提交附件的读取和冷返回。`artifact-context-final.log`、`omni-edu-html-ui-ioCd8s/report.json`。同目录两种尺寸截图及可达性通过，渲染错误 0。 |
+| `npm.cmd run test:renderer-components` | 253/253，退出码 0，`renderer-components.log`。 |
+| `node scripts/electron-smoke.mjs` | 207/207，退出码 0，`electron-smoke.log`。 |
+
+前两次专项日志保留。第一轮定位器包含隐藏原对话中的版本组件，修正为教学文件详情内查询。第二轮在 Electron 自动化读取合成模型回执时返回临时垃圾回收错误，复测原进程读回或在同一次等待中重试该瞬时错误。后续继续核验试卷和备课包专项的右栏路径，以及上海模考的专属字段。本轮 `npm audit` 有原 20 项警报，其中 2 high。

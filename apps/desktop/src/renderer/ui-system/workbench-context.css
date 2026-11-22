@@ -32,6 +32,11 @@
 .wb-task-context p { margin: 6px 0; overflow-wrap: anywhere; }
 .wb-task-context > .pi-context-header { font-size: 13px; color: #242d3d; font-weight: 550; }
 .wb-task-context > .pi-context-status, .wb-task-context > .pi-context-location { display: flex; align-items: center; gap: 8px; }
+.wb-task-context .pi-context-task-title { color: #303a4c; font-weight: 550; }
+.pi-context-steps { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
+.pi-context-steps > li { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.pi-context-steps > li span { overflow-wrap: anywhere; }
+.pi-context-steps > li small { flex-shrink: 0; }
 .wb-task-context .pi-context-sources ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .wb-task-context .pi-context-sources li { display: flex; align-items: center; gap: 8px; }
 @media (max-width: 1050px) { .wb-context { position: absolute; z-index: 25; inset: 0 0 0 auto; width: min(420px, 100%); min-width: 0; box-shadow: -8px 0 24px rgb(20 30 50 / 6%); } }

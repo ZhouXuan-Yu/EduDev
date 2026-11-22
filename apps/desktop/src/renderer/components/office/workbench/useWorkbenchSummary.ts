@@ -10,7 +10,7 @@ export async function readWorkbenchSummary(query: WorkbenchQuery) {
 }
 
 /** Metadata only. Selection changes fence both fulfilled and rejected old reads. */
-export function useWorkbenchSummary(query: WorkbenchQuery) {
+export function useWorkbenchSummary(query: WorkbenchQuery, refreshKey?: number) {
   const key = JSON.stringify(query), epoch = useRef(0);
   const [refresh, setRefresh] = useState(0);
   const [state, setState] = useState<{key: string; value?: WorkbenchSummary; error?: string; loading: boolean}>({key, loading: true});
@@ -27,7 +27,7 @@ export function useWorkbenchSummary(query: WorkbenchQuery) {
       } catch {if (ticket === epoch.current) setState({key, loading: false, error: '本地索引未读取，请重试。'});}
     })();
     return () => {epoch.current++;};
-  }, [key, refresh]);
+  }, [key, refresh, refreshKey]);
   return {loading: state.key !== key || state.loading, value: state.key === key ? state.value : undefined,
     error: state.key === key ? state.error : undefined, reload: () => setRefresh(value => value + 1)};
 }

@@ -34,6 +34,7 @@ import { PiSkillSettings } from './PiSkillSettings';
 import { PiHomeSuggestions, isHomeConversation } from './PiHomeLayout';
 import { workspaceNotifications } from './workspace-notifications';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
+import {updateTaskRunIds,workspaceTaskScope} from './workspace-task-context';
 import {PiRecoveryOverview, restoreWorkbenchTask, type WorkbenchRestoreMode} from './workbench/PiRecoveryOverview';
 import type {WorkbenchTaskRow} from '../../../shared/xiaozhi-workbench';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
@@ -204,7 +205,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         const questionReviews=event.kind==='question_review'?[...(previous.questionReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionReviews;
         const controls=event.kind === 'control' ? [...(previous.controls || []).filter(item=>item.id !== event.control.id),event.control] : previous.controls;
         const usage=event.kind==='usage'?[...(previous.usage || []).filter(item=>item.runId!==event.usage.runId),event.usage]:previous.usage;
-        return { ...previous, approvals, changes, deliveries, officeArtifacts, learningReviews, questionCollections, questionReviews, practiceReviews, paperReviews, controls, usage, ...(event.kind==='goal'?{goal:event.goal}:{}),...(event.kind==='task'?{task:event.task,taskUnavailable:false,...(event.goal?{goal:event.goal}:{})}:{}), ...(event.kind === 'compaction' && !event.automatic ? { operation: 'compact' as const } : {}), running: event.kind === 'status' ? event.status === 'running' : previous.running,
+        return { ...previous, approvals, changes, deliveries, officeArtifacts, learningReviews, questionCollections, questionReviews, practiceReviews, paperReviews, controls, usage, ...(event.kind==='goal'?{goal:event.goal}:{}),...(event.kind==='task'?{task:event.task,taskRunIds:updateTaskRunIds(previous,event.task),taskUnavailable:false,...(event.goal?{goal:event.goal}:{})}:{}), ...(event.kind === 'compaction' && !event.automatic ? { operation: 'compact' as const } : {}), running: event.kind === 'status' ? event.status === 'running' : previous.running,
           projection: { ...previous.projection, sourceSequence: throughSequence, turns } };
       });
   }
@@ -380,6 +381,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
     }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} paperExportIntent={navigation.target.sessionId===id?navigation.target.paperExportIntent:undefined} onConsumed={()=>{if(navigation.target.sessionId===id&&navigation.target.draft!==undefined)navigation.consumeDraft(id,{text:navigation.target.draft,paperExportIntent:navigation.target.paperExportIntent});}}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
+    replyOnly={Boolean(snapshot&&!snapshot.running&&!workspaceTaskScope(snapshot))}
     workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={open=>{if(open)setWorkbenchInitialTab('tasks');setWorkbenchOpen(open);}} onWorkbenchClose={closeWorkbench}
     workbench={<PiRecoveryOverview key={workbenchInitialTab} initialTab={workbenchInitialTab} activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{setHomeActivityRevision(value=>value+1);if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
@@ -387,7 +389,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
-    aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
+    aside={<PiWorkspaceContext key={id} sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
       goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>}/>}
     sidebar={history()}>
     <section className="work-panel ai-chat-surface" data-empty={isHomeConversation(projection)}>

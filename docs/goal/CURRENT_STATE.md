@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 Phase 0 和 Phase 1 工程验收已完成。Phase 2 已交付动态首页、我的任务与任务优先的教学工作台。接下来实施任务与成果关系及编辑同步。真实模型综合质量随产品闭环集中验收。 [阶段记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 Phase 0 和 Phase 1 工程验收已完成。Phase 2 已交付动态首页、我的任务、任务优先工作台、任务与成果双向定位及右侧当前任务上下文。接下来实施专业编辑同步。真实模型质量随产品闭环集中验收。 [阶段记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

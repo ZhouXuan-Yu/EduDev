@@ -750,8 +750,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if (!id) return { enabled, projection, running: false, legacyHistory: false };
     const detail = await store.getAiConversationHistoryPage(id,beforeRunId?{before:beforeRunId}:{});
     const selectedStudent=detail.session.studentId?(await store.listStudents('')).find(student=>student.id===detail.session.studentId):undefined;
-    let task:import('../../shared/xiaozhi-task').TaskView|null=null,taskUnavailable=false;
-    try{await tasks.recover(id);task=await tasks.committed(id);}catch{taskUnavailable=true;}
+    let task:Awaited<ReturnType<typeof tasks.committedRecord>>=null,taskUnavailable=false;
+    try{await tasks.recover(id);task=await tasks.committedRecord(id);}catch{taskUnavailable=true;}
     const binding = await store.xiaozhiState.getBinding(id); if (binding) projection.model = binding.model;
     const modelCapabilities = await readDeepSeekCapabilities(root, projection.model);
     const pageRunIds=detail.messages.filter(message=>message.role==='user').map(message=>String(message.metadata.agentRunId||message.id));
@@ -867,7 +867,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      ...(task?{task}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),...(permissionApprovals.unavailableCount?{approvalRecordsUnavailable:permissionApprovals.unavailableCount}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, deliveries:storedDeliveries, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
+      ...(task?{task:task.view,taskRunIds:task.runIds}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),...(permissionApprovals.unavailableCount?{approvalRecordsUnavailable:permissionApprovals.unavailableCount}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, deliveries:storedDeliveries, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,

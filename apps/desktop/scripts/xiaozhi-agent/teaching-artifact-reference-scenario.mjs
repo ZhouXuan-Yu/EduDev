@@ -66,7 +66,8 @@ export async function checkTeachingArtifactReference({page,app,sourceSessionId,t
     await until(async()=>{
       const status=(await snapshot()).projection.turns.at(-1)?.status;
       if(status==='failed')throw Error('Attachment reference test model failed before the final response');
-      return app.evaluate(()=>globalThis.htmlVersions.referenceText);
+      try{return await app.evaluate(()=>globalThis.htmlVersions.referenceText);}
+      catch(error){if(!String(error).includes('Resulting promise was garbage collected'))throw error;return undefined;}
     });
     await until(async()=>!(await snapshot()).running);
     const modelText=await app.evaluate(()=>globalThis.htmlVersions.referenceText);

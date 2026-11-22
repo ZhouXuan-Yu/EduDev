@@ -52,12 +52,14 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   const success=row.status==='completed';if(task.state==='review_required')try{await state().candidate(id,task.id);return;}catch{/* Interrupted/corrupt completion stays unaccepted. */}
   locked.add(id);try{await checkpoint(id,work=>state(work).settle(own,task.id,task.revision,!success));}finally{locked.delete(id);}
  }
- async function committed(id:string):Promise<TaskView|null>{
-  const task=await state().latest(id);if(!task)return null;
+ async function committedRecord(id:string){
+  const record=await state().latestSummary(id);if(!record)return null;
+  const task=record.view;
   const rows=await sql.all("SELECT e.event_json,e.event_hash FROM xiaozhi_event_journal e JOIN xiaozhi_event_runs r ON r.run_id=e.run_id AND r.generation=e.generation WHERE r.session_id=? AND json_extract(e.event_json,'$.kind')='task' AND json_extract(e.event_json,'$.task.id')=? ORDER BY e.rowid DESC LIMIT 1",[id,task.id]);
   if(!rows.length)throw Error('task_record_uncommitted');const raw=String(rows[0].event_json);if(digest(raw)!==rows[0].event_hash)throw Error('task_record_uncommitted');const event=JSON.parse(raw) as XiaozhiAgentEvent;
-  if(event.kind!=='task'||event.durability!=='committed'||event.sessionId!==id||!validTaskView(event.task)||JSON.stringify(event.task)!==JSON.stringify(task))throw Error('task_record_uncommitted');return task;
+  if(event.kind!=='task'||event.durability!=='committed'||event.sessionId!==id||!validTaskView(event.task)||JSON.stringify(event.task)!==JSON.stringify(task))throw Error('task_record_uncommitted');return record;
  }
+ async function committed(id:string):Promise<TaskView|null>{return (await committedRecord(id))?.view??null;}
  async function details(id:string):Promise<TaskSnapshot>{
   const task=await committed(id);if(!task)return{task:null,canAccept:false};
   let candidate;try{candidate=await state().candidate(id,task.id);}catch(e){if(!/candidate_unavailable|owner_stale/.test(e instanceof Error?e.message:''))throw e;}
@@ -114,6 +116,7 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   admittedRuns:(sessionId:string,taskId:string)=>state().admittedRuns(sessionId,taskId),
   recover,
   committed,
+  committedRecord,
   async cancelInactive(input:Extract<TaskControlInput,{revision:number}>):Promise<TaskApiResult<TaskView>>{
    const id=input.sessionId;if(locked.has(id))return{ok:false,error:'busy'};locked.add(id);
    try{

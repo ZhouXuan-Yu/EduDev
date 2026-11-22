@@ -9,17 +9,17 @@ import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-
 import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
 
-export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, notifications = { hasFiles: false, pending: [] } }: {
+export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, replyOnly = false, notifications = { hasFiles: false, pending: [] } }: {
   title: string; sidebar: ReactNode; aside: ReactNode; children: ReactNode;
   onLeave: () => void; onSkills: () => void; onSettings: () => void;
   files?: (close: () => void) => ReactNode; visible?: boolean; fileRequest?: string; onNewChat?: () => void; sessionKey?: string;
   workbench?: ReactNode; onWorkbenchClose?: () => void;
   workbenchVisible?: boolean; onWorkbenchVisibleChange?: (open: boolean) => void;
-  isEmpty?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
+  isEmpty?: boolean; replyOnly?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
 }) {
   const main = useRef<HTMLDivElement>(null);
   const { hasFiles, pending } = notifications;
-  const [preferences, setPreferences] = useState(() => initialWorkspacePreferences(isEmpty));
+  const [preferences, setPreferences] = useState(() => initialWorkspacePreferences(isEmpty||replyOnly));
   const handledFileRequest = useRef<string | undefined>(undefined);
   const emptyWasVisible = useRef(isEmpty);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -73,7 +73,13 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
     return () => query.removeEventListener('change', resize);
   }, []);
   useEffect(() => { writeColumnWidth('xiaozhi.ui.panelWidth.v1', panelWidth); }, [panelWidth]);
-  useEffect(() => { if (visible) { setPanelFocus({ request: 0 }); panelOrigin.current = undefined; setPreferences(initialWorkspacePreferences(isEmpty)); } }, [visible, sessionKey]);
+  useEffect(() => { if (visible) { setPanelFocus({ request: 0 }); panelOrigin.current = undefined; setPreferences(initialWorkspacePreferences(isEmpty||replyOnly)); } }, [visible, sessionKey]);
+  useEffect(() => {
+    if(replyOnly){
+      panelOrigin.current=undefined;setPanelFocus({request:0});
+      setPreferences(previous=>previous.aside?{...previous,aside:false}:previous);
+    }
+  },[replyOnly]);
   // Loading first becomes an empty thread after hydration. Do not close a panel the
   // teacher subsequently opens in that same empty thread.
   useEffect(() => {

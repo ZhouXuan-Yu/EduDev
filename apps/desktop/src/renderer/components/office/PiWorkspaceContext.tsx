@@ -1,23 +1,20 @@
-import { BookOpen, Folder, Link as LinkIcon, PanelRightClose } from 'lucide-react';
-import { Button, Tooltip } from '@heroui/react';
-import {QuestionSourceLink} from './PiQuestionSource';
-import { WebSource } from './OfficeToolProcess';
+import { BookOpen, Folder, Link as LinkIcon } from 'lucide-react';
+import { Button } from '@heroui/react';
 import { ChatSources } from '../../heroui-pro/components/chat-source';
 import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
-import { AppLayout } from '../../heroui-pro/components/app-layout';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import { PiMemoryScope } from './PiMemoryScope';
 import { PiBudgetCard } from './PiBudgetCard';
 import {PiUsageReceipt} from './PiUsageReceipt';
 import {useState,type ReactNode} from 'react';
 import { workspaceStatus } from './workspace-status';
-import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
-import {StudentSourceLink} from '../students/StudentSourceNavigation';
 import {PiLearningHistory} from './PiLearningHistory';
-import {replySources} from './OfficeReplySources';
+import {OfficeSourceItem,replySources} from './OfficeReplySources';
 import {OfficeMutationBoundary} from './OfficeSynchronization';
 import { PiTaskPlan } from './PiTaskPlan';
 import {teacherWorkspaceLabel} from './workspace-label';
+import {PiTaskContextSummary} from './PiTaskContextSummary';
+import {latestConversationTurn,workspaceTaskScope} from './workspace-task-context';
 
 export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh,goalControl}: {
   sessionId:string;snapshot?:XiaozhiWorkspaceSnapshot;compactBusy:boolean;compacting:boolean;
@@ -26,19 +23,28 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
 }) {
   const [browserMessage,setBrowserMessage]=useState('');
   const current=snapshot?.projection.turns.at(-1);
+  const scope=workspaceTaskScope(snapshot);
   const status=workspaceStatus(snapshot,compactBusy||compacting);
-  const sources=replySources(current);
-  const sourceRow=(source:typeof sources[number])=>source.question?<QuestionSourceLink key={`${source.question.questionId}:${source.question.version}`} source={source}/>:source.student?<StudentSourceLink key={source.title} source={source}/>:source.material ? <MaterialSourceLink key={source.title} source={source}/> : source.url ? <WebSource key={source.url} source={source} sessionId={sessionId}/> : <li key={source.title} title={source.title}><BookOpen size={16}/><span>{source.title}</span></li>;
-  const plan = snapshot?.controls?.filter(control => control.kind === 'plan' && control.runId === current?.id).at(-1);
-  return <div className="wb-task-context" data-testid="xiaozhi-pi-inspector" aria-label="小智任务与来源">
+  const visibleTurns=scope?snapshot?.projection.turns.filter(turn=>scope.runIds.has(turn.id)).reverse()??[]:[latestConversationTurn(snapshot)];
+  const sourceRows=new Map(visibleTurns.flatMap(replySources).map(source=>{
+    const {citationId:_id,...reference}=source;
+    const key=JSON.stringify(reference);
+    return [key,<OfficeSourceItem key={key} source={source} sessionId={sessionId}/>] as const;
+  }));
+  const sources=[...sourceRows.values()];
+  const plan=snapshot?.controls?.findLast(control=>control.kind==='plan'&&(scope?scope.runIds.has(control.runId):control.runId===current?.id));
+  return <div className="wb-task-context" data-testid="xiaozhi-pi-inspector" data-scope={scope?'task':'reply'} aria-label="小智任务与来源">
     <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span></div>
     <div className="pi-context-status" data-testid="xiaozhi-pi-status" data-state={status.state} role="status" aria-live="polite"><BookOpen size={17} aria-hidden="true"/><span>{status.label}</span></div>
     <div className="pi-context-location"><Folder size={17}/><span>{snapshot?.workspace?'教学工作目录':'教师知识库'}</span><span className="pi-context-local">本地</span></div>
-    {plan && <section aria-label="当前任务步骤"><PiTaskPlan plan={plan} sessionId={sessionId} compact /></section>}
+    {snapshot&&scope&&<PiTaskContextSummary snapshot={snapshot} scope={scope} onRefresh={onRefresh}/>}
+    {snapshot?.taskUnavailable&&<p role="status">任务记录暂未同步，可以刷新会话后重试。</p>}
+    {plan && <section aria-label="小智计划报告"><PiTaskPlan plan={plan} sessionId={sessionId} compact /></section>}
     {goalControl&&<section data-heroui-native="" className="default" data-theme="light" data-testid="pi-goal-aside">{goalControl}</section>}
     {snapshot?.browser?.open&&<section data-testid="pi-browser-panel"><Button size="sm" variant="ghost" data-testid="pi-browser-show" onPress={async()=>{const result=await window.omniEdu?.showXiaozhiBrowser(sessionId);setBrowserMessage(result?.ok?'':'浏览器已关闭，请让小智重新打开页面。');await onRefresh();}}>打开浏览器</Button>{snapshot.browser.tabs?.filter(tab=>tab.active).map(tab=><p key={tab.tabId}>{tab.title||new URL(tab.url).hostname}</p>)}{browserMessage&&<p role="status">{browserMessage}</p>}</section>}
-    <section className="pi-context-sources" data-testid="pi-web-aside"><h4><LinkIcon size={16}/>最新一轮读取的资料</h4>
-      {sources.length ? <><ul>{sources.slice(0,3).map(sourceRow)}</ul>{sources.length>3&&<ChatSources defaultExpanded={false}><ChatSources.Trigger>查看全部（{sources.length}）</ChatSources.Trigger><ChatSources.Content><ul>{sources.slice(3).map(sourceRow)}</ul></ChatSources.Content></ChatSources>}</> : <p>本轮暂无已读资料依据。较早回复的依据随正文保留。</p>}
+    <section key={scope?.task.id||'reply'} className="pi-context-sources" data-testid="pi-web-aside"><h4><LinkIcon size={16}/>{scope?'任务已读资料':'本轮已读资料'}</h4>
+      {sources.length ? <><ul>{sources.slice(0,3)}</ul>{sources.length>3&&<ChatSources defaultExpanded={false}><ChatSources.Trigger>查看全部（{sources.length}）</ChatSources.Trigger><ChatSources.Content><ul>{sources.slice(3)}</ul></ChatSources.Content></ChatSources>}</> : <p>{scope?'当前任务暂无可显示的已读资料。':'本轮暂无已读资料。'}</p>}
+      {scope&&snapshot?.projection.hasMoreHistory&&visibleTurns.length<scope.runIds.size&&<p>向上查看较早对话后，可在这里看到对应的资料记录。</p>}
     </section>
     {snapshot?.studentContext?.status==='active'&&<PiLearningHistory key={`${sessionId}:${snapshot.studentContext.id}`} sessionId={sessionId} revision={(snapshot.learningReviews||[]).map(item=>`${item.id}:${item.state}:${item.version}`).join('|')}/>}
     <ChatTool state="output-available" defaultExpanded={false} data-testid="pi-task-details" className="pi-task-details">

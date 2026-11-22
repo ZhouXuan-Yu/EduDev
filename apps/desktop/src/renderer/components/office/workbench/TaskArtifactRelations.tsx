@@ -7,17 +7,17 @@ import styles from '../../../ui-system/xiaozhi-workbench.module.css';
 
 type Query=Extract<WorkbenchQuery,{kind:'task_artifacts'|'artifact_tasks'}>;
 
-export function TaskArtifactRelations({query}: {query:Query}) {
+export function TaskArtifactRelations({query,refreshKey}: {query:Query;refreshKey?:number}) {
   const [open,setOpen]=useState(false);
   return <details data-testid={query.kind==='task_artifacts'?'task-artifact-relations':'artifact-task-relations'}
     onToggle={event=>setOpen(event.currentTarget.open)}>
     <summary>{query.kind==='task_artifacts'?'关联成果':'关联任务'}</summary>
-    {open&&<RelationList query={query}/>}
+    {open&&<RelationList query={query} refreshKey={refreshKey}/>}
   </details>;
 }
 
-function RelationList({query}:{query:Query}) {
-  const navigation=useDesktopNavigation(), {value,loading,error,reload}=useWorkbenchSummary(query);
+function RelationList({query,refreshKey}:{query:Query;refreshKey?:number}) {
+  const navigation=useDesktopNavigation(), {value,loading,error,reload}=useWorkbenchSummary(query,refreshKey);
   const relations=value?.kind==='task_artifacts'||value?.kind==='artifact_tasks'?value:undefined;
   if(loading)return <p role="status">正在读取关联记录…</p>;
   if(error)return <p role="alert">{error} <Button size="sm" variant="ghost" onPress={reload}>重试</Button></p>;
