@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {isStandaloneAnswer} from '../../src/main/xiaozhi-agent/tasks/conversation-intent.ts';
+import {isBoundTaskAmendment} from '../../src/main/xiaozhi-agent/tasks/continuation.ts';
 
 const answers=['你好！','什么是等值分数？','为什么会有四季','请解释小数的计数单位','1+1 等于几？',
     'What is a polynomial?','一元一次方程和一元二次方程有什么区别？'];
@@ -11,4 +12,9 @@ for(const prompt of tasks)assert(!isStandaloneAnswer({prompt}),prompt);
 const prompt=answers[1];
 for(const options of [{attachments:[{id:'attachment',revision:1}]},{presentation:{}},{continueTask:{}},{classroomPlan:{}},
     {paperExportIntent:{}},{resumeDeliveryId:'delivery-id'}])assert(!isStandaloneAnswer({prompt,...options}),JSON.stringify(options));
-console.log(JSON.stringify({passed:answers.length+tasks.length+6,answers:answers.length,tasks:tasks.length,structuredStarts:6}));
+const amendments=['请把刚才的讲义改为八年级，其他要求照旧。','改为两道练习。','请在这份教案增加板书。'];
+const newRequests=['新建一份讲义把题型改为计算','为什么之前的讲义删去了过程？','修改另一份教案','继续'];
+for(const prompt of amendments)assert(isBoundTaskAmendment(prompt),prompt);
+for(const prompt of newRequests)assert(!isBoundTaskAmendment(prompt),prompt);
+console.log(JSON.stringify({passed:answers.length+tasks.length+6+amendments.length+newRequests.length,
+    answers:answers.length,tasks:tasks.length,structuredStarts:6,amendments:amendments.length,newRequests:newRequests.length}));

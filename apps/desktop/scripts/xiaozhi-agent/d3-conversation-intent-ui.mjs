@@ -120,6 +120,23 @@ try{
   assert.deepEqual(rendererErrors,[]);
   await page.screenshot({path:path.join(output,'conversation-after-restart.png')});
   check('重启后普通问答可读，教师继续时恢复原任务');
+  if(process.argv.includes('--amend')){
+    const amended=await send('请把刚才的讲义改为八年级，其他要求照旧。');
+    assert.equal(amended.turn.status,'completed',amended.turn.error);
+    const updated=taskRecords();
+    assert.equal(updated.length,1);
+    assert.equal(updated[0].id,created[0].id);
+    assert.equal(updated[0].requirementsVersion,created[0].requirementsVersion+1);
+    assert.equal(updated[0].origin.messageId,created[0].origin.messageId);
+    assert(updated[0].criteria.some(c=>c.text.includes('八年级')&&updated[0].sources.some(s=>s.messageId===c.sourceId&&s.version===c.sourceVersion)));
+    check('自然语言修订保留任务与原始消息，按新教师来源递增要求版本');
+
+    const separate=await send('新建另一项任务，请制作六年级小数复习教案。');
+    assert.equal(separate.turn.status,'completed',separate.turn.error);
+    assert.notEqual(separate.turn.task?.id,created[0].id);
+    assert.equal(taskRecords().length,2);
+    check('明确新建目标生成独立任务，不覆盖旧任务');
+  }
 }catch(error){failure=error;process.exitCode=1;console.error(error.stack);}
 finally{
   await app?.close().catch(()=>undefined);

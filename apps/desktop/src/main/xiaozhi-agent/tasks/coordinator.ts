@@ -11,7 +11,7 @@ import {readTaskAction} from './teacher-actions';
 import {validTaskResume,taskHasRemainingSteps,type TaskResumeInput} from '../../../shared/xiaozhi-task';
 import {createGoalState,publicGoal,type PrivateGoal} from '../goal-state';
 import {goalFromSource,goalCriterionId} from './goal-binding';
-import {isTaskContinuation} from './continuation';
+import {isTaskContinuation,isBoundTaskAmendment} from './continuation';
 import {assertPaperTaskContinuation} from './paper-export-continuation';
 import type {TaskRecoveryInspection} from '../../../shared/xiaozhi-task-recovery';
 
@@ -62,19 +62,20 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   const recovery=options.inspect&&!options.running(id)?await options.inspect(task):undefined;
   return{task,...(candidate?{candidate}:{}),canAccept,canResume,...(recovery?{recovery}:{})};
  }
- async function assertContinuationAllowed(sessionId:string,prompt:string,continuation?:TaskContinuation,resume?:TaskResumeInput){
-  if(!resume&&!continuation&&!isTaskContinuation(prompt))return;
+ async function assertContinuationAllowed(sessionId:string,prompt:string,continuation?:TaskContinuation,resume?:TaskResumeInput,allowNaturalAmendment=true){
+  if(!resume&&!continuation&&!isTaskContinuation(prompt)&&!(allowNaturalAmendment&&isBoundTaskAmendment(prompt)))return;
   await allowed(sessionId);
   const current=await committed(sessionId);
   const targetId=resume?.taskId??continuation?.taskId;
   if(targetId&&current?.id!==targetId)throw Error('task_resume_invalid');
-  if(current)assertPaperTaskContinuation(current,(await options.store.getAiConversationSession(sessionId)).messages);
+  if(current&&(resume||continuation||isTaskContinuation(prompt)||!current.goal&&['paused','interrupted','review_required'].includes(current.state)))
+   assertPaperTaskContinuation(current,(await options.store.getAiConversationSession(sessionId)).messages);
   if(continuation&&(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion
    ||current.goal||!['paused','interrupted','review_required'].includes(current.state)))throw Error('task_resume_invalid');
  }
  return{
   assertContinuationAllowed,
-  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation){
+  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation,allowNaturalAmendment=true){
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
    if(continuation){
     const current=await committed(sessionId);
@@ -84,10 +85,13 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
    }
    const goal=await goalFromSource(sql,sessionId,message.id),prior=goal?await state().forGoal(sessionId,goal.id):null;
    if(goal&&prior)return publisher.checkpointTask(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
-   const unfinished=!goal&&isTaskContinuation(message.content)?await committed(sessionId):null;
+   const amend=allowNaturalAmendment&&isBoundTaskAmendment(message.content);
+   const unfinished=!goal&&(amend||isTaskContinuation(message.content))?await committed(sessionId):null;
    if(unfinished&&!unfinished.goal&&['paused','interrupted','review_required'].includes(unfinished.state)){
     assertPaperTaskContinuation(unfinished,detail.messages);
-    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id));
+    const amended=amend?(await options.store.sanitizeProblemText(message.content)).sanitizedText.trim():undefined;
+    const revisionInstruction=amended&&amended.length>400?amended.slice(0,399)+'…':amended;
+    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id,undefined,revisionInstruction));
    }
    const cleaned=(await options.store.sanitizeProblemText(message.content)).sanitizedText;
    return publisher.checkpointTask(work=>state(inline(work),async text=>{if(text!==message.content)throw Error('task_source_changed');return cleaned;}).create(publisher.owner,message.id,commandId));

@@ -16,7 +16,7 @@ CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,archived_at TEXT);
 CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT);
 CREATE TABLE xiaozhi_pi_commands(command_id TEXT PRIMARY KEY,conversation_id TEXT,run_id TEXT,status TEXT);
 CREATE TABLE xiaozhi_event_owners(session_id TEXT PRIMARY KEY,run_id TEXT,generation INTEGER);
-CREATE TABLE xiaozhi_event_runs(run_id TEXT PRIMARY KEY,session_id TEXT,generation INTEGER,status TEXT);`);
+CREATE TABLE xiaozhi_event_runs(run_id TEXT PRIMARY KEY,session_id TEXT,generation INTEGER,status TEXT,sequence INTEGER NOT NULL DEFAULT 0);`);
 const schema=()=>JSON.stringify(db.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' ORDER BY name").all());
 const originalSchema=schema(),hash=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 let lane=Promise.resolve();
@@ -26,7 +26,7 @@ const all=()=>JSON.stringify(db.prepare('SELECT * FROM app_settings ORDER BY key
 const check=async(name,fn)=>{await fn();report.checks.push({name,pass:true});console.log('PASS '+name);};
 function owner(runId='run_'+randomUUID(),generation=1,sessionId='aisession_'+randomUUID()){
  db.prepare('INSERT OR IGNORE INTO ai_conversation_sessions VALUES(?,NULL)').run(sessionId);
- db.prepare('INSERT INTO xiaozhi_event_runs VALUES(?,?,?,?)').run(runId,sessionId,generation,'running');
+ db.prepare('INSERT INTO xiaozhi_event_runs(run_id,session_id,generation,status) VALUES(?,?,?,?)').run(runId,sessionId,generation,'running');
  db.prepare('INSERT INTO xiaozhi_event_owners VALUES(?,?,?) ON CONFLICT(session_id) DO UPDATE SET run_id=excluded.run_id,generation=excluded.generation').run(sessionId,runId,generation);
  const commandId='xicmd_'+randomUUID(),messageId='aimsg_'+randomUUID();
  db.prepare('INSERT INTO xiaozhi_pi_commands VALUES(?,?,?,?)').run(commandId,sessionId,runId,'running');

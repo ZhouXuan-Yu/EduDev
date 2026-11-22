@@ -21,7 +21,7 @@ import {preparePaperAdaptationContext} from '../education/paper-basket-adaptatio
 import {createScienceLessonSource,prepareScienceLessonRefresh} from '../education/science-lesson-source';
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
-import {isTaskContinuation} from './tasks/continuation';
+import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -1929,12 +1929,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
+      const allowNaturalAmendment=!input.attachments&&!input.presentation&&!input.paperExportIntent&&!input.classroomPlan&&!input.resumeDeliveryId&&!goalId&&!legacyApprovalId;
       const controller=new AbortController();
       const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
       const phase=<T>(action:()=>Promise<T>,late?:(value:T)=>void|Promise<void>)=>waitForLifecycle('host_admission',action,{signal:controller.signal,timeoutMs:options.lifecycleTimeoutMs,late});
       try {
       let recoveryInspection:TaskRecoveryInspection|undefined;
-      if(operation==='prompt'&&(taskResume||input.continueTask||isTaskContinuation(input.prompt))){
+      if(operation==='prompt'&&(taskResume||input.continueTask||isTaskContinuation(input.prompt)||allowNaturalAmendment&&isBoundTaskAmendment(input.prompt))){
         const task=await phase(()=>createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}).latest(id));
         if(task&&task.state!=='active'){
           await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
@@ -1967,7 +1968,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       // A continuation inherits its authority from the original task source, not this new prompt.
       // Refuse before task recovery can append an event, or admission reserves an Active/run.
-      if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume));
+      if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume,allowNaturalAmendment));
       await phase(()=>tasks.recover(id));
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
@@ -2035,7 +2036,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
-        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask));
+        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask,allowNaturalAmendment));
         else await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
         run.done = observeLifecycle('host_execute',()=>execute(id, input.prompt.trim(), run, settings),{runId:run.runId});

@@ -1,5 +1,5 @@
 import type {XiaozhiStartInput} from '../../../shared/xiaozhi-agent';
-import {isTaskAmendment, isTaskContinuation} from './continuation';
+import {isTaskAmendment, isTaskFollowUp} from './continuation';
 
 const greeting = /^(?:你好|您好|小智你好|早上好|下午好|晚上好|谢谢|多谢|辛苦了|hello|hi|thanks)[，。！!\s]*$/iu;
 const question = /[？?]$/u;
@@ -12,7 +12,7 @@ const suppliedSource = /(?:刚才|之前|当前|以上|上面的|这[个份道�
 export function isStandaloneAnswer(input: Pick<XiaozhiStartInput,'prompt'|'attachments'|'presentation'|'continueTask'|'classroomPlan'|'resumeDeliveryId'|'paperExportIntent'>) {
     if(input.attachments?.length||input.presentation||input.continueTask||input.classroomPlan||input.resumeDeliveryId||input.paperExportIntent)return false;
     const text=input.prompt.trim().normalize('NFKC');
-    if(!text||text.length>600||text.startsWith('/')||/\r|\n/u.test(text)||isTaskContinuation(text)||isTaskAmendment(text))return false;
+    if(!text||text.length>600||text.startsWith('/')||/\r|\n/u.test(text)||isTaskFollowUp(text)||isTaskAmendment(text))return false;
     if(greeting.test(text))return true;
     if(delivery.test(text)||requestedArtifact.test(text)||suppliedSource.test(text)||/^(?:请问\s*)?(?:能否|能不能|可以|可不可以|能帮)(?:\s)*(?:帮|替|给|做|查|搜|生|编|出|组|制|写|改|重|补|存|导|看|用|从)/u.test(text))return false;
     return knowledgeQuestion.test(text)||question.test(text)&&/(?:什么|为何|为啥|怎样|怎么|如何|多少|几|是否|区别|哪|吗|呢|^who\b|^what\b|^why\b|^how\b)/iu.test(text);
