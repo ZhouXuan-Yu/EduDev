@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | NOT_STARTED | 以现有对话、恢复工作台与成果域为底座。 |
+| 2 | PARTIAL | 对话首页已显示真实待办、任务和最近成果。独立任务与成果中心、关联和编辑继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -176,3 +176,18 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 | 12 | 旧成果引用到新对话，教师发送后读取选定字节，冷启保留精确来源。见 17 项跨会话引用专项。 |
 
 Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、原 Pi、文件与 SQLite，新增付费调用 0。真实模型的自主规划与回答质量纳入后续集中验收。下一阶段从现有小智首页、任务入口和教学工作台的真实数据装配开始。
+
+## Phase 2 动态首页
+
+首页在新对话的原 Composer 下显示本地审批、待关注任务和最多两份近期成果。审批打开原收件箱，任务打开原会话，成果落到教学文件的确切记录。使用组卷、讲义、模考汇编或教案入口只填入草稿；已有草稿保留。冷启动的空闲和首次引导由现有会话记录与已保存状态决定。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-home-rc` | TypeScript 及 Electron 通过。`phase2-home/build-recheck.log`。主入口 SHA-256 `79f1bfb533f1bf0215f1d6cf0cbeb0b344aca5cf5ec79b1765534b655fb9a122`。 |
+| `node scripts/xiaozhi-agent/d3-home-activity-electron.mjs` | 4/4，实际 Electron、typed IPC、SQLite、保存文件及真实审批记录。两种尺寸可达，成果精确跳转和返回草稿通过，零导航触发模型。`phase2-home/home-electron/verified.log` 与 `omni-edu-xiaozhi-phase7-workbench-ui-AQrzE8/evidence/home-activity-report.json`。 |
+| `node scripts/workbench-ui.mjs` | 25/25，`phase2-home/workbench-ui/workbench-ENjOhG/report.json`。首开无待办时的资料进口、两尺寸、输入草稿、原资料真实导入与历史恢复。 |
+| 组件回归 | `phase2-home/renderer-components.log` 253/253，`phase2-home/ui-home-state.log` 14/14。 |
+| `node scripts/electron-smoke.mjs` | 同构建 207/207，`phase2-home/smoke/run.log`。 |
+| 手测入口 | `manual-phase2-home/启动-D3-动态首页.cmd`，独立验收数据包含浮力练习示例。 |
+
+失败证据保留在 `phase2-home/home-electron/run.log` 和 `recheck.log`。首轮夹具启动期间工具注册超时。第二轮等到了面板外壳，审批索引仍加载，已改成等待真实审批行。`workbench-ui/run.log` 保留原三项快捷入口断言，复测使用四项教学入口及独立学情示例。

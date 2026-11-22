@@ -17,7 +17,7 @@ import { fingerprint } from './acceptance/evidence.mjs';
 
 const desktop = path.resolve(import.meta.dirname, '..');
 fs.mkdirSync(path.join(desktop, 'test-results'), { recursive: true });
-const output = fs.mkdtempSync(path.join(desktop, 'test-results/workbench-'));
+const output = fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT || path.join(desktop,'test-results'), 'workbench-'));
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-workbench-'));
 const profile = path.join(temp, 'electron-profile'), data = path.join(temp, 'data');
 const osProfile = path.join(temp, 'os-profile'), workspace = path.join(temp, 'teaching-files');
@@ -289,13 +289,14 @@ try {
     await test(planned[index], async () => {
       await size(width, height); await active('ai');
       const home = ui('workbench-home'); await home.waitFor();
+      await ui('pi-home-import').waitFor();
       const heading = await home.locator('h1').boundingBox();
       assert(heading.y >= 100 && heading.y < height - 240, 'home title visible on initial paint without scrolling');
-      assert.equal(await shell().locator('[data-testid^="home-task-"]').count(), 3);
-      assert.deepEqual(await shell().locator('.wb-start-shortcut span').allTextContents(), ['智能备课', '智能组卷', '学情分析']);
+      assert.equal(await shell().locator('[data-testid^="home-task-"]').count(), 5);
+      assert.deepEqual(await shell().locator('.wb-start-shortcut span').allTextContents(), ['生成教案', '自动组卷', '制作讲义', '模考汇编']);
       const boxes = [];
-      for (const id of ['notebook', 'paper', 'analytics']) boxes.push(await assertTarget(ui(`home-task-${id}`)));
-      assert(Math.max(...boxes.map(b => b.y)) - Math.min(...boxes.map(b => b.y)) <= 2, 'three lightweight shortcuts in one row');
+      for (const id of ['notebook', 'paper', 'handout', 'mock-exams']) boxes.push(await assertTarget(ui(`home-task-${id}`)));
+      assert(Math.max(...boxes.map(b => b.y)) - Math.min(...boxes.map(b => b.y)) <= 2, 'four lightweight shortcuts in one row');
       const columns = await Promise.all([nav().boundingBox(), shell().locator('.edu-chat-main').boundingBox()]);
       assert(columns.every(Boolean), 'navigation and chat present');
       assert.equal(await ui('edu-context-panel').count(), 0, 'blank chat must not restore an open right panel');
@@ -310,7 +311,7 @@ try {
     });
   }
   await test(planned[3], async () => {
-    for (const id of ['home-task-notebook', 'home-task-paper', 'home-task-analytics', 'home-suggestion-1']) {
+    for (const id of ['home-task-notebook', 'home-task-paper', 'home-task-handout', 'home-task-mock-exams', 'home-task-analytics', 'home-suggestion-1']) {
       await composer().fill(''); await ui(id).click();
       await poll(() => composer().inputValue(), text => text.length > 10, `${id} should seed draft`);
       assert.equal(dbRead(db => db.prepare('SELECT COUNT(*) n FROM ai_conversation_messages').get().n), 0);
@@ -553,7 +554,7 @@ try {
     const chevron = folder.locator('.wb-chevron');
     assert.equal(await chevron.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
     await ui('workbench-home').waitFor();
-    assert.equal(await shell().locator('.wb-start-shortcut').count(), 3);
+    assert.equal(await shell().locator('.wb-start-shortcuts .wb-start-shortcut').count(), 4);
     for (const element of await shell().locator('.wb-start-shortcut,.wb-start-example').all()) assert.equal(await element.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
     await navigate('teaching');
     assert.equal(await ui('teaching-page-navigation').locator('[data-testid^="hub-entry-"]').count(),teaching.length);

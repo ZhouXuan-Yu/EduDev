@@ -6,8 +6,10 @@ import {readWorkbenchTasks} from './workbench-tasks';
 import {readWorkbenchCapabilities, workbenchTaskContext} from './workbench-capabilities';
 import {workbenchFailure, workbenchText, type WorkbenchRead} from './workbench-state';
 import {xiaozhiToolLabel} from '../../shared/xiaozhi-projection';
+import {readWorkbenchHome} from './workbench-home';
+import type {TeachingFileCatalogEntry} from '../../shared/contracts';
 
-type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail'}>;
+type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail' | 'home'}>;
 type Cursor = {v: 1; query: string; key: string; id: string};
 function queryHash(query: PagedQuery) {const {cursor: _cursor, ...scope} = query; return protocolHash(scope);}
 function cursorFor(query: PagedQuery, key: string, id: string) {
@@ -50,7 +52,8 @@ function stateCounts<T>(items: T[], state: (item: T) => string, initial: string[
   for (const item of items) {const key = state(item); result[key] = (result[key] || 0) + 1;}
   return result;
 }
-export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) => Promise<T>) => Promise<T>}) {
+export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) => Promise<T>) => Promise<T>;
+  recentArtifacts?: () => Promise<TeachingFileCatalogEntry[]>}) {
   return async (input: unknown): Promise<WorkbenchResult> => {
     if (!validWorkbenchQuery(input)) return {ok: false, error: 'invalid_input'};
     try {
@@ -63,6 +66,10 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
             if (typeof row.id !== 'string' || !row.id || typeof row.title !== 'string') {workbenchFailure(read, 'sessions', 'corrupt'); continue;}
             read.sessions.set(row.id, {id: row.id, title: workbenchText(row.title)});
           }
+        }
+        if (input.kind === 'home') {
+          const approvals = await readWorkbenchApprovals(read);
+          return readWorkbenchHome(read, await readWorkbenchTasks(read, approvals), approvals, options.recentArtifacts);
         }
         const requestedSession = input.kind === 'approval_detail' ? input.ref.sessionId : input.sessionId;
         if (requestedSession) {

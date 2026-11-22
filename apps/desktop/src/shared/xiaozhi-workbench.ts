@@ -9,6 +9,7 @@ export type WorkbenchApprovalRef =
   | {kind: 'legacy_copy'; sessionId: string; id: string; etag: string};
 type PageQuery = {schemaVersion: 1; sessionId?: string; cursor?: string; limit?: number};
 export type WorkbenchQuery =
+  | {schemaVersion: 1; kind: 'home'}
   | PageQuery & {kind: 'tasks'; filter: 'unfinished' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'}
   | PageQuery & {kind: 'approvals'; state?: WorkbenchApprovalState | 'all'}
   | {schemaVersion: 1; kind: 'approval_detail'; ref: WorkbenchApprovalRef}
@@ -57,12 +58,20 @@ export type WorkbenchApprovalDetail =
   | {kind: 'permission_v2'; ref: Extract<WorkbenchApprovalRef, {kind: 'permission_v2'}>; approval: PermissionApproval}
   | {kind: 'legacy_copy'; ref: Extract<WorkbenchApprovalRef, {kind: 'legacy_copy'}>; approval: XiaozhiApproval};
 export type WorkbenchSummary =
+  | WorkbenchHomeSummary
   | WorkbenchPage<WorkbenchTaskRow> & {kind: 'tasks'}
   | WorkbenchPage<WorkbenchApprovalRow> & {kind: 'approvals'}
   | WorkbenchPage<WorkbenchCapabilityRow> & {kind: 'capabilities'; context: WorkbenchTaskContext; registryRevision: number | null}
   | {schemaVersion: 1; kind: 'approval_detail'; asOf: string; detail: WorkbenchApprovalDetail};
 export type WorkbenchResult = {ok: true; value: WorkbenchSummary}
   | {ok: false; error: 'invalid_input' | 'permission_denied' | 'changed' | 'unavailable'};
+
+export type WorkbenchHomeSummary = {
+  schemaVersion: 1; kind: 'home'; asOf: string; partial: boolean;
+  pending: Pick<WorkbenchApprovalRow, 'sessionTitle' | 'purpose'> | null;
+  task: (Pick<WorkbenchTaskRow, 'taskId' | 'sessionId' | 'sessionTitle' | 'state' | 'blockedReasons'> & {interruptedReason?: string}) | null;
+  artifacts: {id: string; title: string; updatedAt: string}[];
+};
 
 const object = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === 'object' && !Array.isArray(value));
 const text = (value: unknown, maximum: number): value is string => typeof value === 'string' && value.length > 0
@@ -78,6 +87,7 @@ export function validWorkbenchApprovalRef(value: unknown): value is WorkbenchApp
 }
 export function validWorkbenchQuery(value: unknown): value is WorkbenchQuery {
   if (!object(value) || value.schemaVersion !== WORKBENCH_SCHEMA) return false;
+  if (value.kind === 'home') return keys(value, ['schemaVersion', 'kind']);
   if (value.kind === 'approval_detail') return keys(value, ['schemaVersion', 'kind', 'ref']) && validWorkbenchApprovalRef(value.ref);
   if (value.sessionId !== undefined && !text(value.sessionId, 128)
       || value.cursor !== undefined && !text(value.cursor, 2048)

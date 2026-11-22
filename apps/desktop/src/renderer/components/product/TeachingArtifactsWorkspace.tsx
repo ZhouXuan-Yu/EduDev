@@ -21,8 +21,11 @@ import alignment from '../../ui-system/teaching-catalogue-alignment.module.css';
 
 /** Read existing durable artifact facts; preview uses the same authorized host. */
 export function TeachingArtifactsWorkspace() {
+  const navigation=useDesktopNavigation();
+  const artifactId=navigation.target.view==='artifacts'?navigation.target.artifactId:undefined;
   const [view,setView]=useState<'files'|'deliveries'|'classrooms'>('files');
   const [visited,setVisited]=useState({deliveries:false,classrooms:false});
+  useEffect(()=>{if(artifactId)setView('files');},[artifactId,navigation.intent]);
   function show(next:typeof view){
     setView(next);
     if(next!=='files')setVisited(current=>({...current,[next]:true}));
@@ -34,17 +37,25 @@ export function TeachingArtifactsWorkspace() {
   </nav>;
   return <div className={alignment.frame}>
     {view!=='files'&&links}
-    <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace auxiliaryActions={view==='files'?links:undefined}/></div>
+    <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace artifactId={artifactId} auxiliaryActions={view==='files'?links:undefined}/></div>
     {visited.deliveries&&<div className={alignment.pane} hidden={view!=='deliveries'}><TeachingDeliveryWorkspace/></div>}
     {visited.classrooms&&<div className={alignment.pane} hidden={view!=='classrooms'}><ClassroomWorkspace/></div>}
   </div>;
 }
-function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}) {
+function TeachingFilesWorkspace({auxiliaryActions,artifactId}:{auxiliaryActions?:ReactNode;artifactId?:string}) {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<TeachingFileCatalogEntry[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
   const [loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
   const [reveal,setReveal]=useState<{id:string;path:string}>();const epoch=useRef(0);
   async function load(){const stamp=++epoch.current;setLoading(true);setError('');try{const result=await window.omniEdu?.listDocumentArtifacts();if(!result)throw new Error();if(stamp===epoch.current){setRows(result);setReveal(undefined);}}catch{if(stamp===epoch.current)setError('无法读取教学文件，请重试。');}finally{if(stamp===epoch.current)setLoading(false);}}
   useEffect(()=>{void load();return()=>{++epoch.current;};},[]);
+  const handledIntent=useRef<number|undefined>(undefined);
+  useEffect(()=>{
+    if(!artifactId||loading||error||handledIntent.current===navigation.intent)return;
+    handledIntent.current=navigation.intent;
+    const row=rows.find(item=>item.id===artifactId&&(!item.officeVersion||item.officeVersion.currentArtifactId===item.id));
+    setQuery('');setReveal(undefined);setNotice('');setSelected(row?.officeVersion?.familyId||row?.id||'');
+    if(!row)setError('该成果的当前版本已变化，请在列表中重新选择。');
+  },[artifactId,error,loading,navigation.intent,rows]);
   const visible=rows.filter(row=>!row.officeVersion||row.officeVersion.currentArtifactId===row.id);
   const filtered=visible.filter(row=>matchesMaterial(query,row.title,row.fileName,row.type)),artifact=filtered.find(row=>(row.officeVersion?.familyId||row.id)===selected);
   async function locate(){if(!artifact||busy)return;setBusy(true);setError('');setNotice('');try{if(!window.omniEdu)throw new Error();await window.omniEdu.showDocumentArtifact(artifact.id);setNotice('已在文件夹中定位教学文件。');}catch{setError('无法定位教学文件，请检查文件是否仍存在。');}finally{setBusy(false);}}

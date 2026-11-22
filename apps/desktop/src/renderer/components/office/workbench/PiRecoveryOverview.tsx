@@ -36,11 +36,11 @@ const stateLabels: Record<string, string> = {active:'执行中', review_required
 const reasons: Record<string, string> = {not_latest:'历史任务，请查看原会话', goal_controls:'由原目标面板继续', active:'本轮仍在执行', completed:'已确认完成', ended:'任务已结束', pending_approval:'有待处理审批', unknown_effect:'有操作结果待核验，不会自动重放', no_remaining_steps:'没有可直接恢复的剩余步骤', needs_new_candidate:'需要继续生成并重新核对成果'};
 const filters = {unfinished:'未完成', resumable:'可恢复', blocked:'需处理', completed:'已确认', ended:'已结束', all:'全部'} as const;
 type Filter = Extract<WorkbenchQuery, {kind:'tasks'}>['filter'];
-export function PiRecoveryOverview({activeSessionId, onOpenSession, onRestore, onApprovalChanged, restoring = false, notice = ''}: {
+export function PiRecoveryOverview({activeSessionId, onOpenSession, onRestore, onApprovalChanged, restoring = false, notice = '', initialTab = 'tasks'}: {
   activeSessionId: string; onOpenSession: (id: string) => Promise<boolean>; onRestore: (row: WorkbenchTaskRow, mode: WorkbenchRestoreMode) => Promise<void>;
-  onApprovalChanged: (sessionId: string) => Promise<void>; restoring?: boolean; notice?: string;
+  onApprovalChanged: (sessionId: string) => Promise<void>; restoring?: boolean; notice?: string; initialTab?: 'tasks'|'approvals';
 }) {
-  const [tab, setTab] = useState<'tasks'|'approvals'>('tasks');
+  const [tab, setTab] = useState(initialTab);
   return <section className={styles.root} data-testid="pi-workbench">
     <nav className={styles.actions} aria-label="恢复与待办分类"><Button size="sm" variant={tab==='tasks'?'secondary':'ghost'} onPress={()=>setTab('tasks')} data-testid="pi-workbench-tasks">任务总览</Button><Button size="sm" variant={tab==='approvals'?'secondary':'ghost'} onPress={()=>setTab('approvals')} data-testid="pi-workbench-approvals">审批收件箱</Button></nav>
     {notice && <p role="status" data-testid="pi-workbench-action-notice">{notice}</p>}

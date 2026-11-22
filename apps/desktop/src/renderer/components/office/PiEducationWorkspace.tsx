@@ -87,6 +87,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const modelLock = useRef(false);
   const [notice, setNotice] = useState('');
   const [workbenchOpen,setWorkbenchOpen]=useState(false),[workbenchBusy,setWorkbenchBusy]=useState(false),[workbenchNotice,setWorkbenchNotice]=useState('');
+  const [workbenchInitialTab,setWorkbenchInitialTab]=useState<'tasks'|'approvals'>('tasks');
+  const [homeActivityRevision,setHomeActivityRevision]=useState(0);
   const workbenchEpoch=useRef(0),workbenchLock=useRef(false),workbenchAttempt=useRef<{key:string;commandId:string}|undefined>(undefined);
   function closeWorkbench(){workbenchEpoch.current++;setWorkbenchOpen(false);}
   // The parent survives the session-keyed Composer remount caused by its own selection.
@@ -378,8 +380,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
     }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} paperExportIntent={navigation.target.sessionId===id?navigation.target.paperExportIntent:undefined} onConsumed={()=>{if(navigation.target.sessionId===id&&navigation.target.draft!==undefined)navigation.consumeDraft(id,{text:navigation.target.draft,paperExportIntent:navigation.target.paperExportIntent});}}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
-    workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={setWorkbenchOpen} onWorkbenchClose={closeWorkbench}
-    workbench={<PiRecoveryOverview activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
+    workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={open=>{if(open)setWorkbenchInitialTab('tasks');setWorkbenchOpen(open);}} onWorkbenchClose={closeWorkbench}
+    workbench={<PiRecoveryOverview key={workbenchInitialTab} initialTab={workbenchInitialTab} activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{setHomeActivityRevision(value=>value+1);if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
@@ -445,7 +447,13 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);
         })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { viewBuffer.current!.flush(); const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
-      </div><PiHomeSuggestions visible={isHomeConversation(projection)} />
+      </div><PiHomeSuggestions visible={visible&&isHomeConversation(projection)} activityRevision={homeActivityRevision} activity={{
+        firstUse: !workspace.sessions.some(session=>session.messageCount>0) && !workspace.archivedSessions.some(session=>session.messageCount>0),
+        onOpenApprovals: ()=>{setWorkbenchInitialTab('approvals');setWorkbenchOpen(true);},
+        onOpenTask: target=>sessionNavigation.current!.select(target),
+        onOpenArtifact: artifactId=>navigation.navigate({view:'artifacts',artifactId}),
+        onOpenKnowledge: ()=>navigation.navigate({view:'knowledge'}),
+      }} />
     </section>
     {attachments.modal}
     {skillsOpen && <PiSkillSettings running={Boolean(snapshot?.running)} onClose={() => setSkillsOpen(false)} onChanged={() => hydrate(id)} />}

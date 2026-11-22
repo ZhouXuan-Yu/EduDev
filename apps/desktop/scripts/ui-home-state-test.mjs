@@ -42,7 +42,7 @@ try {
   const heading=renderToStaticMarkup(React.createElement(WorkbenchHome,{headingOnly:true}));
   assert(heading.includes('今天想完成什么教学任务'));assert(!heading.includes('home-task-'));
   const full=renderToStaticMarkup(React.createElement(WorkbenchHome,{onSuggest(){}}));
-  assert.equal((full.match(/data-testid="home-task-/g)||[]).length,3);
+  assert.equal((full.match(/data-testid="home-task-/g)||[]).length,5);
   assert.equal((full.match(/data-testid="home-suggestion-/g)||[]).length,2);
  });
  const {workspaceNotifications,focusWorkspacePending}=await server.ssrLoadModule('/src/renderer/components/office/workspace-notifications.ts');
@@ -98,7 +98,7 @@ try {
  const input=document.querySelector('[data-testid="office-prompt-input"]');
  assert(input,'real composer textarea');
  await act(async()=>document.querySelector('[data-testid="home-task-notebook"]').click());
- check('shortcut prepares real composer draft without send',()=>{assert(input.value.includes('学科'));assert.equal(sends,0);});
+ check('shortcut prepares real composer draft without send',()=>{assert(input.value.includes('教案'));assert.equal(sends,0);});
  const draft=input.value;
  await act(async()=>document.querySelector('[data-testid="home-task-paper"]').click());
  check('shortcut cannot overwrite an existing draft',()=>{assert.equal(input.value,draft);assert(document.body.textContent.includes('已有草稿'));});

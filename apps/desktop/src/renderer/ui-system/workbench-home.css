@@ -17,5 +17,18 @@
 .wb-start-shortcut:focus-visible,.wb-start-example:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .wb-start-shortcut:disabled,.wb-start-example:disabled { opacity:.5; cursor:default; }
 .wb-start-hint { margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--muted); }
+.wb-home-activity { max-width:560px; margin:8px auto 12px; }
+.wb-home-row { display:flex; align-items:center; gap:10px; width:100%; min-height:36px; border:0; border-radius:8px; padding:7px 12px; background:transparent; color:var(--foreground); font:inherit; text-align:left; cursor:pointer; }
+.wb-home-row:hover:enabled { background:var(--surface-secondary); }
+.wb-home-row:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.wb-home-row:disabled { opacity:.55; cursor:default; }
+.wb-home-row > svg, .wb-home-row-action { flex:none; }
+.wb-home-row-text { display:grid; flex:1; min-width:0; gap:3px; overflow-wrap:anywhere; }
+.wb-home-row strong { font-weight:550; font-size:14px; }
+.wb-home-row small, .wb-home-recent > p { color:var(--muted); font-size:12px; }
+.wb-home-row-action { display:inline-flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; }
+.wb-home-recent { margin-top:4px; border-top:1px solid var(--border); }
+.wb-home-recent > p { margin:8px 12px 0; }
+.wb-home-import { width:min(100%,560px); margin-inline:auto; }
 @media (max-width:900px) { .wb-start-below,.wb-start-heading { padding-inline:24px; } }
 @media (max-width:360px) { .wb-start-below,.wb-start-heading { padding-inline:12px; } }
