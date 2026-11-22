@@ -7,6 +7,15 @@ import {normalizeAnswerCitations} from '../../shared/answer-citations';
 import {validLocalAnswerSource} from '../../shared/local-answer-source';
 
 const READS=new Set(['office_read_material','education_verify_material_quote','education_read_question','office_web_fetch','office_read_attachment','office_read_text','office_read_document']);
+const citationIntro='本轮实际读取的引用登记（只证明来源已读取，不证明结论正确）。相关结论可用以下 Markdown 链接引用；未覆盖内容须明确说明。只有需要定位且能核实时才注明实际位置，文本行按实际换行计数。\n';
+
+/** Separate the host citation guide from the domain receipt for readback. */
+export function withoutAnswerEvidenceGuide(tool:string,content:unknown[]):unknown[] {
+  const part=content.at(-1) as {type?:unknown;text?:unknown}|undefined;
+  if(!READS.has(tool)||part?.type!=='text'||typeof part.text!=='string'||!part.text.startsWith(citationIntro))return content;
+  const citations=part.text.slice(citationIntro.length).split('\n');
+  return citations.every(line=>/^\[[^\[\]\r\n]*\]\(#xz-cite-[a-f0-9]{16}-[1-9][0-9]*\)(?:（(?:实读文本行|提取行) [0-9]+(?:–[0-9]+)?）)?$/u.test(line))?content.slice(0,-1):content;
+}
 /** Per-run registry of already-sanitized, located reads. Search/list results are not evidence. */
 export function createAnswerEvidence(runId:string) {
   const prefix=createHash('sha256').update(runId).digest('hex').slice(0,16),entries=new Map<string,XiaozhiPublicSource>();
@@ -38,7 +47,7 @@ export function createAnswerEvidence(runId:string) {
         return `${link}（${locator === 'text_lines' ? '实读文本行' : '提取行'} ${range}）`;
       });
       return {...result,details:{...details,data:{...details.data,sources}},content:[...result.content,{type:'text' as const,
-        text:'本轮实际读取的引用登记（只证明来源已读取，不证明结论正确）。相关结论可用以下 Markdown 链接引用；未覆盖内容须明确说明。只有需要定位且能核实时才注明实际位置，文本行按实际换行计数。\n'+citations.join('\n')}]};
+        text:citationIntro+citations.join('\n')}]};
     },
     normalize:(text:string)=>normalizeAnswerCitations(text,[...entries.values()]),
     sources:()=>[...entries.values()],

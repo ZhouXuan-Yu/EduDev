@@ -114,6 +114,7 @@ import {isTaskAmendment} from './tasks/continuation';
 import {taskControlState,validTaskControl,type TaskControlAction} from '../../shared/xiaozhi-task-control';
 import {teacherQuestionContinuation} from './tasks/teacher-question-continuation';
 import type {TaskApiResult,TaskView} from '../../shared/xiaozhi-task';
+import {taskSourceSubtasks} from '../../shared/xiaozhi-task-subtasks';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
 import {createQuestionContextRuntime} from '../education/question-context-provider';
@@ -1197,13 +1198,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         workspace: () => host.resolveFileWorkspace(id),
       }) : undefined;
       const taskRuntime=run.task&&run.publisher?createTaskPlanRuntime({sql:store.xiaozhiState.sql,taskId:run.task.id,publisher:run.publisher,contextSanitizer:()=>createStudentContextSanitizer(store),
-        planning: planningRuntime,
+        planning: planningRuntime,hasSourceSubtasks:taskSourceSubtasks(run.task).length>0,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),trustedMcpNames:new Set(base.mcpTools?.map(t=>t.name)),
         resources:createTaskResources({sessionId:id,resolveFile:base.fileReferences?.resolve,workspace:()=>host.resolveFileWorkspace(id),officeOutput:()=>resolvePaperOutput(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
-        proofs:async()=>{if(!run.results||!run.readResults)return[];await run.publisher!.barrier();const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];
+        proofs:async()=>{const currentResults=run.results,currentRead=run.readResults;
+          if((!currentResults||!currentRead)&&!taskSourceSubtasks(run.task!).length)return[];
+          await run.publisher!.barrier();const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];
           const task=await tasks.committed(id);if(!task||task.id!==run.task!.id)throw Error('task_owner_stale');
           for(const previous of await tasks.admittedRuns(id,task.id)){if(previous.runId===run.runId)continue;try{proofs.push(await resumedResults!.run(previous.runId,task));}catch{run.abort.signal.throwIfAborted();if(closing||run.stopped||active.get(id)!==run)throw Error('cancelled');/* Missing old authority stays unverified; no tool or approval is replayed. */}}
-          const v=await run.results.check({...legacyVerification(run.runId),state:'needs_human',reason:'human_review',checkedAt:new Date().toISOString()},run.readResults,run.abort.signal);return[...proofs,v];}}):undefined;
+          if(currentResults&&currentRead)proofs.push(await currentResults.check({...legacyVerification(run.runId),state:'needs_human',reason:'human_review',checkedAt:new Date().toISOString()},currentRead,run.abort.signal));
+          return proofs;}}):undefined;
       if(taskRuntime&&run.task?.lastRunId===run.runId)await taskRuntime.refresh();
       if (run.task && run.publisher) run.dynamicCapabilities = createManagedMcpProviderRuntime({mcp, controlled: controlledMcp,
         registry: store.xiaozhiState.capabilities, permissions, store: store.xiaozhiState.permissions, state: acquisition.state,

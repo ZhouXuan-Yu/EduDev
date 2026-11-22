@@ -149,7 +149,7 @@ export interface PiXiaozhiOptions {
   studentSimilar?:{studentId:string;tools:ToolDefinition[]};
   studentLearningReview?:{studentId:string;tools:ToolDefinition[]};
   controlTools?: ToolDefinition[];
-  taskRuntime?:Pick<ReturnType<typeof createTaskPlanRuntime>,'tools'|'context'>;
+  taskRuntime?:Pick<ReturnType<typeof createTaskPlanRuntime>,'tools'|'context'|'sourceContext'>;
   /** Current main-owned SQLite goal only; never renderer supplied callbacks. */
   goal?:ReturnType<typeof createGoalRuntime>;
   webTools?: ToolDefinition[];
@@ -1017,6 +1017,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const transformed=await phase('pi_transform_history',async()=>previousTransform?.(messages,signal),signal)||messages;
     const filtered=transformed.filter(message=>!(message.role==='custom'&&message.customType==='xiaozhi.goal-context.v1'));
     if(options.goal&&running&&!compacting){signal?.throwIfAborted();const content=await phase('pi_read_goal_context',()=>options.goal!.context(),signal);signal?.throwIfAborted();filtered.push({role:'custom',customType:'xiaozhi.goal-context.v1',content,display:false,timestamp:Date.now()});}
+    if(taskRuntime&&running&&!compacting){
+      const sources=await phase('pi_read_source_subtasks',()=>taskRuntime.sourceContext(),signal);
+      if(sources)filtered.push({role:'custom',customType:'xiaozhi.source-subtasks.v1',content:`本任务资料子任务的当前宿主核验结果。只汇总有结果回执的步骤，不重复读取已核验内容，缺失时使用本任务已授权的来源。\n${sources}`,display:false,timestamp:Date.now()});
+    }
     const files=options.fileReferences?await phase('pi_read_file_history',()=>options.fileReferences!.history(filtered,signal),signal):filtered;
     return options.modelToolPrivacy?phase('pi_filter_model_tool_history',()=>options.modelToolPrivacy!.context(files,signal),signal):files;
   };

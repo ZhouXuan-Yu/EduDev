@@ -15,7 +15,19 @@ const output=fs.mkdtempSync(path.join(root,'phase1-intent-'));
 const desktop=process.cwd(),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const requests=[],checks=[],rendererErrors=[];
-let holdNextReply=false,askNextReply=false;
+let holdNextReply=false,askNextReply=false,sourceFixture;
+function modelText(content){
+  if(typeof content==='string')return content;
+  return Array.isArray(content)?content.map(part=>part?.text??'').join('\n'):'';
+}
+function sourceContext(messages){
+  for(const message of messages.slice().reverse()){
+    for(const line of modelText(message.content).split('\n').reverse()){
+      if(!line.startsWith('{"taskId":')||!line.includes('"sourceSubtasks":'))continue;
+      try{return JSON.parse(line);}catch{/* A different context block is not a source receipt. */}
+    }
+  }
+}
 const fixture=http.createServer(async(request,response)=>{
   if(request.url==='/v1/models'){
     response.setHeader('content-type','application/json');
@@ -34,6 +46,32 @@ const fixture=http.createServer(async(request,response)=>{
   response.setHeader('content-type','text/event-stream');
   const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-d3',object:'chat.completion.chunk',created:1,
     model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})+'\n\n';
+  function toolReply(calls){
+    const deltas=calls.map(([id,name,args],index)=>({index,id,type:'function',function:{name,arguments:JSON.stringify(args)}}));
+    return response.end(chunk({role:'assistant'},null)+chunk({tool_calls:deltas},null)+chunk({},'tool_calls')+'data: [DONE]\n\n');
+  }
+  if(sourceFixture?.providerUnavailable){
+    response.writeHead(503,{'content-type':'application/json'});
+    return response.end(JSON.stringify({error:{message:'Synthetic temporary provider failure',type:'server_error'}}));
+  }
+  if(sourceFixture&&toolNames.includes('update_task_plan')){
+    sourceFixture.records.push({context:sourceContext(body.messages),sources:['先画等分方格','再比较分数大小'].map(fragment=>body.messages.some(message=>modelText(message.content).includes(fragment)))});
+    if(sourceFixture.stage===0){
+      sourceFixture.stage++;
+      return toolReply([['d3_background_plan','update_task_plan',{
+        schemaVersion:'xiaozhi.task-plan.v3',expectedRevision:0,requirementsVersion:1,reason:'分别读取两份已授权的备课资料后汇总',steps:[
+          {id:'source_a',text:'读取第一份备课资料',dependsOn:[],reported:'pending',kind:'file',target:'source-a.txt'},
+          {id:'source_b',text:'读取第二份备课资料',dependsOn:[],reported:'pending',kind:'file',target:'source-b.txt'},
+          {id:'synthesis',text:'对照两份资料并供老师确认',dependsOn:['source_a','source_b'],reported:'pending',kind:'human'},
+        ],
+      }]]);
+    }
+    if(sourceFixture.stage===1){
+      sourceFixture.stage++;
+      return toolReply([['d3_background_a','office_read_text',{taskStepId:'source_a',path:'source-a.txt'}],['d3_background_b','office_read_text',{taskStepId:'source_b',path:'source-b.txt'}]]);
+    }
+    if(sourceFixture.stage===2){sourceFixture.stage++;holdNextReply=true;}
+  }
   if(askNextReply&&toolNames.includes('ask_teacher')){
     askNextReply=false;
     const call={index:0,id:'call_'+requests.length,type:'function',function:{name:'ask_teacher',arguments:JSON.stringify({question:'这份课堂导入给哪个年级？',options:['三年级','五年级']})}};
@@ -124,6 +162,13 @@ function runAuthority(){
     owner:db.prepare('SELECT run_id,generation FROM xiaozhi_event_owners WHERE session_id=?').get(sessionId),
     runs:db.prepare('SELECT run_id,status,generation FROM xiaozhi_event_runs WHERE session_id=? ORDER BY generation').all(sessionId)
   };}finally{db.close();}
+}
+function sourceReceipts(){
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{return db.prepare(`SELECT tool.call_id,tool.phase,tool.admitted,tool.success
+    FROM xiaozhi_tool_receipts tool JOIN xiaozhi_event_runs run ON run.run_id=tool.run_id
+    WHERE run.session_id=? AND tool.tool='office_read_text' ORDER BY tool.call_id`).all(sessionId);}
+  finally{db.close();}
 }
 try{
   await launch();sessionId=await activeSession();
@@ -358,6 +403,80 @@ try{
       assert.equal(requests.length,count);
       check('教师主动停止后，正常重启保留旧题卡且禁止其恢复执行');
     }
+  }
+  if(process.argv.includes('--source-subtasks')){
+    await freshConversation();
+    const workspace=path.join(output,'source-workspace');
+    fs.mkdirSync(workspace);
+    const a=path.join(workspace,'source-a.txt');
+    fs.writeFileSync(a,'先画等分方格，帮助学生理解等值分数。');
+    fs.writeFileSync(path.join(workspace,'source-b.txt'),'再比较分数大小，用同一单位解释。');
+    await app.evaluate(({dialog},dir)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[dir]});},workspace);
+    await page.getByTestId('pi-permission-picker').click();
+    await page.getByRole('menuitem',{name:'选择教学工作目录',exact:true}).click();
+    const grantDeadline=Date.now()+15_000;
+    while(!(await snapshot()).workspace&&Date.now()<grantDeadline)await new Promise(resolve=>setTimeout(resolve,80));
+    assert((await snapshot()).workspace);
+    sourceFixture={stage:0,records:[]};
+    await submit('新建教学任务，请阅读已授权目录的 source-a.txt 和 source-b.txt，对照后整理等值分数课堂导入。');
+    const deadline=Date.now()+35_000;
+    while(sourceFixture.stage<3&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,80));
+    assert.equal(sourceFixture.stage,3,'Pi did not reach the parent synthesis request');
+    const first=sourceFixture.records.at(-1),task=(await snapshot()).task;
+    assert(task?.id);assert.equal(first.context?.taskId,task.id);
+    assert.deepEqual(first.sources,[true,true]);
+    const firstProof=first.context.sourceSubtasks.map(subtask=>subtask.result?.callId);
+    assert.deepEqual(firstProof,['d3_background_a','d3_background_b']);
+    const receipts=sourceReceipts();
+    assert.deepEqual(receipts.map(row=>[row.call_id,row.phase,row.admitted,row.success]),firstProof.map(id=>[id,'settled',1,1]));
+    assert.equal(taskRecords().find(row=>row.id===task.id).checks.filter(check=>check.state==='passed').length,2);
+    const card=page.locator(`[data-testid="pi-task-review"][data-task-id="${task.id}"]`);
+    await card.getByTestId('pi-task-review-toggle').click();
+    const rows=card.locator('[data-testid="pi-task-source-subtask"][data-state="verified"]');
+    const window=await app.browserWindow(page);
+    for(const [width,height] of [[1366,768],[1920,1080]]){
+      await window.evaluate((win,size)=>win.setContentSize(...size),[width,height]);
+      await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+      await rows.nth(1).waitFor({state:'visible'});
+      await rows.nth(1).scrollIntoViewIfNeeded();
+      const box=await rows.nth(1).boundingBox();
+      assert(box&&box.x>=0&&box.y>=0&&box.x+box.width<=width+1&&box.y+box.height<=height+1);
+      await page.screenshot({path:path.join(output,`source-subtasks-before-aggregation-${width}.png`)});
+    }
+    check('两份授权资料在同一任务执行，Pi 汇总请求、任务卡和 SQLite 均看到已核验子任务');
+
+    const requestCount=requests.length;await restart(true);assert.equal(requests.length,requestCount);
+    const resumed=await send('继续');
+    assert.equal(resumed.turn.status,'completed',resumed.turn.error);
+    assert.equal(resumed.turn.task?.id,task.id);
+    assert.deepEqual(sourceFixture.records.at(-1).context?.sourceSubtasks.map(subtask=>subtask.result?.callId),firstProof);
+    assert.deepEqual(sourceFixture.records.at(-1).sources,[true,true]);
+    assert.deepEqual(sourceReceipts(),receipts);
+    check('子任务完成后父任务未汇总即中断，冷启后重用原核验结果且没有重发工具');
+
+    sourceFixture.providerUnavailable=true;
+    const interrupted=await send('继续');
+    assert.equal(interrupted.turn.status,'failed');
+    assert.equal(interrupted.turn.task?.id,task.id);
+    const checkpoint=taskRecords().find(row=>row.id===task.id);
+    assert.equal(checkpoint.state,'interrupted');
+    assert.deepEqual(checkpoint.checks.filter(check=>check.state==='passed').map(check=>check.callId).sort(),[...firstProof].sort());
+    sourceFixture.providerUnavailable=false;
+    const retried=await send('继续');
+    assert.equal(retried.turn.status,'completed',retried.turn.error);
+    assert.equal(retried.turn.task?.id,task.id);
+    assert.deepEqual(sourceReceipts(),receipts);
+    check('模型提供方暂时不可用时保留子任务检查点，显式续做复用原结果');
+
+    fs.writeFileSync(a,'更新后的来源内容，旧证据失效。');
+    const updated=await send('继续');
+    assert.equal(updated.turn.task?.id,task.id);
+    const results=sourceFixture.records.at(-1).context?.sourceSubtasks;
+    assert(results?.length===2);
+    assert.equal(results.find(row=>row.stepId==='source_a').result,undefined);
+    assert.equal(results.find(row=>row.stepId==='source_b').result?.callId,'d3_background_b');
+    assert.deepEqual(sourceReceipts(),receipts);
+    check('重新汇总前核对真实来源版本，仅使改动资料的子任务结果失效');
   }
   assert.deepEqual(rendererErrors,[]);
 }catch(error){

@@ -5,7 +5,7 @@
 | 阶段 | 状态 | 当前进展 |
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
-| 1 | PARTIAL | 已实现普通问答分流、当前任务修订、暂停、取消和教师澄清。异常关闭后，历史澄清回接原任务已通过专项。后台子任务与完整恢复矩阵仍待完成。 |
+| 1 | PARTIAL | 已实现问答分流、原任务修订、暂停取消、教师澄清和多份资料子任务。真实模型与跨会话成果引用仍待验收。 |
 | 2 | NOT_STARTED | 以现有对话、恢复工作台与成果域为底座。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
@@ -104,8 +104,23 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 | `node scripts/xiaozhi-agent/d3-conversation-intent-ui.mjs --amend --control --teacher-wait --teacher-cold --teacher-graceful-shutdown` | `phase1-graceful-ui.log` 与 `phase1-intent-SAOOzP/report.json`，16/16，渲染错误 0。正常退出和主动停止都从真实 Electron 操作，核对原 Task、零自动重放及持久化回答。 |
 | 异常退出与审批回归 | `phase1-graceful-abrupt-regression.log` 7/7，`phase1-graceful-approval-cold.log` 3/3。 |
 | 组件回归 | `phase1-graceful-renderer-components.log`，253/253。 |
+| Electron 综合回归 | `phase1-graceful-electron-regression.log` 207/207。已推送 `main` 的 `6a2b7ef`，远端与构建核对见 `phase1-graceful-main-delivery.json`。 |
 | 手测入口 | `manual-graceful-question/启动-D3-退出续答.cmd`。让小智先问年级，等待出现题卡后正常退出。重开原会话，选择年级并发送，原任务继续。 |
 
 真实模型上的长会话整理待验。旧历史题卡仍可查看，并在尝试提交时显示任务已取消或要求已变化的反馈。
 
-后台子任务的源码入口已定位。`tasks/plan-runtime.ts` 负责现有 Task 步骤、依赖和操作准入，`events/receipts.ts` 核对执行与原生结果，`verification/result-readback.ts` 核对正式结果。Phase 1 仍缺明确的子任务组织、主任务接收结构化结果以及未汇总时重启的实际场景。后续从受控只读教学步骤切入，并沿现有 Task 和结果回执实施。
+## 多份资料子任务
+
+同一教学计划内的独立资料步骤沿用 `TaskStep`、真实 Pi 工具和权限。宿主把结构化核验结果送回主任务，并在任务卡显示可用于汇总的结果。冷启通过原回执再次核对来源版本，变更的资料结果失效，其余保持可用。没有新增表或任务调度器。
+
+最初构建 `phase1-subtasks-build.log` 发现 Pi 选项类型少了新增方法，已修正。`phase1-subtasks-ui.log` 实际读取两份文件，原文后的宿主引用说明干扰了 JSON 回执解析。修复后只剥离有确切结构的引用说明，原 Journal 保留完整摘要和原生回执。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-source-subtasks-rc` | TypeScript、Electron 构建通过。`phase1-subtasks-build-rc.log`，主入口 SHA-256 `5fdaf1cb11935a78dcb74667645ea628576c89fb0a198d887c19dc014c3b86fe`。 |
+| 对话与子任务合并专项 | `phase1-subtasks-combined.log`，19/19，渲染错误 0，证据 `phase1-intent-7CjxfV/report.json`。 |
+| 两份文本源与故障恢复 | `phase1-subtasks-provider-recovery.log`，8/8。两份来源实际已读，主模型见到正文和结构化回执。中断或模拟 503 后保留同一 Task 的检查点，续做不重发原工具。改动一份来源后仅该项旧结果失效。 |
+| 组件和审批 | `phase1-subtasks-renderer-components.log` 253/253，`phase1-subtasks-cold-approval.log` 3/3。 |
+| 手测入口 | `manual-source-subtasks/启动-D3-资料子任务.cmd`。通过「选择教学工作目录」授权包含两份 `.txt` 的测试目录，要求小智分别读取并对照整理。展开任务卡查看两个资料子任务及其核验状态。 |
+
+本轮实际验证的资料是授权目录内的合成文本，附件、更多业务子任务及真实模型的自主规划质量需要后续覆盖。跨会话旧成果引用仍待实施和验收。

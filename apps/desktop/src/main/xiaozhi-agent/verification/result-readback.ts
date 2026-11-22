@@ -9,6 +9,7 @@ import {verifyCriteria,type RegisteredEvidence,type Criterion} from './verifier'
 import type {BoundEffect} from './effect-readback';
 import {captureNativeTail,readNativeTail} from '../events/native-tail';
 import {withoutPlanBasisReference} from '../plan-native';
+import {withoutAnswerEvidenceGuide} from '../answer-evidence';
 import {discoveryTools,discoverySnapshot} from './discovery-readback';
 import {validPresentationUnchangedReceipt} from '../../../shared/xiaozhi-presentation-edit';
 
@@ -26,7 +27,7 @@ async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
 }
 function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'tool'|'callId'|'observedAt'>|undefined{
  if(!Array.isArray(content))return;
- content=withoutPlanBasisReference(content,callId,tool);
+ content=withoutAnswerEvidenceGuide(tool,withoutPlanBasisReference(content,callId,tool));
  if(!Array.isArray(content))return;
  const text=content.filter(p=>p?.type==='text'&&typeof p.text==='string').map(p=>p.text).join('\n');
  if(text.length>1048576)return;
@@ -109,7 +110,7 @@ export function createRunResultReadback(options:{runId:string;canonicalize?:(too
  let captureTail=Promise.resolve();
  async function canonicalContent(tool:string,content:unknown,callId:string):Promise<unknown>{
   if(!options.canonicalize||!Array.isArray(content))return content;
-  const parts=withoutPlanBasisReference(content,callId,tool);
+  const parts=withoutAnswerEvidenceGuide(tool,withoutPlanBasisReference(content,callId,tool));
   if(!Array.isArray(parts))return content;
   const text=parts.flatMap(p=>p&&typeof p==='object'&&'type'in p&&p.type==='text'&&'text'in p&&typeof p.text==='string'?[p.text]:[]).join('\n');
   let payload:Record<string,any>;try{payload=JSON.parse(text);}catch{return content;}
