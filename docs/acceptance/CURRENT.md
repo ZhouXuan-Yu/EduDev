@@ -10,6 +10,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 同会话精确导出验证了从教师选定的当前卷生成学生和教师 Word、选定目录、文件审批、题源变化拦截及冷启动读回。 [精确导出证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-同会话多份试卷精确导出)
 
+教案编辑回接已核验真实 Pi 草稿、同会话两份教案、准确的编辑器跳转、修改冲突、确认、恢复以及冷启动。 [教案编辑验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-教案与课堂大纲编辑回接)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

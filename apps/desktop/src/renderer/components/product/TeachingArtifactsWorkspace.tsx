@@ -25,9 +25,13 @@ export function TeachingArtifactsWorkspace() {
   const navigation=useDesktopNavigation();
   const artifactId=navigation.target.view==='artifacts'?navigation.target.artifactId:undefined;
   const artifactVersionId=navigation.target.view==='artifacts'?navigation.target.artifactVersionId:undefined;
-  const [view,setView]=useState<'files'|'deliveries'|'classrooms'>('files');
-  const [visited,setVisited]=useState({deliveries:false,classrooms:false});
-  useEffect(()=>{if(artifactId)setView('files');},[artifactId,navigation.intent]);
+  const planReference=navigation.target.view==='artifacts'?navigation.target.classroomPlan:undefined;
+  const [view,setView]=useState<'files'|'deliveries'|'classrooms'>(planReference?'classrooms':'files');
+  const [visited,setVisited]=useState({deliveries:false,classrooms:Boolean(planReference)});
+  useEffect(()=>{
+    if(planReference){setView('classrooms');setVisited(old=>old.classrooms?old:{...old,classrooms:true});}
+    else if(artifactId)setView('files');
+  },[artifactId,planReference,navigation.intent]);
   function show(next:typeof view){
     setView(next);
     if(next!=='files')setVisited(current=>({...current,[next]:true}));
@@ -41,7 +45,7 @@ export function TeachingArtifactsWorkspace() {
     {view!=='files'&&links}
     <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace artifactId={artifactId} artifactVersionId={artifactVersionId} auxiliaryActions={view==='files'?links:undefined}/></div>
     {visited.deliveries&&<div className={alignment.pane} hidden={view!=='deliveries'}><TeachingDeliveryWorkspace/></div>}
-    {visited.classrooms&&<div className={alignment.pane} hidden={view!=='classrooms'}><ClassroomWorkspace/></div>}
+    {visited.classrooms&&<div className={alignment.pane} hidden={view!=='classrooms'}><ClassroomWorkspace planReference={planReference}/></div>}
   </div>;
 }
 function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:{auxiliaryActions?:ReactNode;artifactId?:string;artifactVersionId?:string}) {

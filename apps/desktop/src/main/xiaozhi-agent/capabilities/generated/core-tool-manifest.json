@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "dca907913ed30dee22e165f8da7e2816bb6f1c4ddba144fa49a7a2c6b7a511c4",
+  "sourceHash": "59bd936d28b3410d679d2b19aa4cb39e06d1774b1cbed872a17d3d8389237d89",
   "sources": [
     {
       "file": "package-lock.json",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "597e1a293c2e9e34130f4d0537a08a93bd52f541369f1d5b7b8678c7491f460e"
+      "sha256": "480011fe3b5267c330ab2cbbc9663628c8ec5f0595e0c4424f87c8f994a1b9d3"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1436,7 +1436,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "f4d2c39a78c32f9f7acfbf48f2eddba0c92f5b119f0ba48689f58a7f0898cdfa"
+      "sha256": "40c04b9010ff0ae738d303a8d747ddc4b2aec3cda36c74e5bc5303f1df92d01a"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1956,7 +1956,7 @@
     },
     {
       "file": "src/shared/classroom-plan.ts",
-      "sha256": "daa60d074fbdd00778bac77d263d3fca5dbfe4854412accf692406c5753b94a9"
+      "sha256": "007c2a6f73e27aad8636011db723811bcfae3c24420b10ce48f1efb604f04769"
     },
     {
       "file": "src/shared/classroom.ts",
@@ -2460,7 +2460,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "9f67a9f79886522fc59c6c0cf90741ddef02cab6a8691284cc23e6041467df08"
+      "sha256": "febb92d20b3805fcbd76707a4412e29dd3ce3e06ba1471d56365f82cb4ffb0b9"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",

@@ -798,6 +798,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const paperOutput=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.xiaozhiState.paperOutput(id):null;
     const storedLearningReviews=detail.session.studentId&&selectedStudent?.status==='active'&&!detail.session.archivedAt?await store.learningReviews.list(id):[];
     const storedPaperReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.papers.list(id):[];
+    const classroomPlanReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')
+      ?await store.xiaozhiState.classroomPlans.reviews(id).catch(()=>undefined):[];
     const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
     const storedQuestionCollections=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.collections.list(id):[];
     const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?[...await store.questionReviews.list(id),...await store.originalQuestions.list(id)]:[];
@@ -868,6 +870,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     // Derive the public view after journal/history hydration; persisted audit remains untouched.
     projection.turns = projection.turns.map(publicProviderTurn);
     return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailure?{eventPersistence:'unavailable' as const,eventPersistenceError:journalFailure.error}:{}), running: Boolean(current)&&!journalFailure, ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
+      ...(classroomPlanReviews?{classroomPlanReviews}:{classroomPlanReviewsUnavailable:true as const}),
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },

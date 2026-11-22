@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷专业编辑回接、历史恢复和同会话精确试卷导出。其他领域编辑继续实施。 |
+| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷编辑回接、历史恢复、同会话精确试卷导出，以及教案和课堂大纲编辑回接。继续其余成果路径和阶段退出验收。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -284,3 +284,19 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 | `node scripts/electron-smoke.mjs` | 同一构建 207/207，`electron-smoke.log`。32 张截图已归档到 `electron-smoke-screenshots`。 |
 
 全部测试产物和原始日志在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-paper-selected-export`。启动入口 `manual-phase2-paper-selected-export/启动-D3-精确试卷导出.cmd`，同目录有操作步骤和实际窗口记录。第一次导出自动化等错目录，第二次比较冷读记录时依赖顺序，原日志均保留。旧 C2 综合夹具未注入现行恢复租约，在旧恢复断言处报 `permission_denied`，保留 `c2-compat.log`，专用恢复测试已通过。精确选择的 Electron 路径覆盖普通题库卷的 Word。PDF、答题卡和模板题卷精确选择的用户路径待集中覆盖。依赖审计有原 20 项警报，其中 2 项 high。
+
+## Phase 2 教案与课堂大纲编辑回接
+
+对话卡按原始 Run 展示同一教案或课堂大纲的当前版本。老师可从卡片或右栏打开该版本，在原编辑器修改目标、时间、活动及评价。保存形成新草稿，正式确认仍由老师执行。查看来源对话会定位原卡。右栏按当前任务显示教学目标和环节。同一会话的独立教案各有版本历史。复用原表、CAS 和来源核查，无迁移。
+
+| 验收 | 最终构建结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-lesson-editor-final` | 通过，`build.log`。主进程 SHA-256 `33aedb09cfc4be009e515816628649afd0cf83e27885fa2a0660796abe288d3a`。 |
+| `node scripts/education/teaching-lesson-electron.mjs --task-editor` | 7/7。原 Pi 读取指定 A 版依据并保存教案，通过原任务卡打开编辑器。覆盖未保存的离开限制、错误会话、旧版本并发拦截、分钟冲突、局部修改、历史恢复、两份教案共存、右栏范围和冷启动。真实 SQLite、双尺寸截图和读回，渲染错误和付费调用均为 0。见 `electron-lesson-editor.log` 和 `xiaozhi-teaching-lesson-ui-l7Awrd/report.json`。 |
+| `teaching-lesson-boundaries.mjs`、`classroom-plan-boundaries.mjs` | 10/10、16/16，分别覆盖教案结构和来源、课堂大纲状态、版本与恢复。使用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs`，日志为 `lesson-boundaries.log`、`plan-boundaries.log`。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同构建 207/207，`electron-smoke.log` 和 `electron-e2e/`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-lesson-editor`。手测入口 `manual-phase2-lesson-editor/启动-D3-教案编辑回接.cmd`，同目录有现场窗口记录和手测步骤。样例使用合成来源，可离线编辑。课堂设计的历史列表和恢复已验证，历史正文只读预览仍待补齐。独立讲义编辑、真实教案教学质量和同链自然语言精细修订按各业务合同继续覆盖。依赖审计保留原 20 项，其中 2 项 high。
+
+`before-w4TpeH/conversation-1366x768.png` 是相同数据在 `af2426a` 构建的基线，对话和右栏都无教案卡。新构建的 `lesson-task-1366x768.png` 与 `lesson-task-1920x1080.png` 记录卡片及可操作的编辑入口。首次采集在浏览器窗口就绪前调整尺寸，保留 `before.log`，修正等待顺序后通过。

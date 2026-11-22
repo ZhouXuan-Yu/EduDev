@@ -304,6 +304,7 @@ const api = {
   reviewXiaozhiLearning:(input:LearningReviewInput)=>ipcRenderer.invoke('xiaozhi:learning-review',input) as Promise<LearningReviewResult<LearningReviewView>>,
   listClassroomPlans:()=>ipcRenderer.invoke('classroom:plan-list') as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem[]>>,
   readClassroomPlan:(id:string)=>ipcRenderer.invoke('classroom:plan-read',id) as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem>>,
+  openClassroomPlan:(input:import('../shared/classroom-plan').ClassroomPlanReference)=>ipcRenderer.invoke('classroom:plan-open',input) as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem>>,
   readClassroomPlanHistory:(id:string)=>ipcRenderer.invoke('classroom:plan-history',id) as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem[]>>,
   editClassroomPlan:(input:import('../shared/classroom-plan').ClassroomPlanEdit)=>ipcRenderer.invoke('classroom:plan-edit',input) as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem>>,
   decideClassroomPlan:(input:import('../shared/classroom-plan').ClassroomPlanDecision)=>ipcRenderer.invoke('classroom:plan-decide',input) as Promise<ClassroomResult<import('../shared/classroom-plan').ClassroomPlanItem>>,

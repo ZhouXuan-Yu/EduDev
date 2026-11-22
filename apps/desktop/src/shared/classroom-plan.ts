@@ -14,7 +14,12 @@ export type ClassroomLessonIntent={subject:string;grade:string;curricula:Curricu
 export type ClassroomPlanStart={mode:'outline';lesson?:ClassroomLessonIntent;realign?:ClassroomPlanSource}|ClassroomPlanBinding;
 export type ClassroomPlanSource={id:string;version:string};
 export type ClassroomCheckpoint={sceneId:string;scene:Scene;inputDigest:string;runId:string};
-export type ClassroomPlanItem={id:string;sessionId:string;runId:string;revision:number;version:string;updatedAt:string;document:ClassroomPlanDocument;context:ClassroomContext;status:'draft'|'confirmed'|'generating'|'interrupted'|'ready'|'rejected';checkpoints:ClassroomCheckpoint[];classroomId?:string};
+export type ClassroomPlanItem={id:string;rootId:string;sessionId:string;runId:string;revision:number;version:string;updatedAt:string;document:ClassroomPlanDocument;context:ClassroomContext;status:'draft'|'confirmed'|'generating'|'interrupted'|'ready'|'rejected';checkpoints:ClassroomCheckpoint[];classroomId?:string};
+export type ClassroomPlanReference={sessionId:string;rootId:string};
+export type ClassroomPlanReview=ClassroomPlanReference&{
+ id:string;originRunId:string;revision:number;status:ClassroomPlanItem['status'];kind:'lesson'|'outline';
+ title:string;totalMinutes:number;objectives:string[];stages:string[];
+};
 export type ClassroomPlanEdit={id:string;version:string;document:ClassroomPlanDocument};
 export type ClassroomPlanDecision={id:string;version:string;decision:'confirm'|'reject'};
 
@@ -22,6 +27,10 @@ function record(value:unknown):value is Record<string,unknown>{return !!value&&t
 function keys(value:Record<string,unknown>,expected:string[]){return Object.keys(value).length===expected.length&&Object.keys(value).every(k=>expected.includes(k));}
 const text=(value:unknown,max:number):value is string=>typeof value==='string'&&value.trim().length>0&&value.length<=max&&!/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(value);
 export const validClassroomPlanId=(value:unknown):value is string=>typeof value==='string'&&/^classplan_[a-f0-9-]{36}$/i.test(value);
+export function validClassroomPlanReference(value:unknown):value is ClassroomPlanReference {
+ return record(value)&&keys(value,['sessionId','rootId'])&&typeof value.sessionId==='string'
+  &&/^aisession_[a-f0-9-]{36}$/i.test(value.sessionId)&&validClassroomPlanId(value.rootId);
+}
 export function validClassroomPlanSource(value:unknown):value is ClassroomPlanSource{return record(value)&&keys(value,['id','version'])&&validClassroomPlanId(value.id)&&typeof value.version==='string'&&/^[a-f0-9]{64}$/.test(value.version);}
 export function validClassroomPlanStart(value:unknown):value is ClassroomPlanStart{
  if(!record(value))return false;

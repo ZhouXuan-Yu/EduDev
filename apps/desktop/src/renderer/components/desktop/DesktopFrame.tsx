@@ -6,9 +6,11 @@ import '../../ui-system/chrome.css';
 import {samePaperReturn, type PaperReturnReference} from '../paper-ui/paper-material-handoff';
 import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {readComposerDraft} from '../office/composer-drafts';
+import type {ClassroomPlanReference} from '../../../shared/classroom-plan';
 
-type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;classroomPlan?:ClassroomPlanReference;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
+  a.classroomPlan?.rootId===b.classroomPlan?.rootId&&a.classroomPlan?.sessionId===b.classroomPlan?.sessionId &&
   (a.view !== 'artifacts' || a.artifactId === b.artifactId && a.artifactVersionId === b.artifactVersionId) &&
   (a.view !== 'my_tasks' || a.taskId === b.taskId) &&
   samePaperReturn(a.paperReturn, b.paperReturn) &&

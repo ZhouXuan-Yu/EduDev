@@ -7,17 +7,27 @@ import type {Scene} from '@openmaic/dsl';
 import {assertClassroomContext} from './classroom-context';
 import {assertTeachingLessonContext} from './teaching-lesson-context';
 import {teachingLessonIssues} from '../../shared/teaching-lesson';
+import type {ClassroomPlanReference,ClassroomPlanReview} from '../../shared/classroom-plan';
 
 type Row=Record<string,unknown>;
 type Payload={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;root:string;revision:number;previous:string;callId:string;inputDigest:string;document:ClassroomPlanDocument;context:ClassroomContext};
 type Effect={state:ClassroomPlanItem['status'];checkpoints:ClassroomCheckpoint[];activeRunId?:string;classroomId?:string};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=(row:Row)=>JSON.parse(String(row.payload_json)) as Payload;
+function latestPlans(rows:Row[]){
+ const latest=new Map<string,Row>();
+ for(const row of rows){
+  const {root,revision}=payload(row);
+  const previous=latest.get(root);
+  if(!previous||payload(previous).revision<revision)latest.set(root,row);
+ }
+ return latest;
+}
 function item(row:Row):ClassroomPlanItem{
  const p=payload(row),e=JSON.parse(String(row.result_json)) as Effect;
  if(p.schemaVersion!==CLASSROOM_PLAN_SCHEMA||!validClassroomPlanDocument(p.document)||!validClassroomContext(p.context)||!p.context.materials.length&&!p.document.lesson||!Number.isSafeInteger(p.revision)||p.revision<1||!['draft','confirmed','generating','interrupted','ready','rejected'].includes(e.state)||!Array.isArray(e.checkpoints))throw Error('unavailable');
  if(e.checkpoints.length>p.document.scenes.length||new Set(e.checkpoints.map(c=>c.sceneId)).size!==e.checkpoints.length||e.checkpoints.some(c=>!validClassroomScene(c.scene)||c.scene.id!==c.sceneId||!p.document.scenes.some(s=>s.sceneId===c.sceneId&&s.type===c.scene.type&&s.title===c.scene.title)||!/^[a-f0-9]{64}$/.test(c.inputDigest)))throw Error('unavailable');
- return{id:String(row.id),sessionId:String(row.session_id),runId:e.activeRunId||String(row.run_id),revision:p.revision,version:hash({id:row.id,sessionId:row.session_id,studentId:row.student_id,payload:p}),updatedAt:String(row.updated_at),document:structuredClone(p.document),context:structuredClone(p.context),status:e.state,checkpoints:structuredClone(e.checkpoints),...(e.classroomId?{classroomId:e.classroomId}:{})};
+ return{id:String(row.id),rootId:p.root,sessionId:String(row.session_id),runId:e.activeRunId||String(row.run_id),revision:p.revision,version:hash({id:row.id,sessionId:row.session_id,studentId:row.student_id,payload:p}),updatedAt:String(row.updated_at),document:structuredClone(p.document),context:structuredClone(p.context),status:e.state,checkpoints:structuredClone(e.checkpoints),...(e.classroomId?{classroomId:e.classroomId}:{})};
 }
 async function authorize(sql:Sql,sessionId:string,studentId?:string){
  const session=(await sql.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]))[0];
@@ -48,6 +58,13 @@ export async function assertLegacyClassroomAllowed(sql:Sql,sessionId:string){
 
 export function createClassroomPlanState(sql:Sql){
  const transaction=<T>(work:(db:Sql)=>Promise<T>)=>{if(!sql.transaction)throw Error('unavailable');return sql.transaction(work);};
+ async function sessionPlans(sessionId:string){
+  const studentId=await authorize(sql,sessionId);
+  const rows=await sql.all(`SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=?
+    AND COALESCE(student_id,'')=? ORDER BY created_at DESC,id DESC LIMIT 1001`,[sessionId,CLASSROOM_PLAN_ACTION,studentId]);
+  if(rows.length>1000)throw Error('unavailable');
+  return rows;
+ }
  async function confirmedLesson(work:Sql,sessionId:string,id:string,version:string){
   if(!validClassroomPlanSource({id,version}))throw Error('invalid_input');
   const value=item(await currentRow(work,id));
@@ -127,6 +144,24 @@ export function createClassroomPlanState(sql:Sql){
    });
   },
   async read(id:string){return item(await currentRow(sql,id));},
+  async open(input:ClassroomPlanReference){
+   const rows=await sessionPlans(input.sessionId);
+   const origin=rows.find(row=>row.id===input.rootId&&payload(row).root===input.rootId&&payload(row).revision===1);
+   const current=origin&&latestPlans(rows).get(input.rootId);
+   if(!current)throw Error('permission_denied');
+   return item(current);
+  },
+  async reviews(sessionId:string):Promise<ClassroomPlanReview[]> {
+   const rows=await sessionPlans(sessionId);
+   const origins=new Map(rows.filter(row=>payload(row).revision===1&&payload(row).root===row.id)
+    .map(row=>[String(row.id),String(row.run_id)]));
+   return [...latestPlans(rows)].filter(([rootId])=>origins.get(rootId)).slice(0,100).map(([rootId,row])=>{
+    const plan=item(row),{document}=plan;
+    return {id:plan.id,rootId,sessionId,originRunId:origins.get(rootId)!,revision:plan.revision,status:plan.status,
+     kind:document.lesson?'lesson':'outline',title:document.title,totalMinutes:document.totalMinutes,
+     objectives:document.objectives,stages:document.scenes.map(scene=>scene.title)};
+   });
+  },
   async history(id:string){
    const latest=await currentRow(sql,id),root=payload(latest).root;
    const rows=await sql.all('SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=?',[String(latest.session_id),CLASSROOM_PLAN_ACTION]);
@@ -135,9 +170,8 @@ export function createClassroomPlanState(sql:Sql){
   },
   async list(){
    const rows=await sql.all(`SELECT c.* FROM ai_confirmation_items c JOIN ai_conversation_sessions s ON s.id=c.session_id LEFT JOIN students t ON t.id=s.student_id WHERE c.action_type=? AND s.archived_at IS NULL AND (s.student_id='' OR s.student_id IS NULL OR t.status='active') ORDER BY c.created_at DESC,c.id DESC LIMIT 1001`,[CLASSROOM_PLAN_ACTION]);
-   if(rows.length>1000)throw Error('unavailable');const latest=new Map<string,Row>();
-   for(const row of rows){const p=payload(row),old=latest.get(p.root);if(!old||payload(old).revision<p.revision)latest.set(p.root,row);}
-   return [...latest.values()].slice(0,100).map(item);
+   if(rows.length>1000)throw Error('unavailable');
+   return [...latestPlans(rows).values()].slice(0,100).map(item);
   },
   async edit(input:ClassroomPlanEdit){
    if(!validClassroomPlanEdit(input))throw Error('invalid_input');return transaction(async work=>{
