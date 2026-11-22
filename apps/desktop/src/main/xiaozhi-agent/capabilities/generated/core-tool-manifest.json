@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "e9fd190c99f05f629a3c91f54a49f2a90eaa23ba887617564337c24f49c19446",
+  "sourceHash": "06bfcc02f5fc8f500832ccdcaaceb1390cbac9f343145e122c33707633ce4086",
   "sources": [
     {
       "file": "package-lock.json",
@@ -181,6 +181,22 @@
     {
       "file": "src/main/education/mistake-similar-provider.ts",
       "sha256": "158a86c78089717aaca6ba497aa2dffe76924163b021b6fb759bed74b1fec57e"
+    },
+    {
+      "file": "src/main/education/mock-exam-catalog.ts",
+      "sha256": "5144581f97b7d962810e0cd936d897521e77eda8f29c9113dd0c0e17922d46cd"
+    },
+    {
+      "file": "src/main/education/mock-exam-metadata.ts",
+      "sha256": "a59155e1c9abd136681aa35d5e64c8e3b54817d52b13e4251626f65cbb50e1b3"
+    },
+    {
+      "file": "src/main/education/mock-exam-sources.ts",
+      "sha256": "3294b6d10a46065afdcb225b5ed1594435aa3daf15c2455591babe520035ab66"
+    },
+    {
+      "file": "src/main/education/mock-exam-state.ts",
+      "sha256": "1854875b38a94df1fcd6d7a9aa951e2f9c6dd7bd9ba270da9ad1fe4dfc685ff4"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -764,7 +780,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "af0eddf3660662982e6c5dd444f635a649dfbd32527e140acd85965e296988bb"
+      "sha256": "d8a24f82b695ece07719fa294bb7be7c8115db439289a4b0f73ba57dba84d359"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1012,7 +1028,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/education-tool-catalog.ts",
-      "sha256": "f51c844da33b33e836868e382f1da273a6e7aaeb8bb9b4f332b7ec011c6ad3e8"
+      "sha256": "fff048cab84cc02b8d35521e8a8b04e727230bf2765e1e675b75e440f6c85454"
     },
     {
       "file": "src/main/xiaozhi-agent/education-tools.ts",
@@ -1072,7 +1088,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/journal.ts",
-      "sha256": "a89708ef898fbb8ef3ea1ddc9061c8755e2a1777e2f7ee5b27319312083ec57f"
+      "sha256": "19dd60d85b096fec175aa170925e8cfe9f8ae9b63b128a08ed4bb7687c18ad71"
     },
     {
       "file": "src/main/xiaozhi-agent/events/native-tail.ts",
@@ -1088,7 +1104,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
-      "sha256": "cccd2a55da44d2eb2f3a625b67eb2366176854ad71fdd9d817c98a9b8ca1df2f"
+      "sha256": "8451cd274deef81752c31022342d54399a3507b16d503931605b81b0ede16940"
     },
     {
       "file": "src/main/xiaozhi-agent/events/terminal-cancellation.ts",
@@ -1460,7 +1476,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "98e00ff1cba77951f562b3e6d2da07148c851608dbddeeba6b4b0675e8e12600"
+      "sha256": "17aadec3513efda9d44ac6296bfcb97d09c91a676f585d618a3c1eb71fe4d129"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1496,7 +1512,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "d8c82c6e1ba592577548ba1f231d13264031dddfbef5dbd08c68650f7c6d078b"
+      "sha256": "6fb9f3b23af21f3fddd8fab17309b752558c10cf6b2de6c712df579d6b404553"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1800,7 +1816,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tools/manifest.ts",
-      "sha256": "203ba8e8143f4aeacdb0cb1ce2de74d14fbd542df630c86b26f6b24df4c427c7"
+      "sha256": "f17324dd89bb17d25db3438efa0dbfee9e0f0aeadf5496bacf1ce4093948eb29"
     },
     {
       "file": "src/main/xiaozhi-agent/tools/read-scheduler.ts",
@@ -2239,6 +2255,10 @@
       "sha256": "f887fec55bf8faa477bcb6a2593b550be53524e9df16b32090054187004a0ff5"
     },
     {
+      "file": "src/shared/mock-exam-compilation.ts",
+      "sha256": "eb17e34cc703a0be186bd9c0dd35923d368d41001b6103e00dfcc50d772888f7"
+    },
+    {
       "file": "src/shared/model-reasoning.ts",
       "sha256": "e561a0ac485fd193470b511d6ee9e3f588844a23cdd01f1add05452cb2b3f551"
     },
@@ -2540,7 +2560,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "9c4c6e421e08d35a940ea627cab082af77237498e81240aab323fe92d0f497fc"
+      "sha256": "916ef8628f40608a070826880c6f9bc75da13633c5c9934db0b9fe4dff12d7fa"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2640,7 +2660,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "109bdc0bfe1af31eb84616a91a4bdb8babc66cf7bc6a0b09be3a524368af0f0b"
+      "sha256": "dcce366c3004cd3df42924b4783c4de2d1509ac3a8911e43e0d9ae1230e93d1f"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

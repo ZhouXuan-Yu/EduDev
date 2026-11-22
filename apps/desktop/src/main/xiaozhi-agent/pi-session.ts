@@ -126,6 +126,7 @@ export interface PiXiaozhiOptions {
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
   teachingHandoutTool?: ToolDefinition;
+  mockExamTool?:ToolDefinition;
   handoutExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   handoutEditTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   capabilityTools?: ToolDefinition[];
@@ -588,6 +589,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(options.teachingHandoutTool.name);
     prompt+='\n老师本轮要求制作可编辑教学讲义或学案。先检索并实读相关本地资料，再以 education_create_teaching_handout 保存讲义草稿。重心是结构化内容、逐步例题和不同难度练习。缺资料应说明待核对范围，不编造引用。草稿成功后指引老师打开讲义核对与编辑。';
   }
+  if(options.mockExamTool){
+    names.push(options.mockExamTool.name);
+    prompt+='\n上海年度模考汇编使用 education_build_mock_exam_catalog 整理本地原件。确认年份再调用，有明确学科年级时使用范围。目录保存后请教师从当轮卡片核对。不要声称已确认、题目已核验或已经导出。';
+  }
   if(options.handoutExportTools){
     names.push(READ_TEACHING_HANDOUT,EXPORT_TEACHING_HANDOUT);
     prompt+='\n老师要求导出已有讲义时，先用 education_read_teaching_handout 核对其当前已确认版本，再用 education_export_teaching_handout 提交 Word。老师要求新编讲义后导出时，先制作新草稿，等待老师确认该稿，再导出。一个受众用 saved_office，学生版加教师版用 saved_bundle。仅根据实际文件回执报告结果。';
@@ -912,6 +917,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
+  if(options.mockExamTool)definitions.push(options.mockExamTool);
   if(options.handoutEditTools){
     const editTools=options.handoutEditTools(action=>budget!.wait(action));
     if(editTools.length!==2||editTools[0].name!==READ_HANDOUT_EDIT||editTools[1].name!==PROPOSE_HANDOUT_EDIT)throw Error('configuration');

@@ -1,6 +1,7 @@
 import {createClassroomPlanState} from '../education/classroom-plan-state';
 import {createTeachingHandoutState} from '../education/teaching-handout-state';
 import {createTeachingHandoutEditState} from '../education/teaching-handout-edit-state';
+import {createMockExamState} from '../education/mock-exam-state';
 import path from 'node:path';
 import {createInspectionState} from './checks/state';
 import {createFileReferenceState} from './file-references';
@@ -72,6 +73,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const classroomPlans=createClassroomPlanState(sql);
   const teachingHandouts=createTeachingHandoutState(sql);
   const handoutEdits=createTeachingHandoutEditState(sql);
+  const mockExamCatalogs=createMockExamState(sql);
   return {
     sql,
     capabilities,
@@ -105,6 +107,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     classroomPlans,
     teachingHandouts,
     handoutEdits,
+    mockExamCatalogs,
     async recover() {
       await permissions.recover();
       await handoutEdits.recover();
@@ -142,6 +145,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await terminalJobs.migrate();
       await teachingHandouts.migrate();
       await handoutEdits.migrate();
+      await mockExamCatalogs.migrate();
     },
     async getBinding(id: string) {
       const row = (await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]))[0];

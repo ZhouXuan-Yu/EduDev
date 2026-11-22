@@ -25,6 +25,7 @@ export type JournalOwner = { sessionId: string; runId: string; generation: numbe
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
 const kinds = new Set(['model_request','activity','text_delta','model_reasoning','assistant_start','assistant_phase','assistant_end','tool_start','tool_output','tool_attempt','tool_end','approval','change','office_artifact','delivery_bundle','learning_review','question_collection','question_review','paper_review','practice_review','control','goal','task','image_delivery','usage','verification','recovery','compaction','memory_isolation','skill_isolation','status']);
 kinds.add('handout_edit');
+kinds.add('mock_exam_catalog');
 const identity = (value: string) => /^[A-Za-z0-9_-]{1,160}$/.test(value);
 function json(value: unknown) {
   const text = JSON.stringify(value);

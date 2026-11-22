@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考目录使用 Pi 原任务调用宿主的本地候选查询。SQLite 追加目录快照及原工具回执，原件、结构和答案册关系继续使用资料库事实。教师确认绑定当前目录摘要并复查被收录原件及其答案册。 [模考目录合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-上海模考年度目录)
+
 一般知识问答和教学任务复用同一 Pi、Journal 与会话历史。主进程判定是否分配业务 Task。教师修订推进原任务的要求版本。任务结束和教师澄清回接由原 Task 检查点控制。 [D3 调用链与状态](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md)
 
 教材成果引用通过 typed IPC 传递会话、成果身份和候选内容摘要。主进程核对原授权与本地版本，归档状态在登记事务中复核，同事务登记新会话、附件导入回执和待发送附件。 [引用执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#跨会话引用既有教学成果)

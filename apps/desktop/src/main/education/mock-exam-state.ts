@@ -1,0 +1,160 @@
+import {randomUUID} from 'node:crypto';
+import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
+  type MockExamEntry,type MockExamScope} from '../../shared/mock-exam-compilation';
+import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
+import type {Sql} from '../xiaozhi-agent/session-state';
+import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
+import type {HandoutOwner} from './teaching-handout-state';
+import {mockExamPosition,mockExamTitle} from './mock-exam-metadata';
+import {assertMockExamSource,mockExamSources} from './mock-exam-sources';
+
+type Row=Record<string,unknown>;
+type Snapshot=Omit<MockExamCatalog,'summary'>;
+type Verify=(id:string,version:string,signal:AbortSignal)=>Promise<void>;
+
+function summary(row:Row):MockExamCatalogSummary {
+  return {schemaVersion:MOCK_EXAM_SCHEMA,id:String(row.id),runId:String(row.run_id),taskId:String(row.task_id),title:String(row.title),
+    revision:Number(row.revision),state:row.state as MockExamCatalogSummary['state'],count:Number(row.entry_count),digest:String(row.digest)};
+}
+const snapshotColumns='c.id,c.run_id,c.task_id,c.title,v.revision,v.state,v.entry_count,v.digest';
+const currentJoin='FROM mock_exam_compilations c JOIN mock_exam_compilation_versions v ON v.catalog_id=c.id AND v.revision=c.revision';
+
+async function allowed(work:Sql,sessionId:string) {
+  const [row]=await work.all(`SELECT id FROM ai_conversation_sessions
+    WHERE id=? AND COALESCE(student_id,'')='' AND COALESCE(archived_at,'')=''`,[sessionId]);
+  if(!row)throw Error('permission_denied');
+}
+async function activeOwner(work:Sql,owner:HandoutOwner) {
+  const tasks=createTaskState(work,{sanitize:async value=>value});
+  const binding=await tasks.ownerForRun(owner.sessionId,owner.runId);
+  const task=await tasks.get(owner.taskId);
+  const [run]=await work.all("SELECT status FROM ai_agent_runs WHERE id=? AND session_id=?",[owner.runId,owner.sessionId]);
+  if(binding?.taskId!==owner.taskId||binding.generation!==owner.generation||binding.requirementsVersion!==owner.requirementsVersion||
+    task?.binding?.runId!==owner.runId||task.requirementsVersion!==owner.requirementsVersion||run?.status!=='running')throw Error('permission_denied');
+}
+function unpack(row:Row):MockExamCatalog {
+  const snapshot=JSON.parse(String(row.image_json)) as Snapshot;
+  if(!Array.isArray(snapshot.entries)||!snapshot.scope||protocolHash(snapshot)!==row.digest)throw Error('configuration');
+  return {summary:summary(row),...snapshot};
+}
+function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snapshot {
+  if(changes.length!==catalog.entries.length||new Set(changes.map(item=>item.resourceId)).size!==changes.length)throw Error('invalid_input');
+  const {scope,unlinkedAnswers,limited}=catalog;
+  const positions=new Set<string>();
+  let included=0;
+  const entries=catalog.entries.map((item):MockExamEntry=>{
+    const change=changes.find(row=>row.resourceId===item.resourceId);
+    if(!change)throw Error('invalid_input');
+    const {metadata,include,permission}=change;
+    if(!include){
+      if(permission==='local_only')return {...item,metadata,include:false,permission:'unknown'};
+      return {...item,metadata,include:false,permission};
+    }
+    if(permission==='excluded')throw Error('invalid_input');
+    if(Object.values(metadata).some(value=>value===null))throw Error('incomplete');
+    if(metadata.year!==scope.year||scope.grade&&metadata.grade!==scope.grade||scope.subject&&metadata.subject!==scope.subject)
+      throw Error('scope_changed');
+    const position=mockExamPosition(metadata);
+    if(positions.has(position))throw Error('conflicting_versions');
+    positions.add(position);
+    included++;
+    const inferred={...item.inferred};
+    for(const key of Object.keys(metadata) as (keyof MockExamEntry['metadata'])[]){
+      if(item.metadata[key]!==metadata[key]||item.conflicts.includes(key))inferred[key]='老师核对';
+    }
+    return {...item,metadata,inferred,conflicts:[],include,permission};
+  });
+  if(!included)throw Error('incomplete');
+  return {scope,entries,unlinkedAnswers,limited};
+}
+
+export function createMockExamState(sql:Sql) {
+  function write<T>(action:(work:Sql)=>Promise<T>) {
+    if(!sql.transaction)throw Error('configuration');
+    return sql.transaction(action);
+  }
+  async function view(work:Sql,sessionId:string,id:string) {
+    await allowed(work,sessionId);
+    const [row]=await work.all('SELECT '+snapshotColumns+',v.image_json '+currentJoin+' WHERE c.id=? AND c.session_id=?',[id,sessionId]);
+    if(!row)throw Error('permission_denied');
+    return unpack(row);
+  }
+  async function append(work:Sql,id:string,revision:number,state:MockExamCatalogSummary['state'],snapshot:Snapshot) {
+    const digest=protocolHash(snapshot);
+    await work.run(`INSERT INTO mock_exam_compilation_versions(catalog_id,revision,state,entry_count,digest,image_json,created_at)
+      VALUES(?,?,?,?,?,?,?)`,[id,revision,state,snapshot.entries.filter(item=>item.include).length,digest,JSON.stringify(snapshot),new Date().toISOString()]);
+  }
+  return {
+    async migrate() {
+      await sql.run(`CREATE TABLE IF NOT EXISTS mock_exam_compilations (
+        id TEXT PRIMARY KEY,session_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id) ON DELETE CASCADE,
+        run_id TEXT NOT NULL UNIQUE REFERENCES ai_agent_runs(id) ON DELETE CASCADE,task_id TEXT NOT NULL,
+        generation INTEGER NOT NULL,call_id TEXT NOT NULL,title TEXT NOT NULL,revision INTEGER NOT NULL,created_at TEXT NOT NULL)`);
+      await sql.run('CREATE INDEX IF NOT EXISTS mock_exam_compilation_session ON mock_exam_compilations(session_id,created_at)');
+      await sql.run(`CREATE TABLE IF NOT EXISTS mock_exam_compilation_versions (
+        catalog_id TEXT NOT NULL REFERENCES mock_exam_compilations(id) ON DELETE CASCADE,revision INTEGER NOT NULL,
+        state TEXT NOT NULL,entry_count INTEGER NOT NULL,digest TEXT NOT NULL,image_json TEXT NOT NULL,created_at TEXT NOT NULL,
+        PRIMARY KEY(catalog_id,revision))`);
+    },
+    async list(sessionId:string){
+      return (await sql.all('SELECT '+snapshotColumns+' '+currentJoin+' WHERE c.session_id=? ORDER BY c.created_at DESC,c.id DESC LIMIT 100',[sessionId])).map(summary);
+    },
+    view:(sessionId:string,id:string)=>view(sql,sessionId,id),
+    async generate(owner:HandoutOwner,callId:string,scope:MockExamScope,fence:()=>void) {
+      fence();
+      const sources=await (sql.readTransaction?sql.readTransaction(work=>mockExamSources(work,scope)):mockExamSources(sql,scope));
+      fence();
+      if(!sources.entries.length)throw Error('no_sources');
+      const snapshot={scope,...sources};
+      return write(async work=>{
+        fence();
+        await allowed(work,owner.sessionId);
+        await activeOwner(work,owner);
+        const [prior]=await work.all('SELECT id,call_id FROM mock_exam_compilations WHERE run_id=? AND session_id=?',[owner.runId,owner.sessionId]);
+        if(prior){
+          const previous=await view(work,owner.sessionId,String(prior.id));
+          if(prior.call_id!==callId||protocolHash(previous.scope)!==protocolHash(scope))throw Error('version_conflict');
+          return previous.summary;
+        }
+        for(const entry of snapshot.entries){fence();await assertMockExamSource(work,entry);}
+        const id='mock_catalog_'+randomUUID(),title=mockExamTitle(scope);
+        await work.run(`INSERT INTO mock_exam_compilations(id,session_id,run_id,task_id,generation,call_id,title,revision,created_at)
+          VALUES(?,?,?,?,?,?,?,1,?)`,[id,owner.sessionId,owner.runId,owner.taskId,owner.generation,callId,title,new Date().toISOString()]);
+        await append(work,id,1,'draft',snapshot);
+        fence();
+        return (await view(work,owner.sessionId,id)).summary;
+      });
+    },
+    async confirm(sessionId:string,id:string,expectedRevision:number,digest:string,changes:MockExamCatalogChange[],verify:Verify) {
+      const initial=await view(sql,sessionId,id);
+      if(initial.summary.revision!==expectedRevision||initial.summary.digest!==digest)throw Error('version_conflict');
+      const next=corrected(initial,changes), included=next.entries.filter(item=>item.include);
+      const signal=AbortSignal.timeout(80_000);
+      for(const entry of included){
+        try {
+          await verify(entry.resourceId,entry.version,signal);
+          if(entry.answer.state==='linked')await verify(entry.answer.resourceId!,entry.answer.version!,signal);
+        }catch(error){if(signal.aborted)throw error;throw Error('source_changed');}
+      }
+      return write(async work=>{
+        const current=await view(work,sessionId,id);
+        if(current.summary.digest!==digest||current.summary.revision!==initial.summary.revision)throw Error('version_conflict');
+        for(const entry of included)await assertMockExamSource(work,entry);
+        signal.throwIfAborted();
+        if(current.summary.state==='confirmed'&&protocolHash(next)===digest)return current;
+        const revision=current.summary.revision+1;
+        await append(work,id,revision,'confirmed',next);
+        await work.run('UPDATE mock_exam_compilations SET revision=? WHERE id=? AND revision=?',[revision,id,revision-1]);
+        return view(work,sessionId,id);
+      });
+    },
+  };
+}
+
+export async function readMockExamEffect(sql:Sql,owner:Pick<HandoutOwner,'sessionId'|'runId'|'generation'>,callId:string){
+  const [row]=await sql.all(`SELECT v.image_json,v.digest FROM mock_exam_compilations c
+    JOIN mock_exam_compilation_versions v ON v.catalog_id=c.id AND v.revision=1
+    WHERE c.session_id=? AND c.run_id=? AND c.generation=? AND c.call_id=?`,
+  [owner.sessionId,owner.runId,owner.generation,callId]);
+  return row&&protocolHash(JSON.parse(String(row.image_json)))===row.digest?'matched' as const:'uncertain' as const;
+}

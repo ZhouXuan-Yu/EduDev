@@ -1,6 +1,7 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import {PROPOSE_HANDOUT_EDIT,READ_HANDOUT_EDIT} from '../../../shared/teaching-handout-edit';
+import {BUILD_MOCK_EXAM_CATALOG} from '../../../shared/mock-exam-compilation';
 export type ToolEffect='safe_read'|'local_cache'|'local_write'|'external_effect';
 export type ToolManifest={version:1;name:string;effect:ToolEffect;timeoutMs:number;maxAttempts:1|2;resource:'none'|'workspace'|'output'|'session';lock:'read'|'write';cancel:'signal_and_wait_bound';input:'sdk_and_domain';output:'bounded_pi_result_and_domain';teacherWait:'pause_active_deadline'};
 const safe=['education_read_classroom_plan','education_compute','education_read_classroom','office_read_text','office_file_stat','office_list_files','office_list_materials','office_list_attachments','office_web_fetch','office_web_search','read','read_education_memory','read_session_process','read_teacher_request','search_teacher_knowledge','education_search_materials','education_verify_material_quote','education_search_questions','education_read_question','education_read_student_context','education_analyse_learning','education_read_paper','education_read_practice','education_find_similar_questions'];
@@ -18,6 +19,7 @@ safe.push(READ_TEACHING_HANDOUT);
 writes.push(EXPORT_TEACHING_HANDOUT);
 safe.push(READ_HANDOUT_EDIT);
 writes.push(PROPOSE_HANDOUT_EDIT);
+writes.push(BUILD_MOCK_EXAM_CATALOG);
 writes.push('education_create_teaching_handout');
 safe.push('education_verify_quantity');
 safe.push('education_verify_solution');

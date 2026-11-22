@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考年度目录从资料库导入与问小智发送开始，核对重复卷、实际原件路径、配对、教师修订、来源变化阻断和冷启。PDF 正文质量、历史恢复与文件交付留在 Phase 4.3 后续验收。 [模考目录证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-上海模考年度目录)
+
 D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄清续答、资料子任务回传、文件版本定位和跨会话引用。实际 Electron、SQLite 读回与本地合成模型证据保存在固定验收根。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 已确认讲义的单份及成组 Word 导出，受众隔离、来源漂移与冷启动读回按讲义专项报告记录。 [讲义导出验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-对话导出已确认讲义)

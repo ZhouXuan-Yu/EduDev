@@ -39,6 +39,7 @@ import {registerQuestionReviewIpc} from '../education/question-review-api';
 import {registerQuestionContextIpc} from '../education/question-context-api';
 import {registerStudentTrainingIpc} from '../education/student-training-api';
 import {handoutEditErrors} from '../../shared/teaching-handout-edit';
+import {mockExamErrors} from '../../shared/mock-exam-compilation';
 import type { RuntimeAuthority } from './runtime-authority';
 import {isBackgroundAcceptance} from './runtime-authority';
 
@@ -133,6 +134,20 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     ? host.handoutEdits.view(input) : {ok:false,error:'permission_denied',message:handoutEditErrors.permission_denied});
   options.ipcMain.handle('xiaozhi:handout-edit-decide',(event,input)=>fromMain(event)
     ? host.handoutEdits.decide(input) : {ok:false,error:'permission_denied',message:handoutEditErrors.permission_denied});
+  const mockExamDenied={ok:false,error:'permission_denied',message:mockExamErrors.permission_denied};
+  options.ipcMain.handle('xiaozhi:mock-exam-review',(event,input)=>fromMain(event)?host.mockExam.view(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-confirm',(event,input)=>fromMain(event)?host.mockExam.confirm(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-original',async(event,input)=>{
+    if(!fromMain(event))return mockExamDenied;
+    const result=await host.mockExam.original(input);
+    if(!result.ok)return result;
+    try{
+      const resource=await options.store.materials.resource(result.value.resourceId);
+      if(!fromMain(event)||resource.contentHash!==result.value.version)return mockExamDenied;
+      shell.showItemInFolder(resource.localPath);
+      return {ok:true,value:true};
+    }catch{return {ok:false,error:'source_changed',message:mockExamErrors.source_changed};}
+  });
   registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerClassroomIpc({ipcMain:options.ipcMain,allowed:fromMain,state:options.store.xiaozhiState.classrooms,plans:options.store.xiaozhiState.classroomPlans});
   registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

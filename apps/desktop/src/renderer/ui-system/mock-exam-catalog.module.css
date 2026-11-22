@@ -1,0 +1,69 @@
+.heading {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  text-align: start;
+}
+.heading > span {
+  display: grid;
+  gap: .12rem;
+}
+.heading small {
+  font-size: .84rem;
+  color: var(--muted);
+}
+.review {
+  display: grid;
+  gap: .6rem;
+  min-inline-size: 0;
+}
+.entries {
+  max-block-size: min(43vh, 32rem);
+  overflow: auto;
+  margin: 0;
+  padding: 0 .25rem;
+  list-style: none;
+}
+.entry {
+  display: grid;
+  gap: .35rem;
+  padding: .65rem .25rem;
+  border-block-start: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.entry > span, .fields small {
+  font-size: .84rem;
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .4rem;
+}
+.fieldset {
+  min-inline-size: 0;
+  border: 1px solid var(--border);
+  border-radius: .55rem;
+  padding: .55rem;
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: .6rem;
+}
+.fields label {
+  display: grid;
+  gap: .2rem;
+  min-inline-size: 0;
+}
+.fields :is(input, select) {
+  padding: .25rem .4rem;
+  border: 1px solid var(--border);
+  border-radius: .3rem;
+  min-inline-size: 0;
+}
+.fields .check {
+  justify-items: start;
+  align-content: center;
+}

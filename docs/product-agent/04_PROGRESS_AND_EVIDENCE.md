@@ -514,3 +514,21 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 验收证据存放于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-edit`。最初编译缺少可选 preload 检查，首轮历史测试读到加载中状态，两项原记录保留。差异列表已修正为 CSS 模块，最终截图说明内容与操作可达。手动验收窗口使用最终构建，独立合成数据、启动 CMD 和操作步骤在 `manual-phase4-handout-edit`。依赖审计仍有既有 20 项，其中 2 项 high，本轮未改依赖。
 
 本小项 **已实现**。Phase 4.2 从会话生成、精细修订、审核确认、可编辑 Word、版本与历史恢复的工程路径通过。真实模型单样本不支持对整体学科质量和教师采用率下结论。下一阶段为上海各区模考汇编，后续继续教案生成与集中验收。
+
+## Phase 4.3 上海模考年度目录
+
+教师从「问小智」按年份和可选学科、年级发起目录。小智读取资料库已有文件名与可用正文首段，列出区、年份、年级、学科、轮次、解析状态和答案册。相同文件摘要归并。同一分类下内容不同的卷由教师选定。区名词表按上海市政府公布的 16 个区校对。 [上海市人民政府区政府网站](https://www.shanghai.gov.cn/nw42858/)
+
+教师可修正字段、排除重版、区分待核与允许本地使用，并确认目录。确认复核所选题卷和实际答案册文件摘要，保持已保存版本及原件。已有答案册配对表示原件关联。实际题目、答案正确性和页面完整性继续按原件核对。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-catalog-review` | 编译与 TypeScript 检查通过。主进程 SHA-256 `aab7819a26415eec1aa19628c40e09cb89d2503dc1f75df7b56d2f77ed0e8746`。 |
+| `node scripts/education/mock-exam-catalog-electron.mjs` | 同一构建 4/4。资料库导入 6 份合成 PDF 及 1 份 Markdown，实际 Pi 调用生成草稿。题卷与答案册定位、重复与冲突字段、老师确认、跨会话访问拒绝、原件变化、SQLite 版本和原调用回执、冷启无重放通过。见 `mock-exam-catalog-ZGOamD/report.json` 及两种尺寸截图。 |
+| `npm.cmd run test:renderer-components` | 253/253。目录卡布局和操作另见 Electron 专项双尺寸。 |
+| `node migration-check.cjs` | 1/1。使用上一版 Electron 测试库的 SQLite 备份运行同一构建，保留两份原讲义，追加两张表，完整性检查为 `ok`。见 `migration-C2zYGz/report.json`。 |
+| `node scripts/electron-smoke.mjs` | 最初构建综合回归 207/207，覆盖 1366×768 和 1920×1080，`electron-smoke.log` 的 `ok` 为 `true`。之后调整了目录的解析完成状态标签与卡片样式，最终构建由本表同一专项复测。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-catalog`。验收窗口、启动 CMD 及步骤在 `manual-phase4-mock-exam-catalog`。首轮 PDF 正文解析返回 `configuration`，首轮保留。复测用成功解析的 Markdown 测正文冲突，PDF 用于原件、未解析状态及配对检查。原件定位以实际 IPC 校验，到达操作系统调用时捕获所选路径。模型使用本地合成响应，付费请求 0 次。原有生产依赖审计 20 项，其中 2 项 high，无依赖变更。
+
+年度目录、独立版本和教师确认 **已实现**。回退到旧构建仍能读原资料、题本和讲义，新增目录使用新构建读取。成果工作台、对话修订、历史恢复、实际导出，以及真实 PDF 缺页、扫描和分栏专项继续在 Phase 4.3 执行。
