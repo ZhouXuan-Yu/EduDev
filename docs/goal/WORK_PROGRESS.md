@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 当前在 Phase 1。已记录任务连续性、正常退出续答、两份资料子任务与指定文件局部编辑验收。下一切片是跨会话引用既有教学成果。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 完成 Phase 0–3 个人版工程验收。教师记忆已核对画像、范围、停用、最小注入及冷启动。开始 Phase 4 自动组卷，后续依次处理教学讲义、上海模考汇编和教案。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

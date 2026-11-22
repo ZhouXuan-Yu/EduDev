@@ -27,6 +27,7 @@ import {createGoalState} from './goal-state';
 import { createEventJournal } from './events/journal';
 import {createClassroomState} from '../education/classroom-state';
 import {createTeacherPreferenceState} from '../education/teacher-preference-state';
+import {createTeacherMemorySettingsState} from '../education/teacher-memory-settings-state';
 import {readNativeToolEntries} from './events/native-tail';
 import {createRecoveryEffectReader} from './events/recovery-readback';
 import {serializeStateWrites} from './serialized-state-sql';
@@ -81,6 +82,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     ...memory,
     ...skills,
     teacherPreferences:createTeacherPreferenceState(sql),
+    teacherMemorySettings:createTeacherMemorySettingsState(sql),
     modelSettings,
     modelSwitch,
     changes,

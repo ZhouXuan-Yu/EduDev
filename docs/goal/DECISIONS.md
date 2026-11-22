@@ -6,6 +6,8 @@ D3 的 D11 由主进程先识别明确的答复型输入，不产生业务 Task 
 
 引用成果时，宿主核对当前成果身份和摘要，保留来源会话的学生范围。由现有附件协议登记本地副本，由教师在新会话中提交。 [跨会话引用合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#跨会话引用既有教学成果)
 
+个人数据根存储教师确认的学科、年级与教材，以及逐项偏好的使用范围。既有偏好版本记录表达值及确认来源。Pi 请求只附加符合当前任务和使用范围的表达指导。 [教师记忆合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-3-教师记忆设置交付合同)
+
 ## 2026-11-22 小智 Harness D1
 
 复用原 Registry 和版本快照，增量管理 Provider Instance 与 Binding 控制。Core 与 Community 在可信宿主中统一接入，通过已存在的许可服务和 Windows 隔离执行。 [D1 架构](../architecture/HARNESS_D1.md)

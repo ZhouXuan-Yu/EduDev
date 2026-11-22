@@ -4,6 +4,8 @@
 
 D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄清续答、资料子任务回传、文件版本定位和跨会话引用。实际 Electron、SQLite 读回与本地合成模型证据保存在固定验收根。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
+教师记忆已核对本机画像、逐项范围、临时要求、停用与启用、旧数据、重启与两个个人数据根，以及实际 Pi 请求。真实教师集中验收仍待开展。 [Phase 3 退出核对](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-3-教师记忆与偏好范围)
+
 ## 2026-11-22 小智 Harness D1
 
 D1-001 至 D1-017 单列自检与原始运行证据。 [专项自检](xiaozhi-harness/D1_SELF_CHECK.md)

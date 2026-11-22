@@ -3,6 +3,8 @@ import {teacherPreferenceContext,teacherPreferenceCorrectionContext,teacherPrefe
 import {implicitTeacherCorrection} from './teacher-preference-learning';
 
 import {selectTeacherPreferenceValues} from './teacher-preference-scope';
+import {teacherMemoryValues} from './teacher-memory-policy';
+import type {TeacherMemoryPolicy} from '../../shared/teacher-memory-settings';
 
 const actionNotice:Record<string,string>={
  learned:'宿主已保存本次明确的长期表达偏好。仅说明记忆时，简短确认已保存。',
@@ -12,8 +14,8 @@ const actionNotice:Record<string,string>={
 };
 
 export function teacherPreferenceForRequest(
- preference:{snapshot:TeacherPreferenceSnapshot;action:string;trial?:TeacherPreferenceValues},
- request:string, exportAlreadyChosen=false,
+ preference:{snapshot:TeacherPreferenceSnapshot;action:string;trial?:TeacherPreferenceValues;policy?:TeacherMemoryPolicy|null},
+ request:string, exportAlreadyChosen=false, course?:string,
 ){
  const notice=actionNotice[preference.action];
  if(notice)return {text:'[教师偏好操作结果]\n'+notice,applied:false};
@@ -25,7 +27,8 @@ export function teacherPreferenceForRequest(
   const values=selectTeacherPreferenceValues(preference.trial,request,exportAlreadyChosen);
   return {text:Object.keys(values).length?teacherPreferenceTrialContext(values):'',applied:false};
  }
- const values=selectTeacherPreferenceValues(preference.snapshot.values,request,exportAlreadyChosen);
+ const scoped=preference.policy===undefined?preference.snapshot.values:teacherMemoryValues(preference.snapshot.values,preference.policy,request,course);
+ const values=selectTeacherPreferenceValues(scoped,request,exportAlreadyChosen);
  const applied=Object.keys(values).length>0;
  return {text:applied?teacherPreferenceContext({...preference.snapshot,values},'none'):'',applied};
 }

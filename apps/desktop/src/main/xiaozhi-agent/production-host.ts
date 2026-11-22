@@ -1115,8 +1115,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const selected=(await preparing(()=>store.getAiConversationSession(id),'host_read_session')).session.studentId;
       if(selected){try{await preparing(()=>store.studentContext.snapshot(selected));}catch(error){if(run.stopped)throw Error('cancelled');throw new Error('permission_denied');}}
       const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run)):{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none'};
+      const lesson=run.classroomPlan?.mode==='outline'?run.classroomPlan.lesson:undefined;
       const presentation=run.operation==='prompt'
-        ?teacherPreferenceForRequest(preference,cleanPrompt,Boolean(run.paperExportIntent||run.resumeDeliveryId))
+        ?teacherPreferenceForRequest(preference,cleanPrompt,Boolean(run.paperExportIntent||run.resumeDeliveryId),lesson&&[lesson.subject,lesson.grade].join(' '))
         :{text:'',applied:false};
       run.teacherPreferenceRevision=presentation.applied?preference.snapshot.revision:0;
       if(run.operation==='prompt'){
@@ -1800,6 +1801,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     candidateHistory:(id:string)=>candidates.list(id),
     candidateEvaluate:(input:TeacherCandidateInput)=>mutateSettings(()=>candidates.evaluate(input)),
     candidateReject:(input:TeacherCandidateInput)=>mutateSettings(()=>candidates.reject(input)),
+    teacherMemorySettings:()=>store.xiaozhiState.teacherMemorySettings.read(),
+    saveTeacherMemorySettings:(input:unknown)=>mutateSettings(()=>store.xiaozhiState.teacherMemorySettings.save(input)),
     mcpAdd: (input: XiaozhiMcpAddInput) => mutateSettings(() => mcp.add(input)),
     mcpInspect: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.inspect(input)),
     mcpTrust: (input: XiaozhiMcpTrustInput) => mutateSettings(() => mcp.trust(input)),

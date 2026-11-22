@@ -3,6 +3,8 @@ import type {Sql} from '../xiaozhi-agent/session-state';
 import {TEACHER_PREFERENCE_SCHEMA,validTeacherPreferenceValues,type TeacherPreferenceSnapshot,type TeacherPreferenceValues} from '../../shared/teacher-preferences';
 import {evaluateTeacherPreference,teacherPreferenceSignal} from './teacher-preference-policy';
 import {abandonTeacherLearning,observeTeacherLearning,type TeacherLearningEvidence} from './teacher-preference-learning';
+import {readTeacherMemoryPolicy} from './teacher-memory-policy';
+import type {TeacherMemoryPolicy} from '../../shared/teacher-memory-settings';
 
 const namespace='xiaozhi.teacher-preference.v1:',headKey=namespace+'head';
 const digest=(value:string)=>createHash('sha256').update(value).digest('hex');
@@ -42,7 +44,13 @@ export async function teacherPreferenceAt(sql:Sql,revision:number):Promise<Teach
 export function createTeacherPreferenceState(sql:Sql){
  return{
   async snapshot(){const c=await current(sql);return c.record?publicSnapshot(c.record):empty();},
-  async observe(sessionId:string,runId:string,isCurrent:()=>boolean):Promise<{snapshot:TeacherPreferenceSnapshot;action:Outcome;trial?:TeacherPreferenceValues}>{
+  async readCurrent(){
+   const {record}=await current(sql);
+   if(!record)return {snapshot:empty(),updatedAt:null};
+   const [row]=await sql.all('SELECT updated_at FROM app_settings WHERE key=?',[namespace+'version:'+record.revision]);
+   return {snapshot:publicSnapshot(record),updatedAt:typeof row?.updated_at==='string'?row.updated_at:null};
+  },
+  async observe(sessionId:string,runId:string,isCurrent:()=>boolean):Promise<{snapshot:TeacherPreferenceSnapshot;action:Outcome;policy:TeacherMemoryPolicy|null;trial?:TeacherPreferenceValues}>{
    if(!/^aisession_[a-f0-9-]{36}$/i.test(sessionId)||!/^run_[a-f0-9-]{36}$/i.test(runId)||!sql.transaction)throw Error('invalid_input');
    return sql.transaction(async work=>{
     if(!isCurrent())throw Error('cancelled');
@@ -51,9 +59,11 @@ export function createTeacherPreferenceState(sql:Sql){
     if(sources.length!==1)throw Error('permission_denied');
     const source=sources[0],text=String(source.content),hash=digest(text),eventKey=namespace+'event:'+runId;
     const prior=await setting(work,eventKey),c=await current(work),baseline=c.record||empty();
-    if(prior){const receipt=JSON.parse(prior);if(receipt.schemaVersion!==TEACHER_PREFERENCE_SCHEMA||receipt.messageId!==source.id||receipt.sha256!==hash||!integer(receipt.appliedRevision)||!['none','learned','rolled_back','rejected','no_previous','observed','trial'].includes(receipt.action)||receipt.trial!==undefined&&!validTeacherPreferenceValues(receipt.trial))throw Error('configuration');const v=await version(work,receipt.appliedRevision);return{snapshot:v?publicSnapshot(v):empty(),action:receipt.action as Outcome,...(receipt.trial?{trial:receipt.trial}:{})};}
+    const policy=await readTeacherMemoryPolicy(work).catch(()=>null);
+    const canLearn=!!policy&&!Object.keys(policy.use).length;
+    if(prior){const receipt=JSON.parse(prior);if(receipt.schemaVersion!==TEACHER_PREFERENCE_SCHEMA||receipt.messageId!==source.id||receipt.sha256!==hash||!integer(receipt.appliedRevision)||!['none','learned','rolled_back','rejected','no_previous','observed','trial'].includes(receipt.action)||receipt.trial!==undefined&&!validTeacherPreferenceValues(receipt.trial))throw Error('configuration');const v=await version(work,receipt.appliedRevision);return{snapshot:v?publicSnapshot(v):empty(),action:receipt.action as Outcome,policy,...(canLearn&&receipt.trial?{trial:receipt.trial}:{})};}
     let signal=teacherPreferenceSignal(text);let action:Outcome='none',next:Version|undefined;
-    const learning=signal.kind==='none'?await observeTeacherLearning(work,{id:String(source.id),sessionId,runId,text},baseline):undefined;
+    const learning=signal.kind==='none'&&canLearn?await observeTeacherLearning(work,{id:String(source.id),sessionId,runId,text},baseline):undefined;
     if(learning?.rollback)signal={kind:'rollback'};
     else if(learning?.patch)signal={kind:'candidate',patch:learning.patch};
     else if(learning?.trial)action='trial';
@@ -89,7 +99,7 @@ export function createTeacherPreferenceState(sql:Sql){
     // Local receipt proves which version the actual run used, without copying messages.
     if(snapshot.revision||signal.kind!=='none'||learning?.candidateId)await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[eventKey,JSON.stringify({schemaVersion:TEACHER_PREFERENCE_SCHEMA,sessionId,runId,messageId:String(source.id),sha256:hash,action,appliedRevision:snapshot.revision,...(learning?.trial?{trial:learning.trial}:{}),...(learning?.candidateId?{candidateId:learning.candidateId}:{})}),timestamp]);
     if(!isCurrent())throw Error('cancelled');
-    return{snapshot,action,...(learning?.trial?{trial:learning.trial}:{})};
+    return{snapshot,action,policy,...(learning?.trial?{trial:learning.trial}:{})};
    });
   },
  };

@@ -35,5 +35,36 @@
 .pi-settings-workspace .pi-memory-scope { width:100%; }
 .pi-settings-workspace .pi-memory-scope [data-slot=chat-tool-content] { overflow-wrap:anywhere; }
 .pi-settings-workspace .pi-settings-search [data-slot=search-field-clear-button] { min-height:0; width:auto; }
+
+.edu-domain [data-settings-page="teacher-memory"] {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 20px;
+  --space-40: 0px;
+  --fs-title: 16px;
+  --fs-caption: 13px;
+  --fs-hint: 12px;
+  --radius-card: 12px;
+}
+
+.pi-teacher-memory {
+  margin-top: var(--space-12);
+}
+
+.pi-teacher-memory [data-settings-surface="card"] {
+  padding-block: var(--space-8);
+}
+
+.pi-teacher-memory-profile [data-settings-surface="card"] {
+  gap: var(--space-12);
+  padding: var(--space-16);
+}
+
+.pi-teacher-memory [role="alert"] {
+  color: var(--danger, #ad342d);
+}
+
 @media(max-width:900px) { .pi-settings-nav { width:218px; padding:20px 12px; } .pi-settings-main { padding:24px; } .pi-settings-workspace .pi-skills-layout { grid-template-columns:minmax(0,1fr); } .pi-settings-workspace .pi-skills-details { border-left:0; border-top:1px solid var(--border); padding:16px 0 0; } }
 @media(prefers-reduced-motion:reduce) { .pi-settings-workspace { --duration-fast:0ms; } }

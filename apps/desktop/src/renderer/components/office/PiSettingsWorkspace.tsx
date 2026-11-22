@@ -19,6 +19,7 @@ import { PiDecisionHistory } from './PiDecisionHistory';
 import {PiCandidateHistory} from './PiCandidateHistory';
 import {PiDiagnostics} from './PiDiagnostics';
 import { PiMemoryScope } from './PiMemoryScope';
+import { PiTeacherMemorySettings } from './PiTeacherMemorySettings';
 import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
@@ -39,6 +40,7 @@ const tabs = [
   { id: 'capabilities', label: '能力中心', icon: Plug },
   { id: 'tools', label: '外部工具', icon: Plug },
   { id: 'permissions', label: '资料与权限', icon: FolderLock },
+  { id: 'teacher-memory', label: '教师记忆', icon: BookOpen },
   { id: 'interface', label: '界面偏好', icon: Monitor },
   { id: 'archives', label: '归档', icon: Archive },
   { id: 'backup', label: '备份与归档', icon: HardDrive },
@@ -55,6 +57,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-mcp-name', tabId: 'tools', title: '外部工具连接', path: ['外部工具（高级）', 'MCP'], aliases: ['mcp', 'stdio', '外部服务', '工具授权'] },
   { id: 'pi-settings-workspace-choose', tabId: 'permissions', title: '本会话工作目录', path: ['工作目录与权限', '工作目录'], aliases: ['workspace', 'folder', '文件', '写入', '授权', '确认'] },
   { id: 'pi-memory-scope', tabId: 'permissions', title: '本会话记忆', path: ['工作目录与权限', '记忆'], aliases: ['memory', '脱敏', '摘要', '撤权', '隐私'] },
+  { id: 'pi-teacher-memory', tabId: 'teacher-memory', title: '教学画像和长期偏好', path: ['教师记忆', '教师画像和长期偏好'], aliases: ['教学画像', '学科', '年级', '教材', '停用'] },
   { id: 'pi-preference-sidebar', tabId: 'interface', title: '展开左侧导航', path: ['界面偏好', '展开左侧导航'], aliases: ['sidebar', '侧边栏', '会话侧栏'] },
   { id: 'pi-preference-aside', tabId: 'interface', title: '任务详情', path: ['界面偏好', '任务详情'], aliases: ['aside', '任务面板'] },
   { id: 'pi-preference-files', tabId: 'interface', title: '本地文件面板', path: ['界面偏好', '本地文件面板'], aliases: ['files', 'file panel', '预览'] },
@@ -182,6 +185,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
               <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
               {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
               </>}
+          </SettingsStack></SettingsPage>}
+          {tab === 'teacher-memory' && <SettingsPage tab={tab}><SettingsStack gap="lg">
+            <h2 className={layoutStyles.subheading}>{title}</h2>
+            <PiTeacherMemorySettings running={locked || actionBusy} onBusyChange={setChildBusy}/>
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
             {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>

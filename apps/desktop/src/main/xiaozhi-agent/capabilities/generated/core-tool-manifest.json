@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "cdb8bfd9e6678058b16abc2a1ee532ec0fdb977fe6ad4dc0c5be192c887b42e6",
+  "sourceHash": "45ab0578fec093221299085441c6e5209c0ed7f0e2f9662a8151dba97b0e2b59",
   "sources": [
     {
       "file": "package-lock.json",
@@ -383,6 +383,10 @@
       "sha256": "ea3a612029c79b742e432a38b886af7fb0bb386c7dc9c17abd153f738f5bda63"
     },
     {
+      "file": "src/main/education/teacher-memory-policy.ts",
+      "sha256": "da5fbcd9eebce95b37fdaa9d065c1e5949cd80b1d05e6744ef72e761824ba223"
+    },
+    {
       "file": "src/main/education/teacher-preference-candidates.ts",
       "sha256": "e81d7342d0f5dc18d9280a41602e0b8e025bdbce596f494b07b6b7a13da9f1c7"
     },
@@ -396,7 +400,7 @@
     },
     {
       "file": "src/main/education/teacher-preference-request.ts",
-      "sha256": "9782b5369b0df6644ae756d047a0a526fa978d7bc3f51be8ddf12c79a20fbe59"
+      "sha256": "bb3e4202df5f64ea105fca205f667c7a1a3e24d8e2f1c5d313776a1c6cad67d8"
     },
     {
       "file": "src/main/education/teacher-preference-scope.ts",
@@ -408,7 +412,7 @@
     },
     {
       "file": "src/main/education/teacher-preference-state.ts",
-      "sha256": "7878860c2ca24c11931e54c3d31cdafc7c705605ad35c72d83162eec5b9ed26e"
+      "sha256": "11b345af60be851dd3b9ad0b6ebffec486dfcc661ac8ab8cbb258c257d70e971"
     },
     {
       "file": "src/main/education/teaching-lesson-export-tools.ts",
@@ -716,7 +720,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "3eae367e26eaba2b1f7af169b052f7c62f84bed5c220579b609d2c81104d5bfd"
+      "sha256": "c9637cdafe738b457618399b8454a746fff7ea5a9ebd1de154953269e6c343ed"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1448,7 +1452,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "b857b559f45a7bd97c4bce31bed4ddc51e0c05b389808ef70958cb90f34000d6"
+      "sha256": "1a3c0aeba85d93ed10fc36c1fc3d8808b7961884381bcaa7e0b42db8e618742c"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2433,6 +2437,10 @@
     {
       "file": "src/shared/student-training.ts",
       "sha256": "01f5929bdb734204d4c628c7c924b1ddc7d035cbd65a48312bb8a8685244fa8a"
+    },
+    {
+      "file": "src/shared/teacher-memory-settings.ts",
+      "sha256": "7f8557787cf63882a4a3ecc1f7c2259894be321a81adec38d6a40a0c62d1eabb"
     },
     {
       "file": "src/shared/teacher-preferences.ts",

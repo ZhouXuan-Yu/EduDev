@@ -354,3 +354,31 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 | `node scripts/electron-smoke.mjs` | 同构建 207/207，`electron-smoke.log` 及 `electron-e2e/`。 |
 
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase3-memory-relevance`。两份失败构建日志分别保留 Pi 请求类型推断和偏好只读属性错误，修复后重新构建。依赖审计保留原 20 项，其中 2 项 high。手测在 `manual-phase3-memory-relevance/启动-D3-教学偏好按需应用.cmd`，另有步骤及窗口证据。正式供应商应答质量留在集中验收。
+
+## Phase 3 教师记忆与偏好范围
+
+教师从「设置 → 教师记忆」保存学科、年级和选填教材。页面显示本机已确认的偏好、当前版本和更新时间。教师可以独立调整每项偏好的使用范围。限定项要求当轮唯一学科和年级均匹配。缺项、不匹配或本轮另有明确格式时省略对应默认值。教材文本保存在本机。未提交的更改可放弃，过期保存由主进程拒绝。
+
+配置保存在现有 `app_settings` 的个人范围键，教师确认的表达值继续使用既有不可变版本。带自定义范围时自动学习暂停，教师仍可明确保存、纠正或撤销。旧库没有个人范围键时继续原按任务规则，无表迁移。降级后新增范围暂不生效，原偏好和会话记录可读。
+
+| Phase 3 退出项 | 验证 |
+| --- | --- |
+| 教师画像、来源和确认 | 从真实设置页选择、保存、放弃或清除。原偏好来自已记录的教师对话确认，设置版本、偏好版本和请求独立核对。已实现。 |
+| 长期与临时、主动确认和纠正 | 同会话与跨会话使用，临时一句话请求优先。候选、留出、确认、撤销及幂等通过，重启读回存档。已实现。 |
+| 适用范围、冲突与停用 | 八年级物理应用限定篇幅，九年级或跨年级提问省略。同一项恢复启用后下次请求可用，其他项保持独立。不相关的问候不含偏好。已实现。 |
+| 个人隔离和最小注入 | 两份本地个人数据根读回隔离，教材文本未进入模型请求。旧原生日志保留，适用偏好仅补到当轮模型请求。已实现。 |
+
+个人版 Phase 3 工程退出通过。真实教师使用及真实供应商回复效果留在集中验收，完整团队空间依 D24 后置。Phase 4 从自动组卷的自然语言、蓝图、来源和质量读回开始。
+
+| 测试或运行 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-teacher-memory-settings-verified` | 通过，`build-verified.log`。主进程 SHA-256 `c649280df4edc58470fc9faf0b90276a580e07c64b837d78f06f8eb40ed1fa49`，preload SHA-256 `899483414ab804a8a8cb4d8a32c7885a14cc9c40f0c388206e4470839631095a`。 |
+| `node scripts/education/teacher-preference-scope-electron.mjs` | 最终构建 7/7，实际 Electron、Pi 请求拦截与 SQLite，1366×768 和 1920×1080 已截图。报告 `d3-memory-scope-DSeSza/report.json`。0 付费调用，0 渲染异常。 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/teacher-preference-scope-boundaries.mjs` | 9/9，`scope-boundaries.log`。 |
+| `node scripts/education/teacher-preference-example.mjs --implicit` | 18/18，`preference-domain.log` 与 `preference-contract-JqBgNQ/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 首个设置页构建 `d3-teacher-memory-settings-final` 207/207，`electron-e2e/`。最终构建的范围校验和设置页间距改动由上述专项复测。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase3-teacher-memory-settings`。早期三份报告保留模型轮次断言、下拉动画重叠及返回对话同步等待的测试故障，最终按实际请求与可发送状态复跑。依赖未变，审计记录既有 20 项提示，其中 2 项 high。
+
+已启动最终构建的独立验收窗口。人工启动与步骤在 `manual-phase3-teacher-memory-settings/启动-D3-教师记忆.cmd` 和 `验收步骤.md`，`window-verification.json` 记录实际运行路径、窗口和哈希。

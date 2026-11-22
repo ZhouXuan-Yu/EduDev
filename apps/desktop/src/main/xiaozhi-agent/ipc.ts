@@ -12,6 +12,7 @@ import {registerTaskIpc} from './tasks/api';
 import { registerMcpIpc } from './mcp-api';
 import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
+import {registerTeacherMemorySettingsIpc} from '../education/teacher-memory-settings-ipc';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {registerPaperBasketIpc} from '../education/paper-basket-api';
@@ -123,6 +124,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerTaskIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerDecisionIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTeacherCandidateIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerTeacherMemorySettingsIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

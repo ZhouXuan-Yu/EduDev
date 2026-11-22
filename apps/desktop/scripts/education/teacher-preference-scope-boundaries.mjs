@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 const {selectTeacherPreferenceValues}=await import('../../src/main/education/teacher-preference-scope.ts');
 const {teacherPreferenceForRequest}=await import('../../src/main/education/teacher-preference-request.ts');
+const {parseTeacherMemorySettings,teacherMemoryValues}=await import('../../src/main/education/teacher-memory-policy.ts');
 const {teacherPreferenceContext,teacherPreferenceTrialContext}=await import('../../src/main/education/teacher-preference-policy.ts');
 const {projectTeacherPreferenceRequest}=await import('../../src/main/xiaozhi-agent/preference-request-context.ts');
 const values={length:'concise',structure:'step_by_step',answerOrder:'hint_first',presentation:'table',exportFormat:'docx'};
@@ -66,5 +67,31 @@ check('Current advice binds to the exact current user text and preserves image b
  assert.deepEqual(next.messages[2],original.messages[2]);
  assert.equal(original.messages[1].content.length,2);
  assert.deepEqual(projectTeacherPreferenceRequest(original,'无匹配','仅本轮表达指导'),original);
+});
+check('Teacher scopes require a single matching subject and grade and explicit current instructions still prevail',()=>{
+ const profile={subject:'物理',grade:'八年级',textbook:'验收教材'};
+ const scoped={revision:1,profile,use:{length:'profile',structure:'off'},updatedAt:null};
+ const applied=prompt=>teacherPreferenceForRequest({snapshot,action:'none',policy:scoped},prompt).text;
+ assert(applied('请解释８年级物理的浮力。').includes('讲解简洁'));
+ assert(applied('请解释初二物理的浮力。').includes('讲解简洁'));
+ for (const prompt of ['请解释八年级的浮力。','请解释物理里的浮力。','请解释面向九年级物理的浮力。','请解释八年级化学与物理的区别。','不用八年级物理知识，解释浮力。','请详细解释初二物理的浮力。']){
+  assert(!applied(prompt).includes('讲解简洁'),prompt);
+ }
+ assert.deepEqual(teacherMemoryValues({length:'concise',structure:'step_by_step'},scoped,'解释浮力','八年级 物理'),{length:'concise'});
+ assert.deepEqual(teacherMemoryValues({length:'concise'},scoped,'用九年级物理解释浮力','八年级 物理'),{});
+ assert.deepEqual(teacherMemoryValues(values,null,'解释初二物理的浮力'),{});
+});
+check('Host scope validation rejects unrelated metadata, unknown controls and incomplete scopes',()=>{
+ const profile={subject:'物理',grade:'八年级',textbook:'  验收教材  '};
+ const draft={revision:1,preferenceRevision:2,profile,use:{length:'profile',structure:'off',presentation:'relevant'}};
+ assert.deepEqual(parseTeacherMemorySettings(draft),{...draft,profile:{...profile,textbook:'验收教材'},use:{length:'profile',structure:'off'}});
+ for(const changed of [
+  {...draft,use:{statement:'off'}},
+  {...draft,use:{length:'global'}},
+  {...draft,profile:{...profile,grade:''}},
+  {...draft,profile:{...profile,textbook:'验收教材\n一'}},
+  {...draft,use:JSON.parse('{"__proto__":"off"}')},
+  {...draft,allowPermission:true},
+ ])assert.throws(()=>parseTeacherMemorySettings(changed),/invalid_input/);
 });
 console.log(JSON.stringify({passed}));
