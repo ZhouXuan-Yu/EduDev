@@ -14,6 +14,7 @@ import {goalFromSource,goalCriterionId} from './goal-binding';
 import {isTaskContinuation,isBoundTaskAmendment} from './continuation';
 import {assertPaperTaskContinuation} from './paper-export-continuation';
 import type {TaskRecoveryInspection} from '../../../shared/xiaozhi-task-recovery';
+import type {TaskControlAction,TaskControlInput} from '../../../shared/xiaozhi-task-control';
 
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 const errorCode=(e:unknown):TaskApiError=>{
@@ -66,6 +67,7 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   if(!resume&&!continuation&&!isTaskContinuation(prompt)&&!(allowNaturalAmendment&&isBoundTaskAmendment(prompt)))return;
   await allowed(sessionId);
   const current=await committed(sessionId);
+  if(current?.state==='ended'&&!current.goal)throw Error('task_ended');
   const targetId=resume?.taskId??continuation?.taskId;
   if(targetId&&current?.id!==targetId)throw Error('task_resume_invalid');
   if(current&&(resume||continuation||isTaskContinuation(prompt)||!current.goal&&['paused','interrupted','review_required'].includes(current.state)))
@@ -96,8 +98,8 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
    const cleaned=(await options.store.sanitizeProblemText(message.content)).sanitizedText;
    return publisher.checkpointTask(work=>state(inline(work),async text=>{if(text!==message.content)throw Error('task_source_changed');return cleaned;}).create(publisher.owner,message.id,commandId));
   },
-  async finish(task:TaskView,publisher:ReturnType<typeof createEventPublisher>,failed:boolean){return publisher.checkpointTask(async work=>{
-   const tasks=state(inline(work)),actual=await tasks.get(task.id);if(!actual)throw Error('task_missing');return tasks.settle(publisher.owner,actual.id,actual.revision,failed);
+  async finish(task:TaskView,publisher:ReturnType<typeof createEventPublisher>,failed:boolean,control?:TaskControlAction){return publisher.checkpointTask(async work=>{
+   const tasks=state(inline(work)),actual=await tasks.get(task.id);if(!actual)throw Error('task_missing');return tasks.settle(publisher.owner,actual.id,actual.revision,failed,control);
   });},
   async bindSessionEventOwner(sessionId:string,publisher:ReturnType<typeof createEventPublisher>){const current=await state().latest(sessionId);if(!current)return;return publisher.checkpointTask(work=>state(inline(work)).bindEventOwner(publisher.owner,current.id,current.revision));},
   prepareResume,
@@ -106,6 +108,15 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   admittedRuns:(sessionId:string,taskId:string)=>state().admittedRuns(sessionId,taskId),
   recover,
   committed,
+  async cancelInactive(input:Extract<TaskControlInput,{revision:number}>):Promise<TaskApiResult<TaskView>>{
+   const id=input.sessionId;if(locked.has(id))return{ok:false,error:'busy'};locked.add(id);
+   try{
+    await allowed(id);if(options.busy(id))throw Error('busy');
+    return{ok:true,value:await checkpoint(id,work=>{
+     if(options.busy(id)||options.closing())throw Error('busy');return state(work).cancelInactive(input);
+    })};
+   }catch(e){return{ok:false,error:errorCode(e)};}finally{locked.delete(id);}
+  },
   async acceptGoal(goal:PrivateGoal,checked:number[]){
    if(checked.length!==goal.criteria.length||goal.criteria.some((_v,i)=>!checked.includes(i)))throw Error('invalid_input');
    const prior=await state().forGoal(goal.sessionId,goal.id);if(!prior)throw Error('command_conflict');

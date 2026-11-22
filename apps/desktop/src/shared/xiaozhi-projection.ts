@@ -28,6 +28,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   goal_stalled:'未取得新的可核验证据，已停止自动继续。请核对目标进度后恢复；已完成操作会保留。',
   goal_review_extended:'提交验收后仍继续调用工具，后续自动调用已停止。请核对已有成果与操作记录后再决定是否恢复。',
   command_conflict: '这条发送记录与消息内容不一致，请重新发送。', permission_denied: '当前操作未获授权或确认已失效，请刷新后重试。',
+  task_ended: '这项任务已结束。你可以查看已保存的成果，或明确发起一个新任务。',
   workspace_locked: '本会话的资料范围已经固定，请新建会话后选择工作目录。',
   budget_exhausted: '本轮已达到运行预算，后续调用已停止。可调整预算后发起新一轮；已完成的操作仍保留。',
   nothing_to_compact: '当前没有需要压缩的较早上下文。可以继续对话；本次没有请求模型。',

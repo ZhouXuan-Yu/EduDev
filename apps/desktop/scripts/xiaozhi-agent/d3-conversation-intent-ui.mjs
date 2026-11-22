@@ -14,6 +14,7 @@ const output=fs.mkdtempSync(path.join(root,'phase1-intent-'));
 const desktop=process.cwd(),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const requests=[],checks=[],rendererErrors=[];
+let holdNextReply=false,askNextReply=false;
 const fixture=http.createServer(async(request,response)=>{
   if(request.url==='/v1/models'){
     response.setHeader('content-type','application/json');
@@ -25,12 +26,22 @@ const fixture=http.createServer(async(request,response)=>{
   }
   let raw='';for await(const part of request)raw+=part;
   const body=JSON.parse(raw);
-  requests.push({tools:body.tools?.map(tool=>tool.function?.name).filter(Boolean)??[],messages:body.messages.length});
+  requests.push({tools:body.tools?.map(tool=>tool.function?.name).filter(Boolean)??[],messages:body.messages.length,
+    teacherAnswer:body.messages.some(message=>message.role==='tool'&&typeof message.content==='string'&&message.content.includes('五年级'))});
   response.setHeader('content-type','text/event-stream');
   const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-d3',object:'chat.completion.chunk',created:1,
     model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})+'\n\n';
+  if(askNextReply){
+    askNextReply=false;
+    const call={index:0,id:'call_'+requests.length,type:'function',function:{name:'ask_teacher',arguments:JSON.stringify({question:'这份课堂导入给哪个年级？',options:['三年级','五年级']})}};
+    return response.end(chunk({role:'assistant'},null)+chunk({tool_calls:[call]},null)+chunk({},'tool_calls')+'data: [DONE]\n\n');
+  }
   response.write(chunk({role:'assistant',content:'已完成这轮合成验收回复。'},null));
-  response.end(chunk({},'stop')+'data: [DONE]\n\n');
+  const finish=()=>response.end(chunk({},'stop')+'data: [DONE]\n\n');
+  if(!holdNextReply)return finish();
+  holdNextReply=false;
+  const timer=setTimeout(finish,30_000);
+  response.once('close',()=>clearTimeout(timer));
 });
 fixture.listen(0,'127.0.0.1');await once(fixture,'listening');
 const boot=path.join(output,'bootstrap.cjs');
@@ -57,10 +68,11 @@ async function launch(){
   await page.waitForFunction(()=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')?.startsWith('aisession_'));
   await assertIsolatedPiMain(app,main,profile);
 }
-async function send(text){
-  const previous=(await snapshot()).projection.turns.length;
+async function submit(text){
   const input=page.getByTestId('office-prompt-input');
   await input.fill(text);await input.press('Enter');
+}
+async function terminal(previous){
   const deadline=Date.now()+45_000;
   while(Date.now()<deadline){
     const state=await snapshot(),turn=state.projection.turns.at(-1);
@@ -68,6 +80,17 @@ async function send(text){
     await new Promise(resolve=>setTimeout(resolve,100));
   }
   throw Error('The submitted turn did not reach persisted terminal status');
+}
+async function send(text){
+  const previous=(await snapshot()).projection.turns.length;
+  await submit(text);return terminal(previous);
+}
+async function restart(){
+  await app.close();app=undefined;await launch();
+  if(await activeSession()===sessionId)return;
+  if(!await page.getByTestId('edu-history-panel').isVisible())await page.getByTestId('pi-sidebar-toggle').click();
+  await page.getByTestId('ai-conversation-session-'+sessionId).click();
+  await page.waitForFunction(id=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===id,sessionId);
 }
 function taskRecords(){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -106,12 +129,7 @@ try{
   assert.equal(kept[0].state,created[0].state);
   check('插入独立问答保留原任务 ID、要求版本和业务状态');
 
-  await app.close();app=undefined;await launch();
-  if(await activeSession()!==sessionId){
-    if(!await page.getByTestId('edu-history-panel').isVisible())await page.getByTestId('pi-sidebar-toggle').click();
-    await page.getByTestId('ai-conversation-session-'+sessionId).click();
-    await page.waitForFunction(id=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')===id,sessionId);
-  }
+  await restart();
   assert((await snapshot()).projection.turns.some(turn=>turn.id===first.turn.id&&turn.status==='completed'));
   const resumed=await send('继续');
   assert.equal(resumed.turn.status,'completed',resumed.turn.error);
@@ -137,6 +155,106 @@ try{
     assert.equal(taskRecords().length,2);
     check('明确新建目标生成独立任务，不覆盖旧任务');
   }
+  if(process.argv.includes('--control')){
+    const before=(await snapshot()).projection.turns.length;
+    holdNextReply=true;
+    await submit('另开一个任务，帮我制作六年级小数复习讲义，包含示范例题。');
+    const pause=page.getByTestId('pi-task-pause');
+    await pause.waitFor({state:'visible',timeout:30_000});
+    const card=page.getByTestId('pi-task-review').filter({has:pause});
+    const taskId=await card.getAttribute('data-task-id');
+    const target=taskRecords().find(item=>item.id===taskId);
+    assert.equal(target?.state,'active');assert(target.binding);
+    const oldOwner={schema:target.schema,sessionId,taskId,requirementsVersion:target.requirementsVersion,owner:{...target.binding,generation:target.binding.generation+1},action:'pause'};
+    const rejected=await page.evaluate(input=>window.omniEdu.controlXiaozhiTask(input),oldOwner);
+    assert.deepEqual(rejected,{ok:false,error:'changed'});
+    const invalid=await page.evaluate(input=>window.omniEdu.controlXiaozhiTask(input),{...oldOwner,owner:target.binding,action:['cancel']});
+    assert.deepEqual(invalid,{ok:false,error:'invalid_input'});
+    assert.equal(taskRecords().find(item=>item.id===taskId).state,'active');
+    const window=await app.browserWindow(page);
+    for(const [width,height] of [[1366,768],[1920,1080]]){
+      await window.evaluate((win,size)=>win.setContentSize(...size),[width,height]);
+      await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+      for(const control of [pause,card.getByTestId('pi-task-cancel')]){
+        await control.scrollIntoViewIfNeeded();
+        const box=await control.boundingBox();
+        assert(box&&box.x>=0&&box.y>=0&&box.x+box.width<=width+1&&box.y+box.height<=height+1);
+      }
+    }
+    await pause.click();
+    const paused=await terminal(before);
+    assert.equal(paused.turn.status,'interrupted');
+    assert.equal(taskRecords().find(item=>item.id===taskId).state,'paused');
+    await page.screenshot({path:path.join(output,'task-paused.png')});
+    check('暂停和取消在两个桌面尺寸可达，过期所有者及非法动作被拒绝，暂停写入原任务');
+
+    const requestCount=requests.length;
+    await restart();assert.equal(requests.length,requestCount);
+    const pausedCard=page.locator(`[data-testid="pi-task-review"][data-task-id="${taskId}"]`);
+    await pausedCard.getByTestId('pi-task-review-toggle').click();
+    const beforeResume=(await snapshot()).projection.turns.length;
+    await pausedCard.getByTestId('pi-task-resume').click({timeout:20_000});
+    const continued=await terminal(beforeResume);
+    assert.equal(continued.turn.task?.id,taskId);
+    assert.equal(continued.turn.task?.requirementsVersion,target.requirementsVersion);
+    check('冷启不重放模型，从任务卡恢复原 Task 和要求版本');
+
+    const beforeCancel=(await snapshot()).projection.turns.length;
+    holdNextReply=true;await submit('继续');
+    await page.getByTestId('pi-task-pause').waitFor({state:'visible',timeout:30_000});
+    await pausedCard.getByTestId('pi-task-cancel').click();
+    assert.equal(taskRecords().find(item=>item.id===taskId).state,'active');
+    await pausedCard.getByTestId('pi-task-confirm-cancel').click();
+    const cancelled=await terminal(beforeCancel);
+    assert.equal(cancelled.turn.status,'interrupted');
+    assert.equal(taskRecords().find(item=>item.id===taskId).state,'ended');
+    check('运行中取消须再次确认，原任务落盘结束');
+
+    const cancelledRequests=requests.length;
+    await restart();
+    assert.equal(taskRecords().find(item=>item.id===taskId).state,'ended');
+    await submit('继续');
+    await page.getByRole('alert').filter({hasText:'这项任务已结束'}).waitFor({state:'visible'});
+    assert.equal(requests.length,cancelledRequests);
+    check('取消状态冷启保留，继续不会新建替代任务或提交模型请求');
+
+    const idle=await send('新建一个教案任务，请写小学数学课堂提纲并等待我确认。');
+    const idleId=idle.turn.task?.id;
+    assert(idleId&&idleId!==taskId);
+    const idleCard=page.locator(`[data-testid="pi-task-review"][data-task-id="${idleId}"]`);
+    await idleCard.getByTestId('pi-task-review-toggle').click();
+    await idleCard.getByTestId('pi-task-cancel').click();
+    await idleCard.getByTestId('pi-task-confirm-cancel').click();
+    await idleCard.getByTestId('pi-task-control-notice').filter({hasText:'任务已取消'}).waitFor({state:'visible'});
+    assert.equal(taskRecords().find(item=>item.id===idleId).state,'ended');
+    assert.equal(requests.length,cancelledRequests+1);
+    await page.screenshot({path:path.join(output,'task-cancelled.png')});
+    check('静止待核对任务也能取消，未增加模型请求');
+  }
+  if(process.argv.includes('--teacher-wait')){
+    const before=(await snapshot()).projection.turns.length,count=requests.length;
+    askNextReply=true;
+    await submit('请新建一个分数课教案任务，我还没确定年级，请先问我再写导入。');
+    const question=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]');
+    await question.waitFor({state:'visible',timeout:30_000});
+    const waiting=await snapshot(),turn=waiting.projection.turns.at(-1);
+    assert.equal(turn.status,'waiting_input');assert(waiting.task?.id);
+    const controlId=await question.getAttribute('data-control-id');
+    assert.equal(requests.length,count+1);
+    const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+    try{assert.equal(db.prepare('SELECT state FROM xiaozhi_pi_controls WHERE id=?').get(controlId).state,'pending');}
+    finally{db.close();}
+    await question.getByTestId('pi-question-option-1').click();
+    await question.getByTestId('pi-question-submit').click();
+    const answered=await terminal(before);
+    assert.equal(answered.turn.status,'completed',answered.turn.error);
+    assert.equal(answered.turn.id,turn.id);
+    assert.equal(answered.turn.task?.id,waiting.task.id);
+    assert(requests.at(-1).teacherAnswer);
+    assert.equal(answered.state.controls.find(item=>item.id===controlId).state,'answered');
+    check('真实澄清卡等待教师输入，选择答案后同一 Run 和 Task 继续，请求携带经过宿主记录的回答');
+  }
+  assert.deepEqual(rendererErrors,[]);
 }catch(error){failure=error;process.exitCode=1;console.error(error.stack);}
 finally{
   await app?.close().catch(()=>undefined);

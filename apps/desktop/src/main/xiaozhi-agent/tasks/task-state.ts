@@ -2,6 +2,7 @@ import type {TaskContinuation} from '../../../shared/xiaozhi-start';
 import type {Sql} from '../session-state';
 import {isTaskFollowUp,isTaskAmendment,isBoundTaskAmendment} from './continuation';
 import {recordTaskAmendment} from './task-amendment';
+import {taskControlState,type TaskControlAction,type TaskControlInput} from '../../../shared/xiaozhi-task-control';
 import {TASK_SCHEMA,validTaskOwner,validTaskView,validTaskSteps,validTaskCriterion,taskObject,taskKeys,taskText,taskIdentity,taskDigest,taskNatural,taskStepState,type TaskView,type TaskOwner,type TaskCriterion,type TaskSource,type TaskPlanProposal} from '../../../shared/xiaozhi-task';
 import {validTaskVerification,type TaskVerification} from '../../../shared/xiaozhi-verification';
 import {taskHash as hash,taskToolKinds as toolKinds,applyTaskReadback,applyTaskRecheck} from './task-evidence';
@@ -292,13 +293,20 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    if(!options.recheck)throw Error('task_effect_recheck_required');const before=await load(sql,id,revision,owner),proofs=await options.recheck(clone(before.doc.view));
    return mutate(owner,id,revision,doc=>applyTaskRecheck(doc,proofs));
   },
-  async settle(owner:TaskOwner,id:string,revision:number,failed:boolean){return transaction(async work=>{
+  async settle(owner:TaskOwner,id:string,revision:number,failed:boolean,control?:TaskControlAction){return transaction(async work=>{
    const before=await load(work,id,revision,undefined,false),next=clone(before.doc),last=next.lineage.at(-1)!;
    const eventOwner=next.eventOwner||{...last,sessionId:next.view.sessionId};
    if(next.view.sessionId!==owner.sessionId||eventOwner.runId!==owner.runId||eventOwner.generation!==owner.generation||!['active','review_required'].includes(next.view.state))throw Error('task_owner_stale');
    const fence=(await work.all('SELECT run_id,generation FROM xiaozhi_event_owners WHERE session_id=?',[owner.sessionId]))[0];
    if(!fence||fence.run_id!==owner.runId||Number(fence.generation)!==owner.generation)throw Error('task_owner_stale');
-   next.view.state=failed?'interrupted':'review_required';next.view.binding=null;return save(work,before,next);
+   if(control&&(!failed||next.view.goal||!matches(owner,next.view.binding)||next.view.state!=='active'))throw Error('task_owner_stale');
+   next.view.state=control?taskControlState(control):failed?'interrupted':'review_required';next.view.binding=null;return save(work,before,next);
+  });},
+  async cancelInactive(input:Extract<TaskControlInput,{revision:number}>){return transaction(async work=>{
+   const before=await load(work,input.taskId,input.revision),view=before.doc.view;
+   if(view.sessionId!==input.sessionId||view.goal||await latestId(work,input.sessionId)!==view.id)throw Error('permission_denied');
+   if(view.requirementsVersion!==input.requirementsVersion||!['paused','interrupted','review_required'].includes(view.state))throw Error('task_revision_conflict');
+   const next=clone(before.doc);next.view.state='ended';return save(work,before,next);
   });},
   async bindEventOwner(owner:TaskOwner,id:string,revision:number){return transaction(async work=>{
    await current(work,owner);const before=await load(work,id,revision,undefined,false),next=clone(before.doc);

@@ -111,6 +111,8 @@ import {createPiWebTools} from './web-tools';
 import {resolveThinkingPolicy,isThinkingContinuation} from './answer-quality';
 import {teachingReference} from './teaching-presentation';
 import {isTaskAmendment} from './tasks/continuation';
+import {taskControlState,validTaskControl,type TaskControlAction} from '../../shared/xiaozhi-task-control';
+import type {TaskApiResult,TaskView} from '../../shared/xiaozhi-task';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
 import {createQuestionContextRuntime} from '../education/question-context-provider';
@@ -243,6 +245,8 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
   answerOnly?: boolean;
+  taskControl?: TaskControlAction;
+  finalizing?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
   rebuildFile?: string;
   dynamicCapabilities?: ReturnType<typeof createManagedMcpProviderRuntime>;
@@ -1360,6 +1364,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const code = error instanceof Error ? error.message : '';
       failure = code === 'authentication' || code === 'cancelled' || code === 'permission_denied' || code === 'memory_scope_changed' || code === 'skill_source_changed' || code === 'skill_scope_changed' ? code : 'configuration';
     } finally {
+      run.finalizing=true;
       run.computationScope?.release();
       await run.agent?.dispose().catch(() => { failure ||= 'configuration'; });
       await run.dynamicCapabilities?.dispose().catch(() => {failure ||= 'configuration';});
@@ -1451,7 +1456,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         await store.completeAiAgentRun(run.runId, failure === 'cancelled' ? 'blocked' : failure ? 'failed' : 'succeeded', failure ? XIAOZHI_ERRORS[failure] : '');
         await store.xiaozhiState.finishCommand(run.commandId);
         if (run.publisher && run.task) await terminalService.releaseRun({...run.publisher.owner, taskId: run.task.id});
-        if(run.operation==='prompt'&&run.task&&run.publisher&&!run.publisher.failed){const task=await tasks.finish(run.task,run.publisher,Boolean(failure));finalTurn.task=task;}
+        if(run.operation==='prompt'&&run.task&&run.publisher&&!run.publisher.failed){const task=await tasks.finish(run.task,run.publisher,Boolean(failure),failure==='cancelled'?run.taskControl:undefined);finalTurn.task=task;}
         if(run.goalId){const goal=await store.xiaozhiState.goals.finish(id,run.runId,text,Boolean(failure));if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
         publicEvent(id, run, {kind:'verification',verification:finalTurn.verification});
         run.publisher?.enqueue(terminal, finalTurn); await run.publisher?.flush();
@@ -1621,6 +1626,21 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     reviewTask:tasks.review,
     correctTask:tasks.correct,
+    async controlTask(raw:unknown):Promise<TaskApiResult<TaskView>>{
+      if(!validTaskControl(raw))return{ok:false,error:'invalid_input'};
+      if(!('owner' in raw))return tasks.cancelInactive(raw);
+      const run=active.get(raw.sessionId),task=run?.task,owner=run?.publisher?.owner;
+      if(!task||task.goal||task.id!==raw.taskId||task.requirementsVersion!==raw.requirementsVersion||owner?.runId!==raw.owner.runId||owner.generation!==raw.owner.generation)return{ok:false,error:'changed'};
+      if(!run?.done||run.stopped||run.finalizing||closing)return{ok:false,error:'busy'};
+      run.taskControl=raw.action;
+      try{
+        if(!(await host.stop(raw.sessionId)).ok)return{ok:false,error:'unavailable'};
+        await waitForLifecycle('task_control_checkpoint',()=>run.done!,{timeoutMs:options.shutdownTimeoutMs??5000});
+        const saved=await tasks.committed(raw.sessionId);
+        if(saved?.id===raw.taskId&&saved.state===taskControlState(raw.action))return{ok:true,value:saved};
+      }catch{/* The task card can re-read the committed state after an uncertain response. */}
+      return{ok:false,error:'unavailable'};
+    },
     async resumeTask(raw:unknown):Promise<XiaozhiStartResult>{
       if(!validTaskResume(raw))return{ok:false,error:'invalid_input'};
       return host.start({sessionId:raw.sessionId,commandId:raw.commandId,prompt:'继续先前任务中尚未完成的步骤；先核对已有来源与保存结果，不重复已有的写入。'},'prompt',undefined,raw);
@@ -1937,7 +1957,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       let recoveryInspection:TaskRecoveryInspection|undefined;
       if(operation==='prompt'&&(taskResume||input.continueTask||isTaskContinuation(input.prompt)||allowNaturalAmendment&&isBoundTaskAmendment(input.prompt))){
         const task=await phase(()=>createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}).latest(id));
-        if(task&&task.state!=='active'){
+        if(task&&task.state!=='active'&&task.state!=='ended'){
           await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
           await phase(()=>effectReconciler.recheck(id,task.id));
           recoveryInspection=await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:task.id}));
@@ -2054,7 +2074,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const code=error instanceof Error?error.message:'';
         return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
-      })().catch((error): XiaozhiStartResult => ({ ok: false, error: controller.signal.aborted?'cancelled':error instanceof Error&&error.message===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:'configuration' }));
+      })().catch((error): XiaozhiStartResult => {
+        const code=error instanceof Error?error.message:'';
+        return {ok:false,error:controller.signal.aborted?'cancelled':code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code==='task_ended'?'task_ended':'configuration'};
+      });
       starting.set(input.commandId, { sessionId:id, hash, result });
       try { return await result; } finally { starting.delete(input.commandId); }
       } finally {pending.delete(controller);if(!pending.size)admissions.delete(id);}

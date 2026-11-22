@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "6cceaf7b2094f83bb7a9bdd7116137543aa5210b746d5d168a2a6ab1b231a55d",
+  "sourceFingerprint": "d6f6191ca45895db92f071bc7b7b9c6d1e7c946d6804b6a8864bd2ee40938c96",
   "definitions": [
     {
       "name": "analyze_geometry_figure",

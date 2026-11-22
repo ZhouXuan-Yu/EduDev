@@ -265,6 +265,7 @@ const api = {
   reviewXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskReviewInput)=>ipcRenderer.invoke('xiaozhi:task-review',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
   correctXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskCorrectionInput)=>ipcRenderer.invoke('xiaozhi:task-correct',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
   resumeXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskResumeInput)=>ipcRenderer.invoke('xiaozhi:task-resume',input) as Promise<import('../shared/xiaozhi-agent').XiaozhiStartResult>,
+  controlXiaozhiTask:(input:import('../shared/xiaozhi-task-control').TaskControlInput)=>ipcRenderer.invoke('xiaozhi:task-control',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult<import('../shared/xiaozhi-task').TaskView>>,
   showXiaozhiBrowser: (id:string)=>ipcRenderer.invoke('xiaozhi:browser-show',id) as Promise<XiaozhiActionResult>,
   previewXiaozhiBrowserCapture:(input:import('../shared/xiaozhi-browser-capture').BrowserCaptureInput)=>ipcRenderer.invoke('xiaozhi:browser-capture-preview',input) as Promise<import('../shared/xiaozhi-browser-capture').BrowserCaptureResult>,
   startXiaozhi: (input: XiaozhiStartInput) => ipcRenderer.invoke('xiaozhi:start', input) as Promise<XiaozhiStartResult>,

@@ -6,11 +6,12 @@ import {useOfficeSynchronization} from './OfficeSynchronization';
 import './pi-task-review.css';
 import {PiTaskSteps} from './PiTaskSteps';
 import {PiTaskRecovery} from './PiTaskRecovery';
+import {PiTaskControls} from './PiTaskControls';
 import {XIAOZHI_ERRORS} from '../../../shared/xiaozhi-projection';
 
 type RequirementDraft={key:string;id?:string;text:string};
 const requirementDrafts=(criteria:TaskView['criteria']):RequirementDraft[]=>criteria.filter(c=>c.kind==='human').map(c=>({key:c.id,id:c.id,text:c.text}));
-const labels:Record<TaskView['state'],string>={active:'执行中',review_required:'待你核对',paused:'需要重新核对',interrupted:'本轮未完成',completed:'你已确认',ended:'已结束'};
+const labels:Record<TaskView['state'],string>={active:'执行中',review_required:'待你核对',paused:'已暂停，待核对',interrupted:'本轮未完成',completed:'你已确认',ended:'已结束'};
 /** Human acceptance of this request. Legacy plan progress remains a proposal. */
 export function PiTaskReview({sessionId,task,running,onRefresh}:{sessionId:string;task:TaskView;running:boolean;onRefresh:()=>Promise<void>}){
  const sync=useOfficeSynchronization(),alive=useRef(true),lock=useRef(false),attempt=useRef<{fingerprint:string;requestId:string}|undefined>(undefined);
@@ -62,6 +63,7 @@ export function PiTaskReview({sessionId,task,running,onRefresh}:{sessionId:strin
  if(!valid)return <p role="alert">要求记录无法核对，请重新读取。</p>;
  return <section className="pi-task-review" data-testid="pi-task-review" data-task-id={task.id} data-state={task.state} data-revision={task.revision} data-scope={scopeKind}>
   <Button variant="ghost" size="sm" className="pi-task-review-toggle" data-testid="pi-task-review-toggle" aria-expanded={open} onPress={()=>{setOpen(v=>!v);if(!open)void load();}}><ClipboardCheck size={16}/><span>{task.goal?'核对目标成果':task.lastRunId?'核对任务成果':'核对本轮回复'}</span><span className="pi-task-review-status">{labels[task.state]}</span><ChevronDown size={14}/></Button>
+  <PiTaskControls key={identity} task={task} running={running} showInactive={open} onRefresh={onRefresh}/>
   {open&&<div className="pi-task-review-body">
    <p className="pi-task-review-status" data-testid="pi-task-review-scope" data-scope={scopeKind}>{crossRun?'确认范围：同一任务的多轮累计成果。每轮自己的核验记录仍保留在对应回复中；本次确认不会重新执行旧工具。':'确认范围：当前任务的本次执行。后续继续任务时会重新读取来源和现有成果。'}</p>
    <p>{task.goal?'逐项核对你设置的目标要求。系统核对来源与保存结果，教学内容由你确认。':task.lastRunId?'按原任务要求核对成果。已保存步骤会重新核对，继续操作不会复用旧的保存批准。':'按本轮原始请求核对成果。这里记录你的确认；计划中的步骤进度仍须分别核验。'}</p>
