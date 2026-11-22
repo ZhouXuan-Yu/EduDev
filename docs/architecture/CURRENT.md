@@ -18,6 +18,8 @@
 
 现有课堂设计账本的根身份与原始 Run 用于会话投影。精确打开由主进程核对会话和当前版本，编辑和历史恢复使用现有版本操作。 [课堂设计合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-教案与课堂大纲编辑回接)
 
+课堂恢复用当前编辑 CAS 加旧版本 ID 与摘要。主进程从原账本解析该版资料上下文并核对当前资料状态。新稿记录恢复来源，旧表和历史兼容。 [历史恢复合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-课堂设计历史正文与恢复)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

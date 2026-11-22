@@ -6,8 +6,8 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 已实现动态首页、任务优先工作台、任务与成果双向定位、右侧上下文、试卷编辑回接、历史恢复、同会话精确试卷导出，以及教案和课堂大纲编辑回接。继续其余成果路径和阶段退出验收。 |
-| 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
+| 2 | DONE | 工程验收覆盖首页、工作台、任务与成果、右侧上下文、专业编辑、版本、只读历史和恢复。各教学业务另按 Phase 4 验收。 |
+| 3 | IN_PROGRESS | 已跑教师记忆基线。明确偏好持久化和独立数据根隔离可用，无关问候仍带入偏好。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
 
@@ -300,3 +300,40 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-lesson-editor`。手测入口 `manual-phase2-lesson-editor/启动-D3-教案编辑回接.cmd`，同目录有现场窗口记录和手测步骤。样例使用合成来源，可离线编辑。课堂设计的历史列表和恢复已验证，历史正文只读预览仍待补齐。独立讲义编辑、真实教案教学质量和同链自然语言精细修订按各业务合同继续覆盖。依赖审计保留原 20 项，其中 2 项 high。
 
 `before-w4TpeH/conversation-1366x768.png` 是相同数据在 `af2426a` 构建的基线，对话和右栏都无教案卡。新构建的 `lesson-task-1366x768.png` 与 `lesson-task-1920x1080.png` 记录卡片及可操作的编辑入口。首次采集在浏览器窗口就绪前调整尺寸，保留 `before.log`，修正等待顺序后通过。
+
+## Phase 2 课堂设计历史正文与恢复
+
+现有历史列表可打开教案或课堂大纲正文。按选定版本展示教学目标、活动、时长及已保存的来源。教案额外展示教师提示语、评价、达成标准与逐目标原文对照。查看不写入数据，关闭返回原操作位置，未保存编辑仍在。
+
+恢复沿原课堂设计编辑事务，由宿主校验同一版本链、当前修改基线和旧版资料。有效资料按该版恢复，撤回或变化的资料保留历史可读，保存恢复会被拒绝。恢复新稿保存旧版 ID 与摘要，并保留原有的教师确认流程。无 SQLite 表迁移。
+
+| 验收 | 最终构建结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-lesson-history-final` | 通过，`build.log`。主进程 SHA-256 `bf2e809140a38437413bd6885ec4d40e2a190ccfd8f7bda2e6a5a4309995eab4`。 |
+| `node scripts/education/teaching-lesson-electron.mjs --task-editor` | 9/9，退出码 0。通过对话进入实际教案与课堂大纲，打开历史正文及历史依据，核对旧版冲突、关闭焦点、未保存稿、两种尺寸、同会话两案和冷启恢复来源。SQLite 无意外写入，渲染错误和付费调用均为 0。 |
+| `teaching-lesson-realignment-boundaries.mjs <上一轮合成教案目录>` | 7/7，覆盖撤回的旧资料仍可读、禁止保存、有效历史依据精确恢复、跨链及过期写入被拒。 |
+| `classroom-plan-boundaries.mjs`、`teaching-lesson-boundaries.mjs` | 16/16、10/10。三项领域测试使用 `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs`。 |
+| `node scripts/education/classroom-outline-components.mjs` | 18/18，`outline-components.log`。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同构建 207/207，`electron-smoke.log`，附 `electron-e2e/` 截图。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase2-lesson-history`。专项报告、版面和数据在 `xiaozhi-teaching-lesson-ui-zoyiUk/`，源复核见 `restore-boundaries.log`。离线验收入口 `manual-phase2-lesson-history/启动-D3-教案历史预览.cmd`，同目录有手测步骤及窗口证据。依赖审计保留原 20 项，其中 2 项 high。
+
+## Phase 2 退出核对
+
+| 执行包验收项 | 已实现并核对的工程场景 |
+| --- | --- |
+| 动态首页 | 原 Composer 下按真实审批、待关注任务、近期成果显示。实测双尺寸、空态、跳转和草稿保护。见「动态首页」。 |
+| 真实任务、工作台优先和筛选 | 从全局任务入口和教学工作台切换真实任务、成果及筛选。停止回写原 Task 和 Run。见「我的任务与教学工作台」。 |
+| 成果独立查看、一个任务多成果、不同任务引用 | 两份真实 HTML 保存于同一任务。另一个任务实际读取引用记录并持久化来源。成果详情按历史版本准确回跳所属任务。见「任务与成果双向定位」。 |
+| 版本、历史只读和回滚 | HTML、试卷及课堂设计沿现有账本保留原结果。分别通过实际文件、版本 SQL 与历史界面读回，课堂设计恢复复核旧资料。见各版本专项。 |
+| 右侧任务上下文与专业编辑 | 按原提交 Run 谱系核对任务、来源、试卷与教案。专业编辑保存后原对话读取当前版本。同会话另一个独立任务不串卷或串教案。 |
+| 重启、失败和不重复写入 | 已在任务、HTML、试卷和课堂设计各专项冷读持久记录。历史预览、选择和恢复前核对保持只读，遇并发或已失效来源有明确结果。 |
+
+Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务新增的专用结构与精确导出仍按 Phase 4 逐项验收。Phase 3 单列教师画像、主动保存、确认与停用、适用范围及最小注入。
+
+## Phase 3 教师记忆运行基线
+
+`phase3-memory-audit/run-1IWNua/report.json` 使用上面同一构建和两份独立 SQLite 数据。明确说「以后讲解详细些，分步骤，先给提示再给答案」后保存一个版本。本次一句话要求没有新建长期版本。另一份本地数据的模型请求没有第一份数据的表达偏好。这一结果覆盖隔离的数据根。
+
+首份数据新对话仅发问候时，拦截的实际模型请求仍带已保存的分步讲解偏好。当前 `production-host` 将 `teacherPreferenceContext` 附加到每轮受保护上下文，偏好表没有适用范围输入。候选通过两个独立纠正样本和一次留出试用，再等教师对试用答复给出正反馈。下一步改造现有偏好与最小注入规则，补充可管理的教师画像和范围。基线复测修正了旧夹具忽略会话侧栏收起的问题，原 `baseline.log` 保留。

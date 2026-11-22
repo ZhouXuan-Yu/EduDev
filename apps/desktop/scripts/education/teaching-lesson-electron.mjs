@@ -2,6 +2,7 @@ import {lessonDocument,standardA,standardB} from './teaching-lesson-fixture.mjs'
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron as electron} from 'playwright';import {openTeachingFiles,productEntry} from '../product-navigation.mjs';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 import {assertStaleLessonEdit,independentTitle,lessonCard,openLessonFromChat,readLessonOwner,verifyLessonReturn} from './teaching-lesson-task-journey.mjs';
+import {verifyReadonlyLessonHistory} from './teaching-lesson-history-journey.mjs';
 const resume=process.argv.slice(2).find(arg=>!arg.startsWith('--'));if(resume&&(!path.resolve(resume).startsWith(path.join(os.tmpdir(),'xiaozhi-teaching-lesson-ui-'))||!fs.existsSync(path.join(resume,'data','app.db'))))throw Error('Invalid owned synthetic resume root');
 const taskEditor=process.argv.includes('--task-editor');
 const desktop=path.resolve(import.meta.dirname,'../..'),root=resume||fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-teaching-lesson-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile');
@@ -14,10 +15,24 @@ let app,page,a,b;const save=()=>fs.writeFileSync(path.join(root,resume?'report-r
 async function launch(cold=false){const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};for(const k of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[k];app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
  await app.evaluate(({net},v)=>{const w=globalThis.curriculumWire={requests:[],reads:[],blocked:[],stage:0};net.fetch=async(url,init)=>{url=typeof url==='string'?url:url.url;if(url.includes('/models'))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text'],effort:{supported_levels:['low','high','max'],default_level:'high'}}]}),{headers:{'content-type':'application/json'}});if(!url.includes('/chat/completions')||v.cold){w.blocked.push(url);throw Error('No external fetch in curriculum fixture');}
   const body=JSON.parse(init.body),last=body.messages.filter(m=>m.role==='tool').at(-1)?.content||'',receipt=last?JSON.parse(last.split('\n')[0]):null;let call,content='';
-  if(w.stage===0){if(!JSON.stringify(body.messages).includes('登记修订=')||!body.tools.find(t=>t.function?.name==='education_propose_classroom_outline')?.function.parameters.required.includes('lesson'))throw Error('Host lesson intent/schema missing');call={name:'office_list_materials',arguments:JSON.stringify({query:'同名课标',offset:0})};}
+  if(w.stage===0){
+   const tool=body.tools.find(t=>t.function?.name==='education_propose_classroom_outline');
+   if(!tool||(!w.outline&&(!JSON.stringify(body.messages).includes('登记修订=')||!tool.function.parameters.required.includes('lesson'))))throw Error('Host classroom intent/schema missing');
+   call={name:'office_list_materials',arguments:JSON.stringify({query:'同名课标',offset:0})};
+  }
   if(w.stage===1){if(!receipt?.success||!receipt.materials.some(m=>m.resourceId===globalThis.curriculumTarget))throw Error('Actual material catalog required');call={name:'office_read_material',arguments:JSON.stringify({resourceId:globalThis.curriculumTarget,offset:0})};}
-  if(w.stage===2){if(receipt?.curriculum?.entry?.metadata.edition!=='A版'||!receipt.text.includes('能依据原文找事实并解释理由')||receipt.text.includes('比较两种观点'))throw Error('Exact A edition read required');w.reads.push(receipt);call={name:'education_propose_classroom_outline',arguments:JSON.stringify(w.title?{...v.document,title:w.title}:v.document)};}
-  if(w.stage===3){if(!receipt?.success||receipt.status!=='draft'||receipt.adopted?.[0]?.source.resourceId!==globalThis.curriculumTarget)throw Error('Real lesson proposal receipt required');w.saved=receipt;content='完整40分钟教案草稿已保存，三项目标均有关联活动和出口检查。采用A版合成依据，仅供测试对照；请到教学工作台互动课堂核对。';}
+  if(w.stage===2){
+   if(receipt?.curriculum?.entry?.metadata.edition!=='A版'||!receipt.text.includes('能依据原文找事实并解释理由')||receipt.text.includes('比较两种观点'))throw Error('Exact A edition read required');
+   w.reads.push(receipt);
+   const document={...v.document,title:w.title||v.document.title};
+   if(w.outline)delete document.lesson;
+   call={name:'education_propose_classroom_outline',arguments:JSON.stringify(document)};
+  }
+  if(w.stage===3){
+   if(!receipt?.success||receipt.status!=='draft'||(!w.outline&&receipt.adopted?.[0]?.source.resourceId!==globalThis.curriculumTarget))throw Error('Real classroom proposal receipt required');
+   w.saved=receipt;
+   content=w.outline?'课堂大纲草稿已保存，请到编辑器核对。':'完整40分钟教案草稿已保存，三项目标均有关联活动和出口检查。采用A版合成依据，仅供测试对照。';
+  }
   if(w.stage>3)throw Error('Unexpected extra model request');w.requests.push({stage:w.stage++,tool:call?.name||null,bodyBytes:Buffer.byteLength(init.body),toolSchemaBytes:Buffer.byteLength(JSON.stringify(body.tools||[]))});const c=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'curriculum-'+w.stage,object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';return new Response(c({role:'assistant',content:''})+c(call?{tool_calls:[{index:0,id:'curriculum-'+w.stage,type:'function',function:call}]}:{content})+c({},call?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
  };},{cold,document:lessonDocument});page=await app.firstWindow();page.on('pageerror',e=>report.errors.push(String(e)));page.setDefaultTimeout(40000);await page.getByTestId('office-prompt-input').waitFor({timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());}
 async function open(id){await productEntry(page,'materials').click();await page.getByTestId('material-'+id).click();const d=page.getByTestId('material-curriculum-disclosure');await d.waitFor();const trigger=d.locator('button[aria-expanded]').first();if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();await page.getByTestId('curriculum-kind').waitFor();await until(async()=>!await page.getByTestId('curriculum-kind').isDisabled());}
@@ -49,7 +64,9 @@ try{
  }
  await expand('classroom-plan-scene-toggle-assess');await page.getByTestId('classroom-plan-scene-toggle-assess').locator('input').last().fill('5');await page.getByTestId('classroom-plan-save').click();await saved(3);assert.equal(await page.getByTestId('lesson-issues').count(),0);await page.getByTestId('classroom-plan-confirm').click();await until(async()=>(await page.getByTestId('classroom-plan-detail').getAttribute('data-status'))==='confirmed');assert.equal(await page.getByTestId('classroom-plan-generate').count(),0);
  await expand('classroom-plan-scene-toggle-intro');const intro='先请学生用原文中的词说一个事实，再区分自己的猜测。';await page.getByTestId('classroom-plan-scene-toggle-intro').locator('textarea').fill(intro);await page.getByTestId('classroom-plan-save').click();await saved(4);const localEdit=JSON.parse(plans().find(r=>JSON.parse(r.payload_json).revision===4).payload_json);assert.equal(localEdit.document.scenes[0].activity,intro);assert.deepEqual(localEdit.document.scenes.slice(1),JSON.parse(plans().find(r=>JSON.parse(r.payload_json).revision===3).payload_json).document.scenes.slice(1));assert.equal(JSON.parse(plans().find(r=>JSON.parse(r.payload_json).revision===4).result_json).state,'draft');check('Teacher explicitly rebalances and confirms, then edits only introduction into a new draft with all other activities unchanged');
- await expand('classroom-plan-history-toggle');await page.getByTestId('classroom-plan-history-load').click();await page.getByTestId('classroom-plan-restore-1').waitFor();await page.getByTestId('classroom-plan-restore-1').click();assert(await page.getByTestId('classroom-plan-confirm').isDisabled());await page.getByTestId('classroom-plan-save').click();await saved(5);const restored=plans().find(r=>JSON.parse(r.payload_json).revision===5);assert.deepEqual(JSON.parse(restored.payload_json).document,lessonDocument);assert.equal(JSON.parse(restored.result_json).state,'draft');await page.getByTestId('classroom-plan-confirm').click();await until(async()=>(await page.getByTestId('classroom-plan-detail').getAttribute('data-status'))==='confirmed');report.versions=plans();check('Historical version 1 restores through current CAS as version 5 draft, requires new confirmation and keeps all earlier immutable revisions');
+ await expand('classroom-plan-history-toggle');await page.getByTestId('classroom-plan-history-load').click();await page.getByTestId('classroom-plan-restore-1').waitFor();
+ if(taskEditor&&!resume)await verifyReadonlyLessonHistory({page,app,root,plans,document:lessonDocument,expand,until,check});
+ await page.getByTestId('classroom-plan-restore-1').click();assert(await page.getByTestId('classroom-plan-confirm').isDisabled());await page.getByTestId('classroom-plan-save').click();await saved(5);const restored=plans().find(r=>JSON.parse(r.payload_json).revision===5);assert.deepEqual(JSON.parse(restored.payload_json).document,lessonDocument);assert.equal(JSON.parse(restored.result_json).state,'draft');assert.equal(JSON.parse(restored.payload_json).restoredFrom.id,initial.id);await page.getByTestId('classroom-plan-confirm').click();await until(async()=>(await page.getByTestId('classroom-plan-detail').getAttribute('data-status'))==='confirmed');report.versions=plans();check('Historical version 1 restores through current CAS as version 5 draft, requires new confirmation and keeps all earlier immutable revisions');
  let unrelated;
  if(taskEditor&&!resume){
   await page.getByTestId('classroom-plan-source-chat').click();
@@ -71,6 +88,30 @@ try{
   assert(unrelated);
   report.versions=plans();
   await verifyLessonReturn({page,app,root,initial,current:restored,independent:unrelated,until,check});
+  await teaching();
+  const outlineTitle='观察与解释课堂大纲';
+  await page.getByTestId('classroom-requirement').fill('依据资料库同名课标 A 版，整理课堂观察活动与随堂题大纲。');
+  await app.evaluate((_,title)=>Object.assign(globalThis.curriculumWire,{stage:0,title,outline:true}),outlineTitle);
+  await page.getByTestId('classroom-create').click();
+  await page.getByTestId('office-prompt-input').waitFor();
+  await until(async()=>(await app.evaluate(()=>globalThis.curriculumWire.requests.length))===12&&!await page.getByTestId('office-prompt-input').isDisabled());
+  const outline=plans().find(row=>JSON.parse(row.payload_json).document.title===outlineTitle);
+  assert(outline);
+  await openLessonFromChat(page,outline.id,outline.id);
+  await expand('classroom-plan-history-toggle');
+  await page.getByTestId('classroom-plan-history-load').click();
+  const history=page.getByTestId('classroom-plan-history-open-1');
+  await history.click();
+  const dialog=page.getByTestId('classroom-plan-history-dialog');
+  await dialog.waitFor();
+  assert.match(await dialog.innerText(),/课堂大纲 · 第 1 版/s);
+  assert.match(await dialog.innerText(),/课堂页安排/);
+  assert((await dialog.innerText()).includes(lessonDocument.scenes[0].activity));
+  assert.equal(await dialog.getByText('教师提示语').count(),0);
+  assert.equal(await dialog.locator('input,textarea,select,[contenteditable=true]').count(),0);
+  await dialog.getByRole('button',{name:'关闭',exact:true}).click();
+  report.versions=plans();
+  check('A production Pi classroom outline uses the same read-only history, with its original page activities and outline fields');
  }
  await app.close();app=undefined;await launch(true);
  if(unrelated){
@@ -79,6 +120,7 @@ try{
   await expand('classroom-plan-history-toggle');
   await page.getByTestId('classroom-plan-history-load').click();
   await page.getByTestId('classroom-plan-restore-1').waitFor();
+  assert.match(await page.getByTestId('classroom-plan-restored-5').innerText(),/恢复来源 · 第 1 版/);
  }else await teaching();
  await page.getByTestId('teaching-lesson-details').waitFor();
  assert.equal(await page.getByTestId('classroom-plan-detail').getAttribute('data-status'),'confirmed');

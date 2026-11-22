@@ -14,13 +14,13 @@ export type ClassroomLessonIntent={subject:string;grade:string;curricula:Curricu
 export type ClassroomPlanStart={mode:'outline';lesson?:ClassroomLessonIntent;realign?:ClassroomPlanSource}|ClassroomPlanBinding;
 export type ClassroomPlanSource={id:string;version:string};
 export type ClassroomCheckpoint={sceneId:string;scene:Scene;inputDigest:string;runId:string};
-export type ClassroomPlanItem={id:string;rootId:string;sessionId:string;runId:string;revision:number;version:string;updatedAt:string;document:ClassroomPlanDocument;context:ClassroomContext;status:'draft'|'confirmed'|'generating'|'interrupted'|'ready'|'rejected';checkpoints:ClassroomCheckpoint[];classroomId?:string};
+export type ClassroomPlanItem={id:string;rootId:string;sessionId:string;runId:string;revision:number;version:string;updatedAt:string;document:ClassroomPlanDocument;context:ClassroomContext;status:'draft'|'confirmed'|'generating'|'interrupted'|'ready'|'rejected';checkpoints:ClassroomCheckpoint[];classroomId?:string;restoredFrom?:ClassroomPlanSource};
 export type ClassroomPlanReference={sessionId:string;rootId:string};
 export type ClassroomPlanReview=ClassroomPlanReference&{
  id:string;originRunId:string;revision:number;status:ClassroomPlanItem['status'];kind:'lesson'|'outline';
  title:string;totalMinutes:number;objectives:string[];stages:string[];
 };
-export type ClassroomPlanEdit={id:string;version:string;document:ClassroomPlanDocument};
+export type ClassroomPlanEdit={id:string;version:string;document:ClassroomPlanDocument;restoreFrom?:ClassroomPlanSource};
 export type ClassroomPlanDecision={id:string;version:string;decision:'confirm'|'reject'};
 
 function record(value:unknown):value is Record<string,unknown>{return !!value&&typeof value==='object'&&!Array.isArray(value)&&Reflect.ownKeys(value).every(k=>typeof k==='string')&&Object.values(Object.getOwnPropertyDescriptors(value)).every(d=>'value'in d);}
@@ -43,5 +43,9 @@ export function validClassroomPlanDocument(value:unknown):value is ClassroomPlan
  const scenes=value.scenes as ClassroomPlanScene[];
  return new Set(scenes.map(s=>s.sceneId)).size===scenes.length&&(value.lesson===undefined?scenes.some(s=>s.type==='slide')&&scenes.some(s=>s.type==='quiz')&&scenes.reduce((n,s)=>n+s.durationMinutes,0)===value.totalMinutes:validTeachingLesson(value.lesson,value as ClassroomPlanDocument))&&!/https?:|file:|javascript:|<\s*(?:script|iframe|object|embed)/i.test(JSON.stringify(value));
 }
-export function validClassroomPlanEdit(value:unknown):value is ClassroomPlanEdit{return record(value)&&keys(value,['id','version','document'])&&validClassroomPlanSource({id:value.id,version:value.version})&&validClassroomPlanDocument(value.document);}
+export function validClassroomPlanEdit(value:unknown):value is ClassroomPlanEdit{
+ return record(value)&&keys(value,['id','version','document',...(value.restoreFrom===undefined?[]:['restoreFrom'])])
+  &&validClassroomPlanSource({id:value.id,version:value.version})&&validClassroomPlanDocument(value.document)
+  &&(value.restoreFrom===undefined||validClassroomPlanSource(value.restoreFrom));
+}
 export function validClassroomPlanDecision(value:unknown):value is ClassroomPlanDecision{return record(value)&&keys(value,['id','version','decision'])&&validClassroomPlanSource({id:value.id,version:value.version})&&['confirm','reject'].includes(String(value.decision));}

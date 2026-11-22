@@ -10,7 +10,7 @@ import {teachingLessonIssues} from '../../shared/teaching-lesson';
 import type {ClassroomPlanReference,ClassroomPlanReview} from '../../shared/classroom-plan';
 
 type Row=Record<string,unknown>;
-type Payload={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;root:string;revision:number;previous:string;callId:string;inputDigest:string;document:ClassroomPlanDocument;context:ClassroomContext};
+type Payload={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;root:string;revision:number;previous:string;callId:string;inputDigest:string;document:ClassroomPlanDocument;context:ClassroomContext;restoredFrom?:ClassroomPlanSource};
 type Effect={state:ClassroomPlanItem['status'];checkpoints:ClassroomCheckpoint[];activeRunId?:string;classroomId?:string};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const payload=(row:Row)=>JSON.parse(String(row.payload_json)) as Payload;
@@ -27,7 +27,7 @@ function item(row:Row):ClassroomPlanItem{
  const p=payload(row),e=JSON.parse(String(row.result_json)) as Effect;
  if(p.schemaVersion!==CLASSROOM_PLAN_SCHEMA||!validClassroomPlanDocument(p.document)||!validClassroomContext(p.context)||!p.context.materials.length&&!p.document.lesson||!Number.isSafeInteger(p.revision)||p.revision<1||!['draft','confirmed','generating','interrupted','ready','rejected'].includes(e.state)||!Array.isArray(e.checkpoints))throw Error('unavailable');
  if(e.checkpoints.length>p.document.scenes.length||new Set(e.checkpoints.map(c=>c.sceneId)).size!==e.checkpoints.length||e.checkpoints.some(c=>!validClassroomScene(c.scene)||c.scene.id!==c.sceneId||!p.document.scenes.some(s=>s.sceneId===c.sceneId&&s.type===c.scene.type&&s.title===c.scene.title)||!/^[a-f0-9]{64}$/.test(c.inputDigest)))throw Error('unavailable');
- return{id:String(row.id),rootId:p.root,sessionId:String(row.session_id),runId:e.activeRunId||String(row.run_id),revision:p.revision,version:hash({id:row.id,sessionId:row.session_id,studentId:row.student_id,payload:p}),updatedAt:String(row.updated_at),document:structuredClone(p.document),context:structuredClone(p.context),status:e.state,checkpoints:structuredClone(e.checkpoints),...(e.classroomId?{classroomId:e.classroomId}:{})};
+ return{id:String(row.id),rootId:p.root,sessionId:String(row.session_id),runId:e.activeRunId||String(row.run_id),revision:p.revision,version:hash({id:row.id,sessionId:row.session_id,studentId:row.student_id,payload:p}),updatedAt:String(row.updated_at),document:structuredClone(p.document),context:structuredClone(p.context),status:e.state,checkpoints:structuredClone(e.checkpoints),...(e.classroomId?{classroomId:e.classroomId}:{}),...(validClassroomPlanSource(p.restoredFrom)?{restoredFrom:p.restoredFrom}:{})};
 }
 async function authorize(sql:Sql,sessionId:string,studentId?:string){
  const session=(await sql.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]))[0];
@@ -110,7 +110,9 @@ export function createClassroomPlanState(sql:Sql){
     const {row,value}=await realignmentSource(work,sessionId,source);
     if(value.document.scenes.map(s=>s.sceneId+':'+s.type).join()!==document.scenes.map(s=>s.sceneId+':'+s.type).join())throw Error('invalid_input');
     if(JSON.stringify(value.context.adopted||[])===JSON.stringify(context.adopted))throw Error('source_changed');
-    const p:Payload={...payload(row),revision:value.revision+1,previous:value.id,callId,inputDigest,document:structuredClone(document),context:structuredClone(context)},stamp=new Date().toISOString();
+    const p:Payload={...payload(row),revision:value.revision+1,previous:value.id,callId,inputDigest,document:structuredClone(document),context:structuredClone(context)};
+    delete p.restoredFrom;
+    const stamp=new Date().toISOString();
     await work.run(`INSERT INTO ai_confirmation_items(id,run_id,session_id,student_id,action_type,status,title,payload_json,result_json,created_at,updated_at) VALUES(?,?,?,?,?,'pending',?,?,?,?,?)`,[id,runId,sessionId,studentId,CLASSROOM_PLAN_ACTION,document.title,JSON.stringify(p),JSON.stringify({state:'draft',checkpoints:[]}),stamp,stamp]);
     if(!current())throw Error('cancelled');return item((await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0]);
    });
@@ -164,8 +166,7 @@ export function createClassroomPlanState(sql:Sql){
   },
   async history(id:string){
    const latest=await currentRow(sql,id),root=payload(latest).root;
-   const rows=await sql.all('SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=?',[String(latest.session_id),CLASSROOM_PLAN_ACTION]);
-   if(rows.length>1000)throw Error('unavailable');
+   const rows=await sessionPlans(String(latest.session_id));
    return rows.filter(r=>payload(r).root===root).sort((a,b)=>payload(b).revision-payload(a).revision).map(item);
   },
   async list(){
@@ -178,8 +179,21 @@ export function createClassroomPlanState(sql:Sql){
     const row=await currentRow(work,input.id),value=item(row);if(value.version!==input.version||['generating','rejected'].includes(value.status))throw Error('conflict');
     if(value.document.scenes.map(s=>s.sceneId+':'+s.type).join()!==input.document.scenes.map(s=>s.sceneId+':'+s.type).join())throw Error('invalid_input');
     if(Boolean(value.document.lesson)!==Boolean(input.document.lesson))throw Error('invalid_input');
-    await assertClassroomContext(work,value.context);await assertTeachingLessonContext(work,input.document,value.context);if(JSON.stringify(input.document)===JSON.stringify(value.document))return value;
-    const id='classplan_'+randomUUID(),p:Payload={...payload(row),revision:value.revision+1,previous:value.id,document:structuredClone(input.document)},stamp=new Date().toISOString();
+    let context=value.context;
+    if(input.restoreFrom){
+     const historicalRow=(await work.all(`SELECT * FROM ai_confirmation_items WHERE id=? AND action_type=?
+       AND session_id=? AND COALESCE(student_id,'')=?`,[input.restoreFrom.id,CLASSROOM_PLAN_ACTION,value.sessionId,String(row.student_id||'')]))[0];
+     if(!historicalRow||payload(historicalRow).root!==value.rootId)throw Error('permission_denied');
+     const historical=item(historicalRow);
+     if(historical.version!==input.restoreFrom.version||historical.revision>=value.revision)throw Error('conflict');
+     context=historical.context;
+    }
+    await assertClassroomContext(work,context);
+    await assertTeachingLessonContext(work,input.document,context);
+    if(!input.restoreFrom&&JSON.stringify(input.document)===JSON.stringify(value.document))return value;
+    const id='classplan_'+randomUUID(),p:Payload={...payload(row),revision:value.revision+1,previous:value.id,document:structuredClone(input.document),context};
+    if(input.restoreFrom)p.restoredFrom={...input.restoreFrom};else delete p.restoredFrom;
+    const stamp=new Date().toISOString();
     await work.run(`INSERT INTO ai_confirmation_items(id,run_id,session_id,student_id,action_type,status,title,payload_json,result_json,created_at,updated_at) VALUES(?,?,?,?,?,'pending',?,?,?,?,?)`,[id,String(row.run_id),value.sessionId,String(row.student_id||''),CLASSROOM_PLAN_ACTION,input.document.title,JSON.stringify(p),JSON.stringify({state:'draft',checkpoints:[]}),stamp,stamp]);
     return item((await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0]);
    });

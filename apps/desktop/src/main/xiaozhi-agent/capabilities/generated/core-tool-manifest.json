@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "59bd936d28b3410d679d2b19aa4cb39e06d1774b1cbed872a17d3d8389237d89",
+  "sourceHash": "e5f51dbb65c004bc162cc4713b0830920c1402f5ef88214f29b578373aec02ec",
   "sources": [
     {
       "file": "package-lock.json",
@@ -708,7 +708,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "480011fe3b5267c330ab2cbbc9663628c8ec5f0595e0c4424f87c8f994a1b9d3"
+      "sha256": "339c6540154c5f8dc9ebc43b1c770f12d6838317f0e7dd049021c4d0fc15db94"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1956,7 +1956,7 @@
     },
     {
       "file": "src/shared/classroom-plan.ts",
-      "sha256": "007c2a6f73e27aad8636011db723811bcfae3c24420b10ce48f1efb604f04769"
+      "sha256": "3e7a03ade012e2bc86813137f80c79684f16fa9f97c4b9344cad68f0e3521a4c"
     },
     {
       "file": "src/shared/classroom.ts",

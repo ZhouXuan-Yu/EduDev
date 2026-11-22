@@ -13,7 +13,7 @@ const checks=[],check=detail=>{checks.push(detail);console.log('PASS '+detail);}
 try{
  const state=createClassroomPlanState(sql),rows=snapshot(),oldRow=rows.find(r=>JSON.parse(r.payload_json).revision===5),old=await state.read(oldRow.id),oldBytes=JSON.stringify(oldRow),sessionId=old.sessionId,source={id:old.id,version:old.version};assert.equal(old.status,'confirmed');
  const entries=all('SELECT * FROM material_curriculum_entries ORDER BY sequence DESC'),newRow=entries.find(r=>r.resource_id!==old.context.adopted[0].source.resourceId&&JSON.parse(r.metadata_json).status==='active'),entry={id:newRow.id,source:JSON.parse(newRow.source_json),metadata:JSON.parse(newRow.metadata_json),createdAt:newRow.created_at},body=String(all('SELECT content_md FROM resource_chunks WHERE id=?',[entry.source.chunkId])[0].content_md);assert(body.includes('比较两种观点'));
- const oldEntry=old.context.adopted[0];run('INSERT INTO material_curriculum_entries(id,resource_id,source_json,metadata_json,created_at) VALUES(?,?,?,?,?)',['curriculum_'+randomUUID(),oldEntry.source.resourceId,JSON.stringify(oldEntry.source),JSON.stringify({...oldEntry.metadata,status:'withdrawn'}),new Date().toISOString()]);
+ const oldEntry=old.context.adopted[0],withdrawal='curriculum_'+randomUUID();run('INSERT INTO material_curriculum_entries(id,resource_id,source_json,metadata_json,created_at) VALUES(?,?,?,?,?)',[withdrawal,oldEntry.source.resourceId,JSON.stringify(oldEntry.source),JSON.stringify({...oldEntry.metadata,status:'withdrawn'}),new Date().toISOString()]);
  const activeRow=all('SELECT * FROM ai_agent_runs WHERE session_id=? LIMIT 1',[sessionId])[0];const columns=Object.keys(activeRow),newRun={...activeRow,id:'run_'+randomUUID(),status:'running'};run('INSERT INTO ai_agent_runs('+columns.join(',')+') VALUES('+columns.map(()=>'?').join(',')+')',columns.map(k=>newRun[k]));
  const intent={mode:'outline',lesson:{subject:old.document.lesson.subject,grade:old.document.lesson.grade,curricula:[{resourceId:entry.source.resourceId,revision:entry.id}]},realign:source};assert(validClassroomPlanStart(intent));for(const bad of [{...intent,lesson:undefined},{...intent,lesson:{...intent.lesson,curricula:[]}},{...intent,realign:{...source,extra:true}}])assert(!validClassroomPlanStart(bad));check('Explicit typed realignment requires exact old CAS and a nonempty host-selected new curriculum');
  const context={schemaVersion:old.context.schemaVersion,preferenceRevision:old.context.preferenceRevision,adopted:[entry],materials:[{source:entry.source,title:'FX14新依据',characters:body.length,truncated:false,recognition:'saved_text',curriculum:entry}]};
@@ -25,5 +25,29 @@ try{
  const history=await state.history(saved.id);assert.equal(history.length,6);assert.deepEqual(history.find(v=>v.id===old.id).document,old.document);await assert.rejects(()=>state.realign(sessionId,newRun.id,'stale',source,document,context,()=>true),/conflict/);const other='aisession_'+randomUUID();await assert.rejects(()=>state.readLessonForRealignment(other,{id:saved.id,version:saved.version}),/permission_denied/);
  await admitClassroomOrTaskTool({sessionId,runId:newRun.id,intent:{...intent,realign:{id:saved.id,version:saved.version}},plans:state,current:()=>true},'read','education_read_classroom_plan',{});await assert.rejects(()=>admitClassroomOrTaskTool({sessionId,runId:newRun.id,intent,plans:state,current:()=>true},'page','education_save_classroom_scene',{}),/mode_mismatch/);check('Stale/cross-session bindings rejected; realignment uses original read/propose admission and cannot start page generation');
  const confirmed=await state.decide({id:saved.id,version:saved.version,decision:'confirm'});assert.equal(confirmed.status,'confirmed');const facts=snapshot();db.close();db=new DatabaseSync(file);await createClassroomPlanState(sql).recover();assert.deepEqual(snapshot(),facts);check('Explicit teacher confirmation and cold recovery retain all6 versions with no replay');
+ const restore={id:confirmed.id,version:confirmed.version,document:old.document,restoreFrom:source};
+ await assert.rejects(()=>state.edit(restore),/source_changed/);
+ await assert.rejects(()=>state.edit({...restore,restoreFrom:{...source,version:'f'.repeat(64)}}),/conflict/);
+ const independent=rows.find(row=>JSON.parse(row.payload_json).root!==old.rootId);
+ if(independent){
+  const unrelated=await state.read(independent.id);
+  await assert.rejects(()=>state.edit({...restore,restoreFrom:{id:unrelated.id,version:unrelated.version}}),/permission_denied/);
+ }
+ assert.deepEqual(snapshot(),facts);
+ assert.deepEqual((await state.history(confirmed.id)).find(value=>value.id===old.id).context,old.context);
+ check('Withdrawn historical sources remain viewable but cannot be restored or substituted, and invalid digests are refused');
+
+ // Remove only the injected withdrawal from this disposable copy to exercise the active-source outcome.
+ assert.equal(db.prepare('DELETE FROM material_curriculum_entries WHERE id=?').run(withdrawal).changes,1);
+ const restored=await state.edit(restore);
+ assert.equal(restored.revision,7);
+ assert.equal(restored.status,'draft');
+ assert.deepEqual(restored.document,old.document);
+ assert.deepEqual(restored.context,old.context);
+ assert.deepEqual(restored.restoredFrom,source);
+ assert.equal(all('SELECT confirmed_at FROM ai_confirmation_items WHERE id=?',[restored.id])[0].confirmed_at,null);
+ assert.deepEqual(snapshot().filter(row=>row.id!==restored.id),facts);
+ await assert.rejects(()=>state.edit(restore),/conflict/);
+ check('Active historical context is reinstated exactly in an unconfirmed revision, with unchanged siblings and stale CAS rejection');
  fs.writeFileSync(path.join(root,'report.json'),JSON.stringify({ok:true,root,checks,paidRequests:0,source,adopted:entry,previousRowsPreserved:true},null,2));console.log(JSON.stringify({ok:true,root,checks:checks.length}));
 }finally{db.close();}
