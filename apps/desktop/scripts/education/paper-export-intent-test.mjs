@@ -1,7 +1,7 @@
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-const {validPaperExportIntent,PAPER_EXPORT_INTENT_SCHEMA,copyPaperExportIntent}=await import('../../src/shared/paper-export.ts');
+const {validPaperAgentExport,validPaperExportIntent,PAPER_EXPORT_INTENT_SCHEMA,copyPaperExportIntent}=await import('../../src/shared/paper-export.ts');
 const {validXiaozhiStart}=await import('../../src/shared/xiaozhi-start.ts');
 const {createPaperExportTool}=await import('../../src/main/education/paper-export.ts');
 let passed=0;
@@ -26,9 +26,10 @@ await check('start carries the exact binding but refuses attachments, continuati
 const paper={id:paperId,sessionId,title:'合同单元卷 A',digest:binding.digest,state:'confirmed',complete:true,sourceCurrent:true,exportCurrent:true,
  totalPoints:5,answerVerified:false,blueprint:{grade:'初二',subject:'数学',durationMinutes:30,sections:[{id:'one',label:'解答题'}]},
  selection:{items:[{number:1,sectionId:'one',points:5,question:{stem:'求 1+1。',answer:'2',analysis:'相加。',sourceTitle:'单元题'}}]}};
-let reviewed=0,latest=0,writes=0,currentPaper=paper,reviewError,proposal,officeReply,officeAfter;
+let reviewed=0,latest=0,scoped=0,writes=0,currentPaper=paper,scopeResult,reviewError,proposal,officeReply,officeAfter;
 const papers={review:async(s,id)=>{reviewed++;assert.equal(s,sessionId);assert.equal(id,paperId);if(reviewError)throw Error(reviewError);return structuredClone(currentPaper);},
- latest:async()=>{latest++;return {...structuredClone(paper),id:'xipaper_'+randomUUID(),title:'B latest'};}};
+ latest:async()=>{latest++;return {...structuredClone(paper),id:'xipaper_'+randomUUID(),title:'B latest'};},
+ readForAgent:async(s,run,taskRuns)=>{scoped++;assert.equal(s,sessionId);assert.equal(run,'unit-run');assert.deepEqual(taskRuns,['related-run']);return scopeResult??{kind:'found',paper:structuredClone(currentPaper)};}};
 const make=(intent=binding)=>createPaperExportTool({papers,sessionId,runId:'unit-run',paperExportIntent:intent,current:()=>true,
  wait:async fn=>fn(),runOffice:async(_sid,_run,_wait,_call,raw)=>{writes++;proposal=raw;officeAfter?.();return officeReply??{content:[],details:{success:true}};}})[0];
 const raw={format:'docx',audience:'student',path:'A.docx'};
@@ -73,13 +74,46 @@ await check('late Office conflict is classified as stale only after exact read p
  assert.deepEqual(await make().execute('teacher-rejected',raw),officeReply);assert.equal(latest,0);
  currentPaper=paper;officeAfter=undefined;officeReply=undefined;
 });
-await check('invalid binding and missing exact review reader fail closed, while old unbound requests retain latest',async()=>{
+await check('invalid binding and missing exact reader fail closed; an omitted reference uses the unique task scope',async()=>{
  const w=writes;assert((await make({...binding,extra:true}).execute('unit',raw)).isError);
  const missing=createPaperExportTool({papers:{latest:papers.latest},paperExportIntent:binding,sessionId,runId:'unit',current:()=>true,wait:async fn=>fn(),runOffice:async()=>assert.fail()})[0];
  assert((await missing.execute('unit',raw)).isError);assert.equal(writes,w);assert.equal(latest,0);
  assert(!(await make(undefined).execute('unit',raw)).isError);
- // Default argument means bound; explicitly omit the option for legacy compatibility.
- const legacy=createPaperExportTool({papers,sessionId,runId:'unit',current:()=>true,wait:async fn=>fn(),runOffice:async()=>({content:[],details:{success:true}})})[0];
- assert(!(await legacy.execute('legacy',raw)).isError);assert.equal(latest,1);
+ const legacy=createPaperExportTool({papers,sessionId,runId:'unit-run',taskRuns:async()=>['related-run'],current:()=>true,wait:async fn=>fn(),runOffice:async(_sid,_run,_wait,_call,value)=>{proposal=value;return {content:[],details:{success:true}};}})[0];
+ currentPaper={...paper,exportCurrent:false};
+ assert(!(await legacy.execute('legacy',raw)).isError);assert.equal(latest,0);assert.equal(scoped,1);
+ assert.equal(proposal.draft.paperSource.paperId,paperId);assert.equal(proposal.draft.paperSource.selection,'selected_version');
+ currentPaper=paper;
+});
+await check('conversation IDs are paired with a digest; an exact prior independent paper ignores latest order but rejects a superseded version',async()=>{
+ const version={paperId,digest:binding.digest};
+ assert(validPaperAgentExport({...raw,...version}));
+ assert(!validPaperAgentExport({...raw,paperId}));assert(!validPaperAgentExport({...raw,digest:binding.digest}));
+ assert(!validPaperAgentExport({...raw,...version,title:'另一份'}));
+ assert(!validPaperAgentExport({...raw,get digest(){assert.fail();}}));
+ const tool=make(null),explicit=createPaperExportTool({papers,sessionId,runId:'unit-run',current:()=>true,wait:async fn=>fn(),
+  runOffice:async(_sid,_run,_wait,_call,value)=>{writes++;proposal=value;return {content:[],details:{success:true}};}})[0];
+ assert((await tool.execute('bad-host',{...raw,...version})).isError);
+ const before=writes;
+ assert((await make().execute('wrong-bound',{...raw,...version,digest:'c'.repeat(64)})).isError);
+ assert.equal(writes,before);
+ currentPaper={...paper,exportCurrent:false};
+ assert(!(await explicit.execute('exact',{...raw,...version})).isError);
+ assert.equal(proposal.draft.paperSource.paperId,paperId);
+ assert.equal(proposal.draft.paperSource.selection,'selected_version');
+ assert.equal(proposal.draft.paperSource.digest,binding.digest);
+ currentPaper={...paper,exportCurrent:false,supersededBy:'xipaper_'+randomUUID()};
+ assert.equal(JSON.parse((await explicit.execute('replaced',{...raw,...version})).content[0].text).error,'paper_export_source_changed');
+ currentPaper=paper;assert.equal(writes,before+1);assert.equal(latest,0);
+});
+await check('ambiguous or not-yet-confirmed task selections cannot open an Office approval or fall back to another paper',async()=>{
+ const lookup=createPaperExportTool({papers,sessionId,runId:'unit-run',current:()=>true,taskRuns:async()=>['related-run'],
+  wait:async fn=>fn(),runOffice:async()=>assert.fail('No draft when selection is unresolved')})[0];
+ for(const [kind,code] of [['ambiguous','ambiguous_paper'],['not_confirmed','not_confirmed']]){
+  scopeResult={kind,choices:[]};
+  const response=await lookup.execute('no-target',raw);
+  assert(response.isError);assert.equal(JSON.parse(response.content[0].text).error,code);
+ }
+ scopeResult=undefined;assert.equal(latest,0);
 });
 console.log(JSON.stringify({success:true,passed,scope:'Actual shared validators and production tool, controlled repository/Office callbacks; no provider/Electron/file delivery claim'}));

@@ -421,4 +421,22 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 
 确认回执与精确版本读回、同会话双卷歧义、题源变化和冷启保持均已实现。六题结果证明所测试的知识点配额和答案算式，真实教学样本仍按集中验收处理。
 
-试卷卡已具备精确版本导出。纯对话导出若没有试卷卡选择，工具仍会默认取最近确认版。下一项复用模型读回的 ID 与摘要校验该路径，随后推进独立讲义工作区接入。
+当时试卷卡已具备精确版本导出，纯对话导出仍按最近确认版处理。下述交付解决了该缺口。
+
+## Phase 4.1 对话精确导出与自动组卷工程退出
+
+对话直接说完整卷名后，Pi 读取该确认卷的 ID 与摘要，导出工具再次核对同一份卷及当前题源，再交给原 Office 审批。无引用时沿任务选择，独立卷有歧义会返回教师选择。此前从试卷卡明确点选的宿主绑定优先。已替代的版本或来源变化均沿原检查拒绝，旧请求不会改用另一份卷。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-conversation-export` | 编译及类型检查通过。主进程 SHA-256 `b2d4942fca38eb6270cedca24397166046434780ef3fed27b062eb566f0e68d1`，Preload `899483414ab804a8a8cb4d8a32c7885a14cc9c40f0c388206e4470839631095a`。 |
+| `node scripts/education/paper-conversation-export-electron.mjs` | 4/4。实际输入对话、真实 Pi 读卷回执、SQLite 精确审批草稿、批准前无文件。两份 Word 均来自 7 分卷，教师版保留解析，学生版省略。无明确目标时未创建审批或文件。冷启核查实际文件与记录。报告 `paper-conversation-export-l4mi7q/report.json`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --export-selected` | 6/6。原试卷卡点选、真实编辑、精确学生和教师版、历史和冷启。报告 `paper-edit-sync-zvtgQS/report.json`。 |
+| `paper-export-intent-test.mjs`、`paper-export-boundaries.mjs`、`paper-export-intent-race-test.mjs` | 10/10、21/21、4/4。覆盖绑定错误、歧义与待确认、源变化、正式文件安装前复核和旧合同兼容。 |
+| `npm.cmd run test:renderer-components` | 253/253。 |
+| Word 16.0 与 WPS 12.0 只读打开实物 | 4/4。学生版、教师版都为 A4 且显示 7 分，解析只在教师版。打开前后文件摘要相同。见 `native-office-readback.json`。 |
+| `node scripts/electron-smoke.mjs` | 前端验收 207/207，覆盖 1366×768 和 1920×1080。总结果为 `ok: true`，见 `electron-smoke.log`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-paper-conversation-export`。使用本地合成模型响应，0 付费调用。依赖未更新，审计仍为既有 20 项，其中 2 项 high。独立验收窗口和操作文档见 `manual-phase4-paper-conversation-export`。
+
+Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分值核对、明确缺额、教师确认与来源、局部修改、版本读回与恢复、对话和试卷卡精确导出均已实现。真实教师使用效果及多个真实题集的学科质量仍留给集中验收。继续 Phase 4.2 可编辑教学讲义。

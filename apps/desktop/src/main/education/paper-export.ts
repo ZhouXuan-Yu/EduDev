@@ -2,13 +2,14 @@ import {PAPER_SNAPSHOT_C2_SCHEMA} from '../../shared/paper-basket-c2';
 import {parsePaperLayout} from '../../shared/paper-layout';
 import {validC2SnapshotExtension} from './paper-template-snapshot';
 import {paperExportVersionCurrent,practiceOfficeIntroduction,PAPER_C2_OFFICE_SCHEMA,SELECTED_PAPER_EXPORT_INTENT_SCHEMA,SELECTED_PAPER_VERSION,type PaperOfficeSource} from '../../shared/paper-export';
-import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from './paper-export-intent';
+import {readPaperExportIntent,resolvePaperExport,PAPER_EXPORT_SOURCE_CHANGED} from './paper-export-intent';
+import {paperAgentReadProperties} from './paper-agent-read';
 import {compileInstancePaperOffice} from './paper-instance-export';
 import {editedInstanceChoiceLabels} from './paper-instance';
 import {paperTextBlocks} from './paper-table-blocks';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {PaperView} from '../../shared/paper-blueprint';
-import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperExport,validPaperExportIntent,copyPaperExportIntent,type PaperExportIntent,type PaperExportInput,type PaperExportTemplate} from '../../shared/paper-export';
+import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperAgentExport,validPaperExportIntent,copyPaperExportIntent,type PaperExportIntent,type PaperExportInput,type PaperExportTemplate} from '../../shared/paper-export';
 import {containsOfficeMath} from '../../shared/office-math';
 import {PAPER_PRINT_LAYOUT,paperAnswerNumber} from '../../shared/paper-print-layout';
 import {compileRichPaperOffice} from './paper-rich-export';
@@ -139,32 +140,31 @@ function officeConflict(result:Awaited<ReturnType<RunOffice>>):boolean{
   try{const receipt=JSON.parse(part.text);return receipt?.error==='conflict'||receipt?.outcome==='conflict';}catch{return false;}
  });
 }
-export function createPaperExportTool(options:{papers:Pick<PaperRepository,'latest'> & Partial<Pick<PaperRepository,'review'>>;paperExportIntent?:PaperExportIntent;sessionId:string;runId:string;current:()=>boolean;wait:Wait;runOffice:RunOffice}):ToolDefinition[]{
+export function createPaperExportTool(options:{papers:Pick<PaperRepository,'readForAgent'|'review'>;paperExportIntent?:PaperExportIntent;
+ sessionId:string;runId:string;current:()=>boolean;taskRuns?:()=>Promise<readonly string[]>;wait:Wait;runOffice:RunOffice}):ToolDefinition[]{
  const supplied=options.paperExportIntent;
  const invalid=supplied!==undefined&&!validPaperExportIntent(supplied);
  const intent=supplied&&!invalid?copyPaperExportIntent(supplied):undefined;
- return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:(intent?'本轮已绑定老师点选的确切确认卷，只允许format='+intent.format+'、audience='+intent.audience+'、template='+intent.template+'；由宿主精确读取，失效时不可换卷或重试其他规格。':'')+'将本会话最新已确认的完整试卷确定性导出为学生卷、教师答案卷或答题卡，并等待教师办公文档审批。只提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)，可选template(paper/answer_sheet，默认paper)；答题卡固定使用学生卷且不含答案或解析。不提供题目、答案、ID或版本；不重新抄题或补题。可使用本会话已授权的试卷保存位置，无需另选教学工作目录；没有可用保存位置时请教师选择，实际授权由宿主校验。已确认完整图文题保留本地原图，教师逐版本核对图片后批准；不支持或不完整的题面明确拒绝，不能退回摘要生成。拒绝或停止后不重复写入。',
-  parameters:{type:'object',additionalProperties:false,required:['format','audience','path'],properties:{format:{type:'string',enum:['docx','pdf']},audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500},template:{type:'string',enum:['paper','answer_sheet']}}} as ToolDefinition['parameters'],
+ return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:(intent?'本轮已绑定老师点选的确切确认卷，只允许format='+intent.format+'、audience='+intent.audience+'、template='+intent.template+'；由宿主精确读取，失效时不可换卷或重试其他规格。':'先用education_read_paper读取教师指定卷，再一并提供该回执的paperId和digest。无引用时，宿主只会采用本轮或任务中能唯一确定的确认卷；多卷时请核对教师要求。')+'从同一份确认快照生成学生卷、教师答案卷或答题卡并等待教师审批。提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)，可选template(paper/answer_sheet，默认paper)；答题卡固定学生卷并省略答案。可直接使用本会话已授权的试卷保存位置，无需另选教学工作目录。已确认完整图文题保留本地原图；无法完整交付时明确报告。拒绝或停止后不重复写入。',
+  parameters:{type:'object',additionalProperties:false,required:['format','audience','path'],properties:{format:{type:'string',enum:['docx','pdf']},audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500},template:{type:'string',enum:['paper','answer_sheet']},paperId:paperAgentReadProperties.paperId,digest:paperAgentReadProperties.digest}} as ToolDefinition['parameters'],
   execute:async(callId,raw,signal)=>{
    const current=()=>{signal?.throwIfAborted();if(!options.current())throw new Error('permission_denied');};
-   try{current();if(invalid||!validPaperExport(raw))throw new Error('invalid_input');
-    if(intent&&(raw.format!==intent.format||raw.audience!==intent.audience||(raw.template??'paper')!==intent.template))throw new Error('conflict');
-    if(intent&&!options.papers.review)throw new Error('configuration');
-    const paper=intent?await readPaperExportIntent(options.papers as Pick<PaperRepository,'review'>,options.sessionId,intent):await options.papers.latest(options.sessionId);
-    current();if(!paper)throw new Error('not_found');
-    const selection=intent?.schemaVersion===SELECTED_PAPER_EXPORT_INTENT_SCHEMA?SELECTED_PAPER_VERSION:undefined;
+   try{current();if(invalid||!validPaperAgentExport(raw))throw new Error('invalid_input');
+    const {paper,intent:bound}=await resolvePaperExport(options.papers,options.sessionId,options.runId,raw,intent,options.taskRuns);
+    current();
+    const selection=bound.schemaVersion===SELECTED_PAPER_EXPORT_INTENT_SCHEMA?SELECTED_PAPER_VERSION:undefined;
     const draft=compilePaperOffice(paper,raw.audience,raw.template??'paper',selection);current();
     const result=await options.runOffice(options.sessionId,options.runId,options.wait,callId,{path:raw.path,format:raw.format,draft,sources:[]},signal);
-    if(intent&&officeConflict(result)){
+    if(officeConflict(result)){
      // Classify only a proven changed binding. A target-file conflict or teacher rejection stays an Office outcome.
-     try{await readPaperExportIntent(options.papers as Pick<PaperRepository,'review'>,options.sessionId,intent);}
+     try{await readPaperExportIntent(options.papers,options.sessionId,bound);}
      catch(error){if(error instanceof Error&&error.message===PAPER_EXPORT_SOURCE_CHANGED)throw error;}
      current();
     }
     return result;
    }catch(error){if(signal?.aborted||(error as Error).message==='cancelled')throw error;
-    const messages:Record<string,string>={not_found:'本会话没有已确认试卷，请先组卷并核对确认。',conflict:'试卷未完整确认或题目来源已变化，请回到组卷核对后重新确认。',unsupported:'此卷含未确认完整题面或缺少可用公式原图的答案，不能完整导出，未生成文件；请返回题库补全核对。',too_large:'完整试卷超过当前文档容量，未截断或生成文件。请拆分试卷后重试。',invalid_input:'请选择学生卷、教师答案卷或答题卡、Word或PDF，并提供授权目录内的新文件名。',permission_denied:'当前任务或工作目录授权已失效。'};
+    const messages:Record<string,string>={not_found:'本会话没有已确认试卷，请先组卷并核对确认。',not_confirmed:'当前任务的试卷尚未确认，请先核对。',ambiguous_paper:'本会话有多份已确认试卷。请先核对教师指定的完整卷名，再按读卷回执导出。',conflict:'试卷或学生版、教师版等规格与本次选择不一致，请核对后重新准备。',unsupported:'此卷含未确认完整题面或缺少可用公式原图的答案，不能完整导出，未生成文件；请返回题库补全核对。',too_large:'完整试卷超过当前文档容量，未截断或生成文件。请拆分试卷后重试。',invalid_input:'请选择学生卷、教师答案卷或答题卡、Word或PDF，并提供授权目录内的新文件名。指定试卷时需同时传 ID 和摘要。',permission_denied:'当前任务或工作目录授权已失效。'};
     messages[PAPER_EXPORT_SOURCE_CHANGED]='这份确认卷已被替代或来源已变化，未生成新的导出文件。请回到组卷重新核对并准备请求；原文件保留。';
-    const code=(error as Error).message;return{content:[{type:'text',text:JSON.stringify({success:false,...(code===PAPER_EXPORT_SOURCE_CHANGED?{error:code}:{}),message:messages[code]||'试卷导出未完成，请检查实际状态后重试。'})}],details:{success:false},isError:true};}
+    const code=(error as Error).message;return{content:[{type:'text',text:JSON.stringify({success:false,...([PAPER_EXPORT_SOURCE_CHANGED,'ambiguous_paper','not_confirmed'].includes(code)?{error:code}:{}),message:messages[code]||'试卷导出未完成，请检查实际状态后重试。'})}],details:{success:false},isError:true};}
   }}];
 }

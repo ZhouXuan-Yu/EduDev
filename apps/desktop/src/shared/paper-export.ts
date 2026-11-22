@@ -23,6 +23,7 @@ export type PaperOfficeFigure={questionId:string;version:string;blockId:string;r
 export const isPaperOfficeSchema=(v:unknown)=>v===PAPER_OFFICE_SCHEMA||isRichPaperOfficeSchema(v);
 export type PaperExportTemplate='paper'|'answer_sheet';
 export type PaperExportInput={format:'docx'|'pdf';audience:'student'|'teacher';path:string;template?:PaperExportTemplate};
+export type PaperAgentExportInput=PaperExportInput&({paperId:string;digest:string}|{paperId?:never;digest?:never});
 export const PAPER_EXPORT_INTENT_SCHEMA='xiaozhi.paper-export-intent.v1' as const;
 export const SELECTED_PAPER_EXPORT_INTENT_SCHEMA='xiaozhi.paper-export-intent.v2' as const;
 export const SELECTED_PAPER_VERSION='selected_version' as const;
@@ -56,6 +57,14 @@ export function validPaperExport(v:unknown):v is PaperExportInput{
  return (exact(v,['format','audience','path'])||exact(v,['format','audience','path','template']))&&['docx','pdf'].includes(String(v.format))&&['student','teacher'].includes(String(v.audience))
   &&template(v.template)&&officeRelativePath(v.path)&&v.path.toLowerCase().endsWith('.'+v.format)
   &&(v.template!=='answer_sheet'||v.audience==='student');
+}
+export function validPaperAgentExport(v:unknown):v is PaperAgentExportInput {
+ if(validPaperExport(v))return true;
+ const keys=['format','audience','path','paperId','digest'];
+ if(!exact(v,keys)&&!exact(v,[...keys,'template']))return false;
+ const {paperId,digest,...spec}=v;
+ return validPaperExport(spec)&&typeof paperId==='string'&&/^xipaper_[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(paperId)
+  &&typeof digest==='string'&&/^[a-f0-9]{64}$/u.test(digest);
 }
 export function validPaperOutput(v:unknown):v is PaperOutputInput{
  return exact(v,['schemaVersion','sessionId'])&&v.schemaVersion===PAPER_OUTPUT_SCHEMA&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId);

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "f62034318e0fbd81b05a1a739e96ad9e8b6a161fc4b92f6651571bf27810998f",
+  "sourceFingerprint": "b9b980393ebf09ac089970e83ed123011771f2c308a3cfd29a1fa06934afce2f",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -819,11 +819,19 @@
             ],
             "type": "string"
           },
+          "digest": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
           "format": {
             "enum": [
               "docx",
               "pdf"
             ],
+            "type": "string"
+          },
+          "paperId": {
+            "pattern": "^xipaper_[a-f0-9-]{36}$",
             "type": "string"
           },
           "path": {

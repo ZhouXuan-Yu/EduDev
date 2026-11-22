@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "958521141428f27d5019a034ff79369d258b3d4ec657916580991d714fbc24d9",
+  "sourceHash": "870d1a8d4f72bad401b42910c0795d539b0589676454019a7e0054130381b1ad",
   "sources": [
     {
       "file": "package-lock.json",
@@ -232,11 +232,11 @@
     },
     {
       "file": "src/main/education/paper-export-intent.ts",
-      "sha256": "36b25449024b29e1e621e9d42575226a610c20d2650b6b3466c97ba99d8356a3"
+      "sha256": "fd4ba28fdf30e2c52c183ab2c5832df2cab07816843bd3418c59c41bd31f6361"
     },
     {
       "file": "src/main/education/paper-export.ts",
-      "sha256": "c2c2c7c89f79caa464d983b918d00691d8d0fcee7035da158da630f76154a854"
+      "sha256": "0902576defa9b37aba9983283b408820cbf2febe9fbea1f91651112cb787dbb9"
     },
     {
       "file": "src/main/education/paper-instance-export.ts",
@@ -732,7 +732,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "56bd8e9e027064967947b8ad7eb52155c20c0f66d1066671f84c876055e81bac"
+      "sha256": "49ce4f93305578bfdd2abbe618d9320d533ebf2c115f85048ee3c245d2cba871"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1428,7 +1428,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "e95a6e575de03191160e119790ef2a65d6a4e5715ceaecd05105b1b10c910eda"
+      "sha256": "9652e524ecf91fa0294ed4fbb2283e7020cd42261fd8bdadfaa290a9b63a50bc"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1464,7 +1464,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "f8cdfa8745eb9f953459f5b22ca7564b6fa207bc953c5afb3abc320781049ffb"
+      "sha256": "b1f8f4041b24c0061eb545d8f289560793a83a30b8596312b549b2f1fc70d2e8"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2256,7 +2256,7 @@
     },
     {
       "file": "src/shared/paper-export.ts",
-      "sha256": "f813388bcf1729c565fe3b1b74eb8f797854b0d8707fd73d0c3f683cdb744940"
+      "sha256": "8a54fccb2a756bb8eea389beb94e14a689451796420687365a86446d15a905a6"
     },
     {
       "file": "src/shared/paper-fulfillment-plan.ts",

@@ -587,14 +587,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     routeJudge:async(id,state,signal)=>judgeRoute(await modelSettings.runtime(id),state,signal),
     assertIdle:()=>{if(closing||!configuring.has('provider')||active.size||starting.size)throw Error('busy');}});
   const candidates=createTeacherCandidateCatalog(store.xiaozhiState.sql);
+  async function paperTaskRuns(id:string,runId:string){
+    const activeTask=active.get(id);
+    if(activeTask?.runId!==runId||!activeTask.task)return [];
+    const record=await tasks.committedRecord(id);
+    if(!record||record.view.id!==activeTask.task.id||!record.runIds.includes(runId))throw Error('conflict');
+    return record.runIds;
+  }
   const paperReviews=createPaperCoordinator({store,
-    taskRuns:async(id,runId)=>{
-      const activeTask=active.get(id);
-      if(activeTask?.runId!==runId||!activeTask.task)return [];
-      const record=await tasks.committedRecord(id);
-      if(!record||record.view.id!==activeTask.task.id||!record.runIds.includes(runId))throw Error('conflict');
-      return record.runIds;
-    },
+    taskRuns:paperTaskRuns,
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canWrite:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'paper_review',review});}
@@ -1036,7 +1037,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId,createScienceLessonSource(store,observedQuestions)),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
-      classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,paperExportIntent:owner?.paperExportIntent,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
+      classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,paperExportIntent:owner?.paperExportIntent,sessionId:id,runId,wait,taskRuns:()=>paperTaskRuns(id,runId),runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await createStudentContextSanitizer(store))(text),protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await (await createStudentContextSanitizer(store))(await deliveries.context(id,owner?.resumeDeliveryId,source=>prepareScienceLessonRefresh(store,source,questionAliases))))
         +(owner&&admittedPrompt?await preparePaperAdaptationContext(store.paperAdaptations,{sessionId:id,studentId,runId,prompt:admittedPrompt},questionAliases,owner.abort.signal,()=>!closing&&!owner.stopped&&active.get(id)===owner):'')

@@ -639,7 +639,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.paperExport){
     if(!educationIdentity.paperExport.present)manager.appendCustomEntry('xiaozhi.education.paper-export.v1',educationIdentity.paperExport.data);
     names.push(...educationIdentity.paperExport.data.tools);
-    prompt+='\n导出本会话已确认试卷必须使用education_export_paper，主进程从确认快照生成完整学生卷或教师答案卷，等待现办公文档审批。不要使用office_create_document重新抄题、猜答案或改写原题；本会话已授权试卷保存位置时直接使用，无需另选教学工作目录。没有可用保存位置时才请教师选择，实际授权由宿主校验。图公式暂不支持时如实报告，不能退回摘要声称完整导出。拒绝或停止后不重试本次写入。';
+    prompt+='\n导出已确认试卷时，先用education_read_paper定位教师所指试卷，再将回执的paperId和digest一起交给education_export_paper。若老师从试卷卡点选，沿本轮宿主绑定使用该卷。多卷且目标不明时请老师指明；来源变化或版本被替代时重新核对，不能自行换卷。主进程生成完整学生卷或教师答案卷并等待文件审批。已有试卷保存授权时使用该位置。不要用office_create_document重抄试卷。图公式暂不支持时如实报告。拒绝或停止后不重试本次写入。';
   }
   if(options.paperReview){
     if(!educationIdentity.paper.present)manager.appendCustomEntry('xiaozhi.education.paper-review.v1',educationIdentity.paper.data);

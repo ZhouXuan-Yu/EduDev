@@ -11,7 +11,7 @@ const {assertPaperOffice,createPaperExportTool}=await import('../../src/main/edu
 const {createOfficeArtifactState}=await import('../../src/main/xiaozhi-agent/office-artifact-state.ts');
 const {createOfficeArtifactService}=await import('../../src/main/xiaozhi-agent/office-artifact-service.ts');
 
-const output=fs.mkdtempSync(path.resolve('test-results/u4d1-exact-paper-races-'));
+const output=fs.mkdtempSync(path.resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||'test-results','u4d1-exact-paper-races-'));
 const report={success:false,checks:[],scope:'Actual repository, SQLite, bound tool and Office service/source lease. Existing synthetic unit question qualification adapter; no production fixture, model, Electron or teacher UI approval claim.'};
 const check=async(name,fn)=>{await fn();report.checks.push({name,pass:true});console.log('PASS '+name);};
 const opened=[];
