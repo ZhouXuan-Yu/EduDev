@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 用本机合成服务跑实际 Electron，读取消息与原 Task，证明一问一目标和冷启动续做的差异。整体验收仍按逐阶段合同推进。 [证据和人工步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 用本地合成响应驱动实际 Electron。现有证据覆盖原任务修订、暂停取消、实时澄清和异常关闭后的回接。手测入口、边界和剩余场景见本阶段记录。 [证据和人工步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

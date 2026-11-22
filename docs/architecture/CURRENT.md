@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-一般知识问答和教学任务复用同一 Pi、Journal 与会话历史。主进程判定是否分配业务 Task，普通问答的 Pi 工具集合为空。已有静止任务沿原记账通道继续。 [D3 调用链与状态](../product-agent/00_CURRENT_STATE_AUDIT.md)
+一般知识问答和教学任务复用同一 Pi、Journal 与会话历史。主进程判定是否分配业务 Task。教师修订推进原任务的要求版本。任务结束和教师澄清回接由原 Task 检查点控制。 [D3 调用链与状态](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md)
 
 ## 2026-11-22 小智 Harness D1
 

@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 当前在 Phase 1。审计、设计规范映射与首个闭环已登记。下一切片是明确追加和修改时保留原任务与来源。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 当前在 Phase 1。已记录问答分流、自然语言修订、任务控制和异常关闭后的回接。下一切片是后台子任务及结果归集。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

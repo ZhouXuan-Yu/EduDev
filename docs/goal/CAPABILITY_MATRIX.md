@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-一般知识问答只走已有会话和 Pi。需要文件、题库、成果、技能或已有任务时沿现有工作入口获得对应能力。 [D3 能力映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)
+一般知识问答使用已有会话和 Pi。教学任务可修订、暂停、恢复或取消。已中断的澄清以原 Run 的任务身份和要求版本为准，能力和审批仍按各自入口治理。 [D3 能力映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)
 
 ## 2026-11-22 小智 Harness D1
 

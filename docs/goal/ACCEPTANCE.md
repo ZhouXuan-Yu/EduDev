@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 首轮核对普通问题、明确成果目标、插入问答、退出后继续。已确定的范围与未验证的教师体验分开留证。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 当前专项包含原任务修订、任务暂停与结束、实时教师澄清、异常关闭后继续原任务及历史题卡隔离。实际 Electron 与本地合成模型证据保存在固定验收根。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 
