@@ -9,8 +9,8 @@ const requestedArtifact = /(?:给|替|帮|为)我[一两几三四五六七八九
 const suppliedSource = /(?:刚才|之前|当前|以上|上面的|这[个份道张]|我(?:的|上传的|提供的|给的)|从)的?\s*(?:资料库|知识库|题库|附件|文件|会话|试卷|教案|讲义|课件|任务|成果|记录|学生|题目)|\bhttps?:\/\//iu;
 
 /** Only clear requests for an answer may enter the tool-free conversation path. */
-export function isStandaloneAnswer(input: Pick<XiaozhiStartInput,'prompt'|'attachments'|'presentation'|'continueTask'|'classroomPlan'|'resumeDeliveryId'|'paperExportIntent'>) {
-    if(input.attachments?.length||input.presentation||input.continueTask||input.classroomPlan||input.resumeDeliveryId||input.paperExportIntent)return false;
+export function isStandaloneAnswer(input: Pick<XiaozhiStartInput,'prompt'|'attachments'|'presentation'|'continueTask'|'classroomPlan'|'resumeDeliveryId'|'paperExportIntent'|'mockExamExportIntent'>) {
+    if(input.attachments?.length||input.presentation||input.continueTask||input.classroomPlan||input.resumeDeliveryId||input.paperExportIntent||input.mockExamExportIntent)return false;
     const text=input.prompt.trim().normalize('NFKC');
     if(!text||text.length>600||text.startsWith('/')||/\r|\n/u.test(text)||isTaskFollowUp(text)||isTaskAmendment(text))return false;
     if(greeting.test(text))return true;

@@ -1,4 +1,5 @@
 import {computationEffectTool,structuredOutputTool} from '../../../shared/xiaozhi-computation';
+import {EXPORT_MOCK_EXAM} from '../../../shared/mock-exam-export';
 import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,6 +22,7 @@ const hex=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{6
 const effects=new Set(['education_create_report','education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','education_propose_questions','education_propose_practice']);
 effects.add('education_export_teaching_lesson');
 effects.add(EXPORT_TEACHING_HANDOUT);
+effects.add(EXPORT_MOCK_EXAM);
 const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',office_deliver_files:'saved_bundle',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
 async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
  let timer:ReturnType<typeof setTimeout>|undefined;

@@ -1,6 +1,7 @@
 import {PAPER_C2_OFFICE_SCHEMA} from '../../shared/paper-export';
 import {isClassroomOfficeSchema,validClassroomOfficeFormat} from '../../shared/classroom-export';
 import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
+import {MOCK_EXAM_OFFICE_SCHEMA} from '../../shared/mock-exam-export';
 import {TEACHING_HANDOUT_OFFICE_SCHEMA} from '../../shared/teaching-handout-export';
 import {handoutSourceChanged} from '../education/teaching-handout-office';
 import {assertFileWritesEnabled} from './file-write-policy';
@@ -55,6 +56,9 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  commitLessonDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
  validateHandoutDraft?:(sessionId:string,draft:OfficeDraft)=>Promise<void>;
  commitHandoutDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
+ validateMockExamDraft?:(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>Promise<void>;
+ verifyMockExamDraft?:(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>Promise<void>;
+ commitMockExamDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void,signal?:AbortSignal)=>Promise<void>;
  validatePaperDraft?:(sessionId:string,draft:OfficeDraft)=>Promise<void>;
  commitPaperDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
   recoverPaperDraft?:<T>(sessionId:string,draft:OfficeDraft,assertCurrent:()=>void,action:(ledger:Ledger)=>Promise<T>,assertAuthority:()=>Promise<void>)=>Promise<T>;
@@ -62,7 +66,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  generate?: (format:PrivateOfficeArtifact['format'],draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;images?:ReadonlyMap<string,Buffer>})=>Promise<Buffer>;
  afterStage?:(stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;onState?:(summary:ReturnType<typeof officeSummary>)=>void}){
  const {state}=options;
- const validatePaper=async(sessionId:string,draft:OfficeDraft)=>{
+ const validateBoundDraft=async(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>{
+  if(draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA){
+   if(!options.validateMockExamDraft||!options.verifyMockExamDraft||!options.commitMockExamDraft)throw Error('permission_denied');
+   await options.validateMockExamDraft(sessionId,draft,signal);
+  }
   if(draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA){
    if(!options.validateHandoutDraft||!options.commitHandoutDraft)throw Error('permission_denied');
    try{await options.validateHandoutDraft(sessionId,draft);}
@@ -85,7 +93,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  }
  async function owned(sessionId:string,id:string){const row=await state.get(id);if(!row||row.sessionId!==sessionId)throw new Error('permission_denied');return row;}
   async function recheck(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal,checkPaper=true,assertCurrent=()=>current(row,signal)){
-   assertCurrent();if(checkPaper){await validatePaper(row.sessionId,row.draft);assertCurrent();}
+   assertCurrent();if(checkPaper){await validateBoundDraft(row.sessionId,row.draft,signal);assertCurrent();}
   if(row.parentArtifactId){
     const parent=await state.parent(row.parentArtifactId);assertCurrent();const source=row.sources.find(s=>s.kind==='parent_artifact');
    if(!parent||!source||parent.session_id!==row.sessionId||parent.content_hash!==source.sha256||parent.file_path!==file(root,source.path))throw new Error('conflict');
@@ -132,8 +140,8 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    if(isPresentationDraft(input.draft)&&!isMathOfficeSchema(input.draft.schemaVersion)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(section=>presentationPageLayout(section));current({sessionId,runId},signal);}
    if(isClassroomOfficeSchema(input.draft.schemaVersion)&&(input.sources.length||input.parentArtifactId||!validClassroomOfficeFormat(input.draft.schemaVersion,input.format)))throw Error('invalid_input');
    if(isPaperOfficeDraft(input.draft)&&(input.sources.length||input.parentArtifactId||!['docx','pdf'].includes(input.format)))throw new Error('invalid_input');
-   if([TEACHING_LESSON_OFFICE_SCHEMA,TEACHING_HANDOUT_OFFICE_SCHEMA].some(schema=>schema===input.draft.schemaVersion)&&(input.sources.length||input.parentArtifactId))throw Error('invalid_input');
-   await validatePaper(sessionId,input.draft);current({sessionId,runId},signal);
+   if([TEACHING_LESSON_OFFICE_SCHEMA,TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===input.draft.schemaVersion)&&(input.sources.length||input.parentArtifactId))throw Error('invalid_input');
+   await validateBoundDraft(sessionId,input.draft,signal);current({sessionId,runId},signal);
    await images(sessionId,input.draft,signal);current({sessionId,runId},signal);
    const inputHash=officeSha(JSON.stringify(input)),existing=await state.call(sessionId,runId,callId);current({sessionId,runId},signal);
    if(existing){if(existing.inputHash!==inputHash||existing.workspaceHash!==workspaceHash(root))throw new Error('conflict');return officeSummary(existing);}
@@ -162,7 +170,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
   },
   async review(sessionId:string,id:string){
    const row=await owned(sessionId,id),root=await authority(sessionId,row);target(root,row);
-   if(isRichPaperOfficeSchema(row.draft.schemaVersion))await validatePaper(sessionId,row.draft);
+   if(isRichPaperOfficeSchema(row.draft.schemaVersion))await validateBoundDraft(sessionId,row.draft);
    const resolved=await images(sessionId,row.draft);await authority(sessionId,row);
    return {...officeSummary(row),draft:row.draft,sources:row.sources,parentArtifactId:row.parentArtifactId,...(resolved?{images:[...resolved].map(([assetId,bytes])=>({assetId,sha256:officeSha(bytes),dataUrl:'data:image/png;base64,'+bytes.toString('base64')}))}:{})};
   },
@@ -187,11 +195,13 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     if(!isClassroomOfficeSchema(latest.draft.schemaVersion)&&isClassroomOfficeSchema(content.schemaVersion))throw Error('permission_denied');
     if(latest.draft.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA&&(content.schemaVersion!==TEACHING_LESSON_OFFICE_SCHEMA||!isDeepStrictEqual(content.lessonSource,latest.draft.lessonSource)))throw Error('conflict');
     if(latest.draft.schemaVersion!==TEACHING_LESSON_OFFICE_SCHEMA&&content.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA)throw Error('permission_denied');
-    if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA&&!isDeepStrictEqual(content,latest.draft))throw Error('conflict');
-    if(latest.draft.schemaVersion!==TEACHING_HANDOUT_OFFICE_SCHEMA&&content.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA)throw Error('permission_denied');
+    for(const schema of [TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA]){
+     if(latest.draft.schemaVersion===schema&&!isDeepStrictEqual(content,latest.draft))throw Error('conflict');
+     if(latest.draft.schemaVersion!==schema&&content.schemaVersion===schema)throw Error('permission_denied');
+    }
     if(isPaperOfficeDraft(latest.draft)&&(!isPaperOfficeDraft(content)||content.schemaVersion!==latest.draft.schemaVersion||JSON.stringify(content.paperSource)!==JSON.stringify(latest.draft.paperSource)))throw new Error('conflict');
     if(!isPaperOfficeDraft(latest.draft)&&isPaperOfficeDraft(content))throw new Error('permission_denied');
-    await validatePaper(sessionId,content);current(latest);
+    await validateBoundDraft(sessionId,content);current(latest);
     if(latest.revision!==revision||latest.state!=='pending')throw new Error('conflict');
     if(!compatible(root,latest))return conflict(latest);
     return officeSummary(await state.transition(latest,['pending'],'pending',{draft:content}));
@@ -230,8 +240,14 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
     }
     if(latest.state!=='pending')throw new Error('conflict');
-    try{await recheck(latest,root,undefined,input.action!=='reject');}
-    catch(error){if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA&&handoutSourceChanged(error))return conflict(latest);throw error;}
+    try{
+     await recheck(latest,root,undefined,input.action!=='reject');
+     if(input.action==='approve'&&latest.draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA){
+      await options.verifyMockExamDraft!(latest.sessionId,latest.draft);
+      current(latest);
+     }
+    }
+    catch(error){if([TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===latest.draft.schemaVersion)&&handoutSourceChanged(error))return conflict(latest);throw error;}
     if(input.action==='approve'&&isClassroomOfficeSchema(latest.draft.schemaVersion)){if(input.imagesReviewed!==true)throw Error('invalid_input');}
     else if(input.action==='approve'&&isRichPaperOfficeSchema(latest.draft.schemaVersion)&&latest.draft.sections.some(s=>s.figures?.length)){if(input.imagesReviewed!==true)throw new Error('invalid_input');await images(input.sessionId,latest.draft);current(latest);}
     else if(input.imagesReviewed!==undefined)throw new Error('invalid_input');
@@ -246,7 +262,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     let latest=await owned(sessionId,id);
     if(latest.state!=='approved')throw new Error('conflict');if(!compatible(root,latest))return conflict(latest);
     try{await recheck(latest,root,signal);}
-    catch(error){if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA&&handoutSourceChanged(error))return conflict(latest);throw error;}
+    catch(error){if([TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===latest.draft.schemaVersion)&&handoutSourceChanged(error))return conflict(latest);throw error;}
     latest=await state.transition(latest,['approved'],'generating');
     notify(latest);
     try{
@@ -266,6 +282,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
       if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
       else if(latest.draft.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA){if(!options.commitLessonDraft)throw Error('permission_denied');await options.commitLessonDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
       else if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA){if(!options.commitHandoutDraft)throw Error('permission_denied');await options.commitHandoutDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+      else if(latest.draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA){if(!options.commitMockExamDraft)throw Error('permission_denied');await options.commitMockExamDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal),signal);}
       else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
       else install(root,latest,temporary,signal);
      });
@@ -278,8 +295,8 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     }catch(error){
      const pending=await state.get(id);
      if(pending&&['generating','prepared','committing'].includes(pending.state)){
-      const handoutConflict=pending.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA&&handoutSourceChanged(error);
-      await state.transition(pending,[pending.state],pending.state==='committing'?'uncertain':signal?.aborted||(error as Error).message==='cancelled'?'interrupted':(error as Error).message==='conflict'||handoutConflict?'conflict':'failed');
+      const boundSourceConflict=[TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===pending.draft.schemaVersion)&&handoutSourceChanged(error);
+      await state.transition(pending,[pending.state],pending.state==='committing'?'uncertain':signal?.aborted||(error as Error).message==='cancelled'?'interrupted':(error as Error).message==='conflict'||boundSourceConflict?'conflict':'failed');
      }
      throw error;
     }

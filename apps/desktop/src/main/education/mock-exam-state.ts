@@ -4,6 +4,7 @@ import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogChange,type Mo
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import type {WorkbenchMockExamRow} from '../../shared/xiaozhi-workbench';
+import type {MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import type {HandoutOwner} from './teaching-handout-state';
 import {mockExamPosition,mockExamTitle} from './mock-exam-metadata';
@@ -126,6 +127,13 @@ export function createMockExamState(sql:Sql) {
     await work.run('UPDATE mock_exam_compilations SET revision=? WHERE id=? AND revision=?',[revision,id,priorRevision]);
     return view(work,sessionId,id);
   }
+  async function confirmed(work:Sql,sessionId:string,source:MockExamOfficeSource){
+    const current=await view(work,sessionId,source.catalogId);
+    if(current.summary.revision!==source.revision||current.summary.digest!==source.digest)throw Error('version_conflict');
+    if(current.summary.state!=='confirmed')throw Error('not_confirmed');
+    for(const entry of current.entries.filter(entry=>entry.include))await assertMockExamSource(work,entry);
+    return current;
+  }
   return {
     async migrate() {
       await sql.run(`CREATE TABLE IF NOT EXISTS mock_exam_compilations (
@@ -141,7 +149,7 @@ export function createMockExamState(sql:Sql) {
     async list(sessionId:string){
       return (await sql.all('SELECT '+snapshotColumns+' '+currentJoin+' WHERE c.session_id=? ORDER BY c.created_at DESC,c.id DESC LIMIT 100',[sessionId])).map(summary);
     },
-    async editTargets(sessionId:string,taskId:string,title?:string){
+    async targets(sessionId:string,taskId:string,title?:string){
       await allowed(sql,sessionId);
       const bucket=async(condition:string,value?:string)=>(await sql.all(`SELECT ${snapshotColumns} ${currentJoin}
         WHERE c.session_id=?${condition} ORDER BY v.created_at DESC,c.id LIMIT 12`,value===undefined?[sessionId]:[sessionId,value])).map(summary);
@@ -149,6 +157,9 @@ export function createMockExamState(sql:Sql) {
       const inTask=await bucket(' AND c.task_id=?',taskId);
       return inTask.length?inTask:bucket('');
     },
+    readConfirmed:(sessionId:string,source:MockExamOfficeSource)=>confirmed(sql,sessionId,source),
+    withConfirmed:<T>(sessionId:string,source:MockExamOfficeSource,action:(catalog:MockExamCatalog)=>T)=>
+      write(async work=>action(await confirmed(work,sessionId,source))),
     view:(sessionId:string,id:string,revision?:number)=>view(sql,sessionId,id,revision),
     viewWithin:view,
     installDraft:(work:Sql,sessionId:string,id:string,priorRevision:number,snapshot:Snapshot)=>install(work,sessionId,id,priorRevision,'draft',snapshot),

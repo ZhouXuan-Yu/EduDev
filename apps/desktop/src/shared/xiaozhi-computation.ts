@@ -1,3 +1,4 @@
+import {EXPORT_MOCK_EXAM} from './mock-exam-export';
 import {EXPORT_TEACHING_HANDOUT} from './teaching-handout-export';
 export const TABLE_INPUT_SCHEMA='xiaozhi.table-input.v1' as const;
 export type ComputationCell=string|number|null;
@@ -17,7 +18,7 @@ export function computationColumns(v:unknown):v is ComputationColumn[]{
   &&!keys.has(c.key)&&!labels.has(c.label)&&!!keys.add(c.key)&&!!labels.add(c.label));
 }
 /** Select a file-effect reader from the actual host receipt, never a model claim. */
-export const structuredOfficeExport=(tool:string)=>tool==='education_export_teaching_lesson'||tool===EXPORT_TEACHING_HANDOUT;
+export const structuredOfficeExport=(tool:string)=>tool==='education_export_teaching_lesson'||tool===EXPORT_TEACHING_HANDOUT||tool===EXPORT_MOCK_EXAM;
 export const structuredOutputTool=(tool:string)=>tool==='education_create_report'||structuredOfficeExport(tool);
 export function computationEffectTool(tool:string,payload:Record<string,unknown>):string{
  if(!structuredOutputTool(tool))return tool;

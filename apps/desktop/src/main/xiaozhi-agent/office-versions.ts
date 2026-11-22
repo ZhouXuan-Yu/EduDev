@@ -11,6 +11,7 @@ import {fileVersion} from './workspace-files';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {officeVersionFamilies} from './office-version-family';
 import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
+import {MOCK_EXAM_OFFICE_SCHEMA} from '../../shared/mock-exam-export';
 import {TEACHING_HANDOUT_OFFICE_SCHEMA} from '../../shared/teaching-handout-export';
 
 type RecordVersion={artifactId:string;path:string;title:string;format:string;parentArtifactId:string|null;savedAt:string;size:number;sha256:string;workspaceHash:string;draftSchema:string;sourcePaths:string;changedSections:string;sectionCount:number;parentSectionCount:number|null;runId:string};
@@ -29,7 +30,7 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
   const selected=rows.find(row=>row.artifactId===id);if(!selected)throw Error('permission_denied');
   // A confirmed lesson export is an immutable source-bound publication. Read
   // its saved bytes/history without admitting it to ordinary file restoration.
-  if(selected.draftSchema===TEACHING_LESSON_OFFICE_SCHEMA||selected.draftSchema===TEACHING_HANDOUT_OFFICE_SCHEMA)return[selected];
+  if(selected.draftSchema===TEACHING_LESSON_OFFICE_SCHEMA||selected.draftSchema===TEACHING_HANDOUT_OFFICE_SCHEMA||selected.draftSchema===MOCK_EXAM_OFFICE_SCHEMA)return[selected];
   if(!ordinary(selected))throw Error('unsupported');
   const families=officeVersionFamilies(rows),ancestor=families.get(id)!.familyId;return rows.filter(row=>families.get(row.artifactId)?.familyId===ancestor);
  }

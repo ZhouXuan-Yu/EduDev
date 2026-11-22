@@ -1,4 +1,5 @@
 import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
+import {MOCK_EXAM_OFFICE_SCHEMA} from '../../shared/mock-exam-export';
 import {TEACHING_HANDOUT_OFFICE_SCHEMA} from '../../shared/teaching-handout-export';
 import {validPresentationEditProposal,PRESENTATION_EDIT_PARAMETERS,PRESENTATION_EDIT_INSTRUCTIONS} from '../../shared/xiaozhi-presentation-edit';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
@@ -90,7 +91,7 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
       const blocked=await options.preflight?.(value.sessionId,waiting.runId,draft.callId,[{kind:'office',id:draft.id}],undefined);
       if(blocked)return{ok:false,error:'configuration'};
      }catch(raw){
-      if(draft.draft.schemaVersion!==TEACHING_HANDOUT_OFFICE_SCHEMA||!(raw instanceof Error)||raw.message!=='source_changed')throw raw;
+      if(![TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===draft.draft.schemaVersion)||!(raw instanceof Error)||raw.message!=='source_changed')throw raw;
       if(draft.revision!==value.revision||draft.state!=='pending')throw Error('conflict');
       await options.state.transition(draft,['pending'],'conflict');
       const summary=await publish(value.sessionId,value.draftId);

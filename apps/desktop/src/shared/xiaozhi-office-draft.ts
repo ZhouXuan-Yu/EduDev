@@ -3,6 +3,7 @@ import {PAPER_C2_OFFICE_SCHEMA,PAPER_OFFICE_SCHEMA,PAPER_RICH_OFFICE_SCHEMA,PAPE
 import {PAPER_PRINT_LAYOUT} from './paper-print-layout';
 import {TEACHING_LESSON_OFFICE_SCHEMA,validTeachingLessonOfficeSource,type TeachingLessonOfficeSource} from './teaching-lesson-export';
 import {TEACHING_HANDOUT_OFFICE_SCHEMA,validTeachingHandoutOfficeSource,type TeachingHandoutOfficeSource} from './teaching-handout-export';
+import {MOCK_EXAM_OFFICE_SCHEMA,mockExamExportFormat,validMockExamOfficeSource,type MockExamOfficeSource} from './mock-exam-export';
 export const OFFICE_DRAFT_SCHEMA = 'xiaozhi.office-draft.v1' as const;
 export const PRESENTATION_DRAFT_SCHEMA = 'xiaozhi.presentation-draft.v1' as const;
 export const MATH_OFFICE_DRAFT_SCHEMA = 'xiaozhi.office-draft.v2' as const;
@@ -10,7 +11,7 @@ export const MATH_PRESENTATION_DRAFT_SCHEMA = 'xiaozhi.presentation-draft.v2' as
 export const isPresentationSchema=(schema:unknown)=>schema===PRESENTATION_DRAFT_SCHEMA||schema===MATH_PRESENTATION_DRAFT_SCHEMA;
 export const isOrdinaryOfficeSchema=(schema:unknown)=>schema===OFFICE_DRAFT_SCHEMA||schema===MATH_OFFICE_DRAFT_SCHEMA||isPresentationSchema(schema);
 export const isMathOfficeSchema=(schema:unknown)=>schema===MATH_OFFICE_DRAFT_SCHEMA||schema===MATH_PRESENTATION_DRAFT_SCHEMA||schema===TEACHING_HANDOUT_OFFICE_SCHEMA;
-export const validOfficeDraftFormat=(schema:unknown,format:unknown)=>schema===TEACHING_HANDOUT_OFFICE_SCHEMA?format==='docx':schema===PAPER_C2_OFFICE_SCHEMA?format==='docx'||format==='pdf':isPresentationSchema(schema)?format==='pptx':schema===MATH_OFFICE_DRAFT_SCHEMA||schema===TEACHING_LESSON_OFFICE_SCHEMA?format==='docx'||format==='pdf':true;
+export const validOfficeDraftFormat=(schema:unknown,format:unknown)=>schema===MOCK_EXAM_OFFICE_SCHEMA?mockExamExportFormat(format):schema===TEACHING_HANDOUT_OFFICE_SCHEMA?format==='docx':schema===PAPER_C2_OFFICE_SCHEMA?format==='docx'||format==='pdf':isPresentationSchema(schema)?format==='pptx':schema===MATH_OFFICE_DRAFT_SCHEMA||schema===TEACHING_LESSON_OFFICE_SCHEMA?format==='docx'||format==='pdf':true;
 export const OFFICE_DRAFT_MAX_BYTES = 256 * 1024;
 export const OFFICE_OUTPUT_MAX_BYTES = 16 * 1024 * 1024;
 export type OfficeOutputFormat = 'docx' | 'pdf' | 'xlsx' | 'pptx';
@@ -20,7 +21,7 @@ export type PresentationNote={kind:'script'|'answer';text:string};
 export type OfficeSection = { heading: string; paragraphs: string[]; table?: OfficeTable; figures?:PaperOfficeFigure[];pageId?:string;speakerNotes?:PresentationNote[];printKind?:'heading'|'answer_area' };
 export type PresentationSection=OfficeSection&{pageId:string;speakerNotes:PresentationNote[]};
 export type PresentationDraft={schemaVersion:typeof PRESENTATION_DRAFT_SCHEMA|typeof MATH_PRESENTATION_DRAFT_SCHEMA;title:string;sections:PresentationSection[]};
-export type OfficeDraft = PresentationDraft | ({title:string;sections:OfficeSection[]} & ({schemaVersion:typeof OFFICE_DRAFT_SCHEMA|typeof MATH_OFFICE_DRAFT_SCHEMA}|{schemaVersion:typeof TEACHING_LESSON_OFFICE_SCHEMA;lessonSource:TeachingLessonOfficeSource}|{schemaVersion:typeof TEACHING_HANDOUT_OFFICE_SCHEMA;handoutSource:TeachingHandoutOfficeSource}|{schemaVersion:typeof CLASSROOM_OFFICE_SCHEMA|typeof CLASSROOM_DOCUMENT_OFFICE_SCHEMA;classroomSource:ClassroomOfficeSource}|{schemaVersion:typeof PAPER_C2_OFFICE_SCHEMA|typeof PAPER_OFFICE_SCHEMA|typeof PAPER_RICH_OFFICE_SCHEMA|typeof PAPER_MATH_OFFICE_SCHEMA|typeof PAPER_TABLE_OFFICE_SCHEMA|typeof PAPER_ANSWER_SHEET_OFFICE_SCHEMA;paperSource:PaperOfficeSource}));
+export type OfficeDraft = PresentationDraft | ({title:string;sections:OfficeSection[]} & ({schemaVersion:typeof OFFICE_DRAFT_SCHEMA|typeof MATH_OFFICE_DRAFT_SCHEMA}|{schemaVersion:typeof TEACHING_LESSON_OFFICE_SCHEMA;lessonSource:TeachingLessonOfficeSource}|{schemaVersion:typeof TEACHING_HANDOUT_OFFICE_SCHEMA;handoutSource:TeachingHandoutOfficeSource}|{schemaVersion:typeof MOCK_EXAM_OFFICE_SCHEMA;mockExamSource:MockExamOfficeSource}|{schemaVersion:typeof CLASSROOM_OFFICE_SCHEMA|typeof CLASSROOM_DOCUMENT_OFFICE_SCHEMA;classroomSource:ClassroomOfficeSource}|{schemaVersion:typeof PAPER_C2_OFFICE_SCHEMA|typeof PAPER_OFFICE_SCHEMA|typeof PAPER_RICH_OFFICE_SCHEMA|typeof PAPER_MATH_OFFICE_SCHEMA|typeof PAPER_TABLE_OFFICE_SCHEMA|typeof PAPER_ANSWER_SHEET_OFFICE_SCHEMA;paperSource:PaperOfficeSource}));
 export const isPresentationDraft=(draft:OfficeDraft):draft is PresentationDraft=>isPresentationSchema(draft.schemaVersion);
 export const isPaperOfficeDraft=(draft:OfficeDraft):draft is Extract<OfficeDraft,{paperSource:PaperOfficeSource}>=>isPaperOfficeSchema(draft.schemaVersion);
 export const isTeachingHandoutOfficeDraft=(draft:OfficeDraft):draft is Extract<OfficeDraft,{handoutSource:TeachingHandoutOfficeSource}>=>draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA;
@@ -33,6 +34,7 @@ export function validOfficeDraft(value: unknown): value is OfficeDraft {
   const presentation=isPresentationSchema(value.schemaVersion);
   const lesson=value.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA;
   const handout=value.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA;
+  const mockExam=value.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA;
   if(lesson&&!validTeachingLessonOfficeSource(value.lessonSource))return false;
   const paper=isPaperOfficeSchema(value.schemaVersion),rich=isRichPaperOfficeSchema(value.schemaVersion),classroom=isClassroomOfficeSchema(value.schemaVersion);
   if(classroom&&(!validClassroomOfficeSource(value.classroomSource)||(value.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA?!value.classroomSource.purpose:value.classroomSource.purpose!==undefined)))return false;
@@ -40,12 +42,12 @@ export function validOfficeDraft(value: unknown): value is OfficeDraft {
   if(paper&&((value.schemaVersion===PAPER_C2_OFFICE_SCHEMA)!==((value.paperSource as PaperOfficeSource|undefined)?.snapshotSchema!==undefined)))return false;
   const printed=paper&&(value.paperSource as PaperOfficeSource|undefined)?.printLayout===PAPER_PRINT_LAYOUT;
   if(paper&&value.schemaVersion!==PAPER_C2_OFFICE_SCHEMA&&(value.schemaVersion===PAPER_ANSWER_SHEET_OFFICE_SCHEMA)!==(paperTemplate==='answer_sheet'))return false;
-  if (!keys(value, handout?['schemaVersion','title','sections','handoutSource']:lesson?['schemaVersion','title','sections','lessonSource']:classroom?['schemaVersion','title','sections','classroomSource']:paper?['schemaVersion','title','sections','paperSource']:['schemaVersion', 'title', 'sections']) || (handout?!validTeachingHandoutOfficeSource(value.handoutSource):lesson?!validTeachingLessonOfficeSource(value.lessonSource):classroom?!validClassroomOfficeSource(value.classroomSource):paper?!validPaperOfficeSource(value.paperSource):!isOrdinaryOfficeSchema(value.schemaVersion))
+  if (!keys(value, mockExam?['schemaVersion','title','sections','mockExamSource']:handout?['schemaVersion','title','sections','handoutSource']:lesson?['schemaVersion','title','sections','lessonSource']:classroom?['schemaVersion','title','sections','classroomSource']:paper?['schemaVersion','title','sections','paperSource']:['schemaVersion', 'title', 'sections']) || (mockExam?!validMockExamOfficeSource(value.mockExamSource):handout?!validTeachingHandoutOfficeSource(value.handoutSource):lesson?!validTeachingLessonOfficeSource(value.lessonSource):classroom?!validClassroomOfficeSource(value.classroomSource):paper?!validPaperOfficeSource(value.paperSource):!isOrdinaryOfficeSchema(value.schemaVersion))
     || !text(value.title, 120) || !Array.isArray(value.sections) || !value.sections.length || value.sections.length > (rich?121:20)) return false;
   const imageIds=new Set<string>(),pageIds=new Set<string>();let imageCount=0;
   for (const section of value.sections) {
     if (!object(section) || !keys(section, [...(presentation?['heading','paragraphs','table','pageId','speakerNotes']:(value.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA||value.schemaVersion===PAPER_C2_OFFICE_SCHEMA)?['heading','paragraphs','figures','table']:rich?['heading','paragraphs','figures']:['heading', 'paragraphs', 'table']),...(printed?['printKind']:[])]) || !text(section.heading, 120)
-      || !Array.isArray(section.paragraphs) || section.paragraphs.length > (classroom||lesson||handout?200:rich?128:20) || !Array.from(section.paragraphs).every(p => text(p, 1000))) return false;
+      || !Array.isArray(section.paragraphs) || section.paragraphs.length > (mockExam?400:classroom||lesson||handout?200:rich?128:20) || !Array.from(section.paragraphs).every(p => text(p, 1000))) return false;
     if(presentation){
       if(typeof section.pageId!=='string'||!/^[a-z][a-z0-9_-]{0,63}$/.test(section.pageId)||pageIds.has(section.pageId)
         ||!Array.isArray(section.speakerNotes)||!section.speakerNotes.length||section.speakerNotes.length>16

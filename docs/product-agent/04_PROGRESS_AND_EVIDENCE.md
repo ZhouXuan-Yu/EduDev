@@ -569,3 +569,22 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-edit`。手动验收窗口、CMD 和步骤在 `manual-phase4-mock-exam-edit`，已保留待核对建议。首轮克隆测试打开了另一条会话。复测发现「只改」命中创建而非修订，已修正。Pi 对越权字段的原生文本错误加入测试断言。失败报告保留。使用本地合成模型响应，0 付费请求。生产依赖审计为既有 20 项，其中 2 项 high，无依赖变更。
 
 对话精确修订 **已实现**。继续 Phase 4.3 的实际文件导出，以及真实扫描、缺页、分栏、公式与图表质量验收。
+
+## Phase 4.3 Word 和 PDF 模考目录
+
+「教学工作台 → 教学文件 → 模考汇编」对确认版显示 Word 和 PDF 导出入口。工作台传入明确的会话、目录编号、修订、摘要与格式。原对话也接受导出请求，使用同版 Word 和 PDF 时可一次审阅。宿主从当前记录编译分区目录、原件出处、许可及答案册配对状态，待核对的同名目录不能生成文件。预览可查看来源，目录内容在来源页修改并重新确认。
+
+沿用 Office 审批、正式文件台账和整包一致性核对。审批及安装前核对源版本和实存文件，拒绝、来源漂移或目标冲突时不覆盖。没有 SQLite 迁移。旧构建仍可通过文件系统打开导出的目录。目录包含索引和来源证据，试卷与答案册原件另经许可打包。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-export` | TypeScript 与 Electron 构建通过。主进程 SHA-256 `36e82562b654682c2c93fa1522161243f16b32407e51dc70adfa12e332db1ed9`。 |
+| `node scripts/education/mock-exam-export-electron.mjs` | 4/4。实际 Electron 操作覆盖待核目录无按钮、同名错误目标拒绝、指定版本和格式、预览与审批、Word/PDF 文件及账本摘要、答案册实存字节变化、拒绝和冷启。见 `mock-exam-export-i0MFGI/report.json` 及两种窗口尺寸的截图。第一次测试使用了未展开对话卡的导航入口，改为从教学文件打开。首次失败报告保留。 |
+| `npm.cmd run test:renderer-components` | 253/253，见 `renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同一最终构建的桌面综合回归 207/207，见 `electron-smoke.log`。 |
+| `node scripts/education/teaching-handout-export-electron.mjs` | 现有讲义单份及整包 Office 回归 4/4，见 `handout-export-Kxqf8W/report.json`。第一次选的是待确认讲义，替换为从已确认演示快照取得的样本。 |
+| Word、WPS、PDF 实文件读回 | Word 16.0、WPS 12.0 只读打开同一 DOCX，确认 A4 和关键文本。PDF 按 A4 读取页面和中文内容。见 `native-office-readback.json` 和导出报告。 |
+
+专项验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-export`，手动启动、步骤与实际窗口身份保存在同一验收根的 `manual-phase4-mock-exam-export`。专项运行使用本地合成模型响应，0 付费请求。生产依赖未变，审计现有 20 条报告，其中 2 条 high。
+
+Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存文件保留。剩余格式可从当前确认版单独发起，原包接续仍待补齐。下一项为保留原始字节、逐份核对用途许可的原件包，随后检查真实缺页、扫描、分栏、公式与图表。

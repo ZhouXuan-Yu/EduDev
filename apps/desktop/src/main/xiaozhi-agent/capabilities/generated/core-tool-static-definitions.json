@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "32825122d44268bfe47c754f0809fb3af4bdfc820cb497c8806efce79544e700",
+  "sourceFingerprint": "0562c44f1974f891a2e255a43ff7a61cbd7a53749521344b5695b2b30c362ec0",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -854,6 +854,60 @@
       }
     },
     {
+      "name": "education_export_mock_exam_catalog",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "catalogId": {
+            "pattern": "^mock_catalog_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "digest": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "outputs": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "format": {
+                  "enum": [
+                    "docx",
+                    "pdf"
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "format",
+                "path"
+              ],
+              "type": "object"
+            },
+            "maxItems": 2,
+            "minItems": 1,
+            "type": "array"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "catalogId",
+          "revision",
+          "digest",
+          "outputs"
+        ],
+        "type": "object"
+      }
+    },
+    {
       "name": "education_export_paper",
       "parameters": {
         "additionalProperties": false,
@@ -1265,6 +1319,28 @@
           "catalogId": {
             "pattern": "^mock_catalog_[a-f0-9-]{36}$",
             "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "education_read_mock_exam_for_export",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "catalogId": {
+            "pattern": "^mock_catalog_[a-f0-9-]{36}$",
+            "type": "string"
+          },
+          "revision": {
+            "minimum": 1,
+            "type": "integer"
           },
           "title": {
             "maxLength": 200,

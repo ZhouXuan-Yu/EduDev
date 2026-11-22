@@ -76,7 +76,7 @@ export function createMockExamEditCoordinator(options:{
             const origin=owner(),sanitize=await options.sanitize();
             let target=raw.catalogId;
             if(!target){
-              const choices=await options.catalogs.editTargets(origin.sessionId,origin.taskId,typeof raw.title==='string'?raw.title.trim():undefined);
+              const choices=await options.catalogs.targets(origin.sessionId,origin.taskId,typeof raw.title==='string'?raw.title.trim():undefined);
               fence(signal);
               if(!choices.length)throw Error('no_sources');
               if(choices.length>1){

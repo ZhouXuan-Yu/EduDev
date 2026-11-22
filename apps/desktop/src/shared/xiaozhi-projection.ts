@@ -56,6 +56,8 @@ const labels: Record<string, string> = {
   education_search_materials:'查找资料正文',
   education_create_teaching_handout:'保存可编辑讲义草稿',
   education_read_teaching_handout:'读取讲义确认版本',
+  education_read_mock_exam_for_export:'读取已确认模考目录',
+  education_export_mock_exam_catalog:'导出模考目录文档',
   education_export_teaching_handout:'导出确认讲义 Word',
   education_read_handout_for_edit:'读取讲义修改位置',
   education_propose_handout_edit:'提交讲义改动审阅',

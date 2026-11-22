@@ -1,5 +1,7 @@
 import {isOrdinaryOfficeSchema} from '../../shared/xiaozhi-office-draft';
 import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
+import {MOCK_EXAM_OFFICE_SCHEMA} from '../../shared/mock-exam-export';
+import type {MockExamExportFile} from '../education/mock-exam-export-tools';
 import {TEACHING_HANDOUT_OFFICE_SCHEMA} from '../../shared/teaching-handout-export';
 import type {HandoutExportFile} from '../education/teaching-handout-export-tools';
 import {buoyancyDemoResourceParameters} from './science-resource';
@@ -146,7 +148,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const next=await options.state.update(row,{approval:null});await publish(next);return{ok:true as const,value:officeSummary(child)};
   }).catch(resultError);
  }
- async function execute(sessionId:string,runId:string,wait:Wait,callId:string,input:unknown,signal?:AbortSignal,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>,hostHandout=false){
+ async function execute(sessionId:string,runId:string,wait:Wait,callId:string,input:unknown,signal?:AbortSignal,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>,hostDraft?:typeof TEACHING_HANDOUT_OFFICE_SCHEMA|typeof MOCK_EXAM_OFFICE_SCHEMA){
   assertFileWritesEnabled();
   if(!object(input)||Object.keys(input).some(k=>!['files','resumeBundleId','renames','checks','scienceLesson','prefix','previousLessonBundleId','demoRepair'].includes(k))||input.demoRepair!==undefined&&input.resumeBundleId===undefined)throw Error('invalid_input');
   let raw:Record<string,unknown>=input;
@@ -247,7 +249,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    if(!object(spec)||typeof spec.fileId!=='string'||!/^[a-z][a-z0-9_-]{0,63}$/.test(spec.fileId))throw Error('invalid_input');
    const{fileId:_,kind,...proposal}=spec;
    if(kind==='office'){if(!validOfficeProposal(proposal)||!isOrdinaryOfficeSchema(proposal.draft.schemaVersion)&&proposal.draft.schemaVersion!==TEACHING_LESSON_OFFICE_SCHEMA&&
-     !(hostHandout&&proposal.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA))throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
+     proposal.draft.schemaVersion!==hostDraft)throw Error('invalid_input');const error=await options.proposalError?.(sessionId,runId,proposal);if(error)throw Error('invalid_input');}
    else if(kind!=='text'||Object.keys(proposal).some(k=>!['path','content'].includes(k))||typeof proposal.path!=='string'||typeof (proposal as {content?:unknown}).content!=='string')throw Error('invalid_input');
   }
   let row=await options.state.create({schemaVersion:1,id:'xidelivery_'+deliveryHash([sessionId,runId,callId]),sessionId,runId,callId,inputHash:deliveryHash(request),revision:0,state:'preparing',taskVersion:await options.taskVersion(sessionId),approval:null,
@@ -324,7 +326,9 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   },
   async read(sessionId:string,id:string){return withContinuation(await owned(sessionId,id),await options.state.list(sessionId));},
   publishHandout:(sessionId:string,runId:string,wait:Wait,callId:string,files:HandoutExportFile[],signal?:AbortSignal)=>
-    execute(sessionId,runId,wait,callId,{files},signal,undefined,true),
+    execute(sessionId,runId,wait,callId,{files},signal,undefined,TEACHING_HANDOUT_OFFICE_SCHEMA),
+  publishMockExam:(sessionId:string,runId:string,wait:Wait,callId:string,files:MockExamExportFile[],signal?:AbortSignal)=>
+    execute(sessionId,runId,wait,callId,{files},signal,undefined,MOCK_EXAM_OFFICE_SCHEMA),
   tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string,resolveLesson?:(origin:LessonOrigin,signal?:AbortSignal)=>Promise<LessonSource>):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
    const {checks:_,...officeProperties}=office.properties;

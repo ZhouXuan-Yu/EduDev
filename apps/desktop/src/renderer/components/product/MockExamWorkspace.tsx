@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react';
 import {Button,SearchField} from '@heroui/react';
 import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogRef} from '../../../shared/mock-exam-compilation';
+import {MockExamExportActions} from './MockExamExportActions';
 import {ResourceTable} from '../../ui-system/ResourceTable';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiMockExamCatalog} from '../office/PiMockExamCatalog';
@@ -82,6 +83,7 @@ function MockExamDetail({reference,onRefresh}:{reference:MockExamCatalogRef;onRe
     <div className={styles.actions}>
       <Button variant="secondary" size="sm" data-testid="mock-exam-origin-conversation" onPress={()=>navigation.navigate({view:'ai',
         sessionId:reference.sessionId,mockExam:reference})}>查看来源对话</Button>
+      {catalog.summary.state==='confirmed'&&<MockExamExportActions catalog={catalog.summary} sessionId={reference.sessionId}/> }
     </div>
     <TaskArtifactRelations query={{schemaVersion:1,kind:'artifact_tasks',sessionId:reference.sessionId,artifactId:reference.id}}/>
     <PiMockExamCatalog summary={catalog.summary} sessionId={reference.sessionId} disabled={false} initialCatalog={catalog}
