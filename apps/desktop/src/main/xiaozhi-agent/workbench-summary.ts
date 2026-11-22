@@ -8,8 +8,9 @@ import {workbenchFailure, workbenchText, type WorkbenchRead} from './workbench-s
 import {xiaozhiToolLabel} from '../../shared/xiaozhi-projection';
 import {readWorkbenchHome} from './workbench-home';
 import type {TeachingFileCatalogEntry} from '../../shared/contracts';
+import {readWorkbenchArtifactLinks} from './workbench-artifact-links';
 
-type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail' | 'home'}>;
+type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail' | 'home' | 'task_artifacts' | 'artifact_tasks'}>;
 type Cursor = {v: 1; query: string; key: string; id: string};
 function queryHash(query: PagedQuery) {const {cursor: _cursor, ...scope} = query; return protocolHash(scope);}
 function cursorFor(query: PagedQuery, key: string, id: string) {
@@ -78,6 +79,7 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
           const approvals = await readWorkbenchApprovals(read);
           return readWorkbenchHome(read, await readWorkbenchTasks(read, approvals), approvals, options.recentArtifacts);
         }
+        if (input.kind === 'task_artifacts' || input.kind === 'artifact_tasks') return readWorkbenchArtifactLinks(read, input);
         const requestedSession = input.kind === 'approval_detail' ? input.ref.sessionId : input.sessionId;
         if (requestedSession) {
           if (!read.sessions.has(requestedSession)) throw Error('permission_denied');
@@ -86,7 +88,8 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
         if (input.kind === 'approval_detail') return {schemaVersion: 1 as const, kind: input.kind, asOf: read.now,
           detail: await readWorkbenchApprovalDetail(read, input.ref)};
         if (input.kind === 'tasks') {
-          const approvals = await readWorkbenchApprovals(read), items = await readWorkbenchTasks(read, approvals);
+          const approvals = await readWorkbenchApprovals(read), all = await readWorkbenchTasks(read, approvals);
+          const items = input.taskId ? all.filter(item => item.taskId === input.taskId) : all;
           const overview = input.filter === 'overview';
           return {...page(read, input, items, overview ? recentTasks(items) : items.filter(item => taskMatches(item, input.filter)),
             stateCounts(items, item => item.state, ['active', 'review_required', 'paused', 'interrupted', 'completed', 'ended']),

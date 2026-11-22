@@ -7,9 +7,10 @@ import {samePaperReturn, type PaperReturnReference} from '../paper-ui/paper-mate
 import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {readComposerDraft} from '../office/composer-drafts';
 
-type Target={view:string;sessionId?:string;artifactId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+type Target={view:string;sessionId?:string;taskId?:string;artifactId?:string;artifactVersionId?:string;draft?:string;paperExportIntent?:PaperExportIntent;paperReturn?:PaperReturnReference;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
-  (a.view !== 'artifacts' || a.artifactId === b.artifactId) &&
+  (a.view !== 'artifacts' || a.artifactId === b.artifactId && a.artifactVersionId === b.artifactVersionId) &&
+  (a.view !== 'my_tasks' || a.taskId === b.taskId) &&
   samePaperReturn(a.paperReturn, b.paperReturn) &&
   (a.view !== 'paper' || (a.paper?.mode === b.paper?.mode &&
     a.paper?.basketId === b.paper?.basketId && a.paper?.stage === b.paper?.stage));

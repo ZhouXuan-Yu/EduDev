@@ -14,6 +14,7 @@ import {ArtifactFileActions} from '../office/ArtifactFileActions';
 import {PiOfficeVersions,PiOfficeCurrent} from '../office/PiOfficeVersions';
 import {PiDeliveryCheck} from '../office/PiDeliveryCheck';
 import {PiArtifactSources} from '../office/PiArtifactSources';
+import {TaskArtifactRelations} from '../office/workbench/TaskArtifactRelations';
 import {OfficeMarkdown as Markdown} from '../office/OfficeMarkdown';
 import {LibraryEmpty} from './LibraryEmpty';
 import {libraryDate,libraryFileSize,matchesMaterial} from './material-library';
@@ -23,6 +24,7 @@ import alignment from '../../ui-system/teaching-catalogue-alignment.module.css';
 export function TeachingArtifactsWorkspace() {
   const navigation=useDesktopNavigation();
   const artifactId=navigation.target.view==='artifacts'?navigation.target.artifactId:undefined;
+  const artifactVersionId=navigation.target.view==='artifacts'?navigation.target.artifactVersionId:undefined;
   const [view,setView]=useState<'files'|'deliveries'|'classrooms'>('files');
   const [visited,setVisited]=useState({deliveries:false,classrooms:false});
   useEffect(()=>{if(artifactId)setView('files');},[artifactId,navigation.intent]);
@@ -37,15 +39,16 @@ export function TeachingArtifactsWorkspace() {
   </nav>;
   return <div className={alignment.frame}>
     {view!=='files'&&links}
-    <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace artifactId={artifactId} auxiliaryActions={view==='files'?links:undefined}/></div>
+    <div className={alignment.pane} hidden={view!=='files'}><TeachingFilesWorkspace artifactId={artifactId} artifactVersionId={artifactVersionId} auxiliaryActions={view==='files'?links:undefined}/></div>
     {visited.deliveries&&<div className={alignment.pane} hidden={view!=='deliveries'}><TeachingDeliveryWorkspace/></div>}
     {visited.classrooms&&<div className={alignment.pane} hidden={view!=='classrooms'}><ClassroomWorkspace/></div>}
   </div>;
 }
-function TeachingFilesWorkspace({auxiliaryActions,artifactId}:{auxiliaryActions?:ReactNode;artifactId?:string}) {
+function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:{auxiliaryActions?:ReactNode;artifactId?:string;artifactVersionId?:string}) {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<TeachingFileCatalogEntry[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
   const [loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
   const [reveal,setReveal]=useState<{id:string;path:string}>();const epoch=useRef(0);
+  const [requestedVersion,setRequestedVersion]=useState<string>();
   async function load(){const stamp=++epoch.current;setLoading(true);setError('');try{const result=await window.omniEdu?.listDocumentArtifacts();if(!result)throw new Error();if(stamp===epoch.current){setRows(result);setReveal(undefined);}}catch{if(stamp===epoch.current)setError('无法读取教学文件，请重试。');}finally{if(stamp===epoch.current)setLoading(false);}}
   useEffect(()=>{void load();return()=>{++epoch.current;};},[]);
   const handledIntent=useRef<number|undefined>(undefined);
@@ -53,9 +56,10 @@ function TeachingFilesWorkspace({auxiliaryActions,artifactId}:{auxiliaryActions?
     if(!artifactId||loading||error||handledIntent.current===navigation.intent)return;
     handledIntent.current=navigation.intent;
     const row=rows.find(item=>item.id===artifactId&&(!item.officeVersion||item.officeVersion.currentArtifactId===item.id));
+    setRequestedVersion(row?.officeVersion?artifactVersionId:undefined);
     setQuery('');setReveal(undefined);setNotice('');setSelected(row?.officeVersion?.familyId||row?.id||'');
     if(!row)setError('该成果的当前版本已变化，请在列表中重新选择。');
-  },[artifactId,error,loading,navigation.intent,rows]);
+  },[artifactId,artifactVersionId,error,loading,navigation.intent,rows]);
   const visible=rows.filter(row=>!row.officeVersion||row.officeVersion.currentArtifactId===row.id);
   const filtered=visible.filter(row=>matchesMaterial(query,row.title,row.fileName,row.type)),artifact=filtered.find(row=>(row.officeVersion?.familyId||row.id)===selected);
   async function locate(){if(!artifact||busy)return;setBusy(true);setError('');setNotice('');try{if(!window.omniEdu)throw new Error();await window.omniEdu.showDocumentArtifact(artifact.id);setNotice('已在文件夹中定位教学文件。');}catch{setError('无法定位教学文件，请检查文件是否仍存在。');}finally{setBusy(false);}}
@@ -69,7 +73,7 @@ function TeachingFilesWorkspace({auxiliaryActions,artifactId}:{auxiliaryActions?
       navigation.navigate({view:'ai',sessionId:result.sessionId});
     }catch{setError('无法引用这份教学文件，请刷新后重试。');}finally{setBusy(false);}
   }
-  function select(id:string){const row=rows.find(r=>r.id===id);setSelected(row?.officeVersion?.familyId||id);setReveal(undefined);setNotice('');setError('');}
+  function select(id:string){const row=rows.find(r=>r.id===id);setSelected(row?.officeVersion?.familyId||id);setRequestedVersion(undefined);setReveal(undefined);setNotice('');setError('');}
   return <section className={alignment.workspace} data-edu-domain="" data-testid="teaching-artifacts-workspace" aria-label="教学文件">
     <header className={alignment.heading}><div><h2>教学文件</h2><p>打开已有成果继续使用，或请小智制作新的教学文件。</p></div><div className={alignment.links}>{auxiliaryActions}<TeachingPageAction><Button onPress={()=>navigation.navigate({view:'ai'})}><MessageSquare size={17}/>请小智制作</Button></TeachingPageAction></div></header>
     <div className={alignment.toolbar}><SearchField aria-label="按教学文件名称或格式查找" value={query} onChange={value=>{setQuery(value);setReveal(undefined);}} className={alignment.search} variant="secondary"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找教学文件或格式" maxLength={128} data-testid="artifacts-search"/><SearchField.ClearButton aria-label="清除教学文件查找"/></SearchField.Group></SearchField>
@@ -86,7 +90,8 @@ function TeachingFilesWorkspace({auxiliaryActions,artifactId}:{auxiliaryActions?
           {artifact.officeVersion?<><PiOfficeCurrent key={artifact.id+'open'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="open" label="系统打开" testId="artifacts-open"/><PiOfficeCurrent key={artifact.id+'locate'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="locate" label="定位当前文件" testId="artifacts-locate"/></>:<Button variant="ghost" isDisabled={busy||artifact.status!=='exported'} onPress={()=>void locate()} data-testid="artifacts-locate"><FolderOpen size={16}/>定位文件</Button>}
           {artifact.status==='exported'&&artifact.sessionId&&/^[a-f0-9]{64}$/.test(artifact.contentHash)&&<Button variant="secondary" isDisabled={busy} onPress={()=>void referenceArtifact()} data-testid="artifacts-reference">在新对话中引用</Button>}
           <Button variant="ghost" isDisabled={!artifact.sessionId} onPress={()=>navigation.navigate({view:'ai',sessionId:artifact.sessionId})} data-testid="artifacts-conversation"><MessageSquare size={16}/>查看来源对话</Button></div>
-          {artifact.status==='exported'&&artifact.sessionId&&['pptx','docx','pdf','xlsx','html'].includes(artifact.type)&&<PiOfficeVersions key={artifact.id} sessionId={artifact.sessionId} artifactId={artifact.id} onOpen={path=>setReveal({id:crypto.randomUUID(),path})} onRefresh={load}/>}
+          {artifact.status==='exported'&&artifact.sessionId&&['pptx','docx','pdf','xlsx','html'].includes(artifact.type)&&<PiOfficeVersions key={artifact.id} sessionId={artifact.sessionId} artifactId={artifact.id} initialArtifactId={requestedVersion} showTaskLinks onOpen={path=>setReveal({id:crypto.randomUUID(),path})} onRefresh={async()=>{setRequestedVersion(undefined);await load();}}/>}
+          {artifact.status==='exported'&&artifact.sessionId&&<TaskArtifactRelations key={artifact.id} query={{schemaVersion:1,kind:'artifact_tasks',sessionId:artifact.sessionId,artifactId:artifact.id}}/>}
           {artifact.status==='exported'&&artifact.officeVersion&&<PiDeliveryCheck key={artifact.id+':checks'} sessionId={artifact.sessionId} path={artifact.fileName} artifactId={artifact.id}/>}
           {artifact.status==='exported'&&artifact.officeVersion&&<PiArtifactSources key={artifact.id+':sources'} sessionId={artifact.sessionId} artifactId={artifact.id}/>}
           {reveal?<div className={`${alignment.preview} pi-themed-surface`}>{artifact.savedArtifactKind==='paper'&&!artifact.officeVersion&&!artifact.htmlVersion&&['docx','pdf'].includes(artifact.type)?<SavedArtifactPreview key={artifact.sessionId+':'+artifact.id+':'+reveal.id} sessionId={artifact.sessionId} artifactId={artifact.id} onClose={()=>setReveal(undefined)}/>:<PiWorkspaceFiles key={artifact.sessionId+':'+artifact.id} sessionId={artifact.sessionId} reveal={reveal} onChoose={()=>setError('请在来源对话中选择教学工作目录，再返回这里预览。')} onClose={()=>setReveal(undefined)}/>}</div>:<><p className={alignment.caption}>{artifact.htmlVersion?'HTML内容按需预览；历史和保存时间来自原修改记录。':'保存时的内容 · 预览文件可查看当前本地版本'}</p><Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{artifact.contentMd||(artifact.htmlVersion?'点击“预览当前文件”查看，或展开版本历史对照先前内容。':'没有保存内容摘要，请定位查看文件。')}</Markdown></>}

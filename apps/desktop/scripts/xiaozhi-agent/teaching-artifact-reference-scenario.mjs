@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import {productEntry} from '../product-navigation.mjs';
+import {openTeachingFiles} from '../product-navigation.mjs';
 
 export async function checkTeachingArtifactReference({page,app,sourceSessionId,third,originalPath,original,oldArtifact,until,check,readSql,root}) {
   const sessions=()=>readSql('SELECT id, student_id, archived_at FROM ai_conversation_sessions');
   const attachments=()=>readSql('SELECT id,conversation_id,relative_path,content_sha256,state,revision,run_id,artifact_origin_json FROM xiaozhi_pi_attachments');
   const previousSessions=sessions().length;
-  await productEntry(page,'teaching').click();
+  await openTeachingFiles(page);
   await page.getByTestId('artifacts-search').fill('html');
   await page.getByTestId('artifact-'+third.artifactId).getByRole('button').click();
   const reference=page.getByTestId('artifacts-reference');

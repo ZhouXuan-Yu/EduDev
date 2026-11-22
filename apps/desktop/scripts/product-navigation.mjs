@@ -5,3 +5,9 @@ export function productEntry(page, space) {
   if (!id) throw new Error('Unknown product space: ' + space);
   return page.locator('[data-testid="edu-navigation"]:visible').getByTestId(id);
 }
+
+export async function openTeachingFiles(page) {
+  await productEntry(page,'teaching').click();
+  await page.getByTestId('hub-entry-artifacts').click();
+  await page.getByTestId('artifacts-search').waitFor();
+}

@@ -14,3 +14,6 @@
 .card code {white-space:pre-wrap; word-break:break-all; font-size:11px;}
 .detail {min-width:0;}
 @media(max-width:500px) {.axes {grid-template-columns:1fr;}}
+.relationList { display:grid; gap:4px; margin:0; padding:0; list-style:none; }
+.relationList li { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.relationList li > span { color:var(--muted); font-size:12px; }

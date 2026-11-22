@@ -6,6 +6,8 @@
 
 教材成果引用通过 typed IPC 传递会话、成果身份和候选内容摘要。主进程核对原授权与本地版本，归档状态在登记事务中复核，同事务登记新会话、附件导入回执和待发送附件。 [引用执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#跨会话引用既有教学成果)
 
+任务与成果双向关联由现有 Workbench 只读查询派生。产出由已保存的版本及任务 Run 谱系确认，引用由已提交附件及版本摘要确认。导航携带精确任务或成果版本身份，沿用原版本服务与文件权限。 [关联执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-2-任务与成果关系)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

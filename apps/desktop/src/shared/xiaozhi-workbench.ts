@@ -10,7 +10,9 @@ export type WorkbenchApprovalRef =
 type PageQuery = {schemaVersion: 1; sessionId?: string; cursor?: string; limit?: number};
 export type WorkbenchQuery =
   | {schemaVersion: 1; kind: 'home'}
-  | PageQuery & {kind: 'tasks'; filter: 'overview' | 'unfinished' | 'active' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'}
+  | PageQuery & {kind: 'tasks'; filter: 'overview' | 'unfinished' | 'active' | 'resumable' | 'blocked' | 'completed' | 'ended' | 'all'; taskId?: string}
+  | {schemaVersion: 1; kind: 'task_artifacts'; sessionId: string; taskId: string}
+  | {schemaVersion: 1; kind: 'artifact_tasks'; sessionId: string; artifactId: string}
   | PageQuery & {kind: 'approvals'; state?: WorkbenchApprovalState | 'all'}
   | {schemaVersion: 1; kind: 'approval_detail'; ref: WorkbenchApprovalRef}
   | PageQuery & {kind: 'capabilities'; taskId?: string; requirementsVersion?: number; query?: string};
@@ -63,6 +65,8 @@ export type WorkbenchApprovalDetail =
   | {kind: 'legacy_copy'; ref: Extract<WorkbenchApprovalRef, {kind: 'legacy_copy'}>; approval: XiaozhiApproval};
 export type WorkbenchSummary =
   | WorkbenchHomeSummary
+  | {schemaVersion: 1; kind: 'task_artifacts'; items: WorkbenchArtifactLink[]; partial: boolean}
+  | {schemaVersion: 1; kind: 'artifact_tasks'; items: WorkbenchArtifactTaskLink[]; partial: boolean}
   | WorkbenchPage<WorkbenchTaskRow> & {kind: 'tasks'}
   | WorkbenchPage<WorkbenchApprovalRow> & {kind: 'approvals'}
   | WorkbenchPage<WorkbenchCapabilityRow> & {kind: 'capabilities'; context: WorkbenchTaskContext; registryRevision: number | null}
@@ -77,11 +81,21 @@ export type WorkbenchHomeSummary = {
   artifacts: {id: string; title: string; updatedAt: string}[];
 };
 
+export type WorkbenchArtifactLink = {
+  relation: 'produced' | 'referenced'; sessionId: string; artifactId: string; currentArtifactId: string | null;
+  title: string; version: number | null; restored: boolean;
+};
+export type WorkbenchArtifactTaskLink = {
+  relation: WorkbenchArtifactLink['relation']; taskId: string; sessionId: string; title: string; restored: boolean;
+};
+
 const object = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === 'object' && !Array.isArray(value));
 const text = (value: unknown, maximum: number): value is string => typeof value === 'string' && value.length > 0
   && value.length <= maximum && !/[\u0000-\u001f\u007f]/u.test(value);
 const positive = (value: unknown): value is number => Number.isSafeInteger(value) && Number(value) > 0;
 const keys = (value: Record<string, unknown>, allowed: string[]) => Object.keys(value).every(key => allowed.includes(key));
+const taskId = (value: unknown) => typeof value === 'string' && /^xitask_[a-f0-9]{64}$/u.test(value);
+const artifactSessionId = (value: unknown) => typeof value === 'string' && /^aisession_[a-f0-9-]{36}$/iu.test(value);
 const approvalStates = ['pending', 'approved', 'executing', 'executed', 'rejected', 'invalidated', 'uncertain', 'failed', 'interrupted', 'verified', 'all'];
 export function validWorkbenchApprovalRef(value: unknown): value is WorkbenchApprovalRef {
   if (!object(value) || !text(value.sessionId, 128) || !text(value.id, 160)) return false;
@@ -92,13 +106,18 @@ export function validWorkbenchApprovalRef(value: unknown): value is WorkbenchApp
 export function validWorkbenchQuery(value: unknown): value is WorkbenchQuery {
   if (!object(value) || value.schemaVersion !== WORKBENCH_SCHEMA) return false;
   if (value.kind === 'home') return keys(value, ['schemaVersion', 'kind']);
+  if (value.kind === 'task_artifacts') return keys(value, ['schemaVersion', 'kind', 'sessionId', 'taskId'])
+    && artifactSessionId(value.sessionId) && taskId(value.taskId);
+  if (value.kind === 'artifact_tasks') return keys(value, ['schemaVersion', 'kind', 'sessionId', 'artifactId'])
+    && artifactSessionId(value.sessionId) && typeof value.artifactId === 'string' && /^[A-Za-z0-9_-]{1,128}$/u.test(value.artifactId);
   if (value.kind === 'approval_detail') return keys(value, ['schemaVersion', 'kind', 'ref']) && validWorkbenchApprovalRef(value.ref);
   if (value.sessionId !== undefined && !text(value.sessionId, 128)
       || value.cursor !== undefined && !text(value.cursor, 2048)
       || value.limit !== undefined && (!positive(value.limit) || value.limit > 50)) return false;
   const common = ['schemaVersion', 'kind', 'sessionId', 'cursor', 'limit'];
-  if (value.kind === 'tasks') return keys(value, [...common, 'filter'])
-    && ['overview', 'unfinished', 'active', 'resumable', 'blocked', 'completed', 'ended', 'all'].includes(String(value.filter));
+  if (value.kind === 'tasks') return keys(value, [...common, 'filter', 'taskId'])
+    && ['overview', 'unfinished', 'active', 'resumable', 'blocked', 'completed', 'ended', 'all'].includes(String(value.filter))
+    && (value.taskId === undefined || artifactSessionId(value.sessionId) && taskId(value.taskId));
   if (value.kind === 'approvals') return keys(value, [...common, 'state'])
     && (value.state === undefined || approvalStates.includes(String(value.state)));
   if (value.kind !== 'capabilities' || !keys(value, [...common, 'taskId', 'requirementsVersion', 'query'])) return false;

@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
-| 2 | PARTIAL | 动态首页、独立「我的任务」和以任务为默认的教学工作台已实现。继续任务与成果关联、右侧动态面板及编辑同步。 |
+| 2 | PARTIAL | 动态首页、独立「我的任务」、任务优先教学工作台及任务与成果双向定位。右侧动态面板和专业编辑同步继续实施。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
@@ -209,3 +209,19 @@ Phase 1 工程退出通过。实测使用本地合成模型和真实 Electron、
 早期专项日志保留了两个工作台外壳的同名按钮以及导航夹具仅查询第一组导航的问题。复测按实际可见侧栏操作。导航回归保留了旧五入口的数量断言，更新为任务入口和原五个领域后通过。没有付费模型调用。依赖审计为原有 20 项警报，其中 2 项 high，本切片未改依赖或锁文件。
 
 下一切片已读回上一轮实际产物库。两个同会话的 HTML 版本归属两个不同 Task，第三个还原版本可追溯到被还原的版本及其任务。跨会话引用稳定落在提交附件的目标 Run 对应 Task。结果记录于 `phase2/task-artifact-projection-audit.json`，用于实现跨任务的成果关系。
+
+## Phase 2 任务与成果双向定位
+
+「我的任务」及「教学任务」的任务卡按需显示关联成果，注明产出、引用与还原。点击直接进入文件详情里的对应版本。教学文件可从当前文件或已选历史版本查看来源任务和引用任务，回跳后只显示指定任务。关联读取复用主进程的任务、文件和附件账本，无新增数据库表或迁移。旧记录缺少可核对的来源时显示空态，旧版回退后底层记录仍可读。
+
+验收数据在 `D:/WorkProject/EduProject/acceptance/D3-20261122`。手测用 `manual-phase2-artifact-links/启动-D3-任务成果关联.cmd`，Windows 已核对窗口可见并响应。按同目录的 `验收步骤.md` 查看任务归属、精确版本和双向跳转。该隔离窗口的主进程 SHA-256 为 `9e7c5e5528baaa57b7bec1e112aefe8e0609529938bae9aa58d9c74b90930fb9`。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-artifact-links-verified` | 通过，`phase2-artifact-links/build-verified.log`。 |
+| `node scripts/xiaozhi-agent/html-versions-electron.mjs --reference --relations` | 15/15，`phase2-artifact-links/electron-lineage.log` 及 `omni-edu-html-ui-yknNej/report.json`。已实测一个任务保存两份独立 HTML，同会话任务分离、另一个会话引用、还原版本继承来源、冒用会话归属被拦截、归档隐藏关联、通过旧版回跳指定任务，以及冷启动读回。实际记录中两份浮力实验文件共享同一个 Run，渲染错误 0。 |
+| `npm.cmd run test:renderer-components` | 253/253，`phase2-artifact-links/renderer-components.log`。 |
+| `node scripts/electron-smoke.mjs` | 207/207，`phase2-artifact-links/electron-smoke.log`。通用冒烟使用本轮较早构建，最终构建单独通过上述专项。 |
+| 现场窗口 | `manual-phase2-artifact-links/window-verification.json`，独立 SQLite 样例，窗口响应且可见。 |
+
+保留先前失败日志。修正测试夹具中已更换的教学工作台入口、冷启动后返回对话的入口，以及合成计划缺少教师核对步骤的问题。付费调用 0。Office 关系使用原已保存版本账本，本轮新增关联路径的完整闭环以 HTML 验证，其他格式及超出原教学文件目录范围的旧成果另列覆盖。依赖审计有原 20 项警报，其中 2 项 high。下一步推进右侧上下文和编辑同步。

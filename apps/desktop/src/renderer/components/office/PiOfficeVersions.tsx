@@ -6,6 +6,7 @@ import './pi-office-versions.css';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
 import {PiDeliveryCheck} from './PiDeliveryCheck';
 import {PiArtifactSources} from './PiArtifactSources';
+import {TaskArtifactRelations} from './workbench/TaskArtifactRelations';
 
 /** Resolve on click, so old chat cards never silently open an obsolete default. */
 export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action='preview',label='打开当前文件',testId='pi-office-open',disabled=false}:{sessionId:string;artifactId:string;fallbackPath:string;onOpen:(path:string)=>void;action?:'preview'|'open'|'locate';label?:string;testId?:string;disabled?:boolean}){
@@ -32,9 +33,9 @@ export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action
 }
 
 /** Same ledger-backed control in chat and Teaching Files. It runs only after an explicit click. */
-export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRefresh}:{sessionId:string;artifactId:string;running?:boolean;onOpen:(path:string)=>void;onRefresh?:()=>Promise<void>}){
+export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRefresh,initialArtifactId,showTaskLinks=false}:{sessionId:string;artifactId:string;running?:boolean;onOpen:(path:string)=>void;onRefresh?:()=>Promise<void>;initialArtifactId?:string;showTaskLinks?:boolean}){
  const [open,setOpen]=useState(false),[view,setView]=useState<OfficeVersionView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[confirm,setConfirm]=useState(false);
- const epoch=useRef(0),lock=useRef(false),identity=`${sessionId}:${artifactId}`,current=useRef(identity),command=useRef<{key:string;id:string}|undefined>(undefined);current.current=identity;
+ const epoch=useRef(0),lock=useRef(false),identity=`${sessionId}:${artifactId}:${initialArtifactId??''}`,current=useRef(identity),command=useRef<{key:string;id:string}|undefined>(undefined);current.current=identity;
  const [preview,setPreview]=useState(false);
  useEffect(()=>{++epoch.current;lock.current=false;setOpen(false);setView(undefined);setBusy(false);setError('');setNotice('');setConfirm(false);command.current=undefined;return()=>{++epoch.current;};},[identity]);
  async function act(action:OfficeVersionInput['action']='view',id=view?.selectedArtifactId??artifactId){
@@ -51,11 +52,13 @@ export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRe
    const result=await window.omniEdu?.officeVersion(input);if(epoch.current!==stamp||current.current!==identity)return;
    if(!result?.ok){setError(result?OFFICE_VERSION_ERRORS[result.error]:'未能读取版本记录，请重试。');return;}
    if(result.value.schemaVersion!==OFFICE_VERSIONS_SCHEMA||result.value.sessionId!==sessionId||!result.value.versions.some(v=>v.artifactId===result.value.selectedArtifactId)){setError('版本记录已变化，请重新读取。');return;}
+   if(action==='view'&&initialArtifactId&&result.value.currentArtifactId!==artifactId){setError('成果当前版本已变化，请在教学文件中刷新后重试。');return;}
    setView(result.value);setNotice(action==='restore'?'已恢复为新版本，原有各版仍保留。':action==='open'?'已交给系统打开。':action==='locate'?'已在文件夹中定位。':'');
    if(action==='restore')await onRefresh?.();
   }catch{if(epoch.current===stamp&&current.current===identity)setError('操作结果尚未确认，请刷新历史；已有文件会保留。');}
   finally{if(epoch.current===stamp&&current.current===identity){lock.current=false;setBusy(false);}}
  }
+ useEffect(()=>{if(initialArtifactId){setOpen(true);void act('view',initialArtifactId);}},[identity,initialArtifactId]);
  const selected=view?.versions.find(v=>v.artifactId===view.selectedArtifactId),latest=view?.versions.find(v=>v.artifactId===view.currentArtifactId);
  return <div className="pi-office-versions" data-edu-domain="" data-testid="pi-office-versions" data-artifact-id={artifactId}>
   <Button size="sm" variant="ghost" onPress={()=>{setOpen(v=>!v);if(!open)void act();}} data-testid="office-versions-toggle" aria-expanded={open}><History size={15}/>版本历史</Button>
@@ -75,6 +78,7 @@ export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRe
     {preview&&view.htmlPreview&&<ScienceDemoFrame html={view.htmlPreview}/>}
     {selected&&<PiDeliveryCheck key={view.selectedArtifactId+':checks'} sessionId={sessionId} path={selected.path} artifactId={view.selectedArtifactId}/>}
     <PiArtifactSources key={view.selectedArtifactId} sessionId={sessionId} artifactId={view.selectedArtifactId} label="此版来源"/>
+    {showTaskLinks&&view.selectedArtifactId!==artifactId&&<TaskArtifactRelations key={view.selectedArtifactId} query={{schemaVersion:1,kind:'artifact_tasks',sessionId,artifactId:view.selectedArtifactId}}/>}
     {confirm&&<div role="group" aria-label="确认恢复版本"><p>将第 {selected?.number} 版另存为新的当前版本，所有历史文件都会保留。</p><Button size="sm" variant="secondary" isDisabled={busy||running} onPress={()=>void act('restore')} data-testid="office-version-confirm">确认恢复为新版本</Button><Button size="sm" variant="ghost" onPress={()=>setConfirm(false)}>取消</Button></div>}
    </>}
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void act()} data-testid="office-versions-refresh">刷新历史</Button>
