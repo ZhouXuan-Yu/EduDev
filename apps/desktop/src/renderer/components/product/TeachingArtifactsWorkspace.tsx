@@ -6,6 +6,7 @@ import {TeachingDeliveryWorkspace} from './TeachingDeliveryWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
 import {ResourceTable} from '../../ui-system/ResourceTable';
 import type {TeachingFileCatalogEntry} from '../../../shared/contracts';
+import {XIAOZHI_ATTACHMENT_ERRORS} from '../../../shared/xiaozhi-attachments';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiWorkspaceFiles} from '../office/PiWorkspaceFiles';
 import {SavedArtifactPreview} from '../office/SavedArtifactPreview';
@@ -47,6 +48,16 @@ function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}
   const visible=rows.filter(row=>!row.officeVersion||row.officeVersion.currentArtifactId===row.id);
   const filtered=visible.filter(row=>matchesMaterial(query,row.title,row.fileName,row.type)),artifact=filtered.find(row=>(row.officeVersion?.familyId||row.id)===selected);
   async function locate(){if(!artifact||busy)return;setBusy(true);setError('');setNotice('');try{if(!window.omniEdu)throw new Error();await window.omniEdu.showDocumentArtifact(artifact.id);setNotice('已在文件夹中定位教学文件。');}catch{setError('无法定位教学文件，请检查文件是否仍存在。');}finally{setBusy(false);}}
+  async function referenceArtifact(){
+    if(!artifact?.sessionId||busy)return;
+    setBusy(true);setError('');setNotice('');
+    try{
+      const result=await window.omniEdu?.referenceTeachingArtifact({sourceSessionId:artifact.sessionId,artifactId:artifact.id,contentHash:artifact.contentHash});
+      if(!result)throw new Error();
+      if(!result.ok){setError(XIAOZHI_ATTACHMENT_ERRORS[result.error]);return;}
+      navigation.navigate({view:'ai',sessionId:result.sessionId});
+    }catch{setError('无法引用这份教学文件，请刷新后重试。');}finally{setBusy(false);}
+  }
   function select(id:string){const row=rows.find(r=>r.id===id);setSelected(row?.officeVersion?.familyId||id);setReveal(undefined);setNotice('');setError('');}
   return <section className={alignment.workspace} data-edu-domain="" data-testid="teaching-artifacts-workspace" aria-label="教学文件">
     <header className={alignment.heading}><div><h2>教学文件</h2><p>打开已有成果继续使用，或请小智制作新的教学文件。</p></div><div className={alignment.links}>{auxiliaryActions}<TeachingPageAction><Button onPress={()=>navigation.navigate({view:'ai'})}><MessageSquare size={17}/>请小智制作</Button></TeachingPageAction></div></header>
@@ -62,6 +73,7 @@ function TeachingFilesWorkspace({auxiliaryActions}:{auxiliaryActions?:ReactNode}
         </header><div className={alignment.actions}>
           {artifact.officeVersion?<PiOfficeCurrent key={artifact.id+'preview'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={path=>setReveal({id:crypto.randomUUID(),path})} label="预览当前文件" testId="artifacts-preview"/>:<Button variant="secondary" isDisabled={artifact.status!=='exported'||!artifact.sessionId} onPress={()=>setReveal({id:crypto.randomUUID(),path:artifact.fileName})} data-testid="artifacts-preview">预览文件</Button>}
           {artifact.officeVersion?<><PiOfficeCurrent key={artifact.id+'open'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="open" label="系统打开" testId="artifacts-open"/><PiOfficeCurrent key={artifact.id+'locate'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="locate" label="定位当前文件" testId="artifacts-locate"/></>:<Button variant="ghost" isDisabled={busy||artifact.status!=='exported'} onPress={()=>void locate()} data-testid="artifacts-locate"><FolderOpen size={16}/>定位文件</Button>}
+          {artifact.status==='exported'&&artifact.sessionId&&/^[a-f0-9]{64}$/.test(artifact.contentHash)&&<Button variant="secondary" isDisabled={busy} onPress={()=>void referenceArtifact()} data-testid="artifacts-reference">在新对话中引用</Button>}
           <Button variant="ghost" isDisabled={!artifact.sessionId} onPress={()=>navigation.navigate({view:'ai',sessionId:artifact.sessionId})} data-testid="artifacts-conversation"><MessageSquare size={16}/>查看来源对话</Button></div>
           {artifact.status==='exported'&&artifact.sessionId&&['pptx','docx','pdf','xlsx','html'].includes(artifact.type)&&<PiOfficeVersions key={artifact.id} sessionId={artifact.sessionId} artifactId={artifact.id} onOpen={path=>setReveal({id:crypto.randomUUID(),path})} onRefresh={load}/>}
           {artifact.status==='exported'&&artifact.officeVersion&&<PiDeliveryCheck key={artifact.id+':checks'} sessionId={artifact.sessionId} path={artifact.fileName} artifactId={artifact.id}/>}

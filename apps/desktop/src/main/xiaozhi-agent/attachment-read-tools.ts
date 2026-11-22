@@ -39,7 +39,7 @@ export function createAttachmentReadTools(options:Options):ToolDefinition[]{
         nextOffset:offset+items.length<rows.length?offset+items.length:null,note:'附件目录不是读取正文或看图回执。ID和revision仅供工具，公开说明只写资料名称及读取步骤，不复述内部字段。'})}],details:{success:true,data:{count:items.length}}};
     }catch(error){return failed(error,scoped);}}
   },{name:'office_read_attachment',label:'读取已发送附件',
-    description:'按当前对话已提交附件ID/revision实读UTF-8文本、DOCX/PDF/XLSX/PPTX必要正文，或教师确认后的本地图片OCR校正文字。先查询office_list_attachments，按需给startLine/lineCount（默认1/60，最多100行及16000字符）；引用真实脱敏标题/提取行，不把提取行当原页码。未确认图片请教师从附件预览选择本地识别并校正确认后继续；不得直接发送学生原图或伪称模型已看图。扫描PDF尚需后续本地OCR。',
+    description:'按当前对话已提交附件ID/revision实读UTF-8文本（含HTML源码）、DOCX/PDF/XLSX/PPTX必要正文，或教师确认后的本地图片OCR校正文字。先查询office_list_attachments，按需给startLine/lineCount（默认1/60，最多100行及16000字符）；引用真实脱敏标题/提取行，不把提取行当原页码。未确认图片请教师从附件预览选择本地识别并校正确认后继续；不得直接发送学生原图或伪称模型已看图。扫描PDF尚需后续本地OCR。',
     parameters:{type:'object',additionalProperties:false,properties:{id:{type:'string'},revision:{type:'integer',minimum:0},startLine:{type:'integer',minimum:1},lineCount:{type:'integer',minimum:1,maximum:100}},required:['id','revision']} as ToolDefinition['parameters'],
     execute:async(_callId,args,signal)=>{const scoped=run(signal);try{
       current(scoped);if(!validAttachmentReadInput(args))throw new Error('invalid_input');
@@ -50,6 +50,7 @@ export function createAttachmentReadTools(options:Options):ToolDefinition[]{
       if(row.format==='image'&&ocr?.status!=='approved')throw new Error('needs_ocr');
       let preview:Pick<XiaozhiFilePreview,'text'|'format'|'document'>;
       if(row.format==='image')preview={text:ocr!.corrected,format:'text'};
+      else if(row.mime==='text/html')preview=await options.importer.readHtmlText(row,scoped);
       else try{preview=await options.importer.preview(options.sessionId,selection,scoped);}
       catch(error){
         current(scoped);

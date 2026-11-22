@@ -78,6 +78,7 @@ import {QuestionAssets} from './assets/question-assets';
 import {renderLocalPdfPage} from './xiaozhi-agent/ocr-host';
 import {PracticeReviewRepository} from './education/practice-review-repository';
 import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
+import {insertConversationSession} from './xiaozhi-agent/artifact-reference-state';
 import {readWorkbenchSnapshot} from './xiaozhi-agent/workbench-read';
 import { conversationTitle } from './xiaozhi-agent/conversation-title';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
@@ -4665,13 +4666,8 @@ export class OmniEduStore {
     if (folderId) await this.ensureAiConversationFolder(folderId);
     const timestamp = now();
     const sessionId = `aisession_${randomUUID()}`;
-    await this.run(
-      `INSERT INTO ai_conversation_sessions (
-        id, folder_id, title, title_source, student_id, last_prompt, last_response_preview,
-        message_count, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, '', '', 0, ?, ?)`,
-      [sessionId, folderId, title, title === '新对话' ? 'automatic' : 'manual', input.studentId ?? '', timestamp, timestamp],
-    );
+    await insertConversationSession({run:(sql,values)=>this.run(sql,values)},
+      {id:sessionId,folderId,title,studentId:input.studentId??'',timestamp});
     return this.getAiConversationSession(sessionId);
   }
 

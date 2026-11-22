@@ -99,6 +99,7 @@ import {createTaskPlanRuntime} from './tasks/plan-runtime';
 import {createTaskResources} from './tasks/resources';
 import {singleCopyWasDeclined} from './tasks/declined-copy';
 import {createAttachmentCoordinator} from './attachment-coordinator';
+import {createArtifactReferences} from './artifact-reference';
 import {createAttachmentImportService} from './attachment-import-service';
 import {publicAttachment} from './attachment-state';
 import {attachmentStartHash} from './attachment-send-state';
@@ -1478,6 +1479,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }
     }
   }
+  const artifactReferences=createArtifactReferences({state:store.xiaozhiState,dataRoot:options.dataRoot,closing:()=>closing,
+    resolve:(sessionId,artifactId):Promise<ResolvedArtifactFile>=>host.resolveArtifactFile(sessionId,artifactId)});
   const host = {
     prewarm:()=>{if(enabled&&!closing)startupPrewarm.schedule();},
     permissions,
@@ -2097,6 +2100,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       } finally {pending.delete(controller);if(!pending.size)admissions.delete(id);}
     },
     attachments,
+    referenceTeachingArtifact:artifactReferences.create,
     async showBrowser(raw:unknown):Promise<XiaozhiActionResult>{
       if(!validId(raw))return {ok:false,error:'invalid_input'};
       try{if(closing||(await store.getAiConversationSession(raw)).session.archivedAt)throw new Error('permission_denied');browser.show(raw);return {ok:true};}catch{return {ok:false,error:'permission_denied'};}
@@ -2140,6 +2144,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
       await attachments.close();
+      await artifactReferences.close();
       await savedArtifactPreview.close();
       await fileChecks.close();
       await terminalService.close();

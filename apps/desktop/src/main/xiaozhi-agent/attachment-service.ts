@@ -4,7 +4,7 @@ import {detectMime} from '../office-agent/vendor/hana/lib/file-metadata';
 import {DOCUMENT_MAX_INPUT,isOfficeDocument} from '../../shared/xiaozhi-documents';
 import {validAttachmentSession,validAttachmentPath,validAttachmentSelection,type XiaozhiAttachmentFormat,type XiaozhiAttachmentSelection} from '../../shared/xiaozhi-attachments';
 import {createAttachmentState,type PrivateAttachment,publicAttachment,attachmentIdentity} from './attachment-state';
-const format=(name:string):XiaozhiAttachmentFormat=>/\.md$/i.test(name)?'markdown':/\.(txt|csv|json|yaml|yml|log)$/i.test(name)?'text':/\.(png|jpe?g|webp|gif)$/i.test(name)?'image':isOfficeDocument(name)?'office':(()=>{throw new Error('unsupported');})();
+const format=(name:string):XiaozhiAttachmentFormat=>/\.md$/i.test(name)?'markdown':/\.(txt|csv|json|yaml|yml|log|html)$/i.test(name)?'text':/\.(png|jpe?g|webp|gif)$/i.test(name)?'image':isOfficeDocument(name)?'office':(()=>{throw new Error('unsupported');})();
 const limit=(kind:XiaozhiAttachmentFormat)=>kind==='office'?DOCUMENT_MAX_INPUT:kind==='image'?4*1048576:1048576;
 /** Selection registers a local reference, never uploads or claims the agent viewed it. */
 export function createAttachmentReader(options:{resolve:(sessionId:string)=>Promise<WorkspaceLease>;isCurrent?:()=>boolean}){

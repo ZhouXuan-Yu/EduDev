@@ -34,7 +34,7 @@ export function PiAttachmentList({
             ) : (
               <span className="pi-agent-attachment-icon" aria-hidden="true"><FileText size={16} /></span>
             )}
-            <span className="pi-agent-attachment-name" title={item.name}>{item.name}</span>
+            <span className="pi-agent-attachment-name" title={item.name}>{item.name}{item.artifactOrigin?' · 引用教学文件':''}</span>
           </button>
           {onRemove && <OfficeMutationBoundary><Button
             variant="ghost"

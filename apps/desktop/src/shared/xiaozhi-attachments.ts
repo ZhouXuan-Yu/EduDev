@@ -2,11 +2,12 @@
 export const XIAOZHI_ATTACHMENTS_SCHEMA='xiaozhi.attachments.v1' as const;
 export const MAX_XIAOZHI_ATTACHMENTS=8;
 /** Keep in sync with the formats accepted by attachment-service/format(). */
-export const XIAOZHI_ATTACHMENT_ACCEPT='.md,.txt,.csv,.json,.yaml,.yml,.log,.docx,.pdf,.xlsx,.pptx,.png,.jpg,.jpeg,.gif,.webp';
+export const XIAOZHI_ATTACHMENT_ACCEPT='.md,.txt,.csv,.json,.yaml,.yml,.log,.html,.docx,.pdf,.xlsx,.pptx,.png,.jpg,.jpeg,.gif,.webp';
 export type XiaozhiAttachmentState='draft'|'submitted'|'removed';
 export type XiaozhiAttachmentFormat='text'|'markdown'|'office'|'image';
 export type XiaozhiAttachment={schemaVersion:typeof XIAOZHI_ATTACHMENTS_SCHEMA;id:string;name:string;mime:string;size:number;
- format:XiaozhiAttachmentFormat;version:string;state:XiaozhiAttachmentState;revision:number;createdAt:string;updatedAt:string;runId?:string;messageId?:string};
+ format:XiaozhiAttachmentFormat;version:string;state:XiaozhiAttachmentState;revision:number;createdAt:string;updatedAt:string;runId?:string;messageId?:string;
+ artifactOrigin?:import('./teaching-artifact-reference').TeachingArtifactOrigin};
 export type XiaozhiAttachmentSelection={id:string;revision:number};
 export type XiaozhiAttachmentError='invalid_input'|'permission_denied'|'not_found'|'changed'|'too_large'|'unsupported'|'busy'|'cancelled'|'configuration'|'read_failed'|'timeout'|'parse_failed'|'needs_ocr'|'empty'|'unavailable'|'text_unreadable';
 export const validAttachmentSession=(id:unknown):id is string=>typeof id==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(id);

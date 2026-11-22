@@ -4,6 +4,8 @@
 
 一般知识问答使用已有会话和 Pi。教学任务可修订、暂停、恢复或取消。已中断的澄清以原 Run 的任务身份和要求版本为准，能力和审批仍按各自入口治理。 [D3 能力映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)
 
+教学文件目录复用已有保存版本读回、附件预览和正式附件读取，当前成果可引用到新对话。 [D3 引用验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#跨会话引用已保存教学成果)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Native、Managed MCP 和 Windows 社区扩展使用适配器执行合同。宿主现能独立核对能力配对、实例、制品版本和权限。 [D1 能力和隔离表](../architecture/HARNESS_D1.md#生产装配)

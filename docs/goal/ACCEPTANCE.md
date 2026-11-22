@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄清续答、资料子任务回传和文件版本定位。实际 Electron 与本地合成模型证据保存在固定验收根。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
+D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄清续答、资料子任务回传、文件版本定位和跨会话引用。实际 Electron、SQLite 读回与本地合成模型证据保存在固定验收根。 [D3 证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
 ## 2026-11-22 小智 Harness D1
 

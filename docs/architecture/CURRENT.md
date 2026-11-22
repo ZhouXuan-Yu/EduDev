@@ -4,6 +4,8 @@
 
 一般知识问答和教学任务复用同一 Pi、Journal 与会话历史。主进程判定是否分配业务 Task。教师修订推进原任务的要求版本。任务结束和教师澄清回接由原 Task 检查点控制。 [D3 调用链与状态](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md)
 
+教材成果引用通过 typed IPC 传递会话、成果身份和候选内容摘要。主进程核对原授权与本地版本，归档状态在登记事务中复核，同事务登记新会话、附件导入回执和待发送附件。 [引用执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#跨会话引用既有教学成果)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

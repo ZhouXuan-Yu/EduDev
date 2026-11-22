@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
-import {createAttachmentState,publicAttachment} from './attachment-state';
+import {createAttachmentState,publicAttachment,type PrivateAttachment} from './attachment-state';
 import {createAttachmentImportState,attachmentImportIdentity,type AttachmentImport} from './attachment-import-state';
 import {createAttachmentService} from './attachment-service';
 import {createWorkspaceFiles,type WorkspaceLease} from './workspace-files';
@@ -9,6 +9,7 @@ import {approvedFile,workspaceHash} from './workspace-authority';
 import {safeFilename} from './vendor/hana/lib/session-files/inbound-filenames';
 import {MAX_XIAOZHI_ATTACHMENTS,validAttachmentSession,validAttachmentSelection,type XiaozhiAttachmentSelection,type XiaozhiAttachment} from '../../shared/xiaozhi-attachments';
 import {XIAOZHI_FILES_SCHEMA,type XiaozhiFilePreview} from '../../shared/xiaozhi-files';
+import type {TeachingArtifactOrigin} from '../../shared/teaching-artifact-reference';
 
 const inside=(root:string,target:string)=>{const relative=path.relative(root.toLowerCase(),target.toLowerCase());return !relative||(!relative.startsWith('..')&&!path.isAbsolute(relative));};
 const noLinks=(absolute:string)=>{
@@ -56,12 +57,23 @@ export function createAttachmentImportService(options:{dataRoot:string;state:Ret
    throw error;
   }
  }
+ async function readSource(sessionId:string,absolute:string,signal:AbortSignal){
+  const parent=path.dirname(absolute),lease={path:parent,label:'已选择的文件',version:workspaceHash(parent)};
+  const reader=createAttachmentService({state:options.state,resolve:async()=>lease,isCurrent:options.isCurrent});
+  return reader.readBytes(sessionId,path.basename(absolute),signal);
+ }
+ async function writeCopy(sessionId:string,relativePath:string,bytes:Buffer,signal:AbortSignal){
+  const root=await resolve(sessionId);current(signal);const file=approvedFile(root.path,relativePath);
+  await fs.promises.mkdir(path.dirname(file));noLinks(path.dirname(file));current(signal);
+  const handle=await fs.promises.open(file,'wx');
+  try{await handle.writeFile(bytes);await handle.sync();}finally{await handle.close();}
+  current(signal);await fs.promises.chmod(file,0o444);current(signal);
+  return managed.capture(sessionId,relativePath,signal);
+ }
  async function importOne(sessionId:string,absolute:string,signal:AbortSignal){
   const count=(await options.state.list(sessionId)).filter(v=>v.state==='draft').length;
   current(signal);
-  const parent=path.dirname(absolute),lease={path:parent,label:'已选择的文件',version:workspaceHash(parent)};
-  const reader=createAttachmentService({state:options.state,resolve:async()=>lease,isCurrent:options.isCurrent});
-  const captured=await reader.readBytes(sessionId,path.basename(absolute),signal);
+  const captured=await readSource(sessionId,absolute,signal);
   if(captured.candidate.format==='image'){await options.validateImage?.(captured.bytes,captured.candidate.mime,signal);current(signal);}
   const identity={sessionId,originalPath:absolute,originalVersion:captured.candidate.version,originalSha256:captured.candidate.contentSha256};
   const sourceKey=attachmentImportIdentity(identity),previous=await options.imports.current(sessionId,sourceKey);current(signal);
@@ -74,12 +86,7 @@ export function createAttachmentImportService(options:{dataRoot:string;state:Ret
   const record=prepared.item;
   try{
    current(signal);await options.afterStage?.('intent');current(signal);
-   const root=await resolve(sessionId);current(signal);const file=approvedFile(root.path,record.relativePath);
-   await fs.promises.mkdir(path.dirname(file));noLinks(path.dirname(file));current(signal);
-   const handle=await fs.promises.open(file,'wx');
-   try{await handle.writeFile(captured.bytes);await handle.sync();}finally{await handle.close();}
-   current(signal);await fs.promises.chmod(file,0o444);current(signal);
-   const copy=await managed.capture(sessionId,record.relativePath,signal);
+   const copy=await writeCopy(sessionId,record.relativePath,captured.bytes,signal);
    if(copy.contentSha256!==record.originalSha256||copy.size!==record.size||copy.mime!==record.mime)throw new Error('changed');
    await options.afterStage?.('file');current(signal);
    const ready=await options.imports.finish(record.id,sessionId,'ready');
@@ -93,6 +100,27 @@ export function createAttachmentImportService(options:{dataRoot:string;state:Ret
   const row=await options.state.get(sessionId,selection.id);if(!row||row.contentSha256!==record.originalSha256)throw new Error('changed');return target;
  }
  return {
+  /** The saved-artifact host has already checked ownership and resolved this exact file. */
+  async stageArtifact(sessionId:string,absolute:string,origin:TeachingArtifactOrigin,signal:AbortSignal){
+   current(signal);noLinks(absolute);
+   const {candidate,bytes}=await readSource(sessionId,absolute,signal);
+   if(candidate.version!==origin.fileVersion||candidate.contentSha256!==origin.contentHash)throw new Error('changed');
+   // Published teaching files are documents. Image admission remains native-picker only here.
+   if(candidate.format==='image')throw new Error('unsupported');
+   const identity={sessionId,originalPath:absolute,originalVersion:candidate.version,originalSha256:candidate.contentSha256};
+   const relativePath=`${randomUUID()}/${safeFilename(candidate.name,candidate.mime,'file')}`;
+   const discard=async()=>{
+    const root=await resolve(sessionId),file=approvedFile(root.path,relativePath);
+    noLinks(file);if(!fs.lstatSync(file).isFile())return;
+    await fs.promises.chmod(file,0o600);await fs.promises.unlink(file);
+    await fs.promises.rmdir(path.dirname(file));await fs.promises.rmdir(root.path);
+   };
+   try{
+    const copy=await writeCopy(sessionId,relativePath,bytes,signal);
+    if(copy.contentSha256!==candidate.contentSha256||copy.size!==candidate.size||copy.mime!==candidate.mime)throw new Error('changed');
+    return {attachment:{...copy,artifactOrigin:origin},imported:{...identity,sourceKey:attachmentImportIdentity(identity),relativePath,size:copy.size,mime:copy.mime},discard};
+   }catch(error){await discard().catch(()=>undefined);throw error;}
+  },
   /** Native picker provides one explicitly selected path; no directory listing or adjacent-file authority. */
   async importFile(sessionId:string,raw:string,signal:AbortSignal){
    if(!validAttachmentSession(sessionId))throw new Error('invalid_input');current(signal);const absolute=source(raw);
@@ -103,6 +131,15 @@ export function createAttachmentImportService(options:{dataRoot:string;state:Ret
    try{return await work;}finally{jobs.delete(key);}
   },
   verify,
+  /** HTML goes to the existing redaction and text-line limit as text, without loading the preview. */
+  async readHtmlText(row:PrivateAttachment,signal:AbortSignal){
+   if(row.state!=='submitted'||row.mime!=='text/html'||!/\.html$/i.test(row.name))throw new Error('permission_denied');
+   const target=await verify(row.sessionId,{id:row.id,revision:row.revision},signal);
+   const {candidate,bytes}=await managed.readBytes(row.sessionId,target.path,signal);
+   if(candidate.version!==row.version||candidate.contentSha256!==row.contentSha256)throw new Error('changed');
+   try{return {text:new TextDecoder('utf-8',{fatal:true}).decode(bytes),format:'text' as const};}
+   catch{throw new Error('text_unreadable');}
+  },
   /** Current captured image bytes, main-only, bounded by the original native-picker authority. */
   async readImageBytes(sessionId:string,selection:XiaozhiAttachmentSelection,signal:AbortSignal){
    const target=await verify(sessionId,selection,signal),row=await options.state.get(sessionId,selection.id);current(signal);

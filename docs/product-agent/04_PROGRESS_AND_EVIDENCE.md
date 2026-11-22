@@ -5,7 +5,7 @@
 | 阶段 | 状态 | 当前进展 |
 | --- | --- | --- |
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
-| 1 | PARTIAL | 已实现问答分流、原任务修订、暂停取消、教师澄清和多份资料子任务。真实模型与跨会话成果引用仍待验收。 |
+| 1 | PARTIAL | 已实现问答分流、原任务修订、暂停取消、教师澄清、多份文本资料子任务和跨会话成果引用。多附件子任务和真实模型仍待验收。 |
 | 2 | NOT_STARTED | 以现有对话、恢复工作台与成果域为底座。 |
 | 3 | NOT_STARTED | 以现有选择的本地记忆、教师偏好为底座。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
@@ -125,8 +125,26 @@ Phase 1 暂无全量退出结论。暂停和取消的证据见下文。
 | Electron 综合回归 | `phase1-subtasks-electron-regression.log` 207/207，退出码 0。 |
 | 手测入口 | `manual-source-subtasks/启动-D3-资料子任务.cmd`。通过「选择教学工作目录」授权包含两份 `.txt` 的测试目录，要求小智分别读取并对照整理。展开任务卡查看两个资料子任务及其核验状态。 |
 
-本轮实际验证的资料是授权目录内的合成文本，附件、更多业务子任务及真实模型的自主规划质量需要后续覆盖。跨会话旧成果引用仍待实施和验收。
+本轮实际验证的资料是授权目录内的合成文本，附件、更多业务子任务及真实模型的自主规划质量需要后续覆盖。
 
 ## 指定成果的局部修改
 
 `node scripts/xiaozhi-agent/html-versions-electron.mjs --checks` 在同一最新构建通过 12/12。真实 Electron 通过操作授权和内容审阅，修改明确指定的 HTML 文件。另一个含相同原文的文件哈希保持原值，历史预览、恢复的新版本、当前和旧报告的适用性均有磁盘和冷启读回。`phase1-artifact-target.log` 保留旧夹具未通过权限卡的失败。修订的夹具通过原权限卡提交教师操作，再按项目原入口确认保存。最终日志 `phase1-artifact-target-recheck.log`，证据 `omni-edu-html-ui-768EtI/report.json`。
+
+## 跨会话引用已保存教学成果
+
+教师从「教学文件」打开已保存的当前版本并选择「在新对话中引用」。宿主核对保存记录和磁盘摘要，登记新对话及本地待发送附件。文件内容待教师点击发送后沿原 Pi 附件工具脱敏读取。文件缺失、变化与来源学生归档均返回可核对的失败。新附件保留来源会话、成果身份、文件版本和内容摘要。
+
+| 验收 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-artifact-reference-release` | 构建和 TypeScript 通过。`artifact-reference/build-release.log`。主入口 SHA-256 `7272a11a2bdaf36262f313d6e96ef794fe32059597f3b5dd2b3bababf668aa1e`。 |
+| `node scripts/xiaozhi-agent/html-versions-electron.mjs --checks --reference` | 17/17，证据 `artifact-reference/omni-edu-html-ui-MFQRIg/report.json`。覆盖旧成果、第三版 HTML 的真实点击引用、预览、发送后读到原始 4N、修改旧文件后引用副本仍保持 4N、冷启零重放、错误输入、旧 Markdown 和归档学生。渲染错误 0，新增付费调用 0。 |
+| 两次原生迁移 | `artifact-reference/legacy-schema-with-row-recheck.log`。对一条旧附件记录执行两次新增列迁移，所有原列保持同值，旧记录从原附件接口读回。 |
+| `npm.cmd run test:renderer-components` | `artifact-reference/renderer-components-final.log` 253/253。最后一处修复在宿主附件读取，渲染产物指纹一致。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207。`artifact-reference-regression-release/electron-smoke.log`。 |
+| `npm.cmd audit --omit=dev --json` | 保留原 20 项依赖警报，包含 2 项 high。未改依赖或锁文件。 |
+| 手测入口 | `manual-artifact-reference/启动-D3-引用教学文件.cmd`。单独的数据根和窗口，`launch-verified.json` 记录实际运行包及其哈希。 |
+
+`artifact-reference.log` 保留首次合成夹具错误解析带有宿主说明的工具回执，`artifact-reference-final.log` 保留首次真实 HTML 读取被格式校验拒绝的结果。最终把 HTML 源码交给已有文本行读取合同，原生受限预览继续呈现 HTML。旧附件表增加一个可空来源字段。回退应用时可沿用原附件记录，旧界面省略来源信息；无须删除字段或改动原件。
+
+手测可在「教学文件」选择「浮力练习（手测样例）」，点击「在新对话中引用」。输入框上方应出现「浮力练习-验收.md · 引用教学文件」。点击文件可预览本机内容。发送「根据附件出一道同类浮力题，并给出答案」后查看本轮已发送附件和资料读取记录。历史版本入口继续单独用于比较、预览与恢复。其它 Office 格式沿现有附件路径，逐格式专项及真实模型回答质量仍待验收。

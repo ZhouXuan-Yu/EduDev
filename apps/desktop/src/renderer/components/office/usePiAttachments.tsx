@@ -7,6 +7,7 @@ import type {OfficeProjectedItem} from '../../../shared/office-agent';
 import {AttachmentOcrPanel} from './AttachmentOcrPanel';
 import type {PublicImageDelivery} from '../../../shared/xiaozhi-public-images';
 import {PiAttachmentList} from './PiAttachmentList';
+import {ScienceDemoFrame} from './ScienceDemoFrame';
 
 /** Local drafts and previews. Actual message delivery is a separate durable operation. */
 export function usePiAttachments(sessionId:string,visible:boolean,history:OfficeProjectedItem[]=[]){
@@ -159,6 +160,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
    <Modal.Body aria-busy={reading}>
     {reading?<p role="status">正在读取附件…</p>:previewError?<div role="alert"><p>{previewError}</p><Button variant="ghost" size="sm" onPress={()=>void open(selected)}>重试</Button></div>:
      preview?.image?<><img src={preview.image} alt={preview.name} data-testid="pi-attachment-image"/><AttachmentOcrPanel key={`${selected.id}:${selected.revision}`} sessionId={sessionId} item={selected} onBusyChange={setOcrBusy}/></>:
+     preview?.html?<ScienceDemoFrame html={preview.html}/>:
      preview?.format==='markdown'||preview?.format==='office'?<><p>{preview.document?.format.toUpperCase()} · 本地提取正文，版式以原文件为准</p>
       <Markdown components={{img:({alt})=><span>［图片：{alt||'文档图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown></>:
       <pre data-testid="pi-attachment-text">{preview?.text}</pre>}

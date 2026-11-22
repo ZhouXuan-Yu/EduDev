@@ -20,6 +20,7 @@ import { createOfficeArtifactState } from './office-artifact-state';
 import {createDeliveryState} from './delivery-state';
 import { createAttachmentState } from './attachment-state';
 import { createAttachmentImportState } from './attachment-import-state';
+import {createArtifactReferenceState} from './artifact-reference-state';
 import {createAttachmentSendState} from './attachment-send-state';
 import {createAttachmentOcrState} from './attachment-ocr-state';
 import {createGoalState} from './goal-state';
@@ -89,6 +90,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     fileReferences,
     attachments,
     attachmentImports,
+    artifactReferences:createArtifactReferenceState(sql),
     attachmentSends,
     attachmentOcr,
     goals,

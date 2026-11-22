@@ -109,10 +109,12 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
       return host.extensionImport(id, selected.filePaths[0]);
     }});
   registerManagedToolIpc({ipcMain:options.ipcMain,allowed:fromMain,service:managedTools});
+  options.ipcMain.handle('xiaozhi:teaching-artifact-reference',(event,input)=>fromMain(event)
+    ? host.referenceTeachingArtifact(input) : {ok:false,error:'permission_denied'});
   registerAttachmentIpc({ipcMain:options.ipcMain,allowed:fromMain,attachments:host.attachments,choose:async()=>{
     const current=options.window();if(!current||current.isDestroyed())return;
     const result=await dialog.showOpenDialog(current,{title:'添加本地附件',properties:['openFile','multiSelections'],
-      filters:[{name:'教学资料',extensions:['png','jpg','jpeg','gif','webp','txt','md','docx','pdf','xlsx','pptx']},{name:'所有文件',extensions:['*']}]});
+      filters:[{name:'教学资料',extensions:['png','jpg','jpeg','gif','webp','txt','md','docx','pdf','xlsx','pptx','html']},{name:'所有文件',extensions:['*']}]});
     return result.canceled?undefined:result.filePaths;
   }});
   registerWebIpc({ipcMain:options.ipcMain,allowed:fromMain,host,preferences:()=>options.store.xiaozhiState.modelSettings.web(),open:url=>shell.openExternal(url)});

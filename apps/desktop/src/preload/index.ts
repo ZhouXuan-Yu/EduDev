@@ -53,6 +53,7 @@ import type {StudentTrainingInput,StudentTrainingSource,StudentTrainingResultInp
 import type {ClassroomItem,ClassroomDecision,ClassroomResult} from '../shared/classroom';
 import type {GoalMutation,GoalResult} from '../shared/xiaozhi-goal';
 import type {XiaozhiAttachmentInput,XiaozhiAttachmentSelectedInput,XiaozhiAttachmentImportInput,XiaozhiAttachmentResult,XiaozhiAttachment,XiaozhiAttachmentChoice,XiaozhiAttachmentPreview} from '../shared/xiaozhi-attachments';
+import type {TeachingArtifactReferenceInput,TeachingArtifactReferenceResult} from '../shared/teaching-artifact-reference';
 import type {AttachmentOcrReview,AttachmentOcrDecision} from '../shared/xiaozhi-ocr';
 import type {MistakeOcrInput,MistakeOcrCorrection,MistakeOcrResult} from '../shared/mistake-ocr';
 import type {LocalImagePreview} from '../shared/xiaozhi-images';
@@ -274,6 +275,7 @@ const api = {
   selectXiaozhiWorkspace: (id: string) => ipcRenderer.invoke('xiaozhi:workspace', id) as Promise<XiaozhiActionResult>,
   selectPaperOutput:(input:import('../shared/paper-export').PaperOutputInput)=>ipcRenderer.invoke('xiaozhi:paper-output',input) as Promise<XiaozhiActionResult>,
   chooseXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-choose',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
+  referenceTeachingArtifact:(input:TeachingArtifactReferenceInput)=>ipcRenderer.invoke('xiaozhi:teaching-artifact-reference',input) as Promise<TeachingArtifactReferenceResult>,
   getPathForFile:(file:File)=>rememberAttachmentPath(file),
   importXiaozhiAttachments:(input:XiaozhiAttachmentImportInput)=>{
     const paths=takeAuthorizedAttachmentPaths(input);
