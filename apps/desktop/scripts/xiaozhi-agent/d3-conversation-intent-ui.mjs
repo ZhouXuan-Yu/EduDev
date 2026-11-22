@@ -27,13 +27,14 @@ const fixture=http.createServer(async(request,response)=>{
   }
   let raw='';for await(const part of request)raw+=part;
   const body=JSON.parse(raw);
-  requests.push({tools:body.tools?.map(tool=>tool.function?.name).filter(Boolean)??[],messages:body.messages.length,
+  const toolNames=body.tools?.map(tool=>tool.function?.name).filter(Boolean)??[];
+  requests.push({tools:toolNames,messages:body.messages.length,
     teacherAnswer:body.messages.some(message=>message.role==='tool'&&typeof message.content==='string'&&message.content.includes('五年级')),
     recoveredTeacherAnswer:body.messages.some(message=>message.role==='user'&&/教师回答:\s*五年级/u.test(JSON.stringify(message.content??'').normalize('NFKC')))});
   response.setHeader('content-type','text/event-stream');
   const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-d3',object:'chat.completion.chunk',created:1,
     model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})+'\n\n';
-  if(askNextReply){
+  if(askNextReply&&toolNames.includes('ask_teacher')){
     askNextReply=false;
     const call={index:0,id:'call_'+requests.length,type:'function',function:{name:'ask_teacher',arguments:JSON.stringify({question:'这份课堂导入给哪个年级？',options:['三年级','五年级']})}};
     return response.end(chunk({role:'assistant'},null)+chunk({tool_calls:[call]},null)+chunk({},'tool_calls')+'data: [DONE]\n\n');
@@ -278,6 +279,7 @@ try{
     check('真实澄清卡等待教师输入，选择答案后同一 Run 和 Task 继续，请求携带经过宿主记录的回答');
   }
   if(process.argv.includes('--teacher-cold')){
+    const sameConversation=process.argv.includes('--same-teacher-conversation');
     async function interruptedQuestion(prompt){
       askNextReply=true;await submit(prompt);
       const pending=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]');
@@ -290,7 +292,7 @@ try{
       await question.getByTestId('pi-question-option-1').waitFor({state:'visible',timeout:15_000});
       return{task,controlId,question,count};
     }
-    await freshConversation();
+    if(!sameConversation)await freshConversation();
     const recovered=await interruptedQuestion('请新建一个分数教学任务，先问我年级再给导入方案。');
     const ids=taskRecords().map(task=>task.id),before=(await snapshot()).projection.turns.length;
     await recovered.question.getByTestId('pi-question-option-1').click();
@@ -312,7 +314,7 @@ try{
     assert.deepEqual(repeat,{ok:true});assert.equal(requests.length,recovered.count+1);
     check('意外关闭后回答原澄清卡，回到原 Task，重复回答保持零新增请求');
 
-    await freshConversation();
+    if(!sameConversation)await freshConversation();
     const cancelled=await interruptedQuestion('新建另一个教案任务，请先询问教师目标年级。');
     const frozenAuthority=runAuthority();
     assert.equal(frozenAuthority.owner.run_id,'');
