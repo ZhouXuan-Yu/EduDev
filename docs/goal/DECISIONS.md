@@ -8,6 +8,8 @@ D3 的 D11 由主进程先识别明确的答复型输入，不产生业务 Task 
 
 个人数据根存储教师确认的学科、年级与教材，以及逐项偏好的使用范围。既有偏好版本记录表达值及确认来源。Pi 请求只附加符合当前任务和使用范围的表达指导。 [教师记忆合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-3-教师记忆设置交付合同)
 
+组卷按题量统计难度比例。教师明确给出三档目标时，每档允许 5 个百分点偏差，档位不明的蓝图需先补齐。选题和核对沿用存量题库标签。 [组卷合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-自动组卷约束与核对)
+
 ## 2026-11-22 小智 Harness D1
 
 复用原 Registry 和版本快照，增量管理 Provider Instance 与 Binding 控制。Core 与 Community 在可信宿主中统一接入，通过已存在的许可服务和 Windows 隔离执行。 [D1 架构](../architecture/HARNESS_D1.md)

@@ -18,6 +18,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 教师记忆设置已在最终构建核对真实保存、范围冲突、停用与重新启用、旧库和冷启动。独立桌面窗口与人工步骤已就绪。 [教师记忆专项验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-3-教师记忆与偏好范围)
 
+自动组卷专项已验证模型错误蓝图被拦截、修正进入原任务、题型与难度快照核对、教师确认、局部编辑与恢复，以及学生版和教师版 Word 读回。 [组卷专项验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-组卷蓝图与实际选题)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

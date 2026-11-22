@@ -6,6 +6,7 @@ import {unwrapTaskArguments} from '../xiaozhi-agent/tasks/tool-envelope';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import {readTaskAction} from '../xiaozhi-agent/tasks/teacher-actions';
 import {isThinkingContinuation} from '../xiaozhi-agent/answer-quality';
+import {compareTeacherPaperConstraints} from './paper-request-constraints';
 
 export type PaperProposalBinding=Readonly<{sessionId:string;runId:string;commandId:string;generation:number;callId:string;taskId:string;requirementsVersion:number}>;
 const identity=(value:string)=>typeof value==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(value);
@@ -64,6 +65,8 @@ export async function admitPaperProposal(options:{sql:Sql;current:()=>boolean},b
  }
  check();
  if(!explicitlyRequestsPaper(request)||corrected!==undefined&&!explicitlyRequestsPaper(corrected))throw new TaskAdmissionError('task_paper_request_scope');
+ const mismatch=compareTeacherPaperConstraints(corrected??request,input);
+ if(mismatch)throw new TaskAdmissionError('task_paper_requirements_'+mismatch);
  // Stable host-side identity only. No generic saved_questions proof is minted.
  const resource=createHash('sha256').update(JSON.stringify(['paper_review',binding,input])).digest('hex');
  return{kind:'paper_review' as const,...binding,resource};

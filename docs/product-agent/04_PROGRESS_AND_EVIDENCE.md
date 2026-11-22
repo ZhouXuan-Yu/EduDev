@@ -382,3 +382,22 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase3-teacher-memory-settings`。早期三份报告保留模型轮次断言、下拉动画重叠及返回对话同步等待的测试故障，最终按实际请求与可发送状态复跑。依赖未变，审计记录既有 20 项提示，其中 2 项 high。
 
 已启动最终构建的独立验收窗口。人工启动与步骤在 `manual-phase3-teacher-memory-settings/启动-D3-教师记忆.cmd` 和 `验收步骤.md`，`window-verification.json` 记录实际运行路径、窗口和哈希。
+
+## Phase 4.1 组卷蓝图与实际选题
+
+教师在原对话里给出明确的全卷约束。原任务准入核对模型蓝图。已支持的约束包括全卷题量、总分、时长、具名科目和年级、逐类题数、原题库限定、必选知识点清单及带档位的难度比例。错误蓝图返回具体类别的拒绝回执，修正后继续同一任务。引文、示例和范围型要求保持由老师与模型澄清。
+
+选题、快照和预览复用已经在题库使用的题型与年级匹配规则。试卷核对显示每节题数、分数、题型、难度与知识点，并显示蓝图和实际三档难度题数。难度比例按题量计算，每档允许偏差 5 个百分点。参考答案与解析继续保留原来源和教师审阅。只有蓝图一致的候选可以确认。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-paper-blueprint-verified` | 通过。主进程 SHA-256 `0c87c8ee2c80b111ae9682bdb5408722ef50c1d503eeeebe05a836d3d7c092f1`。Preload SHA-256 `899483414ab804a8a8cb4d8a32c7885a14cc9c40f0c388206e4470839631095a`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --requirements --restore` | 6/6。实际 Pi 接到 8 分提议失败回执，5 分提议成为唯一候选。验证双尺寸、教师确认、分值局部编辑、版本冲突、历史恢复、原任务及冷启。报告 `paper-edit-sync-3Dls55/report.json`。 |
+| `node scripts/education/paper-edit-sync-electron.mjs --export-selected` | 6/6。学生和教师版 Word 从所选的 7 分编辑版导出，文件和数据库冷读一致，答案保留在教师版。报告 `paper-edit-sync-13efuJ/report.json`。 |
+| `Get-Content -Raw legacy-readback.mjs \| node --input-type=module -` | 实际旧版合成数据库的 4 条试卷快照原样保留。新版窗口显示历史题型及未限定的难度。没有重放模型。报告 `paper-legacy-VG34km/report.json`。 |
+| 组卷履约、宿主准入与组件测试 | 9/9、12/12、253/253。分别验证难度与题型错配、来源配额、授权和任务绑定、首轮错误不触发业务写入，及现有渲染组件。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，`electron-smoke.log` 与 `electron-e2e/`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-paper-blueprint`。前一版边界用例因新增题型题数核对改变了预期，更新断言后复跑；失败报告 `xiaozhi-paper-fulfillment-xidi8r/report.json` 保留。依赖未变，审计现有 20 项提示，其中 2 项 high。模型响应为本地合成，0 付费调用。不同学科的真实题目答案抽样及正式教师使用体验留待集中验收。
+
+最终构建已在 `manual-phase4-paper-blueprint` 启动。启动器为 `启动-D3-自动组卷核对.cmd`，文档提供查看、修改、恢复和可选模型试用步骤。

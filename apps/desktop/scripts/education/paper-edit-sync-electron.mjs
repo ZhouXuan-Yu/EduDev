@@ -14,11 +14,14 @@ const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const restoreMode=process.argv.includes('--restore');
 const exportMode=process.argv.includes('--export-selected');
+const requirementsMode=process.argv.includes('--requirements');
+assert(!requirementsMode||!exportMode);
 const destination=path.join(output,'delivered');
 if(exportMode)fs.mkdirSync(destination);
 const report={ok:false,output,main,checks:[],errors:[],paidRequests:0};
 const blueprint={title:'等式课堂练习卷',subject:'数学',grade:'初二',durationMinutes:20,totalPoints:5,mode:'source_only',
-  sections:[{id:'one',label:'一元一次方程',questionType:'解答题',count:1,points:5}]};
+  sections:[{id:'one',label:'一元一次方程',questionType:'解答题',count:1,points:5,
+    ...(requirementsMode?{difficulty:'medium',knowledgePoint:'一元一次方程'}:{})}]};
 let app,page,sessionId;
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
 async function until(read,timeout=90000){
@@ -39,7 +42,7 @@ async function launch(cold=false){
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-paper-edit-only',DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,`--user-data-dir=${profile}`],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net,dialog},{blueprint,cold,exportMode,destination})=>{
+  await app.evaluate(({net,dialog},{blueprint,cold,exportMode,requirementsMode,destination})=>{
     if(exportMode)dialog.showOpenDialog=async()=>({canceled:false,filePaths:[destination]});
     globalThis.paperEditRequests=[];
     net.fetch=async(raw,init)=>{
@@ -50,6 +53,11 @@ async function launch(cold=false){
       const index=globalThis.paperEditRequests.length;
       const body=JSON.parse(init.body),tools=body.tools?.map(tool=>tool.function.name);
       let offer=index===0?{name:'find_education_tools',args:{query:'education_propose_paper 按蓝图题库组卷'}}:index===1?{name:'education_propose_paper',args:blueprint}:undefined;
+      if(requirementsMode&&index===1)offer.args={...blueprint,totalPoints:8,sections:[{...blueprint.sections[0],points:8}]};
+      if(requirementsMode&&index===2){
+        if(!JSON.stringify(body.messages.at(-1)).includes('task_paper_requirements_points'))throw Error('Missing recoverable task admission reason');
+        offer={name:'education_propose_paper',args:blueprint};
+      }
       if(exportMode&&index>=3){
         const step=(index-3)%4,audience=index<7?'teacher':'student',file=`${blueprint.title}-${audience}.docx`;
         if(step===0)offer={name:'find_education_tools',args:{query:'education_export_paper 导出确认试卷'}};
@@ -64,12 +72,12 @@ async function launch(cold=false){
         if(step===2)offer={name:'education_export_paper',args:{taskStepId:'save',format:'docx',audience,path:file}};
       }
       globalThis.paperEditRequests.push(offer?.name??'reply');
-      if(index>(exportMode?10:2)||(offer&&!tools?.includes(offer.name)))throw Error(`Unexpected paper route: ${offer?.name??index}`);
+      if(index>(exportMode?10:requirementsMode?3:2)||(offer&&!tools?.includes(offer.name)))throw Error(`Unexpected paper route: ${offer?.name??index}`);
       const chunk=(delta,finish_reason=null)=>`data: ${JSON.stringify({id:'owned-paper-edit',object:'chat.completion.chunk',created:0,model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})}\n\n`;
       const delta=offer?{tool_calls:[{index:0,id:`owned-paper-${index}`,type:'function',function:{name:offer.name,arguments:JSON.stringify(offer.args)}}]}:{content:'试卷已按教师确认保存在本机。'};
       return new Response(chunk({role:'assistant'})+chunk(delta)+chunk({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
     };
-  },{blueprint,cold,exportMode,destination});
+  },{blueprint,cold,exportMode,requirementsMode,destination});
   page=await app.firstWindow();page.on('pageerror',error=>report.errors.push(String(error)));
   await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
   await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
@@ -90,21 +98,38 @@ const closeReview=()=>page.getByTestId('pi-paper-dialog').getByRole('button',{na
 try{
   await launch();
   await call('createQuestionBankItem',{subject:'数学',grade:'初二',knowledgePoint:'一元一次方程',questionType:'解答题',
-    stem:'解方程 3x + 7 = 25，并写出等式两边同时减 7 的步骤。',answer:'x = 6',analysis:'两边减 7 后得到 3x = 18，再除以 3。',sourceKind:'teacher_resource'});
+    stem:'解方程 3x + 7 = 25，并写出等式两边同时减 7 的步骤。',answer:'x = 6',analysis:'两边减 7 后得到 3x = 18，再除以 3。',sourceKind:'teacher_resource',
+    ...(requirementsMode?{difficulty:'medium'}:{})});
   const questions=query('SELECT * FROM question_bank_items');
-  const prompt='请实际调用 education_propose_paper 按下面蓝图做纯题库组卷，等待我预览确认，不要导出。蓝图：'+JSON.stringify(blueprint);
+  const prompt=requirementsMode
+    ?'请从题库组卷，做一份初二数学练习卷。共1题，总分五分，限时20分钟，必选知识点：一元一次方程，难度比例易:中:难=0:1:0。等待我预览确认。'
+    :'请实际调用 education_propose_paper 按下面蓝图做纯题库组卷，等待我预览确认，不要导出。蓝图：'+JSON.stringify(blueprint);
   await page.getByTestId('office-prompt-input').fill(prompt);
   await page.getByTestId('office-prompt-input').press('Enter');
   const source=await until(()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' AND status='pending'")[0]);
   report.sourceId=source.id;report.sessionId=sessionId;
   const card=()=>page.locator(`[data-testid="pi-paper-review"][data-paper-id="${source.id}"]`);
   await openCard(card());
+  if(requirementsMode){
+    const details=page.getByTestId('paper-fulfillment-details');
+    await details.getByRole('button',{name:'蓝图配额与实际选题'}).click();
+    assert.match(await details.getByTestId('paper-fulfillment-difficulty').innerText(),/中等 1 题/);
+    assert.match(await details.getByTestId('paper-fulfillment-section').innerText(),/解答题 1 \/ 1.*中等 1 \/ 1/);
+    assert.equal(query("SELECT COUNT(*) AS count FROM ai_confirmation_items WHERE action_type='pi_paper_candidate'")[0].count,1);
+    for(const [width,height] of [[1366,768],[1920,1080]]){
+      await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),[width,height]);
+      await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+      await details.getByTestId('paper-fulfillment-difficulty').scrollIntoViewIfNeeded();
+      await page.screenshot({path:path.join(output,`paper-requirements-${width}x${height}.png`),animations:'disabled'});
+    }
+    check('Typed five-point teacher intent blocks the eight-point model attempt and displays the corrected paper checks');
+  }
   await page.getByTestId('pi-paper-dialog').getByTestId('paper-confirm').click();
   await page.getByTestId('paper-confirmed').waitFor();
   await closeReview();await until(async()=>!(await snapshot()).running);
   const original=candidate(source.id);
   assert.equal(original.status,'confirmed');
-  assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),['find_education_tools','education_propose_paper','reply']);
+  assert.deepEqual(await app.evaluate(()=>globalThis.paperEditRequests),['find_education_tools','education_propose_paper',...(requirementsMode?['education_propose_paper']:[]),'reply']);
   check('Original Pi task and explicit teacher approval save the five-point source paper');
 
   const schemaVersion='xiaozhi.paper-basket.v2';

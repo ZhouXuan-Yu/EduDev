@@ -24,6 +24,8 @@
 
 教师记忆设置复用本地 SQLite `app_settings`。画像和偏好使用范围单独版本化，保存时核验设置版本与已确认偏好版本。教学偏好值和确认来源沿原账本保留。 [教师记忆合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-3-教师记忆设置交付合同)
 
+对话组卷通过原任务准入核对老师原话中的明确约束。蓝图与逐题结果的匹配规则由选题器和快照投影共用。既有 SQLite 试卷快照和版本摘要无需迁移。 [组卷合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-自动组卷约束与核对)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)

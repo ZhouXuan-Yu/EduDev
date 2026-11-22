@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "45ab0578fec093221299085441c6e5209c0ed7f0e2f9662a8151dba97b0e2b59",
+  "sourceHash": "accc2b617fbc23fa5a4a0ba2a6c435c07eaba10e40b052fb6b6015927769ef67",
   "sources": [
     {
       "file": "package-lock.json",
@@ -192,7 +192,7 @@
     },
     {
       "file": "src/main/education/paper-admission.ts",
-      "sha256": "858966dc40657036142a8afe2a0636a576290d3fdfddbee338fd4bdb2195b76c"
+      "sha256": "a42268021dc5ac1fbd188f4de4f71388ef9ffd3b6a3e9dadce1f8e2002c37f27"
     },
     {
       "file": "src/main/education/paper-basket-adaptation-context.ts",
@@ -255,12 +255,16 @@
       "sha256": "f14034415702a1fd7f5d7fef7b8a2ac27b24388f380ae1aa08e2d33c2f6bfaa4"
     },
     {
+      "file": "src/main/education/paper-request-constraints.ts",
+      "sha256": "768fc1032bb84d78e0001f5ad978f8f3fa85ec892b21dd2a84aabd8caed885d0"
+    },
+    {
       "file": "src/main/education/paper-rich-export.ts",
       "sha256": "0db0faa10e01988d04372bb381756cf102ee98a88c1b42a6b28a19953674b0f6"
     },
     {
       "file": "src/main/education/paper-selection.ts",
-      "sha256": "19b4e2c6cf958a2a998c91af83bff10ad593954e71dc906f7135cafb3cab9553"
+      "sha256": "a3b9374b7a4f37523da61fdadb17f35d6ff6c4710a58a5c9cca8640eaa11f146"
     },
     {
       "file": "src/main/education/paper-table-blocks.ts",
@@ -720,7 +724,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "c9637cdafe738b457618399b8454a746fff7ea5a9ebd1de154953269e6c343ed"
+      "sha256": "53a18abc4220893c72a7fcfdd503e2d1c70567c2ad445a6f4353b4349b6b078b"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2252,7 +2256,7 @@
     },
     {
       "file": "src/shared/paper-fulfillment.ts",
-      "sha256": "92dd93e4124f51105f4ee4032fb894b00381aef8965a13e5245c462e485e6a0c"
+      "sha256": "72596b6e05741fdb6f225d8a359a52c80dab4602741467bb0531f2e2b2af2039"
     },
     {
       "file": "src/shared/paper-instance.ts",
@@ -2273,6 +2277,10 @@
     {
       "file": "src/shared/paper-reference.ts",
       "sha256": "9d9472294011edafe3de5f437596b6db8583823dd3ee2af0c74a550c75fb3142"
+    },
+    {
+      "file": "src/shared/paper-section-fit.ts",
+      "sha256": "ab3310c969c81111312e8f0263a5dccc73b8d2b8bd452802b9fb86d9ca2b765e"
     },
     {
       "file": "src/shared/paper-template-validation.ts",

@@ -35,6 +35,7 @@ function PaperSnapshotReview({view,onChanged,onEditing,allowConfirm=true,histori
  }
  return <section className="paper-review" data-testid="paper-review">
   <header><h2>{view.title}</h2><p data-testid="paper-summary">已选 {fulfillment.selectedCount} / {fulfillment.requiredCount} 题 · {fulfillment.selectedPoints} / {fulfillment.requiredPoints} 分 · 预计 {view.blueprint.durationMinutes} 分钟 · {{pending:'待教师核对',confirmed:'已确认保存',rejected:'已拒绝'}[view.state]}</p></header>
+  {fulfillment.state==='conflict'&&<p role="alert" data-testid="paper-fulfillment-conflict">选题与蓝图不一致。可展开核对明细，定位不符的题节。</p>}
   <PaperFulfillmentDetails value={fulfillment}/>
   {historical&&<p data-testid="paper-review-historical">正在查看历史版本。可关闭预览后打开当前修订。</p>}
   {historical&&restoreHead&&view.state==='confirmed'&&<Button variant="secondary" data-testid="paper-restore-draft" isDisabled={busy}
