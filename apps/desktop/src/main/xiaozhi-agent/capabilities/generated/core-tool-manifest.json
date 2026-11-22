@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "e5f51dbb65c004bc162cc4713b0830920c1402f5ef88214f29b578373aec02ec",
+  "sourceHash": "cdb8bfd9e6678058b16abc2a1ee532ec0fdb977fe6ad4dc0c5be192c887b42e6",
   "sources": [
     {
       "file": "package-lock.json",
@@ -384,15 +384,23 @@
     },
     {
       "file": "src/main/education/teacher-preference-candidates.ts",
-      "sha256": "4bd155b23882a202b459cc1d6d258b5ffdcdcb258d5addaafe3716c986eb19c9"
+      "sha256": "e81d7342d0f5dc18d9280a41602e0b8e025bdbce596f494b07b6b7a13da9f1c7"
     },
     {
       "file": "src/main/education/teacher-preference-learning.ts",
-      "sha256": "a7204df7325c56d310af5a83f0a5f079dd91c3b921d68510e6f0d33bd311912f"
+      "sha256": "e9b74ec957b21ed07d7f14323d53d2b5c54b4c1d95bd5226f17e69d7035efd02"
     },
     {
       "file": "src/main/education/teacher-preference-policy.ts",
       "sha256": "37de46b3f715c1356f812802457011a51631791bee2eef1a947d4ea581de6d68"
+    },
+    {
+      "file": "src/main/education/teacher-preference-request.ts",
+      "sha256": "9782b5369b0df6644ae756d047a0a526fa978d7bc3f51be8ddf12c79a20fbe59"
+    },
+    {
+      "file": "src/main/education/teacher-preference-scope.ts",
+      "sha256": "513a5e372bd4d8ef2963c9b9c3ca953e636b2b1c532398d1b16f622d5e2cc363"
     },
     {
       "file": "src/main/education/teacher-preference-sources.ts",
@@ -708,7 +716,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "339c6540154c5f8dc9ebc43b1c770f12d6838317f0e7dd049021c4d0fc15db94"
+      "sha256": "3eae367e26eaba2b1f7af169b052f7c62f84bed5c220579b609d2c81104d5bfd"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1404,7 +1412,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "07b991e0e5bed34466b7e05fcd4cd9c35d59861e964a354ddf3771ac1e2328d2"
+      "sha256": "64f2a44dbabd25d3bd1578ac20d5140dd915877d52446aa1d58d8b747adee01d"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1413,6 +1421,10 @@
     {
       "file": "src/main/xiaozhi-agent/plan-service.ts",
       "sha256": "30648e96192c9b05bb380633c4e3fa37a08b34f3f54effc07b584b46cebd8381"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/preference-request-context.ts",
+      "sha256": "a1fcdfc5b365e162a370a7dc701fc1abf80bf5cfc066282c8a6cf8a856a8b110"
     },
     {
       "file": "src/main/xiaozhi-agent/presentation-event-adapter.ts",
@@ -1436,7 +1448,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "40c04b9010ff0ae738d303a8d747ddc4b2aec3cda36c74e5bc5303f1df92d01a"
+      "sha256": "b857b559f45a7bd97c4bce31bed4ddc51e0c05b389808ef70958cb90f34000d6"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",

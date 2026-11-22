@@ -14,6 +14,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 课堂设计历史预览已核对旧版原文、关闭焦点、撤回来源及恢复存档。工作台与成果工程条目已对照执行包完成退出验收。 [历史与阶段退出](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-2-课堂设计历史正文与恢复)
 
+教学偏好按需应用已核对实际模型请求、本轮优先、同会话及跨会话使用、原生日志兼容、撤销冷启和独立数据根。 [教师记忆验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-3-教学偏好按需应用)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

@@ -1,0 +1,29 @@
+import type {TeacherPreferenceValues} from '../../shared/teacher-preferences';
+
+const explanation=/讲解|解答|解析|解释|求解|计算|证明|推导|说清楚|举例说明|什么是|什么叫|为什么|为何|如何理解|有什么区别|\b(?:why|explain|calculate)\b/iu;
+const artifactOnly=/^(?:请|麻烦|帮我|给我|替我|请帮我|请给我)?\s*(?:导出|另存|下载|保存|生成|制作|编写|整理|组卷|出题|查找|搜索|翻译|安装|运行|更新|修改|打开|复制)/u;
+const processQuestion=/^(?:请问[，,\s]*)?(?:怎么|如何|怎样|为什么|为何).{0,12}(?:安装|登录|设置|更新|导出|保存|下载|打开|配置|报错)/u;
+const shortAnswer=/一句话|一两句话|(?:只|仅)(?:要|给|说|写)(?:结论|答案)|只回答|\b(?:one sentence|just the answer)\b/iu;
+const length=/简要|简短|简洁|精简|详细|简略|长一些|短一些|详细些|深入讲|展开讲|\d+\s*(?:字|个字|词|句话)|\b(?:brief|concise|detailed|\d+\s+words?)\b/iu;
+const structure=/分步|按步骤|列步骤|一步一步|连贯叙述|整段|不分点|只列要点|按点|\b(?:step by step|bullets?)\b/iu;
+const answerOrder=/先.{0,6}(?:答案|结论|提示|引导)|直接.{0,6}(?:答案|结论)|别.{0,6}(?:答案|结论)|不要.{0,6}(?:答案|结论)|\b(?:hint first|answer first)\b/iu;
+const presentation=/表格|用表|不用表|段落|纯文本|列表|清单|漫画|\b(?:table|paragraph|plain text)\b/iu;
+const comparison=/比较|对比|区别|差异|异同|优缺点|逐项|列表|分类|分别|不能当作|区分|\b(?:compare|differences?)\b/iu;
+const fileIntent=/导出|另存(?:为)?|保存(?:为|成)|(?:输出|交付|生成|制作).{0,12}(?:文件|讲义|试卷|教案|课件)/u;
+const explicitFile=/\b(?:docx?|pdf|pptx?|xlsx?|csv|html?|png|jpe?g|word|excel|powerpoint|markdown)\b|文本文件|演示稿|幻灯片|网页版|图片版/u;
+const noFile=/(?:不|别|不要|无需|不需要|不用|不能)(?:再|另|自动)?(?:导出|生成|制作|保存|输出|写入)(?:.{0,12}(?:文件|副本))?/gu;
+
+/** The saved record remains complete. Select only the axes relevant to this request. */
+export function selectTeacherPreferenceValues(values:TeacherPreferenceValues,request:string,exportAlreadyChosen=false):TeacherPreferenceValues {
+ const text=request.trim().normalize('NFKC').replace(noFile,'');
+ const selected:{-readonly [Key in keyof TeacherPreferenceValues]:TeacherPreferenceValues[Key]}={};
+ if(!text)return selected;
+ if(!exportAlreadyChosen&&fileIntent.test(text)&&!processQuestion.test(text)&&!explicitFile.test(text.toLowerCase())&&values.exportFormat)
+  selected.exportFormat=values.exportFormat;
+ if(!explanation.test(text)||artifactOnly.test(text)||processQuestion.test(text)||shortAnswer.test(text))return selected;
+ if(values.length&&!length.test(text))selected.length=values.length;
+ if(values.structure&&!structure.test(text))selected.structure=values.structure;
+ if(values.answerOrder&&!answerOrder.test(text))selected.answerOrder=values.answerOrder;
+ if(values.presentation&&!presentation.test(text)&&(values.presentation!=='table'||comparison.test(text)))selected.presentation=values.presentation;
+ return selected;
+}

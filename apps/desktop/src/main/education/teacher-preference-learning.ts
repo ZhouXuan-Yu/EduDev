@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {validTeacherPreferenceValues,type TeacherPreferenceValues} from '../../shared/teacher-preferences';
 import {teacherPreferenceSignal} from './teacher-preference-policy';
+import {selectTeacherPreferenceValues} from './teacher-preference-scope';
 import type {TeacherCandidateReason,TeacherCandidateStatus} from '../../shared/teacher-candidates';
 import {teacherLearningResponse as response,teacherLearningUser,teacherSampleSource} from './teacher-preference-sources';
 
@@ -13,7 +14,7 @@ type Source={id:string;sessionId:string;runId:string;text:string};
 const presentationMetric='teacher_presentation_observed.v3' as const;
 type Metrics={metric?:'teacher_presentation_observed.v2'|typeof presentationMetric;characters:number;steps:number;table:boolean;passed:boolean};
 type Sample={sessionId:string;runId:string;messageId:string;sha256:string;taskRunId:string;taskHash:string;before:Metrics;after?:Metrics;sourceDigest?:string;afterDigest?:string};
-export type TeacherCandidate={schemaVersion:typeof schema;sourceVersion?:1;revision?:number;reason?:TeacherCandidateReason;id:string;baselineRevision:number;patch:TeacherPreferenceValues;status:TeacherCandidateStatus;samples:Sample[];trial?:{sessionId:string;runId:string;messageId:string;sha256:string;metrics?:Metrics;sourceDigest?:string;resultDigest?:string}};
+export type TeacherCandidate={schemaVersion:typeof schema;sourceVersion?:1;revision?:number;reason?:TeacherCandidateReason;id:string;baselineRevision:number;patch:TeacherPreferenceValues;status:TeacherCandidateStatus;samples:Sample[];trial?:{sessionId:string;runId:string;messageId:string;sha256:string;metrics?:Metrics;sourceDigest?:string;resultDigest?:string;requestScoped?:true}};
 type Candidate=TeacherCandidate;
 export type TeacherLearningEvidence={metric:'teacher_presentation_observed.v1'|'teacher_presentation_observed.v2'|typeof presentationMetric;candidateId:string;trainRuns:string[];holdoutRunId:string};
 type Learning={candidateId?:string;patch?:TeacherPreferenceValues;trial?:TeacherPreferenceValues;rollback?:boolean;evidence?:TeacherLearningEvidence};
@@ -118,7 +119,8 @@ export async function observeTeacherLearning(sql:Sql,source:Source,baseline:{rev
  // Regressions are measured only on a completed, actually applied pure explanation.
  if(baseline.learning&&prior&&teacherPresentationTask(prior.prompt)){
   const event=await get(sql,'xiaozhi.teacher-preference.v1:event:'+prior.runId);
-  if(event&&JSON.parse(event).appliedRevision===baseline.revision&&!teacherPresentationMetrics(prior.content,baseline.values).passed)return{rollback:true};
+  const used=selectTeacherPreferenceValues(baseline.values,prior.prompt);
+  if(Object.keys(used).length&&event&&JSON.parse(event).appliedRevision===baseline.revision&&!teacherPresentationMetrics(prior.content,used).passed)return{rollback:true};
  }
  if(baseline.learning&&correction&&Object.entries(correction).some(([k,v])=>baseline.values[k as keyof TeacherPreferenceValues]!==v))return{rollback:true};
  if(c&&c.baselineRevision!==baseline.revision){c.status='superseded';c.reason='baseline_changed';await save(sql,c);c=undefined;}
@@ -136,11 +138,14 @@ export async function observeTeacherLearning(sql:Sql,source:Source,baseline:{rev
  if(c?.trial){
   const result=await response(sql,c.trial.sessionId,c.trial.runId);
   if(result){
-   c.trial.resultDigest=result.digest;c.trial.metrics=teacherPresentationMetrics(result.content,{...baseline.values,...c.patch});
+   const trial=await teacherLearningUser(sql,c.trial.sessionId,c.trial.runId);
+   const saved={...baseline.values,...c.patch};
+   const values=c.trial.requestScoped?selectTeacherPreferenceValues(saved,trial?.text||''):saved;
+   c.trial.resultDigest=result.digest;c.trial.metrics=teacherPresentationMetrics(result.content,values);
    if(!c.trial.metrics.passed){c.status='failed';c.reason='quality_failed';await save(sql,c);return{};}
    // Ordinary positive feedback, bound to the exact held-out result, is evidence.
    if(prior?.runId===c.trial.runId&&/^(?:这样讲正好|这样就很好|这样讲很好|这个讲解很好|这个回答很好|这样可以)[。！!\s]*$/.test(source.text)){
-    const feedback=await teacherLearningUser(sql,source.sessionId,source.runId),trial=await teacherLearningUser(sql,c.trial.sessionId,c.trial.runId);
+    const feedback=await teacherLearningUser(sql,source.sessionId,source.runId);
     if(!feedback||!trial||feedback.scopeDigest!==trial.scopeDigest||feedback.goalId&&feedback.goalId!==trial.goalId){await save(sql,c);return{};}
     c.status='accepted';await save(sql,c);return{candidateId:c.id,patch:c.patch,evidence:{metric:presentationMetric,candidateId:c.id,trainRuns:c.samples.map(s=>s.runId),holdoutRunId:c.trial.runId}};
    }
@@ -159,8 +164,10 @@ export async function observeTeacherLearning(sql:Sql,source:Source,baseline:{rev
   await save(sql,c);return{candidateId:c.id};
  }
  if(c&&c.samples.length===2&&c.samples.every(s=>s.after?.passed)&&teacherPresentationTask(source.text)&&!c.samples.some(s=>s.taskHash===hash(source.text)||s.runId===source.runId)){
+  const applicable=selectTeacherPreferenceValues(c.patch,source.text);
+  if(Object.keys(applicable).length!==Object.keys(c.patch).length)return{};
   const user=await teacherLearningUser(sql,source.sessionId,source.runId);if(!user||user.id!==source.id||user.text!==source.text)return{};
-  c.trial={sessionId:source.sessionId,runId:source.runId,messageId:source.id,sha256:hash(source.text),sourceDigest:user.digest};c.status='trial';await save(sql,c);return{candidateId:c.id,trial:{...baseline.values,...c.patch}};
+  c.trial={sessionId:source.sessionId,runId:source.runId,messageId:source.id,sha256:hash(source.text),sourceDigest:user.digest,requestScoped:true};c.status='trial';await save(sql,c);return{candidateId:c.id,trial:{...baseline.values,...c.patch}};
  }
  if(c)await save(sql,c);return{};
 }

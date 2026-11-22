@@ -7,7 +7,7 @@
 | 0 | DONE | 主线核对，产品、数据和 DesignSkills 映射已记录，D3 分支独立于 D2。 |
 | 1 | DONE | 对话与任务连续性 12 项工程场景已覆盖。真实模型综合质量和后续教学闭环留在集中验收。 |
 | 2 | DONE | 工程验收覆盖首页、工作台、任务与成果、右侧上下文、专业编辑、版本、只读历史和恢复。各教学业务另按 Phase 4 验收。 |
-| 3 | IN_PROGRESS | 已跑教师记忆基线。明确偏好持久化和独立数据根隔离可用，无关问候仍带入偏好。 |
+| 3 | IN_PROGRESS | 已实现按请求选择适用偏好、本轮覆盖、旧原生日志兼容与撤销冷启。继续画像、停用和可编辑范围。 |
 | 4 | NOT_STARTED | 按组卷、讲义、模考汇编、教案顺序。 |
 | 5 | DEFERRED | 冻结范围之外。 |
 
@@ -337,3 +337,20 @@ Phase 2 工程退出通过。真实教师使用、教学质量和各教学业务
 `phase3-memory-audit/run-1IWNua/report.json` 使用上面同一构建和两份独立 SQLite 数据。明确说「以后讲解详细些，分步骤，先给提示再给答案」后保存一个版本。本次一句话要求没有新建长期版本。另一份本地数据的模型请求没有第一份数据的表达偏好。这一结果覆盖隔离的数据根。
 
 首份数据新对话仅发问候时，拦截的实际模型请求仍带已保存的分步讲解偏好。当前 `production-host` 将 `teacherPreferenceContext` 附加到每轮受保护上下文，偏好表没有适用范围输入。候选通过两个独立纠正样本和一次留出试用，再等教师对试用答复给出正反馈。下一步改造现有偏好与最小注入规则，补充可管理的教师画像和范围。基线复测修正了旧夹具忽略会话侧栏收起的问题，原 `baseline.log` 保留。
+
+## Phase 3 教学偏好按需应用
+
+普通问候与软件操作类咨询省略已保存的教学偏好。适用的讲解按本轮内容选取默认篇幅、步骤和答案顺序，比较类请求才使用已保存的表格偏好。本轮明确指定的字段优先。一句话或只要结论的请求省略讲解默认值。文件格式偏好只在相关导出且格式未指定时进入请求。
+
+宿主只向当轮实际模型请求加入适用指导。无工具答复也沿同一规则。旧宿主合成块从模型历史投影移除，教师原文和原 JSONL 保留。复用 SQLite 偏好版本、候选确认与撤销，无迁移。后续仍需教师画像、手动管理和更具体的适用范围。
+
+| 验收 | 最终构建结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-memory-relevance-final` | 通过，`build-verified.log`。主进程 SHA-256 `e2815d97909d6a6fa20c5c6ec81cf7bdaaf921effc5513b7907056d504d477c8`。 |
+| `node scripts/education/teacher-preference-scope-electron.mjs` | 5/5。实际 Electron、原 Pi 与 SQLite，合成 SSE。检查保存、跨对话、同会话改题、一句话覆盖、无工具请求、撤销冷启、独立数据根和可读取的旧原生日志。实际请求字段记入 `d3-memory-scope-rYCDkL/report.json`。渲染错误和付费请求为 0。 |
+| `node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/teacher-preference-scope-boundaries.mjs` | 7/7，`scope-boundaries.log`。覆盖格式优先级、旧摘要和保留图片内容。 |
+| `node scripts/education/teacher-preference-example.mjs --implicit` | 18/18，`preference-domain.log` 和 `preference-contract-yUGG95/report.json`。向脚本提供本地验证用的实际 SQLite 副本，验证候选、留出、确认、撤销、幂等与旧版本。 |
+| `npm.cmd run test:renderer-components` | 253/253，`renderer.log`。 |
+| `node scripts/electron-smoke.mjs` | 同构建 207/207，`electron-smoke.log` 及 `electron-e2e/`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase3-memory-relevance`。两份失败构建日志分别保留 Pi 请求类型推断和偏好只读属性错误，修复后重新构建。依赖审计保留原 20 项，其中 2 项 high。手测在 `manual-phase3-memory-relevance/启动-D3-教学偏好按需应用.cmd`，另有步骤及窗口证据。正式供应商应答质量留在集中验收。

@@ -1,7 +1,8 @@
 import type {Sql} from '../xiaozhi-agent/session-state';
 import type {TeacherCandidateInput,TeacherCandidateSummary} from '../../shared/teacher-candidates';
 import {readTeacherCandidate,teacherCandidateSources,teacherPresentationMetrics,type TeacherCandidate} from './teacher-preference-learning';
-import {teacherLearningResponse} from './teacher-preference-sources';
+import {teacherLearningResponse,teacherLearningUser} from './teacher-preference-sources';
+import {selectTeacherPreferenceValues} from './teacher-preference-scope';
 import {createTeacherPreferenceState,teacherPreferenceAt} from './teacher-preference-state';
 const prefix='xiaozhi.teacher-preference.v1:learning:';
 const validSession=(id:unknown):id is string=>typeof id==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(id);
@@ -14,9 +15,12 @@ export function createTeacherCandidateCatalog(sql:Sql){
    if(a.passed&&(c.patch.length==='concise'?a.characters<=b.characters*.8:c.patch.length==='detailed'?a.characters>=b.characters*1.2:true))passed++;
   }
   const holdout=c.trial?await teacherLearningResponse(work,c.trial.sessionId,c.trial.runId):undefined;
+  const trialSource=c.trial?.requestScoped?await teacherLearningUser(work,c.trial.sessionId,c.trial.runId):undefined;
+  const trialValues={...baseline.values,...c.patch};
+  const evaluatedValues=c.trial?.requestScoped?selectTeacherPreferenceValues(trialValues,trialSource?.text||''):trialValues;
   const row=snapshot.revision?(await work.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.teacher-preference.v1:version:'+snapshot.revision]))[0]:undefined;
   const activeVersion=row&&JSON.parse(String(row.value_json)).learning?.candidateId===c.id?snapshot.revision:undefined;
-  return{id:c.id,revision:c.revision||0,status:c.status,...(c.reason||reason?{reason:c.reason||reason}:{}),patch:{...c.patch},baselineRevision:c.baselineRevision,sourceCurrent:!reason,baselineCurrent:snapshot.revision===c.baselineRevision,training:{total:c.samples.length,evaluated,passed},holdout:!c.trial?'not_started':!holdout?'waiting':teacherPresentationMetrics(holdout.content,{...baseline.values,...c.patch}).passed?'passed':'failed',metric:'presentation_only',...(activeVersion?{activeVersion}:{})};
+  return{id:c.id,revision:c.revision||0,status:c.status,...(c.reason||reason?{reason:c.reason||reason}:{}),patch:{...c.patch},baselineRevision:c.baselineRevision,sourceCurrent:!reason,baselineCurrent:snapshot.revision===c.baselineRevision,training:{total:c.samples.length,evaluated,passed},holdout:!c.trial?'not_started':!holdout?'waiting':teacherPresentationMetrics(holdout.content,evaluatedValues).passed?'passed':'failed',metric:'presentation_only',...(activeVersion?{activeVersion}:{})};
  }
  async function transaction<T>(action:(work:Sql)=>Promise<T>){if(!sql.transaction)throw Error('configuration');return sql.transaction(action);}
  async function load(work:Sql,input:TeacherCandidateInput){

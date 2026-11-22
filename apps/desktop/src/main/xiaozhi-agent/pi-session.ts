@@ -64,6 +64,7 @@ import {publicToolResult} from './public-tool-result';
 import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,visibleAssistantText} from './presentation-event-adapter';
 import {withPublicResponsePrompt} from './public-response-prompt';
+import {projectTeacherPreferenceRequest} from './preference-request-context';
 import {responseScopeInstructions} from './response-scope';
 import {teachingPresentationInstructions} from './teaching-presentation';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
@@ -188,6 +189,8 @@ export interface PiXiaozhiOptions {
   limitsEnforced?: boolean;
   /** Rebuild authoritative own-session facts; never accepted from renderer. */
   protectedContext?: (excludedRunIds?: readonly string[]) => Promise<string>;
+  /** Main-owned presentation guidance for this run's request only. */
+  teacherPreferenceGuidance?:string;
   /** Main-only callbacks and run identity, never accepted from IPC. */
   memory?: PiMemoryRuntime;
   computationTools?:ToolDefinition[];
@@ -1073,11 +1076,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
   let modelHttpStatus:number|undefined;
+  let submittedTeacherRequest:string|undefined;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
   const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
     args[2]={...args[2],fetch:providerFetch};
     await checkMemory();
+    args[1]=projectTeacherPreferenceRequest(args[1],compacting?undefined:submittedTeacherRequest,options.teacherPreferenceGuidance);
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
@@ -1383,7 +1388,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const subjectInstructions=quality?resolveSubjectAnswerInstructions(text,options.toolTaskQuery):'';
         const scopeInstructions=quality?responseScopeInstructions(text,Boolean(subjectInstructions)):'';
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
-        await session.prompt(context?`${context}\n\n[教师本次请求]\n${text}`:text);
+        submittedTeacherRequest=context?`${context}\n\n[教师本次请求]\n${text}`:text;
+        await session.prompt(submittedTeacherRequest);
         await checkMemory();
         const last=currentAssistantOutcome();
         if (last?.stopReason === 'error') failure = classifyError(last.errorMessage);

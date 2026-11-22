@@ -1,0 +1,70 @@
+import '../office-agent/register-source.mjs';
+import assert from 'node:assert/strict';
+
+const {selectTeacherPreferenceValues}=await import('../../src/main/education/teacher-preference-scope.ts');
+const {teacherPreferenceForRequest}=await import('../../src/main/education/teacher-preference-request.ts');
+const {teacherPreferenceContext,teacherPreferenceTrialContext}=await import('../../src/main/education/teacher-preference-policy.ts');
+const {projectTeacherPreferenceRequest}=await import('../../src/main/xiaozhi-agent/preference-request-context.ts');
+const values={length:'concise',structure:'step_by_step',answerOrder:'hint_first',presentation:'table',exportFormat:'docx'};
+const snapshot={schemaVersion:'xiaozhi.teacher-preference.v1',revision:2,values};
+const scope=(text,exportChosen=false)=>selectTeacherPreferenceValues(values,text,exportChosen);
+let passed=0;
+const check=(description,validate)=>{validate();passed++;console.log('PASS '+description);};
+
+check('Greetings, small talk, app setup and support questions carry no teaching or export defaults',()=>{
+ for(const prompt of ['你好，打个招呼。','谢谢！','如何导出文档？','为什么安装失败？','怎么配置软件？','今天天气怎么样？'])
+  assert.deepEqual(scope(prompt),{});
+});
+check('Teaching explanations apply relevant defaults without leaking file format or table layout everywhere',()=>{
+ assert.deepEqual(scope('为什么会下雨？'),{length:'concise',structure:'step_by_step',answerOrder:'hint_first'});
+ assert.deepEqual(scope('请比较并解释雾和云的区别。'),{
+  length:'concise',structure:'step_by_step',answerOrder:'hint_first',presentation:'table'});
+});
+check('Explicit instructions shadow their own fields and one-sentence or answer-only requests take priority',()=>{
+ assert.deepEqual(scope('请详细解释雾与云的区别，用段落，先给结论。'),{structure:'step_by_step'});
+ assert.deepEqual(scope('只用一句话解释为什么会下雨。'),{});
+ assert.deepEqual(scope('解释这道题，只给答案。'),{});
+ assert.equal(scope('用 80 字解释这个现象').length,undefined);
+});
+check('Existing explicit export formats and output selection beat default format; no delivery request keeps it private',()=>{
+ assert.deepEqual(scope('请导出这份教案。'),{exportFormat:'docx'});
+ assert.deepEqual(scope('请导出这份教案为 PDF。'),{});
+ assert.deepEqual(scope('请导出这份教案。',true),{});
+ assert.equal(scope('解释两种说法的区别，不生成文件。').exportFormat,undefined);
+});
+check('Acknowledgement, rollback and trials stay distinct from the saved preference payload',()=>{
+ for(const action of ['learned','rolled_back','no_previous','rejected']){
+  const output=teacherPreferenceForRequest({snapshot,action},'解释为什么会下雨');
+  assert(output.text.includes('[教师偏好操作结果]'));assert.equal(output.applied,false);
+  assert(!output.text.includes('分步骤讲解'));
+ }
+ assert.equal(teacherPreferenceForRequest({snapshot,action:'none'},'谢谢').text,'');
+ const follow=teacherPreferenceForRequest({snapshot,action:'trial',trial:values},'请解释降雨的原因。');
+ assert(follow.text.includes('本轮表达方式试用')&&!follow.text.includes('导出Word'));
+});
+check('Legacy blended blocks and compacted summaries disappear from requests without mutating recorded messages',()=>{
+ const old=teacherPreferenceContext(snapshot,'none')+teacherPreferenceTrialContext(values);
+ const user={role:'user',content:`[其他任务索引]\n保留引用${old}\n\n[教师本次请求]\n旧问题`,timestamp:1};
+ const summary={role:'user',content:`The conversation history before this point was compacted into the following summary:\n\n<summary>\n原摘要${old}\n</summary>`,timestamp:2};
+ const original={messages:[user,summary,{role:'user',content:'你好',timestamp:3}]};
+ const next=projectTeacherPreferenceRequest(original);
+ assert.equal(next.messages[0].content,'[其他任务索引]\n保留引用\n\n[教师本次请求]\n旧问题');
+ assert(next.messages[1].content.includes('原摘要')&&!next.messages[1].content.includes('分步骤讲解'));
+ assert(user.content.includes('分步骤讲解')&&summary.content.includes('分步骤讲解'));
+});
+check('Current advice binds to the exact current user text and preserves image blocks and source context order',()=>{
+ const raw='请解释这个图。';
+ const image={type:'image',data:'YWJj',mimeType:'image/png'};
+ const original={messages:[
+  {role:'user',content:raw,timestamp:1},
+  {role:'user',content:[{type:'text',text:raw},image],timestamp:2},
+  {role:'user',content:'[资料子任务]\n核对本地来源',timestamp:3},
+ ]};
+ const next=projectTeacherPreferenceRequest(original,raw,'仅本轮表达指导');
+ assert.equal(next.messages[0].content,raw);
+ assert.deepEqual(next.messages[1].content,[...original.messages[1].content,{type:'text',text:'仅本轮表达指导'}]);
+ assert.deepEqual(next.messages[2],original.messages[2]);
+ assert.equal(original.messages[1].content.length,2);
+ assert.deepEqual(projectTeacherPreferenceRequest(original,'无匹配','仅本轮表达指导'),original);
+});
+console.log(JSON.stringify({passed}));

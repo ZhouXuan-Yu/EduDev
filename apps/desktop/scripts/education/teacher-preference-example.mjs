@@ -1,9 +1,16 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{randomUUID,createHash}from'node:crypto';import{pathToFileURL}from'node:url';import{DatabaseSync}from'node:sqlite';import{build}from'esbuild';
-const implicit=process.argv.includes('--implicit');const root=fs.mkdtempSync(implicit?'test-results/goal/hermes-implicit-20261015/contract-':'test-results/goal/hermes-20261015/contract-'),entry=path.resolve(root,'contract.mjs');
+const implicit=process.argv.includes('--implicit'),owned=process.env.OMNI_EDU_PREFERENCE_FIXTURE;
+const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
+const root=fs.mkdtempSync(acceptance?path.join(acceptance,'preference-contract-'):implicit?'test-results/goal/hermes-implicit-20261015/contract-':'test-results/goal/hermes-20261015/contract-'),entry=path.resolve(root,'contract.mjs');
 await build({stdin:{contents:"export{createTeacherPreferenceState}from'./src/main/education/teacher-preference-state';export{teacherPresentationMetrics}from'./src/main/education/teacher-preference-learning';export{teacherPreferenceSignal,teacherPreferenceContext}from'./src/main/education/teacher-preference-policy';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'esm',outfile:entry});
 const{createTeacherPreferenceState,teacherPreferenceSignal,teacherPreferenceContext,teacherPresentationMetrics}=await import(pathToFileURL(entry));
-const source='test-results/education-journey-9U0u4m',proof=JSON.parse(fs.readFileSync(source+'/report.json'));assert(proof.success);fs.copyFileSync(source+'/data/app.db',root+'/app.db');
-const db=new DatabaseSync(root+'/app.db'),session=proof.classroom.saved.sessionId,checks=[];const check=name=>{checks.push({name,pass:true});};
+const source='test-results/education-journey-9U0u4m';
+const proof=owned?undefined:JSON.parse(fs.readFileSync(source+'/report.json'));
+if(!owned)assert(proof.success);
+fs.copyFileSync(owned||source+'/data/app.db',root+'/app.db');
+const db=new DatabaseSync(root+'/app.db'),session=proof?.classroom.saved.sessionId||db.prepare('SELECT id FROM ai_conversation_sessions WHERE archived_at IS NULL LIMIT 1').get()?.id,checks=[];
+assert(session);
+const check=name=>{checks.push({name,pass:true});};
 const sql={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>db.prepare(q).run(...p),change:async(q,p=[])=>Number(db.prepare(q).run(...p).changes)};let queue=Promise.resolve();
 sql.transaction=fn=>{const p=queue.then(async()=>{db.exec('BEGIN IMMEDIATE');try{const result=await fn({run:sql.run,all:sql.all});db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}});queue=p.catch(()=>{});return p;};
 const state=createTeacherPreferenceState(sql),count=()=>db.prepare("SELECT COUNT(*) n FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:%'").get().n;
@@ -20,9 +27,9 @@ try{
  const results=await Promise.all([observe('以后用表格。'),observe('以后用段落。')]);assert.equal(results[1].snapshot.revision,results[0].snapshot.revision+1);assert.equal((await state.snapshot()).values.presentation,'paragraph');check('Serialized real SQLite transactions preserve both concurrent versions and final CAS head');
  if(implicit){
   const style={length:'concise',structure:'step_by_step',presentation:'table'};
-  const recorded=JSON.parse(fs.readFileSync('test-results/education-journey-n1lZ85/report.json')).answers[1].text;
-  const observed=teacherPresentationMetrics(recorded,style);assert(observed.passed);assert.equal(observed.characters,489);assert.equal(observed.metric,'teacher_presentation_observed.v3');assert(observed.steps>=2);
   const calculated='| 项目 | 时间（小时） |\n|---|---|\n| 顺流 | 60÷15=4 |\n| 逆流 | 60÷9=20/3 |';
+  const recorded=owned?calculated:JSON.parse(fs.readFileSync('test-results/education-journey-n1lZ85/report.json')).answers[1].text;
+  const observed=teacherPresentationMetrics(recorded,style);assert(observed.passed);if(!owned)assert.equal(observed.characters,489);assert.equal(observed.metric,'teacher_presentation_observed.v3');assert(observed.steps>=2);
   assert(teacherPresentationMetrics(calculated,style).passed);
   assert(!teacherPresentationMetrics('| 项目 | 结果 |\n|---|---|\n| 时间 | 11小时 |\n| 油耗 | 21.33升 |',style).passed);
   assert(!teacherPresentationMetrics('| 项目 | 计算 |\n|---|---|\n| 顺流 | 60÷15=4 |\n| 顺流 | 60÷15=4 |',style).passed);
@@ -30,7 +37,7 @@ try{
   assert(!teacherPresentationMetrics(calculated.split('\n').map(l=>'> '+l).join('\n'),style).passed);
   assert(teacherPresentationMetrics('| 步骤 | 操作说明 |\n|---|---|\n| 观察 | 先核对已知条件和未知量 |\n| 推导 | 依据条件逐项建立关系式 |',style).passed);
   assert(!teacherPresentationMetrics(recorded+'冗余内容'.repeat(200),style).passed);
-  check('Actual failed provider table is recognized as a decomposed calculation; result-only, duplicate, fenced, quoted and overlong answers remain rejected');
+  check('A decomposed calculation table is recognized; result-only, duplicate, fenced, quoted and overlong answers remain rejected');
   while(Object.keys((await state.snapshot()).values).length)await observe('撤销上次记住的教学偏好');
   const baseline=await state.snapshot(),baseSession=db.prepare('SELECT * FROM ai_conversation_sessions WHERE id=?').get(session);
   const fresh=()=>{const next={...baseSession,id:'aisession_'+randomUUID()},keys=Object.keys(next);db.prepare(`INSERT INTO ai_conversation_sessions(${keys.join(',')}) VALUES(${keys.map(()=>'?').join(',')})`).run(...Object.values(next));return next.id;};
@@ -61,9 +68,9 @@ try{
   const acknowledgement=await run(h,'谢谢');assert.equal(acknowledgement.result.action,'none');finish(h,acknowledgement.id,'不客气。');const afterThanks=await run(h,'请解释为什么稀释不能改变盐的总质量。');assert.equal(afterThanks.result.action,'none');assert.deepEqual(afterThanks.result.snapshot,learned.result.snapshot);finish(h,afterThanks.id,short);check('Promotion acknowledgement and thanks do not roll back the learned strategy before same-session teaching resumes');
   const cold=await createTeacherPreferenceState(sql).snapshot();assert.deepEqual(cold,learned.result.snapshot);const active=fresh(),applied=await run(active,'请讲解商品折扣后的利润计算。');assert.equal(applied.result.snapshot.revision,cold.revision);finish(active,applied.id,long);
   const reverted=await run(active,'继续看下一题');assert.equal(reverted.result.action,'rolled_back');assert.deepEqual(reverted.result.snapshot.values,baseline.values);finish(active,reverted.id,short);check('Cold restore retains promoted strategy; real completed presentation regression automatically appends rollback without changing facts');
-  const settings=()=>db.prepare("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:learning:run_%'").all().map(r=>JSON.parse(r.value_json));const candidate=settings().find(c=>c.id===train[0]);assert(candidate.samples.every(s=>s.after.passed));assert(candidate.trial.metrics.passed);assert.equal(candidate.trial.runId,heldout.id);
+  const settings=()=>db.prepare("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:learning:run_%'").all().map(r=>JSON.parse(r.value_json));const candidate=settings().find(c=>c.id===train[0]);assert(candidate.samples.every(s=>s.after.passed));assert(candidate.trial.metrics.passed);assert.equal(candidate.trial.runId,heldout.id);assert.equal(candidate.trial.requestScoped,true);
   for(const text of['这次太长了，简洁点','资料中说太长了，简洁点','假设太长了，简洁点','太长了，把学生成绩修改一下']){const sid=fresh();const t=await run(sid,'讲解一个问题');finish(sid,t.id,long);const ignored=await run(sid,text);assert.equal(ignored.result.action,'none');finish(sid,ignored.id,short);}check('Per-task, quoted, hypothetical and student-fact requests do not create implicit global style');
   const sid=fresh(),t=await run(sid,'请讲解功和功率。');finish(sid,t.id,long);const pending=start(sid,correction),prior=count();let calls=0;await assert.rejects(()=>state.observe(sid,pending,()=>++calls<2),/cancelled/);assert.equal(count(),prior);check('Cancelled implicit extraction rolls back candidate/head/event atomically in old real SQLite schema');
  }
 }finally{db.close();}
-fs.writeFileSync(root+'/report.json',JSON.stringify({success:true,checks,boundary:'Actual accepted database copy, domain/SQLite contract only; UI/provider proof is separate'},null,2));console.log(JSON.stringify({success:true,checks:checks.length,report:root+'/report.json'}));
+fs.writeFileSync(root+'/report.json',JSON.stringify({success:true,checks,boundary:owned?'Actual isolated desktop database copy, with synthetic preference test content.':'Actual accepted database copy, domain/SQLite contract only; UI/provider proof is separate'},null,2));console.log(JSON.stringify({success:true,checks:checks.length,report:root+'/report.json'}));

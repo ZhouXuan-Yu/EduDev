@@ -57,8 +57,7 @@ import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
 import {assertTeachingLessonOffice} from '../education/teaching-lesson-office';
 import {createClassroomContext} from '../education/classroom-context';
-import {teacherPreferenceContext,teacherPreferenceTrialContext,teacherPreferenceCorrectionContext} from '../education/teacher-preference-policy';
-import {implicitTeacherCorrection} from '../education/teacher-preference-learning';
+import {teacherPreferenceForRequest} from '../education/teacher-preference-request';
 import {assertClassroomOffice} from '../education/classroom-office';
 import {createOriginalQuestionCoordinator} from '../education/original-question-coordinator';
 import {createRunVerification} from './verification/run-observer';
@@ -1116,9 +1115,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const selected=(await preparing(()=>store.getAiConversationSession(id),'host_read_session')).session.studentId;
       if(selected){try{await preparing(()=>store.studentContext.snapshot(selected));}catch(error){if(run.stopped)throw Error('cancelled');throw new Error('permission_denied');}}
       const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run)):{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none'};
-      run.teacherPreferenceRevision=preference.snapshot.revision;
+      const presentation=run.operation==='prompt'
+        ?teacherPreferenceForRequest(preference,cleanPrompt,Boolean(run.paperExportIntent||run.resumeDeliveryId))
+        :{text:'',applied:false};
+      run.teacherPreferenceRevision=presentation.applied?preference.snapshot.revision:0;
       if(run.operation==='prompt'){
-        try{await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:Object.keys(preference.snapshot.values).length>0,action:preference.action,trial:Boolean('trial'in preference&&preference.trial)}));}
+        try{await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:presentation.applied,action:preference.action,trial:Boolean('trial'in preference&&preference.trial&&presentation.text)}));}
         catch{decisions.unavailable(id);}
       }
       const capabilities = await preparing(signal=>resolveDeepSeekCapabilities(root, settings.model, apiKey, signal),'host_resolve_model');
@@ -1130,9 +1132,6 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(run.recoveryInspection?.canRebuildSession)run.skillPrivateContext.unavailableHistory();
       const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt),'host_session_configuration');
       if(base.thinkingPolicy)await preparing(()=>store.xiaozhiState.modelSettings.saveThinkingRun(id,{...base.thinkingPolicy!,runId:run.runId,model:settings.model}));
-      const priorProtectedContext=base.protectedContext,preferenceText=teacherPreferenceContext(preference.snapshot,preference.action)+('trial'in preference&&preference.trial?teacherPreferenceTrialContext(preference.trial):'')+(preference.action==='observed'?teacherPreferenceCorrectionContext(implicitTeacherCorrection(cleanPrompt)):'');
-      // Freeze one evaluated version for this run; stable system/tool prefix is unchanged.
-      base.protectedContext=async excluded=>(await priorProtectedContext?.(excluded)||'')+preferenceText;
       const readbackImporter=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,
         isCurrent:()=>!closing&&active.get(id)===run&&!run.stopped});
       const readSavedFile=createEffectReadback({sessionId:id,runId:run.runId,
@@ -1238,7 +1237,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }) : undefined;
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
-      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
+      run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
           await startupPrewarm.wait();signal.throwIfAborted();
