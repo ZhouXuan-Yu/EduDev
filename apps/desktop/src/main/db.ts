@@ -77,7 +77,9 @@ import {OriginalQuestionRepository} from './education/original-question-reposito
 import {QuestionAssets} from './assets/question-assets';
 import {renderLocalPdfPage} from './xiaozhi-agent/ocr-host';
 import {PracticeReviewRepository} from './education/practice-review-repository';
-import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
+import { createXiaozhiSessionState,type Sql } from './xiaozhi-agent/session-state';
+import {createTeachingBookVersions,teachingBookDigest} from './education/teaching-book-versions';
+import type {TeachingBookContent} from './education/teaching-book-restore';
 import {insertConversationSession} from './xiaozhi-agent/artifact-reference-state';
 import {readWorkbenchSnapshot} from './xiaozhi-agent/workbench-read';
 import { conversationTitle } from './xiaozhi-agent/conversation-title';
@@ -1250,6 +1252,8 @@ export class OmniEduStore {
       finally { await work.close(); }
     }
   } },{nativeRoot:()=>join(this.dataRoot,'xiaozhi-pi'),dataRoot:()=>this.dataRoot});
+  readonly teachingBookVersions=createTeachingBookVersions(this.xiaozhiState.sql,(sql,id)=>this.readTeachingBookContent(sql,id),
+    async (sql,id)=>(await sql.all('SELECT * FROM teaching_book_patches WHERE book_id=? ORDER BY created_at,id',[id])).map(row=>this.mapTeachingBookPatch(row)));
   private db!: sqlite3.Database;
   private dbPath: string;
   private questionRetrievalIndexed = false;
@@ -1404,6 +1408,7 @@ export class OmniEduStore {
     await ensureMaterialCurriculum(sql=>this.exec(sql));
     await this.materialCatalog.init();
     await this.xiaozhiState.init();
+    await this.teachingBookVersions.migrate();
     if (!this.recoveredInterruptedRuns) {
       await this.xiaozhiState.recover();
       const interrupted = await this.all(`SELECT id, route, sub_intent FROM ai_agent_runs WHERE status = 'running'`);
@@ -4026,23 +4031,29 @@ export class OmniEduStore {
 
   async getTeachingBook(id: string): Promise<TeachingBookDetail | undefined> {
     const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
-    const bookRow = (await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
+    const sql=this.xiaozhiState.sql;
+    const content=sql.readTransaction?await sql.readTransaction(work=>this.readTeachingBookContent(work,bookId)):
+      await this.readTeachingBookContent(sql,bookId);
+    if(!content)return undefined;
+    return {...content,health:await this.getTeachingBookHealth(bookId,content.materialSources),versionDigest:teachingBookDigest(content)};
+  }
+
+  private async readTeachingBookContent(sql:Pick<Sql,'all'>,bookId:string):Promise<TeachingBookContent|undefined> {
+    const bookRow = (await sql.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
     if (!bookRow) return undefined;
     const [chapterRows, pageRows, blockRows, sourceRows, materialSources] = await Promise.all([
-      this.all(`SELECT * FROM teaching_book_chapters WHERE book_id = ? ORDER BY sort_order, created_at`, [bookId]),
-      this.all(`SELECT p.*, COUNT(b.id) AS block_count FROM teaching_book_pages p LEFT JOIN teaching_book_blocks b ON b.page_id = p.id WHERE p.book_id = ? GROUP BY p.id ORDER BY p.sort_order, p.created_at`, [bookId]),
-      this.all(`SELECT b.* FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ? ORDER BY b.sort_order, b.created_at`, [bookId]),
-      this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ? ORDER BY created_at`, [bookId]),
-      this.xiaozhiState.teachingHandouts.materialSources(bookId),
+      sql.all(`SELECT * FROM teaching_book_chapters WHERE book_id = ? ORDER BY sort_order, created_at,id`, [bookId]),
+      sql.all(`SELECT p.*, COUNT(b.id) AS block_count FROM teaching_book_pages p LEFT JOIN teaching_book_blocks b ON b.page_id = p.id WHERE p.book_id = ? GROUP BY p.id ORDER BY p.sort_order, p.created_at,p.id`, [bookId]),
+      sql.all(`SELECT b.* FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ? ORDER BY b.sort_order, b.created_at,b.id`, [bookId]),
+      sql.all(`SELECT * FROM teaching_book_sources WHERE book_id = ? ORDER BY created_at,id`, [bookId]),
+      this.xiaozhiState.teachingHandouts.materialSources(bookId,sql),
     ]);
-    const health = await this.getTeachingBookHealth(bookId,materialSources);
     return {
       book: this.mapTeachingBook(bookRow),
       chapters: chapterRows.map((row) => this.mapTeachingBookChapter(row)),
       pages: pageRows.map((row) => this.mapTeachingBookPage(row)),
       blocks: blockRows.map((row) => this.mapTeachingBookBlock(row)),
       sources: sourceRows.map((row) => this.mapTeachingSource(row)),
-      health,
       materialSources,
     };
   }
@@ -4054,7 +4065,8 @@ export class OmniEduStore {
     const title = input.title == null ? String(current.title) : requireNonEmpty(input.title, '讲义标题不能为空').slice(0, 200);
     const status = input.status && ['draft', 'spine_ready', 'compiling', 'ready', 'partial', 'error', 'archived'].includes(input.status) ? input.status : String(current.status);
     const timestamp = now();
-    await this.run(`UPDATE teaching_books SET title = ?, description = ?, language = ?, target_level = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ? AND deleted_at = ''`, [title, input.description == null ? String(current.description ?? '') : String(input.description).slice(0, 1_000), input.language == null ? String(current.language ?? 'zh-CN') : String(input.language).slice(0, 40), input.targetLevel == null ? String(current.target_level ?? '') : String(input.targetLevel).slice(0, 80), status, timestamp, bookId, Math.trunc(input.version)]);
+    const changed=await this.runWithChanges(`UPDATE teaching_books SET title = ?, description = ?, language = ?, target_level = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ? AND deleted_at = ''`, [title, input.description == null ? String(current.description ?? '') : String(input.description).slice(0, 1_000), input.language == null ? String(current.language ?? 'zh-CN') : String(input.language).slice(0, 40), input.targetLevel == null ? String(current.target_level ?? '') : String(input.targetLevel).slice(0, 80), status, timestamp, bookId, Math.trunc(input.version)]);
+    if(!changed)throw new Error('讲义不存在、已归档或版本冲突');
     const row = (await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
     if (!row) throw new Error('讲义更新后无法回读');
     return this.mapTeachingBook(row);

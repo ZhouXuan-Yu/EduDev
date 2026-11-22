@@ -121,8 +121,8 @@ export function createTeachingHandoutState(sql:Sql) {
     async list(sessionId:string) {
       return (await sql.all(summaryQuery+" WHERE origin.session_id=? AND books.deleted_at='' ORDER BY origin.created_at DESC LIMIT 100",[sessionId])).map(mapSummary);
     },
-    async materialSources(bookId:string) {
-      const [row]=await sql.all('SELECT material_sources_json FROM teaching_handout_origins WHERE book_id=?',[bookId]);
+    async materialSources(bookId:string,reader:Pick<Sql,'all'>=sql) {
+      const [row]=await reader.all('SELECT material_sources_json FROM teaching_handout_origins WHERE book_id=?',[bookId]);
       if (!row) return undefined;
       const sources:unknown=JSON.parse(String(row.material_sources_json));
       if (!Array.isArray(sources)||sources.length>20||!sources.every(validMaterialSource)) throw Error('configuration');

@@ -26,6 +26,8 @@ D3 用本地合成响应驱动实际 Electron。验收覆盖任务连续性、�
 
 可编辑讲义已验证真实对话中来源约束、逐段引文、重复保存收敛、局部修改、双尺寸和冷启动。 [讲义验收及启动](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-可编辑讲义草稿)
 
+讲义确认与恢复已核对旧数据升级、预览、确认幂等、局部编辑后保留已确认正文、过期恢复、引用变化、恢复前补丁留存及冷启。 [讲义历史验收及启动](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义教师确认与恢复)
+
 ## 2026-11-22 小智 Harness D1
 
 D1 自检按 D1-001 至 D1-017 单列。Windows 原始运行和迁移证据集中在 `D:/WorkProject/EduProject/acceptance/D1-20261122`。 [逐项验收和执行命令](../goal/xiaozhi-harness/D1_SELF_CHECK.md)

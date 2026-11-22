@@ -12,7 +12,7 @@ D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄�
 
 纯对话导出沿同一次读卷确认，真实 Office 审批后分别打开学生和教师 Word，原试卷卡也回归通过。 [导出与工程退出](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-对话精确导出与自动组卷工程退出)
 
-可编辑讲义草稿专项已核对本地实读、拒绝错误引文、任务与回执、局部修改、来源变化和冷启动。讲义版本恢复与精确 Office 导出待继续。 [讲义专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-可编辑讲义草稿)
+可编辑讲义专项已核对本地实读、拒绝错误引文、任务与回执、局部修改、来源变化和冷启动。教师确认和历史恢复追加真实 Electron 检查。讲义的对话修改与精确 Office 导出待继续。 [讲义专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义教师确认与恢复)
 
 ## 2026-11-22 小智 Harness D1
 

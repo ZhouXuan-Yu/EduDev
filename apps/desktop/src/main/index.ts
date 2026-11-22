@@ -19,6 +19,7 @@ import {registerMaterialIpc} from './assets/material-ipc';
 import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
 import {registerPaperTemplateIpc} from './education/paper-template-ipc';
 import {registerPaperBasketAdaptationIpc} from './education/paper-basket-adaptation-ipc';
+import {registerTeachingBookVersionIpc} from './education/teaching-book-version-ipc';
 import {registerMaterialWordIpc} from './assets/material-word-ipc';
 import {registerMaterialAiIpc} from './assets/material-ai-ipc';
 import {registerRetrievalIpc} from './retrieval/ipc';
@@ -519,6 +520,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   ipcMain.handle('teachingBook:applyPatch', (_event, id: string) => store.applyTeachingBookPatch(id));
   ipcMain.handle('teachingBook:undoPatch', (_event, id: string) => store.undoTeachingBookPatch(id));
   ipcMain.handle('teachingBook:listPatches', (_event, id: string) => store.listTeachingBookPatches(id));
+  registerTeachingBookVersionIpc(ipcMain,settingsSender,store.teachingBookVersions);
   ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
   ipcMain.handle('aiConfirmations:confirm', (_event, id: string, edits?: AiExerciseSetTeacherEdits) => store.confirmAiConfirmation(id, edits));

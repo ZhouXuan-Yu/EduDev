@@ -459,3 +459,19 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-editable-handout`。独立启动、教师操作步骤及已核对窗口在 `manual-phase4-editable-handout`。本切片使用合成资料与本地模型响应，0 付费请求。生产依赖审计仍有 20 项，其中 2 项 high，本轮没有修改依赖。
 
 后续验证讲义历史恢复、对话细化修改、确认与精确的学生/教师 Office 交付。真实学科质量和教师采用率仍待集中验收。
+
+## Phase 4.2 讲义教师确认与恢复
+
+老师在现有讲义编辑页查看「确认与版本」。确认前显示只读草稿，实际保存绑定所见正文摘要和当前引用。局部编辑推进草稿，已确认版仍可单独预览。恢复前保留草稿与补丁，再把所选历史正文放回同一讲义；旧编辑节点失效，新草稿等待老师确认。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-handout-versions-review` | 构建和 TypeScript 检查通过。主进程 SHA-256 `b4bcbcedb693dc47e5505383d17f5dc1b647e67d66dbbfa0d0e421ed6dab22c9`，Preload `dacbfb955b343901bbc5fd68aa3d6ce140e563cc8f810e0b56f2afe1274bfae0`。 |
+| `node scripts/education/teaching-book-versions-electron.mjs` | 最终构建 5/5。迁移真实旧讲义库、Esc 无写入、教师确认、重复确认复用、局部与新增章节、历史正文、过期恢复拒绝、恢复前补丁、旧节点写入拒绝、来源漂移和冷启。1366×768 核对步骤编号与公式，1920×1080 检查历史正文。报告 `teaching-book-versions-qTn9yD/report.json`。 |
+| `node scripts/education/teaching-handout-electron.mjs` | 6/6。原对话生成、引用核对、编辑和冷启回归。运行构建的主进程及 Preload 与最终构建摘要一致。报告 `teaching-handout-28d4PZ/report.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253。 |
+| `node scripts/electron-smoke.mjs` | 两次均 207/207，覆盖 1366×768 和 1920×1080。综合回归构建与最终构建使用相同主进程及 Preload。最终讲义版本预览样式另经本表专项核对。见 `electron-smoke.log`、`electron-smoke-final.log`。 |
+
+证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-handout-versions`。早期复测保留 SQLite 夹具写锁和模态预览列表样式问题，已分别通过等待写锁和 UI 样式边界修正。独立验收窗口、启动与操作步骤在 `manual-phase4-handout-versions`。样本为合成讲义，本次确认和恢复过程无模型派发，不计付费请求。生产依赖审计维持 20 项，其中 2 项 high，本轮没有修改依赖。
+
+对话指定讲义后提交局部修改、章节与题目精细修改和两种受众 Word 交付仍待贯通。历史快照在界面展示正文与补丁数量，补丁详情保存在快照。真实教师采用率留给集中验收。

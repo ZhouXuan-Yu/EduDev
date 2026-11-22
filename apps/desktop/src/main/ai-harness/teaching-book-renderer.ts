@@ -111,7 +111,7 @@ function renderBlock(block: TeachingBookBlock): { markdown: string; fallback: bo
   }
 }
 
-export function renderTeachingBookMarkdown(detail: TeachingBookDetail): { schemaVersion: typeof TEACHING_BOOK_MARKDOWN_SCHEMA_VERSION; markdown: string; fallbackCount: number; blockCount: number; sourceRefs: string[]; } {
+export function renderTeachingBookMarkdown(detail: TeachingBookDetail,limit=detail.materialSources?56000:MAX_MARKDOWN): { schemaVersion: typeof TEACHING_BOOK_MARKDOWN_SCHEMA_VERSION; markdown: string; fallbackCount: number; blockCount: number; sourceRefs: string[]; } {
   const pagesByChapter = new Map<string, typeof detail.pages>();
   for (const page of detail.pages) pagesByChapter.set(page.chapterId, [...(pagesByChapter.get(page.chapterId) ?? []), page]);
   const blocksByPage = new Map<string, TeachingBookBlock[]>();
@@ -131,6 +131,6 @@ export function renderTeachingBookMarkdown(detail: TeachingBookDetail): { schema
       }
     }
   }
-  const markdown = sections.filter(Boolean).join('\n\n').replace(/\n{4,}/g, '\n\n').slice(0, detail.materialSources?56000:MAX_MARKDOWN);
+  const markdown = sections.filter(Boolean).join('\n\n').replace(/\n{4,}/g, '\n\n').slice(0,limit);
   return { schemaVersion: TEACHING_BOOK_MARKDOWN_SCHEMA_VERSION, markdown, fallbackCount, blockCount: detail.blocks.length, sourceRefs: [...sourceRefs].slice(0, 100) };
 }

@@ -5,6 +5,7 @@ import styles from '../ui-system/teaching-editors-alignment.module.css';
 import {TeachingPageAction} from './product/TeachingPageLayout';
 import {MaterialSourceLink} from './product/MaterialSourceNavigation';
 import {TeachingHandoutPreview} from './TeachingHandoutPreview';
+import {TeachingBookVersionHistory} from './TeachingBookVersionHistory';
 import {useDesktopNavigationGuard} from './desktop/DesktopFrame';
 import {emptyBookDraft, emptyChapterDraft, emptyPageDraft, emptyBlockDraft, emptySourceDraft, emptyPatchDraft, emptySelectionPatchDraft, teachingBookDraftBaseline, teachingBookDirtyScopes, preserveTeachingBookDraftVersions} from './teaching-book-draft-state';
 import type {
@@ -430,6 +431,15 @@ export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
         <label>说明<textarea value={bookDraft.description} onChange={(event) => setBookDraft({ ...bookDraft, description: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-description" /></label>
         <div className="toolbar-row">{detail ? <><button className="primary-action" onClick={() => void updateBook()} disabled={loading || saving || archived} data-testid="teaching-book-save"><Save size={16} />保存信息</button><button className="secondary-action" onClick={() => { if (allowDraftChange()) void archiveBook(); }} disabled={loading || saving || archived} data-testid="teaching-book-archive"><Archive size={16} />归档</button></> : <button className="primary-action" onClick={() => void createBook()} disabled={loading || saving} data-testid="teaching-book-create"><Plus size={16} />创建讲义</button>}</div>
       </section>
+
+      {detail?.versionDigest&&<TeachingBookVersionHistory key={detail.book.id} bookId={detail.book.id} digest={detail.versionDigest}
+        disabled={dirty||loading||saving} archived={archived} sourceChanged={detail.health.status!=='healthy'&&detail.sources.length>0}
+        onChanged={async action=>{
+          if(action==='restore'){
+            resetDrafts();
+            await refreshCurrent('已恢复为新草稿，请核对后确认。',true);
+          }else showNotice('讲义版本已确认。');
+        }}/>}
 
       {detail && !archived ? <>
         <section className="work-panel teaching-book-structure" data-testid="teaching-book-structure">

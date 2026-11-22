@@ -632,6 +632,10 @@ const api = {
   applyTeachingBookPatch: (id: string) => ipcRenderer.invoke('teachingBook:applyPatch', id) as Promise<TeachingBookPatch>,
   undoTeachingBookPatch: (id: string) => ipcRenderer.invoke('teachingBook:undoPatch', id) as Promise<TeachingBookPatch>,
   listTeachingBookPatches: (id: string) => ipcRenderer.invoke('teachingBook:listPatches', id) as Promise<TeachingBookPatch[]>,
+  listTeachingBookVersions: (bookId:string,before?:number) => ipcRenderer.invoke('teachingBook:versionHistory',{bookId,...(before===undefined?{}:{before})}) as Promise<import('../shared/teaching-book-version').TeachingBookVersionResult<import('../shared/teaching-book-version').TeachingBookVersionHistory>>,
+  previewTeachingBookVersion: (input:import('../shared/teaching-book-version').TeachingBookVersionRead) => ipcRenderer.invoke('teachingBook:versionPreview',input) as Promise<import('../shared/teaching-book-version').TeachingBookVersionResult<import('../shared/teaching-book-version').TeachingBookVersionPreview>>,
+  confirmTeachingBookVersion: (input:import('../shared/teaching-book-version').TeachingBookConfirm) => ipcRenderer.invoke('teachingBook:versionConfirm',input) as Promise<import('../shared/teaching-book-version').TeachingBookVersionResult<import('../shared/teaching-book-version').TeachingBookVersion>>,
+  restoreTeachingBookVersion: (input:import('../shared/teaching-book-version').TeachingBookRestore) => ipcRenderer.invoke('teachingBook:versionRestore',input) as Promise<import('../shared/teaching-book-version').TeachingBookVersionResult<import('../shared/teaching-book-version').TeachingBookVersion>>,
   listExerciseSets: (studentId: string) =>
     ipcRenderer.invoke('exerciseSets:list', studentId) as Promise<ExerciseSet[]>,
   listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>

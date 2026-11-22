@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "d97034164b3577944cb01df7a0418fd1d35ea88b255cc19458990136789cffff",
+  "sourceHash": "eadbb6ff13aee02de16a8a60ccb8f6652530c51bb917f4c38d8f6ef4f184055e",
   "sources": [
     {
       "file": "package-lock.json",
@@ -52,7 +52,7 @@
     },
     {
       "file": "src/main/ai-harness/teaching-book-renderer.ts",
-      "sha256": "c5524a19548c2c87e537709413f8501ef11ac7217ad7dbe64888e9d05b3d77cb"
+      "sha256": "f140def03f6d9b6c58884daa2b187adf801c87b3cc502cb737019d1ad74e9d0f"
     },
     {
       "file": "src/main/ai-harness/teaching-book.ts",
@@ -428,7 +428,7 @@
     },
     {
       "file": "src/main/education/teaching-handout-state.ts",
-      "sha256": "7d7b1b6281385e33fe1a2271adb0a198271d5fae09f6b98c14a53d23950df44d"
+      "sha256": "c4882f7c9cce64ed98299661ce28f6f1c07f80b0be782b3a0f4e88a8234ed550"
     },
     {
       "file": "src/main/education/teaching-handout-tool.ts",
@@ -740,7 +740,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "c1630b1a39c8ed4d2bfcaa0bdea53f6b2c206ef0b8e2db637de18e08e7495e74"
+      "sha256": "ea7007eb658d1b397cfec7d94e228ef959fbb79853583edeca36ee9ceb01da7f"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",

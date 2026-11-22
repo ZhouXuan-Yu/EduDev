@@ -548,6 +548,7 @@ export type TeachingBookDetail = {
   sources: TeachingSourceRef[];
   health: TeachingBookHealth;
   materialSources?:import('./materials').MaterialSource[];
+  versionDigest?:string;
 };
 
 export type TeachingBookMarkdownPreview = {
