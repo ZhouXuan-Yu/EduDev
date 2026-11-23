@@ -4,6 +4,7 @@ import { Button } from "@heroui/react";
 import type { ArchiveFields } from "../../../shared/question-archive";
 import {
   STRUCTURE_REVIEW_SCHEMA,
+  missingChoiceLabels,
   type DocumentStructureReference,
   type StructureQuestion,
 } from "../../../shared/material-document-structure";
@@ -75,6 +76,7 @@ export function MaterialStructureReview({
       <p>题图、题目起点或完整范围仍需重新切题整理，原页和识别记录已保留。</p>
     );
   const missingNumber = question.issues.includes("missing_question_number");
+  const missingOptions = question.issues.includes("missing_choice_options");
   async function save() {
     if (!fields || !checked || !difficultyChosen || busy) return;
     setBusy(true);
@@ -144,7 +146,18 @@ export function MaterialStructureReview({
           {missingNumber && (
             <p>原页题号未确认。请在原图中核对独立题干，以及同一区域的公式和手写内容，再保存教师修正。</p>
           )}
-          {(missingNumber || question.pageRange[0] !== question.pageRange[1]) && (
+          {missingOptions && (
+            <div data-testid="structure-review-choice-evidence">
+              <p>待核对选项 {missingChoiceLabels(question.options).join("、")}</p>
+              <p>已识别的整题选项</p>
+              <ul>
+                {question.options.map((option, index) => (
+                  <li key={`${option.label}-${index}`}>{option.text}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {(missingNumber || missingOptions || question.pageRange[0] !== question.pageRange[1]) && (
             <>
               <div className="toolbar-row">
                 {[...new Set(question.anchors.map((anchor) => anchor.page))]

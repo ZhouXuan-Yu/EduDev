@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {DatabaseSync} from 'node:sqlite';
+import {backup,DatabaseSync} from 'node:sqlite';
 import {_electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
@@ -14,8 +14,15 @@ assert(acceptance&&fixture,'Use the fixed acceptance directory and verified scan
 const original=path.resolve(fixture,'data'),oldDb=path.join(original,'app.db');
 const output=fs.mkdtempSync(path.join(acceptance,'yangpu-rubrics-'));
 const data=path.join(output,'data'),profile=path.join(output,'profile');
-assert(!fs.existsSync(oldDb+'-wal')||!fs.statSync(oldDb+'-wal').size);
-fs.cpSync(original,data,{recursive:true,filter:file=>!/app\.db-(wal|shm)$/u.test(file)});
+// Keep the source PDF and page caches while each acceptance profile starts its own live stores.
+fs.cpSync(original,data,{recursive:true,filter:file=>{
+  const relative=path.relative(original,file);
+  return !/^app\.db(?:-wal|-shm)?$/u.test(relative)&&
+    relative!==path.join('cache','semantic-v1')&&relative!=='xiaozhi-pi';
+}});
+const fixtureDb=new DatabaseSync(oldDb,{readOnly:true,timeout:5000});
+try{await backup(fixtureDb,path.join(data,'app.db'));}
+finally{fixtureDb.close();}
 const desktop=path.resolve(import.meta.dirname,'../..');
 const main=testMain(desktop),sha=value=>createHash('sha256').update(value).digest('hex');
 const shaFile=file=>sha(fs.readFileSync(file));
@@ -41,9 +48,14 @@ const job=()=>sql('SELECT * FROM material_structure_jobs WHERE resource_id=?',[s
 const pages=generation=>sql('SELECT * FROM material_structure_pages WHERE generation=? ORDER BY page',[generation]);
 const questionRows=generation=>sql('SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid',[generation]);
 const old=job(),oldPages=pages(old.generation),oldQuestions=questionRows(old.generation);
-assert.equal(old.engine,'layout-paragraph-question.v17');
+assert(['layout-paragraph-question.v17','layout-paragraph-question.v18'].includes(old.engine));
 assert.equal(oldPages.length,4);
-assert(!oldQuestions.some(row=>JSON.parse(row.body_json).number==='20'));
+const oldList=oldQuestions.map(row=>JSON.parse(row.body_json));
+const baseline=oldList.find(q=>q.number==='15');
+assert.equal(baseline.options.length,0);
+assert.deepEqual(baseline.subquestions.flatMap(part=>part.children??[])
+  .flatMap(part=>part.options).map(option=>option.text),['(C) 2','(D) 3']);
+if(old.engine.endsWith('v17'))assert(!oldList.some(q=>q.number==='20'));
 const confirmed=()=>sql("SELECT id,archive_json FROM question_bank_items WHERE json_valid(archive_json) AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id");
 const teacherBefore=confirmed();
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
@@ -77,8 +89,8 @@ async function open(){
   await openMaterialDisclosure(panel);
   return {page,panel};
 }
-async function goToFourth(panel){
-  for(let index=1;index<4;index++){
+async function goToPage(panel,number){
+  for(let index=1;index<number;index++){
     await panel.getByTestId('structure-next').click();
     await panel.getByText('第 '+(index+1)+' 页',{exact:true}).waitFor();
   }
@@ -106,12 +118,12 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v18');
+  assert.equal(current.engine,'layout-paragraph-question.v19');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
   assert.equal(shaFile(source.local_path),source.content_hash);
-  check('The existing UI rebuild publishes v18 while the original scan, previous snapshots and confirmed items stay intact');
+  check('The existing UI rebuild publishes v19 while the original scan, previous snapshots and confirmed items stay intact');
 
   const list=questionRows(current.generation).map(row=>JSON.parse(row.body_json));
   const numbered=list.map(q=>q.number).filter(number=>number!=='0');
@@ -129,7 +141,39 @@ try{
     assert(rubric.lineIds.every(id=>p4.lines.some(line=>line.id===id)));
   }
   check('All 21 printed numbers and the six subquestions of questions 20 and 21 retain page-four source anchors and review status');
-  await goToFourth(first.panel);
+  const choice=list.find(q=>q.number==='15');
+  const p2=JSON.parse(pages(current.generation).find(row=>row.page===2).body_json);
+  assert.equal(choice.stem,baseline.stem);
+  assert.deepEqual(choice.anchors,baseline.anchors);
+  assert.deepEqual(choice.subquestions,[]);
+  assert.deepEqual(choice.options.map(option=>option.text),['(C) 2','(D) 3']);
+  assert(choice.issues.includes('missing_choice_options')&&choice.status==='needs_review');
+  assert(choice.options.every(option=>option.paragraphIds.every(id=>p2.paragraphs.some(part=>part.id===id))));
+  if(old.engine.endsWith('v18'))for(const number of ['14','16'])
+    assert.deepEqual(list.find(q=>q.number===number),oldList.find(q=>q.number===number));
+  check('Q15 C and D become whole-question options, A and B remain held, and neighboring choices stay unchanged');
+  await goToPage(first.panel,2);
+  const q15=first.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
+  await q15.getByText(/2 个选项 · 0 个小问/u).waitFor();
+  await q15.getByTestId('structure-review-open').click();
+  const evidence=q15.getByTestId('structure-review-choice-evidence');
+  await evidence.getByText('待核对选项 A、B',{exact:true}).waitFor();
+  assert.deepEqual(await evidence.getByRole('listitem').allTextContents(),['(C) 2','(D) 3']);
+  await q15.getByTestId('structure-review-source-page-2').click();
+  const q15Source=q15.getByTestId('structure-review-source-image');
+  await q15Source.waitFor();
+  await q15Source.evaluate(node=>node.decode());
+  for(const [width,height] of [[1366,768],[1920,1080]]){
+    await first.page.setViewportSize({width,height});
+    await evidence.scrollIntoViewIfNeeded();
+    await first.page.screenshot({path:path.join(output,'q15-review-'+width+'.png'),animations:'disabled'});
+  }
+  await q15.getByTestId('structure-review-cancel').click();
+  assert.deepEqual(confirmed(),teacherBefore);
+  check('The Q15 teacher review shows the actual C and D values and opens the second original page');
+  await first.panel.getByTestId('structure-previous').click();
+  await first.panel.getByText('第 1 页',{exact:true}).waitFor();
+  await goToPage(first.panel,4);
   await first.panel.getByTestId('structure-questions').getByText(/题 20 .*暂缓入库/u).waitFor();
   await first.panel.getByRole('button',{name:'对照原始页图'}).click();
   const image=first.panel.getByTestId('structure-source-image');
@@ -140,7 +184,11 @@ try{
   app=undefined;
 
   const cold=await open();
-  await goToFourth(cold.panel);
+  await goToPage(cold.panel,2);
+  await cold.panel.getByTestId('structure-questions').getByText(/题 15 .*暂缓入库/u).waitFor();
+  await cold.panel.getByTestId('structure-previous').click();
+  await cold.panel.getByText('第 1 页',{exact:true}).waitFor();
+  await goToPage(cold.panel,4);
   const row=cold.panel.getByTestId('structure-questions').getByText(/题 21 .*暂缓入库/u);
   for(const [width,height] of [[1366,768],[1920,1080]]){
     await cold.page.setViewportSize({width,height});

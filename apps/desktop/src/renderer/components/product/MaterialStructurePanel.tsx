@@ -36,6 +36,7 @@ const issueLabels: Record<string, string> = {
   numbering_conflict: "编号关系不明确",
   missing_question_number: "原页题号未确认",
   missing_question_start: "未定位题目起点",
+  missing_choice_options: "部分整题选项待核对",
   missing_figure: "题图未完整定位",
   ambiguous_asset: "图表归属待核对",
   shared_material_scope: "共用材料范围待核对",

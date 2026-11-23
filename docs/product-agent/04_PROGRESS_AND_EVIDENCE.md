@@ -684,4 +684,23 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 
 证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-rubrics`。真实 Electron 报告为 `yangpu-rubrics-DyI7jA/report.json`，同目录保存双尺寸截图，逐代题号和待核数见 `durable-generations.log`。手动入口和步骤在 `manual-phase4-mock-exam-rubrics`。
 
+## Phase 4.3 扫描卷整题选项归属
+
+真实四页杨浦卷第 15 题的 ①②③ 是同一道选择题里的陈述。v18 将 C、D 归为第 ③ 条的小问选项。v19 从同页同栏的选择题分区、连续圈号、指向这组陈述的整题提问及横排选项恢复正确归属。已识别的 `(C) 2` 和 `(D) 3` 出现在核题表单，可直接对照第 2 页原图。选项 A 的 OCR 顺序异常，B 的局部读数有 `I`／`1` 冲突，两个选项仍待老师核对。第 14、16 题内容与 v18 逐字段相同。原卷 21 个题号完整，17 题仍待核对。
+
+| 检查 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-options-verified` | TypeScript 与 Electron 构建通过，主进程 SHA-256 为 `81141e03d886e12611113cab53b901dcf86a421bd064e2e053c424e32fb0c106`。 |
+| `node scripts/education/document-structure-boundaries.mjs` | 61/61，覆盖完整横排、部分读取、仅标签、普通小问、跨行和跨页。 |
+| `node --experimental-transform-types scripts/education/document-structure-repository.mjs` | 40/40，保留旧世代、重建与发布失败边界。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/education/mock-exam-rubrics-electron.mjs` | 5/5。实际资料库操作、两种窗口尺寸、原页图、相邻题、取消、退出重开及原文件和 SQLite 双世代读回。模型请求 0。 |
+| `node scripts/electron-smoke.mjs` | 同一最终构建桌面综合回归 207/207。报告、截图和运行时临时根均在固定验收目录的 `ship-smoke-final`。 |
+| `npm run test:ui-contracts` | 现有「我的任务」页面与合同清单不一致，首项终止，相关文件与基线相同。 |
+| `npm audit --omit=dev --json` | 20 项既有依赖告警，其中 2 项高风险。本次依赖及锁文件无变化。 |
+
+证据在 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-options`。`yangpu-rubrics-Z9qtiJ/report.json` 记录实际构建身份、样本摘要、五项结果和重启状态，附审核表单截图。第一次验收复制遇到旧验收窗口持有的语义索引锁，测试随后使用 SQLite 在线备份和新缓存复跑，原窗口保持运行。手动复验使用 `manual-phase4-mock-exam-options` 内的独立数据，已启动最终构建并核对窗口响应。
+
+整题选项归属与人工复核入口 **已实现**。回退可使用上一构建及原 v18 世代，原 PDF 和教师确认项无需迁移。第 15 题的「人体总的淋雨量」公式仍有分数上下部件被 OCR 拆成通用正文，当前来源记录只有表格资产。公式、表格、分栏和答案质量继续专项验证，整项 Phase 4.3 保持进行中。
+
 扫描卷跨行分值说明 **已实现**。第 21 题仍有文字和公式转写误差。第 15 题的两个前置选项受扫描水印影响，版面回执仅明确识别 C、D。局部整行可补读 A，手工定位的 B 单格在两个亮通道实验中读到标签和值。按 C、D 坐标自动推算 B 的单格读到标签，但选项值仍与原图有分歧。证据为 `q15-options-evidence.png`、`q15-crop-ocr.json`、`q15-crop-colour-ocr.json` 和 `q15-crop-geometry-ocr.json`，当前题目仍待核。

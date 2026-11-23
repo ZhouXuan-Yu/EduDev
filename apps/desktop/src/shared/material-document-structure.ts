@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v18" as const;
+  "layout-paragraph-question.v19" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v18",
   "layout-paragraph-question.v17",
   "layout-paragraph-question.v16",
   "layout-paragraph-question.v15", "layout-paragraph-question.v14", "layout-paragraph-question.v13", "layout-paragraph-question.v12",
@@ -34,6 +35,7 @@ export type StructureIssue =
   | "numbering_conflict"
   | "missing_question_number"
   | "missing_question_start"
+  | "missing_choice_options"
   | "missing_figure"
   | "ambiguous_asset"
   | "shared_material_scope"
@@ -108,6 +110,12 @@ export type StructurePart = {
   answer?: string;
   analysis?: string;
 };
+export function missingChoiceLabels(options: ReadonlyArray<Pick<StructurePart, "label">>) {
+  const seen = new Set(options.map(option => option.label));
+  const labels = Array.from("ABCDEFGH");
+  const last = labels.reduce((end, label, index) => seen.has(label) ? index : end, 0);
+  return labels.slice(0, last).filter(label => !seen.has(label));
+}
 export type StructureQuestion = {
   id: string;
   number: string;

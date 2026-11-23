@@ -6,6 +6,8 @@
 
 文档结构 v18 支持经几何与文本互证的跨行大题分值说明。重建生成新世代，既有快照仍可读取。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷的跨行分值说明)
 
+文档结构 v19 在题目装配层核对选择题分区、连续圈号、整题提问和选项行。既有 SQLite 表、原页预览接口和确认链路继续复用。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷整题选项归属)
+
 模考封面读取绑定当前原件摘要的 PDF 第 1 页回执。新目录存结构化封面依据及证据哈希，旧目录继续沿用原证据格式。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)
 
 模考页码证据从当前原件版本的本地 PDF 页回执提取，随目录快照保存。确认时复核提取结果，旧记录保留原快照。 [页码合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件页码核对)

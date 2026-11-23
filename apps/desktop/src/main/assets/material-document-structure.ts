@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
+import { choiceStatementIds, paragraphOptions } from "./material-structure-choice-options";
 import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,scoredAssessmentRemark,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
   DOCUMENT_STRUCTURE_ENGINE,
+  missingChoiceLabels,
   type StructureIssue,
   type StructureLine,
   type StructureParagraph,
@@ -969,12 +971,14 @@ export class StructureQuestionAssembler {
       q.confidence = unnumbered.confidence;
       q.issues = ["missing_question_number"];
     }
+    const choiceStatements = !unnumbered && q.kind === "question"
+      ? choiceStatementIds(q.section, pending.paragraphs) : undefined;
     let role: "stem" | "answer" | "analysis" = "stem";
     let child: StructureQuestion["subquestions"][number] | undefined;
     let parentChild: typeof child;
     for (const paragraph of unnumbered ? [unnumbered] : pending.paragraphs) {
       q.anchors.push(paragraph.anchor);
-      if (paragraph.marker?.kind === "child") {
+      if (paragraph.marker?.kind === "child" && !choiceStatements?.has(paragraph.id)) {
         role = "stem";
         const nested = /^[①-⑳]/u.test(paragraph.text.trim()) && parentChild;
         child = {
@@ -1000,30 +1004,11 @@ export class StructureQuestionAssembler {
           child.text += (child.text ? "\n" : "") + paragraph.text;
         else child[role] = (child[role] || "") + "\n" + paragraph.text;
       }
-      const markers = [
-        ...paragraph.text.matchAll(
-          /(?:^|\s|[、，])(?:[（(]([A-H])[）)]|([A-H])[.．、])/gu,
-        ),
-      ];
-      const first = markers.findIndex(
-        (marker) => (marker[1] || marker[2]) === "A",
-      );
-      const options =
-        paragraph.role === "option"
-          ? markers
-          : first >= 0 && markers.length - first >= 2
-            ? markers.slice(first)
-            : [];
       const target = child ? child.options! : q.options;
-      for (const [index, marker] of options.entries())
-        target.push({
-          label: marker[1] || marker[2],
-          paragraphIds: [paragraph.id],
-          text: paragraph.text
-            .slice(marker.index, options[index + 1]?.index)
-            .trim(),
-        });
+      target.push(...paragraphOptions(paragraph));
     }
+    if (choiceStatements && missingChoiceLabels(q.options).length)
+      q.issues.push("missing_choice_options");
     const first = pending.paragraphs[0];
     if (first.marker?.kind === "parent" && first.marker.label === q.number) {
       const scored = scoredAssessmentNumber(first.text);

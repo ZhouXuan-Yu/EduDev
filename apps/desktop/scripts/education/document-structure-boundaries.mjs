@@ -8,6 +8,8 @@ const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
 const { printedStructureQuestionType } =
   await import("../../src/main/assets/material-structure-question-type.ts");
+const { missingChoiceLabels } =
+  await import("../../src/shared/material-document-structure.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -71,6 +73,49 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+const choiceStatements = [
+  ["二、选择题（本节共2题）", .1, .07],
+  ["15. 已知下列陈述，判断结论。", .1, .12],
+  ["①第一项符合条件。", .1, .18],
+  ["②第二项符合条件。", .1, .21],
+  ["③第三项符合条件。这些解释合理的个数为", .1, .24],
+];
+await check("A complete horizontal choice row belongs to the question rather than its circled statements", () => {
+  const q = questions([page([...choiceStatements, ["(A) 0", .1, .28, .06],
+    ["(B) 1", .29, .28, .06], ["(C) 2", .48, .28, .06], ["(D) 3", .66, .28, .06]])])[0];
+  assert.deepEqual(q.options.map(option => option.label), [..."ABCD"]);
+  assert.deepEqual(q.subquestions, []);
+  assert.match(q.stem, /①.+\n②.+\n③/u);
+  assert.equal(printedStructureQuestionType(q), "选择题");
+});
+await check("A scan with ambiguous preceding glyphs shows only C and D and holds A and B for source review", () => {
+  const q = questions([page([...choiceStatements, ["0(A)逸", .1, .28, .21],
+    ["(C) 2", .48, .28, .06], ["(D) 3", .66, .28, .06]])])[0];
+  assert.deepEqual(q.options.map(option => option.text), ["(C) 2", "(D) 3"]);
+  assert.deepEqual(missingChoiceLabels(q.options), ["A", "B"]);
+  assert.deepEqual(q.subquestions, []);
+  assert(q.stem.includes("0(A)逸"));
+  assert(q.issues.includes("missing_choice_options"));
+  assert.equal(q.status, "needs_review");
+  assert.equal(printedStructureQuestionType(q), undefined);
+});
+await check("The choice-row rule preserves genuine subquestions and excludes cross-line and cross-page evidence", () => {
+  const options = [["(C) 2", .48, .28, .06], ["(D) 3", .66, .28, .06]];
+  const cases = [
+    [page([["三、解答题"], ...choiceStatements.slice(1), ...options])],
+    [page([...choiceStatements.slice(0, -1), ["③计算各自使用的步骤。", .1, .24], ...options])],
+    [page([...choiceStatements.slice(0, -1), ["③这个样本中正数的个数为", .1, .24], ...options])],
+    [page([...choiceStatements, ["(C)", .48, .28, .06], ["(D) 3", .66, .28, .06]])],
+    [page([...choiceStatements, ["(C) 2", .48, .28, .06], ["(D) 3", .66, .32, .06]])],
+    [page(choiceStatements, 1, 2), page(options, 2, 2)],
+  ];
+  for (const pages of cases) {
+    const q = questions(pages)[0];
+    assert.equal(q.options.length, 0);
+    assert(q.subquestions.length > 0);
+    assert(!q.issues.includes("missing_choice_options"));
+  }
+});
 const numberRows=[
   ["1. 已知数轴上的两个点，求它们的距离。",.10,.10],
   ["2.2.5的倒数是多少？",.10,.16,.60],

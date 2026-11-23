@@ -6,6 +6,8 @@
 
 扫描卷跨行分值验收在实际资料库重建并核对 21 个题号、末两题小问、原图及冷启显示。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷的跨行分值说明)
 
+扫描选择题验收覆盖原页重建、已识别选项和待核字母、两种桌面尺寸、相邻题内容、SQLite 世代及退出后重开。 [选项专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷整题选项归属)
+
 真实扫描封面验收覆盖缺年提示、教师确认、原件元数据变化、冷启动读回以及两个实际导出文件。 [封面专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
 
 模考 PDF 页码专项核对真实扫描与控制缺页样本，确认工作台及 Word／PDF 交付均保留警示。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)

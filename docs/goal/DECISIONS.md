@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+圈号陈述按同页、同栏的整题提问和横排选项归属。只展示标签和文字均已读出的选项，歧义保留在原记录供教师核对。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷整题选项归属)
+
 用同栏、共享标题区域、相邻行与闭合括号恢复大题分值说明。原 OCR 与坐标保留，歧义继续待核。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷的跨行分值说明)
 
 模考分类以教师确认的年度为准。封面学年度、考试月份与文件名届别作为独立证据留在目录上，年度存在多个候选时等待确认。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)

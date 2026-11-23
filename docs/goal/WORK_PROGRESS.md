@@ -2,7 +2,7 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
-Phase 4.3 已验证真实扫描的页码、封面分类、双格式导出和跨行分值。继续分栏、公式与选项。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷的跨行分值说明)
+Phase 4.3 已验证真实扫描的页码、封面分类、双格式导出、跨行分值和整题选项归属。水印影响的两个选项保留待核。继续分栏、公式与答案。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷整题选项归属)
 
 Phase 4.3 已接通年度目录的工作台、任务定位、历史、恢复与原对话精确修订。Word、PDF 和原件 ZIP 可保存，Word／PDF 部分保存后可沿原任务续做。继续真实复杂 PDF 质量专项。 [进度和证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
 
