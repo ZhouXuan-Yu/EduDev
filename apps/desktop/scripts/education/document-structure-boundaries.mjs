@@ -12,6 +12,8 @@ const { choiceLabelsForReview, missingChoiceLabels, validStructureImageQuery, va
   await import("../../src/shared/material-document-structure.ts");
 const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings } =
   await import("../../src/main/assets/material-structure-choice-recheck.ts");
+const { ruledTableGrid, evidenceForTable } =
+  await import("../../src/main/assets/material-structure-ruled-table.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -75,6 +77,37 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+await check("A complete ruled grid preserves position and refuses broken, merged and colored separator lines", () => {
+  const make = ({ merged = false, tint = false, broken = false } = {}) => {
+    const width = 180, height = 110, pixels = Buffer.alloc(width * height * 4, 255);
+    const dot = (x, y) => {
+      const i = (y * width + x) * 4;
+      pixels[i] = 32; pixels[i + 1] = 16; pixels[i + 2] = tint ? 220 : 12;
+    };
+    for (const x of [16,65,113,163]) for (let y = 17; y <= 93; y++)
+      if (!((merged && x === 65 && y > 56) || (broken && x === 113 && y > 52 && y < 81))) dot(x,y);
+    for (const y of [17,53,93]) for (let x = 16; x <= 163; x++) dot(x,y);
+    return {width,height,pixels};
+  };
+  const region = [16/180,17/110,163/180,93/110];
+  const grid = ruledTableGrid(make(),region);
+  assert.deepEqual(grid.map(row => row.length),[3,3]);
+  assert.equal(grid[0][1][0],grid[0][0][2]);
+  for (const mode of [{ merged: true }, { tint: true }, { broken: true }]) assert(!ruledTableGrid(make(mode),region));
+  assert(!ruledTableGrid({...make(),pixels:Buffer.alloc(1)},region));
+  const lines = [
+    {id:"clean",text:"12",score:.98,box:[22/180,24/110,36/180,42/110]},
+    {id:"unclear",text:"I",score:.71,box:[122/180,25/110,140/180,43/110]},
+    {id:"fused",text:"7 8",score:.99,box:[54/180,59/110,89/180,83/110]},
+  ];
+  const result = evidenceForTable(grid, lines);
+  assert.equal(result[0][0].text,"12");
+  assert.equal(result[0][0].needsReview,false);
+  for (const cell of [result[0][1], result[0][2], ...result[1]]) {
+    assert.equal(cell.text, "");
+    assert.equal(cell.needsReview, true);
+  }
+});
 const formulaRows = [
   ["15. 已知质量、压强和时间，求物体受力。", .10, .42, .55],
   ["pwD", .63, .488, .04], ["物体所受压力可记为T=", .39, .50, .24],

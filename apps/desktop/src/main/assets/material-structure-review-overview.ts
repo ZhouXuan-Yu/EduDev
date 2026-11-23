@@ -14,6 +14,7 @@ const issueGroups: Record<StructureIssue, StructureReviewGroup> = {
   missing_figure: "visuals",
   ambiguous_asset: "visuals",
   ambiguous_region: "visuals",
+  table_content_unconfirmed: "visuals",
   pdf_text_conflict: "transcription",
   native_unconfirmed: "transcription",
   low_ocr_score: "transcription",

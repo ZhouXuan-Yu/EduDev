@@ -10,6 +10,8 @@
 
 扫描横排选项可自动本机回查。老师在原核题表单查看有来源的候选、冲突或未读清结果。 [回查流程](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
 
+资料库的题目结构可按扫描表格的行列核对文字，单元格疑点和原表局部在同一入口可见。 [扫描质量流程](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
+
 资料库的核题表单可放大查看分式等堆叠公式的原页局部。关闭后继续编辑同一道题，老师补正后才随原题保存。 [公式专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描公式的原图核对)
 
 模考条目显示封面学年度、印刷月份和文件名届别。老师从「核对条目」选定当前汇编的分类年份，确认后导出保留依据。 [验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
@@ -3262,3 +3264,5 @@ Shell s5JOqA功能15成功，实际dark1366截图显示json标签/标点及token
 ## 2026-10-16 BoardUI 复用复核
 
 BoardUI 来源代码已按用户授权复用并保留 NOTICE/hash；产品状态仍由 Pi host/projection 驱动。当前复核通过 SSR 8/8、组件 217/217、TypeScript exit0，真实联网、图片/文件和完整 Codex 式输入框仍 OPEN。
+
+明确网格的扫描表格支持从待核单元格打开原图、预览局部并确认发起视觉回查。候选提供读数、列名和单位，供教师对照。常规导入仍采用本机流程。

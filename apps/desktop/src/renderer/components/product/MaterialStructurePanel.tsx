@@ -1,5 +1,6 @@
 import { MaterialStructureReview } from "./MaterialStructureReview";
 import { MaterialStructureReviewOverview } from "./MaterialStructureReviewOverview";
+import { MaterialStructureTableEvidence } from "./MaterialStructureTableEvidence";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@heroui/react";
 import type { TeacherResource } from "../../../shared/contracts";
@@ -39,6 +40,7 @@ const issueLabels: Record<string, string> = {
   missing_question_start: "未定位题目起点",
   missing_choice_options: "部分整题选项待核对",
   formula_text_unconfirmed: "公式文字待核对",
+  table_content_unconfirmed: "表格单元格待核对",
   missing_figure: "题图未完整定位",
   ambiguous_asset: "图表归属待核对",
   shared_material_scope: "共用材料范围待核对",
@@ -345,6 +347,9 @@ export function MaterialStructurePanel({
                           .map((issue) => issueLabels[issue] || issue)
                           .join("、")}
                       </p>
+                    )}
+                    {!!question.tableSources?.length && view.references?.[question.id] && (
+                      <MaterialStructureTableEvidence sources={question.tableSources} reference={view.references[question.id]} />
                     )}
                     {view.references?.[question.id] && (
                       <MaterialStructureReview

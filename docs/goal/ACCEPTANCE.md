@@ -3982,3 +3982,5 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 5. `npm run test:education-journeys -- --scenario=DT-05-photo-cycle`
 
 每次只接受报告中当前 build SHA、renderer errors、截图、SQLite/file readback 和首次失败均可核对的结果；历史报告不替代当前证据。
+
+扫描表格的视觉回查按来源绑定、无授权不发送、模型拒绝猜填、入库状态未改变、冷启可读五项核对。八个合成小样的结果不代表批量真实资料的总体识别率。

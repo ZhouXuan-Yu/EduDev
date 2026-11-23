@@ -4,6 +4,7 @@ import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
 import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
 import { choiceRecheckReadings, matchChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
+import { readStructureTables } from "./material-structure-ruled-table";
 import { LOCAL_OCR_ENGINE } from "../../shared/xiaozhi-ocr";
 import type { Quad } from "../../shared/material-layout";
 import type { NativeGapRecovery } from "../../shared/material-native-text";
@@ -392,9 +393,12 @@ export class MaterialStructureRuntime {
     const original = () => raster ??= nativeImage.createFromBuffer(bytes);
     let pixels: Buffer | undefined;
     signal.throwIfAborted();
-    const blanks = printedBlanks(structure, box => printedBlankStripe({
+    const pagePixels = () => ({
       width: image.width, height: image.height, pixels: pixels ??= original().toBitmap(),
-    }, box));
+    });
+    const blanks = printedBlanks(structure, box => printedBlankStripe(pagePixels(), box));
+    const tables = readStructureTables(structure, pagePixels);
+    if (tables.length) input.tableSources = tables;
     const parents: NonNullable<StructurePageReceipt["input"]["printedRecovery"]>["parents"] = [];
     for (const { number, crop } of printedParentProbes(structure)) {
       signal.throwIfAborted();

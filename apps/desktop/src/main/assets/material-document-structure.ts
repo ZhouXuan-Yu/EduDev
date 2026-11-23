@@ -555,6 +555,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
     rawText: input.lines.map((line) => line.text).join("\n"),
     ...(input.nativeRecovery ? { nativeRecovery: input.nativeRecovery } : {}),
     ...(input.printedRecovery ? { printedRecovery: input.printedRecovery } : {}),
+    ...(input.tableSources?.length ? { tableSources: input.tableSources } : {}),
     lines,
     regions: input.regions,
     columns,
@@ -1117,6 +1118,12 @@ export class StructureQuestionAssembler {
           q.issues.push("ambiguous_asset");
         }
       }
+    }
+    const tables = [...pending.pages.values()].flatMap(page => (page.tableSources ?? []).filter(table =>
+      table.rasterSha256 === page.rasterSha256 && q.assets.some(asset => asset.page === table.page && asset.regionId === table.regionId)));
+    if (tables.length) {
+      q.tableSources = tables;
+      if (tables.some(table => table.rows.some(row => row.some(cell => cell.needsReview)))) q.issues.push("table_content_unconfirmed");
     }
     checkWholeQuestionChoices(q);
     if (figureReference.test(q.stem) && !q.assets.length)

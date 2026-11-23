@@ -1,6 +1,7 @@
 import {createTerminalPreload} from './terminal';
 
 import type {StructureReviewInput} from '../shared/material-structure-review';
+import type { TableVisionQuery, TableVisionResult } from "../shared/material-table-vision";
 import type {DocumentStructureImageQuery,DocumentStructureQuery,DocumentStructureReviewOverview,DocumentStructureView} from '../shared/material-document-structure';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
@@ -490,6 +491,7 @@ const api = {
   getMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-read',input) as Promise<DocumentStructureView>,
   getMaterialStructureReviewOverview:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-review-overview',input) as Promise<DocumentStructureReviewOverview | undefined>,
   rebuildMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-rebuild',input) as Promise<DocumentStructureView>,
+  recheckMaterialTable:(input:TableVisionQuery)=>ipcRenderer.invoke("materials:table-vision",input) as Promise<TableVisionResult>,
   getMaterialStructureImage:(input:DocumentStructureImageQuery)=>ipcRenderer.invoke('materials:structure-image',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages',input) as Promise<WordPagesView|undefined>,

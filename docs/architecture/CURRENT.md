@@ -12,6 +12,8 @@
 
 文档结构 v21 复用原本地 OCR 的局部选项回查。源行及裁片摘要随题目快照保存，后台续做复用同世代已结算的记录。 [回查合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-局部选项回查)
 
+文档结构 v22 在原页像素上核对有框表格边线，将网格、读数及原行标识写入页快照，通过既有图表归属与题目关联。 [表格合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-有框扫描表格的单元格核对)
+
 模考封面读取绑定当前原件摘要的 PDF 第 1 页回执。新目录存结构化封面依据及证据哈希，旧目录继续沿用原证据格式。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)
 
 模考页码证据从当前原件版本的本地 PDF 页回执提取，随目录快照保存。确认时复核提取结果，旧记录保留原快照。 [页码合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件页码核对)
@@ -3122,3 +3124,7 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 ## 2026-11-21 备份版本预检
 
 M11 沿用 SQLite 在线备份和已有 typed IPC。新清单在原 v1 结构加入应用版本与实际 SQLite user_version。恢复开始和复制完成均检查兼容性。文件 Hash 及原数据选择保持原路径，无新表、依赖或通道。撤销本提交可恢复此前行为，现有备份可按原路径读取。 [换机专项](../goal/WINDOWS_UPDATE_AND_MIGRATION.md)
+
+### 扫描表格视觉候选
+
+资料导入的本地结构世代为正式来源。视觉回查经过 typed IPC、主进程裁剪、来源和隐私检查及窗口授权。模型回执以资料、结构世代和单元格键保存到增量表 `material_table_vision_candidates`，不改变题目表与正式入题本路径。旧版本能忽略新表。

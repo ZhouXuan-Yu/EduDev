@@ -1,3 +1,5 @@
+import { TABLE_VISION_SCHEMA, type TableVisionCandidate, type TableVisionCell } from "../../shared/material-table-vision";
+import { parseSavedTableVision, visionHash } from "./material-table-vision-provider";
 import { structureOcrSourceKey } from "./material-structure-identity";
 import { readStructureReviewOverview } from "./material-structure-review-overview";
 import { planChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
@@ -134,6 +136,7 @@ export class MaterialStructureRepository {
       `CREATE INDEX IF NOT EXISTS material_structure_question_pages ON material_structure_questions(generation,first_page,last_page)`,
       `CREATE TABLE IF NOT EXISTS material_structure_reviews(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,candidate_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,UNIQUE(resource_id,version,candidate_id))`,
       `CREATE TABLE IF NOT EXISTS material_structure_context_edits(question_id TEXT NOT NULL,request_id TEXT NOT NULL,context_sha TEXT NOT NULL,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(question_id,request_id))`,
+      `CREATE TABLE IF NOT EXISTS material_table_vision_candidates(resource_id TEXT NOT NULL REFERENCES teacher_resources(id) ON DELETE CASCADE,generation TEXT NOT NULL,cell_key TEXT NOT NULL,body_json TEXT NOT NULL,sha256 TEXT NOT NULL,PRIMARY KEY(resource_id,generation,cell_key))`,
       `CREATE INDEX IF NOT EXISTS material_structure_context_hash ON material_structure_context_edits(question_id,context_sha)`,
       `CREATE TABLE IF NOT EXISTS material_structure_chunks(generation TEXT NOT NULL,id TEXT NOT NULL,page INTEGER NOT NULL,body_json TEXT NOT NULL,PRIMARY KEY(generation,id))`,
       `CREATE INDEX IF NOT EXISTS material_structure_chunk_pages ON material_structure_chunks(generation,page)`,
@@ -935,6 +938,65 @@ export class MaterialStructureRepository {
       throw Error("source_changed");
     if (verifyOriginal) await this.host.verify(reference.resourceId, reference.version, signal);
     return { question, document };
+  }
+
+  private tableVisionKey(input: TableVisionCell) {
+    return visionHash(JSON.stringify([TABLE_VISION_SCHEMA, input.reference.sha256, input.reference.candidateId, input.page, input.regionId, input.row, input.column]));
+  }
+
+  async assertTableVisionCurrent(input: TableVisionCell) {
+    await this.assertReviewCurrent(input.reference);
+    const privateRows = await this.host.all(
+      "SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1", [input.reference.resourceId],
+    );
+    if (privateRows.length) throw Error("privacy_blocked");
+    if ((await this.host.all(
+      "SELECT 1 FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id=? LIMIT 1",
+      [input.reference.resourceId, input.reference.version, input.reference.candidateId],
+    )).length) throw Error("source_changed");
+  }
+
+  async tableVisionSource(input: TableVisionCell, signal: AbortSignal) {
+    await this.assertTableVisionCurrent(input);
+    const { question } = await this.sourceCandidate(input.reference, signal);
+    const table = question.tableSources?.find(source => source.page === input.page && source.regionId === input.regionId);
+    if (question.kind !== "question" || question.status !== "needs_review" ||
+        !table?.rows[input.row]?.[input.column]?.needsReview) throw Error("source_incomplete");
+    const image = await this.image({ resourceId: input.reference.resourceId, version: input.reference.version, page: input.page });
+    if (image.sha256 !== table.rasterSha256) throw Error("source_changed");
+    await this.assertReviewCurrent(input.reference);
+    return { table, image };
+  }
+
+  async readTableVision(input: TableVisionCell) {
+    await this.assertReviewCurrent(input.reference);
+    const { resourceId, generation } = input.reference;
+    const [row] = await this.host.all(
+      "SELECT body_json,sha256 FROM material_table_vision_candidates WHERE resource_id=? AND generation=? AND cell_key=?",
+      [resourceId, generation, this.tableVisionKey(input)],
+    );
+    if (!row) return;
+    if (typeof row.body_json !== "string" || visionHash(row.body_json) !== row.sha256) throw Error("source_changed");
+    return parseSavedTableVision(row.body_json);
+  }
+
+  async saveTableVision(input: TableVisionCell, candidate: TableVisionCandidate, signal: AbortSignal) {
+    const body = JSON.stringify(candidate);
+    parseSavedTableVision(body);
+    const {resourceId, generation, version} = input.reference;
+    signal.throwIfAborted();
+    await this.host.run(
+      `INSERT OR IGNORE INTO material_table_vision_candidates(resource_id,generation,cell_key,body_json,sha256)
+       SELECT ?,?,?,?,? WHERE EXISTS (SELECT 1 FROM material_structure_jobs
+       WHERE resource_id=? AND generation=? AND version=? AND status IN ('complete','partial'))
+       AND NOT EXISTS (SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1)
+       AND NOT EXISTS (SELECT 1 FROM material_structure_reviews WHERE resource_id=? AND version=? AND candidate_id=?)`,
+      [resourceId, generation, this.tableVisionKey(input), body, visionHash(body),
+        resourceId, generation, version, resourceId, resourceId, version, input.reference.candidateId],
+    );
+    const result = await this.readTableVision(input);
+    if (!result) throw Error("source_changed");
+    return result;
   }
 
   async prepareReview(

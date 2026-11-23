@@ -48,14 +48,14 @@ const job=()=>sql('SELECT * FROM material_structure_jobs WHERE resource_id=?',[s
 const pages=generation=>sql('SELECT * FROM material_structure_pages WHERE generation=? ORDER BY page',[generation]);
 const questionRows=generation=>sql('SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid',[generation]);
 const old=job(),oldPages=pages(old.generation),oldQuestions=questionRows(old.generation);
-assert(['layout-paragraph-question.v17','layout-paragraph-question.v18','layout-paragraph-question.v19','layout-paragraph-question.v20'].includes(old.engine));
+assert(/\.v(?:17|18|19|20|21)$/u.test(old.engine));
 assert.equal(oldPages.length,4);
 const oldList=oldQuestions.map(row=>JSON.parse(row.body_json));
 const baseline=oldList.find(q=>q.number==='15');
-const oldChoices=/v(?:19|20)$/u.test(old.engine)?baseline.options:baseline.subquestions
+const oldChoices=/v(?:19|20|21)$/u.test(old.engine)?baseline.options:baseline.subquestions
   .flatMap(part=>part.children??[]).flatMap(part=>part.options);
 assert.deepEqual(oldChoices.map(option=>option.text),['(C) 2','(D) 3']);
-assert.equal(baseline.choiceRecheck,undefined);
+assert.equal(baseline.tableSources,undefined);
 if(old.engine.endsWith('v17'))assert(!oldList.some(q=>q.number==='20'));
 const confirmed=()=>sql("SELECT id,archive_json FROM question_bank_items WHERE json_valid(archive_json) AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id");
 const teacherBefore=confirmed();
@@ -119,12 +119,12 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v21');
+  assert.equal(current.engine,'layout-paragraph-question.v23');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
   assert.equal(shaFile(source.local_path),source.content_hash);
-  check('The existing UI rebuild publishes v21 while the original scan, previous snapshots and confirmed items stay intact');
+  check('The existing UI rebuild publishes v23 while the original scan, previous snapshots and confirmed items stay intact');
 
   const list=questionRows(current.generation).map(row=>JSON.parse(row.body_json));
   const numbered=list.map(q=>q.number).filter(number=>number!=='0');
@@ -144,6 +144,16 @@ try{
   check('All 21 printed numbers and the six subquestions of questions 20 and 21 retain page-four source anchors and review status');
   const choice=list.find(q=>q.number==='15');
   const p2=JSON.parse(pages(current.generation).find(row=>row.page===2).body_json);
+  const table=choice.tableSources?.[0];
+  assert(table&&table.page===2&&table.rasterSha256===p2.rasterSha256);
+  assert.deepEqual(table.rows.map(row=>row.length),[8,8]);
+  assert(choice.issues.includes('table_content_unconfirmed'));
+  assert.deepEqual(table.rows.flat().filter(cell=>!cell.needsReview).map(cell=>cell.text),
+    ['人的身高','人体厚度','降雨速度','雨滴密度','行走距离','d','p','D']);
+  assert.equal(table.rows[1][1].text,'');
+  assert.deepEqual(table,p2.tableSources.find(source=>source.regionId===table.regionId));
+  report.table={regionId:table.regionId,rows:table.rows.length,columns:table.rows[0].length,
+    held:table.rows.flat().filter(cell=>cell.needsReview).length,rasterSha256:table.rasterSha256};
   assert.equal(choice.stem,baseline.stem);
   assert.deepEqual(choice.anchors,baseline.anchors);
   assert.deepEqual(choice.subquestions,[]);
@@ -184,6 +194,22 @@ try{
   await goToPage(first.panel,2);
   const q15=first.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
   await q15.getByText(/2 个选项 · 0 个小问/u).waitFor();
+  const tablePanel=q15.getByTestId('structure-table-evidence');
+  await openMaterialDisclosure(tablePanel);
+  await tablePanel.getByText('8 个单元格待核对',{exact:true}).waitFor();
+  assert.equal(await tablePanel.getByTestId('structure-table-grid').getByRole('cell').count(),16);
+  await tablePanel.getByTestId('structure-table-original').click();
+  const tableImage=tablePanel.getByTestId('structure-table-original-image');
+  await tableImage.evaluate(node=>node.decode());
+  const dimensions=await tableImage.evaluate(node=>[node.naturalWidth,node.naturalHeight]);
+  assert.deepEqual(dimensions,[Math.ceil(raster.width*table.box[2])-Math.floor(raster.width*table.box[0]),
+    Math.ceil(raster.height*table.box[3])-Math.floor(raster.height*table.box[1])]);
+  for(const [width,height] of [[1366,768],[1920,1080]]){
+    await first.page.setViewportSize({width,height});
+    await tablePanel.getByTestId('structure-table-grid').scrollIntoViewIfNeeded();
+    await first.page.screenshot({path:path.join(output,'q15-table-'+width+'.png'),animations:'disabled'});
+  }
+  check('The original table becomes a keyboard-accessible 2 by 8 grid with unresolved cells and a source crop');
   await q15.getByTestId('structure-review-open').click();
   const evidence=q15.getByTestId('structure-review-choice-evidence');
   await evidence.getByText('待核对选项 A、B',{exact:true}).waitFor();
@@ -254,6 +280,8 @@ try{
   const cold=await open();
   await goToPage(cold.panel,2);
   const held=cold.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
+  await openMaterialDisclosure(held.getByTestId('structure-table-evidence'));
+  await held.getByTestId('structure-table-evidence').getByText('8 个单元格待核对',{exact:true}).waitFor();
   await held.getByTestId('structure-review-open').click();
   assert.deepEqual(await held.getByTestId('structure-review-choice-recheck').getByRole('listitem').allTextContents(),
     ['A 候选 0 · 请对照原图','B 未读清']);

@@ -1,30 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "@heroui/react";
 import type { DocumentStructureReference, StructureFormulaSource } from "../../../shared/material-document-structure";
-import { validPageBox } from "../../../shared/material-page-preview";
-
-async function readFormulaImage(reference: DocumentStructureReference, source: StructureFormulaSource) {
-  if (!validPageBox(source.box)) throw Error("invalid_input");
-  const png = await window.omniEdu!.getMaterialStructureImage({
-    resourceId: reference.resourceId,
-    version: reference.version,
-    page: source.page,
-    rasterSha256: source.rasterSha256,
-  });
-  const image = new Image();
-  image.src = png;
-  await image.decode();
-  const [left, top, right, bottom] = source.box;
-  const x = Math.floor(left * image.naturalWidth);
-  const y = Math.floor(top * image.naturalHeight);
-  const crop = document.createElement("canvas");
-  crop.width = Math.ceil(right * image.naturalWidth) - x;
-  crop.height = Math.ceil(bottom * image.naturalHeight) - y;
-  const context = crop.getContext("2d");
-  if (!context || !crop.width || !crop.height) throw Error("unavailable");
-  context.drawImage(image, x, y, crop.width, crop.height, 0, 0, crop.width, crop.height);
-  return crop.toDataURL("image/png");
-}
+import { readMaterialStructureCrop } from "./material-structure-source-image";
 
 export function MaterialStructureFormulaPreview({ reference, sources, disabled }: {
   reference: DocumentStructureReference;
@@ -39,7 +16,7 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
   useEffect(() => {
     if (!source) return;
     let current = true;
-    void readFormulaImage(reference, source).then(image => {
+    void readMaterialStructureCrop(reference, source).then(image => {
       if (current) setResult({ image });
     }).catch((error: unknown) => {
       if (current) setResult({ error: String(error).includes("source_changed")

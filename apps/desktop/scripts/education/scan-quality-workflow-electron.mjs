@@ -87,7 +87,7 @@ try{
   report.importMs=Date.now()-started;
   const sources=sql('SELECT id,title,local_path,content_hash FROM teacher_resources');
   assert.equal(sources.length,2);
-  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v21'&&job.processed===job.pages));
+  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v23'&&job.processed===job.pages));
   assert.deepEqual(sources.map(source=>sha(source.local_path)).sort(),report.documents.map(doc=>doc.sha256).sort());
   check('One file-picker action stages both scans and the regular background parser publishes versioned results');
 
@@ -98,6 +98,8 @@ try{
   const realQuestions=questions(real);
   assert.equal(realQuestions.filter(q=>q.kind==='question'&&q.number!=='0').length,21);
   assert.deepEqual(realQuestions.filter(q=>q.formulaSources?.length).map(q=>q.number),['15','21']);
+  const table=realQuestions.find(q=>q.number==='15').tableSources?.[0];
+  assert.deepEqual(table?.rows.map(row=>row.length),[8,8]);
   const realRecheck=realQuestions.find(q=>q.number==='15')?.choiceRecheck;
   assert.deepEqual(realRecheck?.choices,[
     {label:'A',status:'single_read',readings:['0']},
@@ -120,6 +122,12 @@ try{
   assert.deepEqual(intact?.options.map(option=>option.label),[...'ABCD']);
   assert(!intact.issues.includes('missing_choice_options'));
   assert(alternate.filter(q=>['10','11'].includes(q.number)).every(q=>!q.issues.includes('missing_choice_options')));
+  const secondTable=alternate.find(q=>q.number==='10')?.tableSources?.[0];
+  assert.deepEqual(secondTable?.rows.map(row=>row.map(cell=>cell.text)),
+    [['第一天','第二天','第三天'],['123','456','789']]);
+  assert(secondTable.rows.flat().every(cell=>!cell.needsReview));
+  report.tables={original:{rows:table.rows.length,columns:table.rows[0].length},
+    independent:{rows:secondTable.rows.length,columns:secondTable.rows[0].length}};
   check('The new source independently detects trailing omissions and skipped labels while retaining the complete choice and free-response items');
 
   await page.setViewportSize({width:1366,height:768});

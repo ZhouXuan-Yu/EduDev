@@ -5,8 +5,10 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v21" as const;
+  "layout-paragraph-question.v23" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v22",
+  "layout-paragraph-question.v21",
   "layout-paragraph-question.v20",
   "layout-paragraph-question.v19",
   "layout-paragraph-question.v18",
@@ -39,6 +41,7 @@ export type StructureIssue =
   | "missing_question_start"
   | "missing_choice_options"
   | "formula_text_unconfirmed"
+  | "table_content_unconfirmed"
   | "missing_figure"
   | "ambiguous_asset"
   | "shared_material_scope"
@@ -60,6 +63,11 @@ export type ParagraphRole =
   | "figure";
 export type StructureAnchor = { page: number; box: PageBox };
 export type StructureFormulaSource = StructureAnchor & { rasterSha256: string; lineIds: string[] };
+export type StructureTableSource = StructureAnchor & {
+  regionId: string;
+  rasterSha256: string;
+  rows: { box: PageBox; text: string; lineIds: string[]; needsReview: boolean; suspectedOverprint?: true }[][];
+};
 export type StructureLine = {
   id: string;
   sourceId: string;
@@ -98,6 +106,7 @@ export type StructurePage = {
   rawText: string;
   nativeRecovery?: import("./material-native-text").NativeGapRecovery;
   printedRecovery?: PrintedStructureRecovery;
+  tableSources?: StructureTableSource[];
   lines: StructureLine[];
   regions: PageBlock[];
   columns: PageBox[];
@@ -155,6 +164,7 @@ export type StructureQuestion = {
   choiceRecheck?: StructureChoiceRecheck;
   subquestions: StructurePart[];
   formulaSources?: StructureFormulaSource[];
+  tableSources?: StructureTableSource[];
   anchors: StructureAnchor[];
   assets: {
     page: number;
@@ -182,6 +192,7 @@ export type StructurePageInput = {
   rasterSource?: { resourceId: string; version: string };
   nativeRecovery?: import("./material-native-text").NativeGapRecovery;
   printedRecovery?: PrintedStructureRecovery;
+  tableSources?: StructureTableSource[];
   lines: MaterialLine[];
   regions: PageBlock[];
 };

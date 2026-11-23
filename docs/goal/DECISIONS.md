@@ -3211,3 +3211,5 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 - `DT-05-questions` 的 6/6 只接受为题目 source/read path；不能外推到教师确认、练习结果、错题相似题、照片 OCR 或视觉证据。
 - `test:deeptutor-question-notebook` 的动态 `child_process` 失败归类为 Node ESM smoke bundle 与 Electron CommonJS 边界问题。临时 externalize/stub 方案已撤回；除非后续需要该 smoke，否则不为测试绕过生产模块边界。
 - 历史 journey 报告必须保留，但在当前构建的 review/practice/photo 报告生成前不得升级 DT-05 状态。每片完成后再同步 CURRENT_STATE、CAPABILITY_MATRIX、ACCEPTANCE、EDUCATION_BRANCH_TODOLIST 和根四文档。
+
+扫描结构的识图复核采用高清目标裁片加必要语义上下文。由宿主决定裁切边界及持久键。原答案、模型推导、教师确认继续保留独立来源。
