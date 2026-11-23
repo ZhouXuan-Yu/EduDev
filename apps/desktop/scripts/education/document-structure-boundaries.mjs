@@ -160,6 +160,41 @@ await check("A wrapped heading never takes an independent title, a question mark
     assert.equal(recovered.rawText,lead[0]+"\n"+tail[0]);
   }
 });
+await check("A two-line scored parent keeps its printed rubric evidence and its own subquestions", () => {
+  const lead = "20（本题满分18分，第1小题满分";
+  const rows = [
+    [lead,.10,.075,.78,"paragraph_title"], ["6分）",.10,.099,.09,"paragraph_title"],
+    ["如图所示，已知抛物线，求焦点。",.10,.15,.63], ["(1) 求焦点坐标。",.10,.18,.29],
+    ["(2) 求取值范围。",.10,.21,.29], ["(3) 证明结论。",.10,.24,.29],
+  ];
+  for (const text of [lead, lead.replace("20", "20.")]) {
+    const input = [[text,...rows[0].slice(1)],...rows.slice(1)];
+    const run = page(input,1,1,[titleRegion]);
+    const [q] = questions([run]);
+    const printed = run.paragraphs[0];
+    assert.equal(q.number,"20");
+    assert.match(q.stem,/^如图所示/u);
+    assert.doesNotMatch(q.stem,/本题满分/u);
+    assert.deepEqual(q.subquestions.map(item=>item.label),["1","2","3"]);
+    assert.equal(printed.rawText,text+"\n6分）");
+    assert.deepEqual(printed.lineIds,run.lines.slice(0,2).map(line=>line.id));
+    assert.equal(q.needsReview,true);
+  }
+});
+await check("Split score recovery requires a nearby matching title tail with closing punctuation", () => {
+  const lead = ["20（本题满分18分，第1小题满分",.10,.075,.78,"paragraph_title"];
+  for (const [tail,regions] of [
+    [["6分）",.10,.099,.09,"paragraph_title"],[]],
+    [["6分未闭合",.10,.099,.09,"paragraph_title"],[titleRegion]],
+    [["6分）",.10,.099,.09,"paragraph_title",.8],[titleRegion]],
+    [["6分）",.10,.122,.09,"paragraph_title"],[titleRegion]],
+    [["6分）",.74,.099,.09,"paragraph_title"],[titleRegion]],
+  ]) {
+    const run = page([lead,tail],1,1,regions);
+    assert(!run.paragraphs.some(paragraph=>paragraph.marker?.label==="20"),tail);
+    assert.equal(run.rawText,lead[0]+"\n"+tail[0]);
+  }
+});
 await check("Printed type follows the question's own section across pages and refuses incompatible or ambiguous shapes", () => {
   const first = page([
     ["一、单项选择题：（本大题共2题）", .1, .08, .8, "paragraph_title"],

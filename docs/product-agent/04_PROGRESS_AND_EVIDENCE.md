@@ -666,3 +666,22 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-cover`，验收结果为 `verified-5CmHaM/result.json`，双尺寸冷启动截图在同目录。保留首次脚本定位提示失败记录，实际提示存在并经复测。手测窗口和步骤在 `manual-phase4-mock-exam-cover`。
 
 模考封面与年度分类 **已实现**。复杂题的独立质量继续。真实原卷基线保留 18 处待核，其中第 15 题未匹配四选项，第 20 题首行跨行印刷分值，结构记录仍含无题号候选。与原图逐题核对后再进入正式质量结论。
+
+## Phase 4.3 扫描卷的跨行分值说明
+
+资料库用现有「重建结构」入口生成 v18。真实四页杨浦卷从 20 个可辨大题号和 2 条无题号记录，更新为 21 个连续大题号，无无题号记录。第 20、21 题各保留 3 个小问、原页坐标及跨行分值说明，题干与分值说明分开。两题仍在待核对，整卷共 17 处待核。原 PDF、原结构世代和教师已确认内容逐项读回保持一致。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-rubrics` | 通过，含 TypeScript，主进程 SHA-256 为 `bf49181cce90691b013285a3611494504706257d60067d06e596ac4374261d89`。 |
+| `node scripts/education/document-structure-boundaries.mjs` | 58/58，涵盖匹配标题区、跨栏、截断、低置信、旧分栏及图形边界。 |
+| `node --experimental-transform-types scripts/education/document-structure-repository.mjs` | 40/40，含旧世代可读、原件与教师记录保护、取消、并发和恢复。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| 旧采集页重放 | `replay-retest.log`，原 OCR 行逐条不变，两个跨行说明都保留三小问。首次重放留证第 21 题分值区域和离散干扰字导致断题。 |
+| `node scripts/education/mock-exam-rubrics-electron.mjs` | 3/3。用原界面重建、SQL 双世代读回、点开第 4 页原图，再冷启动双尺寸读取题 21。重建处理共 2165 ms，复用隔离库内的解析和 OCR 凭证。真实模型 0 请求。 |
+| `npm audit --omit=dev --json` | 原有依赖告警 20 项，其中 2 项 high，本次无依赖变更。 |
+
+证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-rubrics`。真实 Electron 报告为 `yangpu-rubrics-DyI7jA/report.json`，同目录保存双尺寸截图，逐代题号和待核数见 `durable-generations.log`。手动入口和步骤在 `manual-phase4-mock-exam-rubrics`。
+
+扫描卷跨行分值说明 **已实现**。第 21 题仍有文字和公式转写误差。第 15 题的两个前置选项受扫描水印影响，版面回执仅明确识别 C、D。局部整行可补读 A，手工定位的 B 单格在两个亮通道实验中读到标签和值。按 C、D 坐标自动推算 B 的单格读到标签，但选项值仍与原图有分歧。证据为 `q15-options-evidence.png`、`q15-crop-ocr.json`、`q15-crop-colour-ocr.json` 和 `q15-crop-geometry-ocr.json`，当前题目仍待核。

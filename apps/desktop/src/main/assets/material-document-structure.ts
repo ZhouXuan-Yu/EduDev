@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
-import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,stripAssessmentNumber} from "./material-structure-numbering";
+import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,scoredAssessmentRemark,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
@@ -182,20 +182,24 @@ function headingRemarkDepth(text: string, depth: number) {
 }
 
 /** Join a printed scoring or administration note only within its detected title. */
-function wrappedAssessmentHeadings(rows: OrderedLine[], roles: Map<string, LineRole>, regions: PageBlock[], height: number) {
-  const titles = new Set(regions.filter(region => region.kind === "paragraph_title" && region.score >= 0.8)
-    .map(region => region.id));
+function wrappedAssessmentHeadings(rows: OrderedLine[], roles: Map<string, LineRole>, regions: PageBlock[], height: number, allowQuestion: boolean) {
+  const titleScores = new Map(regions.filter(region => region.kind === "paragraph_title")
+    .map(region => [region.id, region.score]));
   const roots = new Map<string, string>();
+  const ambiguous = new Set<string>();
   for (const [index, lead] of rows.entries()) {
-    if (roles.get(lead.line.id)?.role !== "heading" || lead.line.score < 0.85) continue;
+    const role = roles.get(lead.line.id)!;
+    if (!["heading", "body", "question"].includes(role.role) || lead.line.score < 0.85) continue;
     const text = lead.line.text.trim();
     const section = questionSection.exec(text);
-    if (!section) continue;
-    const remark = text.slice(section[0].length).replace(/^\s*[:：]?\s*/u, "");
+    const scored = allowQuestion ? scoredAssessmentRemark(text) : undefined;
+    const remark = scored ?? (section && role.role === "heading"
+      ? text.slice(section[0].length).replace(/^\s*[:：]?\s*/u, "") : "");
     if (!/^[（(](?:本(?:大|小)?题|共|满分|计分|每(?:小)?题|请在|答题)/u.test(remark)) continue;
     let depth = headingRemarkDepth(remark, 0);
     if (depth <= 0) continue;
-    let owners = lead.line.regionIds.filter(id => titles.has(id));
+    const minimumTitle = scored && role.marker?.kind === "parent" ? 0.75 : 0.8;
+    let owners = lead.line.regionIds.filter(id => (titleScores.get(id) ?? 0) >= minimumTitle);
     if (!owners.length) continue;
 
     const tails: StructureLine[] = [];
@@ -215,13 +219,28 @@ function wrappedAssessmentHeadings(rows: OrderedLine[], roles: Map<string, LineR
       if (depth < 0) break;
       tails.push(line);
       if (depth === 0) {
+        if (scored) {
+          const number = scoredAssessmentNumber(joinStructureLines([text, ...tails.map(tail => tail.text)]));
+          if (!number) break;
+          roles.set(lead.line.id, { role: "question", marker: { kind: "parent", label: number } });
+          const fragment = rows[index + 1 + tails.length];
+          if (fragment?.column === column && roles.get(fragment.line.id)?.role === "heading" &&
+              /^[A-Za-z]{1,5}$/u.test(fragment.line.text.trim()) &&
+              fragment.line.box[0] - line.box[2] > 0.2 &&
+              Math.abs(centerY(fragment.line.box) - centerY(line.box)) < height * 0.45 &&
+              fragment.line.regionIds.some(id => owners.includes(id))) {
+            // Keep displaced marks in the page evidence without making them start a new section.
+            roles.set(fragment.line.id, { role: "note" });
+            ambiguous.add(lead.line.id);
+          }
+        }
         for (const tail of tails) roots.set(tail.id, lead.line.id);
         break;
       }
       above = line;
     }
   }
-  return roots;
+  return { roots, ambiguous };
 }
 
 const centerY = (box: PageBox) => (box[1] + box[3]) / 2;
@@ -418,7 +437,9 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
   const layout = columnsFor(lines, roles, input.regions, height);
   const { columns } = layout;
   const ordered = orderedLines(lines, columns, roles);
-  const wrappedHeadings = wrappedAssessmentHeadings(ordered.rows, roles, input.regions, height);
+  const { roots: wrappedHeadings, ambiguous: rubricAmbiguity } = wrappedAssessmentHeadings(
+    ordered.rows, roles, input.regions, height, !layout.unresolved && !ordered.unresolved,
+  );
   applyAssessmentNumbers(ordered.rows, roles, height, questionCue, wrappedHeadings);
   if (!layout.unresolved && !ordered.unresolved)
     restoreJoinedAssessmentNumbers(ordered.rows, roles, input, height, questionCue);
@@ -483,7 +504,7 @@ export function recoverStructurePage(input: StructurePageInput): StructurePage {
       ...(formulas.uncertain.has(line.id) ? ["ambiguous_asset" as const] : []),
       ...(printedLines.get(line.sourceId)?.uncertain ? ["printed_crop_unconfirmed" as const] : []),
       ...(line.score < 0.85 ? ["low_ocr_score" as const] : []),
-      ...(!line.regionIds.length || ambiguous || regions[0]?.score < 0.5
+      ...(!line.regionIds.length || ambiguous || regions[0]?.score < 0.5 || rubricAmbiguity.has(line.id)
         ? ["ambiguous_region" as const]
         : []),
     ];
@@ -863,7 +884,7 @@ export class StructureQuestionAssembler {
         if (uncertainLeadingTableColumn === paragraph.column)
           this.pending.question.issues.push("ambiguous_columns");
         uncertainLeadingTableColumn = undefined;
-        if (!questionCue.test(paragraph.text) && !this.answers && !scoredAssessmentNumber(paragraph.rawText))
+        if (!questionCue.test(paragraph.text) && !this.answers && !scoredAssessmentNumber(paragraph.text))
           this.pending.question.issues.push("uncertain_boundary");
         this.append(paragraph, page);
         continue;
@@ -1005,7 +1026,7 @@ export class StructureQuestionAssembler {
     }
     const first = pending.paragraphs[0];
     if (first.marker?.kind === "parent" && first.marker.label === q.number) {
-      const scored = scoredAssessmentNumber(first.rawText);
+      const scored = scoredAssessmentNumber(first.text);
       const derived = stripAssessmentNumber(q.stem, first, q.number);
       q.stem = derived === q.stem
         ? q.stem.replace(/^(?:第\s*\d+\s*题\s*[:：]?|\d+[.．、])[ \t]*/u, "")

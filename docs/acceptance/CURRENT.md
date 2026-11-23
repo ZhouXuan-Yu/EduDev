@@ -4,6 +4,8 @@
 
 模考修订覆盖同任务内的只读定位、局部差异、教师决定前无版本写入、断点后再确认、拒绝、来源或版本变化、许可边界及停止。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-从对话精确修订目录)
 
+扫描卷跨行分值验收在实际资料库重建并核对 21 个题号、末两题小问、原图及冷启显示。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷的跨行分值说明)
+
 真实扫描封面验收覆盖缺年提示、教师确认、原件元数据变化、冷启动读回以及两个实际导出文件。 [封面专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
 
 模考 PDF 页码专项核对真实扫描与控制缺页样本，确认工作台及 Word／PDF 交付均保留警示。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)

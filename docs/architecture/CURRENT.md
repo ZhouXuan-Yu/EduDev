@@ -4,6 +4,8 @@
 
 模考修订由 Pi 读取当前目录并提交定向提案。`mock_exam_edit_reviews` 保存提案与审阅结果，Journal 依原任务 Run、generation、调用及摘要核对副作用。应用追加原目录表的新版本并同事务记录决定。 [修订合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-从对话精确修订目录)
 
+文档结构 v18 支持经几何与文本互证的跨行大题分值说明。重建生成新世代，既有快照仍可读取。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷的跨行分值说明)
+
 模考封面读取绑定当前原件摘要的 PDF 第 1 页回执。新目录存结构化封面依据及证据哈希，旧目录继续沿用原证据格式。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)
 
 模考页码证据从当前原件版本的本地 PDF 页回执提取，随目录快照保存。确认时复核提取结果，旧记录保留原快照。 [页码合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件页码核对)

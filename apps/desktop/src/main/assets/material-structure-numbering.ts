@@ -10,7 +10,7 @@ const digit='[1-9１-９][0-9０-９]{0,2}';
 const looseNumber=new RegExp(`^(${digit})(?:[ \\t\\u3000]+(\\S.*))?$`,'u');
 const joinedNumber=/^([1-9１-９][0-9０-９]{0,4})[.．、](?=[0-9０-９])/u;
 const spacedNumber=/^([1-9１-９][0-9０-９]{0,4})[.．、][ \t\u3000]+([0-9０-９].*)$/u;
-const scoredStart=new RegExp(`^(${digit})[ \t\u3000]*([（(])(?:本题|本小题)[ \t]*(?:满分|共|计)[ \t]*[0-9０-９]{1,3}[ \t]*分`,'u');
+const scoredStart=new RegExp(`^(${digit})[.．、]?[ \t\u3000]*([（(])(?:本题|本小题)[ \t]*(?:满分|共|计)[ \t]*[0-9０-９]{1,3}[ \t]*分`,'u');
 export const questionSection=/^(?:(?:第[一二三四五六七八九十百\d]+[部分章]|[一二三四五六七八九十百]+[、．.]|[ⅠⅡⅢⅣⅤ]+[、．.]?)[ \t]*)?(单项选择题|多项选择题|不定项选择题|选择题|填空题|解答题|计算题|实验题|综合题|证明题|判断题|简答题|阅读理解)(?=$|[ \t（(:：])/u;
 const blank=/▲|_{2,}|[（(][ \t]*[）)]/u;
 const option=/^[、，。]?\s*(?:[（(][A-H][）)]|[A-H][.．、])/u;
@@ -32,10 +32,15 @@ export function scoredAssessmentNumber(text:string){
   return scoredPrefix(text)?.number;
 }
 
+export function scoredAssessmentRemark(text:string){
+  const match=scoredStart.exec(text);
+  return match&&text.slice(match[0].indexOf(match[2]));
+}
+
 export function stripAssessmentNumber(stem:string,first:StructureParagraph,number:string){
+  const score=scoredPrefix(first.text);
+  if(score?.number===number&&stem.startsWith(first.text.slice(0,score.length)))return stem.slice(score.length).trimStart();
   const raw=first.rawText.split('\n',1)[0].trim();
-  const score=scoredPrefix(raw);
-  if(score?.number===number&&stem.startsWith(raw.slice(0,score.length)))return stem.slice(score.length).trimStart();
   const joined=joinedNumber.exec(raw);
   if(joined?.[1].normalize('NFKC')===number&&stem.startsWith(joined[0]))return stem.slice(joined[0].length).trimStart();
   const prefix=looseNumber.exec(raw);
