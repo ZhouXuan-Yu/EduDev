@@ -4,6 +4,8 @@
 
 在原对话可要求只改某份模考试卷的分类或收录状态。看完前后差异后，可应用为新待核对版或拒绝。 [模考修订证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-从对话精确修订目录)
 
+模考汇编显示 PDF 实存页数和印刷总页数的核对结果，疑似缺页提示随 Word／PDF 导出。老师可从该行定位原件。 [验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
+
 在「教学文件 → 整包任务」可从部分保存的模考文件组续做。核对原任务和文件后，老师只确认补齐缺失的文件，已保存文件仍能打开。 [操作和证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
 
 确认后的「模考汇编」可预览并保存原件 ZIP。已收录且允许本地使用的试卷与独立答案册按各自许可入包，排除原因写入清单。 [原件包验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件包)

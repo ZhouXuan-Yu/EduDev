@@ -1,5 +1,5 @@
 import {isDeepStrictEqual} from 'node:util';
-import {SHANGHAI_DISTRICTS,type MockExamCatalog} from '../../shared/mock-exam-compilation';
+import {SHANGHAI_DISTRICTS,mockExamPageEvidenceLabel,type MockExamCatalog} from '../../shared/mock-exam-compilation';
 import {MOCK_EXAM_OFFICE_SCHEMA,type MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {verifyMockExamOriginals,type createMockExamState} from './mock-exam-state';
@@ -28,6 +28,7 @@ export function compileMockExamOffice(catalog:MockExamCatalog):MockExamOfficeDra
     const paragraphs=entries.flatMap((entry,index)=>[
       `${index+1}. ${printable(entry.title)}`,
       [entry.metadata.year,entry.metadata.grade,entry.metadata.subject,entry.metadata.round,parse[entry.structure.state],permission[entry.permission]].join(' · '),
+      ...(entry.structure.pageEvidence?[mockExamPageEvidenceLabel(entry.structure.pageEvidence)]:[]),
       `${answers[entry.answer.state]}${entry.answer.title?' · '+printable(entry.answer.title):''}`,
       `原件编号 ${entry.resourceId} · SHA-256 ${entry.version}`,
       ...(entry.answer.state==='linked'?[`答案册编号 ${entry.answer.resourceId} · SHA-256 ${entry.answer.version}`]:[]),

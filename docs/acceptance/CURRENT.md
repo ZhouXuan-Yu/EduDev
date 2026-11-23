@@ -4,6 +4,8 @@
 
 模考修订覆盖同任务内的只读定位、局部差异、教师决定前无版本写入、断点后再确认、拒绝、来源或版本变化、许可边界及停止。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-从对话精确修订目录)
 
+模考 PDF 页码专项核对真实扫描与控制缺页样本，确认工作台及 Word／PDF 交付均保留警示。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
+
 模考 Word／PDF 接续从真实教学文件工作台操作。检验冲突后原 Word 保留、冷启动后失效来源被拦截、原任务只补 PDF、旧 PDF 目标不被覆盖及重启读回。 [专项验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
 
 上海模考目录验收核对真实应用中的导入、原件与答案册身份、对话与工作台任务关联、目录历史预览、恢复时来源与许可、跨会话拒绝和冷启。Word/PDF 目录完成专项验证。原件 ZIP 已核对许可、原始字节、分离目录、拒绝与冷启恢复。缺页、扫描和分栏继续专项。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考成果工作台与目录版本)

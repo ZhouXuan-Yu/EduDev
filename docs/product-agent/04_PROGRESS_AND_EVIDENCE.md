@@ -626,3 +626,23 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-resume`。最终专项日志为 `resume-ship-retest.log`，报告为 `mock-exam-resume-2eaC3s/report.json`。同目录 `durable-readback.log` 核对计划版本仍为 1，整包保存条件有实际读回凭证，教师最终审查仍待确认。保留历史失败记录，覆盖错误提示刷新丢失、模型未收到明确续做绑定、拒绝改名后意图错误保留、测试指向构建尚未生成的目录及一次 Playwright 调试连接异常。验收窗口使用独立资料库，启动、构建核对和步骤保存在 `manual-phase4-mock-exam-resume`。
 
 模考 Word／PDF 原任务续做 **已实现**。真实资料验收已准备一份四页杨浦区扫描卷与保留原件的三页缺页对照，本地 OCR 分别处理了四页和三页。继续核对资料库和汇编的缺页、分栏、公式与图表结果。真实模型按自然语言处理该续做路径和老师正式体验仍待验。
+
+## Phase 4.3 模考原件页码核对
+
+真实资料库导入的四页扫描和同源三页对照均可读回原件摘要。本地 OCR 将实存页分别处理为 4/4 和 3/3。新版汇编另外核对印刷页码，前者页数一致，后者提示疑缺第 2 页。题目结构分别留下 18 和 15 处待核，缺答案和许可待核单列。目录确认后生成的 Word 和 PDF 均读回同一缺页提醒。来源页回执变化会使带旧提示的目录拒绝确认。旧目录和旧生成文件可以继续读取，无数据库迁移。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-page-evidence` | 通过，含 TypeScript 检查。主进程 SHA-256 为 `5738e17779ba4dff9ecfe214479d63d10feaa03ef8d9f84fc645c60700250de7`。 |
+| `node scripts/education/mock-exam-page-evidence.mjs` | 7/7，覆盖原卷、缺页、矛盾、重号、正文分数、解析未就绪和超窗口。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| `node scripts/education/mock-exam-delivery-resume-electron.mjs` | 旧目录兼容性 4/4，在同一任务补齐 PDF，旧 Word 保留。 |
+| 固定验收目录 `run-page-evidence-export.mjs` | 真实 PDF 导入产物冷启后从小智生成目录，通过 UI 核对两种页码结果，确认收录后套用一次整包确认。真实 DOCX XML 与 PDF 文本包含缺页提醒，按 SQLite 逐一核对生成文件的 SHA-256。合成模型响应，付费请求 0。 |
+| `source-evidence-compatibility.log` | 同一源回执变化后拒绝新目录的旧提示，旧目录无页码字段仍可读回。 |
+| `run-page-readback-ui.mjs` | 冷启动后按目录编号从教学工作台打开已确认版，1366×768 和 1920×1080 都显示疑缺第 2 页。证据为 `page-readback-ui.log` 与 `workbench-cold-*.png`。 |
+| `npm audit --omit=dev --json` | 原有依赖告警 20 项（2 项 high），无依赖变更。 |
+
+证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-quality`。正式专项报告为 `verified-wzIH9I/result.json`，同目录保存双尺寸截图、真实输出与 SQLite。手动窗口和步骤位于 `manual-phase4-mock-exam-quality`。保留首次导入后的会话同步等待、调试脚本重复点击提示等失败日志，已用冷启动复测实际入口。
+
+模考原件页码核对 **已实现**。印刷页码缺乏互证或互相矛盾时提示待核。真实样本仍观察到题号范围识别合并、几何图标记混入正文。原件页回执保留了封面 2024 学年度及日期，当前目录使用的首个索引片段从题干开始，因而未呈现与文件名 2025 届的区别。证据为 `metadata-source-gap.log`，继续复核复杂版式、公式、阅读顺序和元数据。

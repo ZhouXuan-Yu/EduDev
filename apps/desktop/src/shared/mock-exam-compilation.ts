@@ -11,12 +11,21 @@ export type MockExamMetadata={district:typeof SHANGHAI_DISTRICTS[number]|null;ye
   subject:typeof MOCK_EXAM_SUBJECTS[number]|null;grade:typeof MOCK_EXAM_GRADES[number]|null;round:typeof MOCK_EXAM_ROUNDS[number]|null};
 export type MockExamPermission='unknown'|'local_only'|'excluded';
 export type MockExamAnswerPermission={resourceId:string;version:string;pairRevision:number;permission:MockExamPermission};
+export type MockExamPageEvidence={state:'unverified';physicalPages:number}
+  |{state:'count_matches';physicalPages:number;printedPages:number}
+  |{state:'possible_missing';physicalPages:number;printedPages:number;possibleMissingPages:number[]};
 export type MockExamEntry={resourceId:string;version:string;title:string;evidenceHash:string;metadata:MockExamMetadata;
   inferred:Partial<Record<keyof MockExamMetadata,'原文件名称'|'原件正文'|'文件名与正文'|'老师核对'>>;
   conflicts:(keyof MockExamMetadata)[];copies:number;include:boolean;permission:MockExamPermission;answerPermission?:MockExamAnswerPermission;
-  structure:{state:'unavailable'|'partial'|'parsed';pages?:number;processed?:number;held?:number};
+  structure:{state:'unavailable'|'partial'|'parsed';pages?:number;processed?:number;held?:number;pageEvidence?:MockExamPageEvidence};
   answer:{state:'missing'|'linked'|'stale'|'embedded';resourceId?:string;version?:string;title?:string;pairRevision?:number};
 };
+export function mockExamPageEvidenceLabel(evidence:MockExamPageEvidence) {
+  if(evidence.state==='unverified')return `文件包含 ${evidence.physicalPages} 页，整卷页码待核对`;
+  if(evidence.state==='count_matches')return `文件 ${evidence.physicalPages} 页，与识别到的印刷总页数一致`;
+  const missing=evidence.possibleMissingPages;
+  return `疑似缺页。文件 ${evidence.physicalPages} 页，印刷总页数 ${evidence.printedPages}${missing.length&&missing.length<=8?`，疑缺第 ${missing.join('、')} 页`:''}。请对照原件。`;
+}
 export type MockExamCatalogSummary={schemaVersion:typeof MOCK_EXAM_SCHEMA;id:string;runId:string;taskId:string;title:string;
   revision:number;state:'draft'|'confirmed';count:number;digest:string};
 export type MockExamCatalog={summary:MockExamCatalogSummary;scope:MockExamScope;entries:MockExamEntry[];unlinkedAnswers:number;limited:boolean;restoredFrom?:number};

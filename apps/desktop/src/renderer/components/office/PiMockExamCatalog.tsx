@@ -5,7 +5,7 @@ import {DisclosureCard} from '../ui/DisclosureCard';
 import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
-import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,
+import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamPageEvidenceLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
@@ -145,6 +145,7 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
               <span>{structure[entry.structure.state]}
                 {entry.structure.pages?(' '+entry.structure.processed+'/'+entry.structure.pages+' 页'):''}
                 {entry.structure.held?(' · '+entry.structure.held+' 处待核'):''} · {answers[entry.answer.state]} · {permissions[edit.permission]}</span>
+              {entry.structure.pageEvidence&&<span data-testid="mock-exam-page-evidence">{mockExamPageEvidenceLabel(entry.structure.pageEvidence)}</span>}
               {entry.copies>1&&<span>{entry.copies} 份同内容文件已合为一条</span>}
               {entry.answer.title&&<span>答案册　{entry.answer.title} · {permissions[mockExamAnswerPermission(entry,edit.answerPermission)?.permission??'unknown']}</span>}
               {!edit.include&&<span>未收录</span>}

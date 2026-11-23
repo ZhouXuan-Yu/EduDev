@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+Phase 4.3 已用真实扫描验证疑似缺页、原件读回及 Word／PDF 警示。继续分栏、公式、题目识别及元数据质量。 [页码证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
+
 Phase 4.3 已接通年度目录的工作台、任务定位、历史、恢复与原对话精确修订。Word、PDF 和原件 ZIP 可保存，Word／PDF 部分保存后可沿原任务续做。继续真实复杂 PDF 质量专项。 [进度和证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
 
 D3 完成 Phase 0–3 个人版、Phase 4.1 组卷和 Phase 4.2 讲义工程路径。讲义支持对话精准修改、老师核对应用、单独确认版本、历史恢复及学生和教师版 Word。继续 Phase 4.3 上海各区模考资料和年度汇编。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
