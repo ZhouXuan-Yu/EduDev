@@ -110,7 +110,9 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
   current(row,signal);
   if(workspaceHash(authorizedWorkspace(root,options.dataRoot))!==row.workspaceHash)throw new Error('permission_denied');
   if(!compatible(root,row))throw new Error('conflict');
-  fs.linkSync(temporary,target(root,row));fs.unlinkSync(temporary);
+  try{fs.linkSync(temporary,target(root,row));}
+  catch(error){if((error as NodeJS.ErrnoException).code==='EEXIST')throw Error('conflict');throw error;}
+  fs.unlinkSync(temporary);
  }
  function outputMatches(root:string,row:PrivateOfficeArtifact){
   const destination=target(root,row);

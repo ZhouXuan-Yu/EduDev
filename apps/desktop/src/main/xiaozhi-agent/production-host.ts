@@ -97,6 +97,7 @@ import {isPaperOfficeDraft,isPresentationDraft,isTeachingHandoutOfficeDraft} fro
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
 import {PAPER_TOOLS,validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
 import {TaskAdmissionError} from './tasks/admission-error';
+import {unwrapTaskArguments} from './tasks/tool-envelope';
 import {createPracticeReviewCoordinator} from '../education/practice-review-coordinator';
 import {validPracticeReview,type PracticeReviewDecision,type PracticeReviewResult,type PracticeReviewSummary} from '../../shared/practice-review';
 import {validBrowserCaptureInput,validBrowserCapture,type BrowserCaptureResult} from '../../shared/xiaozhi-browser-capture';
@@ -269,7 +270,7 @@ type Active = {
   toolGovernance?: RunToolGovernance;
   skillPrivateContext?: SkillPrivateContext;
   legacyApprovalId?: string;
-  hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; mockExamExportIntent?:MockExamExportIntent; resumeDeliveryId?:string; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; lifecycleWork?:ReturnType<typeof createLifecycleWorkTracker>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+  hasToolEvents?:boolean; paperExportIntent?:PaperExportIntent; mockExamExportIntent?:MockExamExportIntent; resumeDeliveryId?:string; mockExamDeliveryResume?:true; classroomPlan?:ClassroomPlanStart; computationResults?:ReturnType<typeof createComputationResults>; computationScope?:Awaited<ReturnType<ReturnType<typeof createManagedTools>['freeze']>>; unfinishedThinkingTask?:string; teachingTaskReference?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; lifecycleWork?:ReturnType<typeof createLifecycleWorkTracker>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -743,7 +744,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     workspace:async()=>(await host.resolveFileWorkspace(id)).path,
     fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,
     changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
-  const deliveries=createDeliveryCoordinator({checkLessonSource:async(_id,source)=>{if(source.question)await readQuestionContextSource(store,source.question);},state:store.xiaozhiState.deliveries,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,
+  const deliveries=createDeliveryCoordinator({checkMockExamSource:mockExamOffice.verify,checkLessonSource:async(_id,source)=>{if(source.question)await readQuestionContextSource(store,source.question);},state:store.xiaozhiState.deliveries,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,
     preflight:(...args)=>preflight(...args),
     checkReceipt:(...args)=>checkReceipt(...args),
     inspectionRules:async(id,runId,callId)=>{await store.xiaozhiState.inspections.migrate();const report=await store.xiaozhiState.inspections.call(id,runId,callId);return report?.files.filter(f=>f.rules).map(f=>({path:f.path,rules:structuredClone(f.rules!)}));},
@@ -1092,6 +1093,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText},
       skillCreatorTools: skillOwner ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
+      boundMockExamBundleId:owner?.mockExamDeliveryResume?owner.resumeDeliveryId:undefined,
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId,createScienceLessonSource(store,observedQuestions)),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
@@ -1315,7 +1317,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         workspace: () => host.resolveFileWorkspace(id),
       }) : undefined;
       const taskRuntime=run.task&&run.publisher?createTaskPlanRuntime({sql:store.xiaozhiState.sql,taskId:run.task.id,publisher:run.publisher,contextSanitizer:()=>createStudentContextSanitizer(store),
-        planning: planningRuntime,hasSourceSubtasks:taskSourceSubtasks(run.task).length>0,
+        planning: planningRuntime,boundMockExamBundleId:run.mockExamDeliveryResume?run.resumeDeliveryId:undefined,hasSourceSubtasks:taskSourceSubtasks(run.task).length>0,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),trustedMcpNames:new Set(base.mcpTools?.map(t=>t.name)),
         resources:createTaskResources({sessionId:id,resolveFile:base.fileReferences?.resolve,workspace:()=>host.resolveFileWorkspace(id),officeOutput:()=>resolvePaperOutput(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
         proofs:async()=>{const currentResults=run.results,currentRead=run.readResults;
@@ -1355,7 +1357,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           signal.throwIfAborted();
           run.toolGovernance = createRunToolGovernance({owner: {...run.publisher!.owner, taskId: run.task!.id}, records,
             assertEffect: (callId, name, receipt) => store.xiaozhiState.eventJournal.assertToolEffect(run.publisher!.owner, callId, name, receipt),
-            preflight: (callId, name, input, enforce) => planningRuntime?.before(callId, name, input, enforce) || Promise.resolve(),
+            preflight: async (callId, name, input, enforce) => {
+              if (!enforce && name==='office_deliver_files' && run.mockExamDeliveryResume && run.resumeDeliveryId)
+                await deliveries.validateMockExamResumeInput(id,run.resumeDeliveryId,unwrapTaskArguments(input).input);
+              return planningRuntime?.before(callId, name, input, enforce);
+            },
             registry: store.xiaozhiState.capabilities, current: () => !closing && active.get(id) === run && !run.stopped,
             mcp: name => mcp.describeTool(name), task: async (callId, currentPlan = false) => {
               const state = createTaskState(store.xiaozhiState.sql, {sanitize: async text => text});
@@ -2156,7 +2162,19 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const interruptClaim=()=>closing?Promise.resolve():trackModelWrite(()=>store.xiaozhiState.interruptCommand(input.commandId,id,hash));
       try {
         const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
-        if(input.resumeDeliveryId){const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));if(bundle.continuation||!['partial','interrupted','failed','conflict'].includes(bundle.state))throw Error('command_conflict');}
+        let deliveryContinuation:XiaozhiStartInput['continueTask'];
+        if(input.resumeDeliveryId){
+          const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));
+          if(bundle.continuation||!['partial','interrupted','failed','conflict'].includes(bundle.state))throw Error('command_conflict');
+          if(bundle.mockExam){
+            const version=await phase(()=>deliveries.prepareMockExamResume(id,bundle.id,run.abort.signal));
+            const task=await phase(()=>tasks.committed(id));
+            if(!task||version!==`${task.id}:${task.requirementsVersion}`)throw Error('command_conflict');
+            deliveryContinuation={taskId:task.id,requirementsVersion:task.requirementsVersion};
+            await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,deliveryContinuation));
+            run.mockExamDeliveryResume=true;
+          }
+        }
         if(input.classroomPlan?.mode==='generate')await phase(()=>store.xiaozhiState.classroomPlans.assertStart(id,input.classroomPlan as Extract<ClassroomPlanStart,{mode:'generate'}>));
         if(input.classroomPlan?.mode==='outline'&&input.classroomPlan.realign){const source=input.classroomPlan.realign;await phase(()=>store.xiaozhiState.classroomPlans.readLessonForRealignment(id,source));}
         if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
@@ -2214,7 +2232,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
-        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask,allowNaturalAmendment));
+        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,deliveryContinuation??input.continueTask,allowNaturalAmendment));
         else await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
         run.done = observeLifecycle('host_execute',()=>execute(id, input.prompt.trim(), run, settings),{runId:run.runId});

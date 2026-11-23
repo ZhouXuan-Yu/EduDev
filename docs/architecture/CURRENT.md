@@ -4,6 +4,8 @@
 
 模考修订由 Pi 读取当前目录并提交定向提案。`mock_exam_edit_reviews` 保存提案与审阅结果，Journal 依原任务 Run、generation、调用及摘要核对副作用。应用追加原目录表的新版本并同事务记录决定。 [修订合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-从对话精确修订目录)
 
+模考 Word／PDF 接续通过已有 Task、Delivery、Office 和原件验证服务关联原任务版本。写入前拒绝替换已保存的文件，允许补齐的文件沿原计划获得新的老师确认。 [续做合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考文件组续做)
+
 模考原件包沿授权会话目录写入 ZIP，使用源文件摘要复核、独占暂存和按确认版本去重。`mock_exam_archives` 保存相对文件名和哈希，旧成果表沿用既有格式。 [原件包合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件包)
 
 模考 Word/PDF 草稿由宿主用当前确认版本编译，复用 Office 写入与账本。来源会话、正文摘要与原件版本在审批和写入前复核。 [模考导出合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-目录与汇编文件交付)

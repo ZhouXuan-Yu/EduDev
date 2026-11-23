@@ -16,7 +16,7 @@ import {acquireToolResource} from '../tools/resource-lock';
 import type {createTaskPlanningRuntime} from './planning-runtime';
 
 type Publisher=ReturnType<typeof createEventPublisher>;
-type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>;contextSanitizer?:()=>Promise<(text:string)=>Promise<string>>;planning?:ReturnType<typeof createTaskPlanningRuntime>;hasSourceSubtasks?:boolean};
+type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>;contextSanitizer?:()=>Promise<(text:string)=>Promise<string>>;planning?:ReturnType<typeof createTaskPlanningRuntime>;hasSourceSubtasks?:boolean;boundMockExamBundleId?:string};
 function normalizeTaskPlanInput(value:unknown):unknown{
  if(!value||typeof value!=='object'||Array.isArray(value))return value;
  const plan=value as Record<string,unknown>;
@@ -159,8 +159,9 @@ export function createTaskPlanRuntime(options:Options){
    // Known model conflicts are refused before a task checkpoint, not disguised
    // as a failed critical journal write.
    if(!human&&!actual.criterionIds.some(id=>current.criteria.find(c=>c.id===id)?.resource===resource))throw new TaskAdmissionError('task_tool_scope');
-    await preflight(()=>state().previewAdmission(owner,current.id,current.revision,stepId,callId,tool,taskHash([tool,input]),resource,human,human&&['local_write','external_effect'].includes(manifest.effect),safeAfterVerified));
-    await publisher.checkpointTask(async work=>{const tasks=state(inline(work)),view=await tasks.get(current.id);if(!view)throw Error('task_missing');return tasks.admit(owner,view.id,view.revision,stepId,callId,tool,taskHash([tool,input]),resource,human,human&&['local_write','external_effect'].includes(manifest.effect),safeAfterVerified);});fence();
+    const resumeBundleId=tool==='office_deliver_files'&&input.resumeBundleId===options.boundMockExamBundleId?options.boundMockExamBundleId:undefined;
+    await preflight(()=>state().previewAdmission(owner,current.id,current.revision,stepId,callId,tool,taskHash([tool,input]),resource,human,human&&['local_write','external_effect'].includes(manifest.effect),safeAfterVerified,resumeBundleId));
+    await publisher.checkpointTask(async work=>{const tasks=state(inline(work)),view=await tasks.get(current.id);if(!view)throw Error('task_missing');return tasks.admit(owner,view.id,view.revision,stepId,callId,tool,taskHash([tool,input]),resource,human,human&&['local_write','external_effect'].includes(manifest.effect),safeAfterVerified,resumeBundleId);});fence();
     if(groupedSourceRead)sourceReadsAdmitted=true;
    });
   },

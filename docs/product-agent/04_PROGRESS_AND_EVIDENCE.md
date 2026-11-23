@@ -608,4 +608,21 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 
 专项验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-archive`。已启动隔离验收窗口，`manual-phase4-mock-exam-archive` 保存 CMD、步骤和窗口构建核对。对话验收使用本地模拟服务，0 付费请求。直接在目录打包无需模型。生产依赖未变，审计保留原有 20 条报告，其中 2 条 high。
 
-原件 ZIP **已实现**。单包最大 64 MB，超出可按学科、年级或考试轮次分批。正式真实样本的扫描、缺页、分栏、公式和图表质量，及 Office 整包部分保存后的原包续做仍在 Phase 4.3。
+原件 ZIP **已实现**。单包最大 64 MB，超出可按学科、年级或考试轮次分批。正式真实样本的扫描、缺页、分栏、公式和图表质量仍在 Phase 4.3。
+
+## Phase 4.3 模考文件组续做
+
+老师可从「教学文件 → 整包任务」选择部分保存的模考 Word／PDF。宿主沿已有任务及要求版本核对确认目录、来源和已保存文件。原 Word 保留，缺失 PDF 可提交不同文件名并单独确认。来源或既有文件变化时，工作台保留当前详情并显示原因。继续使用既有任务、整包和 Office 文件账本，无数据库迁移。返回之前的构建可继续读取原目录及已生成文件，续做入口随代码版本回退。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-resume-ship` | 通过，含 TypeScript 检查。主进程 SHA-256 为 `4f49adb3593d1396406433ed59da39a7d94b841fe205f03a847f631ad2dfd706`。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| `node scripts/xiaozhi-agent/pi-task-store-smoke.mjs` | 最终构建 11/11。 |
+| `node scripts/education/mock-exam-delivery-resume-electron.mjs` | 最终构建 4/4。实际磁盘目标占用产生部分保存，重启后拒绝变化的来源，拒绝改名已保存 Word 后同轮只补 PDF，冷启动读回两份文件与父子文件组。核对原 Word 摘要与修改时间，原占用文件字节保持一致。两种尺寸截图随报告。付费请求 0。 |
+| `npm audit --omit=dev --json` | 原有依赖告警 20 项（2 项 high）。此切片没有依赖变动。 |
+
+证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-resume`。最终专项日志为 `resume-ship-retest.log`，报告为 `mock-exam-resume-2eaC3s/report.json`。同目录 `durable-readback.log` 核对计划版本仍为 1，整包保存条件有实际读回凭证，教师最终审查仍待确认。保留历史失败记录，覆盖错误提示刷新丢失、模型未收到明确续做绑定、拒绝改名后意图错误保留、测试指向构建尚未生成的目录及一次 Playwright 调试连接异常。验收窗口使用独立资料库，启动、构建核对和步骤保存在 `manual-phase4-mock-exam-resume`。
+
+模考 Word／PDF 原任务续做 **已实现**。真实资料验收已准备一份四页杨浦区扫描卷与保留原件的三页缺页对照，本地 OCR 分别处理了四页和三页。继续核对资料库和汇编的缺页、分栏、公式与图表结果。真实模型按自然语言处理该续做路径和老师正式体验仍待验。

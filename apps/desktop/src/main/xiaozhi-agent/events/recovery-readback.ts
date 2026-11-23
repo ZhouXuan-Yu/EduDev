@@ -24,6 +24,7 @@ import {EXPORT_MOCK_EXAM,MOCK_EXAM_OFFICE_SCHEMA} from '../../../shared/mock-exa
 import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import {isTeachingHandoutOfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import {createDeliveryState,deliveryHash} from '../delivery-state';
+import {mockExamDelivery} from '../mock-exam-delivery-resume';
 import {createDeliveryReadback} from '../verification/delivery-readback';
 
 /** Reuse independent teacher-confirmed ledger/disk readback. No grants are revived. */
@@ -37,8 +38,11 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
   if(tool===PROPOSE_MOCK_EXAM_EDIT)return state.sql?readMockExamEditEffect(state.sql,owner,callId):'uncertain';
   if(acquisitionReader){const checked=await acquisitionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(executionReader){const checked=await executionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
-  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document',EXPORT_TEACHING_HANDOUT,EXPORT_MOCK_EXAM].includes(tool))return'not_checked';
+  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files',EXPORT_TEACHING_HANDOUT,EXPORT_MOCK_EXAM].includes(tool))return'not_checked';
   try{
+   const continuation=tool==='office_deliver_files';
+   const restoredBundle=continuation&&state.sql?await createDeliveryState(state.sql).get('xidelivery_'+deliveryHash([owner.sessionId,owner.runId,callId])):null;
+   if(continuation&&(!restoredBundle?.parentId||!await mockExamDelivery(restoredBundle,state.artifacts)))return'not_checked';
    const workspace=async()=>{
     const grant=tool==='office_create_document'?await state.persistent.paperOutput(owner.sessionId):null;
     const legacy=grant?null:await state.persistent.workspace(owner.sessionId);
@@ -48,12 +52,12 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
     return state.dataRoot?authorizedWorkspace(root,state.dataRoot()):root;
    };
    const expectedWorkspace=await workspace();
-   if(tool===EXPORT_TEACHING_HANDOUT||tool===EXPORT_MOCK_EXAM){
-    const mockExam=tool===EXPORT_MOCK_EXAM;
+   if(tool===EXPORT_TEACHING_HANDOUT||tool===EXPORT_MOCK_EXAM||tool==='office_deliver_files'){
+    const mockExam=continuation||tool===EXPORT_MOCK_EXAM;
     const files={sessionId:owner.sessionId,runId:owner.runId,current:()=>true,workspace:async()=>{
      const current=await workspace();if(current!==expectedWorkspace)throw Error('evidence_missing');return current;
     },fileLabel:async(_tool:string,label:string)=>label,changes:state.changes,artifacts:state.artifacts};
-    const row=await state.artifacts.call(owner.sessionId,owner.runId,callId);
+    const row=continuation?null:await state.artifacts.call(owner.sessionId,owner.runId,callId);
     if(row){
      if(row.state!=='saved'||(mockExam?row.draft.schemaVersion!==MOCK_EXAM_OFFICE_SCHEMA:!isTeachingHandoutOfficeDraft(row.draft)))return'uncertain';
      const binding=await createEffectReadback(files)(callId,'office_create_document',
@@ -61,10 +65,10 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
      const read=await binding.read();
      return read.version===binding.version&&read.digest===binding.digest?'matched':'uncertain';
     }
-    if(!state.sql)return'uncertain';
+    if(!state.sql)return continuation?'not_checked':'uncertain';
     const deliveries=createDeliveryState(state.sql);
-    const bundle=await deliveries.get('xidelivery_'+deliveryHash([owner.sessionId,owner.runId,callId]));
-    if(!bundle||bundle.files.length!==2||bundle.files.some(file=>file.kind!=='office'||file.carried||!file.draftId))return'uncertain';
+    const bundle=restoredBundle??await deliveries.get('xidelivery_'+deliveryHash([owner.sessionId,owner.runId,callId]));
+    if(!bundle||bundle.files.length!==2||bundle.files.some(file=>file.kind!=='office'||!continuation&&file.carried||!file.draftId))return'uncertain';
     const saved=await Promise.all(bundle.files.map(file=>state.artifacts.get(file.draftId!)));
     if(mockExam){
      const sources=saved.flatMap(item=>item?.draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA?[item.draft.mockExamSource]:[]);

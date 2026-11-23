@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "9b10d8851aa3114479dc15e1b8872f12dbe4c6fba8bedb572ae1d0e845e30226",
+  "sourceHash": "a42ace308b1e3ff10a059fb79fa7c278d8ca1132588481e2fe35b456e298dcfe",
   "sources": [
     {
       "file": "package-lock.json",
@@ -816,7 +816,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "89014dc3353712c6b1c2ef101b8ea4921e6702ca4956b7ad6f8132ae0e243b2c"
+      "sha256": "0dc6f91a5ac885f27f3dbb5b700b433e5261b27c2407fedf1a10ad6737521338"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1036,7 +1036,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/delivery-coordinator.ts",
-      "sha256": "b9843ddc42d4dd3642f2a179b1c3d59dca55d79342ed2c42dcd8058098a34fa2"
+      "sha256": "c8318da874d5c04c96043819e0dcb754de3a3d357075df197a5950eb244d74e9"
     },
     {
       "file": "src/main/xiaozhi-agent/delivery-final.ts",
@@ -1140,7 +1140,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/events/recovery-readback.ts",
-      "sha256": "7b9a5ea51a7b0d5c22e13dfeea17e4faad23bad930360403e2d117d1da26ec27"
+      "sha256": "3bd315ca33eb11ec5e6187022abd8148d979177c2e857d5c2a5bcb896d5fb58e"
     },
     {
       "file": "src/main/xiaozhi-agent/events/terminal-cancellation.ts",
@@ -1271,6 +1271,10 @@
       "sha256": "c667a50e06e59114c7341294ddb803ec0339d361775d76a3a5bd8d8620b9c85f"
     },
     {
+      "file": "src/main/xiaozhi-agent/mock-exam-delivery-resume.ts",
+      "sha256": "ad08cd5b36614b8860ff806e044c13ec87d7877d4e58f8018c643bf5e07476b5"
+    },
+    {
       "file": "src/main/xiaozhi-agent/model-capabilities.ts",
       "sha256": "8de00516cc82d39c828f9a8816db72b3df4c68b4a7b6d2153420b8581ecfd3ef"
     },
@@ -1340,7 +1344,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-service.ts",
-      "sha256": "dddc45099563a36ba5782d182a7cacee4992078ad30475fc001bf82e4782267d"
+      "sha256": "f1fe5c6ab39dd701b070d858da72a84dc8946b5f34672ae0fbbd59846e2d0444"
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-state.ts",
@@ -1512,7 +1516,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "cec88b31d80200d23291026533062b5fb5753952f406783197f2557127190d5d"
+      "sha256": "9dca363895f2a958f2553581571a4668bbe650fdd6260690147a9a9023e333db"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1548,7 +1552,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "6fa7f9d291a071a89d6f840d2ca73d301130ad7f76f75e3dccda4e8c0c8050f2"
+      "sha256": "51695988525664701adcc7d34a7af186690002b845fe6e84aae33b3193d3c639"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1724,7 +1728,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/plan-runtime.ts",
-      "sha256": "6f8c7810ed00a6cd64614d05c1590ba4b6346fd34a047c9563c00dc7af55691f"
+      "sha256": "6577da1c34131ad90c6f2bda3d7d903cc642768c43d03227559fbf4f625b53a1"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/planning-policy.ts",
@@ -1760,7 +1764,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/task-state.ts",
-      "sha256": "8247b28c5d1270e2a263b7ee07d2e590aae402e7ad3984b0fc259eb7fd6c4cb6"
+      "sha256": "e379128127aeab45ab177abdb9182c195173deb15ad7656d069868c2a218b4df"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/teacher-actions.ts",
@@ -2640,7 +2644,7 @@
     },
     {
       "file": "src/shared/xiaozhi-delivery.ts",
-      "sha256": "ecd8adba2b193cc520069a6c538f16f24c10ad624dece9f65b6c92543e38ce7f"
+      "sha256": "6110438e0997bdbb676874f89ca9892cdc43c05d9ae9bef81b315aa6043d41ae"
     },
     {
       "file": "src/shared/xiaozhi-documents.ts",

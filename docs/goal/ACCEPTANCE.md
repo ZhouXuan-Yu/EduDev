@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考文件组续做核对实际文件占用、部分保存、冷启变化拦截、原任务、重新确认、两份文件的独立摘要及再次冷启。 [专项验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
+
 原件 ZIP 核对许可分离、入包与排除明细、原件摘要、冷启补记和重复确认。 [原件包验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件包)
 
 模考目录 Word/PDF 核对指定目录和格式、确认前无新文件、实际 A4 内容、许可和答案状态、来源变更、拒绝及冷启读回。 [导出验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-word-和-pdf-模考目录)

@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考 Word／PDF 文件组沿老师选中的原任务和要求版本续做。宿主核对原件、已保存文件和历史调用，继续使用现有整包确认与文件账本。 [续做合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考文件组续做)
+
 原件 ZIP 从确认版预览经老师提交。独立答案册许可绑定其文件版本与配对修订，历史恢复沿当前同源许可。旧目录默认待核对。 [原件包合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件包)
 
 对话修订以同会话当前目录和实读条目为范围。原轮成功结算后老师决定是否应用，应用与新待核对版本在同一事务中保存。 [修订合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-从对话精确修订目录)

@@ -177,6 +177,7 @@ export interface PiXiaozhiOptions {
   attachmentTools?: ToolDefinition[];
   attachmentOcr?: boolean;
   publicImages?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ReturnType<typeof createPublicImageRuntime>;
+  boundMockExamBundleId?:string;
   deliveryTools?: (wait: (action: () => Promise<boolean>) => Promise<boolean>) => ToolDefinition[];
   officeArtifactTools?: (wait: (action: () => Promise<boolean>) => Promise<boolean>) => ToolDefinition[];
   onInstructionApplied?: (id: string) => Promise<void>;
@@ -866,6 +867,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.fileReferences)prompt+='\n文件工具的source和entries[].name可能是xiaozhi-file://宿主文件引用，可原样传入后续工具的path或复制source；sourceLabel和labels是脱敏显示名称。引用不授予权限，也不能代替version；旧引用过期时重新列目录获取当前引用。';
   if(options.officeTextTools)prompt+='\n需要数值联动、滑块、Canvas或动画的通用教学HTML时直接office_create_text创建完整自包含页面；Anatomy仅用于真实结构装配图，不强制把物理实验或所有科普内容转为40至80实体。HTML用saved_text，PPT用office_create_document并登记saved_office；要求两份文件时分别实际交付。';
   if(options.officeArtifactTools)prompt+='\n教师要求准确PPT页数、讲解备注或学生投影与答案分开时，office_create_document采用xiaozhi.presentation-draft.v1，每个section一页且含稳定pageId和speakerNotes。封面也算一页，讲解与答案放备注，不能把每个段落自动拆页。修改已保存的本产品PPT须实读当前版本并沿parentArtifactId另存；未改页/备注保留。含公式DOCX/PDF用office-draft.v2，含公式精确页数PPT用presentation-draft.v2，正文/表格以$...$包裹LaTeX，标题普通文字。复用本地公式排版图片并说明公式不可直接编辑，其余PPT正文保持可编辑；不把LaTeX原文当排版结果。';
+  if(options.boundMockExamBundleId)prompt+='\n教师已选择续做模考文件组 '+options.boundMockExamBundleId+'。沿已保存计划直接调用 office_deliver_files，resumeBundleId 必须为该组；目标占用时仅在 renames 为未完成文件提供同格式的新文件名。核对并保留已经保存的文件，等待教师确认。';
   if(options.deliveryTools)prompt+='\n同一任务需要HTML与PPT等多份文件时优先office_deliver_files，一次提交整包草稿并等待一次真实审阅确认，不要拆成逐文件重复确认。整包计划登记saved_bundle，target=current；部分失败只报告实际已保存和未完成部分，后续新任务用resumeBundleId续做，不能重写成功文件。';
   prompt+='\nexec_command通过受控AppContainer在本会话文件区的执行副本中运行PowerShell脚本，用于计算与文件加工，workdir可指定子目录。脚本结束后主进程按当前Grant及原文件版本提交变动，每次shell独立。实际网络需通过Invoke-XiaozhiRequest交给主进程，分别核对目标、方法和外发数据范围。依赖准备使用environment_inspect及已授固定recipe，环境约束失败会返回类型化原因。终端调用不需构造教学保存计划，正式产物仍须原交付工具验证，exitCode=0仅说明命令退出成功。原始资料、学生图片与整库不得自动上传。';
   names.push('exec_command');

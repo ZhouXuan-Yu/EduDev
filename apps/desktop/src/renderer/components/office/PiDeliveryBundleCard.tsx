@@ -26,9 +26,9 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
  async function resume(){
   if(lock.current||running)return;lock.current=true;update({busy:true,error:''});
   try{
-   const result=await window.omniEdu?.startXiaozhi({sessionId,resumeDeliveryId:delivery.id,commandId:`xicmd_${crypto.randomUUID()}`,prompt:sourceChanged?'原题已变化，请重新完整读取同一原题的当前版本，按原备课目标更新所有受影响成果，给新文件名前缀；保留旧文件，不沿旧题源快照续写。':`继续交付“${delivery.files.map(f=>f.path).join('、')}”这组教学文件，只续做未完成部分。已保存文件请核验并保留，重新审阅后保存。`});
+   const result=await window.omniEdu?.startXiaozhi({sessionId,resumeDeliveryId:delivery.id,commandId:`xicmd_${crypto.randomUUID()}`,prompt:sourceChanged?'原题已变化，请重新完整读取同一原题的当前版本，按原备课目标更新所有受影响成果，给新文件名前缀；保留旧文件，不沿旧题源快照续写。':delivery.mockExam?'续做这组模考目录，只补未保存的文件，保留之前保存的版本。':`继续交付“${delivery.files.map(f=>f.path).join('、')}”这组教学文件，只续做未完成部分。已保存文件请核验并保留，重新审阅后保存。`});
    if(!live.current)return;
-   if(!result?.ok){update({error:result?.error==='busy'?'该对话正在执行任务，请打开对话查看或停止后重试。':'续做尚未启动，请刷新整包状态后重试。'});await onRefresh();}else if(onResumeStarted)onResumeStarted();else await onRefresh();
+   if(!result?.ok){update({error:result?.error==='busy'?'该对话正在执行任务，请打开对话查看或停止后重试。':result?.error==='command_conflict'&&delivery.mockExam?'目录版本、已保存文件或原任务已变化，无法继续这组文件。':'续做尚未启动，请刷新整包状态后重试。'});await onRefresh();}else if(onResumeStarted)onResumeStarted();else await onRefresh();
   }catch{update({error:'续做状态未能确认，请刷新后检查。'});}finally{lock.current=false;update({busy:false});}
  }
  return <section className="pi-delivery-bundle" data-testid="pi-delivery-bundle" data-bundle-id={delivery.id} data-state={delivery.state} aria-label="整包教学文件">
@@ -44,9 +44,9 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
    {f.change&&<PiTextChangeCard bundled change={f.change} sessionId={sessionId} running={running&&pending&&!reviewInConversation} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
    {f.artifact&&<PiOfficeArtifactCard bundled artifact={f.artifact} sessionId={sessionId} running={running&&pending&&!reviewInConversation} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
    {!f.draftId&&<p>{f.path} · 未完成草稿提交</p>}
-   {f.error&&<p role="status">{f.error==='source_changed'?'题源已变化，此草稿没有继续保存。':f.deferred?'交互检查发现问题，此HTML尚未保存。':errors[f.error]??'此文件未确认完成，请检查后续做。'}</p>}
+   {f.error&&<p role="status">{f.error==='source_changed'?(delivery.mockExam?'目录或原件已变化，此文件没有继续保存。':'题源已变化，此草稿没有继续保存。'):f.deferred?'交互检查发现问题，此HTML尚未保存。':errors[f.error]??'此文件未确认完成，请检查后续做。'}</p>}
   </div>)}
-  {pending&&(reviewInConversation?<p>请打开原对话修改和确认这组草稿，保持当前审阅进度。</p>:<div className="pi-office-actions"><Button variant="primary" isDisabled={draft.busy||!running||!allReady} onPress={()=>void decide('approve')} data-testid="pi-delivery-approve">{deferred?`确认保存${delivery.files.length-deferred}份可用文件`:'确认保存整包'}</Button><Button variant="ghost" isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-delivery-reject">拒绝整包</Button></div>)}
+  {pending&&(reviewInConversation?<p>请打开原对话修改和确认这组草稿，保持当前审阅进度。</p>:<div className="pi-office-actions"><Button variant="primary" isDisabled={draft.busy||!running||!allReady} onPress={()=>void decide('approve')} data-testid="pi-delivery-approve">{deferred?`确认保存${delivery.files.length-deferred}份可用文件`:delivery.mockExam&&delivery.parentId?'确认保存未完成文件':'确认保存整包'}</Button><Button variant="ghost" isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-delivery-reject">拒绝整包</Button></div>)}
   {delivery.continuation?<div data-testid="pi-delivery-continuation"><p>后续整包：{deliveryLabels[delivery.continuation.state]}。原提交记录保留。</p>{onFollow&&<Button variant="ghost" onPress={()=>onFollow(delivery.continuation!.id)} data-testid="pi-delivery-follow">查看后续整包</Button>}</div>:delivery.continuedBy?<p>这组成果已在后续任务中完成。</p>:['partial','interrupted','failed','conflict'].includes(delivery.state)&&<Button variant="secondary" isDisabled={running||draft.busy} onPress={()=>void resume()} data-testid="pi-delivery-resume">{sourceChanged?'按最新原题重新整理':'续做未完成文件'}</Button>}
   {draft.busy&&<p role="status">正在提交…</p>}
   {draft.error&&<p role="alert">{draft.error}</p>}

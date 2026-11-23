@@ -7,7 +7,7 @@ export type DeliveryState='preparing'|'pending'|'approving'|'approved'|'executin
 export type DeliveryFile={fileId:string;kind:'text'|'office';path:string;draftId:string|null;carried:boolean;error?:string;deferred?:true;
  change?:XiaozhiChangeSummary;artifact?:OfficeArtifactSummary;currentVersion?:{artifactId:string;path:string;version:number}};
 export type DeliverySummary={schemaVersion:typeof DELIVERY_SCHEMA;id:string;runId:string;callId:string;revision:number;state:DeliveryState;
- taskVersion:string;files:DeliveryFile[];fingerprint:string;parentId?:string;continuedBy?:string;continuation?:{id:string;state:DeliveryState};lesson?:ScienceLessonSummary};
+ taskVersion:string;files:DeliveryFile[];fingerprint:string;parentId?:string;continuedBy?:string;continuation?:{id:string;state:DeliveryState};mockExam?:import('./mock-exam-export').MockExamOfficeSource;lesson?:ScienceLessonSummary};
 export type DeliveryDecision={schemaVersion:typeof DELIVERY_SCHEMA;sessionId:string;bundleId:string;revision:number;fingerprint:string;action:'approve'|'reject'};
 export type DeliveryResult={ok:true;value:DeliverySummary}|{ok:false;error:OfficeArtifactError};
 export const deliveryId=(v:unknown):v is string=>typeof v==='string'&&/^xidelivery_[a-f0-9]{64}$/.test(v);

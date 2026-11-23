@@ -13,6 +13,7 @@ import {bindGoalRequirements,goalFromSource,goalTaskKey,requireTaskGoal} from '.
 import {writeTaskCheckpoint, readTaskCheckpoint, type TaskCheckpointRef} from './checkpoints';
 import {validTaskPlanning, type TaskPlanning} from '../../../shared/xiaozhi-task-planning';
 import {evaluateTaskPlanning} from './planning-policy';
+import {mockExamResumeCalls} from '../mock-exam-delivery-resume';
 import {fileWasNotDispatched} from '../effects/non-dispatch';
 
 type Admission={runId:string;generation:number;callId:string;tool:string;stepId:string;planRevision:number;requirementsVersion:number;inputDigest:string;resource:string;criterionIds?:string[]};
@@ -56,12 +57,12 @@ function applyPlan(doc:TaskDocument,clean:TaskPlanProposal){
       doc.view.planning = clone(clean.planning);
     } else delete doc.view.planning;
 }
-function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope:boolean,humanEffect:boolean,safeAfterVerified:boolean,notDispatched:ReadonlySet<string>=new Set()){
+function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope:boolean,humanEffect:boolean,safeAfterVerified:boolean,accountedPriorEffects:ReadonlySet<string>=new Set()){
     const step=doc.view.steps.find(s=>s.id===stepId);if(!step||taskStepState(doc.view,stepId)==='waiting_dependency')throw Error('task_dependency_blocked');
     if(taskStepState(doc.view,stepId)==='verified'&&!safeAfterVerified)throw Error('task_step_already_verified');
     if(!step.criterionIds.some(cid=>{const criterion=doc.view.criteria.find(c=>c.id===cid)!;return humanScope&&criterion.kind==='human'||criterion.resource===resource&&toolKinds[criterion.kind]?.includes(tool);}))throw Error('task_tool_scope');
     const currentEffect=humanEffect||step.criterionIds.some(cid=>doc.view.criteria.find(c=>c.id===cid)?.kind.startsWith('saved_'));
-    const priorEffect=doc.admissions.some(a=>a.runId!==owner.runId&&a.resource===resource&&a.requirementsVersion===doc.view.requirementsVersion&&currentEffect&&effectful(a.tool)&&!notDispatched.has(JSON.stringify([a.runId,a.callId])));
+    const priorEffect=doc.admissions.some(a=>a.runId!==owner.runId&&a.resource===resource&&a.requirementsVersion===doc.view.requirementsVersion&&currentEffect&&effectful(a.tool)&&!accountedPriorEffects.has(JSON.stringify([a.runId,a.callId])));
     if(priorEffect)throw Error(step.criterionIds.some(cid=>doc.view.criteria.find(c=>c.id===cid)?.resource===resource&&doc.view.checks.some(k=>k.criterionId===cid&&k.state==='passed'))?'task_effect_already_saved':'task_effect_needs_recheck');
     if(humanScope&&humanEffect&&doc.view.criteria.some(c=>c.kind!=='human'&&c.resource===resource))throw Error('task_tool_scope');
     const admission:Admission={runId:owner.runId,generation:owner.generation,callId,tool,stepId,planRevision:doc.view.planRevision,requirementsVersion:doc.view.requirementsVersion,inputDigest,resource,criterionIds:[...step.criterionIds]};
@@ -72,10 +73,17 @@ function applyAdmission(doc:TaskDocument,owner:TaskOwner,stepId:string,callId:st
 /** Main-only authority. No model-facing tool or renderer may call evidence/confirm
  * directly. Production activation awaits the typed/runtime B2 adapter. */
 export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise<string>;recheck?:(task:TaskView)=>Promise<TaskVerification[]>;resultRecheck?:(candidate:import('../../../shared/xiaozhi-task').TaskCandidate,task:TaskView)=>Promise<TaskVerification>}){
- async function nonDispatchProofs(work:Sql,doc:TaskDocument,owner:TaskOwner,resource:string,stepId:string,humanEffect:boolean){
-  const proved=new Set<string>();
-  if(!humanEffect&&!doc.view.steps.find(step=>step.id===stepId)?.criterionIds.some(cid=>doc.view.criteria.find(criterion=>criterion.id===cid)?.kind.startsWith('saved_')))return proved;
-  for(const admission of doc.admissions)if(admission.runId!==owner.runId&&admission.resource===resource&&admission.requirementsVersion===doc.view.requirementsVersion&&effectful(admission.tool)&&await fileWasNotDispatched(work,doc,admission))proved.add(JSON.stringify([admission.runId,admission.callId]));
+ async function historicalEffectProofs(work:Sql,doc:TaskDocument,owner:TaskOwner,resource:string,stepId:string,humanEffect:boolean,resumeBundleId?:string){
+  const criterionIds=doc.view.steps.find(step=>step.id===stepId)?.criterionIds??[];
+  const criteria=doc.view.criteria.filter(criterion=>criterionIds.includes(criterion.id));
+  const proved=resumeBundleId&&criteria.some(criterion=>criterion.kind==='saved_bundle'&&criterion.resource===resource)
+   ?await mockExamResumeCalls(work,owner.sessionId,doc.view.id+':'+doc.view.requirementsVersion,resumeBundleId):new Set<string>();
+  if(!humanEffect&&!criteria.some(criterion=>criterion.kind.startsWith('saved_')))return proved;
+  for(const admission of doc.admissions){
+   if(admission.runId===owner.runId||admission.resource!==resource||admission.requirementsVersion!==doc.view.requirementsVersion||!effectful(admission.tool))continue;
+   const call=JSON.stringify([admission.runId,admission.callId]);
+   if(!proved.has(call)&&await fileWasNotDispatched(work,doc,admission))proved.add(call);
+  }
   return proved;
  }
  async function transaction<T>(action:(work:Sql)=>Promise<T>){if(!sql.transaction)throw Error('task_transaction_required');return sql.transaction(action);}
@@ -174,8 +182,8 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
   },
   async previewResume(sessionId:string,id:string,revision:number,requirementsVersion:number){const record=await load(sql,id,revision),view=record.doc.view;if(view.sessionId!==sessionId||view.requirementsVersion!==requirementsVersion||await latestId(sql,sessionId)!==id||!taskHasRemainingSteps(view))throw Error('task_resume_invalid');return clone(view);},
   async admittedRuns(sessionId:string,id:string){const record=await read(sql,id);if(!record||record.doc.view.sessionId!==sessionId)throw Error('permission_denied');return record.doc.lineage.filter(o=>record.doc.admissions.some(a=>a.runId===o.runId&&a.generation===o.generation&&a.requirementsVersion===record.doc.view.requirementsVersion)).map(o=>({runId:o.runId,generation:o.generation}));},
-  async previewAdmission(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false){
-    const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await nonDispatchProofs(sql,doc,owner,resource,stepId,humanEffect));decode(JSON.stringify(doc),id);
+  async previewAdmission(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false,resumeBundleId?:string){
+    const doc=clone((await load(sql,id,revision,owner)).doc);applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await historicalEffectProofs(sql,doc,owner,resource,stepId,humanEffect,tool==='office_deliver_files'?resumeBundleId:undefined));decode(JSON.stringify(doc),id);
   },
   async get(id:string){return clone((await read(sql,id))?.doc.view||null);},
   async summaryRecord(id:string){const record=await read(sql,id);return record?summary(record):null;},
@@ -282,10 +290,10 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     applyPlan(doc,clean);
    });
   },
-  async admit(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false){
+  async admit(owner:TaskOwner,id:string,revision:number,stepId:string,callId:string,tool:string,inputDigest:string,resource:string,humanScope=false,humanEffect=false,safeAfterVerified=false,resumeBundleId?:string){
    if(![stepId,callId,tool].every(taskIdentity)||!taskDigest(inputDigest)||typeof resource!=='string'||resource.length>512)throw Error('invalid_input');
    return mutate(owner,id,revision,async(doc,work)=>{
-     applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await nonDispatchProofs(work,doc,owner,resource,stepId,humanEffect));
+     applyAdmission(doc,owner,stepId,callId,tool,inputDigest,resource,humanScope,humanEffect,safeAfterVerified,await historicalEffectProofs(work,doc,owner,resource,stepId,humanEffect,tool==='office_deliver_files'?resumeBundleId:undefined));
    });
   },
   async readback(owner:TaskOwner,id:string,revision:number,verification:TaskVerification){

@@ -23,7 +23,9 @@ export function TeachingDeliveryWorkspace(){
   }catch{if(stamp===listEpoch.current)setError('无法读取整包任务，已保存文件保留，请重试。');}finally{listLock.current=false;if(stamp===listEpoch.current)setLoading(false);}
  }
  async function open(entry:{id:string;sessionId:string}){
-  const stamp=++detailEpoch.current;setSelected(entry);setDetail(undefined);setDetailError('');setReading(true);setReveal(undefined);
+  const stamp=++detailEpoch.current;
+  if(selected?.id!==entry.id||selected.sessionId!==entry.sessionId){setSelected(entry);setDetail(undefined);setReveal(undefined);}
+  setDetailError('');setReading(true);
   try{const value=await window.omniEdu?.deliveryCatalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:entry.sessionId,bundleId:entry.id});if(stamp!==detailEpoch.current)return;
    if(!value?.ok||value.kind!=='get'){setDetailError(value&&!value.ok&&value.error==='permission_denied'?'原对话已归档或不可用，整包记录保留。':'整包详情暂时无法读取，请刷新后重试。');return;}setDetail(value);
    setItems(old=>old.map(item=>item.id===entry.id?{...item,state:value.delivery.state}:item));
