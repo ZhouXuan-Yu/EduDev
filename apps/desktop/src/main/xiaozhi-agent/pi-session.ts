@@ -146,6 +146,7 @@ export interface PiXiaozhiOptions {
   buoyancyTools?: ToolDefinition[];
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
+  naturalLessonDraft?: {subject:string;grade:string;hasDraft:()=>Promise<boolean>};
   classroomExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   teachingLessonExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   educationSearchTools?:ToolDefinition[];
@@ -648,7 +649,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       const entries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom-plan.'));
       if(entries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom-plan.v1'||JSON.stringify(entry.data)!==JSON.stringify(identity)))throw Error('configuration');
       if(!entries.length)manager.appendCustomEntry('xiaozhi.education.classroom-plan.v1',identity);
-      prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
+      if(options.naturalLessonDraft){
+        const {subject,grade}=options.naturalLessonDraft;
+        prompt+=`\n本轮已确定为新的可编辑教案草稿，lesson.subject=${JSON.stringify(subject)}，lesson.grade=${JSON.stringify(grade)}。先用 education_propose_classroom_outline 保存完整结构化教案。教师没有在本轮选定课标或教材，mappings 留空、missingSources 明确待对照；自拟示例在教案中标明。落实用户要求的总时长及六个栏目。收到成功回执后简短说明草稿在哪里核对；按回执如实说明失败。教师自行确认，文件另行导出。`;
+        prompt+='\n提交前核对 lesson.phases 必须各有至少一个 introduction、activity、practice、assessment。单独安排 assessment，可与 quiz 场景关联。每个场景只出现一次且顺序一致。每项目标都由 activity 或 practice 覆盖，并在至少一条 checks 中检查；checks 中的编号必须属于该环节的 objectiveIndices。';
+      }else prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
     }
     if(!options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0]))prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
   }
@@ -1001,7 +1006,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   const domainDefinitions=options.answerOnly?[]:taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   if(options.answerOnly)names.length=0;
-  const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions):undefined;
+  const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions,
+    options.naturalLessonDraft?[CLASSROOM_PLAN_TOOLS[0]]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
   const governance = options.toolGovernance ? await phase('pi_register_tool_contracts',signal => options.toolGovernance!.register(taskDefinitions,signal)) : undefined;
@@ -1137,6 +1143,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
   let modelHttpStatus:number|undefined;
   let submittedTeacherRequest:string|undefined;
+  let lessonDraftAttempts=0;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
   const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
@@ -1170,11 +1177,19 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
       const leading=args[1].messages.find(message=>message.role==='system');
       const contract=buildPrefix({model:args[0],systemPrompt:leading?JSON.stringify({content:leading.content,sections:leading.sections}):session.agent.state.systemPrompt,tools:leading?.toolsAdded||session.agent.state.tools});manager.appendCustomEntry('xiaozhi.cache-prefix.v1',summarizeCachePrefixContract(contract));}
+    const naturalLesson=compacting?undefined:options.naturalLessonDraft;
+    const requireLessonTool=naturalLesson&&lessonDraftAttempts<2&&!await naturalLesson.hasDraft();
+    if(requireLessonTool)lessonDraftAttempts++;
     {const previous=args[2]?.onPayload;
       args[2]={...args[2],onPayload:async(payload,model)=>{
         const transformed=await previous?.(payload,model),actual=transformed===undefined?payload:transformed;
-        const resolved=applyThinkingPayload(actual,thinkingPolicy);
-        const tools=(resolved as {tools?:unknown[]})?.tools;
+        const configured=applyThinkingPayload(actual,thinkingPolicy);
+        const tools=(configured as {tools?:{function?:{name?:string}}[]})?.tools;
+        if(requireLessonTool&&!tools?.some(tool=>tool.function?.name===CLASSROOM_PLAN_TOOLS[0]))throw Error('configuration');
+        // DeepSeek accepts a named tool choice only in non-thinking mode. This is
+        // the dedicated no-source lesson flow, including its receipt summary.
+        const resolved=naturalLesson?{...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',
+          tool_choice:requireLessonTool?{type:'function',function:{name:CLASSROOM_PLAN_TOOLS[0]}}:'none'}:configured;
         if(!compacting)metrics?.request(Buffer.byteLength(JSON.stringify(resolved)),Array.isArray(tools)?tools.length:0);
         return resolved;
       }};

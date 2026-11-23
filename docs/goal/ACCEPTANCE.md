@@ -3985,3 +3985,5 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 
 扫描表格的视觉回查按来源绑定、无授权不发送、模型拒绝猜填、入库状态未改变、冷启可读五项核对。八个合成小样的结果不代表批量真实资料的总体识别率。
 ‘教学内容’等六个教案栏目已纳入原版本、编辑和双格式导出。D3 工程证据见 docs/product-agent/04_PROGRESS_AND_EVIDENCE.md。
+
+教案从对话开稿真实 DeepSeek 合成单例已通过，软件工程状态和教师试用范围见 D3 进度及固定验收目录。

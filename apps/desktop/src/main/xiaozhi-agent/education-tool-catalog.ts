@@ -32,7 +32,7 @@ const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_repor
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;
 export const TOOL_DISCOVERY_NAME='find_education_tools';
 /** Keep identity fingerprints unchanged; only the provider-facing assembly is scoped. */
-export function createEducationToolCatalog(prompt:string,definitions:readonly ToolDefinition[]) {
+export function createEducationToolCatalog(prompt:string,definitions:readonly ToolDefinition[], required:readonly string[] = []) {
   const catalog=createToolCatalog(),loaded=new Set<string>();
   const deferred=definitions.length>24;
   const rules=new Map<string,string[]>(),common:string[]=[];
@@ -46,7 +46,7 @@ export function createEducationToolCatalog(prompt:string,definitions:readonly To
   const description=(def:ToolDefinition)=>[def.description,...(rules.get(def.name)||[])].join('\n');
   function reset(query:string){
     loaded.clear();
-    for(const def of definitions)if(!deferred||PINNED.has(def.name))loaded.add(def.name);
+    for(const def of definitions)if(!deferred||PINNED.has(def.name)||required.includes(def.name))loaded.add(def.name);
     const needsFiles = FILE_DELIVERY_REQUEST.test(query) || FILE_DELIVERY_TOOLS.some(name => query.includes(name));
     // Office schemas are large. Load the complete existing delivery path when
     // the task needs it, while ordinary questions retain discovery and readers.

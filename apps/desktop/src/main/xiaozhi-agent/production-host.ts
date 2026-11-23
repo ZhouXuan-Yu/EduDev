@@ -22,6 +22,7 @@ import {createScienceLessonSource,prepareScienceLessonRefresh} from '../educatio
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
+import {naturalLessonDraft} from '../education/natural-lesson-draft';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -262,6 +263,7 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
   answerOnly?: boolean;
+  naturalLessonDraft?: true;
   taskControl?: TaskControlAction;
   finalizing?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
@@ -1350,6 +1352,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
+        ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
+          subject:lesson.subject,grade:lesson.grade,
+          hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
+        }}:{}),
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
           await startupPrewarm.wait();signal.throwIfAborted();
@@ -1501,7 +1507,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       sdkEndedMs=performance.now()-executionStarted;
       if(result.ok&&taskRuntime&&!run.stopped)await taskRuntime.refresh();
       if (run.operation === 'compact' && result.ok) await options.afterCompactCommit?.();
-      if (result.ok) {text = result.text;answerTruncated=result.truncated;} else failure = result.error;
+      if (result.ok) {
+        if(run.naturalLessonDraft && !await store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId)) failure='lesson_draft_missing';
+        else {text = result.text;answerTruncated=result.truncated;}
+      } else failure = result.error;
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
       failure = code === 'authentication' || code === 'cancelled' || code === 'permission_denied' || code === 'memory_scope_changed' || code === 'skill_source_changed' || code === 'skill_scope_changed' ? code : 'configuration';
@@ -2102,7 +2111,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
-      const allowNaturalAmendment=!input.attachments&&!input.presentation&&!input.paperExportIntent&&!input.mockExamExportIntent&&!input.classroomPlan&&!input.resumeDeliveryId&&!goalId&&!legacyApprovalId;
+      const inferredLesson = operation === 'prompt' && !goalId && !taskResume && !legacyApprovalId && !recoveredQuestionRunId &&
+        !input.classroomPlan && !input.attachments?.length && !input.presentation && !input.continueTask &&
+        !input.paperExportIntent && !input.mockExamExportIntent && !input.resumeDeliveryId &&
+        !isTaskContinuation(input.prompt) && !isBoundTaskAmendment(input.prompt) ? naturalLessonDraft(input.prompt) : undefined;
+      const allowNaturalAmendment=!inferredLesson&&!input.attachments&&!input.presentation&&!input.paperExportIntent&&!input.mockExamExportIntent&&!input.classroomPlan&&!input.resumeDeliveryId&&!goalId&&!legacyApprovalId;
       const controller=new AbortController();
       const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
       const phase=<T>(action:()=>Promise<T>,late?:(value:T)=>void|Promise<void>)=>waitForLifecycle('host_admission',action,{signal:controller.signal,timeoutMs:options.lifecycleTimeoutMs,late});
@@ -2126,6 +2139,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(input.attachments){try{selectedRows=await phase(()=>store.xiaozhiState.attachments.list(id));if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
       const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt,...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:input.paperExportIntent}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}),...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}), ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const hash=input.continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask:input.continueTask})).digest('hex'):baseHash;
+      // Command identity is the caller's request; host routing can evolve between retries.
+      if(inferredLesson)input={...input,classroomPlan:inferredLesson};
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const admission = invalidateLearningDecisions(id);
@@ -2152,7 +2167,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
-      const run: Active = { ...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),

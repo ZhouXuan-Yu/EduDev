@@ -33,6 +33,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   workspace_locked: '本会话的资料范围已经固定，请新建会话后选择工作目录。',
   budget_exhausted: '本轮已达到运行预算，后续调用已停止。可调整预算后发起新一轮；已完成的操作仍保留。',
   nothing_to_compact: '当前没有需要压缩的较早上下文。可以继续对话；本次没有请求模型。',
+  lesson_draft_missing: '本轮未保存成可编辑教案。可以在原对话重新发起教案，或从互动课堂的教案入口重试。',
   context_limit: '本次资料超出当前上下文可容纳范围。原记录保留，请分批提供资料或新建会话继续。',
   compaction_failed: '本次上下文整理未完成，原记录保留。请重试压缩后继续任务。',
   memory_scope_changed: '本会话记忆选择或来源已变更，后续调用已停止。请刷新记忆选择，重新选择有效版本或关闭后继续。原对话和已完成操作保留。',

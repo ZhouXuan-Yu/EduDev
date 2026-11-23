@@ -145,6 +145,12 @@ export function createClassroomPlanState(sql:Sql){
     if(!current())throw Error('cancelled');return item((await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0]);
    });
   },
+  async hasDraftedLesson(sessionId:string,runId:string){
+   const studentId=await authorize(sql,sessionId);
+   const rows=await sql.all(`SELECT * FROM ai_confirmation_items WHERE run_id=? AND session_id=?
+    AND action_type=? AND COALESCE(student_id,'')=?`,[runId,sessionId,CLASSROOM_PLAN_ACTION,studentId]);
+   return rows.some(row=>Boolean(payload(row).document.lesson));
+  },
   async read(id:string){return item(await currentRow(sql,id));},
   async open(input:ClassroomPlanReference){
    const rows=await sessionPlans(input.sessionId);
