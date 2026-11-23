@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "10ad38e6c5d37227041234cdd0398ccd1b6d3de4d1e6ae0dfac7a760470e92c9",
+  "sourceHash": "9b10d8851aa3114479dc15e1b8872f12dbe4c6fba8bedb572ae1d0e845e30226",
   "sources": [
     {
       "file": "package-lock.json",
@@ -183,8 +183,20 @@
       "sha256": "158a86c78089717aaca6ba497aa2dffe76924163b021b6fb759bed74b1fec57e"
     },
     {
+      "file": "src/main/education/mock-exam-archive-plan.ts",
+      "sha256": "49ca51157e95da2b333eacc39e2010ee99fab6cfb14ad00b719afc95746a6563"
+    },
+    {
+      "file": "src/main/education/mock-exam-archive-state.ts",
+      "sha256": "25cfa7688ea9468c6ec4a14a883c357fbfd03b5c9ede8a8a9ba83fa0eb5898b1"
+    },
+    {
+      "file": "src/main/education/mock-exam-archive.ts",
+      "sha256": "8451667677cc97ce4ff770b226c3d57aa2c979e07974034c63920ea77974d2f0"
+    },
+    {
       "file": "src/main/education/mock-exam-catalog.ts",
-      "sha256": "ebcc794b285a66c593977ab827963c77cb125fba2e2308705b609e3ab0aac910"
+      "sha256": "561f76b389184b28ad0647211ee65896d2485acecc942576845bebe66b8dbc42"
     },
     {
       "file": "src/main/education/mock-exam-edit-plan.ts",
@@ -200,7 +212,7 @@
     },
     {
       "file": "src/main/education/mock-exam-export-tools.ts",
-      "sha256": "f4095ef4d8cfdabb541d94fc907b016234286f0fac3a52c8d0a8b796341fef3a"
+      "sha256": "a2644b4ac9ccdfe9b23019d5af7d3a0830bd9f663beb79c5233be54659f2ac88"
     },
     {
       "file": "src/main/education/mock-exam-metadata.ts",
@@ -216,7 +228,7 @@
     },
     {
       "file": "src/main/education/mock-exam-state.ts",
-      "sha256": "3d3032ed4595233e6456605b77d786cba11977bc7018b6fc4a315a08e64e2144"
+      "sha256": "f4beb8ae608096a259900bc059e9f5bb2bb793ad0b58278093608d54accc21fe"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -551,6 +563,10 @@
       "sha256": "0e4242fc8b9879a39cc036bca9c071ac9c9bd76b89d15331bb3b4c36c5656bf3"
     },
     {
+      "file": "src/main/file-zip.ts",
+      "sha256": "03c5d2f5a347e54fa82c759d50704e6068fe26e968eea9455fa2711f838b47bc"
+    },
+    {
       "file": "src/main/local-file-security.ts",
       "sha256": "eaba792b38b34cfc98400d4b868aab222ab49bf787c3198c6571cac75a6a2eba"
     },
@@ -800,7 +816,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "1f5e49824f2be02f369077e95a4215e81919cf6c5b91d4656facd0e3781c9607"
+      "sha256": "89014dc3353712c6b1c2ef101b8ea4921e6702ca4956b7ad6f8132ae0e243b2c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1496,7 +1512,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "24f785459138f609b330aa9298c104f441923540206a3cd18a537cf70c38b0c0"
+      "sha256": "cec88b31d80200d23291026533062b5fb5753952f406783197f2557127190d5d"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1532,7 +1548,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "dd1e62ae8c135c569ffdfa15cda55b4e9b1d92740495b389f19bb30b02e3c489"
+      "sha256": "6fa7f9d291a071a89d6f840d2ca73d301130ad7f76f75e3dccda4e8c0c8050f2"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2016,7 +2032,7 @@
     },
     {
       "file": "src/shared/artifact-file-actions.ts",
-      "sha256": "12073e27affd93125279013d261f394e4cad3d924c8c1e7576bb29a04aa100c9"
+      "sha256": "c7373e90732309c8650a24d54cd330e241822a43bb84ef10c40464ec02f2dfd9"
     },
     {
       "file": "src/shared/artifact-sources.ts",
@@ -2275,8 +2291,12 @@
       "sha256": "f887fec55bf8faa477bcb6a2593b550be53524e9df16b32090054187004a0ff5"
     },
     {
+      "file": "src/shared/mock-exam-archive.ts",
+      "sha256": "2bde8ddbb42adcaa628d3ac56bc6c2fb0a290d37d11f54ca35e1179460c32892"
+    },
+    {
       "file": "src/shared/mock-exam-compilation.ts",
-      "sha256": "1cd7313f756a3cc9c4becb21361dd65839cc50bcc2f8753d574ce6e4e09df451"
+      "sha256": "ad7c102d0b9044e78f0dee4412eb553ab56eb1976d109fbe53353fd2b2ffc7bc"
     },
     {
       "file": "src/shared/mock-exam-edit.ts",

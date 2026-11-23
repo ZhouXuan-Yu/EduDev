@@ -3,8 +3,9 @@ import {Button} from '@heroui/react';
 import {LibraryBig} from 'lucide-react';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/DesktopFrame';
+import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
-import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,
+import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
@@ -14,8 +15,8 @@ const values={district:SHANGHAI_DISTRICTS,grade:MOCK_EXAM_GRADES,subject:MOCK_EX
 const permissions={unknown:'许可待核对',local_only:'老师确认本地使用',excluded:'不允许使用'};
 const answers={missing:'缺答案',linked:'已关联独立答案册',stale:'答案册关联已过期',embedded:'已发现同册答案区'};
 const structure={unavailable:'正文待解析',partial:'页面部分就绪',parsed:'正文已解析'};
-const draftOf=(catalog:MockExamCatalog)=>catalog.entries.map(({resourceId,include,permission,metadata})=>({
-  resourceId,include,permission,metadata:{...metadata},
+const draftOf=(catalog:MockExamCatalog)=>catalog.entries.map(({resourceId,include,permission,metadata,answerPermission})=>({
+  resourceId,include,permission,metadata:{...metadata},...(answerPermission?{answerPermission}:{}),
 }));
 const position=(metadata:MockExamMetadata)=>fields.some(field=>metadata[field]===null)?null:fields.map(field=>metadata[field]).join('|');
 
@@ -38,6 +39,13 @@ function ExamFields({entry,change,update}:{entry:MockExamEntry;change:MockExamCa
         update({...change,permission,include:permission!=='excluded'&&change.include});
       }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</select>
     </label>
+    {entry.answer.state==='linked'&&<label>答案册使用许可
+      <select value={change.answerPermission?.permission??'unknown'} data-testid="mock-exam-answer-permission" onChange={event=>{
+        const {resourceId,version,pairRevision}=entry.answer;
+        if(!resourceId||!version||!pairRevision)return;
+        update({...change,answerPermission:{resourceId,version,pairRevision,permission:event.currentTarget.value as MockExamEntry['permission']}});
+      }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</select>
+    </label>}
     <label className={styles.check}>收录到目录
       <input type="checkbox" checked={change.include} disabled={change.permission==='excluded'}
         data-testid="mock-exam-include" onChange={event=>update({...change,include:event.currentTarget.checked})}/>
@@ -138,7 +146,7 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
                 {entry.structure.pages?(' '+entry.structure.processed+'/'+entry.structure.pages+' 页'):''}
                 {entry.structure.held?(' · '+entry.structure.held+' 处待核'):''} · {answers[entry.answer.state]} · {permissions[edit.permission]}</span>
               {entry.copies>1&&<span>{entry.copies} 份同内容文件已合为一条</span>}
-              {entry.answer.title&&<span>答案册　{entry.answer.title}</span>}
+              {entry.answer.title&&<span>答案册　{entry.answer.title} · {permissions[mockExamAnswerPermission(entry,edit.answerPermission)?.permission??'unknown']}</span>}
               {!edit.include&&<span>未收录</span>}
               {edit.include&&key&&duplicates.has(key)&&<span>有另一份同轮次文件</span>}
               {entry.conflicts.length>0&&<span>待核对字段　{entry.conflicts.map(field=>labels[field]).join('、')}</span>}
@@ -162,6 +170,7 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
             onPress={()=>void save()}>{saving?'正在复核原件…':'确认目录'}</Button>:
             <Button variant="secondary" size="sm" isDisabled={disabled||reading} data-testid="mock-exam-revise" onPress={()=>setRevising(true)}>修订目录</Button>}
         </div>
+        {!canEdit&&!reading&&<PiMockExamArchive key={current.id+':'+current.revision} catalog={current} sessionId={sessionId}/>}
         {catalog.restoredFrom&&<p role="status">当前内容恢复自第 {catalog.restoredFrom} 版。</p>}
         {showHistory&&<PiMockExamVersions identity={identity} current={current} blocked={disabled||dirty||saving||reading} onRestore={sync}/>}
       </>}

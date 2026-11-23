@@ -141,6 +141,8 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   options.ipcMain.handle('xiaozhi:mock-exam-history',(event,input)=>fromMain(event)?host.mockExam.history(input):mockExamDenied);
   options.ipcMain.handle('xiaozhi:mock-exam-restore',(event,input)=>fromMain(event)?host.mockExam.restore(input):mockExamDenied);
   options.ipcMain.handle('xiaozhi:mock-exam-confirm',(event,input)=>fromMain(event)?host.mockExam.confirm(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-archive-preview',(event,input)=>fromMain(event)?host.mockExamArchive.preview(input):mockExamDenied);
+  options.ipcMain.handle('xiaozhi:mock-exam-archive-save',(event,input)=>fromMain(event)?host.mockExamArchive.save(input):mockExamDenied);
   options.ipcMain.handle('xiaozhi:mock-exam-original',async(event,input)=>{
     if(!fromMain(event))return mockExamDenied;
     const result=await host.mockExam.original(input);

@@ -62,7 +62,8 @@ import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {createMockExamCatalog,mockExamRequest} from '../education/mock-exam-catalog';
 import {BUILD_MOCK_EXAM_CATALOG} from '../../shared/mock-exam-compilation';
 import {createMockExamEditCoordinator,mockExamEditRequest} from '../education/mock-exam-edit-tools';
-import {createMockExamExportTools,mockExamExportRequest} from '../education/mock-exam-export-tools';
+import {createMockExamExportTools,mockExamExportRequest,mockExamArchiveRequest} from '../education/mock-exam-export-tools';
+import {createMockExamArchive} from '../education/mock-exam-archive';
 import {createMockExamOfficeBinding} from '../education/mock-exam-office';
 import type {MockExamExportIntent} from '../../shared/mock-exam-export';
 import {PROPOSE_MOCK_EXAM_EDIT} from '../../shared/mock-exam-edit';
@@ -684,6 +685,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     verify:(id,version,signal)=>store.materials.verifyOriginalVersion(id,version,signal),
     publish:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'mock_exam_edit',review});},
   });
+  const mockExamArchive=createMockExamArchive({dataRoot:options.dataRoot,state:store.xiaozhiState.mockExamCatalogs,materials:store.materials,stopped:()=>closing});
   const mockExamOffice=createMockExamOfficeBinding(store.xiaozhiState.mockExamCatalogs,
     (id,version,signal)=>store.materials.verifyOriginalVersion(id,version,signal));
   const officeArtifacts=createOfficeArtifactCoordinator({state:store.xiaozhiState.officeArtifacts,
@@ -1130,8 +1132,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         },wait),
       }:{}),
       ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&(owner.mockExamExportIntent||mockExamExportRequest(cleanPrompt)&&!mockExamEditRequest(cleanPrompt))?{
+        mockExamArchiveRequested:!owner.mockExamExportIntent&&mockExamArchiveRequest(cleanPrompt),
         mockExamExportTools:wait=>createMockExamExportTools({sessionId:id,taskId:owner.task!.id,intent:owner.mockExamExportIntent,
           state:store.xiaozhiState.mockExamCatalogs,binding:mockExamOffice,
+          ...(!owner.mockExamExportIntent&&mockExamArchiveRequest(cleanPrompt)?{archive:(catalog:import('../../shared/mock-exam-compilation').MockExamCatalogSummary)=>publicEvent(id,owner,{kind:'mock_exam_catalog',catalog})}:{}),
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
           publish:(files,args)=>{
             if(files.length>1)return deliveries.publishMockExam(id,runId,wait,args[0],files,args[2]);
@@ -1652,6 +1656,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     deliveryChecks:fileChecks,
     handoutEdits:{view:handoutEdits.view,decide:handoutEdits.decide},
     mockExam:{view:mockExam.view,history:mockExam.history,restore:mockExam.restore,confirm:mockExam.confirm,original:mockExam.original},
+    mockExamArchive,
     mockExamEdits:{view:mockExamEdits.view,decide:mockExamEdits.decide},
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),

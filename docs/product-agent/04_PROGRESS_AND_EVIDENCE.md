@@ -588,3 +588,24 @@ Phase 4.1 工程路径已贯通。按教师约束确定性选题、配比和分�
 专项验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-export`，手动启动、步骤与实际窗口身份保存在同一验收根的 `manual-phase4-mock-exam-export`。专项运行使用本地合成模型响应，0 付费请求。生产依赖未变，审计现有 20 条报告，其中 2 条 high。
 
 Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存文件保留。剩余格式可从当前确认版单独发起，原包接续仍待补齐。下一项为保留原始字节、逐份核对用途许可的原件包，随后检查真实缺页、扫描、分栏、公式与图表。
+
+## Phase 4.3 模考原件包
+
+已确认目录的「预览原件包」逐条显示试卷和答案册入包结果。试卷许可与独立答案册许可各自核对。两边使用原件字节，分别存入 ZIP 的「试卷」和「答案册」目录。随原件保留的卷内答案、未收录、许可待核、禁止、缺答案和答案配对过期由清单明示。仅保存到本机的教学文件。问小智要求打包时，可先核对明确目录与许可，教师在目录卡或教学工作台确认保存。
+
+答案册许可绑定资料编号、文件摘要和配对修订。旧目录默认待核，当前版本的同源许可用于历史恢复。新增 `mock_exam_archives` 记录暂存身份、相对名称与产物摘要，已保存记录投影到教学文件。按当前确认快照去重，保存阶段独占目标并在提交前复核源文件和授权。若正式文件已安装而记录未结算，确认同版时核对原文件后补记，无需重新生成。上一版可继续读取原有普通文档，ZIP 可通过本地文件系统读取。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm.cmd run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-archive` | TypeScript 和 Electron 构建通过。主进程 SHA-256 `057d6b98557d710f25f233760296a9ae18b41b1b6d4cffee4f488517063398ea`。 |
+| `node scripts/education/mock-exam-archive-electron.mjs` | 5/5。已确认目录和答案册独立许可、无授权或旧快照拒绝、取消预览、源字节变化、实际 ZIP 和清单打开、两种窗口尺寸、自然对话能力路由、当前相同版本幂等、冷启补记。实际桌面与 SQLite 报告 `mock-exam-archive-Gobk3H/report.json`。首次专项的文件标题定位器命中详情标题和摘要标题，改为层级明确的标题。 |
+| Windows `Expand-Archive` | 实际 ZIP 解压出的清单、说明、试卷和答案册 4/4 摘要与专项一致。见 `windows-archive-readback.json`。 |
+| `node scripts/education/mock-exam-export-electron.mjs` | 原 Word/PDF 导出回归 4/4，见 `mock-exam-export-TaX6Rh/report.json`。 |
+| 备份恢复读回 | 从真实设置页导出备份并准备新数据根。用同一构建单独打开恢复副本，源目录关联保留，ZIP 从新根定位，原件包哈希一致。见 `portable-archive-readback.json`。 |
+| `node scripts/electron-smoke.mjs` | 同一最终构建 207/207，见 `electron-smoke.log`。 |
+| 上一构建回退读回 | 带原件包行的隔离数据库使用上一构建打开真实教学文件页，原 PDF 和 Word 记录均可读。见 `previous-build-readback.json`。 |
+| `npm.cmd run test:renderer-components` | 253/253，见 `renderer.log`。 |
+
+专项验收根为 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-archive`。已启动隔离验收窗口，`manual-phase4-mock-exam-archive` 保存 CMD、步骤和窗口构建核对。对话验收使用本地模拟服务，0 付费请求。直接在目录打包无需模型。生产依赖未变，审计保留原有 20 条报告，其中 2 条 high。
+
+原件 ZIP **已实现**。单包最大 64 MB，超出可按学科、年级或考试轮次分批。正式真实样本的扫描、缺页、分栏、公式和图表质量，及 Office 整包部分保存后的原包续做仍在 Phase 4.3。

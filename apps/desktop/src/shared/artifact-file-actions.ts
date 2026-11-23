@@ -1,4 +1,4 @@
-const artifactFileExtensions = /\.(?:md|txt|csv|json|yaml|yml|log|html|docx|pptx|xlsx|pdf|png|jpe?g|webp|gif|svg)$/i;
+const artifactFileExtensions = /\.(?:md|txt|csv|json|yaml|yml|log|html|docx|pptx|xlsx|pdf|zip|png|jpe?g|webp|gif|svg)$/i;
 export const isArtifactFileName = (name: string) => artifactFileExtensions.test(name);
 
 export type ArtifactFileTarget =

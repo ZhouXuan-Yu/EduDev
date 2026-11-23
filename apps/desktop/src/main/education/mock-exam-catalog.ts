@@ -1,6 +1,6 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {BUILD_MOCK_EXAM_CATALOG,MOCK_EXAM_SCHEMA,catalogId,mockExamDigest,mockExamErrors,mockExamParameters,mockExamRevision,
-  validMockExamMetadata,validMockExamScope,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
+  mockExamPermission,validMockExamMetadata,validMockExamScope,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
   type MockExamHistoryEntry,type MockExamResult} from '../../shared/mock-exam-compilation';
 import {materialId} from '../../shared/materials';
 import {plainStudentInput} from '../../shared/student-context';
@@ -14,10 +14,14 @@ const failure=(error:unknown)=>{
   const code=error instanceof Error&&Object.hasOwn(mockExamErrors,error.message)?error.message:'configuration';
   return {ok:false as const,error:code,message:mockExamErrors[code]};
 };
+function validAnswerPermission(value:unknown){
+  return plainStudentInput(value,['resourceId','version','pairRevision','permission'])&&materialId(value.resourceId)&&
+    mockExamDigest(value.version)&&mockExamRevision(value.pairRevision)&&mockExamPermission(value.permission);
+}
 function validChange(value:unknown):value is MockExamCatalogChange {
-  return plainStudentInput(value,['resourceId','metadata','permission','include'])&&materialId(value.resourceId)&&
+  return plainStudentInput(value,['resourceId','metadata','permission','include','answerPermission'])&&materialId(value.resourceId)&&
     validMockExamMetadata(value.metadata)&&typeof value.include==='boolean'&&
-    (value.permission==='unknown'||value.permission==='local_only'||value.permission==='excluded');
+    mockExamPermission(value.permission)&&(value.answerPermission===undefined||validAnswerPermission(value.answerPermission));
 }
 const receipt=(body:object,success:boolean)=>({content:[{type:'text' as const,text:JSON.stringify({success,...body})}],
   details:{success},isError:!success});

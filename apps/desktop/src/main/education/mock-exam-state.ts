@@ -1,12 +1,13 @@
 import {randomUUID} from 'node:crypto';
 import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
-  mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
+  mockExamAnswerPermission,mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import type {WorkbenchMockExamRow} from '../../shared/xiaozhi-workbench';
 import type {MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import type {HandoutOwner} from './teaching-handout-state';
+import {createMockExamArchiveState} from './mock-exam-archive-state';
 import {mockExamPosition,mockExamTitle} from './mock-exam-metadata';
 import {assertMockExamSource,mockExamSources} from './mock-exam-sources';
 
@@ -56,9 +57,13 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
     const change=changes.find(row=>row.resourceId===item.resourceId);
     if(!change)throw Error('invalid_input');
     const {metadata,include,permission}=change;
+    const answerPermission=mockExamAnswerPermission(item,change.answerPermission??item.answerPermission);
+    if(change.answerPermission&&!answerPermission)throw Error('source_changed');
+    const {answerPermission:_priorPermission,...rest}=item;
+    const current={...rest,...(answerPermission?{answerPermission}:{})};
     if(!include){
-      if(permission==='local_only')return {...item,metadata,include:false,permission:'unknown'};
-      return {...item,metadata,include:false,permission};
+      if(permission==='local_only')return {...current,metadata,include:false,permission:'unknown'};
+      return {...current,metadata,include:false,permission};
     }
     if(permission==='excluded')throw Error('invalid_input');
     if(Object.values(metadata).some(value=>value===null))throw Error('incomplete');
@@ -72,7 +77,7 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
     for(const key of Object.keys(metadata) as (keyof MockExamEntry['metadata'])[]){
       if(item.metadata[key]!==metadata[key]||item.conflicts.includes(key))inferred[key]='老师核对';
     }
-    return {...item,metadata,inferred,conflicts:[],include,permission};
+    return {...current,metadata,inferred,conflicts:[],include,permission};
   });
   if(!included)throw Error('incomplete');
   return {...(catalog.restoredFrom?{restoredFrom:catalog.restoredFrom}:{}),scope,entries,unlinkedAnswers,limited};
@@ -80,10 +85,13 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
 
 function restoreSnapshot(target:MockExamCatalog,current:MockExamCatalog):Snapshot {
   const {summary,...snapshot}=target;
-  const permissions=new Map(current.entries.map(entry=>[entry.resourceId,entry.permission]));
+  const currentEntries=new Map(current.entries.map(entry=>[entry.resourceId,entry]));
   const entries=snapshot.entries.map(entry=>{
-    const permission=permissions.get(entry.resourceId)??'unknown';
-    return {...entry,permission,include:entry.include&&permission!=='excluded'};
+    const latest=currentEntries.get(entry.resourceId);
+    const permission=latest?.version===entry.version?latest.permission:'unknown';
+    const answerPermission=mockExamAnswerPermission(entry,latest?.answerPermission);
+    const {answerPermission:_historicalPermission,...original}=entry;
+    return {...original,permission,include:entry.include&&permission!=='excluded',...(answerPermission?{answerPermission}:{})};
   });
   return {...snapshot,entries,restoredFrom:summary.revision};
 }
@@ -98,6 +106,7 @@ export async function verifyMockExamOriginals(entries:MockExamEntry[],verify:Ver
 }
 
 export function createMockExamState(sql:Sql) {
+  const archives=createMockExamArchiveState(sql);
   function write<T>(action:(work:Sql)=>Promise<T>) {
     if(!sql.transaction)throw Error('configuration');
     return sql.transaction(action);
@@ -135,7 +144,9 @@ export function createMockExamState(sql:Sql) {
     return current;
   }
   return {
+    archives,
     async migrate() {
+      await archives.migrate();
       await sql.run(`CREATE TABLE IF NOT EXISTS mock_exam_compilations (
         id TEXT PRIMARY KEY,session_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id) ON DELETE CASCADE,
         run_id TEXT NOT NULL UNIQUE REFERENCES ai_agent_runs(id) ON DELETE CASCADE,task_id TEXT NOT NULL,
@@ -158,8 +169,8 @@ export function createMockExamState(sql:Sql) {
       return inTask.length?inTask:bucket('');
     },
     readConfirmed:(sessionId:string,source:MockExamOfficeSource)=>confirmed(sql,sessionId,source),
-    withConfirmed:<T>(sessionId:string,source:MockExamOfficeSource,action:(catalog:MockExamCatalog)=>T)=>
-      write(async work=>action(await confirmed(work,sessionId,source))),
+    withConfirmed:<T>(sessionId:string,source:MockExamOfficeSource,action:(catalog:MockExamCatalog,work:Sql)=>T)=>
+      write(async work=>action(await confirmed(work,sessionId,source),work)),
     view:(sessionId:string,id:string,revision?:number)=>view(sql,sessionId,id,revision),
     viewWithin:view,
     installDraft:(work:Sql,sessionId:string,id:string,priorRevision:number,snapshot:Snapshot)=>install(work,sessionId,id,priorRevision,'draft',snapshot),

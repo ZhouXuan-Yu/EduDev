@@ -1,16 +1,22 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
-import {catalogId,mockExamDigest,mockExamRevision,mockExamErrors} from '../../shared/mock-exam-compilation';
+import {catalogId,mockExamDigest,mockExamRevision,mockExamErrors,type MockExamCatalogSummary} from '../../shared/mock-exam-compilation';
 import {MOCK_EXAM_EXPORT_FORMATS,READ_MOCK_EXAM_EXPORT,EXPORT_MOCK_EXAM,mockExamExportFormat,
   type MockExamExportIntent,type MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {plainStudentInput} from '../../shared/student-context';
 import {officeRelativePath,type OfficeArtifactProposal} from '../../shared/xiaozhi-office-artifacts';
 import type {createMockExamState} from './mock-exam-state';
+import {planMockExamArchive} from './mock-exam-archive-plan';
 import {compileMockExamOffice,type createMockExamOfficeBinding} from './mock-exam-office';
 
 export type MockExamExportFile=OfficeArtifactProposal&{kind:'office';fileId:string};
+export function mockExamArchiveRequest(prompt:string){
+  const text=prompt.normalize('NFKC');
+  return /(?:模考|[一二三四1234]模|模拟(?:卷|试卷|考试))/u.test(text)&&
+    (/(?:原件|ZIP|压缩包)/iu.test(text)&&/(?:打包|导出|另存|下载|保存)/u.test(text)||/打包.*试卷/u.test(text));
+}
 export function mockExamExportRequest(prompt:string){
   const text=prompt.normalize('NFKC');
-  return /(?:模考|[一二三四1234]模|模拟(?:卷|试卷|考试))/u.test(text)&&/(?:导出|另存)/u.test(text)&&
+  return mockExamArchiveRequest(text)||/(?:模考|[一二三四1234]模|模拟(?:卷|试卷|考试))/u.test(text)&&/(?:导出|另存)/u.test(text)&&
     !/(?:先|新建|新编|请整理).*(?:再|后|并)导出/u.test(text);
 }
 
@@ -24,6 +30,7 @@ const hash={type:'string',pattern:'^[a-f0-9]{64}$'};
 const same=(a:MockExamOfficeSource,b:MockExamOfficeSource)=>a.catalogId===b.catalogId&&a.revision===b.revision&&a.digest===b.digest;
 
 export function createMockExamExportTools(options:{sessionId:string;taskId:string;intent?:MockExamExportIntent;
+  archive?:(catalog:MockExamCatalogSummary)=>void;
   state:ReturnType<typeof createMockExamState>;binding:ReturnType<typeof createMockExamOfficeBinding>;
   current:()=>boolean;sanitize:(value:string)=>Promise<string>;
   publish:(files:MockExamExportFile[],args:Parameters<ToolDefinition['execute']>)=>ReturnType<ToolDefinition['execute']>;}):ToolDefinition[]{
@@ -35,7 +42,7 @@ export function createMockExamExportTools(options:{sessionId:string;taskId:strin
     const code=error instanceof Error&&Object.hasOwn(messages,error.message)?error.message:'configuration';
     return receipt({error:code,message:messages[code]},false);
   }
-  return [{
+  const definitions:ToolDefinition[]=[{
     name:READ_MOCK_EXAM_EXPORT,label:'读取模考目录确认版本',
     description:'从当前会话读取老师指定的已确认模考目录。填写完整title或已有catalogId，可带明确revision。工作台指定时默认该目录及版本。未确认、旧版本或同名歧义均需请老师核对。',
     parameters:{type:'object',additionalProperties:false,properties:{catalogId:id,title:{type:'string',minLength:1,maxLength:200},revision:ordinal}} as ToolDefinition['parameters'],
@@ -59,8 +66,14 @@ export function createMockExamExportTools(options:{sessionId:string;taskId:strin
         const item=choices[0],ref={catalogId:item.id,revision:item.revision,digest:item.digest};
         if(intent&&!same(intent,ref)||raw.revision!==undefined&&raw.revision!==item.revision)throw Error('version_conflict');
         if(item.state!=='confirmed')throw Error('not_confirmed');
-        await options.state.readConfirmed(sessionId,ref);
+        const confirmed=await options.state.readConfirmed(sessionId,ref);
         const title=await options.sanitize(item.title);guard(signal);
+        if(options.archive){
+          const {paperCount,answerCount,embeddedCount}=planMockExamArchive(confirmed);
+          options.archive(item);
+          return receipt({...ref,title,paperCount,answerCount,embeddedCount,state:'preview_available',
+            message:'已核对目录和入包许可。请老师在本对话的模考目录卡，或教学工作台的已确认目录，选择「预览原件包」并确认保存 ZIP。尚无新文件。'},true);
+        }
         observed=ref;
         return receipt({...ref,title,count:item.count,formats:intent?[intent.format]:MOCK_EXAM_EXPORT_FORMATS,
           scope:'目录文档包含出处和状态，不包含试卷及答案册原件。'},true);
@@ -93,4 +106,5 @@ export function createMockExamExportTools(options:{sessionId:string;taskId:strin
       }catch(error){return failure(error,signal);}
     },
   }];
+  return options.archive?definitions.slice(0,1):definitions;
 }

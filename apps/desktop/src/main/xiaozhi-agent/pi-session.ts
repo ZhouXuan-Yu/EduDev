@@ -130,6 +130,7 @@ export interface PiXiaozhiOptions {
   teachingHandoutTool?: ToolDefinition;
   mockExamTool?:ToolDefinition;
   mockExamEditTools?:ToolDefinition[];
+  mockExamArchiveRequested?:boolean;
   mockExamExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   handoutExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   handoutEditTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
@@ -602,7 +603,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push(READ_MOCK_EXAM_EDIT,PROPOSE_MOCK_EXAM_EDIT);
     prompt+='\n修订老师指定的模考目录时，先 education_read_mock_exam_for_edit 读当前目录及条目，再 education_propose_mock_exam_edit 提交明确的局部字段。目标不唯一先问老师。提交成功后告知去本轮审阅卡，不得声称已应用、确认或获得使用许可。';
   }
-  if(options.mockExamExportTools){
+  if(options.mockExamArchiveRequested){
+    names.push(READ_MOCK_EXAM_EXPORT);
+    prompt+='\n老师要求模考原件 ZIP。先用 education_read_mock_exam_for_export 核对指定目录及许可，只根据回执引导老师在本对话目录卡或教学工作台预览原件包并确认。禁止自动写入、复制原件、调终端打包或声称已保存。';
+  }else if(options.mockExamExportTools){
     names.push(READ_MOCK_EXAM_EXPORT,EXPORT_MOCK_EXAM);
     prompt+='\n导出已有模考目录时，用 education_read_mock_exam_for_export 先核对当前已确认版本。只将该回执的 catalogId、revision 和 digest 传给 education_export_mock_exam_catalog。一份选 saved_office，两份选 saved_bundle。目录文档包含来源和配对状态，不含试卷或答案册原件。等待确认，根据真实回执汇报。';
   }
@@ -934,7 +938,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.mockExamEditTools)definitions.push(...options.mockExamEditTools);
   if(options.mockExamExportTools){
     const tools=options.mockExamExportTools(action=>budget!.wait(action));
-    if(tools.map(tool=>tool.name).join(',')!==[READ_MOCK_EXAM_EXPORT,EXPORT_MOCK_EXAM].join(','))throw Error('configuration');
+    const expected=options.mockExamArchiveRequested?[READ_MOCK_EXAM_EXPORT]:[READ_MOCK_EXAM_EXPORT,EXPORT_MOCK_EXAM];
+    if(tools.map(tool=>tool.name).join(',')!==expected.join(','))throw Error('configuration');
     definitions.push(...tools);
   }
   if(options.handoutEditTools){

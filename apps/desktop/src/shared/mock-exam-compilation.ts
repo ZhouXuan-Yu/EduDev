@@ -9,9 +9,11 @@ export const MOCK_EXAM_ROUNDS=['一模','二模','三模','四模','其他模拟
 export type MockExamScope={year:number;subject?:typeof MOCK_EXAM_SUBJECTS[number];grade?:typeof MOCK_EXAM_GRADES[number]};
 export type MockExamMetadata={district:typeof SHANGHAI_DISTRICTS[number]|null;year:number|null;
   subject:typeof MOCK_EXAM_SUBJECTS[number]|null;grade:typeof MOCK_EXAM_GRADES[number]|null;round:typeof MOCK_EXAM_ROUNDS[number]|null};
+export type MockExamPermission='unknown'|'local_only'|'excluded';
+export type MockExamAnswerPermission={resourceId:string;version:string;pairRevision:number;permission:MockExamPermission};
 export type MockExamEntry={resourceId:string;version:string;title:string;evidenceHash:string;metadata:MockExamMetadata;
   inferred:Partial<Record<keyof MockExamMetadata,'原文件名称'|'原件正文'|'文件名与正文'|'老师核对'>>;
-  conflicts:(keyof MockExamMetadata)[];copies:number;include:boolean;permission:'unknown'|'local_only'|'excluded';
+  conflicts:(keyof MockExamMetadata)[];copies:number;include:boolean;permission:MockExamPermission;answerPermission?:MockExamAnswerPermission;
   structure:{state:'unavailable'|'partial'|'parsed';pages?:number;processed?:number;held?:number};
   answer:{state:'missing'|'linked'|'stale'|'embedded';resourceId?:string;version?:string;title?:string;pairRevision?:number};
 };
@@ -23,7 +25,7 @@ export type MockExamCatalogKey=MockExamCatalogRef&{schemaVersion:typeof MOCK_EXA
 export type MockExamCatalogRead=MockExamCatalogKey&{revision?:number};
 export type MockExamHistoryEntry=Pick<MockExamCatalogSummary,'revision'|'state'|'count'|'digest'>&{savedAt:string;restoredFrom?:number};
 export type MockExamCatalogRestore=MockExamCatalogKey&{revision:number;digest:string;sourceRevision:number;sourceDigest:string};
-export type MockExamCatalogChange={resourceId:string;metadata:MockExamMetadata;include:boolean;permission:MockExamEntry['permission']};
+export type MockExamCatalogChange={resourceId:string;metadata:MockExamMetadata;include:boolean;permission:MockExamPermission;answerPermission?:MockExamAnswerPermission};
 export type MockExamCatalogConfirm=MockExamCatalogKey&{revision:number;digest:string;changes:MockExamCatalogChange[]};
 export type MockExamCatalogOriginal=MockExamCatalogKey&{resourceId:string};
 export type MockExamResult<T>={ok:true;value:T}|{ok:false;error:string;message:string};
@@ -42,6 +44,12 @@ export function validMockExamMetadata(value:unknown):value is MockExamMetadata {
 }
 export const catalogId=(value:unknown):value is string=>typeof value==='string'&&/^mock_catalog_[a-f0-9-]{36}$/u.test(value);
 export const mockExamRevision=(value:unknown):value is number=>typeof value==='number'&&Number.isSafeInteger(value)&&value>0;
+export const mockExamPermission=(value:unknown):value is MockExamPermission=>value==='unknown'||value==='local_only'||value==='excluded';
+export function mockExamAnswerPermission(entry:MockExamEntry,value:MockExamAnswerPermission|undefined){
+  const answer=entry.answer;
+  return value&&answer.state==='linked'&&answer.resourceId===value.resourceId&&answer.version===value.version&&
+    answer.pairRevision===value.pairRevision?value:undefined;
+}
 export const mockExamDigest=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
 export const mockExamParameters={type:'object',additionalProperties:false,required:['year'],properties:{
   year:{type:'integer',minimum:1990,maximum:2100},subject:{type:'string',enum:MOCK_EXAM_SUBJECTS},grade:{type:'string',enum:MOCK_EXAM_GRADES},

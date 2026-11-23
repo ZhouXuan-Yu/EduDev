@@ -747,7 +747,7 @@ export type DataBackupVerificationResult = {
   continuity?: BackupContinuity;
 };
 
-export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx' | 'xlsx' | 'pptx';
+export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx' | 'xlsx' | 'pptx' | 'zip';
 
 export type DocumentArtifactStatus = 'draft' | 'exported' | 'failed';
 
@@ -790,6 +790,7 @@ export type TeachingFileCatalogEntry = Omit<DocumentArtifactExportResult, 'type'
   htmlVersion?: {savedAt:string|null;verifiedAt:string|null};
   /** Saved metadata routing hint only; the paper reader rechecks lineage, grants and bytes. */
   savedArtifactKind?: 'paper';
+  mockExamSource?: import('./mock-exam-compilation').MockExamCatalogRef;
 };
 
 export type PlatformOverview = {

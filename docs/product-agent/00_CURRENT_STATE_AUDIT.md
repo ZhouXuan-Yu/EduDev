@@ -24,7 +24,7 @@ Phase 0 源码缺口和实施边界已形成，进入 Phase 1。教师可用性�
 
 ## Phase 4.3 模考汇编开工基线
 
-目录从确认快照导出到现有 Office 草稿及教学文件账本。现有资料库继续拥有原件和答案册事实。原件打包、扫描整册和图表版式继续在 Phase 4.3 核对。
+目录从确认快照导出到既有 Office 账本。原件 ZIP 按确认版许可打包并投影到教学文件。资料库继续拥有原件和答案册关系。Phase 4.3 继续核对扫描整册和图表版式。
 
 资料版本由 `MaterialRepository` 中的原件摘要和实际文件校验确定。版面及题目证据沿 `MaterialStructureRepository` 和 `MaterialQuestionArchive` 读取。独立答案册沿 `MaterialBookPairs` 绑定两侧资源版本，已有真实试卷和答案结构恢复证据。模考汇编应引用现存资料、结构记录和配对，不另存试卷或重做 OCR。
 
