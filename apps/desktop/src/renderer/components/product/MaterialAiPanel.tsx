@@ -23,7 +23,19 @@ export function MaterialAiVerificationStatus({units}:{units:AiBatchView['units']
  return <p role="status" data-testid="material-ai-verification-status">{text}</p>;
 }
 
-export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResource;onDraftDirty?:(dirty:boolean)=>void}){
+export function MaterialAiPanel({resource,onDraftDirty,openRequest=0}:{resource:TeacherResource;onDraftDirty?:(dirty:boolean)=>void;openRequest?:number}){
+  const [expanded,setExpanded]=useState(false);
+  const anchor=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    if(!openRequest)return;
+    setExpanded(true);
+    const frame=requestAnimationFrame(()=>{
+      const trigger=anchor.current?.querySelector<HTMLButtonElement>('button[aria-expanded]');
+      trigger?.focus({preventScroll:true});
+      trigger?.scrollIntoView({block:'start'});
+    });
+    return()=>cancelAnimationFrame(frame);
+  },[openRequest]);
   const [dirtyBatches,setDirtyBatches]=useState<Record<string,boolean>>({});
   const draftDirty=Object.values(dirtyBatches).some(Boolean),dirtyRef=useRef(draftDirty);dirtyRef.current=draftDirty;
   const reportBatchDirty=useCallback((id:string,value:boolean)=>setDirtyBatches(old=>old[id]===value?old:{...old,[id]:value}),[]);
@@ -39,7 +51,7 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
   async function create(){if(dirtyRef.current)return;setBusy(true);setError('');setNotice('');try{await window.omniEdu!.createMaterialAiBatch({schemaVersion:MATERIAL_AI_SCHEMA,resourceId:resource.id,version:resource.contentHash,settingsRevision:settings!.revision,start,count,maxCalls,images,cloudConsent:true,publicMaterial:true,processingMode:'quality'});setConsent(false);setPublic(false);setBatchOffset(0);const rows=await window.omniEdu!.getMaterialAiBatches(resource.id);if(!dirtyRef.current)setBatches(rows);setNotice(book?.role?.kind==='answers'?'已启动本批次，答案会在后台核对并与关联题册匹配。':'已启动本批次，结果自动进入题本。可继续使用小智或暂停。');}catch(e){setError(errorText(e));}finally{setBusy(false);}}
   async function action(id:string,action:AiAction['action']){if(dirtyRef.current&&action!=='pause')return;setBusy(true);setError('');try{await window.omniEdu!.controlMaterialAiBatch({schemaVersion:MATERIAL_AI_SCHEMA,batchId:id,action,...(['retry_unknown','retry_source'].includes(action)?{acceptDuplicateCharge:true as const}:{})});const rows=await window.omniEdu!.getMaterialAiBatches(resource.id,batchOffset);if(!dirtyRef.current)setBatches(rows);}catch(e){setError(action==='recheck_local'?localOcrErrorText(e):errorText(e));}finally{setBusy(false);}}
   const valid=Number.isSafeInteger(start)&&start>=1&&Number.isSafeInteger(count)&&count>=1&&count<=100&&Number.isSafeInteger(maxCalls)&&maxCalls>=2*count&&maxCalls<=400;
-  return <><MaterialBookPanel resource={resource} onChange={bookChanged}/><DisclosureCard className="material-ai" data-testid="material-ai-panel" title="AI深度整理（可选）">{draftDirty&&<p role="note" data-testid="material-ai-unsaved">有临时校对文字，批次列表暂时保留当前显示。清除暂存文字后再切换批次或启动新整理；后台处理继续运行。</p>}
+  return <><MaterialBookPanel resource={resource} onChange={bookChanged}/><div ref={anchor}><DisclosureCard className="material-ai" data-testid="material-ai-panel" title="AI深度整理（可选）" isExpanded={expanded} onExpandedChange={setExpanded}>{draftDirty&&<p role="note" data-testid="material-ai-unsaved">有临时校对文字，批次列表暂时保留当前显示。清除暂存文字后再切换批次或启动新整理；后台处理继续运行。</p>}
     {book?.role?.kind==='answers'&&<p data-testid="material-ai-answer-role">本文件是独立答案册：两遍对照原图还原答案原文，保留章节、题号和解析；本批次不生成新题。已关联题册会在后台匹配已知答案，有疑点时保留候选。</p>}
     {book?.role?.kind==='answers'&&pdf&&<p data-testid="material-ai-answer-privacy">本机仅在文字和图像都能定位、且与正文分离时遮盖答案册页眉的联系方式。无法确认安全范围的页面会留在本机。</p>}
     <p>按所选范围分析题目、答案与解析，再对原文复核。完整文字题和已保留图义的 Word 题自动定稿入题本，正式组卷时集中确认；AI结果仍可编辑。缺图、跨页或两次结果不一致的题保留待整理。</p>
@@ -87,5 +99,5 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
       {batch.units.some(u=>u.error)&&<ul>{batch.units.filter(u=>u.error).slice(0,5).map(u=><li key={u.ordinal}>第{batch.start+u.ordinal-1}项：{errorText(u.error)}</li>)}</ul>}
     </article>)}
     {(batchOffset>0||batches.length===10)&&<div className="toolbar-row"><button disabled={busy||draftDirty||batchOffset===0} onClick={()=>setBatchOffset(Math.max(0,batchOffset-10))}>前10个批次</button><span>第{Math.floor(batchOffset/10)+1}页，进行中批次优先</span><button disabled={busy||draftDirty||batches.length<10} onClick={()=>setBatchOffset(batchOffset+10)}>后10个批次</button></div>}
-  </DisclosureCard></>;
+  </DisclosureCard></div></>;
 }

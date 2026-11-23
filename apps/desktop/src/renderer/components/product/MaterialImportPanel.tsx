@@ -3,12 +3,12 @@ import {Button} from '@heroui/react';
 import {MATERIAL_IMPORT_SCHEMA as schema,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchAction,type MaterialBatchFileFilter} from '../../../shared/material-import-batch';
 import {libraryFileSize} from './material-library';
 import {MaterialFolderAiPanel} from './MaterialFolderAiPanel';
-const labels={queued:'等待归档',running:'正在归档',paused:'已暂停',completed:'归档完成',partial:'部分文件待重试',failed:'归档中断'};
+const labels={queued:'等待归档',running:'正在归档',paused:'已暂停',selecting:'待选择文件',canceled:'已放弃',completed:'归档完成',partial:'部分文件待重试',failed:'归档中断'};
 const contentLabels={waiting:'正文等待或整理中',readable:'正文可查',partial:'部分正文可查',empty:'尚无正文，请核对',failed:'正文解析未完成',unavailable:'资料记录不可用'};
 const structureLabels={running:'正在恢复结构',paused:'结构恢复已暂停',complete:'结构恢复已完成',attention:'结构恢复有待处理项'};
 const structureFileLabels={pending:'结构等待处理',running:'结构恢复中',complete:'结构完整',partial:'结构部分完成，需核对',failed:'结构恢复失败'};
 /** Folder batch progress survives navigation, app shutdown and machine restart. */
-export function MaterialImportPanel({revision,changed,open}:{revision:number;changed:()=>void;open:(id:string)=>void}){
+export function MaterialImportPanel({revision,changed,open,choose}:{revision:number;changed:()=>void;open:(id:string)=>void;choose:(batchId:string)=>void}){
  const [page,setPage]=useState<MaterialBatchPage>(),[offset,setOffset]=useState(0),[expanded,setExpanded]=useState(''),[fileOffset,setFileOffset]=useState(0),[files,setFiles]=useState<MaterialBatchFiles>(),[error,setError]=useState(''),[pending,setPending]=useState('');
  const [fileFilter,setFileFilter]=useState<MaterialBatchFileFilter>('all'),[loadError,setLoadError]=useState('');
  const signature=useRef(''),onChanged=useRef(changed);onChanged.current=changed;
@@ -26,13 +26,15 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
   <h2>文件夹归档</h2><p className="teacher-library-caption">原件自动保存在本机，正文随后整理。关闭小智后，下次打开会接着处理；手动暂停的批次需点击继续。</p>
   {(error||loadError)&&<p role="alert">{error||loadError}</p>}
   {page?.batches.map(batch=><article key={batch.id} className="material-batch" data-testid={'material-batch-'+batch.id} data-status={batch.status}>
-   <div className="teacher-library-toolbar"><strong>{batch.name}</strong><span role="status">{labels[batch.status]}{batch.status==='running'&&batch.phase==='discover'?' · 扫描目录':''}</span>
-    {['queued','running'].includes(batch.status)?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'pause')} data-testid={'batch-pause-'+batch.id}>暂停归档</Button>:batch.status==='paused'?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'resume')} data-testid={'batch-resume-'+batch.id}>继续归档</Button>:null}
-    {(batch.failed>0||batch.parseFailed>0||batch.status==='failed')&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'retry')} data-testid={'batch-retry-'+batch.id}>重试未完成</Button>}
-    <Button size="sm" variant="ghost" onPress={()=>{setExpanded(expanded===batch.id?'':batch.id);setFileOffset(0);setFileFilter('all');setFiles(undefined);}} data-testid={'batch-files-'+batch.id}>{expanded===batch.id?'收起文件':'查看文件'}</Button>
+   <div className="teacher-library-toolbar"><strong>{batch.name}</strong><span role="status">{batch.phase==='preview'&&batch.status==='running'?'正在查找文件':batch.phase==='preview'&&batch.status==='queued'?'等待查找文件':labels[batch.status]}{batch.status==='running'&&batch.phase==='discover'?' · 扫描目录':''}</span>
+    {['queued','running'].includes(batch.status)?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'pause')} data-testid={'batch-pause-'+batch.id}>{batch.phase==='preview'?'暂停查找':'暂停归档'}</Button>:batch.status==='paused'?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'resume')} data-testid={'batch-resume-'+batch.id}>{batch.phase==='preview'?'继续查找':'继续归档'}</Button>:null}
+    {batch.status==='selecting'&&<Button size="sm" onPress={()=>choose(batch.id)} data-testid={'batch-choose-'+batch.id}>选择要导入的文件</Button>}
+    {batch.phase==='preview'&&batch.status==='failed'&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'resume')} data-testid={'batch-retry-'+batch.id}>继续查找文件</Button>}
+    {batch.phase!=='preview'&&(batch.failed>0||batch.parseFailed>0||batch.status==='failed')&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'retry')} data-testid={'batch-retry-'+batch.id}>重试未完成</Button>}
+    {batch.phase!=='preview'&&<Button size="sm" variant="ghost" onPress={()=>{setExpanded(expanded===batch.id?'':batch.id);setFileOffset(0);setFileFilter('all');setFiles(undefined);}} data-testid={'batch-files-'+batch.id}>{expanded===batch.id?'收起文件':'查看文件'}</Button>}
    </div>
    <p className="teacher-library-caption" data-testid={'batch-counts-'+batch.id}>已发现 {batch.scanned} 个文件 · 已归档 {batch.archived} 个（新增 {batch.imported}、复用 {batch.reused}） · {libraryFileSize(batch.archivedBytes)} / {libraryFileSize(batch.bytes)} · {batch.failed} 项失败 · {batch.skipped} 项跳过</p>
-   <p className="teacher-library-caption">{batch.readable} 份完整正文可查{batch.partialReadable?`，${batch.partialReadable} 份部分正文可查`:''}，{batch.waiting} 份正在或等待整理{batch.parseFailed?`，${batch.parseFailed} 份正文需重试`:''}{batch.empty?`，${batch.empty} 份尚无正文需核对`:''}。</p>
+   {batch.phase!=='preview'&&<p className="teacher-library-caption">{batch.readable} 份完整正文可查{batch.partialReadable?`，${batch.partialReadable} 份部分正文可查`:''}，{batch.waiting} 份正在或等待整理{batch.parseFailed?`，${batch.parseFailed} 份正文需重试`:''}{batch.empty?`，${batch.empty} 份尚无正文需核对`:''}。</p>}
    {batch.error&&<p role="alert">{batch.error}</p>}
    {((batch.structureAvailable??0)>0||batch.structureRecovery)&&<div data-testid={'batch-structure-'+batch.id}>
     <div className="teacher-library-toolbar">
@@ -52,7 +54,7 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
      {batch.structureRecovery.partial>0&&<p className="teacher-library-caption">部分完成的资料仍有结构疑点，请打开资料查看并核对。</p>}
     </>:<p className="teacher-library-caption">本批有 {batch.structureAvailable} 份支持结构恢复的不同资料。在本机恢复段落与试题结构，进度可续办；题目完整性与答案仍需核对。</p>}
    </div>}
-   <MaterialFolderAiPanel batchId={batch.id} open={open}/>
+   {batch.phase!=='preview'&&<MaterialFolderAiPanel batchId={batch.id} open={open}/>}
    {expanded===batch.id&&<div data-testid="batch-file-list">
     <div className="teacher-library-toolbar"><Button size="sm" variant="ghost" aria-pressed={fileFilter==='all'} onPress={()=>{setFileFilter('all');setFileOffset(0);setFiles(undefined);}} data-testid="batch-files-all">全部文件</Button><Button size="sm" variant="ghost" aria-pressed={fileFilter==='issues'} onPress={()=>{setFileFilter('issues');setFileOffset(0);setFiles(undefined);}} data-testid="batch-files-issues">只看待处理</Button></div>
     {!files?<p role="status">正在读取文件…</p>:!files.total?<p role="status">{fileFilter==='issues'?'当前没有待处理文件。':'还没有发现文件。'}</p>:<>

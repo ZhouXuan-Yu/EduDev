@@ -3216,3 +3216,5 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 ‘教学内容’等六个教案栏目已纳入原版本、编辑和双格式导出。D3 工程证据见 docs/product-agent/04_PROGRESS_AND_EVIDENCE.md。
 
 明确通用教案首轮由宿主绑定现有可编辑草稿工具，并以本轮持久化回执确定完成。真实字面转录的提示不能替代原图、字段归属与入库复核。
+
+预览发现、文件提交、本地收录、可选 AI 整理分别拥有明确入口。题目审阅布局仍以 [待选方案](../product-agent/07_MATERIAL_IMPORT_AND_REVIEW.md) 记录。

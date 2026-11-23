@@ -5,7 +5,7 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {MaterialImportBatches} from '../../src/main/assets/material-import-batches.ts';
-import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles} from '../../src/shared/material-import-batch.ts';
+import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles,validBatchSelection} from '../../src/shared/material-import-batch.ts';
 const output=await fs.mkdtemp(path.join(os.tmpdir(),'kb-folder-issues-boundaries-'));
 const results=[];
 async function check(name,fn){try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.stack});throw error;}}
@@ -37,6 +37,38 @@ try{
  await check('Batch local retry continues past one busy file, includes needs_ocr and partial, and skips healthy files',async()=>{const f=await fixture();try{const a=f.add('A.pdf','saved','failed',0),b=f.add('B.png','saved','needs_ocr',0),c=f.add('C.pdf','saved','partial');f.add('好.txt');f.throws.add(a);await f.action({});assert.deepEqual(f.calls,[a,b,c]);assert.match((await f.repo.files(f.batchId,0,'issues')).files.find(r=>r.relativePath==='A.pdf').contentError,/正在处理/);await f.reopen();assert.match((await f.repo.files(f.batchId,0,'issues')).files.find(r=>r.relativePath==='A.pdf').contentError,/正在处理/);}finally{await f.close();}});
  await check('Unknown files, healthy rows and paths outside the saved grant cannot be retried',async()=>{const f=await fixture();try{f.add('好.txt');for(const relativePath of ['不存在.pdf','好.txt','../其他.pdf'])await assert.rejects(f.action({relativePath}),/invalid_input/);assert.deepEqual(f.calls,[]);await assert.rejects(f.repo.files(f.batchId,0,'unknown'),/invalid_input/);}finally{await f.close();}});
  await check('An offline original folder cannot authorize re-reading a failed archive',async()=>{const f=await fixture();try{f.add('坏.pdf','failed');await fs.rename(f.source,f.source+'-offline');await assert.rejects(f.action({relativePath:'坏.pdf'}));assert.equal(f.db.prepare('SELECT status FROM material_import_entries').get().status,'failed');}finally{await f.close();}});
+ await check('Large selection stays read-only and version drift never enrolls an unchecked file',async()=>{
+  const f=await fixture();
+  try{
+   await Promise.all(Array.from({length:132},(_,i)=>fs.writeFile(path.join(f.source,`file-${i}.txt`),`fixture ${i}`)));
+   const archived=[];
+   f.repo.host.import=async(files,signal,guard)=>{signal.throwIfAborted();await guard();archived.push(...files.map(file=>path.basename(file)));return {items:[{ok:true,reused:false}],resources:[{id:'test-material'}]};};
+   const batchId=await f.repo.create(f.source,true),selection={schemaVersion:schema,batchId,mode:'only',paths:['file-1.txt']};
+   f.repo.start();
+   async function done(status){
+    for(let i=0;i<400;i++){
+     const row=f.db.prepare('SELECT status,owner_pid FROM material_import_batches WHERE id=?').get(batchId);
+     if(row.status===status&&!row.owner_pid)return;
+     await new Promise(resolve=>setTimeout(resolve,15));
+    }
+    throw Error(`Missing batch status ${status}`);
+   }
+   await done('selecting');
+   assert.equal((await f.repo.files(batchId,0,'selectable')).total,132);
+   assert.deepEqual(archived,[]);
+   assert(validBatchSelection(selection));
+   for(const paths of [[],['../outside.txt'],['file-1.txt','file-1.txt']])assert(!validBatchSelection({...selection,paths}));
+   await assert.rejects(f.repo.action({schemaVersion:schema,batchId,action:'retry'}),/selection_required/);
+   await fs.writeFile(path.join(f.source,'file-1.txt'),'changed version with different length');
+   await f.repo.select(selection);
+   await done('partial');
+   assert.deepEqual(archived,[]);
+   assert.equal((await f.repo.files(batchId,0,'issues')).files[0].relativePath,'file-1.txt');
+   await f.repo.action({schemaVersion:schema,batchId,action:'retry'});
+   await done('completed');
+   assert.deepEqual(archived,['file-1.txt']);
+  }finally{await f.close();}
+ });
  await check('Failed local retry retains its reason; explicit successful retry clears only that reason',async()=>{const f=await fixture();try{const a=f.add('坏.pdf','saved','failed',0);f.throws.add(a);await assert.rejects(f.action({relativePath:'坏.pdf'}),/local_retry_failed/);assert.match(f.db.prepare('SELECT error FROM material_import_entries').get().error,/重试未启动/);f.throws.clear();await f.action({relativePath:'坏.pdf'});assert.equal(f.db.prepare('SELECT error FROM material_import_entries').get().error,'');assert.equal(f.db.prepare('SELECT status FROM material_import_entries').get().status,'saved');}finally{await f.close();}});
 }catch(error){console.error(error);process.exitCode=1;}
 finally{await fs.writeFile(path.join(output,'report.json'),JSON.stringify({output,checks:results,success:!process.exitCode,scope:'Actual SQLite queries and local temporary files; retry queue host controlled, no AI/provider'},null,2));console.log(JSON.stringify({output,passed:results.filter(r=>r.passed).length,total:results.length}));}

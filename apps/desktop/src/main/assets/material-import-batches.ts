@@ -2,13 +2,16 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import type {KnowledgeImportResult} from '../../shared/contracts';
-import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles,type MaterialBatch,type MaterialBatchAction,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchState,type MaterialBatchFileFilter,type MaterialBatchContentState} from '../../shared/material-import-batch';
+import {MATERIAL_IMPORT_SCHEMA as schema,validBatchAction,validBatchFiles,validBatchSelection,type MaterialBatch,type MaterialBatchAction,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchState,type MaterialBatchFileFilter,type MaterialBatchContentState,type MaterialBatchSelection} from '../../shared/material-import-batch';
 import {isSupportedMaterialFile} from './material-folder-import';
 import {structureRecoveryFileState,structureRecoveryFailure,type MaterialStructureRecovery} from './material-structure-recovery';
 import type {MaterialStructureRecoveryAction,MaterialStructureRecoveryState} from '../../shared/material-import-batch';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={structureRecovery?:MaterialStructureRecovery;root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
 const DISCOVERY_SLICE=128;
+// Older builds must not automatically process batches with an explicit selection.
+const selectionSchema='xiaozhi.material-import-selection.v2';
+const batchSchemas=[schema,selectionSchema];
 const now=()=>new Date().toISOString();
 const inside=(root:string,target:string)=>{const p=path.relative(root,target);return p===''||p!=='..'&&!p.startsWith('..'+path.sep)&&!path.isAbsolute(p);};
 const same=(a:string,b:string)=>process.platform==='win32'?a.toLowerCase()===b.toLowerCase():a===b;
@@ -39,10 +42,15 @@ export class MaterialImportBatches{
   `CREATE TABLE IF NOT EXISTS material_import_entries(seq INTEGER PRIMARY KEY AUTOINCREMENT,batch_id TEXT NOT NULL REFERENCES material_import_batches(id),relative_path TEXT NOT NULL,kind TEXT NOT NULL,status TEXT NOT NULL,source_version TEXT NOT NULL DEFAULT '',file_size INTEGER NOT NULL DEFAULT 0,resource_id TEXT NOT NULL DEFAULT '',reused INTEGER NOT NULL DEFAULT 0,error TEXT NOT NULL DEFAULT '',UNIQUE(batch_id,relative_path))`,
   `CREATE INDEX IF NOT EXISTS idx_material_import_work ON material_import_entries(batch_id,kind,status,seq)`,
   `CREATE INDEX IF NOT EXISTS idx_material_import_resource ON material_import_entries(resource_id)`,
- ])await this.host.run(q);await this.host.structureRecovery?.migrate();}
+ ])await this.host.run(q);
+  if(!(await this.host.all('PRAGMA table_info(material_import_batches)')).some(row=>row.name==='selection_json')){
+   await this.host.run('ALTER TABLE material_import_batches ADD COLUMN selection_json TEXT');
+  }
+  await this.host.structureRecovery?.migrate();
+ }
  start(){if(this.timer)return;this.host.structureRecovery?.start();this.closing=false;this.timer=setInterval(()=>this.wake(),700);this.timer.unref();this.wake();}
  async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;await this.host.structureRecovery?.close();}
- async pauseAll(){await this.host.structureRecovery?.pauseAll();await this.host.run(`UPDATE material_import_batches SET status='paused',updated_at=? WHERE schema_version=? AND status='queued' AND owner_pid=0`,[now(),schema]);if(this.active){this.active.pause=true;this.active.controller.abort();await this.pumping;}}
+ async pauseAll(){await this.host.structureRecovery?.pauseAll();await this.host.run(`UPDATE material_import_batches SET status='paused',updated_at=? WHERE schema_version IN (?,?) AND status='queued' AND owner_pid=0`,[now(),...batchSchemas]);if(this.active){this.active.pause=true;this.active.controller.abort();await this.pumping;}}
  private wake(){if(this.closing||this.pumping)return;this.pumping=this.pump().catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
  private async root(row:Row){
   const root=String(row.root_path),managed=await fs.realpath(this.host.root()),stat=await fs.lstat(root);
@@ -53,15 +61,38 @@ export class MaterialImportBatches{
   const root=path.resolve(selected),stat=await fs.lstat(root);const row={root_path:root,root_identity:identity(stat)};
   await this.root(row);return row;
  }
- async create(selected:string){
+ async create(selected:string,review=false){
   const grant=await this.selected(selected),id='batch_'+randomUUID(),time=now();
-  await this.host.run(`INSERT INTO material_import_batches(id,schema_version,root_path,root_identity,name,status,created_at,updated_at) VALUES (?,?,?,?,?,'paused',?,?)`,[id,schema,grant.root_path,grant.root_identity,path.basename(grant.root_path)||grant.root_path,time,time]);
+  await this.host.run(`INSERT INTO material_import_batches(id,schema_version,root_path,root_identity,name,status,phase,created_at,updated_at) VALUES (?,?,?,?,?,'paused',?,?,?)`,[id,review?selectionSchema:schema,grant.root_path,grant.root_identity,path.basename(grant.root_path)||grant.root_path,review?'preview':'discover',time,time]);
   await this.host.run(`INSERT INTO material_import_entries(batch_id,relative_path,kind,status) VALUES (?,'','directory','pending')`,[id]);
   await this.host.run(`UPDATE material_import_batches SET status='queued' WHERE id=?`,[id]);this.wake();return id;
  }
+ async select(input:MaterialBatchSelection){
+  if(!validBatchSelection(input))throw Error('invalid_input');
+  const row=(await this.host.all("SELECT * FROM material_import_batches WHERE id=? AND schema_version=? AND phase='preview' AND status='selecting' AND owner_pid=0",[input.batchId,selectionSchema]))[0];
+  if(!row)throw Error('selection_changed');
+  if(input.mode==='cancel'){
+   const canceled=await this.host.change("UPDATE material_import_batches SET status='canceled',updated_at=? WHERE id=? AND phase='preview' AND status='selecting' AND owner_pid=0",[now(),input.batchId]);
+   if(!canceled)throw Error('selection_changed');
+   return;
+  }
+  await this.root(row);
+  const paths=JSON.stringify(input.paths);
+  const pending="e.batch_id=? AND e.kind='file' AND e.status='pending'";
+  const membership=Number((await this.host.all(`SELECT COUNT(*) n FROM material_import_entries e WHERE ${pending} AND e.relative_path IN (SELECT value FROM json_each(?))`,[input.batchId,paths]))[0]?.n||0);
+  if(membership!==input.paths.length)throw Error('selection_changed');
+  const included=input.mode==='only'?'IN':'NOT IN';
+  const chosen=`SELECT e.relative_path FROM material_import_entries e WHERE ${pending} AND e.relative_path ${included} (SELECT value FROM json_each(?))`;
+  const changed=await this.host.change(`UPDATE material_import_batches
+    SET selection_json=(SELECT json_group_array(relative_path) FROM (${chosen})),status='queued',phase='archive',updated_at=?
+    WHERE id=? AND phase='preview' AND status='selecting' AND owner_pid=0 AND EXISTS (${chosen})`,[input.batchId,paths,now(),input.batchId,input.batchId,paths]);
+  if(!changed)throw Error('selection_changed');
+  this.wake();
+ }
  async action(input:MaterialBatchAction){
   if(!validBatchAction(input))throw new Error('invalid_input');
-  const row=(await this.host.all('SELECT * FROM material_import_batches WHERE id=? AND schema_version=?',[input.batchId,schema]))[0];if(!row)throw new Error('invalid_input');
+  const row=(await this.host.all('SELECT * FROM material_import_batches WHERE id=? AND schema_version IN (?,?)',[input.batchId,...batchSchemas]))[0];if(!row)throw new Error('invalid_input');
+  if(row.status==='selecting'||row.status==='canceled'||row.phase==='preview'&&input.action!=='pause'&&input.action!=='resume')throw Error('selection_required');
   if(input.action.startsWith('structure_')){
    if(!this.host.structureRecovery)throw Error('unsupported');
    await this.host.structureRecovery.action(input.batchId,input.action as MaterialStructureRecoveryAction);
@@ -101,8 +132,8 @@ export class MaterialImportBatches{
   await this.host.run(`UPDATE material_import_entries SET error='' WHERE seq=? AND status='saved'`,[Number(entry.seq)]);return true;
  }
  async list(offset=0):Promise<MaterialBatchPage>{
-  const total=Number((await this.host.all('SELECT COUNT(*) n FROM material_import_batches WHERE schema_version=?',[schema]))[0]?.n||0);
-  const rows=await this.host.all(`SELECT * FROM material_import_batches WHERE schema_version=? ORDER BY created_at DESC,id LIMIT 10 OFFSET ?`,[schema,offset]),batches:MaterialBatch[]=[];
+  const total=Number((await this.host.all('SELECT COUNT(*) n FROM material_import_batches WHERE schema_version IN (?,?)',batchSchemas))[0]?.n||0);
+  const rows=await this.host.all(`SELECT * FROM material_import_batches WHERE schema_version IN (?,?) ORDER BY created_at DESC,id LIMIT 10 OFFSET ?`,[...batchSchemas,offset]),batches:MaterialBatch[]=[];
   for(const row of rows){
    const sums=(await this.host.all(`SELECT COUNT(*) scanned,COALESCE(SUM(file_size),0) bytes,SUM(status='saved') archived,SUM(status='saved' AND reused=0) imported,SUM(status='saved' AND reused=1) reused,SUM(status='failed') failed,SUM(status='skipped') skipped,COALESCE(SUM(CASE WHEN status='saved' THEN file_size ELSE 0 END),0) archived_bytes FROM material_import_entries WHERE batch_id=? AND kind='file'`,[String(row.id)]))[0];
    const parse=(await this.host.all(`SELECT SUM(r.parse_status IN (${readableStatuses}) AND EXISTS (SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) readable,SUM(r.parse_status='partial' AND EXISTS (SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) partial_readable,SUM(${failedParse}) failed,SUM(r.parse_status IN (${readableStatuses}) AND NOT EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id)) empty,COUNT(*) n FROM teacher_resources r WHERE r.id IN (SELECT resource_id FROM material_import_entries WHERE batch_id=? AND status='saved')`,[String(row.id)]))[0];
@@ -119,8 +150,9 @@ export class MaterialImportBatches{
   const recovery=this.host.structureRecovery;
   const issue=recovery?`(${fileIssue} OR s.state IN ('partial','failed'))`:fileIssue;
   const joined=recovery?`LEFT JOIN material_structure_recovery_items s ON s.batch_id=e.batch_id AND s.resource_id=e.resource_id AND e.status='saved'`:'';
+  const selection=filter==='selectable'?(await this.host.all("SELECT name,status,error FROM material_import_batches WHERE id=? AND schema_version=? AND phase='preview'",[id,selectionSchema]))[0]:undefined;
   const from=`FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id ${joined}
-    WHERE e.batch_id=? AND (e.kind='file' OR e.status='failed')${filter==='issues'?` AND ${issue}`:''}`;
+    WHERE e.batch_id=? AND ${filter==='selectable'?"e.kind='file' AND e.status='pending'":"(e.kind='file' OR e.status='failed')"}${filter==='issues'?` AND ${issue}`:''}`;
   const total=Number((await this.host.all(`SELECT COUNT(*) n ${from}`,[id]))[0]?.n||0);
   const rows=await this.host.all(`SELECT e.*,${contentState} content_state ${recovery?`,${structureRecoveryFileState} structure_status,s.error structure_error`:''}
     ${from} ORDER BY CASE WHEN ${issue} THEN 0 WHEN e.status='pending' THEN 1 ELSE 2 END,e.seq LIMIT 20 OFFSET ?`,[id,offset]);
@@ -128,10 +160,10 @@ export class MaterialImportBatches{
    const state=r.content_state as MaterialBatchContentState,saved=r.status==='saved';
    const structureStatus=r.structure_status as MaterialStructureRecoveryState|undefined;
    return{...(structureStatus?{structureStatus}:{}),...(structureStatus==='failed'?{structureError:structureRecoveryFailure(String(r.structure_error))}:{}),relativePath:String(r.relative_path),status:r.status as 'pending'|'saved'|'failed'|'skipped',resourceId:String(r.resource_id),bytes:Number(r.file_size),error:saved?'':String(r.error),...(saved?{contentState:state,contentError:contentError(r,state)}:{}),retryable:String(r.relative_path)!==''&&(r.status==='failed'||saved&&['failed','partial'].includes(state))};
-  }),total,offset,hasMore:offset+rows.length<total};
+  }),total,offset,hasMore:offset+rows.length<total,...(selection?{selection:{name:String(selection.name),status:selection.status as MaterialBatchState,error:String(selection.error)}}:{})};
  }
  private async pump(){
-  const rows=await this.host.all(`SELECT * FROM material_import_batches WHERE schema_version=? AND status IN ('queued','running') ORDER BY created_at LIMIT 100`,[schema]);
+  const rows=await this.host.all(`SELECT * FROM material_import_batches WHERE schema_version IN (?,?) AND status IN ('queued','running') ORDER BY created_at LIMIT 100`,batchSchemas);
   for(const row of rows){
    if(this.closing)return;if(alive(Number(row.owner_pid)))continue;
    const claimed=await this.host.change(`UPDATE material_import_batches SET status='running',owner_pid=?,owner_nonce=?,error='',updated_at=? WHERE id=? AND status=? AND owner_nonce=?`,[process.pid,this.nonce,now(),String(row.id),String(row.status),String(row.owner_nonce)]);if(!claimed)continue;
@@ -147,7 +179,8 @@ export class MaterialImportBatches{
   let cursor=file;for(;;){const stat=await fs.lstat(cursor);if(stat.isSymbolicLink()||!same(await fs.realpath(cursor),cursor))throw new Error('source_changed');if(same(cursor,root))return {file,stat:await fs.lstat(file)};cursor=path.dirname(cursor);}
  }
  private async run(row:Row,signal:AbortSignal){
-  const root=await this.root(row),id=String(row.id);let discovered=0;
+  const root=await this.root(row),id=String(row.id),preview=row.phase==='preview';let discovered=0;
+  if(!preview&&row.schema_version===selectionSchema&&typeof row.selection_json!=='string')throw Error('selection_required');
   for(;;){
    signal.throwIfAborted();await this.root(row);
    const dirs=await this.host.all(`SELECT * FROM material_import_entries WHERE batch_id=? AND kind='directory' AND status='pending' ORDER BY seq LIMIT 1`,[id]);if(!dirs.length)break;
@@ -162,7 +195,7 @@ export class MaterialImportBatches{
      const managed=inside(path.resolve(this.host.root()),file),kind=stat.isDirectory()&&!stat.isSymbolicLink()?'directory':'file';
      const skipped=managed||stat.isSymbolicLink()||kind==='file'&&(!stat.isFile()||!isSupportedMaterialFile(entry.name));
      await this.host.run(`INSERT OR IGNORE INTO material_import_entries(batch_id,relative_path,kind,status,source_version,file_size,error) VALUES (?,?,?,?,?,?,?)`,[id,child,kind,skipped?'skipped':'pending',stat.isFile()?fileVersion(stat):'',stat.isFile()?stat.size:0,skipped?'非支持格式、链接或应用资料目录，已跳过。':'']);
-     if(++discovered>=DISCOVERY_SLICE){
+     if(!preview&&!row.selection_json&&++discovered>=DISCOVERY_SLICE){
       await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
       await this.archivePending(row,root,signal,DISCOVERY_SLICE);discovered=0;
       await this.host.run(`UPDATE material_import_batches SET phase='discover' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
@@ -170,6 +203,14 @@ export class MaterialImportBatches{
     }
     await this.host.run(`UPDATE material_import_entries SET status='scanned' WHERE seq=?`,[Number(directory.seq)]);
    }catch(error){signal.throwIfAborted();if((error as NodeJS.ErrnoException)?.code==='ENOSPC')throw error;await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(directory.seq)]);}
+  }
+  if(preview){
+   await this.host.run("UPDATE material_import_batches SET status='selecting',updated_at=? WHERE id=? AND owner_nonce=?",[now(),id,this.nonce]);
+   return;
+  }
+  if(typeof row.selection_json==='string'){
+   await this.host.run(`UPDATE material_import_entries SET status='skipped',error='未选中导入。' WHERE batch_id=?
+     AND kind='file' AND status IN ('pending','failed') AND relative_path NOT IN (SELECT value FROM json_each(?))`,[id,row.selection_json]);
   }
   await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
   await this.archivePending(row,root,signal);

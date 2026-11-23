@@ -69,7 +69,7 @@ export class MaterialFolderAiRepository{
  async authorize(input:FolderAiGrant):Promise<FolderAiView>{
   if(!validFolderAiGrant(input))throw Error('invalid_input');await this.configured(input.settingsRevision);
   await this.host.writer(async target=>{
-   if(!(await target.host.all('SELECT id FROM material_import_batches WHERE id=?',[input.batchId])).length)throw Error('invalid_input');
+   if(!(await target.host.all("SELECT id FROM material_import_batches WHERE id=? AND phase<>'preview'",[input.batchId])).length)throw Error('invalid_input');
    const prior=(await target.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[input.batchId]))[0];
    const mode=materialAiProcessingPolicy(input.processingMode??prior?.processing_mode??'legacy').mode;
    if(prior&&prior.processing_mode!==mode)throw Error('processing_mode_locked');

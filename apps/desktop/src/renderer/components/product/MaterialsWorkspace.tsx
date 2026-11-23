@@ -31,6 +31,7 @@ import { MaterialLibraryCatalog } from './material-library-ui/MaterialLibraryCat
 import { MaterialLibraryActivity, MaterialLibraryTask, MaterialLibraryDisclosure, materialQueueSummary } from './material-library-ui/MaterialLibraryActivity';
 import { MATERIAL_TASK_SCHEMA, type MaterialQueueView } from '../../../shared/material-parse-task';
 import { MaterialImportPanel } from './MaterialImportPanel';
+import { MaterialImportSelection } from './MaterialImportSelection';
 import { MaterialQuestionStatus } from './MaterialQuestionStatus';
 import { MaterialTextSearch } from './MaterialTextSearch';
 import { RetrievalProgress } from './RetrievalProgress';
@@ -161,7 +162,8 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
             ++listEpoch.current;
         };
     }, [query, offset, scopeKey]);
-    async function work(retry = false, folder = false) {
+    const [importSelection,setImportSelection]=useState('');
+    async function work(retry = false, folder = false, review = false) {
         if (lock.current || !canChangeSource())
             return;
         lock.current = true;
@@ -183,10 +185,11 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                 await load();
             }
             else if (folder) {
-                const result = await window.omniEdu.createMaterialBatch();
+                const result = await window.omniEdu.createMaterialBatch(review);
                 if (!alive.current)
                     return;
-                setNotice(result.canceled ? '已取消选择文件夹。' : '文件夹已开始自动归档，可以继续使用小智。进度会保留，重启后自动接着处理。');
+                if(review&&result.batchId)setImportSelection(result.batchId);
+                else setNotice(result.canceled ? '已取消选择文件夹。' : '文件夹已开始自动归档，可以继续使用小智。进度会保留，重启后自动接着处理。');
             }
             else {
                 const result = await window.omniEdu.importMaterialsBackground();
@@ -330,7 +333,9 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
     return <MaterialLibraryLayout
         actions={<>
             <Button variant="secondary" onPress={() => void work(false, true)} isDisabled={busy}
-                data-testid="materials-import-folder"><FolderPlus size={17}/>添加文件夹</Button>
+                data-testid="materials-import-folder"><FolderPlus size={17}/>导入整个文件夹</Button>
+            <Button variant="secondary" onPress={() => void work(false, true, true)} isDisabled={busy}
+                data-testid="materials-select-folder">从文件夹勾选导入</Button>
             <Button onPress={() => void work()} isDisabled={busy} isPending={busy}
                 data-testid="materials-import"><Plus size={17}/>添加资料</Button>
         </>}
@@ -365,6 +370,9 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
             }} isDisabled={busy || fetching || detailBlocked} data-testid="materials-refresh"><RefreshCw size={16}/></Button>
         </>}
         feedback={<>
+            {importSelection&&<MaterialImportSelection key={importSelection} batchId={importSelection}
+                close={()=>{setImportSelection('');setNotice('可在处理队列的「文件夹批次与恢复」继续选择。');}}
+                finish={canceled=>{setImportSelection('');setRevision(value=>value+1);setNotice(canceled?'已放弃本批，未导入文件。':'已提交选中的文件，可在处理队列查看收录进度。');}}/>}
             {(busy || background) && <div className={styles.progress}>
                 <p role="status" data-testid="materials-progress">{folderProgress
                     ? `正在添加文件夹：已查看 ${folderProgress.scanned} 个文件，新增 ${folderProgress.imported} 份、复用 ${folderProgress.reused} 份；原件不会上传…`
@@ -391,7 +399,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
             batches={<MaterialImportPanel revision={revision} changed={() => {
                 void load(location.current.query, location.current.offset);
                 setRevision(value => value + 1);
-            }} open={id => void openBatchResource(id)}/>}
+            }} open={id => void openBatchResource(id)} choose={setImportSelection}/>}
             diagnostics={<><MaterialQuestionStatus/><RetrievalProgress/></>}/>}>
         <div className={styles.columns} data-mode={mode} data-has-detail={!!resource}>
             <div className={styles.catalog}>

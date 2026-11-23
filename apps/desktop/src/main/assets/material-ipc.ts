@@ -14,7 +14,7 @@ import {recognizeLocalPdfLayout,recognizeLocalPageBlocks} from '../xiaozhi-agent
 import {withMaterialPageBlocks} from './material-page-blocks';
 import {importMaterialFolder} from './material-folder-import';
 import type {MaterialFolderProgress} from '../../shared/materials';
-import {MATERIAL_IMPORT_SCHEMA,validBatchQuery,validBatchAction,validBatchFiles,type MaterialBatchCreated} from '../../shared/material-import-batch';
+import {MATERIAL_IMPORT_SCHEMA,validBatchQuery,validBatchAction,validBatchFiles,validBatchSelection,type MaterialBatchCreated} from '../../shared/material-import-batch';
 import {validFolderAiQuery,validFolderAiGrant,validFolderAiAction} from '../../shared/material-folder-ai';
 import {MATERIAL_SEARCH_SCHEMA,validMaterialTextQuery,type MaterialTextPage} from '../../shared/material-search';
 import {materialReference,materialUnitDigest} from './material-source';
@@ -76,11 +76,13 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:folder-ai-action',(event,input)=>{check(event);if(!validFolderAiAction(input))throw Error('invalid_input');return store.materialFolderAi.action(structuredClone(input));});
  ipcMain.handle('materials:batch-files',(event,input)=>{check(event);if(!validBatchFiles(input))throw new Error('invalid_input');return store.materialImports.files(input.batchId,input.offset,input.filter);});
  ipcMain.handle('materials:batch-action',(event,input)=>{check(event);if(!validBatchAction(input))throw new Error('invalid_input');return store.materialImports.action(structuredClone(input));});
- ipcMain.handle('materials:batch-create',event=>job(event,async():Promise<MaterialBatchCreated>=>{
-  const selection=await dialog.showOpenDialog(window()!,{title:'选择自动归档的教学资料文件夹',properties:['openDirectory']});check(event);
+ ipcMain.handle('materials:batch-select',(event,input)=>{check(event);if(!validBatchSelection(input))throw Error('invalid_input');return store.materialImports.select(structuredClone(input));});
+ ipcMain.handle('materials:batch-create',(event,review)=>job(event,async():Promise<MaterialBatchCreated>=>{
+  if(review!==undefined&&typeof review!=='boolean')throw Error('invalid_input');
+  const selection=await dialog.showOpenDialog(window()!,{title:review?'选择要筛选的教学资料文件夹':'选择自动归档的教学资料文件夹',properties:['openDirectory']});check(event);
   if(selection.canceled||!selection.filePaths.length)return {schemaVersion:MATERIAL_IMPORT_SCHEMA,canceled:true};
   if(selection.filePaths.length!==1)throw new Error('invalid_input');
-  const batchId=await store.materialImports.create(selection.filePaths[0]);return {schemaVersion:MATERIAL_IMPORT_SCHEMA,canceled:false,batchId};
+  const batchId=await store.materialImports.create(selection.filePaths[0],review);return {schemaVersion:MATERIAL_IMPORT_SCHEMA,canceled:false,batchId};
  }));
  ipcMain.handle('materials:job',event=>{check(event);return {schemaVersion:MATERIALS_SCHEMA,active:!!active,...(store.materials.progress?{scan:store.materials.progress}:{}),...(folder?{folder}:{})};});
  ipcMain.handle('materials:queue',(event,resourceId)=>{check(event);if(resourceId!==undefined&&!materialId(resourceId))throw new Error('invalid_input');return store.materialQueue.snapshot(resourceId);});

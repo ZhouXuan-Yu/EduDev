@@ -3987,3 +3987,5 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 ‘教学内容’等六个教案栏目已纳入原版本、编辑和双格式导出。D3 工程证据见 docs/product-agent/04_PROGRESS_AND_EVIDENCE.md。
 
 教案从对话开稿真实 DeepSeek 合成单例已通过，软件工程状态和教师试用范围见 D3 进度及固定验收目录。
+
+D3 勾选导入和手动整理入口通过真实 Electron 专项。批量发现、选择确认、冷启动、放弃、版本变化和表单权限均有证据。

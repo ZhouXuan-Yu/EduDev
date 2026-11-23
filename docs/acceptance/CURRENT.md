@@ -3734,3 +3734,5 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 教案新增六个栏目已通过结构验证、桌面编辑、SQLite 冷启和固定版本的 Word/PDF 文本解析。普通对话入口与真实教学质量另按 D3 验证。
 
 从对话开通用教案已验证原编辑器、同会话咨询、没有草稿的失败和冷启。真实 DeepSeek 单例与输入边界见 [D3 工程证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-从问小智开教案)。
+
+资料库勾选导入最终 Electron 4/4，跨页只归档所选文件，放弃或重启前不提交。打开整理范围仍需教师确认后发起。详见 [D3 实测记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-勾选导入与手动整理)。

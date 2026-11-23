@@ -32,7 +32,7 @@ import type {WordProofInput,WordProof,WordProofCancel,WordProofImageQuery,WordPr
 import type {TeacherResource} from '../shared/contracts';
 import type {FolderAiQuery,FolderAiGrant,FolderAiAction,FolderAiView} from '../shared/material-folder-ai';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
-import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
+import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated,MaterialBatchSelection} from '../shared/material-import-batch';
 import type {MaterialTextQuery,MaterialTextPage,MaterialIndexStatus} from '../shared/material-search';
 import type {ArchiveEdit,ArchiveStatus} from '../shared/question-archive';
 import type {MaterialPdfStatus} from '../shared/material-pdf-file';
@@ -471,7 +471,8 @@ const api = {
   importPastedMaterial: (input: import('../shared/material-paste').MaterialPasteImport) =>
     ipcRenderer.invoke('materials:paste-import', input) as Promise<KnowledgeImportResult>,
   importMaterialsFolder: () => ipcRenderer.invoke('materials:import-folder') as Promise<import('../shared/materials').MaterialFolderResult>,
-  createMaterialBatch: () => ipcRenderer.invoke('materials:batch-create') as Promise<MaterialBatchCreated>,
+  createMaterialBatch: (review?: boolean) => ipcRenderer.invoke('materials:batch-create',review) as Promise<MaterialBatchCreated>,
+  selectMaterialBatch: (input: MaterialBatchSelection) => ipcRenderer.invoke('materials:batch-select',input) as Promise<void>,
   getMaterialFolderAi: (input:FolderAiQuery) => ipcRenderer.invoke('materials:folder-ai-get',input) as Promise<FolderAiView|undefined>,
   authorizeMaterialFolderAi: (input:FolderAiGrant) => ipcRenderer.invoke('materials:folder-ai-authorize',input) as Promise<FolderAiView>,
   controlMaterialFolderAi: (input:FolderAiAction) => ipcRenderer.invoke('materials:folder-ai-action',input) as Promise<FolderAiView>,

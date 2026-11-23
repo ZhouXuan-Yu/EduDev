@@ -1,0 +1,35 @@
+.choices {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.choices label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) max-content;
+  align-items: start;
+  gap: 10px;
+  padding: 6px 2px;
+  overflow-wrap: anywhere;
+}
+
+.choices small {
+  color: var(--muted, #717582);
+}
+
+.footer {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
