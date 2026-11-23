@@ -646,3 +646,23 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-quality`。正式专项报告为 `verified-wzIH9I/result.json`，同目录保存双尺寸截图、真实输出与 SQLite。手动窗口和步骤位于 `manual-phase4-mock-exam-quality`。保留首次导入后的会话同步等待、调试脚本重复点击提示等失败日志，已用冷启动复测实际入口。
 
 模考原件页码核对 **已实现**。印刷页码缺乏互证或互相矛盾时提示待核。真实样本仍观察到题号范围识别合并、几何图标记混入正文。原件页回执保留了封面 2024 学年度及日期，当前目录使用的首个索引片段从题干开始，因而未呈现与文件名 2025 届的区别。证据为 `metadata-source-gap.log`，继续复核复杂版式、公式、阅读顺序和元数据。
+
+## Phase 4.3 模考封面与年度分类
+
+模考目录从当前原件的 PDF 第一页解析回执读取标题，跳过题干，独立保存学年度、考试月份和文件名届别。真实杨浦卷显示 2024 学年度、2024 年 12 月和 2025 届。两个年度查询都可找到该卷，未确定分类年份时不能确认。教师按所整理的年度确认后，实际 Word／PDF 和重启后的目录都保留三条依据。没有原件标题回执时沿用已有正文索引候选。旧目录不迁移，无需重写既有来源或生成文件。
+
+| 测试 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-mock-exam-cover` | 通过，含 TypeScript 检查。主进程 SHA-256 为 `2d2d83117b08da2d110c8927e519278f4c33952845b8c0271b2386e63e303ac6`。 |
+| `node scripts/education/mock-exam-cover-metadata.mjs` | 8/8。封面日期、文件名届别、题干干扰、学年度区间、文件名通用、封面缺失与现有类别冲突。 |
+| `node scripts/education/mock-exam-catalog-electron.mjs --pdf-text` | 7/7。确认、配答、重复、来源变化及冷启动保持，修正测试对带许可标签的答案册文字的精确断言。运行日志 `native-catalog/retest.log`。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/electron-smoke.mjs` | 最终构建 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| `run-cover-export.mjs`、`run-cover-readback-ui.mjs` | 真实扫描及同源缺页件。年份留空拒绝确认，填写 2025 后保存。Word XML 与 PDF 文本均保留封面依据和缺页警示；生成物与 SQLite 摘要一致；双尺寸冷启动从工作台读回。模型响应使用本地夹具，付费请求 0。 |
+| `cover-revalidation.log` | 在隔离库复核当前证据，修改封面回执后拒绝确认旧快照，旧目录继续可用，测试通用文件名及 2024 年候选。 |
+| `npm audit --omit=dev --json` | 现有依赖告警 20 项（2 项 high），无依赖变更。 |
+| `npm run test:ui-contracts` | 现有页面合同测试失败。测试的页面清单遗漏已注册的「我的任务」，继续核对时还发现教学工作台和我的任务的约束条目数量不满足测试阈值。此前主线的测试、页面合同与页面映射在本次改动中均无差异。原日志和诊断保留。 |
+
+证据位于 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-mock-exam-cover`，验收结果为 `verified-5CmHaM/result.json`，双尺寸冷启动截图在同目录。保留首次脚本定位提示失败记录，实际提示存在并经复测。手测窗口和步骤在 `manual-phase4-mock-exam-cover`。
+
+模考封面与年度分类 **已实现**。复杂题的独立质量继续。真实原卷基线保留 18 处待核，其中第 15 题未匹配四选项，第 20 题首行跨行印刷分值，结构记录仍含无题号候选。与原图逐题核对后再进入正式质量结论。

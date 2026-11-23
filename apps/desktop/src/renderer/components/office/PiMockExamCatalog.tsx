@@ -5,7 +5,7 @@ import {DisclosureCard} from '../ui/DisclosureCard';
 import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
-import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamPageEvidenceLabel,
+import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamPageEvidenceLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
@@ -31,7 +31,7 @@ function ExamFields({entry,change,update}:{entry:MockExamEntry;change:MockExamCa
         :<select value={change.metadata[key]??''} data-testid={'mock-exam-field-'+key} onChange={event=>field(key,event.currentTarget.value)}>
           <option value="">待核对</option>{values[key].map(value=><option key={value}>{value}</option>)}
         </select>}
-      <small>{entry.conflicts.includes(key)?'原文件名与正文给出了多个值':entry.inferred[key]||'没有可用的原件标记'}</small>
+      <small>{entry.conflicts.includes(key)?key==='year'&&entry.cover?'请参考封面日期和文件名，确认当前汇编年份':'原文件名与正文给出了多个值':entry.inferred[key]||'没有可用的原件标记'}</small>
     </label>)}
     <label>使用许可
       <select value={change.permission} data-testid="mock-exam-permission" onChange={event=>{
@@ -139,9 +139,11 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
             const edit=edits[index];
             if(!edit)return null;
             const key=position(edit.metadata);
+            const cover=entry.cover&&mockExamCoverLabel(entry.cover);
             return <li key={entry.resourceId} className={styles.entry} data-testid="mock-exam-row" data-resource-id={entry.resourceId}>
               <strong>{entry.title}</strong>
               <span>{fields.map(field=>edit.metadata[field]??'待核对').join(' · ')}</span>
+              {cover&&<span data-testid="mock-exam-cover-evidence">{cover}</span>}
               <span>{structure[entry.structure.state]}
                 {entry.structure.pages?(' '+entry.structure.processed+'/'+entry.structure.pages+' 页'):''}
                 {entry.structure.held?(' · '+entry.structure.held+' 处待核'):''} · {answers[entry.answer.state]} · {permissions[edit.permission]}</span>

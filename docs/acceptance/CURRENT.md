@@ -4,6 +4,8 @@
 
 模考修订覆盖同任务内的只读定位、局部差异、教师决定前无版本写入、断点后再确认、拒绝、来源或版本变化、许可边界及停止。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-从对话精确修订目录)
 
+真实扫描封面验收覆盖缺年提示、教师确认、原件元数据变化、冷启动读回以及两个实际导出文件。 [封面专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
+
 模考 PDF 页码专项核对真实扫描与控制缺页样本，确认工作台及 Word／PDF 交付均保留警示。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
 
 模考 Word／PDF 接续从真实教学文件工作台操作。检验冲突后原 Word 保留、冷启动后失效来源被拦截、原任务只补 PDF、旧 PDF 目标不被覆盖及重启读回。 [专项验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)

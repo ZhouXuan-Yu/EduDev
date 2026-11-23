@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+封面验收核对真实扫描、年份未决时的确认拒绝、选定年度后发布、冷启动、源变化及实际 Word／PDF 证据。 [封面专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
+
 页码验收核对真实四页扫描、同源三页对照、原件字节、目录状态和实际 Word／PDF 中的警示。 [专项验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
 
 模考文件组续做核对实际文件占用、部分保存、冷启变化拦截、原任务、重新确认、两份文件的独立摘要及再次冷启。 [专项验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)

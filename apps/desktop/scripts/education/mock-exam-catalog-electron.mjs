@@ -258,7 +258,7 @@ try{
   assert.equal(await panelTask.getAttribute('data-task-id'),report.taskId);
   const panelCatalog=panel.getByTestId('pi-mock-exam-catalog');
   await panelCatalog.getByRole('button',{name:/汇编/u}).click();
-  await panelCatalog.getByText('答案册　'+names.answers,{exact:true}).waitFor();
+  await panelCatalog.getByText('答案册　'+names.answers+' · 许可待核对',{exact:true}).waitFor();
   await page.getByTestId('workbench-panel-close').click();
   await page.locator('#catalog-'+report.catalogId).getByTestId('mock-exam-open-workbench').click();
   await detail.waitFor();

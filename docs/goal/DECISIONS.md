@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+模考分类以教师确认的年度为准。封面学年度、考试月份与文件名届别作为独立证据留在目录上，年度存在多个候选时等待确认。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)
+
 模考原件页码来自当前文件版本的既有解析回执。印刷页码和物理页数仅用于核对整卷覆盖，题目、答案、许可分别复核。 [页码合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件页码核对)
 
 模考 Word／PDF 文件组沿老师选中的原任务和要求版本续做。宿主核对原件、已保存文件和历史调用，继续使用现有整包确认与文件账本。 [续做合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考文件组续做)

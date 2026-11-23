@@ -11,15 +11,26 @@ export type MockExamMetadata={district:typeof SHANGHAI_DISTRICTS[number]|null;ye
   subject:typeof MOCK_EXAM_SUBJECTS[number]|null;grade:typeof MOCK_EXAM_GRADES[number]|null;round:typeof MOCK_EXAM_ROUNDS[number]|null};
 export type MockExamPermission='unknown'|'local_only'|'excluded';
 export type MockExamAnswerPermission={resourceId:string;version:string;pairRevision:number;permission:MockExamPermission};
+export type MockExamCoverEvidence={page:1;academicYear?:number;academicEndYear?:number;
+  examMonth?:{year:number;month:number};filenameCohort?:number};
 export type MockExamPageEvidence={state:'unverified';physicalPages:number}
   |{state:'count_matches';physicalPages:number;printedPages:number}
   |{state:'possible_missing';physicalPages:number;printedPages:number;possibleMissingPages:number[]};
 export type MockExamEntry={resourceId:string;version:string;title:string;evidenceHash:string;metadata:MockExamMetadata;
   inferred:Partial<Record<keyof MockExamMetadata,'原文件名称'|'原件正文'|'文件名与正文'|'老师核对'>>;
   conflicts:(keyof MockExamMetadata)[];copies:number;include:boolean;permission:MockExamPermission;answerPermission?:MockExamAnswerPermission;
+  cover?:MockExamCoverEvidence;
   structure:{state:'unavailable'|'partial'|'parsed';pages?:number;processed?:number;held?:number;pageEvidence?:MockExamPageEvidence};
   answer:{state:'missing'|'linked'|'stale'|'embedded';resourceId?:string;version?:string;title?:string;pairRevision?:number};
 };
+export function mockExamCoverLabel(cover:MockExamCoverEvidence):string {
+  const {academicYear,academicEndYear,examMonth,filenameCohort}=cover;
+  return [
+    academicYear&&('封面学年度 '+academicYear+(academicEndYear?'–'+academicEndYear:'')),
+    examMonth&&('封面考试月份 '+examMonth.year+' 年 '+examMonth.month+' 月'),
+    filenameCohort&&('文件名 '+filenameCohort+' 届'),
+  ].filter(Boolean).join(' · ');
+}
 export function mockExamPageEvidenceLabel(evidence:MockExamPageEvidence) {
   if(evidence.state==='unverified')return `文件包含 ${evidence.physicalPages} 页，整卷页码待核对`;
   if(evidence.state==='count_matches')return `文件 ${evidence.physicalPages} 页，与识别到的印刷总页数一致`;
@@ -69,7 +80,7 @@ export const mockExamErrors:Record<string,string>={
   incomplete:'还有试卷的区、年份、学科、年级或轮次需要核对。',
   conflicting_versions:'有多份不同原件对应同一区、同年级、同学科和同轮次。请仅保留一份。',
   scope_changed:'保留的试卷超出当前目录范围，请核对元数据或取消收录。',
-  source_changed:'原件、页面状态或答案册配对发生变化。请重新生成目录后核对。',
+  source_changed:'原件、封面或页面状态、答案册配对发生变化。请重新生成目录后核对。',
   version_conflict:'目录版本已变化，请重新读取。',
   history_missing:'找不到这份历史版本，请重新读取。',
   permission_denied:'当前窗口或会话无法操作这份目录。',
