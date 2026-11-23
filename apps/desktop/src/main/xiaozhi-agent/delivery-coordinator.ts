@@ -361,6 +361,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const rows=await options.state.list(sessionId);
    return Promise.all(rows.map(row=>withContinuation(row,rows)));
   },
+  awaitingDecision(id:string){return waits.has(id);},
   async read(sessionId:string,id:string){return withContinuation(await owned(sessionId,id),await options.state.list(sessionId));},
   publishHandout:(sessionId:string,runId:string,wait:Wait,callId:string,files:HandoutExportFile[],signal?:AbortSignal)=>
     execute(sessionId,runId,wait,callId,{files},signal,undefined,TEACHING_HANDOUT_OFFICE_SCHEMA),

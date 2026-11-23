@@ -7,7 +7,7 @@ import { useOfficeControlState } from './OfficeComposerState';
 import './pi-control-surfaces.css';
 
 export function PiControlCards({ items,onAnswer,sessionId,onMutation }: {items:XiaozhiControl[];onAnswer:(id:string,answer:string)=>Promise<void>;sessionId:string;onMutation:(input:XiaozhiQueueMutationInput)=>Promise<void>}) {
-  return <>{items.filter(item=>item.kind !== 'plan').map(item=>item.kind === 'question' ? <Question key={item.id} item={item} onAnswer={onAnswer}/> :
+  return <>{items.filter(item=>item.kind !== 'plan').map(item=>item.kind === 'question' ? <PiTeacherQuestionCard key={item.id} item={item} onAnswer={onAnswer}/> :
     <Instruction key={item.id} item={item} sessionId={sessionId} onMutation={onMutation}/>)}</>;
 }
 function Instruction({item,sessionId,onMutation}:{item:XiaozhiControl;sessionId:string;onMutation:(input:XiaozhiQueueMutationInput)=>Promise<void>}) {
@@ -37,7 +37,7 @@ function Instruction({item,sessionId,onMutation}:{item:XiaozhiControl;sessionId:
     </ChatTool>
   </div>;
 }
-function Question({item,onAnswer}:{item:XiaozhiControl;onAnswer:(id:string,answer:string)=>Promise<void>}) {
+export function PiTeacherQuestionCard({item,onAnswer,inComposer=false}:{item:XiaozhiControl;onAnswer:(id:string,answer:string)=>Promise<void>;inComposer?:boolean}) {
   const {draft,update,lock}=useOfficeControlState(item.id,{answer:item.answer||''});const {answer,busy,error}=draft;
   const editable=item.state === 'pending' || (item.state === 'interrupted' && item.canResume);
   async function submit(value:string) {
@@ -49,13 +49,16 @@ function Question({item,onAnswer}:{item:XiaozhiControl;onAnswer:(id:string,answe
       update({error:code==='task_context_changed'||code==='task_ended'?XIAOZHI_ERRORS[code]:'回答未提交，请重试。'});
     }finally{lock.current=false;update({busy:false});}
   }
-  return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable || item.state === 'answered'} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} data-testid="pi-teacher-question" data-control-id={item.id} data-state={item.state}>
-    <ChatTool.Trigger><CircleHelp size={16} aria-hidden="true"/><span>{item.state === 'pending' ? '问题' : item.state === 'answered' ? '已回答' : item.canResume ? '上次提问已中断' : '提问已停止'}</span></ChatTool.Trigger>
-    <ChatTool.Content><p className="pi-question-text">{item.text}</p>{editable ? <>
+  const identity={'data-testid':'pi-teacher-question','data-control-id':item.id,'data-state':item.state};
+  const content=<><p className="pi-question-text">{item.text}</p>{editable ? <>
       {item.canResume && <p className="pi-history-note">回答后开始新一轮，旧审批不会继续执行。</p>}
       <div className="pi-question-options" role="group" aria-label="建议回答">{item.options?.map((option,index)=><Button key={index} variant="ghost" className="pi-question-option" isDisabled={busy} aria-pressed={answer===option} data-testid={`pi-question-option-${index}`} onPress={()=>update({answer:option,error:''})}><span className="pi-option-number">{index+1}</span><span>{option}</span></Button>)}</div>
       <label className="pi-question-answer"><span className="pi-question-free-label">或自行填写回答</span><TextArea rows={1} aria-label="回答小智的问题" placeholder="或自行填写回答" data-testid="pi-question-answer" value={answer} maxLength={4000} disabled={busy} onChange={event=>update({answer:event.target.value,error:''})}/></label>
-      <div className="pi-question-footer"><span><CornerDownRight size={14} aria-hidden="true"/>选择后发送回答</span><Button size="sm" data-testid="pi-question-submit" isDisabled={busy || !answer.trim()} onPress={()=>void submit(answer)}>{busy?'正在提交…':'发送回答'}</Button></div>
-    </> : item.answer && <p>你的回答：{item.answer}</p>}{error && <p role="alert">{error}</p>}</ChatTool.Content>
+      <div className="pi-question-footer">{!inComposer&&<span><CornerDownRight size={14} aria-hidden="true"/>选择后发送回答</span>}<Button size="sm" data-testid="pi-question-submit" isDisabled={busy || !answer.trim()} onPress={()=>void submit(answer)}>{busy?'正在提交…':'发送回答'}</Button></div>
+    </> : item.answer && <p>你的回答：{item.answer}</p>}{error && <p role="alert">{error}</p>}</>;
+  if(inComposer)return <div {...identity}>{content}</div>;
+  return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable || item.state === 'answered'} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} {...identity}>
+    <ChatTool.Trigger><CircleHelp size={16} aria-hidden="true"/><span>{item.state === 'pending' ? '问题' : item.state === 'answered' ? '已回答' : item.canResume ? '上次提问已中断' : '提问已停止'}</span></ChatTool.Trigger>
+    <ChatTool.Content>{content}</ChatTool.Content>
   </ChatTool>;
 }

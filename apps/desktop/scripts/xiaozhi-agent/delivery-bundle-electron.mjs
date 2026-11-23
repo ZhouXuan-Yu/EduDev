@@ -1,5 +1,6 @@
 import '../office-agent/register-source.mjs';
 import {productEntry} from '../product-navigation.mjs';
+import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 import {createHash} from 'node:crypto';
 import {presentationFixture} from './presentation-fixture.mjs';
 import fs from 'node:fs';
@@ -36,7 +37,9 @@ async function assertTerminal(expected,label){
 async function launch(){
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};
  for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
- application=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+ const main=testMain(desktop);
+ application=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+ await assertIsolatedPiMain(application,main,profile);
  await application.evaluate(({net},fixture)=>{
   const {html,draft,partialMode}=fixture;
   const state=globalThis.defaultDelivery={index:0,requests:[],blocked:[],html,draft,readStarted:false,readText:[],partialMode,resumeStarted:false,bundleId:null};
@@ -81,9 +84,16 @@ try{
 
  await page.getByTestId('office-prompt-input').fill('为八年级生成浮力HTML演示和8页可编辑PPT，每页有教师讲解备注。整包审阅后交付实际文件。');
  await page.getByRole('button',{name:'发送消息',exact:true}).click();
- await page.getByTestId('pi-delivery-bundle').waitFor({timeout:45000});
+ await page.locator('[data-testid="pi-delivery-bundle"][data-state="pending"]').waitFor({timeout:110000});
  const bundle=page.getByTestId('pi-delivery-bundle').last();
  await until(async()=>!await bundle.getByTestId('pi-delivery-approve').isDisabled());
+ if(process.argv.includes('--composer-panel')){
+  const panel=page.getByTestId('pi-composer-pending-panel');
+  assert.equal(await page.getByTestId('pi-delivery-bundle').count(),1);
+  assert.equal(await panel.getByTestId('pi-delivery-bundle').isVisible(),true);
+  await page.screenshot({path:path.join(output,'composer-bundle-review.png')});
+  check('Grouped review has one anchored decision above the composer');
+ }
  assert.equal(await bundle.getByTestId('pi-office-approve').count(),0);assert.equal(await bundle.getByTestId('pi-text-approve').count(),0);
  const meta=JSON.parse(query('SELECT value_json FROM xiaozhi_delivery_bundles')[0].value_json);const child=meta.files.find(f=>f.kind==='office');
  const bypass=await page.evaluate(v=>window.omniEdu.decideXiaozhiOffice(v),{schemaVersion:'xiaozhi.office-artifact.v1',sessionId,draftId:child.draftId,revision:0,action:'approve'});assert.equal(bypass.ok,false);

@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+输入框待确认专项从实际发送开始，核对原 Run 继续、选项保留、面板和输入框可达、真实文件保存与历史读回。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#输入框上方的待确认面板)
+
 批量扫描从一次文件选择进入原有解析队列，核对同类缺陷自动识别、正常题保持、同卷按类别定位以及原页和冷启动读回。 [扫描质量流程](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
 
 局部 OCR 选项回查核对同题横排、来源候选、未读清、版式拒绝和退出重开。测试中原题和选择项读回不变。 [回查专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-局部选项回查)

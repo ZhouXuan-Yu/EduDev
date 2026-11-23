@@ -71,6 +71,10 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
  }
  return {
   cancel,runOffice,service:options.service,proposalError:options.proposalError,
+  awaitingDecision(id:string){
+   const waiting=waits.get(id);
+   return !!waiting&&options.isCurrent(waiting.sessionId,waiting.runId);
+  },
   async review(value:OfficeArtifactReviewInput):Promise<OfficeArtifactResult<OfficeArtifactReview>>{
    if(!input(value,['schemaVersion','sessionId','draftId']))return {ok:false,error:'invalid_input'};
    try{return {ok:true,value:await options.service.review(value.sessionId,value.draftId)};}catch(raw){return {ok:false,error:error(raw)};}

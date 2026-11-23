@@ -18,13 +18,14 @@ const errors: Record<XiaozhiChangeError, string> = { file_writes_disabled:'小�
   conflict: '记录或文件版本已变化，请刷新后检查。', busy: '有任务正在运行，请结束后再操作。', configuration: '暂时无法读取或提交修改，请重试。' };
 
 /** Original Pro disclosure/code block; complete differences stay local and on demand. */
-export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen, bundled=false, onReadiness }: {
-  bundled?:boolean;onReadiness?:(id:string,ready:boolean)=>void;change: XiaozhiChangeSummary; sessionId: string; running: boolean; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
+export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen, bundled=false, onReadiness, composerReview=false }: {
+  bundled?:boolean;composerReview?:boolean;onReadiness?:(id:string,ready:boolean)=>void;change: XiaozhiChangeSummary; sessionId: string; running: boolean; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
 }) {
   const { draft, update, lock } = useOfficeControlState(`text-change:${change.id}`);
   const [review, setReview] = useState<XiaozhiChangeReview>(), [reading, setReading] = useState(false);
   const [expanded, setExpanded] = useState(change.state === 'pending');
   const [tab, setTab] = useState('changes');
+  const [previewOpen,setPreviewOpen]=useState(!composerReview);
   const [readRevision, setReadRevision] = useState(0);
   useEffect(() => {
     if (!expanded) return;
@@ -61,6 +62,8 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
     <ChatTool.Trigger><FilePenLine size={16}/><strong>{change.operation === 'create' ? '新建文件' : '修改文件'}</strong><span title={change.path}>{change.path}</span><span>{labels[change.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
       {reading ? <p role="status">正在读取本地修改…</p> : review && <div className="pi-text-review" data-testid="pi-text-review">
+        {composerReview&&<Button size="sm" variant="secondary" aria-expanded={previewOpen} onPress={()=>setPreviewOpen(value=>!value)} data-testid="pi-composer-file-preview">{previewOpen?'收起文件预览':'查看文件预览'}</Button>}
+        {previewOpen&&<>
         {change.path.toLowerCase().endsWith('.svg')&&<img data-testid="pi-science-preview" alt="科普图草稿：请核对科学含义" src={'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(review.after)} style={{display:'block',width:'100%',maxHeight:520,objectFit:'contain',background:'#fff'}}/>}
         {change.path.toLowerCase().endsWith('.html')&&<ScienceDemoFrame html={review.after}/>}
         {science ? <DisclosureCard data-testid="pi-science-technical" title={<>技术内容（通常无需查看）</>}>
@@ -78,6 +81,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
         {currentFile && <p data-testid="pi-text-current-status">当前文件：{currentFile.state === 'readable' ? '已读取' : currentFile.state === 'missing' ? '未找到' : '未能读取'}，读取时间 {new Date(currentFile.readAt).toLocaleTimeString()}。此处是读取时的快照；原提议不会覆盖后续修改。
           <Button size="sm" variant="ghost" isDisabled={reading||draft.busy} onPress={()=>setReadRevision(value=>value+1)} data-testid="pi-text-current-refresh">重新读取当前文件</Button>
         </p>}
+        </>}
         <p>{pending ? '确认后仅保存此版本；原文件另有修改时不会覆盖。' : '此处是该次操作的版本记录；当前文件请从工作区打开。'}</p>
       </div>}
       {pending && !bundled && <ChatTool.Approval><ChatTool.ApprovalActions>

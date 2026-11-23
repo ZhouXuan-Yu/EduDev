@@ -41,3 +41,5 @@
 | 教案内容、板书与课后安排 | CMP05/10。原教案编辑器以折叠区展示持久标签和字段级缺项，历史仍以只读文本核对。 | 从 Pi 草稿进入原编辑器，修改作业，恢复历史并在 1366 和 1920 尺寸读回。 |
 
 资料库勾选导入采用 CMP08 与 CMP11 的清单、确认及后台进度分工。用 CMP03 的分批列表保持长名单可操作。题目核对方案以 CMP10 的对象、状态与原件证据分层，比较详见 [资料导入与试题核对方案](07_MATERIAL_IMPORT_AND_REVIEW.md)。
+
+输入框上方的待确认面板采用 CMP06 的标题、局部滚动和操作层级。弹层固定在当前操作位置，老师仍可查看对话。出现时保持键盘焦点，面板内按 Esc 收起并把焦点还给展开按钮。 [Apple Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers?changes=_5_5&language=objc) · [Windows Dialogs](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/dialogs-and-flyouts/dialogs)

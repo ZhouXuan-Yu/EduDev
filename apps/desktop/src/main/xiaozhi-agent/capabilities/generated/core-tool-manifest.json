@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "6bd93ef4738907963e97240468cab8125614935649483f2590ae1902942bf2e3",
+  "sourceHash": "09827efe114090b8894e276f04f2488bca0cf664825f3bb0eeef994fcd960297",
   "sources": [
     {
       "file": "package-lock.json",
@@ -824,7 +824,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "8a2cb964539b49e4635d140388b614584bd633a75cc3150f042eb4840cb85db1"
+      "sha256": "6edd88264135ab2dceac50a4f44f765b38acf85ea794fba390bcedc85b89e904"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1044,7 +1044,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/delivery-coordinator.ts",
-      "sha256": "c8318da874d5c04c96043819e0dcb754de3a3d357075df197a5950eb244d74e9"
+      "sha256": "86b97d5c3c0cec3405aed0ee861e2f42056a59374e5fcba185e56b0a09bc67ee"
     },
     {
       "file": "src/main/xiaozhi-agent/delivery-final.ts",
@@ -1348,7 +1348,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-coordinator.ts",
-      "sha256": "3936d1a0f11b4acfab4025e0100c20ecdea12eedd868cd4600e5b3abc32371e1"
+      "sha256": "1a5eb27bfa8c9734f360aa2184128829df463208bd7027544ac949423c0eb1cb"
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-service.ts",
@@ -1560,7 +1560,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "2ae94842378ea596c4362fb559d3aa0f9e9230c7c75e1f6994c5feb61f1183b6"
+      "sha256": "4b0599545b1b3a110112f52ab62e51e11145f8a0932646075134423360d8a01c"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1836,7 +1836,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/text-change-coordinator.ts",
-      "sha256": "02c0da2969755917f2bfe226c91776486dc82172c67fa5e7f3bdbbde5a496569"
+      "sha256": "662b527ed37181da52fec97a576789e3a551143ea609b0231504ad3b8a0f0e36"
     },
     {
       "file": "src/main/xiaozhi-agent/text-change-service.ts",

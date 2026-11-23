@@ -933,6 +933,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
     // Derive the public view after journal/history hydration; persisted audit remains untouched.
     projection.turns = projection.turns.map(publicProviderTurn);
+    // A persisted proposal can be approved only after preflight and registration of
+    // its live teacher wait. Bundled children use the parent card.
+    const visibleDeliveries=storedDeliveries.filter(delivery=>delivery.state!=='pending'||deliveries.awaitingDecision(delivery.id));
+    const bundledDraftIds=new Set(visibleDeliveries.flatMap(delivery=>delivery.files.map(file=>file.draftId)));
+    const visibleChanges=changes.filter(change=>change.state!=='pending'||bundledDraftIds.has(change.id)||textChanges.awaitingDecision(change.id));
+    const visibleArtifacts=artifacts.filter(artifact=>artifact.state!=='pending'||bundledDraftIds.has(artifact.id)||officeArtifacts.awaitingDecision(artifact.id));
     return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailure?{eventPersistence:'unavailable' as const,eventPersistenceError:journalFailure.error}:{}), running: Boolean(current)&&!journalFailure, ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       ...(classroomPlanReviews?{classroomPlanReviews}:{classroomPlanReviewsUnavailable:true as const}),
       ...(teachingHandouts?{teachingHandouts}:{teachingHandoutsUnavailable:true as const}),
@@ -942,7 +948,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      ...(task?{task:task.view,taskRunIds:task.runIds}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),...(permissionApprovals.unavailableCount?{approvalRecordsUnavailable:permissionApprovals.unavailableCount}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, deliveries:storedDeliveries, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
+      ...(task?{task:task.view,taskRunIds:task.runIds}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),...(permissionApprovals.unavailableCount?{approvalRecordsUnavailable:permissionApprovals.unavailableCount}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes:visibleChanges, deliveries:visibleDeliveries, officeArtifacts:visibleArtifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,

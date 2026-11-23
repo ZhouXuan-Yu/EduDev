@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+文件草稿先落库并执行预检，独立草稿在宿主注册本轮确认等待后才进入可操作快照。输入框上方面板仅呈现当前会话、本轮可处理的决定，沿用原 IPC 和审阅记录。 [状态与装配](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#交付预检和确认卡的状态边界)
+
 模考修订由 Pi 读取当前目录并提交定向提案。`mock_exam_edit_reviews` 保存提案与审阅结果，Journal 依原任务 Run、generation、调用及摘要核对副作用。应用追加原目录表的新版本并同事务记录决定。 [修订合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-从对话精确修订目录)
 
 文档结构 v18 支持经几何与文本互证的跨行大题分值说明。重建生成新世代，既有快照仍可读取。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷的跨行分值说明)

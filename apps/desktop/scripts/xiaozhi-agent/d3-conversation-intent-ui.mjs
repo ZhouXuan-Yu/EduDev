@@ -372,6 +372,22 @@ try{
     await submit('请新建一个分数课教案任务，我还没确定年级，请先问我再写导入。');
     const question=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]');
     await question.waitFor({state:'visible',timeout:30_000});
+    if(process.argv.includes('--composer-panel')){
+      const panel=page.getByTestId('pi-composer-pending-panel');
+      const toggle=panel.getByTestId('pi-composer-pending-toggle');
+      assert.equal(await question.count(),1);
+      assert.equal(await panel.getByTestId('pi-teacher-question').count(),1);
+      await question.getByTestId('pi-question-option-1').click();
+      const selection=await question.getByTestId('pi-question-option-1').getAttribute('aria-pressed');
+      assert.equal(selection,'true');
+      await toggle.focus();
+      await toggle.press('Escape');
+      assert.equal(await question.isVisible(),false);
+      await toggle.click();
+      assert.equal(await question.getByTestId('pi-question-option-1').getAttribute('aria-pressed'),selection);
+      await page.screenshot({path:path.join(output,'composer-teacher-question.png')});
+      check('澄清选项在输入框上方出现一次，收起并展开保留所选内容');
+    }
     const waiting=await snapshot(),turn=waiting.projection.turns.at(-1);
     assert.equal(turn.status,'waiting_input');assert(waiting.task?.id);
     const controlId=await question.getAttribute('data-control-id');

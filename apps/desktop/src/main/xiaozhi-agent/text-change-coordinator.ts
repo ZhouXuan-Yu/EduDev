@@ -49,6 +49,10 @@ export function createTextChangeCoordinator(options: {
   return {
     service:options.service,
     cancel,
+    awaitingDecision(id:string) {
+      const waiting=waits.get(id);
+      return !!waiting&&options.isCurrent(waiting.sessionId,waiting.runId);
+    },
     async review(input: XiaozhiChangeReviewInput): Promise<XiaozhiChangeResult<XiaozhiChangeReview>> {
       if (!object(input) || Object.keys(input).some(key => !['sessionId', 'changeId'].includes(key))
         || !session(input.sessionId) || !change(input.changeId)) return { ok: false, error: 'invalid_input' };

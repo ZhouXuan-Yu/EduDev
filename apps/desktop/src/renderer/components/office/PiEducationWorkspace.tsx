@@ -16,6 +16,7 @@ import { AiConversationSidebar } from '../AiConversationSidebar';
 import { PiConversationSurface } from './PiConversationSurface';
 import {PiGoalControl} from './PiGoalControl';
 import {taskReviewInteraction} from './PiInteractionCards';
+import {PiComposerPendingPanel,pendingComposerItems} from './PiComposerPendingPanel';
 import { OfficeComposer } from './OfficeComposer';
 import {PiThinkingPicker} from './PiThinkingPicker';
 import { OfficeComposerState,OfficeComposerSeed } from './OfficeComposerState';
@@ -362,6 +363,16 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   const projection = snapshot?.projection;
   const current = projection?.turns.at(-1);
+  const composerItems=visible&&!syncBlocked?pendingComposerItems(snapshot,id,current?.id):[];
+  const composerItemIds=new Set(composerItems.map(item=>item.id));
+  const showInConversation=(item:{id:string;runId:string},turnId:string)=>item.runId===turnId&&!composerItemIds.has(item.id);
+  async function answerQuestion(controlId:string,answer:string){
+    const target=id;
+    const result=await window.omniEdu?.answerXiaozhi({sessionId:target,controlId,answer});
+    if(!result?.ok)throw new Error(result?.error||'configuration');
+    await hydrate(target);
+  }
+  function revealFile(path:string){setFileReveal({sessionId:id,id:crypto.randomUUID(),path});}
   const compacting = snapshot?.running && snapshot.operation === 'compact';
   async function compact() {
     if (mutationsBlocked() || !id || !snapshot || snapshot.running || compactLock.current) return;
@@ -433,13 +444,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           navigation.target.mockExam.id===summary.id?navigation.intent:undefined}/>))
       .concat((snapshot?.mockExamEdits||[]).filter(item=>item.runId===turnId).map(summary=><PiMockExamEdit key={summary.id} summary={summary}
         sessionId={id} enabled={!snapshot?.running&&!syncBlocked} onRefresh={()=>hydrate(id)}/>))
-      .concat((snapshot?.changes||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.deliveries||[]).filter(item=>item.runId===turnId).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>item.runId === turnId) || []} onAnswer={async(controlId,answer)=>{
-        const target=id; const result=await window.omniEdu?.answerXiaozhi({sessionId:target,controlId,answer}); if(!result?.ok)throw new Error(result?.error||'configuration'); await hydrate(target);
-      }} sessionId={id} onMutation={async input=>{
+      .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []} onAnswer={answerQuestion} sessionId={id} onMutation={async input=>{
         const target=id; const result=await window.omniEdu?.mutateXiaozhiQueue(input); await hydrate(target);
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
-      <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
+      <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><PiComposerPendingPanel items={composerItems} sessionId={id} onAnswer={answerQuestion} onRefresh={()=>hydrate(id)} onOpen={revealFile}/><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" visible={visible} disabled={!snapshot||!id||snapshot.running||modelSelecting||syncBlocked} onChange={choice=>{
           if(mutationsBlocked()||modelLock.current||snapshot?.running||!models?.thinking?.session)return;
           modelLock.current=true;setModelSelecting(true);const target=id;

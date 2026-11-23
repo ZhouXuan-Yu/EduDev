@@ -16,6 +16,9 @@ const sha=filename=>createHash('sha256').update(fs.readFileSync(filename)).diges
 const report={ok:false,output,main,mainSha256:sha(main),paidRequests:0,checks:[],errors:[]};
 const schemaVersion='xiaozhi.mock-exam-compilation.v1';
 const pdfText=process.argv.includes('--pdf-text');
+const live=process.argv.includes('--live');
+const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-shanghai-mock-paper-catalog';
+assert(apiKey,'The synthetic live scenario requires an authorized DeepSeek credential');
 const names={
   primary:'2025上海徐汇区初三数学一模试卷甲卷.pdf',duplicate:'2025上海徐汇区初三数学一模试卷甲卷副本.pdf',
   variant:'2025上海徐汇区初三数学一模试卷乙卷.pdf',answers:'2025上海徐汇区初三数学一模参考答案.pdf',
@@ -41,11 +44,12 @@ async function until(read,timeout=90000){
 }
 async function launch(cold=false){
   const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
-    OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-shanghai-mock-paper-catalog',DEEPSEEK_MODEL:'deepseek-flash'};
+    OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
-  await app.evaluate(({net,dialog,shell},{cold,files})=>{
+  await app.evaluate(({net,dialog,shell},{cold,files,live})=>{
     const wire=globalThis.mockExamWire={calls:[],errors:[],located:[],cold};
+    const remote=net.fetch.bind(net);
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:files});
     shell.showItemInFolder=value=>wire.located.push(value);
     net.fetch=async(input,init)=>{
@@ -57,6 +61,12 @@ async function launch(cold=false){
         if(cold||url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')throw Error('Network disabled in synthetic catalogue scenario');
         const body=JSON.parse(init.body),count=wire.calls.length;
         const name='education_build_mock_exam_catalog';
+        if(live){
+          if(count>=5)throw Error('Synthetic catalogue request limit reached');
+          if(!body.tools?.some(tool=>tool.function.name===name))throw Error('Production catalogue tool missing');
+          wire.calls.push(count);
+          return remote(input,init);
+        }
         if(!body.tools?.some(tool=>tool.function.name===name))throw Error('Production catalogue tool missing');
         if(count>1)throw Error('Unexpected third model request');
         if(count){
@@ -74,7 +84,7 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){wire.errors.push(String(error));throw error;}
     };
-  },{cold,files:Object.values(names).map(file=>path.join(sources,file))});
+  },{cold,live,files:Object.values(names).map(file=>path.join(sources,file))});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -142,11 +152,13 @@ try{
   await until(async()=>{
     const [run]=sql('SELECT status,error_message FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1');
     assert.notEqual(run?.status,'failed',run?.error_message);
+    if(live&&run?.status==='succeeded'&&!sql('SELECT id FROM mock_exam_compilations LIMIT 1').length)throw Error('DeepSeek completed without saving a catalogue');
     return await card().isVisible();
   });
   await card().getByRole('button',{name:/年度|汇编/u}).click();
   await review().getByTestId('mock-exam-row').first().waitFor();
   const wire=await app.evaluate(()=>globalThis.mockExamWire);
+  if(live){report.paidRequests=wire.calls.length;report.wire=wire;}
   assert.deepEqual(wire.errors,[]);
   report.catalogId=sql('SELECT id FROM mock_exam_compilations')[0].id;
   const draft=await apiView();
@@ -207,10 +219,14 @@ try{
   assert.equal(sha(paperPath),source('primary').content_hash);
   check('Cross-session access is denied and a changed original cannot confirm or overwrite a catalogue revision');
 
-  const states=sql("SELECT event_json FROM xiaozhi_event_journal WHERE json_extract(event_json,'$.kind') IN ('mock_exam_catalog','recovery')");
-  const parsed=states.map(row=>JSON.parse(row.event_json));
+  const [owner]=sql('SELECT run_id,call_id FROM mock_exam_compilations WHERE id=?',[report.catalogId]);
+  const parsed=await until(()=>{
+    const rows=sql("SELECT event_json FROM xiaozhi_event_journal WHERE run_id=? AND json_extract(event_json,'$.kind') IN ('mock_exam_catalog','recovery')",[owner.run_id]);
+    const events=rows.map(row=>JSON.parse(row.event_json));
+    return events.some(event=>event.kind==='recovery')?events:undefined;
+  });
   assert(parsed.some(item=>item.kind==='mock_exam_catalog'&&item.catalog.id===report.catalogId));
-  assert(parsed.flatMap(item=>item.recovery?.receipts||[]).some(item=>item.callId==='mock-annual-catalog-create'&&item.disposition==='recorded'));
+  assert(parsed.flatMap(item=>item.recovery?.receipts||[]).some(item=>item.callId===owner.call_id&&item.disposition==='recorded'));
   await app.close();app=undefined;
   await launch(true);
   const conversation=page.getByTestId('ai-conversation-session-'+sessionId);
@@ -328,6 +344,7 @@ try{
 }catch(error){
   report.errors.push(String(error?.stack||error));
   if(app)report.wire=await app.evaluate(()=>globalThis.mockExamWire).catch(()=>null);
+  if(live&&report.wire&&!report.wire.cold)report.paidRequests=report.wire.calls.length;
   if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>undefined);
   console.error(error);
   process.exitCode=1;

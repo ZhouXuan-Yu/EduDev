@@ -8,6 +8,7 @@ import fs from 'node:fs';import os from 'node:os';import path from 'node:path';i
 const checkMode=process.argv.includes('--checks');
 const referenceMode=process.argv.includes('--reference');
 const relationMode=process.argv.includes('--relations');
+const composerPanelMode=process.argv.includes('--composer-panel');
 const contextMode=process.argv.includes('--context');
 const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(os.tmpdir(),'omni-edu-html-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile'),workspace=path.join(root,'workspace');fs.mkdirSync(workspace);const report={ok:false,checks:[],errors:[],root,boundary:'Original formal Pi/composer/read/edit/approve/history/restore with synthetic SSE, actual disk/SQLite and cold readback; zero paid calls. Complete E08/FX01/252 AT remains pending.'};let app,page,id;const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');const until=async(fn,ms=90000)=>{const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,40));}throw Error('HTML version path timed out');};const check=n=>{report.checks.push(n);console.log('PASS '+n);};const snap=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),id),card=r=>page.locator(`[data-testid="pi-text-change"][data-change-id="${r.id}"]`),hist=r=>card(r).getByTestId('pi-office-versions');
 async function launch(){const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'owned-synthetic-not-real',DEEPSEEK_MODEL:'deepseek-flash'};for(const k of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[k];app=await electron.launch({args:[testMain(desktop),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});await assertIsolatedPiMain(app,testMain(desktop),profile);await app.evaluate(({net})=>{globalThis.htmlVersions={mode:'create',n:0,calls:[]};net.fetch=async(input,init)=>{const url=typeof input==='string'?input:input.url;if(url.includes('/models'))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768}]}),{headers:{'content-type':'application/json'}});if(!url.includes('/chat/completions'))throw Error('Network blocked');const s=globalThis.htmlVersions,n=s.n++,body=JSON.parse(init.body),system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');let call;s.calls.push({mode:s.mode,n});
@@ -55,9 +56,46 @@ async function generate(mode,text,count=1){
  const rows=[];
  for(let index=0;index<count;index++){
   const row=await waitForPermittedDraft(mode);
+  if(checkMode){
+   const inspections=readSql('SELECT report_json FROM xiaozhi_delivery_inspections ORDER BY rowid DESC LIMIT 16');
+   assert(inspections.some(({report_json})=>JSON.parse(report_json).files.some(file=>file.candidate?.id===row.id)),
+    'A draft entered the approval snapshot before its actual candidate inspection was stored');
+  }
   await until(async()=>!await card(row).getByTestId('pi-text-approve').isDisabled());
+  if(composerPanelMode&&mode==='create'&&index===0){
+   const panel=page.getByTestId('pi-composer-pending-panel');
+   const toggle=panel.getByTestId('pi-composer-pending-toggle');
+   const preview=panel.getByTestId('pi-composer-file-preview');
+   assert.equal(await card(row).count(),1);
+   assert.equal(await panel.getByTestId('pi-text-approve').isVisible(),true);
+   await preview.click();
+   assert.equal(await preview.getAttribute('aria-expanded'),'true');
+   await preview.click();
+   await toggle.focus();
+   await toggle.press('Escape');
+   assert.equal(await toggle.getAttribute('aria-expanded'),'false');
+   assert.equal(await panel.getByTestId('pi-text-approve').isVisible(),false);
+   assert.equal((await snap()).changes.find(change=>change.id===row.id).state,'pending');
+   assert.equal(fs.existsSync(path.join(workspace,'浮力.html')),false);
+   await toggle.click();
+   for(const [width,height] of [[1366,768],[1920,1080]]){
+    await page.setViewportSize({width,height});
+    const state=await panel.boundingBox(),prompt=await page.getByTestId('office-prompt-input').boundingBox();
+    assert(state&&prompt&&state.y>=0&&state.y+state.height<=prompt.y&&prompt.y+prompt.height<=height);
+    await page.screenshot({path:path.join(root,`composer-review-${width}.png`)});
+   }
+   check('Save review is anchored above the composer at both sizes, with lazy preview and reversible collapse');
+  }
   await card(row).getByTestId('pi-text-approve').click();
-  await until(async()=>(await snap()).changes.find(change=>change.id===row.id)?.state==='applied');
+  await until(async()=>{
+   const state=(await snap()).changes.find(change=>change.id===row.id)?.state;
+   if(state==='applied')return true;
+   const error=card(row).getByTestId('pi-text-error');
+   if(state==='pending'&&await error.isVisible()){
+    const detail=await error.innerText();
+    if(detail.includes('确认或目录授权已失效'))throw Error(detail);
+   }
+  });
   rows.push(row);
  }
  await until(async()=>!(await snap()).running&&!await page.getByTestId('office-prompt-input').isDisabled());
@@ -86,7 +124,15 @@ try{await launch();await app.evaluate(({dialog},dir)=>{dialog.showOpenDialog=asy
   const destination=path.join(workspace,third.path);fs.appendFileSync(destination,'<p>外部改动</p>');await control.getByTestId('pi-file-check-refresh').click();await until(async()=>await control.getByTestId('pi-artifact-check-status').getAttribute('data-integrity')==='changed');assert.equal(await control.getByTestId('pi-file-check-result').getAttribute('data-state'),'stale');assert.equal(await control.getByTestId('pi-file-check-run').count(),0);const changed=await readArtifact(third.artifactId);assert.equal(changed.report.id,fresh.report.id);assert.deepEqual(changed.report.files[0].checks,fresh.report.files[0].checks);fs.unlinkSync(destination);await control.getByTestId('pi-file-check-refresh').click();await until(async()=>await control.getByTestId('pi-artifact-check-status').getAttribute('data-integrity')==='missing');assert((await control.innerText()).includes('仍保留'));assert.equal((await readArtifact(third.artifactId)).report.id,fresh.report.id);fs.writeFileSync(destination,original);check('Actual external edit and deletion invalidate applicability while retaining diagnostic findings, no regenerated output');
  }
  await card(first).getByTestId('pi-text-open').click();await page.getByTestId('pi-file-preview').waitFor();await until(async()=>(await page.getByTestId('pi-file-panel').textContent()).includes(third.path));await page.getByTestId('pi-files-close').click();check('Old chat card default open resolves the new current filename through the same typed host');
- for(const[width,height]of[[1366,768],[1920,1080]]){await app.evaluate(({BrowserWindow},v)=>BrowserWindow.getAllWindows()[0].setContentSize(v.width,v.height),{width,height});await page.waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,{width,height});await c.getByTestId('office-version-select').scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(root,width+'.png'),animations:'disabled'});}(report.viewports)=[1366,1920];check('Existing history selection and restore controls remain reachable in both native window sizes');
+  for(const [width,height] of [[1366,768],[1920,1080]]){
+   if(composerPanelMode)await page.setViewportSize({width,height});
+   else await app.evaluate(({BrowserWindow},v)=>BrowserWindow.getAllWindows()[0].setContentSize(v.width,v.height),{width,height});
+   await page.waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,{width,height});
+   await c.getByTestId('office-version-select').scrollIntoViewIfNeeded();
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+   await page.screenshot({path:path.join(root,width+'.png'),animations:'disabled'});
+  }
+  report.viewports=[1366,1920];check('Existing history selection and restore controls remain reachable at both viewport sizes');
  await app.close();app=undefined;await launch();c=await history(first);assert.equal(await c.getByTestId('office-version-select').locator('option').count(),3);assert.equal(await app.evaluate(()=>globalThis.htmlVersions.calls.length),0);if(checkMode){const control=checkControl(c,first.id);await expandCheck(control);assert.equal(await control.getByTestId('pi-file-check-result').getAttribute('data-state'),'stale');assert.equal((await readArtifact(first.id)).report.id,report.historicalCheck.report.id);await openTeachingFiles(page);await page.getByTestId('artifacts-search').fill('html');await page.getByTestId('artifact-'+third.artifactId).getByRole('button').click();const current=checkControl(page.getByTestId('artifacts-detail'),third.artifactId);await expandCheck(current);assert.equal((await readArtifact(third.artifactId)).report.id,report.restoredCheck.report.id);assert.equal(await app.evaluate(()=>globalThis.htmlVersions.calls.length),0);check('Cold history and Teaching Files retrieve the same selected receipts and honest stale applicability with zero model replay');}assert.deepEqual(fs.readFileSync(path.join(workspace,third.path)),original);assert.deepEqual(report.errors,[]);report.sessionId=id;report.versions=view.value.versions;check('Cold original Pi restores the same three HTML versions and current file with zero replay/errors');
  if((relationMode||contextMode)&&checkMode)await page.getByTestId('artifacts-conversation').click();
  if(contextMode)await checkTaskContextArtifacts({page,app,first,second,third,snap,root,until,check});
