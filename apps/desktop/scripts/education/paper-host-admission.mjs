@@ -17,7 +17,7 @@ const {createEventPublisher}=await import('../../src/main/xiaozhi-agent/events/p
 const {createToolExecutionBoundary}=await import('../../src/main/xiaozhi-agent/tools/execution-bound.ts');
 const {SessionExecutionRegistry}=await import('../../src/main/xiaozhi-agent/vendor/hana/lib/session-execution-registry.ts');
 
-const output=fs.mkdtempSync(path.resolve('test-results/paper-host-admission-')),db=new DatabaseSync(':memory:');
+const output=fs.mkdtempSync(path.resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||'test-results','paper-host-admission-')),db=new DatabaseSync(':memory:');
 db.exec(`CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);
 CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,student_id TEXT,archived_at TEXT);
 CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT);
@@ -99,6 +99,16 @@ try{
   await scopeCase('请按蓝图组卷。',{allowed:true,continueRun:true});
   await scopeCase('请读取资料并解释组卷流程。',{continueRun:true});
   await scopeCase('继续');
+ });
+ await check('School quiz and practice-paper requests authorize only explicit composition',async()=>{
+  for(const request of ['请从现有题本的原题中组一份初二数学小测，先让我核对。','请帮我制作一份练习卷。','根据现有题本创建一份单元测验卷。']){
+    assert.equal(explicitlyRequestsPaper(request),true,request);
+    await scopeCase(request,{allowed:true});
+  }
+  for(const request of ['先介绍怎样组一份数学小测。','请从现有题目组一份小测方案。','请从“制作一份练习卷”这个例子讲解组卷。','组织一次课堂小测，告诉我时间安排。','请制作一份练习卷。暂不生成整卷。']){
+    assert.equal(explicitlyRequestsPaper(request),false,request);
+    await scopeCase(request);
+  }
  });
  await check('Every current teacher correction criterion is authoritative, including later semicolon or newline prohibitions',async()=>{
   for(const later of ['不要实际组卷，只解释方案。','不要生成试卷。\n只解释方案。'])await scopeCase('请按蓝图组卷。',{correction:['请生成一份试卷。',later]});

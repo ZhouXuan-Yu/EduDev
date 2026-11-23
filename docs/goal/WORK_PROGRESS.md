@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+常见小测表达的组卷准入、合写配额和不新增题约束已补齐。 [自动组卷证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-自然表达的小测组卷)
+
 本轮完成当前对话的确认面板和文件预检时序修复。真实 DeepSeek 的年度汇编单例在教师确认后已从工作台冷启动读回。 [阶段证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#输入框上方的待确认面板)
 
 ## 2026-11-22 小智长期个人教学 Agent D3

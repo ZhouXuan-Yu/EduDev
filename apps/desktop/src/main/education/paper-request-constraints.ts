@@ -10,6 +10,8 @@ const numberRules = {
   points: rule('(?:全卷|整卷)?(?:总分|满分|合计|总计)\\s*(?:[:为]|是|设为)?', '分'),
   minutes: rule('(?:考试时长|考试时间|答题时间|限时|用时|时长|时间)\\s*(?:[:为]|是|设为)?', '分钟'),
 } as const;
+const combinedQuota = new RegExp('^(?:全卷|整卷|总共|共计|共)?\\s*'+numeral+'\\s*(?:道(?:题)?|题)\\s*(?:共|总分|满分)?\\s*'+numeral+'\\s*分$','u');
+const perQuestionPoints = rule('(?:全卷|整卷)?每(?:道题|题)\\s*(?:[:为]|是|设为)?','分');
 const digits = '零一二三四五六七八九';
 const units: Readonly<Record<string, number>> = {十: 10, 百: 100, 千: 1000, 万: 10000};
 
@@ -41,7 +43,7 @@ const knowledgeList = /^必选知识点\s*(?:[:=为]|包括)\s*([\p{L}\p{N}、/+
 const typeQuota = new RegExp('^(单项选择题|多项选择题|不定项选择题|选择题|单选题|多选题|填空题|简答题|解答题|计算题|判断题|编程题)\\s*(?:[:为]|共|各)?\\s*'+numeral+'\\s*(?:道(?:题)?|题)$','u');
 const subjectLabel = /^学科\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
 const gradeLabel = /^年级\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
-const originalOnly = /^(?:只|仅)(?:使用|从|用)(?:本地)?题库(?:选题|抽题|组卷)?$|^不(?:使用|采用)生成题$/u;
+const originalOnly = /^(?:只|仅)(?:使用|从|用)(?:本地)?题库(?:选题|抽题|组卷)?$|^不(?:使用|采用)生成题$|^(?:不|不要)(?:添加|新增|生成)新题$/u;
 
 /** Only literal whole-paper clauses from the teacher may constrain a model-submitted blueprint. */
 function clauses(request: string): string[] {
@@ -67,12 +69,20 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
     const expected = new Set<number>();
     for (const clause of terms) {
       const match = numberRules[field].exec(clause);
-      const value = match && integer(match[1]);
+      const joint = field === 'minutes' ? null : combinedQuota.exec(clause);
+      const number = match?.[1] ?? joint?.[field === 'count' ? 1 : 2];
+      const value = number === undefined ? undefined : integer(number);
       if (typeof value === 'number' && value > 0) expected.add(value);
     }
     if (expected.size > 1) return 'ambiguous';
     if (expected.size === 1 && !expected.has(actual[field])) return field;
   }
+  const uniformPoints=new Set(terms.flatMap(clause=>{
+    const match=perQuestionPoints.exec(clause),value=match?integer(match[1]):undefined;
+    return typeof value==='number'&&value>0?[value]:[];
+  }));
+  if(uniformPoints.size>1)return 'ambiguous';
+  if(uniformPoints.size===1&&blueprint.sections.some(section=>!uniformPoints.has(section.points)))return 'points';
   const subjects = new Set(terms.flatMap(clause => subjectLabel.exec(clause)?.[1] ?? []));
   if (subjects.size > 1) return 'ambiguous';
   if (subjects.size === 1 && !subjects.has(blueprint.subject.normalize('NFKC'))) return 'subject';

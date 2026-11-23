@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "09827efe114090b8894e276f04f2488bca0cf664825f3bb0eeef994fcd960297",
+  "sourceHash": "5ce9cd7b1dd02a1f577aa59f6ad60956b3074c91752217b7b1ee9edf0d36e402",
   "sources": [
     {
       "file": "package-lock.json",
@@ -248,7 +248,7 @@
     },
     {
       "file": "src/main/education/paper-admission.ts",
-      "sha256": "a42268021dc5ac1fbd188f4de4f71388ef9ffd3b6a3e9dadce1f8e2002c37f27"
+      "sha256": "b39b4380442684fab23515b44de25b6462d00dd4a4133b3bf49b6df9f5c86d6a"
     },
     {
       "file": "src/main/education/paper-agent-read.ts",
@@ -320,7 +320,7 @@
     },
     {
       "file": "src/main/education/paper-request-constraints.ts",
-      "sha256": "768fc1032bb84d78e0001f5ad978f8f3fa85ec892b21dd2a84aabd8caed885d0"
+      "sha256": "9b0010488ff7c6ceff8ff154f32b3f9a73d8f4213eaf190134e6fb57688caa00"
     },
     {
       "file": "src/main/education/paper-rich-export.ts",
@@ -824,7 +824,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "6edd88264135ab2dceac50a4f44f765b38acf85ea794fba390bcedc85b89e904"
+      "sha256": "bef01485cbd3c37114e0152e18fcbe22210bea1cb2c4dd39796c3ea3d3e89e79"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1524,7 +1524,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "973dc9b683e288bc3d3bedb55b7502b83a9de3c23644703e87ca659462d28473"
+      "sha256": "ded3c9c1ff69eab325d606ec7ba788b08a841725030a774bb64d56c2feb57558"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",

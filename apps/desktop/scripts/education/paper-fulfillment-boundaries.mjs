@@ -7,7 +7,7 @@ import {selectPaper} from '../../src/main/education/paper-selection.ts';
 import {createPaperCoordinator} from '../../src/main/education/paper-coordinator.ts';
 import {compareTeacherPaperConstraints} from '../../src/main/education/paper-request-constraints.ts';
 import {paperAgentResultJson,paperConfirmedCandidates,parsePaperAgentTarget} from '../../src/main/education/paper-agent-read.ts';
-const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-paper-fulfillment-'));
+const output=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT||os.tmpdir(),'xiaozhi-paper-fulfillment-'));
 const report={ok:false,checks:[],paidRequests:0,boundary:'Actual deterministic selection, shared derivation and existing coordinator tools; no model quality or formal UI claim.'};
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
 const blueprint={title:'跨知识点资格样本',subject:'理科',grade:'资格样本',durationMinutes:20,totalPoints:30,mode:'source_only',sections:['方程','浮力','函数'].map((kp,i)=>({id:'kp'+i,label:kp,knowledgePoint:kp,questionType:'short_answer',count:2,points:5}))};
@@ -66,6 +66,13 @@ try{
   assert.equal(compareTeacherPaperConstraints(prompt,explicit),undefined,prompt);
  }
  check('Explicit teacher totals, topic labels and difficulty ratios constrain a model blueprint without inventing targets');
+ assert.equal(compareTeacherPaperConstraints('组一份小测，六题30分，每题5分，不添加新题。',explicit),undefined);
+ assert.equal(compareTeacherPaperConstraints('组一份小测，八题30分。',explicit),'count');
+ assert.equal(compareTeacherPaperConstraints('组一份小测，六道题36分。',explicit),'points');
+ assert.equal(compareTeacherPaperConstraints('组一份小测，六题30分，每题6分。',explicit),'points');
+ assert.equal(compareTeacherPaperConstraints('组一份小测，六题30分，不添加新题。',hybrid),'source');
+ assert.equal(compareTeacherPaperConstraints('组一份小测，六题30分，满分45分。',explicit),'ambiguous');
+ check('Natural combined count and points clauses preserve exact total, per-question points and existing-source mode');
  const anchor='xipaper_00000000-0000-0000-0000-000000000001';
  assert.deepEqual(parsePaperAgentTarget({paperId:anchor,digest:'a'.repeat(64)}),{paperId:anchor,digest:'a'.repeat(64)});
  assert.deepEqual(parsePaperAgentTarget({title:' 练习卷 '}),{title:'练习卷'});

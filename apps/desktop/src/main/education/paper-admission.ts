@@ -10,19 +10,25 @@ import {compareTeacherPaperConstraints} from './paper-request-constraints';
 
 export type PaperProposalBinding=Readonly<{sessionId:string;runId:string;commandId:string;generation:number;callId:string;taskId:string;requirementsVersion:number}>;
 const identity=(value:string)=>typeof value==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(value);
+const paperOutput='(?:试卷|卷子|整卷|候选卷|练习卷|测验卷|测试卷|小测(?:卷)?(?!试))';
+const paperAction='(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计|组(?!织|合))[^，,。！？；;\\n]{0,24}'+paperOutput+')';
+const creationAction=new RegExp('实际调用\\s+education_propose_paper\\b|'+paperAction,'u');
+const declinedCreation=new RegExp('(?:不要|不必|无需|禁止|暂不|别)[^。！？；;\\n]{0,32}'+paperAction,'u');
 
 /** Conservative creation scope, not a general intent classifier. Only the leading
  * teacher instruction counts; quoted blueprints and model step text grant nothing. */
 export function explicitlyRequestsPaper(text:string){
- if(/(?:不要|不必|无需|禁止|暂不|别)[^。！？；;\n]{0,32}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷|候选卷))|(?:仅|只)(?:需|要)?(?:解释|说明|介绍)(?:方案|组卷|出卷|流程|步骤)/u.test(text))return false;
- const head=text.trim().split(/[。！？；;\n]/u,1)[0].replace(/^(?:请你|请|麻烦你|麻烦|请帮我|帮我)\s*/u,'');
- if(/(?:仅|只)(?:需|要)?(?:解释|说明|介绍|阅读|读取|查看)|(?:不要|不必|无需|禁止|暂不|别)[^，,。！？；;\n]{0,24}(?:组卷|出卷|(?:生成|制作|创建|编制|编写|设计)[^，,。！？；;\n]{0,16}(?:试卷|卷子|整卷|候选卷))/u.test(head))return false;
- const action=/(?:实际调用\s+education_propose_paper\b|组卷|出卷|(?:生成|制作|创建|编制|编写|设计|组)[^，,。！？；;\n]{0,24}(?:试卷|卷子|整卷|候选卷))/u.exec(head);
+ if(declinedCreation.test(text)||/(?:仅|只)(?:需|要)?(?:解释|说明|介绍)(?:方案|组卷|出卷|流程|步骤)/u.test(text))return false;
+ const head=text.trim().split(/[。！？；;\n]/u,1)[0]
+  .replace(/["“「『][^"”」』\n]*["”」』]/gu,' ')
+  .replace(/^(?:请帮我|请你|请|麻烦你|麻烦|帮我)\s*/u,'');
+ if(/(?:仅|只)(?:需|要)?(?:解释|说明|介绍|阅读|读取|查看)/u.test(head))return false;
+ const action=creationAction.exec(head);
  if(!action)return false;
  const suffix=head.slice(action.index+action[0].length).trim();
- if(/^(?:是什么|是啥|怎么|如何|怎样|(?:的)?(?:流程|用法|介绍|说明|含义|定义|用途|功能))/u.test(suffix))return false;
+ if(/^(?:是什么|是啥|怎么|如何|怎样|(?:的)?(?:流程|用法|介绍|说明|含义|定义|用途|功能|方案|建议|示例|模板))/u.test(suffix))return false;
  const prefix=head.slice(0,action.index).trim();
- return prefix===''||/^(?:按|按照|根据|依据|基于|从|帮我|现在|重新|继续)/u.test(prefix)&&prefix.length<=120&&!/解释|说明|介绍|阅读|读取|查看|如何|怎样|步骤|流程|不要|禁止|暂不/u.test(prefix);
+ return prefix===''||/^(?:按|按照|根据|依据|基于|从|帮我|现在|重新|继续)/u.test(prefix)&&prefix.length<=120&&!/解释|讲解|说明|介绍|阅读|读取|查看|如何|怎样|步骤|流程|不要|禁止|暂不/u.test(prefix);
 }
 
 /** Read-only SDK/domain gate. It neither creates a paper nor approves a source.
