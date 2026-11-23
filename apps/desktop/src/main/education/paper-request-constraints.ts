@@ -56,6 +56,35 @@ function clauses(request: string): string[] {
     .filter(clause => clause.length > 0 && clause.length <= 180 && !/[{}]/u.test(clause));
 }
 
+function statedTotals(terms: readonly string[], field: keyof typeof numberRules): Set<number> {
+  const expected = new Set<number>();
+  for (const clause of terms) {
+    const match = numberRules[field].exec(clause);
+    const joint = field === 'minutes' ? null : combinedQuota.exec(clause);
+    const number = match?.[1] ?? joint?.[field === 'count' ? 1 : 2];
+    const value = number === undefined ? undefined : integer(number);
+    if (typeof value === 'number' && value > 0) expected.add(value);
+  }
+  return expected;
+}
+
+export function hasCompleteOriginalPaperTotals(request: string): boolean {
+  const terms = clauses(request);
+  const [count, points, minutes] = (['count','points','minutes'] as const).map(field => statedTotals(terms,field));
+  if (count.size !== 1 || points.size !== 1 || minutes.size !== 1) return false;
+  const perQuestion=statedUniformPoints(terms);
+  return [...count][0] <= 100 && [...points][0] <= 10000 && [...minutes][0] <= 1440
+    && (perQuestion.size===0 || perQuestion.size===1 && [...perQuestion][0]*[...count][0]===[...points][0])
+    && terms.some(clause => originalOnly.test(clause));
+}
+
+function statedUniformPoints(terms: readonly string[]): Set<number> {
+  return new Set(terms.flatMap(clause=>{
+    const match=perQuestionPoints.exec(clause),value=match?integer(match[1]):undefined;
+    return typeof value==='number'&&value>0?[value]:[];
+  }));
+}
+
 type PaperConstraintFailure = 'count' | 'points' | 'minutes' | 'subject' | 'grade' | 'type' | 'source' | 'knowledge' | 'difficulty' | 'ambiguous';
 
 export function compareTeacherPaperConstraints(request: string, blueprint: PaperBlueprint): PaperConstraintFailure | undefined {
@@ -66,21 +95,11 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
     minutes: blueprint.durationMinutes,
   };
   for (const field of Object.keys(numberRules) as (keyof typeof numberRules)[]) {
-    const expected = new Set<number>();
-    for (const clause of terms) {
-      const match = numberRules[field].exec(clause);
-      const joint = field === 'minutes' ? null : combinedQuota.exec(clause);
-      const number = match?.[1] ?? joint?.[field === 'count' ? 1 : 2];
-      const value = number === undefined ? undefined : integer(number);
-      if (typeof value === 'number' && value > 0) expected.add(value);
-    }
+    const expected = statedTotals(terms,field);
     if (expected.size > 1) return 'ambiguous';
     if (expected.size === 1 && !expected.has(actual[field])) return field;
   }
-  const uniformPoints=new Set(terms.flatMap(clause=>{
-    const match=perQuestionPoints.exec(clause),value=match?integer(match[1]):undefined;
-    return typeof value==='number'&&value>0?[value]:[];
-  }));
+  const uniformPoints=statedUniformPoints(terms);
   if(uniformPoints.size>1)return 'ambiguous';
   if(uniformPoints.size===1&&blueprint.sections.some(section=>!uniformPoints.has(section.points)))return 'points';
   const subjects = new Set(terms.flatMap(clause => subjectLabel.exec(clause)?.[1] ?? []));

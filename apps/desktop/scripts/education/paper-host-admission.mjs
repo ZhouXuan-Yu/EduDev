@@ -5,7 +5,7 @@ import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 const {createPaperCoordinator}=await import('../../src/main/education/paper-coordinator.ts');
-const {explicitlyRequestsPaper}=await import('../../src/main/education/paper-admission.ts');
+const {explicitlyRequestsPaper,startsWithOriginalPaperBlueprint}=await import('../../src/main/education/paper-admission.ts');
 const {PaperRepository}=await import('../../src/main/education/paper-repository.ts');
 const {PAPER_SCHEMA}=await import('../../src/shared/paper-blueprint.ts');
 const {createTaskCoordinator}=await import('../../src/main/xiaozhi-agent/tasks/coordinator.ts');
@@ -109,6 +109,27 @@ try{
     assert.equal(explicitlyRequestsPaper(request),false,request);
     await scopeCase(request);
   }
+ });
+ await check('Direct blueprint routing only covers complete, independent local-bank requests',async()=>{
+  const prompt='请从现有题本的原题中组一份初二数学小测，不添加新题。限时20分钟，六题30分，每题5分。全部是解答题。先让我核对整卷再保存。';
+  assert(startsWithOriginalPaperBlueprint(prompt));
+  for(const variant of [
+    prompt.replace('限时20分钟，',''),
+    prompt.replace('，不添加新题',''),
+    prompt.replace('初二数学','初二'),
+    prompt.replace('每题5分','每题6分'),
+    prompt+'全卷共八道题。',
+    prompt+'先查原题。',
+    prompt+'用指定题目。',
+    prompt+'并导出文件。',
+    prompt+'请补写缺少的答案。',
+    prompt+'参考附件。',
+    prompt+'把第2题替换。',
+    prompt.replace('题本的原题中','题本的《期末复习》中'),
+    prompt+'不要制作试卷。',
+    '从题本组卷是什么意思？',
+    '从题本制作“初二数学小测”的例子。限时20分钟，六题30分，不添加新题。',
+  ])assert.equal(startsWithOriginalPaperBlueprint(variant),false,variant);
  });
  await check('Every current teacher correction criterion is authoritative, including later semicolon or newline prohibitions',async()=>{
   for(const later of ['不要实际组卷，只解释方案。','不要生成试卷。\n只解释方案。'])await scopeCase('请按蓝图组卷。',{correction:['请生成一份试卷。',later]});

@@ -6,7 +6,7 @@ import {unwrapTaskArguments} from '../xiaozhi-agent/tasks/tool-envelope';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import {readTaskAction} from '../xiaozhi-agent/tasks/teacher-actions';
 import {isThinkingContinuation} from '../xiaozhi-agent/answer-quality';
-import {compareTeacherPaperConstraints} from './paper-request-constraints';
+import {compareTeacherPaperConstraints,hasCompleteOriginalPaperTotals} from './paper-request-constraints';
 
 export type PaperProposalBinding=Readonly<{sessionId:string;runId:string;commandId:string;generation:number;callId:string;taskId:string;requirementsVersion:number}>;
 const identity=(value:string)=>typeof value==='string'&&/^[A-Za-z0-9_:.-]{1,128}$/.test(value);
@@ -29,6 +29,22 @@ export function explicitlyRequestsPaper(text:string){
  if(/^(?:是什么|是啥|怎么|如何|怎样|(?:的)?(?:流程|用法|介绍|说明|含义|定义|用途|功能|方案|建议|示例|模板))/u.test(suffix))return false;
  const prefix=head.slice(0,action.index).trim();
  return prefix===''||/^(?:按|按照|根据|依据|基于|从|帮我|现在|重新|继续)/u.test(prefix)&&prefix.length<=120&&!/解释|讲解|说明|介绍|阅读|读取|查看|如何|怎样|步骤|流程|不要|禁止|暂不/u.test(prefix);
+}
+
+const localPaperBank=/^(?:请(?:帮我|你)?\s*|麻烦\s*)?(?:只|仅)?(?:从|用)(?:现有|本地|已有)*(?:的)?(?:题本|题库)(?:里的?|中的?|的)?(?:原题(?:中|里)?)?\s*(?:组(?!织|合)|出卷|生成|制作|创建|编制|编写|设计)/u;
+const gradeAndSubject=/(?:初[一二三]|[七八九789]年级)\s*(?:的)?\s*(?:数学|物理|化学|语文|英语|生物|地理|历史|科学)/u;
+const paperDependencies=[
+ /附件|上传|指定|点名|题号|编号|第\s*[\d一二三四五六七八九十]+\s*题|上次|上一版|已有试卷|参考/u,
+ /调整|替换|同类|变式|改编|仿照|同时|并且|先(?:问|读|查|看|核对)|不确定/u,
+ /(?:缺|补)[^，,。！？；;\n]{0,12}(?:题|答案|解析)|导出|打印|Word|PDF|PPT|\.docx/iu,
+];
+
+/** Pin the first provider call only for complete requests using the whole local bank. */
+export function startsWithOriginalPaperBlueprint(request:string):boolean {
+ const text=request.normalize('NFKC').trim(),head=text.split(/[。！？；;\n]/u,1)[0];
+ return text.length<=600 && localPaperBank.test(head) && gradeAndSubject.test(head)
+  && !paperDependencies.some(rule=>rule.test(text))
+  && explicitlyRequestsPaper(text) && hasCompleteOriginalPaperTotals(text);
 }
 
 /** Read-only SDK/domain gate. It neither creates a paper nor approves a source.

@@ -23,6 +23,7 @@ import {readQuestionContextSource} from '../education/question-context-provider'
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft} from '../education/natural-lesson-draft';
+import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -264,6 +265,7 @@ type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSe
 type Active = {
   answerOnly?: boolean;
   naturalLessonDraft?: true;
+  directOriginalPaper?: true;
   taskControl?: TaskControlAction;
   finalizing?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
@@ -1358,6 +1360,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
+        ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true}:{}),
         ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
           subject:lesson.subject,grade:lesson.grade,
           hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
@@ -2117,10 +2120,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
-      const inferredLesson = operation === 'prompt' && !goalId && !taskResume && !legacyApprovalId && !recoveredQuestionRunId &&
+      const canInferTeachingRequest = operation === 'prompt' && !goalId && !taskResume && !legacyApprovalId && !recoveredQuestionRunId &&
         !input.classroomPlan && !input.attachments?.length && !input.presentation && !input.continueTask &&
         !input.paperExportIntent && !input.mockExamExportIntent && !input.resumeDeliveryId &&
-        !isTaskContinuation(input.prompt) && !isBoundTaskAmendment(input.prompt) ? naturalLessonDraft(input.prompt) : undefined;
+        !isTaskContinuation(input.prompt) && !isBoundTaskAmendment(input.prompt);
+      const inferredLesson=canInferTeachingRequest?naturalLessonDraft(input.prompt):undefined;
+      const directOriginalPaper=canInferTeachingRequest&&!inferredLesson&&startsWithOriginalPaperBlueprint(input.prompt);
       const allowNaturalAmendment=!inferredLesson&&!input.attachments&&!input.presentation&&!input.paperExportIntent&&!input.mockExamExportIntent&&!input.classroomPlan&&!input.resumeDeliveryId&&!goalId&&!legacyApprovalId;
       const controller=new AbortController();
       const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
@@ -2173,7 +2178,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
-      const run: Active = { ...(inferredLesson?{naturalLessonDraft:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:true as const}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),

@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+同一句完整原题组卷请求实际复测，生成待确认卷 87.3 秒降至 11.6 秒。该数值为一次对应样本。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-完整原题小测的首轮蓝图)
+
 D3 的工程结论、教师体验缺口和各阶段证据在 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md)。
 
 输入框待确认专项从实际发送开始，核对原 Run 继续、选项保留、面板和输入框可达、真实文件保存与历史读回。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#输入框上方的待确认面板)

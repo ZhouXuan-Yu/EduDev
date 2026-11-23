@@ -5,6 +5,7 @@ import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
+import {PAPER_TOOLS} from '../../shared/paper-blueprint';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
@@ -147,6 +148,7 @@ export interface PiXiaozhiOptions {
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
   naturalLessonDraft?: {subject:string;grade:string;hasDraft:()=>Promise<boolean>};
+  directOriginalPaper?: true;
   classroomExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   teachingLessonExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   educationSearchTools?:ToolDefinition[];
@@ -1007,8 +1009,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   const domainDefinitions=options.answerOnly?[]:taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   if(options.answerOnly)names.length=0;
+  const allowedPaperThinking=options.thinkingPolicy?.requested;
+  const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')
+    &&domainDefinitions.some(def=>def.name===PAPER_TOOLS[0]);
   const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions,
-    options.naturalLessonDraft?[CLASSROOM_PLAN_TOOLS[0]]:[]):undefined;
+    options.naturalLessonDraft?[CLASSROOM_PLAN_TOOLS[0]]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
   const governance = options.toolGovernance ? await phase('pi_register_tool_contracts',signal => options.toolGovernance!.register(taskDefinitions,signal)) : undefined;
@@ -1145,6 +1150,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let modelHttpStatus:number|undefined;
   let submittedTeacherRequest:string|undefined;
   let lessonDraftAttempts=0;
+  let paperBlueprintSent=false;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
   const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
@@ -1181,6 +1187,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const naturalLesson=compacting?undefined:options.naturalLessonDraft;
     const requireLessonTool=naturalLesson&&lessonDraftAttempts<2&&!await naturalLesson.hasDraft();
     if(requireLessonTool)lessonDraftAttempts++;
+    const preferPaperTool=!compacting&&toolCatalog&&pinPaperTool&&!paperBlueprintSent&&args[0].provider===PROVIDER;
+    if(!compacting)paperBlueprintSent=true;
     {const previous=args[2]?.onPayload;
       args[2]={...args[2],onPayload:async(payload,model)=>{
         const transformed=await previous?.(payload,model),actual=transformed===undefined?payload:transformed;
@@ -1190,7 +1198,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         // DeepSeek accepts a named tool choice only in non-thinking mode. This is
         // the dedicated no-source lesson flow, including its receipt summary.
         const resolved=naturalLesson?{...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',
-          tool_choice:requireLessonTool?{type:'function',function:{name:CLASSROOM_PLAN_TOOLS[0]}}:'none'}:configured;
+          tool_choice:requireLessonTool?{type:'function',function:{name:CLASSROOM_PLAN_TOOLS[0]}}:'none'}
+          :preferPaperTool&&tools?.some(tool=>tool.function?.name===PAPER_TOOLS[0])?
+            {...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',tool_choice:{type:'function',function:{name:PAPER_TOOLS[0]}}}
+            :configured;
         if(!compacting)metrics?.request(Buffer.byteLength(JSON.stringify(resolved)),Array.isArray(tools)?tools.length:0);
         return resolved;
       }};
@@ -1429,6 +1440,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       if(disposed)return {ok:false,runId:'',error:'configuration'};
       if(phaseController.signal.aborted||options.lifecycleSignal?.aborted)return {ok:false,runId:'',error:'cancelled'};
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
+      paperBlueprintSent=false;
       assistantOutcome=undefined;
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text+'\n'+(options.toolTaskQuery||''));
       thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy(text,capabilities);

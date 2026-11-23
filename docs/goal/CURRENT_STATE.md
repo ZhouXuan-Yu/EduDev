@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 初中原题小测的完整条件已接入首轮组卷蓝图。同题库单例生成待确认卷从 87.3 秒降到 11.6 秒；集中验收仍开放。 [实验与边界](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-完整原题小测的首轮蓝图)
+
 D3 本轮复测自然语言原题小测通过。真实 DeepSeek 生成六题 30 分并冷启读回。代表性学科、复杂扫描和教师体验以 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md) 跟踪。
 
 问小智的待回答和待保存事项已接入输入框上方的面板。D3 仍处于 Phase 4 集中验证，规模、自然模型质量和教师独立验收继续按专项执行。 [阶段证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#输入框上方的待确认面板)
