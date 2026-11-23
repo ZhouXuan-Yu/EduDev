@@ -9,7 +9,7 @@ export function useMaterialDraftGuard(dirty:boolean) {
     const unload=(event:BeforeUnloadEvent)=>{event.preventDefault();event.returnValue='';};
     const guard=(event:Event)=>{
       if(event instanceof KeyboardEvent&&!['Enter',' '].includes(event.key))return;
-      if(event.target instanceof Element&&!event.target.closest('[data-testid="materials-workspace"]')){
+      if(event.target instanceof Element&&!event.target.closest('[data-testid="materials-workspace"], [data-material-draft-scope="workspace"]')){
         event.preventDefault();event.stopPropagation();
       }
     };

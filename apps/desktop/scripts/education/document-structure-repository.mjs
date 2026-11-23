@@ -12,6 +12,7 @@ const { validQuestionArchive, QUESTION_STRUCTURE_ARCHIVE_SCHEMA } =
 const { QUESTION_BOOK_ARCHIVE_SCHEMA } = await import(
   "../../src/shared/question-book-answer.ts"
 );
+const { readStructureReviewOverview } = await import("../../src/main/assets/material-structure-review-overview.ts");
 assert.notEqual(
   QUESTION_STRUCTURE_ARCHIVE_SCHEMA,
   QUESTION_BOOK_ARCHIVE_SCHEMA,
@@ -570,6 +571,65 @@ await check("Archived v12 teacher owners survive only removal of a proven named 
     db.prepare("DELETE FROM question_bank_items WHERE id=?").run(bankId);
     db.prepare("DELETE FROM material_structure_questions WHERE generation=?").run(oldGeneration);
     db.prepare("DELETE FROM material_structure_pages WHERE generation=?").run(oldGeneration);
+  }
+});
+await check("Teacher context completion requires the recovered formula and allows restored choice labels in their printed order", async () => {
+  const anchor = { page: 1, box: [.1,.1,.8,.2] };
+  const sourceQuestion = {
+    stem: "求T；T=a/b。", answer: "", anchors: [anchor], assets: [], subquestions: [],
+    issues: ["formula_text_unconfirmed", "missing_choice_options"],
+    formulaSources: [{ ...anchor, rasterSha256: "b".repeat(64), lineIds: ["lead", "top", "bottom"] }],
+    options: [{ label: "C", text: "C. 2" }, { label: "D", text: "D. 3" }],
+  };
+  const structure = new MaterialStructureRepository({});
+  structure.validate = async () => ({ question: sourceQuestion }); // Isolate the projection rule after source authentication.
+  const archive = { schemaVersion: QUESTION_STRUCTURE_ARCHIVE_SCHEMA, extractor: "layout-question.v1", state: "teacher_edited",
+    sourceChecked: true, number: "15", issues: [], sourceRisks: [], answerOrigin: "missing", analysisOrigin: "missing",
+    structure: {...reference, resourceId: id, version}, sources: [{ schemaVersion: "xiaozhi.material-source.v1",
+      resourceId: id, version, bodyVersion: "a".repeat(64), offset: 0, chunkId: "chunk_12345678-1234-1234-1234-123456789abc" }] };
+  const q = { id: "question_12345678-1234-1234-1234-123456789abc", stem: sourceQuestion.stem,
+    answer: "", analysis: "", archive, tags: [], document: document({ id, contentHash: version }, sourceQuestion) };
+  q.document.blocks.unshift({ id: "source_question_1", kind: "image", mime: "image/png", width: 100, height: 30,
+    assetId: "asset_12345678-1234-1234-1234-123456789abc", sha256: "c".repeat(64), anchors: [anchor] });
+  const provided = text => ({ state: "provided", text });
+  const notApplicable = { state: "not_applicable", text: "" };
+  const projection = { statement: provided(sourceQuestion.stem), formulas: provided("T=a/b"),
+    figures: notApplicable, tables: notApplicable, subquestions: notApplicable, choices: provided("A. 0 B. 1 C. 2 D. 3") };
+  const { next } = await structure.completeContext(q, { projection }, signal);
+  assert.deepEqual(next.document.context.projection, projection);
+  assert.deepEqual(next.document.blocks[0], q.document.blocks[0]);
+  const expanded = { ...projection, choices: provided("A. 0 B. 1 C. 2 D. 3 E. 4") };
+  assert.deepEqual((await structure.completeContext(q, { projection: expanded }, signal)).next.document.context.projection, expanded);
+  sourceQuestion.expectedChoiceCount = 4;
+  await assert.rejects(() => structure.completeContext(q, { projection: expanded }, signal), /invalid_input/u);
+  for (const omitted of [{ formulas: notApplicable }, { choices: provided("C. 2 D. 3") },
+    { choices: provided("B. 1 A. 0 C. 2 D. 3") }, { formulas: provided("T=b/a") }]) {
+    await assert.rejects(() => structure.completeContext(q, { projection: { ...projection, ...omitted } }, signal), /invalid_input/u);
+  }
+});
+await check("Whole-source review totals count each held question once per category and route between its pages", async () => {
+  const auditDb = new DatabaseSync(":memory:");
+  try {
+    auditDb.exec("CREATE TABLE material_structure_questions(generation TEXT,id TEXT,first_page INTEGER,status TEXT,body_json TEXT)");
+    const add = (id, page, issues, kind = "question", status = "needs_review", generation = "published") =>
+      auditDb.prepare("INSERT INTO material_structure_questions VALUES(?,?,?,?,?)")
+        .run(generation, id, page, status, JSON.stringify({ kind, issues }));
+    add("a", 2, ["ambiguous_columns", "numbering_conflict", "missing_choice_options"]);
+    add("b", 5, ["formula_text_unconfirmed", "missing_choice_options"]);
+    add("c", 3, []);
+    add("answer", 3, ["formula_text_unconfirmed"], "answer");
+    add("healthy", 5, [], "question", "candidate");
+    add("old", 1, ["missing_figure"], "question", "needs_review", "old");
+    const read = page => readStructureReviewOverview(async (query, values) => auditDb.prepare(query).all(...values), "published", page);
+    assert.deepEqual((await read(2)).groups, [
+      { kind: "boundaries", count: 1, firstPage: 2, nextPage: 2 },
+      { kind: "choices", count: 2, firstPage: 2, nextPage: 5 },
+      { kind: "formulas", count: 1, firstPage: 5, nextPage: 5 },
+      { kind: "transcription", count: 1, firstPage: 3, nextPage: 3 },
+    ]);
+    assert.equal((await read(5)).groups.find(group => group.kind === "choices").nextPage, 2);
+  } finally {
+    auditDb.close();
   }
 });
 db.close();

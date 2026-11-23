@@ -1,4 +1,4 @@
-import type { StructureParagraph, StructurePart } from "../../shared/material-document-structure";
+import { missingChoiceLabels, type StructureParagraph, type StructurePart, type StructureQuestion } from "../../shared/material-document-structure";
 import { questionSection } from "./material-structure-numbering";
 
 export function paragraphOptions(paragraph: StructureParagraph): StructurePart[] {
@@ -18,6 +18,17 @@ export function paragraphOptions(paragraph: StructureParagraph): StructurePart[]
 const circled = Array.from("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
 const choicePrompt = /(?:这些|上述|以上|前述|其中)[^。！？；\n]{0,36}(?:(?:正确|合理|错误|成立|符合题意)的(?:个数|数量|有|是)|(?:个数|数量)为)/u;
 const labelOnly = /^[、，]?\s*(?:[（(][A-D][）)]|[A-D][.．、])$/u;
+const printedChoiceCount = /(?:每(?:小)?题|各(?:小)?题)(?:均|都)?(?:的|给出|给了|提供|所给(?:出)?(?:的)?|设有|有)?\s*([二三四五六七八2-8])\s*(?:个|项)?\s*选项/u;
+
+export function checkWholeQuestionChoices(question: StructureQuestion) {
+  if (question.kind !== "question" || question.subquestions.length ||
+      !questionSection.exec(question.section.trim())?.[1].endsWith("选择题")) return;
+  const printed = printedChoiceCount.exec(question.section.normalize("NFKC"))?.[1];
+  const expected = printed ? Number(printed) || "一二三四五六七八".indexOf(printed) + 1 : 0;
+  if (!missingChoiceLabels(question.options, expected).length) return;
+  if (expected) question.expectedChoiceCount = expected;
+  question.issues.push("missing_choice_options");
+}
 
 /** Circled statements count as part of the common stem when the printed choice prompt owns the trailing row. */
 export function choiceStatementIds(section: string, paragraphs: StructureParagraph[]): Set<string> | undefined {

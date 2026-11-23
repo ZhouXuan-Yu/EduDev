@@ -1,7 +1,7 @@
 import {createTerminalPreload} from './terminal';
 
 import type {StructureReviewInput} from '../shared/material-structure-review';
-import type {DocumentStructureQuery,DocumentStructureView} from '../shared/material-document-structure';
+import type {DocumentStructureImageQuery,DocumentStructureQuery,DocumentStructureReviewOverview,DocumentStructureView} from '../shared/material-document-structure';
 import type {AiResponseQuery,AiResponseView} from '../shared/material-ai-response';
 import type {WordPagesQuery,WordPagesView} from '../shared/material-word-pages';
 import type {PaperBasketV2Api,PaperBasketV2ReadInput,PaperBasketV2ListInput,PaperBasketV2CreateInput,PaperBasketV2CandidateInput,PaperBasketV2MutationInput,PaperBasketV2SnapshotInput,PaperBasketV2ImportInput} from '../shared/paper-basket-v2';
@@ -488,8 +488,9 @@ const api = {
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
   reviewMaterialStructure: (input:StructureReviewInput)=>ipcRenderer.invoke('materials:structure-review',input) as Promise<QuestionBankItem>,
   getMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-read',input) as Promise<DocumentStructureView>,
+  getMaterialStructureReviewOverview:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-review-overview',input) as Promise<DocumentStructureReviewOverview | undefined>,
   rebuildMaterialStructure:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-rebuild',input) as Promise<DocumentStructureView>,
-  getMaterialStructureImage:(input:DocumentStructureQuery)=>ipcRenderer.invoke('materials:structure-image',input) as Promise<string>,
+  getMaterialStructureImage:(input:DocumentStructureImageQuery)=>ipcRenderer.invoke('materials:structure-image',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages',input) as Promise<WordPagesView|undefined>,
   prepareMaterialWordPages:(input:WordPagesQuery)=>ipcRenderer.invoke('materials:word-pages-prepare',input) as Promise<WordPagesView>,

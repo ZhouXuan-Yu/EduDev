@@ -8,7 +8,7 @@ const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
 const { printedStructureQuestionType } =
   await import("../../src/main/assets/material-structure-question-type.ts");
-const { missingChoiceLabels } =
+const { missingChoiceLabels, validStructureImageQuery, validStructureQuery } =
   await import("../../src/shared/material-document-structure.ts");
 const results = [];
 async function check(name, run) {
@@ -73,6 +73,70 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+const formulaRows = [
+  ["15. 已知质量、压强和时间，求物体受力。", .10, .42, .55],
+  ["pwD", .63, .488, .04], ["物体所受压力可记为T=", .39, .50, .24],
+  ["ZｉZz", .73, .507, .08], ["ν", .641, .512, .026],
+  ["16. 求物体移动的距离。", .10, .61, .50],
+];
+const formulaRegion = { id: "equation-text", kind: "text", score: .68, box: [.37,.48,.85,.56], needsReview: true };
+await check("An unclassified stacked formula retains review-only source pixels and all original OCR lines", () => {
+  const p = page(formulaRows, 1, 1, [formulaRegion]);
+  const [q, following] = questions([p]);
+  assert.equal(q.status, "needs_review");
+  assert(q.issues.includes("formula_text_unconfirmed"));
+  assert.equal(q.formulaSources.length, 1);
+  const [source] = q.formulaSources;
+  assert.equal(source.page, 1);
+  assert.equal(source.rasterSha256, p.rasterSha256);
+  assert(source.box[0] < .63 && source.box[2] > .8 && source.box[3] < .56);
+  assert.deepEqual(source.lineIds.map(id => p.lines.find(line => line.id === id).text),
+    ["物体所受压力可记为T=", "pwD", "ν", "ZｉZz"]);
+  assert(q.stem.includes("ZｉZz") && p.rawText.includes("ν"));
+  assert.equal(following.formulaSources, undefined);
+});
+await check("Formula recovery requires unique aligned pieces inside the same question and does not duplicate a proven layout region", () => {
+  const known = { id: "known-formula", kind: "inline_formula", score: .98, box: [.592,.485,.825,.537], needsReview: true };
+  const separated = formulaRows.map(line => line[0] === "ν" ? ["ν", .77, .512, .026] : line);
+  const cases = [
+    page(formulaRows.filter(line => line[0] !== "ν"), 1, 1, [formulaRegion]),
+    page([...formulaRows.slice(0, 4), ["16. 求剩余部分。", .1, .509, .28], formulaRows[4]], 1, 1, [formulaRegion]),
+    page(separated, 1, 1, [formulaRegion]),
+    page(formulaRows, 1, 1, [formulaRegion, known]),
+  ];
+  for (const p of cases) assert(questions([p]).every(q => !q.formulaSources?.length));
+});
+await check("The optional raster identity is exclusive to image reads and rejects malformed values", () => {
+  const query = {resourceId:"resource_12345678-1234-1234-1234-123456789abc",version:"a".repeat(64),page:2};
+  assert(validStructureImageQuery(query));
+  const pinned = {...query,rasterSha256:"b".repeat(64)};
+  assert(validStructureImageQuery(pinned));
+  assert(!validStructureQuery(pinned));
+  for (const bad of [{...pinned, path:"a.pdf"},{...pinned,rasterSha256:"wrong"},{...pinned,page:0}])
+    assert(!validStructureImageQuery(bad));
+});
+await check("Printed option counts and observed label gaps prevent import from silently dropping choices", () => {
+  const root = ["一、选择题（各题均有四个选项）", .1, .06];
+  const [short, none, complete, freeResponse] = questions([page([
+    root, ["7. 求长方形面积。", .1, .11], ["A. 6 B. 8", .1, .15],
+    ["8. 求等差数列的公差。", .1, .23],
+    ["9. 求长方体体积。", .1, .31], ["A. 3 B. 6 C. 8 D. 10", .1, .35],
+    ["二、解答题", .1, .44], ["10. 证明上述结论。", .1, .5],
+  ])]);
+  assert.deepEqual(missingChoiceLabels(short.options, short.expectedChoiceCount), ["C", "D"]);
+  assert.deepEqual(missingChoiceLabels(none.options, none.expectedChoiceCount), ["A", "B", "C", "D"]);
+  for (const q of [short, none]) assert(q.issues.includes("missing_choice_options") && q.status === "needs_review");
+  assert.equal(complete.status, "candidate");
+  assert(!freeResponse.issues.includes("missing_choice_options"));
+
+  const [gap, binary] = questions([page([
+    ["一、选择题", .1, .06], ["4. 求正数平方根。", .1, .11], ["A. 2", .1, .15], ["C. 4", .1, .18],
+    ["5. 判断命题。", .1, .23], ["A. 真 B. 假", .1, .27],
+  ])]);
+  assert.deepEqual(missingChoiceLabels(gap.options), ["B"]);
+  assert(gap.issues.includes("missing_choice_options"));
+  assert(!binary.issues.includes("missing_choice_options"));
+});
 const choiceStatements = [
   ["二、选择题（本节共2题）", .1, .07],
   ["15. 已知下列陈述，判断结论。", .1, .12],

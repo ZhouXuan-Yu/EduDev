@@ -1,12 +1,13 @@
-import type { PageBox } from "./material-page-preview";
+import { pageSha, type PageBox } from "./material-page-preview";
 import type { MaterialLine } from "./material-layout";
 import type { PageBlock } from "./material-page-blocks";
 
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v19" as const;
+  "layout-paragraph-question.v20" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v19",
   "layout-paragraph-question.v18",
   "layout-paragraph-question.v17",
   "layout-paragraph-question.v16",
@@ -36,6 +37,7 @@ export type StructureIssue =
   | "missing_question_number"
   | "missing_question_start"
   | "missing_choice_options"
+  | "formula_text_unconfirmed"
   | "missing_figure"
   | "ambiguous_asset"
   | "shared_material_scope"
@@ -56,6 +58,7 @@ export type ParagraphRole =
   | "table"
   | "figure";
 export type StructureAnchor = { page: number; box: PageBox };
+export type StructureFormulaSource = StructureAnchor & { rasterSha256: string; lineIds: string[] };
 export type StructureLine = {
   id: string;
   sourceId: string;
@@ -110,11 +113,11 @@ export type StructurePart = {
   answer?: string;
   analysis?: string;
 };
-export function missingChoiceLabels(options: ReadonlyArray<Pick<StructurePart, "label">>) {
+export function missingChoiceLabels(options: ReadonlyArray<Pick<StructurePart, "label">>, expected = 0) {
   const seen = new Set(options.map(option => option.label));
   const labels = Array.from("ABCDEFGH");
-  const last = labels.reduce((end, label, index) => seen.has(label) ? index : end, 0);
-  return labels.slice(0, last).filter(label => !seen.has(label));
+  const count = labels.reduce((end, label, index) => seen.has(label) ? Math.max(index + 1, end) : end, expected);
+  return labels.slice(0, count).filter(label => !seen.has(label));
 }
 export type StructureQuestion = {
   id: string;
@@ -129,7 +132,9 @@ export type StructureQuestion = {
   answer: string;
   analysis: string;
   options: StructurePart[];
+  expectedChoiceCount?: number;
   subquestions: StructurePart[];
+  formulaSources?: StructureFormulaSource[];
   anchors: StructureAnchor[];
   assets: {
     page: number;
@@ -184,6 +189,13 @@ export type DocumentStructureQuery = {
   version: string;
   page: number;
 };
+export type DocumentStructureImageQuery = DocumentStructureQuery & { rasterSha256?: string };
+export const STRUCTURE_REVIEW_GROUPS = ["boundaries", "choices", "formulas", "visuals", "transcription"] as const;
+export type StructureReviewGroup = typeof STRUCTURE_REVIEW_GROUPS[number];
+export type DocumentStructureReviewOverview = {
+  generation: string;
+  groups: { kind: StructureReviewGroup; count: number; firstPage: number; nextPage: number }[];
+};
 export type DocumentStructureView = {
   summary?: DocumentStructureSummary;
   page?: StructurePage;
@@ -215,6 +227,13 @@ export function validStructureQuery(
     Number(v.page) >= 1 &&
     Number(v.page) <= 10000
   );
+}
+
+export function validStructureImageQuery(value: unknown): value is DocumentStructureImageQuery {
+  if (validStructureQuery(value)) return true;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const { rasterSha256, ...query } = value as Record<string, unknown>;
+  return pageSha(rasterSha256) && validStructureQuery(query);
 }
 
 export const STRUCTURE_REVIEW_SCHEMA = 'xiaozhi.structure-review.v1' as const;

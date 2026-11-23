@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+批量扫描质量验收检查同次文件选择自动进入本地任务，以真实扫描和独立版式分别验证边界、分式、选项缺口、正常题对照及冷启。记录原件摘要和 SQLite 世代，并核对模型请求和教师确认计数。 [流程及验收](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
+
 扫描选择题验收用真实四页原卷重建，核对第 15 题归属、待核选项、原页预览、临近题、旧世代和冷启。 [选项专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷整题选项归属)
 
 跨行分值验收覆盖完整原卷的 21 个题号、末两题六小问、原页查看、双世代 SQLite 和冷启动读回。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷的跨行分值说明)

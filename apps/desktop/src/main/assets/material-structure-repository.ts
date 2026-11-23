@@ -1,4 +1,5 @@
 import { structureOcrSourceKey } from "./material-structure-identity";
+import { readStructureReviewOverview } from "./material-structure-review-overview";
 import { createHash, randomUUID } from "node:crypto";
 import type { TeacherResource, QuestionBankItem } from "../../shared/contracts";
 import {
@@ -9,6 +10,7 @@ import {
   validDocumentStructureEngine,
   DOCUMENT_STRUCTURE_SCHEMA,
   validStructureQuery,
+  missingChoiceLabels,
   type DocumentStructureQuery,
   type DocumentStructureSummary,
   type DocumentStructureView,
@@ -714,6 +716,15 @@ export class MaterialStructureRepository {
     };
   }
 
+  async reviewOverview(input: DocumentStructureQuery) {
+    if (!validStructureQuery(input)) throw Error("invalid_input");
+    const resource = await this.host.resource(input.resourceId);
+    if (resource.contentHash !== input.version) throw Error("source_changed");
+    const job = await this.job(resource.id);
+    if (!job || job.version !== input.version || !["complete", "partial"].includes(String(job.status))) return;
+    return readStructureReviewOverview((sql, values) => this.host.all(sql, values), String(job.generation), input.page);
+  }
+
   async image(input: DocumentStructureQuery): Promise<OriginalImage> {
     const view = await this.view(input);
     if (!view.page || !view.summary) throw Error("source_incomplete");
@@ -1158,15 +1169,23 @@ export class MaterialStructureRepository {
           /如图|见图|附图|[上下左右]图|图中/u.test(frozen)) && p.figures.state !== "provided") ||
         ((question.assets.some(a => a.kind === "table") ||
           /如表|见表|[上下]表|表中/u.test(frozen)) && p.tables.state !== "provided") ||
-        (question.assets.some(a => a.kind === "inline_formula" || a.kind === "display_formula") &&
+        ((question.formulaSources?.length || question.assets.some(a => a.kind === "inline_formula" || a.kind === "display_formula")) &&
           p.formulas.state !== "provided") ||
-        (question.options.length && p.choices.state !== "provided") ||
+        ((question.options.length || question.expectedChoiceCount) && p.choices.state !== "provided") ||
         (question.subquestions.length && p.subquestions.state !== "provided"))
       throw Error("invalid_input");
     const labels = [...p.choices.text.matchAll(/(?:^|\s)(?:[（(]([A-H])[）)]|([A-H])[.．、])/gu)]
       .map(match => match[1] || match[2]);
-    if (question.options.length &&
-        JSON.stringify(labels) !== JSON.stringify(question.options.map(option => option.label)))
+    const expectedLabels = question.options.map(option => option.label);
+    const missingChoices = question.issues.includes("missing_choice_options");
+    if (missingChoices) {
+      expectedLabels.push(...missingChoiceLabels(question.options, question.expectedChoiceCount));
+      expectedLabels.sort();
+    }
+    const allowsUnobservedSuffix = missingChoices && !question.expectedChoiceCount;
+    if (expectedLabels.length && (allowsUnobservedSuffix
+      ? labels.length < expectedLabels.length || labels.some((label, index) => label !== String.fromCharCode(65 + index))
+      : JSON.stringify(labels) !== JSON.stringify(expectedLabels)))
       throw Error("invalid_input");
     // Rebuild from the legacy body even when this is a correction of a
     // previous projection that already has separate diagram blocks.

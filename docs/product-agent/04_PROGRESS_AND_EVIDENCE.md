@@ -704,3 +704,26 @@ Word/PDF 目录导出 **已实现**。两种格式只保存一份时，已保存
 整题选项归属与人工复核入口 **已实现**。回退可使用上一构建及原 v18 世代，原 PDF 和教师确认项无需迁移。第 15 题的「人体总的淋雨量」公式仍有分数上下部件被 OCR 拆成通用正文，当前来源记录只有表格资产。公式、表格、分栏和答案质量继续专项验证，整项 Phase 4.3 保持进行中。
 
 扫描卷跨行分值说明 **已实现**。第 21 题仍有文字和公式转写误差。第 15 题的两个前置选项受扫描水印影响，版面回执仅明确识别 C、D。局部整行可补读 A，手工定位的 B 单格在两个亮通道实验中读到标签和值。按 C、D 坐标自动推算 B 的单格读到标签，但选项值仍与原图有分歧。证据为 `q15-options-evidence.png`、`q15-crop-ocr.json`、`q15-crop-colour-ocr.json` 和 `q15-crop-geometry-ocr.json`，当前题目仍待核。
+
+## Phase 4.3 扫描公式的原图核对
+
+v20 的题目装配自动记录同题同栏、上下部件互证的堆叠公式，定位绑定原页摘要及原始 OCR 行。现有核题表单可查看原图局部，公式文字由教师补正。公式局部与原页逐像素一致，关闭弹窗返回核题表单，过期的原图摘要被拒绝。杨浦卷第 15、21 题作为回归样本，生产规则适用于同类题。上一轮弹窗点击被资料草稿导航守卫拦截，修订仅放行本资料的预览控件，保留草稿离开保护。
+
+## Phase 4.3 批量扫描结构质量流程
+
+**共用流程和整份资料核对入口已实现。** 从资料库同时导入两份不同来源或版式的扫描，后台自动解析 5 页、26 道题，分流待核 19 道。真实杨浦卷的两处公式可按类型在第 2、4 页之间跳转；独立合成扫描的第 7、8 题分别标出 C、D 和 B 缺失，第 9 题保留 A–D，两道解答题没有缺选项标记。文件 SHA-256、整卷分类、逐题证据和重启后的结构世代一致，教师核对记录 0，模型请求 0。新导入用时 89.55 秒，包含本地识别与多任务并行测试期间的运行开销。 [调研、复用与扩展](06_SCAN_QUALITY_WORKFLOW.md)
+
+| 检查 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-scan-workflow` | TypeScript 和 Electron 构建通过。主进程 SHA-256 `f9f25764c3b7e12f52c3a5221a32b056def57adbc305284414d7c84614ae4f9e`。 |
+| `node scripts/education/document-structure-boundaries.mjs` | 65/65，包含多栏、原图绑定、公式部件、完整和缺损选项，以及原有 500 页流式样本。 |
+| `node --experimental-transform-types scripts/education/document-structure-repository.mjs` | 42/42，包含各类疑点去重、世代隔离和教师补全的公式与选项验证。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/education/scan-quality-workflow-electron.mjs` | 新导入 4/4。对象来自同一次资料库文件选择，使用实际本机解析进程。 |
+| `node scripts/education/mock-exam-rubrics-electron.mjs` | 重建 7/7，保留旧世代、相邻题和老师已确认数据，验证双尺寸、原图像素、按钮和键盘关闭及冷重启。 |
+| `node scripts/electron-smoke.mjs` | 同一最终构建综合回归 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| 整卷疑点汇总压力探针 | SQLite 内存库 10,000 条题目记录、2,500 页，六次分类与定位查询约 26.6–27.8 毫秒。证据 `overview-load-probe.json`，这里只测查询。 |
+| `npm run test:ui-contracts` | 已存在的 `my_tasks` 页面清单差异仍在，第一项终止。 |
+| `npm audit --omit=dev --json` | 现有 20 项依赖告警，其中 2 项高风险。本轮依赖与锁文件未变。 |
+
+证据根 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-scan-workflow`。新导入报告在 `mixed-workflow-QrRL3G/report.json`，重建报告在 `yangpu-rubrics-z9b8cc/report.json`。手动窗口使用 `manual-phase4-scan-workflow` 下的独立资料库，启动进程和构建摘要见同目录 `launch-window.json`。如需回退，使用上一构建及旧结构世代；既有数据库与原 PDF 无迁移。专业公式转写、难版式与表格的独立识别器、大批量质量基准和答案核验继续推进。

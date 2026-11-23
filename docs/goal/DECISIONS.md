@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+堆叠公式的 OCR 读数不能作为数学文字。按同题同栏的上下行框和原页摘要展示原图局部。完整题目须由教师明确补正公式和待核选项。 [公式合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描公式的原图核对)
+
 圈号陈述按同页、同栏的整题提问和横排选项归属。只展示标签和文字均已读出的选项，歧义保留在原记录供教师核对。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷整题选项归属)
 
 用同栏、共享标题区域、相邻行与闭合括号恢复大题分值说明。原 OCR 与坐标保留，歧义继续待核。 [结构合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描卷的跨行分值说明)

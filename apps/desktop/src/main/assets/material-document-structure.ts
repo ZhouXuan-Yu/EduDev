@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
-import { choiceStatementIds, paragraphOptions } from "./material-structure-choice-options";
+import { checkWholeQuestionChoices, choiceStatementIds, paragraphOptions } from "./material-structure-choice-options";
+import { unconfirmedFormulaSources } from "./material-structure-formula-source";
 import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,scoredAssessmentRemark,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
   DOCUMENT_STRUCTURE_SCHEMA,
   DOCUMENT_STRUCTURE_ENGINE,
-  missingChoiceLabels,
   type StructureIssue,
   type StructureLine,
   type StructureParagraph,
@@ -1007,8 +1007,14 @@ export class StructureQuestionAssembler {
       const target = child ? child.options! : q.options;
       target.push(...paragraphOptions(paragraph));
     }
-    if (choiceStatements && missingChoiceLabels(q.options).length)
-      q.issues.push("missing_choice_options");
+    if (!unnumbered && q.kind === "question") {
+      const sources = [...pending.pages.values()].flatMap(page =>
+        unconfirmedFormulaSources(page, pending.paragraphs.filter(part => part.anchor.page === page.page)));
+      if (sources.length) {
+        q.formulaSources = sources;
+        q.issues.push("formula_text_unconfirmed");
+      }
+    }
     const first = pending.paragraphs[0];
     if (first.marker?.kind === "parent" && first.marker.label === q.number) {
       const scored = scoredAssessmentNumber(first.text);
@@ -1112,6 +1118,7 @@ export class StructureQuestionAssembler {
         }
       }
     }
+    checkWholeQuestionChoices(q);
     if (figureReference.test(q.stem) && !q.assets.length)
       q.issues.push("missing_figure");
     const groups = [

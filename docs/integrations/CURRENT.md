@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-23 扫描结构质量
+
+保留 PDFium、RapidOCR 和 PP-DocLayoutV3。参考 PP-StructureV3 的专项识别、Docling 的来源绑定和 OmniDocBench 的分项测量，继续用现有 SQLite 世代和任务。 [调研与落点](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Pi 执行、SQLite 目录、版本快照与许可证和权限链路已接入统一 Adapter 边界。社区下载页另有设计，拟复用原 Skill 导入及 Managed MCP 托管。 [D1 架构](../architecture/HARNESS_D1.md) · [社区扩展页](../architecture/COMMUNITY_CATALOG_DESIGN.md)

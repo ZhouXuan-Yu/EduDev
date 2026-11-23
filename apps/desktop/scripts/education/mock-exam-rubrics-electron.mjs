@@ -48,13 +48,14 @@ const job=()=>sql('SELECT * FROM material_structure_jobs WHERE resource_id=?',[s
 const pages=generation=>sql('SELECT * FROM material_structure_pages WHERE generation=? ORDER BY page',[generation]);
 const questionRows=generation=>sql('SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid',[generation]);
 const old=job(),oldPages=pages(old.generation),oldQuestions=questionRows(old.generation);
-assert(['layout-paragraph-question.v17','layout-paragraph-question.v18'].includes(old.engine));
+assert(['layout-paragraph-question.v17','layout-paragraph-question.v18','layout-paragraph-question.v19'].includes(old.engine));
 assert.equal(oldPages.length,4);
 const oldList=oldQuestions.map(row=>JSON.parse(row.body_json));
 const baseline=oldList.find(q=>q.number==='15');
-assert.equal(baseline.options.length,0);
-assert.deepEqual(baseline.subquestions.flatMap(part=>part.children??[])
-  .flatMap(part=>part.options).map(option=>option.text),['(C) 2','(D) 3']);
+const oldChoices=old.engine.endsWith('v19')?baseline.options:baseline.subquestions
+  .flatMap(part=>part.children??[]).flatMap(part=>part.options);
+assert.deepEqual(oldChoices.map(option=>option.text),['(C) 2','(D) 3']);
+assert.equal(baseline.formulaSources,undefined);
 if(old.engine.endsWith('v17'))assert(!oldList.some(q=>q.number==='20'));
 const confirmed=()=>sql("SELECT id,archive_json FROM question_bank_items WHERE json_valid(archive_json) AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id");
 const teacherBefore=confirmed();
@@ -118,12 +119,12 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v19');
+  assert.equal(current.engine,'layout-paragraph-question.v20');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
   assert.equal(shaFile(source.local_path),source.content_hash);
-  check('The existing UI rebuild publishes v19 while the original scan, previous snapshots and confirmed items stay intact');
+  check('The existing UI rebuild publishes v20 while the original scan, previous snapshots and confirmed items stay intact');
 
   const list=questionRows(current.generation).map(row=>JSON.parse(row.body_json));
   const numbered=list.map(q=>q.number).filter(number=>number!=='0');
@@ -149,9 +150,20 @@ try{
   assert.deepEqual(choice.options.map(option=>option.text),['(C) 2','(D) 3']);
   assert(choice.issues.includes('missing_choice_options')&&choice.status==='needs_review');
   assert(choice.options.every(option=>option.paragraphIds.every(id=>p2.paragraphs.some(part=>part.id===id))));
-  if(old.engine.endsWith('v18'))for(const number of ['14','16'])
+  if(!old.engine.endsWith('v17'))for(const number of ['14','16'])
     assert.deepEqual(list.find(q=>q.number===number),oldList.find(q=>q.number===number));
   check('Q15 C and D become whole-question options, A and B remain held, and neighboring choices stay unchanged');
+  const formula=choice.formulaSources?.[0];
+  assert.equal(choice.formulaSources?.length,1);
+  assert(choice.issues.includes('formula_text_unconfirmed') && formula.page===2);
+  assert.equal(formula.rasterSha256,p2.rasterSha256);
+  assert.deepEqual(formula.lineIds.map(id=>p2.lines.find(line=>line.id===id).text),
+    ['当人迎风行走时，人体总的淋雨量为T=','pwD','ν','ZｉZz']);
+  assert(formula.box[0]<.487&&formula.box[2]>.73&&formula.box[1]<.51&&formula.box[3]>.543);
+  const proof=list.find(q=>q.number==='21').formulaSources;
+  assert(proof?.some(entry=>entry.page===4&&entry.rasterSha256===p4.rasterSha256));
+  report.formulaSource=formula;
+  check('The Q15 and Q21 formula references bind the original line and page identities without rewriting their stems');
   await goToPage(first.panel,2);
   const q15=first.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
   await q15.getByText(/2 个选项 · 0 个小问/u).waitFor();
@@ -168,6 +180,41 @@ try{
     await evidence.scrollIntoViewIfNeeded();
     await first.page.screenshot({path:path.join(output,'q15-review-'+width+'.png'),animations:'disabled'});
   }
+  const formulaButton=q15.getByTestId('structure-review-formula-0');
+  await formulaButton.click();
+  const formulaDialog=first.page.getByTestId('structure-formula-dialog');
+  const formulaImage=formulaDialog.getByTestId('structure-formula-image');
+  await formulaImage.waitFor();
+  assert(await first.page.evaluate(async bounds=>{
+    const original=document.querySelector('[data-testid="structure-review-source-image"]');
+    const crop=document.querySelector('[data-testid="structure-formula-image"]');
+    await Promise.all([original.decode(),crop.decode()]);
+    const [left,top,right,bottom]=bounds;
+    const x=Math.floor(original.naturalWidth*left),y=Math.floor(original.naturalHeight*top);
+    const width=Math.ceil(original.naturalWidth*right)-x,height=Math.ceil(original.naturalHeight*bottom)-y;
+    if(crop.naturalWidth!==width||crop.naturalHeight!==height)return false;
+    const canvas=document.createElement('canvas');
+    canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(original,x,y,width,height,0,0,width,height);
+    const pixels=ctx.getImageData(0,0,width,height).data;
+    ctx.clearRect(0,0,width,height);ctx.drawImage(crop,0,0);
+    const actual=ctx.getImageData(0,0,width,height).data;
+    return pixels.every((value,index)=>value===actual[index]);
+  },formula.box));
+  for(const [width,height] of [[1366,768],[1920,1080]]){
+    await first.page.setViewportSize({width,height});
+    await first.page.screenshot({path:path.join(output,'q15-formula-'+width+'.png'),animations:'disabled'});
+  }
+  await first.page.keyboard.press('Escape');
+  await formulaDialog.waitFor({state:'hidden'});
+  await first.page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='structure-review-formula-0');
+  const wrongRaster=await first.page.evaluate(async({resourceId,version})=>{
+    try { await window.omniEdu.getMaterialStructureImage({resourceId,version,page:2,rasterSha256:'0'.repeat(64)}); }
+    catch(error){return String(error);}
+  },{resourceId:source.id,version:source.content_hash});
+  assert.match(wrongRaster,/source_changed/u);
+  check('The formula modal renders the exact original pixels, returns keyboard focus and rejects a mismatched raster');
   await q15.getByTestId('structure-review-cancel').click();
   assert.deepEqual(confirmed(),teacherBefore);
   check('The Q15 teacher review shows the actual C and D values and opens the second original page');
@@ -185,7 +232,14 @@ try{
 
   const cold=await open();
   await goToPage(cold.panel,2);
-  await cold.panel.getByTestId('structure-questions').getByText(/题 15 .*暂缓入库/u).waitFor();
+  const held=cold.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
+  await held.getByTestId('structure-review-open').click();
+  await held.getByTestId('structure-review-formula-0').click();
+  const restoredFormula=cold.page.getByTestId('structure-formula-dialog');
+  await restoredFormula.getByTestId('structure-formula-image').evaluate(node=>node.decode());
+  await restoredFormula.getByRole('button',{name:'关闭',exact:true}).click();
+  await restoredFormula.waitFor({state:'hidden',timeout:5000});
+  await held.getByTestId('structure-review-cancel').click();
   await cold.panel.getByTestId('structure-previous').click();
   await cold.panel.getByText('第 1 页',{exact:true}).waitFor();
   await goToPage(cold.panel,4);

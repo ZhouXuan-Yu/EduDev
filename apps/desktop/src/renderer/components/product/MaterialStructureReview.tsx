@@ -9,6 +9,7 @@ import {
   type StructureQuestion,
 } from "../../../shared/material-document-structure";
 import { QuestionArchiveFields } from "../QuestionArchiveFields";
+import { MaterialStructureFormulaPreview } from "./MaterialStructureFormulaPreview";
 import "../question-archive.css";
 
 export function MaterialStructureReview({
@@ -148,14 +149,19 @@ export function MaterialStructureReview({
           )}
           {missingOptions && (
             <div data-testid="structure-review-choice-evidence">
-              <p>待核对选项 {missingChoiceLabels(question.options).join("、")}</p>
-              <p>已识别的整题选项</p>
-              <ul>
-                {question.options.map((option, index) => (
-                  <li key={`${option.label}-${index}`}>{option.text}</li>
-                ))}
-              </ul>
+              <p>待核对选项 {missingChoiceLabels(question.options, question.expectedChoiceCount).join("、")}</p>
+              {question.options.length > 0 && <>
+                <p>已识别的整题选项</p>
+                <ul>
+                  {question.options.map((option, index) => (
+                    <li key={`${option.label}-${index}`}>{option.text}</li>
+                  ))}
+                </ul>
+              </>}
             </div>
+          )}
+          {!!question.formulaSources?.length && (
+            <MaterialStructureFormulaPreview reference={reference} sources={question.formulaSources} disabled={busy} />
           )}
           {(missingNumber || missingOptions || question.pageRange[0] !== question.pageRange[1]) && (
             <>

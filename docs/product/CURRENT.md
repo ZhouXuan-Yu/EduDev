@@ -8,6 +8,8 @@
 
 资料库的核题表单显示已识别到的整题选项和待核字母，可在同一处对照原页，再决定是否保存修正。 [选项专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷整题选项归属)
 
+资料库的核题表单可放大查看分式等堆叠公式的原页局部。关闭后继续编辑同一道题，老师补正后才随原题保存。 [公式专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描公式的原图核对)
+
 模考条目显示封面学年度、印刷月份和文件名届别。老师从「核对条目」选定当前汇编的分类年份，确认后导出保留依据。 [验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考封面与年度分类)
 
 模考汇编显示 PDF 实存页数和印刷总页数的核对结果，疑似缺页提示随 Word／PDF 导出。老师可从该行定位原件。 [验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考原件页码核对)
