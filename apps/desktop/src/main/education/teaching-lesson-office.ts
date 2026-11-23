@@ -2,7 +2,7 @@ import {isDeepStrictEqual} from 'node:util';
 import type {ClassroomPlanItem} from '../../shared/classroom-plan';
 import {TEACHING_LESSON_OFFICE_SCHEMA} from '../../shared/teaching-lesson-export';
 import {curriculumLabel,curriculumBoundary} from '../../shared/material-curriculum';
-import {teachingLessonIssues} from '../../shared/teaching-lesson';
+import {lessonDetailKeys,lessonDetailLabels,teachingLessonIssues} from '../../shared/teaching-lesson';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 
 /** Keep every character, including astral Unicode at paragraph boundaries. */
@@ -19,6 +19,10 @@ export function compileTeachingLessonOffice(item:ClassroomPlanItem):OfficeDraft{
   '本文件来自教师已确认的结构化教案。正文可编辑；编辑导出文件不会回写教案账本。教学正确性仍需教师核对。'
  ]);
  section('教学目标与达成标准',document.objectives.flatMap((objective,index)=>[`目标 ${index+1}：${objective}`,`达成标准 ${index+1}：${lesson.goalCriteria[index]}`]));
+ const details=lesson.details;
+ const detailParagraphs=(keys: (typeof lessonDetailKeys)[number][]) =>
+  details ? keys.flatMap(key=>[lessonDetailLabels[key],details[key]]) : [];
+ if(details) section('教学内容与重难点',detailParagraphs(['content','focus','difficulty']));
  section('课前准备',lesson.preparation.length?lesson.preparation:['本教案未登记额外准备材料。']);
  const labels={introduction:'导入',activity:'活动',practice:'练习',assessment:'评价',closure:'总结'};
  for(const [index,scene]of document.scenes.entries()){
@@ -32,6 +36,7 @@ export function compileTeachingLessonOffice(item:ClassroomPlanItem):OfficeDraft{
    ]):['本环节未单列检查题；请结合教案其他环节的实际检查核对目标。'])
   ]);
  }
+ if(details) section('板书、作业与课后反思',detailParagraphs(['boardwork','homework','reflection']));
  section('采用依据与映射',[
   curriculumBoundary,
   ...(item.context.adopted||[]).flatMap((entry,index)=>[

@@ -3213,3 +3213,4 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 - 历史 journey 报告必须保留，但在当前构建的 review/practice/photo 报告生成前不得升级 DT-05 状态。每片完成后再同步 CURRENT_STATE、CAPABILITY_MATRIX、ACCEPTANCE、EDUCATION_BRANCH_TODOLIST 和根四文档。
 
 扫描结构的识图复核采用高清目标裁片加必要语义上下文。由宿主决定裁切边界及持久键。原答案、模型推导、教师确认继续保留独立来源。
+‘教学内容’等六个教案栏目已纳入原版本、编辑和双格式导出。D3 工程证据见 docs/product-agent/04_PROGRESS_AND_EVIDENCE.md。

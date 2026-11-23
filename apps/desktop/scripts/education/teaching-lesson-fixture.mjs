@@ -10,7 +10,14 @@ export const lessonDocument={schemaVersion:'xiaozhi.classroom-plan.v1',title:'�
   {sceneId:'practice',type:'slide',title:'比较解释与证据',activity:'分别写出一条有依据的解释和一条证据不足的断言，指出未控制的因素并提出补充记录。',durationMinutes:10},
   {sceneId:'assess',type:'quiz',title:'独立出口检查',activity:'独立回答三题，提交原文证据和理由；教师逐目标按标准反馈，未达到者回到相应段落。',durationMinutes:10},
   {sceneId:'close',type:'slide',title:'总结证据边界',activity:'学生补完“我的解释是…，依据是…，还不能断定…”；教师收集下一课待追问问题。',durationMinutes:5}
- ],lesson:{schemaVersion:'xiaozhi.teaching-lesson.v1',subject:'语文',grade:'五年级',preparation:['教师提供合成阅读材料及三列表记录纸','投影或打印原文，准备出口条'],goalCriteria:['准确列出三类原文事实，不补造数据。','至少引用一条原文事实支持解释，并区分解释和断言。','指出至少一项未控制因素，提出可记录的补充观察。'],
+ ],lesson:{schemaVersion:'xiaozhi.teaching-lesson.v1',subject:'语文',grade:'五年级',details:{
+  content:'从两棵树的连续观察中区分记录事实、合理解释和仍需验证的判断。',
+  focus:'引用原文的观察事实支持解释。',
+  difficulty:'识别未控制的条件，避免把相关当成因果。',
+  boardwork:'事实 → 解释 → 待核条件\n用箭头注明每条解释对应的事实。',
+  homework:'从今天的观察记录选择一条事实，写一句有依据的解释和一个待验证的问题。下节课交纸面记录。',
+  reflection:'课后按出口条统计能区分事实和推测的学生。记录一个典型误解并决定下节课的回顾问题。',
+ },preparation:['教师提供合成阅读材料及三列表记录纸','投影或打印原文，准备出口条'],goalCriteria:['准确列出三类原文事实，不补造数据。','至少引用一条原文事实支持解释，并区分解释和断言。','指出至少一项未控制因素，提出可记录的补充观察。'],
  phases:[
   {sceneId:'intro',kind:'introduction',objectiveIndices:[0,1],teacherPrompt:'哪一句是原文事实？哪一句只是你的推测？',checks:[]},
   {sceneId:'explore',kind:'activity',objectiveIndices:[0,1],teacherPrompt:'用原文的哪几个词支持你的记录？不要补写不存在的高度数字。',checks:[]},

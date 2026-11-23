@@ -1,6 +1,6 @@
 import {Button,Input,Label,TextArea,TextField} from '@heroui/react';
 import type {ClassroomPlanItem,ClassroomPlanDocument} from '../../../shared/classroom-plan';
-import {lessonPhaseLabels,teachingLessonIssues,type TeachingLesson,type LessonPhase} from '../../../shared/teaching-lesson';
+import {lessonDetailKeys,lessonDetailLabels,LESSON_DETAIL_LIMIT,lessonPhaseLabels,teachingLessonIssues,type TeachingLesson,type LessonPhase} from '../../../shared/teaching-lesson';
 import {curriculumLabel} from '../../../shared/material-curriculum';
 import {MaterialSourceLink} from './MaterialSourceNavigation';
 import {DisclosureCard} from '../ui/DisclosureCard';
@@ -20,6 +20,16 @@ export function TeachingLessonDetails({plan,document,readOnly,onChange}:{plan:Cl
    {document.objectives.map((goal,i)=><section key={i} className={styles.group} data-testid={'lesson-goal-'+i}><strong>目标{i+1}：{goal}</strong><TextField isDisabled={readOnly}><Label>达成标准</Label><TextArea data-testid={'lesson-goal-criterion-'+i} value={lesson.goalCriteria[i]||''} maxLength={500} onChange={e=>set('goalCriteria',document.objectives.map((_,j)=>j===i?e.target.value:lesson.goalCriteria[j]||''))}/></TextField><p className={styles.muted}>活动：{lesson.phases.filter(p=>p.objectiveIndices.includes(i)).map(p=>document.scenes.find(s=>s.sceneId===p.sceneId)?.title).join('、')||'未关联'}；检查：{lesson.phases.flatMap(p=>p.checks.filter(c=>c.objectiveIndices.includes(i)).map(c=>c.prompt)).join('；')||'未关联'}</p></section>)}
    <TextField isDisabled={readOnly}><Label>准备材料（每行一项）</Label><TextArea data-testid="lesson-preparation" value={lesson.preparation.join('\n')} onChange={e=>set('preparation',lines(e.target.value))}/></TextField>
   </div></DisclosureCard>
+  {lesson.details ? <DisclosureCard title="教学内容、板书与课后安排" data-testid="lesson-content-toggle">
+   <div className={styles.stack}>
+    {lessonDetailKeys.map(key => <TextField key={key} isDisabled={readOnly}>
+     <Label>{lessonDetailLabels[key]}</Label>
+     <TextArea data-testid={`lesson-detail-${key}`} value={lesson.details?.[key] ?? ""} maxLength={LESSON_DETAIL_LIMIT}
+      onChange={event => { if(lesson.details) set("details", {...lesson.details,[key]:event.target.value}); }}/>
+    </TextField>)}
+   </div>
+  </DisclosureCard> : !readOnly && <div><Button variant="secondary" size="sm" data-testid="lesson-add-details"
+   onPress={()=>set("details",{content:"",focus:"",difficulty:"",boardwork:"",homework:"",reflection:""})}>补充教案内容</Button></div>}
   {lesson.phases.map((p,i)=><DisclosureCard key={p.sceneId} title={`${i+1}. ${document.scenes.find(s=>s.sceneId===p.sceneId)?.title||p.sceneId} · ${lessonPhaseLabels[p.kind]}`} data-testid={'lesson-phase-'+p.sceneId}><div className={styles.stack}>
    <p className={styles.muted}>活动正文和分钟在“环节安排”中编辑；此处调整目标、教师提示和评价。</p>
    <div className={styles.fields}><label>教学环节<select className={styles.select} aria-label={`环节${i+1}类型`} disabled={readOnly} value={p.kind} onChange={e=>phase(i,{kind:e.target.value as LessonPhase['kind']})}>{Object.entries(lessonPhaseLabels).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label><GoalLinks value={p.objectiveIndices} goals={document.objectives} disabled={readOnly} label={`环节${i+1}关联目标`} onChange={indices=>phase(i,{objectiveIndices:indices})}/></div>

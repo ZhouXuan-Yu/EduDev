@@ -1,6 +1,6 @@
 import type {ClassroomPlanItem} from '../../../shared/classroom-plan';
 import {curriculumLabel} from '../../../shared/material-curriculum';
-import {lessonPhaseLabels,teachingLessonIssues} from '../../../shared/teaching-lesson';
+import {lessonDetailKeys,lessonDetailLabels,lessonPhaseLabels,teachingLessonIssues} from '../../../shared/teaching-lesson';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {ClassroomSources} from './ClassroomSources';
 
@@ -28,6 +28,9 @@ export function ClassroomPlanSnapshot({plan}:{plan:ClassroomPlanItem}){
   {!!lesson?.preparation.length&&<section><h4>准备材料</h4>
    <ul>{lesson.preparation.map((material,index)=><li key={index}>{material}</li>)}</ul>
   </section>}
+  {lesson?.details&&<DisclosureCard title="教学内容、板书与课后安排" data-testid="classroom-history-lesson-details">
+   <dl>{lessonDetailKeys.map(key=><div key={key}><dt>{lessonDetailLabels[key]}</dt><dd>{lesson.details?.[key]||'待补充'}</dd></div>)}</dl>
+  </DisclosureCard>}
   <section className="edu-plan-section-stack">
    <h4>{lesson?'教学环节':'课堂页安排'}</h4>
    {document.scenes.map((scene,index)=>{

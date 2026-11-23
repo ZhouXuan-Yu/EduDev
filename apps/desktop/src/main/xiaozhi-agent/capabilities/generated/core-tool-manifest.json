@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "350c00af584b7b773183ad3b01bc1fac4da3288c0509fc064ff59d72671e42b7",
+  "sourceHash": "42ff1701b23cda3d892c627b4a3836b7e656f82a085aa23c0e3042fbd3bd0844",
   "sources": [
     {
       "file": "package-lock.json",
@@ -144,7 +144,7 @@
     },
     {
       "file": "src/main/education/classroom-plan-tools.ts",
-      "sha256": "bab24c9fd3cd816a136b561a93564b08bec67250118d0347bcd57f260af6f47e"
+      "sha256": "fda311547197a0c80a576e26f8b5096fa967e7535aa5a2ee58503b197f36cdb0"
     },
     {
       "file": "src/main/education/classroom-pptx.ts",
@@ -516,7 +516,7 @@
     },
     {
       "file": "src/main/education/teaching-lesson-office.ts",
-      "sha256": "6cf3c8f0a1cb60589ca1230e62c94fe0d276529b513c205742ce09f9d1cc83f9"
+      "sha256": "16e369ac7fea05f94e56903761b6c100b602f81808860885c6f99493fb9cfd18"
     },
     {
       "file": "src/main/education/training-plan.ts",
@@ -820,7 +820,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "87a565f71609019b64db0dbb16de861a353ca6366b52bc3d5ae5e0478ccf4f86"
+      "sha256": "3dd656bf50a8596a02337ea4e03dd779865e206ba407a6839fdaf5e4ba802983"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2592,7 +2592,7 @@
     },
     {
       "file": "src/shared/teaching-lesson.ts",
-      "sha256": "bc1f0d09c5c79f5e092f1aaa044180cdb8f4bc356e4914b9b6226e9bbe3225bd"
+      "sha256": "8b3a7a5e252ea57a684bc9a45828cf876250320cafffac48ba4caab4930213ae"
     },
     {
       "file": "src/shared/training-plan.ts",

@@ -21,8 +21,19 @@ try{
  assert(validClassroomPlanDocument(lessonDocument));assert(validClassroomPlanStart({mode:'outline',lesson:{subject:'语文',grade:'五年级',curricula:[{resourceId:rid,revision:entry.id}]}}));
  for(const mutate of [d=>d.lesson.phases[3].checks.splice(2,1),d=>d.lesson.phases[1].objectiveIndices=[7],d=>d.lesson.phases[0].sceneId='absent',d=>d.lesson.phases[0].kind='activity',d=>d.lesson.goalCriteria.pop()]){const d=structuredClone(lessonDocument);mutate(d);assert(!validClassroomPlanDocument(d));}
  check('Strict lesson graph requires complete phases, observable-goal criteria and an actual check for every goal');
+ const legacy=structuredClone(lessonDocument);
+ delete legacy.lesson.details;
+ assert(validClassroomPlanDocument(legacy));
+ assert.deepEqual(teachingLessonIssues(legacy),[]);
+ const pendingDetails=structuredClone(lessonDocument);
+ pendingDetails.lesson.details.homework='';
+ assert(validClassroomPlanDocument(pendingDetails));
+ assert(teachingLessonIssues(pendingDetails).some(issue=>issue.includes('作业')));
+ const forgedDetail=structuredClone(lessonDocument);forgedDetail.lesson.details.extra='extra';
+ assert(!validClassroomPlanDocument(forgedDetail));
+ check('Legacy lessons remain valid; partial detail drafts are readable but flag the exact missing field');
  const binding={mode:'outline',lesson:{subject:'语文',grade:'五年级',curricula:[{resourceId:rid,revision:entry.id}]}},tool=createClassroomPlanTools({sessionId:session,runId:'run',state,current:()=>true,sanitize:async t=>t,context:()=>context,binding})[0];
- const bad=structuredClone(lessonDocument);bad.lesson.grade='六年级';assert((await tool.execute('wrong-grade',bad)).isError);const good=await tool.execute('good',lessonDocument);assert(!good.isError);let item=await state.read(JSON.parse(good.content[0].text).id);assert.equal(item.context.adopted[0].id,entry.id);check('Original Pi tool captures exact host-selected version and enforces requested subject/grade');
+ const bad=structuredClone(lessonDocument);bad.lesson.grade='六年级';assert((await tool.execute('wrong-grade',bad)).isError);assert((await tool.execute('missing-details',legacy)).isError);assert((await tool.execute('incomplete-details',pendingDetails)).isError);const good=await tool.execute('good',lessonDocument);assert(!good.isError);let item=await state.read(JSON.parse(good.content[0].text).id);assert.equal(item.context.adopted[0].id,entry.id);check('Original Pi tool captures exact host-selected version and enforces requested subject/grade');
  const fake=structuredClone(lessonDocument);fake.lesson.mappings[0].quote='不存在的标准编号要求';await assert.rejects(()=>state.propose(session,'run','fake',fake,context,()=>true),/source_changed/);
  await assert.rejects(()=>state.propose(session,'run','unread',lessonDocument,{...context,materials:[]},()=>true),/source_required/);await assert.rejects(()=>state.propose(session,'run','partial',lessonDocument,{...context,materials:context.materials.map(m=>({...m,truncated:true}))},()=>true),/source_required/);check('Unread/truncated selected anchors and invented quotes cannot become mappings');
  const generic=structuredClone(lessonDocument);generic.lesson.mappings=[];generic.lesson.missingSources=['未提供实际教材或课标，通用教案待对照'];const pending=await state.propose(session,'run','generic',generic,{schemaVersion:context.schemaVersion,preferenceRevision:0,materials:[]},()=>true);assert.equal(pending.context.materials.length,0);const falselyMapped=structuredClone(generic);falselyMapped.lesson.missingSources=[];await assert.rejects(()=>state.propose(session,'run','generic-false',falselyMapped,{...context,materials:[],adopted:[]},()=>true),/source_required/);check('Missing materials allow honest generic drafts while absent mappings require explicit missing-source disclosure');
