@@ -632,5 +632,54 @@ await check("Whole-source review totals count each held question once per catego
     auditDb.close();
   }
 });
+await check("Choice rechecks are page-bounded and a resumed generation reuses the durable reading", async () => {
+  const previousResource = resource;
+  const previousPage = host.page;
+  const selectedId = "resource_22345678-1234-1234-1234-123456789abc";
+  resource = { ...resource, id: selectedId, contentHash: version, originalFileName: "scan.png", chunkCount: 0 };
+  let secondPageFailed = true;
+  let attempts = 0;
+  host.page = async (_r, number) => {
+    if (number === 2 && secondPageFailed) throw Error("timeout");
+    const fixture = { ...input(number), resourceId: selectedId };
+    if (number === 1) {
+      const rows = [["一、选择题",.1,.07,.8],["1. 已知三个条件，求面积。",.1,.12,.8],
+        ["(C) 2",.48,.18,.055],["(D) 3",.66,.18,.055],["2. 求与条件对应的答案。",.1,.29,.8],
+        ["(C) 6",.48,.35,.055],["(D) 7",.66,.35,.055],["3. 计算这些条件的乘积。",.1,.46,.8]];
+      fixture.lines = rows.map(([text,x,y,w],index) => {
+        const quad = [[x,y],[x+w,y],[x+w,y+.018],[x,y+.018]];
+        return { id: "line-" + index, text, score: .98, kind: "text", quad, normalizedQuad: quad, needsReview: true };
+      });
+    }
+    return { input: fixture, image: { page: number, sha256: "b".repeat(64) } };
+  };
+  host.recheckChoiceRow = async (image, plan) => {
+    attempts++;
+    assert.deepEqual(plan.labels, ["A", "B"]);
+    return {page: image.page, box: plan.box, rasterSha256: image.sha256, cropSha256: "c".repeat(64), engine: "fixture",
+      attempts: 2, choices: [{label: "A", status: "consistent", readings: ["0"]},{label: "B", status: "unreadable", readings: []}]};
+  };
+  try {
+    await repo.begin(resource, signal, currentLease);
+    await assert.rejects(() => repo.complete(resource, signal, currentLease), /timeout/u);
+    await repo.fail(selectedId, Error("timeout"), currentLease);
+    const first = await repo.view({resourceId: selectedId, version, page: 1});
+    assert.equal(attempts, 1);
+    assert(first.questions.find(q => q.number === "1").choiceRecheck);
+    assert.equal(first.questions.find(q => q.number === "2").choiceRecheck, undefined);
+    secondPageFailed = false;
+    await repo.begin(resource, signal, currentLease);
+    await repo.complete(resource, signal, currentLease);
+    const resumed = await repo.view({resourceId: selectedId, version, page: 1});
+    assert.equal(attempts, 1);
+    assert.equal(resumed.summary.generation, first.summary.generation);
+    assert.deepEqual(resumed.questions.find(q => q.number === "1"), first.questions.find(q => q.number === "1"));
+    assert.equal(resumed.questions.find(q => q.number === "1").status, "needs_review");
+  } finally {
+    delete host.recheckChoiceRow;
+    host.page = previousPage;
+    resource = previousResource;
+  }
+});
 db.close();
 console.log(JSON.stringify({ success: true, count: results.length, results }));

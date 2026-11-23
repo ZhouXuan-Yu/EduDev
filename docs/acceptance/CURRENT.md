@@ -4,6 +4,8 @@
 
 批量扫描从一次文件选择进入原有解析队列，核对同类缺陷自动识别、正常题保持、同卷按类别定位以及原页和冷启动读回。 [扫描质量流程](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
 
+局部 OCR 选项回查核对同题横排、来源候选、未读清、版式拒绝和退出重开。测试中原题和选择项读回不变。 [回查专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-局部选项回查)
+
 模考修订覆盖同任务内的只读定位、局部差异、教师决定前无版本写入、断点后再确认、拒绝、来源或版本变化、许可边界及停止。 [测试与手动步骤](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-从对话精确修订目录)
 
 扫描卷跨行分值验收在实际资料库重建并核对 21 个题号、末两题小问、原图及冷启显示。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷的跨行分值说明)

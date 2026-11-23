@@ -8,8 +8,10 @@ const { printedBlanks, printedBlankStripe, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
 const { printedStructureQuestionType } =
   await import("../../src/main/assets/material-structure-question-type.ts");
-const { missingChoiceLabels, validStructureImageQuery, validStructureQuery } =
+const { choiceLabelsForReview, missingChoiceLabels, validStructureImageQuery, validStructureQuery } =
   await import("../../src/shared/material-document-structure.ts");
+const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings } =
+  await import("../../src/main/assets/material-structure-choice-recheck.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -136,6 +138,41 @@ await check("Printed option counts and observed label gaps prevent import from s
   assert.deepEqual(missingChoiceLabels(gap.options), ["B"]);
   assert(gap.issues.includes("missing_choice_options"));
   assert(!binary.issues.includes("missing_choice_options"));
+});
+await check("A bare choice marker stays in review while original picture choices remain usable", () => {
+  const [q] = questions([page([
+    ["一、选择题", .1, .07], ["19. 已知三个条件求结果。", .1, .13],
+    ["A. 6 B. 8 C. 9 D.", .1, .19],
+  ])]);
+  assert.deepEqual(choiceLabelsForReview(q), ["D"]);
+  assert(q.issues.includes("missing_choice_options"));
+  assert.equal(q.status, "needs_review");
+  assert.deepEqual(choiceLabelsForReview({ ...q, assets: [{ choiceLabel: "D" }] }), []);
+});
+await check("Only ambiguous horizontally aligned options with independent line boxes enter the local recheck", () => {
+  const lead = [["一、选择题", .1, .07], ["7. 已知三个条件求结果。", .1, .13]];
+  const proposed = page([...lead, ["(C) 2", .48, .19, .055], ["(D) 3", .66, .19, .055]]);
+  const question = questions([proposed])[0];
+  const plan = planChoiceRecheck(question, proposed);
+  assert.deepEqual(plan.labels, ["A", "B"]);
+  assert(plan.box[0] < .12 && plan.box[2] > .71 && plan.box[3] < .23);
+  for (const other of [page([...lead, ["(C) 2", .48, .19, .055], ["(D) 3", .66, .23, .055]]),
+    { ...proposed, issues: ["ambiguous_columns"] }]) assert(!planChoiceRecheck(questions([other])[0], other));
+  assert(!planChoiceRecheck({ ...question, pageRange: [1,2] }, proposed));
+
+  const reading = (text, scores = text.split("\n").map(() => .96)) => matchChoiceRecheck(plan, { text, scores });
+  const first = reading("(A) 0\n(B) 1\n(C) 2\n(D) 3");
+  const second = reading("(A) 0\n(B) I\n(C) 2\n(D) 3");
+  assert.deepEqual(choiceRecheckReadings(plan, [first, second]), [
+    { label: "A", status: "consistent", readings: ["0"] },
+    { label: "B", status: "conflicting", readings: ["1", "I"] },
+  ]);
+  for (const wrong of ["(A) 0\n(C) 7\n(D) 3", "(A) 0\n(C) 2\n(C) 2\n(D) 3", "(A) 0\n(D) 3\n(C) 2"])
+    assert.equal(reading(wrong).size, 0);
+  assert.deepEqual(choiceRecheckReadings(plan, [first, reading("(B) I\n(C) 2\n(D) 3", [.64,.95,.95])]), [
+    { label: "A", status: "single_read", readings: ["0"] },
+    { label: "B", status: "single_read", readings: ["1"] },
+  ]);
 });
 const choiceStatements = [
   ["二、选择题（本节共2题）", .1, .07],

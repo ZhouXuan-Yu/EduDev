@@ -10,6 +10,8 @@
 
 文档结构 v20 为无法可靠转写的堆叠公式保存已核对的原页引用、行 ID 和局部坐标。图片读取校验当前原页摘要，核题窗口本机裁出对应区域。 [公式合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-扫描公式的原图核对)
 
+文档结构 v21 复用原本地 OCR 的局部选项回查。源行及裁片摘要随题目快照保存，后台续做复用同世代已结算的记录。 [回查合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-局部选项回查)
+
 模考封面读取绑定当前原件摘要的 PDF 第 1 页回执。新目录存结构化封面依据及证据哈希，旧目录继续沿用原证据格式。 [封面合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考封面与年度分类)
 
 模考页码证据从当前原件版本的本地 PDF 页回执提取，随目录快照保存。确认时复核提取结果，旧记录保留原快照。 [页码合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-43-模考原件页码核对)

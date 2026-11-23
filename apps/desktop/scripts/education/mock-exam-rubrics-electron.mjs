@@ -48,14 +48,14 @@ const job=()=>sql('SELECT * FROM material_structure_jobs WHERE resource_id=?',[s
 const pages=generation=>sql('SELECT * FROM material_structure_pages WHERE generation=? ORDER BY page',[generation]);
 const questionRows=generation=>sql('SELECT * FROM material_structure_questions WHERE generation=? ORDER BY rowid',[generation]);
 const old=job(),oldPages=pages(old.generation),oldQuestions=questionRows(old.generation);
-assert(['layout-paragraph-question.v17','layout-paragraph-question.v18','layout-paragraph-question.v19'].includes(old.engine));
+assert(['layout-paragraph-question.v17','layout-paragraph-question.v18','layout-paragraph-question.v19','layout-paragraph-question.v20'].includes(old.engine));
 assert.equal(oldPages.length,4);
 const oldList=oldQuestions.map(row=>JSON.parse(row.body_json));
 const baseline=oldList.find(q=>q.number==='15');
-const oldChoices=old.engine.endsWith('v19')?baseline.options:baseline.subquestions
+const oldChoices=/v(?:19|20)$/u.test(old.engine)?baseline.options:baseline.subquestions
   .flatMap(part=>part.children??[]).flatMap(part=>part.options);
 assert.deepEqual(oldChoices.map(option=>option.text),['(C) 2','(D) 3']);
-assert.equal(baseline.formulaSources,undefined);
+assert.equal(baseline.choiceRecheck,undefined);
 if(old.engine.endsWith('v17'))assert(!oldList.some(q=>q.number==='20'));
 const confirmed=()=>sql("SELECT id,archive_json FROM question_bank_items WHERE json_valid(archive_json) AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id");
 const teacherBefore=confirmed();
@@ -119,12 +119,12 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v20');
+  assert.equal(current.engine,'layout-paragraph-question.v21');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
   assert.equal(shaFile(source.local_path),source.content_hash);
-  check('The existing UI rebuild publishes v20 while the original scan, previous snapshots and confirmed items stay intact');
+  check('The existing UI rebuild publishes v21 while the original scan, previous snapshots and confirmed items stay intact');
 
   const list=questionRows(current.generation).map(row=>JSON.parse(row.body_json));
   const numbered=list.map(q=>q.number).filter(number=>number!=='0');
@@ -149,6 +149,23 @@ try{
   assert.deepEqual(choice.subquestions,[]);
   assert.deepEqual(choice.options.map(option=>option.text),['(C) 2','(D) 3']);
   assert(choice.issues.includes('missing_choice_options')&&choice.status==='needs_review');
+  const recheck=choice.choiceRecheck;
+  assert(recheck && recheck.page===2 && recheck.rasterSha256===p2.rasterSha256);
+  assert(recheck.attempts<=2&&recheck.attempts>0&&/^[a-f0-9]{64}$/u.test(recheck.cropSha256));
+  assert.deepEqual(recheck.choices,[
+    {label:'A',status:'single_read',readings:['0']},
+    {label:'B',status:'unreadable',readings:[]},
+  ]);
+  const raster=JSON.parse(pages(current.generation).find(row=>row.page===2).image_json);
+  const rasterPng=fs.readFileSync(path.join(data,'question-assets','v1',`${raster.assetId}.png`));
+  assert.equal(sha(rasterPng),recheck.rasterSha256);
+  const crop=await app.evaluate(({nativeImage},{base64,box,width,height})=>{
+    const x=Math.floor(box[0]*width),y=Math.floor(box[1]*height);
+    return nativeImage.createFromBuffer(Buffer.from(base64,'base64')).crop({x,y,
+      width:Math.ceil(box[2]*width)-x,height:Math.ceil(box[3]*height)-y}).toPNG({scaleFactor:1}).toString('base64');
+  },{base64:rasterPng.toString('base64'),box:recheck.box,width:raster.width,height:raster.height});
+  assert.equal(sha(Buffer.from(crop,'base64')),recheck.cropSha256);
+  report.choiceRecheck=recheck;
   assert(choice.options.every(option=>option.paragraphIds.every(id=>p2.paragraphs.some(part=>part.id===id))));
   if(!old.engine.endsWith('v17'))for(const number of ['14','16'])
     assert.deepEqual(list.find(q=>q.number===number),oldList.find(q=>q.number===number));
@@ -171,6 +188,10 @@ try{
   const evidence=q15.getByTestId('structure-review-choice-evidence');
   await evidence.getByText('待核对选项 A、B',{exact:true}).waitFor();
   assert.deepEqual(await evidence.getByRole('listitem').allTextContents(),['(C) 2','(D) 3']);
+  const rechecked=q15.getByTestId('structure-review-choice-recheck');
+  await rechecked.getByText('原页选项回查 · 第 2 页',{exact:true}).waitFor();
+  assert.deepEqual(await rechecked.getByRole('listitem').allTextContents(),['A 候选 0 · 请对照原图','B 未读清']);
+  check('Local option recheck runs from the immutable row and its outcomes are visible before teacher confirmation');
   await q15.getByTestId('structure-review-source-page-2').click();
   const q15Source=q15.getByTestId('structure-review-source-image');
   await q15Source.waitFor();
@@ -234,6 +255,8 @@ try{
   await goToPage(cold.panel,2);
   const held=cold.panel.getByTestId('structure-questions').locator('article').filter({hasText:/题 15 .*暂缓入库/u});
   await held.getByTestId('structure-review-open').click();
+  assert.deepEqual(await held.getByTestId('structure-review-choice-recheck').getByRole('listitem').allTextContents(),
+    ['A 候选 0 · 请对照原图','B 未读清']);
   await held.getByTestId('structure-review-formula-0').click();
   const restoredFormula=cold.page.getByTestId('structure-formula-dialog');
   await restoredFormula.getByTestId('structure-formula-image').evaluate(node=>node.decode());

@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+选项缺口已连接有界本机回查，扫描与重建的同类题可自动获得来源候选并继续由老师核对。 [回查证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-局部选项回查)
+
 扫描质量工作从典型题回归转至共用流程。新导入和重建均使用选择题缺项检查及堆叠公式定位，现有任务和原件路径沿用。 [流程](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
 
 Phase 4.3 已验证真实扫描的页码、封面分类、双格式导出、跨行分值和整题选项归属。水印影响的两个选项保留待核。继续分栏、公式与答案。 [结构专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描卷整题选项归属)

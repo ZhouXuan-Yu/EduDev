@@ -3,6 +3,8 @@ import { recoverNativeGaps } from "./material-native-gap";
 import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
 import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
+import { choiceRecheckReadings, matchChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
+import { LOCAL_OCR_ENGINE } from "../../shared/xiaozhi-ocr";
 import type { Quad } from "../../shared/material-layout";
 import type { NativeGapRecovery } from "../../shared/material-native-text";
 import { createHash, randomUUID } from "node:crypto";
@@ -12,6 +14,7 @@ import type { TeacherResource } from "../../shared/contracts";
 import type {
   StructureQuestion,
   StructurePage,
+  StructureChoiceRecheck,
 } from "../../shared/material-document-structure";
 import { DOCUMENT_STRUCTURE_ENGINE } from "../../shared/material-document-structure";
 import {
@@ -418,6 +421,43 @@ export class MaterialStructureRuntime {
       }
     }
     if (blanks.length || parents.length) input.printedRecovery = { blanks, parents };
+  }
+
+  async recheckChoiceRow(image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal): Promise<StructureChoiceRecheck | undefined> {
+    try {
+      const bytes = await this.assets.read(image, true, signal);
+      const raster = nativeImage.createFromBuffer(bytes);
+      const cut = raster.crop(structureCropRect(image, plan.box));
+      const size = cut.getSize();
+      if (size.width < 80 || size.height < 12 || size.width * size.height > 350_000) return;
+      const original = cut.toPNG({ scaleFactor: 1 });
+      const wider = cut.resize({ width: Math.min(size.width * 2, 2400), quality: "best" });
+      const bitmap = wider.toBitmap();
+      for (let pixel = 0; pixel < bitmap.length; pixel += 4) {
+        const light = Math.max(bitmap[pixel], bitmap[pixel + 1], bitmap[pixel + 2]);
+        bitmap[pixel] = bitmap[pixel + 1] = bitmap[pixel + 2] = light;
+      }
+      const normalized = nativeImage.createFromBitmap(bitmap, wider.getSize()).toPNG({ scaleFactor: 1 });
+      const runs = [];
+      let attempts = 0;
+      const rowSignal = AbortSignal.any([signal, AbortSignal.timeout(16_000)]);
+      for (const input of [original, normalized]) {
+        if (rowSignal.aborted) break;
+        attempts++;
+        try {
+          const receipt = await recognizeLocalImage(input, rowSignal);
+          runs.push(matchChoiceRecheck(plan, receipt));
+        } catch {
+          signal.throwIfAborted();
+        }
+      }
+      signal.throwIfAborted();
+      return { page: image.page, box: plan.box, rasterSha256: image.sha256, cropSha256: sha(original),
+        engine: LOCAL_OCR_ENGINE, attempts, choices: choiceRecheckReadings(plan, runs) };
+    } catch {
+      signal.throwIfAborted();
+      return;
+    }
   }
 
   async verifyPdfMarks(image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal) {

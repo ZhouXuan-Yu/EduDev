@@ -4,7 +4,8 @@ import { Button } from "@heroui/react";
 import type { ArchiveFields } from "../../../shared/question-archive";
 import {
   STRUCTURE_REVIEW_SCHEMA,
-  missingChoiceLabels,
+  choiceLabelsForReview,
+  hasPrintedChoiceText,
   type DocumentStructureReference,
   type StructureQuestion,
 } from "../../../shared/material-document-structure";
@@ -78,6 +79,8 @@ export function MaterialStructureReview({
     );
   const missingNumber = question.issues.includes("missing_question_number");
   const missingOptions = question.issues.includes("missing_choice_options");
+  const readableOptions = missingOptions ? question.options.filter(option => hasPrintedChoiceText(option.text) ||
+    question.assets.some(asset => asset.choiceLabel === option.label)) : [];
   async function save() {
     if (!fields || !checked || !difficultyChosen || busy) return;
     setBusy(true);
@@ -149,16 +152,27 @@ export function MaterialStructureReview({
           )}
           {missingOptions && (
             <div data-testid="structure-review-choice-evidence">
-              <p>待核对选项 {missingChoiceLabels(question.options, question.expectedChoiceCount).join("、")}</p>
-              {question.options.length > 0 && <>
+              <p>待核对选项 {choiceLabelsForReview(question).join("、")}</p>
+              {readableOptions.length > 0 && <>
                 <p>已识别的整题选项</p>
                 <ul>
-                  {question.options.map((option, index) => (
+                  {readableOptions.map((option, index) => (
                     <li key={`${option.label}-${index}`}>{option.text}</li>
                   ))}
                 </ul>
               </>}
             </div>
+          )}
+          {question.choiceRecheck && (
+            <section aria-label="原页选项回查" data-testid="structure-review-choice-recheck">
+              <p>原页选项回查 · 第 {question.choiceRecheck.page} 页</p>
+              <ul>
+                {question.choiceRecheck.choices.map(({ label, status, readings }) => (
+                  <li key={label}>{label} {status === "unreadable" ? "未读清" : status === "conflicting"
+                    ? `两次读数不一致（${readings.join("、")}）` : `候选 ${readings[0]} · 请对照原图`}</li>
+                ))}
+              </ul>
+            </section>
           )}
           {!!question.formulaSources?.length && (
             <MaterialStructureFormulaPreview reference={reference} sources={question.formulaSources} disabled={busy} />

@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v20" as const;
+  "layout-paragraph-question.v21" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v20",
   "layout-paragraph-question.v19",
   "layout-paragraph-question.v18",
   "layout-paragraph-question.v17",
@@ -119,6 +120,24 @@ export function missingChoiceLabels(options: ReadonlyArray<Pick<StructurePart, "
   const count = labels.reduce((end, label, index) => seen.has(label) ? Math.max(index + 1, end) : end, expected);
   return labels.slice(0, count).filter(label => !seen.has(label));
 }
+export function hasPrintedChoiceText(text: string) {
+  return !!text.normalize("NFKC").replace(/^[、，,。]?\s*(?:\([A-H]\)|[A-H][.、])\s*/u, "").trim();
+}
+export function choiceLabelsForReview(question: Pick<StructureQuestion, "options" | "expectedChoiceCount" | "assets">) {
+  const missing = missingChoiceLabels(question.options, question.expectedChoiceCount);
+  for (const option of question.options) {
+    if (!hasPrintedChoiceText(option.text) && !question.assets.some(asset => asset.choiceLabel === option.label))
+      missing.push(option.label);
+  }
+  return [...new Set(missing)].sort();
+}
+export type StructureChoiceRecheck = StructureAnchor & {
+  engine: string;
+  rasterSha256: string;
+  cropSha256: string;
+  attempts: number;
+  choices: { label: string; status: "consistent" | "single_read" | "conflicting" | "unreadable"; readings: string[] }[];
+};
 export type StructureQuestion = {
   id: string;
   number: string;
@@ -133,6 +152,7 @@ export type StructureQuestion = {
   analysis: string;
   options: StructurePart[];
   expectedChoiceCount?: number;
+  choiceRecheck?: StructureChoiceRecheck;
   subquestions: StructurePart[];
   formulaSources?: StructureFormulaSource[];
   anchors: StructureAnchor[];

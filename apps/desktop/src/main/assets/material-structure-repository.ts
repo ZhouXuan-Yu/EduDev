@@ -1,5 +1,6 @@
 import { structureOcrSourceKey } from "./material-structure-identity";
 import { readStructureReviewOverview } from "./material-structure-review-overview";
+import { planChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
 import { createHash, randomUUID } from "node:crypto";
 import type { TeacherResource, QuestionBankItem } from "../../shared/contracts";
 import {
@@ -18,6 +19,7 @@ import {
   type StructurePage,
   type StructurePageInput,
   type StructureQuestion,
+  type StructureChoiceRecheck,
 } from "../../shared/material-document-structure";
 import {
   recoverStructurePage,
@@ -98,6 +100,7 @@ type Host = {
     signal: AbortSignal,
   ) => Promise<QuestionDocument>;
   cropIllustration?: (plan:StructureIllustrationPlan, signal:AbortSignal)=>Promise<StructureIllustrationProof>;
+  recheckChoiceRow?: (image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal) => Promise<StructureChoiceRecheck | undefined>;
   verifyPdfMarks?: (
     image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal,
   ) => Promise<boolean>;
@@ -444,6 +447,7 @@ export class MaterialStructureRepository {
       count = 0,
       held = 0;
     const printedHeadings = new Map<string, PdfChoiceHeading | null>();
+    const choiceRecheckedPages = new Set<number>();
     const printedPdf = /\.pdf$/i.test(resource.originalFileName);
     let coverCount = 0, printedAnswers: PdfPrintedAnswers | undefined;
     const save = async (question: StructureQuestion) => {
@@ -460,6 +464,19 @@ export class MaterialStructureRepository {
         question,
         pages.map((item) => item.page),
       );
+      const source = pages[0];
+      if (this.host.recheckChoiceRow && source && pages.length === 1 && !choiceRecheckedPages.has(source.page.page)) {
+        const plan = planChoiceRecheck(question, source.page);
+        if (plan) {
+          choiceRecheckedPages.add(source.page.page);
+          const [stored] = await this.host.all("SELECT 1 FROM material_structure_questions WHERE generation=? AND id=?", [generation, question.id]);
+          if (!stored) {
+            await this.guard(resource, generation, signal, lease);
+            const recheck = await this.host.recheckChoiceRow(source.image, plan, signal);
+            if (recheck?.rasterSha256 === source.page.rasterSha256) question.choiceRecheck = recheck;
+          }
+        }
+      }
       const admitted = question.status === "candidate"
         ? await this.pdfQuestionAdmission(resource, question, generation, signal) : true;
       const pdfConflict = admitted === false;

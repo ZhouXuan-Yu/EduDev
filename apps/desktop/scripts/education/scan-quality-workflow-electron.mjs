@@ -87,7 +87,7 @@ try{
   report.importMs=Date.now()-started;
   const sources=sql('SELECT id,title,local_path,content_hash FROM teacher_resources');
   assert.equal(sources.length,2);
-  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v20'&&job.processed===job.pages));
+  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v21'&&job.processed===job.pages));
   assert.deepEqual(sources.map(source=>sha(source.local_path)).sort(),report.documents.map(doc=>doc.sha256).sort());
   check('One file-picker action stages both scans and the regular background parser publishes versioned results');
 
@@ -98,12 +98,24 @@ try{
   const realQuestions=questions(real);
   assert.equal(realQuestions.filter(q=>q.kind==='question'&&q.number!=='0').length,21);
   assert.deepEqual(realQuestions.filter(q=>q.formulaSources?.length).map(q=>q.number),['15','21']);
+  const realRecheck=realQuestions.find(q=>q.number==='15')?.choiceRecheck;
+  assert.deepEqual(realRecheck?.choices,[
+    {label:'A',status:'single_read',readings:['0']},
+    {label:'B',status:'unreadable',readings:[]},
+  ]);
   const alternate=questions(controlled);
   report.jobs=jobs.map(({resource_id,generation,engine,status,processed,questions,held})=>({resource_id,generation,engine,status,processed,questions,held}));
   report.alternate=alternate.map(({number,section,options,expectedChoiceCount,issues,status})=>({number,section,
     choices:options.map(option=>option.label),expectedChoiceCount,issues,status}));
   assert(alternate.find(q=>q.number==='7')?.issues.includes('missing_choice_options'));
   assert(alternate.find(q=>q.number==='8')?.issues.includes('missing_choice_options'));
+  const clipped=alternate.find(q=>q.number==='7').choiceRecheck;
+  assert.deepEqual(clipped?.choices,[
+    {label:'C',status:'unreadable',readings:[]},
+    {label:'D',status:'unreadable',readings:[]},
+  ]);
+  assert(alternate.filter(q=>q.number!=='7').every(q=>!q.choiceRecheck));
+  report.choiceRechecks={real:realRecheck,negativeControl:clipped};
   const intact=alternate.find(q=>q.number==='9');
   assert.deepEqual(intact?.options.map(option=>option.label),[...'ABCD']);
   assert(!intact.issues.includes('missing_choice_options'));
@@ -134,6 +146,7 @@ try{
   const short=scan.getByTestId('structure-questions').locator('article').filter({hasText:/题 7 .*暂缓入库/u});
   await short.getByTestId('structure-review-open').click();
   await short.getByTestId('structure-review-choice-evidence').getByText('待核对选项 C、D',{exact:true}).waitFor();
+  assert.deepEqual(await short.getByTestId('structure-review-choice-recheck').getByRole('listitem').allTextContents(),['C 未读清','D 未读清']);
   assert.equal(sql('SELECT COUNT(*) n FROM material_structure_reviews')[0].n,0);
   assert.deepEqual(sql('SELECT generation FROM material_structure_jobs ORDER BY resource_id').map(row=>row.generation),jobs.map(job=>job.generation));
   await close();

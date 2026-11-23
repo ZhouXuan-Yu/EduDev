@@ -727,3 +727,22 @@ v20 的题目装配自动记录同题同栏、上下部件互证的堆叠公式�
 | `npm audit --omit=dev --json` | 现有 20 项依赖告警，其中 2 项高风险。本轮依赖与锁文件未变。 |
 
 证据根 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-scan-workflow`。新导入报告在 `mixed-workflow-QrRL3G/report.json`，重建报告在 `yangpu-rubrics-z9b8cc/report.json`。手动窗口使用 `manual-phase4-scan-workflow` 下的独立资料库，启动进程和构建摘要见同目录 `launch-window.json`。如需回退，使用上一构建及旧结构世代；既有数据库与原 PDF 无迁移。专业公式转写、难版式与表格的独立识别器、大批量质量基准和答案核验继续推进。
+
+## Phase 4.3 局部选项回查
+
+**同题横排选项的本机回查已实现。** 结构 v21 从同题同栏的两个独立选项定位原页，只在已有选项文字能在裁片中再次读出时呈现新增候选。每页最多一行，每行两遍且有 16 秒 OCR 预算。首轮识别、来源页、原裁片摘要与回查结果分别留存。已有 OCR 缺损、候选、无法定位和阅卷确认继续沿原数据与任务治理。
+
+真实杨浦四页卷第 15 题的 A 得到一次 `0` 候选，B 未读清，第 14、16 题与旧世代逐字段一致。页图、两道公式证据、来源题号和教师确认项读回相同。对照件的第 7 题本身缺 C、D，局部回查仍未读清两项，纵排缺项和完整题不触发这个横排方法。用时记录与真实导入日志分别保存，真实重建一次为 19.21 秒，包含双遍局部 OCR 和并行回归运行开销。
+
+| 检查 | 结果 |
+| --- | --- |
+| `npm run build -- --outDir test-results/xiaozhi-agent/d3-choice-recheck` | 通过，主进程 SHA-256 `b726c048acf7295891551347975f3843ef925269a3a343e22e5f013eec89249c`。 |
+| `node scripts/education/document-structure-boundaries.mjs` | 67/67，含空标签、图选项、跨行、错读内容、两次冲突与低置信回执。 |
+| `node --experimental-transform-types scripts/education/document-structure-repository.mjs` | 43/43，含同页额度和故障恢复后复用已结算读数。 |
+| `npm run test:renderer-components` | 253/253。 |
+| `node scripts/education/mock-exam-rubrics-electron.mjs` | 重建 8/8，实际本机识别候选、表单、原页、冷启和旧世代。 |
+| `node scripts/education/scan-quality-workflow-electron.mjs` | 实际双卷导入 4/4，5 页 26 题，19 题待核，模型请求 0。独立对照的横排缺损没有出现多报候选。 |
+| `node scripts/electron-smoke.mjs` | 同一构建桌面综合回归 207/207，见 `ship-smoke/electron-smoke.log`。 |
+| 附加检查 | `test:ui-contracts` 的既有 `my_tasks` 差异仍在；生产依赖审计仍有 20 项告警，其中 2 项高风险。依赖与锁文件未改。 |
+
+证据根 `D:/WorkProject/EduProject/acceptance/D3-20261122/phase4-choice-recheck`。`yangpu-rubrics-hI1UYM/report.json` 包含原页和实裁像素的摘要复算、界面与冷启读回；`mixed-workflow-qSPhDo/report.json` 记录两种版式从空白资料库实际导入。第一次双卷测试把横排确实缺印的对照误设为不调用，本机实际回查两项均未读清；保留该轮失败日志，再以验收合同核对该负例。手工窗口使用 `manual-phase4-choice-recheck` 下的隔离资料库。无需 SQLite 迁移，可回退到旧程序和原 v20 世代。专业公式转写、复杂表格和大批量实际吞吐继续验证。

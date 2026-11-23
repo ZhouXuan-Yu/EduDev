@@ -1,4 +1,4 @@
-import { missingChoiceLabels, type StructureParagraph, type StructurePart, type StructureQuestion } from "../../shared/material-document-structure";
+import { choiceLabelsForReview, type StructureParagraph, type StructurePart, type StructureQuestion } from "../../shared/material-document-structure";
 import { questionSection } from "./material-structure-numbering";
 
 export function paragraphOptions(paragraph: StructureParagraph): StructurePart[] {
@@ -25,7 +25,7 @@ export function checkWholeQuestionChoices(question: StructureQuestion) {
       !questionSection.exec(question.section.trim())?.[1].endsWith("选择题")) return;
   const printed = printedChoiceCount.exec(question.section.normalize("NFKC"))?.[1];
   const expected = printed ? Number(printed) || "一二三四五六七八".indexOf(printed) + 1 : 0;
-  if (!missingChoiceLabels(question.options, expected).length) return;
+  if (!choiceLabelsForReview({...question, expectedChoiceCount: expected}).length) return;
   if (expected) question.expectedChoiceCount = expected;
   question.issues.push("missing_choice_options");
 }
