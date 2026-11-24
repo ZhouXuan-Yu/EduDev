@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v27" as const;
+  "layout-paragraph-question.v28" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v27",
   "layout-paragraph-question.v26",
   "layout-paragraph-question.v25",
   "layout-paragraph-question.v24",
@@ -71,6 +72,11 @@ export type StructureTableSource = StructureAnchor & {
   regionId: string;
   rasterSha256: string;
   layout?: "aligned_text";
+  numericRecheck?: {
+    lineId: string;
+    engine: typeof import("./xiaozhi-ocr").LOCAL_OCR_ENGINE;
+    parts: { box: PageBox; cropSha256: string; text: string; score: number }[];
+  };
   continuesFrom?: { page: number; regionId: string };
   rows: { box: PageBox; text: string; lineIds: string[]; needsReview: boolean; suspectedOverprint?: true;
     rowSpan?: number; columnSpan?: number; covered?: true }[][];

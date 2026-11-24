@@ -2,6 +2,10 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 表格跨列合读的复核
+
+v27 的全页 OCR 将合成扫描卷两页中的四个数值分别合读为两行，表格无法逐格核对。v28 从同表完整行的列位置和原图空隙定位两格，本机分别复读，并核对拼接文本与原读数一致。两页各恢复 15 格，保留负号、精度、原 OCR 行、裁片位置和摘要。真实 Electron 冷启读回，未写教师确认。证据在 `D:/WorkProject/EduProject/acceptance/D3-20261125/fused-table-row`。多行合读、文本列和没有明确空隙的读数仍保留原图。
+
 ## 无框和三线表的核对
 
 同一份两页扫描样卷在 v26 都有版面表格候选，但没有可核对单元格。v27 从本机 OCR 的行列对齐还原纯留白表和三线表各 12 格，保留数值精度，原图与冷启读回通过。弱版面证据、正文、选项、缺格和残留纵线继续沿原图核对。证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261125/borderless-table`。表格检测未识别的区域或文字已被 OCR 合并的格仍待补。

@@ -16,6 +16,7 @@ const continuedCase = process.argv.includes("--continued-grid");
 const splitBaseline = process.argv.includes("--baseline-split-grid");
 const borderlessCase = process.argv.includes("--borderless-grid");
 const borderlessBaseline = process.argv.includes("--baseline-borderless-grid");
+const fusedCase = process.argv.includes("--fused-grid");
 const key = useLive ? process.env.DEEPSEEK_API_KEY : "fake-deepseek-table-vision-test";
 assert(root && fixture && path.basename(fixture) === "synthetic-table-vision.pdf" && key);
 const fixtureSha = createHash("sha256").update(fs.readFileSync(fixture)).digest("hex");
@@ -183,13 +184,21 @@ async function checkSplitBaseline(page, resource, candidate) {
 }
 
 async function checkBorderlessTables(page, resource, questionRows, snapshot, before) {
-  const expected = [
+  const expected = fusedCase ? [
+    { page: 1, question: "10", values: ["23.1", "12.3", "123.4", "29.5", "19.8", "17.4", "21.2", "15.8"],
+      fused: "123.4 29.5" },
+    { page: 2, question: "12", values: ["23.1", "12.3", "-84.6", "13.75", "19.8", "17.4", "21.2", "15.8"],
+      fused: "-84.613.75" },
+  ] : [
     { page: 1, question: "10", values: ["2.50", "0.20", "3.75", "0.30", "5.00", "0.40"] },
     { page: 2, question: "12", values: ["20.5", "12", "23.8", "24", "27.0", "36"] },
   ];
   for (const item of expected) {
     const question = questionRows.find(question => question.number === item.question);
     assert(question.assets.some(asset => asset.page === item.page && asset.kind === "table"));
+    const sourcePage = JSON.parse(query("SELECT body_json FROM material_structure_pages WHERE page=?", item.page)[0].body_json);
+    const originalLine = item.fused && sourcePage.lines.find(line => line.text === item.fused);
+    if (item.fused) assert(originalLine, "The production full-page OCR must reproduce the fused source line");
     if (borderlessBaseline) assert.equal(question.tableSources?.length ?? 0, 0);
     else {
       assert.equal(question.tableSources.length, 1);
@@ -197,6 +206,12 @@ async function checkBorderlessTables(page, resource, questionRows, snapshot, bef
       assert.equal(source.page, item.page);
       assert.equal(source.layout, "aligned_text");
       assert.deepEqual(source.rows.slice(1).flatMap(row => row.slice(1).map(cell => cell.text)), item.values);
+      if (originalLine) {
+        assert.equal(source.numericRecheck.lineId, originalLine.id);
+        assert.deepEqual(source.numericRecheck.parts.map(part => part.text), item.values.slice(2, 4));
+        assert(source.numericRecheck.parts.every(part => /^[a-f0-9]{64}$/.test(part.cropSha256)));
+        assert(source.rows[2].slice(1).every(cell => !cell.needsReview && cell.lineIds.includes(originalLine.id)));
+      }
     }
   }
   assert(questionRows.filter(question => !expected.some(item => item.question === question.number))
@@ -215,10 +230,11 @@ async function checkBorderlessTables(page, resource, questionRows, snapshot, bef
       if (borderlessBaseline) continue;
       await openMaterialDisclosure(cards);
       const grid = cards.getByTestId("structure-table-grid");
-      assert.equal(await grid.getByRole("row").count(), 4);
+      assert.equal(await grid.getByRole("row").count(), item.fused ? 5 : 4);
       const cells = await grid.getByRole("cell").allTextContents();
-      assert.deepEqual(cells.filter(value => /^\d+(?:\.\d+)?$/.test(value)), item.values);
+      assert.deepEqual(cells.filter(value => /^-?\d+(?:\.\d+)?$/.test(value)), item.values);
       await cards.getByText("按原文位置还原的表格，可对照原图").waitFor();
+      if (item.fused) await cards.getByTestId("structure-table-numeric-recheck").waitFor();
       await cards.getByTestId("structure-table-original").click();
       await cards.getByRole("img", { name: `第 ${item.page} 页的原始表格` }).waitFor();
       await grid.scrollIntoViewIfNeeded();
@@ -231,6 +247,7 @@ async function checkBorderlessTables(page, resource, questionRows, snapshot, bef
     app = undefined;
   }
   check(borderlessBaseline ? "Both baseline pages are recognized as table regions but produce no reviewable cells."
+    : fusedCase ? "Two real OCR fusions are separated into four numeric cells, with unchanged raw lines and local crop evidence after restart."
     : "Tables without rules and with horizontal rules only each retain twelve OCR cells and the original crop after restart.");
 }
 
@@ -244,7 +261,7 @@ async function run() {
   const [resource] = query("SELECT id,title FROM teacher_resources");
   const snapshot = () => query("SELECT id,status,sha256 FROM material_structure_questions ORDER BY id");
   const before = snapshot();
-  if (borderlessCase || borderlessBaseline) {
+  if (borderlessCase || borderlessBaseline || fusedCase) {
     const questions = query("SELECT body_json FROM material_structure_questions WHERE generation=?", job.generation)
       .map(record => JSON.parse(record.body_json));
     await checkBorderlessTables(page, resource, questions, snapshot, before);
@@ -264,7 +281,7 @@ async function run() {
     await checkMergedTable(page,resource,candidate,snapshot,before);
     return;
   }
-  assert.equal(job.engine, "layout-paragraph-question.v27");
+  assert.equal(job.engine, "layout-paragraph-question.v28");
   assert.equal(candidate.tableSources[0].rows[1][1].needsReview, true);
   assert.equal(candidate.tableSources[0].rows[1][1].text, "");
   if (process.env.OMNI_EDU_TABLE_VISION_POSITIVE === "1") {

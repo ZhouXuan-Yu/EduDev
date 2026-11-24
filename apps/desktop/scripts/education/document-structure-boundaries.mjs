@@ -16,6 +16,8 @@ const { ruledTableGrid, ruledTableLayout, evidenceForTable, readStructureTables 
   await import("../../src/main/assets/material-structure-ruled-table.ts");
 const { linkStructureTableContinuations } =
   await import("../../src/main/assets/material-structure-table-continuation.ts");
+const { verifiedNumericTableRow } =
+  await import("../../src/main/assets/material-structure-borderless-table.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -151,6 +153,42 @@ await check("Explicit continuation labels and compatible physical headers preser
   }
 });
 
+await check("Numeric table fusion requires a unique physical gap, corroborating rows, and exact independent crop readings", () => {
+  const ink = (raster, x0, x1) => {
+    for (let y = 148; y < 156; y++) for (let x = x0; x < x1; x++) {
+      const at = (y * raster.width + x) * 4;
+      raster.pixels.fill(0, at, at + 3);
+    }
+  };
+  const make = () => {
+    const fixture = alignedTableFixture();
+    const fused = { ...fixture.lines[7], text: "-20.514.25", box: [.46, .49, .78, .525] };
+    fixture.lines.splice(7, 2, fused);
+    ink(fixture.raster, 149, 183);
+    ink(fixture.raster, 202, 246);
+    return fixture;
+  };
+  const { page, raster } = make();
+  const pending = [];
+  assert.deepEqual(readStructureTables(page, () => raster, pending), []);
+  assert.equal(pending.length, 1);
+  const [{ split }] = pending;
+  assert.deepEqual([split.row, split.leftColumn], [2, 1]);
+  const read = part => ({
+    receipt: { text: part, lines: 1, scores: [.98], engine: "test-engine" }, cropSha256: "a".repeat(64),
+  });
+  const readings = [read("-20.5"), read("14.25")];
+  assert.deepEqual(verifiedNumericTableRow(split, readings)?.parts.map(part => part.text), ["-20.5", "14.25"]);
+  for (const wrong of [[read("20.5"), read("14.25")], [read("-20.51"), read("4.25X")],
+    readings.toReversed(), [read("-20.5")], [read("-20.50"), read("14.25")]]) assert(!verifiedNumericTableRow(split, wrong));
+  readings[1].receipt.scores[0] = .89;
+  assert(!verifiedNumericTableRow(split, readings));
+  const noGap = make();
+  ink(noGap.raster, 180, 207);
+  const rejected = [];
+  assert.deepEqual(readStructureTables(noGap.page, () => noGap.raster, rejected), []);
+  assert.equal(rejected.length, 0);
+});
 await check("Missing or wrong labels, changed units, missing pages and shifted columns leave table fragments independent", () => {
   for (const test of [{ marker: "测量记录" }, { marker: "表 3（续）" }, { units: "长度(mm)" }, { nextPage: 3 }, { shift: 0.035 }]) {
     const { links, sources } = continuationFixture(test);

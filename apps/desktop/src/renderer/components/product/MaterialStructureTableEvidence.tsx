@@ -51,6 +51,7 @@ function TableEvidence({ sources, reference }: { sources: StructureTableSource[]
       {expanded && <>
       <p>{first.layout === "aligned_text" ? `按原文位置还原的表格${held ? `，${held} 个单元格待核对` : ""}，可对照原图` :
         held ? `${held} 个单元格待核对${originalOnly ? "，可查看原图" : ""}` : "已定位全部单元格，文字可对照原图"}</p>
+      {first.numericRecheck && <p data-testid="structure-table-numeric-recheck">2 个数值已按原图分列复读</p>}
       <div tabIndex={0} role="region" aria-label="可横向滚动的表格读数" style={{ overflowX: "auto" }}>
         <table aria-label="扫描表格读数" data-testid="structure-table-grid" style={{ borderCollapse: "collapse" }}>
           {sources.map((source, fragment) => {

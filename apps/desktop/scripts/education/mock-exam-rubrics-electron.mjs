@@ -171,7 +171,7 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v27');
+  assert.equal(current.engine,'layout-paragraph-question.v28');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
