@@ -1,0 +1,392 @@
+[
+  {
+    "id": "P01-01",
+    "pageId": "P01",
+    "pageName": "问小智",
+    "path": "images/P01-ai-current.png",
+    "capturedAt": "2026-11-24T18:48:31.446277+08:00",
+    "state": "首页，已有最近任务",
+    "navigation": "问小智",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P02-02",
+    "pageId": "P02",
+    "pageName": "我的任务",
+    "path": "images/P02-tasks-current.png",
+    "capturedAt": "2026-11-24T18:48:42.853247+08:00",
+    "state": "任务总览，未完成",
+    "navigation": "我的任务",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P03-03",
+    "pageId": "P03",
+    "pageName": "资料库",
+    "path": "images/P03-library-current.png",
+    "capturedAt": "2026-11-24T18:48:56.992739+08:00",
+    "state": "已有资料列表",
+    "navigation": "资料库",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P03-04",
+    "pageId": "P03",
+    "pageName": "资料库",
+    "path": "images/P03-library-detail.png",
+    "capturedAt": "2026-11-24T18:49:07.671843+08:00",
+    "state": "概要侧栏",
+    "navigation": "资料库 → 第一份资料",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P04-05",
+    "pageId": "P04",
+    "pageName": "教学工作台",
+    "path": "images/P04-teaching-current.png",
+    "capturedAt": "2026-11-24T18:49:16.087551+08:00",
+    "state": "教学任务",
+    "navigation": "教学工作台",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P05-06",
+    "pageId": "P05",
+    "pageName": "教学文件",
+    "path": "images/P05-files.png",
+    "capturedAt": "2026-11-24T18:49:30.106819+08:00",
+    "state": "空态",
+    "navigation": "教学工作台 → 教学文件",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P06-07",
+    "pageId": "P06",
+    "pageName": "备课本",
+    "path": "images/P06-prep.png",
+    "capturedAt": "2026-11-24T18:49:38.168965+08:00",
+    "state": "空态",
+    "navigation": "教学工作台 → 备课本",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P07-08",
+    "pageId": "P07",
+    "pageName": "讲义",
+    "path": "images/P07-handout.png",
+    "capturedAt": "2026-11-24T18:49:38.743011+08:00",
+    "state": "空态",
+    "navigation": "教学工作台 → 讲义",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P08-09",
+    "pageId": "P08",
+    "pageName": "题本",
+    "path": "images/P08-questions.png",
+    "capturedAt": "2026-11-24T18:49:39.313345+08:00",
+    "state": "空态",
+    "navigation": "教学工作台 → 题本",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P09-10",
+    "pageId": "P09",
+    "pageName": "组卷",
+    "path": "images/P09-paper.png",
+    "capturedAt": "2026-11-24T18:55:07.191003+08:00",
+    "state": "题库空态",
+    "navigation": "教学工作台 → 组卷",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P10-11",
+    "pageId": "P10",
+    "pageName": "学生工作台",
+    "path": "images/P10-students.png",
+    "capturedAt": "2026-11-24T18:55:19.156513+08:00",
+    "state": "空态",
+    "navigation": "学生工作台",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P11-12",
+    "pageId": "P11",
+    "pageName": "学生档案",
+    "path": "images/P11-student-form.png",
+    "capturedAt": "2026-11-24T18:55:25.974190+08:00",
+    "state": "空白表单，未保存",
+    "navigation": "学生工作台 → 添加学生",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  },
+  {
+    "id": "P12-13",
+    "pageId": "P12",
+    "pageName": "设置",
+    "path": "images/P12-settings.png",
+    "capturedAt": "2026-11-24T18:55:33.767663+08:00",
+    "state": "模型与连接，密钥为空",
+    "navigation": "设置",
+    "tabsOrFilters": null,
+    "windowOuterSize": null,
+    "contentSize": null,
+    "imagePixels": {
+      "width": 1362,
+      "height": 901
+    },
+    "osScale": null,
+    "appScale": null,
+    "dpr": null,
+    "scroll": {
+      "region": "可见区域",
+      "position": "初始位置"
+    },
+    "environment": "运行中的 d3-mock-exam-scope 测试结果构建；数据身份未完全核实",
+    "redacted": true,
+    "redaction": "左侧已有会话标题；P01/P02/P04另遮盖任务文案",
+    "sourceSha": null,
+    "runningBuild": "test-results/xiaozhi-agent/d3-mock-exam-scope/renderer/index.html",
+    "componentPath": "apps/desktop/src/renderer/ui-system/page-contracts.ts（页面合同；具体组件未核实）",
+    "notes": "截图工具返回 JPEG，转为 PNG 时未缩放；原始 JPEG 的压缩损失仍在。外框、内容尺寸和缩放未测得。"
+  }
+]
