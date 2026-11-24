@@ -6,12 +6,16 @@ import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
+import {physicsHandout,physicsNotation} from './live-physics-handout-fixture.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT,fixture=process.env.OMNI_EDU_HANDOUT_FIXTURE;
 assert(root&&fixture,'Use the fixed acceptance directory and a confirmed synthetic handout fixture');
 const baseline=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8'));
 const {bookId,sessionId}=baseline;
 assert(baseline.ok&&bookId&&sessionId);
+const title=baseline.title??'等式变形分层学案';
+const physics=title===physicsHandout.title;
+const filePrefix=physics?'浮力与物体浮沉':'等式变形学案';
 const generatedFixture=process.argv.includes('--generated-fixture');
 const liveExport=process.argv.includes('--live-export');
 const apiKey=liveExport?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
@@ -24,10 +28,10 @@ const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const report={ok:false,output,bookId,sessionId,main,sha256:sha(main),paidRequests:0,checks:[],errors:[]};
 const lanes={
-  bundle:{user:'把已确认的《等式变形分层学案》导出为学生版和教师版 Word 文件，两个文件一次确认保存。',outputs:[
-    {audience:'student',path:'等式变形学案-学生版.docx'},{audience:'teacher',path:'等式变形学案-教师版.docx'}]},
-  single:{user:'把已确认的《等式变形分层学案》单独导出为学生版 Word 并确认保存。',outputs:[{audience:'student',path:'独立学生版.docx'}]},
-  changed:{user:'再次导出已确认的《等式变形分层学案》为教师版 Word，先等我确认保存。',outputs:[{audience:'teacher',path:'过期来源不应保存.docx'}]},
+  bundle:{user:`把已确认的《${title}》导出为学生版和教师版 Word 文件，两个文件一次确认保存。`,outputs:[
+    {audience:'student',path:`${filePrefix}-学生版.docx`},{audience:'teacher',path:`${filePrefix}-教师版.docx`}]},
+  single:{user:`把已确认的《${title}》单独导出为学生版 Word 并确认保存。`,outputs:[{audience:'student',path:'独立学生版.docx'}]},
+  changed:{user:`再次导出已确认的《${title}》为教师版 Word，先等我确认保存。`,outputs:[{audience:'teacher',path:'过期来源不应保存.docx'}]},
 };
 let app,page;
 
@@ -53,7 +57,7 @@ async function launch(cold=false){
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{cold,liveExport})=>{
+  await app.evaluate(({net},{cold,liveExport,title})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
     const remote=net.fetch.bind(net);
     net.fetch=async(input,init)=>{
@@ -85,7 +89,7 @@ async function launch(cold=false){
         const active=system.split('\n').findLast(line=>line.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'));
         const task=active?JSON.parse(active):{requirementsVersion:Number([...system.matchAll(/"requirementsVersion":(\d+)/gu)].at(-1)?.[1]||1),revision:0};
         let call,content;
-        if(index===0)call={name:'education_read_teaching_handout',args:{title:'等式变形分层学案'}};
+        if(index===0)call={name:'education_read_teaching_handout',args:{title}};
         else if(index===1){
           if(!previous.success||!previous.teacherConfirmed)throw Error('Confirmed handout was unavailable: '+JSON.stringify(previous));
           state.ref={bookId:previous.bookId,versionId:previous.versionId,digest:previous.digest};
@@ -117,7 +121,7 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport});
+  },{cold,liveExport,title});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -205,14 +209,23 @@ try{
   for(const item of [student,teacher]){
     assert.match(item.text,/练习 1 · 基础/);
     assert.match(item.text,/练习 2 · 巩固/);
-    assert(item.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='5x-2=2x+7'));
+    if(physics)assert(item.formulas.some(Boolean));
+    else assert(item.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='5x-2=2x+7'));
     assert(item.page.includes('11906')&&item.page.includes('16838'));
   }
   assert.doesNotMatch(student.text,/答案与解析|参考资料/);
-  assert(!student.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
-  assert(teacher.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
+  if(physics){
+    const content=file=>[file.text,...file.formulas.filter(Boolean)].map(physicsNotation).join('\n');
+    for(const solution of [/(?:^|[^\d.])15(?:N|牛)/u,/(?:^|[^\d.])8(?:N|牛)/u]){
+      assert.doesNotMatch(content(student),solution);
+      assert.match(content(teacher),solution);
+    }
+  }else{
+    assert(!student.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
+    assert(teacher.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
+  }
   assert.match(teacher.text,/练习 2 · 答案与解析/);
-  if(!generatedFixture){
+  if(!generatedFixture&&!physics){
     assert.match(student.text,/并代回/);
     assert.match(teacher.text,/并代回/);
     assert.match(student.text,/先写明使用了哪条等式性质/);
@@ -255,7 +268,9 @@ try{
     const driftCard=page.getByTestId('pi-office-artifact').filter({hasText:'过期来源不应保存.docx'}).last();
     const driftApprove=driftCard.getByTestId('pi-office-approve');
     await readyApproval(driftApprove);
-    const [source]=sql('SELECT id,content_md FROM resource_chunks ORDER BY rowid');
+    const [origin]=sql('SELECT material_sources_json FROM teaching_handout_origins WHERE book_id=?',[bookId]);
+    const [reference]=JSON.parse(origin.material_sources_json);
+    const [source]=sql('SELECT id,content_md FROM resource_chunks WHERE id=?',[reference.chunkId]);
     assert(source);
     assert(sql('UPDATE resource_chunks SET content_md=? WHERE id=?',[source.content_md+'\n确认后发生的合成资料变动。',source.id],true).changes);
     await driftApprove.click();

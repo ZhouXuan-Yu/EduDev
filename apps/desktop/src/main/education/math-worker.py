@@ -525,21 +525,29 @@ def verify_quantity(request):
             result, result_unit = rational(value['value']), unit(value['unit'])
         else:
             fields(value, ['op', 'args', 'exponent'] if op == 'power' else ['op', 'args'])
-            if op not in ('add', 'subtract', 'multiply', 'divide', 'power', 'sqrt') or not isinstance(value['args'], list) or len(value['args']) != (1 if op in ('power', 'sqrt') else 2):
+            minimum = 1 if op in ('power', 'sqrt') else 2
+            maximum = 8 if op in ('add', 'multiply') else minimum
+            if op not in ('add', 'subtract', 'multiply', 'divide', 'power', 'sqrt') or not isinstance(value['args'], list) or not minimum <= len(value['args']) <= maximum:
                 raise InvalidInput()
             if op == 'power' and (type(value['exponent']) is not int or abs(value['exponent']) > 4):
                 raise InvalidInput()
             children = [expression(child, depth+1) for child in value['args']]
             a, a_unit = children[0]
-            if op in ('add', 'subtract', 'multiply', 'divide'):
-                b, b_unit = children[1]
             if op in ('add', 'subtract'):
-                if dimensions(a_unit) != dimensions(b_unit):
-                    raise QuantityIssue('dimension_mismatch', 'incompatible_addition', 'Cannot add/subtract '+s.sstr(a_unit)+' and '+s.sstr(b_unit))
-                result, result_unit = a + (1 if op == 'add' else -1)*b*scale(b_unit, a_unit), a_unit
+                first_dimensions = dimensions(a_unit)
+                result, result_unit = a, a_unit
+                sign = 1 if op == 'add' else -1
+                for b, b_unit in children[1:]:
+                    if first_dimensions != dimensions(b_unit):
+                        raise QuantityIssue('dimension_mismatch', 'incompatible_addition', 'Cannot add/subtract '+s.sstr(a_unit)+' and '+s.sstr(b_unit))
+                    result += sign*b*scale(b_unit, a_unit)
             elif op == 'multiply':
-                result, result_unit = a*b, a_unit*b_unit
+                result, result_unit = a, a_unit
+                for b, b_unit in children[1:]:
+                    result *= b
+                    result_unit *= b_unit
             elif op == 'divide':
+                b, b_unit = children[1]
                 if b.is_zero is not False:
                     raise QuantityIssue('unsupported', 'undefined', 'Division by zero or an undetermined denominator')
                 result, result_unit = a/b, a_unit/b_unit

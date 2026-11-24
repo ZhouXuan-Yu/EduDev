@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
+import {physicsHandout,assertPhysicsHandout} from './live-physics-handout-fixture.mjs';
 
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
@@ -12,31 +13,38 @@ const wordRequest=process.argv.includes('--word-request');
 const confirmFixture=process.argv.includes('--confirm-fixture');
 const live=process.argv.includes('--live');
 const namedBasis=process.argv.includes('--named-basis');
-assert(!(live&&namedBasis));
+const physics=process.argv.includes('--physics');
+assert(physics ? live&&namedBasis : !(live&&namedBasis));
 const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout';
 assert(apiKey,'Missing DeepSeek test credential');
 const output=fs.mkdtempSync(path.join(acceptance,'teaching-handout-'));
 const data=path.join(output,'data'), profile=path.join(output,'profile');
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const modelTool='education_create_teaching_handout';
-const title='等式变形分层学案', quote='等式两边同时减去同一个数，等式仍然成立。';
-const original=path.join(output,'等式性质参考.md');
-fs.writeFileSync(original,'# 等式性质\n\n'+quote+'\n\n等式两边同时除以同一个非零数，等式仍然成立。');
-const secondQuote='解方程后应把得到的未知数值代回原方程检验。';
-const distractorQuote='复习时可用算例检查等式性质的适用条件。';
+const title=physics?physicsHandout.title:'等式变形分层学案';
+const quote=physics?physicsHandout.quote:'等式两边同时减去同一个数，等式仍然成立。';
+const firstName=physics?physicsHandout.firstName:'等式性质参考.md';
+const secondName=physics?physicsHandout.secondName:'代回检验.md';
+const duplicateName=physics?physicsHandout.duplicateName:'等式性质补充.md';
+const original=path.join(output,firstName);
+fs.writeFileSync(original,'# '+path.basename(firstName,'.md')+'\n\n'+quote+'\n\n'+
+  (physics?'水的密度取 1000 kg/m³ 时，可用 F浮 = ρ液 g V排 计算。':'等式两边同时除以同一个非零数，等式仍然成立。'));
+const secondQuote=physics?physicsHandout.secondQuote:'解方程后应把得到的未知数值代回原方程检验。';
+const distractorQuote=physics?physicsHandout.distractor:'复习时可用算例检查等式性质的适用条件。';
 const inputs=[original];
 if(namedBasis){
-  const second=path.join(output,'代回检验.md');
-  fs.writeFileSync(second,'# 代回检验\n\n'+secondQuote);
+  const second=path.join(output,secondName);
+  fs.writeFileSync(second,'# '+path.basename(secondName,'.md')+'\n\n'+secondQuote+
+    (physics?'\n\n在题目给出的重力加速度下，可用 G = mg 求物重。':''));
   for(const [folder,text] of [['v1',distractorQuote],['v2','这是一份同名的独立算例。']]){
     fs.mkdirSync(path.join(output,folder));
-    const duplicate=path.join(output,folder,'等式性质补充.md');
+    const duplicate=path.join(output,folder,duplicateName);
     fs.writeFileSync(duplicate,'# 补充资料\n\n'+text);
     inputs.push(duplicate);
   }
   inputs.push(second);
 }
-const report={ok:false,output,main,mainHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],errors:[],paidRequests:0};
+const report={ok:false,output,main,mainHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),title,checks:[],errors:[],paidRequests:0};
 const check=(name,details)=>{report.checks.push({name,...details});console.log('PASS '+name);};
 let app,page,sessionId;
 
@@ -192,7 +200,6 @@ const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessi
 const getBook=bookId=>page.evaluate(id=>window.omniEdu.getTeachingBook(id),bookId);
 const card=()=>page.getByTestId('pi-teaching-handout');
 const blockButton=id=>page.getByTestId('teaching-book-block-edit-'+id);
-const sourceLink=()=>page.getByTestId('teaching-book-sources').getByTestId('pi-material-source-open');
 
 async function verifyLive(state,wire){
   const [handout]=state.teachingHandouts;
@@ -216,22 +223,34 @@ async function verifyLive(state,wire){
   const role=name=>book.blocks.filter(block=>block.metadata.handoutRole===name);
   assert.equal(book.chapters.length,1);
   assert.match(role('focus')[0].payload.text,/重点.+难点/su);
-  const math=text=>text.replace(/[\s$`\\]/gu,'').replaceAll('−','-');
-  assert.match(math(role('example')[0].payload.text),/3x\+7=25/u);
-  const steps=math(role('worked_solution')[0].payload.text);
-  assert.match(steps,/3x=18/u);
-  assert.match(steps,/x=6/u);
-  assert.match(steps,/代回|检验|验证/u);
   assert.deepEqual(role('exercise').map(block=>block.title.split(' · ').at(-1)),['基础','巩固']);
-  for(const [index,equation,answer] of [[0,/2x\+3=15/u,/x=6/u],[1,/5x-2=2x\+7/u,/x=3/u]]){
-    assert.match(math(role('exercise')[index].payload.text),equation);
-    assert.match(math(role('exercise_solution')[index].payload.text),answer);
+  if(physics){
+    assertPhysicsHandout(role);
+    assert.deepEqual(new Set(book.materialSources.map(item=>item.resourceId)),new Set([wire.ids.first,wire.ids.second]));
+    assert(events.slice(0,save).filter(event=>event.kind==='tool_end'&&event.tool==='office_read_material'&&event.success).length>=2);
+    for(const item of book.materialSources){
+      const file=item.resourceId===wire.ids.first?original:inputs.at(-1);
+      assert(book.sources.some(source=>source.ref===item.chunkId&&fs.readFileSync(file,'utf8').includes(source.snippet)));
+    }
+  }else{
+    const math=text=>text.replace(/[\s$`\\]/gu,'').replaceAll('−','-');
+    assert.match(math(role('example')[0].payload.text),/3x\+7=25/u);
+    const steps=math(role('worked_solution')[0].payload.text);
+    assert.match(steps,/3x=18/u);
+    assert.match(steps,/x=6/u);
+    assert.match(steps,/代回|检验|验证/u);
+    for(const [index,equation,answer] of [[0,/2x\+3=15/u,/x=6/u],[1,/5x-2=2x\+7/u,/x=3/u]]){
+      assert.match(math(role('exercise')[index].payload.text),equation);
+      assert.match(math(role('exercise_solution')[index].payload.text),answer);
+    }
+    assert(book.sources.length&&book.sources.every(source=>fs.readFileSync(original,'utf8').includes(source.snippet)));
   }
-  assert(book.sources.length&&book.sources.every(source=>fs.readFileSync(original,'utf8').includes(source.snippet)));
-  await sourceLink().first().click();
-  await page.getByTestId('materials-chunk-'+book.materialSources[0].chunkId).waitFor();
-  await page.getByTestId('desktop-back').click();
-  await preview.waitFor();
+  for(const material of book.materialSources){
+    await page.getByTestId('teaching-book-source-'+material.chunkId).getByTestId('pi-material-source-open').click();
+    await page.getByTestId('materials-chunk-'+material.chunkId).waitFor();
+    await page.getByTestId('desktop-back').click();
+    await preview.waitFor();
+  }
   assert(await preview.locator('math').count()>0);
   check('Real provider creates a sourced editable handout with the independently checked example and two exercises.');
   await page.setViewportSize({width:1366,height:768});
@@ -240,6 +259,7 @@ async function verifyLive(state,wire){
   await page.getByTestId('teaching-book-review-current').click();
   await page.getByTestId('teaching-book-version-confirm').click();
   const [version]=await until(()=>{const rows=sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed'",[book.book.id]);return rows.length&&rows;});
+  report.confirmedVersion=version;
   await app.close(); app=undefined;
   await launch(true);
   await card().getByTestId('pi-teaching-handout-open').click();
@@ -354,11 +374,11 @@ try{
   await page.getByTestId('desktop-back').click();
   const input=page.getByTestId('office-prompt-input');
   if(namedBasis){
-    const ids={first:saved.find(row=>row.name==='等式性质参考.md').id,
-      second:saved.find(row=>row.name==='代回检验.md').id,
+    const ids={first:saved.find(row=>row.name===firstName).id,
+      second:saved.find(row=>row.name===secondName).id,
       distractor:saved.find(row=>row.hash===createHash('sha256').update(fs.readFileSync(inputs[1])).digest('hex')).id};
     await app.evaluate((_electron,ids)=>{globalThis.handoutWire.ids=ids;},ids);
-    for(const [file,feedback] of [['等式性质参考缺件','找不到讲义指定的文件'],['等式性质补充.md','核对重名文件']]){
+    for(const [file,feedback] of [[path.basename(firstName,'.md')+'缺件','找不到讲义指定的文件'],[duplicateName,'核对重名文件']]){
       const originalPrompt=`请根据资料库里的《${file}》制作一份七年级讲义。`;
       await input.fill(originalPrompt);
       await page.getByRole('button',{name:'发送消息',exact:true}).click();
@@ -371,7 +391,7 @@ try{
   }
   const request=(namedBasis?'请根据资料库里的《等式性质参考.md》以及《代回检验》':live?'请根据资料库里《等式性质参考》':'请参考相关本地资料')+'制作一份七年级一元一次方程的可编辑'+
     (wordRequest?' Word ':'')+'学案，包含重点难点、分步例题和分层练习。';
-  await input.fill(live?request+'标题是《等式变形分层学案》，只做一章。例题用 3x+7=25，写出两边同减、同除、代回检验。两道练习按基础、巩固排序，分别用 2x+3=15 和 5x-2=2x+7，保留答案与解析。引用实读到的等式性质，先保存讲义草稿让我核对。':request);
+  await input.fill(physics?physicsHandout.prompt:live?request+'标题是《等式变形分层学案》，只做一章。例题用 3x+7=25，写出两边同减、同除、代回检验。两道练习按基础、巩固排序，分别用 2x+3=15 和 5x-2=2x+7，保留答案与解析。引用实读到的等式性质，先保存讲义草稿让我核对。':request);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   sessionId=await until(async()=>{
     const id=await page.locator('.office-composer-container').getAttribute('data-session-id');

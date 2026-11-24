@@ -6,6 +6,7 @@ const {validOfficeProposal}=await import('../../src/shared/xiaozhi-office-artifa
 const {presentationPageLayout}=await import('../../src/main/xiaozhi-agent/presentation-layout.ts');
 const {officeVersionFamilies}=await import('../../src/main/xiaozhi-agent/office-version-family.ts');
 const {applyPresentationEdit}=await import('../../src/shared/xiaozhi-presentation-edit.ts');
+const {officeMathHtml}=await import('../../src/shared/office-math.ts');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-office-math-boundaries-')),report={ok:false,checks:[]};
 const page={pageId:'p1',heading:'浮力探究',paragraphs:['依据阿基米德原理：','$F=\\rho gV$','说明文字仍可编辑。'],speakerNotes:[{kind:'script',text:'保留教师讲解与参考答案。'}]};
 const draft=schemaVersion=>({schemaVersion,title:'教学公式',sections:[structuredClone(page)]});
@@ -14,6 +15,14 @@ const check=(name,run)=>{run();report.checks.push(name);console.log('PASS '+name
 try{
  check('Legacy and formula presentation drafts retain exact page and notes contract',()=>{for(const schema of ['xiaozhi.presentation-draft.v1','xiaozhi.presentation-draft.v2']){const d=draft(schema);assert(validOfficeDraft(d));assert(isPresentationDraft(d));assert(!validOfficeDraft({...d,sections:[{...page,speakerNotes:[]}]}));}});
  check('Math document formats reject XLSX/PPTX instead of silently exporting raw TeX',()=>{const d={schemaVersion:'xiaozhi.office-draft.v2',title:'公式讲义',sections:[{heading:'依据',paragraphs:['$V=\\frac{m}{\\rho}$']}]};assert(validOfficeDraft(d));for(const format of ['docx','pdf','xlsx','pptx'])assert.equal(validOfficeProposal({path:'讲义.'+format,format,draft:d,sources:[]}),['docx','pdf'].includes(format));});
+ check('Chinese math labels retain MathML subscripts and normal syntax checking',()=>{
+  for(const formula of ['$F_浮=\\rho_液 g V_排$','$U_{端}=IR$','$Q_{吸}=cm\\Delta T$','$F_{\\text{浮}}$']){
+   assert.match(officeMathHtml(formula),/<msub>/u);
+   assert.match(officeMathHtml(formula),/<mtext>[浮液排端吸]<\/mtext>/u);
+  }
+  for(const formula of ['$F_♜$','$F_浮=\\unsupportedMacro$','$F_浮=\\href{https://example.com}{x}$'])
+   assert.throws(()=>officeMathHtml(formula),/unsupported/u);
+ });
  check('Only known v1/v2 schemas join ordinary saved version families',()=>{for(const v of ['xiaozhi.office-draft.v1','xiaozhi.office-draft.v2','xiaozhi.presentation-draft.v1','xiaozhi.presentation-draft.v2'])assert(isOrdinaryOfficeSchema(v));assert(!isOrdinaryOfficeSchema('xiaozhi.office-draft.v99'));assert(!validOfficeDraftFormat('xiaozhi.presentation-draft.v2','docx'));});
  check('Legacy layout remains plain text with no rasterized body and same height',()=>{const layout=presentationPageLayout(page);assert.equal(layout.paragraphs[1].text,page.paragraphs[1]);assert(layout.paragraphs.every(p=>!p.image));assert.equal(layout.paragraphs[0].height,24/72*1.35+0.16);});
  check('Formula layout preserves separate native explanation blocks and measured image proportions',()=>{const layout=presentationPageLayout(page,{paragraphs:[{text:'依据阿基米德原理：'},{text:'$F=\\rho gV$',image},{text:'说明文字仍可编辑。'}],cells:new Map()});assert.equal(layout.paragraphs[0].text,'依据阿基米德原理：');assert.equal(layout.paragraphs[2].text,'说明文字仍可编辑。');const p=layout.paragraphs[1];assert.equal(p.image.width/p.image.height,3);assert(p.y+p.height<6.8);});

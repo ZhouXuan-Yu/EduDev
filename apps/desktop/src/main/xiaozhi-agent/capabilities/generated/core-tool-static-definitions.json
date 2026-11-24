@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "98e799bcc1f106fbd328e5c6f3d316f32558c14d06698985dd07d4e32ebc6795",
+  "sourceFingerprint": "58d8d87e86c9a543fe486b180527ba5c732f7faacd07c2210c862c53f07311aa",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -1619,7 +1619,7 @@
             "description": "已推导的精确目标单位数值，或null仅计算；小数写精确分数，不默认四舍五入容差"
           },
           "expression": {
-            "description": "带单位的完整数量表达式AST；保留原单位及给定常数",
+            "description": "带单位的完整数量表达式AST；add/multiply 可用 2–8 项，subtract/divide 恰好 2 项。保留原单位及给定常数",
             "type": "object"
           },
           "kind": {

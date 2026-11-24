@@ -17,7 +17,10 @@ export function validMathQuantityInput(v:unknown):v is MathQuantityInput{
  const expression=(e:unknown,depth:number):boolean=>{
   if(++nodes>128||depth>12||!plainStudentInput(e,['op','value','unit','args','exponent']))return false;
   if(e.op==='quantity')return plainStudentInput(e,['op','value','unit'])&&rational(e.value)&&unit(e.unit);
-  if(!plainStudentInput(e,e.op==='power'?['op','args','exponent']:['op','args'])||!['add','subtract','multiply','divide','power','sqrt'].includes(String(e.op))||!Array.isArray(e.args)||e.args.length!==(['sqrt','power'].includes(String(e.op))?1:2))return false;
+  if(!plainStudentInput(e,e.op==='power'?['op','args','exponent']:['op','args'])||!['add','subtract','multiply','divide','power','sqrt'].includes(String(e.op))||!Array.isArray(e.args))return false;
+  const min=e.op==='sqrt'||e.op==='power'?1:2;
+  const max=e.op==='add'||e.op==='multiply'?8:min;
+  if(e.args.length<min||e.args.length>max)return false;
   return(e.op!=='power'||typeof e.exponent==='number'&&Number.isInteger(e.exponent)&&Math.abs(e.exponent)<=4)&&e.args.every(a=>expression(a,depth+1));
  };
  return expression(v.expression,0);
@@ -27,4 +30,4 @@ export function validMathQuantityResult(v:unknown):v is MathQuantityResult{
  if(['calculated','matched','mismatch'].includes(String(v.state)))return v.reason===null&&plainStudentInput(v.actual,['exact','decimal','unit','dimensions','scaleFactor'])&&v.actual.unit===v.targetUnit&&['exact','decimal','dimensions','scaleFactor'].every(k=>typeof (v.actual as Record<string,unknown>)[k]==='string'&&String((v.actual as Record<string,unknown>)[k]).length<=1024);
  return v.actual===null&&(v.state==='dimension_mismatch'&&['incompatible_addition','incompatible_target'].includes(String(v.reason))||v.state==='unsupported'&&['undefined','unsupported_unit','outside_scope'].includes(String(v.reason)));
 }
-export const mathQuantityParameters={type:'object',additionalProperties:false,required:['kind','expression','targetUnit','expected'],properties:{kind:{type:'string',enum:['quantity']},expression:{type:'object',description:'带单位的完整数量表达式AST；保留原单位及给定常数'},targetUnit:{type:'string',maxLength:128,description:'目标单位ASCII表达式，如Pa、km/h、kg/m^3、N；1表示无量纲'},expected:{anyOf:[{type:'null'},{type:'object',additionalProperties:false,required:['numerator','denominator'],properties:{numerator:{type:'string'},denominator:{type:'string'}}}],description:'已推导的精确目标单位数值，或null仅计算；小数写精确分数，不默认四舍五入容差'}}} as const;
+export const mathQuantityParameters={type:'object',additionalProperties:false,required:['kind','expression','targetUnit','expected'],properties:{kind:{type:'string',enum:['quantity']},expression:{type:'object',description:'带单位的完整数量表达式AST；add/multiply 可用 2–8 项，subtract/divide 恰好 2 项。保留原单位及给定常数'},targetUnit:{type:'string',maxLength:128,description:'目标单位ASCII表达式，如Pa、km/h、kg/m^3、N；1表示无量纲'},expected:{anyOf:[{type:'null'},{type:'object',additionalProperties:false,required:['numerator','denominator'],properties:{numerator:{type:'string'},denominator:{type:'string'}}}],description:'已推导的精确目标单位数值，或null仅计算；小数写精确分数，不默认四舍五入容差'}}} as const;

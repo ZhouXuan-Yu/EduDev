@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "08d743b06f1951a4f3e197f90cb93c034e68f1e062b26d27197f54db838e4a71",
+  "sourceHash": "be2efeba6b966af47b3a29caf25fde620155f16743994f8f24f5050c8c42c415",
   "sources": [
     {
       "file": "package-lock.json",
@@ -396,7 +396,7 @@
     },
     {
       "file": "src/main/education/quantity-tools.ts",
-      "sha256": "b44b8a42983bcaa2e349d2dedf33d456b36fdda14721c00fbc5b362958c115e4"
+      "sha256": "be00cc7fd6d89cc12db9bbead72296fe4b85d6f4861a87c6f929bb44e8e88e84"
     },
     {
       "file": "src/main/education/question-aliases.ts",
@@ -876,7 +876,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "432405de8137d2a73677dfa79fa7bc2e212da5030e10952aeef814674d1c395c"
+      "sha256": "01e6acfc10dd70601dae8b1ef67350232f83c8e4ac79e5c6c3a4878d5569cc18"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2332,7 +2332,7 @@
     },
     {
       "file": "src/shared/math-quantity.ts",
-      "sha256": "90d247c701249bff5efa4702e1f8157ecc125e811fde1d5e00c83bdf138e26bc"
+      "sha256": "a59024dd3e3248c047fa0ec067df0e1e88f58ddd1cbb401e60051c0d5b1ed219"
     },
     {
       "file": "src/shared/math-solution.ts",
@@ -2388,7 +2388,7 @@
     },
     {
       "file": "src/shared/office-math.ts",
-      "sha256": "89f7449ae2c771f6b469b6a5b666d287d79924d88e93e9865c64bc00530700c5"
+      "sha256": "5e0ac29e78cc7e093321c2fe2b15b56b1ca06c06935aecd807dfaf9991ee5319"
     },
     {
       "file": "src/shared/office-relative-path.ts",

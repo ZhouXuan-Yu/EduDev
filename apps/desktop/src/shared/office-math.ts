@@ -22,7 +22,10 @@ export function officeMathParts(value:string):OfficeMathPart[]{
 }
 export function officeMathHtml(value:string):string{return officeMathParts(value).map(p=>{
  if(p.kind==='text')return officeEscape(p.raw.replace(/\\\$/g,'$')).replace(/\n/g,'<br>');
- try{return katex.renderToString(p.tex,{output:'mathml',displayMode:p.display,trust:false,strict:'error',throwOnError:true,maxExpand:100,maxSize:10});}catch{throw Error('unsupported');}
+ try{return katex.renderToString(p.tex,{output:'mathml',displayMode:p.display,trust:false,throwOnError:true,maxExpand:100,maxSize:10,
+  // In Chinese school notation, labels such as F_浮 and V_排 are ordinary math text.
+  strict:(code,_message,token)=>code==='unicodeTextInMathMode'&&token&&/^\p{Script=Han}+$/u.test(token.text)?'ignore':'error',
+ });}catch{throw Error('unsupported');}
 }).join('');}
 /** Chunk text without cutting formula delimiters or losing any source character. */
 export function officeMathChunks(value:string):string[]{const result:string[]=[];let chunk='';for(const p of officeMathParts(value)){
