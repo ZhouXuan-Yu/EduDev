@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {cpSync,existsSync,mkdirSync,mkdtempSync,readFileSync,writeFileSync} from 'node:fs';
 import {basename,join,resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {setTimeout as wait} from 'node:timers/promises';
 import {arch,availableParallelism,platform,release,totalmem} from 'node:os';
 import {_electron as electron} from 'playwright';
@@ -34,12 +35,12 @@ async function until(predicate,timeout=60000){
   while(performance.now()-start<timeout){const result=await predicate();if(result)return result;await wait(35);}
   throw Error('Timed out: '+stage);
 }
-async function launch(data,label,build=main) {
+async function launch(data,label,build=main,entry=build) {
   const profile=join(root,label+'-profile');
   const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:resolve(desktop,'../..'),
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'',GLM_API_KEY:''};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
-  app=await electron.launch({args:[build,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+  app=await electron.launch({args:[entry,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
   page=await app.firstWindow({timeout:45000});
   await page.waitForFunction(()=>Boolean(window.omniEdu));
   await assertIsolatedPiMain(app,build,profile);
@@ -301,12 +302,32 @@ try{
   reportFixture();
 
   stage='five cold first requests';
+  const bootProbe=join(root,'cold-ipc-observer.cjs');
+  writeFileSync(bootProbe,`
+    const {ipcMain}=require('electron');
+    const handle=ipcMain.handle;
+    globalThis.r1ColdRequests=[];
+    ipcMain.handle=function(channel,listener){
+      if(channel!=='xiaozhi:workbench-summary')return handle.call(this,channel,listener);
+      return handle.call(this,channel,async(event,input)=>{
+        if(input?.kind!=='tasks')return listener(event,input);
+        const record={requestStart:performance.now()};
+        globalThis.r1ColdRequests.push(record);
+        try{return await listener(event,input);}
+        finally{record.totalMs=performance.now()-record.requestStart;}
+      });
+    };
+    import(${JSON.stringify(pathToFileURL(main).href)});
+  `);
   report.cold=[];
   for(let iteration=0;iteration<5;iteration++){
-    await launch(targetLarge,'cold-'+iteration);
+    await launch(targetLarge,'cold-'+iteration,main,bootProbe);
+    assert.deepEqual(await app.evaluate(()=>globalThis.r1ColdRequests),[]);
     await traceStart();
     const result=await sample();
-    report.cold.push(result);
+    const requests=await app.evaluate(()=>globalThis.r1ColdRequests);
+    assert.equal(requests.length,1);
+    report.cold.push({...result,mainIpcMs:requests[0].totalMs});
     const trace=await traceEnd();
     assert.equal(trace.statements.filter(([sql])=>sql.includes('r.row_json')).reduce((sum,[,row])=>sum+row.calls,0),1);
     assert.equal(result.matched,10000);

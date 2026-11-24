@@ -171,7 +171,7 @@ export class TaskSummaryProjection {
       for(const check of view.checks.slice(0,32)){
         if(check?.authority!=='teacher')continue;
         for(const [kind,ref] of [['action',check.confirmationId],['message',check.candidate?.messageId],['run',check.runId]]){
-          if(typeof ref==='string' && ref.length<=128){
+          if(typeof ref==='string' && ref.length<=160){
             await sql.run(`INSERT OR IGNORE INTO ${dependencies} VALUES(?,?,?)`,[id,kind,ref]);
           }
         }

@@ -126,6 +126,8 @@ try{
       .run(session.session.id,relative(nativeRoot,nativeFile),'deepseek-flash',new Date().toISOString());
     const document=addTask(db,37,100);
     const approval=addApproval(db,document),taskId=document.view.id;
+    db.prepare(`INSERT INTO ai_agent_runs(id,session_id,prompt,route,status,created_at,updated_at)
+      VALUES('run_r1_backup_memory',?,'R1 memory evidence','general','failed',?,?)`).run(session.session.id,new Date().toISOString(),new Date().toISOString());
     return {effect:db.prepare('SELECT effect_id,state,revision,idempotency_key FROM xiaozhi_effects_v1 WHERE task_id=?').get(taskId),approval,taskId};
   });
   const material=join(source,'r1-attachment.txt');
@@ -141,7 +143,7 @@ try{
   });
   assert.equal(savedArtifact.status,'exported');
   const memory=await page.evaluate(()=>window.omniEdu.createAiMemoryEntry({
-    surface:'chat',section:'R1 backup fixture',text:'合成备份记忆',refs:['ai_agent_run:airun_r1_37'],origin:'teacher',
+    surface:'chat',section:'R1 backup fixture',text:'合成备份记忆',refs:['ai_agent_run:run_r1_backup_memory'],origin:'teacher',
   }));
 
   stage='live KB publisher holds a write transaction';
@@ -154,6 +156,13 @@ try{
   await result('cancel-export').waitFor();
   await wait(200);
   assert.deepEqual(directories(),before,'No public snapshot may start while the true publisher holds the cut');
+  const commandId='xicmd_'+randomUUID();
+  const admissions=await page.evaluate(async ({id,commandId})=>{
+    try{return await window.omniEdu.startXiaozhi({sessionId:id,commandId,prompt:'合成并发验收请求'});}
+    catch(error){return String(error);}
+  },{id:session.session.id,commandId});
+  assert.match(String(admissions),/backup_busy/u);
+  assert.equal(sql(data,'SELECT command_id FROM xiaozhi_pi_commands WHERE command_id=?',commandId).length,0);
   await releaseParse();
   await result('export-success').waitFor();
   const full=await result('export-path').innerText();
