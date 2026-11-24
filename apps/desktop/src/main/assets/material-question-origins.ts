@@ -8,6 +8,7 @@ import {ensureRuleDuplicates,ruleDuplicateHidden} from './material-rule-duplicat
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
 import {migrateWordPageSources,wordPageRuleCandidateHidden} from './material-word-page-source';
 import {migrateStructureBank,structureDraftHidden} from './material-structure-bank';
+import {structureDuplicateHidden} from './material-structure-duplicates';
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
@@ -74,7 +75,7 @@ export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:R
  if(!coverage.length||coverage.length>64||coverage.some(s=>!validMaterialSource(s)||s.resourceId!==a.sources[0]?.resourceId||s.version!==a.sources[0]?.version)||a.sources.some(s=>!coverage.some(t=>same(s,t)))||origin.sources.some(s=>!coverage.some(t=>same(s,t))))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'ai',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
-export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0) OR ${ruleDuplicateHidden} OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`;
+export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0) OR ${ruleDuplicateHidden} OR ${structureDuplicateHidden} OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`;
 export async function visibleQuestionIds(host:Pick<OriginHost,'all'>,ids:string[]){
  if(!ids.length)return new Set<string>();if(ids.length>200)throw Error('too_many_questions');
  return new Set((await host.all(`SELECT q.id FROM question_bank_items q WHERE q.id IN (${ids.map(()=>'?').join(',')}) AND NOT ${sourceCandidateHidden}`,ids)).map(r=>String(r.id)));

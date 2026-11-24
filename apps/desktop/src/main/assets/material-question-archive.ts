@@ -21,6 +21,7 @@ import {assertStructureDraftEditable,hasIdenticalVisibleStructureDraft,publishSt
 import {printedStructureQuestionType} from './material-structure-question-type';
 import {detachedSourceAnswer} from '../../shared/question-document';
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
+import {rememberStructureDuplicate,structureDuplicateHidden,structureDuplicateKey} from './material-structure-duplicates';
 type Row=Record<string,unknown>;type Value=string|number|null;
 const printedTypeCursor='xiaozhi.structure-printed-question-types.cursor.v1';
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;aiOrigin?:(q:QuestionBankItem)=>Promise<{origin:RuleOrigin;sources:MaterialSource[]}|undefined>;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateAiForEdit?:(q:QuestionBankItem)=>Promise<void>;revisePage?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean)=>Promise<QuestionBankItem['document']>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
@@ -60,7 +61,15 @@ export class MaterialQuestionArchive{
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
  async status():Promise<ArchiveStatus>{
   const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden})`))[0];
-  const duplicates=(await this.host.all(`SELECT COUNT(*) n,SUM(CASE WHEN m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden}) THEN 1 ELSE 0 END) attention FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.duplicate_of<>'' AND ${ruleDuplicateHidden}`))[0];
+  const duplicates=(await this.host.all(`SELECT COUNT(*) n,
+    SUM(CASE WHEN m.needs_attention=1 AND NOT (COALESCE(${answerRuleCandidateHidden},0) OR ${wordPageRuleCandidateHidden} OR ${structureDraftHidden}) THEN 1 ELSE 0 END) attention
+    FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id
+    WHERE m.question_id IN (
+      SELECT question_id FROM material_question_members WHERE duplicate_of<>''
+      UNION ALL
+      SELECT question_id FROM material_question_members WHERE ${structureDuplicateKey('material_question_members')}
+    )
+    AND (${ruleDuplicateHidden} OR ${structureDuplicateHidden})`))[0];
   const associated=(await this.host.all('SELECT COUNT(*) n FROM material_question_origins WHERE covered=1'))[0];
   const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;try{const v=JSON.parse(String(state?.value_json||'{}'));if(v.schema===2)cursor=Number(v.cursor)||0;}catch{}
   const latest=(await this.host.all('SELECT COALESCE(MAX(rowid),0) n FROM question_bank_items'))[0];
@@ -105,7 +114,7 @@ export class MaterialQuestionArchive{
      else await recordRuleOrigin(target.host,current);
      if(duplicatePlan){
       if(!await applyRuleDuplicate(target.host,duplicatePlan))await target.host.run('INSERT INTO material_question_origin_dirty_v1(question_id) VALUES(?) ON CONFLICT(question_id) DO UPDATE SET revision=revision+1',[current.id]);
-     }else await clearRuleDuplicate(target.host,current.id);
+     }else if(!await rememberStructureDuplicate(target.host,current))await clearRuleDuplicate(target.host,current.id);
     }
     this.controller.signal.throwIfAborted();
     if(row.revision!==undefined)await target.host.run('DELETE FROM material_question_origin_dirty_v1 WHERE question_id=? AND revision=?',[String(row.id),Number(row.revision)]);

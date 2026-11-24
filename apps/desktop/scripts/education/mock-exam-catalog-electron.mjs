@@ -135,6 +135,14 @@ function settleImport(){
     return rows;
   },180000);
 }
+async function openNotebook(){
+  await page.locator('[data-testid="nav-teaching"]:visible').last().click();
+  await page.getByRole('button',{name:'题本',exact:true}).click();
+  const filters=page.getByTestId('question-notebook-filter-toggle');
+  if((await filters.getAttribute('aria-expanded'))==='false')await filters.click();
+  await page.getByTestId('question-notebook-filter-grade').fill('');
+  await page.getByTestId('question-notebook-filter-subject').fill('');
+}
 async function verifyMixedScan(resource){
   const job=await until(()=>sql(
     "SELECT generation,status,error FROM material_structure_jobs WHERE resource_id=? AND status IN ('complete','partial','failed') ORDER BY rowid DESC LIMIT 1",
@@ -376,7 +384,7 @@ try{
   assert.deepEqual(report.errors,[]);
   check('Teacher enters the teaching workbench from navigation after restart and reads the restored version with no model replay');
   if(mixedScan){
-    const drafts=sql(`SELECT q.source_title,a.needs_attention,
+    const drafts=sql(`SELECT q.id,q.source_title,a.needs_attention,
       json_extract(q.archive_json,'$.sourceChecked') sourceChecked
       FROM question_bank_items q JOIN material_question_members a ON a.question_id=q.id
       WHERE q.source_title IN (?,?)`,[names.primary,names.duplicate]);
@@ -385,6 +393,36 @@ try{
     assert(!formalMatches.some(row=>[names.primary,names.duplicate].includes(row.sourceTitle)));
     report.raster.drafts=drafts;
     check('Neither the scan nor its exact copy becomes eligible for formal question search after catalogue confirmation');
+
+    const originals=drafts.filter(draft=>draft.source_title===names.primary);
+    const copies=drafts.filter(draft=>draft.source_title===names.duplicate);
+    assert.equal(originals.length,3);
+    assert.equal(copies.length,3);
+    await until(async()=>await page.evaluate(()=>window.omniEdu.getMaterialQuestionStatus()).then(status=>status.foldedDuplicates===3));
+    await openNotebook();
+    const raw=page.getByTestId('question-notebook-source-candidates');
+    const questionCard=id=>page.getByTestId('question-notebook-card-'+id);
+    for(const draft of originals)await questionCard(draft.id).waitFor();
+    for(const draft of copies)assert.equal(await questionCard(draft.id).count(),0);
+    await raw.check();
+    for(const draft of copies)await questionCard(draft.id).waitFor();
+    await page.screenshot({path:path.join(output,'raw-notebook-1920.png'),animations:'disabled'});
+    const selected=copies[0].id;
+    const bookmark=page.getByTestId('question-notebook-bookmark-'+selected);
+    await bookmark.click();
+    await until(()=>sql('SELECT bookmarked FROM question_notebook_bookmarks WHERE question_id=? AND bookmarked=1',[selected])[0]);
+    await raw.uncheck();
+    await questionCard(selected).waitFor();
+    await until(async()=>await page.evaluate(()=>window.omniEdu.getMaterialQuestionStatus()).then(status=>status.foldedDuplicates===2));
+    check('Notebook folds exact scan drafts under the paired paper; raw mode and a teacher bookmark preserve independent copies');
+    await bookmark.click();
+    await until(async()=>await page.evaluate(()=>window.omniEdu.getMaterialQuestionStatus()).then(status=>status.foldedDuplicates===3));
+    await page.reload();
+    await openNotebook();
+    for(const draft of originals)await questionCard(draft.id).waitFor();
+    for(const draft of copies)assert.equal(await questionCard(draft.id).count(),0);
+    await page.screenshot({path:path.join(output,'folded-notebook-1920.png'),animations:'disabled'});
+    check('After unbookmarking, a renderer reload reads the persisted folded view');
   }
   report.ok=true;
 }catch(error){

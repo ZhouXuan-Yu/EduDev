@@ -6,6 +6,7 @@ import {materialBodyVersion} from './material-source';
 import type {MaterialRepository, MaterialReadingSnapshot} from './material-repository';
 import {extractMaterialQuestionWindow, type ExtractedQuestion} from './material-question-extract';
 import {teacherOwnsRuleQuestion} from './material-rule-protection';
+import {structureDuplicateIndex,structureDuplicateKey} from './material-structure-duplicates';
 
 type Value = string | number | null;
 type Sql = {all: (sql: string, values?: Value[]) => Promise<Record<string, unknown>[]>; run: (sql: string, values?: Value[]) => Promise<void>};
@@ -70,7 +71,13 @@ export async function ensureRuleDuplicates(host: Sql) {
       UPDATE material_question_members SET duplicate_key='',duplicate_of='',duplicate_order='' WHERE resource_id IN (${resources}) AND duplicate_key<>'';
     END`);
   }
-  if (first && tables.has('app_settings')) await host.run("UPDATE app_settings SET value_json=?,updated_at=datetime('now') WHERE key=?", [JSON.stringify({schema: 2, cursor: 0}), 'xiaozhi.question-origins.cursor.v1']);
+  const firstStructure = !(await host.all("SELECT 1 FROM sqlite_master WHERE type='index' AND name=?", [structureDuplicateIndex])).length;
+  if ((first || firstStructure) && tables.has('app_settings')) await host.run("UPDATE app_settings SET value_json=?,updated_at=datetime('now') WHERE key=?", [JSON.stringify({schema: 2, cursor: 0}), 'xiaozhi.question-origins.cursor.v1']);
+  // Apply the existing bounded origin scan to historical structure drafts on first upgrade.
+  // The index acts as a migration marker after the cursor is reset.
+  await host.run(`CREATE INDEX IF NOT EXISTS ${structureDuplicateIndex}
+    ON material_question_members(duplicate_key,duplicate_order,question_id)
+    WHERE ${structureDuplicateKey("material_question_members")}`);
   // Last marker makes a preparation interrupted before cursor reset retry on the next launch.
   await host.run(`CREATE INDEX IF NOT EXISTS ${policyIndex} ON material_question_members(duplicate_key,duplicate_order,question_id) WHERE duplicate_key<>''`);
 }

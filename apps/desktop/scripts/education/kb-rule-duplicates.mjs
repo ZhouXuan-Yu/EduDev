@@ -5,6 +5,7 @@ import {createHash, randomUUID} from 'node:crypto';
 const {MaterialQuestionArchive} = await import('../../src/main/assets/material-question-archive.ts');
 const {extractMaterialQuestionWindow} = await import('../../src/main/assets/material-question-extract.ts');
 const {prepareRuleDuplicate, applyRuleDuplicate, ruleDuplicateHidden, materialQuestionExtractionKey} = await import('../../src/main/assets/material-rule-duplicates.ts');
+const {structureDuplicateHidden} = await import('../../src/main/assets/material-structure-duplicates.ts');
 const checks = [];
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
@@ -191,5 +192,33 @@ await check('New extraction fails atomically if its window boundary changes befo
   f.materials.readingWindow = async (...args) => ({...await reader(...args), hasMore: ++reads > 1});
   await f.archive.enqueue(f.resourceId, 'a'.repeat(64), 'new-window'); await f.archive.drain();
   assert.equal(f.creates(), 0); assert.equal(f.db.prepare('SELECT status FROM material_question_jobs').get().status, 'failed');
+});
+await check('A linked PDF is the keeper, independent links survive, and stale or retired keepers cannot suppress copies', async f => {
+  const original = await f.seed(), copy = await f.seed();
+  const version = 'a'.repeat(64);
+  const newSource = id => f.db.prepare('INSERT INTO teacher_resources VALUES(?,?,?,?,?,?)')
+    .run(id, '', id+'.pdf', version, 'ready', 'controlled-pdf');
+  const copyId = 'resource_' + randomUUID(), answerId = 'resource_' + randomUUID(), otherAnswerId = 'resource_' + randomUUID();
+  for (const id of [copyId,answerId,otherAnswerId]) newSource(id);
+  const group = 'pdf-structure:' + version + ':' + digest('same-layout');
+  f.db.prepare('UPDATE material_question_members SET resource_id=?,duplicate_key=?,duplicate_order=? WHERE question_id=?')
+    .run(copyId, group, '1', copy.id);
+  f.db.prepare('UPDATE material_question_members SET duplicate_key=?,duplicate_order=? WHERE question_id=?')
+    .run(group, '2', original.id);
+  const visible = () => f.db.prepare(`SELECT q.id FROM question_bank_items q WHERE NOT ${structureDuplicateHidden} ORDER BY q.rowid`)
+    .all().map(row => row.id);
+  const link = (paper, answer) => f.db.prepare('INSERT INTO material_book_pairs VALUES(?,?,?,?,1,1)')
+    .run(paper, version, answer, version);
+  assert.deepEqual(visible(), [copy.id]);
+  link(f.resourceId, answerId);
+  assert.deepEqual(visible(), [original.id]);
+  link(copyId, otherAnswerId);
+  assert.deepEqual(visible(), [original.id,copy.id]);
+  f.db.prepare('DELETE FROM material_book_pairs WHERE question_id=?').run(copyId);
+  f.db.prepare("INSERT INTO material_structure_hidden_questions VALUES(?,?,?,'superseded')").run(original.id, f.resourceId, 'old-layout');
+  assert(visible().includes(copy.id));
+  f.db.prepare('DELETE FROM material_structure_hidden_questions WHERE question_id=?').run(original.id);
+  f.db.prepare('UPDATE teacher_resources SET content_hash=? WHERE id=?').run('b'.repeat(64), f.resourceId);
+  assert(visible().includes(copy.id));
 });
 console.log(JSON.stringify({passed: checks.length, checks, scope: 'Actual SQLite, production parser, migrations, grouping, protection, writer and archive drain. Controlled original verification, zero providers.'}));
