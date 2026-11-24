@@ -105,7 +105,7 @@ try {
   }, fixture);
   await page.getByTestId("materials-import").click();
   const job = await waitResource();
-  assert.equal(job.engine, "layout-paragraph-question.v23");
+  assert.equal(job.engine, "layout-paragraph-question.v24");
   const [resource] = query("SELECT id,title FROM teacher_resources");
   const snapshot = () => query("SELECT id,status,sha256 FROM material_structure_questions ORDER BY id");
   const before = snapshot();

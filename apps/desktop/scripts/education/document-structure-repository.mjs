@@ -4,7 +4,7 @@ import { DatabaseSync } from "node:sqlite";
 const { MaterialStructureRepository, reviseStructureDocument } = await import(
   "../../src/main/assets/material-structure-repository.ts"
 );
-const { DOCUMENT_STRUCTURE_ENGINE } = await import(
+const { DOCUMENT_STRUCTURE_ENGINE, PREVIOUS_DOCUMENT_STRUCTURE_ENGINES } = await import(
   "../../src/shared/material-document-structure.ts"
 );
 const { validQuestionArchive, QUESTION_STRUCTURE_ARCHIVE_SCHEMA } =
@@ -175,12 +175,11 @@ await check("PDF admission rechecks staged questions and fails closed during ret
   }
 });
 await check(
-  "Published v2 through v13 generations remain readable, while interrupted older work restarts with the current engine",
+  "Published previous generations remain readable, while interrupted older work restarts with the current engine",
   async () => {
     const legacy = {...resource,id:"resource_22345678-1234-1234-1234-123456789abc"};
     const id=legacy.id;
-    for (const engine of ["layout-paragraph-question.v2", "layout-paragraph-question.v3", "layout-paragraph-question.v4", "layout-paragraph-question.v5", "layout-paragraph-question.v6",
-      "layout-paragraph-question.v7", "layout-paragraph-question.v8", "layout-paragraph-question.v9", "layout-paragraph-question.v10", "layout-paragraph-question.v11", "layout-paragraph-question.v12", "layout-paragraph-question.v13"]) {
+    for (const engine of PREVIOUS_DOCUMENT_STRUCTURE_ENGINES) {
       const generation = "legacy-" + engine;
       db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,pages,processed,updated_at) VALUES(?,?,?,?,?,?,?,?)")
         .run(id,version,engine,generation,"partial",2,2,new Date().toISOString());

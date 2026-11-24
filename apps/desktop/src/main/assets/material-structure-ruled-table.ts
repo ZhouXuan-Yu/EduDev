@@ -59,9 +59,17 @@ export function ruledTableGrid(raster: PixelRaster, region: PageBox): PageBox[][
       xs.some(x => ys.slice(1).some((end, j) => ratio(false, x, ys[j], end) < .56))) return;
   // A separator visible in only one band can disappear from the page-length scan.
   const partialGuide = (horizontal: boolean, across: number[], complete: number[], extent: number) =>
-    across.slice(1).some((end, index) => bands(complete[0], complete.at(-1)! + 1,
-      position => position < extent && ratio(horizontal, position, across[index], end) >= .77)
-      .some(position => complete.every(guide => Math.abs(guide - position) > 6)));
+    across.slice(1).some((end, index) => {
+      const start = across[index];
+      const junction = Math.min(8, Math.floor((end - start - 6) / 2));
+      // Sample inside the cell so the crossing rule itself cannot count as a connection.
+      const touchesBoundary = (position: number) =>
+        ratio(horizontal, position, start + 3, start + 3 + junction) >= .66 ||
+        ratio(horizontal, position, end - 3 - junction, end - 3) >= .66;
+      return bands(complete[0], complete.at(-1)! + 1,
+        position => position < extent && ratio(horizontal, position, start, end) >= .77)
+        .some(position => complete.every(guide => Math.abs(guide - position) > 6) && touchesBoundary(position));
+    });
   if (partialGuide(false, ys, xs, spanX) || partialGuide(true, xs, ys, spanY)) return;
   return ys.slice(1).map((down, row) => xs.slice(1).map((across, col) => [
     (left + xs[col]) / width, (top + ys[row]) / height, (left + across) / width, (top + down) / height,

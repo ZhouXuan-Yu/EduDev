@@ -6,6 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 import {openTeachingFiles,productEntry} from '../product-navigation.mjs';
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(root);
@@ -23,6 +24,7 @@ const files=expected.map(({name,sha256})=>{
   return file;
 });
 const report={ok:false,output,mainSha256:sha(main),paidRequests:0,checks:[],expected};
+const tableReview=process.argv.includes('--table-review');
 let app,page;
 function sql(query){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true,timeout:5000});
@@ -76,6 +78,26 @@ async function ask(year){
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
 }
 const scanRead=()=>app.evaluate(()=>globalThis.districtScan);
+async function checkTableUI(resourceId,phase){
+  await productEntry(page,'materials').click();
+  await page.getByTestId('material-'+resourceId).getByRole('button').click();
+  await page.getByTestId('materials-section-questions').click();
+  const panel=page.getByTestId('material-structure-panel');
+  await openMaterialDisclosure(panel);
+  for(let n=2;n<=4;n++){
+    await panel.getByTestId('structure-next').click();
+    await panel.getByText(`第 ${n} 页`,{exact:true}).waitFor();
+  }
+  const table=panel.getByTestId('structure-table-evidence').filter({hasText:'4 行 4 列'});
+  await openMaterialDisclosure(table);
+  const rows=table.getByRole('row');
+  assert.equal(await rows.count(),4);
+  assert.deepEqual(await rows.nth(1).getByRole('cell').allTextContents(),['物距/cm','22.5','30.0','60.0']);
+  await table.getByTestId('structure-table-original').click();
+  await table.getByTestId('structure-table-original-image').waitFor();
+  await table.scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(output,`ruled-table-${phase}.png`)});
+}
 
 try{
   await launch();
@@ -84,7 +106,7 @@ try{
   const started=Date.now();
   await page.getByTestId('materials-import').click();
   const originals=await until('both scans complete OCR and publish their local structure',()=>{
-    const rows=sql(`SELECT r.original_file_name,r.content_hash,r.local_path,r.parse_status,j.total,j.state FROM teacher_resources r
+    const rows=sql(`SELECT r.id,r.original_file_name,r.content_hash,r.local_path,r.parse_status,j.total,j.state FROM teacher_resources r
       JOIN material_pdf_jobs j ON j.resource_id=r.id AND j.version=r.content_hash`);
     if(rows.some(row=>row.state==='failed'))throw Error('Local PDF OCR failed');
     return rows.length===2&&rows.every(row=>row.state==='complete'&&row.parse_status==='ready')?rows:null;
@@ -98,6 +120,23 @@ try{
     JOIN material_pdf_jobs j ON p.generation=j.generation JOIN teacher_resources r ON r.id=j.resource_id WHERE p.page=1`)
     .map(({original_file_name,text})=>({original_file_name,heading:text.split(/\r?\n/u).slice(0,6).join('\n')}));
   check('Both six-page project scans go through real import and local OCR with their original bytes preserved.');
+  const district=originals.find(row=>row.original_file_name===expected[0].name);
+  if(tableReview){
+    const layouts=sql(`SELECT r.original_file_name,j.engine,p.page,json_extract(p.body_json,'$.tableSources') tables
+      FROM material_structure_pages p JOIN material_structure_jobs j ON j.generation=p.generation
+      JOIN teacher_resources r ON r.id=j.resource_id WHERE p.page IN (3,4,6) ORDER BY r.original_file_name,p.page`);
+    assert(layouts.every(row=>row.engine==='layout-paragraph-question.v24'));
+    const grids=(file,num)=>JSON.parse(layouts.find(row=>row.original_file_name===file&&row.page===num).tables??'[]');
+    const [pictureTable]=grids(expected[0].name,4).filter(table=>table.rows.length===4);
+    assert.deepEqual(pictureTable.rows[1].map(cell=>cell.text),['物距/cm','22.5','30.0','60.0']);
+    assert(pictureTable.rows[3].slice(1).every(cell=>cell.needsReview&&!cell.text));
+    assert(grids(expected[0].name,3).some(table=>table.rows.length===2&&table.rows[0].length===12));
+    assert(grids(expected[0].name,6).some(table=>table.rows.length===3&&table.rows[0].length===3));
+    assert(grids(expected[1].name,4).some(table=>table.rows.length===3&&table.rows[0].length===4));
+    report.table={resolved:pictureTable.rows.map(row=>row.map(cell=>cell.text)),pending:pictureTable.rows.flat().filter(cell=>cell.needsReview).length};
+    await checkTableUI(district.id,'1366');
+    check('The real illustrated table keeps its numeric cells and original image, without transcribing diagrams or altering the regular grids.');
+  }
 
   await productEntry(page,'ask').click();
   await ask(2026);
@@ -144,6 +183,12 @@ try{
   assert.deepEqual(snapshot(),confirmed);
   await page.screenshot({path:path.join(output,'district-cold-1920.png')});
   check('Independent workbench opens the confirmed version after restart with no model replay.');
+  if(tableReview){
+    await checkTableUI(district.id,'cold-1920');
+    assert.equal(sql('SELECT count(*) AS n FROM material_structure_reviews')[0].n,0);
+    assert.deepEqual(snapshot(),confirmed);
+    check('The new table structure remains visible after restart without silently recording teacher confirmation.');
+  }
   report.ok=true;
 }catch(error){
   report.error=String(error.stack||error);process.exitCode=1;
