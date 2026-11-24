@@ -6,6 +6,7 @@ import { XIAOZHI_MEMORY_LABELS, projectMemorySource } from '../../shared/xiaozhi
 import type { XiaozhiActionResult } from '../../shared/xiaozhi-agent';
 import type { PrivateMemorySelection } from './memory-scope-state';
 import { validMemoryScopeInput, validMemorySelection, validMemorySession, validMemorySource } from './memory-selection';
+import { rankHindsightTrialRows } from './memory-hindsight-trial';
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
 /** Existing SQLite remains the memory fact source. Nothing here invokes a provider. */
@@ -83,10 +84,11 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         payload.push({ reference: `记忆${payload.length + 1}`, layer: fact.layer, source: XIAOZHI_MEMORY_LABELS[fact.source],
           version: fact.version, text, provenance: fact.provenance, sourceDocuments: fact.sourceDocuments.map(source => XIAOZHI_MEMORY_LABELS[source]), refs });
       }
+      const ranked = await rankHindsightTrialRows(payload, signal);
       const final = await authority(id);
       signal?.throwIfAborted();
       if (final.fingerprint !== expectedAuthority || !final.valid) throw new Error('memory_scope_changed');
-      return payload;
+      return ranked;
     },
     async catalog(input: XiaozhiMemoryCatalogInput): Promise<XiaozhiMemoryCatalogResult> {
       if (!validMemorySource(input) || Object.keys(input).length !== 4 || Object.keys(input).some(key => !['sessionId', 'layer', 'source', 'offset'].includes(key))
