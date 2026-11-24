@@ -40,7 +40,12 @@ function integer(text: string): number | undefined {
 
 const ratio = /^(?:难度比例|难度分布)\s*[:=]?\s*(?:易|简单)\s*[:/、]?\s*(?:中|中等)\s*[:/、]?\s*(?:难|困难)\s*[:=为]?\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?\s*[:/]\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?\s*[:/]\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?$/u;
 const knowledgeList = /^必选知识点\s*(?:[:=为]|包括)\s*([\p{L}\p{N}、/+\s·（）()]{1,150})$/u;
-const typeQuota = new RegExp('^(单项选择题|多项选择题|不定项选择题|选择题|单选题|多选题|填空题|简答题|解答题|计算题|判断题|编程题)\\s*(?:[:为]|共|各)?\\s*'+numeral+'\\s*(?:道(?:题)?|题)$','u');
+const typeNames = '(单项选择题|多项选择题|不定项选择题|选择题|单选题|多选题|填空题|简答题|解答题|计算题|判断题|编程题)';
+const typeQuota = new RegExp(String.raw`^${typeNames}\s*(?:[:为]|共|各)?\s*${numeral}\s*(?:道(?:题)?|题)$`, 'u');
+const allOfType = new RegExp(String.raw`^(?:(?:全卷|整卷|全部)(?:都是|均为|均是|是|为|用)|(?:全都|全|都|均)(?:是|为|用)|只(?:要|用|出))\s*${typeNames}$`, 'u');
+const eachTopic = new RegExp(String.raw`^每个知识点\s*(?:各|出|安排)?\s*${numeral}\s*(?:道(?:题)?|题)$`, 'u');
+const topicTier = new RegExp(String.raw`^\s*(?:[:为]|用|均为|都用)?\s*(基础|简单|中等|困难)\s*题?(?:\s*${numeral}\s*(?:道(?:题)?|题))?$`, 'u');
+const difficultyLabels = {基础:'easy', 简单:'easy', 中等:'medium', 困难:'hard'} as const;
 const subjectLabel = /^学科\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
 const gradeLabel = /^年级\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
 const originalOnly = /^(?:只|仅)(?:使用|从|用)(?:本地)?题库(?:选题|抽题|组卷)?$|^不(?:使用|采用)生成题$|^(?:不|不要)(?:添加|新增|生成)新题$/u;
@@ -100,13 +105,10 @@ export function hasCompleteOriginalPaperTotals(request: string): boolean {
 
 const shortPaperHeading = new RegExp(String.raw`^\s*(?:卷)?\s*(?:一[份套张])?\s*(?:${schoolGrade}\s*的?\s*${schoolSubject}|${schoolSubject}\s*的?\s*${schoolGrade})\s*(?:的)?\s*(?:随堂|单元|阶段|期中|期末)?\s*(?:小测(?:卷)?|试卷|练习卷|测验卷|测试卷)$`,"u");
 const plainPaperClauses = [
-  ...Object.values(numberRules), combinedQuota, perQuestionPoints, typeQuota, ratio,
+  ...Object.values(numberRules), combinedQuota, perQuestionPoints, typeQuota, allOfType, ratio,
   knowledgeList, subjectLabel, gradeLabel, originalOnly,
-  /^(?:全部|均)(?:是|为|用)(?:解答|简答|单项选择|选择|填空|计算|判断)题$/u,
   /^(?:请)?(?:先让我|先由教师)核对(?:整卷|试卷)再保存$/u,
   /^(?:题目和原答案保留|保留原题(?:和原答案)?|题目及答案保持原样)$/u,
-  new RegExp(String.raw`^每个知识点\s*${numeral}\s*(?:道(?:题)?|题)$`,"u"),
-  new RegExp(String.raw`^[\p{L}\p{N}（）()·]{1,24}?(?:基础|简单|中等|困难)(?:题\s*${numeral}\s*(?:道(?:题)?|题))?$`,"u"),
 ];
 
 /** Unknown clauses may request another deliverable. They keep the ordinary tool loop. */
@@ -116,8 +118,10 @@ export function originalPaperReceiptOnly(request: string): boolean {
   const [head, ...criteria] = literal.split(/[。！？!?；;，,\n]/u)
     .map(clause => clause.trim().replace(/^(?:要求|约束)\s*:\s*/u, "")).filter(Boolean);
   const bank = bankRequest(head ?? "");
-  return !!bank && shortPaperHeading.test(bank.description) &&
-    criteria.every(clause => plainPaperClauses.some(rule => rule.test(clause)));
+  const topics = requiredPaperTopics(criteria);
+  return !!bank && shortPaperHeading.test(bank.description) && criteria.every(clause =>
+    plainPaperClauses.some(rule => rule.test(clause)) ||
+    topics.size > 0 && (eachTopic.test(clause) || [...topics].some(topic => statedTopicTier(clause, topic))));
 }
 
 function statedUniformPoints(terms: readonly string[]): Set<number> {
@@ -125,6 +129,56 @@ function statedUniformPoints(terms: readonly string[]): Set<number> {
     const match=perQuestionPoints.exec(clause),value=match?integer(match[1]):undefined;
     return typeof value==='number'&&value>0?[value]:[];
   }));
+}
+
+function requiredPaperTopics(terms: readonly string[]): Set<string> {
+  return new Set(terms.flatMap(clause => {
+    const match = knowledgeList.exec(clause);
+    const labels = match?.[1].split(/[、/+]/u).map(label => label.trim()).filter(Boolean) ?? [];
+    return labels.every(label => !/可选|或者|任选|不限|不要求|仅作参考/u.test(label)) ? labels : [];
+  }));
+}
+
+function statedTopicTier(clause: string, topic: string) {
+  if (!clause.startsWith(topic)) return;
+  const match = topicTier.exec(clause.slice(topic.length));
+  if (!match) return;
+  const count = match[2] === undefined ? undefined : integer(match[2]);
+  if (match[2] !== undefined && count === undefined) return;
+  return { difficulty: difficultyLabels[match[1] as keyof typeof difficultyLabels], count };
+}
+
+function comparePaperTopics(terms: readonly string[], sections: PaperBlueprint['sections']) {
+  const topics = requiredPaperTopics(terms);
+  if (!topics.size) return;
+  // A per-topic quota without an explicit topic list has no deterministic scope.
+  const quota = new Set(terms.flatMap(clause => {
+    const match = eachTopic.exec(clause);
+    const count = match && integer(match[1]);
+    return typeof count === 'number' ? [count] : [];
+  }));
+  if (quota.size > 1) return 'ambiguous';
+  if (quota.size && sections.some(section => !section.knowledgePoint)) return 'knowledge';
+  for (const topic of topics) {
+    const planned = sections.filter(section => section.knowledgePoint?.trim().normalize('NFKC') === topic);
+    if (!planned.length || quota.size && !quota.has(planned.reduce((sum, section) => sum + section.count, 0))) return 'knowledge';
+    const tiers = terms.map(clause => statedTopicTier(clause, topic)).filter(tier => tier !== undefined);
+    const every = new Set(tiers.filter(tier => tier.count === undefined).map(tier => tier.difficulty));
+    if (every.size > 1) return 'ambiguous';
+    const counts = new Map<string, number>();
+    for (const { difficulty, count } of tiers) {
+      if (count === undefined) continue;
+      if ((counts.has(difficulty) && counts.get(difficulty) !== count) ||
+          (count > 0 && every.size && !every.has(difficulty))) return 'ambiguous';
+      counts.set(difficulty, count);
+    }
+    if ((every.size || counts.size) && planned.some(section =>
+      !section.difficulty || every.size > 0 && !every.has(section.difficulty))) return 'difficulty';
+    for (const [difficulty, count] of counts) {
+      if (planned.filter(section => section.difficulty === difficulty).reduce((sum, section) => sum + section.count, 0) !== count)
+        return 'difficulty';
+    }
+  }
 }
 
 type PaperConstraintFailure = 'count' | 'points' | 'minutes' | 'subject' | 'grade' | 'type' | 'source' | 'knowledge' | 'difficulty' | 'ambiguous';
@@ -158,11 +212,14 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
   if (grades.length && !equivalentQuestionGradeLabels(grades[0]).includes(blueprint.grade.normalize('NFKC'))) return 'grade';
   if (blueprint.mode !== 'source_only' && (scope?.originalOnly || terms.some(clause => originalOnly.test(clause)))) return 'source';
 
+  const wholeTypes = terms.flatMap(clause => allOfType.exec(clause)?.[1] ?? []);
+  if (wholeTypes.length > 1 && !questionTypeLabels(wholeTypes[0]).some(label =>
+    wholeTypes.every(type => questionTypeLabels(type).includes(label)))) return 'ambiguous';
   const quotas = new Map<string, number>();
   for (const clause of terms) {
-    const match = typeQuota.exec(clause);
+    const match = typeQuota.exec(clause) ?? allOfType.exec(clause);
     if (!match) continue;
-    const count = integer(match[2]);
+    const count = match[2] === undefined ? actual.count : integer(match[2]);
     if (count === undefined) continue;
     const key = paperQuestionType(questionTypeLabels(match[1])[0]);
     if (quotas.has(key) && quotas.get(key) !== count) return 'ambiguous';
@@ -174,12 +231,8 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
       labels.includes(section.questionType) || paperQuestionType(questionTypeLabels(section.questionType)[0]) === type);
     if (selected.reduce((sum, section) => sum + section.count, 0) !== count) return 'type';
   }
-  const requiredLabels = terms.flatMap(clause => {
-    const match = knowledgeList.exec(clause);
-    const labels = match?.[1].split(/[、/+]/u).map(label=>label.trim()).filter(Boolean) || [];
-    return labels.every(label => !/可选|或者|任选|不限|不要求|仅作参考/u.test(label)) ? labels : [];
-  });
-  if (requiredLabels.some(label => !blueprint.sections.some(section => section.knowledgePoint?.trim().normalize('NFKC') === label))) return 'knowledge';
+  const topicMismatch = comparePaperTopics(terms, blueprint.sections);
+  if (topicMismatch) return topicMismatch;
 
   const ratios = new Map<string, number[]>();
   for (const clause of terms) {

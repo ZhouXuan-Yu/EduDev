@@ -161,6 +161,39 @@ try{
   await scopeCase(request+'年级：高一。',{proposal,rejection:'task_paper_requirements_ambiguous'});
   await scopeCase('请从题本原题组一份小测，共1题10分。',{proposal:{...proposal,mode:'ai_original'},rejection:'task_paper_requirements_source'});
  });
+ await check('Whole-paper question type statements enforce every section and preserve choice subtype boundaries',async()=>{
+  const request='请从现有题本的原题中出一份初二数学小测，限时40分钟，共1题10分。';
+  const withType=questionType=>({...blueprint,sections:[{...blueprint.sections[0],questionType}]});
+  await scopeCase(request+'全部是解答题。',{proposal:withType('解答题'),allowed:true});
+  await scopeCase(request+'全部是解答题。',{rejection:'task_paper_requirements_type'});
+  await scopeCase(request+'全卷均为选择题。',{proposal:withType('single_choice'),allowed:true});
+  await scopeCase(request+'全卷均为单项选择题。',{rejection:'task_paper_requirements_type'});
+  await scopeCase(request+'全卷均为单项选择题。',{proposal:withType('单选题'),allowed:true});
+  await scopeCase(request+'全卷均为单项选择题。全卷均为填空题。',{rejection:'task_paper_requirements_ambiguous'});
+  await scopeCase(request+'说明中举例：“全部是解答题”。',{allowed:true});
+ });
+ await check('Named quota and difficulty stay tied to the requested knowledge point',async()=>{
+  const request='请从本地题本原题组一份初二数学小测，限时40分钟，共4题20分。必选知识点：一次方程、分数加法。';
+  const sections=[
+    {...blueprint.sections[0],knowledgePoint:'一次方程',difficulty:'easy',count:2,points:5},
+    {...blueprint.sections[0],id:'other',knowledgePoint:'分数加法',difficulty:'hard',count:2,points:5},
+  ];
+  const propose=(planned=sections)=>({...blueprint,totalPoints:20,sections:planned});
+  const quota='每个知识点各两道题。';
+  const tiers='一次方程用基础题，分数加法困难。难度比例易中难 1:0:1。';
+  await scopeCase(request+quota+tiers,{proposal:propose(),allowed:true});
+  await scopeCase(request+quota,{proposal:propose([{...sections[0],count:1},{...sections[1],count:3}]),rejection:'task_paper_requirements_knowledge'});
+  const extra={...sections[0],id:'unscoped',knowledgePoint:undefined,count:1};
+  await scopeCase(request.replace('4题20分','5题25分')+quota,{proposal:{...propose([...sections,extra]),totalPoints:25},rejection:'task_paper_requirements_knowledge'});
+  await scopeCase(request+tiers,{proposal:propose([{...sections[0],difficulty:'hard'},{...sections[1],difficulty:'easy'}]),rejection:'task_paper_requirements_difficulty'});
+  await scopeCase(request+'一次方程基础题两道。',{proposal:propose(),allowed:true});
+  await scopeCase(request+'一次方程中等题一道。',{proposal:propose(),rejection:'task_paper_requirements_difficulty'});
+  const unplanned=[{...sections[0],count:1},{...sections[0],id:'unplanned',count:1,difficulty:undefined},sections[1]];
+  await scopeCase(request+'一次方程基础题一道。',{proposal:propose(unplanned),rejection:'task_paper_requirements_difficulty'});
+  await scopeCase(request+'一次方程基础。一次方程中等。',{proposal:propose(),rejection:'task_paper_requirements_ambiguous'});
+  await scopeCase(request+quota+'每个知识点三道题。',{proposal:propose(),rejection:'task_paper_requirements_ambiguous'});
+  await scopeCase(request+'一次方程也可用中等题。',{proposal:propose(),allowed:true});
+ });
  await check('Every current teacher correction criterion is authoritative, including later semicolon or newline prohibitions',async()=>{
   for(const later of ['不要实际组卷，只解释方案。','不要生成试卷。\n只解释方案。'])await scopeCase('请按蓝图组卷。',{correction:['请生成一份试卷。',later]});
   await scopeCase('请按蓝图组卷。',{allowed:true,correction:['请按蓝图组卷。','保留真实原题来源。']});

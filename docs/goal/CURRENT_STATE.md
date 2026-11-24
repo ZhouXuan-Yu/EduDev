@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 对话组卷的全卷题型、每个必选知识点的题数、知识点各自的难度已接入宿主蓝图核验。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原话中的题型和知识点配额)
+
 D3 扫描分式核对已能编辑并复制本地识别候选，复杂符号只展示原图和已有片段。真实四页扫描卷验证题干、教师确认状态和原件保持。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-扫描分式的局部核对)
 
 D3 单独的原题组卷在教师确认后，按已保存快照回报题量、总分和时长。该阶段没有额外模型请求。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原题卷确认后的本地回报)
