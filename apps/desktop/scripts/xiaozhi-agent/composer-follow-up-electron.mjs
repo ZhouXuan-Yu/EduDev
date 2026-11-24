@@ -170,9 +170,18 @@ try{
   await row(second.id).getByTestId('pi-instruction-edit').click();
   report.indicatorGeometry=await queue().locator('select[data-native-indicator]').evaluateAll(elements=>elements.map(el=>{
     const read=()=>{const c=getComputedStyle(el),r=el.getBoundingClientRect();return{width:r.width,height:r.height,font:c.font,border:c.border,color:c.color,background:c.backgroundColor,appearance:c.appearance,backgroundImage:c.backgroundImage};};
-    const after=read();el.removeAttribute('data-native-indicator');const before=read();el.setAttribute('data-native-indicator','chevron');return{before,after};
+    const after=read();el.removeAttribute('data-native-indicator');const before=read();el.setAttribute('data-native-indicator','chevron');
+    const r=el.getBoundingClientRect(),cx=r.x+r.width/2,cy=r.y+r.height/2;
+    const overlaps=[...document.querySelectorAll('button,input,textarea,select,a[href]')].filter(other=>{
+      if(other===el||other.disabled||!other.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}))return false;
+      const b=other.getBoundingClientRect();if(b.width<2||b.height<2)return false;
+      if(b.width<24||b.height<24)return (b.x+b.width/2-cx)**2+(b.y+b.height/2-cy)**2<24**2;
+      const dx=Math.max(b.left-cx,0,cx-b.right),dy=Math.max(b.top-cy,0,cy-b.bottom);return dx*dx+dy*dy<12**2;
+    }).map(other=>other.dataset.testid||other.getAttribute('aria-label')||other.tagName);
+    return{before,after,spacing:{criterion:'WCAG 2.5.8 spacing exception for preserved compact native target',diameter:24,overlaps}};
   }));
   assert(report.indicatorGeometry.length>0,'Measure a real visible protected selector');
+  for(const item of report.indicatorGeometry)assert.deepEqual(item.spacing.overlaps,[],'Preserved compact target meets the 24px circle spacing exception');
   for(const item of report.indicatorGeometry)for(const key of ['width','height','font','border','color','background'])assert.equal(item.after[key],item.before[key],'Indicator decoration preserves protected '+key);
 
 

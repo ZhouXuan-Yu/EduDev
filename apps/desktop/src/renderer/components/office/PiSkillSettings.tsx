@@ -97,7 +97,7 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
         </div>
         {archiveName && catalog && <div className="pi-skills-archive" data-testid="pi-skill-archive-confirm"><p>归档此技能后将关闭其使用权限，原文件和旧版本保留。</p><Button size="sm" isDisabled={disabled} data-testid="pi-skill-confirm-archive" onPress={() => void mutate({ action: 'archive', name: archiveName, revision: catalog.revision }, '技能已归档，原文件和旧版本保留。')}>确认归档</Button><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => setArchiveName('')}>取消</Button></div>}
   </>;
-  if (embedded) return <section className="pi-skills-dialog pi-skills-embedded" data-testid="pi-skills-settings"><h1>技能</h1><p>整理小智处理教育与办公任务的工作方法。</p>{content}</section>;
+  if (embedded) return <section className="pi-skills-dialog pi-skills-embedded" data-testid="pi-skills-settings"><h2>技能</h2><p>整理小智处理教育与办公任务的工作方法。</p>{content}</section>;
   return <Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={open => { if (!open && !lock.current) onClose(); }}>
     <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-skills-dialog pi-themed-surface" data-testid="pi-skills-settings">
       <Modal.Header><Modal.Heading>技能</Modal.Heading><p>整理小智处理教育与办公任务的工作方法。</p></Modal.Header>
