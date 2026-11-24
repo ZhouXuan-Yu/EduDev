@@ -76,7 +76,9 @@ try{
  await send('合成键盘验证：请问活动形式，收到回答后复述。');
  const question=await until(async()=>(await snap()).controls?.find(q=>q.kind==='question'&&q.state==='pending'));
  const q=page.locator(`[data-testid="pi-teacher-question"][data-control-id="${question.id}"]`);
- await q.locator('[data-slot=chat-tool-trigger]').focus();await page.keyboard.press('Enter');
+ const questionToggle=page.getByTestId('pi-composer-pending-panel').getByTestId('pi-composer-pending-toggle');
+ if(await questionToggle.count()){await questionToggle.focus();await questionToggle.press('Escape');assert.equal(await q.isVisible(),false);}
+ else{await q.locator('[data-slot=chat-tool-trigger]').focus();await page.keyboard.press('Enter');}
  const questionNotice=page.locator(`[data-testid="workspace-pending-approval"][data-pending-id="${question.id}"]`);await questionNotice.focus();await page.keyboard.press('Enter');
  await until(async()=>(await focused()).testId==='pi-question-answer');
  await page.keyboard.type('小组合作');await page.keyboard.press('Tab');assert.equal((await focused()).testId,'pi-question-submit');await page.keyboard.press('Enter');

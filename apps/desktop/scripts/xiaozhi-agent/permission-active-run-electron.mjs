@@ -81,8 +81,21 @@ try {
   ]);
   await page.getByTestId('office-prompt-input').fill(`请用当前工作目录把合成教学记录保存为 ${filename}。`);
   await page.getByRole('button', {name: '发送消息', exact: true}).click();
-  const privilege = page.locator('[data-testid="pi-permission-approval"][data-state="pending"]');
+  const panel = page.getByTestId('pi-composer-pending-panel');
+  const toggle = panel.getByTestId('pi-composer-pending-toggle');
+  const pendingApproval = '[data-testid="pi-permission-approval"][data-state="pending"]';
+  const privilege = panel.locator(pendingApproval);
   await privilege.waitFor({timeout: 20_000});
+  assert.equal(await page.locator(pendingApproval).count(), 1);
+  assert.match(await privilege.innerText(), /创建文本文件/);
+  for (const [width, height] of [[1366, 768], [1920, 1080]]) {
+    await application.evaluate(({BrowserWindow}, size) => BrowserWindow.getAllWindows()[0].setContentSize(...size), [width, height]);
+    await page.waitForFunction(([w, h]) => innerWidth === w && innerHeight === h, [width, height]);
+    const area = await panel.boundingBox();
+    const input = await page.getByTestId('office-composer').boundingBox();
+    assert(area && input && area.y >= 0 && area.y + area.height <= input.y + 1);
+    await page.screenshot({path: path.join(root, 'evidence', `approval-${width}.png`)});
+  }
   const pending = facts(sessionId);
   assert.equal(pending.runs.length, 1);
   const [run] = pending.runs;
@@ -90,6 +103,17 @@ try {
   const approvalId = await privilege.getAttribute('data-approval-id');
   assert(pending.approvals.some(approval => approval.id === approvalId && approval.status === 'pending'));
   const modelRequestsWhileWaiting = fixture.requests.length;
+  await privilege.getByTestId('pi-permission-reject').focus();
+  await page.keyboard.press('Escape');
+  assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+  assert.equal(await toggle.evaluate(node => document.activeElement === node), true);
+  assert.equal(await privilege.isVisible(), false);
+  assert.deepEqual(facts(sessionId), pending);
+  const notice=page.getByTestId('workspace-pending-approval').filter({hasText:'确认操作授权'});
+  await notice.click();
+  await privilege.waitFor({state: 'visible'});
+  assert.equal(await privilege.getAttribute('data-approval-id'), approvalId);
+  report.checks.push('The Chinese approval appears once at both sizes; Escape preserves it and the conversation notice reopens it');
   await page.waitForTimeout(400);
   assert.deepEqual(facts(sessionId).runs, [run]);
   assert.equal(fixture.requests.length, modelRequestsWhileWaiting);
@@ -97,7 +121,7 @@ try {
   report.checks.push('Active permission wait does not settle the Run, dispatch the write, or invoke the model again');
 
   await privilege.getByTestId('pi-permission-approve').click();
-  const draft = page.locator('[data-testid="pi-text-change"][data-state="pending"]').filter({hasText: filename});
+  const draft = panel.locator('[data-testid="pi-text-change"][data-state="pending"]').filter({hasText: filename});
   await draft.waitFor({timeout: 20_000});
   assert.deepEqual(facts(sessionId).runs, [run]);
   assert.equal(fixture.requests.length, modelRequestsWhileWaiting);

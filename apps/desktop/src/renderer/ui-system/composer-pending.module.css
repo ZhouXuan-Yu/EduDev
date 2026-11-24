@@ -33,6 +33,12 @@
   max-width: 45%;
 }
 
+.count {
+  color: #465b76;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
 .body {
   max-height: min(42vh, 420px);
   overflow: auto;
@@ -69,4 +75,5 @@
 
 @media (max-width: 360px) {
   .anchor { padding-inline: 12px; }
+  .header { flex-wrap: wrap; }
 }

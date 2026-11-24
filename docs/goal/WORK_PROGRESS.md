@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 补齐输入框上方待办的操作授权和复制确认入口。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#输入框上方的待确认面板)
+
 D3 对话交互补齐输入框上方的待发队列、跨会话默认偏好和中文命令提示。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)
 
 D3 教案从对话绑定指定资料和逐目标实读引文。正常、重名、缺资料、无依据旧入口、起草确认及导出已有实机证据。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)

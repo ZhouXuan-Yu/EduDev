@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+待处理面板包含短追问、当前授权及保存决定，验证标准见 [对话页面契约](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)。
+
 生成中追加消息与中文命令的实机记录和手测入口见 [本轮验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)。
 
 具名备课依据已通过实机重名和缺失提示、两份实际读回、逐目标引文、原文点击、教师确认、Word/PDF 和冷启。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)

@@ -385,8 +385,17 @@ try{
       assert.equal(await question.isVisible(),false);
       await toggle.click();
       assert.equal(await question.getByTestId('pi-question-option-1').getAttribute('aria-pressed'),selection);
+      const entry=question.getByTestId('pi-question-answer');
+      await entry.fill('五年级，下节课复习分数。');
+      await entry.press('Escape');
+      assert.equal(await question.isVisible(),false);
+      assert.equal(await toggle.evaluate(node=>document.activeElement===node),true);
+      const questionId=await question.getAttribute('data-control-id');
+      await page.locator(`[data-testid="workspace-pending-approval"][data-pending-id="${questionId}"]`).press('Enter');
+      await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='pi-question-answer');
+      assert.equal(await entry.inputValue(),'五年级，下节课复习分数。');
       await page.screenshot({path:path.join(output,'composer-teacher-question.png')});
-      check('澄清选项在输入框上方出现一次，收起并展开保留所选内容');
+      check('澄清在输入框上方出现一次，收起并展开保留选择和手填文本');
     }
     const waiting=await snapshot(),turn=waiting.projection.turns.at(-1);
     assert.equal(turn.status,'waiting_input');assert(waiting.task?.id);

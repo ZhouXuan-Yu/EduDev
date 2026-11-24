@@ -2,6 +2,7 @@ import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
 
 const targets = {
   copy: ['pi-copy-approval', 'data-approval-id'],
+  permission: ['pi-permission-approval', 'data-approval-id'],
   question: ['pi-teacher-question', 'data-control-id'],
   change: ['pi-text-change', 'data-change-id'],
   office: ['pi-office-artifact', 'data-office-id'],
@@ -14,7 +15,10 @@ export function workspaceNotifications(snapshot?: XiaozhiWorkspaceSnapshot) {
   const pending: WorkspacePendingItem[] = [];
   const runs = new Set(snapshot?.projection.turns.map(turn => turn.id));
   const bundled = new Set(snapshot?.deliveries?.flatMap(bundle => bundle.files.filter(file => !file.carried).map(file => file.draftId)));
-  for (const item of snapshot?.approvals ?? []) if (runs.has(item.runId) && item.state === 'pending') pending.push({ kind: 'copy', id: item.id, label: '确认复制资料' });
+  for (const item of snapshot?.approvals ?? []) {
+    if (!runs.has(item.runId) || (item.permission?.state ?? item.state) !== 'pending') continue;
+    pending.push(item.permission ? {kind:'permission',id:item.id,label:'确认操作授权'} : {kind:'copy',id:item.id,label:'确认复制资料'});
+  }
   for (const item of snapshot?.controls ?? []) if (runs.has(item.runId) && item.kind === 'question' && (item.state === 'pending' || item.state === 'interrupted' && item.canResume)) pending.push({ kind: 'question', id: item.id, label: '回答小智的问题' });
   for (const item of snapshot?.changes ?? []) if (runs.has(item.runId) && !bundled.has(item.id) && item.state === 'pending') pending.push({ kind: 'change', id: item.id, label: '确认文件修改' });
   for (const item of snapshot?.officeArtifacts ?? []) if (runs.has(item.runId) && !bundled.has(item.id) && item.state === 'pending') pending.push({ kind: 'office', id: item.id, label: '确认文档草稿' });

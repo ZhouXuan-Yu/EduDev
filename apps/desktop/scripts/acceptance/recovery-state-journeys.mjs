@@ -20,13 +20,13 @@ export async function copyApprovalJourney(ctx){
  for(const [decision,target] of [['reject','拒绝副本.txt'],['stop','停止副本.txt'],['approve','批准副本.txt']]){
   const turn=await ctx.submit('copy','请求复制公开原件.txt为'+target+'，必须等待教师本次决定。',target),scope=ctx.turn(turn.id);
   await ctx.until(async()=>(await ctx.snapshot()).approvals.some(a=>a.target===target&&a.state==='pending'),'APPROVAL_PENDING');
-  const approval=(await ctx.snapshot()).approvals.filter(a=>a.target===target&&a.state==='pending');assert.equal(approval.length,1);const card=scope.locator(`[data-testid="pi-copy-approval"][data-approval-id="${approval[0].id}"]`);await card.waitFor();assert.equal(await card.count(),1);assert(!fs.existsSync(path.join(ctx.workspace,target)));ctx.approvalIds.push(approval[0].id);
+  const approval=(await ctx.snapshot()).approvals.filter(a=>a.target===target&&a.state==='pending');assert.equal(approval.length,1);const identity=`[data-testid="pi-copy-approval"][data-approval-id="${approval[0].id}"]`;const card=ctx.page().getByTestId('pi-composer-pending-panel').locator(identity);await card.waitFor();assert.equal(await ctx.page().locator(identity).count(),1);assert(!fs.existsSync(path.join(ctx.workspace,target)));ctx.approvalIds.push(approval[0].id);
   for(const [width,height] of [[1366,768],[1920,1080],[800,768]]){await ctx.size(width,height);await card.scrollIntoViewIfNeeded();for(const id of ['pi-copy-approve','pi-copy-reject']){const box=await card.getByTestId(id).boundingBox();assert(box&&box.x>=0&&box.x+box.width<=width&&box.y>=0&&box.y+box.height<=height,'Approval decisions must be reachable');}if(decision==='reject')await ctx.shot('pending-'+width);}
   ctx.check('Pending '+decision+' approval remains explicit and reachable at all three native sizes with zero write');
   if(decision==='stop')await ctx.stop();else await card.getByTestId('pi-copy-'+decision).click();
   await ctx.terminal(turn.id,decision==='stop'?'interrupted':'completed');
   const state=(await ctx.snapshot()).approvals.find(a=>a.id===approval[0].id);assert.equal(state.state,decision==='stop'?'interrupted':decision==='reject'?'rejected':'executed');
-  assert.equal(await card.getByTestId('pi-copy-approve').count(),0);if(decision==='approve')assert.deepEqual(fs.readFileSync(path.join(ctx.workspace,target)),ctx.sourceBytes);else assert(!fs.existsSync(path.join(ctx.workspace,target)));
+  await scope.locator(identity).waitFor();assert.equal(await scope.locator(identity).getByTestId('pi-copy-approve').count(),0);if(decision==='approve')assert.deepEqual(fs.readFileSync(path.join(ctx.workspace,target)),ctx.sourceBytes);else assert(!fs.existsSync(path.join(ctx.workspace,target)));
   await ctx.shot('approval-'+decision);ctx.check('Actual '+decision+' resolves the durable approval; only explicit approve creates the exact copy');
  }
 }
