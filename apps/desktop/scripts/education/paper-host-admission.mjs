@@ -194,6 +194,17 @@ try{
   await scopeCase(request+quota+'每个知识点三道题。',{proposal:propose(),rejection:'task_paper_requirements_ambiguous'});
   await scopeCase(request+'一次方程也可用中等题。',{proposal:propose(),allowed:true});
  });
+ await check('Spoken difficulty ratios and percentages constrain the actual proposal before delivery',async()=>{
+  const request='请从本地题本原题组一份初二数学小测，限时40分钟，共10题50分。';
+  const proposal=(counts)=>({...blueprint,totalPoints:50,sections:['easy','medium','hard'].map((difficulty,i)=>
+    ({...blueprint.sections[0],id:'tier-'+i,difficulty,count:counts[i],points:5}))});
+  for(const clause of ['易中难按3:5:2。','基础题占30%，中等题占50%，难题占20%。']){
+   assert(originalPaperReceiptOnly(request+clause));
+   await scopeCase(request+clause,{proposal:proposal([3,5,2]),allowed:true});
+   await scopeCase(request+clause,{proposal:proposal([4,4,2]),rejection:'task_paper_requirements_difficulty'});
+  }
+  await scopeCase(request+'易中难按1:1:1。',{proposal:proposal([3,4,3]),rejection:'task_paper_requirements_difficulty_impossible'});
+ });
  await check('Every current teacher correction criterion is authoritative, including later semicolon or newline prohibitions',async()=>{
   for(const later of ['不要实际组卷，只解释方案。','不要生成试卷。\n只解释方案。'])await scopeCase('请按蓝图组卷。',{correction:['请生成一份试卷。',later]});
   await scopeCase('请按蓝图组卷。',{allowed:true,correction:['请按蓝图组卷。','保留真实原题来源。']});
@@ -240,6 +251,7 @@ try{
   let effects=0;const other=taskEnvelope({name:'office_create_text',label:'Effect witness',description:'No real write',parameters:{type:'object',additionalProperties:false,required:['path','content'],properties:{path:{type:'string'},content:{type:'string'}}},execute:async()=>{effects++;return{content:[],details:{success:true}};}});
   const response=await execute(other,{path:'unapproved.md',content:'synthetic'});assert.equal(response.details.execution.code,'task_blocked');assert.equal(effects,0);assert.equal(db.prepare('SELECT count(*) n FROM learning_records').get().n,0);assert.equal(critical,0);assert(!publisher.failed);
  });
- const source=fs.readFileSync('src/main/xiaozhi-agent/production-host.ts','utf8');assert.match(source,/if\(delivery\.tool===PAPER_TOOLS\[0\]\)\{[\s\S]*?await taskRuntime\.refresh\(\);[\s\S]*?await paperReviews\.admitProposal[\s\S]*?else await admitClassroomOrTaskTool[\s\S]*?eventJournal\.admitTool/);
+ const source=fs.readFileSync('src/main/xiaozhi-agent/production-host.ts','utf8');
+ assert.match(source,/if\(delivery\.tool===PAPER_TOOLS\[0\]\)\{[^}]*?await taskRuntime\.refresh\(\);\s*await paperReviews\.admitProposal[\s\S]*?eventJournal\.admitTool/);
  console.log(JSON.stringify({passed:checks.length,output,boundary:'Real task runtime, SDK boundary, journal and paper transaction; synthetic local source, no model/build/Electron'}));
 }finally{coordinator.close();await publisher.flush();db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({checks,kind:'real source task/domain admission integration; not provider/product quality'},null,2));}

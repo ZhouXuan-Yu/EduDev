@@ -52,9 +52,9 @@ try{
  assert.equal(compareTeacherPaperConstraints(request.replace('20','15'),explicit),'minutes');
  assert.equal(compareTeacherPaperConstraints(request.replace('函数','统计'),explicit),'knowledge');
  assert.equal(compareTeacherPaperConstraints(request,blueprint),'difficulty');
- assert.equal(compareTeacherPaperConstraints(request.replace('1:1:1','2:1:1'),explicit),'difficulty');
+ assert.equal(compareTeacherPaperConstraints(request.replace('1:1:1','2:1:1'),explicit),'difficulty_impossible');
  assert.equal(compareTeacherPaperConstraints(request.replace('1:1:1','38%:31%:31%'),explicit),undefined);
- assert.equal(compareTeacherPaperConstraints(request.replace('1:1:1','39%:30%:31%'),explicit),'difficulty');
+ assert.equal(compareTeacherPaperConstraints(request.replace('1:1:1','39%:30%:31%'),explicit),'difficulty_impossible');
  assert.equal(compareTeacherPaperConstraints('组卷，学科：理科，年级：资格样本，简答题六题，仅用本地题库。',explicit),undefined);
  assert.equal(compareTeacherPaperConstraints('组卷，学科：物理。',explicit),'subject');
  assert.equal(compareTeacherPaperConstraints('组卷，年级：初二。',{...explicit,grade:'八年级'}),undefined);
@@ -66,6 +66,21 @@ try{
   assert.equal(compareTeacherPaperConstraints(prompt,explicit),undefined,prompt);
  }
  check('Explicit teacher totals, topic labels and difficulty ratios constrain a model blueprint without inventing targets');
+ const apportioned={...explicit,totalPoints:50,sections:explicit.sections.map((section,i)=>({...section,count:[3,5,2][i]}))};
+ for(const clause of ['易中难按 3:5:2','难度配比为 3：5：2','难度分布：基础、中等、困难分别为 30%:50%:20%',
+   '基础题占30%，中等题占50%，难题占20%','整卷困难题占20%']){
+  assert.equal(compareTeacherPaperConstraints('组卷，'+clause+'。',apportioned),undefined,clause);
+  assert.equal(compareTeacherPaperConstraints('组卷，'+clause+'。',explicit),'difficulty',clause);
+ }
+ assert.equal(compareTeacherPaperConstraints('组卷，易中难按 1:1:1。',apportioned),'difficulty_impossible');
+ assert.equal(compareTeacherPaperConstraints('组卷，易中难按 3:5:2；困难题占30%。',apportioned),'ambiguous');
+ assert.equal(compareTeacherPaperConstraints('组卷，基础题占35%，中等题占50%，难题占25%。',apportioned),'ambiguous');
+ assert.equal(compareTeacherPaperConstraints('组卷，难度比例易中难 30%:50%:30%。',apportioned),'ambiguous');
+ assert.equal(compareTeacherPaperConstraints('组卷，难度比例易中难 33.33%:33.33%:33.33%。',explicit),undefined);
+ const oneHard={...explicit,totalPoints:100,sections:explicit.sections.map((section,i)=>({...section,count:[9,10,1][i]}))};
+ assert.equal(compareTeacherPaperConstraints('组卷，困难题占0%。',oneHard),'difficulty');
+ assert.equal(compareTeacherPaperConstraints('组卷，不限制困难题占比。参考蓝图：「易中难按 3:5:2」。',explicit),undefined);
+ check('Natural whole-paper ratios and independent tier percentages refuse wrong, contradictory and unattainable allocations');
  assert.equal(compareTeacherPaperConstraints('组一份小测，六题30分，每题5分，不添加新题。',explicit),undefined);
  assert.equal(compareTeacherPaperConstraints('组一份小测，八题30分。',explicit),'count');
  assert.equal(compareTeacherPaperConstraints('组一份小测，六道题36分。',explicit),'points');

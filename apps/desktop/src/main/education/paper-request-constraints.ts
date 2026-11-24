@@ -1,5 +1,6 @@
 import type {PaperBlueprint} from '../../shared/paper-blueprint';
-import {PAPER_DIFFICULTIES, paperPlannedDifficulty, paperQuestionType} from '../../shared/paper-section-fit';
+import {paperQuestionType} from '../../shared/paper-section-fit';
+import {comparePaperDifficulty,isPaperDifficultyClause,type PaperDifficultyMismatch} from './paper-difficulty-request';
 import {equivalentQuestionGradeLabels} from '../../shared/question-grade';
 import {questionTypeLabels} from '../../shared/question-type';
 
@@ -38,7 +39,6 @@ function integer(text: string): number | undefined {
   return total + pending;
 }
 
-const ratio = /^(?:难度比例|难度分布)\s*[:=]?\s*(?:易|简单)\s*[:/、]?\s*(?:中|中等)\s*[:/、]?\s*(?:难|困难)\s*[:=为]?\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?\s*[:/]\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?\s*[:/]\s*(\d{1,3}(?:\.\d{1,2})?)\s*(%)?$/u;
 const knowledgeList = /^必选知识点\s*(?:[:=为]|包括)\s*([\p{L}\p{N}、/+\s·（）()]{1,150})$/u;
 const typeNames = '(单项选择题|多项选择题|不定项选择题|选择题|单选题|多选题|填空题|简答题|解答题|计算题|判断题|编程题)';
 const typeQuota = new RegExp(String.raw`^${typeNames}\s*(?:[:为]|共|各)?\s*${numeral}\s*(?:道(?:题)?|题)$`, 'u');
@@ -105,7 +105,7 @@ export function hasCompleteOriginalPaperTotals(request: string): boolean {
 
 const shortPaperHeading = new RegExp(String.raw`^\s*(?:卷)?\s*(?:一[份套张])?\s*(?:${schoolGrade}\s*的?\s*${schoolSubject}|${schoolSubject}\s*的?\s*${schoolGrade})\s*(?:的)?\s*(?:随堂|单元|阶段|期中|期末)?\s*(?:小测(?:卷)?|试卷|练习卷|测验卷|测试卷)$`,"u");
 const plainPaperClauses = [
-  ...Object.values(numberRules), combinedQuota, perQuestionPoints, typeQuota, allOfType, ratio,
+  ...Object.values(numberRules), combinedQuota, perQuestionPoints, typeQuota, allOfType,
   knowledgeList, subjectLabel, gradeLabel, originalOnly,
   /^(?:请)?(?:先让我|先由教师)核对(?:整卷|试卷)再保存$/u,
   /^(?:题目和原答案保留|保留原题(?:和原答案)?|题目及答案保持原样)$/u,
@@ -120,7 +120,7 @@ export function originalPaperReceiptOnly(request: string): boolean {
   const bank = bankRequest(head ?? "");
   const topics = requiredPaperTopics(criteria);
   return !!bank && shortPaperHeading.test(bank.description) && criteria.every(clause =>
-    plainPaperClauses.some(rule => rule.test(clause)) ||
+    plainPaperClauses.some(rule => rule.test(clause)) || isPaperDifficultyClause(clause) ||
     topics.size > 0 && (eachTopic.test(clause) || [...topics].some(topic => statedTopicTier(clause, topic))));
 }
 
@@ -181,7 +181,7 @@ function comparePaperTopics(terms: readonly string[], sections: PaperBlueprint['
   }
 }
 
-type PaperConstraintFailure = 'count' | 'points' | 'minutes' | 'subject' | 'grade' | 'type' | 'source' | 'knowledge' | 'difficulty' | 'ambiguous';
+type PaperConstraintFailure = 'count' | 'points' | 'minutes' | 'subject' | 'grade' | 'type' | 'source' | 'knowledge' | PaperDifficultyMismatch;
 
 export function compareTeacherPaperConstraints(request: string, blueprint: PaperBlueprint): PaperConstraintFailure | undefined {
   const terms = clauses(request);
@@ -234,21 +234,5 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
   const topicMismatch = comparePaperTopics(terms, blueprint.sections);
   if (topicMismatch) return topicMismatch;
 
-  const ratios = new Map<string, number[]>();
-  for (const clause of terms) {
-    const match = ratio.exec(clause);
-    if (!match) continue;
-    const values = [Number(match[1]), Number(match[3]), Number(match[5])];
-    const total = values.reduce((sum, value) => sum + value, 0);
-    const percentCount = [match[2], match[4], match[6]].filter(Boolean).length;
-    if (!total || (percentCount && (percentCount !== 3 || Math.abs(total - 100) > 0.001))) continue;
-    const proportions = values.map(value => value / total);
-    ratios.set(proportions.map(value => value.toFixed(6)).join(':'), proportions);
-  }
-  if (ratios.size > 1) return 'ambiguous';
-  if (ratios.size === 1) {
-    const planned = paperPlannedDifficulty(blueprint), [expected] = ratios.values();
-    if (planned.unspecified || PAPER_DIFFICULTIES.some((level,index) =>
-      Math.abs(planned[level] / actual.count - expected[index]) > 0.0500001)) return 'difficulty';
-  }
+  return comparePaperDifficulty(terms, blueprint, actual.count);
 }
