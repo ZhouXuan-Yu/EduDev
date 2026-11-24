@@ -7,6 +7,7 @@ import {openLessonFromChat} from './teaching-lesson-task-journey.mjs';
 import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 const {conversationOutput}=await import('../../src/main/xiaozhi-agent/conversation-output.ts');
 const fixture=process.argv[2];assert(fixture);
+const composerMode=process.argv.includes('--composer');
 const natural=path.basename(fixture).startsWith('lesson-from-chat-');
 const named=path.basename(fixture).startsWith('named-lesson-');
 const outputName=named?'具名依据教案':natural?'教案':'教案第5版';
@@ -48,7 +49,17 @@ async function launch(cold=false){
  page=await app.firstWindow();page.on('pageerror',error=>report.errors.push(String(error)));await page.getByTestId('office-prompt-input').waitFor({timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());await page.evaluate(()=>{globalThis.lessonEvents=[];window.omniEdu.onXiaozhiEvent(event=>lessonEvents.push(event));});
 }
 const configure=async(mode,plan)=>app.evaluate((_,v)=>Object.assign(lessonWire,{...v,stage:0}),{mode,plan});
-async function start(id,prompt){const result=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{sessionId:id,prompt,commandId:'xicmd_'+randomUUID()});assert(result.ok,JSON.stringify(result));return result.runId;}
+async function start(id,prompt){
+ if(composerMode){
+  await until(()=>page.locator('.office-composer-container').getAttribute('data-session-id').then(sessionId=>sessionId===id));
+  const before=new Set((await snapshot(id)).projection.turns.map(turn=>turn.id));
+  await page.getByTestId('office-prompt-input').fill(prompt);
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  return until(async()=>(await snapshot(id)).projection.turns.findLast(turn=>!before.has(turn.id))?.id);
+ }
+ const result=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{sessionId:id,prompt,commandId:'xicmd_'+randomUUID()});
+ assert(result.ok,JSON.stringify(result));return result.runId;
+}
 async function idle(id){return until(async()=>{const value=await snapshot(id);return !value.running&&value.projection.turns.length?value:null;});}
 try{
  const originalRows=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'");
@@ -76,10 +87,26 @@ try{
   await page.getByTestId('classroom-plan-confirm').click();
   await until(async()=>await page.getByTestId('classroom-plan-detail').getAttribute('data-status')==='confirmed');
  }
+ if(composerMode){
+  if(!natural)await openLessonFromChat(page,payload.root,row.id);
+  await page.getByTestId('classroom-plan-source-chat').click();
+ }
  const read=await page.evaluate(id=>window.omniEdu.readClassroomPlan(id),row.id);assert(read.ok,JSON.stringify(read));const plan=read.data;report.plan=plan;
  await configure('good',plan);const runId=await start(id,`新任务：把已确认的《${plan.document.title}》第${plan.revision}版教案交付可编辑 Word 和同源 A4 PDF。保留目标、环节、材料正文与评价。`);
  const bundle=await until(async()=>{const current=await snapshot(id);if(!current.running&&current.projection.turns.at(-1)?.id===runId)throw Error('Run ended before delivery; inspect retained wire');return page.evaluate(({id,runId})=>lessonEvents.findLast(e=>e.sessionId===id&&e.runId===runId&&e.kind==='delivery_bundle'&&e.delivery.state==='pending')?.delivery,{id,runId});});assert.equal(bundle.files.length,2);const out=conversationOutput(data,id).path;assert(!fs.existsSync(path.join(out,outputName+'.docx')));assert(!fs.existsSync(path.join(out,outputName+'.pdf')));
- const approval=await page.evaluate(input=>window.omniEdu.decideXiaozhiDelivery(input),{schemaVersion:'xiaozhi.delivery.v1',sessionId:id,bundleId:bundle.id,revision:bundle.revision,fingerprint:bundle.fingerprint,action:'approve'});assert(approval.ok,JSON.stringify(approval));report.turn=(await idle(id)).projection.turns.at(-1);report.goodWire=await wire();assert.equal(report.goodWire.calls.length,5);assert.equal(report.goodWire.blocked.length,0);report.bundle=bundle;
+ if(composerMode){
+  const pending=page.getByTestId('pi-composer-pending-panel').locator(`[data-bundle-id="${bundle.id}"]`);
+  const approve=pending.getByTestId('pi-delivery-approve');
+  await approve.waitFor({state:'visible'});
+  await until(async()=>await approve.isEnabled());
+  await page.screenshot({path:path.join(root,'lesson-bundle-before-approval.png')});
+  await approve.click();
+  report.deliveryEntry='composer-ui';
+ }else{
+  const approval=await page.evaluate(input=>window.omniEdu.decideXiaozhiDelivery(input),{schemaVersion:'xiaozhi.delivery.v1',sessionId:id,bundleId:bundle.id,revision:bundle.revision,fingerprint:bundle.fingerprint,action:'approve'});
+  assert(approval.ok,JSON.stringify(approval));
+ }
+ report.turn=(await idle(id)).projection.turns.at(-1);report.goodWire=await wire();assert.equal(report.goodWire.calls.length,5);assert.equal(report.goodWire.blocked.length,0);report.bundle=bundle;
  const files=['docx','pdf'].map(format=>path.join(out,outputName+'.'+format));assert(files.every(fs.existsSync));report.files=files.map(file=>({file,sha256:sha(fs.readFileSync(file)),bytes:fs.statSync(file).size,mtime:fs.statSync(file).mtimeMs}));
  const parser=path.join(root,'readback.py');fs.writeFileSync(parser,`import sys,json,zipfile,xml.etree.ElementTree as ET,fitz\nwith zipfile.ZipFile(sys.argv[1]) as z:\n r=ET.fromstring(z.read('word/document.xml'));ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'};text='\\n'.join(n.text or '' for n in r.findall('.//w:t',ns));images=[n for n in z.namelist() if n.startswith('word/media/')];size=r.find('.//w:pgSz',ns).attrib\nd=fitz.open(sys.argv[2]);pages=[]\nfor p in d:\n spans=[s for b in p.get_text('dict')['blocks'] if 'lines' in b for l in b['lines'] for s in l['spans'] if s['text'].strip()];pages.append({'size':[p.rect.width,p.rect.height],'text':p.get_text(),'bounds':[s['bbox'] for s in spans]})\nprint(json.dumps({'docxText':text,'images':images,'docxSize':size,'pages':pages},ensure_ascii=True))\n`);
  const parsed=JSON.parse(execFileSync('python',[parser,...files],{encoding:'utf8'}));report.readback=parsed;assert.equal(parsed.images.length,0);assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}w'],'11906');assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}h'],'16838');

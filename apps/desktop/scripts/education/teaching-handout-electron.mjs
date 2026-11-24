@@ -9,6 +9,7 @@ import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
 const wordRequest=process.argv.includes('--word-request');
+const confirmFixture=process.argv.includes('--confirm-fixture');
 const live=process.argv.includes('--live');
 const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout';
 assert(apiKey,'Missing DeepSeek test credential');
@@ -306,6 +307,13 @@ try{
     await verifyLive(state,wire);
   }else{
     await verifyControlled(state,wire,oldBook);
+    if(confirmFixture){
+      await page.getByTestId('teaching-book-review-current').click();
+      await page.getByTestId('teaching-book-version-confirm').click();
+      report.confirmedVersion=await until(()=>sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed'",[report.bookId])[0]);
+      report.confirmationSource='teacher-ui';
+      check('The real editor confirms this synthetic handout for the same-build export journey');
+    }
   }
   report.ok=true;
 }catch(error){

@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 四条教学流程已按同一生产构建实测。当前仍为部分验收，真实教师采用率、自然样本及规模指标待记录。 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md)
+
 D3 教案对话可精确修改教师提示语及既有检查题。检查题不明确时从对话上方选定，修改沿原教案版本。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#教案环节的活动提问和评价修订)
 
 D3 对话教案可调整一个点名的环节活动，或按原话重新分配多个环节的分钟数。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
