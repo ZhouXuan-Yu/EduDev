@@ -409,12 +409,28 @@ try{
       const entry=question.getByTestId('pi-question-answer');
       assert.equal(await entry.getAttribute('aria-label'),'或自行填写回答');
       await entry.fill('五年级，下节课复习分数。');
+      await entry.evaluate(node=>{
+        const fields=node.closest('.pi-question-fields');
+        fields.scrollTop=0;
+      });
+      assert(await entry.evaluate(node=>node.getBoundingClientRect().bottom>node.closest('.pi-question-fields').getBoundingClientRect().bottom),
+        'Long-question fixture must place the answer below the visible fields');
       await entry.press('Escape');
       assert.equal(await question.isVisible(),false);
       assert.equal(await toggle.evaluate(node=>document.activeElement===node),true);
       const questionId=await question.getAttribute('data-control-id');
       await page.locator(`[data-testid="workspace-pending-approval"][data-pending-id="${questionId}"]`).press('Enter');
       await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='pi-question-answer');
+      const revealed=await question.evaluate(card=>{
+        const fields=card.querySelector('.pi-question-fields').getBoundingClientRect();
+        const answer=card.querySelector('[data-testid="pi-question-answer"]').getBoundingClientRect();
+        const submit=card.querySelector('[data-testid="pi-question-submit"]').getBoundingClientRect();
+        const composer=document.querySelector('[data-testid="office-prompt-input"]').getBoundingClientRect();
+        return {answerVisible:answer.top>=fields.top-1&&answer.bottom<=fields.bottom+1,
+          actionsVisible:fields.bottom<=submit.top&&submit.bottom<=composer.top&&composer.bottom<=innerHeight+1};
+      });
+      assert.deepEqual(revealed,{answerVisible:true,actionsVisible:true});
+      check('从顶部待办重新打开长追问，填写框滚入可见区并聚焦，提交与对话输入框仍可用');
       assert.equal(await entry.inputValue(),'五年级，下节课复习分数。');
       await entry.press('End');await entry.press('Enter');
       assert.equal(await entry.inputValue(),'五年级，下节课复习分数。\n');

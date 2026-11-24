@@ -2,6 +2,12 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 待老师处理事项的统一入口
+
+问小智的短补填、选择和确认统一复用输入框正上方的 `PiComposerPendingPanel`，列为项目强制交互约束。老师从顶部提示重新打开长追问时，填写框滚入可见区并聚焦，原「发送回答」和对话输入框保持可用。页面契约同时覆盖自动出现时的焦点、草稿保留、中文标签、重启后的续答以及从面板进入专业工作面。 [页面验收标准](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)
+
+同一 Electron 用例在 `d3-catalog-entry-fix` 复现填写框仍被裁切，在 `d3-composer-pending-rule` 通过。对话与冷启 11/11，当前 Run 的授权与文档保存 5/5，渲染组件 261/261，桌面综合冒烟 207/207。专项使用本地合成响应，付费请求 0 次。截图与原始日志在 `D:/WorkProject/EduProject/acceptance/D3-20261124/composer-pending-rule`。系统输入法手测另外记录。
+
 ## 首个对话初始化与页面契约
 
 实际 Electron 在主进程写入首个会话后暂时延迟返回。老师进入资料库后释放回执。旧构建返回问小智仍不能输入，新构建在同一个已保存会话中可输入，SQLite 只留一个会话且没有生成轮次。回归使用相同测试脚本和时序。证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261124/contracts-and-natural-catalog`。

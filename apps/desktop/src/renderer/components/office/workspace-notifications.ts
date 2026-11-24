@@ -51,6 +51,7 @@ export function focusWorkspacePending(root: HTMLElement, item: WorkspacePendingI
     card.scrollIntoView({ block: 'center' });
     const input = [...card.querySelectorAll<HTMLElement>('textarea:not(:disabled),input:not(:disabled):not([type="hidden"])')]
       .find(node => !node.closest('[hidden],[inert],[aria-hidden="true"]') && (node.checkVisibility?.({ checkVisibilityCSS: true }) ?? true));
+    if (item.kind === 'question') input?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     // A review card may contain an inactive editor. Keep its preview/trigger in
     // focus instead of choosing an invisible input or a write decision button.
     (input ?? trigger)?.focus({ preventScroll: true });
