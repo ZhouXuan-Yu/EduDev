@@ -11,16 +11,22 @@ import {openTeachingFiles} from '../product-navigation.mjs';
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT,fixture=process.env.OMNI_EDU_MOCK_EXAM_FIXTURE;
 assert(root&&fixture,'Use the fixed acceptance directory and synthetic catalogue fixture');
 const baseline=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8'));
-assert(baseline.ok&&baseline.paidRequests===0);
+const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
+const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const providerFixture=process.argv.includes('--provider-fixture');
+if(providerFixture){
+  assert.equal(path.dirname(fs.realpathSync(fixture)),fs.realpathSync(root));
+  assert.equal(baseline.mainSha256,sha(main));
+  assert(baseline.stableSource&&baseline.scope&&baseline.paidRequests>0);
+}
+assert(baseline.ok&&(providerFixture||baseline.paidRequests===0));
 const {catalogId,sessionId}=baseline;
 const scoped=Boolean(baseline.scope?.districts||baseline.scope?.rounds);
 const output=fs.mkdtempSync(path.join(root,'mock-exam-export-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const oldData=path.resolve(fixture,'data'),wal=path.join(oldData,'app.db-wal');
 assert(!fs.existsSync(wal)||!fs.statSync(wal).size);
 fs.cpSync(oldData,data,{recursive:true,filter:file=>!/app\.db-(wal|shm)$/u.test(file)});
-const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
-const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-const report={ok:false,output,catalogId,sessionId,main,mainSha256:sha(main),paidRequests:0,checks:[],pageErrors:[]};
+const report={ok:false,output,catalogId,sessionId,main,mainSha256:sha(main),providerFixture,paidRequests:0,checks:[],pageErrors:[]};
 const lanes={
   word:{outputs:[{format:'docx',path:'上海模考目录.docx'}],button:'docx'},
   bundle:{outputs:[{format:'docx',path:'同期模考目录.docx'},{format:'pdf',path:'同期模考目录.pdf'}]},

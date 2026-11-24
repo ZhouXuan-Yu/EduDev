@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 已复验组卷、讲义、模考与教案的真实模型合成用例，完成教师试用任务设计。 [同版证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#四条教学流程同版验收)
+
 D3 对话教案增加环节提示语、检查题、预期证据和判断标准的局部修订。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案环节提问与评价修订)
 
 D3 衔接对话修订的教案活动和时长范围，新稿纳入原教案版本账本。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
