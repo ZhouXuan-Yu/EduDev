@@ -1,0 +1,53 @@
+{
+  "verifiedSha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "deliveredCodeAndEvidenceCommit": "032f69b73b980543211f25e60003dacd92dd5a84",
+  "remoteMainAtCheck": "032f69b73b980543211f25e60003dacd92dd5a84",
+  "remoteContainsVerifiedAndDelivered": true,
+  "runtimeDiffAfterVerified": [],
+  "buildFingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+  "window": {
+    "pid": 76516,
+    "id": 1,
+    "title": "小智 · UI R1 验收（独立测试数据）",
+    "visible": true,
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 769
+    },
+    "contentBounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 768
+    },
+    "displays": [
+      {
+        "bounds": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        },
+        "scaleFactor": 1
+      },
+      {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1067
+        },
+        "scaleFactor": 1.5
+      }
+    ]
+  },
+  "pushExit": 0,
+  "pushOutput": [
+    "To https://github.com/ZhouXuan-Yu/EduDev.git",
+    " \tHEAD:refs/heads/main\t11ca45f..032f69b",
+    "Done"
+  ],
+  "receiptRule": "This receipt is committed after the observed delivered commit. Its final metadata-only child SHA is reported in the final reply; no self-referential SHA is fabricated."
+}

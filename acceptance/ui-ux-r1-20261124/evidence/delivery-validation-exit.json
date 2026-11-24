@@ -1,4 +1,4 @@
 {
-  "expected": "2=valid BLOCKED record, not Goal completion",
-  "validatorExit": 2
+  "validatorExit": 2,
+  "expected": "2: structurally valid BLOCKED, no false completion"
 }

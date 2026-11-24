@@ -1,6 +1,6 @@
 # UI / UX R1 恢复入口
 
-最新状态：**BLOCKED，未输出UI_R1_DONE**。28项22 PASS/1 FAIL（完整状态证据不足）/5 BLOCKED（本次推送待核对）。机器validator结构有效exit2。教师试用NOT_RUN。
+最新状态：**BLOCKED，未输出UI_R1_DONE**。28项23 PASS/1 FAIL（完整状态证据不足）/4 BLOCKED。机器validator结构有效exit2。教师试用NOT_RUN。
 
 任务入口contract/01_EXECUTION_GOAL.md，包目录结构完整；不限正常修复轮次，未修改Master及其他AI任务。旧阶段历史见history/与既有日志。当前没有自动Goal工具实例（get_goal=null），未虚假complete。
 
@@ -17,3 +17,5 @@
 详细结果、真实命令与边界：FINAL_REPORT.md / delivery.json。回滚具体UI提交而非合并他人代码；不reset、不强推、不删资料。
 
 最后主线11ca45f/c5984c7已合入ade49eb并实际重建。受影响77结构/表格视觉/261Renderer与配置10项、PPT4项、题篮3项复验通过。最终推送完成后只更新包含凭据，不追加设计。
+
+最终交付包含核对：032f69b已正常push，远端包含实测ade49eb与交付提交；两者无apps/desktop/src差异。记录见final-delivery-receipt.json。后续只追记验收状态与本receipt，不改变运行代码。

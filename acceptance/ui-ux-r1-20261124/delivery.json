@@ -4,7 +4,7 @@
   "state": "BLOCKED",
   "baseline_sha": "700143faca7051baca892b50cf5081ff297ec9bb",
   "verified_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
-  "delivered_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "delivered_sha": "032f69b73b980543211f25e60003dacd92dd5a84",
   "runtime": {
     "kind": "electron",
     "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
@@ -298,12 +298,13 @@
     },
     {
       "id": "UIR1-27",
-      "status": "BLOCKED",
+      "status": "PASS",
       "evidence_ids": [
         "E-WINDOW",
-        "E-SOURCE-REMOTE"
+        "E-SOURCE-REMOTE",
+        "E-FINAL-REMOTE"
       ],
-      "note": "最终证据提交待正常push后更新；实际最新窗口已启动。"
+      "note": "最终源码ade、可见原生窗口76516和远端包含已核对；delivery receipt中的后续提交仅元数据。"
     },
     {
       "id": "UIR1-28",
@@ -805,6 +806,16 @@
       "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
       "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
       "note": "原source question/实例/hash保持"
+    },
+    {
+      "id": "E-FINAL-REMOTE",
+      "path": "final-delivery-receipt.json",
+      "sha256": "a5525130aa46ebda2c242a018f8c0a282bdb609464142f29239891139b371c51",
+      "layer": "git",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "实际正常push与远端包含检查；源码差异为空；非预填计划"
     }
   ],
   "defects": [
@@ -968,8 +979,8 @@
   },
   "delivery": {
     "main_integration": "PASS",
-    "remote_contains_commit": "NOT_RUN",
+    "remote_contains_commit": "PASS",
     "final_delta": "evidence_only",
-    "note": "实测源码ade49eb/构建e946688；已合入11ca45f/c5984c7并复验受影响项。待最终证据提交正常push后记录远端包含；之后只有证据/QA/文档差异。"
+    "note": "实际源码ade49eb/构建e946688已验证；032f69b正常push后远端包含实测提交和证据提交。git diff ade49eb..032f69b -- apps/desktop/src为空。随后仅追记本receipt和验收状态，不改源码；最终metadata子提交号在最终答复提供。"
   }
 }
