@@ -13,12 +13,18 @@ assert(acceptance);
 const useLive = process.env.OMNI_EDU_NATURAL_LESSON_LIVE === "1";
 const testRevision = process.argv.includes("--revision");
 const testAmbiguous = process.argv.includes("--ambiguous");
-const testAgenda = process.argv.includes("--agenda");
+const testStageFields = process.argv.includes("--stage-fields");
+const testAgenda = testStageFields || process.argv.includes("--agenda");
 assert(!testRevision || !useLive);
 assert(!testAmbiguous || testRevision);
 assert(!testAgenda || !testRevision && !useLive);
 const revisionBoardwork = "左侧列出观察事实，右侧列出解释与反例，中间用箭头连接证据。";
 const revisedPractice = "学生独立写一条有依据的解释，再两人互查引用；各自指出一个未控制的条件。";
+const stageEdits = {
+  "agenda-stage-fields": {activity:"学生写下原文事实，再画线区分推测。",teacherPrompt:"哪一句原文事实能支持你的判断？"},
+  "agenda-check-fields": {expectedEvidence:"从原文找出土壤条件不同的证据。",criterion:"引用真实线索，且说明未控制变量会影响归因。"},
+  "agenda-check-choice": {checkPrompt:"选出一条原文事实，说明还要检查哪种其他因素。"},
+};
 const apiKey = useLive ? process.env.DEEPSEEK_API_KEY : "local-fixture-only";
 assert(apiKey);
 const root = fs.mkdtempSync(path.join(acceptance, "lesson-from-chat-"));
@@ -106,13 +112,38 @@ async function launch(cold) {
         } else if(wire.mode.startsWith("agenda-")) {
           const edit=request.tools?.find(entry=>entry.function.name==="education_propose_classroom_outline")?.function;
           const activity=wire.mode==="agenda-activity";
-          if(JSON.stringify(edit?.parameters.required)!==JSON.stringify(activity?["activity"]:[])) throw Error("Agenda tool admits unexpected fields");
+          const patch=input.stageEdits[wire.mode];
+          const expectedFields=activity?["activity"]:wire.mode==="agenda-no-check"?["criterion"]:Object.keys(patch??{});
+          if(JSON.stringify(edit?.parameters.required)!==JSON.stringify(expectedFields)) throw Error("Agenda tool admits unexpected fields");
           if(stage===0)toolCall={name:"education_read_classroom_plan",arguments:"{}"};
           else{
-            const latest=JSON.parse(request.messages.filter(entry=>entry.role==="tool").at(-1)?.content?.split("\n")[0]||"{}");
+            const toolText=request.messages.filter(entry=>entry.role==="tool").at(-1)?.content||"{}";
+            const rejectedExtraField=wire.mode==="agenda-stage-fields"&&stage===2&&
+              toolText.startsWith('Validation failed for tool "education_propose_classroom_outline"')&&toolText.includes('objectiveIndices');
+            const latest=rejectedExtraField?{success:false,error:"invalid_input"}:JSON.parse(toolText.split("\n")[0]);
             if(wire.mode==="agenda-conflict"){
               if(latest.error!=="lesson_timing_mismatch"||!latest.message.includes("40 分钟")||!latest.message.includes("43 分钟"))throw Error("Missing precise lesson-time mismatch");
               message=latest.message;
+            }else if(wire.mode==="agenda-no-check"){
+              if(latest.error!=="lesson_check_unresolved")throw Error("The missing check should stay unresolved");
+              message=latest.message;
+            }else if(wire.mode==="agenda-check-choice"&&stage===1){
+              if(latest.error!=="lesson_check_required"||latest.choices.length!==3)throw Error("Three real check choices expected");
+              toolCall={name:"ask_teacher",arguments:JSON.stringify({question:"请选择要修改的检查题。",options:latest.choices})};
+            }else if(wire.mode==="agenda-check-choice"&&stage===2){
+              toolCall={name:"education_read_classroom_plan",arguments:"{}"};
+            }else if(wire.mode==="agenda-check-choice"&&stage===3){
+              if(!latest.success||latest.stage.checkNumber!==2||latest.stage.check.criterion!==input.stageEdits["agenda-check-fields"].criterion)throw Error("Teacher selection did not bind check two of the current revision");
+              toolCall={name:edit.name,arguments:JSON.stringify(patch)};
+            }else if(wire.mode==="agenda-stage-fields"&&stage===1){
+              if(!latest.success||latest.current.teacherPrompt!==input.draft.scenes[2].teacherPrompt)throw Error("Read did not return the existing teacher prompt");
+              toolCall={name:edit.name,arguments:JSON.stringify({...patch,objectiveIndices:[0]})};
+            }else if(wire.mode==="agenda-stage-fields"&&stage===2){
+              if(latest.success!==false||latest.error!=="invalid_input")throw Error("Out-of-scope goal change was not rejected");
+              toolCall={name:edit.name,arguments:JSON.stringify(patch)};
+            }else if(wire.mode==="agenda-check-fields"&&stage===1){
+              if(!latest.success||latest.stage.checkNumber!==2||latest.current.criterion!==input.draft.scenes[3].checks[1].criterion)throw Error("Read did not bind the explicit check number");
+              toolCall={name:edit.name,arguments:JSON.stringify(patch)};
             }else if(stage===1){
               if(latest.success!==true)throw Error("Agenda reading failed: "+JSON.stringify(latest));
               if(activity && (latest.current.activity!==input.draft.scenes[2].activity||!latest.stage.teacherPrompt))throw Error("Activity context does not identify the existing practice stage");
@@ -218,7 +249,7 @@ async function launch(cold) {
         {headers:{"Content-Type":"text/event-stream"}});
       } catch(error) { wire.errors.push(String(error)); throw error; }
     };
-  }, { prompt, draft:draftInput, cold, live: useLive, revisionBoardwork, testAmbiguous, revisedPractice });
+  }, { prompt, draft:draftInput, cold, live: useLive, revisionBoardwork, testAmbiguous, revisedPractice, stageEdits });
   const page = await app.firstWindow();
   await page.getByTestId("office-prompt-input").waitFor({ timeout: 60000 });
   await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
@@ -296,12 +327,29 @@ try {
       ["agenda-time","请把这份教案的导入环节改为8分钟，练习环节改为7分钟。", "succeeded"],
       ["agenda-total","请把这份教案的总结环节改为6分钟，全课总时长改为41分钟。", "succeeded"],
     ];
+    if(testStageFields)cases.push(
+      ["agenda-stage-fields","请修改这份教案的练习环节的学生活动和教师提示语。让学生先区分原文事实和推测。", "succeeded"],
+      ["agenda-check-fields",`请修改《${payload.document.title}》教案中的评价环节检查2的预期证据和判断标准。聚焦未控制的土壤条件。`, "succeeded"],
+      ["agenda-check-choice","请修改这份教案的评价环节检查题。请把题干改得适合课堂口头回答。", "succeeded"],
+      ["agenda-no-check","请修改这份教案的练习环节判断标准。", "failed"],
+    );
     let previousRun=record.run_id;
+    let expectedCount=1;
     const expected=structuredClone(payload.document);
     for(const [mode,text,status] of cases){
       await until(async()=>!await page.getByTestId("office-prompt-input").isDisabled());
       await app.evaluate((_electron,name)=>{globalThis.lessonDraftWire.mode=name;}, mode);
       await send(page,text);
+      if(mode==="agenda-check-choice"){
+        const panel=page.getByTestId("pi-composer-pending-panel");
+        const question=panel.getByTestId("pi-teacher-question");
+        await question.waitFor({state:"visible"});
+        assert.equal(await page.getByTestId("pi-teacher-question").count(),1);
+        assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,expectedCount);
+        await page.screenshot({path:path.join(root,"lesson-check-choice.png")});
+        await question.getByTestId("pi-question-option-1").click();
+        await question.getByTestId("pi-question-submit").click();
+      }
       const run=await until(()=>{
         const next=query("SELECT id,status,error_message FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1")[0];
         return next?.id!==previousRun&&["failed","succeeded"].includes(next?.status)?next:undefined;
@@ -310,14 +358,24 @@ try {
       previousRun=run.id;
       const rows=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan' ORDER BY rowid");
       if(mode==="agenda-conflict"){
-        assert.equal(rows.length,2);
+        assert.equal(rows.length,expectedCount);
         const snapshot=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id);
         assert(snapshot.projection.turns.find(turn=>turn.id===run.id).items.some(item=>item.kind==='message'&&item.text.includes('43 分钟')));
         check("A 43-minute subtotal conflicting with the 40-minute plan is shown to the teacher and adds no revision");
+      }else if(mode==="agenda-no-check"){
+        assert.equal(rows.length,expectedCount);
+        check("An absent evaluation check leaves the original revision unchanged");
       }else{
+        assert.equal(rows.length,++expectedCount);
         if(mode==="agenda-activity")expected.scenes[2].activity=revisedPractice;
         if(mode==="agenda-time"){expected.scenes[0].durationMinutes=8;expected.scenes[2].durationMinutes=7;}
         if(mode==="agenda-total"){expected.scenes[4].durationMinutes=6;expected.totalMinutes=41;}
+        if(mode==="agenda-stage-fields"){
+          expected.scenes[2].activity=stageEdits[mode].activity;
+          expected.lesson.phases[2].teacherPrompt=stageEdits[mode].teacherPrompt;
+        }
+        if(mode==="agenda-check-fields")Object.assign(expected.lesson.phases[3].checks[1],stageEdits[mode]);
+        if(mode==="agenda-check-choice")expected.lesson.phases[3].checks[1].prompt=stageEdits[mode].checkPrompt;
         const row=rows.at(-1), version=JSON.parse(row.payload_json);
         assert.equal(version.previous,expectedHead);
         assert.equal(version.root,record.id);
@@ -326,11 +384,21 @@ try {
         assert.deepEqual(version.context,payload.context);
         assert.equal(JSON.parse(row.result_json).state,"draft");
         expectedHead=row.id;
-        check(mode==="agenda-activity"?"The requested practice activity changes only its original scene":mode==="agenda-time"?"Two named durations change and preserve the 40-minute subtotal":"An explicit matching full-course total saves as 41 minutes");
+        const checks={
+          "agenda-activity":"The requested practice activity changes only its original scene",
+          "agenda-time":"Two named durations change and preserve the 40-minute subtotal",
+          "agenda-total":"An explicit matching full-course total saves as 41 minutes",
+          "agenda-stage-fields":"Activity and teacher prompt change together after rejecting an extra objective field",
+          "agenda-check-fields":"The explicitly numbered check changes evidence and criterion only",
+          "agenda-check-choice":"The composer popup binds check two and applies the change only after teacher selection",
+        };
+        check(checks[mode]);
       }
     }
-    const taskRow=query("SELECT value_json FROM app_settings WHERE key=?",`xiaozhi.task.v1:${task.view.id}`)[0];
-    assert.equal(JSON.parse(taskRow.value_json).view.lastRunId,previousRun);
+    await until(()=>{
+      const taskRow=query("SELECT value_json FROM app_settings WHERE key=?",`xiaozhi.task.v1:${task.view.id}`)[0];
+      return taskRow&&JSON.parse(taskRow.value_json).view.lastRunId===previousRun;
+    });
     await lessonCard(page,record.id).and(page.locator(`[data-plan-id="${expectedHead}"]`)).waitFor();
     await openLessonFromChat(page,record.id,expectedHead);
     await page.screenshot({path:path.join(root,"lesson-agenda-revision.png")});
@@ -460,8 +528,27 @@ try {
   const coldDetails = cold.getByTestId("lesson-content-toggle");
   await coldDetails.locator("button[aria-expanded]").first().click();
   assert.equal(await coldDetails.getByTestId("lesson-detail-content").inputValue(),savedContent);
+  if(testStageFields){
+    const practice=cold.getByTestId("lesson-phase-lesson-3");
+    await practice.locator("button[aria-expanded]").first().click();
+    assert.equal(await practice.getByTestId("lesson-teacher-prompt-lesson-3").inputValue(),stageEdits["agenda-stage-fields"].teacherPrompt);
+    const evaluation=cold.getByTestId("lesson-phase-lesson-4");
+    await evaluation.locator("button[aria-expanded]").first().click();
+    const selectedCheck=evaluation.locator("section").filter({has:cold.getByText("检查2",{exact:true})});
+    const fields=selectedCheck.locator("textarea");
+    assert.equal(await fields.count(),3);
+    const expected=[stageEdits["agenda-check-choice"].checkPrompt,stageEdits["agenda-check-fields"].expectedEvidence,stageEdits["agenda-check-fields"].criterion];
+    for(const [index,value] of expected.entries())assert.equal(await fields.nth(index).inputValue(),value);
+    const window=await app.browserWindow(cold);
+    for(const [width,height] of [[1366,768],[1920,1080]]){
+      await window.evaluate((win,size)=>win.setContentSize(...size),[width,height]);
+      await cold.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+      await fields.last().scrollIntoViewIfNeeded();
+      await cold.screenshot({path:path.join(root,`lesson-assessment-cold-${width}.png`)});
+    }
+  }
   assert.equal((await app.evaluate(()=>globalThis.lessonDraftWire.stages)).length,0);
-  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,testAgenda?4:testAmbiguous?3:testRevision?2:1);
+  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,testStageFields?7:testAgenda?4:testAmbiguous?3:testRevision?2:1);
   check("Cold start opens the same stored lesson without replaying the provider request");
   report.ok = true;
 } catch(error) {
