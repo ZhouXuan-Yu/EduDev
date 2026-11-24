@@ -24,6 +24,7 @@ export const naturalLessonToolSchema = {
     preparation: lesson.preparation,
     details: lesson.details,
     materials: lessonMaterialsToolSchema,
+    mappings: lesson.mappings,
     scenes: {
       type: "array", minItems: 4, maxItems: 12,
       items: {
@@ -50,14 +51,22 @@ type NaturalLessonInput = {
   preparation: string[];
   details: NonNullable<TeachingLesson["details"]>;
   materials?: { title: string; text: string }[];
+  mappings?: TeachingLesson["mappings"];
   scenes: (Omit<LessonPhase, "sceneId"> & { title: string; activity: string; durationMinutes: number })[];
 };
 
 export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent, requestedMaterials?: number):
-  { document: ClassroomPlanDocument; materialCount: number } | { issue: string } {
-  const { title, totalMinutes, objectives, preparation, details, scenes, materials } = raw as NaturalLessonInput;
+  { document: ClassroomPlanDocument; materialCount: number } | { issue: string; error: string } {
+  const { title, totalMinutes, objectives, preparation, details, scenes, materials, mappings = [] } = raw as NaturalLessonInput;
   const included = includeLessonMaterials(details.content, materials, requestedMaterials);
-  if ("issue" in included) return included;
+  if ("issue" in included) return { ...included, error: "lesson_materials_incomplete" };
+  const missingBasis = intent.curricula.findIndex((_,index) => !mappings.some(mapping => mapping.curriculumIndex === index));
+  if (missingBasis >= 0) return {
+    error: "source_required", issue: `请为第 ${missingBasis + 1} 份备课依据至少关联一个教学目标，并逐字引用实际读到的相关正文。`,
+  };
+  const missingSources = !intent.curricula.length ? ["本轮未选用课标或教材，请教师对照适用版本。"] :
+    objectives.flatMap((_,index) => mappings.some(mapping => mapping.objectiveIndex === index) ? [] :
+      [`目标 ${index + 1} 尚无直接对应的资料依据，请教师复核。`]);
   const sceneId = (index: number) => `lesson-${index + 1}`;
   const document: ClassroomPlanDocument = {
     schemaVersion: CLASSROOM_PLAN_SCHEMA,
@@ -81,8 +90,8 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
       phases: scenes.map(({ kind, objectiveIndices, teacherPrompt, checks }, index) => ({
         sceneId: sceneId(index), kind, objectiveIndices, teacherPrompt, checks,
       })),
-      mappings: [],
-      missingSources: ["本轮未选用课标或教材，请教师对照适用版本。"],
+      mappings,
+      missingSources,
     },
   };
   return { document, materialCount: included.materialCount };

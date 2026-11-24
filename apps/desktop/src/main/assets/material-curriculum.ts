@@ -24,6 +24,19 @@ export class MaterialCurriculumRepository{
   if(changed!==1){await this.materials.source(input.source);throw Error('revision_conflict');}return this.view(input.source.resourceId);
  }
  async choices(){const rows=await this.sql.all(`SELECT e.resource_id,r.title FROM material_curriculum_entries e JOIN teacher_resources r ON r.id=e.resource_id WHERE e.sequence=(SELECT max(n.sequence) FROM material_curriculum_entries n WHERE n.resource_id=e.resource_id) ORDER BY e.sequence DESC LIMIT 100`,[]);const results=[];for(const row of rows){const v=await this.view(String(row.resource_id));if(v.entry)results.push({title:String(row.title),...v});}return results;}
+ async namedBasis(title:string):Promise<CurriculumEntry>{
+  if(!title||title.length>200)throw Error('lesson_basis_unavailable');
+  const rows=await this.sql.all(`SELECT id FROM teacher_resources
+   WHERE lower(trim(title))=lower(?) OR lower(trim(original_file_name))=lower(?) LIMIT 2`,[title,title]);
+  if(rows.length>1)throw Error('lesson_basis_ambiguous');
+  if(!rows.length)throw Error('lesson_basis_unavailable');
+  const {entry,stale}=await this.view(String(rows[0].id));
+  if(!entry||stale||entry.metadata.status!=='active')throw Error('lesson_basis_unavailable');
+  const {body}=await this.materials.source(entry.source);
+  const chunk=body.chunks[0];
+  if(!chunk||chunk.containsPersonalData||!chunk.contentMd.trim()||chunk.contentMd.length>12000)throw Error('lesson_basis_unavailable');
+  return entry;
+ }
  async bound(binding:{resourceId:string;revision:string}){const view=await this.view(binding.resourceId);if(!view.entry||view.entry.id!==binding.revision)throw Error('revision_conflict');if(view.stale)throw Error('source_changed');return view.entry;}
  async prepare(input:CurriculumPrepare,clean:(s:string)=>Promise<string>){
   if(!validCurriculumPrepare(input))throw Error('invalid_input');const selected=await this.bound(input.selected);if(selected.metadata.status==='withdrawn')throw Error('withdrawn');

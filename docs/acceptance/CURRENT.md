@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+具名教案依据的实读、重名反馈、教师确认、双格式及重启见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)。
+
 原题卷确认后的零新增模型请求、补充指令、后续对话和冷启见 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原题卷确认后的本地回报)
 
 跨学段原题小测的准入、来源隔离、教师确认和返回历史见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)

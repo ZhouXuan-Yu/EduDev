@@ -14,6 +14,12 @@ accepted("请编写七年级历史教案，课堂导入5分钟。", "七年级",
 accepted("请编写七年级历史教案，总时长999分钟。", "七年级", "历史");
 accepted("新任务：为我设计一节数学 四年级的单元教案。", "四年级", "数学");
 accepted("请为小学六年级下册科学准备一份教案。", "六年级", "科学");
+const grounded=naturalLessonDraft("请依据本地资料库里的《七年级历史观察A》与《观察B.txt》，编写一份40分钟的五年级语文教案。");
+assert.deepEqual(grounded,{mode:"outline",lesson:{subject:"语文",grade:"五年级",curricula:[]},
+  sourceTitles:["七年级历史观察A","观察B.txt"],requestedMinutes:40});
+assert.deepEqual(naturalLessonDraft("请生成五年级语文教案。使用资料库中的《记录 A.txt》。").sourceTitles,["记录 A.txt"]);
+assert.deepEqual(naturalLessonDraft("用资料库《记录 A.txt》帮我写一份五年级语文教案。").sourceTitles,["记录 A.txt"]);
+assert.equal(naturalLessonDraft("该如何依据资料库里的《观察A》写五年级语文教案？"),undefined);
 for(const prompt of [
   "五年级语文教案", "请查看五年级语文教案", "帮我改写五年级语文教案",
   "如何写五年级语文教案？", "给我一个五年级语文教案模板",

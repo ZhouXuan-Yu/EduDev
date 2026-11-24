@@ -23,6 +23,7 @@ import {readQuestionContextSource} from '../education/question-context-provider'
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
+import {resolveNaturalLessonBasis} from '../education/natural-lesson-basis';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
@@ -1011,6 +1012,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const adopted=lessonIntent?await Promise.all(lessonIntent.curricula.map(binding=>store.materialCurriculum.bound(binding))):undefined;
     if(adopted?.some(entry=>entry.metadata.status!=='active'))throw Error('source_changed');
     const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0,adopted);
+    const lessonBasis=owner?.naturalLessonDraft&&adopted?.length?adopted:undefined;
     const fileReferenceTask=owner?.task?.id||(await tasks.committed(id))?.id;
     const fileReferences=fileReferenceTask?createFileReferenceProjection({state:store.xiaozhiState.fileReferences,sessionId:id,taskId:fileReferenceTask,
       workspace:()=>host.resolveFileWorkspace(id),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped),
@@ -1039,6 +1041,14 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
     try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+      ...(owner?.naturalLessonDraft&&lessonIntent?{naturalLessonDraft:{
+        subject:lessonIntent.subject,grade:lessonIntent.grade,...owner.naturalLessonDraft,
+        basis:lessonBasis&&{
+          sources:lessonBasis.map(({source:{resourceId,offset}})=>({resourceId,offset})),
+          hasPendingRead:()=>lessonBasis.some(entry=>!classroomContext.hasRead(entry)),
+        },
+        hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,runId),
+      }}:{}),
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
         return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:true,generatedWorkspace:!Boolean(await store.xiaozhiState.workspace(id))};
@@ -1183,7 +1193,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions,()=>observedMistakeLearning)},
       paperReview:{studentId,tools:paperReviews.tools(id,runId)},
       originalQuestionReviewTools:originalReviews.tools(id,runId,observedMaterials),
-      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);}),
+      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);},lessonBasis),
       materialPageTools:createMaterialPageTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observedMaterials),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&handoutRequest(cleanPrompt)?{
@@ -1366,10 +1376,6 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true,paperReceiptSummary:run.paperReceiptSummary}:{}),
-        ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
-          subject:lesson.subject,grade:lesson.grade,...run.naturalLessonDraft,
-          hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
-        }}:{}),
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
           await startupPrewarm.wait();signal.throwIfAborted();
@@ -2204,6 +2210,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const interruptClaim=()=>closing?Promise.resolve():trackModelWrite(()=>store.xiaozhiState.interruptCommand(input.commandId,id,hash));
       try {
         const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
+        if(inferredLesson?.sourceTitles&&inferredLesson.lesson){
+          if(detail.session.studentId)throw Error('permission_denied');
+          const lesson=await phase(()=>resolveNaturalLessonBasis(inferredLesson.sourceTitles!,inferredLesson.lesson!,
+            title=>store.materialCurriculum.namedBasis(title)));
+          run.classroomPlan=input.classroomPlan={mode:'outline',lesson};
+        }
         let deliveryContinuation:XiaozhiStartInput['continueTask'];
         if(input.resumeDeliveryId){
           const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));
@@ -2290,7 +2302,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}
         const code=error instanceof Error?error.message:'';
-        return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='version_conflict'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
+        return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'||code==='lesson_basis_ambiguous'||code==='lesson_basis_unavailable'?code:code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='version_conflict'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
       })().catch((error): XiaozhiStartResult => {
         const code=error instanceof Error?error.message:'';

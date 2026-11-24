@@ -1,5 +1,5 @@
 import {CLASSROOM_CONTEXT_SCHEMA,validClassroomContext,validClassroomMaterial,type ClassroomContext,type ClassroomMaterial} from '../../shared/classroom-context';
-import {materialBodyVersion} from '../assets/material-source';
+import {materialBodyVersion,sameMaterialSource} from '../assets/material-source';
 import type {ResourceChunk} from '../../shared/contracts';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {assertCurriculumEntry} from '../assets/material-curriculum';
@@ -15,6 +15,11 @@ export function createClassroomContext(preferenceRevision:number,adopted?:Curric
    const key=material.source.resourceId+'/'+material.source.chunkId;
    if(!delivered.has(key)&&delivered.size>=24)throw Error('too_large');
    delivered.set(key,structuredClone(material));
+  },
+  hasRead(entry:CurriculumEntry){
+   const source=entry.source;
+   const material=delivered.get(source.resourceId+'/'+source.chunkId);
+   return Boolean(material&&!material.truncated&&sameMaterialSource(source,material.source));
   },
   snapshot():ClassroomContext{return {schemaVersion:CLASSROOM_CONTEXT_SCHEMA,materials:structuredClone([...delivered.values()]),preferenceRevision,...(selected?{adopted:structuredClone(selected)}:{})};},
  };

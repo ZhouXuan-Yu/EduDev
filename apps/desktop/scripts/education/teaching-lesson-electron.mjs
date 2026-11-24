@@ -40,11 +40,20 @@ async function register(edition){await page.getByTestId('curriculum-kind').selec
 async function teaching(){await openTeachingFiles(page);await page.getByTestId('teaching-classrooms-tab').click();await page.getByTestId('classroom-workspace').waitFor();}
 async function expand(id){const target=page.getByTestId(id),trigger=target.locator('button[aria-expanded]').first();await target.scrollIntoViewIfNeeded();if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();}
 const plans=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan' ORDER BY created_at,id");
+async function settledRun(count){
+ await until(async()=>{
+  const runs=query("SELECT status,error_message FROM ai_agent_runs ORDER BY rowid");
+  if(runs.length<count||runs.some(run=>run.status==='running'))return false;
+  assert(runs.every(run=>run.status==='succeeded'),JSON.stringify(runs));
+  return !await page.getByTestId('office-prompt-input').isDisabled();
+ });
+ assert.equal((await app.evaluate(()=>globalThis.curriculumWire.requests)).length,count*4);
+}
 async function saved(revision){await until(()=>plans().length===revision);await until(async()=>await page.getByTestId('classroom-plan-save').isDisabled());assert(await page.getByTestId('classroom-plan-save').isDisabled());}
 try{
  let initial,p;if(resume){await launch(true);initial=plans()[0];p=JSON.parse(initial.payload_json);a=p.context.adopted[0].source.resourceId;const originals=query('SELECT id,local_path FROM teacher_resources');report.originals=originals.map(r=>({id:r.id,path:r.local_path,sha256:sha(fs.readFileSync(r.local_path)),mtime:fs.statSync(r.local_path).mtimeMs}));report.resumedFrom=path.join(root,'report.json');}else{
  await launch();await assertIsolatedPiMain(app,main,profile);report.main=main;report.mainSha=sha(fs.readFileSync(main));await productEntry(page,'materials').click();await app.evaluate(({dialog},files)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:files});},files);await page.getByTestId('materials-import').click();await until(()=>{const rows=query('SELECT id,content_hash,parse_status FROM teacher_resources');return rows.length===2&&rows.every(r=>r.parse_status==='ready');});const originals=query('SELECT id,content_hash,local_path FROM teacher_resources');a=originals.find(r=>r.content_hash===sha(Buffer.from(texts[0]))).id;b=originals.find(r=>r.content_hash===sha(Buffer.from(texts[1]))).id;await page.getByTestId('materials-refresh').click();await open(a);await register('A版');await open(b);await register('B版');
- await teaching();await page.getByTestId('lesson-create-mode').click();await page.getByTestId('classroom-requirement').fill('用已登记A版合成阅读材料设计一节40分钟的五年级语文课。三项可观察目标：找出事实、依据事实解释、辨认因果证据边界。完整活动、实际检查题与参考证据、准备材料和教师提示语。');await expand('lesson-basis-toggle');await page.getByTestId('lesson-basis-'+a).check();assert(!await page.getByTestId('lesson-basis-'+b).isChecked());assert.equal((await app.evaluate(()=>globalThis.curriculumWire.requests)).length,0);await app.evaluate((_,id)=>{globalThis.curriculumTarget=id;},a);await page.getByTestId('lesson-create').click();await page.getByTestId('office-prompt-input').waitFor();await until(async()=>{const w=await app.evaluate(()=>globalThis.curriculumWire);return w.requests.length===4&&!await page.getByTestId('office-prompt-input').isDisabled();});report.wire=await app.evaluate(()=>globalThis.curriculumWire);assert.equal(report.wire.blocked.length,0);assert.equal(report.wire.reads.length,1);initial=plans()[0];p=JSON.parse(initial.payload_json);assert.deepEqual(p.document,lessonDocument);assert.equal(p.context.adopted.length,1);assert.equal(p.context.adopted[0].source.resourceId,a);assert.equal(p.context.adopted[0].metadata.edition,'A版');assert.equal(p.context.materials[0].source.resourceId,a);check('Original teacher entry selects A separately from same-title B; original Pi catalog/read/proposal writes exact 40-minute lesson with host-owned adoption');report.originals=originals.map(r=>({id:r.id,path:r.local_path,sha256:sha(fs.readFileSync(r.local_path)),mtime:fs.statSync(r.local_path).mtimeMs}));}
+ await teaching();await page.getByTestId('lesson-create-mode').click();await page.getByTestId('classroom-requirement').fill('用已登记A版合成阅读材料设计一节40分钟的五年级语文课。三项可观察目标：找出事实、依据事实解释、辨认因果证据边界。完整活动、实际检查题与参考证据、准备材料和教师提示语。');await expand('lesson-basis-toggle');await page.getByTestId('lesson-basis-'+a).check();assert(!await page.getByTestId('lesson-basis-'+b).isChecked());assert.equal((await app.evaluate(()=>globalThis.curriculumWire.requests)).length,0);await app.evaluate((_,id)=>{globalThis.curriculumTarget=id;},a);await page.getByTestId('lesson-create').click();await page.getByTestId('office-prompt-input').waitFor();await settledRun(1);report.wire=await app.evaluate(()=>globalThis.curriculumWire);assert.equal(report.wire.blocked.length,0);assert.equal(report.wire.reads.length,1);initial=plans()[0];p=JSON.parse(initial.payload_json);assert.deepEqual(p.document,lessonDocument);assert.equal(p.context.adopted.length,1);assert.equal(p.context.adopted[0].source.resourceId,a);assert.equal(p.context.adopted[0].metadata.edition,'A版');assert.equal(p.context.materials[0].source.resourceId,a);check('Original teacher entry selects A separately from same-title B; original Pi catalog/read/proposal writes exact 40-minute lesson with host-owned adoption');report.originals=originals.map(r=>({id:r.id,path:r.local_path,sha256:sha(fs.readFileSync(r.local_path)),mtime:fs.statSync(r.local_path).mtimeMs}));}
  if(taskEditor&&!resume){
   await openLessonFromChat(page,initial.id,initial.id);
   const detail=page.getByTestId('classroom-plan-detail');
@@ -93,7 +102,7 @@ try{
   },independentTitle);
   await page.getByTestId('lesson-create').click();
   await page.getByTestId('office-prompt-input').waitFor();
-  await until(async()=>(await app.evaluate(()=>globalThis.curriculumWire.requests.length))===8&&!await page.getByTestId('office-prompt-input').isDisabled());
+  await settledRun(2);
   unrelated=plans().find(row=>JSON.parse(row.payload_json).document.title===independentTitle);
   assert(unrelated);
   report.versions=plans();
@@ -104,7 +113,7 @@ try{
   await app.evaluate((_,title)=>Object.assign(globalThis.curriculumWire,{stage:0,title,outline:true}),outlineTitle);
   await page.getByTestId('classroom-create').click();
   await page.getByTestId('office-prompt-input').waitFor();
-  await until(async()=>(await app.evaluate(()=>globalThis.curriculumWire.requests.length))===12&&!await page.getByTestId('office-prompt-input').isDisabled());
+  await settledRun(3);
   const outline=plans().find(row=>JSON.parse(row.payload_json).document.title===outlineTitle);
   assert(outline);
   await openLessonFromChat(page,outline.id,outline.id);

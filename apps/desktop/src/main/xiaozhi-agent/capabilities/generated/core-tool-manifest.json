@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "8ad54fb5899d4ea882295f8bcc04bc84ea771a1a42c5608613af14f63b4d5cce",
+  "sourceHash": "661aabe552f4578cbe39343d0011435d4ed2644df076bd69697a8cc7b7ba7279",
   "sources": [
     {
       "file": "package-lock.json",
@@ -76,7 +76,7 @@
     },
     {
       "file": "src/main/assets/material-curriculum.ts",
-      "sha256": "8b26bba647b6ee49931904772d193dafeaf5d51a21603bb037f7674ce50ea351"
+      "sha256": "ae8d3adb35e3803514e7ade7feb0cfc4bcbabd2dcb4eae3bb1b0be07a7470bc0"
     },
     {
       "file": "src/main/assets/material-layout.ts",
@@ -100,11 +100,11 @@
     },
     {
       "file": "src/main/assets/material-source.ts",
-      "sha256": "abd54f97469c460ded0f23df53e3f6876d854a8e91fbc7b7f5df67d2b70243f1"
+      "sha256": "0fa4aca7cd7b8e56c0b2dfe84ecd1ff9346094ad926102f750dd7d477950f6d0"
     },
     {
       "file": "src/main/assets/material-tools.ts",
-      "sha256": "464ab1dc7ea8aa175936e73b4580bc2bf68a58d3743dcaa0fa310dd420d31e2b"
+      "sha256": "5e3d66d0b6b30c3a8daea6648a64ea88538214b04af621a4e25603e5510735ac"
     },
     {
       "file": "src/main/assets/word-package.ts",
@@ -124,7 +124,7 @@
     },
     {
       "file": "src/main/education/classroom-context.ts",
-      "sha256": "a9cde6ec68b3cd2ddd02d9818e6887034d8c6bd49d5cc0582b649de145eeb199"
+      "sha256": "42d5aa66a0a5ea70300d105a337eb2a6ac49b68060f131f77a532eccfc41662c"
     },
     {
       "file": "src/main/education/classroom-document-pages.ts",
@@ -144,7 +144,7 @@
     },
     {
       "file": "src/main/education/classroom-plan-tools.ts",
-      "sha256": "3a65bd99cb4a8ad5fe0d4bf5dc814b6f6c73f0afb9cf405f12f9a61bbed45680"
+      "sha256": "0ce6ed6c7c31c6ff70015225c3809bc97f090d60b297a3efb42b464915105a7a"
     },
     {
       "file": "src/main/education/classroom-pptx.ts",
@@ -239,8 +239,12 @@
       "sha256": "269bb48febb0b23bf456fc3d0f80909039c03317342b8811702e9c607f564fe7"
     },
     {
+      "file": "src/main/education/natural-lesson-basis.ts",
+      "sha256": "0b332d6c7937b0c2f6ec19bc7fc64ed10b8ff4652bcb3cd3a0b84e81bd3742f8"
+    },
+    {
       "file": "src/main/education/natural-lesson-draft.ts",
-      "sha256": "26f10103d203c0322059fc90b141e26d5c1fb07ebfed6c96d53cdbb100a66f00"
+      "sha256": "411a34374641ce5b7c07267868b34643a26a6563b79299e3a5e785e30d76f856"
     },
     {
       "file": "src/main/education/natural-lesson-materials.ts",
@@ -248,7 +252,7 @@
     },
     {
       "file": "src/main/education/natural-lesson-tool.ts",
-      "sha256": "6a88e2b9736da83476c6e4e35eaa5c5691fce15dbdd48a64117e77aed4fba2db"
+      "sha256": "babe42381aaaf2b66c21ecb1732486243b1ae784ccaca8faccde7b9ba5d6ad75"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -844,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "8db3cea6a3a1f31beab956b1b7f3d6df177c54557fff400ee4074ffeca683ead"
+      "sha256": "72e21730875b805e08e8aceae998982680f12d7e1c2fe4d7b39127a75e998716"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1544,7 +1548,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "bdcbb3d8799a7cfb6cc5bfff30eaec349ee15ab031e02ebdc82f9cc7a2f03e6d"
+      "sha256": "91f4b29283984e9d652da563c179522e88e00d548eb5073dd946bb6b61f03cce"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1580,7 +1584,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "6346eb7c1aad12e14ae5c2b327b1ec385f7d76697ce0e7a297cf87e1cfaa90f4"
+      "sha256": "d793cdab1ba75b37fced029d02c725d204a3dde65804b69f664b9fcabf645801"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2640,7 +2644,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "9b94b2f3b167e83c8e97a4cad7146477641e3788af49b8985a8c6d3aca702a18"
+      "sha256": "3aa89568612c46035644785f6bb1d745623ed0fab82c77125aec621ef39c4ebc"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2740,7 +2744,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "d9c899049dd0d8e176c5c92cfec9ed4e72df4e4b7712116101a412116ff0d837"
+      "sha256": "e7066af844cb9d42ece601c4b2e5af4940f800bcd03b2d8acd77e988319245a8"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

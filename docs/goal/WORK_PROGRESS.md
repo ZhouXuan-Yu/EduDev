@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 教案从对话绑定指定资料和逐目标实读引文。正常、重名、缺资料、无依据旧入口、起草确认及导出已有实机证据。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
+
 D3 模考按对话指定的地区和轮次筛选，并在教师确认及对话修订时复核范围。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)
 
 D3 讲义校验明确题名和学生版、教师版请求，错名与错受众在创建稿件前拒绝。最终构建已运行双份 Word 实机和冷启动。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)

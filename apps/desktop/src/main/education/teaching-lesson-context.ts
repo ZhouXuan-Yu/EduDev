@@ -1,6 +1,7 @@
 import type {ClassroomPlanDocument} from '../../shared/classroom-plan';
 import type {ClassroomContext} from '../../shared/classroom-context';
 import type {Sql} from '../xiaozhi-agent/session-state';
+import {sameMaterialSource} from '../assets/material-source';
 
 /** Only the host selects versions; model mappings reference those by bounded index. */
 export async function assertTeachingLessonContext(sql:Sql,document:ClassroomPlanDocument,context:ClassroomContext){
@@ -8,7 +9,7 @@ export async function assertTeachingLessonContext(sql:Sql,document:ClassroomPlan
  const adopted=context.adopted||[];
  for(const entry of adopted){
   const source=entry.source;
-  if(!context.materials.some(m=>!m.truncated&&m.source.resourceId===source.resourceId&&m.source.chunkId===source.chunkId&&m.source.version===source.version&&m.source.bodyVersion===source.bodyVersion&&m.source.offset===source.offset))throw Error('source_required');
+  if(!context.materials.some(m=>!m.truncated&&sameMaterialSource(m.source,source)))throw Error('source_required');
  }
  for(const mapping of lesson.mappings){
   const entry=adopted[mapping.curriculumIndex];if(!entry)throw Error('invalid_input');

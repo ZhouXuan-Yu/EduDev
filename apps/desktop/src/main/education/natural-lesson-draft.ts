@@ -9,9 +9,11 @@ const subjectFirst = new RegExp(`(${subject})${connector}(${grade})`, "g");
 const verb = "(?:设计|制作|生成|编写|写|拟定|准备|安排|做)";
 const lead = "(?:新任务[：:]\\s*)?(?:(?:请你|请|麻烦|能否|可以|能不能|能帮我)\\s*)*";
 const creation = new RegExp(`^${lead}(?:(?:(?:帮我|为我|给我)\\s*)?${verb}|(?:为|给)(?!我)[^。！？?\\n]{1,55}?${verb}|(?:给我|来)\\s*一[份篇节套])[^。！？?\\n]{0,200}?教案`, "u");
+const sourceName = "《[^《》\\r\\n]+》";
+const namedBasis = new RegExp(`(?:依照|依据|根据|基于|参考|使用|用)\\s*(?:本地)?资料库(?:中|里)?的?\\s*(${sourceName}(?:\\s*(?:、|和|与|及)\\s*${sourceName})*)`, "gu");
 
 export type NaturalLessonRequirements = { requestedMinutes?: number; requestedMaterials?: number };
-type NaturalLessonDraft = Extract<ClassroomPlanStart, { mode: "outline" }> & NaturalLessonRequirements;
+type NaturalLessonDraft = Extract<ClassroomPlanStart, { mode: "outline" }> & NaturalLessonRequirements & { sourceTitles?: string[] };
 
 function requestedLessonMinutes(text: string, firstSentence: string): number | undefined {
   const minutes = new Set([
@@ -25,11 +27,18 @@ function requestedLessonMinutes(text: string, firstSentence: string): number | u
 
 /** Only explicit new draft requests with an unambiguous subject and grade bind the classroom tool. */
 export function naturalLessonDraft(prompt: string): NaturalLessonDraft | undefined {
-  const text = prompt.trim().slice(0, 1200);
-  const direct = text.match(creation)?.[0];
+  const text = prompt.trim();
+  const sources = Array.from(text.matchAll(namedBasis)).filter(match => {
+    const prefix = text.slice(0, match.index);
+    return !/(?:不要|无需|不用|不必|不能|不应|别|不|勿)\s*$/u.test(prefix);
+  });
+  let request = text;
+  for (const match of sources.toReversed())
+    request = request.slice(0, match.index) + request.slice(match.index + match[0].length).replace(/^[\s，,：:]*/u, "");
+  const direct = request.slice(0, 1200).match(creation)?.[0];
   if (!direct ||
-      /教案(?:的)?(?:模板|格式|结构|提示词|样式|范例)|(?:根据|依据|基于|沿用|使用|参考)(?:我|这份|该|附件|上次|已选|已上传|资料库)|(?:并|以及|同时).{0,20}(?:PPT|幻灯片|课件)/iu.test(text)) return;
-  const prefix = text.split(/[。！？?\n]/u, 1)[0];
+      /教案(?:的)?(?:模板|格式|结构|提示词|样式|范例)|(?:依照|根据|依据|基于|沿用|使用|参考|用)\s*(?:我|这份|该|附件|上次|已选|已上传|(?:本地)?资料库)|(?:并|以及|同时).{0,20}(?:PPT|幻灯片|课件)/iu.test(request)) return;
+  const prefix = request.split(/[。！？?\n]/u, 1)[0];
   const matches = [
     ...Array.from(prefix.matchAll(gradeFirst), match => [match[1], match[2]]),
     ...Array.from(prefix.matchAll(subjectFirst), match => [match[2], match[1]]),
@@ -37,11 +46,13 @@ export function naturalLessonDraft(prompt: string): NaturalLessonDraft | undefin
   const pairs = new Map(matches.map(pair => [JSON.stringify(pair), pair]));
   if (pairs.size !== 1) return;
   const [[gradeName, subjectName]] = pairs.values();
-  const requestedMinutes = requestedLessonMinutes(text, prefix);
-  const requestedMaterials = requestedLessonMaterials(text);
+  const requestedMinutes = requestedLessonMinutes(request, prefix);
+  const requestedMaterials = requestedLessonMaterials(request);
+  const sourceTitles = [...new Set(sources.flatMap(match => Array.from(match[1].matchAll(/《([^》]+)》/gu), title => title[1].trim())))];
   return {
     mode: "outline",
     lesson: { grade: gradeName, subject: subjectName, curricula: [] },
+    ...(sourceTitles.length ? { sourceTitles } : {}),
     ...(requestedMinutes === undefined ? {} : { requestedMinutes }),
     ...(requestedMaterials === undefined ? {} : { requestedMaterials }),
   };

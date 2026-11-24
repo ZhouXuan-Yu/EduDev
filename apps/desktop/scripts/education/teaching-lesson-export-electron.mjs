@@ -8,8 +8,9 @@ import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 const {conversationOutput}=await import('../../src/main/xiaozhi-agent/conversation-output.ts');
 const fixture=process.argv[2];assert(fixture);
 const natural=path.basename(fixture).startsWith('lesson-from-chat-');
-const outputName=natural?'教案':'教案第5版';
-assert(natural||path.basename(fixture).startsWith('xiaozhi-teaching-lesson-ui-'));
+const named=path.basename(fixture).startsWith('named-lesson-');
+const outputName=named?'具名依据教案':natural?'教案':'教案第5版';
+assert(natural||named||path.basename(fixture).startsWith('xiaozhi-teaching-lesson-ui-'));
 const fixtureReport=JSON.parse(fs.readFileSync(path.join(fixture,fs.existsSync(path.join(fixture,'report-resume.json'))?'report-resume.json':'report.json')));
 assert(fixtureReport.ok);
 const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT||os.tmpdir(),'omni-edu-lesson-export-pi-')),data=path.join(root,'data'),profile=path.join(root,'profile');fs.cpSync(path.join(fixture,'data'),data,{recursive:true});fs.mkdirSync(profile);
@@ -51,13 +52,18 @@ async function start(id,prompt){const result=await page.evaluate(input=>window.o
 async function idle(id){return until(async()=>{const value=await snapshot(id);return !value.running&&value.projection.turns.length?value:null;});}
 try{
  const originalRows=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'");
- assert.equal(originalRows.length,natural?1:5);
- const row=natural?originalRows[0]:originalRows.find(r=>JSON.parse(r.payload_json).revision===5);assert(row);
+ assert.equal(originalRows.length,natural||named?1:5);
+ const row=natural||named?originalRows[0]:originalRows.find(r=>JSON.parse(r.payload_json).revision===5);assert(row);
  const payload=JSON.parse(row.payload_json),document=payload.document;
  if(natural){
   assert.equal(JSON.parse(row.result_json).state,'draft');
   assert.equal(fixtureReport.materialBodies.length,2);
   assert(fixtureReport.materialBodies.every(body=>document.lesson.details.content.includes(body)));
+ } else if(named) {
+  assert.equal(row.id,fixtureReport.lesson.id);
+  assert.equal(JSON.parse(row.result_json).state,'confirmed');
+  assert.equal(payload.context.adopted.length,2);
+  assert.deepEqual(new Set(document.lesson.mappings.map(mapping=>mapping.curriculumIndex)),new Set([0,1]));
  } else {
   assert.deepEqual(document,lessonDocument);
   assert.equal(JSON.parse(row.result_json).state,'confirmed');
@@ -78,6 +84,7 @@ try{
  const parser=path.join(root,'readback.py');fs.writeFileSync(parser,`import sys,json,zipfile,xml.etree.ElementTree as ET,fitz\nwith zipfile.ZipFile(sys.argv[1]) as z:\n r=ET.fromstring(z.read('word/document.xml'));ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'};text='\\n'.join(n.text or '' for n in r.findall('.//w:t',ns));images=[n for n in z.namelist() if n.startswith('word/media/')];size=r.find('.//w:pgSz',ns).attrib\nd=fitz.open(sys.argv[2]);pages=[]\nfor p in d:\n spans=[s for b in p.get_text('dict')['blocks'] if 'lines' in b for l in b['lines'] for s in l['spans'] if s['text'].strip()];pages.append({'size':[p.rect.width,p.rect.height],'text':p.get_text(),'bounds':[s['bbox'] for s in spans]})\nprint(json.dumps({'docxText':text,'images':images,'docxSize':size,'pages':pages},ensure_ascii=True))\n`);
  const parsed=JSON.parse(execFileSync('python',[parser,...files],{encoding:'utf8'}));report.readback=parsed;assert.equal(parsed.images.length,0);assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}w'],'11906');assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}h'],'16838');
  const normalize=text=>text.replace(/\s+/g,''),pdfText=parsed.pages.map(p=>p.text).join('');const required=[document.title,...document.objectives,...document.lesson.goalCriteria,...document.lesson.preparation,...Object.values(document.lesson.details),...document.scenes.flatMap(s=>[s.title,s.activity]),...document.lesson.phases.flatMap(p=>[p.teacherPrompt,...p.checks.flatMap(c=>[c.prompt,c.expectedEvidence,c.criterion])]),...document.lesson.mappings.flatMap(m=>[m.quote,m.explanation]),...document.lesson.missingSources,plan.id,plan.version];
+ if(named)required.push(...payload.context.adopted.flatMap(entry=>[entry.id,entry.source.version,entry.source.chunkId]));
  for(const text of required){assert(normalize(parsed.docxText).includes(normalize(text)),'DOCX missing '+text);assert(normalize(pdfText).includes(normalize(text)),'PDF missing '+text);}for(const page of parsed.pages){assert(Math.abs(page.size[0]-595.28)<1&&Math.abs(page.size[1]-841.89)<1);for(const [x0,y0,x1,y1]of page.bounds)assert(x0>=0&&y0>=0&&x1<=page.size[0]+1&&y1<=page.size[1]+1,'PDF text clipped');}
  check('FAT-B04-02 actual original Pi and one bundle approval save native text DOCX and same-version A4 PDF; all goals/phases/checks/evidence/source qualifications independently read back without image pages or clipping');
  const edited=structuredClone(plan.document);edited.lesson.preparation.push('导出后教师修订的准备说明');const changed=await page.evaluate(input=>window.omniEdu.editClassroomPlan(input),{id:plan.id,version:plan.version,document:edited});assert(changed.ok,JSON.stringify(changed));assert.equal(changed.data.status,'draft');

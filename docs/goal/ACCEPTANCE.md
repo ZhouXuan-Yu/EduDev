@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+具名备课依据已通过实机重名和缺失提示、两份实际读回、逐目标引文、原文点击、教师确认、Word/PDF 和冷启。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
+
 上海模考的地区和轮次实机核对覆盖错范围拦截、候选待核、教师纠正、配对与冷启动。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)
 
 讲义导出受众专项覆盖互换文件名、额外教师版、修正后同任务审批、真实 Word 和冷启动。 [验收证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)

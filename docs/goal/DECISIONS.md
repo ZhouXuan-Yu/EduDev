@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+教案对话用完整名称绑定版本。已登记正文从原读取工具实读，映射核对后保存草稿。重名需回专业选择入口确认具体版本。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-44-对话使用具名备课依据)
+
 上海模考目录若明确限定地区或轮次，以教师请求绑定范围。分类冲突、未判明的候选先保留未收录。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)
 
 讲义的结构化 Word 导出在生成草稿前核对老师明示的讲义名和受众，同时验证文件名和实际受众一致。 [交付合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-42-讲义导出的指定版本与受众)

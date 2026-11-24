@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 支持从问小智按完整资料名指定教案依据。最终合成样本通过真实模型、原文定位、教师确认和同版双格式导出。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
+
 D3 模考目录已落实教师指定的地区和轮次，候选、确认、配答及冷启通过。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)
 
 D3 讲义 Word 导出在派发前核对老师明确要求的讲义名称与文件受众，老师可从同一个任务修正不符的文件提案。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)
