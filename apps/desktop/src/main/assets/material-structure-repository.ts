@@ -103,7 +103,7 @@ type Host = {
     signal: AbortSignal,
   ) => Promise<QuestionDocument>;
   cropIllustration?: (plan:StructureIllustrationPlan, signal:AbortSignal)=>Promise<StructureIllustrationProof>;
-  recheckChoiceRow?: (image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal) => Promise<StructureChoiceRecheck | undefined>;
+  recheckChoiceRow?: (image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal, budgetMs: number) => Promise<StructureChoiceRecheck | undefined>;
   verifyPdfMarks?: (
     image: OriginalImage, marks: PageBox[], slices: PageBox[], signal: AbortSignal,
   ) => Promise<boolean>;
@@ -118,6 +118,7 @@ type Host = {
 const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const now = () => new Date().toISOString();
+const CHOICE_RECHECK_BUDGETS_MS: readonly number[] = [16_000, 8_000];
 export const MATERIAL_STRUCTURE_EXTENSIONS = [".pdf", ".docx", ".png", ".jpg", ".jpeg", ".webp"] as const;
 const supported = (r: TeacherResource) =>
   MATERIAL_STRUCTURE_EXTENSIONS.some(extension => r.originalFileName.toLowerCase().endsWith(extension));
@@ -451,7 +452,7 @@ export class MaterialStructureRepository {
       count = 0,
       held = 0;
     const printedHeadings = new Map<string, PdfChoiceHeading | null>();
-    const choiceRecheckedPages = new Set<number>();
+    const choiceRecheckCounts = new Map<number, number>();
     const printedPdf = /\.pdf$/i.test(resource.originalFileName);
     let coverCount = 0, printedAnswers: PdfPrintedAnswers | undefined;
     const save = async (question: StructureQuestion) => {
@@ -469,14 +470,18 @@ export class MaterialStructureRepository {
         pages.map((item) => item.page),
       );
       const source = pages[0];
-      if (this.host.recheckChoiceRow && source && pages.length === 1 && !choiceRecheckedPages.has(source.page.page)) {
-        const plan = planChoiceRecheck(question, source.page);
+      if (this.host.recheckChoiceRow && source && pages.length === 1) {
+        const page = source.page.page;
+        const used = choiceRecheckCounts.get(page) ?? 0;
+        const budget = CHOICE_RECHECK_BUDGETS_MS[used];
+        const plan = budget === undefined ? undefined : planChoiceRecheck(question, source.page);
         if (plan) {
-          choiceRecheckedPages.add(source.page.page);
+          // Replayed rows reserve their original slots without repeating OCR.
+          choiceRecheckCounts.set(page, used + 1);
           const [stored] = await this.host.all("SELECT 1 FROM material_structure_questions WHERE generation=? AND id=?", [generation, question.id]);
           if (!stored) {
             await this.guard(resource, generation, signal, lease);
-            const recheck = await this.host.recheckChoiceRow(source.image, plan, signal);
+            const recheck = await this.host.recheckChoiceRow(source.image, plan, signal, budget);
             if (recheck?.rasterSha256 === source.page.rasterSha256) question.choiceRecheck = recheck;
           }
         }

@@ -433,9 +433,10 @@ export class MaterialStructureRuntime {
     if (blanks.length || parents.length) input.printedRecovery = { blanks, parents };
   }
 
-  async recheckChoiceRow(image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal): Promise<StructureChoiceRecheck | undefined> {
+  async recheckChoiceRow(image: OriginalImage, plan: ChoiceRecheckPlan, signal: AbortSignal, budgetMs: number): Promise<StructureChoiceRecheck | undefined> {
+    const rowSignal = AbortSignal.any([signal, AbortSignal.timeout(budgetMs)]);
     try {
-      const bytes = await this.assets.read(image, true, signal);
+      const bytes = await this.assets.read(image, true, rowSignal);
       const raster = nativeImage.createFromBuffer(bytes);
       const cut = raster.crop(structureCropRect(image, plan.box));
       const size = cut.getSize();
@@ -450,7 +451,6 @@ export class MaterialStructureRuntime {
       const normalized = nativeImage.createFromBitmap(bitmap, wider.getSize()).toPNG({ scaleFactor: 1 });
       const runs = [];
       let attempts = 0;
-      const rowSignal = AbortSignal.any([signal, AbortSignal.timeout(16_000)]);
       for (const input of [original, normalized]) {
         if (rowSignal.aborted) break;
         attempts++;
@@ -462,6 +462,7 @@ export class MaterialStructureRuntime {
         }
       }
       signal.throwIfAborted();
+      if (attempts === 0) return;
       return { page: image.page, box: plan.box, rasterSha256: image.sha256, cropSha256: sha(original),
         engine: LOCAL_OCR_ENGINE, attempts, choices: choiceRecheckReadings(plan, runs) };
     } catch {

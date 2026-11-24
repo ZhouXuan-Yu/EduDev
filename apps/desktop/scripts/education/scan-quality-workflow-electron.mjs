@@ -11,7 +11,8 @@ import {windowsOcrMetrics} from '../acceptance/windows-ocr-metrics.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const files=JSON.parse(process.env.OMNI_EDU_SCAN_WORKFLOW_FILES??'[]');
-assert(root&&files.length===2&&files.every(file=>path.isAbsolute(file)&&fs.statSync(file).isFile()));
+const multiRow=process.argv.includes('--multiple-choice-rows');
+assert(root&&files.length===(multiRow?3:2)&&files.every(file=>path.isAbsolute(file)&&fs.statSync(file).isFile()));
 const output=fs.mkdtempSync(path.join(root,'mixed-workflow-'));
 const data=path.join(output,'data');
 const profile=path.join(output,'profile');
@@ -97,12 +98,12 @@ try{
   const jobs=await waitForJobs();
   report.importMs=Date.now()-started;
   const sources=sql('SELECT id,title,local_path,content_hash FROM teacher_resources');
-  assert.equal(sources.length,2);
-  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v29'&&job.processed===job.pages));
+  assert.equal(sources.length,files.length);
+  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v30'&&job.processed===job.pages));
   assert.deepEqual(sources.map(source=>sha(source.local_path)).sort(),report.documents.map(doc=>doc.sha256).sort());
-  check('One file-picker action stages both scans and the regular background parser publishes versioned results');
+  check('One file-picker action stages the scans and the regular background parser publishes versioned results');
 
-  const [real,controlled]=report.documents.map(doc=>sources.find(source=>source.content_hash===doc.sha256));
+  const [real,controlled,multi]=report.documents.map(doc=>sources.find(source=>source.content_hash===doc.sha256));
   const job=source=>jobs.find(entry=>entry.resource_id===source.id);
   const questions=source=>sql('SELECT body_json FROM material_structure_questions WHERE generation=? ORDER BY rowid',[job(source).generation])
     .map(row=>JSON.parse(row.body_json));
@@ -141,6 +142,20 @@ try{
     independent:{rows:secondTable.rows.length,columns:secondTable.rows[0].length}};
   check('The new source independently detects trailing omissions and skipped labels while retaining the complete choice and free-response items');
 
+  if(multiRow){
+    const rows=questions(multi);
+    report.multipleRows=rows.map(({number,issues,status,choiceRecheck})=>({number,issues,status,choiceRecheck}));
+    assert.deepEqual(rows.filter(row=>row.issues.includes('missing_choice_options')).map(row=>row.number),['1','2','3']);
+    assert.deepEqual(rows.filter(row=>row.choiceRecheck).map(row=>row.number),['1','2']);
+    for(const row of rows.filter(row=>row.choiceRecheck)){
+      assert.equal(row.status,'needs_review');
+      assert.deepEqual(row.choiceRecheck.choices.map(item=>[item.label,item.status]),[['A','unreadable'],['B','unreadable']]);
+    }
+    assert.deepEqual(rows.find(row=>row.number==='4')?.options.map(option=>option.label),[...'ABCD']);
+    assert.equal(rows.find(row=>row.number==='4')?.status,'candidate');
+    check('The actual local OCR rechecks both earlier eligible rows within one scanned page while a complete item is admitted normally');
+  }
+
   await page.setViewportSize({width:1366,height:768});
   const realPanel=await panel(page,real);
   await realPanel.getByTestId('structure-review-overview-toggle').click();
@@ -166,6 +181,16 @@ try{
   await short.getByTestId('structure-review-open').click();
   await short.getByTestId('structure-review-choice-evidence').getByText('待核对选项 C、D',{exact:true}).waitFor();
   assert.deepEqual(await short.getByTestId('structure-review-choice-recheck').getByRole('listitem').allTextContents(),['C 未读清','D 未读清']);
+  if(multiRow){
+    await short.getByTestId('structure-review-cancel').click();
+    const multiple=await panel(cold,multi);
+    const second=multiple.getByTestId('structure-questions').locator('article').filter({hasText:/题 2 .*暂缓入库/u});
+    await second.getByTestId('structure-review-open').click();
+    const readings=second.getByTestId('structure-review-choice-recheck').getByRole('listitem');
+    await readings.first().waitFor();
+    assert.deepEqual(await readings.allTextContents(),['A 未读清','B 未读清']);
+    await cold.screenshot({path:path.join(output,'second-recheck-1920.png'),animations:'disabled'});
+  }
   assert.equal(sql('SELECT COUNT(*) n FROM material_structure_reviews')[0].n,0);
   assert.deepEqual(sql('SELECT generation FROM material_structure_jobs ORDER BY resource_id').map(row=>row.generation),jobs.map(job=>job.generation));
   await close();
