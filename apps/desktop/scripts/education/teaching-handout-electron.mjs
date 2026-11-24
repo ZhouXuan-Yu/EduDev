@@ -114,6 +114,10 @@ async function launch(cold=false){
       if(namedBasis){
         const read=resourceId=>({name:'office_read_material',args:{resourceId,offset:0}});
         const save=args=>({name:modelTool,args});
+        const withRootCitations=draft=>{
+          const [{citations,...chapter}]=draft.chapters;
+          return {...draft,chapters:[chapter],citations};
+        };
         const result=phase?latest():undefined;
         if(result)wire.results.push(result);
         const {first,second,distractor}=wire.ids;
@@ -138,19 +142,29 @@ async function launch(cold=false){
           offer=read(second);
         }else if(phase===5){
           expect(result.text?.includes(secondQuote),'Second named source was not read');
-          offer=save(document(quote,[source(second,'本句不在第二份资料正文中。')]));
+          offer=save(withRootCitations(document(quote,[source(second,'本句不在第二份资料正文中。')])));
         }else if(phase===6){
-          expect(result.error==='source_quote_mismatch','A false quote was accepted');
-          offer=save(document(quote,[source(second,secondQuote)]));
+          expect(result.error==='source_quote_mismatch','Repositioning a false quote must still fail source verification');
+          const draft=document(quote,[source(second,secondQuote)]);
+          offer=save({...draft,chapters:[...draft.chapters,{...draft.chapters[0],title:'第二章'}],citations:draft.chapters[0].citations});
         }else if(phase===7){
-          expect(result.success&&!result.teacherConfirmed&&result.sourceCount===2,'Draft did not retain both sources');
-          wire.bookId=result.bookId;
-          offer=save(document(quote,[source(second,secondQuote)]));
+          expect(result.unparsed?.includes('chapters[i].citations'),'Unassigned citations across chapters must get actionable feedback');
+          const draft=document(quote,[source(second,secondQuote)]);
+          offer=save({...draft,citations:[source(first,quote)]});
         }else if(phase===8){
+          expect(result.unparsed?.includes('chapters[i].citations'),'Conflicting copies of citations must be rejected');
+          offer=save(withRootCitations(document(quote,[source(second,secondQuote)])));
+        }else if(phase===9){
+          expect(result.success&&!result.teacherConfirmed&&result.sourceCount===2,'Draft with misplaced citations did not retain both sources');
+          wire.bookId=result.bookId;
+          const draft=document(quote,[source(second,secondQuote)]);
+          const citations=draft.chapters[0].citations.map(({resourceId,offset,quote})=>({quote,offset,resourceId}));
+          offer=save({...draft,citations});
+        }else if(phase===10){
           expect(result.bookId===wire.bookId,'Identical retry did not return same draft');
           offer=save({...document(quote,[source(second,secondQuote)]),title:'另一份冲突草稿'});
-        }else if(phase===9)expect(result.error==='conflict','Conflicting retry did not stop');
-        expect(phase<=9,'Unexpected model request after named handout save');
+        }else if(phase===11)expect(result.error==='conflict','Conflicting retry did not stop');
+        expect(phase<=11,'Unexpected model request after named handout save');
       }else if(phase){
         const result=latest();
         wire.results.push(result);
@@ -273,7 +287,7 @@ async function verifyLive(state,wire){
 
 async function verifyControlled(state,wire,oldBook){
   assert.equal(wire.error,undefined);
-  assert.equal(wire.requests.length,namedBasis?10:7);
+  assert.equal(wire.requests.length,namedBasis?12:7);
   assert.equal(state.projection.turns.at(-1)?.status,'completed');
   const [handout]=state.teachingHandouts;
   report.sessionId=sessionId; report.bookId=handout.bookId; report.runId=handout.runId; report.taskId=handout.taskId;
@@ -306,6 +320,7 @@ async function verifyControlled(state,wire,oldBook){
     assert.equal(wire.requests[0],'office_read_material');
     assert(!wire.requests.includes('office_list_materials'));
     check('Exact names resolve before model dispatch; saved book contains both requested sources and no substitutes');
+    check('Both observed single-chapter citation layouts converge on one draft; ambiguous layouts and false quotes are rejected');
   }
   await page.setViewportSize({width:1366,height:768});
   await preview.scrollIntoViewIfNeeded();

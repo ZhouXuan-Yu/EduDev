@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {isDeepStrictEqual} from 'node:util';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {ClassroomContext} from '../../shared/classroom-context';
 import {materialId} from '../../shared/materials';
@@ -13,9 +14,13 @@ export function handoutRequest(prompt:string) {
     !/(?:如何|怎么|怎样).{0,6}(?:制作|生成|编写|设计|创建)|(?:不要|无需|不用|不必|别).{0,6}(?:制作|生成|编写|设计|准备|整理|创建|写|做|起草)/u.test(text);
 }
 
+function record(value:unknown):value is Record<string,unknown> {
+  return !!value && typeof value==='object' && !Array.isArray(value);
+}
+
 function fields(value:unknown,keys:string):value is Record<string,unknown> {
   const required=keys.split(' ');
-  return !!value && typeof value==='object' && !Array.isArray(value) &&
+  return record(value) &&
     Object.keys(value).length===required.length && required.every(key => Object.hasOwn(value,key));
 }
 
@@ -26,6 +31,17 @@ function readable(value:unknown,max:number,min=1):value is string {
 
 function texts(value:unknown,count:number,length:number,min=1):value is string[] {
   return Array.isArray(value) && value.length>=min && value.length<=count && value.every(item => readable(item,length));
+}
+
+function normalizeCitationLayout(raw:unknown):unknown {
+  if (!record(raw) || !Object.hasOwn(raw,'citations')) return raw;
+  const {citations,...input}=raw;
+  const chapter=Array.isArray(input.chapters)&&input.chapters.length===1 ? input.chapters[0] : undefined;
+  const correction='请按原文归属把引文放入对应章节的 chapters[i].citations，每章最多四条。移除讲义顶层的 citations。';
+  if (!Array.isArray(citations) || citations.length>4 || !record(chapter)) throw Error(correction);
+  if (!Object.hasOwn(chapter,'citations')) return {...input,chapters:[{...chapter,citations}]};
+  if (!isDeepStrictEqual(chapter.citations,citations)) throw Error(correction);
+  return input;
 }
 
 export function validTeachingHandout(raw:unknown):raw is TeachingHandoutInput {
@@ -81,8 +97,9 @@ export function createTeachingHandoutTool(options:{
   return {
     name:TEACHING_HANDOUT_TOOL,
     label:'保存可编辑讲义草稿',
-    description:'教学讲义、学生学案的可编辑草稿。先在本地资料中检索并逐段实读，再按章提交学习目标、重点、难点、知识讲解、带分步过程的例题和至少两档练习及各自答案解析。正文、题目、推导和答案里的数学表达式使用 Markdown LaTeX，例如 $3x+7=25$、$x=6$；独立公式用 $$...$$。公式定界符让讲义预览和导出使用数学排版。citations用本轮office_read_material的resourceId/offset与原句quote，引文逐字保留。缺依据用sourceGaps明示，不能编引文。无需另建文件计划或生成普通Word。提交成功后提示老师打开真实讲义编辑和核对。',
+    description:'教学讲义、学生学案的可编辑草稿。先在本地资料中检索并逐段实读，再按章提交学习目标、重点、难点、知识讲解、带分步过程的例题和至少两档练习及各自答案解析。正文、题目、推导和答案里的数学表达式使用 Markdown LaTeX，例如 $3x+7=25$、$x=6$；独立公式用 $$...$$。公式定界符让讲义预览和导出使用数学排版。在对应章节的 chapters[i].citations 中填写本轮 office_read_material 的 resourceId、offset 和逐字原句 quote。缺依据用 sourceGaps 明示。无需另建文件计划或生成普通Word。提交成功后提示老师打开真实讲义编辑和核对。',
     parameters:teachingHandoutParameters as ToolDefinition['parameters'],
+    prepareArguments:normalizeCitationLayout,
     execute:async(callId,raw,signal) => {
       const current=()=>options.current()&&!signal?.aborted;
       try {
