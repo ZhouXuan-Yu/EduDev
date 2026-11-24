@@ -1,0 +1,11 @@
+{
+  "indexTree": "3272ed040b6a7b0bf82eb71ab4def4c2fe0aa620",
+  "exportDirectory": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-r1-index-roundtrip-6191d371",
+  "archiveSha256": "a386f42a5e6a07353db469837f57507078fdbe7a0ada941b8ac366c4bc2fe554",
+  "validatorExit": 2,
+  "validatorOutput": "INCOMPLETE: BLOCKED; record is structurally valid, but the Goal is not complete.",
+  "validatorError": "",
+  "runtimeSourceChanged": false,
+  "cause": "git add skipped stat-unchanged normalized entries after .gitattributes changed; explicit scoped --renormalize reapplied the new byte-preservation rule",
+  "attributesScope": "Only acceptance/ui-ux-r1-20261124; existing whitespace rules retained, terminal CR is part of actual Windows records"
+}
