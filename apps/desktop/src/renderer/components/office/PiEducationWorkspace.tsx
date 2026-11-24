@@ -129,6 +129,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const compactAttempt = useRef<{ sessionId: string; commandId: string } | undefined>(undefined);
   const idRef = useRef('');
   const opening=useRef<symbol | undefined>(undefined);
+  const initialOpening=useRef<Promise<void> | undefined>(undefined);
   const attempt = useRef<XiaozhiStartInput | undefined>(undefined);
   const queueAttempt=useRef<{sessionId:string;commandId:string;text:string;mode:'steer'|'followUp'}|undefined>(undefined);
   const sequences = useRef(new Map<string, number>());
@@ -182,7 +183,14 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   function mutationsBlocked(){const view=snapshotRef.current;return !view||view.projection.threadId!==idRef.current||snapshotBarrier.current!==undefined||refreshing.current||refreshFailure.current||eventReceiver.current?.synchronization()!=='ready'||Boolean(view.projection.needsHydration||view.eventPersistence);}
   function requireSynchronized(){if(mutationsBlocked())throw Error('过程记录正在同步，请稍后再试。');}
   async function refreshCurrent(){
-    if(refreshing.current)return;const target=idRef.current,token=hydration.current!.token();setHydrating(true);
+    if(refreshing.current)return;
+    const target=idRef.current,token=hydration.current!.token();setHydrating(true);
+    if(!target){
+      try{await initializeConversation();}
+      catch{if(active.current){setRefreshFailed(true);setNotice('无法加载本地对话。');}}
+      finally{if(active.current)setHydrating(false);}
+      return;
+    }
     const failed=Boolean(snapshotRef.current?.eventPersistence)||eventReceiver.current?.synchronization()==='unavailable';
     try{
       const result=await window.omniEdu?.refreshXiaozhiRecords(target);
@@ -263,6 +271,32 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       return open(target);
     },refreshList);
   }
+  function initializeConversation():Promise<void> {
+    if(!active.current||idRef.current)return Promise.resolve();
+    return initialOpening.current??=(async()=>{
+      const api=window.omniEdu;
+      if(!api)throw Error('configuration');
+      let list=await api.listAiConversations();
+      if(!active.current||idRef.current)return;
+      if(!list.sessions.length){
+        // Bootstrap a local conversation even when the teacher briefly leaves
+        // Ask. A saved first session must remain usable on return.
+        await api.createAiConversationSession({title:'新对话',folderId:null});
+        list=await api.listAiConversations();
+      }
+      if(!active.current||idRef.current)return;
+      setWorkspace(list);
+      const navigation=navigationRef.current;
+      const requested=navigation.target.view==='ai'?navigation.target.sessionId:undefined;
+      let remembered='';
+      try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{/* Use the current session list. */}
+      if(requested&&!list.sessions.some(session=>session.id===requested))navigation.reject(requested);
+      const first=list.sessions.find(session=>session.id===requested)
+        ??list.sessions.find(session=>session.id===remembered)??list.sessions[0];
+      if(!first)throw Error('snapshot_unavailable');
+      await open(first.id);
+    })().finally(()=>{initialOpening.current=undefined;});
+  }
   async function loadEarlier() {
     const current=snapshotRef.current,target=idRef.current;
     const before=current?.projection.turns[0]?.id;
@@ -317,14 +351,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   useEffect(() => {
     if(!hasEntered)return;
     let live = true;active.current=true;
-    void (async () => {
-      const list = await window.omniEdu?.listAiConversations(); if (!live) return;
-      if (list) setWorkspace(list);
-      let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{/* Fall back to current active list. */}
-      const requested=navigationRef.current.target.sessionId;
-      if(requested&&!list?.sessions.some(session=>session.id===requested))navigationRef.current.reject(requested);
-      const first = list?.sessions.find(session=>session.id===(requested||remembered)) || list?.sessions[0]; if (first) await open(first.id); else await fresh();
-    })().catch(() => { if (live) setNotice('无法加载本地对话。'); });
+    void initializeConversation().catch(() => { if (live){setRefreshFailed(true);setNotice('无法加载本地对话。');} });
     const applyEvent = (event: XiaozhiAgentEvent) => {
       if (!live || event.sessionId !== idRef.current || event.sequence <= (sequences.current.get(event.runId) || 0)) return;
       hydration.current!.changed(); // In-flight older snapshots must re-read after the burst.

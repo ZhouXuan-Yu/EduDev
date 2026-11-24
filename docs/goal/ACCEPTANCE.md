@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+D3 首会话保存后的快速切页恢复、唯一弹窗的文档生成和「我的任务」契约检查 **已实现**。独立合成试验验证切页时不自动发送。完整组件指纹检查另有旧记录差异。 [对话专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#首个对话初始化与页面契约)
+
+D3 自然杨浦卷和缺页对照从空库导入至确认 Word/PDF 和冷启打开 **已实现**。不同地区和年份的自然试卷仍待补。 [扫描闭环](../product-agent/04_PROGRESS_AND_EVIDENCE.md#真实扫描模考闭环)
+
 D3 工作区冷启、流式交互、1 GiB 归档、五页本地 OCR 和合成端点长对话整理与冷启读回 **已实现**。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#同版桌面性能和大文件验收)
 
 D3 四条教学流程同一桌面构建有真实模型合成用例与工程回读。真实教师试用按 24 项任务执行。 [集中验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md#教师与规模集中验收)
