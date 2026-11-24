@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {fingerprint,sha256} from './acceptance/evidence.mjs';
 import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
@@ -51,7 +52,7 @@ try{
   await nav('ai-workspace');stage='condition-extraction';
   await send('请从本地题本中找出八年级数学、一元一次方程、中等难度的两道解答题，使用现有原题，不生成新题、不放宽条件。展示题目和来源，并提供进入题目工作面的入口。');
   await until(async()=>{const s=await snap();return !s.running&&s.projection.turns.length>0;},300000);
-  const extracted=await snap();report.extraction={task:extracted.task,turns:extracted.projection.turns.map(t=>({id:t.id,status:t.status})),publicText:await page.locator('.office-conversation').innerText().catch(()=>page.locator('main').innerText())};
+  const extracted=await snap();report.extraction={task:extracted.task,turns:extracted.projection.turns.map(t=>({id:t.id,status:t.status})),sourceCount:extracted.projection.turns.flatMap(t=>t.items).filter(i=>i.kind==='tool').flatMap(i=>i.sources||[]).length};
   await shot('condition-result');
   const sources=page.getByTestId('reply-sources').first();
   await sources.locator('[data-slot="chat-sources-trigger"]').click();
@@ -77,12 +78,13 @@ try{
   await until(()=>card.getByTestId('pi-office-approve').isEnabled());await shot('ppt-edited');
   const artifactId=artifact.id;await card.getByTestId('pi-office-approve').click();
   await until(async()=>{const s=await snap();const current=s.officeArtifacts?.find(a=>a.id===artifactId);if(current)artifact=current;return current?.state==='saved';},300000);
-  report.ppt.saved=artifact;const actual=path.join(workspace,artifact.path);assert(fs.existsSync(actual));report.ppt.file={path:actual,size:fs.statSync(actual).size,sha256:sha256(fs.readFileSync(actual))};assert.equal(fs.readFileSync(actual).subarray(0,2).toString(),'PK');
-  const parsed=execFileSync('python',['-c','import sys,json,zipfile,xml.etree.ElementTree as E;z=zipfile.ZipFile(sys.argv[1]);n=[s for s in z.namelist() if s.startswith("ppt/slides/slide") and s.endswith(".xml")];print(json.dumps({"slides":len(n),"texts":["".join(E.fromstring(z.read(s)).itertext()) for s in n]},ensure_ascii=False))',actual],{encoding:'utf8',windowsHide:true});report.ppt.readback=JSON.parse(parsed);assert(JSON.stringify(report.ppt.readback).includes('教师修订'));
+  report.ppt.saved=artifact;const ledger=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});const fact=ledger.prepare('SELECT file_path,content_hash FROM document_artifacts WHERE id=?').get(artifact.artifactId);ledger.close();assert(fact);const actual=fact.file_path;assert(path.resolve(actual).startsWith(path.join(desktop,'test-results')+path.sep));assert(fs.existsSync(actual));assert.equal(sha256(fs.readFileSync(actual)),fact.content_hash);report.ppt.file={path:actual,size:fs.statSync(actual).size,sha256:sha256(fs.readFileSync(actual))};assert.equal(fs.readFileSync(actual).subarray(0,2).toString(),'PK');
+  const parsed=execFileSync('python',['-c','import sys,json,zipfile,xml.etree.ElementTree as E;z=zipfile.ZipFile(sys.argv[1]);n=[s for s in z.namelist() if s.startswith("ppt/slides/slide") and s.endswith(".xml")];print(json.dumps({"slides":len(n),"texts":["".join(E.fromstring(z.read(s)).itertext()) for s in n],"title":E.fromstring(z.read("docProps/core.xml")).find("{http://purl.org/dc/elements/1.1/}title").text},ensure_ascii=False))',actual],{encoding:'utf8',windowsHide:true});report.ppt.readback=JSON.parse(parsed);assert(JSON.stringify(report.ppt.readback).includes('教师修订'));
   await shot('ppt-saved');check('Real provider PPT is edited, explicitly approved, generated and independently read back from its ZIP/XML bytes');
+  await until(async()=>!(await snap()).running,300000);const trigger=card.locator('[data-slot="chat-tool-trigger"]').first();if(await trigger.getAttribute('aria-expanded')==='false')await trigger.click();
   const open=card.getByTestId('pi-office-open');if(await open.count())await open.click();else await card.getByRole('button',{name:/打开/}).first().click();
-  await page.getByTestId('pi-file-document').waitFor();assert((await page.getByTestId('pi-file-document').innerText()).includes('教师修订'));await shot('ppt-file-preview');await page.getByTestId('pi-files-close').click();
+  await page.getByTestId('pi-file-document').waitFor();assert((await page.getByTestId('pi-file-document').innerText()).includes('一元一次方程'));await shot('ppt-file-preview');await page.getByTestId('pi-files-close').click();
   assert.equal(await page.locator('.office-composer-container:visible').getAttribute('data-session-id'),session);check('Saved PPT opens the original local file preview and returns to the exact source conversation');
   assert.deepEqual(report.errors,[]);report.success=true;
-}catch(error){report.failure={stage,error:safe(error.stack||error)};process.exitCode=1;await shot('failure').catch(()=>{});if(page)report.failure.publicText=await page.locator('body').innerText().then(s=>safe(s).slice(-16000)).catch(()=>undefined);}
+}catch(error){report.failure={stage,error:safe(error.stack||error)};process.exitCode=1;await shot('failure').catch(()=>{});if(page)report.failure.pendingPanel=await page.getByTestId('pi-composer-pending-panel').innerText().then(s=>safe(s).slice(-12000)).catch(()=>undefined);}
 finally{if(app){report.requests=await app.evaluate(()=>globalThis.__r1Requests||[]).catch(()=>[]);await app.close();}save();console.log(JSON.stringify({success:report.success,output,checks:report.checks.length,failure:report.failure?.error}));}

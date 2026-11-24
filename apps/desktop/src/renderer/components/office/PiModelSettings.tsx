@@ -87,7 +87,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
                 <p className={styles.hint} data-testid="pi-settings-configured">{view?.configured ? `已配置 · ${view.maskedApiKey}` : '尚未配置'}</p>
               </div>
               <div className={styles.credentialControl}>
-                <TextField aria-label="API 密钥" isDisabled={disabled} value={key} onChange={setKey}><Input id="pi-settings-api-key" type="password" autoComplete="off" data-testid="pi-settings-key" placeholder="留空保留现有密钥" /></TextField>
+                <TextField aria-label="API 密钥" isDisabled={disabled} value={key} onChange={setKey}><Input className={styles.readablePlaceholder} id="pi-settings-api-key" type="password" autoComplete="off" data-testid="pi-settings-key" placeholder="留空保留现有密钥" /></TextField>
                 <div className={styles.save}><Button type="button" variant="secondary" data-testid="pi-settings-verify" isDisabled={disabled || !key.trim()} onPress={() => void verify()}>{verifying ? '正在验证…' : '验证密钥'}</Button></div>
               </div>
             </div>

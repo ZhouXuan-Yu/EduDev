@@ -171,7 +171,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
           {!query.trim()&&<button type="button" className={layoutStyles.navigationEntry} aria-current={tab==='capabilities'?'page':undefined} disabled={busy} data-testid="pi-settings-tab-capabilities" onClick={()=>open('capabilities')}>能力中心</button>}
           <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy}>
-            <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
+            <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className={`edu-settings-search-input ${layoutStyles.readablePlaceholder}`} placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
           </SearchField>
         </nav>
         <main className={layoutStyles.main} aria-label={title} data-testid="pi-settings-main">

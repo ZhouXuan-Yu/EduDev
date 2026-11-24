@@ -31,6 +31,7 @@ async function nav(space) {
   await page.locator(`.edu-shell[data-view="${space}"]:visible`).waitFor();
 }
 async function capture(id, state = 'current') {
+  await page.waitForFunction(()=>![...document.querySelectorAll('.edu-shell [data-testid$=loading],.edu-shell [role=status],.edu-shell p')].some(el=>el.getClientRects().length&&/^正在(读取|加载|查询|核对)/.test(el.textContent.trim())));
   for (const [width, height] of [[1366, 768], [1920, 1080], [800, 768]]) {
     await app.evaluate(({BrowserWindow}, size) => BrowserWindow.getAllWindows()[0].setContentSize(...size), [width, height]);
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
@@ -83,11 +84,13 @@ try {
     report.settings.push({id, screenshot: `settings-${id}.png`, text: (await page.getByTestId('pi-settings-main').innerText()).slice(0, 1800)});
     save();
   }
-  for (const state of ['normal', 'hover', 'focus']) {
+  for (const state of ['normal', 'hover', 'focus', 'selected', 'pressed']) {
     const target = page.getByTestId('pi-settings-tab-interface');
     await page.mouse.move(1, 1); await target.evaluate(element => element.blur());
     if (state === 'hover') await target.hover();
     if (state === 'focus') await target.focus();
+    if(state==='selected')await target.click();
+    if(state==='pressed'){await target.hover();await page.mouse.down();}
     const computed = await target.evaluate(element => {
       const css = getComputedStyle(element);
       return {background: css.backgroundColor, color: css.color, outline: css.outline, font: css.font, selected: element.getAttribute('aria-current')};
@@ -97,10 +100,13 @@ try {
     const matched = await cdp.send('CSS.getMatchedStylesForNode', {nodeId});
     report.cssom.push({state, computed, rules: matched.matchedCSSRules.map(({rule}) => ({selector: rule.selectorList.text,
       origin: rule.origin, source: sheetMap.get(rule.styleSheetId), layers: rule.layers, properties: rule.style.cssProperties.filter(p => /color|background|outline|font/.test(p.name))}))});
+    if(state==='pressed')await page.mouse.up();
   }
   report.spacing = await page.locator('[data-settings-page="models"], [data-testid="pi-settings-main"]').first().evaluate(element => {
     const style = getComputedStyle(element); return {space24: style.getPropertyValue('--space-24'), space40: style.getPropertyValue('--space-40')};
   });
+  report.displays=await app.evaluate(({screen})=>screen.getAllDisplays().map(({bounds,scaleFactor})=>({bounds,scaleFactor})));
+  assert.deepEqual(report.errors,[]);assert(report.pages.every(p=>!p.viewport.horizontalOverflow),'No document horizontal overflow');
   report.httpAttempts = await app.evaluate(() => globalThis.__uiRoneHttp);
   assert.equal(fingerprint(path.join(desktop, 'src')).sha256, before.sha256);
   assert.equal(fingerprint(path.join(desktop, 'out')).sha256, build.sha256);

@@ -330,3 +330,8 @@
 @media (prefers-reduced-motion: reduce) {
   .chevron { transition: none; }
 }
+
+/* Existing settings field opt-in, scoped to application-owned inputs. */
+.readablePlaceholder:not(:disabled)::placeholder {
+  color: var(--field-placeholder, var(--muted));
+}
