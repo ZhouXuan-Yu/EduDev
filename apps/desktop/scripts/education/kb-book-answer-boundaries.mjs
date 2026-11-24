@@ -70,6 +70,29 @@ check('Version four retains answer table matching and holds real section and pag
  const [candidate]=bookAnswerPage(uncert,uncert,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY).entries;
  assert(candidate.issues.includes('missing_section')&&candidate.issues.includes('page_uncertainty'));
 });
+check('A wrapped exam heading scopes a literal answer grid without losing the separate table label',()=>{
+ const heading='2025年上海市静安区\n初三数学二模\n参考答案（乙卷）';
+ const source=heading+'\n选择题答案\n3 4\nA B';
+ const first=scoped(source.replace(heading,heading.replaceAll('\n','')));
+ const result=bookAnswerPage(first,scoped(source),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true);
+ assert.deepEqual(result.entries.map(e=>[e.number,e.answer,e.section]),[['3','A',heading],['4','B',heading]]);
+ assert(result.entries.every(e=>e.agrees&&e.quote===source.slice(e.start,e.end)));
+});
+check('A separated or foreign cover cannot leave its answer under a previous Shanghai scope',()=>{
+ const first='2025年上海市静安区初三数学二模参考答案';
+ for(const incomplete of ['2025年上海市长宁区\n\n初三数学二模参考答案','2025年江苏省南京市\n初三数学二模参考答案']){
+  const raw=scoped(first+'\n1. D\n解析：前一份。\n'+incomplete+'\n2. B\n解析：另一份。');
+  const result=bookAnswerPage(raw,raw,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true);
+  assert.deepEqual(result.entries.map(e=>[e.number,e.section]),[['1',first],['2','']]);
+ }
+});
+check('An incomplete heading cannot absorb a new independently dated exam',()=>{
+ const actual='2025年上海市静安区初三数学二模参考答案';
+ const raw=scoped('2026年上海市长宁区\n'+actual+'\n1. D\n解析：该卷答案。');
+ const [entry]=bookAnswerPage(raw,raw,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true).entries;
+ assert.equal(entry.section,actual);
+ assert(entry.agrees);
+});
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});
  try{

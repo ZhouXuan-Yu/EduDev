@@ -1,6 +1,7 @@
 import type { DocumentStructureReference, StructurePage, StructureQuestion } from '../../shared/material-document-structure';
 import { bookSectionAt } from './material-book-answer-content';
 import { bookSectionLookupKey } from '../../shared/material-book-section-layout';
+import type { ShanghaiMockSectionPolicy } from '../../shared/shanghai-mock-sections';
 
 export type StructureBookScope = {
   schemaVersion: 'xiaozhi.structure-book-scope.v1';
@@ -16,7 +17,7 @@ export function structureBookScope(
   reference: DocumentStructureReference,
   question: StructureQuestion,
   pages: { page: StructurePage; sha: string }[],
-  mockTitles = true,
+  mockTitles: ShanghaiMockSectionPolicy = true,
 ): StructureBookScope {
   const firstPage = question.pageRange[0];
   const scope: StructureBookScope = { schemaVersion: 'xiaozhi.structure-book-scope.v1', reference, page: firstPage, section: '', pages: [] };

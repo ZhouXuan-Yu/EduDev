@@ -2,6 +2,12 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 换行标题的模考逐题配答
+
+试卷与答案册的完整身份可分布在同页相邻的两至三行，包括单列成行的卷别。结构定位、逐题答案和答案表格使用同一标题边界；缺字段、卷别冲突及隔断后的文字继续待核。自动写回仍核对版本、两遍记录、题号和原页。原字面、偏移和存量配答回执保留。升级仅重新投影本机派生索引，旧配答依原版规则读回。
+
+旧逻辑在换行样本留待核。新版生产 Electron 从资料库导入并关联两份 PDF，在同一答案页的两个第 1 题中写回徐汇 A 卷的 100℃，排除虹口 A 卷的 95℃。原答案页和冷启读回经核验。样本是合成 PDF 与受控模型转录，天然多卷的整批配答准确率和共享答案册仍待验证。固定证据目录 `D:/WorkProject/EduProject/acceptance/D3-20261125/wrapped-exam-answers`。
+
 ## 独立扫描公式区的本机识别
 
 同一三页扫描样卷上，v28 在版面中标出三处独立公式，题目核对缺少公式入口。v29 关联原页和题目后，在现有公式弹窗用本机 PP-FormulaNet 识别根式、上下标和负数分式，可预览、编辑及复制 LaTeX。原先需要另行配置 Python 和权重。已有识别与原图核对证据在 `D:/WorkProject/EduProject/acceptance/D3-20261125/formula-recognition`。

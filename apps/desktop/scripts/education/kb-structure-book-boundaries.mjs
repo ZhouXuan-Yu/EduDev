@@ -97,6 +97,41 @@ const mockPaper='2025年上海市徐汇区九年级数学一模试卷（A卷）'
 const mockAnswer='2025年上海徐汇区初三数学一模参考答案（A卷）';
 const withMockTitle=(p,q)=>[[p('title',mockPaper)],[q]];
 const numberedAnswer='\n1. 答案：48平方米\n解析：8乘以6得48。';
+for(const [paper,answer] of [
+ ['2025 年上海市徐汇区\n九年级数学一模试卷（A卷）','2025 年上海徐汇区初三数学一模\n参考答案（A卷）'],
+ ['2025 年上海市\n奉贤区高二物理二模\n试题（乙卷）','2025年上海奉贤区高二年级物理2模\n参考解答\n（乙卷）'],
+]){
+ await check('A printed heading wrapped over adjacent lines preserves the exact exam identity',{
+  pages:(p,q)=>[paper.split('\n').map((line,index)=>p('line-'+index,line)),[q]],
+  answerText:mockAnswer.replace('徐汇','虹口')+'\n1. B\n解析：另一份。\n'+answer+numberedAnswer,
+ },async f=>{
+  const view=await f.matchStructure(),after=await f.read();
+  assert.equal(view.rows[0].state,'applied');
+  assert.equal(after.answer,'48平方米');
+  await f.structures.validate(after);
+ });
+}
+await check('An incomplete wrapped heading ends the previous exam scope',{
+ pages:withMockTitle,answerText:mockAnswer+'\n1. 答案：D\n解析：上一份。\n2025年上海虹口区\n初三一模参考答案（A卷）\n2. 答案：B\n解析：另一份。',
+},async f=>{
+ const rows=f.db.prepare("SELECT number,section_key FROM material_book_answer_index_v1 WHERE start>=0 ORDER BY start").all();
+ assert.deepEqual(rows.map(row=>[row.number,row.section_key]),[['1',mockAnswer.normalize('NFKC')],['2','']]);
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+});
+await check('Upgrading a v5 index replays the saved pages without changing the original receipts',{
+ pages:(p,q)=>[[p('prefix','2025年上海市徐汇区'),p('main','九年级数学一模试卷（A卷）')],[q]],
+ answerText:'2025年上海徐汇区\n初三数学一模参考答案（A卷）'+numberedAnswer,
+},async f=>{
+ const original=JSON.stringify([...f.proofs]);
+ f.db.exec("UPDATE material_book_answer_index_v1 SET lookup_key='' WHERE start>=0;UPDATE material_book_answer_control_v1 SET section_policy=5;");
+ assert.equal(await f.repo.index.pending(),false);
+ await f.repo.migrate();
+ assert.equal(await f.repo.index.pending(),true);
+ await f.init();
+ assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,6);
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ assert.equal(JSON.stringify([...f.proofs]),original);
+});
 await check('Mixed district answer pages retain exact numeric text for the correct matching edition',{
  pages:withMockTitle,answerText:mockAnswer.replace('徐汇','虹口')+'\n1. B\n解析：另一份。\n'+mockAnswer+numberedAnswer,
 },async f=>{
@@ -137,6 +172,29 @@ await check('A historical applied chapter answer still authenticates in legacy s
  const receipt=f.db.prepare('SELECT id,evidence_json FROM material_book_answer_journal_v1').get();
  const evidence=JSON.parse(receipt.evidence_json);
  delete evidence.sectionProjection;
+ f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=? WHERE id=?').run(JSON.stringify(evidence),receipt.id);
+ await f.structures.validate(await f.read());
+});
+await check('A standalone edition line prevents linking to an edition-free answer key',{
+ pages:(p,q)=>[[p('heading',mockPaper.replace('（A卷）','')),p('edition','（A卷）')],[q]],
+ answerText:mockAnswer.replace('（A卷）','')+numberedAnswer,
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].reason,'answer_not_found');
+ assert.equal((await f.read()).answer,'');
+});
+await check('A conflicting edition line prevents automatic matching',{
+ pages:(p,q)=>[[p('heading',mockPaper),p('edition','B卷')],[q]],answerText:mockAnswer+numberedAnswer,
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].reason,'missing_section');
+ assert.equal((await f.read()).answer,'');
+});
+await check('A historical single-line Shanghai match validates with its original parsing policy',{
+ pages:withMockTitle,answerText:mockAnswer+numberedAnswer,
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const receipt=f.db.prepare('SELECT id,evidence_json FROM material_book_answer_journal_v1').get();
+ const evidence=JSON.parse(receipt.evidence_json);
+ evidence.sectionProjection='shanghai-mock-sections.v1';
  f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=? WHERE id=?').run(JSON.stringify(evidence),receipt.id);
  await f.structures.validate(await f.read());
 });

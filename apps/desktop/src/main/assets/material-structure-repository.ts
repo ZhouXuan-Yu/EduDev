@@ -42,6 +42,7 @@ import { validPdfFilePage } from "../../shared/material-pdf-file";
 import { localizedPdfMarkProof, verifiedQuestionBeforeNativeSection, verifiedQuestionInPdfConflict } from "./material-pdf-question-conflict";
 import { BOOK_SECTION_LOOKBACK } from "./material-book-question-section";
 import { structureBookScope } from "./material-structure-book-scope";
+import type { ShanghaiMockSectionPolicy } from "../../shared/shanghai-mock-sections";
 import {
   assertStructureIllustrationPlan, attachStructureIllustrations, planStructureIllustrations,
   structureIllustrationAssets, validStructureIllustrationProof,
@@ -1298,7 +1299,7 @@ export class MaterialStructureRepository {
     return {next,illustrations};
   }
 
-  async bookScope(q: QuestionBankItem, signal: AbortSignal, mockTitles = true) {
+  async bookScope(q: QuestionBankItem, signal: AbortSignal, mockTitles: ShanghaiMockSectionPolicy = true) {
     const reference = q.archive?.structure;
     if (!reference) throw Error("source_changed");
     await this.host.verifyBookOriginal?.(reference.resourceId,reference.version,signal);

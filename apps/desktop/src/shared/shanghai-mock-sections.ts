@@ -1,9 +1,14 @@
 import { MOCK_EXAM_GRADES, MOCK_EXAM_SUBJECTS, SHANGHAI_DISTRICTS, mockExamYear } from "./mock-exam-compilation";
 
 export const SHANGHAI_MOCK_SECTIONS = "shanghai-mock-sections.v1" as const;
+export const WRAPPED_SHANGHAI_MOCK_SECTIONS = "shanghai-mock-sections.v2" as const;
+export type ShanghaiMockSectionPolicy = boolean | typeof SHANGHAI_MOCK_SECTIONS;
 const gradeAliases = ["初预", "初一", "初二", "初三", "高一年级", "高二年级", "高三年级"];
 const roundNames = ["一", "二", "三", "四"];
 const edition = "(?:[ABCD甲乙丙丁]卷)";
+const editionLine = new RegExp("^(?:\\(" + edition + "\\)|" + edition + ")$", "u");
+const regionHeading = new RegExp("^\\d{4}年?上海(?:市)?(?:" + SHANGHAI_DISTRICTS.join("|") + ")?$", "u");
+const yearHeading = /^\d{4}(?:年|届|学年|[-–—]|上海)/u;
 const variant = "(?:\\((" + edition + ")\\)|(" + edition + "))?";
 const answerRole = "(?:参考答案(?:及解析)?|答案(?:解析|册)?|参考解答)";
 const title = new RegExp(
@@ -31,7 +36,28 @@ export function shanghaiMockSectionKey(text: string): string | undefined {
 /** An exam-looking heading with incomplete identity terminates inheritance. */
 export function shanghaiMockSectionBoundary(text: string): boolean {
   const normalized = layoutText(text);
-  return normalized.length <= 100 && /^\d{4}(?:年|届|学年|[-–—]|上海)/u.test(normalized) &&
+  return normalized.length <= 100 && yearHeading.test(normalized) &&
     /(?:[一二三四1-4]模|模考|模拟)/u.test(normalized) &&
     /(?:试卷|试题|参考答案|答案册|答案解析|答案|参考解答)(?:\(?[ABCD甲乙丙丁]卷\)?)?$/u.test(normalized);
+}
+
+/** Only adjacent literal lines can contribute to the identity of a printed heading. */
+export function wrappedShanghaiMockHeading(lines: readonly string[]) {
+  const first = layoutText(lines[0] ?? "");
+  if (!yearHeading.test(first)) return;
+  let boundary: { title: string; count: number } | undefined;
+  if (regionHeading.test(first)) boundary = { title: "", count: 1 };
+  let heading = lines[0];
+  for (let i = 1; i < Math.min(lines.length, 3); i++) {
+    const next = layoutText(lines[i]);
+    if (!next || yearHeading.test(next) || /[。！？?]/u.test(next)) break;
+    // An already complete heading can only absorb a standalone explicit edition.
+    const complete = shanghaiMockSectionKey(heading);
+    if (complete && !editionLine.test(next)) break;
+    heading += "\n" + lines[i];
+    if (layoutText(heading).length > 100) break;
+    if (shanghaiMockSectionKey(heading)) boundary = { title: heading, count: i + 1 };
+    else if (complete || shanghaiMockSectionBoundary(heading)) boundary = { title: "", count: i + 1 };
+  }
+  return boundary;
 }

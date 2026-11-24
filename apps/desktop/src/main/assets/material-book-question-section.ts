@@ -4,6 +4,7 @@ import type {MaterialBookAnswerIndex} from './material-book-answer-index';
 import {sameMaterialBookIdentity} from '../../shared/material-book-pair';
 import {MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY,pageTranscriptionAgrees} from '../../shared/material-ai-page';
 import type {BookAnswerPage} from '../../shared/material-book-answer';
+import type {ShanghaiMockSectionPolicy} from '../../shared/shanghai-mock-sections';
 
 type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
 export const BOOK_SECTION_CONTEXT='xiaozhi.book-section-context.v1' as const;
@@ -13,12 +14,12 @@ type Page={batchId:string;ordinal:number;source:NonNullable<Proof['unit']['pageS
 export type BookQuestionSectionEvidence={schemaVersion:typeof BOOK_SECTION_CONTEXT;section:string;pages:Page[]};
 export type BookAnswerSectionEvidence={schemaVersion:typeof BOOK_ANSWER_SECTION_CONTEXT;section:string;pages:Page[]};
 type Host={receipt:(batch:string,ordinal:number)=>Promise<Proof>};
-function numbers(proof:Proof,section:string|undefined,mockTitles:boolean){
+function numbers(proof:Proof,section:string|undefined,mockTitles:ShanghaiMockSectionPolicy){
  const read=(response:Proof['first'])=>bookAnswerPage(response,response,undefined,proof.unit.bookPagePolicy,mockTitles).entries.filter(e=>section===undefined?!e.section:e.sectionKey===bookSectionKey(section)).map(e=>Number(e.number));
  const a=read(proof.first),b=read(proof.final);
  return JSON.stringify(a)===JSON.stringify(b)&&b.every((n,i)=>n>0&&(!i||n>b[i-1]))?b:undefined;
 }
-function cleanContinuityPage(proof:Proof,page:BookAnswerPage,mockTitles:boolean){
+function cleanContinuityPage(proof:Proof,page:BookAnswerPage,mockTitles:ShanghaiMockSectionPolicy){
  return proof.first.outcome==='no_questions'&&proof.final.outcome==='no_questions'&&
   pageTranscriptionAgrees(proof.first,proof.final)&&page.status==='compared'&&
   !page.pageUncertain&&!page.unresolvedTables&&!page.firstOnly.length&&
@@ -30,7 +31,7 @@ function cleanContinuityPage(proof:Proof,page:BookAnswerPage,mockTitles:boolean)
 }
 /** Derived context only. Original paid transcripts and canonical question text are untouched. */
 export class MaterialBookQuestionSection{
- constructor(private host:Host,private index:MaterialBookAnswerIndex,private mockTitles=true){}
+ constructor(private host:Host,private index:MaterialBookAnswerIndex,private mockTitles:ShanghaiMockSectionPolicy=true){}
  async resolve(current:Proof,signal=new AbortController().signal):Promise<BookQuestionSectionEvidence|undefined>{
   return this.resolveRole(current,false,signal) as Promise<BookQuestionSectionEvidence|undefined>;
  }
