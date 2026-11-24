@@ -1,0 +1,17 @@
+{
+  "authorization": "contract/docs/04_COMPONENT_POLICY.md explicitly authorizes replacement of the rejected native markers. OfficeComposer internals untouched. Queue/pending state, callbacks, DOM geometry and skin preserved; only marker reserved space changes.",
+  "files": [
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx",
+      "onlyIndicatorAdapter": true,
+      "handlersValuesOptionsAndExistingClassesUnchanged": true,
+      "originalSHA256": "f237c8c0eb5f66a5304cc5ba77ccac91ee3d39d10f3c1d19bbb0015453e15968"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiComposerQueue.tsx",
+      "onlyIndicatorAdapter": true,
+      "handlersValuesOptionsAndExistingClassesUnchanged": true,
+      "originalSHA256": "3e14b718b1ddbc3d814e4d0253c98844e815557afcbe88bb64fd878281aef01f"
+    }
+  ]
+}

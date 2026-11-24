@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "package_id": "XIAOZHI_UI_UX_R1_20261124",
+  "version": "2026-11-24",
+  "criteria": [
+    {
+      "id": "UIR1-01",
+      "title": "代码、构建与运行窗口身份",
+      "required": true,
+      "pass_rule": "记录实际源码根、基线 SHA、执行分支、Electron 启动命令、构建指纹和可见窗口。历史截图与当前构建分别标注；最终证据能对应真实代码。",
+      "required_layers": [
+        "git",
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-02",
+      "title": "范围与旧合同映射",
+      "required": true,
+      "pass_rule": "18 个已知页面合同逐项登记入口、对象、组件、数据来源与本轮处理；设置子页和弹层有附表。旧 A01–A36 全部完成影响 / 回归映射，禁止以图片数当页面覆盖数。",
+      "required_layers": [
+        "static"
+      ]
+    },
+    {
+      "id": "UIR1-03",
+      "title": "并行协作和样式边界",
+      "required": true,
+      "pass_rule": "未覆盖他人工作；配置责任与接口表齐全；运行代码不另建 Pi、权限或数据库。CSSOM / diff 证明无本轮 vendor 修改、全局样式污染和无关依赖升级。",
+      "required_layers": [
+        "git",
+        "static"
+      ]
+    },
+    {
+      "id": "UIR1-04",
+      "title": "HeroUI 复用与黑箭头",
+      "required": true,
+      "pass_rule": "所有本轮触及的小控件有来源 / 版本 / 样式依赖记录；粗黑默认 select / summary 三角被匹配组件指示符替代；保留可发现性和语义，不误删数学内容或受保护输入。",
+      "required_layers": [
+        "static",
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-05",
+      "title": "控件状态区分",
+      "required": true,
+      "pass_rule": "代表性控件逐项检查 normal、hover、selected、pressed、focus、expanded、disabled、error 的适用状态。悬停不冒充选中；导航当前项语义唯一，焦点可见。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-06",
+      "title": "排版与可读性",
+      "required": true,
+      "pass_rule": "所有冻结页面无文字互相覆盖、标题乱级、表单标签漂移；长中文、文件名、公式、图文与限制条件可读。应用字体沿已批准 token；主内容不被缩成辅助字号。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-07",
+      "title": "位置与主操作",
+      "required": true,
+      "pass_rule": "每页页名、当前对象 / 状态及下一步清楚；有层级时返回目标明确。页面级主要操作只有一个视觉重点；不新增假保存、假继续或无去向入口。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-08",
+      "title": "尺寸与缩放可操作",
+      "required": true,
+      "pass_rule": "全部冻结页面通过 1366×768、1920×1080 与 800×768 操作检查；代表密集页验证 125% / 150% 系统缩放。记录 native / CSS viewport / DPR，不遮挡确认、关闭、返回和焦点。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-09",
+      "title": "状态覆盖",
+      "required": true,
+      "pass_rule": "冻结页面按实际能力覆盖有数据、长内容、空、加载、错误；任务另覆盖运行、停止、等待、部分结果。读取失败不显示空；关闭 / 取消保留应保留内容。缺少状态证据不能用正常截图代替。",
+      "required_layers": [
+        "electron",
+        "component"
+      ]
+    },
+    {
+      "id": "UIR1-10",
+      "title": "设置分层和定位",
+      "required": true,
+      "pass_rule": "常用设置以教师用途呈现，必要说明就近；专业策略 / 诊断按需查看且原功能可达；搜索定位具体项；当前分类唯一；不强制实施未确认六分类。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-11",
+      "title": "保存与生效真实",
+      "required": true,
+      "pass_rule": "对实际存在的即时和显式保存分别核对；失败保留输入且可恢复；成功提示基于真实宿主响应；重进 / 需要持久化的重启后回读一致。未保存离开无静默丢失。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-12",
+      "title": "作用范围与授权",
+      "required": true,
+      "pass_rule": "应用 / 教师 / 当前对话 / 当前任务范围可辨；不把最近会话偷偷投射成全局。目录、自动操作、完全访问等保持真实权限差异与原确认入口；UI 变化不扩权。",
+      "required_layers": [
+        "electron",
+        "static"
+      ]
+    },
+    {
+      "id": "UIR1-13",
+      "title": "教学偏好与记忆",
+      "required": true,
+      "pass_rule": "显示真实已确认偏好和适用范围，示例不冒充已保存；关闭 / 删除不混同；scope 和保存 / 生效遵循实际接口，不用单一开关替换多语义枚举。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-14",
+      "title": "任务信息和行动",
+      "required": true,
+      "pass_rule": "任务名称简明、关键约束可见且完整原要求可查；状态与实际记录一致；主要按钮对应可执行下一步；任务和原会话身份一致，不用重复长段落掩盖行动。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-15",
+      "title": "原输入与追加消息保护",
+      "required": true,
+      "pass_rule": "OfficeComposer、工具栏及弹层同环境外观 / 行为无未授权变化。IME、换行、附件、草稿隔离、流式输入和当前消息追加 / 撤回按原合同通过；不重挂载丢草稿。",
+      "required_layers": [
+        "electron",
+        "component"
+      ]
+    },
+    {
+      "id": "UIR1-16",
+      "title": "统一待处理面板",
+      "required": true,
+      "pass_rule": "一个会话一个 PiComposerPendingPanel，位于输入上方；切事项 / 收起 / 恢复保留填入内容，进入等待不抢输入焦点；提交 / 审批沿宿主，办结在原对话留记录。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-17",
+      "title": "右栏与返回连续性",
+      "required": true,
+      "pass_rule": "右栏由用户主动打开，显示真实对象；普通工具事件不抢空间；列表 / 详情 / 编辑 / 原对话返回保留身份、筛选、草稿与合理滚动。模态关闭后焦点返回合理位置。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-18",
+      "title": "组卷真实往返",
+      "required": true,
+      "pass_rule": "从问小智或现有合法入口形成真实题组，选题 / 编辑 / 预览 / 原正式导出与返回保持同一对象；编辑 / 保存后回读与文件一致；来源与确认不被绕过。底座缺失则 BLOCKED。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-19",
+      "title": "PPT 真实往返",
+      "required": true,
+      "pass_rule": "从问小智发起生成，打开真实 PPT 成果和现有预览 / 编辑，验证支持的修改 / 保存 / 返回；实际文件可打开、回读一致。无能力或模型不可用时 BLOCKED，不交固定样例当生成。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-20",
+      "title": "按条件抽题真实往返",
+      "required": true,
+      "pass_rule": "从对话按实际条件抽题，核对结果与来源，进入现有题目工作面并返回；筛选 / 选择保持，空结果和缺题明确；不暗放宽限制或伪造命中。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-21",
+      "title": "学生与资料对象一致性",
+      "required": true,
+      "pass_rule": "资料筛选→详情→返回保留上下文；同一 studentId 切子页一致；切对象保护未保存内容，旧请求晚到不污染新对象；需要持久化的内容重启一致。",
+      "required_layers": [
+        "electron",
+        "readback"
+      ]
+    },
+    {
+      "id": "UIR1-22",
+      "title": "键盘与可访问性",
+      "required": true,
+      "pass_rule": "键盘完成选择、展开、菜单、确认及返回；焦点可见，模态 / 非模态语义正确；图标按钮有名称，字段有标签。新改造指针目标符合 24×24 CSS px 或记录有效例外。",
+      "required_layers": [
+        "electron",
+        "component"
+      ]
+    },
+    {
+      "id": "UIR1-23",
+      "title": "反馈与使用流畅度",
+      "required": true,
+      "pass_rule": "同机同数据有前后记录；三类轻量 UI 操作各 10 次，9/10 首次反馈≤200ms、无一次>500ms；不计模型完成时间。流式时可输入滚动，无本轮重复请求 / 持续冻结 / 闪烁；提供原始样本，不伪造统计。",
+      "required_layers": [
+        "measurement",
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-24",
+      "title": "异常与证据有效性",
+      "required": true,
+      "pass_rule": "最终有效构建中无本轮引入控制台错误 / 未处理异常；失败、取消、部分结果与迟到响应有可复现记录。截图、录像、readback 标明证据层、代码 SHA、构建指纹及窗口数据。",
+      "required_layers": [
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-25",
+      "title": "必要工程门禁",
+      "required": true,
+      "pass_rule": "当前 build、renderer 组件、相关 UI / 样式 / 导航 / 设置 / 尺寸脚本及必要 smoke / 模块验证实际完成；记录命令、cwd、退出码和 skipped。git diff --check 通过；不降低断言或更新指纹蒙混。",
+      "required_layers": [
+        "git",
+        "component"
+      ]
+    },
+    {
+      "id": "UIR1-26",
+      "title": "旧门禁与保护回归",
+      "required": true,
+      "pass_rule": "A01–A36 影响映射无漏项；本轮触及和保护行为完成对应复验，或给有效可继承证据及代码未变证明。无关旧缺口单列，不能声称旧合同全部通过；阻断本轮的缺口不得豁免。",
+      "required_layers": [
+        "static",
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-27",
+      "title": "主线交付与真实窗口",
+      "required": true,
+      "pass_rule": "按已有授权普通整合最新 main、复验受影响项并 push，证明远端包含交付提交；实际 Windows Electron 窗口可见可用；源码 / 构建 / 验收代码一致。若最终仅新增证据文档，给差异证明。",
+      "required_layers": [
+        "git",
+        "electron"
+      ]
+    },
+    {
+      "id": "UIR1-28",
+      "title": "完整交付与有限结束",
+      "required": true,
+      "pass_rule": "28 项全记录；所有 PASS 引用可定位证据；无未关闭范围内 S0/S1/S2；报告、组件 / 接口 / 页面表、遗留、回滚和恢复入口齐全。明确工程结论与教师试用状态，达标停止，阻塞不假完成。",
+      "required_layers": [
+        "static"
+      ]
+    }
+  ]
+}

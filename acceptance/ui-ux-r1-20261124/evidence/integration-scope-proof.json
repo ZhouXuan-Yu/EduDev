@@ -1,0 +1,84 @@
+{
+  "verifiedSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "baselineSha": "700143faca7051baca892b50cf5081ff297ec9bb",
+  "protected": [
+    {
+      "file": "apps/desktop/src/renderer/components/office/OfficeComposer.tsx",
+      "baselineBlob": "94a23d447a4e7cb4747fb091d0d1c6f2d8d436e6",
+      "verifiedBlob": "94a23d447a4e7cb4747fb091d0d1c6f2d8d436e6",
+      "diff": ""
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/composer-follow-up.ts",
+      "baselineBlob": "b918e4bf13e8d39fdf57bc05e4bd95eaa9e39d07",
+      "verifiedBlob": "b918e4bf13e8d39fdf57bc05e4bd95eaa9e39d07",
+      "diff": ""
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx",
+      "baselineBlob": "edefd610a0aca2236beefd190441d81f13379d88",
+      "verifiedBlob": "1b71d8e5925bb542392217d0cc30f5f3ba778387",
+      "diff": "diff --git a/apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx b/apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx\nindex edefd61..1b71d8e 100644\n--- a/apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx\n+++ b/apps/desktop/src/renderer/components/office/PiComposerPendingPanel.tsx\n@@ -1,3 +1,4 @@\n+import {AppNativeSelect} from '../ui/AppNativeSelect';\n import {useEffect,useId,useRef,useState} from 'react';\n import {Button} from '@heroui/react';\n import {ChevronDown,ChevronUp} from 'lucide-react';\n@@ -76,10 +77,10 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi\n     <div className={styles.panel}>\n       <header className={styles.header}>\n         <h2 id={headingId} aria-live=\"polite\">{title}</h2>\n-        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><select aria-label=\"选择待处理事项\" className={styles.select} value={active.id}\n+        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><AppNativeSelect indicatorOnly aria-label=\"选择待处理事项\" className={styles.select} value={active.id}\n           onChange={event=>{setSelected(event.target.value);setCollapsedFor('');}}>\n           {items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}\n-        </select></>}\n+        </AppNativeSelect></>}\n         <Button ref={toggle} size=\"sm\" variant=\"ghost\" aria-controls={bodyId} aria-expanded={!collapsed}\n           data-testid=\"pi-composer-pending-toggle\" onPress={()=>setCollapsedFor(collapsed?'':active.id)}>\n           {collapsed?<ChevronUp size={14} aria-hidden=\"true\"/>:<ChevronDown size={14} aria-hidden=\"true\"/>}\n"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiComposerQueue.tsx",
+      "baselineBlob": "9129c0c1306ba345ab71da730cf8591ab7d2fc1d",
+      "verifiedBlob": "30459733b74eea2f8c4031d8c493aa775978d298",
+      "diff": "diff --git a/apps/desktop/src/renderer/components/office/PiComposerQueue.tsx b/apps/desktop/src/renderer/components/office/PiComposerQueue.tsx\nindex 9129c0c..3045973 100644\n--- a/apps/desktop/src/renderer/components/office/PiComposerQueue.tsx\n+++ b/apps/desktop/src/renderer/components/office/PiComposerQueue.tsx\n@@ -1,3 +1,4 @@\n+import {AppNativeSelect} from '../ui/AppNativeSelect';\n import {useState} from 'react';\n import {Button, TextArea} from '@heroui/react';\n import {ArrowDown, ArrowUp, CornerDownRight, GripVertical, Pencil, Trash2} from 'lucide-react';\n@@ -75,9 +76,9 @@ function QueueItem({item,sessionId,mutate,previous,next,draggable,onDrag,dropSou\n       <TextArea autoFocus aria-label=\"编辑待发送消息\" data-testid=\"pi-instruction-text\" value={draft.text} maxLength={8192} disabled={blocked}\n         onChange={event=>update({text:event.target.value})}/>\n       <div className=\"pi-queue-actions\">\n-        <select aria-label=\"发送时机\" data-testid=\"pi-instruction-mode\" value={draft.mode} disabled={blocked} onChange={event=>update({mode:event.target.value==='steer'?'steer':'followUp'})}>\n+        <AppNativeSelect indicatorOnly aria-label=\"发送时机\" data-testid=\"pi-instruction-mode\" value={draft.mode} disabled={blocked} onChange={event=>update({mode:event.target.value==='steer'?'steer':'followUp'})}>\n           <option value=\"followUp\">本轮结束后发送</option><option value=\"steer\">补充到本轮</option>\n-        </select>\n+        </AppNativeSelect>\n         <Button size=\"sm\" data-testid=\"pi-instruction-save\" isDisabled={blocked||!draft.text.trim()}\n           onPress={()=>void act({action:'edit',text:draft.text.trim(),mode:draft.mode},item,draft.revision)}>保存</Button>\n         <Button size=\"sm\" variant=\"ghost\" isDisabled={draft.busy} onPress={()=>update({editing:false,error:''})}>取消</Button>\n"
+    },
+    {
+      "file": "apps/desktop/package-lock.json",
+      "baselineBlob": "f0294d794700ff6559372e7a94c9cfa7759c1234",
+      "verifiedBlob": "f0294d794700ff6559372e7a94c9cfa7759c1234",
+      "diff": ""
+    }
+  ],
+  "fullSmokeSha": "7a17b31254acaae020083d843d1221968a71e6bd",
+  "reuse": [
+    {
+      "file": "apps/desktop/src/renderer/components/product/StudentWorkbench.tsx",
+      "unchangedSinceFullSmoke": true,
+      "existsAtVerifiedWorktree": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/StudentProfileWorkspace.tsx",
+      "unchangedSinceFullSmoke": null,
+      "existsAtVerifiedWorktree": false,
+      "note": "Nonexistent path is not evidence of unchanged source; page inventory names authoritative consumers."
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+      "unchangedSinceFullSmoke": true,
+      "existsAtVerifiedWorktree": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+      "unchangedSinceFullSmoke": true,
+      "existsAtVerifiedWorktree": true
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/workbench/PiRecoveryOverview.tsx",
+      "unchangedSinceFullSmoke": true,
+      "existsAtVerifiedWorktree": true
+    },
+    {
+      "file": "apps/desktop/scripts/education/paper-export-journey.mjs",
+      "unchangedSinceFullSmoke": false,
+      "existsAtVerifiedWorktree": true
+    }
+  ],
+  "incomingChanges": "de2bb12/e7ac890 scan-table work retained; independent owner; fresh build and renderer gate passed",
+  "noRuntimeDeltaAfterVerification": "最后ade49eb已重建并复验：77结构边界、表格视觉边界、261Renderer与配置/题篮/PPT冷读；之后仅QA/证据/文档。6f到ade的生产变化来自协作者11ca45f/c5984c7表格恢复，未冒称此前运行覆盖新代码。",
+  "latestVerifiedSha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "latestBuild": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+  "previousUiVerificationSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "incomingAfterPreviousUiVerification": [
+    "apps/desktop/src/main/assets/material-structure-borderless-table.ts",
+    "apps/desktop/src/main/assets/material-structure-ruled-table.ts",
+    "apps/desktop/src/main/assets/material-structure-runtime.ts",
+    "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+    "apps/desktop/src/renderer/components/product/MaterialStructureTableEvidence.tsx",
+    "apps/desktop/src/shared/material-document-structure.ts"
+  ]
+}

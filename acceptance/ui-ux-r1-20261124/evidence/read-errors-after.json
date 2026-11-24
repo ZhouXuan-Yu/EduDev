@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "layer": "component",
+  "baseline": false,
+  "source": "working tree",
+  "checks": [
+    "question read failure is not an empty library or no-results state",
+    "successful retry may show a real empty question library",
+    "book read failure is not an empty book library",
+    "book retry clears stale failure and presents confirmed empty state",
+    "structure read failure is not described as no structure created",
+    "material read failure is not described as first import or no match",
+    "settings read failure does not claim there are no current conversations",
+    "archive read failure does not claim an empty archive"
+  ],
+  "boundary": "Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance."
+}

@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "layer": "component",
+  "baseline": true,
+  "source": "5d45c38",
+  "checks": [],
+  "boundary": "Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance.",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ ''\n- 'fixture-only-not-a-credential'\n\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-model-buffer.mjs:46:125\n    at check (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-model-buffer.mjs:27:25)\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-model-buffer.mjs:46:3"
+}

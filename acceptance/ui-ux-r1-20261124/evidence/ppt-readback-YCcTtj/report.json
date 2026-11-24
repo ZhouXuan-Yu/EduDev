@@ -1,0 +1,87 @@
+{
+  "success": true,
+  "source": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "build": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+  "prior": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\live-ZfxRlK\\report.json",
+  "fact": {
+    "id": "artifact_090afee0-c674-4980-9d81-a5584f08497d",
+    "session_id": "aisession_0340b56b-1d76-4c09-9d91-1e5b9bdc5983",
+    "title": "一元一次方程 · 教师修订",
+    "file_path": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-ZfxRlK\\XiaozhiOutputs\\ca6d92330faf55db\\aisession_0340b56b-1d76-4c09-9d91-1e5b9bdc5983\\UIR1方程课.pptx",
+    "file_size": 77356,
+    "content_hash": "1238ae672d22904035f1e4d783aabe258890ce9f0a46d01396f42bc4e7c7d3cb",
+    "status": "exported"
+  },
+  "readback": {
+    "slides": 3,
+    "texts": [
+      "第1页　引入：把方程一步步“化简”等式的基本性质：等式两边同加（或同减）同一个数，等式仍成立；等式两边同乘（或同除以）同一个不为0的数，等式仍成立。只含一个未知数，未知数的次数是1，且等号两边都是整式的方程，叫做一元一次方程。例如 3x－5＝7。本节课目标：用等式性质把方程一步步化成“x＝a”的形式，并养成代回检验的习惯。思考：如果 3 个相同的括号整体等于 12，你能先求出每个括号的值吗？1 / 3",
+      "第2页　例题：解方程 3(x－2)＝12原方程：3(x－2)＝12解法一（先去括号）：3x－6＝12 → 3x＝18 → x＝6解法二（先两边同除以3）：x－2＝4 → x＝6检验：把 x＝6 代入左边，3×(6－2)＝3×4＝12，与右边相等，所以 x＝6 是原方程的解。比较：两种解法的依据都是等式性质，先除以3的解法步骤更少，但对“整体”的观察要求更高。2 / 3",
+      "第3页　练习：解方程 2x＋5＝17练习：解方程 2x＋5＝17，并写出检验过程。要求：①每一步写出变形依据；②等号对齐；③把结果代回原方程检验。想一想：这道题先“减5”还是先“除以2”？两种顺序分别会得到什么式子？拓展（学有余力）：解方程 5(x＋1)＝20，并说明它与本页例题的联系。3 / 3"
+    ],
+    "title": "一元一次方程 · 教师修订"
+  },
+  "checks": [
+    "Actual managed output location comes from the saved artifact fact, not a presumed input workspace path",
+    "PPT ZIP/XML readback contains all three generated slides and the teacher-edited title",
+    "Cold-start saved PPT opens the original local preview and returns to its own conversation",
+    "Real task state, complete excerpt disclosure and original-conversation action retain the same task/session at three window sizes without replay"
+  ],
+  "errors": [],
+  "boundary": "Continuation of the actually saved real-provider PPT. Cold launch and UI preview only; HTTP blocked, no regeneration or native journal edits.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-ZfxRlK\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-ZfxRlK\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/pi-session-b1fjezoi.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "preview": "PPTX · 本地提取正文，版式以原文件为准\n\n第1页　引入：把方程一步步“化简”\n\n等式的基本性质：等式两边同加（或同减）同一个数，等式仍成立；等\n\n式两边同乘（或同除以）同一个不为0的数，等式仍成立。\n\n只含一个未知数，未知数的次数是1，且等号两边都是整式的方程，叫\n\n做一元一次方程。例如 3x－5＝7。\n\n本节课目标：用等式性质把方程一步步化成“x＝a”的形式，并养成代回\n\n检验的习惯。\n\n思考：如果 3 个相同的括号整体等于 12，\n\n你能先求出每个括号的值吗？\n\n1 / 3\n\n讲解备注：开场用1分钟复习等式性质，让学生齐读两条性质，提醒“除数不为0”这个条件。接着给出定义，强调三个条件：只有一个未知数、未知数次数为1、两边都是整式。最后抛出问题，先不解答，把学生注意力引到第2页的例题上。 讲解备注：板书时把性质写成两行：加、减；乘、除。可以在黑板上用一个具体的数演示，例如 8＝8，两边同减3得 5＝5，让学生直观看到“等式像天平，两边同时做同样的动作仍保持平衡”。\n\n第2页　例题：解方程 3(x－2)＝12\n\n原方程：3(x－2)＝12\n\n解法一（先去括号）：3x－6＝12 → 3x＝18 → x＝6\n\n解法二（先两边同除以3）：x－2＝4 → x＝6\n\n检验：把 x＝6 代入左边，3×(6－2)＝3×4＝12，与右边相等，\n\n所以 x＝6 是原方程的解。\n\n比较：两种解法的依据都是等式性质，\n\n先除以3的解法步骤更少，但对“整体”的观察要求更高。\n\n2 / 3\n\n讲解备注：先用解法一示范完整书写格式：每一步都要写清依据（去括号、两边同时加6、两边同时除以3），强调等号对齐。再请一名学生上台用解法二书写，其余同学比较步骤多少。 参考答案：规范解答：去括号得 3x－6＝12；两边同加6得 3x＝18；两边同除以3得 x＝6。另解：两边同除以3得 x－2＝4；两边同加2得 x＝6。检验：左边＝3×(6－2)＝12＝右边。 讲解备注：提醒学生：括号前是数字3，去括号时括号内每一项都要乘，这里写成 3x－6 而不是 3x－2。检验环节不能省，代回时注意先算括号。\n\n第3页　练习：解方程 2x＋5＝17\n\n练习：解方程 2x＋5＝17，并写出检验过程。\n\n要求：①每一步写出变形依据；②等号对齐；③把结果代回原方程\n\n检验。\n\n想一想：这道题先“减5”还是先“除以2”？两种顺序分别会得到什\n\n么式子？\n\n拓展（学有余力）：解方程 5(x＋1)＝20，并说明它与本页例题\n\n的联系。\n\n3 / 3\n\n讲解备注：给学生3分钟独立完成，教师巡视，重点看是否漏写检验、等号是否对齐。请两名学生分别用“先减5”和“先除以2”的顺序板演，再组织比较哪种更简洁。 参考答案：练习答案：两边同减5得 2x＝12，两边同除以2得 x＝6。检验：左边＝2×6＋5＝17＝右边，所以 x＝6 是原方程的解。拓展题：5(x＋1)＝20，两边同除以5得 x＋1＝4，得 x＝3；检验：左边＝5×(3＋1)＝20＝右边。 讲解备注：若先除以2：2x＋5＝17 两边同除以2得 x＋2.5＝8.5，再减2.5得 x＝6，答案相同但出现小数，说明先移项再除以系数通常更省力。最后小结：解一元一次方程就是把方程一步步化成 x＝a，并用代回检验兜底。",
+  "task": {
+    "sessionId": "aisession_0340b56b-1d76-4c09-9d91-1e5b9bdc5983",
+    "sessionTitle": "请从本地题本中找出八年级数学、一元一次方程、中等难度的两道解答题，使用现有原题，",
+    "taskId": "xitask_fa1107a128b38f60f5e6b0340cfa6323a3bc351c409d596363c49da4194f6a0b",
+    "revision": 9,
+    "requirementsVersion": 1,
+    "state": "interrupted",
+    "updatedAt": "2026-11-24T18:03:11.643Z",
+    "lastRunId": "run_bf00e225-c390-42ed-83e2-8a2ac8b05e2d",
+    "isLatestForSession": true,
+    "resumeCandidate": true,
+    "continuationCandidate": true,
+    "blockedReasons": [
+      "unknown_effect"
+    ],
+    "pendingApprovalCount": 0,
+    "unknownEffectCount": 2,
+    "planningLevel": 2,
+    "nativeInspection": "not_checked",
+    "goalExcerpt": "为八年级数学制作一份可编辑的3页PPT，主题是一元一次方程：第1页引入，第2页给出3(x－2)＝12的例题，第3页给出一道练习。请使用现有PPT工具实际起草文件，保存路径为UIR1方程课.pptx，等待我审阅和确认。不要只输出文字提纲。",
+    "steps": {
+      "total": 2,
+      "verified": 0
+    }
+  },
+  "http": []
+}

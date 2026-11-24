@@ -1,0 +1,138 @@
+[
+  {
+    "path": "evidence/composer-kRoHQY/report.json",
+    "sha256": "68f16e3e4030c9459cd111337ffed26b5b4fa1863edf557956423115c77bc2e1",
+    "checksPassedBeforeFailure": 1,
+    "stage": null,
+    "errorSummary": "locator.inputValue: Error: Node is not an <input>, <textarea> or <select> element\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-queue-mode')\u001b[22m\n\n    at D:\\Wor",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/composer-kTiO62/report.json",
+    "sha256": "642cd6a89bef073e2e51d3f7e9717292ca6c2b1f4552f801245faeb628de3dd8",
+    "checksPassedBeforeFailure": 3,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: Indicator decoration preserves protected height\n+ actual - expected\n\n+ 24\n- 21.33333396911621\n\n    at file:///D:/WorkProject/Edu",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/composer-l5Pzsu/report.json",
+    "sha256": "9033983df52da2ad1715e28f48b544f8cc5b0a08ccbcc7050c9382e732d71b2f",
+    "checksPassedBeforeFailure": 3,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: Indicator decoration preserves protected width\n\n140 !== 132\n\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/des",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/live-lOkOm2/report.json",
+    "sha256": "2c7d426418b4c89c32fe749cb74d8ad6f5de28ca24c008e85fd02cc411a3c2ad",
+    "checksPassedBeforeFailure": 3,
+    "stage": "ppt-generation",
+    "errorSummary": "{'stage': 'ppt-generation', 'error': \"TypeError: Cannot read properties of undefined (reading 'id')\\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/live-yiyUAL/report.json",
+    "sha256": "0bb162054d0b51a2d6af0c907b6154ccb2379955739c8e7ea81408cf1afbf404",
+    "checksPassedBeforeFailure": 2,
+    "stage": "ppt-generation",
+    "errorSummary": "{'stage': 'ppt-generation', 'error': 'Error: Timeout at ppt-generation\\n    at until (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/u",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/live-ZfxRlK/report.json",
+    "sha256": "5adc5bb36510a10baf91d7aa39347dcb6a5cd1e7e2a9054c59d116859d56cf84",
+    "checksPassedBeforeFailure": 3,
+    "stage": "ppt-generation",
+    "errorSummary": "{'stage': 'ppt-generation', 'error': 'AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\\n\\n  assert(fs.existsSync(actual))\\n\\n    at fi",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/paper-current-CaUi7E/report.json",
+    "sha256": "0e4219b02909a70c91344d5be5b77618305926ae7d547cf11750579dabb18d66",
+    "checksPassedBeforeFailure": 0,
+    "stage": "select-question",
+    "errorSummary": "{'stage': 'select-question', 'error': \"locator.waitFor: Timeout 20000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for getByTestId('paper-basket-create-dialog') t",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/paper-current-WSnGiP/report.json",
+    "sha256": "5916fe9030747595a652a2f1add854f2727bd3759908249da44f8596c23f8c3e",
+    "checksPassedBeforeFailure": 2,
+    "stage": "preview-confirm",
+    "errorSummary": "{'stage': 'preview-confirm', 'error': \"locator.click: Timeout 20000ms exceeded.\\nCall log:\\n\\x1b[2m  - waiting for getByTestId('paper-basket-preview')\\x1b[22m\\n",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/paper-readback-N0sgTy/report.json",
+    "sha256": "e884d653a1eaad185350308aeae2527bf119c76b6582e699e9f46b6d09893695",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ ''\n- 'xibasket_5acff54a-e2e5-4a2a-b237-ae68097b95de'\n\n    at file:/",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/paper-readback-Tq7vsR/report.json",
+    "sha256": "de043ae8e7bb43af3d36de350e914106e2a795d0ac3b4c7506a1af658d80ec52",
+    "checksPassedBeforeFailure": 1,
+    "stage": null,
+    "errorSummary": "locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('paper-basket-stage-preview')\u001b[22m\n\n    at D:\\WorkProject\\EduProject-ui-ux-r1",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/ppt-readback-QfyLae/report.json",
+    "sha256": "167a850a168ed2c8666842bb4030016802ab1b75489a6c5b9140e853be0243e1",
+    "checksPassedBeforeFailure": 2,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: Opening the actual saved artifact must preview its generated equation content\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-full-41/report.json",
+    "sha256": "546976012d693490cbe47c38eeb5822fc593fffe2569fa7e141fbbad50f0ac72",
+    "checksPassedBeforeFailure": 41,
+    "stage": null,
+    "errorSummary": "Actual saved credential transport evidence failed",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-transport-B2pQHs/report.json",
+    "sha256": "82fc730925864724d3364f904a564dab8f9066cd016391b052582bc0e3877cae",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(report.requests.some(r=>r.status===200))\n\n    at file:///D:/WorkProject/Edu",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-transport-bh3EpV/report.json",
+    "sha256": "1e83219aa77e290d3dfa85e46c404947a58ef8e3a9d2662d77542737e5711b81",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(report.requests.some(r=>r.status===200))\n\n    at file:///D:/WorkProject/Edu",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-transport-V20Qmc/report.json",
+    "sha256": "82fc730925864724d3364f904a564dab8f9066cd016391b052582bc0e3877cae",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(report.requests.some(r=>r.status===200))\n\n    at file:///D:/WorkProject/Edu",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-visual-m31zwd/report.json",
+    "sha256": "91edae488b8a1af5c4b4191d8f928b9bde888fec9c93b03a1fe1b49f59734f62",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: pi-settings-save contrast 3.5889872396911766\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-",
+    "originalPreserved": true
+  },
+  {
+    "path": "evidence/settings-visual-pMWtv4/report.json",
+    "sha256": "99c5131d184258a703c70ed06a6e9a04dd0fe77f0ca7c0e7094369fb9ad90b90",
+    "checksPassedBeforeFailure": 0,
+    "stage": null,
+    "errorSummary": "AssertionError [ERR_ASSERTION]: pi-settings-default-model contrast 2.0988934599201072\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/sc",
+    "originalPreserved": true
+  }
+]

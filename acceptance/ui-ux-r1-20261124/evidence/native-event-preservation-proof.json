@@ -1,0 +1,146 @@
+{
+  "excluded": [
+    "App.tsx",
+    "components/AiQualityReviewWorkspace.tsx",
+    "components/MemoryGovernanceWorkspace.tsx",
+    "components/office/PiComposerPendingPanel.tsx",
+    "components/office/PiComposerQueue.tsx",
+    "components/ui/AppNativeSelect.tsx",
+    "src/classroom-preview.tsx"
+  ],
+  "converted": [
+    {
+      "path": "src/renderer/components/product/MaterialAiPagePanel.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "a67b28ea1ec13d6d295f5bd1a59b62874eb62c5f8983ba255e60c50e72a376c5",
+      "normalizedAfter": "1ef869e0dc2b13fdfb323baeeb6443a7f91f886595f7eafe09cfcd2ddf5807eb"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialAiResponses.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "1b9ce79b63e8f001d9107bc5690dc78d50192bae218dd6a0d8ad104446de8dd6",
+      "normalizedAfter": "2b450c8eb69b0830cd7424efc68841a5708e79219ff831e4be674f4c6dbeff62"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialBookPanel.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "0dee10a3fa4c7dd45a202857b9cb320149bfd46133a35b6b864714ce6bd0274d",
+      "normalizedAfter": "2703f83931ea90a53d386a661f9c5314802675d023d130a610f1adcdca2dcfd8"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialCatalogFilters.tsx",
+      "count": 8,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "4c1e8c3d7e806f9503ba123a64cd80dd029f0845975f404650912a66d6f39840",
+      "normalizedAfter": "0a514ba8a8c7711ab57b5655634068f38d3be2bd859882a89e3ab2297bc87ef5"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialCurriculumPanel.tsx",
+      "count": 4,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "f0e852e5f09210669e0a4c0d4828704171ceb848965e31c154b0d5d8d0820831",
+      "normalizedAfter": "f5bc748d9c3293b42b70a277003052ffedb2ef98b83f1ee0437a917f31dc4e95"
+    },
+    {
+      "path": "src/renderer/components/product/MaterialTextSearch.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "4f02681913068b3b87ef6226ab29685517e4f8f873da82399b5a42181064d979",
+      "normalizedAfter": "e8b6c09aa1bf3bfa04398bf5aec824a1184e8d5d3e1ee1efc6e5f702df25c4e6"
+    },
+    {
+      "path": "src/renderer/components/office/PiDiagnostics.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "496f024b4ab9827b6407ea8bcce5fc14199c4a4094da5acdade691dd696818fe",
+      "normalizedAfter": "81b5384c1a6b11fc13e683905f79e496270d0d455b5432a92bd2befa3142d7f0"
+    },
+    {
+      "path": "src/renderer/components/office/PiDeliveryCheck.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "171b2fc95410f5edf4998d01afe27b6eeeca7ac7e2bdfcd5f177d63fe189b339",
+      "normalizedAfter": "d0e9cc885289fed9e87ff4f5d9f8936c6427f3dfe45ddec9536ea8b3e260f6a6"
+    },
+    {
+      "path": "src/renderer/components/office/PiDeliveryVisual.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "ff5a4ede1cd837de78d1d9ec6a5d54f32368b0403fcd23ec762bb54e588d4e31",
+      "normalizedAfter": "4a013fa1e596a87655ac6681976a30c7d6f6759c0e304a492044ae23782aa0ca"
+    },
+    {
+      "path": "src/renderer/components/office/PiLearningReview.tsx",
+      "count": 2,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "779feec07401761081e68b4cac99ab230a834d7fad753f780d9d0a2ace236ff6",
+      "normalizedAfter": "e34f0df66871bbaad95a5d687009a6330388dbb10eda0050af54efae4c637461"
+    },
+    {
+      "path": "src/renderer/components/office/PiMemoryScope.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "b82b5b039a6572b7ebb146ee9f722dbce3b316fd687e8a2288074795ba2e4ee1",
+      "normalizedAfter": "ed323f8088aab6cb2d2455c5ff703e60fde96d43b2acc44b32b6d56c873a561e"
+    },
+    {
+      "path": "src/renderer/components/office/PiMockExamCatalog.tsx",
+      "count": 3,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "67a418f55839f4cbec53148733921b34f845177668c35782b8643d754b661259",
+      "normalizedAfter": "e1d1c1c383682469b6948f557fdbb4fb4f19e730865a08822ccf25cc119da0af"
+    },
+    {
+      "path": "src/renderer/components/office/PiOriginalMultiQuestionReview.tsx",
+      "count": 3,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "2fc03bb4a20431693c5a34fd02b51058c8f07c2d563acc9411d0682469a76326",
+      "normalizedAfter": "2f0ba09d37b4a4dab025b3c2a4c1078539cd3f86b4669cd31bc34cfbc56572b5"
+    },
+    {
+      "path": "src/renderer/components/office/PiOfficeVersions.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "025b06f25ef62f97e9b667aace674f5cb13423fd27c51866e9b9dfec435c2ded",
+      "normalizedAfter": "5bf847d100ebfa962a7ba810625c934a41291abaf3e9caadccb6f9455ae0f63d"
+    },
+    {
+      "path": "src/renderer/components/office/PiPracticeReview.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "d2b80d386ed6e4e9d8586e013ff1425065d233ce893a17435b50f8341c5dd97c",
+      "normalizedAfter": "900ecc9f68ea3a287bb963ee702f4ee3e829712825ce840b4a1ae660bb841a65"
+    },
+    {
+      "path": "src/renderer/components/office/PiOriginalQuestionReview.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "f2a45b74a50436f7d346550fc1d901a594721064f4c98253a293b6dd771d8b8e",
+      "normalizedAfter": "cd1d6708b261646c9994503bfedc7680a147204657748d56df065ea0ecbd61fc"
+    },
+    {
+      "path": "src/renderer/components/office/PiQuestionReview.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "11e788d6b6c7c20f1490fab1642e96deffc6855a2d1da14d41c768cd2832765b",
+      "normalizedAfter": "1bef5f6c97f4deaca1a869bef471286e449db2854e3cc0e56905060ad34cc1f5"
+    },
+    {
+      "path": "src/renderer/components/office/PiTrainingPlan.tsx",
+      "count": 3,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "89feeb122cbc9a2764f146f14f309479a178be5ab4c013793fd46a81a8ca1e16",
+      "normalizedAfter": "b2f3f9a9d6676da381cf561f81db0bcaaf576aed9339e719a18026ed4fa933f8"
+    },
+    {
+      "path": "src/renderer/components/office/QuestionProjectionFields.tsx",
+      "count": 1,
+      "callbacksAttributesOptionsUnchanged": true,
+      "normalizedBefore": "0acfdebaf54617cbc07e30434ae76e757057ae4255ebaafb46449687260614e4",
+      "normalizedAfter": "b567426e2239add3ae475a7c1f7d62602b704be9596f24601b3358956d49352a"
+    }
+  ]
+}

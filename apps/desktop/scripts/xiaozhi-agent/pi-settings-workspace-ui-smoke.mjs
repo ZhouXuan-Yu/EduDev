@@ -166,9 +166,9 @@ async function launch() {
   await aiShell().waitFor({ timeout: 60000 }); assert.equal(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot())),path.resolve(data),'Settings QA must use owned isolated data, never daily data'); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled()); id = await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id');
   assert(await app.evaluate(() => process.env.DEEPSEEK_API_KEY === '' && process.env.DEEPSEEK_MODEL === '' && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'));
   // Observe only safe transport facts; original SDK requests/responses remain unchanged.
-  await app.evaluate((_, {expectedKey, archiveOnly}) => {
-    globalThis.currentSettingsRequests = []; const original = globalThis.fetch;
-    globalThis.fetch = async function(input, init) {
+  await app.evaluate(({net}, {expectedKey, archiveOnly}) => {
+    globalThis.currentSettingsRequests = [];
+    const observe = (original, receiver) => async function(input, init) {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input?.url; let record;
       if (archiveOnly && typeof url === 'string' && /\/chat\/completions(?:\?|$)/.test(url)) {
         globalThis.currentSettingsRequests.push({kind:'forbidden-model-request', blocked:true});
@@ -182,9 +182,11 @@ async function launch() {
         record = { model: body.model, credentialMatchesSaved: headers.get('authorization') === `Bearer ${expectedKey}`, status: null };
         globalThis.currentSettingsRequests.push(record);
       }
-      try { const response = await original.apply(this, arguments); if (record) record.status = response.status; return response; }
+      try { const response = await original.apply(receiver, arguments); if (record) record.status = response.status; return response; }
       catch (error) { if (record) { record.errorName = error.name; record.aborted = Boolean(init?.signal?.aborted); } throw error; }
     };
+    globalThis.fetch = observe(globalThis.fetch, globalThis);
+    net.fetch = observe(net.fetch, net);
   }, {expectedKey:apiKey, archiveOnly});
   await page.evaluate(() => { globalThis.currentSettingsEvents = []; window.omniEdu.onXiaozhiEvent(e => globalThis.currentSettingsEvents.push({kind:e.kind})); });
 }

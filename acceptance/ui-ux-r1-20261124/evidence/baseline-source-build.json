@@ -1,0 +1,8 @@
+{
+  "sourceSHA": "700143faca7051baca892b50cf5081ff297ec9bb",
+  "root": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-r1-baseline-source",
+  "files": 4323,
+  "lockSHA256": "f9008ffaef15bfa8bd6cf4e6b1fd647951e6e1970cffd15bb8957f131249e5f8",
+  "dependencies": "Independent npm ci --no-audit --no-fund in baseline archive; 1178 packages, original lock. Never copied node_modules. Third-party license assets archived from the same baseline commit. Build3 passed.",
+  "buildLog": "../logs/performance-baseline-build-3.log"
+}

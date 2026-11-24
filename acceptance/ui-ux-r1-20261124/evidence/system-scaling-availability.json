@@ -1,0 +1,24 @@
+{
+  "required": "Actual system scaling at 125% and 150%; forced Chromium DPR is separate",
+  "observedNativeScale": 1.5,
+  "nativeProof": "verification-pages-oDvt67/report.json displays",
+  "forcedDprProof": "../../../apps/desktop/test-results/xiaozhi-agent/pi-dpi-interface-ui-PmgMdJ/report.json",
+  "attempts": [
+    {
+      "method": "computer-use sky.list_apps/list_windows",
+      "result": "No Settings application/window exposed"
+    },
+    {
+      "method": "sky.launch_app existing C:/Windows/ImmersiveControlPanel/SystemSettings.exe",
+      "result": "launched app did not expose a targetable window: process:C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe"
+    },
+    {
+      "method": "fresh sky.list_windows and process inventory after launch",
+      "result": "No Settings window or SystemSettings process; no stale coordinates used"
+    }
+  ],
+  "systemModified": false,
+  "parallelScope": "Many unrelated EduProject-harness Electron windows remain open; none controlled or closed",
+  "unblockCondition": "A targetable Windows Display Settings window or a dedicated system-125-percent desktop supplied for native scaling acceptance; then rerun dense pages and restore original 150-percent setting",
+  "status": "BLOCKED_NATIVE_125_ONLY"
+}

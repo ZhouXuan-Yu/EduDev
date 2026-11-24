@@ -42,3 +42,7 @@ python/omni_edu_retrieval/worker.py text eol=lf
 apps/desktop/scripts/release/build-retrieval-runtime.mjs text eol=lf
 python/omni_edu_retrieval/SOURCE.md text eol=lf
 apps/desktop/scripts/release/prepare-retrieval-assets.mjs text eol=lf
+
+# SHA-256 evidence keeps exact Windows/package bytes across Git checkouts.
+# Retain normal whitespace checks; terminal CR is part of recorded CRLF.
+/acceptance/ui-ux-r1-20261124/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

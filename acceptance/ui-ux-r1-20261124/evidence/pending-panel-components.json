@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "checks": [
+    "Entering two pending items keeps one panel and does not steal composer focus",
+    "Protected multi-item control retains its direct native DOM, name and choices",
+    "Switching, collapsing and restoring pending items preserves both independent answers and the composer draft",
+    "Failed callback retains the answer, exposes a retryable error and releases busy state"
+  ],
+  "boundary": "Mounted original pending panel and original shared composer draft provider, controlled synthetic question metadata/callback failures only. No Electron, provider or persistence claim."
+}

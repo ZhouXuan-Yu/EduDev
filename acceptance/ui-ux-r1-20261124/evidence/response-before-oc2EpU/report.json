@@ -1,0 +1,262 @@
+{
+  "success": true,
+  "baseline": true,
+  "runtime": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-r1-baseline-source\\apps\\desktop",
+  "source": "700143faca7051baca892b50cf5081ff297ec9bb",
+  "sourceFingerprint": "6f4819441fa59cf6f9b1c5f895f4d71b02bf988bbcc2ad7311dabce8af701124",
+  "build": "df97fa381883da9d0127a91625dee0395a339c69eb75ca536ab7dc11504f3ced",
+  "method": "Actual production Electron. Capture-phase pointerup/input to first animation frame after observable DOM feedback; trusted Playwright pointer/keyboard, not physical input. Same clean empty application data in each independent profile. No provider timing, network or mock outputs.",
+  "samples": [
+    {
+      "kind": "category",
+      "ms": 14.099999994039536,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 6.5999999940395355,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 4,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 6,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 4.200000002980232,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 6.799999997019768,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 5.299999997019768,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 9.099999994039536,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 5,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "category",
+      "ms": 5.899999991059303,
+      "event": "pointerup",
+      "condition": "tab"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 2.5,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 1.7000000029802322,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 1.5999999940395355,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 2.199999988079071,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 2.7000000029802322,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 2.0999999940395355,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 1.800000011920929,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 1.2000000029802322,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 2.2000000029802322,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "disclosure",
+      "ms": 1.8999999910593033,
+      "event": "pointerup",
+      "condition": "expanded"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 8.900000005960464,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 5.4000000059604645,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.5,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.299999997019768,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.700000002980232,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.100000008940697,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.399999991059303,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 3.7000000029802322,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.4000000059604645,
+      "event": "input",
+      "condition": "input"
+    },
+    {
+      "kind": "controlled-search-feedback",
+      "ms": 4.100000008940697,
+      "event": "input",
+      "condition": "input"
+    }
+  ],
+  "errors": [],
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\response-before-oc2EpU\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\response-before-oc2EpU\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/pi-session-b1fjezoi.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ui-r1-baseline-source/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "display": [
+    {
+      "bounds": {
+        "x": 1707,
+        "y": 0,
+        "width": 2560,
+        "height": 1440
+      },
+      "scaleFactor": 1
+    },
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1707,
+        "height": 1067
+      },
+      "scaleFactor": 1.5
+    }
+  ],
+  "viewport": {
+    "width": 1366,
+    "height": 768,
+    "dpr": 1.5
+  },
+  "summary": {
+    "category": {
+      "count": 10,
+      "under200": 10,
+      "max": 14.099999994039536
+    },
+    "disclosure": {
+      "count": 10,
+      "under200": 10,
+      "max": 2.7000000029802322
+    },
+    "controlled-search-feedback": {
+      "count": 10,
+      "under200": 10,
+      "max": 8.900000005960464
+    }
+  }
+}

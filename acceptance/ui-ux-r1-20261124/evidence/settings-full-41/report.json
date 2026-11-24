@@ -1,0 +1,5930 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Unified formal entry embeds the existing encrypted model form and live official model directory",
+      "pass": true
+    },
+    {
+      "name": "Fresh official model menu saves the current Flash default with encrypted local credentials",
+      "pass": true
+    },
+    {
+      "name": "All current setting categories retain capabilities; tools and policy records remain advanced and archives remains under backup",
+      "pass": true
+    },
+    {
+      "name": "Hana multi-token ranking opens an actionable backup setting",
+      "pass": true
+    },
+    {
+      "name": "Hana NFKC search resolves full-width API text without indexing credential values",
+      "pass": true
+    },
+    {
+      "name": "Search empty state, Escape and official clear control work",
+      "pass": true
+    },
+    {
+      "name": "Unified permission page selects an actual authorized directory through the existing typed chooser",
+      "pass": true
+    },
+    {
+      "name": "Existing memory scope saves and revokes through the unified permission page and actual SQLite readback",
+      "pass": true
+    },
+    {
+      "name": "Hana builtin full preview works embedded without weakening edit permissions",
+      "pass": true
+    },
+    {
+      "name": "Current settings expose the reviewed builtin skill version two through the existing skill manager",
+      "pass": true
+    },
+    {
+      "name": "Actual local skill import defaults off and explicit enable/revoke persists from unified settings",
+      "pass": true
+    },
+    {
+      "name": "Existing CAS skill editor saves a new version while leaving authority disabled",
+      "pass": true
+    },
+    {
+      "name": "Display preferences persist only the original versioned booleans",
+      "pass": true
+    },
+    {
+      "name": "Storage failure shows a visible failure and does not claim preference success",
+      "pass": true
+    },
+    {
+      "name": "Returning and restarting preserve navigation collapse, encrypted configuration and session without replay; blank chat panels stay on demand",
+      "pass": true
+    },
+    {
+      "name": "Unknown preference schema falls back safely and never turns a stored path into authority",
+      "pass": true
+    },
+    {
+      "name": "Real archived folder/session opens public saved history read-only without creating a run",
+      "pass": true
+    },
+    {
+      "name": "Backup chooser cancellation has visible feedback and no new backup",
+      "pass": true
+    },
+    {
+      "name": "Actual existing local backup service exports and verifies a real owned data directory",
+      "pass": true
+    },
+    {
+      "name": "Existing backup integrity service verifies the exported files from the visible setting action",
+      "pass": true
+    },
+    {
+      "name": "Exported SQLite passes actual integrity and archived-message readback",
+      "pass": true
+    },
+    {
+      "name": "Verified backup restored into a separate root boots and reads actual archived history without model replay",
+      "pass": true
+    },
+    {
+      "name": "Non-backup selection shows an actionable failure instead of a success banner",
+      "pass": true
+    },
+    {
+      "name": "A secondary renderer cannot invoke either local backup action",
+      "pass": true
+    },
+    {
+      "name": "Exhausted controlled chooser shows bounded human feedback and releases local ownership",
+      "pass": true
+    },
+    {
+      "name": "All six real setting pages and default-model portals fit light/dark native viewports with readable text and real Escape focus restoration",
+      "pass": true
+    },
+    {
+      "name": "Current conversation model menu selects both actual official models while preserving saved default configuration",
+      "pass": true
+    },
+    {
+      "name": "Ordinary selected-skill live and completed public bubble presents teacher input without the injected command",
+      "pass": true
+    },
+    {
+      "name": "Real official DeepSeek reply completes through the preserved formal composer after unified settings",
+      "pass": true
+    },
+    {
+      "name": "Ordinary selected-skill send has a task-only persisted/rendered title while the original prompt retains its Pi command",
+      "pass": true
+    },
+    {
+      "name": "Actual user-typed skill command stays visible and executes through Pi rather than being stripped as an automatic prefix",
+      "pass": true
+    },
+    {
+      "name": "Ordinary automatic input and explicit literal command retain distinct public rendering in both native sizes and themes",
+      "pass": true
+    },
+    {
+      "name": "Actual live run survives native Settings→Back unchanged and blocks local backups until stopped",
+      "pass": true
+    },
+    {
+      "name": "Real subsequent ordinary task and stop preserve the teacher rename to the default label",
+      "pass": true
+    },
+    {
+      "name": "Bound conversation directory remains locked after real native history exists",
+      "pass": true
+    },
+    {
+      "name": "U2 history manager renames and navigation search filters the real conversation while retaining original native message bytes",
+      "pass": true
+    },
+    {
+      "name": "Real archive confirmation traps focus and Escape cancels without mutation across native light/dark viewports",
+      "pass": true
+    },
+    {
+      "name": "Actual live conversation archive cancellation preserves history and confirmation creates a fresh conversation through the U2 history manager",
+      "pass": true
+    },
+    {
+      "name": "Archived real selected-skill message uses the same public overlay without editing native history",
+      "pass": true
+    },
+    {
+      "name": "Actual archived live reply and teacher title remain readable after cold restart with unchanged native bytes and zero startup tool replay",
+      "pass": true
+    },
+    {
+      "name": "Source teacher fixtures remain byte-identical and renderer has no runtime exceptions",
+      "pass": true
+    }
+  ],
+  "viewports": [
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "models",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1128,
+        "y": 622.40625,
+        "right": 1244,
+        "bottom": 658.40625
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "skills",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 484,
+        "y": 621.7916870117188,
+        "right": 592,
+        "bottom": 653.7916870117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "permissions",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1148,
+        "y": 403.57293701171875,
+        "right": 1228,
+        "bottom": 435.57293701171875
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "interface",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1188,
+        "y": 659.9375,
+        "right": 1228,
+        "bottom": 679.9375
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "archives",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1148,
+        "y": 516.4791870117188,
+        "right": 1228,
+        "bottom": 548.4791870117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "tab": "backup",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 484,
+        "y": 501.88543701171875,
+        "right": 620,
+        "bottom": 537.8854370117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "models",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1272,
+        "y": 622.40625,
+        "right": 1388,
+        "bottom": 658.40625
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "skills",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 628,
+        "y": 621.7916870117188,
+        "right": 736,
+        "bottom": 653.7916870117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "permissions",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1292,
+        "y": 403.57293701171875,
+        "right": 1372,
+        "bottom": 435.57293701171875
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "interface",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1332,
+        "y": 659.9375,
+        "right": 1372,
+        "bottom": 679.9375
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "archives",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1292,
+        "y": 516.4791870117188,
+        "right": 1372,
+        "bottom": 548.4791870117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "tab": "backup",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 628,
+        "y": 501.88543701171875,
+        "right": 764,
+        "bottom": 537.8854370117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "models",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1128,
+        "y": 622.40625,
+        "right": 1244,
+        "bottom": 658.40625
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "skills",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 484,
+        "y": 621.7916870117188,
+        "right": 592,
+        "bottom": 653.7916870117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "permissions",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1148,
+        "y": 403.57293701171875,
+        "right": 1228,
+        "bottom": 435.57293701171875
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "interface",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1188,
+        "y": 659.9375,
+        "right": 1228,
+        "bottom": 679.9375
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "archives",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1148,
+        "y": 516.4791870117188,
+        "right": 1228,
+        "bottom": 548.4791870117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "tab": "backup",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 484,
+        "y": 501.88543701171875,
+        "right": 620,
+        "bottom": 537.8854370117188
+      },
+      "backRect": {
+        "x": 1232,
+        "y": 55.66666793823242,
+        "right": 1340,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "models",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1272,
+        "y": 622.40625,
+        "right": 1388,
+        "bottom": 658.40625
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "skills",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 628,
+        "y": 621.7916870117188,
+        "right": 736,
+        "bottom": 653.7916870117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "permissions",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1292,
+        "y": 403.57293701171875,
+        "right": 1372,
+        "bottom": 435.57293701171875
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "interface",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1332,
+        "y": 659.9375,
+        "right": 1372,
+        "bottom": 679.9375
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "archives",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1292,
+        "y": 516.4791870117188,
+        "right": 1372,
+        "bottom": 548.4791870117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "tab": "backup",
+      "mainWidth": 760,
+      "mainScroll": 760,
+      "contentWidth": 760,
+      "navWidth": 180,
+      "navScroll": 180,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 628,
+        "y": 501.88543701171875,
+        "right": 764,
+        "bottom": 537.8854370117188
+      },
+      "backRect": {
+        "x": 1786,
+        "y": 55.66666793823242,
+        "right": 1894,
+        "bottom": 91.66666793823242
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "height": 768,
+      "surface": "archive-dialog",
+      "chrome": {
+        "width": 1366,
+        "height": 768,
+        "header": {
+          "className": "edu-header",
+          "rect": {
+            "x": 232,
+            "y": 44,
+            "width": 1134,
+            "height": 60
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "input": {
+          "className": "textarea textarea--full-width textarea--primary prompt-input__textarea border-0 bg-transparent shadow-none ring-0 outline-none hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[focused=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0 data-[hovered=true]:border-transparent data-[hovered=true]:bg-transparent",
+          "rect": {
+            "x": 413.66668701171875,
+            "y": 569.3333740234375,
+            "width": 770.6666870117188,
+            "height": 112
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "anchors": {
+          "header": "pi-workspace-header",
+          "input": "office-prompt-input"
+        },
+        "parents": [
+          {
+            "className": "edu-shell",
+            "rect": {
+              "x": 0,
+              "y": 44,
+              "width": 1366,
+              "height": 724
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-workspace",
+            "rect": {
+              "x": 232,
+              "y": 44,
+              "width": 1134,
+              "height": 724
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat-main",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "work-panel ai-chat-surface",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "ai-conversation-frame",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 432.66668701171875
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          }
+        ]
+      }
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "height": 1080,
+      "surface": "archive-dialog",
+      "chrome": {
+        "width": 1920,
+        "height": 1080,
+        "header": {
+          "className": "edu-header",
+          "rect": {
+            "x": 232,
+            "y": 44,
+            "width": 1688,
+            "height": 60
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "input": {
+          "className": "textarea textarea--full-width textarea--primary prompt-input__textarea border-0 bg-transparent shadow-none ring-0 outline-none hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[focused=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0 data-[hovered=true]:border-transparent data-[hovered=true]:bg-transparent",
+          "rect": {
+            "x": 690.6666870117188,
+            "y": 881.3333740234375,
+            "width": 770.6666870117188,
+            "height": 112
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "anchors": {
+          "header": "pi-workspace-header",
+          "input": "office-prompt-input"
+        },
+        "parents": [
+          {
+            "className": "edu-shell",
+            "rect": {
+              "x": 0,
+              "y": 44,
+              "width": 1920,
+              "height": 1036
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-workspace",
+            "rect": {
+              "x": 232,
+              "y": 44,
+              "width": 1688,
+              "height": 1036
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat-main",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "work-panel ai-chat-surface",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "ai-conversation-frame",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 744.6666870117188
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          }
+        ]
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "height": 768,
+      "surface": "archive-dialog",
+      "chrome": {
+        "width": 1366,
+        "height": 768,
+        "header": {
+          "className": "edu-header",
+          "rect": {
+            "x": 232,
+            "y": 44,
+            "width": 1134,
+            "height": 60
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "input": {
+          "className": "textarea textarea--full-width textarea--primary prompt-input__textarea border-0 bg-transparent shadow-none ring-0 outline-none hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[focused=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0 data-[hovered=true]:border-transparent data-[hovered=true]:bg-transparent",
+          "rect": {
+            "x": 413.66668701171875,
+            "y": 569.3333740234375,
+            "width": 770.6666870117188,
+            "height": 112
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "anchors": {
+          "header": "pi-workspace-header",
+          "input": "office-prompt-input"
+        },
+        "parents": [
+          {
+            "className": "edu-shell",
+            "rect": {
+              "x": 0,
+              "y": 44,
+              "width": 1366,
+              "height": 724
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-workspace",
+            "rect": {
+              "x": 232,
+              "y": 44,
+              "width": 1134,
+              "height": 724
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat-main",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "work-panel ai-chat-surface",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 664
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "ai-conversation-frame",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1134,
+              "height": 432.66668701171875
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          }
+        ]
+      }
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "height": 1080,
+      "surface": "archive-dialog",
+      "chrome": {
+        "width": 1920,
+        "height": 1080,
+        "header": {
+          "className": "edu-header",
+          "rect": {
+            "x": 232,
+            "y": 44,
+            "width": 1688,
+            "height": 60
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "input": {
+          "className": "textarea textarea--full-width textarea--primary prompt-input__textarea border-0 bg-transparent shadow-none ring-0 outline-none hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[focused=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0 data-[hovered=true]:border-transparent data-[hovered=true]:bg-transparent",
+          "rect": {
+            "x": 690.6666870117188,
+            "y": 881.3333740234375,
+            "width": 770.6666870117188,
+            "height": 112
+          },
+          "scrollTop": 0,
+          "overflow": 0
+        },
+        "anchors": {
+          "header": "pi-workspace-header",
+          "input": "office-prompt-input"
+        },
+        "parents": [
+          {
+            "className": "edu-shell",
+            "rect": {
+              "x": 0,
+              "y": 44,
+              "width": 1920,
+              "height": 1036
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-workspace",
+            "rect": {
+              "x": 232,
+              "y": 44,
+              "width": 1688,
+              "height": 1036
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "edu-chat-main",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "work-panel ai-chat-surface",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 976
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          },
+          {
+            "className": "ai-conversation-frame",
+            "rect": {
+              "x": 232,
+              "y": 104,
+              "width": 1688,
+              "height": 744.6666870117188
+            },
+            "scrollTop": 0,
+            "overflow": 0
+          }
+        ]
+      }
+    }
+  ],
+  "launches": [
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+      ]
+    },
+    {
+      "paths": {
+        "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile",
+        "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-aZyMzQ\\profile"
+      },
+      "modules": [
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+        "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+      ]
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.",
+    "Native chooser returns controlled in main; browser storage failure injected only for the owned profile.",
+    "Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.",
+    "No full Codex pixel-match, VPN-off or installer proof.",
+    "Recovery is a filesystem restoration drill to a new owned root; production has no restore UI/IPC. Application stays light under either OS color preference."
+  ],
+  "layer": "C isolated formal Electron",
+  "humanAccepted": false,
+  "build": {
+    "root": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out",
+    "files": 481,
+    "sha256": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd"
+  },
+  "scriptSha256": "6f10aa441818adea4148d7398d622691b8037061cfa875bf0d37c85b4608fbf1",
+  "models": [
+    {
+      "id": "deepseek-flash",
+      "source": "official",
+      "inputModalities": [
+        "text",
+        "image"
+      ]
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "source": "official",
+      "inputModalities": [
+        "text"
+      ]
+    }
+  ],
+  "defaultModel": "deepseek-flash",
+  "skillVersions": [
+    {
+      "name": "education-evidence",
+      "version": 2,
+      "enabled": true,
+      "origin": "builtin"
+    },
+    {
+      "name": "lesson-preparation",
+      "version": 2,
+      "enabled": true,
+      "origin": "builtin"
+    },
+    {
+      "name": "question-analysis",
+      "version": 2,
+      "enabled": true,
+      "origin": "builtin"
+    },
+    {
+      "name": "science-illustration",
+      "version": 2,
+      "enabled": true,
+      "origin": "builtin"
+    },
+    {
+      "name": "teaching-office",
+      "version": 2,
+      "enabled": true,
+      "origin": "builtin"
+    }
+  ],
+  "recovery": {
+    "kind": "verified backup filesystem restore into new isolated root",
+    "uiRestoreAvailable": false,
+    "integrity": "ok",
+    "archivedHistoryReadable": true,
+    "modelReplay": false
+  },
+  "contrast": [
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "label": "description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "search-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "credential-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "default-model-trigger",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "save-button",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "default-model-hover",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "default-model-menu",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "skills",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "skills",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "skills",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "interface",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "interface",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "interface",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "archives",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "archives",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "archives",
+      "label": "navigation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "backup",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "backup",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "backup",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "label": "description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "search-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "credential-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "default-model-trigger",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "save-button",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "default-model-hover",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "default-model-menu",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "skills",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "skills",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "skills",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "interface",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "interface",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "interface",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "archives",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "archives",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "archives",
+      "label": "navigation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "backup",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "backup",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "backup",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "label": "description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "search-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "credential-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "default-model-trigger",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "save-button",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "default-model-hover",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "default-model-menu",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "skills",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "skills",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "skills",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "interface",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "interface",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "interface",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "archives",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "archives",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "archives",
+      "label": "navigation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "backup",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "backup",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "backup",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "label": "description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "search-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "credential-placeholder",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "default-model-trigger",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "save-button",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "default-model-hover",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "default-model-menu",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "skills",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "skills",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "skills",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "skill-version-status-description",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "interface",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "interface",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "interface",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "archives",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "archives",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "archives",
+      "label": "navigation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        225,
+        225,
+        226
+      ],
+      "opacity": 1,
+      "ratio": 4.656374528089794
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "backup",
+      "label": "heading",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "backup",
+      "label": "description",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "backup",
+      "label": "navigation",
+      "foreground": [
+        0,
+        47,
+        167
+      ],
+      "background": [
+        225,
+        235,
+        247
+      ],
+      "opacity": 1,
+      "ratio": 8.8709317277236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "label": "archive-confirmation",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        113,
+        113,
+        122
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 4.832895561154151
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        30,
+        99,
+        174
+      ],
+      "background": [
+        235,
+        235,
+        236
+      ],
+      "opacity": 1,
+      "ratio": 5.107587503426236
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "label": "archive-confirmation",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    }
+  ],
+  "backgrounds": [
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "label": "search-field",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "INPUT",
+          "id": "react-aria1500062172-_r_62_",
+          "className": "search-field__input edu-settings-search-input _readablePlaceholder_1eqn5_669",
+          "testId": "pi-settings-search",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "search-field__group search-field__group--full-width",
+          "testId": null,
+          "rawComputed": "oklch(1 0 0)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 2,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/heroui-pro-WPeDvs3H.css",
+                "ownerId": null
+              },
+              "selector": ".search-field__group",
+              "background": "",
+              "backgroundColor": "var(--field-background,var(--default))",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 3,
+                  "header": "@layer components "
+                },
+                {
+                  "index": 1069,
+                  "header": ".search-field__group "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "skills",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "interface",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "archives",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "backup",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "label": "search-field",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "INPUT",
+          "id": "react-aria1500062172-_r_62_",
+          "className": "search-field__input edu-settings-search-input _readablePlaceholder_1eqn5_669",
+          "testId": "pi-settings-search",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "search-field__group search-field__group--full-width",
+          "testId": null,
+          "rawComputed": "oklch(1 0 0)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 2,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/heroui-pro-WPeDvs3H.css",
+                "ownerId": null
+              },
+              "selector": ".search-field__group",
+              "background": "",
+              "backgroundColor": "var(--field-background,var(--default))",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 3,
+                  "header": "@layer components "
+                },
+                {
+                  "index": 1069,
+                  "header": ".search-field__group "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "skills",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "interface",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "archives",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "backup",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "label": "search-field",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "INPUT",
+          "id": "react-aria1500062172-_r_62_",
+          "className": "search-field__input edu-settings-search-input _readablePlaceholder_1eqn5_669",
+          "testId": "pi-settings-search",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "search-field__group search-field__group--full-width",
+          "testId": null,
+          "rawComputed": "oklch(1 0 0)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 2,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/heroui-pro-WPeDvs3H.css",
+                "ownerId": null
+              },
+              "selector": ".search-field__group",
+              "background": "",
+              "backgroundColor": "var(--field-background,var(--default))",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 3,
+                  "header": "@layer components "
+                },
+                {
+                  "index": 1069,
+                  "header": ".search-field__group "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "skills",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "permissions",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "interface",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "archives",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "backup",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "label": "search-field",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "INPUT",
+          "id": "react-aria1500062172-_r_62_",
+          "className": "search-field__input edu-settings-search-input _readablePlaceholder_1eqn5_669",
+          "testId": "pi-settings-search",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "search-field__group search-field__group--full-width",
+          "testId": null,
+          "rawComputed": "oklch(1 0 0)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 2,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/heroui-pro-WPeDvs3H.css",
+                "ownerId": null
+              },
+              "selector": ".search-field__group",
+              "background": "",
+              "backgroundColor": "var(--field-background,var(--default))",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 3,
+                  "header": "@layer components "
+                },
+                {
+                  "index": 1069,
+                  "header": ".search-field__group "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "skills",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "permissions",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "interface",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "archives",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "backup",
+      "label": "workspace",
+      "resolvedRGB": [
+        255,
+        255,
+        255
+      ],
+      "sum": 765,
+      "layers": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "className": "_workspace_1eqn5_1 edu-domain",
+          "testId": "pi-settings-workspace",
+          "rawComputed": "rgba(0, 0, 0, 0)",
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "contribution": 0,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": []
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "className": "edu-workspace",
+          "testId": null,
+          "rawComputed": "rgb(255, 255, 255)",
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "contribution": 1,
+          "inlineBackground": "",
+          "inlineBackgroundColor": "",
+          "matchedBackgroundRules": [
+            {
+              "source": {
+                "index": 3,
+                "href": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/assets/index-DzFt2HUD.css",
+                "ownerId": null
+              },
+              "selector": ".edu-workspace",
+              "background": "rgb(255, 255, 255)",
+              "backgroundColor": "rgb(255, 255, 255)",
+              "priority": "",
+              "contexts": [
+                {
+                  "index": 939,
+                  "header": ".edu-workspace "
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "whiteCanvasRemainder": 0,
+      "unreadableStylesheets": [],
+      "ruleEvidence": "Matched declarations are candidates; raw computed color identifies the resolved cascade result."
+    }
+  ],
+  "styleSettles": [
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "models",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "skills",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "permissions",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "interface",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "archives",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1366,
+      "tab": "backup",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "models",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "skills",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "permissions",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "interface",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "archives",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "light",
+      "width": 1920,
+      "tab": "backup",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "models",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "skills",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "permissions",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "interface",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "archives",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1366,
+      "tab": "backup",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "models",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "skills",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "permissions",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "interface",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "archives",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "theme": "dark",
+      "width": 1920,
+      "tab": "backup",
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    }
+  ],
+  "transitions": [
+    {
+      "label": "screenshot:model-menu-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 4,
+      "count": 2,
+      "durations": [
+        250,
+        150
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:models-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:skills-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:permissions-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:interface-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archives-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:backup-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:model-menu-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 3,
+      "count": 2,
+      "durations": [
+        250,
+        150
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:models-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:skills-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:permissions-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 0,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:interface-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archives-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:backup-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:model-menu-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 2,
+      "durations": [
+        250,
+        150
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:models-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:skills-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:permissions-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:interface-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archives-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:backup-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:model-menu-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 2,
+      "durations": [
+        250,
+        150
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:models-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:skills-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:permissions-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:interface-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archives-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:backup-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:public-message-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:public-message-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:public-message-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:public-message-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-entry:light:1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 2,
+      "durations": [
+        150,
+        250
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-focus:light:1366",
+      "windowVisible": false,
+      "elapsedMs": 0,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archive-dialog-light-1366",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-entry:light:1920",
+      "windowVisible": false,
+      "elapsedMs": 3,
+      "count": 2,
+      "durations": [
+        150,
+        250
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-focus:light:1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archive-dialog-light-1920",
+      "windowVisible": false,
+      "elapsedMs": 3,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-entry:dark:1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 2,
+      "durations": [
+        150,
+        250
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-focus:dark:1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archive-dialog-dark-1366",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-entry:dark:1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 2,
+      "durations": [
+        150,
+        250
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "archive-focus:dark:1920",
+      "windowVisible": false,
+      "elapsedMs": 2,
+      "count": 1,
+      "durations": [
+        100
+      ],
+      "advancedHiddenSnapshot": true
+    },
+    {
+      "label": "screenshot:archive-dialog-dark-1920",
+      "windowVisible": false,
+      "elapsedMs": 1,
+      "count": 0,
+      "durations": [],
+      "advancedHiddenSnapshot": true
+    }
+  ],
+  "titleObservation": {
+    "sessionId": "aisession_bbfc6b02-4279-4411-bd51-441b8b9dfb2d",
+    "taskOnlyTitle": true,
+    "nativeSkillPrefixPreserved": true,
+    "renderedTitleMatches": true
+  },
+  "stoppedRequestOffset": 0,
+  "stoppedRunId": "run_b44fc901-bcd6-48fe-8d96-510b30e251d4",
+  "requests": [],
+  "rendererErrors": [],
+  "error": "Actual saved credential transport evidence failed"
+}
