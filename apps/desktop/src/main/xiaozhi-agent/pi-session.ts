@@ -5,6 +5,7 @@ import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS,NATURAL_LESSON_TOOL} from '../../shared/classroom-plan';
+import type {NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {PAPER_TOOLS} from '../../shared/paper-blueprint';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
@@ -147,7 +148,7 @@ export interface PiXiaozhiOptions {
   buoyancyTools?: ToolDefinition[];
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
-  naturalLessonDraft?: {subject:string;grade:string;requestedMinutes?:number;hasDraft:()=>Promise<boolean>};
+  naturalLessonDraft?: NaturalLessonRequirements & {subject:string;grade:string;hasDraft:()=>Promise<boolean>};
   directOriginalPaper?: true;
   classroomExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   teachingLessonExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
@@ -654,11 +655,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       if(entries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom-plan.v1'||JSON.stringify(entry.data)!==JSON.stringify(identity)))throw Error('configuration');
       if(!entries.length)manager.appendCustomEntry('xiaozhi.education.classroom-plan.v1',identity);
       if(options.naturalLessonDraft){
-        const {subject,grade,requestedMinutes}=options.naturalLessonDraft;
+        const {subject,grade,requestedMinutes,requestedMaterials}=options.naturalLessonDraft;
         prompt+=`\n为${JSON.stringify(grade)}的${JSON.stringify(subject)}编写新的可编辑教案，调用 ${NATURAL_LESSON_TOOL} 保存。未选正式课标或教材，系统会标为待对照。自拟示例在教案中标明。收到成功回执后说明在哪里核对。教师自行确认，文件另行导出。`;
         if(requestedMinutes!==undefined)prompt+=`\n教师要求全课 ${requestedMinutes} 分钟。totalMinutes 必须为 ${requestedMinutes}，scenes 的 durationMinutes 之和也必须为 ${requestedMinutes}。若工具返回课时差异，按差值调整相关环节后再提交。`;
         prompt+='\n先写 details 的 content（教学内容）、focus（重点）、difficulty（难点）、boardwork（板书）、homework（任务及提交方式）、reflection（课后应查看的学生证据和调整问题）。objectives 的每项包含可观察的 goal 和对应 criterion。使用工具 schema 指定的字段；按反馈的字段路径修正。';
-        prompt+='\n如果教师需要自拟材料，给出可直接使用的全文和清楚的模拟标记。活动、检查题和达成标准引用自拟材料里的原句或确切事实，区分只有一份材料提到、两份材料都提到和仍待核对的说法。';
+        if(requestedMaterials!==undefined)prompt+=`\n教师明确要 ${requestedMaterials} 份自拟材料。materials 数组必须包含 ${requestedMaterials} 项，每项只有独立 title 和学生可直接阅读的 text 正文。`;
+        prompt+='\n如需自拟课堂材料，先写 materials 的标题与正文，再安排依赖它们的活动和评价。用材料 A、B 等表示数组顺序。教学内容中说明取材和用途即可，宿主会把正文和模拟标签加入教案。检查题和标准引用实际出现的句子与事实。';
         prompt+='\n按教学顺序写 scenes，每项 kind 从 introduction、activity、practice、assessment、closure 选择。前四种至少各一项。教学最后才测的目标，也要先在 activity 或 practice 里安排一次真实练习并填该目标编号。提交前逐个核对所有目标编号同时出现在 activity 或 practice 的 objectiveIndices 以及至少一条检查题的 objectiveIndices。objectiveIndices 从 0 编号，检查题所用编号必须属于当前环节，expectedEvidence 和 criterion 要能据实际学生回答判定。';
       }else prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
     }

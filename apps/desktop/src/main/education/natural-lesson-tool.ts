@@ -1,6 +1,8 @@
 import { CLASSROOM_PLAN_SCHEMA, type ClassroomPlanDocument, type ClassroomLessonIntent } from "../../shared/classroom-plan";
 import { TEACHING_LESSON_SCHEMA, teachingLessonToolSchema, type TeachingLesson, type LessonPhase } from "../../shared/teaching-lesson";
 
+import { includeLessonMaterials, lessonMaterialsToolSchema } from "./natural-lesson-materials";
+
 const lesson = teachingLessonToolSchema.properties;
 const phase = lesson.phases.items.properties;
 
@@ -21,6 +23,7 @@ export const naturalLessonToolSchema = {
     },
     preparation: lesson.preparation,
     details: lesson.details,
+    materials: lessonMaterialsToolSchema,
     scenes: {
       type: "array", minItems: 4, maxItems: 12,
       items: {
@@ -45,14 +48,18 @@ type NaturalLessonInput = {
   totalMinutes: number;
   objectives: { goal: string; criterion: string }[];
   preparation: string[];
-  details: TeachingLesson["details"];
+  details: NonNullable<TeachingLesson["details"]>;
+  materials?: { title: string; text: string }[];
   scenes: (Omit<LessonPhase, "sceneId"> & { title: string; activity: string; durationMinutes: number })[];
 };
 
-export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent): ClassroomPlanDocument {
-  const { title, totalMinutes, objectives, preparation, details, scenes } = raw as NaturalLessonInput;
+export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent, requestedMaterials?: number):
+  { document: ClassroomPlanDocument; materialCount: number } | { issue: string } {
+  const { title, totalMinutes, objectives, preparation, details, scenes, materials } = raw as NaturalLessonInput;
+  const included = includeLessonMaterials(details.content, materials, requestedMaterials);
+  if ("issue" in included) return included;
   const sceneId = (index: number) => `lesson-${index + 1}`;
-  return {
+  const document: ClassroomPlanDocument = {
     schemaVersion: CLASSROOM_PLAN_SCHEMA,
     title,
     totalMinutes,
@@ -69,7 +76,7 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
       subject: intent.subject,
       grade: intent.grade,
       preparation,
-      details,
+      details: { ...details, content: included.content },
       goalCriteria: objectives.map(({ criterion }) => criterion),
       phases: scenes.map(({ kind, objectiveIndices, teacherPrompt, checks }, index) => ({
         sceneId: sceneId(index), kind, objectiveIndices, teacherPrompt, checks,
@@ -78,4 +85,5 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
       missingSources: ["本轮未选用课标或教材，请教师对照适用版本。"],
     },
   };
+  return { document, materialCount: included.materialCount };
 }

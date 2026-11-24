@@ -23,18 +23,24 @@ draft.lesson.missingSources = ["本轮未选用课标或教材，请教师对照
 draft.scenes.forEach((scene,index) => {
   scene.sceneId = draft.lesson.phases[index].sceneId = "lesson-" + (index+1);
 });
+const materials = [
+  { title:"观察记录甲", text:"星期一我在操场附近看到两棵树。靠围墙的一棵得到更多日照。记录本上写着两棵树每周都浇了同样多的水。" },
+  { title:"观察记录乙", text:"两棵树的树高记录只覆盖四周。我发现靠围墙一侧的泥土不同，无法排除土壤差异对树高变化也有影响。" },
+];
 const draftInput = {
   title:draft.title,totalMinutes:draft.totalMinutes,
   objectives:draft.objectives.map((goal,index)=>({goal,criterion:draft.lesson.goalCriteria[index]})),
-  preparation:draft.lesson.preparation,details:draft.lesson.details,
+  preparation:draft.lesson.preparation,details:{...draft.lesson.details},materials,
   scenes:draft.scenes.map(({title,activity,durationMinutes},index)=>{
     const {kind,objectiveIndices,teacherPrompt,checks}=draft.lesson.phases[index];
     return {title,kind,activity,durationMinutes,objectiveIndices,teacherPrompt,checks};
   }),
 };
+draft.lesson.details.content += materials.map(({title,text},index)=>
+  `\n\n【模拟课堂材料 ${String.fromCharCode(65+index)}】${title}\n${text}`).join("");
 const prompt = useLive
   ? "请编写一份七年级历史教案。整节课45分钟，主题是比较两份关于同一校史展品的回忆。请自拟两份简短、观点有出入的展品记录，明确标注为模拟史料。学生要区分史料记录与推断，并根据证据说明暂不能确认的结论。"
-  : "请生成一份五年级语文教案，40分钟，主题是从观察到有依据的解释，包含正式教案的所有栏目。";
+  : "请生成一份五年级语文教案，40分钟，主题是从观察到有依据的解释，包含正式教案的所有栏目。请自拟两份观察记录。";
 const consultation = "如何写五年级语文教案？请解释板书通常起什么作用。";
 const report = { ok: false, useLive, root, prompt, mainSha: createHash("sha256").update(fs.readFileSync(main)).digest("hex"), checks: [] };
 let app;
@@ -106,6 +112,23 @@ async function launch(cold) {
           receipt = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
           if(receipt.success !== true || receipt.status !== "draft" || receipt.teacherConfirmed) throw Error("Missing owned lesson receipt");
           message = "结构化教案草稿已保存，请打开教案卡片核对。";
+        } else if(wire.mode === "no-materials") {
+          const attempt = structuredClone(input.draft);
+          if(stage > 0) {
+            const rejection = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
+            if(rejection.error !== "lesson_materials_incomplete" ||
+               !(stage===1 ? rejection.message.includes("当前 materials 提交 0 份") : rejection.message.includes("材料 B 缺少独立正文"))) {
+              throw Error("Missing exact materials correction receipt");
+            }
+            wire.materialsCorrection = rejection;
+          }
+          if(stage < 2) {
+            attempt.materials = stage===0 ? [] : [attempt.materials[0],{...attempt.materials[1],text:attempt.materials[0].text}];
+            toolCall = {name:tool.name,arguments:JSON.stringify(attempt)};
+          } else {
+            if(request.tool_choice !== "none") throw Error("Unusable materials exceeded the bounded correction budget");
+            message = "自拟材料还缺正文，未保存草稿。";
+          }
         } else if(wire.mode === "no-coverage") {
           if(stage > 0) {
             const rejection = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
@@ -185,6 +208,12 @@ try {
     assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
     check("Wrong scene subtotal is rejected with exact feedback, corrected once, and never saved as a second draft");
   }
+  const savedContent = payload.document.lesson.details.content;
+  const bodies = savedContent.split(/【模拟课堂材料 [AB]】[^\r\n]+\n/u).slice(1).map(body=>body.trim());
+  assert.equal(bodies.length,2);
+  assert(bodies.every(body=>body.replace(/[^\p{L}\p{N}]/gu,"").length>=24));
+  assert.notEqual(bodies[0],bodies[1]);
+  report.materialBodies=bodies;
   assert.equal(JSON.parse(record.result_json||"{}").state,"draft");
   assert.equal((payload.context.adopted||[]).length,0);
   const task = query("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'")
@@ -197,7 +226,11 @@ try {
   const details = page.getByTestId("lesson-content-toggle");
   await details.locator("button[aria-expanded]").first().click();
   assert.equal(await details.getByTestId("lesson-detail-boardwork").inputValue(),payload.document.lesson.details.boardwork);
+  const content = details.getByTestId("lesson-detail-content");
+  assert.equal(await content.inputValue(),savedContent);
+  await content.scrollIntoViewIfNeeded();
   await page.screenshot({path:path.join(root,"lesson-from-chat.png")});
+  check("Both labelled full texts are stored in the editable Teaching Content field");
   if(!useLive) {
     await page.getByTestId("classroom-plan-source-chat").click();
     await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
@@ -238,12 +271,27 @@ try {
     assert.equal(coverage.error,"lesson_objective_coverage");
     assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
     check("An objective assessed without prior practice names the missing link and cannot persist after the retry");
+    await until(async () => !(await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id)).running);
+    await app.evaluate(()=>{globalThis.lessonDraftWire.mode="no-materials";});
+    await send(page,"新任务：请生成一份五年级语文教案。请自拟两份模拟材料。");
+    const missing=await until(()=>{
+      const [other]=query("SELECT id,status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1");
+      return other?.id!==uncovered.id&&["failed","succeeded"].includes(other.status)?other:null;
+    });
+    assert.equal(missing.status,"failed");
+    const correction=await app.evaluate(()=>globalThis.lessonDraftWire.materialsCorrection);
+    assert.equal(correction.error,"lesson_materials_incomplete");
+    assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
+    check("Missing and duplicated source bodies are rejected before saving, with no silent extra retries");
 
   } else check("Real model draft opens the original editor with its actual board plan and six populated fields");
 
   await app.close(); app=undefined;
   const cold=await launch(true);
   await openLessonFromChat(cold,record.id,record.id);
+  const coldDetails = cold.getByTestId("lesson-content-toggle");
+  await coldDetails.locator("button[aria-expanded]").first().click();
+  assert.equal(await coldDetails.getByTestId("lesson-detail-content").inputValue(),savedContent);
   assert.equal((await app.evaluate(()=>globalThis.lessonDraftWire.stages)).length,0);
   assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
   check("Cold start opens the same stored lesson without replaying the provider request");

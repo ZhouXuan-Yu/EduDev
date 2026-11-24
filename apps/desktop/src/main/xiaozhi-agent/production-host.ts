@@ -22,7 +22,7 @@ import {createScienceLessonSource,prepareScienceLessonRefresh} from '../educatio
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
-import {naturalLessonDraft} from '../education/natural-lesson-draft';
+import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
@@ -264,7 +264,7 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
   answerOnly?: boolean;
-  naturalLessonDraft?: {requestedMinutes?:number};
+  naturalLessonDraft?: NaturalLessonRequirements;
   directOriginalPaper?: true;
   taskControl?: TaskControlAction;
   finalizing?: boolean;
@@ -1363,7 +1363,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true}:{}),
         ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
-          subject:lesson.subject,grade:lesson.grade,requestedMinutes:run.naturalLessonDraft.requestedMinutes,
+          subject:lesson.subject,grade:lesson.grade,...run.naturalLessonDraft,
           hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
         }}:{}),
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
@@ -2179,7 +2179,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
-      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),

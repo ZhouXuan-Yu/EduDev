@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "2ac0318a62f92ca73563023f3b370fc810c30dd877c36bd5cfd811da3a518c34",
+  "sourceHash": "5499938e17c623f2e81d683a14f936a6d215e0d9dd8bd97207198619b00bf947",
   "sources": [
     {
       "file": "package-lock.json",
@@ -144,7 +144,7 @@
     },
     {
       "file": "src/main/education/classroom-plan-tools.ts",
-      "sha256": "173ad7efc01daf4735e9092e1f5bbb0bd2bf0fbb55588ab839a2baf1bd11cf92"
+      "sha256": "3a65bd99cb4a8ad5fe0d4bf5dc814b6f6c73f0afb9cf405f12f9a61bbed45680"
     },
     {
       "file": "src/main/education/classroom-pptx.ts",
@@ -236,11 +236,15 @@
     },
     {
       "file": "src/main/education/natural-lesson-draft.ts",
-      "sha256": "28c3b7c1301144f66c5263ed78ca96bd402fb8c72a38ea2b671f4e057a9da784"
+      "sha256": "26f10103d203c0322059fc90b141e26d5c1fb07ebfed6c96d53cdbb100a66f00"
+    },
+    {
+      "file": "src/main/education/natural-lesson-materials.ts",
+      "sha256": "e6b547e0e9485fe7a1009331e3636ed39dde4a65c501e37e5a86aa4d797f076f"
     },
     {
       "file": "src/main/education/natural-lesson-tool.ts",
-      "sha256": "45e6f54949091208f879cb0f6b83c83b27ca3a0fd53e2c8a2b293974178b568f"
+      "sha256": "6a88e2b9736da83476c6e4e35eaa5c5691fce15dbdd48a64117e77aed4fba2db"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -828,7 +832,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "bf6264d2d11cebe8680a542bd05448245c9c55e2a5515b54612d94ca22367e03"
+      "sha256": "4c65f267385a66f0f332f13363b818e6b6fa65dfda8d62543fe11238db558905"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1528,7 +1532,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "2503d6afdfcbed5e2bec5b67c6765086a208c396d2572a8cd1af6361b649e225"
+      "sha256": "38024401f67ad3acf1416c6a72f7a1cc14c6f16db44b4a4846d41f5b64c5988f"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1564,7 +1568,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "76d98aaf92ee0ef4b26709acd1350978a5036a967212c4910061111c0d911098"
+      "sha256": "47222774f49e5597dd5fa9d61ac67215b385048b15e24e3f3623847dd36f229d"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",

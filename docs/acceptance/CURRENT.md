@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+教案自拟材料已验证正文冷读、确认及两个文件的完整性。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
+
 对话教案的明确课时、目标覆盖和连续会话恢复见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案的课时与提交结构)。
 
 真实模型学案单例与同一确认版导出、原资料定位和冷启见 [讲义专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-自然语言生成讲义和公式)。

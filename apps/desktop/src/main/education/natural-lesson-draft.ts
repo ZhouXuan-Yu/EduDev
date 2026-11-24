@@ -1,4 +1,5 @@
 import type { ClassroomPlanStart } from "../../shared/classroom-plan";
+import { requestedLessonMaterials } from "./natural-lesson-materials";
 
 const grade = "(?:[一二三四五六七八九]年级|[1-9]年级|初[一二三]|高[一二三]|小学(?:低|中|高)年级)";
 const subject = "(?:道德与法治|思想政治|综合实践活动|信息科技|语文|数学|英语|物理|化学|生物|地理|历史|科学|音乐|美术|体育|劳动)";
@@ -9,7 +10,8 @@ const verb = "(?:设计|制作|生成|编写|写|拟定|准备|安排|做)";
 const lead = "(?:新任务[：:]\\s*)?(?:(?:请你|请|麻烦|能否|可以|能不能|能帮我)\\s*)*";
 const creation = new RegExp(`^${lead}(?:(?:(?:帮我|为我|给我)\\s*)?${verb}|(?:为|给)(?!我)[^。！？?\\n]{1,55}?${verb}|(?:给我|来)\\s*一[份篇节套])[^。！？?\\n]{0,200}?教案`, "u");
 
-type NaturalLessonDraft = Extract<ClassroomPlanStart, { mode: "outline" }> & { requestedMinutes?: number };
+export type NaturalLessonRequirements = { requestedMinutes?: number; requestedMaterials?: number };
+type NaturalLessonDraft = Extract<ClassroomPlanStart, { mode: "outline" }> & NaturalLessonRequirements;
 
 function requestedLessonMinutes(text: string, firstSentence: string): number | undefined {
   const minutes = new Set([
@@ -36,9 +38,11 @@ export function naturalLessonDraft(prompt: string): NaturalLessonDraft | undefin
   if (pairs.size !== 1) return;
   const [[gradeName, subjectName]] = pairs.values();
   const requestedMinutes = requestedLessonMinutes(text, prefix);
+  const requestedMaterials = requestedLessonMaterials(text);
   return {
     mode: "outline",
     lesson: { grade: gradeName, subject: subjectName, curricula: [] },
     ...(requestedMinutes === undefined ? {} : { requestedMinutes }),
+    ...(requestedMaterials === undefined ? {} : { requestedMaterials }),
   };
 }
