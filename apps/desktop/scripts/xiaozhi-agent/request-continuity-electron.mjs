@@ -1,3 +1,4 @@
+import {testMain} from '../acceptance/build-root.mjs';
 import '../office-agent/register-source.mjs';
 import {presentationFixture} from './presentation-fixture.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron as electron} from 'playwright';
@@ -5,7 +6,7 @@ const recovery=process.env.XIAOZHI_REQUEST_RECOVERY_ROOT;
 if(recovery&&(!path.basename(recovery).startsWith('xiaozhi-request-continuity-ui-')||!fs.existsSync(path.join(recovery,'data','app.db'))))throw Error('Invalid owned recovery fixture');
 const desktop=path.resolve(import.meta.dirname,'../..'),output=recovery||fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-request-continuity-ui-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const controlFile=path.join(output,'control.json'),wireFile=path.join(output,'wire.json'),bootstrap=path.join(output,'bootstrap.cjs');
-fs.writeFileSync(bootstrap,`globalThis.continuityFs=require('node:fs');import(${JSON.stringify(pathToFileURL(path.join(desktop,'out/main/index.js')).href)});`);
+fs.writeFileSync(bootstrap,`globalThis.continuityFs=require('node:fs');import(${JSON.stringify(pathToFileURL(testMain(desktop)).href)});`);
 const control=patch=>{const value=fs.existsSync(controlFile)?JSON.parse(fs.readFileSync(controlFile,'utf8')):{};fs.writeFileSync(controlFile+'.tmp',JSON.stringify({...value,...patch}));fs.renameSync(controlFile+'.tmp',controlFile);};control({phase:'intent'});
 const html='<!doctype html><html lang="zh-CN"><title>浮力演示</title><body><h1>原始演示</h1><label>载荷<input id="load" type="range" min="0" max="5" value="0"></label><output id="force">6 N</output><script>load.oninput=()=>force.textContent=(6+Number(load.value))+" N";</script></body></html>';
 const report={ok:false,checks:[],errors:[],boundary:'Actual formal Electron UI/Pi/task journal/approvals and real HTML/PPT revisions, synthetic SSE only. No natural reasoning-quality, Office/WPS rendering, daily runtime or full E03 AT acceptance.'};
@@ -99,7 +100,7 @@ try{
  const longRequest='长请求校验：'+('浮力条件。'.repeat(1300))+'尾部要求：必须保留排液体积';
  await send('long',longRequest);await settled();assert(wires().some(w=>w.phase==='long'&&w.hasTail));assert.equal(wires().filter(w=>w.phase==='long'&&w.tool==='read_teacher_request').length,3);check('Real Pi reads all three request segments including constraints after character 6500');
  await send('queue','请先问我说明用于课堂还是课后，再给一句建议。');const question=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').last();await question.waitFor({timeout:60000});
- await page.getByTestId('office-prompt-input').fill('讲解改为八年级');await page.getByTestId('pi-queue-mode').selectOption('steer');await page.getByTestId('pi-queue-submit').click();await page.locator('[data-testid="pi-queued-instruction"][data-state="queued"]').waitFor({timeout:30000});
+ await page.getByTestId('office-prompt-input').fill('讲解改为八年级');await page.getByTestId('office-prompt-input').press('Control+Enter');await page.locator('[data-testid="pi-queued-instruction"][data-state="queued"]').waitFor({timeout:30000});
  await question.getByTestId('pi-question-option-0').click();await question.getByTestId('pi-question-submit').click();await settled();const applied=query("SELECT payload_json FROM xiaozhi_pi_controls WHERE kind='instruction' AND state='applied'").map(r=>JSON.parse(r.payload_json));assert.equal(applied.length,1);assert.equal(applied[0].appliedOrder,1);check('Composer supplement is actually delivered by Pi at a turn seam and persists application order');
  await send('inspect','继续');await settled();assert(wires().some(w=>w.phase==='inspect'&&w.hasApplied));check('Next actual request rebuilds applied teacher instructions from SQLite');
  await send('independent','另建第二份独立压力探究课件 force.pptx，8页，每页有备注。');const independentCard=page.locator('[data-testid="pi-office-artifact"][data-state="pending"]').last();await independentCard.waitFor({timeout:60000});await until(async()=>!await independentCard.getByTestId('pi-office-approve').isDisabled());await independentCard.getByTestId('pi-office-approve').click();await settled();

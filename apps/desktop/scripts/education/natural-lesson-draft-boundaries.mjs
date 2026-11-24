@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import {naturalLessonDraft} from "../../src/main/education/natural-lesson-draft.ts";
 import {includeLessonMaterials, requestedLessonMaterials} from "../../src/main/education/natural-lesson-materials.ts";
+import {lessonRevisionRequest} from "../../src/main/education/lesson-revision-request.ts";
+import {applyLessonAgenda, LessonTimingMismatch} from "../../src/main/education/lesson-agenda-revision.ts";
+import {lessonDocument} from "./teaching-lesson-fixture.mjs";
 
 const accepted = (text, grade, subject, requestedMinutes) => assert.deepEqual(naturalLessonDraft(text),
   {mode:"outline",lesson:{subject,grade,curricula:[]},...(requestedMinutes===undefined?{}:{requestedMinutes})});
@@ -53,3 +56,39 @@ assert.match(includeLessonMaterials("概要", [{...first, title:"一\n二"}], 1)
 assert.match(includeLessonMaterials("讲义".repeat(744), [first], 1).issue, /超过 1500/);
 assert.deepEqual(includeLessonMaterials("原有内容"), {content:"原有内容", materialCount:0});
 console.log("PASS requested synthetic texts are complete, distinct, explicitly labeled, and bounded");
+
+for (const [request, expected] of [
+  ["请只修改这份教案的板书设计，改成左侧观察右侧解释，作业保持原样。",{fields:["boardwork"]}],
+  ["请调整《史料阅读》教案的教学重点和课后反思。",{title:"史料阅读",fields:["focus","reflection"]}],
+  ["请把《作业交流》教案的板书改为‘先展示作业，再讲重难点’。",{title:"作业交流",fields:["boardwork"]}],
+  ["请把教案中的板书分享给我看看。",undefined],
+  ["请新建教案，分析教学重点。",undefined],
+  ["请修改《史料阅读》和《口语表达》教案的作业。",undefined],
+  ["请调整讲义的作业。",undefined],
+]) assert.deepEqual(lessonRevisionRequest(request),expected,request);
+console.log("PASS lesson revision targets known fields before the replacement prose and never selects unrelated drafts");
+
+const activity=lessonRevisionRequest("请只修改《观察课》教案的练习环节活动，改为先独立写一条解释，再交流。");
+assert.deepEqual(activity,{title:"观察课",agenda:{activity:"practice"}});
+const timed=lessonRevisionRequest("请把这份教案的导入环节改为８分钟，练习环节改为7分钟，其余环节不变。");
+assert.deepEqual(timed,{agenda:{minutes:{introduction:8,practice:7}}});
+const explicit=lessonRevisionRequest("请把这份教案的总结环节改为6分钟，全课总时长改为41分钟。");
+assert.deepEqual(explicit,{agenda:{minutes:{closure:6},totalMinutes:41}});
+assert.equal(lessonRevisionRequest("请把这份教案的导入和练习环节活动改为先做再说。"),undefined);
+assert.deepEqual(lessonRevisionRequest("请把这份教案的探究与讲授环节的学生活动改为小组对照原文。"),{agenda:{activity:"activity"}});
+assert.deepEqual(lessonRevisionRequest("请把这份教案的导入调为8分钟，练习设为7分钟。"),{agenda:{minutes:{introduction:8,practice:7}}});
+assert.equal(lessonRevisionRequest("请把这份教案的导入环节改为8分钟，导入改为7分钟。"),undefined);
+assert.equal(lessonRevisionRequest("请把这份教案的导入环节改为8分钟左右。"),undefined);
+assert.equal(lessonRevisionRequest("请把这份教案的练习环节活动改为先独立写，再把全课时长改为41分钟。"),undefined);
+const updated=applyLessonAgenda(lessonDocument,timed.agenda,{});
+assert.deepEqual(updated.scenes.map(scene=>scene.durationMinutes),[8,10,7,10,5]);
+assert.equal(updated.totalMinutes,40);
+assert.equal(applyLessonAgenda(updated,explicit.agenda,{}).totalMinutes,41);
+assert.throws(()=>applyLessonAgenda(lessonDocument,{minutes:{introduction:8}},{}),error=>error instanceof LessonTimingMismatch&&error.expected===40&&error.scheduled===43);
+assert.throws(()=>applyLessonAgenda(lessonDocument,timed.agenda,{durationMinutes:99}),/invalid_input/);
+const repeated=structuredClone(lessonDocument);
+repeated.lesson.phases[0].kind='practice';
+assert.throws(()=>applyLessonAgenda(repeated,activity.agenda,{activity:'先独立写。'}),/lesson_phase_unresolved/);
+const justActivity=applyLessonAgenda(lessonDocument,activity.agenda,{activity:'先独立写。'});
+assert.deepEqual(justActivity,{...lessonDocument,scenes:lessonDocument.scenes.map(scene=>scene.sceneId==='practice'?{...scene,activity:'先独立写。'}:scene)});
+console.log("PASS named phase, exact timing, conflict, duplicate scope, and unchanged lesson context");

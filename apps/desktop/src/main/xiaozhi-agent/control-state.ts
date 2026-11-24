@@ -3,8 +3,8 @@ import type { XiaozhiControl } from '../../shared/xiaozhi-agent';
 import {validVersionedPlan,planStepId,type VersionedPlan} from '../../shared/xiaozhi-plan';
 
 export type PrivateControl = XiaozhiControl & { sessionId: string; callId?: string; requestHash?: string;appliedOrder?:number;planRetiredIds?:string[]; recoverableQuestion?:boolean };
-export const publicControl = ({ id, runId, kind, state, text, revision, steps,plan, options, answer, mode, canResume, callId }: PrivateControl): XiaozhiControl =>
-  ({ id, runId, kind, state, text, ...(kind === 'instruction'||plan ? {revision:revision ?? 0} : {}), ...(plan?{plan}:{}), ...(steps ? { steps } : {}), ...(options ? { options } : {}), ...(answer !== undefined ? { answer } : {}), ...(mode ? { mode } : {}), ...(canResume ? { canResume:true } : {}), ...(callId ? {callId} : {}) });
+export const publicControl = ({ id, runId, kind, state, text, revision, steps,plan, options, answer, mode, queueOrder, canResume, callId }: PrivateControl): XiaozhiControl =>
+  ({ id, runId, kind, state, text, ...(kind === 'instruction'||plan ? {revision:revision ?? 0} : {}), ...(plan?{plan}:{}), ...(steps ? { steps } : {}), ...(options ? { options } : {}), ...(answer !== undefined ? { answer } : {}), ...(mode ? { mode } : {}), ...(queueOrder!==undefined?{queueOrder}:{}), ...(canResume ? { canResume:true } : {}), ...(callId ? {callId} : {}) });
 const time = () => new Date().toISOString();
 function parse(row: Record<string, unknown>): PrivateControl {
   const value = JSON.parse(String(row.payload_json)) as PrivateControl;
@@ -17,6 +17,7 @@ function parse(row: Record<string, unknown>): PrivateControl {
   if (!['plan', 'question', 'instruction'].includes(value.kind) || !['pending','answered','queued','dispatching','withdrawn','applied','interrupted','resuming'].includes(value.state)
     || (version === 1 && ['dispatching','withdrawn'].includes(value.state))
     || (value.revision !== undefined && (!Number.isSafeInteger(value.revision) || value.revision < 0))
+    || (value.queueOrder!==undefined&&(!Number.isFinite(value.queueOrder)||value.kind!=='instruction'))
     || (value.appliedOrder!==undefined&&(!Number.isSafeInteger(value.appliedOrder)||value.appliedOrder<1||value.kind!=='instruction'||value.state!=='applied'))
     || (value.recoverableQuestion!==undefined&&(value.kind!=='question'||typeof value.recoverableQuestion!=='boolean'))
     || typeof value.text !== 'string' || value.text.length > 8192) throw new Error('configuration');
@@ -26,7 +27,7 @@ export function createPiControlState(sql: Sql) {
   const control = async (id: string) => {
     const row = (await sql.all('SELECT * FROM xiaozhi_pi_controls WHERE id=?', [id]))[0]; return row ? parse(row) : null;
   };
-  const changeControl = async (id: string, from: XiaozhiControl['state'][], patch: Partial<Pick<PrivateControl, 'state' | 'answer' | 'canResume' | 'revision' | 'text' | 'mode' | 'appliedOrder'>>, revision?: number) => {
+  const changeControl = async (id: string, from: XiaozhiControl['state'][], patch: Partial<Pick<PrivateControl, 'state' | 'answer' | 'canResume' | 'revision' | 'text' | 'mode' | 'appliedOrder' | 'queueOrder'>>, revision?: number) => {
     const row = (await sql.all('SELECT * FROM xiaozhi_pi_controls WHERE id=?', [id]))[0];
     const item = row ? parse(row) : null;
     if (!item || !from.includes(item.state) || !sql.change || (revision !== undefined && (item.revision ?? 0) !== revision)) return false;

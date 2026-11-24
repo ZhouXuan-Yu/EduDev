@@ -1,5 +1,13 @@
 # 当前状态与恢复入口
 
+D3 对话教案可调整一个点名的环节活动，或按原话重新分配多个环节的分钟数。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
+D3 原对话支持局部修订教案六个正文栏目，沿原教案账本保存下一版待教师确认草稿。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)
+
+问小智的短追问、操作授权和文件保存共用输入框正上方的待处理弹窗。后续同类交互必须遵循 [对话页面契约](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)。
+
+问小智的输入框支持生成中排队、临时补充本轮和中文斜杠命令。 [实施与验证](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)
+
 D3 支持从问小智按完整资料名指定教案依据。最终合成样本通过真实模型、原文定位、教师确认和同版双格式导出。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
 
 D3 模考目录已落实教师指定的地区和轮次，候选、确认、配答及冷启通过。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)

@@ -780,13 +780,12 @@ async function scenarioI() {
   // The owned native queue behind the pending question accepts a steering
   // instruction without any model stage; the card renders from control state.
   await page.getByTestId('office-prompt-input').fill('H09 排队指令补充：核对时请注意教学要求版本。');
-  await page.getByTestId('pi-queue-submit').click();
+  await page.getByTestId('office-prompt-input').press('Control+Enter');
   const first = await until(async () => {
     const item = (await snap()).controls?.find(c => c.kind === 'instruction' && c.state === 'queued');
     return item || undefined;
   }, 30000);
   report.queuedInstruction = { id: first.id, mode: first.mode, state: first.state, revision: first.revision };
-  await page.getByTestId('pi-queue-mode-followup').click();
   await page.getByTestId('office-prompt-input').fill('H09 排队补充二：完成后补一句教师复核提醒。');
   await page.getByTestId('pi-queue-submit').click();
   const second = await until(async () => {
@@ -799,8 +798,8 @@ async function scenarioI() {
   await axNameAudit('i-queued');
   await probeState('i-queued', {
     expect: { questionStates: ['pending'], instructionStates: ['queued'], 'pi-queued-instruction': 'visible' },
-    tabExpected: [...composerExpectedRunning, 'pi-queue-mode-steer', 'pi-queue-mode-followup', 'pi-queue-submit', '补充本轮', '接着处理', 'pi-instruction-edit', 'pi-instruction-withdraw'],
-    contrastTargets: [...composerContrast, ['queue submit', '[data-testid="pi-queue-submit"]'], ['queue mode steer', '[data-testid="pi-queue-mode-steer"]'], ['queue mode followup', '[data-testid="pi-queue-mode-followup"]'], ['instruction trigger', '[data-testid="pi-queued-instruction"] [data-slot="chat-tool-trigger"]'], ['instruction body', '[data-testid="pi-queued-instruction"] p'], ['instruction edit', '[data-testid="pi-instruction-edit"]'], ['instruction withdraw', '[data-testid="pi-instruction-withdraw"]']],
+    tabExpected: [...composerExpectedRunning, 'pi-instruction-steer', 'pi-instruction-edit', 'pi-instruction-withdraw'],
+    contrastTargets: [...composerContrast, ['queue timing', '.edu-queue-timing'], ['instruction body', '.edu-queue-text'], ['instruction edit', '[data-testid="pi-instruction-edit"]'], ['instruction withdraw', '[data-testid="pi-instruction-withdraw"]']],
     liveExpected: ['等待你的补充'],
   });
   // Keyboard edit bumps the control revision while the run keeps waiting.

@@ -1,5 +1,13 @@
 # EduDev 当前任务进度
 
+D3 衔接对话修订的教案活动和时长范围，新稿纳入原教案版本账本。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
+D3 教案对话修订已接入原任务与版本账本，支持候选澄清和限定字段。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#对话局部修订教案)
+
+D3 输入框上方待办已接入操作授权、复制确认与教师补填。持续按统一弹窗约束交付此类交互。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#输入框上方的待确认面板)
+
+D3 对话交互补齐输入框上方的待发队列、跨会话默认偏好和中文命令提示。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)
+
 D3 教案从对话绑定指定资料和逐目标实读引文。正常、重名、缺资料、无依据旧入口、起草确认及导出已有实机证据。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
 
 D3 模考按对话指定的地区和轮次筛选，并在教师确认及对话修订时复核范围。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)

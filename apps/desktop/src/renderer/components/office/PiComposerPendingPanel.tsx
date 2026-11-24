@@ -1,11 +1,15 @@
-import {useId,useRef,useState} from 'react';
+import {useEffect,useId,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {ChevronDown,ChevronUp} from 'lucide-react';
-import type {XiaozhiWorkspaceSnapshot} from '../../../shared/xiaozhi-agent';
+import type {XiaozhiDecisionInput,XiaozhiWorkspaceSnapshot} from '../../../shared/xiaozhi-agent';
 import {PiTeacherQuestionCard} from './PiControlCards';
+import {PiCopyApproval} from './PiCopyApproval';
 import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
+import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiTextChangeCard} from './PiTextChangeCard';
+import {permissionAction} from './permissionPresentation';
+import {focusWorkspacePending,type WorkspacePendingItem} from './workspace-notifications';
 import styles from '../../ui-system/composer-pending.module.css';
 
 export function pendingComposerItems(snapshot:XiaozhiWorkspaceSnapshot|undefined,sessionId:string,runId:string|undefined) {
@@ -14,42 +18,58 @@ export function pendingComposerItems(snapshot:XiaozhiWorkspaceSnapshot|undefined
   const bundled=new Set(owned.flatMap(item=>item.files.filter(file=>!file.carried).map(file=>file.draftId)));
   return [
     ...(snapshot.controls||[]).filter(item=>item.runId===runId&&item.kind==='question'&&item.state==='pending')
-      .map(item=>({kind:'question' as const,id:item.id,label:'选择回答',item})),
+      .map(item=>({kind:'question' as const,id:item.id,label:item.options?.length?'选择或填写回答':'填写回答',item})),
+    ...(snapshot.approvals||[]).filter(item=>item.runId===runId&&(item.permission?.state??item.state)==='pending')
+      .map(item=>({kind:'approval' as const,id:item.id,label:item.permission?`授权 · ${permissionAction(item.permission.request.action)}`:'确认复制文件',item})),
     ...(snapshot.changes||[]).filter(item=>item.runId===runId&&item.state==='pending'&&!bundled.has(item.id))
-      .map(item=>({kind:'change' as const,id:item.id,label:item.path,item})),
+      .map(item=>({kind:'change' as const,id:item.id,label:`保存 · ${item.path}`,item})),
     ...(snapshot.officeArtifacts||[]).filter(item=>item.runId===runId&&item.state==='pending'&&!bundled.has(item.id))
-      .map(item=>({kind:'office' as const,id:item.id,label:item.path,item})),
+      .map(item=>({kind:'office' as const,id:item.id,label:`保存 · ${item.path}`,item})),
     ...owned.filter(item=>item.state==='pending')
       .map(item=>({kind:'bundle' as const,id:item.id,label:`确认 ${item.files.length} 份文件`,item})),
   ];
 }
 
-export function PiComposerPendingPanel({items,sessionId,onAnswer,onRefresh,onOpen}:{
+export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecision,onRefresh,onOpen}:{
   items:ReturnType<typeof pendingComposerItems>;
   sessionId:string;
+  reveal?:WorkspacePendingItem;
   onAnswer:(id:string,answer:string)=>Promise<void>;
+  onDecision:(id:string,decision:XiaozhiDecisionInput['decision'])=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onOpen:(path:string)=>void;
 }) {
   const [selected,setSelected]=useState(''),[collapsedFor,setCollapsedFor]=useState('');
-  const bodyId=useId(),headingId=useId(),toggle=useRef<HTMLButtonElement>(null);
+  const bodyId=useId(),headingId=useId(),toggle=useRef<HTMLButtonElement>(null),panel=useRef<HTMLElement>(null);
+  const handledReveal=useRef<WorkspacePendingItem>(undefined);
   const active=items.find(item=>item.id===selected)||items[0];
+  const collapsed=Boolean(active&&collapsedFor===active.id);
+  useEffect(()=>{
+    if(!reveal)return;
+    setSelected(reveal.id);
+    setCollapsedFor('');
+  },[reveal]);
+  useEffect(()=>{
+    if(!reveal||active?.id!==reveal.id||collapsed||handledReveal.current===reveal||!panel.current)return;
+    if(focusWorkspacePending(panel.current,reveal))handledReveal.current=reveal;
+  },[reveal,active?.id,collapsed]);
   if(!active)return null;
-  const collapsed=collapsedFor===active.id;
   const shared={sessionId,onRefresh,onOpen,running:true};
-  return <section aria-labelledby={headingId} className={styles.anchor} data-testid="pi-composer-pending-panel"
+  const title=active.kind==='question'?(active.item.options?.length?'小智需要你的选择':'小智需要你补充信息')
+    :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件'):'确认保存文件';
+  return <section ref={panel} aria-labelledby={headingId} className={styles.anchor} data-testid="pi-composer-pending-panel"
     onKeyDown={event=>{
-      if(event.key==='Escape'&&!event.defaultPrevented&&!collapsed){
+      if(event.key==='Escape'&&!event.defaultPrevented&&!event.nativeEvent.isComposing&&event.nativeEvent.keyCode!==229&&!collapsed){
         event.preventDefault();setCollapsedFor(active.id);toggle.current?.focus();
       }
     }}>
     <div className={styles.panel}>
       <header className={styles.header}>
-        <h2 id={headingId} aria-live="polite">{active.kind==='question'?'小智需要你的选择':'确认保存文件'}</h2>
-        {items.length>1&&<select aria-label="选择待处理事项" className={styles.select} value={active.id}
+        <h2 id={headingId} aria-live="polite">{title}</h2>
+        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><select aria-label="选择待处理事项" className={styles.select} value={active.id}
           onChange={event=>{setSelected(event.target.value);setCollapsedFor('');}}>
           {items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}
-        </select>}
+        </select></>}
         <Button ref={toggle} size="sm" variant="ghost" aria-controls={bodyId} aria-expanded={!collapsed}
           data-testid="pi-composer-pending-toggle" onPress={()=>setCollapsedFor(collapsed?'':active.id)}>
           {collapsed?<ChevronUp size={14} aria-hidden="true"/>:<ChevronDown size={14} aria-hidden="true"/>}
@@ -58,6 +78,8 @@ export function PiComposerPendingPanel({items,sessionId,onAnswer,onRefresh,onOpe
       </header>
       <div id={bodyId} hidden={collapsed} className={active.kind==='question'?`${styles.body} ${styles.question}`:styles.body}>
         {active.kind==='question'?<PiTeacherQuestionCard key={active.id} item={active.item} onAnswer={onAnswer} inComposer/>
+          :active.kind==='approval'?(active.item.permission?<PiPermissionApproval key={active.id} approval={active.item.permission} onRefresh={onRefresh}/>
+            :<PiCopyApproval key={active.id} approval={active.item} onDecision={onDecision}/>)
           :active.kind==='change'?<PiTextChangeCard key={active.id} {...shared} change={active.item} composerReview/>
           :active.kind==='office'?<PiOfficeArtifactCard key={active.id} {...shared} artifact={active.item}/>
           :<PiDeliveryBundleCard key={active.id} {...shared} delivery={active.item}/>}

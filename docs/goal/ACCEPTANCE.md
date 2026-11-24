@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+教案环节和时长覆盖唯一环节、合计冲突、两处重新分配及指定新总时长。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
+D3 教案局部修订的任务归属、字段范围、版本读回及冷启见 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)。
+
+待处理弹窗验收检查唯一操作入口、长问题下可见的提交区、快捷键、收起后恢复及原会话回执。 [对话页面契约](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)
+
+生成中追加消息与中文命令的实机记录和手测入口见 [本轮验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)。
+
 具名备课依据已通过实机重名和缺失提示、两份实际读回、逐目标引文、原文点击、教师确认、Word/PDF 和冷启。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
 
 上海模考的地区和轮次实机核对覆盖错范围拦截、候选待核、教师纠正、配对与冷启动。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)

@@ -27,7 +27,6 @@ function useDraftState(sessionId?: string) {
   const [failedPaperExportIntent,setFailedPaperExportIntent]=useState<PaperExportIntent>();
   const [stopFailed, setStopFailed] = useState(false);
   const sendLock = useRef(false), stopLock = useRef(false);
-  const [queueMode, setQueueMode] = useState<'steer' | 'followUp'>('steer');
   const draftRef = useRef(draft); draftRef.current = draft;
   function receiveSeed(text:string,intent?:PaperExportIntent):boolean{
     const old=inputRef.current;
@@ -60,7 +59,7 @@ function useDraftState(sessionId?: string) {
   return { draft, draftRef, storageFailed, setDraft,inputRef,paperExportIntent:input.paperExportIntent,paperExportInvalid:input.paperExportInvalid,
     pendingPaperExport:input.pendingPaperExport,receiveSeed,cancelExport,cancelPendingExport,clearSent,
     submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,failedPaperExportIntent,setFailedPaperExportIntent,
-    stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill,
+    stopFailed, setStopFailed, sendLock, stopLock, skillName, setSkillName, showSkill, setShowSkill,
     controlDrafts, setControlDrafts, controlLocks, readingBookmark };
 }
 const DraftContext = createContext<ReturnType<typeof useDraftState> | null>(null);

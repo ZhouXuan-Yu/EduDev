@@ -16,6 +16,7 @@ const desktop=process.cwd(),main=testMain(desktop);
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const requests=[],checks=[],rendererErrors=[];
 const contextMode=process.argv.includes('--context');
+const composerPanelMode=process.argv.includes('--composer-panel');
 let holdNextReply=false,askNextReply=false,sourceFixture;
 function modelText(content){
   if(typeof content==='string')return content;
@@ -89,7 +90,8 @@ const fixture=http.createServer(async(request,response)=>{
   }
   if(askNextReply&&toolNames.includes('ask_teacher')){
     askNextReply=false;
-    const call={index:0,id:'call_'+requests.length,type:'function',function:{name:'ask_teacher',arguments:JSON.stringify({question:'这份课堂导入给哪个年级？',options:['三年级','五年级']})}};
+    const question='这份课堂导入给哪个年级？'+(composerPanelMode?'\n补充说明：'+('\n课堂活动用分数图示，请按实际授课年级选择。').repeat(12):'');
+    const call={index:0,id:'call_'+requests.length,type:'function',function:{name:'ask_teacher',arguments:JSON.stringify({question,options:['三年级','五年级']})}};
     return response.end(chunk({role:'assistant'},null)+chunk({tool_calls:[call]},null)+chunk({},'tool_calls')+'data: [DONE]\n\n');
   }
   response.write(chunk({role:'assistant',content:'已完成这轮合成验收回复。'},null));
@@ -372,11 +374,30 @@ try{
     await submit('请新建一个分数课教案任务，我还没确定年级，请先问我再写导入。');
     const question=page.locator('[data-testid="pi-teacher-question"][data-state="pending"]');
     await question.waitFor({state:'visible',timeout:30_000});
-    if(process.argv.includes('--composer-panel')){
+    if(composerPanelMode){
       const panel=page.getByTestId('pi-composer-pending-panel');
       const toggle=panel.getByTestId('pi-composer-pending-toggle');
+      const window=await app.browserWindow(page);
       assert.equal(await question.count(),1);
       assert.equal(await panel.getByTestId('pi-teacher-question').count(),1);
+      assert.equal(await question.getByTestId('pi-question-submit').isDisabled(),true);
+      for(const [width,height] of [[1366,768],[1920,1080]]){
+        await window.evaluate((win,size)=>win.setContentSize(...size),[width,height]);
+        await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+        const layout=await panel.evaluate(node=>{
+          const fields=node.querySelector('.pi-question-fields');
+          const textarea=node.querySelector('[data-testid="pi-question-answer"]').getBoundingClientRect();
+          const button=node.querySelector('[data-testid="pi-question-submit"]').getBoundingClientRect();
+          const composer=document.querySelector('[data-testid="office-prompt-input"]').getBoundingClientRect();
+          return {scrollable:fields.scrollHeight>fields.clientHeight,fieldsBottom:fields.getBoundingClientRect().bottom,
+            fieldWidth:fields.clientWidth,textWidth:textarea.width,textHeight:textarea.height,
+            buttonTop:button.top,buttonBottom:button.bottom,composerTop:composer.top,composerBottom:composer.bottom};
+        });
+        assert(layout.textWidth>=layout.fieldWidth-16&&layout.textHeight>=60,JSON.stringify(layout));
+        assert(layout.scrollable&&layout.fieldsBottom<=layout.buttonTop&&layout.buttonBottom<=layout.composerTop&&layout.composerBottom<=height+1,JSON.stringify(layout));
+        await page.screenshot({path:path.join(output,`composer-long-question-${width}.png`)});
+      }
+      check('长问题只滚动正文，两种窗口尺寸下提交按钮和聊天输入框均可达');
       await question.getByTestId('pi-question-option-1').click();
       const selection=await question.getByTestId('pi-question-option-1').getAttribute('aria-pressed');
       assert.equal(selection,'true');
@@ -385,8 +406,23 @@ try{
       assert.equal(await question.isVisible(),false);
       await toggle.click();
       assert.equal(await question.getByTestId('pi-question-option-1').getAttribute('aria-pressed'),selection);
+      const entry=question.getByTestId('pi-question-answer');
+      assert.equal(await entry.getAttribute('aria-label'),'或自行填写回答');
+      await entry.fill('五年级，下节课复习分数。');
+      await entry.press('Escape');
+      assert.equal(await question.isVisible(),false);
+      assert.equal(await toggle.evaluate(node=>document.activeElement===node),true);
+      const questionId=await question.getAttribute('data-control-id');
+      await page.locator(`[data-testid="workspace-pending-approval"][data-pending-id="${questionId}"]`).press('Enter');
+      await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='pi-question-answer');
+      assert.equal(await entry.inputValue(),'五年级，下节课复习分数。');
+      await entry.press('End');await entry.press('Enter');
+      assert.equal(await entry.inputValue(),'五年级，下节课复习分数。\n');
+      await entry.dispatchEvent('keydown',{key:'Enter',ctrlKey:true,isComposing:true,bubbles:true});
+      assert.equal((await snapshot()).projection.turns.at(-1).status,'waiting_input');
+      assert.equal(requests.length,count+1);
       await page.screenshot({path:path.join(output,'composer-teacher-question.png')});
-      check('澄清选项在输入框上方出现一次，收起并展开保留所选内容');
+      check('澄清只出现一次，收起后保留选择和手填文本，换行与输入法选字不会提交');
     }
     const waiting=await snapshot(),turn=waiting.projection.turns.at(-1);
     assert.equal(turn.status,'waiting_input');assert(waiting.task?.id);
@@ -395,15 +431,21 @@ try{
     const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
     try{assert.equal(db.prepare('SELECT state FROM xiaozhi_pi_controls WHERE id=?').get(controlId).state,'pending');}
     finally{db.close();}
-    await question.getByTestId('pi-question-option-1').click();
-    await question.getByTestId('pi-question-submit').click();
+    if(composerPanelMode){
+      await question.getByTestId('pi-question-answer').press('Control+Enter');
+    }else{
+      await question.getByTestId('pi-question-option-1').click();
+      await question.getByTestId('pi-question-submit').click();
+    }
     const answered=await terminal(before);
     assert.equal(answered.turn.status,'completed',answered.turn.error);
     assert.equal(answered.turn.id,turn.id);
     assert.equal(answered.turn.task?.id,waiting.task.id);
     assert(requests.at(-1).teacherAnswer);
     assert.equal(answered.state.controls.find(item=>item.id===controlId).state,'answered');
-    check('真实澄清卡等待教师输入，选择答案后同一 Run 和 Task 继续，请求携带经过宿主记录的回答');
+    assert.equal(answered.state.controls.find(item=>item.id===controlId).answer,composerPanelMode?'五年级，下节课复习分数。':'五年级');
+    assert.equal(requests.length,count+2);
+    check('真实澄清卡收到教师明确提交后，同一 Run 和 Task 继续一次，请求携带经过宿主记录的回答');
   }
   if(process.argv.includes('--teacher-cold')){
     const sameConversation=process.argv.includes('--same-teacher-conversation');

@@ -9,13 +9,14 @@ import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-
 import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
 
-export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, replyOnly = false, notifications = { hasFiles: false, pending: [] } }: {
+export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, replyOnly = false, onPending, notifications = { hasFiles: false, pending: [] } }: {
   title: string; sidebar: ReactNode; aside: ReactNode; children: ReactNode;
   onLeave: () => void; onSkills: () => void; onSettings: () => void;
   files?: (close: () => void) => ReactNode; visible?: boolean; fileRequest?: string; onNewChat?: () => void; sessionKey?: string;
   workbench?: ReactNode; onWorkbenchClose?: () => void;
   workbenchVisible?: boolean; onWorkbenchVisibleChange?: (open: boolean) => void;
   isEmpty?: boolean; replyOnly?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
+  onPending?: (item: WorkspacePendingItem) => boolean;
 }) {
   const main = useRef<HTMLDivElement>(null);
   const { hasFiles, pending } = notifications;
@@ -122,7 +123,7 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
         {((hasFiles && files && !(open && mode === 'files')) || pending.length > 0) && <div className="wb-workspace-notifications" aria-label="会话事项">
           {hasFiles && files && !(open && mode === 'files') && <Button variant="ghost" size="sm" data-testid="workspace-files-available" onPress={() => panel('files')}><Files size={15} />查看已保存文件</Button>}
           {pending.map(item => <Button key={`${item.kind}:${item.id}`} variant="ghost" size="sm" data-testid="workspace-pending-approval" data-pending-kind={item.kind} data-pending-id={item.id} onPress={() => {
-            if (main.current) focusWorkspacePending(main.current, item);
+            if (!onPending?.(item) && main.current) focusWorkspacePending(main.current, item);
           }}>{item.label}</Button>)}
         </div>}
         {children}

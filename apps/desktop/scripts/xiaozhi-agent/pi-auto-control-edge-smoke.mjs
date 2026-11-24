@@ -60,7 +60,6 @@ try {
   await launch(); await activeAuto();
   const before = await snap(), run = before.projection.turns.at(-1).id;
   const instruction = '后续只补一行：自动整理后仍需教师复核。';
-  await page.getByTestId('pi-queue-mode-followup').click();
   await page.getByTestId('office-prompt-input').fill(instruction); await page.getByTestId('pi-queue-submit').click();
   await until(async () => (await snap()).controls.some(item => item.kind === 'instruction' && item.text === instruction));
   check('Follow-up is accepted through the real composer during automatic summary', () => assert(before.running));

@@ -6,7 +6,7 @@ import type { XiaozhiSkill } from './xiaozhi-skills';
 import type { XiaozhiChangeSummary } from './xiaozhi-changes';
 import type { OfficeArtifactSummary } from './xiaozhi-office-artifacts';
 export type XiaozhiAgentError = 'paper_export_source_changed' | 'paper_export_restart_required' | 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'event_recovered' | 'authentication'
-  | 'rate_limited' | 'insufficient_balance' | 'provider_unavailable' | 'timeout' | 'lifecycle_timeout' | 'transport' | 'cancelled' | 'model_error' | 'lesson_draft_missing' | 'lesson_basis_ambiguous' | 'lesson_basis_unavailable' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'task_ended' | 'task_context_changed' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
+  | 'rate_limited' | 'insufficient_balance' | 'provider_unavailable' | 'timeout' | 'lifecycle_timeout' | 'transport' | 'cancelled' | 'model_error' | 'lesson_draft_missing' | 'lesson_revision_missing' | 'lesson_basis_ambiguous' | 'lesson_basis_unavailable' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'task_ended' | 'task_context_changed' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
 export type XiaozhiModelCapabilities = { id: string; name: string; contextWindow: number; maxOutputTokens: number;
   /** Absent in older catalogues means unknown, never an inferred image grant. */
   inputModalities?: ('text' | 'image')[];
@@ -31,11 +31,11 @@ export type XiaozhiActionResult = { ok: true } | { ok: false; error: XiaozhiAgen
 export type XiaozhiPlanStep = { text: string; status: 'pending' | 'in_progress' | 'completed';id?:string;dependsOn?:string[] };
 export type XiaozhiControl = { id: string; runId: string; kind: 'plan' | 'question' | 'instruction';
   state: 'pending' | 'answered' | 'queued' | 'dispatching' | 'withdrawn' | 'applied' | 'interrupted' | 'resuming';
-  text: string; revision?: number; steps?: XiaozhiPlanStep[];plan?:import('./xiaozhi-plan').PlanMetadata; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; canResume?: boolean; callId?:string };
+  text: string; revision?: number; steps?: XiaozhiPlanStep[];plan?:import('./xiaozhi-plan').PlanMetadata; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; queueOrder?:number; canResume?: boolean; callId?:string };
 export type XiaozhiControlInput = { sessionId: string; controlId: string; answer: string };
 export type XiaozhiQueueInput = { sessionId: string; commandId: string; text: string; mode: 'steer' | 'followUp' };
 export type XiaozhiQueueMutationInput = { sessionId: string; controlId: string; revision: number }
-  & ({ action: 'edit'; text: string; mode: 'steer' | 'followUp' } | { action: 'withdraw' });
+  & ({ action: 'edit'; text: string; mode: 'steer' | 'followUp' } | { action: 'withdraw' } | {action:'move'; beforeId:string|null});
 export type XiaozhiAgentEventPayload = (
   {kind:'model_request';request:import('./xiaozhi-model-request').XiaozhiModelRequest} |
   { kind: 'activity'; stage: 'preparing' | 'waiting_model' | 'responding'; since: number }

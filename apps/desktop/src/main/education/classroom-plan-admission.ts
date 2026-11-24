@@ -2,12 +2,14 @@ import {CLASSROOM_PLAN_TOOLS,NATURAL_LESSON_TOOL,validClassroomPlanStart,type Cl
 import {TaskAdmissionError} from '../xiaozhi-agent/tasks/admission-error';
 import type {createTaskPlanRuntime} from '../xiaozhi-agent/tasks/plan-runtime';
 import type {createClassroomPlanState} from './classroom-plan-state';
+import {LESSON_REVISION_TOOLS} from './lesson-revision-tools';
 
 type Options={
  sessionId:string;
  runId:string;
  intent?:ClassroomPlanStart;
  naturalDraft?:boolean;
+ lessonRevision?:boolean;
  plans:ReturnType<typeof createClassroomPlanState>;
  current:()=>boolean;
  signal?:AbortSignal;
@@ -26,6 +28,12 @@ export async function admitClassroomOrTaskTool(options:Options,callId:string,too
  }
  const check=()=>{if(options.signal?.aborted||!options.current())throw Error('cancelled');};
  check();
+ if(options.lessonRevision&&LESSON_REVISION_TOOLS.some(name=>name===tool)){
+  await options.task?.refresh();
+  await options.plans.assertOutlineRun(options.sessionId,options.runId,options.current);
+  check();
+  return;
+ }
  const intent=options.intent;
  if(!intent||!validClassroomPlanStart(intent))throw new TaskAdmissionError('task_classroom_intent_required');
  const realignmentRead=intent.mode==='outline'&&intent.realign&&tool==='education_read_classroom_plan';

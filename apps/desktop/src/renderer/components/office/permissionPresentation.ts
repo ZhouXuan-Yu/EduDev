@@ -6,6 +6,8 @@ export const permissionClassification: Record<PermissionRequest['classification'
 export function permissionAction(action: string) {
   const names: Record<string, string> = {exec_command: '运行受控脚本', mcp_call: '调用外部MCP工具',
     network_broker: '网络请求与资料外发', environment_repair: '修复本地环境', office_copy_file: '复制文件',
+    office_create_text:'创建文本文件', office_edit_text:'修改文本文件', office_create_document:'创建教学文档',
+    office_deliver_files:'保存整包教学文件', office_web_search:'检索公开资料', office_web_fetch:'读取公开网页',
     capability_prepare: '准备本地工具', mcp_stdio_start: '启动受控工具'};
   return names[action] || action;
 }

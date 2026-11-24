@@ -149,6 +149,7 @@ export interface PiXiaozhiOptions {
   buoyancyTools?: ToolDefinition[];
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
+  lessonRevision?: true;
   naturalLessonDraft?: NaturalLessonRequirements & {subject:string;grade:string;hasDraft:()=>Promise<boolean>;
     basis?:{sources:{resourceId:string;offset:number}[];hasPendingRead:()=>boolean}};
   directOriginalPaper?: true;
@@ -1019,12 +1020,18 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push('skill_create');
     prompt += '\n教师要求保存可复用流程或已验证的稳定方法时，使用skill_create自动验证并发布个人纯说明技能。只保存通用方法，不保存学生信息、教师私有原文、凭据、脚本或外链。技能声明不能授予权限；宿主在下一安全Run激活合格版本。';
   }
-  const domainDefinitions=options.answerOnly?[]:taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
+  const lessonRevisionNames=new Set<string>(['education_read_classroom_plan','education_propose_classroom_outline','ask_teacher']);
+  const domainDefinitions=options.answerOnly?[]:options.lessonRevision?definitions.filter(tool=>lessonRevisionNames.has(tool.name))
+    :taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   if(options.answerOnly)names.length=0;
+  if(options.lessonRevision){
+    names.splice(0,names.length,...domainDefinitions.map(tool=>tool.name));
+    prompt+='\n本轮是修订已有教案。先调用 education_read_classroom_plan。若返回候选，按回执逐字提供选项请老师选择，回答后重新读。按工具字段提交完整的指定栏目或环节活动。仅调整时长且已通过合计核对时，提交空对象，由宿主按原话保存分钟数。核对失败时向教师说明，避免自行分配课时。成功后说明生成的待确认版本和修改范围，告知老师可回原教案卡核对。只根据真实回执报告保存。';
+  }
   const allowedPaperThinking=options.thinkingPolicy?.requested;
   const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')
     &&domainDefinitions.some(def=>def.name===PAPER_TOOLS[0]);
-  const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions,
+  const toolCatalog=quality&&!options.answerOnly&&!options.lessonRevision?createEducationToolCatalog(prompt,domainDefinitions,
     options.naturalLessonDraft?[NATURAL_LESSON_TOOL,...(options.naturalLessonDraft.basis?['office_read_material']:[])]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
@@ -1454,11 +1461,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     diagnostics: () => ({ running, activeTools: session.getActiveToolNames(), executing: executions.activeCount(sessionId),
       toolManifests:manifests,
       model: session.model?.id, provider: 'deepseek' as const, sdkVersion: '1.0.2' as const }),
-    async queue(id: string, text: string, mode: 'steer' | 'followUp') {
+    nextInstructionOrder: instructions.nextOrder,
+    async queue(id: string, text: string, mode: 'steer' | 'followUp', queueOrder?:number) {
       if (!running || (compacting && !autoAbort) || interrupted || budget?.snapshot().exhausted || disposed) throw new Error('busy');
       await skills?.validateCommand(text);
       paperReceivedTeacherInstruction=true;
-      instructions.enqueue(id,text,mode);
+      instructions.enqueue(id,text,mode,0,queueOrder);
     },
     reserveInstruction: (...args: Parameters<typeof instructions.reserve>) => {
       paperReceivedTeacherInstruction=true;
