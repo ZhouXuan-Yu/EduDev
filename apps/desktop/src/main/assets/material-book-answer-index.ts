@@ -124,13 +124,14 @@ export class MaterialBookAnswerIndex{
    AND EXISTS(SELECT 1 FROM material_book_answer_index_v1 e
     JOIN teacher_resources r ON r.id=e.resource_id AND r.content_hash=e.version
     JOIN material_ai_units a ON a.batch_id=e.batch_id AND a.ordinal=e.ordinal
+    JOIN material_book_answer_roles owner ON owner.answer_id=e.resource_id AND owner.answer_version=e.version
     JOIN material_book_pairs p ON p.answer_id=e.resource_id AND p.answer_version=e.version AND p.active=1
     JOIN teacher_resources q ON q.id=p.question_id AND q.content_hash=p.question_version
     WHERE e.batch_id=${batch} AND e.ordinal=${ordinal} AND e.start=-1 AND e.resource_id=${resource} AND e.version=${version} AND e.page=${page}
      AND e.review_state='section-resolved.v1' AND e.proof_sha<>'' AND a.status='review' AND a.error='page_content_incomplete'
-     AND json_valid(a.input_json) AND json_extract(a.input_json,'$.bookRole.questionId')=p.question_id
-     AND json_extract(a.input_json,'$.bookRole.questionVersion')=p.question_version
-     AND json_extract(a.input_json,'$.bookRole.revision')=p.revision
+     AND json_valid(a.input_json) AND json_extract(a.input_json,'$.bookRole.questionId')=owner.question_id
+     AND json_extract(a.input_json,'$.bookRole.questionVersion')=owner.question_version
+     AND json_extract(a.input_json,'$.bookRole.revision')=owner.revision
      AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq)))`;
  }
  private async invalidateFollowing(resource:string,version:string,page:number){

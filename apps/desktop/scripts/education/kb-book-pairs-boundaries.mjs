@@ -1,5 +1,5 @@
 import '../office-agent/register-source.mjs';import {DatabaseSync} from 'node:sqlite';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
-const {MaterialBookPairs,answerRuleCandidateHidden}=await import('../../src/main/assets/material-book-pairs.ts');
+const {MaterialBookPairs,migrateMaterialBookPairs,answerRuleCandidateHidden}=await import('../../src/main/assets/material-book-pairs.ts');
 const {MaterialQuestionArchive}=await import('../../src/main/assets/material-question-archive.ts');
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
 const {migrateWordPageSources}=await import('../../src/main/assets/material-word-page-source.ts');
@@ -32,11 +32,40 @@ const input={schemaVersion:'xiaozhi.material-book-pair.v1',action:'link',resourc
 const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
 try{
  await books.migrate();await books.migrate();await migrateWordPageSources(host);
+ await check('An installed one-to-one database upgrades in place, preserving original identity and revision',async()=>{
+  const legacy=new DatabaseSync(':memory:');
+  try{
+   legacy.exec(`CREATE TABLE material_book_pairs(question_id TEXT PRIMARY KEY,question_version TEXT,answer_id TEXT,answer_version TEXT,revision INTEGER,active INTEGER);
+     CREATE UNIQUE INDEX idx_material_book_answer ON material_book_pairs(answer_id) WHERE active=1;`);
+   const insert=legacy.prepare('INSERT INTO material_book_pairs VALUES(?,?,?,?,?,1)');
+   insert.run(ids[0],sha,ids[1],sha,7);
+   const old=legacy.prepare('SELECT * FROM material_book_pairs').get();
+   const oldHost={all:async s=>legacy.prepare(s).all(),run:async s=>legacy.exec(s)};
+   await migrateMaterialBookPairs(oldHost);await migrateMaterialBookPairs(oldHost);
+   assert.deepEqual(legacy.prepare('SELECT * FROM material_book_pairs').get(),old);
+   insert.run(ids[2],sha,ids[1],sha,1);
+   assert.equal(legacy.prepare('SELECT COUNT(*) n FROM material_book_pairs WHERE answer_id=?').get(ids[1]).n,2);
+   assert.equal(legacy.prepare('SELECT revision FROM material_book_answer_roles WHERE answer_id=?').get(ids[1]).revision,7);
+  }finally{legacy.close();}
+ });
  await check('Strict input refuses same file, forged fields, accessors, absent versions and stale bounds',async()=>{assert(validMaterialBookPairInput(input));for(const bad of [{...input,answerId:ids[0]},{...input,extra:true},{...input,revision:-1},{...input,answerVersion:undefined},{...input,action:'unlink'}])assert(!validMaterialBookPairInput(bad));let called=false;assert(!validMaterialBookPairInput({...input,get revision(){called=true;return 0;}}));assert(!called);});
  await check('Two durable versioned roles, idempotent retry and restart readback',async()=>{const v=await books.change(input);assert.equal(v.role.kind,'questions');assert.equal(v.role.revision,1);assert.equal((await books.role(ids[1])).kind,'answers');assert.deepEqual(await books.change(input),v);const reopened=new MaterialBookPairs(host);assert.deepEqual(await reopened.view(ids[0]),v);});
- await check('Answer reuse, role cycles and old original versions cannot modify the pair',async()=>{await assert.rejects(books.change({...input,resourceId:ids[2]}),/conflict/);await assert.rejects(books.change({...input,resourceId:ids[1],answerId:ids[2]}),/conflict/);await assert.rejects(books.change({...input,answerVersion:'b'.repeat(64)}),/source_changed/);assert.equal((await books.role(ids[0])).answerId,ids[1]);});
+ await check('Two papers share one answer file with independently managed links',async()=>{
+  const source=await books.role(ids[1]),second={...input,resourceId:ids[2]};
+  const pair=await books.change(second);
+  assert.equal(pair.role.questionId,ids[2]);
+  assert.equal((await books.view(ids[1])).linkedQuestionCount,2);
+  assert.deepEqual(await books.role(ids[1]),source);
+  assert.deepEqual(await books.change(second),pair);
+  await assert.rejects(books.change({...input,resourceId:ids[1],answerId:ids[2]}),/conflict/);
+  await assert.rejects(books.change({...input,answerVersion:'b'.repeat(64)}),/source_changed/);
+  assert.equal((await books.role(ids[0])).answerId,ids[1]);
+  await books.change({schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[2],version:sha,revision:1});
+  assert.equal((await books.view(ids[1])).linkedQuestionCount,1);
+  assert.deepEqual(await books.role(ids[1]),source);
+ });
  await check('Unlink increments a persistent tombstone; a stale replay cannot clear a new pairing',async()=>{const unlink={schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[0],version:sha,revision:1};await books.change(unlink);assert.equal(await books.role(ids[1]),null);await assert.rejects(books.change(input),/conflict/);await books.change({...input,revision:2});await assert.rejects(books.change(unlink),/conflict/);assert.equal((await books.role(ids[0])).revision,3);});
- await check('Late role assignment preserves rule memberships; empty billable batches still block',async()=>{db.prepare('INSERT INTO material_question_members(resource_id,question_id) VALUES(?,?)').run(ids[3],'prior-rule');const before=db.prepare('SELECT * FROM material_question_members').all();await books.change({...input,resourceId:ids[2],answerId:ids[3]});assert.deepEqual(db.prepare('SELECT * FROM material_question_members').all(),before);await books.change({schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[2],version:sha,revision:1});db.exec('DELETE FROM material_question_members');addBatch.run('empty',ids[3],'paused');await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3],revision:2}),/answer_already_processed/);assert.equal(await books.role(ids[2]),null);});
+ await check('Late role assignment preserves rule memberships; empty billable batches still block',async()=>{db.prepare('INSERT INTO material_question_members(resource_id,question_id) VALUES(?,?)').run(ids[3],'prior-rule');const before=db.prepare('SELECT * FROM material_question_members').all();await books.change({...input,resourceId:ids[2],answerId:ids[3],revision:2});assert.deepEqual(db.prepare('SELECT * FROM material_question_members').all(),before);await books.change({schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[2],version:sha,revision:3});db.exec('DELETE FROM material_question_members');addBatch.run('empty',ids[3],'paused');await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3],revision:4}),/answer_already_processed/);assert.equal(await books.role(ids[2]),null);});
 
  await check('Only fully saved answer-role units of the identical pair can restore a removed association',async()=>{
   db.exec('DELETE FROM material_ai_batches');const role={kind:'answers',questionId:ids[0],questionVersion:sha,answerId:ids[1],answerVersion:sha,revision:3};
@@ -48,7 +77,7 @@ try{
   for(const raw of ['invalid','{}',JSON.stringify({bookRole:{...role,kind:'questions'}}),JSON.stringify({bookRole:{...role,questionId:ids[2]}}),JSON.stringify({bookRole:{...role,answerVersion:'b'.repeat(64)}})]){db.prepare('UPDATE material_ai_units SET input_json=?').run(raw);await assert.rejects(books.change({...input,revision:4}),/answer_already_processed/);}
   db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify({bookRole:role}));const restored=await books.change({...input,revision:4});assert.equal(restored.role.revision,5);assert(sameMaterialBookIdentity(role,{...role,revision:5}));
  });
- const retryPair={...input,resourceId:ids[2],answerId:ids[3],revision:2};
+ const retryPair={...input,resourceId:ids[2],answerId:ids[3],revision:4};
  addBatch.run('private',ids[3],'attention');
  addUnit.run('private','failed','{}','privacy_blocked');
  db.exec(`INSERT INTO material_ai_page_units(batch_id) VALUES('private');

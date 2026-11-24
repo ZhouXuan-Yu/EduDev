@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {BOOK_FINAL_REFERENCE_SCHEMA,validBookFinalReferences,type BookFinalReference,type BookFinalReferences} from '../../shared/material-ai-book-reference';
-import {validMaterialBookRole,sameMaterialBookIdentity,type MaterialBookRole} from '../../shared/material-book-pair';
+import {validMaterialBookRole,sameMaterialBookIdentity,sameMaterialAnswerSource,type MaterialBookRole} from '../../shared/material-book-pair';
 import type {AiUnitInput} from '../../shared/material-ai';
 import type {AiPageResponse} from '../../shared/material-ai-page';
 import {bookAnswerPage,bookSectionAt,bookSectionKey} from './material-book-answer-content';
@@ -45,7 +45,12 @@ export async function collectBookReferences(host:Host,unit:AiUnitInput,first:AiP
   const found=await host.books.index.find(pair.answerId,pair.answerVersion,bookSectionKey(section),q.number,record.layoutLookup);
   if(found.length!==1){item.state=found.length?'ambiguous':'not_found';continue;}
   const row=found[0],proof=await host.receipt(String(row.batch_id),Number(row.ordinal)),answerSource=proof.unit.pageSource;
-  if(!answerSource||!sameAnswerPair(proof.unit.bookRole,pair))throw Error('source_changed');
+  if(!answerSource)throw Error('source_changed');
+  if(!sameAnswerPair(proof.unit.bookRole,pair)){
+   if(sameMaterialBookIdentity(proof.unit.bookRole,{...pair,kind:'answers'})||
+      !sameMaterialAnswerSource(proof.unit.bookRole,pair))throw Error('source_changed');
+   item.state='unscoped';continue;
+  }
   const derived=await host.books.sections.answerPage(proof,signal),entry=derived.page.entries.find(e=>e.start===Number(row.start)&&e.number===q.number&&e.sectionKey===String(row.section_key));
   if(!entry)throw Error('source_changed');
   if(!entry.agrees||entry.issues.some(i=>i!=='missing_analysis')||!entry.answer.trim()){item.state='unchecked';continue;}

@@ -15,7 +15,7 @@ export function MaterialFolderBooks({batchId,onReadyChange,onBusyChange}:{batchI
  async function choose(book:MaterialFolderBook){const token=++generation.current;setQuestion(book);setAnswer(undefined);setPair(undefined);setNotice('');setBusy(true);setError('');try{const v=await window.omniEdu!.getMaterialBookPair(book.resourceId);if(token===generation.current)setPair(v);}catch(e){if(token===generation.current)setError(failure(e));}finally{if(token===generation.current)setBusy(false);}}
  async function save(unlink=false){if(!question||!pair||busy||!unlink&&!answer)return;const token=++generation.current;setBusy(true);setError('');setNotice('');try{const v=await window.omniEdu!.setMaterialBookPair({schemaVersion:MATERIAL_BOOK_PAIR_SCHEMA,action:unlink?'unlink':'link',resourceId:question.resourceId,version:question.version,revision:pair.revision,...(!unlink?{answerId:answer!.resourceId,answerVersion:answer!.version}:{})});if(token!==generation.current)return;setPair(v);setAnswer(undefined);refresh(v=>v+1);setNotice(unlink?'已解除关联，原件与历史记录保留。':'已保存关联。可以继续配置其他题册；开启本批AI后，答案册仅转录并后台配答，疑点保留待核对。');}catch(e){if(token===generation.current)setError(failure(e));}finally{if(token===generation.current)setBusy(false);}}
  return <section data-testid="folder-books">
-  <p>先为本批PDF配置题册和独立答案册，可配置多组。关联保存在本地，不发送资料；后台逐题匹配仍核对章节、题号和来源，不会覆盖教师修改。</p>
+  <p>先为本批 PDF 配置题册和答案册。多份模考试卷可以选择同一份答案册，后台会分别核对卷名、卷别和题号。关联保存在本机。</p>
   <label>按本批相对路径查找 PDF <input value={query} maxLength={128} onChange={e=>{setQuery(e.target.value);setOffset(0);}} data-testid="folder-books-query"/></label>
   <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>refresh(v=>v+1)} data-testid="folder-books-refresh">刷新本批文件</Button>
   {loading?<p role="status">正在读取本批PDF…</p>:page&&<>
@@ -23,7 +23,7 @@ export function MaterialFolderBooks({batchId,onReadyChange,onBusyChange}:{batchI
    {!page.books.length?<p role="status">当前没有匹配的已归档PDF，可修改查找条件或等待归档。</p>:<ul>{page.books.map(book=><li className="material-batch-file" key={book.resourceId} data-testid="folder-book" data-resource={book.resourceId}>
     <span>{book.relativePath}</span><span>{book.role?(book.role.kind==='answers'?'已关联答案册':'已关联题册'):'尚未关联'}</span>
     <Button size="sm" variant="secondary" isDisabled={busy||book.role?.kind==='answers'} onPress={()=>void choose(book)} data-testid="folder-book-question">设为题册</Button>
-    <Button size="sm" variant="secondary" isDisabled={busy||!question||question.resourceId===book.resourceId||!!book.role} onPress={()=>{setAnswer(book);setNotice('');setError('');}} data-testid="folder-book-answer">设为答案册</Button>
+    <Button size="sm" variant="secondary" isDisabled={busy||!question||question.resourceId===book.resourceId||book.role?.kind==='questions'} onPress={()=>{setAnswer(book);setNotice('');setError('');}} data-testid="folder-book-answer">设为答案册</Button>
    </li>)}</ul>}
    <div className="teacher-library-toolbar"><Button size="sm" variant="ghost" isDisabled={busy||offset===0} onPress={()=>setOffset(v=>Math.max(0,v-20))} data-testid="folder-books-previous">前20份</Button><span>共 {page.total} 份PDF（同一原件去重）</span><Button size="sm" variant="ghost" isDisabled={busy||!page.hasMore} onPress={()=>setOffset(v=>v+20)} data-testid="folder-books-next">后20份</Button></div>
   </>}

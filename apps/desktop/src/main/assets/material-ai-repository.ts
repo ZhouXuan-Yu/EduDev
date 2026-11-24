@@ -243,6 +243,7 @@ export class MaterialAiRepository{
   }
   private async inputs(input:AiBatchInput,task?:AiBatchTask):Promise<AiUnitInput[]>{
     const role=await this.books.role(input.resourceId);
+    if(role?.kind==='answers'&&role.answerVersion!==input.version)throw Error('source_changed');
     if(role?.kind==='answers'&&(!input.images||!/\.pdf$/i.test((await this.host.materials().resource(input.resourceId)).originalFileName)))throw Error('answer_book_requires_images');
     const policy=materialAiProcessingPolicy(task?.folderId?(await this.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId)).processing_mode:input.processingMode??'legacy');
     if(role?.kind==='answers'&&!policy.restoration)throw Error('page_restoration_disabled');
@@ -422,6 +423,7 @@ export class MaterialAiRepository{
   }
   private async validateInput(config:AiBatchInput,unit:AiUnitInput,archivedRole=false,batchId?:string,task?:AiBatchTask,archivedRead?:ArchivedOriginalRead){
     const role=await this.books.role(config.resourceId);
+    if(role?.kind==='answers'&&role.answerVersion!==config.version)throw Error('source_changed');
     if(JSON.stringify(role?.kind==='answers'?role:undefined)!==JSON.stringify(unit.bookRole)&&!(archivedRole&&sameMaterialBookIdentity(role,unit.bookRole)))throw Error('source_changed');
     return this.validateOriginalInput(config,unit,batchId,task,archivedRead);
   }

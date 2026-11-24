@@ -97,6 +97,28 @@ const mockPaper='2025年上海市徐汇区九年级数学一模试卷（A卷）'
 const mockAnswer='2025年上海徐汇区初三数学一模参考答案（A卷）';
 const withMockTitle=(p,q)=>[[p('title',mockPaper)],[q]];
 const numberedAnswer='\n1. 答案：48平方米\n解析：8乘以6得48。';
+for(const shared of [true,false]){
+ await check(shared?'A second paper reuses a verified answer original under a complete exam identity':
+   'An ordinary section cannot use a different paper’s answer transcription',{
+  pages:shared?withMockTitle:undefined,answerText:(shared?mockAnswer:title)+numberedAnswer,
+ },async f=>{
+  const anchor={...f.pair,kind:'answers',questionId:'resource_'+randomUUID()};
+  f.proofs.get(f.answerBatch).unit.bookRole=anchor;
+  const oldRole=f.host.role;
+  f.host.role=id=>id===anchor.answerId?Promise.resolve(anchor):oldRole(id);
+  const result=(await f.matchStructure()).rows[0];
+  if(shared){
+   assert.equal(result.state,'applied');
+   assert.equal((await f.read()).answer,'48平方米');
+   const row=f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get();
+   assert.equal(JSON.parse(row.evidence_json).answerSharing,'shared-exam-answer.v1');
+   await f.structures.validate(await f.read());
+  }else{
+   assert.equal(result.state,'held');
+   assert.equal((await f.read()).answer,'');
+  }
+ });
+}
 for(const [paper,answer] of [
  ['2025 年上海市徐汇区\n九年级数学一模试卷（A卷）','2025 年上海徐汇区初三数学一模\n参考答案（A卷）'],
  ['2025 年上海市\n奉贤区高二物理二模\n试题（乙卷）','2025年上海奉贤区高二年级物理2模\n参考解答\n（乙卷）'],
