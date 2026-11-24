@@ -62,6 +62,7 @@ import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
 import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
+import {namedTeachingMaterialMatches,namedTeachingMaterialTitles,resolveNamedHandoutSources,type NamedHandoutSource} from '../education/named-teaching-materials';
 import {assertTeachingHandoutExportProposal,createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
 import {EXPORT_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teaching-handout-edit';
@@ -271,6 +272,7 @@ type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSe
 type Active = {
   answerOnly?: boolean;
   naturalLessonDraft?: NaturalLessonRequirements;
+  handoutBasis?: NamedHandoutSource[];
   directOriginalPaper?: true;
   paperReceiptSummary?: true;
   lessonRevision?: LessonRevisionRequest;
@@ -1204,8 +1206,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       materialPageTools:createMaterialPageTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observedMaterials),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&handoutRequest(cleanPrompt)?{
+        handoutBasis:owner.handoutBasis,
         teachingHandoutTool:createTeachingHandoutTool({
-          state:store.xiaozhiState.teachingHandouts,context:()=>classroomContext.snapshot(),prompt:cleanPrompt,
+          state:store.xiaozhiState.teachingHandouts,context:()=>classroomContext.snapshot(),prompt:cleanPrompt,basis:owner.handoutBasis,
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,requirementsVersion:owner.task!.requirementsVersion}),
         }),
@@ -1548,6 +1551,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (result.ok) {
         if((run.naturalLessonDraft||run.lessonRevision) && !await store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId))
           failure=run.lessonRevision?'lesson_revision_missing':'lesson_draft_missing';
+        else if(run.handoutBasis&&!await store.xiaozhiState.teachingHandouts.hasDraft(id,run.runId))
+          failure='handout_basis_unread';
         else {text = result.text;answerTruncated=result.truncated;}
       } else failure = result.error;
     } catch (error) {
@@ -2240,6 +2245,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             title=>store.materialCurriculum.namedBasis(title)));
           run.classroomPlan=input.classroomPlan={mode:'outline',lesson};
         }
+        if(canInferTeachingRequest&&!run.classroomPlan&&!detail.session.studentId&&handoutRequest(input.prompt)){
+          const titles=namedTeachingMaterialTitles(namedTeachingMaterialMatches(input.prompt));
+          if(titles.length)run.handoutBasis=await phase(()=>resolveNamedHandoutSources(titles,title=>store.materials.exactNames(title)));
+        }
         let deliveryContinuation:XiaozhiStartInput['continueTask'];
         if(input.resumeDeliveryId){
           const bundle=await phase(()=>deliveries.read(id,input.resumeDeliveryId!));
@@ -2326,6 +2335,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}
         const code=error instanceof Error?error.message:'';
+        if(!run.stopped&&!closing&&!controller.signal.aborted&&(code==='handout_basis_unavailable'||code==='handout_basis_ambiguous'))return {ok:false,error:code};
         return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'||code==='lesson_basis_ambiguous'||code==='lesson_basis_unavailable'?code:code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='version_conflict'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
       })().catch((error): XiaozhiStartResult => {

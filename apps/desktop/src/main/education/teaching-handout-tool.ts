@@ -4,6 +4,7 @@ import type {ClassroomContext} from '../../shared/classroom-context';
 import {materialId} from '../../shared/materials';
 import {TEACHING_HANDOUT_SCHEMA, TEACHING_HANDOUT_TOOL, teachingHandoutParameters, type TeachingHandoutInput} from '../../shared/teaching-handout';
 import type {createTeachingHandoutState, HandoutOwner} from './teaching-handout-state';
+import type {NamedHandoutSource} from './named-teaching-materials';
 
 export function handoutRequest(prompt:string) {
   const text = prompt.trim().normalize('NFKC');
@@ -63,6 +64,7 @@ export function validTeachingHandout(raw:unknown):raw is TeachingHandoutInput {
 const messages:Record<string,string>={
   invalid_input:'请补齐学习目标、重点难点、例题步骤和至少两个难度的独立练习。无依据的章节须说明待核对来源。',
   source_required:'先读取本轮实际使用的本地资料段落，再引用对应段落。仅检索摘要或历史引用不能作为依据。',
+  named_sources_required:'请逐份引用老师点名的资料。每份至少引用一段本轮实读的原文，移除其他资料的引用。',
   source_quote_mismatch:'引用未在原段落找到，请重新读取后修正。',
   source_changed:'资料已经变化，请重新读取当前版本后再制作。',
   sensitive_content:'草稿包含需要脱敏的信息，请移除后重新提交。',
@@ -74,7 +76,7 @@ const messages:Record<string,string>={
 
 export function createTeachingHandoutTool(options:{
   state:ReturnType<typeof createTeachingHandoutState>; owner:()=>HandoutOwner;
-  context:()=>ClassroomContext; current:()=>boolean; sanitize:(text:string)=>Promise<string>; prompt:string;
+  context:()=>ClassroomContext; current:()=>boolean; sanitize:(text:string)=>Promise<string>; prompt:string; basis?:readonly NamedHandoutSource[];
 }):ToolDefinition {
   return {
     name:TEACHING_HANDOUT_TOOL,
@@ -91,7 +93,7 @@ export function createTeachingHandoutTool(options:{
             !raw.chapters.some(chapter => chapter.citations.length>0)) throw Error('source_required');
         const encoded=JSON.stringify(raw);
         if (await options.sanitize(encoded)!==encoded) throw Error('sensitive_content');
-        const data=await options.state.save(options.owner(),callId,raw,createHash('sha256').update(encoded).digest('hex'),options.context(),current);
+        const data=await options.state.save(options.owner(),callId,raw,createHash('sha256').update(encoded).digest('hex'),options.context(),current,options.basis);
         const receipt={success:true,...data,status:'draft',teacherConfirmed:false,location:'教学 → 讲义'};
         return {content:[{type:'text',text:JSON.stringify(receipt)}],details:{success:true,data:receipt}};
       } catch (error) {

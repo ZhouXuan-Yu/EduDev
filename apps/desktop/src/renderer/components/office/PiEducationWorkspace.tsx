@@ -388,7 +388,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       ...(attachments.selections.length?{attachments:attachments.selections}:{}) };
     let result;
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
-    if (!result.ok) { attempt.current=undefined;setNotice(XIAOZHI_ERRORS[result.error]); await Promise.all([hydrate(id),attachments.refresh()]); throw new Error(result.error); }
+    if (!result.ok) {
+      attempt.current=undefined;
+      if(result.error!=='handout_basis_ambiguous'&&result.error!=='handout_basis_unavailable')setNotice(XIAOZHI_ERRORS[result.error]);
+      await Promise.allSettled([hydrate(id),attachments.refresh()]);
+      throw new Error(result.error);
+    }
     attempt.current = undefined;
     await Promise.all([hydrate(id), refreshList(),attachments.refresh()]).catch(() => setNotice('消息已接收，暂时无法刷新记录。'));
   }

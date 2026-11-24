@@ -6,6 +6,7 @@ import type {TeachingHandoutInput, TeachingHandoutSummary} from '../../shared/te
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import {assertClassroomContext} from './classroom-context';
+import type {NamedHandoutSource} from './named-teaching-materials';
 
 export type HandoutOwner = {sessionId:string; taskId:string; runId:string; generation:number; requirementsVersion:number};
 type VerifiedCitation = {anchor:TeachingSourceRef; source:MaterialSource};
@@ -25,8 +26,12 @@ async function recordReceipt(sql:Sql,bookId:string,owner:HandoutRun,callId:strin
     [owner.runId,callId,bookId,owner.generation]);
 }
 
-async function verifyCitations(sql:Sql,input:TeachingHandoutInput,context:ClassroomContext) {
+async function verifyCitations(sql:Sql,input:TeachingHandoutInput,context:ClassroomContext,basis?:readonly NamedHandoutSource[]) {
   const cited = input.chapters.flatMap(chapter => chapter.citations);
+  const allowed = basis && new Map(basis.map(source => [source.resourceId,source.version]));
+  const citedIds = new Set(cited.map(citation => citation.resourceId));
+  if (allowed && (citedIds.size!==allowed.size || [...citedIds].some(id => !allowed.has(id))))
+    throw Error('named_sources_required');
   const materials = new Map(context.materials.filter(item => !item.truncated)
     .map(item => [item.source.resourceId+'/'+item.source.offset,item]));
   const selected = new Map<string,ClassroomContext['materials'][number]>();
@@ -34,6 +39,7 @@ async function verifyCitations(sql:Sql,input:TeachingHandoutInput,context:Classr
     const key = citation.resourceId+'/'+citation.offset;
     const material = materials.get(key);
     if (!material) throw Error('source_required');
+    if (allowed && material.source.version!==allowed.get(citation.resourceId)) throw Error('source_changed');
     selected.set(key,material);
   }
   await assertClassroomContext(sql,{...context,materials:[...selected.values()]});
@@ -121,6 +127,10 @@ export function createTeachingHandoutState(sql:Sql) {
     async list(sessionId:string) {
       return (await sql.all(summaryQuery+" WHERE origin.session_id=? AND books.deleted_at='' ORDER BY origin.created_at DESC LIMIT 100",[sessionId])).map(mapSummary);
     },
+    async hasDraft(sessionId:string,runId:string) {
+      return Boolean((await sql.all(`SELECT 1 FROM teaching_handout_origins origin JOIN teaching_books book ON book.id=origin.book_id
+        WHERE origin.session_id=? AND origin.run_id=? AND book.deleted_at=''`,[sessionId,runId]))[0]);
+    },
     async materialSources(bookId:string,reader:Pick<Sql,'all'>=sql) {
       const [row]=await reader.all('SELECT material_sources_json FROM teaching_handout_origins WHERE book_id=?',[bookId]);
       if (!row) return undefined;
@@ -128,7 +138,7 @@ export function createTeachingHandoutState(sql:Sql) {
       if (!Array.isArray(sources)||sources.length>20||!sources.every(validMaterialSource)) throw Error('configuration');
       return sources;
     },
-    async save(owner:HandoutOwner,callId:string,input:TeachingHandoutInput,inputHash:string,context:ClassroomContext,current:()=>boolean) {
+    async save(owner:HandoutOwner,callId:string,input:TeachingHandoutInput,inputHash:string,context:ClassroomContext,current:()=>boolean,basis?:readonly NamedHandoutSource[]) {
       if (!sql.transaction) throw Error('configuration');
       const fence = () => {if (!current()) throw Error('cancelled');};
       return sql.transaction(async work => {
@@ -146,7 +156,7 @@ export function createTeachingHandoutState(sql:Sql) {
           fence();
           return mapSummary(existing);
         }
-        const citations = await verifyCitations(work,input,context);
+        const citations = await verifyCitations(work,input,context,basis);
         fence();
         const bookId = 'teaching_book_'+randomUUID(), time = new Date().toISOString();
         const sources = await writeBook(work,bookId,input,citations,time);

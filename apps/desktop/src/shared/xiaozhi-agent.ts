@@ -5,7 +5,7 @@ import type { XiaozhiMemoryScope } from './xiaozhi-memory';
 import type { XiaozhiSkill } from './xiaozhi-skills';
 import type { XiaozhiChangeSummary } from './xiaozhi-changes';
 import type { OfficeArtifactSummary } from './xiaozhi-office-artifacts';
-export type XiaozhiAgentError = 'paper_export_source_changed' | 'paper_export_restart_required' | 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'event_recovered' | 'authentication'
+export type XiaozhiAgentError = 'handout_basis_ambiguous' | 'handout_basis_unavailable' | 'handout_basis_unread' | 'paper_export_source_changed' | 'paper_export_restart_required' | 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'event_recovered' | 'authentication'
   | 'rate_limited' | 'insufficient_balance' | 'provider_unavailable' | 'timeout' | 'lifecycle_timeout' | 'transport' | 'cancelled' | 'model_error' | 'lesson_draft_missing' | 'lesson_revision_missing' | 'lesson_basis_ambiguous' | 'lesson_basis_unavailable' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'task_ended' | 'task_context_changed' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
 export type XiaozhiModelCapabilities = { id: string; name: string; contextWindow: number; maxOutputTokens: number;
   /** Absent in older catalogues means unknown, never an inferred image grant. */

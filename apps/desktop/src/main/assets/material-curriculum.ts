@@ -25,12 +25,10 @@ export class MaterialCurriculumRepository{
  }
  async choices(){const rows=await this.sql.all(`SELECT e.resource_id,r.title FROM material_curriculum_entries e JOIN teacher_resources r ON r.id=e.resource_id WHERE e.sequence=(SELECT max(n.sequence) FROM material_curriculum_entries n WHERE n.resource_id=e.resource_id) ORDER BY e.sequence DESC LIMIT 100`,[]);const results=[];for(const row of rows){const v=await this.view(String(row.resource_id));if(v.entry)results.push({title:String(row.title),...v});}return results;}
  async namedBasis(title:string):Promise<CurriculumEntry>{
-  if(!title||title.length>200)throw Error('lesson_basis_unavailable');
-  const rows=await this.sql.all(`SELECT id FROM teacher_resources
-   WHERE lower(trim(title))=lower(?) OR lower(trim(original_file_name))=lower(?) LIMIT 2`,[title,title]);
+  const rows=await this.materials.exactNames(title);
   if(rows.length>1)throw Error('lesson_basis_ambiguous');
   if(!rows.length)throw Error('lesson_basis_unavailable');
-  const {entry,stale}=await this.view(String(rows[0].id));
+  const {entry,stale}=await this.view(rows[0].resourceId);
   if(!entry||stale||entry.metadata.status!=='active')throw Error('lesson_basis_unavailable');
   const {body}=await this.materials.source(entry.source);
   const chunk=body.chunks[0];

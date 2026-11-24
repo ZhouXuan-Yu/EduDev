@@ -53,6 +53,12 @@ export class MaterialRepository {
   const row=(await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?`,[id]))[0];
   if(!row)throw new Error('material_not_found');return this.host.mapResource(row);
  }
+ async exactNames(title:string):Promise<{resourceId:string;version:string}[]>{
+  if(!title||title.length>200)return [];
+  const rows=await this.host.all(`SELECT id,content_hash FROM teacher_resources
+   WHERE lower(trim(title))=lower(?) OR lower(trim(original_file_name))=lower(?) LIMIT 2`,[title,title]);
+  return rows.map(row=>({resourceId:String(row.id),version:String(row.content_hash)}));
+ }
  /** Conservative reference-use gate; no private chunk contents or local paths cross IPC. */
  async privateResourceIds(ids:string[]):Promise<string[]>{
   if(ids.length>50||ids.some(id=>!/^resource_[a-f0-9-]{36}$/i.test(id)))throw Error('invalid_input');

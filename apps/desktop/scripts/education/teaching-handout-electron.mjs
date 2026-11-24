@@ -11,6 +11,8 @@ assert(acceptance);
 const wordRequest=process.argv.includes('--word-request');
 const confirmFixture=process.argv.includes('--confirm-fixture');
 const live=process.argv.includes('--live');
+const namedBasis=process.argv.includes('--named-basis');
+assert(!(live&&namedBasis));
 const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout';
 assert(apiKey,'Missing DeepSeek test credential');
 const output=fs.mkdtempSync(path.join(acceptance,'teaching-handout-'));
@@ -20,6 +22,20 @@ const modelTool='education_create_teaching_handout';
 const title='等式变形分层学案', quote='等式两边同时减去同一个数，等式仍然成立。';
 const original=path.join(output,'等式性质参考.md');
 fs.writeFileSync(original,'# 等式性质\n\n'+quote+'\n\n等式两边同时除以同一个非零数，等式仍然成立。');
+const secondQuote='解方程后应把得到的未知数值代回原方程检验。';
+const distractorQuote='复习时可用算例检查等式性质的适用条件。';
+const inputs=[original];
+if(namedBasis){
+  const second=path.join(output,'代回检验.md');
+  fs.writeFileSync(second,'# 代回检验\n\n'+secondQuote);
+  for(const [folder,text] of [['v1',distractorQuote],['v2','这是一份同名的独立算例。']]){
+    fs.mkdirSync(path.join(output,folder));
+    const duplicate=path.join(output,folder,'等式性质补充.md');
+    fs.writeFileSync(duplicate,'# 补充资料\n\n'+text);
+    inputs.push(duplicate);
+  }
+  inputs.push(second);
+}
 const report={ok:false,output,main,mainHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],errors:[],paidRequests:0};
 const check=(name,details)=>{report.checks.push({name,...details});console.log('PASS '+name);};
 let app,page,sessionId;
@@ -45,10 +61,10 @@ async function launch(cold=false){
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop});
-  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,original,wordRequest,live})=>{
+  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,inputs,wordRequest,live,namedBasis,secondQuote,distractorQuote})=>{
     const wire=globalThis.handoutWire={requests:[],results:[]};
     const remote=net.fetch.bind(net);
-    dialog.showOpenDialog=async()=>({canceled:false,filePaths:[original]});
+    dialog.showOpenDialog=async()=>({canceled:false,filePaths:inputs});
     net.fetch=async(raw,init)=>{
       const url=new URL(typeof raw==='string'?raw:raw.url);
       if(url.origin!=='https://api.deepseek.com')throw Error('External request blocked');
@@ -77,16 +93,57 @@ async function launch(cold=false){
         expect(names.includes(modelTool)&&!names.includes('education_export_teaching_handout'),
           'New Word handout request must route to draft creation');
       }
-      const document=(citation)=>({schemaVersion:'xiaozhi.teaching-handout.v1',title,targetLevel:'七年级',
+      const source=(resourceId,quote)=>({resourceId,offset:0,quote});
+      const document=(citation,extras=[])=>({schemaVersion:'xiaozhi.teaching-handout.v1',title,targetLevel:'七年级',
         chapters:[{title:'等式两边同做一种运算',objectives:['用等式性质解一元一次方程'],
           focus:'保持等式两侧同步运算。',difficulty:'除法步骤必须说明除数非零。',
           explanation:'等式性质可以用于移项。比如 $3x+7=25$ 可先在两边同时减去 7。',
           example:{prompt:'解方程 $3x+7=25$。',steps:['两边同减 7，得到 $3x=18$。','两边同除以 3，得到 $x=6$。','把 6 代回原式核验。'],answer:'$x=6$'},
           exercises:[{prompt:'解 $2x+3=15$。',difficulty:'基础',answer:'$x=6$',explanation:'先两边减 3，再除以 2。'},
             {prompt:'解 $5x-2=2x+7$ 并代回。',difficulty:'巩固',answer:'$x=3$',explanation:'两边减去 $2x$ 并加 2，得到 $3x=9$。'}],
-          citations:[{resourceId:wire.resourceId,offset:0,quote:citation}]}],sourceGaps:[]});
+          citations:[source(wire.resourceId,citation),...extras]}],sourceGaps:[]});
       let offer;
-      if(phase){
+      if(namedBasis){
+        const read=resourceId=>({name:'office_read_material',args:{resourceId,offset:0}});
+        const save=args=>({name:modelTool,args});
+        const result=phase?latest():undefined;
+        if(result)wire.results.push(result);
+        const {first,second,distractor}=wire.ids;
+        if(phase===0){
+          const system=JSON.stringify(body.messages.filter(item=>item.role==='system'));
+          const current=JSON.stringify(body.messages.filter(item=>item.role==='user').at(-1));
+          expect(current.includes('宿主已按完整名称找到指定资料')&&current.includes(first)&&current.includes(second)&&!current.includes(distractor),'Named source scope was not delivered with the current request');
+          expect(!system.includes(first)&&!system.includes(second),'Run-specific resources changed the stable system prompt');
+          wire.resourceId=first;
+          offer=read(first);
+        }else if(phase===1){
+          expect(result.text?.includes(quote),'First named source was not read');
+          offer=save(document(quote));
+        }else if(phase===2){
+          expect(result.error==='named_sources_required','Omitted named source was accepted');
+          offer=read(distractor);
+        }else if(phase===3){
+          expect(result.text?.includes(distractorQuote),'Distractor source was not read');
+          offer=save(document(quote,[source(distractor,distractorQuote)]));
+        }else if(phase===4){
+          expect(result.error==='named_sources_required','A read but unnamed source replaced a named source');
+          offer=read(second);
+        }else if(phase===5){
+          expect(result.text?.includes(secondQuote),'Second named source was not read');
+          offer=save(document(quote,[source(second,'本句不在第二份资料正文中。')]));
+        }else if(phase===6){
+          expect(result.error==='source_quote_mismatch','A false quote was accepted');
+          offer=save(document(quote,[source(second,secondQuote)]));
+        }else if(phase===7){
+          expect(result.success&&!result.teacherConfirmed&&result.sourceCount===2,'Draft did not retain both sources');
+          wire.bookId=result.bookId;
+          offer=save(document(quote,[source(second,secondQuote)]));
+        }else if(phase===8){
+          expect(result.bookId===wire.bookId,'Identical retry did not return same draft');
+          offer=save({...document(quote,[source(second,secondQuote)]),title:'另一份冲突草稿'});
+        }else if(phase===9)expect(result.error==='conflict','Conflicting retry did not stop');
+        expect(phase<=9,'Unexpected model request after named handout save');
+      }else if(phase){
         const result=latest();
         wire.results.push(result);
         if(phase===1){
@@ -123,7 +180,7 @@ async function launch(cold=false){
       return new Response(event({role:'assistant'})+event(delta)+event({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',
         {headers:{'content-type':'text/event-stream'}});
     };
-  },{cold,title,quote,modelTool,original,wordRequest,live});
+  },{cold,title,quote,modelTool,inputs,wordRequest,live,namedBasis,secondQuote,distractorQuote});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
@@ -196,7 +253,7 @@ async function verifyLive(state,wire){
 
 async function verifyControlled(state,wire,oldBook){
   assert.equal(wire.error,undefined);
-  assert.equal(wire.requests.length,7);
+  assert.equal(wire.requests.length,namedBasis?10:7);
   assert.equal(state.projection.turns.at(-1)?.status,'completed');
   const [handout]=state.teachingHandouts;
   report.sessionId=sessionId; report.bookId=handout.bookId; report.runId=handout.runId; report.taskId=handout.taskId;
@@ -220,8 +277,16 @@ async function verifyControlled(state,wire,oldBook){
   const originalBook=await getBook(handout.bookId);
   assert.equal(originalBook.book.status,'draft');
   assert.equal(originalBook.blocks.length,8);
-  assert.equal(originalBook.sources[0].snippet,quote);
   assert.equal(originalBook.materialSources[0].resourceId,wire.resourceId);
+  const material=originalBook.materialSources[0];
+  assert.equal(originalBook.sources.find(item=>item.ref===material.chunkId).snippet,quote);
+  if(namedBasis){
+    assert.deepEqual(originalBook.materialSources.map(item=>item.resourceId),[wire.ids.first,wire.ids.second]);
+    assert.deepEqual(new Set(originalBook.sources.map(item=>item.snippet)),new Set([quote,secondQuote]));
+    assert.equal(wire.requests[0],'office_read_material');
+    assert(!wire.requests.includes('office_list_materials'));
+    check('Exact names resolve before model dispatch; saved book contains both requested sources and no substitutes');
+  }
   await page.setViewportSize({width:1366,height:768});
   await preview.scrollIntoViewIfNeeded();
   await page.screenshot({path:path.join(output,'editable-handout-1366.png'),animations:'disabled'});
@@ -230,8 +295,7 @@ async function verifyControlled(state,wire,oldBook){
   await page.screenshot({path:path.join(output,'editable-handout-1920.png'),animations:'disabled'});
   check('Conversation opens exact editable handout with chapter, staged exercises and locally rendered formulas',{blockCount:originalBook.blocks.length});
 
-  const material=originalBook.materialSources[0];
-  await sourceLink().click();
+  await page.getByTestId('teaching-book-source-'+material.chunkId).getByTestId('pi-material-source-open').click();
   const excerpt=page.getByTestId('materials-chunk-'+material.chunkId);
   await excerpt.waitFor();
   assert.match(await excerpt.innerText(),new RegExp(quote));
@@ -283,10 +347,29 @@ try{
   if(await page.getByTestId('ai-return-workspace').isVisible())await page.getByTestId('ai-return-workspace').click();
   await page.getByTestId('nav-knowledge').click();
   await page.getByTestId('materials-import').click();
-  await until(()=>sql("SELECT id FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')")[0]);
+  const saved=await until(()=>{
+    const rows=sql("SELECT id,original_file_name AS name,content_hash AS hash FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')");
+    return rows.length===inputs.length&&rows;
+  });
   await page.getByTestId('desktop-back').click();
   const input=page.getByTestId('office-prompt-input');
-  const request='请根据资料库里《等式性质参考》制作一份七年级一元一次方程的可编辑'+
+  if(namedBasis){
+    const ids={first:saved.find(row=>row.name==='等式性质参考.md').id,
+      second:saved.find(row=>row.name==='代回检验.md').id,
+      distractor:saved.find(row=>row.hash===createHash('sha256').update(fs.readFileSync(inputs[1])).digest('hex')).id};
+    await app.evaluate((_electron,ids)=>{globalThis.handoutWire.ids=ids;},ids);
+    for(const [file,feedback] of [['等式性质参考缺件','找不到讲义指定的文件'],['等式性质补充.md','核对重名文件']]){
+      const originalPrompt=`请根据资料库里的《${file}》制作一份七年级讲义。`;
+      await input.fill(originalPrompt);
+      await page.getByRole('button',{name:'发送消息',exact:true}).click();
+      await page.getByTestId('pi-composer-viewport').getByRole('alert').filter({hasText:feedback}).waitFor({timeout:15000});
+      assert.equal(await input.inputValue(),originalPrompt);
+      assert.equal((await app.evaluate(()=>globalThis.handoutWire.requests)).length,0);
+      assert.equal(sql('SELECT book_id FROM teaching_handout_origins').length,0);
+      check('Composer retains draft and explains '+(file.endsWith('.md')?'duplicate exact file name':'missing exact file name')+' before model dispatch');
+    }
+  }
+  const request=(namedBasis?'请根据资料库里的《等式性质参考.md》以及《代回检验》':live?'请根据资料库里《等式性质参考》':'请参考相关本地资料')+'制作一份七年级一元一次方程的可编辑'+
     (wordRequest?' Word ':'')+'学案，包含重点难点、分步例题和分层练习。';
   await input.fill(live?request+'标题是《等式变形分层学案》，只做一章。例题用 3x+7=25，写出两边同减、同除、代回检验。两道练习按基础、巩固排序，分别用 2x+3=15 和 5x-2=2x+7，保留答案与解析。引用实读到的等式性质，先保存讲义草稿让我核对。':request);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
@@ -297,7 +380,7 @@ try{
   const state=await until(async()=>{
     const value=await snapshot();
     const turn=value.projection.turns.at(-1);
-    if(live&&!value.running&&turn&&['failed','completed','interrupted'].includes(turn.status)&&!value.teachingHandouts?.length)
+    if((live||namedBasis)&&!value.running&&turn&&['failed','completed','interrupted'].includes(turn.status)&&!value.teachingHandouts?.length)
       throw Error('Run ended without a saved handout: '+turn.status+' '+(turn.errorCode||''));
     return !value.running&&turn?.status!=='running'&&value.teachingHandouts?.length&&value;
   });

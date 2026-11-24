@@ -13,6 +13,7 @@ import './office-conversation.css';
 import './prompt-input.utilities.css';
 import './pi-control-surfaces.css';
 import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
+import {XIAOZHI_ERRORS} from '../../../shared/xiaozhi-projection';
 import {XIAOZHI_ATTACHMENT_ACCEPT} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
@@ -207,7 +208,13 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
     const outgoing = injected ? `/skill:${skill.name} ${text}` : text;
     const presentation = injected ? {version:1 as const,skill:skill.name,text} : retryPresentation;
     try { if (running && onQueue) await onQueue(outgoing,mode); else await onSubmit(outgoing,presentation,binding?copyPaperExportIntent(binding):undefined); if(clearDraft && draftRef.current === prompt)clearSent(prompt,binding); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined);setFailedPaperExportIntent(undefined); }
-    catch { setFailedPrompt(outgoing);setFailedPresentation(presentation);setFailedPaperExportIntent(binding?copyPaperExportIntent(binding):undefined); }
+    catch (error) {
+      if(error instanceof Error&&(error.message==='handout_basis_ambiguous'||error.message==='handout_basis_unavailable')) {
+        setSendIssue(XIAOZHI_ERRORS[error.message]);
+      } else {
+        setFailedPrompt(outgoing);setFailedPresentation(presentation);setFailedPaperExportIntent(binding?copyPaperExportIntent(binding):undefined);
+      }
+    }
     finally { sendLock.current = false; setSubmitting(false); }
   }
 

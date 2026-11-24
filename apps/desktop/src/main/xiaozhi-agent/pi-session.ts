@@ -131,6 +131,7 @@ export interface PiXiaozhiOptions {
   /** Pure education domain capabilities; Pi remains the only loop. */
   educationCapabilityTools?: ToolDefinition[];
   teachingHandoutTool?: ToolDefinition;
+  handoutBasis?: readonly {resourceId:string}[];
   mockExamTool?:ToolDefinition;
   mockExamEditTools?:ToolDefinition[];
   mockExamArchiveRequested?:boolean;
@@ -601,7 +602,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   if(options.teachingHandoutTool){
     names.push(options.teachingHandoutTool.name);
-    prompt+='\n老师本轮要求制作可编辑教学讲义或学案。先检索并实读相关本地资料，再以 education_create_teaching_handout 保存讲义草稿。重心是结构化内容、逐步例题和不同难度练习。缺资料应说明待核对范围，不编造引用。草稿成功后指引老师打开讲义核对与编辑。';
+    prompt+='\n老师本轮要求制作可编辑教学讲义或学案。宿主提供指定资料时按其范围直接实读，否则先检索并实读相关本地资料。再以 education_create_teaching_handout 保存讲义草稿。重心是结构化内容、逐步例题和不同难度练习。缺资料应说明待核对范围，不编造引用。草稿成功后指引老师打开讲义核对与编辑。';
   }
   if(options.mockExamTool){
     names.push(options.mockExamTool.name);
@@ -1178,7 +1179,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   session.agent.streamFunction=async (...args)=>{
     args[2]={...args[2],fetch:providerFetch};
     await checkMemory();
-    args[1]=projectTeacherPreferenceRequest(args[1],compacting?undefined:submittedTeacherRequest,options.teacherPreferenceGuidance);
+    const handoutGuidance=!compacting&&options.handoutBasis
+      ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
+      : '';
+    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
+    args[1]=projectTeacherPreferenceRequest(args[1],compacting?undefined:submittedTeacherRequest,currentGuidance);
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
