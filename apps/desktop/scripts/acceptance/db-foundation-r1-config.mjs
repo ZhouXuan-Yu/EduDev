@@ -119,8 +119,10 @@ async function eventually(predicate){
 try{
   await launch();
   stage='global defaults without a session';
+  await page.waitForFunction(async()=>(await window.omniEdu.listAiConversations()).sessions.length>0);
   await productEntry(page,'materials').click();
   withSql(data,true,db=>db.prepare('UPDATE ai_conversation_sessions SET archived_at=? WHERE archived_at IS NULL').run(stamp));
+  await page.waitForFunction(async()=>(await window.omniEdu.listAiConversations()).sessions.length===0);
   await diagnostics();
   await guards();
   const section=page.getByTestId('pi-resolved-config');
