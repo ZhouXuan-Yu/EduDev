@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {LibraryBig} from 'lucide-react';
@@ -28,23 +29,23 @@ function ExamFields({entry,change,update}:{entry:MockExamEntry;change:MockExamCa
     {fields.map(key=><label key={key}>{labels[key]}
       {key==='year'?<input type="number" min="1990" max="2100" value={change.metadata.year??''}
         data-testid="mock-exam-field-year" onChange={event=>field(key,event.currentTarget.value)}/>
-        :<select value={change.metadata[key]??''} data-testid={'mock-exam-field-'+key} onChange={event=>field(key,event.currentTarget.value)}>
+        :<AppNativeSelect value={change.metadata[key]??''} data-testid={'mock-exam-field-'+key} onChange={event=>field(key,event.currentTarget.value)}>
           <option value="">待核对</option>{values[key].map(value=><option key={value}>{value}</option>)}
-        </select>}
+        </AppNativeSelect>}
       <small>{entry.conflicts.includes(key)?key==='year'&&entry.cover?'请参考封面日期和文件名，确认当前汇编年份':'原文件名与正文给出了多个值':entry.inferred[key]||'没有可用的原件标记'}</small>
     </label>)}
     <label>使用许可
-      <select value={change.permission} data-testid="mock-exam-permission" onChange={event=>{
+      <AppNativeSelect value={change.permission} data-testid="mock-exam-permission" onChange={event=>{
         const permission=event.currentTarget.value as MockExamEntry['permission'];
         update({...change,permission,include:permission!=='excluded'&&change.include});
-      }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</select>
+      }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</AppNativeSelect>
     </label>
     {entry.answer.state==='linked'&&<label>答案册使用许可
-      <select value={change.answerPermission?.permission??'unknown'} data-testid="mock-exam-answer-permission" onChange={event=>{
+      <AppNativeSelect value={change.answerPermission?.permission??'unknown'} data-testid="mock-exam-answer-permission" onChange={event=>{
         const {resourceId,version,pairRevision}=entry.answer;
         if(!resourceId||!version||!pairRevision)return;
         update({...change,answerPermission:{resourceId,version,pairRevision,permission:event.currentTarget.value as MockExamEntry['permission']}});
-      }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</select>
+      }}>{Object.entries(permissions).map(([key,label])=><option value={key} key={key}>{label}</option>)}</AppNativeSelect>
     </label>}
     <label className={styles.check}>收录到目录
       <input type="checkbox" checked={change.include} disabled={change.permission==='excluded'}

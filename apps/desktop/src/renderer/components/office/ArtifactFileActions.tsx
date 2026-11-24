@@ -72,8 +72,8 @@ export function ArtifactFileActions({target,onLocate}:{target:ArtifactFileTarget
       </Dropdown.Popover>
     </Dropdown>
     {message&&<p role={message.error?'alert':'status'} data-testid="artifact-file-action-message">{message.text}</p>}
-    {location&&<DisclosureCard defaultExpanded className="artifact-file-location" data-testid="artifact-file-location" title="文件位置">
-      <FileLocation parts={location}/>
+    {location&&<DisclosureCard defaultExpanded className="artifact-file-location-container" data-testid="artifact-file-location" title="文件位置">
+      <div className="artifact-file-location"><FileLocation parts={location}/></div>
     </DisclosureCard>}
   </div>;
 }

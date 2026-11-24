@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {History,FolderOpen,ExternalLink} from 'lucide-react';
@@ -66,7 +67,7 @@ export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRe
    {busy&&<p role="status">正在核对本地版本…</p>}
    {error&&<p role="alert" data-testid="office-versions-error">{error}</p>}{notice&&<p role="status" data-testid="office-versions-notice">{notice}</p>}
    {view&&<><p data-testid="office-versions-current">当前：第 {latest?.number} 版 · {latest?.path}</p>
-    <label>查看版本<select value={view.selectedArtifactId} disabled={busy} onChange={event=>void act('view',event.target.value)} data-testid="office-version-select">{view.versions.map(v=><option key={v.artifactId} value={v.artifactId}>第 {v.number} 版 · {v.path}{v.artifactId===view.currentArtifactId?'（当前）':''}</option>)}</select></label>
+    <label>查看版本<AppNativeSelect value={view.selectedArtifactId} disabled={busy} onChange={event=>void act('view',event.target.value)} data-testid="office-version-select">{view.versions.map(v=><option key={v.artifactId} value={v.artifactId}>第 {v.number} 版 · {v.path}{v.artifactId===view.currentArtifactId?'（当前）':''}</option>)}</AppNativeSelect></label>
     {selected&&<><p data-testid="office-version-metadata">{selected.title} · {selected.format.toUpperCase()} · {selected.savedAt?`保存完成：${new Date(selected.savedAt).toLocaleString()}`:'保存时间未知'}{selected.verifiedAt?` · 已于 ${new Date(selected.verifiedAt).toLocaleString()} 核验`:''} · {selected.size.toLocaleString()} 字节</p><p data-testid="office-version-change">{selected.change}</p></>}
     <p data-testid="office-version-integrity" data-integrity={view.integrity}>{view.integrity==='same'?(view.historyBacking==='text_ledger'?'历史内容保存在原修改记录中；系统打开历史版会制作查看副本。':'本次核对：文件与保存记录一致；内容质量请查看原检查。'):view.integrity==='missing'?OFFICE_VERSION_ERRORS.missing:OFFICE_VERSION_ERRORS.changed}</p>
     <div className="pi-office-version-actions">

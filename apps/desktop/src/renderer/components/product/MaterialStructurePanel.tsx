@@ -192,7 +192,7 @@ export function MaterialStructurePanel({
           刷新
         </Button>
       </div>
-      {!view?.summary && !loading && (
+      {!view?.summary && !loading && !error && (
         <p data-testid="structure-empty">
           当前资料尚未建立结构记录，可在后台恢复。
         </p>

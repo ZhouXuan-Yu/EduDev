@@ -66,13 +66,17 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
   const [questionDraft, setQuestionDraft] = useState<QuestionBankItemInput>(emptyQuestionDraft);
   const [tagText, setTagText] = useState('');
   const [loading, setLoading] = useState(true);
+  const [catalogueFailed, setCatalogueFailed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
   const [usageQuestionId, setUsageQuestionId] = useState('');
   const [usages, setUsages] = useState<QuestionNotebookUsage[]>([]);
   const [usageLoading, setUsageLoading] = useState(false);
+  const [usageFailed, setUsageFailed] = useState(false);
   const requestRef = useRef(0);
+  const usageRequest = useRef(0);
+  useEffect(()=>()=>{requestRef.current++;usageRequest.current++;},[]);
   const newQuestionDirty = JSON.stringify(questionDraft) !== JSON.stringify(emptyQuestionDraft) || !!tagText;
   const newQuestionRoot = useQuestionEditGuard(newQuestionDirty || saving);
 
@@ -97,7 +101,8 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
         if (requireReadback) throw new Error('本次题本读取已被更新，请重新读取保存结果。');
         return;
       }
-      if (requireReadback && (!result || !Array.isArray(allCategories))) throw new Error('题本重新读取未完成，请重试。');
+      if (!result || !Array.isArray(allCategories)) throw new Error('题本重新读取未完成，请重试。');
+      setCatalogueFailed(false);
       const nextCategories = allCategories ?? [];
       setItems(result?.items ?? []); setTotal(result?.total ?? 0); setRetrievalMethod(result?.retrievalMethod??'');
       if(offset>0&&offset>=(result?.total??0))setOffset(Math.max(0,Math.ceil((result?.total??0)/pageSize)-1)*pageSize);
@@ -106,6 +111,7 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
       setCategoryDrafts((current) => Object.fromEntries(nextCategories.filter((category) => category.status === 'active').map((category) => [category.id, current[category.id] ?? category.name])));
     } catch (error) {
       if (requestId === requestRef.current) {
+        setCatalogueFailed(true);
         // Keep C1 editors (and their guards/input) mounted until readback or explicit cancel.
         if (!paperReturn) {setItems([]);setTotal(0);setRetrievalMethod('');}
         showError(error, '读取题本失败，请稍后重试。');
@@ -164,10 +170,15 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
   }
 
   async function loadUsage(questionId: string) {
-    setUsageQuestionId(questionId); setUsageLoading(true);
-    try { setUsages(await window.omniEdu?.listQuestionNotebookUsage(questionId, 20) ?? []); }
-    catch (error) { showError(error, '读取题目使用记录失败。'); setUsages([]); }
-    finally { setUsageLoading(false); }
+    const ticket = ++usageRequest.current;
+    setUsageQuestionId(questionId); setUsageLoading(true); setUsageFailed(false);
+    try {
+      const next = await window.omniEdu?.listQuestionNotebookUsage(questionId, 20);
+      if(ticket!==usageRequest.current)return;
+      if(!Array.isArray(next))throw new Error('题目使用记录未读取，请重试。');
+      setUsages(next);
+    } catch (error) { if(ticket===usageRequest.current){setUsageFailed(true);showError(error, '读取题目使用记录失败。');setUsages([]);} }
+    finally { if(ticket===usageRequest.current)setUsageLoading(false); }
   }
 
   async function recordManualUsage(item: QuestionNotebookEntry) {
@@ -199,14 +210,15 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
           <label className="checkbox-label"><input type="checkbox" checked={showSourceCandidates} onChange={event=>{setOffset(0);setShowSourceCandidates(event.target.checked);}} data-testid="question-notebook-source-candidates"/>显示原始候选（包含历史结构草稿、答案册候选及重复抽题记录）</label>
           <p className="muted" data-testid="question-notebook-duplicate-scope">同题候选只比较当前页；文字题只比较已保存文字。不会合并原题，也不表示答案已核验。</p>
         </div>
-        <div className={`question-notebook-summary ${styles.summary}`} data-testid="question-notebook-summary"><span>共 {total} 道题</span><span>当前显示 {items.length} 道</span><span>分类 {categories.length} 个</span></div>
+        <div className={`question-notebook-summary ${styles.summary}`} data-testid="question-notebook-summary">{catalogueFailed?<span>题目数量尚未读取</span>:<><span>共 {total} 道题</span><span>当前显示 {items.length} 道</span><span>分类 {categories.length} 个</span></>}</div>
         {loading ? <p data-testid="question-notebook-loading">正在读取本地题本…</p> : null}
         {errorMessage ? <div className="warning-box" role="alert" data-testid="question-notebook-error">{errorMessage}</div> : null}
+        {catalogueFailed&&<p role="status" data-testid="question-notebook-read-failed">题本列表未读取，不能据此判断题库为空。<Button variant="secondary" isDisabled={loading||saving} onPress={()=>void refresh()}>重新读取题本</Button></p>}
         {notice ? <div className="success-box" role="status" data-testid="question-notebook-success">{notice}</div> : null}
         <div className={styles.questionList}>{!loading || paperReturn ? items.map((item,index) => <article className={`question-notebook-card ${styles.questionCard}`} key={item.id} data-testid={`question-notebook-card-${item.id}`}><div className="question-notebook-card-head"><div className="answer-meta"><span className="status-chip">{item.subject || '未分类学科'}</span><span className="status-chip">{item.archive?.issues.includes('missing_difficulty')?'难度待分类':difficultyLabel(item.difficulty)}</span><span>{item.questionType || '题目'} · {item.knowledgePoint || '未标知识点'}</span></div><button className={item.bookmarked ? 'bookmark-button active' : 'bookmark-button'} aria-label={item.bookmarked ? '取消收藏' : '收藏题目'} onClick={() => void toggleBookmark(item)} disabled={saving} data-testid={`question-notebook-bookmark-${item.id}`}>{item.bookmarked ? '★' : '☆'}</button></div><span className="status-chip" data-testid={`question-notebook-duplicate-${item.id}`}>{duplicateCandidates[index].scope==='unsupported'?'题面待核对，未比较同题':duplicateCandidates[index].matches>1?`当前页同题候选 ${duplicateCandidates[index].matches} 条`:'当前页未发现同题候选'}</span>{item.historicalStructure && <p role="note" data-testid="question-notebook-historical-structure">历史结构草稿 · 查看原题请返回资料页</p>}<QuestionMathText as="h3" testId="question-notebook-stem" text={questionFactConflicts(item).includes('statement')?'题目内容待核对':item.stem}/>{item.document?<><QuestionOriginalPicture question={item}/>{!item.historicalStructure && item.archive?.ai?.policy!=='page-crop-complete.v1'&&<QuestionContextEditor question={item} openDisabled={!!paperReturn && loading} onSaved={async()=>{await refresh(!!paperReturn);showNotice('完整题面已保存，小智将读取新版本。');}}/>}</>:null}{!item.document&&(item.archive?.native||item.archive?.pageSource)?<QuestionOriginalPicture question={item}/>:null}{!item.historicalStructure && <QuestionArchiveEditor question={item} openDisabled={!!paperReturn && loading} onSaved={async()=>{await refresh(!!paperReturn);showNotice('题目补正已保存。');}}/>}<DisclosureCard title="查看答案与解析" data-testid={`question-notebook-answer-fold-${item.id}`}>
                   <QuestionAnswerEvidence question={item}/>
                   {!item.historicalStructure && <QuestionStructureBookMatch question={item} onReadback={saved=>setItems(current=>current.map(entry=>entry.id===saved.id?saved:entry))}/>}
-                </DisclosureCard><div className="question-notebook-card-foot"><span data-testid={`question-notebook-source-${item.id}`}>来源：{item.sourceTitle || '本地题库'} · {questionSourceLabel(item.sourceKind)} · 使用 {item.usageCount} 次</span><div className="question-category-chips">{categories.map((category) => <button key={category.id} className={item.categories.some((entry) => entry.id === category.id) ? 'category-chip active' : 'category-chip'} onClick={() => void toggleCategory(item, category.id)} disabled={saving} data-testid={`question-notebook-category-${item.id}-${category.id}`}>{category.name}</button>)}</div></div><div className="toolbar-row"><button className="secondary-action" onClick={() => void loadUsage(item.id)} data-testid={`question-notebook-usage-open-${item.id}`}><History size={15} />使用记录</button><button className="secondary-action" onClick={() => void recordManualUsage(item)} disabled={saving} data-testid={`question-notebook-usage-record-${item.id}`}>记录课堂使用</button></div>{usageQuestionId === item.id ? <div className="question-notebook-usage" data-testid={`question-notebook-usage-${item.id}`}>{usageLoading ? <span>正在读取使用记录…</span> : usages.length ? usages.map((usage) => <div key={usage.id}><strong>{questionUsageLabel(usage.usageType)}</strong><span>{formatTime(usage.createdAt)}</span></div>) : <span data-testid="question-notebook-usage-empty">还没有使用记录。</span>}</div> : null}</article>) : null}{!loading && !items.length ? <div className="empty-state" data-testid={hasFilters ? 'question-notebook-no-results' : 'question-notebook-empty'}><BookOpenCheck size={20} /><span>{hasFilters ? '当前筛选没有命中题目，请调整搜索或分类。' : '题库中还没有题目，点击“新建题目”开始添加。'}</span></div> : null}</div>
+                </DisclosureCard><div className="question-notebook-card-foot"><span data-testid={`question-notebook-source-${item.id}`}>来源：{item.sourceTitle || '本地题库'} · {questionSourceLabel(item.sourceKind)} · 使用 {item.usageCount} 次</span><div className="question-category-chips">{categories.map((category) => <button key={category.id} className={item.categories.some((entry) => entry.id === category.id) ? 'category-chip active' : 'category-chip'} onClick={() => void toggleCategory(item, category.id)} disabled={saving} data-testid={`question-notebook-category-${item.id}-${category.id}`}>{category.name}</button>)}</div></div><div className="toolbar-row"><button className="secondary-action" onClick={() => void loadUsage(item.id)} data-testid={`question-notebook-usage-open-${item.id}`}><History size={15} />使用记录</button><button className="secondary-action" onClick={() => void recordManualUsage(item)} disabled={saving} data-testid={`question-notebook-usage-record-${item.id}`}>记录课堂使用</button></div>{usageQuestionId === item.id ? <div className="question-notebook-usage" data-testid={`question-notebook-usage-${item.id}`}>{usageLoading ? <span>正在读取使用记录…</span> : usageFailed ? <span role="status" data-testid="question-notebook-usage-failed">使用记录未读取。<Button variant="ghost" onPress={()=>void loadUsage(item.id)}>重新读取</Button></span> : usages.length ? usages.map((usage) => <div key={usage.id}><strong>{questionUsageLabel(usage.usageType)}</strong><span>{formatTime(usage.createdAt)}</span></div>) : <span data-testid="question-notebook-usage-empty">还没有使用记录。</span>}</div> : null}</article>) : null}{!loading && !catalogueFailed && !items.length ? <div className="empty-state" data-testid={hasFilters ? 'question-notebook-no-results' : 'question-notebook-empty'}><BookOpenCheck size={20} /><span>{hasFilters ? '当前筛选没有命中题目，请调整搜索或分类。' : '题库中还没有题目，点击“新建题目”开始添加。'}</span></div> : null}</div>
         <div className="toolbar-row" data-testid="question-notebook-pagination"><button className="secondary-action" disabled={loading||offset===0} onClick={()=>setOffset(Math.max(0,offset-pageSize))} data-testid="question-notebook-prev">上一页</button><span>第 {Math.floor(offset/pageSize)+1} / {Math.max(1,Math.ceil(total/pageSize))} 页</span><button className="secondary-action" disabled={loading||offset+pageSize>=total} onClick={()=>setOffset(offset+pageSize)} data-testid="question-notebook-next">下一页</button><button className="ghost-action" disabled={!hasFilters} onClick={()=>{setQuery('');setCategoryId('');setBookmarkedOnly(false);setFilters({});setOffset(0);}} data-testid="question-notebook-clear">清除筛选</button><span data-testid="question-notebook-retrieval-method">本地关键词检索{retrievalMethod==='local_keyword_index'?' · 已用中文索引':''}</span></div>
       </section>
 
@@ -225,7 +237,7 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
         <DisclosureCard title="分类管理" data-testid="question-notebook-category-toggle">
         <p>可重命名分类；删除后仍可恢复。</p>
         <div className="toolbar-row"><input value={categoryName} onChange={(event) => setCategoryName(event.target.value)} placeholder="新分类名称" data-testid="question-notebook-category-name" /><button className="secondary-action" onClick={() => void createCategory()} disabled={saving} data-testid="question-notebook-create-category"><Plus size={16} />创建</button></div>
-        <div className="question-category-admin-list">{categories.map((category) => <div className="category-admin-row" key={category.id} data-testid={`question-notebook-category-admin-${category.id}`}><input value={categoryDrafts[category.id] ?? category.name} onChange={(event) => setCategoryDrafts({ ...categoryDrafts, [category.id]: event.target.value })} data-testid={`question-notebook-category-rename-input-${category.id}`} /><span>{category.entryCount} 题</span><button className="ghost-action" onClick={() => void renameCategory(category)} disabled={saving} data-testid={`question-notebook-rename-category-${category.id}`}>重命名</button><button className="ghost-action" onClick={() => void deleteCategory(category.id)} disabled={saving} data-testid={`question-notebook-delete-category-${category.id}`}>删除</button></div>)}{!categories.length ? <span>还没有分类。</span> : null}</div>
+        <div className="question-category-admin-list">{categories.map((category) => <div className="category-admin-row" key={category.id} data-testid={`question-notebook-category-admin-${category.id}`}><input value={categoryDrafts[category.id] ?? category.name} onChange={(event) => setCategoryDrafts({ ...categoryDrafts, [category.id]: event.target.value })} data-testid={`question-notebook-category-rename-input-${category.id}`} /><span>{category.entryCount} 题</span><button className="ghost-action" onClick={() => void renameCategory(category)} disabled={saving} data-testid={`question-notebook-rename-category-${category.id}`}>重命名</button><button className="ghost-action" onClick={() => void deleteCategory(category.id)} disabled={saving} data-testid={`question-notebook-delete-category-${category.id}`}>删除</button></div>)}{!catalogueFailed && !categories.length ? <span>还没有分类。</span> : null}</div>
         <DisclosureCard
           data-testid="question-notebook-deleted-categories"
           title={`已删除分类（${deletedCategories.length}）`}
@@ -244,7 +256,7 @@ function QuestionNotebookBody({setStatus, paperReturn, onReturnToPaper, onOpenMa
                 data-testid={`question-notebook-restore-category-${category.id}`}
               >恢复</button>
             </div>)}
-            {!deletedCategories.length ? <span>没有已删除分类。</span> : null}
+            {!catalogueFailed && !deletedCategories.length ? <span>没有已删除分类。</span> : null}
           </div>
         </DisclosureCard>
         </DisclosureCard>

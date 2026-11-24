@@ -406,7 +406,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                 <div hidden={mode !== 'catalog'}>
                     <MaterialLibraryCatalog items={stale ? [] : catalog?.items || []} selected={resource?.id}
                         onSelect={selectResource} disabled={busy || fetching || detailBlocked}
-                        empty={fetching ? <p role="status">正在读取资料…</p> : <LibraryEmpty
+                        empty={fetching ? <p role="status">正在读取资料…</p> : error ? <div data-testid="materials-read-failed"><p>资料目录尚未读取。请重试，原有资料仍保存在本机。</p><Button variant="secondary" isDisabled={busy || detailBlocked} onPress={()=>void load(location.current.query,location.current.offset)}>重新读取资料</Button></div> : <LibraryEmpty
                             title={query || hasCatalogScope(filters) ? '没有匹配的资料' : '先添加一份资料'}
                             description={query || hasCatalogScope(filters) ? '请调整或清除筛选，恢复查看全部资料。' : '从本机选择教材、教案、图片或其他教学文件。'}/>}/>
                     {!!catalog?.total && <Pagination aria-label="资料目录翻页" className={styles.pagination}>

@@ -56,6 +56,7 @@ export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
   const [patches, setPatches] = useState<TeachingBookPatch[]>([]);
   const [includeArchived, setIncludeArchived] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [catalogueFailed, setCatalogueFailed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
@@ -169,10 +170,13 @@ export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
   }
 
   async function loadBooks(preferredId = selectedId, showArchived = includeArchived, exact = false) {
-    const stamp = ++requests.current.list; setLoading(true);
+    const stamp = ++requests.current.list; setLoading(true); setErrorMessage('');
+    let catalogueRead = false;
     try {
-      const next = await window.omniEdu?.listTeachingBooks(showArchived) ?? [];
+      const next = await window.omniEdu?.listTeachingBooks(showArchived);
       if (stamp !== requests.current.list) return;
+      if (!Array.isArray(next)) throw new Error('讲义列表未读取，请重新读取。');
+      catalogueRead = true; setCatalogueFailed(false);
       setBooks(next);
       if (exact&&!next.some(book=>book.id===preferredId)) {
         setEditorOpen(false);
@@ -182,7 +186,7 @@ export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
       activeBookId.current = nextId;
       await loadBook(nextId);
       if (!nextId) setSelectedId('');
-    } catch (error) { if (stamp === requests.current.list) showError(error, '读取讲义工作区失败，请稍后重试。'); }
+    } catch (error) { if (stamp === requests.current.list) {if(!catalogueRead)setCatalogueFailed(true);showError(error, '读取讲义工作区失败，请稍后重试。');} }
     finally { if (stamp === requests.current.list) setLoading(false); }
   }
 
@@ -416,8 +420,9 @@ export function TeachingBookWorkspace({ setStatus,initialBookId }: Props) {
         {dirty && <button className="secondary-action" disabled={saving || loading} onClick={discardDrafts} data-testid="teaching-book-discard-drafts">放弃未保存修改</button>}
         {dirty && !editorOpen && <button className="secondary-action" disabled={saving || loading} onClick={() => setEditorOpen(true)} data-testid="teaching-book-resume-draft">继续编辑当前草稿</button>}
         <div className={styles.catalogue}><table aria-label="讲义列表"><thead><tr><th>名称</th><th>内容</th><th>版本</th></tr></thead><tbody>{filteredBooks.map((book) => <tr key={book.id} aria-selected={book.id === selectedId}><td><button disabled={loading || saving} onClick={() => void chooseBook(book.id)} data-testid={`teaching-book-item-${book.id}`}><strong>{book.title}</strong><small>{book.description || book.targetLevel || '讲义'}</small></button></td><td>{book.chapterCount} 章 · {book.pageCount} 页</td><td>第 {book.version} 版{book.deletedAt ? ' · 已归档' : ''}</td></tr>)}</tbody></table></div>
-        {!loading && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，点击“新建讲义”开始。</div> : null}
-        {!loading && books.length > 0 && !filteredBooks.length && <p role="status" data-testid="teaching-book-filter-empty">没有匹配的讲义，请调整搜索词。</p>}
+        {!loading && !catalogueFailed && !books.length ? <div className="empty-state" data-testid="teaching-book-empty">还没有讲义，点击“新建讲义”开始。</div> : null}
+        {!loading && !catalogueFailed && books.length > 0 && !filteredBooks.length && <p role="status" data-testid="teaching-book-filter-empty">没有匹配的讲义，请调整搜索词。</p>}
+        {catalogueFailed&&<p role="status" data-testid="teaching-book-read-failed">讲义列表尚未读取。可使用上方“刷新讲义”重试；已打开内容和未保存修改保持。</p>}
       </section>
 
       <div className={styles.bookEditor} hidden={!editorOpen} inert={loading || saving}>

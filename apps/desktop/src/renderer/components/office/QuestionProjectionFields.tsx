@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {TextArea} from '@heroui/react';
 import {QUESTION_PROJECTION_FIELDS,QUESTION_PROJECTION_LABELS,type QuestionProjection} from '../../../shared/question-projection';
 
@@ -8,9 +9,9 @@ export function QuestionProjectionFields({value,disabled,onChange}:{value:Questi
   <p data-testid="question-projection-uncertainty">必要图义或读数无法核实时，请保留疑点并选“尚未核对”，核实前不能保存完整题面。原图标记来源不明时请注明，不把它当作标准答案。</p>
   <p role="status" aria-live="polite" data-testid="question-projection-coverage">已核对 {QUESTION_PROJECTION_FIELDS.length-pending.length} / {QUESTION_PROJECTION_FIELDS.length} 项{pending.length?`；还需核对：${pending.map(key=>QUESTION_PROJECTION_LABELS[key]).join('、')}。`:'；请最后确认与全部原图一致。'}</p>
   {QUESTION_PROJECTION_FIELDS.map(key=>{const part=value[key];return <div key={key}>
-   <label>{QUESTION_PROJECTION_LABELS[key]}<select data-testid={`projection-${key}-state`} aria-label={`${QUESTION_PROJECTION_LABELS[key]}核对状态`} disabled={disabled} value={part.state} onChange={e=>onChange({...value,[key]:{state:e.target.value as typeof part.state,text:e.target.value==='not_applicable'?'':part.text}})}>
+   <label>{QUESTION_PROJECTION_LABELS[key]}<AppNativeSelect data-testid={`projection-${key}-state`} aria-label={`${QUESTION_PROJECTION_LABELS[key]}核对状态`} disabled={disabled} value={part.state} onChange={e=>onChange({...value,[key]:{state:e.target.value as typeof part.state,text:e.target.value==='not_applicable'?'':part.text}})}>
     <option value="missing">尚未核对</option><option value="provided">已完整转写</option>{key!=='statement'&&<option value="not_applicable">本题没有此项</option>}
-   </select></label>
+   </AppNativeSelect></label>
    {part.state!=='not_applicable'&&<TextArea aria-label={QUESTION_PROJECTION_LABELS[key]} data-testid={`projection-${key}-text`} disabled={disabled} maxLength={key==='statement'?12000:4000} value={part.text} onChange={e=>onChange({...value,[key]:{state:'missing',text:e.target.value}})}/>}
   </div>;})}<p>确认的是转写与原图一致，答案仍需独立核对。</p>
  </section>;

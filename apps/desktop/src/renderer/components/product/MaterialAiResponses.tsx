@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import { DisclosureCard } from "../ui/DisclosureCard";
 import { useEffect, useState } from "react";
 import {
@@ -66,7 +67,7 @@ export function MaterialAiResponses({
           </p>
           <label>
             批次项目
-            <select
+            <AppNativeSelect
               data-testid="material-ai-response-unit"
               value={ordinal}
               onChange={(event) => {
@@ -79,7 +80,7 @@ export function MaterialAiResponses({
                   第{start + unit.ordinal - 1}项
                 </option>
               ))}
-            </select>
+            </AppNativeSelect>
           </label>
           <button
             disabled={loading}
