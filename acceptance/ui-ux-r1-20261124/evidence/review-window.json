@@ -1,7 +1,7 @@
 {
-  "sourceSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-  "headAtLaunch": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-  "build": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+  "sourceSha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "headAtLaunch": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "build": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
   "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out\\main\\index.js",
   "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile",
   "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\data",
@@ -34,7 +34,7 @@
     ]
   },
   "window": {
-    "pid": 76252,
+    "pid": 76516,
     "id": 1,
     "title": "小智 · UI R1 验收（独立测试数据）",
     "visible": true,
@@ -72,6 +72,5 @@
     ]
   },
   "url": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/index.html",
-  "scope": "已实际验证的当前源码构建；独立虚构验收数据，未替换D盘日常目录、配置或资料。生产Pi和既有服务可用，不使用zero-network或模拟provider。",
-  "nativeWindowProof": "native-review-window.json"
+  "scope": "已实际验证的当前源码构建；独立虚构验收数据，未替换D盘日常目录、配置或资料。生产Pi和既有服务可用，不使用zero-network或模拟provider。"
 }

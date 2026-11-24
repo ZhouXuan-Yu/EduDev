@@ -68,5 +68,17 @@
     }
   ],
   "incomingChanges": "de2bb12/e7ac890 scan-table work retained; independent owner; fresh build and renderer gate passed",
-  "noRuntimeDeltaAfterVerification": "Subsequent work limited to QA scripts, acceptance records and recovery notes; out unchanged."
+  "noRuntimeDeltaAfterVerification": "最后ade49eb已重建并复验：77结构边界、表格视觉边界、261Renderer与配置/题篮/PPT冷读；之后仅QA/证据/文档。6f到ade的生产变化来自协作者11ca45f/c5984c7表格恢复，未冒称此前运行覆盖新代码。",
+  "latestVerifiedSha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "latestBuild": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+  "previousUiVerificationSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "incomingAfterPreviousUiVerification": [
+    "apps/desktop/src/main/assets/material-structure-borderless-table.ts",
+    "apps/desktop/src/main/assets/material-structure-ruled-table.ts",
+    "apps/desktop/src/main/assets/material-structure-runtime.ts",
+    "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+    "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+    "apps/desktop/src/renderer/components/product/MaterialStructureTableEvidence.tsx",
+    "apps/desktop/src/shared/material-document-structure.ts"
+  ]
 }

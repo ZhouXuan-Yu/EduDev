@@ -1,7 +1,7 @@
 {
-  "sourceSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "sourceSha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
   "source": {
-    "sha256": "c2a853f4404f755b3bd08754642eddd744d357b346c4ebf82a9b78a31b63fa4c",
+    "sha256": "755335db2ba2b3a64b5124d733295ff3340df262deb4a36e68a6e17c1fe2e909",
     "files": [
       {
         "file": "main/ai-harness/agent-harness-profile.ts",
@@ -525,7 +525,7 @@
       },
       {
         "file": "main/assets/material-structure-borderless-table.ts",
-        "sha256": "0bf58baa5ab598c92158435d6e21e5e6b5636ae86a614c8dea064f55fe273632"
+        "sha256": "d2663f7519548640f907f782acf64885997e49a03158f9f5c5606ba2ca1856ce"
       },
       {
         "file": "main/assets/material-structure-choice-options.ts",
@@ -577,11 +577,11 @@
       },
       {
         "file": "main/assets/material-structure-ruled-table.ts",
-        "sha256": "b0ac34691fd44555fb1b8c68d21016b6f72e4e81c9e8eeeef0e2a9c3c7a2c216"
+        "sha256": "753d795670bd998af726f9b65afa12b4635d30b4eac6955fc830cd286f195c41"
       },
       {
         "file": "main/assets/material-structure-runtime.ts",
-        "sha256": "f7a583e7dd54344a1ef6159bc1ba0b9da92189df2664b8f07731476ae15b9193"
+        "sha256": "5f17fd4643d8b4c38309d6da2aa3c4a27d8af22c4954b3648cfd869afed9ebfc"
       },
       {
         "file": "main/assets/material-structure-search.ts",
@@ -2613,11 +2613,11 @@
       },
       {
         "file": "main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
-        "sha256": "e4a66363e549a20bab14db8a14328f293d9e610574b3476a0c7f91cab25a43db"
+        "sha256": "3e4fe04825d6489fea3775b447b4ac6bda3453d1d997773f4b4fdfc78ae7a4d9"
       },
       {
         "file": "main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-        "sha256": "13761ca3a153e621c66a0dc159f6a56ee4137ddab960c0e59e93718e5c4b939c"
+        "sha256": "ac7a206f10a7a4a705a4f32970401eb1d91a3101a0ca633ffd9278acef572d5b"
       },
       {
         "file": "main/xiaozhi-agent/capabilities/generated/native-stat-0c327b73170a428d809b7239406b2e53ef931887a88826a01ad025ad96036831.cjs",
@@ -5657,7 +5657,7 @@
       },
       {
         "file": "renderer/components/product/MaterialStructureTableEvidence.tsx",
-        "sha256": "7417487fe7757e6d43711e253e434a7014e50f4158101b7b4a044a3e29699aa9"
+        "sha256": "0b65dd78e46e3f23db530b341b44245114b0b4ce05104d4c465c3b72d99524e4"
       },
       {
         "file": "renderer/components/product/MaterialStudyPanel.tsx",
@@ -6989,7 +6989,7 @@
       },
       {
         "file": "shared/material-document-structure.ts",
-        "sha256": "608c24de6181bbb8118d8010b25fd59f79bee5f072e84bdbe21d376c34dbdf6d"
+        "sha256": "3dd2b512ffc7a8bf91c83f3f66b6d9a97715fb63332db3845ccb5f4d1bcc7e42"
       },
       {
         "file": "shared/material-folder-ai.ts",
@@ -7698,7 +7698,7 @@
     ]
   },
   "build": {
-    "sha256": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+    "sha256": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
     "files": [
       {
         "file": "main/attachment-pdf-text-B15AhdWG.js",
@@ -7758,7 +7758,7 @@
       },
       {
         "file": "main/index.js",
-        "sha256": "be2f4996870eea353056a3c0b5e2b483d94f5b6b792acff946defda01f875862"
+        "sha256": "ea5ea8638eece4313ff822839f8858c1d5f8694e283f898b3ef983f2c1cd73c0"
       },
       {
         "file": "main/inspection-worker.js",
@@ -8605,8 +8605,8 @@
         "sha256": "ba72029ee4c7ee2b815e08f8bdf082102c4a48d2533b6096b59785718e8ac704"
       },
       {
-        "file": "renderer/assets/highlighted-body-OFNGDK62-B3R6uZbl.js",
-        "sha256": "486fd16f511646eec0a3b435a75fb358c5f33f88ac4a2c7989cc659a3d592914"
+        "file": "renderer/assets/highlighted-body-OFNGDK62-BcaR0MXA.js",
+        "sha256": "fd474f7cca2c27b95dfb1103f74ab1ba092e82590dbd59aa244f7a322dc2f97e"
       },
       {
         "file": "renderer/assets/hjson-I7LcauIB.js",
@@ -8657,8 +8657,8 @@
         "sha256": "63851953f60a70e580b0c2e3934e25fa89c3c8548f9c96fb16a59d72eb19ee6c"
       },
       {
-        "file": "renderer/assets/index-Cxb7xwg_.js",
-        "sha256": "da411792491b2e312d3c6ee7325e3e7bd736fad1068d61aa0c440dd59a8c0b2a"
+        "file": "renderer/assets/index-CxvRGGK5.js",
+        "sha256": "9d2e3c7fe0f7e7978fcd8349eaef41d854a1bd1ae0c1fd07972a7dfecbb1f1e4"
       },
       {
         "file": "renderer/assets/index-DzFt2HUD.css",
@@ -9618,7 +9618,7 @@
       },
       {
         "file": "renderer/index.html",
-        "sha256": "73c9f73a3aa97c87074e7486fa5f90d95013b6265da7040d4d9ec116dd2f1de4"
+        "sha256": "43ce3181d5b8c9be6bcde290440697573c601e9ed40b45235afa49cd68b84880"
       },
       {
         "file": "renderer/licenses/react-image-crop.LICENSE.md",
@@ -9626,5 +9626,10 @@
       }
     ]
   },
-  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out\\main\\index.js"
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out\\main\\index.js",
+  "prior": {
+    "sourceSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+    "build": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+    "identityCommit": "b855132"
+  }
 }

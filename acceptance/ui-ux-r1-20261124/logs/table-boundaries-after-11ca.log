@@ -1,0 +1,79 @@
+PASS Aligned tables preserve exact OCR cells and leave a low-confidence reading held
+PASS Borderless inference refuses prose, choice columns, competing owners, absent cells and damaged ruled grids
+PASS Explicit continuation labels and compatible physical headers preserve source links without mutating page tables
+PASS Numeric table fusion requires a unique physical gap, corroborating rows, and exact independent crop readings
+PASS Missing or wrong labels, changed units, missing pages and shifted columns leave table fragments independent
+PASS Competing tables, a new question boundary, or an unverified header prevent continuation
+PASS Exactly corroborated local header readings can link tables while preserving pending cells
+PASS A complete ruled grid preserves position and refuses broken, merged and colored separator lines
+PASS Only a local divider attached to an existing grid crossing can veto the grid
+PASS Confirmed missing internal separators recover rectangular row and column spans, with malformed layouts held
+PASS An unclassified stacked formula retains review-only source pixels and all original OCR lines
+PASS Formula recovery requires unique aligned pieces inside the same question and does not duplicate a proven layout region
+PASS The optional raster identity is exclusive to image reads and rejects malformed values
+PASS Printed option counts and observed label gaps prevent import from silently dropping choices
+PASS A bare choice marker stays in review while original picture choices remain usable
+PASS Only ambiguous horizontally aligned options with independent line boxes enter the local recheck
+PASS A complete horizontal choice row belongs to the question rather than its circled statements
+PASS A scan with ambiguous preceding glyphs shows only C and D and holds A and B for source review
+PASS The choice-row rule preserves genuine subquestions and excludes cross-line and cross-page evidence
+PASS Positioned PDF whitespace restores a joined parent without stripping a decimal in its stem
+PASS Joined numbers need unique bound native evidence, the same text, and adjacent question numbers
+PASS Wrapped scoring headings retain all OCR lines and govern unpunctuated question numbers
+PASS A wrapped heading never takes an independent title, a question marker or an unclosed continuation
+PASS A two-line scored parent keeps its printed rubric evidence and its own subquestions
+PASS Split score recovery requires a nearby matching title tail with closing punctuation
+PASS Printed type follows the question's own section across pages and refuses incompatible or ambiguous shapes
+PASS An isolated unnumbered prompt stays reviewable and a numbered figure caption cannot split the next question
+PASS Printed space-separated and separately boxed question numbers use section, alignment and option evidence
+PASS A running fill sequence continues across missing headings and closes before a scored heading
+PASS Quantities, decimals, chart values, and a lone unproven numeral do not become parent questions
+PASS A stacked formula beside the next question never changes the preceding complete choice question
+PASS A positioned literal exam-section title can bound an independently matching native question
+PASS Native section recovery refuses pseudo headings, wrong positions, lost tokens and raised/lowered components
+PASS PDF annotations must be complete, detached and backed by exact paged OCR
+PASS Option-mark recovery works across choice counts, graphics and row layouts
+PASS Each mark pigment is checked independently against every source crop
+PASS Printed fill slots preserve literal OCR and require visible thin rules
+PASS A crop can confirm exactly one numbered parent with original readings
+PASS Fill detection excludes midline strokes and gaps between numbers
+PASS A conflicted page can admit one exact bounded parent without releasing its damaged sibling
+PASS An unnumbered next-page figure becomes a reviewable crop, while the following question keeps its own figure
+PASS A matching literal caption verifies a standalone next-page diagram, but competing references keep it held
+PASS Page-leading image choices, prior-owned figures and layout conflicts never become an orphan attachment
+PASS Four labeled graphics attach separately in horizontal and grid reading order, leaving the next question alone
+PASS Uncertain graph captions are shown for review and wrong or missing labels never publish
+PASS Consecutive Chinese lines form a paragraph while a real vertical gap starts another
+PASS One multiline question retains its stem and all horizontal options
+PASS Two columns read down the left column before the right column
+PASS Three text columns retain every line without lending middle options or a leading table to another question
+PASS A fused OCR line across the gutter stays reviewable with its original coordinates
+PASS Parallel short stems and options remain pending if a gutter cannot be established
+PASS A blocked gutter is uncertain only with independent lanes, including staggered distinct regions
+PASS An unresolved leading table keeps its text and marks both neighboring questions for review
+PASS Subquestions keep their own option groups
+PASS A question continues across pages until the next parent boundary
+PASS Headers, footers and instructions remain in source paragraphs and stay outside questions
+PASS A side diagram stays attached without turning its labels into a new question
+PASS Mathematical symbols and unit token gaps survive paragraph recovery
+PASS Shared material has explicit links to its bounded question range
+PASS Low-confidence scans are held and raw line coverage is exact
+PASS Fragmented punctuation on the same baseline joins its original stem
+PASS A diagram label between two text rows does not break a continuous stem
+PASS A punctuation-marked horizontal option retains its original label and raw content
+PASS Nested numbered and circled subquestions retain a two-level tree
+PASS A repeated section title on a new page preserves the unfinished question
+PASS Unnumbered question fragments are quarantined with their original anchors
+PASS Shared materials and their diagrams keep cross-page provenance
+PASS An unbounded lead-in stays with at most one review candidate; later references still need evidence
+PASS A printed page count is removed from stems only with bottom geometry, number region, and matching page
+PASS Named folios use adjoining physical regions and retain the exact OCR line without polluting the question
+PASS A declared material range excludes questions both before and after it
+PASS Formula and table regions are associated without inventing symbols or cells
+PASS Conflicting overlapping layout regions stay in review
+PASS Word paragraph indexing keeps a long native paragraph intact
+{"syntheticPages":500,"questions":1000,"structureMs":41}
+PASS Five hundred streamed pages keep question boundaries and independent source IDs
+PASS Uncertain shared conditions quarantine every dependent question
+PASS Low-confidence diagram labels reduce the confidence of the whole question
+{"success":true,"count":77,"results":["Aligned tables preserve exact OCR cells and leave a low-confidence reading held","Borderless inference refuses prose, choice columns, competing owners, absent cells and damaged ruled grids","Explicit continuation labels and compatible physical headers preserve source links without mutating page tables","Numeric table fusion requires a unique physical gap, corroborating rows, and exact independent crop readings","Missing or wrong labels, changed units, missing pages and shifted columns leave table fragments independent","Competing tables, a new question boundary, or an unverified header prevent continuation","Exactly corroborated local header readings can link tables while preserving pending cells","A complete ruled grid preserves position and refuses broken, merged and colored separator lines","Only a local divider attached to an existing grid crossing can veto the grid","Confirmed missing internal separators recover rectangular row and column spans, with malformed layouts held","An unclassified stacked formula retains review-only source pixels and all original OCR lines","Formula recovery requires unique aligned pieces inside the same question and does not duplicate a proven layout region","The optional raster identity is exclusive to image reads and rejects malformed values","Printed option counts and observed label gaps prevent import from silently dropping choices","A bare choice marker stays in review while original picture choices remain usable","Only ambiguous horizontally aligned options with independent line boxes enter the local recheck","A complete horizontal choice row belongs to the question rather than its circled statements","A scan with ambiguous preceding glyphs shows only C and D and holds A and B for source review","The choice-row rule preserves genuine subquestions and excludes cross-line and cross-page evidence","Positioned PDF whitespace restores a joined parent without stripping a decimal in its stem","Joined numbers need unique bound native evidence, the same text, and adjacent question numbers","Wrapped scoring headings retain all OCR lines and govern unpunctuated question numbers","A wrapped heading never takes an independent title, a question marker or an unclosed continuation","A two-line scored parent keeps its printed rubric evidence and its own subquestions","Split score recovery requires a nearby matching title tail with closing punctuation","Printed type follows the question's own section across pages and refuses incompatible or ambiguous shapes","An isolated unnumbered prompt stays reviewable and a numbered figure caption cannot split the next question","Printed space-separated and separately boxed question numbers use section, alignment and option evidence","A running fill sequence continues across missing headings and closes before a scored heading","Quantities, decimals, chart values, and a lone unproven numeral do not become parent questions","A stacked formula beside the next question never changes the preceding complete choice question","A positioned literal exam-section title can bound an independently matching native question","Native section recovery refuses pseudo headings, wrong positions, lost tokens and raised/lowered components","PDF annotations must be complete, detached and backed by exact paged OCR","Option-mark recovery works across choice counts, graphics and row layouts","Each mark pigment is checked independently against every source crop","Printed fill slots preserve literal OCR and require visible thin rules","A crop can confirm exactly one numbered parent with original readings","Fill detection excludes midline strokes and gaps between numbers","A conflicted page can admit one exact bounded parent without releasing its damaged sibling","An unnumbered next-page figure becomes a reviewable crop, while the following question keeps its own figure","A matching literal caption verifies a standalone next-page diagram, but competing references keep it held","Page-leading image choices, prior-owned figures and layout conflicts never become an orphan attachment","Four labeled graphics attach separately in horizontal and grid reading order, leaving the next question alone","Uncertain graph captions are shown for review and wrong or missing labels never publish","Consecutive Chinese lines form a paragraph while a real vertical gap starts another","One multiline question retains its stem and all horizontal options","Two columns read down the left column before the right column","Three text columns retain every line without lending middle options or a leading table to another question","A fused OCR line across the gutter stays reviewable with its original coordinates","Parallel short stems and options remain pending if a gutter cannot be established","A blocked gutter is uncertain only with independent lanes, including staggered distinct regions","An unresolved leading table keeps its text and marks both neighboring questions for review","Subquestions keep their own option groups","A question continues across pages until the next parent boundary","Headers, footers and instructions remain in source paragraphs and stay outside questions","A side diagram stays attached without turning its labels into a new question","Mathematical symbols and unit token gaps survive paragraph recovery","Shared material has explicit links to its bounded question range","Low-confidence scans are held and raw line coverage is exact","Fragmented punctuation on the same baseline joins its original stem","A diagram label between two text rows does not break a continuous stem","A punctuation-marked horizontal option retains its original label and raw content","Nested numbered and circled subquestions retain a two-level tree","A repeated section title on a new page preserves the unfinished question","Unnumbered question fragments are quarantined with their original anchors","Shared materials and their diagrams keep cross-page provenance","An unbounded lead-in stays with at most one review candidate; later references still need evidence","A printed page count is removed from stems only with bottom geometry, number region, and matching page","Named folios use adjoining physical regions and retain the exact OCR line without polluting the question","A declared material range excludes questions both before and after it","Formula and table regions are associated without inventing symbols or cells","Conflicting overlapping layout regions stay in review","Word paragraph indexing keeps a long native paragraph intact","Five hundred streamed pages keep question boundaries and independent source IDs","Uncertain shared conditions quarantine every dependent question","Low-confidence diagram labels reduce the confidence of the whole question"],"scope":"Synthetic layout/paragraph/question invariants; production integration and natural samples are separate gates"}

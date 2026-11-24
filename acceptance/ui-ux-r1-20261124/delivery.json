@@ -3,12 +3,12 @@
   "package_id": "XIAOZHI_UI_UX_R1_20261124",
   "state": "BLOCKED",
   "baseline_sha": "700143faca7051baca892b50cf5081ff297ec9bb",
-  "verified_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-  "delivered_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "verified_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+  "delivered_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
   "runtime": {
     "kind": "electron",
-    "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-    "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+    "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+    "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
     "launch_path": "D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
     "platform": "win32"
   },
@@ -119,7 +119,9 @@
         "E-CONFIG",
         "E-CONFIG-R",
         "E-MODEL-BUFFER",
-        "E-TRANSPORT"
+        "E-TRANSPORT",
+        "E-CONFIG-LATEST",
+        "E-CONFIG-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -129,7 +131,9 @@
       "evidence_ids": [
         "E-CONFIG",
         "E-INTERFACES",
-        "E-SCOPE"
+        "E-SCOPE",
+        "E-CONFIG-LATEST",
+        "E-CONFIG-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -139,7 +143,9 @@
       "evidence_ids": [
         "E-CONFIG",
         "E-CONFIG-R",
-        "E-SETTINGS-FULL"
+        "E-SETTINGS-FULL",
+        "E-CONFIG-LATEST",
+        "E-CONFIG-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -149,7 +155,9 @@
       "evidence_ids": [
         "E-COMPONENTS",
         "E-PPT-COLD",
-        "E-PPT-R"
+        "E-PPT-R",
+        "E-PPT-LATEST",
+        "E-PPT-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -191,7 +199,9 @@
         "E-PAPER",
         "E-PAPER-R",
         "E-PAPER-COLD",
-        "E-PAPER-COLD-R"
+        "E-PAPER-COLD-R",
+        "E-PAPER-LATEST",
+        "E-PAPER-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -202,7 +212,9 @@
         "E-LIVE",
         "E-PPT-COLD",
         "E-PPT-R",
-        "E-POWERPOINT"
+        "E-POWERPOINT",
+        "E-PPT-LATEST",
+        "E-PPT-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -222,7 +234,9 @@
         "E-PAGES",
         "E-SMOKE",
         "E-CONFIG-R",
-        "E-SCOPE"
+        "E-SCOPE",
+        "E-CONFIG-LATEST",
+        "E-CONFIG-LATEST-R"
       ],
       "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
     },
@@ -265,7 +279,10 @@
         "E-ISOLATION",
         "E-RENDERER",
         "E-DIFF",
-        "E-BUILD"
+        "E-BUILD",
+        "E-INTEGRATED-BUILD",
+        "E-INTEGRATED-RENDERER",
+        "E-INTEGRATED-TABLE"
       ],
       "note": "BLOCKED：当前build/261组件/9样式/17专项及其他门禁实际运行；原生prompt-input五项旧基线指纹失败需基线责任方核对。设置综合41项通过但原捕获器整体失败；net.fetch专项单独通过，未伪造全套exit0。"
     },
@@ -281,12 +298,12 @@
     },
     {
       "id": "UIR1-27",
-      "status": "PASS",
+      "status": "BLOCKED",
       "evidence_ids": [
         "E-WINDOW",
         "E-SOURCE-REMOTE"
       ],
-      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+      "note": "最终证据提交待正常push后更新；实际最新窗口已启动。"
     },
     {
       "id": "UIR1-28",
@@ -312,11 +329,11 @@
     {
       "id": "E-SCOPE",
       "path": "evidence/integration-scope-proof.json",
-      "sha256": "2d881971d7d23f04e048173d31d81177e9547d891da1ee97ba93a4df7e6aeca5",
+      "sha256": "30dd10c315c67310a1dd628e8553c4563eb482be6bdb76a08813229372649c64",
       "layer": "git",
       "phase": "verification",
-      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
       "note": "本轮与协作者边界；旧证据有效继承逐文件证明"
     },
     {
@@ -372,11 +389,11 @@
     {
       "id": "E-WINDOW",
       "path": "evidence/review-window.json",
-      "sha256": "74d88c028ebe03bbba03a0e447612d367c39cddaf8442e93ad9debe77638d069",
+      "sha256": "f9c0ad5f8d247596276ecb49b7ef9024da7abf1a054b9fe5fe3de4f8afd4232d",
       "layer": "electron",
       "phase": "verification",
-      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
-      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
       "note": "实际可见Windows Electron；独立虚构验收数据，保留日常目录"
     },
     {
@@ -602,7 +619,7 @@
     {
       "id": "E-SMOKE",
       "path": "logs/smoke-main-final.log",
-      "sha256": "e2de3f9a9081cf88bac572dc6a33736bbba70d17c59e71a9caa6f7a9e9027d95",
+      "sha256": "6706552e75d5807f05540cf3b72a67f2a9c3ccfb1873b3c7397084de1e9bec98",
       "layer": "electron",
       "phase": "verification",
       "source_sha": "7a17b31254acaae020083d843d1221968a71e6bd",
@@ -672,7 +689,7 @@
     {
       "id": "E-BUILD",
       "path": "logs/integrated-r1-last-build.log",
-      "sha256": "2918d98b36b61612440b1dc88c39d579037e430ed723d712aa11f3180333a7d0",
+      "sha256": "3783000b4c2263903bc6fb1de7245a3ff316b50817284387d912dd7013a61d8e",
       "layer": "static",
       "phase": "verification",
       "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
@@ -688,6 +705,106 @@
       "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
       "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
       "note": "git diff --check exit0；生成物与换行警告单列"
+    },
+    {
+      "id": "E-INTEGRATED-BUILD",
+      "path": "logs/build-after-11ca.log",
+      "sha256": "f88abc24fb81670815a880ff36334c1bdc6897dcfb39d2fcd194889ef4f83160",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最终ade实际构建含tsc；旧6f完整测试继承按scope证明"
+    },
+    {
+      "id": "E-INTEGRATED-RENDERER",
+      "path": "logs/renderer-after-11ca.log",
+      "sha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "当前ade 261/261，exit0"
+    },
+    {
+      "id": "E-INTEGRATED-TABLE",
+      "path": "logs/table-boundaries-after-11ca.log",
+      "sha256": "2294f919d80d36b5170d9be96ac8265ddfcdde55bf102ebf5ad597ddcddeff1c",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "当前协作者受影响结构77项，exit0；不冒称自然样本整库"
+    },
+    {
+      "id": "E-INTEGRATED-CHECKS",
+      "path": "evidence/checks-after-11ca.json",
+      "sha256": "635efa6349fd68f16d95c0d032df02d843139c149e777fe6b499b4c619ecd7ff",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "实际三个命令退出码"
+    },
+    {
+      "id": "E-CONFIG-LATEST",
+      "path": "evidence/settings-HfKR6v/report.json",
+      "sha256": "dd14dfbef6f2764af1ca92daaf0945c314a67787ab527a2d81ebff247266acf1",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最新配置10项实际宿主与冷启"
+    },
+    {
+      "id": "E-CONFIG-LATEST-R",
+      "path": "evidence/settings-HfKR6v/report.json",
+      "sha256": "dd14dfbef6f2764af1ca92daaf0945c314a67787ab527a2d81ebff247266acf1",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最新真实CAS/保存/配置/草稿冷启"
+    },
+    {
+      "id": "E-PPT-LATEST",
+      "path": "evidence/ppt-readback-YCcTtj/report.json",
+      "sha256": "80b4aa2a707d432a426ac20cb5a9b7a11371fd16b665b39f9577974ab9401105",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最新构建实际原PPT预览/原对话往返及任务三尺寸"
+    },
+    {
+      "id": "E-PPT-LATEST-R",
+      "path": "evidence/ppt-readback-YCcTtj/report.json",
+      "sha256": "80b4aa2a707d432a426ac20cb5a9b7a11371fd16b665b39f9577974ab9401105",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最新ZIP/XML/hash原文件"
+    },
+    {
+      "id": "E-PAPER-LATEST",
+      "path": "evidence/paper-readback-S8MwGn/report.json",
+      "sha256": "593f3bd2700af2b5d021c643899cffdffa3a92b7fbd946a1ca03e514cf69ecf8",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "最新构建同题篮/预览/原会话"
+    },
+    {
+      "id": "E-PAPER-LATEST-R",
+      "path": "evidence/paper-readback-S8MwGn/report.json",
+      "sha256": "593f3bd2700af2b5d021c643899cffdffa3a92b7fbd946a1ca03e514cf69ecf8",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "ade49eb39eb2c2b22bc6eda6e165dfd780b597c2",
+      "build_fingerprint": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+      "note": "原source question/实例/hash保持"
     }
   ],
   "defects": [
@@ -851,8 +968,8 @@
   },
   "delivery": {
     "main_integration": "PASS",
-    "remote_contains_commit": "PASS",
+    "remote_contains_commit": "NOT_RUN",
     "final_delta": "evidence_only",
-    "note": "正式源码与实测out固定为6f57863/9bd597bf；后续只提交QA、报告和恢复资料，源码已普通推送main。最终证据提交的SHA与远端包含检查见本地final-delivery-receipt.json及最终回复；不尝试在提交中写入自身SHA。"
+    "note": "实测源码ade49eb/构建e946688；已合入11ca45f/c5984c7并复验受影响项。待最终证据提交正常push后记录远端包含；之后只有证据/QA/文档差异。"
   }
 }

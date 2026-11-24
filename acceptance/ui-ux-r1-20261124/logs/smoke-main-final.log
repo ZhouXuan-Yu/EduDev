@@ -15,19 +15,19 @@ transforming...
 "readStoredCredential" is imported from external module "@earendil-works/pi-coding-agent" but never used in "src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js".
 ✓ 1467 modules transformed.
 rendering chunks...
-[plugin vite:reporter] 
+[plugin vite:reporter]
 (!) D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/document-host.ts is dynamically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/production-host.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/workspace-files.ts but also statically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/material-repository.ts, dynamic import will not move module into another chunk.
 
-[plugin vite:reporter] 
+[plugin vite:reporter]
 (!) D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/shared/original-multi-review.ts is dynamically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/production-host.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/production-host.ts but also statically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/education/original-multi-repository.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/education/original-question-coordinator.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/education/original-question-repository.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/education/question-review-repository.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/shared/original-question-batch.ts, dynamic import will not move module into another chunk.
 
-[plugin vite:reporter] 
+[plugin vite:reporter]
 (!) D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/word-pdf-runtime.ts is dynamically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/material-structure-runtime.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/db.ts but also statically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/material-word-ipc.ts, dynamic import will not move module into another chunk.
 
-[plugin vite:reporter] 
+[plugin vite:reporter]
 (!) D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/model-settings.ts is dynamically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/index.ts but also statically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/material-ai-ipc.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/model-settings-api.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/production-host.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/resolved-agent-config.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/web-api.ts, dynamic import will not move module into another chunk.
 
-[plugin vite:reporter] 
+[plugin vite:reporter]
 (!) D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/image-host.ts is dynamically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/attachment-coordinator.ts but also statically imported by D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/assets/material-ai-ipc.ts, D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/src/main/xiaozhi-agent/public-image-runtime.ts, dynamic import will not move module into another chunk.
 
 out/main/context-service-D4oP7gk0.js                    1.26 kB

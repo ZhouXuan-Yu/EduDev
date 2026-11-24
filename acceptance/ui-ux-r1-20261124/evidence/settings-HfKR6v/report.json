@@ -1,0 +1,154 @@
+{
+  "success": true,
+  "source": "755335db2ba2b3a64b5124d733295ff3340df262deb4a36e68a6e17c1fe2e909",
+  "build": "e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3",
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\settings-HfKR6v",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\settings-HfKR6v\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\settings-HfKR6v\\profile",
+  "checks": [
+    {
+      "name": "unsaved model input has an explicit dirty notice and prevents category loss",
+      "pass": true
+    },
+    {
+      "name": "explicit discard clears only the local model form",
+      "pass": true
+    },
+    {
+      "name": "existing queue preference saves the original steer enum immediately",
+      "pass": true
+    },
+    {
+      "name": "teacher profile is saved through the original host and read back",
+      "pass": true
+    },
+    {
+      "name": "real revision conflict is visible and retains unsaved teacher input",
+      "pass": true
+    },
+    {
+      "name": "conflict recovery reloads the real concurrent value",
+      "pass": true
+    },
+    {
+      "name": "settings save and return do not remount or clear the conversation draft",
+      "pass": true
+    },
+    {
+      "name": "existing recent sessions are not silently adopted as current permissions scope",
+      "pass": true
+    },
+    {
+      "name": "cold restart retains profile, queue enum and original conversation draft",
+      "pass": true
+    },
+    {
+      "name": "Select opens with keyboard and Escape restores trigger focus",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "readback": {
+    "teacherSaved": {
+      "revision": 1,
+      "profile": {
+        "subject": "物理",
+        "grade": "八年级",
+        "textbook": "UI验收教材"
+      },
+      "use": {},
+      "updatedAt": "2026-11-24T19:26:06.721Z",
+      "preference": {
+        "schemaVersion": "xiaozhi.teacher-preference.v1",
+        "revision": 0,
+        "values": {}
+      },
+      "preferenceUpdatedAt": null
+    },
+    "scope": {
+      "sessionCount": 1,
+      "currentPreference": null,
+      "workspaceSelectorAbsent": true
+    },
+    "afterRestart": {
+      "revision": 2,
+      "profile": {
+        "subject": "物理",
+        "grade": "八年级",
+        "textbook": "UI验收并发修改的教材"
+      },
+      "use": {},
+      "updatedAt": "2026-11-24T19:26:06.864Z",
+      "preference": {
+        "schemaVersion": "xiaozhi.teacher-preference.v1",
+        "revision": 0,
+        "values": {}
+      },
+      "preferenceUpdatedAt": null
+    }
+  },
+  "scope": "Production Electron, original typed IPC and persistent host. Fictional local teacher settings. No provider requests. Concurrent-write case uses a real typed host write to the isolated profile, not a mocked response.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\settings-HfKR6v\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\settings-HfKR6v\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/pi-session-b1fjezoi.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "displays": [
+    {
+      "id": 3860943202,
+      "bounds": {
+        "x": 1707,
+        "y": 0,
+        "width": 2560,
+        "height": 1440
+      },
+      "workArea": {
+        "x": 1707,
+        "y": 0,
+        "width": 2560,
+        "height": 1392
+      },
+      "scaleFactor": 1
+    },
+    {
+      "id": 3090968599,
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1707,
+        "height": 1067
+      },
+      "workArea": {
+        "x": 0,
+        "y": 0,
+        "width": 1707,
+        "height": 1019
+      },
+      "scaleFactor": 1.5
+    }
+  ],
+  "httpAttempts": []
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "file": "logs/integrated-r1-last-build.log",
+    "originalCommit": "b855132",
+    "rawSha256": "2918d98b36b61612440b1dc88c39d579037e430ed723d712aa11f3180333a7d0",
+    "archive": "history/raw-logs-b855132/integrated-r1-last-build.log.gz",
+    "publishedSha256": "3783000b4c2263903bc6fb1de7245a3ff316b50817284387d912dd7013a61d8e",
+    "change": "Trailing whitespace and space-before-tab only; textual observations unchanged"
+  },
+  {
+    "file": "logs/smoke-main-final.log",
+    "originalCommit": "b855132",
+    "rawSha256": "e2de3f9a9081cf88bac572dc6a33736bbba70d17c59e71a9caa6f7a9e9027d95",
+    "archive": "history/raw-logs-b855132/smoke-main-final.log.gz",
+    "publishedSha256": "6706552e75d5807f05540cf3b72a67f2a9c3ccfb1873b3c7397084de1e9bec98",
+    "change": "Trailing whitespace and space-before-tab only; textual observations unchanged"
+  },
+  {
+    "file": "logs/source-main-push-last.log",
+    "originalCommit": "b855132",
+    "rawSha256": "5520ee3a877fae194c9b1ae3f4972180817e7da8ac3667573cba1052922d8a68",
+    "archive": "history/raw-logs-b855132/source-main-push-last.log.gz",
+    "publishedSha256": "600f1d0ffcd0b248273cbe1168c7513d670f76360dc636914fd658665af39fe8",
+    "change": "Trailing whitespace and space-before-tab only; textual observations unchanged"
+  },
+  {
+    "file": "logs/build-after-11ca.log",
+    "rawSha256": "44050402efccd94dfaf6b7b9510117199924b6d79b89563198c3ea18c3faa873",
+    "archive": "history/raw-logs-b855132/build-after-11ca.log.gz",
+    "publishedSha256": "f88abc24fb81670815a880ff36334c1bdc6897dcfb39d2fcd194889ef4f83160",
+    "change": "Whitespace-only publication normalization; raw bytes archived"
+  }
+]

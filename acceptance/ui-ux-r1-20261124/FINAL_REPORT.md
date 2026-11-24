@@ -1,6 +1,6 @@
 # 小智 UI / UX R1 交付报告
 
-结论：**BLOCKED**。包编号 XIAOZHI_UI_UX_R1_20261124。28项：23 PASS、1 FAIL（状态证据矩阵不足）、4 BLOCKED。**没有达到 UI_R1_DONE，不将这份报告当作 Goal 已完成。** 教师试用 NOT_RUN。
+结论：**BLOCKED**。包编号 XIAOZHI_UI_UX_R1_20261124。28项：22 PASS、1 FAIL（状态证据矩阵不足）、5 BLOCKED（含本次最终推送待核对）。**没有达到 UI_R1_DONE，不将这份报告当作 Goal 已完成。** 教师试用 NOT_RUN。
 
 ## 本次实际交付
 
@@ -11,12 +11,18 @@ OfficeComposer、工具栏和弹层未重做；消息追加与唯一待处理面
 ## 代码、构建与窗口身份
 
 - 源码根：D:/WorkProject/EduProject-ui-ux-r1-20261125；分支 codex/ui-ux-r1-20261125。
-- Phase0主线：700143faca7051baca892b50cf5081ff297ec9bb；最后实测源码：6f57863f8ffe04b4201248d51175c673e09b67b5。
-- 最终out指纹：9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd，481文件；renderer index-Cxb7xwg_.js。
+- Phase0主线：700143faca7051baca892b50cf5081ff297ec9bb；最后实测源码：ade49eb39eb2c2b22bc6eda6e165dfd780b597c2；主体UI证据基线6f57863仍保留原SHA。
+- 最终out指纹：e946688128c158f03b9b9ad297e07d69651721ea1e42a06ca7c53d3fb83625e3，481文件；renderer index-CxvRGGK5.js。
 - 正常合入协作者扫描表格提交，包括de2bb12、e7ac890；不回滚、不强推。源码6f57863已正常推到main且当时远端同SHA，证据 source-main-push-last.json。后续证据/脚本提交与远端包含关系见 final-delivery-receipt.json。
-- 已启动实际Electron窗口「小智 · UI R1 验收（独立测试数据）」，PID76252，原生窗口也由sky.list_windows/get_window_state核对；启动和可见性见 evidence/review-window.json、review-window.png。
+- 已启动实际Electron窗口「小智 · UI R1 验收（独立测试数据）」，PID76516，原生窗口也由sky.list_windows/get_window_state核对；启动和可见性见 evidence/review-window.json、review-window.png。
 - 启动命令：在 apps/desktop 执行 node scripts/ui-ux-r1-review-window.mjs。直接打开已验过的out，不重新构建旧目录或只启动浏览器。
 - 窗口使用本轮独立虚构资料、2道本地数学题和真实模型PPT，不是D盘日常资料根；Pi与原服务真实运行。D:/WorkProject/EduProject 原有未提交内容和其他AI工作树未覆盖。
+
+## 最后一次主线整合的复验
+
+已正常合入11ca45f/c5984c7，得到ade49eb；新增的生产改动来自原负责方的跨列数值复读，Renderer仅增加原表格的来源状态说明，未改本轮布局CSS。已再次运行build、261/261 Renderer、77项结构边界和表格视觉边界，三个门禁退出0；当前构建配置真实保存/冲突/冷启10项、题篮冷启动返回3项和PPT冷读4项均退出0。日志为 *-after-11ca.log，检查退出码见 checks-after-11ca.json / runtime-after-11ca.json。没有将6f的完整smoke或41项设置记录改标签冒充ade重新执行。
+
+当前窗口已切换到ade/e946688实际构建。旧窗口已正常关闭后才重建，避免混合资源。原始日志空白引起的证据提交检查失败保留在b855132及raw-logs归档；发布副本仅规范尾随空白，未改测试观察与断言，当前diff检查0。
 
 ## 教师可见效果及截图
 
@@ -70,7 +76,7 @@ OfficeComposer、工具栏和弹层未重做；消息追加与唯一待处理面
 
 完整文件与用途见 records/CHANGED_FILES.csv。关键生产文件：student-settings-layout.module.css（就近布局与状态）、AppSelect/AppNativeSelect（复用组件与原事件）、PiModelSettings（dirty/失败恢复）、PiSettingsWorkspace（显式当前scope/错误状态）、TaskOverviewCard/PiRecoveryOverview（任务层级）、QuestionNotebookWorkspace/TeachingBookWorkspace/MaterialsWorkspace（真实空与错误）、PiOfficeArtifactCard（busy释放）、workbench-home.css（窄屏可达）。业务模型、原权限和持久化策略未替换。
 
-本轮代码提交：a438902、6cfa15e、9c3c414、c2d93a7、6ec9330、7cc4ddd；主线合并提交保留他人工作，最终实测6f57863。共享main回滚应评审后按反向依赖revert本轮具体提交；**不直接revert带入其他团队的合并提交，不reset、不强推、不删数据**。证据提交单独revert不影响生产功能。
+本轮代码提交：a438902、6cfa15e、9c3c414、c2d93a7、6ec9330、7cc4ddd；主线合并提交保留他人工作，最终实测ade49eb。共享main回滚应评审后按反向依赖revert本轮具体提交；**不直接revert带入其他团队的合并提交，不reset、不强推、不删数据**。证据提交单独revert不影响生产功能。
 
 用户可在当前窗口：①查看设置并Tab移动分类焦点；②输入模型字段后切页，确认脏状态守卫/放弃；③在界面偏好修改追加时机再返回；④看我的任务并展开约束；⑤从本地题来源返回原对话；⑥打开已生成PPT并返回，确认草稿不丢。此窗口均为虚构验收资料，日常真实数据继续使用D盘原入口；原目录有并行脏改动，未替用户重启/覆盖。
 
