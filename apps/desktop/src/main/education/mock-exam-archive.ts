@@ -14,8 +14,16 @@ import type {createMockExamState} from './mock-exam-state';
 import {mockExamArchiveSummary,planMockExamArchive} from './mock-exam-archive-plan';
 
 const hash=(value:string|Buffer)=>createHash('sha256').update(value).digest('hex');
-const originalFiles=(plan:MockExamArchivePreview)=>plan.entries.flatMap(row=>[row.paper,row.answer]).flatMap(item=>
-  item.path&&item.resourceId&&item.sha256?[{path:item.path,id:item.resourceId,sha256:item.sha256}]:[]);
+function originalFiles(plan:MockExamArchivePreview){
+  const files=new Map<string,{path:string;id:string;sha256:string}>();
+  for(const {paper,answer} of plan.entries)for(const {path,resourceId,sha256} of [paper,answer]){
+    if(!path||!resourceId||!sha256)continue;
+    const prior=files.get(path);
+    if(prior&&(prior.id!==resourceId||prior.sha256!==sha256))throw Error('configuration');
+    files.set(path,{path,id:resourceId,sha256});
+  }
+  return [...files.values()];
+}
 const errors:Record<string,string>={...mockExamErrors,not_confirmed:'请先确认模考目录。',
   no_permitted_originals:'没有可以打包的试卷。请核对已收录试卷的本地使用许可。',
   too_large:'原件包超出 64 MB。请按学科、年级或轮次拆分目录后重试。',

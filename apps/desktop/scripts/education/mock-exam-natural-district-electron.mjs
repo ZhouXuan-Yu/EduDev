@@ -7,6 +7,7 @@ import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 import {openTeachingFiles,productEntry} from '../product-navigation.mjs';
 import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
+import {readMockExamZip} from './read-mock-exam-zip.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(root);
@@ -25,6 +26,7 @@ const files=expected.map(({name,sha256})=>{
 });
 const report={ok:false,output,mainSha256:sha(main),paidRequests:0,checks:[],expected};
 const tableReview=process.argv.includes('--table-review');
+const archive=process.argv.includes('--zip-archive');
 let app,page;
 function sql(query){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true,timeout:5000});
@@ -158,11 +160,15 @@ try{
   check('Fengxian is matched to the printed 2026 exam month and physical subject; the school-only scan is outside the district scope.');
 
   const confirm=card.getByTestId('mock-exam-confirm');
+  if(archive){
+    await row.getByTestId('mock-exam-row-edit').click();
+    await row.getByTestId('mock-exam-permission').selectOption('local_only');
+  }
   await until('first Run releases catalogue confirmation',()=>confirm.isEnabled());
   await confirm.click();
   const confirmed=await until('confirmed current catalogue',()=>{const next=snapshot();return next?.state==='confirmed'&&next;});
   assert.equal(confirmed.revision,2);
-  check('Teacher confirms the actual original with missing answer and use permission retained.');
+  check('Teacher confirms the actual original and retains its missing-answer classification.');
   await ask(2025);
   const requests=await until('both catalogue replies',async()=>{const current=await scanRead();return current.receipts.length===2&&current;});
   assert(requests.receipts[0].success);assert.equal(requests.receipts[1].success,false);
@@ -183,6 +189,27 @@ try{
   assert.deepEqual(snapshot(),confirmed);
   await page.screenshot({path:path.join(output,'district-cold-1920.png')});
   check('Independent workbench opens the confirmed version after restart with no model replay.');
+  if(archive){
+    const detail=page.getByTestId('mock-exam-detail');
+    await detail.getByTestId('mock-exam-archive-preview').click();
+    const plan=detail.getByTestId('mock-exam-archive-plan');
+    await plan.getByText(/1 份试卷 · 0 份独立答案册/u).waitFor();
+    await plan.getByTestId('mock-exam-archive-save').click();
+    await detail.getByTestId('mock-exam-archive-saved').waitFor();
+    const [artifact]=sql("SELECT id,status,content_hash FROM mock_exam_archives");
+    assert.equal(artifact.status,'exported');
+    const file=(await page.evaluate(()=>window.omniEdu.listDocumentArtifacts())).find(item=>item.id===artifact.id);
+    const saved=readMockExamZip(file.filePath);
+    assert.equal(sha(file.filePath),artifact.content_hash);
+    assert.equal(saved.manifest.entries.length,1);
+    assert.equal(saved.manifest.entries[0].answer.omission,'answer_missing');
+    assert.equal(saved.files[saved.manifest.entries[0].paper.path],expected[0].sha256);
+    assert.equal(Object.keys(saved.files).length,3);
+    assert.equal((await scanRead()).requests,0);
+    assert.deepEqual(snapshot(),confirmed);
+    report.archive={path:file.filePath,sha256:artifact.content_hash,files:saved.files,answerOmission:'answer_missing'};
+    check('The authorized natural scan is packaged byte-identically from the cold confirmed catalogue with a missing-answer entry.');
+  }
   if(tableReview){
     await checkTableUI(district.id,'cold-1920');
     assert.equal(sql('SELECT count(*) AS n FROM material_structure_reviews')[0].n,0);

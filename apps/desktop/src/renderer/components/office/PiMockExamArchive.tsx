@@ -5,7 +5,7 @@ import type {MockExamCatalogSummary} from '../../../shared/mock-exam-compilation
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
-const decision=(item:MockExamArchiveItem)=>item.path?'入包':item.omission?mockExamArchiveOmissions[item.omission]:'待核对';
+const decision=(item:MockExamArchiveItem)=>item.path?(item.shared?'共用文件，入包一次':'入包'):item.omission?mockExamArchiveOmissions[item.omission]:'待核对';
 
 export function PiMockExamArchive({catalog,sessionId}:{catalog:MockExamCatalogSummary;sessionId:string}){
   const navigation=useDesktopNavigation(),lock=useRef(false),live=useRef(true);

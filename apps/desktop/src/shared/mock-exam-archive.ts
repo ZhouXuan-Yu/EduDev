@@ -7,7 +7,7 @@ export type MockExamArchiveRequest={schemaVersion:typeof MOCK_EXAM_ARCHIVE_SCHEM
 export type MockExamArchiveConfirm=MockExamArchiveRequest&{previewDigest:string};
 export type SavedMockExamArchive={artifactId:string;fileName:string;fileSize:number;sha256:string};
 export type MockExamArchiveOmission='not_selected'|'permission_unknown'|'permission_denied'|'unsupported'|'paper_omitted'|'answer_missing'|'answer_stale'|'answer_embedded';
-export type MockExamArchiveItem={title:string;resourceId?:string;sha256?:string;path?:string;omission?:MockExamArchiveOmission};
+export type MockExamArchiveItem={title:string;resourceId?:string;sha256?:string;path?:string;shared?:true;omission?:MockExamArchiveOmission};
 export type MockExamArchivePreview={
   schemaVersion:typeof MOCK_EXAM_ARCHIVE_SCHEMA;catalogId:string;revision:number;digest:string;title:string;previewDigest:string;
   entries:{district:string;round:string;paper:MockExamArchiveItem;answer:MockExamArchiveItem}[];

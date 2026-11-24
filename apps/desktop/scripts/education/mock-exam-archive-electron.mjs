@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -7,6 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 import {openTeachingFiles,productEntry} from '../product-navigation.mjs';
+import {readMockExamZip} from './read-mock-exam-zip.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT,fixture=process.env.OMNI_EDU_MOCK_EXAM_FIXTURE;
 assert(root&&fixture);
@@ -46,17 +46,26 @@ async function launch(cold=false){
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60_000});
   await app.evaluate(({net},{catalogId,cold})=>{
-    const wire=globalThis.mockArchiveTest={requests:[],errors:[],running:false};
+    const wire=globalThis.mockArchiveTest={requests:[],compactions:0,errors:[],running:false};
     net.fetch=async(input,init)=>{
       const url=new URL(typeof input==='string'?input:input.url);
       if(url.origin==='https://api.deepseek.com'&&url.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',
         data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768}]}),{headers:{'content-type':'application/json'}});
       try{
         if(cold||!wire.running||url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')throw Error('Unexpected external request');
-        const body=JSON.parse(init.body),list=body.tools.map(tool=>tool.function.name),index=wire.requests.length;
+        const body=JSON.parse(init.body),list=(body.tools??[]).map(tool=>tool.function.name),index=wire.requests.length;
+        const chunk=(value,finish_reason=null)=>'data: '+JSON.stringify({id:'mock-exam-archive',object:'chat.completion.chunk',
+          created:0,model:body.model,choices:[{index:0,delta:value,finish_reason}]})+'\n\n';
+        if(!list.length&&body.messages.some(message=>message.role==='system'&&
+           String(message.content).startsWith('You are a context summarization assistant.'))){
+          if(++wire.compactions>2)throw Error('Bounded fixture compaction exceeded');
+          const content='# Goal\n核对已确认模考目录的原件包。\n# Completed\n试卷与答案册许可分别保存。\n# Next\n读取当前目录供老师确认。';
+          return new Response(chunk({role:'assistant',content})+chunk({},'stop')+'data: [DONE]\n\n',
+            {headers:{'content-type':'text/event-stream'}});
+        }
         const read='education_read_mock_exam_for_export';
         if(!list.includes(read)||list.includes('education_export_mock_exam_catalog')||list.includes('education_build_mock_exam_catalog'))
-          throw Error('Unexpected tool route for archive');
+          throw Error('Unexpected tool route for archive: '+JSON.stringify(list));
         let delta,finish;
         if(!index){
           delta={tool_calls:[{index:0,id:'archive-catalog-read',type:'function',function:{name:read,arguments:JSON.stringify({catalogId})}}]};
@@ -69,8 +78,6 @@ async function launch(cold=false){
           delta={content:'已核对当前目录。请打开模考目录卡，预览后确认保存原件 ZIP。'};
           finish='stop';wire.requests.push({receipt});
         }
-        const chunk=(value,finish_reason=null)=>'data: '+JSON.stringify({id:'mock-exam-archive',object:'chat.completion.chunk',
-          created:0,model:body.model,choices:[{index:0,delta:value,finish_reason}]})+'\n\n';
         return new Response(chunk({role:'assistant',content:''})+chunk(delta)+chunk({},finish)+'data: [DONE]\n\n',
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){wire.errors.push(String(error));throw error;}
@@ -93,18 +100,6 @@ async function preview(){
   const pane=detail().getByTestId('mock-exam-archive-plan');
   await pane.waitFor();
   return pane;
-}
-function readZip(filename){
-  const code=[
-    'import json,sys,zipfile,hashlib',
-    'with zipfile.ZipFile(sys.argv[1]) as z:',
-    ' assert z.testzip() is None',
-    " items={n:hashlib.sha256(z.read(n)).hexdigest() for n in z.namelist()}",
-    " print(json.dumps({'files':items,'manifest':json.loads(z.read('清单.json'))},ensure_ascii=True))",
-  ].join('\n');
-  const result=spawnSync('python',['-c',code,filename],{encoding:'utf8'});
-  assert.equal(result.status,0,result.stderr);
-  return JSON.parse(result.stdout);
 }
 
 try{
@@ -153,7 +148,7 @@ try{
   const artifact=(await page.evaluate(()=>window.omniEdu.listDocumentArtifacts())).find(item=>item.id===row.id);
   assert.equal(artifact.type,'zip');assert.equal(artifact.mockExamSource.id,catalogId);
   assert.equal(sha(artifact.filePath),row.content_hash);
-  const archive=readZip(artifact.filePath),manifest=archive.manifest;
+  const archive=readMockExamZip(artifact.filePath),manifest=archive.manifest;
   assert.equal(manifest.revision,current.revision);
   assert.equal(manifest.digest,current.digest);
   assert.equal(Object.keys(archive.files).length,4);
@@ -180,6 +175,7 @@ try{
   await until(async()=>await app.evaluate(()=>globalThis.mockArchiveTest.requests.length===2||globalThis.mockArchiveTest.errors.length>0));
   const wire=await app.evaluate(()=>globalThis.mockArchiveTest);
   assert.deepEqual(wire.errors,[]);assert.equal(wire.requests[1].receipt.catalogId,catalogId);
+  report.compactions=wire.compactions;
   assert.equal(archives().length,1);
   check('Natural chat routes to the verified archive preview, without an autonomous write or ordinary document export');
 

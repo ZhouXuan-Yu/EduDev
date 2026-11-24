@@ -16,6 +16,7 @@ function archivePath(folder:string,ordinal:number,title:string){
 export function planMockExamArchive(catalog:MockExamCatalog):MockExamArchivePreview{
   const {summary}=catalog;
   if(summary.state!=='confirmed')throw Error('not_confirmed');
+  const answerFiles=new Map<string,{path:string;items:MockExamArchiveItem[]}>();
   const entries=catalog.entries.map((entry,index)=>{
     const district=entry.metadata.district??'区待核对',round=entry.metadata.round??'轮次待核对';
     const paper:MockExamArchiveItem={title:entry.title,resourceId:entry.resourceId,sha256:entry.version};
@@ -33,14 +34,23 @@ export function planMockExamArchive(catalog:MockExamCatalog):MockExamArchivePrev
       const omission=permissionOmission(choice);
       if(!paper.path)answer.omission='paper_omitted';
       else if(omission)answer.omission=omission;
-      else if(answerPath&&a.resourceId&&a.version)answer.path=answerPath;
+      else if(answerPath&&a.resourceId&&a.version){
+        answer.path=answerPath;
+        const identity=a.resourceId+'\0'+a.version;
+        const existing=answerFiles.get(identity);
+        if(existing)existing.items.push(answer);
+        else answerFiles.set(identity,{path:archivePath('答案册/共用',index,answer.title)!,items:[answer]});
+      }
       else answer.omission='unsupported';
     }else if(a.state==='embedded')answer.omission=paper.path?'answer_embedded':'paper_omitted';
     else answer.omission=a.state==='stale'?'answer_stale':'answer_missing';
     return {district,round,paper,answer};
   });
+  for(const {path,items} of answerFiles.values())if(items.length>1){
+    for(const item of items){item.path=path;item.shared=true;}
+  }
   const source={schemaVersion:MOCK_EXAM_ARCHIVE_SCHEMA,catalogId:summary.id,revision:summary.revision,digest:summary.digest,title:summary.title,entries,
-    paperCount:entries.filter(row=>row.paper.path).length,answerCount:entries.filter(row=>row.answer.path).length,
+    paperCount:entries.filter(row=>row.paper.path).length,answerCount:answerFiles.size,
     embeddedCount:entries.filter(row=>row.answer.omission==='answer_embedded').length} as const;
   return {...source,previewDigest:protocolHash(source)};
 }
