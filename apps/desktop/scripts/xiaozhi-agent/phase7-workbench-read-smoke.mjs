@@ -4,9 +4,9 @@ import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {randomUUID, createHash} from 'node:crypto';
-import sqlite3 from 'sqlite3';
 import {openFixture} from './phase6-state-foundation-worker.mjs';
 const {readWorkbenchSnapshot} = await import('../../src/main/xiaozhi-agent/workbench-read.ts');
+const {openSqlite} = await import('../../src/main/sqlite-connections.ts');
 const {createWorkbenchSummary} = await import('../../src/main/xiaozhi-agent/workbench-summary.ts');
 const {createTaskState} = await import('../../src/main/xiaozhi-agent/tasks/task-state.ts');
 const {createPiPersistentState} = await import('../../src/main/xiaozhi-agent/persistent-state.ts');
@@ -21,14 +21,13 @@ const report = {success: false, root, paidCalls: 0, checks: [], opened: 0, close
   boundary: 'Actual sqlite3 READONLY handle/query_only/BEGIN. Original Task coordinator/Journal, Permission request/transition, legacy state, Registry and Acquisition writers seed owned synthetic metadata. No Host, guest, network or UI acceptance.'};
 const save = () => fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(report, null, 2));
 const f = await openFixture(root); let closed = false;
-const ro = action => readWorkbenchSnapshot(() => new Promise((resolve, reject) => {
-  const database = new sqlite3.Database(f.file, sqlite3.OPEN_READONLY | sqlite3.OPEN_FULLMUTEX, error => {
-    if (error) return reject(error); report.opened++;
-    const original = database.close.bind(database);
-    database.close = callback => original(error => {if (!error) report.closed++; callback(error);});
-    resolve(database);
-  });
-}), action);
+const ro = action => readWorkbenchSnapshot(async () => {
+  const database = await openSqlite(f.file,'liveRead');
+  report.opened++;
+  const original = database.close.bind(database);
+  database.close = callback => original(error => {if (!error) report.closed++; callback(error);});
+  return database;
+}, action);
 const summary = createWorkbenchSummary({read: ro});
 const query = async input => {const value = await summary({schemaVersion: 1, ...input}); assert(value.ok, JSON.stringify(value)); return value.value;};
 async function check(id, action) {try {const detail = await action(); report.checks.push({id, pass: true, detail});}
