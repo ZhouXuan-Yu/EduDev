@@ -125,7 +125,7 @@ try{
     const layouts=sql(`SELECT r.original_file_name,j.engine,p.page,json_extract(p.body_json,'$.tableSources') tables
       FROM material_structure_pages p JOIN material_structure_jobs j ON j.generation=p.generation
       JOIN teacher_resources r ON r.id=j.resource_id WHERE p.page IN (3,4,6) ORDER BY r.original_file_name,p.page`);
-    assert(layouts.every(row=>row.engine==='layout-paragraph-question.v24'));
+    assert(layouts.every(row=>row.engine==='layout-paragraph-question.v25'));
     const grids=(file,num)=>JSON.parse(layouts.find(row=>row.original_file_name===file&&row.page===num).tables??'[]');
     const [pictureTable]=grids(expected[0].name,4).filter(table=>table.rows.length===4);
     assert.deepEqual(pictureTable.rows[1].map(cell=>cell.text),['物距/cm','22.5','30.0','60.0']);

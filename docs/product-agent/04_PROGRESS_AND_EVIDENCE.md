@@ -2,6 +2,12 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 合并单元格的本地结构核对
+
+扫描结构 v25 在已知网格中找相连的分隔线，区分清晰的缺线和残留笔画，只有无内部边线的矩形连通区域才能生成跨行、跨列。每个原 OCR 读数只归一个单元格，原图保持可查看。短断线、开外框和非矩形合并继续保留核对路径。
+
+同一合成源的 Electron 输入、识别与冷启显示，v24 没有合并网格，v25 显示 7 个物理格，保留跨行和跨列各一处及 4 个数值。证据根 `D:/WorkProject/EduProject/acceptance/D3-20261125/merged-table`。合并表格的线上单格回查、跨页拼表及无框表继续待做。
+
 ## 历史资料库升级备份
 
 上轮重建尝试复用了不完整的历史副本。复制器遗漏了 SQLite 引用的原生 Pi 会话目录，升级前备份按 `backup_reference_missing` 拒绝。补齐耐久文件后，原始 `user_version=0` 资料库经真实 Electron 生成已验证备份并升级到 v3。备份中的原会话文件摘要一致，杨浦原件、旧结构、已确认题目及重建的 v24 均经读回。启动提示现在区分文件缺失、内容不符和已知磁盘或权限问题。缺失副本继续拒绝升级，原库版本保持，未发布备份。完整 12/12、缺失对照 1/1，证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261125/legacy-backup`。

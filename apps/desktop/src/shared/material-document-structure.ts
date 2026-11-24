@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v24" as const;
+  "layout-paragraph-question.v25" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v24",
   "layout-paragraph-question.v23",
   "layout-paragraph-question.v22",
   "layout-paragraph-question.v21",
@@ -67,7 +68,8 @@ export type StructureFormulaSource = StructureAnchor & { rasterSha256: string; l
 export type StructureTableSource = StructureAnchor & {
   regionId: string;
   rasterSha256: string;
-  rows: { box: PageBox; text: string; lineIds: string[]; needsReview: boolean; suspectedOverprint?: true }[][];
+  rows: { box: PageBox; text: string; lineIds: string[]; needsReview: boolean; suspectedOverprint?: true;
+    rowSpan?: number; columnSpan?: number; covered?: true }[][];
 };
 export type StructureLine = {
   id: string;

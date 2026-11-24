@@ -11,6 +11,7 @@ import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
 const root = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const fixture = process.env.OMNI_EDU_SYNTHETIC_VISION_PDF;
 const useLive = process.env.OMNI_EDU_TABLE_VISION_LIVE === "1";
+const mergedCase = process.argv.includes("--merged-grid");
 const key = useLive ? process.env.DEEPSEEK_API_KEY : "fake-deepseek-table-vision-test";
 assert(root && fixture && path.basename(fixture) === "synthetic-table-vision.pdf" && key);
 const fixtureSha = createHash("sha256").update(fs.readFileSync(fixture)).digest("hex");
@@ -84,7 +85,7 @@ async function waitResource() {
   throw Error("Synthetic fixture did not publish a structure");
 }
 
-async function openTable(page, resource) {
+async function openTable(page, resource, vision = true) {
   await page.getByTestId("materials-search").fill(resource.title);
   await page.getByTestId("material-" + resource.id).getByRole("button").click();
   await page.getByTestId("materials-section-questions").click();
@@ -92,25 +93,59 @@ async function openTable(page, resource) {
   await openMaterialDisclosure(panel);
   const table = panel.getByTestId("structure-table-evidence");
   await openMaterialDisclosure(table);
+  if (!vision) return table;
   await table.getByTestId("table-vision-cell-1-1").click();
   await table.getByRole("button", { name: "用 DeepSeek 回查" }).waitFor({ timeout: 25_000 })
     .catch(async () => table.getByTestId("table-vision-candidate").waitFor({ timeout: 5000 }));
   return table;
 }
 
-try {
+async function checkMergedTable(page, resource, candidate, snapshot, before) {
+  const rows = candidate.tableSources?.[0]?.rows;
+  assert(rows, "Expected the actual raster table to publish a local merged grid");
+  assert.equal(rows[0][1].columnSpan, 2);
+  assert.equal(rows[1][0].rowSpan, 2);
+  assert(rows[0][2].covered && rows[2][0].covered);
+  assert.deepEqual(rows.slice(1).map(row => row.slice(1).map(cell => cell.text)), [["22.5", "30.0"], ["18.5", "24.0"]]);
+  for(const [phase,screen] of [["first",page],["cold",undefined]]){
+    const current=screen??await launch();
+    await current.setViewportSize({width:phase==="first"?1366:1920,height:phase==="first"?768:1080});
+    const table=await openTable(current,resource,false);
+    const grid=table.getByTestId("structure-table-grid");
+    assert.equal(await grid.locator('td[colspan="2"]').count(),1);
+    assert.equal(await grid.locator('td[rowspan="2"]').count(),1);
+    assert.equal(await grid.getByRole("cell").count(),7);
+    await table.getByTestId("structure-table-original").click();
+    await table.getByTestId("structure-table-original-image").waitFor();
+    await table.scrollIntoViewIfNeeded();
+    await current.screenshot({path:path.join(output,`merged-${phase}.png`)});
+    assert.deepEqual(snapshot(),before);
+    assert.equal(query("SELECT count(*) AS n FROM material_structure_reviews")[0].n,0);
+    assert.equal(await app.evaluate(()=>globalThis.tableVisionAudit.calls.length),0);
+    await app.close();app=undefined;
+  }
+  report.cells=rows.map(row=>row.filter(cell=>!cell.covered).map(({text,rowSpan,columnSpan})=>({text,rowSpan,columnSpan})));
+  check("The merged raster keeps seven cells, four numeric values and one span in each direction.");
+  check("Native preview and cold restart retain the original image without teacher edits or requests.");
+}
+
+async function run() {
   const page = await launch();
   await app.evaluate(({dialog}, value) => {
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [value] });
   }, fixture);
   await page.getByTestId("materials-import").click();
   const job = await waitResource();
-  assert.equal(job.engine, "layout-paragraph-question.v24");
   const [resource] = query("SELECT id,title FROM teacher_resources");
   const snapshot = () => query("SELECT id,status,sha256 FROM material_structure_questions ORDER BY id");
   const before = snapshot();
   const [record] = query("SELECT id,sha256,body_json FROM material_structure_questions WHERE generation=? AND json_extract(body_json,'$.number')='10'", job.generation);
   const candidate = JSON.parse(record.body_json);
+  if (mergedCase) {
+    await checkMergedTable(page,resource,candidate,snapshot,before);
+    return;
+  }
+  assert.equal(job.engine, "layout-paragraph-question.v25");
   assert.equal(candidate.tableSources[0].rows[1][1].needsReview, true);
   assert.equal(candidate.tableSources[0].rows[1][1].text, "");
   if (process.env.OMNI_EDU_TABLE_VISION_POSITIVE === "1") {
@@ -194,6 +229,10 @@ try {
   await cold.screenshot({ path: path.join(output, "review-1920.png") });
   assert.equal(await app.evaluate(() => globalThis.tableVisionAudit.calls.length), 0);
   check("Cold start reads the same candidate without resending");
+}
+
+try {
+  await run();
   report.ok = true;
 } catch (error) {
   report.error = error.stack;

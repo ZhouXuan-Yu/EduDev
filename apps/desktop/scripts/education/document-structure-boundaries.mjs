@@ -12,7 +12,7 @@ const { choiceLabelsForReview, missingChoiceLabels, validStructureImageQuery, va
   await import("../../src/shared/material-document-structure.ts");
 const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings } =
   await import("../../src/main/assets/material-structure-choice-recheck.ts");
-const { ruledTableGrid, evidenceForTable } =
+const { ruledTableGrid, ruledTableLayout, evidenceForTable } =
   await import("../../src/main/assets/material-structure-ruled-table.ts");
 const results = [];
 async function check(name, run) {
@@ -123,6 +123,34 @@ await check("Only a local divider attached to an existing grid crossing can veto
       else assert.deepEqual(grid.map(row=>row.length),[2,2]);
     }
   }
+});
+await check("Confirmed missing internal separators recover rectangular row and column spans, with malformed layouts held", () => {
+  const width=260,height=200,xs=[16,90,165,242],ys=[15,65,120,181];
+  const region=[xs[0]/width,ys[0]/height,xs[3]/width,ys[3]/height];
+  function raster(mode){
+    const pixels=Buffer.alloc(width*height*4,255);
+    const dot=(x,y)=>pixels.fill(12,(y*width+x)*4,(y*width+x)*4+3);
+    for(const x of xs)for(let y=ys[0];y<=ys[3];y++){
+      if(x===xs[2]&&y>ys[0]&&y<ys[1])continue;
+      if(x===xs[0]&&mode==='open'&&y>ys[1]&&y<ys[2])continue;
+      if(x===xs[1]&&mode==='broken'&&y>ys[2]+8&&y<ys[3]-8)continue;
+      dot(x,y);
+    }
+    for(const y of ys)for(let x=xs[0];x<=xs[3];x++){
+      if(y===ys[2]&&x>xs[0]&&x<xs[1])continue;
+      if(y===ys[1]&&mode==='nonrectangular'&&x>xs[1]&&x<xs[2])continue;
+      dot(x,y);
+    }
+    return {width,height,pixels};
+  }
+  const layout=ruledTableLayout(raster('merged'),region);
+  assert.deepEqual(layout.map(row=>row.length),[3,3,3]);
+  assert.equal(layout[0][1].columnSpan,2);
+  assert.equal(layout[0][2].covered,true);
+  assert.equal(layout[1][0].rowSpan,2);
+  assert.equal(layout[2][0].covered,true);
+  assert.deepEqual(layout[0][1].box,[90/260,15/200,242/260,65/200]);
+  for(const mode of ['broken','open','nonrectangular'])assert.equal(ruledTableLayout(raster(mode),region),undefined);
 });
 const formulaRows = [
   ["15. 已知质量、压强和时间，求物体受力。", .10, .42, .55],

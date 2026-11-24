@@ -171,12 +171,12 @@ try{
   const current=await waitForPublish();
   report.publishMs=Date.now()-begin;
   report.generation=current.generation;
-  assert.equal(current.engine,'layout-paragraph-question.v24');
+  assert.equal(current.engine,'layout-paragraph-question.v25');
   assert.deepEqual(pages(old.generation),oldPages);
   assert.deepEqual(questionRows(old.generation),oldQuestions);
   assert.deepEqual(confirmed(),teacherBefore);
   assert.equal(shaFile(source.local_path),source.content_hash);
-  check('The existing UI rebuild publishes v24 while the original scan, previous snapshots and confirmed items stay intact');
+  check('The existing UI rebuild publishes the current structure while the original scan, previous snapshots and confirmed items stay intact');
 
   const list=questionRows(current.generation).map(row=>JSON.parse(row.body_json));
   const numbered=list.map(q=>q.number).filter(number=>number!=='0');
