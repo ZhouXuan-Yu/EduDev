@@ -23,6 +23,14 @@ try{
  report.preview=await page.getByTestId('pi-file-preview').innerText();await page.screenshot({path:path.join(output,'opened-preview.png')});
  assert(JSON.stringify(readback.texts).includes('一元一次方程'));assert(report.preview.includes('一元一次方程')&&report.preview.includes('12'),'Opening the actual saved artifact must preview its generated equation content');
  await page.getByTestId('pi-files-close').click();assert.equal(await page.locator('.office-composer-container:visible').getAttribute('data-session-id'),prefix.session);report.checks.push('Cold-start saved PPT opens the original local preview and returns to its own conversation');
+ const summary=await page.evaluate(sessionId=>window.omniEdu.getXiaozhiWorkbenchSummary({schemaVersion:1,kind:'tasks',filter:'all',sessionId,limit:20}),prefix.session);assert(summary.ok&&summary.value.kind==='tasks');
+ const current=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),prefix.session);const task=summary.value.items.find(row=>row.taskId===current.task?.id);assert(task,'Original current task is present in its real summary');report.task=task;
+ await page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-my_tasks').click();await page.getByTestId('pi-task-filter').click();await page.getByRole('option',{name:'全部',exact:true}).click();
+ const row=page.locator(`[data-testid="pi-task-overview-row"][data-task-id="${task.taskId}"]`);await row.waitFor();assert.equal(await row.getAttribute('data-session-id'),prefix.session);assert.equal(await row.locator('[data-state]').getAttribute('data-state'),task.state);
+ await row.getByRole('button',{name:'任务详情与要求',exact:true}).click();if(task.goalExcerpt)assert((await row.innerText()).includes(task.goalExcerpt));
+ for(const [width,height]of [[1366,768],[1920,1080],[800,768]]){await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(...s),[width,height]);await row.scrollIntoViewIfNeeded();await page.screenshot({path:path.join(output,'real-task-'+width+'.png')});}
+ await row.getByTestId('pi-task-open-session').click();await page.getByTestId('office-prompt-input').waitFor();assert.equal(await page.locator('.office-composer-container:visible').getAttribute('data-session-id'),prefix.session);report.checks.push('Real task state, complete excerpt disclosure and original-conversation action retain the same task/session at three window sizes without replay');
+
  assert.deepEqual(report.errors,[]);report.success=true;
 }catch(e){report.failure=String(e.stack||e);await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});process.exitCode=1;}
 finally{if(app){report.http=await app.evaluate(()=>globalThis.__savedPptHttp);await app.close();}fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,output,failure:report.failure}));}

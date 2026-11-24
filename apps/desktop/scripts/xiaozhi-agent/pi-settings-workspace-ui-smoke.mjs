@@ -379,6 +379,11 @@ try {
       await tab(name);
       const control = { models: 'pi-settings-save', skills: 'pi-skill-import', permissions: 'pi-settings-workspace-choose', interface: 'pi-preference-files', archives: `pi-archive-read-${archivedId}`, backup: 'data-backup-export' }[name];
       await page.getByTestId(control).scrollIntoViewIfNeeded();
+      if(name==='models')await until(async()=>!await page.getByTestId('pi-settings-key').isDisabled());
+      // Measure stable native styles, not the 0 ms frame of a hidden-window transition.
+      const hiddenSnapshot=!await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].isVisible());
+      const settled=await settleWorkspaceTransitions(page,{hiddenSnapshot});
+      (report.styleSettles||=[]).push({theme,width:viewport.width,tab:name,...settled});
       const measurements = await page.evaluate(control => { const main = document.querySelector('[data-testid="pi-settings-main"]'), nav = document.querySelector('nav[aria-label="小智设置分类"]'), content = main.querySelector(':scope>div,:scope>section'), action = document.querySelector(`[data-testid="${control}"]`).getBoundingClientRect(), back = document.querySelector('[data-testid="nav-ai"]').getBoundingClientRect(); return { mainWidth: main.clientWidth, mainScroll: main.scrollWidth, contentWidth: content.getBoundingClientRect().width, navWidth: nav.clientWidth, navScroll: nav.scrollWidth, bodyWidth: document.documentElement.clientWidth, bodyScroll: document.documentElement.scrollWidth, actionRect: { x: action.x, y: action.y, right: action.right, bottom: action.bottom }, backRect: { x: back.x, y: back.y, right: back.right, bottom: back.bottom } }; }, control);
       assert(measurements.mainScroll <= measurements.mainWidth + 1, `${name} main overflow`); assert(measurements.contentWidth >= Math.min(700, measurements.mainWidth - 24) - 1 && measurements.contentWidth <= Math.min(801, measurements.mainWidth), `${name} readable responsive content width`); assert(measurements.navScroll <= measurements.navWidth + 1); assert(measurements.bodyScroll <= measurements.bodyWidth + 1);
       for (const rect of [measurements.actionRect, measurements.backRect]) assert(rect.x >= 0 && rect.y >= 0 && rect.right <= viewport.width && rect.bottom <= viewport.height, `${name} complete action reachable`);
@@ -399,6 +404,7 @@ try {
         report.backgrounds.push({theme,width:viewport.width,tab:name,label:'search-field',...fieldBackground});
         assert(fieldBackground.sum>500,`Light-only search field under OS ${theme}: ${JSON.stringify(fieldBackground)}`);
         await page.getByTestId('pi-settings-default-model').hover();
+        await settleWorkspaceTransitions(page,{hiddenSnapshot});
         await page.waitForFunction(()=>!document.querySelector('[data-testid="pi-settings-default-model"]').getAnimations().some(a=>a.playState==='running'));
         const hover=await measureTextContrast(page.getByTestId('pi-settings-default-model'));report.contrast.push({theme,width:viewport.width,label:'default-model-hover',...hover});assert(hover.ratio>=4.5,`${theme} hovered default-model contrast ${hover.ratio}`);
         await page.getByTestId('pi-settings-default-model').click();const menu=page.getByRole('menu');await menu.waitFor();

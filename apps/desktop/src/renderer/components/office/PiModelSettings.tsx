@@ -42,12 +42,10 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     if (disabled || lock.current || !view || modelUnavailable) return;
     lock.current = true; setBusy(true); setNotice(''); stamp.current++;
     const input = { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: view.version, defaultModel: model, ...(key.trim() ? { apiKey: key.trim() } : {}) };
-    // The form drops its copy as soon as the teacher submits, including failed saves.
-    setKey('');
     try {
       const result = await window.omniEdu?.saveXiaozhiSettings(input);
       if (!live.current) return;
-      if (result?.ok) { accept(result.value); onSaved?.(result.value); setNotice('已保存。默认模型用于新对话，已有对话继续使用原模型。'); }
+      if (result?.ok) { setKey(''); accept(result.value); onSaved?.(result.value); setNotice('已保存。默认模型用于新对话，已有对话继续使用原模型。'); }
       else setNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '设置没有保存，请重试。');
     } catch { if (live.current) setNotice('设置没有保存，请重试。'); }
     finally { lock.current = false; if (live.current) setBusy(false); }
@@ -143,7 +141,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
               {dirty&&<Button type="button" variant="ghost" data-testid="pi-settings-discard" isDisabled={disabled} onPress={()=>{setModel(view?.defaultModel||'');setKey('');setNotice('已放弃未保存的模型设置。');}}>放弃修改</Button>}
               <Button className="edu-primary-action-contrast" type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button>
             </div>
-            {dirty&&<p className={styles.hint} data-testid="pi-settings-unsaved">模型与密钥有未保存的更改。密钥提交后会清除输入，保存失败时需重新填写。</p>}
+            {dirty&&<p className={styles.hint} data-testid="pi-settings-unsaved">模型与密钥有未保存的更改。保存失败时保留本次输入；保存成功或放弃修改后清除密钥输入。</p>}
           </form>
           {view?.locked && <p role="status">小智正在处理任务，结束后可修改配置。</p>}
           {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}
