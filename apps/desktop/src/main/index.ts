@@ -3,7 +3,7 @@ import {registerWindowsUpdate} from './updates/windows-update-api';
 import {applyPendingUpdateRollback} from './updates/pending-rollback';
 import {runStartupRecovery} from './updates/startup-recovery';
 import {backupApplicationVersion} from './backup/compatibility';
-import {DatabaseUpgradeError} from './database-migrations';
+import {describeDatabaseStartupFailure} from './database-startup-diagnostics';
 import {providerCredentialCodec} from './provider-credential-codec';
 import {BackupPublicationBarrier} from './backup/publication-barrier';
 import {BackupRestoreVersionError,selectedBackupRoot} from './backup/activation';
@@ -275,20 +275,14 @@ if (ownsDesktop) app.whenReady().then(async () => {
     await store.init();
     await store.migrateProviderCredentials(providerCredentialCodec);
   } catch (error) {
-    const issue = error instanceof DatabaseUpgradeError ? error.issue : 'startup_failed';
-    const reason = issue === 'newer_version' ? '此数据库由较新版本的小智创建，请使用支持该格式的版本。'
-      : issue === 'recovery_point_failed' ? '无法建立升级前备份。请检查磁盘空间和目录权限，再打开小智。'
-      : '数据库初始化未完成。请使用升级前备份或核对诊断后重试。';
-    const cause = error instanceof Error ? error.cause : undefined;
-    const code = cause && typeof cause === 'object' && 'code' in cause ? String(cause.code) : '';
-    const sqliteCode = /^SQLITE_[A-Z_]+$/u.test(code) ? code : undefined;
-    const diagnostic = {schemaVersion:1,issue,sqliteCode,appVersion,at:new Date().toISOString()};
+    const {issue, sqliteCode, backupFailure, reason} = describeDatabaseStartupFailure(error);
+    const diagnostic = {schemaVersion:1,issue,sqliteCode,backupFailure,appVersion,at:new Date().toISOString()};
     try {
       writeFileSync(join(app.getPath('userData'),'xiaozhi-database-startup.json'), JSON.stringify(diagnostic,null,2),'utf8');
     } catch {
       console.error('[database] could not save startup diagnostic');
     }
-    console.error('[database]', issue, sqliteCode ?? '');
+    console.error('[database]', issue, backupFailure ?? sqliteCode ?? '');
     dialog.showErrorBox('数据库未打开', reason + '（' + issue + '）');
     app.exit(1);
     return;

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {backup,DatabaseSync} from 'node:sqlite';
 import {_electron} from 'playwright';
@@ -14,11 +16,12 @@ assert(acceptance&&fixture,'Use the fixed acceptance directory and verified scan
 const original=path.resolve(fixture,'data'),oldDb=path.join(original,'app.db');
 const output=fs.mkdtempSync(path.join(acceptance,'yangpu-rubrics-'));
 const data=path.join(output,'data'),profile=path.join(output,'profile');
-// Keep the source PDF and page caches while each acceptance profile starts its own live stores.
+const omitNative=process.argv.includes('--omit-native');
+// Keep every durable file referenced by the database, including native Pi sessions.
 fs.cpSync(original,data,{recursive:true,filter:file=>{
   const relative=path.relative(original,file);
   return !/^app\.db(?:-wal|-shm)?$/u.test(relative)&&
-    relative!==path.join('cache','semantic-v1')&&relative!=='xiaozhi-pi';
+    relative!==path.join('cache','semantic-v1')&&!(omitNative&&relative==='xiaozhi-pi');
 }});
 const fixtureDb=new DatabaseSync(oldDb,{readOnly:true,timeout:5000});
 try{await backup(fixtureDb,path.join(data,'app.db'));}
@@ -60,12 +63,53 @@ if(old.engine.endsWith('v17'))assert(!oldList.some(q=>q.number==='20'));
 const confirmed=()=>sql("SELECT id,archive_json FROM question_bank_items WHERE json_valid(archive_json) AND (json_extract(archive_json,'$.state')='teacher_edited' OR json_extract(archive_json,'$.sourceChecked')=1) ORDER BY id");
 const teacherBefore=confirmed();
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
+const originalSchema=sql('PRAGMA user_version')[0].user_version;
+const nativeSessions=sql('SELECT session_file FROM xiaozhi_pi_session_bindings').map(({session_file})=>{
+  const root=path.join(original,'xiaozhi-pi'),file=path.resolve(root,session_file),relative=path.relative(root,file);
+  assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
+  return {relative,hash:shaFile(file)};
+});
 
-async function open(){
+function environment(){
   const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),
     OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'0'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];
-  app=await _electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60_000});
+  return env;
+}
+
+if(omitNative){
+  assert(originalSchema<3&&nativeSessions.length>0,'An upgrade with a durable native session reference is required');
+  const dialog=path.join(output,'startup-dialog.json'),boot=path.join(output,'startup-probe.cjs');
+  fs.writeFileSync(boot,`
+    const {dialog}=require('electron');
+    dialog.showErrorBox=(title,message)=>require('node:fs').writeFileSync(${JSON.stringify(dialog)},JSON.stringify({title,message}));
+    import(${JSON.stringify(pathToFileURL(main).href)});
+  `);
+  try{
+    const runtime=path.join(desktop,'node_modules/electron/dist/electron.exe');
+    const code=await new Promise((resolve,reject)=>{
+      const child=spawn(runtime,[boot,'--user-data-dir='+profile],{cwd:desktop,env:environment(),windowsHide:true,stdio:'ignore'});
+      const timer=setTimeout(()=>{child.kill();reject(Error('Startup failure probe did not exit'));},40000);
+      child.once('error',error=>{clearTimeout(timer);reject(error);});
+      child.once('close',code=>{clearTimeout(timer);resolve(code);});
+    });
+    assert.equal(code,1);
+    const diagnostic=JSON.parse(fs.readFileSync(path.join(profile,'xiaozhi-database-startup.json'),'utf8'));
+    assert.equal(diagnostic.issue,'recovery_point_failed');
+    assert.equal(diagnostic.backupFailure,'backup_reference_missing');
+    assert.match(JSON.parse(fs.readFileSync(dialog,'utf8')).message,/缺少数据库引用.*对话文件/u);
+    assert.equal(sql('PRAGMA user_version')[0].user_version,originalSchema);
+    assert.deepEqual(fs.readdirSync(path.join(output,'XiaozhiUpgradeRecovery')),[]);
+    report.diagnostic=diagnostic;report.ok=true;
+    check('A genuinely incomplete copy refuses upgrade, identifies missing source files and keeps the original schema.');
+  }catch(error){report.error=String(error.stack||error);console.error(report.error);process.exitCode=1;}
+  fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
+  console.log(output);
+  process.exit(process.exitCode??0);
+}
+
+async function open(){
+  app=await _electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env:environment(),timeout:60_000});
   await assertIsolatedPiMain(app,main,profile);
   await app.evaluate(({net})=>{
     globalThis.testRubricRemoteCalls=0;
@@ -114,6 +158,14 @@ async function waitForPublish(){
 
 try{
   const first=await open();
+  assert.equal(sql('PRAGMA user_version')[0].user_version,3);
+  if(originalSchema<3){
+    const recovery=path.join(output,'XiaozhiUpgradeRecovery');
+    const [snapshot]=fs.readdirSync(recovery);
+    assert(snapshot);
+    for(const {relative,hash} of nativeSessions)assert.equal(shaFile(path.join(recovery,snapshot,'xiaozhi-pi',relative)),hash);
+    check('The complete historical library opens after a verified recovery backup with the original native session bytes.');
+  }
   const begin=Date.now();
   await first.panel.getByTestId('structure-rebuild').click();
   const current=await waitForPublish();

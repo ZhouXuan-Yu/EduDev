@@ -2,6 +2,10 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 历史资料库升级备份
+
+上轮重建尝试复用了不完整的历史副本。复制器遗漏了 SQLite 引用的原生 Pi 会话目录，升级前备份按 `backup_reference_missing` 拒绝。补齐耐久文件后，原始 `user_version=0` 资料库经真实 Electron 生成已验证备份并升级到 v3。备份中的原会话文件摘要一致，杨浦原件、旧结构、已确认题目及重建的 v24 均经读回。启动提示现在区分文件缺失、内容不符和已知磁盘或权限问题。缺失副本继续拒绝升级，原库版本保持，未发布备份。完整 12/12、缺失对照 1/1，证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261125/legacy-backup`。
+
 ## 带插图的扫描表格
 
 结构 v24 判断仅出现于某个行带或列带的长笔画时，另查其是否连接已识别的边线，避免把示意图误判为额外分隔线。断边、合并格和真实局部分隔线仍留待核。无需改原件，原 v23 结构继续可读。
