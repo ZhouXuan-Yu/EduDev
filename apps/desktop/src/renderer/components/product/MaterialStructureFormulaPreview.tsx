@@ -3,6 +3,7 @@ import { Button, Input, Modal } from "@heroui/react";
 import type { DocumentStructureReference, StructureFormulaSource } from "../../../shared/material-document-structure";
 import { readMaterialStructureCrop } from "./material-structure-source-image";
 import { structureFormulaCandidate } from "./material-structure-formula-candidate";
+import { MaterialLocalFormulaRecognition } from "./MaterialLocalFormulaRecognition";
 
 type Candidate = NonNullable<ReturnType<typeof structureFormulaCandidate>>;
 
@@ -77,7 +78,7 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
       <p>公式文字识别不完整，请对照原图补正。</p>
       <div className="toolbar-row">
         {sources.map((item, index) => (
-          <Button key={item.lineIds[0]} variant="secondary" isDisabled={disabled}
+          <Button key={`${item.page}-${item.regionId ?? item.lineIds[0]}`} variant="secondary" isDisabled={disabled}
             data-testid={`structure-review-formula-${index}`}
             onPress={() => {
               trigger.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -100,6 +101,8 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
                       <img src={result.image} alt={`原卷第 ${source.page} 页的待核对公式`}
                         style={{ maxWidth: "100%", height: "auto" }} data-testid="structure-formula-image" />
                       {result.candidate && <FormulaFragments candidate={result.candidate} />}
+                      {source.regionId && <MaterialLocalFormulaRecognition key={source.regionId}
+                        reference={reference} page={source.page} regionId={source.regionId} />}
                     </>}
               </Modal.Body>
               <Modal.Footer>

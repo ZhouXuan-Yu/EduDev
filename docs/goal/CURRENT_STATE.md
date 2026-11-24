@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 扫描结构 v29 为独立公式区接通可选的本机 LaTeX 识别。弹窗可预览、编辑和复制候选。原图支持未配置组件时核对。 [前后对照](../product-agent/04_PROGRESS_AND_EVIDENCE.md#独立扫描公式区的本机识别)
+
 D3 扫描结构 v28 可对相邻两列被读成同一行的数值做本机分列复读。保留合并的原 OCR 行、原图和每格裁片摘要。 [前后对照](../product-agent/04_PROGRESS_AND_EVIDENCE.md#表格跨列合读的复核)
 
 D3 扫描结构 v27 可在资料库还原无纵线、文字行列稳定的表格。原图、原 OCR 字面和待核状态保留。 [前后对照](../product-agent/04_PROGRESS_AND_EVIDENCE.md#无框和三线表的核对)

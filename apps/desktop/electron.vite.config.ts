@@ -31,7 +31,7 @@ export default defineConfig(({ command }) => ({
         fs.writeFileSync(resolve(options.dir,'classroom-preview.json'),JSON.stringify(await buildClassroomPreview()));
         fs.writeFileSync(resolve(options.dir,'buoyancy-demo.json'),JSON.stringify(await buildBuoyancyDemo()));
         fs.copyFileSync(resolve('src/main/education/reading-worker.py'),resolve(options.dir,'reading-worker.py'));
-        for(const file of ['word-drawing-worker.py','word_office_worker.py','word-pdf-worker.py'])fs.copyFileSync(resolve('src/main/assets',file),resolve(options.dir,file));
+        for(const file of ['word-drawing-worker.py','word_office_worker.py','word-pdf-worker.py','material-formula-recognition-worker.py'])fs.copyFileSync(resolve('src/main/assets',file),resolve(options.dir,file));
         fs.mkdirSync(resolve(options.dir,'vendor/deeptutor-reading'),{recursive:true});
         for(const file of ['search.py','models.py','LICENSE','source-manifest.json'])
           fs.copyFileSync(resolve('src/main/education/vendor/deeptutor-reading',file),resolve(options.dir,'vendor/deeptutor-reading',file));

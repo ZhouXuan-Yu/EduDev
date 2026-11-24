@@ -27,6 +27,7 @@ import {registerMaterialPasteIpc} from './material-paste-ipc';
 import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
 import {validStructureReviewInput} from '../../shared/material-structure-review';
 import {validStructureImageQuery,validStructureQuery} from '../../shared/material-document-structure';
+import { registerFormulaRecognition } from "./material-formula-recognition-ipc";
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
 export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
@@ -38,6 +39,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  const allowed=(event:Electron.IpcMainInvokeEvent)=>{const main=window();return !!main&&!main.isDestroyed()&&event.sender===main.webContents&&event.senderFrame===main.webContents.mainFrame;};
  const check=(event:Electron.IpcMainInvokeEvent)=>{if(!allowed(event))throw new Error('permission_denied');};
  registerMaterialCatalogIpc(store,ipcMain,check);
+ registerFormulaRecognition(store,ipcMain,check);
  ipcMain.handle('materials:structure-review',(event,input)=>{check(event);if(!validStructureReviewInput(input))throw Error('invalid_input');return store.materialQuestions.reviewStructure(structuredClone(input));});
  ipcMain.handle('materials:structure-read',(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');return store.materialStructures.view(structuredClone(input));});
  ipcMain.handle('materials:structure-review-overview',(event,input)=>{check(event);if(!validStructureQuery(input))throw Error('invalid_input');return store.materialStructures.reviewOverview(structuredClone(input));});

@@ -1009,14 +1009,6 @@ export class StructureQuestionAssembler {
       const target = child ? child.options! : q.options;
       target.push(...paragraphOptions(paragraph));
     }
-    if (!unnumbered && q.kind === "question") {
-      const sources = [...pending.pages.values()].flatMap(page =>
-        unconfirmedFormulaSources(page, pending.paragraphs.filter(part => part.anchor.page === page.page)));
-      if (sources.length) {
-        q.formulaSources = sources;
-        q.issues.push("formula_text_unconfirmed");
-      }
-    }
     const first = pending.paragraphs[0];
     if (first.marker?.kind === "parent" && first.marker.label === q.number) {
       const scored = scoredAssessmentNumber(first.text);
@@ -1118,6 +1110,18 @@ export class StructureQuestionAssembler {
         } else {
           q.issues.push("ambiguous_asset");
         }
+      }
+    }
+    if (!unnumbered && q.kind === "question") {
+      const sources = [...pending.pages.values()].flatMap(page => [
+        ...unconfirmedFormulaSources(page, pending.paragraphs.filter(part => part.anchor.page === page.page)),
+        ...q.assets.filter(asset => asset.page === page.page && asset.kind === "display_formula")
+          .map(asset => ({ page: page.page, box: asset.box, rasterSha256: page.rasterSha256,
+            regionId: asset.regionId, lineIds: asset.lineIds ?? [] })),
+      ]).slice(0, 12);
+      if (sources.length) {
+        q.formulaSources = sources;
+        q.issues.push("formula_text_unconfirmed");
       }
     }
     const tables = [...pending.pages.values()].flatMap(page => (page.tableSources ?? []).filter(table =>

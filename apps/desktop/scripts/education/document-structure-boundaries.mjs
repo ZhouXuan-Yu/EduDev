@@ -18,6 +18,8 @@ const { linkStructureTableContinuations } =
   await import("../../src/main/assets/material-structure-table-continuation.ts");
 const { verifiedNumericTableRow } =
   await import("../../src/main/assets/material-structure-borderless-table.ts");
+const { readableFormulaLatex, validFormulaRecognitionQuery } =
+  await import("../../src/shared/material-formula-recognition.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -81,6 +83,23 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+
+await check("Formula recognition accepts only versioned source identity and safe renderable TeX candidates", () => {
+  const request = { reference: {
+    schemaVersion: "xiaozhi.document-structure.v1", resourceId: "resource_" + "a".repeat(36),
+    candidateId: "sq_" + "b".repeat(40), generation: "c".repeat(36), sha256: "d".repeat(64), version: "e".repeat(64),
+  }, page: 2, regionId: "block-2", requestId: "f".repeat(36), action: "run" };
+  assert(validFormulaRecognitionQuery(request));
+  assert(!validFormulaRecognitionQuery({ ...request, regionId: "../arbitrary.png" }));
+  assert(!validFormulaRecognitionQuery({ ...request, box: [.1, .2, .3, .4] }));
+  assert(!validFormulaRecognitionQuery({ ...request, reference: { ...request.reference, version: "old" } }));
+  for (const reading of ["y=\\sqrt{x^{2}+9}", "E_k=\\frac{1}{2}mv^2", "\\frac{-3x+2}{5x-7}", "x<y"]) {
+    assert(readableFormulaLatex(reading));
+  }
+  for (const reading of ["-", "", "v=3.50~/mathrm", "\\frac{1}{", "$x$", "x\u0000", "\\href{https://example.com}{x}", "\\includegraphics{a.png}"]) {
+    assert(!readableFormulaLatex(reading));
+  }
+});
 
 function alignedTableFixture() {
   const raster = { width: 320, height: 300, pixels: Buffer.alloc(320 * 300 * 4, 255) };

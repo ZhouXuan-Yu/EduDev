@@ -281,7 +281,7 @@ async function run() {
     await checkMergedTable(page,resource,candidate,snapshot,before);
     return;
   }
-  assert.equal(job.engine, "layout-paragraph-question.v28");
+  assert.equal(job.engine, "layout-paragraph-question.v29");
   assert.equal(candidate.tableSources[0].rows[1][1].needsReview, true);
   assert.equal(candidate.tableSources[0].rows[1][1].text, "");
   if (process.env.OMNI_EDU_TABLE_VISION_POSITIVE === "1") {
