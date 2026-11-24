@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {PracticeTargetSummary,StudentPracticeButton} from './PracticeTarget';
 import {practiceTargetIssues} from '../../../shared/practice-target';
 import {useEffect,useRef,useState} from 'react';
@@ -14,7 +15,7 @@ export function PracticeQuestionList({view,draft,onChange}:{view:PracticeReviewV
  const editable=!!onChange,count=draft.items.length,change=(index:number,patch:Partial<PracticeReviewDraft['items'][number]>)=>onChange?.({...draft,items:draft.items.map((q,i)=>i===index?{...q,...patch}:q)});
  return <div className="pi-question-candidates" tabIndex={0} aria-label="练习题目与来源">{count>1&&<p className="pi-practice-count" data-testid="practice-review-count" role="status">共 {count} 题，请逐题核对；题目较多时可向下滚动。</p>}{draft.items.map((item,n)=>{const entry=view.questions[item.index];return <section className="pi-training-day" data-testid="practice-review-item" key={item.index}>
   <strong>第 {n+1}/{count} 题 · {entry.question.knowledgePoint||'未标注知识点'}</strong>
-  <div className="pi-training-heading"><label>题目用途<select data-testid="practice-review-role" disabled={!editable} value={item.role} onChange={e=>change(n,{role:e.target.value as typeof item.role})}>{Object.entries(roles).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label>
+  <div className="pi-training-heading"><label>题目用途<AppNativeSelect data-testid="practice-review-role" disabled={!editable} value={item.role} onChange={e=>change(n,{role:e.target.value as typeof item.role})}>{Object.entries(roles).map(([k,v])=><option key={k} value={k}>{v}</option>)}</AppNativeSelect></label>
   {editable&&<div><Button variant="secondary" data-testid="practice-review-up" isDisabled={!n} onPress={()=>{const items=[...draft.items];[items[n-1],items[n]]=[items[n],items[n-1]];onChange({...draft,items});}}>上移</Button><Button variant="secondary" data-testid="practice-review-remove" isDisabled={draft.items.length===1} onPress={()=>onChange({...draft,items:draft.items.filter((_,i)=>i!==n)})}>移出练习</Button></div>}</div>
   <h4>题干</h4><div className="pi-practice-text" data-testid="practice-review-stem">{entry.question.stem}</div>
   <h4>参考答案</h4><div className="pi-practice-text" data-testid="practice-review-answer">{entry.question.answer}</div>

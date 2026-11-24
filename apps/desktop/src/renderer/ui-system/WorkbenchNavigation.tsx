@@ -128,7 +128,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
         <Modal.Body>
           {dialog === 'new' && <form id={`${panelId}-new`} className="wb-form" onSubmit={event => { event.preventDefault(); void run(() => data!.onNewSession(folderId || null, title.trim() || undefined), true); }}>
             <label>对话标题（可选）<input autoFocus value={title} maxLength={200} disabled={unavailable} onChange={event => setTitle(event.target.value)} placeholder="为这次教学任务命名" /></label>
-            <label>教学空间<select aria-label="教学空间" value={folderId} disabled={unavailable} onChange={event => setFolderId(event.target.value)}><option value="">未分组</option>{folders.map(folder => <option key={folder.id} value={folder.id}>{folder.name}</option>)}</select></label>
+            <label>教学空间<AppNativeSelect aria-label="教学空间" value={folderId} disabled={unavailable} onChange={event => setFolderId(event.target.value)}><option value="">未分组</option>{folders.map(folder => <option key={folder.id} value={folder.id}>{folder.name}</option>)}</AppNativeSelect></label>
           </form>}
           {dialog === 'folder' && <form id={`${panelId}-folder`} className="wb-form" onSubmit={event => { event.preventDefault(); if (folderName.trim()) void run(() => data!.onCreateFolder(folderName.trim()), true); }}><label>空间名称<input autoFocus required maxLength={100} value={folderName} disabled={unavailable} onChange={event => setFolderName(event.target.value)} /></label></form>}
           {dialog === 'search' && <div className="wb-search"><label className="wb-form">对话标题<input autoFocus type="search" value={query} disabled={disabled || busy} onChange={event => setQuery(event.target.value)} placeholder="搜索已有对话" /></label>
@@ -146,3 +146,4 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     </Modal.Backdrop>}
   </aside>;
 }
+import {AppNativeSelect} from '../components/ui/AppNativeSelect';

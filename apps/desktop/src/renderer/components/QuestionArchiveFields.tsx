@@ -1,3 +1,4 @@
+import {AppNativeSelect} from './ui/AppNativeSelect';
 import type { ArchiveFields } from "../../shared/question-archive";
 
 /** Shared fields for the existing bank editor and source-structure correction. */
@@ -41,7 +42,7 @@ export function QuestionArchiveFields({
       ))}
       <label>
         难度
-        <select
+        <AppNativeSelect
           disabled={disabled}
           value={difficultyChosen ? fields.difficulty : ""}
           onChange={(event) => {
@@ -59,7 +60,7 @@ export function QuestionArchiveFields({
           <option value="easy">基础</option>
           <option value="medium">中等</option>
           <option value="hard">困难</option>
-        </select>
+        </AppNativeSelect>
       </label>
       {(
         [

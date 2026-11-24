@@ -1,4 +1,5 @@
 # Pinned upstream adapters are verified by byte hashes, including their LF endings.
+apps/desktop/src/renderer/design-review/OfficialTraceReference.tsx text eol=lf
 apps/desktop/src/main/education/vendor/** text eol=lf
 apps/desktop/src/main/xiaozhi-agent/vendor/mozilla-readability/** text eol=lf
 apps/desktop/src/main/xiaozhi-agent/vendor/hana/quality/** text eol=lf

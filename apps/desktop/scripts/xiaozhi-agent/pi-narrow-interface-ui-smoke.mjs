@@ -57,16 +57,15 @@ async function collectView(width,height,theme,label='',forcedColors=false){
   await page.emulateMedia({colorScheme:theme,forcedColors:forcedColors?'active':'none'});
   await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});
   await until(()=>page.evaluate(({width,height})=>innerWidth===width&&innerHeight===height,{width,height}));
-  await page.getByTestId('teacher-quick-starts').waitFor({state:'visible'}).catch(()=>undefined);
+  await page.getByRole('region',{name:'教学任务建议',exact:true}).waitFor({state:'visible'}).catch(()=>undefined);
   const dataView=await page.evaluate(({width,height})=>{
     const selectors=[
       'xiaozhi-pi-workspace',
       'office-conversation',
       'office-prompt-input',
-      'teacher-quick-starts',
-      'teacher-quick-start-materials',
-      'teacher-quick-start-mistakes',
-      'teacher-quick-start-classroom',
+      'home-suggestions',
+      'home-task-notebook', 'home-task-paper', 'home-task-handout', 'home-task-mock-exams',
+      'home-suggestion-1', 'home-suggestion-2', 'home-task-analytics',
       'pi-sidebar-toggle',
       'pi-permission-picker',
       'pi-skill-picker',
@@ -92,7 +91,7 @@ async function collectView(width,height,theme,label='',forcedColors=false){
       viewport:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio,forcedColors:matchMedia('(forced-colors: active)').matches},
       document:{scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,scrollHeight:document.documentElement.scrollHeight,clientHeight:document.documentElement.clientHeight},
       nodes:Object.fromEntries(selectors.map(selector=>{
-        const node=selector==='office-model-picker'?document.querySelector('.office-model-picker'):selector==='prompt-input-send'?document.querySelector('[data-slot="prompt-input-send"]'):document.querySelector(`[data-testid="${selector}"]`);
+        const node=selector==='home-suggestions'?document.querySelector('[aria-label="教学任务建议"]'):selector==='office-model-picker'?document.querySelector('.office-model-picker'):selector==='prompt-input-send'?document.querySelector('[data-slot="prompt-input-send"]'):document.querySelector(`[data-testid="${selector}"]`);
         return [selector,rect(node)];
       })),
       activeElement:document.activeElement?.getAttribute('data-testid')||document.activeElement?.tagName,
@@ -142,14 +141,14 @@ async function keyboardProbe(){
     if(!sequence.some(value=>String(value).includes(expected)))throw Error(`keyboard sequence missing ${expected}: ${JSON.stringify(sequence)}`);
   }
   await input.fill('');
-  await page.getByTestId('teacher-quick-starts').waitFor({state:'visible'});
-  await page.getByTestId('teacher-quick-start-materials').focus();
+  await page.getByRole('region',{name:'教学任务建议',exact:true}).waitFor({state:'visible'});
+  await page.getByTestId('home-task-notebook').focus();
   await page.keyboard.press('Enter');
-  await until(async()=>await input.inputValue().then(value=>value.includes('先读取资料')));
+  await until(async()=>await input.inputValue().then(value=>value.includes('可修改的教案')&&value.includes('年级和课时')));
   await until(()=>page.evaluate(()=>document.activeElement?.getAttribute('data-testid')==='office-prompt-input'));
   report.quickStartKeyboard=true;
   await input.fill('');
-  await page.getByTestId('teacher-quick-starts').waitFor({state:'visible'});
+  await page.getByRole('region',{name:'教学任务建议',exact:true}).waitFor({state:'visible'});
   const toggle=page.getByTestId('pi-sidebar-toggle');
   await toggle.focus();
   await page.keyboard.press('Enter');
@@ -192,7 +191,7 @@ try{
   await app.close();
   app=undefined;
   await launch();
-  await page.getByTestId('teacher-quick-starts').waitFor({state:'visible'});
+  await page.getByRole('region',{name:'教学任务建议',exact:true}).waitFor({state:'visible'});
   await collectView(390,844,'dark','cold');
   assertDeepNoErrors();
   const database=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -219,7 +218,7 @@ function assertView(row){
   const {width,height,data}=row;
   if(data.document.scrollWidth>data.document.clientWidth)throw Error(`${width}x${height} horizontal overflow ${data.document.scrollWidth}/${data.document.clientWidth}`);
   if(row.label==='forced'&&!data.viewport.forcedColors)throw Error('forced-colors probe did not activate');
-  const required=['xiaozhi-pi-workspace','office-conversation','office-prompt-input','teacher-quick-starts','teacher-quick-start-materials','teacher-quick-start-mistakes','teacher-quick-start-classroom','pi-sidebar-toggle','pi-permission-picker','pi-skill-picker','office-model-picker','prompt-input-send'];
+  const required=['xiaozhi-pi-workspace','office-conversation','office-prompt-input','home-suggestions','home-task-notebook','home-task-paper','home-task-handout','home-task-mock-exams','home-suggestion-1','home-suggestion-2','home-task-analytics','pi-sidebar-toggle','pi-permission-picker','pi-skill-picker','office-model-picker','prompt-input-send'];
   for(const selector of required){
     const box=data.nodes[selector];
     if(!box||box.width<=0||box.height<=0||box.x<0||box.y<0||box.right>width||box.bottom>height)throw Error(`${width}x${height} ${selector} is missing or clipped: ${JSON.stringify(box)}`);

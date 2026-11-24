@@ -1,4 +1,23 @@
 .workspace {
+  /* Hana application structure tokens. Do not re-enable the legacy workspace
+   * adapter, which also restyles third-party controls. */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-40: 40px;
+  --fs-body: 15px;
+  --fs-ui: 15px;
+  --fs-title: 17px;
+  --fs-caption: 13px;
+  --fs-hint: 13px;
+  --text: var(--foreground);
+  --text-light: var(--foreground);
+  --text-muted: var(--muted);
+  --bg-card: var(--surface);
+  --duration-fast: 180ms;
+  --ease-out: ease-out;
   flex: 1;
   min-height: 0;
   min-width: 0;
@@ -108,10 +127,20 @@
   cursor: pointer;
 }
 
-.navigationEntry[aria-current='page'],
 .navigationEntry:hover,
 .advancedToggle:hover {
   background: var(--default);
+}
+
+.navigationEntry[aria-current='page'] {
+  background: color-mix(in oklab, var(--accent) 10%, var(--background));
+  color: var(--edu-accent, #002fa7);
+  font-weight: 600;
+}
+
+.navigationEntry:active,
+.advancedToggle:active {
+  background: color-mix(in oklab, var(--accent) 18%, var(--background));
 }
 
 .navigationEntry:focus-visible,
@@ -300,4 +329,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .chevron { transition: none; }
+}
+
+/* Existing settings field opt-in, scoped to application-owned inputs. */
+.readablePlaceholder:not(:disabled)::placeholder {
+  color: var(--field-placeholder, var(--muted));
 }

@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {ClipboardCheck} from 'lucide-react';
@@ -26,7 +27,7 @@ function PiOriginalSingleQuestionReview({sessionId,review,onRefresh}:{sessionId:
    {view&&<><p>{view.sourceTitle} · 第 {view.image.page} 页 · 原图保存在本机</p><div className={`pi-original-paper ${sourceStyles.paper}`} tabIndex={0} aria-label="原题图"><img className={sourceStyles.paperImage} data-testid="original-review-image" src={view.image.dataUrl} alt={`第 ${view.image.page} 页原题区域`}/></div>{!view.sourceCurrent&&<p role="alert">原件已变化，候选不能保存；请拒绝后重新读取。</p>}</>}
    {draft&&<fieldset className={`pi-learning-fields ${styles.fields}`} disabled={!pending||loading||state.busy}>
     {(['title','subject','grade','knowledgePoint','questionType'] as const).map((field,i)=><label className={styles.field} key={field}>{['题目名称','科目','年级','知识点','题型'][i]}<input className={styles.control} data-testid={`original-review-${field}`} maxLength={field==='title'?160:128} value={draft[field]} onChange={e=>change({...draft,[field]:e.target.value})}/></label>)}
-    <label className={styles.field}>难度<select className={styles.control} data-testid="original-review-difficulty" value={draft.difficulty} onChange={e=>change({...draft,difficulty:e.target.value as OriginalQuestionDraft['difficulty']})}><option value="easy">基础</option><option value="medium">标准</option><option value="hard">提高</option></select></label>
+    <label className={styles.field}>难度<AppNativeSelect className={styles.control} data-testid="original-review-difficulty" value={draft.difficulty} onChange={e=>change({...draft,difficulty:e.target.value as OriginalQuestionDraft['difficulty']})}><option value="easy">基础</option><option value="medium">标准</option><option value="hard">提高</option></AppNativeSelect></label>
     <label className={styles.field}>教师校正转写<textarea className={`${styles.control} ${styles.textarea}`} data-testid="original-review-stem" maxLength={12000} value={draft.stem} onChange={e=>change({...draft,stem:e.target.value})}/></label>
     <label className={styles.field}>教师补充答案（没有可靠答案可留空）<textarea className={`${styles.control} ${styles.textarea}`} data-testid="original-review-answer" maxLength={8000} value={draft.answer} onChange={e=>change({...draft,answer:e.target.value})}/></label>
     <label className={styles.field}>教师补充解析（可留空）<textarea className={`${styles.control} ${styles.textarea}`} data-testid="original-review-analysis" maxLength={12000} value={draft.analysis} onChange={e=>change({...draft,analysis:e.target.value})}/></label>

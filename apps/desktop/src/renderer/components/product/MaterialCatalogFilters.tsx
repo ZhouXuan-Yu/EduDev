@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import { Button } from '@heroui/react';
 import type { TeacherResource } from '../../../shared/contracts';
 import { materialReadiness } from './material-library';
@@ -34,25 +35,25 @@ function CatalogFilters({ facets, value, disabled, onChange, onClear, active, pl
     if (placement === 'toolbar') return <div className={libraryStyles.filterToolbar}>
         <label className={libraryStyles.filterField}>
             <span className={libraryStyles.visuallyHidden}>格式</span>
-            <select className={libraryStyles.filterSelect} value={value.format} disabled={disabled}
+            <AppNativeSelect className={libraryStyles.filterSelect} value={value.format} disabled={disabled}
                 onChange={event => onChange({ ...value, format: event.target.value })} data-testid="materials-filter-format">
                 <option value="">全部格式</option>
                 {formats.map(facet => <option key={facet.value} value={facet.value}>{facet.value}（{facet.count}）</option>)}
-            </select>
+            </AppNativeSelect>
         </label>
         <label className={libraryStyles.filterField}>
             <span className={libraryStyles.visuallyHidden}>收录状态</span>
-            <select className={libraryStyles.filterSelect} value={value.state} disabled={disabled}
+            <AppNativeSelect className={libraryStyles.filterSelect} value={value.state} disabled={disabled}
                 onChange={event => onChange({ ...value, state: event.target.value as CatalogScope['state'] })}
                 data-testid="materials-filter-state">
                 <option value="">全部状态</option><option value="ready">可用于查找</option>
                 <option value="waiting">待处理／部分收录</option><option value="error">读取失败</option>
-            </select>
+            </AppNativeSelect>
         </label>
         <Button variant="ghost" isDisabled={disabled || !active} onPress={onClear} data-testid="materials-filter-clear">清除筛选</Button>
     </div>;
     return <div className={styles.filters} data-testid="materials-filters">
-  <label className={styles.field}>教学目录<select
+  <label className={styles.field}>教学目录<AppNativeSelect
         className={styles.control}
         value={JSON.stringify(value.directory)}
         disabled={disabled}
@@ -60,8 +61,8 @@ function CatalogFilters({ facets, value, disabled, onChange, onClear, active, pl
         data-testid="materials-filter-directory"
     >
    <option value="null">全部目录</option>{directories.map(f => <option key={f.value} value={JSON.stringify(f.value)}>{f.value || '未整理'}（{f.count}）</option>)}
-  </select></label>
-  <label className={styles.field}>标签（全部命中，可多选）<select
+  </AppNativeSelect></label>
+  <label className={styles.field}>标签（全部命中，可多选）<AppNativeSelect
         multiple
         size={Math.max(2, Math.min(4, tags.length))}
         className={styles.control}
@@ -71,21 +72,21 @@ function CatalogFilters({ facets, value, disabled, onChange, onClear, active, pl
         data-testid="materials-filter-tags"
     >
    {tags.map(f => <option key={catalogKey(f.value)} value={catalogKey(f.value)}>{f.value}（{f.count}）</option>)}
-  </select></label>
-  <label className={styles.field}>格式<select
+  </AppNativeSelect></label>
+  <label className={styles.field}>格式<AppNativeSelect
         className={styles.control}
         value={value.format}
         disabled={disabled}
         onChange={e => onChange({ ...value, format: e.target.value })}
         data-testid="materials-filter-format"
-    ><option value="">全部格式</option>{formats.map(f => <option key={f.value} value={f.value}>{f.value}（{f.count}）</option>)}</select></label>
-  <label className={styles.field}>收录状态<select
+    ><option value="">全部格式</option>{formats.map(f => <option key={f.value} value={f.value}>{f.value}（{f.count}）</option>)}</AppNativeSelect></label>
+  <label className={styles.field}>收录状态<AppNativeSelect
         className={styles.control}
         value={value.state}
         disabled={disabled}
         onChange={e => onChange({ ...value, state: e.target.value as CatalogScope['state'] })}
         data-testid="materials-filter-state"
-    ><option value="">全部状态</option><option value="ready">可用于查找</option><option value="waiting">待处理／部分收录</option><option value="error">读取失败</option></select></label>
+    ><option value="">全部状态</option><option value="ready">可用于查找</option><option value="waiting">待处理／部分收录</option><option value="error">读取失败</option></AppNativeSelect></label>
   <Button variant="ghost" isDisabled={disabled || !active} onPress={onClear} data-testid="materials-filter-clear">清除全部筛选</Button>
  </div>;
 }
@@ -97,13 +98,13 @@ function LegacyPageFilters({ rows, value, disabled, onChange }: {
 }) {
     const formats = [...new Set(rows.map(materialFormat))].sort();
     return <div className="edu-material-filters" data-testid="materials-filters">
-    <label>当前页格式<select value={value.format} disabled={disabled} onChange={e => onChange({ ...value, format: e.target.value })}>
+    <label>当前页格式<AppNativeSelect value={value.format} disabled={disabled} onChange={e => onChange({ ...value, format: e.target.value })}>
       <option value="">全部格式</option>{formats.map(format => <option key={format}>{format}</option>)}
-    </select></label>
-    <label>当前页状态<select value={value.state} disabled={disabled} onChange={e => onChange({ ...value, state: e.target.value })}>
+    </AppNativeSelect></label>
+    <label>当前页状态<AppNativeSelect value={value.state} disabled={disabled} onChange={e => onChange({ ...value, state: e.target.value })}>
       <option value="">全部状态</option><option value="ready">可用于查找</option>
       <option value="waiting">待处理／部分收录</option><option value="error">读取失败</option>
-    </select></label>
+    </AppNativeSelect></label>
     {(value.format || value.state) && <Button size="sm" variant="ghost" isDisabled={disabled} onPress={() => onChange({ format: '', state: '' })}>清除筛选</Button>}
   </div>;
 }

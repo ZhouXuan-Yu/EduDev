@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import { useEffect, useRef, useState } from 'react';
 import { History, RefreshCw } from 'lucide-react';
@@ -62,9 +63,9 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
         <Button size="sm" variant="ghost" isDisabled={busy || running} data-testid={`pi-memory-remove-${item.id}`} onPress={() => setSelected(previous => previous.filter(entry => key(entry) !== key(item)))}>取消选择</Button>
       </li>)}</ul>
       {!scope.selections.length && <p data-testid="pi-memory-scope-empty">尚未选择长期记忆。</p>}
-      <label>本地记忆来源<select value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); void preview(index); }} data-testid="pi-memory-source">
+      <label>本地记忆来源<AppNativeSelect value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); void preview(index); }} data-testid="pi-memory-source">
         {sources.map((source, index) => <option key={`${source.layer}:${source.source}`} value={index}>{source.layer} · {XIAOZHI_MEMORY_LABELS[source.source]}</option>)}
-      </select></label>
+      </AppNativeSelect></label>
       <div className="pi-memory-actions">
         <Button size="sm" variant="outline" isDisabled={loading} onPress={() => { void preview(); }} data-testid="pi-memory-preview"><History size={14} />查看本地记忆</Button>
         <Button size="sm" variant="ghost" isDisabled={busy || loading} onPress={() => { void onRefresh().then(() => preview()).catch(() => setError('刷新失败，请重试。')); }} data-testid="pi-memory-refresh"><RefreshCw size={14} />刷新</Button>

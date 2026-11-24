@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
@@ -19,8 +20,8 @@ export function PiDeliveryVisual({sessionId,reportId,fileSha256,evidence,histori
  const old=historical||image?.historical,src=image?'data:image/png;base64,'+image.dataBase64:undefined;
  return <section className="pi-check-visual" data-testid="pi-check-visual" aria-label="实际检查截图">
   <strong>实际检查截图</strong><p>{old?'这是旧版本检查时的截图，不代表当前文件。':'截图对应本次检查时的文件版本。'}图片仅保存在本机。</p>
-  {evidence.length?<><div className="pi-file-check-actions"><label>页面与视口（CSS像素） <select aria-label="检查截图尺寸" value={selected} onChange={event=>{epoch.current++;setSelected(Number(event.target.value));setImage(undefined);setError('');setBusy(false);}} data-testid="pi-check-visual-select">
-   {evidence.map((item,index)=><option key={item.sha256+index} value={index}>第{item.page}页 · {item.viewport}</option>)}</select></label>
+  {evidence.length?<><div className="pi-file-check-actions"><label>页面与视口（CSS像素） <AppNativeSelect aria-label="检查截图尺寸" value={selected} onChange={event=>{epoch.current++;setSelected(Number(event.target.value));setImage(undefined);setError('');setBusy(false);}} data-testid="pi-check-visual-select">
+   {evidence.map((item,index)=><option key={item.sha256+index} value={index}>第{item.page}页 · {item.viewport}</option>)}</AppNativeSelect></label>
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void load()} data-testid="pi-check-visual-load">{busy?'读取中…':'查看截图'}</Button>
    {image&&<Button size="sm" variant="ghost" onPress={()=>dialog.current?.showModal()} data-testid="pi-check-visual-expand">放大查看</Button>}</div>
    {error&&<p role="status" data-testid="pi-check-visual-error">{error}</p>}

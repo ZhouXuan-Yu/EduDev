@@ -48,9 +48,9 @@ async function inspect(page,scale,dpr,width,height,theme){
     const send=document.querySelector('[data-slot="prompt-input-send"]');
     const box=node=>{const r=node?.getBoundingClientRect();return r?{x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom}:null;};
     const attach=document.querySelector('button[aria-label="添加本地附件"]');
-    const controls={input:box(find('office-prompt-input')),attach:box(attach),permission:box(find('pi-permission-picker')),skill:box(find('pi-skill-picker')),model:box(model),send:box(send),quick:box(find('teacher-quick-starts'))};
+    const controls={input:box(find('office-prompt-input')),attach:box(attach),permission:box(find('pi-permission-picker')),skill:box(find('pi-skill-picker')),model:box(model),send:box(send),quick:box(document.querySelector('[aria-label="教学任务建议"]'))};
     const visible=node=>{if(!(node instanceof HTMLElement))return false;const r=node.getBoundingClientRect(),s=getComputedStyle(node);return r.width>0&&r.height>0&&s.display!=='none'&&s.visibility!=='hidden';};
-    return{inner:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},document:{clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,clientHeight:document.documentElement.clientHeight,scrollHeight:document.documentElement.scrollHeight},controls,quick:controls.quick,quickVisible:visible(find('teacher-quick-starts')),inputVisible:visible(find('office-prompt-input')),sendVisible:visible(send),messages:document.querySelectorAll('.office-turn').length};
+    return{inner:{width:innerWidth,height:innerHeight,dpr:devicePixelRatio},document:{clientWidth:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth,clientHeight:document.documentElement.clientHeight,scrollHeight:document.documentElement.scrollHeight},controls,quick:controls.quick,quickVisible:visible(document.querySelector('[aria-label="教学任务建议"]')),inputVisible:visible(find('office-prompt-input')),sendVisible:visible(send),messages:document.querySelectorAll('.office-turn').length};
   },{width,height});
   assert(Math.abs(data.inner.width-width)<=2,`CSS width ${data.inner.width} for ${width}`);
   assert(Math.abs(data.inner.height-height)<=2,`CSS height ${data.inner.height} for ${height}`);

@@ -192,7 +192,7 @@ export function MaterialStructurePanel({
           刷新
         </Button>
       </div>
-      {!view?.summary && !loading && (
+      {!view?.summary && !loading && !error && (
         <p data-testid="structure-empty">
           当前资料尚未建立结构记录，可在后台恢复。
         </p>
@@ -271,8 +271,7 @@ export function MaterialStructurePanel({
               data-testid="structure-source-image"
             />
           )}
-          <details>
-            <summary>原始 OCR 行</summary>
+          <DisclosureCard title="原始 OCR 行">
             <pre
               style={{
                 whiteSpace: "pre-wrap",
@@ -283,9 +282,8 @@ export function MaterialStructurePanel({
             >
               {view.page.rawText}
             </pre>
-          </details>
-          <details open>
-            <summary>恢复段落</summary>
+          </DisclosureCard>
+          <DisclosureCard title="恢复段落" defaultExpanded>
             <div
               style={{ maxHeight: 450, overflow: "auto" }}
               data-testid="structure-paragraphs"
@@ -302,8 +300,7 @@ export function MaterialStructurePanel({
                     {paragraph.issues.length ? " · 待核对" : ""}
                   </p>
                   <p style={{ whiteSpace: "pre-wrap" }}>{paragraph.text}</p>
-                  <details>
-                    <summary>原文与位置</summary>
+                  <DisclosureCard title="原文与位置" headingLevel={4}>
                     <pre style={{ whiteSpace: "pre-wrap" }}>
                       {paragraph.rawText}
                       {"\n"}
@@ -311,13 +308,12 @@ export function MaterialStructurePanel({
                       {"\n"}
                       {paragraph.lineIds.join(", ")}
                     </pre>
-                  </details>
+                  </DisclosureCard>
                 </article>
               ))}
             </div>
-          </details>
-          <details open>
-            <summary>题目归属</summary>
+          </DisclosureCard>
+          <DisclosureCard title="题目归属" defaultExpanded>
             <div
               data-testid="structure-questions"
               style={{ maxHeight: 450, overflow: "auto" }}
@@ -368,7 +364,7 @@ export function MaterialStructurePanel({
                 <p>本页尚无完整题目候选。跨页题目会在后续页面恢复后出现。</p>
               )}
             </div>
-          </details>
+          </DisclosureCard>
         </div>
       )}
     </DisclosureCard>

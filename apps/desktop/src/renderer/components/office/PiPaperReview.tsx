@@ -8,6 +8,7 @@ import {PaperExportEntry} from '../PaperExportEntry';
 import '../paper-workspace.css';
 import {OfficeMutationBoundary} from './OfficeSynchronization';
 import {paperReviewVersions} from './paper-review-versions';
+import {DisclosureCard} from '../ui/DisclosureCard';
 export function PiPaperReview({sessionId,review,reviews=[],onRefresh,running=false,compact=false}:{sessionId:string;review:PaperSummary;reviews?:readonly PaperSummary[];running?:boolean;onRefresh:()=>Promise<void>;compact?:boolean}){
  const [view,setView]=useState<PaperView>(),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const {versions,latest,currentId}=paperReviewVersions(review,reviews);
@@ -27,11 +28,11 @@ export function PiPaperReview({sessionId,review,reviews=[],onRefresh,running=fal
  </Modal.Container></Modal.Backdrop>;
  const action=<><Button variant={compact?'ghost':'secondary'} size={compact?'sm':undefined} data-testid={compact?'pi-context-paper-preview':'pi-paper-preview'} isDisabled={busy} onPress={()=>void open()}>
    {edited?'查看修改后的正式卷':compact?'查看蓝图、题目与答案':'预览并核对试卷'}</Button>
-   {edited&&<details data-testid="pi-paper-versions"><summary>试卷版本</summary>
+   {edited&&<DisclosureCard data-testid="pi-paper-versions" title="试卷版本">
      {latest.restoredFrom&&<p data-testid="pi-paper-restored">当前修订从{restoredIndex===0?'原版':restoredIndex>0?`第 ${restoredIndex+1} 版`:'历史版本'}恢复。</p>}
      {versions.filter(version=>version.id!==currentId).map((version,index)=><Button key={version.id} size="sm" variant="ghost" isDisabled={busy}
        data-testid="pi-paper-history-open" data-paper-id={version.id} onPress={()=>void open(version.id)}>{index===0?'查看原版':`查看第 ${index+1} 版`}</Button>)}
-   </details>}{error&&<p role="alert">{error}</p>}</>;
+   </DisclosureCard>}{error&&<p role="alert">{error}</p>}</>;
  if(compact)return <>{action}{dialog}</>;
  return <ChatTool className="pi-learning-review" data-testid="pi-paper-review" data-paper-id={review.id} data-current-paper-id={currentId} data-state={review.state} defaultExpanded={review.state==='pending'} state={review.state==='pending'?'requires-action':review.state==='confirmed'||edited?'output-available':'output-error'}>
    <ChatTool.Trigger><ClipboardCheck size={16}/><span>核对试卷</span><span>{latest.restoredFrom?'已保存恢复版':edited?'已保存编辑版':{pending:'需要你核对',confirmed:'已确认保存',rejected:'已拒绝'}[review.state]}</span></ChatTool.Trigger>

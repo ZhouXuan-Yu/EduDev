@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {MaterialFinalBookReferences} from './MaterialFinalBookReferences';
 import {MaterialBookMatches} from './MaterialBookMatches';
 import {MaterialSourceReadings} from './MaterialSourceReadings';
@@ -37,7 +38,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
   <button className="secondary-action" data-testid="material-ai-page-open" disabled={draftDirty} onClick={()=>setOpen(v=>!v)}>{open?'收起还原正文':'查看原页与AI还原正文'}</button>
   {draftDirty&&<p role="note" data-testid="material-ai-page-unsaved">原页有临时校对文字。切换还原项、重新核对或收起前，请先复制所需文字，再清除选择和暂存文字；切换资料分区会保留。</p>}
   {open&&<div>
-   {choices.length>1&&<label>查看项目<select data-testid="material-ai-page-select" value={selected} disabled={draftDirty} onChange={e=>{if(!draftDirty)setSelected(Number(e.target.value));}}>{choices.map(n=><option key={n} value={n}>第{start+n-1}项</option>)}</select></label>}
+   {choices.length>1&&<label>查看项目<AppNativeSelect data-testid="material-ai-page-select" value={selected} disabled={draftDirty} onChange={e=>{if(!draftDirty)setSelected(Number(e.target.value));}}>{choices.map(n=><option key={n} value={n}>第{start+n-1}项</option>)}</AppNativeSelect></label>}
    {busy&&<p role="status">正在核对原页来源及两遍回执…</p>}{error&&<p role="alert" data-testid="material-ai-page-error">{error}</p>}
    {!busy&&<button className="secondary-action" data-testid="material-ai-page-refresh" disabled={draftDirty} onClick={()=>{if(!draftDirty)setRevision(n=>n+1);}}>重新核对</button>}
    {view&&<>

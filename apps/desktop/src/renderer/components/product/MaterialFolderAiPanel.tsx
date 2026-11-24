@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useState} from 'react';
 import {Button} from '@heroui/react';
 import {MATERIAL_FOLDER_AI_SCHEMA as schema,type FolderAiView,type FolderAiProcessingMode} from '../../../shared/material-folder-ai';
@@ -32,7 +33,7 @@ export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:st
   <Button size="sm" variant="secondary" isDisabled={busy||booksBusy} onPress={()=>{setForm(!form);setConsent(false);setPublic(false);void window.omniEdu?.getMaterialAiSettings().then(setSettings).catch(e=>setError(message(e)));}} data-testid="folder-ai-open-authorization">{view?'调整本批AI授权':'开启本批AI整理'}</Button>
   {form&&<div data-testid="folder-ai-authorization"><p>授权范围为这个文件夹批次已归档和随后归档的资料，仅发送必要页或题图及OCR文字。使用小智统一DeepSeek账户，按实际调用计费；每单元预留两次，启用原图纠错复核的页面预留三次，额度不足暂停新单元，结果未知不会自动重发。</p>
    {!view&&<><label><input type="checkbox" checked={hasAnswerBooks} disabled={busy||booksBusy} onChange={e=>setHasAnswerBooks(e.target.checked)} data-testid="folder-ai-has-answer-books"/>本批有独立题册与答案册，先配置关联</label>{hasAnswerBooks&&<MaterialFolderBooks key={batchId} batchId={batchId} onReadyChange={setBooksReady} onBusyChange={setBooksBusy}/>}</>}
-   <label>处理方式 <select value={selectedMode} disabled={busy||!!view} onChange={e=>setProcessingMode(e.target.value as 'quality'|'standard')} data-testid="folder-ai-mode"><option value="quality">质量优先（推荐）</option><option value="standard">标准整理</option>{selectedMode==='legacy'&&<option value="legacy">原批次策略</option>}</select></label>
+   <label>处理方式 <AppNativeSelect value={selectedMode} disabled={busy||!!view} onChange={e=>setProcessingMode(e.target.value as 'quality'|'standard')} data-testid="folder-ai-mode"><option value="quality">质量优先（推荐）</option><option value="standard">标准整理</option>{selectedMode==='legacy'&&<option value="legacy">原批次策略</option>}</AppNativeSelect></label>
    <p>{selectedMode==='quality'?`结合本地OCR与原图识别；PDF和图片启用图块纠错复核，每页或每张最多三次调用，PDF支持可判定的跨页关联。${!view||view.wordSourcePolicy==='word-pages.v1'?'Word 自动准备原版 PDF 后按页整理。':'本批 Word 保留已固定的双轮逐题流程。'}文字使用已有双轮流程。`:selectedMode==='standard'?'双轮识别与原图、局部题图对照，疑点保留待核对。':'此批次继续沿用已有处理策略。'}{view?'处理方式已固定，可调整本批调用上限。':'处理方式随本批保存，关闭后继续沿用。'}</p>
    <label>本批调用上限 <input type="number" min={2} max={1000000} value={budget} onChange={e=>setBudget(Number(e.target.value))} data-testid="folder-ai-budget"/></label>
    <label><input type="checkbox" checked={publicMaterial} onChange={e=>setPublic(e.target.checked)} data-testid="folder-ai-public"/>确认本批资料可用于云端处理。除本机可安全遮盖的答案册页眉联系方式，资料不含需保护的个人信息</label>

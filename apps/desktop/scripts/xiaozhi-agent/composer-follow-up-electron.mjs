@@ -130,12 +130,12 @@ try{
 
   await settings();
   const mode=page.getByTestId('pi-queue-mode');
-  assert.equal(await mode.inputValue(),'followUp');
-  await mode.selectOption('steer');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('edudev.composer.follow-up.v1'))||'followUp','followUp');
+  await mode.click();await page.getByRole('option',{name:'补充到本轮',exact:true}).click();
   await leaveSettings();
   await settings();
-  assert.equal(await mode.inputValue(),'steer');
-  await mode.selectOption('followUp');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('edudev.composer.follow-up.v1')),'steer');
+  await mode.click();await page.getByRole('option',{name:'本轮结束后发送',exact:true}).click();
   await leaveSettings();
   check('Follow-up default can be changed and is read back by the real settings page');
   await input().fill('设计五年级分数课的导入，请给两句话。');
@@ -168,6 +168,14 @@ try{
   await row(second.id).getByTestId('pi-instruction-up').click();
   await until(()=>queued().find(item=>item.id===second.id)?.revision===1,'reordered revision');
   await row(second.id).getByTestId('pi-instruction-edit').click();
+  report.indicatorGeometry=await queue().locator('select[data-native-indicator]').evaluateAll(elements=>elements.map(el=>{
+    const read=()=>{const c=getComputedStyle(el),r=el.getBoundingClientRect();return{width:r.width,height:r.height,font:c.font,border:c.border,color:c.color,background:c.backgroundColor,appearance:c.appearance,backgroundImage:c.backgroundImage};};
+    const after=read();el.removeAttribute('data-native-indicator');const before=read();el.setAttribute('data-native-indicator','chevron');return{before,after};
+  }));
+  assert(report.indicatorGeometry.length>0,'Measure a real visible protected selector');
+  for(const item of report.indicatorGeometry)for(const key of ['width','height','font','border','color','background'])assert.equal(item.after[key],item.before[key],'Indicator decoration preserves protected '+key);
+
+
   await row(second.id).getByTestId('pi-instruction-text').fill(revised);
   await row(second.id).getByTestId('pi-instruction-save').click();
   await until(()=>queued().find(item=>item.id===second.id)?.revision===2,'edited revision');

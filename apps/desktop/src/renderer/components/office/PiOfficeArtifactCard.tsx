@@ -62,7 +62,8 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
    if(result?.ok){update({editing:false,officeRevision:result.value.revision});setTab('preview');}else update({error:result?OFFICE_ARTIFACT_ERRORS[result.error]:'拟内容没有保存，请重试。'});
    await onRefresh();
   }catch{if(live.current)update({error:'拟内容状态未能确认，请刷新后检查。'});}
-  finally{lock.current=false;if(live.current)update({busy:false});}
+  // Shared draft state survives card reparenting during snapshot refresh.
+  finally{lock.current=false;update({busy:false});}
  }
  async function decide(action:OfficeArtifactDecision['action']){
   if(lock.current||(action==='approve'&&(!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision))))return;
@@ -73,7 +74,8 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
    if(!result?.ok)update({error:result?OFFICE_ARTIFACT_ERRORS[result.error]:'本次操作没有提交，请重试。'});
    await onRefresh();
   }catch{if(live.current)update({error:'文档状态未能确认，请刷新后检查。'});}
-  finally{lock.current=false;if(live.current)update({busy:false});}
+  // Shared draft state survives card reparenting during snapshot refresh.
+  finally{lock.current=false;update({busy:false});}
  }
  const state=pending||artifact.state==='uncertain'?'requires-action':['approved','generating','prepared','committing'].includes(artifact.state)?'input-available':artifact.state==='saved'?'output-available':'output-error';
  return <ChatTool state={state} isExpanded={expanded} onExpandedChange={setExpanded} className="pi-copy-approval pi-office-artifact"

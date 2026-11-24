@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {type MockExamCatalog,type MockExamCatalogKey,type MockExamHistoryEntry} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
+import {DisclosureCard} from '../ui/DisclosureCard';
 
 export function PiMockExamVersions({identity,current,blocked,onRestore}:{identity:MockExamCatalogKey;current:MockExamCatalog['summary'];
   blocked:boolean;onRestore:(catalog:MockExamCatalog)=>Promise<void>}){
@@ -49,8 +50,7 @@ export function PiMockExamVersions({identity,current,blocked,onRestore}:{identit
     finally{lock.current=false;setRestoring(false);}
   }
 
-  return <details className={styles.versions} data-testid="mock-exam-versions" onToggle={event=>setOpen(event.currentTarget.open)}>
-    <summary>目录版本历史</summary>
+  return <div className={styles.versions}><DisclosureCard data-testid="mock-exam-versions" title="目录版本历史" isExpanded={open} onExpandedChange={setOpen}>
     {open&&<>
       {!history&&!error&&<p role="status">正在读取版本历史…</p>}
       {history&&<ol aria-label="目录版本列表">{history.map(version=><li key={version.revision}>
@@ -76,5 +76,5 @@ export function PiMockExamVersions({identity,current,blocked,onRestore}:{identit
       </section>}
       {error&&<p role="alert">{error} <Button size="sm" variant="ghost" onPress={()=>{setLoading(false);setReload(value=>value+1);}}>重新读取</Button></p>}
     </>}
-  </details>;
+  </DisclosureCard></div>;
 }

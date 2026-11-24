@@ -1,3 +1,4 @@
+import {AppNativeSelect} from './ui/AppNativeSelect';
 import { useEffect, useMemo, useState } from 'react';
 import type {
   AiConfirmationItem,
@@ -242,7 +243,7 @@ export function MistakesWorkspace({
         {loading ? <p data-testid="mistake-loading">正在读取或保存错题状态…</p> : null}
         {!analyses.length ? <p data-testid="mistake-ocr-empty">暂无 OCR 任务。</p> : (
           <>
-            <label>分析记录<select disabled={recognizing||savingCorrection} value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus==='teacher_corrected'?'已校正':item.localOcr?'待校正':'待识别'} · {records.find(record=>record.id===item.recordId)?.title||'错题图片'}</option>)}</select></label>
+            <label>分析记录<AppNativeSelect disabled={recognizing||savingCorrection} value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus==='teacher_corrected'?'已校正':item.localOcr?'待校正':'待识别'} · {records.find(record=>record.id===item.recordId)?.title||'错题图片'}</option>)}</AppNativeSelect></label>
             {selectedAnalysis?.attachmentId&&<StudentMistakeOcr key={selectedAnalysis.id} analysis={selectedAnalysis} onBusy={setRecognizing} onAnalysis={saved=>setAnalyses(current=>current.map(item=>item.id===saved.id?saved:item))}/>}
             <label>教师校正文本<textarea disabled={recognizing||savingCorrection} value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value,sanitizedText:'' })} placeholder="识别图片或手动输入题干" data-testid="mistake-correction-input" /></label>
             <div className="toolbar-row"><button className="secondary-action" onClick={previewSanitized} disabled={loading || recognizing||savingCorrection||!draft.text.trim()} data-testid="mistake-sanitize-button">生成脱敏预览</button><button className="primary-action" onClick={saveCorrection} disabled={savingCorrection||recognizing||!draft.text.trim()} data-testid="mistake-save-correction">{savingCorrection ? '保存中…' : '保存教师校正'}</button></div>

@@ -89,12 +89,11 @@ export function MaterialTableVision({ source, reference, row, column }: {
     <section aria-label={`第 ${row + 1} 行第 ${column + 1} 列视觉回查`} data-testid="table-vision-review">
       <p>第 {row + 1} 行第 {column + 1} 列</p>
       {loading && <p role="status">正在读取待核区域…</p>}
-      {!!previews.length && <details>
-        <summary>查看拟发送的局部</summary>
+      {!!previews.length && <DisclosureCard title="查看拟发送的局部">
         {previews.map(({image, label}) =>
           <img key={label} alt={label}
             style={{ maxWidth: "100%", display: "block" }} src={image} />)}
-      </details>}
+      </DisclosureCard>}
       {candidate ? <div data-testid="table-vision-candidate" role="status">
         <p>DeepSeek · {labels[candidate.state]} · 待核对</p>
         {candidate.text && <p>候选读数 {candidate.text}</p>}
@@ -111,3 +110,4 @@ export function MaterialTableVision({ source, reference, row, column }: {
     </section>
   );
 }
+import {DisclosureCard} from '../ui/DisclosureCard';

@@ -1,3 +1,4 @@
+import {AppNativeSelect} from './components/ui/AppNativeSelect';
 import {PaperBlueprintWorkspace} from './components/PaperBlueprintWorkspace';
 import {openPaperMaterialSource, paperMaterialActions} from './components/paper-ui/paper-material-handoff';
 import {
@@ -1590,10 +1591,10 @@ export function App() {
           {presentation === 'all' ? <WorkspaceLabel number="03" title="证据时间线" description="所有结论都从真实记录、标签和附件回溯。" /> : <h2>学习记录</h2>}
           {showFilters ? (
             <StudentRecordFilters plain={presentation === 'records'}><div className="filter-grid">
-              <select value={recordTypeFilter} onChange={(event) => setRecordTypeFilter(event.target.value)}>
+              <AppNativeSelect aria-label="记录类型" value={recordTypeFilter} onChange={(event) => setRecordTypeFilter(event.target.value)}>
                 <option value="">全部类型</option>
                 {Object.entries(recordTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
+              </AppNativeSelect>
               <input placeholder="科目" value={recordSubjectFilter} onChange={(event) => setRecordSubjectFilter(event.target.value)} />
               <input placeholder="标签" value={recordTagFilter} onChange={(event) => setRecordTagFilter(event.target.value)} />
               <input placeholder="关键词" value={recordKeyword} onChange={(event) => setRecordKeyword(event.target.value)} />
@@ -1648,9 +1649,9 @@ export function App() {
         <div className="form-grid">
           <label>
             记录类型
-            <select data-testid="record-form-type" value={recordForm.recordType} onChange={(event) => setRecordForm({ ...recordForm, recordType: event.target.value })}>
+            <AppNativeSelect data-testid="record-form-type" value={recordForm.recordType} onChange={(event) => setRecordForm({ ...recordForm, recordType: event.target.value })}>
               {Object.entries(recordTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-            </select>
+            </AppNativeSelect>
           </label>
           <label>
             科目

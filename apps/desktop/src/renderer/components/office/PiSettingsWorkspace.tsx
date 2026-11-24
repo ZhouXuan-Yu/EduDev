@@ -30,6 +30,7 @@ import {followUpLabel,alternateFollowUp,saveComposerFollowUp,useComposerFollowUp
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import {SettingsSearchResults} from './SettingsSearchResults';
 import {SettingsNavigation} from './SettingsNavigation';
+import {AppSelect} from '../ui/AppSelect';
 import layoutStyles from '../../ui-system/student-settings/student-settings-layout.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
@@ -79,6 +80,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>(), [sessionId, setSessionId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>(), [dataRoot, setDataRoot] = useState('');
   const [recoveryModel, setRecoveryModel] = useState<RecoveryModelSettings>();
+  const [readFailed, setReadFailed] = useState(false);
   const [locked, setLocked] = useState(true), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const [preferences, setPreferences] = useState(readWorkspacePreferences), [preferenceNotice, setPreferenceNotice] = useState('');
   const navigationPreferences = useWorkbenchPreferences();
@@ -90,19 +92,20 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   const results = useMemo(() => searchSettings(query, XIAOZHI_SETTINGS_SEARCH_ENTRIES, key => key), [query]);
   async function reload() {
     const own = ++request.current;
+    setLoading(true);
     try {
       const api = window.omniEdu; if (!api) throw new Error('unavailable');
       const [list, settings, root] = await Promise.all([api.listAiConversations(), api.getXiaozhiSettings(), api.getDataRoot()]);
       if (!live.current || request.current !== own) return;
       let remembered = '';
       try { remembered = localStorage.getItem('xiaozhi.current-session.v1') || ''; } catch { /* No authority in preferences. */ }
-      const id = list.sessions.find(item => item.id === remembered)?.id || list.sessions[0]?.id || '';
+      const id = list.sessions.find(item => item.id === remembered)?.id || '';
       const current = id ? await api.getXiaozhiSnapshot(id) : undefined;
       if (!live.current || request.current !== own) return;
-      setWorkspace(list); setSessionId(id); setSnapshot(current); setDataRoot(root);
+      setWorkspace(list); setSessionId(id); setSnapshot(current); setDataRoot(root); setReadFailed(false);
       setRecoveryModel(settings.ok ? settings.value : undefined);
       setLocked(!settings.ok || settings.value.locked); setNotice(settings.ok ? '' : '暂时无法读取任务状态，请刷新。');
-    } catch { if (live.current && request.current === own) { setLocked(true); setNotice('设置状态未读取，请刷新重试。'); } }
+    } catch { if (live.current && request.current === own) { setReadFailed(true); setLocked(true); setNotice('设置状态未读取，请刷新重试。'); } }
     finally { if (live.current && request.current === own) setLoading(false); }
   }
   useEffect(() => {
@@ -168,13 +171,13 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
           {!query.trim()&&<button type="button" className={layoutStyles.navigationEntry} aria-current={tab==='capabilities'?'page':undefined} disabled={busy} data-testid="pi-settings-tab-capabilities" onClick={()=>open('capabilities')}>能力中心</button>}
           <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy}>
-            <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
+            <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className={`edu-settings-search-input ${layoutStyles.readablePlaceholder}`} placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
           </SearchField>
         </nav>
         <main className={layoutStyles.main} aria-label={title} data-testid="pi-settings-main">
           {(tab === 'backup' || tab === 'archives') && <nav className={layoutStyles.sectionNavigation} aria-label="备份与归档">
-            <Button variant={tab === 'backup' ? 'secondary' : 'ghost'} isDisabled={busy} data-testid="pi-settings-backup-panel" onPress={() => open('backup')}>本地备份</Button>
-            <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>
+            <Button variant={tab === 'backup' ? 'secondary' : 'ghost'} aria-pressed={tab === 'backup'} isDisabled={busy} data-testid="pi-settings-backup-panel" onPress={() => open('backup')}>本地备份</Button>
+            <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} aria-pressed={tab === 'archives'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>
           </nav>}
           {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
           {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy} onSaved={setRecoveryModel}/>}
@@ -182,7 +185,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {tab === 'capabilities' && <SettingsPage tab={tab}><PiCapabilityCenter sessionId={sessionId||undefined} task={snapshot?.task&&snapshot.task.sessionId===sessionId?{id:snapshot.task.id,requirementsVersion:snapshot.task.requirementsVersion}:undefined} onNavigate={open}/></SettingsPage>}
           {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings sessionId={sessionId} running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
           {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>授权属于当前对话，明确范围内自动执行，新增范围集中申请。</p></div>
-            {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
+            {loading ? <p role="status">正在读取本地授权…</p> : readFailed ? <p>当前对话的授权状态尚未读取，请刷新重试。</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">尚未选定可设置的对话，请返回小智选择或新建对话。</p> : <>
               <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>
                 <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="实际操作按当前主进程授权范围执行，新范围集中申请。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
                 {snapshot.projection.turns.length > 0 && <SettingsSection.Note>该对话已绑定目录。需要其他目录时，请新建对话再选择。</SettingsSection.Note>}
@@ -200,7 +203,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
             {!loading&&<PiResolvedAgentConfig key={sessionId} sessionId={sessionId||undefined} onNavigate={open}/>}
-            {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
+            {loading ? <p role="status">正在读取记录…</p> : readFailed ? <p>对话记录尚未读取，请刷新重试。</p> : !sessionId || !snapshot ? <p>尚未选定可查看的对话，请返回小智选择或新建对话。</p> : <>
               <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
               <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
               <PiDiagnostics key={'diagnostics-'+sessionId} sessionId={sessionId} turns={snapshot.projection.turns} onBusyChange={setChildBusy}/>
@@ -208,10 +211,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2></div>
             <SettingsSection title="对话">
               <SettingsRow label="追加消息的发送时机" hint={`Enter ${followUpLabel(followUp)} · Ctrl+Enter ${followUpLabel(alternateFollowUp(followUp))}`}
-                control={<select aria-label="追加消息的发送时机" data-testid="pi-queue-mode" value={followUp}
-                  onChange={event=>setFollowUpSaveFailed(!saveComposerFollowUp(event.target.value==='steer'?'steer':'followUp'))}>
-                  <option value="followUp">本轮结束后发送</option><option value="steer">补充到本轮</option>
-                </select>}/>
+                control={<AppSelect label="追加消息的发送时机" hideLabel testId="pi-queue-mode" value={followUp}
+                  options={[{id:'followUp',label:'本轮结束后发送'},{id:'steer',label:'补充到本轮'}]}
+                  onChange={value=>setFollowUpSaveFailed(!saveComposerFollowUp(value==='steer'?'steer':'followUp'))}/>}/>
               {followUpSaveFailed&&<p role="alert">发送偏好未保存，请重试。</p>}
             </SettingsSection>
             <SettingsSection title="工作区面板">
@@ -219,7 +221,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}
           {tab === 'archives' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>查看保存在本机的归档记录。</p></div><div className="pi-settings-actions"><Button size="sm" variant="ghost" onPress={() => { setArchive(undefined); void reload(); }}><RefreshCw size={15}/>刷新归档</Button></div>
             <SettingsSection title="已归档对话"><div data-testid="pi-settings-archives">
-              {loading ? <p>正在读取…</p> : !workspace?.archivedSessions.length ? <p data-testid="pi-settings-archive-empty">没有已归档的对话。</p> : workspace.archivedSessions.map(item => <SettingsRow key={item.id} label={item.title} hint={`${item.messageCount} 条消息`} control={<Button size="sm" variant="ghost" data-testid={`pi-archive-read-${item.id}`} onPress={() => void readArchive(item.id, item.title)}>查看记录</Button>}/>)}</div></SettingsSection>
+              {loading ? <p>正在读取…</p> : readFailed ? <p data-testid="pi-settings-archive-read-failed">归档列表尚未读取，请刷新重试。</p> : !workspace?.archivedSessions.length ? <p data-testid="pi-settings-archive-empty">没有已归档的对话。</p> : workspace.archivedSessions.map(item => <SettingsRow key={item.id} label={item.title} hint={`${item.messageCount} 条消息`} control={<Button size="sm" variant="ghost" data-testid={`pi-archive-read-${item.id}`} onPress={() => void readArchive(item.id, item.title)}>查看记录</Button>}/>)}</div></SettingsSection>
             {!!workspace?.archivedFolders.length && <SettingsSection title="已归档项目">{workspace.archivedFolders.map(item => <SettingsRow key={item.id} label={item.name} control={<span>已归档</span>}/>)}</SettingsSection>}
             {archiveLoading && <p role="status">正在读取归档记录…</p>}{archiveNotice && <p role="alert">{archiveNotice}</p>}
             {archive && <section className="pi-settings-archive-reader" data-testid="pi-settings-archive-reader"><h2 className={layoutStyles.subheading}>{archive.title}</h2><p>只读记录</p><OfficeConversation projection={archive.value.projection}/></section>}

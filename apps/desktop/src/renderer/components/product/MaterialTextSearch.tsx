@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import { useEffect, useRef, useState } from 'react';
 import { Button, SearchField } from '@heroui/react';
 import { MATERIAL_SEARCH_SCHEMA as schema, type MaterialTextPage, type MaterialIndexStatus } from '../../../shared/material-search';
@@ -108,7 +109,7 @@ export function MaterialTextSearch({ open, scope, resetKey = 0, disabled = false
         isPending={busy}
         data-testid="materials-text-submit"
     >查找正文</Button>
-   <select
+   <AppNativeSelect
         disabled={disabled}
         className="material-search-mode"
         data-testid="materials-search-mode"
@@ -120,7 +121,7 @@ export function MaterialTextSearch({ open, scope, resetKey = 0, disabled = false
         epoch.current++;
         setBusy(false);
     }}
-    ><option value="hybrid">按题意与关键词</option><option value="keyword">只查关键词</option></select>
+    ><option value="hybrid">按题意与关键词</option><option value="keyword">只查关键词</option></AppNativeSelect>
   </form>
   <p className="teacher-library-caption" data-testid="materials-text-scope">{scope ? '在当前目录、标签、格式和状态范围内检索正文。' : '全部资料正文检索。'}</p>
   {index && <p className="teacher-library-caption" data-testid="materials-index-status">{scope ? '全部资料索引状态：' : ''}{!index.available ? '正文查找暂不可用。' : `${index.indexed} 段正文可查${index.pending ? `，${index.pending} 段正在补充整理；当前结果还不完整` : ''}。多个关键词用空格隔开，可查其中任一关键词。`}</p>}
