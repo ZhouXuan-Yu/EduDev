@@ -16,7 +16,9 @@ const sha=filename=>createHash('sha256').update(fs.readFileSync(filename)).diges
 const report={ok:false,output,main,mainSha256:sha(main),paidRequests:0,checks:[],errors:[]};
 const schemaVersion='xiaozhi.mock-exam-compilation.v1';
 const pdfText=process.argv.includes('--pdf-text');
+const mixedScan=process.env.OMNI_EDU_SYNTHETIC_MOCK_EXAM_SCAN;
 const live=process.argv.includes('--live');
+assert(!mixedScan||!live,'Raster fixture check uses controlled local responses');
 const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-shanghai-mock-paper-catalog';
 assert(apiKey,'The synthetic live scenario requires an authorized DeepSeek credential');
 const names={
@@ -93,12 +95,18 @@ async function fixture(){
   const titles={
     primary:'2025年上海徐汇区九年级数学一模试卷。 计算 7+5。',
     variant:'2025年上海徐汇区九年级数学一模试卷。 计算 15+4。',
-    answers:'2025年上海徐汇区九年级数学一模参考答案。 第1题 12。',
+    answers:mixedScan
+      ?'2025年上海徐汇区九年级数学一模参考答案。 第1题 48平方米。 第2题 27立方单位。 第3题 800米。 第4题 4米。'
+      :'2025年上海徐汇区九年级数学一模参考答案。 第1题 12。',
     conflict:'2025年上海闵行区九年级数学二模试卷。 第1题 12+6。',
     unlinked:'2025年上海浦东新区九年级数学二模答案。 第1题 6。',
     other:'2024年上海徐汇区九年级数学一模试卷。 计算 1+9。',
   };
   for(const [key,text] of Object.entries(titles)){
+    if(key==='primary'&&mixedScan){
+      fs.copyFileSync(mixedScan,path.join(sources,names.primary));
+      continue;
+    }
     if (key==='conflict'&&!pdfText) {
       fs.writeFileSync(path.join(sources,names[key]),`# ${text}\n`,'utf8');
       continue;
@@ -127,6 +135,28 @@ function settleImport(){
     return rows;
   },180000);
 }
+async function verifyMixedScan(resource){
+  const job=await until(()=>sql(
+    "SELECT generation,status,error FROM material_structure_jobs WHERE resource_id=? AND status IN ('complete','partial','failed') ORDER BY rowid DESC LIMIT 1",
+    [resource.id],
+  )[0],180000);
+  assert.notEqual(job.status,'failed',job.error);
+  const pages=sql('SELECT body_json FROM material_structure_pages WHERE generation=? ORDER BY page',[job.generation]);
+  const questions=sql('SELECT body_json FROM material_structure_questions WHERE generation=? ORDER BY rowid',[job.generation]).map(row=>JSON.parse(row.body_json));
+  const found=pages.map(row=>JSON.parse(row.body_json));
+  report.raster={job,questions,geometry:found.map(p=>({columns:p.columns,issues:p.issues,paragraphs:p.paragraphs.map(x=>[x.role,x.column,x.text])}))};
+  assert.equal(sha(resource.local_path),resource.content_hash);
+  assert.equal(found.length,1);
+  assert.equal(found[0].columns.length,2);
+  assert.deepEqual(questions.map(question=>question.number),['1','2','3','4']);
+  const owners=questions.map(question=>[...new Set(found[0].paragraphs.filter(p=>question.paragraphIds.includes(p.id)).map(p=>p.column))]);
+  assert.deepEqual(owners,[[0],[0],[1],[1]]);
+  assert.match(questions[0].stem,/六米/);
+  assert.match(questions[2].stem,/两圈/);
+  assert.doesNotMatch(questions[1].stem,/跑道|小明/);
+  assert(questions.every(question=>question.needsReview),'Scanned candidates must remain in review');
+  check('Raster paper reads left column then right and retains question membership and review status');
+}
 try{
   await launch();
   await fixture();
@@ -137,7 +167,12 @@ try{
   const source=key=>materials.find(row=>row.original_file_name===names[key]);
   assert.equal(source('primary').content_hash,source('duplicate').content_hash);
   assert.notEqual(source('primary').content_hash,source('variant').content_hash);
+  if(mixedScan)await verifyMixedScan(source('primary'));
   await until(()=>sql("SELECT id FROM resource_chunks WHERE resource_id=? AND instr(content_md,'闵行')>0",[source('conflict').id])[0],90000);
+  if(mixedScan&&pdfText){
+    await until(()=>sql("SELECT id FROM resource_chunks WHERE resource_id=? AND instr(content_md,'48平方米')>0",
+      [source('answers').id])[0]);
+  }
   const pair=await page.evaluate(({paper,answers})=>window.omniEdu.setMaterialBookPair({
     schemaVersion:'xiaozhi.material-book-pair.v1',action:'link',resourceId:paper.id,version:paper.content_hash,
     revision:0,answerId:answers.id,answerVersion:answers.content_hash,
@@ -340,6 +375,17 @@ try{
   assert.deepEqual((await app.evaluate(()=>globalThis.mockExamWire)).calls,[]);
   assert.deepEqual(report.errors,[]);
   check('Teacher enters the teaching workbench from navigation after restart and reads the restored version with no model replay');
+  if(mixedScan){
+    const drafts=sql(`SELECT q.source_title,a.needs_attention,
+      json_extract(q.archive_json,'$.sourceChecked') sourceChecked
+      FROM question_bank_items q JOIN material_question_members a ON a.question_id=q.id
+      WHERE q.source_title IN (?,?)`,[names.primary,names.duplicate]);
+    assert(drafts.every(row=>row.needs_attention===1&&row.sourceChecked!==1));
+    const formalMatches=await page.evaluate(()=>window.omniEdu.searchQuestionBank({query:'水池 正方体 跑道 长方形',limit:20}));
+    assert(!formalMatches.some(row=>[names.primary,names.duplicate].includes(row.sourceTitle)));
+    report.raster.drafts=drafts;
+    check('Neither the scan nor its exact copy becomes eligible for formal question search after catalogue confirmation');
+  }
   report.ok=true;
 }catch(error){
   report.errors.push(String(error?.stack||error));
