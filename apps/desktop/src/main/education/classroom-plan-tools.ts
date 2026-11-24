@@ -23,7 +23,7 @@ function outline(scene:ClassroomPlanScene,index:number,document:ClassroomPlanDoc
  return{id:scene.sceneId,type:scene.type,title:scene.title,description:`${scene.activity}\n教学目标：${document.objectives.join('；')}。本页安排${scene.durationMinutes}分钟。`,keyPoints:document.objectives,order:index,...(scene.type==='quiz'?{quizConfig:{questionCount:1,difficulty:'medium',questionTypes:['single']}}:{})};
 }
 /** Same Pi owns every model call. OpenMAIC only supplies prompts and normalizes Pi JSON. */
-export function createClassroomPlanTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomPlanState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context:()=>ClassroomContext;binding?:ClassroomPlanStart;naturalDraft?:NaturalLessonRequirements}):ToolDefinition[]{
+export function createClassroomPlanTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomPlanState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context:()=>ClassroomContext;binding?:ClassroomPlanStart;naturalDraft?:NaturalLessonRequirements;revisionTools?:[ToolDefinition,ToolDefinition]}):ToolDefinition[]{
  const check=(signal?:AbortSignal)=>{if(signal?.aborted||!options.current())throw Error('cancelled');};
  const binding=():ClassroomPlanBinding=>{if(options.binding?.mode!=='generate')throw Error('not_confirmed');return options.binding;};
  const read=(signal?:AbortSignal)=>options.state.readForRun(options.sessionId,options.runId,binding(),()=>options.current()&&!signal?.aborted);
@@ -98,5 +98,5 @@ export function createClassroomPlanTools(options:{sessionId:string;runId:string;
   tools[0].description+=' 本轮是教师显式改用新版依据：先education_read_classroom_plan读取历史教案，再实读本次新登记锚点；保留场景ID/类型，逐目标重映射并调整目标/活动/检查，保存同谱系下一版草稿。旧批准不继承，缺任何目标的新映射不提交；不要创建第二个无关教案。';
   tools[1].description='读取教师本次绑定的待重对齐历史教案及旧采用记录，仅供比较。旧依据可已撤回，返回不计本轮实读；必须另读新登记锚点才能提交新草稿。无参数，不能选择其他id。';
  }
- return tools;
+ return options.revisionTools ? [...options.revisionTools.toReversed(),...tools.slice(2)] : tools;
 }

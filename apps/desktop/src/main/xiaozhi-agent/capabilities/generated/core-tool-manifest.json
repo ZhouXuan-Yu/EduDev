@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "5db471c74152f3c0bcec6cdb665e9d4501adb4c0fdb44bc8ee55364a7213f2fd",
+  "sourceHash": "b7bc34f48d9ebedfe092d803babed18c4c27172604fcdbb3834cf24c7067d43c",
   "sources": [
     {
       "file": "package-lock.json",
@@ -140,11 +140,11 @@
     },
     {
       "file": "src/main/education/classroom-plan-admission.ts",
-      "sha256": "292c68b87d00e304dddfbafcf700c0a09b22b13afba7763b4a45c34b756a916c"
+      "sha256": "842a30424b86833c2cd60308bb994c56ed2249265902103d52899348180ac705"
     },
     {
       "file": "src/main/education/classroom-plan-tools.ts",
-      "sha256": "0ce6ed6c7c31c6ff70015225c3809bc97f090d60b297a3efb42b464915105a7a"
+      "sha256": "f644a0e4559ec5e3b5d27549366eec3cb7e3ad59bdced4bf298b9b45a5d2741b"
     },
     {
       "file": "src/main/education/classroom-pptx.ts",
@@ -173,6 +173,14 @@
     {
       "file": "src/main/education/learning-review-coordinator.ts",
       "sha256": "6a3a7e3227045f69cd010f45d6091921b7106c38daf0461ba64e48975bf90e44"
+    },
+    {
+      "file": "src/main/education/lesson-revision-request.ts",
+      "sha256": "31438786ea0d9d3f6a48c149ee87fb20065f4dcd2858735339df1c67b2b3733e"
+    },
+    {
+      "file": "src/main/education/lesson-revision-tools.ts",
+      "sha256": "8946ffcd0a5406f4cbd0e9520a4ddf727a99f11c066bc3f2f22f26021c5ca6bb"
     },
     {
       "file": "src/main/education/math-host.ts",
@@ -848,7 +856,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "3e9c2906e88b9f484dbeca13acdc445e834f78cba5e14d88acd0d3b13ef5ddf7"
+      "sha256": "b31162111961a7c4af5e727f3e51988a997f39709923adc8f5f6340798cddbcc"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1548,7 +1556,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "89999e9956802e47ffce43b83fa112289db968513dc4091a4216f2ddc7426a34"
+      "sha256": "5aec85461e16f7962fc85e6752430a2fd021043d9e5d5a2704d2c8d529ee79fe"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1584,7 +1592,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "6b92cf024bfd8cc09190ba3e3a5e3e3d32bb5dc937ef77b857a8ba5aac3a33a2"
+      "sha256": "55e93abf4de70e29687e14caabb99d1d0993979c924f4b28e91148cc9d3c9347"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -2644,7 +2652,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "262c307701b0857a8d16bcc5bb133d18119415b62b0e53266792b6321a5c2047"
+      "sha256": "f1af4ad31453dba69a12e4639ebdeb820ed4aa0a30ccd58d32897c141cca36be"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2744,7 +2752,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "e7066af844cb9d42ece601c4b2e5af4940f800bcd03b2d8acd77e988319245a8"
+      "sha256": "843262724da0328b9fe42594c0d3afbc36fd74ac18cf89b04a907c4b0499a525"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

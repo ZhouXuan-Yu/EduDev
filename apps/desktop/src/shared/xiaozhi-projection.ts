@@ -34,6 +34,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   budget_exhausted: '本轮已达到运行预算，后续调用已停止。可调整预算后发起新一轮；已完成的操作仍保留。',
   nothing_to_compact: '当前没有需要压缩的较早上下文。可以继续对话；本次没有请求模型。',
   lesson_draft_missing: '本轮未保存成可编辑教案。可以在原对话重新发起教案，或从互动课堂的教案入口重试。',
+  lesson_revision_missing: '本轮没有保存教案修改。请核对原教案的标题和要修改的栏目，再从原对话重试。',
   lesson_basis_ambiguous: '本轮无法确定唯一的备课资料版本。请在教学工作台的互动课堂中选择具体版本，一次最多选三份。',
   lesson_basis_unavailable: '本轮指定的备课依据不可用。请回资料库核对完整名称、学科、年级和依据登记状态，然后重试。',
   context_limit: '本次资料超出当前上下文可容纳范围。原记录保留，请分批提供资料或新建会话继续。',

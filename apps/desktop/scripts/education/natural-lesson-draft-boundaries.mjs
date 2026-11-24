@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {naturalLessonDraft} from "../../src/main/education/natural-lesson-draft.ts";
 import {includeLessonMaterials, requestedLessonMaterials} from "../../src/main/education/natural-lesson-materials.ts";
+import {lessonRevisionRequest} from "../../src/main/education/lesson-revision-request.ts";
 
 const accepted = (text, grade, subject, requestedMinutes) => assert.deepEqual(naturalLessonDraft(text),
   {mode:"outline",lesson:{subject,grade,curricula:[]},...(requestedMinutes===undefined?{}:{requestedMinutes})});
@@ -53,3 +54,14 @@ assert.match(includeLessonMaterials("概要", [{...first, title:"一\n二"}], 1)
 assert.match(includeLessonMaterials("讲义".repeat(744), [first], 1).issue, /超过 1500/);
 assert.deepEqual(includeLessonMaterials("原有内容"), {content:"原有内容", materialCount:0});
 console.log("PASS requested synthetic texts are complete, distinct, explicitly labeled, and bounded");
+
+for (const [request, expected] of [
+  ["请只修改这份教案的板书设计，改成左侧观察右侧解释，作业保持原样。",{fields:["boardwork"]}],
+  ["请调整《史料阅读》教案的教学重点和课后反思。",{title:"史料阅读",fields:["focus","reflection"]}],
+  ["请把《作业交流》教案的板书改为‘先展示作业，再讲重难点’。",{title:"作业交流",fields:["boardwork"]}],
+  ["请把教案中的板书分享给我看看。",undefined],
+  ["请新建教案，分析教学重点。",undefined],
+  ["请修改《史料阅读》和《口语表达》教案的作业。",undefined],
+  ["请调整讲义的作业。",undefined],
+]) assert.deepEqual(lessonRevisionRequest(request),expected,request);
+console.log("PASS lesson revision targets known fields before the replacement prose and never selects unrelated drafts");

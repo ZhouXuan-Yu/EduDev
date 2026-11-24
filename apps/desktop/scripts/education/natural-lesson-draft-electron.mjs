@@ -6,11 +6,16 @@ import { DatabaseSync } from "node:sqlite";
 import { _electron } from "playwright";
 import { testMain, assertIsolatedPiMain } from "../acceptance/build-root.mjs";
 import { lessonDocument } from "./teaching-lesson-fixture.mjs";
-import { openLessonFromChat } from "./teaching-lesson-task-journey.mjs";
+import { lessonCard, openLessonFromChat } from "./teaching-lesson-task-journey.mjs";
 
 const acceptance = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
 const useLive = process.env.OMNI_EDU_NATURAL_LESSON_LIVE === "1";
+const testRevision = process.argv.includes("--revision");
+const testAmbiguous = process.argv.includes("--ambiguous");
+assert(!testRevision || !useLive);
+assert(!testAmbiguous || testRevision);
+const revisionBoardwork = "左侧列出观察事实，右侧列出解释与反例，中间用箭头连接证据。";
 const apiKey = useLive ? process.env.DEEPSEEK_API_KEY : "local-fixture-only";
 assert(apiKey);
 const root = fs.mkdtempSync(path.join(acceptance, "lesson-from-chat-"));
@@ -90,7 +95,35 @@ async function launch(cold) {
           return remote(address,init);
         }
         let toolCall, message, receipt;
-        if(wire.mode === "draft" && stage < 2) {
+        if(wire.mode === "clone") {
+          if(stage===0){
+            if(!tool) throw Error("Second draft did not use the original classroom tool");
+            toolCall={name:tool.name,arguments:JSON.stringify({...input.draft,title:"独立的合成课观察复习",details:{...input.draft.details,boardwork:"第二份教案专用板书，保持原样。"}})};
+          }else message="第二份独立教案草稿已保存。";
+        } else if(wire.mode === "revision") {
+          const methods = request.tools?.map(entry=>entry.function.name).sort();
+          if(JSON.stringify(methods)!==JSON.stringify(["ask_teacher","education_propose_classroom_outline","education_read_classroom_plan"])) throw Error("Revision admitted a different tool set");
+          const edit = request.tools.find(entry=>entry.function.name==="education_propose_classroom_outline").function;
+          if(JSON.stringify(edit.parameters.required)!==JSON.stringify(["boardwork"])) throw Error("Revision schema is not limited to boardwork");
+          const latest = request.messages.filter(entry=>entry.role==="tool").at(-1)?.content || "{}";
+          const editStep=input.testAmbiguous&&stage>0?stage-2:stage;
+          if(input.testAmbiguous&&stage===1){
+            const candidates=JSON.parse(latest.split("\n")[0]);
+            if(candidates.error!=="lesson_target_required" || candidates.choices?.length!==2) throw Error("Ambiguous target was not handed to the teacher");
+            toolCall={name:"ask_teacher",arguments:JSON.stringify({question:"请选要修订的教案。",options:candidates.choices})};
+          }else if(editStep===0) toolCall={name:"education_read_classroom_plan",arguments:"{}"};
+          else if(editStep===1){
+            if(JSON.parse(latest.split("\n")[0]).current?.boardwork!==input.draft.details.boardwork) throw Error("Revision tool did not read the original boardwork");
+            toolCall={name:edit.name,arguments:JSON.stringify({boardwork:input.revisionBoardwork,homework:"不应保存的字段"})};
+          }else if(editStep===2){
+            if(latest.includes('"status":"draft"')) throw Error("The out-of-scope patch saved a draft");
+            toolCall={name:edit.name,arguments:JSON.stringify({boardwork:input.revisionBoardwork})};
+          }else if(editStep===3){
+            receipt=JSON.parse(latest.split("\n")[0]);
+            if(receipt.success!==true || receipt.revision!==2 || receipt.status!=="draft") throw Error("Revision did not return the new local draft receipt");
+            message="教案第 2 版已保存为草稿，只修改了板书设计。";
+          }else throw Error("Unexpected revision stage");
+        } else if(wire.mode === "draft" && stage < 2) {
           if(!JSON.stringify(request.messages).includes(input.prompt) ||
              !tool?.parameters.required.includes("details") || !tool.parameters.properties.scenes.items.required.includes("kind")) {
             throw Error("Normal chat did not bind the structured lesson tool");
@@ -162,7 +195,7 @@ async function launch(cold) {
         {headers:{"Content-Type":"text/event-stream"}});
       } catch(error) { wire.errors.push(String(error)); throw error; }
     };
-  }, { prompt, draft:draftInput, cold, live: useLive });
+  }, { prompt, draft:draftInput, cold, live: useLive, revisionBoardwork, testAmbiguous });
   const page = await app.firstWindow();
   await page.getByTestId("office-prompt-input").waitFor({ timeout: 60000 });
   await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
@@ -231,7 +264,71 @@ try {
   await content.scrollIntoViewIfNeeded();
   await page.screenshot({path:path.join(root,"lesson-from-chat.png")});
   check("Both labelled full texts are stored in the editable Teaching Content field");
-  if(!useLive) {
+  let expectedHead=record.id;
+  if(testRevision){
+    await page.getByTestId("classroom-plan-source-chat").click();
+    await until(async()=>!await page.getByTestId("office-prompt-input").isDisabled());
+    let independent;
+    if(testAmbiguous){
+      await app.evaluate(()=>{globalThis.lessonDraftWire.mode="clone";});
+      await send(page,"新任务：请生成一份独立的五年级语文教案，40分钟。主题是观察复习。");
+      independent=await until(()=>{
+        const [other]=query("SELECT c.* FROM ai_confirmation_items c JOIN ai_agent_runs r ON r.id=c.run_id WHERE c.action_type='pi_classroom_plan' AND c.id<>? AND r.status='succeeded'",record.id);
+        return other;
+      });
+      await until(async()=>!(await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id)).running);
+    }
+    await app.evaluate(()=>{globalThis.lessonDraftWire.mode="revision";});
+    await send(page,"请只修改这份教案的板书设计，改成左侧列观察、右侧列解释与反例，其他栏目保持原样。");
+    if(testAmbiguous){
+      const pending=page.getByTestId("pi-composer-pending-panel").getByTestId("pi-teacher-question");
+      await pending.waitFor({timeout:60000});
+      assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,2);
+      await pending.getByRole("button").filter({hasText:payload.document.title}).click();
+      await pending.getByTestId("pi-question-submit").click();
+    }
+    const nextRun=await until(()=>{
+      const [row]=query("SELECT id,status,error_message FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1");
+      return row?.id!==(independent?.run_id||record.run_id)&&["failed","succeeded"].includes(row?.status)?row:undefined;
+    });
+    assert.equal(nextRun.status,"succeeded",nextRun.error_message);
+    const saved=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan' ORDER BY rowid");
+    assert.equal(saved.length,testAmbiguous?3:2);
+    const original=saved[0], revised=saved.at(-1);
+    const version=JSON.parse(revised.payload_json);
+    assert.equal(original.payload_json,record.payload_json);
+    assert.equal(revised.run_id,nextRun.id);
+    assert.equal(version.root,record.id);
+    assert.equal(version.previous,record.id);
+    assert.equal(version.revision,2);
+    assert.deepEqual(version.context,payload.context);
+    const expected=structuredClone(payload.document);
+    expected.lesson.details.boardwork=revisionBoardwork;
+    assert.deepEqual(version.document,expected);
+    assert.equal(JSON.parse(revised.result_json).state,"draft");
+    const finalTask=query("SELECT value_json FROM app_settings WHERE key=?",`xiaozhi.task.v1:${task.view.id}`)[0];
+    if(testAmbiguous){
+      assert.equal(saved[1].payload_json,independent.payload_json);
+      const prior=JSON.parse(finalTask.value_json).view;
+      assert.equal(prior.lastRunId??prior.origin.runId,record.run_id);
+      assert.equal(prior.requirementsVersion,task.view.requirementsVersion);
+      const sibling=query("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'")
+        .map(row=>JSON.parse(row.value_json).view).find(view=>view.origin.runId===independent.run_id);
+      assert.equal(sibling.lastRunId??sibling.origin.runId,independent.run_id);
+      check("Two drafts require the existing teacher-selection popup; choosing the older one changes neither independent draft nor task");
+    }else assert.equal(JSON.parse(finalTask.value_json).view.lastRunId,nextRun.id);
+    await until(async()=>!(await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id)).running);
+    expectedHead=revised.id;
+    await lessonCard(page,record.id).and(page.locator(`[data-plan-id="${expectedHead}"]`)).waitFor({timeout:30000});
+    await openLessonFromChat(page,record.id,expectedHead);
+    const fields=page.getByTestId("lesson-content-toggle");
+    await fields.locator("button[aria-expanded]").first().click();
+    assert.equal(await fields.getByTestId("lesson-detail-boardwork").inputValue(),revisionBoardwork);
+    await page.screenshot({path:path.join(root,"lesson-local-revision.png")});
+    report.wire=await app.evaluate(()=>globalThis.lessonDraftWire);
+    assert.deepEqual(report.wire.errors,[]);
+    check("Natural revision rejects an extra field, preserves the original task, lesson and evidence, and opens the exact next draft");
+  }else if(!useLive) {
     await page.getByTestId("classroom-plan-source-chat").click();
     await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
     await app.evaluate(()=>{globalThis.lessonDraftWire.mode="consultation";});
@@ -288,12 +385,12 @@ try {
 
   await app.close(); app=undefined;
   const cold=await launch(true);
-  await openLessonFromChat(cold,record.id,record.id);
+  await openLessonFromChat(cold,record.id,expectedHead);
   const coldDetails = cold.getByTestId("lesson-content-toggle");
   await coldDetails.locator("button[aria-expanded]").first().click();
   assert.equal(await coldDetails.getByTestId("lesson-detail-content").inputValue(),savedContent);
   assert.equal((await app.evaluate(()=>globalThis.lessonDraftWire.stages)).length,0);
-  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
+  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,testAmbiguous?3:testRevision?2:1);
   check("Cold start opens the same stored lesson without replaying the provider request");
   report.ok = true;
 } catch(error) {

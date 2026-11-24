@@ -149,6 +149,7 @@ export interface PiXiaozhiOptions {
   buoyancyTools?: ToolDefinition[];
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
+  lessonRevision?: true;
   naturalLessonDraft?: NaturalLessonRequirements & {subject:string;grade:string;hasDraft:()=>Promise<boolean>;
     basis?:{sources:{resourceId:string;offset:number}[];hasPendingRead:()=>boolean}};
   directOriginalPaper?: true;
@@ -1019,12 +1020,18 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push('skill_create');
     prompt += '\n教师要求保存可复用流程或已验证的稳定方法时，使用skill_create自动验证并发布个人纯说明技能。只保存通用方法，不保存学生信息、教师私有原文、凭据、脚本或外链。技能声明不能授予权限；宿主在下一安全Run激活合格版本。';
   }
-  const domainDefinitions=options.answerOnly?[]:taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
+  const lessonRevisionNames=new Set<string>(['education_read_classroom_plan','education_propose_classroom_outline','ask_teacher']);
+  const domainDefinitions=options.answerOnly?[]:options.lessonRevision?definitions.filter(tool=>lessonRevisionNames.has(tool.name))
+    :taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   if(options.answerOnly)names.length=0;
+  if(options.lessonRevision){
+    names.splice(0,names.length,...domainDefinitions.map(tool=>tool.name));
+    prompt+='\n本轮是修订已有教案，新的课堂大纲与文件工具不适用。先调用 education_read_classroom_plan。若返回候选，按回执逐字提供选项请老师选择，回答后重新读。随后仅将明确指定栏目的完整新文本提交给 education_propose_classroom_outline。其他内容由原版保留。成功后说明生成的待确认版本和修改栏目，告知老师可回原教案卡核对。只根据真实回执报告保存。';
+  }
   const allowedPaperThinking=options.thinkingPolicy?.requested;
   const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')
     &&domainDefinitions.some(def=>def.name===PAPER_TOOLS[0]);
-  const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions,
+  const toolCatalog=quality&&!options.answerOnly&&!options.lessonRevision?createEducationToolCatalog(prompt,domainDefinitions,
     options.naturalLessonDraft?[NATURAL_LESSON_TOOL,...(options.naturalLessonDraft.basis?['office_read_material']:[])]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
