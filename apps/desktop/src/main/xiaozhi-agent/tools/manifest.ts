@@ -1,3 +1,4 @@
+import { NATURAL_LESSON_TOOL } from '../../../shared/classroom-plan';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
 import {PROPOSE_HANDOUT_EDIT,READ_HANDOUT_EDIT} from '../../../shared/teaching-handout-edit';
@@ -16,7 +17,7 @@ const external=['office_browser'];
 safe.push('find_education_tools');
 safe.push('education_verify_equation');
 safe.push('education_read_teaching_lesson');
-writes.push('education_export_teaching_lesson');
+writes.push('education_export_teaching_lesson',NATURAL_LESSON_TOOL);
 safe.push(READ_TEACHING_HANDOUT);
 writes.push(EXPORT_TEACHING_HANDOUT);
 safe.push(READ_HANDOUT_EDIT);

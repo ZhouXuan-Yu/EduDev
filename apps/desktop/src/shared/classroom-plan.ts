@@ -6,6 +6,7 @@ import {materialId} from './materials';
 
 export const CLASSROOM_PLAN_SCHEMA='xiaozhi.classroom-plan.v1' as const;
 export const CLASSROOM_PLAN_ACTION='pi_classroom_plan';
+export const NATURAL_LESSON_TOOL='education_propose_natural_lesson' as const;
 export const CLASSROOM_PLAN_TOOLS=['education_propose_classroom_outline','education_read_classroom_plan','education_prepare_planned_scene','education_save_classroom_scene','education_finish_classroom_plan'] as const;
 export type ClassroomPlanScene={sceneId:string;type:'slide'|'quiz';title:string;activity:string;durationMinutes:number};
 export type ClassroomPlanDocument={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;title:string;objectives:string[];totalMinutes:number;scenes:ClassroomPlanScene[];lesson?:TeachingLesson};

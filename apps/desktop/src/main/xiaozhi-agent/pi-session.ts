@@ -4,7 +4,7 @@ import type {ModelToolPrivacy} from './model-tool-privacy';
 import {NATIVE_SESSION_FORMAT_VERSION} from './native-session-format';
 import {assertCurrentPermission} from './permissions/current';
 import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
-import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
+import {CLASSROOM_PLAN_TOOLS,NATURAL_LESSON_TOOL} from '../../shared/classroom-plan';
 import {PAPER_TOOLS} from '../../shared/paper-blueprint';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
@@ -147,7 +147,7 @@ export interface PiXiaozhiOptions {
   buoyancyTools?: ToolDefinition[];
   quantityTools?: ToolDefinition[];
   classroomTools?: ToolDefinition[];
-  naturalLessonDraft?: {subject:string;grade:string;hasDraft:()=>Promise<boolean>};
+  naturalLessonDraft?: {subject:string;grade:string;requestedMinutes?:number;hasDraft:()=>Promise<boolean>};
   directOriginalPaper?: true;
   classroomExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   teachingLessonExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
@@ -643,21 +643,26 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(classroomEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom.v1'||JSON.stringify(entry.data)!==JSON.stringify(classroomIdentity))||classroomEntries.length&&!options.classroomTools)throw new Error('configuration');
   if(options.classroomTools){
     const actual=options.classroomTools.map(tool=>tool.name);
-    if(actual.join(',')!==CLASSROOM_TOOLS.join(',')&&actual.join(',')!==[...CLASSROOM_TOOLS,...CLASSROOM_PLAN_TOOLS].join(','))throw new Error('configuration');
+    const planTools=options.naturalLessonDraft?[NATURAL_LESSON_TOOL,...CLASSROOM_PLAN_TOOLS.slice(1)]:CLASSROOM_PLAN_TOOLS;
+    if(actual.join(',')!==CLASSROOM_TOOLS.join(',')&&actual.join(',')!==[...CLASSROOM_TOOLS,...planTools].join(','))throw new Error('configuration');
+    const hasPlanTool=actual.includes(planTools[0]);
     if(!classroomEntries.length)manager.appendCustomEntry('xiaozhi.education.classroom.v1',classroomIdentity);
     names.push(...options.classroomTools.map(tool=>tool.name));
-    if(options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0])){
+    if(hasPlanTool){
       const identity={version:1,tools:[...CLASSROOM_PLAN_TOOLS],source:'sqlite-confirmed-outline-checkpoints-v1'};
       const entries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom-plan.'));
       if(entries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom-plan.v1'||JSON.stringify(entry.data)!==JSON.stringify(identity)))throw Error('configuration');
       if(!entries.length)manager.appendCustomEntry('xiaozhi.education.classroom-plan.v1',identity);
       if(options.naturalLessonDraft){
-        const {subject,grade}=options.naturalLessonDraft;
-        prompt+=`\n本轮已确定为新的可编辑教案草稿，lesson.subject=${JSON.stringify(subject)}，lesson.grade=${JSON.stringify(grade)}。先用 education_propose_classroom_outline 保存完整结构化教案。教师没有在本轮选定课标或教材，mappings 留空、missingSources 明确待对照；自拟示例在教案中标明。落实用户要求的总时长及六个栏目。收到成功回执后简短说明草稿在哪里核对；按回执如实说明失败。教师自行确认，文件另行导出。`;
-        prompt+='\n提交前核对 lesson.phases 必须各有至少一个 introduction、activity、practice、assessment。单独安排 assessment，可与 quiz 场景关联。每个场景只出现一次且顺序一致。每项目标都由 activity 或 practice 覆盖，并在至少一条 checks 中检查；checks 中的编号必须属于该环节的 objectiveIndices。';
+        const {subject,grade,requestedMinutes}=options.naturalLessonDraft;
+        prompt+=`\n为${JSON.stringify(grade)}的${JSON.stringify(subject)}编写新的可编辑教案，调用 ${NATURAL_LESSON_TOOL} 保存。未选正式课标或教材，系统会标为待对照。自拟示例在教案中标明。收到成功回执后说明在哪里核对。教师自行确认，文件另行导出。`;
+        if(requestedMinutes!==undefined)prompt+=`\n教师要求全课 ${requestedMinutes} 分钟。totalMinutes 必须为 ${requestedMinutes}，scenes 的 durationMinutes 之和也必须为 ${requestedMinutes}。若工具返回课时差异，按差值调整相关环节后再提交。`;
+        prompt+='\n先写 details 的 content（教学内容）、focus（重点）、difficulty（难点）、boardwork（板书）、homework（任务及提交方式）、reflection（课后应查看的学生证据和调整问题）。objectives 的每项包含可观察的 goal 和对应 criterion。使用工具 schema 指定的字段；按反馈的字段路径修正。';
+        prompt+='\n如果教师需要自拟材料，给出可直接使用的全文和清楚的模拟标记。活动、检查题和达成标准引用自拟材料里的原句或确切事实，区分只有一份材料提到、两份材料都提到和仍待核对的说法。';
+        prompt+='\n按教学顺序写 scenes，每项 kind 从 introduction、activity、practice、assessment、closure 选择。前四种至少各一项。教学最后才测的目标，也要先在 activity 或 practice 里安排一次真实练习并填该目标编号。提交前逐个核对所有目标编号同时出现在 activity 或 practice 的 objectiveIndices 以及至少一条检查题的 objectiveIndices。objectiveIndices 从 0 编号，检查题所用编号必须属于当前环节，expectedEvidence 和 criterion 要能据实际学生回答判定。';
       }else prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
     }
-    if(!options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0]))prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
+    if(!hasPlanTool)prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
   }
   if(capabilityEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.deeptutor-reading.v1'||JSON.stringify(entry.data)!==JSON.stringify(capabilityIdentity))
     ||capabilityEntries.length&&!options.educationCapabilityTools)throw new Error('configuration');
@@ -1013,7 +1018,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')
     &&domainDefinitions.some(def=>def.name===PAPER_TOOLS[0]);
   const toolCatalog=quality&&!options.answerOnly?createEducationToolCatalog(prompt,domainDefinitions,
-    options.naturalLessonDraft?[CLASSROOM_PLAN_TOOLS[0]]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
+    options.naturalLessonDraft?[NATURAL_LESSON_TOOL]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
   const governance = options.toolGovernance ? await phase('pi_register_tool_contracts',signal => options.toolGovernance!.register(taskDefinitions,signal)) : undefined;
@@ -1194,11 +1199,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const transformed=await previous?.(payload,model),actual=transformed===undefined?payload:transformed;
         const configured=applyThinkingPayload(actual,thinkingPolicy);
         const tools=(configured as {tools?:{function?:{name?:string}}[]})?.tools;
-        if(requireLessonTool&&!tools?.some(tool=>tool.function?.name===CLASSROOM_PLAN_TOOLS[0]))throw Error('configuration');
+        if(requireLessonTool&&!tools?.some(tool=>tool.function?.name===NATURAL_LESSON_TOOL))throw Error('configuration');
         // DeepSeek accepts a named tool choice only in non-thinking mode. This is
         // the dedicated no-source lesson flow, including its receipt summary.
         const resolved=naturalLesson?{...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',
-          tool_choice:requireLessonTool?{type:'function',function:{name:CLASSROOM_PLAN_TOOLS[0]}}:'none'}
+          tool_choice:requireLessonTool?{type:'function',function:{name:NATURAL_LESSON_TOOL}}:'none'}
           :preferPaperTool&&tools?.some(tool=>tool.function?.name===PAPER_TOOLS[0])?
             {...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',tool_choice:{type:'function',function:{name:PAPER_TOOLS[0]}}}
             :configured;

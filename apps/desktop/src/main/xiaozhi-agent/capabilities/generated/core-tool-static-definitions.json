@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "68df98c126cc12ea0c5d6bb5b7a7f85b3e360d2f2f8cd390411df8bf8ba4eb48",
+  "sourceFingerprint": "05f9df4912591ca25cedc8d6a1b3445fa303002177af87ce8e9cabe2ea6419b8",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -3398,6 +3398,7 @@
     "education_propose_classroom_outline",
     "education_propose_handout_edit",
     "education_propose_learning_change",
+    "education_propose_natural_lesson",
     "education_propose_original_question",
     "education_propose_original_questions",
     "education_propose_questions",

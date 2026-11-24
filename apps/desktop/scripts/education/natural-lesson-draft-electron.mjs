@@ -20,9 +20,23 @@ const main = testMain(desktop);
 const draft = structuredClone(lessonDocument);
 draft.lesson.mappings = [];
 draft.lesson.missingSources = ["本轮未选用课标或教材，请教师对照适用版本。"];
-const prompt = "请生成一份五年级语文教案，40分钟，主题是从观察到有依据的解释，包含正式教案的所有栏目。";
+draft.scenes.forEach((scene,index) => {
+  scene.sceneId = draft.lesson.phases[index].sceneId = "lesson-" + (index+1);
+});
+const draftInput = {
+  title:draft.title,totalMinutes:draft.totalMinutes,
+  objectives:draft.objectives.map((goal,index)=>({goal,criterion:draft.lesson.goalCriteria[index]})),
+  preparation:draft.lesson.preparation,details:draft.lesson.details,
+  scenes:draft.scenes.map(({title,activity,durationMinutes},index)=>{
+    const {kind,objectiveIndices,teacherPrompt,checks}=draft.lesson.phases[index];
+    return {title,kind,activity,durationMinutes,objectiveIndices,teacherPrompt,checks};
+  }),
+};
+const prompt = useLive
+  ? "请编写一份七年级历史教案。整节课45分钟，主题是比较两份关于同一校史展品的回忆。请自拟两份简短、观点有出入的展品记录，明确标注为模拟史料。学生要区分史料记录与推断，并根据证据说明暂不能确认的结论。"
+  : "请生成一份五年级语文教案，40分钟，主题是从观察到有依据的解释，包含正式教案的所有栏目。";
 const consultation = "如何写五年级语文教案？请解释板书通常起什么作用。";
-const report = { ok: false, useLive, root, mainSha: createHash("sha256").update(fs.readFileSync(main)).digest("hex"), checks: [] };
+const report = { ok: false, useLive, root, prompt, mainSha: createHash("sha256").update(fs.readFileSync(main)).digest("hex"), checks: [] };
 let app;
 const check = name => { report.checks.push(name); console.log("PASS " + name); };
 async function until(read, timeout = 80000) {
@@ -59,32 +73,60 @@ async function launch(cold) {
       try {
         if (input.cold || url.hostname !== "api.deepseek.com" || !url.pathname.endsWith("/chat/completions")) throw Error("Unexpected request: " + url.origin + url.pathname);
         const request = JSON.parse(init.body), stage = wire.stages.filter(item => item.mode === wire.mode).length;
-        const tool = request.tools?.find(candidate => candidate.function.name === "education_propose_classroom_outline")?.function;
+        const tool = request.tools?.find(candidate => candidate.function.name === "education_propose_natural_lesson")?.function;
         if(wire.mode === "draft" && stage === 0 &&
-            (request.tool_choice?.function?.name !== "education_propose_classroom_outline" ||
+            (request.tool_choice?.function?.name !== "education_propose_natural_lesson" ||
              request.thinking?.type !== "disabled")) throw Error("Missing exact classroom tool choice on first call");
         if(input.live) {
           if(stage >= 6) throw Error("Live synthetic request limit reached");
-          if(!tool?.parameters.required.includes("lesson")) throw Error("Live run lost lesson binding");
+          if(!tool?.parameters.required.includes("details")) throw Error("Live run lost lesson binding");
           wire.stages.push({mode:wire.mode,stage,lessonTool:!!tool});
           return remote(address,init);
         }
         let toolCall, message, receipt;
-        if(wire.mode === "draft" && stage === 0) {
+        if(wire.mode === "draft" && stage < 2) {
           if(!JSON.stringify(request.messages).includes(input.prompt) ||
-             !tool?.parameters.required.includes("lesson") || !tool.parameters.properties.lesson.required.includes("details")) {
+             !tool?.parameters.required.includes("details") || !tool.parameters.properties.scenes.items.required.includes("kind")) {
             throw Error("Normal chat did not bind the structured lesson tool");
           }
-          toolCall = {name:tool.name,arguments:JSON.stringify(input.draft)};
-        } else if(wire.mode === "draft" && stage === 1) {
+          const attempt = structuredClone(input.draft);
+          if(stage === 0) {
+            attempt.scenes[0].durationMinutes += 5;
+          } else {
+            const rejection = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
+            if(rejection.success !== false || rejection.error !== "lesson_duration_mismatch" ||
+               !rejection.message.includes("教师要求 40 分钟，当前总时长 40 分钟、环节合计 45 分钟")) {
+              throw Error("Missing exact draft duration correction receipt");
+            }
+            wire.durationCorrection = rejection;
+          }
+          if(request.tool_choice?.function?.name !== tool.name) throw Error("Missing bounded lesson tool retry");
+          toolCall = {name:tool.name,arguments:JSON.stringify(attempt)};
+        } else if(wire.mode === "draft" && stage === 2) {
           receipt = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
           if(receipt.success !== true || receipt.status !== "draft" || receipt.teacherConfirmed) throw Error("Missing owned lesson receipt");
           message = "结构化教案草稿已保存，请打开教案卡片核对。";
+        } else if(wire.mode === "no-coverage") {
+          if(stage > 0) {
+            const rejection = JSON.parse(request.messages.filter(item => item.role === "tool").at(-1)?.content?.split("\n")[0] || "{}");
+            if(rejection.success !== false || rejection.error !== "lesson_objective_coverage" ||
+               !rejection.message.includes("编号 2 的目标缺少")) throw Error("Missing actionable objective coverage rejection");
+            wire.coverageCorrection = rejection;
+          }
+          if(stage < 2) {
+            const attempt = structuredClone(input.draft);
+            const practice = attempt.scenes.find(scene => scene.kind === "practice");
+            practice.objectiveIndices = [1];
+            toolCall = {name:tool.name,arguments:JSON.stringify(attempt)};
+          } else {
+            if(request.tool_choice !== "none") throw Error("Invalid lesson exceeded the bounded correction budget");
+            message = "有目标尚未安排练习，未保存草稿。";
+          }
         } else if(wire.mode === "no-effect" && stage === 0) {
-          if(request.tool_choice?.function?.name !== "education_propose_classroom_outline") throw Error("False completion case did not bind the tool");
+          if(request.tool_choice?.function?.name !== "education_propose_natural_lesson") throw Error("False completion case did not bind the tool");
           message = "教案草稿已保存。";
         } else if (wire.mode === "consultation" && stage === 0) {
-          if(tool?.parameters.required.includes("lesson")) throw Error("Ordinary consultation granted lesson draft binding");
+          if(tool?.parameters.required.includes("details")) throw Error("Ordinary consultation granted lesson draft binding");
           message = "板书把教学重点、示例和学生需要复述的线索留在同一视图。";
         } else throw Error("Unexpected model stage");
         wire.stages.push({ mode:wire.mode,stage,receipt,lessonTool:!!tool });
@@ -92,12 +134,12 @@ async function launch(cold) {
           id:"lesson-from-chat",object:"chat.completion.chunk",created:0,model:request.model,choices:[{index:0,delta,finish_reason}],
         })+"\n\n";
         return new Response(chunk({role:"assistant"})+chunk(toolCall?{tool_calls:[{
-          index:0,id:"owned-lesson-draft",type:"function",function:toolCall,
+          index:0,id:`owned-lesson-${wire.mode}-${stage}`,type:"function",function:toolCall,
         }]}:{content:message})+chunk({},toolCall?"tool_calls":"stop")+"data: [DONE]\n\n",
         {headers:{"Content-Type":"text/event-stream"}});
       } catch(error) { wire.errors.push(String(error)); throw error; }
     };
-  }, { prompt, draft, cold, live: useLive });
+  }, { prompt, draft:draftInput, cold, live: useLive });
   const page = await app.firstWindow();
   await page.getByTestId("office-prompt-input").waitFor({ timeout: 60000 });
   await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
@@ -126,17 +168,23 @@ try {
   const payload = JSON.parse(record.payload_json);
   if(useLive) {
     const {document} = payload;
-    assert.equal(document.totalMinutes,40);
-    assert.equal(document.scenes.reduce((sum,scene)=>sum+scene.durationMinutes,0),40);
-    assert.equal(document.lesson.subject,"语文");
-    assert.equal(document.lesson.grade,"五年级");
+    assert.equal(document.totalMinutes,45);
+    assert.equal(document.scenes.reduce((sum,scene)=>sum+scene.durationMinutes,0),45);
+    assert.equal(document.lesson.subject,"历史");
+    assert.equal(document.lesson.grade,"七年级");
     assert(Object.keys(draft.lesson.details).every(key=>document.lesson.details[key].trim()));
     assert(document.lesson.missingSources.length>0);
     assert.deepEqual(document.lesson.mappings,[]);
     report.generatedDocument=document;
     report.wire=await app.evaluate(()=>globalThis.lessonDraftWire);
     assert.deepEqual(report.wire.errors,[]);
-  } else assert.deepEqual(payload.document,draft);
+  } else {
+    assert.deepEqual(payload.document,draft);
+    const correction = await app.evaluate(() => globalThis.lessonDraftWire.durationCorrection);
+    assert.equal(correction.error,"lesson_duration_mismatch");
+    assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
+    check("Wrong scene subtotal is rejected with exact feedback, corrected once, and never saved as a second draft");
+  }
   assert.equal(JSON.parse(record.result_json||"{}").state,"draft");
   assert.equal((payload.context.adopted||[]).length,0);
   const task = query("SELECT value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'")
@@ -175,6 +223,21 @@ try {
     assert.match(unsupported.error_message,/未保存成可编辑教案/);
     assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
     check("A model claim without a persisted classroom draft is reported as a failed delivery");
+    await until(async () => {
+      const snapshot=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id);
+      return !snapshot.running;
+    });
+    await app.evaluate(()=>{globalThis.lessonDraftWire.mode="no-coverage";});
+    await send(page,"新任务：请生成一份五年级语文教案，主题为记录和判断。");
+    const uncovered=await until(()=>{
+      const [other]=query("SELECT id,status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1");
+      return other?.id!==unsupported.id&&["failed","succeeded"].includes(other.status)?other:null;
+    });
+    assert.equal(uncovered.status,"failed");
+    const coverage=await app.evaluate(()=>globalThis.lessonDraftWire.coverageCorrection);
+    assert.equal(coverage.error,"lesson_objective_coverage");
+    assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,1);
+    check("An objective assessed without prior practice names the missing link and cannot persist after the retry");
 
   } else check("Real model draft opens the original editor with its actual board plan and six populated fields");
 

@@ -264,7 +264,7 @@ import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, Xi
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 type Active = {
   answerOnly?: boolean;
-  naturalLessonDraft?: true;
+  naturalLessonDraft?: {requestedMinutes?:number};
   directOriginalPaper?: true;
   taskControl?: TaskControlAction;
   finalizing?: boolean;
@@ -1193,7 +1193,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       quantityTools:createQuantityTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       solutionTools:createSolutionTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       buoyancyTools:createBuoyancyTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
-      classroomTools:[...createClassroomTools({outlineOnly:Boolean(owner?.classroomPlan),context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),...createClassroomPlanTools({sessionId:id,runId,state:store.xiaozhiState.classroomPlans,binding:owner?.classroomPlan,context:()=>classroomContext.snapshot(),current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)})],
+      classroomTools:[...createClassroomTools({outlineOnly:Boolean(owner?.classroomPlan),context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),...createClassroomPlanTools({sessionId:id,runId,state:store.xiaozhiState.classroomPlans,binding:owner?.classroomPlan,naturalDraft:owner?.naturalLessonDraft,context:()=>classroomContext.snapshot(),current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)})],
       educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
       studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(facts,delivered)=>{observedLearning=facts;observedMistakeLearning={facts,delivered};})},
@@ -1363,7 +1363,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true}:{}),
         ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
-          subject:lesson.subject,grade:lesson.grade,
+          subject:lesson.subject,grade:lesson.grade,requestedMinutes:run.naturalLessonDraft.requestedMinutes,
           hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
         }}:{}),
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
@@ -1443,7 +1443,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }else if(delivery.tool===PROPOSE_MOCK_EXAM_EDIT){
             if(!taskRuntime||!base.mockExamEditTools)throw new TaskAdmissionError('task_owner_stale');
             await taskRuntime.refresh();
-          }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
+          }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,naturalDraft:Boolean(run.naturalLessonDraft),plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
           await run.toolGovernance?.before(delivery.callId, delivery.tool, delivery.input, signal || run.abort.signal);
         }
@@ -2152,7 +2152,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt,...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:input.paperExportIntent}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}),...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}), ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const hash=input.continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask:input.continueTask})).digest('hex'):baseHash;
       // Command identity is the caller's request; host routing can evolve between retries.
-      if(inferredLesson)input={...input,classroomPlan:inferredLesson};
+      if(inferredLesson)input={...input,classroomPlan:{mode:inferredLesson.mode,lesson:inferredLesson.lesson}};
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const admission = invalidateLearningDecisions(id);
@@ -2179,7 +2179,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
-      const run: Active = { ...(inferredLesson?{naturalLessonDraft:true as const}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),

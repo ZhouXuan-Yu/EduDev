@@ -24,6 +24,21 @@ function validLessonDetails(value: unknown): value is LessonDetails {
 export function lessonDetailIssues(details?: LessonDetails): string[] {
  return lessonDetailKeys.filter(key => !details?.[key].trim()).map(key => `请补充${lessonDetailLabels[key]}。`);
 }
+export function teachingLessonCoverageIssues(phases: LessonPhase[], objectiveCount: number): string[] {
+ const issues: string[] = [];
+ for(const kind of ['introduction','activity','practice','assessment'] as const) {
+  if(!phases.some(phase=>phase.kind===kind))issues.push(`请安排 ${kind}（${lessonPhaseLabels[kind]}）环节。`);
+ }
+ for(let index=0;index<objectiveCount;index++) {
+  if(!phases.some(phase=>['activity','practice'].includes(phase.kind)&&phase.objectiveIndices.includes(index))) {
+   issues.push(`编号 ${index} 的目标缺少带此编号的 activity 或 practice 学生活动。`);
+  }
+  if(!phases.some(phase=>phase.checks.some(check=>check.objectiveIndices.includes(index)))) {
+   issues.push(`编号 ${index} 的目标缺少对应检查题。请在对应环节的 checks 增加检查题、预期证据和判断标准。`);
+  }
+ }
+ return issues;
+}
 export function validTeachingLesson(v:unknown,document:Document):v is TeachingLesson{
  if(!record(v)||!keys(v,['schemaVersion','subject','grade','preparation','goalCriteria','phases','mappings','missingSources',...('details' in v?['details']:[])])||('details' in v&&!validLessonDetails(v.details))||v.schemaVersion!==TEACHING_LESSON_SCHEMA||!text(v.subject,160)||!text(v.grade,160)||!strings(v.preparation,12)||!Array.isArray(v.goalCriteria)||v.goalCriteria.length!==document.objectives.length||!v.goalCriteria.every(c=>text(c,500))||!strings(v.missingSources,8)||!Array.isArray(v.phases)||v.phases.length!==document.scenes.length||!Array.isArray(v.mappings)||v.mappings.length>24)return false;
  const indices=(value:unknown):value is number[]=>Array.isArray(value)&&value.length>0&&value.length<=document.objectives.length&&new Set(value).size===value.length&&value.every(i=>Number.isSafeInteger(i)&&i>=0&&i<document.objectives.length);
@@ -33,8 +48,7 @@ export function validTeachingLesson(v:unknown,document:Document):v is TeachingLe
   for(const check of phase.checks)if(!record(check)||!keys(check,['objectiveIndices','prompt','expectedEvidence','criterion'])||!indices(check.objectiveIndices)||check.objectiveIndices.some(i=>!phaseIndices.includes(i))||!text(check.prompt)||!text(check.expectedEvidence)||!text(check.criterion,500))return false;
  }
  const phases=v.phases as LessonPhase[];
- if(new Set(phases.map(p=>p.sceneId)).size!==phases.length||!['introduction','activity','practice','assessment'].every(k=>phases.some(p=>p.kind===k)))return false;
- for(let i=0;i<document.objectives.length;i++)if(!phases.some(p=>['activity','practice'].includes(p.kind)&&p.objectiveIndices.includes(i))||!phases.some(p=>p.checks.some(c=>c.objectiveIndices.includes(i))))return false;
+ if(new Set(phases.map(p=>p.sceneId)).size!==phases.length||teachingLessonCoverageIssues(phases,document.objectives.length).length>0)return false;
  return v.mappings.every(m=>record(m)&&keys(m,['objectiveIndex','curriculumIndex','quote','explanation'])&&Number.isSafeInteger(m.objectiveIndex)&&Number(m.objectiveIndex)>=0&&Number(m.objectiveIndex)<document.objectives.length&&Number.isSafeInteger(m.curriculumIndex)&&Number(m.curriculumIndex)>=0&&Number(m.curriculumIndex)<3&&text(m.quote,1500)&&text(m.explanation,1500))&&new Set(v.mappings.map(m=>`${m.objectiveIndex}/${m.curriculumIndex}`)).size===v.mappings.length;
 }
 /** Saving a time conflict is allowed; confirming it is not. Semantic quality still needs review. */

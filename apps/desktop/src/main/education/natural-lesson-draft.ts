@@ -9,8 +9,20 @@ const verb = "(?:设计|制作|生成|编写|写|拟定|准备|安排|做)";
 const lead = "(?:新任务[：:]\\s*)?(?:(?:请你|请|麻烦|能否|可以|能不能|能帮我)\\s*)*";
 const creation = new RegExp(`^${lead}(?:(?:(?:帮我|为我|给我)\\s*)?${verb}|(?:为|给)(?!我)[^。！？?\\n]{1,55}?${verb}|(?:给我|来)\\s*一[份篇节套])[^。！？?\\n]{0,200}?教案`, "u");
 
+type NaturalLessonDraft = Extract<ClassroomPlanStart, { mode: "outline" }> & { requestedMinutes?: number };
+
+function requestedLessonMinutes(text: string, firstSentence: string): number | undefined {
+  const minutes = new Set([
+    ...text.matchAll(/(?:全课(?:时长)?|整节课(?:时长)?|总时长|总课时)\s*(?:为|共|[:：])?\s*([0-9０-９]{1,3})\s*分钟(?!\s*(?:左右|以内|以上|以下|到|至|[~～—–-]))(?=$|[\s，,。；;、])/gu),
+    ...firstSentence.matchAll(/(?:[一1][份篇节套]\s*([0-9０-９]{1,3})\s*分钟的|教案[，,：:]\s*([0-9０-９]{1,3})\s*分钟(?!\s*(?:左右|以内|以上|以下|到|至|[~～—–-]))(?=$|[\s，,；;、]))/gu),
+  ].map(match => Number((match[1] ?? match[2]).normalize("NFKC"))));
+  if (minutes.size !== 1) return;
+  const [value] = minutes;
+  return value >= 2 && value <= 240 ? value : undefined;
+}
+
 /** Only explicit new draft requests with an unambiguous subject and grade bind the classroom tool. */
-export function naturalLessonDraft(prompt: string): Extract<ClassroomPlanStart, { mode: "outline" }> | undefined {
+export function naturalLessonDraft(prompt: string): NaturalLessonDraft | undefined {
   const text = prompt.trim().slice(0, 1200);
   const direct = text.match(creation)?.[0];
   if (!direct ||
@@ -23,5 +35,10 @@ export function naturalLessonDraft(prompt: string): Extract<ClassroomPlanStart, 
   const pairs = new Map(matches.map(pair => [JSON.stringify(pair), pair]));
   if (pairs.size !== 1) return;
   const [[gradeName, subjectName]] = pairs.values();
-  return { mode: "outline", lesson: { grade: gradeName, subject: subjectName, curricula: [] } };
+  const requestedMinutes = requestedLessonMinutes(text, prefix);
+  return {
+    mode: "outline",
+    lesson: { grade: gradeName, subject: subjectName, curricula: [] },
+    ...(requestedMinutes === undefined ? {} : { requestedMinutes }),
+  };
 }

@@ -1,10 +1,16 @@
 import assert from "node:assert/strict";
 import {naturalLessonDraft} from "../../src/main/education/natural-lesson-draft.ts";
 
-const accepted = (text, grade, subject) => assert.deepEqual(naturalLessonDraft(text),
-  {mode:"outline",lesson:{subject,grade,curricula:[]}});
+const accepted = (text, grade, subject, requestedMinutes) => assert.deepEqual(naturalLessonDraft(text),
+  {mode:"outline",lesson:{subject,grade,curricula:[]},...(requestedMinutes===undefined?{}:{requestedMinutes})});
 accepted("请生成一份五年级语文教案。主题是区分事实和观点。", "五年级", "语文");
-accepted("帮我写一份40分钟的高一物理《浮力》教案。", "高一", "物理");
+accepted("帮我写一份40分钟的高一物理《浮力》教案。", "高一", "物理", 40);
+accepted("请编写七年级历史教案，45分钟，聚焦史料对照。", "七年级", "历史", 45);
+accepted("请编写七年级历史教案。整节课共４５分钟，导入5分钟。", "七年级", "历史", 45);
+accepted("请编写七年级历史教案，45分钟。总时长为50分钟。", "七年级", "历史");
+accepted("请编写七年级历史教案，总时长45分钟 左右。", "七年级", "历史");
+accepted("请编写七年级历史教案，课堂导入5分钟。", "七年级", "历史");
+accepted("请编写七年级历史教案，总时长999分钟。", "七年级", "历史");
 accepted("新任务：为我设计一节数学 四年级的单元教案。", "四年级", "数学");
 accepted("请为小学六年级下册科学准备一份教案。", "六年级", "科学");
 for(const prompt of [
