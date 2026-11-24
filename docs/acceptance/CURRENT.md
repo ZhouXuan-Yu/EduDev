@@ -3754,3 +3754,7 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 从对话开通用教案已验证原编辑器、同会话咨询、没有草稿的失败和冷启。真实 DeepSeek 单例与输入边界见 [D3 工程证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-从问小智开教案)。
 
 资料库勾选导入最终 Electron 4/4，跨页只归档所选文件，放弃或重启前不提交。打开整理范围仍需教师确认后发起。详见 [D3 实测记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-勾选导入与手动整理)。
+
+## 数据库基础治理 R1
+
+固定 28 项的验收账本、证据哈希、失败迭代和回退记录见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r1`。以其中集成构建的 `final-report.md` 和验证器报告为准。

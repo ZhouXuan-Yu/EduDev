@@ -24,25 +24,43 @@ export async function beginMaterialWrite(
 ) {
   signal?.throwIfAborted();
   const pragmas = foreignKeys ? "PRAGMA foreign_keys=ON; " : "";
-  if (process.env.OMNI_EDU_MATERIAL_ASYNC_WRITE_LOCK === "0") {
+  if (!signal && process.env.OMNI_EDU_MATERIAL_ASYNC_WRITE_LOCK === "0") {
     await exec(pragmas + "PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;");
     return;
   }
   await exec(pragmas + "PRAGMA busy_timeout=0;");
-  const deadline = Date.now() + 10_000;
+  await beginSqliteWrite(exec, signal);
+}
+
+/** Use a connection with busy_timeout=0 so waits stay outside the native pool. */
+export async function beginSqliteWrite(
+  exec: (sql: string) => Promise<unknown>,
+  signal?: AbortSignal,
+) {
+  const deadline = performance.now() + 10_000;
   for (let attempt = 0; ; attempt++) {
     signal?.throwIfAborted();
+    if (performance.now() >= deadline) throw new Error("busy");
     try {
       await exec("BEGIN IMMEDIATE;");
-      return;
     } catch (error) {
       if (!isSqliteWriteLock(error)) throw error;
-      if (Date.now() >= deadline) throw new Error("busy");
-      await delay(
-        Math.min(sqliteWriteLockDelay(attempt), deadline - Date.now()),
-        undefined,
-        { signal },
-      );
+      const remaining = deadline - performance.now();
+      if (remaining <= 0) throw new Error("busy");
+      try {
+        await delay(Math.min(sqliteWriteLockDelay(attempt), remaining), undefined, { signal });
+      } catch (waitError) {
+        // Timers reject with AbortError; preserve the caller's cancellation reason for IPC.
+        signal?.throwIfAborted();
+        throw waitError;
+      }
+      continue;
     }
+    if (signal?.aborted || performance.now() >= deadline) {
+      await exec("ROLLBACK;");
+      signal?.throwIfAborted();
+      throw new Error("busy");
+    }
+    return;
   }
 }

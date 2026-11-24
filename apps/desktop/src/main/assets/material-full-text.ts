@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import {MaterialSearchStatistics,MATERIAL_SEARCH_COUNTS,MATERIAL_SEARCH_COUNT_CONTROL,writeMaterialFtsRow} from './material-search-statistics';
 import type {MaterialReadingUnit} from './material-source';
 import type {ResourceChunk} from '../../shared/contracts';
@@ -8,7 +9,7 @@ import type {CatalogScope} from '../../shared/material-catalog';
 import {catalogPredicate} from './material-catalog';
 import {migrateMaterialSearchVisibility,migrateStructureSearchPublications,nextStructureSearchPublication,type StructureSearchPublication} from './material-structure-search';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;map:(r:Row)=>ResourceChunk;withWriter?:(action:(index:MaterialFullTextSearch)=>Promise<void>)=>Promise<void>;restored?:()=>MaterialAiTextIndex|undefined;reconcileStructure?:(publication:StructureSearchPublication)=>Promise<void>};
+type Host={publications?:BackupPublicationBarrier;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;map:(r:Row)=>ResourceChunk;withWriter?:(action:(index:MaterialFullTextSearch)=>Promise<void>)=>Promise<void>;restored?:()=>MaterialAiTextIndex|undefined;reconcileStructure?:(publication:StructureSearchPublication)=>Promise<void>};
 const index='material_body_fts_v1',dirty='material_body_dirty_v1';
 /** Shared normalisation, explicit version via v1 tables. No model/SQLite extension dependency. */
 const characters=(s:string)=>Array.from(s.normalize('NFKC').toLowerCase().replace(/\s+/gu,''));
@@ -38,7 +39,7 @@ export class MaterialFullTextSearch{
   await this.statistics.migrate(this.recreated);
   this.available=true;
  }
- start(){if(this.timer||!this.available)return;const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.host.restored?.()?.drain();await this.drain(50);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,700);this.timer.unref();pump();}
+ start(){if(this.timer||!this.available)return;const pump=()=>{if(this.pumping)return;this.pumping=publishBackground(this.host.publications,async()=>{await this.host.restored?.()?.drain();await this.drain(50);})?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,700);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;await this.pumping;}
  private async indexRow(row:Row){
   const id=Number(row.chunk_rowid);

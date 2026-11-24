@@ -4,12 +4,14 @@ import {createTaskState} from './tasks/task-state';
 import {createEffectState} from './effects/state';
 import {workbenchFailure, workbenchRows, workbenchText, type WorkbenchRead} from './workbench-state';
 
-export async function readWorkbenchTasks(read: WorkbenchRead, approvals: WorkbenchApprovalRow[]): Promise<WorkbenchTaskRow[]> {
+export async function readWorkbenchTasks(read: WorkbenchRead, approvals: WorkbenchApprovalRow[],
+  selected?: Record<string,unknown>[]): Promise<WorkbenchTaskRow[]> {
   const tasks = createTaskState(read.sql, {sanitize: async text => text});
   const effects = createEffectState(read.sql);
   const latest = new Map<string, TaskView | null>();
   const items: WorkbenchTaskRow[] = [];
-  for await (const row of workbenchRows(read, 'app_settings', 'tasks', "key GLOB 'xiaozhi.task.v1:xitask_*' AND length(key)=?", ['xiaozhi.task.v1:xitask_'.length + 64])) {
+  const rows=selected ?? workbenchRows(read, 'app_settings', 'tasks', "key GLOB 'xiaozhi.task.v1:xitask_*' AND length(key)=?", ['xiaozhi.task.v1:xitask_'.length + 64]);
+  for await (const row of rows) {
     const id = String(row.key).slice('xiaozhi.task.v1:'.length);
     try {
       const record = await tasks.summaryRecordFromRow(id, row);

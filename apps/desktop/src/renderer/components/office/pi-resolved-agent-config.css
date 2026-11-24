@@ -1,0 +1,13 @@
+.pi-resolved-config { display: grid; gap: var(--space-3, 12px); }
+.pi-resolved-config-actions { display: flex; flex-wrap: wrap; gap: var(--space-2, 8px); }
+.pi-resolved-config table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.pi-resolved-config th, .pi-resolved-config td {
+  padding: 0.6rem 0.5rem;
+  text-align: start;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+}
+.pi-resolved-config thead th:first-child { width: 16%; }
+.pi-resolved-config thead th:nth-child(2) { width: 38%; }
+.pi-resolved-config thead th:last-child { width: 16%; }

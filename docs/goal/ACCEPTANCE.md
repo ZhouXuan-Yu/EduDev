@@ -4013,3 +4013,7 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 自拟课堂材料的数量、正文、原编辑器、正式确认与导出冷读 已实现。 [D3 材料专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
 
 D3 勾选导入和手动整理入口通过真实 Electron 专项。批量发现、选择确认、冷启动、放弃、版本变化和表单权限均有证据。
+
+## 数据库基础治理 R1
+
+验收采用附件冻结的 28 项。历史基线的实际 Electron 证据与集成构建的验收证据在账本内分别标明。 [验收入口](../acceptance/CURRENT.md#数据库基础治理-r1)

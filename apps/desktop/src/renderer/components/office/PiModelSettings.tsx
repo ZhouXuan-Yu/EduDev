@@ -62,6 +62,8 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     }catch{if(live.current)setNotice('验证没有完成，请重试。');}
     finally{lock.current=false;if(live.current){setBusy(false);setVerifying(false);}}
   }
+  const migrations=Object.values(view?.legacyCredentialMigration ?? {});
+  const migrationPending=migrations.some(status=>status!=='not_needed' && status!=='migrated');
   return <div className={embedded ? styles.modelEmbedded : styles.modelStandalone} data-testid="pi-model-settings">
     {!embedded && <header className={styles.standaloneHeader}><Button variant="ghost" size="sm" data-testid="nav-ai" onPress={onBack}><ArrowLeft size={17} />返回小智</Button><span>设置</span></header>}
     <main className={styles.modelMain}>
@@ -69,6 +71,8 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
         <section className={styles.section} aria-labelledby="pi-model-heading">
           <header className={styles.sectionHeading}><h2 id="pi-model-heading">模型与连接</h2><p>配置模型后，新对话使用这里的默认值。</p></header>
           {view?.credentialError && <p role="alert" data-testid="pi-settings-credential-error">{view.credentialError === 'storage_unavailable' ? '本机安全存储暂时不可用，请稍后重试。' : '本机无法读取已保存的密钥，请重新输入并保存。'}</p>}
+          {migrationPending && <p role="status" data-testid="pi-settings-credential-migration-pending">历史密钥尚未迁移。请检查本机安全存储或重新保存密钥。</p>}
+          {!migrationPending && migrations.includes('migrated') && <p role="status" data-testid="pi-settings-credential-migration-done">历史密钥已转存到本机安全存储。</p>}
           {loading && <p role="status" data-testid="pi-settings-loading">正在读取模型设置…</p>}
           {view?.catalogueError && <p role="alert" data-testid="pi-settings-catalogue-error">{XIAOZHI_SETTINGS_ERRORS[view.catalogueError]}{view.models.length ? ' 显示上次读取的官方目录。' : ''}</p>}
           <form onSubmit={event => { event.preventDefault(); void save(); }}>

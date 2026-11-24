@@ -36,10 +36,11 @@ function approvalValue(read: WorkbenchRead, row: Record<string, unknown>): {summ
     updatedAt: workbenchText(row.updated_at, 64), canDecide: ['pending', 'uncertain', 'approved'].includes(item.state), blockedReasons: [],
   }};
 }
-export async function readWorkbenchApprovals(read: WorkbenchRead): Promise<WorkbenchApprovalRow[]> {
+export async function readWorkbenchApprovals(read: WorkbenchRead, onlySession?:string): Promise<WorkbenchApprovalRow[]> {
   const items: WorkbenchApprovalRow[] = [];
   for await (const row of workbenchRows(read, 'ai_confirmation_items', 'approvals',
-    "action_type IN ('xiaozhi_permission_v2','pi_office_copy')")) {
+    "action_type IN ('xiaozhi_permission_v2','pi_office_copy')" + (onlySession ? ' AND session_id=?' : ''),
+    onlySession ? [onlySession] : [])) {
     if (!read.sessions.has(String(row.session_id))) continue;
     try {items.push(approvalValue(read, row).summary);}
     catch {workbenchFailure(read, 'approvals', 'corrupt');}

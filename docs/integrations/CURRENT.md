@@ -2852,3 +2852,7 @@ fresh npm audit --omit=dev --json exit1，0critical/3high/2moderate；npm explai
 ## 2026-10-16 BoardUI 复用复核
 
 集成记录：`OfficeToolProcess` 仅对全组联网工具使用 BoardUI 过程视图；教育/浏览器/旧工具视图保持原路径。来源打开仍使用既有 typed IPC，未新增主进程通道或第二运行时。
+
+## 数据库基础治理 R1
+
+凭据迁移沿用 Electron `safeStorage`，以实际本地密文回读和事务校验完成迁移。诊断读取配置来源和是否配置状态。换机包使用统一字段清单清除本机凭据和旧设备授权，恢复后由教师重新配置。

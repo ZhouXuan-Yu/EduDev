@@ -3,6 +3,9 @@ import {registerWindowsUpdate} from './updates/windows-update-api';
 import {applyPendingUpdateRollback} from './updates/pending-rollback';
 import {runStartupRecovery} from './updates/startup-recovery';
 import {backupApplicationVersion} from './backup/compatibility';
+import {DatabaseUpgradeError} from './database-migrations';
+import {providerCredentialCodec} from './provider-credential-codec';
+import {BackupPublicationBarrier} from './backup/publication-barrier';
 import {BackupRestoreVersionError,selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
@@ -10,7 +13,7 @@ import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTh
 import {createDesktopIpcLifetime} from './desktop-ipc-lifetime';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
 import { restoreWindowGeometry, installWindowGeometry, MIN_HOST_WINDOW_WIDTH } from './desktop-chrome/window-geometry';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, isAbsolute, join } from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -43,7 +46,9 @@ const mainEntryDirectory = dirname(mainEntryFile);
 applyLaunchProfile({ profile: app.commandLine.getSwitchValue('user-data-dir'), setPath: (name, directory) => app.setPath(name, directory) });
 
 let store: OmniEduStore;
-const ipcLifetime=createDesktopIpcLifetime(electronIpcMain);
+const publications=new BackupPublicationBarrier();
+const ipcLifetime=createDesktopIpcLifetime(electronIpcMain,publications);
+let backupExport: {controller:AbortController; committing:boolean}|undefined;
 const ipcMain=ipcLifetime.ipcMain;
 let mainWindow: BrowserWindow | undefined;
 let backgroundAcceptance = false;
@@ -264,8 +269,30 @@ if (ownsDesktop) app.whenReady().then(async () => {
   let dataRoot=baseDataRoot;
   try{dataRoot=(await selectedBackupRoot(app.getPath('userData'),baseDataRoot,appVersion)).dataRoot;}catch(error){dialog.showErrorBox('恢复目录不可用',error instanceof Error?error.message:'仍使用原数据目录');if(error instanceof BackupRestoreVersionError||!existsSync(join(baseDataRoot,'app.db'))){app.quit();return;}}
   const authority = resolveRuntimeAuthority({ packaged: app.isPackaged, env: process.env, dataRoot, profileRoot: app.getPath('userData') });
-  store = new OmniEduStore(dataRoot);
-  await store.init();
+  store = new OmniEduStore(dataRoot, () => appVersion + ':' + createHash('sha256')
+    .update(readFileSync(fileURLToPath(import.meta.url))).digest('hex'),publications);
+  try {
+    await store.init();
+    await store.migrateProviderCredentials(providerCredentialCodec);
+  } catch (error) {
+    const issue = error instanceof DatabaseUpgradeError ? error.issue : 'startup_failed';
+    const reason = issue === 'newer_version' ? '此数据库由较新版本的小智创建，请使用支持该格式的版本。'
+      : issue === 'recovery_point_failed' ? '无法建立升级前备份。请检查磁盘空间和目录权限，再打开小智。'
+      : '数据库初始化未完成。请使用升级前备份或核对诊断后重试。';
+    const cause = error instanceof Error ? error.cause : undefined;
+    const code = cause && typeof cause === 'object' && 'code' in cause ? String(cause.code) : '';
+    const sqliteCode = /^SQLITE_[A-Z_]+$/u.test(code) ? code : undefined;
+    const diagnostic = {schemaVersion:1,issue,sqliteCode,appVersion,at:new Date().toISOString()};
+    try {
+      writeFileSync(join(app.getPath('userData'),'xiaozhi-database-startup.json'), JSON.stringify(diagnostic,null,2),'utf8');
+    } catch {
+      console.error('[database] could not save startup diagnostic');
+    }
+    console.error('[database]', issue, sqliteCode ?? '');
+    dialog.showErrorBox('数据库未打开', reason + '（' + issue + '）');
+    app.exit(1);
+    return;
+  }
   backgroundAcceptance = isBackgroundAcceptance({ packaged: app.isPackaged, env: process.env, dataRoot,
     profileRoot: app.getPath('userData'), repoRoot: process.env.OMNI_EDU_REPO_ROOT || join(process.cwd(), '../..') });
   const legacyTestRuntime = authority.mode === 'legacy-test'
@@ -338,11 +365,33 @@ if (ownsDesktop) app.whenReady().then(async () => {
       assertCurrent();
       if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app), purpose);
-      if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
-      return exported;
+      const operation={controller:new AbortController(),committing:false};
+      backupExport=operation;
+      try {
+        const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app), purpose, {
+          signal:operation.controller.signal,
+          commitStarted:()=>{
+            assertCurrent();
+            if(!settingsSender(event))throw Error('permission_denied');
+            operation.committing=true;
+          },
+        });
+        if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
+        return exported;
+      } catch(error) {
+        if(operation.controller.signal.aborted)return null;
+        throw error;
+      } finally {
+        if(backupExport===operation)backupExport=undefined;
+      }
     };
     return xiaozhi.withLocalSettingsJob(action);
+  });
+  ipcMain.handle('app:cancelDataBackup', event => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    if (!backupExport || backupExport.committing || backupExport.controller.signal.aborted) return {cancelled:false};
+    backupExport.controller.abort(Error('cancelled'));
+    return {cancelled:true};
   });
   ipcMain.handle('app:verifyDataBackup', async event => {
     if (!settingsSender(event)) throw new Error('permission_denied');
@@ -423,7 +472,30 @@ if (ownsDesktop) app.whenReady().then(async () => {
   ipcMain.handle('aiMemory:draftSummary', (_event, surface: AiMemorySurface, runId?: string, limit = 8) => store.draftAiMemorySummary(surface, runId, limit));
   ipcMain.handle('aiMemory:listRevisions', (_event, entryId: string, limit = 50) => store.listAiMemoryRevisions(entryId, limit));
   ipcMain.handle('aiMemory:createEntry', (_event, input: AiMemoryEntryInput) => store.createAiMemoryEntry(input));
-  ipcMain.handle('aiMemory:updateEntry', (_event, entryId: string, input: AiMemoryEntryUpdateInput) => store.updateAiMemoryEntry(entryId, input));
+  const memorySaves = new Map<string, AbortController>();
+  ipcMain.handle('aiMemory:updateEntry', async (event, entryId: string, input: AiMemoryEntryUpdateInput, requestId?: string) => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    if (requestId === undefined) return store.updateAiMemoryEntry(entryId, input);
+    if (typeof requestId !== 'string' || !/^[a-f0-9-]{36}$/u.test(requestId) ||
+      memorySaves.has(requestId) || memorySaves.size >= 16) throw new Error('invalid_input');
+    const controller = new AbortController();
+    memorySaves.set(requestId, controller);
+    try {
+      return await store.updateAiMemoryEntry(entryId, input, {
+        signal:controller.signal,
+        commitStarted:()=>memorySaves.delete(requestId),
+      });
+    } finally {
+      if (memorySaves.get(requestId) === controller) memorySaves.delete(requestId);
+    }
+  });
+  ipcMain.handle('aiMemory:cancelUpdate', (event, requestId: string) => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    const controller = memorySaves.get(requestId);
+    if (!controller || controller.signal.aborted) return {cancelled:false};
+    controller.abort(new Error('cancelled'));
+    return {cancelled:true};
+  });
   ipcMain.handle('aiMemory:deleteEntry', (_event, entryId: string, version: number) => store.deleteAiMemoryEntry(entryId, version));
   ipcMain.handle('aiMemoryL3:listDocuments', () => store.listAiMemoryL3Documents());
   ipcMain.handle('aiMemoryL3:getDocument', (_event, slot: AiMemoryL3Slot) => store.getAiMemoryL3Document(slot));
@@ -565,6 +637,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   if (authority.mode === 'pi') registerPiConsoleEndpoints({ipcMain,authority,window:()=>mainWindow,run:input=>piConsole.run(input)});
   let shutdown:Promise<void>|undefined,shutdownReady=false,materialAiStartup:Promise<void>|undefined,materialQueueStartup:Promise<void>|undefined;
   app.on('before-quit', event => {
+    if (backupExport && !backupExport.committing) backupExport.controller.abort(Error('cancelled'));
     if(shutdownReady)return;
     event.preventDefault();
     if(shutdown)return;
@@ -581,18 +654,22 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();
+  store.taskSummary.start();
   const startupWindow=mainWindow;
   if(startupWindow){
     const prewarm=()=>{if(!shutdown&&!startupWindow.isDestroyed())xiaozhi.prewarm();};
     if(startupWindow.webContents.isLoadingMainFrame())startupWindow.webContents.once('did-finish-load',prewarm);
     else setImmediate(prewarm);
   }
-  materialQueueStartup=store.materialQueue.start().catch(()=>console.error('[materials] startup_recovery_failed'));
+  materialQueueStartup=publications.tryPublish(()=>store.materialQueue.start())?.catch(()=>console.error('[materials] startup_recovery_failed'));
   store.materialImports.start();
   store.materialSearch.start();
   store.materialQuestions.start();
   store.retrieval.start();
-  materialAiStartup=store.materialAi.recoverStartup().then(()=>{if(!shutdown){store.materialAi.start();store.materialFolderAi.start();}}).catch(()=>console.error('[material-ai] startup_recovery_failed'));
+  materialAiStartup=publications.tryPublish(async()=>{
+    await store.materialAi.recoverStartup();
+    if(!shutdown){store.materialAi.start();store.materialFolderAi.start();}
+  })?.catch(()=>console.error('[material-ai] startup_recovery_failed'));
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

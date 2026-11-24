@@ -1,5 +1,5 @@
 import {existsSync, readFileSync} from 'node:fs';
-import {join} from 'node:path';
+import {basename,join} from 'node:path';
 import type {DataBackupVerificationResult} from '../../shared/contracts';
 import {PORTABLE_BACKUP_PURPOSE, PORTABLE_LOCAL_ENV_FILE} from '../../shared/backup-purpose';
 import {backupCompatibility, readBackupDataVersion, readBackupVersion} from './compatibility';
@@ -8,8 +8,12 @@ import {assertPortableBackupDatabase} from './portable';
 import {collectDataBackupEntries} from './data-root-files';
 import {readConversationOutputsBackup} from './conversation-outputs';
 import {readExternalOutputsBackup} from './external-outputs';
+import {assertBackupDatabaseIntegrity,verifyBackupReferences} from './references';
 
-export async function verifyDataBackup(backupPath: string, appVersion?: string): Promise<DataBackupVerificationResult> {
+export const PARTIAL_BACKUP_PREFIX = '.xiaozhi-backup-partial-';
+
+export async function verifyDataBackup(backupPath: string, appVersion?: string,
+  options: {signal?: AbortSignal; staging?: boolean} = {}): Promise<DataBackupVerificationResult> {
   const resolvedBackup = backupPath.trim();
   const manifestPath = join(resolvedBackup, 'omni-edu-backup-manifest.v1.json');
   const base: DataBackupVerificationResult = {
@@ -22,8 +26,12 @@ export async function verifyDataBackup(backupPath: string, appVersion?: string):
     unexpectedFiles: [],
   };
   try {
+    options.signal?.throwIfAborted();
+    if (!options.staging && basename(resolvedBackup).toLowerCase().startsWith(PARTIAL_BACKUP_PREFIX)) {
+      return {...base,errorMessage:'备份未发布，请重新创建。'};
+    }
     if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
-    const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;purpose?:unknown;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown;compatibilityAppVersionSource?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+    const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;purpose?:unknown;conversationOutputs?:unknown;externalOutputs?:unknown;compatibility?:unknown;compatibilityAppVersionSource?:unknown; snapshotValidation?: {schemaVersion?:number;files?:number;sessions?:number}; files?: Array<{ path?: string; size?: number; sha256?: string }> };
     if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
     if (parsed.purpose !== undefined && parsed.purpose !== PORTABLE_BACKUP_PURPOSE) return { ...base, errorMessage: '备份用途无法识别，请用原电脑的小智核对该备份。' };
     const expected = new Map(parsed.files.flatMap((item) => {
@@ -36,7 +44,7 @@ export async function verifyDataBackup(backupPath: string, appVersion?: string):
     if (expected.size !== parsed.files.length) return { ...base, errorMessage: '备份清单包含非法路径或重复条目' };
     const conversationOutputs=readConversationOutputsBackup(parsed.conversationOutputs,expected.keys());
     const externalOutputs=readExternalOutputsBackup(parsed.externalOutputs,expected.keys());
-    const actual = await collectDataBackupEntries(resolvedBackup);
+    const actual = await collectDataBackupEntries(resolvedBackup, options.signal);
     const actualMap = new Map(actual.map((item) => [item.path, item]));
     const missingFiles = [...expected.keys()].filter((path) => !actualMap.has(path));
     const changedFiles: string[] = [];
@@ -66,9 +74,20 @@ export async function verifyDataBackup(backupPath: string, appVersion?: string):
         return {...result, verified: false, errorMessage: '换机包未通过凭据和授权核对，请重新创建换机包。'};
       }
     }
+    if (parsed.snapshotValidation !== undefined) {
+      if (!hasDatabase || !conversationOutputs || !externalOutputs || parsed.snapshotValidation?.schemaVersion !== 1) {
+        throw Error('备份缺少引用核对记录。');
+      }
+      await assertBackupDatabaseIntegrity(databasePath);
+      const identities=await verifyBackupReferences(resolvedBackup,actual,conversationOutputs,externalOutputs,options.signal);
+      if (identities.files!==parsed.snapshotValidation.files || identities.sessions!==parsed.snapshotValidation.sessions) {
+        throw Error('备份引用与核对记录不一致。');
+      }
+    }
     const continuity = compatibility ? await readBackupContinuity(databasePath) : undefined;
     return { ...result, purpose: parsed.purpose, compatibility, continuity };
   } catch (error) {
+    options.signal?.throwIfAborted();
     return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
   }
 }

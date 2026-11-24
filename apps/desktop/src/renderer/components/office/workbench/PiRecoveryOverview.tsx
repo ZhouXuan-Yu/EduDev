@@ -57,16 +57,19 @@ function TaskRows({activeSessionId, onOpenSession, onRestore, restoring, page: e
   const state = useWorkbenchSummary(taskScope?{schemaVersion:1,kind:'tasks',filter:'all',...taskScope}:
     {schemaVersion:1, kind:'tasks', filter, ...(currentOnly?{sessionId:activeSessionId}:{}), limit:20, ...(cursors.length?{cursor:cursors.at(-1)}:{})});
   const page = state.value?.kind==='tasks'?state.value:undefined;
+  const items=page?.items ?? [];
+  const visible=filter==='overview' ? (Object.keys(groupLabels) as (keyof typeof groupLabels)[])
+    .flatMap(group=>items.filter(row=>workbenchTaskGroup(row.state)===group)) : items;
   async function open(id: string) {if(lock.current)return; lock.current=true; setOpening(true); try {if(!await onOpenSession(id))setNotice('会话选择已变化，请重新选择。');}catch{setNotice('会话未打开，请重试。');}finally{lock.current=false;setOpening(false);}}
   return <>
     {!expanded&&<><h2>跨会话任务</h2><p className={styles.meta}>先核对已保存记录，再显式继续同一任务。不会自动重放未知操作。</p></>}
     {!taskScope&&<div className={styles.actions}><label className={styles.field}>任务范围<select data-testid="pi-task-filter" value={filter} onChange={event=>{setFilter(event.target.value as Filter);setCursors([]);}}>{Object.entries(filters).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label><label className={styles.field}>会话范围<select data-testid="pi-task-session-filter" value={currentOnly?'current':'all'} onChange={event=>{setCurrentOnly(event.target.value==='current');setCursors([]);}}><option value="all">全部会话</option><option value="current" disabled={!activeSessionId}>当前会话</option></select></label><Button size="sm" variant="ghost" onPress={()=>{setCursors([]);state.reload();}} data-testid="pi-task-overview-refresh">刷新记录</Button></div>}
     {state.loading&&<p role="status">正在读取任务索引…</p>}{state.error&&<p role="alert">{state.error}</p>}{notice&&<p role="alert">{notice}</p>}
     {page&&<>{!taskScope&&<p data-testid="pi-task-counts" className={styles.meta}>任务总数 {page.total??'未完整核对'} · 当前筛选 {page.matched??'未完整核对'} · 已确认 {page.counts?.completed??'未完整核对'} · 已结束 {page.counts?.ended??'未完整核对'}</p>}
-      {page.partial&&<p role="status" className={styles.notice} data-testid="pi-task-partial">部分来源未读取，数量不代表完整记录。不可读 {page.unavailableCount}；{page.sourceFailures.map(item=>`${item.source}: ${item.code}`).join('；')}。{!page.items.length&&' 当前筛选没有可显示的记录，请点击“刷新记录”重试。'}</p>}
+      {page.partial&&<p role="status" className={styles.notice} data-testid="pi-task-partial">部分任务正在核对或暂不可读。显示的任务可能尚未更新。{!items.length&&' 当前没有可显示的记录。'}请点击“刷新记录”重试。</p>}
       {!page.partial&&!page.items.length&&<p data-testid="pi-task-overview-empty">当前筛选没有任务。</p>}
-      {page.items.map((row,index)=><Fragment key={`${row.sessionId}:${row.taskId}`}>
-        {filter==='overview'&&(!index||workbenchTaskGroup(row.state)!==workbenchTaskGroup(page.items[index-1].state))
+      {visible.map((row,index)=><Fragment key={`${row.sessionId}:${row.taskId}`}>
+        {filter==='overview'&&(!index||workbenchTaskGroup(row.state)!==workbenchTaskGroup(visible[index-1].state))
           &&<h3 data-testid="pi-task-overview-group">{groupLabels[workbenchTaskGroup(row.state)]}</h3>}
         <article className={styles.card} data-testid="pi-task-overview-row" data-task-id={row.taskId}>
         <h3>{row.sessionTitle||'未命名会话'}</h3><p>{stateLabels[row.state]}</p>
@@ -76,8 +79,8 @@ function TaskRows({activeSessionId, onOpenSession, onRestore, restoring, page: e
         {row.blockedReasons.map(reason=><p key={reason} className={styles.meta}>{reasons[reason]||reason}</p>)}
         {row.continuationCandidate&&<p className={styles.meta}>继续检查任务已保存的来源和成果。</p>}
         <div className={styles.actions}><Button size="sm" variant="ghost" isDisabled={opening||restoring} onPress={()=>void open(row.sessionId)} data-testid="pi-task-open-session">查看会话</Button>
-          {onRestore&&row.resumeCandidate&&<Button size="sm" variant="secondary" isDisabled={restoring||opening} onPress={()=>void onRestore(row,'remaining')} data-testid="pi-task-overview-resume">继续剩余步骤</Button>}
-          {onRestore&&row.continuationCandidate&&<Button size="sm" variant="secondary" isDisabled={restoring||opening} onPress={()=>void onRestore(row,'continue')} data-testid="pi-task-overview-continue">继续核对本任务</Button>}
+          {onRestore&&row.resumeCandidate&&<Button size="sm" variant="secondary" isDisabled={restoring||opening||page.partial} onPress={()=>void onRestore(row,'remaining')} data-testid="pi-task-overview-resume">继续剩余步骤</Button>}
+          {onRestore&&row.continuationCandidate&&<Button size="sm" variant="secondary" isDisabled={restoring||opening||page.partial} onPress={()=>void onRestore(row,'continue')} data-testid="pi-task-overview-continue">继续核对本任务</Button>}
         </div><TaskArtifactRelations query={{schemaVersion:1,kind:'task_artifacts',sessionId:row.sessionId,taskId:row.taskId}}/></article></Fragment>)}
       {!taskScope&&<div className={styles.actions}><Button size="sm" variant="ghost" isDisabled={!cursors.length} onPress={()=>setCursors(value=>value.slice(0,-1))} data-testid="pi-task-page-prev">上一页</Button><Button size="sm" variant="ghost" isDisabled={!page.nextCursor} onPress={()=>setCursors(value=>[...value,page.nextCursor!])} data-testid="pi-task-page-next">下一页</Button></div>}</>}
   </>;

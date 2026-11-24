@@ -120,9 +120,15 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover();
     },
     async init() {
+      await this.migrateSchema();
+      await this.registerBundledProviders();
+    },
+    async registerBundledProviders() {
+      await registerNativeStatProviders(capabilities,options?.dataRoot?path.join(options.dataRoot(),'capability-artifacts'):undefined);
+    },
+    async migrateSchema() {
       await permissions.migrate();
       await capabilities.migrate();
-      await registerNativeStatProviders(capabilities,options?.dataRoot?path.join(options.dataRoot(),'capability-artifacts'):undefined);
       await capabilitySnapshots.migrate();
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,

@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import type {MaterialStructureRecoveryAction,MaterialStructureRecoveryState,MaterialStructureRecoveryView} from '../../shared/material-import-batch';
 import {MATERIAL_STRUCTURE_EXTENSIONS,type MaterialStructureRepository} from './material-structure-repository';
 import type {MaterialParseQueue} from './material-parse-queue';
@@ -6,6 +7,7 @@ import {DOCUMENT_STRUCTURE_ENGINE,PREVIOUS_DOCUMENT_STRUCTURE_ENGINES} from '../
 type Value=string|number|null;
 type Row=Record<string,unknown>;
 type Host={
+  publications?:BackupPublicationBarrier;
   all:(sql:string,values?:Value[])=>Promise<Row[]>;
   run:(sql:string,values?:Value[])=>Promise<void>;
   structures:()=>MaterialStructureRepository;
@@ -90,7 +92,7 @@ export class MaterialStructureRecovery {
 
   private wake(){
     if(!this.timer||this.closing||this.pumping)return;
-    this.pumping=this.tick().catch(()=>undefined).finally(()=>{this.pumping=undefined;});
+    this.pumping=publishBackground(this.host.publications,()=>this.tick())?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});
   }
 
   async action(batchId:string,action:MaterialStructureRecoveryAction){

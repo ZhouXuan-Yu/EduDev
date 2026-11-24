@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import {materialAiProcessingPolicy} from './material-ai-processing-policy';
 import {MATERIAL_CROP_CORRECTION_POLICY} from '../../shared/material-ai-page-fragments';
@@ -35,7 +36,7 @@ const parseRecoverable=`u.state='review' AND u.ai_batch_id='' AND u.error='local
  AND (lower(r.original_file_name) LIKE '%.pdf' AND j.version=u.version AND j.state IN ('complete','partial') AND u.unit<=j.total
  OR lower(r.original_file_name) NOT LIKE '%.pdf' AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id))
  AND ${unreserved}`;
-type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;wordPages?:PrepareFolderWordPages;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
+type Host={publications?:BackupPublicationBarrier;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;wordPages?:PrepareFolderWordPages;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
 export class MaterialFolderAiRepository{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private lastGrantRowid=0;
  private preparing?:{batchId:string;controller:AbortController};
@@ -63,7 +64,7 @@ export class MaterialFolderAiRepository{
    UPDATE material_folder_ai SET status='attention',error='scope_changed' WHERE batch_id=NEW.batch_id AND status='complete' AND EXISTS(SELECT 1 FROM material_folder_ai_resources r WHERE r.batch_id=NEW.batch_id AND r.resource_id=NEW.resource_id AND r.status='waiting');
   END`);
  }
- start(){if(this.timer)return;this.closing=false;const pump=()=>{if(this.pumping||this.closing)return;this.pumping=this.tick().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,1200);this.timer.unref();pump();}
+ start(){if(this.timer)return;this.closing=false;const pump=()=>{if(this.pumping||this.closing)return;this.pumping=publishBackground(this.host.publications,()=>this.tick())?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,1200);this.timer.unref();pump();}
  async close(){this.closing=true;this.preparing?.controller.abort();if(this.timer)clearInterval(this.timer);this.timer=undefined;await this.pumping;}
  private async configured(revision:number){const s=await this.host.ai().settings();if(!s.configured||!s.secureStorage||s.model!=='deepseek-flash'||s.revision!==revision)throw Error('configuration_changed');}
  async authorize(input:FolderAiGrant):Promise<FolderAiView>{

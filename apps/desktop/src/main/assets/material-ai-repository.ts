@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import {validAnswerPageHeaderMask} from '../../shared/material-ai-answer-page-mask';
 import {assertAnswerPageMaskSource,prepareAnswerPageMask} from './material-ai-answer-page-mask';
 import {FIGURE_LABEL_SPACING} from '../../shared/material-ai-figure-spacing';
@@ -88,7 +89,7 @@ import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/mater
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
-type Host={webSourceDocument?:(q:QuestionBankItem)=>Promise<QuestionBankItem['document']>;inspectContinuationText?:ContinuationTextInspector;root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
+type Host={publications?:BackupPublicationBarrier;webSourceDocument?:(q:QuestionBankItem)=>Promise<QuestionBankItem['document']>;inspectContinuationText?:ContinuationTextInspector;root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
   structureBookScope?:ConstructorParameters<typeof MaterialBookAnswerRepository>[0]["structureScope"];
   validateBookStructure?:(q:QuestionBankItem,signal:AbortSignal)=>Promise<void>;
   readQuestion?:(id:string)=>Promise<QuestionBankItem|undefined>;validateQuestion?:(q:QuestionBankItem)=>Promise<void>;word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
@@ -185,7 +186,7 @@ export class MaterialAiRepository{
     signal.throwIfAborted();
     return result;
   }
-  async migrate(){
+  async migrate(inStartupTransaction=false){
     await migrateImageOcr(this.host);
     await this.books.migrate();
     for(const sql of [
@@ -202,7 +203,8 @@ export class MaterialAiRepository{
       'CREATE INDEX IF NOT EXISTS material_ai_native_layout_rechecks_batch ON material_ai_native_layout_rechecks(batch_id)',
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
-    await this.write(target=>target.responses.migrate());
+    if(inStartupTransaction)await this.responses.migrate();
+    else await this.write(target=>target.responses.migrate());
     if(!(await this.host.all('PRAGMA table_info(material_ai_page_crops)')).some(c=>c.name==='quality_json'))await this.host.run("ALTER TABLE material_ai_page_crops ADD COLUMN quality_json TEXT NOT NULL DEFAULT ''");
     const imageColumns=await this.host.all('PRAGMA table_info(material_ai_image_inputs)');
     if(!imageColumns.some(c=>c.name==='storage_version'))await this.host.run("ALTER TABLE material_ai_image_inputs ADD COLUMN storage_version TEXT NOT NULL DEFAULT 'inline.v1'");
@@ -873,7 +875,7 @@ export class MaterialAiRepository{
   async recoverStartup(){await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE retry_at<>0 AND status IN ('pending','first_saved')");await this.cropRechecks.recoverStartup();await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
   start(){
     if(this.timer)return;this.closing=false;
-    const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
+    const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=publishBackground(this.host.publications,async()=>{await this.recover();await this.drain();})?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
     this.timer=setInterval(pump,1000);this.timer.unref();pump();
   }
   async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;for(const controller of this.layoutControllers)controller.abort();this.active?.controller.abort();await this.pumping;}

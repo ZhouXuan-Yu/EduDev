@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -7,7 +8,7 @@ import {isSupportedMaterialFile} from './material-folder-import';
 import {structureRecoveryFileState,structureRecoveryFailure,type MaterialStructureRecovery} from './material-structure-recovery';
 import type {MaterialStructureRecoveryAction,MaterialStructureRecoveryState} from '../../shared/material-import-batch';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={structureRecovery?:MaterialStructureRecovery;root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
+type Host={publications?:BackupPublicationBarrier;structureRecovery?:MaterialStructureRecovery;root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
 const DISCOVERY_SLICE=128;
 // Older builds must not automatically process batches with an explicit selection.
 const selectionSchema='xiaozhi.material-import-selection.v2';
@@ -51,7 +52,7 @@ export class MaterialImportBatches{
  start(){if(this.timer)return;this.host.structureRecovery?.start();this.closing=false;this.timer=setInterval(()=>this.wake(),700);this.timer.unref();this.wake();}
  async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;await this.host.structureRecovery?.close();}
  async pauseAll(){await this.host.structureRecovery?.pauseAll();await this.host.run(`UPDATE material_import_batches SET status='paused',updated_at=? WHERE schema_version IN (?,?) AND status='queued' AND owner_pid=0`,[now(),...batchSchemas]);if(this.active){this.active.pause=true;this.active.controller.abort();await this.pumping;}}
- private wake(){if(this.closing||this.pumping)return;this.pumping=this.pump().catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
+ private wake(){if(this.closing||this.pumping)return;this.pumping=publishBackground(this.host.publications,()=>this.pump())?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
  private async root(row:Row){
   const root=String(row.root_path),managed=await fs.realpath(this.host.root()),stat=await fs.lstat(root);
   if(!path.isAbsolute(root)||!stat.isDirectory()||stat.isSymbolicLink()||!same(await fs.realpath(root),root)||inside(managed,root)||identity(stat)!==row.root_identity)throw new Error('invalid_root');

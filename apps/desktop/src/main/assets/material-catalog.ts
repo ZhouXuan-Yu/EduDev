@@ -22,7 +22,7 @@ import {
 type Row = Record<string, unknown>;
 type Value = string | number | null;
 type Host = {
-    open: () => Promise<sqlite3.Database>;
+    open: (write: boolean) => Promise<sqlite3.Database>;
     mapResource: (row: Row) => TeacherResource;
     assertOpen: () => void;
 };
@@ -90,7 +90,7 @@ export class MaterialCatalogRepository {
         let committed = false;
         const task = (async () => {
             current();
-            const db = await this.host.open();
+            const db = await this.host.open(write);
             const raw = (sql: string) => new Promise<void>((resolve, reject) => db.exec(sql, e => e ? reject(e) : resolve()));
             const sql: Sql = {
                 all: async (q, p = []) => {
@@ -106,7 +106,7 @@ export class MaterialCatalogRepository {
             };
             try {
                 current();
-                await raw('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; ' + (write ? 'BEGIN IMMEDIATE;' : 'BEGIN;'));
+                await raw(write ? 'BEGIN IMMEDIATE;' : 'BEGIN;');
                 current();
                 const result = await action(sql, current);
                 current();
@@ -127,9 +127,14 @@ export class MaterialCatalogRepository {
         void task.then(() => this.tasks.delete(task), () => this.tasks.delete(task));
         return task;
     }
-    async init() {
+    reopen() {
         this.closing = false;
-        await this.work(true, async (sql) => {
+    }
+    async init() {
+        this.reopen();
+        await this.work(true, sql => this.migrate(sql));
+    }
+    async migrate(sql: Pick<Sql, 'run'>) {
             await sql.run(`CREATE TABLE IF NOT EXISTS ${metadataTable}(
                 resource_id TEXT PRIMARY KEY REFERENCES teacher_resources(id),
                 revision INTEGER NOT NULL CHECK(revision>0),
@@ -145,7 +150,6 @@ export class MaterialCatalogRepository {
             )`);
             await sql.run(`CREATE INDEX IF NOT EXISTS material_catalog_directory_v1 ON ${metadataTable}(directory_key,resource_id)`);
             await sql.run(`CREATE INDEX IF NOT EXISTS material_catalog_tag_v1 ON ${tagsTable}(tag_key,resource_id)`);
-        });
     }
     /** Synchronous latch runs before the first await in store shutdown. */
     async close() {

@@ -6,6 +6,7 @@ import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { _electron as electron } from 'playwright';
 import { assertIsolatedPiMain, testMain } from '../acceptance/build-root.mjs';
+import {addTask} from '../acceptance/db-foundation-r1-task-fixture.mjs';
 
 const desktop = path.resolve(import.meta.dirname, '../..');
 const main = testMain(desktop);
@@ -36,20 +37,22 @@ function seedPortableFixture() {
   const grant = {schemaVersion: 1, grantId: 'xigrant_fixture', revision: 1, sessionId, taskId: null, scope,
     provenance: {kind: 'teacher', reference: 'fixture'}, createdAt: at, expiresAt: null, revokedAt: null};
   const markers = ['fixture-deepseek-token', 'fixture-glm-token', 'fixture-shared-token', 'fixture-material-token',
-    'fixture-mcp-token', 'fixture-mcp-argument-credential', 'fixture-env-credential', 'fixture-previous-model-token'];
+    'fixture-mcp-token', 'fixture-mcp-argument-credential', 'fixture-env-credential', 'fixture-previous-model-token',
+    'fixture-protected-legacy-deepseek', 'fixture-protected-legacy-glm'];
   const db = new DatabaseSync(path.join(dataRoot, 'app.db'));
   try {
     const put = db.prepare('INSERT OR REPLACE INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)');
     const save = (key, value) => put.run(key, JSON.stringify(value), at);
-    save('deepseek', {model:'deepseek-pro', apiKey: markers[0]});
-    save('glm', {model:'glm-4', apiKey: markers[1]});
+    save('deepseek', {model:'deepseek-pro', apiKey: markers[0], sealedKey: markers[8]});
+    save('glm', {model:'glm-4', apiKey: markers[1], sealedKey: markers[9]});
     save('xiaozhi.provider.v1', {schema:1, revision:4, defaultModel:'deepseek-pro', sealedKey:markers[7]});
     save('xiaozhi.provider.v1', {schema:1, revision:5, defaultModel:'deepseek-pro', sealedKey:markers[2]});
     save('xiaozhi.material-ai.v1', {revision:1, model:'qwen3-vl-plus', sealedKey:markers[3]});
     save('xiaozhi.mcp.v1', {schemaVersion:1, revision:1, servers: [{sealedSecret:markers[4], args:[markers[5]]}]});
     save('xiaozhi.thinking.default', {schema:1, revision:1, choice:'high'});
-    db.exec("CREATE TABLE migration_fixture_cursor (label TEXT); INSERT INTO migration_fixture_cursor (rowid,label) VALUES (999,'保留索引位置')");
+    db.exec("INSERT INTO app_settings(rowid,key,value_json,updated_at) VALUES(999,'fixture.portable.cursor','{}','2026-11-21')");
     db.prepare('INSERT INTO ai_conversation_sessions(id,title,created_at,updated_at) VALUES(?,?,?,?)').run(sessionId, '合成换机对话', at, at);
+    addTask(db,37,100);
     db.prepare('INSERT INTO xiaozhi_permission_profiles_v1 VALUES(?,?,?,?)').run(sessionId, profile.revision, JSON.stringify(profile), protocolHash(profile));
     db.prepare('INSERT INTO xiaozhi_permission_grants_v1 VALUES(?,?,?,?,?,?,?,?)').run(grant.grantId, sessionId, null, 1, 0,
       JSON.stringify(grant), protocolHash(grant), at);
@@ -83,8 +86,12 @@ function checkPortableDatabase(file, marker, sessionId, portable) {
     assert.equal(setting('xiaozhi.provider.v1').defaultModel, 'deepseek-pro');
     assert.equal(setting('xiaozhi.provider.v1').sealedKey, portable ? undefined : marker);
     assert.equal(setting('xiaozhi.thinking.default').choice, 'high');
-    assert.equal(db.prepare('SELECT rowid FROM migration_fixture_cursor').get().rowid, 999);
+    assert.equal(db.prepare("SELECT rowid FROM app_settings WHERE key='fixture.portable.cursor'").get().rowid, 999);
     assert.equal(setting('deepseek').model, 'deepseek-pro');
+    for(const provider of ['deepseek','glm']){
+      assert.equal(Object.hasOwn(setting(provider),'apiKey'),!portable);
+      assert.equal(Object.hasOwn(setting(provider),'sealedKey'),!portable);
+    }
     assert.equal(Boolean(setting('xiaozhi.mcp.v1')), !portable);
     assert.equal(db.prepare('SELECT title FROM ai_conversation_sessions WHERE id=?').get(sessionId).title, '合成换机对话');
     const profile = db.prepare('SELECT document_json FROM xiaozhi_permission_profiles_v1 WHERE session_id=?').get(sessionId);
@@ -93,6 +100,8 @@ function checkPortableDatabase(file, marker, sessionId, portable) {
     const approvals = db.prepare("SELECT payload_json FROM ai_confirmation_items WHERE session_id=? AND action_type='xiaozhi_permission_v2' ORDER BY id").all(sessionId);
     assert.deepEqual(approvals.map(row => JSON.parse(row.payload_json).state),
       portable ? ['invalidated','executed','uncertain','invalidated'] : ['approved','executed','executing','pending']);
+    const historical=db.prepare("SELECT state,revision,idempotency_key FROM xiaozhi_effects_v1 WHERE run_id='airun_r1_37'").get();
+    assert.deepEqual({...historical},{state:'unknown',revision:1,idempotency_key:'r1-effect:airun_r1_37'});
   } finally { db.close(); }
 }
 
@@ -162,7 +171,12 @@ try {
   await expectVisible('data-backup-export-success');
   exported = await page.getByTestId('data-backup-export-path').innerText();
   const manifest = JSON.parse(fs.readFileSync(path.join(exported, manifestFile), 'utf8'));
-  assert.deepEqual(manifest.compatibility, { appVersion: applicationVersion, dataVersion: 0 });
+  const opened = new DatabaseSync(path.join(exported,'app.db'),{readOnly:true});
+  let dataVersion;
+  try {dataVersion=opened.prepare('PRAGMA user_version').get().user_version;}
+  finally {opened.close();}
+  assert(dataVersion >= 1, 'A current export must be a managed database');
+  assert.deepEqual(manifest.compatibility, { appVersion: applicationVersion, dataVersion });
   assert.equal(manifest.compatibilityAppVersionSource,'desktop');
   const originalDatabase = sha(fs.readFileSync(path.join(exported, 'app.db')));
   assert((await page.getByTestId('data-backup-compatibility').innerText()).includes(applicationVersion));
@@ -239,18 +253,29 @@ try {
   assert.equal(sha(fs.readFileSync(settingsDb)), settingsHash);
   checks.push('The prepared-copy view carries the same read-only inventory and keeps the original active.');
 
-  const olderSettings = copyBackup('unknown-settings', (manifest, folder) => {
+  const missingSettings = copyBackup('managed-missing-settings', (manifest, folder) => {
     const dbPath = path.join(folder, 'app.db');
     const db = new DatabaseSync(dbPath);
     try { db.exec('PRAGMA journal_mode=DELETE; DROP TABLE app_settings'); } finally { db.close(); }
     const bytes = fs.readFileSync(dbPath);
     Object.assign(manifest.files.find(item => item.path === 'app.db'), { size: bytes.length, sha256: sha(bytes) });
   });
-  await pick(olderSettings);
-  await page.getByTestId('data-backup-verify').click();
-  await expectVisible('data-backup-verify-success');
-  await expectVisible('data-backup-continuity', /暂时无法读取换机设置清单/);
-  checks.push('A verified old backup without settings tables shows a distinct inventory-unavailable state.');
+  await verifyAndReject(missingSettings, undefined, /invalid_ledger/, false);
+  checks.push('A managed backup missing a required table is rejected before copying, even with correct file hashes.');
+
+  for(const [name,statement] of [
+    ['unknown-migration',"UPDATE xiaozhi_schema_migrations SET migration_id='unrecognized' WHERE to_version=1"],
+    ['invalid-checksum',"UPDATE xiaozhi_schema_migrations SET checksum=printf('%064d',0) WHERE to_version=1"],
+  ]){
+    const corrupt=copyBackup(name,(manifest,folder)=>{
+      const file=path.join(folder,'app.db'),db=new DatabaseSync(file);
+      try {db.exec(statement);}finally {db.close();}
+      const bytes=fs.readFileSync(file);
+      Object.assign(manifest.files.find(item=>item.path==='app.db'),{size:bytes.length,sha256:sha(bytes)});
+    });
+    await verifyAndReject(corrupt, undefined, /invalid_ledger/, false);
+    checks.push('Restore rejects a managed backup with '+name+' before copying.');
+  }
 
   const legacy = copyBackup('legacy', manifest => delete manifest.compatibility);
   await pick(legacy);
@@ -282,14 +307,14 @@ try {
     delete manifest.compatibility;
     const dbPath = path.join(folder, 'app.db');
     const db = new DatabaseSync(dbPath);
-    try { db.exec('PRAGMA user_version = 1'); } finally { db.close(); }
+    try { db.exec('PRAGMA user_version = '+(dataVersion+1)); } finally { db.close(); }
     const bytes = fs.readFileSync(dbPath);
     Object.assign(manifest.files.find(item => item.path === 'app.db'), { size: bytes.length, sha256: sha(bytes) });
   });
   await verifyAndReject(newerData, /无法读取此数据库格式/, /无法读取此备份的数据库格式/);
   checks.push('An unsupported actual SQLite data version is rejected even with the app metadata absent.');
 
-  const inconsistent = copyBackup('inconsistent', manifest => { manifest.compatibility.dataVersion = 1; });
+  const inconsistent = copyBackup('inconsistent', manifest => { manifest.compatibility.dataVersion = dataVersion+1; });
   await verifyAndReject(inconsistent, undefined, /版本信息无效或与数据库不一致/, false);
   checks.push('Declared and actual data version must agree.');
 
@@ -417,6 +442,8 @@ try {
   };
   await relaunch();
   assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()), activeCopy);
+  checkPortableDatabase(path.join(activeCopy,'app.db'),markers[2],sessionId,true);
+  assert(!fs.existsSync(path.join(activeCopy,'r1-test.txt')));
   const settings = await page.evaluate(() => window.omniEdu.getXiaozhiSettings());
   assert.equal(settings.ok, true);
   const restoredModel = settings.value;

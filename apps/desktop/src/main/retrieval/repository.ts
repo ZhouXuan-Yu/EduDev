@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import {sourceReadingEnabled} from '../../shared/material-ai-source-reading';
 import {isCompleteQuestionDocument} from '../../shared/question-document';
 import {createHash,randomUUID} from 'node:crypto';
@@ -26,7 +27,7 @@ import {aiPageQuestionIssues} from '../assets/material-ai-page-publish';
 import {migrateMaterialSearchVisibility} from '../assets/material-structure-search';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]};
-type Host={validateStructureQuestion?:(q:QuestionBankItem)=>Promise<void>;validatePageQuestion?:(q:QuestionBankItem)=>Promise<void>;root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
+type Host={publications?:BackupPublicationBarrier;validateStructureQuestion?:(q:QuestionBankItem)=>Promise<void>;validatePageQuestion?:(q:QuestionBankItem)=>Promise<void>;root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   keywordCandidates?:(f:QuestionSearchFilters)=>Promise<{questions:SimilarQuestionMatch[];excludedRecords:number;candidateLimitReached:boolean}>;
@@ -43,7 +44,12 @@ export class RetrievalRepository{
   private port?:VectorPort;private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private retryAt=0;
   constructor(private host:Host){this.restoredText=new MaterialAiTextIndex({...host,write:action=>host.writer(target=>action(target.restoredText))});}
   configure(port:VectorPort){this.port=port;}
-  async migrate(){const reset=!!this.host.fullText().recreated;await this.host.writer(target=>target.migrateInWriter(reset));if(reset)this.host.fullText().recreated=false;}
+  async migrate(inStartupTransaction=false){
+    const reset=!!this.host.fullText().recreated;
+    if(inStartupTransaction)await this.migrateInWriter(reset);
+    else await this.host.writer(async target=>{await target.migrateInWriter(reset);await target.recoverMaintenance();});
+    if(reset)this.host.fullText().recreated=false;
+  }
   private async migrateInWriter(reset=false){
     await migrateMaterialSearchVisibility(this.host);
     for(const sql of [
@@ -86,6 +92,8 @@ export class RetrievalRepository{
       const c=await this.control();if(c.building)await this.host.run("UPDATE retrieval_generations SET question_cursor='',backfill_done=0 WHERE id=?",[String(c.building)]);else if(c.active)await this.newGeneration();
       await this.host.run("INSERT INTO retrieval_schema_migrations(name) VALUES('source-closure.v2')");
     }
+  }
+  async recoverMaintenance(){
     await this.host.run("UPDATE retrieval_maintenance SET state_json=json_set(state_json,'$.phase','retry_pending','$.error','interrupted'),checked_at=0 WHERE json_valid(state_json) AND json_extract(state_json,'$.phase')='running'");
   }
   private linkSql(prefix:'new'|'q'){
@@ -114,7 +122,7 @@ export class RetrievalRepository{
     const maintenance=id?await this.maintenanceState(id):undefined;
     return{schemaVersion:RETRIEVAL_SCHEMA,available:!!this.port&&!c.error,generation:String(c.active),building:String(c.building),paused:!!c.paused,phase:c.building?'building':c.active?'ready':'waiting',pending:Math.max(0,max-Number(g?.applied_seq||0)),indexed:Number(g?.indexed||0),failed:id?await this.failed(id):0,error:String(c.error),model:EMBEDDING_ID,...(maintenance?{maintenance}:{})};
   }
-  start(){if(this.timer)return;this.closing=false;const pump=()=>{if(this.pumping||!this.port||this.closing||Date.now()<this.retryAt)return;this.pumping=this.drain().then(()=>undefined).catch(async error=>{if(this.closing||(await this.control()).paused)return;this.retryAt=Date.now()+15000;await this.host.run('UPDATE retrieval_control SET error=? WHERE id=1',[issue(error)]).catch(()=>undefined);}).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,400);this.timer.unref();pump();}
+  start(){if(this.timer)return;this.closing=false;const pump=()=>{if(this.pumping||!this.port||this.closing||Date.now()<this.retryAt)return;this.pumping=publishBackground(this.host.publications,async()=>{await this.drain();})?.catch(async error=>{if(this.closing||(await this.control()).paused)return;this.retryAt=Date.now()+15000;await this.host.run('UPDATE retrieval_control SET error=? WHERE id=1',[issue(error)]).catch(()=>undefined);}).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,400);this.timer.unref();pump();}
   async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;await this.port?.close();await this.pumping;}
   private async failed(id:string){return Number((await this.host.all('SELECT COUNT(*) n FROM retrieval_failures WHERE generation=?',[id]))[0].n);}
   private async maintenanceState(id:string){const row=(await this.host.all('SELECT state_json FROM retrieval_maintenance WHERE generation=?',[id]))[0];try{const state=JSON.parse(String(row?.state_json));return validIndexMaintenance(state)?state:undefined;}catch{return undefined;}}

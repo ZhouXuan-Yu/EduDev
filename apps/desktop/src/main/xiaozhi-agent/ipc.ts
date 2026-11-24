@@ -5,6 +5,7 @@ import {registerEnvironmentIpc} from './environment/api';
 import {registerAcquisitionIpc} from './capabilities/acquisition/api';
 import {registerTerminalIpc} from './terminal/api';
 import {registerWorkbenchIpc} from './workbench-api';
+import {createResolvedAgentConfig} from './resolved-agent-config';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -19,7 +20,8 @@ import {registerPaperBasketIpc} from '../education/paper-basket-api';
 import {validPaperOutput} from '../../shared/paper-export';
 import {registerPracticeReviewIpc} from '../education/practice-review-api';
 import type { IpcMain, BrowserWindow } from 'electron';
-import { app, dialog, safeStorage, shell } from 'electron';
+import { app, dialog, shell } from 'electron';
+import {providerCredentialCodec} from '../provider-credential-codec';
 import {registerWebIpc} from './web-api';
 import {registerAttachmentIpc} from './attachment-api';
 import fs from 'node:fs';
@@ -81,8 +83,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
       fs.writeFileSync(path.join(options.dataRoot, `.e2e-pi-text-${stage}`), 'durable-stage-reached');
       await new Promise(resolve => setTimeout(resolve, 30000));
     } } : {}),
-    settingsCodec: { available: () => safeStorage.isEncryptionAvailable(), seal: key => safeStorage.encryptString(key).toString('base64'),
-      open: sealed => safeStorage.decryptString(Buffer.from(sealed, 'base64')) },
+    settingsCodec: providerCredentialCodec,
     ...(queueDelay ? {afterInstructionDispatch:async (signal:AbortSignal)=>{
       fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-queue-dispatching'),'durable-dispatching');
       await new Promise<void>(resolve=>{const done=()=>{clearTimeout(timer);signal.removeEventListener('abort',done);resolve();};const timer=setTimeout(done,queueDelay);signal.addEventListener('abort',done,{once:true});if(signal.aborted)done();});
@@ -98,7 +99,10 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
   registerWorkbenchIpc({ipcMain: options.ipcMain, allowed: fromMain, read: action => options.store.readWorkbench(action),
-    recentArtifacts: () => options.store.listDocumentArtifacts()});
+    indexedTasks:true,recentArtifacts: () => options.store.listDocumentArtifacts()});
+  const readResolvedConfig=createResolvedAgentConfig(action=>options.store.readWorkbench(action));
+  options.ipcMain.handle('xiaozhi:resolved-agent-config',(event,input)=>fromMain(event)
+    ? readResolvedConfig(input) : {ok:false,error:'permission_denied'});
   registerTerminalIpc({ipcMain: options.ipcMain, allowed: fromMain, api: host.terminal});
   registerPermissionIpc({ipcMain: options.ipcMain, allowed: fromMain, permissions: host.permissions,
     resumeLegacy: input => host.resumeLegacyApproval(input)});

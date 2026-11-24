@@ -10,6 +10,7 @@ import {readWorkbenchHome} from './workbench-home';
 import type {TeachingFileCatalogEntry} from '../../shared/contracts';
 import {readWorkbenchArtifactLinks} from './workbench-artifact-links';
 import {mockExamWorkbenchRows} from '../education/mock-exam-state';
+import {readTaskSummaryPage} from './task-summary-read';
 
 type PagedQuery = Exclude<WorkbenchQuery, {kind: 'approval_detail' | 'home' | 'task_artifacts' | 'artifact_tasks'}>;
 type Cursor = {v: 1; query: string; key: string; id: string};
@@ -62,16 +63,20 @@ function stateCounts<T>(items: T[], state: (item: T) => string, initial: string[
   return result;
 }
 export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) => Promise<T>) => Promise<T>;
+  indexedTasks?: boolean;
   recentArtifacts?: () => Promise<TeachingFileCatalogEntry[]>}) {
   return async (input: unknown): Promise<WorkbenchResult> => {
     if (!validWorkbenchQuery(input)) return {ok: false, error: 'invalid_input'};
     try {
       const value = await options.read(async sql => {
+        if(input.kind==='tasks' && options.indexedTasks)return readTaskSummaryPage(sql,input);
         const tables = new Set((await sql.all("SELECT name FROM sqlite_master WHERE type='table'")).map(row => String(row.name)));
         const read: WorkbenchRead = {sql, now: new Date().toISOString(), tables, sessions: new Map(), failures: [], unavailable: 0};
+        const requestedSession = input.kind === 'approval_detail' ? input.ref.sessionId : 'sessionId' in input ? input.sessionId : undefined;
         if (!tables.has('ai_conversation_sessions')) workbenchFailure(read, 'sessions', 'not_initialized', null);
         else {
-          for (const row of await sql.all('SELECT id,title FROM ai_conversation_sessions WHERE archived_at IS NULL')) {
+          for (const row of await sql.all('SELECT id,title FROM ai_conversation_sessions WHERE archived_at IS NULL'
+            +(requestedSession?' AND id=?':''),requestedSession?[requestedSession]:[])) {
             if (typeof row.id !== 'string' || !row.id || typeof row.title !== 'string') {workbenchFailure(read, 'sessions', 'corrupt'); continue;}
             read.sessions.set(row.id, {id: row.id, title: workbenchText(row.title)});
           }
@@ -81,7 +86,6 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
           return readWorkbenchHome(read, await readWorkbenchTasks(read, approvals), approvals, options.recentArtifacts);
         }
         if (input.kind === 'task_artifacts' || input.kind === 'artifact_tasks') return readWorkbenchArtifactLinks(read, input);
-        const requestedSession = input.kind === 'approval_detail' ? input.ref.sessionId : input.sessionId;
         if (requestedSession) {
           if (!read.sessions.has(requestedSession)) throw Error('permission_denied');
           read.sessions = new Map([[requestedSession, read.sessions.get(requestedSession)!]]);

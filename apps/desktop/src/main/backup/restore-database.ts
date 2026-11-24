@@ -1,11 +1,11 @@
-import sqlite3 from 'sqlite3';
+import {closeSqlite,openSqlite} from '../sqlite-connections';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 /** Relocate mutable file addresses in the new copy. Immutable event/native/check facts stay byte-identical. */
 export type RestoredExternalRoot={sourceRoot:string;targetRoot:string;files:string[]};
 export async function relocateBackupDatabase(file:string,fromData:string,toData:string,fromOutputs:string,toOutputs:string,external:RestoredExternalRoot[]=[]){
- const db=await new Promise<sqlite3.Database>((resolve,reject)=>{const d=new sqlite3.Database(file,sqlite3.OPEN_READWRITE,e=>e?reject(e):resolve(d));});
+ const db=await openSqlite(file,'backupWrite');
  const run=(q:string,a:unknown[]=[])=>new Promise<void>((resolve,reject)=>db.run(q,a,e=>e?reject(e):resolve()));
  const all=(q:string,a:unknown[]=[])=>new Promise<Record<string,unknown>[]>((resolve,reject)=>db.all(q,a,(e,r)=>e?reject(e):resolve(r as Record<string,unknown>[])));
  const externalFiles=new Map(external.flatMap(r=>r.files.map(f=>[path.join(r.sourceRoot,f).toLowerCase(),path.join(r.targetRoot,f)] as const)));
@@ -13,7 +13,8 @@ export async function relocateBackupDatabase(file:string,fromData:string,toData:
  const relocateRoot=(value:string)=>external.find(r=>path.normalize(r.sourceRoot).toLowerCase()===path.normalize(value).toLowerCase())?.targetRoot||relocate(value);
  const warnings:string[]=[];
  try{
-  const integrity=await all('PRAGMA quick_check');if(integrity.length!==1||Object.values(integrity[0])[0]!=='ok')throw Error('备份数据库损坏，未激活恢复');
+  const integrity=await all('PRAGMA integrity_check');if(integrity.length!==1||Object.values(integrity[0])[0]!=='ok')throw Error('备份数据库损坏，未激活恢复');
+  if((await all('PRAGMA foreign_key_check')).length)throw Error('备份数据库存在无效关系，未激活恢复');
   const tables=new Set((await all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
   await run('BEGIN IMMEDIATE');
   for(const [table,column]of [['attachments','file_path'],['document_artifacts','file_path'],['teacher_resources','local_path'],['mistake_image_analyses','local_path'],['xiaozhi_pi_office_drafts','result_path']]){
@@ -46,7 +47,8 @@ export async function relocateBackupDatabase(file:string,fromData:string,toData:
   if(tables.has('material_folder_ai'))await run("UPDATE material_folder_ai SET status='paused' WHERE status='running'");
   if(tables.has('material_ai_batches'))await run("UPDATE material_ai_batches SET status='paused' WHERE status='running'");
   // No history is replayed here. Normal original startup recovery settles running/uncertain records.
+  if((await all('PRAGMA foreign_key_check')).length)throw Error('恢复后的数据库存在无效关系，未激活恢复');
   await run('COMMIT');return warnings;
  }catch(e){await run('ROLLBACK').catch(()=>undefined);throw e;}
- finally{await new Promise<void>((resolve,reject)=>db.close(e=>e?reject(e):resolve()));}
+ finally{await closeSqlite(db);}
 }

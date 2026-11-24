@@ -6,9 +6,10 @@ import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import {supportedThinking,validThinkingChoice,type ThinkingInput,type ThinkingView} from '../../shared/xiaozhi-thinking';
 import { fetchDeepSeekCatalogue, readDeepSeekCatalogue } from './model-capabilities';
 import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSettingsView, type XiaozhiSessionModelInput, type XiaozhiSessionModel, type XiaozhiCredentialInput, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
+import {openProviderCredential,type SettingsKeyCodec} from '../provider-credentials';
 
 // The codec is injected by Electron main; this service never imports it in Node/Worker.
-export type SettingsKeyCodec = { available: () => boolean; seal: (key: string) => string; open: (sealed: string) => string };
+export type {SettingsKeyCodec} from '../provider-credentials';
 const modelId = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/.test(value);
 const revision = (value: unknown) => Number.isSafeInteger(value) && Number(value) >= 0 && Number(value) < Number.MAX_SAFE_INTEGER;
 export const validSessionId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
@@ -37,26 +38,23 @@ export function validThinkingInput(value:unknown):value is ThinkingInput {
 export function createModelSettings(options: { store: OmniEduStore; root: string; codec?: SettingsKeyCodec; busy: () => boolean; assertMutation?: () => void;
   switchBound?: (input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) => Promise<void> }) {
   const { store, root, codec } = options;
-  const legacyModel = (legacy: {model: string; apiKey?: string; updatedAt: string}) =>
-    legacy.updatedAt || legacy.apiKey ? legacy.model : 'deepseek-flash';
+  const legacyModel = async () => {
+    const legacy = await store.legacyDeepSeekModelDefault();
+    return legacy.updatedAt || legacy.configured ? legacy.model : 'deepseek-flash';
+  };
   async function model(id?: string) {
-    const saved = await store.xiaozhiState.modelSettings.configuration(), legacy = await store.getDeepSeekRuntimeSettings('deepseek');
+    const saved = await store.xiaozhiState.modelSettings.configuration();
     const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
     const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return binding?.model || selection?.model || saved.defaultModel || legacyModel(legacy);
+    return binding?.model || selection?.model || saved.defaultModel || await legacyModel();
   }
   async function runtime(id?: string) {
     const saved = await store.xiaozhiState.modelSettings.configuration();
-    const legacy = await store.getDeepSeekRuntimeSettings('deepseek');
-    let apiKey = legacy.apiKey;
-    if (saved.sealedKey) {
-      if (!codec?.available()) throw new Error('storage_unavailable');
-      try { apiKey = codec.open(saved.sealedKey); } catch { throw new Error('configuration'); }
-      if (!apiKey || apiKey.length > 4096) throw new Error('configuration');
-    }
+    const apiKey = saved.sealedKey ? openProviderCredential(codec,saved.sealedKey)
+      : (await store.getDeepSeekRuntimeSettings('deepseek')).apiKey;
     const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
     const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return { provider: 'deepseek' as const, apiKey, model: binding?.model || selection?.model || saved.defaultModel || legacyModel(legacy) };
+    return { provider: 'deepseek' as const, apiKey, model: binding?.model || selection?.model || saved.defaultModel || await legacyModel() };
   }
   async function sessionModel(id: string, includeBusy = true): Promise<XiaozhiSessionModel> {
     const detail = await store.getAiConversationSession(id);
@@ -74,8 +72,8 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     catch (error) {
       // A readable configuration with an undecryptable credential is recoverable by
       // explicitly replacing the key. Never fall back to another credential for runs.
-      if (!saved.sealedKey) throw error;
-      credentialError = error instanceof Error && error.message === 'storage_unavailable' ? 'storage_unavailable' : 'configuration';
+      if (!(error instanceof Error) || !['storage_unavailable','configuration'].includes(error.message)) throw error;
+      credentialError = error.message === 'storage_unavailable' ? 'storage_unavailable' : 'configuration';
       settings = { model: await model() };
     }
     let catalogue = await readDeepSeekCatalogue(root);
@@ -87,6 +85,7 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     // No credential, encrypted blob, private path or provider response is projected.
     return { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: saved.revision, provider: 'deepseek', configured: Boolean(settings.apiKey),
       maskedApiKey: settings.apiKey ? '••••••••' + settings.apiKey.slice(-4) : '', defaultModel: settings.model,
+      legacyCredentialMigration: store.getProviderCredentialMigration(),
       thinking:await thinking(query?.sessionId),web: await store.xiaozhiState.modelSettings.web(), locked: options.busy(), models: catalogue?.models || [], catalogue: catalogue ? catalogue.models[0].source : 'unavailable',
       packages:packageManifest.packages.map(item=>({name:item.name,version:item.version,label:item.name==='pi-web-access'?'联网资料定位':item.name==='pi-goal-x'?'长任务目标增强':'模型账户余额',state:item.name==='pi-goal-x'?'staged' as const:'active' as const,scope:item.name==='pi-web-access'?'已接入网页关键词定位；其他搜索供应商与视频能力待接入。':item.name==='pi-goal-x'?'已安装；现有目标功能继续使用，增强能力正在适配。':'已接入当前已保存DeepSeek账户的官方余额查询。'})),
       ...(catalogueError ? { catalogueError } : {}), ...(credentialError ? { credentialError } : {}), ...(selection ? { sessionModel: { ...selection, locked: selection.locked || options.busy() } } : {}) };
@@ -137,6 +136,7 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
       let sealedKey = previous.sealedKey;
       if (codec?.available()) { try { sealedKey = codec.seal(key); } catch { throw new Error('storage_unavailable'); } }
       await store.xiaozhiState.modelSettings.saveConfiguration(input.version, { schema: 1, defaultModel: input.defaultModel, ...(sealedKey ? { sealedKey } : {}) });
+      await store.retryProviderCredentialMigration();
       return view();
     },
     async select(input: XiaozhiSessionModelInput) {

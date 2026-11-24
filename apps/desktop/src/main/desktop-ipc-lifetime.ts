@@ -1,7 +1,8 @@
 import type {IpcMain} from 'electron';
+import type {BackupPublicationBarrier} from './backup/publication-barrier';
 
 /** Own admitted IPC work until shutdown; callers cannot reopen the admission gate. */
-export function createDesktopIpcLifetime(target:IpcMain){
+export function createDesktopIpcLifetime(target:IpcMain, publications?:BackupPublicationBarrier){
   const pending=new Set<Promise<unknown>>();
   let closing=false,drained:Promise<void>|undefined;
   const handle:IpcMain['handle']=(channel,listener)=>target.handle(channel,(...args)=>{
@@ -11,7 +12,14 @@ export function createDesktopIpcLifetime(target:IpcMain){
     const result=new Promise<unknown>((yes,no)=>{resolve=yes;reject=no;});
     pending.add(result);
     void result.finally(()=>pending.delete(result)).catch(()=>undefined);
-    try{resolve(listener(...args));}catch(error){reject(error);}
+    try{
+      if (publications && channel !== 'app:exportDataRoot' && channel !== 'app:cancelDataBackup' &&
+        channel !== 'app:getDataRoot') {
+        const operation = publications.tryPublish(()=>listener(...args));
+        if (!operation) throw Error('backup_busy');
+        resolve(operation);
+      } else resolve(listener(...args));
+    } catch(error){reject(error);}
     return result;
   });
   const ipcMain=new Proxy(target,{

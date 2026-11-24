@@ -32,7 +32,7 @@ export async function readBackupContinuity(file: string): Promise<BackupContinui
           count(CASE WHEN key='xiaozhi.thinking.default' AND ${revision('doc')}
             AND json_extract(doc, '$.choice') IN (${thinkingChoices}) THEN 1 END) AS thinking,
           count(CASE WHEN key='xiaozhi.provider.v1' AND ${hasText('doc', 'sealedKey')}
-            OR key IN ('deepseek', 'glm') AND ${hasText('doc', 'apiKey')} THEN 1 END) AS credentials
+            OR key IN ('deepseek', 'glm') AND ((${hasText('doc', 'apiKey')}) OR (${hasText('doc', 'sealedKey')})) THEN 1 END) AS credentials
         FROM known`, [...THINKING_CHOICES]);
       const sessions = await hasTable('ai_conversation_sessions') ? await query(db, `WITH choices AS (
         SELECT pref.key, ${storedJson('pref.value_json')} AS doc FROM ai_conversation_sessions s

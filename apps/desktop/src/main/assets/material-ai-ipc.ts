@@ -6,7 +6,8 @@ import {withMaterialPageBlocks} from './material-page-blocks';
 import {pageBlockTexts} from '../../shared/material-ai-page-fragments';
 import {ocrRuntimeRoot,recognizeLocalPageBlocks} from '../xiaozhi-agent/ocr-host';
 import {validAnyBookMatchQuery} from '../../shared/question-book-answer';
-import {ipcMain as electronIpcMain,safeStorage,type BrowserWindow} from 'electron';
+import {ipcMain as electronIpcMain,type BrowserWindow} from 'electron';
+import {providerCredentialCodec} from '../provider-credential-codec';
 import {inspectPageCrop} from './material-ai-crop-inspector';
 import {randomUUID,createHash} from 'node:crypto';
 import {createModelSettings} from '../xiaozhi-agent/model-settings';
@@ -32,12 +33,12 @@ import {validMaterialFolderBooksQuery} from '../../shared/material-folder-books'
 import {AI_STRUCTURE_PENDING} from './material-ai-structure-source';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
-  const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
+  const codec=providerCredentialCodec;
   const shared=createModelSettings({store,root:store.getDataRoot(),codec,busy:()=>false});
   const layoutCache=new MaterialLayoutCache(()=>store.getDataRoot());
   store.materialAi.configure({
     account:async()=>{const saved=await store.xiaozhiState.modelSettings.configuration(),current=await shared.runtime();return{revision:parseInt(createHash('sha256').update(JSON.stringify([saved.revision,current.apiKey||'',current.model])).digest('hex').slice(0,12),16)+1,model:'deepseek-flash' as const,apiKey:current.apiKey||''};},
-    codec:{available:()=>safeStorage.isEncryptionAvailable(),seal:key=>safeStorage.encryptString(key).toString('base64'),open:value=>safeStorage.decryptString(Buffer.from(value,'base64'))},
+    codec,
     clean:async text=>(await createStudentContextSanitizer(store))(text),
     word:{environment:async()=>{const m=await import('./word-question-render');return m.wordProofEnvironment();},render:async(source,images,signal,dataRoot)=>{const m=await import('./word-question-render');return m.renderWordQuestionProof(source,images,{dataRoot,signal});}},
     ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},

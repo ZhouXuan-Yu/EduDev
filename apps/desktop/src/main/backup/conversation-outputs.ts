@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {conversationOutputLocation} from '../xiaozhi-agent/conversation-output-path';
 import type {ConversationOutputsBackup} from '../../shared/contracts';
+import {copyBackupFile} from './data-root-files';
 
 export const OUTPUT_BACKUP_PREFIX='__xiaozhi_outputs__';
 const within=(root:string,target:string)=>{const rel=path.relative(root,target);return !rel||!path.isAbsolute(rel)&&rel!=='..'&&!rel.startsWith('..'+path.sep);};
@@ -19,7 +20,7 @@ export async function assertOutputBackupDestination(dataRoot:string,destination:
  return source;
 }
 /** Add generated files to the original complete backup without copying other instances or private grants. */
-export async function copyConversationOutputs(dataRoot:string,backupRoot:string):Promise<ConversationOutputsBackup>{
+export async function copyConversationOutputs(dataRoot:string,backupRoot:string,signal?:AbortSignal):Promise<ConversationOutputsBackup>{
  const source=await assertOutputBackupDestination(dataRoot,backupRoot),destination=path.join(backupRoot,OUTPUT_BACKUP_PREFIX);
  try{await fs.lstat(destination);throw Error('数据目录含备份保留目录，请先核对：'+OUTPUT_BACKUP_PREFIX);}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
  let count=0;
@@ -28,11 +29,12 @@ export async function copyConversationOutputs(dataRoot:string,backupRoot:string)
   const directory=path.join(source.path,relative);await noLinks(directory);
   const entries=await fs.opendir(directory);await fs.mkdir(path.join(destination,relative),{recursive:true});
   for await(const entry of entries){
+   signal?.throwIfAborted();
    const next=relative?relative+'/'+entry.name:entry.name,file=path.join(source.path,next);await noLinks(file);
    const before=await fs.lstat(file);
    if(before.isDirectory())await visit(next);
    else if(before.isFile()&&before.nlink===1){
-    await fs.copyFile(file,path.join(destination,next));const after=await fs.lstat(file);await noLinks(file);
+    await copyBackupFile(file,path.join(destination,next),signal);const after=await fs.lstat(file);await noLinks(file);
     if(after.size!==before.size||after.mtimeMs!==before.mtimeMs||after.ino!==before.ino||after.dev!==before.dev)throw Error('生成文件在备份期间有变化，请重新备份');
     facts.push({relative:next,size:before.size,mtimeMs:before.mtimeMs,ino:before.ino,dev:before.dev});count++;
    }else throw Error('生成文件包含链接或不支持的类型，未完成备份');

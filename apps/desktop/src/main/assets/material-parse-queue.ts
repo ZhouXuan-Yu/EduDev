@@ -1,3 +1,4 @@
+import {publishBackground,type BackupPublicationBarrier} from '../backup/publication-barrier';
 import {createHash,randomUUID} from 'node:crypto';
 import {freemem,totalmem} from 'node:os';
 import type {TeacherResource} from '../../shared/contracts';
@@ -8,7 +9,7 @@ type Value=string|number|null;
 type Row=Record<string,unknown>;
 type Payload={schemaVersion:typeof MATERIAL_TASK_SCHEMA;resourceId:string;version:string;priority:0|100;attempt:number;owner:null|{pid:number;nonce:string}};
 export type MaterialParseLease={taskId:string;payload:string};
-type Host={structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2};
+type Host={publications?:BackupPublicationBarrier;structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2};
 type ActiveParse={id:string;priority:number;controller:AbortController;reason?:'preempt'|'shutdown';work?:Promise<void>};
 const time=()=>new Date().toISOString();
 const hash=(id:string)=>createHash('sha256').update(id).digest('hex');
@@ -41,7 +42,7 @@ export class MaterialParseQueue {
   }
   this.timer=setInterval(()=>this.wake(),500);this.timer.unref();this.wake();
  }
- wake(){if(!this.started||this.closing||this.pumping)return;this.pumping=this.pump().catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
+ wake(){if(!this.started||this.closing||this.pumping)return;this.pumping=publishBackground(this.host.publications,()=>this.pump())?.catch(()=>undefined).finally(()=>{this.pumping=undefined;});}
  async close(){if(this.closing)return;this.closing=true;if(this.timer)clearInterval(this.timer);await this.pumping;for(const active of this.active.values()){active.reason='shutdown';active.controller.abort();}await Promise.all([...this.active.values()].map(a=>a.work));await this.recoverUntracked(true);this.started=false;}
  async snapshot(resourceId?:string):Promise<MaterialQueueView>{
   if(resourceId!==undefined&&!materialId(resourceId))throw new Error('invalid_input');
@@ -132,7 +133,8 @@ export class MaterialParseQueue {
    const p=parse(row)!,claim={...p,attempt:p.attempt+1,owner:{pid:process.pid,nonce:this.nonce}};if(!await this.cas(row,'running',claim))continue;
    const lease={taskId:String(row.id),payload:JSON.stringify(claim)},active:ActiveParse={id:p.resourceId,priority:p.priority,controller:new AbortController()};this.active.set(p.resourceId,active);
    // Track the owner before any further SQL can fail, so shutdown always joins it.
-   active.work=this.runClaim(claim,lease,active).catch(()=>undefined).finally(()=>{this.active.delete(p.resourceId);this.wake();});
+   const work=this.runClaim(claim,lease,active).catch(()=>undefined).finally(()=>{this.active.delete(p.resourceId);this.wake();});
+   active.work=this.host.publications?.retain(work)??work;
    if(this.closing){active.reason='shutdown';active.controller.abort();}
    else if(p.priority===0&&this.active.size>=this.slots()&&(await this.rows('pending')).some(row=>parse(row)?.priority===100)){active.reason='preempt';active.controller.abort();}
   }

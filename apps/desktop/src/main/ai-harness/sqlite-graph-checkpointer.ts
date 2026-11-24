@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
-import sqlite3 from 'sqlite3';
+import type sqlite3 from 'sqlite3';
+import {closeSqlite,openSqlite} from '../sqlite-connections';
 import type { RunnableConfig } from '@langchain/core/runnables';
 import {
   BaseCheckpointSaver, WRITES_IDX_MAP, copyCheckpoint, getCheckpointId,
@@ -29,25 +30,25 @@ function boundedId(value: unknown, label: string, allowEmpty = false): string {
 
 /** SQLite backed LangGraph saver. The graph must pass only sanitized, bounded state. */
 export class SqliteGraphCheckpointer extends BaseCheckpointSaver {
-  private readonly db: sqlite3.Database;
-  private readonly ready: Promise<void>;
+  private readonly ready: Promise<sqlite3.Database>;
   private readonly pendingPuts = new Map<string, Promise<RunnableConfig>>();
 
   constructor(dbPath: string, private readonly onCheckpoint?: (checkpoint: { id: string; step: number; source: string }) => Promise<void>) {
     super();
-    this.db = new sqlite3.Database(dbPath);
-    this.ready = this.run('PRAGMA foreign_keys = ON');
+    this.ready = openSqlite(dbPath, 'legacyCheckpoint');
   }
 
-  private run(sql: string, params: unknown[] = []): Promise<void> {
+  private async run(sql: string, params: unknown[] = []): Promise<void> {
+    const db = await this.ready;
     return new Promise((resolve, reject) => {
-      this.db.run(sql, params, (error) => error ? reject(error) : resolve());
+      db.run(sql, params, (error) => error ? reject(error) : resolve());
     });
   }
 
-  private all<T>(sql: string, params: unknown[] = []): Promise<T[]> {
+  private async all<T>(sql: string, params: unknown[] = []): Promise<T[]> {
+    const db = await this.ready;
     return new Promise((resolve, reject) => {
-      this.db.all(sql, params, (error, rows) => error ? reject(error) : resolve((rows ?? []) as T[]));
+      db.all(sql, params, (error, rows) => error ? reject(error) : resolve((rows ?? []) as T[]));
     });
   }
 
@@ -161,7 +162,6 @@ export class SqliteGraphCheckpointer extends BaseCheckpointSaver {
   }
 
   async close(): Promise<void> {
-    await this.ready;
-    await new Promise<void>((resolve, reject) => this.db.close((error) => error ? reject(error) : resolve()));
+    await closeSqlite(await this.ready);
   }
 }

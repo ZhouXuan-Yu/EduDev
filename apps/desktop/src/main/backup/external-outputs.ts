@@ -1,11 +1,12 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import sqlite3 from 'sqlite3';
+import {closeSqlite,openSqlite} from '../sqlite-connections';
 import {createHash} from 'node:crypto';
 import type {ExternalOutputsBackup} from '../../shared/contracts';
 import {conversationOutputLocation} from '../xiaozhi-agent/conversation-output-path';
 import {approvedFile} from '../xiaozhi-agent/workspace-authority';
 import {hashFileSha256} from '../local-file-security';
+import {copyBackupFile} from './data-root-files';
 
 export const EXTERNAL_OUTPUT_PREFIX='__xiaozhi_external_outputs__';
 export const RESTORED_EXTERNAL_DIRECTORY='RecoveredWorkspaces';
@@ -14,8 +15,8 @@ const within=(a:string,b:string)=>{const r=path.relative(a,b);return !r||!path.i
 async function noLinks(file:string){let cursor=path.resolve(file);while(true){const stat=await fs.lstat(cursor);if(stat.isSymbolicLink())throw Error('成果路径包含链接，未纳入备份');const next=path.dirname(cursor);if(next===cursor)break;cursor=next;}}
 
 /** Read only the frozen SQLite snapshot, never enumerate an external workspace. */
-export async function copyExternalOutputs(dataRoot:string,backupRoot:string):Promise<ExternalOutputsBackup>{
- const db=await new Promise<sqlite3.Database>((resolve,reject)=>{const d=new sqlite3.Database(path.join(backupRoot,'app.db'),sqlite3.OPEN_READONLY,e=>e?reject(e):resolve(d));});
+export async function copyExternalOutputs(dataRoot:string,backupRoot:string,signal?:AbortSignal):Promise<ExternalOutputsBackup>{
+ const db=await openSqlite(path.join(backupRoot,'app.db'),'backupRead');
  const all=(q:string)=>new Promise<Record<string,unknown>[]>((resolve,reject)=>db.all(q,(e,r)=>e?reject(e):resolve(r as Record<string,unknown>[])));
  const roots=new Map<string,{sourceRoot:string;prefix:string;fileCount:number}>(),targets=new Map<string,{root:string;relative:string}>();
  const omitted=new Set<string>(),bindings:{session:string;root:string;hash:string}[]=[];
@@ -55,21 +56,22 @@ export async function copyExternalOutputs(dataRoot:string,backupRoot:string):Pro
    const binding=bindings.filter(b=>within(b.root,file)).sort((a,b)=>b.root.length-a.root.length)[0];
    add(binding?.root||path.dirname(file),path.relative(binding?.root||path.dirname(file),file).split(path.sep).join('/'));
   }
- }finally{await new Promise<void>((resolve,reject)=>db.close(e=>e?reject(e):resolve()));}
+ }finally{await closeSqlite(db);}
  const destination=path.join(backupRoot,EXTERNAL_OUTPUT_PREFIX);try{await fs.lstat(destination);throw Error('数据目录含外部成果备份保留目录');}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
  const facts:{file:string;version:string;sha256:string}[]=[];
  const stamp=(s:import('node:fs').Stats)=>[s.dev,s.ino,s.size,s.mtimeMs,s.ctimeMs].join(':');
  for(const {root,relative}of targets.values()){
+  signal?.throwIfAborted();
   const file=approvedFile(root,relative);let before;
   try{await noLinks(file);before=await fs.lstat(file);}catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT'){omitted.add('成果文件已缺失：'+file);continue;}throw e;}
   if(!before.isFile()||before.nlink!==1)throw Error('成果不是独立普通文件，未完成备份');
   const key=hash(root),entry=roots.get(key)||{sourceRoot:root,prefix:key,fileCount:0};roots.set(key,entry);
-  const to=path.join(destination,key,relative);await fs.mkdir(path.dirname(to),{recursive:true});await fs.copyFile(file,to);
-  await noLinks(file);const digest=await hashFileSha256(file);
-  if(stamp(before)!==stamp(await fs.lstat(file))||await hashFileSha256(to)!==digest)throw Error('外选目录成果在备份期间变化，请重新备份');
+  const to=path.join(destination,key,relative);await fs.mkdir(path.dirname(to),{recursive:true});await copyBackupFile(file,to,signal);
+  await noLinks(file);const digest=await hashFileSha256(file,signal);
+  if(stamp(before)!==stamp(await fs.lstat(file))||await hashFileSha256(to,signal)!==digest)throw Error('外选目录成果在备份期间变化，请重新备份');
   facts.push({file,version:stamp(before),sha256:digest});entry.fileCount++;
  }
- for(const fact of facts){await noLinks(fact.file);if(stamp(await fs.lstat(fact.file))!==fact.version||await hashFileSha256(fact.file)!==fact.sha256)throw Error('外选目录成果在备份期间变化，请重新备份');}
+ for(const fact of facts){await noLinks(fact.file);if(stamp(await fs.lstat(fact.file))!==fact.version||await hashFileSha256(fact.file,signal)!==fact.sha256)throw Error('外选目录成果在备份期间变化，请重新备份');}
  return{schemaVersion:1,backupPrefix:EXTERNAL_OUTPUT_PREFIX,roots:[...roots.values()],fileCount:facts.length,omittedCount:omitted.size,omitted:[...omitted].slice(0,64)};
 }
 

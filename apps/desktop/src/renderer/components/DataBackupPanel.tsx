@@ -172,7 +172,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
       if (!window.omniEdu?.exportDataRoot) throw new Error('完整备份接口不可用，请重新启动应用。');
       const result = await window.omniEdu.exportDataRoot(purpose === 'portable' ? purpose : undefined);
       if (!result) {
-        const message = `已取消创建${label}，未创建新目录。`;
+        const message = `已取消创建${label}，没有发布新的备份。`;
         setState({ status: 'cancelled', message });
         setStatus?.(message);
         return;
@@ -188,6 +188,18 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
       setState({ status: 'error', message });
       setStatus?.(message);
     } finally { lock.current = false; }
+  };
+
+  const cancelExport = async () => {
+    try {
+      const result=await window.omniEdu?.cancelDataBackup();
+      if (result?.cancelled && live.current) {
+        updateState(previous=>previous.status==='exporting' ? {...previous,message:'正在停止备份…'} : previous);
+      }
+    } catch {
+      if (live.current) updateState(previous=>previous.status==='exporting'
+        ? {...previous,message:'未能提交取消请求，备份仍在处理。'} : previous);
+    }
   };
 
   const verifyBackup = async () => {
@@ -286,6 +298,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>创建本地备份</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup('portable')} data-testid="data-backup-portable-export">创建换机包</Button>
+      {state.status==='exporting' && <Button variant="ghost" data-testid="data-backup-cancel-export" onPress={()=>void cancelExport()}>取消备份</Button>}
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
     {restoreControls}
     <div aria-live="polite">
@@ -310,6 +323,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
           <HardDrive size={17} />备份完整数据目录
         </button>
         <button className="secondary-action" disabled={busy || disabled || !dataRoot} onClick={() => void exportBackup('portable')} data-testid="data-backup-portable-export">创建换机包</button>
+        {state.status==='exporting' && <button type="button" className="secondary-action" data-testid="data-backup-cancel-export" onClick={()=>void cancelExport()}>取消备份</button>}
         <button className="secondary-action" disabled={busy} onClick={() => void verifyBackup()} data-testid="data-backup-verify">
           <ShieldCheck size={17} />{state.status === 'verifying' ? '校验中…' : '校验备份完整性'}
         </button>

@@ -18,8 +18,10 @@ import { PiMcpSettings } from './PiMcpSettings';
 import { PiDecisionHistory } from './PiDecisionHistory';
 import {PiCandidateHistory} from './PiCandidateHistory';
 import {PiDiagnostics} from './PiDiagnostics';
+import {PiResolvedAgentConfig} from './PiResolvedAgentConfig';
 import { PiMemoryScope } from './PiMemoryScope';
 import { PiTeacherMemorySettings } from './PiTeacherMemorySettings';
+import {PiL2MemorySettings} from './PiL2MemorySettings';
 import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
@@ -65,6 +67,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'data-backup-export', tabId: 'backup', title: '创建本地备份', path: ['备份', '创建'], aliases: ['backup export', '导出备份', '数据'] },
   { id: 'data-backup-verify', tabId: 'backup', title: '检查已有备份', path: ['备份', '检查'], aliases: ['backup verify', '校验', '完整性'] },
   { id: 'pi-diagnostic-preview', tabId: 'diagnostics', title: '本轮诊断', path: ['策略与诊断', '本轮诊断'], aliases: ['诊断导出', '错误记录', 'diagnostic', '脱敏'] },
+  { id: 'pi-resolved-config', tabId: 'diagnostics', title: '当前配置来源', path: ['策略与诊断', '当前配置来源'], aliases: ['模型来源', '配置版本', '只读'] },
 ];
 
 export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
@@ -189,8 +192,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {tab === 'teacher-memory' && <SettingsPage tab={tab}><SettingsStack gap="lg">
             <h2 className={layoutStyles.subheading}>{title}</h2>
             <PiTeacherMemorySettings running={locked || actionBusy} onBusyChange={setChildBusy}/>
+            <PiL2MemorySettings/>
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
+            {!loading&&<PiResolvedAgentConfig key={sessionId} sessionId={sessionId||undefined} onNavigate={open}/>}
             {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
               <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
               <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>

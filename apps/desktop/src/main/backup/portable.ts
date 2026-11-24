@@ -2,18 +2,15 @@ import { constants } from 'node:fs';
 import { copyFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import sqlite3 from 'sqlite3';
+import type sqlite3 from 'sqlite3';
+import {closeSqlite,openSqlite} from '../sqlite-connections';
+import {portableProviderSecretFields} from '../provider-credentials';
 import type { Sql } from '../xiaozhi-agent/session-state';
 import { createPermissionStore } from '../xiaozhi-agent/permissions/store';
 import { withReadOnlyBackup } from './compatibility';
 import { snapshotDataBackupSqlite } from './data-root-files';
 
-const providerFields = [
-  ['xiaozhi.provider.v1', '$.sealedKey'],
-  ['deepseek', '$.apiKey'],
-  ['glm', '$.apiKey'],
-  ['xiaozhi.material-ai.v1', '$.sealedKey'],
-] as const;
+const providerFields = portableProviderSecretFields;
 const mcpSettings = 'xiaozhi.mcp.v1';
 const invalidPackage = '换机包包含旧设备凭据或授权，请在原电脑重新创建换机包。';
 
@@ -29,11 +26,10 @@ async function hasTable(all: Sql['all'], name: string) {
 }
 
 /** Only called on a temporary file written by the live store's snapshot operation. */
-async function sanitize(file: string, output: string) {
-  const db = await new Promise<sqlite3.Database>((resolve, reject) => {
-    const connection = new sqlite3.Database(file, sqlite3.OPEN_READWRITE,
-      error => error ? reject(error) : resolve(connection));
-  });
+async function sanitize(file: string, output: string, signal?: AbortSignal) {
+  const db = await openSqlite(file, 'backupWrite');
+  const abort = () => db.interrupt();
+  signal?.addEventListener('abort',abort,{once:true});
   const change: NonNullable<Sql['change']> = (sql, values = []) =>
     new Promise((resolve, reject) => db.run(sql, values, function (error) {
       if (error) reject(error);
@@ -43,6 +39,7 @@ async function sanitize(file: string, output: string) {
   // The detached snapshot has one connection and one enclosing transaction.
   detached.transaction = async work => work(detached);
   try {
+    signal?.throwIfAborted();
     await change('PRAGMA secure_delete=ON');
     await change('BEGIN IMMEDIATE');
     try {
@@ -63,7 +60,8 @@ async function sanitize(file: string, output: string) {
     // cursors in this database still refer to those rowids after recovery.
     await change('VACUUM INTO ?', [output]);
   } finally {
-    await new Promise<void>((resolve, reject) => db.close(error => error ? reject(error) : resolve()));
+    signal?.removeEventListener('abort',abort);
+    await closeSqlite(db);
   }
 }
 
@@ -87,14 +85,15 @@ export function assertPortableBackupDatabase(file: string) {
 }
 
 /** Publish only the sanitized standalone DB. A failed export never writes live credentials to its target. */
-export async function snapshotPortableBackup(database: unknown, destination: string) {
+export async function snapshotPortableBackup(database: unknown, destination: string, signal?: AbortSignal) {
   const staging = await mkdtemp(join(tmpdir(), 'xiaozhi-portable-'));
   try {
     const original = join(staging, 'snapshot.db');
     const file = join(staging, 'app.db');
-    await snapshotDataBackupSqlite(database, original);
-    await sanitize(original, file);
+    await snapshotDataBackupSqlite(database, original, signal);
+    await sanitize(original, file, signal);
     await assertPortableBackupDatabase(file);
+    signal?.throwIfAborted();
     await copyFile(file, destination, constants.COPYFILE_EXCL);
   } finally {
     await rm(staging, {recursive: true, force: true});
