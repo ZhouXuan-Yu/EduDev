@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { leadingGraphicChoices } from "./material-structure-graphic-choices";
 import { checkWholeQuestionChoices, choiceStatementIds, paragraphOptions } from "./material-structure-choice-options";
 import { unconfirmedFormulaSources } from "./material-structure-formula-source";
+import { linkStructureTableContinuations } from "./material-structure-table-continuation";
 import {applyAssessmentNumbers,questionSection,restoreAssessmentFormulaOrder,restoreJoinedAssessmentNumbers,scoredAssessmentNumber,scoredAssessmentRemark,stripAssessmentNumber} from "./material-structure-numbering";
 import { isPrintedExamTitle } from "./word-booklet";
 import {
@@ -1122,7 +1123,7 @@ export class StructureQuestionAssembler {
     const tables = [...pending.pages.values()].flatMap(page => (page.tableSources ?? []).filter(table =>
       table.rasterSha256 === page.rasterSha256 && q.assets.some(asset => asset.page === table.page && asset.regionId === table.regionId)));
     if (tables.length) {
-      q.tableSources = tables;
+      q.tableSources = linkStructureTableContinuations(tables, pending.pages);
       if (tables.some(table => table.rows.some(row => row.some(cell => cell.needsReview)))) q.issues.push("table_content_unconfirmed");
     }
     checkWholeQuestionChoices(q);

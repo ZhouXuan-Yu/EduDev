@@ -12,8 +12,10 @@ const { choiceLabelsForReview, missingChoiceLabels, validStructureImageQuery, va
   await import("../../src/shared/material-document-structure.ts");
 const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings } =
   await import("../../src/main/assets/material-structure-choice-recheck.ts");
-const { ruledTableGrid, ruledTableLayout, evidenceForTable } =
+const { ruledTableGrid, ruledTableLayout, evidenceForTable, readStructureTables } =
   await import("../../src/main/assets/material-structure-ruled-table.ts");
+const { linkStructureTableContinuations } =
+  await import("../../src/main/assets/material-structure-table-continuation.ts");
 const results = [];
 async function check(name, run) {
   await run();
@@ -77,6 +79,122 @@ function questions(pages) {
   const builder = new StructureQuestionAssembler();
   return [...pages.flatMap((page) => builder.push(page)), ...builder.end()];
 }
+
+function alignedTableFixture() {
+  const raster = { width: 320, height: 300, pixels: Buffer.alloc(320 * 300 * 4, 255) };
+  const region = { id: "aligned", kind: "table", score: .95, box: [.12, .2, .88, .69] };
+  const lines = [["样品", "含量", "耗时"], ["甲", "0.40", "12"], ["乙", "0.05", "24"], ["丙", "1.25", "6"]]
+    .flatMap((row, y) => row.map((text, x) => {
+      const right = .25 + .28 * x;
+      const left = right - (x === 2 ? .035 + .012 * text.length : .07);
+      return { id: `aligned-${y}-${x}`, text, box: [left, .25 + .12 * y, right, .285 + .12 * y],
+        score: .99, regionIds: [region.id] };
+    }));
+  const page = { page: 1, rasterSha256: "8".repeat(64), regions: [region], lines, issues: [] };
+  return { page, region, lines, raster };
+}
+
+await check("Aligned tables preserve exact OCR cells and leave a low-confidence reading held", () => {
+  const { page, region, lines, raster } = alignedTableFixture();
+  lines[7].score = .85;
+  const [table] = readStructureTables(page, () => raster);
+  assert.equal(table.layout, "aligned_text");
+  assert.deepEqual(table.box, region.box);
+  assert.deepEqual(table.rows.map(row => row.map(cell => cell.text)), [
+    ["样品", "含量", "耗时"], ["甲", "0.40", "12"], ["乙", "", "24"], ["丙", "1.25", "6"],
+  ]);
+  assert.deepEqual(table.rows.flat().flatMap(cell => cell.lineIds), lines.map(line => line.id));
+  assert.equal(table.rows[2][1].needsReview, true);
+});
+
+await check("Borderless inference refuses prose, choice columns, competing owners, absent cells and damaged ruled grids", () => {
+  const variants = [
+    ({ region }) => { region.kind = "text"; },
+    ({ region }) => { region.score = .8; },
+    ({ page }) => { page.issues.push("ambiguous_columns"); },
+    ({ lines }) => { lines[6].regionIds.unshift("stronger-owner"); },
+    ({ lines }) => { lines.splice(6, 1); },
+    ({ lines }) => { lines[0].text = "A．甲"; lines[3].text = "B．乙"; },
+    ({ lines }) => { lines[0].box[2] += .22; },
+    ({ raster }) => { for (let y = 63; y < 137; y++) raster.pixels.fill(4, (y * 320 + 105) * 4, (y * 320 + 105) * 4 + 3); },
+  ];
+  for (const variant of variants) {
+    const fixture = alignedTableFixture();
+    variant(fixture);
+    assert.deepEqual(readStructureTables(fixture.page, () => fixture.raster), []);
+  }
+});
+function continuationFixture({ marker = "续表", nextPage = 2, units = "长度(cm)", shift = 0 } = {}) {
+  const previous = page([["表 2 测量记录", 0.1, 0.68, 0.3]], 1, nextPage);
+  const next = page([[marker, 0.1, 0.13, 0.2]], nextPage, nextPage);
+  function table(source, top, header, offset) {
+    return {
+      page: source.page, regionId: `table-${source.page}`, rasterSha256: source.rasterSha256,
+      box: [0.1 + offset, top, 0.7 + offset, top + 0.14],
+      rows: [["组别", header, "宽度(cm)"], ["第一组", "18.5", "8.5"]].map((row, y) => row.map((text, x) => ({
+        box: [0.1 + x * 0.2 + offset, top + y * 0.07, 0.3 + x * 0.2 + offset, top + (y + 1) * 0.07],
+        text, lineIds: [`row-${y}-${x}`], needsReview: false,
+      }))),
+    };
+  }
+  const sources = [table(previous, 0.73, "长度（cm）", 0), table(next, 0.18, units, shift)];
+  return { links: () => linkStructureTableContinuations(sources, new Map([[1, previous], [nextPage, next]])),
+    sources, previous, next };
+}
+
+await check("Explicit continuation labels and compatible physical headers preserve source links without mutating page tables", () => {
+  for (const marker of ["续表", "（续表）", "表 ２（续）"]) {
+    const { links, sources } = continuationFixture({ marker, shift: 0.008 });
+    assert.deepEqual(links()[1].continuesFrom, { page: 1, regionId: sources[0].regionId });
+    assert.equal(sources[1].continuesFrom, undefined);
+    assert.deepEqual(links()[1].rows, sources[1].rows);
+  }
+});
+
+await check("Missing or wrong labels, changed units, missing pages and shifted columns leave table fragments independent", () => {
+  for (const test of [{ marker: "测量记录" }, { marker: "表 3（续）" }, { units: "长度(mm)" }, { nextPage: 3 }, { shift: 0.035 }]) {
+    const { links, sources } = continuationFixture(test);
+    assert.deepEqual(links(), sources);
+  }
+});
+
+await check("Competing tables, a new question boundary, or an unverified header prevent continuation", () => {
+  const duplicates = continuationFixture();
+  duplicates.sources.push({ ...duplicates.sources[0], regionId: "second-possible-previous-table" });
+  assert.deepEqual(duplicates.links(), duplicates.sources);
+  const afterBoundary = continuationFixture();
+  afterBoundary.next.paragraphs.push({
+    role: "question", marker: { kind: "parent", label: "11" }, anchor: { page: 2, box: [0.1, 0.155, 0.5, 0.172] },
+  });
+  assert.deepEqual(afterBoundary.links(), afterBoundary.sources);
+  for (const defect of [{ needsReview: true }, { rowSpan: 2 }, { lineIds: [] }]) {
+    const { links, sources } = continuationFixture();
+    Object.assign(sources[1].rows[0][0], defect);
+    assert.deepEqual(links(), sources);
+  }
+});
+
+await check("Exactly corroborated local header readings can link tables while preserving pending cells", () => {
+  const { links, sources, next } = continuationFixture();
+  const cell = sources[1].rows[0][1];
+  Object.assign(cell, { needsReview: true, text: "" });
+  const line = {
+    id: cell.lineIds[0], text: "长度(cm)", score: 0.9, regionIds: [sources[1].regionId],
+    box: [0.33, 0.19, 0.45, 0.215],
+  };
+  next.lines.push(line);
+  assert.deepEqual(links()[1].continuesFrom, { page: 1, regionId: sources[0].regionId });
+  assert(cell.needsReview && !cell.text);
+  for (const defect of [{ text: "长度(mm)" }, { score: 0.7 }, { box: [0.25, 0.19, 0.45, 0.215] }, { regionIds: ["other"] }]) {
+    const saved = { ...line };
+    Object.assign(line, defect);
+    assert.deepEqual(links(), sources);
+    Object.assign(line, saved);
+  }
+  cell.suspectedOverprint = true;
+  assert.deepEqual(links(), sources);
+});
+
 await check("A complete ruled grid preserves position and refuses broken, merged and colored separator lines", () => {
   const make = ({ merged = false, tint = false, broken = false } = {}) => {
     const width = 180, height = 110, pixels = Buffer.alloc(width * height * 4, 255);

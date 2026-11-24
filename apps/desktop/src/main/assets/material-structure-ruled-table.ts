@@ -1,6 +1,7 @@
 import type { StructureLine, StructurePage, StructureTableSource } from "../../shared/material-document-structure";
 import type { PageBox } from "../../shared/material-page-preview";
 import { rectangularTableCells, type RuledTableSlot } from "./material-structure-table-topology";
+import { borderlessTableGrid } from "./material-structure-borderless-table";
 
 type PixelRaster = { width: number; height: number; pixels: Buffer };
 type Cell = StructureTableSource["rows"][number][number];
@@ -157,7 +158,15 @@ export function readStructureTables(page: StructurePage, getRaster: () => PixelR
   return regions.flatMap(region => {
     const lines = page.lines.filter(line => line.regionIds.includes(region.id) && !line.origin);
     const layout = ruledTableLayout(raster, region.box);
-    if (!layout || !lines.length) return [];
+    if (!lines.length) return [];
+    if (!layout) {
+      if (region.score < .85 || page.issues.includes("native_unconfirmed") ||
+          page.issues.includes("ambiguous_region") || lines.some(line => line.regionIds[0] !== region.id)) return [];
+      const grid = borderlessTableGrid(region.box, lines, raster);
+      if (!grid) return [];
+      return [{ regionId: region.id, page: page.page, box: region.box, rasterSha256: page.rasterSha256,
+        layout: "aligned_text", rows: evidenceForTable(grid, lines, raster) }];
+    }
     const rows=layout.map(row=>row.map(({box,rowSpan,columnSpan,covered}):Cell=>{
       if(covered)return {box,covered:true,text:"",lineIds:[],needsReview:false};
       return {...evidenceForCell(box,lines,raster),...(rowSpan&&columnSpan?{rowSpan,columnSpan}:{})};
