@@ -1,7 +1,7 @@
 import type { StructureLine, StructurePage, StructureTableSource } from "../../shared/material-document-structure";
 import type { PageBox } from "../../shared/material-page-preview";
 import { rectangularTableCells, type RuledTableSlot } from "./material-structure-table-topology";
-import { borderlessTableGrid } from "./material-structure-borderless-table";
+import { planBorderlessTable, type NumericTableSplit } from "./material-structure-borderless-table";
 
 type PixelRaster = { width: number; height: number; pixels: Buffer };
 type Cell = StructureTableSource["rows"][number][number];
@@ -151,7 +151,10 @@ export function evidenceForTable(grid: PageBox[][], lines: StructureLine[], rast
   return grid.map(row=>row.map(box=>evidenceForCell(box,lines,raster)));
 }
 
-export function readStructureTables(page: StructurePage, getRaster: () => PixelRaster): StructureTableSource[] {
+export type TableRowRecheck = { table: StructureTableSource; split: NumericTableSplit };
+
+export function readStructureTables(page: StructurePage, getRaster: () => PixelRaster,
+  pending?: TableRowRecheck[]): StructureTableSource[] {
   const regions = page.regions.filter(region => region.kind === "table" && region.score >= .7).slice(0, 8);
   if (!regions.length || page.issues.includes("ambiguous_columns")) return [];
   const raster = getRaster();
@@ -162,10 +165,13 @@ export function readStructureTables(page: StructurePage, getRaster: () => PixelR
     if (!layout) {
       if (region.score < .85 || page.issues.includes("native_unconfirmed") ||
           page.issues.includes("ambiguous_region") || lines.some(line => line.regionIds[0] !== region.id)) return [];
-      const grid = borderlessTableGrid(region.box, lines, raster);
-      if (!grid) return [];
-      return [{ regionId: region.id, page: page.page, box: region.box, rasterSha256: page.rasterSha256,
-        layout: "aligned_text", rows: evidenceForTable(grid, lines, raster) }];
+      const plan = planBorderlessTable(region.box, lines, raster);
+      if (!plan) return [];
+      const table: StructureTableSource = { regionId: region.id, page: page.page, box: region.box, rasterSha256: page.rasterSha256,
+        layout: "aligned_text", rows: evidenceForTable(plan.grid, lines, raster) };
+      if (!plan.split) return [table];
+      if (!paleChromaticReading(raster, plan.split.line.box)) pending?.push({ table, split: plan.split });
+      return [];
     }
     const rows=layout.map(row=>row.map(({box,rowSpan,columnSpan,covered}):Cell=>{
       if(covered)return {box,covered:true,text:"",lineIds:[],needsReview:false};

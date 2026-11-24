@@ -37,6 +37,8 @@ v26 在题目装配完成后为明确的续表建立来源关联。要求相邻�
 
 v27 为高置信表格区增加无纵线核对。先依据本地 OCR 建立同行和稳定对齐的列，检查空白间隔、完整填充和纵向残留，再复用原表格的单元格证据与原图入口。推定的格界标有还原来源。单格视觉回查仍要求实线格界。 [文字间隔解析参考](https://github.com/camelot-dev/camelot/blob/master/docs/user/how-it-works.rst)
 
+v28 在至少三行独立列证据和唯一可确认空隙时，允许原本跨两列的数值行进入本机裁片复读。每页最多复读一行的两格，共享 12 秒上限。仅当两个数字都达到阈值且按顺序拼回原行一致时，发布表格候选并附原行、原页位置和裁片摘要。失败和超时保留原图入口。
+
 公式专项的首轮候选为可独立输入局部图的 PP-FormulaNet，以及 Docling 的可选公式增强阶段。比较使用同一份被冻结的公式局部图和人工真值，含分式、根式、上下标、多行公式、水印和非公式对照。以符号正确和位置对应为准，记录拒绝、未识别和误放行。Windows 本机时延、组件体积、安装与换机成本通过实测后再决定是否接入。 [PaddleOCR 公式模块](https://www.paddleocr.ai/main/en/version3.x/module_usage/formula_recognition.html) · [Docling 增强阶段](https://docling-project.github.io/docling/usage/enrichments/)
 
 ## 扫描分式的局部核对

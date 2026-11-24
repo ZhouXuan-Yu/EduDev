@@ -4,7 +4,8 @@ import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
 import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
 import { choiceRecheckReadings, matchChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
-import { readStructureTables } from "./material-structure-ruled-table";
+import { readStructureTables, type TableRowRecheck } from "./material-structure-ruled-table";
+import { verifiedNumericTableRow } from "./material-structure-borderless-table";
 import { LOCAL_OCR_ENGINE } from "../../shared/xiaozhi-ocr";
 import type { Quad } from "../../shared/material-layout";
 import type { NativeGapRecovery } from "../../shared/material-native-text";
@@ -397,7 +398,12 @@ export class MaterialStructureRuntime {
       width: image.width, height: image.height, pixels: pixels ??= original().toBitmap(),
     });
     const blanks = printedBlanks(structure, box => printedBlankStripe(pagePixels(), box));
-    const tables = readStructureTables(structure, pagePixels);
+    const pendingTables: TableRowRecheck[] = [];
+    const tables = readStructureTables(structure, pagePixels, pendingTables);
+    if (pendingTables.length === 1) {
+      const recovered = await recheckNumericTable(pendingTables[0], original(), image, signal);
+      if (recovered) tables.push(recovered);
+    }
     if (tables.length) input.tableSources = tables;
     const parents: NonNullable<StructurePageReceipt["input"]["printedRecovery"]>["parents"] = [];
     for (const { number, crop } of printedParentProbes(structure)) {
@@ -605,6 +611,36 @@ export class MaterialStructureRuntime {
       throw Error("structure_document_invalid");
     return document;
   }
+}
+
+async function recheckNumericTable(plan: TableRowRecheck, raster: Electron.NativeImage, image: OriginalImage, signal: AbortSignal) {
+  const budget = AbortSignal.any([signal, AbortSignal.timeout(12_000)]);
+  const readings = [];
+  try {
+    for (const box of plan.split.crops) {
+      budget.throwIfAborted();
+      const rect = structureCropRect(image, box);
+      if (rect.width < 20 || rect.height < 12 || rect.width * rect.height > 60_000) return;
+      const crop = raster.crop(rect);
+      const original = crop.toPNG({ scaleFactor: 1 });
+      const enlarged = crop.resize({ width: rect.width * 2, quality: "best" }).toPNG({ scaleFactor: 1 });
+      const receipt = await recognizeLocalImage(enlarged, budget);
+      readings.push({ receipt, cropSha256: sha(original) });
+    }
+  } catch {
+    signal.throwIfAborted();
+    return;
+  }
+  signal.throwIfAborted();
+  const proof = verifiedNumericTableRow(plan.split, readings);
+  if (!proof) return;
+  for (const [i, part] of proof.parts.entries()) {
+    const cell = plan.table.rows[plan.split.row][plan.split.leftColumn + i];
+    cell.text = part.text;
+    cell.lineIds = [proof.lineId];
+    cell.needsReview = false;
+  }
+  return { ...plan.table, numericRecheck: proof };
 }
 
 function structureCropRect(image: OriginalImage, box: PageBox) {
