@@ -5,6 +5,7 @@ import {plainStudentInput} from '../../shared/student-context';
 import {officeRelativePath,type OfficeArtifactProposal} from '../../shared/xiaozhi-office-artifacts';
 import type {createTeachingBookVersions} from './teaching-book-versions';
 import {compileHandoutOffice} from './teaching-handout-office';
+import {assertHandoutOutputScope,handoutOutputScope,handoutTitleKey} from './teaching-handout-output-scope';
 
 export type HandoutExportFile=OfficeArtifactProposal&{kind:'office';fileId:string};
 export function handoutExportRequest(prompt:string){
@@ -19,6 +20,9 @@ const messages:Record<string,string>={
   invalid_input:'请用本轮读到的讲义版本，选择学生版或教师版，并提供新的 Word 文件名。',
   book_unavailable:'本会话没有找到这份讲义。请核对原对话或讲义名称。',
   ambiguous:'找到多份讲义，请老师指定要导出的稿件。',
+  target_mismatch:'请读取老师在本轮明确指定的讲义，依据原题名定位。',
+  audience_mismatch:'输出对象与老师本轮要求不符。请只提交明确要求的学生版、教师版或两者。',
+  audience_filename_conflict:'文件名里的学生版或教师版与实际受众不一致。请修正文件名后重试。',
   not_confirmed:'当前草稿需要老师确认后才能导出。',
   version_conflict:'讲义已修订或版本已变化，请从当前讲义核对确认后再导出。',
   source_changed:'讲义引用已发生变化，请核对原文并重新确认当前讲义。',
@@ -32,11 +36,32 @@ const messages:Record<string,string>={
 };
 const result=(data:object,ok:boolean)=>({content:[{type:'text' as const,text:JSON.stringify({success:ok,...data})}],details:{success:ok},isError:!ok});
 
+function parseHandoutOutput(raw:unknown) {
+  if(!plainStudentInput(raw,['bookId','versionId','digest','outputs'])||Object.keys(raw).length!==4||
+    !handoutBookId(raw.bookId)||!handoutVersionId(raw.versionId)||!handoutDigest(raw.digest)||
+    !Array.isArray(raw.outputs)||raw.outputs.length<1||raw.outputs.length>2)throw Error('invalid_input');
+  const ref={bookId:raw.bookId,versionId:raw.versionId,digest:raw.digest};
+  const outputs:TeachingHandoutOfficeOutput[]=raw.outputs.map(output=>{
+    if(!plainStudentInput(output,['audience','path'])||!handoutAudience(output.audience)||
+      !officeRelativePath(output.path)||!output.path.toLowerCase().endsWith('.docx'))throw Error('invalid_input');
+    return {audience:output.audience,path:output.path};
+  });
+  if(new Set(outputs.map(output=>output.audience)).size!==outputs.length||
+    new Set(outputs.map(output=>output.path.toLowerCase())).size!==outputs.length)throw Error('invalid_input');
+  return {ref,outputs};
+}
+
+export function assertTeachingHandoutExportProposal(prompt:string,raw:unknown) {
+  const {outputs}=parseHandoutOutput(raw);
+  assertHandoutOutputScope(handoutOutputScope(prompt),outputs);
+}
+
 export function createTeachingHandoutExportTools(options:{
-  sessionId:string;taskId:string;state:ReturnType<typeof createTeachingBookVersions>;
+  sessionId:string;taskId:string;prompt:string;state:ReturnType<typeof createTeachingBookVersions>;
   current:()=>boolean;sanitize:(text:string)=>Promise<string>;
   publish:(files:HandoutExportFile[],args:Parameters<ToolDefinition['execute']>)=>ReturnType<ToolDefinition['execute']>;
 }):ToolDefinition[] {
+  const scope=handoutOutputScope(options.prompt);
   let observed:TeachingHandoutVersionRef|undefined;
   const check=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw Error('cancelled');};
   function error(raw:unknown,signal?:AbortSignal) {
@@ -59,12 +84,16 @@ export function createTeachingHandoutExportTools(options:{
         const {bookId,title}=raw;
         if(bookId!==undefined&&!handoutBookId(bookId)||
           title!==undefined&&(typeof title!=='string'||!title.trim()||title.length>200||/[\x00-\x1f]/u.test(title)))throw Error('invalid_input');
-        const item=await options.state.forExport(options.sessionId,options.taskId,{title,bookId});check(signal);
+        if(scope.title!==undefined&&title!==undefined&&handoutTitleKey(title)!==handoutTitleKey(scope.title))
+          throw Error('target_mismatch');
+        const item=await options.state.forExport(options.sessionId,options.taskId,
+          scope.title===undefined?{title,bookId}:{title:scope.title});check(signal);
         if(item.kind==='ambiguous'){
           const choices=await Promise.all(item.choices.map(async row=>({...row,title:await options.sanitize(row.title)})));
           check(signal);
           return result({error:'ambiguous',message:messages.ambiguous,choices},false);
         }
+        if(scope.title!==undefined&&bookId!==undefined&&item.version.bookId!==bookId)throw Error('target_mismatch');
         const safeTitle=await options.sanitize(item.version.title);check(signal);
         observed={bookId:item.version.bookId,versionId:item.version.id,digest:item.version.digest};
         return result({...observed,title:safeTitle,revision:item.version.revision,chapterCount:item.content.chapters.length,
@@ -73,7 +102,7 @@ export function createTeachingHandoutExportTools(options:{
     },
   },{
     name:EXPORT_TEACHING_HANDOUT,label:'导出确认讲义 Word',
-    description:'用本轮读到的bookId/versionId/digest导出确切讲义。outputs每项填写audience=student或teacher和新相对.docx路径，受众与路径均不重复。学生版省略独立练习答案与教师附加内容，两份用saved_bundle target=current合并一次审批，单份用saved_office target=相对路径。编辑或来源变化应重新确认，不用普通文档工具重抄。',
+    description:'用本轮读到的bookId/versionId/digest导出确切讲义。outputs按教师本轮指定的受众提交，audience=student或teacher和新相对.docx路径均不重复。文件名如标明学生版或教师版，必须与受众一致。学生版省略独立练习答案与教师附加内容，两份用saved_bundle target=current合并一次审批，单份用saved_office target=相对路径。编辑或来源变化应重新确认，不用普通文档工具重抄。',
     parameters:{type:'object',additionalProperties:false,required:['bookId','versionId','digest','outputs'],
       properties:{bookId:id,versionId,digest,outputs:{type:'array',minItems:1,maxItems:2,items:{type:'object',
         additionalProperties:false,required:['audience','path'],properties:{audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500}}}}}} as ToolDefinition['parameters'],
@@ -81,18 +110,9 @@ export function createTeachingHandoutExportTools(options:{
       const [,raw,signal]=args;
       try {
         check(signal);
-        if(!plainStudentInput(raw,['bookId','versionId','digest','outputs'])||Object.keys(raw).length!==4||
-          !handoutBookId(raw.bookId)||!handoutVersionId(raw.versionId)||!handoutDigest(raw.digest)||
-          !Array.isArray(raw.outputs)||raw.outputs.length<1||raw.outputs.length>2)throw Error('invalid_input');
-        const ref={bookId:raw.bookId,versionId:raw.versionId,digest:raw.digest};
+        const {ref,outputs}=parseHandoutOutput(raw);
         if(!observed||observed.bookId!==ref.bookId||observed.versionId!==ref.versionId||observed.digest!==ref.digest)throw Error('source_required');
-        const outputs:TeachingHandoutOfficeOutput[]=raw.outputs.map(output=>{
-          if(!plainStudentInput(output,['audience','path'])||!handoutAudience(output.audience)||
-            !officeRelativePath(output.path)||!output.path.toLowerCase().endsWith('.docx'))throw Error('invalid_input');
-          return {audience:output.audience,path:output.path};
-        });
-        if(new Set(outputs.map(output=>output.audience)).size!==outputs.length||
-          new Set(outputs.map(output=>output.path.toLowerCase())).size!==outputs.length)throw Error('invalid_input');
+        assertHandoutOutputScope(scope,outputs);
         const item=await options.state.forExport(options.sessionId,options.taskId,ref);check(signal);
         if(item.kind!=='found')throw Error('ambiguous');
         const files:HandoutExportFile[]=outputs.map(output=>({kind:'office',fileId:'handout_'+output.audience,

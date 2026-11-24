@@ -13,6 +13,9 @@ const baseline=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8
 const {bookId,sessionId}=baseline;
 assert(baseline.ok&&bookId&&sessionId);
 const generatedFixture=process.argv.includes('--generated-fixture');
+const liveExport=process.argv.includes('--live-export');
+const apiKey=liveExport?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
+assert(apiKey,'A configured test model is required');
 const output=fs.mkdtempSync(path.join(root,'handout-export-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const oldData=path.join(fixture,'data'),wal=path.join(oldData,'app.db-wal');
 assert(!fs.existsSync(wal)||fs.statSync(wal).size===0);
@@ -47,11 +50,12 @@ async function until(read,timeout=75000){
 }
 async function launch(cold=false){
   const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
-    OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-teaching-handout-export',DEEPSEEK_MODEL:'deepseek-flash'};
+    OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},cold)=>{
+  await app.evaluate(({net},{cold,liveExport})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
+    const remote=net.fetch.bind(net);
     net.fetch=async(input,init)=>{
       const url=new URL(typeof input==='string'?input:input.url);
       if(url.origin==='https://api.deepseek.com'&&url.pathname==='/v1/models'){
@@ -62,11 +66,20 @@ async function launch(cold=false){
       try{
         if(cold||url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')throw Error('Unexpected external dispatch');
         const {phase,lane}=state,body=JSON.parse(init.body),index=state.index++;
+        if(liveExport){
+          if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
+          const request={phase,index,status:0};
+          state.requests.push(request);
+          const response=await remote(input,init);
+          request.status=response.status;
+          return response;
+        }
         const raw=body.messages.findLast(message=>message.role==='tool')?.content;
         const text=typeof raw==='string'?raw:raw?.map(part=>part.text||'').join('\n');
         let previous={};
         if(index>0&&text){
-          try{previous=JSON.parse(text.split('\n')[0]);}catch{previous={unparsed:text};}
+          const json=text.split('\n').find(line=>line.startsWith('{'));
+          try{previous=JSON.parse(json??'');}catch{previous={unparsed:text};}
         }
         const system=body.messages.filter(message=>message.role==='system').map(message=>message.content).join('\n');
         const active=system.split('\n').findLast(line=>line.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'));
@@ -81,7 +94,17 @@ async function launch(cold=false){
             expectedRevision:task.revision,reason:'按本次实读确认版本输出讲义',steps:[{id:'deliver',text:'保存老师指定受众的讲义',
               dependsOn:[],reported:'pending',kind:grouped?'saved_bundle':'saved_office',target:grouped?'current':lane.outputs[0].path},
             {id:'review',text:'教师核对讲义与受众',dependsOn:['deliver'],reported:'pending',kind:'human'}]}};
-        }else if(index===2){
+        }else if(index===2&&phase!=='changed'){
+          const outputs=phase==='bundle'
+            ?lane.outputs.map((file,index)=>({...file,path:lane.outputs[1-index].path}))
+            :lane.outputs.map(file=>({...file,audience:'teacher'}));
+          call={name:'education_export_teaching_handout',args:{...state.ref,outputs,taskStepId:'deliver'}};
+        }else if(index===(phase==='changed'?2:3)){
+          if(phase!=='changed'){
+            const expected=phase==='bundle'?'task_handout_audience_filename_conflict':'task_handout_audience_mismatch';
+            if(previous.reason!==expected||previous.delivery!=='not_delivered')
+              throw Error('Unexpected handout audience result: '+JSON.stringify(previous));
+          }
           call={name:'education_export_teaching_handout',args:{...state.ref,outputs:lane.outputs,taskStepId:'deliver'}};
         }else content=previous.success?'已保存对应的 Word 讲义。':'没有生成新文件，需重新核对讲义来源。';
         if(call&&!body.tools?.some(tool=>tool.function.name===call.name))throw Error('Tool not exposed: '+call.name);
@@ -94,7 +117,7 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },cold);
+  },{cold,liveExport});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -160,11 +183,17 @@ try{
     assert.equal(draft.handoutSource.bookId,bookId);
     assert.equal(draft.handoutSource.versionId,version.id);
     assert.equal(draft.handoutSource.digest,version.digest);
+    assert.equal(draft.handoutSource.audience,row.relative_path.includes('学生版')?'student':'teacher');
   }
-  await page.screenshot({path:path.join(output,'pending-1366.png')});
+  assert.equal(ledger().length,2,'The swapped names must not add approval rows.');
+  await page.screenshot({path:path.join(output,'pending-1366.png'),animations:'disabled'});
   await approve.click();
   await until(()=>ledger().filter(row=>row.state==='saved').length===2);
-  await settle();
+  const bundleWire=await settle();
+  if(liveExport){
+    report.paidRequests=bundleWire.requests.length;
+    assert(report.paidRequests>0&&bundleWire.requests.every(request=>request.status===200));
+  }
   assert.equal(facts().length,2);
   const files=ledger().map(row=>{
     const saved=facts().find(item=>item.id===row.artifact_id);
@@ -195,35 +224,51 @@ try{
   report.files=files;
   check('One real approval creates two version-bound A4 Word files with editable text, intact equations and independent answer isolation');
 
-  await page.setViewportSize({width:1920,height:1080});
-  await send('single');
-  const single=page.getByTestId('pi-office-artifact').filter({hasText:'独立学生版.docx'}).last();
-  const singleApprove=single.getByTestId('pi-office-approve');
-  await readyApproval(singleApprove);
-  assert.equal(await single.getByRole('tab',{name:'修改拟内容'}).count(),0);
-  await single.getByRole('tab',{name:'来源'}).click();
-  assert.match(await single.getByTestId('pi-handout-office-source').innerText(),/已确认的讲义.*学生版/);
-  await page.screenshot({path:path.join(output,'single-1920.png')});
-  await singleApprove.click();
-  await until(()=>ledger().some(row=>row.relative_path==='独立学生版.docx'&&row.state==='saved'));
-  await settle();
-  check('A single audience uses the existing Office approval with visible source binding and read-only preview');
+  if(!liveExport){
+    await page.setViewportSize({width:1920,height:1080});
+    await send('single');
+    const single=page.getByTestId('pi-office-artifact').filter({hasText:'独立学生版.docx'}).last();
+    const singleApprove=single.getByTestId('pi-office-approve');
+    await readyApproval(singleApprove);
+    assert.equal(await single.getByRole('tab',{name:'修改拟内容'}).count(),0);
+    await single.getByRole('tab',{name:'来源'}).click();
+    assert.match(await single.getByTestId('pi-handout-office-source').innerText(),/已确认的讲义.*学生版/);
+    assert.equal(ledger().length,3,'The unrequested teacher edition must not add an approval row.');
+    assert.equal(JSON.parse(ledger().find(row=>row.relative_path==='独立学生版.docx').draft_json).handoutSource.audience,'student');
+    await page.screenshot({path:path.join(output,'single-1920.png'),animations:'disabled'});
+    await singleApprove.click();
+    await until(()=>ledger().some(row=>row.relative_path==='独立学生版.docx'&&row.state==='saved'));
+    const verifiedAudience=await settle();
+    for(const [phase,reason] of [['bundle','task_handout_audience_filename_conflict'],['single','task_handout_audience_mismatch']]){
+      const refused=verifiedAudience.requests.find(item=>item.phase===phase&&item.index===3).previous;
+      assert.equal(refused.reason,reason);
+      assert.equal(refused.delivery,'not_delivered');
+      const [receipt]=sql("SELECT admitted,effect_state FROM xiaozhi_tool_receipts WHERE call_id=?",
+        ['handout-export-'+phase+'-2']);
+      assert.equal(receipt.admitted,0);
+      assert.notEqual(receipt.effect_state,'uncertain');
+    }
+    check('Swapped names and an unrequested teacher edition are rejected before drafting while the same run can submit the correct files');
+    check('A single audience uses the existing Office approval with visible source binding and read-only preview');
 
-  await send('changed');
-  const driftCard=page.getByTestId('pi-office-artifact').filter({hasText:'过期来源不应保存.docx'}).last();
-  const driftApprove=driftCard.getByTestId('pi-office-approve');
-  await readyApproval(driftApprove);
-  const [source]=sql('SELECT id,content_md FROM resource_chunks ORDER BY rowid');
-  assert(source);
-  assert(sql('UPDATE resource_chunks SET content_md=? WHERE id=?',[source.content_md+'\n确认后发生的合成资料变动。',source.id],true).changes);
-  await driftApprove.click();
-  await until(()=>ledger().some(row=>row.relative_path==='过期来源不应保存.docx'&&row.state==='conflict'));
-  const completed=await settle();
-  assert.equal(facts().length,3);
-  assert.equal(ledger().find(row=>row.relative_path==='过期来源不应保存.docx').result_path,null);
-  assert.equal(completed.requests.find(item=>item.phase==='changed'&&item.index===3).previous.success,false);
-  check('A source change after preview stops approval without a fourth file or saved fact');
+    await send('changed');
+    const driftCard=page.getByTestId('pi-office-artifact').filter({hasText:'过期来源不应保存.docx'}).last();
+    const driftApprove=driftCard.getByTestId('pi-office-approve');
+    await readyApproval(driftApprove);
+    const [source]=sql('SELECT id,content_md FROM resource_chunks ORDER BY rowid');
+    assert(source);
+    assert(sql('UPDATE resource_chunks SET content_md=? WHERE id=?',[source.content_md+'\n确认后发生的合成资料变动。',source.id],true).changes);
+    await driftApprove.click();
+    await until(()=>ledger().some(row=>row.relative_path==='过期来源不应保存.docx'&&row.state==='conflict'));
+    const completed=await settle();
+    assert.equal(facts().length,3);
+    assert.equal(ledger().find(row=>row.relative_path==='过期来源不应保存.docx').result_path,null);
+    assert.equal(completed.requests.find(item=>item.phase==='changed'&&item.index===3).previous.success,false);
+    check('A source change after preview stops approval without a fourth file or saved fact');
 
+    report.wire=completed.requests.map(({phase,index,tool,previous})=>({phase,index,tool,
+      error:previous.error??previous.reason??null,delivery:previous.delivery??null}));
+  }
   const savedBefore=facts();
   await app.close();app=undefined;
   await launch(true);
@@ -236,6 +281,7 @@ try{
 }catch(error){
   report.errors.push(String(error?.stack||error));
   if(app)report.wire=await app.evaluate(()=>globalThis.handoutExportTest).catch(()=>null);
+  if(liveExport)report.paidRequests||=report.wire?.requests.length||0;
   report.ledger=ledger().map(({draft_json,...row})=>row);
   if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>undefined);
   console.error(error);

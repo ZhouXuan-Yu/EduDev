@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 讲义校验明确题名和学生版、教师版请求，错名与错受众在创建稿件前拒绝。最终构建已运行双份 Word 实机和冷启动。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)
+
 D3 原题组卷从教师原话落实整卷题型、必选知识点的题量和难度。 [本轮证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原话中的题型和知识点配额)
 
 D3 原题组卷确认时的回报已改由宿主根据已保存卷提供。保留追加要求、改版和后续任务。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原题卷确认后的本地回报)

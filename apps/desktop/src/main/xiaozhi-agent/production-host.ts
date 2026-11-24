@@ -59,7 +59,8 @@ import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
 import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
-import {createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
+import {assertTeachingHandoutExportProposal,createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
+import {EXPORT_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teaching-handout-edit';
 import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {createMockExamCatalog,mockExamRequest} from '../education/mock-exam-catalog';
@@ -1131,7 +1132,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           return officeArtifacts.tools(id,runId,wait)[0].execute(args[0],proposal,args[2],args[3],args[4]);
         }}),
       ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
-        handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,state:store.teachingBookVersions,
+        handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,prompt:cleanPrompt,state:store.teachingBookVersions,
           current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
           publish:(files,args)=>{
             if(files.length>1)return deliveries.publishHandout(id,runId,wait,args[0],files,args[2]);
@@ -1445,7 +1446,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }else if(delivery.tool===PROPOSE_MOCK_EXAM_EDIT){
             if(!taskRuntime||!base.mockExamEditTools)throw new TaskAdmissionError('task_owner_stale');
             await taskRuntime.refresh();
-          }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,naturalDraft:Boolean(run.naturalLessonDraft),plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
+          }else {
+            if(delivery.tool===EXPORT_TEACHING_HANDOUT){
+              if(!taskRuntime||!base.handoutExportTools)throw new TaskAdmissionError('task_owner_stale');
+              // Reject an invalid audience before the task records a document write attempt.
+              try{assertTeachingHandoutExportProposal(cleanPrompt,unwrapTaskArguments(delivery.input).input);}
+              catch(error){throw new TaskAdmissionError('task_handout_'+(error instanceof Error?error.message:'invalid_input'));}
+            }
+            await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,naturalDraft:Boolean(run.naturalLessonDraft),plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
+          }
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
           await run.toolGovernance?.before(delivery.callId, delivery.tool, delivery.input, signal || run.abort.signal);
         }

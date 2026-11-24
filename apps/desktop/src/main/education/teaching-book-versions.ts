@@ -10,6 +10,7 @@ import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import {assertClassroomContext} from './classroom-context';
 import {restoreTeachingBook,type TeachingBookContent} from './teaching-book-restore';
 import {handoutEditPlan,writeHandoutEdits} from './teaching-handout-edit-plan';
+import {handoutTitleKey} from './teaching-handout-output-scope';
 
 type VersionImage = {schema:1; content:TeachingBookContent; patches:TeachingBookPatch[]};
 type Row = Record<string,unknown>;
@@ -67,10 +68,9 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
   }
   async function chooseBook(work:Sql,sessionId:string,taskId:string,target:{title?:string;bookId?:string}) {
     const rows=await sessionBooks(work,sessionId);
-    const normalized=(value:string)=>value.trim().normalize('NFKC').toLowerCase();
     const byTask=rows.filter(row=>row.taskId===taskId);
     const matches=target.bookId?rows.filter(row=>row.bookId===target.bookId):
-      target.title!==undefined?rows.filter(row=>normalized(row.title)===normalized(target.title!)):
+      target.title!==undefined?rows.filter(row=>handoutTitleKey(row.title)===handoutTitleKey(target.title!)):
       byTask.length?byTask:rows;
     if(!matches.length)throw Error('book_unavailable');
     if(matches.length>1)return {kind:'ambiguous' as const,choices:matches.slice(0,8).map(({bookId,title})=>({bookId,title}))};

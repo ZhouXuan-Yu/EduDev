@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "b09b257d1c33e38a98685d44185512ad43a3f5a84c8f7b43a2f149516c13a542",
+  "sourceHash": "cd831275c6c59d5f83ff260e6c49a0c02945ad5eeb222cac52c5639259a075bf",
   "sources": [
     {
       "file": "package-lock.json",
@@ -512,11 +512,15 @@
     },
     {
       "file": "src/main/education/teaching-handout-export-tools.ts",
-      "sha256": "db04fcabd76db7ccce53e5e18f838ad9ba6c5be5130f2d978026f9a4de21cbc8"
+      "sha256": "653633de1437872a6cd577075907118e7ba770b5948f3bfd74a5ca27fc7fa2bb"
     },
     {
       "file": "src/main/education/teaching-handout-office.ts",
       "sha256": "34f0bf43f4992746102ea724e8debc39bce61e577f6e0a5687f998b1ef31fb37"
+    },
+    {
+      "file": "src/main/education/teaching-handout-output-scope.ts",
+      "sha256": "63f1477826f906a77608249ba517d84b9f423b940c41902aa283cb849c8c4337"
     },
     {
       "file": "src/main/education/teaching-handout-state.ts",
@@ -836,7 +840,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "21597173495a8ac487adee152cb49aa6112f1453c77c317df5c536970d301cdc"
+      "sha256": "8042d7f3fdd082b51e80e8a62db4cc20c13b76d9d66ca9309351911c1c718d9a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1572,7 +1576,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "9e25c1ce3bc4550f99568121dec005c3b243125fab466be2d49b76fd00417f97"
+      "sha256": "2e7a16a6f3e96570837e28380637dfad89377db875d7d07bc30cd07124215277"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",

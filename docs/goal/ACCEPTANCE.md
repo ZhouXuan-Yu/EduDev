@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+讲义导出受众专项覆盖互换文件名、额外教师版、修正后同任务审批、真实 Word 和冷启动。 [验收证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)
+
 原题组卷配额核对已覆盖错题型、错知识点分配及错置知识点难度，三类错误均在实机创建试卷前拦截。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原话中的题型和知识点配额)
 
 真实模型学案验证原文引用、学科结果、公式预览、教师确认与冷启。双受众验证见 [同一确认版 Word](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-自然语言生成讲义和公式)。
