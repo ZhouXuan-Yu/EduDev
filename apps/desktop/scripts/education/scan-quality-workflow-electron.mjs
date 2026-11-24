@@ -7,6 +7,7 @@ import {_electron} from 'playwright';
 import {productEntry} from '../product-navigation.mjs';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
+import {windowsOcrMetrics} from '../acceptance/windows-ocr-metrics.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const files=JSON.parse(process.env.OMNI_EDU_SCAN_WORKFLOW_FILES??'[]');
@@ -20,6 +21,7 @@ const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 const report={ok:false,output,mainSha256:sha(main),documents:files.map(file=>({name:path.basename(file),sha256:sha(file)})),checks:[],providerCalls:0};
 const check=text=>{report.checks.push(text);console.log('PASS '+text);};
 let app;
+const measureResources=process.argv.includes('--measure-resources');
 
 function sql(query,args=[]){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true,timeout:5000});
@@ -58,10 +60,18 @@ async function close(){
 async function waitForJobs(){
   const end=Date.now()+420000;
   let jobs=[];
+  let nextSample=0;
   while(Date.now()<end){
     jobs=sql('SELECT * FROM material_structure_jobs ORDER BY resource_id');
     if(jobs.some(job=>['failed','cancelled'].includes(job.status)))throw Error(JSON.stringify(jobs));
     if(jobs.length===files.length&&jobs.every(job=>['complete','partial'].includes(job.status)))return jobs;
+    if(measureResources&&Date.now()>=nextSample){
+      const at=Date.now();
+      const processes=await app.evaluate(({app})=>app.getAppMetrics().map(m=>({pid:m.pid,type:m.type,workingSetKiB:m.memory.workingSetSize})));
+      const native=await windowsOcrMetrics(processes.map(process=>process.pid));
+      report.resources.samples.push({at,processes,native,jobStates:jobs.map(job=>job.status)});
+      nextSample=at+4000;
+    }
     await new Promise(resolve=>setTimeout(resolve,1000));
   }
   throw Error('Background import did not publish all sources: '+JSON.stringify(jobs));
@@ -82,6 +92,7 @@ try{
     dialog.showOpenDialog=async()=>{dialog.showOpenDialog=saved;return {canceled:false,filePaths:paths};};
   },files);
   const started=Date.now();
+  if(measureResources)report.resources={started,samples:[],sampleIntervalMs:4000};
   await page.getByTestId('materials-import').click();
   const jobs=await waitForJobs();
   report.importMs=Date.now()-started;

@@ -6,29 +6,34 @@ import assert from 'node:assert/strict';
 import {createHash,randomBytes} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {once} from 'node:events';
-import {execFile} from 'node:child_process';
 import {_electron} from 'playwright';
+import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
+import {windowsOcrMetrics} from '../acceptance/windows-ocr-metrics.mjs';
 
 // Byte capacity is deliberately distinct from natural-corpus recall/recognition quality.
 const arg=(key,fallback)=>Number(process.argv.find(v=>v.startsWith(key+'='))?.split('=')[1]??fallback);
 const totalGiB=arg('--total-gib',1),stageGiB=arg('--stage-gib',1),fileMiB=arg('--file-mib',1024);
+const observationMs=arg('--observation-ms',1800000);
 assert([totalGiB,stageGiB,fileMiB].every(v=>Number.isSafeInteger(v)&&v>0));
 assert(totalGiB<=40&&stageGiB<=10&&fileMiB<=2048);
+assert(Number.isSafeInteger(observationMs)&&observationMs>=1000&&observationMs<=1800000);
 const fileBytes=fileMiB*1024**2,stageCount=stageGiB*1024/fileMiB;
 assert(Number.isSafeInteger(stageCount)&&totalGiB%stageGiB===0);
 const desktop=process.cwd(),resume=process.argv.find(v=>v.startsWith('--resume='))?.slice(9);
-const output=resume?path.resolve(resume):fs.mkdtempSync(path.join(os.tmpdir(),'omni-byte-capacity-'));
-if(resume){assert.equal(path.dirname(output),path.resolve(os.tmpdir()));assert(/^omni-byte-capacity-[a-z0-9]+$/i.test(path.basename(output)));assert.equal(fs.realpathSync(output),output);}
+const main=testMain(desktop),acceptance=fs.realpathSync(process.env.OMNI_EDU_ACCEPTANCE_ROOT||os.tmpdir());
+const output=resume?path.resolve(resume):fs.mkdtempSync(path.join(acceptance,'omni-byte-capacity-'));
+if(resume){assert.equal(path.dirname(output),acceptance);assert(/^omni-byte-capacity-[a-z0-9]+$/i.test(path.basename(output)));assert.equal(fs.realpathSync(output),output);}
 const data=path.join(output,'data'),profile=path.join(output,'profile');
+const buildSha256=createHash('sha256').update(fs.readFileSync(main)).digest('hex');
 const report=resume?JSON.parse(fs.readFileSync(path.join(output,'report.json'),'utf8')):{output,totalGiB,stageGiB,fileMiB,checks:[],stages:[],samples:[],queries:[],rendererErrors:[],
-  buildSha256:createHash('sha256').update(fs.readFileSync(path.join(desktop,'out/main/index.js'))).digest('hex'),
+  main,buildSha256,
   scope:'Production Electron folder UI, real non-sparse PDF bytes/copy/SHA, native PDF Worker and SQLite/FTS. Small visible synthetic text plus unreferenced binary load; NOT natural 40GiB teaching content, high-cardinality semantic recall, OCR/cloud quality or installer acceptance.'};
 assert(report.output===output&&report.totalGiB===totalGiB&&report.stageGiB===stageGiB&&report.fileMiB===fileMiB);
 if(resume){const backup='report-attempt-'+Date.now()+'.json';fs.copyFileSync(path.join(output,'report.json'),path.join(output,backup),fs.constants.COPYFILE_EXCL);(report.attempts??=[]).push({backup,error:report.error,success:report.success,resumedAt:Date.now()});delete report.error;delete report.closeError;delete report.success;}
 let app,page,timer,sampling=false;
 const write=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
 const sql=(q,p=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(q).all(...p);}finally{db.close();}};
-async function until(fn,ms=1800000){const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,500));}throw Error('Capacity deadline exceeded');}
+async function until(fn,ms=observationMs){const end=Date.now()+ms;while(Date.now()<end){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,500));}throw Error('Capacity deadline exceeded');}
 async function space(needed){const s=await fsp.statfs(output);assert(s.bavail*s.bsize>needed+8*1024**3,'Insufficient disk: preserve at least 8GiB');}
 async function hashFile(file){const h=createHash('sha256');for await(const b of fs.createReadStream(file))h.update(b);return h.digest('hex');}
 
@@ -63,19 +68,19 @@ async function sample(){
   if(sampling||!app)return;sampling=true;
   try{
     const s=await app.evaluate(async({app})=>({time:Date.now(),metrics:app.getAppMetrics().map(m=>({pid:m.pid,type:m.type,workingSetKiB:m.memory.workingSetSize})),main:await process.getProcessMemoryInfo(),workers:globalThis.capacityWorkers||[],reads:globalThis.capacityReads||[],cloudRequests:globalThis.capacityCloud||0}));
-    if(process.platform==='win32'){
-      const parents=s.metrics.map(m=>m.pid).filter(Number.isSafeInteger);
-      s.nativeWorkers=await new Promise(resolve=>execFile('powershell.exe',['-NoProfile','-Command',`$owned=@(${parents.join(',')}); Get-CimInstance Win32_Process -Filter "Name='omni-edu-ocr.exe'" | Where-Object { $owned -contains [int]$_.ParentProcessId } | ForEach-Object { $p=Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; if($p){[pscustomobject]@{pid=$p.Id;parentPid=$_.ParentProcessId;workingSetBytes=$p.WorkingSet64;privateBytes=$p.PrivateMemorySize64}} } | ConvertTo-Json -Compress`],{windowsHide:true,timeout:4000},(_e,stdout)=>{try{const j=JSON.parse(stdout);resolve(Array.isArray(j)?j:[j]);}catch{resolve([]);}}));
-    }
+    const native=await windowsOcrMetrics(s.metrics.map(m=>m.pid));
+    s.nativeWorkers=native.workers;
+    if(native.error)s.nativeWorkerSampleError=native.error;
     s.view=await page.evaluate(()=>({view:document.querySelector('.edu-shell[data-view]')?.getAttribute('data-view'),materials:!!document.querySelector('[data-testid="materials-workspace"]'),commands:globalThis.capacityCommands||[],events:globalThis.capacityEvents||[]})).catch(()=>undefined);
     report.samples.push(s);write();
   }catch{}finally{sampling=false;}
 }
 async function launch(){
-  (report.launches??=[]).push({time:Date.now(),buildSha256:createHash('sha256').update(fs.readFileSync(path.join(desktop,'out/main/index.js'))).digest('hex')});
-  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};
+  const launch={time:Date.now(),buildSha256};
+  (report.launches??=[]).push(launch);
+  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};
   for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
-  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
+  app=await _electron.launch({args:[main,'--user-data-dir='+profile],cwd:output,env,timeout:60000});
   await app.evaluate(({net})=>{
     globalThis.capacityCloud=0;globalThis.capacityWorkers=[];globalThis.capacityReads=[];
     for(const object of [globalThis,net]){object.fetch=async()=>{globalThis.capacityCloud++;throw Error('Capacity fixture blocks all network');};}
@@ -88,7 +93,9 @@ async function launch(){
   page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));
   await page.evaluate(()=>{globalThis.capacityCommands=[];globalThis.capacityEvents=[];window.omniEdu.onDesktopCommand?.(command=>globalThis.capacityCommands.push({command,time:Date.now()}));document.addEventListener('click',e=>{globalThis.capacityEvents.push({time:Date.now(),testId:e.target.closest('[data-testid]')?.getAttribute('data-testid')});globalThis.capacityEvents=globalThis.capacityEvents.slice(-20);},true);});
   await page.locator('[data-testid="nav-knowledge"]:visible').click();
-  await page.getByTestId('materials-search-mode').waitFor();
+  await page.getByTestId('materials-select-folder').waitFor();
+  launch.libraryUsableMs=Date.now()-launch.time;
+  await assertIsolatedPiMain(app,main,profile);
   timer=setInterval(()=>void sample(),5000);await sample();
 }
 async function close(){
@@ -99,15 +106,24 @@ async function close(){
     await app.close();app=undefined;assert.equal(cloud,0,'Unexpected network request blocked by capacity fixture');
   }
 }
+
+async function revealBatches(){
+  const queue=page.getByTestId('materials-queue-toggle');
+  if(await queue.getAttribute('aria-expanded')!=='true')await queue.click();
+  const batches=page.getByTestId('materials-batches').getByRole('button',{name:'文件夹批次与恢复'});
+  if(await batches.getAttribute('aria-expanded')!=='true')await batches.click();
+}
 async function query(label){
   const before=await page.evaluate(()=>({view:document.querySelector('.edu-shell[data-view]')?.getAttribute('data-view'),materials:!!document.querySelector('[data-testid="materials-workspace"]'),commands:globalThis.capacityCommands||[],events:globalThis.capacityEvents||[]}));
   if(!before.materials){(report.navigationInterruptions??=[]).push({time:Date.now(),label,...before});await page.screenshot({path:path.join(output,'navigation-interruption-'+Date.now()+'.png')});}
   await page.locator('[data-testid="nav-knowledge"]:visible').click();
   await page.getByTestId('materials-workspace').waitFor();
+  await page.getByTestId('materials-mode-text').click();
   const start=performance.now();await page.getByTestId('materials-search-mode').selectOption('keyword');
   await page.getByTestId('materials-text-query').fill(label);await page.getByTestId('materials-text-submit').click();
   await until(async()=>!(await page.getByTestId('materials-text-submit').isDisabled()));
   const hits=page.locator('[data-testid^="material-text-hit-"]');await until(async()=>await hits.count()>0);
+  await page.getByTestId('materials-text-results').getByText(label,{exact:false}).first().waitFor();
   const result=await page.getByTestId('materials-text-results').innerText();assert(result.includes(label));
   const elapsedMs=performance.now()-start;report.queries.push({label,elapsedMs,mode:'keyword',archiveBytes:sql('SELECT SUM(file_size) n FROM teacher_resources')[0].n});
 }
@@ -129,13 +145,23 @@ try{
     const manifest=s.manifest;assert.equal(manifest.length,stageCount);for(const item of manifest){assert.equal(path.dirname(item.file),folder);assert.equal(item.bytes,fileBytes);}
     if(!s.batchId){
       await app.evaluate(({dialog},folder)=>{const old=dialog.showOpenDialog;dialog.showOpenDialog=async(_win,options)=>{dialog.showOpenDialog=old;assertDirectory(options);return{canceled:false,filePaths:[folder]};};function assertDirectory(options){if(!options.properties.includes('openDirectory'))throw Error('Not a directory chooser');}},folder);
-      await page.getByTestId('materials-import-folder').click();
+      const selectedAt=performance.now();
+      await page.getByTestId('materials-select-folder').click();
+      const confirm=page.getByTestId('material-import-selection').getByRole('button',{name:`导入 ${stageCount} 个文件`,exact:true});
+      await confirm.waitFor();
+      s.selectionMs=performance.now()-selectedAt;
+      await page.screenshot({path:path.join(output,`selection-${stage}.png`)});
+      s.confirmedAt=Date.now();
+      await confirm.click();
     }
     const batch=await until(()=>sql('SELECT * FROM material_import_batches WHERE root_path=?',[folder])[0]);s.batchId=batch.id;
     if(stage===0&&!report.checks.some(c=>c.startsWith('Teacher pauses'))){
+      await revealBatches();
       await page.getByTestId('batch-pause-'+batch.id).click();
       await until(()=>sql('SELECT status FROM material_import_batches WHERE id=?',[batch.id])[0].status==='paused');
       await close();await launch();assert.equal(sql('SELECT status FROM material_import_batches WHERE id=?',[batch.id])[0].status,'paused');
+      await revealBatches();
+      s.resumedAt=Date.now();
       await page.getByTestId('batch-resume-'+batch.id).click();report.checks.push('Teacher pauses real large-file import; native restart preserves pause and UI resume uses the same batch');
     }
     const finished=await until(()=>{const row=sql('SELECT * FROM material_import_batches WHERE id=?',[batch.id])[0];return ['completed','partial','failed'].includes(row.status)?row:undefined;});
@@ -144,6 +170,8 @@ try{
       if(rows.some(r=>['failed','needs_ocr'].includes(r.parse_status)))throw Error('Native parser failed: '+JSON.stringify(rows));
       return rows.length===stageCount&&rows.every(r=>r.parse_status==='ready');});
     s.parseMs??=Date.now()-s.started;
+    if(s.confirmedAt)s.parseFromConfirmationMs??=Date.now()-s.confirmedAt;
+    if(s.resumedAt)s.parseFromResumeMs??=Date.now()-s.resumedAt;
     const saved=sql('SELECT r.id,r.original_file_name,r.local_path,r.file_size,r.content_hash,r.parse_status FROM teacher_resources r JOIN material_import_entries e ON e.resource_id=r.id WHERE e.batch_id=?',[batch.id]);
     assert.equal(saved.length,manifest.length);
     for(const item of manifest){const r=saved.find(r=>r.original_file_name===path.basename(item.file));assert(r);assert.equal(r.file_size,item.bytes);assert.equal(r.content_hash,item.sha256);assert.equal(await hashFile(r.local_path),item.sha256);assert(sql('SELECT content_md FROM resource_chunks WHERE resource_id=?',[r.id]).some(c=>c.content_md.includes(item.label)));}
@@ -158,7 +186,8 @@ try{
     console.log(JSON.stringify({stage,archivedBytes:s.archivedBytes,archiveMs:s.archiveMs,parseMs:s.parseMs,output}));
   }
   await query('KBLOAD0DOC000');await query(report.stages.at(-1).manifest.at(-1).label);
-  report.final={...sql('SELECT COUNT(*) files,SUM(file_size) bytes FROM teacher_resources')[0],chunks:sql('SELECT COUNT(*) n FROM resource_chunks')[0].n};
+  report.final={...sql('SELECT COUNT(*) files,SUM(file_size) bytes FROM teacher_resources')[0],chunks:sql('SELECT COUNT(*) n FROM resource_chunks')[0].n,
+    sqliteBytes:fs.statSync(path.join(data,'app.db')).size};
   assert.equal(report.rendererErrors.length,0);report.success=true;
 }catch(error){report.success=false;report.error=String(error.stack||error);process.exitCode=1;try{report.failureView=await page.evaluate(()=>({view:document.querySelector('.edu-shell[data-view]')?.getAttribute('data-view'),text:document.body.innerText.slice(0,1500),commands:globalThis.capacityCommands||[],events:globalThis.capacityEvents||[]}));await page.screenshot({path:path.join(output,'failure-'+Date.now()+'.png')});}catch{}}
-finally{try{await close();}catch(e){report.closeError=String(e);process.exitCode=1;}write();console.log(JSON.stringify({success:report.success,error:report.error,checks:report.checks,output}));}
+finally{try{await close();}catch(e){report.closeError=String(e);report.success=false;process.exitCode=1;}write();console.log(JSON.stringify({success:report.success,error:report.error,checks:report.checks,output}));}
