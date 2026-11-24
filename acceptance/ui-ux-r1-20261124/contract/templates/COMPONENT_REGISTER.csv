@@ -1,0 +1,10 @@
+﻿surface,usage,current_component,candidate,source_path,resolved_version,css_theme_utils,states,reason,status,evidence_ids
+settings,学科年级选择,,现有 Select,,,,,,TO_VERIFY,
+settings,诊断展开,,现有 Disclosure/Accordion,,,,,,TO_VERIFY,
+tasks,任务主次动作,,现有 Button/Dropdown,,,,,,TO_VERIFY,
+shell,导航和页签,,现有导航/Tabs,,,,,,TO_VERIFY,
+forms,布尔偏好,,现有 Switch,,,,,,TO_VERIFY,
+overlays,确认和右栏,,现有 Modal/Drawer/Popover,,,,,,TO_VERIFY,
+lists,资料题目列表,,现有 Table/可用 Pro 组件,,,,,,TO_VERIFY,
+feedback,加载空态错误,,现有状态组件,,,,,,TO_VERIFY,
+icons,返回更多展开,,既有 lucide 或组件 Indicator,,,,,,TO_VERIFY,

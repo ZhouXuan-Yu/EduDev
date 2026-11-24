@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "layer": "component",
+  "baseline": true,
+  "source": "bacc2c9",
+  "checks": [],
+  "boundary": "Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance.",
+  "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!find('question-notebook-empty'))\n\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-read-errors.mjs:41:122\n    at check (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-read-errors.mjs:27:25)\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-read-errors.mjs:41:3"
+}

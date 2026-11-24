@@ -1,0 +1,8 @@
+Loading production model form
+Mounting production model form
+Mounted production model form
+PASS host rejection retains the unsaved password locally, failure feedback and retry
+PASS transport rejection also retains the input without browser persistence
+PASS only an actual successful host response clears the submitted password
+PASS explicit discard clears the local password and dirty guard
+{"success":true,"layer":"component","baseline":false,"source":"working tree","checks":["host rejection retains the unsaved password locally, failure feedback and retry","transport rejection also retains the input without browser persistence","only an actual successful host response clears the submitted password","explicit discard clears the local password and dirty guard"],"boundary":"Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance."}

@@ -1,0 +1,18 @@
+PASS native form name, label and selected value survive the adapter
+PASS disabled option remains disabled
+PASS decorative indicator is hidden from accessibility tree
+PASS disabled field retains native disabled semantics
+PASS invalid field and description remain addressable
+PASS list selection has no misleading popup indicator
+PASS protected indicator adapter preserves the direct native select DOM
+PASS task state and legal return action: active
+PASS task state and legal return action: review_required
+PASS task state and legal return action: paused
+PASS task state and legal return action: interrupted
+PASS task state and legal return action: completed
+PASS task state and legal return action: ended
+PASS long original title is escaped and constraints are not removed
+PASS record identity remains explicit on the task card
+PASS no native disclosure marker in the task card
+PASS partial snapshot cannot enable direct resume
+{"suite":"ui-ux-r1-components","passed":17,"layer":"component","fixtures":"synthetic task metadata only; no provider or business acceptance claim"}

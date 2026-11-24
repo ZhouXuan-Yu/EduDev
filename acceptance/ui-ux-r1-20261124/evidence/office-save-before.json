@@ -1,0 +1,7 @@
+{
+  "before": true,
+  "success": false,
+  "boundary": "Mounted real Office card with deferred host fixtures and real shared draft provider; not a provider or persistence test.",
+  "busy": "true",
+  "error": "AssertionError [ERR_ASSERTION]: Completed host save must release shared busy even when refresh reparents its card\n\n'true' !== 'false'\n\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ui-ux-r1-office-save.mjs:41:34"
+}

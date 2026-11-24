@@ -1,0 +1,7 @@
+{
+  "file": "apps/desktop/src/renderer/design-review/OfficialTraceReference.tsx",
+  "before": "f9951189b46850fa55dd7e195d98b81a27fb919a23ace9f3fbb5d2e131623a2b",
+  "after": "b40a60eafd9e42351c32597f4d60b7aa2aeba6877d1cb9a38596663fc152884a",
+  "onlyCRLFNormalization": true,
+  "expectedOriginal": "b40a60eafd9e42351c32597f4d60b7aa2aeba6877d1cb9a38596663fc152884a"
+}

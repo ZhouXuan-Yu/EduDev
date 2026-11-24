@@ -1,0 +1,4 @@
+{
+  "exit": 0,
+  "command": "git diff --check"
+}

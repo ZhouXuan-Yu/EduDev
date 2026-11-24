@@ -1,0 +1,7 @@
+{
+  "reviewedFiles": 255,
+  "actualEnvironmentCredentialFound": false,
+  "credentialPatternsFound": false,
+  "noProfilesOrDatabases": true,
+  "falsePositivePolicy": "match must begin at token boundary; task-* substrings are not keys"
+}

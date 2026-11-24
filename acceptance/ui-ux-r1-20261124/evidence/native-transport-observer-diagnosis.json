@@ -1,0 +1,7 @@
+{
+  "assignedName": "r1DiagnosticMarker",
+  "isSameFunction": false,
+  "ownDescriptor": true,
+  "originalName": "fetch",
+  "source": "async function r1DiagnosticMarker(){return old.apply(net,arguments);}"
+}

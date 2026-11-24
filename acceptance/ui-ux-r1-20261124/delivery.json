@@ -1,0 +1,858 @@
+{
+  "schema_version": 1,
+  "package_id": "XIAOZHI_UI_UX_R1_20261124",
+  "state": "BLOCKED",
+  "baseline_sha": "700143faca7051baca892b50cf5081ff297ec9bb",
+  "verified_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "delivered_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "runtime": {
+    "kind": "electron",
+    "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+    "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+    "launch_path": "D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+    "platform": "win32"
+  },
+  "checks": [
+    {
+      "id": "UIR1-01",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-WINDOW",
+        "E-SCOPE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-02",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-REGISTERS",
+        "E-LEGACY"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-03",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-SCOPE",
+        "E-INTERFACES",
+        "E-PROVENANCE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-04",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-COMPONENT-REGISTER",
+        "E-SCOPE",
+        "E-COMPONENTS",
+        "E-PAGES",
+        "E-COMPOSER"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-05",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-SETTINGS-FULL",
+        "E-COMPONENTS"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-06",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-SETTINGS-FULL",
+        "E-LIVE",
+        "E-PAPER"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-07",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-PAPER-COLD",
+        "E-PPT-COLD"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-08",
+      "status": "BLOCKED",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-DPI"
+      ],
+      "note": "BLOCKED：缺少原生125%系统缩放环境，150%与三个CSS尺寸已实测；forced DPR不能替代。"
+    },
+    {
+      "id": "UIR1-09",
+      "status": "FAIL",
+      "evidence_ids": [
+        "E-STATES",
+        "E-READ-ERRORS",
+        "E-SETTINGS-FULL"
+      ],
+      "note": "FAIL（验收覆盖不足）：已验证正常页、专项失败/空/等待/运行/停止/保存/冷启；未逐页完成全部长内容、loading和error矩阵。不据此断言业务错误，不能用57张正常截图填PASS。"
+    },
+    {
+      "id": "UIR1-10",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-SETTINGS-FULL",
+        "E-CONFIG"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-11",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-CONFIG",
+        "E-CONFIG-R",
+        "E-MODEL-BUFFER",
+        "E-TRANSPORT"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-12",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-CONFIG",
+        "E-INTERFACES",
+        "E-SCOPE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-13",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-CONFIG",
+        "E-CONFIG-R",
+        "E-SETTINGS-FULL"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-14",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-COMPONENTS",
+        "E-PPT-COLD",
+        "E-PPT-R"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-15",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-COMPOSER",
+        "E-PENDING",
+        "E-SCOPE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-16",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PENDING",
+        "E-LIVE",
+        "E-LIVE-R",
+        "E-COMPOSER"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-17",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-LIVE",
+        "E-PPT-COLD",
+        "E-CONFIG"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-18",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAPER",
+        "E-PAPER-R",
+        "E-PAPER-COLD",
+        "E-PAPER-COLD-R"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-19",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-LIVE",
+        "E-PPT-COLD",
+        "E-PPT-R",
+        "E-POWERPOINT"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-20",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-LIVE",
+        "E-LIVE-R"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-21",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-SMOKE",
+        "E-CONFIG-R",
+        "E-SCOPE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-22",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-COMPOSER",
+        "E-PENDING",
+        "E-COMPONENTS",
+        "E-CONFIG"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-23",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PERF-BEFORE",
+        "E-PERF-AFTER",
+        "E-COMPOSER"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-24",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-PAGES",
+        "E-COMPOSER",
+        "E-CONFIG"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-25",
+      "status": "BLOCKED",
+      "evidence_ids": [
+        "E-CONTRACTS",
+        "E-ISOLATION",
+        "E-RENDERER",
+        "E-DIFF",
+        "E-BUILD"
+      ],
+      "note": "BLOCKED：当前build/261组件/9样式/17专项及其他门禁实际运行；原生prompt-input五项旧基线指纹失败需基线责任方核对。设置综合41项通过但原捕获器整体失败；net.fetch专项单独通过，未伪造全套exit0。"
+    },
+    {
+      "id": "UIR1-26",
+      "status": "BLOCKED",
+      "evidence_ids": [
+        "E-LEGACY",
+        "E-CONTRACTS",
+        "E-SCOPE"
+      ],
+      "note": "BLOCKED：36项已去重映射，旧领域全项保持UNKNOWN/NOT_RUN；必要组件基线门禁没有豁免。"
+    },
+    {
+      "id": "UIR1-27",
+      "status": "PASS",
+      "evidence_ids": [
+        "E-WINDOW",
+        "E-SOURCE-REMOTE"
+      ],
+      "note": "本项按附带证据的范围验证；工程结果不等于教师主观满意或旧36业务全项通过。"
+    },
+    {
+      "id": "UIR1-28",
+      "status": "BLOCKED",
+      "evidence_ids": [
+        "E-STATES",
+        "E-PROVENANCE"
+      ],
+      "note": "BLOCKED：未满足全部必选项，不能输出UI_R1_DONE；交付与恢复资料已形成。"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-P0",
+      "path": "PHASE0.md",
+      "sha256": "bf7083ccd8993f809e847318578fbe06a6d4902edb912239aa85ccb5e3b2dbf8",
+      "layer": "static",
+      "phase": "baseline",
+      "source_sha": "700143faca7051baca892b50cf5081ff297ec9bb",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "先审查再修改；初始46脏文件保留"
+    },
+    {
+      "id": "E-SCOPE",
+      "path": "evidence/integration-scope-proof.json",
+      "sha256": "2d881971d7d23f04e048173d31d81177e9547d891da1ee97ba93a4df7e6aeca5",
+      "layer": "git",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "本轮与协作者边界；旧证据有效继承逐文件证明"
+    },
+    {
+      "id": "E-REGISTERS",
+      "path": "records/PAGE_INVENTORY.csv",
+      "sha256": "3407e53dae25d0963273b59380037c26f07c1f7f8875b35631eb09f34e45ba2c",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "18真实入口；设置子页见附表"
+    },
+    {
+      "id": "E-LEGACY",
+      "path": "records/LEGACY_GATE_MAP.csv",
+      "sha256": "395650d2135c2547f0e01073a89c54313241dd0e3717a3778706f5f1d796caf6",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "旧36全量映射；原UNKNOWN没有升级PASS"
+    },
+    {
+      "id": "E-INTERFACES",
+      "path": "records/CONFIG_CONTRACT.csv",
+      "sha256": "18effd3b5ff2ad7b07e15aceedc01782ac06fa61fe4a42660a1720ebf7076371",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "沿用原宿主接口与枚举、scope、确认"
+    },
+    {
+      "id": "E-COMPONENT-REGISTER",
+      "path": "records/COMPONENT_REGISTER.csv",
+      "sha256": "b08ff956073d8174645ca169e657337760db63aa5520061cb729c406f3e327bb",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "OSS3.2.2与本地适配器分别登记；非官方Pro不冒称"
+    },
+    {
+      "id": "E-PAGES",
+      "path": "evidence/verification-pages-jETY5M/report.json",
+      "sha256": "05a6881009855ca325dd6800d40e3f1d13ac1cfe0bf87369c8a6af1541a53c40",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "18页3尺寸57截图；0页面异常/0console.error；普通状态，不等于每页全部异常"
+    },
+    {
+      "id": "E-WINDOW",
+      "path": "evidence/review-window.json",
+      "sha256": "74d88c028ebe03bbba03a0e447612d367c39cddaf8442e93ad9debe77638d069",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "实际可见Windows Electron；独立虚构验收数据，保留日常目录"
+    },
+    {
+      "id": "E-SOURCE-REMOTE",
+      "path": "evidence/source-main-push-last.json",
+      "sha256": "ffd4703c07e007ab973eb10275d93bd3bc87594c27dc09d535a534b351eafbf2",
+      "layer": "git",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "源码6f57863普通push并远端同SHA；后续证据提交另有receipt"
+    },
+    {
+      "id": "E-CONFIG",
+      "path": "evidence/settings-vgqJIS/report.json",
+      "sha256": "e88fac5aa7da42aaa2ee687cdbd8b826a84dcbefe204d67527f2a547fcc8721b",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "10项实际宿主、CAS冲突、冷启、scope与draft检查"
+    },
+    {
+      "id": "E-CONFIG-R",
+      "path": "evidence/settings-vgqJIS/report.json",
+      "sha256": "e88fac5aa7da42aaa2ee687cdbd8b826a84dcbefe204d67527f2a547fcc8721b",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "原typed IPC实际设置回读和冷启；无伪造配置"
+    },
+    {
+      "id": "E-SETTINGS-FULL",
+      "path": "evidence/settings-full-41/report.json",
+      "sha256": "546976012d693490cbe47c38eeb5822fc593fffe2569fa7e141fbbad50f0ac72",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "41项界面/持久化检查PASS；整体exit1因旧global.fetch观察器缺记录；失败保留，不能称全套PASS"
+    },
+    {
+      "id": "E-SETTINGS-R",
+      "path": "evidence/settings-full-41/report.json",
+      "sha256": "546976012d693490cbe47c38eeb5822fc593fffe2569fa7e141fbbad50f0ac72",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "真实备份完整性、分离恢复、归档原生字节冷读、停止与无重放；整体失败单列"
+    },
+    {
+      "id": "E-TRANSPORT",
+      "path": "evidence/settings-transport-L67VfG/report.json",
+      "sha256": "3ffcd21121aecf861ee65d2970e72996f79329a2cc86ca1a4f2cf11319a03305",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "改为真实net.fetch专项，空环境密钥、已存凭据匹配、HTTP200、SQLite终态；41项没有伪称重跑"
+    },
+    {
+      "id": "E-MODEL-BUFFER",
+      "path": "evidence/model-buffer-after.json",
+      "sha256": "c6b728c60d9d2eadae8c70faac62f865f19bdf50fdc51abebb96a63dd44af7d9",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "4项当前组件故障注入，仅本地输入保留；非provider验收"
+    },
+    {
+      "id": "E-READ-ERRORS",
+      "path": "evidence/read-errors-after.json",
+      "sha256": "e0f9ab8a9cb376c3f3f957fba21adc2debf07b19665739af0ef6b8c00f7443c2",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "8项目录/题本/讲义/结构/设置读取失败与空态检查"
+    },
+    {
+      "id": "E-PENDING",
+      "path": "evidence/pending-panel-components.json",
+      "sha256": "c095d9969fc8d7ae017d7c82e2aa98cbeba7a06b827d8751d699a8437c92e4f3",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "4项原待处理面板切换/收起/草稿/错误，保持唯一入口"
+    },
+    {
+      "id": "E-RENDERER",
+      "path": "logs/components-integrated-last.log",
+      "sha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "npm run test:renderer-components:261/261，exit0"
+    },
+    {
+      "id": "E-COMPONENTS",
+      "path": "logs/targeted-components-last.log",
+      "sha256": "10a6b5b0da7c8e88c95fe1250d0ff1eb109c26c49adc96c2f5d6c55421590cf2",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "17项任务/选择器组件检查，exit0"
+    },
+    {
+      "id": "E-COMPOSER",
+      "path": "evidence/published/composer.json",
+      "sha256": "d358e0069e70fccf2dd76b45292c6a197064a55af3673a33db7230db51a3c389",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "5项真实Pi+受控SSE队列检查；132x20保留；composition事件覆盖，不冒称物理IME实操"
+    },
+    {
+      "id": "E-LIVE",
+      "path": "evidence/live-R8V1y8/report.json",
+      "sha256": "d8bf4d273de95267ba521fbe95378c51842d983cd2a1e5f6f133e68617199ff5",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "5d45c38fafbb9a04c20564748cf270df460406be",
+      "build_fingerprint": "921101688a2bcdadca6d1f59f7299df29d21a368e3362302c457051196b8c8eb",
+      "note": "真实provider5项：抽题/来源/PPT编辑确认保存往返；后续只改设置UI，原流程保留"
+    },
+    {
+      "id": "E-LIVE-R",
+      "path": "evidence/live-R8V1y8/report.json",
+      "sha256": "d8bf4d273de95267ba521fbe95378c51842d983cd2a1e5f6f133e68617199ff5",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "5d45c38fafbb9a04c20564748cf270df460406be",
+      "build_fingerprint": "921101688a2bcdadca6d1f59f7299df29d21a368e3362302c457051196b8c8eb",
+      "note": "原题ID/来源/生成PPT3页XML与教师改后标题；没有固定样例替代真实生成"
+    },
+    {
+      "id": "E-PPT-COLD",
+      "path": "evidence/ppt-readback-Z1zKg6/report.json",
+      "sha256": "ad16a6d15a064c85484cadd57709cff41fd926e5148bf23838a080846c57e2d7",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "最终构建实际冷读PPT、原预览/任务三尺寸/原对话返回；不重新生成"
+    },
+    {
+      "id": "E-PPT-R",
+      "path": "evidence/ppt-readback-Z1zKg6/report.json",
+      "sha256": "ad16a6d15a064c85484cadd57709cff41fd926e5148bf23838a080846c57e2d7",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "保存位置取宿主artifact事实；文件hash+ZIP/XML+教师修订一致"
+    },
+    {
+      "id": "E-POWERPOINT",
+      "path": "evidence/ppt-native-open/report.json",
+      "sha256": "433c4a684306e223e0c964df16ff601533b1f035c41035a6fdb03e3656452f88",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "7a17b31254acaae020083d843d1221968a71e6bd",
+      "build_fingerprint": "49ec170787c4eee4d5d0fea937d8c412f7f3e7e21ec8759117f1941715fbb50f",
+      "note": "安装的PowerPoint只读打开并渲染真实PPT，hash未改"
+    },
+    {
+      "id": "E-PAPER",
+      "path": "evidence/paper-current-ZYV2rN/report.json",
+      "sha256": "a64cfbd992dade833ab07f78814afe9e89386be9c78a5f46d1878326a60ab82c",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "7a17b31254acaae020083d843d1221968a71e6bd",
+      "build_fingerprint": "49ec170787c4eee4d5d0fea937d8c412f7f3e7e21ec8759117f1941715fbb50f",
+      "note": "真实题篮实例编辑/教师确认/Pi正式DOCX+PDF；源题未改"
+    },
+    {
+      "id": "E-PAPER-R",
+      "path": "evidence/paper-current-ZYV2rN/report.json",
+      "sha256": "a64cfbd992dade833ab07f78814afe9e89386be9c78a5f46d1878326a60ab82c",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "7a17b31254acaae020083d843d1221968a71e6bd",
+      "build_fingerprint": "49ec170787c4eee4d5d0fea937d8c412f7f3e7e21ec8759117f1941715fbb50f",
+      "note": "两个正式文件独立文本提取和hash，包含修改且无答案哨兵"
+    },
+    {
+      "id": "E-PAPER-COLD",
+      "path": "evidence/paper-readback-vxZbI5/report.json",
+      "sha256": "df32d30bbdd8ad3d493c5f9ec481e174a957e0013f7ed4be3535227d06e9a612",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "当前构建冷启原题篮/原预览/原对话，已确认状态不重复创建"
+    },
+    {
+      "id": "E-PAPER-COLD-R",
+      "path": "evidence/paper-readback-vxZbI5/report.json",
+      "sha256": "df32d30bbdd8ad3d493c5f9ec481e174a957e0013f7ed4be3535227d06e9a612",
+      "layer": "readback",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "同一basketId/questionId/实例修改/正式文件hash保持"
+    },
+    {
+      "id": "E-STATES",
+      "path": "records/STATE_COVERAGE.csv",
+      "sha256": "7be120916a43df603c2b3c193a3775f697957dd9fb487d5010edc5632b4e8a6c",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "已观察状态与未做全矩阵明确区分，UIR1-09不能PASS"
+    },
+    {
+      "id": "E-SMOKE",
+      "path": "logs/smoke-main-final.log",
+      "sha256": "e2de3f9a9081cf88bac572dc6a33736bbba70d17c59e71a9caa6f7a9e9027d95",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "7a17b31254acaae020083d843d1221968a71e6bd",
+      "build_fingerprint": "49ec170787c4eee4d5d0fea937d8c412f7f3e7e21ec8759117f1941715fbb50f",
+      "note": "7a17集成build的完整既有smoke exit0；不能冒称6f完整重跑；继承范围见proof"
+    },
+    {
+      "id": "E-PERF-BEFORE",
+      "path": "evidence/response-before-oc2EpU/report.json",
+      "sha256": "bfadec612435dcfe9148a2b81d92d453ab215c3e81dd16f804b6d84fe2f6b120",
+      "layer": "measurement",
+      "phase": "baseline",
+      "source_sha": "700143faca7051baca892b50cf5081ff297ec9bb",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "独立npmci的700143f原源码构建，3类各10原始样本；非模型耗时"
+    },
+    {
+      "id": "E-PERF-AFTER",
+      "path": "evidence/response-after-P8fraF/report.json",
+      "sha256": "a9af91de697d91bc51ef04d6e370b3aa8d54e84e8c0942819e6f5adab85c7a42",
+      "layer": "measurement",
+      "phase": "verification",
+      "source_sha": "5d45c38fafbb9a04c20564748cf270df460406be",
+      "build_fingerprint": "921101688a2bcdadca6d1f59f7299df29d21a368e3362302c457051196b8c8eb",
+      "note": "3类各10样本，全部≤200ms，最大20.4/2.1/11.1ms；未受后续设置文字/标题改动影响"
+    },
+    {
+      "id": "E-DPI",
+      "path": "evidence/system-scaling-availability.json",
+      "sha256": "5d0e4a7e0ae47648897f8b7d9fb2fb6387b186ffb68f422c859e43a910d5f653",
+      "layer": "electron",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "实际原生150%；强制DPR1.25不等于原生125%；Settings启动无可定位窗口"
+    },
+    {
+      "id": "E-CONTRACTS",
+      "path": "logs/ui-contracts-last.log",
+      "sha256": "8031770777a3df66c163ba062d9f31fd917c6a6738cea7e29c44b64efa041595",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "28通过1失败；五个prompt-input旧指纹不一致，不删断言不更新指纹"
+    },
+    {
+      "id": "E-PROVENANCE",
+      "path": "evidence/native-baseline-provenance.json",
+      "sha256": "b423c57b47ac6b4f77b32ec7fc9566b03c2acb9f289ec23078e1960690b929df",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "差异早于Phase0在effc6c0已存在；本轮未改受保护源码"
+    },
+    {
+      "id": "E-ISOLATION",
+      "path": "logs/style-isolation-last.log",
+      "sha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "layer": "component",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "9/9，exit0；无新增vendor/global important补丁"
+    },
+    {
+      "id": "E-BUILD",
+      "path": "logs/integrated-r1-last-build.log",
+      "sha256": "2918d98b36b61612440b1dc88c39d579037e430ed723d712aa11f3180333a7d0",
+      "layer": "static",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "npm run build含tsc，exit0；独立npmci；已整合de2bb12"
+    },
+    {
+      "id": "E-DIFF",
+      "path": "evidence/diff-check-last.json",
+      "sha256": "9e1f2aef81bef7cd0c35f4577f4bca1f2d309757afe22c9df9053c305cdd314f",
+      "layer": "git",
+      "phase": "verification",
+      "source_sha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+      "build_fingerprint": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+      "note": "git diff --check exit0；生成物与换行警告单列"
+    }
+  ],
+  "defects": [
+    {
+      "id": "D01",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-06",
+        "UIR1-10"
+      ]
+    },
+    {
+      "id": "D02",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-05"
+      ]
+    },
+    {
+      "id": "D03",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-12"
+      ]
+    },
+    {
+      "id": "D04",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-04",
+        "UIR1-14"
+      ]
+    },
+    {
+      "id": "D05",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-09"
+      ]
+    },
+    {
+      "id": "D06",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-04",
+        "UIR1-22"
+      ]
+    },
+    {
+      "id": "D07",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-08"
+      ]
+    },
+    {
+      "id": "D08",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-19",
+        "UIR1-11"
+      ]
+    },
+    {
+      "id": "D09",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-05",
+        "UIR1-10"
+      ]
+    },
+    {
+      "id": "D10",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-06",
+        "UIR1-10"
+      ]
+    },
+    {
+      "id": "D11",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-15",
+        "UIR1-04"
+      ]
+    },
+    {
+      "id": "D12",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-05",
+        "UIR1-10"
+      ]
+    },
+    {
+      "id": "D13",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-11"
+      ]
+    },
+    {
+      "id": "D14",
+      "in_scope": true,
+      "severity": "S2",
+      "status": "CLOSED",
+      "acceptance_ids": [
+        "UIR1-06"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "B1",
+      "acceptance_ids": [
+        "UIR1-08"
+      ],
+      "reason": "Windows原生125%缩放的必要验收环境不可操作；sky启动设置无可定位窗口，未改变当前150%或其他AI窗口。",
+      "unblock_condition": "提供可定位Display Settings或独立原生125%桌面，按原用例验密集页后恢复原150%；不把强制DPR计为原生。"
+    },
+    {
+      "id": "B2",
+      "acceptance_ids": [
+        "UIR1-25",
+        "UIR1-26"
+      ],
+      "reason": "原prompt-input五个受保护源码在effc6c0已变更，旧指纹仍指向更早原厂版本；本轮无权改vendor、抹掉已接入功能或直接更新指纹。",
+      "unblock_condition": "由Composer/组件基线负责方核对effc6c0功能改动与官方来源，提供经审查的正确基线或兼容修复，保留原失败再运行同门禁。"
+    }
+  ],
+  "teacher_review": {
+    "status": "NOT_RUN",
+    "notes": "没有真实教师参与；验收窗口已开，等待用户试用，不代填满意。"
+  },
+  "delivery": {
+    "main_integration": "PASS",
+    "remote_contains_commit": "PASS",
+    "final_delta": "evidence_only",
+    "note": "正式源码与实测out固定为6f57863/9bd597bf；后续只提交QA、报告和恢复资料，源码已普通推送main。最终证据提交的SHA与远端包含检查见本地final-delivery-receipt.json及最终回复；不尝试在提交中写入自身SHA。"
+  }
+}

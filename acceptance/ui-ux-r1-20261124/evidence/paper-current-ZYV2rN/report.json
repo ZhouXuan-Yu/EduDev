@@ -1,0 +1,329 @@
+{
+  "success": true,
+  "source": "7a17b31254acaae020083d843d1221968a71e6bd",
+  "build": "49ec170787c4eee4d5d0fea937d8c412f7f3e7e21ec8759117f1941715fbb50f",
+  "donor": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-goal-paper-zsXwff",
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\paper-current-ZYV2rN",
+  "checks": [
+    "Visible current library selection creates a real session-owned basket and pins the exact source question",
+    "Teacher edits only this basket instance, saves through the original host and leaves the source bank byte-for-byte unchanged",
+    "The same edited members reach real preview and explicit whole-paper confirmation",
+    "Real docx export contains the edited instance and isolates student answers",
+    "Real pdf export contains the edited instance and isolates student answers"
+  ],
+  "errors": [],
+  "files": [
+    {
+      "id": "artifact_2ca0a0e8-09ef-4988-90ad-f2370ac83a9f",
+      "path": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-goal-paper-zsXwff\\XiaozhiOutputs\\5077d05c7e939deb\\aisession_f864f923-db93-474b-b4ec-4c029a7a276f\\数学练习-student.docx",
+      "sha256": "907e3d7049102385992345d74946c8a51862132d796f04ac7faa710e509966d0",
+      "text": "数学练习 · 学生练习\r\n练习说明\r\n用途：练习 · 初二 · 数学 · 共 1 题\r\n学生练习 · 请按题目要求作答。\r\n解答题\r\n1.（1 分）\r\n导出集08248fe0 条件19：求 19+5。\r\n本卷校订：请写出计算过程。\r\n"
+    },
+    {
+      "id": "artifact_4b963687-6a5e-49c8-9576-922c269db82c",
+      "path": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-goal-paper-zsXwff\\XiaozhiOutputs\\5077d05c7e939deb\\aisession_f864f923-db93-474b-b4ec-4c029a7a276f\\数学练习-student.pdf",
+      "sha256": "18195e92886909fb30992dc60cda0150ed6f8a7b4e0d07b47ecf50e6f965a3b3",
+      "text": "数 学 练 习  ·  学 生 练 习\r\n练 习 说 明\r\n用途：练习 · 初二 · 数学 · 共 1 题\r\n学生练习 · 请按题目要求作答。\r\n解 答 题\r\n1 . （ 1  分 ）\r\n导出集08248fe0 条件19：求 19+5。\r\n本卷校订：请写出计算过程。\r\n学生卷\r\n第 1 页 / 共 1 页\r\n"
+    }
+  ],
+  "boundary": "Current production question library and basket UI; original Pi and real official provider for export. Reuses twenty fictional teacher-entered bank facts from the preserved earlier failed UI run, no SQL writes, generated questions, proxy responses or production data.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-goal-paper-zsXwff\\electron-profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ui-goal-paper-zsXwff\\electron-profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/pi-session-b1fjezoi.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "resume": {
+    "basketId": "xibasket_5acff54a-e2e5-4a2a-b237-ae68097b95de",
+    "reason": "Earlier genuine UI selection auto-created its basket; failed QA expected an unnecessary dialog. Resume persisted facts rather than add a duplicate."
+  },
+  "reference": {
+    "session": "aisession_f864f923-db93-474b-b4ec-4c029a7a276f",
+    "basketId": "xibasket_5acff54a-e2e5-4a2a-b237-ae68097b95de",
+    "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c"
+  },
+  "initial": {
+    "id": "xibasket_5acff54a-e2e5-4a2a-b237-ae68097b95de",
+    "sessionId": "aisession_f864f923-db93-474b-b4ec-4c029a7a276f",
+    "revision": 3,
+    "state": "active",
+    "title": "数学练习",
+    "count": 1,
+    "createdAt": "2026-11-24T18:10:49.897Z",
+    "updatedAt": "2026-11-24T18:13:02.958Z",
+    "studentId": "",
+    "schemaVersion": "xiaozhi.paper-basket.v2",
+    "persistedSchemaVersion": "xiaozhi.paper-basket.v2",
+    "purpose": "practice",
+    "paperRequirements": "required",
+    "blueprint": {
+      "title": "数学练习",
+      "subject": "数学",
+      "grade": "初二",
+      "durationMinutes": 30,
+      "mode": "source_only",
+      "totalPoints": 5,
+      "sections": [
+        {
+          "id": "practice_0",
+          "label": "选择题",
+          "questionType": "选择题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_1",
+          "label": "填空题",
+          "questionType": "填空题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_2",
+          "label": "解答题",
+          "questionType": "解答题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_3",
+          "label": "简答题",
+          "questionType": "简答题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_4",
+          "label": "判断题",
+          "questionType": "判断题",
+          "count": 1,
+          "points": 1
+        }
+      ]
+    },
+    "entries": [
+      {
+        "entryId": "xibasketentry_0c922ef7-72ee-434d-bd48-d44469a14e15",
+        "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+        "contentVersion": "eb8853d5938900f83e2d933d4f9aff875a680a66519d72c8f36bfd40e40693ff",
+        "sectionId": "practice_2",
+        "position": 0,
+        "question": {
+          "id": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集08248fe0",
+          "questionType": "解答题",
+          "difficulty": "medium",
+          "stem": "导出集08248fe0 条件19：求 19+5。",
+          "answer": "答案哨兵24",
+          "analysis": "解析哨兵19：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-11-24T17:54:56.645Z",
+          "updatedAt": "2026-11-24T17:54:56.645Z"
+        },
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_0c922ef7-72ee-434d-bd48-d44469a14e15",
+          "instanceRevision": 2,
+          "sourceBinding": {
+            "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+            "sourceVersion": "eb8853d5938900f83e2d933d4f9aff875a680a66519d72c8f36bfd40e40693ff"
+          },
+          "content": {
+            "question": {
+              "mode": "edited",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "导出集08248fe0 条件19：求 19+5。\n本卷校订：请写出计算过程。"
+                }
+              ]
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "a1c8732b23a64ed0cbc5e81479e082dadf5a42ae2daa498bd6d70a725a4f4c0e"
+        },
+        "reviewCurrent": false,
+        "availability": {
+          "available": true
+        },
+        "deliveryBlock": "needs_review"
+      }
+    ],
+    "gaps": [],
+    "complete": false,
+    "uiState": {
+      "stage": "organize",
+      "filters": {},
+      "offset": 0,
+      "scrollTop": 0
+    }
+  },
+  "carriedEdit": "Original UI save verified in paper-current-WSnGiP; current exact instance is read back without adding the same edit again.",
+  "confirmed": {
+    "id": "xibasket_5acff54a-e2e5-4a2a-b237-ae68097b95de",
+    "sessionId": "aisession_f864f923-db93-474b-b4ec-4c029a7a276f",
+    "revision": 4,
+    "state": "active",
+    "title": "数学练习",
+    "count": 1,
+    "createdAt": "2026-11-24T18:10:49.897Z",
+    "updatedAt": "2026-11-24T18:15:08.620Z",
+    "studentId": "",
+    "schemaVersion": "xiaozhi.paper-basket.v2",
+    "persistedSchemaVersion": "xiaozhi.paper-basket.v2",
+    "confirmedPaperId": "xipaper_e499a620-caa2-4d05-ae4c-4ca8cc977289",
+    "purpose": "practice",
+    "paperRequirements": "required",
+    "blueprint": {
+      "title": "数学练习",
+      "subject": "数学",
+      "grade": "初二",
+      "durationMinutes": 30,
+      "mode": "source_only",
+      "totalPoints": 5,
+      "sections": [
+        {
+          "id": "practice_0",
+          "label": "选择题",
+          "questionType": "选择题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_1",
+          "label": "填空题",
+          "questionType": "填空题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_2",
+          "label": "解答题",
+          "questionType": "解答题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_3",
+          "label": "简答题",
+          "questionType": "简答题",
+          "count": 1,
+          "points": 1
+        },
+        {
+          "id": "practice_4",
+          "label": "判断题",
+          "questionType": "判断题",
+          "count": 1,
+          "points": 1
+        }
+      ]
+    },
+    "entries": [
+      {
+        "entryId": "xibasketentry_0c922ef7-72ee-434d-bd48-d44469a14e15",
+        "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+        "contentVersion": "eb8853d5938900f83e2d933d4f9aff875a680a66519d72c8f36bfd40e40693ff",
+        "sectionId": "practice_2",
+        "position": 0,
+        "question": {
+          "id": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+          "subject": "数学",
+          "grade": "初二",
+          "knowledgePoint": "导出集08248fe0",
+          "questionType": "解答题",
+          "difficulty": "medium",
+          "stem": "导出集08248fe0 条件19：求 19+5。",
+          "answer": "答案哨兵24",
+          "analysis": "解析哨兵19：把两个数相加。",
+          "sourceTitle": "教师本地题库",
+          "sourceKind": "teacher_resource",
+          "tags": [],
+          "createdAt": "2026-11-24T17:54:56.645Z",
+          "updatedAt": "2026-11-24T17:54:56.645Z"
+        },
+        "instance": {
+          "schemaVersion": "xiaozhi.paper-instance.v1",
+          "entryId": "xibasketentry_0c922ef7-72ee-434d-bd48-d44469a14e15",
+          "instanceRevision": 2,
+          "sourceBinding": {
+            "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+            "sourceVersion": "eb8853d5938900f83e2d933d4f9aff875a680a66519d72c8f36bfd40e40693ff"
+          },
+          "content": {
+            "question": {
+              "mode": "edited",
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "导出集08248fe0 条件19：求 19+5。\n本卷校订：请写出计算过程。"
+                }
+              ]
+            },
+            "answer": {
+              "mode": "source"
+            },
+            "analysis": {
+              "mode": "source"
+            }
+          },
+          "contentDigest": "a1c8732b23a64ed0cbc5e81479e082dadf5a42ae2daa498bd6d70a725a4f4c0e",
+          "review": {
+            "eventId": "xireview_1850422e-2828-48f4-a47d-6cacee55a390",
+            "action": "confirm",
+            "instanceRevision": 2,
+            "contentDigest": "a1c8732b23a64ed0cbc5e81479e082dadf5a42ae2daa498bd6d70a725a4f4c0e",
+            "sourceBinding": {
+              "questionId": "question_53ad834d-c6eb-4e34-96c8-0fb643f9b29c",
+              "sourceVersion": "eb8853d5938900f83e2d933d4f9aff875a680a66519d72c8f36bfd40e40693ff"
+            },
+            "reviewedAt": "2026-11-24T18:15:08.620Z"
+          }
+        },
+        "reviewCurrent": true,
+        "availability": {
+          "available": true
+        }
+      }
+    ],
+    "gaps": [],
+    "complete": true,
+    "uiState": {
+      "stage": "preview",
+      "filters": {},
+      "offset": 0,
+      "scrollTop": 0
+    }
+  }
+}

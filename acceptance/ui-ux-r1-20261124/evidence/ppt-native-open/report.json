@@ -1,0 +1,23 @@
+﻿{
+    "pages":  [
+                  {
+                      "number":  1,
+                      "shapes":  10,
+                      "image":  "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\ppt-native-open\\page-1.png"
+                  },
+                  {
+                      "number":  2,
+                      "shapes":  12,
+                      "image":  "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\ppt-native-open\\page-2.png"
+                  },
+                  {
+                      "number":  3,
+                      "shapes":  10,
+                      "image":  "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\ppt-native-open\\page-3.png"
+                  }
+              ],
+    "sha256":  "1238AE672D22904035F1E4D783AABE258890CE9F0A46D01396F42BC4E7C7D3CB",
+    "source":  "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-ZfxRlK\\XiaozhiOutputs\\ca6d92330faf55db\\aisession_0340b56b-1d76-4c09-9d91-1e5b9bdc5983\\UIR1方程课.pptx",
+    "success":  true,
+    "boundary":  "Installed PowerPoint COM opens and renders the actual real-provider PPT read-only; original bytes preserved. No WPS or teacher aesthetic acceptance claim."
+}

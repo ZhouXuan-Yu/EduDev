@@ -22,7 +22,7 @@ const env = {...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.
 for (const key of Object.keys(env)) if (/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key) || key.startsWith('OMNI_EDU_E2E_') || ['ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'NODE_OPTIONS'].includes(key)) delete env[key];
 const report = {success: false, mode, output, data, profile, main, source: before.sha256, build: build.sha256,
   scope: 'Real production Electron with own npm-ci dependencies, clean isolated profile and fictional student created by UI. HTTP forbidden. No provider responses or teaching outputs are simulated.',
-  pages: [], errors: [], settings: [], cssom: [], unavailable: []};
+  pages: [], errors: [], consoleErrors: [], settings: [], cssom: [], unavailable: []};
 const save = () => fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
 let app, page;
 async function nav(space) {
@@ -48,6 +48,7 @@ try {
   app = await electron.launch({args: [bootstrap, '--user-data-dir=' + profile], env, cwd: desktop, timeout: 60000});
   page = await app.firstWindow(); page.setDefaultTimeout(15000);
   page.on('pageerror', error => {report.errors.push(String(error)); save();});
+  page.on('console', message => {if(message.type()==='error'){report.consoleErrors.push(message.text());save();}});
   await page.getByTestId('office-prompt-input').waitFor({timeout: 60000});
   report.identity = await assertIsolatedPiMain(app, main, profile);
   report.pid = app.process().pid;
@@ -106,7 +107,7 @@ try {
     const style = getComputedStyle(element); return {space24: style.getPropertyValue('--space-24'), space40: style.getPropertyValue('--space-40')};
   });
   report.displays=await app.evaluate(({screen})=>screen.getAllDisplays().map(({bounds,scaleFactor})=>({bounds,scaleFactor})));
-  assert.deepEqual(report.errors,[]);assert(report.pages.every(p=>!p.viewport.horizontalOverflow),'No document horizontal overflow');
+  assert.deepEqual(report.errors,[]);assert.deepEqual(report.consoleErrors,[]);assert(report.pages.every(p=>!p.viewport.horizontalOverflow),'No document horizontal overflow');
   report.httpAttempts = await app.evaluate(() => globalThis.__uiRoneHttp);
   assert.equal(fingerprint(path.join(desktop, 'src')).sha256, before.sha256);
   assert.equal(fingerprint(path.join(desktop, 'out')).sha256, build.sha256);

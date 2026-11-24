@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "package_id": "XIAOZHI_UI_UX_R1_20261124",
+  "state": "NOT_STARTED",
+  "baseline_sha": "",
+  "verified_sha": "",
+  "delivered_sha": "",
+  "runtime": {
+    "kind": "",
+    "source_sha": "",
+    "build_fingerprint": "",
+    "launch_path": "",
+    "platform": ""
+  },
+  "checks": [
+    {
+      "id": "UIR1-01",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-02",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-03",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-04",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-05",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-06",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-07",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-08",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-09",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-10",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-11",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-12",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-13",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-14",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-15",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-16",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-17",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-18",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-19",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-20",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-21",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-22",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-23",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-24",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-25",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-26",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-27",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    },
+    {
+      "id": "UIR1-28",
+      "status": "NOT_RUN",
+      "evidence_ids": [],
+      "note": ""
+    }
+  ],
+  "evidence": [],
+  "defects": [],
+  "blockers": [],
+  "teacher_review": {
+    "status": "NOT_RUN",
+    "notes": "未开展教师试用，不代表产品已通过。"
+  },
+  "delivery": {
+    "main_integration": "NOT_RUN",
+    "remote_contains_commit": "NOT_RUN",
+    "final_delta": "none",
+    "note": ""
+  }
+}

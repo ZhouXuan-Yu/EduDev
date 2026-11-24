@@ -1,0 +1,9 @@
+{
+  "selected": {
+    "app": "process:D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+    "id": 3478950,
+    "title": "小智 · UI R1 验收（独立测试数据）"
+  },
+  "observation": "Window: \"小智 · UI R1 验收（独立测试数据）\", App: electron.exe.\n\t0 window (窗口) 小智 · UI R1 验收（独立测试数据） Secondary Actions: Raise\n\t\t1 pane (窗格) (disabled)\n\t\t2 pane (区域) 小智 · UI R1 验收（独立测试数据）\n\t\t\t3 pane (区域)\n\t\t\t\t4 pane (区域)\n\t\t\t\t\t5 pane (区域)\n\t\t\t\t\t\t6 button (按钮) 最小化\n\t\t\t\t\t\t7 button (按钮) 最大化\n\t\t\t\t\t\t8 button (按钮) 关闭\n\t\t\t\t\t9 pane (区域)\n\t\t\t\t\t\t10 pane (区域)\n\t\t\t\t\t\t\t11 pane (区域)\n\t\t\t\t\t\t\t\t12 pane (区域)\n\t\t\t\t\t\t\t\t13 pane (区域)",
+  "boundary": "Native Windows inventory and accessibility read only; no other window controlled"
+}

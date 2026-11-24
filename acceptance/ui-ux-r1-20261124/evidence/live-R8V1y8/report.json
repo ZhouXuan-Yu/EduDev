@@ -1,0 +1,300 @@
+{
+  "success": true,
+  "source": "5d45c38fafbb9a04c20564748cf270df460406be",
+  "sourceFingerprint": "1b49cd5a910eb45e14372e79371c8c696bab341a174075c5f58373514dcdcd5e",
+  "build": "921101688a2bcdadca6d1f59f7299df29d21a368e3362302c457051196b8c8eb",
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\live-R8V1y8",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile",
+  "workspace": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\teaching",
+  "checks": [
+    "Two teacher-created questions are saved by the visible form and read back from the original bank",
+    "Real condition-matched question source opens the existing question surface and returns to the same conversation",
+    "Actual directory permission is chosen through the existing menu",
+    "Real provider PPT is edited, explicitly approved, generated and independently read back from its ZIP/XML bytes",
+    "Saved PPT opens the original local file preview and returns to the exact source conversation"
+  ],
+  "requests": [
+    {
+      "time": "2026-11-24T18:32:17.330Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:19.625Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:23.174Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:29.421Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:39.564Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:42.961Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:32:46.768Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:33:15.092Z",
+      "status": 200
+    },
+    {
+      "time": "2026-11-24T18:33:20.038Z",
+      "status": 200
+    }
+  ],
+  "errors": [],
+  "steps": [
+    {
+      "stage": "condition-extraction",
+      "text": "请从本地题本中找出八年级数学、一元一次方程、中等难度的两道解答题，使用现有原题，不生成新题、不放宽条件。展示题目和来源，并提供进入题目工作面的入口。"
+    },
+    {
+      "stage": "ppt-generation",
+      "text": "为八年级数学制作一份可编辑的3页PPT，主题是一元一次方程：第1页引入，第2页给出3(x－2)＝12的例题，第3页给出一道练习。请使用现有PPT工具实际起草文件，保存路径为UIR1方程课.pptx，等待我审阅和确认。不要只输出文字提纲。"
+    }
+  ],
+  "boundary": "Real official DeepSeek and original Pi/IPC/SQLite/Office. Isolated fictional teacher inputs. Dialog chooser points only to owned test workspace. No provider mocks or production user data.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "session": "aisession_e3444d99-a8d8-421b-8467-b71f23f2079b",
+  "bank": {
+    "items": [
+      {
+        "id": "question_949f1464-a2dd-4662-b0b6-e986d5c9974e",
+        "subject": "数学",
+        "grade": "八年级",
+        "knowledgePoint": "一元一次方程",
+        "questionType": "解答题",
+        "difficulty": "medium",
+        "stem": "解方程：2x＋5＝17。",
+        "answer": "x＝6",
+        "analysis": "两边减5得2x＝12，两边同除以2得x＝6。",
+        "sourceTitle": "教师本地题库",
+        "sourceKind": "local_bank",
+        "tags": [
+          "UIR1教师输入"
+        ],
+        "createdAt": "2026-11-24T18:32:15.072Z",
+        "updatedAt": "2026-11-24T18:32:15.072Z",
+        "bookmarked": false,
+        "version": 0,
+        "categories": [],
+        "usageCount": 0,
+        "lastUsedAt": ""
+      },
+      {
+        "id": "question_5ad5f4a1-fbc4-4438-afc7-718e714698a3",
+        "subject": "数学",
+        "grade": "八年级",
+        "knowledgePoint": "一元一次方程",
+        "questionType": "解答题",
+        "difficulty": "medium",
+        "stem": "解方程：3(x－2)＝12。",
+        "answer": "x＝6",
+        "analysis": "两边同除以3得x－2＝4，两边加2得x＝6。",
+        "sourceTitle": "教师本地题库",
+        "sourceKind": "local_bank",
+        "tags": [
+          "UIR1教师输入"
+        ],
+        "createdAt": "2026-11-24T18:32:14.946Z",
+        "updatedAt": "2026-11-24T18:32:14.946Z",
+        "bookmarked": false,
+        "version": 0,
+        "categories": [],
+        "usageCount": 0,
+        "lastUsedAt": ""
+      }
+    ],
+    "total": 2,
+    "retrievalMethod": "local_keyword_scan"
+  },
+  "extraction": {
+    "task": {
+      "schema": "xiaozhi.task.v1",
+      "id": "xitask_922b240d9e585c23a2a74a0ffb5bbb7b1b797456a09fd819dd7b0622050457b0",
+      "sessionId": "aisession_e3444d99-a8d8-421b-8467-b71f23f2079b",
+      "revision": 5,
+      "requirementsVersion": 1,
+      "planRevision": 0,
+      "planReason": "依据教师当前请求建立任务；历史来源仅保留上下文，冲突约束以最新明确修订为准，步骤尚未采用",
+      "state": "review_required",
+      "origin": {
+        "messageId": "aimsg_84f94689-9ebe-4cef-a23d-66343813e6a1",
+        "commandId": "xicmd_239b3aa4-1f62-483f-ae7c-89c9796ee74f",
+        "runId": "run_92a6f728-bb3a-4043-82ec-925df90e0b81"
+      },
+      "sources": [
+        {
+          "messageId": "aimsg_84f94689-9ebe-4cef-a23d-66343813e6a1",
+          "runId": "run_92a6f728-bb3a-4043-82ec-925df90e0b81",
+          "version": "150e63658860c424f7cb35478aee5cb89b98aa0573274cbf4267e923f227710b"
+        }
+      ],
+      "criteria": [
+        {
+          "id": "teacher_request",
+          "version": 1,
+          "sourceId": "aimsg_84f94689-9ebe-4cef-a23d-66343813e6a1",
+          "sourceVersion": "150e63658860c424f7cb35478aee5cb89b98aa0573274cbf4267e923f227710b",
+          "text": "请从本地题本中找出八年级数学、一元一次方程、中等难度的两道解答题，使用现有原题，不生成新题、不放宽条件。展示题目和来源，并提供进入题目工作面的入口。",
+          "kind": "human"
+        }
+      ],
+      "steps": [],
+      "checks": [],
+      "binding": null,
+      "createdAt": "2026-11-24T18:32:15.321Z",
+      "updatedAt": "2026-11-24T18:32:27.242Z",
+      "planning": {
+        "schemaVersion": 1,
+        "level": 2,
+        "reasons": [
+          "multiple_steps"
+        ],
+        "preflight": {
+          "state": "ready",
+          "checks": {
+            "capabilities": {
+              "state": "ready",
+              "references": [
+                "provider:edu.native.tool.education_read_question:a34ad46cb3ecffa38b8df6deea0d8e71187c285f84a44d6c6552473e94095c9b"
+              ]
+            },
+            "dependencies": {
+              "state": "ready",
+              "references": [
+                "registered-domain:education_read_question"
+              ]
+            },
+            "permissions": {
+              "state": "ready",
+              "references": [
+                "task:xitask_922b240d9e585c23a2a74a0ffb5bbb7b1b797456a09fd819dd7b0622050457b0"
+              ]
+            },
+            "risk": {
+              "state": "ready",
+              "references": [
+                "effect:safe_read:teacher_domain_authority"
+              ]
+            },
+            "artifacts": {
+              "state": "ready",
+              "references": [
+                "workspace:1e9d6b93a921c6a1248c4911a56f52e083f1d82994a82a3de8c3b2f0e6a8061b"
+              ]
+            },
+            "recovery": {
+              "state": "ready",
+              "references": [
+                "xitcp_3ff386a624d11acec85282477fb68c849e648c7d90098c362a5be90a10528ecf"
+              ]
+            }
+          },
+          "blockers": []
+        },
+        "observedTools": [
+          "education_search_questions",
+          "education_read_question"
+        ],
+        "capabilityRequirements": [],
+        "requirementsVersion": 1,
+        "planRevision": 0,
+        "checkedAt": "2026-11-24T18:32:21.356Z"
+      }
+    },
+    "turns": [
+      {
+        "id": "run_92a6f728-bb3a-4043-82ec-925df90e0b81",
+        "status": "completed"
+      }
+    ],
+    "sourceCount": 4,
+    "sourceView": "题目来源\n\n数学 · 八年级 · 一元一次方程 · 解答题\n\n来源：教师本地题库 · 本地题库\n\n打开时已核对本地保存版本。题目中的答案和解析仍需教师核对。\n\n题目\n解方程：2x＋5＝17。\n参考答案\n\n标注来源：历史记录，来源待确认\n\nx＝6\n解析\n\n标注来源：历史记录，来源待确认\n\n两边减5得2x＝12，两边同除以2得x＝6。\n\n答案与解析尚未独立核对正确性，请在教学使用前核实。题面核对与来源确认不代表答案正确。\n\n联网补答记录\n关闭",
+    "entryCandidates": [
+      {
+        "testId": "pi-question-source-open",
+        "label": "一元一次方程 · 教师本地题库"
+      },
+      {
+        "testId": "pi-question-source-open",
+        "label": "一元一次方程 · 教师本地题库"
+      }
+    ]
+  },
+  "ppt": {
+    "initial": {
+      "schemaVersion": "xiaozhi.office-artifact.v1",
+      "id": "xioffice_57c8a5cb-d035-4bed-af5f-4034560b3f9e",
+      "runId": "run_a963e79d-71cb-45f4-898a-874426d0119f",
+      "callId": "call_00_PfSrayE9V8AFnByyXx0I9488",
+      "path": "UIR1方程课.pptx",
+      "format": "pptx",
+      "state": "pending",
+      "revision": 0,
+      "artifactId": null,
+      "sourceCount": 0
+    },
+    "saved": {
+      "schemaVersion": "xiaozhi.office-artifact.v1",
+      "id": "xioffice_57c8a5cb-d035-4bed-af5f-4034560b3f9e",
+      "runId": "run_a963e79d-71cb-45f4-898a-874426d0119f",
+      "callId": "call_00_PfSrayE9V8AFnByyXx0I9488",
+      "path": "UIR1方程课.pptx",
+      "format": "pptx",
+      "state": "saved",
+      "revision": 6,
+      "artifactId": "artifact_ad7984b3-4007-4b51-9e8f-207da49a7559",
+      "sourceCount": 0
+    },
+    "file": {
+      "path": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\XiaozhiOutputs\\08bf325d2ca7bdd1\\aisession_e3444d99-a8d8-421b-8467-b71f23f2079b\\UIR1方程课.pptx",
+      "size": 73418,
+      "sha256": "3b657d2b5cbd38e113aa81a7b083e1fd116ad823b0473d06afa54ab4039aa492"
+    },
+    "readback": {
+      "slides": 3,
+      "texts": [
+        "一元一次方程：从等式走向未知数只含有一个未知数，未知数的次数都是1，且等号两边都是整式的方程，叫作一元一次方程。例如：2x＋5＝17，3(x－2)＝12，都只含未知数 x，且 x 的次数是1。解方程，就是求出能使等式两边相等的未知数的值；求出后要代回原方程检验。1 / 3",
+        "例题：解方程 3(x－2)＝12思路一（整体法）：把 (x－2) 看作一个整体，两边同除以3。两边同除以3，得 x－2＝4；两边同加2，得 x＝6。思路二（去括号法）：先去括号，得 3x－6＝12。两边同加6，得 3x＝18；两边同除以3，得 x＝6。检验：左边＝3×(6－2)＝3×4＝12，右边＝12，左边＝右边，所以 x＝6 是原方程的解。2 / 3",
+        "练习：独立解方程 2x＋5＝17解方程：2x＋5＝17。要求：写出每一步的变形依据，并在最后代回原方程检验。完成后与同桌交换，重点检查两处：移项时符号是否改变，两边同除以系数时是否两边都除。3 / 3"
+      ],
+      "title": "一元一次方程 · 教师修订"
+    }
+  }
+}

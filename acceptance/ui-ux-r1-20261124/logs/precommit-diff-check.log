@@ -1,0 +1,10 @@
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js', LF will be replaced by CRLF the next time Git touches it

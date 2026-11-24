@@ -1,0 +1,77 @@
+{
+  "sourceSha": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "headAtLaunch": "6f57863f8ffe04b4201248d51175c673e09b67b5",
+  "build": "9bd597bfcf3d98e825dcb3eda92b1ff47a34170d024830a6a7f18fa4138e45cd",
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out\\main\\index.js",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\data",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\live-R8V1y8\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-images-csczqeb6.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-pdf-renderer--tcfzadl.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/office-relative-path-byzlrxoy.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/pi-session-b1fjezoi.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/typed-table-bm91h4xz.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/out/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "window": {
+    "pid": 76252,
+    "id": 1,
+    "title": "小智 · UI R1 验收（独立测试数据）",
+    "visible": true,
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 769
+    },
+    "contentBounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 768
+    },
+    "displays": [
+      {
+        "bounds": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1440
+        },
+        "scaleFactor": 1
+      },
+      {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1067
+        },
+        "scaleFactor": 1.5
+      }
+    ]
+  },
+  "url": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/out/renderer/index.html",
+  "scope": "已实际验证的当前源码构建；独立虚构验收数据，未替换D盘日常目录、配置或资料。生产Pi和既有服务可用，不使用zero-network或模拟provider。",
+  "nativeWindowProof": "native-review-window.json"
+}

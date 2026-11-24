@@ -1,0 +1,140 @@
+{
+  "package_id": "XIAOZHI_UI_UX_R1_20261124",
+  "created_on": "2026-11-24",
+  "timezone": "Asia/Shanghai",
+  "purpose": "execution_handoff_not_product_acceptance",
+  "observed_main_sha": "10d0d2a9242a82cb8b3a6138a1ee0fd08afbc947",
+  "historical_screenshot_sha": "db9056a6633b1fad14f652840810ae889c65c1ca",
+  "files": [
+    {
+      "path": "00_README.md",
+      "bytes": 5269,
+      "sha256": "187c917a039e9f9978acdaf3df1f0e838804a871a2a5c8562bf7ac7bc4389223"
+    },
+    {
+      "path": "01_EXECUTION_GOAL.md",
+      "bytes": 7603,
+      "sha256": "a50932c4012775cd3869ed4a3661003e17ef457ae88195fc08d357e85866bd1f"
+    },
+    {
+      "path": "PACKAGE_VALIDATION.md",
+      "bytes": 1341,
+      "sha256": "2a1a913022529c95056b99b951999920f06039c2304f3c5263f52f7c8cc54706"
+    },
+    {
+      "path": "acceptance/criteria.json",
+      "bytes": 11423,
+      "sha256": "579979c5cb9f985bfa861feaf36bafa91a70974c4d4247646a721616be311e42"
+    },
+    {
+      "path": "docs/01_SCOPE_AND_DECISIONS.md",
+      "bytes": 4856,
+      "sha256": "725d74f6329937c3bceb07effe5c749f019a2020766c6a029ec3d25731b63575"
+    },
+    {
+      "path": "docs/02_BASELINE.md",
+      "bytes": 6201,
+      "sha256": "5379bdfc534a7d2b98ea488d5c98cee640327ba9950abc0cb15816971d945863"
+    },
+    {
+      "path": "docs/03_PAGE_UX_SPEC.md",
+      "bytes": 6874,
+      "sha256": "7d15695251eeb416e1b2faf144cb94a74a17276ba76a15a844bf0a3682f05421"
+    },
+    {
+      "path": "docs/04_COMPONENT_POLICY.md",
+      "bytes": 4095,
+      "sha256": "2be34742543f566c437a928f13831f41a60f73f8f40d0d0dd47401c464d4fe74"
+    },
+    {
+      "path": "docs/05_PARALLEL_CONTRACT.md",
+      "bytes": 3076,
+      "sha256": "08ffa6c426369375c3d1793c60e061a4f759c8e84561a0544003841f0908198c"
+    },
+    {
+      "path": "docs/06_IMPLEMENTATION_PLAN.md",
+      "bytes": 3121,
+      "sha256": "e5c43459aa02f1b9f3de747591f0969c10c4eae625068653e8e952cd1695a27e"
+    },
+    {
+      "path": "docs/07_ACCEPTANCE.md",
+      "bytes": 9389,
+      "sha256": "4fe304470678564507c87dd81065951d5a44aa9c3ef9283245f48a82e36172b7"
+    },
+    {
+      "path": "docs/08_TEST_RUNBOOK.md",
+      "bytes": 7726,
+      "sha256": "8dd1ea6aa618e35d98aec36ce8c9af62c702ccc15760cda599e1c7ecc50e15df"
+    },
+    {
+      "path": "docs/09_COMPLETION_PROTOCOL.md",
+      "bytes": 4238,
+      "sha256": "826f71dedb5cc88ac7e329ab2ae59edb40ed7bd523274a810d9cbd33fe33195d"
+    },
+    {
+      "path": "docs/10_RESEARCH.md",
+      "bytes": 4303,
+      "sha256": "c159338e11aafa2ff3f41c62a08eaddd4a0dc4fcebb989f11e214574ba9f7a37"
+    },
+    {
+      "path": "references/PREVIOUS_UI_DECISIONS.md",
+      "bytes": 6523,
+      "sha256": "f4168f9406b1f0b1a73344d68cf0d4a4313d37c1aad290bebd33ef06224aff51"
+    },
+    {
+      "path": "scripts/validate_delivery.py",
+      "bytes": 18040,
+      "sha256": "c66fbbd5f4a4198ed6513ad263e66ea5b59086dcb5667c51a4aa023c161238c3"
+    },
+    {
+      "path": "tasks/backlog.csv",
+      "bytes": 1131,
+      "sha256": "39ac8ec3c63a600dd31e81d067e63136b76fd53bf1fe06509366f9a5c037689d"
+    },
+    {
+      "path": "templates/COMPONENT_REGISTER.csv",
+      "bytes": 715,
+      "sha256": "fff748a2260d5629dcc168f81149d8e9404873a9c7907f2b56ffaec84cf233ac"
+    },
+    {
+      "path": "templates/CONFIG_CONTRACT.csv",
+      "bytes": 189,
+      "sha256": "f3d1a7f09e688441c71db02b3a1f268f42815a4ea0b290ab57cc3bc4e1493a21"
+    },
+    {
+      "path": "templates/DEFECT_LOG.csv",
+      "bytes": 154,
+      "sha256": "a77f1de8952823e0b8124560f64b7de4e20cae4095fc1ae403651eb8e7dc587a"
+    },
+    {
+      "path": "templates/EXECUTION_STATE.md",
+      "bytes": 546,
+      "sha256": "6c88ff0b3ae4f2234a2aa258b66c9644f9d08b4fdb2e79357264ccae3abbebd7"
+    },
+    {
+      "path": "templates/FINAL_REPORT.md",
+      "bytes": 1539,
+      "sha256": "0d329bf3731703f594ad1c16c808521b57e6a6c1ce243dddc6eb801e63e20df5"
+    },
+    {
+      "path": "templates/LEGACY_GATE_MAP.csv",
+      "bytes": 2639,
+      "sha256": "c7aeaf3c50f5cc26e60cfaf2d8b7ba9879156aa37bfa4378621930b533391805"
+    },
+    {
+      "path": "templates/PAGE_INVENTORY.csv",
+      "bytes": 960,
+      "sha256": "adb32693ab4be9de99913d5062420109200f77b24bd69be0270af82690650be7"
+    },
+    {
+      "path": "templates/STATE_COVERAGE.csv",
+      "bytes": 146,
+      "sha256": "551445e669f840e70f191f3ffbbbc257eba9e701e9c276634275c9274658b4ae"
+    },
+    {
+      "path": "templates/delivery.json",
+      "bytes": 3590,
+      "sha256": "321ab65c835e696d71f021925af8f3535b26ea8df2a8ebe9184fca678bee76ac"
+    }
+  ]
+}

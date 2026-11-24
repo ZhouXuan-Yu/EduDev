@@ -1,0 +1,8 @@
+(node:65156) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Slash autocomplete, Chinese search, arrow selection, Esc retention, goal argument, and new conversation all run locally
+PASS Follow-up default can be changed and is read back by the real settings page
+PASS Enter queues, Ctrl+Enter steers, Shift+Enter inserts a line, and IME confirmation keeps the text
+PASS Live queue panels above the composer persist reordering, revision edits, and deletion at both window sizes
+PASS Original Pi receives steer first, then the two reordered replies exactly once; restart replays nothing
+{"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ui-ux-r1-20261124\\evidence\\composer-X6Mzri","ok":true,"checks":5}

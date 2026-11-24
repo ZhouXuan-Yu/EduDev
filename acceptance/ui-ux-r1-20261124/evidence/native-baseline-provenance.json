@@ -1,0 +1,35 @@
+{
+  "historicCommit": "effc6c0109bdc4c8fc892ac7ad7639bfbed99cde",
+  "files": [
+    {
+      "file": "index.ts",
+      "localOfficialExists": false,
+      "matchesLocalOfficialLF": false,
+      "sourceUnchangedFromPhase0": true
+    },
+    {
+      "file": "prompt-input.context.tsx",
+      "localOfficialExists": false,
+      "matchesLocalOfficialLF": false,
+      "sourceUnchangedFromPhase0": true
+    },
+    {
+      "file": "prompt-input.styles.ts",
+      "localOfficialExists": false,
+      "matchesLocalOfficialLF": false,
+      "sourceUnchangedFromPhase0": true
+    },
+    {
+      "file": "prompt-input.tsx",
+      "localOfficialExists": false,
+      "matchesLocalOfficialLF": false,
+      "sourceUnchangedFromPhase0": true
+    },
+    {
+      "file": "prompt-input.utils.ts",
+      "localOfficialExists": false,
+      "matchesLocalOfficialLF": false,
+      "sourceUnchangedFromPhase0": true
+    }
+  ]
+}
