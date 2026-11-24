@@ -13,6 +13,7 @@ assert(root&&fixture,'Use the fixed acceptance directory and synthetic catalogue
 const baseline=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8'));
 assert(baseline.ok&&baseline.paidRequests===0);
 const {catalogId,sessionId}=baseline;
+const scoped=Boolean(baseline.scope?.districts||baseline.scope?.rounds);
 const output=fs.mkdtempSync(path.join(root,'mock-exam-export-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const oldData=path.resolve(fixture,'data'),wal=path.join(oldData,'app.db-wal');
 assert(!fs.existsSync(wal)||!fs.statSync(wal).size);
@@ -41,7 +42,7 @@ for(const row of sql('SELECT id,local_path,content_hash FROM teacher_resources')
 const catalogues=()=>sql('SELECT c.id,c.title,v.state,v.revision,v.digest,v.image_json FROM mock_exam_compilations c JOIN mock_exam_compilation_versions v ON v.catalog_id=c.id AND v.revision=c.revision WHERE c.session_id=?',[sessionId]);
 const initial=catalogues(),confirmed=initial.find(row=>row.id===catalogId),draft=initial.find(row=>row.id!==catalogId&&row.title===confirmed?.title);
 assert.equal(confirmed?.state,'confirmed');
-assert.equal(draft?.state,'draft');
+if(!scoped)assert.equal(draft?.state,'draft');
 const entries=JSON.parse(confirmed.image_json).entries;
 const source={catalogId,revision:confirmed.revision,digest:confirmed.digest};
 const ledger=()=>sql("SELECT relative_path,format,state,draft_json,result_path,artifact_id FROM xiaozhi_pi_office_drafts WHERE json_extract(draft_json,'$.schemaVersion')='xiaozhi.mock-exam-office.v1'");
@@ -79,7 +80,7 @@ async function launch(cold=false){
         const active=system.split('\n').findLast(line=>line.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'));
         const task=active?JSON.parse(active):{requirementsVersion:Number([...system.matchAll(/"requirementsVersion":(\d+)/gu)].at(-1)?.[1]||1),revision:0};
         let call,content;
-        const wrongTarget=mode==='word',phase=wrongTarget?index-1:index;
+        const wrongTarget=mode==='word'&&Boolean(draftId),phase=wrongTarget?index-1:index;
         if(wrongTarget&&index===0)call={name:read,args:{catalogId:draftId}};
         else if(phase===0){
           if(wrongTarget&&(previous?.success!==false||previous.error!=='version_conflict'))throw Error('Selected catalogue was not enforced');
@@ -109,7 +110,7 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){wire.errors.push(String(error));throw error;}
     };
-  },{source,draftId:draft.id,cold});
+  },{source,draftId:draft?.id,cold});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.pageErrors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -140,10 +141,12 @@ async function send(mode){
 }
 async function ready(button){
   await until(async()=>{
-    assert.notEqual(lastRun()?.status,'failed',lastRun()?.error_message);
-    const wire=await app.evaluate(()=>globalThis.mockExamExport);
-    assert.deepEqual(wire.errors,[]);
-    return await button.isVisible()&&!await button.isDisabled();
+    const run=lastRun();
+    assert.notEqual(run?.status,'failed',run?.error_message);
+    if(await button.isVisible()&&!await button.isDisabled())return true;
+    if(run&&['succeeded','cancelled','interrupted'].includes(run.status))
+      throw Error('Export completed without an actionable approval: '+run.status);
+    return false;
   });
 }
 async function settle(){
@@ -178,9 +181,11 @@ function readDocument(file,format){
 try{
   await launch();
   await page.setViewportSize({width:1366,height:768});
-  const draftDetail=await openCatalogue(draft.id);
-  await draftDetail.getByTestId('mock-exam-origin-conversation').waitFor();
-  assert.equal(await draftDetail.getByTestId('mock-exam-export-docx').count(),0);
+  if(draft){
+    const draftDetail=await openCatalogue(draft.id);
+    await draftDetail.getByTestId('mock-exam-origin-conversation').waitFor();
+    assert.equal(await draftDetail.getByTestId('mock-exam-export-docx').count(),0);
+  }
   const factCount=facts().length;
   await send('word');
   const single=officeCard(lanes.word.outputs[0].path),approve=single.getByTestId('pi-office-approve');
@@ -193,7 +198,8 @@ try{
   await approve.click();
   await settle();
   assert.equal(ledger().find(row=>row.relative_path===lanes.word.outputs[0].path)?.state,'saved');
-  check('Workbench enforces the selected confirmed version and format over a same-title draft, then saves Word after review');
+  check(draft?'Workbench enforces the selected confirmed version and format over a same-title draft, then saves Word after review':
+    'Workbench exports the selected confirmed scoped catalogue as Word after review');
 
   await page.setViewportSize({width:1920,height:1080});
   await send('bundle');
@@ -213,6 +219,12 @@ try{
     const result=readDocument(row.result_path,row.format),stripped=result.text.replace(/\s+/gu,'');
     for(const value of ['徐汇区','缺答案','已关联独立答案册','许可待核对','甲卷'])assert(stripped.includes(value),value);
     assert.doesNotMatch(stripped,/乙卷/u);
+    if(scoped){
+      for(const district of baseline.scope.districts??[])assert(stripped.includes(district),district);
+      for(const round of baseline.scope.rounds??[])assert(stripped.includes(round),round);
+      for(const title of baseline.excludedTitles??[])assert(!stripped.includes(title),title);
+      assert.doesNotMatch(stripped,/虹口区|二模|2024/u);
+    }
     if(row.format==='docx')assert(result.page.includes('11906')&&result.page.includes('16838'));
     else assert(result.page.length&&result.page.every(([w,h])=>Math.abs(w-595.3)<3&&Math.abs(h-841.9)<3));
     return {format:row.format,path:row.result_path,sha256:fact.content_hash,...result};

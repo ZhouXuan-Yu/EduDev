@@ -603,7 +603,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   if(options.mockExamTool){
     names.push(options.mockExamTool.name);
-    prompt+='\n上海年度模考汇编使用 education_build_mock_exam_catalog 整理本地原件。确认年份再调用，有明确学科年级时使用范围。目录保存后请教师从当轮卡片核对。不要声称已确认、题目已核验或已经导出。';
+    prompt+='\n上海年度模考汇编使用 education_build_mock_exam_catalog 整理本地原件。确认年份再调用，按教师明确指定的学科、年级、地区和轮次提交范围。目录保存后请教师从当轮卡片核对。不要声称已确认、题目已核验或已经导出。';
   }
   if(options.mockExamEditTools){
     if(options.mockExamEditTools.map(tool=>tool.name).join(',')!==[READ_MOCK_EXAM_EDIT,PROPOSE_MOCK_EXAM_EDIT].join(','))throw Error('configuration');

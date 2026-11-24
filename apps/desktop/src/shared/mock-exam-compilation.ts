@@ -6,7 +6,10 @@ export const MOCK_EXAM_SUBJECTS=['语文','数学','英语','物理','化学','�
 export const MOCK_EXAM_GRADES=['六年级','七年级','八年级','九年级','高一','高二','高三'] as const;
 export const MOCK_EXAM_ROUNDS=['一模','二模','三模','四模','其他模拟'] as const;
 
-export type MockExamScope={year:number;subject?:typeof MOCK_EXAM_SUBJECTS[number];grade?:typeof MOCK_EXAM_GRADES[number]};
+export type MockExamDistrict=typeof SHANGHAI_DISTRICTS[number];
+export type MockExamRound=typeof MOCK_EXAM_ROUNDS[number];
+export type MockExamScope={year:number;subject?:typeof MOCK_EXAM_SUBJECTS[number];grade?:typeof MOCK_EXAM_GRADES[number];
+  districts?:MockExamDistrict[];rounds?:MockExamRound[]};
 export type MockExamMetadata={district:typeof SHANGHAI_DISTRICTS[number]|null;year:number|null;
   subject:typeof MOCK_EXAM_SUBJECTS[number]|null;grade:typeof MOCK_EXAM_GRADES[number]|null;round:typeof MOCK_EXAM_ROUNDS[number]|null};
 export type MockExamPermission='unknown'|'local_only'|'excluded';
@@ -55,9 +58,24 @@ export type MockExamResult<T>={ok:true;value:T}|{ok:false;error:string;message:s
 
 export const mockExamYear=(value:unknown):value is number=>typeof value==='number'&&Number.isSafeInteger(value)&&value>=1990&&value<=2100;
 const member=<T extends string>(choices:readonly T[],value:unknown):value is T=>typeof value==='string'&&choices.includes(value as T);
+const validSubset=<T extends string>(choices:readonly T[],value:unknown):value is T[]=>Array.isArray(value)&&
+  value.length>0&&value.length<=choices.length&&Object.keys(value).length===value.length&&
+  new Set(value).size===value.length&&value.every(item=>member(choices,item));
 export const validMockExamScope=(value:Record<string,unknown>):value is MockExamScope=>
-  Object.keys(value).every(key=>['year','subject','grade'].includes(key))&&mockExamYear(value.year)&&
-  (value.subject===undefined||member(MOCK_EXAM_SUBJECTS,value.subject))&&(value.grade===undefined||member(MOCK_EXAM_GRADES,value.grade));
+  Object.keys(value).every(key=>['year','subject','grade','districts','rounds'].includes(key))&&mockExamYear(value.year)&&
+  (value.subject===undefined||member(MOCK_EXAM_SUBJECTS,value.subject))&&(value.grade===undefined||member(MOCK_EXAM_GRADES,value.grade))&&
+  (value.districts===undefined||validSubset(SHANGHAI_DISTRICTS,value.districts))&&
+  (value.rounds===undefined||validSubset(MOCK_EXAM_ROUNDS,value.rounds));
+
+export function mockExamMetadataMatchesScope(metadata:MockExamMetadata,scope:MockExamScope,allowUnknown=false) {
+  const matches=<T>(expected:readonly T[]|undefined,value:T|null)=>!expected||(value===null?allowUnknown:expected.includes(value));
+  return matches([scope.year],metadata.year)&&matches(scope.subject?[scope.subject]:undefined,metadata.subject)&&
+    matches(scope.grade?[scope.grade]:undefined,metadata.grade)&&matches(scope.districts,metadata.district)&&matches(scope.rounds,metadata.round);
+}
+
+export function mockExamScopeLabel(scope:MockExamScope) {
+  return [scope.year+' 年上海模考',scope.districts?.join('、'),scope.grade,scope.subject,scope.rounds?.join('、')].filter(Boolean).join(' · ');
+}
 export function validMockExamMetadata(value:unknown):value is MockExamMetadata {
   if(!value||typeof value!=='object'||Array.isArray(value))return false;
   const data=value as Record<string,unknown>;
@@ -76,10 +94,14 @@ export function mockExamAnswerPermission(entry:MockExamEntry,value:MockExamAnswe
 export const mockExamDigest=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/u.test(value);
 export const mockExamParameters={type:'object',additionalProperties:false,required:['year'],properties:{
   year:{type:'integer',minimum:1990,maximum:2100},subject:{type:'string',enum:MOCK_EXAM_SUBJECTS},grade:{type:'string',enum:MOCK_EXAM_GRADES},
+  districts:{type:'array',minItems:1,maxItems:SHANGHAI_DISTRICTS.length,uniqueItems:true,items:{type:'string',enum:SHANGHAI_DISTRICTS}},
+  rounds:{type:'array',minItems:1,maxItems:MOCK_EXAM_ROUNDS.length,uniqueItems:true,items:{type:'string',enum:MOCK_EXAM_ROUNDS}},
 }};
 export const mockExamErrors:Record<string,string>={
-  invalid_input:'请选择有效的年份、学科和年级。',
-  no_sources:'资料库中没有找到符合范围的模考试卷。请导入原件或核对年份、学科与年级。',
+  invalid_input:'请选择有效的年份、地区、学科、年级和轮次。',
+  scope_mismatch:'整理范围与老师的明确要求不一致，请按指定年份、地区、学科、年级和轮次提交。',
+  scope_ambiguous:'本次目录的年份、学科或年级不唯一，请先与老师核对。',
+  no_sources:'资料库中没有找到符合范围的模考试卷。请导入原件或核对年份、地区、学科、年级与轮次。',
   incomplete:'还有试卷的区、年份、学科、年级或轮次需要核对。',
   conflicting_versions:'有多份不同原件对应同一区、同年级、同学科和同轮次。请仅保留一份。',
   scope_changed:'保留的试卷超出当前目录范围，请核对元数据或取消收录。',

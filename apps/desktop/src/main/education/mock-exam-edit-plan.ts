@@ -1,6 +1,6 @@
 import type {MockExamCatalog,MockExamEntry,MockExamMetadata} from '../../shared/mock-exam-compilation';
 import {MOCK_EXAM_EDIT_LIMIT,type MockExamEditDiff,type MockExamEditInput,type MockExamPatch} from '../../shared/mock-exam-edit';
-import {catalogId,mockExamRevision,mockExamDigest,validMockExamMetadata} from '../../shared/mock-exam-compilation';
+import {catalogId,mockExamRevision,mockExamDigest,mockExamMetadataMatchesScope,validMockExamMetadata} from '../../shared/mock-exam-compilation';
 import {plainStudentInput} from '../../shared/student-context';
 import {materialId} from '../../shared/materials';
 
@@ -32,8 +32,7 @@ export function planMockExamEdit(catalog:MockExamCatalog,input:MockExamEditInput
     const metadata={...entry.metadata,...changes},inferred={...entry.inferred};
     if(include&&entry.permission==='excluded')throw Error('permission_denied');
     const {scope}=catalog;
-    if(include&&(metadata.year!==null&&metadata.year!==scope.year||scope.subject&&metadata.subject&&metadata.subject!==scope.subject||
-      scope.grade&&metadata.grade&&metadata.grade!==scope.grade))throw Error('scope_changed');
+    if(include&&!mockExamMetadataMatchesScope(metadata,scope,true))throw Error('scope_changed');
     const diff:MockExamEditDiff['fields']=[];
     const changedFields=fields.filter(name=>metadata[name]!==entry.metadata[name]);
     for(const name of changedFields){

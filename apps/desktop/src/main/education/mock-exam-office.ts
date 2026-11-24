@@ -1,5 +1,5 @@
 import {isDeepStrictEqual} from 'node:util';
-import {SHANGHAI_DISTRICTS,mockExamCoverLabel,mockExamPageEvidenceLabel,type MockExamCatalog} from '../../shared/mock-exam-compilation';
+import {SHANGHAI_DISTRICTS,mockExamCoverLabel,mockExamPageEvidenceLabel,mockExamScopeLabel,type MockExamCatalog} from '../../shared/mock-exam-compilation';
 import {MOCK_EXAM_OFFICE_SCHEMA,type MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {verifyMockExamOriginals,type createMockExamState} from './mock-exam-state';
@@ -15,7 +15,7 @@ export function compileMockExamOffice(catalog:MockExamCatalog):MockExamOfficeDra
   if(summary.state!=='confirmed')throw Error('not_confirmed');
   const selected=catalog.entries.filter(entry=>entry.include&&entry.permission!=='excluded');
   if(!selected.length||selected.length!==summary.count)throw Error('invalid_input');
-  const scopeLabel=[`${scope.year} 年上海模考`,scope.grade,scope.subject].filter(Boolean).join(' · ');
+  const scopeLabel=mockExamScopeLabel(scope);
   const sections:OfficeSection[]=[{heading:'汇编范围与出处',paragraphs:[scopeLabel,`已确认目录第 ${summary.revision} 版 · ${selected.length} 份试卷`,
     `目录编号 ${summary.id}`,`目录内容摘要 ${summary.digest}`,
     `已关联独立答案册 ${selected.filter(entry=>entry.answer.state==='linked').length} 份 · 缺答案 ${selected.filter(entry=>entry.answer.state==='missing').length} 份`,

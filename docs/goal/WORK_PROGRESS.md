@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 模考按对话指定的地区和轮次筛选，并在教师确认及对话修订时复核范围。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)
+
 D3 讲义校验明确题名和学生版、教师版请求，错名与错受众在创建稿件前拒绝。最终构建已运行双份 Word 实机和冷启动。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义导出的指定版本与受众)
 
 D3 原题组卷从教师原话落实整卷题型、必选知识点的题量和难度。 [本轮证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原话中的题型和知识点配额)

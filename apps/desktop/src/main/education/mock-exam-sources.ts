@@ -1,5 +1,5 @@
 import {materialId} from '../../shared/materials';
-import type {MockExamEntry,MockExamScope} from '../../shared/mock-exam-compilation';
+import {mockExamMetadataMatchesScope,type MockExamEntry,type MockExamScope} from '../../shared/mock-exam-compilation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import {inferMockExam,mockExamCoverHeader,standaloneAnswers} from './mock-exam-metadata';
@@ -61,19 +61,20 @@ export async function mockExamSources(work:Sql,scope:MockExamScope) {
     if(!materialId(row.id)||!safeHash(row.content_hash))continue;
     const name=title(row),cover=pageOne(row),metadata=inferMockExam(name,String(row.headline),scope,cover);
     if(!metadata||Number(row.is_answer)===1)continue;
-    if(standaloneAnswers(name)){unlinkedAnswers++;continue;}
+    const include=(!scope.districts&&!scope.rounds)||mockExamMetadataMatchesScope(metadata.metadata,scope);
+    if(standaloneAnswers(name)){if(include)unlinkedAnswers++;continue;}
     sourceRows.set(row.id,row);
     const item:MockExamEntry={...metadata,resourceId:row.id,version:row.content_hash,title:name,
-      evidenceHash:evidenceHash(row,cover||undefined),include:true,copies:1,permission:'unknown',structure:structure(row),answer:answer(row)};
+      evidenceHash:evidenceHash(row,cover||undefined),include,copies:1,permission:'unknown',structure:structure(row),answer:answer(row)};
     const previous=byHash.get(item.version);
     if(previous){
-      const quality=(entry:MockExamEntry)=>Object.values(entry.metadata).filter(Boolean).length-entry.conflicts.length+
+      const quality=(entry:MockExamEntry)=>(entry.include?100:0)+Object.values(entry.metadata).filter(Boolean).length-entry.conflicts.length+
         (entry.answer.state==='linked'?10:0);
       const chosen=quality(item)>quality(previous)?item:previous;
       byHash.set(item.version,{...chosen,copies:previous.copies+1});
     }else byHash.set(item.version,item);
   }
-  const entries=[...byHash.values()].sort((a,b)=>sortKey(a).localeCompare(sortKey(b),'zh-CN'));
+  const entries=[...byHash.values()].sort((a,b)=>Number(b.include)-Number(a.include)||sortKey(a).localeCompare(sortKey(b),'zh-CN'));
   const selected=await Promise.all(entries.slice(0,entryLimit).map(async entry=>{
     const source=sourceRows.get(entry.resourceId);
     const pageEvidence=source&&await mockExamPageEvidence(work,source);

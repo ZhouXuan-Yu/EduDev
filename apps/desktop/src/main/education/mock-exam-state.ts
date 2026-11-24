@@ -1,6 +1,6 @@
 import {randomUUID} from 'node:crypto';
 import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
-  mockExamAnswerPermission,mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
+  mockExamAnswerPermission,mockExamMetadataMatchesScope,mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import type {WorkbenchMockExamRow} from '../../shared/xiaozhi-workbench';
@@ -67,8 +67,7 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
     }
     if(permission==='excluded')throw Error('invalid_input');
     if(Object.values(metadata).some(value=>value===null))throw Error('incomplete');
-    if(metadata.year!==scope.year||scope.grade&&metadata.grade!==scope.grade||scope.subject&&metadata.subject!==scope.subject)
-      throw Error('scope_changed');
+    if(!mockExamMetadataMatchesScope(metadata,scope))throw Error('scope_changed');
     const position=mockExamPosition(metadata);
     if(positions.has(position))throw Error('conflicting_versions');
     positions.add(position);

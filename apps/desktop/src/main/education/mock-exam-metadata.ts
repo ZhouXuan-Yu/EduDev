@@ -1,8 +1,9 @@
 import {MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,
-  mockExamYear,type MockExamCoverEvidence,type MockExamMetadata,type MockExamEntry,type MockExamScope} from '../../shared/mock-exam-compilation';
+  mockExamYear,mockExamScopeLabel,type MockExamCoverEvidence,type MockExamMetadata,type MockExamEntry,type MockExamScope} from '../../shared/mock-exam-compilation';
+
+import {equivalentQuestionGradeLabels} from '../../shared/question-grade';
 
 const districts=SHANGHAI_DISTRICTS.map(name=>[name,name==='浦东新区'?'浦东':name.slice(0,-1)] as const);
-const gradeAliases=['初预','初一','初二','初三','高一年级','高二年级','高三年级'];
 const numberedRounds=['第一轮','第二轮','第三轮','第四轮'];
 const numericRounds=['1模','2模','3模','4模'];
 const unique=<T>(values:T[])=>[...new Set(values)];
@@ -41,14 +42,19 @@ function coverEvidence(filename:string,heading:string) {
   return evidence;
 }
 
+export const mockExamDistrictsIn=(text:string)=>districts.filter(([,alias])=>text.includes(alias)).map(([name])=>name);
+export const mockExamGradesIn=(text:string)=>MOCK_EXAM_GRADES.filter(grade=>
+  equivalentQuestionGradeLabels(grade).some(label=>text.includes(label))||grade==='六年级'&&/初预|预初/u.test(text));
+export const mockExamNumberedRoundsIn=(text:string)=>MOCK_EXAM_ROUNDS.slice(0,4).filter((name,index)=>
+  text.includes(name)||text.includes(numericRounds[index])||new RegExp(numberedRounds[index]+'.{0,8}(?:模拟|测试)','u').test(text));
+
 function matches(text:string) {
-  const round=MOCK_EXAM_ROUNDS.slice(0,4).filter((name,index)=>text.includes(name)||text.includes(numericRounds[index])||
-    new RegExp(numberedRounds[index]+'.{0,8}(?:模拟|测试)','u').test(text));
+  const round=mockExamNumberedRoundsIn(text);
   return {
-    district:districts.filter(([,alias])=>text.includes(alias)).map(([name])=>name),
+    district:mockExamDistrictsIn(text),
     year:yearsIn(text),
     subject:MOCK_EXAM_SUBJECTS.filter(name=>text.includes(name)),
-    grade:MOCK_EXAM_GRADES.filter((name,index)=>text.includes(name)||text.includes(gradeAliases[index])),
+    grade:mockExamGradesIn(text),
     round:round.length?round:hasMarker(text)?['其他模拟' as const]:[],
   };
 }
@@ -69,6 +75,10 @@ export function inferMockExam(title:string,header:string,scope:MockExamScope,pag
   const allowed=<T>(values:T[],filter:T|undefined)=>filter===undefined||!values.length||values.includes(filter);
   if(!allowed([...name.year,...parsed.year],scope.year)||!allowed([...name.subject,...parsed.subject],scope.subject)||
     !allowed([...name.grade,...parsed.grade],scope.grade))return;
+  const districtsFound=[...name.district,...parsed.district];
+  const roundsFound=[...name.round,...parsed.round].filter(round=>round!=='其他模拟');
+  if(scope.districts&&districtsFound.length&&!districtsFound.some(district=>scope.districts!.includes(district)))return;
+  if(scope.rounds&&roundsFound.length&&!roundsFound.some(round=>scope.rounds!.includes(round)))return;
   const inferred:MockExamEntry['inferred']={},conflicts:Field[]=[];
   const metadata:MockExamMetadata={district:null,year:null,subject:null,grade:null,round:null};
   for(const field of fields){
@@ -80,7 +90,7 @@ export function inferMockExam(title:string,header:string,scope:MockExamScope,pag
     }
     const possible=unique([...fromName,...fromBody]);
     if(possible.length>1){conflicts.push(field);continue;}
-    if(!possible.length)continue;
+    if(!possible.length||field==='round'&&possible[0]==='其他模拟'&&scope.rounds&&!scope.rounds.includes('其他模拟'))continue;
     Object.assign(metadata,{[field]:possible[0]});
     inferred[field]=fromName.length&&fromBody.length?'文件名与正文':fromName.length?'原文件名称':'原件正文';
   }
@@ -88,4 +98,4 @@ export function inferMockExam(title:string,header:string,scope:MockExamScope,pag
 }
 
 export const mockExamPosition=(metadata:MockExamMetadata)=>[metadata.year,metadata.district,metadata.grade,metadata.subject,metadata.round].join('|');
-export const mockExamTitle=(scope:MockExamScope)=>[scope.year+' 年上海模考',scope.grade,scope.subject,'汇编'].filter(Boolean).join(' · ');
+export const mockExamTitle=(scope:MockExamScope)=>mockExamScopeLabel(scope)+' · 汇编';

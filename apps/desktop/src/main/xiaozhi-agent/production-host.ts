@@ -65,6 +65,7 @@ import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teac
 import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {createMockExamCatalog,mockExamRequest} from '../education/mock-exam-catalog';
 import {BUILD_MOCK_EXAM_CATALOG} from '../../shared/mock-exam-compilation';
+import {resolveMockExamScope} from '../education/mock-exam-request-scope';
 import {createMockExamEditCoordinator,mockExamEditRequest} from '../education/mock-exam-edit-tools';
 import {createMockExamExportTools,mockExamExportRequest,mockExamArchiveRequest} from '../education/mock-exam-export-tools';
 import {createMockExamArchive} from '../education/mock-exam-archive';
@@ -1165,7 +1166,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }:{}),
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&!owner.mockExamExportIntent&&mockExamRequest(cleanPrompt)&&!mockExamEditRequest(cleanPrompt)&&!mockExamExportRequest(cleanPrompt)?{
         mockExamTool:mockExam.tool(()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
-          requirementsVersion:owner.task!.requirementsVersion}),()=>!closing&&active.get(id)===owner&&!owner.stopped),
+          requirementsVersion:owner.task!.requirementsVersion}),()=>!closing&&active.get(id)===owner&&!owner.stopped,cleanPrompt),
       }:{}),
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
@@ -1442,6 +1443,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             await taskRuntime.refresh();
           }else if(delivery.tool===BUILD_MOCK_EXAM_CATALOG){
             if(!taskRuntime||!base.mockExamTool)throw new TaskAdmissionError('task_owner_stale');
+            try{resolveMockExamScope(cleanPrompt,unwrapTaskArguments(delivery.input).input);}
+            catch(error){throw new TaskAdmissionError('task_mock_exam_'+(error instanceof Error?error.message:'invalid_input'));}
             await taskRuntime.refresh();
           }else if(delivery.tool===PROPOSE_MOCK_EXAM_EDIT){
             if(!taskRuntime||!base.mockExamEditTools)throw new TaskAdmissionError('task_owner_stale');

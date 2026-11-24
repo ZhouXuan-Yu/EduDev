@@ -6,7 +6,7 @@ import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/Deskto
 import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
 import {PiMockExamAnswerReview} from './PiMockExamAnswerReview';
-import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamPageEvidenceLabel,
+import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamMetadataMatchesScope,mockExamPageEvidenceLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
@@ -132,7 +132,10 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
       {reading&&<p role="status">正在读取本地目录…</p>}
       {catalog&&<>
         <p>目录确认只归档来源和分类。题目内容、缺页及答案仍按原件核对。</p>
-        {catalog.limited&&<p role="status">有候选超出本批范围。可分别按学科、年级整理。</p>}
+        {catalog.limited&&<p role="status">候选超过本批上限。可按地区、轮次或学科分开整理。</p>}
+        {catalog.summary.state==='draft'&&(catalog.scope.districts||catalog.scope.rounds)&&catalog.entries.some(entry=>
+          !mockExamMetadataMatchesScope(entry.metadata,catalog.scope))&&
+          <p data-testid="mock-exam-scope-review">分类未明确的候选暂未收录。对照原件核对后可勾选。</p>}
         {catalog.unlinkedAnswers>0&&<p>{catalog.unlinkedAnswers} 份独立答案册还没有建立试卷配对。</p>}
         {duplicates.size>0&&canEdit&&<p role="status">有同一区、同年级、同学科及同轮次的不同文件。请核对后只收录一份。</p>}
         <ul className={styles.entries} tabIndex={0} aria-label="模考试卷目录">
@@ -155,6 +158,8 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
                 <PiMockExamAnswerReview key={current.digest+':'+entry.resourceId}
                   input={{...identity,resourceId:entry.resourceId,revision:current.revision,digest:current.digest}}/>}
               {!edit.include&&<span>未收录</span>}
+              {edit.include&&!mockExamMetadataMatchesScope(edit.metadata,catalog.scope,true)&&
+                <span data-testid="mock-exam-outside-scope">超出目录范围。请修正分类或取消收录。</span>}
               {edit.include&&key&&duplicates.has(key)&&<span>有另一份同轮次文件</span>}
               {entry.conflicts.length>0&&<span>待核对字段　{entry.conflicts.map(field=>labels[field]).join('、')}</span>}
               <div className={styles.actions}>

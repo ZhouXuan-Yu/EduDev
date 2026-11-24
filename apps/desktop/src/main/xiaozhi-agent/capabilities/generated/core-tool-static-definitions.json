@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "0c9ba25d4d5cc8b5a738f88c4095fee07f9da9a820029bbcc051245ba82d7037",
+  "sourceFingerprint": "63fb94173b296426d490699c5c020fbf812966c098fe9e429ef180b0adf954ca",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -592,52 +592,6 @@
             "type": "string"
           }
         },
-        "type": "object"
-      }
-    },
-    {
-      "name": "education_build_mock_exam_catalog",
-      "parameters": {
-        "additionalProperties": false,
-        "properties": {
-          "grade": {
-            "enum": [
-              "六年级",
-              "七年级",
-              "八年级",
-              "九年级",
-              "高一",
-              "高二",
-              "高三"
-            ],
-            "type": "string"
-          },
-          "subject": {
-            "enum": [
-              "语文",
-              "数学",
-              "英语",
-              "物理",
-              "化学",
-              "生物",
-              "历史",
-              "地理",
-              "政治",
-              "道德与法治",
-              "信息技术",
-              "科学"
-            ],
-            "type": "string"
-          },
-          "year": {
-            "maximum": 2100,
-            "minimum": 1990,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "year"
-        ],
         "type": "object"
       }
     },
@@ -3394,6 +3348,7 @@
   ],
   "skippedNames": [
     "education_analyze_buoyancy",
+    "education_build_mock_exam_catalog",
     "education_create_teaching_handout",
     "education_propose_classroom_outline",
     "education_propose_handout_edit",

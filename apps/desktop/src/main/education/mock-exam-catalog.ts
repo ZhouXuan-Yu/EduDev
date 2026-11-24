@@ -1,11 +1,12 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {BUILD_MOCK_EXAM_CATALOG,MOCK_EXAM_SCHEMA,catalogId,mockExamDigest,mockExamErrors,mockExamParameters,mockExamRevision,
-  mockExamPermission,validMockExamMetadata,validMockExamScope,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
+  mockExamPermission,validMockExamMetadata,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
   type MockExamHistoryEntry,type MockExamEntry,type MockExamAnswerReview,type MockExamResult} from '../../shared/mock-exam-compilation';
 import {materialId} from '../../shared/materials';
 import {plainStudentInput} from '../../shared/student-context';
 import type {createMockExamState} from './mock-exam-state';
 import type {HandoutOwner} from './teaching-handout-state';
+import {resolveMockExamScope} from './mock-exam-request-scope';
 
 export const mockExamRequest=(prompt:string)=>/(?:模考|[一二三四1234]模|模拟(?:卷|试卷|考试))/u.test(prompt)&&
   /(?:汇编|目录|整理|归档|收录|盘点|汇总)/u.test(prompt);
@@ -93,16 +94,16 @@ export function createMockExamCatalog(options:{state:ReturnType<typeof createMoc
         return {ok:true,value:{resourceId:input.resourceId,version}};
       }catch(error){return failure(error);}
     },
-    tool(owner:()=>HandoutOwner,current:()=>boolean):ToolDefinition {
+    tool(owner:()=>HandoutOwner,current:()=>boolean,prompt:string):ToolDefinition {
       return {name:BUILD_MOCK_EXAM_CATALOG,label:'整理上海模考目录',
-        description:'从教师本地资料库整理上海各区某一年模考目录。year 必填，未明确年份时请先问老师。subject、grade 只在老师限定时填写。宿主会识别地区、轮次、来源、重复、答案册和解析状态并保存待老师核对的目录，不会复制原件，不会标记题目已核验。请告知实际成功的候选数及审阅入口，勿称已经确认或导出。',
+        description:'从教师本地资料库整理上海某一年模考目录。year 必填，未明确年份时先问老师。按老师原话填写 subject、grade、districts（上海区名数组）、rounds（轮次数组），未指定字段可省略。宿主从原件确认分类证据、去重及答案册状态，保存待老师核对的目录，不会复制原件，不会标记题目已核验。请告知实际成功的候选数及审阅入口，勿称已经确认或导出。',
         parameters:mockExamParameters as ToolDefinition['parameters'],
         execute:async(callId,raw,signal)=>{
           const fence=()=>{signal?.throwIfAborted();if(!current())throw Error('cancelled');};
           try{
             fence();
-            if(!plainStudentInput(raw,['year','subject','grade'])||!validMockExamScope(raw))throw Error('invalid_input');
-            const scope=owner(),result=await options.state.generate(scope,callId,raw,fence);
+            const requested=resolveMockExamScope(prompt,raw);
+            const scope=owner(),result=await options.state.generate(scope,callId,requested,fence);
             options.notify(scope.sessionId,scope.runId,result);
             return receipt({id:result.id,title:result.title,count:result.count,revision:result.revision,
               state:result.state,location:'本轮模考目录卡',message:'目录已保存，等待老师核对。题目、答案和使用许可须分别查看。'},true);
