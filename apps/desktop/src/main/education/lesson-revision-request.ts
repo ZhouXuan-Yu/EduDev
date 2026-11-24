@@ -27,7 +27,9 @@ export function lessonRevisionRequest(prompt: string): LessonRevisionRequest | u
   const selection = names[0] ? {title: names[0][1].trim()} : {};
   const unnamedTarget=target.replace(/《[^《》]+》/gu, '');
   const fields = lessonDetailKeys.filter(key => aliases[key].test(unnamedTarget));
-  const agenda=lessonAgendaRevision(text.replace(/《[^《》]+》/gu, ''), unnamedTarget);
+  const titleMarker = !unnamedTarget.includes('教案') && selection.title?.includes('教案') ? '教案' : '';
+  const agenda=lessonAgendaRevision(text.replace(/《[^《》]+》/gu, titleMarker),
+    titleMarker ? target.replace(/《[^《》]+》/gu, titleMarker) : unnamedTarget);
   if (agenda) return fields.length ? undefined : {...selection, agenda};
   if (fields.length) return {...selection, fields};
 }

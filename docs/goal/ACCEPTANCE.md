@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+D3 教案评价修订核对检查编号、教师选择、越界拒绝、目标对应、SQLite 及冷启编辑器读回。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案环节提问与评价修订)
+
 教案环节和时长覆盖唯一环节、合计冲突、两处重新分配及指定新总时长。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
 
 D3 教案局部修订的任务归属、字段范围、版本读回及冷启见 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)。

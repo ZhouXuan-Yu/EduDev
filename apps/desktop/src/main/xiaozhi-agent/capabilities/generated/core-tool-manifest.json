@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "06da2b50732d42ef85b7987272c39257321016edabac3cc2f9bd5cc51a8f1148",
+  "sourceHash": "e3e715f897e26b2f30ad90c65d6f40e3fa96922bc75cdf471b30fbca5df898b0",
   "sources": [
     {
       "file": "package-lock.json",
@@ -176,15 +176,15 @@
     },
     {
       "file": "src/main/education/lesson-agenda-revision.ts",
-      "sha256": "b01e746928bf09ac2d6df17ce82d96e96b7d698338570c98b0855a68f01fd90e"
+      "sha256": "acc902338b26185f295706e867ff9202ad3a81e440cefe0dfd82e4c07622095a"
     },
     {
       "file": "src/main/education/lesson-revision-request.ts",
-      "sha256": "eb760136b8d892a42f4fd21f3277c3c1bff7bcb9404aa32f86a5bf80cf07efe1"
+      "sha256": "465a72ee5e5ac2538fc1c594e5457e59b93604fceb2b9e1018d42d6189affafb"
     },
     {
       "file": "src/main/education/lesson-revision-tools.ts",
-      "sha256": "b9ab9229555e8d545e2e32666923ae605828449dd4afd529e79ec4173e642b69"
+      "sha256": "3edafb72664c80ea4219165844514e31319a7627116b0e3573123d5f5b5fea39"
     },
     {
       "file": "src/main/education/math-host.ts",
@@ -860,7 +860,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "8e0f6d419f9abc8581d71e08e6ea4e4074a97592e12afac32382ed5a5639992c"
+      "sha256": "3d8e4df6e6673657bd30eab3dc409cc8140a5bb02d03c800188c913d1cf66f70"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1560,7 +1560,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "a3fbf3fbe3cabbcb0d851628ce862e1a620adeba3e736bb251d323172f33da94"
+      "sha256": "89a745dfb72be783d6e607ac2b6599280ccb8170dada321af9f3960ab6337f93"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1740,7 +1740,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/continuation.ts",
-      "sha256": "fd68dd19ae625a13b716a522c0d2eb00e7c46469924ee8404e0718bc54efee94"
+      "sha256": "401694a701f0e28502a98e6b97d3854d4be516ad0fea1c855984df8734b77779"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/conversation-intent.ts",

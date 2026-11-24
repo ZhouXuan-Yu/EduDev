@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 教案对话可精确修改教师提示语及既有检查题。检查题不明确时从对话上方选定，修改沿原教案版本。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#教案环节的活动提问和评价修订)
+
 D3 对话教案可调整一个点名的环节活动，或按原话重新分配多个环节的分钟数。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
 
 D3 原对话支持局部修订教案六个正文栏目，沿原教案账本保存下一版待教师确认草稿。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)

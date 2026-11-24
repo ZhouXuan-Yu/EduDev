@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+对话修改环节活动、提问和评价时，绑定原场景与指定检查。保留目标索引；多项未指定时由老师在原有弹窗选定。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#教案环节的活动提问和评价修订)
+
 教案环节时长沿原话取值。各环节合计必须等于原总时长或老师明确调整后的总时长。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#对话局部修订教案)
 
 对话修订教案时，宿主绑定当前版本和教师点名的栏目，按原文档合并。新的教案草稿仍需教师确认。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#对话局部修订教案)

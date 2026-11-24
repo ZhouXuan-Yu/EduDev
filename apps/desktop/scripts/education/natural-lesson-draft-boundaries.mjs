@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import {naturalLessonDraft} from "../../src/main/education/natural-lesson-draft.ts";
 import {includeLessonMaterials, requestedLessonMaterials} from "../../src/main/education/natural-lesson-materials.ts";
 import {lessonRevisionRequest} from "../../src/main/education/lesson-revision-request.ts";
-import {applyLessonAgenda, LessonTimingMismatch} from "../../src/main/education/lesson-agenda-revision.ts";
+import {isBoundTaskAmendment} from "../../src/main/xiaozhi-agent/tasks/continuation.ts";
+import {applyLessonAgenda, lessonAgendaChoices, lessonAgendaContext, LessonTimingMismatch} from "../../src/main/education/lesson-agenda-revision.ts";
 import {lessonDocument} from "./teaching-lesson-fixture.mjs";
 
 const accepted = (text, grade, subject, requestedMinutes) => assert.deepEqual(naturalLessonDraft(text),
@@ -69,13 +70,13 @@ for (const [request, expected] of [
 console.log("PASS lesson revision targets known fields before the replacement prose and never selects unrelated drafts");
 
 const activity=lessonRevisionRequest("请只修改《观察课》教案的练习环节活动，改为先独立写一条解释，再交流。");
-assert.deepEqual(activity,{title:"观察课",agenda:{activity:"practice"}});
+assert.deepEqual(activity,{title:"观察课",agenda:{phase:"practice",fields:["activity"]}});
 const timed=lessonRevisionRequest("请把这份教案的导入环节改为８分钟，练习环节改为7分钟，其余环节不变。");
 assert.deepEqual(timed,{agenda:{minutes:{introduction:8,practice:7}}});
 const explicit=lessonRevisionRequest("请把这份教案的总结环节改为6分钟，全课总时长改为41分钟。");
 assert.deepEqual(explicit,{agenda:{minutes:{closure:6},totalMinutes:41}});
 assert.equal(lessonRevisionRequest("请把这份教案的导入和练习环节活动改为先做再说。"),undefined);
-assert.deepEqual(lessonRevisionRequest("请把这份教案的探究与讲授环节的学生活动改为小组对照原文。"),{agenda:{activity:"activity"}});
+assert.deepEqual(lessonRevisionRequest("请把这份教案的探究与讲授环节的学生活动改为小组对照原文。"),{agenda:{phase:"activity",fields:["activity"]}});
 assert.deepEqual(lessonRevisionRequest("请把这份教案的导入调为8分钟，练习设为7分钟。"),{agenda:{minutes:{introduction:8,practice:7}}});
 assert.equal(lessonRevisionRequest("请把这份教案的导入环节改为8分钟，导入改为7分钟。"),undefined);
 assert.equal(lessonRevisionRequest("请把这份教案的导入环节改为8分钟左右。"),undefined);
@@ -92,3 +93,26 @@ assert.throws(()=>applyLessonAgenda(repeated,activity.agenda,{activity:'先独�
 const justActivity=applyLessonAgenda(lessonDocument,activity.agenda,{activity:'先独立写。'});
 assert.deepEqual(justActivity,{...lessonDocument,scenes:lessonDocument.scenes.map(scene=>scene.sceneId==='practice'?{...scene,activity:'先独立写。'}:scene)});
 console.log("PASS named phase, exact timing, conflict, duplicate scope, and unchanged lesson context");
+
+const part=lessonRevisionRequest('请修改这份教案的评价环节第2项检查的预期证据和判断标准。');
+assert.deepEqual(part,{agenda:{phase:'assessment',fields:['expectedEvidence','criterion'],checkNumber:2}});
+assert.deepEqual(lessonRevisionRequest('请修改《观察课教案》中的评价环节检查2的判断标准。'),
+  {title:'观察课教案',agenda:{phase:'assessment',fields:['criterion'],checkNumber:2}});
+assert(isBoundTaskAmendment('请修改《观察课教案》中的评价环节检查2的判断标准。'));
+assert.equal(isBoundTaskAmendment('请问《观察课教案》中的评价标准是什么？'),false);
+const mixed=lessonRevisionRequest('请修改这份教案的练习环节的学生活动和教师提示语。');
+assert.deepEqual(mixed,{agenda:{phase:'practice',fields:['activity','teacherPrompt']}});
+assert.equal(lessonRevisionRequest('请把这份教案的练习环节活动改为先交流，再把评价环节的判断标准改为需举例。'),undefined);
+const unspecified=lessonRevisionRequest('请修改这份教案的评价环节判断标准。').agenda;
+const choices=lessonAgendaChoices(lessonDocument,unspecified);
+assert.deepEqual(choices.map(item=>item.checkNumber),[1,2,3]);
+assert(choices[1].label.includes(lessonDocument.lesson.phases[3].checks[1].prompt));
+assert.throws(()=>lessonAgendaContext(lessonDocument,unspecified),/lesson_check_unresolved/);
+assert.throws(()=>lessonAgendaContext(lessonDocument,{...unspecified,phase:'practice'}),/lesson_check_unresolved/);
+const delta={expectedEvidence:'引用土壤条件不同的原句。',criterion:'能说出土壤差异是另一种可能解释。'};
+const expected=structuredClone(lessonDocument);
+Object.assign(expected.lesson.phases[3].checks[1],delta);
+assert.deepEqual(applyLessonAgenda(lessonDocument,part.agenda,delta),expected);
+assert.throws(()=>applyLessonAgenda(lessonDocument,part.agenda,{...delta,objectiveIndices:[0]}),/invalid_input/);
+assert.throws(()=>applyLessonAgenda(lessonDocument,part.agenda,{...delta,criterion:'字'.repeat(501)}),/invalid_input/);
+console.log('PASS ordered and ambiguous assessment selection, and exact patch preserves existing objective links');
