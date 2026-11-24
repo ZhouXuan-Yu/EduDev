@@ -16,6 +16,19 @@ export type FormulaRecognitionResult =
   | { state: "ready" | "unavailable" | "unclear" | "cancelled" | "timeout" | "busy" | "failed" | "source_changed" }
   | { state: "candidate"; latex: string; engine: typeof FORMULA_RECOGNITION_ENGINE; cropSha256: string };
 
+export type FormulaComponentAction = "status" | "install" | "cancel";
+export type FormulaComponentStatus = {
+  phase: "missing" | "ready" | "unsupported" | "checking" | "downloading" | "installing" | "failed";
+  downloadedBytes: number;
+  totalBytes: number;
+  installedBytes: number;
+  reason?: "disk_full" | "verification_failed" | "download_failed";
+};
+
+export function formulaComponentInstalling(status: FormulaComponentStatus | undefined) {
+  return status?.phase === "checking" || status?.phase === "downloading" || status?.phase === "installing";
+}
+
 export function validFormulaRecognitionQuery(raw: unknown): raw is FormulaRecognitionQuery {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return false;
   const query = raw as FormulaRecognitionQuery;

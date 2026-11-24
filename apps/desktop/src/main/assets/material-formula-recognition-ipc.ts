@@ -4,6 +4,7 @@ import { validPageBox } from "../../shared/material-page-preview";
 import { validFormulaRecognitionQuery, type FormulaRecognitionQuery, type FormulaRecognitionResult }
   from "../../shared/material-formula-recognition";
 import { localFormulaAvailable, recognizeLocalFormula } from "./material-formula-recognition-runtime";
+import { cancelFormulaInstallation, formulaComponentState, installFormulaComponent } from "./formula-component";
 
 async function formulaSource(store: OmniEduStore, query: FormulaRecognitionQuery) {
   const { reference, page, regionId } = query;
@@ -20,6 +21,20 @@ async function formulaSource(store: OmniEduStore, query: FormulaRecognitionQuery
 export function registerFormulaRecognition(store: OmniEduStore, ipcMain: Pick<IpcMain, "handle">,
   check: (event: IpcMainInvokeEvent) => void) {
   let active: { id: string; controller: AbortController } | undefined;
+  ipcMain.handle("materials:formula-component", async (event, action: unknown) => {
+    check(event);
+    if (action === "status") return formulaComponentState();
+    if (action === "cancel") {
+      cancelFormulaInstallation();
+      return formulaComponentState();
+    }
+    if (action !== "install") throw Error("invalid_input");
+    const controller = new AbortController();
+    const closed = () => controller.abort();
+    event.sender.once("destroyed", closed);
+    try { return await installFormulaComponent(controller.signal); }
+    finally { event.sender.removeListener("destroyed", closed); }
+  });
   ipcMain.handle("materials:formula-recognition", async (event, input: unknown): Promise<FormulaRecognitionResult> => {
     check(event);
     if (!validFormulaRecognitionQuery(input)) throw Error("invalid_input");

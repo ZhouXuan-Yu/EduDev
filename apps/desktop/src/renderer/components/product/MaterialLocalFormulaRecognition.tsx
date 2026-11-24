@@ -4,9 +4,9 @@ import { type DocumentStructureReference } from "../../../shared/material-docume
 import { readableFormulaLatex, type FormulaRecognitionQuery, type FormulaRecognitionResult }
   from "../../../shared/material-formula-recognition";
 import { QuestionMathText } from "../QuestionMathText";
+import { FormulaComponentSetup } from "./FormulaComponentSetup";
 
 const feedback: Partial<Record<FormulaRecognitionResult["state"], string>> = {
-  unavailable: "本机公式识别组件暂不可用，可按原图补正。",
   unclear: "本次未得到可预览的公式候选，请对照原图补正。",
   cancelled: "已停止本机识别。",
   timeout: "本机识别超时，可重试或查看原图。",
@@ -57,6 +57,7 @@ export function MaterialLocalFormulaRecognition({ reference, page, regionId }: {
             isDisabled={!result || result.state === "unavailable" || result.state === "source_changed"}>本机识别公式</Button>}
       </div>
       {running && <p role="status">正在本机读取当前公式裁片…</p>}
+      {!running && result?.state === "unavailable" && <FormulaComponentSetup onReady={() => setResult({ state: "ready" })} />}
       {!running && result && feedback[result.state] && <p role="status">{feedback[result.state]}</p>}
       {!running && result?.state === "candidate" && <>
         <p>请对照原图核对指数、下标和单位，确认后可把候选复制到题干。</p>

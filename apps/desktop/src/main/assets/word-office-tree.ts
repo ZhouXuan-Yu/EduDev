@@ -10,15 +10,15 @@ const parallelReads=8;
 const maxFileBytes=256*1024**2;
 const readBlockBytes=256*1024;
 
-async function* officeFiles(folder:string,signal:AbortSignal,relative=''):AsyncGenerator<WordOfficeFile>{
+async function* officeFiles(folder:string,signal:AbortSignal,relative='',includePyCache=false):AsyncGenerator<WordOfficeFile>{
  const entries=await fs.readdir(folder,{withFileTypes:true});
  entries.sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
  for(const entry of entries){
   signal.throwIfAborted();
   if(entry.isSymbolicLink())throw Error('configuration');
-  if(entry.name==='__pycache__')continue;
+  if(!includePyCache&&entry.name==='__pycache__')continue;
   const local=path.join(folder,entry.name),name=relative?relative+'/'+entry.name:entry.name;
-  if(entry.isDirectory())yield* officeFiles(local,signal,name);
+  if(entry.isDirectory())yield* officeFiles(local,signal,name,includePyCache);
   else if(entry.isFile())yield {local,name};
   else throw Error('configuration');
  }
@@ -48,7 +48,7 @@ async function hashOfficeFile(entry:WordOfficeFile,signal:AbortSignal){
  }
 }
 
-export async function verifyOfficeTree(root:string,pin:WordOfficeTreePin,signal:AbortSignal){
+export async function verifyOfficeTree(root:string,pin:WordOfficeTreePin,signal:AbortSignal,includePyCache=false){
  signal.throwIfAborted();
  noLinks(root);
  const hash=createHash('sha256');
@@ -67,7 +67,7 @@ export async function verifyOfficeTree(root:string,pin:WordOfficeTreePin,signal:
   }
   batch.length=0;
  }
- for await(const entry of officeFiles(root,signal)){
+ for await(const entry of officeFiles(root,signal,'',includePyCache)){
   if(++count>pin.files)throw Error('configuration');
   batch.push(entry);
   if(batch.length===parallelReads)await includeBatch();

@@ -9,6 +9,7 @@ import { productEntry } from "../product-navigation.mjs";
 import { openMaterialDisclosure } from "./material-disclosure-ui.mjs";
 
 const baseline = process.argv.includes("--baseline");
+const managed = process.argv.includes("--managed");
 const root = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const fixture = process.env.OMNI_EDU_SYNTHETIC_FORMULA_PDF;
 const sha = file => createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -16,6 +17,9 @@ assert(root && fixture && sha(fixture) === process.env.OMNI_EDU_SYNTHETIC_FORMUL
 const output = fs.mkdtempSync(path.join(root, "formula-desktop-"));
 const data = path.join(output, "data"), profile = path.join(output, "profile");
 const desktop = path.resolve(import.meta.dirname, "../.."), main = testMain(desktop);
+const packageLock = managed ? JSON.parse(fs.readFileSync(path.join(desktop, "src/main/assets/formula-component-lock.json"), "utf8")) : undefined;
+const formulaDownloads = packageLock ? [packageLock.python.url, ...packageLock.wheels.map(wheel => wheel.url),
+  "https://paddle-model-ecology.bj.bcebos.com/paddlex/official_inference_model/paddle3.0.0/PP-FormulaNet_plus-S_infer.tar"] : [];
 const report = { mainSha256: sha(main), fixtureSha256: sha(fixture), checks: [] };
 const check = message => { report.checks.push(message); console.log("PASS " + message); };
 let app;
@@ -23,17 +27,28 @@ function sql(statement) {
   const db = new DatabaseSync(path.join(data, "app.db"), { readOnly: true, timeout: 5000 });
   try { return db.prepare(statement).all(); } finally { db.close(); }
 }
-async function open(withRuntime) {
+async function open(withRuntime, downloads = false) {
   const env = { ...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_XIAOZHI_PI: "1",
     OMNI_EDU_SKIP_DOTENV: "1", OMNI_EDU_REPO_ROOT: path.resolve(desktop, "../..") };
   for (const key of ["NODE_OPTIONS", "ELECTRON_RUN_AS_NODE", "ELECTRON_RENDERER_URL"]) delete env[key];
   if (!withRuntime) for (const key of ["OMNI_EDU_FORMULA_PYTHON", "OMNI_EDU_FORMULA_MODEL_DIR"]) delete env[key];
   app = await _electron.launch({ args: [main, "--user-data-dir=" + profile], cwd: desktop, env, timeout: 60000 });
   await assertIsolatedPiMain(app, main, profile);
-  await app.evaluate(({ net, dialog }, source) => {
-    net.fetch = async () => { throw Error("External fetch forbidden in this local scenario"); };
+  await app.evaluate(({ net, dialog }, { source, allowed }) => {
+    const fetch = net.fetch.bind(net);
+    globalThis.formulaSetupAudit = { calls: [], corrupt: Boolean(allowed.length) };
+    net.fetch = async (input, init) => {
+      const url = typeof input === "string" ? input : input.url ?? input.href;
+      if (!allowed.includes(url) || init?.body) throw Error("Only pinned component artifact GETs are admitted");
+      globalThis.formulaSetupAudit.calls.push(url);
+      if (globalThis.formulaSetupAudit.corrupt) {
+        globalThis.formulaSetupAudit.corrupt = false;
+        return new Response("intentionally invalid archive");
+      }
+      return fetch(input, init);
+    };
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [source] });
-  }, fixture);
+  }, { source: fixture, allowed: downloads ? formulaDownloads : [] });
   const page = await app.firstWindow();
   await productEntry(page, "materials").click();
   return page;
@@ -53,7 +68,7 @@ const expected = [
   { number: 14, page: 3, latex: "\\frac{-3x+2}{5x-7}" },
 ];
 try {
-  const page = await open(!baseline);
+  const page = await open(!baseline && !managed, managed);
   await page.getByTestId("materials-import").click();
   await page.waitForFunction(() => document.querySelector('[data-testid="materials-search"]'), null);
   const deadline = Date.now() + 180000;
@@ -91,6 +106,35 @@ try {
       const dialog = page.getByTestId("structure-formula-dialog");
       await dialog.getByTestId("structure-formula-image").waitFor();
       assert.equal(await dialog.getByTestId("structure-formula-local-candidate").count(), 0);
+      if (managed && item.page === 1) {
+        const installed = path.join(profile, "managed-components", "formula-win64-v1");
+        const install = dialog.getByTestId("structure-formula-install");
+        await install.waitFor();
+        assert(!fs.existsSync(installed));
+        assert.equal(await app.evaluate(() => globalThis.formulaSetupAudit.calls.length), 0);
+        await install.click();
+        await dialog.getByText("组件校验失败，请重新下载安装。", { exact: true }).waitFor();
+        assert(!fs.existsSync(installed));
+        assert.deepEqual(fs.readdirSync(path.dirname(installed)), []);
+        const started = performance.now();
+        await install.click();
+        const progress = dialog.getByRole("progressbar", { name: "公式组件安装进度" });
+        await progress.waitFor();
+        await page.waitForFunction(() => {
+          const setup = document.querySelector('[data-testid="structure-local-formula-setup"]');
+          if (!setup) return true;
+          if (!setup.querySelector("progress") && /失败|中断|空间不足/u.test(setup.textContent))
+            throw Error(setup.textContent);
+          return false;
+        }, null, { timeout: 900_000 });
+        const calls = await app.evaluate(() => globalThis.formulaSetupAudit.calls);
+        assert.deepEqual(calls, [formulaDownloads[0], ...formulaDownloads]);
+        assert(fs.existsSync(path.join(installed, "python", "python.exe")));
+        assert(fs.existsSync(path.join(installed, "model", "inference.pdiparams")));
+        report.installMs = Math.round(performance.now() - started);
+        report.downloads = calls.length - 1;
+        check("Invalid content is rejected, then official artifacts install with progress and no user-supplied Python.");
+      }
       if (item.page === 1) {
         await dialog.getByTestId("structure-formula-local-run").click();
         await dialog.getByRole("button", { name: "停止识别" }).click();
@@ -140,10 +184,20 @@ try {
     await review.getByTestId("structure-review-formula-0").click();
     const dialog = cold.getByTestId("structure-formula-dialog");
     await dialog.getByTestId("structure-formula-image").waitFor();
-    await dialog.getByText(/本机公式识别组件暂不可用/u).waitFor();
-    assert(await dialog.getByTestId("structure-formula-local-run").isDisabled());
+    const run = dialog.getByTestId("structure-formula-local-run");
+    if (managed) {
+      await run.click();
+      const input = dialog.getByTestId("structure-formula-local-candidate");
+      await input.waitFor({ timeout: 60_000 });
+      assert.equal(await input.inputValue(), expected[0].latex);
+      assert.equal(await app.evaluate(() => globalThis.formulaSetupAudit.calls.length), 0);
+      check("Cold restart without environment configuration uses the installed component offline.");
+    } else {
+      await dialog.getByTestId("structure-formula-install").waitFor();
+      assert(await run.isDisabled());
+      check("Cold restart without the configured runtime retains exact source and read-only review.");
+    }
     assert.deepEqual(sql("SELECT * FROM material_structure_questions ORDER BY id"), initialRows);
-    check("Cold restart without the configured runtime retains exact source and read-only review.");
   }
   check(baseline ? "Three independently detected formula areas have no review entry in v28."
     : "Three formulas use the real offline worker, render locally and copy an edited candidate without changing question records.");

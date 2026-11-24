@@ -47,7 +47,7 @@ v28 在至少三行独立列证据和唯一可确认空隙时，允许原本跨�
 
 v29 复用已归属题目的独立公式位框。教师打开核对窗口后主动触发本机识别。主进程核对资料版本、结构世代、题目和页图，裁切原页后交给本机 PP-FormulaNet plus-S。输出经过长度、协议和安全排版检查，供教师核对、改写及复制到题干。关闭窗口可停止，结果不写正式题目。 [PaddleOCR 公式模块](https://www.paddleocr.ai/latest/en/version3.x/module_usage/formula_recognition.html)
 
-当前 Windows x64 采用管理员启动配置。 `OMNI_EDU_FORMULA_PYTHON` 指向装有 PaddlePaddle 3.0.0、PaddleOCR 3.0.3、PaddleX 3.0.2 的本机 Python，`OMNI_EDU_FORMULA_MODEL_DIR` 指向应用按 SHA-256 校验的官方 PP-FormulaNet plus-S 解包目录。运行时读取本地裁片，无网络推理。默认安装时组件未配置，保留公式原图和已有候选。模型小样中的积分和单位确有错误，教师仍须对照原图。
+Windows x64 首次使用时，可在公式弹窗点击「安装本机公式组件」。应用下载约 443 MiB 的固定版本 CPython、PaddleX 离线推理依赖和官方 PP-FormulaNet plus-S，逐包核对大小和 SHA-256，通过验证后写入当前应用配置目录的 `managed-components/formula-win64-v1`。安装支持进度与取消，组件约占 869 MiB。旧版已使用的 `OMNI_EDU_FORMULA_PYTHON` 和 `OMNI_EDU_FORMULA_MODEL_DIR` 启动配置仍可用。安装完成后，识别和重启复用本地组件。识别只读取当前已核对的公式裁片。公式原图始终可查看，模型小样中的积分和单位曾出现误读，候选需要教师确认。
 
 ### 同题上下片段
 
