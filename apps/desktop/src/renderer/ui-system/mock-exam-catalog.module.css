@@ -98,9 +98,6 @@
   padding-block-start: .6rem;
   border-block-start: 1px solid var(--border);
 }
-.versions summary {
-  cursor: pointer;
-}
 .versions ol {
   margin-block: .5rem;
   padding-inline: 0;

@@ -31,4 +31,5 @@
 .wb-home-recent > p { margin:8px 12px 0; }
 .wb-home-import { width:min(100%,560px); margin-inline:auto; }
 @media (max-width:900px) { .wb-start-below,.wb-start-heading { padding-inline:24px; } }
+@media (max-width:540px) { .wb-start-shortcuts { margin-block:12px; } }
 @media (max-width:360px) { .wb-start-below,.wb-start-heading { padding-inline:12px; } }

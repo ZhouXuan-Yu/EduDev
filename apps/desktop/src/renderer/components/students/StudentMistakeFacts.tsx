@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import type {MistakeImageAnalysis} from '../../../shared/contracts';
@@ -31,14 +32,14 @@ export function StudentMistakeFacts({analysis,title,onAnalysis,onBusy,onSendAi,o
    <label>题目名称<input value={facts.title} disabled={busy} onChange={e=>edit('title',e.target.value)} data-testid="mistake-facts-title"/></label>
    <label>科目<input value={facts.subject} disabled={busy} onChange={e=>edit('subject',e.target.value)} data-testid="mistake-facts-subject"/></label>
    <label>知识点<input value={facts.knowledgePoint} disabled={busy} onChange={e=>edit('knowledgePoint',e.target.value)} data-testid="mistake-facts-point"/></label>
-   <label>知识类型<select value={facts.knowledgeType} disabled={busy} onChange={e=>edit('knowledgeType',e.target.value as MistakeFacts['knowledgeType'])} data-testid="mistake-facts-type"><option value="procedure">方法与步骤</option><option value="concept">概念理解</option><option value="memory">记忆</option><option value="design">设计与应用</option></select></label>
-   <label>难度<select value={facts.difficulty} disabled={busy} onChange={e=>edit('difficulty',e.target.value as MistakeFacts['difficulty'])} data-testid="mistake-facts-difficulty"><option value="easy">基础</option><option value="medium">中等</option><option value="hard">较难</option></select></label>
+   <label>知识类型<AppNativeSelect value={facts.knowledgeType} disabled={busy} onChange={e=>edit('knowledgeType',e.target.value as MistakeFacts['knowledgeType'])} data-testid="mistake-facts-type"><option value="procedure">方法与步骤</option><option value="concept">概念理解</option><option value="memory">记忆</option><option value="design">设计与应用</option></AppNativeSelect></label>
+   <label>难度<AppNativeSelect value={facts.difficulty} disabled={busy} onChange={e=>edit('difficulty',e.target.value as MistakeFacts['difficulty'])} data-testid="mistake-facts-difficulty"><option value="easy">基础</option><option value="medium">中等</option><option value="hard">较难</option></AppNativeSelect></label>
    <label>发生时间<input type="datetime-local" value={new Date(Date.parse(facts.occurredAt)-new Date(facts.occurredAt).getTimezoneOffset()*60000).toISOString().slice(0,16)} disabled={busy} onChange={e=>{const d=new Date(e.target.value);if(Number.isFinite(d.getTime()))edit('occurredAt',d.toISOString());}} data-testid="mistake-facts-time"/></label>
   </div>
   <label>题干<textarea value={facts.stem} disabled={busy} onChange={e=>edit('stem',e.target.value)} data-testid="mistake-facts-stem"/></label>
   <div className="form-grid"><label>标准答案<textarea value={facts.expectedAnswer} disabled={busy} onChange={e=>edit('expectedAnswer',e.target.value)} data-testid="mistake-facts-answer"/></label><label>解析<textarea value={facts.analysis} disabled={busy} onChange={e=>edit('analysis',e.target.value)} data-testid="mistake-facts-analysis"/></label></div>
   <label>学生实际作答（未作答可留空）<textarea value={facts.actualAnswer} disabled={busy} onChange={e=>edit('actualAnswer',e.target.value)} data-testid="mistake-facts-actual"/></label>
-  <label>实际表现<select value={facts.result} disabled={busy} onChange={e=>edit('result',e.target.value as MistakeFacts['result'])} data-testid="mistake-facts-result"><option value="">请选择实际表现</option><option value="incorrect">错误</option><option value="partial">部分正确</option><option value="correct">正确</option></select></label>
+  <label>实际表现<AppNativeSelect value={facts.result} disabled={busy} onChange={e=>edit('result',e.target.value as MistakeFacts['result'])} data-testid="mistake-facts-result"><option value="">请选择实际表现</option><option value="incorrect">错误</option><option value="partial">部分正确</option><option value="correct">正确</option></AppNativeSelect></label>
   <label>教师核对的错因与观察<textarea value={facts.errorCause} disabled={busy} onChange={e=>edit('errorCause',e.target.value)} data-testid="mistake-facts-cause"/></label>
   {error&&<p role="alert" data-testid="mistake-facts-error">{error}</p>}
   <div className="toolbar-row"><Button isDisabled={busy} onPress={()=>void confirm()} data-testid="mistake-facts-confirm">{busy?'保存中…':'确认保存题目与实际作答'}</Button><Button variant="secondary" onPress={()=>{if(busy&&pending.current)void window.omniEdu?.cancelMistakeOcr(pending.current.source);else{setEditing(false);setFacts(initial());setError('');}}} data-testid="mistake-facts-cancel">{busy?'取消保存':'放弃填写'}</Button></div>

@@ -9,6 +9,7 @@ import styles from '../../ui-system/student-settings/student-settings-layout.mod
 import {PiWebSettings} from './PiWebSettings';
 import {PiProviderBalance} from './PiProviderBalance';
 import {PiThinkingPicker} from './PiThinkingPicker';
+import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 
 export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSaved }: {
   onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void; onSaved?: (view: XiaozhiSettingsView) => void;
@@ -18,9 +19,12 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
   const live = useRef(true), lock = useRef(false), stamp = useRef(0);
   const [webBusy,setWebBusy]=useState(false);
   const [balanceBusy,setBalanceBusy]=useState(false);
+  const dirty = !!view && (model !== view.defaultModel || !!key.trim());
+  const dirtyRef = useRef(dirty); dirtyRef.current = dirty;
+  useDesktopNavigationGuard(dirty || busy, '模型设置有未保存的更改，请先保存或放弃。');
   const disabled = loading || busy || webBusy || balanceBusy || !view || view.locked;
   const modelUnavailable = !!view?.models.length && !view.models.some(item => item.id === model);
-  useEffect(() => { onBusyChange?.(busy||webBusy||balanceBusy); return () => onBusyChange?.(false); }, [busy,webBusy,balanceBusy, onBusyChange]);
+  useEffect(() => { onBusyChange?.(dirty||busy||webBusy||balanceBusy); return () => onBusyChange?.(false); }, [dirty,busy,webBusy,balanceBusy, onBusyChange]);
   function accept(next: XiaozhiSettingsView) { setView(next); setModel(next.defaultModel); }
   async function reload(refresh = false) {
     if (lock.current) return;
@@ -28,7 +32,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     try {
       const result = await window.omniEdu?.getXiaozhiSettings({ refresh });
       if (!live.current || stamp.current !== request) return;
-      if (result?.ok) accept(result.value); else setNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '无法读取设置，请重试。');
+      if (result?.ok) {setView(result.value); if(!dirtyRef.current)setModel(result.value.defaultModel);} else setNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '无法读取设置，请重试。');
     } catch { if (live.current && stamp.current === request) setNotice('无法读取设置，请重试。'); }
     finally { if (live.current && stamp.current === request) setLoading(false); }
   }
@@ -135,7 +139,11 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
                 }}/>
               </div>
             </div>
-            <div className={styles.save}><Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button></div>
+            <div className={styles.save}>
+              {dirty&&<Button type="button" variant="ghost" data-testid="pi-settings-discard" isDisabled={disabled} onPress={()=>{setModel(view?.defaultModel||'');setKey('');setNotice('已放弃未保存的模型设置。');}}>放弃修改</Button>}
+              <Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button>
+            </div>
+            {dirty&&<p className={styles.hint} data-testid="pi-settings-unsaved">模型与密钥有未保存的更改。密钥提交后会清除输入，保存失败时需重新填写。</p>}
           </form>
           {view?.locked && <p role="status">小智正在处理任务，结束后可修改配置。</p>}
           {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}

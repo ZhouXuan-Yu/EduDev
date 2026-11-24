@@ -5,7 +5,6 @@
 .artifact-file-menu { min-width: 180px; }
 .artifact-file-menu [role="menuitem"] { display: flex; align-items: center; gap: 8px; }
 .artifact-file-location { min-width: 0; max-width: 100%; font-size: 12px; }
-.artifact-file-location summary { cursor: pointer; }
 .artifact-file-location ul { margin: 0; padding: 2px 0 0 11px; list-style: none; }
 .artifact-file-location .artifact-file-location-row { display: flex; align-items: center; gap: 5px; min-width: 0; }
 .artifact-file-location-row > svg { flex: none; }
@@ -13,7 +12,7 @@
 .artifact-file-location [aria-current="true"] { font-weight: 600; }
 .pi-file-breadcrumb > .artifact-file-actions { flex: 0 0 auto; max-width: 56%; }
 .pi-file-explorer [data-current="true"] { background: var(--pi-accent-soft, #eaf1fc); color: var(--pi-ink, #263342); border-radius: 7px; }
-.artifact-file-header[data-slot="card-header"], header.artifact-file-header {
+.artifact-file-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
@@ -22,4 +21,4 @@
 .artifact-file-header > div:first-child { min-width: 0; overflow-wrap: anywhere; }
 .artifact-file-header > .artifact-file-actions { display: contents; }
 .artifact-file-header > .artifact-file-actions > button { justify-self: end; }
-.artifact-file-header > .artifact-file-actions > :is(p, details) { grid-column: 1 / -1; }
+.artifact-file-header > .artifact-file-actions > :is(p, .artifact-file-location) { grid-column: 1 / -1; }

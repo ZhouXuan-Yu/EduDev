@@ -4,16 +4,16 @@ import type {WorkbenchQuery} from '../../../../shared/xiaozhi-workbench';
 import {useDesktopNavigation} from '../../desktop/DesktopFrame';
 import {useWorkbenchSummary} from './useWorkbenchSummary';
 import styles from '../../../ui-system/xiaozhi-workbench.module.css';
+import {DisclosureCard} from '../../ui/DisclosureCard';
 
 type Query=Extract<WorkbenchQuery,{kind:'task_artifacts'|'artifact_tasks'}>;
 
 export function TaskArtifactRelations({query,refreshKey}: {query:Query;refreshKey?:number}) {
   const [open,setOpen]=useState(false);
-  return <details data-testid={query.kind==='task_artifacts'?'task-artifact-relations':'artifact-task-relations'}
-    onToggle={event=>setOpen(event.currentTarget.open)}>
-    <summary>{query.kind==='task_artifacts'?'关联成果':'关联任务'}</summary>
+  return <DisclosureCard data-testid={query.kind==='task_artifacts'?'task-artifact-relations':'artifact-task-relations'}
+    title={query.kind==='task_artifacts'?'关联成果':'关联任务'} isExpanded={open} onExpandedChange={setOpen}>
     {open&&<RelationList query={query} refreshKey={refreshKey}/>}
-  </details>;
+  </DisclosureCard>;
 }
 
 function RelationList({query,refreshKey}:{query:Query;refreshKey?:number}) {

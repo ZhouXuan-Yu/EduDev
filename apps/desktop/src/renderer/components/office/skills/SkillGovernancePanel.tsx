@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../../ui/AppNativeSelect';
 import {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {Button} from '@heroui/react';
 import {SKILL_GOVERNANCE_ERRORS, type SkillGovernanceMutation, type SkillGovernanceView} from '../../../../shared/xiaozhi-skill-governance';
@@ -96,10 +97,10 @@ export function SkillGovernancePanel({disabled, onChanged}: {disabled: boolean; 
     {creating && <SkillPublicationForm formRef={personalFormRef} disabled={blocked} close={() => closePublicationForm(false)} publish={draft => mutate({action: 'create', draft})} />}
     {view && <>
       <p>当前教师 {view.actor.displayName}。个人技能默认私有。</p>
-      <label>版本与来源<select data-testid="pi-skill-governance-select" value={selected} onChange={event => setSelected(event.target.value)}>
+      <label>版本与来源<AppNativeSelect data-testid="pi-skill-governance-select" value={selected} onChange={event => setSelected(event.target.value)}>
         <option value="">选择技能</option>
         {view.skills.map(item => <option key={item.id} value={item.id}>{scopeLabels[item.scope]} · {item.title}{item.archived ? ' · 已归档' : ''}</option>)}
-      </select></label>
+      </AppNativeSelect></label>
       {skill && <div data-testid="pi-skill-version-history">
         <h3>{scopeLabels[skill.scope]} · {skill.title}</h3>
         <p>当前版本 {skill.activeVersion || '未激活'}{skill.autoActivate ? `，待安全点激活 ${skill.autoActivate}` : ''}</p>

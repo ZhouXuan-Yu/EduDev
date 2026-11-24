@@ -1,3 +1,4 @@
+import {AppNativeSelect} from './ui/AppNativeSelect';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PAPER_ERRORS,PAPER_SCHEMA,type PaperCompareInput,type PaperCompareItem,type PaperCompareSummary,type PaperCompareView,type PaperSummary} from '../../shared/paper-blueprint';
@@ -36,8 +37,8 @@ export function PaperCompareState({papers,leftId,rightId,status,error,view,loadi
   <p data-testid="paper-compare-readonly">只读对比，不会自动合并、改分、补题或写入确认记录。</p>
   {loading?<p role="status" data-testid="paper-compare-list-loading">正在读取已保存试卷…</p>:!papers.length?<p data-testid="paper-compare-empty">暂无可对比的试卷。先完成一份组卷记录。</p>:<>
    <div className="paper-fields">
-    <label>左侧试卷<select data-testid="paper-compare-left" value={leftId} disabled={disabled||status==='loading'} onChange={event=>onLeft(event.target.value)}><option value="">选择试卷</option>{papers.map(paper=><option key={paper.id} value={paper.id}>{paper.title} · {paper.count}题 · {stateLabel(paper.state)}</option>)}</select></label>
-    <label>右侧试卷<select data-testid="paper-compare-right" value={rightId} disabled={disabled||status==='loading'||!left} onChange={event=>onRight(event.target.value)}><option value="">{left?'选择同一对话中的试卷':'请先选择左侧试卷'}</option>{candidates.map(paper=><option key={paper.id} value={paper.id}>{paper.title} · {paper.count}题 · {stateLabel(paper.state)}</option>)}</select></label>
+    <label>左侧试卷<AppNativeSelect data-testid="paper-compare-left" value={leftId} disabled={disabled||status==='loading'} onChange={event=>onLeft(event.target.value)}><option value="">选择试卷</option>{papers.map(paper=><option key={paper.id} value={paper.id}>{paper.title} · {paper.count}题 · {stateLabel(paper.state)}</option>)}</AppNativeSelect></label>
+    <label>右侧试卷<AppNativeSelect data-testid="paper-compare-right" value={rightId} disabled={disabled||status==='loading'||!left} onChange={event=>onRight(event.target.value)}><option value="">{left?'选择同一对话中的试卷':'请先选择左侧试卷'}</option>{candidates.map(paper=><option key={paper.id} value={paper.id}>{paper.title} · {paper.count}题 · {stateLabel(paper.state)}</option>)}</AppNativeSelect></label>
    </div>
    <div className="paper-review-actions"><Button data-testid="paper-compare-run" isDisabled={disabled||status==='loading'||!left||!rightId||!candidates.some(paper=>paper.id===rightId)} isPending={status==='loading'} onPress={onCompare}>开始对比</Button></div>
    {status==='loading'&&<p role="status" data-testid="paper-compare-loading">正在读取两份试卷快照…</p>}

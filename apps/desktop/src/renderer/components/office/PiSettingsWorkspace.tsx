@@ -30,6 +30,7 @@ import {followUpLabel,alternateFollowUp,saveComposerFollowUp,useComposerFollowUp
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import {SettingsSearchResults} from './SettingsSearchResults';
 import {SettingsNavigation} from './SettingsNavigation';
+import {AppSelect} from '../ui/AppSelect';
 import layoutStyles from '../../ui-system/student-settings/student-settings-layout.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
@@ -96,7 +97,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
       if (!live.current || request.current !== own) return;
       let remembered = '';
       try { remembered = localStorage.getItem('xiaozhi.current-session.v1') || ''; } catch { /* No authority in preferences. */ }
-      const id = list.sessions.find(item => item.id === remembered)?.id || list.sessions[0]?.id || '';
+      const id = list.sessions.find(item => item.id === remembered)?.id || '';
       const current = id ? await api.getXiaozhiSnapshot(id) : undefined;
       if (!live.current || request.current !== own) return;
       setWorkspace(list); setSessionId(id); setSnapshot(current); setDataRoot(root);
@@ -208,10 +209,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2></div>
             <SettingsSection title="对话">
               <SettingsRow label="追加消息的发送时机" hint={`Enter ${followUpLabel(followUp)} · Ctrl+Enter ${followUpLabel(alternateFollowUp(followUp))}`}
-                control={<select aria-label="追加消息的发送时机" data-testid="pi-queue-mode" value={followUp}
-                  onChange={event=>setFollowUpSaveFailed(!saveComposerFollowUp(event.target.value==='steer'?'steer':'followUp'))}>
-                  <option value="followUp">本轮结束后发送</option><option value="steer">补充到本轮</option>
-                </select>}/>
+                control={<AppSelect label="追加消息的发送时机" hideLabel testId="pi-queue-mode" value={followUp}
+                  options={[{id:'followUp',label:'本轮结束后发送'},{id:'steer',label:'补充到本轮'}]}
+                  onChange={value=>setFollowUpSaveFailed(!saveComposerFollowUp(value==='steer'?'steer':'followUp'))}/>}/>
               {followUpSaveFailed&&<p role="alert">发送偏好未保存，请重试。</p>}
             </SettingsSection>
             <SettingsSection title="工作区面板">
