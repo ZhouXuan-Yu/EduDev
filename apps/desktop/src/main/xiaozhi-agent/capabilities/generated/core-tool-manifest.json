@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1f79aa6b14eb4475c993ecce1787cb02e9390111d1e324d1d5a03b147aa340f9",
+  "sourceHash": "94d4e7275f6f76b6e2079d75044048b9ed578222dad344bbee01046d0fa445c2",
   "sources": [
     {
       "file": "package-lock.json",
@@ -228,7 +228,7 @@
     },
     {
       "file": "src/main/education/mock-exam-metadata.ts",
-      "sha256": "d6fe714f5644d7d04109392d5497fcbf2694f836557ba603bb11f07fc0953040"
+      "sha256": "1f1f54e111978f95b9f8c9d8cbc785dd5a53f48c29f11e866fb603dda351fe62"
     },
     {
       "file": "src/main/education/mock-exam-office.ts",
@@ -248,7 +248,7 @@
     },
     {
       "file": "src/main/education/mock-exam-state.ts",
-      "sha256": "269bb48febb0b23bf456fc3d0f80909039c03317342b8811702e9c607f564fe7"
+      "sha256": "0965e0c5252fb05e04e79cc97ca61fe44f486c63ecd3ef7f913e2c7e6d0f4656"
     },
     {
       "file": "src/main/education/natural-lesson-basis.ts",
@@ -868,7 +868,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "5ff446d6657d9bcb137d6496a7f4cef458ff341ec4c7e6066ea5e4e30a6dc2c1"
+      "sha256": "0c6d1e7c5710fa0fdb40c587b2a8a25b84234352633f98f3fd791fc48001089a"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2356,7 +2356,7 @@
     },
     {
       "file": "src/shared/mock-exam-compilation.ts",
-      "sha256": "319077cbb20eeba7a9cf0a9c689bf2b9bf88adab0726804c3cd68b52fc8d4578"
+      "sha256": "f145db1dd56985a943d610fb18501190f43cb41d9f5c6de94fe14b2adbdb06c2"
     },
     {
       "file": "src/shared/mock-exam-edit.ts",
@@ -2365,6 +2365,10 @@
     {
       "file": "src/shared/mock-exam-export.ts",
       "sha256": "0868b81d6b70fbc2d16a4cd9b9337d918ad34eb04a5e6cc67705cb5e5a05c861"
+    },
+    {
+      "file": "src/shared/mock-exam-selection.ts",
+      "sha256": "393df9efb25333112b5f7b3646bfff98347969de5613d950c4d7233e67e8c348"
     },
     {
       "file": "src/shared/model-reasoning.ts",

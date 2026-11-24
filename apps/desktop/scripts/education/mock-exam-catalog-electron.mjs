@@ -235,8 +235,19 @@ try{
   await page.screenshot({path:path.join(output,'candidate-1366.png')});
   await approve.click();
   await until(async()=>/同一区/u.test(await review().getByTestId('mock-exam-error').innerText()));
+  const duplicate=review().getByTestId('mock-exam-error');
+  assert.equal(await duplicate.getByTestId('mock-exam-locate-issue').count(),2);
+  assert((await duplicate.innerText()).includes(names.primary));
+  await duplicate.getByTestId('mock-exam-locate-issue').filter({hasText:names.variant}).click();
+  const duplicateSelection=row(names.variant).getByTestId('mock-exam-include');
+  assert(await duplicateSelection.evaluate(node=>document.activeElement===node));
+  assert.equal(await duplicateSelection.isChecked(),true);
+  const changes=draft.value.entries.map(({resourceId,title,metadata,permission})=>({resourceId,metadata,permission,
+    include:title===names.primary||title===names.variant}));
+  const rejected=await page.evaluate(input=>window.omniEdu.confirmMockExamCatalog(input),
+    {schemaVersion,sessionId,id:report.catalogId,revision:1,digest:draft.value.summary.digest,changes});
+  assert.equal(rejected.error,'conflicting_versions');
   assert.equal(sql('SELECT COUNT(*) AS n FROM mock_exam_compilation_versions')[0].n,1);
-  await row(names.variant).getByTestId('mock-exam-row-edit').click();
   await row(names.variant).getByTestId('mock-exam-include').uncheck();
   await row(names.primary).getByTestId('mock-exam-row-edit').click();
   await row(names.primary).getByTestId('mock-exam-permission').selectOption('local_only');

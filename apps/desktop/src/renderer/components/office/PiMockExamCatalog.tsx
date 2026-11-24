@@ -6,12 +6,12 @@ import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/Deskto
 import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
 import {PiMockExamAnswerReview} from './PiMockExamAnswerReview';
+import {PiMockExamSelectionFeedback,mockExamFieldLabels as labels,type MockExamFocus} from './PiMockExamSelectionFeedback';
 import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamMetadataMatchesScope,mockExamPageEvidenceLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
+import {mockExamFields as fields,mockExamPosition,mockExamSelectionIssue} from '../../../shared/mock-exam-selection';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
 
-const fields=['district','year','grade','subject','round'] as const;
-const labels={district:'区',year:'年份',grade:'年级',subject:'学科',round:'轮次'};
 const values={district:SHANGHAI_DISTRICTS,grade:MOCK_EXAM_GRADES,subject:MOCK_EXAM_SUBJECTS,round:MOCK_EXAM_ROUNDS};
 const permissions={unknown:'许可待核对',local_only:'老师确认本地使用',excluded:'不允许使用'};
 const answers={missing:'缺答案',linked:'已关联独立答案册',stale:'答案册关联已过期',embedded:'已发现同册答案区'};
@@ -19,7 +19,6 @@ const structure={unavailable:'正文待解析',partial:'页面部分就绪',pars
 const draftOf=(catalog:MockExamCatalog)=>catalog.entries.map(({resourceId,include,permission,metadata,answerPermission})=>({
   resourceId,include,permission,metadata:{...metadata},...(answerPermission?{answerPermission}:{}),
 }));
-const position=(metadata:MockExamMetadata)=>fields.some(field=>metadata[field]===null)?null:fields.map(field=>metadata[field]).join('|');
 
 function ExamFields({entry,change,update}:{entry:MockExamEntry;change:MockExamCatalogChange;update:(next:MockExamCatalogChange)=>void}){
   function field(key:keyof MockExamMetadata,value:string){
@@ -63,6 +62,8 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
   const [edits,setEdits]=useState<MockExamCatalogChange[]>(()=>initialCatalog?draftOf(initialCatalog):[]),[active,setActive]=useState('');
   const [revising,setRevising]=useState(false),[reading,setReading]=useState(false),[saving,setSaving]=useState(false);
   const [issue,setIssue]=useState(''),[retry,setRetry]=useState(0);
+  const [showSelectionIssue,setShowSelectionIssue]=useState(false),[focus,setFocus]=useState<MockExamFocus>();
+  const fieldset=useRef<HTMLFieldSetElement>(null);
   const lock=useRef(false);
   const loaded=useRef(initialCatalog?[sessionId,summary.id,summary.revision,0].join('|'):'');
   const current=catalog?.summary??summary;
@@ -78,9 +79,16 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
     const frame=requestAnimationFrame(()=>document.getElementById(domId)?.scrollIntoView({block:'nearest'}));
     return()=>cancelAnimationFrame(frame);
   },[domId,revealIntent]);
+  useEffect(()=>{
+    if(!focus)return;
+    const control=['include','permission'].includes(focus.control)?focus.control:`field-${focus.control}`;
+    const input=fieldset.current?.querySelector<HTMLElement>(`[data-testid="mock-exam-${control}"]`);
+    input?.scrollIntoView({block:'nearest'});
+    input?.focus({preventScroll:true});
+  },[focus]);
 
   async function sync(next:MockExamCatalog){
-    setCatalog(next);setEdits(draftOf(next));setRevising(false);setActive('');
+    setCatalog(next);setEdits(draftOf(next));setRevising(false);setActive('');setShowSelectionIssue(false);
     await onRefresh();
   }
   useEffect(()=>{
@@ -93,13 +101,19 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
     setReading(true);
     void api.reviewMockExamCatalog({schemaVersion:MOCK_EXAM_SCHEMA,sessionId,id:summary.id}).then(result=>{
       if(!live)return;
-      if(result.ok){loaded.current=key;setCatalog(result.value);setEdits(draftOf(result.value));setIssue('');}
+      if(result.ok){loaded.current=key;setCatalog(result.value);setEdits(draftOf(result.value));setIssue('');setShowSelectionIssue(false);}
       else setIssue(result.message);
     }).catch(()=>{if(live)setIssue('暂时无法读取模考目录。');}).finally(()=>{if(live)setReading(false);});
     return()=>{live=false;};
   },[summary.id,summary.revision,sessionId,open,retry]);
-  const activeKeys=edits.flatMap(edit=>{const value=position(edit.metadata);return value&&edit.include?[value]:[];});
-  const duplicates=new Set(activeKeys.filter((key,index)=>activeKeys.indexOf(key)!==index));
+  const seen=new Set<string>(),duplicates=new Set<string>();
+  for(const edit of edits){
+    const key=edit.include&&mockExamPosition(edit.metadata);
+    if(!key)continue;
+    if(seen.has(key))duplicates.add(key);
+    seen.add(key);
+  }
+  const selectionIssue=catalog&&mockExamSelectionIssue(edits,catalog.scope);
 
   async function reveal(resourceId:string){
     try{
@@ -109,7 +123,10 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
   }
   async function save(){
     if(!catalog||disabled||lock.current)return;
-    lock.current=true;setSaving(true);setIssue('');
+    setIssue('');
+    setShowSelectionIssue(Boolean(selectionIssue));
+    if(selectionIssue)return;
+    lock.current=true;setSaving(true);
     try{
       const result=await window.omniEdu?.confirmMockExamCatalog({schemaVersion:MOCK_EXAM_SCHEMA,sessionId,id:summary.id,
         revision:catalog.summary.revision,digest:catalog.summary.digest,changes:edits});
@@ -137,12 +154,12 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
           !mockExamMetadataMatchesScope(entry.metadata,catalog.scope))&&
           <p data-testid="mock-exam-scope-review">分类未明确的候选暂未收录。对照原件核对后可勾选。</p>}
         {catalog.unlinkedAnswers>0&&<p>{catalog.unlinkedAnswers} 份独立答案册还没有建立试卷配对。</p>}
-        {duplicates.size>0&&canEdit&&<p role="status">有同一区、同年级、同学科及同轮次的不同文件。请核对后只收录一份。</p>}
+        {duplicates.size>0&&canEdit&&!showSelectionIssue&&<p role="status">有同一区、同一年份、年级、学科及轮次的不同文件。请核对后只收录一份。</p>}
         <ul className={styles.entries} tabIndex={0} aria-label="模考试卷目录">
           {catalog.entries.map((entry,index)=>{
             const edit=edits[index];
             if(!edit)return null;
-            const key=position(edit.metadata);
+            const key=mockExamPosition(edit.metadata);
             const cover=entry.cover&&mockExamCoverLabel(entry.cover);
             return <li key={entry.resourceId} className={styles.entry} data-testid="mock-exam-row" data-resource-id={entry.resourceId}>
               <strong>{entry.title}</strong>
@@ -168,16 +185,18 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
                 {canEdit&&<Button size="sm" variant="secondary" isDisabled={saving||disabled} data-testid="mock-exam-row-edit"
                   onPress={()=>setActive(value=>value===entry.resourceId?'':entry.resourceId)}>{active===entry.resourceId?'收起核对':'核对条目'}</Button>}
               </div>
-              {canEdit&&active===entry.resourceId&&<fieldset disabled={saving||disabled} className={styles.fieldset}>
+              {canEdit&&active===entry.resourceId&&<fieldset ref={fieldset} disabled={saving||disabled} className={styles.fieldset}>
                 <legend>原件分类与许可</legend>
                 <ExamFields entry={entry} change={edit} update={next=>setEdits(old=>old.map((item,i)=>i===index?next:item))}/>
               </fieldset>}
             </li>;
           })}
         </ul>
+        {canEdit&&showSelectionIssue&&selectionIssue&&<PiMockExamSelectionFeedback issue={selectionIssue} entries={catalog.entries}
+          edits={edits} active={active} onLocate={target=>{setActive(target.resourceId);setFocus(target);}}/>}
         <div className={styles.actions}>
           {anchor&&<Button variant="ghost" size="sm" isDisabled={saving} data-testid="mock-exam-open-workbench" onPress={()=>navigation.navigate({view:'artifacts',mockExam:{id:summary.id,sessionId}})}>在教学工作台打开</Button>}
-          {canEdit&&dirty&&<Button variant="ghost" size="sm" isDisabled={saving} onPress={()=>{setEdits(draftOf(catalog));setActive('');setIssue('');}}>放弃本次修改</Button>}
+          {canEdit&&dirty&&<Button variant="ghost" size="sm" isDisabled={saving} onPress={()=>{setEdits(draftOf(catalog));setActive('');setIssue('');setShowSelectionIssue(false);}}>放弃本次修改</Button>}
           {canEdit?<Button variant="primary" size="sm" isDisabled={disabled||saving||reading} data-testid="mock-exam-confirm"
             onPress={()=>void save()}>{saving?'正在复核原件…':'确认目录'}</Button>:
             <Button variant="secondary" size="sm" isDisabled={disabled||reading} data-testid="mock-exam-revise" onPress={()=>setRevising(true)}>修订目录</Button>}

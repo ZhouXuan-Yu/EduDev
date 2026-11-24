@@ -1,6 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {MOCK_EXAM_SCHEMA,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
-  mockExamAnswerPermission,mockExamMetadataMatchesScope,mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
+  mockExamAnswerPermission,mockExamRevision,type MockExamEntry,type MockExamScope,type MockExamHistoryEntry} from '../../shared/mock-exam-compilation';
+import {mockExamSelectionIssue} from '../../shared/mock-exam-selection';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import type {WorkbenchMockExamRow} from '../../shared/xiaozhi-workbench';
@@ -8,7 +9,7 @@ import type {MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import type {HandoutOwner} from './teaching-handout-state';
 import {createMockExamArchiveState} from './mock-exam-archive-state';
-import {mockExamPosition,mockExamTitle} from './mock-exam-metadata';
+import {mockExamTitle} from './mock-exam-metadata';
 import {assertMockExamSource,mockExamSources} from './mock-exam-sources';
 
 type Row=Record<string,unknown>;
@@ -49,12 +50,11 @@ function unpack(row:Row):MockExamCatalog {
   return {summary:summary(row),...snapshot};
 }
 function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snapshot {
-  if(changes.length!==catalog.entries.length||new Set(changes.map(item=>item.resourceId)).size!==changes.length)throw Error('invalid_input');
+  const bySource=new Map(changes.map(item=>[item.resourceId,item]));
+  if(changes.length!==catalog.entries.length||bySource.size!==changes.length)throw Error('invalid_input');
   const {scope,unlinkedAnswers,limited}=catalog;
-  const positions=new Set<string>();
-  let included=0;
   const entries=catalog.entries.map((item):MockExamEntry=>{
-    const change=changes.find(row=>row.resourceId===item.resourceId);
+    const change=bySource.get(item.resourceId);
     if(!change)throw Error('invalid_input');
     const {metadata,include,permission}=change;
     const answerPermission=mockExamAnswerPermission(item,change.answerPermission??item.answerPermission);
@@ -66,19 +66,14 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
       return {...current,metadata,include:false,permission};
     }
     if(permission==='excluded')throw Error('invalid_input');
-    if(Object.values(metadata).some(value=>value===null))throw Error('incomplete');
-    if(!mockExamMetadataMatchesScope(metadata,scope))throw Error('scope_changed');
-    const position=mockExamPosition(metadata);
-    if(positions.has(position))throw Error('conflicting_versions');
-    positions.add(position);
-    included++;
     const inferred={...item.inferred};
     for(const key of Object.keys(metadata) as (keyof MockExamEntry['metadata'])[]){
       if(item.metadata[key]!==metadata[key]||item.conflicts.includes(key))inferred[key]='老师核对';
     }
     return {...current,metadata,inferred,conflicts:[],include,permission};
   });
-  if(!included)throw Error('incomplete');
+  const issue=mockExamSelectionIssue(entries,scope);
+  if(issue)throw Error(issue.code);
   return {...(catalog.restoredFrom?{restoredFrom:catalog.restoredFrom}:{}),scope,entries,unlinkedAnswers,limited};
 }
 

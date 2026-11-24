@@ -186,14 +186,44 @@ try{
   check('The catalogue retains the intact original, flags page 2 in the control, and distinguishes the school year from the exam month and graduating class.');
 
   await missing.getByTestId('mock-exam-row-edit').click();
-  await missing.getByTestId('mock-exam-include').check();
+  const year=missing.getByTestId('mock-exam-field-year');
+  const include=missing.getByTestId('mock-exam-include');
   const confirm=card.getByTestId('mock-exam-confirm');
-  await confirm.click();
   const issue=card.getByTestId('mock-exam-error');
+  assert.equal(await year.inputValue(),'');
+  await year.fill('2025');
+  await confirm.click();
+  await issue.getByText(/还没有勾选试卷/u).waitFor();
+  await issue.getByTestId('mock-exam-locate-issue').click();
+  assert(await include.evaluate(node=>document.activeElement===node));
+  assert.equal(await include.isChecked(),false);
+  assert.equal(await year.inputValue(),'2025');
+  assert.equal(sql('SELECT count(*) n FROM mock_exam_compilation_versions')[0].n,1);
+  await page.screenshot({path:path.join(output,'no-selection-1366.png')});
+  check('A filled year without a selection gives a separate action that focuses the checkbox and preserves the draft without writing a version.');
+
+  const schemaVersion='xiaozhi.mock-exam-compilation.v1';
+  const key={schemaVersion,sessionId:sql('SELECT session_id FROM mock_exam_compilations')[0].session_id,
+    id:sql('SELECT id FROM mock_exam_compilations')[0].id};
+  const draft=await page.evaluate(input=>window.omniEdu.reviewMockExamCatalog(input),key);
+  assert(draft.ok);
+  const {revision,digest}=draft.value.summary;
+  for(const code of ['no_selection','incomplete']){
+    const changes=draft.value.entries.map(({resourceId,metadata,permission})=>({resourceId,metadata,permission,
+      include:code==='incomplete'&&resourceId===draft.value.entries.find(entry=>entry.title.includes(expected[1].name)).resourceId}));
+    const rejected=await page.evaluate(input=>window.omniEdu.confirmMockExamCatalog(input),{...key,revision,digest,changes});
+    assert.equal(rejected.error,code);
+  }
+  await year.fill('');
+  await include.check();
+  await confirm.click();
   await issue.waitFor();
   assert.match(await issue.innerText(),/年份.*需要核对/u);
+  assert((await issue.innerText()).includes(expected[1].name));
+  await issue.getByTestId('mock-exam-locate-issue').click();
+  assert(await year.evaluate(node=>document.activeElement===node));
   assert.equal(sql("SELECT count(*) n FROM mock_exam_compilation_versions WHERE state='confirmed'")[0].n,0);
-  const year=missing.getByTestId('mock-exam-field-year');
+  await page.screenshot({path:path.join(output,'missing-year-1366.png')});
   assert.equal(await year.inputValue(),'');
   await year.fill('2025');
   await confirm.click();

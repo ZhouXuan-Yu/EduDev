@@ -97,5 +97,4 @@ export function inferMockExam(title:string,header:string,scope:MockExamScope,pag
   return {metadata,inferred,conflicts,...(cover?{cover}:{})};
 }
 
-export const mockExamPosition=(metadata:MockExamMetadata)=>[metadata.year,metadata.district,metadata.grade,metadata.subject,metadata.round].join('|');
 export const mockExamTitle=(scope:MockExamScope)=>mockExamScopeLabel(scope)+' · 汇编';

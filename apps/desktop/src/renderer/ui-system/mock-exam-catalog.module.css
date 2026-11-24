@@ -59,6 +59,15 @@
   justify-content: flex-end;
   gap: .4rem;
 }
+.validation p {
+  margin: 0 0 .25rem;
+}
+.locate {
+  max-inline-size: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: start;
+}
 .fieldset {
   min-inline-size: 0;
   border: 1px solid var(--border);
