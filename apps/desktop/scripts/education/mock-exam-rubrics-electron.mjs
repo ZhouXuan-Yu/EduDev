@@ -253,6 +253,23 @@ try{
     await first.page.setViewportSize({width,height});
     await first.page.screenshot({path:path.join(output,'q15-formula-'+width+'.png'),animations:'disabled'});
   }
+  const stem=q15.getByTestId('structure-review-stem');
+  const originalStem=await stem.inputValue();
+  const fraction=formulaDialog.getByTestId('structure-formula-candidate');
+  assert.equal(await fraction.inputValue(),'(pwD)/(ν)');
+  await formulaDialog.getByText(/外形相近的英文字母/u).waitFor();
+  await first.page.evaluate(()=>{
+    Object.defineProperty(navigator.clipboard,'writeText',{configurable:true,value:async text=>{
+      window.testFormulaCopy=text;
+    }});
+  });
+  await fraction.fill('');
+  assert(await formulaDialog.getByTestId('structure-formula-copy').isDisabled());
+  await fraction.fill('(pwD)/(v)');
+  await formulaDialog.getByTestId('structure-formula-copy').click();
+  assert.equal(await first.page.evaluate(()=>window.testFormulaCopy),'(pwD)/(v)');
+  await formulaDialog.getByRole('status').getByText(/已复制/u).waitFor();
+  check('The fraction is editable and sends the corrected text to the clipboard interface only after a click');
   await first.page.keyboard.press('Escape');
   await formulaDialog.waitFor({state:'hidden'});
   await first.page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='structure-review-formula-0');
@@ -262,6 +279,9 @@ try{
   },{resourceId:source.id,version:source.content_hash});
   assert.match(wrongRaster,/source_changed/u);
   check('The formula modal renders the exact original pixels, returns keyboard focus and rejects a mismatched raster');
+  assert.equal(await stem.inputValue(),originalStem);
+  assert(!(await q15.getByTestId('structure-review-checked').isChecked()));
+  assert(await q15.getByTestId('structure-review-save').isDisabled());
   await q15.getByTestId('structure-review-cancel').click();
   assert.deepEqual(confirmed(),teacherBefore);
   check('The Q15 teacher review shows the actual C and D values and opens the second original page');
@@ -288,12 +308,26 @@ try{
   await held.getByTestId('structure-review-formula-0').click();
   const restoredFormula=cold.page.getByTestId('structure-formula-dialog');
   await restoredFormula.getByTestId('structure-formula-image').evaluate(node=>node.decode());
-  await restoredFormula.getByRole('button',{name:'关闭',exact:true}).click();
+  assert.equal(await restoredFormula.getByTestId('structure-formula-candidate').inputValue(),'(pwD)/(ν)');
+  await restoredFormula.getByTestId('structure-formula-close').click();
   await restoredFormula.waitFor({state:'hidden',timeout:5000});
   await held.getByTestId('structure-review-cancel').click();
   await cold.panel.getByTestId('structure-previous').click();
   await cold.panel.getByText('第 1 页',{exact:true}).waitFor();
   await goToPage(cold.panel,4);
+  const q21=cold.panel.getByTestId('structure-review-'+list.find(q=>q.number==='21').id);
+  await q21.getByTestId('structure-review-open').click();
+  await q21.getByTestId('structure-review-formula-0').click();
+  const uncertain=cold.page.getByTestId('structure-formula-dialog');
+  await uncertain.getByTestId('structure-formula-image').evaluate(node=>node.decode());
+  await uncertain.getByTestId('structure-formula-fragments').getByText(/片段仍有疑义/u).waitFor();
+  assert.equal(await uncertain.getByTestId('structure-formula-copy').count(),0);
+  await uncertain.getByTestId('structure-formula-close').click();
+  await uncertain.waitFor({state:'hidden'});
+  await q21.getByTestId('structure-review-cancel').click();
+  assert.deepEqual(confirmed(),teacherBefore);
+  assert.equal(shaFile(source.local_path),source.content_hash);
+  check('A cold restart restores the original candidate while the ambiguous fraction shows only the OCR fragments');
   const row=cold.panel.getByTestId('structure-questions').getByText(/题 21 .*暂缓入库/u);
   for(const [width,height] of [[1366,768],[1920,1080]]){
     await cold.page.setViewportSize({width,height});

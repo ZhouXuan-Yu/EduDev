@@ -65,5 +65,33 @@ export async function structureReviewComponentCases(server) {
     render({question: {...props.question, issues: ['native_unconfirmed']}}),
     /structure-review-open/,
   );
-  return 7;
+  const { structureFormulaCandidate } = await server.ssrLoadModule(
+    "/src/renderer/components/product/material-structure-formula-candidate.ts",
+  );
+  const reference = { resourceId: "resource", version: "version", generation: "generation", candidateId: "q", sha256: "candidate" };
+  const source = { page: 2, box: [0.1, 0.2, 0.4, 0.5], rasterSha256: "raster", lineIds: ["lead", "upper", "lower", "side"] };
+  const lines = [
+    { id: "lower", text: "3a−2", score: 0.96 },
+    { id: "lead", text: "求出 y=", score: 0.99 },
+    { id: "side", text: "+b", score: 0.99 },
+    { id: "upper", text: "m×2", score: 0.97 },
+  ];
+  const view = {
+    summary: reference,
+    references: { q: reference },
+    page: { ...reference, page: 2, rasterSha256: "raster", lines },
+    questions: [{ id: "q", formulaSources: [source] }],
+  };
+  assert.deepEqual(structureFormulaCandidate(view, reference, source),
+    { numerator: "m×2", denominator: "3a−2", copyText: "(m×2)/(3a−2)" });
+  assert.equal(structureFormulaCandidate(view, { ...reference, generation: "other" }, source), undefined);
+  assert.equal(structureFormulaCandidate(view, { ...reference, sha256: "other" }, source), undefined);
+  assert.equal(structureFormulaCandidate(view, reference, { ...source, rasterSha256: "other" }), undefined);
+  assert.equal(structureFormulaCandidate(view, reference, { ...source, lineIds: ["lead", "side", "lower"] }), undefined);
+  assert.equal(structureFormulaCandidate({ ...view, page: { ...view.page, lines: lines.slice(1) } }, reference, source), undefined);
+  const lowerScore = [ { ...lines[0], score: 0.89 }, ...lines.slice(1) ];
+  assert.equal(structureFormulaCandidate({ ...view, page: { ...view.page, lines: lowerScore } }, reference, source).copyText, undefined);
+  const uncertainGlyph = [ { ...lines[0], text: "a²" }, ...lines.slice(1) ];
+  assert.equal(structureFormulaCandidate({ ...view, page: { ...view.page, lines: uncertainGlyph } }, reference, source).copyText, undefined);
+  return 15;
 }
