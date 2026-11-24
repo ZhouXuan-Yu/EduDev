@@ -1,4 +1,5 @@
 import {paperFulfillment} from '../../shared/paper-fulfillment';
+import {confirmedOriginalPaperSummary} from './paper-confirmation-summary';
 import {createHash} from 'node:crypto';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
@@ -15,10 +16,10 @@ export function createPaperCoordinator(options:Options){
  const publish=async(sessionId:string,id:string)=>{const row=(await options.store.papers.list(sessionId)).find(r=>r.id===id);if(!row)throw new Error('permission_denied');options.emit(sessionId,row.runId,row);return row;};
  // Keep host-issued identifiers outside redaction. Only validated IDs and digests
  // are attached here. All teacher-originated text goes through the sanitizer.
- const receipt=async(sessionId:string,value:Record<string,unknown>,isError=false,lease?:()=>boolean,reference?:{paperId:string;digest:string;supersededBy?:string})=>{
+ const receipt=async(sessionId:string,value:Record<string,unknown>,isError=false,lease?:()=>boolean,reference?:{paperId:string;digest:string;supersededBy?:string},summaryText?:string)=>{
   const clean=await createStudentContextSanitizer(options.store),text=await paperAgentResultJson({...value,...reference},clean);
   if(lease&&!lease())throw new Error('cancelled');
-  return{content:[{type:'text' as const,text}],details:{success:!isError},isError};
+  return{content:[{type:'text' as const,text}],details:{success:!isError,...(summaryText?{confirmedOriginalPaperSummary:summaryText}:{})},isError};
  };
  const create=async(input:PaperCreateInput,runId='',callId='',lease:()=>boolean=()=>true):Promise<PaperResult<PaperView>>=>{
   if(!validPaperCreate(input))return{ok:false,error:'invalid_input'};const id=key(input),existing=jobs.get(id);if(existing)return existing.runId===runId&&existing.input===JSON.stringify(input)?existing.promise:{ok:false,error:'conflict'};
@@ -40,7 +41,7 @@ export function createPaperCoordinator(options:Options){
   cancel(runId:string){for(const job of jobs.values())if(job.runId===runId)job.cancelled=true;for(const wait of waits.values())if(wait.runId===runId)wait.finish();},
   close(){closing=true;for(const job of jobs.values())job.cancelled=true;for(const wait of waits.values())wait.finish();},
   tools(sessionId:string,runId:string):ToolDefinition[]{return[
-   {name:PAPER_TOOLS[0],label:'按蓝图组卷并请教师核对',description:'从本机题库和当前任务教师已确认的生成题按蓝图确定性组卷。mode可source_only纯题库、hybrid混合、ai_original原创；hybrid每个section须generatedCount=生成题数（0到count），另外两模式禁止此字段。原创只用当前任务已确认的AI原创，混合可用当前任务已确认的原创/变式，自动核验审批来源和当前版本；没有本次已确认生成题就如实缺额。title/subject/grade/durationMinutes/totalPoints/mode/sections必填；section包含id/label/questionType/count/points，可选difficulty/knowledgePoint；总分须精确相符，最多100题。无额外模型生成或偷补缺题。工具等待教师确认或拒绝；只保存已核验来源及当前题版本的整卷快照，不改学生事实，不导出文件，不证明答案正确。教师确认后调用education_read_paper复读。拒绝或取消不自动重放。',
+   {name:PAPER_TOOLS[0],label:'按蓝图组卷并请教师核对',description:'从本机题库和当前任务教师已确认的生成题按蓝图确定性组卷。mode可source_only纯题库、hybrid混合、ai_original原创；hybrid每个section须generatedCount=生成题数（0到count），另外两模式禁止此字段。原创只用当前任务已确认的AI原创，混合可用当前任务已确认的原创/变式，自动核验审批来源和当前版本；没有本次已确认生成题就如实缺额。title/subject/grade/durationMinutes/totalPoints/mode/sections必填；section包含id/label/questionType/count/points，可选difficulty/knowledgePoint；总分须精确相符，最多100题。无额外模型生成或偷补缺题。工具等待教师确认或拒绝；只保存已核验来源及当前题版本的整卷快照，不改学生事实，不导出文件，不证明答案正确。确认回执来自已保存卷，包含可直接汇报的摘要。需要详情、历史版本或其他交付时再按需读卷。拒绝或取消不自动重放。',
     parameters:{type:'object',additionalProperties:false,required:['title','subject','grade','durationMinutes','totalPoints','mode','sections'],properties:{title:{type:'string',minLength:1,maxLength:160},subject:{type:'string',minLength:1,maxLength:128},grade:{type:'string',minLength:1,maxLength:128},durationMinutes:{type:'integer',minimum:1,maximum:1440},totalPoints:{type:'integer',minimum:1,maximum:10000},mode:{type:'string',enum:['source_only','hybrid','ai_original']},sections:{type:'array',minItems:1,maxItems:20,items:{type:'object',additionalProperties:false,required:['id','label','questionType','count','points'],properties:{id:{type:'string',pattern:'^[a-zA-Z0-9_-]{1,40}$'},label:{type:'string',minLength:1,maxLength:80},questionType:{type:'string',minLength:1,maxLength:128},count:{type:'integer',minimum:1,maximum:100},points:{type:'integer',minimum:1,maximum:1000},generatedCount:{type:'integer',minimum:0,maximum:100},difficulty:{type:'string',enum:['easy','medium','hard']},knowledgePoint:{type:'string',minLength:1,maxLength:128}}}}}},
     async execute(callId,raw,signal){const abort=signal||new AbortController().signal,current=()=>!abort.aborted&&options.isCurrent(sessionId,runId);try{
      if(!validPaperBlueprint(raw))throw new Error('invalid_input');abort.throwIfAborted();if(!current())throw new Error('cancelled');
@@ -53,11 +54,16 @@ export function createPaperCoordinator(options:Options){
      const read=await options.store.papers.readForAgent(sessionId,runId,[],{paperId:pending.id});
      const paper=read.kind==='found'?read.paper:undefined;
      if(!paper&&original.state==='confirmed')throw Error('unavailable');
+     const fulfillment=paperFulfillment(paper?.blueprint||pending.blueprint,paper?.selection||pending.selection);
+     const summaryReady=!!paper&&paper.id===pending.id&&paper.state==='confirmed'&&paper.complete&&
+      paper.sourceCurrent&&!!paper.digest&&paper.blueprint.mode==='source_only'&&fulfillment.state==='satisfied';
      return receipt(sessionId,{success:!!paper,state:paper?.state||original.state,count:paper?.count??original.count,totalPoints:paper?.totalPoints??original.totalPoints,
-      fulfillment:paperFulfillment(paper?.blueprint||pending.blueprint,paper?.selection||pending.selection),
+      fulfillment,
+      ...(paper?{teacherConfirmed:true,title:paper.title,subject:paper.blueprint.subject,grade:paper.blueprint.grade,
+       durationMinutes:paper.blueprint.durationMinutes,sourceCurrent:paper.sourceCurrent}:{}),
       ...(paper&&paper.id!==pending.id?{modifiedFrom:pending.id}:{}),answerVerified:false,
-      message:paper?'教师已确认保存整卷。请用回执的 paperId 读取对应试卷，再报告结果。':'教师未确认正式试卷，请勿自动重提。'},
-      !paper,current,paper?{paperId:paper.id,digest:paper.digest!}:undefined);
+      message:paper?'教师已确认保存整卷。可用本回执报告保存结果；参考答案尚未核验。':'教师未确认正式试卷，请勿自动重提。'},
+      !paper,current,paper?{paperId:paper.id,digest:paper.digest!}:undefined,summaryReady?confirmedOriginalPaperSummary(paper):undefined);
     }catch(e){if(abort.aborted)throw new Error('cancelled');const code=failure(e);return receipt(sessionId,{success:false,code,message:PAPER_ERRORS[code]},true);}}},
    {name:PAPER_TOOLS[1],label:'读取已确认试卷',
     description:'读取本会话的已确认试卷。传组卷回执 paperId 跟随该卷的编辑后继；同时传 paperId 和摘要 digest 精确读取指定历史快照。也可仅传教师明确给出的完整 title。无参数时优先当前任务，同会话有多份无法唯一定位时请教师指定。结果是保存的蓝图和选题摘要，来源变化会标记。',

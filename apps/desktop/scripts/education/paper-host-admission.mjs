@@ -6,6 +6,7 @@ import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 const {createPaperCoordinator}=await import('../../src/main/education/paper-coordinator.ts');
 const {explicitlyRequestsPaper,startsWithOriginalPaperBlueprint}=await import('../../src/main/education/paper-admission.ts');
+const {originalPaperReceiptOnly}=await import('../../src/main/education/paper-request-constraints.ts');
 const {PaperRepository}=await import('../../src/main/education/paper-repository.ts');
 const {PAPER_SCHEMA}=await import('../../src/shared/paper-blueprint.ts');
 const {createTaskCoordinator}=await import('../../src/main/xiaozhi-agent/tasks/coordinator.ts');
@@ -139,6 +140,17 @@ try{
     '从题本制作“初二数学小测”的例子。限时20分钟，六题30分，不添加新题。',
   ])assert.equal(startsWithOriginalPaperBlueprint(variant),false,variant);
  });
+ await check('Only a plain original-paper request can report from the confirmed receipt without further tools',async()=>{
+  const input='请从现有题本的原题中出一份高二物理小测。限时20分钟，六题30分，每题5分。解答题六道。必选知识点：动量守恒、电场强度、动能定理。难度比例易中难 1:1:1。每个知识点两题，动量守恒基础，电场强度中等，动能定理困难。题目和原答案保留。先让我核对整卷再保存。';
+  assert(startsWithOriginalPaperBlueprint(input));
+  assert(originalPaperReceiptOnly(input));
+  assert(originalPaperReceiptOnly('从本地题库原题组一份五年级数学练习卷，限时10分钟，共4题10分。'));
+  for(const request of [
+   input+'确认后把各题答案逐条发给我。',input+'确认后打分。',input+'导出为 Word。',
+   input+'请点评全部考题。',input+'告诉我第2题是怎么做的。',input+'“并写解决方案”',
+   input.replace('小测。','小测并把详细答案列出来。'),input+'确认后说明'.repeat(65)+'。',
+  ]) assert.equal(originalPaperReceiptOnly(request),false,request);
+ });
  await check('Natural original-bank scope rejects wrong subject, grade and generated sources before admission',async()=>{
   const request='请从本地题本原题中组一份高二物理小测，限时40分钟，共1题10分。';
   const proposal={...blueprint,subject:'物理',grade:'高中二年级'};
@@ -160,7 +172,14 @@ try{
  await check('Domain route preserves original pending teacher review, journal admission, and same-call payload deduplication',async()=>{
   const call='paper_'+randomUUID(),offset=published.length,pending=execute(def,blueprint,call);await until(()=>published.length>offset);const paper=published.at(-1);assert.equal(paper.state,'pending');assert.equal(paper.complete,true);assert.equal(await papers.latest(sessionId),undefined);
   const same=execute(def,blueprint,call);const conflict=await execute(def,{...blueprint,title:'冲突正文'},call);assert.equal(conflict.details.execution.code,'conflict');
-  assert((await coordinator.decide(decision(paper))).ok);assert(!(await pending).isError);assert(!(await same).isError);assert.equal((await papers.latest(sessionId)).state,'confirmed');
+  assert((await coordinator.decide(decision(paper))).ok);
+  const outcome=await pending;assert(!outcome.isError);assert(!(await same).isError);
+  assert.match(outcome.details.confirmedOriginalPaperSummary,/你已确认保存.*1 题、10 分.*40 分钟/);
+  const readback=JSON.parse(outcome.content[0].text),saved=await papers.latest(sessionId);
+  assert.equal(saved.state,'confirmed');
+  assert.equal(readback.paperId,saved.id);assert.equal(readback.digest,saved.digest);
+  assert.equal(readback.durationMinutes,40);assert.equal(readback.sourceCurrent,true);assert.equal(readback.teacherConfirmed,true);
+  assert.equal(readback.count,1);assert.equal(readback.answerVerified,false);
   const receipt=db.prepare('SELECT admitted,phase,success FROM xiaozhi_tool_receipts WHERE run_id=? AND call_id=?').get(runId,call);assert.equal(receipt.admitted,1);assert.equal(receipt.phase,'settled');assert.equal(receipt.success,1);
   const view=await taskCoordinator.committed(sessionId);assert(!view.checks.some(value=>value.authority==='readback'),'Paper confirmation must not mint saved_questions evidence');
  });

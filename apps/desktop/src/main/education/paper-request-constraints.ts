@@ -58,7 +58,7 @@ function bankRequest(head: string) {
     ...Array.from(description.matchAll(gradeFirst), match => ({ grade: match[1], subject: match[2] })),
     ...Array.from(description.matchAll(subjectFirst), match => ({ grade: match[2], subject: match[1] })),
   ].filter(pair => equivalentQuestionGradeLabels(pair.grade).length > 1);
-  return { pairs, originalOnly: Boolean(lead[1] || lead[2]) };
+  return { description, pairs, originalOnly: Boolean(lead[1] || lead[2]) };
 }
 
 /** Only literal whole-paper clauses from the teacher may constrain a model-submitted blueprint. */
@@ -96,6 +96,28 @@ export function hasCompleteOriginalPaperTotals(request: string): boolean {
   return [...count][0] <= 100 && [...points][0] <= 10000 && [...minutes][0] <= 1440
     && (perQuestion.size===0 || perQuestion.size===1 && [...perQuestion][0]*[...count][0]===[...points][0])
     && (scope.originalOnly || terms.some(clause => originalOnly.test(clause)));
+}
+
+const shortPaperHeading = new RegExp(String.raw`^\s*(?:卷)?\s*(?:一[份套张])?\s*(?:${schoolGrade}\s*的?\s*${schoolSubject}|${schoolSubject}\s*的?\s*${schoolGrade})\s*(?:的)?\s*(?:随堂|单元|阶段|期中|期末)?\s*(?:小测(?:卷)?|试卷|练习卷|测验卷|测试卷)$`,"u");
+const plainPaperClauses = [
+  ...Object.values(numberRules), combinedQuota, perQuestionPoints, typeQuota, ratio,
+  knowledgeList, subjectLabel, gradeLabel, originalOnly,
+  /^(?:全部|均)(?:是|为|用)(?:解答|简答|单项选择|选择|填空|计算|判断)题$/u,
+  /^(?:请)?(?:先让我|先由教师)核对(?:整卷|试卷)再保存$/u,
+  /^(?:题目和原答案保留|保留原题(?:和原答案)?|题目及答案保持原样)$/u,
+  new RegExp(String.raw`^每个知识点\s*${numeral}\s*(?:道(?:题)?|题)$`,"u"),
+  new RegExp(String.raw`^[\p{L}\p{N}（）()·]{1,24}?(?:基础|简单|中等|困难)(?:题\s*${numeral}\s*(?:道(?:题)?|题))?$`,"u"),
+];
+
+/** Unknown clauses may request another deliverable. They keep the ordinary tool loop. */
+export function originalPaperReceiptOnly(request: string): boolean {
+  const literal = request.normalize("NFKC");
+  if (/[{}#`"'“”「」『』]/u.test(literal)) return false;
+  const [head, ...criteria] = literal.split(/[。！？!?；;，,\n]/u)
+    .map(clause => clause.trim().replace(/^(?:要求|约束)\s*:\s*/u, "")).filter(Boolean);
+  const bank = bankRequest(head ?? "");
+  return !!bank && shortPaperHeading.test(bank.description) &&
+    criteria.every(clause => plainPaperClauses.some(rule => rule.test(clause)));
 }
 
 function statedUniformPoints(terms: readonly string[]): Set<number> {

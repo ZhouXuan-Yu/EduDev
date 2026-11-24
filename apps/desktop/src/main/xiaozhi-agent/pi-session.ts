@@ -7,6 +7,7 @@ import {validTerminalOutput} from '../../shared/xiaozhi-terminal';
 import {CLASSROOM_PLAN_TOOLS,NATURAL_LESSON_TOOL} from '../../shared/classroom-plan';
 import type {NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {PAPER_TOOLS} from '../../shared/paper-blueprint';
+import {streamConfirmedPaperSummary} from '../education/paper-confirmation-summary';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import {TEACHING_LESSON_EXPORT_TOOLS} from '../../shared/teaching-lesson-export';
 import {EXPORT_TEACHING_HANDOUT,READ_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
@@ -150,6 +151,7 @@ export interface PiXiaozhiOptions {
   classroomTools?: ToolDefinition[];
   naturalLessonDraft?: NaturalLessonRequirements & {subject:string;grade:string;hasDraft:()=>Promise<boolean>};
   directOriginalPaper?: true;
+  paperReceiptSummary?: true;
   classroomExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   teachingLessonExportTools?:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>ToolDefinition[];
   educationSearchTools?:ToolDefinition[];
@@ -1157,6 +1159,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let modelHttpStatus:number|undefined;
   let submittedTeacherRequest:string|undefined;
   let lessonDraftAttempts=0;
+  let confirmedPaper: {callId:string;text:string} | undefined;
+  let paperReceivedTeacherInstruction = false;
   let paperBlueprintSent=false;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
   const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
@@ -1180,6 +1184,20 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!compacting&&quality&&!options.sourceAvailability&&toolCatalog)args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'&&message.toolsAdded?{...message,toolsAdded:message.toolsAdded.filter(tool=>toolCatalog.exposed(tool.name))}:message)};
     if(options.answerOnly)args[1]={...args[1],messages:args[1].messages.map(message=>
       message.role==='system'&&message.toolsAdded?{...message,toolsAdded:[]}:message)};
+    const deepseekPaperRun=!compacting&&options.directOriginalPaper&&args[0].provider===PROVIDER;
+    const lastMessage=args[1].messages.at(-1);
+    if(deepseekPaperRun&&confirmedPaper&&!paperReceivedTeacherInstruction&&
+      lastMessage?.role==='toolResult'&&lastMessage.toolCallId===confirmedPaper.callId){
+      const receipt=confirmedPaper;
+      confirmedPaper=undefined;
+      // Reuse Pi's host barrier, then confirm no new teacher instruction arrived while waiting.
+      await phase('pi_commit_paper_summary',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal);
+      await checkMemory();args[2]?.signal?.throwIfAborted();
+      if(!paperReceivedTeacherInstruction){
+        manager.appendCustomEntry('xiaozhi.paper-confirmation-summary.v1',{runId,callId:receipt.callId});
+        return streamConfirmedPaperSummary(receipt.text);
+      }
+    }
     // Final complete-request gate also applies to native summarization requests.
     args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
@@ -1194,7 +1212,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const naturalLesson=compacting?undefined:options.naturalLessonDraft;
     const requireLessonTool=naturalLesson&&lessonDraftAttempts<2&&!await naturalLesson.hasDraft();
     if(requireLessonTool)lessonDraftAttempts++;
-    const preferPaperTool=!compacting&&toolCatalog&&pinPaperTool&&!paperBlueprintSent&&args[0].provider===PROVIDER;
+    const preferPaperTool=deepseekPaperRun&&pinPaperTool&&toolCatalog&&!paperBlueprintSent;
     if(!compacting)paperBlueprintSent=true;
     {const previous=args[2]?.onPayload;
       args[2]={...args[2],onPayload:async(payload,model)=>{
@@ -1379,6 +1397,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       if (!toolStartedAt.has(event.toolCallId)) toolStartedAt.set(event.toolCallId, performance.now());
       emit({ kind: 'tool_start', tool: event.toolName, callId: event.toolCallId.slice(0, 128) });
     } else if (event.type === 'tool_execution_end' && names.includes(event.toolName)) {
+      if(options.paperReceiptSummary&&event.toolName===PAPER_TOOLS[0]&&!event.isError) {
+        const text=event.result?.details?.confirmedOriginalPaperSummary;
+        if(typeof text==='string'&&text)confirmedPaper={callId:event.toolCallId,text};
+      }
       options.onToolResult?.(event.toolCallId,event.toolName,event.result,event.isError);
       const startedAt = toolStartedAt.get(event.toolCallId);
       toolStartedAt.delete(event.toolCallId);
@@ -1421,9 +1443,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     async queue(id: string, text: string, mode: 'steer' | 'followUp') {
       if (!running || (compacting && !autoAbort) || interrupted || budget?.snapshot().exhausted || disposed) throw new Error('busy');
       await skills?.validateCommand(text);
+      paperReceivedTeacherInstruction=true;
       instructions.enqueue(id,text,mode);
     },
-    reserveInstruction: instructions.reserve,
+    reserveInstruction: (...args: Parameters<typeof instructions.reserve>) => {
+      paperReceivedTeacherInstruction=true;
+      return instructions.reserve(...args);
+    },
     async prompt(text: string): Promise<XiaozhiAgentResult> {
       if (disposed) return { ok: false, runId: '', error: 'configuration' };
       if (running || preparingPrompt) return { ok: false, runId, error: 'busy' };
@@ -1449,6 +1475,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
       paperBlueprintSent=false;
       assistantOutcome=undefined;
+      confirmedPaper=undefined;
+      paperReceivedTeacherInstruction=false;
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text+'\n'+(options.toolTaskQuery||''));
       thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy(text,capabilities);
       policy.maxOutputTokens=thinkingPolicy.maxOutputTokens;model.maxTokens=thinkingPolicy.maxOutputTokens;

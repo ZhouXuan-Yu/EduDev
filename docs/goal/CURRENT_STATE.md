@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 单独的原题组卷在教师确认后，按已保存快照回报题量、总分和时长。该阶段没有额外模型请求。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原题卷确认后的本地回报)
+
 D3 对话原题小测从教师原话约束学科、年级和原题来源。小学、初中和高中可在范围明确时直接提交首轮蓝图。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
 
 D3 对话开教案会核对明确要求的模拟材料数量和正文。实际七年级历史单例已持久化两份正文，经过确认后从同一版本导出 Word 和 PDF。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)

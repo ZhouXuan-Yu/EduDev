@@ -23,6 +23,7 @@ import {readQuestionContextSource} from '../education/question-context-provider'
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
+import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
@@ -266,6 +267,7 @@ type Active = {
   answerOnly?: boolean;
   naturalLessonDraft?: NaturalLessonRequirements;
   directOriginalPaper?: true;
+  paperReceiptSummary?: true;
   taskControl?: TaskControlAction;
   finalizing?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
@@ -1361,7 +1363,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const capabilityTools = capabilityRuntime ? createCapabilityDispatcher(capabilityRuntime) : undefined;
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
-        ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true}:{}),
+        ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true,paperReceiptSummary:run.paperReceiptSummary}:{}),
         ...(run.naturalLessonDraft&&lesson?{naturalLessonDraft:{
           subject:lesson.subject,grade:lesson.grade,...run.naturalLessonDraft,
           hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,run.runId),
@@ -2127,6 +2129,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         !isTaskContinuation(input.prompt) && !isBoundTaskAmendment(input.prompt);
       const inferredLesson=canInferTeachingRequest?naturalLessonDraft(input.prompt):undefined;
       const directOriginalPaper=canInferTeachingRequest&&!inferredLesson&&startsWithOriginalPaperBlueprint(input.prompt);
+      const paperReceiptSummary=directOriginalPaper&&originalPaperReceiptOnly(input.prompt);
       const allowNaturalAmendment=!inferredLesson&&!input.attachments&&!input.presentation&&!input.paperExportIntent&&!input.mockExamExportIntent&&!input.classroomPlan&&!input.resumeDeliveryId&&!goalId&&!legacyApprovalId;
       const controller=new AbortController();
       const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
@@ -2179,7 +2182,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&isStandaloneAnswer(input);
-      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),

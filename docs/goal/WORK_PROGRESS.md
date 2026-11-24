@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 原题组卷确认时的回报已改由宿主根据已保存卷提供。保留追加要求、改版和后续任务。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-原题卷确认后的本地回报)
+
 D3 扩展原题小测的学段和自然措辞，并把教师指定的学科、年级和来源落实到宿主组卷准入。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
 
 D3 补齐课堂活动所需的自拟材料。覆盖缺正文、重复正文、正常交付、教师确认、同版双格式与冷启动。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
