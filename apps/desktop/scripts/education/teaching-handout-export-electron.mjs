@@ -12,6 +12,7 @@ assert(root&&fixture,'Use the fixed acceptance directory and a confirmed synthet
 const baseline=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8'));
 const {bookId,sessionId}=baseline;
 assert(baseline.ok&&bookId&&sessionId);
+const generatedFixture=process.argv.includes('--generated-fixture');
 const output=fs.mkdtempSync(path.join(root,'handout-export-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const oldData=path.join(fixture,'data'),wal=path.join(oldData,'app.db-wal');
 assert(!fs.existsSync(wal)||fs.statSync(wal).size===0);
@@ -175,16 +176,22 @@ try{
   for(const item of [student,teacher]){
     assert.match(item.text,/练习 1 · 基础/);
     assert.match(item.text,/练习 2 · 巩固/);
-    assert.match(item.text,/并代回/);
-    assert.match(item.text,/先写明使用了哪条等式性质/);
-    assert(item.formulas.includes('5x-2=2x+7'));
+    assert(item.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='5x-2=2x+7'));
     assert(item.page.includes('11906')&&item.page.includes('16838'));
   }
-  assert.doesNotMatch(student.text,/先两边减 3，再除以 2。|参考资料/);
-  assert(!student.formulas.includes('x=3'));
-  assert.match(teacher.text,/先两边减 3，再除以 2。/);
-  assert.match(teacher.text,/教师补充/);
-  assert(teacher.formulas.includes('x=3'));
+  assert.doesNotMatch(student.text,/答案与解析|参考资料/);
+  assert(!student.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
+  assert(teacher.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='x=3'));
+  assert.match(teacher.text,/练习 2 · 答案与解析/);
+  if(!generatedFixture){
+    assert.match(student.text,/并代回/);
+    assert.match(teacher.text,/并代回/);
+    assert.match(student.text,/先写明使用了哪条等式性质/);
+    assert.match(teacher.text,/先写明使用了哪条等式性质/);
+    assert.match(teacher.text,/教师补充/);
+    assert.doesNotMatch(student.text,/先两边减 3，再除以 2。/);
+    assert.match(teacher.text,/先两边减 3，再除以 2。/);
+  }
   report.files=files;
   check('One real approval creates two version-bound A4 Word files with editable text, intact equations and independent answer isolation');
 

@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+真实模型学案单例与同一确认版导出、原资料定位和冷启见 [讲义专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-自然语言生成讲义和公式)。
+
 同一句完整原题组卷请求实际复测，生成待确认卷 87.3 秒降至 11.6 秒。该数值为一次对应样本。 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-完整原题小测的首轮蓝图)
 
 D3 的工程结论、教师体验缺口和各阶段证据在 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md)。

@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 已复测真实 DeepSeek 从已导入资料制作带公式的可编辑学案，并确认、冷启和导出双受众 Word。学案采用率仍待教师试点。 [证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-自然语言生成讲义和公式)
+
 D3 初中原题小测的完整条件已接入首轮组卷蓝图。同题库单例生成待确认卷从 87.3 秒降到 11.6 秒；集中验收仍开放。 [实验与边界](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-完整原题小测的首轮蓝图)
 
 D3 本轮复测自然语言原题小测通过。真实 DeepSeek 生成六题 30 分并冷启读回。代表性学科、复杂扫描和教师体验以 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md) 跟踪。

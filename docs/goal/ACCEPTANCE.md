@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+真实模型学案验证原文引用、学科结果、公式预览、教师确认与冷启。双受众验证见 [同一确认版 Word](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-自然语言生成讲义和公式)。
+
 完整原题小测性能专项核对首轮工具选择、1 次请求到待确认卷、相同配额、真实确认和冷启零重放。 [证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-完整原题小测的首轮蓝图)
 
 自然语言组卷已核对实际源题、总题数、分值、难度、答案、教师确认和冷启，综合状态仍有部分未验证。 [综合验收](../product-agent/08_D3_DELIVERY_ACCEPTANCE.md)

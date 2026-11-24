@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "d8a9a73bf19351c42b3a262c8cf454e0906376c938eb12ee6c0b34ee54866bbf",
+  "sourceHash": "9186012102799c46a2ab45b8a78df3f21ef26e0e97cb47af58a3a91d829d2fc7",
   "sources": [
     {
       "file": "package-lock.json",
@@ -512,7 +512,7 @@
     },
     {
       "file": "src/main/education/teaching-handout-tool.ts",
-      "sha256": "9d65e98475c04f58846084c330d0cac9389311f26afc9d604e72ca3faee6871c"
+      "sha256": "e83810510d55828aef49cf0265db228ab456cdc29492fbd461f67f8b3b16b98b"
     },
     {
       "file": "src/main/education/teaching-lesson-export-tools.ts",
@@ -824,7 +824,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "353ea27ba298edc3c5b6b00506099ccda99aa3198b16e60b21da9c1ebe2f878b"
+      "sha256": "3165133341007d719d399fb6857ee49684e69f23d67fc65751cc1451b067d9dc"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",

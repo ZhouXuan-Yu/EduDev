@@ -79,7 +79,7 @@ export function createTeachingHandoutTool(options:{
   return {
     name:TEACHING_HANDOUT_TOOL,
     label:'保存可编辑讲义草稿',
-    description:'教学讲义、学生学案的可编辑草稿。先在本地资料中检索并逐段实读，再按章提交学习目标、重点、难点、知识讲解、带分步过程的例题和至少两档练习及各自答案解析。citations用本轮office_read_material的resourceId/offset与原句quote。缺依据用sourceGaps明示，不能编引文。无需另建文件计划或生成普通Word。提交成功后提示老师打开真实讲义编辑和核对。',
+    description:'教学讲义、学生学案的可编辑草稿。先在本地资料中检索并逐段实读，再按章提交学习目标、重点、难点、知识讲解、带分步过程的例题和至少两档练习及各自答案解析。正文、题目、推导和答案里的数学表达式使用 Markdown LaTeX，例如 $3x+7=25$、$x=6$；独立公式用 $$...$$。公式定界符让讲义预览和导出使用数学排版。citations用本轮office_read_material的resourceId/offset与原句quote，引文逐字保留。缺依据用sourceGaps明示，不能编引文。无需另建文件计划或生成普通Word。提交成功后提示老师打开真实讲义编辑和核对。',
     parameters:teachingHandoutParameters as ToolDefinition['parameters'],
     execute:async(callId,raw,signal) => {
       const current=()=>options.current()&&!signal?.aborted;

@@ -9,6 +9,9 @@ import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
 const wordRequest=process.argv.includes('--word-request');
+const live=process.argv.includes('--live');
+const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout';
+assert(apiKey,'Missing DeepSeek test credential');
 const output=fs.mkdtempSync(path.join(acceptance,'teaching-handout-'));
 const data=path.join(output,'data'), profile=path.join(output,'profile');
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
@@ -38,11 +41,12 @@ async function until(read,timeout=90000){
 
 async function launch(cold=false){
   const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
-    OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-teaching-handout',DEEPSEEK_MODEL:'deepseek-flash'};
+    OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop});
-  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,original,wordRequest})=>{
+  await app.evaluate(({net,dialog},{cold,title,quote,modelTool,original,wordRequest,live})=>{
     const wire=globalThis.handoutWire={requests:[],results:[]};
+    const remote=net.fetch.bind(net);
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[original]});
     net.fetch=async(raw,init)=>{
       const url=new URL(typeof raw==='string'?raw:raw.url);
@@ -52,6 +56,14 @@ async function launch(cold=false){
         effort:{supported_levels:['low','high','max'],default_level:'high'},
       }]}),{headers:{'content-type':'application/json'}});
       if(cold||url.pathname!=='/v1/chat/completions')throw Error('Unexpected model dispatch');
+      if(live){
+        if(wire.requests.length>=10)throw Error('Live synthetic handout request limit');
+        const request={sentAt:Date.now(),status:0};
+        wire.requests.push(request);
+        const response=await remote(raw,init);
+        request.status=response.status;
+        return response;
+      }
       const phase=wire.requests.length, body=JSON.parse(init.body);
       const latest=()=> {
         const raw=body.messages.filter(item=>item.role==='tool').at(-1)?.content;
@@ -110,7 +122,7 @@ async function launch(cold=false){
       return new Response(event({role:'assistant'})+event(delta)+event({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',
         {headers:{'content-type':'text/event-stream'}});
     };
-  },{cold,title,quote,modelTool,original,wordRequest});
+  },{cold,title,quote,modelTool,original,wordRequest,live});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
@@ -124,28 +136,64 @@ const card=()=>page.getByTestId('pi-teaching-handout');
 const blockButton=id=>page.getByTestId('teaching-book-block-edit-'+id);
 const sourceLink=()=>page.getByTestId('teaching-book-sources').getByTestId('pi-material-source-open');
 
-try{
-  await launch();
-  const oldBook=await page.evaluate(()=>window.omniEdu.createTeachingBook({title:'此前的独立讲义'}));
-  if(await page.getByTestId('ai-return-workspace').isVisible())await page.getByTestId('ai-return-workspace').click();
-  await page.getByTestId('nav-knowledge').click();
-  await page.getByTestId('materials-import').click();
-  await until(()=>sql("SELECT id FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')")[0]);
+async function verifyLive(state,wire){
+  const [handout]=state.teachingHandouts;
+  assert.equal(state.teachingHandouts.length,1);
+  assert.equal(handout.taskId,state.task?.id);
+  assert.equal(state.projection.turns.at(-1)?.status,'completed');
+  assert(wire.requests.length>0&&wire.requests.every(request=>request.status===200));
+  const events=sql('SELECT event_json FROM xiaozhi_event_journal WHERE run_id=? ORDER BY rowid',[handout.runId]).map(row=>JSON.parse(row.event_json));
+  const read=events.findIndex(event=>event.kind==='tool_end'&&event.tool==='office_read_material'&&event.success);
+  const save=events.findIndex(event=>event.kind==='tool_end'&&event.tool===modelTool&&event.success);
+  assert(read>=0&&save>read,'Read the stored source before drafting');
+  assert.equal(sql('SELECT book_id FROM teaching_handout_origins WHERE session_id=?',[sessionId]).length,1);
+  report.sessionId=sessionId; report.bookId=handout.bookId; report.runId=handout.runId; report.taskId=handout.taskId;
+  report.wire=wire;
+  await card().getByTestId('pi-teaching-handout-open').click();
+  const preview=page.getByTestId('teaching-book-preview');
+  await preview.waitFor();
+  const book=await getBook(handout.bookId);
+  assert.equal(book.book.title,title);
+  assert.equal(book.book.status,'draft');
+  const role=name=>book.blocks.filter(block=>block.metadata.handoutRole===name);
+  assert.equal(book.chapters.length,1);
+  assert.match(role('focus')[0].payload.text,/重点.+难点/su);
+  const math=text=>text.replace(/[\s$`\\]/gu,'').replaceAll('−','-');
+  assert.match(math(role('example')[0].payload.text),/3x\+7=25/u);
+  const steps=math(role('worked_solution')[0].payload.text);
+  assert.match(steps,/3x=18/u);
+  assert.match(steps,/x=6/u);
+  assert.match(steps,/代回|检验|验证/u);
+  assert.deepEqual(role('exercise').map(block=>block.title.split(' · ').at(-1)),['基础','巩固']);
+  for(const [index,equation,answer] of [[0,/2x\+3=15/u,/x=6/u],[1,/5x-2=2x\+7/u,/x=3/u]]){
+    assert.match(math(role('exercise')[index].payload.text),equation);
+    assert.match(math(role('exercise_solution')[index].payload.text),answer);
+  }
+  assert(book.sources.length&&book.sources.every(source=>fs.readFileSync(original,'utf8').includes(source.snippet)));
+  await sourceLink().first().click();
+  await page.getByTestId('materials-chunk-'+book.materialSources[0].chunkId).waitFor();
   await page.getByTestId('desktop-back').click();
-  const input=page.getByTestId('office-prompt-input');
-  await input.fill('请根据资料库里《等式性质参考》制作一份七年级一元一次方程的可编辑'+
-    (wordRequest?' Word ':'')+'学案，包含重点难点、分步例题和分层练习。');
-  await page.getByRole('button',{name:'发送消息',exact:true}).click();
-  sessionId=await until(async()=>{
-    const id=await page.locator('.office-composer-container').getAttribute('data-session-id');
-    return /^aisession_[a-f0-9-]{36}$/u.test(id??'')&&id;
-  });
-  const state=await until(async()=>{
-    const value=await snapshot();
-    const turn=value.projection.turns.at(-1);
-    return !value.running&&turn?.status!=='running'&&value.teachingHandouts?.length&&value;
-  });
-  const wire=await app.evaluate(()=>globalThis.handoutWire);
+  await preview.waitFor();
+  assert(await preview.locator('math').count()>0);
+  check('Real provider creates a sourced editable handout with the independently checked example and two exercises.');
+  await page.setViewportSize({width:1366,height:768});
+  await preview.scrollIntoViewIfNeeded();
+  await page.screenshot({path:path.join(output,'live-draft-1366.png')});
+  await page.getByTestId('teaching-book-review-current').click();
+  await page.getByTestId('teaching-book-version-confirm').click();
+  const [version]=await until(()=>{const rows=sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed'",[book.book.id]);return rows.length&&rows;});
+  await app.close(); app=undefined;
+  await launch(true);
+  await card().getByTestId('pi-teaching-handout-open').click();
+  await page.getByTestId('teaching-book-version-status').waitFor();
+  assert.deepEqual(sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed'",[book.book.id]),[version]);
+  assert.deepEqual((await app.evaluate(()=>globalThis.handoutWire)).requests,[]);
+  await page.setViewportSize({width:1920,height:1080});
+  await page.screenshot({path:path.join(output,'live-confirmed-1920.png')});
+  check('Teacher confirmation is durable and the original handout opens after cold start with no model replay.');
+}
+
+async function verifyControlled(state,wire,oldBook){
   assert.equal(wire.error,undefined);
   assert.equal(wire.requests.length,7);
   assert.equal(state.projection.turns.at(-1)?.status,'completed');
@@ -226,11 +274,48 @@ try{
   sql('UPDATE resource_chunks SET content_md=substr(content_md,1,length(content_md)-?) WHERE id=?',[added.length,material.chunkId],true);
   await page.getByTestId('teaching-book-health-refresh').click();
   await until(async()=> (await getBook(handout.bookId)).health.status==='healthy');
+}
+
+try{
+  await launch();
+  const oldBook=await page.evaluate(()=>window.omniEdu.createTeachingBook({title:'此前的独立讲义'}));
+  if(await page.getByTestId('ai-return-workspace').isVisible())await page.getByTestId('ai-return-workspace').click();
+  await page.getByTestId('nav-knowledge').click();
+  await page.getByTestId('materials-import').click();
+  await until(()=>sql("SELECT id FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')")[0]);
+  await page.getByTestId('desktop-back').click();
+  const input=page.getByTestId('office-prompt-input');
+  const request='请根据资料库里《等式性质参考》制作一份七年级一元一次方程的可编辑'+
+    (wordRequest?' Word ':'')+'学案，包含重点难点、分步例题和分层练习。';
+  await input.fill(live?request+'标题是《等式变形分层学案》，只做一章。例题用 3x+7=25，写出两边同减、同除、代回检验。两道练习按基础、巩固排序，分别用 2x+3=15 和 5x-2=2x+7，保留答案与解析。引用实读到的等式性质，先保存讲义草稿让我核对。':request);
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  sessionId=await until(async()=>{
+    const id=await page.locator('.office-composer-container').getAttribute('data-session-id');
+    return /^aisession_[a-f0-9-]{36}$/u.test(id??'')&&id;
+  });
+  const state=await until(async()=>{
+    const value=await snapshot();
+    const turn=value.projection.turns.at(-1);
+    if(live&&!value.running&&turn&&['failed','completed','interrupted'].includes(turn.status)&&!value.teachingHandouts?.length)
+      throw Error('Run ended without a saved handout: '+turn.status+' '+(turn.errorCode||''));
+    return !value.running&&turn?.status!=='running'&&value.teachingHandouts?.length&&value;
+  });
+  const wire=await app.evaluate(()=>globalThis.handoutWire);
+  if(live){
+    report.paidRequests=wire.requests.length;
+    await verifyLive(state,wire);
+  }else{
+    await verifyControlled(state,wire,oldBook);
+  }
   report.ok=true;
 }catch(error){
   report.error=String(error.stack);
   report.wire=await app?.evaluate(()=>globalThis.handoutWire).catch(()=>undefined);
-  report.snapshot=await snapshot().then(state=>({running:state.running,turn:state.projection.turns.at(-1)})).catch(()=>undefined);
+  if(live&&!report.paidRequests)report.paidRequests=report.wire?.requests.length||0;
+  report.snapshot=await snapshot().then(state=>{
+    const turn=state.projection.turns.at(-1);
+    return {running:state.running,turn:live?{status:turn?.status,errorCode:turn?.errorCode}:turn};
+  }).catch(()=>undefined);
   await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>undefined);
   console.error(report.error);
   process.exitCode=1;
