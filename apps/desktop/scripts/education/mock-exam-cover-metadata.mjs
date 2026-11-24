@@ -29,4 +29,16 @@ assert.deepEqual(termResult.cover,{page:1,academicYear:2024,academicEndYear:2025
 assert.deepEqual(termResult.conflicts,['year']);
 assert.equal(mockExamCoverHeader('1. 上海2025年模拟的题干'), '');
 assert.equal(inferMockExam(file,'',{year:2025}).metadata.year,2025);
-console.log(JSON.stringify({ok:true,checks:8}));
+const spring=mockExamCoverHeader('2025学年第二学期九年级综合练习\n(2026.05)\n物理部分\n(物理、化学、跨学科共120分钟)\n1. 徐汇模拟题正文');
+const springFile='2026奉贤三模(3).pdf';
+const springScope={year:2026,subject:'物理',grade:'九年级',districts:['奉贤区'],rounds:['三模']};
+const springResult=inferMockExam(springFile,'',springScope,spring);
+assert.deepEqual(springResult.metadata,{district:'奉贤区',year:2026,subject:'物理',grade:'九年级',round:'三模'});
+assert.deepEqual(springResult.cover,{page:1,academicYear:2025,examMonth:{year:2026,month:5}});
+assert.equal(inferMockExam(springFile,'',{...springScope,year:2025},spring),undefined);
+assert.equal(inferMockExam('26年6月风华初三三模模拟测试卷.pdf','',springScope,spring),undefined);
+assert.equal(inferMockExam('2026奉贤课堂练习.pdf','',springScope,spring),undefined);
+assert.deepEqual(inferMockExam('2026奉贤三模化学试卷.pdf','',{year:2026},spring).conflicts,['subject']);
+const wrongSeason=spring.replace('2026.05','2026.10');
+assert.deepEqual(inferMockExam(springFile,'',springScope,wrongSeason).conflicts,['year']);
+console.log(JSON.stringify({ok:true,checks:15}));

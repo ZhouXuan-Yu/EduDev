@@ -12,6 +12,7 @@ export const standaloneAnswers=(name:string)=>/(?:答案册|答案解析|参考�
   !/(?:含|附|及|带)(?:参考)?答案/u.test(name);
 const yearsIn=(text:string)=>unique([...text.matchAll(/(?<!\d)(19[9]\d|20\d\d|2100)(?!\d)/gu)].map(hit=>Number(hit[1])));
 const questionStart=/(?:^|[。；\s])(?:(?:[一二三四五六七八九十]+[、.]\s*)?(?:填空题|选择题|解答题|计算题|简答题|实验题|阅读理解)|第\s*\d+\s*题|[1-9]\d?[.．、]\s*(?!\d))/u;
+const comprehensiveTitle=/^\d{4}\s*学年(?:度)?[^\n]{0,42}综合(?:练习|测试)(?:\s|$)/u;
 
 /** Read the bounded first-page title before the printed question sections. */
 export function mockExamCoverHeader(text:string):string {
@@ -23,7 +24,7 @@ export function mockExamCoverHeader(text:string):string {
     break;
   }
   const heading=lines.join('\n');
-  return hasMarker(heading)?heading:'';
+  return hasMarker(heading)||comprehensiveTitle.test(heading)&&mockExamGradesIn(lines[0]).length===1?heading:'';
 }
 
 function coverEvidence(filename:string,heading:string) {
@@ -40,6 +41,14 @@ function coverEvidence(filename:string,heading:string) {
   const cohorts=unique([...filename.matchAll(/(?<!\d)(\d{4})\s*届/gu)].map(match=>Number(match[1])).filter(mockExamYear));
   if(cohorts.length===1)evidence.filenameCohort=cohorts[0];
   return evidence;
+}
+
+function printedClassificationYears(cover:MockExamCoverEvidence,filenameYears:number[]){
+  const {academicYear,examMonth}=cover;
+  // A printed spring date confirmed by the filename can belong to the preceding school year.
+  if(academicYear!==undefined&&examMonth?.year===academicYear+1&&examMonth.month<=8&&
+    filenameYears.length===1&&filenameYears[0]===examMonth.year)return [examMonth.year];
+  return unique([academicYear,examMonth?.year].filter(mockExamYear));
 }
 
 export const mockExamDistrictsIn=(text:string)=>districts.filter(([,alias])=>text.includes(alias)).map(([name])=>name);
@@ -67,8 +76,10 @@ export function inferMockExam(title:string,header:string,scope:MockExamScope,pag
   const name=matches(filename),parsed=matches(body);
   if(cover){
     if(cover.filenameCohort!==undefined)name.year=[cover.filenameCohort];
-    const printedYears=[cover.academicYear,cover.examMonth?.year].filter(mockExamYear);
-    if(printedYears.length)parsed.year=unique(printedYears);
+    const printedYears=printedClassificationYears(cover,name.year);
+    if(printedYears.length)parsed.year=printedYears;
+    const printedParts=MOCK_EXAM_SUBJECTS.filter(subject=>new RegExp(`(?:^|\n)\\s*${subject}\\s*部分(?=\\s|\\(|$)`,'u').test(body));
+    if(printedParts.length)parsed.subject=printedParts;
   }
   const city=filename+' '+body;
   if(!name.district.length&&!parsed.district.length&&!city.includes('上海'))return;
