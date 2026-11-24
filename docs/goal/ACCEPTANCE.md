@@ -3998,6 +3998,8 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 
 对话教案的课时、目标覆盖、工具合同隔离和连续会话回归记录见 [D3 教案证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案的课时与提交结构)。
 
+从题本原题出小测的学科、年级、来源约束与高二物理单例 已实现。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
+
 自拟课堂材料的数量、正文、原编辑器、正式确认与导出冷读 已实现。 [D3 材料专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
 
 D3 勾选导入和手动整理入口通过真实 Electron 专项。批量发现、选择确认、冷启动、放弃、版本变化和表单权限均有证据。

@@ -44,6 +44,22 @@ const typeQuota = new RegExp('^(单项选择题|多项选择题|不定项选择�
 const subjectLabel = /^学科\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
 const gradeLabel = /^年级\s*[:为]\s*([\p{L}\p{N}·()]{1,18})$/u;
 const originalOnly = /^(?:只|仅)(?:使用|从|用)(?:本地)?题库(?:选题|抽题|组卷)?$|^不(?:使用|采用)生成题$|^(?:不|不要)(?:添加|新增|生成)新题$/u;
+const localPaperBank = /^(?:请(?:帮我|你)?\s*|麻烦\s*)?(只|仅)?(?:从|用)(?:现有|本地|已有)*(?:的)?(?:题本|题库)(?:里的?|中的?|的)?(原题(?:中|里)?)?\s*(?:组(?!织|合)|出(?!现|版|示|错)|生成|制作|创建|编制|编写|设计)/u;
+const schoolGrade = "(?:(?:小学|初中|高中)?[一二三四五六七八九1-9]年级|[初高][一二三1-3]|预初|初中预备年级)";
+const schoolSubject = "(?:思想政治|道德与法治|信息科技|综合实践活动|数学|物理|化学|语文|英语|生物|地理|历史|科学|音乐|美术|体育|劳动)";
+const gradeFirst = new RegExp(String.raw`(${schoolGrade})\s*的?\s*(${schoolSubject})`, "gu");
+const subjectFirst = new RegExp(String.raw`(${schoolSubject})\s*的?\s*(${schoolGrade})`, "gu");
+
+function bankRequest(head: string) {
+  const lead = localPaperBank.exec(head);
+  if (!lead) return;
+  const description = head.slice(lead[0].length);
+  const pairs = [
+    ...Array.from(description.matchAll(gradeFirst), match => ({ grade: match[1], subject: match[2] })),
+    ...Array.from(description.matchAll(subjectFirst), match => ({ grade: match[2], subject: match[1] })),
+  ].filter(pair => equivalentQuestionGradeLabels(pair.grade).length > 1);
+  return { pairs, originalOnly: Boolean(lead[1] || lead[2]) };
+}
 
 /** Only literal whole-paper clauses from the teacher may constrain a model-submitted blueprint. */
 function clauses(request: string): string[] {
@@ -73,9 +89,13 @@ export function hasCompleteOriginalPaperTotals(request: string): boolean {
   const [count, points, minutes] = (['count','points','minutes'] as const).map(field => statedTotals(terms,field));
   if (count.size !== 1 || points.size !== 1 || minutes.size !== 1) return false;
   const perQuestion=statedUniformPoints(terms);
+  const scope = bankRequest(terms[0] ?? "");
+  const first = scope?.pairs[0];
+  if (!scope || !first || scope.pairs.some(pair => pair.subject !== first.subject ||
+    !equivalentQuestionGradeLabels(first.grade).includes(pair.grade))) return false;
   return [...count][0] <= 100 && [...points][0] <= 10000 && [...minutes][0] <= 1440
     && (perQuestion.size===0 || perQuestion.size===1 && [...perQuestion][0]*[...count][0]===[...points][0])
-    && terms.some(clause => originalOnly.test(clause));
+    && (scope.originalOnly || terms.some(clause => originalOnly.test(clause)));
 }
 
 function statedUniformPoints(terms: readonly string[]): Set<number> {
@@ -102,13 +122,19 @@ export function compareTeacherPaperConstraints(request: string, blueprint: Paper
   const uniformPoints=statedUniformPoints(terms);
   if(uniformPoints.size>1)return 'ambiguous';
   if(uniformPoints.size===1&&blueprint.sections.some(section=>!uniformPoints.has(section.points)))return 'points';
-  const subjects = new Set(terms.flatMap(clause => subjectLabel.exec(clause)?.[1] ?? []));
-  if (subjects.size > 1) return 'ambiguous';
+  const scope = bankRequest(terms[0] ?? "");
+  const subjects = new Set([
+    ...terms.flatMap(clause => subjectLabel.exec(clause)?.[1] ?? []),
+    ...(scope?.pairs.map(pair => pair.subject) ?? []),
+  ]);
+  const grades = [
+    ...terms.flatMap(clause => gradeLabel.exec(clause)?.[1] ?? []),
+    ...(scope?.pairs.map(pair => pair.grade) ?? []),
+  ];
+  if (subjects.size > 1 || grades.some(grade => !equivalentQuestionGradeLabels(grades[0]).includes(grade))) return 'ambiguous';
   if (subjects.size === 1 && !subjects.has(blueprint.subject.normalize('NFKC'))) return 'subject';
-  const grades = terms.flatMap(clause => gradeLabel.exec(clause)?.[1] ?? []);
-  if (grades.some(grade => !equivalentQuestionGradeLabels(grades[0]).includes(grade))) return 'ambiguous';
-  if (grades.length && !equivalentQuestionGradeLabels(grades[0]).includes(blueprint.grade)) return 'grade';
-  if (blueprint.mode !== 'source_only' && terms.some(clause => originalOnly.test(clause))) return 'source';
+  if (grades.length && !equivalentQuestionGradeLabels(grades[0]).includes(blueprint.grade.normalize('NFKC'))) return 'grade';
+  if (blueprint.mode !== 'source_only' && (scope?.originalOnly || terms.some(clause => originalOnly.test(clause)))) return 'source';
 
   const quotas = new Map<string, number>();
   for (const clause of terms) {

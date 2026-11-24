@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+D3 对话原题小测从教师原话约束学科、年级和原题来源。小学、初中和高中可在范围明确时直接提交首轮蓝图。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
+
 D3 对话开教案会核对明确要求的模拟材料数量和正文。实际七年级历史单例已持久化两份正文，经过确认后从同一版本导出 Word 和 PDF。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
 
 D3 对话教案的课时已接入原工具核验。明确全课分钟时，错配会在写入前返回具体差值。目标、活动与评价回到原教案版本账本。 [证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案的课时与提交结构)

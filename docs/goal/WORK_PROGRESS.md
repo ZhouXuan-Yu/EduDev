@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 扩展原题小测的学段和自然措辞，并把教师指定的学科、年级和来源落实到宿主组卷准入。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
+
 D3 补齐课堂活动所需的自拟材料。覆盖缺正文、重复正文、正常交付、教师确认、同版双格式与冷启动。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
 
 补齐对话开课的明确课时和教案工具提交结构。多学科自然样本和教师备课反馈继续按 D3 综合验收跟踪。 [证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案的课时与提交结构)

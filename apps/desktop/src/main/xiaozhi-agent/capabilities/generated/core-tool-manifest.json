@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "5499938e17c623f2e81d683a14f936a6d215e0d9dd8bd97207198619b00bf947",
+  "sourceHash": "37d9ec3299fd8e792b443a91cbbaf209098365ff4ee027ff8398ff5f6c7bbbbd",
   "sources": [
     {
       "file": "package-lock.json",
@@ -256,7 +256,7 @@
     },
     {
       "file": "src/main/education/paper-admission.ts",
-      "sha256": "5e4487781838d4a584c8870d65d0023e30c0036c470c5ce1b52e997a68e5baf4"
+      "sha256": "77220813172e76d12b2181aa8b746ed58254c9949668d1fd289ed51f80817590"
     },
     {
       "file": "src/main/education/paper-agent-read.ts",
@@ -328,7 +328,7 @@
     },
     {
       "file": "src/main/education/paper-request-constraints.ts",
-      "sha256": "1db7072734d8ffaa9ccfceddb612f58006cf25eb9060685dc76b8c929feac866"
+      "sha256": "aa249da459ade065b7cc91120b6dfa396d3a396e8b3d69ad14c08862e5c15707"
     },
     {
       "file": "src/main/education/paper-rich-export.ts",
@@ -832,7 +832,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "4c65f267385a66f0f332f13363b818e6b6fa65dfda8d62543fe11238db558905"
+      "sha256": "1ed01d6334f65e0335b27302e926d29c9a7b25d468cdede79d1fac08a3af4e02"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",

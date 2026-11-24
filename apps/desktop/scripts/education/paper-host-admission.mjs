@@ -59,7 +59,7 @@ const decision=(paper,action='confirm')=>({schemaVersion:PAPER_SCHEMA,sessionId,
 const checks=[],check=async(name,fn)=>{await fn();checks.push({name,pass:true});console.log('PASS '+name);};
 // Each scope case has a genuine current task and SDK receipt. A source mismatch
 // must not accidentally satisfy a test intended to prove teacher operation scope.
-async function scopeCase(request,{allowed=false,modelPlan=false,correction,continueRun=false}={}){
+async function scopeCase(request,{allowed=false,modelPlan=false,correction,continueRun=false,proposal=blueprint,rejection='task_paper_request_scope'}={}){
  const sid='aisession_'+randomUUID();db.prepare("INSERT INTO ai_conversation_sessions VALUES(?,'',NULL)").run(sid);
  let rid,cmd,pub,currentTask;
  const scopedStore={...store,getAiConversationSession:async()=>({session:{id:sid},messages:db.prepare('SELECT * FROM ai_conversation_messages WHERE session_id=? ORDER BY rowid').all(sid).map(row=>({id:row.id,role:row.role,content:row.content,metadata:JSON.parse(row.metadata_json)}))})};
@@ -83,15 +83,15 @@ async function scopeCase(request,{allowed=false,modelPlan=false,correction,conti
   await makeRuntime().refresh();
   const call='scope_'+randomUUID();pub.enqueue({kind:'tool_start',tool:def.name,callId:call});await pub.flush();
   const bound={sessionId:sid,runId:rid,commandId:cmd,generation:pub.owner.generation,callId:call,taskId:currentTask.id,requirementsVersion:currentTask.requirementsVersion},before=count();
-  if(allowed)assert.equal((await scoped.admitProposal(bound,blueprint)).kind,'paper_review');
-  else await assert.rejects(()=>scoped.admitProposal(bound,blueprint),error=>error.message==='task_paper_request_scope');
+  if(allowed)assert.equal((await scoped.admitProposal(bound,proposal)).kind,'paper_review');
+  else await assert.rejects(()=>scoped.admitProposal(bound,proposal),error=>error.message===rejection);
   assert.equal(count(),before);
  }finally{scoped.close();await pub.flush();}
 }
 try{
  await check('Original task gate reproduces task_plan_required before paper creation',async()=>{generic=true;const response=await execute(def,blueprint);generic=false;assert.equal(response.details.taskReason,'task_plan_required');assert.equal(count(),0);assert.equal(critical,0);});
  await check('Bare informational paper queries, unrelated reads and full-request prohibitions never authorize creation',async()=>{
-  for(const request of ['候选卷是什么？','只说明候选卷，不要生成候选卷。','请生成候选卷。暂不创建候选卷。','组卷是什么？','组卷怎么用？','组卷流程介绍','出卷是什么？','请读取资料并解释组卷流程。','只解释组卷，不要创建试卷。','请生成一份试卷。不要实际组卷，只解释方案。','请按蓝图组卷\n不要生成试卷。','请生成一份试卷；不要出卷，只解释方案。']){assert.equal(explicitlyRequestsPaper(request),false);await scopeCase(request);}
+  for(const request of ['候选卷是什么？','只说明候选卷，不要生成候选卷。','请生成候选卷。暂不创建候选卷。','组卷是什么？','组卷怎么用？','组卷流程介绍','出卷是什么？','请出三道小测题。','从本地题库出几道小测题。','请读取资料并解释组卷流程。','只解释组卷，不要创建试卷。','请生成一份试卷。不要实际组卷，只解释方案。','请按蓝图组卷\n不要生成试卷。','请生成一份试卷；不要出卷，只解释方案。']){assert.equal(explicitlyRequestsPaper(request),false);await scopeCase(request);}
   await scopeCase('请读取资料并解释组卷流程。',{modelPlan:true});
  });
  await check('Explicit teacher creation and the real QA request retain scope; bound continuation cannot expand it',async()=>{
@@ -112,11 +112,19 @@ try{
  });
  await check('Direct blueprint routing only covers complete, independent local-bank requests',async()=>{
   const prompt='请从现有题本的原题中组一份初二数学小测，不添加新题。限时20分钟，六题30分，每题5分。全部是解答题。先让我核对整卷再保存。';
-  assert(startsWithOriginalPaperBlueprint(prompt));
+  for(const variant of [
+    prompt,
+    prompt.replace('，不添加新题',''),
+    prompt.replace('初二数学','小学五年级语文'),
+    prompt.replace('初二数学','物理高中二年级').replace('组一份','出一份'),
+    prompt.replace('初二数学','初中预备年级数学'),
+  ])assert(startsWithOriginalPaperBlueprint(variant),variant);
   for(const variant of [
     prompt.replace('限时20分钟，',''),
-    prompt.replace('，不添加新题',''),
+    prompt.replace('的原题中','').replace('，不添加新题',''),
     prompt.replace('初二数学','初二'),
+    prompt.replace('初二数学','高中八年级物理'),
+    prompt.replace('初二数学','五年级数学和初二数学'),
     prompt.replace('每题5分','每题6分'),
     prompt+'全卷共八道题。',
     prompt+'先查原题。',
@@ -130,6 +138,16 @@ try{
     '从题本组卷是什么意思？',
     '从题本制作“初二数学小测”的例子。限时20分钟，六题30分，不添加新题。',
   ])assert.equal(startsWithOriginalPaperBlueprint(variant),false,variant);
+ });
+ await check('Natural original-bank scope rejects wrong subject, grade and generated sources before admission',async()=>{
+  const request='请从本地题本原题中组一份高二物理小测，限时40分钟，共1题10分。';
+  const proposal={...blueprint,subject:'物理',grade:'高中二年级'};
+  await scopeCase(request,{allowed:true,proposal});
+  await scopeCase(request,{proposal:{...proposal,grade:'高一'},rejection:'task_paper_requirements_grade'});
+  await scopeCase(request,{proposal:{...proposal,subject:'数学'},rejection:'task_paper_requirements_subject'});
+  await scopeCase(request,{proposal:{...proposal,mode:'ai_original'},rejection:'task_paper_requirements_source'});
+  await scopeCase(request+'年级：高一。',{proposal,rejection:'task_paper_requirements_ambiguous'});
+  await scopeCase('请从题本原题组一份小测，共1题10分。',{proposal:{...proposal,mode:'ai_original'},rejection:'task_paper_requirements_source'});
  });
  await check('Every current teacher correction criterion is authoritative, including later semicolon or newline prohibitions',async()=>{
   for(const later of ['不要实际组卷，只解释方案。','不要生成试卷。\n只解释方案。'])await scopeCase('请按蓝图组卷。',{correction:['请生成一份试卷。',later]});

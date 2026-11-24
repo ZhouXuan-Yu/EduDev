@@ -2,6 +2,8 @@
 
 ## 2026-11-22 小智长期个人教学 Agent D3
 
+跨学段原题小测的准入、来源隔离、教师确认和返回历史见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-41-从原题出指定学科和年级的小测)
+
 教案自拟材料已验证正文冷读、确认及两个文件的完整性。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案随附自拟材料正文)
 
 对话教案的明确课时、目标覆盖和连续会话恢复见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-教案的课时与提交结构)。
