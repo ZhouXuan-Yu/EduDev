@@ -1,7 +1,7 @@
 import {useEffect,useId,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {ChevronDown,ChevronUp} from 'lucide-react';
-import type {XiaozhiDecisionInput,XiaozhiWorkspaceSnapshot} from '../../../shared/xiaozhi-agent';
+import type {XiaozhiControl,XiaozhiDecisionInput,XiaozhiWorkspaceSnapshot} from '../../../shared/xiaozhi-agent';
 import {PiTeacherQuestionCard} from './PiControlCards';
 import {PiCopyApproval} from './PiCopyApproval';
 import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
@@ -9,16 +9,26 @@ import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiTextChangeCard} from './PiTextChangeCard';
 import {permissionAction} from './permissionPresentation';
-import {focusWorkspacePending,type WorkspacePendingItem} from './workspace-notifications';
+import {focusWorkspacePending,isRecoverableTeacherQuestion,type WorkspacePendingItem} from './workspace-notifications';
 import styles from '../../ui-system/composer-pending.module.css';
 
+function composerQuestion(item:XiaozhiControl) {
+  const label=item.options?.length?'选择或填写回答':'填写回答';
+  return {kind:'question' as const,id:item.id,label:item.state==='interrupted'?`继续 · ${label}`:label,item};
+}
+
 export function pendingComposerItems(snapshot:XiaozhiWorkspaceSnapshot|undefined,sessionId:string,runId:string|undefined) {
-  if(!snapshot?.running||snapshot.projection.threadId!==sessionId||!runId)return [];
+  if(!snapshot||snapshot.projection.threadId!==sessionId)return [];
+  const questions=(snapshot.controls||[]).filter(item=>item.kind==='question');
+  if(!snapshot.running){
+    const runs=new Set(snapshot.projection.turns.map(turn=>turn.id));
+    return questions.filter(item=>runs.has(item.runId)&&isRecoverableTeacherQuestion(snapshot,item)).map(composerQuestion);
+  }
+  if(!runId)return [];
   const owned=(snapshot.deliveries||[]).filter(item=>item.runId===runId);
   const bundled=new Set(owned.flatMap(item=>item.files.filter(file=>!file.carried).map(file=>file.draftId)));
   return [
-    ...(snapshot.controls||[]).filter(item=>item.runId===runId&&item.kind==='question'&&item.state==='pending')
-      .map(item=>({kind:'question' as const,id:item.id,label:item.options?.length?'选择或填写回答':'填写回答',item})),
+    ...questions.filter(item=>item.runId===runId&&item.state==='pending').map(composerQuestion),
     ...(snapshot.approvals||[]).filter(item=>item.runId===runId&&(item.permission?.state??item.state)==='pending')
       .map(item=>({kind:'approval' as const,id:item.id,label:item.permission?`授权 · ${permissionAction(item.permission.request.action)}`:'确认复制文件',item})),
     ...(snapshot.changes||[]).filter(item=>item.runId===runId&&item.state==='pending'&&!bundled.has(item.id))
@@ -55,7 +65,7 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   },[reveal,active?.id,collapsed]);
   if(!active)return null;
   const shared={sessionId,onRefresh,onOpen,running:true};
-  const title=active.kind==='question'?(active.item.options?.length?'小智需要你的选择':'小智需要你补充信息')
+  const title=active.kind==='question'?(active.item.state==='interrupted'?'继续回答小智的问题':active.item.options?.length?'小智需要你的选择':'小智需要你补充信息')
     :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件'):'确认保存文件';
   return <section ref={panel} aria-labelledby={headingId} className={styles.anchor} data-testid="pi-composer-pending-panel"
     onKeyDown={event=>{

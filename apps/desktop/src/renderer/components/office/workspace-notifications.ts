@@ -1,4 +1,4 @@
-import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
+import type { XiaozhiControl, XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
 
 const targets = {
   copy: ['pi-copy-approval', 'data-approval-id'],
@@ -10,6 +10,12 @@ const targets = {
 } as const;
 export type WorkspacePendingItem = { kind: keyof typeof targets; id: string; label: string };
 
+export function isRecoverableTeacherQuestion(snapshot: XiaozhiWorkspaceSnapshot, item: XiaozhiControl): boolean {
+  const task = snapshot.task;
+  return Boolean(!snapshot.running && task && task.state !== 'ended' && item.state === 'interrupted' && item.canResume
+    && (task.lastRunId ?? task.origin.runId) === item.runId);
+}
+
 /** Presentation facts only; the host still verifies permission, revision and files. */
 export function workspaceNotifications(snapshot?: XiaozhiWorkspaceSnapshot) {
   const pending: WorkspacePendingItem[] = [];
@@ -19,7 +25,11 @@ export function workspaceNotifications(snapshot?: XiaozhiWorkspaceSnapshot) {
     if (!runs.has(item.runId) || (item.permission?.state ?? item.state) !== 'pending') continue;
     pending.push(item.permission ? {kind:'permission',id:item.id,label:'确认操作授权'} : {kind:'copy',id:item.id,label:'确认复制资料'});
   }
-  for (const item of snapshot?.controls ?? []) if (runs.has(item.runId) && item.kind === 'question' && (item.state === 'pending' || item.state === 'interrupted' && item.canResume)) pending.push({ kind: 'question', id: item.id, label: '回答小智的问题' });
+  if (snapshot) for (const item of snapshot.controls ?? []) {
+    if (runs.has(item.runId) && item.kind === 'question' && (item.state === 'pending' || isRecoverableTeacherQuestion(snapshot,item))) {
+      pending.push({ kind: 'question', id: item.id, label: '回答小智的问题' });
+    }
+  }
   for (const item of snapshot?.changes ?? []) if (runs.has(item.runId) && !bundled.has(item.id) && item.state === 'pending') pending.push({ kind: 'change', id: item.id, label: '确认文件修改' });
   for (const item of snapshot?.officeArtifacts ?? []) if (runs.has(item.runId) && !bundled.has(item.id) && item.state === 'pending') pending.push({ kind: 'office', id: item.id, label: '确认文档草稿' });
   for (const item of snapshot?.deliveries ?? []) if (runs.has(item.runId) && item.state === 'pending') pending.push({ kind: 'delivery', id: item.id, label: '确认整包教学文件' });

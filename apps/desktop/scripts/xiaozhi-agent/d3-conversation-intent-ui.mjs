@@ -460,6 +460,16 @@ try{
       assert.equal(requests.length,count);
       const question=page.locator(`[data-testid="pi-teacher-question"][data-control-id="${controlId}"][data-state="interrupted"]`);
       await question.getByTestId('pi-question-option-1').waitFor({state:'visible',timeout:15_000});
+      const panel=page.getByTestId('pi-composer-pending-panel');
+      await panel.getByRole('heading',{name:'继续回答小智的问题'}).waitFor();
+      assert.equal(await question.count(),1);
+      assert.equal(await panel.locator(`[data-control-id="${controlId}"]`).count(),1);
+      const toggle=panel.getByTestId('pi-composer-pending-toggle');
+      await toggle.press('Escape');
+      assert.equal(await question.getByTestId('pi-question-answer').isVisible(),false);
+      await page.locator(`[data-testid="workspace-pending-approval"][data-pending-id="${controlId}"]`).press('Enter');
+      await question.getByTestId('pi-question-answer').waitFor({state:'visible'});
+      assert.equal(requests.length,count);
       return{task,controlId,question,count};
     }
     if(!sameConversation)await freshConversation();
@@ -482,7 +492,7 @@ try{
     assert.equal(requests.length,recovered.count+1);assert(requests.at(-1).recoveredTeacherAnswer);
     const repeat=await page.evaluate(input=>window.omniEdu.answerXiaozhi(input),{sessionId,controlId:recovered.controlId,answer:'五年级'});
     assert.deepEqual(repeat,{ok:true});assert.equal(requests.length,recovered.count+1);
-    check(`${abrupt?'意外关闭':'正常退出'}后回答原澄清卡，回到原 Task，重复回答保持零新增请求`);
+    check(`${abrupt?'意外关闭':'正常退出'}后从输入框上方的唯一弹窗补答，回到原 Task，重复回答保持零新增请求`);
 
     if(!sameConversation)await freshConversation();
     const cancelled=await interruptedQuestion('新建另一个教案任务，请先询问教师目标年级。');
@@ -493,9 +503,11 @@ try{
     await cancelledCard.getByTestId('pi-task-cancel').click();
     await cancelledCard.getByTestId('pi-task-confirm-cancel').click();
     await cancelledCard.getByTestId('pi-task-control-notice').filter({hasText:'任务已取消'}).waitFor({state:'visible'});
-    await cancelled.question.getByTestId('pi-question-option-1').click();
-    await cancelled.question.getByTestId('pi-question-submit').click();
-    await cancelled.question.getByRole('alert').filter({hasText:'这项任务已结束'}).waitFor({state:'visible'});
+    await cancelled.question.waitFor({state:'visible'});
+    assert.equal(await cancelled.question.getByTestId('pi-question-submit').count(),0);
+    assert.equal(await page.getByTestId('pi-composer-pending-panel').count(),0);
+    const staleAnswer={sessionId,controlId:cancelled.controlId,answer:'五年级'};
+    assert.deepEqual(await page.evaluate(input=>window.omniEdu.answerXiaozhi(input),staleAnswer),{ok:false,error:'task_ended'});
     assert.equal(requests.length,cancelled.count);
     assert.equal(taskRecords().find(task=>task.id===cancelled.task.id).state,'ended');
     assert.deepEqual(runAuthority(),frozenAuthority);
@@ -504,8 +516,9 @@ try{
     const newer=await send('另开一个新任务，给我一个五年级分数导入方案。');
     assert(newer.turn.task?.id&&newer.turn.task.id!==cancelled.task.id);
     const latestCount=requests.length;
-    await cancelled.question.getByTestId('pi-question-submit').click();
-    await cancelled.question.getByRole('alert').filter({hasText:'原任务或要求已变化'}).waitFor({state:'visible'});
+    assert.equal(await cancelled.question.getByTestId('pi-question-submit').count(),0);
+    assert.equal(await page.getByTestId('pi-composer-pending-panel').count(),0);
+    assert.deepEqual(await page.evaluate(input=>window.omniEdu.answerXiaozhi(input),staleAnswer),{ok:false,error:'task_context_changed'});
     assert.equal(requests.length,latestCount);
     assert.equal(taskRecords().find(task=>task.id===cancelled.task.id).state,'ended');
     check('原任务被替换后，历史问题不能串到当前任务');

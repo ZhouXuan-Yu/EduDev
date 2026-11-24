@@ -37,7 +37,7 @@ async function until(predicate, message) {
 }
 
 try {
-  const options = {background: true, onPageError: error => report.errors.push(error.message)};
+  const options = {background: true, seed:!process.argv.includes('--fresh-database'), onPageError: error => report.errors.push(error.message)};
   fixture = await startWorkbenchFixture(options);
   root = fixture.root;
   report.root = root;

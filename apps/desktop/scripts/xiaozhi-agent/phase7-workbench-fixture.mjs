@@ -11,10 +11,13 @@ import {testMain} from '../acceptance/build-root.mjs';
 
 export async function startWorkbenchFixture(options = {}) {
   const main = testMain(process.cwd());
-  // The seed bundles source, while the app runs the selected frozen build.
-  const manifest = JSON.parse(fs.readFileSync('src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json', 'utf8'));
-  assert(typeof manifest.sourceHash === 'string' && /^[a-f0-9]{64}$/u.test(manifest.sourceHash)
-    && fs.readFileSync(main).includes(manifest.sourceHash), 'Workbench seed and selected build have different core provider manifests');
+  const seed = options.seed !== false;
+  if (seed) {
+    // The seed bundles source, while the app runs the selected frozen build.
+    const manifest = JSON.parse(fs.readFileSync('src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json', 'utf8'));
+    assert(typeof manifest.sourceHash === 'string' && /^[a-f0-9]{64}$/u.test(manifest.sourceHash)
+      && fs.readFileSync(main).includes(manifest.sourceHash), 'Workbench seed and selected build have different core provider manifests');
+  }
   const prefix = options.background ? 'omni-edu-xiaozhi-phase7-workbench-ui-' : 'xiaozhi-phase7-workbench-ui-';
   const root = options.root || fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   assert(path.resolve(root).startsWith(path.resolve(os.tmpdir()) + path.sep), 'Owned C TEMP fixture only');
@@ -70,8 +73,11 @@ export async function startWorkbenchFixture(options = {}) {
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve)); const origin = 'http://127.0.0.1:' + server.address().port;
   const bundle = path.join(root, 'seed.mjs');
-  await build({entryPoints: ['scripts/xiaozhi-agent/phase7-workbench-fixture-seed.ts'], outfile: bundle, bundle: true, platform: 'node', target: 'node24', format: 'esm', packages: 'external', logLevel: 'warning'});
-  fs.copyFileSync('package.json', path.join(root, 'package.json')); if (!fs.existsSync(path.join(root, 'node_modules'))) fs.symlinkSync(path.resolve('node_modules'), path.join(root, 'node_modules'), 'junction');
+  if (seed) {
+    await build({entryPoints: ['scripts/xiaozhi-agent/phase7-workbench-fixture-seed.ts'], outfile: bundle, bundle: true, platform: 'node', target: 'node24', format: 'esm', packages: 'external', logLevel: 'warning'});
+    fs.copyFileSync('package.json', path.join(root, 'package.json'));
+    if (!fs.existsSync(path.join(root, 'node_modules'))) fs.symlinkSync(path.resolve('node_modules'), path.join(root, 'node_modules'), 'junction');
+  }
   const approvalDetailDelayMs = options.approvalDetailDelayMs ?? 0;
   assert(Number.isInteger(approvalDetailDelayMs) && approvalDetailDelayMs >= 0 && approvalDetailDelayMs <= 5000);
   const delayApprovalDetail = approvalDetailDelayMs ? `
@@ -86,7 +92,9 @@ export async function startWorkbenchFixture(options = {}) {
       : original);
   ` : '';
   const bootstrap = path.join(root, 'bootstrap.cjs');
-  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net,ipcMain}=require('electron');${delayApprovalDetail}app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{if(!fs.existsSync(${JSON.stringify(path.join(root, 'FIXTURE_IDS.json'))})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)},${options.capabilityControls === true});}await import(${JSON.stringify(pathToFileURL(main).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
+  const idsPath = path.join(root, 'FIXTURE_IDS.json');
+  const bootstrapSeed = seed ? `if(!fs.existsSync(${JSON.stringify(idsPath)})){const seed=await import(${JSON.stringify(pathToFileURL(bundle).href)});await seed.seedWorkbenchFixture(${JSON.stringify(root)},${JSON.stringify(origin + '/fixture/control')},${JSON.stringify(token)},${options.capabilityControls === true});}` : '';
+  fs.writeFileSync(bootstrap, `const fs=require('node:fs');const {app,net,ipcMain}=require('electron');${delayApprovalDetail}app.setPath('userData',${JSON.stringify(path.join(root, 'profile'))});net.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);if(url.origin!=='https://api.deepseek.com')throw Error('fixture_external_network_forbidden');return fetch(${JSON.stringify(origin)}+url.pathname,init);};app.whenReady().then(async()=>{try{${bootstrapSeed}await import(${JSON.stringify(pathToFileURL(main).href)});}catch(error){fs.writeFileSync(${JSON.stringify(path.join(output, 'bootstrap-error.txt'))},String(error.stack));console.error(error);app.exit(1);}});`);
   const env = {...process.env, OMNI_EDU_DATA_ROOT: path.join(root, 'data'), OMNI_EDU_REPO_ROOT: path.resolve('../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: 'synthetic-phase7-loopback', DEEPSEEK_MODEL: 'deepseek-flash'};
   if (options.background) {
     fs.mkdirSync(env.OMNI_EDU_DATA_ROOT, {recursive: true});
@@ -108,9 +116,9 @@ export async function startWorkbenchFixture(options = {}) {
     if (options.background) assert.equal(await application.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isVisible()), false);
     await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
     await application.evaluate(({BrowserWindow}, title) => {BrowserWindow.getAllWindows()[0].setTitle(title);}, 'Phase7 Synthetic Workbench · ' + path.basename(root));
-    const ids = JSON.parse(fs.readFileSync(path.join(root, 'FIXTURE_IDS.json'), 'utf8'));
+    const ids = seed ? JSON.parse(fs.readFileSync(idsPath, 'utf8')) : {};
     fs.writeFileSync(path.join(root, 'RUNNING.json'), JSON.stringify({root, dataRoot: path.join(root, 'data'), profileRoot: path.join(root, 'profile'), pid: application.process().pid,
-      title: 'Phase7 Synthetic Workbench · ' + path.basename(root), modelOrigin: origin, paidCalls: 0, ids: path.join(root, 'FIXTURE_IDS.json')}, null, 2));
+      title: 'Phase7 Synthetic Workbench · ' + path.basename(root), modelOrigin: origin, paidCalls: 0, ...(seed ? {ids: idsPath} : {})}, null, 2));
     return {root, output, main, application, page, ids, requests, log, holdNextReply,
       scenario: tools => {queue.splice(0, queue.length, ...tools);},
       close: async () => {await application.close(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); fs.writeFileSync(path.join(root, 'STOPPED.json'), JSON.stringify({paidCalls: 0, modelCalls: requests.length, errors: log}, null, 2));}};

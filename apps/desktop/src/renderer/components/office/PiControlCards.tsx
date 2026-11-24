@@ -9,7 +9,7 @@ import {inComposerQueue} from './PiComposerQueue';
 import {followUpLabel} from './composer-follow-up';
 import './pi-control-surfaces.css';
 
-export function PiControlCards({items,onAnswer}:{items:XiaozhiControl[];onAnswer:(id:string,answer:string)=>Promise<void>}) {
+export function PiControlCards({items,onAnswer}:{items:XiaozhiControl[];onAnswer?:(id:string,answer:string)=>Promise<void>}) {
   return <>{items.filter(item=>item.kind!=='plan'&&!inComposerQueue(item)).map(item=>
     item.kind==='question'?<PiTeacherQuestionCard key={item.id} item={item} onAnswer={onAnswer}/>:
     <InstructionHistory key={item.id} item={item}/>)}</>;
@@ -35,11 +35,11 @@ function InstructionHistory({item}:{item:XiaozhiControl}){
     </ChatTool>
   </div>;
 }
-export function PiTeacherQuestionCard({item,onAnswer,inComposer=false}:{item:XiaozhiControl;onAnswer:(id:string,answer:string)=>Promise<void>;inComposer?:boolean}) {
+export function PiTeacherQuestionCard({item,onAnswer,inComposer=false}:{item:XiaozhiControl;onAnswer?:(id:string,answer:string)=>Promise<void>;inComposer?:boolean}) {
   const {draft,update,lock}=useOfficeControlState(item.id,{answer:item.answer||''});const {answer,busy,error}=draft;
-  const editable=item.state === 'pending' || (item.state === 'interrupted' && item.canResume);
+  const editable=Boolean(onAnswer&&(item.state==='pending'||(item.state==='interrupted'&&item.canResume)));
   async function submit(value:string) {
-    if (!editable || lock.current || !value.trim()) return;
+    if (!onAnswer || !editable || lock.current || !value.trim()) return;
     lock.current=true;update({busy:true,error:''});
     try {await onAnswer(item.id,value.trim());}
     catch(error){
