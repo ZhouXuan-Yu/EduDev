@@ -108,6 +108,22 @@ await check("A complete ruled grid preserves position and refuses broken, merged
     assert.equal(cell.needsReview, true);
   }
 });
+await check("Only a local divider attached to an existing grid crossing can veto the grid", () => {
+  const width=360,height=300,region=[24/360,20/300,335/360,268/300];
+  for(const horizontal of [false,true]){
+    for(const connected of [false,true]){
+      const pixels=Buffer.alloc(width*height*4,255);
+      const dot=(x,y)=>pixels.fill(12,(y*width+x)*4,(y*width+x)*4+3);
+      for(const x of [24,176,335])for(let y=20;y<=268;y++)dot(x,y);
+      for(const y of [20,136,268])for(let x=24;x<=335;x++)dot(x,y);
+      if(horizontal){for(let x=connected?24:36;x<165;x++)dot(x,78);}
+      else{for(let y=connected?136:148;y<257;y++)dot(242,y);}
+      const grid=ruledTableGrid({width,height,pixels},region);
+      if(connected)assert.equal(grid,undefined);
+      else assert.deepEqual(grid.map(row=>row.length),[2,2]);
+    }
+  }
+});
 const formulaRows = [
   ["15. 已知质量、压强和时间，求物体受力。", .10, .42, .55],
   ["pwD", .63, .488, .04], ["物体所受压力可记为T=", .39, .50, .24],
