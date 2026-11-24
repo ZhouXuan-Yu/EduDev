@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "b7bc34f48d9ebedfe092d803babed18c4c27172604fcdbb3834cf24c7067d43c",
+  "sourceHash": "06da2b50732d42ef85b7987272c39257321016edabac3cc2f9bd5cc51a8f1148",
   "sources": [
     {
       "file": "package-lock.json",
@@ -175,12 +175,16 @@
       "sha256": "6a3a7e3227045f69cd010f45d6091921b7106c38daf0461ba64e48975bf90e44"
     },
     {
+      "file": "src/main/education/lesson-agenda-revision.ts",
+      "sha256": "b01e746928bf09ac2d6df17ce82d96e96b7d698338570c98b0855a68f01fd90e"
+    },
+    {
       "file": "src/main/education/lesson-revision-request.ts",
-      "sha256": "31438786ea0d9d3f6a48c149ee87fb20065f4dcd2858735339df1c67b2b3733e"
+      "sha256": "eb760136b8d892a42f4fd21f3277c3c1bff7bcb9404aa32f86a5bf80cf07efe1"
     },
     {
       "file": "src/main/education/lesson-revision-tools.ts",
-      "sha256": "8946ffcd0a5406f4cbd0e9520a4ddf727a99f11c066bc3f2f22f26021c5ca6bb"
+      "sha256": "b9ab9229555e8d545e2e32666923ae605828449dd4afd529e79ec4173e642b69"
     },
     {
       "file": "src/main/education/math-host.ts",
@@ -856,7 +860,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "b31162111961a7c4af5e727f3e51988a997f39709923adc8f5f6340798cddbcc"
+      "sha256": "8e0f6d419f9abc8581d71e08e6ea4e4074a97592e12afac32382ed5a5639992c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1556,7 +1560,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "5aec85461e16f7962fc85e6752430a2fd021043d9e5d5a2704d2c8d529ee79fe"
+      "sha256": "a3fbf3fbe3cabbcb0d851628ce862e1a620adeba3e736bb251d323172f33da94"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -2752,7 +2756,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "843262724da0328b9fe42594c0d3afbc36fd74ac18cf89b04a907c4b0499a525"
+      "sha256": "de68cd1623554e4e31e23e1c7d55ee4978919cc2d53ae1e5dfba5be92830e76f"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

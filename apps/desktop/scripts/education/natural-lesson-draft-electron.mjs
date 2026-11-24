@@ -13,9 +13,12 @@ assert(acceptance);
 const useLive = process.env.OMNI_EDU_NATURAL_LESSON_LIVE === "1";
 const testRevision = process.argv.includes("--revision");
 const testAmbiguous = process.argv.includes("--ambiguous");
+const testAgenda = process.argv.includes("--agenda");
 assert(!testRevision || !useLive);
 assert(!testAmbiguous || testRevision);
+assert(!testAgenda || !testRevision && !useLive);
 const revisionBoardwork = "左侧列出观察事实，右侧列出解释与反例，中间用箭头连接证据。";
+const revisedPractice = "学生独立写一条有依据的解释，再两人互查引用；各自指出一个未控制的条件。";
 const apiKey = useLive ? process.env.DEEPSEEK_API_KEY : "local-fixture-only";
 assert(apiKey);
 const root = fs.mkdtempSync(path.join(acceptance, "lesson-from-chat-"));
@@ -100,6 +103,26 @@ async function launch(cold) {
             if(!tool) throw Error("Second draft did not use the original classroom tool");
             toolCall={name:tool.name,arguments:JSON.stringify({...input.draft,title:"独立的合成课观察复习",details:{...input.draft.details,boardwork:"第二份教案专用板书，保持原样。"}})};
           }else message="第二份独立教案草稿已保存。";
+        } else if(wire.mode.startsWith("agenda-")) {
+          const edit=request.tools?.find(entry=>entry.function.name==="education_propose_classroom_outline")?.function;
+          const activity=wire.mode==="agenda-activity";
+          if(JSON.stringify(edit?.parameters.required)!==JSON.stringify(activity?["activity"]:[])) throw Error("Agenda tool admits unexpected fields");
+          if(stage===0)toolCall={name:"education_read_classroom_plan",arguments:"{}"};
+          else{
+            const latest=JSON.parse(request.messages.filter(entry=>entry.role==="tool").at(-1)?.content?.split("\n")[0]||"{}");
+            if(wire.mode==="agenda-conflict"){
+              if(latest.error!=="lesson_timing_mismatch"||!latest.message.includes("40 分钟")||!latest.message.includes("43 分钟"))throw Error("Missing precise lesson-time mismatch");
+              message=latest.message;
+            }else if(stage===1){
+              if(latest.success!==true)throw Error("Agenda reading failed: "+JSON.stringify(latest));
+              if(activity && (latest.current.activity!==input.draft.scenes[2].activity||!latest.stage.teacherPrompt))throw Error("Activity context does not identify the existing practice stage");
+              if(!activity && latest.proposedTotalMinutes!==(wire.mode==="agenda-total"?41:40))throw Error("Agenda did not calculate the expected lesson total");
+              toolCall={name:edit.name,arguments:JSON.stringify(activity?{activity:input.revisedPractice}:{})};
+            }else{
+              if(latest.success!==true||latest.status!=="draft")throw Error("Agenda version did not save: "+JSON.stringify(latest));
+              message="指定的教案环节已保存为下一版草稿，请打开教案核对。";
+            }
+          }
         } else if(wire.mode === "revision") {
           const methods = request.tools?.map(entry=>entry.function.name).sort();
           if(JSON.stringify(methods)!==JSON.stringify(["ask_teacher","education_propose_classroom_outline","education_read_classroom_plan"])) throw Error("Revision admitted a different tool set");
@@ -195,7 +218,7 @@ async function launch(cold) {
         {headers:{"Content-Type":"text/event-stream"}});
       } catch(error) { wire.errors.push(String(error)); throw error; }
     };
-  }, { prompt, draft:draftInput, cold, live: useLive, revisionBoardwork, testAmbiguous });
+  }, { prompt, draft:draftInput, cold, live: useLive, revisionBoardwork, testAmbiguous, revisedPractice });
   const page = await app.firstWindow();
   await page.getByTestId("office-prompt-input").waitFor({ timeout: 60000 });
   await until(async () => !await page.getByTestId("office-prompt-input").isDisabled());
@@ -265,7 +288,55 @@ try {
   await page.screenshot({path:path.join(root,"lesson-from-chat.png")});
   check("Both labelled full texts are stored in the editable Teaching Content field");
   let expectedHead=record.id;
-  if(testRevision){
+  if(testAgenda){
+    await page.getByTestId("classroom-plan-source-chat").click();
+    const cases=[
+      ["agenda-activity","请只修改这份教案的练习环节活动，改为先独立写一条解释，再交流。", "succeeded"],
+      ["agenda-conflict","请把这份教案的导入环节改为8分钟。", "failed"],
+      ["agenda-time","请把这份教案的导入环节改为8分钟，练习环节改为7分钟。", "succeeded"],
+      ["agenda-total","请把这份教案的总结环节改为6分钟，全课总时长改为41分钟。", "succeeded"],
+    ];
+    let previousRun=record.run_id;
+    const expected=structuredClone(payload.document);
+    for(const [mode,text,status] of cases){
+      await until(async()=>!await page.getByTestId("office-prompt-input").isDisabled());
+      await app.evaluate((_electron,name)=>{globalThis.lessonDraftWire.mode=name;}, mode);
+      await send(page,text);
+      const run=await until(()=>{
+        const next=query("SELECT id,status,error_message FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1")[0];
+        return next?.id!==previousRun&&["failed","succeeded"].includes(next?.status)?next:undefined;
+      });
+      assert.equal(run.status,status,run.error_message);
+      previousRun=run.id;
+      const rows=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan' ORDER BY rowid");
+      if(mode==="agenda-conflict"){
+        assert.equal(rows.length,2);
+        const snapshot=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),record.session_id);
+        assert(snapshot.projection.turns.find(turn=>turn.id===run.id).items.some(item=>item.kind==='message'&&item.text.includes('43 分钟')));
+        check("A 43-minute subtotal conflicting with the 40-minute plan is shown to the teacher and adds no revision");
+      }else{
+        if(mode==="agenda-activity")expected.scenes[2].activity=revisedPractice;
+        if(mode==="agenda-time"){expected.scenes[0].durationMinutes=8;expected.scenes[2].durationMinutes=7;}
+        if(mode==="agenda-total"){expected.scenes[4].durationMinutes=6;expected.totalMinutes=41;}
+        const row=rows.at(-1), version=JSON.parse(row.payload_json);
+        assert.equal(version.previous,expectedHead);
+        assert.equal(version.root,record.id);
+        assert.equal(version.revision,rows.length);
+        assert.deepEqual(version.document,expected);
+        assert.deepEqual(version.context,payload.context);
+        assert.equal(JSON.parse(row.result_json).state,"draft");
+        expectedHead=row.id;
+        check(mode==="agenda-activity"?"The requested practice activity changes only its original scene":mode==="agenda-time"?"Two named durations change and preserve the 40-minute subtotal":"An explicit matching full-course total saves as 41 minutes");
+      }
+    }
+    const taskRow=query("SELECT value_json FROM app_settings WHERE key=?",`xiaozhi.task.v1:${task.view.id}`)[0];
+    assert.equal(JSON.parse(taskRow.value_json).view.lastRunId,previousRun);
+    await lessonCard(page,record.id).and(page.locator(`[data-plan-id="${expectedHead}"]`)).waitFor();
+    await openLessonFromChat(page,record.id,expectedHead);
+    await page.screenshot({path:path.join(root,"lesson-agenda-revision.png")});
+    report.wire=await app.evaluate(()=>globalThis.lessonDraftWire);
+    assert.deepEqual(report.wire.errors,[]);
+  }else if(testRevision){
     await page.getByTestId("classroom-plan-source-chat").click();
     await until(async()=>!await page.getByTestId("office-prompt-input").isDisabled());
     let independent;
@@ -390,7 +461,7 @@ try {
   await coldDetails.locator("button[aria-expanded]").first().click();
   assert.equal(await coldDetails.getByTestId("lesson-detail-content").inputValue(),savedContent);
   assert.equal((await app.evaluate(()=>globalThis.lessonDraftWire.stages)).length,0);
-  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,testAmbiguous?3:testRevision?2:1);
+  assert.equal(query("SELECT id FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").length,testAgenda?4:testAmbiguous?3:testRevision?2:1);
   check("Cold start opens the same stored lesson without replaying the provider request");
   report.ok = true;
 } catch(error) {

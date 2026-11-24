@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+教案环节和时长覆盖唯一环节、合计冲突、两处重新分配及指定新总时长。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
 D3 教案局部修订的任务归属、字段范围、版本读回及冷启见 [专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)。
 
 待处理面板包含短追问、当前授权及保存决定，验证标准见 [对话页面契约](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)。

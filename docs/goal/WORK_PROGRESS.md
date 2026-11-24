@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+D3 衔接对话修订的教案活动和时长范围，新稿纳入原教案版本账本。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
 D3 教案对话修订已接入原任务与版本账本，支持候选澄清和限定字段。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#对话局部修订教案)
 
 D3 补齐输入框上方待办的操作授权和复制确认入口。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#输入框上方的待确认面板)

@@ -29,6 +29,8 @@ D3 当前 **PARTIAL**。Phase 0–3 的个人版工程验收已有退出记录�
 
 ## 当前底座证据
 
+教案环节活动和明确课时分配完成原对话、同一教案新版本和冷启的实机验证。分钟冲突保留旧版本。 [环节与课时专项](04_PROGRESS_AND_EVIDENCE.md#phase-44-对话修改教学环节和课时)
+
 教案对话局部修订从原生 Pi 到原版和新草稿读回已覆盖单目标、两个目标澄清、越界拒绝、任务归属和冷启动。范围为教案的六个正文栏目。 [教案修订专项](04_PROGRESS_AND_EVIDENCE.md#phase-44-对话局部修订教案)
 
 确认面板发布提交 `77296ff35a3e553b6154af2219099592bb459b3d` 已在 GitHub `main`。对应构建 `d3-composer-ready`，main SHA-256 为 `6f0790f5119edf749403d80e2ff4a13ede56df7ea409e6facbcbe63cb592659c`。该构建包含独立文件和整包的预检等待门控。构建/TypeScript 通过，澄清 6/6、HTML 核对与恢复 13/13、整包拒绝 4/4、桌面综合冒烟 207/207。文件、命令、失败及分层说明保存在 `D:/WorkProject/EduProject/acceptance/D3-20261123/phase4-evidence-closeout/验收报告.md`。同一面板的外观前后变化、键盘行为与来源见 [设计规范对应](02_DESIGNSKILLS_MAPPING.md) 和 [本轮交互](04_PROGRESS_AND_EVIDENCE.md#输入框上方的待确认面板)。

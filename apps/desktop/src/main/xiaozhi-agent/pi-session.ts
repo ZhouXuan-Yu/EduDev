@@ -1026,7 +1026,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.answerOnly)names.length=0;
   if(options.lessonRevision){
     names.splice(0,names.length,...domainDefinitions.map(tool=>tool.name));
-    prompt+='\n本轮是修订已有教案，新的课堂大纲与文件工具不适用。先调用 education_read_classroom_plan。若返回候选，按回执逐字提供选项请老师选择，回答后重新读。随后仅将明确指定栏目的完整新文本提交给 education_propose_classroom_outline。其他内容由原版保留。成功后说明生成的待确认版本和修改栏目，告知老师可回原教案卡核对。只根据真实回执报告保存。';
+    prompt+='\n本轮是修订已有教案。先调用 education_read_classroom_plan。若返回候选，按回执逐字提供选项请老师选择，回答后重新读。按工具字段提交完整的指定栏目或环节活动。仅调整时长且已通过合计核对时，提交空对象，由宿主按原话保存分钟数。核对失败时向教师说明，避免自行分配课时。成功后说明生成的待确认版本和修改范围，告知老师可回原教案卡核对。只根据真实回执报告保存。';
   }
   const allowedPaperThinking=options.thinkingPolicy?.requested;
   const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')

@@ -8,7 +8,8 @@ import {assertClassroomContext} from './classroom-context';
 import {assertTeachingLessonContext} from './teaching-lesson-context';
 import {lessonDetailKeys, teachingLessonIssues, type LessonDetails} from '../../shared/teaching-lesson';
 import type {ClassroomPlanReference,ClassroomPlanReview} from '../../shared/classroom-plan';
-import type {LessonDetailKey} from './lesson-revision-request';
+import type {LessonRevisionRequest} from './lesson-revision-request';
+import {applyLessonAgenda} from './lesson-agenda-revision';
 
 type Row=Record<string,unknown>;
 type Payload={schemaVersion:typeof CLASSROOM_PLAN_SCHEMA;root:string;revision:number;previous:string;callId:string;inputDigest:string;document:ClassroomPlanDocument;context:ClassroomContext;restoredFrom?:ClassroomPlanSource};
@@ -86,7 +87,6 @@ export function createClassroomPlanState(sql:Sql){
  }
  async function revisionSource(work:Sql,sessionId:string,source:ClassroomPlanSource){
   const {row,value}=await realignmentSource(work,sessionId,source);
-  if(!value.document.lesson?.details)throw Error('invalid_input');
   await assertClassroomContext(work,value.context);
   await assertTeachingLessonContext(work,value.document,value.context);
   return {row,value};
@@ -107,20 +107,21 @@ export function createClassroomPlanState(sql:Sql){
  const state={
   async readLessonForRealignment(sessionId:string,source:ClassroomPlanSource){return (await realignmentSource(sql,sessionId,source)).value;},
   async readLessonForRevision(sessionId:string,source:ClassroomPlanSource){return (await revisionSource(sql,sessionId,source)).value;},
-  async reviseLesson(sessionId:string,runId:string,callId:string,source:ClassroomPlanSource,fields:LessonDetailKey[],patch:Partial<LessonDetails>,current:()=>boolean){
-   if(!fields.length||Object.keys(patch).length!==fields.length||!fields.every(key=>lessonDetailKeys.includes(key)&&Object.hasOwn(patch,key)))throw Error('invalid_input');
+  async reviseLesson(sessionId:string,runId:string,callId:string,source:ClassroomPlanSource,request:LessonRevisionRequest,patch:Record<string,unknown>,current:()=>boolean){
+   if('fields' in request&&(!request.fields.length||Object.keys(patch).length!==request.fields.length||!request.fields.every(key=>lessonDetailKeys.includes(key)&&Object.hasOwn(patch,key))))throw Error('invalid_input');
    return transaction(async work=>{
     const studentId=await authorize(work,sessionId),run=(await work.all("SELECT id FROM ai_agent_runs WHERE id=? AND session_id=? AND status='running'",[runId,sessionId]))[0];
     if(!run||!current())throw Error('cancelled');
     const id='classplan_'+hash({sessionId,runId,callId,operation:'lesson_revision'}).slice(0,36);
-    const inputDigest=hash({source,fields,patch});
+    const inputDigest=hash({source,request,patch});
     const old=(await work.all('SELECT * FROM ai_confirmation_items WHERE id=?',[id]))[0];
     if(old){if(payload(old).inputDigest!==inputDigest)throw Error('conflict');return item(await currentRow(work,id));}
     const {row,value}=await revisionSource(work,sessionId,source);
     const lesson=value.document.lesson!;
-    if(fields.every(key=>lesson.details![key]===patch[key]))throw Error('invalid_input');
-    const document={...value.document,lesson:{...lesson,details:{...lesson.details!,...patch}}};
-    if(!validClassroomPlanDocument(document))throw Error('invalid_input');
+    if('fields' in request&&!lesson.details)throw Error('invalid_input');
+    const document='agenda' in request?applyLessonAgenda(value.document,request.agenda,patch):
+     {...value.document,lesson:{...lesson,details:{...lesson.details!,...patch as Partial<LessonDetails>}}};
+    if(!validClassroomPlanDocument(document)||JSON.stringify(document)===JSON.stringify(value.document))throw Error('invalid_input');
     const p:Payload={...payload(row),revision:value.revision+1,previous:value.id,callId,inputDigest,document};
     delete p.restoredFrom;
     const stamp=new Date().toISOString();
