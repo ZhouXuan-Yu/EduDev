@@ -12,6 +12,8 @@ const root = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const fixture = process.env.OMNI_EDU_SYNTHETIC_VISION_PDF;
 const useLive = process.env.OMNI_EDU_TABLE_VISION_LIVE === "1";
 const mergedCase = process.argv.includes("--merged-grid");
+const continuedCase = process.argv.includes("--continued-grid");
+const splitBaseline = process.argv.includes("--baseline-split-grid");
 const key = useLive ? process.env.DEEPSEEK_API_KEY : "fake-deepseek-table-vision-test";
 assert(root && fixture && path.basename(fixture) === "synthetic-table-vision.pdf" && key);
 const fixtureSha = createHash("sha256").update(fs.readFileSync(fixture)).digest("hex");
@@ -85,13 +87,17 @@ async function waitResource() {
   throw Error("Synthetic fixture did not publish a structure");
 }
 
-async function openTable(page, resource, vision = true) {
+async function openTables(page, resource) {
   await page.getByTestId("materials-search").fill(resource.title);
   await page.getByTestId("material-" + resource.id).getByRole("button").click();
   await page.getByTestId("materials-section-questions").click();
   const panel = page.getByTestId("material-structure-panel");
   await openMaterialDisclosure(panel);
-  const table = panel.getByTestId("structure-table-evidence");
+  return panel.getByTestId("structure-table-evidence");
+}
+
+async function openTable(page, resource, vision = true) {
+  const table = await openTables(page, resource);
   await openMaterialDisclosure(table);
   if (!vision) return table;
   await table.getByTestId("table-vision-cell-1-1").click();
@@ -129,6 +135,51 @@ async function checkMergedTable(page, resource, candidate, snapshot, before) {
   check("Native preview and cold restart retain the original image without teacher edits or requests.");
 }
 
+async function checkContinuedTable(page, resource, candidate, snapshot, before) {
+  const sources = candidate.tableSources;
+  report.fragments = sources?.map(({ page, regionId, continuesFrom }) => ({ page, regionId, continuesFrom }));
+  assert.deepEqual(sources?.map(source => source.page), [1, 2]);
+  assert.deepEqual(sources[1].continuesFrom, { page: 1, regionId: sources[0].regionId });
+  for (const [width, height, screen] of [[1366, 768, page], [1920, 1080, undefined]]) {
+    const current = screen ?? await launch();
+    await current.setViewportSize({ width, height });
+    const table = await openTable(current, resource, false);
+    const grid = table.getByTestId("structure-table-grid");
+    const pendingHeader = sources[1].rows[0].some(cell => cell.needsReview);
+    assert.equal(await grid.getByRole("cell", { name: "测量组", exact: true }).count(), pendingHeader ? 2 : 1);
+    if (pendingHeader) {
+      assert.equal(await grid.getByRole("button", { name: /回查第 2 页第 1 行/ }).count(),
+        sources[1].rows[0].filter(cell => cell.needsReview).length);
+    }
+    const values = await grid.getByRole("cell").allTextContents();
+    assert.deepEqual(values.filter(value => /^\d+\.\d+$/.test(value)),
+      ["22.5", "30.0", "18.5", "24.0", "42.5", "51.0", "39.5", "48.0"]);
+    for (const source of sources) {
+      await table.getByRole("button", { name: `查看第 ${source.page} 页表格原图` }).click();
+      await table.getByRole("img", { name: `第 ${source.page} 页的原始表格` }).waitFor();
+    }
+    await table.getByTestId("structure-table-grid").scrollIntoViewIfNeeded();
+    await current.screenshot({ path: path.join(output, `continued-${width}.png`) });
+    assert.deepEqual(snapshot(), before);
+    assert.equal(query("SELECT count(*) AS n FROM material_structure_reviews")[0].n, 0);
+    assert.equal(await app.evaluate(() => globalThis.tableVisionAudit.calls.length), 0);
+    await app.close();
+    app = undefined;
+  }
+  check("One table with eight numeric values and the same pending cells, with images anchored to both pages after restart.");
+  check("Opening the combined table preserves the local structure and makes no model calls.");
+}
+
+async function checkSplitBaseline(page, resource, candidate) {
+  assert.deepEqual(candidate.tableSources.map(source => source.page), [1, 2]);
+  assert(candidate.tableSources.every(source => !source.continuesFrom));
+  const tables = await openTables(page, resource);
+  assert.equal(await tables.count(), 2);
+  for (const card of await tables.all()) await openMaterialDisclosure(card);
+  assert.equal(await page.getByTestId("structure-table-grid").count(), 2);
+  check("The same input in the previous build requires two table disclosures.");
+}
+
 async function run() {
   const page = await launch();
   await app.evaluate(({dialog}, value) => {
@@ -141,11 +192,19 @@ async function run() {
   const before = snapshot();
   const [record] = query("SELECT id,sha256,body_json FROM material_structure_questions WHERE generation=? AND json_extract(body_json,'$.number')='10'", job.generation);
   const candidate = JSON.parse(record.body_json);
+  if (splitBaseline) {
+    await checkSplitBaseline(page, resource, candidate);
+    return;
+  }
+  if (continuedCase) {
+    await checkContinuedTable(page, resource, candidate, snapshot, before);
+    return;
+  }
   if (mergedCase) {
     await checkMergedTable(page,resource,candidate,snapshot,before);
     return;
   }
-  assert.equal(job.engine, "layout-paragraph-question.v25");
+  assert.equal(job.engine, "layout-paragraph-question.v26");
   assert.equal(candidate.tableSources[0].rows[1][1].needsReview, true);
   assert.equal(candidate.tableSources[0].rows[1][1].text, "");
   if (process.env.OMNI_EDU_TABLE_VISION_POSITIVE === "1") {
