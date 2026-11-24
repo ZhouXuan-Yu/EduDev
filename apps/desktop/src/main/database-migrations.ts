@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import type sqlite3 from 'sqlite3';
 import {sqliteExec} from './sqlite-connections';
 import {taskSummarySchema} from './xiaozhi-agent/task-summary-schema';
+import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/capabilities/acquisition/schema';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -38,7 +39,11 @@ const migrations = [{
 }, {
   id: 'r1.task_summary_projection.v2',
   sql: taskSummarySchema,
+}, {
+  id: 'r1.capability_acquisition.v3',
+  sql: acquisitionSchema,
 }] as const;
+const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;
 
 type UpgradeIssue = 'newer_version' | 'unknown_legacy' | 'invalid_ledger' | 'changed_during_upgrade'
@@ -50,6 +55,23 @@ export class DatabaseUpgradeError extends Error {
 }
 type SchemaRow = {name: string; type: string; tbl_name: string; sql: string};
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
+
+function matchesRegisteredSchema(objects: SchemaRow[], version: number, observed: string, registered?: string) {
+  const acquisition = objects.filter(row => legacyAcquisitionDefinitions.has(row.name));
+  // Reject modified definitions even when an older database had already registered them.
+  if (acquisition.some(row => row.type !== 'table' || row.tbl_name !== row.name
+      || row.sql !== legacyAcquisitionDefinitions.get(row.name))) return false;
+  if (observed === registered) return version < ACQUISITION_SCHEMA_VERSION || acquisition.length === legacyAcquisitionDefinitions.size;
+  if (version >= ACQUISITION_SCHEMA_VERSION || !registered) return false;
+  // Old builds could register any subset, then create the rest lazily. Reconstruct
+  // the registered digest by removing only known, exact legacy table definitions.
+  const positions = new Map(acquisition.map((row, index) => [row, 1 << index]));
+  for (let mask = 1; mask < 1 << acquisition.length; mask++) {
+    const previous = objects.filter(row => !(mask & (positions.get(row) ?? 0)));
+    if (hash(JSON.stringify(previous)) === registered) return true;
+  }
+  return false;
+}
 
 function all<T>(db: sqlite3.Database, sql: string, params: string[] = []): Promise<T[]> {
   return new Promise((resolve, reject) => db.all<T>(sql, params, (error, rows) => error ? reject(error) : resolve(rows)));
@@ -98,6 +120,7 @@ async function inspectDatabase(db: sqlite3.Database, version: number) {
   const ledgerPresent = objects.some(row => row.name === migrationsTable);
   if (version === 0) {
     if (baselinePresent || ledgerPresent) throw new DatabaseUpgradeError('invalid_ledger');
+    if (!matchesRegisteredSchema(objects,version,digest,digest)) throw new DatabaseUpgradeError('invalid_ledger');
     if (objects.length) await verifyLegacyCore(db,objects);
     return {kind: objects.length ? 'adopted' as const : 'fresh' as const,digest};
   }
@@ -112,7 +135,7 @@ async function inspectDatabase(db: sqlite3.Database, version: number) {
     );
     if (!info || other.length || info.id !== 1 || !['fresh','adopted'].includes(info.kind) ||
         !/^[a-f0-9]{64}$/u.test(info.source_schema_sha256) || !Number.isFinite(Date.parse(info.recorded_at)) ||
-        entries.length !== version || entries.at(-1)?.schema_sha256 !== digest ||
+        entries.length !== version || !matchesRegisteredSchema(objects,version,digest,entries.at(-1)?.schema_sha256) ||
         entries.some((entry,index) => entry.from_version !== index || entry.to_version !== index+1 ||
           entry.migration_id !== migrations[index].id || entry.checksum !== hash(migrations[index].sql) ||
           !entry.app_build || !Number.isFinite(Date.parse(entry.applied_at)))) {

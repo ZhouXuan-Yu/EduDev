@@ -2,15 +2,16 @@ import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
-import {join, resolve} from 'node:path';
+import {basename, dirname, join, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {DatabaseSync} from 'node:sqlite';
+import {backup, DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
-const legacy=resolve(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js');
+const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
+const expectedVersion=3;
 assert(existsSync(legacy),'The actual frozen WP-00 v0 build is required');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(evidence,'fixtures'),{recursive:true});
@@ -82,7 +83,8 @@ async function startFailing(name,data,interrupt=0) {
       db.exec=function(statement,callback){
         const v1=statement==='CREATE INDEX idx_ai_memory_revisions_document ON ai_memory_revisions(document_id);';
         const v2=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_task_summary_control');
-        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2)){
+        const v3=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_acquisition_candidates_v1');
+        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3)){
           return exec.call(this,statement,error=>{
             if(error)return callback(error);
             electron.app.exit(31);
@@ -131,9 +133,9 @@ try{
     assert.equal(student.id,old.students[0][0]);
   });
   const upgraded=dataState(upgradeData);
-  assert.equal(upgraded.version,2);
+  assert.equal(upgraded.version,expectedVersion);
   assert.equal(upgraded.baseline[0].kind,'adopted');
-  assert.equal(upgraded.ledger.length,2);
+  assert.equal(upgraded.ledger.length,expectedVersion);
   assert.deepEqual(upgraded.students,old.students);
   assert.deepEqual(upgraded.users,old.users);
   assert.deepEqual(upgraded.nativeLegacyMigration,old.nativeLegacyMigration);
@@ -160,7 +162,7 @@ try{
   await launch(main,fresh,profile('fresh'));
   const created=dataState(fresh);
   assert.equal(created.baseline[0].kind,'fresh');
-  assert.equal(created.version,2);
+  assert.equal(created.version,expectedVersion);
   assert.deepEqual(created.schema,upgraded.schema);
   assert.equal(created.ledger[0].schema_sha256,upgraded.ledger[0].schema_sha256);
   assert.deepEqual(created.foreignKeys,[]);
@@ -174,8 +176,8 @@ try{
   assert.deepEqual(dataState(interrupted),old);
   await launch(main,interrupted,profile('interrupted-reentry'));
   const resumed=dataState(interrupted);
-  assert.equal(resumed.version,2);
-  assert.equal(resumed.ledger.length,2);
+  assert.equal(resumed.version,expectedVersion);
+  assert.equal(resumed.ledger.length,expectedVersion);
   assert.deepEqual(resumed.students,old.students);
   receipt('Process interruption after executing migration DDL rolls back schema and user_version; cold re-entry succeeds.', killed);
 
@@ -190,10 +192,90 @@ try{
   assert.deepEqual(committed.students,old.students);
   await launch(main,between,profile('interrupted-v2-reentry'));
   const continued=dataState(between);
-  assert.equal(continued.version,2);
+  assert.equal(continued.version,expectedVersion);
   assert.deepEqual(continued.ledger.slice(0,1),committed.ledger);
   assert.deepEqual(continued.students,old.students);
   receipt('Abort after v2 DDL preserves the committed v1 ledger. Cold re-entry finishes v2 without reapplying v1.');
+
+  stage='acquisition schema migration, partial legacy registration and drift rejection';
+  const tableNames=['xiaozhi_acquisition_candidates_v1','xiaozhi_acquisition_operations_v1','xiaozhi_acquisition_artifacts_v1'];
+  const createTable=table=>`CREATE TABLE IF NOT EXISTS ${table} (
+      id TEXT PRIMARY KEY, revision INTEGER NOT NULL, payload_json TEXT NOT NULL, document_hash TEXT NOT NULL)`;
+  const partial=join(root,'partial-acquisition','data');
+  cpSync(oldData,partial,{recursive:true});
+  sql(partial,false,db=>db.exec(createTable(tableNames[0])));
+  await startFailing('partial-acquisition',partial,3);
+  const partialBefore=dataState(partial);
+  assert.equal(partialBefore.version,2);
+  assert.deepEqual(partialBefore.schema.filter(([,name])=>tableNames.includes(name)).map(([,name])=>name),[tableNames[0]]);
+  sql(partial,false,db=>db.exec(tableNames.slice(1).map(createTable).join(';')));
+  for(const [name,change] of [
+    ['unexpected-table','CREATE TABLE unrelated_schema_edit(id TEXT)'],
+    ['modified-acquisition','ALTER TABLE xiaozhi_acquisition_operations_v1 ADD COLUMN extra TEXT'],
+  ]){
+    const invalid=join(root,name,'data');
+    cpSync(partial,invalid,{recursive:true});
+    sql(invalid,false,db=>db.exec(change));
+    const before=dataState(invalid);
+    assert.equal((await startFailing(name,invalid)).issue,'invalid_ledger');
+    assert.deepEqual(dataState(invalid),before);
+    receipt('Legacy acquisition compatibility still rejects '+name+' before writes.');
+  }
+  await launch(main,partial,profile('partial-acquisition-upgrade'));
+  const partialAfter=dataState(partial);
+  assert.equal(partialAfter.version,expectedVersion);
+  assert.deepEqual(partialAfter.ledger.slice(0,2),partialBefore.ledger);
+  assert.equal(partialAfter.ledger.at(-1).migration_id,'r1.capability_acquisition.v3');
+  assert.deepEqual(partialAfter.students,old.students);
+  await launch(main,partial,profile('partial-acquisition-reentry'));
+  assert.deepEqual(dataState(partial),partialAfter);
+  receipt('Upgrade v2 after late creation of exact acquisition tables. A preexisting registered subset and the v1/v2 ledger are preserved.');
+
+  const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;
+  if(priorFixture){
+    stage='reproduce and upgrade the original synthetic v2 fixture';
+    const data=join(root,'prior-acquisition','data');
+    const fixtureDatabase=resolve(priorFixture);
+    assert.equal(basename(fixtureDatabase),'app.db');
+    cpSync(dirname(fixtureDatabase),data,{recursive:true,filter:path=>!/^app\.db(?:-(?:shm|wal|journal))?$/u.test(basename(path))});
+    const source=new DatabaseSync(fixtureDatabase,{readOnly:true});
+    try{await backup(source,dbPath(data));}finally{source.close();}
+    const tableReadback=dir=>sql(dir,true,db=>tableNames.map(table=>db.prepare('SELECT * FROM '+table+' ORDER BY id').all()));
+    const frozen=dataState(data),rows=tableReadback(data);
+    assert.equal(frozen.version,2);
+    assert(rows[0].length>0,'Use the actual previously failing acquisition fixture');
+    await launch(main,data,profile('prior-acquisition'));
+    const upgraded=dataState(data);
+    assert.equal(upgraded.version,expectedVersion);
+    assert.deepEqual(upgraded.ledger.slice(0,2),frozen.ledger);
+    assert.deepEqual(tableReadback(data),rows);
+    const recovery=join(root,'prior-acquisition','XiaozhiUpgradeRecovery');
+    const [label]=readdirSync(recovery);
+    const saved=join(recovery,label);
+    assert(existsSync(join(saved,'omni-edu-backup-manifest.v1.json')));
+    assert.equal(dataState(saved).version,2);
+    assert.deepEqual(tableReadback(saved),rows);
+    await launch(main,data,profile('prior-acquisition-restart'),async page=>{
+      await page.getByTestId('office-prompt-input').waitFor({state:'visible'});
+      await page.getByRole('button',{name:'设置',exact:true}).click();
+      const advanced=page.getByTestId('pi-settings-advanced-toggle');
+      if(await advanced.getAttribute('aria-expanded')!=='true')await advanced.click();
+      await page.getByTestId('pi-settings-tab-tools').click();
+      const discovery=page.getByTestId('pi-acquisition-discovery');
+      await discovery.scrollIntoViewIfNeeded();
+      await discovery.getByText('合成候选 · 来源待核对',{exact:true}).waitFor({state:'visible',timeout:15000});
+      await discovery.getByText('合成候选 · 核验已过期',{exact:true}).waitFor({state:'visible',timeout:15000});
+      for(const {id} of rows[0])assert.equal(await discovery.getByTestId('pi-acquisition-candidate-'+id).count(),1);
+      await discovery.getByText('本地资料只读访问',{exact:true}).waitFor({state:'visible'});
+      await page.screenshot({path:join(root,'acquisition-cold-readback.png')});
+    });
+    assert.deepEqual(dataState(data),upgraded);
+    // Opening the discovery panel also registers the bundled, reviewed candidate.
+    const [candidates,operations,artifacts]=tableReadback(data);
+    assert.deepEqual([rows[0].map(({id})=>candidates.find(candidate=>candidate.id===id)),operations,artifacts],rows);
+    receipt('Original v2 fixture opens twice. Actual settings show the original candidates and the original rows match the v2 recovery point.',
+      {preservedRows:rows.map(table=>table.length)});
+  }
 
   stage='refuse future, unknown migration and corrupt schema before writing';
   const invalid=[
@@ -221,7 +303,7 @@ try{
     assert.equal(student.id,old.students[0][0]);
   });
   assert.equal(dataState(rollbackData).version,0);
-  assert.equal(dataState(upgradeData).version,2);
+  assert.equal(dataState(upgradeData).version,expectedVersion);
   receipt('Rollback run uses verified pre-upgrade data in a new root and leaves the upgraded root intact.');
   report.ok=true;
 } catch(error) {

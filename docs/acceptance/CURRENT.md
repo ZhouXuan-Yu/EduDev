@@ -3757,4 +3757,6 @@ Next：Phase1继续真实Pi主工作台：先冻结glass主壳/低噪音过程/�
 
 ## 数据库基础治理 R1
 
+能力获取数据库 v3 兼容升级 **已实现**。原来启动失败的 v2 合成资料库副本通过升级与二次冷启，逐字段核对原候选及升级前备份。实际 v0 旧库、v3 新库、迁移中断、未知结构拒绝、工作台授权保存和便携备份有独立回执。证据在 `D:/WorkProject/EduProject/acceptance/D3-20261124/acquisition-schema-recovery`。
+
 固定 28 项的验收账本、证据哈希、失败迭代和回退记录见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r1`。以其中集成构建的 `final-report.md` 和验证器报告为准。

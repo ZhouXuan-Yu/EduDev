@@ -5,6 +5,7 @@ import type {CapabilityCandidate, AcquisitionOperationView, AcquisitionArtifactV
 import type {PermissionOwner} from '../../../../shared/xiaozhi-permissions';
 import type {PreparedStdioBinding} from '../../mcp-controlled-service';
 import type {LockedNpmPackage} from './npm-source';
+import {acquisitionTables as tables, acquisitionTableStatements} from './schema';
 
 export type AcquisitionOperation = AcquisitionOperationView & {
   owner: PermissionOwner;
@@ -23,7 +24,6 @@ export type AcquisitionArtifact = AcquisitionArtifactView & {
   validationRefs: string[];
   attestation: {signature: 'verified' | 'unavailable' | 'untrusted'; provenance: 'verified' | 'unavailable' | 'untrusted'};
 };
-const tables = {candidate: 'xiaozhi_acquisition_candidates_v1', operation: 'xiaozhi_acquisition_operations_v1', artifact: 'xiaozhi_acquisition_artifacts_v1'} as const;
 
 export function readAcquisitionRow<T>(row: Record<string, unknown> | undefined): T | null {
   if (!row) return null;
@@ -38,8 +38,7 @@ export function createAcquisitionState(source: Sql) {
   const sql = serializeStateWrites(source);
   let migrated: Promise<void> | undefined;
   const migrate = () => migrated ||= (async () => {
-    for (const table of Object.values(tables)) await sql.run(`CREATE TABLE IF NOT EXISTS ${table} (
-      id TEXT PRIMARY KEY, revision INTEGER NOT NULL, payload_json TEXT NOT NULL, document_hash TEXT NOT NULL)`);
+    for (const statement of acquisitionTableStatements) await sql.run(statement);
   })().catch(error => {migrated = undefined; throw error;});
   function read<T>(row: Record<string, unknown> | undefined): T | null {
     return readAcquisitionRow<T>(row);
