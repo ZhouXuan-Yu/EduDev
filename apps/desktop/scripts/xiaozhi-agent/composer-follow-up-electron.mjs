@@ -130,12 +130,12 @@ try{
 
   await settings();
   const mode=page.getByTestId('pi-queue-mode');
-  assert.equal(await mode.inputValue(),'followUp');
-  await mode.selectOption('steer');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('edudev.composer.follow-up.v1'))||'followUp','followUp');
+  await mode.click();await page.getByRole('option',{name:'补充到本轮',exact:true}).click();
   await leaveSettings();
   await settings();
-  assert.equal(await mode.inputValue(),'steer');
-  await mode.selectOption('followUp');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('edudev.composer.follow-up.v1')),'steer');
+  await mode.click();await page.getByRole('option',{name:'本轮结束后发送',exact:true}).click();
   await leaveSettings();
   check('Follow-up default can be changed and is read back by the real settings page');
   await input().fill('设计五年级分数课的导入，请给两句话。');
@@ -161,6 +161,12 @@ try{
   await until(async()=>queued().length===3&&await input().inputValue()==='','one-shot steer acknowledged');
   assert.deepEqual(queued().map(item=>item.mode),['followUp','followUp','steer']);
   await queue().waitFor();
+  report.indicatorGeometry=await queue().locator('select[data-native-indicator]').evaluateAll(elements=>elements.map(el=>{
+    const read=()=>{const c=getComputedStyle(el),r=el.getBoundingClientRect();return{width:r.width,height:r.height,font:c.font,border:c.border,color:c.color,background:c.backgroundColor,appearance:c.appearance,backgroundImage:c.backgroundImage};};
+    const after=read();el.removeAttribute('data-native-indicator');const before=read();el.setAttribute('data-native-indicator','chevron');return{before,after};
+  }));
+  for(const item of report.indicatorGeometry)for(const key of ['width','height','font','border','color','background'])assert.equal(item.after[key],item.before[key],'Indicator decoration preserves protected '+key);
+
   const [,second,steer]=queued();
   assert.equal(await queue().locator('[data-control-id]').first().getAttribute('data-control-id'),steer.id);
   check('Enter queues, Ctrl+Enter steers, Shift+Enter inserts a line, and IME confirmation keeps the text');

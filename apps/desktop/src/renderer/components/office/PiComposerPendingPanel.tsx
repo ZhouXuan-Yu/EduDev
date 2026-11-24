@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useEffect,useId,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {ChevronDown,ChevronUp} from 'lucide-react';
@@ -76,10 +77,10 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
     <div className={styles.panel}>
       <header className={styles.header}>
         <h2 id={headingId} aria-live="polite">{title}</h2>
-        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><select aria-label="选择待处理事项" className={styles.select} value={active.id}
+        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><AppNativeSelect indicatorOnly aria-label="选择待处理事项" className={styles.select} value={active.id}
           onChange={event=>{setSelected(event.target.value);setCollapsedFor('');}}>
           {items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}
-        </select></>}
+        </AppNativeSelect></>}
         <Button ref={toggle} size="sm" variant="ghost" aria-controls={bodyId} aria-expanded={!collapsed}
           data-testid="pi-composer-pending-toggle" onPress={()=>setCollapsedFor(collapsed?'':active.id)}>
           {collapsed?<ChevronUp size={14} aria-hidden="true"/>:<ChevronDown size={14} aria-hidden="true"/>}

@@ -8,7 +8,7 @@ import {createServer} from 'vite';
 
 // Component fault injection only. No real data, Electron IPC or provider claim.
 const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'http://localhost',pretendToBeVisual:true});
-for(const k of ['window','document','navigator','HTMLElement','HTMLInputElement','HTMLTextAreaElement','HTMLButtonElement','HTMLSelectElement','Element','Node','Event','MouseEvent','PointerEvent','KeyboardEvent','SVGElement','DocumentFragment','getComputedStyle','localStorage','MutationObserver'])Object.defineProperty(globalThis,k,{value:dom.window[k],configurable:true});
+for(const k of ['window','document','navigator','HTMLElement','HTMLInputElement','HTMLTextAreaElement','HTMLButtonElement','HTMLSelectElement','Element','Node','NodeFilter','Event','MouseEvent','PointerEvent','KeyboardEvent','SVGElement','DocumentFragment','getComputedStyle','localStorage','MutationObserver'])Object.defineProperty(globalThis,k,{value:dom.window[k],configurable:true});
 globalThis.requestAnimationFrame=dom.window.requestAnimationFrame=fn=>setTimeout(fn,0);
 globalThis.cancelAnimationFrame=dom.window.cancelAnimationFrame=clearTimeout;
 globalThis.ResizeObserver=dom.window.ResizeObserver=class{observe(){}unobserve(){}disconnect(){}};
@@ -53,7 +53,14 @@ try{
   // The real catalog deliberately debounces reads for 150 ms. Wait for its
   // observable error rather than assuming the initial loading render settled.
   for(let i=0;i<50&&!find('materials-error');i++)await act(()=>new Promise(resolve=>setTimeout(resolve,20)));
-  check('material read failure is not described as first import or no match',()=>{assert(find('materials-error'));assert(find('materials-read-failed'));assert(!document.body.textContent.includes('先添加一份资料'));assert(!document.body.textContent.includes('没有匹配的资料'));});
+  check('material read failure is not described as first import or no match',()=>{assert(find('materials-error'));assert(find('materials-read-failed'));assert(!find('materials-count').textContent.includes('0 份资料'));assert(!document.body.textContent.includes('先添加一份资料'));assert(!document.body.textContent.includes('没有匹配的资料'));});
+  const settingsFile='components/office/PiSettingsWorkspace.tsx';
+  await mount(settingsFile,'PiSettingsWorkspace',{onBack:()=>{}},{listAiConversations:reject,getXiaozhiSettings:async()=>({ok:false}),getDataRoot:async()=>''});
+  await act(()=>find('pi-settings-tab-permissions').click());
+  check('settings read failure does not claim there are no current conversations',()=>{assert(find('pi-settings-state'));assert(!find('pi-settings-no-session'));});
+  await act(()=>find('pi-settings-tab-backup').click());
+  await act(()=>find('pi-settings-tab-archives').click());
+  check('archive read failure does not claim an empty archive',()=>{assert(find('pi-settings-archive-read-failed'));assert(!find('pi-settings-archive-empty'));});
   report.success=true;
 }catch(error){report.failure=String(error.stack||error);process.exitCode=1;console.error(report.failure);}
 finally{

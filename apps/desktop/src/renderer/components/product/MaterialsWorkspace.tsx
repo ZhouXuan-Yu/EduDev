@@ -436,7 +436,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                         }}/>
                 </div>
                 <footer className={styles.count} data-testid="materials-count">
-                    <span>{fetching ? '正在读取资料…' : `${catalog?.total || 0} 份资料${mode === 'catalog' ? ' · 当前页显示 ' + visibleRows.length + ' / ' + rows.length + ' 份' : ''}`}</span>
+                    <span>{fetching ? '正在读取资料…' : !catalog && error ? '资料数量尚未读取' : `${catalog?.total || 0} 份资料${mode === 'catalog' ? ' · 当前页显示 ' + visibleRows.length + ' / ' + rows.length + ' 份' : ''}`}</span>
                     <span>原文件保存在本机</span>
                 </footer>
             </div>

@@ -134,7 +134,7 @@
 
 .navigationEntry[aria-current='page'] {
   background: color-mix(in oklab, var(--accent) 10%, var(--background));
-  color: var(--accent);
+  color: var(--edu-accent, #002fa7);
   font-weight: 600;
 }
 

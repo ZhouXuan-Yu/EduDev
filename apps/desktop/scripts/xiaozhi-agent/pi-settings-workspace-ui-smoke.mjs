@@ -191,8 +191,9 @@ async function launch() {
 async function close() { if (!app) return; requests.push(...await app.evaluate(() => globalThis.currentSettingsRequests)); await app.close(); app = undefined; }
 async function open() { await productEntry(page, 'settings').click(); await settingsShell().waitFor(); await until(async () => await page.getByTestId('pi-settings-key').count() === 1 && !await page.getByTestId('pi-settings-key').isDisabled()); }
 async function tab(name) {
-  assert(['models', 'permissions', 'interface', 'backup', 'archives', 'skills', 'tools', 'diagnostics'].includes(name));
+  assert(['models', 'permissions', 'interface', 'backup', 'archives', 'teacher-memory', 'capabilities', 'skills', 'tools', 'diagnostics'].includes(name));
   activeStage = `settings-tab-${name}`;
+  if(name==='archives'&&!await page.getByTestId('pi-settings-tab-archives').isVisible())await tab('backup');
   const target = page.getByTestId(`pi-settings-tab-${name}`);
   if (['skills','tools','diagnostics'].includes(name) && !await target.isVisible()) {
     await page.getByTestId('pi-settings-advanced-toggle').click();
@@ -200,7 +201,10 @@ async function tab(name) {
   }
   await target.click();
   await until(async () => await settingsShell().getAttribute('data-tab') === name);
-  assert.equal(await target.getAttribute('aria-current'), 'page');
+  if(name==='archives'){
+    assert.equal(await target.getAttribute('aria-pressed'),'true');
+    assert.equal(await page.getByTestId('pi-settings-tab-backup').getAttribute('aria-current'),'page');
+  }else assert.equal(await target.getAttribute('aria-current'), 'page');
 }
 async function assertSavingNavigationLocked() {
   const destinations=page.locator('[data-testid=edu-navigation]:visible').locator('[data-testid^=nav-]:visible');
@@ -256,6 +260,7 @@ async function recoverVerifiedBackup(marker) {
     await aiShell(restoredPage).waitFor({timeout:60000});
     assert.equal(path.resolve(await restoredPage.evaluate(()=>window.omniEdu.getDataRoot())),path.resolve(restoredData));
     await productEntry(restoredPage,'settings').click();await settingsShell(restoredPage).waitFor();
+    await restoredPage.getByTestId('pi-settings-tab-backup').click();
     await restoredPage.getByTestId('pi-settings-tab-archives').click();
     await restoredPage.getByTestId(`pi-archive-read-${archivedId}`).click();
     await restoredPage.getByTestId('pi-settings-archive-reader').getByText(marker,{exact:true}).waitFor();
@@ -302,14 +307,18 @@ try {
   await page.getByTestId('pi-settings-default-model').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').isDisabled());await assertSavingNavigationLocked(); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
   storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); report.defaultModel = (await settings()).value.defaultModel;
   assert.equal(report.defaultModel, 'deepseek-flash'); check('Fresh official model menu saves the current Flash default with encrypted local credentials');
-  assert.equal(await page.locator('[data-testid^="pi-settings-tab-"]').count(), 8);
-  for (const name of ['models','permissions','interface','backup','archives']) assert(await page.getByTestId(`pi-settings-tab-${name}`).isVisible());
+  // Current Phase-0 metadata: five daily entries, three advanced entries and
+  // the existing capability center. Archives is an actionable backup subpage.
+  const registeredTabs=['models','permissions','interface','backup','teacher-memory','skills','tools','diagnostics','capabilities'];
+  assert.deepEqual((await page.locator('[data-testid^="pi-settings-tab-"]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-testid').replace('pi-settings-tab-','')))).sort(),registeredTabs.sort());
+  for (const name of ['models','permissions','interface','backup','teacher-memory','capabilities']) assert(await page.getByTestId(`pi-settings-tab-${name}`).isVisible());
+  assert.equal(await page.getByTestId('pi-settings-tab-archives').count(),0);
   for (const name of ['skills','tools','diagnostics']) assert(!await page.getByTestId(`pi-settings-tab-${name}`).isVisible());
   assert.equal(await page.getByTestId('pi-settings-advanced-toggle').getAttribute('aria-expanded'),'false');
   await tab('tools'); await page.getByTestId('pi-mcp-empty').waitFor();
   await tab('diagnostics'); await page.getByTestId('pi-decisions-refresh').waitFor();await page.getByTestId('pi-candidates-refresh').waitFor();
   await tab('permissions');assert.equal(await page.getByTestId('pi-decisions-refresh').count(),0);assert.equal(await page.getByTestId('pi-candidates-refresh').count(),0);
-  check('Eight setting categories retain all capabilities with real tools and policy records in the advanced group');
+  check('All current setting categories retain capabilities; tools and policy records remain advanced and archives remains under backup');
   const input = page.getByTestId('pi-settings-search');
   await input.fill('backup verify'); await page.getByTestId('pi-settings-search-results').getByRole('button', { name: /检查已有备份/ }).click(); assert.equal(await settingsShell().getAttribute('data-tab'), 'backup'); check('Hana multi-token ranking opens an actionable backup setting');
   await input.fill('ＡＰＩ'); await page.getByTestId('pi-settings-search-results').getByRole('button', { name: /API 密钥/ }).click(); await page.getByTestId('pi-settings-key').waitFor(); check('Hana NFKC search resolves full-width API text without indexing credential values');
@@ -370,13 +379,13 @@ try {
       await tab(name);
       const control = { models: 'pi-settings-save', skills: 'pi-skill-import', permissions: 'pi-settings-workspace-choose', interface: 'pi-preference-files', archives: `pi-archive-read-${archivedId}`, backup: 'data-backup-export' }[name];
       await page.getByTestId(control).scrollIntoViewIfNeeded();
-      const measurements = await page.evaluate(control => { const main = document.querySelector('[data-testid="pi-settings-main"]'), nav = document.querySelector('.edu-settings-nav'), content = main.querySelector(':scope>div,:scope>section'), action = document.querySelector(`[data-testid="${control}"]`).getBoundingClientRect(), back = document.querySelector('[data-testid="nav-ai"]').getBoundingClientRect(); return { mainWidth: main.clientWidth, mainScroll: main.scrollWidth, contentWidth: content.getBoundingClientRect().width, navWidth: nav.clientWidth, navScroll: nav.scrollWidth, bodyWidth: document.documentElement.clientWidth, bodyScroll: document.documentElement.scrollWidth, actionRect: { x: action.x, y: action.y, right: action.right, bottom: action.bottom }, backRect: { x: back.x, y: back.y, right: back.right, bottom: back.bottom } }; }, control);
+      const measurements = await page.evaluate(control => { const main = document.querySelector('[data-testid="pi-settings-main"]'), nav = document.querySelector('nav[aria-label="小智设置分类"]'), content = main.querySelector(':scope>div,:scope>section'), action = document.querySelector(`[data-testid="${control}"]`).getBoundingClientRect(), back = document.querySelector('[data-testid="nav-ai"]').getBoundingClientRect(); return { mainWidth: main.clientWidth, mainScroll: main.scrollWidth, contentWidth: content.getBoundingClientRect().width, navWidth: nav.clientWidth, navScroll: nav.scrollWidth, bodyWidth: document.documentElement.clientWidth, bodyScroll: document.documentElement.scrollWidth, actionRect: { x: action.x, y: action.y, right: action.right, bottom: action.bottom }, backRect: { x: back.x, y: back.y, right: back.right, bottom: back.bottom } }; }, control);
       assert(measurements.mainScroll <= measurements.mainWidth + 1, `${name} main overflow`); assert(measurements.contentWidth >= Math.min(700, measurements.mainWidth - 24) - 1 && measurements.contentWidth <= Math.min(801, measurements.mainWidth), `${name} readable responsive content width`); assert(measurements.navScroll <= measurements.navWidth + 1); assert(measurements.bodyScroll <= measurements.bodyWidth + 1);
       for (const rect of [measurements.actionRect, measurements.backRect]) assert(rect.x >= 0 && rect.y >= 0 && rect.right <= viewport.width && rect.bottom <= viewport.height, `${name} complete action reachable`);
       const workspaceBackground=await settingsBackgroundEvidence(settingsShell());
       report.backgrounds.push({theme,width:viewport.width,tab:name,label:'workspace',...workspaceBackground});
       assert(workspaceBackground.sum>500,`Light-only application remains light under OS ${theme}: ${JSON.stringify(workspaceBackground)}`);
-      for(const [label,locator]of [['heading',page.getByTestId('pi-settings-main').locator('h1').first()],['description',page.getByTestId('pi-settings-main').locator('p').first()],['navigation',page.getByTestId(`pi-settings-tab-${name}`)]]){
+      for(const [label,locator]of [['heading',page.getByTestId('pi-settings-main').locator('h2').first()],['description',page.getByTestId('pi-settings-main').locator('p').first()],['navigation',page.getByTestId(`pi-settings-tab-${name}`)]]){
         const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:viewport.width,tab:name,label,...contrast});assert(contrast.ratio>=4.5,`${theme} ${name} ${label} contrast ${contrast.ratio}`);
       }
       if(name==='models'){

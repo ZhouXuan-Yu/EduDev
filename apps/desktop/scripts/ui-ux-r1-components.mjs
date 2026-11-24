@@ -18,6 +18,7 @@ try {
   check('disabled field retains native disabled semantics',()=>assert.match(render(AppNativeSelect,{...props,disabled:true}),/<select[^>]*disabled/));
   check('invalid field and description remain addressable',()=>assert.match(render(AppNativeSelect,{...props,'aria-invalid':true,'aria-describedby':'error'}),/aria-invalid="true" aria-describedby="error"/));
   check('list selection has no misleading popup indicator',()=>assert(!render(AppNativeSelect,{...props,multiple:true,value:['one']}).includes('<svg')));
+  check('protected indicator adapter preserves the direct native select DOM',()=>{const html=render(AppNativeSelect,{...props,indicatorOnly:true});assert(html.startsWith('<select'));assert(!html.includes('<span'));assert(html.includes('data-native-indicator="chevron"'));});
   const {TaskOverviewCard}=await server.ssrLoadModule('/src/renderer/components/office/workbench/TaskOverviewCard.tsx');
   const row={sessionId:'aisession_11111111-1111-4111-8111-111111111111',taskId:'xitask_'+'a'.repeat(64),revision:1,requirementsVersion:1,
     sessionTitle:'上海七年级数学期中试卷，只含一模，不含二模。<script>不可执行</script>'.repeat(3),state:'interrupted',updatedAt:'2026-11-24T08:00:00Z',

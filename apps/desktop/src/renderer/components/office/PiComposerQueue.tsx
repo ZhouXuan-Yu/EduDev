@@ -1,3 +1,4 @@
+import {AppNativeSelect} from '../ui/AppNativeSelect';
 import {useState} from 'react';
 import {Button, TextArea} from '@heroui/react';
 import {ArrowDown, ArrowUp, CornerDownRight, GripVertical, Pencil, Trash2} from 'lucide-react';
@@ -75,9 +76,9 @@ function QueueItem({item,sessionId,mutate,previous,next,draggable,onDrag,dropSou
       <TextArea autoFocus aria-label="编辑待发送消息" data-testid="pi-instruction-text" value={draft.text} maxLength={8192} disabled={blocked}
         onChange={event=>update({text:event.target.value})}/>
       <div className="pi-queue-actions">
-        <select aria-label="发送时机" data-testid="pi-instruction-mode" value={draft.mode} disabled={blocked} onChange={event=>update({mode:event.target.value==='steer'?'steer':'followUp'})}>
+        <AppNativeSelect indicatorOnly aria-label="发送时机" data-testid="pi-instruction-mode" value={draft.mode} disabled={blocked} onChange={event=>update({mode:event.target.value==='steer'?'steer':'followUp'})}>
           <option value="followUp">本轮结束后发送</option><option value="steer">补充到本轮</option>
-        </select>
+        </AppNativeSelect>
         <Button size="sm" data-testid="pi-instruction-save" isDisabled={blocked||!draft.text.trim()}
           onPress={()=>void act({action:'edit',text:draft.text.trim(),mode:draft.mode},item,draft.revision)}>保存</Button>
         <Button size="sm" variant="ghost" isDisabled={draft.busy} onPress={()=>update({editing:false,error:''})}>取消</Button>
