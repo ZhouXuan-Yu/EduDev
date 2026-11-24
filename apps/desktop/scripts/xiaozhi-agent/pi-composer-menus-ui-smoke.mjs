@@ -1,3 +1,4 @@
+import {testMain} from '../acceptance/build-root.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -36,7 +37,7 @@ async function launch() {
   delete env.ELECTRON_RUN_AS_NODE;
   delete env.NODE_OPTIONS;
   delete env.DEEPSEEK_API_KEY;
-  app = await electron.launch({ args: [path.join(desktop, 'out/main/index.js'), `--user-data-dir=${profile}`], env, timeout: 60000 });
+  app = await electron.launch({ args: [testMain(desktop), `--user-data-dir=${profile}`], env, timeout: 60000 });
   page = await app.firstWindow();
   page.on('pageerror', error => errors.push(String(error)));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ state: 'visible', timeout: 60000 });
@@ -81,7 +82,7 @@ try {
   await page.getByTestId('pi-command-picker').click();
   await page.waitForTimeout(150);
   const commandText = await page.locator('.pi-command-menu').innerText();
-  for (const text of ['/clear', '/goal', '/compact', '/permissions', '/skills', '清除对话上下文', '设置并跟踪一个教学目标']) assert(commandText.includes(text), text);
+  for (const text of ['/new','/clear','/goal','/compact','/permissions','/skills','/status','/model','新建对话','持续目标']) assert(commandText.includes(text), text);
   check('Command menu exposes common slash commands with descriptions');
 
   await page.keyboard.press('Escape');

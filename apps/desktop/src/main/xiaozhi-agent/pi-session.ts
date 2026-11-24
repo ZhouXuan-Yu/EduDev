@@ -1454,11 +1454,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     diagnostics: () => ({ running, activeTools: session.getActiveToolNames(), executing: executions.activeCount(sessionId),
       toolManifests:manifests,
       model: session.model?.id, provider: 'deepseek' as const, sdkVersion: '1.0.2' as const }),
-    async queue(id: string, text: string, mode: 'steer' | 'followUp') {
+    nextInstructionOrder: instructions.nextOrder,
+    async queue(id: string, text: string, mode: 'steer' | 'followUp', queueOrder?:number) {
       if (!running || (compacting && !autoAbort) || interrupted || budget?.snapshot().exhausted || disposed) throw new Error('busy');
       await skills?.validateCommand(text);
       paperReceivedTeacherInstruction=true;
-      instructions.enqueue(id,text,mode);
+      instructions.enqueue(id,text,mode,0,queueOrder);
     },
     reserveInstruction: (...args: Parameters<typeof instructions.reserve>) => {
       paperReceivedTeacherInstruction=true;

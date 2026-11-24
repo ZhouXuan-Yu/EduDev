@@ -2091,11 +2091,17 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         run.instructions.add(input.commandId); // Reserve in the live owner before async sanitation/persistence.
         const text = await (await createStudentContextSanitizer(store))(input.text.trim());
         if (closing || run.stopped || active.get(input.sessionId) !== run || !run.agent.diagnostics().running) return {ok:false,error:'busy'};
-        const item = { id:input.commandId,sessionId:input.sessionId,runId:run.runId,kind:'instruction' as const,state:'queued' as const,text,mode:input.mode,revision:0,requestHash:hash };
+        const item = { id:input.commandId,sessionId:input.sessionId,runId:run.runId,kind:'instruction' as const,state:'queued' as const,text,mode:input.mode,revision:0,requestHash:hash,queueOrder:run.agent.nextInstructionOrder() };
         if (!await store.xiaozhiState.putControl(item)) return {ok:false,error:'command_conflict'};
+        try { await run.agent.queue(item.id,text,item.mode,item.queueOrder); }
+        catch {
+          run.instructions.delete(item.id);
+          await store.xiaozhiState.changeControl(item.id,['queued'],{state:'interrupted'});
+          publicEvent(input.sessionId,run,{kind:'control',control:{...publicControl(item),state:'interrupted'}});
+          return {ok:false,error:'busy'};
+        }
         publicEvent(input.sessionId,run,{kind:'control',control:publicControl(item)});
-        try { await run.agent.queue(item.id,text,item.mode); return {ok:true}; }
-        catch { await store.xiaozhiState.changeControl(item.id,['queued'],{state:'interrupted'}); publicEvent(input.sessionId,run,{kind:'control',control:{...publicControl(item),state:'interrupted'}}); return {ok:false,error:'busy'}; }
+        return {ok:true};
       })().catch(():XiaozhiActionResult=>({ok:false,error:'configuration'}));
       queueing.set(input.commandId,{hash,result});
       try {return await result;} finally {queueing.delete(input.commandId);}

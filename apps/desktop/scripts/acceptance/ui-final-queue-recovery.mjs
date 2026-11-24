@@ -221,7 +221,10 @@ export async function queueRecoveryJourney(api){
   await check('QUEUE_IDS_REVISION_MODES_EDIT_WITHDRAW',async()=>{
     queueId=await fresh();queueRun=await send(queueId,'合成测试：请只确认收到，不调用工具。 '+marker,'HOLD',1);
     await until(async()=>{const g=await health();return g.requests.some(r=>r.phase==='HOLD'&&r.bound);});
-    const enqueue=async(text,mode)=>{const before=controls(queueId).length;await(await unique(composer().getByTestId('pi-queue-mode'))).selectOption(mode);await input().fill(text);await click(composer().getByTestId('pi-queue-submit'));return until(async()=>{const rows=controls(queueId);need(rows.length<=before+1,'QUEUE_CHANGED');return rows.length===before+1&&await input().inputValue()===''?rows[before]:false;});};
+    const enqueue=async(text,mode)=>{const before=controls(queueId).length;const legacy=composer().getByTestId('pi-queue-mode');await input().fill(text);
+      if(await legacy.count()){await legacy.selectOption(mode);await click(composer().getByTestId('pi-queue-submit'));}
+      else await input().press(mode==='steer'?'Control+Enter':'Enter');
+      return until(async()=>{const rows=controls(queueId);need(rows.length<=before+1,'QUEUE_CHANGED');return rows.length===before+1&&await input().inputValue()===''?rows[before]:false;});};
     first=await enqueue(originalQueueText,'steer');second=await enqueue('待撤回指令 '+marker,'followUp');need(first.id!==second.id&&first.revision===0&&second.revision===0&&first.runId===queueRun.id&&second.runId===queueRun.id&&first.mode==='steer'&&second.mode==='followUp','QUEUE_CHANGED');
     await click(card(first.id).getByTestId('pi-instruction-edit'));const edited='编辑完成但不交付 '+marker;
     await card(first.id).getByTestId('pi-instruction-text').fill(edited);await card(first.id).getByTestId('pi-instruction-mode').selectOption('followUp');

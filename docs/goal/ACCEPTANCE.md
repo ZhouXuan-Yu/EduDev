@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+生成中追加消息与中文命令的实机记录和手测入口见 [本轮验收](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)。
+
 具名备课依据已通过实机重名和缺失提示、两份实际读回、逐目标引文、原文点击、教师确认、Word/PDF 和冷启。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)
 
 上海模考的地区和轮次实机核对覆盖错范围拦截、候选待核、教师纠正、配对与冷启动。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)

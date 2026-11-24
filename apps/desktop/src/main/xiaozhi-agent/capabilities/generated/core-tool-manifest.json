@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "661aabe552f4578cbe39343d0011435d4ed2644df076bd69697a8cc7b7ba7279",
+  "sourceHash": "5db471c74152f3c0bcec6cdb665e9d4501adb4c0fdb44bc8ee55364a7213f2fd",
   "sources": [
     {
       "file": "package-lock.json",
@@ -848,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "72e21730875b805e08e8aceae998982680f12d7e1c2fe4d7b39127a75e998716"
+      "sha256": "3e9c2906e88b9f484dbeca13acdc445e834f78cba5e14d88acd0d3b13ef5ddf7"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1004,7 +1004,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/control-state.ts",
-      "sha256": "bdfb132ff7c372c640c33ec8e24a871a611d62a09f9d5b0fa777596a38f0cfc5"
+      "sha256": "0bd42ce8560bdbae5a1ace1cceb2535deb755156edeb5f7a64f125d1e2dbb29d"
     },
     {
       "file": "src/main/xiaozhi-agent/control-tools.ts",
@@ -1252,7 +1252,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/instruction-queue.ts",
-      "sha256": "ad21835f85e7b8f7f7a8d3ae4e8c02f65fec9dcc7a64d353f1cbeed27a587afb"
+      "sha256": "9b7e2f2df8243da7fdee57b6f181fcbd123e5ac7dbe6f22ad56528340e2b6f8c"
     },
     {
       "file": "src/main/xiaozhi-agent/lesson-recovery.ts",
@@ -1548,7 +1548,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "91f4b29283984e9d652da563c179522e88e00d548eb5073dd946bb6b61f03cce"
+      "sha256": "89999e9956802e47ffce43b83fa112289db968513dc4091a4216f2ddc7426a34"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1584,7 +1584,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "d793cdab1ba75b37fced029d02c725d204a3dde65804b69f664b9fcabf645801"
+      "sha256": "6b92cf024bfd8cc09190ba3e3a5e3e3d32bb5dc937ef77b857a8ba5aac3a33a2"
     },
     {
       "file": "src/main/xiaozhi-agent/public-image-runtime.ts",
@@ -1604,7 +1604,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/queue-mutations.ts",
-      "sha256": "b1d612f3307d7926002fe7d578f6c52c66ac2775811d826526caa90ad8c1ba34"
+      "sha256": "04f1771e25865570540d8b729b2b9968b0437addab4c2648584a094911ba15ef"
     },
     {
       "file": "src/main/xiaozhi-agent/repeat-tool-reminder.ts",
@@ -2644,7 +2644,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "3aa89568612c46035644785f6bb1d745623ed0fab82c77125aec621ef39c4ebc"
+      "sha256": "262c307701b0857a8d16bcc5bb133d18119415b62b0e53266792b6321a5c2047"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",

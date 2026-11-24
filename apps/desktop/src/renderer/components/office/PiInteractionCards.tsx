@@ -1,4 +1,4 @@
-import type { XiaozhiWorkspaceSnapshot, XiaozhiQueueMutationInput, XiaozhiDecisionInput } from '../../../shared/xiaozhi-agent';
+import type { XiaozhiWorkspaceSnapshot, XiaozhiDecisionInput } from '../../../shared/xiaozhi-agent';
 import type { LearningReviewSummary } from '../../../shared/learning-review';
 import type { OfficeInteraction } from './OfficeInteractions';
 import { PiCopyApproval } from './PiCopyApproval';
@@ -22,11 +22,10 @@ export function taskReviewInteraction(snapshot:XiaozhiWorkspaceSnapshot|undefine
 }
 
 /** Original business cards and decisions; only their persisted location changes. */
-export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, onDecision, onAnswer, onMutation }: {
+export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, onDecision, onAnswer }: {
   snapshot?: XiaozhiWorkspaceSnapshot; sessionId: string; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
   onDecision: (id: string, decision: XiaozhiDecisionInput['decision']) => Promise<void>;
   onAnswer: (id: string, answer: string) => Promise<void>;
-  onMutation: (input: XiaozhiQueueMutationInput) => Promise<void>;
 }): OfficeInteraction[] {
   if (!snapshot || snapshot.projection.threadId !== sessionId) return [];
   const running = Boolean(snapshot.running);
@@ -57,7 +56,7 @@ export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, on
     ...(snapshot.practiceReviews || []).map(item => ({ id: `practice:${item.id}`, runId: item.runId, callId: item.callId, kind: 'practice' as const,
       content: <PiPracticeReview sessionId={sessionId} review={item} onRefresh={onRefresh} /> })),
     ...(snapshot.controls || []).filter(item => item.kind !== 'plan').map(item => ({ id: `control:${item.id}`, runId: item.runId, callId: item.callId,
-      kind: item.kind as 'question' | 'instruction', content: <PiControlCards items={[item]} sessionId={sessionId} onAnswer={onAnswer} onMutation={onMutation} /> })),
+      kind: item.kind as 'question' | 'instruction', content: <PiControlCards items={[item]} onAnswer={onAnswer} /> })),
   ];
   const originals = (snapshot.questionReviews || []).filter(item => item.originalBatch);
   for (const runId of new Set(originals.map(item => item.runId))) {

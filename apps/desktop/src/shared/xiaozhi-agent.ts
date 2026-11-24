@@ -31,11 +31,11 @@ export type XiaozhiActionResult = { ok: true } | { ok: false; error: XiaozhiAgen
 export type XiaozhiPlanStep = { text: string; status: 'pending' | 'in_progress' | 'completed';id?:string;dependsOn?:string[] };
 export type XiaozhiControl = { id: string; runId: string; kind: 'plan' | 'question' | 'instruction';
   state: 'pending' | 'answered' | 'queued' | 'dispatching' | 'withdrawn' | 'applied' | 'interrupted' | 'resuming';
-  text: string; revision?: number; steps?: XiaozhiPlanStep[];plan?:import('./xiaozhi-plan').PlanMetadata; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; canResume?: boolean; callId?:string };
+  text: string; revision?: number; steps?: XiaozhiPlanStep[];plan?:import('./xiaozhi-plan').PlanMetadata; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; queueOrder?:number; canResume?: boolean; callId?:string };
 export type XiaozhiControlInput = { sessionId: string; controlId: string; answer: string };
 export type XiaozhiQueueInput = { sessionId: string; commandId: string; text: string; mode: 'steer' | 'followUp' };
 export type XiaozhiQueueMutationInput = { sessionId: string; controlId: string; revision: number }
-  & ({ action: 'edit'; text: string; mode: 'steer' | 'followUp' } | { action: 'withdraw' });
+  & ({ action: 'edit'; text: string; mode: 'steer' | 'followUp' } | { action: 'withdraw' } | {action:'move'; beforeId:string|null});
 export type XiaozhiAgentEventPayload = (
   {kind:'model_request';request:import('./xiaozhi-model-request').XiaozhiModelRequest} |
   { kind: 'activity'; stage: 'preparing' | 'waiting_model' | 'responding'; since: number }

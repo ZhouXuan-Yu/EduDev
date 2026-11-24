@@ -76,7 +76,7 @@ try{
   check('Visible native steering queue accepts once and clears composer',()=>{assert.equal(steer.state,'queued');assert.equal(steer.payload.mode,'steer');});assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');
   const duplicate=await page.evaluate(({session,command,text})=>Promise.all([window.omniEdu.queueXiaozhi({sessionId:session,commandId:command,text,mode:'steer'}),window.omniEdu.queueXiaozhi({sessionId:session,commandId:command,text,mode:'followUp'})]),{session,command:steer.id,text:steer.payload.text});
   check('Queued command replay is idempotent and mode conflict is rejected',()=>{assert(duplicate[0].ok);assert.equal(duplicate[1].error,'command_conflict');assert.equal(rows().controls.filter(row=>row.id===steer.id).length,1);});
-  await page.getByTestId('pi-queue-mode-followup').click();await page.getByTestId('office-prompt-input').fill('接着请只补一行：教师复核提醒。');await page.getByTestId('pi-queue-submit').click();
+  await page.getByTestId('office-prompt-input').fill('接着请只补一行：教师复核提醒。');await page.getByTestId('pi-queue-submit').click();
   await until(async()=>rows().controls.filter(row=>row.kind==='instruction').length===2);check('Follow-up remains queued while teacher question waits',()=>assert.equal(rows().controls.find(row=>row.payload.mode==='followUp').state,'queued'));
   await page.getByTestId('pi-question-option-1').click();
   check('Selecting an actual suggested answer does not dispatch until explicit send',()=>{});

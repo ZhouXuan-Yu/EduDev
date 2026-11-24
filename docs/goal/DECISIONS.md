@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+生成中普通回车采用本机默认设置，Ctrl+Enter 临时采用另一种。排队调整入原会话控制记录，Pi 在可交付边界按顺序执行。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#生成中追加消息与中文斜杠命令)
+
 教案对话用完整名称绑定版本。已登记正文从原读取工具实读，映射核对后保存草稿。重名需回专业选择入口确认具体版本。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-44-对话使用具名备课依据)
 
 上海模考目录若明确限定地区或轮次，以教师请求绑定范围。分类冲突、未判明的候选先保留未收录。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-对话限定地区和轮次的模考目录)

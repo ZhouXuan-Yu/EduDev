@@ -28,8 +28,11 @@ async function fresh(){const previous=await id();await page.getByTestId('ai-conv
 async function send(text){const session=await id(),n=(await snap()).projection.turns.length;await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('office-prompt-input').press('Enter');await until(async()=>(await snap(session)).projection.turns.length>n);return session;}
 async function terminal(session){await until(async()=>!(await snap(session)).running);return snap(session);}
 async function ask(){const session=await send('帮我准备一份分数课导入，请先问我面向哪个年级，给三年级和五年级两个选项，等我回答后再给一句建议，不操作文件。');await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});return session;}
-async function queue(text,mode='steer'){await page.getByTestId(mode==='steer'?'pi-queue-mode-steer':'pi-queue-mode-followup').click();const n=(await snap()).controls.filter(item=>item.kind==='instruction').length;
-  await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('pi-queue-submit').click();await until(async()=>(await snap()).controls.filter(item=>item.kind==='instruction').length>n);assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');return (await snap()).controls.filter(item=>item.kind==='instruction').at(-1);}
+async function queue(text,mode='steer'){const n=(await snap()).controls.filter(item=>item.kind==='instruction').length;
+  const input=page.getByTestId('office-prompt-input');
+  await input.fill(text);await input.press(mode==='steer'?'Control+Enter':'Enter');
+  await until(async()=>(await snap()).controls.filter(item=>item.kind==='instruction').length>n&&await input.inputValue()==='');
+  return (await snap()).controls.filter(item=>item.kind==='instruction').at(-1);}
 function native(session){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{const binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(session);return fs.readFileSync(path.join(data,'xiaozhi-pi',binding.session_file),'utf8').trim().split('\n').map(JSON.parse);}finally{db.close();}}
 const occurrences=(session,text)=>native(session).filter(entry=>entry.type==='message'&&entry.message.role==='user'&&entry.message.content.some(part=>part.type==='text'&&part.text===text)).length;
 const mutate=input=>page.evaluate(input=>window.omniEdu.mutateXiaozhiQueue(input),input);

@@ -24,6 +24,7 @@ import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
 import { SettingsRow } from './hana-settings/SettingsRow';
+import {followUpLabel,alternateFollowUp,saveComposerFollowUp,useComposerFollowUp} from './composer-follow-up';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import {SettingsSearchResults} from './SettingsSearchResults';
 import {SettingsNavigation} from './SettingsNavigation';
@@ -61,6 +62,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-preference-sidebar', tabId: 'interface', title: '展开左侧导航', path: ['界面偏好', '展开左侧导航'], aliases: ['sidebar', '侧边栏', '会话侧栏'] },
   { id: 'pi-preference-aside', tabId: 'interface', title: '任务详情', path: ['界面偏好', '任务详情'], aliases: ['aside', '任务面板'] },
   { id: 'pi-preference-files', tabId: 'interface', title: '本地文件面板', path: ['界面偏好', '本地文件面板'], aliases: ['files', 'file panel', '预览'] },
+  { id: 'pi-queue-mode', tabId: 'interface', title: '追加消息的发送时机', path: ['界面偏好', '追加消息的发送时机'], aliases: ['排队', '补充', '回车', 'steer', 'queue'] },
   { id: 'pi-settings-archives', tabId: 'archives', title: '已归档对话', path: ['归档', '对话记录'], aliases: ['archived chats', 'history', '历史'] },
   { id: 'data-backup-export', tabId: 'backup', title: '创建本地备份', path: ['备份', '创建'], aliases: ['backup export', '导出备份', '数据'] },
   { id: 'data-backup-verify', tabId: 'backup', title: '检查已有备份', path: ['备份', '检查'], aliases: ['backup verify', '校验', '完整性'] },
@@ -68,6 +70,8 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
 ];
 
 export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
+  const followUp=useComposerFollowUp();
+  const [followUpSaveFailed,setFollowUpSaveFailed]=useState(false);
   const [tab, setTab] = useState<Tab>('models'), [query, setQuery] = useState('');
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>(), [sessionId, setSessionId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>(), [dataRoot, setDataRoot] = useState('');
@@ -196,7 +200,16 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
               <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
               <PiDiagnostics key={'diagnostics-'+sessionId} sessionId={sessionId} turns={snapshot.projection.turns} onBusyChange={setChildBusy}/>
             </>}</SettingsStack></SettingsPage>}
-          {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
+          {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2></div>
+            <SettingsSection title="对话">
+              <SettingsRow label="追加消息的发送时机" hint={`Enter ${followUpLabel(followUp)} · Ctrl+Enter ${followUpLabel(alternateFollowUp(followUp))}`}
+                control={<select aria-label="追加消息的发送时机" data-testid="pi-queue-mode" value={followUp}
+                  onChange={event=>setFollowUpSaveFailed(!saveComposerFollowUp(event.target.value==='steer'?'steer':'followUp'))}>
+                  <option value="followUp">本轮结束后发送</option><option value="steer">补充到本轮</option>
+                </select>}/>
+              {followUpSaveFailed&&<p role="alert">发送偏好未保存，请重试。</p>}
+            </SettingsSection>
+            <SettingsSection title="工作区面板">
             {([{ field: 'sidebar', label: '展开左侧导航', hint: '关闭后保留图标导航，收起项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={item.field === 'sidebar' ? !navigationPreferences.preferences.collapsed : preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
           </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}
           {tab === 'archives' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>{title}</h2><p>查看保存在本机的归档记录。</p></div><div className="pi-settings-actions"><Button size="sm" variant="ghost" onPress={() => { setArchive(undefined); void reload(); }}><RefreshCw size={15}/>刷新归档</Button></div>

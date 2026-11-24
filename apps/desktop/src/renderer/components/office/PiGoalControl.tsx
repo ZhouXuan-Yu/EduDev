@@ -9,13 +9,31 @@ import {PiTaskReview} from './PiTaskReview';
 import type {TaskView} from '../../../shared/xiaozhi-task';
 
 /** Public persisted goal facts. Only the teacher can accept a result. */
-export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh,openSignal,headless=false}:{sessionId:string;goal?:XiaozhiGoal;task?:TaskView;running:boolean;disabled:boolean;onRefresh:()=>Promise<void>;openSignal?:{token:number;sessionId:string};headless?:boolean}){
+export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh,openSignal,headless=false}:{sessionId:string;goal?:XiaozhiGoal;task?:TaskView;running:boolean;disabled:boolean;onRefresh:()=>Promise<void>;openSignal?:{token:number;sessionId:string;objective?:string};headless?:boolean}){
  const [open,setOpen]=useState(false),[objective,setObjective]=useState(''),[criteria,setCriteria]=useState(''),[busy,setBusy]=useState(false),[notice,setNotice]=useState(''),[checked,setChecked]=useState<number[]>([]);
  const lock=useRef(false),createId=useRef(`xigoal_${crypto.randomUUID()}`);
  const sync=useOfficeSynchronization();
  const terminal=!goal||['completed','ended'].includes(goal.state);
  const linked=task?.goal?.id===goal?.id&&Boolean(goal&&task?.goal)?task:undefined;
- useEffect(()=>{if(openSignal?.sessionId===sessionId){setOpen(true);setNotice('');createId.current=`xigoal_${crypto.randomUUID()}`;}},[openSignal,sessionId]);
+ useEffect(()=>{
+  if(openSignal?.sessionId!==sessionId)return;
+  const argument=openSignal.objective;
+  const mode=argument?.toLowerCase();
+  const canPause=goal&&['active','waiting_teacher'].includes(goal.state);
+  const canResume=goal&&['paused','interrupted'].includes(goal.state);
+  if(!disabled&&!running&&goal&&(mode==='pause'&&canPause||mode==='resume'&&canResume)){
+   void mutate({schemaVersion:1,sessionId,id:goal.id,revision:goal.revision,action:mode==='pause'?'pause':'resume'});
+   return;
+  }
+  if(mode==='pause'||mode==='resume'||mode==='clear'){
+   if(terminal){setNotice('当前没有可操作的持续目标。');return;}
+   setNotice(mode==='clear'?'确认结束后会保留既有进度和成果。':'当前状态无法执行该目标命令。');
+  }else{
+   setNotice('');
+   if(argument&&terminal)setObjective(argument);
+  }
+  setChecked([]);setOpen(true);createId.current=`xigoal_${crypto.randomUUID()}`;
+ },[openSignal,sessionId]);
  async function mutate(input:GoalMutation){
   if(sync.isBlocked()||lock.current)return;lock.current=true;setBusy(true);setNotice('');
   try{const result=await window.omniEdu?.mutateXiaozhiGoal(input);
@@ -41,11 +59,14 @@ export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh,op
   {notice&&<p className="pi-goal-notice" role="status" data-testid="pi-goal-notice">{notice}</p>}
   {!headless&&linked&&<div className="pi-goal-task-review"><PiTaskReview sessionId={sessionId} task={linked} running={running} onRefresh={onRefresh}/></div>}
   {open&&<Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={value=>{if(!value&&!lock.current)setOpen(false);}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-goal-dialog" data-testid="pi-goal-dialog">
-   <Modal.Header><Modal.Heading>{terminal?'设置持续目标':'验收目标成果'}</Modal.Heading></Modal.Header>
+   <Modal.Header><Modal.Heading>{terminal?'设置持续目标':goal.state==='review_required'?'验收目标成果':'持续目标'}</Modal.Heading></Modal.Header>
    <Modal.Body>{sync.blocked&&<p role="status">正在同步过程记录，目标变更暂时不可用。</p>}<OfficeMutationBoundary>{terminal?<><label htmlFor="pi-goal-objective">希望完成什么</label><TextArea id="pi-goal-objective" data-testid="pi-goal-objective" value={objective} onChange={e=>setObjective(e.target.value)} rows={3} maxLength={4000} aria-label="持续目标"/>
     <label htmlFor="pi-goal-criteria">验收要求（每行一项，最多八项）</label><TextArea id="pi-goal-criteria" data-testid="pi-goal-criteria" value={criteria} onChange={e=>setCriteria(e.target.value)} rows={3} maxLength={3200} aria-label="目标验收要求"/>
-    <p>小智会保存进度并持续推进。需要你的决定时等待确认；暂停与重启后保留进度，由你恢复。</p></>:<><p>{goal.objective}</p><pre data-testid="pi-goal-result">{goal.candidate}</pre><p>核对本轮成果后逐项确认：</p>{goal.criteria.map((text,i)=><Checkbox key={i} data-testid={`pi-goal-check-${i}`} isSelected={checked.includes(i)} onChange={value=>setChecked(items=>value?[...items.filter(v=>v!==i),i]:items.filter(v=>v!==i))}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><Label>{text}</Label></Checkbox.Content></Checkbox>)}</>}{notice&&<p role="alert">{notice}</p>}</OfficeMutationBoundary></Modal.Body>
-   <Modal.Footer><Button variant="secondary" isDisabled={busy} onPress={()=>setOpen(false)}>取消</Button><OfficeMutationBoundary>{terminal?<Button data-testid="pi-goal-create" isDisabled={busy||disabled||running||!objective.trim()||!criteria.trim()||criteria.split('\n').filter(v=>v.trim()).length>8||criteria.split('\n').some(v=>v.trim().length>400)} onPress={()=>void mutate({schemaVersion:1,action:'create',sessionId,id:createId.current,revision:0,objective:objective.trim(),criteria:criteria.split('\n').map(v=>v.trim()).filter(Boolean)})}>开始目标</Button>:<Button data-testid="pi-goal-accept" isDisabled={busy||running||checked.length!==goal.criteria.length} onPress={()=>action('accept')}>确认完成</Button>}</OfficeMutationBoundary></Modal.Footer>
+    <p>小智会保存进度并持续推进。需要你的决定时等待确认；暂停与重启后保留进度，由你恢复。</p></>:<><p>{goal.objective}</p><p>{GOAL_LABELS[goal.state]}</p>{goal.state==='review_required'?<><pre data-testid="pi-goal-result">{goal.candidate}</pre><p>核对本轮成果后逐项确认：</p>{goal.criteria.map((text,i)=><Checkbox key={i} data-testid={`pi-goal-check-${i}`} isSelected={checked.includes(i)} onChange={value=>setChecked(items=>value?[...items.filter(v=>v!==i),i]:items.filter(v=>v!==i))}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><Label>{text}</Label></Checkbox.Content></Checkbox>)}</>:<p>{goal.summary||goal.nextStep}</p>}</>}{notice&&<p role="alert">{notice}</p>}</OfficeMutationBoundary></Modal.Body>
+   <Modal.Footer><Button variant="secondary" isDisabled={busy} onPress={()=>setOpen(false)}>取消</Button><OfficeMutationBoundary>{terminal?<Button data-testid="pi-goal-create" isDisabled={busy||disabled||running||!objective.trim()||!criteria.trim()||criteria.split('\n').filter(v=>v.trim()).length>8||criteria.split('\n').some(v=>v.trim().length>400)} onPress={()=>void mutate({schemaVersion:1,action:'create',sessionId,id:createId.current,revision:0,objective:objective.trim(),criteria:criteria.split('\n').map(v=>v.trim()).filter(Boolean)})}>开始目标</Button>:goal.state==='review_required'?<Button data-testid="pi-goal-accept" isDisabled={busy||running||checked.length!==goal.criteria.length} onPress={()=>action('accept')}>确认完成</Button>:<>
+   {['active','waiting_teacher'].includes(goal.state)&&<Button variant="ghost" isDisabled={disabled||busy} onPress={()=>action('pause')}>暂停目标</Button>}
+   {['paused','interrupted'].includes(goal.state)&&<Button isDisabled={disabled||busy||running} onPress={()=>action('resume')}>恢复目标</Button>}
+   <Button variant="ghost" isDisabled={disabled||busy} onPress={()=>action('end')}>结束目标</Button></>}</OfficeMutationBoundary></Modal.Footer>
   </Modal.Dialog></Modal.Container></Modal.Backdrop>}
  </>;
 }

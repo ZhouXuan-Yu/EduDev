@@ -36,6 +36,9 @@ import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import { PiTextChangeCard } from './PiTextChangeCard';
 import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import { PiControlCards } from './PiControlCards';
+import {PiComposerQueue} from './PiComposerQueue';
+import type {XiaozhiQueueMutationInput} from '../../../shared/xiaozhi-agent';
+import {workspaceStatus} from './workspace-status';
 import { PiSkillSettings } from './PiSkillSettings';
 import { PiHomeSuggestions, isHomeConversation } from './PiHomeLayout';
 import { workspaceNotifications } from './workspace-notifications';
@@ -76,7 +79,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [id, setId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>();
   const attachments=usePiAttachments(id,visible,snapshot?.projection.turns.flatMap(turn=>turn.items)||[]);
-  const [goalOpenSignal,setGoalOpenSignal]=useState<{token:number;sessionId:string}>();
+  const [goalOpenSignal,setGoalOpenSignal]=useState<{token:number;sessionId:string;objective?:string}>();
   const [fileReveal,setFileReveal]=useState<{sessionId:string;id:string;path:string}>();
   const [models, setModels] = useState<XiaozhiSettingsView>(), [modelSelecting, setModelSelecting] = useState(false);
   const [returnHydrating,setReturnHydrating]=useState(false);
@@ -374,6 +377,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   function revealFile(path:string){setFileReveal({sessionId:id,id:crypto.randomUUID(),path});}
   const compacting = snapshot?.running && snapshot.operation === 'compact';
+  async function mutateQueue(input:XiaozhiQueueMutationInput){
+    requireSynchronized();
+    const result=await window.omniEdu?.mutateXiaozhiQueue(input);
+    await hydrate(input.sessionId).catch(()=>undefined);
+    if(!result?.ok)throw Error('queue_mutation_failed');
+  }
   async function compact() {
     if (mutationsBlocked() || !id || !snapshot || snapshot.running || compactLock.current) return;
     compactLock.current = true; setCompactBusy(true); setNotice(''); const target = id;
@@ -412,7 +421,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
     aside={<PiWorkspaceContext key={id} sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
-      goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>}/>}
+      goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>}/>}
     sidebar={history()}>
     <section className="work-panel ai-chat-surface" data-empty={isHomeConversation(projection)}>
       {snapshot?.legacyHistory && <p className="pi-history-note">旧对话保留供参考；小智从本轮开始使用新的上下文。</p>}
@@ -444,10 +453,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           navigation.target.mockExam.id===summary.id?navigation.intent:undefined}/>))
       .concat((snapshot?.mockExamEdits||[]).filter(item=>item.runId===turnId).map(summary=><PiMockExamEdit key={summary.id} summary={summary}
         sessionId={id} enabled={!snapshot?.running&&!syncBlocked} onRefresh={()=>hydrate(id)}/>))
-      .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []} onAnswer={answerQuestion} sessionId={id} onMutation={async input=>{
-        const target=id; const result=await window.omniEdu?.mutateXiaozhiQueue(input); await hydrate(target);
-        if (!result?.ok) throw new Error('queue_mutation_failed');
-      }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
+      .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []} onAnswer={answerQuestion}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><PiComposerPendingPanel items={composerItems} sessionId={id} onAnswer={answerQuestion} onRefresh={()=>hydrate(id)} onOpen={revealFile}/><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" visible={visible} disabled={!snapshot||!id||snapshot.running||modelSelecting||syncBlocked} onChange={choice=>{
           if(mutationsBlocked()||modelLock.current||snapshot?.running||!models?.thinking?.session)return;
@@ -461,7 +467,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
             .finally(()=>{modelLock.current=false;if(active.current)setModelSelecting(false);});
         }}/ >}
         showQuickStarts={false}
-        taskSummary={<><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/></>}
+        statusDetails={snapshot&&<><strong>{workspaceStatus(snapshot,Boolean(compacting)).label}</strong><span>模型 {projection?.model||'DeepSeek'}</span><span>{snapshot.workspace?.label||'教师资料库'}</span>{snapshot.modelCapabilities&&<span>上下文 {snapshot.modelCapabilities.contextWindow.toLocaleString()} Token</span>}</>}
+        taskSummary={<><PiComposerQueue controls={snapshot?.controls||[]} sessionId={id} onMutation={mutateQueue}/><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/></>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || Boolean(snapshot.studentContext&&snapshot.studentContext.status!=='active')} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}
         onModelChange={!models?.sessionModel || models.sessionModel.locked || models.locked ? undefined : model => {
@@ -477,12 +484,24 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         }}
         onQueue={compacting ? undefined : async(text,mode)=>{
           requireSynchronized();
-          const target=id; if(!queueAttempt.current || queueAttempt.current.sessionId !== target || queueAttempt.current.text !== text || queueAttempt.current.mode !== mode)queueAttempt.current={sessionId:target,text,mode,commandId:`xicmd_${crypto.randomUUID()}`};
-          const result=await window.omniEdu?.queueXiaozhi(queueAttempt.current); if(!result?.ok){setNotice(result?XIAOZHI_ERRORS[result.error]:'补充未发送。');throw new Error('queue_failed');}queueAttempt.current=undefined;await hydrate(target);
+          const target=id;
+          const attempt=queueAttempt.current;
+          if(!attempt||attempt.sessionId!==target||attempt.text!==text||attempt.mode!==mode){
+            queueAttempt.current={sessionId:target,text,mode,commandId:`xicmd_${crypto.randomUUID()}`};
+          }
+          const result=await window.omniEdu?.queueXiaozhi(queueAttempt.current!);
+          if(!result?.ok){
+            setNotice(result?XIAOZHI_ERRORS[result.error]:'补充未发送。');
+            throw new Error('queue_failed');
+          }
+          queueAttempt.current=undefined;
+          void hydrate(target).catch(()=>{
+            if(active.current&&idRef.current===target)setNotice('消息已提交，队列暂未刷新。请重新读取对话。');
+          });
         }}
         attachments={attachments.cards} hasAttachments={attachments.hasAttachments} sendBlocked={attachments.sendBlocked} attachDisabled={attachments.busy||Boolean(snapshot?.running)||syncBlocked} onAttach={()=>{if(!mutationsBlocked())void attachments.choose();}} onFilesSelected={files=>{if(!mutationsBlocked())void attachments.importFiles(files);}}
         onPermissions={onSettings} permissionMode={permissionMode} onPermissionModeChange={setPermissionMode}
-        onNewChat={()=>void fresh(null)} onOpenGoal={()=>setGoalOpenSignal({token:Date.now(),sessionId:id})} onCompact={()=>void compact()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
+        onNewChat={()=>void fresh(null)} onOpenGoal={objective=>setGoalOpenSignal({token:Date.now(),sessionId:id,objective})} onCompact={()=>void compact()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
         attachLabel="添加本地附件" permissionLabel={snapshot?.workspace ? '工作目录 · 写入需确认' : '教师资料 · 只读'} onWorkspace={() => { void (async () => {
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);

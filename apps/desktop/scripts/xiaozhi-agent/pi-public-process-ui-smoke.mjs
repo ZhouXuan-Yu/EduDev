@@ -131,9 +131,9 @@ try {
   const before=(await snapshot()).projection.turns.length,input=page.getByTestId('office-prompt-input');await input.fill('请使用教师提问工具询问这节分数课安排上午还是下午，给两个选项，等待我回答，不要操作文件。');await input.press('Enter');
   await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});
   const pendingRun = last(await snapshot()).id, unsent = '尚未发送的下一项教研说明';
-  await page.getByTestId('pi-queue-mode-followup').click();await input.fill(unsent);
+  await input.fill(unsent);
   await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-file-panel').waitFor({state:'visible'});
-  assert.equal(await input.inputValue(),unsent);assert.equal(await page.getByTestId('pi-queue-mode-followup').getAttribute('aria-pressed'),'true');
+  assert.equal(await input.inputValue(),unsent);assert.match(await page.getByTestId('pi-queue-shortcuts').innerText(),/Enter 本轮结束后发送/);
   await page.getByTestId('pi-files-close').click();assert.equal(await input.inputValue(),unsent);
   check('Actual waiting run retains unsent queue draft and mode through file-panel reparenting without dispatch',()=>{});
   assert.equal(last(await snapshot()).id,pendingRun);assert.equal((await snapshot()).projection.turns.length,before+1);

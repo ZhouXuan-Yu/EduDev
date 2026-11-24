@@ -11,6 +11,21 @@
 | 4 | IN_PROGRESS | 四类教学业务均有实际工程路径。真实教学样本、复杂扫描和体验指标按 [综合验收](08_D3_DELIVERY_ACCEPTANCE.md) 收口。 |
 | 5 | DEFERRED | 冻结范围之外。 |
 
+## 生成中追加消息与中文斜杠命令
+
+在「问小智」输入 `/` 或 `／` 可用英文命令和中文名称筛选。常用操作包括新建对话、切换模型、压缩上下文、查看状态、设定持续目标及查看权限和技能。菜单保留英文指令拼写，功能描述和键盘提示用中文。新建空白对话后可从历史读取原对话。 [Codex 桌面命令说明](https://learn.chatgpt.com/docs/developer-commands)
+
+生成中，普通回车默认把新消息加入「待发送消息」。`Ctrl+Enter` 可在当前轮的 Pi 可交付边界补充。老师可在「设置 → 界面」切换默认方式，两个快捷键随之对调。待发消息可编辑、调序、提前补充和删除。已中断的消息可手动取回，冷启不自动重放。 [Codex 消息追加说明](https://learn.chatgpt.com/docs/prompting)
+
+固定验收目录为 `D:/WorkProject/EduProject/acceptance/D3-20261124/composer-follow-up`。手工验收使用该目录下 `manual/启动-D3-追加消息和斜杠命令验收.cmd`，构建日志、界面截图、SQLite 和进程核对集中在验收目录。专项使用本机确定性流式应答，真实模型的答复质量由综合验收核对。
+
+| 验证 | 结果 |
+| --- | --- |
+| Electron 实机、SQLite 与 Pi 队列 | `composer-native.log` 与 `composer-Kwyl2J/report.json`，5/5。覆盖中文命令、设置读回、输入法与按键、待发队列编辑和调序、删除和提前发送、两个窗口尺寸、送达顺序及冷启零重放。 |
+| 渲染组件与持久队列边界 | `renderer.log` 261/261，`queue-boundary.log` 10/10。 |
+| Electron 常规回归 | `electron-regression.log` 207/207，来自本轮上一候选构建。最后的发送确认和停止按钮改动由最终构建的专项覆盖。 |
+| 构建与手测窗口 | `build-delivery.log` 退出 0。`manual/window.json` 记录实际窗口和构建指纹。 |
+
 ## Phase 1 初始验证
 
 | 命令或证据 | 当前结果 |
