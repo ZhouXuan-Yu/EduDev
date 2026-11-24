@@ -48,12 +48,21 @@ export function PiTeacherQuestionCard({item,onAnswer,inComposer=false}:{item:Xia
     }finally{lock.current=false;update({busy:false});}
   }
   const identity={'data-testid':'pi-teacher-question','data-control-id':item.id,'data-state':item.state};
-  const content=<><p className="pi-question-text">{item.text}</p>{editable ? <>
+  const answerLabel=item.options?.length?'或自行填写回答':'填写回答';
+  const fields=<div className="pi-question-fields"><p className="pi-question-text">{item.text}</p>{editable ? <>
       {item.canResume && <p className="pi-history-note">回答后开始新一轮，旧审批不会继续执行。</p>}
-      <div className="pi-question-options" role="group" aria-label="建议回答">{item.options?.map((option,index)=><Button key={index} variant="ghost" className="pi-question-option" isDisabled={busy} aria-pressed={answer===option} data-testid={`pi-question-option-${index}`} onPress={()=>update({answer:option,error:''})}><span className="pi-option-number">{index+1}</span><span>{option}</span></Button>)}</div>
-      <label className="pi-question-answer"><span className="pi-question-free-label">或自行填写回答</span><TextArea rows={1} aria-label="回答小智的问题" placeholder="或自行填写回答" data-testid="pi-question-answer" value={answer} maxLength={4000} disabled={busy} onChange={event=>update({answer:event.target.value,error:''})}/></label>
-      <div className="pi-question-footer">{!inComposer&&<span><CornerDownRight size={14} aria-hidden="true"/>选择后发送回答</span>}<Button size="sm" data-testid="pi-question-submit" isDisabled={busy || !answer.trim()} onPress={()=>void submit(answer)}>{busy?'正在提交…':'发送回答'}</Button></div>
-    </> : item.answer && <p>你的回答：{item.answer}</p>}{error && <p role="alert">{error}</p>}</>;
+      {Boolean(item.options?.length)&&<div className="pi-question-options" role="group" aria-label="建议回答">{item.options?.map((option,index)=><Button key={index} variant="ghost" className="pi-question-option" isDisabled={busy} aria-pressed={answer===option} data-testid={`pi-question-option-${index}`} onPress={()=>update({answer:option,error:''})}><span className="pi-option-number">{index+1}</span><span>{option}</span></Button>)}</div>}
+      <label className="pi-question-answer"><span className="pi-question-free-label">{answerLabel}</span><TextArea rows={1} aria-label={inComposer?answerLabel:'回答小智的问题'} placeholder={inComposer?undefined:answerLabel} data-testid="pi-question-answer" value={answer} maxLength={4000} disabled={busy}
+        onChange={event=>update({answer:event.target.value,error:''})}
+        onKeyDown={inComposer?event=>{
+          if(event.key!=='Enter'||!event.ctrlKey||event.shiftKey||event.altKey||event.metaKey||event.nativeEvent.isComposing||event.nativeEvent.keyCode===229)return;
+          event.preventDefault();
+          if(!event.repeat)void submit(answer);
+        }:undefined}/></label>
+    </> : item.answer && <p>你的回答：{item.answer}</p>}</div>;
+  const content=<>{fields}{editable&&<div className="pi-question-footer">{inComposer?<span>Ctrl+Enter 提交</span>:<span><CornerDownRight size={14} aria-hidden="true"/>{item.options?.length?'选择后发送回答':'填写后发送回答'}</span>}
+    <Button size="sm" data-testid="pi-question-submit" aria-keyshortcuts={inComposer?'Control+Enter':undefined} isDisabled={busy || !answer.trim()} onPress={()=>void submit(answer)}>{busy?'正在提交…':'发送回答'}</Button></div>}
+    {error&&<p className="pi-question-error" role="alert">{error}</p>}</>;
   if(inComposer)return <div {...identity}>{content}</div>;
   return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable || item.state === 'answered'} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} {...identity}>
     <ChatTool.Trigger><CircleHelp size={16} aria-hidden="true"/><span>{item.state === 'pending' ? '问题' : item.state === 'answered' ? '已回答' : item.canResume ? '上次提问已中断' : '提问已停止'}</span></ChatTool.Trigger>

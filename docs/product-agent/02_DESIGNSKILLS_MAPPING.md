@@ -48,3 +48,5 @@
 输入框上方的待确认面板采用 CMP06 的标题、局部滚动和操作层级。弹层固定在当前操作位置，老师仍可查看对话。出现时保持键盘焦点，面板内按 Esc 收起并把焦点还给展开按钮。 [Apple Popovers](https://developer.apple.com/design/human-interface-guidelines/popovers?changes=_5_5&language=objc) · [Windows Dialogs](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/dialogs-and-flyouts/dialogs)
 
 同一面板接入操作授权与复制确认，沿 CMP05 的持续字段标签、CMP06 的收起行为和 CMP10 的审批状态。待处理项多于一项时，在标题旁显示数量和可切换的类别。 [应用契约](../design/ui-rebuild-2026-10-24/pages/ai.md#输入框上方的待处理面板)
+
+补填时将提交区放在正文滚动区之外，保留中文填写标签。收起、再展开、换行和输入法选字在真实 Electron 会话中验证，沿同一任务记录提交。 [验收条目](../design/ui-rebuild-2026-10-24/pages/ai.md#必须验证)

@@ -4,7 +4,7 @@ D3 衔接对话修订的教案活动和时长范围，新稿纳入原教案版�
 
 D3 教案对话修订已接入原任务与版本账本，支持候选澄清和限定字段。 [实施合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#对话局部修订教案)
 
-D3 补齐输入框上方待办的操作授权和复制确认入口。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#输入框上方的待确认面板)
+D3 输入框上方待办已接入操作授权、复制确认与教师补填。持续按统一弹窗约束交付此类交互。 [执行合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#输入框上方的待确认面板)
 
 D3 对话交互补齐输入框上方的待发队列、跨会话默认偏好和中文命令提示。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#生成中追加消息与中文斜杠命令)
 

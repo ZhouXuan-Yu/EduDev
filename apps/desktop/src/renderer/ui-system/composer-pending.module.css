@@ -47,12 +47,46 @@
 }
 
 .question {
-  padding-inline: 12px;
+  max-height: none;
+  overflow: visible;
+  padding: 0 8px 8px;
+}
+
+.question :global(.pi-question-fields) {
+  max-height: min(34vh, 340px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
 }
 
 .question :global(.pi-question-text) {
   margin: 0 0 4px;
   font-weight: 550;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.question :global(.pi-question-answer) {
+  display: block;
+}
+
+.question :global(.pi-question-answer .pi-question-free-label) {
+  position: static;
+  display: block;
+  width: auto;
+  height: auto;
+  margin-bottom: 4px;
+  clip-path: none;
+  color: #465b76;
+}
+
+.question :global(.pi-question-answer) textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 60px;
+  max-height: 150px;
+  resize: vertical;
 }
 
 .question :global(.pi-question-option) {
@@ -70,7 +104,13 @@
 .question :global(.pi-question-footer) {
   display: flex;
   justify-content: flex-end;
-  margin-top: 6px;
+  padding: 6px 4px 0;
+  border-top: 1px solid #d5dfec;
+}
+
+.question :global(.pi-question-error) {
+  margin: 4px 4px 0;
+  color: var(--pi-danger, #b33f3f);
 }
 
 @media (max-width: 360px) {
