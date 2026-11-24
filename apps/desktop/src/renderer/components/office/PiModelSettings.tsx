@@ -141,7 +141,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
             </div>
             <div className={styles.save}>
               {dirty&&<Button type="button" variant="ghost" data-testid="pi-settings-discard" isDisabled={disabled} onPress={()=>{setModel(view?.defaultModel||'');setKey('');setNotice('已放弃未保存的模型设置。');}}>放弃修改</Button>}
-              <Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button>
+              <Button className="edu-primary-action-contrast" type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model || modelUnavailable}>{busy ? '正在验证并保存…' : '保存模型设置'}</Button>
             </div>
             {dirty&&<p className={styles.hint} data-testid="pi-settings-unsaved">模型与密钥有未保存的更改。密钥提交后会清除输入，保存失败时需重新填写。</p>}
           </form>

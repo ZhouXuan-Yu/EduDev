@@ -10,13 +10,13 @@ try{
  for(const [width,height]of [[1366,768],[1920,1080],[800,768]]){
   await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(...s),[width,height]);
   for(const [id,pseudo]of [['pi-settings-search','::placeholder'],['pi-settings-key','::placeholder'],['pi-settings-default-model',null],['pi-settings-save',null],['pi-settings-tab-models',null]]){
-   const field=page.getByTestId(id);await field.scrollIntoViewIfNeeded();const contrast=await measureTextContrast(field,pseudo);report.contrast.push({id,width,...contrast});assert(contrast.ratio>=4.5,id+' contrast '+contrast.ratio);
+   const field=page.getByTestId(id);await field.scrollIntoViewIfNeeded();const contrast=await measureTextContrast(field,pseudo);const disabled=await field.isDisabled();report.contrast.push({id,width,disabled,exception:disabled?'Inactive controls are exempt under WCAG 1.4.3; preserve official disabled appearance':undefined,...contrast});if(!disabled)assert(contrast.ratio>=4.5,id+' contrast '+contrast.ratio);
   }
   const nav=page.getByTestId('pi-settings-tab-interface');await nav.focus();await page.keyboard.press('Shift+Tab');await page.keyboard.press('Tab');
   assert(await nav.evaluate(el=>el===document.activeElement&&el.matches(':focus-visible')),'Real keyboard focus returns to the category');
   const style=await nav.evaluate(el=>{const c=getComputedStyle(el),r=el.getBoundingClientRect();return{outlineStyle:c.outlineStyle,outlineWidth:c.outlineWidth,width:r.width,height:r.height};});assert.notEqual(style.outlineStyle,'none');assert(style.width>=24&&style.height>=24);report.focus.push({width,...style});
   await page.screenshot({path:path.join(output,'models-keyboard-'+width+'.png')});
  }
- report.checks.push('All five actual fields/navigation labels retain 4.5:1 contrast at all three sizes','Actual keyboard navigation has visible focus and 24px targets');assert.deepEqual(report.errors,[]);report.success=true;
+ report.checks.push('All enabled fields/navigation labels retain 4.5:1 contrast at all three sizes; genuine disabled controls are recorded separately','Actual keyboard navigation has visible focus and 24px targets');assert.deepEqual(report.errors,[]);report.success=true;
 }catch(e){report.failure=String(e.stack||e);process.exitCode=1;await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{await app?.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,output,failure:report.failure}));}
