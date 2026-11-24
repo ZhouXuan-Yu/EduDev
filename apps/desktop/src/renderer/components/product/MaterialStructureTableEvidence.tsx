@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@heroui/react";
 import type { DocumentStructureReference, StructureTableSource } from "../../../shared/material-document-structure";
-import { hasMergedTableCells } from "../../../shared/material-table-vision";
+import { supportsTableCellVision } from "../../../shared/material-table-vision";
 import { DisclosureCard } from "../ui/DisclosureCard";
 import { MaterialTableVision } from "./MaterialTableVision";
 import { readMaterialStructureCrop } from "./material-structure-source-image";
@@ -40,7 +40,7 @@ function TableEvidence({ sources, reference }: { sources: StructureTableSource[]
   const [selected, setSelected] = useState<{ source: StructureTableSource; row: number; column: number }>();
   const [first] = sources;
   const combined = sources.length > 1;
-  const merged = sources.some(hasMergedTableCells);
+  const originalOnly = sources.some(source => !supportsTableCellVision(source));
   const held = sources.flatMap(source => source.rows.flat()).filter(cell => cell.needsReview).length;
   const title = combined
     ? `查看跨页表格 · 第 ${first.page}–${sources.at(-1)!.page} 页`
@@ -49,11 +49,12 @@ function TableEvidence({ sources, reference }: { sources: StructureTableSource[]
     <DisclosureCard title={title}
       data-testid="structure-table-evidence" isExpanded={expanded} onExpandedChange={setExpanded}>
       {expanded && <>
-      <p>{held ? `${held} 个单元格待核对${merged ? "，可查看原图" : ""}` : "已定位全部单元格，文字可对照原图"}</p>
+      <p>{first.layout === "aligned_text" ? `按原文位置还原的表格${held ? `，${held} 个单元格待核对` : ""}，可对照原图` :
+        held ? `${held} 个单元格待核对${originalOnly ? "，可查看原图" : ""}` : "已定位全部单元格，文字可对照原图"}</p>
       <div tabIndex={0} role="region" aria-label="可横向滚动的表格读数" style={{ overflowX: "auto" }}>
         <table aria-label="扫描表格读数" data-testid="structure-table-grid" style={{ borderCollapse: "collapse" }}>
           {sources.map((source, fragment) => {
-            const canRecheck = !hasMergedTableCells(source);
+            const canRecheck = supportsTableCellVision(source);
             const showHeader = fragment === 0 || source.rows[0].some(cell => cell.needsReview);
             return (
               <tbody key={tableKey(source)}>

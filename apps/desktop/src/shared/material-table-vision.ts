@@ -39,7 +39,7 @@ export function validTableVisionQuery(value: unknown): value is TableVisionQuery
 
 /** Include the first row and the selected row. Bounded tall tables use a local window. */
 export function tableVisionPlan(table: StructureTableSource, row: number, column: number) {
-  if (hasMergedTableCells(table)) throw Error("source_incomplete");
+  if (!supportsTableCellVision(table)) throw Error("source_incomplete");
   const cell = table.rows[row]?.[column];
   if (!cell?.needsReview || !validPageBox(cell.box)) throw Error("source_incomplete");
   const firstRow = table.rows[row <= 3 ? 0 : row - 1];
@@ -62,6 +62,10 @@ export function tableVisionPlan(table: StructureTableSource, row: number, column
 
 export function hasMergedTableCells(table:StructureTableSource) {
   return table.rows.some(row=>row.some(cell=>cell.covered));
+}
+
+export function supportsTableCellVision(table: StructureTableSource) {
+  return table.layout !== "aligned_text" && !hasMergedTableCells(table);
 }
 
 /** An optional contrast view. Never replace the original pixels or use the transformation on clean cells. */

@@ -52,7 +52,7 @@ export function linkStructureTableContinuations(sources: StructureTableSource[],
   for (const next of sources) {
     const page = pages.get(next.page);
     const previousPage = pages.get(next.page - 1);
-    if (!page || !previousPage || next.box[1] > 0.55) continue;
+    if (!page || !previousPage || next.layout === "aligned_text" || next.box[1] > 0.55) continue;
     const markers = captionsAbove(page, next, continuationLabel);
     if (markers.length !== 1) continue;
     const [marker] = markers;
@@ -60,7 +60,8 @@ export function linkStructureTableContinuations(sources: StructureTableSource[],
         part.anchor.box[1] > marker.line.box[1] && part.anchor.box[1] < next.box[1])) continue;
 
     const matches = sources.filter(previous => {
-      if (previous.page !== previousPage.page || !headersMatch(previous, next, previousPage, page)) return false;
+      if (previous.page !== previousPage.page || previous.layout === "aligned_text" ||
+          !headersMatch(previous, next, previousPage, page)) return false;
       if (!marker.number) return true;
       const captions = captionsAbove(previousPage, previous, /^表(\d{1,3})(?!\d)/u);
       return captions.length === 1 && captions[0].number === marker.number;

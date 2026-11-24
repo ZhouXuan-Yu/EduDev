@@ -14,6 +14,8 @@ const useLive = process.env.OMNI_EDU_TABLE_VISION_LIVE === "1";
 const mergedCase = process.argv.includes("--merged-grid");
 const continuedCase = process.argv.includes("--continued-grid");
 const splitBaseline = process.argv.includes("--baseline-split-grid");
+const borderlessCase = process.argv.includes("--borderless-grid");
+const borderlessBaseline = process.argv.includes("--baseline-borderless-grid");
 const key = useLive ? process.env.DEEPSEEK_API_KEY : "fake-deepseek-table-vision-test";
 assert(root && fixture && path.basename(fixture) === "synthetic-table-vision.pdf" && key);
 const fixtureSha = createHash("sha256").update(fs.readFileSync(fixture)).digest("hex");
@@ -180,6 +182,58 @@ async function checkSplitBaseline(page, resource, candidate) {
   check("The same input in the previous build requires two table disclosures.");
 }
 
+async function checkBorderlessTables(page, resource, questionRows, snapshot, before) {
+  const expected = [
+    { page: 1, question: "10", values: ["2.50", "0.20", "3.75", "0.30", "5.00", "0.40"] },
+    { page: 2, question: "12", values: ["20.5", "12", "23.8", "24", "27.0", "36"] },
+  ];
+  for (const item of expected) {
+    const question = questionRows.find(question => question.number === item.question);
+    assert(question.assets.some(asset => asset.page === item.page && asset.kind === "table"));
+    if (borderlessBaseline) assert.equal(question.tableSources?.length ?? 0, 0);
+    else {
+      assert.equal(question.tableSources.length, 1);
+      const [source] = question.tableSources;
+      assert.equal(source.page, item.page);
+      assert.equal(source.layout, "aligned_text");
+      assert.deepEqual(source.rows.slice(1).flatMap(row => row.slice(1).map(cell => cell.text)), item.values);
+    }
+  }
+  assert(questionRows.filter(question => !expected.some(item => item.question === question.number))
+    .every(question => !question.tableSources?.length));
+
+  const sizes = borderlessBaseline ? [[1366, 768, page]] : [[1366, 768, page], [1920, 1080, undefined]];
+  for (const [width, height, screen] of sizes) {
+    const current = screen ?? await launch();
+    await current.setViewportSize({ width, height });
+    const cards = await openTables(current, resource);
+    const panel = current.getByTestId("material-structure-panel");
+    for (const item of expected) {
+      if (item.page !== 1) await panel.getByTestId("structure-next").click();
+      await panel.getByText(new RegExp(`^题 ${item.question} · 第 ${item.page}`)).waitFor();
+      assert.equal(await cards.count(), borderlessBaseline ? 0 : 1);
+      if (borderlessBaseline) continue;
+      await openMaterialDisclosure(cards);
+      const grid = cards.getByTestId("structure-table-grid");
+      assert.equal(await grid.getByRole("row").count(), 4);
+      const cells = await grid.getByRole("cell").allTextContents();
+      assert.deepEqual(cells.filter(value => /^\d+(?:\.\d+)?$/.test(value)), item.values);
+      await cards.getByText("按原文位置还原的表格，可对照原图").waitFor();
+      await cards.getByTestId("structure-table-original").click();
+      await cards.getByRole("img", { name: `第 ${item.page} 页的原始表格` }).waitFor();
+      await grid.scrollIntoViewIfNeeded();
+      await current.screenshot({ path: path.join(output, `aligned-${item.page}-${width}.png`) });
+    }
+    assert.deepEqual(snapshot(), before);
+    assert.equal(query("SELECT count(*) AS n FROM material_structure_reviews")[0].n, 0);
+    assert.equal(await app.evaluate(() => globalThis.tableVisionAudit.calls.length), 0);
+    await app.close();
+    app = undefined;
+  }
+  check(borderlessBaseline ? "Both baseline pages are recognized as table regions but produce no reviewable cells."
+    : "Tables without rules and with horizontal rules only each retain twelve OCR cells and the original crop after restart.");
+}
+
 async function run() {
   const page = await launch();
   await app.evaluate(({dialog}, value) => {
@@ -190,6 +244,12 @@ async function run() {
   const [resource] = query("SELECT id,title FROM teacher_resources");
   const snapshot = () => query("SELECT id,status,sha256 FROM material_structure_questions ORDER BY id");
   const before = snapshot();
+  if (borderlessCase || borderlessBaseline) {
+    const questions = query("SELECT body_json FROM material_structure_questions WHERE generation=?", job.generation)
+      .map(record => JSON.parse(record.body_json));
+    await checkBorderlessTables(page, resource, questions, snapshot, before);
+    return;
+  }
   const [record] = query("SELECT id,sha256,body_json FROM material_structure_questions WHERE generation=? AND json_extract(body_json,'$.number')='10'", job.generation);
   const candidate = JSON.parse(record.body_json);
   if (splitBaseline) {
@@ -204,7 +264,7 @@ async function run() {
     await checkMergedTable(page,resource,candidate,snapshot,before);
     return;
   }
-  assert.equal(job.engine, "layout-paragraph-question.v26");
+  assert.equal(job.engine, "layout-paragraph-question.v27");
   assert.equal(candidate.tableSources[0].rows[1][1].needsReview, true);
   assert.equal(candidate.tableSources[0].rows[1][1].text, "");
   if (process.env.OMNI_EDU_TABLE_VISION_POSITIVE === "1") {

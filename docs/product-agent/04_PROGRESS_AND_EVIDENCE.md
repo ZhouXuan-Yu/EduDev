@@ -2,6 +2,10 @@
 
 当前基线和保护边界见 [审计](00_CURRENT_STATE_AUDIT.md)，冻结映射见 [实施映射](01_IMPLEMENTATION_MAPPING.md)。原始日志和合成 SQLite 根为 `D:/WorkProject/EduProject/acceptance/D3-20261122`，验收从 `apps/desktop` 执行。
 
+## 无框和三线表的核对
+
+同一份两页扫描样卷在 v26 都有版面表格候选，但没有可核对单元格。v27 从本机 OCR 的行列对齐还原纯留白表和三线表各 12 格，保留数值精度，原图与冷启读回通过。弱版面证据、正文、选项、缺格和残留纵线继续沿原图核对。证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261125/borderless-table`。表格检测未识别的区域或文字已被 OCR 合并的格仍待补。
+
 ## 跨页表格的核对
 
 扫描结构 v26 在同一题内校验相邻页的续表标记、表头读数和列边界。受控扫描在 v25 分成两张表，v26 打开一次即可读到两页共 8 个数据，分别有原页标签和原图。与清楚表头一致但置信不足的本地读数可支持归组，原单元格仍待核。已打开原图的状态不改变持久化记录，冷启按原位置读回。证据根为 `D:/WorkProject/EduProject/acceptance/D3-20261125/cross-page-table`。现场未标续表、无框表及更广自然续表样本仍待覆盖。

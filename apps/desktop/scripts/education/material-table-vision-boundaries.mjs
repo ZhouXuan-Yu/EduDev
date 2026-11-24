@@ -24,6 +24,7 @@ const merged = structuredClone(table);
 merged.rows[0][0].columnSpan = 2;
 merged.rows[0][1].covered = true;
 assert.throws(() => tableVisionPlan(merged, 6, 5), /source_incomplete/);
+assert.throws(() => tableVisionPlan({ ...table, layout: "aligned_text" }, 6, 5), /source_incomplete/);
 assert.throws(() => parseTableVisionReading({state: "unreadable", text: "13", columnLabel: null, unit: null}), /invalid_response/);
 assert.throws(() => parseTableVisionReading({state: "partial", text: null, columnLabel: null, unit: null}), /invalid_response/);
 assert.throws(() => parseTableVisionReading({state: "read", text: "13\u202e", columnLabel: null, unit: null}), /invalid_response/);
