@@ -35,6 +35,24 @@
   font-size: .84rem;
   color: var(--muted);
 }
+.answerReview {
+  min-inline-size: 0;
+}
+.answerReviewRows {
+  display: grid;
+  gap: .4rem;
+  padding-inline-start: 0;
+  list-style: none;
+}
+.answerReviewRows > li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .2rem .6rem;
+}
+.answerReviewRows > li > span {
+  color: var(--muted);
+  font-size: .84rem;
+}
 .actions {
   display: flex;
   flex-wrap: wrap;

@@ -48,6 +48,9 @@ export type MockExamCatalogRestore=MockExamCatalogKey&{revision:number;digest:st
 export type MockExamCatalogChange={resourceId:string;metadata:MockExamMetadata;include:boolean;permission:MockExamPermission;answerPermission?:MockExamAnswerPermission};
 export type MockExamCatalogConfirm=MockExamCatalogKey&{revision:number;digest:string;changes:MockExamCatalogChange[]};
 export type MockExamCatalogOriginal=MockExamCatalogKey&{resourceId:string};
+export type MockExamAnswerReviewRead=MockExamCatalogOriginal&{revision:number;digest:string};
+export type MockExamAnswerReviewRow={id:string;number:string;state:'saved'|'held'|'changed';reason?:string;answerPage?:number};
+export type MockExamAnswerReview={rows:MockExamAnswerReviewRow[];limited:boolean;unreadable:number};
 export type MockExamResult<T>={ok:true;value:T}|{ok:false;error:string;message:string};
 
 export const mockExamYear=(value:unknown):value is number=>typeof value==='number'&&Number.isSafeInteger(value)&&value>=1990&&value<=2100;

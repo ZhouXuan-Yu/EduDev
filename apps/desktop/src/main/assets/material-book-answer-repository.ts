@@ -18,6 +18,8 @@ import {MaterialBookAnswerIndex} from './material-book-answer-index';
 import {MaterialBookQuestionSection,type BookQuestionSectionEvidence,type BookAnswerSectionEvidence} from './material-book-question-section';
 import type {readAiPageReceipt} from './material-ai-page-evidence';
 import type {StructureBookScope} from './material-structure-book-scope';
+import type {MockExamEntry} from '../../shared/mock-exam-compilation';
+import {readMockExamAnswerReview} from './material-book-answer-review';
 import type {StructureBookJob} from './material-structure-book-work';
 import {assertStructureDraftEditable} from './material-structure-bank';
 type Row=Record<string,unknown>;type Value=string|number|null;type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
@@ -61,6 +63,7 @@ export class MaterialBookAnswerRepository{
   }catch(error){if(error instanceof Error&&['source_changed','source_incomplete','privacy_blocked'].includes(error.message))return raw;throw error;}
  }
  async indexOne(){if(!await this.index.pending())return false;return this.host.writer(target=>target.index.applyOne());}
+ paperReview(entry:MockExamEntry,signal:AbortSignal){return readMockExamAnswerReview(this.host,entry,signal);}
  async list(input:AnyBookMatchQuery):Promise<BookMatchView>{
   if(!validAnyBookMatchQuery(input))throw Error('invalid_input');
   const rows='questionId' in input

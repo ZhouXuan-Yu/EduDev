@@ -331,6 +331,8 @@ const api = {
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
   reviewHandoutEdit:(input:HandoutEditRequest)=>ipcRenderer.invoke('xiaozhi:handout-edit-review',input) as Promise<HandoutEditResult<HandoutEditReview>>,
   decideHandoutEdit:(input:HandoutEditDecision)=>ipcRenderer.invoke('xiaozhi:handout-edit-decide',input) as Promise<HandoutEditResult<HandoutEditSummary>>,
+  reviewMockExamAnswers:(input:import('../shared/mock-exam-compilation').MockExamAnswerReviewRead)=>
+    ipcRenderer.invoke('xiaozhi:mock-exam-answer-review',input) as Promise<MockExamResult<import('../shared/mock-exam-compilation').MockExamAnswerReview>>,
   reviewMockExamCatalog:(input:MockExamCatalogRead)=>ipcRenderer.invoke('xiaozhi:mock-exam-review',input) as Promise<MockExamResult<MockExamCatalog>>,
   listMockExamHistory:(input:MockExamCatalogKey)=>ipcRenderer.invoke('xiaozhi:mock-exam-history',input) as Promise<MockExamResult<MockExamHistoryEntry[]>>,
   previewMockExamArchive:(input:import('../shared/mock-exam-archive').MockExamArchiveRequest)=>ipcRenderer.invoke('xiaozhi:mock-exam-archive-preview',input) as Promise<MockExamResult<import('../shared/mock-exam-archive').MockExamArchivePreview>>,

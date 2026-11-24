@@ -193,6 +193,24 @@ await check('Lookup normalization is confined to explicit chapter-boundary ornam
  assert.equal(bookSectionLookupKey('第九章》 素养基础测试卷'),bookSectionLookupKey('第九章 素养基础测试卷'));assert.notEqual(bookSectionKey('第九章》素养基础测试卷'),bookSectionKey('第九章素养基础测试卷'));
  for(const [a,b]of [['第九章基础测试卷','第十章基础测试卷'],['第九章基础测试卷','第九章提优测试卷'],['第九章基础》测试卷','第九章基础测试卷'],['题面[2kg]','题面2kg'],['第九章>10基础测试卷','第九章10基础测试卷'],['第1、2章基础测试卷','第12章基础测试卷']])assert.notEqual(bookSectionLookupKey(a),bookSectionLookupKey(b));
 });
+await check('Catalogue answer review reads only current pair attempts and reports a changed question without editing facts',()=>withFixture({},async f=>{
+ await f.match();
+ f.db.exec('CREATE TABLE material_structure_jobs(resource_id TEXT,version TEXT,generation TEXT,status TEXT);CREATE TABLE material_structure_hidden_questions(question_id TEXT);');
+ const {pair}=f;
+ const entry={resourceId:pair.questionId,version:pair.questionVersion,
+   answer:{state:'linked',resourceId:pair.answerId,version:pair.answerVersion,pairRevision:pair.revision}};
+ const signal=new AbortController().signal;
+ const saved=f.db.prepare('SELECT id,after_json,evidence_json FROM material_book_answer_journal_v1').get();
+ assert.deepEqual(await f.repo.paperReview(entry,signal),
+  {rows:[{id:saved.id,number:'1',state:'saved',answerPage:3}],limited:false,unreadable:0});
+ f.db.prepare('UPDATE question_bank_items SET analysis=? WHERE id=?').run('老师补充的解析',f.questionId);
+ assert.equal((await f.repo.paperReview(entry,signal)).rows[0].state,'changed');
+ assert.equal((await f.read()).analysis,'老师补充的解析');
+ assert.equal(f.db.prepare('SELECT after_json FROM material_book_answer_journal_v1').get().after_json,saved.after_json);
+ f.db.prepare('DELETE FROM material_book_pairs').run();
+ f.host.role=async()=>null;
+ await assert.rejects(f.repo.paperReview(entry,signal),/source_changed/);
+}));
 console.log(JSON.stringify({success:true,checks,scope:'Actual SQLite writer, journal, schemas, derived index and local queue with controlled page/source proofs; not natural OCR or mathematical acceptance'}));
 
 export {fixture};

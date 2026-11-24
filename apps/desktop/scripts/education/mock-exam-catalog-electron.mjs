@@ -218,6 +218,16 @@ try{
   assert.equal(path.resolve((await app.evaluate(()=>globalThis.mockExamWire.located))[0]),path.resolve(source('primary').local_path));
   check('Imported real PDFs produce a task-bound draft with exact deduplication, original navigation, answer pair and explicit missing answer');
 
+  const matches=row(names.primary).getByTestId('mock-exam-answer-review');
+  assert.equal(await row(names.conflict).getByTestId('mock-exam-answer-review').count(),0);
+  await matches.getByRole('button',{name:'逐题配答记录',exact:true}).click();
+  await matches.getByTestId('mock-exam-answer-review-empty').waitFor();
+  const requestedAnswerReview={schemaVersion,sessionId,id:report.catalogId,revision:1,digest:draft.value.summary.digest,resourceId:primary.resourceId};
+  const noAttempt=await page.evaluate(input=>window.omniEdu.reviewMockExamAnswers(input),requestedAnswerReview);
+  assert.deepEqual(noAttempt,{ok:true,value:{rows:[],limited:false,unreadable:0}});
+  await matches.getByRole('button',{name:'逐题配答记录',exact:true}).click();
+  check('A linked answer book with no recorded matches shows an explicit empty state; unpaired entries do not expose the action');
+
   await row(names.conflict).getByTestId('mock-exam-row-edit').click();
   await row(names.conflict).getByTestId('mock-exam-field-district').selectOption('闵行区');
   const approve=review().getByTestId('mock-exam-confirm');
@@ -248,6 +258,10 @@ try{
   const denied=await page.evaluate(({schemaVersion,sessionId,id})=>window.omniEdu.reviewMockExamCatalog({schemaVersion,sessionId,id}),
     {schemaVersion,sessionId:otherSession.session.id,id:report.catalogId});
   assert(!denied.ok&&denied.error==='permission_denied');
+  const deniedReview=await page.evaluate(input=>window.omniEdu.reviewMockExamAnswers(input),{...requestedAnswerReview,sessionId:otherSession.session.id});
+  assert(!deniedReview.ok&&deniedReview.error==='permission_denied');
+  const staleReview=await page.evaluate(input=>window.omniEdu.reviewMockExamAnswers(input),requestedAnswerReview);
+  assert(!staleReview.ok&&staleReview.error==='version_conflict');
   await page.setViewportSize({width:1920,height:1080});
   await review().getByTestId('mock-exam-revise').click();
   const paperPath=source('primary').local_path;
@@ -255,6 +269,9 @@ try{
   const original=fs.readFileSync(paperPath);
   try{
     fs.appendFileSync(paperPath,Buffer.from('\n% acceptance source changed\n'));
+    const changedReview=await page.evaluate(input=>window.omniEdu.reviewMockExamAnswers(input),
+      {...requestedAnswerReview,revision:2,digest:confirmed.value.summary.digest});
+    assert(!changedReview.ok&&changedReview.error==='source_changed');
     await review().getByTestId('mock-exam-confirm').click();
     await until(async()=>/原件.*发生变化/u.test(await review().getByTestId('mock-exam-error').innerText()));
     assert.deepEqual(sql('SELECT revision,state,digest FROM mock_exam_compilation_versions ORDER BY revision'),stored);

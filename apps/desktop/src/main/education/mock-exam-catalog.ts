@@ -1,7 +1,7 @@
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {BUILD_MOCK_EXAM_CATALOG,MOCK_EXAM_SCHEMA,catalogId,mockExamDigest,mockExamErrors,mockExamParameters,mockExamRevision,
   mockExamPermission,validMockExamMetadata,validMockExamScope,type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,
-  type MockExamHistoryEntry,type MockExamResult} from '../../shared/mock-exam-compilation';
+  type MockExamHistoryEntry,type MockExamEntry,type MockExamAnswerReview,type MockExamResult} from '../../shared/mock-exam-compilation';
 import {materialId} from '../../shared/materials';
 import {plainStudentInput} from '../../shared/student-context';
 import type {createMockExamState} from './mock-exam-state';
@@ -28,6 +28,7 @@ const receipt=(body:object,success:boolean)=>({content:[{type:'text' as const,te
 
 export function createMockExamCatalog(options:{state:ReturnType<typeof createMockExamState>;
   notify:(sessionId:string,runId:string,summary:MockExamCatalogSummary)=>void;
+  answerReview:(entry:MockExamEntry,signal:AbortSignal)=>Promise<MockExamAnswerReview>;
   verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>}) {
   return {
     async view(input:unknown):Promise<MockExamResult<MockExamCatalog>> {
@@ -35,6 +36,29 @@ export function createMockExamCatalog(options:{state:ReturnType<typeof createMoc
         !validSession(input.sessionId)||!catalogId(input.id)||input.revision!==undefined&&!mockExamRevision(input.revision))return failure(Error('invalid_input'));
       try{return {ok:true,value:await options.state.view(input.sessionId,input.id,input.revision as number|undefined)};}
       catch(error){return failure(error);}
+    },
+    async answerReview(input:unknown):Promise<MockExamResult<MockExamAnswerReview>> {
+      if(!plainStudentInput(input,['schemaVersion','sessionId','id','revision','digest','resourceId'])||
+        input.schemaVersion!==MOCK_EXAM_SCHEMA||!validSession(input.sessionId)||!catalogId(input.id)||
+        !mockExamRevision(input.revision)||!mockExamDigest(input.digest)||!materialId(input.resourceId))return failure(Error('invalid_input'));
+      try {
+        const catalog=await options.state.view(input.sessionId,input.id);
+        const requireCurrent=(value:MockExamCatalog)=>{
+          if(value.summary.revision!==input.revision||value.summary.digest!==input.digest)throw Error('version_conflict');
+        };
+        requireCurrent(catalog);
+        const entry=catalog.entries.find(item=>item.resourceId===input.resourceId);
+        if(!entry||entry.permission==='excluded'||entry.answerPermission?.permission==='excluded')throw Error('permission_denied');
+        if(entry.answer.state!=='linked'||!entry.answer.resourceId||!entry.answer.version)throw Error('source_changed');
+        const signal=AbortSignal.timeout(20_000);
+        try {
+          await options.verify(entry.resourceId,entry.version,signal);
+          await options.verify(entry.answer.resourceId,entry.answer.version,signal);
+        }catch{throw Error('source_changed');}
+        const value=await options.answerReview(entry,signal);
+        requireCurrent(await options.state.view(input.sessionId,input.id));
+        return {ok:true,value};
+      }catch(error){return failure(error);}
     },
     async history(input:unknown):Promise<MockExamResult<MockExamHistoryEntry[]>> {
       if(!plainStudentInput(input,['schemaVersion','sessionId','id'])||input.schemaVersion!==MOCK_EXAM_SCHEMA||

@@ -5,6 +5,7 @@ import {DisclosureCard} from '../ui/DisclosureCard';
 import {useDesktopNavigation, useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
+import {PiMockExamAnswerReview} from './PiMockExamAnswerReview';
 import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamPageEvidenceLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
@@ -150,6 +151,9 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
               {entry.structure.pageEvidence&&<span data-testid="mock-exam-page-evidence">{mockExamPageEvidenceLabel(entry.structure.pageEvidence)}</span>}
               {entry.copies>1&&<span>{entry.copies} 份同内容文件已合为一条</span>}
               {entry.answer.title&&<span>答案册　{entry.answer.title} · {permissions[mockExamAnswerPermission(entry,edit.answerPermission)?.permission??'unknown']}</span>}
+              {entry.answer.state==='linked'&&edit.permission!=='excluded'&&edit.answerPermission?.permission!=='excluded'&&
+                <PiMockExamAnswerReview key={current.digest+':'+entry.resourceId}
+                  input={{...identity,resourceId:entry.resourceId,revision:current.revision,digest:current.digest}}/>}
               {!edit.include&&<span>未收录</span>}
               {edit.include&&key&&duplicates.has(key)&&<span>有另一份同轮次文件</span>}
               {entry.conflicts.length>0&&<span>待核对字段　{entry.conflicts.map(field=>labels[field]).join('、')}</span>}

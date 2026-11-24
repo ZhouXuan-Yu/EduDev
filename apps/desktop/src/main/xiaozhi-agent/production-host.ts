@@ -682,6 +682,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     publish:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'handout_edit',review});},
   });
   const mockExam=createMockExamCatalog({state:store.xiaozhiState.mockExamCatalogs,
+    answerReview:(entry,signal)=>store.materialAi.bookAnswers.paperReview(entry,signal),
     verify:(id,version,signal)=>store.materials.verifyOriginalVersion(id,version,signal),
     notify:(id,runId,catalog)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'mock_exam_catalog',catalog});},
   });
@@ -1679,7 +1680,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }, store.paperBasketsV2,paperReviews.changed),
     deliveryChecks:fileChecks,
     handoutEdits:{view:handoutEdits.view,decide:handoutEdits.decide},
-    mockExam:{view:mockExam.view,history:mockExam.history,restore:mockExam.restore,confirm:mockExam.confirm,original:mockExam.original},
+    mockExam:{view:mockExam.view,answerReview:mockExam.answerReview,history:mockExam.history,restore:mockExam.restore,confirm:mockExam.confirm,original:mockExam.original},
     mockExamArchive,
     mockExamEdits:{view:mockExamEdits.view,decide:mockExamEdits.decide},
     listPapers:paperReviews.list,
