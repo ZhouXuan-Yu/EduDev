@@ -1298,7 +1298,7 @@ export class MaterialStructureRepository {
     return {next,illustrations};
   }
 
-  async bookScope(q: QuestionBankItem, signal: AbortSignal) {
+  async bookScope(q: QuestionBankItem, signal: AbortSignal, mockTitles = true) {
     const reference = q.archive?.structure;
     if (!reference) throw Error("source_changed");
     await this.host.verifyBookOriginal?.(reference.resourceId,reference.version,signal);
@@ -1317,7 +1317,7 @@ export class MaterialStructureRepository {
       if (page.page !== row.page || page.resourceId !== reference.resourceId ||
           page.version !== reference.version || hash(page) !== row.sha256) throw Error("source_changed");
       return { page, sha: String(row.sha256) };
-    }));
+    }), mockTitles);
   }
 
   async validateForBook(q: QuestionBankItem, signal: AbortSignal) {

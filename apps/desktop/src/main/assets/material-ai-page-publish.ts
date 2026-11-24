@@ -34,7 +34,7 @@ export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:Ma
  const curriculumOutline=!answerBook&&corroboratedCurriculumOutline([originalFirst,first,final],prompt);
  const numbered=answerBook||curriculumOutline?[]:restoredResponseQuestions(final,source,prompt,crops),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
  const unstructured=!answerBook&&!curriculumOutline&&final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
- const answers=answerBook?bookAnswerPage(first,final,undefined,bookPagePolicy):undefined;
+ const answers=answerBook?bookAnswerPage(first,final,undefined,bookPagePolicy,true):undefined;
  const answerReview=!!answers&&(answers.status==='too_large'||answers.status==='unstructured'&&!!(first.pageText||final.pageText)||answers.pageUncertain||!!answers.unresolvedTables||answers.firstOnly.length>0||answers.entries.some(e=>!e.agrees||e.issues.some(i=>i!=='missing_analysis')));
  return{numbered,omitted,review:answerReview||omitted||unstructured||final.outcome==='needs_review'||!agrees};
 }

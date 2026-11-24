@@ -1,5 +1,6 @@
 import {MaterialBookAnswerWork} from './material-book-answer-work';
 import {bookSectionLookupKey} from '../../shared/material-book-section-layout';
+import {shanghaiMockSectionKey} from '../../shared/shanghai-mock-sections';
 import {createHash} from 'node:crypto';
 import {bookAnswerSectionReviewResolved} from './material-book-answer-content';
 import {MaterialBookQuestionSection,BOOK_SECTION_LOOKBACK} from './material-book-question-section';
@@ -33,7 +34,7 @@ export class MaterialBookAnswerIndex{
    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ${name}_v2 AFTER ${event} ON ${table} BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(${r}.batch_id,${r}.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END`);
   }
   // One incremental pass upgrades old projections, without replaying any model receipt.
-  await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=4 WHERE id=1 AND section_policy<4');
+  await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=5 WHERE id=1 AND section_policy<5');
  }
  async pending(){return !!(await this.host.all('SELECT 1 FROM material_book_answer_dirty_v1 UNION ALL SELECT 1 FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM material_book_answer_control_v1 WHERE id=1) LIMIT 1')).length;}
  /** A saved proof waits for changes to its book version, including removals that lost their batch row. */
@@ -79,7 +80,7 @@ export class MaterialBookAnswerIndex{
      // A sentinel for every latest page prevents an older successful transcript surviving a later empty page.
      const {page,context}=await new MaterialBookQuestionSection(this.host,this).answerPage(proof);
      const fingerprint=createHash('sha256').update(JSON.stringify([source,proof.firstSha,proof.finalSha,proof.imageSha,context])).digest('hex');
-     const resolved=proof.status==='review'&&!!context&&bookAnswerSectionReviewResolved(proof.first,proof.final,page,proof.unit.bookPagePolicy);
+     const resolved=proof.status==='review'&&!!context&&bookAnswerSectionReviewResolved(proof.first,proof.final,page,proof.unit.bookPagePolicy,true);
      for(const entry of [{start:-1,sectionKey:'',number:''},...page.entries])await this.put(batch,ordinal,entry.start,source.resourceId,source.version,source.page,Number(slot.seq),entry.sectionKey,entry.number,'answers',fingerprint,entry.start===-1&&resolved?'section-resolved.v1':'');
     }
    }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;}
@@ -105,7 +106,7 @@ export class MaterialBookAnswerIndex{
   return true;
  }
  private async put(batch:string,ordinal:number,start:number,resource:string,version:string,page:number,seq:number,section:string,number:string,kind:string,fingerprint:string,reviewState=''){
-  await this.host.run('INSERT OR REPLACE INTO material_book_answer_index_v1(batch_id,ordinal,start,resource_id,version,page,seq,section_key,number,book_role,proof_sha,review_state,lookup_key) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',[batch,ordinal,start,resource,version,page,seq,section,number,kind,fingerprint,reviewState,bookSectionLookupKey(section)]);
+  await this.host.run('INSERT OR REPLACE INTO material_book_answer_index_v1(batch_id,ordinal,start,resource_id,version,page,seq,section_key,number,book_role,proof_sha,review_state,lookup_key) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',[batch,ordinal,start,resource,version,page,seq,section,number,kind,fingerprint,reviewState,bookSectionLookupKey(section,true)]);
  }
  /** Folder alias u is internal SQL only. Cached visibility never authorizes a question write. */
  folderReviewResolvedSql(){
@@ -135,7 +136,7 @@ export class MaterialBookAnswerIndex{
  private async invalidateFollowing(resource:string,version:string,page:number){
   await this.host.run(`INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) SELECT e.batch_id,e.ordinal,1 FROM material_book_answer_index_v1 e WHERE e.resource_id=? AND e.version=? AND e.page>? AND e.page<=? AND e.start=-1 AND e.book_role='answers' AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) AND true ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1`,[resource,version,page,Math.min(10000,page+BOOK_SECTION_LOOKBACK)]);
  }
- async find(resourceId:string,version:string,section:string,number:string,layoutOverride?:boolean){const layout=layoutOverride??process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0';return this.host.all(`SELECT e.* FROM material_book_answer_index_v1 e WHERE resource_id=? AND version=? AND ${layout?'lookup_key':'section_key'}=? AND number=? AND start>=0 AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) ORDER BY page,start LIMIT 3`,[resourceId,version,layout?bookSectionLookupKey(section):section,number]);}
+ async find(resourceId:string,version:string,section:string,number:string,layoutOverride?:boolean){const layout=layoutOverride??process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0';const projected=layout||!!shanghaiMockSectionKey(section);return this.host.all(`SELECT e.* FROM material_book_answer_index_v1 e WHERE resource_id=? AND version=? AND ${projected?'lookup_key':'section_key'}=? AND number=? AND start>=0 AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) ORDER BY page,start LIMIT 3`,[resourceId,version,projected?bookSectionLookupKey(section,true,layout):section,number]);}
  async sectionPages(resourceId:string,version:string,page:number,lookback:number){return this.host.all(`SELECT e.* FROM material_book_answer_index_v1 e WHERE resource_id=? AND version=? AND page>=? AND page<? AND start=-1 AND NOT EXISTS(SELECT 1 FROM material_book_answer_index_v1 n WHERE n.resource_id=e.resource_id AND n.version=e.version AND n.page=e.page AND n.seq>e.seq) ORDER BY page DESC LIMIT ?`,[resourceId,version,Math.max(1,page-lookback),page,lookback]);}
  async latestPage(resourceId:string,version:string,page:number){return(await this.host.all('SELECT batch_id,ordinal,proof_sha FROM material_book_answer_index_v1 WHERE resource_id=? AND version=? AND page=? AND start=-1 ORDER BY seq DESC LIMIT 1',[resourceId,version,page]))[0];}
  async rebuild(){await this.host.run('DELETE FROM material_book_answer_index_v1');await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0 WHERE id=1');}

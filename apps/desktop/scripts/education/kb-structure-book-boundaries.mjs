@@ -23,7 +23,7 @@ async function prepare({pages, ambiguousPage, ...options}={}) {
     if (!original.present||id!==pair.questionId||version!==pair.questionVersion) throw Error('source_changed');
   },unwrapBook:q=>f.repo.validatedSourceDocument(q)});
   await structures.migrate();
-  host.structureScope=(q,signal)=>structures.bookScope(q,signal);
+  host.structureScope=(q,signal,mockTitles)=>structures.bookScope(q,signal,mockTitles);
   const legacyValidate=host.validate;
   host.validate=q=>q.archive.structure?structures.validate(q):legacyValidate(q);
   const seed=await f.read(),generation=randomUUID(),candidateId='sq_'+hash(seed.id).slice(0,40);
@@ -82,6 +82,63 @@ await check('Prior-page title and authenticated teacher structure reuse the exac
   assert.equal(f.db.prepare('SELECT count(*) n FROM material_book_answer_journal_v1').get().n,1);
   f.original.present=false;
   await assert.rejects(f.structures.validate(after),/source_changed/);
+});
+await check('A Shanghai mock exam and its independent answer heading identify the same numbered entry',{
+  pages:(p,q)=>[[p('title','2025年上海市徐汇区九年级数学一模试卷（A卷）')],[q]],
+  answerText:'2025年上海徐汇区初三数学一模参考答案（A卷）\n1. D\n解析：条件与选项一致。',
+},async f=>{
+  const view=await f.matchStructure(),after=await f.read();
+  assert.equal(view.rows[0].state,'applied');
+  assert.equal(after.answer,'D');
+  assert.equal(after.document.answer.book.source.resourceId,f.pair.answerId);
+  await f.structures.validate(after);
+});
+const mockPaper='2025年上海市徐汇区九年级数学一模试卷（A卷）';
+const mockAnswer='2025年上海徐汇区初三数学一模参考答案（A卷）';
+const withMockTitle=(p,q)=>[[p('title',mockPaper)],[q]];
+const numberedAnswer='\n1. 答案：48平方米\n解析：8乘以6得48。';
+await check('Mixed district answer pages retain exact numeric text for the correct matching edition',{
+ pages:withMockTitle,answerText:mockAnswer.replace('徐汇','虹口')+'\n1. B\n解析：另一份。\n'+mockAnswer+numberedAnswer,
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const q=await f.read();
+ assert.equal(q.answer,'48平方米');
+ assert.equal(q.analysis,'8乘以6得48。');
+ await f.structures.validate(q);
+});
+for(const [label,replacement] of [['district','虹口区'],['round','二模'],['edition','B卷'],['unlabeled edition',''],['year','2024']]){
+ const other=label==='district'?mockAnswer.replace('徐汇区',replacement):label==='round'?mockAnswer.replace('一模',replacement):
+   label==='edition'?mockAnswer.replace('A卷',replacement):label==='year'?mockAnswer.replace('2025',replacement):mockAnswer.replace('（A卷）','');
+ await check('Matching number cannot cross '+label,{pages:withMockTitle,answerText:other+numberedAnswer},async f=>{
+  assert.equal((await f.matchStructure()).rows[0].reason,'answer_not_found');
+  assert.equal((await f.read()).answer,'');
+ });
+}
+await check('A missing question number is explicit even with a fully matching cover',{
+ pages:withMockTitle,answerText:mockAnswer+numberedAnswer.replace('1.','2.'),
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].reason,'answer_not_found');
+ assert.equal((await f.read()).answer,'');
+});
+await check('Aliases that resolve to two printed copies of the same number remain ambiguous',{
+ pages:withMockTitle,answerText:mockAnswer+numberedAnswer+'\n'+mockAnswer.replace('初三','九年级')+numberedAnswer,
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].reason,'ambiguous_answer');
+ assert.equal((await f.read()).answer,'');
+});
+await check('A visibly incomplete mock heading blocks inheritance from a different preceding exam',{
+ pages:(p,q)=>[[p('old',title)],[p('new','2025年上海徐汇区九年级一模试卷（A卷）'),q]],
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].reason,'missing_section');
+ assert.equal((await f.read()).answer,'');
+});
+await check('A historical applied chapter answer still authenticates in legacy scope',{},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const receipt=f.db.prepare('SELECT id,evidence_json FROM material_book_answer_journal_v1').get();
+ const evidence=JSON.parse(receipt.evidence_json);
+ delete evidence.sectionProjection;
+ f.db.prepare('UPDATE material_book_answer_journal_v1 SET evidence_json=? WHERE id=?').run(JSON.stringify(evidence),receipt.id);
+ await f.structures.validate(await f.read());
 });
 await check('Same number and different section return no answer',{answerText:otherTitle+'\n1. B 解析：另一份试卷。'},async f=>{
   assert.equal((await f.matchStructure()).rows[0].reason,'answer_not_found');

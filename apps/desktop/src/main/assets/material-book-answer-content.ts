@@ -3,13 +3,14 @@ import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
+import {shanghaiMockSectionBoundary,shanghaiMockSectionKey} from '../../shared/shanghai-mock-sections';
 
 type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIssue[]};
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
 export {bookSectionKey} from '../../shared/material-book-answer';
 /** A title-only review can be projected as resolved; content doubts never qualify. */
-export function bookAnswerSectionReviewResolved(first:AiPageResponse,final:AiPageResponse,derived:BookAnswerPage,policy?:MaterialBookPagePolicy){
- const raw=bookAnswerPage(first,final,undefined,policy);
+export function bookAnswerSectionReviewResolved(first:AiPageResponse,final:AiPageResponse,derived:BookAnswerPage,policy?:MaterialBookPagePolicy,mockTitles=false){
+ const raw=bookAnswerPage(first,final,undefined,policy,mockTitles);
  return first.outcome==='no_questions'&&final.outcome==='no_questions'&&!first.questions.length&&!final.questions.length&&pageTranscriptionAgrees(first,final)
   &&raw.status==='compared'&&!raw.unresolvedTables&&!derived.unresolvedTables&&!raw.pageUncertain&&!raw.firstOnly.length&&raw.entries.some(e=>e.issues.includes('missing_section'))
   &&raw.entries.every(e=>e.agrees&&e.issues.every(i=>i==='missing_section'||i==='missing_analysis'))
@@ -19,19 +20,21 @@ export function bookAnswerSectionReviewResolved(first:AiPageResponse,final:AiPag
 const title=(text:string)=>text.length<=200&&/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节)|专项|期中|期末|中考|单元|基础|素养|综合|能力).*(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(text);
 const chapter=(text:string)=>/^第[一二三四五六七八九十百零〇\d、，,]+章$/.test(text);
 const headingText=(raw:string)=>raw.replace(/^\s*#{1,6}\s*/,'').trim();
-function sectionBoundary(value:string,previous:string):string|undefined{
+function sectionBoundary(value:string,previous:string,mockTitles=false):string|undefined{
+ if(mockTitles&&shanghaiMockSectionKey(value))return value;
+ if(mockTitles&&shanghaiMockSectionBoundary(value))return '';
  if(title(value)&&value.length<=100&&!/[。！？?]/.test(value))return chapter(previous)?previous+' '+value:value;
  if(/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节|套|讲)|(?:专项|期中|期末|中考|单元|基础|素养|综合|能力).*?(?:测试|训练|练习|检测|模拟|测验)|(?:试卷|测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验))/.test(value)
   ||value.length<=100&&!/[。！？?]/.test(value)&&/(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(value))return '';
  return undefined;
 }
 /** Undefined means no heading; empty means a visible but unsupported boundary. */
-export function bookSectionAt(text:string,end=text.length):string|undefined{
+export function bookSectionAt(text:string,end=text.length,mockTitles=false):string|undefined{
  let section:string|undefined,previous='';
  for(const line of text.matchAll(/[^\n]+(?:\n|$)/g)){
   if(line.index!>=end)break;
   const value=headingText(line[0]);
-  section=sectionBoundary(value,previous)??section;
+  section=sectionBoundary(value,previous,mockTitles)??section;
   previous=value;
  }
  return section;
@@ -76,7 +79,7 @@ function printedRoles(body:string):{answer:string;analysis:string;conflict?:true
  return{answer:refersToAnalysis?'':answer,analysis:second?field(second):''};
 }
 /** Deterministic derived spans into the stored transcript; never supplies missing text or solves a problem. */
-function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>,printedLabels=false):Entry[]{
+function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>,printedLabels=false,mockTitles=false):Entry[]{
  if(nonQuestionPagePurpose(text))return[];
  const lines=[...text.matchAll(/[^\n]+(?:\n|$)/g)];let section=initialSection||'',previous='',open:{start:number;bodyStart:number;section:string;number:string}|undefined;const out:Entry[]=[];
  const finish=(end:number,last=false)=>{if(!open)return;const body=text.slice(open.bodyStart,end).trim(),value=(printedLabels?printedRoles:roles)(body),issues:BookAnswerIssue[]=[];
@@ -88,11 +91,10 @@ function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>
  for(const line of lines){if(out.length>200)return out;const raw=line[0].replace(/\n$/,''),value=raw.replace(/^\s*#{1,6}\s*/,'').trim(),at=line.index!;
   if(tableBoundaries?.has(at)){finish(at);previous='';continue;}
   // A title is a whole short line, not a reference to another test inside an analysis paragraph.
-  if(title(value)&&value.length<=100&&!/[。！？?]/.test(value)){
-   finish(at);section=/^第[一二三四五六七八九十百零〇\d、，,]+章$/.test(previous)?previous+' '+value:value;previous=value;continue;
-  }
+  const heading=sectionBoundary(value,previous,mockTitles);
+  if(heading){finish(at);section=heading;previous=value;continue;}
   // Only the new derived-context policy changes boundary handling. Saved raw-page policies keep their meaning.
-  if((initialSection!==undefined||tableBoundaries)&&sectionBoundary(value,'')===''){finish(at);section='';previous=value;continue;}
+  if((initialSection!==undefined||tableBoundaries||mockTitles&&shanghaiMockSectionBoundary(value))&&heading===''){finish(at);section='';previous=value;continue;}
   const numbered=/^\s{0,3}(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))\s*/.exec(raw);
   if(numbered){finish(at);open={start:at,bodyStart:at+numbered[0].length,section,number:numbered[1]||numbered[2]};}
   previous=value;
@@ -106,14 +108,14 @@ function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>
  */
 // The one-code-unit width conversion keeps every raw source offset intact.
 const width=(value:string)=>value.replace(/[０-９Ａ-Ｈ]/gu,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0));
-function readAnswerKeyTables(text:string,continuation?:{section?:string}){
+function readAnswerKeyTables(text:string,continuation?:{section?:string},mockTitles=false){
  const lines=[...text.matchAll(/[^\n]+(?:\n|$)/g)].filter(line=>line[0].trim());
  const accepted:Entry[]=[], boundaries=new Set<number>();
  let unresolved=0,section:string|undefined,previous='',leadingKey=false;
  if(nonQuestionPagePurpose(text))return {accepted,boundaries,unresolved,leadingKey};
  for(let i=0;i<lines.length;i++){
   const value=headingText(lines[i][0]);
-  section=sectionBoundary(value,previous)??section;
+  section=sectionBoundary(value,previous,mockTitles)??section;
   previous=value;
   if(!/^(?:答案速查|参考答案|选择题答案)\s*[:：]?$/u.test(value))continue;
   boundaries.add(lines[i].index!);
@@ -148,9 +150,9 @@ function readAnswerKeyTables(text:string,continuation?:{section?:string}){
  return {accepted,boundaries,unresolved,leadingKey};
 }
 
-function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false,continuedTable=false){
- const {accepted,boundaries,unresolved,leadingKey}=readAnswerKeyTables(text,continuedTable?{section:initialSection}:undefined);
- const detailed=entries(text,initialSection,boundaries,printedLabels);
+function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false,continuedTable=false,mockTitles=false){
+ const {accepted,boundaries,unresolved,leadingKey}=readAnswerKeyTables(text,continuedTable?{section:initialSection}:undefined,mockTitles);
+ const detailed=entries(text,initialSection,boundaries,printedLabels,mockTitles);
  const key=(entry:Entry)=>entry.sectionKey+'\0'+entry.number;
  const known=new Map<string,Entry[]>();
  for(const e of detailed){
@@ -174,14 +176,14 @@ function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=
  return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200,leadingKey};
 }
 
-export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy):BookAnswerPage{
+export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy,mockTitles=false):BookAnswerPage{
  const scoped=first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&final.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;
  const base:Omit<BookAnswerPage,'status'>={schemaVersion:MATERIAL_BOOK_ANSWER_SCHEMA,policy:initialSection!==undefined?'section-number-inherited.v1':scoped?'section-number-two-pass.v2':'section-number-two-pass.v1',pageUncertain:!!(first.pageIssues.length||final.pageIssues.length)||first.schemaVersion!==final.schemaVersion,entries:[],firstOnly:[]};
  if(Buffer.byteLength(first.pageText)>64000||Buffer.byteLength(final.pageText)>64000)return{...base,status:'too_large'};
  const continuedTable=policy===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY;
  const printedLabels=continuedTable||policy===MATERIAL_BOOK_PAGE_LABEL_POLICY;
  const extract=(text:string)=>scoped&&(printedLabels||policy===MATERIAL_BOOK_PAGE_TABLE_POLICY)
-  ?entriesWithAnswerKeys(text,initialSection,printedLabels,continuedTable):{entries:entries(text,initialSection),unresolved:0,tooLarge:false,leadingKey:false};
+  ?entriesWithAnswerKeys(text,initialSection,printedLabels,continuedTable,mockTitles):{entries:entries(text,initialSection,undefined,false,mockTitles),unresolved:0,tooLarge:false,leadingKey:false};
  const left=extract(first.pageText),right=extract(final.pageText),a=left.entries,b=right.entries;
  if(left.tooLarge||right.tooLarge||a.length>200||b.length>200)return{...base,status:'too_large'};
  if(left.unresolved||right.unresolved)base.unresolvedTables=Math.max(left.unresolved,right.unresolved);
