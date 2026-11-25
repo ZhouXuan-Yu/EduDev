@@ -8,7 +8,7 @@ import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-import {assertCurrentPermissionSignal} from './permissions/current';
+import {assertCurrentPermission,assertCurrentPermissionSignal} from './permissions/current';
 import path from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
 import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
@@ -113,6 +113,12 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
   if(root!==active)throw new Error('permission_denied');return active;
  }
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
+ async function recheckExecution(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal){
+  current(row,signal);
+  await assertCurrentPermission();
+  await state.assertRevision(row);
+  await recheck(row,root,signal);
+ }
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
  function install(root:string,row:PrivateOfficeArtifact,temporary:string,signal?:AbortSignal){
   assertCurrentPermissionSignal();
@@ -192,10 +198,14 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    if(row.state!=='pending')throw Error('conflict');
    if(!row.output){
     row=await withGenerationBudget(row,signal,async()=>{
-     await recheck(row,root,signal);
+     await recheckExecution(row,root,signal);
+     if(!compatible(root,row))throw Error('conflict');
      const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
-     const resolved=await images(sessionId,row.draft,signal),bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
-     await recheck(row,root,signal);return state.cacheCandidate(row,bytes);
+     const resolved=await images(sessionId,row.draft,signal);await recheckExecution(row,root,signal);
+     const bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+     await recheckExecution(row,root,signal);
+     if(!compatible(root,row))throw Error('conflict');
+     return state.cacheCandidate(row,bytes);
     });
    }
    return{path:row.path,bytes:row.output!,version:row.draftHash,candidate:{kind:'office' as const,id:row.id,revision:row.revision}};
@@ -282,38 +292,38 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     latest=await state.transition(latest,['approved'],'generating');
     notify(latest);
     try{
-     latest=await withGenerationBudget(latest,signal,async()=>{
+     return await withGenerationBudget(latest,signal,async()=>{
+      assertFileWritesEnabled();
+      await recheckExecution(latest,root,signal);
+      if(!compatible(root,latest))return conflict(latest);
       const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
-      await recheck(latest,root,signal);
-      const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
+      const resolved=await images(sessionId,latest.draft,signal);await recheckExecution(latest,root,signal);
       const bytes=latest.output??await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
-      await recheck(latest,root,signal);
-      if(!compatible(root,latest))return state.transition(latest,[latest.state],'conflict');
-      return state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});
+      await recheckExecution(latest,root,signal);
+      if(!compatible(root,latest))return conflict(latest);
+      latest=await state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});
+      notify(latest);
+      await options.afterStage?.('prepared');await recheck(latest,root,signal);
+      latest=await state.transition(latest,['prepared'],'committing');
+      notify(latest);
+      await options.afterStage?.('intent');await recheckExecution(latest,root,signal);
+      await withOwnedFileStage(target(root,latest),latest.output!,stage=>state.storeStage(latest,stage),async temporary=>{
+       if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+       else if(latest.draft.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA){if(!options.commitLessonDraft)throw Error('permission_denied');await options.commitLessonDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+       else if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA){if(!options.commitHandoutDraft)throw Error('permission_denied');await options.commitHandoutDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+       else if(latest.draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA){if(!options.commitMockExamDraft)throw Error('permission_denied');await options.commitMockExamDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal),signal);}
+       else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
+       else install(root,latest,temporary,signal);
+      });
+      await options.afterStage?.('file');
+      // The write may already exist. A stopped call must leave its existing receipt for recovery.
+      current(latest,signal);
+      if(outputMatches(root,latest)!=='same')throw new Error('conflict');
+      const saved=await state.transition(latest,['committing'],'saved');notify(saved);await options.afterStage?.('fact');return officeSummary(saved);
      });
-     if(latest.state==='conflict')return officeSummary(latest);
-     notify(latest);
-     await options.afterStage?.('prepared');await recheck(latest,root,signal);
-     latest=await state.transition(latest,['prepared'],'committing');
-     notify(latest);
-     await options.afterStage?.('intent');await recheck(latest,root,signal);
-     await withOwnedFileStage(target(root,latest),latest.output!,stage=>state.storeStage(latest,stage),async temporary=>{
-      if(isClassroomOfficeSchema(latest.draft.schemaVersion)){if(!options.commitClassroomDraft)throw Error('permission_denied');await options.commitClassroomDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
-      else if(latest.draft.schemaVersion===TEACHING_LESSON_OFFICE_SCHEMA){if(!options.commitLessonDraft)throw Error('permission_denied');await options.commitLessonDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
-      else if(latest.draft.schemaVersion===TEACHING_HANDOUT_OFFICE_SCHEMA){if(!options.commitHandoutDraft)throw Error('permission_denied');await options.commitHandoutDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
-      else if(latest.draft.schemaVersion===MOCK_EXAM_OFFICE_SCHEMA){if(!options.commitMockExamDraft)throw Error('permission_denied');await options.commitMockExamDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal),signal);}
-      else if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,temporary,signal));}
-      else install(root,latest,temporary,signal);
-     });
-     await options.afterStage?.('file');
-     // The file may already exist; cancellation must retain an uncertain effect,
-     // rather than granting a late continuation permission to publish saved facts.
-     current(latest,signal);
-     if(outputMatches(root,latest)!=='same')throw new Error('conflict');
-     const saved=await state.transition(latest,['committing'],'saved');notify(saved);await options.afterStage?.('fact');return officeSummary(saved);
     }catch(error){
      const pending=await state.get(id);
-     if(pending&&['generating','prepared','committing'].includes(pending.state)){
+     if(pending&&pending.revision===latest.revision&&['generating','prepared','committing'].includes(pending.state)){
       const boundSourceConflict=[TEACHING_HANDOUT_OFFICE_SCHEMA,MOCK_EXAM_OFFICE_SCHEMA].some(schema=>schema===pending.draft.schemaVersion)&&handoutSourceChanged(error);
       await state.transition(pending,[pending.state],pending.state==='committing'?'uncertain':signal?.aborted||(error as Error).message==='cancelled'?'interrupted':(error as Error).message==='conflict'||boundSourceConflict?'conflict':'failed');
      }

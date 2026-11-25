@@ -23,8 +23,8 @@
 | AC-17 OCR 生命周期 | PASS · 已实现 | 同一实际构建下，排队取消和停止 3/3，六页 PDF 故障与检查点 5/5。真实进程的启动失败和运行错误分别结算。冷启仅续跑第 3–6 页，前两页的摘要和执行次数保持一致。错误的旧工作器版本触发新代全六页执行。 |
 | AC-18 embedding/vector | NOT_RUN | `native-vector-retry.log` 10 项通过，补 worker RPC 超时、退出交错及驻留证据。 |
 | AC-19 索引批次与发布 | NOT_RUN | 桌面暂停、冷启、正式题库语义检索、原子重建和新世代冷启通过 3 项。旧脚本的 43 项断言在两版复现，日志及独立数据库保留。另有 Windows 原生 writer lock 3/3。正式压力下备份屏障与批次的组合尚未验证。 |
-| AC-20 PDF 输出与回收 | NOT_RUN | 真实自然卷 Word/PDF 读回通过，最终版三次原生混载上均观察到首份打印取消后占用保留、第二份实际打印、隔离窗口与文件清理。还需补源图准备和原定正式端到端失败路径。 |
-| AC-21 排队后治理 | NOT_RUN | 文件解析唤醒检查原租约/版本，补三类正式权限撤销及提交屏障读回。 |
+| AC-20 PDF 输出与回收 | PASS · 已实现 | 实际 OCR 和索引工作未结束时启动合成讲义 PDF。逐项回读四节正文、版本标记并栅格化整页，审核发布的 SQLite 哈希与文件一致。真实准备取消、队列超时及打印取消都保留对应额度至停止或实际结算，清理所属窗口和文件。 |
+| AC-21 排队后治理 | NOT_RUN | 文件解析唤醒检查原租约与版本。实际 PDF 等待后复核授权、草稿和源文件，人工写入的目标文件保留。其余 Provider/索引接线等待完整验收。 |
 | AC-22 业务预算 | NOT_RUN | 未新增 run 等待接口调用，补同 run 并行工具的计时、超时和预算完整证据。 |
 | AC-23 中断恢复 | NOT_RUN | 自然扫描与暂停索引已有冷启证据，补三类未完成/结果未知对账。 |
 | AC-24 切换、休眠与状态 | NOT_RUN | `queue-ui-with-close-retry.log` 在最后一版主进程通过 3 项实机检查，含实际排队、尚未退出的 OCR 显示「正在停止」、退出之后变为「已停止」。还需补实际前台切换和休眠/恢复。 |
@@ -72,3 +72,9 @@
 - `npm run build -- --outDir test-results/r1-pdf-checkpoint`、`tsc --noEmit`、组件回归通过。主进程 SHA-256 为 `901efc05b845a2c1515f04f4f70191c191f2982502ff7021d185fc3f2399ac48`。首次新构建测试在 Playwright 主进程读取遥测时失败，原始记录 `wp04-pdf-checkpoint-green.log` 保留。使用序列化快照复跑，验收断言保留。
 - `node scripts/acceptance/host-resource-pdf-checkpoints.mjs <六页扫描件> <固定证据根>` 通过 5/5。完整的 PID、`spawn/error/close`、进程额度探针、原任务 ID、源哈希、工作器版本、页编号和结果摘要见 `r1-pdf-checkpoint-zVRTFt/report.json`。`wp04-pdf-checkpoint-stop.log` 另记录同构建的排队、停止及实际退出。
 - 同一隔离验收数据根已从新版本重启，记录 `wp04-pdf-checkpoint-manual-window.json`。
+
+## PDF 导出准入与人工修改保护
+
+- `wp06-office-fences-red.log` 在实际 Electron 复现授权撤销后仍打开一个原生渲染窗口。`wp06-office-fences-final.log` 对新编译的业务服务 7/7，检查等待后授权、草稿和来源变更，准备取消、队列超时、保留人工文件及真实预览续接。发布文件 `approved.pdf` 的 11 个固定字段和整页栅格检查记录在 `wp06-office-physical-pdf.json`。
+- `wp06-office-fences-stable-overlap.log` 5/5。普通容量下，原生 OCR 和索引写入已实际占用各自额度时 PDF 开始。取消首轮打印直到 Chromium 返回仍持有额度，第二次正常打印，窗口和临时文件归零。冷启降额时缺少重叠的首次观测保留在 `wp06-office-fences-overlap.log`。实际混载的 PDF 正文和页面证据见 `wp06-office-overlap-pdf.json`。
+- `tsc --noEmit`、独立构建、组件和桌面冒烟通过，两个尺寸一共 207/207 条前端断言。原始 Node 版 Office Coordinator 脚本在加载 Electron `shell` 导出时退出，原始记录 `wp06-office-fences-coordinator.log`，未将该脚本计为通过。当前构建主进程 SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`。

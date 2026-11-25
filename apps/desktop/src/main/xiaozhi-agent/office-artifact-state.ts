@@ -66,6 +66,11 @@ export function createOfficeArtifactState(sql:Sql){
   if(updated!==1)throw new Error('conflict');return (await get(row.id))!;
  }
  return {get,call,transition:cas,
+  async assertRevision(row:Pick<PrivateOfficeArtifact,'id'|'sessionId'|'state'|'revision'|'draftHash'>){
+   const [current]=await sql.all('SELECT 1 FROM xiaozhi_pi_office_drafts WHERE id=? AND conversation_id=? AND state=? AND revision=? AND draft_hash=?',
+    [row.id,row.sessionId,row.state,row.revision,row.draftHash]);
+   if(!current)throw Error('conflict');
+  },
   async storeStage(row:PrivateOfficeArtifact,stage:OwnedFileStage|null){
    if(!sql.change||await sql.change('UPDATE xiaozhi_pi_office_drafts SET staging_json=? WHERE id=? AND conversation_id=? AND state=? AND revision=?',
     [stage?JSON.stringify(stage):null,row.id,row.sessionId,row.state,row.revision])!==1)throw Error('conflict');

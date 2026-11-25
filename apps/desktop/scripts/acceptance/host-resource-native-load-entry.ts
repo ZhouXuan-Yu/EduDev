@@ -6,7 +6,7 @@ import path from 'node:path';
 import {parsePdfFile} from '../../src/main/xiaozhi-agent/pdf-file-host';
 import {VectorHost} from '../../src/main/retrieval/vector-host';
 import {generateOfficeDocument} from '../../src/main/xiaozhi-agent/office-generator';
-import {hostResourceDiagnostics} from '../../src/main/host-resources/desktop';
+import {hostResourceDiagnostics,reserveHostStage} from '../../src/main/host-resources/desktop';
 import {EMBEDDING_ID,EMBEDDING_MODEL,EMBEDDING_TOKENIZER,type GenerationSpec,type RetrievalFact} from '../../src/shared/retrieval';
 import {OFFICE_DRAFT_SCHEMA,type OfficeDraft} from '../../src/shared/xiaozhi-office-draft';
 
@@ -77,6 +77,43 @@ async function output(draft:OfficeDraft){
   return {sha256:sha(pdf),bytes:pdf.length};
 }
 
+async function outputDuringBackgroundWork(draft:OfficeDraft){
+  const deadline=performance.now()+30000;
+  for(;;){
+    const events=hostResourceDiagnostics().events;
+    const active=(owner:string,phase:string)=>events.find(event=>event.owner===owner&&event.phase===phase&&event.state==='started'&&
+      !events.some(end=>end.lease===event.lease&&end.state==='actual_settled'));
+    const ocr=active('fixture-material-scanned.pdf','parse'),index=active('vector-owner','applyMany');
+    if(ocr&&index){
+      const bytes=await output(draft);
+      const after=hostResourceDiagnostics().events;
+      const print=after.find(event=>event.owner==='office-export'&&event.phase==='pdf'&&event.state==='started');
+      assert(print&&print.at>=ocr.at&&print.at>=index.at,'PDF must start while both jobs are active');
+      for(const background of [ocr,index]){
+        const settled=after.find(event=>event.lease===background.lease&&event.state==='actual_settled');
+        assert(!settled||settled.at>print.at,'Background job ended before the PDF started');
+      }
+      report.overlap={ocr,index,print};
+      return bytes;
+    }
+    if(performance.now()>=deadline)throw Error('No joint OCR and embedding/index execution was observed');
+    await new Promise(resolve=>setTimeout(resolve,20));
+  }
+}
+
+async function waitForValidHostSamples(){
+  const probe=await reserveHostStage('fixture-sample-probe','sample','foreground',{cpu:1},5000);
+  assert(probe.start());probe.settle();
+  // Cold launch deliberately starts with the smallest capacity. Observe real
+  // recovery before exercising concurrent admission at ordinary capacity.
+  const deadline=performance.now()+30000;
+  while(hostResourceDiagnostics().pressure!==0){
+    if(performance.now()>=deadline)throw Error('The host did not reach ordinary capacity for the overlap case');
+    await new Promise(resolve=>setTimeout(resolve,100));
+  }
+  report.ordinaryCapacity=hostResourceDiagnostics().target;
+}
+
 async function cancelDuringPrint(draft:OfficeDraft){
   const cancellation=new AbortController();
   let unblock!:()=>void,markStarted!:()=>void;
@@ -117,16 +154,16 @@ void app.whenReady().then(async()=>{
     const [source,corpus,queries]=await Promise.all(['export-source.html','teaching-corpus.jsonl','queries.json']
       .map(file=>fs.readFile(path.join(fixtures,file),'utf8')));
     const draft=draftFromHtml(source);
-    const results=await Promise.allSettled([
-      parse('material-original.pdf'),parse('material-scanned.pdf'),
-      index(corpus.trim().split(/\r?\n/u).map(line=>JSON.parse(line)),JSON.parse(queries).queries),
-      output(draft),
-    ]);
+    await waitForValidHostSamples();
+    const scanned=parse('material-scanned.pdf');
+    const indexing=index(corpus.trim().split(/\r?\n/u).map(line=>JSON.parse(line)),JSON.parse(queries).queries);
+    const printing=outputDuringBackgroundWork(draft);
+    const results=await Promise.allSettled([printing.then(()=>parse('material-original.pdf')),scanned,indexing,printing]);
     report.results=results.map(result=>result.status==='fulfilled'?result.value:String(result.reason?.stack??result.reason));
     assert(results.every(result=>result.status==='fulfilled'),JSON.stringify(report.results));
     checks.push('Native file worker returned six nonempty pages for each package PDF');
     checks.push('Native embedding and Lance indexed 48 declared sources and returned the expected source for each query');
-    checks.push('Electron generated a PDF from the four mapped fixture sections');
+    checks.push('Electron generated the four-section PDF while native OCR and indexing leases were both running');
     report.cancelledPrint=await cancelDuringPrint(draft);
     checks.push('An aborted Chromium print retains its lease until actual receipt and permits the next print');
     assert.equal(BrowserWindow.getAllWindows().length,0);

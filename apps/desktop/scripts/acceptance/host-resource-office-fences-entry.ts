@@ -58,6 +58,8 @@ void app.whenReady().then(async()=>{
     const draft:OfficeDraft={schemaVersion:OFFICE_DRAFT_SCHEMA,title:html.match(/<h1>([^<]+)<\/h1>/u)![1],sections:
       [...html.matchAll(/<section><h2>([^<]+)<\/h2><p>([^<]+)<\/p><\/section>/gu)].map((match,index)=>({heading:match[1],paragraphs:[`R1-SECTION-${index+1}`,match[2]]}))};
     assert.equal(draft.sections.length,4);
+    draft.sections[0].paragraphs.unshift('ARTIFACT-EXPORT-001 / version 1 / SYNTHETIC');
+    draft.sections.at(-1)!.paragraphs.push(html.match(/<footer>([^<]+)<\/footer>/u)![1]);
     const draftFor=(name:string,sources:{path:string;version:string}[]=[])=>service.propose(sessionId,runId,name,{draft,format:'pdf',path:name,sources});
     const approve=async(row:Awaited<ReturnType<typeof draftFor>>)=>service.decide({schemaVersion:OFFICE_ARTIFACT_SCHEMA,
       sessionId,draftId:row.id,revision:row.revision,action:'approve'});
@@ -104,6 +106,26 @@ void app.whenReady().then(async()=>{
     assert.equal(conflict.state,'conflict');
     assert.equal(windows,beforeSource,'changed source was only checked after rendering');
     checks.push('A changed source rejects the approved old version before rendering');
+
+    const preparing=await approve(await draftFor('preparing.pdf')),beforePreparation=windows;
+    const cancellation=new AbortController();
+    let enter!:()=>void,release!:()=>void;
+    const entered=new Promise<void>(resolve=>{enter=resolve;});
+    const hold=new Promise<void>(resolve=>{release=resolve;});
+    const running=runWithPermission({...permission,signal:cancellation.signal,assert:async()=>{enter();await hold;}},
+      ()=>service.apply(sessionId,preparing.id,cancellation.signal));
+    try{
+      await Promise.race([entered,running.then(()=>{throw Error('Preparation finished before the barrier');})]);
+      evidence.cancelPreparation={lease:hostResourceDiagnostics().used.pdfWindows,windowsOpened:windows-beforePreparation};
+      assert.equal(hostResourceDiagnostics().used.pdfWindows,1);
+      cancellation.abort();
+    }finally{release();}
+    await assert.rejects(running,/cancelled/u);
+    assert.equal((await state.get(preparing.id))?.state,'interrupted');
+    assert.equal(windows,beforePreparation);
+    assert.equal(hostResourceDiagnostics().used.pdfWindows,0);
+    await assert.rejects(fs.stat(path.join(workspace,preparing.path)),{code:'ENOENT'});
+    checks.push('Cancelling after resource admission during preparation creates no renderer, file or saved fact');
 
     const edited=await approve(await draftFor(target));
     const manual=Buffer.from('Teacher kept this manual file.');

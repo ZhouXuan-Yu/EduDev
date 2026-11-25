@@ -31,9 +31,9 @@
 
 记录从固定证据根读取。WP-02 红灯由真实既有逻辑槽多放行一个受内存约束工作复现，记录于 `wp02-red.log`、提交 `46bb7fb`。分支后续通过绿灯与真实 Windows 子进程测试。候选进度和逐项状态见 [10 验收](10_ACCEPTANCE_REPORT.md) 与 [11 集成](11_MERGE_REPORT.md)。
 
-累计尝试记录于固定证据根的 `attempt-ledger.jsonl`。WP-00、01、02 各 1 轮，WP-03 2 轮，WP-04 6 轮，WP-05 8 轮，WP-06 2 轮，WP-07 4 轮，WP-08 实际集成候选 0 次。后续按原 03 保留累计值。WP-05 的正式检索、世代发布和冷数据复查通过，剩余嵌套进程资源实现需要第 9 轮。
+累计尝试记录于固定证据根的 `attempt-ledger.jsonl`。WP-00、01、02 各 1 轮，WP-03 2 轮，WP-04 6 轮，WP-05 8 轮，WP-06 4 轮，WP-07 4 轮，WP-08 实际集成候选 0 次。后续按原 03 保留累计值。WP-05 的正式检索、世代发布和冷数据复查通过，剩余嵌套进程资源实现需要第 9 轮。
 
-可独立继续 WP-06。先用原生打印屏障阻塞第二份 PDF，在源图准备开始前撤销批准或更改草稿版本，再释放屏障，核对 AC-20/21/30 所需的准备、清理和持久副作用。原生混载的内存峰值仍依合同核验。压力策略 `host-resources.r1.2` 的阈值和样本见 `wp03-pressure-policy-r1.2.json` 及 `wp03-pressure-native-measurements.json`。
+按用户要求切换到 Provider 健康管理专项时保存本检查点。AC-20 已通过。若接续本专项，先在 WP-06 用实际 SQLite 的非空候选 BLOB 和打印资源屏障，测量 `OfficeArtifactService` 是否在准入前读取缓存，继续完成 AC-14 和全局内存峰值验证。压力策略 `host-resources.r1.2` 的阈值和样本见 `wp03-pressure-policy-r1.2.json` 及 `wp03-pressure-native-measurements.json`。
 
 先处理 WP-05 的嵌套进程账。当前协调器区分原生向量宿主常驻与每条 RPC，但 embedding 子进程的缓冲、模型常驻和向量宿主退出的时间线仍需独立凭证。先在 `vector-worker.ts` 与 `embedding-client.ts` 的真实 spawn/close 周围固定可复现交错，再补齐宿主层账本和最小容量活性。旧检索旅程的题目断言在 `29e836e` 对照构建也失败，记录另见 AC-19。后续验收保持来源保护，使用正式生成或核对过的题来验证题库路径，然后执行正式 W-03 和同机反馈采样。
 
