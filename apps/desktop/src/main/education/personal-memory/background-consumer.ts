@@ -12,6 +12,7 @@ type Options = {
   sources: ReturnType<typeof createPersonalMemorySourceAuthority>;
   provider: Parameters<Worker>[0];
   targets: (pins: PersonalMemoryJobLease['job']['targets']) => Promise<TargetRecord[]>;
+  targetsCurrent?: (db:Sql,pins:PersonalMemoryJobLease['job']['targets'])=>Promise<boolean>;
 };
 
 function errorCode(error: unknown) {
@@ -39,6 +40,8 @@ export function createPersonalMemoryBackgroundConsumer(sql: Sql, options: Option
       if (!lease) return {state:'idle' as const};
       const identity = lease.id;
       const currentLease = () => lease!;
+      const targetsCurrent=(db:Sql)=>currentLease().job.targets.length
+        ? options.targetsCurrent?.(db,currentLease().job.targets) ?? Promise.resolve(false) : Promise.resolve(true);
       let terminal = false;
       let unavailableSources = 0;
       try {
@@ -59,12 +62,13 @@ export function createPersonalMemoryBackgroundConsumer(sql: Sql, options: Option
         };
         const result = await run({
           read,
-          isCurrent:db=>jobs.isCurrent(db,currentLease()),
+          isCurrent:async db=>await jobs.isCurrent(db,currentLease()) && await targetsCurrent(db),
           beforeModel:async manifest=>{
             if (admission.aborted) throw Error('cancelled');
             const current=currentLease();
             const dispatched=new Set(manifest.sources.map(source=>source.id));
             lease=await jobs.reserve(current,async db=>{
+              if (!await targetsCurrent(db)) return false;
               for (const pin of current.job.sources) {
                 if (dispatched.has(pin.id) && !await options.sources.dispatchCurrent(db,pin.id,pin.version,pin.revision)) return false;
               }

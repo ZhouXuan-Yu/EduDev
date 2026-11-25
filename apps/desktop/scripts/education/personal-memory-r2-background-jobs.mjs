@@ -10,6 +10,9 @@ const { createPersonalMemorySourceAuthority,personalMemoryExtractSchema }=await 
 const { historyMemorySchema }=await import('../../src/main/xiaozhi-agent/history/schema.ts');
 const { historyId }=await import('../../src/main/xiaozhi-agent/history/state.ts');
 const { teacherRequestSourceVersion }=await import('../../src/main/xiaozhi-agent/request-sources.ts');
+const {createPersonalMemoryRecordState,personalMemoryRecordSchema}=await import('../../src/main/education/personal-memory/record-state.ts');
+const {createPersonalMemoryOrganization}=await import('../../src/main/education/personal-memory/organization.ts');
+const {preparePersonalMemoryExtraction,bindPersonalMemoryProposals}=await import('../../src/main/education/personal-memory/candidate-admission.ts');
 
 function database(){
   const db=new DatabaseSync(':memory:');
@@ -22,6 +25,7 @@ function database(){
   db.exec(historyMemorySchema);
   db.exec(personalMemoryCandidateSchema);
   db.exec(personalMemoryExtractSchema);
+  db.exec(personalMemoryRecordSchema);
   db.exec('CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)');
   const sql={
     all:async(q,v=[])=>db.prepare(q).all(...v),
@@ -215,6 +219,61 @@ const begin=Date.parse('2026-11-25T02:00:00Z');
   console.log('PASS existing off mode pauses automation and a new settings revision fences earlier claims');
   db.close();
 }
+{
+  const {db,sql,row}=database();
+  const sources=createPersonalMemorySourceAuthority(sql,async text=>text);
+  const records=createPersonalMemoryRecordState(sql,sources);
+  const jobs=createPersonalMemoryJobs(sql);
+  const plan=createPersonalMemoryOrganization(sql,sources,records,jobs,async text=>text);
+  const sessionId='aisession_'+randomUUID(),runId='run_'+randomUUID();
+  db.prepare('INSERT INTO ai_conversation_sessions VALUES(?,?,NULL,NULL)').run(sessionId,'合成教研交接');
+  const live=process.argv.includes('--live-organize');
+  const consumer=createPersonalMemoryBackgroundConsumer(sql,{
+    sources,targets:plan.targets,targetsCurrent:plan.targetsCurrent,
+    provider:{pythonExecutable:process.env.OMNI_EDU_R2_PYTHON??'',repoRoot:fileURLToPath(new URL('../../../../',import.meta.url)),
+      providerKey:process.env.DEEPSEEK_API_KEY??''},
+  },live?undefined:async(_options,manifest)=>{
+    const [source]=manifest.sources,[target]=manifest.targets;
+    return {status:'success',proposals:[{kind:'teaching_context',source_id:source.id,source_version:source.version,
+      scope_id:source.scope.id,valid_term:source.term,supporting_quote:source.text,value:source.text,supersedes:target.id}],
+      modelCalls:1,usage:[]};
+  });
+  const policy=await consumer.state.setEnabled(true,0);
+  async function observe(value){
+    const recordId=randomUUID();
+    db.prepare('INSERT INTO ai_conversation_messages VALUES(?,?,?,?,?,?)')
+      .run(recordId,sessionId,'user',value,JSON.stringify({piVersion:'xiaozhi.pi.education.v1',agentRunId:runId}),'2026-11-25');
+    const ref={kind:'history_request',recordId,sessionId,sourceVersion:teacherRequestSourceVersion(recordId,runId,value)};
+    const grant=await sources.change(ref,0,{scope:{kind:'course',id:'science'},term:'本学期'});
+    const liveSources=await sources.snapshot([grant.sourceId],policy);
+    const manifest=preparePersonalMemoryExtraction(liveSources,policy);
+    const proposal={kind:'teaching_context',source_id:grant.sourceId,source_version:grant.revision,
+      scope_id:'science',valid_term:'本学期',supporting_quote:value,value,supersedes:null};
+    const [draft]=bindPersonalMemoryProposals([proposal],manifest,liveSources,policy).candidates;
+    await consumer.state.savePending([draft],policy);
+    return draft;
+  }
+  const original=await observe('我本学期负责四年级科学。');
+  const reviewed=await records.preview(original.key,1);
+  const accepted=await records.accept({operationId:randomUUID(),key:original.key,revision:1,targetRevision:0,reviewedQuoteSha256:reviewed.quoteSha256});
+  assert.equal(await plan.plan(policy),null);
+  const changed=await observe('更正，本学期我负责五年级科学，原四年级已经交接。');
+  const queued=await plan.plan(policy);
+  assert(queued?.created);
+  assert.equal(await plan.plan(policy),null);
+  const outcome=await consumer.advance(new AbortController().signal);
+  assert.equal(outcome.state,'processed',JSON.stringify(outcome));
+  assert.equal(row(queued.id).status,'succeeded');
+  const [suggestion]= (await consumer.state.list(10)).filter(item=>item.draft.replaces?.id===accepted.id);
+  assert.equal(suggestion?.state,'pending');
+  assert.equal(suggestion.draft.witness.sourceId,changed.witness.sourceId);
+  assert.equal(suggestion.draft.replaces.revision,1);
+  assert.equal((await records.read(accepted.id)).value,original.proposedValue);
+  assert.equal((await records.read(accepted.id)).revision,1);
+  assert.equal(await plan.plan(policy),null);
+  console.log(JSON.stringify({organized:true,live,receipt:JSON.parse(row(queued.id).result_json),pendingRevision:suggestion.revision}));
+  db.close();
+}
 if(process.argv.includes('--live')){
   const {db,sql,row}=database();
   const authority=createPersonalMemorySourceAuthority(sql,async text=>text);
@@ -244,4 +303,4 @@ if(process.argv.includes('--live')){
   console.log(JSON.stringify({live:true,provider:'deepseek-flash',receipt,scope:draft.draft.scope,term:draft.draft.term,committedState:draft.state}));
   db.close();
 }
-console.log(JSON.stringify({passed:7,live:process.argv.includes('--live')}));
+console.log(JSON.stringify({passed:8,live:process.argv.includes('--live'),liveOrganization:process.argv.includes('--live-organize')}));

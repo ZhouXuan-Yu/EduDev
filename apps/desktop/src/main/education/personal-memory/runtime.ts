@@ -6,6 +6,7 @@ import {createPersonalMemoryBackgroundConsumer} from './background-consumer';
 import {createPersonalMemoryJobs} from './background-jobs';
 import {readPersonalMemoryProcessing} from './candidate-state';
 import {createPersonalMemoryRecordState} from './record-state';
+import {createPersonalMemoryOrganization} from './organization';
 import {createPersonalMemorySourceAuthority} from './source-authority';
 import type {runPersonalMemoryCandidateWorker} from './candidate-worker-client';
 
@@ -25,6 +26,7 @@ export function createPersonalMemoryRuntime(sql:Sql, options:RuntimeOptions) {
   const jobs=createPersonalMemoryJobs(sql);
   const sources=createPersonalMemorySourceAuthority(sql,options.sanitize);
   const records=createPersonalMemoryRecordState(sql,sources);
+  const organization=createPersonalMemoryOrganization(sql,sources,records,jobs,options.sanitize);
   let timer:ReturnType<typeof setInterval>|undefined;
   let running:{controller:AbortController; result:Promise<void>}|undefined;
   let quietUntil=Date.now()+quietMs;
@@ -48,9 +50,10 @@ export function createPersonalMemoryRuntime(sql:Sql, options:RuntimeOptions) {
     if (competing) return;
     const provider=await options.provider();
     if (!provider || signal.aborted || !idle()) return;
-    await jobs.planExtraction();
+    const extraction=await jobs.planExtraction();
+    if (!extraction && !signal.aborted && idle()) await organization.plan(policy);
     if (signal.aborted || !idle()) return;
-    const consumer=createPersonalMemoryBackgroundConsumer(sql,{sources,provider,targets:async()=>[]});
+    const consumer=createPersonalMemoryBackgroundConsumer(sql,{sources,provider,targets:organization.targets,targetsCurrent:organization.targetsCurrent});
     await consumer.advance(signal);
   }
 

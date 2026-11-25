@@ -128,6 +128,13 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
   return {
     enqueue:(input:JobInput)=>write(db=>enqueue(db,input)),
 
+    async organizationAvailable() {
+      const [busy]=await sql.all(`SELECT 1 FROM ai_tasks WHERE task_type=? AND json_valid(payload_json)
+        AND json_extract(payload_json,'$.kind')='organize' AND (status IN ('pending','running')
+          OR json_extract(payload_json,'$.dispatch.startedAt')>?) LIMIT 1`,[taskType,clock()-organizeIntervalMs]);
+      return !busy;
+    },
+
     async planExtraction() {
       return write(async db=>{
         const authority=await processing(db);

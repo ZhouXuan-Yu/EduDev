@@ -58,6 +58,7 @@ type MemoryVersion = {
   id: string;
   revision: number;
   state: 'active' | 'disabled' | 'forgotten';
+  operation: 'accept' | PersonalMemoryEditInput['action'];
   value: string;
   draftKey: string;
   sourceOccurredAt: string | null;
@@ -72,8 +73,10 @@ const safeRevision = (value: number) => Number.isSafeInteger(value) && value > 0
 
 function version(row: Record<string, unknown>): MemoryVersion {
   const state = row.state;
-  if (state !== 'active' && state !== 'disabled' && state !== 'forgotten') throw Error('configuration');
-  return {id:String(row.memory_id),revision:Number(row.revision),state,value:String(row.value),
+  const operation = row.operation as MemoryVersion['operation'];
+  if ((state !== 'active' && state !== 'disabled' && state !== 'forgotten') ||
+      !['accept','edit','disable','restore','forget'].includes(operation)) throw Error('configuration');
+  return {id:String(row.memory_id),revision:Number(row.revision),state,operation,value:String(row.value),
     draftKey:String(row.draft_key),sourceOccurredAt:typeof row.source_occurred_at === 'string' ? row.source_occurred_at : null,
     recordedAt:Number(row.recorded_at)};
 }
@@ -121,14 +124,14 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
     });
   }
 
-  async function append(db: WritableSql, next: MemoryVersion, operation: 'accept' | PersonalMemoryEditInput['action']) {
+  async function append(db: WritableSql, next: MemoryVersion) {
     if (next.revision === 1) {
       const created = await db.change('INSERT INTO personal_memory_records VALUES(?,1) ON CONFLICT(memory_id) DO NOTHING',[next.id]);
       if (created !== 1) throw Error('revision_conflict');
     } else if (await db.change('UPDATE personal_memory_records SET current_revision=? WHERE memory_id=? AND current_revision=?',
       [next.revision,next.id,next.revision-1]) !== 1) throw Error('revision_conflict');
     await db.run('INSERT INTO personal_memory_versions VALUES(?,?,?,?,?,?,?,?)',
-      [next.id,next.revision,next.state,next.value,next.draftKey,next.sourceOccurredAt,operation,next.recordedAt]);
+      [next.id,next.revision,next.state,next.value,next.draftKey,next.sourceOccurredAt,next.operation,next.recordedAt]);
     return next;
   }
 
@@ -165,9 +168,9 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
               target.scope.id !== draft.scope.id || target.scope.kind !== draft.scope.kind) throw Error('invalid_target');
         }
         const id = draft.replaces?.id ?? key;
-        const next: MemoryVersion = {id,revision:targetRevision+1,state:'active',value:draft.proposedValue,
+        const next: MemoryVersion = {id,revision:targetRevision+1,state:'active',operation:'accept',value:draft.proposedValue,
           draftKey:key,sourceOccurredAt:reviewed.occurredAt,recordedAt:Date.now()};
-        await append(db,next,'accept');
+        await append(db,next);
         const decided = await db.change(`UPDATE personal_memory_pending SET state='accepted',revision=revision+1
           WHERE draft_key=? AND revision=? AND state='pending'`,[key,revision]);
         if (decided !== 1) throw Error('revision_conflict');
@@ -197,8 +200,8 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         }
         const state = action === 'forget' ? 'forgotten' : action === 'disable' ? 'disabled' : 'active';
         const nextValue = action === 'forget' ? '' : action === 'edit' ? value : record.value;
-        return append(db,{...record,revision:revision+1,state,value:nextValue,
-          recordedAt:Date.now()},action);
+        return append(db,{...record,revision:revision+1,state,value:nextValue,operation:action,
+          recordedAt:Date.now()});
       });
     },
     async read(id: string) {
@@ -208,6 +211,11 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         return record ? present(db,record,sources) : null;
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);
+    },
+    async organizationTargetCurrent(db:Sql,id:string,revision:number) {
+      const record=await head(db,id);
+      return record?.state==='active' && record.operation==='accept' && record.revision===revision &&
+        await sources.witnessCurrent(db,await sourceDraft(db,record));
     },
     async previewRecord(id: string, revision: number) {
       if (!hashPattern.test(id) || !safeRevision(revision)) throw Error('invalid_input');
