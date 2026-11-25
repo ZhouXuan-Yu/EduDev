@@ -20,6 +20,6 @@ const timer = setTimeout(() => child.kill(), 180000);
 const code = await new Promise((resolve, reject) => {child.once('error', reject); child.once('exit', resolve);});
 clearTimeout(timer); await new Promise(resolve => stream.end(resolve));
 let report; try {report = JSON.parse(fs.readFileSync(path.join(output, 'report.json'), 'utf8'));} catch {}
-const success = code === 0 && report?.success && report.checks.length === (managedRecovery ? 14 : 11);
+const success = code === 0 && report?.success && report.checks.length === (managedRecovery ? 15 : 11);
 if (!success) process.exitCode = 1;
 console.log(JSON.stringify({success, exitCode: code, passed: report?.checks.length, output, root: report?.root, error: report?.error}));

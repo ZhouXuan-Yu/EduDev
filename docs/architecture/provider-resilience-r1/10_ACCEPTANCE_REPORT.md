@@ -1,17 +1,20 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 3/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 7/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
 | AC-01 | PASS · 已实现 | 固定 22 条故障矩阵与 8 条补充混合、未知和不可信来源反例全部通过。证据见 WP-01。 |
 | AC-02 | NOT_RUN | 实际 MCP 权限否决、既有审批、资源锁、取消和非法输入均验证零外部请求与零健康增量。业务 CAS、来源冲突及通过真实 Effect 的组合对照待补。 |
-| AC-03 | NOT_RUN | 真实 loopback HTTP 和 Windows Electron Managed stdio 各已验证超时、SQLite 信任保留及同一只读能力恢复。直接 stdio 真进程的临时故障与恢复全路径及公开诊断仍须验收。 |
+| AC-03 | PASS · 已实现 | 真实 HTTP、直接受控 stdio、Managed stdio 同一来源重新核验、SQLite 原信任与选中工具读回，恢复后真实读取。正式生产 Pi 在故障和冷却期仍成功调用内置文件列表。 |
 | AC-04 | NOT_RUN | 已验证 HTTP Schema 漂移、Managed stdio 原绑定不兼容及信任撤销时不尝试重连。还需包、凭证、Instance、Binding、Grant 与驻留的完整变体。 |
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
 | AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
-| AC-07 | NOT_RUN | 实际 HTTP 10 路只发一次探针，真实 429 的 Retry-After 未提前发送。失败、取消、代际的确定性检查已通过，生产跨 owner 反例待补。 |
-| AC-08–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
+| AC-08 | NOT_RUN | 尚需冷启、唤醒、重配置、缓存上限与跨持久化预算证据。 |
+| AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
+| AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
+| AC-11–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -56,3 +59,14 @@
 
 - `node scripts/xiaozhi-agent/mcp-effect-host-smoke.mjs` 通过 6/6。`mcp-effect-P3g135/REPORT.json` 保留四组不同的 Session ID、Run ID、实际合成模型请求与外部服务计数。连续四个宿主请求在真实 MCP 服务的握手计数为 1/2/3/3，没有额外业务工具请求，原信任存留。报告内同时保留生产 Effect 的五个原有回归用例。
 - `wp03-mcp-production-sessions.log` 记录 944 个源输入和 0 条漂移。与正式 preload 的来源隔离、熔断拦截、恢复证据以及实际 HTTP 执行的健康清零合并判定 AC-06。实际失败探针、取消探针与冷启动仍按 AC-07/08 补齐。
+
+## WP-02 第四轮 Windows 受控 stdio
+
+- `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 15/15。新用例在真正 Windows AppContainer 中停住直接工具准备的初始化，确认 SQLite 原 Schema 与工具选择保留、Job 释放，再用同一授权读取固定文件。原 Managed 用例保留实际读取及撤权反例。证据见 `wp02-direct-stdio/runner.log`。
+- 正式 Electron 宿主 `mcp-effect-host-smoke.mjs` 6/6，`mcp-effect-TMPXp8/REPORT.json` 记录四个生产 Pi session 均在 MCP 故障期间通过实际内置工具列目录。外部 MCP 初始化累计 1/2/3/3，无额外外部任务调用。原五组 Effect 回归保持通过。`worker.log` 记录一次 Chromium 网络服务重启。
+
+## WP-03 第三至第五轮模型与取消探针
+
+- `6d2a9c1` 真实 Windows 基线证实三次失败后，下一轮仍发送一次。保留 `wp03-model-wire-red.log`。接线后先通过 4 项窄回归。混合 429/503/200 的完整场景发现，SDK 正常结束的同时取消包装读取，会误占用健康结算。诊断证据在 `model-wire-health-sbW7A0/report.json`。修复后等待底层取消或 EOF，并同时要求 SDK 原生终态确认，才结算成功。
+- `provider-model-health-electron.mjs` 正式 Electron / Pi 和真实本机 HTTP/SSE 8/8，见 `wp03-model-wire-final-fixed.log` 和 `model-wire-health-hlEZum/report.json`。`wp03-model-wire-sqlite.json` 从实际 `app.db` 核对 11 个运行，发送事件计数、服务实际次数及原预算逐项相等。原桌面请求回归 10/10，渲染组件 261/261，最终构建及独立窗口证据分别见 `wp03-model-wire-build-final.log` 和 `wp03-model-manual-window.json`。使用合成模型响应，真实付费调用为 0，AC-34 留待组合判断。
+- `22650c0` 的红灯显示停止后准备仍在等待远端探针。传递原 Run 取消信号后，实际取消先于迟到的 HTTP 响应，健康域保留 Open、失败数维持 4。等待满足后只用原 Schema 核验，旧代际响应不影响恢复。证据见 `wp03-mcp-cancel-red.log`、`wp03-model-source-all.log` 与 `mcp-sqlite-generation-cRMHZF/report.json`，最终 Node 合并门禁 53/53。

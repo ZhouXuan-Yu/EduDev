@@ -79,6 +79,7 @@ import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,resolveSu
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
 import {createRepeatToolReminder} from './repeat-tool-reminder';
 import {withModelRequestRecovery} from './model-request-recovery';
+import {createModelHealthScope, type ModelProviderHealth} from './model-provider-health';
 import {modelHttpError} from '../../shared/xiaozhi-model-request';
 import {createQualityMetrics} from './quality-metrics';
 import {createAnswerEvidence} from './answer-evidence';
@@ -109,6 +110,7 @@ export interface PiXiaozhiOptions {
   fileReadWorkspace?:string;
   apiKey: string;
   model: string;
+  modelProviderHealth?: ModelProviderHealth;
   sessionFile?: string;
   excludedRoots?: string[];
   approveCopy?: Parameters<typeof createHanaOfficeTools>[0]['approveCopy'];
@@ -1167,7 +1169,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     memoryTimer.unref();
   }
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
-  let modelHttpStatus:number|undefined;
+  let modelHttpStatus:number|undefined, modelHealthBlocked=false, modelRequestSequence=0;
   let submittedTeacherRequest:string|undefined;
   let lessonDraftAttempts=0;
   let lessonBasisAttempts=0;
@@ -1175,9 +1177,26 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let paperReceivedTeacherInstruction = false;
   let paperBlueprintSent=false;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
-  const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
-    args[2]={...args[2],fetch:providerFetch};
+    const modelSignal=args[2]?.signal;
+    const health=options.modelProviderHealth ? createModelHealthScope(options.modelProviderHealth,args[0].id,
+      ()=>interrupted||disposed||Boolean(modelSignal?.aborted||options.lifecycleSignal?.aborted),()=>{modelHealthBlocked=true;}) : undefined;
+    const guarded=quality||Boolean(health);
+    modelHealthBlocked=false;
+    modelHttpStatus=undefined;
+    let logicalRequestStarted=false;
+    const wireFetch=guarded?withModelRequestRecovery(rawProviderFetch,{health,maxAttempts:quality?3:1,nextRequest:()=>++modelRequestSequence,
+      beforeSend:()=>budget!.model(),
+      onState:quality?request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});}:undefined,
+      beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();},
+      onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});},
+    }):rawProviderFetch;
+    const providerFetch:typeof fetch=async(input,init)=>{
+      if(guarded&&logicalRequestStarted)throw Error('provider_unavailable');
+      logicalRequestStarted=true;
+      return wireFetch(input,init);
+    };
+    args[2]={...args[2],fetch:providerFetch,maxRetries:0};
     await checkMemory();
     const handoutGuidance=!compacting&&options.handoutBasis
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
@@ -1218,7 +1237,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
     await phase('pi_before_model_delivery',async()=>options.beforeModelDelivery?.(),args[2]?.signal);
-    await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
+    await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted();
+    if(!guarded)budget!.model();
     skillEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
@@ -1266,7 +1286,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         return transformed;
       }};
     }
-    const stream = await nativeStream(...args);
+    let stream: Awaited<ReturnType<typeof nativeStream>>;
+    try {stream=await nativeStream(...args);}
+    catch(error){health?.sdkResult(false);throw error;}
+    if(health){
+      void stream.result().then(message=>health.sdkResult(['stop','length','toolUse'].includes(message.stopReason)),()=>health.sdkResult(false));
+    }
     if(imageRuntime&&!compacting){
       const result=stream.result.bind(stream);let received:ReturnType<typeof result>|undefined;
       stream.result=()=>received||=(result().then(message=>{imageRuntime.response(imageBatch,message,interrupted||Boolean(args[2]?.signal?.aborted));return message;})
@@ -1547,6 +1572,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         if (last?.stopReason === 'length') outputLimited=true;
       } catch (error) { failure = classifyError(error); }
       finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
+      if((failure==='model_error'||failure==='transport')&&modelHealthBlocked)failure='provider_unavailable';
       if(failure==='model_error')failure=modelHttpError(modelHttpStatus)||failure;
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;

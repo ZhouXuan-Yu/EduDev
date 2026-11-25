@@ -24,16 +24,27 @@ const server = http.createServer(async (request, response) => {
   let encoded = '';
   for await (const part of request) encoded += part;
   const body = JSON.parse(encoded), number = ++attempts;
-  const status = mode === 'exhausted' ? 500 : 200;
+  const status = mode === 'exhausted' ? 500 : mode === 'long-rate-limit' || mode === 'sequence' && number === 1 ? 429
+    : mode === 'sequence' && number === 2 ? 503 : mode === 'auth-401' ? 401 : mode === 'auth-403' ? 403 : 200;
   report.calls.push({mode, number, status, at: performance.now(), model: body.model});
+  if (mode === 'uncertain-post') {response.destroy(); return;}
   if (status !== 200) {
-    response.writeHead(status, {'content-type': 'application/json', 'retry-after': '0'});
+    const retryAfter = mode === 'long-rate-limit' ? '90' : mode === 'sequence' ? number === 1 ? '0.02' : 'invalid' : '0';
+    report.calls.at(-1).retryAfter = retryAfter;
+    response.writeHead(status, {'content-type': 'application/json', 'retry-after': retryAfter,
+      ...(status === 401 || status === 403 ? {'x-should-retry': 'true'} : {})});
     response.end(JSON.stringify({error: {type: 'server_error', message: 'Owned loopback provider unavailable'}}));
     return;
   }
   const chunk = (delta, finish_reason = null) => 'data: ' + JSON.stringify({id: 'model-wire-fixture',
     object: 'chat.completion.chunk', created: 1, model: body.model, choices: [{index: 0, delta, finish_reason}]}) + '\n\n';
   response.writeHead(200, {'content-type': 'text/event-stream'});
+  if (mode === 'partial') {
+    response.write(chunk({role: 'assistant', content: '合成提示：先说明方向。'}));
+    await delay(320);
+    response.destroy();
+    return;
+  }
   response.end(chunk({role: 'assistant', content: '合成示例：浮力的方向竖直向上。'}) + chunk({}, 'stop') + 'data: [DONE]\n\n');
 });
 
@@ -87,6 +98,14 @@ try {
     return {turn, usage};
   }
 
+  const sequence = await send('用一句话说明浮力方向和大小。', 'sequence');
+  verifyCount('sequence', 3);
+  assert.equal(sequence.usage.modelCalls, 3);
+  assert.equal(sequence.turn.status, 'completed');
+  const wire = report.calls.filter(row => row.mode === 'sequence');
+  assert.deepEqual(wire.map(row => row.status), [429, 503, 200]);
+  assert(wire[1].at - wire[0].at >= 20);
+  report.checks.push('Short valid Retry-After and invalid-header fallback stay within the original three physical requests');
   const exhausted = await send('用一句话说明浮力方向。', 'exhausted');
   verifyCount('exhausted', 3);
   assert.equal(exhausted.usage.modelCalls, 3);
@@ -108,6 +127,33 @@ try {
   assert.equal(steady.turn.status, 'completed');
   assert(report.calls.every(row => row.model === 'deepseek-flash'));
   report.checks.push('A valid completed stream closes the circuit without any model switch');
+  for (const status of [401, 403]) {
+    const phase = 'auth-' + status;
+    const rejected = await send('测试合成连接的授权反馈。', phase);
+    verifyCount(phase, 1);
+    assert.equal(rejected.usage.modelCalls, 1);
+    assert.equal(rejected.turn.errorCode, 'authentication');
+  }
+  report.checks.push('401 and 403 are sent exactly once even when the provider advertises an SDK retry');
+  const unknown = await send('核对合成请求在连接断开后的尝试数。', 'uncertain-post');
+  verifyCount('uncertain-post', 1);
+  assert.equal(unknown.usage.modelCalls, 1);
+  assert.equal(unknown.turn.status, 'failed');
+  const partial = await send('说明浮力方向，保留实际已收到的段落。', 'partial');
+  verifyCount('partial', 1);
+  assert.equal(partial.usage.modelCalls, 1);
+  assert.equal(partial.usage.cost, null);
+  assert.equal(partial.turn.status, 'failed');
+  assert(partial.turn.items.some(item => item.text?.includes('合成提示：先说明方向。')));
+  report.checks.push('An ambiguous POST and a broken partial stream each dispatch once and retain received text');
+  const limited = await send('检查合成长限流。', 'long-rate-limit');
+  verifyCount('long-rate-limit', 1);
+  assert.equal(limited.turn.errorCode, 'rate_limited');
+  const delayed = await send('在冷却期内再次检查合成限流。', 'long-rate-blocked');
+  verifyCount('long-rate-blocked', 0);
+  assert.equal(delayed.usage?.modelCalls ?? 0, 0);
+  assert.equal(delayed.turn.errorCode, 'provider_unavailable');
+  report.checks.push('A long Retry-After causes no early send or budget charge on the next turn');
   report.success = true;
 } catch (error) {
   report.error = String(error.stack ?? error);

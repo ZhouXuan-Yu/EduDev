@@ -300,10 +300,10 @@ test('real failed and cancelled MCP probes respect backoff and ignore late succe
     assert.equal(initialize, 4);
     clock++;
 
-    const arrived = deferred(), release = deferred();
+    const arrived = deferred(), release = deferred(), lateReply = deferred();
     const controller = new AbortController();
     fixture.state.beforeReply = async request => {
-      if (request.method === 'initialize') {initialize++; arrived.resolve(); await release.promise;}
+      if (request.method === 'initialize') {initialize++; arrived.resolve(); await release.promise; lateReply.resolve();}
     };
     const awaiting = prepare(controller.signal);
     try {
@@ -320,6 +320,9 @@ test('real failed and cancelled MCP probes respect backoff and ignore late succe
       report.cancelledProbe = await runtime.healthSnapshot(id);
       assert.equal(report.cancelledProbe.phase, 'open');
     } finally {release.resolve(); await awaiting;}
+
+    await lateReply.promise;
+    assert.deepEqual(await runtime.healthSnapshot(id), report.cancelledProbe, 'the late response cannot close the circuit');
 
     fixture.state.beforeReply = request => {if (request.method === 'initialize') initialize++;};
     assert.equal(await prepare(), 1);

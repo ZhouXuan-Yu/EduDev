@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {createMcpRuntime} from '../../src/main/xiaozhi-agent/mcp-runtime';
+import {createMcpRuntime, mcpToolName} from '../../src/main/xiaozhi-agent/mcp-runtime';
 import {createControlledMcpService, type PreparedStdioBinding} from '../../src/main/xiaozhi-agent/mcp-controlled-service';
 import {createCapabilityRegistry} from '../../src/main/xiaozhi-agent/capabilities/registry';
 import {createAcquisitionState, type AcquisitionArtifact} from '../../src/main/xiaozhi-agent/capabilities/acquisition/state';
@@ -13,6 +13,7 @@ import {canonicalMcp} from '../../src/main/xiaozhi-agent/mcp-schema';
 import {filesystemScope, digest} from '../../src/main/xiaozhi-agent/permissions/resources';
 import type {createPermissionRuntimeManager} from '../../src/main/xiaozhi-agent/permissions/windows/runtime';
 import type {PermissionService} from '../../src/main/xiaozhi-agent/permissions/service';
+import {createMcpPermissionContext} from '../../src/main/xiaozhi-agent/permissions/mcp';
 import type {PermissionStore} from '../../src/main/xiaozhi-agent/permissions/store';
 import type {PermissionOwner} from '../../src/shared/xiaozhi-permissions';
 import type {Sql} from '../../src/main/xiaozhi-agent/session-state';
@@ -108,6 +109,33 @@ export async function testManagedMcpRecovery(options: {sql: Sql; workspace: stri
       await state.saveArtifact(artifact, 0);
       const resolved = await adapter.resolveVersion(owner.sessionId, requirement, providerId, version, providerHash);
       assert.equal(resolved.selectedProviders[0]?.providerId, providerId);
+    });
+    await check('Direct Pi tool preparation reconnects the same supervised Windows stdio endpoint without changing the approved selection', async () => {
+      const key = artifact.serverId!;
+      const before = (await mcp.catalog()).servers.find(row => row.id === key)!;
+      const prepare = () => mcp.tools(createMcpPermissionContext({permissions, store, owner: () => owner,
+        requirementsVersion: () => 1, stdio: view()}), {serverId: key, preparationTimeoutMs: 12000, signal});
+      fs.writeFileSync(outage, 'synthetic direct preparation outage');
+      const failed = await prepare();
+      try {assert.equal(failed.definitions.length, 0);} finally {await failed.dispose();}
+      const unavailable = (await mcp.catalog()).servers.find(row => row.id === key)!;
+      assert.equal(unavailable.status, 'failed');
+      assert.equal(unavailable.trustedSchemaHash, before.trustedSchemaHash);
+      assert.deepEqual(unavailable.tools.filter(tool => tool.selected), before.tools.filter(tool => tool.selected));
+      assert.equal(permissions.engine.activeCount(), 0);
+      fs.unlinkSync(outage);
+      const healthy = await prepare();
+      try {
+        const read = healthy.definitions.find(tool => tool.name === mcpToolName(key, 'read_text_file'))!;
+        assert(read);
+        const result = await read.execute('direct_stdio_read_after_reconnect', {path: topic}, signal, undefined, undefined as never);
+        assert.equal(result.isError, false);
+        assert(JSON.stringify(result.content).includes('MANAGED_MCP_SYNTHETIC_PHYSICS'));
+        const after = (await mcp.catalog()).servers.find(row => row.id === key)!;
+        assert.equal(after.status, 'ready');
+        assert.equal(after.trustedSchemaHash, before.trustedSchemaHash);
+      } finally {await healthy.dispose();}
+      assert.equal(permissions.engine.activeCount(), 0);
     });
     await check('Actual managed stdio timeout preserves pinned SQLite trust and releases the failed Windows Job', async () => {
       const trusted = await mcp.trustedAuthority(artifact.serverId!);

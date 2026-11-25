@@ -83,7 +83,7 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
   // The existing permission engine authorizes the real function probe. The fixture
   // lives only in the owned projection and is never written into teacher files.
   const prepared = await options.mcp.tools(permission(options, {...stdio, transformInput: stdio.healthInput}),
-    {preparationTimeoutMs: 30000, serverId: server.id});
+    {preparationTimeoutMs: 30000, serverId: server.id, signal: options.context.signal});
   const healthCallId = 'acquisition_health_' + artifact.id.slice(-16);
   const recordPending = async () => {
     const approval = (await options.store.approvals(options.context.owner.sessionId)).find(row => row.state === 'pending'
@@ -198,7 +198,7 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
       if (disposed || options.context.signal.aborted || !await options.context.current()) return null;
       if (reconnectFor && !await authorized(reconnectFor, true)) return null;
       const prepared = await options.mcp.tools(permission(options, ownerStdio().fork()),
-        {preparationTimeoutMs: 30000, serverId: artifact.serverId!});
+        {preparationTimeoutMs: 30000, serverId: artifact.serverId!, signal: options.context.signal});
       if (!disposed && prepared.definitions.some(tool => tool.name === mcpToolName(artifact.serverId!, 'read_text_file'))) return prepared;
       await prepared.dispose();
       return null;

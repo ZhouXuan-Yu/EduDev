@@ -6,7 +6,7 @@ import { canonicalMcp, validMcpTools } from './mcp-schema';
 import { McpAuthRequiredError, McpClient, McpConnectionClosedError, McpHttpError, McpSessionExpiredError, McpTimeoutError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
 import {fetchMcpHttp} from './permissions/mcp-http';
 import {classifyProviderFault, isTemporaryProviderHttpStatus, providerRetryAfterSeconds} from './provider-fault-policy';
-import {createProviderHealth, ProviderHealthBlocked, type ProviderHealthAttempt} from './provider-health';
+import {createProviderHealth, ProviderHealthBlocked, type ProviderHealth, type ProviderHealthAttempt} from './provider-health';
 import {acquireToolResource} from './tools/resource-lock';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { Sql } from './session-state';
@@ -135,13 +135,14 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   stdioTransport?: (configuration: McpStdioConfiguration, signal?: AbortSignal) => Promise<McpTransport>;
   healthNow?: () => number;
   healthRandom?: () => number;
+  health?: ProviderHealth;
 } = {}) {
   const timeoutMs = options.timeoutMs ?? 10000;
   const handles = new Set<() => Promise<void>>();
   const serverClients = new Map<string, Set<McpClient>>();
   const connections = new WeakMap<McpClient, {observation: ConnectionObservation; closing?: Promise<void>}>();
   const sanitize = options.sanitize ?? ((text: string) => text);
-  const health = createProviderHealth({now: options.healthNow, random: options.healthRandom});
+  const health = options.health ?? createProviderHealth({now: options.healthNow, random: options.healthRandom});
   function closeClient(serverId: string, client: McpClient) {
     const connection = connections.get(client)!;
     connection.closing ??= (async () => {
@@ -360,12 +361,13 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     await Promise.allSettled([...(serverClients.get(server.id) || [])].map(client => closeClient(server.id, client)));
     return catalog();
   }
-  async function tools(permission?: McpPermissionContext, admission?: {preparationTimeoutMs: number; serverId?: string}) {
+  async function tools(permission?: McpPermissionContext, admission?: {preparationTimeoutMs?: number; serverId?: string; signal?: AbortSignal}) {
     // A group of offline extensions must not exhaust Pi's own 15s preparation
     // fence. This deadline applies only to extension admission, not teacher work.
     const preparationMs = admission?.preparationTimeoutMs ?? options.preparationTimeoutMs ?? (permission?.stdioTransport ? 12000 : 5000);
     if (!Number.isSafeInteger(preparationMs) || preparationMs < 1000 || preparationMs > 60000) throw Error('invalid_input');
-    const preparation = AbortSignal.timeout(preparationMs);
+    const deadline = AbortSignal.timeout(preparationMs);
+    const preparation = admission?.signal ? AbortSignal.any([admission.signal, deadline]) : deadline;
     let stateValue: State;
     try { stateValue = await state(); } catch { stateValue = { schemaVersion: 1, revision: 0, servers: [] }; }
     const definitions: ToolDefinition[] = [];
@@ -378,6 +380,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     };
     handles.add(dispose);
     for (let server of stateValue.servers) {
+      if (preparation.aborted) break;
       if (admission?.serverId && server.id !== admission.serverId) continue;
       if ((server.status !== 'ready' && !needsRevalidation(server)) || !hasVerifiedSchema(server) || !server.selectedTools.length) continue;
       const source = permissionSourceFor(server);
@@ -394,10 +397,10 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       catch (error) {
         if (error instanceof ProviderHealthBlocked) continue;
         const {code,temporary} = preparationFault(error);
-        const cancelled = error instanceof Error && error.message === 'cancelled';
-        if (!cancelled && !['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code))
+        const cancelled = admission?.signal?.aborted || error instanceof Error && error.message === 'cancelled';
+        if (!cancelled && (!temporary || observation.started) && !['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code))
           await unavailable(server, code, temporary).catch(() => undefined);
-        attempt?.complete(observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});
+        attempt?.complete(!cancelled && observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});
         continue;
       }
       const { client, tools: remote } = connected;

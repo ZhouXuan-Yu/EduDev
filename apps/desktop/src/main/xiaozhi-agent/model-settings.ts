@@ -62,7 +62,7 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     const apiKey = saved.sealedKey ? openProviderCredential(codec,saved.sealedKey)
       : (await store.getDeepSeekRuntimeSettings('deepseek')).apiKey;
     const resolved=await modelResolution(saved,id);
-    return {provider:'deepseek' as const,apiKey,model:resolved.runtimeValue,modelObservation:resolved.observation};
+    return {provider:'deepseek' as const,apiKey,model:resolved.runtimeValue,modelObservation:resolved.observation,providerConfigRevision:saved.revision};
   }
   async function modelSnapshot(work:Sql,id?:string){
     const modelSettings=createModelSettingsState(work),modelSwitch=createModelSwitchState(work);
@@ -87,7 +87,8 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
       return {snapshot,thinking:{observation,lastRun:await state.thinkingRun(id)}};
     });
     return {provider:'deepseek' as const,model:captured.snapshot.resolved.runtimeValue,
-      modelObservation:captured.snapshot.resolved.observation,apiKey:keyFromSnapshot(captured.snapshot),thinking:captured.thinking};
+      modelObservation:captured.snapshot.resolved.observation,apiKey:keyFromSnapshot(captured.snapshot),thinking:captured.thinking,
+      providerConfigRevision:captured.snapshot.saved.revision};
   }
   async function sessionModel(id: string, includeBusy = true): Promise<XiaozhiSessionModel> {
     const detail = await store.getAiConversationSession(id);

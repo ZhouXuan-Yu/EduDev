@@ -16,7 +16,7 @@ export class ProviderHealthBlocked extends Error {
 
 export type ProviderHealthOutcome =
   | {kind: 'verified' | 'ignored'}
-  | {kind: 'dependency_failure'; retryAfterMs?: number};
+  | {kind: 'dependency_failure'; retryAfterMs?: number; retryAfterOnly?: boolean};
 
 type Entry = {
   failures: number[];
@@ -47,7 +47,7 @@ export function createProviderHealth(options: {now?: () => number; random?: () =
       let eviction: [string, Entry] | undefined;
       for (const [id, entry] of entries) {
         trim(entry, at);
-        if (entry.active || entry.failures.length || entry.phase === 'open' || entry.phase === 'half_open') continue;
+        if (entry.active || entry.failures.length || at < entry.retryAt || entry.phase === 'open' || entry.phase === 'half_open') continue;
         if (!eviction || entry.lastUsed < eviction[1].lastUsed) eviction = [id, entry];
       }
       if (!eviction) throw new ProviderHealthBlocked('capacity');
@@ -62,7 +62,7 @@ export function createProviderHealth(options: {now?: () => number; random?: () =
     const unjittered = Math.min(MAX_COOLDOWN_MS, entry.cooldown ? 2 * entry.cooldown : INITIAL_COOLDOWN_MS);
     const local = Math.min(MAX_COOLDOWN_MS, unjittered * (1 + 0.2 * Math.min(1, Math.max(0, random()))));
     entry.cooldown = unjittered;
-    entry.retryAt = at + Math.max(local, retryAfterMs);
+    entry.retryAt = Math.max(entry.retryAt, at + Math.max(local, retryAfterMs));
     entry.phase = 'open';
     entry.generation++;
   }
@@ -72,6 +72,7 @@ export function createProviderHealth(options: {now?: () => number; random?: () =
       const at = time(), entry = entryFor(key, at);
       const probe = entry.phase === 'open';
       if (entry.phase === 'retired' || entry.phase === 'half_open') throw new ProviderHealthBlocked('active');
+      if (!probe && at < entry.retryAt) throw new ProviderHealthBlocked('cooldown', entry.retryAt);
       if (probe && (!allowsVerification || at < entry.retryAt)) throw new ProviderHealthBlocked('cooldown', entry.retryAt);
       if (probe && entry.active) throw new ProviderHealthBlocked('active');
       if (probe) entry.phase = 'half_open';
@@ -94,7 +95,8 @@ export function createProviderHealth(options: {now?: () => number; random?: () =
         if (outcome.kind === 'verified') {
           entry.phase = 'closed';
           entry.failures.length = 0;
-          entry.cooldown = entry.retryAt = 0;
+          entry.cooldown = 0;
+          if (entry.retryAt <= finishedAt) entry.retryAt = 0;
           if (probe) entry.generation++;
           return;
         }
@@ -102,7 +104,8 @@ export function createProviderHealth(options: {now?: () => number; random?: () =
           trim(entry, finishedAt);
           entry.failures.push(finishedAt);
           const retryAfter = Math.max(0, outcome.retryAfterMs ?? 0);
-          if (probe || entry.failures.length >= FAILURE_LIMIT || retryAfter > 0) reopen(entry, finishedAt, retryAfter);
+          if (probe || entry.failures.length >= FAILURE_LIMIT || retryAfter > 0 && !outcome.retryAfterOnly) reopen(entry, finishedAt, retryAfter);
+          else if (retryAfter > 0) entry.retryAt = Math.max(entry.retryAt, finishedAt + retryAfter);
           return;
         }
         if (probe) entry.phase = 'open';
