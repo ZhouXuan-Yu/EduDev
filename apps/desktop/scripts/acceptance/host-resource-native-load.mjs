@@ -9,9 +9,11 @@ import {testMain} from './build-root.mjs';
 
 const require=createRequire(import.meta.url);
 const desktop=path.resolve(import.meta.dirname,'../..');
-const [fixtures,acceptance]=process.argv.slice(2);
+const [fixtures,acceptance,mode]=process.argv.slice(2);
 assert(fixtures&&path.isAbsolute(fixtures)&&acceptance&&path.isAbsolute(acceptance));
-const root=await fs.mkdtemp(path.join(await fs.realpath(acceptance),'r1-native-mixed-'));
+assert(mode===undefined||mode==='office-fences');
+const profile=mode??'native-mixed';
+const root=await fs.mkdtemp(path.join(await fs.realpath(acceptance),`r1-${profile}-`));
 const appEntry=testMain(desktop),buildMain=path.dirname(appEntry);
 const worker=path.join(buildMain,'retrieval-worker.js');
 const nativeEntry=path.join(buildMain,path.basename(root)+'.mjs');
@@ -19,7 +21,8 @@ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const identity={app:sha(await fs.readFile(appEntry)),worker:sha(await fs.readFile(worker))};
 await build({
   absWorkingDir:desktop, bundle:true, format:'esm', platform:'node', packages:'external',
-  outfile:nativeEntry, entryPoints:['scripts/acceptance/host-resource-native-load-entry.ts'],
+  outfile:nativeEntry, entryPoints:[mode==='office-fences'
+    ?'scripts/acceptance/host-resource-office-fences-entry.ts':'scripts/acceptance/host-resource-native-load-entry.ts'],
 });
 identity.harness=sha(await fs.readFile(nativeEntry));
 const output=await fs.open(path.join(root,'electron.log'),'wx');
@@ -37,7 +40,7 @@ try{
   });
   const report=JSON.parse(await fs.readFile(path.join(root,'report.json'),'utf8'));
   await fs.writeFile(path.join(root,'identity.json'),JSON.stringify(identity,null,2),{flag:'wx'});
-  assert.equal(exit,0,report.error);
+  assert.equal(exit,0,`${report.error}\nRaw evidence: ${root}`);
   assert.equal(report.success,true);
   console.log(JSON.stringify({root,identity,checks:report.checks,paidCalls:0}));
 }finally{
