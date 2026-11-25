@@ -1,10 +1,30 @@
 import unittest
 from types import SimpleNamespace
 
-from pdf_stream import matches_printed_body, printed_body_tokens
+from pdf_stream import matches_printed_body, native_is_scan_stamp, printed_body_tokens
 
 
 class PrintedBodyTests(unittest.TestCase):
+    def test_scan_stamp_requires_exclusive_envelope_geometry_and_dominant_image(self):
+        bottom = (1, -1, 142, 3)
+        top = (1, 997, 142, 1001)
+        images = [(0, 0, 700, 1000)]
+        stamp = "{#{" + "Z0+/" * 11 + "==}#}"
+
+        self.assertTrue(native_is_scan_stamp(stamp, [bottom], images, 700, 1000))
+        self.assertTrue(native_is_scan_stamp(stamp.replace("Z", "b"), [top], images, 700, 1000))
+        for text, boxes, page_images in (
+            ("教师版\n" + stamp, [bottom], images),
+            ("第 2 题：x² − 1 = 0", [bottom], images),
+            ("Qb9Dx7Ab2" * 6, [bottom], images),
+            (stamp, [bottom, top], images),
+            (stamp, [(1, 400, 142, 404)], images),
+            (stamp, [(1, -1, 142, 13)], images),
+            (stamp, [bottom], [(0, 0, 700, 450), (0, 450, 700, 900)]),
+        ):
+            with self.subTest(text=text, boxes=boxes, page_images=page_images):
+                self.assertFalse(native_is_scan_stamp(text, boxes, page_images, 700, 1000))
+
     def test_typography_and_separate_tokens(self):
         self.assertEqual(printed_body_tokens("设 𝑅1 ＝ ５Ω"), printed_body_tokens("设R1=5Ω"))
         for left, right in (("1\n2", "12"), ("1.5", "1 5"), ("R₁", "R1"), ("x²", "x2"), ("m s", "ms"), ("R-1", "R+1")):

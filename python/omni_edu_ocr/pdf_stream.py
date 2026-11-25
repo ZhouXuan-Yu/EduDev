@@ -76,6 +76,7 @@ def native_covered(native, ocr):
 
 _BODY_TOKENS = re.compile(r"[0-9]+(?:\.[0-9]+)?|[A-Za-zΑ-Ωα-ω]+|\S")
 _DIAGRAM_LABEL = re.compile(r"(?:[A-Za-zΑ-Ωα-ω][0-9₀-₉]{0,2}|[A-Za-zΑ-Ωα-ω]{2})")
+_SCAN_STAMP = re.compile(r"\{#\{[A-Za-z0-9+/]{24,128}={0,2}\}#\}")
 
 
 def printed_body_tokens(text):
@@ -96,6 +97,22 @@ def printed_body_tokens(text):
 
 def intersection_area(a, b):
     return max(0, min(a[2], b[2]) - max(a[0], b[0])) * max(0, min(a[3], b[3]) - max(a[1], b[1]))
+
+
+def native_is_scan_stamp(native, native_boxes, images, width, height):
+    # Scan exporters can leave a machine tag as the entire native text layer.
+    # Require the envelope, page-edge geometry, and a dominant raster together.
+    if len(native_boxes) != 1 or not _SCAN_STAMP.fullmatch(native):
+        return False
+    left, bottom, right, top = native_boxes[0]
+    if not all(math.isfinite(value) for value in (left, bottom, right, top)):
+        return False
+    if not 0 < right - left <= width * .25 or not 0 < top - bottom <= height * .01:
+        return False
+    if not (bottom < height and top > 0 and (top <= height * .01 or bottom >= height * .99)):
+        return False
+    page_box = (0, 0, width, height)
+    return any(intersection_area(image, page_box) >= width * height * .80 for image in images)
 
 
 def matches_printed_body(native, native_boxes, images, bitmap, page, result):
@@ -179,6 +196,7 @@ def read_page(page, create_engine, engine_holder):
         elif item.type == pdfium.raw.FPDF_PAGEOBJ_FORM:
             hidden = True
     image_area = min(1.0, sum(max(0, min(width, b[2]) - max(0, b[0])) * max(0, min(height, b[3]) - max(0, b[1])) for b in images) / (width * height))
+    native_body = "" if count == 1 and native_is_scan_stamp(native, native_boxes, rectangular_images, width, height) else native
     suspicious = hidden or "\ufffd" in native or len(native_boxes) == 0 and bool(native)
     use_ocr = bool(images) or suspicious or len(native.strip()) < 20 and objects > 0
     ocr, verified_native = "", False
@@ -198,7 +216,7 @@ def read_page(page, create_engine, engine_holder):
             if len(result.txts or []) > 4000:
                 raise ValueError("too_large")
             ocr = bounded_text("\n".join(result.txts or []))
-            conflict = bool(native and ocr and not native_covered(native, ocr))
+            conflict = bool(native_body and ocr and not native_covered(native_body, ocr))
             if conflict and not suspicious and count <= 2000 and len(images) == len(rectangular_images) and 0 < image_area <= 0.20:
                 verified_native = matches_printed_body(native, native_boxes, rectangular_images, bitmap, page, result)
         method = "ocr"
@@ -209,7 +227,7 @@ def read_page(page, create_engine, engine_holder):
         elif conflict:
             state, error = "needs_review", "text_conflict"
     # One selected transcription, never concatenate overlapping native/OCR versions.
-    selected = ocr if method == "ocr" and ocr else native
+    selected = ocr if method == "ocr" and ocr else native_body
     return {"status": state, "error": error, "method": method, "text": selected, "nativeText": native, "ocrText": ocr,
             "width": pixel_width, "height": pixel_height, "imageArea": image_area, "nativeBoxes": native_boxes}
 

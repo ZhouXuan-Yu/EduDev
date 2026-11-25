@@ -9,7 +9,7 @@ type Value=string|number|null;
 type Row=Record<string,unknown>;
 type Payload={schemaVersion:typeof MATERIAL_TASK_SCHEMA;resourceId:string;version:string;priority:0|100;attempt:number;owner:null|{pid:number;nonce:string}};
 export type MaterialParseLease={taskId:string;payload:string};
-type Host={publications?:BackupPublicationBarrier;structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2};
+type Host={publications?:BackupPublicationBarrier;structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;hasUnfinishedPdf?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2};
 type ActiveParse={id:string;priority:number;controller:AbortController;reason?:'preempt'|'shutdown';work?:Promise<void>};
 const time=()=>new Date().toISOString();
 const hash=(id:string)=>createHash('sha256').update(id).digest('hex');
@@ -77,7 +77,12 @@ export class MaterialParseQueue {
    }
    return;
   }
-  if(existing&&row.status==='succeeded'&&await this.isReadable(resource)&&!await this.host.structureRequired?.(resourceId)&&!(retry&&/\.pdf$/i.test(resource.originalFileName)&&resource.parseEngine!==PDF_FILE_ENGINE))return;
+  if(existing&&row.status==='succeeded'&&await this.isReadable(resource)&&!await this.host.structureRequired?.(resourceId)){
+   // Readable text can coexist with pending pages after a teacher requests a retry.
+   const pdfNeedsRetry=retry&&/\.pdf$/i.test(resource.originalFileName)&&
+    (resource.parseEngine!==PDF_FILE_ENGINE||await this.host.hasUnfinishedPdf?.(resourceId));
+   if(!pdfNeedsRetry)return;
+  }
   if(existing&&['failed','cancelled'].includes(String(row.status))&&!retry)return;
   const payload:Payload=existing?{...existing,priority:Math.max(priority,existing.priority) as 0|100,owner:null}:{schemaVersion:MATERIAL_TASK_SCHEMA,resourceId,version,priority,attempt:0,owner:null};
   if(!await this.cas(row,'pending',payload))throw new Error('material_task_conflict');

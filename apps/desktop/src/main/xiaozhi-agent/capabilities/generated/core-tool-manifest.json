@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "16126c19001101b601ff9df37f670cc5fad4520f204819aab0fcbd881b2771a9",
+  "sourceHash": "8f9f6fc6ee17a19b18eb4b7b33f82b4ba45140459dcaa5deb765e6bcefb760c4",
   "sources": [
     {
       "file": "package-lock.json",
@@ -876,7 +876,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "a75c30f0277e9e54b7279993d738fd410b3eb0be75a2478c617b54b4326a1dd8"
+      "sha256": "d75c0b370f3c242c46c87b50db3676b4b13b2fd1b2a204d88db102302c7f43cb"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1400,7 +1400,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/ocr-runtime-manifest.json",
-      "sha256": "f6dab846a29798fd15cda473afac9befee86585ce29f621750ec22db0280b1d6"
+      "sha256": "e4297960d3b873de6b5c650b4fcf9971581d3e67bd4cf984c85d05e67f3113e4"
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-coordinator.ts",

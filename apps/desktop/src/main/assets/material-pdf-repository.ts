@@ -29,6 +29,9 @@ export class MaterialPdfRepository{
   const failures=(await this.host.all("SELECT page,error,attempts FROM material_pdf_pages WHERE generation=? AND status IN ('failed','needs_review') ORDER BY page LIMIT 10",[String(job.generation)])).map(r=>({page:Number(r.page),error:String(r.error),attempts:Number(r.attempts)}));
   return{generation:String(job.generation),total:Number(job.total),complete,blank,review,failed,pending:Math.max(0,Number(job.total)-complete-blank-review-failed),state:String(job.state),bytes:Number(job.bytes),failures};
  }
+ async hasUnfinished(id:string){
+  return (await this.host.all("SELECT 1 FROM material_pdf_jobs WHERE resource_id=? AND state<>'complete'",[id])).length>0;
+ }
  async retryFailures(id:string,version:string){return this.host.withWriter(async target=>{
   const resource=await target.host.resource(id),job=(await target.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=?',[id]))[0];if(resource.contentHash!==version||!job||job.version!==version)throw new Error('source_changed');
   if(Number(job.owner_pid)>0&&alive(Number(job.owner_pid)))throw new Error('busy');

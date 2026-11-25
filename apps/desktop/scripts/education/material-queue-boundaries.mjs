@@ -3,6 +3,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {randomUUID,createHash} from 'node:crypto';
 import {MaterialParseQueue} from '../../src/main/assets/material-parse-queue.ts';
 import {MATERIAL_TASK_SCHEMA as schema,validMaterialTaskAction} from '../../src/shared/material-parse-task.ts';
+import {PDF_FILE_ENGINE} from '../../src/shared/material-pdf-file.ts';
 const hash=text=>createHash('sha256').update(text).digest('hex');
 const wait=async fn=>{const deadline=Date.now()+5000;while(Date.now()<deadline){if(await fn())return;await new Promise(r=>setTimeout(r,10));}throw new Error('Queue did not settle');};
 export function fixture(slots=()=>1){
@@ -23,6 +24,28 @@ export function fixture(slots=()=>1){
  return{db,host,queue,add,row,calls,gates,failures,action,commits:()=>commits,close:async()=>{await queue.close();db.close();}};
 }
 export async function materialQueueBoundaries(check){
+ await check('An explicit retry requeues a readable PDF with unfinished pages on the same task',async()=>{
+  const f=fixture();
+  try{
+   const item=f.add(),resource=f.host.resource;
+   let unfinished=true;
+   f.host.resource=async id=>({...await resource(id),originalFileName:'scanned.pdf',parseEngine:PDF_FILE_ENGINE});
+   f.host.hasUnfinishedPdf=async()=>unfinished;
+   await f.queue.enqueue(item.id,item.version);
+   await f.queue.start();
+   await wait(()=>f.row(item.id).status==='succeeded');
+   await f.action(item,'prioritize');
+   assert.equal(f.row(item.id).retry_count,1);
+   await f.action(item,'retry');
+   await wait(()=>f.row(item.id).status==='succeeded'&&f.row(item.id).retry_count===2);
+   assert.equal(f.row(item.id).id,item.task);
+   assert.deepEqual(f.calls,[item.id,item.id]);
+   unfinished=false;
+   await f.action(item,'retry');
+   assert.equal(f.row(item.id).status,'succeeded');
+   assert.equal(f.row(item.id).retry_count,2);
+  }finally{await f.close();}
+ });
  await check('A priority recheck SQL failure cannot strand an untracked running lease at shutdown',async()=>{const f=fixture(()=>1);try{const a=f.add();f.gates.set(a.id,{});await f.queue.enqueue(a.id,a.version);const all=f.host.all;let injected=false;f.host.all=async(sql,values=[])=>{if(!injected&&values[1]==='pending'&&f.row(a.id).status==='running'){injected=true;throw Error('injected_sql_failure');}return all(sql,values);};await f.queue.start();await wait(()=>injected&&f.calls.length===1);await f.queue.close();assert.equal(f.row(a.id).status,'pending');assert.equal((await f.queue.snapshot()).running,0);assert.equal(f.commits(),0);}finally{await f.close();}});
  await check('Two blocked books run together while a third file waits for a real slot',async()=>{const f=fixture(()=>2);try{const a=f.add(),b=f.add(),c=f.add();for(const r of [a,b,c]){f.gates.set(r.id,{});await f.queue.enqueue(r.id,r.version);}await f.queue.start();await wait(()=>f.calls.length===2);assert.deepEqual(f.calls,[a.id,b.id]);assert.equal((await f.queue.snapshot()).running,2);assert.equal(f.row(c.id).status,'pending');f.gates.get(b.id).resolve();await wait(()=>f.calls.length===3);assert.equal(f.row(a.id).status,'running');assert.equal(f.row(b.id).status,'succeeded');assert.equal(f.row(c.id).status,'running');await f.queue.close();assert.equal(f.row(a.id).status,'pending');assert.equal(f.row(c.id).status,'pending');assert.equal((await f.queue.snapshot()).running,0);assert.equal(f.commits(),1);f.gates.clear();await f.queue.start();await wait(()=>f.commits()===3);assert.equal(f.calls.filter(id=>id===b.id).length,1);}finally{await f.close();}});
  await check('Foreground demand fills an unused slot without restarting a background book',async()=>{const f=fixture(()=>2);try{const a=f.add();f.gates.set(a.id,{});await f.queue.enqueue(a.id,a.version);await f.queue.start();await wait(()=>f.calls.length===1);const b=f.add();await f.queue.enqueue(b.id,b.version,100);await wait(()=>f.row(b.id).status==='succeeded');assert.deepEqual(f.calls,[a.id,b.id]);assert.equal(JSON.parse(f.row(a.id).payload_json).attempt,1);assert.equal(f.row(a.id).status,'running');f.gates.get(a.id).resolve();await wait(()=>f.commits()===2);}finally{await f.close();}});
