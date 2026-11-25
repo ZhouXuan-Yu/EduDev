@@ -171,3 +171,29 @@ test('a cold legacy failure without trust requires the original selection and is
     assert.equal(fixture.state.calls, 0);
   });
 });
+
+test('a transport loss before tool dispatch degrades a live session without replaying an already dispatched call', async () => {
+  await scenario('live-metadata-transport-loss', async ({runtime, fixture, read, report, schemaHash}) => {
+    const first = await runtime.tools();
+    assert.equal(first.definitions.length, 1);
+    fixture.state.beforeReply = request => request.method === 'tools/list' ? 'drop' : undefined;
+    const failed = await first.definitions[0].execute('before_dispatch', {topic: 'synthetic'});
+    assert.equal(failed.isError, true);
+    assert.equal(fixture.state.calls, 0);
+    report.offline = read();
+    assert.equal(report.offline.servers[0].status, 'failed', 'a known metadata loss leaves the live session incorrectly ready');
+    assert.equal(report.offline.servers[0].trustedSchemaHash, schemaHash);
+    await first.dispose();
+
+    fixture.state.beforeReply = undefined;
+    const second = await runtime.tools();
+    assert.equal(second.definitions.length, 1);
+    report.recovered = read();
+    assert.equal(report.recovered.servers[0].status, 'ready');
+    fixture.state.drop = true;
+    const ambiguous = await second.definitions[0].execute('after_dispatch', {topic: 'synthetic'});
+    assert.equal(ambiguous.isError, true);
+    assert.equal(fixture.state.calls, 1, 'the physical call may have produced an effect and must not be replayed');
+    await second.dispose();
+  });
+});
