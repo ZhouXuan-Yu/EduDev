@@ -52,7 +52,14 @@ async function launch(){
       const fs = process.getBuiltinModule('node:fs/promises');
       const rename = fs.rename;
       fs.rename = async (from, to) => {
-        try { return await rename(from, to); }
+        try {
+          if (state.failNextCatalogueRename && String(to).endsWith('deepseek-capabilities.v1.json')) {
+            state.failNextCatalogueRename = false;
+            state.directoryDiagnostics.push({ kind: 'injected_rename_error', code: 'EPERM' });
+            throw Object.assign(new Error('controlled transient Windows sharing failure'), { code: 'EPERM' });
+          }
+          return await rename(from, to);
+        }
         catch (error) {
           if (String(to).endsWith('deepseek-capabilities.v1.json')) {
             state.directoryDiagnostics.push({ kind: 'rename_error', code: error.code });
@@ -364,11 +371,21 @@ try{
   const wouldRace=global('default_model',currentModel.version,b);
   await until(async()=> (await hostState()).pausedCatalogue===1,'official model preflight');
   const concurrent=value(await global('default_model',currentModel.version,null));
-  await app.evaluate(()=>{globalThis.r3Fixture.pauseCatalogue=false;globalThis.r3Fixture.releaseCatalogue();});
+  await app.evaluate(()=>{
+    const fixture=globalThis.r3Fixture;
+    fixture.pauseCatalogue=false;
+    if(process.env.OMNI_EDU_R4_RENAME_FAULT==='1') fixture.failNextCatalogueRename=true;
+    fixture.releaseCatalogue();
+  });
   const race=await wouldRace;
   assert.deepEqual(race,{ok:false,error:'conflict'});
   assert.equal((await scopeView('default_model')).value,null);
   saved('AC-10',{removedCurrent:invalidCurrent,unknown:'model_unavailable',concurrentClear:concurrent,latePreflight:race});
+  if (process.env.OMNI_EDU_R4_RENAME_FAULT === '1') {
+    const diagnostics = await app.evaluate(() => globalThis.r3Fixture.directoryDiagnostics);
+    assert.equal(diagnostics.filter(item => item.kind === 'injected_rename_error').length, 1);
+    saved('AC-R4-11-catalogue-replace', { diagnostics, staleCommitRejected: race.error });
+  }
   saved('AC-22',{removed,unchangedRevision:currentModel.version,undoStillAvailable:true});
 
   stage='AC-07 model commit and refresh downgrade';

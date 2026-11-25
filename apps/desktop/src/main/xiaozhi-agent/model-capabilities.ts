@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import {createDeepSeekFetch} from './deepseek-fetch';
 
@@ -47,6 +48,22 @@ export async function readDeepSeekCatalogue(root: string): Promise<DeepSeekCatal
 export async function readDeepSeekCapabilities(root: string, id: string): Promise<XiaozhiModelCapabilities | undefined> {
   return (await readDeepSeekCatalogue(root))?.models.find(item => item.id === id);
 }
+
+async function publishCatalogue(temporary: string, destination: string, signal?: AbortSignal) {
+  for (let attempt = 0; ; attempt++) {
+    signal?.throwIfAborted();
+    try {
+      await fs.rename(temporary, destination);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      // A concurrent Windows reader can briefly hold the destination open.
+      if (process.platform !== 'win32' || attempt === 3 || (code !== 'EPERM' && code !== 'EBUSY')) throw error;
+      await delay(25 * (attempt + 1), undefined, { signal });
+    }
+  }
+}
+
 export async function fetchDeepSeekCatalogue(root: string, apiKey: string, signal?: AbortSignal): Promise<DeepSeekCatalogue> {
   let temporary: string | undefined;
   try {
@@ -71,8 +88,8 @@ export async function fetchDeepSeekCatalogue(root: string, apiKey: string, signa
     await fs.mkdir(root, { recursive: true });
     temporary = path.join(root, `deepseek-capabilities.${randomUUID()}.tmp`);
     await fs.writeFile(temporary, JSON.stringify(catalogue), { flag: 'wx' });
-    signal?.throwIfAborted();
-    await fs.rename(temporary, path.join(root, 'deepseek-capabilities.v1.json')); temporary = undefined;
+    await publishCatalogue(temporary, path.join(root, 'deepseek-capabilities.v1.json'), signal);
+    temporary = undefined;
     return catalogue;
   } catch (error) {
     if (signal?.aborted) throw new Error('cancelled');

@@ -225,7 +225,9 @@ async function exerciseVisibleJourney(app, primary, primaryNative) {
   });
   const [first, second] = ids;
   const setSession = async id => {
-    await primary.getByTestId('ai-conversation-session-' + id).click();
+    const toggle = primary.getByTestId('workbench-sidebar-toggle');
+    if (await toggle.getAttribute('aria-label') === '展开侧栏') await toggle.click();
+    await primary.getByTestId('workbench-session-' + id).click();
     await primary.locator('.office-composer-container[data-session-id="' + id + '"]').waitFor();
   };
   const state = id => withSql(data, false, db => {
@@ -458,10 +460,11 @@ async function runChecks(app, primary) {
   report.checks.push({ id: 'AC-R4-02', isolatedPreload: true, popupsDenied: true, navigationRetained: true,
     closeCleanedUp: true, sessionWasScoped: true, archivedDenied: true, subframeHasNoBridge: true, otherWindowDenied: true });
   if (visibleJourney) {
-    const gone = scoped.waitForEvent('close');
+    const crashedId = await scopedNative.evaluate(win => win.id);
     await scopedNative.evaluate(win => win.webContents.forcefullyCrashRenderer());
-    await gone;
-    assert.equal(app.windows().length, 1);
+    await until(() => app.evaluate(({ BrowserWindow }, id) => BrowserWindow.fromId(id) === null, crashedId),
+      'the crashed auxiliary renderer and its window are reclaimed');
+    await until(() => app.windows().length === 1, 'Playwright sees the remaining primary window');
     report.checks.find(check => check.id === 'AC-R4-02').rendererLossCleanedUp = true;
     await exerciseVisibleJourney(app, primary, primaryNative);
   }
