@@ -115,7 +115,9 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
       accept(updated);
       const saved=result.value.outcome==='committed'?'已保存。更改从下一次适用运行生效。':'设置没有变化。';
       setNotice(saved);
-      const fresh=await window.omniEdu?.getXiaozhiSettings({refresh:result.value.outcome==='committed'&&(view.configured||hadCredential)});
+      // A newly supplied credential already required a successful catalogue fetch before commit.
+      const refreshCatalogue=result.value.outcome==='committed'&&view.configured&&!hadCredential;
+      const fresh=await window.omniEdu?.getXiaozhiSettings({refresh:refreshCatalogue});
       if(!live.current)return;
       if(fresh?.ok){
         accept(fresh.value);onSaved?.(fresh.value);
