@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 17/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 19/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -27,9 +27,9 @@
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
 | AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
 | AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
-| AC-24 | NOT_RUN | 正式桌面冷启、原审批与显式继续。 |
-| AC-25 | NOT_RUN | 固定修复 recipe 的实际执行、读回与幂等性。 |
-| AC-26 | NOT_RUN | 危险修复拒绝、保护原数据库与安全凭证入口。 |
+| AC-24 | NOT_RUN | 实测原任务显式继续及确定未提交的 DOCX 冷读对账。带原待审、撤权和旧 Provider 快照的同场景仍待验证。 |
+| AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
+| AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
 | AC-27 | NOT_RUN | 原 Goal 健康等待与进展证据、空转和停滞。 |
 | AC-28 | NOT_RUN | Goal 预算、停止及教师最终验收约束。 |
 | AC-29 | NOT_RUN | 正式界面的健康、停止、回执未知和继续入口。 |
@@ -196,3 +196,11 @@
 
 - 当前 Node 24 需通过 `node --experimental-transform-types scripts/xiaozhi-agent/phase6-startup-recovery-smoke.mjs` 运行原 TypeScript 依赖，实际 SQLite、Task 和 Journal 冷启 2/2。原 strip-only 错误、修正命令和读回分别见 `wp06-cold-current-contract.log`、`wp06-cold-current-contract-transform.log`、`xiaozhi-phase6-startup-recovery-hhJRGv/report.json`。
 - `node scripts/xiaozhi-agent/phase6-recovery-host-parent.mjs` 使用真实 Electron Host 及受控终端，H01–H04 共 4/4。冷启原任务、显式继续、缺失或损坏 JSONL 的受控重建，以及 native binding 失败回滚和再次继续通过。见 `xiaozhi-phase6-recovery-host-Ps7VIq/report.json`。此基线未覆盖同时存在原待审、撤权、未知 Effect 和旧快照的前端场景。
+- `file-stage-recovery-electron.mjs --build <实际构建>` 在实际 DOCX 专属临时文件写入后、原子发布前终止隔离 Electron 进程。冷启零模型请求，原 HTML 摘要和修改时间不变，前端显示待核对，点核对只清理记录的临时文件。第二次重新启动状态一致，4/4。见 `xiaozhi-stage-ui-yXh0ko/report.json`。
+
+## WP-06 固定修复与危险请求拒绝
+
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs` 原生实测 5/5。合成旧元数据触发内置源码配方，实际编译固定 helper、以 Windows AppContainer 运行健康命令并核实摘要，之后才发布活动指针。再次准备 `changed=false` 且数据库仅有一次实际构建意图。错源拒绝且原活动指针字节一致。见 `wp06-fixed-native-runtime-report.json`，原报告 SHA-256 为 `cfc00f84f83d2e98fcbcb97ded1ec8511542fcbef16c1762b35812c56654c9d1`。
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` 15/15。真实演练目录与 SQLite 验证写入失败无成果、配置修复后重复不写、hash 变化拒绝、未知字段保留、撤权后实际写入数为 0，以及分别受控的所属网络与出站授权。见 `xiaozhi-permission-phase3-store-fm6TSd/report.json`。
+- 在主进程 `9b018a32ac40ef0898078b0f629ea7dae42a9c86c815920e9895ba8bbb13d6a6` 的正式桌面，预加载拒绝未知下载、数据库自动修复和关闭权限。缺凭据时显示原安全入口。使用隔离合成模型响应，实际 Pi 对 `environment_repair(recipe=disable_permissions)` 返回失败回执，无 Effect 写入，原资料和配置字节不变。另一个真实桌面用损坏 SQLite 冷启以退出码 1 停止，原始 DB SHA-256 `5d1fc514904bc265b8fb840f2b21d200b3405bbb023db96af04b0117b7d44017` 不变，弹窗指向备份和诊断。见 `provider-environment-refusal-LLBMS8/report.json`，3/3。
+- 运行证据统一在指定验收根中。固定修复沿用权限引擎、已有 recipe 和原数据路径。本切片只增加真实验收入口，无生产行为变更和实际付费调用。

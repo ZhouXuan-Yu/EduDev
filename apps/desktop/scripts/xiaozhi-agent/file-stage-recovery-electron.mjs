@@ -7,24 +7,30 @@ import {execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 const desktop=path.resolve(import.meta.dirname,'../..'),baseline=process.argv.includes('--baseline');
+const buildArg=process.argv.indexOf('--build');
+const build=buildArg<0?path.join(desktop,'out'):process.argv[buildArg+1];
+assert(path.isAbsolute(build??''),'Pass an absolute test build');
+const main=fs.realpathSync(path.join(build,'main/index.js'));
 const readRoot=process.argv.includes('--read')?path.resolve(process.argv[process.argv.indexOf('--read')+1]):undefined;
 if(readRoot){assert.equal(path.dirname(readRoot).toLowerCase(),os.tmpdir().toLowerCase());assert(path.basename(readRoot).startsWith('xiaozhi-stage-ui-'));}
 const root=readRoot||fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-stage-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile'),marker=path.join(root,'cut.json');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const query=(sql)=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all();}finally{db.close();}};
 const until=async(action,ms=60000)=>{const end=Date.now()+ms;while(Date.now()<end){const v=await action();if(v)return v;await new Promise(r=>setTimeout(r,80));}throw Error('Stage recovery condition timed out');};
-const report={ok:false,baseline,checks:[],boundary:'Original Pi/UI/local synthetic SSE; owned main force termination while installing actual DOCX. No paid model, teacher data, power loss or full AT acceptance.'};
+const report={ok:false,baseline,main,mainHash:sha(fs.readFileSync(main)),checks:[],boundary:'Original Pi/UI/local synthetic SSE; owned main force termination while installing actual DOCX. No paid model, teacher data, power loss or full AT acceptance.'};
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};let app,page,session;
 async function launch(){
- const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};
- for(const k of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[k];
- app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+ const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>
+  !/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
+ Object.assign(env,{OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
+  OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'});
+ app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
  await app.evaluate(({net},input)=>{
   const state=globalThis.stageTest={requests:0,blocked:[]};
   net.fetch=async(url,init)=>{
-   url=typeof url==='string'?url:url.url;
-   if(url.includes('/models'))return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text']}]}),{headers:{'content-type':'application/json'}});
-   if(!url.includes('/chat/completions')){state.blocked.push(url);throw Error('External network forbidden');}
+   const endpoint=new URL(typeof url==='string'?url:url instanceof URL?url.href:url.url);
+   if(endpoint.origin==='https://api.deepseek.com'&&endpoint.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text']}]}),{headers:{'content-type':'application/json'}});
+   if(endpoint.origin!=='https://api.deepseek.com'||endpoint.pathname!=='/v1/chat/completions'){state.blocked.push(endpoint.origin);throw Error('External network forbidden');}
    const body=JSON.parse(init.body),i=state.requests++,planned=body.tools?.some(t=>t.function.name==='update_task_plan');let call;
    if(i===0&&planned){const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n'),task=JSON.parse(system.split('\n').findLast(l=>l.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'))),requirementsVersion=task.requirementsVersion;call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion,expectedRevision:task.revision,reason:'保存两份教学文件',steps:[{id:'deliver',text:'保存教学文件',dependsOn:[],reported:'pending',kind:'saved_bundle',target:'current'},{id:'review',text:'教师核对内容',dependsOn:['deliver'],reported:'pending',kind:'human'}]})};}
    else if(i===(planned?1:0))call={name:'office_deliver_files',arguments:JSON.stringify({files:[{fileId:'html',kind:'text',path:'保留演示.html',content:'<!doctype html><html lang="zh-CN"><title>浮力</title><body><h1>排液体积与浮力</h1></body></html>'},{fileId:'doc',kind:'office',path:'未完成讲解.docx',format:'docx',sources:[],draft:{schemaVersion:'xiaozhi.office-draft.v1',title:'浮力讲解',sections:[{heading:'探究问题',paragraphs:['排液体积改变时浮力怎样变化？']}]}}],...(planned?{taskStepId:'deliver'}:{})})};
