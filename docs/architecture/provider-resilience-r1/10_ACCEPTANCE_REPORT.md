@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 13/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 14/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -21,7 +21,7 @@
 | AC-15 | PASS · 已实现 | Windows 生产文件经过两次明确拒绝，存入两份权威的未派发证明，重启并重新授权后各保存一次。未知写入、真实 HTTP 丢回执与真实终端未发布均受保护。已有文件和已匹配网络回执通过独立读回保持原物理次数。 |
 | AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
 | AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
-| AC-18 | NOT_RUN | 正式 Electron 已证实单条 HTTP 连接挂起时，独立 MCP 完成握手，另一会话完成题库检索与保存，原传输实际关闭后迟到响应未生效。真实 Windows stdio 异常退出与并发路径仍待验。 |
+| AC-18 | PASS · 已实现 | 正式 Electron 实测 HTTP 连接挂起与真实 Windows Job 异常退出及超时。故障期间另一会话查题、保存和独立 HTTP MCP 调用成功。真实迟到 stdout 未进入新请求。仅在原 PID、helper 与隔离目录清理后结算资源和回执。 |
 | AC-19 | NOT_RUN | 真实 OCR/文档进程退出、旧回执拦截及页级接续。 |
 | AC-20 | NOT_RUN | 真实向量/embedding 退出、索引游标、代际和替代质量。 |
 | AC-21 | NOT_RUN | 实际 PDF 取消、迟到回调、资源归还和前台并行。 |
@@ -145,3 +145,10 @@
 - 同一 Run 最多并发准备四个连接，维持总准备期限和每服务的权限、信任与健康域。目录更新仍使用版本检查，按原目录顺序暴露已核验工具。关闭 Run/宿主时取消准备并等待对应传输清理。`node scripts/xiaozhi-agent/provider-mcp-preparation-isolation.mjs` 通过 3/3，见 `provider-mcp-preparation-47pieG/report.json`。覆盖另一连接实际调用、超时后旧响应与主动关闭。
 - 正式构建 `test-results/provider-r1-mcp-preparation` 的主进程 SHA-256 为 `b474e3f9e0025926caa7fce8b1110bcfdc5d3cea0c9196db2ffa940c831566cc`。运行 `node scripts/xiaozhi-agent/provider-mcp-health-ipc.mjs <绝对构建目录> --preparation-isolation`，正式 Electron 通过 2/2。`mcp-health-desktop-wW6veK/report.json` 显示旧传输挂起后 157.3 毫秒另一服务回送 Schema，4.872 秒另一会话通过 Pi 搜索实际题库，4.879 秒保存另一道合成题并经 SQLite 验证，9.957 秒后原传输真正关闭。原服务故障后迟到响应未改变其目录记录。该测试控制单条连接挂起，服务允许另一条连接正常握手。
 - 对同一构建正常运行 IPC 熔断回归 3/3，见 `mcp-health-desktop-IxMUnY/report.json`。Windows direct/managed MCP 工作者回归 15/15，生产宿主及 Effect 回归 6/6，渲染组件 261/261。日志包括 `wp05-preparation-stdio-regression.log`、`wp05-preparation-effect-regression.log`、`wp05-preparation-renderer.log` 和 `wp05-preparation-build.log`。锁文件无变更，审计见 `wp05-preparation-npm-audit.json`。真实付费调用 0。AC-18 的异常进程退出与独立会话同一时间线仍待补。
+
+## WP-05 第二轮 Windows MCP 异常退出与真实旧输出
+
+- 基线 `10f07c2`，复现提交 `d87cecf`。测试夹具只写独占 SQLite、AppContainer 投影和合成素材。使用真实 Windows helper 与已核验的测试包授权，同一正式 Electron 主进程走真实 typed Preload、Pi 调用及题库保存。最初尝试的 PowerShell 语法及临时文件观察分别保留在 `wp05-native-seed.log`、`wp05-native-stdio-initial.log`。随后改从实际 helper 帧观察 PID、退出及响应。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-mcp-stdio-desktop.mjs <绝对构建目录>`。基线完成两个故障隔离断言后，原子进程退出码 23，SQLite 的原权限 lease 却写为 `execution_completed`。见 `wp05-native-stdio-permission-red.log`、`provider-mcp-stdio-desktop-MJNLtV/desktop-report.json`。修复后 Windows Job 回执保留原始退出码，非零退出按失败结算，已有投影提交分支只在干净结束后可达。
+- 正式构建 `test-results/provider-r1-mcp-native-exit`，主进程 SHA-256 为 `8ce5ce68ebf14695de0d59c8d0cbb49af6a3ccbaafd08b80e3631ce09c225d79`。专项 3/3，见 `wp05-native-stdio-final.log`、`provider-mcp-stdio-desktop-DwXfEw/desktop-report.json`。一次完整时间线中，原进程开始故障调用后 2.084 秒另一会话完成本地查题与保存、3.521 秒独立 HTTP 工具实际调用一次、8.584 秒原进程与 helper 退出并清除投影。第二个原进程超时后真实发出旧 stdout 并以 31 退出，原回执失败，后续新 Run 只返回新连接的回执。保留同一已验证信任。
+- 同一构建的 HTTP 隔离重跑 2/2，见 `mcp-health-desktop-LzZLz7/report.json`。实际宿主与 Effect 回归 6/6，见 `mcp-effect-sim676/REPORT.json`。正式构建通过，Windows MCP 生命周期 15/15，渲染组件 261/261。见 `wp05-native-stdio-build.log`、`wp05-native-stdio-lifecycle.log`、`wp05-native-stdio-renderer.log`。已保留锁文件审计 `wp05-native-stdio-audit.json`，真实付费请求为 0。各执行器十轮资源回收仍由 AC-22 真实组合验证。

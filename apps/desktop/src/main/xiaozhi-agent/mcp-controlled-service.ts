@@ -182,7 +182,9 @@ export function createControlledMcpService(options: {
                     cpuRate: recipe.limits.cpuRate, userTimeMs: recipe.limits.userTimeMs, environment}},
                 receipt: async result => {
                   cleanupVerified = result.cleanup.jobActiveProcesses === 0 && result.cleanup.profileRemoved && result.cleanup.remainingOwnedAces === 0;
-                  terminalState = cleanupVerified ? result.state : 'failed';
+                  // The helper's completed state confirms that the Job ended. Only
+                  // an exit code of zero can authorize the projection commit.
+                  terminalState = !cleanupVerified || result.state === 'completed' && result.exitCode !== 0 ? 'failed' : result.state;
                   await options.store.audit(frozenOwner.sessionId, 'mcp_service_terminal', selected.executionId,
                     {owner: frozenOwner, ...(context.acquisitionCall ? {acquisitionCall: context.acquisitionCall} : {}), serverId: configuration.source.serverId, artifactId: recipe.artifactId, result});
                 },
