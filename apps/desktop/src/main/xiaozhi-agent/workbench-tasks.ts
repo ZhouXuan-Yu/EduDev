@@ -1,10 +1,11 @@
-import type {WorkbenchApprovalRow, WorkbenchTaskRow} from '../../shared/xiaozhi-workbench';
+import type {WorkbenchTaskRow} from '../../shared/xiaozhi-workbench';
+import type {TaskApprovalIdentity} from './workbench-approvals';
 import {taskHasRemainingSteps, taskStepState, type TaskView} from '../../shared/xiaozhi-task';
 import {createTaskState} from './tasks/task-state';
 import {createEffectState} from './effects/state';
 import {workbenchFailure, workbenchRows, workbenchText, type WorkbenchRead} from './workbench-state';
 
-export async function readWorkbenchTasks(read: WorkbenchRead, approvals: WorkbenchApprovalRow[],
+export async function readWorkbenchTasks(read: WorkbenchRead, approvals: TaskApprovalIdentity[],
   selected?: Record<string,unknown>[]): Promise<WorkbenchTaskRow[]> {
   const tasks = createTaskState(read.sql, {sanitize: async text => text});
   const effects = createEffectState(read.sql);

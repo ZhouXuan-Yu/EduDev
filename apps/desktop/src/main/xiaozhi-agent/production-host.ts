@@ -256,6 +256,9 @@ import { getPiProtectedContext } from './compaction-context';
 import type { XiaozhiCompactInput } from '../../shared/xiaozhi-agent';
 import { readDeepSeekCapabilities, resolveDeepSeekCapabilities,fetchDeepSeekCatalogue } from './model-capabilities';
 import { createModelSettings, type SettingsKeyCodec } from './model-settings';
+import {resolveAgentThinking} from './agent-config-resolver';
+import {savePreparedAgentConfig} from './prepared-agent-config';
+import type {PreparedAgentConfig} from '../../shared/xiaozhi-resolved-config';
 import type { XiaozhiSettingsInput, XiaozhiSessionModelInput, XiaozhiCredentialInput } from '../../shared/xiaozhi-settings';
 import { createQueueMutationHandler } from './queue-mutations';
 import { createPiMemoryScope } from './memory-scope';
@@ -1011,7 +1014,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     try {await work;}finally{recoveringModels.delete(id);}
   }
   async function sessionConfiguration(id:string,settings:{apiKey:string;model:string},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
-    budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions> {
+    budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions & {thinkingBaseline:PreparedAgentConfig['thinking']}> {
     await skillsReady;
     const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
     await skillGovernance.activatePending(skillOwner);
@@ -1029,7 +1032,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const teaching=owner?.teachingTaskReference;
     const toolTaskQuery=[...(owner?.task?.criteria.filter(c=>c.kind==='human').map(c=>c.text)||[]),...(owner?.task?.steps.map(step=>step.text)||[]),...(isThinkingContinuation(cleanPrompt)||isTaskAmendment(cleanPrompt)?[unfinished||'']:[]),...(teaching?[teaching]:[])].join('\n').slice(0,8000);
     const taskDepth=teaching||(unfinished&&isThinkingContinuation(unfinished)&&thinking.lastRun?.mode==='deep'?'深入教学任务':unfinished);
-    const thinkingPolicy=resolveThinkingPolicy(cleanPrompt,capabilities,thinking.session?.choice??thinking.global.choice??'auto',thinking.session?.choice?'session':'global',taskDepth);
+    const thinkingObservation=resolveAgentThinking(thinking.global,thinking.session);
+    const thinkingSource=thinkingObservation.source;
+    const thinkingPolicy=resolveThinkingPolicy(cleanPrompt,capabilities,thinkingObservation.value,thinkingSource==='session_selection'?'session':'global',taskDepth);
+    const thinkingBaseline:PreparedAgentConfig['thinking']={source:thinkingSource,revision:thinkingObservation.revision,
+      requested:thinkingPolicy.requested,effective:thinkingPolicy.effective};
     const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
     let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
     const observedMaterials=new Map<string,string>();
@@ -1069,7 +1076,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
-    try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,thinkingBaseline,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       ...(owner?.naturalLessonDraft&&lessonIntent?{naturalLessonDraft:{
         subject:lessonIntent.subject,grade:lessonIntent.grade,...owner.naturalLessonDraft,
         basis:lessonBasis&&{
@@ -1269,7 +1276,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     } finally {await agent.dispose();}
     });
   }
-  async function execute(id: string, prompt: string, run: Active, settings: Pick<Awaited<ReturnType<OmniEduStore['getDeepSeekRuntimeSettings']>>, 'provider' | 'apiKey' | 'model'>) {
+  async function execute(id: string, prompt: string, run: Active, settings: Awaited<ReturnType<typeof modelSettings.runtime>>) {
     const executionStarted=performance.now();let preparationMs:number|undefined,sdkEndedMs:number|undefined;
     let failure: XiaozhiAgentError | undefined, text = '',answerTruncated=false;
     try {
@@ -1281,14 +1288,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const cleanPrompt = await preparing(async signal=>{const sanitize=await createStudentContextSanitizer(store);signal.throwIfAborted();return sanitize(prompt);},'host_sanitize_prompt');
       const selected=(await preparing(()=>store.getAiConversationSession(id),'host_read_session')).session.studentId;
       if(selected){try{await preparing(()=>store.studentContext.snapshot(selected));}catch(error){if(run.stopped)throw Error('cancelled');throw new Error('permission_denied');}}
-      const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run)):{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none'};
+      const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run))
+        :{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none',policy:null,eventRecorded:false};
       const lesson=run.classroomPlan?.mode==='outline'?run.classroomPlan.lesson:undefined;
       const presentation=run.operation==='prompt'
         ?teacherPreferenceForRequest(preference,cleanPrompt,Boolean(run.paperExportIntent||run.resumeDeliveryId),lesson&&[lesson.subject,lesson.grade].join(' '))
         :{text:'',applied:false};
       run.teacherPreferenceRevision=presentation.applied?preference.snapshot.revision:0;
+      let decisionId:string|null=null;
       if(run.operation==='prompt'){
-        try{await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:presentation.applied,action:preference.action,trial:Boolean('trial'in preference&&preference.trial&&presentation.text)}));}
+        try{decisionId=(await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:presentation.applied,action:preference.action,trial:Boolean('trial'in preference&&preference.trial&&presentation.text)}))).id;}
         catch{decisions.unavailable(id);}
       }
       const capabilities = await preparing(signal=>resolveDeepSeekCapabilities(root, settings.model, apiKey, signal),'host_resolve_model');
@@ -1556,6 +1565,22 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       // Fence legacy version-1 readers before any model/tool memory delivery.
       await store.xiaozhiState.setBinding(id, path.relative(root, run.agent.sessionFile), settings.model, 4);
       if (run.stopped) throw new Error('cancelled');
+      const {source,revision,status}=settings.modelObservation;
+      const receipt:PreparedAgentConfig={schemaVersion:1,operation:run.operation,model:{source,revision,status},thinking:base.thinkingBaseline,
+        teacher:{observedRevision:preference.snapshot.revision,policyRevision:preference.policy?.revision??null,longTermApplied:presentation.applied,
+          eventRecorded:preference.eventRecorded,decisionId},native:{generation:owner.generation,markerId}};
+      const publisher=run.publisher;
+      await preparing(async signal=>{
+        const current=()=>!signal.aborted&&!closing&&!run.stopped&&active.get(id)===run;
+        let writeError:unknown;
+        const attempted=await publisher.persistIfCurrent(current,async bound=>{
+          try{await savePreparedAgentConfig(store.xiaozhiState.sql,{runId:bound.runId,sessionId:bound.sessionId,receipt},
+            ()=>{if(!current())throw Error('cancelled');});}
+          catch(error){writeError=error;}
+        });
+        if(!attempted || !current())throw Error('cancelled');
+        if(writeError)throw Error('configuration',{cause:writeError});
+      },'host_persist_prepared_configuration');
       const count=run.turn.items[0]?.attachments?.length||0;
       let deliveredPrompt=count?`${cleanPrompt}\n\n本轮有 ${count} 个已登记的本地附件。文件正文和图片尚未提供给你，请勿声称已阅读、查看或分析这些附件；需要读取时说明所需操作。`:cleanPrompt;
       if(run.recoveryInspection){

@@ -7,6 +7,7 @@ import {supportedThinking,validThinkingChoice,type ThinkingInput,type ThinkingVi
 import { fetchDeepSeekCatalogue, readDeepSeekCatalogue } from './model-capabilities';
 import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSettingsView, type XiaozhiSessionModelInput, type XiaozhiSessionModel, type XiaozhiCredentialInput, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
 import {openProviderCredential,type SettingsKeyCodec} from '../provider-credentials';
+import {classifyConfigError,deepSeekModelEnvironment,readLegacyDeepSeekSetting,resolveAgentModel} from './agent-config-resolver';
 
 // The codec is injected by Electron main; this service never imports it in Node/Worker.
 export type {SettingsKeyCodec} from '../provider-credentials';
@@ -38,23 +39,26 @@ export function validThinkingInput(value:unknown):value is ThinkingInput {
 export function createModelSettings(options: { store: OmniEduStore; root: string; codec?: SettingsKeyCodec; busy: () => boolean; assertMutation?: () => void;
   switchBound?: (input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) => Promise<void> }) {
   const { store, root, codec } = options;
-  const legacyModel = async () => {
-    const legacy = await store.legacyDeepSeekModelDefault();
-    return legacy.updatedAt || legacy.configured ? legacy.model : 'deepseek-flash';
-  };
+  async function modelResolution(saved:Awaited<ReturnType<typeof store.xiaozhiState.modelSettings.configuration>>,id?:string) {
+    const state=store.xiaozhiState;
+    const binding=id?await state.getBinding(id):undefined;
+    const selection=id?await state.modelSettings.session(id):undefined;
+    const identity=id && binding?.model ? await state.modelSwitch.current(id).then(
+      current=>({revision:current?.revision??null}),error=>({revision:null,failure:classifyConfigError(error)}),
+    ) : {revision:null};
+    const legacy=binding?.model || selection?.model || saved.defaultModel ? undefined
+      : await readLegacyDeepSeekSetting(state.sql,deepSeekModelEnvironment());
+    return resolveAgentModel({configuration:saved,binding:binding?{model:binding.model,...identity}:undefined,selection,legacy});
+  }
   async function model(id?: string) {
-    const saved = await store.xiaozhiState.modelSettings.configuration();
-    const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
-    const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return binding?.model || selection?.model || saved.defaultModel || await legacyModel();
+    return (await modelResolution(await store.xiaozhiState.modelSettings.configuration(),id)).runtimeValue;
   }
   async function runtime(id?: string) {
     const saved = await store.xiaozhiState.modelSettings.configuration();
     const apiKey = saved.sealedKey ? openProviderCredential(codec,saved.sealedKey)
       : (await store.getDeepSeekRuntimeSettings('deepseek')).apiKey;
-    const binding = id ? await store.xiaozhiState.getBinding(id) : undefined;
-    const selection = id ? await store.xiaozhiState.modelSettings.session(id) : undefined;
-    return { provider: 'deepseek' as const, apiKey, model: binding?.model || selection?.model || saved.defaultModel || await legacyModel() };
+    const resolved=await modelResolution(saved,id);
+    return {provider:'deepseek' as const,apiKey,model:resolved.runtimeValue,modelObservation:resolved.observation};
   }
   async function sessionModel(id: string, includeBusy = true): Promise<XiaozhiSessionModel> {
     const detail = await store.getAiConversationSession(id);

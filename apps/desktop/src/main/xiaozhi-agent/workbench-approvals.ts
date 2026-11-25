@@ -47,6 +47,26 @@ export async function readWorkbenchApprovals(read: WorkbenchRead, onlySession?:s
   }
   return items;
 }
+
+export type TaskApprovalIdentity=Pick<WorkbenchApprovalRow,'kind'|'sessionId'|'runId'|'taskId'|'state'>;
+
+/** Task counts use the same authority validation without constructing cards, resources or ETags. */
+export async function readWorkbenchTaskApprovals(read:WorkbenchRead,sessionId:string):Promise<TaskApprovalIdentity[]> {
+  const items:TaskApprovalIdentity[]=[];
+  for await(const row of workbenchRows(read,'ai_confirmation_items','approvals',
+    "action_type IN ('xiaozhi_permission_v2','pi_office_copy') AND session_id=?",[sessionId])){
+    try {
+      if(row.action_type==='xiaozhi_permission_v2'){
+        const {request,state}=readPermissionApprovalRow(row);
+        items.push({kind:'permission_v2',sessionId,taskId:request.owner.taskId,runId:request.owner.runId,state});
+      }else{
+        const {runId,state}=readLegacyApprovalRow(row);
+        items.push({kind:'legacy_copy',sessionId,taskId:null,runId,state});
+      }
+    }catch{workbenchFailure(read,'approvals','corrupt');}
+  }
+  return items;
+}
 export async function readWorkbenchApprovalDetail(read: WorkbenchRead, ref: WorkbenchApprovalRef): Promise<WorkbenchApprovalDetail> {
   if (!read.sessions.has(ref.sessionId)) throw Error('permission_denied');
   const row = (await read.sql.all('SELECT * FROM ai_confirmation_items WHERE session_id=? AND id=? AND action_type=?',

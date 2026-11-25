@@ -1,6 +1,11 @@
 import type {IpcMain} from 'electron';
 import type {BackupPublicationBarrier} from './backup/publication-barrier';
 
+// These IPCs coordinate a snapshot or inspect its lifecycle. They still drain at shutdown.
+const snapshotChannels = new Set([
+  'app:exportDataRoot', 'app:prepareWindowsUpdate', 'app:cancelDataBackup', 'app:getDataRoot',
+]);
+
 /** Own admitted IPC work until shutdown; callers cannot reopen the admission gate. */
 export function createDesktopIpcLifetime(target:IpcMain, publications?:BackupPublicationBarrier){
   const pending=new Set<Promise<unknown>>();
@@ -13,8 +18,7 @@ export function createDesktopIpcLifetime(target:IpcMain, publications?:BackupPub
     pending.add(result);
     void result.finally(()=>pending.delete(result)).catch(()=>undefined);
     try{
-      if (publications && channel !== 'app:exportDataRoot' && channel !== 'app:cancelDataBackup' &&
-        channel !== 'app:getDataRoot') {
+      if (publications && !snapshotChannels.has(channel)) {
         const operation = publications.tryPublish(()=>listener(...args));
         if (!operation) throw Error('backup_busy');
         resolve(operation);

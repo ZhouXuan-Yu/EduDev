@@ -4,28 +4,20 @@ import type {ConfigObservation, ConfigSource, ResolvedAgentConfig, ResolvedAgent
 import {validSessionId} from './model-settings';
 import {createXiaozhiSessionState,type Sql} from './session-state';
 import {workbenchText} from './workbench-state';
-import {readLegacyProviderSetting} from '../provider-credentials';
+import {classifyConfigError,deepSeekModelEnvironment,missing,observed,readLegacyDeepSeekSetting,resolveAgentModel,resolveAgentThinking} from './agent-config-resolver';
+import {readPreparedAgentConfig,validPreparedRunId} from './prepared-agent-config';
 
-const defaultModel='deepseek-flash';
-const validModel=(value:unknown):value is string=>typeof value==='string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/u.test(value);
-const observed=<T>(value:T,source:ConfigSource,revision:number|string|null=null):ConfigObservation<T>=>({value,source,revision,status:'valid'});
-const missing=<T>(status:Exclude<ConfigObservation<T>['status'],'valid'>,source:ConfigSource|null=null):ConfigObservation<T>=>({
-  value:null,source,revision:null,status,
-});
 function validQuery(value:unknown):value is ResolvedConfigQuery|undefined {
   if(value===undefined)return true;
   if(!value || typeof value!=='object' || Array.isArray(value))return false;
   const query=value as ResolvedConfigQuery;
-  return Object.keys(query).every(key=>key==='sessionId') && (query.sessionId===undefined || validSessionId(query.sessionId));
-}
-function classify(error:unknown) {
-  const code = error && typeof error==='object' && 'code' in error ? error.code : undefined;
-  return typeof code==='string' && code.startsWith('SQLITE_') ? 'unavailable' as const : 'invalid' as const;
+  return Object.keys(query).every(key=>key==='sessionId'||key==='runId') &&
+    (query.sessionId===undefined || validSessionId(query.sessionId)) &&
+    (query.runId===undefined || Boolean(query.sessionId) && validPreparedRunId(query.runId));
 }
 async function check<T>(source:ConfigSource|null,read:()=>Promise<ConfigObservation<T>>) {
-  try{return await read();}catch(error){return missing<T>(classify(error),source);}
+  try{return await read();}catch(error){return missing<T>(classifyConfigError(error),source);}
 }
-const environment=()=>({model:process.env.DEEPSEEK_MODEL||defaultModel,keyConfigured:Boolean(process.env.DEEPSEEK_API_KEY)});
 const displayText=(value:unknown,limit?:number)=>{
   const text=workbenchText(value,limit);
   return /(?:[a-z]:[\\/]|(?:^|\s)(?:\\\\|\/(?!\s))|file:\/\/)/iu.test(text) ? '' : text;
@@ -35,7 +27,7 @@ export function createResolvedAgentConfig(snapshot:<T>(read:(sql:Sql)=>Promise<T
   return async (input:unknown):Promise<ResolvedAgentConfigResult>=>{
     if(!validQuery(input))return {ok:false,error:'invalid_input'};
     try {
-      const sessionId=input?.sessionId, env=environment();
+      const sessionId=input?.sessionId, env=deepSeekModelEnvironment();
       const value=await snapshot(async(sql):Promise<ResolvedAgentConfig>=>{
         const state=createXiaozhiSessionState(sql);
         const modelSettings=state.modelSettings;
@@ -43,49 +35,28 @@ export function createResolvedAgentConfig(snapshot:<T>(read:(sql:Sql)=>Promise<T
           ?await sql.all('SELECT title FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL',[sessionId]):[];
         if(sessionId&&!session)throw Error('permission_denied');
         const global=await check('global',async()=>observed(await modelSettings.configuration(),'global'));
-        const legacy=async()=>{
-          const record=await readLegacyProviderSetting(sql,'deepseek');
-          if(record.invalid)throw Error('configuration');
-          const stored=record.stored;
-          if(stored.model!==undefined && typeof stored.model!=='string')throw Error('configuration');
-          if(Object.hasOwn(stored,'sealedKey') && (typeof stored.sealedKey!=='string' || !stored.sealedKey || stored.sealedKey.length>16384))
-            throw Error('configuration');
-          if(stored.apiKey!==undefined && typeof stored.apiKey!=='string')throw Error('configuration');
-          const credentialSource=Object.hasOwn(stored,'sealedKey') || typeof stored.apiKey==='string'
-            || stored.legacyCredentialDisabled===true ? 'legacy_compat' : env.keyConfigured ? 'environment' : 'default';
-          const credentialConfigured=Object.hasOwn(stored,'sealedKey') || (typeof stored.apiKey==='string'
-            ?Boolean(stored.apiKey):stored.legacyCredentialDisabled!==true && env.keyConfigured);
-          return {model:(typeof stored.model==='string'&&stored.model.trim())||env.model,updatedAt:record.updatedAt,
-            credentialSource,credentialConfigured} as const;
-        };
-        let legacySetting:ReturnType<typeof legacy>|undefined;
-        const readLegacy=()=>legacySetting??=legacy();
+        let legacySetting:ReturnType<typeof readLegacyDeepSeekSetting>|undefined;
+        const readLegacy=()=>legacySetting??=readLegacyDeepSeekSetting(sql,env);
         const model=await check<string>(null,async()=>{
           if(!global.value)return missing(global.status==='unavailable'?'unavailable':'invalid','global');
           const binding=sessionId?await check('session_binding',async()=>{
             const value=await state.getBinding(sessionId);
-            if(!value?.model)return missing<string>('not_applicable','session_binding');
-            if(!validModel(value.model))return missing<string>('invalid','session_binding');
+            if(!value?.model)return missing<{model:string;revision:number|null}>('not_applicable','session_binding');
             const ledger=await state.modelSwitch.current(sessionId);
-            return observed(value.model,'session_binding',ledger?.revision??null);
+            return observed({model:value.model,revision:ledger?.revision??null},'session_binding');
           }):undefined;
-          if(binding?.status==='invalid'||binding?.status==='unavailable')return binding;
+          if(binding?.status==='invalid'||binding?.status==='unavailable')return missing(binding.status,'session_binding');
           const selection=sessionId?await check('session_selection',async()=>observed(await modelSettings.session(sessionId),'session_selection')):undefined;
           if(selection && !selection.value)return missing(selection.status==='unavailable'?'unavailable':'invalid','session_selection');
-          if(binding?.value)return binding;
-          if(selection?.value?.model)return observed(selection.value.model,'session_selection',selection.value.revision);
-          if(global.value.defaultModel)return observed(global.value.defaultModel,'global',global.value.revision);
-          return check('legacy_compat',async()=>{
-            const previous=await readLegacy();
-            if(!previous.updatedAt&&!previous.credentialConfigured)return observed(defaultModel,'default');
-            if(!validModel(previous.model))return missing('invalid','legacy_compat');
-            return observed(previous.model,'legacy_compat',previous.updatedAt||null);
-          });
+          const inputs={configuration:global.value,binding:binding?.value??undefined,selection:selection?.value??undefined};
+          if(inputs.binding || inputs.selection?.model || inputs.configuration.defaultModel)return resolveAgentModel(inputs).observation;
+          return check('legacy_compat',async()=>resolveAgentModel({...inputs,legacy:await readLegacy()}).observation);
         });
         const credential=await check<boolean>('legacy_compat',async()=>{
           if(!global.value)return missing(global.status==='unavailable'?'unavailable':'invalid','global');
           if(global.value.sealedKey)return observed(true,'global',global.value.revision);
           const previous=await readLegacy();
+          if(previous.invalid)return missing('invalid','legacy_compat');
           return observed(previous.credentialConfigured,previous.credentialSource,
             previous.credentialSource==='legacy_compat'?previous.updatedAt||null:null);
         });
@@ -94,8 +65,7 @@ export function createResolvedAgentConfig(snapshot:<T>(read:(sql:Sql)=>Promise<T
           if(!saved.value)return missing(saved.status==='unavailable'?'unavailable':'invalid','global');
           const sessionChoice=sessionId?await check('session_selection',async()=>observed(await modelSettings.thinking(sessionId),'session_selection')):undefined;
           if(sessionChoice&&!sessionChoice.value)return missing(sessionChoice.status==='unavailable'?'unavailable':'invalid','session_selection');
-          if(sessionChoice?.value?.choice)return observed(sessionChoice.value.choice,'session_selection',sessionChoice.value.version);
-          return observed(saved.value.choice??'auto',saved.value.version?'global':'default',saved.value.version||null);
+          return resolveAgentThinking(saved.value,sessionChoice?.value??undefined);
         });
         const lastRun= sessionId? await check<NonNullable<ResolvedAgentConfig['lastRun']['value']>>('saved_run',async()=>{
           const value=await modelSettings.thinkingRun(sessionId);
@@ -130,12 +100,13 @@ export function createResolvedAgentConfig(snapshot:<T>(read:(sql:Sql)=>Promise<T
         }):missing<NonNullable<ResolvedAgentConfig['permission']['value']>>('not_applicable');
         return {schemaVersion:1,observedAt:new Date().toISOString(),consistency:'snapshot',
           session:sessionId?{id:sessionId,title:displayText(session?.title)||'未命名会话'}:null,
-          model,thinking,lastRun,teacher,memory,permission,credential:{...credential,verification:'not_checked'},
+          model,thinking,lastRun,prepared:await readPreparedAgentConfig(sql,sessionId,input?.runId),teacher,memory,permission,
+          credential:{...credential,verification:'not_checked'},
           preferences:{...preferences,application:!preferences.value?'unknown':preferences.value.savedCount>0 &&
             preferences.value.scopeCounts.off===preferences.value.savedCount?'disabled':'requires_task_context',
             temporary:'not_persisted',textbook:'reference_only'}};
       });
-      const after=environment();
+      const after=deepSeekModelEnvironment();
       if(env.model!==after.model || env.keyConfigured!==after.keyConfigured)value.consistency='stale';
       return {ok:true,value};
     }catch(error){

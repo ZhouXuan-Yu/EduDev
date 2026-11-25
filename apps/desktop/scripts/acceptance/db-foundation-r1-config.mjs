@@ -71,7 +71,7 @@ async function guards(){
     if(typeof diagnostic!=='function')throw Error('Configured diagnostic handler was not registered');
     const raw={all:db.all,run:db.run,exec:db.exec,decrypt:safeStorage.decryptString,request:net.request,fetch:globalThis.fetch,read:fs.readFile};
     const counts={decrypt:0,writes:0,network:0,nativeFileReads:0};
-    const state={counts,independentWrites:[],writeTargets:[],requests:0,hold:false,release:null};
+    const state={counts,independentWrites:[],writeTargets:[],requests:0,hold:false,fail:false,release:null};
     globalThis.r1Config=state;
     handlers.set(channel,(...args)=>{state.requests++;return scope.run(true,()=>diagnostic(...args));});
     safeStorage.decryptString=function(...args){if(scope.getStore())counts.decrypt++;return raw.decrypt.apply(this,args);};
@@ -94,6 +94,10 @@ async function guards(){
     db.run=function(sql,...args){write(sql);return raw.run.call(this,sql,...args);};
     db.exec=function(sql,...args){write(sql);return raw.exec.call(this,sql,...args);};
     db.all=function(sql,params,callback){
+      if(state.fail && scope.getStore() && sql==='SELECT value_json FROM app_settings WHERE key=?' && params?.[0]==='xiaozhi.provider.v1'){
+        state.fail=false;
+        return raw.all.call(this,'SELECT fixture_no_such_column FROM app_settings WHERE key=?',params,callback);
+      }
       if(state.hold && scope.getStore() && typeof callback==='function' && sql==='SELECT value_json FROM app_settings WHERE key=?'
         && params?.[0]==='xiaozhi.provider.v1'){
         state.hold=false;
@@ -112,17 +116,21 @@ async function guards(){
 const counts=()=>app.evaluate(()=>globalThis.r1Config.counts);
 const zero={decrypt:0,writes:0,network:0,nativeFileReads:0};
 async function eventually(predicate){
-  const end=performance.now()+4000;
+  const end=performance.now()+10000;
   while(performance.now()<end){if(await predicate())return;await wait(25);}
   throw Error('Timed out: '+stage);
 }
 try{
   await launch();
+  stage='environment key and default-model source';
+  await app.evaluate((_,key)=>{process.env.DEEPSEEK_API_KEY=key;},markers.environment);
+  assert.deepEqual((await config()).model,{value:'deepseek-flash',source:'default',revision:null,status:'valid'});
+  await app.evaluate(()=>{delete process.env.DEEPSEEK_API_KEY;});
   stage='global defaults without a session';
-  await page.waitForFunction(async()=>(await window.omniEdu.listAiConversations()).sessions.length>0);
+  await eventually(()=>page.evaluate(async()=>(await window.omniEdu.listAiConversations()).sessions.length>0));
   await productEntry(page,'materials').click();
   withSql(data,true,db=>db.prepare('UPDATE ai_conversation_sessions SET archived_at=? WHERE archived_at IS NULL').run(stamp));
-  await page.waitForFunction(async()=>(await window.omniEdu.listAiConversations()).sessions.length===0);
+  await eventually(()=>page.evaluate(async()=>(await window.omniEdu.listAiConversations()).sessions.length===0));
   await diagnostics();
   await guards();
   const section=page.getByTestId('pi-resolved-config');
@@ -148,11 +156,18 @@ try{
   await diagnostics();
   await guards();
   await app.evaluate((_,key)=>{process.env.DEEPSEEK_API_KEY=key;},markers.environment);
-  assert.equal((await config()).credential.source,'environment');
-  await app.evaluate(()=>{delete process.env.DEEPSEEK_API_KEY;});
+  const environmentKey = await config();
+  assert.equal(environmentKey.credential.source,'environment');
+  assert.deepEqual(environmentKey.model,{value:'deepseek-flash',source:'default',revision:null,status:'valid'});
+  await app.evaluate(()=>{process.env.DEEPSEEK_MODEL='synthetic-env-model';});
+  assert.deepEqual((await config()).model,{value:'synthetic-env-model',source:'environment',revision:null,status:'valid'});
   put({deepseek:{model:'legacy-model',apiKey:markers.legacy}});
   assert.equal((await config()).model.source,'legacy_compat');
   assert.equal((await config()).model.value,'legacy-model');
+  put({deepseek:null});
+  await app.evaluate(()=>{delete process.env.DEEPSEEK_API_KEY;});
+  assert.deepEqual((await config()).model,{value:'deepseek-flash',source:'default',revision:null,status:'valid'});
+  await app.evaluate(()=>{delete process.env.DEEPSEEK_MODEL;});
   put({'xiaozhi.provider.v1':{schema:1,revision:4,defaultModel:'global-r1',sealedKey:markers.wrapped},
     [`xiaozhi.model.${first}`]:{schema:1,revision:5,model:'selected-r1'},
     'xiaozhi.thinking.default':{schema:1,revision:3,choice:'high'},
@@ -199,6 +214,18 @@ try{
   assert.equal(old.consistency,'snapshot');
   assert.equal(old.credential.revision,4);assert.equal(old.thinking.revision,2);
   assert.equal(after.credential.revision,5);assert.equal(after.thinking.revision,3);
+  await app.evaluate(()=>{globalThis.r1Config.hold=true;});
+  const environmentMoved=config(first);
+  await eventually(()=>app.evaluate(()=>Boolean(globalThis.r1Config.release)));
+  await app.evaluate(()=>{
+    process.env.DEEPSEEK_MODEL='synthetic-different-environment';
+    globalThis.r1Config.release();globalThis.r1Config.release=null;
+  });
+  assert.equal((await environmentMoved).consistency,'stale');
+  await app.evaluate(()=>{delete process.env.DEEPSEEK_MODEL;globalThis.r1Config.fail=true;});
+  const unavailable=await config(first);
+  assert.equal(unavailable.model.status,'unavailable');
+  assert.equal(unavailable.credential.status,'unavailable');
   const businessBefore=restoredSettings();
   await section.getByRole('button',{name:'当前配置来源'}).click();
   await page.getByTestId('pi-resolved-config-table').waitFor();

@@ -1,4 +1,5 @@
 import sqlite3 from 'sqlite3';
+import {pathToFileURL} from 'node:url';
 
 // Main's NORMAL and the independent writers' FULL match their previous
 // durability. Only the live bootstrap and the detached snapshot may change
@@ -47,9 +48,15 @@ export async function openSqlite(file: string, role: SqliteConnectionRole): Prom
   const policy = policies[role];
   const readOnly = policy.access === 'read';
   const access = readOnly ? sqlite3.OPEN_READONLY : sqlite3.OPEN_READWRITE;
-  const flags = access | sqlite3.OPEN_FULLMUTEX | (policy.access === 'create' ? sqlite3.OPEN_CREATE : 0);
+  const standalone = role === 'backupRead';
+  const flags = access | sqlite3.OPEN_FULLMUTEX | (policy.access === 'create' ? sqlite3.OPEN_CREATE : 0)
+    | (standalone ? sqlite3.OPEN_URI : 0);
+  // A validated backup is a standalone file, even if its header records WAL.
+  // Immutable readers never create journal sidecars in the backup directory.
+  const url = standalone ? pathToFileURL(file) : undefined;
+  const filename = url ? (url.host ? `file:////${url.host}${url.pathname}` : url.href)+'?immutable=1' : file;
   const db = await new Promise<sqlite3.Database>((resolve, reject) => {
-    const handle = new sqlite3.Database(file, flags, error => error ? reject(error) : resolve(handle));
+    const handle = new sqlite3.Database(filename, flags, error => error ? reject(error) : resolve(handle));
   });
   db.serialize();
   try {

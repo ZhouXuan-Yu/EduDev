@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+小智数据库 R2 的实际构建、迁移、Windows 验收和合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2/state.json`。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)
+
 D3 模考 ZIP 将获准共用的同一版本答案册打包一次，逐卷保留许可和清单引用。真实奉贤扫描卷已验证原件字节及缺答案标记。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#共享答案册的原件包)
 
 D3 模考支持多份试卷共用一份独立答案册。各试卷按完整印刷身份和题号匹配，分别管理关联，复用同一份转录。 [运行证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#多份模考试卷共用答案册)

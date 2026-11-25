@@ -11,8 +11,10 @@ const desktop = path.resolve(import.meta.dirname,'../..');
 const evidence = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
+const adoption=process.argv.includes('--adoption');
+if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
-const root = fs.mkdtempSync(path.join(evidence,'r2-fast-path-electron-'));
+const root = fs.mkdtempSync(path.join(evidence,adoption?'r2-adoption-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
@@ -20,12 +22,12 @@ const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root
 const prefix = 'xiaozhi.teacher-preference.v1';
 let app, page;
 
-async function until(read, timeout=90000) {
+async function until(read, timeout=90000, interval=140) {
   const stop=Date.now()+timeout;
   while(Date.now()<stop){
     const value=await read();
     if(value)return value;
-    await wait(140);
+    await wait(interval);
   }
   throw Error('The Electron action did not reach the expected state');
 }
@@ -106,8 +108,7 @@ async function close(){
   await app.close();
   app=undefined;
 }
-try{
-  await launch();
+async function fastPath(){
   assert.equal(currentHead(),null);
   const explicit='请记住，以后讲解先提示再给答案。请简单确认。';
   const initial=await send(explicit);
@@ -134,6 +135,105 @@ try{
   await launch();
   assert.deepEqual(currentHead(),after);
   check('the explicit rollback persists across a fresh Electron process',{revision:after.revision});
+}
+
+async function memorySettings(){
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  await page.getByTestId('pi-settings-tab-teacher-memory').click();
+  const memory=page.getByTestId('pi-personal-memory-settings');
+  const heading=memory.getByRole('button',{name:'自动记忆',exact:true});
+  if(await heading.getAttribute('aria-expanded')!=='true')await heading.click();
+  await memory.getByTestId('personal-memory-auto').waitFor();
+  return memory;
+}
+
+const memoryRead = async()=> {
+  const view=await page.evaluate(()=>window.omniEdu.personalMemory.view());
+  assert(view.ok,JSON.stringify(view));
+  return view.value;
+};
+
+function backgroundReceipt(){
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const row=db.prepare("SELECT status,error_message,result_json FROM ai_tasks WHERE task_type='personal_memory' ORDER BY created_at DESC LIMIT 1").get();
+    if(!row||row.status==='pending'||row.status==='running')return null;
+    assert.equal(row.status,'succeeded',row.error_message);
+    const result=JSON.parse(row.result_json);
+    assert(result.modelCalls>=1 && result.modelCalls<=2);
+    assert.equal(result.saved,1);
+    return result;
+  }finally{db.close();}
+}
+
+async function candidateAdoption(){
+  const sessionId=await active();
+  const source='我本学期负责四年级科学。';
+  const turn=await send(source);
+  let memory=await memorySettings();
+  const auto=memory.getByTestId('personal-memory-auto');
+  await auto.click();
+  await memory.getByText('已开启自动处理。',{exact:true}).waitFor();
+  const history=page.getByTestId('pi-history-memory-settings');
+  await history.getByTestId('history-settings-session').selectOption(sessionId);
+  await history.getByRole('button',{name:'查看来源',exact:true}).click();
+  const sourcePreview=history.getByTestId('history-settings-preview');
+  assert((await sourcePreview.textContent()).includes(source));
+  await sourcePreview.getByTestId('personal-memory-source-consent').click();
+  await sourcePreview.getByText('已允许从这条原话提取记忆建议。',{exact:true}).waitFor();
+  const background=await until(backgroundReceipt,210000,1000);
+  report.background=background;
+  const {candidates,records}=await memoryRead();
+  assert.deepEqual(records,[]);
+  assert.equal(candidates.length,1);
+  const candidateId=candidates[0].key;
+  check('real Pi source, separate teacher extraction consent and a durable real model job create a pending candidate',
+    {runId:turn.id,candidateId,modelCalls:background.modelCalls,usage:background.usage});
+  await memory.getByRole('button',{name:'刷新记忆',exact:true}).click();
+  const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
+  await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
+  await candidate.getByText(source,{exact:true}).waitFor();
+  await page.screenshot({path:path.join(root,'review-candidate.png')});
+  await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
+  await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
+  const adopted=(await memoryRead()).records[0];
+  assert.equal(adopted.id,candidateId);
+  assert.equal(adopted.revision,1);
+  assert.equal(adopted.sourceCurrent,true);
+  check('the teacher reviews a real source and adopts a formal memory through typed preload',{id:adopted.id,revision:adopted.revision});
+
+  const record=memory.getByTestId('personal-memory-record-'+adopted.id);
+  await record.getByRole('button',{name:'修订',exact:true}).click();
+  await record.getByLabel('修订内容',{exact:true}).fill('本学期负责四年级两个科学班。');
+  await record.getByRole('button',{name:'保存修订',exact:true}).click();
+  await memory.getByText('已保存修订。',{exact:true}).waitFor();
+  assert.equal((await memoryRead()).records[0].value,'本学期负责四年级两个科学班。');
+  await record.getByRole('button',{name:'停用',exact:true}).click();
+  await memory.getByText('已停用。',{exact:true}).waitFor();
+  assert.equal((await memoryRead()).records[0].state,'disabled');
+  await record.getByRole('button',{name:'恢复',exact:true}).click();
+  await memory.getByText('已恢复。',{exact:true}).waitFor();
+  await record.getByRole('button',{name:'遗忘',exact:true}).click();
+  await record.getByRole('button',{name:'确认遗忘',exact:true}).click();
+  await memory.getByText('已停止使用这条记忆。',{exact:true}).waitFor();
+  await auto.click();
+  await memory.getByText('已关闭自动处理。',{exact:true}).waitFor();
+  await close();
+  await launch();
+  memory=await memorySettings();
+  const after=await memoryRead();
+  assert.equal(after.policy.enabled,false);
+  assert.equal(after.records[0].state,'forgotten');
+  assert.equal(after.records[0].revision,5);
+  assert.equal(after.records[0].value,'');
+  assert.deepEqual(after.candidates,[]);
+  check('teacher correction, disable, re-enable and forgetting survive a real Electron restart',{revision:after.records[0].revision});
+}
+
+try{
+  await launch();
+  if(adoption)await candidateAdoption();
+  else await fastPath();
   await page.screenshot({path:path.join(root,'restart.png')});
   report.ok=true;
 }catch(error){

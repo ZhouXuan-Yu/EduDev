@@ -4,6 +4,7 @@ import {once} from 'node:events';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
 import {inc} from 'semver';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
@@ -32,15 +33,16 @@ const release = {
   tag_name:'v'+targetVersion, draft:false, prerelease:false, assets:[{
     name:name(targetVersion), state:'uploaded', digest:'sha256:'+digest, size:original.length,
   }],
-  body:`<!-- xiaozhi-update-v1\n${JSON.stringify({targetDataVersion:0,sources:[{appVersion:currentVersion,dataVersion:0}]})}\n-->`,
+  body:'',
 };
 
 const checks = [], rendererErrors = [];
 let app, page, error;
-async function useFixture({file = installer, body = release, status = 200, destination = snapshots, verifyRoot = '', rollbackRecord = ''} = {}) {
+async function useFixture({file = installer, body = release, status = 200, destination = snapshots, verifyRoot = '', rollbackRecord = '', normalDestination = ''} = {}) {
   await app.evaluate(({dialog,net},fixture) => {
     dialog.showOpenDialog = async options => {
       const picked = options.title.includes('更新前快照') ? fixture.destination
+        : options.title.includes('完整数据目录备份位置') ? fixture.normalDestination
         : options.title.includes('完整性校验') ? fixture.verifyRoot
         : options.title === '选择小智更新记录' ? fixture.rollbackRecord
         : options.title === '选择独立恢复副本的保存位置' ? fixture.rollbackParent : fixture.file;
@@ -53,12 +55,18 @@ async function useFixture({file = installer, body = release, status = 200, desti
         options.redirect !== 'error' || options.credentials !== 'omit') throw Error('Unexpected fixture traffic');
       return new Response(JSON.stringify(fixture.body), {status:fixture.status,headers:{'content-type':'application/json'}});
     };
-  }, {file,body,status,destination,verifyRoot,rollbackParent,rollbackRecord});
+  }, {file,body,status,destination,verifyRoot,rollbackParent,rollbackRecord,normalDestination});
 }
 
 async function inspect(check) {
   await page.getByTestId('windows-update-inspect').click();
   await page.locator(`[data-testid="windows-update-candidate"][data-check="${check}"]`).waitFor({timeout:30000});
+}
+
+async function until(action,timeout=15000){
+  const deadline=performance.now()+timeout;
+  while(performance.now()<deadline){const result=await action();if(result)return result;await new Promise(resolve=>setTimeout(resolve,30));}
+  assert.fail('Update did not reach its publication barrier in time');
 }
 
 try {
@@ -69,6 +77,12 @@ try {
   page = await app.firstWindow();
   page.on('pageerror', value => rendererErrors.push(String(value)));
   await assertIsolatedPiMain(app,main,profile);
+  const database = new DatabaseSync(path.join(data, 'app.db'), {readOnly:true});
+  try {
+    const {user_version:dataVersion} = database.prepare('PRAGMA user_version').get();
+    release.body = `<!-- xiaozhi-update-v1\n${JSON.stringify({targetDataVersion:dataVersion,
+      sources:[{appVersion:currentVersion,dataVersion}]})}\n-->`;
+  } finally {database.close();}
   await app.evaluate(() => { globalThis.updateFixtureRequests = []; });
   await useFixture({file:''});
   await page.getByRole('button',{name:'设置',exact:true}).click();
@@ -113,12 +127,90 @@ try {
   fs.writeFileSync(installer, original);
   checks.push('Changing the inspected installer before creating the snapshot prevents any copy.');
 
+  if(process.argv.includes('--self-wait-probe')){
+    await page.getByTestId('windows-update-prepare').click();
+    const blocked=page.getByTestId('windows-update-feedback').filter({hasText:'backup_publishers_busy'});
+    await page.getByTestId('windows-update-snapshot').or(blocked).waitFor({timeout:30000});
+    assert.equal(await blocked.count(),0,await blocked.first().textContent({timeout:100}).catch(()=>''));
+    checks.push('A verified update candidate completes its snapshot without waiting for its own publisher.');
+  } else {
+
+  const controlParent=path.join(root,'snapshot-control');
+  const normalDestination=path.join(root,'verification-export');
+  for(const directory of [controlParent,normalDestination])fs.mkdirSync(directory);
+  await app.evaluate((_,{requirePath,controlParent})=>{
+    const module=process.getBuiltinModule('module'),fs=process.getBuiltinModule('fs/promises');
+    const db=module.createRequire(requirePath)('sqlite3').Database.prototype;
+    const run=db.run,rename=fs.rename;
+    const gate=globalThis.updatePublication={events:[],pending:null,hold:true,fail:false};
+    db.run=function(sql,params,callback){
+      if(gate.hold && sql.includes('INSERT INTO students') && params.includes('R2 update publisher')){
+        gate.events.push('publisher_waiting');
+        gate.pending=()=>{gate.pending=null;return run.call(this,sql,params,callback);};
+        return this;
+      }
+      return run.call(this,sql,params,callback);
+    };
+    fs.rename=async(from,to)=>{
+      if(gate.fail && String(to).startsWith(controlParent) && String(from).includes('.xiaozhi-backup-partial-')){
+        gate.events.push('rename_failed');
+        throw Error('controlled update publication failure');
+      }
+      return rename(from,to);
+    };
+    gate.restore=()=>{db.run=run;fs.rename=rename;};
+  },{requirePath:path.join(desktop,'package.json'),controlParent});
+  const prepare=page.getByTestId('windows-update-prepare');
+  const noteFeedback=page.getByTestId('windows-update-feedback');
+  const barrierBusy=()=>page.evaluate(async()=>{
+    try{await window.omniEdu.listStudents('R2 update publisher');return false;}
+    catch(error){if(!String(error).includes('backup_busy'))throw error;return true;}
+  });
+  await useFixture({destination:controlParent,normalDestination});
+  const publisher=page.evaluate(()=>window.omniEdu.createStudent({displayName:'R2 update publisher'}));
+  await until(()=>app.evaluate(()=>Boolean(globalThis.updatePublication.pending)));
+  await prepare.click();
+  await until(barrierBusy);
+  assert.deepEqual(fs.readdirSync(controlParent),[],'Action waits for the admitted native writer');
+  await assert.rejects(page.evaluate(()=>window.omniEdu.createStudent({displayName:'R2 rejected publisher'})),/backup_busy/u);
+  assert.deepEqual(await page.evaluate(()=>window.omniEdu.cancelDataBackup()),{cancelled:true});
+  await noteFeedback.filter({hasText:/已取消/}).waitFor();
+  await app.evaluate(()=>{globalThis.updatePublication.pending();});
+  const [admitted]=await publisher;
+  assert(admitted.id);
+  assert.deepEqual(fs.readdirSync(controlParent),[]);
+  assert.equal((await page.evaluate(()=>window.omniEdu.exportDataRoot('full'))).verified,true);
+  checks.push('Existing native writes drain before the action; freezing rejects new writers, and cancel releases the settings job for another verified export.');
+
+  await app.evaluate(()=>{globalThis.updatePublication.fail=true;});
+  await prepare.click();
+  await noteFeedback.filter({hasText:'controlled update publication failure'}).waitFor();
+  assert.deepEqual(fs.readdirSync(controlParent),[]);
+  assert.equal((await page.evaluate(()=>window.omniEdu.exportDataRoot('full'))).verified,true);
+  assert.deepEqual(await app.evaluate(()=>globalThis.updatePublication.events),['publisher_waiting','rename_failed']);
+  await app.evaluate(()=>{globalThis.updatePublication.fail=false;});
+  checks.push('A failed snapshot publication cleans temporary files and releases the settings job for another verified export.');
+  await useFixture();
+
   fs.writeFileSync(path.join(data,'合成备课.txt'),'升级前的备课记录');
+  const draining=page.evaluate(()=>window.omniEdu.createStudent({displayName:'R2 update publisher'}));
+  await until(()=>app.evaluate(()=>Boolean(globalThis.updatePublication.pending)));
   await page.getByTestId('windows-update-prepare').click();
-  await page.getByTestId('windows-update-snapshot').waitFor({timeout:30000});
+  await until(barrierBusy);
+  assert.deepEqual(fs.readdirSync(snapshots),[]);
+  await app.evaluate(()=>{globalThis.updatePublication.pending();});
+  const [drained]=await draining;
+  const snapshotResult = page.getByTestId('windows-update-snapshot');
+  const preparationError = page.getByTestId('windows-update-feedback').filter({hasText:'backup_publishers_busy'});
+  await snapshotResult.or(preparationError).waitFor({timeout:30000});
+  assert.equal(await preparationError.count(), 0, await preparationError.first().textContent({timeout:100}).catch(()=>'Update preparation'));
   const entries = fs.readdirSync(snapshots);
   assert.equal(entries.length,2);
   const backup = path.join(snapshots, entries.find(value => value.startsWith('OmniEduData-backup-')));
+  const copied=new DatabaseSync(path.join(backup,'app.db'),{readOnly:true});
+  try {assert.equal(copied.prepare('SELECT display_name FROM students WHERE id=?').get(drained.id).display_name,'R2 update publisher');}
+  finally {copied.close();}
+  await app.evaluate(()=>globalThis.updatePublication.restore());
   const recordPath = path.join(snapshots, entries.find(value => value.startsWith('Xiaozhi-update-')));
   const record = JSON.parse(fs.readFileSync(recordPath, 'utf8'));
   assert.equal(record.sha256,digest);
@@ -309,11 +401,60 @@ try {
   assert.equal(await page.evaluate(() => window.omniEdu.getDataRoot()),startupPointer.dataRoot);
   assert.equal(sha(fs.readFileSync(damaged)),damagedDigest);
   checks.push('The real startup entry creates and activates a verified copy without a readable upgraded database or pending rollback, then a normal launch reads it with the original bytes intact.');
+
+  const shutdownData=path.join(root,'shutdown-data'),shutdownProfile=path.join(root,'shutdown-profile');
+  const shutdownDestination=path.join(root,'shutdown-snapshots'),donePath=path.join(root,'shutdown-native-writer.txt');
+  fs.mkdirSync(shutdownDestination);
+  await app.close();
+  const shutdownEnv={...env,OMNI_EDU_DATA_ROOT:shutdownData};
+  app=await electron.launch({args:[main,'--user-data-dir='+shutdownProfile],cwd:desktop,env:shutdownEnv,timeout:60000});
+  page=await app.firstWindow();
+  await assertIsolatedPiMain(app,main,shutdownProfile);
+  await app.evaluate(()=>{globalThis.updateFixtureRequests=[];});
+  await useFixture({destination:shutdownDestination,normalDestination});
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  await page.getByTestId('pi-settings-tab-backup').click();
+  await inspect('ready');
+  await app.evaluate((_,{requirePath,donePath})=>{
+    const db=process.getBuiltinModule('module').createRequire(requirePath)('sqlite3').Database.prototype;
+    const raw=db.run,fs=process.getBuiltinModule('fs');
+    db.run=function(sql,params,callback){
+      if(sql.includes('INSERT INTO students') && params.includes('R2 shutdown publisher')){
+        globalThis.releaseShutdownWriter=()=>raw.call(this,sql,params,error=>{
+          fs.writeFileSync(donePath,error?String(error):'native write completed');
+          callback(error);
+        });
+        return this;
+      }
+      return raw.call(this,sql,params,callback);
+    };
+  },{requirePath:path.join(desktop,'package.json'),donePath});
+  const shutdownWriter=page.evaluate(()=>window.omniEdu.createStudent({displayName:'R2 shutdown publisher'})).catch(()=>undefined);
+  await until(()=>app.evaluate(()=>Boolean(globalThis.releaseShutdownWriter)));
+  await page.getByTestId('windows-update-prepare').click();
+  await until(barrierBusy);
+  const child=app.process();
+  const stopped=once(child,'exit',{signal:AbortSignal.timeout(15000)});
+  await app.evaluate(({app})=>{
+    setTimeout(()=>app.quit(),20);
+    setTimeout(()=>{globalThis.releaseShutdownWriter();},400);
+  });
+  assert.deepEqual(await stopped,[0,null]);
+  await shutdownWriter;
+  app=undefined;page=undefined;
+  assert.equal(fs.readFileSync(donePath,'utf8'),'native write completed');
+  assert.deepEqual(fs.readdirSync(shutdownDestination),[]);
+  const closed=new DatabaseSync(path.join(shutdownData,'app.db'),{readOnly:true});
+  try {assert(closed.prepare('SELECT id FROM students WHERE display_name=?').get('R2 shutdown publisher'));}
+  finally {closed.close();}
+  checks.push('Normal Electron shutdown cancels the waiting update snapshot, drains the admitted native writer and exits without a late snapshot.');
+  }
 } catch (failure) {
   error = failure.stack;
   process.exitCode = 1;
   if (page) await page.screenshot({path:path.join(root,'failure.png')}).catch(()=>undefined);
 } finally {
+  await app?.evaluate(()=>{globalThis.updatePublication?.pending?.();}).catch(()=>undefined);
   await app?.close();
   const report={ok:!error,root,mainSha256:sha(fs.readFileSync(main)),fixtureSha256:digest,checks,rendererErrors,error};
   fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));

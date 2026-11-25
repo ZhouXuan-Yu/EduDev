@@ -64,12 +64,14 @@ function stateCounts<T>(items: T[], state: (item: T) => string, initial: string[
 }
 export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) => Promise<T>) => Promise<T>;
   indexedTasks?: boolean;
+  repairTaskRows?: (ids:string[]) => Promise<void>;
   recentArtifacts?: () => Promise<TeachingFileCatalogEntry[]>}) {
   return async (input: unknown): Promise<WorkbenchResult> => {
     if (!validWorkbenchQuery(input)) return {ok: false, error: 'invalid_input'};
+    const damagedIds:string[]=[];
     try {
       const value = await options.read(async sql => {
-        if(input.kind==='tasks' && options.indexedTasks)return readTaskSummaryPage(sql,input);
+        if(input.kind==='tasks' && options.indexedTasks)return readTaskSummaryPage(sql,input,damagedIds);
         const tables = new Set((await sql.all("SELECT name FROM sqlite_master WHERE type='table'")).map(row => String(row.name)));
         const read: WorkbenchRead = {sql, now: new Date().toISOString(), tables, sessions: new Map(), failures: [], unavailable: 0};
         const requestedSession = input.kind === 'approval_detail' ? input.ref.sessionId : 'sessionId' in input ? input.sessionId : undefined;
@@ -124,6 +126,9 @@ export function createWorkbenchSummary(options: {read: <T>(action: (sql: Sql) =>
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
       return {ok: false, error: code === 'permission_denied' || code === 'changed' ? code : 'unavailable'};
+    } finally {
+      // The diagnostic result survives an unavailable writer. A later read can retry the repair.
+      if(damagedIds.length)await options.repairTaskRows?.(damagedIds).catch(()=>undefined);
     }
   };
 }
