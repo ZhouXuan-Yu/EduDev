@@ -21,6 +21,7 @@ const {MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY}=await im
 const {shanghaiMockSectionKey,WRAPPED_SHANGHAI_MOCK_SECTIONS}=await import('../../src/shared/shanghai-mock-sections.ts');
 const {printedSingleChoiceRange}=await import('../../src/main/assets/material-compact-choice-key.ts');
 const {localCompactChoicePage}=await import('../../src/main/assets/material-book-answer-content.ts');
+const {independentChoiceLetters,locateLocalChoiceRow}=await import('../../src/main/assets/material-local-book-choice-layout.ts');
 const {bookPageRestorationInstruction}=await import('../../src/main/assets/material-ai-book-instruction.ts');
 const printed=(first,final=first)=>bookAnswerPage(scoped(first),scoped(final),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY);
 check('Printed brackets after repeated question text recover literal answer and analysis only for new inputs',()=>{
@@ -169,6 +170,20 @@ check('Local preview uses printed source values and keeps unresolved, contradict
   assert(view.needsReview);
  }
  assert.deepEqual(localCompactChoicePage('复习参考资料正文'),{answers:[],needsReview:false});
+});
+check('The second OCR must read one isolated answer row and cannot borrow an adjacent sequence',()=>{
+ const line=(text,left,top,right,bottom,score=.96)=>({text,score,normalizedQuad:[[left,top],[right,top],[right,bottom],[left,bottom]]});
+ const key='二、选择题：DBAC';
+ const main=line(key,.12,.31,.39,.33), after=line('三、解答题',.12,.333,.29,.35);
+ const bounded=locateLocalChoiceRow({lines:[main,after]},key);
+ assert(bounded&&bounded[3]>.33&&bounded[3]<.333);
+ assert.equal(locateLocalChoiceRow({lines:[main,line('黑色重叠',.22,.324,.36,.345)]},key),undefined);
+ assert.equal(locateLocalChoiceRow({lines:[main,line(key,.12,.36,.39,.38)]},key),undefined);
+ assert.equal(locateLocalChoiceRow({lines:[{...main,score:.85}]},key),undefined);
+ assert.equal(independentChoiceLetters(['一 、 选 择 题 ： D B A C']),'DBAC');
+ assert.equal(independentChoiceLetters(['选择题答案（第4至6题）：A、D、C']),'ADC');
+ for(const lines of [['选择题：','DBAC'],['选择题：D?AC'],['选择题：DBAC','选择题：DAAC'],['选项：DBAC']])
+  assert.equal(independentChoiceLetters(lines),'');
 });
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});

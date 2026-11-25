@@ -211,15 +211,38 @@ function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=
 }
 
 /** One local transcript supplies review candidates only. It cannot create a paired answer receipt. */
-export function localCompactChoicePage(text: string): { answers: LocalBookAnswer[]; needsReview: boolean } {
+function localCompactChoiceEntries(text: string) {
   if (Buffer.byteLength(text) > 64000) return { answers: [], needsReview: true };
   const result = entriesWithAnswerKeys(text, undefined, true, false, true, true);
   if (result.tooLarge || result.entries.length > 200) return { answers: [], needsReview: true };
   const compact = result.entries.filter(entry => entry.compactChoiceRange);
   const answers = compact.filter(entry => entry.issues.every(issue => issue === 'missing_analysis'));
-  return { answers: answers.map(({section, number, answer}) => ({section, number, answer})),
+  return { answers,
     needsReview: !!result.unresolved || compact.length !== answers.length ||
       result.entries.some(entry => entry.issues.includes('answer_conflict')) };
+}
+
+export function localCompactChoicePage(text: string): { answers: LocalBookAnswer[]; needsReview: boolean } {
+  const { answers, needsReview } = localCompactChoiceEntries(text);
+  return { answers: answers.map(({ section, number, answer }) => ({ section, number, answer })), needsReview };
+}
+
+export function localCompactChoiceRows(text: string) {
+  const byLine = new Map<number, Entry[]>();
+  for (const entry of localCompactChoiceEntries(text).answers) {
+    const line = text.lastIndexOf('\n', entry.start - 1) + 1;
+    const items = byLine.get(line) ?? [];
+    items.push(entry);
+    byLine.set(line, items);
+  }
+  return [...byLine].flatMap(([start, entries]) => {
+    const end = text.indexOf('\n', start);
+    const sample = text.slice(start, end < 0 ? undefined : end).trim();
+    const { compactChoiceRange: range, section } = entries[0];
+    if (!range || !sample || sample.length > 200 || entries.length !== range[1] - range[0] + 1 ||
+        entries.some((entry,index) => Number(entry.number) !== range[0] + index || entry.section !== section)) return [];
+    return [{ section, range, sample, letters: entries.map(entry => entry.answer).join('') }];
+  });
 }
 
 export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy,mockTitles:ShanghaiMockSectionPolicy=false,compactChoices=mockTitles===true):BookAnswerPage{

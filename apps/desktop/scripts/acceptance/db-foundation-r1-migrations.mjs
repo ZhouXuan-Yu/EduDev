@@ -11,7 +11,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
 const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
-const expectedVersion=3;
+const expectedVersion=4;
 assert(existsSync(legacy),'The actual frozen WP-00 v0 build is required');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(evidence,'fixtures'),{recursive:true});
@@ -84,7 +84,8 @@ async function startFailing(name,data,interrupt=0) {
         const v1=statement==='CREATE INDEX idx_ai_memory_revisions_document ON ai_memory_revisions(document_id);';
         const v2=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_task_summary_control');
         const v3=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_acquisition_candidates_v1');
-        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3)){
+        const v4=statement.includes('CREATE TABLE material_local_book_rechecks_v1');
+        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3) || (${interrupt}===4 && v4)){
           return exec.call(this,statement,error=>{
             if(error)return callback(error);
             electron.app.exit(31);
@@ -225,11 +226,27 @@ try{
   const partialAfter=dataState(partial);
   assert.equal(partialAfter.version,expectedVersion);
   assert.deepEqual(partialAfter.ledger.slice(0,2),partialBefore.ledger);
-  assert.equal(partialAfter.ledger.at(-1).migration_id,'r1.capability_acquisition.v3');
+  assert.equal(partialAfter.ledger[2].migration_id,'r1.capability_acquisition.v3');
+  assert.equal(partialAfter.ledger[3].migration_id,'r1.local_book_recheck_evidence.v4');
   assert.deepEqual(partialAfter.students,old.students);
   await launch(main,partial,profile('partial-acquisition-reentry'));
   assert.deepEqual(dataState(partial),partialAfter);
   receipt('Upgrade v2 after late creation of exact acquisition tables. A preexisting registered subset and the v1/v2 ledger are preserved.');
+
+  stage='interrupt v4 after v3 commits';
+  const recheckUpgrade=join(root,'interrupted-v4','data');
+  cpSync(oldData,recheckUpgrade,{recursive:true});
+  await startFailing('interrupted-v4',recheckUpgrade,4);
+  const stableV3=dataState(recheckUpgrade);
+  assert.equal(stableV3.version,3);
+  assert(!stableV3.schema.some(([,name])=>name==='material_local_book_rechecks_v1'));
+  await launch(main,recheckUpgrade,profile('interrupted-v4-reentry'));
+  const stableV4=dataState(recheckUpgrade);
+  assert.equal(stableV4.version,expectedVersion);
+  assert.deepEqual(stableV4.ledger.slice(0,3),stableV3.ledger);
+  assert(stableV4.schema.some(([,name])=>name==='material_local_book_rechecks_v1'));
+  assert.deepEqual(stableV4.students,old.students);
+  receipt('Interrupting v4 rolls back the evidence table and leaves the committed v3 ledger readable.');
 
   const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;
   if(priorFixture){

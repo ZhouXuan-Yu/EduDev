@@ -42,6 +42,13 @@ const migrations = [{
 }, {
   id: 'r1.capability_acquisition.v3',
   sql: acquisitionSchema,
+}, {
+  id: 'r1.local_book_recheck_evidence.v4',
+  sql: `CREATE TABLE material_local_book_rechecks_v1(
+    resource_id TEXT NOT NULL, version TEXT NOT NULL, generation TEXT NOT NULL, page INTEGER NOT NULL,
+    raw_sha TEXT NOT NULL, body_json TEXT NOT NULL, body_sha TEXT NOT NULL,
+    PRIMARY KEY(resource_id,version,generation,page)
+  );`,
 }] as const;
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;

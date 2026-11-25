@@ -84,7 +84,8 @@ import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileRef
 import {migrateImageOcr} from './material-image-ocr';
 import {MaterialBookPairs} from './material-book-pairs';
 import {MaterialBookAnswerRepository} from './material-book-answer-repository';
-import {readLocalBookAnswers} from './material-local-book-answers';
+import {readLocalBookAnswers,type LocalBookPageSource} from './material-local-book-answers';
+import {runLocalBookRecheck,saveLocalBookRecheck} from './material-local-book-recheck';
 import type {LocalBookAnswersQuery} from '../../shared/material-local-book-answers';
 import {continuationQuestionOrigin} from './material-question-page-origin';
 import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/material-book-pair';
@@ -171,9 +172,16 @@ export class MaterialAiRepository{
   readonly bookAnswers:MaterialBookAnswerRepository;
   constructor(private host:Host){this.choiceRechecks=new MaterialChoiceRechecks({all:host.all,run:host.run,root:host.root,proof:(batch,ordinal,signal)=>this.pageEvidence(batch,ordinal,signal)});this.responses=new MaterialAiResponses(host);this.cropRechecks=new MaterialCropRechecks({all:host.all,run:host.run,root:()=>{if(!host.root)throw Error('storage_unavailable');return host.root();},proof:(batch,ordinal)=>this.pageEvidence(batch,ordinal),runtime:()=>this.runtime,writer:(fn,before)=>this.write(target=>fn(target.cropRechecks),before)});this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});this.bookAnswers=new MaterialBookAnswerRepository({all:host.all,run:host.run,receipt:(batch,ordinal)=>this.bookReceipt(batch,ordinal),role:id=>this.books.role(id),structureScope:host.structureBookScope,read:async id=>host.readQuestion?.(id),validate:async(q,signal)=>{if(q.archive?.structure&&host.validateBookStructure)return host.validateBookStructure(q,signal);if(!host.validateQuestion)throw Error('unsupported');await host.validateQuestion(q);},title:async id=>(await host.materials().resource(id)).originalFileName,writer:(fn,beforeCommit)=>this.write(target=>fn(target.bookAnswers),beforeCommit)});}
   configure(runtime:AiRuntime){this.runtime=runtime;this.account=runtime.account;}
+  private localBookHost(){
+    return {all:this.host.all,role:(id:string)=>this.books.role(id),
+      verify:(id:string,version:string,signal:AbortSignal)=>this.host.materials().verifyOriginalVersion(id,version,signal)};
+  }
   localBookAnswers(input:LocalBookAnswersQuery,signal:AbortSignal){
-    return readLocalBookAnswers({all:this.host.all,role:id=>this.books.role(id),
-      verify:(...args)=>this.host.materials().verifyOriginalVersion(...args)},input,signal);
+    return readLocalBookAnswers(this.localBookHost(),input,signal);
+  }
+  localBookRecheck(source:LocalBookPageSource,layout:Parameters<typeof runLocalBookRecheck>[0]['layout'],signal:AbortSignal){
+    return runLocalBookRecheck({...this.localBookHost(),layout,save:(proof,active)=>this.write(target=>
+      saveLocalBookRecheck({...target.localBookHost(),run:target.host.run},proof,active),()=>active.throwIfAborted())},source,signal);
   }
   private write<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void){return this.host.writer(target=>{target.account=this.runtime?.account||this.account;return action(target);},beforeCommit);}
   private nativeHost():NativeAiHost{if(!this.host.native||!this.host.word)throw Error('unsupported');return{all:this.host.all,run:this.host.run,create:this.host.create,native:this.host.native,word:this.host.word,associate:async(q,source,sources)=>{

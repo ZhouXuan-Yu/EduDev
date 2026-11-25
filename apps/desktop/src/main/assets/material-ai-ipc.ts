@@ -31,7 +31,7 @@ import {validAiPageQuery} from '../../shared/material-ai-page';
 import {validMaterialBookPairInput} from '../../shared/material-book-pair';
 import {validMaterialFolderBooksQuery} from '../../shared/material-folder-books';
 import {AI_STRUCTURE_PENDING} from './material-ai-structure-source';
-import {validLocalBookAnswersQuery} from '../../shared/material-local-book-answers';
+import {validLocalBookAnswersQuery,validLocalBookRecheckQuery} from '../../shared/material-local-book-answers';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec=providerCredentialCodec;
@@ -88,6 +88,24 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
       const view=await store.materialAi.localBookAnswers(input,controller.signal);
       check(event);return view;
     });}finally{event.sender.removeListener('destroyed',closed);}
+  });
+  ipcMain.handle('materials:book-local-recheck',async(event,input)=>{
+    check(event);if(!validLocalBookRecheckQuery(input))throw Error('invalid_input');
+    const controller=new AbortController(),closed=()=>controller.abort();
+    event.sender.once('destroyed',closed);
+    const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(90000)]);
+    try{
+      const {resourceId,version,page}=input;
+      const result=await store.materialAi.localBookRecheck({resourceId,version,page},async(source,active)=>{
+        const view=await readMaterialLayout(store.materials,layoutCache,
+          {...source,schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),refresh:false},active,recognizeLocalPdfLayout,layoutPdfFile);
+        return view.layout;
+      },signal);
+      check(event);return result;
+    }catch(error){
+      const code=error instanceof Error?error.message:'';
+      throw Error(signal.aborted?'cancelled':['local_recheck_unavailable','source_changed','source_incomplete','book_pair_required','unit_too_large','busy','timeout'].includes(code)?code:'unavailable');
+    }finally{event.sender.removeListener('destroyed',closed);}
   });
   ipcMain.handle('materials:folder-books',(event,input)=>{check(event);if(!validMaterialFolderBooksQuery(input))throw Error('invalid_input');return safe(()=>store.materialAi.books.folderCandidates(structuredClone(input)));});
   ipcMain.handle('materials:book-pair-set',(event,input)=>{check(event);if(!validMaterialBookPairInput(input))throw Error('invalid_input');return store.materialAi.books.change(structuredClone(input)).catch(error=>{const code=error instanceof Error?error.message:'';throw Error(['invalid_input','source_changed','conflict','unsupported','answer_already_processed'].includes(code)?code:'unavailable');});});
