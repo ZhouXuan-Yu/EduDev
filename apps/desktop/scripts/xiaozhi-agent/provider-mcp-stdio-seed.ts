@@ -63,10 +63,10 @@ try {
     packageHash:digest(bytes),files:[{path:filename,bytes:bytes.length,sha256:digest(bytes)}],executable:{path:selected.path,sha256:selected.sha256},
     arguments:['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File','$PACKAGE/'+filename],workspaceActions:['read'],
     limits:{memoryBytes:536870912,cpuRate:5000,userTimeMs:0,leaseMs:120000,maxInputBytes:4194304,maxOutputBytes:4194304,maxProcesses:4}};
-  await permissionStore.issue(fault,[runtime.recipe(),filesystemScope(workspace,['read']),
+  const nativeScopes: Parameters<typeof permissionStore.issue>[1]=[runtime.recipe(),filesystemScope(workspace,['read']),
     {kind:'process',backend:'appcontainer',executable:selected.path,executableHash:selected.sha256,workspace},
-    {kind:'dependency',source:binding.source,package:binding.package,version:binding.version,sha256:binding.packageHash,environment:directory,installScripts:false}],
-  {kind:'teacher',reference:'owned-mcp-isolation-fixture-grant'});
+    {kind:'dependency',source:binding.source,package:binding.package,version:binding.version,sha256:binding.packageHash,environment:directory,installScripts:false}];
+  await permissionStore.issue(fault,nativeScopes,{kind:'teacher',reference:'owned-mcp-isolation-fixture-grant'});
   const controlled=createControlledMcpService({permissions,store:permissionStore,runtime,binding:async()=>binding});
   const sourceHash=digest(canonicalMcp({transport:'stdio',command:'managed:'+artifactId,args:[],cwd:''}));
   mcp=createMcpRuntime(store.xiaozhiState.sql);
@@ -80,6 +80,14 @@ try {
   catalog=await mcp.trust({...input(),schemaHash:verified.schemaHash,tools:['echo']});
   await permissionStore.issue(fault,[{kind:'mcp',serverId,sourceHash,schemaHash:verified.schemaHash,tools:['echo']}],
     {kind:'teacher',reference:'owned-mcp-isolation-fixture-tool-grant'});
+  if(process.env.OMNI_EDU_PROVIDER_MCP_OWNER_CYCLES==='1'){
+    const secondFault=(await store.createAiConversationSession({title:'重复原生故障会话',folderId:null})).session.id;
+    await store.xiaozhiState.setWorkspace(secondFault,workspace,'Owned test workspace');
+    await permissionStore.issue(secondFault,nativeScopes,{kind:'teacher',reference:'owned-mcp-isolation-fixture-grant'});
+    await permissionStore.issue(secondFault,[{kind:'mcp',serverId,sourceHash,schemaHash:verified.schemaHash,tools:['echo']}],
+      {kind:'teacher',reference:'owned-mcp-isolation-fixture-tool-grant'});
+    report.secondFault=secondFault;
+  }
   await createAcquisitionState(store.xiaozhiState.sql).saveArtifact({id:artifactId,name:binding.package,version:binding.version,
     source:binding.source,license:'MIT',revision:1,status:'ready',schemaHash:verified.schemaHash,installedBytes:bytes.length,
     expiresAt:new Date(Date.now()+900000).toISOString(),sourceHash,ownerTaskId:owner.taskId,recipeId:'owned-mcp-isolation',serverId,

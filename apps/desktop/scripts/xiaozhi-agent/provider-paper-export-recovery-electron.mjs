@@ -12,7 +12,8 @@ import {_electron as electron} from 'playwright';
 const build=process.argv[2];
 assert(path.isAbsolute(build??''),'Pass the exact verified desktop build root');
 const keepFailing=process.argv[3]==='--keep-failing';
-const cancelInFlight=process.argv[3]==='--cancel-in-flight';
+const shutdownInFlight=process.argv[3]==='--shutdown-in-flight';
+const cancelInFlight=process.argv[3]==='--cancel-in-flight'||shutdownInFlight;
 assert(!process.argv[3]||keepFailing||cancelInFlight,'Unknown fixture argument');
 const desktop=path.resolve(import.meta.dirname,'../..');
 const main=fs.realpathSync(path.join(build,'main/index.js'));
@@ -28,7 +29,7 @@ const fileIdentity=file=>{
   const {dev,ino,mtimeMs,birthtimeMs}=fs.statSync(file);
   return {dev,ino,mtimeMs,birthtimeMs};
 };
-const report={ok:false,root,build,keepFailing,cancelInFlight,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
+const report={ok:false,root,build,keepFailing,cancelInFlight,shutdownInFlight,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
 let app,page,sessionId;
 function sql(query,values=[]) {
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -138,6 +139,10 @@ async function verifyPrintCancellation(paper,confirmed,previousWord) {
   assert.deepEqual(confirmedFacts(),confirmed);
   assert.equal(fileHash(docx),previousWord);
   assert.equal(fileHash(preserved),preservedHash);
+  if(shutdownInFlight){
+    report.cancellation.independent={sessionId:other,runId:search.runId,result:independent.status};
+    return {kept,runId,probe};
+  }
   await app.evaluate(()=>globalThis.releaseProviderPaperPrint());
   const closed=await until(async()=>{
     const print=await app.evaluate(()=>globalThis.providerPaperRecovery.printing[0]);
@@ -159,14 +164,83 @@ async function verifyPrintCancellation(paper,confirmed,previousWord) {
   report.checks.push('The cancelled PDF retains its actual slot until its late native reply, while another teacher query succeeds and original files are preserved');
 }
 
+async function verifyShutdown({kept,runId,probe},env,facts,oldHash,oldOutput) {
+  const child=app.process();
+  const processExit=new Promise(resolve=>child.once('close',(code,signal)=>resolve({pid:child.pid,code,signal})));
+  void processExit.then(exit=>{report.shutdown.exit=exit;});
+  const appClosed=app.waitForEvent('close',{timeout:20_000});
+  void appClosed.catch(()=>undefined);
+  report.shutdown={pid:child.pid};
+  await app.evaluate(({app})=>{
+    app.on('before-quit',()=>{globalThis.providerPaperRecovery.quitAttempts.push(Date.now());});
+    setTimeout(()=>app.quit(),30);
+  });
+  report.shutdown.beforeQuit=await until(()=>app.evaluate(()=>globalThis.providerPaperRecovery.quitAttempts[0]),'actual before-quit');
+  report.shutdown.slotWhileClosing=await probe();
+  assert.equal(report.shutdown.slotWhileClosing,'cancelled');
+  assert(fs.existsSync(kept)&&!fs.existsSync(pdf));
+  report.shutdown.beforeRelease=await app.evaluate(()=>globalThis.providerPaperRecovery.printing[0]);
+  assert(!report.shutdown.beforeRelease.closed);
+  report.shutdown.notice=await until(()=>app.evaluate(()=>globalThis.providerPaperRecovery.quitNotice),'visible failed-exit warning',10_000);
+  assert.match(report.shutdown.notice.message,/暂时无法退出/u);
+  assert(report.shutdown.notice.at-report.shutdown.beforeQuit>=4_900);
+  const other=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({
+    title:'暂时无法退出时仍可操作',folderId:null
+  })).session.id);
+  assert.match(other,/^aisession_/u);
+  report.shutdown.foregroundAfterTimeout=other;
+  report.shutdown.slotAfterTimeout=await probe();
+  assert.equal(report.shutdown.slotAfterTimeout,'timeout');
+  assert(fs.existsSync(kept));
+  await app.evaluate(({BrowserWindow})=>{
+    const teacherWindow=BrowserWindow.getAllWindows().find(window=>!window.webContents.getURL().includes('/office-render-'));
+    if(!teacherWindow)throw Error('Missing teacher desktop');
+    setTimeout(()=>teacherWindow.close(),30);
+  });
+  report.shutdown.secondQuit=await until(()=>app.evaluate(()=>globalThis.providerPaperRecovery.quitAttempts[1]),'original window close requests another quit');
+  await app.evaluate(()=>setTimeout(()=>globalThis.releaseProviderPaperPrint(),30));
+  await appClosed;
+  report.shutdown.exit=await processExit;
+  assert.equal(report.shutdown.exit.code,0);
+  assert(!fs.existsSync(kept),'The original print stage is gone after real Electron process exit');
+  assert(!fs.existsSync(pdf));
+  assert.deepEqual(confirmedFacts(),facts);
+  assert.deepEqual(artifactFacts(),oldOutput);
+  assert.equal(fileHash(docx),oldHash);
+  assert.equal(event(runId).status,'interrupted');
+  assert(!physical(runId).some(effect=>effect.state==='committed'));
+  app=undefined;
+  const coldEnv={...env};
+  delete coldEnv.DEEPSEEK_API_KEY;
+  app=await electron.launch({args:[main,'--user-data-dir='+profile],env:coldEnv,timeout:60_000});
+  page=await app.firstWindow();
+  await page.getByTestId('office-prompt-input').waitFor();
+  assert.notEqual(app.process().pid,child.pid);
+  const restored=await until(async()=>{
+    const live=await state();
+    const turn=live.projection.turns.find(turn=>turn.id===runId);
+    return turn&&{turn,running:live.running};
+  },'cold readback of the original interrupted PDF turn');
+  assert(!restored.running);
+  assert.equal(restored.turn.status,'interrupted');
+  assert.notEqual(restored.turn.task?.state,'completed');
+  report.shutdown.cold={pid:app.process().pid,sessionId,task:restored.turn.task,turn:restored.turn.status};
+  report.checks.push('A blocked print yields a failed-exit warning while the teacher remains active, then actual shutdown waits for cleanup and restores the interrupted turn');
+}
+
 try {
   const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
   Object.assign(env,{OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_DATA_ROOT:data,
     OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),DEEPSEEK_API_KEY:'synthetic-provider-paper',DEEPSEEK_MODEL:'deepseek-flash'});
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,timeout:60_000});
-  await app.evaluate(({app,dialog,net},{directory,keepFailing,cancelInFlight})=>{
-    const state=globalThis.providerPaperRecovery={requests:[],printing:[],phase:null,independent:[]};
+  await app.evaluate(({app,dialog,net},{directory,keepFailing,cancelInFlight,shutdownInFlight})=>{
+    const state=globalThis.providerPaperRecovery={requests:[],printing:[],phase:null,independent:[],quitAttempts:[]};
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});
+    if(shutdownInFlight)dialog.showMessageBox=async(...args)=>{
+      const {title,message,detail}=args.at(-1);
+      state.quitNotice={title,message,detail,at:Date.now()};
+      return {response:0,checkboxChecked:false};
+    };
     app.on('web-contents-created',(_,contents)=>{
       const native=contents.printToPDF.bind(contents);
       let current;
@@ -222,7 +296,7 @@ try {
       const delta=tool?{role:'assistant',tool_calls:[{index:0,id,type:'function',function:tool}]}:{role:'assistant',content:'以实际保存结果为准。'};
       return respond(id,delta,tool);
     };
-  },{directory:workspace,keepFailing,cancelInFlight});
+  },{directory:workspace,keepFailing,cancelInFlight,shutdownInFlight});
   page=await app.firstWindow();
   await page.getByTestId('office-prompt-input').waitFor();
   sessionId=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({title:'原题卷恢复验收',folderId:null})).session.id);
@@ -247,28 +321,31 @@ try {
   assert.equal(oldOutput.length,1);
   assert.equal(oldEffect.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
   report.checks.push('Teacher-confirmed paper is unchanged after the actual Word export');
-  if(cancelInFlight)await verifyPrintCancellation(paper,facts,oldHash);
-  report.second=await startExport(paper,'pdf');
-  report.instrumentation=await app.evaluate(()=>globalThis.providerPaperRecovery);
-  assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),
-    cancelInFlight?[[false,true,true],[false,true,true]]:[[true,true,true],[keepFailing,true,true]]);
-  assert.equal(fileHash(docx),oldHash);
-  assert.deepEqual(fileIdentity(docx),oldIdentity);
-  assert(!fs.readdirSync(data).some(name=>name.startsWith('office-render-')));
-  assert.deepEqual(confirmedFacts(),facts);
-  assert.deepEqual(physical(report.first.runId),oldEffect);
-  assert.deepEqual(artifactFacts().filter(row=>row.file_path===docx),oldOutput);
-  if(keepFailing){
-    assert.notEqual(report.second.terminal.artifact?.state,'saved');
-    assert(!fs.existsSync(pdf));
-    assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,0);
-    assert.equal(report.second.physical.filter(item=>item.state==='committed').length,0);
-    report.checks.push('Persistent print rejection stops at two physical attempts and produces no saved fact');
+  const stopped=cancelInFlight?await verifyPrintCancellation(paper,facts,oldHash):undefined;
+  if(shutdownInFlight){
+    await verifyShutdown(stopped,env,facts,oldHash,oldOutput);
   }else{
-    assert.equal(report.second.terminal.artifact?.state,'saved',JSON.stringify(report.second));
-    assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,1);
-    assert.equal(report.second.physical.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
-    const parsed=spawnSync(process.env.OMNI_EDU_FIXTURE_PYTHON||'python',['-c',`
+    report.second=await startExport(paper,'pdf');
+    report.instrumentation=await app.evaluate(()=>globalThis.providerPaperRecovery);
+    assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),
+      cancelInFlight?[[false,true,true],[false,true,true]]:[[true,true,true],[keepFailing,true,true]]);
+    assert.equal(fileHash(docx),oldHash);
+    assert.deepEqual(fileIdentity(docx),oldIdentity);
+    assert(!fs.readdirSync(data).some(name=>name.startsWith('office-render-')));
+    assert.deepEqual(confirmedFacts(),facts);
+    assert.deepEqual(physical(report.first.runId),oldEffect);
+    assert.deepEqual(artifactFacts().filter(row=>row.file_path===docx),oldOutput);
+    if(keepFailing){
+      assert.notEqual(report.second.terminal.artifact?.state,'saved');
+      assert(!fs.existsSync(pdf));
+      assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,0);
+      assert.equal(report.second.physical.filter(item=>item.state==='committed').length,0);
+      report.checks.push('Persistent print rejection stops at two physical attempts and produces no saved fact');
+    }else{
+      assert.equal(report.second.terminal.artifact?.state,'saved',JSON.stringify(report.second));
+      assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,1);
+      assert.equal(report.second.physical.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
+      const parsed=spawnSync(process.env.OMNI_EDU_FIXTURE_PYTHON||'python',['-c',`
 import json,sys,zipfile,xml.etree.ElementTree as ET
 from pypdf import PdfReader
 doc,pdf,marker=sys.argv[1:]
@@ -282,10 +359,11 @@ body=' '.join(''.join((page.extract_text() or '').split()) for page in reader.pa
 assert marker in body
 print(json.dumps({'pageCount':len(reader.pages),'marker':marker}))
 `,docx,pdf,marker],{encoding:'utf8'});
-    assert.equal(parsed.status,0,parsed.stderr||parsed.stdout);
-    report.files={docx,docxHash:oldHash,pdf,pdfHash:fileHash(pdf),parse:JSON.parse(parsed.stdout)};
-    report.checks.push(cancelInFlight?'A new author-approved PDF survives independent Word/PDF readback after the cancelled window closes':
-      'Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
+      assert.equal(parsed.status,0,parsed.stderr||parsed.stdout);
+      report.files={docx,docxHash:oldHash,pdf,pdfHash:fileHash(pdf),parse:JSON.parse(parsed.stdout)};
+      report.checks.push(cancelInFlight?'A new author-approved PDF survives independent Word/PDF readback after the cancelled window closes':
+        'Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
+    }
   }
   report.ok=true;
 }catch(error){

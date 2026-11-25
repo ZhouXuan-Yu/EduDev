@@ -10,8 +10,10 @@ import {startMcpFixture} from './fixtures/mcp-server.mjs';
 
 const build=process.argv[2];
 assert(path.isAbsolute(build??''),'Pass the actual Electron build root');
+const ownerCycles=process.argv[3]==='--owner-cycles';
+assert(!process.argv[3]||ownerCycles,'Unknown fixture argument');
 const main=fs.realpathSync(path.join(build,'main/index.js'));
-const report={success:false,mainHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),paidCalls:0,checks:[],timeline:[]};
+const report={success:false,mainHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),paidCalls:0,checks:[],timeline:[],cycles:[]};
 const mark=(name,details={})=>report.timeline.push({name,at:performance.now(),...details});
 const service=await startMcpFixture();
 let app, root;
@@ -27,6 +29,7 @@ function gone(pid) {
 }
 try {
   process.env.OMNI_EDU_PROVIDER_HEALTHY_MCP_URL=service.url;
+  if(ownerCycles)process.env.OMNI_EDU_PROVIDER_MCP_OWNER_CYCLES='1';
   const seeded=await runNativeHostSmoke({prefix:'provider-mcp-stdio-desktop-',workerFile:'scripts/xiaozhi-agent/provider-mcp-stdio-seed.ts',checkCount:1});
   root=seeded.output;
   assert(seeded.success,JSON.stringify(seeded));
@@ -39,15 +42,28 @@ try {
   Object.assign(env,{OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_DATA_ROOT:seed.dataRoot,
     OMNI_EDU_REPO_ROOT:path.resolve(import.meta.dirname,'../../../..'),DEEPSEEK_API_KEY:'synthetic-native-mcp-isolation',DEEPSEEK_MODEL:'deepseek-flash'});
   app=await electron.launch({args:[main,'--user-data-dir='+path.join(root,'desktop-profile')],env,timeout:60_000});
-  await app.evaluate(({net},{tool,independentTool,query})=>{
+  await app.evaluate(({net},{tool,independentTool,query,requestLimit})=>{
     const traces=globalThis.providerNativeMcpFrames=[];
     const childProcess=process.getBuiltinModule('node:child_process');
     const nativeSpawn=childProcess.spawn;
     childProcess.spawn=function(executable,args,...options){
       const child=nativeSpawn.call(this,executable,args,...options);
       if(!args?.includes('--protocol-stdio'))return child;
-      let pending='';
-      child.stdout?.on('data',bytes=>{
+      let pending='',lateOwner=false,cancellation;
+      const write=child.stdin.write.bind(child.stdin);
+      child.stdin.write=(input,...args)=>{
+        if(lateOwner){
+          let control;
+          try{control=JSON.parse(input.toString());}catch{/* Keep raw helper input. */}
+          if(control?.type==='cancel'){
+            // Let the owned fixture complete native EOF; its old output must still be rejected.
+            cancellation??=setTimeout(()=>{if(!child.stdin.destroyed)write(input,...args);},1_500);
+            return true;
+          }
+        }
+        return write(input,...args);
+      };
+      const readFrame=bytes=>{
         pending+=bytes.toString('utf8');
         const lines=pending.split('\n');
         pending=lines.pop();
@@ -60,9 +76,19 @@ try {
           if(type!=='output'||typeof data!=='string')continue;
           const text=Buffer.from(data,'base64').toString('utf8');
           const match=/NATIVE-PROVIDER-FIXTURE (native-exit|native-late) (\d+)/u.exec(text);
-          if(match&&stream==='stderr')traces.push({type:'physical_call',executionId,mode:match[1],pid:Number(match[2])});
+          if(match&&stream==='stderr'){
+            lateOwner=match[1]==='native-late';
+            traces.push({type:'physical_call',executionId,mode:match[1],pid:Number(match[2])});
+          }
           if(stream==='stdout'&&text.includes('NATIVE-LATE-701-MUST-NOT-PUBLISH'))traces.push({type:'late_stdout',executionId});
         }
+      };
+      child.stdout?.on('data',readFrame);
+      child.once('close',code=>{
+        clearTimeout(cancellation);
+        child.stdout?.off('data',readFrame);
+        setImmediate(()=>traces.push({type:'helper_close',helperPid:child.pid,code,
+          stdoutListeners:child.stdout?.listenerCount('data')??0,stderrListeners:child.stderr?.listenerCount('data')??0}));
       });
       return child;
     };
@@ -73,10 +99,11 @@ try {
       if(url.origin!=='https://api.deepseek.com')throw Error('Synthetic fixture prevents external network');
       if(url.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,
         max_output_tokens:32768,input_modalities:['text']}]}),{headers:{'content-type':'application/json'}});
-      if(url.pathname!=='/v1/chat/completions'||requests.length>=24)throw Error('Unexpected synthetic model request');
+      if(url.pathname!=='/v1/chat/completions'||requests.length>=requestLimit)throw Error('Unexpected synthetic model request');
       const body=JSON.parse(init.body),lastUser=body.messages.findLastIndex(item=>item.role==='user');
-      const mode=/NATIVECASE-(exit|late|new|local)/u.exec(JSON.stringify(body.messages[lastUser]))?.[1];
-      if(!mode)throw Error('Missing owned synthetic scenario for original session');
+      const scenario=/NATIVECASE-(exit|late|new|local) CASE-ID-([a-f0-9-]+) /u.exec(JSON.stringify(body.messages[lastUser]));
+      if(!scenario)throw Error('Missing owned synthetic scenario for original session');
+      const [,mode,caseId]=scenario;
       const receipts=body.messages.slice(lastUser+1).filter(item=>item.role==='tool');
       const steps=mode==='local'?[
         ['education_search_questions',{query,subject:'物理',limit:3}],
@@ -84,15 +111,15 @@ try {
         [independentTool,{topic:'合成独立服务课程'}]
       ]:[['find_education_tools',{query:'Owned Windows MCP isolation echo'}],[tool,{text:'native-'+mode}]];
       const next=steps[receipts.length];
-      requests.push({mode,count:receipts.length,lastTool:receipts.at(-1)?.content});
-      const id='native_case_'+mode+'_'+receipts.length;
+      requests.push({mode,caseId,count:receipts.length,lastTool:receipts.at(-1)?.content});
+      const id='native_case_'+caseId+'_'+receipts.length;
       const delta=next?{role:'assistant',tool_calls:[{index:0,id,type:'function',function:{name:next[0],arguments:JSON.stringify(next[1])}}]}:
         {role:'assistant',content:'以本地处理与实际工具结果为准。'};
       const chunk=(value,reason)=>'data: '+JSON.stringify({id,object:'chat.completion.chunk',created:1,model:body.model,
         choices:[{index:0,delta:value,finish_reason:reason}]})+'\n\n';
       return new Response(chunk(delta,null)+chunk({},next?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
     };
-  },{tool:seed.tool,independentTool:seed.independentTool,query});
+  },{tool:seed.tool,independentTool:seed.independentTool,query,requestLimit:ownerCycles?96:24});
   const page=await app.firstWindow();
   await page.getByTestId('office-prompt-input').waitFor();
   const call=(method,input)=>page.evaluate(({method,input})=>window.omniEdu[method](input),{method,input});
@@ -111,7 +138,7 @@ try {
   }
   const receipts=run=>sql('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=? AND tool=?',run,seed.tool);
   async function start(sessionId,mode,request) {
-    const result=await call('startXiaozhi',{sessionId,commandId:'xicmd_'+randomUUID(),prompt:'NATIVECASE-'+mode+' '+request});
+    const result=await call('startXiaozhi',{sessionId,commandId:'xicmd_'+randomUUID(),prompt:'NATIVECASE-'+mode+' CASE-ID-'+randomUUID()+' '+request});
     assert(result.ok,JSON.stringify(result));
     return result.runId;
   }
@@ -193,6 +220,42 @@ try {
   assert.deepEqual(report.permissionTerminals,{exit:['execution_failed'],late:['execution_failed'],healthy:['execution_completed']},
     'A physically cleaned child with a nonzero exit code must not settle its service authority as successful');
   report.checks.push('Permission audit distinguishes an orderly release of native resources from success of the owned MCP service');
+  async function saveOwnerCycle(physical,terminal){
+    const close=await until(async()=>{
+      const frames=await app.evaluate(()=>globalThis.providerNativeMcpFrames);
+      return frames.find(frame=>frame.type==='helper_close'&&frame.helperPid===physical.helperPid);
+    },'original helper close event');
+    assert.equal(close.stdoutListeners,0,'No pipe listener remains after actual close');
+    assert.equal(close.stderrListeners,0,'No diagnostic pipe listener remains after actual close');
+    assert(!report.cycles.some(cycle=>cycle.executionId===terminal.executionId||cycle.projection===physical.intent.projectionRoot));
+    report.cycles.push({executionId:terminal.executionId,owner:terminal.owner,pid:physical.pid,helperPid:physical.helperPid,
+      projection:physical.intent.projectionRoot,terminal:terminal.result,close});
+  }
+  if(ownerCycles){
+    await saveOwnerCycle(owned,report.exit);
+    await saveOwnerCycle(late,report.late);
+    for(let ordinal=3;ordinal<=10;ordinal++){
+      // Rotate test conversations without rotating the application, trusted server or permission owner service.
+      const session=ordinal<=5?seed.fault:seed.secondFault;
+      assert(session);
+      const broken=await start(session,'exit','记录第 '+ordinal+' 个真实进程退出。');
+      const failingOwner=await dispatch(broken,'exit');
+      const terminal=await ended(broken,failingOwner,23);
+      await finished(session,broken);
+      assert.equal(receipts(broken).length,1);
+      assert.equal(receipts(broken)[0].success,0);
+      assert.deepEqual(permissionTerminal(broken),['execution_failed']);
+      await saveOwnerCycle(failingOwner,terminal);
+      const recovering=await start(session,'new','使用新连接读取测试课程 '+ordinal+'。');
+      await finished(session,recovering);
+      assert.equal(receipts(recovering).length,1);
+      assert.equal(receipts(recovering)[0].success,1);
+      assert.deepEqual(permissionTerminal(recovering),['execution_completed']);
+      assert.equal((await mcpCatalog()).servers.find(row=>row.id===seed.serverId).trustedSchemaHash,seed.schemaHash);
+      report.cycles.at(-1).recoveryRun=recovering;
+    }
+    report.checks.push('Ten independent native fault owners close their Job, projection and pipe listener without losing original trust');
+  }
   report.success=true;
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}
 finally{

@@ -7,16 +7,17 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 
-const [build, fixture, acceptance] = process.argv.slice(2);
+const [build, fixture, acceptance, mode] = process.argv.slice(2);
 assert([build, fixture, acceptance].every(value => value && path.isAbsolute(value)), 'Pass the actual build, scan and acceptance root');
+assert(!mode||mode==='--owner-cycles','Unknown fixture argument');
 const main = fs.realpathSync(path.join(build, 'main/index.js'));
 const desktop = path.resolve(build, '../..');
 const root = fs.mkdtempSync(path.join(fs.realpathSync(acceptance), 'provider-ocr-recovery-'));
 const data = path.join(root, 'data'), profile = path.join(root, 'profile'), database = path.join(data, 'app.db');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceHash = hash(fs.readFileSync(fixture));
-const report = {root, main, mainHash:hash(fs.readFileSync(main)), sourceHash, success:false, paidCalls:0, checks:[]};
-let app, page, resourceId;
+const report = {root, main, mainHash:hash(fs.readFileSync(main)), sourceHash, success:false, paidCalls:0, checks:[], cycles:[]};
+let app, page, resourceId, selectedFixture=fixture;
 
 async function until(label, read, timeout = 45000) {
   const deadline = performance.now() + timeout;
@@ -33,7 +34,7 @@ function read(action) {
 }
 function live() {
   return read(db => {
-    const source = db.prepare('SELECT id,local_path,content_hash,parse_status FROM teacher_resources WHERE original_file_name=?').get(path.basename(fixture));
+    const source = db.prepare('SELECT id,local_path,content_hash,parse_status FROM teacher_resources WHERE original_file_name=?').get(path.basename(selectedFixture));
     if (!source) return {};
     resourceId = source.id;
     const task = db.prepare("SELECT id,status,error_message,payload_json FROM ai_tasks WHERE task_type='resource_parse' AND json_extract(payload_json,'$.resourceId')=?").get(resourceId);
@@ -63,7 +64,10 @@ async function capture(mode, barrierPage) {
       child.once('spawn', () => {trace.spawned = true;});
       child.stdout.once('close', () => {trace.outputClosed = true;});
       const watchdog = setTimeout(() => kill(), 75000);
-      child.once('close', (code, signal) => {clearTimeout(watchdog);Object.assign(trace, {closed:true, code, signal});});
+      child.once('close', (code, signal) => {
+        clearTimeout(watchdog);
+        queueMicrotask(()=>Object.assign(trace,{closed:true,code,signal,stdoutDataListeners:child.stdout.listenerCount('data')}));
+      });
       globalThis.releaseProviderOcr = () => {if (!trace.closed) kill();};
       if (mode === 'hold-cancel') child.kill = () => {trace.killRequested = true;return true;};
       child.stdout.push = (chunk, ...rest) => {
@@ -166,6 +170,19 @@ try {
   await observeLeaseScheduler(ownerFile);
   const leaseSnapshot = () => app.evaluate(() => globalThis.readProviderOcrLease());
   const forTask = (snapshot, id) => snapshot.events.filter(event => event.owner === id && event.phase === 'parse');
+  async function verifyOwnerCycle(worker, task, expectedLease) {
+    assert(worker.closed&&worker.outputClosed&&gone(worker.pid));
+    assert.equal(worker.stdoutDataListeners,0);
+    const snapshot=await leaseSnapshot();
+    const events=forTask(snapshot,task.id);
+    const start=expectedLease?events.find(event=>event.lease===expectedLease&&event.state==='started'):
+      events.findLast(event=>event.state==='started');
+    assert(start,'Observe the actual OCR lease');
+    assert.equal(events.filter(event=>event.lease===start.lease&&event.state==='actual_settled').length,1);
+    assert(!report.cycles.some(cycle=>cycle.request===worker.requestId||cycle.lease===start.lease));
+    report.cycles.push({task:task.id,pid:worker.pid,request:worker.requestId,code:worker.code,lease:start.lease,events,
+      stdoutDataListeners:worker.stdoutDataListeners});
+  }
   page = await app.firstWindow();
   await page.locator('[data-testid="nav-knowledge"]:visible').click();
   await capture('abnormal',1);
@@ -183,6 +200,7 @@ try {
   assert.equal(interrupted.source.content_hash,sourceHash);
   assert.equal(hash(fs.readFileSync(interrupted.source.local_path)),sourceHash);
   report.abnormal = {trace:first, snapshot:interrupted};
+  if(mode)await verifyOwnerCycle(first,interrupted.task);
   report.checks.push('A real unexpected exit clears only its owner after the first page was durably saved');
 
   await capture('hold-cancel',2);
@@ -239,6 +257,7 @@ try {
   assert.deepEqual(cancelled.snapshot.pages,heldState.pages);
   assert.equal(cancelled.snapshot.task.state,'cancelled');
   report.cancel = {held, late, blocked, saved:{id:saved.id}, beforeClose, afterClose, lease:cancelling.lease, after:cancelled};
+  if(mode)await verifyOwnerCycle(cancelled.trace,heldState.task,cancelling.lease);
   report.checks.push('Actual cancel acknowledgement holds capacity and fences the old real page while an independent save succeeds');
 
   await capture('observe');
@@ -276,6 +295,28 @@ try {
   await page.getByTestId('materials-queue').getByText('正文已收录',{exact:true}).waitFor();
   assert.deepEqual(terminal.pages,completed.pages);
   report.checks.push('The original material queue and its visible success agree with persistent six-page evidence');
+  if(mode){
+    const template=fs.readFileSync(fixture);
+    for(let ordinal=3;ordinal<=10;ordinal++){
+      selectedFixture=path.join(root,`ocr-owner-${ordinal}.pdf`);
+      fs.writeFileSync(selectedFixture,Buffer.concat([template,Buffer.from(`\n% physical owner ${ordinal}\n`)]),{flag:'wx'});
+      await capture('abnormal',1);
+      await app.evaluate(({dialog},selected)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[selected]});},selectedFixture);
+      await page.getByTestId('materials-import').click();
+      const failure=await until('real OCR owner exit '+ordinal,()=>{
+        const current=live();
+        return current.task?.state==='failed'&&current.job?.state==='interrupted'&&current.job.owner_pid===0&&current;
+      });
+      const worker=await trace();
+      assert(worker.checkpointAck===1&&worker.code!==0&&worker.pid>0);
+      const fixtureHash=hash(fs.readFileSync(selectedFixture));
+      assert.equal(failure.source.content_hash,fixtureHash);
+      assert.equal(hash(fs.readFileSync(failure.source.local_path)),fixtureHash);
+      assert.deepEqual(failure.pages.map(p=>[p.page,p.status,p.attempts]),[[1,'complete',1]]);
+      await verifyOwnerCycle(worker,failure.task);
+    }
+    report.checks.push('Ten actual OCR fault owners settle their exact lease and pipe listener in one open desktop');
+  }
   report.success = true;
 } catch (error) {
   report.error = String(error.stack ?? error);

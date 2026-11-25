@@ -25,7 +25,7 @@
 | AC-19 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。Provider 组合阶段重跑。 |
 | AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
-| AC-22 | NOT_RUN | 各执行器 10 次生命周期、未退出占用与关停。 |
+| AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
 | AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
 | AC-24 | NOT_RUN | 正式桌面冷启、原审批与显式继续。 |
 | AC-25 | NOT_RUN | 固定修复 recipe 的实际执行、读回与幂等性。 |
@@ -175,3 +175,24 @@
 - 正式构建主进程 SHA-256 为 `a2a589037b74bd60a0d124b9df93dc8657f301cfd194a41e639d05f876eb2606`，渲染入口为 `719270bcc6b4c9a4073d31ddd1d0bb18264cb9c6a9fe53f4b13b0d68fe4208e8`。窗口 2（渲染进程 48748）在停止确认后仍存活，500 毫秒的第二次同类准入等待超时，独立会话通过真实查题工具得到原题。回执交付后旧窗口关闭、专属临时目录消失、PDF 配额可重新取得。旧 run 持久化为中断，Effect 保持 unknown，未生成已保存回执。原试卷、Word 与教师笔记摘要一致。重新提交并获教师授权后，独立 PDF 与 DOCX 读取确认内容、答案和份数。见 `provider-paper-export-JWmNVd/report.json`，共 3/3。
 - 同一构建复验暂态失败仅补齐缺失 PDF（2/2），持续失败为两次实际打印、零已保存回执（2/2）。分别见 `provider-paper-export-ZIgwaM/report.json`、`provider-paper-export-2xZ4gV/report.json`。命令为 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <本轮实际构建>`，分别使用 `--cancel-in-flight`、默认模式及 `--keep-failing`。
 - 正式构建、渲染组件 261/261、资源压力与调度合同 10/10 均通过。原日志为 `wp05-pdf-lease-build.log`、`wp05-pdf-lease-renderer.log`、`wp05-pdf-lease-resource-contract.log`。依赖锁未变，审计维持 30 项通报（高危 5 项）。实际模型付费调用为 0。各 owner 多轮回收与不退出实例留给 AC-22。
+
+## WP-05 第六至八轮 执行器资源结算与关停
+
+| 路径 | 实际结果 | 本地证据 |
+| --- | --- | --- |
+| Windows MCP stdio | 10 次故障 owner，独立会话继续查题。Windows AppContainer 的子进程、helper、Job、投影目录均退出或清理。真实旧 stdout 在原超时后到达，后续工具仅接受新回执。旧版物理退出后仍有 1 个数据监听器，修复后 stdout 和 stderr 监听器均为 0，权限审计与发生的效果一致。 | `provider-mcp-stdio-desktop-nMsRyq/desktop-report.json`、`provider-mcp-stdio-desktop-aPNeA4/desktop-report.json` |
+| MCP HTTP | 10 次本地真实连接断开，记录关闭回执和同一来源的重新握手。独立来源始终正常，原已核验的 Schema 保持一致。 | `mcp-health-desktop-DgpQMU/report.json` |
+| OCR | 同一正式资源 R1 桌面执行 10 次故障 owner。检查原材文件摘要、实际 PID、nonce、页码 checkpoint、准确的 lease 和每轮恰好一次 `actual_settled`。确认取消前景独立保存、旧输出不覆盖原页。 | `provider-ocr-recovery-ABeSuf/report.json` |
+| 向量和 embedding | 同一个资源 R1 桌面各 10 次。原始向量 utility 的 PID 与世代退出后，旧回执不推进游标。新 utility 用原游标恢复。原 ONNX 请求超时后发生真实迟到管道回执，旧子进程关闭前未开启新模型进程。关闭后连续 10 次恢复同一来源。21 个观测到的原生进程在测试退出后均已结束。 | `provider-vector-recovery-YrDust/report.json`、同目录 `embedding-trace.jsonl` |
+| 本地文档解析 | 实际 Electron utility 使用正式构建内的 `document-worker.js` 读回 DOCX。基线原消息监听器为 1，修复后停用和恢复的各十个物理子进程均以 0 个专属监听器结算；在该旧子进程仍活着时，全部八个真实槽位保持占满，迟到合法回执不能覆盖取消。 | `provider-document-owner-SvZLHL/REPORT.json`、`provider-document-owner-rjBNMO/REPORT.json`、`wp05-ownership-document-contract.log` |
+| PDF 同进程循环 | 10 个唯一浏览上下文和临时目录，记录实际窗口/PID、原 Chromium 字节、停止与结算。停止后原 PDF 类目不可重新准入，各轮窗体、监听器和临时项目均回到基线。 | `provider-pdf-lifecycle-QvWfb2/report.json` |
+| PDF 长时间无法退出 | 旧版主进程在真实打印回执尚未交付时退出。修复后保留原窗口及租约，5 秒后提示，并可开新会话。继续等待时相同槽位仍不可用。由原窗口再次触发退出，经真实回执和清理后进程以 0 退出，重启读回原中断任务、原 Word 和教师确认，无 PDF 已保存记录。 | `provider-paper-export-EnivwN/report.json`、`provider-paper-export-Ac46n7/report.json` |
+
+正式构建主进程为 `9b018a32ac40ef0898078b0f629ea7dae42a9c86c815920e9895ba8bbb13d6a6`，渲染入口为 `719270bcc6b4c9a4073d31ddd1d0bb18264cb9c6a9fe53f4b13b0d68fe4208e8`。同一源码构建时 `npm run build` 通过，渲染组件 261/261，文档生命周期合同 4/4。依赖审计锁未改，30 项既有通报含高危 5 项。模型付费请求为 0。
+
+三次实现验证分别消耗 WP-05 第 6、7、8 轮。保留 MCP 池超时和测试上下文被压缩的原始失败。反例中的旧进程信号只对合成服务延迟交付，重跑在同一 Electron 实例以两个获授同一固定能力的会话复用原 Provider，从而单独测量 owner 回收。AC-22 暂不计入必需项完成数。
+
+## WP-06 冷启基线
+
+- 当前 Node 24 需通过 `node --experimental-transform-types scripts/xiaozhi-agent/phase6-startup-recovery-smoke.mjs` 运行原 TypeScript 依赖，实际 SQLite、Task 和 Journal 冷启 2/2。原 strip-only 错误、修正命令和读回分别见 `wp06-cold-current-contract.log`、`wp06-cold-current-contract-transform.log`、`xiaozhi-phase6-startup-recovery-hhJRGv/report.json`。
+- `node scripts/xiaozhi-agent/phase6-recovery-host-parent.mjs` 使用真实 Electron Host 及受控终端，H01–H04 共 4/4。冷启原任务、显式继续、缺失或损坏 JSONL 的受控重建，以及 native binding 失败回滚和再次继续通过。见 `xiaozhi-phase6-recovery-host-Ps7VIq/report.json`。此基线未覆盖同时存在原待审、撤权、未知 Effect 和旧快照的前端场景。

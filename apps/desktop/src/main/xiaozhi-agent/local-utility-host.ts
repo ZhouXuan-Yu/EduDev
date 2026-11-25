@@ -21,18 +21,27 @@ export function runLocalUtility<T>(options:{entry:'pdf-text-worker.js'|'document
   const env=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP','LANG'].flatMap(key=>process.env[key]?[[key,process.env[key]!]]:[]));
   try{child=utilityProcess.fork(path.join(path.dirname(fileURLToPath(import.meta.url)),options.entry),[],{stdio:'pipe',serviceName:options.serviceName,env});}
   catch{release();resolve(fail('unavailable'));return;}
-  const finish=(result:T)=>{
+  const finish=(result:T,stop=true)=>{
    if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);
-   child.kill();resolve(result);
+   if(stop)child.kill();resolve(result);
   };
   const abort=()=>finish(fail(signal.reason==='timeout'?'timeout':'cancelled'));
   const timer=setTimeout(()=>finish(fail('timeout')),options.timeout);
   signal.addEventListener('abort',abort,{once:true});
   // Drain streams without exposing parser diagnostics, contents or paths.
-  child.stderr?.on('data',()=>{});child.stdout?.on('data',()=>{});
-  child.once('spawn',()=>{if(settled)child.kill();});
-  child.once('exit',()=>{release();finish(fail('unavailable'));});
-  child.on('message',value=>finish(options.valid(value)?value:fail('parse_failed')));
+  const stdout=child.stdout,stderr=child.stderr;
+  const drain=()=>{};
+  const onSpawn=()=>{if(settled)child.kill();};
+  const onMessage=(value:unknown)=>finish(options.valid(value)?value:fail('parse_failed'));
+  stdout?.on('data',drain);stderr?.on('data',drain);
+  child.once('spawn',onSpawn);
+  child.once('exit',()=>{
+   child.removeListener('spawn',onSpawn);
+   child.removeListener('message',onMessage);
+   stdout?.removeListener('data',drain);stderr?.removeListener('data',drain);
+   release();finish(fail('unavailable'),false);
+  });
+  child.on('message',onMessage);
   try{child.postMessage(options.request);}catch{finish(fail('unavailable'));}
   if(signal.aborted)abort();
  });

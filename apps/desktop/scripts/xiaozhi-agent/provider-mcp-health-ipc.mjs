@@ -10,7 +10,8 @@ import {verifyMcpPreparationIsolation} from './provider-mcp-preparation-desktop.
 
 const build = process.argv[2];
 const preparationIsolation = process.argv[3] === '--preparation-isolation';
-assert(!process.argv[3] || preparationIsolation, 'Unknown fixture argument');
+const ownerCycles = process.argv[3] === '--owner-cycles';
+assert(!process.argv[3] || preparationIsolation || ownerCycles, 'Unknown fixture argument');
 const acceptance = process.env.OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT;
 assert(path.isAbsolute(build ?? '') && path.isAbsolute(acceptance ?? ''), 'Set the verified build and acceptance root');
 const main = await fs.realpath(path.join(build, 'main/index.js'));
@@ -56,6 +57,38 @@ try {
   const second = await trust('Independent MCP fixture', independent);
   if (preparationIsolation) {
     await verifyMcpPreparationIsolation({page, app, source, independent, first, report, data, call, success});
+  } else if (ownerCycles) {
+    const cycles=report.cycles=[];
+    for(let ordinal=1;ordinal<=10;ordinal++){
+      const cycle={ordinal,dispatched:0,closed:0};
+      cycles.push(cycle);
+      let offline=true;
+      source.state.beforeReply=(request,_,response)=>{
+        if(request.method!=='initialize')return;
+        cycle.dispatched++;
+        if(!offline)return;
+        response.once('close',()=>{cycle.closed++;});
+        return 'drop';
+      };
+      const failed=success(await inspect(first.id));
+      assert.equal(failed.servers.find(row=>row.id===first.id).status,'failed');
+      assert.equal(failed.servers.find(row=>row.id===first.id).trustedSchemaHash,first.trustedSchemaHash);
+      const closedDeadline=Date.now()+1_000;
+      while(!cycle.closed&&Date.now()<closedDeadline)await delay(25);
+      assert.equal(cycle.closed,1);
+      assert.equal(cycle.dispatched,1);
+      const other=success(await inspect(second.id));
+      assert.equal(other.servers.find(row=>row.id===second.id).status,'ready');
+      offline=false;
+      const recovered=success(await inspect(first.id));
+      const owner=recovered.servers.find(row=>row.id===first.id);
+      assert.equal(owner.status,'ready');
+      assert.equal(owner.trustedSchemaHash,first.trustedSchemaHash);
+      assert.equal(cycle.dispatched,2);
+      cycle.revision=recovered.revision;
+    }
+    assert.equal(source.state.calls+independent.state.calls,0);
+    report.checks.push('Ten real HTTP disconnects close the original response and recover the same verified service while the second connection remains available');
   } else {
     const initTime = [];
     let offline = true;

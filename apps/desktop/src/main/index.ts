@@ -35,6 +35,7 @@ import { buildReviewReminder } from './ai-harness/review-reminder';
 import { renderTeachingBookMarkdown } from './ai-harness/teaching-book-renderer';
 import { registerXiaozhiIpc } from './xiaozhi-agent/ipc';
 import {registerReplyExport} from './xiaozhi-agent/reply-export';
+import {officePdfWorkPending, prepareOfficePdfShutdown} from './xiaozhi-agent/office-pdf-budget';
 import { createPiConsoleFacade } from './xiaozhi-agent/console-facade';
 import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } from './xiaozhi-agent/runtime-authority';
 
@@ -195,6 +196,11 @@ function createWindow() {
     },
   });
   mainWindow = window;
+  window.on('close', event => {
+    if (!officePdfWorkPending()) return;
+    event.preventDefault();
+    app.quit();
+  });
   installLocalFrameIsolation(window.webContents);
   installDesktopChrome(window);
   installWindowGeometry(window, maximized, geometry);
@@ -630,11 +636,23 @@ if (ownsDesktop) app.whenReady().then(async () => {
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});
   if (authority.mode === 'pi') registerPiConsoleEndpoints({ipcMain,authority,window:()=>mainWindow,run:input=>piConsole.run(input)});
   let shutdown:Promise<void>|undefined,shutdownReady=false,materialAiStartup:Promise<void>|undefined,materialQueueStartup:Promise<void>|undefined;
+  let pdfShutdown:Promise<void>|undefined;
   app.on('before-quit', event => {
-    if (backupExport && !backupExport.committing) backupExport.controller.abort(Error('cancelled'));
     if(shutdownReady)return;
     event.preventDefault();
-    if(shutdown)return;
+    if(shutdown||pdfShutdown)return;
+    if(officePdfWorkPending()){
+      pdfShutdown=prepareOfficePdfShutdown(5_000).then(settled=>{
+        pdfShutdown=undefined;
+        if(settled){app.quit();return;}
+        const notice={type:'warning' as const,title:'PDF 仍在结束',
+          message:'小智暂时无法退出。',detail:'一个 PDF 打印还在清理。可以继续使用其它功能，待打印结束后再退出。'};
+        const displayed=mainWindow&&!mainWindow.isDestroyed()?dialog.showMessageBox(mainWindow,notice):dialog.showMessageBox(notice);
+        void displayed.catch(()=>console.error('[shutdown] pdf_work_still_running'));
+      });
+      return;
+    }
+    if (backupExport && !backupExport.committing) backupExport.controller.abort(Error('cancelled'));
     const ipcDrained=ipcLifetime.close();
     shutdown=Promise.resolve().then(async()=>{
       // Closing windows stops renderer polling. A repeated quit must still wait.

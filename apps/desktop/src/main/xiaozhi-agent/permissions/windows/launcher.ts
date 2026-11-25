@@ -248,9 +248,9 @@ export async function runNativeSandbox(options: {
   options.signal.addEventListener('abort', cancel, {once: true});
   const deadline = setTimeout(() => {failure ||= Error('timeout'); cancel(); child.stdin.end();}, options.start.timeoutMs + 15000);
   deadline.unref();
-  child.stdin.on('error', () => { /* EOF/parent-monitor cleanup is verified separately. */ });
-  child.stderr.on('data', (bytes: Buffer) => {stderrBytes += bytes.length; if (stderrBytes > 8192) fail();});
-  child.stdout.on('data', (bytes: Buffer) => {
+  const onInputError = () => { /* EOF/parent-monitor cleanup is verified separately. */ };
+  const onDiagnostic = (bytes: Buffer) => {stderrBytes += bytes.length; if (stderrBytes > 8192) fail();};
+  const onProtocol = (bytes: Buffer) => {
     try {
       pending += protocol.write(bytes);
       let newline = pending.indexOf('\n');
@@ -295,10 +295,14 @@ export async function runNativeSandbox(options: {
       }
       if (Buffer.byteLength(pending) > 65536) fail();
     } catch {fail();}
-  });
+  };
+  const onHelperError = (error: Error) => {failure ||= error;};
+  child.stdin.on('error', onInputError);
+  child.stderr.on('data', onDiagnostic);
+  child.stdout.on('data', onProtocol);
+  child.once('error', onHelperError);
   try {
-    const code = await new Promise<number | null>((resolve, reject) => {
-      child.once('error', reject);
+    const code = await new Promise<number | null>(resolve => {
       child.once('close', resolve);
       child.stdin.write(JSON.stringify(options.start) + '\n');
       if (options.signal.aborted) cancel();
@@ -316,6 +320,10 @@ export async function runNativeSandbox(options: {
     resizes.clear();
     clearTimeout(deadline);
     options.signal.removeEventListener('abort', cancel);
-    child.stdin.end();
+    child.removeListener('error', onHelperError);
+    child.stdout.removeListener('data', onProtocol);
+    child.stderr.removeListener('data', onDiagnostic);
+    if (!child.stdin.destroyed) child.stdin.end();
+    child.stdin.removeListener('error', onInputError);
   }
 }

@@ -5,6 +5,12 @@ const {pathToFileURL} = require('node:url');
 const fork = utilityProcess.fork.bind(utilityProcess);
 const capture = globalThis.providerVectorRecovery = {workers:[], requests:[], mode:'observe'};
 let first, replacement;
+globalThis.armProviderVectorRebuild = active => {
+  if (replacement) throw Error('The previous observed utility reply has not been released');
+  first=undefined;
+  Object.assign(capture,{active,mode:'rebuild-crash',rebuildRequests:0,crash:undefined,replacement:undefined,
+    replacementTarget:undefined,oldDelivered:false});
+};
 utilityProcess.fork = function (modulePath, args, options) {
   if (path.basename(modulePath) !== 'retrieval-worker.js') return fork(modulePath, args, options);
   const child = fork(process.env.OMNI_EDU_VECTOR_EVIDENCE_WRAPPER,
