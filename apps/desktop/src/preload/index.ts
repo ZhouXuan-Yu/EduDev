@@ -69,7 +69,8 @@ import type { XiaozhiControlInput, XiaozhiQueueInput, XiaozhiActionResult, Xiaoz
 import type { XiaozhiBudgetInput, XiaozhiCompactInput, XiaozhiQueueMutationInput } from '../shared/xiaozhi-agent';
 import type { XiaozhiMemoryCatalogInput, XiaozhiMemoryCatalogResult, XiaozhiMemoryScopeInput, XiaozhiMemoryTrace } from '../shared/xiaozhi-memory';
 import type { HistoryAccessAction, HistoryDiscovery, HistoryIndexStatus, HistoryPreview, HistoryResult, HistorySource, HistorySourceRef } from '../shared/xiaozhi-history-memory';
-import type {PersonalMemoryAdoptInput, PersonalMemoryCandidateInput, PersonalMemoryEditInput, PersonalMemoryPolicy,
+import type {PersonalMemoryAdoptInput, PersonalMemoryCancelJobInput, PersonalMemoryCancelJobReceipt,
+  PersonalMemoryCandidateInput, PersonalMemoryEditInput, PersonalMemoryPolicy,
   PersonalMemoryPolicyInput, PersonalMemoryReceipt, PersonalMemoryRecordInput, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourceInput,
   PersonalMemorySourcePermission, PersonalMemoryView} from '../shared/xiaozhi-personal-memory';
 import type { XiaozhiSkillCatalog, XiaozhiSkillPreview, XiaozhiSkillResult, XiaozhiSkillMutation, XiaozhiSkillMutationResult } from '../shared/xiaozhi-skills';
@@ -437,6 +438,7 @@ const api = {
     edit:(input:PersonalMemoryEditInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-edit',input) as Promise<PersonalMemoryResult<PersonalMemoryReceipt>>,
     sourceStatus:(ref:HistorySourceRef)=>ipcRenderer.invoke('xiaozhi:personal-memory-source',ref) as Promise<PersonalMemoryResult<PersonalMemorySourcePermission>>,
     setSource:(input:PersonalMemorySourceInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-source-change',input) as Promise<PersonalMemoryResult<PersonalMemorySourcePermission>>,
+    cancelJob:(input:PersonalMemoryCancelJobInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-job-cancel',input) as Promise<PersonalMemoryResult<PersonalMemoryCancelJobReceipt>>,
   },
   getXiaozhiDecisions: (sessionId: string) => ipcRenderer.invoke('xiaozhi:decision-history',sessionId) as Promise<DecisionResult<DecisionSummary[]>>,
   replayXiaozhiDecision: (input: DecisionInput) => ipcRenderer.invoke('xiaozhi:decision-replay',input) as Promise<DecisionResult<DecisionReplay>>,

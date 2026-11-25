@@ -464,8 +464,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }
     }
   }
+  async function mutateMemory<T>(work:()=>Promise<T>):Promise<T> {
+    const owner='memory-authority';
+    if (closing || configuring.has('provider') || configuring.has(owner)) throw Error('busy');
+    configuring.add(owner);
+    try {return await work();}
+    finally {configuring.delete(owner);}
+  }
   const personalMemory=createPersonalMemoryOperations(store.xiaozhiState.sql,sanitizePersonalMemory,{
-    stopBackground:()=>personalMemoryRuntime?.interrupt(), invalidateUse:revokeUnavailablePersonalMemory,
+    stopBackground:()=>personalMemoryRuntime?.interrupt(), invalidateUse:revokeUnavailablePersonalMemory,mutate:mutateMemory,
   });
   const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
     permissionRuntime,
@@ -2128,7 +2135,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           await run.done;
         }
       }
-    }),
+    },mutateMemory),
     async confirmHistoryMemory(id:string,version:number,ticket:string):Promise<XiaozhiActionResult> {
       const selected=history.candidate(id,version,ticket);
       if(!selected)return {ok:false,error:'command_conflict'};

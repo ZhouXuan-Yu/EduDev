@@ -12,7 +12,13 @@ export type PersonalMemorySummary = {id:string; revision:number; kind:PersonalMe
   state:'active'|'disabled'|'forgotten'; cleanupPending:boolean};
 export type PersonalMemoryCandidate = {key:string; revision:number; kind:PersonalMemoryKind;
   scope:PersonalMemoryScope; term:string; state:'pending'|'conflict'; value:string; targetRevision:number};
-export type PersonalMemoryView = {policy:PersonalMemoryPolicy; records:PersonalMemorySummary[]; candidates:PersonalMemoryCandidate[]};
+export type PersonalMemoryJob = {id:string; revision:string; kind:'extract'|'organize';
+  state:'pending'|'running'|'waiting_budget'|'succeeded'|'partial'|'failed'|'cancelled';
+  saved:number|null; notSaved:number|null; error:string|null; outbound:boolean};
+export type PersonalMemoryCancelJobInput = {id:string; revision:string};
+export type PersonalMemoryCancelJobReceipt = {state:PersonalMemoryJob['state']; cancelled:boolean; outbound:boolean};
+export type PersonalMemoryView = {policy:PersonalMemoryPolicy; records:PersonalMemorySummary[];
+  candidates:PersonalMemoryCandidate[]; jobs:PersonalMemoryJob[]};
 export type PersonalMemoryReview = {quote:string; quoteSha256:string; occurredAt:string|null};
 export type PersonalMemoryCandidateInput = {key:string; revision:number};
 export type PersonalMemoryRecordInput = {id:string; revision:number};

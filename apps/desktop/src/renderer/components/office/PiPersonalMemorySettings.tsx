@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Button, TextArea} from '@heroui/react';
 import type {PersonalMemoryCandidate, PersonalMemoryEditInput, PersonalMemoryError, PersonalMemoryResult,
-  PersonalMemoryReview, PersonalMemoryScope, PersonalMemoryView} from '../../../shared/xiaozhi-personal-memory';
+  PersonalMemoryJob, PersonalMemoryReview, PersonalMemoryScope, PersonalMemoryView} from '../../../shared/xiaozhi-personal-memory';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
 
@@ -12,6 +12,10 @@ const failureText:Partial<Record<PersonalMemoryError,string>> = {
   stale_policy:'记忆设置已经变化，请刷新后重新核对。',
   cancelled:'自动处理已暂停，这次采用未保存。',
   command_conflict:'这次操作与已记录的请求不一致，请刷新后核对。',
+};
+const jobStates:Record<PersonalMemoryJob['state'],string> = {
+  pending:'等待空闲',running:'处理中',waiting_budget:'等待模型预算',succeeded:'已完成',partial:'部分完成',
+  failed:'未完成',cancelled:'已取消',
 };
 
 function scopeText(scope:PersonalMemoryScope,term:string) {
@@ -97,6 +101,24 @@ export function PiPersonalMemorySettings() {
       {view?.policy.enabled&&view.policy.pausedByUsePolicy&&<p role="status">当前记忆使用策略暂停了自动处理。</p>}
       {busy&&<p role="status">正在处理…</p>}
       {feedback&&<p role={feedback.error?'alert':'status'} data-testid="personal-memory-feedback">{feedback.message}</p>}
+      {!!view?.jobs.length&&<DisclosureCard title="后台任务">
+        <SettingsStack gap="sm">
+          {view.jobs.map(job=><SettingsInline key={job.id}>
+            <span>{job.kind==='extract'?'提取建议':'整理记忆'} · {jobStates[job.state]}
+              {job.saved!==null?` · 已生成 ${job.saved} 条建议`:''}
+              {job.notSaved?` · ${job.notSaved} 项待处理`:''}</span>
+            {job.error==='provider_effect_unknown'&&<span>未收到模型回执，未自动重发。</span>}
+            {['pending','running','waiting_budget'].includes(job.state)&&<Button size="sm" variant="ghost" isDisabled={busy}
+              data-testid={'personal-memory-cancel-'+job.id} onPress={()=>void perform(async reload=>{
+                const result=replyValue(await api?.cancelJob({id:job.id,revision:job.revision}));
+                const message=result.cancelled
+                  ? result.outbound?'已取消此任务。模型请求已发出，后续结果不会保存。':'已取消此任务。'
+                  : '任务在取消前已结束，已保存的结果保留。';
+                return afterCommit(message,reload);
+              })}>取消此任务</Button>}
+          </SettingsInline>)}
+        </SettingsStack>
+      </DisclosureCard>}
       {view?.candidates.length===0&&<p>暂无待核对的建议。</p>}
       {view?.candidates.map(item=><article key={item.key} data-testid={'personal-memory-candidate-'+item.key}>
         <h4>{item.state==='conflict'?'待处理的冲突':'待核对的建议'}</h4>

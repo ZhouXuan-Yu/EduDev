@@ -1,7 +1,7 @@
 import {app,dialog,type IpcMainInvokeEvent} from 'electron';
 import type {OmniEduStore} from '../db';
 import {validBackupRestoreAction,type PreparedBackupRestore} from '../../shared/backup-restore';
-import {prepareBackupRestore,verifyPreparedBackupRestore} from './restore';
+import {prepareBackupRestore,verifyPreparedBackupRestore,verifyRestoredMemoryAuthority} from './restore';
 import {inspectBackupRestore,type BackupRestorePlan} from './restore-plan';
 import {selectedBackupRoot,selectBackupRoot} from './activation';
 import {backupApplicationVersion} from './compatibility';
@@ -71,6 +71,8 @@ export function registerBackupRestore(options:{ipcMain:Pick<Electron.IpcMain,'ha
   let target:string;
   if(input.action==='activate'){
    const value=prepared.get(input.id);if(!value)throw Error('恢复副本已失效，请重新恢复');
+   await verifyRestoredMemoryAuthority(value,options.store.getDataRoot());
+   current();guard(event);
    if(value.rollback){
     await stageUpdateRollback(options.profile,options.baseRoot,options.store.getDataRoot(),backupApplicationVersion(app),value,()=>{current();guard(event);});
     prepared.delete(input.id);return status();

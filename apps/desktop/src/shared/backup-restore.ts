@@ -19,7 +19,7 @@ export type BackupRestorePreview = {
   omittedOutputs: number;
   rollback?: UpdateRollback;
 };
-export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];purpose?:BackupPurpose;compatibility?: BackupCompatibility;continuity?: BackupContinuity;rollback?:UpdateRollback};
+export type PreparedBackupRestore={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;id:string;dataRoot:string;backupPath:string;fileCount:number;generatedFiles:number;warnings:string[];purpose?:BackupPurpose;compatibility?: BackupCompatibility;continuity?: BackupContinuity;rollback?:UpdateRollback;memoryAuthority?:string|null};
 export type PortableRestoreSummary = {fileCount:number; generatedFiles:number; warnings:string[]};
 export type BackupRestoreStatus={dataRoot:string;previousRoot?:string;portableRestore?:PortableRestoreSummary;pendingRollback?:UpdateRollback;previousAppVersion?:string;returnRequiresVersion?:string};
 export type BackupRestoreAction={schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'activate';id:string}|{schemaVersion:typeof BACKUP_RESTORE_SCHEMA;action:'revert'|'cancel_rollback'};

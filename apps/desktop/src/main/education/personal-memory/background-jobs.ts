@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import type {PersonalMemoryCancelJobInput, PersonalMemoryJob} from '../../../shared/xiaozhi-personal-memory';
 import type { Sql } from '../../xiaozhi-agent/session-state';
 import { sameCandidatePolicy, type CandidateAuthority } from './candidate-admission';
 import { readPersonalMemoryProcessing } from './candidate-state';
@@ -71,6 +72,17 @@ function jobFromRow(row: Record<string, unknown>): Job {
   return job;
 }
 
+function publicJob(row:Record<string,unknown>,job:Job):PersonalMemoryJob {
+  const status=row.status as JobStatus;
+  if (!['pending','running','succeeded','partial','failed','cancelled'].includes(status)) throw Error('invalid_task');
+  const result=row.result_json ? JSON.parse(String(row.result_json)) as {saved?:unknown;notSaved?:unknown} : null;
+  const error=typeof row.error_message==='string' && /^[a-z_]{1,48}$/.test(row.error_message) ? row.error_message : null;
+  return {id:String(row.id),kind:job.kind,revision:hash([status,row.payload_json]),
+    state:status==='pending' && error==='budget_exhausted'?'waiting_budget':status,
+    saved:natural(result?.saved)?result.saved:null,notSaved:natural(result?.notSaved)?result.notSaved:null,
+    error,outbound:!!job.dispatch};
+}
+
 function requireChanges(db: Sql): asserts db is Writable {
   if (!db.change) throw Error('configuration');
 }
@@ -116,10 +128,11 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
     const inserted=await db.change(`INSERT OR IGNORE INTO ai_tasks(id,task_type,status,input_hash,payload_json,created_at,updated_at)
       VALUES(?,?,'pending',?,?,?,?)`,[id,taskType,identity,JSON.stringify(job),time,time]);
     if (inserted) return {id, created:true};
-    const [prior] = await db.all('SELECT status,payload_json FROM ai_tasks WHERE id=? AND task_type=?',[id,taskType]);
+    const [prior] = await db.all('SELECT status,payload_json,error_message FROM ai_tasks WHERE id=? AND task_type=?',[id,taskType]);
     const old = jobFromRow(prior);
     // Only jobs that never started outbound work can be reopened without a new grant.
-    if ((prior.status==='cancelled' || prior.status==='pending') && !old.dispatch && !matchesPolicy(old,policy)) {
+    if ((prior.status==='pending' || prior.status==='cancelled' && ['stale_policy','cancelled'].includes(String(prior.error_message))) &&
+        !old.dispatch && !matchesPolicy(old,policy)) {
       await cas(db,id,prior.status,String(prior.payload_json),'pending',job);
     }
     return {id, created:false};
@@ -127,6 +140,29 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
 
   return {
     enqueue:(input:JobInput)=>write(db=>enqueue(db,input)),
+    async list(){
+      const entries=await sql.all(`SELECT id,status,payload_json,result_json,error_message FROM ai_tasks
+        WHERE task_type=? ORDER BY updated_at DESC,id LIMIT 12`,[taskType]);
+      return entries.map(row=>publicJob(row,jobFromRow(row)));
+    },
+    async cancel(input:PersonalMemoryCancelJobInput){
+      return write(async db=>{
+        const [row]=await db.all(`SELECT id,status,payload_json,result_json,error_message FROM ai_tasks
+          WHERE task_type=? AND id=?`,[taskType,input.id]);
+        if (!row) throw Error('invalid_input');
+        const job=jobFromRow(row);
+        const view=publicJob(row,job);
+        const running=row.status==='running';
+        if (!running && row.status!=='pending') {
+          return {state:view.state,cancelled:row.error_message==='teacher_cancelled',outbound:view.outbound,wasRunning:false};
+        }
+        if (view.revision!==input.revision) throw Error('revision_conflict');
+        const changed=await cas(db,input.id,running?'running':'pending',String(row.payload_json),'cancelled',
+          {...job,owner:null},'teacher_cancelled');
+        if (changed!==1) throw Error('revision_conflict');
+        return {state:'cancelled' as const,cancelled:true,outbound:view.outbound,wasRunning:running};
+      });
+    },
 
     async organizationAvailable() {
       const [busy]=await sql.all(`SELECT 1 FROM ai_tasks WHERE task_type=? AND json_valid(payload_json)
@@ -144,7 +180,7 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
           FROM personal_memory_extract_grants g JOIN memory_source_access a ON a.source_id=g.source_id
           LEFT JOIN ai_tasks job ON job.id=g.extraction_job_id AND job.task_type='personal_memory'
           WHERE g.extract_allowed=1 AND g.updated_at<=? AND a.memory_state='active' AND a.generation=g.history_generation
-          AND (g.extraction_job_id IS NULL OR (job.status='cancelled' AND json_valid(job.payload_json)
+          AND (g.extraction_job_id IS NULL OR (job.status='cancelled' AND job.error_message IN ('stale_policy','cancelled') AND json_valid(job.payload_json)
             AND json_extract(job.payload_json,'$.dispatch') IS NULL
             AND (json_extract(job.payload_json,'$.authority.cancelGeneration')<>?
               OR json_extract(job.payload_json,'$.authority.policyRevision')<>?

@@ -6,6 +6,7 @@ import {hashFileSha256} from '../local-file-security';
 import {conversationOutputLocation} from '../xiaozhi-agent/conversation-output-path';
 import {assertBackupCompatibility} from './compatibility';
 import {relocateBackupDatabase} from './restore-database';
+import {readMemoryRestoreLedger} from './memory-restore';
 import {EXTERNAL_OUTPUT_PREFIX,RESTORED_EXTERNAL_DIRECTORY} from './external-outputs';
 import {inspectBackupRestore,inside,noLinks,recheckRestorePlan,recoveryReceiptName as receiptName,
   type RestoreSelection,type BackupRestorePlan} from './restore-plan';
@@ -36,10 +37,11 @@ export async function prepareBackupRestore(options:RestoreSelection & {
   }
   const again=await options.verify(backup);if(!again.verified||!manifestBytes.equals(await fs.readFile(manifestPath)))throw Error('备份在恢复期间变化，未激活恢复');
   assertBackupCompatibility(again.compatibility);
-  const warnings=await relocateBackupDatabase(path.join(root,'app.db'),source.sourceDataRoot,root,source.sourceOutputRoot,outputs.path,externalRoots);
+  const ledger=await readMemoryRestoreLedger(options.currentDataRoot);
+  const warnings=await relocateBackupDatabase(path.join(root,'app.db'),source.sourceDataRoot,root,source.sourceOutputRoot,outputs.path,externalRoots,ledger);
   if(external?.omittedCount)warnings.push(`备份时有 ${external.omittedCount} 项外选目录成果未能纳入；请查看备份清单中的遗漏说明。`);
   const database=copied.find(f=>f.file===path.join(root,'app.db'))!;database.sha256=await hashFileSha256(database.file);database.size=(await fs.stat(database.file)).size;
-  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings,purpose:again.purpose,compatibility:again.compatibility,continuity:again.continuity,rollback:plan.preview.rollback};
+  const receipt:PreparedBackupRestore={schemaVersion:BACKUP_RESTORE_SCHEMA,id,dataRoot:root,backupPath:backup,fileCount:copied.length,generatedFiles:source.fileCount+(external?.fileCount||0),warnings,purpose:again.purpose,compatibility:again.compatibility,continuity:again.continuity,rollback:plan.preview.rollback,memoryAuthority:ledger?.hash??null};
   await fs.writeFile(path.join(root,receiptName),JSON.stringify(receipt,null,2),'utf8');
   await fs.writeFile(path.join(instance,'restoration-files.v1.json'),JSON.stringify({schemaVersion:BACKUP_RESTORE_SCHEMA,id,sourceManifestSha256:createHash('sha256').update(manifestBytes).digest('hex'),files:copied,boundary:'Verified new-copy files after address migration; original events/native/check reports stay unchanged.'},null,2),'utf8');
   return receipt;
@@ -52,4 +54,9 @@ export async function verifyPreparedBackupRestore(value:PreparedBackupRestore){
  const manifest=JSON.parse(await fs.readFile(file,'utf8')) as {schemaVersion:string;id:string;files:{file:string;size:number;sha256:string}[]};
  if(manifest.schemaVersion!==BACKUP_RESTORE_SCHEMA||manifest.id!==value.id||!Array.isArray(manifest.files)||manifest.files.length!==value.fileCount)throw Error('恢复副本清单无效');
  for(const entry of manifest.files){if(!path.isAbsolute(entry.file)||!inside(instance,entry.file)||!Number.isSafeInteger(entry.size)||!/^[a-f0-9]{64}$/.test(entry.sha256))throw Error('恢复副本清单无效');await noLinks(entry.file);const s=await fs.lstat(entry.file);if(!s.isFile()||s.nlink!==1||s.size!==entry.size||await hashFileSha256(entry.file)!==entry.sha256)throw Error('恢复副本在准备后已变化，未切换数据');}
+}
+
+export async function verifyRestoredMemoryAuthority(value:PreparedBackupRestore,currentDataRoot:string) {
+ const latest=await readMemoryRestoreLedger(currentDataRoot);
+ if((latest?.hash??null)!==value.memoryAuthority)throw Error('当前记忆或授权在准备后有变化，请重新准备恢复副本。');
 }

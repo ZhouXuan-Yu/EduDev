@@ -113,6 +113,22 @@ const begin=Date.parse('2026-11-25T02:00:00Z');
   assert.equal((await jobs.enqueue(request)).created,false);
   assert.equal(await jobs.isCurrent(sql,dispatched),false);
   console.log('PASS existing ai_tasks deduplicates input, honors the due time and fences restart before or after dispatch');
+  const pending=await jobs.enqueue({kind:'extract',sources:[pin(3)],authority,notBefore:0});
+  const pendingView=(await jobs.list()).find(job=>job.id===pending.id);
+  await assert.rejects(jobs.cancel({id:pending.id,revision:'0'.repeat(64)}),/revision_conflict/);
+  assert.deepEqual(await jobs.cancel({id:pending.id,revision:pendingView.revision}),
+    {state:'cancelled',cancelled:true,outbound:false,wasRunning:false});
+  assert.equal(await jobs.claim(),null);
+  const late=await jobs.enqueue({kind:'extract',sources:[pin(4)],authority,notBefore:0});
+  const reservation=await jobs.reserve(await jobs.claim());
+  const runningView=(await jobs.list()).find(job=>job.id===late.id);
+  assert.deepEqual(await jobs.cancel({id:late.id,revision:runningView.revision}),
+    {state:'cancelled',cancelled:true,outbound:true,wasRunning:true});
+  assert.equal(await jobs.isCurrent(sql,reservation),false);
+  await assert.rejects(sql.transaction(tx=>jobs.finish(tx,reservation,{status:'succeeded',modelCalls:1})),/stale_task/);
+  assert.equal(JSON.parse(row(late.id).payload_json).dispatch.reserved,2);
+  assert.equal(row(late.id).result_json,null);
+  console.log('PASS explicit task cancellation fences queued and already reserved work without losing its budget receipt');
   db.close();
 }
 {
@@ -183,6 +199,9 @@ const begin=Date.parse('2026-11-25T02:00:00Z');
   assert.equal((await consumer.advance(active.signal)).state,'processed');
   assert.equal(workerCalls,1);
   assert.equal(row(job.id).status,'succeeded');
+  assert.equal(JSON.parse(row(job.id).result_json).saved,1);
+  const finished=(await consumer.jobs.list()).find(item=>item.id===job.id);
+  assert.deepEqual(await consumer.jobs.cancel(finished),{state:'succeeded',cancelled:false,outbound:true,wasRunning:false});
   assert.equal(JSON.parse(row(job.id).result_json).saved,1);
   assert.equal((await consumer.state.list(20)).length,1);
   assert.equal((await consumer.advance(active.signal)).state,'idle');
@@ -303,4 +322,4 @@ if(process.argv.includes('--live')){
   console.log(JSON.stringify({live:true,provider:'deepseek-flash',receipt,scope:draft.draft.scope,term:draft.draft.term,committedState:draft.state}));
   db.close();
 }
-console.log(JSON.stringify({passed:8,live:process.argv.includes('--live'),liveOrganization:process.argv.includes('--live-organize')}));
+console.log(JSON.stringify({passed:9,live:process.argv.includes('--live'),liveOrganization:process.argv.includes('--live-organize')}));

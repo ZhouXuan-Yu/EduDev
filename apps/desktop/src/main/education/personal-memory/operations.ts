@@ -1,11 +1,12 @@
 import type {
-  PersonalMemoryAdoptInput, PersonalMemoryCandidate, PersonalMemoryCandidateInput, PersonalMemoryEditInput,
+  PersonalMemoryAdoptInput, PersonalMemoryCancelJobReceipt, PersonalMemoryCandidate, PersonalMemoryCandidateInput, PersonalMemoryEditInput,
   PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
   PersonalMemorySummary, PersonalMemoryView,
 } from '../../../shared/xiaozhi-personal-memory';
 import {validHistoryRef} from '../../xiaozhi-agent/history/source';
 import {historyId} from '../../xiaozhi-agent/history/state';
 import type { Sql } from '../../xiaozhi-agent/session-state';
+import {createPersonalMemoryJobs} from './background-jobs';
 import { createPersonalMemoryCandidateState } from './candidate-state';
 import { createPersonalMemoryRecordState } from './record-state';
 import { createPersonalMemorySourceAuthority } from './source-authority';
@@ -49,13 +50,15 @@ function editInput(value:unknown):value is PersonalMemoryEditInput {
 
 /** Renderer requests are evidence review and teacher mutations, with no renderer control of job dispatch. */
 export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>,
-  options:{stopBackground?:()=>void;invalidateUse?:()=>Promise<void>}={}) {
+  options:{stopBackground?:()=>void;invalidateUse?:()=>Promise<void>;mutate?:<T>(work:()=>Promise<T>)=>Promise<T>}={}) {
   const sources = createPersonalMemorySourceAuthority(sql,sanitize);
   const candidates = createPersonalMemoryCandidateState(sql,sources.witnessCurrent);
   const records = createPersonalMemoryRecordState(sql,sources);
+  const jobs=createPersonalMemoryJobs(sql);
+  const mutate=options.mutate ?? (async<T>(work:()=>Promise<T>)=>work());
   return {
     view:()=>respond<PersonalMemoryView>(async()=>{
-      const [policy,saved,open] = await Promise.all([candidates.processing(),records.list(40),candidates.list(40,true)]);
+      const [policy,saved,open,background] = await Promise.all([candidates.processing(),records.list(40),candidates.list(40,true),jobs.list()]);
       const pending:PersonalMemoryCandidate[]=[];
       for (const {draft,state,revision} of open) {
         if ((state === 'pending' || state === 'conflict') && await sources.witnessCurrent(sql,draft)) {
@@ -63,15 +66,16 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
             value:draft.proposedValue,targetRevision:draft.replaces?.revision ?? 0});
         }
       }
-      return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),candidates:pending};
+      return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),
+        candidates:pending,jobs:background};
     }),
-    setEnabled:(value:unknown)=>respond(async()=>{
+    setEnabled:(value:unknown)=>respond(()=>mutate(async()=>{
       if (!inputObject(value) || typeof value.enabled !== 'boolean' ||
           (value.revision !== 0 && !safeRevision(value.revision))) throw Error('invalid_input');
       const updated=await candidates.setEnabled(value.enabled,value.revision);
       if (!updated.enabled) options.stopBackground?.();
       return policyView(updated);
-    }),
+    })),
     preview:(value:unknown)=>respond<PersonalMemoryReview>(async()=>{
       if (!candidateInput(value)) throw Error('invalid_input');
       const {quote,quoteSha256,occurredAt} = await records.preview(value.key,value.revision);
@@ -81,30 +85,37 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
       if (!inputObject(value) || !safeId(value.id) || !safeRevision(value.revision)) throw Error('invalid_input');
       return records.previewRecord(value.id,value.revision);
     }),
-    adopt:(value:unknown)=>respond(async()=>{
+    adopt:(value:unknown)=>respond(()=>mutate(async()=>{
       if (!adoptInput(value)) throw Error('invalid_input');
       const receipt=await records.accept(value);
       await options.invalidateUse?.();
       return receipt;
-    }),
-    reject:(value:unknown)=>respond(async()=>{
+    })),
+    reject:(value:unknown)=>respond(()=>mutate(async()=>{
       if (!candidateInput(value)) throw Error('invalid_input');
       const rejected = await candidates.reject(value.key,value.revision);
       return {revision:rejected.revision};
-    }),
-    edit:(value:unknown)=>respond(async()=>{
+    })),
+    edit:(value:unknown)=>respond(()=>mutate(async()=>{
       if (!editInput(value)) throw Error('invalid_input');
       const receipt=await records.edit(value);
       if (value.action==='forget' || value.action==='disable') options.stopBackground?.();
       await options.invalidateUse?.();
       return receipt;
-    }),
+    })),
+    cancelJob:(value:unknown)=>respond<PersonalMemoryCancelJobReceipt>(()=>mutate(async()=>{
+      if (!inputObject(value) || typeof value.id!=='string' || !/^memorytask_[a-f0-9]{64}$/.test(value.id) ||
+          !safeId(value.revision)) throw Error('invalid_input');
+      const {wasRunning,...receipt}=await jobs.cancel({id:value.id,revision:value.revision});
+      if (wasRunning) options.stopBackground?.();
+      return receipt;
+    })),
     sourceStatus:(ref:unknown)=>respond<PersonalMemorySourcePermission>(async()=>{
       if (!validHistoryRef(ref)) throw Error('invalid_input');
       const grant=await sources.permission(historyId(ref));
       return {allowed:grant?.allowed===true && grant.ref.sourceVersion===ref.sourceVersion,revision:grant?.revision ?? 0};
     }),
-    setSource:(value:unknown)=>respond<PersonalMemorySourcePermission>(async()=>{
+    setSource:(value:unknown)=>respond<PersonalMemorySourcePermission>(()=>mutate(async()=>{
       if (!inputObject(value) || !validHistoryRef(value.ref) || typeof value.enabled!=='boolean' ||
           (value.revision!==0 && !safeRevision(value.revision))) throw Error('invalid_input');
       const grant=await sources.change(value.ref,value.revision,value.enabled?{scope:{kind:'teacher',id:'self'},term:'unknown'}:null);
@@ -113,6 +124,6 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
         await options.invalidateUse?.();
       }
       return {allowed:grant?.allowed ?? false,revision:grant?.revision ?? 0};
-    }),
+    })),
   };
 }

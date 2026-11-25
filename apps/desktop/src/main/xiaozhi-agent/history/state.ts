@@ -18,6 +18,16 @@ function fromRow(row: Record<string,unknown>): Access {
   };
 }
 
+export async function invalidateHistoryProjections(db:Sql,id:string) {
+  // A sent or ambiguous upsert can still write; cleanup waits for reconciliation.
+  await db.run(`INSERT OR IGNORE INTO memory_index_jobs
+    (job_id,action,document_id,source_id,source_version,generation,index_generation,index_namespace,state)
+    SELECT 'delete:'||document_id,'delete',document_id,source_id,source_version,generation,index_generation,index_namespace,'pending'
+    FROM memory_index_jobs WHERE action='upsert' AND source_id=? AND state IN ('running','retry','succeeded','failed')`,[id]);
+  await db.run(`UPDATE memory_index_jobs SET state='cancelled' WHERE source_id=? AND action='upsert' AND state='pending'`,[id]);
+  await db.run("UPDATE memory_index_catalog SET status='obsolete' WHERE source_id=?",[id]);
+}
+
 export function createHistoryState(sql: Sql) {
   const get = async (id: string, db = sql) => {
     const [row] = await db.all('SELECT * FROM memory_source_access WHERE source_id=?',[id]);
@@ -93,13 +103,7 @@ export function createHistoryState(sql: Sql) {
           generation=excluded.generation,index_allowed=excluded.index_allowed,discover_allowed=excluded.discover_allowed,
           memory_state=excluded.memory_state,updated_at=excluded.updated_at`,
         [id,ref.kind,ref.sessionId,ref.recordId,version,revision,generation,Number(allowed),Number(allowed),status,timestamp]);
-        // A sent or ambiguous upsert can still write; cleanup waits for reconciliation.
-        await work.run(`INSERT OR IGNORE INTO memory_index_jobs
-          (job_id,action,document_id,source_id,source_version,generation,index_generation,index_namespace,state)
-          SELECT 'delete:'||document_id,'delete',document_id,source_id,source_version,generation,index_generation,index_namespace,'pending'
-          FROM memory_index_jobs WHERE action='upsert' AND source_id=? AND state IN ('running','retry','succeeded','failed')`,[id]);
-        await work.run(`UPDATE memory_index_jobs SET state='cancelled' WHERE source_id=? AND action='upsert' AND state='pending'`,[id]);
-        await work.run("UPDATE memory_index_catalog SET status='obsolete' WHERE source_id=?",[id]);
+        await invalidateHistoryProjections(work,id);
         if (allowed) {
           const index=await indexState(work);
           await queueDocument(work,id,version,generation,index.active);

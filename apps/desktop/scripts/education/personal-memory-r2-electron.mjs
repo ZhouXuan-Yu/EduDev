@@ -262,6 +262,11 @@ async function candidateAdoption(){
   check('real Pi source, separate teacher extraction consent and a durable real model job create a pending candidate',
     {runId:turn.id,candidateId,modelCalls:background.modelCalls,usage:background.usage});
   await memory.getByRole('button',{name:'刷新记忆',exact:true}).click();
+  if(process.argv.includes('--jobs')){
+    await memory.getByRole('button',{name:'后台任务',exact:true}).click();
+    await memory.getByText('提取建议 · 已完成 · 已生成 1 条建议',{exact:true}).waitFor();
+    check('the settings page reads the durable background task result',{saved:background.saved,modelCalls:background.modelCalls});
+  }
   const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
   await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
   const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
