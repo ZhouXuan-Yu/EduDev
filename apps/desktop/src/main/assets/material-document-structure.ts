@@ -732,6 +732,9 @@ export class StructureQuestionAssembler {
         if (paragraph.id === printedAnswerCoverId) printedAnswerPage = true;
         else if (printedAnswerPage && isPrintedExamTitle(paragraph.rawText)) printedAnswerPage = false;
         if (paragraph.text === this.section) continue;
+        if (!this.pending && !printedAnswerPage && questionSection.test(this.section.trim()) &&
+            !sectionHeading.test(paragraph.text) && !questionSection.test(paragraph.text.trim()) &&
+            examAdministration.test(paragraph.text)) continue;
         if (this.pending) output.push(this.finish());
         this.section = paragraph.text;
         this.shared = [];

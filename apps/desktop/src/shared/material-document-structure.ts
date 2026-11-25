@@ -5,8 +5,9 @@ import type { PageBlock } from "./material-page-blocks";
 export const DOCUMENT_STRUCTURE_SCHEMA =
   "xiaozhi.document-structure.v1" as const;
 export const DOCUMENT_STRUCTURE_ENGINE =
-  "layout-paragraph-question.v30" as const;
+  "layout-paragraph-question.v31" as const;
 export const PREVIOUS_DOCUMENT_STRUCTURE_ENGINES = [
+  "layout-paragraph-question.v30",
   "layout-paragraph-question.v29",
   "layout-paragraph-question.v28",
   "layout-paragraph-question.v27",
@@ -32,7 +33,7 @@ export function validDocumentStructureEngine(value: unknown): value is DocumentS
   return value === DOCUMENT_STRUCTURE_ENGINE || PREVIOUS_DOCUMENT_STRUCTURE_ENGINES.some(engine => engine === value);
 }
 export type PrintedStructureRecovery = {
-  parents: { line: MaterialLine; crop: PageBox; cropSha256: string; readings: string[]; engine: string; uncertain?: true }[];
+  parents: { line: MaterialLine; crop: PageBox; cropSha256: string; readings: string[]; engine: string; variant?: 'color-light'; uncertain?: true }[];
   blanks: { beforeId: string; afterId: string; box: PageBox }[];
 };
 export type StructureIssue =

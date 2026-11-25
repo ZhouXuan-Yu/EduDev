@@ -406,14 +406,15 @@ export class MaterialStructureRuntime {
     }
     if (tables.length) input.tableSources = tables;
     const parents: NonNullable<StructurePageReceipt["input"]["printedRecovery"]>["parents"] = [];
-    for (const { number, crop } of printedParentProbes(structure)) {
+    for (const { number, crop, variant } of printedParentProbes(structure)) {
       signal.throwIfAborted();
       const x = Math.floor(crop[0] * image.width), y = Math.floor(crop[1] * image.height);
       const cut = original().crop({
         x, y, width: Math.ceil(crop[2] * image.width) - x, height: Math.ceil(crop[3] * image.height) - y,
       });
       const size = cut.getSize();
-      const normalized = cut.resize({ width: size.width * 2, height: size.height * 2, quality: "best" });
+      const enlarged = cut.resize({ width: size.width * 2, height: size.height * 2, quality: "best" });
+      const normalized = variant === "color-light" ? removeColorInk(enlarged) : enlarged;
       try {
         const receipt = await recognizeLocalImage(normalized.toPNG({ scaleFactor: 1 }), signal);
         const found = readPrintedParent(receipt, number);
@@ -421,7 +422,8 @@ export class MaterialStructureRuntime {
         const quad: Quad = [[crop[0], crop[1]], [crop[2], crop[1]], [crop[2], crop[3]], [crop[0], crop[3]]];
         parents.push({
           crop, cropSha256: sha(cut.toPNG({ scaleFactor: 1 })), readings: found.readings, engine: receipt.engine,
-          ...(found.uncertain && { uncertain: true }),
+          ...(variant && { variant }),
+          ...((found.uncertain || variant === "color-light") && { uncertain: true }),
           line: { id: "printed-parent-" + number, kind: "text", needsReview: true, text: found.text, score: found.score,
             normalizedQuad: quad, quad: quad.map(([a, b]) => [a * image.width, b * image.height]) as Quad },
         });
@@ -443,12 +445,7 @@ export class MaterialStructureRuntime {
       if (size.width < 80 || size.height < 12 || size.width * size.height > 350_000) return;
       const original = cut.toPNG({ scaleFactor: 1 });
       const wider = cut.resize({ width: Math.min(size.width * 2, 2400), quality: "best" });
-      const bitmap = wider.toBitmap();
-      for (let pixel = 0; pixel < bitmap.length; pixel += 4) {
-        const light = Math.max(bitmap[pixel], bitmap[pixel + 1], bitmap[pixel + 2]);
-        bitmap[pixel] = bitmap[pixel + 1] = bitmap[pixel + 2] = light;
-      }
-      const normalized = nativeImage.createFromBitmap(bitmap, wider.getSize()).toPNG({ scaleFactor: 1 });
+      const normalized = removeColorInk(wider).toPNG({ scaleFactor: 1 });
       const runs = [];
       let attempts = 0;
       for (const input of [original, normalized]) {
@@ -647,6 +644,16 @@ async function recheckNumericTable(plan: TableRowRecheck, raster: Electron.Nativ
 function structureCropRect(image: OriginalImage, box: PageBox) {
   const x = Math.floor(box[0] * image.width), y = Math.floor(box[1] * image.height);
   return { x, y, width: Math.ceil(box[2] * image.width) - x, height: Math.ceil(box[3] * image.height) - y };
+}
+
+/** Suppress colored marks in a derived OCR crop while keeping neutral ink. */
+function removeColorInk(image: Electron.NativeImage) {
+  const bitmap = image.toBitmap();
+  for (let pixel = 0; pixel < bitmap.length; pixel += 4) {
+    const light = Math.max(bitmap[pixel], bitmap[pixel + 1], bitmap[pixel + 2]);
+    bitmap[pixel] = bitmap[pixel + 1] = bitmap[pixel + 2] = light;
+  }
+  return nativeImage.createFromBitmap(bitmap, image.getSize());
 }
 
 /** Bounded short-line normalization, preserving the untouched crop as the source asset. */

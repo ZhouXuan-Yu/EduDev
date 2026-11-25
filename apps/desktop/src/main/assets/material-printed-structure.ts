@@ -1,14 +1,60 @@
 import type { PrintedStructureRecovery, StructurePage, StructureParagraph } from "../../shared/material-document-structure";
 import type { PageBox } from "../../shared/material-page-preview";
 import type { LocalOcrReceipt } from "../../shared/xiaozhi-ocr";
+import { contiguousChoiceRange, printedChoiceCount, printedChoiceRanges } from './material-choice-rubric';
+import { questionSection } from './material-structure-numbering';
 
-type ParentProbe = { number: number; crop: PageBox };
+type ParentProbe = { number: number; crop: PageBox; variant?: 'color-light' };
 type Blank = PrintedStructureRecovery["blanks"][number];
 type Raster = { width: number; height: number; pixels: Buffer };
 
 function options(parts: StructureParagraph[], column: number) {
   return parts.length === 4 && parts.every((part, i) => part.column === column &&
     part.marker?.kind === "option" && part.marker.label === "ABCD"[i]);
+}
+
+/** A missing last parent has no following numeral. Its own printed section
+ * needs to declare the range, and the final choice group must occupy a second
+ * text region physically separate from the last observed parent and options. */
+function terminalChoiceProbes(page: StructurePage, paragraphs: StructureParagraph[], limit: number): ParentProbe[] {
+  const probes: ParentProbe[] = [];
+  const lines = new Map(page.lines.map(line=>[line.id,line]));
+  const headingType = (p: StructureParagraph) => p.role==='heading' ? questionSection.exec(p.text)?.[1] : undefined;
+  for (let start=0;start<paragraphs.length&&probes.length<limit;start++) {
+    const heading=paragraphs[start],kind=headingType(heading);
+    if (kind!=='选择题'&&kind!=='单项选择题') continue;
+    const range=contiguousChoiceRange(printedChoiceRanges(heading.text),printedChoiceCount(heading.text));
+    if (!range||range[1]<=range[0]) continue;
+    const stop=paragraphs.findIndex((p,i)=>i>start&&!!headingType(p));
+    const section=paragraphs.slice(start+1,stop<0?undefined:stop);
+    const parents=section.filter(p=>p.marker?.kind==='parent');
+    const before=parents.at(-1);
+    if (!before||before.column<0||parents.length!==range[1]-range[0]||
+       parents.some((parent,i)=>parent.column!==before.column||Number(parent.marker?.label)!==range[0]+i)) continue;
+    const tail=section.slice(section.indexOf(before)+1);
+    const allOptions=tail.filter(p=>p.marker?.kind==='option');
+    const previous=allOptions.slice(0,4),own=allOptions.slice(4);
+    if (!options(previous,before.column)||!options(own,before.column)) continue;
+    const previousBottom=Math.max(...previous.map(p=>p.anchor.box[3]));
+    const regions=page.regions.filter(region=>region.kind==='text'&&region.score>=.60&&region.box[1]>=previousBottom-.004&&
+      own.every(p=>p.regionIds.includes(region.id))&&!previous.some(p=>p.regionIds.includes(region.id)));
+    if (regions.length!==1) continue;
+    const region=regions[0],first=tail.find(p=>p.column===before.column&&p.regionIds.includes(region.id)&&
+      ['body','subquestion'].includes(p.role)&&p.text.length>=6);
+    const line=first&&lines.get(first.lineIds[0]);
+    if (!line||line.box[1]>=own[0].anchor.box[1]) continue;
+    const height=line.box[3]-line.box[1],gap=line.box[1]-region.box[1];
+    if (gap<height*.65||gap>height*2.4) continue;
+    const column=page.columns[before.column];
+    const left=Math.max(column[0], Math.min(region.box[0],before.anchor.box[0])-height*.4);
+    const top=Math.max(previousBottom,region.box[1]-height*.23);
+    const bottom=line.box[1]-height*.05;
+    const right=Math.min(column[2],region.box[2]+height*.25);
+    if (bottom-top<height*.65||right-left<=.08||page.regions.some(block=>
+      ['image','chart','table'].includes(block.kind)&&block.box[0]<right&&block.box[2]>left&&block.box[1]<bottom&&block.box[3]>top)) continue;
+    probes.push({number:range[1],crop:[left,top,right,bottom],variant:'color-light'});
+  }
+  return probes;
 }
 
 /** A complete second choice group in a distinct text block can warrant one local retry. */
@@ -45,6 +91,7 @@ export function printedParentProbes(page: StructurePage): ParentProbe[] {
       block.box[1] < bottom && block.box[3] > top).map(block => block.box[0]));
     if (bottom - top >= height * 0.65 && right - left > 0.08) probes.push({ number, crop: [left, top, right, bottom] });
   }
+  probes.push(...terminalChoiceProbes(page,paragraphs,3-probes.length));
   return probes.filter(probe => probes.filter(other => other.number === probe.number).length === 1);
 }
 

@@ -4,7 +4,7 @@ const { recoverStructurePage, StructureQuestionAssembler, joinStructureLines } =
   await import("../../src/main/assets/material-document-structure.ts");
 const { localizedPdfMarkProof, separatedMarkPixels, verifiedQuestionInPdfConflict, verifiedQuestionBeforeNativeSection } =
   await import("../../src/main/assets/material-pdf-question-conflict.ts");
-const { printedBlanks, printedBlankStripe, readPrintedParent } =
+const { printedBlanks, printedBlankStripe, printedParentProbes, readPrintedParent } =
   await import("../../src/main/assets/material-printed-structure.ts");
 const { printedStructureQuestionType } =
   await import("../../src/main/assets/material-structure-question-type.ts");
@@ -440,6 +440,26 @@ await check("A complete horizontal choice row belongs to the question rather tha
   assert.deepEqual(q.subquestions, []);
   assert.match(q.stem, /①.+\n②.+\n③/u);
   assert.equal(printedStructureQuestionType(q), "选择题");
+});
+await check("A printed choice heading survives the answer-sheet instruction and owns a complete aligned grid", () => {
+  const lead = [
+    ["一、单项选择题（共4小题）", .1, .07],
+    ["每小题只有一个选项正确，请在答题卡上填涂对应代号。", .1, .10, .8, "paragraph_title"],
+    ["3. 请判断两个关于实验条件的命题。", .1, .15],
+    ["①命题甲在相同温度下成立。", .1, .18],
+    ["②命题乙在相同温度下成立。下列说法中正确的是（ ）", .1, .21],
+  ];
+  const grid = [["A. 仅甲正确", .1, .25, .2], ["B. 仅乙正确", .52, .25, .2],
+    ["C. 甲乙均正确", .1, .29, .2], ["D. 甲乙均错误", .52, .29, .2]];
+  const [q] = questions([page([...lead, ...grid])]);
+  assert.match(q.section, /单项选择题/u);
+  assert.deepEqual(q.options.map(option => option.label), [..."ABCD"]);
+  assert.deepEqual(q.subquestions, []);
+  for (const rows of [grid.slice(0, 3), [...grid.slice(0, 3), ["D. 甲乙均错误", .68, .29, .2]]]) {
+    const [held] = questions([page([...lead, ...rows])]);
+    assert.equal(held.options.length, 0);
+    assert(held.subquestions.length > 0);
+  }
 });
 await check("A scan with ambiguous preceding glyphs shows only C and D and holds A and B for source review", () => {
   const q = questions([page([...choiceStatements, ["0(A)逸", .1, .28, .21],
@@ -923,6 +943,29 @@ await check("A crop can confirm exactly one numbered parent with original readin
   assert.equal(readPrintedParent(input,11), undefined);
   assert.equal(readPrintedParent({...input,scores:[.65,.99,.97]},10), undefined);
   assert.equal(readPrintedParent({text:input.text+"\n另一段来自其他题目的连续文字",scores:[...input.scores,.99]},10), undefined);
+});
+await check("An explicitly bounded last choice question can retry its own region, never a partial or shared option group", () => {
+  const section="二、选择题（本大题共3题，第4～6题每题4分）";
+  const options=(from)=>Array.from('ABCD',(label,index)=>[label+". 独立选项",.12,from+index*.025,.26]);
+  const rows=[[section,.08,.08,.67],["4. 关于实验结果，下列说法正确的是",.08,.13,.55],
+    ["5. 根据实验数据，下列判断正确的是",.08,.24,.55],...options(.30),
+    ["①观察图中两条曲线的变化趋势。",.12,.48,.53],...options(.53)];
+  const regions=[{id:'prior',kind:'text',score:.99,box:[.073,.23,.75,.404],needsReview:false},
+    {id:'terminal',kind:'text',score:.62,box:[.081,.45,.76,.64],needsReview:true}];
+  const eligible=printedParentProbes(page(rows,1,1,regions));
+  assert.equal(eligible.length,1);
+  assert.equal(eligible[0].number,6);
+  assert.equal(eligible[0].variant,'color-light');
+  assert(eligible[0].crop[1]>.40&&eligible[0].crop[3]<.48);
+  assert.deepEqual(printedParentProbes(page(rows.slice(0,-1),1,1,regions)),[]);
+  const undeclared=[[section.replace('第4～6题','第4～7题'),.08,.08,.67],...rows.slice(1)];
+  assert.deepEqual(printedParentProbes(page(undeclared,1,1,regions)),[]);
+  const shared=[{...regions[0],box:[.073,.23,.76,.64]}];
+  assert.deepEqual(printedParentProbes(page(rows,1,1,shared)),[]);
+  const obstruction={id:'image-1',kind:'image',score:.95,box:[.25,.452,.40,.474],needsReview:false};
+  assert.deepEqual(printedParentProbes(page(rows,1,1,[...regions,obstruction])),[]);
+  const p=page(rows,1,1,regions);
+  assert.deepEqual(printedParentProbes({...p,issues:['ambiguous_columns']}),[]);
 });
 await check("Fill detection excludes midline strokes and gaps between numbers", () => {
   const region = {id:"fill-body",kind:"text",score:.99,box:[.08,.09,.65,.13],needsReview:true};

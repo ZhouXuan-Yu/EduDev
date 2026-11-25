@@ -99,7 +99,7 @@ try{
   report.importMs=Date.now()-started;
   const sources=sql('SELECT id,title,local_path,content_hash FROM teacher_resources');
   assert.equal(sources.length,files.length);
-  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v30'&&job.processed===job.pages));
+  assert(jobs.every(job=>job.engine==='layout-paragraph-question.v31'&&job.processed===job.pages));
   assert.deepEqual(sources.map(source=>sha(source.local_path)).sort(),report.documents.map(doc=>doc.sha256).sort());
   check('One file-picker action stages the scans and the regular background parser publishes versioned results');
 

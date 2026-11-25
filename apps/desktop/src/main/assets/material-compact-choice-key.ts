@@ -1,9 +1,9 @@
 import {createHash} from 'node:crypto';
 import {validPdfFilePage} from '../../shared/material-pdf-file';
 import type {QuestionBankItem} from '../../shared/contracts';
+import {contiguousChoiceRange,printedChoiceCount,printedChoiceRanges,type ChoiceRange} from './material-choice-rubric';
 
 export const COMPACT_CHOICE_POLICY = 'printed-compact-choice.v1' as const;
-export type ChoiceRange = [number, number];
 type Line = {raw: string; value: string; at: number; heading?: string};
 export type CompactChoiceProof = {policy: typeof COMPACT_CHOICE_POLICY; resourceId: string; version: string;
   generation: string; page: number; receiptSha: string; range: ChoiceRange};
@@ -64,9 +64,8 @@ export function printedSingleChoiceRange(text: string, number: string): ChoiceRa
   const start = lines.slice(0, marker).findLastIndex(line => numberedHeading.test(line));
   if (start < 0 || !questionHeading.test(lines[start]) || !lines.slice(start, Math.min(start + 5, marker)).some(line => singleChoice.test(line))) return;
   const heading = lines[start];
-  const count = /(?:共有|共计|共)\s*([1-9][0-9]?)\s*(?:小)?题/u.exec(heading);
-  let ranges = [...heading.matchAll(new RegExp(`第\\s*(${digits})(?:\\s*${dash}\\s*(${digits}))?\\s*题`, 'gu'))]
-    .map(match => [Number(match[1]), Number(match[2] ?? match[1])] as ChoiceRange);
+  const count = printedChoiceCount(heading);
+  let ranges = printedChoiceRanges(heading);
   if (!ranges.length) {
     const end = lines.findIndex((line,index) => index > start && numberedHeading.test(line));
     ranges = lines.slice(start+1,end < 0 ? undefined : end).flatMap(line=>{
@@ -74,9 +73,8 @@ export function printedSingleChoiceRange(text: string, number: string): ChoiceRa
       return item?[[Number(item[1]),Number(item[1])] as ChoiceRange]:[];
     });
   }
-  if (!count || !ranges.length || ranges.some(([from, through], index) => through < from || index > 0 && from !== ranges[index - 1][1] + 1)) return;
-  const range: ChoiceRange = [ranges[0][0], ranges.at(-1)![1]];
-  if (range[1] - range[0] + 1 === Number(count[1]) && Number(number) >= range[0] && Number(number) <= range[1]) return range;
+  const range = contiguousChoiceRange(ranges,count);
+  if (range && Number(number) >= range[0] && Number(number) <= range[1]) return range;
 }
 
 type Read = (sql: string, values: (string|number|null)[]) => Promise<Record<string,unknown>[]>;
