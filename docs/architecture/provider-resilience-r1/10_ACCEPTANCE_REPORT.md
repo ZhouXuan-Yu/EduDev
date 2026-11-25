@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 19/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 20/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -27,7 +27,7 @@
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
 | AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
 | AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
-| AC-24 | NOT_RUN | 实测原任务显式继续及确定未提交的 DOCX 冷读对账。带原待审、撤权和旧 Provider 快照的同场景仍待验证。 |
+| AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
 | AC-27 | NOT_RUN | 原 Goal 健康等待与进展证据、空转和停滞。 |
@@ -204,3 +204,9 @@
 - `node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` 15/15。真实演练目录与 SQLite 验证写入失败无成果、配置修复后重复不写、hash 变化拒绝、未知字段保留、撤权后实际写入数为 0，以及分别受控的所属网络与出站授权。见 `xiaozhi-permission-phase3-store-fm6TSd/report.json`。
 - 在主进程 `9b018a32ac40ef0898078b0f629ea7dae42a9c86c815920e9895ba8bbb13d6a6` 的正式桌面，预加载拒绝未知下载、数据库自动修复和关闭权限。缺凭据时显示原安全入口。使用隔离合成模型响应，实际 Pi 对 `environment_repair(recipe=disable_permissions)` 返回失败回执，无 Effect 写入，原资料和配置字节不变。另一个真实桌面用损坏 SQLite 冷启以退出码 1 停止，原始 DB SHA-256 `5d1fc514904bc265b8fb840f2b21d200b3405bbb023db96af04b0117b7d44017` 不变，弹窗指向备份和诊断。见 `provider-environment-refusal-LLBMS8/report.json`，3/3。
 - 运行证据统一在指定验收根中。固定修复沿用权限引擎、已有 recipe 和原数据路径。本切片只增加真实验收入口，无生产行为变更和实际付费调用。
+
+## WP-06 同一任务的冷启审批与未知结果
+
+- `file-stage-recovery-electron.mjs --build <实际构建> --continue --pending-approval` 通过 6/6。正式 Electron 首先在合成 DOCX 原子提交前终止。原 HTML 成果、两条未知 Effect 和其绑定的旧 Provider Snapshot 保留。冷启等待教师操作，核对 DOCX 唯一临时文件，未接触无关文件。
+- 教师从实际任务卡点击继续，Pi 在同一 Task 新世代产生真实等待审批，不执行终端。再次精确终止验收 Electron 主进程后，独立进程冷读零模型请求，实际恢复卡显示原审批仍待处理。又一次显式继续发出一条合成模型请求，Task ID、要求版本、原快照 hash、未知 Effect 与原 HTML 完全一致。随后用真实撤权入口撤销相关 Grant，原 approval 失效，提交旧版本审批被拒，终端派发审计数仍为 0。见 `xiaozhi-stage-ui-KqOoHK/report.json`。
+- 保留三条中间失败证据。原核对卡需先展开，`xiaozhi-stage-ui-DHkcoK/report.json`；Office 审批阻塞同一顺序工具批次，改为同一任务跨世代生成待审，`xiaozhi-stage-ui-b7mv9a/report.json`；Windows 包装进程 PID 与真实 Electron 主进程可能不同，`xiaozhi-stage-ui-B7T1gp/report.json`。最终先核对实际主进程 PID、构建和隔离 profile，再终止目标进程。无生产改动和付费模型调用。
