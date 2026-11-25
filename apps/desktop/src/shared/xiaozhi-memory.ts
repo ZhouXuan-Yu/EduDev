@@ -1,5 +1,6 @@
 import type { AiMemorySurface, AiMemoryL3Slot } from './contracts';
 import type { HistorySelection } from './xiaozhi-history-memory';
+import type { PersonalMemorySelection } from './xiaozhi-personal-memory';
 
 export const XIAOZHI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
 export const XIAOZHI_MEMORY_SLOTS: AiMemoryL3Slot[] = ['recent', 'profile', 'scope', 'preferences'];
@@ -11,7 +12,7 @@ export type XiaozhiMemorySource = { layer: 'L2'; source: AiMemorySurface } | { l
 export const projectMemorySource = (item: XiaozhiMemorySource): XiaozhiMemorySource => item.layer === 'L2'
   ? { layer: 'L2', source: item.source } : { layer: 'L3', source: item.source };
 export type XiaozhiMemorySelection = XiaozhiMemorySource & { id: string; version: number };
-export type XiaozhiMemoryUseSelection = XiaozhiMemorySelection | HistorySelection;
+export type XiaozhiMemoryUseSelection = XiaozhiMemorySelection | HistorySelection | PersonalMemorySelection;
 export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; selections: XiaozhiMemoryUseSelection[] };
 export type XiaozhiMemoryCatalogInput = { sessionId: string; offset: number } & XiaozhiMemorySource;
 export type XiaozhiMemorySelectionState = 'ready' | 'changed' | 'disabled' | 'missing' | 'unavailable';

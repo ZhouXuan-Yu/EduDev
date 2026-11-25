@@ -9,7 +9,8 @@ function validPayload(value: unknown, schema: number): value is Omit<PrivateMemo
   const item = value as Omit<PrivateMemoryScope, 'version'>;
   return Object.keys(item).length === 2 && typeof item.enabled === 'boolean'
     && Array.isArray(item.selections) && item.selections.length <= 12
-    && item.selections.every(entry => schema===2 ? validMemoryUseSelection(entry, true) : validMemorySelection(entry, true))
+    && item.selections.every(entry=>schema===1 ? validMemorySelection(entry,true)
+      : validMemoryUseSelection(entry,true) && (schema===3 || entry.layer!=='personal'))
     && new Set(item.selections.map(memorySelectionKey)).size === item.selections.length;
 }
 export function createPiMemoryScopeState(sql: Sql) {
@@ -26,20 +27,20 @@ export function createPiMemoryScopeState(sql: Sql) {
       if (!row) return { version: 0, enabled: false, selections: [] };
       const value: unknown = JSON.parse(String(row.payload_json));
       const schema=Number(row.schema_version);
-      if (![1,2].includes(schema) || !Number.isSafeInteger(row.version) || Number(row.version) < 1 || !validPayload(value,schema)) throw new Error('configuration');
+      if (![1,2,3].includes(schema) || !Number.isSafeInteger(row.version) || Number(row.version) < 1 || !validPayload(value,schema)) throw new Error('configuration');
       return { version: Number(row.version), ...value };
     },
     async saveMemoryScope(id: string, version: number, value: Omit<PrivateMemoryScope, 'version'>): Promise<boolean> {
-      if (!validMemorySession(id) || !Number.isSafeInteger(version) || version < 0 || !validPayload(value,2)) throw new Error('invalid_input');
+      if (!validMemorySession(id) || !Number.isSafeInteger(version) || version < 0 || !validPayload(value,3)) throw new Error('invalid_input');
       if (!sql.change) throw new Error('configuration');
       // Read rejects unknown schema even if an old expected version is supplied.
       await this.memoryScope(id);
       const payload = JSON.stringify(value), timestamp = new Date().toISOString();
-      const schema = value.selections.some(item=>item.layer==='history') ? 2 : 1;
+      const schema = value.selections.some(item=>item.layer==='personal') ? 3 : value.selections.some(item=>item.layer==='history') ? 2 : 1;
       if (version === 0) return (await sql.change(`INSERT OR IGNORE INTO xiaozhi_pi_memory_scopes
         (conversation_id,schema_version,version,payload_json,updated_at) VALUES(?,?,1,?,?)`, [id,schema,payload,timestamp])) === 1;
       return (await sql.change(`UPDATE xiaozhi_pi_memory_scopes SET version=version+1,schema_version=MAX(schema_version,?),payload_json=?,updated_at=?
-        WHERE conversation_id=? AND schema_version IN (1,2) AND version=?`, [schema,payload,timestamp,id,version])) === 1;
+        WHERE conversation_id=? AND schema_version IN (1,2,3) AND version=?`, [schema,payload,timestamp,id,version])) === 1;
     },
   };
 }

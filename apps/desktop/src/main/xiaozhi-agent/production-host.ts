@@ -225,6 +225,7 @@ import {validLearningBatchDecision,validLearningReview,type LearningReviewBatchD
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {createPersonalMemoryRuntime, type personalMemoryWorkerPaths} from '../education/personal-memory/runtime';
 import {createPersonalMemoryOperations} from '../education/personal-memory/operations';
+import {createPersonalMemoryUse} from '../education/personal-memory/use';
 import {readModelReasoning} from '../../shared/model-reasoning';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
 import {publicProviderTurn} from '../../shared/public-provider-text';
@@ -358,7 +359,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const enabled = options.enabled !== false;
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const history = createHistoryMemory(store,options.dataRoot);
-  const memory = createPiMemoryScope(store, { modelAccess: 'available', history });
+  const sanitizePersonalMemory=async(text:string)=>(await createStudentContextSanitizer(store))(text);
+  const personalMemoryUse=createPersonalMemoryUse(store.xiaozhiState.sql,sanitizePersonalMemory);
+  const memory = createPiMemoryScope(store, { modelAccess: 'available', history, personal:personalMemoryUse });
   let closing = false;
   const startupPrewarm=createStartupPrewarm(async signal=>{
     signal.throwIfAborted();
@@ -438,7 +441,6 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     release:id=>{choosing.delete(id);}});
   const modelSettings = createModelSettings({ store, root, codec: options.settingsCodec, busy: settingsBusy,
     assertMutation: () => { if (closing || !configuring.has('provider')) throw new Error('busy'); }, switchBound });
-  const sanitizePersonalMemory=async(text:string)=>(await createStudentContextSanitizer(store))(text);
   const personalMemoryRuntime=options.personalMemoryPaths && createPersonalMemoryRuntime(store.xiaozhiState.sql,{
     idle:()=>enabled && !settingsBusy() && admissions.size===0,
     sanitize:sanitizePersonalMemory,
@@ -450,8 +452,21 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     report:code=>console.warn('[personal-memory]',code),
   });
-  const personalMemory=createPersonalMemoryOperations(store.xiaozhiState.sql,sanitizePersonalMemory,
-    ()=>personalMemoryRuntime?.interrupt());
+  async function revokeUnavailablePersonalMemory():Promise<void> {
+    for (const [sessionId,run] of active) {
+      const scope=await store.xiaozhiState.memoryScope(sessionId);
+      if (!scope.enabled) continue;
+      for (const item of scope.selections) {
+        if (item.layer!=='personal' || await personalMemoryUse(sessionId,item).catch(()=>null)) continue;
+        await host.stop(sessionId);
+        await run.done;
+        break;
+      }
+    }
+  }
+  const personalMemory=createPersonalMemoryOperations(store.xiaozhiState.sql,sanitizePersonalMemory,{
+    stopBackground:()=>personalMemoryRuntime?.interrupt(), invalidateUse:revokeUnavailablePersonalMemory,
+  });
   const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
     permissionRuntime,
     runtimeChecks: inspectLocalRuntimes,
@@ -2105,6 +2120,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }),
     historyMemory: historyOperations(history,async sourceId=>{
       personalMemoryRuntime?.interrupt();
+      await revokeUnavailablePersonalMemory();
       for (const [sessionId,run] of active) {
         const scope = await store.xiaozhiState.memoryScope(sessionId);
         if (scope.enabled && scope.selections.some(item=>item.layer==='history'&&item.id===sourceId)) {

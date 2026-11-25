@@ -29,8 +29,8 @@ function policyView({enabled,pausedByUsePolicy,policyRevision}:PersonalMemoryPol
   return {enabled,pausedByUsePolicy,policyRevision};
 }
 
-function recordView({id,revision,kind,scope,term,value,sourceOccurredAt,sourceCurrent,state,cleanupPending}:PersonalMemorySummary):PersonalMemorySummary {
-  return {id,revision,kind,scope,term,value,sourceOccurredAt,sourceCurrent,state,cleanupPending};
+function recordView({id,revision,kind,scope,term,value,sourceVersion,sourceOccurredAt,sourceCurrent,state,cleanupPending}:PersonalMemorySummary):PersonalMemorySummary {
+  return {id,revision,kind,scope,term,value,sourceVersion,sourceOccurredAt,sourceCurrent,state,cleanupPending};
 }
 
 function candidateInput(value:unknown):value is PersonalMemoryCandidateInput & Record<string,unknown> {
@@ -48,7 +48,8 @@ function editInput(value:unknown):value is PersonalMemoryEditInput {
 }
 
 /** Renderer requests are evidence review and teacher mutations, with no renderer control of job dispatch. */
-export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>, stopBackground?:()=>void) {
+export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>,
+  options:{stopBackground?:()=>void;invalidateUse?:()=>Promise<void>}={}) {
   const sources = createPersonalMemorySourceAuthority(sql,sanitize);
   const candidates = createPersonalMemoryCandidateState(sql,sources.witnessCurrent);
   const records = createPersonalMemoryRecordState(sql,sources);
@@ -62,13 +63,13 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
             value:draft.proposedValue,targetRevision:draft.replaces?.revision ?? 0});
         }
       }
-      return {policy:policyView(policy),records:saved.map(recordView),candidates:pending};
+      return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),candidates:pending};
     }),
     setEnabled:(value:unknown)=>respond(async()=>{
       if (!inputObject(value) || typeof value.enabled !== 'boolean' ||
           (value.revision !== 0 && !safeRevision(value.revision))) throw Error('invalid_input');
       const updated=await candidates.setEnabled(value.enabled,value.revision);
-      if (!updated.enabled) stopBackground?.();
+      if (!updated.enabled) options.stopBackground?.();
       return policyView(updated);
     }),
     preview:(value:unknown)=>respond<PersonalMemoryReview>(async()=>{
@@ -82,7 +83,9 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     }),
     adopt:(value:unknown)=>respond(async()=>{
       if (!adoptInput(value)) throw Error('invalid_input');
-      return records.accept(value);
+      const receipt=await records.accept(value);
+      await options.invalidateUse?.();
+      return receipt;
     }),
     reject:(value:unknown)=>respond(async()=>{
       if (!candidateInput(value)) throw Error('invalid_input');
@@ -92,7 +95,8 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     edit:(value:unknown)=>respond(async()=>{
       if (!editInput(value)) throw Error('invalid_input');
       const receipt=await records.edit(value);
-      if (value.action==='forget' || value.action==='disable') stopBackground?.();
+      if (value.action==='forget' || value.action==='disable') options.stopBackground?.();
+      await options.invalidateUse?.();
       return receipt;
     }),
     sourceStatus:(ref:unknown)=>respond<PersonalMemorySourcePermission>(async()=>{
@@ -104,7 +108,10 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
       if (!inputObject(value) || !validHistoryRef(value.ref) || typeof value.enabled!=='boolean' ||
           (value.revision!==0 && !safeRevision(value.revision))) throw Error('invalid_input');
       const grant=await sources.change(value.ref,value.revision,value.enabled?{scope:{kind:'teacher',id:'self'},term:'unknown'}:null);
-      if (!grant?.allowed) stopBackground?.();
+      if (!grant?.allowed) {
+        options.stopBackground?.();
+        await options.invalidateUse?.();
+      }
       return {allowed:grant?.allowed ?? false,revision:grant?.revision ?? 0};
     }),
   };
