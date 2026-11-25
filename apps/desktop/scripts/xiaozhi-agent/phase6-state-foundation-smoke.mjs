@@ -29,7 +29,7 @@ async function killedBoundary(cut) {
   const worker = fileURLToPath(new URL('./phase6-state-foundation-worker.mjs', import.meta.url));
   const record = {cut, directory}; report.crashes.push(record); save();
   const environment = Object.fromEntries(Object.entries(process.env).filter(([key]) => /^(SystemRoot|windir|SystemDrive|TEMP|TMP|LOCALAPPDATA|USERPROFILE)$/iu.test(key)));
-  const child = fork(worker, ['--crash', directory, cut], {execPath: process.execPath, execArgv: [], windowsHide: true,
+  const child = fork(worker, ['--crash', directory, cut], {execPath: process.execPath, execArgv: ['--experimental-transform-types'], windowsHide: true,
     env: environment, stdio: ['ignore', 'pipe', 'pipe', 'ipc']});
   record.pid = child.pid;
   let stdout = '', stderr = '';

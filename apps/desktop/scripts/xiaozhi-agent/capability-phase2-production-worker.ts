@@ -27,7 +27,13 @@ for (const name of ['ipaddr.js', 'undici', 'jsdom']) {
   const markerCode = `require('node:fs').appendFileSync(${JSON.stringify(dependencyMarker)},${JSON.stringify(name + '\n')});throw Error('untrusted fixture dependency executed');`;
   fs.writeFileSync(path.join(directory, 'index.cjs'), markerCode);
 }
-fs.mkdirSync(workspace);fs.writeFileSync(path.join(workspace,'资料.txt'),'synthetic native artifact evidence');
+const coldSeed=process.argv.includes('--provider-cold-seed');
+const coldResume=process.argv.includes('--provider-cold-resume');
+if (!coldResume) {
+  fs.mkdirSync(workspace);
+  fs.writeFileSync(path.join(workspace,'资料.txt'),'synthetic native artifact evidence');
+}
+const coldIdentity=path.join(output,'cold-identity.json');
 const fixtures=JSON.parse(fs.readFileSync(path.join(output,'fixtures.json'),'utf8')) as Record<string,{manifest:NativeStatArtifactManifest;path:string}>;
 const suiteStarted = performance.now();
 let priorCheckAt = suiteStarted;
@@ -47,6 +53,10 @@ let sessionId='',scenario='activation',stage=0,fixtureFailure:unknown;
 const recoveryOnly=process.argv.includes('--provider-recovery');
 let recoveryBefore: Awaited<ReturnType<typeof task>>;
 let recoveryReceipt: unknown;
+let coldCalls=0;
+let coldCompleted!: (cut: boolean)=>void;
+const coldBoundary=new Promise<boolean>(resolve=>{coldCompleted=resolve;});
+let coldResult: unknown;
 const activatedProviderId='edu.native.activated-file-stat';
 let v2CallsBeforeInitial=0;
 let callsBeforeRequiredLoss=0;
@@ -231,6 +241,24 @@ const fixture=http.createServer(async(incoming,response)=>{
       }
     }
     if(scenario==='initial'){await initialFlow(body,response);return;}
+    if (scenario==='cold-seed'||scenario==='cold-resume') {
+      coldCalls++;
+      if (stage++===0) {
+        send(response,'capability_execute',{requirement:request,input:{path:'资料.txt'}});return;
+      }
+      const result=lastTool(body.messages,'capability_execute');
+      assert(validProviderResult(result),JSON.stringify(result));
+      assert.equal(result.providerId,NATIVE_STAT_PROVIDER_IDS[0]);
+      assert.equal(result.status,'completed');
+      assert.equal(result.data.path,'资料.txt');
+      assert.equal(result.data.size,Buffer.byteLength('synthetic native artifact evidence'));
+      coldResult=result;
+      if (scenario==='cold-seed') {
+        coldCompleted(true); // Stop at a real active model request after the original read receipt.
+        return;
+      }
+      send(response);return;
+    }
     if (scenario==='provider-recovery') {
       switch (stage++) {
         case 0: send(response,'capability_resolve',request); return;
@@ -274,17 +302,81 @@ const fixture=http.createServer(async(incoming,response)=>{
     const result=lastTool(body.messages,'capability_execute');assert(validProviderResult(result));
     assert.equal(result.provenance.providerVersion,scenario==='resume'?fixtures.v3.manifest.version:fixtures.v2.manifest.version);
     assert.equal(result.data.mime,scenario==='resume'?'text/plain':'application/x-native-stat-v2');send(response);
-  } catch(error) {fixtureFailure??=error;console.error(error);if(!response.headersSent)response.writeHead(500);response.end();}
+  } catch(error) {fixtureFailure??=error; coldCompleted(false); console.error(error);if(!response.headersSent)response.writeHead(500);response.end();}
 });
 async function start(prompt:string){assert(host);stage=0;const result=await host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt});assert(result.ok,JSON.stringify(result));return result.runId;}
 try {
-  if (!recoveryOnly) await verifyActualPhase1Migration();
+  if (!recoveryOnly&&!coldSeed&&!coldResume) await verifyActualPhase1Migration();
   await new Promise<void>(resolve=>fixture.listen(0,'127.0.0.1',resolve));const address=fixture.address();assert(address&&typeof address!=='string');
   net.fetch=async(input,init)=>{const target=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);assert.equal(target.origin,'https://api.deepseek.com');return globalThis.fetch(`http://127.0.0.1:${address.port}${target.pathname}`,init);};
-  await store.init();sessionId=(await store.createAiConversationSession({title:'Phase2合成真实执行',folderId:null})).session.id;
-  await store.xiaozhiState.setWorkspace(sessionId,workspace,'合成授权目录');
+  await store.init();
+  const coldPrior=coldResume?JSON.parse(fs.readFileSync(coldIdentity,'utf8')):undefined;
+  if (coldPrior) sessionId=coldPrior.sessionId;
+  else {
+    sessionId=(await store.createAiConversationSession({title:'Phase2合成真实执行',folderId:null})).session.id;
+    await store.xiaozhiState.setWorkspace(sessionId,workspace,'合成授权目录');
+  }
   host=createXiaozhiProductionHost({store,dataRoot,enabled:true,emit:event=>{events.push(event);if(scenario==='stop'&&event.kind==='tool_attempt'&&event.attempt.state==='started'&&event.attempt.tool==='capability_execute')stopStarted();}});
-  if (recoveryOnly) {
+  if (coldSeed) {
+    await host.capabilities.resolve(sessionId,wireRequest);
+    await updateHana((_provider,binding)=>{binding.priority=10;});
+    scenario='cold-seed';
+    const runId=await start('验收：读取当前工作区资料.txt的文件信息，然后由教师决定下一步。');
+    const atBoundary=await Promise.race([coldBoundary,host.waitForRun(sessionId,runId).then(()=>false),
+      new Promise<false>(resolve=>{setTimeout(()=>resolve(false),30000).unref();})]);
+    if (fixtureFailure) throw fixtureFailure;
+    assert(atBoundary);
+    assert((await host.stop(sessionId)).ok);
+    await host.waitForRun(sessionId,runId);
+    const stopped=await task();
+    const previous=(await snapshots())[0];
+    assert(stopped&&previous);
+    assert.equal(previous.runId,runId);
+    assert.equal((await store.getAiAgentRun(runId))?.status,'blocked');
+    await updateProvider(NATIVE_STAT_PROVIDER_IDS[1],(provider,binding)=>{provider.cost.latencyMs=250;binding.priority=50;});
+    const currentRanking=await host.capabilities.resolve(sessionId,wireRequest);
+    assert.equal(currentRanking.selectedProviders[0]?.providerId,NATIVE_STAT_PROVIDER_IDS[1]);
+    fs.writeFileSync(coldIdentity,JSON.stringify({sessionId,taskId:stopped.id,requirementsVersion:stopped.requirementsVersion,
+      runId,previous,result:coldResult,pid:process.pid,coldCalls,currentRanking},null,2));
+    check('Actual original read reaches a persisted Snapshot and the teacher stops the same in-flight task');
+    report.success=true;
+  } else if (coldResume) {
+    const preserved=await task();
+    assert.equal(preserved?.id,coldPrior.taskId);
+    assert.equal(preserved?.requirementsVersion,coldPrior.requirementsVersion);
+    assert.deepEqual(await snapshots(),[coldPrior.previous]);
+    const currentRanking=await host.capabilities.resolve(sessionId,wireRequest);
+    assert.equal(currentRanking.selectedProviders[0]?.providerId,NATIVE_STAT_PROVIDER_IDS[1]);
+    assert.notEqual(process.pid,coldPrior.pid);
+    assert.equal(coldCalls,0);
+    assert.deepEqual(host.capabilities.executionHistory(),[]);
+    scenario='cold-resume';stage=0;
+    const resumed=await host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt:'继续',
+      continueTask:{taskId:coldPrior.taskId,requirementsVersion:coldPrior.requirementsVersion}});
+    assert(resumed.ok,JSON.stringify(resumed));
+    assert.notEqual(resumed.runId,coldPrior.runId);
+    await host.waitForRun(sessionId,resumed.runId);
+    if (fixtureFailure) throw fixtureFailure;
+    assert.equal((await store.getAiAgentRun(resumed.runId))?.status,'succeeded');
+    const current=await task();
+    assert.equal(current?.id,coldPrior.taskId);
+    assert.equal(current?.requirementsVersion,coldPrior.requirementsVersion);
+    const lineage=await snapshots();
+    assert.equal(lineage.length,2);
+    assert.deepEqual(lineage.find(item=>item.snapshotId===coldPrior.previous.snapshotId),coldPrior.previous);
+    const replacement=lineage.find(item=>item.runId===resumed.runId);
+    assert.equal(replacement?.refreshReason,'resume_revalidate');
+    assert.equal(replacement?.previousSnapshotId,coldPrior.previous.snapshotId);
+    assert.equal(replacement?.providerHash,coldPrior.previous.providerHash);
+    assert.deepEqual(replacement?.selection,coldPrior.previous.selection);
+    const actual=host.capabilities.executionHistory();
+    assert.deepEqual(actual.map(item=>item.providerId),[NATIVE_STAT_PROVIDER_IDS[0]]);
+    assert.equal(actual[0].hash,coldPrior.previous.providerHash);
+    assert.deepEqual((coldResult as {data: unknown}).data,coldPrior.result.data);
+    check('Cold production Electron reuses the old verified Provider and links a new Snapshot for the same Task');
+    Object.assign(report,{coldPrior,result:coldResult,currentRanking,lineage,actual,coldCalls,pid:process.pid,dataRoot,runId:resumed.runId});
+    report.success=true;
+  } else if (recoveryOnly) {
     await host.capabilities.resolve(sessionId,wireRequest);
     await updateHana((_provider,binding)=>{binding.priority=10;});
     scenario='provider-recovery';
@@ -406,5 +498,5 @@ try {
 finally {
   await host?.close().catch(()=>{});await store.close().catch(()=>{});net.fetch=originalFetch;
   fixture.closeAllConnections();await new Promise<void>(resolve=>fixture.close(()=>resolve()));
-  fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,passed:checks.length,output,error:report.error}));
+  fs.writeFileSync(path.join(output,coldSeed?'report-seed.json':'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,passed:checks.length,output,error:report.error}));
 }

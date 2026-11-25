@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 8/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 10/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -16,9 +16,10 @@
 | AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
 | AC-11 | NOT_RUN | 实际旧读取未归还前，同一输入不得再次触发读取。原只读 EBUSY 补发与停止回归通过。尚需串联真实业务和 R1 资源租约计数。 |
 | AC-12 | PASS · 已实现 | Windows Electron 生产 Pi 在原 Task 内，从不可用的 Hana stat 切到已登记的 workspace stat。A 发起 0 次，B 发起 1 次，原要求版本、默认优先级和快照内容保留。实际 SQLite 有两条链接快照与一条成功执行回执。 |
-| AC-13 | NOT_RUN | 实际本地读取夹具已验固定项、缺少触发条件所需证据、等待审批、初次和迟到的安全点占用。其余拒绝矩阵和生产 Effect 仍待补。 |
-| AC-14 | NOT_RUN | 同一运行内，更高优先级候选出现时仍使用有效的旧快照。完整冷启同任务恢复仍待验。 |
-| AC-15–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-13 | PASS · 已实现 | 实际 Registry/Resolver、原生只读 Adapter 与 SQLite 验证缺必要证据、自述证据、缺触发条件、撤销版本、新授权、驻留、预算、固定及两处忙碌屏障。每条实际替代为零，原任务、快照和 Effect 不变，返回真实原因和可执行的下一步。 |
+| AC-14 | PASS · 已实现 | 正式 Windows Electron 启动同一 SQLite，原任务主动继续前实际模型请求为零。新 Run 使用旧 Provider 版本和 hash，保留原快照字节，追加带 `resume_revalidate` 的 lineage。真实快照、文件结果和两个 PID 可读回。 |
+| AC-15 | FAIL | 文件和网络的实际中断回归均通过。是否只有权威未派发证据才允许生产文件重试，以及已派发但未确认终端动作的完整观察仍缺，两个原生产夹具执行超时。 |
+| AC-16–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -92,3 +93,14 @@
 - `6464760` 使用现有两个原生 stat 实现、真实文件和实际 SQLite，切换前红灯 4/5。原实现不可用时，主进程只返回 `needs_refresh`，替代实际读取次数为 0。见 `wp04-native-snapshot-red.log`。生产范围限定在已知原生 stat 合同，原请求未进入旧 Adapter，当前任务安全点允许，原要求有效，候选满足全部所需条件且在同一驻留约束内。复用已有 `explicit_refresh` 持久值和前序快照链接，保持旧版读回兼容。
 - Node 真实文件和 SQLite 最终 7/7，见 `wp04-native-snapshot-guards.log` 和 `provider-snapshot-recovery-TRnzJe`。运行 `node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs --provider-recovery`，实际 Electron 43.8.3 / Pi 专项 1/1。合成 SSE 只发原 resolve、execute 和终态应答，宿主在处理中完成替代，无模型刷新请求。报告 `wp04-native-pi-report.json` 记录替代内容、版本、hash、Task 和 Snapshot。关闭后独立以 SQLite 只读方式核对，见 `wp04-native-pi-sqlite.json`。Chrome 网络服务有一次重启，见 `wp04-native-pi-worker.log`。
 - 构建通过，见 `wp04-safe-stat-build.log`。原能力合同 10/10，渲染组件 261/261，日志 `wp04-predeployment-contract.log` 与 `wp04-safe-stat-renderer.log`。真实付费模型调用为 0。AC-34 仍留待组合差异审查。
+
+## WP-04 第二至第三轮拒绝及正式冷启
+
+- `034d472` 的原生只读矩阵以两套实际实现、真实文件、SQLite 和控制屏障运行。所有负例已经没有实际替代，但缺少与原因对应的后续入口，9 条行为断言失败。见 `wp04-refusal-red.log`。增加结构化原因和可继续动作后通过 11/11，见 `wp04-refusal-green.log` 与 `provider-snapshot-recovery-LTbXit`。断言包括原 Task、原 Snapshot、零 Effect 和零替代执行。合同缺失、驻留和权限仍由原 Resolver 判定。
+- `node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs --provider-cold` 以两个真实且先后退出的 Electron 进程通过，见 `wp04-cold-actual.log` 和 `wp04-cold-host/`。随后从独立案例运行同一命令并附加 `--desktop-build <绝对路径>`，由生产 Electron 产物的 typed Preload 发出原明确继续请求。两次进程 PID 为 38800 和 55980。正式读取继承原 capability、版本 hash 和文件元信息。另一兼容 Provider 的声明耗时与优先级更优，普通解析排序选它，原任务继续仍保留旧快照。启动至继续前模型请求为零，继续后两次合成 HTTP 请求均使用原模型。见 `wp04-cold-formal.log`、`wp04-cold-formal/report.json` 和 `wp04-cold-formal/cold-identity.json`。
+- 构建 `test-results/provider-r1-refusal-lineage` 通过。原 D2 合同 10/10，渲染组件 261/261，见 `wp04-refusal-build.log`、`wp04-refusal-d2-contract-final.log` 和 `wp04-refusal-renderer-final.log`。本段新增模型可见的结构化失败结果，AC-34 后续需要固定任务真模型对照，本轮真实付费调用为 0。
+
+## WP-04 第四轮 Effect 回归与现行审批等待
+
+- 实际 Windows 子进程 SIGKILL 和 SQLite 文件对账 `phase6-state-foundation-smoke.mjs` 8/8，原文件字节 hash 与物理生成次数保持稳定。真实网络回执和独立 HTTP 线计数 `phase6-network-effects-smoke.mjs` 8/8。两者使用 `node --experimental-transform-types`，原工作子进程也显式启用该模式。首次子进程启动失败及故障诊断目录缺失分别见 `wp04-state-foundation-node24.log`、`wp04-network-effects-node24.log`。复跑日志为 `wp04-state-foundation-final.log`、`wp04-network-effects-final.log`，原报告位于 `xiaozhi-phase6-state-ngB6UV` 和 `xiaozhi-phase6-network-effects-Ckqxng`。
+- `non-dispatch-host-smoke.mjs` 现行代码实际到达第一条文件工具的已准入状态，等待教师授权。旧夹具却等工具回到模型并让模型生成两个调用后才检查审批，30 秒后超时。保留 `wp04-authoritative-no-dispatch.log`、`xiaozhi-non-dispatch-host-qiyTZ7/REPORT.json` 和实际请求记录。另一个 Windows 终端权限用例未到达最后断言，退出码为空，源输入 945 未漂移。保留 `wp04-terminal-effects-final.log` 与 `terminal-grant-rINQgw`。现有两组生产验收缺口仍需沿当前授权入口复现。

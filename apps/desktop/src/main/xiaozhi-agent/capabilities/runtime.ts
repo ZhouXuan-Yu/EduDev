@@ -10,10 +10,15 @@ import {CORE_ADAPTER_VERSION, nativeStatAdapterSchemas, registerCoreAdapters} fr
 import type {AdapterExecution} from './adapters/contract';
 import type { WorkspaceLease } from '../workspace-files';
 import {NATIVE_STAT_CAPABILITY, validStatInput} from './native-stat-contract';
+type ProviderRecoveryHint = {
+    reasons: string[];
+    nextAction: 'review_pinned_provider' | 'review_compatible_providers' | 'review_provider_authorization' | 'wait_for_current_operation';
+};
 type ResolutionView = {
     resolution: CapabilityResolution;
     snapshot: ProviderSnapshot | null;
     recoveredWorkspace?: WorkspaceLease;
+    recovery?: ProviderRecoveryHint;
     blockedReason?: 'provider_version_unavailable' | 'capability_revoked' | 'permission_denied' | 'needs_refresh'
         | 'capability_refresh_busy';
 };
@@ -154,11 +159,14 @@ export function createCapabilityTaskRuntime(options: {
         // Restrict this automatic path to the known native read contract. The old Adapter
         // has not been entered for this call, so there is no unknown result to replay.
         const authority = await options.registry.snapshot();
-        if (authority.revision !== blocked.resolution.registryRevision
-            || authority.bindings.some(item => item.capabilityId === request.capabilityId && item.userPinned)) return blocked;
+        if (authority.revision !== blocked.resolution.registryRevision) throw Error('source_changed');
+        if (authority.bindings.some(item => item.capabilityId === request.capabilityId && item.userPinned)) {
+            return {...blocked, recovery: {reasons: ['provider_pinned'], nextAction: 'review_pinned_provider'}};
+        }
         const old = authority.providers.find(item => item.id === prior.selection.providerId);
         if (old?.type !== 'native' || (await options.registry.defaultInstance(old)).state !== 'enabled') return blocked;
-        const busy = {...blocked, blockedReason: 'capability_refresh_busy' as const};
+        const busy: ResolutionView = {...blocked, blockedReason: 'capability_refresh_busy',
+            recovery: {reasons: ['capability_refresh_busy'], nextAction: 'wait_for_current_operation'}};
         if (!await options.canRefresh(request.capabilityId, 'provider_recovery')) return busy;
         const lease = await options.workspace();
         fence(signal);
@@ -166,7 +174,12 @@ export function createCapabilityTaskRuntime(options: {
         fence(signal);
         if (resolution.registryRevision !== authority.revision) throw Error('source_changed');
         const selection = resolution.selectedProviders[0];
-        if (!selection || selection.providerId === prior.selection.providerId) return {...blocked, resolution};
+        if (!selection || selection.providerId === prior.selection.providerId) {
+            const reasons = [...new Set(resolution.excludedProviders
+                .filter(item => item.providerId !== prior.selection.providerId).flatMap(item => item.reasons))];
+            const nextAction = reasons.includes('permission_denied') ? 'review_provider_authorization' : 'review_compatible_providers';
+            return {...blocked, resolution, recovery: {reasons: reasons.length ? reasons : resolution.blockedReasons, nextAction}};
+        }
         const record = await options.registry.providerVersion(selection.providerId, selection.providerVersion, request.capabilityId);
         if (!record || record.revoked || record.provider.type !== 'native') return {...blocked, resolution};
         const snapshot = await options.persist(async () => {
@@ -205,6 +218,7 @@ export function createCapabilityTaskRuntime(options: {
                 success: false as const,
                 resolution: view.resolution,
                 snapshotId: view.snapshot?.snapshotId,
+                ...(view.recovery ? {recovery: view.recovery} : {}),
                 error: {
                     code,
                     message: code,

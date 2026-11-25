@@ -77,10 +77,11 @@ async function fixture(id, action) {
 }
 async function killAfterReceipt(pathname) {
   const directory = path.join(root, 'N05-cold-receipt'), record = {directory};
+  fs.mkdirSync(directory);
   report.crashes.push(record); save();
   const environment = Object.fromEntries(Object.entries(process.env).filter(([key]) => /^(SystemRoot|windir|SystemDrive|TEMP|TMP|LOCALAPPDATA|USERPROFILE)$/iu.test(key)));
   const worker = fileURLToPath(new URL('./phase6-network-effects-worker.mjs', import.meta.url));
-  const child = fork(worker, ['--receipt-boundary', directory, origin, pathname], {execPath: process.execPath, execArgv: [],
+  const child = fork(worker, ['--receipt-boundary', directory, origin, pathname], {execPath: process.execPath, execArgv: ['--experimental-transform-types'],
     windowsHide: true, env: environment, stdio: ['ignore', 'pipe', 'pipe', 'ipc']});
   record.pid = child.pid;
   let stdout = '', stderr = '', timer;

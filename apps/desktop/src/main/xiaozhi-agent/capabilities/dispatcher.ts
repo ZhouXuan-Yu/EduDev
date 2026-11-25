@@ -162,7 +162,8 @@ export function createCapabilityDispatcher(runtime: CapabilityTaskRuntime): Tool
                         ...(value.success ? {
                             provider: value.result
                         } : {
-                            error: value.error
+                            error: value.error,
+                            ...(value.recovery ? {recovery: value.recovery} : {})
                         })
                     },
                     isError: failed

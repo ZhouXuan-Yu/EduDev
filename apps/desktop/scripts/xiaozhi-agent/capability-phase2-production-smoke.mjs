@@ -10,6 +10,9 @@ import {buildNativeStatArtifact} from '../build-capability-artifacts.mjs';
 fs.mkdirSync('test-results/xiaozhi-agent',{recursive:true});
 const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/capability-phase2-production-'));
 const recoveryOnly=process.argv.includes('--provider-recovery');
+const coldRecovery=process.argv.includes('--provider-cold');
+const desktopBuild=process.argv[process.argv.indexOf('--desktop-build')+1];
+const useDesktop=coldRecovery&&process.argv.includes('--desktop-build');
 const externalRoot=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-phase2-user-data-'));
 fs.writeFileSync(path.join(output,'external-root.json'),JSON.stringify({externalRoot},null,2));
 const sourceRoot=path.join(output,'artifact-source');
@@ -41,13 +44,34 @@ await build({entryPoints:['scripts/xiaozhi-agent/capability-phase2-production-wo
 const bootstrap=path.join(output,'bootstrap.cjs');
 fs.writeFileSync(bootstrap,`const {app}=require('electron');app.setPath('userData',${JSON.stringify(path.join(externalRoot,'profile'))});app.whenReady().then(async()=>{try{await import(${JSON.stringify(pathToFileURL(path.join(output,'worker.mjs')).href)});if(process.exitCode)app.exit(Number(process.exitCode));else app.quit();}catch(error){console.error(error.stack);app.exit(1);}});`,{flag:'wx'});
 const env={...process.env};delete env.NODE_OPTIONS;delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_PATH;
-const log=fs.createWriteStream(path.join(output,'worker.log'));
-const child=spawn(createRequire(import.meta.url)('electron'),[bootstrap,output,externalRoot,...(recoveryOnly?['--provider-recovery']:[])],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
-child.stdout.pipe(log,{end:false});child.stderr.pipe(log,{end:false});
-const timeout=setTimeout(()=>child.kill(),240000);
-const code=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);});
-clearTimeout(timeout);await new Promise(resolve=>log.end(resolve));
-let report;try{report=JSON.parse(fs.readFileSync(path.join(output,'report.json'),'utf8'));}catch{}
-const success=code===0&&report?.success===true&&report.checks.length>=(recoveryOnly?1:14)&&report.checks.every(item=>item.pass===true);
-if(!success)process.exitCode=1;
-console.log(JSON.stringify({success,exitCode:code,passed:report?.checks?.length,output,error:report?.error}));
+async function runWorker(args, logFile) {
+  const log=fs.createWriteStream(path.join(output,logFile));
+  const child=spawn(createRequire(import.meta.url)('electron'),[bootstrap,output,externalRoot,...args],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
+  child.stdout.pipe(log,{end:false});child.stderr.pipe(log,{end:false});
+  const timeout=setTimeout(()=>child.kill(),240000);
+  try {
+    const code=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('close',resolve);});
+    return {pid:child.pid,code};
+  } finally {
+    clearTimeout(timeout);
+    await new Promise(resolve=>log.end(resolve));
+  }
+}
+const seed=coldRecovery?await runWorker(['--provider-cold-seed'],'worker-seed.log'):undefined;
+if(seed&&seed.code!==0){
+  console.error(JSON.stringify({success:false,seed,output}));
+  process.exitCode=1;
+}else if(useDesktop){
+  const {resumeInDesktop}=await import('./provider-snapshot-cold-desktop.mjs');
+  const report=await resumeInDesktop({build:path.resolve(desktopBuild),output,externalRoot,seedPid:seed.pid});
+  if(!report.success)process.exitCode=1;
+  console.log(JSON.stringify({success:report.success,passed:report.checks.length,seed,coldPid:report.coldPid,output,error:report.error}));
+}else{
+  const worker=await runWorker(coldRecovery?['--provider-cold-resume']:recoveryOnly?['--provider-recovery']:[],'worker.log');
+  const code=worker.code;
+  let report;try{report=JSON.parse(fs.readFileSync(path.join(output,'report.json'),'utf8'));}catch{}
+  const success=code===0&&report?.success===true&&report.checks.length>=((coldRecovery||recoveryOnly)?1:14)
+    &&report.checks.every(item=>item.pass===true)&&(!seed||seed.pid!==worker.pid);
+  if(!success)process.exitCode=1;
+  console.log(JSON.stringify({success,exitCode:code,passed:report?.checks?.length,output,seed,worker,error:report?.error}));
+}
