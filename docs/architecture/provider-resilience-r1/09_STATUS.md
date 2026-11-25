@@ -28,13 +28,13 @@
 | 04 实际预算 | 部分完成 | AC-09、AC-10 通过。原 Pi 补发由同一 owner 处理，健康拦截零扣减，实际发送和持久化预算一致。AC-11 已禁止旧读取未结束时启动同一读取。跨 Pi、工具、Provider 与业务的总物理预算及原调度租约对账待补。 |
 | 05 兼容接续 | 已验证完成 | AC-12 至 AC-14 通过。原生 stat 在旧实现不可用且本次未发出时，在原任务安全点运行兼容读取。拒绝矩阵均为零替代调用，并带可继续入口。正式桌面在真正冷启后沿用原合格快照。 |
 | 06 Effect 与版本 | 已验证完成 | AC-15 至 AC-17 通过。Windows 宿主、真实文件、网络和终端验证了派发与版本屏障。已确认原题卷从真实 PDF 打印故障恢复，只补齐缺失输出。SQLite 中原教师确认、Word 历史和新 PDF 回执均已读回。 |
-| 07 worker | 部分完成 | 当前主线有 `local-utility-host.ts`、`ocr-host.ts`、`vector-host.ts`、`embedding-client.ts` 和私有打印 owner。R1 分支 lease 未合入，组合单独核验。 |
+| 07 worker | 部分完成 | WP-05 已修复一个 MCP 握手耗尽同轮准备期限导致独立工具缺失。正式 Electron 证实原连接仍挂起时，另一会话查题和保存均完成。真实 stdio 异常退出与并发路径、OCR/文档、向量、PDF 取消和资源调度 lease 仍待核验。 |
 | 08 桌面恢复 | 部分完成 | `tasks/startup-recovery.ts` 已有原任务冷启动读回，`phase6-startup-recovery-smoke.mjs` 是候选入口。网络和原生 suspend/resume、截止时间的组合待验。 |
 | 09 固定修复 | 部分完成 | `environment/service.ts` 提供现有受权 recipe。只用合成目录核对 hash、拒绝危险修复与代表能力读回。 |
 | 10 Goal | 部分完成 | `goal-coordinator.ts` 与 `goal-progress.ts` 保留教师验收和证据推进。等健康等待接入后验原任务预算及真实模型计数。 |
 | 11 诊断 | 部分完成 | `diagnostics/report.ts` 有现有有界导出基础。四类状态、实际 IPC 和隐私 canary 待补。 |
 | 12 集成 | 待核验 | 按 05 分离模块、真实组合和最终 main，真实模型评测先按 AC-34 判断适用性。 |
 
-当前状态为实施中，必需验收 13/36。WP-01 累计 5/8，WP-02 累计 4/8，WP-03 累计 7/8。WP-04 累计 8/8，负责的 AC-12 至 AC-17 全部通过。WP-05–08 尚未开始实现，集成候选 0/3。冷却使用现有 SQLite `app_settings` 中的版本化记录。本轮无表结构迁移，真实付费请求为 0。
+当前状态为实施中，必需验收 13/36。WP-01 累计 5/8，WP-02 累计 4/8，WP-03 累计 7/8。WP-04 累计 8/8，负责的 AC-12 至 AC-17 全部通过。WP-05 累计 1/8，已有 AC-18 的独立 HTTP 证据。WP-06 至 WP-08 尚未开始实现，集成候选 0/3。冷却使用现有 SQLite `app_settings` 中的版本化记录。本轮无表结构迁移，真实付费请求为 0。
 
-下一步为 WP-05 的 AC-18。从已验过真实 HTTP、direct/managed stdio 的 `phase5-mcp-lifecycle-smoke.mjs` 与正式 Electron 的 `mcp-effect-host-smoke.mjs` 接续，用独立真实 MCP 服务和教师会话补齐故障期间正常查题、保存及原传输退出的同一时间线。AC-02、AC-04 可独立补验，AC-11 与 AC-08 的其余边界维持原合同。AC-19 至 AC-22 继续按原合同核对原生工作进程和资源调度 lease。
+下一步为 WP-05 的 AC-18。利用 `phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 的真实 Windows AppContainer 子进程，注入退出与迟到 stdout，将 PID、Job 退出、独立 MCP 调用和另一会话保存关联到同一时间线。持续挂起的同一端点对新会话准备的影响另行验证。AC-02、AC-04 可独立补验，AC-11 与 AC-08 的其余边界维持原合同。AC-19 至 AC-22 按原合同核对原生工作进程和资源调度 lease。

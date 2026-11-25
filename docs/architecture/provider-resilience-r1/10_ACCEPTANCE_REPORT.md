@@ -21,7 +21,25 @@
 | AC-15 | PASS · 已实现 | Windows 生产文件经过两次明确拒绝，存入两份权威的未派发证明，重启并重新授权后各保存一次。未知写入、真实 HTTP 丢回执与真实终端未发布均受保护。已有文件和已匹配网络回执通过独立读回保持原物理次数。 |
 | AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
 | AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
-| AC-18–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-18 | NOT_RUN | 正式 Electron 已证实单条 HTTP 连接挂起时，独立 MCP 完成握手，另一会话完成题库检索与保存，原传输实际关闭后迟到响应未生效。真实 Windows stdio 异常退出与并发路径仍待验。 |
+| AC-19 | NOT_RUN | 真实 OCR/文档进程退出、旧回执拦截及页级接续。 |
+| AC-20 | NOT_RUN | 真实向量/embedding 退出、索引游标、代际和替代质量。 |
+| AC-21 | NOT_RUN | 实际 PDF 取消、迟到回调、资源归还和前台并行。 |
+| AC-22 | NOT_RUN | 各执行器 10 次生命周期、未退出占用与关停。 |
+| AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
+| AC-24 | NOT_RUN | 正式桌面冷启、原审批与显式继续。 |
+| AC-25 | NOT_RUN | 固定修复 recipe 的实际执行、读回与幂等性。 |
+| AC-26 | NOT_RUN | 危险修复拒绝、保护原数据库与安全凭证入口。 |
+| AC-27 | NOT_RUN | 原 Goal 健康等待与进展证据、空转和停滞。 |
+| AC-28 | NOT_RUN | Goal 预算、停止及教师最终验收约束。 |
+| AC-29 | NOT_RUN | 正式界面的健康、停止、回执未知和继续入口。 |
+| AC-30 | NOT_RUN | 诊断导出脱敏、隔离、大小边界与 hash。 |
+| AC-31 | NOT_RUN | DB R2 prepared-run 组合与旧库、损坏记录和回退矩阵。 |
+| AC-32 | NOT_RUN | 组合下租约和 Agent Experience R1 的性能合同。 |
+| AC-33 | NOT_RUN | 四类教学任务的无故障、可恢复和不可恢复矩阵。 |
+| AC-34 | NOT_RUN | 按实际差异判定是否触发真实模型质量评测，再跑固定合同。 |
+| AC-35 | NOT_RUN | 模块、真实组合候选和最终 main 的版本绑定与门禁。 |
+| AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -120,3 +138,10 @@
 - 原 owner 在首次打印明确失败且私有资源清理结束后，复核当前授权、确认源、工作区与目标文件，再在原时限内重试一次。导出成功以实际文件、原 SQLite 产物和绑定的试卷来源读回为准。中间验证识别出通用 Effect 读回未识别原题卷工具，保留 `provider-paper-export-s5PxUd/report.json`。
 - 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <绝对构建目录>`，再附加 `--keep-failing` 运行反例。正式构建为 `test-results/provider-r1-pdf-owner-receipt`，主进程 SHA-256 为 `b6511c2b6e075f8dc06d7cb50141975a957f5cfd90ac5780610863af04210e5e`。两次各通过 2 项。正例见 `provider-paper-export-3Yjuc0/report.json`，两次私有窗口先后销毁，Word 的 hash 与文件身份不变，PDF 审批前无目标文件，最终 Word/PDF 各一个持久化成功 Effect，DOCX XML 与 pypdf 分别读出同一题目。反例见 `provider-paper-export-Jo4fCp/report.json`，两次打印失败后无 PDF 或成功 Effect，原 Word 保持一致。真实付费模型调用 0。
 - 正式构建通过、渲染组件 261/261，见 `wp04-native-pdf-owner-build-final.log` 和 `wp04-native-pdf-renderer.log`。依赖锁保持原样，审计记录 30 项已存在风险，其中高危 5 项，见 `wp04-native-pdf-npm-audit.json`。旧 Office 扩展回归运行了 16 项后，缺少脚本硬编码的历史数据库，整组未跑完，见 `wp04-office-artifact-foundation-node24.log`。AC-21、AC-22 的取消、迟到回调和实际 lease 归还仍按原要求实测。
+
+## WP-05 第一轮 MCP 握手隔离
+
+- `152380d` 在独立 SQLite 和两个实际 HTTP 服务上复现。首个已验证服务挂起至准备截止，另一个服务保持 `ready`，原运行可用 MCP 定义却为空。见 `wp05-preparation-isolation-red.log` 和 `provider-mcp-preparation-dB6rwC/report.json`。
+- 同一 Run 最多并发准备四个连接，维持总准备期限和每服务的权限、信任与健康域。目录更新仍使用版本检查，按原目录顺序暴露已核验工具。关闭 Run/宿主时取消准备并等待对应传输清理。`node scripts/xiaozhi-agent/provider-mcp-preparation-isolation.mjs` 通过 3/3，见 `provider-mcp-preparation-47pieG/report.json`。覆盖另一连接实际调用、超时后旧响应与主动关闭。
+- 正式构建 `test-results/provider-r1-mcp-preparation` 的主进程 SHA-256 为 `b474e3f9e0025926caa7fce8b1110bcfdc5d3cea0c9196db2ffa940c831566cc`。运行 `node scripts/xiaozhi-agent/provider-mcp-health-ipc.mjs <绝对构建目录> --preparation-isolation`，正式 Electron 通过 2/2。`mcp-health-desktop-wW6veK/report.json` 显示旧传输挂起后 157.3 毫秒另一服务回送 Schema，4.872 秒另一会话通过 Pi 搜索实际题库，4.879 秒保存另一道合成题并经 SQLite 验证，9.957 秒后原传输真正关闭。原服务故障后迟到响应未改变其目录记录。该测试控制单条连接挂起，服务允许另一条连接正常握手。
+- 对同一构建正常运行 IPC 熔断回归 3/3，见 `mcp-health-desktop-IxMUnY/report.json`。Windows direct/managed MCP 工作者回归 15/15，生产宿主及 Effect 回归 6/6，渲染组件 261/261。日志包括 `wp05-preparation-stdio-regression.log`、`wp05-preparation-effect-regression.log`、`wp05-preparation-renderer.log` 和 `wp05-preparation-build.log`。锁文件无变更，审计见 `wp05-preparation-npm-audit.json`。真实付费调用 0。AC-18 的异常进程退出与独立会话同一时间线仍待补。

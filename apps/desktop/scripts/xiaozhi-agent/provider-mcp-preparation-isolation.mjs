@@ -19,6 +19,15 @@ const slow=await startMcpFixture(),healthy=await startMcpFixture();
 const report={root,ok:false,checks:[],events:[],paidCalls:0};
 const event=name=>report.events.push({name,at:performance.now()});
 let releaseLate,prepared;
+async function observed(name) {
+  const deadline=performance.now()+1500;
+  do {
+    const entry=report.events.find(row=>row.name===name);
+    if(entry)return entry.at;
+    await delay(10);
+  }while(performance.now()<deadline);
+  assert.fail('Missing actual event: '+name);
+}
 
 async function trust(name,url) {
   let view=await runtime.add({name,transport:'http',url});
@@ -45,14 +54,13 @@ try {
     if(request.method==='tools/list')event('healthy-schema');
   };
   prepared=await runtime.tools();
-  const observed=await runtime.catalog();
-  report.catalog=observed.servers.map(server=>({id:server.id,status:server.status,trustedSchemaHash:server.trustedSchemaHash}));
+  const catalog=await runtime.catalog();
+  report.catalog=catalog.servers.map(server=>({id:server.id,status:server.status,trustedSchemaHash:server.trustedSchemaHash}));
   report.exposed=prepared.definitions.map(tool=>tool.name);
-  const deadline=performance.now()+1500;
-  while (!report.events.some(row=>row.name==='slow-transport-closed')&&performance.now()<deadline)await delay(10);
   const seen=name=>report.events.find(row=>row.name===name)?.at;
-  assert(seen('slow-transport-closed')>seen('slow-request'),'Time out and close the real hung HTTP request');
-  assert(seen('healthy-schema')<seen('slow-transport-closed'),'An independent source must verify while the first actual transport is still hung');
+  const closed=await observed('slow-transport-closed');
+  assert(closed>seen('slow-request'),'Time out and close the real hung HTTP request');
+  assert(seen('healthy-schema')<closed,'An independent source must verify while the first actual transport is still hung');
   const only=prepared.definitions.find(tool=>tool.name===mcpToolName(independent.id,'lookup_lesson'));
   assert(only,'Keep the independent verified MCP tool usable for the original turn');
   const read=await only.execute('wp05_independent_read',{topic:'合成物理课程'},new AbortController().signal,undefined,{});
@@ -60,7 +68,7 @@ try {
   assert.match(read.content[0].text,/合成物理课程/u);
   assert.equal(healthy.state.calls,1);
   report.checks.push('Second trusted MCP verifies while the first is hung and reads through the original preparation handle');
-  const before=observed.servers.find(server=>server.id===offline.id);
+  const before=catalog.servers.find(server=>server.id===offline.id);
   assert.equal(before.status,'failed');
   assert.equal(before.trustedSchemaHash,offline.trustedSchemaHash);
   releaseLate();
@@ -70,6 +78,27 @@ try {
   assert.deepEqual(after,before);
   assert.equal(slow.state.calls,0);
   report.checks.push('Closed transport fences late replies and retains the original verified choice');
+
+  await prepared.dispose();
+  slow.state.beforeReply=undefined;
+  const reverified=await runtime.inspect({schemaVersion:catalog.schemaVersion,revision:catalog.revision,serverId:offline.id});
+  assert.equal(reverified.servers.find(server=>server.id===offline.id).status,'ready');
+  slow.state.beforeReply=async(request,reply,response)=>{
+    if(request.method!=='initialize')return;
+    event('shutdown-request');
+    response.once('close',()=>event('shutdown-transport-closed'));
+    await new Promise(resolve=>{releaseLate=resolve;});
+    return reply;
+  };
+  const pending=runtime.tools();
+  const requestedAt=await observed('shutdown-request');
+  await runtime.dispose();
+  assert.equal((await pending).definitions.length,0);
+  assert(await observed('shutdown-transport-closed')-requestedAt<1000,'Shutdown closes the owned request before its preparation deadline');
+  releaseLate();
+  releaseLate=undefined;
+  assert.deepEqual(await runtime.catalog(),reverified);
+  report.checks.push('Host disposal aborts an active handshake, fences publication, and preserves the catalog');
   report.ok=true;
 }catch(error){
   report.error=String(error.stack??error);
