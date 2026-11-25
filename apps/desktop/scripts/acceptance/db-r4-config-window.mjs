@@ -303,7 +303,8 @@ async function exerciseVisibleJourney(app, primary, primaryNative) {
     assert.deepEqual(state(first), firstTaskRun);
 
     await settings();
-    await primary.getByRole('button', { name: '策略与诊断', exact: true }).click();
+    await primary.getByTestId('pi-settings-advanced-toggle').click();
+    await primary.getByTestId('pi-settings-tab-diagnostics').click();
     await primary.getByRole('button', { name: '当前配置来源', exact: true }).click();
     const sourceTable = primary.getByTestId('pi-resolved-config-table');
     await sourceTable.waitFor();
