@@ -24,7 +24,7 @@ export async function readHistorySource(db: Sql, ref: HistorySourceRef) {
 
   const metadata = "CASE WHEN json_valid(m.metadata_json) THEN m.metadata_json ELSE '{}' END";
   const [anchor] = await db.all(`
-    SELECT m.content, s.title, ${metadata} AS metadata_json
+    SELECT m.content, m.created_at, s.title, ${metadata} AS metadata_json
     FROM ai_conversation_messages m JOIN ai_conversation_sessions s ON s.id=m.session_id
     WHERE m.session_id=? AND m.role='user' AND COALESCE(s.archived_at,'')='' AND COALESCE(s.student_id,'')=''
       AND json_extract(${metadata}, '$.piVersion')='xiaozhi.pi.education.v1'
@@ -51,5 +51,9 @@ export async function readHistorySource(db: Sql, ref: HistorySourceRef) {
   const messageMetadata = JSON.parse(String(anchor.metadata_json)) as {agentRunId?:unknown} | null;
   const runId = control?.runId ?? String(messageMetadata?.agentRunId);
   if (teacherRequestSourceVersion(ref.recordId, runId, text, control?.revision) !== ref.sourceVersion) throw Error('source_changed');
-  return {ref, title:String(anchor.title ?? '新对话').slice(0,80), label, text, teacherText, runId};
+  const occurredAt = control
+    ? (await db.all('SELECT updated_at FROM xiaozhi_pi_controls WHERE id=?',[control.id]))[0]?.updated_at
+    : anchor.created_at;
+  return {ref, title:String(anchor.title ?? '新对话').slice(0,80), label, text, teacherText, runId,
+    occurredAt:typeof occurredAt === 'string' && Number.isFinite(Date.parse(occurredAt)) ? occurredAt : null};
 }

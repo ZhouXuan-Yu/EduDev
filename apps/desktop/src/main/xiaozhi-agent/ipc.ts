@@ -14,6 +14,9 @@ import { registerMcpIpc } from './mcp-api';
 import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerTeacherMemorySettingsIpc} from '../education/teacher-memory-settings-ipc';
+import {registerPersonalMemoryIpc} from '../education/personal-memory/ipc';
+import {createPersonalMemoryOperations} from '../education/personal-memory/operations';
+import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {registerPaperBasketIpc} from '../education/paper-basket-api';
@@ -131,6 +134,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerDecisionIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTeacherCandidateIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerTeacherMemorySettingsIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  const personalMemory=createPersonalMemoryOperations(options.store.xiaozhiState.sql,
+    async text=>(await createStudentContextSanitizer(options.store))(text));
+  registerPersonalMemoryIpc(options.ipcMain,event=>options.authority.mode==='pi' && fromMain(event),personalMemory);
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

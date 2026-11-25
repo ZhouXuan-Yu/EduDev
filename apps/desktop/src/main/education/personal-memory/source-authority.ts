@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
 import { readHistorySource, validHistoryRef } from '../../xiaozhi-agent/history/source';
 import { createHistoryState, historyId } from '../../xiaozhi-agent/history/state';
@@ -86,6 +87,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
       if (!binding) {
         if (!current) return null;
         if (current.ref.sourceVersion !== ref.sourceVersion) throw Error('source_changed');
+        if (!current.allowed) return current;
         await db.run(`UPDATE personal_memory_extract_grants SET extract_allowed=0,grant_revision=grant_revision+1,updated_at=?
           WHERE source_id=?`, [Date.now(),id]);
         await invalidatePersonalMemoryDrafts(db,id,current.revision);
@@ -94,6 +96,9 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
 
       const source = await readHistorySource(db,ref);
       if (!runPattern.test(source.runId) || sensitiveCredential.test(source.teacherText)) throw Error('permission_denied');
+      if (current?.allowed && current.ref.sourceVersion === ref.sourceVersion &&
+          current.binding.scope.kind === binding.scope.kind && current.binding.scope.id === binding.scope.id &&
+          current.binding.term === binding.term) return current;
       const identity = await history.get(id,db);
       if (identity && identity.status !== 'active') throw Error('permission_denied');
       if (!identity) {
@@ -152,6 +157,33 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     }
   }
 
+  async function reviewQuote(db: Sql, draft: PersonalMemoryDraft) {
+    if (!await witnessCurrent(db,draft)) return null;
+    const saved = await permission(draft.witness.sourceId,db);
+    if (!saved?.allowed) return null;
+    try {
+      const source = await readHistorySource(db,saved.ref);
+      const sanitized = await sanitize(source.teacherText);
+      const {textDigest,start,end} = draft.witness;
+      if (start < 0 || end <= start || end > sanitized.length ||
+          createHash('sha256').update(sanitized).digest('hex') !== textDigest) return null;
+      const current = await permission(saved.sourceId,db);
+      return current?.allowed && current.revision === saved.revision
+        ? {quote:sanitized.slice(start,end),occurredAt:source.occurredAt} : null;
+    } catch (error) {
+      if (unavailable(error)) return null;
+      throw error;
+    }
+  }
+
+  async function revokeWitness(db: Sql, id: string, revision: number) {
+    if (!db.change) throw Error('configuration');
+    const changed = await db.change(`UPDATE personal_memory_extract_grants
+      SET extract_allowed=0,grant_revision=grant_revision+1,updated_at=?
+      WHERE source_id=? AND grant_revision=? AND extract_allowed=1`, [Date.now(),id,revision]);
+    if (changed) await invalidatePersonalMemoryDrafts(db,id,revision);
+  }
+
   async function dispatchCurrent(db: Sql, id: string, sourceVersion: string, revision: number) {
     const saved=await permission(id,db);
     if (!saved?.allowed || saved.ref.sourceVersion!==sourceVersion || saved.revision!==revision) return false;
@@ -164,5 +196,5 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     }
   }
 
-  return {permission, change, snapshot, witnessCurrent, dispatchCurrent};
+  return {permission, change, snapshot, witnessCurrent, dispatchCurrent, reviewQuote, revokeWitness};
 }

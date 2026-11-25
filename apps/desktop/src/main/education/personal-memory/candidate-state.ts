@@ -16,7 +16,7 @@ CREATE TABLE personal_memory_pending (
   source_id TEXT NOT NULL,
   source_version TEXT NOT NULL,
   source_generation INTEGER NOT NULL CHECK (source_generation>=0),
-  state TEXT NOT NULL CHECK (state IN ('pending','rejected','stale','conflict')),
+  state TEXT NOT NULL CHECK (state IN ('pending','rejected','stale','conflict','accepted')),
   revision INTEGER NOT NULL CHECK (revision>0),
   draft_json TEXT NOT NULL,
   created_at INTEGER NOT NULL
@@ -25,7 +25,7 @@ CREATE INDEX personal_memory_pending_source ON personal_memory_pending(source_id
 `;
 
 export type PersonalMemoryProcessing = CandidateAuthority & Readonly<{ enabled: boolean; pausedByUsePolicy: boolean }>;
-type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict'; revision: number };
+type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict' | 'accepted'; revision: number };
 export type CandidateWriteReceipt = { saved: string[]; stale: string[]; conflicted: string[]; repeated: number };
 type SourceWitnessReader = (transaction: Sql, draft: PersonalMemoryDraft) => Promise<boolean>;
 type WritableSql = Sql & { change: NonNullable<Sql['change']> };
@@ -52,8 +52,14 @@ function pendingDraft(row: Record<string, unknown>): PendingDraft {
   if (row.schema_version !== 1 || draft.key !== row.draft_key || draft.state !== 'pending'
       || draft.witness.sourceId !== row.source_id || draft.witness.sourceVersion !== row.source_version
       || draft.witness.generation !== row.source_generation || !Number.isSafeInteger(revision) || revision < 1
-      || (state !== 'pending' && state !== 'rejected' && state !== 'stale' && state !== 'conflict')) throw Error('configuration');
+      || (state !== 'pending' && state !== 'rejected' && state !== 'stale' && state !== 'conflict' && state !== 'accepted'))
+    throw Error('configuration');
   return {draft, state, revision};
+}
+
+export async function readPersonalMemoryDraft(db: Sql, key: string) {
+  const [row] = await db.all('SELECT * FROM personal_memory_pending WHERE draft_key=?',[key]);
+  return row ? pendingDraft(row) : null;
 }
 
 export async function readPersonalMemoryProcessing(db: Sql): Promise<PersonalMemoryProcessing> {
@@ -116,9 +122,8 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
             saved.push(draft.key);
             continue;
           }
-          const [row] = await db.all('SELECT * FROM personal_memory_pending WHERE draft_key=?', [draft.key]);
-          const prior = pendingDraft(row);
-          if (prior.state === 'pending' && prior.draft.proposedValue !== draft.proposedValue) {
+          const prior = await readPersonalMemoryDraft(db,draft.key);
+          if (prior?.state === 'pending' && prior.draft.proposedValue !== draft.proposedValue) {
             await db.change("UPDATE personal_memory_pending SET state='conflict',revision=revision+1 WHERE draft_key=?",
               [draft.key]);
             conflicted.push(draft.key);
@@ -129,9 +134,11 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
         return receipt;
       });
     },
-    async list(limit: number) {
+    async list(limit: number, onlyOpen = false) {
       if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100) throw Error('invalid_input');
-      return (await sql.all('SELECT * FROM personal_memory_pending ORDER BY created_at DESC, draft_key LIMIT ?',[limit])).map(pendingDraft);
+      return (await sql.all(`SELECT * FROM personal_memory_pending
+        ${onlyOpen ? "WHERE state IN ('pending','conflict')" : ''}
+        ORDER BY created_at DESC, draft_key LIMIT ?`,[limit])).map(pendingDraft);
     },
     async reject(key: string, expectedRevision: number) {
       assertRevision(expectedRevision);

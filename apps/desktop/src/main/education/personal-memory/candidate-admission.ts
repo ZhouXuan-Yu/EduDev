@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
+import type { PersonalMemoryKind as MemoryKind, PersonalMemoryScope } from '../../../shared/xiaozhi-personal-memory';
 
-type MemoryKind = 'teaching_context' | 'preference';
-type MemoryScope = Readonly<{ kind: 'teacher' | 'class' | 'course' | 'task' | 'artifact'; id: string }>;
+type MemoryScope = Readonly<PersonalMemoryScope>;
 type Purpose = 'index' | 'discover' | 'extract' | 'use';
 
 export type CandidateAuthority = Readonly<{ policyRevision: number; cancelGeneration: number; teacherPolicyRevision?: number }>;
