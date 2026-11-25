@@ -16,7 +16,7 @@ function deferred() {
   return {promise, resolve};
 }
 
-async function scenario(label, verify) {
+async function scenario(label, verify, healthNow) {
   const root = await fs.mkdtemp(path.join(await fs.realpath(evidence), 'mcp-sqlite-generation-'));
   const filename = path.join(root, 'isolated.sqlite');
   let db = new DatabaseSync(filename);
@@ -28,7 +28,7 @@ async function scenario(label, verify) {
   const codec = {available: () => true, seal: value => Buffer.from(value).toString('base64'),
     open: value => Buffer.from(value, 'base64').toString()};
   let sanitize = text => text;
-  let runtime = createMcpRuntime(sql, codec, {timeoutMs: 1300, sanitize: text => sanitize(text)});
+  let runtime = createMcpRuntime(sql, codec, {timeoutMs: 1300, sanitize: text => sanitize(text), healthNow, healthRandom: () => 0});
   const fixture = await startMcpFixture();
   const report = {label, root, transport: 'real loopback HTTP + cold SQLite', http: fixture.url, success: false};
   try {
@@ -196,4 +196,46 @@ test('a transport loss before tool dispatch degrades a live session without repl
     assert.equal(fixture.state.calls, 1, 'the physical call may have produced an effect and must not be replayed');
     await second.dispose();
   });
+});
+
+test('same MCP domain blocks repeated preparation and admits a single real half-open probe', async () => {
+  let clock = 1000;
+  await scenario('shared-mcp-breaker', async ({runtime, fixture, id, input, read, report}) => {
+    let initialize = 0;
+    fixture.state.beforeReply = request => {
+      if (request.method === 'initialize') {initialize++; return 'drop';}
+    };
+    const attempt = async () => {
+      const prepared = await runtime.tools(undefined, {serverId: id, preparationTimeoutMs: 4000});
+      try {return prepared.definitions.length;} finally {await prepared.dispose();}
+    };
+    for (let index = 0; index < 3; index++) assert.equal(await attempt(), 0);
+    assert.equal(initialize, 3);
+    assert.equal(await attempt(), 0);
+    await runtime.inspect(await input());
+    report.beforeCooldown = {initialize, state: read()};
+    assert.equal(initialize, 3, 'open domain must stop ordinary and explicit metadata requests');
+    assert.equal(fixture.state.calls, 0);
+    const arrived = deferred(), release = deferred();
+    fixture.state.beforeReply = async request => {
+      if (request.method === 'initialize') {
+        initialize++;
+        arrived.resolve();
+        await release.promise;
+      }
+    };
+    clock += 10_000;
+    const probes = Array.from({length: 10}, attempt);
+    try {
+      await Promise.race([arrived.promise, Promise.all(probes).then(() => {throw Error('No physical probe after cooldown');})]);
+    } finally {release.resolve();}
+    report.probes = await Promise.all(probes);
+    assert.equal(initialize, 4, 'concurrent half-open requests must share one physical probe');
+    assert.equal(report.probes.filter(count => count === 1).length, 1);
+    assert.equal(read().servers[0].status, 'ready');
+    fixture.state.beforeReply = undefined;
+    assert.equal(await attempt(), 1);
+    assert.equal(fixture.state.calls, 0);
+    report.recovered = read();
+  }, () => clock);
 });
