@@ -4,6 +4,7 @@ import type {TeacherResource} from '../../../shared/contracts';
 import {MATERIAL_BOOK_PAIR_SCHEMA,type MaterialBookPairView} from '../../../shared/material-book-pair';
 import {MATERIALS_SCHEMA,type MaterialPage} from '../../../shared/materials';
 import {DisclosureCard} from '../ui/DisclosureCard';
+import {MaterialLocalBookAnswers} from './MaterialLocalBookAnswers';
 const errorText=(error:unknown)=>{const code=error instanceof Error?error.message:String(error);return code.includes('answer_already_processed')?'这份答案册已有未完成AI任务或按其他角色整理的AI记录。为保留原任务的输入含义，暂不能关联；同一题册已完成的答案转录可以恢复关联。':code.includes('conflict')?'关联已变化或这份资料已被其他题册使用，请刷新后重试。':code.includes('source_changed')?'原文件版本已变化，请刷新资料后重新关联。':'无法完成关联，请稍后重试。';};
 export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;onChange:(view:MaterialBookPairView)=>void}){
  const [view,setView]=useState<MaterialBookPairView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -23,6 +24,7 @@ export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;
    {page&&<><AppNativeSelect aria-label="答案册文件" data-testid="material-book-select" value={selection} onChange={e=>setSelection(e.target.value)}><option value="">请选择答案册</option>{page.resources.filter(r=>r.id!==resource.id&&/\.pdf$/i.test(r.originalFileName)).map(r=><option key={r.id} value={r.id}>{r.originalFileName}</option>)}</AppNativeSelect>{!page.resources.some(r=>r.id!==resource.id&&/\.pdf$/i.test(r.originalFileName))&&<p>本页没有可选答案 PDF，请调整文件名或翻页。</p>}<div className="toolbar-row"><button disabled={busy||page.offset===0} onClick={()=>void search(Math.max(0,page.offset-50))}>前一页</button><button disabled={busy||!page.hasMore} onClick={()=>void search(page.offset+50)}>后一页</button></div></>}
    <p>导入后也可关联。未经处理的答案册自动抽题候选将从题本默认列表隐藏，可在“显示原始候选”中查看；教师处理过的题目保留可见，解除关联可恢复原候选。关联不上传资料，答案匹配仍须核对章节和题号。</p><button className="primary-action" data-testid="material-book-link" disabled={busy||!selection} onClick={()=>void save()}>关联答案册</button>
   </fieldset>}
+  {view?.current&&view.role?.kind==='answers'&&<MaterialLocalBookAnswers key={`${resource.id}:${resource.contentHash}`} resource={resource}/>}
   {busy&&<p role="status">正在保存或查找…</p>}{notice&&<p role="status">{notice}</p>}{error&&<><p role="alert">{error}</p><button disabled={busy} onClick={()=>{setError('');void window.omniEdu!.getMaterialBookPair(resource.id).then(v=>{setView(v);onChange(v);}).catch(e=>setError(errorText(e)));}}>刷新关联</button></>}
  </DisclosureCard>;
 }

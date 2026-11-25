@@ -5,6 +5,7 @@ import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
 import {shanghaiMockSectionBoundary,shanghaiMockSectionKey,startsWrappedShanghaiMockHeading,wrappedShanghaiMockHeading,type ShanghaiMockSectionPolicy} from '../../shared/shanghai-mock-sections';
 import {compactChoiceCandidate,readCompactChoiceRow} from './material-compact-choice-key';
+import type {LocalBookAnswer} from '../../shared/material-local-book-answers';
 
 type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIssue[]};
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
@@ -207,6 +208,18 @@ function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=
   }
  }
  return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200,leadingKey,compactChoiceRows};
+}
+
+/** One local transcript supplies review candidates only. It cannot create a paired answer receipt. */
+export function localCompactChoicePage(text: string): { answers: LocalBookAnswer[]; needsReview: boolean } {
+  if (Buffer.byteLength(text) > 64000) return { answers: [], needsReview: true };
+  const result = entriesWithAnswerKeys(text, undefined, true, false, true, true);
+  if (result.tooLarge || result.entries.length > 200) return { answers: [], needsReview: true };
+  const compact = result.entries.filter(entry => entry.compactChoiceRange);
+  const answers = compact.filter(entry => entry.issues.every(issue => issue === 'missing_analysis'));
+  return { answers: answers.map(({section, number, answer}) => ({section, number, answer})),
+    needsReview: !!result.unresolved || compact.length !== answers.length ||
+      result.entries.some(entry => entry.issues.includes('answer_conflict')) };
 }
 
 export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy,mockTitles:ShanghaiMockSectionPolicy=false,compactChoices=mockTitles===true):BookAnswerPage{

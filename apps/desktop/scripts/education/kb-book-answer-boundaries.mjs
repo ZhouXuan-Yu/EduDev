@@ -20,6 +20,7 @@ const section='第十三、十四章 素养基础测试卷',other='第十三、�
 const {MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY}=await import('../../src/shared/material-ai-page.ts');
 const {shanghaiMockSectionKey,WRAPPED_SHANGHAI_MOCK_SECTIONS}=await import('../../src/shared/shanghai-mock-sections.ts');
 const {printedSingleChoiceRange}=await import('../../src/main/assets/material-compact-choice-key.ts');
+const {localCompactChoicePage}=await import('../../src/main/assets/material-book-answer-content.ts');
 const {bookPageRestorationInstruction}=await import('../../src/main/assets/material-ai-book-instruction.ts');
 const printed=(first,final=first)=>bookAnswerPage(scoped(first),scoped(final),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY);
 check('Printed brackets after repeated question text recover literal answer and analysis only for new inputs',()=>{
@@ -154,6 +155,20 @@ check('Printed original range requires a single-choice instruction, contiguous g
  const listed=paper.replace('，满分18分，第13～14题每题4分，第15～16题每题5分','');
  assert.deepEqual(printedSingleChoiceRange(listed,'16'),[13,16]);
  assert.equal(printedSingleChoiceRange(listed.replace('15. 题面\n',''),'16'),undefined);
+});
+check('Local preview uses printed source values and keeps unresolved, contradictory or unscoped keys out',()=>{
+ const heading='2025年上海市浦东新区初三物理一模参考答案';
+ const compact='选择题答案（第3～5题）：A、D、C';
+ assert.deepEqual(localCompactChoicePage(heading+'\n'+compact),{
+  answers:[{section:heading,number:'3',answer:'A'},{section:heading,number:'4',answer:'D'},{section:heading,number:'5',answer:'C'}],needsReview:false,
+ });
+ for(const [text,expected] of [[compact,[]],[heading+'\n'+compact.replace('A、D、C','A、？、C'),[]],
+  [heading+'\n'+compact+'\n'+compact,[]],[heading+'\n'+compact+'\n3. B', ['4','5']]]){
+  const view=localCompactChoicePage(text);
+  assert.deepEqual(view.answers.map(row=>row.number),expected);
+  assert(view.needsReview);
+ }
+ assert.deepEqual(localCompactChoicePage('复习参考资料正文'),{answers:[],needsReview:false});
 });
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});
