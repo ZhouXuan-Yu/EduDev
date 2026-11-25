@@ -6,10 +6,10 @@
 | --- | --- | --- |
 | AC-01 基线、WIP、隔离 | NOT_RUN | 工作树、分支、开工规则、依赖、原生组件已核对。继续补实际集成写者交接及基线校准回执。 |
 | AC-02 可信描述与单一拥有者 | NOT_RUN | 原生混载已有同一协调者三类接线轨迹。补全生产入口与 task/run/attempt/worker 跨进程关联。 |
-| AC-03 多维全有或全无 | PASS | `wp02-red.log` 显示独立槽多放行，`kernel-regression.log` 核对完整向量、拒绝非法向量和超预算。 |
-| AC-04 授予与取消竞态 | PASS | 同一内核门禁覆盖排队、授予前和已实际开始后的取消，旧回调重复归还保持账本。 |
+| AC-03 多维全有或全无 | PASS · 已实现 | `wp02-red.log` 显示独立槽多放行，`kernel-regression.log` 核对完整向量、拒绝非法向量和超预算。 |
+| AC-04 授予与取消竞态 | PASS · 已实现 | 同一内核门禁覆盖排队、授予前和已实际开始后的取消，旧回调重复归还保持账本。 |
 | AC-05 caller 与实际结束 | NOT_RUN | 真实 Windows 子进程与受控屏障通过。逐一注入三条生产路径的退出和超时故障。 |
-| AC-06 重试与代际 | PASS | `kernel-regression.log` 多代并存和迟到完成，`execution-bound.log` 实际运行 21 项既有权限、重试和效果边界。 |
+| AC-06 重试与代际 | PASS · 已实现 | `kernel-regression.log` 多代并存和迟到完成，`execution-bound.log` 实际运行 21 项既有权限、重试和效果边界。 |
 | AC-07 驻留资源 | NOT_RUN | VectorHost 常驻和请求各有租约，补 embedding 子进程独立常驻、退出确认及低预算活性。 |
 | AC-08 父子及业务锁 | NOT_RUN | 原锁冲突和实际持有回归通过，补三类完整接线下无环反例。 |
 | AC-09 前台及依赖 | NOT_RUN | 前台 lane 已接搜索、输出和显式优先收录。补当前会话焦点及依赖失效验证。 |
@@ -17,10 +17,10 @@
 | AC-11 安全让行 | NOT_RUN | 收录原 CAS/ACK 保留，原生维护按原边界。补 OCR、索引和锁持有者的安全点交错。 |
 | AC-12 采样与滞回 | PASS · 已实现 | 同一采样器覆盖就绪前启动及恢复，阈值波动和两次持续压力测试通过。Windows 原生混载采集 32 个有效样本，记录从 2→1→0 逐级恢复。 |
 | AC-13 降额与排空欠额 | PASS · 已实现 | 受控缺失、NaN、负读数和陈旧读数均触发保守策略，CPU 在用量 8 对目标 4 保留欠额 4。实际租约归还之后仍限制新工作，直到五个可靠样本触发一级恢复。 |
-| AC-14 有界准备 | NOT_RUN | 流式摘要及 PDF HTML 准入已接，补读图、其他输入 Buffer、阶段转移与多项增长反例。 |
+| AC-14 有界准备 | NOT_RUN | `wp04-material-final-image.log` 证明 PNG 排队或未准入取消时全量读取为零，实际 OCR 退出前不可分配其进程槽。解析和版面分析的读取都在完整预留内，校验为固定块流式摘要。补索引上游、其他入口及全流程峰值。 |
 | AC-15 资源口径及 Windows Job | NOT_RUN | 原 Job 治理未修改，补实际 Win32 报告及三类资源口径对账。 |
-| AC-16 材料队列 | NOT_RUN | 自然扫描复跑真机七项通过，补有计划的竞争、故障和原任务状态完整证据。 |
-| AC-17 OCR 生命周期 | NOT_RUN | 正常实际退出、闭环、页输出已有证据，补已启动错误、运行取消和中断后原 worker 退出证明。 |
+| AC-16 材料队列 | PASS · 已实现 | `wp04-material-ack-recovery.log` 9 项故障恢复与 26 项原队列合同通过，使用真实 SQLite 执行优先级、双消费 CAS、原 owner/lease、停止及重启。最新 Electron 的 PNG 5 项与扫描 PDF 3 项实测补证，含同源重试、实际关闭、SQLite 取消状态、原件哈希及无非法回写。 |
+| AC-17 OCR 生命周期 | NOT_RUN | PNG/PDF 实际进程停止与 `close` 已复验。还需补启动失败、运行错误和页后重试的版本匹配验证。 |
 | AC-18 embedding/vector | NOT_RUN | `native-vector-retry.log` 10 项通过，补 worker RPC 超时、退出交错及驻留证据。 |
 | AC-19 索引批次与发布 | NOT_RUN | 桌面暂停、冷启、正式题库语义检索、原子重建和新世代冷启通过 3 项。旧脚本的 43 项断言在两版复现，日志及独立数据库保留。另有 Windows 原生 writer lock 3/3。正式压力下备份屏障与批次的组合尚未验证。 |
 | AC-20 PDF 输出与回收 | NOT_RUN | 真实自然卷 Word/PDF 读回通过，最终版三次原生混载上均观察到首份打印取消后占用保留、第二份实际打印、隔离窗口与文件清理。还需补源图准备和原定正式端到端失败路径。 |
@@ -57,3 +57,11 @@
 - 原始红灯保存在 `wp03-pressure-red.log`，覆盖采样异常逸出及应用就绪前遗漏恢复监听。 `npm run test:host-resources` 通过 10/10，实际状态和容量序列见 `wp03-pressure-sequences.log`。
 - 原窗口、阈值和恢复步长保留。规则记录 `wp03-pressure-policy-r1.2.json` 的 SHA-256 为 `efdc9e5608d7e6bcfa397f2142a7a9ae76a079b57eacca7ad9aead8fdfd60fc68`。实机原始数据见 `r1-native-mixed-c2MglK/report.json`，状态转移摘要见 `wp03-pressure-native-measurements.json`。
 - `npm run build -- --outDir test-results/r1-pressure` 通过，主进程 SHA-256 为 `6cc252076b67972c5d5cdad122e70af10a33d39cf87f97766b1634aad6b1615e`。同版组件 261/261，原生混载 5/5，资料库实际排队和停止 3/3，隔离窗口已启动。正式 W-04 和 AC-29 保持待验。
+
+## 材料准备与原任务恢复复验
+
+- `wp04-material-buffer-red.log` 对旧主进程实测。进程槽被占满时读入 110,262 字节。`wp04-material-buffer-stack.log` 另外追踪当时尚未准入的版面分析读取。最新版本同一 PNG 的等待读取次数为零，每次导入解析读取一次，后续版面分析使用独立完整准入，流式校验记录未产生额外的全量读取。
+- `npm run build -- --outDir test-results/r1-material-prep` 及 `tsc --noEmit` 通过。主进程 SHA-256 为 `a74df7f1932c834fc7e67ce8db3dbc286da724f231e56c7a9da78db12d4667ca`。Electron 实际图片 5/5、扫描 PDF 3/3、原生混载 5/5、资源确定性回归 10/10、组件 261/261。原始日志和独立数据库保存在固定证据目录，详见 `wp04-material-final-image.log`、`wp04-material-final-pdf-queue.log` 和 `wp04-material-final-native.log`。
+- `node --experimental-transform-types scripts/education/material-queue-ack-recovery.mjs` 通过 9 项实际 SQLite 故障恢复和 26 项队列合同。主动注入 `SQLITE_BUSY` 后同一结果只提交一次。首次读取 SHA、再次读回的同源 OCR 记录与副作用检查都在独立测试数据上完成。
+- 对同一隔离构建执行 `node scripts/electron-smoke.mjs`，1366×768 与 1920×1080 的 207/207 条前端断言通过，日志 `wp04-material-final-smoke.log`。原有 UI 指纹和能力迁移门禁仍列为失败。`npm audit --package-lock-only --json` 记录 30 条既有通报，其中 5 条 high。
+- 手动验收窗口从同一构建启动，实际进程、主进程哈希和独立数据根见 `wp04-material-manual-window.json`。

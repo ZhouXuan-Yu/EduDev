@@ -16,6 +16,7 @@ import {PDF_LAYOUT_SCHEMA,validPdfLayout,type PdfLayoutReceipt} from '../../shar
 import {PAGE_BLOCKS_SCHEMA,validPageBlocks,type PageBlocksReceipt} from '../../shared/material-page-blocks';
 import {METAFILE_SCHEMA,METAFILE_INPUT,validMetafileReceipt,type MetafileInput,type MetafileReceipt} from '../../shared/material-metafile';
 import {runHostStage} from '../host-resources/desktop';
+import {runMaterialWorker} from '../host-resources/material-buffer-budget';
 
 type OcrOptions<T> = {schema:string;maxInput:number;maxOutput:number;timeout:number;valid:(value:unknown)=>value is T;
  onProgress?:(progress:MaterialOcrProgress)=>void;onCompleted?:(item:import('../../shared/material-pdf-ocr').MaterialOcrCompleted)=>void;
@@ -59,9 +60,10 @@ export async function recognizeLocalPageBlocks(bytes:Buffer,signal:AbortSignal):
 }
 async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:OcrOptions<T>,ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
  signal.throwIfAborted();if(!bytes.length||bytes.length>options.maxInput)throw new Error('too_large');
- return runHostStage('ocr','worker',options.onProgress?'background':'foreground',
-  {cpu:2,memoryMiB:640+Math.ceil((bytes.length*4+options.maxOutput*3)/1048576),processes:1},
-  options.timeout,signal,remaining=>runAdmittedOcr(bytes,signal,{...options,timeout:remaining},ownedRuntimeRoot));
+ const demand={cpu:2,memoryMiB:640+Math.ceil((bytes.length*4+options.maxOutput*3)/1048576),processes:1};
+ const run=(remaining:number)=>runAdmittedOcr(bytes,signal,{...options,timeout:remaining},ownedRuntimeRoot);
+ return runMaterialWorker(signal,demand,options.timeout,run)??
+  runHostStage('ocr','worker',options.onProgress?'background':'foreground',demand,options.timeout,signal,run);
 }
 async function runAdmittedOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:OcrOptions<T>,ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
  const deadline=performance.now()+options.timeout;

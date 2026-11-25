@@ -45,7 +45,7 @@ try{
         const read=handle.read;
         handle.read=function(buffer,offset,length,...tail){
           if(buffer.length===args.size+1&&offset===0&&length===buffer.length)
-            globalThis.materialReads.push({bytes:buffer.length});
+            globalThis.materialReads.push({bytes:buffer.length,stack:new Error().stack?.split('\n').slice(2,11)});
           return read.call(this,buffer,offset,length,...tail);
         };
         return handle;
@@ -110,12 +110,13 @@ try{
     };
     modules.syncBuiltinESMExports();
   });
-  await page.evaluate(async()=>{
+  const retry=()=>page.evaluate(async()=>{
     const queue=await window.omniEdu.getMaterialQueue();
     const task=queue.tasks.find(item=>item.status==='cancelled');
     if(!task)throw Error('Missing cancelled source task');
     await window.omniEdu.controlMaterialTask({schemaVersion:queue.schemaVersion,resourceId:task.resourceId,version:task.version,action:'retry'});
   });
+  await retry();
   const until=async check=>{
     for(let i=0;i<250;i++){if(await check())return;await new Promise(resolve=>setTimeout(resolve,100));}
     throw Error('Real OCR lifecycle did not reach the expected state');
@@ -142,6 +143,26 @@ try{
   await page.getByTestId('materials-queue').getByText('已停止',{exact:true}).waitFor();
   if(bufferedImage){
     report.checks.push('Full source allocation waits for admission, and OCR holds its process slot until close');
+    await retry();
+    await until(()=>{
+      const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+      try{
+        const result=db.prepare('SELECT version,status,receipt_json FROM material_image_ocr_receipts LIMIT 1').get();
+        if(!result)return false;
+        assert.equal(result.version,report.sourceSha);
+        assert.equal(result.status,'complete');
+        const receipt=JSON.parse(result.receipt_json);
+        assert(receipt.ok&&receipt.text.trim());
+        report.imageReceipt={engine:receipt.engine,characters:receipt.text.trim().length};
+        return true;
+      }finally{db.close();}
+    });
+    await until(()=>app.evaluate(()=>globalThis.materialReads.length>=3));
+    report.readsAfterRetry=await app.evaluate(()=>globalThis.materialReads);
+    assert.equal(report.readsAfterRetry.length,3,'only ingest and structure may buffer the original');
+    assert(report.readsAfterRetry[2].stack.some(line=>line.includes('MaterialStructureRuntime.page')));
+    assert(report.readsAfterRetry.every(read=>read.stack.some(line=>line.includes('runHostStage'))));
+    report.checks.push('A new attempt after the real close produces a native OCR receipt for the same original');
   }
   report.ocr={before,after:await app.evaluate(()=>globalThis.heldOcrTrace)};
   report.checks.push('Visible stop-request state precedes confirmed close of the real OCR child');

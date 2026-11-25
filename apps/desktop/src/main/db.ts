@@ -1197,6 +1197,7 @@ export class OmniEduStore {
     commit: (id, content, engine, hash, signal, pages, lease, word) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease, word),
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
+    leaseCurrent: lease => this.materialLeaseCurrent(lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
     structure:{begin:(r,s,l)=>this.materialStructures.begin(r,s,l),complete:(r,s,l)=>this.materialStructures.complete(r,s,l),fail:(id,e,l)=>this.materialStructures.fail(id,e,l)},
   });

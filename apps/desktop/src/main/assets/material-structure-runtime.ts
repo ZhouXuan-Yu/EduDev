@@ -1,4 +1,5 @@
 import { nativePdfText } from "./material-native-text-host";
+import { materialWorkerDeadline } from "../host-resources/material-buffer-budget";
 import { recoverNativeGaps } from "./material-native-gap";
 import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
@@ -624,7 +625,7 @@ export class MaterialStructureRuntime {
 }
 
 async function recheckNumericTable(plan: TableRowRecheck, raster: Electron.NativeImage, image: OriginalImage, signal: AbortSignal) {
-  const budget = AbortSignal.any([signal, AbortSignal.timeout(12_000)]);
+  const budget = materialWorkerDeadline(signal, 12_000);
   const readings = [];
   try {
     for (const box of plan.split.crops) {
