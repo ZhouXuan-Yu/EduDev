@@ -28,7 +28,7 @@ export async function startMcpFixture() {
     let body = ''; for await (const chunk of req) { body += chunk; if (body.length > 262144) { res.writeHead(413).end(); return; } }
     const request = JSON.parse(body);
     const original = reply(request, state);
-    const response = (await state.beforeReply?.(request, original)) ?? original;
+    const response = (await state.beforeReply?.(request, original, res)) ?? original;
     if (response === 'drop') { req.socket.destroy(); return; }
     if (response === 'hang') return;
     if (response?.httpStatus) {res.writeHead(response.httpStatus, response.headers).end(); return;}
