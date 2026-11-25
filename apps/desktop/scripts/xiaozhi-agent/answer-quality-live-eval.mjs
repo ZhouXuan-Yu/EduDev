@@ -2,6 +2,7 @@
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';import {_electron as electron} from 'playwright';
 import {randomInt} from 'node:crypto';
+import {readSharedModelBudget,sharedModelBudgetEntry} from '../acceptance/db-r4-shared-model-budget.mjs';
 import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';import {fingerprint} from '../acceptance/evidence.mjs';
 const args=process.argv.slice(2),arg=name=>args.find(x=>x.startsWith(name+'='))?.slice(name.length+1);
 const dryRun=args.includes('--dry-run');
@@ -37,7 +38,10 @@ const trials=Array.from({length:repetitions},(_,index)=>{
 }).flat();
 const plannedTrials=trials.length;
 if(productionConfig&&limit<plannedTrials)throw Error('Request limit is smaller than the production trial count');
-const plan={caseIds:cases.map(item=>item.id),repetitions,modePolicy:productionConfig?'production':'legacy-versus-optimized',plannedTrials,requestLimit:limit};
+const desktop=path.resolve(import.meta.dirname,'../..');
+const sharedBudget=readSharedModelBudget(args,desktop,{dryRun});
+if(sharedBudget&&(!productionConfig||plannedTrials>sharedBudget.limit-sharedBudget.used))throw Error('Shared budget requires production configuration and sufficient remaining trials');
+const plan={caseIds:cases.map(item=>item.id),repetitions,modePolicy:productionConfig?'production':'legacy-versus-optimized',plannedTrials,requestLimit:limit,...(sharedBudget?{sharedBudget}:{})};
 if(dryRun){
   const schedule=trials.map(({item,mode,repetition})=>({caseId:item.id,mode,repetition}));
   console.log(JSON.stringify({dryRun:true,...plan,schedule,requests:0}));
@@ -46,7 +50,7 @@ if(dryRun){
 
 if(arg('--env-file'))process.loadEnvFile(path.resolve(arg('--env-file')));
 if(!process.env.DEEPSEEK_API_KEY)throw Error('Configured DEEPSEEK_API_KEY required. No requests sent.');
-const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
+const main=testMain(desktop);
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'edu-quality-live-')),data=path.join(root,'data'),profile=path.join(root,'profile');
 const report={ok:false,build:fingerprint(path.dirname(path.dirname(main))).sha256,...plan,answers:[],errors:[],scope:'Synthetic development tasks; teacher blind grading and independent natural holdout remain required.'};
 console.log(JSON.stringify({output:root,requestLimit:limit}));
@@ -57,7 +61,9 @@ try{
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_VISIBLE:'1',DEEPSEEK_MODEL:process.env.DEEPSEEK_MODEL||'deepseek-flash'};
  for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
  if(productionConfig)delete env.XIAOZHI_ANSWER_QUALITY;
- app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});await assertIsolatedPiMain(app,main,profile);
+ if(sharedBudget)env.OMNI_EDU_SKIP_DOTENV='1';
+ const entry=sharedModelBudgetEntry(main,profile,sharedBudget,'QA');
+ app=await electron.launch({args:[entry,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});if(sharedBudget)await app.firstWindow();await assertIsolatedPiMain(app,main,profile);
  await app.evaluate(async({net},{limit,ledger})=>{const fs=process.getBuiltinModule('fs'),original=net.fetch.bind(net);globalThis.liveQuality={requests:0,limit,payloads:[]};fs.writeFileSync(ledger,JSON.stringify(globalThis.liveQuality));net.fetch=(input,init)=>{const url=new URL(typeof input==='string'?input:input.url);if(url.hostname!=='api.deepseek.com'||!['/models','/chat/completions','/v1/models','/v1/chat/completions'].includes(url.pathname))throw Error('Evaluation permits only the approved DeepSeek endpoint');if(url.pathname.endsWith('/chat/completions')){if(globalThis.liveQuality.requests>=limit)throw Error('Live evaluation request cap reached');globalThis.liveQuality.requests++;const b=JSON.parse(init.body);globalThis.liveQuality.payloads.push({model:b.model,effort:b.reasoning_effort,maxTokens:b.max_tokens,bytes:Buffer.byteLength(init.body),tools:b.tools?.length||0});fs.writeFileSync(ledger,JSON.stringify(globalThis.liveQuality));}return original(input,init);};},{limit,ledger:path.join(root,'request-ledger.json')});
  page=await app.firstWindow();page.setDefaultTimeout(15000);page.on('pageerror',e=>report.errors.push(String(e)));await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});
  const ready=()=>page.waitForFunction(()=>{const input=document.querySelector('[data-testid="office-prompt-input"]');return input&&input.checkVisibility()&&!input.disabled&&!document.querySelector('[data-testid="pi-workspace-loading"]')&&!document.querySelector('button[aria-label="停止本轮"]');},null,{timeout:90000});
