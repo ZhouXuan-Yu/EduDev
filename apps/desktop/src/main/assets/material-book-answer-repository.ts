@@ -168,7 +168,7 @@ export class MaterialBookAnswerRepository{
      if(!row.reason&&answerEntry.compactChoiceRange){
       const page=structure?.page??questionProof?.unit.pageSource?.page;
       evidence.compactChoice=page?await verifyCompactChoice((sql,values)=>target.host.all(sql,values),q,
-       {resourceId:pair.questionId,version:pair.questionVersion,page},answerEntry.compactChoiceRange,answerEntry.answer):undefined;
+       {resourceId:pair.questionId,version:pair.questionVersion,page},answerEntry.compactChoiceRange,answerEntry.answer,structure):undefined;
       if(!evidence.compactChoice)row.reason='choice_range_unchecked';
      }
     }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;row.reason='source_changed';}
@@ -297,7 +297,7 @@ export class MaterialBookAnswerRepository{
    if(e.compactChoice){
     const page=e.structure?.page??before.archive?.pageSource?.page;
     const actual=page&&entry.compactChoiceRange&&await verifyCompactChoice((sql,values)=>this.host.all(sql,values),before,
-     {resourceId:e.pair.questionId,version:e.pair.questionVersion,page},entry.compactChoiceRange,entry.answer);
+     {resourceId:e.pair.questionId,version:e.pair.questionVersion,page},entry.compactChoiceRange,entry.answer,e.structure);
     if(JSON.stringify(actual)!==JSON.stringify(e.compactChoice))throw Error('source_changed');
    }
    const removedConflict=before.archive?.issues.includes('answer_conflict')&&!after.archive?.issues.includes('answer_conflict');

@@ -6,6 +6,9 @@ const {MaterialStructureRepository}=await import('../../src/main/assets/material
 const {completeQuestion}=await import('../../src/main/education/question-context-revision.ts');
 const {questionVersion}=await import('../../src/main/education/question-context-provider.ts');
 const {archiveEligible}=await import('../../src/shared/question-archive.ts');
+const {PDF_LAYOUT_ENGINE}=await import('../../src/shared/material-layout.ts');
+const {LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');
+const {verifyCompactChoice}=await import('../../src/main/assets/material-compact-choice-key.ts');
 
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const title='第十三、十四章 素养基础测试卷';
@@ -14,7 +17,7 @@ const docSchema='xiaozhi.document-structure.v1';
 const checked=['statement','formulas','tables','figures','choices','subquestions'];
 let checks=0;
 
-async function prepare({pages, ambiguousPage, choiceLabels, ...options}={}) {
+async function prepare({pages, ambiguousPage, choiceLabels, reviewedTerminal=false, ...options}={}) {
   const f=fixture({currentAnswer:'',...(choiceLabels?{answerIssues:[]}:{}),...options});
   if(choiceLabels)f.proofs.get(f.answerBatch).unit.bookPagePolicy='answer-entry-continued-table.v5';
   const {db,pair,host}=f;
@@ -22,7 +25,7 @@ async function prepare({pages, ambiguousPage, choiceLabels, ...options}={}) {
   const structures=new MaterialStructureRepository({...host,verify:async(id,version,signal)=>{
     signal.throwIfAborted();
     if (!original.present||id!==pair.questionId||version!==pair.questionVersion) throw Error('source_changed');
-  },unwrapBook:q=>f.repo.validatedSourceDocument(q)});
+  },resource:async id=>({id,contentHash:pair.questionVersion}),unwrapBook:q=>f.repo.validatedSourceDocument(q)});
   await structures.migrate();
   host.structureScope=(q,signal,mockTitles)=>structures.bookScope(q,signal,mockTitles);
   const legacyValidate=host.validate;
@@ -38,20 +41,39 @@ async function prepare({pages, ambiguousPage, choiceLabels, ...options}={}) {
   if(choiceLabels)document.blocks.push({kind:'choices',id:'original-choices',anchors:[anchor],
     options:[...choiceLabels].map(label=>({label,blocks:[{kind:'text',id:'option-'+label,text:'选项'+label,anchors:[anchor]}]}))});
   const paragraph=(id,rawText,role='heading',number)=>({id,rawText,role,...(number?{marker:{kind:'parent',label:number}}:{})});
-  const start=paragraph('start','1. '+seed.stem,'question','1');
+  const number=reviewedTerminal?'2':'1';
+  const start=paragraph('start',number+'. '+seed.stem,'question',number);
   const evidencePages=pages?.(paragraph,start)??[[paragraph('title',title)],[start]];
   evidencePages.forEach((paragraphs,index)=>{
     const pg={schemaVersion:docSchema,resourceId:pair.questionId,version:pair.questionVersion,page:index+1,paragraphs,
       issues:index+1===ambiguousPage?['ambiguous_columns']:[]};
-    db.prepare('INSERT INTO material_structure_pages VALUES(?,?,?,?,?)').run(generation,pg.page,JSON.stringify(pg),'',hash(pg));
+    let image='';
+    if(reviewedTerminal&&pg.page===2){
+      const line={id:'printed-parent-'+number,text:start.rawText,score:.96};
+      pg.totalPages=2;
+      pg.sourceEngine=PDF_LAYOUT_ENGINE;
+      pg.rasterSource={resourceId:pg.resourceId,version:pg.version};
+      pg.rasterSha256=hash('raster');
+      pg.printedRecovery={parents:[{line,crop:anchor.box,cropSha256:hash('crop'),readings:[line.text],engine:LOCAL_OCR_ENGINE,variant:'color-light',uncertain:true}],blanks:[]};
+      pg.lines=[{id:'crop-line',sourceId:line.id,text:line.text,origin:'local_ocr_crop'}];
+      start.lineIds=['crop-line'];
+      start.issues=['printed_crop_unconfirmed'];
+      image=JSON.stringify({resourceId:pg.resourceId,version:pg.version,page:2,total:2,box:[0,0,1,1],width:1697,height:2400,sha256:pg.rasterSha256});
+    }
+    db.prepare('INSERT INTO material_structure_pages VALUES(?,?,?,?,?)').run(generation,pg.page,JSON.stringify(pg),image,hash(pg));
   });
-  const question={id:candidateId,kind:'question',number:'1',pageRange:[2,2],paragraphIds:[start.id],status:'candidate',issues:[]};
+  const question={id:candidateId,kind:'question',number,pageRange:[2,2],paragraphIds:[start.id],status:reviewedTerminal?'needs_review':'candidate',issues:[]};
   const body={question,document};
   const reference={schemaVersion:docSchema,resourceId:pair.questionId,version:pair.questionVersion,generation,candidateId,sha256:hash(body)};
   db.prepare('INSERT INTO material_structure_questions VALUES(?,?,?,?,?,?,?,?)').run(generation,candidateId,2,2,question.status,JSON.stringify(question),JSON.stringify(document),reference.sha256);
-  const archive={schemaVersion:'xiaozhi.question-archive.structure.v1',extractor:'layout-question.v1',state:'teacher_edited',number:'1',
+  const archive={schemaVersion:'xiaozhi.question-archive.structure.v1',extractor:'layout-question.v1',state:'teacher_edited',number,
     sources:[{schemaVersion:'xiaozhi.material-source.v1',resourceId:pair.questionId,version:pair.questionVersion,offset:0,chunkId:'chunk_'+randomUUID(),bodyVersion:hash('source')}],
     issues:['missing_answer','missing_analysis'],sourceRisks:[],sourceChecked:true,answerOrigin:'missing',analysisOrigin:'missing',structure:reference};
+  if(reviewedTerminal){
+    db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,updated_at) VALUES(?,?,'layout-paragraph-question.v31',?,'partial',?)")
+      .run(pair.questionId,pair.questionVersion,generation,new Date().toISOString());
+    archive.structureReview=await structures.recordReview({reference,question,document},{stem:seed.stem,answer:'',analysis:''},seed.id);
+  }
   const draft={...seed,answer:'',analysis:'',document,archive,...(choiceLabels?{questionType:'选择题'}:{})};
   const projection=Object.fromEntries(checked.map(role=>[role,{state:role==='statement'?'provided':'not_applicable',text:role==='statement'?seed.stem:''}]));
   if(choiceLabels)projection.choices={state:'provided',text:[...choiceLabels].map(label=>label+'. 选项'+label).join('\n')};
@@ -193,6 +215,45 @@ await check('A compact key waits for its independent choice range, then applies 
  await f.structures.validate(saved);
  f.db.prepare('UPDATE material_pdf_pages SET result_json=? WHERE generation=?').run(JSON.stringify({...ocr,text:body.replace('第1～2题','第2～3题')}),generation);
  await assert.rejects(()=>f.structures.validate(saved),/source_changed/);
+});
+await check('A teacher-reviewed terminal numeral permits a compact match and binds the raw page, crop and review',{
+ reviewedTerminal:true,choiceLabels:'ABCD',answerText:title+'\n选择题答案（第1～2题）：B、D',
+},async f=>{
+ const generation=randomUUID(),{questionId,questionVersion:version}=f.pair;
+ f.db.exec('CREATE TABLE material_pdf_jobs(resource_id TEXT PRIMARY KEY,generation TEXT,version TEXT);'+
+   'CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,PRIMARY KEY(generation,page));');
+ f.db.prepare('INSERT INTO material_pdf_jobs VALUES(?,?,?)').run(questionId,generation,version);
+ const good='二、选择题（本大题共2题，第1～2题每题4分）\n每题只有一个正确答案\n1. 相邻题\nA. 第一项\nB. 第二项';
+ const ocr=text=>JSON.stringify({status:'complete',error:'',method:'ocr',text,nativeText:'',ocrText:text,width:1697,height:2400,imageArea:1,nativeBoxes:[]});
+ const update=f.db.prepare('UPDATE material_pdf_pages SET result_json=? WHERE generation=?');
+ f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'complete',?)").run(generation,ocr(good+'\n三、解答题\n2. 另一节同号题'));
+ assert.equal((await f.matchStructure()).rows[0].reason,'choice_range_unchecked');
+ update.run(ocr(good.replace('第1～2题','每小题')),generation);
+ assert.equal((await f.matchStructure()).rows[0].reason,'choice_range_unchecked');
+ const before=await f.read(),ref=before.archive.structure;
+ const stored=f.db.prepare('SELECT image_json FROM material_structure_pages WHERE generation=? AND page=2').get(ref.generation);
+ const updateImage=f.db.prepare('UPDATE material_structure_pages SET image_json=? WHERE generation=? AND page=2');
+ update.run(ocr(good),generation);
+ updateImage.run(JSON.stringify({...JSON.parse(stored.image_json),width:1024}),ref.generation);
+ assert.equal((await f.matchStructure()).rows[0].reason,'choice_range_unchecked');
+ assert.equal((await f.read()).answer,'');
+ updateImage.run(stored.image_json,ref.generation);
+ const source={resourceId:questionId,version,page:2},scope=await f.structures.bookScope(before,new AbortController().signal);
+ const unreviewed={...before,archive:{...before.archive,structureReview:undefined}};
+ assert.equal(await verifyCompactChoice(f.host.all,unreviewed,source,[1,2],'D',scope),undefined);
+ assert.equal(await verifyCompactChoice(f.host.all,before,source,[1,2],'D',{...scope,page:1}),undefined);
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const applied=await f.read();
+ assert.equal(applied.answer,'D');
+ assert.deepEqual(applied.document.blocks,before.document.blocks);
+ const proof=JSON.parse(f.db.prepare("SELECT evidence_json FROM material_book_answer_journal_v1 WHERE after_json<>''").get().evidence_json);
+ assert.deepEqual(proof.compactChoice.terminalWitness,{
+   policy:'reviewed-terminal-choice-number.v1',pageSha:proof.structure.pages.at(-1),
+   cropSha:hash('crop'),rasterSha:hash('raster'),reviewSha:before.archive.structureReview.sha256,
+ });
+ await f.structures.validate(applied);
+ updateImage.run(JSON.stringify({...JSON.parse(stored.image_json),sha256:hash('different raster')}),ref.generation);
+ await assert.rejects(()=>f.structures.validate(applied),/source_changed/);
 });
 await check('Ordinary explanations on the same page freeze the compact row boundary for later source readback',{
  choiceLabels:'ABCD',answerText:title+'\n1. D\n解析：原文到此结束。\n选择题答案（第13～16题）：DCCA',

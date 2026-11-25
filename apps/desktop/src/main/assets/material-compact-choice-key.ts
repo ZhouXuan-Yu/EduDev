@@ -2,11 +2,14 @@ import {createHash} from 'node:crypto';
 import {validPdfFilePage} from '../../shared/material-pdf-file';
 import type {QuestionBankItem} from '../../shared/contracts';
 import {contiguousChoiceRange,printedChoiceCount,printedChoiceRanges,type ChoiceRange} from './material-choice-rubric';
+import {reviewedChoiceNumber,type ChoiceSource} from './material-compact-choice-review';
+import type {StructureBookScope} from './material-structure-book-scope';
 
 export const COMPACT_CHOICE_POLICY = 'printed-compact-choice.v1' as const;
 type Line = {raw: string; value: string; at: number; heading?: string};
-export type CompactChoiceProof = {policy: typeof COMPACT_CHOICE_POLICY; resourceId: string; version: string;
-  generation: string; page: number; receiptSha: string; range: ChoiceRange};
+export type CompactChoiceProof = ChoiceSource & {policy: typeof COMPACT_CHOICE_POLICY;
+  generation: string; receiptSha: string; range: ChoiceRange;
+  terminalWitness?: NonNullable<Awaited<ReturnType<typeof reviewedChoiceNumber>>>};
 
 const digits = '[1-9][0-9]{0,4}';
 const dash = '[-–—~～至到]';
@@ -59,6 +62,10 @@ export function readCompactChoiceRow(lines: Line[], index: number, sectionStart:
 
 export function printedSingleChoiceRange(text: string, number: string): ChoiceRange | undefined {
   const lines = normalize(text).split('\n').map(line => line.trim());
+  return printedSingleChoiceSection(lines, number)?.range;
+}
+
+function printedSingleChoiceSection(lines: string[], number: string) {
   const marker = lines.findIndex(line => itemStart.exec(line)?.[1] === number);
   if (marker < 0 || lines.slice(marker + 1).some(line => itemStart.exec(line)?.[1] === number)) return;
   const start = lines.slice(0, marker).findLastIndex(line => numberedHeading.test(line));
@@ -66,19 +73,31 @@ export function printedSingleChoiceRange(text: string, number: string): ChoiceRa
   const heading = lines[start];
   const count = printedChoiceCount(heading);
   let ranges = printedChoiceRanges(heading);
+  const explicit = ranges.length > 0;
+  const end = lines.findIndex((line,index) => index > start && numberedHeading.test(line));
   if (!ranges.length) {
-    const end = lines.findIndex((line,index) => index > start && numberedHeading.test(line));
     ranges = lines.slice(start+1,end < 0 ? undefined : end).flatMap(line=>{
       const item=itemStart.exec(line);
       return item?[[Number(item[1]),Number(item[1])] as ChoiceRange]:[];
     });
   }
   const range = contiguousChoiceRange(ranges,count);
-  if (range && Number(number) >= range[0] && Number(number) <= range[1]) return range;
+  if (range && Number(number) >= range[0] && Number(number) <= range[1]) return { range, explicit, start, end };
+}
+
+function provesMissingTerminalNumber(text: string, range: ChoiceRange, number: string) {
+  if (number !== String(range[1]) || range[0] >= range[1]) return false;
+  const lines = normalize(text).split('\n').map(line => line.trim());
+  if (lines.some(line => itemStart.exec(line)?.[1] === number)) return false;
+  const section = printedSingleChoiceSection(lines, String(range[1] - 1));
+  if (!section?.explicit || section.range[0] !== range[0] || section.range[1] !== range[1]) return false;
+  const markers = lines.slice(section.start + 1, section.end < 0 ? undefined : section.end)
+    .flatMap(line => itemStart.exec(line)?.[1] ?? []);
+  return markers.length === range[1] - range[0] && markers.every((label,index) => Number(label) === range[0] + index);
 }
 
 type Read = (sql: string, values: (string|number|null)[]) => Promise<Record<string,unknown>[]>;
-export async function verifyCompactChoice(read: Read, q: QuestionBankItem, source: {resourceId:string;version:string;page:number}, range: ChoiceRange, answer: string) {
+export async function verifyCompactChoice(read: Read, q: QuestionBankItem, source: ChoiceSource, range: ChoiceRange, answer: string, scope?: StructureBookScope) {
   if (!/^(?:单项选择题|单选题|选择题)$/u.test(q.questionType) || !q.archive?.number) return;
   const choices = q.document?.blocks.flatMap(block => block.kind === 'choices' ? block.options : []) ?? [];
   if (choices.filter(option => normalize(option.label) === answer).length !== 1) return;
@@ -89,7 +108,10 @@ export async function verifyCompactChoice(read: Read, q: QuestionBankItem, sourc
   try { receipt = JSON.parse(row.result_json); } catch { return; }
   if (!validPdfFilePage(receipt) || receipt.status !== 'complete') return;
   const printed = printedSingleChoiceRange(receipt.text, q.archive.number);
-  if (!printed || printed[0] !== range[0] || printed[1] !== range[1]) return;
-  return {policy:COMPACT_CHOICE_POLICY,...source,generation:String(row.generation),
+  const proof = {policy:COMPACT_CHOICE_POLICY,...source,generation:String(row.generation),
     receiptSha:createHash('sha256').update(row.result_json).digest('hex'),range} satisfies CompactChoiceProof;
+  if (printed?.[0] === range[0] && printed[1] === range[1]) return proof;
+  if (printed || !provesMissingTerminalNumber(receipt.text, range, q.archive.number)) return;
+  const terminalWitness = await reviewedChoiceNumber(read, q, source, receipt, scope);
+  if (terminalWitness) return {...proof, terminalWitness};
 }
