@@ -1,5 +1,5 @@
 import {isDeepStrictEqual} from 'node:util';
-import {SHANGHAI_DISTRICTS,mockExamCoverLabel,mockExamPageEvidenceLabel,mockExamScopeLabel,type MockExamCatalog} from '../../shared/mock-exam-compilation';
+import {SHANGHAI_DISTRICTS,mockExamCoverLabel,mockExamPageEvidenceLabel,mockExamPendingCoverLabel,mockExamScopeLabel,type MockExamCatalog} from '../../shared/mock-exam-compilation';
 import {MOCK_EXAM_OFFICE_SCHEMA,type MockExamOfficeSource} from '../../shared/mock-exam-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {verifyMockExamOriginals,type createMockExamState} from './mock-exam-state';
@@ -21,6 +21,7 @@ export function compileMockExamOffice(catalog:MockExamCatalog):MockExamOfficeDra
     `已关联独立答案册 ${selected.filter(entry=>entry.answer.state==='linked').length} 份 · 缺答案 ${selected.filter(entry=>entry.answer.state==='missing').length} 份`,
     '这是试卷目录。正文和答卷按原件核对，页面状态及配对记录不代表试题或答案已核验。',
     ...(catalog.unlinkedAnswers?[`另有 ${catalog.unlinkedAnswers} 份独立答案册尚未建立配对。`]:[]),
+    ...(catalog.pendingCovers?[mockExamPendingCoverLabel(catalog.pendingCovers)]:[]),
     ...(catalog.limited?['原目录只覆盖本次整理显示的候选。']:[])]}];
   for(const district of SHANGHAI_DISTRICTS){
     const entries=selected.filter(entry=>entry.metadata.district===district);

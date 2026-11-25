@@ -18,7 +18,8 @@ const sha=filename=>createHash('sha256').update(fs.readFileSync(filename)).diges
 const report={ok:false,output,main,mainSha256:sha(main),paidRequests:0,checks:[],errors:[]};
 const schemaVersion='xiaozhi.mock-exam-compilation.v1';
 const pdfText=process.argv.includes('--pdf-text');
-const answerCovers=process.argv.includes('--answer-covers');
+const coverStage=process.argv.includes('--cover-queued')?'queued':process.argv.includes('--cover-committed')?'committed':undefined;
+const answerCovers=!!coverStage||process.argv.includes('--answer-covers');
 const mixedScan=process.env.OMNI_EDU_SYNTHETIC_MOCK_EXAM_SCAN;
 const live=process.argv.includes('--live');
 assert(!mixedScan||!live,'Raster fixture check uses controlled local responses');
@@ -39,6 +40,36 @@ function sql(query,args=[]){
   finally{database.close();}
 }
 const check=label=>{report.checks.push(label);console.log('PASS '+label);};
+async function holdPdfCover(){
+  await app.evaluate((_,{hash,stage})=>{
+    const cp=process.getBuiltinModule('child_process');
+    const {syncBuiltinESMExports}=process.getBuiltinModule('module');
+    const spawn=cp.spawn;
+    cp.spawn=function(command,...args){
+      const child=spawn.call(this,command,...args);
+      if(!String(command).endsWith('omni-edu-ocr.exe')||!child.stdin)return child;
+      const write=child.stdin.write.bind(child.stdin);
+      let target=false;
+      child.stdin.write=(data,...options)=>{
+        let message;
+        try{message=JSON.parse(String(data));}catch{return write(data,...options);}
+        if(message.operation==='parse')target=message.inputSha256===hash;
+        if(target&&(stage==='queued'?message.operation==='parse':message.page===1&&message.ack===true)){
+          globalThis.releaseHeldPdf=()=>{
+            cp.spawn=spawn;
+            syncBuiltinESMExports();
+            delete globalThis.releaseHeldPdf;
+            write(data,...options);
+          };
+          return true;
+        }
+        return write(data,...options);
+      };
+      return child;
+    };
+    syncBuiltinESMExports();
+  },{hash:sha(path.join(sources,names.splitAnswer)),stage:coverStage});
+}
 async function until(read,timeout=90000){
   const stop=Date.now()+timeout;
   while(Date.now()<stop){
@@ -176,6 +207,7 @@ async function verifyMixedScan(resource){
 try{
   await launch();
   await fixture();
+  if(coverStage)await holdPdfCover();
   if(await page.getByTestId('ai-return-workspace').isVisible())await page.getByTestId('ai-return-workspace').click();
   await page.getByTestId('nav-knowledge').click();
   await page.getByTestId('materials-import').click();
@@ -190,15 +222,20 @@ try{
       [source('answers').id])[0]);
   }
   if(answerCovers){
-    const covers=await until(()=>{
-      const ready=sql(`SELECT job.resource_id,json_extract(page.result_json,'$.text') AS cover
+    const covers=await until(async()=>{
+      if(coverStage&&!await app.evaluate(()=>typeof globalThis.releaseHeldPdf==='function'))return;
+      const ready=sql(`SELECT job.resource_id,job.state,json_extract(page.result_json,'$.text') AS cover
         FROM material_pdf_jobs job JOIN material_pdf_pages page ON page.generation=job.generation
-        WHERE job.resource_id IN (?,?) AND job.state IN ('complete','partial')
+        WHERE job.resource_id IN (?,?)
           AND page.page=1 AND page.status='complete'`,[source('inlineAnswer').id,source('splitAnswer').id]);
-      return ready.length===2?ready:undefined;
+      return ready.length===(coverStage==='queued'?1:2)?ready:undefined;
     },180000);
     assert.match(covers.find(item=>item.resource_id===source('inlineAnswer').id).cover,/试卷（参考答案）/u);
-    assert.match(covers.find(item=>item.resource_id===source('splitAnswer').id).cover,/试卷\s*\n\s*答案与解析/u);
+    if(coverStage!=='queued'){
+      const second=covers.find(item=>item.resource_id===source('splitAnswer').id);
+      assert.match(second.cover,/试卷\s*\n\s*答案与解析/u);
+      if(coverStage==='committed')assert.equal(second.state,'processing');
+    }
   }
   const pair=await page.evaluate(({paper,answers})=>window.omniEdu.setMaterialBookPair({
     schemaVersion:'xiaozhi.material-book-pair.v1',action:'link',resourceId:paper.id,version:paper.content_hash,
@@ -225,15 +262,29 @@ try{
   report.catalogId=sql('SELECT id FROM mock_exam_compilations')[0].id;
   const draft=await apiView();
   assert(draft.ok&&draft.value.summary.state==='draft'&&draft.value.summary.revision===1);
-  if(answerCovers)report.coverAdmission={unlinked:draft.value.unlinkedAnswers,entries:draft.value.entries.map(item=>item.title)};
-  assert.equal(draft.value.unlinkedAnswers,answerCovers?3:1);
+  if(answerCovers)report.coverAdmission={unlinked:draft.value.unlinkedAnswers,pending:draft.value.pendingCovers,entries:draft.value.entries.map(item=>item.title)};
+  const unlinked=coverStage==='queued'?2:answerCovers?3:1;
+  assert.equal(draft.value.unlinkedAnswers,unlinked);
   assert.equal(draft.value.entries.length,3);
   if(answerCovers){
     assert.equal(await row(names.inlineAnswer).count(),0);
     assert.equal(await row(names.splitAnswer).count(),0);
     assert.equal(await row(names.variant).count(),1);
-    await review().getByText('3 份独立答案册还没有建立试卷配对。',{exact:true}).waitFor();
+    await review().getByText(`${unlinked} 份独立答案册还没有建立试卷配对。`,{exact:true}).waitFor();
     check('Generic PDFs with standalone answer covers are counted outside the draft; a paper with appended answers remains selectable');
+  }
+  if(coverStage){
+    const warning=review().getByTestId('mock-exam-pending-covers');
+    const pending=coverStage==='queued'?1:undefined;
+    assert.equal(draft.value.pendingCovers,pending);
+    const receipt=await until(()=>app.evaluate(()=>globalThis.mockExamWire.result));
+    assert.equal(receipt.pendingCovers,pending);
+    if(pending)await warning.getByText(/有 1 份 PDF 的首页仍待解析/u).waitFor();
+    else assert.equal(await warning.count(),0);
+    await page.screenshot({path:path.join(output,'cover-status-1366.png'),animations:'disabled'});
+    await app.evaluate(()=>globalThis.releaseHeldPdf());
+    check(pending?'The draft and tool receipt report one queued first page while the PDF waits at its real worker':
+      'The committed first page classifies the answer book before the PDF job finishes');
   }
   const primary=draft.value.entries.find(item=>item.title===names.primary);
   assert(primary.copies===2&&primary.answer.state==='linked'&&primary.answer.resourceId===source('answers').id);
@@ -282,6 +333,7 @@ try{
   await until(async()=>await review().getAttribute('data-state')==='confirmed');
   const confirmed=await apiView();
   assert(confirmed.ok&&confirmed.value.summary.revision===2&&confirmed.value.summary.count===2);
+  if(coverStage==='queued')assert.equal(confirmed.value.pendingCovers,1);
   assert(confirmed.value.entries.find(item=>item.title===names.conflict).metadata.district==='闵行区');
   assert.equal(confirmed.value.entries.find(item=>item.title===names.primary).permission,'local_only');
   assert.equal(confirmed.value.entries.find(item=>item.title===names.conflict).permission,'unknown');
@@ -332,6 +384,7 @@ try{
   await page.setViewportSize({width:1920,height:1080});
   await card().getByRole('button',{name:/汇编/u}).click();
   await until(async()=>await review().getAttribute('data-state')==='confirmed');
+  if(coverStage==='queued')await review().getByTestId('mock-exam-pending-covers').waitFor();
   await row(names.primary).scrollIntoViewIfNeeded();
   await page.screenshot({path:path.join(output,'confirmed-1920.png'),animations:'disabled'});
   assert.deepEqual(sql('SELECT revision,state,digest FROM mock_exam_compilation_versions ORDER BY revision'),stored);

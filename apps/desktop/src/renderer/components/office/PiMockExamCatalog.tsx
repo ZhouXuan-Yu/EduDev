@@ -8,7 +8,7 @@ import {PiMockExamArchive} from './PiMockExamArchive';
 import {PiMockExamVersions} from './PiMockExamVersions';
 import {PiMockExamAnswerReview} from './PiMockExamAnswerReview';
 import {PiMockExamSelectionFeedback,mockExamFieldLabels as labels,type MockExamFocus} from './PiMockExamSelectionFeedback';
-import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamMetadataMatchesScope,mockExamPageEvidenceLabel,
+import {MOCK_EXAM_SCHEMA,MOCK_EXAM_GRADES,MOCK_EXAM_ROUNDS,MOCK_EXAM_SUBJECTS,SHANGHAI_DISTRICTS,mockExamAnswerPermission,mockExamCoverLabel,mockExamMetadataMatchesScope,mockExamPageEvidenceLabel,mockExamPendingCoverLabel,
   type MockExamCatalog,type MockExamCatalogChange,type MockExamCatalogSummary,type MockExamEntry,type MockExamMetadata} from '../../../shared/mock-exam-compilation';
 import {mockExamFields as fields,mockExamPosition,mockExamSelectionIssue} from '../../../shared/mock-exam-selection';
 import styles from '../../ui-system/mock-exam-catalog.module.css';
@@ -150,6 +150,7 @@ export function PiMockExamCatalog({summary,sessionId,disabled,onRefresh,initialC
       {reading&&<p role="status">正在读取本地目录…</p>}
       {catalog&&<>
         <p>目录确认只归档来源和分类。题目内容、缺页及答案仍按原件核对。</p>
+        {catalog.pendingCovers&&<p role="status" data-testid="mock-exam-pending-covers">{mockExamPendingCoverLabel(catalog.pendingCovers)}</p>}
         {catalog.limited&&<p role="status">候选超过本批上限。可按地区、轮次或学科分开整理。</p>}
         {catalog.summary.state==='draft'&&(catalog.scope.districts||catalog.scope.rounds)&&catalog.entries.some(entry=>
           !mockExamMetadataMatchesScope(entry.metadata,catalog.scope))&&

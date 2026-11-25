@@ -42,7 +42,8 @@ export function mockExamPageEvidenceLabel(evidence:MockExamPageEvidence) {
 }
 export type MockExamCatalogSummary={schemaVersion:typeof MOCK_EXAM_SCHEMA;id:string;runId:string;taskId:string;title:string;
   revision:number;state:'draft'|'confirmed';count:number;digest:string};
-export type MockExamCatalog={summary:MockExamCatalogSummary;scope:MockExamScope;entries:MockExamEntry[];unlinkedAnswers:number;limited:boolean;restoredFrom?:number};
+export type MockExamCatalog={summary:MockExamCatalogSummary;scope:MockExamScope;entries:MockExamEntry[];unlinkedAnswers:number;limited:boolean;pendingCovers?:number;restoredFrom?:number};
+export const mockExamPendingCoverLabel=(count:number)=>`生成目录时，资料库有 ${count} 份 PDF 的首页仍待解析。解析完成后可重新整理目录。`;
 export type MockExamCatalogRef={sessionId:string;id:string};
 export type MockExamCatalogKey=MockExamCatalogRef&{schemaVersion:typeof MOCK_EXAM_SCHEMA};
 export type MockExamCatalogRead=MockExamCatalogKey&{revision?:number};
@@ -102,6 +103,7 @@ export const mockExamErrors:Record<string,string>={
   scope_mismatch:'整理范围与老师的明确要求不一致，请按指定年份、地区、学科、年级和轮次提交。',
   scope_ambiguous:'本次目录的年份、学科或年级不唯一，请先与老师核对。',
   no_sources:'资料库中没有找到符合范围的模考试卷。请导入原件或核对年份、地区、学科、年级与轮次。',
+  sources_processing:'暂未找到可用于本次目录的试卷。资料库还有 PDF 首页待解析，完成后可重新整理。',
   no_selection:'还没有勾选试卷。请至少勾选一份「收录到目录」。',
   incomplete:'有已勾选的试卷缺少分类。请核对地区、年份、学科、年级和轮次。',
   conflicting_versions:'同一区、同一年份、年级、学科和轮次选了多个版本。请核对原件后只勾选一份。',

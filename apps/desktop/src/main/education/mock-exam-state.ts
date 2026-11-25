@@ -52,7 +52,7 @@ function unpack(row:Row):MockExamCatalog {
 function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snapshot {
   const bySource=new Map(changes.map(item=>[item.resourceId,item]));
   if(changes.length!==catalog.entries.length||bySource.size!==changes.length)throw Error('invalid_input');
-  const {scope,unlinkedAnswers,limited}=catalog;
+  const {scope,unlinkedAnswers,limited,pendingCovers}=catalog;
   const entries=catalog.entries.map((item):MockExamEntry=>{
     const change=bySource.get(item.resourceId);
     if(!change)throw Error('invalid_input');
@@ -74,7 +74,7 @@ function corrected(catalog:MockExamCatalog,changes:MockExamCatalogChange[]):Snap
   });
   const issue=mockExamSelectionIssue(entries,scope);
   if(issue)throw Error(issue.code);
-  return {...(catalog.restoredFrom?{restoredFrom:catalog.restoredFrom}:{}),scope,entries,unlinkedAnswers,limited};
+  return {...(catalog.restoredFrom?{restoredFrom:catalog.restoredFrom}:{}),scope,entries,unlinkedAnswers,limited,...(pendingCovers?{pendingCovers}:{})};
 }
 
 function restoreSnapshot(target:MockExamCatalog,current:MockExamCatalog):Snapshot {
@@ -184,7 +184,6 @@ export function createMockExamState(sql:Sql) {
       fence();
       const sources=await (sql.readTransaction?sql.readTransaction(work=>mockExamSources(work,scope)):mockExamSources(sql,scope));
       fence();
-      if(!sources.entries.length)throw Error('no_sources');
       const snapshot={scope,...sources};
       return write(async work=>{
         fence();
@@ -194,15 +193,16 @@ export function createMockExamState(sql:Sql) {
         if(prior){
           const previous=await view(work,owner.sessionId,String(prior.id));
           if(prior.call_id!==callId||protocolHash(previous.scope)!==protocolHash(scope))throw Error('version_conflict');
-          return previous.summary;
+          return previous;
         }
+        if(!sources.entries.length)throw Error(sources.pendingCovers?'sources_processing':'no_sources');
         for(const entry of snapshot.entries){fence();await assertMockExamSource(work,entry);}
         const id='mock_catalog_'+randomUUID(),title=mockExamTitle(scope);
         await work.run(`INSERT INTO mock_exam_compilations(id,session_id,run_id,task_id,generation,call_id,title,revision,created_at)
           VALUES(?,?,?,?,?,?,?,1,?)`,[id,owner.sessionId,owner.runId,owner.taskId,owner.generation,callId,title,new Date().toISOString()]);
         await append(work,id,1,'draft',snapshot);
         fence();
-        return (await view(work,owner.sessionId,id)).summary;
+        return view(work,owner.sessionId,id);
       });
     },
     async confirm(sessionId:string,id:string,expectedRevision:number,digest:string,changes:MockExamCatalogChange[],verify:Verify) {

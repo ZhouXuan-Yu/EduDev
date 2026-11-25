@@ -1,4 +1,5 @@
 import {materialId} from '../../shared/materials';
+import {MATERIAL_TASK_SCHEMA} from '../../shared/material-parse-task';
 import {mockExamMetadataMatchesScope,type MockExamEntry,type MockExamScope} from '../../shared/mock-exam-compilation';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
@@ -22,7 +23,7 @@ const facts=`r.id,r.original_file_name,r.title,r.content_hash,r.parse_status,
   EXISTS(SELECT 1 FROM material_book_pairs a2 WHERE a2.answer_id=r.id AND a2.active=1) AS is_answer`;
 const joins=`LEFT JOIN material_structure_jobs j ON j.resource_id=r.id AND j.version=r.content_hash
   LEFT JOIN material_pdf_jobs p ON p.resource_id=r.id AND p.version=r.content_hash
-  LEFT JOIN material_pdf_pages f ON f.generation=p.generation AND f.page=1 AND f.status='complete' AND p.state IN ('complete','partial')
+  LEFT JOIN material_pdf_pages f ON f.generation=p.generation AND f.page=1 AND f.status='complete'
   LEFT JOIN material_book_pairs q ON q.question_id=r.id AND q.active=1
   LEFT JOIN teacher_resources a ON a.id=q.answer_id`;
 const pageOne=(row:Record<string,unknown>)=>mockExamCoverHeader(String(row.cover_text??''));
@@ -46,6 +47,18 @@ function answer(row:Record<string,unknown>):MockExamEntry['answer'] {
   return {state:Number(row.embedded)===1?'embedded':'missing'};
 }
 const sortKey=(entry:MockExamEntry)=>[entry.metadata.district,entry.metadata.subject,entry.metadata.round,entry.title].join('|');
+
+async function countPendingCovers(work:Sql) {
+  const task=`CASE WHEN json_valid(t.payload_json) THEN t.payload_json ELSE '{}' END`;
+  const [row]=await work.all(`SELECT COUNT(DISTINCT r.id) AS count FROM ai_tasks t
+    JOIN teacher_resources r ON r.id=json_extract(${task},'$.resourceId') AND r.content_hash=json_extract(${task},'$.version')
+    LEFT JOIN material_pdf_jobs p ON p.resource_id=r.id AND p.version=r.content_hash
+    LEFT JOIN material_pdf_pages f ON f.generation=p.generation AND f.page=1
+    WHERE t.task_type='resource_parse' AND t.status IN ('pending','running')
+      AND json_extract(${task},'$.schemaVersion')=? AND lower(r.original_file_name) LIKE '%.pdf'
+      AND (f.status IS NULL OR f.status IN ('pending','processing'))`,[MATERIAL_TASK_SCHEMA]);
+  return Number(row?.count??0);
+}
 
 export async function mockExamSources(work:Sql,scope:MockExamScope) {
   const rows=await work.all(`SELECT ${facts} FROM teacher_resources r ${joins}
@@ -81,7 +94,8 @@ export async function mockExamSources(work:Sql,scope:MockExamScope) {
     const pageEvidence=source&&await mockExamPageEvidence(work,source);
     return pageEvidence?{...entry,structure:{...entry.structure,pageEvidence}}:entry;
   }));
-  return {entries:selected,unlinkedAnswers,limited:rows.length>scanLimit||entries.length>entryLimit};
+  const pendingCovers=await countPendingCovers(work);
+  return {entries:selected,unlinkedAnswers,limited:rows.length>scanLimit||entries.length>entryLimit,...(pendingCovers?{pendingCovers}:{})};
 }
 
 export async function assertMockExamSource(work:Sql,entry:MockExamEntry) {
