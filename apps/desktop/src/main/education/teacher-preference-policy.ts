@@ -1,12 +1,23 @@
 import {TEACHER_PREFERENCE_SCHEMA,validTeacherPreferenceValues,type TeacherPreferenceValues,type TeacherPreferenceSnapshot} from '../../shared/teacher-preferences';
 
 export type TeacherPreferenceSignal={kind:'none'}|{kind:'rollback'}|{kind:'candidate';patch:TeacherPreferenceValues}|{kind:'rejected';reason:'ambiguous'};
+
+const attributedSpeech = /(?:同事|别的?老师|其他老师|助教|学生|家长|助手|小智|模型|AI).{0,10}(?:建议|推荐|(?:说|认为|觉得|猜)(?:[，,：:\s]|你|我|应|要|更|喜|用|先|以后|今后))/i;
+const restrictedAudience = /(?:[一二三四五六七八九十零〇\dA-Z]+\s*班(?:级)?|(?:这个|那个|某个|本|当前|指定)(?:班级?|课程|小组|教学组)|[一二三四五六七八九十零〇\d]+\s*年级)/i;
+const restrictedSubject = /(?:语文|数学|英语|物理|化学|生物|地理|历史|道德与法治|政治|信息技术|科学)(?:课程|课(?:上|内|的|里|时|，|,|都)|学科|讲义|作业|试卷)/;
+const restrictedTime = /(?:本|上|下|这[个一]?|那[个一]?|每[个一]?|第[一二三四五六七八九十\d]+|春季|秋季)(?:学期|学年)|(?:下周|本周|下个月|本月|今年|明年)(?:开始|结束|起|前|后|内|为止)|(?:接下来|未来|仅限|只在|直到).{0,12}(?:天|周|个月|学期|学年|月底|期末)/;
+
 /** Only explicit general future presentation requests. Sources/quotes are never feedback. */
 export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  let input=text.trim();
  if(input.length>8000||/[`“”「」『』"<>]|(?:引用|假设|例如|例子|翻译|资料中|题目中|不要记住|别记住|不用记住|如果)/.test(input))return{kind:'none'};
  if(/^(?:请)?撤销(?:上次|上一版|刚才)(?:记住的|的)?(?:教学)?(?:偏好|习惯)[。！!\s]*$/.test(input))return{kind:'rollback'};
+ // Accept an adoption only when this teacher message restates the actual requirement.
+ input=input.replace(/^我(?:明确)?(?:采纳|采用)(?:这条|这个|上述|上面(?:的)?)建议[，,：:]\s*/,'');
+ input=input.replace(/^(?:(?:请|帮我)?记住)[，,：:\s]*/,'');
  if(!/^(?:请)?(?:以后|今后|后续|下次|从现在起|我习惯|我更喜欢|我偏好)/.test(input))return{kind:'none'};
+ // This head is app-wide. A request with an unbound audience or term remains in the current task.
+ if(attributedSpeech.test(input)||restrictedAudience.test(input)||restrictedSubject.test(input)||restrictedTime.test(input))return{kind:'none'};
  // Never learn policies, student facts, temporary/per-student requests or credentials.
  if(/权限|审批|批准|安全|隐私|密钥|凭证|API|token|成绩|分数|正确答案|数据库|源代码|系统提示|忽略规则|绕过|这次|这道|本题|本次|只针对|仅针对|(?:给|对|帮).{0,24}(?:同学|学生|孩子)/i.test(input))return{kind:'none'};
  // Resolve only unambiguous negative alternatives before positive matching.
@@ -49,7 +60,7 @@ export function teacherPreferenceContext(snapshot:TeacherPreferenceSnapshot,acti
  const notice=action==='rejected'?'本条表达存在歧义，偏好没有保存；不能声称已经记住，请简短澄清。':action==='no_previous'?'当前没有可撤销的教师表达偏好；不能声称恢复了一个不存在的版本。':'';
  if(!snapshot.revision)return notice+(action==='observed'?'本次只是当前讲解的修正，尚未保存长期表达习惯；正常修改当前讲解，不称已经学会或记住。':'');
  const preferences=Object.values(snapshot.values).map(value=>labels[value]);
- return'\n[当前教师表达偏好：本机已保存的明确要求；非学生事实、权限或答案依据]\n'+JSON.stringify({version:snapshot.revision,preferences,latestAction:action})+'\n仅在适合任务且教师本次未另行指定时采用；本次明确要求优先。以上明确习惯已经由宿主保存，不要重复询问详细程度、档位或要求教师配置记忆/技能；若本次仅说明习惯，简短确认即可。旧对话中的偏好若与此版本冲突，以此版本为准；空列表表示已撤销，不恢复旧习惯。不改变审批、隐私、来源、题目答案和学生事实。'+presentationAdvice(snapshot.values)+notice;
+ return'\n[当前教师表达偏好：本机已保存的明确要求；非学生事实、权限或答案依据]\n'+JSON.stringify({version:snapshot.revision,preferences,latestAction:action})+'\n仅在适合任务且教师本次未另行指定时采用；本次明确要求优先。以上明确习惯已经由宿主保存，不要重复询问详细程度、档位或要求教师配置记忆/技能。仅当 latestAction 为 learned 且本次只说明习惯时，可以简短确认已记住本次要求。旧对话中的偏好若与此版本冲突，以此版本为准；空列表表示已撤销，不恢复旧习惯。不改变审批、隐私、来源、题目答案和学生事实。'+presentationAdvice(snapshot.values)+notice;
 }
 export function teacherPreferenceTrialContext(values:TeacherPreferenceValues){
  if(!validTeacherPreferenceValues(values))throw Error('configuration');
