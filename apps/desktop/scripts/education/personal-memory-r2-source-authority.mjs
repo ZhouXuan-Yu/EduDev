@@ -146,6 +146,8 @@ await assert.rejects(records.accept({...accept,revision:2}),/command_conflict/);
 assert.equal((await records.read(accepted.id)).witness.sourceVersion,committedSource.sourceVersion);
 assert.equal((await records.read(accepted.id)).sourceOccurredAt,'2026-11-25');
 assert.equal(db.prepare('SELECT COUNT(*) AS total FROM personal_memory_outbox').get().total,1);
+assert.equal(await records.reconcile(),1);
+assert.equal(db.prepare('SELECT revision FROM personal_memory_catalog WHERE memory_id=?').get(accepted.id).revision,accepted.revision);
 console.log('PASS adoption needs the reviewed source and commits a revision, decision, receipt and outbox atomically');
 
 const correctionSource=message('correction','我现在负责五年级科学。');
@@ -172,6 +174,8 @@ await assert.rejects(records.previewRecord(accepted.id,2),/revision_conflict/);
 const restored=await records.edit({operationId:randomUUID(),action:'restore',id:accepted.id,revision:paused.revision});
 assert.equal((await records.read(accepted.id)).state,'active');
 assert.equal((await records.read(accepted.id)).value,edit.value);
+await records.reconcile();
+assert.equal(db.prepare('SELECT revision FROM personal_memory_catalog WHERE memory_id=?').get(accepted.id).revision,restored.revision);
 console.log('PASS disabling prevents active use, preserves source review and requires the current revision to restore');
 
 const stopped=await state.setEnabled(false,policy.policyRevision);
@@ -187,12 +191,20 @@ assert.deepEqual(await records.edit(forget),forgotten);
 assert.deepEqual(await authority.snapshot([historyId(committedSource)],resumed),[]);
 assert.equal((await records.read(accepted.id)).state,'forgotten');
 assert.equal((await records.read(accepted.id)).value,'');
+assert.equal((await records.read(accepted.id)).cleanupPending,true);
+assert.equal(db.prepare('SELECT revision FROM personal_memory_catalog WHERE memory_id=?').get(accepted.id),undefined);
 assert.equal(db.prepare('SELECT action FROM personal_memory_outbox WHERE memory_id=? AND revision=?').get(accepted.id,forgotten.revision).action,'invalidate');
 await assert.rejects(records.previewRecord(accepted.id,forgotten.revision),/revision_conflict/);
 await authority.change(committedSource,2,scope);
 const [newGrantSource]=await authority.snapshot([historyId(committedSource)],resumed);
 assert.equal(newGrantSource.generation,3);
 assert.equal((await records.read(accepted.id)).sourceCurrent,false);
+// Emulate late redelivery of an already processed upsert after the old source was reauthorized.
+db.prepare("UPDATE personal_memory_outbox SET state='pending' WHERE memory_id=? AND revision=?").run(accepted.id,restored.revision);
+assert.equal(await records.reconcile(),2);
+assert.equal(await records.reconcile(),0);
+assert.equal((await records.read(accepted.id)).cleanupPending,false);
+assert.equal(db.prepare('SELECT revision FROM personal_memory_catalog WHERE memory_id=?').get(accepted.id),undefined);
 assert.equal(db.prepare('PRAGMA quick_check').get().quick_check,'ok');
 db.close();
 console.log('PASS closing automatic processing preserves allowed reads, and a forgotten revision stays invalid after restart and a new grant');

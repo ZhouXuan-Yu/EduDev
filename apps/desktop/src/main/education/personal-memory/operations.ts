@@ -48,7 +48,7 @@ function editInput(value:unknown):value is PersonalMemoryEditInput {
 }
 
 /** Renderer requests are evidence review and teacher mutations, with no renderer control of job dispatch. */
-export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>) {
+export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>, stopBackground?:()=>void) {
   const sources = createPersonalMemorySourceAuthority(sql,sanitize);
   const candidates = createPersonalMemoryCandidateState(sql,sources.witnessCurrent);
   const records = createPersonalMemoryRecordState(sql,sources);
@@ -67,7 +67,9 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     setEnabled:(value:unknown)=>respond(async()=>{
       if (!inputObject(value) || typeof value.enabled !== 'boolean' ||
           (value.revision !== 0 && !safeRevision(value.revision))) throw Error('invalid_input');
-      return policyView(await candidates.setEnabled(value.enabled,value.revision));
+      const updated=await candidates.setEnabled(value.enabled,value.revision);
+      if (!updated.enabled) stopBackground?.();
+      return policyView(updated);
     }),
     preview:(value:unknown)=>respond<PersonalMemoryReview>(async()=>{
       if (!candidateInput(value)) throw Error('invalid_input');
@@ -89,7 +91,9 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     }),
     edit:(value:unknown)=>respond(async()=>{
       if (!editInput(value)) throw Error('invalid_input');
-      return records.edit(value);
+      const receipt=await records.edit(value);
+      if (value.action==='forget' || value.action==='disable') stopBackground?.();
+      return receipt;
     }),
     sourceStatus:(ref:unknown)=>respond<PersonalMemorySourcePermission>(async()=>{
       if (!validHistoryRef(ref)) throw Error('invalid_input');
@@ -100,6 +104,7 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
       if (!inputObject(value) || !validHistoryRef(value.ref) || typeof value.enabled!=='boolean' ||
           (value.revision!==0 && !safeRevision(value.revision))) throw Error('invalid_input');
       const grant=await sources.change(value.ref,value.revision,value.enabled?{scope:{kind:'teacher',id:'self'},term:'unknown'}:null);
+      if (!grant?.allowed) stopBackground?.();
       return {allowed:grant?.allowed ?? false,revision:grant?.revision ?? 0};
     }),
   };

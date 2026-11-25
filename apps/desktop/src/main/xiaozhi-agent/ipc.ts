@@ -15,8 +15,7 @@ import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerTeacherMemorySettingsIpc} from '../education/teacher-memory-settings-ipc';
 import {registerPersonalMemoryIpc} from '../education/personal-memory/ipc';
-import {createPersonalMemoryOperations} from '../education/personal-memory/operations';
-import {createStudentContextSanitizer} from '../students/context-sanitizer';
+import {personalMemoryWorkerPaths} from '../education/personal-memory/runtime';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {registerPaperBasketIpc} from '../education/paper-basket-api';
@@ -62,6 +61,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
   const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
+    personalMemoryPaths:()=>personalMemoryWorkerPaths({packaged:app.isPackaged,resourcesPath:process.resourcesPath,
+      dataRoot:options.dataRoot,repoRoot:process.env.OMNI_EDU_REPO_ROOT || path.resolve(process.cwd(),'../..'),
+      configuredPython:process.env.OMNI_EDU_R2_PYTHON}),
     emitTerminal: event => {const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:terminal:update', event);},
     ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
       const held=path.join(options.dataRoot,'.e2e-model-wait');
@@ -134,9 +136,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerDecisionIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTeacherCandidateIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerTeacherMemorySettingsIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
-  const personalMemory=createPersonalMemoryOperations(options.store.xiaozhiState.sql,
-    async text=>(await createStudentContextSanitizer(options.store))(text));
-  registerPersonalMemoryIpc(options.ipcMain,event=>options.authority.mode==='pi' && fromMain(event),personalMemory);
+  registerPersonalMemoryIpc(options.ipcMain,event=>options.authority.mode==='pi' && fromMain(event),host.personalMemory);
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

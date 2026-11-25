@@ -37,6 +37,20 @@ CREATE TABLE personal_memory_outbox (
   FOREIGN KEY(memory_id,revision) REFERENCES personal_memory_versions(memory_id,revision)
 );
 CREATE INDEX personal_memory_outbox_pending ON personal_memory_outbox(state,memory_id,revision);
+CREATE TABLE personal_memory_catalog (
+  memory_id TEXT PRIMARY KEY,
+  revision INTEGER NOT NULL,
+  source_id TEXT NOT NULL,
+  source_generation INTEGER NOT NULL,
+  FOREIGN KEY(memory_id,revision) REFERENCES personal_memory_versions(memory_id,revision)
+);
+CREATE INDEX personal_memory_catalog_source ON personal_memory_catalog(source_id,source_generation);
+CREATE TRIGGER personal_memory_catalog_authority_changed
+AFTER UPDATE OF grant_revision,extract_allowed ON personal_memory_extract_grants
+WHEN NEW.grant_revision<>OLD.grant_revision OR NEW.extract_allowed<>OLD.extract_allowed
+BEGIN
+  DELETE FROM personal_memory_catalog WHERE source_id=OLD.source_id AND source_generation<=OLD.grant_revision;
+END;
 `;
 
 type SourceAuthority = Pick<ReturnType<typeof createPersonalMemorySourceAuthority>, 'witnessCurrent' | 'reviewQuote' | 'revokeWitness'>;
@@ -215,6 +229,31 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         return Promise.all(rows.map(row=>present(db,version(row),sources)));
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);
+    },
+    async reconcile(limit = 20) {
+      if (!Number.isSafeInteger(limit) || limit < 1 || limit > 50) throw Error('invalid_input');
+      if (!sql.transaction) throw Error('configuration');
+      return sql.transaction(async db=>{
+        const pending=await db.all(`SELECT memory_id,revision,action FROM personal_memory_outbox
+          WHERE state='pending' ORDER BY memory_id,revision LIMIT ?`,[limit]);
+        for (const row of pending) {
+          const id=String(row.memory_id), revision=Number(row.revision);
+          const current=await head(db,id);
+          const draft=row.action==='upsert' && current?.state==='active' && current.revision===revision
+            ? await sourceDraft(db,current) : null;
+          if (draft && await sources.witnessCurrent(db,draft)) {
+            await db.run(`INSERT INTO personal_memory_catalog VALUES(?,?,?,?)
+              ON CONFLICT(memory_id) DO UPDATE SET revision=excluded.revision,source_id=excluded.source_id,
+                source_generation=excluded.source_generation WHERE personal_memory_catalog.revision<excluded.revision`,
+            [id,revision,draft.witness.sourceId,draft.witness.generation]);
+          } else {
+            await db.run('DELETE FROM personal_memory_catalog WHERE memory_id=? AND revision<=?',[id,revision]);
+          }
+          await db.run(`UPDATE personal_memory_outbox SET state='acknowledged'
+            WHERE memory_id=? AND revision=? AND state='pending'`,[id,revision]);
+        }
+        return pending.length;
+      });
     },
   };
 }
