@@ -7,6 +7,7 @@ import {handoutSourceChanged} from '../education/teaching-handout-office';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 import {assertCurrentPermissionSignal} from './permissions/current';
 import path from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
@@ -39,9 +40,14 @@ function capture(root:string,relative:string,version?:string){
  const handle=fs.openSync(value,fs.constants.O_RDONLY|(fs.constants.O_NOFOLLOW||0));
  try{
   const opened=fs.fstatSync(handle);if(!opened.isFile()||opened.nlink!==1||fileVersion(opened)!==fileVersion(stat))throw new Error('conflict');
-  const bytes=fs.readFileSync(handle),post=fs.fstatSync(handle);
-  if(bytes.length!==stat.size||fileVersion(post)!==fileVersion(stat)||fileVersion(fs.lstatSync(file(root,relative)))!==fileVersion(stat))throw new Error('conflict');
-  return {version:fileVersion(stat),sha256:officeSha(bytes)};
+  const chunk=Buffer.allocUnsafe(256*1024),digest=createHash('sha256');let size=0;
+  for(let read;(read=fs.readSync(handle,chunk,0,chunk.length,null))>0;){
+   size+=read;if(size>stat.size)throw new Error('conflict');
+   digest.update(chunk.subarray(0,read));
+  }
+  const post=fs.fstatSync(handle);
+  if(size!==stat.size||fileVersion(post)!==fileVersion(stat)||fileVersion(fs.lstatSync(file(root,relative)))!==fileVersion(stat))throw new Error('conflict');
+  return {version:fileVersion(stat),sha256:digest.digest('hex')};
  }finally{fs.closeSync(handle);}
 }
 function sourceVersions(root:string,row:PrivateOfficeArtifact){
@@ -83,6 +89,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  const images=async(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>{
   if(!isRichPaperOfficeSchema(draft.schemaVersion))return undefined;
   if(!options.resolvePaperImages)throw new Error('permission_denied');return options.resolvePaperImages(sessionId,draft,signal);
+ };
+ const withGenerationBudget=async<T>(row:PrivateOfficeArtifact,signal:AbortSignal|undefined,run:()=>Promise<T>)=>{
+  if(row.format!=='pdf'||options.generate)return run();
+  const {withOfficePdfBudget}=await import('./office-pdf-budget');
+  return withOfficePdfBudget(signal,60000,run);
  };
  const notify=(row:PrivateOfficeArtifact)=>{try{options.onState?.(officeSummary(row));}catch{/* A UI lifetime cannot own file execution. */}};
  const current=(row:Pick<PrivateOfficeArtifact,'sessionId'|'runId'>,signal?:AbortSignal)=>{check(signal);if(!options.isCurrent(row.sessionId,row.runId))throw new Error('permission_denied');};
@@ -180,9 +191,12 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    let row=await owned(sessionId,id);const root=await authority(sessionId,row);current(row,signal);await recheck(row,root,signal);
    if(row.state!=='pending')throw Error('conflict');
    if(!row.output){
-    const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
-    const resolved=await images(sessionId,row.draft,signal),bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
-    await recheck(row,root,signal);row=await state.cacheCandidate(row,bytes);
+    row=await withGenerationBudget(row,signal,async()=>{
+     await recheck(row,root,signal);
+     const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
+     const resolved=await images(sessionId,row.draft,signal),bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+     await recheck(row,root,signal);return state.cacheCandidate(row,bytes);
+    });
    }
    return{path:row.path,bytes:row.output!,version:row.draftHash,candidate:{kind:'office' as const,id:row.id,revision:row.revision}};
   },
@@ -268,13 +282,16 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     latest=await state.transition(latest,['approved'],'generating');
     notify(latest);
     try{
-     const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
-     await recheck(latest,root,signal);
-     const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
-     const bytes=latest.output??await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
-     await recheck(latest,root,signal);
-     if(!compatible(root,latest))return conflict(latest);
-     latest=await state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});
+     latest=await withGenerationBudget(latest,signal,async()=>{
+      const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
+      await recheck(latest,root,signal);
+      const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
+      const bytes=latest.output??await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+      await recheck(latest,root,signal);
+      if(!compatible(root,latest))return state.transition(latest,[latest.state],'conflict');
+      return state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});
+     });
+     if(latest.state==='conflict')return officeSummary(latest);
      notify(latest);
      await options.afterStage?.('prepared');await recheck(latest,root,signal);
      latest=await state.transition(latest,['prepared'],'committing');

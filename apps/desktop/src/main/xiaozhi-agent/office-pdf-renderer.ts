@@ -9,7 +9,7 @@ import {isMathOfficeSchema,isTeachingHandoutOfficeDraft,type OfficeDraft} from '
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA} from '../../shared/classroom-export';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 import {PAPER_PRINT_LAYOUT,paperContentWidthTwips,paperContentHeightPx,paperMathCellWidth,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
-import {runHostStage} from '../host-resources/desktop';
+import {withOfficePdfBudget} from './office-pdf-budget';
 const escape=(value:unknown)=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 /** Static document data, never arbitrary HTML or resource URLs supplied by a tool. */
 export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()):string{
@@ -96,10 +96,8 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
 
 /** Same static sandbox and unmodified Hana PDF job as v1–v3. */
 export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>}):Promise<Buffer>{
- const memoryMiB=384+Math.ceil(([...options.images?.values()??[]].reduce((n,image)=>n+image.length,0)
-   +[...options.classroomPages?.values()??[]].reduce((n,page)=>n+page.bytes.length,0))*5/1048576);
- return runHostStage('office-export','pdf','foreground',{cpu:1,memoryMiB,pdfWindows:1},
-  options.deadlineMs??60000,options.signal,remaining=>renderAdmittedOfficePdf(draft,{...options,deadlineMs:remaining}));
+ return withOfficePdfBudget(options.signal,options.deadlineMs??60000,
+  remaining=>renderAdmittedOfficePdf(draft,{...options,deadlineMs:remaining}));
 }
 async function renderAdmittedOfficePdf(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>}):Promise<Buffer>{
  const images=officeImageSnapshot(draft,options.images);

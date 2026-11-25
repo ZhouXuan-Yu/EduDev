@@ -5,15 +5,16 @@ import {spawn} from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {build} from 'esbuild';
+import {testMain} from './build-root.mjs';
 
 const require=createRequire(import.meta.url);
 const desktop=path.resolve(import.meta.dirname,'../..');
 const [fixtures,acceptance]=process.argv.slice(2);
 assert(fixtures&&path.isAbsolute(fixtures)&&acceptance&&path.isAbsolute(acceptance));
 const root=await fs.mkdtemp(path.join(await fs.realpath(acceptance),'r1-native-mixed-'));
-const appEntry=path.join(desktop,'out/main/index.js');
-const worker=path.join(desktop,'out/main/retrieval-worker.js');
-const nativeEntry=path.join(desktop,'out/main',path.basename(root)+'.mjs');
+const appEntry=testMain(desktop),buildMain=path.dirname(appEntry);
+const worker=path.join(buildMain,'retrieval-worker.js');
+const nativeEntry=path.join(buildMain,path.basename(root)+'.mjs');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const identity={app:sha(await fs.readFile(appEntry)),worker:sha(await fs.readFile(worker))};
 await build({
