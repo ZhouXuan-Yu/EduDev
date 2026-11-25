@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 15/36 项通过，其中 AC-19 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 16/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -23,7 +23,7 @@
 | AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
 | AC-18 | PASS · 已实现 | 正式 Electron 实测 HTTP 连接挂起与真实 Windows Job 异常退出及超时。故障期间另一会话查题、保存和独立 HTTP MCP 调用成功。真实迟到 stdout 未进入新请求。仅在原 PID、helper 与隔离目录清理后结算资源和回执。 |
 | AC-19 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。Provider 组合阶段重跑。 |
-| AC-20 | NOT_RUN | 真实向量/embedding 退出、索引游标、代际和替代质量。 |
+| AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
 | AC-21 | NOT_RUN | 实际 PDF 取消、迟到回调、资源归还和前台并行。 |
 | AC-22 | NOT_RUN | 各执行器 10 次生命周期、未退出占用与关停。 |
 | AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
@@ -160,3 +160,10 @@
 - 首次真实进程在第 1 页持久化后非正常退出。第二轮在第 2 页持久化后点停止，测试的旧进程保持存活，实际产生第 3 页结果，交还给旧读取器的 1,393 字节未导致第三页落库。此时独立教师保存经 SQLite 读回。旧 lease `14` 收到 `cancel_requested` 后仍占进程额度，原 PID 关闭后才产生唯一 `actual_settled`。新 lease `15` 收尾时同样只结算一次。首次固定探针曾因即时整机降额误判，见 `provider-ocr-recovery-0NoWOY/report.json`。暂停式观测未完成，见 `wp05-ocr-recovery-lease.log`。最终从原调度器只读提取具体 lease 与状态序列。
 - 第三轮原任务重试只收到实际 OCR 第 3–6 页。前两页摘要和原件 hash 保持，六页各保存一次。OCR 完成时原资料任务仍在运行，等后续处理实际结算后再核对原任务 `succeeded` 与可见的「正文已收录」。本轮代码仅新增验收入口，沿用原 R1 受控生命周期。Provider 与资源 R1 最终组合构建未形成，AC-19 须在组合重跑。真实付费调用 0。
 - 新脚本通过 `node --check`，`git diff --check` 通过。锁文件内容未变，`wp05-ocr-recovery-npm-audit.json` 记录 30 项既有依赖通报，其中高危 5 项。
+
+## WP-05 第四轮向量世代、游标与实际 embedding 超时
+
+- 沿用资源调度 R1 `ed618c1c68e3e5561fe57d7555e62073978ebc72` 的 `r1-office-fences` 正式构建。主进程 SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`，实际向量工作器 SHA-256 `464053d494c4006e4a9e80ecb88b94c0c6fd04eb0168d58d55e3cc51ca44be66`。`wp05-vector-runtime-preflight.json` 核对原生二进制及模型共 154 个文件。当前 Provider 分支相对原 main 未改检索生产代码。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-vector-recovery-desktop.mjs <绝对构建目录> <固定证据根>`。正式结果 3/3，见 `wp05-vector-native-uncached.log` 和 `provider-vector-recovery-HNX9uG/report.json`。通过现有资料库导入并索引 25 份合成资料，对两种改写确认题意检索首位命中真实几何来源。旧 active generation 保持可查，实际工作器在新的世代已有有效游标后退出，旧工作器的成功回执重放未推进原游标，替换进程对同一组八条索引事实重新生成回执。新世代只在完整追平后发布，游标终止，`applied_seq` 等于原事件序号 50，原数据摘要及索引数量保持。
+- 正式原生 embedding 对查询实际生成结果，夹具在 stdout 边界暂缓交付，派发后 30.014 秒触发生产超时。返回 `embedding_unavailable`、`available=false`、`complete=false`，语义改写返回空结果，关键词仍能命中原文。旧进程尚存时交付其真实迟到数据 6,061 字节，下一查询仍未完成或启动新的 embedding。旧 PID 41064 关闭后新 PID 49524 才启动，成功命中相同 `resourceId/chunkId`。原始 native 管道和时间线见同目录 `embedding-trace.jsonl`。质量对照限固定原文、同一查询、来源与完整覆盖语义。
+- 首次复跑定位到资料库展开后才出现重建按钮，见 `wp05-vector-native-initial.log`。真实世代退出已通过的中间复跑使用了原内存缓存查询，未触发原生超时，见 `provider-vector-recovery-WI7pvf/report.json`。正式测试使用在旧 utility 测过、在新 utility 未缓存的等义查询。测试入口和两处观测夹具通过 `node --check`，`git diff --check` 通过。依赖锁未改，`wp05-vector-native-npm-audit.json` 记录 30 项既有依赖通报，真实付费调用 0。嵌套模型常驻额度和多轮回收仍由 AC-22、AC-32 验证。
