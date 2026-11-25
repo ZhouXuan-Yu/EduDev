@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Input, Modal } from "@heroui/react";
 import type { DocumentStructureReference, StructureFormulaSource } from "../../../shared/material-document-structure";
+import { formulaRecognitionSource } from "../../../shared/material-formula-recognition";
 import { readMaterialStructureCrop } from "./material-structure-source-image";
 import { structureFormulaCandidate } from "./material-structure-formula-candidate";
 import { MaterialLocalFormulaRecognition } from "./MaterialLocalFormulaRecognition";
 
 type Candidate = NonNullable<ReturnType<typeof structureFormulaCandidate>>;
 
-function FormulaFragments({ candidate }: { candidate: Candidate }) {
+function FormulaFragments({ candidate, target }: { candidate: Candidate; target: string }) {
   const { numerator, denominator, copyText } = candidate;
   const [value, setValue] = useState(copyText ?? "");
   const [notice, setNotice] = useState("");
@@ -27,7 +28,7 @@ function FormulaFragments({ candidate }: { candidate: Candidate }) {
           <Button variant="secondary" data-testid="structure-formula-copy" isDisabled={!value.trim()} onPress={async () => {
             try {
               await navigator.clipboard.writeText(value.trim());
-              setNotice("已复制分式候选。可粘贴到题干后补正。");
+              setNotice(`已复制分式候选。可粘贴到${target}后补正。`);
             } catch {
               setNotice("复制失败，请选中分式候选后复制。");
             }
@@ -49,6 +50,8 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
   const [result, setResult] = useState<{ image: string; candidate?: Candidate } | { error: string }>();
   const trigger = useRef<HTMLElement | null>(null);
   const source = selected === undefined ? undefined : sources[selected];
+  const recognition = source && formulaRecognitionSource(source);
+  const target = source?.optionLabel ? `${source.optionLabel} 选项` : "题干";
   useEffect(() => {
     if (!source) return;
     let current = true;
@@ -85,7 +88,8 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
               setResult(undefined);
               setSelected(index);
             }}>
-            {sources.length === 1 ? "查看公式原图" : `查看公式 ${index + 1} 原图`}
+            {item.optionLabel ? `查看 ${item.optionLabel} 选项公式原图`
+              : sources.length === 1 ? "查看公式原图" : `查看公式 ${index + 1} 原图`}
           </Button>
         ))}
       </div>
@@ -93,16 +97,16 @@ export function MaterialStructureFormulaPreview({ reference, sources, disabled }
         <Modal.Backdrop isOpen onOpenChange={open => { if (!open) close(); }}>
           <Modal.Container size="lg" scroll="inside">
             <Modal.Dialog className="pi-themed-surface" data-testid="structure-formula-dialog" data-material-draft-scope="workspace">
-              <Modal.Header><Modal.Heading>公式原图 · 第 {source.page} 页</Modal.Heading></Modal.Header>
+              <Modal.Header><Modal.Heading>公式原图 · 第 {source.page} 页{source.optionLabel && ` · ${target}`}</Modal.Heading></Modal.Header>
               <Modal.Body>
                 {!result ? <p role="status">正在读取公式原图…</p>
                   : "error" in result ? <p role="alert">{result.error}</p>
                     : <>
                       <img src={result.image} alt={`原卷第 ${source.page} 页的待核对公式`}
                         style={{ maxWidth: "100%", height: "auto" }} data-testid="structure-formula-image" />
-                      {result.candidate && <FormulaFragments candidate={result.candidate} />}
-                      {source.regionId && <MaterialLocalFormulaRecognition key={source.regionId}
-                        reference={reference} page={source.page} regionId={source.regionId} />}
+                      {result.candidate && <FormulaFragments candidate={result.candidate} target={target} />}
+                      {recognition && <MaterialLocalFormulaRecognition key={recognition.id}
+                        reference={reference} page={source.page} regionId={recognition.id} target={target} />}
                     </>}
               </Modal.Body>
               <Modal.Footer>

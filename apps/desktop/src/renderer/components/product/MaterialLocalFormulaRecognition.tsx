@@ -15,8 +15,8 @@ const feedback: Partial<Record<FormulaRecognitionResult["state"], string>> = {
   source_changed: "原页或结构版本有变化，请关闭窗口并刷新资料结构。",
 };
 
-export function MaterialLocalFormulaRecognition({ reference, page, regionId }: {
-  reference: DocumentStructureReference; page: number; regionId: string;
+export function MaterialLocalFormulaRecognition({ reference, page, regionId, target = "题干" }: {
+  reference: DocumentStructureReference; page: number; regionId: string; target?: string;
 }) {
   const key = useMemo(() => ({ reference, page, regionId, requestId: crypto.randomUUID() }), [reference, page, regionId]);
   const [result, setResult] = useState<FormulaRecognitionResult>();
@@ -41,7 +41,7 @@ export function MaterialLocalFormulaRecognition({ reference, page, regionId }: {
     try {
       const next = await call("run");
       setResult(next);
-      setValue(next.state === "candidate" ? next.latex : "");
+      setValue(next.state === "candidate" ? next.copyLatex ?? next.latex : "");
     } catch {
       setResult({ state: "failed" });
     } finally {
@@ -60,7 +60,8 @@ export function MaterialLocalFormulaRecognition({ reference, page, regionId }: {
       {!running && result?.state === "unavailable" && <FormulaComponentSetup onReady={() => setResult({ state: "ready" })} />}
       {!running && result && feedback[result.state] && <p role="status">{feedback[result.state]}</p>}
       {!running && result?.state === "candidate" && <>
-        <p>请对照原图核对指数、下标和单位，确认后可把候选复制到题干。</p>
+        <p>请对照原图核对指数、下标和单位，确认后可把候选复制到{target}。</p>
+        {result.copyLatex && <p>识别原文 <code>{result.latex}</code></p>}
         <label>公式候选（LaTeX）
           <TextArea value={value} fullWidth rows={2} maxLength={320} data-testid="structure-formula-local-candidate"
             onChange={event => { setValue(event.target.value); setNotice(""); }} />
@@ -70,7 +71,7 @@ export function MaterialLocalFormulaRecognition({ reference, page, regionId }: {
         <Button variant="secondary" isDisabled={!valid} data-testid="structure-formula-local-copy" onPress={async () => {
           try {
             await navigator.clipboard.writeText(`$${value.trim()}$`);
-            setNotice("已复制公式候选，可粘贴到题干。");
+            setNotice(`已复制公式候选，可粘贴到${target}。`);
           } catch { setNotice("复制失败，请选中候选公式后复制。"); }
         }}>复制公式候选</Button>
         {notice && <p role="status">{notice}</p>}

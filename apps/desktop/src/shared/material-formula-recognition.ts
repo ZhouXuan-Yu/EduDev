@@ -1,8 +1,19 @@
-import { validStructureReference, type DocumentStructureReference } from "./material-document-structure";
+import { validStructureReference, type DocumentStructureReference, type StructureFormulaSource } from "./material-document-structure";
+import { validPageBox } from "./material-page-preview";
 import { officeMathParts, officeMathHtml } from "./office-math";
 
 export const FORMULA_RECOGNITION_SCHEMA = "xiaozhi.local-formula-recognition.v1" as const;
 export const FORMULA_RECOGNITION_ENGINE = "pp-formulanet-plus-s.paddle3.v1" as const;
+
+/** Legacy regions use their original ID. Inferred crops use a source-owned lead line. */
+export function formulaRecognitionSource(source: StructureFormulaSource) {
+  if (source.regionId && validPageBox(source.box)) return { id: source.regionId, box: source.box };
+  const box = source.recognitionBox;
+  if (!validPageBox(source.box) || !validPageBox(box) || source.lineIds.length < 3 ||
+      !/^[a-z0-9_-]{1,116}$/iu.test(source.lineIds[0]) ||
+      box[0] < source.box[0] || box[1] < source.box[1] || box[2] > source.box[2] || box[3] > source.box[3]) return;
+  return { id: "stacked:" + source.lineIds[0], box };
+}
 
 export type FormulaRecognitionQuery = {
   reference: DocumentStructureReference;
@@ -14,7 +25,13 @@ export type FormulaRecognitionQuery = {
 
 export type FormulaRecognitionResult =
   | { state: "ready" | "unavailable" | "unclear" | "cancelled" | "timeout" | "busy" | "failed" | "source_changed" }
-  | { state: "candidate"; latex: string; engine: typeof FORMULA_RECOGNITION_ENGINE; cropSha256: string };
+  | { state: "candidate"; latex: string; copyLatex?: string; engine: typeof FORMULA_RECOGNITION_ENGINE; cropSha256: string };
+
+export function stackedFractionValue(latex: string, lead: string) {
+  if (!lead.normalize("NFKC").trimEnd().endsWith("=")) return;
+  const value = /^=\s*(\\(?:frac|dfrac|tfrac)\b.+)$/u.exec(latex.trim())?.[1];
+  return readableFormulaLatex(value) ? value : undefined;
+}
 
 export type FormulaComponentAction = "status" | "install" | "cancel";
 export type FormulaComponentStatus = {

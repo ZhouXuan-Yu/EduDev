@@ -79,7 +79,7 @@ try {
     if (["complete", "partial"].includes(job?.status)) break;
     await new Promise(resolve => setTimeout(resolve, 500));
   }
-  assert.equal(job.engine, "layout-paragraph-question.v" + (baseline ? "28" : "29"));
+  assert.equal(job.engine, "layout-paragraph-question.v" + (baseline ? "28" : "33"));
   assert.equal(job.processed, 3);
   const [resource] = sql("SELECT id,title,local_path FROM teacher_resources");
   const initialRows = sql("SELECT * FROM material_structure_questions ORDER BY id");

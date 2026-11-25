@@ -18,7 +18,7 @@ const { linkStructureTableContinuations } =
   await import("../../src/main/assets/material-structure-table-continuation.ts");
 const { verifiedNumericTableRow } =
   await import("../../src/main/assets/material-structure-borderless-table.ts");
-const { readableFormulaLatex, validFormulaRecognitionQuery } =
+const { formulaRecognitionSource, readableFormulaLatex, stackedFractionValue, validFormulaRecognitionQuery } =
   await import("../../src/shared/material-formula-recognition.ts");
 const results = [];
 async function check(name, run) {
@@ -368,6 +368,32 @@ await check("The optional raster identity is exclusive to image reads and reject
   assert(!validStructureQuery(pinned));
   for (const bad of [{...pinned, path:"a.pdf"},{...pinned,rasterSha256:"wrong"},{...pinned,page:0}])
     assert(!validStructureImageQuery(bad));
+});
+await check("A stacked option formula keeps its owning label and sends a tight, authenticated fraction crop", () => {
+  const rows = [
+    ["一、选择题", .1, .06], ["3. 判断下列等式。", .1, .12],
+    ["A. 结果无法确定", .12, .225, .23], ["√x", .69, .212, .035],
+    ["B. f(x)=", .51, .225, .176], ["y²", .69, .240, .03],
+    ["C. 条件不足", .12, .31, .24], ["D. 以上均正确", .51, .31, .24],
+  ];
+  const region = { id:"choice-math",kind:"text",score:.8,box:[.49,.205,.86,.28],needsReview:true };
+  const p = page(rows,1,1,[region]);
+  const [q] = questions([p]);
+  assert(q.issues.includes("formula_text_unconfirmed"));
+  const [source] = q.formulaSources;
+  assert.equal(source.optionLabel,"B");
+  assert.deepEqual(source.lineIds.map(id => p.lines.find(line => line.id === id)?.text),["B. f(x)=","√x","y²"]);
+  const recognition = formulaRecognitionSource(source);
+  assert.equal(recognition.id,"stacked:"+source.lineIds[0]);
+  assert(recognition.box[0] > source.box[0] && recognition.box[2] < source.box[2]);
+  assert(!formulaRecognitionSource({...source,recognitionBox:undefined}));
+  assert(!formulaRecognitionSource({...source,recognitionBox:[0,0,1,1]}));
+  assert.equal(stackedFractionValue(String.raw`=\frac{-3x+2}{5x-7}`, "B. f(x)＝"), String.raw`\frac{-3x+2}{5x-7}`);
+  for (const [latex, lead] of [[String.raw`=\frac{2}{3}`, "x ≡"], ["=7", "x="], [String.raw`f(x)=\frac{2}{3}`, "x="]])
+    assert.equal(stackedFractionValue(latex,lead), undefined);
+  const otherRows = rows.map(row => row[0] === "D. 以上均正确" ? ["D. 来自其他选项",.72,.23,.15] : row);
+  const conflict = questions([page(otherRows,1,1,[region])])[0];
+  assert(!conflict.formulaSources?.length);
 });
 await check("Printed option counts and observed label gaps prevent import from silently dropping choices", () => {
   const root = ["一、选择题（各题均有四个选项）", .1, .06];
