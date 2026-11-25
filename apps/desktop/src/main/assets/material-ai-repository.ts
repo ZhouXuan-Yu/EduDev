@@ -182,7 +182,8 @@ export class MaterialAiRepository{
   localBookRecheck(source:LocalBookPageSource,layout:Parameters<typeof runLocalBookRecheck>[0]['layout'],signal:AbortSignal){
     return runLocalBookRecheck({...this.localBookHost(),layout,save:(proof,active)=>this.write(async target=>{
       await saveLocalBookRecheck({...target.localBookHost(),run:target.host.run},proof,active);
-      const confirmed=proof.rows.flatMap(row=>row.crop?.observed===row.letters
+      const confirmed=proof.rows.flatMap(row=>row.section&&row.crop?.observed===row.letters&&
+        (!row.numbered||row.markerCrop?.observed===String(row.range[0]))
         ? Array.from(row.letters,(_,index)=>String(row.range[0]+index)) : []);
       if(confirmed.length&&target.host.structureBookScope)
         await target.bookAnswers.work.structures.answerChanged(proof.resourceId,proof.version,confirmed);

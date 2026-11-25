@@ -21,7 +21,8 @@ const {MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY}=await im
 const {shanghaiMockSectionKey,WRAPPED_SHANGHAI_MOCK_SECTIONS}=await import('../../src/shared/shanghai-mock-sections.ts');
 const {printedSingleChoiceRange}=await import('../../src/main/assets/material-compact-choice-key.ts');
 const {localCompactChoicePage}=await import('../../src/main/assets/material-book-answer-content.ts');
-const {independentChoiceLetters,locateLocalChoiceRow}=await import('../../src/main/assets/material-local-book-choice-layout.ts');
+const {independentChoiceLetters,independentNumberedChoice,locateLocalChoiceRow}=await import('../../src/main/assets/material-local-book-choice-layout.ts');
+const {numberedChoiceRows}=await import('../../src/main/assets/material-numbered-choice-answers.ts');
 const {bookPageRestorationInstruction}=await import('../../src/main/assets/material-ai-book-instruction.ts');
 const printed=(first,final=first)=>bookAnswerPage(scoped(first),scoped(final),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY);
 check('Printed brackets after repeated question text recover literal answer and analysis only for new inputs',()=>{
@@ -184,6 +185,35 @@ check('The second OCR must read one isolated answer row and cannot borrow an adj
  assert.equal(independentChoiceLetters(['选择题答案（第4至6题）：A、D、C']),'ADC');
  for(const lines of [['选择题：','DBAC'],['选择题：D?AC'],['选择题：DBAC','选择题：DAAC'],['选项：DBAC']])
   assert.equal(independentChoiceLetters(lines),'');
+});
+check('A numbered choice range follows adjacent pages without borrowing another exam or a conflicting answer',()=>{
+ const front=section+'\n二、选择题（本大题共3题，第6～8题）';
+ const page=front+'\n【6】题干\n【解】B\n【7】第二题\n答案：D';
+ const next='【8】题干\n由以上关系，选C。';
+ const display=rows=>rows.map(({section,range,letters,numbered})=>[section,range,letters,numbered.choiceRange]);
+ assert.deepEqual(display(numberedChoiceRows([page])),[[section,[6,6],'B',[6,8]],[section,[7,7],'D',[6,8]]]);
+ assert.deepEqual(display(numberedChoiceRows([page,next])),[[section,[8,8],'C',[6,8]]]);
+ assert.deepEqual(numberedChoiceRows([page,'',next]),[]);
+ assert.deepEqual(numberedChoiceRows([page,next+'\n【8】重复编号\n选C']),[]);
+ assert.deepEqual(numberedChoiceRows([page,next+'\n答案：A']),[]);
+ assert.deepEqual(numberedChoiceRows([page,'2026届某区高三数学一模解析\n'+next]),[]);
+ assert.equal(independentNumberedChoice(['【 8 】 题 干'],'number'),'8');
+ assert.equal(independentNumberedChoice(['【解】 D'],'letter'),'D');
+ assert.equal(independentNumberedChoice(['〖 8 〗 题 干'],'number'),'8');
+ assert.equal(independentNumberedChoice(['〖 解 〗 c'],'letter'),'C');
+ assert.equal(independentNumberedChoice(['〖 解 】 B'],'letter'),'');
+ assert.equal(independentNumberedChoice(['故选 C。','答案：B'],'letter'),'');
+ assert.equal(independentNumberedChoice(['C','设事件B'],'letter'),'');
+ const line=(text,x,y,right,bottom)=>({text,score:.98,normalizedQuad:[[x,y],[right,y],[right,bottom],[x,bottom]]});
+ const marker=line('【8】很长的原题题干',.1,.25,.8,.27);
+ const irrelevant=line('叠印',.45,.24,.55,.28);
+ assert(locateLocalChoiceRow({lines:[marker,irrelevant]},marker.text,'numbered-marker')[2]<.21);
+ const key=line('【解】D',.1,.35,.155,.37);
+ const edge=line('相邻选项',.11,.326,.21,.352);
+ assert.equal(locateLocalChoiceRow({lines:[key,edge]},key.text),undefined);
+ assert.equal(locateLocalChoiceRow({lines:[key,edge]},key.text,'numbered-answer')[1],.352);
+ const overlap=line('遮挡答案',.11,.326,.21,.363);
+ assert.equal(locateLocalChoiceRow({lines:[key,overlap]},key.text,'numbered-answer'),undefined);
 });
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});

@@ -173,7 +173,7 @@ try{
   await dialog.waitFor();assert.equal(await dialog.getAttribute('data-paper-id'),edited);
   assert.match(await dialog.getByTestId('paper-summary').innerText(),/7\s*\/\s*7 分/);
   await closeReview();
-  await card().getByTestId('pi-paper-versions').locator('summary').click();
+  await card().getByTestId('pi-paper-versions').getByRole('button',{name:'试卷版本',exact:true}).click();
   await card().getByTestId('pi-paper-history-open').click();
   await dialog.getByTestId('paper-review-historical').waitFor();
   assert.equal(await dialog.getAttribute('data-paper-id'),source.id);
