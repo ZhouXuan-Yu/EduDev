@@ -104,6 +104,23 @@ function parseProposal(value: unknown): Proposal | undefined {
   return p as Proposal;
 }
 
+function candidateEvidence(text:string, quote:string, kind:MemoryKind) {
+  const match = text.indexOf(quote);
+  if (match < 0 || text.lastIndexOf(quote) !== match) return;
+  // Keep the surrounding statement, including subject, negation and time qualifiers.
+  const before=text.slice(0,match);
+  const boundary=before.search(/[。！？；\n][^。！？；\n]*$/u);
+  const lead=before.slice(boundary+1).match(/^\s*(?:(?:请|帮我)?记住[，,：:]\s*)?/u)?.[0] ?? '';
+  const start=boundary+1+lead.length;
+  const matchEnd=match+quote.length;
+  const after=/[。！？；\n]\s*$/u.test(quote)?'':(text.slice(matchEnd).match(/^[^。！？；\n]*[。！？；]?/u)?.[0]??'');
+  const statement=text.slice(start,matchEnd+after.length).trimEnd();
+  if (!bounded(statement,320) || /[`“”「」『』"<>]|引用材料|忽略(?:前文|规则|指令)|系统提示/u.test(text) ||
+      /(?:同事|别的?老师|其他老师|助教|学生|家长|助手|模型|AI).{0,10}(?:说|建议|推荐|认为|猜测|觉得)/iu.test(statement) ||
+      (kind==='preference' && /这次|这个任务|这份|本次|仅本轮|本题|这道题|例如|假设/u.test(statement))) return;
+  return {start,end:start+statement.length,statement};
+}
+
 export function preparePersonalMemoryExtraction(sources: readonly PersonalMemorySource[], authority: CandidateAuthority,
   targets: readonly ExistingMemoryWitness[] = []): PersonalMemoryManifest {
   if (!integer(authority.policyRevision) || !integer(authority.cancelGeneration) || !integer(authority.teacherPolicyRevision??0))
@@ -141,17 +158,16 @@ function createDraft(proposal: Proposal, pin: SourcePin, liveSource: PersonalMem
       || hash(liveSource.sanitizedText) !== pin.textDigest) return 'source_changed';
   if (proposal.scope_id !== projection.scope.id) return 'scope_mismatch';
   if (proposal.valid_term !== projection.term) return 'term_mismatch';
-  const start = projection.text.indexOf(proposal.supporting_quote);
-  if (start < 0 || projection.text.lastIndexOf(proposal.supporting_quote) !== start) return 'ungrounded';
+  const evidence=candidateEvidence(projection.text,proposal.supporting_quote,proposal.kind);
+  if (!evidence) return 'ungrounded';
   if (proposal.supersedes && (!pinnedTarget || !liveTarget || pinnedTarget.revision !== liveTarget.revision
       || !sameScope(pinnedTarget.scope, projection.scope) || !sameScope(liveTarget.scope, pinnedTarget.scope)
       || pinnedTarget.kind !== proposal.kind || liveTarget.kind !== pinnedTarget.kind
       || pinnedTarget.term !== projection.term || liveTarget.term !== pinnedTarget.term)) return 'invalid_target';
-  const end = start + proposal.supporting_quote.length;
   const witness = Object.freeze({ sourceId: proposal.source_id, sourceVersion: pin.sourceVersion, generation: projection.version,
-    textDigest: pin.textDigest, start, end });
+    textDigest: pin.textDigest, start:evidence.start, end:evidence.end });
   const key = hash(JSON.stringify([proposal.kind, witness, projection.scope, projection.term, proposal.supersedes]));
-  return Object.freeze({key, state:'pending', kind:proposal.kind, proposedValue:proposal.value,
+  return Object.freeze({key, state:'pending', kind:proposal.kind, proposedValue:evidence.statement,
     scope:projection.scope, term:projection.term, authority, witness, replaces:pinnedTarget ?? null});
 }
 
@@ -167,7 +183,7 @@ export function bindPersonalMemoryProposals(results: unknown, manifest: Personal
   if (authority.cancelGeneration !== manifest.authority.cancelGeneration) return {candidates: [], rejections: ['cancelled']};
   const sourceNow = new Map(current.map(source => [source.id, source]));
   const targetNow = new Map(targets.map(target => [target.id, target]));
-  const valid = new Map<string, PersonalMemoryDraft>();
+  const valid = new Map<string, {draft:PersonalMemoryDraft;modelValue:string}>();
   const conflicts = new Set<string>();
   const rejections: Rejection[] = [];
   for (const result of results) {
@@ -181,11 +197,11 @@ export function bindPersonalMemoryProposals(results: unknown, manifest: Personal
     if (typeof draft === 'string') { rejections.push(draft); continue; }
     if (conflicts.has(draft.key)) continue;
     const prior = valid.get(draft.key);
-    if (prior && prior.proposedValue !== draft.proposedValue) {
+    if (prior && prior.modelValue !== proposal.value) {
       valid.delete(draft.key);
       conflicts.add(draft.key);
       rejections.push('conflicting_proposals');
-    } else if (!prior) valid.set(draft.key, draft);
+    } else if (!prior) valid.set(draft.key,{draft,modelValue:proposal.value});
   }
-  return {candidates: [...valid.values()], rejections};
+  return {candidates: [...valid.values()].map(entry=>entry.draft), rejections};
 }
