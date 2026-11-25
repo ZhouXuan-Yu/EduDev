@@ -6,16 +6,9 @@ import { validMemorySession } from '../memory-selection';
 import { createHistoryState, historyHash, historyId, type Access } from './state';
 import { createHistoryIndexWorker } from './index-worker';
 import { configuredHistoryIndex } from './hindsight';
+import { historyRecordId, readHistorySource, validHistoryRef } from './source';
 
-const sourceVersion = /^[a-f0-9]{64}$/;
-const recordId = /^[a-z0-9_-]{1,180}$/i;
-export function validHistoryRef(value: unknown): value is HistorySourceRef {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  const ref = value as HistorySourceRef;
-  return Object.keys(ref).length===4 && (ref.kind==='history_request'||ref.kind==='history_control')
-    && validMemorySession(ref.sessionId) && typeof ref.recordId==='string' && recordId.test(ref.recordId)
-    && typeof ref.sourceVersion==='string' && sourceVersion.test(ref.sourceVersion);
-}
+export { validHistoryRef } from './source';
 const marker = (input: string) => input.normalize('NFKC').toLowerCase();
 const segmenter = new Intl.Segmenter('zh', {granularity:'word'});
 function terms(input: string) {
@@ -40,20 +33,16 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       selection:{layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion}});
     return {...source,ticket};
   }
-  async function session(id: string, includeControls = true) {
+  async function session(id: string) {
     if (!validMemorySession(id)) throw Error('invalid_input');
     const detail = await store.getAiConversationSession(id).catch(()=>null);
     if (!detail || detail.session.archivedAt || detail.session.studentId) throw Error('source_unavailable');
-    const controls = includeControls ? await store.xiaozhiState.controls(id) : [];
-    return {title:detail.session.title,sources:teacherRequestSources(detail.messages,controls).filter(item=>recordId.test(item.sourceId))};
+    const controls = await store.xiaozhiState.controls(id);
+    return {title:detail.session.title,sources:teacherRequestSources(detail.messages,controls).filter(item=>historyRecordId.test(item.sourceId))};
   }
   async function original(ref: HistorySourceRef) {
-    if (!validHistoryRef(ref)) throw Error('invalid_input');
-    const {title,sources} = await session(ref.sessionId,ref.kind==='history_control');
-    const row = sources.find(item=>item.sourceId===ref.recordId && (item.kind==='request')===(ref.kind==='history_request'));
-    if (!row) throw Error('source_unavailable');
-    if (row.sourceVersion!==ref.sourceVersion) throw Error('source_changed');
-    return {ref,title: title.slice(0,80),label:row.kind==='request'?'教师原话':row.kind==='answer'?'教师补答':'已生效的追加要求',text:row.text};
+    const {title,label,text} = await readHistorySource(sql,ref);
+    return {ref,title,label,text};
   }
   async function project(ref: HistorySourceRef, label: string, title: string, known?: Access|null): Promise<HistorySource> {
     const id = historyId(ref);

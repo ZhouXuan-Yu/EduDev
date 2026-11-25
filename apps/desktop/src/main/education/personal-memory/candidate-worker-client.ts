@@ -20,6 +20,12 @@ export type CandidateWorkerSuccess = {
 
 type WorkerOptions = { pythonExecutable: string; repoRoot: string; providerKey: string };
 
+function validUsage(value: unknown): value is CandidateUsage {
+  return !!value && typeof value==='object' && !Array.isArray(value) && Object.entries(value).every(([key,count])=>
+    ['prompt_tokens','completion_tokens','prompt_cache_hit_tokens'].includes(key)
+    && typeof count==='number' && Number.isSafeInteger(count) && count>=0);
+}
+
 function parseResult(output: Buffer, requestId: string): CandidateWorkerSuccess {
   let result: { schemaVersion?: unknown; requestId?: unknown; status?: unknown; proposals?: unknown; modelCalls?: unknown; usage?: unknown };
   try {
@@ -36,7 +42,7 @@ function parseResult(output: Buffer, requestId: string): CandidateWorkerSuccess 
   const { proposals, modelCalls, usage } = result;
   if (!Array.isArray(proposals) || proposals.length > 20 || (result.status === 'success_empty') !== !proposals.length
       || typeof modelCalls !== 'number' || !Number.isInteger(modelCalls) || modelCalls < 1 || modelCalls > 2
-      || !Array.isArray(usage) || usage.length > modelCalls) throw Error('invalid_result');
+      || !Array.isArray(usage) || usage.length > modelCalls || !usage.every(validUsage)) throw Error('invalid_result');
   return {status: result.status, proposals, modelCalls, usage};
 }
 

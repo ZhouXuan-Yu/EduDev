@@ -4,7 +4,11 @@ type MemoryKind = 'teaching_context' | 'preference';
 type MemoryScope = Readonly<{ kind: 'teacher' | 'class' | 'course' | 'task' | 'artifact'; id: string }>;
 type Purpose = 'index' | 'discover' | 'extract' | 'use';
 
-export type CandidateAuthority = Readonly<{ policyRevision: number; cancelGeneration: number }>;
+export type CandidateAuthority = Readonly<{ policyRevision: number; cancelGeneration: number; teacherPolicyRevision?: number }>;
+
+export function sameCandidatePolicy(a: CandidateAuthority, b: CandidateAuthority) {
+  return a.policyRevision===b.policyRevision && (a.teacherPolicyRevision??0)===(b.teacherPolicyRevision??0);
+}
 
 export type PersonalMemorySource = Readonly<{
   id: string;
@@ -102,7 +106,8 @@ function parseProposal(value: unknown): Proposal | undefined {
 
 export function preparePersonalMemoryExtraction(sources: readonly PersonalMemorySource[], authority: CandidateAuthority,
   targets: readonly ExistingMemoryWitness[] = []): PersonalMemoryManifest {
-  if (!integer(authority.policyRevision) || !integer(authority.cancelGeneration)) throw Error('invalid_authority');
+  if (!integer(authority.policyRevision) || !integer(authority.cancelGeneration) || !integer(authority.teacherPolicyRevision??0))
+    throw Error('invalid_authority');
   if (sources.length > maximumSources || targets.length > maximumDrafts) throw Error('manifest_too_large');
   const pins = new Map<string, SourcePin>();
   let bytes = 0;
@@ -158,7 +163,7 @@ export function bindPersonalMemoryProposals(results: unknown, manifest: Personal
   if (!bindings) throw Error('invalid_source_manifest');
   if (!Array.isArray(results)) throw Error('invalid_candidate_result');
   if (results.length > maximumDrafts) throw Error('result_too_large');
-  if (authority.policyRevision !== manifest.authority.policyRevision) return {candidates: [], rejections: ['stale_policy']};
+  if (!sameCandidatePolicy(authority,manifest.authority)) return {candidates: [], rejections: ['stale_policy']};
   if (authority.cancelGeneration !== manifest.authority.cancelGeneration) return {candidates: [], rejections: ['cancelled']};
   const sourceNow = new Map(current.map(source => [source.id, source]));
   const targetNow = new Map(targets.map(target => [target.id, target]));

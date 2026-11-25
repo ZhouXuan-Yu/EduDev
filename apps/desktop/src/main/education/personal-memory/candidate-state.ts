@@ -1,5 +1,6 @@
 import type { Sql } from '../../xiaozhi-agent/session-state';
-import type { CandidateAuthority, PersonalMemoryDraft } from './candidate-admission';
+import { sameCandidatePolicy, type CandidateAuthority, type PersonalMemoryDraft } from './candidate-admission';
+import { readTeacherMemoryPolicy } from '../teacher-memory-policy';
 
 export const personalMemoryCandidateSchema = `
 CREATE TABLE personal_memory_processing (
@@ -23,8 +24,9 @@ CREATE TABLE personal_memory_pending (
 CREATE INDEX personal_memory_pending_source ON personal_memory_pending(source_id,state);
 `;
 
-export type PersonalMemoryProcessing = CandidateAuthority & Readonly<{ enabled: boolean }>;
+export type PersonalMemoryProcessing = CandidateAuthority & Readonly<{ enabled: boolean; pausedByUsePolicy: boolean }>;
 type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict'; revision: number };
+export type CandidateWriteReceipt = { saved: string[]; stale: string[]; conflicted: string[]; repeated: number };
 type SourceWitnessReader = (transaction: Sql, draft: PersonalMemoryDraft) => Promise<boolean>;
 type WritableSql = Sql & { change: NonNullable<Sql['change']> };
 
@@ -34,6 +36,13 @@ function requireChanges(db: Sql): asserts db is WritableSql {
 
 function assertRevision(value: number) {
   if (!Number.isSafeInteger(value) || value < 0) throw Error('invalid_input');
+}
+
+export async function invalidatePersonalMemoryDrafts(db: Sql, sourceId: string, generation: number) {
+  assertRevision(generation);
+  requireChanges(db);
+  return db.change(`UPDATE personal_memory_pending SET state='stale',revision=revision+1
+    WHERE source_id=? AND source_generation<=? AND state IN ('pending','conflict')`, [sourceId,generation]);
 }
 
 function pendingDraft(row: Record<string, unknown>): PendingDraft {
@@ -47,6 +56,14 @@ function pendingDraft(row: Record<string, unknown>): PendingDraft {
   return {draft, state, revision};
 }
 
+export async function readPersonalMemoryProcessing(db: Sql): Promise<PersonalMemoryProcessing> {
+  const [row] = await db.all('SELECT enabled,policy_revision,cancel_generation FROM personal_memory_processing WHERE id=1');
+  if (!row) throw Error('configuration');
+  const teacherPolicy = await readTeacherMemoryPolicy(db);
+  return {enabled:row.enabled===1, policyRevision:Number(row.policy_revision), cancelGeneration:Number(row.cancel_generation),
+    teacherPolicyRevision:teacherPolicy.revision, pausedByUsePolicy:Object.keys(teacherPolicy.use).length>0};
+}
+
 /** Persistence for admitted drafts. Canonical source and target witnesses remain with the authorizing host. */
 export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: SourceWitnessReader) {
   function write<T>(action: (work: WritableSql) => Promise<T>) {
@@ -57,11 +74,7 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
     });
   }
 
-  async function processing(db = sql): Promise<PersonalMemoryProcessing> {
-    const [row] = await db.all('SELECT enabled,policy_revision,cancel_generation FROM personal_memory_processing WHERE id=1');
-    if (!row) throw Error('configuration');
-    return {enabled:row.enabled===1, policyRevision:Number(row.policy_revision), cancelGeneration:Number(row.cancel_generation)};
-  }
+  const processing = (db = sql) => readPersonalMemoryProcessing(db);
 
   return {
     processing,
@@ -77,19 +90,20 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
         return processing(db);
       });
     },
-    async savePending(drafts: readonly PersonalMemoryDraft[], expected: CandidateAuthority, taskCurrent?: (transaction: Sql) => Promise<boolean>) {
+    async savePending(drafts: readonly PersonalMemoryDraft[], expected: CandidateAuthority, taskCurrent?: (transaction: Sql) => Promise<boolean>,
+      complete?: (transaction: Sql, receipt: CandidateWriteReceipt) => Promise<void>) {
       if (drafts.length > 20) throw Error('invalid_input');
       return write(async db => {
         const current = await processing(db);
-        if (!current.enabled || current.cancelGeneration !== expected.cancelGeneration) throw Error('cancelled');
-        if (current.policyRevision !== expected.policyRevision) throw Error('stale_policy');
+        if (!current.enabled || current.pausedByUsePolicy || current.cancelGeneration !== expected.cancelGeneration) throw Error('cancelled');
+        if (!sameCandidatePolicy(current,expected)) throw Error('stale_policy');
         if (taskCurrent && !await taskCurrent(db)) throw Error('stale_task');
         const saved: string[] = [];
         const stale: string[] = [];
         const conflicted: string[] = [];
         let repeated = 0;
         for (const draft of drafts) {
-          if (draft.state !== 'pending' || draft.authority.policyRevision !== current.policyRevision
+          if (draft.state !== 'pending' || !sameCandidatePolicy(draft.authority,current)
               || draft.authority.cancelGeneration !== current.cancelGeneration || !await witnessCurrent(db,draft)) {
             stale.push(draft.key);
             continue;
@@ -110,7 +124,9 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
             conflicted.push(draft.key);
           } else repeated++;
         }
-        return {saved, stale, conflicted, repeated};
+        const receipt = {saved, stale, conflicted, repeated};
+        await complete?.(db,receipt);
+        return receipt;
       });
     },
     async list(limit: number) {
@@ -128,11 +144,6 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
         return pendingDraft(row);
       });
     },
-    async invalidateSource(db: Sql, sourceId: string, generation: number) {
-      assertRevision(generation);
-      requireChanges(db);
-      return db.change(`UPDATE personal_memory_pending SET state='stale',revision=revision+1
-        WHERE source_id=? AND source_generation<=? AND state IN ('pending','conflict')`,[sourceId,generation]);
-    },
+    invalidateSource:invalidatePersonalMemoryDrafts,
   };
 }

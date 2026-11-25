@@ -12,6 +12,7 @@ const { createPersonalMemoryCandidateRunner } = await import('../../src/main/edu
 const database = join(mkdtempSync(join(tmpdir(),'edudev-r2-candidate-')), 'app.db');
 let db = new DatabaseSync(database);
 db.exec(personalMemoryCandidateSchema);
+db.exec('CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)');
 db.exec('CREATE TABLE source_witness(id TEXT PRIMARY KEY, version TEXT, generation INTEGER, enabled INTEGER)');
 
 const sql = {
@@ -28,7 +29,7 @@ const state=createPersonalMemoryCandidateState(sql,async (tx,draft)=>{
   const [row]=await tx.all('SELECT * FROM source_witness WHERE id=?',[draft.witness.sourceId]);
   return !!row && row.version===draft.witness.sourceVersion && row.generation===draft.witness.generation && row.enabled===1;
 });
-assert.deepEqual(await state.processing(),{enabled:false,policyRevision:0,cancelGeneration:0});
+assert.deepEqual(await state.processing(),{enabled:false,policyRevision:0,cancelGeneration:0,teacherPolicyRevision:0,pausedByUsePolicy:false});
 const policy=await state.setEnabled(true,0);
 await assert.rejects(state.setEnabled(false,0),/revision_conflict/);
 
