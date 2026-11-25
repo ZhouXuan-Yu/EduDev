@@ -97,7 +97,7 @@ export function MaterialLocalBookAnswers({ resource }: { resource: TeacherResour
             复读字母 {receipt.agreeing}/{receipt.checked} 条一致。
             {receipt.different > 0 && ` ${receipt.different} 条所在答案行读数不同。`}
             {receipt.unreadable > 0 && ` ${receipt.unreadable} 条所在答案行读不清。`}
-            {' '}仍须对照原卷配答。
+            {receipt.agreeing > 0 && ' 一致项将按原卷标题、题号范围和选项后台核对，未通过的继续待核。'}
           </p>}
           <ul>
             {Array.from(new Set(answers.map(answer => answer.section))).map(section => <li key={section}>

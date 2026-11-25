@@ -4,7 +4,7 @@ import type { TeacherResource } from '../../../shared/contracts';
 import { MATERIAL_PREVIEW_SCHEMA, materialPreviewErrorText, type MaterialPreviewResult } from '../../../shared/material-page-preview';
 
 export function MaterialLocalBookAnswerSource({ resource, page, onClose }: {
-  resource: TeacherResource; page: number; onClose: () => void;
+  resource: Pick<TeacherResource,'id'|'contentHash'>; page: number; onClose: () => void;
 }) {
   const [result, setResult] = useState<MaterialPreviewResult>();
   const [revision, setRevision] = useState(0);

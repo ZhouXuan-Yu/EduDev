@@ -2,6 +2,7 @@ import {useEffect,useState} from 'react';
 import {MATERIAL_BOOK_MATCH_SCHEMA,bookMatchReasons,type BookMatchRow,type BookMatchView} from '../../../shared/question-book-answer';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {MaterialAiPagePanel} from './MaterialAiPagePanel';
+import {MaterialLocalBookAnswerSource} from './MaterialLocalBookAnswerSource';
 /** Local-only alignment uses saved receipts. Matching does not authorize another cloud request. */
 export function MaterialBookMatches({batchId,ordinal,revision,questionId}:{batchId:string;ordinal:number;revision:number;questionId?:string}){
  const [view,setView]=useState<BookMatchView>(),[busy,setBusy]=useState(false),[error,setError]=useState('');
@@ -28,6 +29,10 @@ export function MaterialBookMatchRows({rows}:{rows:BookMatchRow[]}){
    {row.source&&<p>{row.source.title} · 第{row.source.page}页</p>}
    {row.source?.sectionPage&&<p data-testid="material-book-answer-section-source">试卷标题承接答案册第{row.source.sectionPage}页；答案原文保留在第{row.source.page}页。</p>}
    {row.source&&<><button className="secondary-action" data-testid="material-book-source-open" onClick={()=>setSourceOpen(sourceOpen===row.id?'':row.id)}>{sourceOpen===row.id?'收起答案原页':'查看答案原页'}</button>{sourceOpen===row.id&&<MaterialAiPagePanel batchId={row.source.batchId} ordinal={row.source.ordinal} initiallyOpen/>}</>}
+   {row.localSource&&<><p>{row.localSource.title} · 第{row.localSource.page}页 · 本地复读</p>
+    <button className="secondary-action" data-testid="material-book-local-source-open" onClick={()=>setSourceOpen(row.id)}>查看答案原页</button>
+    {sourceOpen===row.id&&<MaterialLocalBookAnswerSource resource={{id:row.localSource.resourceId,contentHash:row.localSource.version}}
+      page={row.localSource.page} onClose={()=>setSourceOpen('')}/>}</>}
    {row.answer&&<p>已知答案：{row.answer}</p>}{row.analysis&&<DisclosureCard title="已知解析" headingLevel={5}><p>{row.analysis}</p></DisclosureCard>}
   </article>)}
  </>;

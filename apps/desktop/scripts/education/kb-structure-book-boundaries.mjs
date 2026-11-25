@@ -9,6 +9,8 @@ const {archiveEligible}=await import('../../src/shared/question-archive.ts');
 const {PDF_LAYOUT_ENGINE}=await import('../../src/shared/material-layout.ts');
 const {LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');
 const {verifyCompactChoice}=await import('../../src/main/assets/material-compact-choice-key.ts');
+const {localCompactChoiceRows}=await import('../../src/main/assets/material-book-answer-content.ts');
+const {localBookReceiptSha}=await import('../../src/main/assets/material-local-book-answers.ts');
 
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const title='第十三、十四章 素养基础测试卷';
@@ -501,6 +503,103 @@ await check('An answer is held when it cannot be reconciled with the existing te
   assert.equal((await f.read()).answer,'');
   assert.equal((await f.read()).analysis,existing);
   assert.equal((await f.repo.list(await f.query())).rows[0].reason,'protected_analysis_mismatch');
+});
+function installLocalKey(f) {
+  const {db,pair}=f;
+  const questionGeneration=randomUUID(), answerGeneration=randomUUID();
+  const receipt=text=>JSON.stringify({status:'complete',error:'',method:'ocr',text,nativeText:'',ocrText:text,
+    width:1697,height:2400,imageArea:1,nativeBoxes:[]});
+  db.exec(`CREATE TABLE material_pdf_jobs(resource_id TEXT PRIMARY KEY,generation TEXT,version TEXT);
+    CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,PRIMARY KEY(generation,page));
+    CREATE TABLE material_local_book_rechecks_v1(resource_id TEXT,version TEXT,generation TEXT,page INTEGER,
+      raw_sha TEXT,body_json TEXT,body_sha TEXT,PRIMARY KEY(resource_id,version,generation,page));`);
+  const saveJob=db.prepare('INSERT INTO material_pdf_jobs VALUES(?,?,?)');
+  const savePage=db.prepare("INSERT OR REPLACE INTO material_pdf_pages VALUES(?,?,'complete',?)");
+  const save=db.prepare('INSERT OR REPLACE INTO material_local_book_rechecks_v1 VALUES(?,?,?,?,?,?,?)');
+  saveJob.run(pair.questionId,questionGeneration,pair.questionVersion);
+  saveJob.run(pair.answerId,answerGeneration,pair.answerVersion);
+  savePage.run(questionGeneration,2,receipt('二、单项选择题（本大题共2题，第1～2题每题4分）\n1. 原卷题目\n2. 相邻题'));
+  const original={available:true};
+  f.host.verifyLocalOriginal=async(id,version,signal)=>{
+    signal.throwIfAborted();
+    if(!original.available||id!==pair.answerId||version!==pair.answerVersion)throw Error('source_changed');
+  };
+  const put=({page=1,section=title,observed='BD',letters='BD'}={})=>{
+    const text=section+'\n选择题答案（第1～2题）：'+[...letters].join('、');
+    const [row]=localCompactChoiceRows(text);
+    assert(row,'a valid local OCR source fixture');
+    const raw=receipt(text),rawSha=localBookReceiptSha(raw);
+    const body=JSON.stringify({schemaVersion:'xiaozhi.material-local-book-recheck.v1',engine:'windows.media.ocr.zh-hans-cn.v1',
+      resourceId:pair.answerId,version:pair.answerVersion,generation:answerGeneration,page,rawSha,rasterSha:hash('raster'),
+      rows:[{...row,crop:{box:[.1,.1,.7,.2],sha256:hash('crop'),inputSha:hash('input'),
+        lines:['选择题答案（第1～2题）：'+[...observed].join('、')],observed}}]});
+    savePage.run(answerGeneration,page,raw);
+    save.run(pair.answerId,pair.answerVersion,answerGeneration,page,rawSha,body,localBookReceiptSha(body));
+  };
+  return {original,put};
+}
+await check('A repeat-read answer queues existing reviewed questions, survives readback and never supplies an invented explanation',{
+  choiceLabels:'ABCD',answerText:otherTitle+'\n1. D',
+},async f=>{
+  const local=installLocalKey(f),before=await f.read();
+  await settle(f);
+  assert.equal((await f.repo.list(await f.query())).rows[0].reason,'answer_not_found');
+  local.put({section:otherTitle});
+  const scan=()=>f.repo.work.structures.answerChanged(f.pair.answerId,f.pair.answerVersion,['1','2']);
+  await scan();await settle(f);
+  assert.equal((await f.read()).answer,'');
+  local.put({observed:'AD'});
+  await scan();await settle(f);
+  assert.equal((await f.read()).answer,'');
+  local.put({letters:'HD',observed:'HD'});
+  await scan();await settle(f);
+  assert.equal((await f.repo.list(await f.query())).rows[0].reason,'choice_range_unchecked');
+  local.put();
+  local.put({page:2,letters:'CD',observed:'CD'});
+  await scan();await settle(f);
+  assert.equal((await f.repo.list(await f.query())).rows[0].reason,'ambiguous_answer');
+  assert.equal((await f.read()).answer,'');
+  f.db.prepare('DELETE FROM material_local_book_rechecks_v1 WHERE page=2').run();
+  await scan();await settle(f);
+  const saved=await f.read(),row=(await f.repo.list(await f.query())).rows[0];
+  assert.equal(row.state,'applied');
+  assert.deepEqual(row.localSource,{resourceId:f.pair.answerId,version:f.pair.answerVersion,page:1,title:'答案.pdf'});
+  assert.equal(saved.answer,'B');
+  assert.equal(saved.analysis,'');
+  assert.deepEqual(saved.document.blocks,before.document.blocks);
+  assert.equal(saved.document.answer.book.schemaVersion,'xiaozhi.question-book-local-evidence.v1');
+  await f.structures.validate(saved);
+  const {questionId:resourceId,questionVersion:version,answerId,answerVersion,revision}=f.pair;
+  f.db.prepare("INSERT INTO material_structure_jobs(resource_id,version,engine,generation,status,updated_at) VALUES(?,?,'layout-paragraph-question.v31',?,'complete',?)")
+    .run(resourceId,version,saved.archive.structure.generation,saved.updatedAt);
+  const review=await f.repo.paperReview({resourceId,version,answer:{
+    state:'linked',resourceId:answerId,version:answerVersion,pairRevision:revision,
+  }},new AbortController().signal);
+  assert.deepEqual(review.rows,[{id:row.id,number:saved.archive.number,state:'saved',answerPage:1}]);
+  const count=()=>f.db.prepare("SELECT count(*) AS n FROM material_book_answer_journal_v1 WHERE after_json<>''").get().n;
+  local.put();
+  await scan();await settle(f);
+  assert.equal(count(),1);
+  await f.structures.validate(saved);
+  local.original.available=false;
+  await assert.rejects(()=>f.structures.validate(saved),/source_changed/);
+  local.original.available=true;
+  local.put({observed:'AD'});
+  await assert.rejects(()=>f.structures.validate(saved),/source_changed/);
+});
+await check('The repeat-read gap filler leaves a separately authored explanation and its missing answer intact',{
+  choiceLabels:'ABCD',answerText:otherTitle+'\n1. D',
+},async f=>{
+  const local=installLocalKey(f),q=await f.read(),analysis='教师解释要求保留。';
+  const document={...q.document,analysis:{origin:'teacher',text:analysis,anchors:[]}};
+  const archive={...q.archive,analysisOrigin:'teacher',issues:['missing_answer']};
+  f.db.prepare('UPDATE question_bank_items SET analysis=?,archive_json=?,document_json=? WHERE id=?')
+    .run(analysis,JSON.stringify(archive),JSON.stringify(document),q.id);
+  local.put();
+  await settle(f);
+  assert.equal((await f.repo.list(await f.query())).rows[0].reason,'protected_analysis_mismatch');
+  assert.equal((await f.read()).answer,'');
+  assert.equal((await f.read()).analysis,analysis);
 });
 await check('Stable original identity shares whole-file hashing across book jobs; a changed file forces reauthentication',{},async ()=>{
   const {verifyStampedOriginal}=await import('../../src/main/assets/material-original.ts');

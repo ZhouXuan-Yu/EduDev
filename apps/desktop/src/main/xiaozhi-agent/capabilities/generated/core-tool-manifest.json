@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "d44477c73cf2e92e693c63e93d7534cac39f4f477925ceb9fc5f4a48472cba7c",
+  "sourceHash": "155e3d66a67df23e3082420e8018ee11d8e4780633ce34f042b12089efe11045",
   "sources": [
     {
       "file": "package-lock.json",
@@ -876,7 +876,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "030790484319efa597a2f565700986714ee4f85fa74dd8660f47a5cabb34e143"
+      "sha256": "61c3e2707170ccf0257bd1faf6b7bb682290a88780b65a106343af58998000cc"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2508,11 +2508,11 @@
     },
     {
       "file": "src/shared/question-book-answer.ts",
-      "sha256": "a8328d1dbbedbefb3e9c8af189c790a86f4822dbac21294a08968a9de1ef5914"
+      "sha256": "53b8731209fd94923b241bb44bff8b7d9d9b589355589cc4e36de378bce21e8b"
     },
     {
       "file": "src/shared/question-book-document.ts",
-      "sha256": "f5a38198bdaba31c2f6bb1bacf81f847ca3484924e5527c5d78188d40f1bc332"
+      "sha256": "36d4df907de2d882562cfca611741e70638154059e3cba7317305511885dfe1a"
     },
     {
       "file": "src/shared/question-buoyancy.ts",

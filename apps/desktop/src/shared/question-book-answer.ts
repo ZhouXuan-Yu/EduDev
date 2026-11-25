@@ -9,7 +9,7 @@ export type QuestionBookEvidence={schemaVersion:typeof QUESTION_BOOK_EVIDENCE_SC
 export type BookMatchQuery={schemaVersion:typeof MATERIAL_BOOK_MATCH_SCHEMA;batchId:string;ordinal:number;revision:number};
 export type StructureBookMatchQuery={schemaVersion:typeof STRUCTURE_BOOK_MATCH_SCHEMA;questionId:string;version:string};
 export type AnyBookMatchQuery=BookMatchQuery|StructureBookMatchQuery;
-export type BookMatchRow={id:string;questionId:string;number:string;section:string;state:'applied'|'held'|'conflict';reason:string;answer:string;analysis:string;beforeVersion:string;afterVersion:string;source?:{batchId:string;ordinal:number;start:number;page:number;title:string;sectionPage?:number}};
+export type BookMatchRow={id:string;questionId:string;number:string;section:string;state:'applied'|'held'|'conflict';reason:string;answer:string;analysis:string;beforeVersion:string;afterVersion:string;source?:{batchId:string;ordinal:number;start:number;page:number;title:string;sectionPage?:number};localSource?:{resourceId:string;version:string;page:number;title:string}};
 export type BookMatchView={schemaVersion:typeof MATERIAL_BOOK_MATCH_SCHEMA;rows:BookMatchRow[];indexPending:boolean;automaticPending:boolean;automaticError:string};
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>plainStudentInput(v,keys)&&Object.keys(v).length===keys.length;

@@ -76,7 +76,7 @@ export async function readMockExamAnswerReview(host: Host, entry: MockExamEntry,
     const version = record.afterVersion || record.beforeVersion;
     const changed = !current || questionVersion(current) !== version || record.state === "conflict";
     const state = changed ? "changed" : record.state === "applied" && record.afterVersion ? "saved" : "held";
-    const page = record.source?.page;
+    const page = (record.source ?? record.localSource)?.page;
     rows.push({
       id: record.id,
       number: record.number,
