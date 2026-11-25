@@ -22,7 +22,7 @@
 
 | REQ | 分类 | 实际锚点、保留边界和下一项验证 |
 | --- | --- | --- |
-| 01 故障语义 | 部分完成 | `mcp-runtime.ts` 的 `safeError` 与运行失败码、`model-request-recovery.ts` 的特定状态支持分流。接入固定 fault matrix 的统一宿主判定，区分实际网络失败、输入和未知效果。 |
+| 01 故障语义 | 部分完成 | 原 MCP 异常与模型 HTTP 白名单消费 `provider-fault-policy.ts`。固定矩阵与混合反例通过 AC-01，AC-02 的实际工具、调度和权限计量仍需验证。 |
 | 02 MCP 信任 | 部分完成 | 已修复直接 HTTP 临时失效清空信任和 Managed MCP 拦在握手前的问题。真实 SQLite、HTTP 与 Windows AppContainer 分别证实原信任保留、授权下重验及部分撤权屏障。旧记录和各类并发失效仍待完整验收。 |
 | 03 熔断 | 尚未实现 | `capabilities/provider-instances.ts` 的运行可用状态已在 Resolver 中消费。首批执行边界缺共享故障域熔断和单探针的组合证据。 |
 | 04 实际预算 | 部分完成 | `model-request-recovery.ts` 持有原 HTTP 白名单及最多三次；`pi-session.ts` 接现有执行边界。用 `request-recovery-electron.mjs` 核对真实请求序列及预算是否叠加。 |
@@ -35,6 +35,6 @@
 | 11 诊断 | 部分完成 | `diagnostics/report.ts` 有现有有界导出基础。四类状态、实际 IPC 和隐私 canary 待补。 |
 | 12 集成 | 待核验 | 按 05 分离模块、真实组合和最终 main，真实模型评测先按 AC-34 判断适用性。 |
 
-当前状态为实施中。WP-02 累计 3/8 轮。第一轮修复直接 HTTP，第二轮在 `171ecfd` 复现 Managed MCP 握手次数为 0 的故障，并在 `ce0150d` 验证修复。恢复仅在既有 Resolver 选定兼容且已授权的绑定后尝试，只准备目标 MCP。每个当前 adapter 复用进行中的恢复，并等待旧 Job 处置。第三轮通过真实 HTTP 和 SQLite 并发屏障完成 AC-05。真实付费请求为 0。WP-01 与 WP-03–08 未进入实施验证，集成候选 0/3。使用原 SQLite 设置行，无数据迁移。
+当前状态为实施中。WP-02 累计 3/8 轮。第一轮修复直接 HTTP，第二轮在 `171ecfd` 复现 Managed MCP 握手次数为 0 的故障，并在 `ce0150d` 验证修复。每个 adapter 复用进行中的授权恢复，并等待旧 Job 处置。第三轮完成 AC-05，提交 `afadd88`。WP-01 累计 1/8 轮。已复现和修复 MCP 活动连接的元数据故障仍保持 ready，并完成 AC-01。WP-03–08 尚未启动，集成候选 0/3。使用原 SQLite 设置行，无数据迁移。真实付费请求为 0。
 
-下一步根据 WP-01 的固定故障矩阵建立统一语义，随后消费该分类补工具会话已建立后的 stdio 元数据失败和直接 stdio 真进程路径。跨 owner 的共享单探针、熔断和调度租约按后续工作包验证。
+下一步覆盖 AC-02 的实际工具执行边界与 `resource_busy`、取消、无 Grant、非法参数、业务 CAS 和来源版本变化等零误计量反例。复用已分类的故障事实补直接 stdio 真进程恢复和各类失效屏障，随后接入 WP-03 跨 owner 单探针、熔断和调度租约。

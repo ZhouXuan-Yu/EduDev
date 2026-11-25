@@ -3,8 +3,9 @@ import path from 'node:path';
 import { Type } from 'typebox';
 import { validateToolArguments } from '@earendil-works/pi-ai';
 import { canonicalMcp, validMcpTools } from './mcp-schema';
-import { McpAuthRequiredError, McpClient, McpConnectionClosedError, McpHttpError, McpTimeoutError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
+import { McpAuthRequiredError, McpClient, McpConnectionClosedError, McpHttpError, McpSessionExpiredError, McpTimeoutError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
 import {fetchMcpHttp} from './permissions/mcp-http';
+import {classifyProviderFault, isTemporaryProviderHttpStatus} from './provider-fault-policy';
 import {acquireToolResource} from './tools/resource-lock';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { Sql } from './session-state';
@@ -58,10 +59,13 @@ function safeError(error: unknown): NonNullable<XiaozhiMcpServer['lastError']> {
   return 'transport';
 }
 function preparationFault(error: unknown) {
-  const temporary = error instanceof McpTimeoutError || error instanceof McpConnectionClosedError ||
-    error instanceof McpHttpError && [429, 500, 502, 503, 504].includes(error.status) ||
-    error instanceof TypeError && object(error.cause) && ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH'].includes(String(error.cause.code));
-  return {code:safeError(error), temporary};
+  const code = safeError(error);
+  const typedTransportLoss = error instanceof McpTimeoutError || error instanceof McpConnectionClosedError || error instanceof McpSessionExpiredError ||
+    error instanceof McpHttpError && isTemporaryProviderHttpStatus(error.status) ||
+    error instanceof TypeError && object(error.cause) && ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'UND_ERR_SOCKET'].includes(String(error.cause.code));
+  const decision = classifyProviderFault({origin: 'host', stage: 'reconnect', effect: 'none_proven',
+    signals: [typedTransportLoss ? 'connect_failed' : code === 'timeout' ? 'unknown' : code]});
+  return {code, temporary: decision.action === 'probe_or_retry_safe'};
 }
 function hasVerifiedSchema(server: StoredServer) {
   return !!server.trustedSchemaHash && server.trustedSchemaHash === server.schemaHash;
@@ -348,7 +352,13 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
               const perform = async (ownedSignal: AbortSignal) => {
                 const release = acquireToolResource('mcp-server:' + server.id, 'write');
                 try {
-                  const latest = await list(runtime, ownedSignal);
+                  let latest: Tool[];
+                  try {latest = await list(runtime, ownedSignal);}
+                  catch (error) {
+                    const fault = preparationFault(error);
+                    if (!ownedSignal.aborted && fault.temporary) await unavailable(server, fault.code, true).catch(() => undefined);
+                    throw error;
+                  }
                   ownedSignal.throwIfAborted();
                   if (schemaHash(latest) !== server.trustedSchemaHash) {
                     await unavailable(server, 'schema_changed');

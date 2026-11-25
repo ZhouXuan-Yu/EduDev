@@ -1,4 +1,5 @@
 import type {XiaozhiModelRequest} from '../../shared/xiaozhi-model-request';
+import {isTemporaryProviderHttpStatus} from './provider-fault-policy';
 type RetryOptions={beforeRetry:()=>Promise<void>;onRetry?:(attempt:number,status:number)=>void;onState?:(request:XiaozhiModelRequest)=>void;delayMs?:number};
 /** Retry only explicit transient HTTP rejection, before any response body is read.
  * Never replay a tool, a partial stream, an ambiguous network failure or auth error. */
@@ -19,7 +20,7 @@ export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptio
       const response=await fetcher(input,init);
       lastStatus=response.status;
       const done=()=>{state({state:response.ok?'accepted':'rejected',status:response.status});return response;};
-      if(!replayable||attempt>=2||![429,500,502,503,504].includes(response.status))return done();
+      if(!replayable||attempt>=2||!isTemporaryProviderHttpStatus(response.status))return done();
       const header=response.headers.get('retry-after');
       const retryAt=header?Date.parse(header):NaN;
       const seconds=header&&/^\d+(\.\d+)?$/.test(header)?Number(header)
