@@ -83,7 +83,15 @@ async function capture(mode,pageNumber){
     modules.syncBuiltinESMExports();
   },{mode,pageNumber});
 }
-const trace=()=>app.evaluate(()=>globalThis.pdfTrace);
+async function trace(){
+  for(let attempt=0;;attempt++){
+    try{return JSON.parse(await app.evaluate(()=>JSON.stringify(globalThis.pdfTrace)));}
+    catch(error){
+      if(attempt===2||!String(error).includes('Resulting promise was garbage collected'))throw error;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+  }
+}
 const retry=()=>page.evaluate(async id=>{
   const queue=await window.omniEdu.getMaterialQueue(id);
   const task=queue.tasks.find(item=>item.resourceId===id);

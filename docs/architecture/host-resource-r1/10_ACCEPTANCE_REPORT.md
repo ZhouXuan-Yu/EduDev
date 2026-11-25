@@ -20,7 +20,7 @@
 | AC-14 有界准备 | NOT_RUN | `wp04-material-final-image.log` 证明 PNG 排队或未准入取消时全量读取为零，实际 OCR 退出前不可分配其进程槽。解析和版面分析的读取都在完整预留内，校验为固定块流式摘要。补索引上游、其他入口及全流程峰值。 |
 | AC-15 资源口径及 Windows Job | NOT_RUN | 原 Job 治理未修改，补实际 Win32 报告及三类资源口径对账。 |
 | AC-16 材料队列 | PASS · 已实现 | `wp04-material-ack-recovery.log` 9 项故障恢复与 26 项原队列合同通过，使用真实 SQLite 执行优先级、双消费 CAS、原 owner/lease、停止及重启。最新 Electron 的 PNG 5 项与扫描 PDF 3 项实测补证，含同源重试、实际关闭、SQLite 取消状态、原件哈希及无非法回写。 |
-| AC-17 OCR 生命周期 | NOT_RUN | PNG/PDF 实际进程停止与 `close` 已复验。还需补启动失败、运行错误和页后重试的版本匹配验证。 |
+| AC-17 OCR 生命周期 | PASS · 已实现 | 同一实际构建下，排队取消和停止 3/3，六页 PDF 故障与检查点 5/5。真实进程的启动失败和运行错误分别结算。冷启仅续跑第 3–6 页，前两页的摘要和执行次数保持一致。错误的旧工作器版本触发新代全六页执行。 |
 | AC-18 embedding/vector | NOT_RUN | `native-vector-retry.log` 10 项通过，补 worker RPC 超时、退出交错及驻留证据。 |
 | AC-19 索引批次与发布 | NOT_RUN | 桌面暂停、冷启、正式题库语义检索、原子重建和新世代冷启通过 3 项。旧脚本的 43 项断言在两版复现，日志及独立数据库保留。另有 Windows 原生 writer lock 3/3。正式压力下备份屏障与批次的组合尚未验证。 |
 | AC-20 PDF 输出与回收 | NOT_RUN | 真实自然卷 Word/PDF 读回通过，最终版三次原生混载上均观察到首份打印取消后占用保留、第二份实际打印、隔离窗口与文件清理。还需补源图准备和原定正式端到端失败路径。 |
@@ -65,3 +65,10 @@
 - `node --experimental-transform-types scripts/education/material-queue-ack-recovery.mjs` 通过 9 项实际 SQLite 故障恢复和 26 项队列合同。主动注入 `SQLITE_BUSY` 后同一结果只提交一次。首次读取 SHA、再次读回的同源 OCR 记录与副作用检查都在独立测试数据上完成。
 - 对同一隔离构建执行 `node scripts/electron-smoke.mjs`，1366×768 与 1920×1080 的 207/207 条前端断言通过，日志 `wp04-material-final-smoke.log`。原有 UI 指纹和能力迁移门禁仍列为失败。`npm audit --package-lock-only --json` 记录 30 条既有通报，其中 5 条 high。
 - 手动验收窗口从同一构建启动，实际进程、主进程哈希和独立数据根见 `wp04-material-manual-window.json`。
+
+## 六页扫描件故障恢复复验
+
+- `wp04-pdf-checkpoint-red.log` 对旧构建执行实际工作器启动失败、运行错误、完成页后退出和冷启续跑。前四项通过，旧代工作器版本的检查点仍被沿用，未观察到新的 PDF 解析请求。原始证据 `r1-pdf-checkpoint-5UXWcy/report.json` 保留旧版本和页结果摘要。
+- `npm run build -- --outDir test-results/r1-pdf-checkpoint`、`tsc --noEmit`、组件回归通过。主进程 SHA-256 为 `901efc05b845a2c1515f04f4f70191c191f2982502ff7021d185fc3f2399ac48`。首次新构建测试在 Playwright 主进程读取遥测时失败，原始记录 `wp04-pdf-checkpoint-green.log` 保留。使用序列化快照复跑，验收断言保留。
+- `node scripts/acceptance/host-resource-pdf-checkpoints.mjs <六页扫描件> <固定证据根>` 通过 5/5。完整的 PID、`spawn/error/close`、进程额度探针、原任务 ID、源哈希、工作器版本、页编号和结果摘要见 `r1-pdf-checkpoint-zVRTFt/report.json`。`wp04-pdf-checkpoint-stop.log` 另记录同构建的排队、停止及实际退出。
+- 同一隔离验收数据根已从新版本重启，记录 `wp04-pdf-checkpoint-manual-window.json`。

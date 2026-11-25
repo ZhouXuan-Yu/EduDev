@@ -79,8 +79,9 @@ export class MaterialPdfRepository{
   if(resource.fileSize>PDF_FILE_MAX_BYTES)throw new Error('too_large');
   await verifyMaterialOriginal(path.join(this.host.root(),'teacher_resources'),resource.localPath,resource.contentHash,signal);
   const previous=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=?',[resource.id]))[0];
-  if(['complete','partial'].includes(String(previous?.state))&&await this.host.structureRequired?.(resource.id))return resource;
-  if(previous?.state==='complete'&&previous.version===resource.contentHash&&previous.worker===pdfFileWorkerVersion()&&resource.parseEngine===PDF_FILE_ENGINE&&resource.parseStatus==='ready')return resource;
+  const checkpointMatches=previous?.version===resource.contentHash&&previous.worker===pdfFileWorkerVersion();
+  if(checkpointMatches&&['complete','partial'].includes(String(previous.state))&&await this.host.structureRequired?.(resource.id))return resource;
+  if(checkpointMatches&&previous.state==='complete'&&resource.parseEngine===PDF_FILE_ENGINE&&resource.parseStatus==='ready')return resource;
   const claim=await this.start(resource,signal,lease),blocked=new Set<number>();let currentPage=0,published=false;
   const stage={owner:lease?.taskId??resource.id,lane:lease?.priority===0?'background' as const:'foreground' as const,beforeStart:()=>this.guard(claim)};
   try{
