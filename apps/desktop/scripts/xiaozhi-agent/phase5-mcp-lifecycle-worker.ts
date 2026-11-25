@@ -14,6 +14,7 @@ import {createMcpPermissionContext} from '../../src/main/xiaozhi-agent/permissio
 import {canonicalMcp} from '../../src/main/xiaozhi-agent/mcp-schema';
 import {filesystemScope, digest} from '../../src/main/xiaozhi-agent/permissions/resources';
 import type {Sql} from '../../src/main/xiaozhi-agent/session-state';
+import {testManagedMcpRecovery} from './provider-managed-mcp-fixture';
 
 const output = process.argv[2];
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-phase5-mcp-lifecycle-'));
@@ -176,6 +177,9 @@ try {
     const terminals = audit.filter(row => row.kind === 'mcp_service_terminal').map(row => JSON.parse(String(row.metadata_json)));
     assert(terminals.length >= 2); for (const row of terminals) assert.deepEqual(row.result.cleanup, {jobActiveProcesses: 0, profileRemoved: true, remainingOwnedAces: 0});
   });
+  if (process.argv.includes('--managed-recovery')) {
+    await testManagedMcpRecovery({sql, workspace, directory, owner, permissions, store, runtime, signal, check});
+  }
   report.success = true;
 } catch (error) {report.error = error instanceof Error ? error.stack : String(error); process.exitCode = 1; console.error(error);}
 finally {await prepared?.dispose(); await mcp.dispose(); db.close(); fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
