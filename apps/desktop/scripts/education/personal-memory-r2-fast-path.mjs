@@ -2,6 +2,7 @@ import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';
 
 const { teacherPreferenceSignal } = await import('../../src/main/education/teacher-preference-policy.ts');
+const { selectTeacherPreferenceValues } = await import('../../src/main/education/teacher-preference-scope.ts');
 
 const cases = [
   ['教师默认表达', '以后讲解先提示再给答案。', { kind: 'candidate', patch: { answerOrder: 'hint_first' } }],
@@ -18,6 +19,11 @@ const cases = [
   ['限定课程', '以后物理课的讲义要用表格。', { kind: 'none' }],
   ['有限学期', '以后只在本学期的讲义用表格。', { kind: 'none' }],
   ['任务临时例外', '以后讲解用表格，这次只做学生版。', { kind: 'none' }],
+  ['讲义答案的明确长期位置', '以后我的讲义答案统一放最后。', {kind:'candidate',patch:{handoutAnswerPlacement:'at_end'}}],
+  ['学案使用相同规则', '请记住，今后学案每道题后附参考答案。', {kind:'candidate',patch:{handoutAnswerPlacement:'after_each'}}],
+  ['本次安排不改长期位置', '这次讲义答案放在文末。', {kind:'none'}],
+  ['有班级限定不写共用位置', '以后八年级一班的学案答案放在文末。', {kind:'none'}],
+  ['引述别人的做法不代表本人的要求', '以后同事建议讲义的答案放在最后。', {kind:'none'}],
 ];
 
 const failures = [];
@@ -30,5 +36,16 @@ for (const [name, text, expected] of cases) {
     console.log('FAIL '+name+' '+error.message);
   }
 }
-console.log(JSON.stringify({ passed: cases.length-failures.length, failures }));
+const contextCases=[
+  ['实际讲义任务使用保存的位置','请制作一份带两道题的科学讲义。','at_end'],
+  ['单次学生版不使用位置','这次制作一份讲义，只做学生版，不要答案。',undefined],
+  ['本次明确的位置优先','生成一份讲义，答案逐题给出。',undefined],
+  ['一般讲解不注入讲义位置','请解释为什么光会折射。',undefined],
+];
+for(const [name,request,expected] of contextCases) {
+  const actual=selectTeacherPreferenceValues({handoutAnswerPlacement:'at_end'},request).handoutAnswerPlacement;
+  if(actual!==expected)failures.push({name,actual,expected});
+  console.log((actual===expected?'PASS ':'FAIL ')+name);
+}
+console.log(JSON.stringify({ passed: cases.length+contextCases.length-failures.length, failures }));
 if (failures.length) process.exitCode = 1;

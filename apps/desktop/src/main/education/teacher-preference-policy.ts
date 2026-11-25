@@ -6,6 +6,8 @@ const attributedSpeech = /(?:同事|别的?老师|其他老师|助教|学生|家
 const restrictedAudience = /(?:[一二三四五六七八九十零〇\dA-Z]+\s*班(?:级)?|(?:这个|那个|某个|本|当前|指定)(?:班级?|课程|小组|教学组)|[一二三四五六七八九十零〇\d]+\s*年级)/i;
 const restrictedSubject = /(?:语文|数学|英语|物理|化学|生物|地理|历史|道德与法治|政治|信息技术|科学)(?:课程|课(?:上|内|的|里|时|，|,|都)|学科|讲义|作业|试卷)/;
 const restrictedTime = /(?:本|上|下|这[个一]?|那[个一]?|每[个一]?|第[一二三四五六七八九十\d]+|春季|秋季)(?:学期|学年)|(?:下周|本周|下个月|本月|今年|明年)(?:开始|结束|起|前|后|内|为止)|(?:接下来|未来|仅限|只在|直到).{0,12}(?:天|周|个月|学期|学年|月底|期末)/;
+const handoutAtEnd = /(?:答案|参考解答).{0,12}(?:放[在到]?|排[在到]?|置[于在]|列在|集中|统一在|附在)(?:整份|这份|整篇)?(?:讲义|学案|文档|全文)?(?:的)?(?:最后|末尾|文末|结尾)|(?:讲义|学案)(?:的)?(?:末尾|最后|文末|结尾).{0,6}(?:附|列|给|放).{0,4}答案/;
+const handoutAfterEach = /(?:每道?题|逐题|各题).{0,8}(?:后面?|后边|后紧跟|下方|紧跟).{0,10}(?:答案|参考解答)|(?:答案|参考解答).{0,10}(?:跟在|紧跟|放在|附在)(?:每道?题|各题)(?:后面?|下方)/;
 
 /** Only explicit general future presentation requests. Sources/quotes are never feedback. */
 export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
@@ -37,6 +39,7 @@ export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  choose('answerOrder',[['hint_first',/先(?:给)?提示|先引导|不要直接.{0,8}答案/],['answer_first',/先(?:给|说|列|给出)?答案|先结论/]]);
  choose('presentation',[['table',/用表格|表格形式|优先.{0,6}表格/],['paragraph',/用段落|采用段落|不要.{0,5}表格/]]);
  choose('exportFormat',[['docx',/(?:导出|输出|保存).{0,10}(?:word|docx)/i],['pdf',/(?:导出|输出|保存).{0,10}pdf/i],['pptx',/(?:导出|输出|保存).{0,10}(?:pptx|ppt)/i]]);
+ if(/讲义|学案/.test(input))choose('handoutAnswerPlacement',[['at_end',handoutAtEnd],['after_each',handoutAfterEach]]);
  if(ambiguous)return{kind:'rejected',reason:'ambiguous'};
  return Object.keys(patch).length?{kind:'candidate',patch}:{kind:'none'};
 }
@@ -51,7 +54,8 @@ export function evaluateTeacherPreference(baseline:TeacherPreferenceValues,patch
  return{candidate,evaluation:{metric:'teacher_preference_contract.v1',matched,total:expected.length,baselineMatched,preserved,passed:matched===expected.length&&preserved,educationalCorrectness:'not_evaluated'}};
 }
 
-const labels:Record<string,string>={concise:'讲解简洁',detailed:'讲解详细',step_by_step:'分步骤讲解',continuous:'连贯叙述',hint_first:'先给提示，再给答案',answer_first:'先给答案或结论',table:'适合比较的信息优先用表格',paragraph:'优先用段落',docx:'未指定时优先导出Word',pdf:'未指定时优先导出PDF',pptx:'未指定时优先导出PPTX'};
+const labels:Record<string,string>={concise:'讲解简洁',detailed:'讲解详细',step_by_step:'分步骤讲解',continuous:'连贯叙述',hint_first:'先给提示，再给答案',answer_first:'先给答案或结论',table:'适合比较的信息优先用表格',paragraph:'优先用段落',docx:'未指定时优先导出Word',pdf:'未指定时优先导出PDF',pptx:'未指定时优先导出PPTX',
+ at_end:'讲义需附答案时，将答案集中放在讲义末尾',after_each:'讲义需附答案时，将答案放在各题后'};
 function presentationAdvice(values:TeacherPreferenceValues){
  return values.length==='concise'?'\n简洁讲解以约400–600字为宜，含公式和表格尽量控制在800字内。保留关键条件、关系式、单位与结论；步骤正文和表格不要重复同一组计算，不另附无关扩展、变式邀请或重复提醒。不能为满足篇幅删掉解题必需条件，必要内容确实超长时优先保证完整和正确。':'';
 }

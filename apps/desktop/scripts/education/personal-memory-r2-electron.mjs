@@ -13,9 +13,10 @@ const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
 const adoption=process.argv.includes('--adoption');
 const verifyUse=process.argv.includes('--use');
+const handout=process.argv.includes('--handout');
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
-const root = fs.mkdtempSync(path.join(evidence,adoption?'r2-adoption-electron-':'r2-fast-path-electron-'));
+const root = fs.mkdtempSync(path.join(evidence,adoption?'r2-adoption-electron-':handout?'r2-handout-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
@@ -137,6 +138,47 @@ async function fastPath(){
   await launch();
   assert.deepEqual(currentHead(),after);
   check('the explicit rollback persists across a fresh Electron process',{revision:after.revision});
+}
+
+async function handoutPreference(){
+  const requirement='以后我的讲义答案统一放最后。';
+  const taught=await send(requirement);
+  const head=currentHead();
+  assert.equal(head.revision,1);
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const {value_json:raw}=db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(prefix+':version:'+head.revision);
+    const saved=JSON.parse(raw);
+    assert.equal(saved.values.handoutAnswerPlacement,'at_end');
+    assert.equal(saved.evidence.runId,taught.id);
+    assert.equal(head.sha256,createHash('sha256').update(raw).digest('hex'));
+    const original=db.prepare('SELECT role,content FROM ai_conversation_messages WHERE id=?').get(saved.evidence.messageId);
+    assert.equal(original.role,'user');
+    assert.equal(original.content,requirement);
+    assert.equal(saved.evidence.sha256,createHash('sha256').update(original.content).digest('hex'));
+  } finally{db.close();}
+  assert((await wire()).some(row=>row.preference.some(text=>text.includes('宿主已保存本次明确的长期表达偏好'))));
+  check('the handout layout is saved immediately with the original teacher message and revision',{revision:head.revision,runId:taught.id});
+
+  await fresh();
+  let offset=(await wire()).length;
+  const applied=await send('请制作一份关于光的反射的科学小讲义。练习小节列两道短题，答案小节标题为参考答案。本次仅在对话用短文本给出，不需要导出。');
+  const appliedWire=(await wire()).slice(offset).flatMap(row=>row.preference);
+  assert(appliedWire.some(text=>text.includes('将答案集中放在讲义末尾')));
+  const appliedText=applied.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
+  assert(appliedText.includes('练习')&&appliedText.lastIndexOf('参考答案')>appliedText.lastIndexOf('练习'),appliedText);
+  check('a new handout receives the saved layout and places its answer section after the exercises',{runId:applied.id});
+
+  offset=(await wire()).length;
+  const student=await send('这次重新制作小讲义，只做学生版，不要答案。只在此对话给出两道练习，不需要导出。');
+  assert(!(await wire()).slice(offset).flatMap(row=>row.preference).some(text=>text.includes('将答案集中放在讲义末尾')));
+  assert.deepEqual(currentHead(),head);
+  const studentText=student.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
+  assert(!/^\s*#{1,6}\s*(?:参考)?答案\s*[:：]?\s*$/m.test(studentText),studentText);
+  await close();
+  await launch();
+  assert.deepEqual(currentHead(),head);
+  check('the student-only request leaves the long-term version unchanged across restart',{runId:student.id,revision:head.revision});
 }
 
 async function memorySettings(){
@@ -274,6 +316,7 @@ async function candidateAdoption(){
 try{
   await launch();
   if(adoption)await candidateAdoption();
+  else if(handout)await handoutPreference();
   else await fastPath();
   await page.screenshot({path:path.join(root,'restart.png')});
   report.ok=true;
