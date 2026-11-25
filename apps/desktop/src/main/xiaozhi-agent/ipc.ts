@@ -44,8 +44,12 @@ import {handoutEditErrors} from '../../shared/teaching-handout-edit';
 import {mockExamErrors} from '../../shared/mock-exam-compilation';
 import type { RuntimeAuthority } from './runtime-authority';
 import {isBackgroundAcceptance} from './runtime-authority';
+import type { ConfigChange } from '../../shared/xiaozhi-config-window';
 
-export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority }) {
+export function registerXiaozhiIpc(options: {
+  ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority;
+  onConfigChange?: (change: ConfigChange) => void;
+}) {
   const commitDelay = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'
     ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMPACT_COMMIT_DELAY_MS) || 0)) : 0;
   const testing = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1';
@@ -84,6 +88,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
       await new Promise(resolve => setTimeout(resolve, 30000));
     } } : {}),
     settingsCodec: providerCredentialCodec,
+    onConfigChange: options.onConfigChange,
     ...(queueDelay ? {afterInstructionDispatch:async (signal:AbortSignal)=>{
       fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-queue-dispatching'),'durable-dispatching');
       await new Promise<void>(resolve=>{const done=()=>{clearTimeout(timer);signal.removeEventListener('abort',done);resolve();};const timer=setTimeout(done,queueDelay);signal.addEventListener('abort',done,{once:true});if(signal.aborted)done();});

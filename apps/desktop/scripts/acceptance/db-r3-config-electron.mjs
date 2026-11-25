@@ -9,9 +9,12 @@ import {withSql} from './db-foundation-r1-task-fixture.mjs';
 
 const desktop=resolve(import.meta.dirname,'../..');
 const baseline=process.env.OMNI_EDU_R3_BASELINE_MAIN;
-const main=baseline?resolve(baseline):testMain(desktop);
+const permissionReference=process.env.OMNI_EDU_R4_PERMISSION_REFERENCE_MAIN;
+assert(!(baseline&&permissionReference));
+const main=baseline||permissionReference?resolve(baseline||permissionReference):testMain(desktop);
 const digest=file=>createHash('sha256').update(readFileSync(file)).digest('hex');
 if(baseline)assert.equal(digest(main),process.env.OMNI_EDU_R3_BASELINE_MAIN_SHA256);
+if(permissionReference)assert.equal(digest(main),process.env.OMNI_EDU_R4_PERMISSION_REFERENCE_SHA256);
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results','xiaozhi-db-r3'));
 const artifacts={};
 for(const name of ['evidence','fixtures','images','logs']){
@@ -44,13 +47,30 @@ async function launch(){
     const state=globalThis.r3Fixture;
     globalThis.r3Sqlite=sqlite;
     globalThis.r3Runtime={version:process.versions,sqlite:sqlite.VERSION,safeStorage:Boolean(process.getBuiltinModule('electron')?.safeStorage),build:app.getAppPath()};
+    if (process.env.OMNI_EDU_R4_DYNAMIC === '1') {
+      state.directoryDiagnostics = [];
+      const fs = process.getBuiltinModule('node:fs/promises');
+      const rename = fs.rename;
+      fs.rename = async (from, to) => {
+        try { return await rename(from, to); }
+        catch (error) {
+          if (String(to).endsWith('deepseek-capabilities.v1.json')) {
+            state.directoryDiagnostics.push({ kind: 'rename_error', code: error.code });
+          }
+          throw error;
+        }
+      };
+    }
     net.fetch=async(input,options)=>{
       const url=String(typeof input==='string'?input:input.url);
       if(url.endsWith('/models')){
         const attempt=++state.catalogueAttempts;
         if(state.pauseCatalogue){
           state.pausedCatalogue++;
+          const start=Date.now();
           await new Promise(resolve=>{state.releaseCatalogue=resolve;});state.releaseCatalogue=undefined;
+          state.directoryDiagnostics?.push({ kind: 'held_catalogue_released', elapsedMs: Date.now()-start,
+            aborted: options.signal.aborted, models: [...state.models] });
         }
         if(state.failCatalogueAfter!==null&&attempt>state.failCatalogueAfter)return new Response('{}',{status:503});
         return new Response(JSON.stringify({object:'list',data:state.models.map(id=>({id,
@@ -63,6 +83,9 @@ async function launch(){
         hasTools:Boolean(body.tools?.length),
         protectedSourceDisclosed:JSON.stringify(body.messages).includes('R3-SYNTHETIC-PROTECTED-READBACK'),
         permissionToolAvailable:body.tools?.some(tool=>tool.function?.name==='office_read_text')??false};
+      if(process.env.OMNI_EDU_R4_COMBINED==='1'||process.env.OMNI_EDU_R4_PERMISSION_REFERENCE_MAIN){
+        request.permissionToolResult=body.messages.find(message=>message.role==='tool'&&message.tool_call_id==='r3_permission_revoke_call')?.content;
+      }
       state.requests.push(request);
       state.observedByPi++;
       if(state.holdNext||state.holdFirst&&state.requests.length===1){
@@ -114,7 +137,7 @@ const newSession=title=>page.evaluate(async title=>(await window.omniEdu.createA
 const admitted=(sessionId,prompt,commandId='xicmd_'+randomUUID(),extra)=>page.evaluate(input=>window.omniEdu.startXiaozhi(input),{sessionId,prompt,commandId,...extra});
 const releaseRun=()=>app.evaluate(()=>{globalThis.r3Fixture.releasePi();globalThis.r3Fixture.releasePi=undefined;});
 async function finished(prompt,sessionId){
-  const value=await until(()=>read("SELECT id,model,status FROM ai_agent_runs WHERE prompt=? AND status<>'running'",[prompt]),'run settlement');
+  const value=await until(()=>read("SELECT id,model,status FROM ai_agent_runs WHERE session_id=? AND prompt=? AND status<>'running'",[sessionId,prompt]),'run settlement');
   assert.equal(value.status,'succeeded',JSON.stringify(value));
   await until(async()=>!(await settings({sessionId})).value?.locked,'host release');return value;
 }
@@ -122,11 +145,13 @@ const value=result=>{assert.equal(result.ok,true,JSON.stringify(result));return 
 const scopeView=field=>history(field).then(value);
 const staged=apiKey=>page.evaluate(input=>window.omniEdu.stageXiaozhiCredential(input),{schemaVersion:'xiaozhi.settings.v1',apiKey}).then(value);
 async function openSettings(){
-  const shortcut=page.getByRole('button',{name:'小智模型设置',exact:true});
-  if(await shortcut.isVisible())await shortcut.click();
-  else{
-    await page.getByRole('button',{name:'设置',exact:true}).click();
-    await page.getByRole('button',{name:'模型与连接',exact:true}).click();
+  if (!await page.getByTestId('pi-model-settings').isVisible()) {
+    const shortcut=page.getByRole('button',{name:'小智模型设置',exact:true});
+    if(await shortcut.isVisible())await shortcut.click();
+    else{
+      await page.getByRole('button',{name:'设置',exact:true}).click();
+      await page.getByRole('button',{name:'模型与连接',exact:true}).click();
+    }
   }
   await page.getByTestId('pi-model-settings').waitFor();
   await until(async()=>!await page.getByTestId('pi-settings-default-model').isDisabled(),'settings ready');
@@ -140,10 +165,72 @@ async function historyPanel(){
   await page.getByTestId('pi-config-history-default_model').waitFor();
 }
 
+async function checkPermissionRevocation(){
+  stage='AC-14 live permission revocation';
+  const permissionSession=await newSession('撤销教师目录授权');
+  const external=join(root,'permission-fixture');mkdirSync(external);
+  writeFileSync(join(external,'protected.txt'),'R3-SYNTHETIC-PROTECTED-READBACK','utf8');
+  await app.evaluate(({dialog},selected)=>{
+    const original=dialog.showOpenDialog;
+    dialog.showOpenDialog=async()=>{dialog.showOpenDialog=original;return {canceled:false,filePaths:[selected]};};
+  },external);
+  value(await page.evaluate(id=>window.omniEdu.selectXiaozhiWorkspace(id),permissionSession));
+  const permissionView=()=>page.evaluate(id=>window.omniEdu.getXiaozhiPermissions(id),permissionSession).then(value);
+  const beforeRevoke=await permissionView();
+  const eligible=beforeRevoke.grants.filter(grant=>!grant.revokedAt&&grant.scope.kind==='filesystem');
+  assert(eligible.length>0);
+  const permissionPrompt='请通过当前工作目录读取 protected.txt，报告是否能核对内容。';
+  await configureFixture({holdNext:true,nextTool:true});
+  const gate=await admitted(permissionSession,permissionPrompt);
+  assert.equal(gate.ok,true,JSON.stringify(gate));
+  await until(async()=> (await hostState()).holding,'prepared permission run');
+  const preparedBefore=(await resolved(permissionSession,gate.runId).then(value)).prepared.receipt;
+  assert.equal(preparedBefore.operation,'prompt');
+  assert.equal((await hostState()).requests.at(-1).permissionToolAvailable,true);
+  for(const grant of eligible){
+    const revoked=value(await page.evaluate(data=>window.omniEdu.revokeXiaozhiGrant(data),{
+      sessionId:permissionSession,grantId:grant.grantId,revision:grant.revision,
+    }));
+    assert(revoked.revokedAt);
+  }
+  await releaseRun();
+  const finishedPermission=await until(()=>read("SELECT status,error_message FROM ai_agent_runs WHERE id=? AND status<>'running'",[gate.runId]),'permission result');
+  const nativeFile=read('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?',[permissionSession]).session_file;
+  const deniedResult=readFileSync(join(data,'xiaozhi-pi',nativeFile),'utf8').trim().split('\n').map(JSON.parse)
+    .find(entry=>entry.message?.role==='toolResult'&&entry.message?.toolCallId==='r3_permission_revoke_call')?.message;
+  const denial=read("SELECT phase,admitted,success FROM xiaozhi_tool_receipts WHERE run_id=? AND tool='office_read_text'",[gate.runId]);
+  const requestsAfter=(await hostState()).requests;
+  assert(!requestsAfter.some(item=>item.protectedSourceDisclosed));
+  assert.equal(deniedResult?.isError,true);
+  assert.match(JSON.stringify(deniedResult.content),/permission_denied|授权|权限/u);
+  report.permissionRedWitness={run:finishedPermission,receipt:denial,nativeResult:deniedResult.content};
+  if (process.env.OMNI_EDU_R4_COMBINED === '1' || permissionReference) {
+    const outbound = requestsAfter.filter(request => request.permissionToolResult !== undefined)
+      .map(request => request.permissionToolResult);
+    saved('AC-R4-12-permission-wire', { ...report.permissionRedWitness, outbound });
+    if (!permissionReference) {
+      assert.equal(outbound.length, 1, 'Pi must deliver the denial to the model in its next request');
+      assert.match(JSON.stringify(outbound[0]), /permission_denied|授权|权限/u);
+    }
+  }
+  assert.equal(finishedPermission.status,'succeeded',JSON.stringify(report.permissionRedWitness));
+  assert.deepEqual({...denial},{phase:'settled',admitted:0,success:0});
+  assert((await permissionView()).grants.every(grant=>grant.revokedAt||grant.scope.kind!=='filesystem'));
+  assert.deepEqual((await resolved(permissionSession,gate.runId).then(value)).prepared.receipt,preparedBefore);
+  await finished(permissionPrompt,permissionSession);
+  saved('AC-14',{runId:gate.runId,grantsRevoked:eligible.map(grant=>grant.grantId),denial,preparedUnchanged:true,disclosed:false});
+  return permissionSession;
+}
+
 try{
   await launch();
   const initial=await settings({refresh:true}).then(value);
   assert.equal(initial.defaultModel,a);
+  if(permissionReference){
+    await configureFixture({holdFirst:false});
+    await checkPermissionRevocation();
+    assert.fail('The archived reference unexpectedly passed the current revocation assertion');
+  }
   if(baseline){
     assert.equal((await page.evaluate(input=>window.omniEdu.saveXiaozhiThinking(input),{schemaVersion:'xiaozhi.settings.v1',version:0,choice:'high'})).ok,true);
   }else{
@@ -446,50 +533,7 @@ try{
   saved('AC-13',{beforeAdmissionHadNoRun:true,first:accepted.runId,replayed:repeated.runId,newRun:resumed.runId,
     firstThinking:queuedPrepared.thinking,coldThinking:cold.thinking,sameTask:afterTask.id,criteriaPreserved:true});
 
-  stage='AC-14 live permission revocation';
-  const permissionSession=await newSession('撤销教师目录授权');
-  const external=join(root,'permission-fixture');mkdirSync(external);
-  writeFileSync(join(external,'protected.txt'),'R3-SYNTHETIC-PROTECTED-READBACK','utf8');
-  await app.evaluate(({dialog},selected)=>{
-    const original=dialog.showOpenDialog;
-    dialog.showOpenDialog=async()=>{dialog.showOpenDialog=original;return {canceled:false,filePaths:[selected]};};
-  },external);
-  value(await page.evaluate(id=>window.omniEdu.selectXiaozhiWorkspace(id),permissionSession));
-  const permissionView=()=>page.evaluate(id=>window.omniEdu.getXiaozhiPermissions(id),permissionSession).then(value);
-  const beforeRevoke=await permissionView();
-  const eligible=beforeRevoke.grants.filter(grant=>!grant.revokedAt&&grant.scope.kind==='filesystem');
-  assert(eligible.length>0);
-  const permissionPrompt='请通过当前工作目录读取 protected.txt，报告是否能核对内容。';
-  await configureFixture({holdNext:true,nextTool:true});
-  const gate=await admitted(permissionSession,permissionPrompt);
-  assert.equal(gate.ok,true,JSON.stringify(gate));
-  await until(async()=> (await hostState()).holding,'prepared permission run');
-  const preparedBefore=(await resolved(permissionSession,gate.runId).then(value)).prepared.receipt;
-  assert.equal(preparedBefore.operation,'prompt');
-  assert.equal((await hostState()).requests.at(-1).permissionToolAvailable,true);
-  for(const grant of eligible){
-    const revoked=value(await page.evaluate(data=>window.omniEdu.revokeXiaozhiGrant(data),{
-      sessionId:permissionSession,grantId:grant.grantId,revision:grant.revision,
-    }));
-    assert(revoked.revokedAt);
-  }
-  await releaseRun();
-  const finishedPermission=await until(()=>read("SELECT status,error_message FROM ai_agent_runs WHERE id=? AND status<>'running'",[gate.runId]),'permission result');
-  const nativeFile=read('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?',[permissionSession]).session_file;
-  const deniedResult=readFileSync(join(data,'xiaozhi-pi',nativeFile),'utf8').trim().split('\n').map(JSON.parse)
-    .find(entry=>entry.message?.role==='toolResult'&&entry.message?.toolCallId==='r3_permission_revoke_call')?.message;
-  const denial=read("SELECT phase,admitted,success FROM xiaozhi_tool_receipts WHERE run_id=? AND tool='office_read_text'",[gate.runId]);
-  const requestsAfter=(await hostState()).requests;
-  assert(!requestsAfter.some(item=>item.protectedSourceDisclosed));
-  assert.equal(deniedResult?.isError,true);
-  assert.match(JSON.stringify(deniedResult.content),/permission_denied|授权|权限/u);
-  report.permissionRedWitness={run:finishedPermission,receipt:denial,nativeResult:deniedResult.content};
-  assert.equal(finishedPermission.status,'succeeded',JSON.stringify(report.permissionRedWitness));
-  assert.deepEqual({...denial},{phase:'settled',admitted:0,success:0});
-  assert((await permissionView()).grants.every(grant=>grant.revokedAt||grant.scope.kind!=='filesystem'));
-  assert.deepEqual((await resolved(permissionSession,gate.runId).then(value)).prepared.receipt,preparedBefore);
-  await finished(permissionPrompt,permissionSession);
-  saved('AC-14',{runId:gate.runId,grantsRevoked:eligible.map(grant=>grant.grantId),denial,preparedUnchanged:true,disclosed:false});
+  const permissionSession=await checkPermissionRevocation();
 
   stage='AC-15 production ownership and AC-27 negative IPC';
   const factSql="SELECT key,value_json FROM app_settings WHERE key GLOB 'xiaozhi.task.v1:*' OR key GLOB 'teacher.*' ORDER BY key";
@@ -528,10 +572,133 @@ try{
   saved('AC-15',{ordinary,unchangedTaskRecords:beforeBoundary.taskAndTeacher.length,unchangedPrepared:beforeBoundary.runtime.length,
     unchangedPermission:beforeBoundary.permission.length,nativeSwitchKeptSeparate:true,teacherPreferencesRevision:teacher.preference.revision});
   saved('AC-27',{strictInputs:requests,rendererErrors:report.rendererErrors,electron:report.runtime.version.electron});
+  if (process.env.OMNI_EDU_R4_COMBINED === '1') {
+    stage = 'AC-R4-10 combined credential and default model';
+    const before = await scopeView('default_model');
+    assert.equal(before.value, b);
+    const beforeJson = cfg().value_json;
+    const beforeReceipts = operations();
+    const testKey = 'r4-acceptance-combined-credential';
+    await openSettings();
+    await choose(a);
+    await page.getByTestId('pi-settings-key').fill(testKey);
+    const button = page.getByTestId('pi-settings-save');
+    const feedback = page.getByTestId('pi-settings-feedback');
+
+    const attempts = (await hostState()).catalogueAttempts;
+    await configureFixture({ failCatalogueAfter: attempts });
+    try {
+      await button.click();
+      await feedback.waitFor();
+      assert.doesNotMatch(await feedback.innerText(), /已保存/);
+      assert.equal(await page.getByTestId('pi-settings-key').inputValue(), testKey);
+      assert.equal(cfg().value_json, beforeJson);
+      assert.deepEqual(await scopeView('default_model'), before);
+      assert.equal(operations(), beforeReceipts);
+    } finally {
+      await configureFixture({ failCatalogueAfter: null });
+    }
+
+    write("CREATE TRIGGER r4_reject_config_receipt BEFORE INSERT ON xiaozhi_config_operations_v1 BEGIN SELECT RAISE(ABORT,'r4 controlled receipt failure'); END;");
+    try {
+      await button.click();
+      await feedback.waitFor();
+      assert.doesNotMatch(await feedback.innerText(), /已保存/);
+      assert.equal(await page.getByTestId('pi-settings-key').inputValue(), testKey);
+      assert.equal(cfg().value_json, beforeJson);
+      assert.deepEqual(await scopeView('default_model'), before);
+      assert.equal(operations(), beforeReceipts);
+    } finally {
+      write('DROP TRIGGER r4_reject_config_receipt');
+    }
+
+    await button.click();
+    await until(async () => (await feedback.innerText()).startsWith('已保存。'), 'combined form receipt');
+    const after = await scopeView('default_model');
+    const atomicallySaved = JSON.parse(cfg().value_json);
+    assert.equal(after.version, before.version + 1);
+    assert.equal(after.value, a);
+    assert.equal(atomicallySaved.defaultModel, a);
+    assert.notEqual(atomicallySaved.sealedKey, JSON.parse(beforeJson).sealedKey);
+    assert.equal(operations(), beforeReceipts + 1);
+    assert.equal(after.items[0].changeId, after.undo.changeId);
+    assert.equal(after.items[0].previous, b);
+    assert.equal(await page.getByTestId('pi-settings-key').inputValue(), '');
+    const restored = value(await undo('default_model', after.undo));
+    const afterUndo = JSON.parse(cfg().value_json);
+    assert.equal(afterUndo.defaultModel, b);
+    assert.equal(afterUndo.sealedKey, atomicallySaved.sealedKey);
+    const latestCredentialPreserved = await app.evaluate(({ safeStorage }, { ciphertext, cleartext }) =>
+      safeStorage.isEncryptionAvailable() && safeStorage.decryptString(Buffer.from(ciphertext, 'base64')) === cleartext,
+    { ciphertext: afterUndo.sealedKey, cleartext: testKey });
+    assert.equal(latestCredentialPreserved, true);
+    const publicData = JSON.stringify({
+      ledger: rows('SELECT * FROM xiaozhi_config_operations_v1'),
+      history: await scopeView('default_model'),
+      resolved: await resolved(first).then(value),
+      diagnostics: report.hostJournalDiagnostics,
+      checks: report.checks,
+    });
+    for (const secret of [testKey, afterUndo.sealedKey, JSON.parse(beforeJson).sealedKey]) {
+      assert(!publicData.includes(secret));
+      assert(!publicData.includes(createHash('sha256').update(secret).digest('hex')));
+    }
+    saved('AC-R4-10', { fieldVersion: after.version, changeId: after.undo.changeId, restored,
+      catalogueFailureAtomic: true, receiptFailureAtomic: true, safeStoragePreserved: true, publicEvidenceRedacted: true });
+  }
+
+  if (process.env.OMNI_EDU_R4_DYNAMIC === '1') {
+    stage = 'AC-R4-09 dynamic inheritance after undo';
+    const inherited = await newSession('R4 动态继承测试');
+    const explicit = await newSession('R4 保留会话自动设置');
+    const available = await scopeView('global_thinking');
+    value(await global('global_thinking', available.version, 'high'));
+    for (const sessionId of [inherited, explicit]) {
+      const initial = value(await history('session_thinking', sessionId));
+      assert.equal(initial.value, null);
+      value(await commit({ field: 'session_thinking', sessionId, value: 'auto', expectedVersion: initial.version }));
+      assert.equal(value(await history('session_thinking', sessionId)).value, 'auto');
+    }
+    const head = value(await history('session_thinking', inherited)).undo;
+    const undone = value(await undo('session_thinking', head, { sessionId: inherited }));
+    const high = value(await resolved(inherited)).thinking;
+    assert.equal(high.source, 'global');
+    assert.equal(high.value, 'high');
+    assert.equal(value(await history('session_thinking', inherited)).value, null);
+    const lower = value(await global('global_thinking', (await scopeView('global_thinking')).version, 'low'));
+    const low = value(await resolved(inherited)).thinking;
+    const observedExplicit = value(await resolved(explicit)).thinking;
+    assert.equal(low.source, 'global');
+    assert.equal(low.value, 'low');
+    assert.equal(observedExplicit.source, 'session_selection');
+    assert.equal(observedExplicit.value, 'auto');
+    const last = (await hostState()).requests.length;
+    const records = [];
+    const prompt = '请完整推导一元一次方程 2(x-3)=x+5 的解，并代回验证。';
+    for (const [sessionId, expected] of [[inherited, 'low'], [explicit, 'auto']]) {
+      const admittedRun = await admitted(sessionId, prompt);
+      assert.equal(admittedRun.ok, true, JSON.stringify(admittedRun));
+      await finished(prompt, sessionId);
+      const prepared = value(await resolved(sessionId, admittedRun.runId)).prepared.receipt;
+      assert.equal(prepared.thinking.requested, expected);
+      assert.equal(prepared.thinking.source, expected === 'low' ? 'global' : 'session_selection');
+      assert.equal(prepared.thinking.effective, expected === 'low' ? 'low' : 'high');
+      records.push({ sessionId, runId: admittedRun.runId, thinking: prepared.thinking });
+    }
+    const outgoing = (await hostState()).requests.slice(last);
+    assert.equal(outgoing.length, 2);
+    assert.equal(outgoing[0].effort, 'low');
+    assert.equal(outgoing[1].effort, 'high');
+    saved('AC-R4-09', { target: head.changeId, undone, lower, high, low, explicit: observedExplicit, records, outgoing });
+  }
+
   assert.deepEqual(report.rendererErrors,[]);
   report.success=true;
 }catch(error){
   report.failedAt=stage;report.error=String(error.stack??error);
+  if (app && process.env.OMNI_EDU_R4_DYNAMIC === '1') {
+    report.directoryDiagnostics=await app.evaluate(()=>globalThis.r3Fixture.directoryDiagnostics).catch(()=>undefined);
+  }
   if(page)await page.screenshot({path:join(root,'failure.png')}).catch(()=>{});
   process.exitCode=1;
 }finally{

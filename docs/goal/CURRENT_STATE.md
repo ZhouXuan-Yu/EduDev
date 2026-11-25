@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+数据库 R4 的版本、构建、测试和集成状态见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4/state.json`。按 [验收入口](../acceptance/CURRENT.md#小智数据库-r4) 核对当前阶段。
+
 小智数据库 R3 的实际代码、Windows 构建和合并读回以 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json` 为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
 
 小智数据库 R2 的实际构建、迁移、Windows 验收和合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2/state.json`。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)

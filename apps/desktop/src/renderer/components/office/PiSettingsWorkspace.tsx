@@ -180,7 +180,8 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} aria-pressed={tab === 'archives'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>
           </nav>}
           {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
-          {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy} onSaved={setRecoveryModel}/>}
+          {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy} onSaved={setRecoveryModel}
+            currentSession={workspace?.sessions.find(item => item.id === sessionId)}/>}
           {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
           {tab === 'capabilities' && <SettingsPage tab={tab}><PiCapabilityCenter sessionId={sessionId||undefined} task={snapshot?.task&&snapshot.task.sessionId===sessionId?{id:snapshot.task.id,requirementsVersion:snapshot.task.requirementsVersion}:undefined} onNavigate={open}/></SettingsPage>}
           {tab === 'tools' && <SettingsPage tab={tab}><PiManagedTools sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiMcpSettings sessionId={sessionId} running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}

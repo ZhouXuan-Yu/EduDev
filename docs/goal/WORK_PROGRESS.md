@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+数据库 R4 分基线、R3 回归、受控窗口、并发提交、字段撤回、Windows 工程验收和条件集成推进。阶段和证据回执见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4/reports`。
+
 小智数据库 R3 在独立工作树接续 R2，并依次验证配置继承、普通提交、准入捕获、字段级撤回、界面与备份恢复。各切片进度和累计回合记录见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json`。
 
 D3 修复首个会话写入期间切到资料库造成的返回后输入锁定。页面契约由已交付导航枚举读取，并保留补填弹窗和重启验收条目。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#首个对话初始化与页面契约)

@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 小智数据库 R4
+
+R4 使用 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4` 的独立 Windows 启动入口、逐项账本、测试报告和状态记录。教师操作步骤见该目录的 `manual-acceptance.md`，构建身份由 `windows-fixtures.json` 校验。
+
 ## 小智数据库 R3
 
 机器验收以工程包 `contracts/acceptance.json` 为准。原始 Windows、Electron、SQLite 和 Pi 证据以及合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3`。

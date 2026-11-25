@@ -7,6 +7,7 @@ import {readDeepSeekCatalogue} from './model-capabilities';
 import type {createModelSettings} from './model-settings';
 import {createOrdinaryConfigJournal} from './ordinary-config-journal';
 import type {Sql} from './session-state';
+import type { ConfigChange } from '../../shared/xiaozhi-config-window';
 
 const maxTickets=8;
 const ticketLifetimeMs=120_000;
@@ -22,10 +23,10 @@ function sameModelSource(before:ModelSnapshot,after:ModelSnapshot){
     before.resolved.runtimeValue===after.resolved.runtimeValue&&a.value===b.value&&a.revision===b.revision&&a.source===b.source&&a.status===b.status;
 }
 
-export function createOrdinaryConfigService({sql,model,root,codec}:{
-  sql:Sql;model:Models;root:string;codec?:SettingsKeyCodec;
+export function createOrdinaryConfigService({sql,model,root,codec,onCommitted}:{
+  sql:Sql;model:Models;root:string;codec?:SettingsKeyCodec;onCommitted?:(change:ConfigChange)=>void;
 }){
-  const journal=createOrdinaryConfigJournal(sql);
+  const journal=createOrdinaryConfigJournal(sql,onCommitted);
   const tickets=new Map<string,{sealed:string;expires:number}>();
 
   function stageCredential(input:XiaozhiCredentialInput){

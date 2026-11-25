@@ -7,6 +7,7 @@ import {
 import {validThinkingChoice} from '../../shared/xiaozhi-thinking';
 import {createModelSettingsState} from './model-settings-state';
 import type {Sql} from './session-state';
+import type { ConfigChange } from '../../shared/xiaozhi-config-window';
 
 const changes='xiaozhi_config_changes_v1';
 const heads='xiaozhi_config_heads_v1';
@@ -96,7 +97,7 @@ async function proposedUndo(work:Sql,input:OrdinaryUndo,current:Awaited<ReturnTy
   return target.previous_value;
 }
 
-export function createOrdinaryConfigJournal(sql:Sql) {
+export function createOrdinaryConfigJournal(sql:Sql, onCommitted?: (change: ConfigChange) => void) {
   // A cursor is local to one open host and cannot be edited or reused for another field.
   const cursorKey=randomBytes(32);
   function cursor(target:OrdinaryTarget,last:number){
@@ -135,11 +136,11 @@ export function createOrdinaryConfigJournal(sql:Sql) {
     async write(input:OrdinaryIntent,preflight:Preflight={}):Promise<OrdinaryReceipt>{
       checkedIntent(input);
       if(!sql.transaction)throw Error('configuration');
-      return sql.transaction(async work=>{
+      const result = await sql.transaction(async work=>{
         preflight.assertCurrent?.();
         await authorized(work,input);
         const previous=await duplicate(work,input);
-        if(previous)return previous;
+        if(previous)return { receipt: previous, edited: false };
         const current=await readField(work,input);
         if(!isUndo(input)&&input.expectedVersion!==current.version)throw Error('conflict');
         const next=isUndo(input)?await proposedUndo(work,input,current):input.value;
@@ -174,8 +175,16 @@ export function createOrdinaryConfigJournal(sql:Sql) {
           outcome:edited?'committed':'no_change',version,changeId,savedAt:recorded,effectiveFrom:'next_applicable_run'};
         await work.run(`INSERT INTO ${operations} VALUES(?,?,?)`,[input.operationId,payload(input),JSON.stringify(receipt)]);
         preflight.assertCurrent?.();
-        return receipt;
+        return { receipt, edited };
       });
+      if (result.edited && onCommitted) {
+        try {
+          onCommitted({ field: input.field, sessionId: input.sessionId, version: result.receipt.version });
+        } catch (error) {
+          console.warn('[xiaozhi-config] change notification unavailable', error instanceof Error ? error.name : 'Error');
+        }
+      }
+      return result.receipt;
     },
     async history(query:OrdinaryQuery):Promise<OrdinaryHistory>{
       if(!validOrdinaryQuery(query))throw Error('invalid_input');
