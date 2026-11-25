@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { History, RefreshCw } from 'lucide-react';
 import { Button } from '@heroui/react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
-import type { XiaozhiMemoryCatalog, XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemorySelection, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../../shared/xiaozhi-memory';
+import type { XiaozhiMemoryCatalog, XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemoryUseSelection, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../../shared/xiaozhi-memory';
 import { XIAOZHI_MEMORY_LABELS, XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES, projectMemorySource } from '../../../shared/xiaozhi-memory';
 
-const key = (item: XiaozhiMemorySelection) => `${item.layer}:${item.source}:${item.id}`;
+const key = (item: XiaozhiMemoryUseSelection) => `${item.layer}:${item.source}:${item.id}`;
+const savedChoices = (scope:XiaozhiMemoryScope):XiaozhiMemoryUseSelection[] =>
+  scope.selections.map(({label:_label,state:_state,...selection})=>selection);
 const states = { ready: '版本有效', changed: '内容已变更，请重新选择', disabled: '已停用', missing: '已删除或不存在', unavailable: '暂时无法核验' };
 const sources: XiaozhiMemorySource[] = [
   ...XIAOZHI_MEMORY_SURFACES.map(source => ({ layer: 'L2' as const, source })),
@@ -18,7 +20,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
   onSave: (input: XiaozhiMemoryScopeInput) => Promise<void>; onRefresh: () => Promise<void>;
 }) {
   const [enabled, setEnabled] = useState(scope.enabled);
-  const [selected, setSelected] = useState<XiaozhiMemorySelection[]>(scope.selections.map(item => ({ ...projectMemorySource(item), id: item.id, version: item.version })));
+  const [selected, setSelected] = useState<XiaozhiMemoryUseSelection[]>(savedChoices(scope));
   const [sourceIndex, setSourceIndex] = useState(0), [catalog, setCatalog] = useState<XiaozhiMemoryCatalog>();
   const [trace, setTrace] = useState<XiaozhiMemoryTrace | null>();
   const [busy, setBusy] = useState(false), [loading, setLoading] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
@@ -26,7 +28,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; request.current++; }; }, []);
   useEffect(() => {
     setEnabled(scope.enabled);
-    setSelected(scope.selections.map(item => ({ ...projectMemorySource(item), id: item.id, version: item.version })));
+    setSelected(savedChoices(scope));
   }, [scope.version]);
   async function preview(index = sourceIndex, offset = 0) {
     const stamp = ++request.current; setLoading(true); setError('');
@@ -92,7 +94,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
         </div>
       </div>}
       {trace !== undefined &&<DisclosureCard data-testid="pi-memory-own-trace" title={<>本会话最近过程记录</>}>{trace ? <ul>{trace.events.map(event => <li key={event.sequence}>{event.label} · {event.status}</li>)}</ul> : <p>本会话尚无过程记录。</p>}</DisclosureCard>}
-      <p>当前选择 {selected.length}/12 项。记忆编辑、停用及删除仍在工作台“L2 记忆”中完成。</p>
+      <p>当前选择 {selected.length}/12 项。在“设置 → 教师记忆”管理历史查找许可和已保存的记录。</p>
       <div className="pi-memory-actions">
         <Button size="sm" variant="outline" isDisabled={busy || running} onPress={() => { void save(); }} data-testid="pi-memory-save">保存本会话选择</Button>
         <Button size="sm" variant="ghost" isDisabled={busy} onPress={() => { void save(true); }} data-testid="pi-memory-clear">关闭并清空</Button>

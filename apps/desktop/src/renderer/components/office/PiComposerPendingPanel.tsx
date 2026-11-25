@@ -9,6 +9,8 @@ import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiTextChangeCard} from './PiTextChangeCard';
+import {PiHistoryLookup} from './PiHistoryLookup';
+import type {XiaozhiMemoryScope} from '../../../shared/xiaozhi-memory';
 import {permissionAction} from './permissionPresentation';
 import {focusWorkspacePending,isRecoverableTeacherQuestion,type WorkspacePendingItem} from './workspace-notifications';
 import styles from '../../ui-system/composer-pending.module.css';
@@ -41,7 +43,7 @@ export function pendingComposerItems(snapshot:XiaozhiWorkspaceSnapshot|undefined
   ];
 }
 
-export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecision,onRefresh,onOpen}:{
+export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecision,onRefresh,onOpen,history}:{
   items:ReturnType<typeof pendingComposerItems>;
   sessionId:string;
   reveal?:WorkspacePendingItem;
@@ -49,11 +51,13 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   onDecision:(id:string,decision:XiaozhiDecisionInput['decision'])=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onOpen:(path:string)=>void;
+  history?:{scope:XiaozhiMemoryScope;query:string;close:()=>void;confirmed:()=>Promise<void>};
 }) {
   const [selected,setSelected]=useState(''),[collapsedFor,setCollapsedFor]=useState('');
   const bodyId=useId(),headingId=useId(),toggle=useRef<HTMLButtonElement>(null),panel=useRef<HTMLElement>(null);
   const handledReveal=useRef<WorkspacePendingItem>(undefined);
-  const active=items.find(item=>item.id===selected)||items[0];
+  const allItems=history?[...items,{kind:'history' as const,id:'history-lookup',label:'查找历史',item:history}]:items;
+  const active=allItems.find(item=>item.id===selected)||allItems[0];
   const collapsed=Boolean(active&&collapsedFor===active.id);
   useEffect(()=>{
     if(!reveal)return;
@@ -67,7 +71,7 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   if(!active)return null;
   const shared={sessionId,onRefresh,onOpen,running:true};
   const title=active.kind==='question'?(active.item.state==='interrupted'?'继续回答小智的问题':active.item.options?.length?'小智需要你的选择':'小智需要你补充信息')
-    :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件'):'确认保存文件';
+    :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件'):active.kind==='history'?'查找可参考的历史':'确认保存文件';
   return <section ref={panel} aria-labelledby={headingId} className={styles.anchor} data-testid="pi-composer-pending-panel"
     onKeyDown={event=>{
       if(event.key==='Escape'&&!event.defaultPrevented&&!event.nativeEvent.isComposing&&event.nativeEvent.keyCode!==229&&!collapsed){
@@ -77,9 +81,9 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
     <div className={styles.panel}>
       <header className={styles.header}>
         <h2 id={headingId} aria-live="polite">{title}</h2>
-        {items.length>1&&<><span className={styles.count}>{items.length} 项待处理</span><AppNativeSelect indicatorOnly aria-label="选择待处理事项" className={styles.select} value={active.id}
+        {allItems.length>1&&<><span className={styles.count}>{allItems.length} 项待处理</span><AppNativeSelect indicatorOnly aria-label="选择待处理事项" className={styles.select} value={active.id}
           onChange={event=>{setSelected(event.target.value);setCollapsedFor('');}}>
-          {items.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}
+          {allItems.map(item=><option key={item.id} value={item.id}>{item.label}</option>)}
         </AppNativeSelect></>}
         <Button ref={toggle} size="sm" variant="ghost" aria-controls={bodyId} aria-expanded={!collapsed}
           data-testid="pi-composer-pending-toggle" onPress={()=>setCollapsedFor(collapsed?'':active.id)}>
@@ -93,6 +97,8 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
             :<PiCopyApproval key={active.id} approval={active.item} onDecision={onDecision}/>)
           :active.kind==='change'?<PiTextChangeCard key={active.id} {...shared} change={active.item} composerReview/>
           :active.kind==='office'?<PiOfficeArtifactCard key={active.id} {...shared} artifact={active.item}/>
+          :active.kind==='history'?<PiHistoryLookup key={active.id} sessionId={sessionId} scope={active.item.scope}
+            query={active.item.query} onClose={active.item.close} onConfirmed={active.item.confirmed}/>
           :<PiDeliveryBundleCard key={active.id} {...shared} delivery={active.item}/>}
       </div>
     </div>

@@ -11,7 +11,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
 const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
-const expectedVersion=4;
+const expectedVersion=5;
 assert(existsSync(legacy),'The actual frozen WP-00 v0 build is required');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(evidence,'fixtures'),{recursive:true});
@@ -85,7 +85,8 @@ async function startFailing(name,data,interrupt=0) {
         const v2=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_task_summary_control');
         const v3=statement.includes('CREATE TABLE IF NOT EXISTS xiaozhi_acquisition_candidates_v1');
         const v4=statement.includes('CREATE TABLE material_local_book_rechecks_v1');
-        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3) || (${interrupt}===4 && v4)){
+        const v5=statement.includes('CREATE TABLE memory_source_access');
+        if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3) || (${interrupt}===4 && v4) || (${interrupt}===5 && v5)){
           return exec.call(this,statement,error=>{
             if(error)return callback(error);
             electron.app.exit(31);
@@ -247,6 +248,21 @@ try{
   assert(stableV4.schema.some(([,name])=>name==='material_local_book_rechecks_v1'));
   assert.deepEqual(stableV4.students,old.students);
   receipt('Interrupting v4 rolls back the evidence table and leaves the committed v3 ledger readable.');
+
+  stage='interrupt history-memory migration after v4 commits';
+  const historyUpgrade=join(root,'interrupted-v5','data');
+  cpSync(oldData,historyUpgrade,{recursive:true});
+  await startFailing('interrupted-v5',historyUpgrade,5);
+  const beforeHistory=dataState(historyUpgrade);
+  assert.equal(beforeHistory.version,4);
+  assert(!beforeHistory.schema.some(([,name])=>name==='memory_source_access'));
+  await launch(main,historyUpgrade,profile('interrupted-v5-reentry'));
+  const afterHistory=dataState(historyUpgrade);
+  assert.equal(afterHistory.version,expectedVersion);
+  assert.equal(afterHistory.ledger.at(-1).migration_id,'r1.history_memory_access_and_index.v5');
+  assert.deepEqual(afterHistory.ledger.slice(0,4),beforeHistory.ledger);
+  assert.deepEqual(afterHistory.students,old.students);
+  receipt('Interrupted history DDL rolls back, then v4 resumes and preserves previous records and ledger.');
 
   const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;
   if(priorFixture){

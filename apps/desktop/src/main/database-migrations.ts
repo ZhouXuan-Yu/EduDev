@@ -3,6 +3,7 @@ import type sqlite3 from 'sqlite3';
 import {sqliteExec} from './sqlite-connections';
 import {taskSummarySchema} from './xiaozhi-agent/task-summary-schema';
 import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/capabilities/acquisition/schema';
+import {historyMemorySchema} from './xiaozhi-agent/history/schema';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -49,6 +50,9 @@ const migrations = [{
     raw_sha TEXT NOT NULL, body_json TEXT NOT NULL, body_sha TEXT NOT NULL,
     PRIMARY KEY(resource_id,version,generation,page)
   );`,
+}, {
+  id: 'r1.history_memory_access_and_index.v5',
+  sql: historyMemorySchema,
 }] as const;
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;

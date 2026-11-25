@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-25 历史记忆 R1
+
+隔离实施使用官方 Hindsight SDK 1.3.0 及回环开发服务。SQLite 保持来源、许可和撤销的权威，现有 Pi scope 继续约束引用。教师受管部署仍按专项单独验收。 [历史记忆入口与恢复边界](../product-agent/HISTORY_MEMORY_R1.md)
+
 ## 2026-11-23 扫描结构质量
 
 保留 PDFium、RapidOCR 和 PP-DocLayoutV3。参考 PP-StructureV3 的专项识别、Docling 的来源绑定和 OmniDocBench 的分项测量，继续用现有 SQLite 世代和任务。 [调研与落点](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
