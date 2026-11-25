@@ -400,7 +400,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     verifyProvider: async provider => {
       if (provider.id.startsWith('edu.native.tool.')) return validCorePermissionProvider(store.xiaozhiState.capabilities, provider);
       if (provider.id.startsWith('mcp.mcp-')) {
-        const current = await mcp.authority('mcp_' + provider.id.slice('mcp.mcp-'.length));
+        const current = await mcp.trustedAuthority('mcp_' + provider.id.slice('mcp.mcp-'.length));
         return !!current && current.sourceHash === provider.sourceHash && current.schemaHash === provider.schemaHash;
       }
       return validNativePermissionProvider(provider);

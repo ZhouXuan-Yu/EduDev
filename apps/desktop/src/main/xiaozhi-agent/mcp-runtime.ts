@@ -3,7 +3,7 @@ import path from 'node:path';
 import { Type } from 'typebox';
 import { validateToolArguments } from '@earendil-works/pi-ai';
 import { canonicalMcp, validMcpTools } from './mcp-schema';
-import { McpAuthRequiredError, McpClient, McpHttpError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
+import { McpAuthRequiredError, McpClient, McpConnectionClosedError, McpHttpError, McpTimeoutError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
 import {fetchMcpHttp} from './permissions/mcp-http';
 import {acquireToolResource} from './tools/resource-lock';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
@@ -57,6 +57,18 @@ function safeError(error: unknown): NonNullable<XiaozhiMcpServer['lastError']> {
   if (error instanceof Error && error.message === 'schema_changed') return 'schema_changed';
   return 'transport';
 }
+function preparationFault(error: unknown) {
+  const temporary = error instanceof McpTimeoutError || error instanceof McpConnectionClosedError ||
+    error instanceof McpHttpError && [429, 500, 502, 503, 504].includes(error.status) ||
+    error instanceof TypeError && object(error.cause) && ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH'].includes(String(error.cause.code));
+  return {code:safeError(error), temporary};
+}
+function hasVerifiedSchema(server: StoredServer) {
+  return !!server.trustedSchemaHash && server.trustedSchemaHash === server.schemaHash;
+}
+function needsRevalidation(server: StoredServer) {
+  return server.status === 'failed' && ['timeout','transport'].includes(server.lastError ?? '');
+}
 function publicServer(server: StoredServer): XiaozhiMcpServer {
   const secret = permissionSourceFor(server).secret;
   return { id: server.id, name: server.name, transport: server.transport, endpoint: server.transport === 'stdio' ? path.basename(server.command) : new URL(server.url).origin,
@@ -104,6 +116,11 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   const handles = new Set<() => Promise<void>>();
   const serverClients = new Map<string, Set<McpClient>>();
   const sanitize = options.sanitize ?? ((text: string) => text);
+  async function closeClient(serverId: string, client: McpClient) {
+    await client.close();
+    const group = serverClients.get(serverId);
+    if (group?.delete(client) && !group.size) serverClients.delete(serverId);
+  }
   async function raw() { const row = (await sql.all('SELECT value_json FROM app_settings WHERE key=?', [KEY]))[0]; return row ? String(row.value_json) : undefined; }
   async function state(): Promise<State> { const encoded = await raw(); if (!encoded) return { schemaVersion: 1, revision: 0, servers: [] }; try { return validateState(JSON.parse(encoded)); } catch { throw Error('configuration'); } }
   async function commit(previous: State, next: State) {
@@ -150,7 +167,12 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       await unchanged();
       return { client, tools };
     } catch (e) { await client.close().catch(() => undefined); await ownedTransport?.close().catch(() => undefined);
-      group.delete(client); if (!group.size) serverClients.delete(server.id); if (signal?.aborted) throw Error('timeout'); throw e; }
+      group.delete(client); if (!group.size && serverClients.get(server.id) === group) serverClients.delete(server.id);
+      if (signal?.aborted) {
+        if (signal.reason instanceof DOMException && signal.reason.name === 'TimeoutError') throw new McpTimeoutError(timeoutMs);
+        throw Error('cancelled');
+      }
+      throw e; }
     finally { signal?.removeEventListener('abort', cancel); }
   }
   async function list(client: McpClient, signal?: AbortSignal) {
@@ -170,6 +192,26 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     return sanitize(raw ? text.split(raw).join('[凭证已隐藏]') : text);
   }
   async function catalog(): Promise<XiaozhiMcpCatalog> { return readMcpCatalog(sql); }
+  async function unavailable(observed: StoredServer, code: NonNullable<StoredServer['lastError']>, temporary = false) {
+    const current = await state(), target = current.servers.find(server => server.id === observed.id);
+    if (!target || target.revision !== observed.revision || target.status === 'revoked') return;
+    const preserve = temporary && hasVerifiedSchema(target);
+    if (preserve && target.status === 'failed' && target.lastError === code) return;
+    target.status = code === 'schema_changed' ? 'schema_changed' : 'failed';
+    target.lastError = code;
+    if (!preserve) { target.trustedSchemaHash = undefined; target.selectedTools = []; }
+    target.revision++;
+    await commit(current, { ...current, revision: current.revision + 1 });
+  }
+  async function restoreReadiness(observed: StoredServer) {
+    const current = await state(), target = current.servers.find(server => server.id === observed.id);
+    if (!target || target.revision !== observed.revision || !hasVerifiedSchema(target)) throw Error('conflict');
+    if (target.status === 'ready') return target;
+    if (!needsRevalidation(target)) throw Error('conflict');
+    target.status = 'ready'; target.lastError = undefined; target.revision++;
+    await commit(current, { ...current, revision: current.revision + 1 });
+    return target;
+  }
   async function add(input: XiaozhiMcpAddInput) {
     if (!input || !object(input) || typeof input.name !== 'string' || !namePattern.test(input.name.trim()) || !['stdio', 'http'].includes(input.transport)) throw Error('invalid_input');
     const suppliedSecret = input.transport === 'stdio' ? input.secret : input.bearerToken;
@@ -205,9 +247,9 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
         // echoed as a tool name even before teacher trust has been granted.
         const metadata = canonicalMcp(tools);
         if (await clean(server, metadata) !== metadata) throw Error('configuration');
-      } finally { await connected.client.close(); const group = serverClients.get(server.id); group?.delete(connected.client); if (!group?.size) serverClients.delete(server.id); }
+      } finally { await closeClient(server.id, connected.client); }
     }
-    catch (error) { server.status = 'failed'; server.lastError = safeError(error); server.trustedSchemaHash = undefined; server.selectedTools = []; current.revision++; await commit({ ...current, revision: current.revision - 1 }, current); return catalog(); }
+    catch (error) { const {code,temporary} = preparationFault(error); await unavailable(server, code, temporary); return catalog(); }
     if (tools.length > 128 || tools.some(tool => !validToolSchema(tool))) throw Error('configuration');
     const digest = schemaHash(tools);
     server.tools = await Promise.all(tools.map(async tool => ({ name: tool.name, title: (await clean(server, tool.title || tool.name)).slice(0, 120), description: (await clean(server, tool.description || '')).slice(0, 1000), readOnly: tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint !== true, selected: false })));
@@ -262,39 +304,32 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     let disposed = false;
     const dispose = async () => {
       disposed = true;
-      await Promise.allSettled([...clients.entries()].map(async ([serverId, client]) => {
-        await client.close();
-        const group = serverClients.get(serverId);
-        group?.delete(client);
-        if (!group?.size) serverClients.delete(serverId);
-      }));
+      await Promise.allSettled([...clients.entries()].map(([serverId, client]) => closeClient(serverId, client)));
       clients.clear(); handles.delete(dispose);
     };
     handles.add(dispose);
-    async function invalidate(id: string, code: NonNullable<XiaozhiMcpServer['lastError']>) {
-      const current = await state(), target = current.servers.find(s => s.id === id);
-      if (!target) return;
-      target.status = code === 'schema_changed' ? 'schema_changed' : 'failed'; target.lastError = code;
-      target.trustedSchemaHash = undefined; target.selectedTools = []; target.revision++;
-      await commit(current, { ...current, revision: current.revision + 1 });
-    }
-    for (const server of stateValue.servers) {
-      if (server.status !== 'ready' || !server.trustedSchemaHash || server.trustedSchemaHash !== server.schemaHash || !server.selectedTools.length) continue;
+    for (let server of stateValue.servers) {
+      if ((server.status !== 'ready' && !needsRevalidation(server)) || !hasVerifiedSchema(server) || !server.selectedTools.length) continue;
       const source = permissionSourceFor(server);
       let connected: Awaited<ReturnType<typeof connect>>;
       try { connected = permission ? await permission.run(source, null, {}, preparation, signal => connect(server, signal, permission.stdioTransport)) : await connect(server, preparation); }
       catch (error) {
-        const code = safeError(error);
-        if (!['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code)) await invalidate(server.id, code).catch(() => undefined);
+        const {code,temporary} = preparationFault(error);
+        const cancelled = error instanceof Error && error.message === 'cancelled';
+        if (!cancelled && !['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code))
+          await unavailable(server, code, temporary).catch(() => undefined);
         continue;
       }
       const { client, tools: remote } = connected;
-      if (disposed) { await client.close(); break; }
+      if (disposed) { await closeClient(server.id, client).catch(() => undefined); break; }
       let metadataSafe = false;
       try { metadataSafe = await clean(server, canonicalMcp(remote)) === canonicalMcp(remote); } catch { /* Isolate a failed external catalog from built-in tools. */ }
       if (schemaHash(remote) !== server.trustedSchemaHash || remote.some(tool => !validToolSchema(tool)) || !metadataSafe) {
-        await client.close(); await invalidate(server.id, 'schema_changed').catch(() => undefined); continue;
+        await closeClient(server.id, client).catch(() => undefined);
+        await unavailable(server, 'schema_changed').catch(() => undefined); continue;
       }
+      try { preparation.throwIfAborted(); server = await restoreReadiness(server); preparation.throwIfAborted(); }
+      catch { await closeClient(server.id, client).catch(() => undefined); continue; }
       clients.set(server.id, client);
       for (const tool of remote.filter(item => server.selectedTools.includes(item.name))) {
         const name = mcpToolName(server.id, tool.name);
@@ -305,7 +340,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
             try {
               signal?.throwIfAborted(); const runtime = clients.get(server.id); if (disposed || !runtime) return failed('cancelled');
               const authority = (await state()).servers.find(s => s.id === server.id);
-              if (!authority || authority.status !== 'ready' || authority.trustedSchemaHash !== server.trustedSchemaHash || !authority.selectedTools.includes(tool.name)) return failed('permission_denied');
+              if (!authority || authority.revision !== server.revision || authority.status !== 'ready' || authority.trustedSchemaHash !== server.trustedSchemaHash || !authority.selectedTools.includes(tool.name)) return failed('permission_denied');
               let input: Record<string, unknown>;
               try { input = validateToolArguments(definition, { type: 'toolCall', id: callId, name, arguments: args as Parameters<typeof validateToolArguments>[1]['arguments'] }); } catch { return failed('invalid_input'); }
               if (await sanitize(canonicalMcp(input)) !== canonicalMcp(input)) return failed('permission_denied');
@@ -315,11 +350,11 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
                   const latest = await list(runtime, ownedSignal);
                   ownedSignal.throwIfAborted();
                   if (schemaHash(latest) !== server.trustedSchemaHash) {
-                    await invalidate(server.id, 'schema_changed');
+                    await unavailable(server, 'schema_changed');
                     throw Error('permission_denied');
                   }
                   const allowed = (await state()).servers.find(s => s.id === server.id);
-                  const sourceMatches = allowed?.status === 'ready' && allowed.trustedSchemaHash === server.trustedSchemaHash
+                  const sourceMatches = allowed?.revision === server.revision && allowed.status === 'ready' && allowed.trustedSchemaHash === server.trustedSchemaHash
                     && allowed.selectedTools.includes(tool.name);
                   if (disposed || !sourceMatches) throw Error('permission_denied');
                   const wireInput = permission?.transformInput ? await permission.transformInput(source, tool.name, input) : input;
@@ -328,7 +363,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
                     await permission.beforeCall(source, tool.name, input, ownedSignal, callId);
                     ownedSignal.throwIfAborted();
                     const current = (await state()).servers.find(s => s.id === server.id);
-                    if (disposed || current?.status !== 'ready' || current.trustedSchemaHash !== server.trustedSchemaHash
+                    if (disposed || current?.revision !== server.revision || current.status !== 'ready' || current.trustedSchemaHash !== server.trustedSchemaHash
                         || !current.selectedTools.includes(tool.name)) throw Error('permission_denied');
                     ownedSignal.throwIfAborted();
                   }
@@ -365,7 +400,12 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     },
     async authority(serverId: string) {
       const server = (await state()).servers.find(server => server.id === serverId);
-      return server?.status === 'ready' && server.trustedSchemaHash === server.schemaHash ? permissionSourceFor(server) : null;
+      return server?.status === 'ready' && hasVerifiedSchema(server) ? permissionSourceFor(server) : null;
+    },
+    /** Identity validation also serves authorized metadata checks while the server is offline. */
+    async trustedAuthority(serverId: string) {
+      const server = (await state()).servers.find(server => server.id === serverId);
+      return server && (server.status === 'ready' || needsRevalidation(server)) && hasVerifiedSchema(server) ? permissionSourceFor(server) : null;
     }
   };
 }

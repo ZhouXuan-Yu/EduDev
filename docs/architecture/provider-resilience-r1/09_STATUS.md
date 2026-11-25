@@ -23,7 +23,7 @@
 | REQ | 分类 | 实际锚点、保留边界和下一项验证 |
 | --- | --- | --- |
 | 01 故障语义 | 部分完成 | `mcp-runtime.ts` 的 `safeError` 与运行失败码、`model-request-recovery.ts` 的特定状态支持分流。接入固定 fault matrix 的统一宿主判定，区分实际网络失败、输入和未知效果。 |
-| 02 MCP 信任 | 行为错误待复现 | `mcp-runtime.ts` 的 `inspect` 与 `tools` 在失败路径清 `trustedSchemaHash` 与 `selectedTools`。原有 schema、凭证、授权规则保留。先用 SQLite 和同一 loopback HTTP 真实暂时断开取得红灯。 |
+| 02 MCP 信任 | 部分完成 | `mcp-runtime.ts` 原会话准备超时抹掉可信哈希的行为已复现。已接通 HTTP 有限临时失效、受权重验和代际校验。Managed MCP 重新绑定、Windows 真进程重连和其余失效屏障还需正式验收。 |
 | 03 熔断 | 尚未实现 | `capabilities/provider-instances.ts` 的运行可用状态已在 Resolver 中消费。首批执行边界缺共享故障域熔断和单探针的组合证据。 |
 | 04 实际预算 | 部分完成 | `model-request-recovery.ts` 持有原 HTTP 白名单及最多三次；`pi-session.ts` 接现有执行边界。用 `request-recovery-electron.mjs` 核对真实请求序列及预算是否叠加。 |
 | 05 兼容接续 | 部分完成 | `capabilities/runtime.ts` 和 `resolver.ts` 管理原快照恢复及安全刷新。后续只在原安全点验证合格替代与拒绝原因。 |
@@ -35,4 +35,6 @@
 | 11 诊断 | 部分完成 | `diagnostics/report.ts` 有现有有界导出基础。四类状态、实际 IPC 和隐私 canary 待补。 |
 | 12 集成 | 待核验 | 按 05 分离模块、真实组合和最终 main，真实模型评测先按 AC-34 判断适用性。 |
 
-当前状态为实施中。WP-01–08 的尝试从固定证据根的账本续做，已记录的其他专项预算不改写。首个切片使用原 MCP SQLite 设置行和原许可路径，保持结构兼容，复现后实现，未跨入共享业务或生产数据迁移。未进入主线集成。
+当前状态为实施中。WP-02 第 1 轮的红灯出现在 `ad53f4e` 对应主机源码。目标是经实际 HTTP 和 SQLite 保留未变信任，再通过原权限引擎重验。WP-01 与 WP-03–08 未进入实施验证。使用原 SQLite 设置行，不涉及数据迁移。未进入主线集成。
+
+接续先进入 WP-02 的 Managed MCP。`capabilities/acquisition/managed-mcp.ts` 目前在进入 `tools()` 之前要求运行态 `authority()` 可用。核对可信身份、实际准备与 Resolver 安全点，再使用原 Windows stdio fixture 补齐断开、撤权、旧回调和恢复。不得以可信身份读回代替运行可用性或 Grant。
