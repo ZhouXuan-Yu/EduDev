@@ -6,12 +6,14 @@ import os from 'node:os';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
+import {fileURLToPath} from 'node:url';
 import {_electron as electron} from 'playwright';
 
 const build=process.argv[2];
 assert(path.isAbsolute(build??''),'Pass the exact verified desktop build root');
 const keepFailing=process.argv[3]==='--keep-failing';
-assert(!process.argv[3]||keepFailing,'Unknown fixture argument');
+const cancelInFlight=process.argv[3]==='--cancel-in-flight';
+assert(!process.argv[3]||keepFailing||cancelInFlight,'Unknown fixture argument');
 const desktop=path.resolve(import.meta.dirname,'../..');
 const main=fs.realpathSync(path.join(build,'main/index.js'));
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'provider-paper-export-'));
@@ -26,7 +28,7 @@ const fileIdentity=file=>{
   const {dev,ino,mtimeMs,birthtimeMs}=fs.statSync(file);
   return {dev,ino,mtimeMs,birthtimeMs};
 };
-const report={ok:false,root,build,keepFailing,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
+const report={ok:false,root,build,keepFailing,cancelInFlight,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
 let app,page,sessionId;
 function sql(query,values=[]) {
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -49,16 +51,19 @@ function physical(run) {
     .map(row=>JSON.parse(row.document_json));
 }
 const state=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
-async function startExport(paper,format) {
+async function launchExport(paper,format,hold=false) {
   const spec={audience:'student',format,template:'paper',path:'confirmed.'+format};
-  await app.evaluate((_,spec)=>{globalThis.providerPaperRecovery.phase={spec,index:0};},spec);
+  await app.evaluate((_,{spec,hold})=>{globalThis.providerPaperRecovery.phase={spec,index:0,hold};},{spec,hold});
   const started=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{
     sessionId,commandId:'xicmd_'+randomUUID(),prompt:`education_export_paper 原样导出教师已确认试卷“${title}”，只保存 ${spec.path}，等待原审批。`,
     paperExportIntent:{schemaVersion:'xiaozhi.paper-export-intent.v1',paperId:paper.id,digest:paper.digest,
       audience:spec.audience,format,template:spec.template}
   });
   assert(started.ok,JSON.stringify(started));
-  const runId=started.runId;
+  return {runId:started.runId,spec};
+}
+async function startExport(paper,format) {
+  const {runId,spec}=await launchExport(paper,format);
   const review=await until(async()=>{
     const live=await state();
     const item=live.officeArtifacts?.find(item=>item.runId===runId&&item.path===spec.path&&item.state==='pending');
@@ -86,13 +91,82 @@ async function startExport(paper,format) {
   return {runId,terminal,physical:physical(runId)};
 }
 
+async function verifyPrintCancellation(paper,confirmed,previousWord) {
+  const preserved=path.join(workspace,'teacher-notes.txt');
+  fs.writeFileSync(preserved,'Owned independent fixture file.\n',{flag:'wx'});
+  const preservedHash=fileHash(preserved);
+  const {runId}=await launchExport(paper,'pdf',true);
+  const old=await until(()=>app.evaluate(()=>globalThis.providerPaperRecovery.printing.find(print=>print.hold&&print.bytes>0)),
+    'old actual PDF bytes held at the native boundary');
+  assert(!old.closed && old.rendererPid>0 && old.id>0);
+  const kept=path.dirname(fileURLToPath(old.url));
+  assert(fs.existsSync(kept));
+  const stopped=await page.evaluate(id=>window.omniEdu.stopXiaozhi(id),sessionId);
+  const afterStop=await app.evaluate(()=>globalThis.providerPaperRecovery.printing[0]);
+  report.cancellation={old,stopped,afterStop,originalRun:runId};
+  assert(stopped.ok,JSON.stringify(stopped));
+  assert(!afterStop.closed, 'The private PDF window must stay owned until the pending native receipt actually settles');
+  assert(fs.existsSync(kept));
+  assert(!fs.existsSync(pdf));
+
+  const chunks=fs.readdirSync(path.dirname(main)).filter(name=>name.endsWith('.js')).map(name=>path.join(path.dirname(main),name));
+  const module=chunks.find(file=>fs.readFileSync(file,'utf8').includes('function reserveHostStage('));
+  assert(module,'Use the original Host Resource Scheduling coordinator for the physical PDF admission');
+  const reserveExport=fs.readFileSync(module,'utf8').match(/\breserveHostStage as (\w+)/u)?.[1];
+  assert(reserveExport);
+  const probe=()=>app.evaluate(async (_electron,{module,reserveExport})=>{
+    const req=process.getBuiltinModule('node:module').createRequire(module);
+    try {
+      const lease=await req(module)[reserveExport]('provider-ac21-probe','pdf-window','foreground',{pdfWindows:1},500);
+      lease.settle();
+      return 'admitted';
+    }catch(error){return error.message;}
+  },{module,reserveExport});
+  const beforeClose=await probe();
+  assert.equal(beforeClose,'timeout');
+  const other=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({title:'PDF 停止期间独立查题',folderId:null})).session.id);
+  const search=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{
+    sessionId:other,commandId:'xicmd_'+randomUUID(),prompt:'AC21-INDEPENDENT 请从题库查找浮力方向，直接回答。'
+  });
+  assert(search.ok,JSON.stringify(search));
+  const independent=await until(async()=>{
+    const result=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),other);
+    return !result.running&&result.projection.turns.find(turn=>turn.id===search.runId&&turn.status==='completed');
+  },'the independent teacher foreground question');
+  const captured=await app.evaluate(()=>globalThis.providerPaperRecovery.independent);
+  assert(captured.some(request=>JSON.stringify(request.receipt??null).includes(marker)));
+  assert(!(await app.evaluate(()=>globalThis.providerPaperRecovery.printing[0])).closed);
+  assert.deepEqual(confirmedFacts(),confirmed);
+  assert.equal(fileHash(docx),previousWord);
+  assert.equal(fileHash(preserved),preservedHash);
+  await app.evaluate(()=>globalThis.releaseProviderPaperPrint());
+  const closed=await until(async()=>{
+    const print=await app.evaluate(()=>globalThis.providerPaperRecovery.printing[0]);
+    return print.closed&&print.released&&print;
+  },'actual old PDF callback, window destruction and cleanup');
+  await until(async()=> (await probe())==='admitted'&&!fs.existsSync(kept),'the same PDF slot after physical settlement');
+  const original=await until(async()=>{
+    const live=await state();
+    return !live.running&&live.projection.turns.find(turn=>turn.id===runId&&turn.status!=='running');
+  },'original cancelled turn');
+  assert.notEqual(original.status,'completed');
+  assert(!fs.existsSync(pdf));
+  assert(!artifactFacts().some(row=>row.file_path===pdf));
+  assert(!physical(runId).some(effect=>effect.state==='committed'));
+  assert.deepEqual(confirmedFacts(),confirmed);
+  assert.equal(fileHash(preserved),preservedHash);
+  Object.assign(report.cancellation,{beforeClose,closed, independent:{sessionId:other,runId:search.runId,result:independent.status},
+    originalStatus:original.status,originalEffect:physical(runId),preservedHash});
+  report.checks.push('The cancelled PDF retains its actual slot until its late native reply, while another teacher query succeeds and original files are preserved');
+}
+
 try {
   const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
   Object.assign(env,{OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_DATA_ROOT:data,
     OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),DEEPSEEK_API_KEY:'synthetic-provider-paper',DEEPSEEK_MODEL:'deepseek-flash'});
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,timeout:60_000});
-  await app.evaluate(({app,dialog,net},{directory,keepFailing})=>{
-    const state=globalThis.providerPaperRecovery={requests:[],printing:[],phase:null};
+  await app.evaluate(({app,dialog,net},{directory,keepFailing,cancelInFlight})=>{
+    const state=globalThis.providerPaperRecovery={requests:[],printing:[],phase:null,independent:[]};
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});
     app.on('web-contents-created',(_,contents)=>{
       const native=contents.printToPDF.bind(contents);
@@ -100,10 +174,19 @@ try {
       contents.once('destroyed',()=>{if(current) current.closed=true;});
       contents.printToPDF=async settings=>{
         if(!contents.getURL().includes('/office-render-'))return native(settings);
-        const failed=keepFailing||state.printing.length===0;
-        current={id:contents.id,failed,previousClosed:state.printing.at(-1)?.closed??true,closed:false};
+        const failed=!cancelInFlight&&(keepFailing||state.printing.length===0);
+        const hold=state.phase?.hold??false;
+        current={id:contents.id,rendererPid:contents.getOSProcessId(),url:contents.getURL(),failed,hold,previousClosed:state.printing.at(-1)?.closed??true,closed:false};
         state.printing.push(current);
         if(failed) throw new Error('Controlled settled native PDF print rejection');
+        if(hold){
+          const barrier=new Promise(resolve=>{globalThis.releaseProviderPaperPrint=resolve;});
+          const bytes=await native(settings);
+          current.bytes=bytes.length;
+          await barrier;
+          current.released=true;
+          return bytes;
+        }
         return native(settings);
       };
     });
@@ -113,10 +196,23 @@ try {
       if(url.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,
         max_output_tokens:32768,input_modalities:['text'],effort:{supported_levels:['low','high','max'],default_level:'high'}}]}),{headers:{'content-type':'application/json'}});
       if(url.pathname!=='/v1/chat/completions'||!state.phase)throw Error('Unexpected synthetic request');
+      const body=JSON.parse(init.body);
+      const chunk=(id,value,reason)=>'data: '+JSON.stringify({id,object:'chat.completion.chunk',created:1,model:body.model,
+        choices:[{index:0,delta:value,finish_reason:reason}]})+'\n\n';
+      const respond=(id,delta,tool)=>new Response(chunk(id,delta,null)+chunk(id,{},tool?'tool_calls':'stop')+'data: [DONE]\n\n',
+        {headers:{'content-type':'text/event-stream'}});
+      if(JSON.stringify(body.messages).includes('AC21-INDEPENDENT')){
+        const id='ac21_independent_'+state.independent.length;
+        const receipt=body.messages.filter(item=>item.role==='tool').at(-1)?.content;
+        state.independent.push({id,receipt});
+        if(receipt)return respond(id,{role:'assistant',content:'从已保存的题目查到浮力方向。'},false);
+        return respond(id,{role:'assistant',tool_calls:[{index:0,id,type:'function',function:{name:'education_search_questions',
+          arguments:JSON.stringify({query:'浮力',subject:'物理',limit:3})}}]},true);
+      }
       const {spec,index}=state.phase;
       if(index>3)throw Error('Synthetic request budget exceeded');
       state.phase.index++;
-      const body=JSON.parse(init.body),id='pdf_recovery_'+spec.format+'_'+index;
+      const id='pdf_recovery_'+spec.format+'_'+index;
       let tool;
       if(index===0)tool={name:'find_education_tools',arguments:JSON.stringify({query:'education_export_paper 导出已确认试卷'})};
       if(index===1)tool={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:1,
@@ -125,11 +221,9 @@ try {
       if(index===2)tool={name:'education_export_paper',arguments:JSON.stringify({...spec,taskStepId:'save'})};
       state.requests.push({format:spec.format,index,tool:tool?.name,receipt:index===3?body.messages.filter(item=>item.role==='tool').at(-1)?.content:undefined});
       const delta=tool?{role:'assistant',tool_calls:[{index:0,id,type:'function',function:tool}]}:{role:'assistant',content:'以实际保存结果为准。'};
-      const chunk=(value,reason)=>'data: '+JSON.stringify({id,object:'chat.completion.chunk',created:1,model:body.model,
-        choices:[{index:0,delta:value,finish_reason:reason}]})+'\n\n';
-      return new Response(chunk(delta,null)+chunk({},tool?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
+      return respond(id,delta,tool);
     };
-  },{directory:workspace,keepFailing});
+  },{directory:workspace,keepFailing,cancelInFlight});
   page=await app.firstWindow();
   await page.getByTestId('office-prompt-input').waitFor();
   sessionId=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({title:'原题卷恢复验收',folderId:null})).session.id);
@@ -154,9 +248,11 @@ try {
   assert.equal(oldOutput.length,1);
   assert.equal(oldEffect.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
   report.checks.push('Teacher-confirmed paper is unchanged after the actual Word export');
+  if(cancelInFlight)await verifyPrintCancellation(paper,facts,oldHash);
   report.second=await startExport(paper,'pdf');
   report.instrumentation=await app.evaluate(()=>globalThis.providerPaperRecovery);
-  assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),[[true,true,true],[keepFailing,true,true]]);
+  assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),
+    cancelInFlight?[[false,true,true],[false,true,true]]:[[true,true,true],[keepFailing,true,true]]);
   assert.equal(fileHash(docx),oldHash);
   assert.deepEqual(fileIdentity(docx),oldIdentity);
   assert(!fs.readdirSync(data).some(name=>name.startsWith('office-render-')));
@@ -189,7 +285,8 @@ print(json.dumps({'pageCount':len(reader.pages),'marker':marker}))
 `,docx,pdf,marker],{encoding:'utf8'});
     assert.equal(parsed.status,0,parsed.stderr||parsed.stdout);
     report.files={docx,docxHash:oldHash,pdf,pdfHash:fileHash(pdf),parse:JSON.parse(parsed.stdout)};
-    report.checks.push('Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
+    report.checks.push(cancelInFlight?'A new author-approved PDF survives independent Word/PDF readback after the cancelled window closes':
+      'Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
   }
   report.ok=true;
 }catch(error){
@@ -198,6 +295,7 @@ print(json.dumps({'pageCount':len(reader.pages),'marker':marker}))
 }finally{
   if(app){
     report.instrumentation??=await app.evaluate(()=>globalThis.providerPaperRecovery).catch(()=>undefined);
+    await app.evaluate(()=>globalThis.releaseProviderPaperPrint?.()).catch(()=>{});
     await app.close().catch(()=>{});
   }
   fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));
