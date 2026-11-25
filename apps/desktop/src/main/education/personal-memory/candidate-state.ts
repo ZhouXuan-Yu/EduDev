@@ -140,6 +140,12 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
         ${onlyOpen ? "WHERE state IN ('pending','conflict')" : ''}
         ORDER BY created_at DESC, draft_key LIMIT ?`,[limit])).map(pendingDraft);
     },
+    async listForSession(sessionId: string) {
+      return (await sql.all(`SELECT pending.* FROM personal_memory_pending pending
+        JOIN memory_source_access source ON source.source_id=pending.source_id
+        WHERE source.session_id=? AND pending.state IN ('pending','conflict')
+        ORDER BY pending.created_at DESC, pending.draft_key LIMIT 40`,[sessionId])).map(pendingDraft);
+    },
     async reject(key: string, expectedRevision: number) {
       assertRevision(expectedRevision);
       if (!/^[a-f0-9]{64}$/.test(key)) throw Error('invalid_input');

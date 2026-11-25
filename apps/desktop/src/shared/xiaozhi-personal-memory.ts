@@ -17,8 +17,8 @@ export type PersonalMemoryJob = {id:string; revision:string; kind:'extract'|'org
   saved:number|null; notSaved:number|null; error:string|null; outbound:boolean};
 export type PersonalMemoryCancelJobInput = {id:string; revision:string};
 export type PersonalMemoryCancelJobReceipt = {state:PersonalMemoryJob['state']; cancelled:boolean; outbound:boolean};
-export type PersonalMemoryView = {policy:PersonalMemoryPolicy; records:PersonalMemorySummary[];
-  candidates:PersonalMemoryCandidate[]; jobs:PersonalMemoryJob[]};
+export type PersonalMemoryQueue = {policy:PersonalMemoryPolicy; candidates:PersonalMemoryCandidate[]};
+export type PersonalMemoryView = PersonalMemoryQueue & {records:PersonalMemorySummary[]; jobs:PersonalMemoryJob[]};
 export type PersonalMemoryReview = {quote:string; quoteSha256:string; occurredAt:string|null};
 export type PersonalMemoryCandidateInput = {key:string; revision:number};
 export type PersonalMemoryRecordInput = {id:string; revision:number};

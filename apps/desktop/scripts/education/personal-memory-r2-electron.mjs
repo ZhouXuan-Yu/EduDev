@@ -13,6 +13,7 @@ const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
 const adoption=process.argv.includes('--adoption');
 const verifyUse=process.argv.includes('--use');
+const verifyPending=process.argv.includes('--pending');
 const handout=process.argv.includes('--handout');
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
@@ -238,6 +239,49 @@ async function useAdoptedMemory(record,source){
   return sessionId;
 }
 
+async function reviewInConversation(sessionId,candidateId,draft,source){
+  const open=()=>page.getByTestId('personal-memory-review-open');
+  const pending=()=>page.getByTestId('pi-composer-pending-panel').getByTestId('personal-memory-conversation-review');
+  const candidate=()=>pending().getByTestId('personal-memory-candidate-'+candidateId);
+  const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
+  assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
+  for (const [width,height] of [[1366,768],[1920,1080]]) {
+    await app.evaluate(({BrowserWindow},size)=>{
+      const window=BrowserWindow.getAllWindows().find(win=>win.isVisible());
+      window.unmaximize();
+      window.setContentSize(...size);
+    },[width,height]);
+    await until(async()=>page.evaluate(([w,h])=>innerWidth===w&&innerHeight===h,[width,height]),10000);
+    await open().click();
+    await candidate().getByRole('button',{name:'查看来源',exact:true}).click();
+    await candidate().getByText(review.value.quote,{exact:true}).waitFor();
+    assert.equal(await input().inputValue(),draft);
+    await page.screenshot({path:path.join(root,`conversation-review-${width}x${height}.png`)});
+    await pending().getByRole('button',{name:'关闭核对',exact:true}).click();
+    await pending().waitFor({state:'hidden'});
+    assert(await open().evaluate(element=>element===document.activeElement));
+  }
+  await fresh();
+  await open().click();
+  await pending().getByText('暂无待核对的建议。',{exact:true}).waitFor();
+  await close();
+  await launch();
+  if(await active()!==sessionId){
+    const toggle=page.getByTestId('pi-sidebar-toggle');
+    if(await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();
+    await page.getByTestId('ai-conversation-session-'+sessionId).click();
+    await until(async()=>await session()===sessionId);
+  }
+  await open().click();
+  await candidate().getByRole('button',{name:'查看来源',exact:true}).click();
+  await candidate().getByText(review.value.quote,{exact:true}).waitFor();
+  assert.equal(await input().inputValue(),draft);
+  await candidate().getByRole('button',{name:'确认采用',exact:true}).click();
+  await pending().getByText('已保存为正式记忆。',{exact:true}).waitFor();
+  check('the existing pending panel isolates sessions and resumes source review after restart, keeping the draft',
+    {sessionId,candidateId,windowContentSizes:[[1366,768],[1920,1080]],restoredDraft:true});
+}
+
 async function candidateAdoption(){
   const sessionId=await active();
   const source='我本学期负责四年级科学。';
@@ -253,6 +297,12 @@ async function candidateAdoption(){
   assert((await sourcePreview.textContent()).includes(source));
   await sourcePreview.getByTestId('personal-memory-source-consent').click();
   await sourcePreview.getByText('已允许从这条原话提取记忆建议。',{exact:true}).waitFor();
+  const draft='这段是尚未发送的新任务草稿。';
+  if(verifyPending){
+    await page.getByTestId('nav-ai').click();
+    await input().fill(draft);
+    assert(await input().evaluate(element=>element===document.activeElement));
+  }
   const background=await until(backgroundReceipt,210000,1000);
   report.background=background;
   const {candidates,records}=await memoryRead();
@@ -261,20 +311,29 @@ async function candidateAdoption(){
   const candidateId=candidates[0].key;
   check('real Pi source, separate teacher extraction consent and a durable real model job create a pending candidate',
     {runId:turn.id,candidateId,modelCalls:background.modelCalls,usage:background.usage});
+  if(verifyPending){
+    assert(await input().evaluate(element=>element===document.activeElement));
+    assert(!await page.getByTestId('personal-memory-conversation-review').isVisible());
+    check('background completion does not open a panel or move focus from the unsent draft',{candidateId});
+    await reviewInConversation(sessionId,candidateId,draft,source);
+    memory=await memorySettings();
+  }
   await memory.getByRole('button',{name:'刷新记忆',exact:true}).click();
   if(process.argv.includes('--jobs')){
     await memory.getByRole('button',{name:'后台任务',exact:true}).click();
     await memory.getByText('提取建议 · 已完成 · 已生成 1 条建议',{exact:true}).waitFor();
     check('the settings page reads the durable background task result',{saved:background.saved,modelCalls:background.modelCalls});
   }
-  const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
-  await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
-  const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
-  assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
-  await candidate.getByText(review.value.quote,{exact:true}).waitFor();
-  await page.screenshot({path:path.join(root,'review-candidate.png')});
-  await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
-  await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
+  if(!verifyPending){
+    const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
+    await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
+    const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
+    assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
+    await candidate.getByText(review.value.quote,{exact:true}).waitFor();
+    await page.screenshot({path:path.join(root,'review-candidate.png')});
+    await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
+    await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
+  }
   const adopted=(await memoryRead()).records[0];
   assert.equal(adopted.id,candidateId);
   assert.equal(adopted.revision,1);
@@ -300,7 +359,7 @@ async function candidateAdoption(){
   await record.getByRole('button',{name:'遗忘',exact:true}).click();
   await record.getByRole('button',{name:'确认遗忘',exact:true}).click();
   await memory.getByText('已停止使用这条记忆。',{exact:true}).waitFor();
-  await auto.click();
+  await memory.getByTestId('personal-memory-auto').click();
   await memory.getByText('已关闭自动处理。',{exact:true}).waitFor();
   await close();
   await launch();

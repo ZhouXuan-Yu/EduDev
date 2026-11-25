@@ -403,6 +403,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const composerItems=visible&&!syncBlocked?pendingComposerItems(snapshot,id,current?.id):[];
   const [historyLookup,setHistoryLookup]=useState<{sessionId:string;query:string}>();
   const openHistory=historyLookup?.sessionId===id&&visible&&!syncBlocked&&!snapshot?.running?snapshot?.memoryScope:undefined;
+  const [personalReviewSession,setPersonalReviewSession]=useState<string>();
+  const personalReviewButton=useRef<HTMLButtonElement>(null);
+  const showPersonalReview=Boolean(visible&&snapshot&&snapshot.projection.threadId===id&&!snapshot.studentContext&&!snapshot.running&&!syncBlocked);
+  const openPersonalReview=showPersonalReview&&personalReviewSession===id;
+  useEffect(()=>{setPersonalReviewSession(undefined);},[id,visible]);
   const selectedHistoryCount=snapshot?.memoryScope?.enabled
     ? snapshot.memoryScope.selections.filter(item=>item.layer==='history'&&item.state==='ready').length : 0;
   const composerItemIds=new Set(composerItems.map(item=>item.id));
@@ -502,8 +507,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         {visible&&snapshot?.memoryScope&&!openHistory&&!snapshot.running&&!syncBlocked&&
           <Button size="sm" variant="ghost" data-testid="history-lookup-open"
             onPress={()=>setHistoryLookup({sessionId:id,query:readComposerDraft(id).text.slice(0,1800)})}>查找历史</Button>}
+        {showPersonalReview&&<Button ref={personalReviewButton} size="sm" variant="ghost" data-testid="personal-memory-review-open"
+          aria-expanded={openPersonalReview} onPress={()=>setPersonalReviewSession(openPersonalReview?undefined:id)}>核对记忆建议</Button>}
         <PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined}
           onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}
+          personalReview={openPersonalReview} onClosePersonalReview={()=>{setPersonalReviewSession(undefined);personalReviewButton.current?.focus();}}
           history={openHistory?{scope:openHistory,query:historyLookup!.query,close:()=>setHistoryLookup(undefined),
             confirmed:async()=>{setHistoryLookup(undefined);await hydrate(id);}}:undefined}/>
         <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}

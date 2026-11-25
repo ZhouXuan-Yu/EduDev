@@ -10,6 +10,7 @@ import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import {PiPermissionApproval} from './PiPermissionApproval';
 import {PiTextChangeCard} from './PiTextChangeCard';
 import {PiHistoryLookup} from './PiHistoryLookup';
+import {PiPersonalMemoryPending} from './PiPersonalMemoryPending';
 import type {XiaozhiMemoryScope} from '../../../shared/xiaozhi-memory';
 import {permissionAction} from './permissionPresentation';
 import {focusWorkspacePending,isRecoverableTeacherQuestion,type WorkspacePendingItem} from './workspace-notifications';
@@ -43,7 +44,7 @@ export function pendingComposerItems(snapshot:XiaozhiWorkspaceSnapshot|undefined
   ];
 }
 
-export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecision,onRefresh,onOpen,history}:{
+export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecision,onRefresh,onOpen,history,personalReview,onClosePersonalReview}:{
   items:ReturnType<typeof pendingComposerItems>;
   sessionId:string;
   reveal?:WorkspacePendingItem;
@@ -52,13 +53,24 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   onRefresh:()=>Promise<void>;
   onOpen:(path:string)=>void;
   history?:{scope:XiaozhiMemoryScope;query:string;close:()=>void;confirmed:()=>Promise<void>};
+  personalReview?:boolean;
+  onClosePersonalReview?:()=>void;
 }) {
   const [selected,setSelected]=useState(''),[collapsedFor,setCollapsedFor]=useState('');
   const bodyId=useId(),headingId=useId(),toggle=useRef<HTMLButtonElement>(null),panel=useRef<HTMLElement>(null);
   const handledReveal=useRef<WorkspacePendingItem>(undefined);
-  const allItems=history?[...items,{kind:'history' as const,id:'history-lookup',label:'查找历史',item:history}]:items;
+  const allItems=[
+    ...items,
+    ...(history?[{kind:'history' as const,id:'history-lookup',label:'查找历史',item:history}]:[]),
+    ...(personalReview?[{kind:'personal-memory' as const,id:'personal-memory',label:'核对记忆建议'}]:[]),
+  ];
   const active=allItems.find(item=>item.id===selected)||allItems[0];
   const collapsed=Boolean(active&&collapsedFor===active.id);
+  useEffect(()=>{
+    if (!personalReview) return;
+    setSelected('personal-memory');
+    setCollapsedFor('');
+  },[personalReview]);
   useEffect(()=>{
     if(!reveal)return;
     setSelected(reveal.id);
@@ -71,7 +83,8 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   if(!active)return null;
   const shared={sessionId,onRefresh,onOpen,running:true};
   const title=active.kind==='question'?(active.item.state==='interrupted'?'继续回答小智的问题':active.item.options?.length?'小智需要你的选择':'小智需要你补充信息')
-    :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件'):active.kind==='history'?'查找可参考的历史':'确认保存文件';
+    :active.kind==='approval'?(active.item.permission?'确认操作授权':'确认复制文件')
+    :active.kind==='history'?'查找可参考的历史':active.kind==='personal-memory'?'核对记忆建议':'确认保存文件';
   return <section ref={panel} aria-labelledby={headingId} className={styles.anchor} data-testid="pi-composer-pending-panel"
     onKeyDown={event=>{
       if(event.key==='Escape'&&!event.defaultPrevented&&!event.nativeEvent.isComposing&&event.nativeEvent.keyCode!==229&&!collapsed){
@@ -99,6 +112,7 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
           :active.kind==='office'?<PiOfficeArtifactCard key={active.id} {...shared} artifact={active.item}/>
           :active.kind==='history'?<PiHistoryLookup key={active.id} sessionId={sessionId} scope={active.item.scope}
             query={active.item.query} onClose={active.item.close} onConfirmed={active.item.confirmed}/>
+          :active.kind==='personal-memory'?<PiPersonalMemoryPending key={active.id} sessionId={sessionId} onClose={()=>onClosePersonalReview?.()}/>
           :<PiDeliveryBundleCard key={active.id} {...shared} delivery={active.item}/>}
       </div>
     </div>

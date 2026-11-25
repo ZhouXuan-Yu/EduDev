@@ -1,10 +1,11 @@
 import type {
   PersonalMemoryAdoptInput, PersonalMemoryCancelJobReceipt, PersonalMemoryCandidate, PersonalMemoryCandidateInput, PersonalMemoryEditInput,
-  PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
+  PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryQueue, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
   PersonalMemorySummary, PersonalMemoryView,
 } from '../../../shared/xiaozhi-personal-memory';
 import {validHistoryRef} from '../../xiaozhi-agent/history/source';
 import {historyId} from '../../xiaozhi-agent/history/state';
+import {validMemorySession} from '../../xiaozhi-agent/memory-selection';
 import type { Sql } from '../../xiaozhi-agent/session-state';
 import {createPersonalMemoryJobs} from './background-jobs';
 import { createPersonalMemoryCandidateState } from './candidate-state';
@@ -56,18 +57,28 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
   const records = createPersonalMemoryRecordState(sql,sources);
   const jobs=createPersonalMemoryJobs(sql);
   const mutate=options.mutate ?? (async<T>(work:()=>Promise<T>)=>work());
+  async function visibleCandidates(open:Awaited<ReturnType<typeof candidates.list>>):Promise<PersonalMemoryCandidate[]> {
+    const pending:PersonalMemoryCandidate[]=[];
+    for (const {draft,state,revision} of open) {
+      if ((state === 'pending' || state === 'conflict') && await sources.witnessCurrent(sql,draft)) {
+        pending.push({key:draft.key,revision,kind:draft.kind,scope:draft.scope,term:draft.term,state,
+          value:draft.proposedValue,targetRevision:draft.replaces?.revision ?? 0});
+      }
+    }
+    return pending;
+  }
   return {
     view:()=>respond<PersonalMemoryView>(async()=>{
       const [policy,saved,open,background] = await Promise.all([candidates.processing(),records.list(40),candidates.list(40,true),jobs.list()]);
-      const pending:PersonalMemoryCandidate[]=[];
-      for (const {draft,state,revision} of open) {
-        if ((state === 'pending' || state === 'conflict') && await sources.witnessCurrent(sql,draft)) {
-          pending.push({key:draft.key,revision,kind:draft.kind,scope:draft.scope,term:draft.term,state,
-            value:draft.proposedValue,targetRevision:draft.replaces?.revision ?? 0});
-        }
-      }
       return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),
-        candidates:pending,jobs:background};
+        candidates:await visibleCandidates(open),jobs:background};
+    }),
+    queue:(sessionId:unknown)=>respond<PersonalMemoryQueue>(async()=>{
+      if (!validMemorySession(sessionId)) throw Error('invalid_input');
+      const [session]=await sql.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]);
+      if (!session || session.student_id || session.archived_at) throw Error('permission_denied');
+      const [policy,open]=await Promise.all([candidates.processing(),candidates.listForSession(sessionId)]);
+      return {policy:policyView(policy),candidates:await visibleCandidates(open)};
     }),
     setEnabled:(value:unknown)=>respond(()=>mutate(async()=>{
       if (!inputObject(value) || typeof value.enabled !== 'boolean' ||

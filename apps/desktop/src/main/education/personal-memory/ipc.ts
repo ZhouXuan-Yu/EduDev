@@ -9,6 +9,7 @@ export function registerPersonalMemoryIpc(ipc:IpcMain, allowed:(event:IpcMainInv
     'source':memory.sourceStatus,'source-change':memory.setSource,
     'record-preview':memory.previewRecord,
     'job-cancel':memory.cancelJob,
+    'queue':memory.queue,
   })) {
     ipc.handle(`xiaozhi:personal-memory-${name}`,(event,input:unknown)=>
       allowed(event) ? action(input) : {ok:false,error:'permission_denied'});
