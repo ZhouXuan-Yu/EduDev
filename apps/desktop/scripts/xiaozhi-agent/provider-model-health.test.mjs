@@ -18,7 +18,7 @@ test('HTTP success headers and SDK verification cannot release a body that has n
   advance(10_000);
   const model = scope('owned');
   let source;
-  const wrapped = model.begin().response(new Response(new ReadableStream({start(controller) {source = controller;}})));
+  const wrapped = await model.begin().response(new Response(new ReadableStream({start(controller) {source = controller;}})));
   model.sdkResult(true);
   assert.equal(health.snapshot('owned').phase, 'half_open');
   assert.equal(health.snapshot('owned').active, 1);
@@ -35,7 +35,7 @@ test('SDK end sentinel closes only after pending stream cancellation has actuall
   const model = scope('owned');
   let release;
   const cleanup = new Promise(resolve => {release = resolve;});
-  const result = model.begin().response(new Response(new ReadableStream({cancel: () => cleanup})));
+  const result = await model.begin().response(new Response(new ReadableStream({cancel: () => cleanup})));
   const closing = result.body.cancel();
   model.sdkResult(true);
   assert.equal(health.snapshot('owned').phase, 'half_open');
@@ -47,15 +47,15 @@ test('SDK end sentinel closes only after pending stream cancellation has actuall
 
 test('HTTP 401, caller cancellation and short throttling retain the original health policy', async () => {
   const {health, scope, advance, cancel} = fixture();
-  await scope('owned').begin().response(new Response('rejected', {status: 401})).text();
+  await (await scope('owned').begin().response(new Response('rejected', {status: 401}))).text();
   assert.equal(health.snapshot('owned').failures, 0);
-  await scope('owned').begin().response(new Response('limited', {status: 429, headers: {'retry-after': '2'}})).text();
+  await (await scope('owned').begin().response(new Response('limited', {status: 429, headers: {'retry-after': '2'}}))).text();
   assert.equal(health.snapshot('owned').failures, 1);
   advance(1999);
   assert.throws(() => scope('owned').begin(), /provider_unavailable/u);
   advance(1);
   const next = scope('owned');
-  const body = next.begin().response(new Response(new ReadableStream()));
+  const body = await next.begin().response(new Response(new ReadableStream()));
   cancel();
   await body.body.cancel();
   next.sdkResult(true);
@@ -66,14 +66,14 @@ test('HTTP 401, caller cancellation and short throttling retain the original hea
 test('an interrupted wire response contributes exactly one fault and an invalid SDK result never verifies recovery', async () => {
   const {health, scope} = fixture();
   const first = scope('owned');
-  const body = first.begin().response(new Response(new ReadableStream({
+  const body = await first.begin().response(new Response(new ReadableStream({
     start(controller) {controller.error(new TypeError('terminated'));},
   })));
   await assert.rejects(body.text(), /terminated/u);
   first.sdkResult(false);
   assert.equal(health.snapshot('owned').failures, 1);
   const second = scope('owned');
-  await second.begin().response(new Response('malformed stream')).text();
+  await (await second.begin().response(new Response('malformed stream'))).text();
   second.sdkResult(false);
   assert.equal(health.snapshot('owned').failures, 1);
   assert.equal(health.snapshot('owned').active, 0);

@@ -160,6 +160,15 @@ try {
   assert.equal(delayed.turn.errorCode, 'provider_unavailable');
   report.checks.push('A long Retry-After causes no early send or budget charge on the next turn');
   if (process.argv.includes('--cold')) {
+    const beforeWake = report.calls.length;
+    await app.evaluate(({powerMonitor}) => powerMonitor.emit('resume'));
+    await delay(150);
+    assert.equal(report.calls.length, beforeWake);
+    const afterWake = await send('唤醒事件后核对合成限流。', 'wake-blocked');
+    verifyCount('wake-blocked', 0);
+    assert.equal(afterWake.usage?.modelCalls ?? 0, 0);
+    assert.equal(afterWake.turn.errorCode, 'provider_unavailable');
+    report.checks.push('The Electron resume handler schedules no work and keeps the active Retry-After');
     await app.close();app=undefined;
     const before = report.calls.length;
     mode = 'unrequested-startup';

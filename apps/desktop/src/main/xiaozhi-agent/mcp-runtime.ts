@@ -287,6 +287,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     let attempt: ProviderHealthAttempt | undefined;
     const observation = connectionObservation();
     const key = healthKey(server);
+    await health.ready();
     try {
       if (hasVerifiedSchema(server)) attempt = health.begin(key, true);
       const connected = await connect(server, observation, undefined, stdio);
@@ -302,7 +303,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       if (error instanceof ProviderHealthBlocked) throw error;
       const {code,temporary} = preparationFault(error);
       try {await unavailable(server, code, temporary);}
-      finally {attempt?.complete(observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});}
+      finally {await attempt?.complete(observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});}
       return catalog();
     }
     try {
@@ -314,7 +315,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       if (server.status === 'schema_changed') { server.trustedSchemaHash = undefined; server.selectedTools = []; }
       current.revision++; server.revision++; await commit({ ...current, revision: current.revision - 1 }, current);
       if (server.status === 'schema_changed') health.retire(key);
-      else attempt?.complete({kind: 'verified'});
+      else await attempt?.complete({kind: 'verified'});
       return catalog();
     } finally {attempt?.complete({kind: 'ignored'});}
   }
@@ -379,6 +380,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       clients.clear(); handles.delete(dispose);
     };
     handles.add(dispose);
+    try {await health.ready();} catch {return {definitions, dispose};}
     for (let server of stateValue.servers) {
       if (preparation.aborted) break;
       if (admission?.serverId && server.id !== admission.serverId) continue;
@@ -400,7 +402,8 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
         const cancelled = admission?.signal?.aborted || error instanceof Error && error.message === 'cancelled';
         if (!cancelled && (!temporary || observation.started) && !['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code))
           await unavailable(server, code, temporary).catch(() => undefined);
-        attempt?.complete(!cancelled && observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});
+        try {await attempt?.complete(!cancelled && observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});}
+        catch {break;}
         continue;
       }
       const { client, tools: remote } = connected;
@@ -412,9 +415,8 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
         await unavailable(server, 'schema_changed').catch(() => undefined);
         attempt?.complete({kind: 'ignored'}); continue;
       }
-      try { preparation.throwIfAborted(); server = await restoreReadiness(server); preparation.throwIfAborted(); }
+      try { preparation.throwIfAborted(); server = await restoreReadiness(server); preparation.throwIfAborted(); await attempt?.complete({kind: 'verified'}); }
       catch { await closeClient(server.id, client).catch(() => undefined); attempt?.complete({kind: 'ignored'}); continue; }
-      attempt?.complete({kind: 'verified'});
       clients.set(server.id, client);
       for (const tool of remote.filter(item => server.selectedTools.includes(item.name))) {
         const name = mcpToolName(server.id, tool.name);
@@ -438,9 +440,10 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
                   await closeClient(server.id, runtime).catch(() => undefined);
                   if (ownedSignal.aborted) return;
                   await unavailable(server, fault.code, true).catch(() => undefined);
-                  executionHealth?.complete({kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs});
+                  await executionHealth?.complete({kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs});
                 };
                 try {
+                  await health.ready();
                   ownedSignal.throwIfAborted();
                   executionHealth = health.begin(key, false);
                   observation.retryAfterMs = 0;
@@ -495,6 +498,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   async function dispose() { await Promise.allSettled([...handles].map(close => close())); }
   return { catalog, add, inspect, trust, revoke, remove, credential, tools, dispose,
     async healthSnapshot(serverId: string) {
+      await health.ready();
       const server = (await state()).servers.find(row => row.id === serverId);
       if (!server || !hasVerifiedSchema(server)) return null;
       const key = healthKey(server);

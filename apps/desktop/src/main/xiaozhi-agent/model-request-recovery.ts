@@ -17,6 +17,8 @@ export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptio
       currentAttempt=attempt+1;
       started=false;lastStatus=undefined;
       signal?.throwIfAborted();
+      if(options.health)await options.health.ready();
+      signal?.throwIfAborted();
       const attemptHealth=options.health?.begin();
       let response: Response;
       try {
@@ -24,8 +26,8 @@ export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptio
         started=true;
         state({state:'sending'});
         const received=await fetcher(input,init);
-        response=attemptHealth?.response(received) ?? received;
-      } catch (error) {attemptHealth?.failed(error,started);throw error;}
+        response=attemptHealth ? await attemptHealth.response(received) : received;
+      } catch (error) {await attemptHealth?.failed(error,started);throw error;}
       lastStatus=response.status;
       const done=()=>{state({state:response.ok?'accepted':'rejected',status:response.status});return response;};
       if(!replayable||attempt+1>=(options.maxAttempts??3)||!isTemporaryProviderHttpStatus(response.status))return done();

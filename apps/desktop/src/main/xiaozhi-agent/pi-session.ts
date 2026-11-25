@@ -1288,9 +1288,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     let stream: Awaited<ReturnType<typeof nativeStream>>;
     try {stream=await nativeStream(...args);}
-    catch(error){health?.sdkResult(false);throw error;}
+    catch(error){await health?.sdkResult(false);throw error;}
     if(health){
-      void stream.result().then(message=>health.sdkResult(['stop','length','toolUse'].includes(message.stopReason)),()=>health.sdkResult(false));
+      void stream.result().then(message=>health.sdkResult(['stop','length','toolUse'].includes(message.stopReason)),()=>health.sdkResult(false)).catch(()=>undefined);
     }
     if(imageRuntime&&!compacting){
       const result=stream.result.bind(stream);let received:ReturnType<typeof result>|undefined;

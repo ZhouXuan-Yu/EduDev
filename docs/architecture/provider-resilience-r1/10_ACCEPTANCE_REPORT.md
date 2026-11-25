@@ -11,10 +11,11 @@
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
 | AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
 | AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
-| AC-08 | NOT_RUN | 尚需冷启、唤醒、重配置、缓存上限与跨持久化预算证据。 |
+| AC-08 | NOT_RUN | 实际闭合 Electron 后冷启动，同一合成凭证仍受原 Retry-After 约束，零请求、零扣减。另一合成凭证可用。真实 Windows 系统挂起及完整矩阵仍待验。 |
 | AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
 | AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
-| AC-11–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-11 | NOT_RUN | 实际旧读取未归还前，同一输入不得再次触发读取。原只读 EBUSY 补发与停止回归通过。尚需串联真实业务和 R1 资源租约计数。 |
+| AC-12–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -70,3 +71,15 @@
 - `6d2a9c1` 真实 Windows 基线证实三次失败后，下一轮仍发送一次。保留 `wp03-model-wire-red.log`。接线后先通过 4 项窄回归。混合 429/503/200 的完整场景发现，SDK 正常结束的同时取消包装读取，会误占用健康结算。诊断证据在 `model-wire-health-sbW7A0/report.json`。修复后等待底层取消或 EOF，并同时要求 SDK 原生终态确认，才结算成功。
 - `provider-model-health-electron.mjs` 正式 Electron / Pi 和真实本机 HTTP/SSE 8/8，见 `wp03-model-wire-final-fixed.log` 和 `model-wire-health-hlEZum/report.json`。`wp03-model-wire-sqlite.json` 从实际 `app.db` 核对 11 个运行，发送事件计数、服务实际次数及原预算逐项相等。原桌面请求回归 10/10，渲染组件 261/261，最终构建及独立窗口证据分别见 `wp03-model-wire-build-final.log` 和 `wp03-model-manual-window.json`。使用合成模型响应，真实付费调用为 0，AC-34 留待组合判断。
 - `22650c0` 的红灯显示停止后准备仍在等待远端探针。传递原 Run 取消信号后，实际取消先于迟到的 HTTP 响应，健康域保留 Open、失败数维持 4。等待满足后只用原 Schema 核验，旧代际响应不影响恢复。证据见 `wp03-mcp-cancel-red.log`、`wp03-model-source-all.log` 与 `mcp-sqlite-generation-cRMHZF/report.json`，最终 Node 合并门禁 53/53。
+
+## WP-03 第六至第七轮冷启动与读取退出
+
+- 冷启动基线 `88c2dca` 在同一隔离 SQLite 中读回记录，重启后一轮向仍限流的服务发送 1 次请求。见 `wp03-cold-red.log` 与 `model-wire-health-1Ycxwz/report.json`。修复后复用设置表保存有界的冷却账本，真实 Electron 退出并重启后仍是零请求、零扣减。更换合成凭证可实际发送 1 次。生产 `powerMonitor` 回调通过事件注入触发，已检查没有主动执行或缩短冷却。正式回归 11/11 见 `wp03-cold-final.log` 和 `model-wire-health-S6Qd9E/report.json`。系统挂起与恢复保留待验。
+- `wp03-cold-source-final.log` 记录 Node 56/56，覆盖真实 SQLite 关闭与重开、时钟回拨、健康代际和空闲缓存回收。账本只保存随机 salt、不可直接识别的域键和期限。无表结构变更，原设置、任务和事件继续使用现有表。
+- `feb632b` 复现第一次工具调用超时但底层仍在读取时，第二次已开始。见 `wp03-physical-read-red.log`。修复后只有实际结束才解除同会话、同工具、同输入的占用。主进程边界 22/22 和已有 Hana 文件工具 7/7 分别见 `wp03-physical-read-green.log` 和 `wp03-ordinary-tool-regression.log`。最终正式 Electron 文件回归 6/6，报告为 `xiaozhi-ordinary-recovery-ui-s5orMb/report.json`。还未串联原生 worker 租约与跨业务预算。
+- 最终构建见 `wp03-cold-build-final.log`，渲染组件 261/261 见 `wp03-cold-renderer.log`。真实付费调用为 0。依赖锁未动，审计见 `wp03-cold-npm-audit.json`。
+- 原桌面请求回归串行运行通过 10/10，停止反馈 186.63 毫秒，见 `wp03-final-request-recovery-serial.log` 与 `xiaozhi-request-recovery-ui-ZBDmxf/report.json`。第一次与文件桌面回归及渲染组件同时执行时为 362.87 毫秒，未达 300 毫秒门槛，原样保留在 `wp03-final-request-recovery.log` 和 `xiaozhi-request-recovery-ui-b6gfTi/report.json`。混合负载下本轮未确认能稳定满足该门槛。
+
+## WP-04 恢复基线
+
+- `phase6-provider-resume-smoke.mjs` 10/12，证据 `wp04-resolver-starting-baseline.log` 与 `xiaozhi-phase6-provider-resume-pyQazG/report.json`。R01 在调用前失败，R08 无执行记录。现有夹具 Adapter 缺少 `schemas`，其中 R08 将 stat Provider 绑定在合成的写入能力。先用符合生产合同的两个原生 stat Provider 复核实际路径，再判断是否需要调整产品。原失败报告保留。

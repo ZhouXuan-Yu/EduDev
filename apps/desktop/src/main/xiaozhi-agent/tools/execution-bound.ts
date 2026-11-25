@@ -13,6 +13,7 @@ import {taskAdmissionFailure} from '../tasks/admission-error';
 import type {PermissionToolExecution} from '../permissions/tool-runtime';
 import {nonDispatchFileTools} from '../effects/non-dispatch';
 import {TerminalNotStartedError} from '../terminal/not-started';
+import {protocolHash} from '../capabilities/validation';
 type Result=Awaited<ReturnType<ToolDefinition['execute']>>;
 type Options={notDispatched?:(callId:string,tool:string,input:unknown,signal:AbortSignal)=>Promise<void>;resolveInput?:(tool:string,input:unknown,signal?:AbortSignal)=>Promise<unknown>;trustedMcpNames?:ReadonlySet<string>;sessionId:string;workspaceKey:string;outputWorkspaceKey?:string;registry:SessionExecutionRegistry;epoch:()=>string;current:(epoch:string)=>boolean;waiting:()=>boolean;onWaiting:(fn:(waiting:boolean)=>void)=>()=>void;beforeDelivery:(callId:string,tool:string,signal:AbortSignal,input:unknown)=>Promise<void>;attempt:(attempt:XiaozhiToolAttempt,signal:AbortSignal)=>Promise<void>;criticalFailure?:(error:unknown)=>void;timeout?: (manifest:ToolManifest)=>number};
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
@@ -84,6 +85,8 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
     return result;
    }
    if(!options.current(epoch)||signal?.aborted)return failed('cancelled',summary(1,'failed','cancelled'));
+   // Scope the physical read to the owning conversation and validated operation, across call IDs and Run generations.
+   const readKey=manifest.effect==='safe_read'?'tool-read:'+protocolHash([options.sessionId,def.name,input]):undefined;
    let admitted=false;
    // Actual IO releases its registry entry when it settles. Keep the subsequent
    // retry wait registered too, so session stop can cancel it immediately.
@@ -104,13 +107,14 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
      }catch(error){if(!taskAdmissionFailure(error)&&toolExecutionCode(error)!=='cancelled'&&options.current(epoch))options.criticalFailure?.(error);throw error;}
     };
     const persistAttempt=(state:XiaozhiToolAttempt)=>critical(s=>options.attempt(state,s));
-    let releaseLock=()=>{},safeSlot:ReadSlot|undefined,released=false,queuePersisted=manifest.effect!=='safe_read';
-    const release=()=>{if(released)return;released=true;releaseLock();safeSlot?.release();active.release();};
+    let releaseLock=()=>{},releaseRead=()=>{},safeSlot:ReadSlot|undefined,released=false,queuePersisted=manifest.effect!=='safe_read';
+    const release=()=>{if(released)return;released=true;releaseLock();releaseRead();safeSlot?.release();active.release();};
     try{
      if(manifest.effect==='safe_read'){
       await persistAttempt(summary(n,'queued'));queuePersisted=true;current(active.signal);
       safeSlot=await acquireSafeReadSlot(active.signal);current(active.signal);
      }
+     releaseRead=acquireToolResource(readKey,'write');
      releaseLock=acquireToolResource(manifest.resource==='none'?undefined:manifest.resource==='output'?options.outputWorkspaceKey??options.workspaceKey:manifest.resource==='workspace'?options.workspaceKey:`session:${options.sessionId}`,manifest.lock);
     }catch(error){
      try{
@@ -201,7 +205,7 @@ export function createToolExecutionBoundary(options:Options & {executeAuthorized
     if(!code&&result){const state=summary(n,'succeeded',undefined,'none',timing());await persistAttempt(state);return{...result,details:{...(object(result.details)?result.details:{}),execution:state}};}
     code??='unknown';
     if(code==='cancelled'||!options.current(epoch))return failed('cancelled',summary(n,'failed','cancelled',effect,timing()));
-    if(manifest.effect==='safe_read'&&n<manifest.maxAttempts&&['network','rate_limited','service_error','timeout','resource_busy'].includes(code)&&options.current(epoch)&&!signal?.aborted){
+    if(released&&manifest.effect==='safe_read'&&n<manifest.maxAttempts&&['network','rate_limited','service_error','timeout','resource_busy'].includes(code)&&options.current(epoch)&&!signal?.aborted){
      await persistAttempt(summary(n,'retrying',code,'none',timing()));
      if(!await waitForRetry(code==='rate_limited'?1000:300))return failed('cancelled',summary(n,'failed','cancelled'));
      continue;

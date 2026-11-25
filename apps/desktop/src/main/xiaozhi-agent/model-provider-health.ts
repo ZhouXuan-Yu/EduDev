@@ -24,8 +24,9 @@ export function createModelHealthScope(configuration: ModelProviderHealth, model
   onBlocked: () => void) {
   const key = configuration.keyForModel(modelId);
   let sdkVerified: boolean | undefined;
-  let settleAccepted: (() => void) | undefined;
+  let settleAccepted: (() => void | Promise<void>) | undefined;
   return {
+    ready: configuration.health.ready,
     begin() {
       let permit;
       try {permit = configuration.health.begin(key, true);}
@@ -35,22 +36,22 @@ export function createModelHealthScope(configuration: ModelProviderHealth, model
         finish(dispatched && transportLoss(error) ? {kind: 'dependency_failure'} : {kind: 'ignored'});
       return {
         failed,
-        response(response: Response) {
+        async response(response: Response) {
           const observed = response.ok ? null : rejection(response);
           let settling=false, cancelledByReader=false;
-          const drained = () => {
+          const drained = async () => {
             if(settling)return;
             settling=true;
-            if (observed) finish(observed);
+            if (observed) await finish(observed);
             else {
               settleAccepted = () => {
-                if (sdkVerified !== undefined) finish({kind: sdkVerified ? 'verified' : 'ignored'});
+                if (sdkVerified !== undefined) return finish({kind: sdkVerified ? 'verified' : 'ignored'});
               };
-              settleAccepted();
+              await settleAccepted();
             }
           };
           const reader = response.body?.getReader();
-          if (!reader) {drained(); return response;}
+          if (!reader) {await drained(); return response;}
           const body = new ReadableStream<Uint8Array>({
             async pull(controller) {
               let result: Awaited<ReturnType<typeof reader.read>>;
@@ -58,20 +59,20 @@ export function createModelHealthScope(configuration: ModelProviderHealth, model
                 result = await reader.read();
               } catch (error) {
                 if(cancelledByReader)return;
-                if (observed?.kind === 'dependency_failure') finish(observed);
-                else failed(error, true);
-                controller.error(error);
+                if (observed?.kind === 'dependency_failure') await finish(observed);
+                else await failed(error, true);
+                if(!cancelledByReader)controller.error(error);
                 return;
               }
               // A normal [DONE] response can make the SDK cancel while a read is pending.
               if(cancelledByReader)return;
-              if (result.done) {drained(); controller.close();}
+              if (result.done) {await drained(); if(!cancelledByReader)controller.close();}
               else controller.enqueue(result.value);
             },
             async cancel(reason) {
               cancelledByReader=true;
               try {await reader.cancel(reason);}
-              finally {drained();}
+              finally {await drained();}
             }
           });
           return new Response(body, {status: response.status, statusText: response.statusText, headers: response.headers});
@@ -80,7 +81,7 @@ export function createModelHealthScope(configuration: ModelProviderHealth, model
     },
     sdkResult(verified: boolean) {
       sdkVerified = verified;
-      settleAccepted?.();
+      return settleAccepted?.();
     }
   };
 }

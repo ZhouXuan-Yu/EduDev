@@ -2,12 +2,13 @@ import fs from 'node:fs';import path from 'node:path';import os from 'node:os';i
 const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-request-recovery-ui-')),data=path.join(root,'data'),profile=path.join(root,'profile');
 const main=path.join(process.env.OMNI_EDU_PROVIDER_RECOVERY_BUILD || path.join(desktop,'out'),'main/index.js');
 const priorWire=[];
+let fixtureCredential=0;
 const report={ok:false,checks:[],errors:[],boundary:'Formal isolated Electron/Pi, synthetic local HTTP/SSE rejection and partial-body faults, actual composer/stop/settings-entry/continuation and SQLite/cold readback. Zero real model requests; not full E07 AT or natural quality.'};let app,page,id;
 const check=name=>{report.checks.push(name);console.log('PASS '+name);fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));};
 const until=async(fn,ms=60000)=>{const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,50));}throw Error('Recovery UI condition timed out');};
 const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),id),query=sql=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all();}finally{db.close();}};
 async function launch(){
- const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'owned-synthetic-never-a-real-key',DEEPSEEK_MODEL:'deepseek-flash'};for(const key of['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[key];
+ const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'owned-synthetic-never-a-real-key-'+fixtureCredential,DEEPSEEK_MODEL:'deepseek-flash'};for(const key of['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[key];
  app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
  await app.evaluate(({net})=>{
   globalThis.requestRecovery={mode:'ok',modeCalls:0,calls:[],blocked:[]};net.fetch=async(input,init)=>{const s=globalThis.requestRecovery,url=typeof input==='string'?input:input.url;
@@ -28,6 +29,7 @@ async function restartFixture(){
  priorWire.push(...await calls());
  const session=id;
  await app.close();app=undefined;
+ fixtureCredential++;
  await launch();assert.equal(id,session);
 }
 let previousTurn;async function send(text){previousTurn=(await snapshot()).projection.turns.at(-1)?.id;await input().fill(text);await page.getByRole('button',{name:'发送消息',exact:true}).click();}
@@ -38,7 +40,7 @@ try{
  if(!focused){
   if(!stopOnly){await mode('transient');await send('请用一句话说明浮力方向，临时连接失败后沿同一任务继续。');const waiting=page.getByTestId('office-model-requests');await until(async()=>await waiting.count()&&await waiting.getAttribute('data-state')==='retry_wait');assert((await waiting.textContent()).includes('等待重试'));s=await idle();turn=s.projection.turns.at(-1);assert.equal(turn.status,'completed');assert.equal((await calls()).filter(c=>c.mode==='transient').length,2);assert.equal(turn.modelRequests.length,2);assert.equal(turn.modelRequests[0].state,'retried');report.retryRunId=turn.id;check('503 wait is visible in the original turn, exactly two wire attempts succeed under one task and two request records persist');
   for(const[scenario,code,text]of[['auth','authentication','凭证不可用'],['balance','insufficient_balance','余额不足'],['limited','rate_limited','限流']]){await mode(scenario);await send('请继续说明浮力，测试本轮连接反馈 '+scenario);s=await idle();turn=s.projection.turns.at(-1);assert.equal(turn.status,'failed');assert.equal(turn.errorCode,code);assert(turn.error.includes(text));assert.equal((await calls()).filter(c=>c.mode===scenario).length,1);const element=turnElement(turn);if(scenario!=='limited')assert(await element.getByTestId('office-turn-configure').isVisible());check(scenario+' displays the exact actionable category and makes one attempt without automatic key/account changes');}
-  // Independent scenarios start in a fresh desktop process. The shared cooldown stays covered by the real loopback suite.
+  // Independent scenarios use separate synthetic credential identities. The loopback suite verifies persistence for the same credential.
   await restartFixture();
   await mode('exhaust');await send('请说明浮力，服务暂不可用时有限恢复。');s=await idle();turn=s.projection.turns.at(-1);assert.equal(turn.status,'failed');assert.equal(turn.errorCode,'provider_unavailable');assert.equal((await calls()).filter(c=>c.mode==='exhaust').length,3);assert.equal(turn.modelRequests.length,3);assert.equal(s.usage.find(u=>u.runId===turn.id)?.modelCalls,3);check('HTTP500 exhaustion stops at three wire/budget attempts and displays service failure rather than model incapability');
   await restartFixture();
