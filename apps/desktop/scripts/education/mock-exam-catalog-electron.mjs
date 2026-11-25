@@ -5,6 +5,8 @@ import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
+import {openTeachingFiles} from '../product-navigation.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(root);
@@ -16,6 +18,7 @@ const sha=filename=>createHash('sha256').update(fs.readFileSync(filename)).diges
 const report={ok:false,output,main,mainSha256:sha(main),paidRequests:0,checks:[],errors:[]};
 const schemaVersion='xiaozhi.mock-exam-compilation.v1';
 const pdfText=process.argv.includes('--pdf-text');
+const answerCovers=process.argv.includes('--answer-covers');
 const mixedScan=process.env.OMNI_EDU_SYNTHETIC_MOCK_EXAM_SCAN;
 const live=process.argv.includes('--live');
 assert(!mixedScan||!live,'Raster fixture check uses controlled local responses');
@@ -26,6 +29,7 @@ const names={
   variant:'2025上海徐汇区初三数学一模试卷乙卷.pdf',answers:'2025上海徐汇区初三数学一模参考答案.pdf',
   conflict:'2025上海嘉定区初三数学二模试卷.'+(pdfText?'pdf':'md'),unlinked:'2025上海浦东新区初三数学二模答案.pdf',
   other:'2024上海徐汇区初三数学一模试卷.pdf',
+  ...(answerCovers?{inlineAnswer:'扫描件 01.pdf',splitAnswer:'扫描件 02.pdf'}:{}),
 };
 let app,page,sessionId;
 
@@ -94,13 +98,17 @@ async function launch(cold=false){
 async function fixture(){
   const titles={
     primary:'2025年上海徐汇区九年级数学一模试卷。 计算 7+5。',
-    variant:'2025年上海徐汇区九年级数学一模试卷。 计算 15+4。',
+    variant:answerCovers?'2025年上海徐汇区九年级数学一模试卷（附参考答案）\n第1题 计算 15+4。':'2025年上海徐汇区九年级数学一模试卷。 计算 15+4。',
     answers:mixedScan
       ?'2025年上海徐汇区九年级数学一模参考答案。 第1题 48平方米。 第2题 27立方单位。 第3题 800米。 第4题 4米。'
       :'2025年上海徐汇区九年级数学一模参考答案。 第1题 12。',
     conflict:'2025年上海闵行区九年级数学二模试卷。 第1题 12+6。',
     unlinked:'2025年上海浦东新区九年级数学二模答案。 第1题 6。',
     other:'2024年上海徐汇区九年级数学一模试卷。 计算 1+9。',
+    ...(answerCovers?{
+      inlineAnswer:'2025年上海虹口区九年级数学一模试卷（参考答案）\n第1题 21。',
+      splitAnswer:'2025年上海普陀区九年级数学一模试卷\n答案与解析\n第1题 32。',
+    }:{}),
   };
   for(const [key,text] of Object.entries(titles)){
     if(key==='primary'&&mixedScan){
@@ -114,7 +122,7 @@ async function fixture(){
     const base64=await app.evaluate(async({BrowserWindow},body)=>{
       const window=new BrowserWindow({show:false,width:800,height:900,webPreferences:{sandbox:true}});
       try{
-        await window.loadURL('data:text/html;charset=utf-8,'+encodeURIComponent('<html lang="zh"><p style="font:22px Microsoft YaHei">'+body+'</p></html>'));
+        await window.loadURL('data:text/html;charset=utf-8,'+encodeURIComponent('<html lang="zh"><p style="font:22px Microsoft YaHei;white-space:pre-line">'+body+'</p></html>'));
         return (await window.webContents.printToPDF({pageSize:'A4'})).toString('base64');
       }finally{window.destroy();}
     },text);
@@ -181,6 +189,17 @@ try{
     await until(()=>sql("SELECT id FROM resource_chunks WHERE resource_id=? AND instr(content_md,'48平方米')>0",
       [source('answers').id])[0]);
   }
+  if(answerCovers){
+    const covers=await until(()=>{
+      const ready=sql(`SELECT job.resource_id,json_extract(page.result_json,'$.text') AS cover
+        FROM material_pdf_jobs job JOIN material_pdf_pages page ON page.generation=job.generation
+        WHERE job.resource_id IN (?,?) AND job.state IN ('complete','partial')
+          AND page.page=1 AND page.status='complete'`,[source('inlineAnswer').id,source('splitAnswer').id]);
+      return ready.length===2?ready:undefined;
+    },180000);
+    assert.match(covers.find(item=>item.resource_id===source('inlineAnswer').id).cover,/试卷（参考答案）/u);
+    assert.match(covers.find(item=>item.resource_id===source('splitAnswer').id).cover,/试卷\s*\n\s*答案与解析/u);
+  }
   const pair=await page.evaluate(({paper,answers})=>window.omniEdu.setMaterialBookPair({
     schemaVersion:'xiaozhi.material-book-pair.v1',action:'link',resourceId:paper.id,version:paper.content_hash,
     revision:0,answerId:answers.id,answerVersion:answers.content_hash,
@@ -206,8 +225,16 @@ try{
   report.catalogId=sql('SELECT id FROM mock_exam_compilations')[0].id;
   const draft=await apiView();
   assert(draft.ok&&draft.value.summary.state==='draft'&&draft.value.summary.revision===1);
-  assert.equal(draft.value.unlinkedAnswers,1);
+  if(answerCovers)report.coverAdmission={unlinked:draft.value.unlinkedAnswers,entries:draft.value.entries.map(item=>item.title)};
+  assert.equal(draft.value.unlinkedAnswers,answerCovers?3:1);
   assert.equal(draft.value.entries.length,3);
+  if(answerCovers){
+    assert.equal(await row(names.inlineAnswer).count(),0);
+    assert.equal(await row(names.splitAnswer).count(),0);
+    assert.equal(await row(names.variant).count(),1);
+    await review().getByText('3 份独立答案册还没有建立试卷配对。',{exact:true}).waitFor();
+    check('Generic PDFs with standalone answer covers are counted outside the draft; a paper with appended answers remains selectable');
+  }
   const primary=draft.value.entries.find(item=>item.title===names.primary);
   assert(primary.copies===2&&primary.answer.state==='linked'&&primary.answer.resourceId===source('answers').id);
   const uncertain=draft.value.entries.find(item=>item.title===names.conflict);
@@ -324,13 +351,13 @@ try{
   await workbench.getByText('没有匹配的汇编',{exact:true}).waitFor();
   await search.fill('2025 数学');
   await titleRow.waitFor();
-  await detail.getByTestId('artifact-task-relations').locator('summary').click();
+  await openMaterialDisclosure(detail.getByTestId('artifact-task-relations'));
   const taskLink=detail.getByTestId('artifact-related-task');
   await taskLink.waitFor();
   assert.equal(await taskLink.getAttribute('data-task-id'),report.taskId);
   await taskLink.click();
   const taskWorkspace=page.getByTestId('my-tasks-workspace');
-  await taskWorkspace.getByTestId('task-artifact-relations').locator('summary').click();
+  await openMaterialDisclosure(taskWorkspace.getByTestId('task-artifact-relations'));
   const artifactLink=taskWorkspace.getByTestId('task-related-artifact').filter({hasText:'上海模考'});
   await artifactLink.waitFor();
   assert.equal(await artifactLink.getAttribute('data-artifact-id'),report.catalogId);
@@ -364,7 +391,7 @@ try{
   const latest=await until(async()=>{const result=await apiView(); return result.ok&&result.value.summary.revision===3&&result.value;});
   await page.getByTestId('desktop-navigation-notice').waitFor({state:'hidden'});
   const history=benchReview.getByTestId('mock-exam-versions');
-  await history.locator('summary').click();
+  await openMaterialDisclosure(history);
   await history.getByTestId('mock-exam-view-version-2').click();
   const preview=history.getByTestId('mock-exam-history-preview');
   await preview.getByText(/闵行区/).waitFor();
@@ -401,8 +428,7 @@ try{
   await app.close();app=undefined;
   await launch(true);
   await page.setViewportSize({width:1920,height:1080});
-  await page.getByTestId('nav-teaching').click();
-  await page.getByTestId('hub-entry-artifacts').click();
+  await openTeachingFiles(page);
   await page.getByTestId('teaching-mock-exams-tab').click();
   await page.getByTestId('mock-exam-result-'+report.catalogId).getByRole('button').click();
   await page.getByTestId('mock-exam-detail').getByText('当前内容恢复自第 2 版。').waitFor();

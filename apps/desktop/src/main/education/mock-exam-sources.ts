@@ -18,13 +18,16 @@ const facts=`r.id,r.original_file_name,r.title,r.content_hash,r.parse_status,
   j.status AS structure_status,j.pages,j.processed,j.held,
   p.total AS pdf_total,p.state AS pdf_state,p.generation AS pdf_generation,
   q.answer_id,q.answer_version,q.question_version,q.revision AS pair_revision,a.content_hash AS current_answer_version,
-  a.original_file_name AS answer_title,${answerSection} AS embedded,${heading},${coverText} AS cover_text`;
+  a.original_file_name AS answer_title,${answerSection} AS embedded,${heading},${coverText} AS cover_text,
+  EXISTS(SELECT 1 FROM material_book_pairs a2 WHERE a2.answer_id=r.id AND a2.active=1) AS is_answer`;
 const joins=`LEFT JOIN material_structure_jobs j ON j.resource_id=r.id AND j.version=r.content_hash
   LEFT JOIN material_pdf_jobs p ON p.resource_id=r.id AND p.version=r.content_hash
   LEFT JOIN material_pdf_pages f ON f.generation=p.generation AND f.page=1 AND f.status='complete' AND p.state IN ('complete','partial')
   LEFT JOIN material_book_pairs q ON q.question_id=r.id AND q.active=1
   LEFT JOIN teacher_resources a ON a.id=q.answer_id`;
 const pageOne=(row:Record<string,unknown>)=>mockExamCoverHeader(String(row.cover_text??''));
+const standaloneSource=(row:Record<string,unknown>)=>
+  standaloneAnswers(title(row),String(row.cover_text??''),String(row.headline));
 const evidenceHash=(row:Record<string,unknown>,cover?:string)=>
   protocolHash(cover===undefined?[title(row),String(row.headline)]:[title(row),'pdf-cover-v1',cover]);
 
@@ -45,9 +48,7 @@ function answer(row:Record<string,unknown>):MockExamEntry['answer'] {
 const sortKey=(entry:MockExamEntry)=>[entry.metadata.district,entry.metadata.subject,entry.metadata.round,entry.title].join('|');
 
 export async function mockExamSources(work:Sql,scope:MockExamScope) {
-  const rows=await work.all(`SELECT ${facts},
-    EXISTS(SELECT 1 FROM material_book_pairs a2 WHERE a2.answer_id=r.id AND a2.active=1) AS is_answer
-    FROM teacher_resources r ${joins}
+  const rows=await work.all(`SELECT ${facts} FROM teacher_resources r ${joins}
     WHERE r.content_hash IS NOT NULL AND (instr(r.original_file_name || r.title,'模')>0
       OR instr(${coverText},'模')>0
       OR EXISTS(SELECT 1 FROM resource_chunks c2 WHERE c2.resource_id=r.id AND c2.contains_personal_data=0
@@ -62,7 +63,7 @@ export async function mockExamSources(work:Sql,scope:MockExamScope) {
     const name=title(row),cover=pageOne(row),metadata=inferMockExam(name,String(row.headline),scope,cover);
     if(!metadata||Number(row.is_answer)===1)continue;
     const include=(!scope.districts&&!scope.rounds)||mockExamMetadataMatchesScope(metadata.metadata,scope);
-    if(standaloneAnswers(name)){if(include)unlinkedAnswers++;continue;}
+    if(standaloneSource(row)){if(include)unlinkedAnswers++;continue;}
     sourceRows.set(row.id,row);
     const item:MockExamEntry={...metadata,resourceId:row.id,version:row.content_hash,title:name,
       evidenceHash:evidenceHash(row,cover||undefined),include,copies:1,permission:'unknown',structure:structure(row),answer:answer(row)};
@@ -86,7 +87,7 @@ export async function mockExamSources(work:Sql,scope:MockExamScope) {
 export async function assertMockExamSource(work:Sql,entry:MockExamEntry) {
   const [row]=await work.all(`SELECT ${facts} FROM teacher_resources r ${joins} WHERE r.id=?`,[entry.resourceId]);
   const {pageEvidence,...storedStructure}=entry.structure;
-  if(!row||row.content_hash!==entry.version||evidenceHash(row,entry.cover?pageOne(row):undefined)!==entry.evidenceHash||
+  if(!row||Number(row.is_answer)===1||standaloneSource(row)||row.content_hash!==entry.version||evidenceHash(row,entry.cover?pageOne(row):undefined)!==entry.evidenceHash||
     protocolHash([structure(row),answer(row)])!==protocolHash([storedStructure,entry.answer])||
     pageEvidence&&protocolHash(await mockExamPageEvidence(work,row)??null)!==protocolHash(pageEvidence))throw Error('source_changed');
 }

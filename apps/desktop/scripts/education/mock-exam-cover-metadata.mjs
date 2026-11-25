@@ -1,6 +1,6 @@
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';
-const {inferMockExam,mockExamCoverHeader}=await import('../../src/main/education/mock-exam-metadata.ts');
+const {inferMockExam,mockExamCoverHeader,standaloneAnswers}=await import('../../src/main/education/mock-exam-metadata.ts');
 const {mockExamCoverLabel}=await import('../../src/shared/mock-exam-compilation.ts');
 
 const file='上海杨浦区2025届高三一模数学试卷.pdf';
@@ -41,4 +41,12 @@ assert.equal(inferMockExam('2026奉贤课堂练习.pdf','',springScope,spring),u
 assert.deepEqual(inferMockExam('2026奉贤三模化学试卷.pdf','',{year:2026},spring).conflicts,['subject']);
 const wrongSeason=spring.replace('2026.05','2026.10');
 assert.deepEqual(inferMockExam(springFile,'',springScope,wrongSeason).conflicts,['year']);
-console.log(JSON.stringify({ok:true,checks:15}));
+const mockTitle='2025年上海虹口区九年级数学一模试卷';
+assert(standaloneAnswers('扫描件.pdf',`${mockTitle}（参考答案）\n第1题 21。`));
+assert(standaloneAnswers('扫描件.pdf',`2024学年\n${mockTitle}\n答案与解析\n第1题 21。`));
+assert(standaloneAnswers('扫描件.pdf','【参考答案及评分标准】\n'+mockTitle));
+assert(standaloneAnswers('2025上海虹口初三数学一模参考答案.pdf'));
+assert(!standaloneAnswers('扫描件.pdf',`${mockTitle}（附参考答案）\n第1题 21。`));
+assert(!standaloneAnswers('扫描件.pdf',`${mockTitle}\n一、填空题\n第1题求解\n参考答案`));
+assert(!standaloneAnswers('扫描件.pdf',`${mockTitle}\n请做完后对照参考答案自查\n第1题求解`));
+console.log(JSON.stringify({ok:true,checks:22}));

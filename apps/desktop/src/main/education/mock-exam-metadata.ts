@@ -8,14 +8,16 @@ const numberedRounds=['第一轮','第二轮','第三轮','第四轮'];
 const numericRounds=['1模','2模','3模','4模'];
 const unique=<T>(values:T[])=>[...new Set(values)];
 const hasMarker=(text:string)=>/(?:[一二三四1234]模|模考|模拟(?:考试|测试|卷)?|(?:第[一二三四]轮).{0,8}(?:模拟|测试))/u.test(text);
-export const standaloneAnswers=(name:string)=>/(?:答案册|答案解析|参考答案|评分标准|答卷)(?:[）)\s_.-]|$)|答案(?:[）)]?\.[\da-z]+|[）)]?)$/iu.test(name)&&
-  !/(?:含|附|及|带)(?:参考)?答案/u.test(name);
+const combinedAnswers=/(?:含|附(?:有)?|及|与|带)\s*(?:参考)?答案/u;
+const namedAnswers=/(?:答案册|答案解析|参考答案|评分标准|答卷)(?:[）)\s_.-]|$)|答案(?:[）)]?\.[\da-z]+|[）)]?)$/iu;
+const printedAnswerRole='(?:参考答案(?:[与及]评分(?:标准|细则))?|答案(?:[与及]?解析|[与及]评分(?:标准|细则))?|评分(?:标准|细则)|答案册)';
+const printedRoleLine=new RegExp(`^[\\s(【]*${printedAnswerRole}[\\s)】:：。]*$`,'u');
+const printedRoleSuffix=new RegExp(`(?:[一二三四1234]模|模拟(?:考试|测试)?|(?:试|测试|练习)卷)[\\s(【:：·。—-]*${printedAnswerRole}[\\s)】:：。]*$`,'u');
 const yearsIn=(text:string)=>unique([...text.matchAll(/(?<!\d)(19[9]\d|20\d\d|2100)(?!\d)/gu)].map(hit=>Number(hit[1])));
 const questionStart=/(?:^|[。；\s])(?:(?:[一二三四五六七八九十]+[、.]\s*)?(?:填空题|选择题|解答题|计算题|简答题|实验题|阅读理解)|第\s*\d+\s*题|[1-9]\d?[.．、]\s*(?!\d))/u;
 const comprehensiveTitle=/^\d{4}\s*学年(?:度)?[^\n]{0,42}综合(?:练习|测试)(?:\s|$)/u;
 
-/** Read the bounded first-page title before the printed question sections. */
-export function mockExamCoverHeader(text:string):string {
+function mockExamCoverLines(text:string):string[] {
   const lines:string[]=[];
   for(const line of text.normalize('NFKC').split(/\r?\n/u).map(value=>value.trim()).filter(Boolean).slice(0,6)){
     const boundary=line.search(questionStart);
@@ -23,8 +25,24 @@ export function mockExamCoverHeader(text:string):string {
     if(boundary>0)lines.push(line.slice(0,boundary).trim());
     break;
   }
+  return lines;
+}
+
+/** Read the bounded first-page title before the printed question sections. */
+export function mockExamCoverHeader(text:string):string {
+  const lines=mockExamCoverLines(text);
   const heading=lines.join('\n');
   return hasMarker(heading)||comprehensiveTitle.test(heading)&&mockExamGradesIn(lines[0]).length===1?heading:'';
+}
+
+export function standaloneAnswers(name:string,...printedCovers:string[]):boolean {
+  if(namedAnswers.test(name)&&!combinedAnswers.test(name))return true;
+  return printedCovers.some(cover=>{
+    const lines=mockExamCoverLines(cover);
+    if(combinedAnswers.test(lines[0]??''))return false;
+    return printedRoleLine.test(lines[0]??'')||lines.some((line,index)=>hasMarker(line)&&!combinedAnswers.test(line)&&
+      (printedRoleSuffix.test(line)||printedRoleLine.test(lines[index+1]??'')));
+  });
 }
 
 function coverEvidence(filename:string,heading:string) {

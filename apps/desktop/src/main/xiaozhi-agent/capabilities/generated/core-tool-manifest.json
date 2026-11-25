@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "7bf454fd13cbb485a66b4880f3e6f5bb466b693de1ff5316e96d0c323e254861",
+  "sourceHash": "15408d461aa6c8869cb2e6720268e4bdee24a48bdbd412ced8d4126e9fd5982c",
   "sources": [
     {
       "file": "package-lock.json",
@@ -228,7 +228,7 @@
     },
     {
       "file": "src/main/education/mock-exam-metadata.ts",
-      "sha256": "1c69884a45f302972859c6ab017aadead11c2bea60da092e2dca69c3bc3eec6a"
+      "sha256": "33516a9b3f8eb2f9665332e50014f6b424a174cc10419d21edf9fc511c8f22fb"
     },
     {
       "file": "src/main/education/mock-exam-office.ts",
@@ -244,7 +244,7 @@
     },
     {
       "file": "src/main/education/mock-exam-sources.ts",
-      "sha256": "b4395b7bf94eb413be70af70b57aaa064df81091ee98aaf07784c52a309cb32d"
+      "sha256": "9dc8634871dfcdb0c403ce893e2d55dc30ef97b2238d7497a24077e77fe834f3"
     },
     {
       "file": "src/main/education/mock-exam-state.ts",
@@ -876,7 +876,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "8aea7f880defaf77b42a0d2bf699eebbd983caba11a794abf89fe2ebb3941dd0"
+      "sha256": "5968d01a8203e15a4d7d366be3d1a17729356ecfd7e152bc6a064e0064550f45"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
