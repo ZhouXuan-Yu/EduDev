@@ -1410,9 +1410,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         adapters: run.dynamicCapabilities,
         adapterRegistry: capabilityAdapters,
         current: () => !closing && active.get(id) === run && !run.stopped,
-        canRefresh: async capabilityId => run.agent?.canRefreshCapabilities() === true
+        canRefresh: async (capabilityId, scope) => run.agent?.canRefreshCapabilities() === true
           && !(await store.xiaozhiState.effects.forTask(id, run.task!.id)).some(effect =>
-            effect.contract.capabilityId === capabilityId && ['local_write', 'external_effect'].includes(effect.contract.effect)
+            (scope === 'provider_recovery' || effect.contract.capabilityId === capabilityId)
+              && ['local_write', 'external_effect'].includes(effect.contract.effect)
               && ['intent', 'executing', 'unknown'].includes(effect.state)),
         workspace: () => host.resolveFileWorkspace(id),
         persist: action => run.publisher!.persist(() => action()),

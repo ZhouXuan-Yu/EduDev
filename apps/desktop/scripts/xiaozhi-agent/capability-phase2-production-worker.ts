@@ -44,6 +44,9 @@ const originalFetch=net.fetch;
 let store=new OmniEduStore(dataRoot);
 let host:ReturnType<typeof createXiaozhiProductionHost>|undefined;
 let sessionId='',scenario='activation',stage=0,fixtureFailure:unknown;
+const recoveryOnly=process.argv.includes('--provider-recovery');
+let recoveryBefore: Awaited<ReturnType<typeof task>>;
+let recoveryReceipt: unknown;
 const activatedProviderId='edu.native.activated-file-stat';
 let v2CallsBeforeInitial=0;
 let callsBeforeRequiredLoss=0;
@@ -228,6 +231,45 @@ const fixture=http.createServer(async(incoming,response)=>{
       }
     }
     if(scenario==='initial'){await initialFlow(body,response);return;}
+    if (scenario==='provider-recovery') {
+      switch (stage++) {
+        case 0: send(response,'capability_resolve',request); return;
+        case 1: {
+          first=lastTool(body.messages,'capability_resolve').snapshot;
+          assert.equal(first?.selection.providerId,NATIVE_STAT_PROVIDER_IDS[0]);
+          recoveryBefore=await task();
+          assert(recoveryBefore);
+          await updateHana(provider=>{provider.health='unavailable';});
+          send(response,'capability_execute',{requirement:request,input:{path:'资料.txt'}}); return;
+        }
+        case 2: {
+          const result=lastTool(body.messages,'capability_execute');
+          assert(validProviderResult(result),JSON.stringify(result));
+          assert.equal(result.providerId,NATIVE_STAT_PROVIDER_IDS[1]);
+          assert.equal(result.status,'partial');
+          assert.equal(result.data.path,'资料.txt');
+          assert.equal(result.data.size,Buffer.byteLength('synthetic native artifact evidence'));
+          const current=await task();
+          assert.equal(current?.id,recoveryBefore?.id);
+          assert.equal(current?.requirementsVersion,recoveryBefore?.requirementsVersion);
+          const lineage=await snapshots();
+          const replacement=lineage.find(item=>item.snapshotId===result.snapshotId);
+          assert.equal(lineage.length,2);
+          assert.deepEqual(lineage.find(item=>item.snapshotId===first?.snapshotId),first);
+          assert.equal(replacement?.previousSnapshotId,first?.snapshotId);
+          assert.equal(replacement?.refreshReason,'explicit_refresh');
+          assert.deepEqual(replacement?.requirement,first?.requirement);
+          const executed=host!.capabilities.executionHistory();
+          assert.deepEqual(executed.map(item=>item.providerId),[NATIVE_STAT_PROVIDER_IDS[1]]);
+          assert.equal(executed[0].hash,replacement?.providerHash);
+          recoveryReceipt={result,original:first,replacement,executed,requirementsVersion:current?.requirementsVersion,
+            runId:current?.lastRunId, effectCount:(await store.xiaozhiState.effects.forTask(sessionId,current!.id)).length};
+          check('Active production Pi run refreshes only the unsent native read and retains the original Task Snapshot');
+          send(response); return;
+        }
+        default: throw Error('Unexpected provider recovery fixture step');
+      }
+    }
     if(stage++===0){send(response,'capability_execute',{requirement:request,input:{path:'资料.txt'}});return;}
     const result=lastTool(body.messages,'capability_execute');assert(validProviderResult(result));
     assert.equal(result.provenance.providerVersion,scenario==='resume'?fixtures.v3.manifest.version:fixtures.v2.manifest.version);
@@ -236,12 +278,25 @@ const fixture=http.createServer(async(incoming,response)=>{
 });
 async function start(prompt:string){assert(host);stage=0;const result=await host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt});assert(result.ok,JSON.stringify(result));return result.runId;}
 try {
-  await verifyActualPhase1Migration();
+  if (!recoveryOnly) await verifyActualPhase1Migration();
   await new Promise<void>(resolve=>fixture.listen(0,'127.0.0.1',resolve));const address=fixture.address();assert(address&&typeof address!=='string');
   net.fetch=async(input,init)=>{const target=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);assert.equal(target.origin,'https://api.deepseek.com');return globalThis.fetch(`http://127.0.0.1:${address.port}${target.pathname}`,init);};
   await store.init();sessionId=(await store.createAiConversationSession({title:'Phase2合成真实执行',folderId:null})).session.id;
   await store.xiaozhiState.setWorkspace(sessionId,workspace,'合成授权目录');
   host=createXiaozhiProductionHost({store,dataRoot,enabled:true,emit:event=>{events.push(event);if(scenario==='stop'&&event.kind==='tool_attempt'&&event.attempt.state==='started'&&event.attempt.tool==='capability_execute')stopStarted();}});
+  if (recoveryOnly) {
+    await host.capabilities.resolve(sessionId,wireRequest);
+    await updateHana((_provider,binding)=>{binding.priority=10;});
+    scenario='provider-recovery';
+    const runId=await start('合成验证：读取当前工作区资料.txt的文件大小。');
+    await host.waitForRun(sessionId,runId);
+    if (fixtureFailure) throw fixtureFailure;
+    assert.equal(stage,3);
+    assert(recoveryReceipt);
+    assert.equal((await store.getAiAgentRun(runId))?.status,'succeeded');
+    Object.assign(report,{recoveryReceipt,runId,externalRoot,dataRoot});
+    report.success=true;
+  } else {
   const coldBegin=performance.now();
   const executable=loadNativeStatExecutable('hana',fixtures.dependencyOnly.manifest,path.dirname(fixtures.dependencyOnly.path));
   const coldLoadMs=performance.now()-coldBegin;
@@ -346,6 +401,7 @@ try {
   report.performance={artifactBytes:fs.statSync(fixtures.v2.path).size,coldArtifactLoadMs:coldLoadMs,warmNativeSamples:warmSamples.length,warmNativeMeanMs:warmSamples.reduce((sum,value)=>sum+value,0)/warmSamples.length,warmNativeP95Ms:[...warmSamples].sort((a,b)=>a-b)[Math.ceil(warmSamples.length*0.95)-1],stopReceiptMs,artifactSettledMs,sourceFiles:fixtures.v2.manifest.sources.length};
   report.success=true;
   Object.assign(report,{externalRoot,dataRoot,dependencyMarker,dependencyMarkerLoads:0,nodePathCleared:true});
+  }
 } catch(error) {report.error=String(error instanceof Error?error.stack:error);process.exitCode=1;}
 finally {
   await host?.close().catch(()=>{});await store.close().catch(()=>{});net.fetch=originalFetch;

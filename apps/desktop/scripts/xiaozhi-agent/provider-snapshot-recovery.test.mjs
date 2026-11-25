@@ -42,7 +42,8 @@ async function setup(t, name, options = {}) {
   };
   const native = createNativeStatService({registry, resolveWorkspace: async () => lease, isCurrent});
   await native.register();
-  const allow = {refresh: true};
+  let refreshChecks = 0;
+  const allow = {refresh: true, attempts: Infinity};
   async function setProvider(id, update) {
     const view = await registry.snapshot();
     const provider = view.providers.find(item => item.id === id);
@@ -54,7 +55,7 @@ async function setup(t, name, options = {}) {
   await setProvider(hana, (_, binding) => {binding.priority = 10; binding.userPinned = options.pinned === true;});
   const runtime = createCapabilityTaskRuntime({registry, snapshots, native, owner: run.owner, taskId: run.task.id,
     current: () => isCurrent(run.sessionId, run.runId), workspace: async () => lease,
-    canRefresh: async () => allow.refresh, persist: action => run.publisher.persist(action)});
+    canRefresh: async () => allow.refresh && ++refreshChecks <= allow.attempts, persist: action => run.publisher.persist(action)});
   const requirement = options.mime ? {...request, conditions: ['require_mime']} : request;
   const selected = (await runtime.resolve(requirement)).snapshot;
   assert.equal(selected?.selection.providerId, hana);
@@ -92,7 +93,7 @@ test('recovers an unsent local read once through the compatible installed Provid
   assert.deepEqual(seen.history.find(item => item.snapshotId === x.selected.snapshotId), x.selected);
   const recovered = seen.history.find(item => item.snapshotId !== x.selected.snapshotId);
   assert.equal(recovered.previousSnapshotId, x.selected.snapshotId);
-  assert.equal(recovered.refreshReason, 'host_recovery');
+  assert.equal(recovered.refreshReason, 'explicit_refresh');
   assert.deepEqual(recovered.requirement, x.selected.requirement);
   assert.deepEqual(seen.task, x.originalTask);
   assert.equal(seen.providers.bindings.find(item => item.providerId === hana).priority, 10);
@@ -102,11 +103,15 @@ for (const [name, options] of [
   ['user-pinned', {pinned: true}],
   ['missing-conditional-evidence', {mime: true}],
   ['busy-safe-point', {}],
+  ['late-busy-safe-point', {}],
+  ['approval-required', {}],
 ]) {
   test(`preserves the original snapshot and makes no replacement read when ${name}`, async t => {
     const x = await setup(t, name, options);
     if (name === 'busy-safe-point') x.allow.refresh = false;
+    if (name === 'late-busy-safe-point') x.allow.attempts = 3;
     await x.setProvider(hana, provider => {provider.health = 'unavailable';});
+    if (name === 'approval-required') await x.setProvider(workspace, provider => {provider.health = 'pending_approval';});
     const seen = await x.observe(await x.execute());
     assert.equal(seen.result.success, false);
     assert.deepEqual(seen.actualReads, []);

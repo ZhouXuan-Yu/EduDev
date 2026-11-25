@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 7/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 8/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -15,7 +15,10 @@
 | AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
 | AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
 | AC-11 | NOT_RUN | 实际旧读取未归还前，同一输入不得再次触发读取。原只读 EBUSY 补发与停止回归通过。尚需串联真实业务和 R1 资源租约计数。 |
-| AC-12–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-12 | PASS · 已实现 | Windows Electron 生产 Pi 在原 Task 内，从不可用的 Hana stat 切到已登记的 workspace stat。A 发起 0 次，B 发起 1 次，原要求版本、默认优先级和快照内容保留。实际 SQLite 有两条链接快照与一条成功执行回执。 |
+| AC-13 | NOT_RUN | 实际本地读取夹具已验固定项、缺少触发条件所需证据、等待审批、初次和迟到的安全点占用。其余拒绝矩阵和生产 Effect 仍待补。 |
+| AC-14 | NOT_RUN | 同一运行内，更高优先级候选出现时仍使用有效的旧快照。完整冷启同任务恢复仍待验。 |
+| AC-15–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -83,3 +86,9 @@
 ## WP-04 恢复基线
 
 - `phase6-provider-resume-smoke.mjs` 10/12，证据 `wp04-resolver-starting-baseline.log` 与 `xiaozhi-phase6-provider-resume-pyQazG/report.json`。R01 在调用前失败，R08 无执行记录。现有夹具 Adapter 缺少 `schemas`，其中 R08 将 stat Provider 绑定在合成的写入能力。先用符合生产合同的两个原生 stat Provider 复核实际路径，再判断是否需要调整产品。原失败报告保留。
+
+## WP-04 第一轮原生只读接续
+
+- `6464760` 使用现有两个原生 stat 实现、真实文件和实际 SQLite，切换前红灯 4/5。原实现不可用时，主进程只返回 `needs_refresh`，替代实际读取次数为 0。见 `wp04-native-snapshot-red.log`。生产范围限定在已知原生 stat 合同，原请求未进入旧 Adapter，当前任务安全点允许，原要求有效，候选满足全部所需条件且在同一驻留约束内。复用已有 `explicit_refresh` 持久值和前序快照链接，保持旧版读回兼容。
+- Node 真实文件和 SQLite 最终 7/7，见 `wp04-native-snapshot-guards.log` 和 `provider-snapshot-recovery-TRnzJe`。运行 `node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs --provider-recovery`，实际 Electron 43.8.3 / Pi 专项 1/1。合成 SSE 只发原 resolve、execute 和终态应答，宿主在处理中完成替代，无模型刷新请求。报告 `wp04-native-pi-report.json` 记录替代内容、版本、hash、Task 和 Snapshot。关闭后独立以 SQLite 只读方式核对，见 `wp04-native-pi-sqlite.json`。Chrome 网络服务有一次重启，见 `wp04-native-pi-worker.log`。
+- 构建通过，见 `wp04-safe-stat-build.log`。原能力合同 10/10，渲染组件 261/261，日志 `wp04-predeployment-contract.log` 与 `wp04-safe-stat-renderer.log`。真实付费模型调用为 0。AC-34 仍留待组合差异审查。
