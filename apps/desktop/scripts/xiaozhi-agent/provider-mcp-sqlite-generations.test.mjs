@@ -277,3 +277,56 @@ test('real HTTP Retry-After throttles only the affected MCP source', async () =>
     } finally {await separate.close();}
   }, () => clock);
 });
+
+test('real failed and cancelled MCP probes respect backoff and ignore late success', async () => {
+  let clock = 1000;
+  await scenario('mcp-failed-and-cancelled-probe', async ({runtime, fixture, id, report}) => {
+    let initialize = 0;
+    fixture.state.beforeReply = request => {
+      if (request.method === 'initialize') {initialize++; return 'drop';}
+    };
+    const prepare = async signal => {
+      const handle = await runtime.tools(undefined, {serverId: id, signal, preparationTimeoutMs: 3000});
+      try {return handle.definitions.length;} finally {await handle.dispose();}
+    };
+    for (let index = 0; index < 3; index++) assert.equal(await prepare(), 0);
+    clock += 10_000;
+    assert.equal(await prepare(), 0);
+    const failed = report.failedProbe = await runtime.healthSnapshot(id);
+    assert.equal(initialize, 4);
+    assert.deepEqual({phase: failed.phase, failures: failed.failures, retryAt: failed.retryAt}, {phase: 'open', failures: 4, retryAt: 31_000});
+    clock += 19_999;
+    assert.equal(await prepare(), 0);
+    assert.equal(initialize, 4);
+    clock++;
+
+    const arrived = deferred(), release = deferred();
+    const controller = new AbortController();
+    fixture.state.beforeReply = async request => {
+      if (request.method === 'initialize') {initialize++; arrived.resolve(); await release.promise;}
+    };
+    const awaiting = prepare(controller.signal);
+    try {
+      await Promise.race([arrived.promise, awaiting.then(() => {throw Error('Missing actual half-open HTTP request');})]);
+      controller.abort(Error('cancelled'));
+      const snapshotBeforeReply = await Promise.race([awaiting.then(count => ({count})),
+        new Promise(resolve => {
+          const limit = AbortSignal.timeout(750);
+          limit.addEventListener('abort', () => resolve(null), {once: true});
+        })]);
+      assert.deepEqual(snapshotBeforeReply, {count: 0}, 'caller cancellation must close the owned probe before a remote reply');
+      assert.equal(initialize, 5);
+      assert.equal((await runtime.healthSnapshot(id)).failures, 4);
+      report.cancelledProbe = await runtime.healthSnapshot(id);
+      assert.equal(report.cancelledProbe.phase, 'open');
+    } finally {release.resolve(); await awaiting;}
+
+    fixture.state.beforeReply = request => {if (request.method === 'initialize') initialize++;};
+    assert.equal(await prepare(), 1);
+    assert.equal(initialize, 6);
+    report.reverified = await runtime.healthSnapshot(id);
+    assert.equal(report.reverified.phase, 'closed');
+    assert.equal(report.reverified.failures, 0);
+    assert.equal(fixture.state.calls, 0);
+  }, () => clock);
+});
