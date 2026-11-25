@@ -34,7 +34,7 @@ export class MaterialBookAnswerIndex{
    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ${name}_v2 AFTER ${event} ON ${table} BEGIN INSERT INTO material_book_answer_dirty_v1(batch_id,ordinal,context_only) VALUES(${r}.batch_id,${r}.ordinal,0) ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,context_only=0; END`);
   }
   // One incremental pass upgrades old projections, without replaying any model receipt.
-  await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=6 WHERE id=1 AND section_policy<6');
+  await this.host.run('UPDATE material_book_answer_control_v1 SET cursor=0,section_policy=7 WHERE id=1 AND section_policy<7');
  }
  async pending(){return !!(await this.host.all('SELECT 1 FROM material_book_answer_dirty_v1 UNION ALL SELECT 1 FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM material_book_answer_control_v1 WHERE id=1) LIMIT 1')).length;}
  /** A saved proof waits for changes to its book version, including removals that lost their batch row. */

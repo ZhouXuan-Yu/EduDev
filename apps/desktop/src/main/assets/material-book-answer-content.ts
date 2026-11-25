@@ -3,7 +3,7 @@ import {MATERIAL_AI_BOOK_PAGE_RESPONSE,MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
-import {shanghaiMockSectionBoundary,shanghaiMockSectionKey,wrappedShanghaiMockHeading,type ShanghaiMockSectionPolicy} from '../../shared/shanghai-mock-sections';
+import {shanghaiMockSectionBoundary,shanghaiMockSectionKey,startsWrappedShanghaiMockHeading,wrappedShanghaiMockHeading,type ShanghaiMockSectionPolicy} from '../../shared/shanghai-mock-sections';
 
 type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIssue[]};
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
@@ -26,14 +26,14 @@ function* bookLines(text:string,mockTitles:ShanghaiMockSectionPolicy){
   const line=lines[i],value=headingText(line[0]);
   let last=line;
   let heading:string|undefined;
-  if(mockTitles===true&&/^\d{4}/u.test(value.normalize('NFKC'))){
+  if(startsWrappedShanghaiMockHeading(value,mockTitles)){
    const adjacent=[value];
    for(const next of lines.slice(i+1,i+3)){
     if(next.index!==last.index!+last[0].length)break;
     adjacent.push(headingText(next[0]));
     last=next;
    }
-   const wrapped=wrappedShanghaiMockHeading(adjacent);
+   const wrapped=wrappedShanghaiMockHeading(adjacent,mockTitles);
    last=lines[i+(wrapped?.count??1)-1];
    if(wrapped){heading=wrapped.title;i+=wrapped.count-1;}
   }
@@ -41,8 +41,8 @@ function* bookLines(text:string,mockTitles:ShanghaiMockSectionPolicy){
  }
 }
 function sectionBoundary(value:string,previous:string,mockTitles:ShanghaiMockSectionPolicy=false):string|undefined{
- if(mockTitles&&shanghaiMockSectionKey(value))return value;
- if(mockTitles&&shanghaiMockSectionBoundary(value))return '';
+ if(mockTitles&&shanghaiMockSectionKey(value,mockTitles))return value;
+ if(mockTitles&&shanghaiMockSectionBoundary(value,mockTitles))return '';
  if(title(value)&&value.length<=100&&!/[。！？?]/.test(value))return chapter(previous)?previous+' '+value:value;
  if(/^(?:第[一二三四五六七八九十百零〇\d、，,]+(?:章|单元|课|节|套|讲)|(?:专项|期中|期末|中考|单元|基础|素养|综合|能力).*?(?:测试|训练|练习|检测|模拟|测验)|(?:试卷|测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验))/.test(value)
   ||value.length<=100&&!/[。！？?]/.test(value)&&/(?:测试卷|训练卷|练习卷|检测卷|模拟卷|单元测验)(?:[（(][一二三四五六七八九十\d]+[）)])?$/.test(value))return '';
@@ -114,7 +114,7 @@ function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>
   const heading=line.heading??sectionBoundary(value,previous,mockTitles);
   if(heading){finish(at);section=heading;previous=value;continue;}
   // Only the new derived-context policy changes boundary handling. Saved raw-page policies keep their meaning.
-  if((line.heading!==undefined||initialSection!==undefined||tableBoundaries||mockTitles&&shanghaiMockSectionBoundary(value))&&heading===''){finish(at);section='';previous=value;continue;}
+  if((line.heading!==undefined||initialSection!==undefined||tableBoundaries||mockTitles&&shanghaiMockSectionBoundary(value,mockTitles))&&heading===''){finish(at);section='';previous=value;continue;}
   const numbered=/^\s{0,3}(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))\s*/.exec(raw);
   if(numbered){finish(at);open={start:at,bodyStart:at+numbered[0].length,section,number:numbered[1]||numbered[2]};}
   previous=value;

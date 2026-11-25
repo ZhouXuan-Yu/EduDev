@@ -18,6 +18,7 @@ check('All displayed quotes map exactly into final saved text and raw responses 
 const scoped=(body,answerIssues=[],pageIssues=[],outcome=answerIssues.length||pageIssues.length?'needs_review':'no_questions')=>parseAiPageResponse(JSON.stringify({schemaVersion:MATERIAL_AI_BOOK_PAGE_RESPONSE,outcome,questions:[],pageText:body,pageIssues,answerIssues}));
 const section='第十三、十四章 素养基础测试卷',other='第十三、十四章 素养提优测试卷',local={section,number:'2',issues:['uncertain_ocr']};
 const {MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY}=await import('../../src/shared/material-ai-page.ts');
+const {shanghaiMockSectionKey,WRAPPED_SHANGHAI_MOCK_SECTIONS}=await import('../../src/shared/shanghai-mock-sections.ts');
 const {bookPageRestorationInstruction}=await import('../../src/main/assets/material-ai-book-instruction.ts');
 const printed=(first,final=first)=>bookAnswerPage(scoped(first),scoped(final),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY);
 check('Printed brackets after repeated question text recover literal answer and analysis only for new inputs',()=>{
@@ -92,6 +93,35 @@ check('An incomplete heading cannot absorb a new independently dated exam',()=>{
  const [entry]=bookAnswerPage(raw,raw,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true).entries;
  assert.equal(entry.section,actual);
  assert(entry.agrees);
+});
+check('District term covers match across role placement and line wrapping while retaining the printed event',()=>{
+ const paper='松江区2024学年度第一学期期末质量监控试卷\n高三数学';
+ const answers='上海市松江区 2024—2025 学年 第1学期 期末质量监控试卷\n高三年级数学参考答案';
+ const key=shanghaiMockSectionKey(paper);
+ assert(key);
+ assert.equal(key,shanghaiMockSectionKey(answers));
+ assert.equal(shanghaiMockSectionKey(paper,WRAPPED_SHANGHAI_MOCK_SECTIONS),undefined);
+ const second='黄浦区2024学年度第一学期高三年级期终调研测试\n数学试卷';
+ assert.equal(shanghaiMockSectionKey(second),shanghaiMockSectionKey(second.replace('数学试卷','数学参考答案')));
+ assert.notEqual(shanghaiMockSectionKey(second),shanghaiMockSectionKey('2025年上海黄浦区高三数学一模答案解析'));
+ for(const altered of [answers.replaceAll('松江','金山'),answers.replace('第1学期','第2学期'),answers.replace('2024—2025','2023—2024'),
+  answers.replace('质量监控','质量检测'),answers.replace('高三','高二'),answers.replace('数学','物理'),answers+'（乙卷）']){
+  assert(shanghaiMockSectionKey(altered));
+  assert.notEqual(shanghaiMockSectionKey(altered),key);
+ }
+ for(const invalid of [answers.replace('2024—2025','2024—2026'),answers.replace('试卷','（A卷）试卷')+'（B卷）',
+  answers.replace('松江','鼓楼'),answers.replace('数学','')])assert.equal(shanghaiMockSectionKey(invalid),undefined);
+});
+check('District term heading boundaries prevent borrowing a prior scope over an incomplete or foreign cover',()=>{
+ const title='松江区2024学年度第一学期期末质量监控试卷\n高三数学答案';
+ const first=scoped(title+'\n1. D\n解析：本卷内容。');
+ const same=scoped(first.pageText.replace('试卷\n高三','试卷高三'));
+ assert.deepEqual(bookAnswerPage(same,first,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true).entries.map(e=>[e.section,e.agrees]),[[title,true]]);
+ for(const partial of ['青浦区2025学年度第二学期期末质量监控试卷\n\n高三数学答案',
+  '南京市鼓楼区2025学年度第二学期期末质量监控试卷\n高三数学答案']){
+  const proof=scoped(first.pageText+'\n'+partial+'\n2. B\n解析：另一份。');
+  assert.deepEqual(bookAnswerPage(proof,proof,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true).entries.map(e=>[e.number,e.section]),[['1',title],['2','']]);
+ }
 });
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});

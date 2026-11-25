@@ -150,8 +150,21 @@ await check('Upgrading a v5 index replays the saved pages without changing the o
  await f.repo.migrate();
  assert.equal(await f.repo.index.pending(),true);
  await f.init();
- assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,6);
+ assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,7);
  assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ assert.equal(JSON.stringify([...f.proofs]),original);
+});
+await check('Printed term identity ignores other events but preserves source validation and the v3 receipt',{
+ pages:(p,q)=>[[p('front','松江区2024学年度第一学期期末质量监控试卷'),p('grade','高三数学')],[q]],
+ answerText:'松江区2024学年度第二学期期末质量监控试卷\n高三数学答案\n1. B\n解析：第二学期。\n'+
+   '松江区2024学年度第一学期期末质量监控试卷\n高三数学答案'+numberedAnswer,
+},async f=>{
+ const original=JSON.stringify([...f.proofs]);
+ const view=await f.matchStructure(),after=await f.read();
+ assert.equal(view.rows[0].state,'applied');
+ assert.equal(after.answer,'48平方米');
+ assert.equal(JSON.parse(f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get().evidence_json).sectionProjection,'shanghai-mock-sections.v3');
+ await f.structures.validate(after);
  assert.equal(JSON.stringify([...f.proofs]),original);
 });
 await check('Mixed district answer pages retain exact numeric text for the correct matching edition',{

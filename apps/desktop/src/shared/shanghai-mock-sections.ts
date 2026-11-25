@@ -1,8 +1,12 @@
 import { MOCK_EXAM_GRADES, MOCK_EXAM_SUBJECTS, SHANGHAI_DISTRICTS, mockExamYear } from "./mock-exam-compilation";
+import { districtTermExamIdentity, startsDistrictTermExamHeading } from './district-term-exam-heading';
 
 export const SHANGHAI_MOCK_SECTIONS = "shanghai-mock-sections.v1" as const;
 export const WRAPPED_SHANGHAI_MOCK_SECTIONS = "shanghai-mock-sections.v2" as const;
-export type ShanghaiMockSectionPolicy = boolean | typeof SHANGHAI_MOCK_SECTIONS;
+export const TERM_SHANGHAI_MOCK_SECTIONS = "shanghai-mock-sections.v3" as const;
+export type ShanghaiMockSectionVersion = typeof SHANGHAI_MOCK_SECTIONS | typeof WRAPPED_SHANGHAI_MOCK_SECTIONS | typeof TERM_SHANGHAI_MOCK_SECTIONS;
+export type ShanghaiMockSectionPolicy = boolean | ShanghaiMockSectionVersion;
+const termAware = (policy: ShanghaiMockSectionPolicy) => policy === true || policy === TERM_SHANGHAI_MOCK_SECTIONS;
 const gradeAliases = ["初预", "初一", "初二", "初三", "高一年级", "高二年级", "高三年级"];
 const roundNames = ["一", "二", "三", "四"];
 const edition = "(?:[ABCD甲乙丙丁]卷)";
@@ -21,8 +25,11 @@ const title = new RegExp(
 const layoutText = (text: string) => text.normalize("NFKC").replace(/\s/gu, "");
 
 /** Compare only a complete printed scope. Filenames, question numbers and partial covers cannot fill it. */
-export function shanghaiMockSectionKey(text: string): string | undefined {
-  const match = title.exec(layoutText(text));
+export function shanghaiMockSectionKey(text: string, policy: ShanghaiMockSectionPolicy = true): string | undefined {
+  const normalized = layoutText(text);
+  const termIdentity = termAware(policy) ? districtTermExamIdentity(normalized) : undefined;
+  if (termIdentity) return TERM_SHANGHAI_MOCK_SECTIONS + '|' + termIdentity;
+  const match = title.exec(normalized);
   if (!match) return;
   const [, year, district, grade, subject, round, before1, before2, paper, inside1, inside2, answers, after1, after2] = match;
   if (!mockExamYear(Number(year)) || !paper && !answers) return;
@@ -34,30 +41,39 @@ export function shanghaiMockSectionKey(text: string): string | undefined {
 }
 
 /** An exam-looking heading with incomplete identity terminates inheritance. */
-export function shanghaiMockSectionBoundary(text: string): boolean {
+export function shanghaiMockSectionBoundary(text: string, policy: ShanghaiMockSectionPolicy = true): boolean {
   const normalized = layoutText(text);
+  if (termAware(policy) && startsDistrictTermExamHeading(normalized)) return true;
   return normalized.length <= 100 && yearHeading.test(normalized) &&
     /(?:[一二三四1-4]模|模考|模拟)/u.test(normalized) &&
     /(?:试卷|试题|参考答案|答案册|答案解析|答案|参考解答)(?:\(?[ABCD甲乙丙丁]卷\)?)?$/u.test(normalized);
 }
 
+export function startsWrappedShanghaiMockHeading(text: string, policy: ShanghaiMockSectionPolicy): boolean {
+  if (policy !== WRAPPED_SHANGHAI_MOCK_SECTIONS && !termAware(policy)) return false;
+  const normalized = layoutText(text);
+  return /^\d{4}/u.test(normalized) || termAware(policy) && startsDistrictTermExamHeading(normalized);
+}
+
 /** Only adjacent literal lines can contribute to the identity of a printed heading. */
-export function wrappedShanghaiMockHeading(lines: readonly string[]) {
+export function wrappedShanghaiMockHeading(lines: readonly string[], policy: ShanghaiMockSectionPolicy = true) {
   const first = layoutText(lines[0] ?? "");
-  if (!yearHeading.test(first)) return;
+  const startsTerm = termAware(policy) && startsDistrictTermExamHeading(first);
+  if (!startsTerm && !yearHeading.test(first)) return;
   let boundary: { title: string; count: number } | undefined;
   if (regionHeading.test(first)) boundary = { title: "", count: 1 };
+  if (startsTerm && !shanghaiMockSectionKey(first, policy)) boundary = {title: '', count: 1};
   let heading = lines[0];
   for (let i = 1; i < Math.min(lines.length, 3); i++) {
     const next = layoutText(lines[i]);
-    if (!next || yearHeading.test(next) || /[。！？?]/u.test(next)) break;
+    if (!next || yearHeading.test(next) || termAware(policy) && startsDistrictTermExamHeading(next) || /[。！？?]/u.test(next)) break;
     // An already complete heading can only absorb a standalone explicit edition.
-    const complete = shanghaiMockSectionKey(heading);
+    const complete = shanghaiMockSectionKey(heading, policy);
     if (complete && !editionLine.test(next)) break;
     heading += "\n" + lines[i];
     if (layoutText(heading).length > 100) break;
-    if (shanghaiMockSectionKey(heading)) boundary = { title: heading, count: i + 1 };
-    else if (complete || shanghaiMockSectionBoundary(heading)) boundary = { title: "", count: i + 1 };
+    if (shanghaiMockSectionKey(heading, policy)) boundary = { title: heading, count: i + 1 };
+    else if (complete || !startsTerm && shanghaiMockSectionBoundary(heading, policy)) boundary = { title: "", count: i + 1 };
   }
   return boundary;
 }
