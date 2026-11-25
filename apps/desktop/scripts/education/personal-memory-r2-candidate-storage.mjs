@@ -8,6 +8,7 @@ import { join } from 'node:path';
 
 const { preparePersonalMemoryExtraction, bindPersonalMemoryProposals } = await import('../../src/main/education/personal-memory/candidate-admission.ts');
 const { createPersonalMemoryCandidateState, personalMemoryCandidateSchema } = await import('../../src/main/education/personal-memory/candidate-state.ts');
+const { createPersonalMemoryCandidateRunner } = await import('../../src/main/education/personal-memory/candidate-runner.ts');
 const database = join(mkdtempSync(join(tmpdir(),'edudev-r2-candidate-')), 'app.db');
 let db = new DatabaseSync(database);
 db.exec(personalMemoryCandidateSchema);
@@ -83,6 +84,21 @@ assert.equal(rows[second.key].state,'stale');
 assert.equal(rows[third.key].state,'pending');
 assert.equal(rows[fourth.key].state,'conflict');
 assert.equal(rows[first.key].revision,2);
-db.close();
 console.log('PASS SQLite restart retains policy and teacher decisions');
-console.log(JSON.stringify({passed:5,database}));
+
+const sourceVersion=createHash('sha256').update('runner').digest('hex');
+const source={id:'runner-root',sourceVersion,generation:1,policyRevision:resumed.policyRevision,role:'teacher',purpose:['extract'],
+  scope:{kind:'course',id:'science'},term:'unknown',sanitizedText:'我教五年级科学。'};
+db.prepare('INSERT INTO source_witness VALUES (?, ?, 1, 1)').run(source.id,sourceVersion);
+const proposal={kind:'teaching_context',source_id:source.id,source_version:1,scope_id:'science',valid_term:'unknown',
+  supporting_quote:source.sanitizedText,value:source.sanitizedText,supersedes:null};
+const run=createPersonalMemoryCandidateRunner(state,{pythonExecutable:'',repoRoot:'',providerKey:''},
+  async ()=>({status:'success',modelCalls:1,usage:[],proposals:[proposal]}));
+const read=async()=>({sources:[source],existing:[]});
+await assert.rejects(run({read,isCurrent:async()=>false}),/stale_task/);
+assert.equal((await state.list(100)).some(row=>row.draft.witness.sourceId===source.id),false);
+assert.equal((await run({read,isCurrent:async()=>true})).state,'processed');
+assert.equal((await state.list(100)).some(row=>row.draft.witness.sourceId===source.id&&row.state==='pending'),true);
+db.close();
+console.log('PASS candidate task checks the existing task lease inside the SQLite transaction');
+console.log(JSON.stringify({passed:6,database}));

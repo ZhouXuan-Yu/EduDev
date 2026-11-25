@@ -26,6 +26,11 @@ CREATE INDEX personal_memory_pending_source ON personal_memory_pending(source_id
 export type PersonalMemoryProcessing = CandidateAuthority & Readonly<{ enabled: boolean }>;
 type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict'; revision: number };
 type SourceWitnessReader = (transaction: Sql, draft: PersonalMemoryDraft) => Promise<boolean>;
+type WritableSql = Sql & { change: NonNullable<Sql['change']> };
+
+function requireChanges(db: Sql): asserts db is WritableSql {
+  if (!db.change) throw Error('configuration');
+}
 
 function assertRevision(value: number) {
   if (!Number.isSafeInteger(value) || value < 0) throw Error('invalid_input');
@@ -44,6 +49,14 @@ function pendingDraft(row: Record<string, unknown>): PendingDraft {
 
 /** Persistence for admitted drafts. Canonical source and target witnesses remain with the authorizing host. */
 export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: SourceWitnessReader) {
+  function write<T>(action: (work: WritableSql) => Promise<T>) {
+    if (!sql.transaction) throw Error('configuration');
+    return sql.transaction(async work => {
+      requireChanges(work);
+      return action(work);
+    });
+  }
+
   async function processing(db = sql): Promise<PersonalMemoryProcessing> {
     const [row] = await db.all('SELECT enabled,policy_revision,cancel_generation FROM personal_memory_processing WHERE id=1');
     if (!row) throw Error('configuration');
@@ -55,7 +68,7 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
     async setEnabled(enabled: boolean, expectedRevision: number) {
       assertRevision(expectedRevision);
       if (typeof enabled !== 'boolean') throw Error('invalid_input');
-      return sql.transaction(async db => {
+      return write(async db => {
         const current = await processing(db);
         if (current.policyRevision !== expectedRevision) throw Error('revision_conflict');
         if (current.enabled === enabled) return current;
@@ -64,12 +77,13 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
         return processing(db);
       });
     },
-    async savePending(drafts: readonly PersonalMemoryDraft[], expected: CandidateAuthority) {
+    async savePending(drafts: readonly PersonalMemoryDraft[], expected: CandidateAuthority, taskCurrent?: (transaction: Sql) => Promise<boolean>) {
       if (drafts.length > 20) throw Error('invalid_input');
-      return sql.transaction(async db => {
+      return write(async db => {
         const current = await processing(db);
         if (!current.enabled || current.cancelGeneration !== expected.cancelGeneration) throw Error('cancelled');
         if (current.policyRevision !== expected.policyRevision) throw Error('stale_policy');
+        if (taskCurrent && !await taskCurrent(db)) throw Error('stale_task');
         const saved: string[] = [];
         const stale: string[] = [];
         const conflicted: string[] = [];
@@ -106,7 +120,7 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
     async reject(key: string, expectedRevision: number) {
       assertRevision(expectedRevision);
       if (!/^[a-f0-9]{64}$/.test(key)) throw Error('invalid_input');
-      return sql.transaction(async db => {
+      return write(async db => {
         const changed = await db.change(`UPDATE personal_memory_pending SET state='rejected',revision=revision+1
           WHERE draft_key=? AND revision=? AND state IN ('pending','conflict')`, [key,expectedRevision]);
         if (changed !== 1) throw Error('revision_conflict');
@@ -116,6 +130,7 @@ export function createPersonalMemoryCandidateState(sql: Sql, witnessCurrent: Sou
     },
     async invalidateSource(db: Sql, sourceId: string, generation: number) {
       assertRevision(generation);
+      requireChanges(db);
       return db.change(`UPDATE personal_memory_pending SET state='stale',revision=revision+1
         WHERE source_id=? AND source_generation<=? AND state IN ('pending','conflict')`,[sourceId,generation]);
     },
