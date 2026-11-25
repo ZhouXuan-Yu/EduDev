@@ -1,5 +1,17 @@
 # Pinned upstream adapters are verified by byte hashes, including their LF endings.
 apps/desktop/src/renderer/design-review/OfficialTraceReference.tsx text eol=lf
+# The component review registry pins these Windows checkout bytes, including CRLF.
+apps/desktop/src/renderer/heroui-pro/heroui-oss.min.css text eol=crlf
+apps/desktop/src/renderer/heroui-pro/heroui-pro.min.css text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chain-of-thought/chain-of-thought.styles.ts text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chain-of-thought/chain-of-thought.tsx text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chain-of-thought/index.ts text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chat-message/chat-message.styles.ts text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chat-message/chat-message.tsx text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/chat-message/index.ts text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.context.tsx text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.tsx text eol=crlf
+apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.types.ts text eol=crlf
 apps/desktop/src/main/education/vendor/** text eol=lf
 apps/desktop/src/main/xiaozhi-agent/vendor/mozilla-readability/** text eol=lf
 apps/desktop/src/main/xiaozhi-agent/vendor/hana/quality/** text eol=lf
