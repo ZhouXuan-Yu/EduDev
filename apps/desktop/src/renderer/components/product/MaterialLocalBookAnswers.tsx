@@ -101,7 +101,7 @@ export function MaterialLocalBookAnswers({ resource }: { resource: TeacherResour
           </p>}
           <ul>
             {Array.from(new Set(answers.map(answer => answer.section))).map(section => <li key={section}>
-              <p>{section}</p>
+              <p>{section || '试卷标题待核对'}</p>
               <p data-testid="local-book-answer-values">{answers.filter(answer => answer.section === section)
                 .map(answer => `${answer.number} ${answer.answer}`).join(' · ')}</p>
             </li>)}

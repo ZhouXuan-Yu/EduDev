@@ -134,7 +134,7 @@ const extract=[
   "if file.endswith('.pdf'):"," import fitz"," with fitz.open(file) as doc: text=' '.join(page.get_text() for page in doc)",
   'else:'," with zipfile.ZipFile(file) as archive:","  root=ET.fromstring(archive.read('word/document.xml'))",
   "  text=' '.join(node.text or '' for node in root.iter() if node.tag.endswith('}t'))",
-  'print(json.dumps(text,ensure_ascii=True))',
+  "print('OMNI_EDU_EXTRACTED_TEXT '+json.dumps(text,ensure_ascii=True))",
 ].join('\n');
 
 try{
@@ -247,7 +247,13 @@ try{
     assert.equal(file.content_hash,sha(file.file_path));
     const result=spawnSync('python',['-c',extract,file.file_path],{encoding:'utf8',windowsHide:true,timeout:15000});
     assert.equal(result.status,0,result.stderr||String(result.error));
-    const text=JSON.parse(result.stdout).replace(/\s+/gu,'');
+    const marker='OMNI_EDU_EXTRACTED_TEXT ';
+    const lines=result.stdout.trim().split(/\r?\n/u);
+    const payload=lines.filter(line=>line.startsWith(marker));
+    assert.equal(payload.length,1,result.stdout);
+    const diagnostics=[...lines.filter(line=>!line.startsWith(marker)),result.stderr.trim()].filter(Boolean);
+    if(diagnostics.length)(report.extractDiagnostics??=[]).push({file:file.file_name,diagnostics});
+    const text=JSON.parse(payload[0].slice(marker.length)).replace(/\s+/gu,'');
     assert.match(text,/疑缺第2页/u);
     assert.match(text,/封面学年度2024.*封面考试月份2024年12月.*文件名2025届/u);
   }

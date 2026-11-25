@@ -7,8 +7,9 @@ import { LOCAL_BOOK_DOCUMENT_EVIDENCE } from '../../shared/question-book-documen
 import type { QuestionEvidence } from '../../shared/question-document';
 import type { ShanghaiMockSectionPolicy } from '../../shared/shanghai-mock-sections';
 import { localCompactChoiceRows } from './material-book-answer-content';
-import { WINDOWS_CHOICE_OCR, localBookReceiptSha, type LocalBookHost, type LocalBookRecheckEvidence } from './material-local-book-answers';
-import { independentChoiceLetters } from './material-local-book-choice-layout';
+import { WINDOWS_CHOICE_OCR, localBookReceiptSha, readLocalBookChoiceRows,
+  type LocalBookCropEvidence, type LocalBookHost, type LocalBookRecheckEvidence } from './material-local-book-answers';
+import { independentChoiceLetters, independentNumberedChoice } from './material-local-book-choice-layout';
 
 export type LocalBookAnswerSource = {
   source: MaterialPageSource;
@@ -19,6 +20,9 @@ export type LocalBookAnswerSource = {
 };
 
 const digest = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
+const validCrop = (crop?: LocalBookCropEvidence): crop is LocalBookCropEvidence =>
+  !!crop && validPageBox(crop.box) && digest(crop.sha256) && digest(crop.inputSha) &&
+  Array.isArray(crop.lines) && crop.lines.every(line => typeof line === 'string');
 
 export async function findLocalBookAnswer(
   all: LocalBookHost['all'], resourceId: string, version: string, section: string, number: string,
@@ -52,20 +56,29 @@ export async function findLocalBookAnswer(
           proof.schemaVersion !== LOCAL_BOOK_RECHECK_SCHEMA || proof.engine !== WINDOWS_CHOICE_OCR ||
           proof.resourceId !== resourceId || proof.version !== version || proof.page !== source.page ||
           proof.generation !== source.generation || proof.rawSha !== rawSha || !digest(proof.rasterSha)) continue;
-      const current = localCompactChoiceRows(receipt.text);
+      const current = proof.rows.some(candidate=>candidate.numbered)
+        ? await readLocalBookChoiceRows(all,source,source.generation,receipt.text)
+        : localCompactChoiceRows(receipt.text).map(row=>({...row,numbered:undefined}));
       for (const candidate of proof.rows) {
         const original = current.filter(item => item.sample === candidate.sample && item.section === candidate.section &&
-          item.letters === candidate.letters && item.range[0] === candidate.range?.[0] && item.range[1] === candidate.range?.[1]);
+          item.letters === candidate.letters && item.range[0] === candidate.range?.[0] && item.range[1] === candidate.range?.[1] &&
+          JSON.stringify(item.numbered) === JSON.stringify(candidate.numbered));
         if (original.length !== 1 || candidate.range[0] > position || candidate.range[1] < position ||
             bookSectionLookupKey(candidate.section, policy, layout === BOOK_SECTION_LAYOUT) !== key) continue;
         const crop = candidate.crop;
-        if (!crop || !validPageBox(crop.box) || !digest(crop.sha256) || !digest(crop.inputSha) ||
-            !Array.isArray(crop.lines) || crop.lines.some(line => typeof line !== 'string') ||
-            crop.observed !== candidate.letters || independentChoiceLetters(crop.lines) !== candidate.letters) continue;
+        if (!validCrop(crop) || crop.observed !== candidate.letters) continue;
+        const numbered = candidate.numbered;
+        if (numbered) {
+          const marker = candidate.markerCrop;
+          if (!validCrop(marker) || marker.observed !== number || independentNumberedChoice(marker.lines,'number') !== number ||
+              independentNumberedChoice(crop.lines,'letter') !== candidate.letters ||
+              marker.box[3]>crop.box[1] || Math.abs(marker.box[0]-crop.box[0])>.24) continue;
+        } else if (independentChoiceLetters(crop.lines) !== candidate.letters) continue;
         const answer = candidate.letters[position - candidate.range[0]];
         if (/^[A-H]$/.test(answer || '')) {
           const proofSha = localBookReceiptSha(JSON.stringify([source, proof.engine, proof.rasterSha, candidate]));
-          matches.push({source, proofSha, range: candidate.range, answer, quoteSha: localBookReceiptSha(candidate.sample)});
+          const quote = numbered ? JSON.stringify([numbered.marker,candidate.sample]) : candidate.sample;
+          matches.push({source, proofSha, range: numbered?.choiceRange ?? candidate.range, answer, quoteSha: localBookReceiptSha(quote)});
           if (matches.length > 1) return matches;
         }
       }

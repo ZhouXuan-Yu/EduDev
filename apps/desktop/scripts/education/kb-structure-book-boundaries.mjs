@@ -536,8 +536,44 @@ function installLocalKey(f) {
     savePage.run(answerGeneration,page,raw);
     save.run(pair.answerId,pair.answerVersion,answerGeneration,page,rawSha,body,localBookReceiptSha(body));
   };
-  return {original,put};
+  const putNumbered=({markerObserved='1',answerObserved='B'}={})=>{
+    const head=title+'\n二、选择题（本大题共2题，第1～2题）';
+    const text='【1】本题条件\n【解】B\n【2】下一题\n故选 D';
+    const raw=receipt(text),rawSha=localBookReceiptSha(raw);
+    const crop=(box,lines,observed)=>({box,lines,observed,sha256:hash(lines),inputSha:hash(box)});
+    const rows=[{section:title,range:[1,1],sample:'【解】B',letters:'B',
+      numbered:{marker:'【1】本题条件',choiceRange:[1,2]},
+      crop:crop([.1,.4,.25,.44],['【解】'+answerObserved],answerObserved),
+      markerCrop:crop([.1,.1,.7,.13],['【'+markerObserved+'】本题条件'],markerObserved)}];
+    const body=JSON.stringify({schemaVersion:'xiaozhi.material-local-book-recheck.v1',engine:'windows.media.ocr.zh-hans-cn.v1',
+      resourceId:pair.answerId,version:pair.answerVersion,generation:answerGeneration,page:2,rawSha,rasterSha:hash('raster'),rows});
+    savePage.run(answerGeneration,1,receipt(head));
+    savePage.run(answerGeneration,2,raw);
+    save.run(pair.answerId,pair.answerVersion,answerGeneration,2,rawSha,body,localBookReceiptSha(body));
+  };
+  return {original,put,putNumbered};
 }
+await check('The paired writer verifies a numbered marker independently and rechecks its original section before display',{
+  choiceLabels:'ABCD',answerText:otherTitle+'\n1. D',
+},async f=>{
+  const local=installLocalKey(f);
+  const scan=async()=>{await f.repo.work.structures.answerChanged(f.pair.answerId,f.pair.answerVersion,['1']);await settle(f);};
+  local.putNumbered({markerObserved:'2'});
+  await scan();
+  assert.equal((await f.read()).answer,'');
+  local.putNumbered({answerObserved:'D'});
+  await scan();
+  assert.equal((await f.read()).answer,'');
+  local.putNumbered();
+  await scan();
+  const saved=await f.read(),row=(await f.repo.list(await f.query())).rows[0];
+  assert.equal(saved.answer,'B');
+  assert.equal(row.localSource.page,2);
+  await f.structures.validate(saved);
+  const sql="UPDATE material_pdf_pages SET status='blank' WHERE page=1 AND generation=(SELECT generation FROM material_pdf_jobs WHERE resource_id=?)";
+  f.db.prepare(sql).run(f.pair.answerId);
+  await assert.rejects(()=>f.structures.validate(saved),/source_changed/);
+});
 await check('A repeat-read answer queues existing reviewed questions, survives readback and never supplies an invented explanation',{
   choiceLabels:'ABCD',answerText:otherTitle+'\n1. D',
 },async f=>{
