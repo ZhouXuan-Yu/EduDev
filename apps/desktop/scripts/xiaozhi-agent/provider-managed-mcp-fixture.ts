@@ -125,12 +125,14 @@ export async function testManagedMcpRecovery(options: {sql: Sql; workspace: stri
       const denied = await adapter.resolveVersion(owner.sessionId, {...requirement, platform: 'linux'}, providerId, version, providerHash);
       assert.equal(denied.selectedProviders.length, 0);
       assert.equal((await services('mcp_service_intent')).length, count);
-      const offline = await adapter.resolveVersion(owner.sessionId, requirement, providerId, version, providerHash);
-      assert.equal(offline.selectedProviders.length, 0);
+      const resolvePinned = () => adapter.resolveVersion(owner.sessionId, requirement, providerId, version, providerHash);
+      const offline = await Promise.all([resolvePinned(), resolvePinned()]);
+      assert(offline.every(result => result.selectedProviders.length === 0));
       assert.equal((await services('mcp_service_intent')).length - count, 1, 'authorized resolver must attempt one known metadata handshake');
       fs.unlinkSync(outage);
-      const resolved = await adapter.resolveVersion(owner.sessionId, requirement, providerId, version, providerHash);
+      const [resolved, concurrent] = await Promise.all([resolvePinned(), resolvePinned()]);
       assert.equal(resolved.selectedProviders[0]?.providerId, providerId);
+      assert.equal(concurrent.selectedProviders[0]?.providerId, providerId);
       assert.equal((await services('mcp_service_intent')).length - count, 2);
       const result = await adapter.execute({...owner, stepId: null, callId: 'managed_read_after_reconnect', signal,
         grantRef: 'managed-recovery-fixture', idempotencyKey: 'synthetic-file-v1', budget: {timeoutMs: 30000, resourceUnits: 1},
@@ -141,6 +143,10 @@ export async function testManagedMcpRecovery(options: {sql: Sql; workspace: stri
       assert.equal((result.data as {text: string}).text, 'MANAGED_MCP_SYNTHETIC_PHYSICS');
       assert.equal((await services('mcp_service_intent')).length - count, 2, 'real read keeps the recovered session');
       assert.equal((await state.artifact(artifact.id))?.revision, 1);
+      const catalog = await mcp.catalog();
+      await mcp.revoke({schemaVersion: catalog.schemaVersion, revision: catalog.revision, serverId: artifact.serverId!});
+      assert.equal((await resolvePinned()).selectedProviders.length, 0);
+      assert.equal((await services('mcp_service_intent')).length - count, 2, 'revocation never opens a replacement process');
       await adapter.dispose();
       assert.equal(permissions.engine.activeCount(), 0);
       const receipts = await sql.all("SELECT metadata_json FROM xiaozhi_permission_audit_v1 WHERE kind='mcp_service_terminal' AND json_extract(metadata_json,'$.artifactId')=?", [artifact.id]);

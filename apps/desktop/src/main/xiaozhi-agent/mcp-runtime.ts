@@ -291,7 +291,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     const current = await state(); if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict'); if (!current.servers.some(item => item.id === input.serverId)) throw Error('not_found');
     const next = { ...current, revision: current.revision + 1, servers: current.servers.filter(item => item.id !== input.serverId) }; await commit(current, next); return catalog();
   }
-  async function tools(permission?: McpPermissionContext, admission?: {preparationTimeoutMs: number}) {
+  async function tools(permission?: McpPermissionContext, admission?: {preparationTimeoutMs: number; serverId?: string}) {
     // A group of offline extensions must not exhaust Pi's own 15s preparation
     // fence. This deadline applies only to extension admission, not teacher work.
     const preparationMs = admission?.preparationTimeoutMs ?? options.preparationTimeoutMs ?? (permission?.stdioTransport ? 12000 : 5000);
@@ -309,6 +309,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     };
     handles.add(dispose);
     for (let server of stateValue.servers) {
+      if (admission?.serverId && server.id !== admission.serverId) continue;
       if ((server.status !== 'ready' && !needsRevalidation(server)) || !hasVerifiedSchema(server) || !server.selectedTools.length) continue;
       const source = permissionSourceFor(server);
       let connected: Awaited<ReturnType<typeof connect>>;
