@@ -13,7 +13,7 @@ const root = await fs.mkdtemp(path.join(await fs.realpath(acceptance), 'model-wi
 const data = path.join(root, 'data'), profile = path.join(root, 'profile');
 const report = {root, main, mainHash: createHash('sha256').update(await fs.readFile(main)).digest('hex'),
   checks: [], calls: [], paidCalls: 0, success: false};
-let mode = 'exhausted', attempts = 0, app, page;
+let mode = 'exhausted', attempts = 0, app, page, input, session;
 const server = http.createServer(async (request, response) => {
   if (request.url === '/v1/models') {
     response.setHeader('content-type', 'application/json');
@@ -68,7 +68,8 @@ try {
   Object.assign(env, {OMNI_EDU_SKIP_DOTENV: '1', OMNI_EDU_REPO_ROOT: path.resolve(import.meta.dirname, '../../../..'),
     OMNI_EDU_DATA_ROOT: data, OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: 'owned-model-wire-fixture', DEEPSEEK_MODEL: 'deepseek-flash',
     TEMP: root, TMP: root});
-  app = await electron.launch({args: [main, '--user-data-dir=' + profile], env, timeout: 60_000});
+  async function launch(credential = 'owned-model-wire-fixture') {
+    app = await electron.launch({args: [main, '--user-data-dir=' + profile], env: {...env, DEEPSEEK_API_KEY: credential}, timeout: 60_000});
   await app.evaluate(({net}, endpoint) => {
     net.fetch = (input, init) => {
       const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url);
@@ -77,10 +78,14 @@ try {
     };
   }, 'http://127.0.0.1:' + server.address().port);
   page = await app.firstWindow();
-  const input = page.getByTestId('office-prompt-input');
+  input = page.getByTestId('office-prompt-input');
   await input.waitFor();
   await until(async () => !await input.isDisabled());
-  const session = await page.locator('.office-composer-container').getAttribute('data-session-id');
+    const current = await page.locator('.office-composer-container').getAttribute('data-session-id');
+    if (session) assert.equal(current, session);
+    session = current;
+  }
+  await launch();
   const snapshot = () => page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), session);
   async function send(text, phase) {
     mode = phase;
@@ -154,6 +159,27 @@ try {
   assert.equal(delayed.usage?.modelCalls ?? 0, 0);
   assert.equal(delayed.turn.errorCode, 'provider_unavailable');
   report.checks.push('A long Retry-After causes no early send or budget charge on the next turn');
+  if (process.argv.includes('--cold')) {
+    await app.close();app=undefined;
+    const before = report.calls.length;
+    mode = 'unrequested-startup';
+    await launch();
+    assert.equal(report.calls.length, before);
+    const restored = await snapshot();
+    assert.equal(restored.usage.find(row => row.runId === exhausted.turn.id)?.modelCalls, 3);
+    assert.deepEqual(restored.projection.turns.find(row => row.id === exhausted.turn.id)?.modelRequests, exhausted.turn.modelRequests);
+    const cold = await send('重启后检查合成限流是否仍然生效。', 'cold-blocked');
+    verifyCount('cold-blocked', 0);
+    assert.equal(cold.usage?.modelCalls ?? 0, 0);
+    assert.equal(cold.turn.errorCode, 'provider_unavailable');
+    report.checks.push('After a real Electron restart the original Retry-After and the persisted attempt count are intact');
+    await app.close();app=undefined;
+    await launch('owned-alternate-wire-fixture');
+    const separate = await send('使用当前合成连接说明浮力。', 'separate-credential');
+    verifyCount('separate-credential', 1);
+    assert.equal(separate.turn.status, 'completed');
+    report.checks.push('A different credential verifies its own domain without borrowing the previous cooldown');
+  }
   report.success = true;
 } catch (error) {
   report.error = String(error.stack ?? error);
