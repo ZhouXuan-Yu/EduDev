@@ -9,6 +9,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=path.resolve(import.meta.dirname,'../..');
 const [fixture,output]=process.argv.slice(2);
 assert(path.isAbsolute(fixture)&&path.isAbsolute(output));
+const bufferedImage=/\.png$/i.test(fixture);
 const root=fs.mkdtempSync(path.join(fs.realpathSync(output),'r1-queue-ui-'));
 const main=testMain(desktop),mainDirectory=path.dirname(main);
 const sourceFiles=fs.readdirSync(mainDirectory).filter(name=>name.endsWith('.js'));
@@ -34,9 +35,39 @@ try{
     const lease=await reserve('acceptance-barrier','owned-slots','foreground',{processes:7},30000);
     if(!lease.start())throw Error('acceptance barrier did not start');
     globalThis.releaseHostResourceBarrier=()=>lease.settle();
-  },{ownerFile,exportName});
+    if(args.bufferedImage){
+      const fs=process.getBuiltinModule('node:fs/promises'),path=process.getBuiltinModule('node:path');
+      const open=fs.open;
+      globalThis.materialReads=[];
+      fs.open=async function(file,...rest){
+        const handle=await open.call(this,file,...rest);
+        if(typeof file!=='string'||!file.startsWith(args.data+path.sep)||!file.endsWith('-'+args.name))return handle;
+        const read=handle.read;
+        handle.read=function(buffer,offset,length,...tail){
+          if(buffer.length===args.size+1&&offset===0&&length===buffer.length)
+            globalThis.materialReads.push({bytes:buffer.length});
+          return read.call(this,buffer,offset,length,...tail);
+        };
+        return handle;
+      };
+      globalThis.restoreMaterialObserver=()=>{fs.open=open;};
+    }
+  },{ownerFile,exportName,bufferedImage,data,name:path.basename(fixture),size:fs.statSync(fixture).size});
   await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},fixture);
   await page.getByTestId('materials-import').click();
+  if(bufferedImage){
+    for(let i=0;i<120;i++){
+      if(await app.evaluate(()=>globalThis.materialReads.length>0))break;
+      if(await page.evaluate(async()=>{
+        const queue=await window.omniEdu.getMaterialQueue();
+        return queue.tasks.some(task=>task.resourceState==='waiting_resources');
+      }))break;
+      if(i===119)throw Error('Buffered image never reached the resource barrier');
+      await new Promise(resolve=>setTimeout(resolve,50));
+    }
+    report.queuedReads=await app.evaluate(()=>globalThis.materialReads);
+    assert.equal(report.queuedReads.length,0,'managed original was buffered before admission');
+  }
   await page.waitForFunction(async()=>{
     const queue=await window.omniEdu.getMaterialQueue();
     return queue.tasks.some(task=>task.resourceState==='waiting_resources');
@@ -48,6 +79,7 @@ try{
   report.checks.push('Visible material list exposes the actual queued resource state');
   await page.getByTestId('materials-stop').click();
   await page.getByTestId('materials-queue').getByText('已停止',{exact:true}).waitFor();
+  if(bufferedImage)assert.equal(await app.evaluate(()=>globalThis.materialReads.length),0);
   await app.evaluate(()=>globalThis.releaseHostResourceBarrier());
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
   try{
@@ -94,10 +126,23 @@ try{
   const before=await app.evaluate(()=>globalThis.heldOcrTrace);
   assert.equal(before.killRequested,true);
   assert.equal(before.closed,false);
+  if(bufferedImage){
+    report.admittedReads=await app.evaluate(()=>globalThis.materialReads);
+    assert.equal(report.admittedReads.length,1);
+    report.beforeClose=await app.evaluate(async(_electron,args)=>{
+      const reserve=process.getBuiltinModule('node:module').createRequire(args.ownerFile)(args.ownerFile)[args.exportName];
+      try{const probe=await reserve('acceptance-barrier','check-owned-slot','foreground',{processes:8},200);probe.settle();return 'admitted';}
+      catch(error){return error.message;}
+    },{ownerFile,exportName});
+    assert.equal(report.beforeClose,'timeout');
+  }
   await page.screenshot({path:path.join(root,'stopping.png')});
   await app.evaluate(()=>globalThis.releaseHeldOcr());
   await until(()=>app.evaluate(()=>globalThis.heldOcrTrace.closed));
   await page.getByTestId('materials-queue').getByText('已停止',{exact:true}).waitFor();
+  if(bufferedImage){
+    report.checks.push('Full source allocation waits for admission, and OCR holds its process slot until close');
+  }
   report.ocr={before,after:await app.evaluate(()=>globalThis.heldOcrTrace)};
   report.checks.push('Visible stop-request state precedes confirmed close of the real OCR child');
   report.success=true;
@@ -107,6 +152,7 @@ try{
 }finally{
   await app.evaluate(()=>globalThis.releaseHostResourceBarrier?.()).catch(()=>{});
   await app.evaluate(()=>globalThis.releaseHeldOcr?.()).catch(()=>{});
+  await app.evaluate(()=>globalThis.restoreMaterialObserver?.()).catch(()=>{});
   await app.close();
   fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2),{flag:'wx'});
   console.log(JSON.stringify(report));
