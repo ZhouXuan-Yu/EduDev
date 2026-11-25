@@ -26,8 +26,10 @@ CREATE TABLE personal_memory_extract_grants (
   scope_kind TEXT NOT NULL CHECK(scope_kind IN ('teacher','class','course','task','artifact')),
   scope_id TEXT NOT NULL,
   term TEXT NOT NULL,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  extraction_job_id TEXT
 );
+CREATE INDEX personal_memory_grants_ready ON personal_memory_extract_grants(extract_allowed,updated_at,source_id);
 CREATE TRIGGER personal_memory_extract_history_invalidation
 AFTER UPDATE OF generation, memory_state ON memory_source_access
 WHEN NEW.generation<>OLD.generation OR NEW.memory_state<>OLD.memory_state
@@ -111,7 +113,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
         VALUES(?,?,?,?,1,?,?,?,?)
         ON CONFLICT(source_id) DO UPDATE SET source_version=excluded.source_version,history_generation=excluded.history_generation,
           grant_revision=excluded.grant_revision,extract_allowed=1,scope_kind=excluded.scope_kind,scope_id=excluded.scope_id,
-          term=excluded.term,updated_at=excluded.updated_at`,
+          term=excluded.term,updated_at=excluded.updated_at,extraction_job_id=NULL`,
       [id,ref.sourceVersion,identity?.generation ?? 1,expectedRevision+1,binding.scope.kind,binding.scope.id,binding.term,Date.now()]);
       if (current) await invalidatePersonalMemoryDrafts(db,id,current.revision);
       return permission(id,db);

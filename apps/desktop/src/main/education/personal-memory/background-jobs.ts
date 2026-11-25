@@ -11,6 +11,7 @@ const dayCalls = 30;
 const jobCalls = 2;
 const leaseMs = 240_000;
 const organizeIntervalMs = 30 * 60_000;
+const quietMs = 60_000;
 const digestPattern = /^[a-f0-9]{64}$/;
 const identityPattern = /^[a-z0-9][a-z0-9_-]{0,179}$/i;
 
@@ -99,30 +100,58 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
     return job.owner && job.owner.expiresAt>clock() ? job : null;
   }
 
+  async function enqueue(db: Writable, input: JobInput) {
+    if (!validPins(input)) throw Error('invalid_input');
+    const sources = input.sources.map(s=>({id:s.id,version:s.version,revision:s.revision})).sort(compareId);
+    const targets = (input.targets??[]).map(s=>({id:s.id,revision:s.revision})).sort(compareId);
+    const authority = {policyRevision:input.authority.policyRevision,cancelGeneration:input.authority.cancelGeneration,
+      teacherPolicyRevision:input.authority.teacherPolicyRevision??0};
+    const identity = hash([jobSchema,processorVersion,input.kind,sources,targets]);
+    const id = 'memorytask_'+identity;
+    const job:Job={schemaVersion:jobSchema,processorVersion,kind:input.kind,sources,targets,authority,
+      notBefore:input.notBefore,owner:null,dispatch:null};
+    const policy=await processing(db);
+    if (!matchesPolicy(job,policy)) throw Error('stale_policy');
+    const time = new Date(clock()).toISOString();
+    const inserted=await db.change(`INSERT OR IGNORE INTO ai_tasks(id,task_type,status,input_hash,payload_json,created_at,updated_at)
+      VALUES(?,?,'pending',?,?,?,?)`,[id,taskType,identity,JSON.stringify(job),time,time]);
+    if (inserted) return {id, created:true};
+    const [prior] = await db.all('SELECT status,payload_json FROM ai_tasks WHERE id=? AND task_type=?',[id,taskType]);
+    const old = jobFromRow(prior);
+    // Only jobs that never started outbound work can be reopened without a new grant.
+    if ((prior.status==='cancelled' || prior.status==='pending') && !old.dispatch && !matchesPolicy(old,policy)) {
+      await cas(db,id,prior.status,String(prior.payload_json),'pending',job);
+    }
+    return {id, created:false};
+  }
+
   return {
-    async enqueue(input: JobInput) {
-      if (!validPins(input)) throw Error('invalid_input');
-      const sources = input.sources.map(s=>({id:s.id,version:s.version,revision:s.revision})).sort(compareId);
-      const targets = (input.targets??[]).map(s=>({id:s.id,revision:s.revision})).sort(compareId);
-      const authority = {policyRevision:input.authority.policyRevision,cancelGeneration:input.authority.cancelGeneration,
-        teacherPolicyRevision:input.authority.teacherPolicyRevision??0};
-      const identity = hash([jobSchema,processorVersion,input.kind,sources,targets]);
-      const id = 'memorytask_'+identity;
-      const job:Job={schemaVersion:jobSchema,processorVersion,kind:input.kind,sources,targets,authority,
-        notBefore:input.notBefore,owner:null,dispatch:null};
+    enqueue:(input:JobInput)=>write(db=>enqueue(db,input)),
+
+    async planExtraction() {
       return write(async db=>{
-        if (!matchesPolicy(job,await processing(db))) throw Error('stale_policy');
-        const time = new Date(clock()).toISOString();
-        const inserted=await db.change(`INSERT OR IGNORE INTO ai_tasks(id,task_type,status,input_hash,payload_json,created_at,updated_at)
-          VALUES(?,?,'pending',?,?,?,?)`,[id,taskType,identity,JSON.stringify(job),time,time]);
-        if (inserted) return {id, created:true};
-        const [prior] = await db.all('SELECT status,payload_json FROM ai_tasks WHERE id=? AND task_type=?',[id,taskType]);
-        const old = jobFromRow(prior);
-        // A new policy can resume work that never started a model call. Completed or uncertain dispatches stay deduplicated.
-        if ((prior.status==='cancelled' || prior.status==='pending') && !old.dispatch && !matchesPolicy(old,await processing(db))) {
-          await cas(db,id,prior.status,String(prior.payload_json),'pending',job);
+        const authority=await processing(db);
+        if (!authority.enabled || authority.pausedByUsePolicy) return null;
+        const now=clock();
+        const rows=await db.all(`SELECT g.source_id,g.source_version,g.grant_revision
+          FROM personal_memory_extract_grants g JOIN memory_source_access a ON a.source_id=g.source_id
+          LEFT JOIN ai_tasks job ON job.id=g.extraction_job_id AND job.task_type='personal_memory'
+          WHERE g.extract_allowed=1 AND g.updated_at<=? AND a.memory_state='active' AND a.generation=g.history_generation
+          AND (g.extraction_job_id IS NULL OR (job.status='cancelled' AND json_valid(job.payload_json)
+            AND json_extract(job.payload_json,'$.dispatch') IS NULL
+            AND (json_extract(job.payload_json,'$.authority.cancelGeneration')<>?
+              OR json_extract(job.payload_json,'$.authority.policyRevision')<>?
+              OR json_extract(job.payload_json,'$.authority.teacherPolicyRevision')<>?)))
+          ORDER BY g.updated_at,g.source_id LIMIT 12`,[now-quietMs,authority.cancelGeneration,authority.policyRevision,
+            authority.teacherPolicyRevision??0]);
+        if (!rows.length) return null;
+        const sources=rows.map(row=>({id:String(row.source_id),version:String(row.source_version),revision:Number(row.grant_revision)}));
+        const planned=await enqueue(db,{kind:'extract',sources,authority,notBefore:now});
+        for (const pin of sources) {
+          await db.change(`UPDATE personal_memory_extract_grants SET extraction_job_id=?
+            WHERE source_id=? AND source_version=? AND grant_revision=?`,[planned.id,pin.id,pin.version,pin.revision]);
         }
-        return {id, created:false};
+        return planned;
       });
     },
 
@@ -183,6 +212,13 @@ export function createPersonalMemoryJobs(sql: Sql, clock: () => number = Date.no
       nextDay.setUTCHours(24,0,0,0);
       if (await cas(db,lease.id,'running',lease.payload,'pending',{...job,owner:null,notBefore:nextDay.getTime()},
         'budget_exhausted')!==1) throw Error('stale_task');
+    },
+
+    async deferBeforeDispatch(db: Sql, lease: PersonalMemoryJobLease) {
+      const job=await current(db,lease);
+      if (!job || job.dispatch || !matchesPolicy(job,await processing(db))) return false;
+      return await cas(db,lease.id,'running',lease.payload,'pending',
+        {...job,owner:null,notBefore:clock()+quietMs},'resource_wait')===1;
     },
 
     async finish(db: Sql, lease: PersonalMemoryJobLease, outcome: {

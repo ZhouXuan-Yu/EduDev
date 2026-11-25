@@ -42,6 +42,46 @@ const pin=n=>({id:digest('source-'+n),version:digest('version-'+n),revision:1});
 const begin=Date.parse('2026-11-25T02:00:00Z');
 {
   const {db,sql,state,row}=database();
+  const authority=createPersonalMemorySourceAuthority(sql,async text=>text);
+  const sessionId='aisession_'+randomUUID(),runId='run_'+randomUUID();
+  db.prepare('INSERT INTO ai_conversation_sessions VALUES(?,?,NULL,NULL)').run(sessionId,'合成课程');
+  const binding={scope:{kind:'course',id:'science'},term:'unknown'};
+  const refs=[];
+  for (const grade of ['三','四','五']) {
+    const recordId=randomUUID(),value=`我这学期教${grade}年级科学。`;
+    db.prepare('INSERT INTO ai_conversation_messages VALUES(?,?,?,?,?,?)')
+      .run(recordId,sessionId,'user',value,JSON.stringify({piVersion:'xiaozhi.pi.education.v1',agentRunId:runId}),'2026-11-25');
+    refs.push({kind:'history_request',sessionId,recordId,sourceVersion:teacherRequestSourceVersion(recordId,runId,value)});
+  }
+  for (const ref of refs.slice(0,2)) await authority.change(ref,0,binding);
+  let tick=db.prepare('SELECT MAX(updated_at) AS updated FROM personal_memory_extract_grants').get().updated;
+  const jobs=createPersonalMemoryJobs(sql,()=>tick);
+  assert.equal(await jobs.planExtraction(),null);
+  const enabled=await state.setEnabled(true,0);
+  assert.equal(await jobs.planExtraction(),null);
+  tick+=60000;
+  const planned=await jobs.planExtraction();
+  assert.equal(planned.created,true);
+  assert.equal(await jobs.planExtraction(),null);
+  assert.deepEqual(JSON.parse(row(planned.id).payload_json).sources.map(source=>source.id).sort(),
+    refs.slice(0,2).map(historyId).sort());
+  const lease=await jobs.claim();
+  assert.equal(await sql.transaction(tx=>jobs.deferBeforeDispatch(tx,lease)),true);
+  assert.equal(row(planned.id).status,'pending');
+  assert.equal(await jobs.claim(),null);
+  tick+=60000;
+  const stopped=await state.setEnabled(false,enabled.policyRevision);
+  assert.equal(await jobs.planExtraction(),null);
+  await state.setEnabled(true,stopped.policyRevision);
+  assert.equal(await jobs.claim(),null);
+  assert.equal(row(planned.id).status,'cancelled');
+  assert.deepEqual(await jobs.planExtraction(),{id:planned.id,created:false});
+  assert.equal((await jobs.claim()).id,planned.id);
+  console.log('PASS stable grants coalesce in one durable job, skip ungranted sources and safely resume before dispatch');
+  db.close();
+}
+{
+  const {db,sql,state,row}=database();
   const authority=await state.setEnabled(true,0);
   let tick=begin;
   const jobs=createPersonalMemoryJobs(sql,()=>tick);
@@ -204,4 +244,4 @@ if(process.argv.includes('--live')){
   console.log(JSON.stringify({live:true,provider:'deepseek-flash',receipt,scope:draft.draft.scope,term:draft.draft.term,committedState:draft.state}));
   db.close();
 }
-console.log(JSON.stringify({passed:6,live:process.argv.includes('--live')}));
+console.log(JSON.stringify({passed:7,live:process.argv.includes('--live')}));

@@ -68,7 +68,8 @@ export function createPersonalMemoryBackgroundConsumer(sql: Sql, options: Option
               for (const pin of current.job.sources) {
                 if (dispatched.has(pin.id) && !await options.sources.dispatchCurrent(db,pin.id,pin.version,pin.revision)) return false;
               }
-              return !admission.aborted;
+              if (admission.aborted) throw Error('cancelled');
+              return true;
             });
           },
           complete:async(db, counts, processor, rejections)=>{
@@ -90,12 +91,19 @@ export function createPersonalMemoryBackgroundConsumer(sql: Sql, options: Option
         const code = errorCode(error);
         if (terminal) throw error;
         const budgetWait=code==='budget_exhausted' && !currentLease().job.dispatch;
-        await write(db=>budgetWait
-          ? jobs.deferBudget(db,currentLease())
-          : jobs.finish(db,currentLease(),{status:code==='cancelled'?'cancelled':'failed',code})).catch(failure=>{
+        const rescheduled=await write(async db=>{
+          if (budgetWait) {
+            await jobs.deferBudget(db,currentLease());
+            return false;
+          }
+          if (code==='cancelled' && await jobs.deferBeforeDispatch(db,currentLease())) return true;
+          await jobs.finish(db,currentLease(),{status:code==='cancelled'?'cancelled':'failed',code});
+          return false;
+        }).catch(failure=>{
           if (errorCode(failure)!=='stale_task') throw failure;
+          return false;
         });
-        return {id:identity,state:budgetWait?'budget_wait' as const:'stopped' as const,code};
+        return {id:identity,state:budgetWait?'budget_wait' as const:rescheduled?'resource_wait' as const:'stopped' as const,code};
       }
     },
   };
