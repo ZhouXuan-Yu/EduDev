@@ -8,8 +8,9 @@ import {materialId} from '../../shared/materials';
 type Value=string|number|null;
 type Row=Record<string,unknown>;
 type Payload={schemaVersion:typeof MATERIAL_TASK_SCHEMA;resourceId:string;version:string;priority:0|100;attempt:number;owner:null|{pid:number;nonce:string}};
-export type MaterialParseLease={taskId:string;payload:string};
-type Host={publications?:BackupPublicationBarrier;structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;hasUnfinishedPdf?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2};
+export type MaterialParseLease={taskId:string;payload:string;priority?:0|100};
+type Host={publications?:BackupPublicationBarrier;structureReady?:(resource:TeacherResource)=>Promise<boolean>;structureRequired?:(id:string)=>Promise<boolean>;hasUnfinishedPdf?:(id:string)=>Promise<boolean>;all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>;slots?:()=>1|2;
+ isResourceQueued?:(taskId:string)=>boolean};
 type ActiveParse={id:string;priority:number;controller:AbortController;reason?:'preempt'|'shutdown';work?:Promise<void>};
 const time=()=>new Date().toISOString();
 const hash=(id:string)=>createHash('sha256').update(id).digest('hex');
@@ -51,7 +52,11 @@ export class MaterialParseQueue {
   const counts=await this.host.all(`SELECT status,COUNT(*) AS n FROM ai_tasks WHERE task_type='resource_parse' AND json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')=? GROUP BY status`,[MATERIAL_TASK_SCHEMA]);
   const pending=Number(counts.find(row=>row.status==='pending')?.n||0),running=Number(counts.find(row=>row.status==='running')?.n||0);
   for(const row of rows){const p=parse(row);if(!p||!['pending','running','succeeded','failed','cancelled'].includes(String(row.status))){invalid++;continue;}
-   tasks.push({resourceId:p.resourceId,version:p.version,title:String(row.resource_title||'资料已不可用'),status:row.status as MaterialTaskStatus,priority:p.priority,attempt:p.attempt,error:String(row.error_message||'')});
+   const status=row.status as MaterialTaskStatus;
+   const resourceState=status==='cancelled'&&this.active.has(p.resourceId)?'stopping'
+    :status==='running'&&this.host.isResourceQueued?.(String(row.id))?'waiting_resources':undefined;
+   tasks.push({resourceId:p.resourceId,version:p.version,title:String(row.resource_title||'资料已不可用'),status,priority:p.priority,attempt:p.attempt,error:String(row.error_message||''),
+    ...(resourceState?{resourceState}:{})});
   }
   return {schemaVersion:MATERIAL_TASK_SCHEMA,tasks,pending,running,invalid};
  }
@@ -136,7 +141,7 @@ export class MaterialParseQueue {
    for(const candidate of pending)if(!parse(candidate))quarantined+=await this.quarantine(candidate);
    const row=pending.find(row=>{const p=parse(row);return p&&!this.active.has(p.resourceId);});if(!row){if(quarantined)continue;return;}if(this.closing)return;
    const p=parse(row)!,claim={...p,attempt:p.attempt+1,owner:{pid:process.pid,nonce:this.nonce}};if(!await this.cas(row,'running',claim))continue;
-   const lease={taskId:String(row.id),payload:JSON.stringify(claim)},active:ActiveParse={id:p.resourceId,priority:p.priority,controller:new AbortController()};this.active.set(p.resourceId,active);
+   const lease={taskId:String(row.id),payload:JSON.stringify(claim),priority:claim.priority},active:ActiveParse={id:p.resourceId,priority:p.priority,controller:new AbortController()};this.active.set(p.resourceId,active);
    // Track the owner before any further SQL can fail, so shutdown always joins it.
    const work=this.runClaim(claim,lease,active).catch(()=>undefined).finally(()=>{this.active.delete(p.resourceId);this.wake();});
    active.work=this.host.publications?.retain(work)??work;

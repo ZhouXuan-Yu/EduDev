@@ -9,6 +9,7 @@ import {isMathOfficeSchema,isTeachingHandoutOfficeDraft,type OfficeDraft} from '
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA} from '../../shared/classroom-export';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 import {PAPER_PRINT_LAYOUT,paperContentWidthTwips,paperContentHeightPx,paperMathCellWidth,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
+import {runHostStage} from '../host-resources/desktop';
 const escape=(value:unknown)=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 /** Static document data, never arbitrary HTML or resource URLs supplied by a tool. */
 export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()):string{
@@ -38,7 +39,9 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  for(const font of options.fontResources||[]){if(!/^data:(?:font\/[^;,]+|application\/(?:font-woff|x-font-ttf));base64,[A-Za-z0-9+/=]+$/.test(font))throw Error('configuration');allowedImages.add(font);}
  const root=fs.realpathSync(options.dataRoot),staging=fs.mkdtempSync(path.join(root,'office-render-'));
  const htmlPath=path.join(staging,'input.html'),outputPath=path.join(staging,'output.pdf'),url=pathToFileURL(htmlPath).href;
- const privateSession=session.fromPartition(`office-render-${randomUUID()}`);let window:BrowserWindow|undefined,reason:string|undefined;
+ const privateSession=session.fromPartition(`office-render-${randomUUID()}`);
+ let window:BrowserWindow|undefined,reason:string|undefined,destroyWindow:(()=>void)|undefined;
+ const printing=new Set<Promise<Buffer>>();
  privateSession.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));privateSession.setPermissionCheckHandler(()=>false);
  privateSession.webRequest.onBeforeRequest({urls:['<all_urls>']},(details,callback)=>{
   const cancel=details.url!==url&&!allowedImages.has(details.url)&&!(options.inlineResources&&/^(data:|blob:)/.test(details.url));
@@ -48,13 +51,27 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  let settleStop:()=>void=()=>{};
  const stopped=new Promise<void>(resolve=>{settleStop=resolve;});
  // Destroying WebContents can leave its script/print Promise pending indefinitely.
- const stop=(code:string)=>{reason??=code;settleStop();if(window&&!window.isDestroyed())window.destroy();};
+ const stop=(code:string)=>{reason??=code;settleStop();if(!printing.size)destroyWindow?.();};
  const abort=()=>stop('cancelled'),deadline=options.deadlineMs??60000;
  const timer=setTimeout(()=>stop('timeout'),deadline);options.signal?.addEventListener('abort',abort,{once:true});
  // Constructor injection only. The four upstream function bodies stay unchanged.
  class IsolatedWindow{
   constructor(input:Electron.BrowserWindowConstructorOptions){
    window=new BrowserWindow({...input,show:false,webPreferences:{...input.webPreferences,session:privateSession,javascript:input.webPreferences?.javascript??false,sandbox:true,nodeIntegration:false,contextIsolation:true}});
+   const owned=window,destroy=owned.destroy.bind(owned),print=owned.webContents.printToPDF.bind(owned.webContents);
+   destroyWindow=()=>{if(!owned.isDestroyed())destroy();};
+   // The vendor job may time out before native printing returns. Keep the window and
+   // its lease while Chromium still owns the print request. Block any late new print.
+   owned.destroy=()=>{if(!printing.size)destroyWindow?.();};
+   owned.webContents.printToPDF=async settings=>{
+    if(reason||options.signal?.aborted||owned.isDestroyed())throw Error(reason||'cancelled');
+    const job=print(settings);printing.add(job);
+    try{
+     const bytes=await job;
+     if(reason||options.signal?.aborted)throw Error(reason||'cancelled');
+     return bytes;
+    }finally{printing.delete(job);}
+   };
    window.webContents.on('will-navigate',event=>event.preventDefault());window.webContents.on('will-redirect',event=>event.preventDefault());window.webContents.setWindowOpenHandler(()=>({action:'deny'}));
    if(reason||options.signal?.aborted)stop(reason||'cancelled');return window;
   }
@@ -67,7 +84,9 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
   return result;
  }catch(error){throw Object.assign(new Error(reason||(options.signal?.aborted?'cancelled':error instanceof Error&&error.message==='too_large'?'too_large':'generation_failed')),{cause:error});}
  finally{
-  clearTimeout(timer);options.signal?.removeEventListener('abort',abort);if(window&&!window.isDestroyed())window.destroy();
+  clearTimeout(timer);options.signal?.removeEventListener('abort',abort);
+  await Promise.allSettled(printing);
+  destroyWindow?.();
   privateSession.webRequest.onBeforeRequest(null);await privateSession.clearStorageData();
   // Two fixed owned files only; no recursive deletion or user-directory traversal.
   for(const file of [htmlPath,outputPath])try{fs.unlinkSync(file);}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw new Error('cleanup_failed');}
@@ -77,6 +96,12 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
 
 /** Same static sandbox and unmodified Hana PDF job as v1–v3. */
 export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>}):Promise<Buffer>{
+ const memoryMiB=384+Math.ceil(([...options.images?.values()??[]].reduce((n,image)=>n+image.length,0)
+   +[...options.classroomPages?.values()??[]].reduce((n,page)=>n+page.bytes.length,0))*5/1048576);
+ return runHostStage('office-export','pdf','foreground',{cpu:1,memoryMiB,pdfWindows:1},
+  options.deadlineMs??60000,options.signal,remaining=>renderAdmittedOfficePdf(draft,{...options,deadlineMs:remaining}));
+}
+async function renderAdmittedOfficePdf(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>}):Promise<Buffer>{
  const images=officeImageSnapshot(draft,options.images);
  const resources=new Map(images);for(const [key,value]of options.classroomPages||[])resources.set('classroom-'+key,value.bytes);
  return withStaticOfficePage(officeDraftHtml(draft,images,options.classroomPages),{...options,images:resources},async({Window,htmlPath,outputPath,deadline})=>{

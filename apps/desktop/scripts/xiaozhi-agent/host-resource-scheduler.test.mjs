@@ -1,22 +1,19 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {existsSync} from 'node:fs';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
 import {setImmediate as tick} from 'node:timers/promises';
-import {acquireSafeReadSlot} from '../../src/main/xiaozhi-agent/tools/read-scheduler.ts';
+import {HostResourceScheduler} from '../../src/main/host-resources/scheduler.ts';
 
-const source = new URL('../../src/main/host-resources/scheduler.ts', import.meta.url);
-const Scheduler = existsSync(source) ? (await import(source.href)).HostResourceScheduler : undefined;
 const capacity = {cpu:2, memoryMiB:100, processes:2, indexOps:1, pdfWindows:1};
 const request = (attempt, demand, lane='background', owner='fixture') =>
   ({owner, attempt, phase:'fixture', lane, demand, deadline:performance.now()+5000});
-const scheduler = () => new Scheduler(capacity, {maxQueued:4, maxBypasses:2});
+const scheduler = () => new HostResourceScheduler(capacity, {maxQueued:4, maxBypasses:2});
 
 test('OCR and PDF launches cannot jointly use exhausted memory when CPU and physical slots remain', async () => {
   const abort = new AbortController();
-  const host = Scheduler && scheduler();
-  // Baseline only has a logical read slot. It allows both stages to start at once.
-  const acquire = stage => host ? host.acquire(stage, abort.signal) :
-    acquireSafeReadSlot(abort.signal).then(slot => ({settle:slot.release}));
+  const host = scheduler();
+  const acquire = stage => host.acquire(stage, abort.signal);
   const ocr = await acquire(request('ocr', {cpu:1, memoryMiB:80, processes:1}));
   let started = false;
   const pdf = acquire(request('pdf', {cpu:1, memoryMiB:30, pdfWindows:1}, 'foreground')).then(lease => {
@@ -34,7 +31,7 @@ test('OCR and PDF launches cannot jointly use exhausted memory when CPU and phys
   }
 });
 
-test('cancel before start rolls back, cancellation during work drains until its own actual completion', {skip:!Scheduler}, async () => {
+test('cancel before start rolls back, cancellation during work drains until its own actual completion', async () => {
   const host = scheduler(), queuedAbort = new AbortController();
   const first = await host.acquire(request('run', {cpu:2}), queuedAbort.signal);
   const beforeStart = new AbortController();
@@ -54,7 +51,7 @@ test('cancel before start rolls back, cancellation during work drains until its 
   assert.equal(host.snapshot().used.cpu,0);
 });
 
-test('overlapping retries have separate lifetimes, and stale settlement cannot return newer capacity', {skip:!Scheduler}, async () => {
+test('overlapping retries have separate lifetimes, and stale settlement cannot return newer capacity', async () => {
   const host = scheduler();
   const old = await host.acquire(request('attempt-1', {cpu:1,processes:1}));
   const fresh = await host.acquire(request('attempt-2', {cpu:1,processes:1}));
@@ -68,7 +65,7 @@ test('overlapping retries have separate lifetimes, and stale settlement cannot r
   assert.equal(host.snapshot().used.processes,0);
 });
 
-test('larger background stage gets a reservation opportunity despite continued foreground work', {skip:!Scheduler}, async () => {
+test('larger background stage gets a reservation opportunity despite continued foreground work', async () => {
   const host = scheduler();
   const running = await host.acquire(request('running',{cpu:1,memoryMiB:60}));
   const large = host.acquire(request('background',{cpu:2,memoryMiB:95}));
@@ -85,7 +82,7 @@ test('larger background stage gets a reservation opportunity despite continued f
   (await final).settle();
 });
 
-test('downshift retains outstanding work and reservations drain before new starts', {skip:!Scheduler}, async () => {
+test('downshift retains outstanding work and reservations drain before new starts', async () => {
   const host = scheduler();
   const running = await host.acquire(request('running',{cpu:2,memoryMiB:90}));
   running.start();
@@ -97,7 +94,7 @@ test('downshift retains outstanding work and reservations drain before new start
   (await waiting).settle();
 });
 
-test('invalid demand, impossible stages, bounded queue and expired deadline are explicit', {skip:!Scheduler}, async () => {
+test('invalid demand, impossible stages, bounded queue and expired deadline are explicit', async () => {
   const host = scheduler();
   for (const cpu of [-1,NaN,Infinity]) await assert.rejects(host.acquire(request('invalid',{cpu})),/invalid/);
   await assert.rejects(host.acquire(request('impossible',{memoryMiB:101})),/capacity/);
@@ -109,4 +106,35 @@ test('invalid demand, impossible stages, bounded queue and expired deadline are 
   wait.abort();
   await Promise.all(queued);
   running.settle();
+});
+
+test('a caller can leave while an actual child still owns the resource', async () => {
+  const host = scheduler(), cancellation = new AbortController();
+  let started;
+  const launch = new Promise(resolve => {started=resolve;});
+  let child;
+  const work = host.run(request('old-child',{processes:2}), cancellation.signal, async () => {
+    child=spawn(process.execPath,['-e','process.stdin.resume()'],{stdio:['pipe','ignore','ignore'],windowsHide:true});
+    const closed=once(child,'close');
+    await once(child,'spawn');
+    started();
+    await closed;
+  });
+  await launch;
+  try{
+    cancellation.abort();
+    const successor=host.acquire(request('new-child',{processes:1},'foreground'));
+    await tick();
+    assert.equal(host.snapshot().used.processes,2);
+    assert.equal(host.snapshot().queued,1);
+    assert.equal(host.recentEvents().at(-2).state,'cancel_requested');
+    child.stdin.end();
+    await work;
+    const lease=await successor;
+    lease.settle();
+    assert.equal(host.snapshot().used.processes,0);
+  }finally{
+    if(child.exitCode===null)child.kill();
+    await work;
+  }
 });

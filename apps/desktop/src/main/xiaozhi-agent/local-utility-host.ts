@@ -1,6 +1,7 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {utilityProcess} from 'electron';
+import {reserveHostStage} from '../host-resources/desktop';
 
 // A cancelled receipt is not an exited process. Documents and images share this pool.
 let workers=0;
@@ -10,11 +11,18 @@ export function reserveLocalWorker(){
  return ()=>{if(!released){released=true;workers--;}};
 }
 type UtilityFailure='busy'|'cancelled'|'timeout'|'unavailable'|'parse_failed';
-export function runLocalUtility<T>(options:{entry:'pdf-text-worker.js'|'document-worker.js'|'image-worker.js'|'word-worker.js'|'inspection-worker.js';serviceName:string;
+export async function runLocalUtility<T>(options:{entry:'pdf-text-worker.js'|'document-worker.js'|'image-worker.js'|'word-worker.js'|'inspection-worker.js';serviceName:string;
  request:unknown;timeout:number;signal:AbortSignal;valid:(value:unknown)=>value is T;fail:(error:UtilityFailure)=>T}):Promise<T>{
  const {signal,fail}=options;
- if(signal.aborted)return Promise.resolve(fail(signal.reason==='timeout'?'timeout':'cancelled'));
- const release=reserveLocalWorker();if(!release)return Promise.resolve(fail('busy'));
+ const cancelled=()=>fail(signal.reason==='timeout'?'timeout':'cancelled');
+ if(signal.aborted)return cancelled();
+ const deadline=performance.now()+options.timeout;
+ let lease;
+ try{lease=await reserveHostStage('local-utility',options.entry,'foreground',{cpu:1,memoryMiB:256,processes:1},options.timeout,signal);}
+ catch(error){return signal.aborted?cancelled():fail((error as Error).message==='timeout'?'timeout':'busy');}
+ if(!lease.start()){lease.settle();return signal.aborted?cancelled():fail('timeout');}
+ const localRelease=reserveLocalWorker();if(!localRelease){lease.settle();return fail('busy');}
+ const release=()=>{localRelease();lease.settle();};
  return new Promise(resolve=>{
   let settled=false;
   let child:Electron.UtilityProcess;
@@ -26,7 +34,7 @@ export function runLocalUtility<T>(options:{entry:'pdf-text-worker.js'|'document
    child.kill();resolve(result);
   };
   const abort=()=>finish(fail(signal.reason==='timeout'?'timeout':'cancelled'));
-  const timer=setTimeout(()=>finish(fail('timeout')),options.timeout);
+  const timer=setTimeout(()=>finish(fail('timeout')),Math.max(1,deadline-performance.now()));
   signal.addEventListener('abort',abort,{once:true});
   // Drain streams without exposing parser diagnostics, contents or paths.
   child.stderr?.on('data',()=>{});child.stdout?.on('data',()=>{});

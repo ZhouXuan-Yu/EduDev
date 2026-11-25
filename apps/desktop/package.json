@@ -46,6 +46,7 @@
     "preview": "electron-vite preview",
     "test:smoke": "npm run build && node scripts/electron-smoke.mjs",
     "test:renderer-components": "node scripts/renderer-component-state-test.mjs",
+    "test:host-resources": "node --experimental-transform-types --test scripts/xiaozhi-agent/host-resource-scheduler.test.mjs",
     "test:office-tool-expansion": "node scripts/office-tool-expansion-interaction.mjs",
     "test:office-tool-grouping": "node scripts/office-tool-expansion-grouping.mjs",
     "test:xiaozhi-pi": "tsc --noEmit && node scripts/xiaozhi-agent/pi-education-boundary-smoke.mjs",
