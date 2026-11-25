@@ -4,6 +4,8 @@ import { separatedMarkPixels } from "./material-pdf-question-conflict";
 import { recoverStructurePage } from "./material-document-structure";
 import { printedBlankStripe, printedBlanks, printedParentProbes, readPrintedParent } from "./material-printed-structure";
 import { choiceRecheckReadings, matchChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
+import { WINDOWS_CHOICE_OCR } from "./material-local-book-answers";
+import { recognizeWindowsChoiceCrops } from "./material-windows-choice-ocr";
 import { readStructureTables, type TableRowRecheck } from "./material-structure-ruled-table";
 import { verifiedNumericTableRow } from "./material-structure-borderless-table";
 import { LOCAL_OCR_ENGINE } from "../../shared/xiaozhi-ocr";
@@ -446,9 +448,19 @@ export class MaterialStructureRuntime {
       const original = cut.toPNG({ scaleFactor: 1 });
       const wider = cut.resize({ width: Math.min(size.width * 2, 2400), quality: "best" });
       const normalized = removeColorInk(wider).toPNG({ scaleFactor: 1 });
+      if (plan.mergedSuffix && process.platform === "win32") {
+        try {
+          const [lines] = await recognizeWindowsChoiceCrops([normalized], rowSignal);
+          const matched = matchChoiceRecheck(plan, { text: lines.join("\n") });
+          if (matched.size) return { page: image.page, box: plan.box, rasterSha256: image.sha256, cropSha256: sha(original),
+            engine: WINDOWS_CHOICE_OCR, attempts: 1, choices: choiceRecheckReadings(plan, [matched]) };
+        } catch {
+          signal.throwIfAborted();
+        }
+      }
       const runs = [];
       let attempts = 0;
-      for (const input of [original, normalized]) {
+      for (const input of plan.mergedSuffix && process.platform === "win32" ? [normalized] : [original, normalized]) {
         if (rowSignal.aborted) break;
         attempts++;
         try {

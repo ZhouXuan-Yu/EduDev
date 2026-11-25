@@ -2,7 +2,7 @@ import { TABLE_VISION_SCHEMA, type TableVisionCandidate, type TableVisionCell } 
 import { parseSavedTableVision, visionHash } from "./material-table-vision-provider";
 import { structureOcrSourceKey } from "./material-structure-identity";
 import { readStructureReviewOverview } from "./material-structure-review-overview";
-import { planChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
+import { planChoiceRecheck, recordChoiceRecheck, type ChoiceRecheckPlan } from "./material-structure-choice-recheck";
 import { createHash, randomUUID } from "node:crypto";
 import type { TeacherResource, QuestionBankItem } from "../../shared/contracts";
 import {
@@ -478,11 +478,16 @@ export class MaterialStructureRepository {
         if (plan) {
           // Replayed rows reserve their original slots without repeating OCR.
           choiceRecheckCounts.set(page, used + 1);
-          const [stored] = await this.host.all("SELECT 1 FROM material_structure_questions WHERE generation=? AND id=?", [generation, question.id]);
-          if (!stored) {
+          const [stored] = await this.host.all("SELECT body_json FROM material_structure_questions WHERE generation=? AND id=?", [generation, question.id]);
+          if (stored) {
+            const previous = JSON.parse(String(stored.body_json)) as StructureQuestion;
+            if (previous.ocrSourceKey !== question.ocrSourceKey) throw Error("source_changed");
+            if (previous.choiceRecheck?.rasterSha256 === source.page.rasterSha256)
+              recordChoiceRecheck(question, plan, previous.choiceRecheck);
+          } else {
             await this.guard(resource, generation, signal, lease);
             const recheck = await this.host.recheckChoiceRow(source.image, plan, signal, budget);
-            if (recheck?.rasterSha256 === source.page.rasterSha256) question.choiceRecheck = recheck;
+            if (recheck?.rasterSha256 === source.page.rasterSha256) recordChoiceRecheck(question, plan, recheck);
           }
         }
       }

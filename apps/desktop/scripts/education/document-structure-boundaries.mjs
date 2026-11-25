@@ -10,7 +10,7 @@ const { printedStructureQuestionType } =
   await import("../../src/main/assets/material-structure-question-type.ts");
 const { choiceLabelsForReview, missingChoiceLabels, validStructureImageQuery, validStructureQuery } =
   await import("../../src/shared/material-document-structure.ts");
-const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings } =
+const { planChoiceRecheck, matchChoiceRecheck, choiceRecheckReadings, recordChoiceRecheck } =
   await import("../../src/main/assets/material-structure-choice-recheck.ts");
 const { ruledTableGrid, ruledTableLayout, evidenceForTable, readStructureTables } =
   await import("../../src/main/assets/material-structure-ruled-table.ts");
@@ -425,6 +425,43 @@ await check("Only ambiguous horizontally aligned options with independent line b
     { label: "A", status: "single_read", readings: ["0"] },
     { label: "B", status: "single_read", readings: ["1"] },
   ]);
+});
+await check("An independently labeled trailing line exposes the merged final two choices for review", () => {
+  for (const [labels, texts, spacing] of [
+    ["ABCD", ["速度变小", "速度不变", "速度增大", "速度为零"], .2],
+    ["ABCDE", ["低于沸点", "保持原状", "沉到杯底", "浮到表面", "需要补充条件"], .16],
+  ]) {
+    const source = page([["一、单项选择题", .1, .07], ["12. 判断以下哪一项正确。", .1, .13],
+      ...Array.from(labels, (label, index) => [
+        index === labels.length - 1 ? texts[index] : `${label}. ${texts[index]}`,
+        .1 + spacing * index + (index === labels.length - 1 ? .02 : 0), .19, .10,
+      ]), ["13. 另一道题的题干。", .1, .24]]);
+    const [question] = questions([source]);
+    const plan = planChoiceRecheck(question, source);
+    assert(plan?.mergedSuffix, JSON.stringify(question));
+    const [prior, next] = Array.from(labels).slice(-2);
+    const [beforeChoice, suffix] = texts.slice(-2);
+    assert.deepEqual(plan.labels, [prior, next]);
+    assert(plan.box[0] > .1 + spacing * (labels.length - 2) + .10);
+    for (const text of [suffix, `${prior}. ${suffix}`, `${next}. 正文不同`, `${next}. ${suffix}\nA. 另一题`])
+      assert.equal(matchChoiceRecheck(plan, {text}).size, 0);
+    const sourceRead = matchChoiceRecheck(plan, {text: `${next}． ${suffix}`});
+    const blank = {page:1,box:plan.box,rasterSha256:source.rasterSha256,cropSha256:"f".repeat(64),
+      engine:"test",attempts:1,choices:choiceRecheckReadings(plan, [])};
+    recordChoiceRecheck(question, plan, blank);
+    assert.equal(question.choiceRecheck, undefined);
+    const original = structuredClone(question.options);
+    recordChoiceRecheck(question, plan, {...blank,choices:choiceRecheckReadings(plan, [sourceRead])});
+    assert.deepEqual(question.options, original);
+    assert.deepEqual(choiceLabelsForReview(question), [next]);
+    assert.equal(question.status, "needs_review");
+    assert.deepEqual(question.choiceRecheck.choices, [
+      {label:prior,readings:[beforeChoice],status:"single_read"}, {label:next,readings:[suffix],status:"single_read"},
+    ]);
+    assert(!planChoiceRecheck({...question,section:"三、解答题",issues:[]}, source));
+    const foreign = { ...source, paragraphs: [...source.paragraphs, {id:"different-owner",anchor:{page:1,box:plan.box}}] };
+    assert(!planChoiceRecheck({...question,issues:[],expectedChoiceCount:undefined}, foreign));
+  }
 });
 const choiceStatements = [
   ["二、选择题（本节共2题）", .1, .07],
