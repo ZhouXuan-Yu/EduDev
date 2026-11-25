@@ -6,8 +6,11 @@ import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import {supportedThinking,validThinkingChoice,type ThinkingInput,type ThinkingView} from '../../shared/xiaozhi-thinking';
 import { fetchDeepSeekCatalogue, readDeepSeekCatalogue } from './model-capabilities';
 import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSettingsView, type XiaozhiSessionModelInput, type XiaozhiSessionModel, type XiaozhiCredentialInput, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
-import {openProviderCredential,type SettingsKeyCodec} from '../provider-credentials';
-import {classifyConfigError,deepSeekModelEnvironment,readLegacyDeepSeekSetting,resolveAgentModel} from './agent-config-resolver';
+import {openLegacyProviderCredential,openProviderCredential,readLegacyProviderSetting,type SettingsKeyCodec} from '../provider-credentials';
+import {classifyConfigError,deepSeekModelEnvironment,describeLegacyDeepSeekSetting,readLegacyDeepSeekSetting,resolveAgentModel,resolveAgentThinking} from './agent-config-resolver';
+import {createModelSettingsState} from './model-settings-state';
+import {createModelSwitchState} from './model-switch-state';
+import {readPiSessionBinding,type Sql} from './session-state';
 
 // The codec is injected by Electron main; this service never imports it in Node/Worker.
 export type {SettingsKeyCodec} from '../provider-credentials';
@@ -17,7 +20,7 @@ export const validSessionId = (id: unknown): id is string => typeof id === 'stri
 const exact = (value: unknown, required: string[], optional: string[] = []): value is Record<string, unknown> => Boolean(value && typeof value === 'object' && !Array.isArray(value)
   && required.every(key => Object.prototype.hasOwnProperty.call(value, key)) && Object.keys(value).every(key => [...required, ...optional].includes(key)));
 export function validSettingsInput(value: unknown): value is XiaozhiSettingsInput {
-  return exact(value, ['schemaVersion','version','defaultModel'], ['apiKey']) && value.schemaVersion === XIAOZHI_SETTINGS_SCHEMA && revision(value.version) && modelId(value.defaultModel)
+  return exact(value, ['schemaVersion','version','defaultModel'], ['apiKey']) && value.schemaVersion === XIAOZHI_SETTINGS_SCHEMA && revision(value.version) && (value.defaultModel===null || modelId(value.defaultModel))
     && (value.apiKey === undefined || typeof value.apiKey === 'string' && value.apiKey.length<=4096 && /^[\x21-\x7e]{8,4096}$/.test(value.apiKey.trim()));
 }
 export function validCredentialInput(value:unknown):value is XiaozhiCredentialInput {
@@ -39,15 +42,16 @@ export function validThinkingInput(value:unknown):value is ThinkingInput {
 export function createModelSettings(options: { store: OmniEduStore; root: string; codec?: SettingsKeyCodec; busy: () => boolean; assertMutation?: () => void;
   switchBound?: (input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) => Promise<void> }) {
   const { store, root, codec } = options;
-  async function modelResolution(saved:Awaited<ReturnType<typeof store.xiaozhiState.modelSettings.configuration>>,id?:string) {
-    const state=store.xiaozhiState;
+  async function modelResolution(saved:Awaited<ReturnType<typeof store.xiaozhiState.modelSettings.configuration>>,id?:string,
+    state:Pick<typeof store.xiaozhiState,'sql'|'getBinding'|'modelSettings'|'modelSwitch'>=store.xiaozhiState,
+    readLegacy=()=>readLegacyDeepSeekSetting(state.sql,deepSeekModelEnvironment())) {
     const binding=id?await state.getBinding(id):undefined;
     const selection=id?await state.modelSettings.session(id):undefined;
     const identity=id && binding?.model ? await state.modelSwitch.current(id).then(
       current=>({revision:current?.revision??null}),error=>({revision:null,failure:classifyConfigError(error)}),
     ) : {revision:null};
     const legacy=binding?.model || selection?.model || saved.defaultModel ? undefined
-      : await readLegacyDeepSeekSetting(state.sql,deepSeekModelEnvironment());
+      : await readLegacy();
     return resolveAgentModel({configuration:saved,binding:binding?{model:binding.model,...identity}:undefined,selection,legacy});
   }
   async function model(id?: string) {
@@ -60,6 +64,31 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     const resolved=await modelResolution(saved,id);
     return {provider:'deepseek' as const,apiKey,model:resolved.runtimeValue,modelObservation:resolved.observation};
   }
+  async function modelSnapshot(work:Sql,id?:string){
+    const modelSettings=createModelSettingsState(work),modelSwitch=createModelSwitchState(work);
+    const saved=await modelSettings.configuration();
+    const env=deepSeekModelEnvironment(), fallbackKey=process.env.DEEPSEEK_API_KEY;
+    const legacy=await readLegacyProviderSetting(work,'deepseek');
+    const resolved=await modelResolution(saved,id,{sql:work,modelSettings,modelSwitch,getBinding:target=>readPiSessionBinding(work,modelSwitch,target)},
+      async()=>describeLegacyDeepSeekSetting(legacy,env));
+    return {saved,resolved,legacy,fallbackKey,environmentModel:env.model};
+  }
+  function keyFromSnapshot(snapshot:Awaited<ReturnType<typeof modelSnapshot>>){
+    return snapshot.saved.sealedKey?openProviderCredential(codec,snapshot.saved.sealedKey)
+      :openLegacyProviderCredential(codec,snapshot.legacy.stored,snapshot.fallbackKey);
+  }
+  async function captureRun(id:string){
+    const sql=store.xiaozhiState.sql;
+    if(!sql.readTransaction)throw Error('configuration');
+    const captured=await sql.readTransaction(async work=>{
+      const snapshot=await modelSnapshot(work,id);
+      const state=createModelSettingsState(work);
+      const observation=resolveAgentThinking(await state.thinking(),await state.thinking(id));
+      return {snapshot,thinking:{observation,lastRun:await state.thinkingRun(id)}};
+    });
+    return {provider:'deepseek' as const,model:captured.snapshot.resolved.runtimeValue,
+      modelObservation:captured.snapshot.resolved.observation,apiKey:keyFromSnapshot(captured.snapshot),thinking:captured.thinking};
+  }
   async function sessionModel(id: string, includeBusy = true): Promise<XiaozhiSessionModel> {
     const detail = await store.getAiConversationSession(id);
     if (detail.session.archivedAt) throw new Error('permission_denied');
@@ -68,7 +97,7 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     return { version: ledger?.revision ?? selection.revision, model: await model(id),
       locked: includeBusy && options.busy() || Boolean(binding) && !options.switchBound || !binding && detail.messages.length > 0 };
   }
-  async function view(query?: { refresh?: boolean; sessionId?: string }): Promise<XiaozhiSettingsView> {
+  async function view(query?: { refresh?: boolean; sessionId?: string }, allowNetwork = true): Promise<XiaozhiSettingsView> {
     const selection = query?.sessionId ? await sessionModel(query.sessionId) : undefined;
     const saved = await store.xiaozhiState.modelSettings.configuration();
     let settings: { model: string; apiKey?: string }, credentialError: XiaozhiSettingsView['credentialError'];
@@ -82,13 +111,13 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     }
     let catalogue = await readDeepSeekCatalogue(root);
     let catalogueError: XiaozhiSettingsView['catalogueError'];
-    if (query?.refresh || !catalogue && settings.apiKey) {
+    if (allowNetwork && (query?.refresh || !catalogue && settings.apiKey)) {
       try { if (!settings.apiKey) throw new Error('authentication'); catalogue = await fetchDeepSeekCatalogue(root, settings.apiKey); }
       catch (error) { const code = error instanceof Error ? error.message : ''; catalogueError = ['authentication','transport','timeout'].includes(code) ? code as typeof catalogueError : 'configuration'; }
     }
     // No credential, encrypted blob, private path or provider response is projected.
     return { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: saved.revision, provider: 'deepseek', configured: Boolean(settings.apiKey),
-      maskedApiKey: settings.apiKey ? '••••••••' + settings.apiKey.slice(-4) : '', defaultModel: settings.model,
+      maskedApiKey: settings.apiKey ? '••••••••' + settings.apiKey.slice(-4) : '', defaultModel: settings.model, defaultModelOverride:saved.defaultModel,
       legacyCredentialMigration: store.getProviderCredentialMigration(),
       thinking:await thinking(query?.sessionId),web: await store.xiaozhiState.modelSettings.web(), locked: options.busy(), models: catalogue?.models || [], catalogue: catalogue ? catalogue.models[0].source : 'unavailable',
       packages:packageManifest.packages.map(item=>({name:item.name,version:item.version,label:item.name==='pi-web-access'?'联网资料定位':item.name==='pi-goal-x'?'长任务目标增强':'模型账户余额',state:item.name==='pi-goal-x'?'staged' as const:'active' as const,scope:item.name==='pi-web-access'?'已接入网页关键词定位；其他搜索供应商与视频能力待接入。':item.name==='pi-goal-x'?'已安装；现有目标功能继续使用，增强能力正在适配。':'已接入当前已保存DeepSeek账户的官方余额查询。'})),
@@ -99,8 +128,31 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     const state=store.xiaozhiState.modelSettings;
     return {global:await state.thinking(),...(id?{session:await state.thinking(id),lastRun:await state.thinkingRun(id)}:{})};
   }
+  async function preflightModelSetting(defaultModel:string|null, apiKey:string|undefined, replacingKey:boolean) {
+    if(defaultModel===null && !replacingKey)return readDeepSeekCatalogue(root);
+    if(!apiKey)throw Error('authentication');
+    let catalogue;
+    try { catalogue=await fetchDeepSeekCatalogue(root,apiKey); }
+    catch(error) {
+      if(replacingKey || !(error instanceof Error) || !['timeout','transport'].includes(error.message))throw error;
+      catalogue=await readDeepSeekCatalogue(root);
+      if(!catalogue?.models.some(item=>!item.stale))throw error;
+    }
+    if(defaultModel!==null && !catalogue.models.some(item=>item.id===defaultModel && !item.stale))throw Error('model_unavailable');
+    return catalogue;
+  }
+  async function committedView(fallback:XiaozhiSettingsView, retryCredentials:boolean, sessionId?:string) {
+    try {
+      if(retryCredentials)await store.retryProviderCredentialMigration();
+      return await view(sessionId?{sessionId}:undefined,false);
+    } catch(error) {
+      const message=error instanceof Error ? error.message : '';
+      const safeError=message==='transport'||message==='timeout'||message==='storage_unavailable'?message:'configuration';
+      return {...fallback,refreshAfterSaveError:safeError} satisfies XiaozhiSettingsView;
+    }
+  }
   return {
-    runtime, model, sessionModel, view,thinking,
+    runtime, model, sessionModel, view,thinking,preflightModelSetting,committedView,captureRun,modelSnapshot,keyFromSnapshot,
     async saveThinking(input:ThinkingInput){
       const before=await thinking(input.sessionId),selected=input.sessionId?before.session!:before.global;
       if(selected.version!==input.version)throw Error('conflict');
@@ -131,17 +183,22 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     async save(input: XiaozhiSettingsInput) {
       const previous = await store.xiaozhiState.modelSettings.configuration();
       if (previous.revision !== input.version) throw new Error('conflict');
-      const key = input.apiKey?.trim() || (await runtime()).apiKey;
-      if (!key) throw new Error('authentication');
-      if (input.apiKey && !codec?.available()) throw new Error('storage_unavailable');
-      const catalogue = await fetchDeepSeekCatalogue(root, key);
-      if (!catalogue.models.some(item => item.id === input.defaultModel)) throw new Error('model_unavailable');
+      const suppliedKey=input.apiKey?.trim();
+      if (suppliedKey && !codec?.available()) throw new Error('storage_unavailable');
+      const key=suppliedKey || (input.defaultModel===null?undefined:(await runtime()).apiKey);
+      const catalogue=await preflightModelSetting(input.defaultModel,key,Boolean(suppliedKey));
+      const resolved=await modelResolution({...previous,defaultModel:input.defaultModel});
+      let sealedKey=previous.sealedKey;
+      if(suppliedKey){
+        try { sealedKey=codec!.seal(suppliedKey); }
+        catch { throw new Error('storage_unavailable'); }
+      }
       options.assertMutation?.();
-      let sealedKey = previous.sealedKey;
-      if (codec?.available()) { try { sealedKey = codec.seal(key); } catch { throw new Error('storage_unavailable'); } }
       await store.xiaozhiState.modelSettings.saveConfiguration(input.version, { schema: 1, defaultModel: input.defaultModel, ...(sealedKey ? { sealedKey } : {}) });
-      await store.retryProviderCredentialMigration();
-      return view();
+      return committedView({schemaVersion:XIAOZHI_SETTINGS_SCHEMA,version:input.version+1,provider:'deepseek',
+        configured:Boolean(key || sealedKey), maskedApiKey:key?'••••••••'+key.slice(-4):'',
+        defaultModel:resolved.runtimeValue, defaultModelOverride:input.defaultModel, locked:options.busy(),
+        models:catalogue?.models??[], catalogue:catalogue?.models[0]?.source??'unavailable'},true);
     },
     async select(input: XiaozhiSessionModelInput) {
       const selection = await sessionModel(input.sessionId, false);

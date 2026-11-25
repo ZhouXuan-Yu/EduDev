@@ -7,7 +7,7 @@ import {closeSqlite,openSqlite,setSqliteJournalMode} from './sqlite-connections'
 import {migrateDatabase} from './database-migrations';
 import {BackupPublicationBarrier} from './backup/publication-barrier';
 import {exportDatabaseBackup} from './backup/export';
-import {migrateLegacyProviderCredentials,openProviderCredential,readLegacyProviderSetting,sealProviderCredential,type CredentialMigrationState,type SettingsKeyCodec} from './provider-credentials';
+import {migrateLegacyProviderCredentials,openLegacyProviderCredential,readLegacyProviderSetting,sealProviderCredential,type CredentialMigrationState,type SettingsKeyCodec} from './provider-credentials';
 import {currentC2Snapshot} from './education/paper-template-snapshot';
 import {PaperBasketV2Repository} from './education/paper-basket-v2-repository';
 import {createPaperBasketAdaptationService} from './education/paper-basket-adaptation-service';
@@ -1489,10 +1489,7 @@ export class OmniEduStore {
   }
 
   private legacyProviderSecret({stored,fallbackKey}: {stored:Record<string,unknown>;fallbackKey?:string}) {
-    if (Object.hasOwn(stored,'sealedKey')) return openProviderCredential(this.providerCredentialCodec,stored.sealedKey);
-    if (typeof stored.apiKey==='string') return stored.apiKey;
-    if (stored.legacyCredentialDisabled === true) return '';
-    return fallbackKey;
+    return openLegacyProviderCredential(this.providerCredentialCodec,stored,fallbackKey);
   }
 
   async getDeepSeekRuntimeSettings(providerOverride?: AiProviderId): Promise<{ provider: AiProviderId; apiKey?: string; model: string; updatedAt: string }> {

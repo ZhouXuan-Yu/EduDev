@@ -35,6 +35,13 @@ export function openProviderCredential(codec: SettingsKeyCodec | undefined, seal
   return key;
 }
 
+export function openLegacyProviderCredential(codec:SettingsKeyCodec|undefined,stored:Record<string,unknown>,fallbackKey?:string) {
+  if (Object.hasOwn(stored,'sealedKey')) return openProviderCredential(codec,stored.sealedKey);
+  if (typeof stored.apiKey==='string') return stored.apiKey;
+  if (stored.legacyCredentialDisabled===true) return '';
+  return fallbackKey;
+}
+
 export function sealProviderCredential(codec: SettingsKeyCodec, key: string) {
   if (!codec.available()) throw new Error('storage_unavailable');
   if (!key || key.length > 4096) throw new Error('configuration');

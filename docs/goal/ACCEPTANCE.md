@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+数据库 R3 先验收 AC-00 至 AC-28，按实际 diff 处置 AC-30，合并后在最终 main 构建验证 AC-29。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
+
 数据库 R2 按工程包 `contracts/acceptance.json` 的 20 项与 82 个子断言验收，结果以本轮隔离 Windows 构建和验收账本为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)
 
 D3 首会话保存后的快速切页恢复、唯一弹窗的文档生成和「我的任务」契约检查 **已实现**。独立合成试验验证切页时不自动发送。完整组件指纹检查另有旧记录差异。 [对话专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#首个对话初始化与页面契约)

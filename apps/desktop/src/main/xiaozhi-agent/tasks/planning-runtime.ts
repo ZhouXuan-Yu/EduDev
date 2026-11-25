@@ -48,7 +48,12 @@ export function createTaskPlanningRuntime(options: {
     const dependencies = invocation ? await options.dependencies(invocation.tool, invocation.input)
       : {state: missing.some(resolution => resolution.excludedProviders.some(provider => provider.reasons.includes('missing_dependency'))) ? 'blocked' as const : 'ready' as const,
         references: [...new Set(resolutions.map(resolution => 'registry:' + resolution.registryRevision))]};
-    const workspace = await options.workspace();
+    const workspace = await options.workspace().catch(error => {
+      if (error instanceof Error && error.message === 'permission_denied') {
+        throw new TaskAdmissionError('permission_denied');
+      }
+      throw error;
+    });
     const checkpoint = await tasks.checkpoint(task.id);
     const effects = await options.sql.all(`SELECT effect_id FROM xiaozhi_effects_v1 WHERE session_id=? AND task_id=? AND state='unknown'
       AND json_extract(document_json,'$.contract.effect') IN ('local_write','external_effect')

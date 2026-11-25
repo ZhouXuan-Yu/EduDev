@@ -8,18 +8,36 @@ import {installHostAdmissionRuntime,hostAdmissionFixture} from './host-admission
 // These host-admission boundaries never execute the Electron extraction utility.
 installHostAdmissionRuntime();
 const { createXiaozhiProductionHost } = await import('../../src/main/xiaozhi-agent/production-host.ts');
+const {ordinaryConfigSchema}=await import('../../src/main/xiaozhi-agent/ordinary-config-journal.ts');
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
 const fixture=hostAdmissionFixture('test-results/xiaozhi-agent/pi-control-ui-2AWPBO/data/app.db');
 const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-host-lock-'));
 const digest = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex'), before = digest(fixture);
-fs.copyFileSync(fixture, path.join(output, 'app.db')); const db = new DatabaseSync(path.join(output, 'app.db'));
-const state = createXiaozhiSessionState({ run: async (sql, values = []) => db.prepare(sql).run(...values), change: async (sql, values = []) => Number(db.prepare(sql).run(...values).changes), all: async (sql, values = []) => db.prepare(sql).all(...values) });
+const database=path.join(output,'app.db');
+fs.copyFileSync(fixture,database);
+const db=new DatabaseSync(database);
+if(!db.prepare("SELECT name FROM sqlite_schema WHERE name='xiaozhi_config_changes_v1'").get())db.exec(ordinaryConfigSchema);
+const state=createXiaozhiSessionState({
+  run:async (sql,values=[])=>db.prepare(sql).run(...values),
+  change:async (sql,values=[])=>Number(db.prepare(sql).run(...values).changes),
+  all:async (sql,values=[])=>db.prepare(sql).all(...values),
+  readTransaction:async action=>{
+    const reader=new DatabaseSync(database,{readOnly:true});
+    try{
+      reader.exec('BEGIN');
+      const result=await action({all:async(sql,values=[])=>reader.prepare(sql).all(...values)});
+      reader.exec('COMMIT');return result;
+    }finally{reader.close();}
+  },
+});
 const id = db.prepare('SELECT id FROM ai_conversation_sessions LIMIT 1').get().id;
 let enteredDetail, releaseDetail, detailArchived = false, releaseFetch, enteredFetch;
 const store = { xiaozhiState: state, questionReviews: { collections: { list: async () => [] } }, getDeepSeekRuntimeSettings: async () => ({ provider: 'deepseek', apiKey: 'synthetic-host-key', model: 'deepseek-flash' }),
+  getProviderCredentialMigration:()=>({deepseek:'not_needed',glm:'not_needed'}),
   getAiConversationSession: async () => { enteredDetail?.(); if (releaseDetail) await new Promise(resolve => releaseDetail.current = resolve); return { session: { archivedAt: detailArchived ? 'owned' : undefined }, messages: [] }; } };
 const schemaVersion = 'xiaozhi.settings.v1', request = version => ({ schemaVersion, version, defaultModel: 'deepseek-flash' });
 const fetchBefore = globalThis.fetch;
+process.env.DEEPSEEK_API_KEY='synthetic-host-key';
 globalThis.fetch = async () => { enteredFetch?.(); if (releaseFetch) await new Promise(resolve => releaseFetch.current = resolve); return new Response(JSON.stringify({ object: 'list', data: [{ id: 'deepseek-flash', context_window: 1048576, max_output_tokens: 393216 }] })); };
 const host = createXiaozhiProductionHost({ store, dataRoot: output, emit: () => assert.fail('Lock boundary must not launch a model turn') });
 const checks = [], report = { success: false, fixture, fixtureSha256:before, checks, boundaries: ['Actual production-host ownership gates and disposable existing-schema SQLite; controlled provider and chooser barriers.', 'Electron PDF/window/session imports are throwing sentinels; invoking them fails this non-UI test. No native renderer or provider quality claim.'] };
@@ -49,7 +67,7 @@ try {
   await check('Reserved startup blocks credential mutation before model execution', async () => { await assert.rejects(host.saveModelSettings(request(1)), /busy/); });
   releaseDetail.current(); await starting; releaseDetail = undefined; enteredDetail = undefined; detailArchived = false;
   let closeEntered; const closingWait = new Promise(resolve => closeEntered = resolve); enteredFetch = closeEntered; releaseFetch = {};
-  const savingOnClose = host.saveModelSettings(request(1)); await closingWait; await host.close(); releaseFetch.current(); releaseFetch = undefined;
+  const savingOnClose = host.saveModelSettings(request(1)); await closingWait; const closed=host.close(); releaseFetch.current(); releaseFetch = undefined; await closed;
   await check('Closing during validation rejects a late configuration commit', async () => { await assert.rejects(savingOnClose, /busy/); assert.equal((await state.modelSettings.configuration()).revision, 1); });
   await check('Owned source database is unchanged', async () => assert.equal(digest(fixture), before));
   report.success = true;

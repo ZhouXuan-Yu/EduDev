@@ -254,6 +254,8 @@ import { getPiProtectedContext } from './compaction-context';
 import type { XiaozhiCompactInput } from '../../shared/xiaozhi-agent';
 import { readDeepSeekCapabilities, resolveDeepSeekCapabilities,fetchDeepSeekCatalogue } from './model-capabilities';
 import { createModelSettings, type SettingsKeyCodec } from './model-settings';
+import {createOrdinaryConfigService} from './ordinary-config-service';
+import type {OrdinaryCommit,OrdinaryIntent,OrdinaryQuery,OrdinaryUndo} from '../../shared/xiaozhi-ordinary-config';
 import {resolveAgentThinking} from './agent-config-resolver';
 import {savePreparedAgentConfig} from './prepared-agent-config';
 import type {PreparedAgentConfig} from '../../shared/xiaozhi-resolved-config';
@@ -432,6 +434,17 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     release:id=>{choosing.delete(id);}});
   const modelSettings = createModelSettings({ store, root, codec: options.settingsCodec, busy: settingsBusy,
     assertMutation: () => { if (closing || !configuring.has('provider')) throw new Error('busy'); }, switchBound });
+  const ordinaryBusy=()=>Boolean(closing||skillsMutating||choosing.size||configuring.size);
+  const ordinaryConfig=createOrdinaryConfigService({sql:store.xiaozhiState.sql,model:modelSettings,root,codec:options.settingsCodec});
+  const assertOrdinary=()=>{if(ordinaryBusy())throw Error('busy');};
+  const assertCredential=()=>{if(closing||!configuring.has('provider'))throw Error('busy');};
+  async function writeOrdinary(input:OrdinaryIntent){
+    const repeat=await ordinaryConfig.repeat(input);
+    if(repeat)return repeat;
+    return 'credentialId' in input && input.credentialId
+      ?mutateSettings(()=>ordinaryConfig.apply(input,assertCredential))
+      :ordinaryConfig.apply(input,assertOrdinary);
+  }
   const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
     permissionRuntime,
     runtimeChecks: inspectLocalRuntimes,
@@ -974,9 +987,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       afterStage:options.afterModelSwitchStage});
   }
   const modelWrites=new Set<Promise<void>>();
-  async function trackModelWrite(action:()=>Promise<void>) {
-    const work=action();modelWrites.add(work);
-    try{await work;}finally{modelWrites.delete(work);}
+  async function trackModelWrite<T>(action:()=>Promise<T>):Promise<T> {
+    const work=action();
+    const settled=work.then(()=>undefined,()=>undefined);
+    modelWrites.add(settled);
+    try{return await work;}finally{modelWrites.delete(settled);}
   }
   const recoveringModels=new Map<string,Promise<void>>();
   async function recoverModel(id:string) {
@@ -993,7 +1008,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     })(); recoveringModels.set(id,work);
     try {await work;}finally{recoveringModels.delete(id);}
   }
-  async function sessionConfiguration(id:string,settings:{apiKey:string;model:string},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
+  async function sessionConfiguration(id:string,settings:{apiKey:string;model:string;thinking?:Awaited<ReturnType<typeof modelSettings.captureRun>>['thinking']},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
     budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions & {thinkingBaseline:PreparedAgentConfig['thinking']}> {
     await skillsReady;
     const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
@@ -1007,12 +1022,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
     const web = await store.xiaozhiState.modelSettings.web();
-    const thinking=await modelSettings.thinking(id);
+    const currentThinking=settings.thinking?undefined:await modelSettings.thinking(id);
+    const thinking=settings.thinking??{
+      observation:resolveAgentThinking(currentThinking!.global,currentThinking!.session),lastRun:currentThinking!.lastRun,
+    };
     const unfinished=owner?.unfinishedThinkingTask;
     const teaching=owner?.teachingTaskReference;
     const toolTaskQuery=[...(owner?.task?.criteria.filter(c=>c.kind==='human').map(c=>c.text)||[]),...(owner?.task?.steps.map(step=>step.text)||[]),...(isThinkingContinuation(cleanPrompt)||isTaskAmendment(cleanPrompt)?[unfinished||'']:[]),...(teaching?[teaching]:[])].join('\n').slice(0,8000);
     const taskDepth=teaching||(unfinished&&isThinkingContinuation(unfinished)&&thinking.lastRun?.mode==='deep'?'深入教学任务':unfinished);
-    const thinkingObservation=resolveAgentThinking(thinking.global,thinking.session);
+    const thinkingObservation=thinking.observation;
     const thinkingSource=thinkingObservation.source;
     const thinkingPolicy=resolveThinkingPolicy(cleanPrompt,capabilities,thinkingObservation.value,thinkingSource==='session_selection'?'session':'global',taskDepth);
     const thinkingBaseline:PreparedAgentConfig['thinking']={source:thinkingSource,revision:thinkingObservation.revision,
@@ -1256,7 +1274,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     } finally {await agent.dispose();}
     });
   }
-  async function execute(id: string, prompt: string, run: Active, settings: Awaited<ReturnType<typeof modelSettings.runtime>>) {
+  async function execute(id: string, prompt: string, run: Active, settings: Awaited<ReturnType<typeof modelSettings.captureRun>>) {
     const executionStarted=performance.now();let preparationMs:number|undefined,sdkEndedMs:number|undefined;
     let failure: XiaozhiAgentError | undefined, text = '',answerTruncated=false;
     try {
@@ -1287,7 +1305,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       run.skillPrivateContext ||= createSkillPrivateContext();
       await preparing(()=>captureRetiredPrivateHistory(store.xiaozhiState.sql,root,id,run.skillPrivateContext!),'host_read_retired_history');
       if(run.recoveryInspection?.canRebuildSession)run.skillPrivateContext.unavailableHistory();
-      const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt),'host_session_configuration');
+      const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model,thinking:settings.thinking},run.runId,capabilities,run.usage.budget,cleanPrompt,run,prompt),'host_session_configuration');
       if(base.thinkingPolicy)await preparing(()=>store.xiaozhiState.modelSettings.saveThinkingRun(id,{...base.thinkingPolicy!,runId:run.runId,model:settings.model}));
       const readbackImporter=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,
         isCurrent:()=>!closing&&active.get(id)===run&&!run.stopped});
@@ -2003,7 +2021,17 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       void work.finally(() => localSettingsJobs.delete(work)).catch(() => undefined);
       return work;
     },
-    modelSettingsView: async(query?:{refresh?:boolean;sessionId?:string})=>{if(query?.sessionId)await recoverModel(query.sessionId);return modelSettings.view(query);},
+    modelSettingsView: async(query?:{refresh?:boolean;sessionId?:string})=>{
+      if(query?.sessionId)await recoverModel(query.sessionId);
+      return {...await modelSettings.view(query),ordinaryLocked:ordinaryBusy()};
+    },
+    ordinaryConfigCommit:(input:OrdinaryCommit)=>trackModelWrite(()=>writeOrdinary(input)),
+    ordinaryConfigUndo:(input:OrdinaryUndo)=>trackModelWrite(()=>writeOrdinary(input)),
+    ordinaryConfigHistory:(input:OrdinaryQuery)=>ordinaryConfig.history(input),
+    async stageOrdinaryCredential(input:XiaozhiCredentialInput){
+      if(settingsBusy())throw Error('busy');
+      return ordinaryConfig.stageCredential(input);
+    },
     mcpCatalog: () => mcp.catalog(),
     decisionHistory: (id: string) => decisions.list(id),
     decisionReplay: (input: DecisionInput) => decisions.replay(input),
@@ -2034,13 +2062,28 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     async saveWebSettings(input:XiaozhiWebInput) { return mutateSettings(()=>store.xiaozhiState.modelSettings.saveWeb(input,()=>{if(closing||!configuring.has('provider'))throw new Error('busy');})); },
     async saveThinkingSettings(input:import('../../shared/xiaozhi-thinking').ThinkingInput){
-      const value=await mutateSettings(()=>modelSettings.saveThinking(input));
-      return {...value,locked:settingsBusy()};
+      assertOrdinary();
+      const query=input.sessionId?{sessionId:input.sessionId}:undefined;
+      const fallback=await modelSettings.view(query,false);
+      const receipt=await host.ordinaryConfigCommit({
+        operationId:randomUUID(),field:input.sessionId?'session_thinking':'global_thinking',
+        sessionId:input.sessionId,expectedVersion:input.version,value:input.choice,
+      });
+      const setting={version:receipt.version,choice:input.choice};
+      const thinking=fallback.thinking?{...fallback.thinking,...(input.sessionId?{session:setting}:{global:setting})}:undefined;
+      return {...await modelSettings.committedView({...fallback,thinking},false,input.sessionId),locked:settingsBusy(),ordinaryLocked:ordinaryBusy()};
     },
     async verifyModelCredential(input:XiaozhiCredentialInput) {return mutateSettings(()=>modelSettings.verify(input));},
     async saveModelSettings(input: XiaozhiSettingsInput) {
-      const value = await mutateSettings(() => modelSettings.save(input));
-      return { ...value, locked: settingsBusy() };
+      const result=await mutateSettings(()=>trackModelWrite(async()=>{
+        const fallback=await modelSettings.view(undefined,false);
+        const staged=input.apiKey?ordinaryConfig.stageCredential({schemaVersion:input.schemaVersion,apiKey:input.apiKey}):undefined;
+        const receipt=await ordinaryConfig.apply({operationId:randomUUID(),field:'default_model',
+          expectedVersion:input.version,value:input.defaultModel,...staged},assertCredential);
+        return modelSettings.committedView({...fallback,version:receipt.version,
+          defaultModel:input.defaultModel??fallback.defaultModel,defaultModelOverride:input.defaultModel},Boolean(staged));
+      }));
+      return {...result,locked:settingsBusy(),ordinaryLocked:ordinaryBusy()};
     },
     async selectSessionModel(input: XiaozhiSessionModelInput) {
       await recoverModel(input.sessionId);
@@ -2313,7 +2356,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           fs.writeFileSync(path.join(options.dataRoot, '.e2e-pi-command-claimed'), input.commandId);
           await new Promise(resolve => setTimeout(resolve, Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMMAND_DELAY_MS) || 0))));
         }
-        const settings = await phase(()=>modelSettings.runtime(id));
+        // This snapshot orders run admission against ordinary configuration writes.
+        const settings = await phase(()=>modelSettings.captureRun(id));
         if(input.attachments){
           if(closing||run.stopped)throw new Error('cancelled');
           const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,...(input.continueTask?{continueTask:input.continueTask}:{}),...(input.presentation?{presentation:input.presentation}:{}),hash,model:settings.model,attachments:drafts,selections:input.attachments});
@@ -2410,7 +2454,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },
     async close() {
-      closing = true;const prewarmStopped=startupPrewarm.close();for(const pending of admissions.values())for(const controller of pending)controller.abort();
+      closing = true;ordinaryConfig.clear();const prewarmStopped=startupPrewarm.close();for(const pending of admissions.values())for(const controller of pending)controller.abort();
       for (const run of active.values()) { run.stopped = true; run.abort.abort('app_shutdown'); }
       for(const run of active.values())void run.agent?.abort().catch(()=>undefined);
       for(const controller of balanceQueries)controller.abort();

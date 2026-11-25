@@ -61,9 +61,12 @@ try {
     const channels = new Map();
     registerModelSettingsIpc({ ipcMain: { handle: (name, handler) => channels.set(name, handler) }, allowed: () => false,
       host: { modelSettingsView: () => assert.fail(), saveModelSettings: () => assert.fail(), selectSessionModel: () => assert.fail(),
-        verifyModelCredential: () => assert.fail(), queryProviderBalance: () => assert.fail(), saveThinkingSettings: () => assert.fail() } });
+        verifyModelCredential: () => assert.fail(), queryProviderBalance: () => assert.fail(), saveThinkingSettings: () => assert.fail(),
+        ordinaryConfigCommit: () => assert.fail(), ordinaryConfigHistory: () => assert.fail(),
+        ordinaryConfigUndo: () => assert.fail(), stageOrdinaryCredential: () => assert.fail() } });
     assert.deepEqual([...channels.keys()].sort(), ['xiaozhi:thinking-save','xiaozhi:settings-get','xiaozhi:settings-save',
-      'xiaozhi:model-select','xiaozhi:settings-verify','xiaozhi:provider-balance'].sort());
+      'xiaozhi:model-select','xiaozhi:settings-verify','xiaozhi:provider-balance','xiaozhi:config-commit',
+      'xiaozhi:config-history','xiaozhi:config-undo','xiaozhi:config-credential-stage'].sort());
     for (const handler of channels.values()) assert.equal(handler({}, undefined).error, 'permission_denied');
   });
   await check('Busy state is visible without leaking private session binding', async () => { busy = true; const view = await service.view({ sessionId: id }); assert(view.locked && view.sessionModel.locked); assert(!JSON.stringify(view).includes('private.jsonl')); });

@@ -5,6 +5,7 @@ import {taskSummarySchema} from './xiaozhi-agent/task-summary-schema';
 import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/capabilities/acquisition/schema';
 import {preparedAgentConfigSchema} from './xiaozhi-agent/prepared-agent-config';
 import {taskSummaryMaintenanceV6} from './xiaozhi-agent/task-summary-maintenance-v6';
+import {ordinaryConfigSchema} from './xiaozhi-agent/ordinary-config-journal';
 import {ensureTaskSummarySchema} from './xiaozhi-agent/task-summary-projection';
 
 const baselineTable = 'xiaozhi_schema_baseline';
@@ -58,6 +59,9 @@ const migrations = [{
 }, {
   id: 'r2.task_summary_maintenance.v6',
   sql: taskSummaryMaintenanceV6,
+}, {
+  id: 'r3.ordinary_config_history.v7',
+  sql: ordinaryConfigSchema,
 }] as const;
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;

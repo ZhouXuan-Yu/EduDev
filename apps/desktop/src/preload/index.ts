@@ -70,6 +70,7 @@ import type { XiaozhiBudgetInput, XiaozhiCompactInput, XiaozhiQueueMutationInput
 import type { XiaozhiMemoryCatalogInput, XiaozhiMemoryCatalogResult, XiaozhiMemoryScopeInput, XiaozhiMemoryTrace } from '../shared/xiaozhi-memory';
 import type { XiaozhiSkillCatalog, XiaozhiSkillPreview, XiaozhiSkillResult, XiaozhiSkillMutation, XiaozhiSkillMutationResult } from '../shared/xiaozhi-skills';
 import type { XiaozhiFileInput, XiaozhiPreviewInput, XiaozhiFileResult, XiaozhiFileList, XiaozhiFilePreview } from '../shared/xiaozhi-files';
+import type {OrdinaryCommit,OrdinaryHistory,OrdinaryQuery,OrdinaryReceipt,OrdinaryUndo} from '../shared/xiaozhi-ordinary-config';
 import type { XiaozhiSettingsInput, XiaozhiSettingsResult, XiaozhiSettingsView, XiaozhiSessionModelInput, XiaozhiSessionModel, XiaozhiCredentialInput, XiaozhiCredentialView } from '../shared/xiaozhi-settings';
 import type { XiaozhiMcpAddInput, XiaozhiMcpCatalog, XiaozhiMcpInput, XiaozhiMcpResult, XiaozhiMcpTrustInput } from '../shared/xiaozhi-mcp';
 import type { XiaozhiChangeReviewInput, XiaozhiChangeReview, XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeResult } from '../shared/xiaozhi-changes';
@@ -240,6 +241,10 @@ const api = {
   saveXiaozhiWebSettings: (input:XiaozhiWebInput)=>ipcRenderer.invoke('xiaozhi:web-settings',input) as Promise<XiaozhiSettingsResult<XiaozhiWebPreferences>>,
   openXiaozhiWebSource: (input:XiaozhiWebSourceInput)=>ipcRenderer.invoke('xiaozhi:web-source-open',input) as Promise<XiaozhiSettingsResult<void>>,
   getXiaozhiSettings: (input?: { refresh?: boolean; sessionId?: string }) => ipcRenderer.invoke('xiaozhi:settings-get', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
+  commitXiaozhiConfig: (input:OrdinaryCommit)=>ipcRenderer.invoke('xiaozhi:config-commit',input) as Promise<XiaozhiSettingsResult<OrdinaryReceipt>>,
+  getXiaozhiConfigHistory: (input:OrdinaryQuery)=>ipcRenderer.invoke('xiaozhi:config-history',input) as Promise<XiaozhiSettingsResult<OrdinaryHistory>>,
+  undoXiaozhiConfig: (input:OrdinaryUndo)=>ipcRenderer.invoke('xiaozhi:config-undo',input) as Promise<XiaozhiSettingsResult<OrdinaryReceipt>>,
+  stageXiaozhiCredential: (input:XiaozhiCredentialInput)=>ipcRenderer.invoke('xiaozhi:config-credential-stage',input) as Promise<XiaozhiSettingsResult<{credentialId:string}>>,
   saveXiaozhiSettings: (input: XiaozhiSettingsInput) => ipcRenderer.invoke('xiaozhi:settings-save', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
   verifyXiaozhiCredential: (input:XiaozhiCredentialInput)=>ipcRenderer.invoke('xiaozhi:settings-verify',input) as Promise<XiaozhiSettingsResult<XiaozhiCredentialView>>,
   getXiaozhiMcpCatalog: () => ipcRenderer.invoke('xiaozhi:mcp-catalog') as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,

@@ -19,6 +19,7 @@ import {taskReviewInteraction} from './PiInteractionCards';
 import {PiComposerPendingPanel,pendingComposerItems} from './PiComposerPendingPanel';
 import { OfficeComposer } from './OfficeComposer';
 import {PiThinkingPicker} from './PiThinkingPicker';
+import type {OrdinaryCommit} from '../../../shared/xiaozhi-ordinary-config';
 import { OfficeComposerState,OfficeComposerSeed } from './OfficeComposerState';
 import { PiCopyApproval } from './PiCopyApproval';
 import {PiPermissionApproval} from './PiPermissionApproval';
@@ -95,6 +96,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [hasEntered,setHasEntered]=useState(visible);
   useEffect(()=>{if(visible)setHasEntered(true);},[visible]);
   const modelLock = useRef(false);
+  const pendingThinking=useRef<OrdinaryCommit|undefined>(undefined);
   const [notice, setNotice] = useState('');
   const [pendingReveal,setPendingReveal]=useState<{sessionId:string;item:WorkspacePendingItem}>();
   const [workbenchOpen,setWorkbenchOpen]=useState(false),[workbenchBusy,setWorkbenchBusy]=useState(false),[workbenchNotice,setWorkbenchNotice]=useState('');
@@ -492,15 +494,23 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         sessionId={id} enabled={!snapshot?.running&&!syncBlocked} onRefresh={()=>hydrate(id)}/>))
       .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined} onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}/><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
-        thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" visible={visible} disabled={!snapshot||!id||snapshot.running||modelSelecting||syncBlocked} onChange={choice=>{
-          if(mutationsBlocked()||modelLock.current||snapshot?.running||!models?.thinking?.session)return;
+        thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" sessionId={id} visible={visible}
+          onHistoryChange={()=>void hydrate(id)} disabled={!snapshot||!id||modelSelecting||syncBlocked} onChange={choice=>{
+          if(mutationsBlocked()||modelLock.current||!models?.thinking?.session)return;
           modelLock.current=true;setModelSelecting(true);const target=id;
           void (async()=>{
-            const result=await window.omniEdu?.saveXiaozhiThinking({schemaVersion:XIAOZHI_SETTINGS_SCHEMA,sessionId:target,version:models.thinking!.session!.version,choice});
+            const expectedVersion=models.thinking!.session!.version,existing=pendingThinking.current;
+            const input=existing?.sessionId===target&&existing.expectedVersion===expectedVersion&&existing.value===choice?existing
+              :{operationId:crypto.randomUUID(),field:'session_thinking' as const,sessionId:target,expectedVersion,value:choice};
+            pendingThinking.current=input;
+            const result=await window.omniEdu?.commitXiaozhiConfig(input);
             if(!active.current||idRef.current!==target)return;
-            setNotice(result?.ok?'已保存思考配置，下一轮生效。':result?XIAOZHI_SETTINGS_ERRORS[result.error]:'思考配置没有保存，请重试。');
-            await hydrate(target);
-          })().catch(()=>{if(active.current&&idRef.current===target)setNotice('思考配置没有保存，请重试。');})
+            if(result?.ok){
+              pendingThinking.current=undefined;
+              setNotice(result.value.outcome==='committed'?'已保存思考配置，下一轮生效。':'会话思考配置没有变化。');
+            }else setNotice(result?XIAOZHI_SETTINGS_ERRORS[result.error]:'未收到保存回执，可以重试同一次提交。');
+            if(result?.ok||result?.error==='conflict')await hydrate(target);
+          })().catch(()=>{if(active.current&&idRef.current===target)setNotice('思考配置暂时无法读取，请核对已保存的值。');})
             .finally(()=>{modelLock.current=false;if(active.current)setModelSelecting(false);});
         }}/ >}
         showQuickStarts={false}

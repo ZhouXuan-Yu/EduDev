@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 小智数据库 R3
+
+机器验收以工程包 `contracts/acceptance.json` 为准。原始 Windows、Electron、SQLite 和 Pi 证据以及合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3`。
+
 ## 小智数据库 R2
 
 使用 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2` 下的验收账本、最终报告和隔离 Windows 入口。核对实际构建身份、任务列表、教师条目修订、备份检查、当前配置和准备基线，并按报告确认冷启动读回。

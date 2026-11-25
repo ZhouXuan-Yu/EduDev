@@ -43,6 +43,14 @@ import {createPermissionStore} from './permissions/store';
 import {createSkillGovernanceState} from './skills/state';
 import {createEffectState} from './effects/state';
 import {createTerminalJobState} from './terminal/job-state';
+export async function readPiSessionBinding(sql:Sql,modelSwitch:ReturnType<typeof createModelSwitchState>,id:string){
+  const [row]=await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]);
+  if(!row)return null;
+  if(![1,2,3,4,5].includes(Number(row.schema_version)))throw Error('configuration');
+  if(Number(row.schema_version)===5&&!await modelSwitch.current(id))throw Error('configuration');
+  return {sessionFile:String(row.session_file),model:String(row.model)};
+}
+
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
 export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
@@ -158,13 +166,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await mockExamCatalogs.migrate();
       await mockExamEdits.migrate();
     },
-    async getBinding(id: string) {
-      const row = (await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]))[0];
-      if (!row) return null;
-      if (![1, 2, 3, 4, 5].includes(Number(row.schema_version))) throw new Error('configuration');
-      if (Number(row.schema_version)===5 && !await modelSwitch.current(id)) throw new Error('configuration');
-      return { sessionFile: String(row.session_file), model: String(row.model) };
-    },
+    getBinding: (id:string)=>readPiSessionBinding(sql,modelSwitch,id),
     async setBinding(id: string, file: string, model: string, schemaVersion: 1 | 2 | 3 | 4 | 5 = 1) {
       if (![1, 2, 3, 4, 5].includes(schemaVersion)) throw new Error('configuration');
       const current = (await sql.all('SELECT schema_version FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [id]))[0];

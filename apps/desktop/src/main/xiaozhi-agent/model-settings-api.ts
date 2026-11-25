@@ -1,18 +1,26 @@
 import type { IpcMain } from 'electron';
 import type {XiaozhiProviderBalance} from '../../shared/xiaozhi-settings';
+import {validOrdinaryCommit,validOrdinaryQuery,validOrdinaryUndo} from '../../shared/xiaozhi-ordinary-config';
 import type { createXiaozhiProductionHost } from './production-host';
 import { validSessionModelInput, validSettingsInput, validSettingsQuery, validCredentialInput,validThinkingInput } from './model-settings';
 import { XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsError, type XiaozhiSettingsResult, type XiaozhiSettingsView, type XiaozhiSessionModel, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
-type Host = Pick<ReturnType<typeof createXiaozhiProductionHost>, 'modelSettingsView' | 'saveModelSettings' | 'selectSessionModel' | 'verifyModelCredential' | 'queryProviderBalance' | 'saveThinkingSettings'>;
+type Host = Pick<ReturnType<typeof createXiaozhiProductionHost>, 'modelSettingsView' | 'saveModelSettings' | 'selectSessionModel' | 'verifyModelCredential' | 'queryProviderBalance' | 'saveThinkingSettings' |
+  'ordinaryConfigCommit' | 'ordinaryConfigUndo' | 'ordinaryConfigHistory' | 'stageOrdinaryCredential'>;
 export function settingsError(error: unknown): XiaozhiSettingsError {
   const code = error instanceof Error ? error.message : '';
+  if(error&&typeof error==='object'&&'code' in error&&typeof error.code==='string'&&error.code.startsWith('SQLITE_'))return 'unavailable';
   return Object.prototype.hasOwnProperty.call(XIAOZHI_SETTINGS_ERRORS, code) ? code as XiaozhiSettingsError : 'configuration';
 }
 export function createModelSettingsApi(host: Host) {
   async function result<T>(action: () => Promise<T>): Promise<XiaozhiSettingsResult<T>> {
     try { return { ok: true, value: await action() }; } catch (error) { return { ok: false, error: settingsError(error) }; }
   }
+  const invalid={ok:false,error:'invalid_input'} as const;
   return {
+    commit:(input:unknown)=>validOrdinaryCommit(input)?result(()=>host.ordinaryConfigCommit(input)):Promise.resolve(invalid),
+    undo:(input:unknown)=>validOrdinaryUndo(input)?result(()=>host.ordinaryConfigUndo(input)):Promise.resolve(invalid),
+    history:(input:unknown)=>validOrdinaryQuery(input)?result(()=>host.ordinaryConfigHistory(input)):Promise.resolve(invalid),
+    stageCredential:(input:unknown)=>validCredentialInput(input)?result(()=>host.stageOrdinaryCredential(input)):Promise.resolve(invalid),
     thinking(input:unknown):Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>{
       return validThinkingInput(input)?result(()=>host.saveThinkingSettings(input)):Promise.resolve({ok:false,error:'invalid_input'});
     },
@@ -33,6 +41,8 @@ export function createModelSettingsApi(host: Host) {
 }
 export function registerModelSettingsIpc(options: { ipcMain: IpcMain; allowed: (event: Electron.IpcMainInvokeEvent) => boolean; host: Host }) {
   const api = createModelSettingsApi(options.host);
-  for (const [channel, method] of [['xiaozhi:thinking-save',api.thinking],['xiaozhi:settings-get', api.get], ['xiaozhi:settings-save', api.save], ['xiaozhi:model-select', api.select], ['xiaozhi:settings-verify',api.verify],['xiaozhi:provider-balance',api.balance]] as const)
+  for (const [channel, method] of [['xiaozhi:thinking-save',api.thinking],['xiaozhi:settings-get', api.get], ['xiaozhi:settings-save', api.save], ['xiaozhi:model-select', api.select], ['xiaozhi:settings-verify',api.verify],['xiaozhi:provider-balance',api.balance],
+    ['xiaozhi:config-commit',api.commit],['xiaozhi:config-history',api.history],['xiaozhi:config-undo',api.undo],
+    ['xiaozhi:config-credential-stage',api.stageCredential]] as const)
     options.ipcMain.handle(channel, (event, input) => options.allowed(event) ? method(input) : { ok: false, error: 'permission_denied' });
 }

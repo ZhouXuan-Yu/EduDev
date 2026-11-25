@@ -58,7 +58,7 @@ export function createModelSettingsState(sql:Sql){
     async configuration():Promise<ProviderConfiguration>{
       const raw=await read(globalKey);if(!raw)return {schema:1,revision:0,defaultModel:null};
       let value:ProviderConfiguration;try{value=JSON.parse(raw);}catch{throw new Error('configuration');}
-      if(!value||value.schema!==1||!Number.isSafeInteger(value.revision)||value.revision<1||!modelId(value.defaultModel)
+      if(!value||value.schema!==1||!Number.isSafeInteger(value.revision)||value.revision<1||(value.defaultModel!==null&&!modelId(value.defaultModel))
         ||Object.keys(value).some(key=>!['schema','revision','defaultModel','sealedKey'].includes(key))
         ||value.sealedKey!==undefined&&(typeof value.sealedKey!=='string'||value.sealedKey.length>16384||!value.sealedKey.length))throw new Error('configuration');
       return value;

@@ -15,7 +15,9 @@ export function classifyConfigError(error:unknown) {
 }
 
 export function readLegacyDeepSeekSetting(sql:Pick<Sql,'all'>, env:ReturnType<typeof deepSeekModelEnvironment>) {
-  return readLegacyProviderSetting(sql,'deepseek').then(({stored,updatedAt,invalid})=>{
+  return readLegacyProviderSetting(sql,'deepseek').then(setting=>describeLegacyDeepSeekSetting(setting,env));
+}
+export function describeLegacyDeepSeekSetting({stored,updatedAt,invalid}:Awaited<ReturnType<typeof readLegacyProviderSetting>>,env:ReturnType<typeof deepSeekModelEnvironment>) {
     const sealed=Object.hasOwn(stored,'sealedKey');
     const credentialConfigured=sealed || (typeof stored.apiKey==='string'
       ?Boolean(stored.apiKey):stored.legacyCredentialDisabled!==true && env.keyConfigured);
@@ -26,7 +28,6 @@ export function readLegacyDeepSeekSetting(sql:Pick<Sql,'all'>, env:ReturnType<ty
       invalid:invalid || stored.model!==undefined && typeof stored.model!=='string' ||
         sealed && (typeof stored.sealedKey!=='string' || !stored.sealedKey || stored.sealedKey.length>16384) ||
         stored.apiKey!==undefined && typeof stored.apiKey!=='string'} as const;
-  });
 }
 
 export function resolveAgentModel(input:{configuration:ProviderConfiguration;

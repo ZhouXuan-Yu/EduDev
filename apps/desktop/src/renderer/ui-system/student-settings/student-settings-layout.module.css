@@ -300,6 +300,40 @@
   min-width: 0;
 }
 
+.configHistory {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.configHistory + .configHistory {
+  margin-top: 20px;
+}
+
+.configHistory h4,
+.configHistory p,
+.configHistory ol {
+  margin: 0;
+}
+
+.configHistory ol {
+  padding-inline-start: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.configHistory time {
+  display: inline-block;
+  margin-inline-start: 0.6rem;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.configActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 @media (max-width: 1050px) {
   .workspace { padding: 24px; }
   .layout { grid-template-columns: 155px minmax(0, 1fr); gap: 26px; }

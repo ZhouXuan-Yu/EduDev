@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+小智数据库 R3 在独立工作树接续 R2，并依次验证配置继承、普通提交、准入捕获、字段级撤回、界面与备份恢复。各切片进度和累计回合记录见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json`。
+
 D3 修复首个会话写入期间切到资料库造成的返回后输入锁定。页面契约由已交付导航枚举读取，并保留补填弹窗和重启验收条目。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#首个对话初始化与页面契约)
 
 D3 本机性能专项覆盖工作区冷启、原运行流式交互、1 GiB 归档续做和五页 OCR。当前构建复验 12 轮完整对话、一次自动整理及冷启读回。 [专项记录](../product-agent/04_PROGRESS_AND_EVIDENCE.md#同版桌面性能和大文件验收)

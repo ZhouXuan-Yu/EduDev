@@ -11,7 +11,7 @@ import {productEntry} from '../product-navigation.mjs';
 
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
-const baseline=resolve(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js');
+const baseline=resolve(process.env.OMNI_EDU_DB_V0_BUILD||join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
 const acceptance=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(acceptance,'fixtures'),{recursive:true});
 const root=mkdtempSync(join(acceptance,'fixtures','FX-04-credential-'));
