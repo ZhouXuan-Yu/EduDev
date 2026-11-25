@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 10/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 12/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -18,8 +18,10 @@
 | AC-12 | PASS · 已实现 | Windows Electron 生产 Pi 在原 Task 内，从不可用的 Hana stat 切到已登记的 workspace stat。A 发起 0 次，B 发起 1 次，原要求版本、默认优先级和快照内容保留。实际 SQLite 有两条链接快照与一条成功执行回执。 |
 | AC-13 | PASS · 已实现 | 实际 Registry/Resolver、原生只读 Adapter 与 SQLite 验证缺必要证据、自述证据、缺触发条件、撤销版本、新授权、驻留、预算、固定及两处忙碌屏障。每条实际替代为零，原任务、快照和 Effect 不变，返回真实原因和可执行的下一步。 |
 | AC-14 | PASS · 已实现 | 正式 Windows Electron 启动同一 SQLite，原任务主动继续前实际模型请求为零。新 Run 使用旧 Provider 版本和 hash，保留原快照字节，追加带 `resume_revalidate` 的 lineage。真实快照、文件结果和两个 PID 可读回。 |
-| AC-15 | FAIL | 文件和网络的实际中断回归均通过。是否只有权威未派发证据才允许生产文件重试，以及已派发但未确认终端动作的完整观察仍缺，两个原生产夹具执行超时。 |
-| AC-16–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-15 | PASS · 已实现 | Windows 生产文件经过两次明确拒绝，存入两份权威的未派发证明，重启并重新授权后各保存一次。未知写入、真实 HTTP 丢回执与真实终端未发布均受保护。已有文件和已匹配网络回执通过独立读回保持原物理次数。 |
+| AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
+| AC-17 | NOT_RUN | 旧 C2 夹具未进入产品路径，连接阶段访问已移除的接口失败。真实确认讲义或原题卷的 Word/PDF 部分恢复待运行。 |
+| AC-18–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -104,3 +106,10 @@
 
 - 实际 Windows 子进程 SIGKILL 和 SQLite 文件对账 `phase6-state-foundation-smoke.mjs` 8/8，原文件字节 hash 与物理生成次数保持稳定。真实网络回执和独立 HTTP 线计数 `phase6-network-effects-smoke.mjs` 8/8。两者使用 `node --experimental-transform-types`，原工作子进程也显式启用该模式。首次子进程启动失败及故障诊断目录缺失分别见 `wp04-state-foundation-node24.log`、`wp04-network-effects-node24.log`。复跑日志为 `wp04-state-foundation-final.log`、`wp04-network-effects-final.log`，原报告位于 `xiaozhi-phase6-state-ngB6UV` 和 `xiaozhi-phase6-network-effects-Ckqxng`。
 - `non-dispatch-host-smoke.mjs` 现行代码实际到达第一条文件工具的已准入状态，等待教师授权。旧夹具却等工具回到模型并让模型生成两个调用后才检查审批，30 秒后超时。保留 `wp04-authoritative-no-dispatch.log`、`xiaozhi-non-dispatch-host-qiyTZ7/REPORT.json` 和实际请求记录。另一个 Windows 终端权限用例未到达最后断言，退出码为空，源输入 945 未漂移。保留 `wp04-terminal-effects-final.log` 与 `terminal-grant-rINQgw`。现有两组生产验收缺口仍需沿当前授权入口复现。
+
+## WP-04 第五至第七轮权限与版本屏障
+
+- `node scripts/xiaozhi-agent/non-dispatch-host-smoke.mjs` 4/4。生产宿主用当前权限入口逐一拒绝旧请求，得到两份 `host-filesystem-not-dispatched.v1`。关闭并重新打开 SQLite，再由教师显式授权，只有当前 Task 写入两份实际文件。再次继续时两份 SHA-256 不变，新增写入准入为零。原记录见 `wp04-permission-file-current.log` 与 `xiaozhi-non-dispatch-host-KCOWGz/REPORT.json`。只读复制对账 8/8，拒绝缺失、篡改、未知执行、跨版本或跨所有者的证明。见 `wp04-file-proof-readback-final.log`。
+- `node scripts/xiaozhi-agent/terminal-grant-host-smoke.mjs` 5/5。实际原生终端审批前零启动，原任务授权后启动一次，其他任务或撤销后均未启动。另一条真实命令已执行但确认前停止，保留 `unknown` 及原执行身份。重开宿主后，用相同逻辑操作试探原 Task，实际启动总数保持 2，未确认文件仍未发布。见 `wp04-terminal-current-grants.log` 与 `terminal-grant-Lg9HGC/REPORT.json`。连续 HTTP 和本地进程失败切点另由第四轮文件、网络各 8/8 对照。
+- `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 2/2。对真实确认中的文件手工写入，旧提议进入 `conflict`，保留教师版本 SHA。另一个任务暂停、订正后从要求版本 1 进入 2，新 Run 等待确认时才提交迟到的旧审批，结果为 `permission_denied`。旧文件未生成，唯一提交 Effect 属于 V2。在窗体可见校验前尝试审批及把机器核验项当做人类可编辑要求的两次夹具失败保留于 `wp04-task-fence-host.log` 和 `wp04-task-fence-published.log`。最终报告见 `wp04-task-fence-requirements-final.log` 与 `provider-task-fence-QKRQQd/REPORT.json`。真 Grant 撤销和在途响应边界见网络 N07。
+- AC-17 预检 `paper-c2-office-recovery-focused-test.mjs` 连接阶段因 `store.openDatabase` 不存在退出，0 项业务断言。见 `wp04-office-recovery-existing.log`。未由此判定产品恢复行为。
