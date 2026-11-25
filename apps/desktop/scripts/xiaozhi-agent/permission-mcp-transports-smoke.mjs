@@ -11,6 +11,7 @@ const {createMcpPermissionContext} = await import('../../src/main/xiaozhi-agent/
 const {createMcpRuntime} = await import('../../src/main/xiaozhi-agent/mcp-runtime.ts');
 const {createPermissionStore} = await import('../../src/main/xiaozhi-agent/permissions/store.ts');
 const {createPermissionEngine} = await import('../../src/main/xiaozhi-agent/permissions/engine.ts');
+const {acquireToolResource} = await import('../../src/main/xiaozhi-agent/tools/resource-lock.ts');
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'xiaozhi-mcp-transports-'));
 const report = {success: false, root, checks: [], paidCalls: 0,
   boundary: 'Current permission adapter and engine, owned SQLite, actual HTTP MCP loopback and network broker. Stdio input conversion is a declared callback fixture, without a native stdio process. No Electron or model.'};
@@ -54,7 +55,7 @@ const grant = async scope => (await store.issue(owner.sessionId, [scope], {kind:
 const revoke = row => engine.revoke(owner.sessionId, row.grantId, row.revision);
 let handle, view, definition, source;
 let calls = 0;
-const call = input => definition.execute('call_' + randomUUID(), input, new AbortController().signal, undefined, {});
+const call = (input, signal = new AbortController().signal) => definition.execute('call_' + randomUUID(), input, signal, undefined, {});
 async function succeeds() {
   const result = await call({topic: 'public-normal-grant'});
   assert.equal(result.isError, false);
@@ -63,14 +64,16 @@ async function succeeds() {
   assert.equal(fixture.state.calls, ++calls);
   assert.equal(transforms, 0);
 }
-async function denied(input = {topic: 'public-normal-grant'}, code) {
+async function denied(input = {topic: 'public-normal-grant'}, code, signal) {
   const before = fixture.state.requests;
-  const result = await call(input);
+  const health = await runtime.healthSnapshot(source.serverId);
+  const result = await call(input, signal);
   assert.equal(result.isError, true);
   if (code) assert.equal(result.details.error.code, code);
   assert.equal(fixture.state.calls, calls);
   assert.equal(fixture.state.requests, before);
   assert.equal(transforms, 0);
+  assert.deepEqual(await runtime.healthSnapshot(source.serverId), health);
 }
 try {
   await check('Mixed adapter leaves HTTP input unchanged and does not invoke the stdio converter', async () => {
@@ -103,12 +106,22 @@ try {
   let mcpGrant = await grant(mcpScope);
   let egressGrant = await grant(egressScope);
   await grant({...networkScope, origin: 'http://127.0.0.1:1'});
-  await check('Network grant for another actual URL origin cannot authorize this endpoint', () => denied());
+  await check('Network grant for another origin creates an existing approval without sending or counting dependency failure', async () => {
+    await denied(undefined, 'permission_pending');
+    const pending = (await store.approvals(owner.sessionId)).find(row => row.state === 'pending' && row.request.action === 'mcp_call');
+    assert(pending);
+    report.approval = {action: pending.request.action, state: pending.state, health: await runtime.healthSnapshot(source.serverId)};
+  });
   let networkGrant = await grant(networkScope);
   await check('Exact Network Egress and MCP grants permit the actual HTTP call without stdio projection', succeeds);
   await check('Input schema and privacy refusals happen before any HTTP request', async () => {
     await denied({topic: 'public', undeclared: true}, 'invalid_input');
     await denied({topic: 'PRIVATE_STUDENT'}, 'permission_denied');
+  });
+  await check('Actual resource lock and caller cancellation leave the MCP health and transport untouched', async () => {
+    const release = acquireToolResource('mcp-server:' + source.serverId, 'write');
+    try {await denied(undefined, 'resource_busy');} finally {release();}
+    await denied(undefined, 'cancelled', AbortSignal.abort());
   });
   await check('Server authentication failure is reported independently from URL authorization', async () => {
     fixture.state.auth = 'owned-authentication-negative';

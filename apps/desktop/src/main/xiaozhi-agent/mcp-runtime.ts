@@ -5,7 +5,8 @@ import { validateToolArguments } from '@earendil-works/pi-ai';
 import { canonicalMcp, validMcpTools } from './mcp-schema';
 import { McpAuthRequiredError, McpClient, McpConnectionClosedError, McpHttpError, McpSessionExpiredError, McpTimeoutError, StreamableHttpTransport, toLlmContent, type Tool, type McpTransport } from '@earendil-works/pi-mcp';
 import {fetchMcpHttp} from './permissions/mcp-http';
-import {classifyProviderFault, isTemporaryProviderHttpStatus} from './provider-fault-policy';
+import {classifyProviderFault, isTemporaryProviderHttpStatus, providerRetryAfterSeconds} from './provider-fault-policy';
+import {createProviderHealth, ProviderHealthBlocked, type ProviderHealthAttempt} from './provider-health';
 import {acquireToolResource} from './tools/resource-lock';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { Sql } from './session-state';
@@ -28,6 +29,18 @@ export type McpPermissionContext = {
     operation: (signal: AbortSignal) => Promise<T>, callId?: string) => Promise<T>;
 };
 const KEY = 'xiaozhi.mcp.v1';
+function connectionObservation() {
+  const pending = new Set<Promise<unknown>>();
+  return {started: false, retryAfterMs: 0, track<T>(operation: Promise<T>) {
+    pending.add(operation);
+    const settled = () => {pending.delete(operation);};
+    void operation.then(settled, settled);
+    return operation;
+  }, async drain() {
+    while (pending.size) await Promise.allSettled([...pending]);
+  }};
+}
+type ConnectionObservation = ReturnType<typeof connectionObservation>;
 function permissionSourceFor(server: StoredServer): McpPermissionSource {
   const sourceHash = createHash('sha256').update(canonicalMcp(server.transport === 'http' ? {transport: server.transport, url: server.url}
       : {transport: server.transport, command: server.command, args: server.args, cwd: server.cwd || ''})).digest('hex');
@@ -61,6 +74,7 @@ function safeError(error: unknown): NonNullable<XiaozhiMcpServer['lastError']> {
 function preparationFault(error: unknown) {
   const code = safeError(error);
   const typedTransportLoss = error instanceof McpTimeoutError || error instanceof McpConnectionClosedError || error instanceof McpSessionExpiredError ||
+    error instanceof DOMException && error.name === 'TimeoutError' ||
     error instanceof McpHttpError && isTemporaryProviderHttpStatus(error.status) ||
     error instanceof TypeError && object(error.cause) && ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'UND_ERR_SOCKET'].includes(String(error.cause.code));
   const decision = classifyProviderFault({origin: 'host', stage: 'reconnect', effect: 'none_proven',
@@ -69,6 +83,10 @@ function preparationFault(error: unknown) {
 }
 function hasVerifiedSchema(server: StoredServer) {
   return !!server.trustedSchemaHash && server.trustedSchemaHash === server.schemaHash;
+}
+function healthKey(server: StoredServer) {
+  const {sourceHash, schemaHash, secret} = permissionSourceFor(server);
+  return 'mcp:' + createHash('sha256').update(canonicalMcp([server.id, sourceHash, schemaHash, secret?.reference ?? null])).digest('hex');
 }
 function needsRevalidation(server: StoredServer) {
   return server.status === 'failed' && ['timeout','transport'].includes(server.lastError ?? '');
@@ -115,15 +133,26 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   timeoutMs?: number;
   preparationTimeoutMs?: number;
   stdioTransport?: (configuration: McpStdioConfiguration, signal?: AbortSignal) => Promise<McpTransport>;
+  healthNow?: () => number;
+  healthRandom?: () => number;
 } = {}) {
   const timeoutMs = options.timeoutMs ?? 10000;
   const handles = new Set<() => Promise<void>>();
   const serverClients = new Map<string, Set<McpClient>>();
+  const connections = new WeakMap<McpClient, {observation: ConnectionObservation; closing?: Promise<void>}>();
   const sanitize = options.sanitize ?? ((text: string) => text);
-  async function closeClient(serverId: string, client: McpClient) {
-    await client.close();
-    const group = serverClients.get(serverId);
-    if (group?.delete(client) && !group.size) serverClients.delete(serverId);
+  const health = createProviderHealth({now: options.healthNow, random: options.healthRandom});
+  function closeClient(serverId: string, client: McpClient) {
+    const connection = connections.get(client)!;
+    connection.closing ??= (async () => {
+      try {await client.close();}
+      finally {
+        await connection.observation.drain();
+        const group = serverClients.get(serverId);
+        if (group?.delete(client) && !group.size) serverClients.delete(serverId);
+      }
+    })();
+    return connection.closing;
   }
   async function raw() { const row = (await sql.all('SELECT value_json FROM app_settings WHERE key=?', [KEY]))[0]; return row ? String(row.value_json) : undefined; }
   async function state(): Promise<State> { const encoded = await raw(); if (!encoded) return { schemaVersion: 1, revision: 0, servers: [] }; try { return validateState(JSON.parse(encoded)); } catch { throw Error('configuration'); } }
@@ -138,7 +167,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     return server.sealedBearer ? { Authorization: `Bearer ${open(server.sealedBearer)}` } : {};
   }
   function open(sealed: string) { if (!codec?.available()) throw Error('storage_unavailable'); try { return codec.open(sealed); } catch { throw Error('configuration'); } }
-  async function transport(server: StoredServer, signal?: AbortSignal, stdio = options.stdioTransport) {
+  async function transport(server: StoredServer, signal: AbortSignal | undefined, stdio: typeof options.stdioTransport, observation: ConnectionObservation) {
     if (server.transport === 'stdio') {
       if (!stdio) throw Error('unsupported_constraint');
       const source = permissionSourceFor(server);
@@ -148,14 +177,24 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     }
     const headers = credentials(server);
     return new StreamableHttpTransport({ url: server.url, ...(Object.keys(headers).length ? { headers } : {}), openGetStream: false, maxMessageBytes: 262144,
-      fetch: (url, init) => fetchMcpHttp(server.url, url, { ...init, redirect: 'error', signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs) }) });
+      fetch: async (url, init) => {
+        const response = await observation.track(fetchMcpHttp(server.url, url,
+          { ...init, redirect: 'error', signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs) },
+          completed => observation.track(completed)));
+        if (response.status === 429 || response.status === 503) {
+          const seconds = providerRetryAfterSeconds(response.headers.get('retry-after'));
+          observation.retryAfterMs = Math.max(observation.retryAfterMs, (seconds ?? 0) * 1000);
+        }
+        return response;
+      } });
   }
-  async function connect(server: StoredServer, signal?: AbortSignal, stdio = options.stdioTransport) {
+  async function connect(server: StoredServer, observation: ConnectionObservation, signal?: AbortSignal, stdio = options.stdioTransport) {
     const client = new McpClient({ name: 'xiaozhi-edu', version: '1.0.0', requestTimeoutMs: timeoutMs });
+    connections.set(client, {observation});
     let group = serverClients.get(server.id);
     if (!group) {group = new Set(); serverClients.set(server.id, group);}
     group.add(client);
-    const cancel = () => { void client.close().catch(() => undefined); };
+    const cancel = () => { void closeClient(server.id, client).catch(() => undefined); };
     let ownedTransport: McpTransport | undefined;
     const unchanged = async () => {
       const current = (await state()).servers.find(row => row.id === server.id);
@@ -164,14 +203,14 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     };
     try {
       signal?.throwIfAborted(); signal?.addEventListener('abort', cancel, { once: true });
-      await unchanged(); ownedTransport = await transport(server, signal, stdio); await unchanged();
+      await unchanged(); ownedTransport = await transport(server, signal, stdio, observation); await unchanged();
+      observation.started = true;
       await client.connect(ownedTransport);
       signal?.throwIfAborted();
       const tools = await list(client, signal);
       await unchanged();
       return { client, tools };
-    } catch (e) { await client.close().catch(() => undefined); await ownedTransport?.close().catch(() => undefined);
-      group.delete(client); if (!group.size && serverClients.get(server.id) === group) serverClients.delete(server.id);
+    } catch (e) { await closeClient(server.id, client).catch(() => undefined); await ownedTransport?.close().catch(() => undefined); await observation.drain();
       if (signal?.aborted) {
         if (signal.reason instanceof DOMException && signal.reason.name === 'TimeoutError') throw new McpTimeoutError(timeoutMs);
         throw Error('cancelled');
@@ -206,6 +245,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     if (!preserve) { target.trustedSchemaHash = undefined; target.selectedTools = []; }
     target.revision++;
     await commit(current, { ...current, revision: current.revision + 1 });
+    if (!preserve) health.retire(healthKey(observed));
   }
   async function restoreReadiness(observed: StoredServer) {
     const current = await state(), target = current.servers.find(server => server.id === observed.id);
@@ -243,8 +283,12 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
     const current = await state(); if (!object(input) || input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict');
     const server = current.servers.find(item => item.id === input.serverId); if (!server) throw Error('not_found');
     let tools: Tool[] = [];
+    let attempt: ProviderHealthAttempt | undefined;
+    const observation = connectionObservation();
+    const key = healthKey(server);
     try {
-      const connected = await connect(server, undefined, stdio);
+      if (hasVerifiedSchema(server)) attempt = health.begin(key, true);
+      const connected = await connect(server, observation, undefined, stdio);
       try {
         tools = connected.tools;
         // Names and schemas are also remote-controlled; do not publish a credential
@@ -253,26 +297,41 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
         if (await clean(server, metadata) !== metadata) throw Error('configuration');
       } finally { await closeClient(server.id, connected.client); }
     }
-    catch (error) { const {code,temporary} = preparationFault(error); await unavailable(server, code, temporary); return catalog(); }
-    if (tools.length > 128 || tools.some(tool => !validToolSchema(tool))) throw Error('configuration');
-    const digest = schemaHash(tools);
-    server.tools = await Promise.all(tools.map(async tool => ({ name: tool.name, title: (await clean(server, tool.title || tool.name)).slice(0, 120), description: (await clean(server, tool.description || '')).slice(0, 1000), readOnly: tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint !== true, selected: false })));
-    server.schemaHash = digest; server.status = server.trustedSchemaHash && server.trustedSchemaHash !== digest ? 'schema_changed' : 'ready';
-    server.lastError = server.status === 'schema_changed' ? 'schema_changed' : undefined;
-    if (server.status === 'schema_changed') { server.trustedSchemaHash = undefined; server.selectedTools = []; }
-    current.revision++; server.revision++; await commit({ ...current, revision: current.revision - 1 }, current); return catalog();
+    catch (error) {
+      if (error instanceof ProviderHealthBlocked) throw error;
+      const {code,temporary} = preparationFault(error);
+      try {await unavailable(server, code, temporary);}
+      finally {attempt?.complete(observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});}
+      return catalog();
+    }
+    try {
+      if (tools.length > 128 || tools.some(tool => !validToolSchema(tool))) throw Error('configuration');
+      const digest = schemaHash(tools);
+      server.tools = await Promise.all(tools.map(async tool => ({ name: tool.name, title: (await clean(server, tool.title || tool.name)).slice(0, 120), description: (await clean(server, tool.description || '')).slice(0, 1000), readOnly: tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint !== true, selected: false })));
+      server.schemaHash = digest; server.status = server.trustedSchemaHash && server.trustedSchemaHash !== digest ? 'schema_changed' : 'ready';
+      server.lastError = server.status === 'schema_changed' ? 'schema_changed' : undefined;
+      if (server.status === 'schema_changed') { server.trustedSchemaHash = undefined; server.selectedTools = []; }
+      current.revision++; server.revision++; await commit({ ...current, revision: current.revision - 1 }, current);
+      if (server.status === 'schema_changed') health.retire(key);
+      else attempt?.complete({kind: 'verified'});
+      return catalog();
+    } finally {attempt?.complete({kind: 'ignored'});}
   }
   async function trust(input: { schemaVersion: string; revision: number; serverId: string; schemaHash: string; tools: string[] }) {
     const current = await state(); if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision || !/^[a-f0-9]{64}$/.test(input.schemaHash) || !Array.isArray(input.tools) || input.tools.length > 64) throw Error('conflict');
     const server = current.servers.find(item => item.id === input.serverId); if (!server) throw Error('not_found');
     if (server.status !== 'ready' || server.schemaHash !== input.schemaHash || new Set(input.tools).size !== input.tools.length || input.tools.some(name => !server.tools.some(tool => tool.name === name))) throw Error('permission_denied');
+    const previousKey = healthKey(server);
     server.trustedSchemaHash = input.schemaHash; server.selectedTools = [...input.tools]; server.status = 'ready'; server.revision++; current.revision++;
-    await commit({ ...current, revision: current.revision - 1 }, current); return catalog();
+    await commit({ ...current, revision: current.revision - 1 }, current);
+    health.retire(previousKey);
+    return catalog();
   }
   async function revoke(input: { schemaVersion: string; revision: number; serverId: string }) {
-    const result = await mutate(current => { if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict'); const server = current.servers.find(item => item.id === input.serverId); if (!server) throw Error('not_found'); server.trustedSchemaHash = undefined; server.selectedTools = []; server.status = 'revoked'; server.revision++; return current; });
-    await Promise.allSettled([...(serverClients.get(input.serverId) || [])].map(client => client.close()));
-    serverClients.delete(input.serverId);
+    let previousKey = '';
+    const result = await mutate(current => { if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict'); const server = current.servers.find(item => item.id === input.serverId); if (!server) throw Error('not_found'); previousKey = healthKey(server); server.trustedSchemaHash = undefined; server.selectedTools = []; server.status = 'revoked'; server.revision++; return current; });
+    health.retire(previousKey);
+    await Promise.allSettled([...(serverClients.get(input.serverId) || [])].map(client => closeClient(input.serverId, client)));
     return result;
   }
   async function credential(input: XiaozhiMcpCredentialInput) {
@@ -282,18 +341,24 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
         || input.action === 'set' && (typeof input.value !== 'string' || !input.value.trim() || input.value.length > 4096 || /[\0\r\n]/u.test(input.value))) throw Error('invalid_input');
     const current = await state(); if (current.revision !== input.revision) throw Error('conflict');
     const server = current.servers.find(server => server.id === input.serverId); if (!server) throw Error('not_found');
+    const previousKey = healthKey(server);
     const sealed = input.action === 'set' ? seal(input.value) : undefined;
     server.credentialRevision = (server.credentialRevision || 1) + 1;
     if (server.transport === 'stdio') server.sealedSecret = sealed; else server.sealedBearer = sealed;
     server.status = 'unverified'; server.trustedSchemaHash = undefined; server.selectedTools = []; server.lastError = undefined;
     server.revision++; current.revision++;
     await commit({...current, revision: current.revision - 1}, current);
-    await Promise.allSettled([...(serverClients.get(server.id) || [])].map(client => client.close())); serverClients.delete(server.id);
+    health.retire(previousKey);
+    await Promise.allSettled([...(serverClients.get(server.id) || [])].map(client => closeClient(server.id, client)));
     return catalog();
   }
   async function remove(input: { schemaVersion: string; revision: number; serverId: string }) {
-    const current = await state(); if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict'); if (!current.servers.some(item => item.id === input.serverId)) throw Error('not_found');
-    const next = { ...current, revision: current.revision + 1, servers: current.servers.filter(item => item.id !== input.serverId) }; await commit(current, next); return catalog();
+    const current = await state(); if (input.schemaVersion !== XIAOZHI_MCP_SCHEMA || input.revision !== current.revision) throw Error('conflict');
+    const server = current.servers.find(item => item.id === input.serverId); if (!server) throw Error('not_found');
+    const next = { ...current, revision: current.revision + 1, servers: current.servers.filter(item => item.id !== input.serverId) };
+    await commit(current, next); health.retire(healthKey(server));
+    await Promise.allSettled([...(serverClients.get(server.id) || [])].map(client => closeClient(server.id, client)));
+    return catalog();
   }
   async function tools(permission?: McpPermissionContext, admission?: {preparationTimeoutMs: number; serverId?: string}) {
     // A group of offline extensions must not exhaust Pi's own 15s preparation
@@ -316,25 +381,37 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
       if (admission?.serverId && server.id !== admission.serverId) continue;
       if ((server.status !== 'ready' && !needsRevalidation(server)) || !hasVerifiedSchema(server) || !server.selectedTools.length) continue;
       const source = permissionSourceFor(server);
+      const key = healthKey(server);
+      let attempt: ProviderHealthAttempt | undefined;
+      const observation = connectionObservation();
       let connected: Awaited<ReturnType<typeof connect>>;
-      try { connected = permission ? await permission.run(source, null, {}, preparation, signal => connect(server, signal, permission.stdioTransport)) : await connect(server, preparation); }
+      const open = (signal: AbortSignal) => {
+        signal.throwIfAborted();
+        attempt = health.begin(key, true);
+        return connect(server, observation, signal, permission?.stdioTransport);
+      };
+      try { connected = permission ? await permission.run(source, null, {}, preparation, open) : await open(preparation); }
       catch (error) {
+        if (error instanceof ProviderHealthBlocked) continue;
         const {code,temporary} = preparationFault(error);
         const cancelled = error instanceof Error && error.message === 'cancelled';
         if (!cancelled && !['unsupported_constraint', 'permission_pending', 'permission_denied'].includes(code))
           await unavailable(server, code, temporary).catch(() => undefined);
+        attempt?.complete(observation.started && temporary ? {kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs} : {kind: 'ignored'});
         continue;
       }
       const { client, tools: remote } = connected;
-      if (disposed) { await closeClient(server.id, client).catch(() => undefined); break; }
+      if (disposed) { await closeClient(server.id, client).catch(() => undefined); attempt?.complete({kind: 'ignored'}); break; }
       let metadataSafe = false;
       try { metadataSafe = await clean(server, canonicalMcp(remote)) === canonicalMcp(remote); } catch { /* Isolate a failed external catalog from built-in tools. */ }
       if (schemaHash(remote) !== server.trustedSchemaHash || remote.some(tool => !validToolSchema(tool)) || !metadataSafe) {
         await closeClient(server.id, client).catch(() => undefined);
-        await unavailable(server, 'schema_changed').catch(() => undefined); continue;
+        await unavailable(server, 'schema_changed').catch(() => undefined);
+        attempt?.complete({kind: 'ignored'}); continue;
       }
       try { preparation.throwIfAborted(); server = await restoreReadiness(server); preparation.throwIfAborted(); }
-      catch { await closeClient(server.id, client).catch(() => undefined); continue; }
+      catch { await closeClient(server.id, client).catch(() => undefined); attempt?.complete({kind: 'ignored'}); continue; }
+      attempt?.complete({kind: 'verified'});
       clients.set(server.id, client);
       for (const tool of remote.filter(item => server.selectedTools.includes(item.name))) {
         const name = mcpToolName(server.id, tool.name);
@@ -351,14 +428,22 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
               if (await sanitize(canonicalMcp(input)) !== canonicalMcp(input)) return failed('permission_denied');
               const perform = async (ownedSignal: AbortSignal) => {
                 const release = acquireToolResource('mcp-server:' + server.id, 'write');
+                let executionHealth: ProviderHealthAttempt | undefined;
+                const settleTransportLoss = async (error: unknown) => {
+                  const fault = preparationFault(error);
+                  if (!fault.temporary && !ownedSignal.aborted) return;
+                  await closeClient(server.id, runtime).catch(() => undefined);
+                  if (ownedSignal.aborted) return;
+                  await unavailable(server, fault.code, true).catch(() => undefined);
+                  executionHealth?.complete({kind: 'dependency_failure', retryAfterMs: observation.retryAfterMs});
+                };
                 try {
+                  ownedSignal.throwIfAborted();
+                  executionHealth = health.begin(key, false);
+                  observation.retryAfterMs = 0;
                   let latest: Tool[];
                   try {latest = await list(runtime, ownedSignal);}
-                  catch (error) {
-                    const fault = preparationFault(error);
-                    if (!ownedSignal.aborted && fault.temporary) await unavailable(server, fault.code, true).catch(() => undefined);
-                    throw error;
-                  }
+                  catch (error) {await settleTransportLoss(error); throw error;}
                   ownedSignal.throwIfAborted();
                   if (schemaHash(latest) !== server.trustedSchemaHash) {
                     await unavailable(server, 'schema_changed');
@@ -378,8 +463,13 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
                         || !current.selectedTools.includes(tool.name)) throw Error('permission_denied');
                     ownedSignal.throwIfAborted();
                   }
-                  return await runtime.callTool(tool.name, wireInput, {signal: ownedSignal, timeoutMs});
-                } finally {release();}
+                  try {return await runtime.callTool(tool.name, wireInput, {signal: ownedSignal, timeoutMs});}
+                  catch (error) {
+                    // A known dependency loss can affect health, while Effect remains with the original caller.
+                    await settleTransportLoss(error);
+                    throw error;
+                  }
+                } finally {executionHealth?.complete({kind: 'ignored'}); release();}
               };
               const result = permission ? await permission.run(source, tool.name, input, signal || new AbortController().signal, perform, callId)
                 : await perform(signal || new AbortController().signal);
@@ -389,6 +479,7 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
               if (!content.length) return failed('unsupported');
               return { content, details: { success: result.isError !== true, ...(result.isError ? { error: { code: 'service_error', retryable: false } } : {}), untrusted: true, server: server.name, tool: tool.name, callId }, isError: result.isError === true };
             } catch (error) {
+              if (error instanceof ProviderHealthBlocked) return failed('provider_unavailable');
               const code = error instanceof Error && error.message === 'resource_busy' ? 'resource_busy' : safeError(error);
               return failed(signal?.aborted ? 'cancelled' : code === 'transport' ? 'network' : code);
             }
@@ -400,6 +491,12 @@ export function createMcpRuntime(sql: Sql, codec?: SettingsKeyCodec, options: {
   }
   async function dispose() { await Promise.allSettled([...handles].map(close => close())); }
   return { catalog, add, inspect, trust, revoke, remove, credential, tools, dispose,
+    async healthSnapshot(serverId: string) {
+      const server = (await state()).servers.find(row => row.id === serverId);
+      if (!server || !hasVerifiedSchema(server)) return null;
+      const key = healthKey(server);
+      return {key, ...health.snapshot(key)};
+    },
     async describeTool(name: string) {
       for (const server of (await state()).servers) {
         if (server.status !== 'ready' || server.trustedSchemaHash !== server.schemaHash) continue;

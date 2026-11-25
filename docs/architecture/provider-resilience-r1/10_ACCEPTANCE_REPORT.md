@@ -5,11 +5,13 @@
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
 | AC-01 | PASS · 已实现 | 固定 22 条故障矩阵与 8 条补充混合、未知和不可信来源反例全部通过。证据见 WP-01。 |
-| AC-02 | NOT_RUN | 正式 Electron 已验证文件占用的原有两次上限和等待停止。原权限、输入和冲突的真实尝试、健康计数、Effect 审计仍需要组合对照。 |
+| AC-02 | NOT_RUN | 实际 MCP 权限否决、既有审批、资源锁、取消和非法输入均验证零外部请求与零健康增量。业务 CAS、来源冲突及通过真实 Effect 的组合对照待补。 |
 | AC-03 | NOT_RUN | 真实 loopback HTTP 和 Windows Electron Managed stdio 各已验证超时、SQLite 信任保留及同一只读能力恢复。直接 stdio 真进程的临时故障与恢复全路径及公开诊断仍须验收。 |
 | AC-04 | NOT_RUN | 已验证 HTTP Schema 漂移、Managed stdio 原绑定不兼容及信任撤销时不尝试重连。还需包、凭证、Instance、Binding、Grant 与驻留的完整变体。 |
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
-| AC-06–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
+| AC-06 | NOT_RUN | 已通过真实 HTTP/SQLite、不同来源隔离和正式 Windows typed IPC 的单设置窗口用例。仍需多个实际产品 session 的组合测试。 |
+| AC-07 | NOT_RUN | 实际 HTTP 10 路只发一次探针，真实 429 的 Retry-After 未提前发送。失败、取消、代际的确定性检查已通过，生产跨 owner 反例待补。 |
+| AC-08–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
 
@@ -42,3 +44,10 @@
 - 主进程边界 21/21，原文件工具 7/7。证据 `wp01-tool-boundaries`，包括无效输入零 dispatch、权限拒绝单次、原资源限制和取消等反例。合成工具的回归仅证明其所在执行边界。
 - `ordinary-tool-recovery-electron.mjs` 首次报告 4 次原始文件读取。`wp01-ordinary-tool-read-inventory.log` 对应实际调用栈和 SQLite 显示其中两次为工具尝试，两次为工具完成后的验收读回。修正夹具，将读取阶段分开计量并验证模型只请求一次工具。下一次捕获了停止后界面已经展开时被测试再次关闭的情况，证据 `wp01-ordinary-tool-electron-corrected.log`。测试改为读取面板展开状态后按需点击，并保留原内容及 300 毫秒反馈断言。
 - 正式 Electron 最终 6/6，见 `wp01-ordinary-tool-electron-final.log` 与 `xiaozhi-ordinary-recovery-ui-oEtnEY/report.json`。实际占用时成功或失败均最多两次读取。停止反馈为 38.96 毫秒，停止后仅有一次已发文件读取、一次已发合成模型请求。冷启未增加调用或改变文件与事件 hash。AC-02 全项仍待健康计量和权限/Effect 对照。
+
+## WP-03 第一轮 MCP 运行健康
+
+- 真实 `initialize` 断线红灯在 `8facf3c`，三次失败后再次准备和显式检查仍各发送一次，共 5 次。见 `wp03-shared-mcp-red.log`。修复后 `wp03-source-gate.log` 48/48，同一健康域三次失败后无额外连接。冷却结束后十个并发准备只有一个物理握手，Schema 重新核验成功后清零。注入真实 HTTP 429 与 `Retry-After: 120` 时，另外一个端点仍可工作，同一端点在早 1 毫秒时仍无发送。证据包括每条隔离 SQLite、服务计数和脱敏的域键。
+- `provider-mcp-health-ipc.mjs` 在实际 Windows Electron 产物通过 3/3。`mcp-health-desktop-fmjQPa/report.json` 记录主进程 SHA-256、preload 结果、实际 SQLite 和重新连接的间隔 12,138 毫秒。未依赖模型账户，恢复过程中没有发送工具业务调用。Windows 受管 stdio 生命周期 14/14。渲染组件 261/261。
+- `wp03-mcp-permissions-ac02.log` 12/12，原权限引擎及真实 HTTP 确认无 Grant 时写入待审批记录。无效输入、权限拒绝、资源占用、取消均无实际请求，健康快照前后一致。有效授权仍可执行原工具。
+- 现有模型请求的白名单、长 Retry-After 和三次上限回归 11/11。模型域尚未接到健康协调，未发真实模型请求。真实生产宿主 Effect 回归 5/5，见 `wp03-mcp-effect-host-final.log`。首次运行在编辑期间发现源文件变化，保留 `wp03-mcp-effect-host.log`，冻结源文件后以 944 个输入无漂移复跑。独立窗口见 `wp03-manual-window.json`，回退见合并记录。

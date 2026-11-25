@@ -212,9 +212,11 @@ test('same MCP domain blocks repeated preparation and admits a single real half-
     for (let index = 0; index < 3; index++) assert.equal(await attempt(), 0);
     assert.equal(initialize, 3);
     assert.equal(await attempt(), 0);
-    await runtime.inspect(await input());
-    report.beforeCooldown = {initialize, state: read()};
+    await assert.rejects(runtime.inspect(await input()), /provider_unavailable/u);
+    report.beforeCooldown = {initialize, state: read(), health: await runtime.healthSnapshot(id)};
     assert.equal(initialize, 3, 'open domain must stop ordinary and explicit metadata requests');
+    assert.equal(report.beforeCooldown.health.phase, 'open');
+    assert.equal(report.beforeCooldown.health.failures, 3);
     assert.equal(fixture.state.calls, 0);
     const arrived = deferred(), release = deferred();
     fixture.state.beforeReply = async request => {
@@ -233,9 +235,45 @@ test('same MCP domain blocks repeated preparation and admits a single real half-
     assert.equal(initialize, 4, 'concurrent half-open requests must share one physical probe');
     assert.equal(report.probes.filter(count => count === 1).length, 1);
     assert.equal(read().servers[0].status, 'ready');
+    assert.equal((await runtime.healthSnapshot(id)).failures, 0);
     fixture.state.beforeReply = undefined;
     assert.equal(await attempt(), 1);
     assert.equal(fixture.state.calls, 0);
     report.recovered = read();
+  }, () => clock);
+});
+
+test('real HTTP Retry-After throttles only the affected MCP source', async () => {
+  let clock = 1000;
+  await scenario('mcp-retry-after', async ({runtime, fixture, id, report}) => {
+    const separate = await startMcpFixture();
+    const prepare = async serverId => {
+      const tools = await runtime.tools(undefined, {serverId, preparationTimeoutMs: 4000});
+      try {return tools.definitions.length;} finally {await tools.dispose();}
+    };
+    try {
+      const added = await runtime.add({name: 'Independent source', transport: 'http', url: separate.url});
+      const separateId = added.servers.at(-1).id;
+      const inspected = await runtime.inspect({schemaVersion: added.schemaVersion, revision: added.revision, serverId: separateId});
+      const independent = inspected.servers.at(-1);
+      await runtime.trust({schemaVersion: inspected.schemaVersion, revision: inspected.revision,
+        serverId: separateId, schemaHash: independent.schemaHash, tools: ['lookup_lesson']});
+      fixture.state.beforeReply = request => request.method === 'initialize' ? {httpStatus: 429, headers: {'Retry-After': '120'}} : undefined;
+      assert.equal(await prepare(id), 0);
+      const requestCount = fixture.state.requests;
+      report.limited = await runtime.healthSnapshot(id);
+      assert.equal(report.limited.retryAt, 121_000);
+      clock += 119_999;
+      assert.equal(await prepare(id), 0);
+      assert.equal(fixture.state.requests, requestCount);
+      assert.equal(await prepare(separateId), 1);
+      report.independent = await runtime.healthSnapshot(separateId);
+      assert.notEqual(report.limited.key, report.independent.key);
+      assert.equal(report.independent.phase, 'closed');
+      clock++;
+      fixture.state.beforeReply = undefined;
+      assert.equal(await prepare(id), 1);
+      assert.equal(fixture.state.calls + separate.state.calls, 0);
+    } finally {await separate.close();}
   }, () => clock);
 });

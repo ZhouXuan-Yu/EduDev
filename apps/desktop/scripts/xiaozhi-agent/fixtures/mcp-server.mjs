@@ -31,6 +31,7 @@ export async function startMcpFixture() {
     const response = (await state.beforeReply?.(request, original)) ?? original;
     if (response === 'drop') { req.socket.destroy(); return; }
     if (response === 'hang') return;
+    if (response?.httpStatus) {res.writeHead(response.httpStatus, response.headers).end(); return;}
     if (!response) { res.writeHead(202).end(); return; }
     res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(response));
   });

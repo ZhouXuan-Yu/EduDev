@@ -54,6 +54,13 @@ export function isTemporaryProviderHttpStatus(status: number) {
   return retryableHttpStatuses.has(status);
 }
 
+export function providerRetryAfterSeconds(header: string | null, wallNow = Date.now()) {
+  if (!header) return undefined;
+  if (/^\d+(\.\d+)?$/u.test(header)) return Number(header);
+  const timestamp = Date.parse(header);
+  return Number.isFinite(timestamp) ? Math.max(0, (timestamp - wallNow) / 1000) : undefined;
+}
+
 /** Host-normalized facts only. Provider payloads cannot authorize replay or certify an effect. */
 export function classifyProviderFault(fact: {
   origin: 'host' | 'provider';

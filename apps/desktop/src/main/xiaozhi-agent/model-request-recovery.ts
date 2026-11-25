@@ -1,5 +1,5 @@
 import type {XiaozhiModelRequest} from '../../shared/xiaozhi-model-request';
-import {isTemporaryProviderHttpStatus} from './provider-fault-policy';
+import {isTemporaryProviderHttpStatus, providerRetryAfterSeconds} from './provider-fault-policy';
 type RetryOptions={beforeRetry:()=>Promise<void>;onRetry?:(attempt:number,status:number)=>void;onState?:(request:XiaozhiModelRequest)=>void;delayMs?:number};
 /** Retry only explicit transient HTTP rejection, before any response body is read.
  * Never replay a tool, a partial stream, an ambiguous network failure or auth error. */
@@ -21,10 +21,7 @@ export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptio
       lastStatus=response.status;
       const done=()=>{state({state:response.ok?'accepted':'rejected',status:response.status});return response;};
       if(!replayable||attempt>=2||!isTemporaryProviderHttpStatus(response.status))return done();
-      const header=response.headers.get('retry-after');
-      const retryAt=header?Date.parse(header):NaN;
-      const seconds=header&&/^\d+(\.\d+)?$/.test(header)?Number(header)
-        :Number.isFinite(retryAt)?Math.max(0,(retryAt-Date.now())/1000):undefined;
+      const seconds=providerRetryAfterSeconds(response.headers.get('retry-after'));
       // Long server backoff belongs to an explicit later user retry.
       if(seconds!==undefined&&seconds>5)return done();
       await response.body?.cancel();
