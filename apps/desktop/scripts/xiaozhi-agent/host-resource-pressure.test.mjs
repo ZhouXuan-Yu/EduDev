@@ -56,7 +56,7 @@ async function start(host){
   lease.settle();
 }
 
-test('starting the sampler before Electron is ready still handles resume and discards the prior CPU window',async()=>{
+test('starting the sampler before Electron is ready still handles resume and discards the prior CPU window',async t=>{
   const f=await fixture(false);
   try{
     await start(f.host);
@@ -70,12 +70,13 @@ test('starting the sampler before Electron is ready still handles resume and dis
     assert.equal(resumed.pressure,2);
     assert.equal(resumed.lastSample.cpuRatio,null);
     assert.equal(resumed.lastSample.reason,'resume');
+    t.diagnostic(JSON.stringify(resumed.lastSample));
     await start(f.host);
     assert.equal(f.intervals(),1);
   }finally{f.restore();}
 });
 
-test('sensor exceptions degrade future admissions without erasing existing work',async()=>{
+test('sensor exceptions degrade future admissions without erasing existing work',async t=>{
   const f=await fixture();
   let running;
   try{
@@ -93,17 +94,21 @@ test('sensor exceptions degrade future admissions without erasing existing work'
       assert.equal(f.host.hostResourceDiagnostics().queued,1);
       running.settle();
       assert.equal(f.host.hostResourceDiagnostics().queued,1);
+      const drained=f.host.hostResourceDiagnostics();
       f.overrides.err=false;
       for(let i=0;i<5;i++)f.advance();
       assert.equal(f.host.hostResourceDiagnostics().pressure,2);
       f.advance();
-      assert.equal(f.host.hostResourceDiagnostics().pressure,1);
+      const recovered=f.host.hostResourceDiagnostics();
+      assert.equal(recovered.pressure,1);
+      t.diagnostic(JSON.stringify([degraded,drained,recovered].map(({lastSample,used,target,debt,queued})=>
+        ({lastSample,used,target,debt,queued}))));
       (await candidate).settle();
     }finally{wait.abort();}
   }finally{running?.settle();f.restore();}
 });
 
-test('oscillation does not toggle capacity and missing, invalid or stale samples are explained',async()=>{
+test('oscillation does not toggle capacity and missing, invalid or stale samples are explained',async t=>{
   const f=await fixture();
   try{
     await start(f.host);
@@ -130,5 +135,6 @@ test('oscillation does not toggle capacity and missing, invalid or stale samples
     assert.equal(recovered.pressure,0);
     assert(recovered.pressureSamples.some(sample=>sample.reason==='recovery_step'&&sample.level===1));
     assert(recovered.pressureSamples.length<=32);
+    t.diagnostic(JSON.stringify(recovered.pressureSamples));
   }finally{f.restore();}
 });

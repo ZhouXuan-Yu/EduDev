@@ -2,9 +2,10 @@ import {randomUUID} from 'node:crypto';
 import {availableParallelism, cpus, freemem, totalmem} from 'node:os';
 import {app, powerMonitor} from 'electron';
 import {HostResourceScheduler, type ResourceLane, type ResourceVector} from './scheduler';
+import {HostPressurePolicy, type PressureLevel, type UnavailablePressureSample} from './pressure';
 
 const MiB = 1_048_576;
-export const hostResourcePolicyVersion = 'host-resources.r1.1';
+export const hostResourcePolicyVersion = 'host-resources.r1.2';
 const normal: ResourceVector = {
   cpu: Math.max(2, Math.min(8, Math.floor(availableParallelism()/2))),
   memoryMiB: Math.max(1536, Math.min(4096, Math.floor(totalmem()/MiB/5))),
@@ -12,16 +13,21 @@ const normal: ResourceVector = {
 };
 const sampleMs = 1000;
 const coordinator = new HostResourceScheduler(normal, {maxQueued:64, maxBypasses:6});
+const policy = new HostPressurePolicy();
 let sampler: ReturnType<typeof setInterval> | undefined;
-let previousTick = 0;
-let previousCpu = {idle:0, total:0};
-let pressure = 0;
-let affectedSamples = 0;
-let healthySamples = 0;
-let lastSample: {at:number; availableMiB:number; delayMs:number; cpuRatio:number|null; processWorkingSetKiB:number|null} | undefined;
+let previousTick: number | undefined;
+let previousCpu: ReturnType<typeof readCpuTotals>;
+type Measurement = {
+  at: number;
+  intervalMs: number | null;
+  delayMs: number | null;
+  availableMiB: number | null;
+  cpuRatio: number | null;
+  processWorkingSetKiB: number | null;
+} & ReturnType<HostPressurePolicy['observe']>;
+const pressureSamples: Measurement[] = [];
 
-function setPressure(level: number) {
-  pressure = level;
+function setPressure(level: PressureLevel) {
   coordinator.setTarget(level === 0 ? normal : {...normal,
     cpu:Math.max(2, Math.floor(normal.cpu*(level===1 ? .75 : .5))),
     memoryMiB:Math.max(1536, Math.floor(normal.memoryMiB*(level===1 ? .75 : .5))),
@@ -29,43 +35,68 @@ function setPressure(level: number) {
   });
 }
 
-function sample() {
-  const at = performance.now(), delayMs = Math.max(0, at-previousTick-sampleMs), availableMiB = freemem()/MiB;
-  const cpu = {idle:0,total:0};
-  for (const {times} of cpus()) {
-    cpu.idle += times.idle;
-    cpu.total += times.idle + times.user + times.nice + times.sys + times.irq;
+function readCpuTotals() {
+  const processors = cpus();
+  if (!processors.length) return undefined;
+  let idle = 0, total = 0;
+  for (const {times} of processors) {
+    const values = [times.idle, times.user, times.nice, times.sys, times.irq];
+    if (values.some(value => !Number.isFinite(value) || value < 0)) return undefined;
+    idle += times.idle;
+    total += values.reduce((sum, value) => sum+value, 0);
   }
-  const delta = cpu.total-previousCpu.total, idleDelta = cpu.idle-previousCpu.idle;
-  const cpuRatio = previousCpu.total && delta>0 && idleDelta>=0 && idleDelta<=delta ? 1-idleDelta/delta : null;
-  const healthyInterval = previousTick > 0 && at-previousTick < sampleMs*5;
-  previousTick=at; previousCpu=cpu;
+  return {idle,total,count:processors.length};
+}
+
+function sample(origin?: 'cold_start' | 'resume') {
+  const at = performance.now();
+  const intervalMs = previousTick === undefined ? null : at-previousTick;
+  previousTick = at;
+  const validInterval = intervalMs !== null && Number.isFinite(intervalMs) && intervalMs > 0 && intervalMs < sampleMs*5;
+  const delayMs = validInterval ? Math.max(0, intervalMs-sampleMs) : null;
+  let availableMiB: number|null = null, cpuRatio: number|null = null;
+  let unavailable: UnavailablePressureSample | undefined = origin;
+  try {
+    const bytes = freemem();
+    if (Number.isFinite(bytes) && bytes > 0) availableMiB = bytes/MiB;
+    const cpu = readCpuTotals();
+    if (validInterval && cpu && previousCpu?.count === cpu.count) {
+      const elapsed = cpu.total-previousCpu.total, idle = cpu.idle-previousCpu.idle;
+      if (Number.isFinite(elapsed) && elapsed > 0 && idle >= 0 && idle <= elapsed) cpuRatio = 1-idle/elapsed;
+    }
+    previousCpu = cpu;
+    unavailable ??= !validInterval ? 'stale_interval' : availableMiB === null ? 'invalid_memory' :
+      cpuRatio === null ? 'invalid_cpu' : undefined;
+  } catch {
+    previousCpu = undefined;
+    unavailable ??= 'sensor_failed';
+  }
   let processWorkingSetKiB: number|null = null;
   // Working sets may count shared pages more than once. Use for diagnostics only.
   try {
     const metrics = app.isReady() ? app.getAppMetrics() : [];
-    if (metrics.length) processWorkingSetKiB = metrics.reduce((sum, entry) => sum+entry.memory.workingSetSize,0);
+    const sizes = metrics.map(entry => entry.memory.workingSetSize);
+    if (sizes.length && sizes.every(size => Number.isFinite(size) && size >= 0))
+      processWorkingSetKiB = sizes.reduce((sum, size) => sum+size, 0);
   } catch { /* Optional metric, especially during shutdown. */ }
-  lastSample={at,availableMiB,delayMs,cpuRatio,processWorkingSetKiB};
-  const measured = healthyInterval && Number.isFinite(availableMiB) && availableMiB>0 && cpuRatio!==null;
-  const level = !measured || availableMiB<1024 ? 2 : availableMiB<2048 || delayMs>80 || cpuRatio>.92 ? 1 : 0;
-  affectedSamples=level>pressure ? affectedSamples+1 : 0;
-  healthySamples=measured && level<pressure && availableMiB>=2560 && delayMs<40 && cpuRatio<.85 ? healthySamples+1 : 0;
-  if (!measured || availableMiB<1024 || affectedSamples>=2) {setPressure(level); affectedSamples=healthySamples=0;}
-  else if (healthySamples>=5) {setPressure(pressure-1); healthySamples=0;}
+  const decision = policy.observe({availableMiB, delayMs, cpuRatio, unavailable});
+  pressureSamples.push({at,intervalMs,availableMiB,delayMs,cpuRatio,processWorkingSetKiB,...decision});
+  if (pressureSamples.length > 32) pressureSamples.shift();
+  if (decision.level !== decision.previousLevel) setPressure(decision.level);
 }
 
 function beginSampling() {
   if (sampler) return;
-  previousTick=performance.now();
-  sample();
-  sampler=setInterval(sample,sampleMs);
+  sample('cold_start');
+  sampler=setInterval(()=>sample(),sampleMs);
   sampler.unref();
-  if (app.isReady()) powerMonitor.on('resume', () => {
-    previousTick=0;
-    previousCpu={idle:0,total:0};
-    sample();
+  const bindResume = () => powerMonitor.on('resume', () => {
+    previousTick=undefined;
+    previousCpu=undefined;
+    sample('resume');
   });
+  if (app.isReady()) bindResume();
+  else app.once('ready',bindResume);
 }
 
 export function reserveHostStage(owner: string, phase: string, lane: ResourceLane, demand: Partial<ResourceVector>,
@@ -87,7 +118,11 @@ export async function runHostStage<T>(owner: string, phase: string, lane: Resour
 }
 
 export function hostResourceDiagnostics() {
-  return {policy:hostResourcePolicyVersion, pressure, lastSample, ...coordinator.snapshot(), events:coordinator.recentEvents()};
+  const samples=pressureSamples.map(sample=>({...sample}));
+  const lastSample=samples.at(-1);
+  return {policy:hostResourcePolicyVersion, pressure:lastSample?.level ?? 0, lastSample, pressureSamples:samples,
+    sampling:{periodMs:sampleMs,clock:'performance.now',memory:'os.freemem',cpu:'os.cpus delta',processMemory:'Electron working set'},
+    ...coordinator.snapshot(), events:coordinator.recentEvents()};
 }
 
 export function isHostResourceQueued(owner: string): boolean {

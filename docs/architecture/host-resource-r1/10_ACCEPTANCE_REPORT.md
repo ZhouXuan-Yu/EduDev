@@ -15,8 +15,8 @@
 | AC-09 前台及依赖 | NOT_RUN | 前台 lane 已接搜索、输出和显式优先收录。补当前会话焦点及依赖失效验证。 |
 | AC-10 有限公平 | NOT_RUN | 大任务晋升的确定性反例通过，补真实工作进度。 |
 | AC-11 安全让行 | NOT_RUN | 收录原 CAS/ACK 保留，原生维护按原边界。补 OCR、索引和锁持有者的安全点交错。 |
-| AC-12 采样与滞回 | NOT_RUN | 原生混载保存机器采样，补冻结参数、坏数据与稳定恢复曲线。 |
-| AC-13 降额与排空欠额 | NOT_RUN | 内核降额保留旧占用，补缺失/陈旧信号和正式压力序列。 |
+| AC-12 采样与滞回 | PASS · 已实现 | 同一采样器覆盖就绪前启动及恢复，阈值波动和两次持续压力测试通过。Windows 原生混载采集 32 个有效样本，记录从 2→1→0 逐级恢复。 |
+| AC-13 降额与排空欠额 | PASS · 已实现 | 受控缺失、NaN、负读数和陈旧读数均触发保守策略，CPU 在用量 8 对目标 4 保留欠额 4。实际租约归还之后仍限制新工作，直到五个可靠样本触发一级恢复。 |
 | AC-14 有界准备 | NOT_RUN | 流式摘要及 PDF HTML 准入已接，补读图、其他输入 Buffer、阶段转移与多项增长反例。 |
 | AC-15 资源口径及 Windows Job | NOT_RUN | 原 Job 治理未修改，补实际 Win32 报告及三类资源口径对账。 |
 | AC-16 材料队列 | NOT_RUN | 自然扫描复跑真机七项通过，补有计划的竞争、故障和原任务状态完整证据。 |
@@ -51,3 +51,9 @@
 ## PDF 准备上游复验构建
 
 `npm run build -- --outDir test-results/r1-pdf-preparation` 通过。主进程 SHA-256 为 `189b6288a285c1d4a4c4a853a2b37ba037805eada2b67d4a14aee895a1bc41b7`。同版原生混合与打印取消专项 5/5，正式 Electron 的扫描导入、可读 Word/PDF 和冷启专项 7/7。实际运行窗口见 `manual-window.json`，完整日志参见 `pdf-preparation-native.log` 和 `pdf-preparation-desktop-ocr-export.log`。
+
+## 压力采样复验构建
+
+- 原始红灯保存在 `wp03-pressure-red.log`，覆盖采样异常逸出及应用就绪前遗漏恢复监听。 `npm run test:host-resources` 通过 10/10，实际状态和容量序列见 `wp03-pressure-sequences.log`。
+- 原窗口、阈值和恢复步长保留。规则记录 `wp03-pressure-policy-r1.2.json` 的 SHA-256 为 `efdc9e5608d7e6bcfa397f2142a7a9ae76a079b57eacca7ad9aead8fdfd60fc68`。实机原始数据见 `r1-native-mixed-c2MglK/report.json`，状态转移摘要见 `wp03-pressure-native-measurements.json`。
+- `npm run build -- --outDir test-results/r1-pressure` 通过，主进程 SHA-256 为 `6cc252076b67972c5d5cdad122e70af10a33d39cf87f97766b1634aad6b1615e`。同版组件 261/261，原生混载 5/5，资料库实际排队和停止 3/3，隔离窗口已启动。正式 W-04 和 AC-29 保持待验。
