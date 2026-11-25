@@ -64,11 +64,16 @@ async function setup(t, name, options = {}) {
   const execute = () => runtime.execute('owned-metadata', requirement, {path: file});
   const observe = async result => {
     const seen = {result, history: await history(), actualReads: native.executionHistory(),
-      task: await f.taskState.get(run.task.id), providers: await registry.snapshot()};
+      task: await f.taskState.get(run.task.id), providers: await registry.snapshot(),
+      effects: await f.effects.forTask(run.sessionId, run.task.id)};
     await writeFile(path.join(directory, 'report.json'), JSON.stringify(seen, null, 2));
     return seen;
   };
-  return {allow, setProvider, execute, observe, selected, originalTask, file, content};
+  const revoke = async id => {
+    const record = (await registry.snapshot()).providers.find(item => item.id === id);
+    return registry.revokeProviderVersion(id, record.version, request.capabilityId);
+  };
+  return {allow, setProvider, execute, observe, selected, originalTask, file, content, revoke};
 }
 
 test('uses the original verified readable Provider when another Provider becomes preferred', async t => {
@@ -99,23 +104,45 @@ test('recovers an unsent local read once through the compatible installed Provid
   assert.equal(seen.providers.bindings.find(item => item.providerId === hana).priority, 10);
 });
 
-for (const [name, options] of [
-  ['user-pinned', {pinned: true}],
-  ['missing-conditional-evidence', {mime: true}],
-  ['busy-safe-point', {}],
-  ['late-busy-safe-point', {}],
-  ['approval-required', {}],
-]) {
+const rejectionCases = [
+  {name: 'user-pinned', options: {pinned: true}, reason: 'provider_pinned', action: 'review_pinned_provider'},
+  {name: 'contract-unverified', reason: 'missing_required', action: 'review_compatible_providers',
+    setup: x => x.setProvider(workspace, (_, binding) => {
+      binding.conformance.evidence = binding.conformance.evidence.map(item => ({...item, kind: 'self_declared'}));
+    })},
+  {name: 'missing-conditional-evidence', options: {mime: true}, reason: 'missing_conditional', action: 'review_compatible_providers'},
+  {name: 'revoked-version', reason: 'provider_revoked', action: 'review_compatible_providers',
+    setup: x => x.revoke(workspace)},
+  {name: 'approval-required', reason: 'permission_denied', action: 'review_provider_authorization',
+    setup: x => x.setProvider(workspace, provider => {
+      provider.health = 'pending_approval';
+      provider.permissions = ['workspace.file.metadata', 'workspace.file.write'];
+    })},
+  {name: 'remote-residency', reason: 'data_residency', action: 'review_compatible_providers',
+    setup: x => x.setProvider(workspace, provider => {provider.locality = 'remote';})},
+  {name: 'resource-budget', reason: 'budget_exceeded', action: 'review_compatible_providers',
+    setup: x => x.setProvider(workspace, provider => {provider.cost.resourceUnits = 2;})},
+  {name: 'busy-safe-point', reason: 'capability_refresh_busy', action: 'wait_for_current_operation',
+    setup: x => {x.allow.refresh = false;}},
+  {name: 'late-busy-safe-point', reason: 'capability_refresh_busy', action: 'wait_for_current_operation',
+    setup: x => {x.allow.attempts = 3;}},
+];
+for (const {name, options, reason, action, setup: prepare} of rejectionCases) {
   test(`preserves the original snapshot and makes no replacement read when ${name}`, async t => {
     const x = await setup(t, name, options);
-    if (name === 'busy-safe-point') x.allow.refresh = false;
-    if (name === 'late-busy-safe-point') x.allow.attempts = 3;
     await x.setProvider(hana, provider => {provider.health = 'unavailable';});
-    if (name === 'approval-required') await x.setProvider(workspace, provider => {provider.health = 'pending_approval';});
+    await prepare?.(x);
     const seen = await x.observe(await x.execute());
     assert.equal(seen.result.success, false);
     assert.deepEqual(seen.actualReads, []);
     assert.deepEqual(seen.history, [x.selected]);
     assert.deepEqual(seen.task, x.originalTask);
+    assert.deepEqual(seen.effects, []);
+    if (action === 'review_compatible_providers' || action === 'review_provider_authorization') {
+      const candidate = seen.result.resolution.excludedProviders.find(item => item.providerId === workspace);
+      assert(candidate?.reasons.includes(reason), JSON.stringify(seen.result));
+    }
+    assert(seen.result.recovery?.reasons.includes(reason), JSON.stringify(seen.result));
+    assert.equal(seen.result.recovery?.nextAction, action);
   });
 }
