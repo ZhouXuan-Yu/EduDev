@@ -22,13 +22,14 @@ import type {MockExamEntry} from '../../shared/mock-exam-compilation';
 import {readMockExamAnswerReview} from './material-book-answer-review';
 import type {StructureBookJob} from './material-structure-book-work';
 import {assertStructureDraftEditable} from './material-structure-bank';
+import {COMPACT_CHOICE_POLICY,verifyCompactChoice,type CompactChoiceProof} from './material-compact-choice-key';
 type Row=Record<string,unknown>;type Value=string|number|null;type Proof=Awaited<ReturnType<typeof readAiPageReceipt>>;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;role:(id:string)=>Promise<MaterialBookRole|null>;receipt:(batch:string,ordinal:number)=>Promise<Proof>;read:(id:string)=>Promise<QuestionBankItem|undefined>;validate:(q:QuestionBankItem,signal:AbortSignal)=>Promise<void>;structureScope?:(q:QuestionBankItem,signal:AbortSignal,mockTitles?:ShanghaiMockSectionPolicy)=>Promise<StructureBookScope>;title:(id:string)=>Promise<string>;writer:<T>(fn:(target:MaterialBookAnswerRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type PageKey={batchId:string;ordinal:number};
 type BookMatchJob=PageBookJob|StructureBookJob;
 type QuestionProof={key:PageKey;receipt:Proof;context?:BookQuestionSectionEvidence}|{key:PageKey;structure:StructureBookScope};
 const SHARED_EXAM_ANSWER='shared-exam-answer.v1' as const;
-type Evidence={pair:MaterialBookRole;question:PageKey;answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;lookupPolicy?:typeof BOOK_SECTION_LAYOUT;sectionProjection?:ShanghaiMockSectionVersion;questionSection?:BookQuestionSectionEvidence;structure?:StructureBookScope;answerSection?:BookAnswerSectionEvidence;slotRecoveryPolicy?:typeof PRINTED_FILL_SLOTS;answerSharing?:typeof SHARED_EXAM_ANSWER};
+type Evidence={pair:MaterialBookRole;question:PageKey;answer:{batchId:string;ordinal:number;start:number;firstSha:string;finalSha:string;imageSha:string};section:string;number:string;lookupPolicy?:typeof BOOK_SECTION_LAYOUT;sectionProjection?:ShanghaiMockSectionVersion;questionSection?:BookQuestionSectionEvidence;structure?:StructureBookScope;answerSection?:BookAnswerSectionEvidence;slotRecoveryPolicy?:typeof PRINTED_FILL_SLOTS;answerSharing?:typeof SHARED_EXAM_ANSWER;answerParsing?:typeof COMPACT_CHOICE_POLICY;compactChoice?:CompactChoiceProof};
 function checkAnswerPair(proof:Proof,pair:MaterialBookRole,section:string,share:boolean,mockTitles:ShanghaiMockSectionPolicy=true){
  const {bookRole,pageSource}=proof.unit;
  if(pageSource?.resourceId!==pair.answerId||pageSource.version!==pair.answerVersion)throw Error('source_changed');
@@ -134,7 +135,7 @@ export class MaterialBookAnswerRepository{
    const q=await target.host.read(snapshot.id);if(!q)throw Error('source_changed');
    const lookupPolicy=process.env.OMNI_EDU_BOOK_SECTION_LAYOUT!=='0'?BOOK_SECTION_LAYOUT:undefined,slotPolicy=process.env.OMNI_EDU_BOOK_FILL_SLOTS!=='0'?PRINTED_FILL_SLOTS:undefined;
    const sectionProjection=shanghaiMockSectionKey(section)?.startsWith(TERM_SHANGHAI_MOCK_SECTIONS+'|')?TERM_SHANGHAI_MOCK_SECTIONS:WRAPPED_SHANGHAI_MOCK_SECTIONS;
-   const number=q.archive?.number||'0',key=hash(JSON.stringify([BOOK_ANSWER_CONFLICT_POLICY,sectionProjection,SHARED_EXAM_ANSWER,snapshot.id,questionVersion(snapshot),input,section,found.map(f=>[f.batch_id,f.ordinal,f.start,f.proof_sha]),...(lookupPolicy?[lookupPolicy]:[]),...(slotPolicy?[slotPolicy]:[]),...(sectionContext?[sectionContext]:[]),...(structure?[pair,structure]:[]),...(structureJob?['structure-missing-roles.v1']:[]),...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[])])),old=(await target.host.all('SELECT payload_json FROM material_book_answer_journal_v1 WHERE request_key=?',[key]))[0];if(old)return;
+   const number=q.archive?.number||'0';
    const row:BookMatchRow={id:'bookanswer_'+randomUUID(),questionId:q.id,number,section,state:'held',reason:'',answer:'',analysis:'',beforeVersion:questionVersion(snapshot),afterVersion:''};
    const evidence:Evidence={pair,question:proof.key,answer:{batchId:'',ordinal:0,start:0,firstSha:'',finalSha:'',imageSha:''},section,number,sectionProjection,...(lookupPolicy?{lookupPolicy}:{}),...(sectionContext?{questionSection:sectionContext}:{}),...(structure?{structure}:{})};
    let answerProof:Proof|undefined,answerEntry:ReturnType<typeof bookAnswerPage>['entries'][number]|undefined,slotRecovery=false;
@@ -149,6 +150,7 @@ export class MaterialBookAnswerRepository{
       evidence.answerSharing=sharing;
      }
      const derived=await target.examSections.answerPage(answerProof,signal);
+     if(derived.page.compactChoiceRows)evidence.answerParsing=COMPACT_CHOICE_POLICY;
      answerEntry=derived.page.entries.find(e=>e.start===Number(f.start)&&e.number===number&&e.sectionKey===String(f.section_key));
      const sectionKey=(title:string)=>bookSectionLookupKey(title,true,lookupPolicy===BOOK_SECTION_LAYOUT);
      if(!answerEntry||sectionKey(answerEntry.section)!==sectionKey(section))throw Error('source_changed');
@@ -163,11 +165,23 @@ export class MaterialBookAnswerRepository{
      const archive=q.archive;
      const supported=archive&&(structure?!!archive.structure&&archive.sourceChecked:!!archive.ai&&!!archive.pageSource);
      row.reason=!supported||q.document&&(!isCompleteQuestionDocument(q.document)||process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK==='0')?'unsupported':archive.issues.some(i=>!metadata.has(i)&&!(slotRecovery&&i==='answer_conflict'))||archive.sourceRisks.length?'question_unchecked':!answerEntry.agrees||answerEntry.issues.some(code=>code!=='missing_analysis')?'answer_unchecked':q.answer.trim()&&!(slotPolicy?samePrintedFillAnswer(q,q.answer,row.answer):aiTextSignature(q.answer)===aiTextSignature(row.answer))?'existing_answer_conflict':'';
+     if(!row.reason&&answerEntry.compactChoiceRange){
+      const page=structure?.page??questionProof?.unit.pageSource?.page;
+      evidence.compactChoice=page?await verifyCompactChoice((sql,values)=>target.host.all(sql,values),q,
+       {resourceId:pair.questionId,version:pair.questionVersion,page},answerEntry.compactChoiceRange,answerEntry.answer):undefined;
+      if(!evidence.compactChoice)row.reason='choice_range_unchecked';
+     }
     }catch(error){if(!(error instanceof Error)||!['source_changed','source_incomplete','privacy_blocked'].includes(error.message))throw error;row.reason='source_changed';}
    }
    if(structureJob&&!row.reason&&!q.answer.trim()&&q.analysis.trim()&&
       (!row.analysis||aiTextSignature(q.analysis)!==aiTextSignature(row.analysis)))
     row.reason='protected_analysis_mismatch';
+   const key=hash(JSON.stringify([BOOK_ANSWER_CONFLICT_POLICY,sectionProjection,SHARED_EXAM_ANSWER,snapshot.id,row.beforeVersion,input,section,
+    found.map(f=>[f.batch_id,f.ordinal,f.start,f.proof_sha]),...(lookupPolicy?[lookupPolicy]:[]),...(slotPolicy?[slotPolicy]:[]),
+    ...(sectionContext?[sectionContext]:[]),...(structure?[pair,structure]:[]),...(structureJob?['structure-missing-roles.v1']:[]),
+    ...(snapshot.document?['structured-book-writeback.v1',process.env.OMNI_EDU_BOOK_DOCUMENT_WRITEBACK!=='0']:[]),
+    ...(evidence.answerParsing?[evidence.answerParsing]:[]),...(evidence.compactChoice?[evidence.compactChoice]:[])]));
+   if((await target.host.all('SELECT 1 FROM material_book_answer_journal_v1 WHERE request_key=?',[key])).length)return;
    let next:QuestionBankItem|undefined=!structureJob&&row.reason==='existing_answer_conflict'?quarantineBookAnswerConflict(q):undefined;
    if(!row.reason&&answerEntry&&row.source){
     const writable=roles.filter(r=>!!row[r]&&(!q[r].trim()&&q.archive?.[`${r}Origin`]==='missing'||!structureJob&&q.archive?.[`${r}Origin`]==='ai_generated'));
@@ -270,14 +284,22 @@ export class MaterialBookAnswerRepository{
    const sections=mockTitles===TERM_SHANGHAI_MOCK_SECTIONS?this.examSections:mockTitles?new MaterialBookQuestionSection(this.host,this.index,mockTitles):this.sections;
    const receipt=await this.host.receipt(e.answer.batchId,e.answer.ordinal);
    if(e.answerSection){const key=JSON.stringify([e.answer.batchId,e.answer.ordinal,e.answerSection]);if(!checkedSections.has(key)){await sections.validateAnswer(e.answerSection,receipt,e.answer);checkedSections.add(key);}}
-   const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section,receipt.unit.bookPagePolicy,mockTitles).entries.find(x=>x.start===e.answer.start);
+   if(e.answerParsing!==undefined&&e.answerParsing!==COMPACT_CHOICE_POLICY)throw Error('source_changed');
+   const entry=bookAnswerPage(receipt.first,receipt.final,e.answerSection?.section,receipt.unit.bookPagePolicy,mockTitles,e.answerParsing===COMPACT_CHOICE_POLICY).entries.find(x=>x.start===e.answer.start);
    if(e.answerSection&&(bookSectionAt(receipt.final.pageText,entry?.start,mockTitles)!==undefined||
       !bookAnswerPage(receipt.first,receipt.first,undefined,receipt.unit.bookPagePolicy,mockTitles).entries.some(x=>!x.section&&x.number===e.number&&bookSectionAt(receipt.first.pageText,x.start,mockTitles)===undefined)))throw Error('source_changed');
    if(e.lookupPolicy!==undefined&&e.lookupPolicy!==BOOK_SECTION_LAYOUT)throw Error('source_changed');
    const sectionKey=(title:string)=>bookSectionLookupKey(title,mockTitles,e.lookupPolicy===BOOK_SECTION_LAYOUT);
    if(checkAnswerPair(receipt,e.pair,e.section,e.answerSharing===SHARED_EXAM_ANSWER,mockTitles)!==e.answerSharing||
       receipt.firstSha!==e.answer.firstSha||receipt.finalSha!==e.answer.finalSha||receipt.imageSha!==e.answer.imageSha||
-      !entry||!entry.agrees||entry.issues.some(i=>i!=='missing_analysis')||sectionKey(entry.section)!==sectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role])throw Error('source_changed');
+      !entry||!entry.agrees||entry.issues.some(i=>i!=='missing_analysis')||sectionKey(entry.section)!==sectionKey(e.section)||entry.number!==e.number||entry[role]!==q[role]||
+      !!entry.compactChoiceRange!==!!e.compactChoice)throw Error('source_changed');
+   if(e.compactChoice){
+    const page=e.structure?.page??before.archive?.pageSource?.page;
+    const actual=page&&entry.compactChoiceRange&&await verifyCompactChoice((sql,values)=>this.host.all(sql,values),before,
+     {resourceId:e.pair.questionId,version:e.pair.questionVersion,page},entry.compactChoiceRange,entry.answer);
+    if(JSON.stringify(actual)!==JSON.stringify(e.compactChoice))throw Error('source_changed');
+   }
    const removedConflict=before.archive?.issues.includes('answer_conflict')&&!after.archive?.issues.includes('answer_conflict');
    if(e.structure){
     const reference=before.archive?.structure;

@@ -19,6 +19,7 @@ const scoped=(body,answerIssues=[],pageIssues=[],outcome=answerIssues.length||pa
 const section='第十三、十四章 素养基础测试卷',other='第十三、十四章 素养提优测试卷',local={section,number:'2',issues:['uncertain_ocr']};
 const {MATERIAL_BOOK_PAGE_LABEL_POLICY,MATERIAL_BOOK_PAGE_TABLE_POLICY}=await import('../../src/shared/material-ai-page.ts');
 const {shanghaiMockSectionKey,WRAPPED_SHANGHAI_MOCK_SECTIONS}=await import('../../src/shared/shanghai-mock-sections.ts');
+const {printedSingleChoiceRange}=await import('../../src/main/assets/material-compact-choice-key.ts');
 const {bookPageRestorationInstruction}=await import('../../src/main/assets/material-ai-book-instruction.ts');
 const printed=(first,final=first)=>bookAnswerPage(scoped(first),scoped(final),undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY);
 check('Printed brackets after repeated question text recover literal answer and analysis only for new inputs',()=>{
@@ -122,6 +123,37 @@ check('District term heading boundaries prevent borrowing a prior scope over an 
   const proof=scoped(first.pageText+'\n'+partial+'\n2. B\n解析：另一份。');
   assert.deepEqual(bookAnswerPage(proof,proof,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true).entries.map(e=>[e.number,e.section]),[['1',title],['2','']]);
  }
+});
+check('Compact choice keys retain literal letters and require neighboring markers or a complete printed range',()=>{
+ const title='松江区2024学年度第一学期期末质量监控试卷\n高三数学答案';
+ const body='\n一、填空题\n12. 4.96\n二、选择题：ＤＣＣＡ\n微\n三、解答题\n17. 解：略。';
+ const source=scoped(title+body);
+ const answers=(first,final=first)=>bookAnswerPage(first,final,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true);
+ const selected=answers(source).entries.filter(row=>row.compactChoiceRange);
+ assert.deepEqual(selected.map(row=>[row.number,row.answer]),[['13','D'],['14','C'],['15','C'],['16','A']]);
+ assert(selected.every(row=>row.agrees&&row.quote===source.pageText.slice(row.start,row.end)));
+ assert.equal(new Set(selected.map(row=>row.start)).size,4);
+ const wrongLetters=answers(source,scoped(source.pageText.replace('ＤＣＣＡ','ＤＢＣＡ'))).entries.find(row=>row.number==='14');
+ assert(wrongLetters.issues.includes('transcription_disagreement'));
+ const numbered=scoped(title+'\n选择题答案（第21～24题）：B、D、D、C');
+ assert.deepEqual(answers(numbered).entries.map(row=>row.number),['21','22','23','24']);
+ for(const incomplete of [body.replace('12.','11.'),body.replace('17.','18.'),body.replace('ＤＣＣＡ','ＤＣ？Ａ'),
+  body.replace('三、解答题','不清楚'),body.replace('一、填空题','其他内容'),body.replace('微','请核对另一张卷')]){
+  const page=answers(scoped(title+incomplete));
+  assert(!page.entries.some(row=>row.compactChoiceRange));
+  assert.equal(page.unresolvedTables,1);
+ }
+ const legacy=bookAnswerPage(source,source,undefined,MATERIAL_BOOK_PAGE_LABEL_POLICY,true,false);
+ assert(!legacy.entries.some(row=>row.compactChoiceRange));
+});
+check('Printed original range requires a single-choice instruction, contiguous groups and the actual number on the page',()=>{
+ const paper='二、选择题（本大题共有4题，满分18分，第13～14题每题4分，第15～16题每题5分）\n每题有且只有一个正确答案。\n13. 题面\n14. 题面\n15. 题面\n16. 题面';
+ for(const n of ['13','14','15','16'])assert.deepEqual(printedSingleChoiceRange(paper,n),[13,16]);
+ for(const invalid of [paper.replace('有且只有','可以有'),paper.replace('第15～16题','第16～17题'),paper.replace('共有4题','共有5题'),paper+'\n13. 另一个父题'])assert.equal(printedSingleChoiceRange(invalid,'13'),undefined);
+ assert.equal(printedSingleChoiceRange(paper,'17'),undefined);
+ const listed=paper.replace('，满分18分，第13～14题每题4分，第15～16题每题5分','');
+ assert.deepEqual(printedSingleChoiceRange(listed,'16'),[13,16]);
+ assert.equal(printedSingleChoiceRange(listed.replace('15. 题面\n',''),'16'),undefined);
 });
 if(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY){
  const db=new DatabaseSync(process.env.OMNI_EDU_PRINTED_ANSWER_REPLAY,{readOnly:true});

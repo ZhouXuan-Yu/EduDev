@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "8f9f6fc6ee17a19b18eb4b7b33f82b4ba45140459dcaa5deb765e6bcefb760c4",
+  "sourceHash": "19170fca31a3e8d7ca1e5caeb8c69dac4831de076e3b32898622c57ea31de4bf",
   "sources": [
     {
       "file": "package-lock.json",
@@ -876,7 +876,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "d75c0b370f3c242c46c87b50db3676b4b13b2fd1b2a204d88db102302c7f43cb"
+      "sha256": "015983c4e8e68004d10854ae9310d39a08efdfc10373e07969fe5c915fe40ce7"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2280,7 +2280,7 @@
     },
     {
       "file": "src/shared/material-book-answer.ts",
-      "sha256": "d54a64b5cabf535971a91387432fb19fcf8d24eeb55fbf3e57ddc377a310bfd6"
+      "sha256": "2f0650cd18dbd4fbfcc4bd956a3097445fb464b758d4a674ee2c1c31c4f23421"
     },
     {
       "file": "src/shared/material-curriculum.ts",
@@ -2508,7 +2508,7 @@
     },
     {
       "file": "src/shared/question-book-answer.ts",
-      "sha256": "c16b21dac2926d229c030dd266ea734f393409ac710e5f26c3d0489890e8288d"
+      "sha256": "a8328d1dbbedbefb3e9c8af189c790a86f4822dbac21294a08968a9de1ef5914"
     },
     {
       "file": "src/shared/question-book-document.ts",

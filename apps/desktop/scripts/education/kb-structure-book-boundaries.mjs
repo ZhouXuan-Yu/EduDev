@@ -14,8 +14,9 @@ const docSchema='xiaozhi.document-structure.v1';
 const checked=['statement','formulas','tables','figures','choices','subquestions'];
 let checks=0;
 
-async function prepare({pages, ambiguousPage, ...options}={}) {
-  const f=fixture({currentAnswer:'',...options});
+async function prepare({pages, ambiguousPage, choiceLabels, ...options}={}) {
+  const f=fixture({currentAnswer:'',...(choiceLabels?{answerIssues:[]}:{}),...options});
+  if(choiceLabels)f.proofs.get(f.answerBatch).unit.bookPagePolicy='answer-entry-continued-table.v5';
   const {db,pair,host}=f;
   const original={present:true};
   const structures=new MaterialStructureRepository({...host,verify:async(id,version,signal)=>{
@@ -34,6 +35,8 @@ async function prepare({pages, ambiguousPage, ...options}={}) {
     {id:'original',kind:'image',assetId:'asset_'+randomUUID(),sha256:hash('image'),mime:'image/png',width:320,height:160,anchors:[anchor]},
     {id:'transcription',kind:'text',text:seed.stem,anchors:[anchor]},
   ],answer:empty,analysis:{...empty}};
+  if(choiceLabels)document.blocks.push({kind:'choices',id:'original-choices',anchors:[anchor],
+    options:[...choiceLabels].map(label=>({label,blocks:[{kind:'text',id:'option-'+label,text:'选项'+label,anchors:[anchor]}]}))});
   const paragraph=(id,rawText,role='heading',number)=>({id,rawText,role,...(number?{marker:{kind:'parent',label:number}}:{})});
   const start=paragraph('start','1. '+seed.stem,'question','1');
   const evidencePages=pages?.(paragraph,start)??[[paragraph('title',title)],[start]];
@@ -49,13 +52,14 @@ async function prepare({pages, ambiguousPage, ...options}={}) {
   const archive={schemaVersion:'xiaozhi.question-archive.structure.v1',extractor:'layout-question.v1',state:'teacher_edited',number:'1',
     sources:[{schemaVersion:'xiaozhi.material-source.v1',resourceId:pair.questionId,version:pair.questionVersion,offset:0,chunkId:'chunk_'+randomUUID(),bodyVersion:hash('source')}],
     issues:['missing_answer','missing_analysis'],sourceRisks:[],sourceChecked:true,answerOrigin:'missing',analysisOrigin:'missing',structure:reference};
-  const draft={...seed,answer:'',analysis:'',document,archive};
+  const draft={...seed,answer:'',analysis:'',document,archive,...(choiceLabels?{questionType:'选择题'}:{})};
   const projection=Object.fromEntries(checked.map(role=>[role,{state:role==='statement'?'provided':'not_applicable',text:role==='statement'?seed.stem:''}]));
+  if(choiceLabels)projection.choices={state:'provided',text:[...choiceLabels].map(label=>label+'. 选项'+label).join('\n')};
   const q=completeQuestion(draft,projection,new Date().toISOString());
   const input={schemaVersion:'xiaozhi.question-context-edit.v1',questionId:q.id,version:questionVersion(draft),requestId:'xicontext_'+randomUUID(),projection,complete:true};
   await structures.recordContext(input,q,questionVersion(q));
-  db.prepare("UPDATE question_bank_items SET answer='',analysis='',archive_json=?,document_json=?,updated_at=? WHERE id=?")
-    .run(JSON.stringify(archive),JSON.stringify(q.document),q.updatedAt,q.id);
+  db.prepare("UPDATE question_bank_items SET answer='',analysis='',archive_json=?,document_json=?,updated_at=?,question_type=? WHERE id=?")
+    .run(JSON.stringify(archive),JSON.stringify(q.document),q.updatedAt,q.questionType,q.id);
   db.prepare('DELETE FROM material_ai_members').run();
   await f.init();
   await structures.validate(await f.read());
@@ -150,7 +154,7 @@ await check('Upgrading a v5 index replays the saved pages without changing the o
  await f.repo.migrate();
  assert.equal(await f.repo.index.pending(),true);
  await f.init();
- assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,7);
+ assert.equal(f.db.prepare('SELECT section_policy FROM material_book_answer_control_v1').get().section_policy,8);
  assert.equal((await f.matchStructure()).rows[0].state,'applied');
  assert.equal(JSON.stringify([...f.proofs]),original);
 });
@@ -166,6 +170,40 @@ await check('Printed term identity ignores other events but preserves source val
  assert.equal(JSON.parse(f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get().evidence_json).sectionProjection,'shanghai-mock-sections.v3');
  await f.structures.validate(after);
  assert.equal(JSON.stringify([...f.proofs]),original);
+});
+await check('A compact key waits for its independent choice range, then applies and verifies its exact PDF receipt',{
+ choiceLabels:'ABCD',answerText:title+'\n选择题答案（第1～2题）：D、D',
+},async f=>{
+ f.db.exec('CREATE TABLE material_pdf_jobs(resource_id TEXT PRIMARY KEY,generation TEXT,version TEXT);'+
+   'CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT,PRIMARY KEY(generation,page));');
+ assert.equal((await f.matchStructure()).rows[0].reason,'choice_range_unchecked');
+ assert.equal((await f.read()).answer,'');
+ const {questionId,questionVersion:version}=f.pair,generation=randomUUID();
+ const body='二、单项选择题（本大题共2题，第1～2题每题4分）\n1. 该题印刷原文\n2. 相邻题';
+ const ocr={status:'complete',error:'',method:'ocr',text:body,nativeText:'',ocrText:body,width:1697,height:2400,imageArea:1,nativeBoxes:[]};
+ f.db.prepare('INSERT INTO material_pdf_jobs VALUES(?,?,?)').run(questionId,generation,version);
+ f.db.prepare("INSERT INTO material_pdf_pages(generation,page,status,result_json) VALUES(?,2,'complete',?)").run(generation,JSON.stringify(ocr));
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const saved=await f.read();
+ assert.equal(saved.answer,'D');
+ assert.equal(saved.analysis,'');
+ const journal=JSON.parse(f.db.prepare("SELECT evidence_json FROM material_book_answer_journal_v1 WHERE after_json<>''").get().evidence_json);
+ assert.deepEqual(journal.compactChoice.range,[1,2]);
+ assert.equal(journal.compactChoice.page,2);
+ await f.structures.validate(saved);
+ f.db.prepare('UPDATE material_pdf_pages SET result_json=? WHERE generation=?').run(JSON.stringify({...ocr,text:body.replace('第1～2题','第2～3题')}),generation);
+ await assert.rejects(()=>f.structures.validate(saved),/source_changed/);
+});
+await check('Ordinary explanations on the same page freeze the compact row boundary for later source readback',{
+ choiceLabels:'ABCD',answerText:title+'\n1. D\n解析：原文到此结束。\n选择题答案（第13～16题）：DCCA',
+},async f=>{
+ assert.equal((await f.matchStructure()).rows[0].state,'applied');
+ const saved=await f.read();
+ assert.equal(saved.analysis,'原文到此结束。');
+ const proof=JSON.parse(f.db.prepare('SELECT evidence_json FROM material_book_answer_journal_v1').get().evidence_json);
+ assert.equal(proof.answerParsing,'printed-compact-choice.v1');
+ assert(!proof.compactChoice);
+ await f.structures.validate(saved);
 });
 await check('Mixed district answer pages retain exact numeric text for the correct matching edition',{
  pages:withMockTitle,answerText:mockAnswer.replace('徐汇','虹口')+'\n1. B\n解析：另一份。\n'+mockAnswer+numberedAnswer,

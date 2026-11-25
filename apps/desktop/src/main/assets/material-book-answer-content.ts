@@ -4,6 +4,7 @@ import {aiTextSignature} from '../../shared/material-ai-image';
 import {nonQuestionPagePurpose} from './material-page-purpose';
 import type {AiIssue} from '../../shared/material-ai';
 import {shanghaiMockSectionBoundary,shanghaiMockSectionKey,startsWrappedShanghaiMockHeading,wrappedShanghaiMockHeading,type ShanghaiMockSectionPolicy} from '../../shared/shanghai-mock-sections';
+import {compactChoiceCandidate,readCompactChoiceRow} from './material-compact-choice-key';
 
 type Entry=Omit<BookAnswerEntry,'first'|'agrees'|'issues'>&{issues:BookAnswerIssue[]};
 /** Only layout separators normalize in titles. Different chapter/test words never fuzzy-match. */
@@ -128,16 +129,27 @@ function entries(text:string,initialSection?:string,tableBoundaries?:Set<number>
  */
 // The one-code-unit width conversion keeps every raw source offset intact.
 const width=(value:string)=>value.replace(/[０-９Ａ-Ｈ]/gu,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0));
-function readAnswerKeyTables(text:string,continuation?:{section?:string},mockTitles:ShanghaiMockSectionPolicy=false){
+function readAnswerKeyTables(text:string,continuation?:{section?:string},mockTitles:ShanghaiMockSectionPolicy=false,compactChoices=false){
  const lines=[...bookLines(text,mockTitles)].filter(line=>line.raw.trim());
  const accepted:Entry[]=[], boundaries=new Set<number>();
- let unresolved=0,section:string|undefined,previous='',leadingKey=false;
- if(nonQuestionPagePurpose(text))return {accepted,boundaries,unresolved,leadingKey};
+ let unresolved=0,section:string|undefined,sectionStart=-1,previous='',leadingKey=false,compactChoiceRows=false;
+ if(nonQuestionPagePurpose(text))return {accepted,boundaries,unresolved,leadingKey,compactChoiceRows};
  for(let i=0;i<lines.length;i++){
   const {value,heading,at}=lines[i];
-  section=heading??sectionBoundary(value,previous,mockTitles)??section;
+  const boundary=heading??sectionBoundary(value,previous,mockTitles);
+  if(boundary!==undefined){section=boundary;sectionStart=i;}
   previous=value;
   if(heading!==undefined)continue;
+  if(compactChoices&&compactChoiceCandidate(lines[i])){
+   compactChoiceRows=true;
+   boundaries.add(at);
+   const row=section&&readCompactChoiceRow(lines,i,sectionStart);
+   if(!row)unresolved++;
+   else for(const entry of row.entries)accepted.push({...entry,end:entry.start+entry.quote.length,section:section!,sectionKey:bookSectionKey(section!),
+    compactChoiceRange:row.range,analysis:'',issues:['missing_analysis']});
+   if(accepted.length>200)break;
+   continue;
+  }
   if(!/^(?:答案速查|参考答案|选择题答案)\s*[:：]?$/u.test(value))continue;
   boundaries.add(at);
   const numbers=lines[i+1],answers=lines[i+2];
@@ -168,11 +180,11 @@ function readAnswerKeyTables(text:string,continuation?:{section?:string},mockTit
   i+=2;
   if(accepted.length>200)break;
  }
- return {accepted,boundaries,unresolved,leadingKey};
+ return {accepted,boundaries,unresolved,leadingKey,compactChoiceRows};
 }
 
-function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false,continuedTable=false,mockTitles:ShanghaiMockSectionPolicy=false){
- const {accepted,boundaries,unresolved,leadingKey}=readAnswerKeyTables(text,continuedTable?{section:initialSection}:undefined,mockTitles);
+function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=false,continuedTable=false,mockTitles:ShanghaiMockSectionPolicy=false,compactChoices=false){
+ const {accepted,boundaries,unresolved,leadingKey,compactChoiceRows}=readAnswerKeyTables(text,continuedTable?{section:initialSection}:undefined,mockTitles,compactChoices);
  const detailed=entries(text,initialSection,boundaries,printedLabels,mockTitles);
  const key=(entry:Entry)=>entry.sectionKey+'\0'+entry.number;
  const known=new Map<string,Entry[]>();
@@ -194,21 +206,22 @@ function entriesWithAnswerKeys(text:string,initialSection?:string,printedLabels=
    detailed.push(...cells);
   }
  }
- return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200,leadingKey};
+ return {entries:detailed.sort((a,b)=>a.start-b.start),unresolved,tooLarge:accepted.length>200,leadingKey,compactChoiceRows};
 }
 
-export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy,mockTitles:ShanghaiMockSectionPolicy=false):BookAnswerPage{
+export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initialSection?:string,policy?:MaterialBookPagePolicy,mockTitles:ShanghaiMockSectionPolicy=false,compactChoices=mockTitles===true):BookAnswerPage{
  const scoped=first.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE&&final.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;
  const base:Omit<BookAnswerPage,'status'>={schemaVersion:MATERIAL_BOOK_ANSWER_SCHEMA,policy:initialSection!==undefined?'section-number-inherited.v1':scoped?'section-number-two-pass.v2':'section-number-two-pass.v1',pageUncertain:!!(first.pageIssues.length||final.pageIssues.length)||first.schemaVersion!==final.schemaVersion,entries:[],firstOnly:[]};
  if(Buffer.byteLength(first.pageText)>64000||Buffer.byteLength(final.pageText)>64000)return{...base,status:'too_large'};
  const continuedTable=policy===MATERIAL_BOOK_PAGE_CONTINUED_TABLE_POLICY;
  const printedLabels=continuedTable||policy===MATERIAL_BOOK_PAGE_LABEL_POLICY;
  const extract=(text:string)=>scoped&&(printedLabels||policy===MATERIAL_BOOK_PAGE_TABLE_POLICY)
-  ?entriesWithAnswerKeys(text,initialSection,printedLabels,continuedTable,mockTitles):{entries:entries(text,initialSection,undefined,false,mockTitles),unresolved:0,tooLarge:false,leadingKey:false};
+  ?entriesWithAnswerKeys(text,initialSection,printedLabels,continuedTable,mockTitles,compactChoices):{entries:entries(text,initialSection,undefined,false,mockTitles),unresolved:0,tooLarge:false,leadingKey:false,compactChoiceRows:false};
  const left=extract(first.pageText),right=extract(final.pageText),a=left.entries,b=right.entries;
  if(left.tooLarge||right.tooLarge||a.length>200||b.length>200)return{...base,status:'too_large'};
  if(left.unresolved||right.unresolved)base.unresolvedTables=Math.max(left.unresolved,right.unresolved);
  if(left.leadingKey||right.leadingKey)base.leadingKeyContinuation=true;
+ if(left.compactChoiceRows||right.compactChoiceRows)base.compactChoiceRows=true;
  // Scope is usable only when it resolves uniquely in that pass's actual transcript.
  // Unknown or ambiguous scopes cannot silently remove whole-page uncertainty.
  const local=new Map<string,Set<AiIssue>>();
@@ -221,7 +234,8 @@ export function bookAnswerPage(first:AiPageResponse,final:AiPageResponse,initial
   }
  }
  const key=(e:Entry)=>e.sectionKey+'\0'+e.number,groups=new Map<string,Entry[]>();for(const e of a)groups.set(key(e),[...(groups.get(key(e))||[]),e]);
- const compared=b.map(e=>{const candidates=groups.get(key(e))||[],prior=candidates.length===1?candidates[0]:undefined,agrees=!!prior&&!e.issues.includes('duplicate_number')&&!prior.issues.includes('duplicate_number')&&aiTextSignature(prior.answer)===aiTextSignature(e.answer)&&aiTextSignature(prior.analysis)===aiTextSignature(e.analysis);
+ const compared=b.map(e=>{const candidates=groups.get(key(e))||[],prior=candidates.length===1?candidates[0]:undefined,agrees=!!prior&&!e.issues.includes('duplicate_number')&&!prior.issues.includes('duplicate_number')&&aiTextSignature(prior.answer)===aiTextSignature(e.answer)&&aiTextSignature(prior.analysis)===aiTextSignature(e.analysis)&&
+  prior.compactChoiceRange?.[0]===e.compactChoiceRange?.[0]&&prior.compactChoiceRange?.[1]===e.compactChoiceRange?.[1];
   const issues=[...e.issues,...(prior?.issues||[]),...(local.get(key(e))||[])];if(!agrees)issues.push('transcription_disagreement');if(base.pageUncertain)issues.push('page_uncertainty');return{...e,...(prior?{first:{answer:prior.answer,analysis:prior.analysis,quote:prior.quote}}:{}),agrees,issues:[...new Set(issues)]};
  });
  return{...base,entries:compared,firstOnly:a.filter(e=>!b.some(f=>key(f)===key(e))).map(e=>({section:e.section,number:e.number})),status:b.length||a.length?'compared':'unstructured'};
