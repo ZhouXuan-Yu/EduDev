@@ -2,6 +2,14 @@ import { randomUUID } from 'node:crypto';
 import type { Sql } from './session-state';
 import {protocolHash} from './capabilities/validation';
 
+export async function readPiSessionBinding(sql:Sql,modelSwitch:ReturnType<typeof createModelSwitchState>,id:string){
+  const [row]=await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]);
+  if(!row)return null;
+  if(![1,2,3,4,5].includes(Number(row.schema_version)))throw Error('configuration');
+  if(Number(row.schema_version)===5&&!await modelSwitch.current(id))throw Error('configuration');
+  return {sessionFile:String(row.session_file),model:String(row.model)};
+}
+
 export type ModelIdentity = { sessionId: string; sessionFile: string; nativeSessionId: string;
   originModel: string; model: string; revision: number };
 export type ModelTransition = ModelIdentity & { id: string; target: string;

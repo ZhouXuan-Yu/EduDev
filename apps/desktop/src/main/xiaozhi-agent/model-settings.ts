@@ -9,8 +9,8 @@ import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSetting
 import {openLegacyProviderCredential,openProviderCredential,readLegacyProviderSetting,type SettingsKeyCodec} from '../provider-credentials';
 import {classifyConfigError,deepSeekModelEnvironment,describeLegacyDeepSeekSetting,readLegacyDeepSeekSetting,resolveAgentModel,resolveAgentThinking} from './agent-config-resolver';
 import {createModelSettingsState} from './model-settings-state';
-import {createModelSwitchState} from './model-switch-state';
-import {readPiSessionBinding,type Sql} from './session-state';
+import {createModelSwitchState,readPiSessionBinding} from './model-switch-state';
+import type {Sql} from './session-state';
 
 // The codec is injected by Electron main; this service never imports it in Node/Worker.
 export type {SettingsKeyCodec} from '../provider-credentials';

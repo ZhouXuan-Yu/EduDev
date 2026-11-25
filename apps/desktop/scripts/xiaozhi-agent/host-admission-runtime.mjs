@@ -5,7 +5,7 @@ import path from 'node:path';
 import {registerHooks} from 'node:module';
 
 export function installHostAdmissionRuntime(){
-  const source="export const utilityProcess={};export const app={isPackaged:false};export class BrowserWindow{constructor(){throw Error('Host admission test must not render PDF');}}export const session=new Proxy({},{get(){throw Error('Host admission test must not access Electron session');}});";
+  const source="export const utilityProcess={};export const net={fetch(){throw Error('Host admission test must not perform Electron network requests');}};export const app={isPackaged:false};export class BrowserWindow{constructor(){throw Error('Host admission test must not render PDF');}}export const session=new Proxy({},{get(){throw Error('Host admission test must not access Electron session');}});";
   registerHooks({
     resolve(specifier,context,next){return specifier==='electron'?{url:'data:text/javascript,'+encodeURIComponent(source),shortCircuit:true}:next(specifier,context);},
     load(url,context,next){return url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json')?{format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true}:next(url,context);}

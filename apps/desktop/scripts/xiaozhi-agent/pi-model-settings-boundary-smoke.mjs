@@ -12,11 +12,14 @@ const { readDeepSeekCatalogue, resolveDeepSeekCapabilities } = await import('../
 const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-settings-boundary-'));
 const database = path.join(output, 'settings.db'), db = new DatabaseSync(database);
 db.exec('CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT NOT NULL,updated_at TEXT NOT NULL)');
-const state = () => createModelSettingsState({ all: async (sql, values = []) => db.prepare(sql).all(...values), change: async (sql, values = []) => Number(db.prepare(sql).run(...values).changes), run: async (sql, values = []) => db.prepare(sql).run(...values) });
+const sql = {all:async (sql,values=[])=>db.prepare(sql).all(...values),
+  change:async (sql,values=[])=>Number(db.prepare(sql).run(...values).changes),
+  run:async (sql,values=[])=>db.prepare(sql).run(...values)};
+const state = () => createModelSettingsState(sql);
 const key = 'synthetic-test-' + randomUUID(), secret = randomBytes(32);
 const codec = { available: () => true, seal: text => { const iv = randomBytes(12), cipher = createCipheriv('aes-256-gcm', secret, iv); const encrypted = Buffer.concat([cipher.update(text), cipher.final()]); return Buffer.concat([iv, cipher.getAuthTag(), encrypted]).toString('base64'); }, open: sealed => { const bytes = Buffer.from(sealed, 'base64'), decipher = createDecipheriv('aes-256-gcm', secret, bytes.subarray(0,12)); decipher.setAuthTag(bytes.subarray(12,28)); return Buffer.concat([decipher.update(bytes.subarray(28)), decipher.final()]).toString(); } };
 const id = `aisession_${randomUUID()}`, binding = new Map(), details = new Map([[id, { session: {}, messages: [] }]]);
-const store = { xiaozhiState: { modelSettings: state(), getBinding: async id => binding.get(id) }, getDeepSeekRuntimeSettings: async () => ({ provider: 'deepseek', model: 'deepseek-flash', apiKey: key }), getAiConversationSession: async id => { if (!details.has(id)) throw new Error('unknown_session'); return details.get(id); } };
+const store = { xiaozhiState: {sql,modelSettings:state(),modelSwitch:{current:async()=>null},getBinding:async id=>binding.get(id)}, getDeepSeekRuntimeSettings: async () => ({ provider: 'deepseek', model: 'deepseek-flash', apiKey: key }), getProviderCredentialMigration:()=>({deepseek:'not_needed',glm:'not_needed'}),retryProviderCredentialMigration:async()=>{}, getAiConversationSession: async id => { if (!details.has(id)) throw new Error('unknown_session'); return details.get(id); } };
 let busy = false, responseMode = 'ok', models = ['deepseek-flash', 'deepseek-v4-pro'], requests = 0;
 const fetchBefore = globalThis.fetch;
 globalThis.fetch = async (url, init) => {
