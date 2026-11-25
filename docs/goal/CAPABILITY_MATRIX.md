@@ -1,5 +1,7 @@
 # 小智能力与复用矩阵
 
+数据库 R2 复用 SQLite、原生 Pi、正式 preload、既有备份和恢复、Task/Approval/Effect 与会话 JSONL。当前配置诊断和每轮准备基线沿用同一次实际解析的来源。 [架构](../architecture/CURRENT.md#小智数据库-r2)
+
 ## 2026-11-22 小智长期个人教学 Agent D3
 
 一般知识问答使用已有会话和 Pi。教学任务可修订、暂停、恢复或取消。已中断的澄清以原 Run 的任务身份和要求版本为准，能力和审批仍按各自入口治理。 [D3 能力映射](../product-agent/01_IMPLEMENTATION_MAPPING.md)

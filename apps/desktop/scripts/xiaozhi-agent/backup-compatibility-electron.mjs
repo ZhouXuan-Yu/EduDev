@@ -277,6 +277,100 @@ try {
     checks.push('Restore rejects a managed backup with '+name+' before copying.');
   }
 
+  const historicalBuild = path.resolve(process.env.OMNI_EDU_DB_V0_BUILD ||
+    path.join(desktop, 'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
+  const historicalData = path.join(root, 'v0-data');
+  const historicalProfile = path.join(root, 'v0-profile');
+  const oldApp = await electron.launch({args:[historicalBuild, '--user-data-dir='+historicalProfile],
+    cwd:desktop,env:{...env,OMNI_EDU_DATA_ROOT:historicalData},timeout:60000});
+  let oldStudent;
+  try {
+    const oldPage = await oldApp.firstWindow();
+    await assertIsolatedPiMain(oldApp,historicalBuild,historicalProfile);
+    [oldStudent] = await oldPage.evaluate(()=>window.omniEdu.createStudent({displayName:'历史恢复夹具'}));
+  } finally { await oldApp.close(); }
+  const historicalDb = path.join(historicalData,'app.db');
+  const historicalHash = sha(fs.readFileSync(historicalDb));
+  const selectionPath = path.join(profile,'xiaozhi-data-selection.v1.json');
+  const selectionBytes = () => fs.existsSync(selectionPath)?sha(fs.readFileSync(selectionPath)):null;
+  for (const [name,statement] of [
+    ['v0-missing-table','DROP TABLE learning_records'],
+    ['v0-missing-column','ALTER TABLE app_settings RENAME COLUMN value_json TO fixture_broken_value'],
+  ]) {
+    const source = copyBackup(name, (manifest, folder) => {
+      const file = path.join(folder,'app.db');
+      fs.copyFileSync(historicalDb,file);
+      const db = new DatabaseSync(file, {enableForeignKeyConstraints:false});
+      try {db.exec('PRAGMA journal_mode=DELETE; '+statement);} finally {db.close();}
+      const bytes = fs.readFileSync(file);
+      Object.assign(manifest.files.find(item=>item.path==='app.db'), {size:bytes.length,sha256:sha(bytes)});
+      manifest.compatibility.dataVersion = 0;
+    });
+    const filesBefore = fs.readdirSync(source).sort();
+    const dbBefore = sha(fs.readFileSync(path.join(source,'app.db')));
+    const manifestBefore = sha(fs.readFileSync(path.join(source,manifestFile)));
+    const activeSelection = selectionBytes();
+    await pick(source);
+    const verified = await page.evaluate(()=>window.omniEdu.verifyDataBackup());
+    assert.equal(verified.verified,false,`${name}: backup verification accepted unknown SQLite v0`);
+    assert.match(verified.errorMessage,/unknown_legacy/);
+    await verifyAndReject(source,undefined,/unknown_legacy/,false);
+    assert.deepEqual(fs.readdirSync(source).sort(),filesBefore);
+    assert.equal(sha(fs.readFileSync(path.join(source,'app.db'))),dbBefore);
+    assert.equal(sha(fs.readFileSync(path.join(source,manifestFile))),manifestBefore);
+    assert.equal(selectionBytes(),activeSelection);
+  }
+  const supportedV0 = copyBackup('v0-supported', (manifest, folder) => {
+    fs.copyFileSync(historicalDb,path.join(folder,'app.db'));
+    Object.assign(manifest.files.find(item=>item.path==='app.db'),
+      {size:fs.statSync(historicalDb).size,sha256:historicalHash});
+    manifest.compatibility.dataVersion = 0;
+  });
+  const supportedBefore=fs.readdirSync(supportedV0).sort();
+  await pick(supportedV0);
+  await page.getByTestId('data-backup-restore').click();
+  await page.getByTestId('data-backup-restore-prepare').click();
+  const historicalCopy = await expectVisible('data-backup-restore-ready');
+  const copyRoot = await historicalCopy.locator('.pi-settings-location').innerText();
+  const chooseManually=()=>app.evaluate(()=>{
+    process.env.OMNI_EDU_E2E_DIALOG_MODE='1';
+    process.env.OMNI_EDU_E2E_RESTORE_RELAUNCH='manual';
+  });
+  const changeSelection=async (button,expected)=>{
+    await chooseManually();
+    await page.getByTestId(button).click();
+    const expiry=Date.now()+30000;
+    while(Date.now()<expiry && !(fs.existsSync(selectionPath) && JSON.parse(fs.readFileSync(selectionPath,'utf8')).dataRoot===expected)){
+      await new Promise(resolve=>setTimeout(resolve,50));
+    }
+    assert(fs.existsSync(selectionPath),'No restore selection was persisted: '+await page.getByTestId('data-backup-panel').innerText());
+    assert.equal(JSON.parse(fs.readFileSync(selectionPath,'utf8')).dataRoot,expected);
+    await app.close();
+    app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
+    page=await app.firstWindow();
+    page.on('pageerror',error=>rendererErrors.push(String(error)));
+    await assertIsolatedPiMain(app,main,profile);
+    assert.equal(await page.evaluate(()=>window.omniEdu.getDataRoot()),expected);
+    await page.getByRole('button',{name:'设置',exact:true}).click();
+    await page.getByTestId('pi-settings-tab-backup').click();
+  };
+  await changeSelection('data-backup-restore-activate',copyRoot);
+  const [student] = await page.evaluate(()=>window.omniEdu.listStudents('历史恢复夹具'));
+  assert.equal(student?.id,oldStudent.id);
+  assert.equal((await page.evaluate(()=>window.omniEdu.getXiaozhiResolvedAgentConfig())).value.prepared.status,'not_recorded');
+  const upgraded = new DatabaseSync(path.join(copyRoot,'app.db'),{readOnly:true});
+  try {
+    assert.equal(upgraded.prepare('PRAGMA user_version').get().user_version,dataVersion);
+    assert.deepEqual(upgraded.prepare('PRAGMA foreign_key_check').all(),[]);
+  } finally {upgraded.close();}
+  assert.equal(sha(fs.readFileSync(historicalDb)),historicalHash);
+  assert.equal(sha(fs.readFileSync(path.join(supportedV0,'app.db'))),historicalHash);
+  assert.deepEqual(fs.readdirSync(supportedV0).sort(),supportedBefore);
+  await changeSelection('data-backup-restore-revert',dataRoot);
+  assert.equal(await page.evaluate(()=>window.omniEdu.getDataRoot()),dataRoot);
+  checks.push({name:'Historical v0 verifies and cold upgrades; missing table and column reject without altering the source or active root.',
+    historicalBuild, historicalBuildSha256:sha(fs.readFileSync(historicalBuild)), historicalHash, copyRoot});
+
   const legacy = copyBackup('legacy', manifest => delete manifest.compatibility);
   await pick(legacy);
   await page.getByTestId('data-backup-restore').click();

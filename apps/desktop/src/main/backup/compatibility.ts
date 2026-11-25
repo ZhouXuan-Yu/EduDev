@@ -1,5 +1,6 @@
 import { gt, valid } from 'semver';
 import type sqlite3 from 'sqlite3';
+import {lstat} from 'node:fs/promises';
 import {closeSqlite,openSqlite} from '../sqlite-connections';
 import {inspectBackupDatabaseVersion,MAX_DATABASE_SCHEMA_VERSION} from '../database-migrations';
 import desktopPackage from '../../../package.json' with {type: 'json'};
@@ -15,6 +16,12 @@ const isDataVersion = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= 0x7fff_ffff;
 
 export async function withReadOnlyBackup<T>(file: string, inspect: (db: sqlite3.Database) => Promise<T>): Promise<T> {
+  for(const suffix of ['-wal','-shm','-journal']) {
+    const sidecar=await lstat(file+suffix).catch(error=>{
+      if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;
+    });
+    if(sidecar)throw Error('backup_database_not_standalone');
+  }
   const db = await openSqlite(file, 'backupRead');
   try {
     return await inspect(db);
@@ -25,6 +32,12 @@ export async function withReadOnlyBackup<T>(file: string, inspect: (db: sqlite3.
 
 export function readBackupDataVersion(file: string): Promise<number> {
   return withReadOnlyBackup(file, inspectBackupDatabaseVersion);
+}
+
+export async function readLiveDataVersion(file:string):Promise<number> {
+  const db=await openSqlite(file,'liveRead');
+  try{return await inspectBackupDatabaseVersion(db);}
+  finally{await closeSqlite(db);}
 }
 
 export function readBackupVersion(input: unknown, actualDataVersion: number): BackupVersion | undefined {

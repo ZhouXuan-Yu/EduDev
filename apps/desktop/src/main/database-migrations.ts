@@ -3,6 +3,9 @@ import type sqlite3 from 'sqlite3';
 import {sqliteExec} from './sqlite-connections';
 import {taskSummarySchema} from './xiaozhi-agent/task-summary-schema';
 import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/capabilities/acquisition/schema';
+import {preparedAgentConfigSchema} from './xiaozhi-agent/prepared-agent-config';
+import {taskSummaryMaintenanceV6} from './xiaozhi-agent/task-summary-maintenance-v6';
+import {ensureTaskSummarySchema} from './xiaozhi-agent/task-summary-projection';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -49,6 +52,12 @@ const migrations = [{
     raw_sha TEXT NOT NULL, body_json TEXT NOT NULL, body_sha TEXT NOT NULL,
     PRIMARY KEY(resource_id,version,generation,page)
   );`,
+}, {
+  id: 'r2.prepared_agent_config.v5',
+  sql: preparedAgentConfigSchema,
+}, {
+  id: 'r2.task_summary_maintenance.v6',
+  sql: taskSummaryMaintenanceV6,
 }] as const;
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;
@@ -158,14 +167,7 @@ async function inspectDatabase(db: sqlite3.Database, version: number) {
 export async function inspectBackupDatabaseVersion(db: sqlite3.Database) {
   const version = await databaseUserVersion(db);
   // Compatibility needs to display future versions, which it forbids activating.
-  // Legacy bundles keep their existing compatibility readers.
-  if (version > 0 && version <= MAX_DATABASE_SCHEMA_VERSION) await inspectDatabase(db,version);
-  if (version === 0) {
-    const objects = await schema(db);
-    if (objects.some(row => row.name === baselineTable || row.name === migrationsTable)) {
-      throw new DatabaseUpgradeError('invalid_ledger');
-    }
-  }
+  if (version <= MAX_DATABASE_SCHEMA_VERSION) await inspectDatabase(db,version);
   return version;
 }
 
@@ -215,6 +217,7 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
           [current.kind,current.digest,new Date().toISOString()]);
       }
       const migration = migrations[from];
+      if (migration.id === 'r2.task_summary_maintenance.v6') await ensureTaskSummarySchema(db,{beforeV6:true});
       await sqliteExec(db,migration.sql);
       const check = await all(db,'PRAGMA foreign_key_check');
       if (check.length) throw new DatabaseUpgradeError('foreign_key_check_failed');

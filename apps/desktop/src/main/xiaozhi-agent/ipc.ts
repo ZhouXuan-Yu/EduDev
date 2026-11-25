@@ -99,7 +99,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
   registerWorkbenchIpc({ipcMain: options.ipcMain, allowed: fromMain, read: action => options.store.readWorkbench(action),
-    indexedTasks:true,recentArtifacts: () => options.store.listDocumentArtifacts()});
+    indexedTasks:true,repairTaskRows:ids=>options.store.taskSummary.repairRows(ids),recentArtifacts: () => options.store.listDocumentArtifacts()});
   const readResolvedConfig=createResolvedAgentConfig(action=>options.store.readWorkbench(action));
   options.ipcMain.handle('xiaozhi:resolved-agent-config',(event,input)=>fromMain(event)
     ? readResolvedConfig(input) : {ok:false,error:'permission_denied'});

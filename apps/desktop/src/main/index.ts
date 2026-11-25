@@ -351,35 +351,34 @@ if (ownsDesktop) app.whenReady().then(async () => {
     }
     shell.showItemInFolder(filePath);
   });
+  const exportSettingsBackup = async (destination: string, purpose: 'full' | 'portable' | undefined,
+    assertCurrent: () => void) => {
+    const operation={controller:new AbortController(),committing:false};
+    backupExport=operation;
+    try {
+      return await store.exportDataRoot(destination, backupApplicationVersion(app), purpose, {
+        signal:operation.controller.signal,
+        commitStarted:()=>{assertCurrent();operation.committing=true;},
+      });
+    } catch(error) {
+      if(operation.controller.signal.aborted)return null;
+      throw error;
+    } finally {
+      if(backupExport===operation)backupExport=undefined;
+    }
+  };
   ipcMain.handle('app:exportDataRoot', async (event, purpose: unknown) => {
     if (!settingsSender(event)) throw new Error('permission_denied');
     if (purpose !== undefined && purpose !== 'full' && purpose !== 'portable') throw new Error('备份用途无法识别');
-    const action = async (assertCurrent: () => void) => {
+    return xiaozhi.withLocalSettingsJob(async current => {
+      const assertCurrent=()=>{current();if(!settingsSender(event))throw Error('permission_denied');};
       const result = await selectDataBackupExportRoot(purpose);
       assertCurrent();
-      if (!settingsSender(event)) throw new Error('permission_denied');
       if (result.canceled || !result.filePaths[0]) return null;
-      const operation={controller:new AbortController(),committing:false};
-      backupExport=operation;
-      try {
-        const exported = await store.exportDataRoot(result.filePaths[0], backupApplicationVersion(app), purpose, {
-          signal:operation.controller.signal,
-          commitStarted:()=>{
-            assertCurrent();
-            if(!settingsSender(event))throw Error('permission_denied');
-            operation.committing=true;
-          },
-        });
-        if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
-        return exported;
-      } catch(error) {
-        if(operation.controller.signal.aborted)return null;
-        throw error;
-      } finally {
-        if(backupExport===operation)backupExport=undefined;
-      }
-    };
-    return xiaozhi.withLocalSettingsJob(action);
+      const exported = await exportSettingsBackup(result.filePaths[0],purpose,assertCurrent);
+      if (exported && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
+      return exported;
+    });
   });
   ipcMain.handle('app:cancelDataBackup', event => {
     if (!settingsSender(event)) throw new Error('permission_denied');
@@ -624,7 +623,8 @@ if (ownsDesktop) app.whenReady().then(async () => {
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
   registerBackupRestore({ipcMain,store,baseRoot:baseDataRoot,profile:app.getPath('userData'),allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),restart:()=>{app.relaunch();app.quit();}});
-  registerWindowsUpdate({ipcMain,store,allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work)});
+  registerWindowsUpdate({ipcMain,store,allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),
+    exportSnapshot:(destination,current)=>exportSettingsBackup(destination,'full',current)});
   const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});

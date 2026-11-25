@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 小智数据库 R2
+
+使用 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2` 下的验收账本、最终报告和隔离 Windows 入口。核对实际构建身份、任务列表、教师条目修订、备份检查、当前配置和准备基线，并按报告确认冷启动读回。
+
 ## 2026-11-22 小智长期个人教学 Agent D3
 
 具名教案依据的实读、重名反馈、教师确认、双格式及重启见 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-44-对话使用具名备课依据)。

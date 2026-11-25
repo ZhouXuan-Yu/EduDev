@@ -33,7 +33,7 @@ export async function readWindowsUpdateRecord(file: string, runningVersion: stri
     throw Error(`该记录对应 ${context.sourceVersion} 至 ${context.targetVersion}，请从其中一个版本准备回退。`);
   }
   const folder = path.win32.basename(entry.snapshotPath);
-  if (!/^OmniEduData-backup-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z$/.test(folder)) {
+  if (!/^OmniEduData-backup-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z(?:-[a-f0-9]{8})?$/u.test(folder)) {
     throw Error('升级前备份名称无效。');
   }
   // The update record and backup can be moved together. Its old absolute path carries no authority.

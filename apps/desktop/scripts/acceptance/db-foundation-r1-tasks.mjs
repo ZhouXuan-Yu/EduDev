@@ -10,7 +10,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 import {addTask,expectedTasks,prefix,saveTask,seed,sessionFor,withSql} from './db-foundation-r1-task-fixture.mjs';
 
 const desktop=resolve(import.meta.dirname,'../..'), main=testMain(desktop);
-const legacy=resolve(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js');
+const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
 assert(existsSync(legacy),'The WP-00 Electron build is required');
 const sha=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
@@ -52,7 +52,7 @@ async function good(input=query){
   assert.equal(result.ok,true,JSON.stringify(result));
   return result.value;
 }
-const ready=data=>until(()=>{const row=clock(data);return row?.phase==='ready'&&!row.dirty&&row;});
+const ready=(data,timeout)=>until(()=>{const row=clock(data);return row?.phase==='ready'&&!row.dirty&&row;},timeout);
 async function walk(input,limit=Infinity){
   const received=[];
   let after;
@@ -241,10 +241,14 @@ try{
       return all.call(this,sql,values,callback);
     };
   },join(desktop,'package.json'));
+  const selectFilter=async label=>{
+    await taskFilter.click();
+    await page.getByRole('option',{name:label,exact:true}).click();
+  };
   try{
-    await taskFilter.selectOption('completed');
+    await selectFilter('已确认');
     await until(()=>app.evaluate(()=>Boolean(globalThis.r1UiRead.release)));
-    await taskFilter.selectOption('ended');
+    await selectFilter('已结束');
     await page.getByTestId('pi-task-overview-row').first().waitFor();
     const shown=await page.getByTestId('pi-task-overview-row').first().getAttribute('data-task-id');
     assert(expectedTasks(data).find(task=>task.id===shown)?.state==='ended');
@@ -268,7 +272,7 @@ try{
   stage='10,000 task projection and SQL plans';
   const rebuildStart=performance.now();
   await launch(targetLarge,'large');
-  await ready(targetLarge);
+  await ready(targetLarge,240000);
   report.initialBuildAndRebuildMs=performance.now()-rebuildStart;
   const cursorStart=performance.now(),walkedLarge=await walk(query,7500);
   report.cursorPreparationMs=performance.now()-cursorStart;
@@ -351,6 +355,45 @@ try{
   report.previousQueryTrace=oldTrace.statements.map(([sql,record])=>({sql,calls:record.calls}));
   report.previousLoop=oldTrace.eventLoop50Ms;
   check('The actual frozen v0 baseline ran the identical four fixed queries and returned the same first identities.');
+  await close();
+
+  stage='10k same-name derived schema drift, repair, crash and concurrent fact';
+  const damaged=join(root,'r2-derived-drift-10000');
+  cpSync(targetLarge,damaged,{recursive:true});
+  const schemaSql=dir=>read(dir,"SELECT sql FROM sqlite_schema WHERE name='xiaozhi_task_summary_ordered'")[0].sql;
+  const originalSchema=schemaSql(damaged),originalClock=clock(damaged);
+  exec(damaged,db=>db.exec(`DROP INDEX xiaozhi_task_summary_ordered;
+    CREATE INDEX xiaozhi_task_summary_ordered ON xiaozhi_task_summary_rows(updated_at ASC,task_id DESC)`));
+  assert.notEqual(schemaSql(damaged),originalSchema);
+  await launch(damaged,'r2-derived-drift');
+  const repairStart=await until(()=>{
+    const row=clock(damaged);
+    return row.phase==='rebuilding' && row.projected_rows>=40 && row.projected_rows<10000 && row;
+  });
+  assert.notEqual(repairStart.epoch,originalClock.epoch);
+  assert.equal(schemaSql(damaged),originalSchema);
+  const repairing=await good();
+  assert(repairing.partial && repairing.counts===null && repairing.total===null && repairing.nextCursor===null);
+  assert.deepEqual(await list({...query,cursor:walkedLarge.after}),{ok:false,error:'changed'});
+  const added=exec(damaged,db=>addTask(db,10000,100));
+  const repairingProcess=app.process();
+  assert(repairingProcess.kill());
+  await until(()=>repairingProcess.exitCode!==null||repairingProcess.signalCode!==null);
+  await close().catch(()=>{app=undefined;page=undefined;});
+  const durableRepair=clock(damaged);
+  assert.equal(durableRepair.epoch,repairStart.epoch);
+  assert(durableRepair.cursor>=repairStart.cursor);
+  await launch(damaged,'r2-derived-drift-reentry');
+  const repaired=await ready(damaged,240000);
+  assert.equal(repaired.epoch,repairStart.epoch);
+  assert.equal(repaired.projected_rows,10001);
+  assert.equal((await good({...query,sessionId:added.view.sessionId,taskId:added.view.id})).items[0]?.taskId,added.view.id);
+  const rows=read(damaged,'SELECT task_id AS id FROM xiaozhi_task_summary_rows ORDER BY updated_at DESC,task_id').map(row=>row.id);
+  assert.deepEqual(rows,expectedTasks(damaged).map(task=>task.id));
+  await wait(1200);
+  assert.equal(clock(damaged).epoch,repaired.epoch);
+  check('Same-name schema drift rebuilds in bounded, durable batches on 10k facts. Reentry preserves the new concurrent task and does not repeat repair.',
+    {originalClock,repairStart,durableRepair,repaired,added:added.view.id});
   await close();
   report.ok=true;
 }catch(error){

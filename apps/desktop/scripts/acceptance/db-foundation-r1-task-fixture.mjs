@@ -23,12 +23,12 @@ export function saveTask(db,doc,latest=false) {
   if(latest)save.run(prefix+'session:'+sessionId,JSON.stringify({schema:'xiaozhi.task.v1',taskId:id}),updatedAt);
 }
 
-export function addTask(db,index,sessions) {
-  const sessionId=sessionFor(index%sessions), runId='airun_r1_'+index, messageId='aimsg_r1_'+index;
+export function addTask(db,index,sessions,sessionIndex=index%sessions) {
+  const sessionId=sessionFor(sessionIndex), runId='airun_r1_'+index, messageId='aimsg_r1_'+index;
   const commandId='xicmd_r1_'+index, state=states[index%states.length];
   const updatedAt=new Date(Date.parse(stamp)+Math.floor(index/4)*1000).toISOString();
   const id='xitask_'+digest([sessionId,messageId]), owner={sessionId,runId,generation:1};
-  const title='R1 合成教学会话 '+(index%sessions), content=('合成任务 '+index+' ').repeat(1+index%17);
+  const title='R1 合成教学会话 '+sessionIndex, content=('合成任务 '+index+' ').repeat(1+index%17);
   const version=digest([sessionId,messageId,'user',content,runId]);
   db.prepare('INSERT OR IGNORE INTO ai_conversation_sessions(id,title,created_at,updated_at) VALUES(?,?,?,?)')
     .run(sessionId,title,stamp,updatedAt);
@@ -57,16 +57,16 @@ export function addApproval(db,doc) {
   return id;
 }
 
-export function addEffect(db,doc) {
+export function addEffect(db,doc,suffix='') {
   const {id:taskId,sessionId,lastRunId:runId,origin:{commandId},updatedAt}=doc.view;
-  const callId='r1_effect_call_'+runId, idempotencyKey='r1-effect:'+runId;
+  const callId='r1_effect_call_'+runId+suffix, idempotencyKey='r1-effect:'+runId+suffix;
   const owner={sessionId,taskId,runId,generation:1}, id='xieffect_'+digest([sessionId,taskId,idempotencyKey]);
   const value={schemaVersion:1,id,owner,callId,commandId,tool:'office_copy',operation:'tool',idempotencyKey,
     receipt:{runId,callId},contract:{schemaVersion:1,taskId,requirementsVersion:1,inputDigest:digest('input'),
       sourceHash:digest('source'),providerHash:digest('provider'),schemaHash:digest('schema'),grantRefs:[],authorityRefs:[]},
     target:'r1-test.txt',targetVersion:null,revision:1,state:'unknown',proofs:[],createdAt:updatedAt,updatedAt};
   db.prepare(`INSERT INTO xiaozhi_event_runs(run_id,session_id,generation,revision,sequence,status,turn_json,updated_at)
-    VALUES(?,?,1,1,1,'completed','{}',?)`).run(runId,sessionId,updatedAt);
+    VALUES(?,?,1,1,1,'completed','{}',?) ON CONFLICT(run_id) DO NOTHING`).run(runId,sessionId,updatedAt);
   db.prepare(`INSERT INTO xiaozhi_tool_receipts(run_id,call_id,generation,tool,start_sequence,phase,updated_at)
     VALUES(?,?,1,'office_copy',1,'result',?)`).run(runId,callId,updatedAt);
   db.prepare(`INSERT INTO xiaozhi_effects_v1(effect_id,session_id,task_id,run_id,generation,call_id,command_id,operation,

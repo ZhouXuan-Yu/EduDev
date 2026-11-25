@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+数据库 R2 的 Windows 更新、备份恢复和兼容确认继续使用正式 preload。准备基线关联 Pi 原生 owner 与原有教师观察及决策。集成夹具使用受控模型响应。 [架构](../architecture/CURRENT.md#小智数据库-r2)
+
 ## 2026-11-23 扫描结构质量
 
 保留 PDFium、RapidOCR 和 PP-DocLayoutV3。参考 PP-StructureV3 的专项识别、Docling 的来源绑定和 OmniDocBench 的分项测量，继续用现有 SQLite 世代和任务。 [调研与落点](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)

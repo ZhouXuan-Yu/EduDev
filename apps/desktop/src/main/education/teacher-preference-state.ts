@@ -50,7 +50,7 @@ export function createTeacherPreferenceState(sql:Sql){
    const [row]=await sql.all('SELECT updated_at FROM app_settings WHERE key=?',[namespace+'version:'+record.revision]);
    return {snapshot:publicSnapshot(record),updatedAt:typeof row?.updated_at==='string'?row.updated_at:null};
   },
-  async observe(sessionId:string,runId:string,isCurrent:()=>boolean):Promise<{snapshot:TeacherPreferenceSnapshot;action:Outcome;policy:TeacherMemoryPolicy|null;trial?:TeacherPreferenceValues}>{
+  async observe(sessionId:string,runId:string,isCurrent:()=>boolean):Promise<{snapshot:TeacherPreferenceSnapshot;action:Outcome;policy:TeacherMemoryPolicy|null;eventRecorded:boolean;trial?:TeacherPreferenceValues}>{
    if(!/^aisession_[a-f0-9-]{36}$/i.test(sessionId)||!/^run_[a-f0-9-]{36}$/i.test(runId)||!sql.transaction)throw Error('invalid_input');
    return sql.transaction(async work=>{
     if(!isCurrent())throw Error('cancelled');
@@ -61,7 +61,7 @@ export function createTeacherPreferenceState(sql:Sql){
     const prior=await setting(work,eventKey),c=await current(work),baseline=c.record||empty();
     const policy=await readTeacherMemoryPolicy(work).catch(()=>null);
     const canLearn=!!policy&&!Object.keys(policy.use).length;
-    if(prior){const receipt=JSON.parse(prior);if(receipt.schemaVersion!==TEACHER_PREFERENCE_SCHEMA||receipt.messageId!==source.id||receipt.sha256!==hash||!integer(receipt.appliedRevision)||!['none','learned','rolled_back','rejected','no_previous','observed','trial'].includes(receipt.action)||receipt.trial!==undefined&&!validTeacherPreferenceValues(receipt.trial))throw Error('configuration');const v=await version(work,receipt.appliedRevision);return{snapshot:v?publicSnapshot(v):empty(),action:receipt.action as Outcome,policy,...(canLearn&&receipt.trial?{trial:receipt.trial}:{})};}
+    if(prior){const receipt=JSON.parse(prior);if(receipt.schemaVersion!==TEACHER_PREFERENCE_SCHEMA||receipt.messageId!==source.id||receipt.sha256!==hash||!integer(receipt.appliedRevision)||!['none','learned','rolled_back','rejected','no_previous','observed','trial'].includes(receipt.action)||receipt.trial!==undefined&&!validTeacherPreferenceValues(receipt.trial))throw Error('configuration');const v=await version(work,receipt.appliedRevision);return{snapshot:v?publicSnapshot(v):empty(),action:receipt.action as Outcome,policy,eventRecorded:true,...(canLearn&&receipt.trial?{trial:receipt.trial}:{})};}
     let signal=teacherPreferenceSignal(text);let action:Outcome='none',next:Version|undefined;
     const learning=signal.kind==='none'&&canLearn?await observeTeacherLearning(work,{id:String(source.id),sessionId,runId,text},baseline):undefined;
     if(learning?.rollback)signal={kind:'rollback'};
@@ -97,9 +97,10 @@ export function createTeacherPreferenceState(sql:Sql){
     }
     const snapshot=publicSnapshot(next||baseline);
     // Local receipt proves which version the actual run used, without copying messages.
-    if(snapshot.revision||signal.kind!=='none'||learning?.candidateId)await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[eventKey,JSON.stringify({schemaVersion:TEACHER_PREFERENCE_SCHEMA,sessionId,runId,messageId:String(source.id),sha256:hash,action,appliedRevision:snapshot.revision,...(learning?.trial?{trial:learning.trial}:{}),...(learning?.candidateId?{candidateId:learning.candidateId}:{})}),timestamp]);
+    const eventRecorded=Boolean(snapshot.revision||signal.kind!=='none'||learning?.candidateId);
+    if(eventRecorded)await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[eventKey,JSON.stringify({schemaVersion:TEACHER_PREFERENCE_SCHEMA,sessionId,runId,messageId:String(source.id),sha256:hash,action,appliedRevision:snapshot.revision,...(learning?.trial?{trial:learning.trial}:{}),...(learning?.candidateId?{candidateId:learning.candidateId}:{})}),timestamp]);
     if(!isCurrent())throw Error('cancelled');
-    return{snapshot,action,policy,...(learning?.trial?{trial:learning.trial}:{})};
+    return{snapshot,action,policy,eventRecorded,...(learning?.trial?{trial:learning.trial}:{})};
    });
   },
  };

@@ -12,6 +12,7 @@ const sources:Record<ConfigSource,string>={
 };
 const statuses={valid:'已读取',invalid:'记录无法识别',unavailable:'暂不可用',not_applicable:'不适用'};
 const permissions={request:'按需申请',acceptEdits:'允许本地编辑',approveForMe:'委托审批',fullAccess:'完整访问'};
+const runStatuses={running:'进行中',succeeded:'已完成',failed:'失败',blocked:'已停止',waiting_confirmation:'待确认',waiting_input:'待输入'};
 const list=(value:ResolvedAgentConfig)=>{
   const {teacher,preferences,memory,credential,lastRun}=value;
   return [
@@ -71,6 +72,15 @@ export function PiResolvedAgentConfig({sessionId,onNavigate}:{sessionId?:string;
         <p>长期偏好按具体任务判断。教材用于参考，临时偏好随本次任务使用。</p>
         {value.session&&<section aria-label="上次运行时的思考设置" data-testid="pi-resolved-config-last-run">
           <h4>上次运行</h4><p>{rows.at(-1)?.[2]??(value.lastRun.status==='not_applicable'?'暂无运行记录':statuses[value.lastRun.status])}</p>
+        </section>}
+        {value.session&&value.prepared&&<section aria-label="本轮准备基线" data-testid="pi-resolved-config-prepared">
+          <h4>本轮准备基线</h4>
+          {value.prepared.runStatus&&<p>运行状态 {runStatuses[value.prepared.runStatus]}</p>}
+          {value.prepared.receipt ? <>
+            <p>{value.prepared.receipt.modelValue} · {value.prepared.receipt.model.source&&sources[value.prepared.receipt.model.source]} · 准备时思考档次 {THINKING_LABELS[value.prepared.receipt.thinking.effective]}</p>
+            <p>教师偏好版本 {value.prepared.receipt.teacher.observedRevision} · {value.prepared.receipt.teacher.longTermApplied?'本轮采用长期偏好':'本轮未采用长期偏好'}</p>
+            <p>思考档次按运行准备时记录，后续教学步骤可以调整。</p>
+          </> : <p>{value.prepared.status==='not_recorded'?'未记录':value.prepared.status==='invalid'?'记录无法识别':'暂不可用'}</p>}
         </section>}
       </>}
     </>}

@@ -49,7 +49,7 @@ import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
 import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionKeywordOrder,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import {equivalentQuestionGradeLabels} from '../shared/question-grade';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, extname, join } from 'node:path';
 import type sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
@@ -1493,13 +1493,6 @@ export class OmniEduStore {
     if (typeof stored.apiKey==='string') return stored.apiKey;
     if (stored.legacyCredentialDisabled === true) return '';
     return fallbackKey;
-  }
-
-  async legacyDeepSeekModelDefault() {
-    const {stored,fallbackKey,model,updatedAt} = await this.legacyProviderSettings('deepseek');
-    const configured = Object.hasOwn(stored,'sealedKey') || (typeof stored.apiKey==='string'
-      ? Boolean(stored.apiKey) : stored.legacyCredentialDisabled !== true && Boolean(fallbackKey));
-    return {model,updatedAt,configured};
   }
 
   async getDeepSeekRuntimeSettings(providerOverride?: AiProviderId): Promise<{ provider: AiProviderId; apiKey?: string; model: string; updatedAt: string }> {
@@ -3693,11 +3686,8 @@ export class OmniEduStore {
     }
     const timestamp = now();
     const atomicExerciseSet = confirmation.actionType === 'save_exercise_set';
-    let began = false;
-    let committed = false;
-    try {
-      if (atomicExerciseSet) { await this.run('BEGIN IMMEDIATE'); began = true; }
-      const readback = await this.executeAiConfirmation(confirmation);
+    const apply = async (work:OmniEduStore) => {
+      const readback = await work.executeAiConfirmation(confirmation);
       if (confirmation.actionType === 'create_review_report' && !readback?.report) throw new Error('确认后未能读回复盘报告');
       if (confirmation.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
       if (confirmation.actionType === 'save_mastery_state' && !readback?.masteryPath && !readback?.masteryAttempt) throw new Error('Mastery confirmation did not produce a readback');
@@ -3716,17 +3706,26 @@ export class OmniEduStore {
         masteryAttempt: readback?.masteryAttempt,
         actionType: confirmation.actionType,
       };
-      await this.run(
+      await work.run(
         `UPDATE ai_confirmation_items
             SET status = 'confirmed', result_json = ?, payload_json = ?, preview_md = ?, error_message = '', updated_at = ?, confirmed_at = ?
           WHERE id = ?`,
         [JSON.stringify(result), JSON.stringify(confirmation.payload), confirmation.previewMd, timestamp, timestamp, id],
       );
-      if (atomicExerciseSet) await this.run('COMMIT');
+      return readback;
+    };
+    let committed = false;
+    try {
+      if(atomicExerciseSet) {
+        return await this.shortWrite(async work=>{
+          const readback=await apply(work);
+          return {item:await work.getAiConfirmationOrThrow(id),readback};
+        },{committed:()=>{committed=true;}});
+      }
+      const readback=await apply(this);
       committed = true;
       return { item: await this.getAiConfirmationOrThrow(id), readback };
     } catch (error) {
-      if (began && !committed) await this.run('ROLLBACK').catch(() => undefined);
       if (committed) throw error;
       const message = error instanceof Error ? error.message : '确认项执行失败';
       await this.run(
@@ -5309,8 +5308,8 @@ export class OmniEduStore {
   }
 
   private async shortWrite<T>(action: (transaction: OmniEduStore) => Promise<T>,
-    cancellation?: {signal: AbortSignal; commitStarted: () => void}): Promise<T> {
-    const signal = cancellation?.signal;
+    lifecycle?: {signal?: AbortSignal; commitStarted?: () => void; committed?: () => void}): Promise<T> {
+    const signal = lifecycle?.signal;
     signal?.throwIfAborted();
     const work = new OmniEduStore(this.dataRoot);
     work.db = await openSqlite(this.dbPath, 'retryWrite');
@@ -5319,8 +5318,9 @@ export class OmniEduStore {
       try {
         const result = await action(work);
         signal?.throwIfAborted();
-        cancellation?.commitStarted();
+        lifecycle?.commitStarted?.();
         await work.exec('COMMIT;');
+        lifecycle?.committed?.();
         return result;
       } catch (error) {
         await work.exec('ROLLBACK;').catch(() => undefined);
@@ -6768,10 +6768,11 @@ export class OmniEduStore {
     const reportRoot = this.resolveInsideDataRoot('students', studentId, 'reports');
     mkdirSync(reportRoot, { recursive: true });
     const reportPath = resolveInsideRoot(reportRoot, `${report.id}.md`);
-    let fileWritten = false;
-    await this.run(`BEGIN IMMEDIATE`);
+    let ownsFile = false;
+    let committed = false;
     try {
-      await this.run(
+      return await this.shortWrite(async work=>{
+      await work.run(
         `INSERT INTO review_reports (
           id, student_id, subject, start_date, end_date, report_type, title, content_md,
           parent_summary, quality_checks_json, source_record_ids, created_at, updated_at
@@ -6792,16 +6793,23 @@ export class OmniEduStore {
           report.updatedAt,
         ],
       );
-      writeFileSync(reportPath, contentMd, 'utf8');
-      fileWritten = true;
-      await this.touchStudent(studentId);
-      const readback = (await this.all(`SELECT * FROM review_reports WHERE id = ?`, [report.id]))[0];
+      const file=openSync(reportPath,'wx');
+      ownsFile=true;
+      try {writeFileSync(file,contentMd,'utf8');} finally {closeSync(file);}
+      await work.touchStudent(studentId);
+      const readback = (await work.all(`SELECT * FROM review_reports WHERE id = ?`, [report.id]))[0];
       if (!readback) throw new Error('确认后未能读回复盘报告');
-      await this.run(`COMMIT`);
-      return this.mapReport(readback);
+      return work.mapReport(readback);
+      },{committed:()=>{committed=true;}});
     } catch (error) {
-      await this.run(`ROLLBACK`).catch(() => undefined);
-      if (fileWritten) rmSync(reportPath, { force: true });
+      if (ownsFile && !committed) {
+        try {rmSync(reportPath,{force:true});}
+        catch(cleanupError) {
+          console.error('[review_report] owned_file_cleanup_failed',report.id,
+            cleanupError instanceof Error && 'code' in cleanupError?cleanupError.code:'unknown');
+          throw Error('复盘报告保存失败，且未能清理本次生成的文件。',{cause:error});
+        }
+      }
       throw error;
     }
   }
