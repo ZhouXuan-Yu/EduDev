@@ -22,7 +22,8 @@ import {TEACHING_HANDOUT_TOOL} from '../../../shared/teaching-handout';
 import {isDeepStrictEqual} from 'node:util';
 import {EXPORT_MOCK_EXAM,MOCK_EXAM_OFFICE_SCHEMA} from '../../../shared/mock-exam-export';
 import {EXPORT_TEACHING_HANDOUT} from '../../../shared/teaching-handout-export';
-import {isTeachingHandoutOfficeDraft} from '../../../shared/xiaozhi-office-draft';
+import {isPaperOfficeDraft,isTeachingHandoutOfficeDraft} from '../../../shared/xiaozhi-office-draft';
+import {PAPER_EXPORT_TOOL} from '../../../shared/paper-export';
 import {createDeliveryState,deliveryHash} from '../delivery-state';
 import {mockExamDelivery} from '../mock-exam-delivery-resume';
 import {createDeliveryReadback} from '../verification/delivery-readback';
@@ -38,13 +39,13 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
   if(tool===PROPOSE_MOCK_EXAM_EDIT)return state.sql?readMockExamEditEffect(state.sql,owner,callId):'uncertain';
   if(acquisitionReader){const checked=await acquisitionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
   if(executionReader){const checked=await executionReader(owner,callId,tool);if(checked!=='not_checked')return checked;}
-  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files',EXPORT_TEACHING_HANDOUT,EXPORT_MOCK_EXAM].includes(tool))return'not_checked';
+  if(!['office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files',PAPER_EXPORT_TOOL,EXPORT_TEACHING_HANDOUT,EXPORT_MOCK_EXAM].includes(tool))return'not_checked';
   try{
    const continuation=tool==='office_deliver_files';
    const restoredBundle=continuation&&state.sql?await createDeliveryState(state.sql).get('xidelivery_'+deliveryHash([owner.sessionId,owner.runId,callId])):null;
    if(continuation&&(!restoredBundle?.parentId||!await mockExamDelivery(restoredBundle,state.artifacts)))return'not_checked';
    const workspace=async()=>{
-    const grant=tool==='office_create_document'?await state.persistent.paperOutput(owner.sessionId):null;
+    const grant=tool==='office_create_document'||tool===PAPER_EXPORT_TOOL?await state.persistent.paperOutput(owner.sessionId):null;
     const legacy=grant?null:await state.persistent.workspace(owner.sessionId);
     // Resolve the existing output location without creating directories/grants.
     const root=grant?.path||legacy?.path||(state.dataRoot?path.join(conversationOutputLocation(state.dataRoot()).path,owner.sessionId):undefined);
@@ -84,8 +85,14 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
     return read.version===binding.version&&read.digest===binding.digest?'matched':'uncertain';
    }
    let payload:Record<string,unknown>,label:string;
-   if(tool==='office_create_document'){
+   if(tool==='office_create_document'||tool===PAPER_EXPORT_TOOL){
     const row=await state.artifacts.call(owner.sessionId,owner.runId,callId);
+    if(tool===PAPER_EXPORT_TOOL){
+     if(!state.sql||!row||row.state!=='saved'||!row.artifactId||!isPaperOfficeDraft(row.draft))return'uncertain';
+     const {paperId,digest,audience}=row.draft.paperSource;
+     const [lineage]=await state.sql.all('SELECT draft_id,paper_id,paper_digest,audience FROM document_artifact_paper_sources WHERE artifact_id=?',[row.artifactId]);
+     if(!lineage||lineage.draft_id!==row.id||lineage.paper_id!==paperId||lineage.paper_digest!==digest||lineage.audience!==audience)return'uncertain';
+    }
     if(!row){
      const unchanged=entry&&entry.callId===callId&&entry.tool===tool&&!entry.failed?presentationUnchangedReceipt(entry.message.content):undefined;
      if(!unchanged)return'uncertain';
@@ -95,7 +102,7 @@ export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof c
     const row=await state.changes.call(owner.sessionId,owner.runId,callId);if(!row||row.state!=='applied')return'uncertain';label=row.path;payload={success:true,outcome:'applied',operation:row.operation,file:label};
    }
    const reader=createEffectReadback({sessionId:owner.sessionId,runId:owner.runId,current:()=>true,workspace:async()=>{const current=await workspace();if(current!==expectedWorkspace)throw Error('evidence_missing');return current;},fileLabel:async()=>label,changes:state.changes,artifacts:state.artifacts});
-   const bound=await reader(callId,tool,payload),read=await bound.read();return read.version===bound.version&&read.digest===bound.digest?'matched':'uncertain';
+   const bound=await reader(callId,tool===PAPER_EXPORT_TOOL?'office_create_document':tool,payload),read=await bound.read();return read.version===bound.version&&read.digest===bound.digest?'matched':'uncertain';
   }catch{return'uncertain';}
  };
 }

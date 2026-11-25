@@ -10,6 +10,8 @@ import {_electron as electron} from 'playwright';
 
 const build=process.argv[2];
 assert(path.isAbsolute(build??''),'Pass the exact verified desktop build root');
+const keepFailing=process.argv[3]==='--keep-failing';
+assert(!process.argv[3]||keepFailing,'Unknown fixture argument');
 const desktop=path.resolve(import.meta.dirname,'../..');
 const main=fs.realpathSync(path.join(build,'main/index.js'));
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'provider-paper-export-'));
@@ -20,7 +22,11 @@ const title='原题卷恢复验证';
 const docx=path.join(workspace,'confirmed.docx'),pdf=path.join(workspace,'confirmed.pdf');
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fileHash=file=>hash(fs.readFileSync(file));
-const report={ok:false,root,build,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
+const fileIdentity=file=>{
+  const {dev,ino,mtimeMs,birthtimeMs}=fs.statSync(file);
+  return {dev,ino,mtimeMs,birthtimeMs};
+};
+const report={ok:false,root,build,keepFailing,mainHash:fileHash(main),rendererHash:fileHash(path.join(build,'renderer/index.html')),checks:[],paidCalls:0};
 let app,page,sessionId;
 function sql(query,values=[]) {
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -53,12 +59,19 @@ async function startExport(paper,format) {
   });
   assert(started.ok,JSON.stringify(started));
   const runId=started.runId;
-  const row=await until(async()=>{
+  const review=await until(async()=>{
     const live=await state();
     const item=live.officeArtifacts?.find(item=>item.runId===runId&&item.path===spec.path&&item.state==='pending');
-    if(item) return item;
-    if(event(runId)?.status&&!live.running)throw Error('Export ended before approval: '+JSON.stringify(live.projection.turns.at(-1)));
+    if(item)return {row:item};
+    if(event(runId)?.status&&!live.running){
+      const turn=live.projection.turns.find(item=>item.id===runId);
+      const artifact=live.officeArtifacts.find(item=>item.runId===runId&&item.path===spec.path);
+      if(keepFailing&&format==='pdf')return {terminal:{turn,artifact}};
+      throw Error('Export ended before approval: '+JSON.stringify({status:turn?.status,error:turn?.errorCode,artifact,tools:turn?.items.filter(item=>item.kind==='tool')}));
+    }
   },'actual original Office review '+format);
+  if(review.terminal)return {runId,terminal:review.terminal,physical:physical(runId)};
+  const {row}=review;
   const file=path.join(workspace,spec.path);
   assert(!fs.existsSync(file));
   assert(!artifactFacts().some(item=>item.file_path===file));
@@ -78,7 +91,7 @@ try {
   Object.assign(env,{OMNI_EDU_SKIP_DOTENV:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_DATA_ROOT:data,
     OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),DEEPSEEK_API_KEY:'synthetic-provider-paper',DEEPSEEK_MODEL:'deepseek-flash'});
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,timeout:60_000});
-  await app.evaluate(({app,dialog,net},directory)=>{
+  await app.evaluate(({app,dialog,net},{directory,keepFailing})=>{
     const state=globalThis.providerPaperRecovery={requests:[],printing:[],phase:null};
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});
     app.on('web-contents-created',(_,contents)=>{
@@ -87,7 +100,7 @@ try {
       contents.once('destroyed',()=>{if(current) current.closed=true;});
       contents.printToPDF=async settings=>{
         if(!contents.getURL().includes('/office-render-'))return native(settings);
-        const failed=state.printing.length===0;
+        const failed=keepFailing||state.printing.length===0;
         current={id:contents.id,failed,previousClosed:state.printing.at(-1)?.closed??true,closed:false};
         state.printing.push(current);
         if(failed) throw new Error('Controlled settled native PDF print rejection');
@@ -116,7 +129,7 @@ try {
         choices:[{index:0,delta:value,finish_reason:reason}]})+'\n\n';
       return new Response(chunk(delta,null)+chunk({},tool?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
     };
-  },workspace);
+  },{directory:workspace,keepFailing});
   page=await app.firstWindow();
   await page.getByTestId('office-prompt-input').waitFor();
   sessionId=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({title:'原题卷恢复验收',folderId:null})).session.id);
@@ -136,21 +149,31 @@ try {
   const facts=confirmedFacts();
   report.first=await startExport(paper,'docx');
   assert.equal(report.first.terminal.artifact?.state,'saved',JSON.stringify(report.first));
-  const oldHash=fileHash(docx),oldOutput=artifactFacts(),oldEffect=physical(report.first.runId);
-  report.checks.push('Teacher-confirmed paper is unchanged after the actual Word export');
+  const oldHash=fileHash(docx),oldIdentity=fileIdentity(docx),oldOutput=artifactFacts(),oldEffect=physical(report.first.runId);
   assert.deepEqual(confirmedFacts(),facts);
   assert.equal(oldOutput.length,1);
+  assert.equal(oldEffect.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
+  report.checks.push('Teacher-confirmed paper is unchanged after the actual Word export');
   report.second=await startExport(paper,'pdf');
   report.instrumentation=await app.evaluate(()=>globalThis.providerPaperRecovery);
-  assert.equal(report.second.terminal.artifact?.state,'saved',JSON.stringify(report.second));
-  assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),[[true,true,true],[false,true,true]]);
+  assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),[[true,true,true],[keepFailing,true,true]]);
   assert.equal(fileHash(docx),oldHash);
+  assert.deepEqual(fileIdentity(docx),oldIdentity);
+  assert(!fs.readdirSync(data).some(name=>name.startsWith('office-render-')));
   assert.deepEqual(confirmedFacts(),facts);
   assert.deepEqual(physical(report.first.runId),oldEffect);
   assert.deepEqual(artifactFacts().filter(row=>row.file_path===docx),oldOutput);
-  assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,1);
-  assert.equal(report.second.physical.filter(item=>item.state==='committed').length,1);
-  const parsed=spawnSync(process.env.OMNI_EDU_FIXTURE_PYTHON||'python',['-c',`
+  if(keepFailing){
+    assert.notEqual(report.second.terminal.artifact?.state,'saved');
+    assert(!fs.existsSync(pdf));
+    assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,0);
+    assert.equal(report.second.physical.filter(item=>item.state==='committed').length,0);
+    report.checks.push('Persistent print rejection stops at two physical attempts and produces no saved fact');
+  }else{
+    assert.equal(report.second.terminal.artifact?.state,'saved',JSON.stringify(report.second));
+    assert.equal(artifactFacts().filter(row=>row.file_path===pdf).length,1);
+    assert.equal(report.second.physical.filter(item=>item.state==='committed'&&item.proofs.length===1).length,1);
+    const parsed=spawnSync(process.env.OMNI_EDU_FIXTURE_PYTHON||'python',['-c',`
 import json,sys,zipfile,xml.etree.ElementTree as ET
 from pypdf import PdfReader
 doc,pdf,marker=sys.argv[1:]
@@ -164,9 +187,10 @@ body=' '.join(''.join((page.extract_text() or '').split()) for page in reader.pa
 assert marker in body
 print(json.dumps({'pageCount':len(reader.pages),'marker':marker}))
 `,docx,pdf,marker],{encoding:'utf8'});
-  assert.equal(parsed.status,0,parsed.stderr||parsed.stdout);
-  report.files={docx,docxHash:oldHash,pdf,pdfHash:fileHash(pdf),parse:JSON.parse(parsed.stdout)};
-  report.checks.push('Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
+    assert.equal(parsed.status,0,parsed.stderr||parsed.stdout);
+    report.files={docx,docxHash:oldHash,pdf,pdfHash:fileHash(pdf),parse:JSON.parse(parsed.stdout)};
+    report.checks.push('Settled PDF failure recovers only the missing export under the original run and survives independent Word/PDF readback');
+  }
   report.ok=true;
 }catch(error){
   report.error=String(error.stack??error);

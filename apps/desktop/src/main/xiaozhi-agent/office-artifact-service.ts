@@ -7,7 +7,7 @@ import {handoutSourceChanged} from '../education/teaching-handout-office';
 import {assertFileWritesEnabled} from './file-write-policy';
 import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
-import {assertCurrentPermissionSignal} from './permissions/current';
+import {assertCurrentPermission,assertCurrentPermissionSignal} from './permissions/current';
 import path from 'node:path';
 import {isDeepStrictEqual} from 'node:util';
 import {removeOwnedFileStage,withOwnedFileStage} from './owned-file-stage';
@@ -63,7 +63,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  commitPaperDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
   recoverPaperDraft?:<T>(sessionId:string,draft:OfficeDraft,assertCurrent:()=>void,action:(ledger:Ledger)=>Promise<T>,assertAuthority:()=>Promise<void>)=>Promise<T>;
  resolvePaperImages?:(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>Promise<Map<string,Buffer>>;
- generate?: (format:PrivateOfficeArtifact['format'],draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;images?:ReadonlyMap<string,Buffer>})=>Promise<Buffer>;
+ generate?: typeof import('./office-generator').generateOfficeDocument;
  afterStage?:(stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;onState?:(summary:ReturnType<typeof officeSummary>)=>void}){
  const {state}=options;
  const validateBoundDraft=async(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>{
@@ -103,6 +103,17 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  }
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
+ async function generateOwned(row:PrivateOfficeArtifact,root:string,resolved:ReadonlyMap<string,Buffer>|undefined,signal?:AbortSignal){
+  const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
+  const beforePrintRetry=row.format==='pdf'?async()=>{
+   await assertCurrentPermission();
+   const latest=await state.get(row.id);
+   if(!latest||latest.revision!==row.revision||latest.state!==row.state||latest.draftHash!==row.draftHash)throw Error('conflict');
+   await recheck(latest,root,signal);
+   if(!compatible(root,latest))throw Error('conflict');
+  }:undefined;
+  return generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved,beforePrintRetry});
+ }
  function install(root:string,row:PrivateOfficeArtifact,temporary:string,signal?:AbortSignal){
   assertCurrentPermissionSignal();
   assertFileWritesEnabled();
@@ -180,8 +191,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    let row=await owned(sessionId,id);const root=await authority(sessionId,row);current(row,signal);await recheck(row,root,signal);
    if(row.state!=='pending')throw Error('conflict');
    if(!row.output){
-    const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
-    const resolved=await images(sessionId,row.draft,signal),bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+    const resolved=await images(sessionId,row.draft,signal),bytes=await generateOwned(row,root,resolved,signal);
     await recheck(row,root,signal);row=await state.cacheCandidate(row,bytes);
    }
    return{path:row.path,bytes:row.output!,version:row.draftHash,candidate:{kind:'office' as const,id:row.id,revision:row.revision}};
@@ -268,10 +278,9 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     latest=await state.transition(latest,['approved'],'generating');
     notify(latest);
     try{
-     const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
      await recheck(latest,root,signal);
      const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
-     const bytes=latest.output??await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+     const bytes=latest.output??await generateOwned(latest,root,resolved,signal);
      await recheck(latest,root,signal);
      if(!compatible(root,latest))return conflict(latest);
      latest=await state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});

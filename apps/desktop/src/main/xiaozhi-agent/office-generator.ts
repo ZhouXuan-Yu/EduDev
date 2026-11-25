@@ -107,7 +107,7 @@ async function pptx(draft:OfficeDraft){
  return Buffer.from(await presentation.write({outputType:'nodebuffer',compression:true}) as Buffer);
 }
 /** No file-authority/tool API. The host receives bytes for a later reviewed, versioned commit. */
-export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>}):Promise<Buffer>{
+export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;beforePrintRetry?:()=>Promise<void>}):Promise<Buffer>{
  if(!officeOutputFormat(format)||!validOfficeDraft(draft))throw new Error('invalid_input');check(options.signal);
  if(!validOfficeDraftFormat(draft.schemaVersion,format))throw Error('invalid_input');
  // Snapshot the strict data before an async library can observe caller mutations.
@@ -123,5 +123,5 @@ export async function generateOfficeDocument(format:OfficeOutputFormat,draft:Off
   const mathImages=needsMath&&format==='docx'&&(isMathPaperOfficeSchema(input.schemaVersion)||classroomDocument||isMathOfficeSchema(input.schemaVersion))?await(await import('./office-pdf-renderer')).renderOfficeMathImages(input,options):new Map<string,OfficeMathImage>();
   const bytes=isPresentationDraft(input)?await(await import('./presentation-generator')).generatePresentation(input,options):'classroomSource'in input&&!classroomDocument?await(await import('../education/classroom-pptx')).generateClassroomPptx(input.classroomSource,options):format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images,classroomPages}):format==='docx'?await docx(input,images,mathImages,classroomPages):format==='xlsx'?await xlsx(input):await pptx(input);
   check(options.signal);if(!bytes.length||bytes.length>OFFICE_OUTPUT_MAX_BYTES)throw new Error('too_large');return bytes;
- }catch(error){const code=error instanceof Error?error.message:'';throw Object.assign(new Error(['cancelled','timeout','too_large','configuration','cleanup_failed'].includes(code)?code:'generation_failed'),{cause:error});}
+ }catch(error){const code=error instanceof Error?error.message:'';throw Object.assign(new Error(['cancelled','timeout','too_large','configuration','cleanup_failed','permission_denied','source_changed','conflict'].includes(code)?code:'generation_failed'),{cause:error});}
 }

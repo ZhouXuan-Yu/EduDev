@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 12/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前 13/36 项通过。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -20,7 +20,7 @@
 | AC-14 | PASS · 已实现 | 正式 Windows Electron 启动同一 SQLite，原任务主动继续前实际模型请求为零。新 Run 使用旧 Provider 版本和 hash，保留原快照字节，追加带 `resume_revalidate` 的 lineage。真实快照、文件结果和两个 PID 可读回。 |
 | AC-15 | PASS · 已实现 | Windows 生产文件经过两次明确拒绝，存入两份权威的未派发证明，重启并重新授权后各保存一次。未知写入、真实 HTTP 丢回执与真实终端未发布均受保护。已有文件和已匹配网络回执通过独立读回保持原物理次数。 |
 | AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
-| AC-17 | NOT_RUN | 旧 C2 夹具未进入产品路径，连接阶段访问已移除的接口失败。真实确认讲义或原题卷的 Word/PDF 部分恢复待运行。 |
+| AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
 | AC-18–36 | NOT_RUN | 按冻结合同逐项运行，实际组合候选和最终 main 均尚未形成。 |
 
 ## 首轮 HTTP 故障证据
@@ -113,3 +113,10 @@
 - `node scripts/xiaozhi-agent/terminal-grant-host-smoke.mjs` 5/5。实际原生终端审批前零启动，原任务授权后启动一次，其他任务或撤销后均未启动。另一条真实命令已执行但确认前停止，保留 `unknown` 及原执行身份。重开宿主后，用相同逻辑操作试探原 Task，实际启动总数保持 2，未确认文件仍未发布。见 `wp04-terminal-current-grants.log` 与 `terminal-grant-Lg9HGC/REPORT.json`。连续 HTTP 和本地进程失败切点另由第四轮文件、网络各 8/8 对照。
 - `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 2/2。对真实确认中的文件手工写入，旧提议进入 `conflict`，保留教师版本 SHA。另一个任务暂停、订正后从要求版本 1 进入 2，新 Run 等待确认时才提交迟到的旧审批，结果为 `permission_denied`。旧文件未生成，唯一提交 Effect 属于 V2。在窗体可见校验前尝试审批及把机器核验项当做人类可编辑要求的两次夹具失败保留于 `wp04-task-fence-host.log` 和 `wp04-task-fence-published.log`。最终报告见 `wp04-task-fence-requirements-final.log` 与 `provider-task-fence-QKRQQd/REPORT.json`。真 Grant 撤销和在途响应边界见网络 N07。
 - AC-17 预检 `paper-c2-office-recovery-focused-test.mjs` 连接阶段因 `store.openDatabase` 不存在退出，0 项业务断言。见 `wp04-office-recovery-existing.log`。未由此判定产品恢复行为。
+
+## WP-04 第八轮原题卷部分导出恢复
+
+- 基线产品代码 `7c27138`、复现提交 `079f303`。用当前 typed Preload 建立、确认并导出合成试卷，真实保存 DOCX 后，在原 PDF 导出任务的私有 `printToPDF` 接口注入一次已结算的错误。基线没有进入 PDF 审批，实际打印尝试 1 次，私有窗口已关闭。见 `wp04-paper-pdf-native-red-actual.log`、`provider-paper-export-HncUY5/report.json`。
+- 原 owner 在首次打印明确失败且私有资源清理结束后，复核当前授权、确认源、工作区与目标文件，再在原时限内重试一次。导出成功以实际文件、原 SQLite 产物和绑定的试卷来源读回为准。中间验证识别出通用 Effect 读回未识别原题卷工具，保留 `provider-paper-export-s5PxUd/report.json`。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <绝对构建目录>`，再附加 `--keep-failing` 运行反例。正式构建为 `test-results/provider-r1-pdf-owner-receipt`，主进程 SHA-256 为 `b6511c2b6e075f8dc06d7cb50141975a957f5cfd90ac5780610863af04210e5e`。两次各通过 2 项。正例见 `provider-paper-export-3Yjuc0/report.json`，两次私有窗口先后销毁，Word 的 hash 与文件身份不变，PDF 审批前无目标文件，最终 Word/PDF 各一个持久化成功 Effect，DOCX XML 与 pypdf 分别读出同一题目。反例见 `provider-paper-export-Jo4fCp/report.json`，两次打印失败后无 PDF 或成功 Effect，原 Word 保持一致。真实付费模型调用 0。
+- 正式构建通过、渲染组件 261/261，见 `wp04-native-pdf-owner-build-final.log` 和 `wp04-native-pdf-renderer.log`。依赖锁保持原样，审计记录 30 项已存在风险，其中高危 5 项，见 `wp04-native-pdf-npm-audit.json`。旧 Office 扩展回归运行了 16 项后，缺少脚本硬编码的历史数据库，整组未跑完，见 `wp04-office-artifact-foundation-node24.log`。AC-21、AC-22 的取消、迟到回调和实际 lease 归还仍按原要求实测。
