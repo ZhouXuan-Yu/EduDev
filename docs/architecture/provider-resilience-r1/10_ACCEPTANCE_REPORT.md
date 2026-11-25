@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 16/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 17/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -24,7 +24,7 @@
 | AC-18 | PASS · 已实现 | 正式 Electron 实测 HTTP 连接挂起与真实 Windows Job 异常退出及超时。故障期间另一会话查题、保存和独立 HTTP MCP 调用成功。真实迟到 stdout 未进入新请求。仅在原 PID、helper 与隔离目录清理后结算资源和回执。 |
 | AC-19 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。Provider 组合阶段重跑。 |
 | AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
-| AC-21 | NOT_RUN | 实际 PDF 取消、迟到回调、资源归还和前台并行。 |
+| AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
 | AC-22 | NOT_RUN | 各执行器 10 次生命周期、未退出占用与关停。 |
 | AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
 | AC-24 | NOT_RUN | 正式桌面冷启、原审批与显式继续。 |
@@ -167,3 +167,11 @@
 - 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-vector-recovery-desktop.mjs <绝对构建目录> <固定证据根>`。正式结果 3/3，见 `wp05-vector-native-uncached.log` 和 `provider-vector-recovery-HNX9uG/report.json`。通过现有资料库导入并索引 25 份合成资料，对两种改写确认题意检索首位命中真实几何来源。旧 active generation 保持可查，实际工作器在新的世代已有有效游标后退出，旧工作器的成功回执重放未推进原游标，替换进程对同一组八条索引事实重新生成回执。新世代只在完整追平后发布，游标终止，`applied_seq` 等于原事件序号 50，原数据摘要及索引数量保持。
 - 正式原生 embedding 对查询实际生成结果，夹具在 stdout 边界暂缓交付，派发后 30.014 秒触发生产超时。返回 `embedding_unavailable`、`available=false`、`complete=false`，语义改写返回空结果，关键词仍能命中原文。旧进程尚存时交付其真实迟到数据 6,061 字节，下一查询仍未完成或启动新的 embedding。旧 PID 41064 关闭后新 PID 49524 才启动，成功命中相同 `resourceId/chunkId`。原始 native 管道和时间线见同目录 `embedding-trace.jsonl`。质量对照限固定原文、同一查询、来源与完整覆盖语义。
 - 首次复跑定位到资料库展开后才出现重建按钮，见 `wp05-vector-native-initial.log`。真实世代退出已通过的中间复跑使用了原内存缓存查询，未触发原生超时，见 `provider-vector-recovery-WI7pvf/report.json`。正式测试使用在旧 utility 测过、在新 utility 未缓存的等义查询。测试入口和两处观测夹具通过 `node --check`，`git diff --check` 通过。依赖锁未改，`wp05-vector-native-npm-audit.json` 记录 30 项既有依赖通报，真实付费调用 0。嵌套模型常驻额度和多轮回收仍由 AC-22、AC-32 验证。
+
+## WP-05 第五轮 PDF 窗口退出与旧回执
+
+- 基线 `df24d1a`，测试提交 `143bc07`。Windows Electron 实际执行 `printToPDF`，测试在 Chromium 已生成 49,145 字节后暂停向主进程交付回执。点击停止后，旧版过早销毁窗口 2（渲染进程 9136），真实断言失败。见 `wp05-pdf-cancel-red.log` 及 `provider-paper-export-CaceVn/report.json`。
+- 接入资源调度 R1 `ed618c1` 原有的 PDF 配额及宿主调度器，复用同一层实际 lease，包含图片和 HTML 准备、真实打印回执、原窗口和临时文件清理。重新打印前通过现有授权、记录修订、来源和目标校验。教师停止后拒绝旧回执写入，保留原 Effect 状态待对账。
+- 正式构建主进程 SHA-256 为 `a2a589037b74bd60a0d124b9df93dc8657f301cfd194a41e639d05f876eb2606`，渲染入口为 `719270bcc6b4c9a4073d31ddd1d0bb18264cb9c6a9fe53f4b13b0d68fe4208e8`。窗口 2（渲染进程 48748）在停止确认后仍存活，500 毫秒的第二次同类准入等待超时，独立会话通过真实查题工具得到原题。回执交付后旧窗口关闭、专属临时目录消失、PDF 配额可重新取得。旧 run 持久化为中断，Effect 保持 unknown，未生成已保存回执。原试卷、Word 与教师笔记摘要一致。重新提交并获教师授权后，独立 PDF 与 DOCX 读取确认内容、答案和份数。见 `provider-paper-export-JWmNVd/report.json`，共 3/3。
+- 同一构建复验暂态失败仅补齐缺失 PDF（2/2），持续失败为两次实际打印、零已保存回执（2/2）。分别见 `provider-paper-export-ZIgwaM/report.json`、`provider-paper-export-2xZ4gV/report.json`。命令为 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <本轮实际构建>`，分别使用 `--cancel-in-flight`、默认模式及 `--keep-failing`。
+- 正式构建、渲染组件 261/261、资源压力与调度合同 10/10 均通过。原日志为 `wp05-pdf-lease-build.log`、`wp05-pdf-lease-renderer.log`、`wp05-pdf-lease-resource-contract.log`。依赖锁未变，审计维持 30 项通报（高危 5 项）。实际模型付费调用为 0。各 owner 多轮回收与不退出实例留给 AC-22。

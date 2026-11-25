@@ -110,18 +110,17 @@ async function verifyPrintCancellation(paper,confirmed,previousWord) {
   assert(!fs.existsSync(pdf));
 
   const chunks=fs.readdirSync(path.dirname(main)).filter(name=>name.endsWith('.js')).map(name=>path.join(path.dirname(main),name));
-  const module=chunks.find(file=>fs.readFileSync(file,'utf8').includes('function reserveHostStage('));
+  const module=chunks.find(file=>fs.readFileSync(file,'utf8').includes('function withOfficePdfBudget('));
   assert(module,'Use the original Host Resource Scheduling coordinator for the physical PDF admission');
-  const reserveExport=fs.readFileSync(module,'utf8').match(/\breserveHostStage as (\w+)/u)?.[1];
-  assert(reserveExport);
-  const probe=()=>app.evaluate(async (_electron,{module,reserveExport})=>{
+  const source=fs.readFileSync(module,'utf8');
+  const budgetExport=source.match(/\bwithOfficePdfBudget as (\w+)/u)?.[1]??'withOfficePdfBudget';
+  const probe=()=>app.evaluate(async (_electron,{module,budgetExport})=>{
     const req=process.getBuiltinModule('node:module').createRequire(module);
-    try {
-      const lease=await req(module)[reserveExport]('provider-ac21-probe','pdf-window','foreground',{pdfWindows:1},500);
-      lease.settle();
-      return 'admitted';
-    }catch(error){return error.message;}
-  },{module,reserveExport});
+    const withBudget=req(module)[budgetExport];
+    if(typeof withBudget!=='function')throw Error('Missing production PDF budget export');
+    try {return await withBudget(undefined,500,async()=>'admitted');}
+    catch(error){return error.message;}
+  },{module,budgetExport});
   const beforeClose=await probe();
   assert.equal(beforeClose,'timeout');
   const other=await page.evaluate(async()=> (await window.omniEdu.createAiConversationSession({title:'PDF 停止期间独立查题',folderId:null})).session.id);
@@ -209,10 +208,10 @@ try {
         return respond(id,{role:'assistant',tool_calls:[{index:0,id,type:'function',function:{name:'education_search_questions',
           arguments:JSON.stringify({query:'浮力',subject:'物理',limit:3})}}]},true);
       }
-      const {spec,index}=state.phase;
+      const {spec,index,hold}=state.phase;
       if(index>3)throw Error('Synthetic request budget exceeded');
       state.phase.index++;
-      const id='pdf_recovery_'+spec.format+'_'+index;
+      const id=(hold?'pdf_cancel_':'pdf_recovery_')+spec.format+'_'+index;
       let tool;
       if(index===0)tool={name:'find_education_tools',arguments:JSON.stringify({query:'education_export_paper 导出已确认试卷'})};
       if(index===1)tool={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:1,

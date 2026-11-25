@@ -106,12 +106,20 @@ async function pptx(draft:OfficeDraft){
  }
  return Buffer.from(await presentation.write({outputType:'nodebuffer',compression:true}) as Buffer);
 }
+type GenerationOptions={dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;beforePrintRetry?:()=>Promise<void>};
 /** No file-authority/tool API. The host receives bytes for a later reviewed, versioned commit. */
-export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;beforePrintRetry?:()=>Promise<void>}):Promise<Buffer>{
+export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:GenerationOptions):Promise<Buffer>{
  if(!officeOutputFormat(format)||!validOfficeDraft(draft))throw new Error('invalid_input');check(options.signal);
  if(!validOfficeDraftFormat(draft.schemaVersion,format))throw Error('invalid_input');
- // Snapshot the strict data before an async library can observe caller mutations.
+ // Capture the validated draft before yielding. Large image and renderer work stays inside admission.
  const input=JSON.parse(JSON.stringify(draft)) as OfficeDraft;
+ if(format==='pdf'){
+  const {withOfficePdfBudget}=await import('./office-pdf-budget');
+  return withOfficePdfBudget(options.signal,options.deadlineMs??60000,deadlineMs=>produceOfficeDocument(format,input,{...options,deadlineMs}));
+ }
+ return produceOfficeDocument(format,input,options);
+}
+async function produceOfficeDocument(format:OfficeOutputFormat,input:OfficeDraft,options:GenerationOptions):Promise<Buffer>{
  if(isMathOfficeSchema(input.schemaVersion)){const {officeMathParts,officeMathHtml}=await import('../../shared/office-math');for(const text of [input.title,...input.sections.map(s=>s.heading)])if(officeMathParts(text).some(p=>p.kind==='math'))throw Error('unsupported');for(const section of input.sections)for(const text of [...section.paragraphs,...(section.table?[section.table.columns,...section.table.rows].flat().map(String):[])])officeMathHtml(text);}
  const images=officeImageSnapshot(input,options.images);
  if(images.size&&!['docx','pdf'].includes(format))throw new Error('invalid_input');
