@@ -1,0 +1,518 @@
+{
+  "source": "contract/06_ATDD_ACCEPTANCE.md",
+  "sourceSha256": "37ed2e8f2b3c7ca180206b394c83da550a50eaf4ab51b1164655f4c516173665",
+  "ac": [
+    {
+      "id": "AC-001",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-002",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-003",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-004",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-005",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-006",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-007",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-008",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-009",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-010",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-011",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-012",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-013",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-014",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-015",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-016",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-017",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-018",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-019",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-020",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-021",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-022",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-023",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-024",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-025",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-026",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-027",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-028",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-029",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-030",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-031",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-032",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-033",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-034",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-035",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-036",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-037",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-038",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-039",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-040",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-041",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-042",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-043",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-044",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-045",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-046",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-047",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-048",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-049",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-050",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-051",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-052",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-053",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-054",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-055",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-056",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-057",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-058",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-059",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-060",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-061",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-062",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-063",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-064",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-065",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-066",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-067",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-068",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-069",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-070",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-071",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-072",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-073",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-074",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-075",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-076",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-077",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-078",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-079",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-080",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-081",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-082",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-083",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-084",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-085",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-086",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-087",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-088",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-089",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-090",
+      "status": "NOT_RUN"
+    }
+  ],
+  "legacy": [
+    {
+      "id": "LG-A01",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A02",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A03",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A04",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A05",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A06",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A07",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A08",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A09",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A10",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A11",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A12",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A13",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A14",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A15",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A16",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A17",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A18",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A19",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A20",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A21",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A22",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A23",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A24",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A25",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A26",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A27",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A28",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A29",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A30",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A31",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A32",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A33",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A34",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A35",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "LG-A36",
+      "status": "NOT_RUN"
+    }
+  ],
+  "gates": {
+    "SET-P0": "NOT_RUN",
+    "MG-01": "NOT_RUN",
+    "FG-01": "NOT_RUN",
+    "FG-02": "NOT_RUN"
+  }
+}

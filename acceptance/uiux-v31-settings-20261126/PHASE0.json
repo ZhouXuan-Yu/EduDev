@@ -1,0 +1,1899 @@
+{
+  "date": "2026-11-26",
+  "phase": "0",
+  "head": "d16b0af4b95a8aea3050848546209f51e94abca5",
+  "branch": "codex/ui-ux-r1-20261125",
+  "originMain": "d16b0af4b95a8aea3050848546209f51e94abca5",
+  "root": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125",
+  "worktrees": [
+    {
+      "directory": "D:/WorkProject/EduProject",
+      "head": "7ee410dbdc5af4af5abbc310ae9c1aaec2232073",
+      "branch": "detached",
+      "dirty": [
+        "M 2.Memory.md",
+        " M 3.Learning.md",
+        " M 4.Wiki.md",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M docs/goal/xiaozhi-harness/00_HARNESS_DECISION_LOG.md",
+        " M docs/goal/xiaozhi-harness/EXECUTION_BOOK.md",
+        " M docs/goal/xiaozhi-harness/GOAL_XIAOZHI_HARNESS.md",
+        " M docs/integrations/ANATOMY.md",
+        " D \"\\345\\220\\257\\345\\212\\250\\347\\237\\245\\350\\257\\206\\345\\272\\223\\345\\274\\200\\345\\217\\221\\347\\211\\210.cmd\"",
+        " M \"\\347\\247\\221\\346\\231\\256\\350\\257\\276\\344\\273\\266\\344\\275\\277\\347\\224\\250.md\""
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/03ca/EduProject",
+      "head": "60f7f4f004aa39cf760eaa351952f96d437509b2",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/1ae5/EduProject",
+      "head": "9b192954e3d64e7d00fe15382a2db34f8351d0cc",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/4d10/EduProject",
+      "head": "3af57365ca3ce415ec92d6b385f0e9018ee7f217",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/d084/EduProject",
+      "head": "0dc86d8e65789063b006550022d8492e8a3fb440",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/EduProject-main-tracking",
+      "head": "3af57365ca3ce415ec92d6b385f0e9018ee7f217",
+      "branch": "refs/heads/main",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/EduProject-memory-hindsight-20261124",
+      "head": "52f54ced647fc14c41715e90f69a035d817296aa",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/EduProject-quality-20261126",
+      "head": "f420db00e4c124a1320aab57c82e65017ee89297",
+      "branch": "refs/heads/codex/quality-review-20261126",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/harness-baseline-20261117/EduProject",
+      "head": "d50ef330f0f9c4995cc7e096e85bd8fd93629c83",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/history-r1-main",
+      "head": "d9a87bf2042ffbbd4627cd85e776bd734bd8fe31",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/personal-memory-r3",
+      "head": "0e0eb04f9bbd805e9e225cfab7bf1710b7fc990e",
+      "branch": "refs/heads/feature/xiaozhi-memory-r3-use-quality",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js",
+        " M apps/desktop/src/renderer/components/office/PiHistoryLookup.tsx"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-main-recheck-d9a87bf",
+      "head": "d9a87bf2042ffbbd4627cd85e776bd734bd8fe31",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-r2-candidate",
+      "head": "0dc86d8e65789063b006550022d8492e8a3fb440",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-r2-history-v3",
+      "head": "f563f58f7f1f7321823922fd28dab71337c030e0",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-r3-candidate",
+      "head": "9b192954e3d64e7d00fe15382a2db34f8351d0cc",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-r3-config",
+      "head": "9b192954e3d64e7d00fe15382a2db34f8351d0cc",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-db-r4-config",
+      "head": "67d273e818d25db8e5a837cac2590a9881a7e315",
+      "branch": "refs/heads/codex/xiaozhi-db-r4-config",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-provider-resource-recovery",
+      "head": "75d773650574f39c822e60874e7e79dad8f76cf7",
+      "branch": "refs/heads/codex/provider-resource-recovery-20261126",
+      "dirty": [
+        "M apps/desktop/scripts/acceptance/provider-resilience-live-j04.mjs",
+        " M apps/desktop/scripts/education/source-anchored-lesson-request.test.mjs",
+        " M apps/desktop/scripts/education/teaching-lesson-export-electron.mjs",
+        " M apps/desktop/src/main/assets/material-repository.ts",
+        " M apps/desktop/src/main/assets/material-tools.ts",
+        " M apps/desktop/src/main/education/classroom-context.ts",
+        " M apps/desktop/src/main/education/classroom-plan-tools.ts",
+        " M apps/desktop/src/main/education/lesson-agenda-revision.ts",
+        " M apps/desktop/src/main/education/natural-lesson-basis.ts",
+        " M apps/desktop/src/main/education/natural-lesson-draft.ts",
+        " M apps/desktop/src/main/education/natural-lesson-tool.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js",
+        " M apps/desktop/src/shared/xiaozhi-projection.ts"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/AppData/Local/Temp/edu-main-harness-87-c77734b2",
+      "head": "27a4c5d33aedc9f22c77a457ade0babb1310d1e7",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/scripts/build-permission-runtime.mjs",
+        " M apps/desktop/scripts/education/document-structure-boundaries.mjs",
+        " M apps/desktop/scripts/education/document-structure-electron.mjs",
+        " M apps/desktop/scripts/education/document-structure-repository.mjs",
+        " M apps/desktop/scripts/education/kb-ai-page-boundaries.mjs",
+        " M apps/desktop/scripts/education/native-real-pdf-electron.mjs",
+        " M apps/desktop/scripts/education/question-web-document-boundaries.mjs",
+        " M apps/desktop/scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs",
+        " M apps/desktop/scripts/xiaozhi-agent/phase5-governance-smoke.mjs",
+        " M apps/desktop/scripts/xiaozhi-agent/phase6-job-recovery-worker.ts",
+        " M apps/desktop/scripts/xiaozhi-agent/phase7-workbench-fixture.mjs",
+        " M apps/desktop/scripts/xiaozhi-agent/phase7-workbench-renderer-smoke.mjs",
+        " M apps/desktop/src/main/assets/material-ai-ipc.ts",
+        " M apps/desktop/src/main/assets/material-ai-repository.ts",
+        " M apps/desktop/src/main/assets/material-book-answer-repository.ts",
+        " M apps/desktop/src/main/assets/material-document-structure.ts",
+        " M apps/desktop/src/main/assets/material-question-archive.ts",
+        " M apps/desktop/src/main/assets/material-structure-repository.ts",
+        " M apps/desktop/src/main/assets/material-structure-runtime.ts",
+        " M apps/desktop/src/main/db.ts",
+        " M apps/desktop/src/main/education/original-question-repository.ts",
+        " M apps/desktop/src/main/education/paper-rich-export.ts",
+        " M apps/desktop/src/main/education/question-web-answer-repository.ts",
+        " M apps/desktop/src/main/retrieval/repository.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/journal.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/reconcile.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/events/journal.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/events/receipts.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/mcp-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/input.ts",
+        " M apps/desktop/src/preload/index.ts",
+        " M apps/desktop/src/renderer/components/QuestionNotebookWorkspace.tsx",
+        " M apps/desktop/src/renderer/components/office/PiCapabilityCenter.tsx",
+        " M apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+        " M apps/desktop/src/renderer/components/office/PiPermissionApproval.tsx",
+        " M apps/desktop/src/renderer/components/office/workbench/PiApprovalInbox.tsx",
+        " M apps/desktop/src/renderer/components/office/workbench/PiRecoveryOverview.tsx",
+        " M apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx",
+        " M apps/desktop/src/renderer/ui-system/EduPanel.tsx",
+        " M apps/desktop/src/shared/material-document-structure.ts",
+        " M apps/desktop/src/shared/native-question.ts",
+        " M apps/desktop/src/shared/question-archive.ts",
+        " M apps/desktop/src/shared/question-book-answer.ts",
+        " M apps/desktop/src/shared/xiaozhi-agent.ts",
+        " M apps/desktop/src/shared/xiaozhi-permissions.ts"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "C:/Users/ZhouXuan/AppData/Local/Temp/eduh-merge-b94d6e2b",
+      "head": "59b81cb1fd7e65020eed2c4d3690a9ef04eb4dd6",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/api.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/file-hash.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/managed-mcp.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/node-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-install.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/npm-source.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/package-archive.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/prepare-receipts.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/public-fetch.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/recipes.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/sources.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/tools.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/core-governance.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/dispatcher.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-executable.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat-require.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/native-stat.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/provider-contract.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/provider-snapshots.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/registry.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/resolver.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/types.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/journal.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/network-receipts.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/network.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/readback.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/reconcile.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/effects/tools.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/environment/runtime-diagnostics.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/environment/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/environment/tools.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/events/recovery-readback.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/host.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/package-manager.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/package-worker.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/registry.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/rpc.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/types.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/extensions/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/mcp-controlled-transport.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/native-session-format.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/current.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/engine.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/lease.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/legacy-approval.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/legacy-request.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/mcp-http.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/mcp.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/network.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/provider-source.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/public.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/resources.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/store.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/summary.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/tool-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/broker.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/launcher.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/operations.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/catalog.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/legacy.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/official-authority.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/private-context.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/private-history.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/requirements.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/teams.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/tools.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/skills/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/checkpoints.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/native-rebuild-state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/native-session-replacement.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/planning-policy.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/planning-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/recovery-inspection.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/startup-recovery.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/controlled-backend.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/input.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/job-state.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/lifecycle.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/presentation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/recovery.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/service.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/shell-startup.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/tools.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/terminal/validation.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js",
+        " M apps/desktop/src/shared/xiaozhi-acquisition.ts",
+        " M apps/desktop/src/shared/xiaozhi-permissions.ts",
+        " M apps/desktop/src/shared/xiaozhi-skill-governance.ts",
+        " M apps/desktop/src/shared/xiaozhi-task-planning.ts",
+        " M apps/desktop/src/shared/xiaozhi-terminal-jobs.ts"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-agent-stream-tools",
+      "head": "1945965c6ab36a4785b53f196b4a3048ec612b50",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/electron.vite.config.ts",
+        " M apps/desktop/package-lock.json",
+        " M apps/desktop/package.json",
+        " M apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tasks/tool-envelope.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/tools/terminal.ts",
+        " M apps/desktop/src/preload/index.ts",
+        " M apps/desktop/src/renderer/components/office/AgentPublicTool.tsx",
+        " M apps/desktop/src/renderer/components/office/OfficeConversation.tsx",
+        " M apps/desktop/src/renderer/components/office/agent-tool-kind.ts",
+        " M apps/desktop/src/shared/xiaozhi-projection.ts",
+        " M apps/desktop/src/shared/xiaozhi-terminal.ts"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-collaboration-rules-20261119",
+      "unavailable": true
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-harness",
+      "head": "29e836e54dff917b005afd3b36d637d3aef289f4",
+      "branch": "refs/heads/codex/product-agent-d3",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-host-resource-r1",
+      "head": "ed618c1c68e3e5561fe57d7555e62073978ebc72",
+      "branch": "refs/heads/codex/host-resource-scheduling-r1",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-kb-isolation",
+      "unavailable": true
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-memory-r1",
+      "head": "10958570226c5c43f4fb9f64702b291851ea862c",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/scripts/education/history-memory-r1-state.mjs"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-personal-memory-r2",
+      "head": "c372ec3423d6d252bad3b598043f1a81b4229350",
+      "branch": "refs/heads/codex/xiaozhi-personal-memory-r2",
+      "dirty": [
+        "M apps/desktop/.gitignore",
+        " M apps/desktop/electron-builder.cjs",
+        " M apps/desktop/scripts/education/personal-memory-r2-candidate-worker.mjs",
+        " M apps/desktop/scripts/education/personal-memory-r2-electron.mjs",
+        " M apps/desktop/scripts/release/prepare-resources.mjs",
+        " M apps/desktop/scripts/release/verify-packaged-resources.cjs",
+        " M apps/desktop/src/main/education/personal-memory/candidate-worker-client.ts",
+        " M apps/desktop/src/main/education/personal-memory/operations.ts",
+        " M apps/desktop/src/main/education/personal-memory/runtime.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js",
+        " M apps/desktop/src/renderer/components/office/PiPersonalMemorySettings.tsx",
+        " M apps/desktop/src/shared/xiaozhi-personal-memory.ts",
+        " M python/omni_edu_personal_memory/worker.py"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-provider-resilience-r1",
+      "head": "4df8baae58af95a8d2e2a2bca00da1f774f9276a",
+      "branch": "refs/heads/codex/xiaozhi-provider-resilience-r1",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-ui-audit-20261124",
+      "unavailable": true
+    },
+    {
+      "directory": "D:/WorkProject/EduProject-ui-ux-r1-20261125",
+      "head": "d16b0af4b95a8aea3050848546209f51e94abca5",
+      "branch": "refs/heads/codex/ui-ux-r1-20261125",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "E:/EduDev-db-audit-20261126",
+      "head": "cbc0872cc5fb114d13407306ee2575600bc99953",
+      "branch": "refs/heads/codex/xiaozhi-db-audit-20261126",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "E:/EduDev-Harness-Acceptance-20261121/b-70b19a8",
+      "head": "70b19a8d4912897d3306eec6a13bbe5151853ec0",
+      "branch": "detached",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "E:/EduDev-Harness-Acceptance-20261121/backup-compatibility",
+      "head": "866eaa509a1810d2b51461396025017ed04b1129",
+      "branch": "detached",
+      "dirty": [],
+      "owner": "Existing worktree owner; no writes by this audit"
+    },
+    {
+      "directory": "E:/EduDev-personal-memory-r2-main",
+      "head": "988a29d83eb661f8db4d706bd82d2270cfebadea",
+      "branch": "refs/heads/integration/personal-memory-r2-main",
+      "dirty": [
+        "M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        " M apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js",
+        " M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js"
+      ],
+      "owner": "Existing worktree owner; no writes by this audit"
+    }
+  ],
+  "contractFiles": [
+    {
+      "file": "01_CONFIRMED_SPEC.md",
+      "sha256": "f6d1f5cf00d10d7ae53bfc87eb77b4efe4edef1cea6e1ebddbffc137b3a08117"
+    },
+    {
+      "file": "02_BASELINE_AND_WIP.md",
+      "sha256": "c31f214d9f887a70de255453e9ed7d0a872f28b4f618e6fafb5d97622784627d"
+    },
+    {
+      "file": "03_GIT_WORKFLOW.md",
+      "sha256": "0b73d1dc67bdbe83a392e9ebdb42c91a78137586f8b9fd5d3d053a18dc4dd1ec"
+    },
+    {
+      "file": "04_IMPLEMENTATION_PLAN.md",
+      "sha256": "cb96c00a12188d3e776df6c40f81d965c3ae2420dbbfd85b25675be6bb6a33e9"
+    },
+    {
+      "file": "05_BDD_SCENARIOS.md",
+      "sha256": "763aa8ab51e2a7bc8b1cf2d96eb063eeb48bd31ebec7ea05aa052b7fa891b1de"
+    },
+    {
+      "file": "06_ATDD_ACCEPTANCE.md",
+      "sha256": "37ed2e8f2b3c7ca180206b394c83da550a50eaf4ab51b1164655f4c516173665"
+    },
+    {
+      "file": "07_TEST_STRATEGY.md",
+      "sha256": "adb89f21a5e3143f85fadcb323a441f2a4f1ddad635243f92ddcd427b4a8bdf1"
+    },
+    {
+      "file": "08_REQUIREMENT_TRACEABILITY.md",
+      "sha256": "25d4833620fef969d4a93821b6c9bd0034ee0540d88dbdbb0cb84e6c0105432b"
+    },
+    {
+      "file": "09_VERIFICATION_RUNBOOK.md",
+      "sha256": "814428f0a76747d66cb7dd446bb32223fd81024d75195056377e4f5d0a29f04d"
+    },
+    {
+      "file": "10_QUALITY_GATES.md",
+      "sha256": "71c784385312c9af8a6ec8a414d0c1df81ed047b553ed5400fe0d9726434bddb"
+    },
+    {
+      "file": "11_PARALLEL_OWNERSHIP.md",
+      "sha256": "c74c046c8e20b708c52d179619a4181b3980fd85799a2da31d6c76e08f3a612b"
+    },
+    {
+      "file": "12_RISK_AND_ROLLBACK.md",
+      "sha256": "2b07959a9ea8c85e8c215ea5980aed908402643a20d5751bb9607245f5de7ae5"
+    },
+    {
+      "file": "13_EXECUTION_STATUS.md",
+      "sha256": "4639a72a314194109ccf18d030202843294e6d4bed558d563464465cd4e31cd8"
+    },
+    {
+      "file": "14_ACCEPTANCE_REPORT.md",
+      "sha256": "e6cbc193bebdf050e55dc1a0cb611b66a81b5e1f5b3afa31d666f3a9a0913920"
+    },
+    {
+      "file": "15_MERGE_REPORT.md",
+      "sha256": "6116e92d6aa2d07b8700d1a48e9182aed6bb5b80b6919d55437dd9d8d0cb6f6f"
+    },
+    {
+      "file": "16_SETTINGS_PRIORITY_IMPLEMENTATION.md",
+      "sha256": "f2b06873c4c210374295c7002e17e259aa669c3f402f204b2ce15c1a94513f4c"
+    },
+    {
+      "file": "17_SETTINGS_ACCEPTANCE_MATRIX.md",
+      "sha256": "8ebb0415c66c8e3096cf334b519980d22a46151e95dd3e7b34c30b5501004e4f"
+    },
+    {
+      "file": "acceptance/acceptance_matrix.csv",
+      "sha256": "3892891c153671171f1ed1bcec16d5f53760b2f4ac81a3989656faef81f192a4"
+    },
+    {
+      "file": "acceptance/COVERAGE_SUMMARY.md",
+      "sha256": "1e610b29887cf7888bf47fdb1fb71faaf1b729835f22a84762f3bcb9d85a99f9"
+    },
+    {
+      "file": "acceptance/legacy_acceptance_matrix.csv",
+      "sha256": "de9383d089c7b4ca4f2da03ea9240c85b69ba7784dc4811782625a984df869b8"
+    },
+    {
+      "file": "acceptance/README.md",
+      "sha256": "3a4b961f8bd6f37cf38f11b039d99147b4809d80f28536aebfb15c6fda2ad420"
+    },
+    {
+      "file": "acceptance/settings_priority_matrix.csv",
+      "sha256": "bf449a110bf12ba06adc09064f1cb26b8afc19829f5212b0c51876f74eccffa0"
+    },
+    {
+      "file": "acceptance/traceability.csv",
+      "sha256": "5fa886798460ef3fd7a9ce5d0828f28bc93ec6478d81920d389629b458662467"
+    },
+    {
+      "file": "CHANGELOG_V3.md",
+      "sha256": "fb1398f1c0c4eb43a018bc8484bbbad875fabe5f7a1dc566a201979c8ae531ae"
+    },
+    {
+      "file": "CHANGELOG_V3_1.md",
+      "sha256": "b5d7e2cc4a4e0b3e7d4c97566b95494698fdb947f3b4d3ae6d091499b29788a0"
+    },
+    {
+      "file": "design/01_SETTINGS_WINDOW_CONTRACT.md",
+      "sha256": "2b19add81047efadc51030a1729124e49b309951949030dc6705481bc36e2d2f"
+    },
+    {
+      "file": "design/02_VISUAL_TOKENS.md",
+      "sha256": "876b9c6594a01c0db8c5c20e15acc344a14a0501a219611d5817e81596316e78"
+    },
+    {
+      "file": "design/03_MOTION_SYSTEM.md",
+      "sha256": "d16632264466e54cfb54b257589e7fdd5257a51abecbbd0f342889206ad1c21d"
+    },
+    {
+      "file": "design/04_PAGE_DESIGN_AND_APPROVAL.md",
+      "sha256": "24c5965f90e0469ba6fb9a137d7e2b0d8845199e5c19e36dfa4df2594d10932a"
+    },
+    {
+      "file": "design/05_TEACHER_WORKFLOWS.md",
+      "sha256": "82645bc3ddcb71c12ff9efc2bced3f7646fc9159ef24b9bd253c3e21dfa60471"
+    },
+    {
+      "file": "design/06_EXTERNAL_REFERENCES.md",
+      "sha256": "64efec13ae6fa1a78a8f8cead4162304edcad813fdf22d4c4120a451f93edce1"
+    },
+    {
+      "file": "design/page-decisions/00_PAGE_DECISION_LOG.md",
+      "sha256": "31dedb0a6560253f653d2399b6c81597a82c9c337e10631f78ebb9663fa2cef8"
+    },
+    {
+      "file": "design/page-decisions/02_MY_TASKS_CONFIRMED.md",
+      "sha256": "2f9e350c661b5fedb8d62320d2a628cbe4bbc896bd7de358d4a1a285c5fa83ec"
+    },
+    {
+      "file": "design/page-decisions/03_MATERIALS_LIBRARY_PROPOSAL.md",
+      "sha256": "8185eaa017b28db576009b945f27b00c77bdff7e1bf33a899d265af7e54644a8"
+    },
+    {
+      "file": "design/page-prototypes/00_INITIAL_REFERENCE_STATUS.md",
+      "sha256": "046d4027f81ffd6e59affcb83d8e602418b6d38514dfebc7c195e435935696ac"
+    },
+    {
+      "file": "design/page-prototypes/PAGE_DESIGN_REVIEW.md",
+      "sha256": "362c6738b835da4951a9b40c282fd24b8f7aae5c010a7f916b790ce057def2a5"
+    },
+    {
+      "file": "design/page-prototypes/REFERENCE_APPROVAL_STATUS.md",
+      "sha256": "ea0d8b815f82ded2bb43aca3da9ccf57ef679b990e064118a19d1e25e35dbf30"
+    },
+    {
+      "file": "design/page-prototypes/SCREENS.json",
+      "sha256": "e0d8191f3db0544a991dbcfb04e7c0ef896b24c360b710ed7b4b631e42b74424"
+    },
+    {
+      "file": "design/page-prototypes/VALIDATION.md",
+      "sha256": "c9ea4f9f898ac9e093c034b44f95745bcbce73183176d14a8cc7755387cd5345"
+    },
+    {
+      "file": "design/settings-priority/01_SETTINGS_DECISION_AND_SCOPE.md",
+      "sha256": "363d821ae339a8a7d22537e15df134e3e9cfda73e1544199630e3324bdfb913a"
+    },
+    {
+      "file": "design/settings-priority/02_SETTINGS_SCREEN_FLOW.md",
+      "sha256": "708e0f97cf7464321642114b3b0de925812ee2d4ba54f525c8e5a80894e4edd9"
+    },
+    {
+      "file": "design/settings-priority/03_SETTINGS_API_AND_OWNERSHIP_MATRIX.md",
+      "sha256": "66bc90ac2fbf29ea4a04d4b844d7df410f04239ac4568f2bd657229baf4bcfb4"
+    },
+    {
+      "file": "design/settings-priority/04_TEACHER_COPY_AND_VISUAL_GUIDE.md",
+      "sha256": "02668bc3e130664e16bbe88c86ef71c57b2a113e919c11606311ba3350af786c"
+    },
+    {
+      "file": "design/settings-priority/05_REFERENCE_AND_EVIDENCE.md",
+      "sha256": "e4e89a6a4827a3c59310cd7458f0208833569f3c11544e32fa9c2e0e8f8faca5"
+    },
+    {
+      "file": "design/v2-prototypes/offline_smoke.json",
+      "sha256": "fc735c5a82ffbe5c90f7e6a2f663dcf57987ac5b72af78d2b4debb09cadecaa1"
+    },
+    {
+      "file": "design/v2-prototypes/README.md",
+      "sha256": "5388e517e11866b07d3cb9294b894b7dfcb267d1b9a4d562fdeb71eb706a4c16"
+    },
+    {
+      "file": "goal.md",
+      "sha256": "49c39c0b37f90e9148fb48819ce0f5245a24f7951df269dd11991939cd8e699c"
+    },
+    {
+      "file": "legacy/LEGACY_GATE_MAPPING.md",
+      "sha256": "2c074145ea3ec4557627d1daec507715ced296e9b5b2f03785b3e3c8e1eb3b83"
+    },
+    {
+      "file": "legacy/README.md",
+      "sha256": "4e43e3e28320a15c2c3020e69daa4d52af2b6164d7478bbe9bc23e8bea391164"
+    },
+    {
+      "file": "legacy/UI_FINAL_ACCEPTANCE_36.md",
+      "sha256": "8cca8c8906cd5fe1ae731148ef61d0736b07542711e963d8c45fdcfed40a4881"
+    },
+    {
+      "file": "legacy/V2_AC_MAPPING.md",
+      "sha256": "d76340c924d23e67e529ba4c05b9bc17a986bb6db0ecece758f3a0517051efb9"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/01_CONFIRMED_PLAN.md",
+      "sha256": "3acb2dbc7dd663cda111a601fa2be4b34236179c08c9467dbe9ce8338d650670"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/02_BASELINE_AND_WIP.md",
+      "sha256": "87d9e5ed65a08327a294d776bb61518ce9a7f42f3834c1c05f719d56a9cc2b1a"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/03_GIT_AND_PARALLEL_RULES.md",
+      "sha256": "abbc4c54e9c932e1356adc076be4ecb1409236ee04f02ff1f70ca36cddaa6b68"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/04_IMPLEMENTATION_PLAN.md",
+      "sha256": "63e4451e68acda43901ff1a4935ce1109cf1f95467ae5c2532fd334d2a1f252d"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/05_ACCEPTANCE_CRITERIA.md",
+      "sha256": "26e87a0ae59cd1630798560c44d801d183c0a9bbbc1c2d5b66bdc7ab9cdddb59"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/06_TEST_STRATEGY.md",
+      "sha256": "752f0ab08661361b8b1d584daab11c6b6c7d6837b6b31638315adb7ca3906f28"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/07_OWNERSHIP_AND_CONTRACTS.md",
+      "sha256": "a7bc63fdb63f5d03d921415256229494c0f56755cd8e45163d6e5f16c263bf20"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/08_RISKS_AND_ROLLBACK.md",
+      "sha256": "5974f11bb1f4d97ba5a4f46e3ee9ee19f30697ad80c08a13c1b92efda285f13b"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/09_STATUS.md",
+      "sha256": "8313d95692072e372dc71b8e71403dd72395f386b846b8b6459845b405630fdc"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/10_ACCEPTANCE_REPORT.md",
+      "sha256": "2faed8871e19b4b0039524dd5c644ec880020aa26a05f38117cdc195ce5f311f"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/11_MERGE_REPORT.md",
+      "sha256": "2fec97633a174d2105cc25aa93fe47ceafc8513fa7353db204cd99a0bdad6873"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/12_SOURCE_EVIDENCE.md",
+      "sha256": "cd6357c416cc7df404c536a5edde4073e769a3556c6d3a852cd851424f4e4518"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/acceptance/README.md",
+      "sha256": "05978926ec0804d44ca20e81289ebb9c7b0eed9d8f3e9e06f2c0914a70cc19d1"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/acceptance/traceability.csv",
+      "sha256": "1eba78f79573b8dfc2631c6f96da3d82085a493ef1f8ac2612aa256ba6db5885"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/01_SETTINGS_WINDOW_CONTRACT.md",
+      "sha256": "e7170d85d1d12168746f54b81c6766377c7897958326b9bfab393f9a163f8d3a"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/02_VISUAL_TOKENS.md",
+      "sha256": "99f2e58b47b7ae3dfcf20c4132fd535a0903bfb0180416f6c15e81a8b8889f2d"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/03_MOTION_SYSTEM.md",
+      "sha256": "9618c9d5a62de7bf2bb87278125eb7323b9a02633ba5a4e89dce7c0ad03f5a79"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/04_THREE_PAGE_SAMPLES.md",
+      "sha256": "b772d2da1c2938faf45919a2e82913489b55c8e71f55cd979021e779563316c1"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/05_REVIEW_AND_CONSULTATION.md",
+      "sha256": "825692aff076d4711f927284486c58188abd969c3f9c947172c105da8ec706e1"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/prototypes/offline_smoke.json",
+      "sha256": "fc735c5a82ffbe5c90f7e6a2f663dcf57987ac5b72af78d2b4debb09cadecaa1"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/prototypes/README.md",
+      "sha256": "5388e517e11866b07d3cb9294b894b7dfcb267d1b9a4d562fdeb71eb706a4c16"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/design/tokens.candidate.json",
+      "sha256": "2d723f50a4f8eaf87f3b26a5a11876054fec7a250dfa4530467c9f08ac76dc0b"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/goal.md",
+      "sha256": "0d6e6bbcd0195a2edd4c44fd113c253c08da50f03b31cde6613d8ade520fc1e3"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/manifest.json",
+      "sha256": "51cf994b712bb72b5ee48461236d67fbaeab6ed886f436a2001e357053c36901"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/PACKAGE_VALIDATION.md",
+      "sha256": "dc70a0699cfb1e98ec5ea7e8b97dcc8fc89efea225d209a7cbb7d15a17f4515e"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/README.md",
+      "sha256": "2d85e38dad2a2794c0c81e41c1fd0921d35b88d1f910feb514dce7a1fcfa96a0"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/START_PROMPT.md",
+      "sha256": "3e83b40169086c7727ef45ae72acf673ab0aaa7fb9e0e54978decb90eaf8f763"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/templates/CONTRACT_HANDSHAKE.md",
+      "sha256": "40812eb229d4153d3cfde42087668ec5148edd4763c57da5c38738a472fd5c9e"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/templates/LEGACY_GATE_MAPPING.md",
+      "sha256": "2cd896a0b409b3be89feab042fb7c5be6bb86ff3b49c624cb84b3d4d5df3874d"
+    },
+    {
+      "file": "legacy/V2_PACKAGE_20261125/Xiaozhi_UIUX_3_0_Engineering_Package_20261125/templates/PHASE0_AUDIT.md",
+      "sha256": "63ead8d97ff7e47557e5da5285c4aabc9086a31774b71d6b9d18524399dba21e"
+    },
+    {
+      "file": "manifest.json",
+      "sha256": "0af74e2c70086484dc14a2a0fbb2bc351e7cda74eabf696fbdef508340795172"
+    },
+    {
+      "file": "PACKAGE_VALIDATION.md",
+      "sha256": "ce69e3d4178f84df0d5821983869c73b52a9219ba9b3f260f1397cc27539226d"
+    },
+    {
+      "file": "README.md",
+      "sha256": "8e67a712646c4042925def0d76f59bdb05ed52be63aea9060c1cb5da42e20a2c"
+    },
+    {
+      "file": "SHA256SUMS.txt",
+      "sha256": "5912f8e5d3e7aa7c20146615765d3ec341ee746f75b3d5b50b69ae8a82987780"
+    },
+    {
+      "file": "source/SOURCE_BASELINE.md",
+      "sha256": "bed4b589c29a112a040699364a3c6037569574c34fb1967d66a5d031f0ad2184"
+    },
+    {
+      "file": "START_PROMPT.md",
+      "sha256": "d0d03404e55fb4739f162062bd414eb030399f66788fc5924a9ce69c52788dc8"
+    },
+    {
+      "file": "templates/CONTRACT_HANDSHAKE.md",
+      "sha256": "e155bb4fe4fda139c6d60ebdf53a290a0db884d19c460a08b731b605d4bb1536"
+    },
+    {
+      "file": "templates/DEFECT_LOOP.md",
+      "sha256": "403d5513e6bb4065335b3deeb5423dfa461ad0d7dc3994c652bbb224fd410b10"
+    },
+    {
+      "file": "templates/PHASE0_AUDIT.md",
+      "sha256": "ffd353dbeda60d28c8dfd549912f8e3242c65f6d506959c6edcf43f63df9a62d"
+    },
+    {
+      "file": "templates/SETTINGS_IPC_AUDIT.csv",
+      "sha256": "f5347e4f3b63a13f77af7b3d350214c9261122565b59f195bb25b9f17a309074"
+    },
+    {
+      "file": "VALIDATION_RESULTS.json",
+      "sha256": "ef8060795420cddc63ce47fadab0bb3207bfcb74b229412a89535aa8683d8ccb"
+    }
+  ],
+  "acCount": 90,
+  "legacyCount": 36,
+  "settingsTabs": [
+    "models",
+    "skills",
+    "capabilities",
+    "tools",
+    "permissions",
+    "teacher-memory",
+    "interface",
+    "archives",
+    "backup",
+    "diagnostics"
+  ],
+  "settingsApis": [
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "line": 61,
+      "method": "getXiaozhiAcquisition"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "line": 106,
+      "method": "searchXiaozhiAcquisition"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "line": 121,
+      "method": "mutateXiaozhiAcquisition"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePiAcquisition.ts",
+      "line": 138,
+      "method": "mutateXiaozhiAcquisition"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 14,
+      "method": "listManagedTools"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 18,
+      "method": "prepareManagedTool"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 22,
+      "method": "removeManagedTool"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 25,
+      "method": "activateManagedTool"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 25,
+      "method": "rollbackManagedTool"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 30,
+      "method": "removeManagedToolVersion"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiManagedTools.tsx",
+      "line": 38,
+      "method": "cancelManagedTool"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/workbench/useWorkbenchSummary.ts",
+      "line": 7,
+      "method": "getXiaozhiWorkbenchSummary"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiPermissionSettings.tsx",
+      "line": 15,
+      "method": "getXiaozhiPermissions"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "line": 20,
+      "method": "getXiaozhiEnvironment"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiEnvironmentSettings.tsx",
+      "line": 41,
+      "method": "repairXiaozhiEnvironment"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/PortableRecoveryChecklist.tsx",
+      "line": 37,
+      "method": "getRetrievalStatus"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/PortableRecoveryChecklist.tsx",
+      "line": 40,
+      "method": "getXiaozhiMcpCatalog"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 158,
+      "method": "backupRestoreStatus"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 173,
+      "method": "exportDataRoot"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 195,
+      "method": "cancelDataBackup"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 211,
+      "method": "verifyDataBackup"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 245,
+      "method": "previewBackupRestore"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 250,
+      "method": "prepareBackupRestore"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "line": 256,
+      "method": "activateBackupRestore"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/WindowsUpdatePanel.tsx",
+      "line": 33,
+      "method": "inspectWindowsUpdate"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/WindowsUpdatePanel.tsx",
+      "line": 37,
+      "method": "prepareWindowsUpdate"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiWebSettings.tsx",
+      "line": 12,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiWebSettings.tsx",
+      "line": 20,
+      "method": "saveXiaozhiWebSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiProviderBalance.tsx",
+      "line": 16,
+      "method": "queryXiaozhiBalance"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiConfigHistory.tsx",
+      "line": 32,
+      "method": "getXiaozhiConfigHistory"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiConfigHistory.tsx",
+      "line": 58,
+      "method": "undoXiaozhiConfig"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/paper-ui/paper-material-handoff.ts",
+      "line": 43,
+      "method": "getMaterialSource"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/desktop/DesktopFrame.tsx",
+      "line": 123,
+      "method": "getDesktopChrome"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/desktop/DesktopFrame.tsx",
+      "line": 124,
+      "method": "onDesktopChrome"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/desktop/DesktopFrame.tsx",
+      "line": 124,
+      "method": "onDesktopCommand"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/desktop/DesktopFrame.tsx",
+      "line": 129,
+      "method": "openDesktopMenu"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 66,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 78,
+      "method": "onXiaozhiEvent"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 93,
+      "method": "stageXiaozhiCredential"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 100,
+      "method": "commitXiaozhiConfig"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 107,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 120,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 143,
+      "method": "commitXiaozhiConfig"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 152,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "line": 164,
+      "method": "verifyXiaozhiCredential"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/skills/SkillGovernancePanel.tsx",
+      "line": 41,
+      "method": "getXiaozhiSkillGovernance"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/skills/SkillGovernancePanel.tsx",
+      "line": 55,
+      "method": "mutateXiaozhiSkillGovernance"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "line": 24,
+      "method": "getXiaozhiSkills"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "line": 35,
+      "method": "previewXiaozhiSkill"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "line": 46,
+      "method": "manageXiaozhiSkill"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "line": 51,
+      "method": "getXiaozhiSkills"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSkillSettings.tsx",
+      "line": 61,
+      "method": "previewXiaozhiSkill"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 30,
+      "method": "getXiaozhiMcpCatalog"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 53,
+      "method": "addXiaozhiMcp"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 63,
+      "method": "setXiaozhiMcpCredential"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 64,
+      "method": "inspectXiaozhiMcp"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 65,
+      "method": "revokeXiaozhiMcp"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 66,
+      "method": "removeXiaozhiMcp"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMcpSettings.tsx",
+      "line": 71,
+      "method": "trustXiaozhiMcp"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDecisionHistory.tsx",
+      "line": 14,
+      "method": "getXiaozhiDecisions"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDecisionHistory.tsx",
+      "line": 23,
+      "method": "replayXiaozhiDecision"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDecisionHistory.tsx",
+      "line": 24,
+      "method": "reviewXiaozhiRoute"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDecisionHistory.tsx",
+      "line": 24,
+      "method": "reviewXiaozhiDecision"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiCandidateHistory.tsx",
+      "line": 13,
+      "method": "getTeacherCandidates"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiCandidateHistory.tsx",
+      "line": 15,
+      "method": "rejectTeacherCandidate"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiCandidateHistory.tsx",
+      "line": 15,
+      "method": "evaluateTeacherCandidate"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDiagnostics.tsx",
+      "line": 17,
+      "method": "saveXiaozhiDiagnostic"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiDiagnostics.tsx",
+      "line": 19,
+      "method": "previewXiaozhiDiagnostic"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiResolvedAgentConfig.tsx",
+      "line": 41,
+      "method": "getXiaozhiResolvedAgentConfig"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMemoryScope.tsx",
+      "line": 38,
+      "method": "getXiaozhiMemoryCatalog"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiMemoryScope.tsx",
+      "line": 39,
+      "method": "getXiaozhiMemoryTrace"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiTeacherMemorySettings.tsx",
+      "line": 75,
+      "method": "getTeacherMemorySettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiTeacherMemorySettings.tsx",
+      "line": 111,
+      "method": "saveTeacherMemorySettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiL2MemorySettings.tsx",
+      "line": 30,
+      "method": "updateAiMemoryEntry"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiL2MemorySettings.tsx",
+      "line": 55,
+      "method": "updateAiMemoryEntry"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiL2MemorySettings.tsx",
+      "line": 75,
+      "method": "cancelAiMemoryEntryUpdate"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiL2MemorySettings.tsx",
+      "line": 110,
+      "method": "getAiMemoryDocument"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 24,
+      "method": "listHistoryMemorySessions"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 30,
+      "method": "getHistoryMemoryIndex"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 41,
+      "method": "listHistoryMemory"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 56,
+      "method": "previewHistoryMemory"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 68,
+      "method": "changeHistoryMemory"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiHistoryMemorySettings.tsx",
+      "line": 84,
+      "method": "rebuildHistoryMemoryIndex"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 77,
+      "method": "readXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 111,
+      "method": "sendEofXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 112,
+      "method": "writeXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 154,
+      "method": "closeInputXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 154,
+      "method": "closeXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 154,
+      "method": "takeControlXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 172,
+      "method": "resizeXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalSession.ts",
+      "line": 201,
+      "method": "onXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalJobs.ts",
+      "line": 17,
+      "method": "listXiaozhiTerminals"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/terminal/useTerminalJobs.ts",
+      "line": 43,
+      "method": "onXiaozhiTerminal"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/OfficeBrowserCapture.tsx",
+      "line": 9,
+      "method": "previewXiaozhiBrowserCapture"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionOriginalGallery.tsx",
+      "line": 9,
+      "method": "getOriginalQuestionGallery"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialLocalBookAnswerSource.tsx",
+      "line": 23,
+      "method": "cancelMaterialPagePreview"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialLayoutPreview.tsx",
+      "line": 19,
+      "method": "cancelMaterialPageLayout"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialLayoutPreview.tsx",
+      "line": 20,
+      "method": "cancelMaterialPageLayout"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialLayoutPreview.tsx",
+      "line": 24,
+      "method": "getMaterialPageLayout"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialOriginalPreview.tsx",
+      "line": 19,
+      "method": "cancelMaterialPagePreview"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialOriginalPreview.tsx",
+      "line": 23,
+      "method": "getMaterialPagePreview"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/product/MaterialOriginalPreview.tsx",
+      "line": 24,
+      "method": "cancelMaterialPagePreview"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/QuestionOriginalPicture.tsx",
+      "line": 21,
+      "method": "getOriginalQuestionImage"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiQuestionSource.tsx",
+      "line": 34,
+      "method": "getQuestionContextSource"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/OfficeWebSearchProcess.tsx",
+      "line": 69,
+      "method": "openXiaozhiWebSource"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/OfficeToolProcess.tsx",
+      "line": 34,
+      "method": "openXiaozhiWebSource"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 22,
+      "method": "cancelXiaozhiAttachment"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 24,
+      "method": "previewXiaozhiAttachment"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 30,
+      "method": "cancelXiaozhiAttachment"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 31,
+      "method": "reviewXiaozhiAttachmentOcr"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 38,
+      "method": "cancelXiaozhiFile"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 39,
+      "method": "listXiaozhiFiles"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 43,
+      "method": "cancelXiaozhiFile"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/LocalAnswerSourceLink.tsx",
+      "line": 44,
+      "method": "previewXiaozhiFile"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 99,
+      "method": "listAiConversations"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 99,
+      "method": "getXiaozhiSettings"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 99,
+      "method": "getDataRoot"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 104,
+      "method": "getXiaozhiSnapshot"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 114,
+      "method": "onXiaozhiEvent"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 143,
+      "method": "setXiaozhiMemoryScope"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 150,
+      "method": "selectXiaozhiWorkspace"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 159,
+      "method": "listAiConversations"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/office/PiSettingsWorkspace.tsx",
+      "line": 161,
+      "method": "getXiaozhiSnapshot"
+    }
+  ],
+  "settingsCriticalGaps": [
+    "App activeView settings replaces main work area",
+    "PiSettingsWorkspace trusts its own localStorage current-session preference",
+    "main settingsSender and Pi fromMain bind only mainWindow",
+    "main preload exposes full omniEdu; no settings-specific entry",
+    "WorkbenchProvider local state has no cross-window storage subscription"
+  ],
+  "versions": {
+    "node": "v24.12.0",
+    "packageManager": "npm@11.21.3",
+    "electron": "43.8.3",
+    "hero": "^3.2.2",
+    "lucide": "^0.468.0",
+    "lockSha256": "626e9eeb540c222cf20e8d9207d2a4cc2da0128df81d0705fc107b27d7509fce"
+  },
+  "scripts": {
+    "ui:review": "node scripts/ui-review-utilities.mjs && node scripts/ui-review-electron.mjs --stay",
+    "test:ui-contracts": "node scripts/ui-contracts.mjs",
+    "test:ui-review": "node scripts/ui-review-electron.mjs",
+    "test:ux00-baseline": "node scripts/xiaozhi-agent/ux00-baseline.mjs",
+    "test:agent-trace": "node scripts/xiaozhi-agent/agent-trace-boundaries.mjs",
+    "test:reply-presentation": "node scripts/xiaozhi-agent/reply-presentation-boundaries.mjs",
+    "test:desktop-process": "node scripts/xiaozhi-agent/desktop-process-boundaries.mjs",
+    "test:model-reasoning": "node scripts/xiaozhi-agent/model-reasoning-boundaries.mjs",
+    "test:model-reasoning-electron": "node scripts/xiaozhi-agent/model-reasoning-electron.mjs",
+    "test:ui-style-isolation": "node scripts/xiaozhi-agent/ui-style-isolation-test.mjs",
+    "verify:deeptutor-question": "node scripts/education/reuse-deeptutor-question.mjs --verify",
+    "verify:hana-pdf-renderer": "node scripts/xiaozhi-agent/reuse-hana-pdf-renderer.mjs --verify",
+    "test:xiaozhi-office-draft": "node scripts/xiaozhi-agent/pi-office-draft-protocol-smoke.mjs",
+    "test:xiaozhi-office-generation": "node scripts/xiaozhi-agent/pi-office-generator-electron-smoke.mjs",
+    "test:xiaozhi-office-artifact-foundation": "node scripts/xiaozhi-agent/pi-office-artifact-foundation-smoke.mjs",
+    "test:xiaozhi-office-artifact-coordinator": "node scripts/xiaozhi-agent/pi-office-artifact-coordinator-smoke.mjs",
+    "test:xiaozhi-office-artifact-host": "node scripts/xiaozhi-agent/pi-office-artifact-host-smoke.mjs",
+    "test:xiaozhi-office-artifact-ui": "node scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs",
+    "test:xiaozhi-document-tools": "node scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs",
+    "test:xiaozhi-document-tools-ui": "node scripts/xiaozhi-agent/pi-office-document-tool-ui-smoke.mjs",
+    "test:xiaozhi-document-read-safety": "node scripts/xiaozhi-agent/pi-document-read-safety-smoke.mjs",
+    "test:xiaozhi-document-worker": "node scripts/xiaozhi-agent/pi-document-host-boundary-smoke.mjs",
+    "verify:hana-documents": "node scripts/xiaozhi-agent/reuse-hana-document-extract.mjs --verify",
+    "test:xiaozhi-document-protocol": "node scripts/xiaozhi-agent/pi-document-protocol-smoke.mjs",
+    "test:xiaozhi-document-ui": "node scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs",
+    "start": "node scripts/start-desktop.mjs",
+    "test:daily-entry": "node scripts/daily-entry-smoke.mjs",
+    "test:sidebar-navigation": "node scripts/workbench-ui.mjs",
+    "test:workbench-ui": "node scripts/workbench-ui.mjs",
+    "verify:deeptutor-reading": "node scripts/education/reuse-deeptutor-reading.mjs --verify",
+    "test:education-capabilities": "node scripts/education/capability-boundary-smoke.mjs",
+    "test:education-journeys": "node scripts/education/golden-teacher-journeys.mjs",
+    "dev": "electron-vite dev",
+    "build": "node scripts/sync-pi-package-capabilities.mjs && node scripts/build-capability-artifacts.mjs && node scripts/build-permission-runtime.mjs && node scripts/build-core-tool-manifest.mjs && tsc --noEmit && electron-vite build",
+    "release:prepare": "node scripts/release/prepare-resources.mjs",
+    "release:win": "npm run dist:win",
+    "preview": "electron-vite preview",
+    "test:smoke": "npm run build && node scripts/electron-smoke.mjs",
+    "test:renderer-components": "node scripts/renderer-component-state-test.mjs",
+    "test:office-tool-expansion": "node scripts/office-tool-expansion-interaction.mjs",
+    "test:office-tool-grouping": "node scripts/office-tool-expansion-grouping.mjs",
+    "test:xiaozhi-pi": "tsc --noEmit && node --experimental-transform-types scripts/xiaozhi-agent/pi-education-boundary-smoke.mjs",
+    "test:xiaozhi-pi-live": "node scripts/xiaozhi-agent/pi-education-live-smoke.mjs",
+    "test:xiaozhi-pi-electron": "node scripts/xiaozhi-agent/pi-education-electron-smoke.mjs",
+    "test:xiaozhi-pi-ui": "npm run build && node scripts/xiaozhi-agent/pi-production-ui-smoke.mjs",
+    "test:xiaozhi-pi-attachment-entry": "npm run build && node scripts/xiaozhi-agent/pi-attachment-entry-ui-smoke.mjs",
+    "test:xiaozhi-pi-composer-send": "npm run build && node scripts/xiaozhi-agent/pi-composer-send-ui-smoke.mjs",
+    "test:xiaozhi-teacher-quick-starts": "node scripts/xiaozhi-agent/pi-teacher-quick-starts-ui.mjs",
+    "test:xiaozhi-narrow-interface": "node scripts/xiaozhi-agent/pi-narrow-interface-ui-smoke.mjs",
+    "test:xiaozhi-dpi-interface": "node scripts/xiaozhi-agent/pi-dpi-interface-ui.mjs",
+    "test:xiaozhi-long-history": "node scripts/xiaozhi-agent/pi-long-history-ui.mjs",
+    "test:xiaozhi-task-browser-admission": "node scripts/xiaozhi-agent/pi-task-browser-admission.mjs",
+    "test:xiaozhi-pi-approvals": "npm run build && node scripts/xiaozhi-agent/pi-approval-ui-smoke.mjs",
+    "test:xiaozhi-pi-controls": "npm run build && node scripts/xiaozhi-agent/pi-control-ui-smoke.mjs",
+    "test:xiaozhi-pi-budget": "npm run build && node scripts/xiaozhi-agent/pi-budget-ui-smoke.mjs",
+    "test:xiaozhi-pi-compaction": "npm run build && node scripts/xiaozhi-agent/pi-compaction-ui-smoke.mjs",
+    "test:xiaozhi-pi-auto-compaction": "npm run build && node scripts/xiaozhi-agent/pi-auto-compaction-ui-smoke.mjs",
+    "test:xiaozhi-pi-auto-boundary": "node scripts/xiaozhi-agent/pi-auto-boundary-smoke.mjs",
+    "test:xiaozhi-pi-model-settings": "tsc --noEmit && node scripts/xiaozhi-agent/pi-model-settings-boundary-smoke.mjs",
+    "test:xiaozhi-pi-model-settings-lock": "tsc --noEmit && node scripts/xiaozhi-agent/pi-model-settings-host-lock-smoke.mjs",
+    "test:xiaozhi-pi-model-settings-ui": "node scripts/xiaozhi-agent/pi-model-settings-ui-smoke.mjs",
+    "test:xiaozhi-pi-settings-workspace-ui": "node scripts/xiaozhi-agent/pi-settings-workspace-ui-smoke.mjs",
+    "test:xiaozhi-pi-settings-local-job": "node scripts/xiaozhi-agent/pi-settings-local-job-smoke.mjs",
+    "verify:hana-settings-workspace": "node scripts/xiaozhi-agent/reuse-hana-settings-workspace.mjs --verify",
+    "test:xiaozhi-pi-queue": "npm run build && node scripts/xiaozhi-agent/pi-queue-ui-smoke.mjs",
+    "test:xiaozhi-pi-queue-boundary": "node scripts/xiaozhi-agent/pi-queue-boundary-smoke.mjs",
+    "test:xiaozhi-pi-memory-scope": "npm run build && node scripts/xiaozhi-agent/pi-memory-model-ui-smoke.mjs",
+    "test:xiaozhi-pi-memory-model": "npm run build && node scripts/xiaozhi-agent/pi-memory-model-ui-smoke.mjs",
+    "test:xiaozhi-pi-memory-epoch": "tsc --noEmit && node scripts/xiaozhi-agent/pi-memory-epoch-smoke.mjs",
+    "test:xiaozhi-pi-skills": "tsc --noEmit && node scripts/xiaozhi-agent/pi-skills-boundary-smoke.mjs",
+    "test:xiaozhi-pi-skills-ui": "npm run build && node scripts/xiaozhi-agent/pi-skills-ui-smoke.mjs",
+    "test:xiaozhi-pi-skills-management-state": "tsc --noEmit && node scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs",
+    "test:xiaozhi-pi-skill-authority": "tsc --noEmit && node scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs",
+    "test:xiaozhi-pi-skill-host-lock": "tsc --noEmit && node scripts/xiaozhi-agent/pi-skill-host-lock-smoke.mjs",
+    "test:xiaozhi-pi-skill-existing-ui": "node scripts/xiaozhi-agent/pi-skill-existing-ui-smoke.mjs",
+    "test:xiaozhi-pi-skill-api": "tsc --noEmit && node scripts/xiaozhi-agent/pi-skill-management-api-smoke.mjs",
+    "test:xiaozhi-pi-skill-settings-ui": "npm run build && node scripts/xiaozhi-agent/pi-skill-settings-ui-smoke.mjs",
+    "test:office-tools": "tsc --noEmit && node scripts/office-agent/hana-tools-smoke.mjs",
+    "test:office-tools-live": "node scripts/office-agent/hana-tools-smoke.mjs --live-network",
+    "test:office-tools-electron": "node scripts/office-agent/hana-tools-electron-smoke.mjs",
+    "test:office-hana-harness": "node scripts/office-agent/codex-app-server-live-smoke.mjs --restricted --hana-tools",
+    "test:office-connection": "tsc --noEmit && node scripts/office-agent/host-connection-smoke.mjs",
+    "test:office-connection-electron": "node scripts/office-agent/host-connection-electron-smoke.mjs",
+    "test:office-host-harness": "node scripts/office-agent/codex-app-server-live-smoke.mjs --restricted --hana-tools --host-client",
+    "test:deepseek": "npm run build && node scripts/deepseek-smoke.mjs",
+    "test:ai-provider": "npm run build && node --experimental-strip-types scripts/ai-provider-electron-smoke.mjs",
+    "test:ai-harness": "tsc --noEmit && node scripts/ai-harness-eval.mjs",
+    "test:triplet-graph": "tsc --noEmit && node scripts/triplet-graph-smoke.mjs",
+    "test:graph-checkpoint": "tsc --noEmit && node scripts/graph-checkpoint-resume-smoke.mjs",
+    "test:graph-interrupt-contract": "node scripts/graph-interrupt-contract-smoke.mjs",
+    "test:triplet-resume": "tsc --noEmit && node scripts/triplet-production-resume-smoke.mjs",
+    "test:triplet-process-crash": "tsc --noEmit && node scripts/triplet-process-crash-smoke.mjs",
+    "test:triplet-retrieve-crash": "tsc --noEmit && node scripts/triplet-process-crash-smoke.mjs --retrieve",
+    "test:triplet-confirm-crash": "tsc --noEmit && node scripts/triplet-process-crash-smoke.mjs --confirm",
+    "test:triplet-confirm-transaction-crash": "tsc --noEmit && node scripts/triplet-process-crash-smoke.mjs --confirm --confirmation-transaction-crash",
+    "test:triplet-network-retry": "tsc --noEmit && node scripts/triplet-network-retry-smoke.mjs",
+    "test:triplet-network-cap": "tsc --noEmit && node scripts/triplet-network-retry-smoke.mjs --cap",
+    "test:triplet-graph-electron": "npm run build && node scripts/triplet-graph-electron-smoke.mjs",
+    "test:ai-workspace-electron": "npm run build && node scripts/ai-workspace-visual-smoke.mjs",
+    "test:ai-agent-runtime": "tsc --noEmit && node scripts/ai-agent-runtime-smoke.mjs",
+    "test:ai-tool-calling": "tsc --noEmit && node scripts/ai-tool-calling-smoke.mjs",
+    "test:ai-confirmation": "tsc --noEmit && node scripts/ai-confirmation-smoke.mjs",
+    "test:ai-structured-reply": "tsc --noEmit && node scripts/ai-structured-reply-smoke.mjs",
+    "test:ai-education-grader": "tsc --noEmit && node scripts/ai-education-grader-smoke.mjs",
+    "test:ai-exercise-set": "tsc --noEmit && node scripts/ai-exercise-set-smoke.mjs",
+    "test:ai-mistake-image": "tsc --noEmit && node scripts/ai-mistake-image-smoke.mjs",
+    "test:ai-knowledge-graph": "tsc --noEmit && node scripts/ai-knowledge-graph-smoke.mjs",
+    "test:ai-document-export": "tsc --noEmit && node scripts/ai-document-export-smoke.mjs",
+    "test:ai-observability": "tsc --noEmit && node scripts/ai-observability-smoke.mjs",
+    "test:ai-usability": "tsc --noEmit && node scripts/ai-usability-smoke.mjs",
+    "test:ai-human-review": "tsc --noEmit && node scripts/ai-usability-human-review-smoke.mjs",
+    "test:ai-replay": "tsc --noEmit && node scripts/ai-usability-replay-smoke.mjs",
+    "test:ai-model-grader": "tsc --noEmit && node scripts/ai-model-grader-smoke.mjs",
+    "test:ai-live-evidence": "tsc --noEmit && node scripts/ai-live-evidence-binding-smoke.mjs",
+    "test:deeptutor-bridge": "tsc --noEmit && node scripts/deeptutor-bridge-contract-smoke.mjs",
+    "test:deeptutor-host-proxy": "node scripts/deeptutor-host-tool-proxy-smoke.mjs",
+    "test:deeptutor-agent-tool-call": "node scripts/deeptutor-agent-tool-call-smoke.mjs",
+    "test:deeptutor-multi-round": "tsc --noEmit && node scripts/deeptutor-multi-round-model-smoke.mjs",
+    "test:deeptutor-progressive-tools": "tsc --noEmit && node scripts/deeptutor-progressive-tools-smoke.mjs",
+    "test:deeptutor-progressive-sidecar": "node scripts/deeptutor-progressive-sidecar-smoke.mjs",
+    "test:deeptutor-model-proxy": "node scripts/deeptutor-model-proxy-smoke.mjs",
+    "test:deeptutor-recovery": "node scripts/deeptutor-sidecar-recovery-smoke.mjs",
+    "test:deeptutor-performance": "node scripts/deeptutor-performance-smoke.mjs",
+    "test:deeptutor-mastery-policy": "node scripts/deeptutor-mastery-policy-smoke.mjs",
+    "test:deeptutor-mastery-pending": "tsc --noEmit && node scripts/deeptutor-mastery-pending-smoke.mjs",
+    "test:deeptutor-mastery-quiz-queue": "tsc --noEmit && node scripts/deeptutor-mastery-quiz-queue-smoke.mjs",
+    "test:deeptutor-attached-source": "tsc --noEmit && node scripts/deeptutor-attached-source-explore-smoke.mjs",
+    "test:deeptutor-r10-budget": "npm run build && node scripts/deeptutor-r10-budget-smoke.mjs",
+    "test:deeptutor-r11-lineage": "npm run build && node scripts/deeptutor-r11-lineage-smoke.mjs",
+    "test:deeptutor-review-scheduler": "tsc --noEmit && node scripts/deeptutor-review-scheduler-smoke.mjs",
+    "test:deeptutor-review-queue": "tsc --noEmit && node scripts/deeptutor-review-queue-smoke.mjs",
+    "test:deeptutor-review-recovery": "node scripts/deeptutor-review-recovery-smoke.mjs",
+    "test:deeptutor-r09-restart": "npm run build && node scripts/deeptutor-r09-restart-smoke.mjs",
+    "test:deeptutor-review-reminder": "tsc --noEmit && node scripts/deeptutor-review-reminder-smoke.mjs",
+    "test:deeptutor-review-reminder-electron": "node scripts/deeptutor-review-reminder-electron-smoke.mjs",
+    "test:deeptutor-review-performance": "node scripts/deeptutor-review-performance-smoke.mjs",
+    "test:deeptutor-review-performance-electron": "node scripts/deeptutor-review-performance-electron-smoke.mjs",
+    "test:deeptutor-learning-analytics": "tsc --noEmit && node scripts/deeptutor-learning-analytics-smoke.mjs",
+    "test:deeptutor-error-taxonomy": "tsc --noEmit && node scripts/deeptutor-error-taxonomy-smoke.mjs",
+    "test:deeptutor-vision-solver": "tsc --noEmit && node scripts/deeptutor-vision-solver-smoke.mjs",
+    "test:deeptutor-notebook-crud": "tsc --noEmit && node scripts/deeptutor-notebook-crud-smoke.mjs",
+    "test:deeptutor-notebook-analysis": "tsc --noEmit && node scripts/deeptutor-notebook-analysis-smoke.mjs",
+    "test:deeptutor-question-notebook": "tsc --noEmit && node scripts/deeptutor-question-notebook-smoke.mjs",
+    "test:deeptutor-book-workspace": "tsc --noEmit && node scripts/deeptutor-book-workspace-smoke.mjs",
+    "test:deeptutor-book-renderer": "tsc --noEmit && node scripts/deeptutor-book-renderer-smoke.mjs",
+    "test:deeptutor-c05-advanced-blocks": "tsc --noEmit && node scripts/deeptutor-c05-advanced-blocks-smoke.mjs",
+    "test:deeptutor-book-planner": "tsc --noEmit && node scripts/deeptutor-book-planner-smoke.mjs",
+    "test:deeptutor-book-health": "tsc --noEmit && node scripts/deeptutor-book-health-smoke.mjs",
+    "test:deeptutor-book-cowriter": "tsc --noEmit && node scripts/deeptutor-book-cowriter-smoke.mjs",
+    "test:deeptutor-book-cowriter-selection": "tsc --noEmit && node scripts/deeptutor-book-cowriter-selection-smoke.mjs",
+    "test:deeptutor-persona-profile": "tsc --noEmit && node scripts/deeptutor-persona-profile-smoke.mjs",
+    "test:deeptutor-memory-trace": "tsc --noEmit && node scripts/deeptutor-memory-trace-smoke.mjs",
+    "test:deeptutor-memory-summary": "tsc --noEmit && node scripts/deeptutor-memory-summary-smoke.mjs",
+    "test:deeptutor-memory-synthesis": "tsc --noEmit && node scripts/deeptutor-memory-synthesis-smoke.mjs",
+    "test:deeptutor-memory-performance": "tsc --noEmit && node scripts/deeptutor-memory-performance-smoke.mjs",
+    "test:deeptutor-backup-integrity": "tsc --noEmit && node scripts/deeptutor-backup-integrity-smoke.mjs",
+    "test:deeptutor-capability-evals": "tsc --noEmit && node scripts/deeptutor-capability-eval.mjs",
+    "test:deeptutor-research-visualization": "tsc --noEmit && node scripts/deeptutor-research-visualization-smoke.mjs",
+    "test:ai-human-review-ui": "npm run build && node scripts/ai-usability-review-ui-smoke.mjs",
+    "test:ai-live-usability": "npm run build && node scripts/ai-live-usability-replay.mjs",
+    "test:ai-execution-routing": "node scripts/ai-execution-routing-smoke.mjs",
+    "test:ai-enter-submit": "node scripts/ai-enter-submit-smoke.mjs",
+    "verify:30-students": "npm run test:smoke",
+    "build:education-runtime": "node scripts/release/build-education-runtime.mjs",
+    "pack:win": "npm run build && npm run release:prepare && electron-builder --win --x64 --dir --config electron-builder.cjs",
+    "dist:win": "npm run build && npm run release:prepare && electron-builder --win nsis --x64 --config electron-builder.cjs",
+    "test:release-workers": "node scripts/release/test-education-runtime.mjs",
+    "test:release-packaged": "node scripts/release/packaged-smoke.mjs",
+    "test:xiaozhi-pi-composer-menus": "npm run build && node scripts/xiaozhi-agent/pi-composer-menus-ui-smoke.mjs"
+  },
+  "ciWorkflows": [],
+  "collaboration": {
+    "userDecision": "有ai负责改动部分，你不是git分支吗？改动完合并到一起就行",
+    "interpretation": "Continue this isolated branch; current model owns window/IPC adapters only. No claim of signatures by other AI; preserve original business services and re-evaluate integration diff before MG-01.",
+    "otherWorktrees": "Read-only inventory; owner-specific dirty changes remain untouched"
+  },
+  "historicalEvidence": "../ux-followup-20261126/delivery.json; prior pass counts are not V3 acceptance",
+  "requirements": [
+    {
+      "id": "REQ-01",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-02",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-03",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-04",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-05",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-06",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-07",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-08",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-09",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-10",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-11",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-12",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-13",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-14",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-15",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-16",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-17",
+      "status": "MISSING",
+      "evidence": "App.tsx:2878; no independent BrowserWindow"
+    },
+    {
+      "id": "REQ-18",
+      "status": "DEFECT",
+      "evidence": "PiSettingsWorkspace.tsx:105-109; main/index.ts:304; xiaozhi-agent/ipc.ts:100"
+    },
+    {
+      "id": "REQ-19",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-20",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-21",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-22",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-23",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-24",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-25",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    },
+    {
+      "id": "REQ-26",
+      "status": "TO_VERIFY",
+      "evidence": "Existing entrypoints require current V3-specific validation"
+    }
+  ]
+}

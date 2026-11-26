@@ -1,0 +1,11 @@
+(node:66548) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS only trusted main can bind a verified host session
+PASS invalid selection cannot become a capability or query arbitrary host IDs
+PASS switching sessions invalidates previous permits before lookup completes
+PASS forged session, epoch or revision fails even in a legitimate settings window
+PASS host revision changes invalidate the same session and fake windows are denied
+PASS superseded asynchronous selection cannot publish old scope
+PASS revoked window fails recheck after awaiting host facts
+PASS caller mutation of a snapshot cannot grant authority
+{"passed":8,"checks":["only trusted main can bind a verified host session","invalid selection cannot become a capability or query arbitrary host IDs","switching sessions invalidates previous permits before lookup completes","forged session, epoch or revision fails even in a legitimate settings window","host revision changes invalidate the same session and fake windows are denied","superseded asynchronous selection cannot publish old scope","revoked window fails recheck after awaiting host facts","caller mutation of a snapshot cannot grant authority"],"boundary":"Capability/epoch unit contract. Host-adapter and actual settings IPC integration remain required; not a substitute configuration store."}

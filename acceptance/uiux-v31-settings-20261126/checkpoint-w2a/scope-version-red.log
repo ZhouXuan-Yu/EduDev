@@ -1,0 +1,24 @@
+(node:68760) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS only trusted main can bind a verified host session
+PASS invalid selection cannot become a capability or query arbitrary host IDs
+PASS switching sessions invalidates previous permits before lookup completes
+PASS forged session, epoch or revision fails even in a legitimate settings window
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Missing expected rejection.
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-scope-test.mjs:25:2
+    at async check (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-scope-test.mjs:6:31)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-scope-test.mjs:24:1 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: /scope_changed/,
+  operator: 'rejects',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

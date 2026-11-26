@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+V3.1按工程包06_ATDD_ACCEPTANCE.md的90项及36 LG独立建账，原R1证据不自动转PASS。生命周期/scope单测与真实Electron夹具仅为子条件，不能声称SET-P0_ACCEPTED。全部合并前必需和MG-01通过才可main集成。[当前入口](UIUX_V31_EXECUTION.md)。
+
 UI遗留专项的当前构建、来源、测试与原生操作见[报告](../audit/ux-followup-20261126/RESULT.md)和`acceptance/ux-followup-20261126/delivery.json`。保留旧UIR1-01至28及A01–A36影响记录，不以本轮局部通过覆盖原失败/未执行；原生125%、完整状态与真实教师/provider边界仍公开记录。
 
 学习记录附件导入在独立 Windows Electron 和真实 SQLite 验证。 [验收方法和记录](../audit/quality-review-20261126.md#验收方法和记录)

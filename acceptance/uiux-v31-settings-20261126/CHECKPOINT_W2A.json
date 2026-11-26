@@ -1,0 +1,112 @@
+{
+  "state": "IMPLEMENTING",
+  "headBeforeCheckpoint": "d16b0af4b95a8aea3050848546209f51e94abca5",
+  "requirements": [
+    "REQ-17",
+    "REQ-18"
+  ],
+  "tasks": [
+    "W2-A",
+    "W2-C"
+  ],
+  "attempts": {
+    "W2-A": 2,
+    "W2-C": 2,
+    "W10": 0
+  },
+  "results": {
+    "controllerUnit": 9,
+    "scopeUnit": 9,
+    "electronLifecycleFixture": 8,
+    "buildExit": 0,
+    "rendererComponents": 261,
+    "audit": 0
+  },
+  "rows": [
+    {
+      "original": "controller-red.log",
+      "originalSha": "8b01184e2a5d7424dfd9dd7f3ec830717d441d262a67e858589d25f3a169cb59",
+      "published": "controller-red.log",
+      "publishedSha": "06b5b64d090813e13454efffd6f544075bd949bf5c16edd2b82c17f0ad414f65"
+    },
+    {
+      "original": "controller-green-1.log",
+      "originalSha": "7f0fcc6edb4f86ca57f3ed92fb37dc566f06e8427075b005021295aa88053582",
+      "published": "controller-green-1.log",
+      "publishedSha": "f0c68b587c698e78785e742512ea1f2aa038c9bee3280a771d5e695b3b2df9bf"
+    },
+    {
+      "original": "controller-crash-red.log",
+      "originalSha": "d370d2d9171fcd8f413392d2bc949f3cee00d2bdae55c3d7d49e819e78d0c270",
+      "published": "controller-crash-red.log",
+      "publishedSha": "7b9eb2bd7b0b68cce05393d24e802976c5d98d1add73dad51788be0fa328da75"
+    },
+    {
+      "original": "controller-green-2.log",
+      "originalSha": "3012d6c94ebc12bde73cd0c5a57f07e9333b77bae899245e26f80ef9eb8a08dc",
+      "published": "controller-green-2.log",
+      "publishedSha": "bf27dfadcc35d681f111695826120320a9c8e8525fe51a48180ad89ee18d62c5"
+    },
+    {
+      "original": "scope-green-1.log",
+      "originalSha": "dc3ada0f41e148af599e8c803cd151c32f211b2889a0e944db1e5e644d26829e",
+      "published": "scope-green-1.log",
+      "publishedSha": "7d5e42501a7bfe0265ab47e289ad567963b9bccf9af45567a57751ef1c3572eb"
+    },
+    {
+      "original": "scope-version-red.log",
+      "originalSha": "f45892850be3e7d5a361c35771af09449b6720e9d50f663a1fa58de7176a3279",
+      "published": "scope-version-red.log",
+      "publishedSha": "a6171c1f62896ef8cc7fab427a18f7af1fef1e470f6669a01752b4f349e4156c"
+    },
+    {
+      "original": "scope-green-2.log",
+      "originalSha": "8b90e9c7d84b99df99acdef618b3034bd484bcabf423a4acd27cf80df226fb43",
+      "published": "scope-green-2.log",
+      "publishedSha": "7268b607197089c6c41d8111198dd8c15fe1b78b454e8237600f46e749554a77"
+    },
+    {
+      "original": "controller-electron-2.log",
+      "originalSha": "43892939cce0fcad60096c307539d77d00ac276e105d4400b892919b9cd094c4",
+      "published": "controller-electron-2.log",
+      "publishedSha": "86332e9340a730b7e3af5835dd3c1cb3f8c94679cc2b72084eb13353deb7eee3"
+    },
+    {
+      "original": "build-w2a.log",
+      "originalSha": "e275389e7f136cc69e1043e46ba8c463d7b5bff1c413fa20e7caa69656093c81",
+      "published": "build-w2a.log",
+      "publishedSha": "2096d165467465e7f80da8d87e2ed135242e1d55fd50405c4e063662612b3306"
+    },
+    {
+      "original": "renderer-w2a.log",
+      "originalSha": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "published": "renderer-w2a.log",
+      "publishedSha": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "original": "audit-w2a.json",
+      "originalSha": "bad0b7f195c9ec4505503ba2baa2f20b784ba411a1f45287d0a120216b46e87e",
+      "published": "audit-w2a.json",
+      "publishedSha": "40cb8db956267f5928c63e7c394b3e377b3a2a28b965a75ded61e8ff3a4b54cc"
+    },
+    {
+      "original": "controller-electron-EOcbKR/report.json",
+      "originalSha": "dbd777fae998c27b9780a0c778800e072bf71d5d9968e3c1405f59a13f873111",
+      "published": "electron-report.json",
+      "publishedSha": "dbd777fae998c27b9780a0c778800e072bf71d5d9968e3c1405f59a13f873111"
+    }
+  ],
+  "integrationStatus": "NOT_INTEGRATED_WITH_APPLICATION",
+  "formalAcceptance": "90 AC and36 LG remain NOT_RUN; module subconditions do not establish SET-P0 or MG-01",
+  "mergeAllowed": false,
+  "sourceFiles": [
+    {
+      "file": "apps/desktop/src/main/settings-window/controller.ts",
+      "sha256": "47465a70b750224235e24faec0c49e74d0441486a529a10c7c05f5af6677ba78"
+    },
+    {
+      "file": "apps/desktop/src/main/settings-window/scope-authority.ts",
+      "sha256": "e121ff3b1cbda2b8140f4157874ca41d76a11ca6aa33c8f98dc31295dc6c58d9"
+    }
+  ]
+}

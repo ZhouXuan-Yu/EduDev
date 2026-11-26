@@ -1,0 +1,27 @@
+(node:64316) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS repeated opens during creation share one top-level nonmodal sandboxed window
+PASS load failure rejects, destroys its window and permits a fresh retry
+PASS missing first paint times out and leaves no hidden singleton
+PASS close during creation settles the pending open instead of hanging
+PASS main focus, settings blur, hide, minimize and close clear dimming
+PASS all geometry stays in DIP workArea including a removed display
+PASS only current settings mainFrame at its exact local document is trusted
+PASS unexpected navigation, webviews and popup windows are denied
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: false == true
+    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:71:108
+    at async test (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:32:30)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:70:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
