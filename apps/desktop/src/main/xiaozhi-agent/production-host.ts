@@ -1261,6 +1261,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       memory:{runId,authority:()=>memory.authority(id),
         personalReferences:(authority,requestId,query,tokens,signal)=>memory.personalReferences(id,authority,requestId,query,tokens,signal),
         readSelected:(authority,signal,personalIds)=>memory.readSelected(id,authority,signal,personalIds),
+        referenceReceived:(scopeVersion,items)=>store.xiaozhiState.recordReferenceDelivery(id,runId,scopeVersion,items),
         trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;

@@ -35,5 +35,11 @@ export async function personalReferencePlan(saved:PrivateMemoryScope, read:Retur
     }
   }
   const plan = planMemoryUse(host,facts);
-  return {...plan, projection:plan.items.length ? instruction+plan.projection : ''};
+  const receipts = plan.items.flatMap(item=>{
+    const pin=saved.selections.find(entry=>entry.layer===item.layer && entry.id===item.id && entry.version===item.version);
+    if (!pin) return [];
+    const {layer,source,id,version,reason}=item;
+    return [{id,version,reason,fingerprint:pin.fingerprint,estimatedTokens:Buffer.byteLength(JSON.stringify({layer,source,id,version}))}];
+  });
+  return {...plan, receipts, projection:plan.items.length ? instruction+plan.projection : ''};
 }

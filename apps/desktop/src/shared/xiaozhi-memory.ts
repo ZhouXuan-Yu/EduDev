@@ -24,7 +24,8 @@ export function validTeachingTarget(value: unknown): value is MemoryTeachingTarg
 export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; teachingTarget?: MemoryTeachingTarget | null; selections: XiaozhiMemoryUseSelection[] };
 export type XiaozhiMemoryCatalogInput = { sessionId: string; offset: number } & XiaozhiMemorySource;
 export type XiaozhiMemorySelectionState = 'ready' | 'changed' | 'disabled' | 'missing' | 'unavailable';
-export type XiaozhiMemoryScope = { teachingTarget?: MemoryTeachingTarget; currentFolderId?: string; version: number; enabled: boolean; modelAccess: 'unavailable' | 'available';
+export type XiaozhiMemoryScope = { receivedReferences?:Array<{id:string;version:number;estimatedTokens:number;reason:string}>;
+  teachingTarget?: MemoryTeachingTarget; currentFolderId?: string; version: number; enabled: boolean; modelAccess: 'unavailable' | 'available';
   selections: Array<XiaozhiMemoryUseSelection & { state: XiaozhiMemorySelectionState; label: string }> };
 export type XiaozhiMemoryPreview = XiaozhiMemorySelection & { text: string; sanitizedText: string;
   section: string; status: 'active' | 'disabled' | 'deleted';

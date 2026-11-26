@@ -70,7 +70,15 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const { fingerprint: _private, ...selection } = item;
       selections.push({ ...selection, state, label: XIAOZHI_MEMORY_LABELS[item.source] });
     }
-    return { ...(session.folderId && !session.studentId && !session.archivedAt ? {currentFolderId:session.folderId} : {}),
+    const receipts=saved.enabled && selections.some(item=>item.layer==='personal' && item.state==='ready')
+      ? await store.xiaozhiState.latestReferenceDeliveries(id) : [];
+    const receivedReferences=receipts.flatMap(row=>{
+      const pin=saved.selections.find(item=>item.layer==='personal' && item.id===row.id && item.version===row.version);
+      if (!pin || pin.fingerprint!==row.fingerprint || saved.version!==row.scopeVersion ||
+          !selections.some(item=>item.layer==='personal' && item.id===row.id && item.state==='ready')) return [];
+      return [{id:pin.id,version:pin.version,estimatedTokens:Number(row.estimatedTokens),reason:String(row.reason)}];
+    });
+    return { ...(receivedReferences.length?{receivedReferences}:{}), ...(session.folderId && !session.studentId && !session.archivedAt ? {currentFolderId:session.folderId} : {}),
       ...(saved.teachingTarget ? {teachingTarget:saved.teachingTarget} : {}), version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
   }
   async function authority(id: string) {

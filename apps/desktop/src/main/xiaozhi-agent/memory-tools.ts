@@ -6,6 +6,7 @@ export type PiMemoryRuntime = {
   readSelected: (authority: string, signal?: AbortSignal, personalIds?:readonly string[]) => ReturnType<ReturnType<typeof createPiMemoryScope>['readSelected']>;
   personalReferences?: (authority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) =>
     ReturnType<ReturnType<typeof createPiMemoryScope>['personalReferences']>;
+  referenceReceived?: (scopeVersion:number,items:readonly import('./memory-use/receipts').ReceivedReference[])=>Promise<void>;
   trace: () => ReturnType<ReturnType<typeof createPiMemoryScope>['trace']>;
 };
 export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string, beforeDelivery: () => void,

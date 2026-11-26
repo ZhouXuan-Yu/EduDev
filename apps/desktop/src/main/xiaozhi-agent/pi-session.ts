@@ -1,3 +1,4 @@
+import {carriesReferenceProjection} from './memory-use/receipts';
 import {createTerminalTool} from './tools/terminal';
 import type {FileReferenceProjection} from './file-references';
 import type {ModelToolPrivacy} from './model-tool-privacy';
@@ -1210,6 +1211,27 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       currentGuidance, submittedTeacherTimestamp,()=>{
         if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
       });
+    if (projectedPersonalIds.length && personalPlan && initialAuthority && options.memory?.referenceReceived) {
+      const writeReceipt=options.memory.referenceReceived;
+      const {projection,receipts}=personalPlan;
+      const {version}=initialAuthority;
+      const ids=projectedPersonalIds;
+      const previousPayload=args[2]?.onPayload,previousResponse=args[2]?.onResponse;
+      let inPayload=false;
+      args[2]={...args[2],onPayload:async(payload,model)=>{
+        const changed=await previousPayload?.(payload,model);
+        inPayload=carriesReferenceProjection(changed??payload,projection);
+        await checkMemory();
+        if(ids!==projectedPersonalIds)throw Error('memory_scope_changed');
+        return changed;
+      },onResponse:async(response,model)=>{
+        await previousResponse?.(response,model);
+        if(inPayload && response.status>=200 && response.status<300) {
+          // Loss of a diagnostic receipt leaves the UI unverified after the actual HTTP response.
+          await writeReceipt(version,receipts).catch(()=>undefined);
+        }
+      }};
+    }
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);

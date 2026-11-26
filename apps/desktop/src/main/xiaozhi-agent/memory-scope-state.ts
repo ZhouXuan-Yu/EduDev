@@ -1,3 +1,4 @@
+import {createReferenceReceipts,referenceReceiptSchema} from './memory-use/receipts';
 import type { Sql } from './session-state';
 import { validTeachingTarget, type MemoryTeachingTarget, type XiaozhiMemoryUseSelection } from '../../shared/xiaozhi-memory';
 import { memorySelectionKey, validMemorySelection, validMemorySession, validMemoryUseSelection } from './memory-selection';
@@ -24,7 +25,9 @@ export async function currentTeachingTarget(sql: Sql, sessionId: string) {
 }
 export function createPiMemoryScopeState(sql: Sql) {
   return {
+    ...createReferenceReceipts(sql),
     async migrateMemoryScope() {
+      await sql.run(referenceReceiptSchema);
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_memory_scopes (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,
         version INTEGER NOT NULL, payload_json TEXT NOT NULL, updated_at TEXT NOT NULL,

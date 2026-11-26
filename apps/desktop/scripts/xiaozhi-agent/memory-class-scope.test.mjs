@@ -42,3 +42,32 @@ test('a confirmed class and term persist, old clients preserve them, and moving 
     assert.deepEqual(await state.memoryScope(session),{version:7,...empty});
   } finally { db.close(); }
 });
+
+test('only the owning Pi run can attest a reference received, with no body stored or duplicate rows',async()=>{
+  const db=new DatabaseSync(':memory:');
+  try {
+    db.exec('CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY); CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT)');
+    const session='aisession_'+randomUUID(),other='aisession_'+randomUUID(),run='run_'+randomUUID();
+    db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(run,session,'pi_education','2026-11-26');
+    const sql={run:async(q,args=[])=>db.prepare(q).run(...args),all:async(q,args=[])=>db.prepare(q).all(...args)};
+    const state=createPiMemoryScopeState(sql);
+    await state.migrateMemoryScope();
+    const item={id:'a'.repeat(64),version:3,fingerprint:'b'.repeat(64),reason:'teaching_scope',estimatedTokens:112};
+    await state.recordReferenceDelivery(other,run,4,[item]);
+    assert.deepEqual(await state.latestReferenceDeliveries(other),[]);
+    await state.recordReferenceDelivery(session,run,4,[item]);
+    await state.recordReferenceDelivery(session,run,4,[item]);
+    assert.deepEqual(await state.latestReferenceDeliveries(session),[{...item,runId:run,scopeVersion:4}]);
+    await assert.rejects(state.recordReferenceDelivery(session,run,4,[{...item,text:'PRIVATE'}]),/invalid_input/);
+    db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run('run_'+randomUUID(),session,'pi_education','2026-11-27');
+    assert.deepEqual(await state.latestReferenceDeliveries(session),[]);
+  } finally {db.close();}
+});
+
+test('only the outgoing current user content can confirm inclusion',async()=>{
+  const {carriesReferenceProjection}=await import('../../src/main/xiaozhi-agent/memory-use/receipts.ts');
+  const marker='引用 '+randomUUID();
+  assert(carriesReferenceProjection({messages:[{role:'user',content:[{type:'text',text:'本轮'+marker}]}]},marker));
+  assert(!carriesReferenceProjection({messages:[{role:'user',content:marker},{role:'user',content:'另一个问题'}]},marker));
+  assert(!carriesReferenceProjection({messages:[{role:'assistant',content:marker}]},marker));
+});

@@ -102,6 +102,10 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
       {running && <p role="status">本轮结束或停止后可修改选择。“关闭并清空”会先停止本轮，再撤销记忆引用。</p>}
       <ul className="pi-memory-selected" data-testid="pi-memory-selected">{scope.selections.map(item => <li key={key(item)} data-memory-id={item.id} data-state={item.state}>
         <span>{item.label} · v{item.version} · {selected.some(entry => key(entry) === key(item)) ? states[item.state] : '已取消，待保存'}</span>
+        {item.layer==='personal' && item.state==='ready' && <span data-testid={`pi-memory-use-${item.id}`}>
+          {scope.receivedReferences?.some(ref=>ref.id===item.id && ref.version===item.version)
+            ? '最近一轮已提供引用，成果仍需核验' : '已选择，最近一轮暂无引用投递回执'}
+        </span>}
         <Button size="sm" variant="ghost" isDisabled={busy || running} data-testid={`pi-memory-remove-${item.id}`} onPress={() => setSelected(previous => previous.filter(entry => key(entry) !== key(item)))}>取消选择</Button>
       </li>)}</ul>
       {!scope.selections.length && <p data-testid="pi-memory-scope-empty">尚未选择长期记忆。</p>}
