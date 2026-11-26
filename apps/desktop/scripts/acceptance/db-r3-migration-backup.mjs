@@ -10,6 +10,14 @@ import {withSql} from './db-foundation-r1-task-fixture.mjs';
 const desktop=resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const output=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results','xiaozhi-db-r3'));
 const fixture=realpathSync(process.env.OMNI_EDU_R3_V6_DATA);
+const expectedVersion=Number(process.env.OMNI_EDU_DB_EXPECTED_VERSION??9);
+const migrationsAfterV6=[
+  'r3.ordinary_config_history.v7',
+  'r1.history_memory_access_and_index.after_r3_config.v8',
+  'r2.personal_memory.after_r3_config.v9',
+];
+assert(Number.isInteger(expectedVersion)&&expectedVersion>=7&&expectedVersion<=6+migrationsAfterV6.length,
+  'Expected a known configuration migration target (v7, v8 or v9)');
 const files=['fixtures','evidence','logs'];
 for(const folder of files)mkdirSync(join(output,folder),{recursive:true});
 const root=mkdtempSync(join(output,'fixtures','R3-migration-backup-'));
@@ -17,7 +25,7 @@ const data=join(root,'data'),profile=join(root,'profile');
 const a='deepseek-flash',b='deepseek-v4-pro',c='deepseek-r3-synthetic-ambient';
 const key='r3-migration-portable-synthetic-key';
 const digest=file=>createHash('sha256').update(readFileSync(file)).digest('hex');
-const report={success:false,root,mainSha256:digest(main),suiteSha256:digest(import.meta.filename),sourceFixture:fixture,checks:[]};
+const report={success:false,root,mainSha256:digest(main),suiteSha256:digest(import.meta.filename),sourceFixture:fixture,expectedVersion,checks:[]};
 const rows=(directory,sql,...values)=>withSql(directory,false,db=>db.prepare(sql).all(...values).map(row=>({...row})));
 const version=directory=>rows(directory,'PRAGMA user_version')[0].user_version;
 const migrations=directory=>rows(directory,'SELECT * FROM xiaozhi_schema_migrations ORDER BY to_version');
@@ -85,10 +93,11 @@ try{
 
   stage='AC-25 update v6';
   await launch();
-  assert.equal(version(data),7);
+  assert.equal(version(data),expectedVersion);
   const upgraded=migrations(data);
   assert.deepEqual(upgraded.slice(0,6),old);
-  assert.deepEqual([upgraded[6].migration_id,upgraded[6].from_version,upgraded[6].to_version],['r3.ordinary_config_history.v7',6,7]);
+  assert.deepEqual(upgraded.slice(6).map(({migration_id,from_version,to_version})=>[migration_id,from_version,to_version]),
+    migrationsAfterV6.slice(0,expectedVersion-6).map((id,index)=>[id,6+index,7+index]));
   const recoveryParent=join(root,'XiaozhiUpgradeRecovery');
   const recovery=readdirSync(recoveryParent).map(name=>join(recoveryParent,name)).find(path=>existsSync(join(path,'app.db')));
   assert(recovery);
@@ -145,7 +154,8 @@ try{
   await app.evaluate((_,folders)=>{process.env.OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE=JSON.stringify(folders);},destinations);
   const full=await backup('full'),portable=await backup('portable');
   for(const copy of [full,portable]){
-    assert.equal(version(copy),7);
+    assert.equal(version(copy),expectedVersion);
+    assert.deepEqual(migrations(copy),upgraded);
     assert.deepEqual(journal(copy),expected);
     assert.deepEqual(safeFacts(copy),expectedFacts);
     assert.deepEqual(jsonls(copy,expectedFacts),expectedFiles);
@@ -168,6 +178,8 @@ try{
   await page.evaluate(id=>window.omniEdu.activateBackupRestore({schemaVersion:'xiaozhi.backup-restore.v1',action:'activate',id}),prepared.id);
   await close();await launch();
   assert.equal(await page.evaluate(()=>window.omniEdu.getDataRoot()),prepared.dataRoot);
+  assert.equal(version(prepared.dataRoot),expectedVersion);
+  assert.deepEqual(migrations(prepared.dataRoot),upgraded);
   assert.deepEqual(journal(prepared.dataRoot),expected);
   assert.equal((await history()).value,b);
   assert((await history()).undo);
