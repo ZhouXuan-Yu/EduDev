@@ -35,6 +35,7 @@ function validPin(pin: Pin) {
       && typeof pin.sourceVersion === 'string' && pin.sourceVersion.trim().length > 0));
 }
 function grantedPins(host: HostSnapshot): Pin[] {
+  if (!Number.isSafeInteger(host.scopeVersion) || host.scopeVersion < 0) return [];
   const preferencePins = new Map<string, Pin>();
   const conflicts = new Set<string>();
   for (const pin of host.preferences) {
@@ -44,7 +45,7 @@ function grantedPins(host: HostSnapshot): Pin[] {
     preferencePins.set(key, pin);
   }
   const preferences = [...preferencePins].filter(([key]) => !conflicts.has(key)).map(([,pin]) => pin);
-  if (!host.enabled || host.selections.length > 12) return preferences;
+  if (host.enabled !== true || host.selections.length > 12) return preferences;
   const explicit = host.selections.filter(pin => ['history','personal','L2','L3'].includes(pin.layer) && validPin(pin));
   const unique = new Set(explicit.map(identity));
   return unique.size === explicit.length && explicit.length === host.selections.length
@@ -68,6 +69,15 @@ function scopePriority(scope: TeachingScope | null, current: TeachingScope) {
 
 function compareText(a: string, b: string) {
   return a < b ? -1 : a > b ? 1 : 0;
+}
+
+function projectionBudget(availableTokens: number) {
+  return Number.isSafeInteger(availableTokens) && availableTokens > 0
+    ? Math.min(1024, Math.floor(availableTokens / 20)) : 0;
+}
+
+function referenceOf({layer,source,id,version}: Pin): Reference {
+  return {layer,source,id,version};
 }
 
 /** Only whole references are projected. Their independent host read still has to succeed.
@@ -105,12 +115,11 @@ export function planMemoryUse(host: HostSnapshot, facts: readonly SourceFact[]) 
   ranked.sort((a,b) => Number(b.named) - Number(a.named) || b.priority - a.priority
     || Number(b.fact.provenance === 'exact') - Number(a.fact.provenance === 'exact')
     || b.fact.relevance - a.fact.relevance || compareText(a.key,b.key));
-  const budget = Number.isSafeInteger(host.availableTokens) && host.availableTokens > 0
-    ? Math.min(1024, Math.floor(host.availableTokens / 20)) : 0;
+  const budget = projectionBudget(host.availableTokens);
   const items: Decision[] = [], serialized: string[] = [];
   let bytes = 2; // Array brackets.
   for (const {fact, named: direct, priority} of ranked) {
-    const ref: Reference = {layer:fact.layer, source:fact.source, id:fact.id, version:fact.version};
+    const ref = referenceOf(fact);
     const json = JSON.stringify(ref), cost = Buffer.byteLength(json) + Number(serialized.length > 0);
     if (bytes + cost > budget) continue;
     bytes += cost;
@@ -131,10 +140,12 @@ export async function dispatchMemoryUse(initial: HostSnapshot, read: (pins: Pin[
   current: () => HostSnapshot, dispatch: (plan: Plan) => void | Promise<void>, signal?: AbortSignal
 ): Promise<{status: DeliveryStatus}> {
   if (signal?.aborted) return {status:'cancelled'};
-  const pins = grantedPins(initial);
-  if (!pins.length) return {status:'empty'};
   const {sessionId,requestId,authority,scopeVersion} = initial;
-  if (!sessionId || !requestId || !authority || !Number.isSafeInteger(scopeVersion)) return {status:'invalidated'};
+  if (!sessionId || !requestId || !authority || !Number.isSafeInteger(scopeVersion) || scopeVersion < 0) return {status:'invalidated'};
+  const pins = grantedPins(initial);
+  const budget = projectionBudget(initial.availableTokens);
+  // Keep the full set for ranking and omitted counts if any reference can fit.
+  if (!pins.some(pin => Buffer.byteLength(JSON.stringify([referenceOf(pin)])) <= budget)) return {status:'empty'};
   let plan: Plan;
   try {
     const facts = await read(pins);

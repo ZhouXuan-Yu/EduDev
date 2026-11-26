@@ -109,3 +109,24 @@ test('equal facts with different property insertion order have the same result',
   const same = {...Object.fromEntries(Object.entries(first).reverse()),scope:{termRef:'term-2',classRef:'class-b'}};
   assert.deepEqual(ids(planMemoryUse(snapshot([a]),[first,same])), ['a']);
 });
+
+test('malformed authority or an unusable reference budget never starts a source read', async () => {
+  const ref = pin('x'.repeat(100));
+  const envelope = {layer:ref.layer, source:ref.source, id:ref.id, version:ref.version};
+  const exact = Buffer.byteLength(JSON.stringify([envelope])) * 20;
+  for (const [change, expected] of [
+    [{enabled:'false'},'empty'], [{scopeVersion:-1},'invalidated'],
+    [{availableTokens:0},'empty'], [{availableTokens:exact-1},'empty'],
+  ]) {
+    const ctx = snapshot([ref], change);
+    let reads = 0, deliveries = 0;
+    const receipt = await dispatchMemoryUse(ctx, async () => { reads++; return [fact(ref)]; },
+      () => ctx, () => { deliveries++; });
+    assert.deepEqual({reads,deliveries,status:receipt.status},{reads:0,deliveries:0,status:expected});
+  }
+  const ctx = snapshot([ref],{availableTokens:exact});
+  let reads=0, deliveries=0;
+  await dispatchMemoryUse(ctx, async () => { reads++; return [fact(ref)]; },
+    () => ctx, () => { deliveries++; });
+  assert.deepEqual([reads,deliveries],[1,1]);
+});
