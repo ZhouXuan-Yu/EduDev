@@ -65,7 +65,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     if(workspace)workspace.inert=true;
     const close=(event:KeyboardEvent)=>{
       if(event.key!=='Escape'||event.defaultPrevented)return;
-      const inside=root.current?.contains(document.activeElement);
+      const inside=root.current?.contains(document.activeElement)||document.activeElement?.getAttribute('data-testid')==='workbench-dismiss-navigation';
       setMobileOpen(false);
       if(inside)root.current?.querySelector<HTMLButtonElement>('[data-testid="workbench-sidebar-toggle"]')?.focus({preventScroll:true});
     };

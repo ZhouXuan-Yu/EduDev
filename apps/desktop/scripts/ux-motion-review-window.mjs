@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {_electron as electron} from 'playwright';
+import {fingerprint} from './acceptance/evidence.mjs';
+import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
+
+const desktop=path.resolve(import.meta.dirname,'..'),repo=path.resolve(desktop,'../..');
+const proof=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+if(!proof.success)throw new Error('Acceptance has not passed');
+const main=path.join(desktop,'out/main/index.js');
+if(fingerprint(path.join(desktop,'out')).sha256!==proof.build)throw new Error('Build changed since acceptance');
+const env={...process.env,OMNI_EDU_DATA_ROOT:proof.data,OMNI_EDU_REPO_ROOT:repo,OMNI_EDU_SKIP_DOTENV:'1'};
+for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
+const app=await electron.launch({args:[main,'--user-data-dir='+proof.profile],cwd:desktop,env,timeout:60000});
+const page=await app.firstWindow();await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
+const identity=await assertIsolatedPiMain(app,main,proof.profile);
+await page.locator('[data-testid=edu-navigation]:visible').getByTestId('nav-ai-workspace').click();
+const window=await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0];w.setContentSize(1366,768);w.on('page-title-updated',event=>event.preventDefault());w.setTitle('小智 · 体验与动效验收（最新版·独立数据）');w.show();w.focus();return{pid:process.pid,title:w.getTitle(),visible:w.isVisible(),bounds:w.getBounds()};});
+const receipt={head:execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),main,source:fingerprint(path.join(desktop,'src')).sha256,build:proof.build,data:proof.data,profile:proof.profile,identity,window,scope:'Actual production main; fictional acceptance data retained. No replacement of daily configuration, user data or source worktree.'};
+const output=path.join(repo,'docs/audit/ux-motion-20261126');fs.writeFileSync(path.join(output,'review-window.json'),JSON.stringify(receipt,null,2));
+await page.screenshot({path:path.join(output,'review-window.png')});
+console.log(JSON.stringify({ready:true,...window}));
+await new Promise(resolve=>app.on('close',resolve));
