@@ -20,7 +20,7 @@ import {registerPaperBasketIpc} from '../education/paper-basket-api';
 import {validPaperOutput} from '../../shared/paper-export';
 import {registerPracticeReviewIpc} from '../education/practice-review-api';
 import type { IpcMain, BrowserWindow } from 'electron';
-import { app, dialog, shell } from 'electron';
+import { app, dialog, shell, powerMonitor } from 'electron';
 import {providerCredentialCodec} from '../provider-credential-codec';
 import {registerWebIpc} from './web-api';
 import {registerAttachmentIpc} from './attachment-api';
@@ -222,5 +222,8 @@ export function registerXiaozhiIpc(options: {
       return result.canceled?undefined:result.filePaths[0];
     });
   });
-  return host;
+  const resumed=()=>{void host.providerResumed().catch(()=>undefined);};
+  powerMonitor.on('resume',resumed);
+  const close=host.close;
+  return {...host, async close(){powerMonitor.removeListener('resume',resumed);await close();}};
 }

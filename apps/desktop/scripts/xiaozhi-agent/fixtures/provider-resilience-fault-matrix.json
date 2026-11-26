@@ -1,0 +1,204 @@
+{
+  "schema": "fixture.resilience.faults.v1",
+  "note": "logical semantics to map to existing error types; counts only confirmed dependency-failure observations, never trust provider hint alone; fixture synthetic",
+  "cases": [
+    {
+      "id": "F01",
+      "signal": "connect_failed",
+      "stage": "before_tool_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "transient",
+      "allowed_next_action": "probe_or_retry_safe",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F02",
+      "signal": "http_429",
+      "stage": "before_response_body",
+      "effect_evidence": "explicit_model_http_rejection",
+      "expected_category": "transient",
+      "allowed_next_action": "existing_model_retry",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F03",
+      "signal": "http_503",
+      "stage": "before_response_body",
+      "effect_evidence": "explicit_model_http_rejection",
+      "expected_category": "transient",
+      "allowed_next_action": "existing_model_retry",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F04",
+      "signal": "stream_interrupted",
+      "stage": "partial_response",
+      "effect_evidence": "unknown",
+      "expected_category": "ambiguous",
+      "allowed_next_action": "stop_or_explicit_continue",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F05",
+      "signal": "transport_lost",
+      "stage": "after_dispatch",
+      "effect_evidence": "unknown",
+      "expected_category": "effect_unknown",
+      "allowed_next_action": "reconcile_only",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F06",
+      "signal": "timeout",
+      "stage": "after_dispatch",
+      "effect_evidence": "unknown",
+      "expected_category": "effect_unknown",
+      "allowed_next_action": "reconcile_only",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F07",
+      "signal": "timeout",
+      "stage": "safe_local_read",
+      "effect_evidence": "no_effect_proven",
+      "expected_category": "transient",
+      "allowed_next_action": "retry_if_budget",
+      "counts_dependency_failure": true
+    },
+    {
+      "id": "F08",
+      "signal": "schema_changed",
+      "stage": "reconnect",
+      "effect_evidence": "none_proven",
+      "expected_category": "security",
+      "allowed_next_action": "invalidate_current_binding",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F09",
+      "signal": "capability_revoked",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "security",
+      "allowed_next_action": "deny",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F10",
+      "signal": "authentication",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "configuration",
+      "allowed_next_action": "needs_teacher",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F11",
+      "signal": "invalid_input",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "input",
+      "allowed_next_action": "correct_input",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F12",
+      "signal": "source_changed",
+      "stage": "pre_commit",
+      "effect_evidence": "none_proven",
+      "expected_category": "conflict",
+      "allowed_next_action": "read_current",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F13",
+      "signal": "resource_busy",
+      "stage": "queued",
+      "effect_evidence": "none_proven",
+      "expected_category": "resource_wait",
+      "allowed_next_action": "bounded_wait",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F14",
+      "signal": "cancelled",
+      "stage": "queued",
+      "effect_evidence": "none_proven",
+      "expected_category": "cancelled",
+      "allowed_next_action": "stop",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F15",
+      "signal": "permission_pending",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "approval",
+      "allowed_next_action": "existing_approval",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F16",
+      "signal": "budget_exceeded",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "budget",
+      "allowed_next_action": "stop",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F17",
+      "signal": "provider_self_report_retryable",
+      "stage": "unknown",
+      "effect_evidence": "unknown",
+      "expected_category": "unknown",
+      "allowed_next_action": "conservative_readback",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F18",
+      "signal": "old_epoch_success",
+      "stage": "late_callback",
+      "effect_evidence": "unknown",
+      "expected_category": "stale",
+      "allowed_next_action": "discard_for_current",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F19",
+      "signal": "connection_recovered",
+      "stage": "probe",
+      "effect_evidence": "none_proven",
+      "expected_category": "health_only",
+      "allowed_next_action": "revalidate_before_ready",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F20",
+      "signal": "success",
+      "stage": "verified_readback",
+      "effect_evidence": "known",
+      "expected_category": "success",
+      "allowed_next_action": "continue",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F21",
+      "signal": "permission_denied",
+      "stage": "pre_dispatch",
+      "effect_evidence": "none_proven",
+      "expected_category": "security",
+      "allowed_next_action": "deny",
+      "counts_dependency_failure": false
+    },
+    {
+      "id": "F22",
+      "signal": "dependency_missing",
+      "stage": "preparation",
+      "effect_evidence": "none_proven",
+      "expected_category": "configuration",
+      "allowed_next_action": "verified_recipe_or_needs_teacher",
+      "counts_dependency_failure": false
+    }
+  ]
+}

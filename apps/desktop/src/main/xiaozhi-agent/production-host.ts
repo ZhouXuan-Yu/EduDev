@@ -197,11 +197,13 @@ import { publicEducationSkills } from './education-skills';
 import { createManagedEducationSkills } from './managed-skills';
 import { parseFrontmatter } from '@earendil-works/pi-coding-agent';
 import type { XiaozhiSkill } from '../../shared/xiaozhi-skills';
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { randomUUID } from 'node:crypto';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 import { createNativeModelSwitch, type ModelSwitchStage } from './native-model-switch';
 import { createMcpRuntime } from './mcp-runtime';
+import {createProviderHealth} from './provider-health';
+import {createProviderCooldownStore} from './provider-cooldown-store';
 import { createDecisionLedger } from './decisions/ledger';
 import { judgeDecision,judgeRoute } from './decisions/deepseek-shadow';
 import {createDecisionAuthority} from './decisions/authority';
@@ -403,7 +405,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     verifyProvider: async provider => {
       if (provider.id.startsWith('edu.native.tool.')) return validCorePermissionProvider(store.xiaozhiState.capabilities, provider);
       if (provider.id.startsWith('mcp.mcp-')) {
-        const current = await mcp.authority('mcp_' + provider.id.slice('mcp.mcp-'.length));
+        const current = await mcp.trustedAuthority('mcp_' + provider.id.slice('mcp.mcp-'.length));
         return !!current && current.sourceHash === provider.sourceHash && current.schemaHash === provider.schemaHash;
       }
       return validNativePermissionProvider(provider);
@@ -563,7 +565,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'learning_review',review});}
   });
-  const mcp = createMcpRuntime(store.xiaozhiState.sql, options.settingsCodec, { sanitize: text => sanitizeOfficeDocumentText(store, text) });
+  const cooldowns=createProviderCooldownStore(store.xiaozhiState.sql);
+  const providerHealth=createProviderHealth({persistence:cooldowns});
+  const mcp = createMcpRuntime(store.xiaozhiState.sql, options.settingsCodec, { health:providerHealth,sanitize: text => sanitizeOfficeDocumentText(store, text) });
   const capabilityAdapters = createAdapterRegistry({audit: async (context, adapterId, code) => {
     await store.xiaozhiState.permissions.audit(context.sessionId, 'capability_adapter_denied', adapterId,
       {code, taskId: context.taskId, runId: context.runId, callId: context.callId});
@@ -1014,7 +1018,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     })(); recoveringModels.set(id,work);
     try {await work;}finally{recoveringModels.delete(id);}
   }
-  async function sessionConfiguration(id:string,settings:{apiKey:string;model:string;thinking?:Awaited<ReturnType<typeof modelSettings.captureRun>>['thinking']},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
+  async function sessionConfiguration(id:string,settings:{apiKey:string;model:string;providerConfigRevision?:string|number;thinking?:Awaited<ReturnType<typeof modelSettings.captureRun>>['thinking']},runId:string,capabilities:XiaozhiModelCapabilities|undefined,
     budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions & {thinkingBaseline:PreparedAgentConfig['thinking']}> {
     await skillsReady;
     const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
@@ -1058,6 +1062,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       workspace:()=>host.resolveFileWorkspace(id),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped),
       sanitize:async text=>(await createStudentContextSanitizer(store))(text),sanitizer:()=>createStudentContextSanitizer(store),
       fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText}):undefined;
+    const providerHealthSalt=await cooldowns.salt();
     const mcpTools = owner?.task ? await mcp.tools(createMcpPermissionContext({permissions, store: store.xiaozhiState.permissions,
       beforeCall: async (source, tool, input, signal, callId) => {
         if (!owner.toolGovernance) throw Error('permission_denied');
@@ -1074,13 +1079,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       owner: () => {
         if (!owner.publisher || !owner.task || owner.stopped || active.get(id) !== owner) throw Error('permission_denied');
         return {...owner.publisher.owner, taskId: owner.task.id};
-      }})) : {definitions: [], dispose: async () => undefined};
+      }}),{signal:owner.abort.signal}) : {definitions: [], dispose: async () => undefined};
     const observedQuestions=new Map<string,QuestionContextSource>();
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
     try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,thinkingBaseline,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+      modelProviderHealth:{health:providerHealth,keyForModel:modelId=>'deepseek:'+createHmac('sha256',providerHealthSalt)
+        .update(JSON.stringify([settings.providerConfigRevision,settings.apiKey,modelId])).digest('hex')},
       ...(owner?.naturalLessonDraft&&lessonIntent?{naturalLessonDraft:{
         subject:lessonIntent.subject,grade:lessonIntent.grade,...owner.naturalLessonDraft,
         basis:lessonBasis&&{
@@ -1266,7 +1273,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     if(!settings.apiKey)throw new Error('authentication');
     if(ledger && ledger.revision!==input.version)throw new Error('conflict');
     const capabilities=await readDeepSeekCapabilities(root,settings.model);
-    const base=await sessionConfiguration(id,{apiKey:settings.apiKey,model:settings.model},'ximodel_'+randomUUID(),capabilities,(await store.xiaozhiState.budgetSettings(id)).budget);
+    const base=await sessionConfiguration(id,{...settings,apiKey:settings.apiKey},'ximodel_'+randomUUID(),capabilities,(await store.xiaozhiState.budgetSettings(id)).budget);
     const {createPiXiaozhiSession}=await import('./pi-session');
     const agent=await createPiXiaozhiSession({...base,switchTarget:target});
     try {
@@ -1409,9 +1416,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         adapters: run.dynamicCapabilities,
         adapterRegistry: capabilityAdapters,
         current: () => !closing && active.get(id) === run && !run.stopped,
-        canRefresh: async capabilityId => run.agent?.canRefreshCapabilities() === true
+        canRefresh: async (capabilityId, scope) => run.agent?.canRefreshCapabilities() === true
           && !(await store.xiaozhiState.effects.forTask(id, run.task!.id)).some(effect =>
-            effect.contract.capabilityId === capabilityId && ['local_write', 'external_effect'].includes(effect.contract.effect)
+            (scope === 'provider_recovery' || effect.contract.capabilityId === capabilityId)
+              && ['local_write', 'external_effect'].includes(effect.contract.effect)
               && ['intent', 'executing', 'unknown'].includes(effect.state)),
         workspace: () => host.resolveFileWorkspace(id),
         persist: action => run.publisher!.persist(() => action()),
@@ -2486,6 +2494,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       },{timeoutMs:options.shutdownTimeoutMs??5000});return {ok:true};}
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },
+    async providerResumed(){if(!closing)await providerHealth.revalidateAfterResume();},
     async close() {
       closing = true;ordinaryConfig.clear();const prewarmStopped=startupPrewarm.close();for(const pending of admissions.values())for(const controller of pending)controller.abort();
       for (const run of active.values()) { run.stopped = true; run.abort.abort('app_shutdown'); }
@@ -2508,6 +2517,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await Promise.allSettled([...starting.values()].map(item => item.result));
       for (const [id,run] of active) { await controls.finish(id,run.runId,run.abort.signal.reason==='app_shutdown'); await approvals.cancel(run.runId, true); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...executions.values()].map(execution => execution.done));
+      await providerHealth.ready();
       },{timeoutMs:options.shutdownTimeoutMs??5000});}
       catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}
       await prewarmStopped;

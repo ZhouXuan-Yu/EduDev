@@ -21,6 +21,24 @@ try{
  await check('Normal result and fifth Pi context pass through, cleanup releases registry and listeners',async()=>{const r=runtime();const result=await r.execute(definition('office_read_text',async(id,args,signal,progress,context)=>{assert.equal(context.owned,37);assert.equal(args.value,'owned');return ok();}));assert.equal(result.isError,undefined);assert.equal(result.details.execution.state,'succeeded');assert.equal(r.registry.activeCount(r.sessionId),0);assert.equal(r.listeners.size,0);assert.equal(r.admitted(),1);});
  await check('SDK input schema rejects missing/extra/wrong fields before any dispatch or admission',async()=>{const r=runtime();let dispatch=0;const d=definition('office_read_text',async()=>{dispatch++;return ok();});for(const [i,args]of[{}, {value:'owned',extra:'private'},{value:'x'.repeat(21)}].entries()){const out=await r.boundary.execute(d,'invalid_'+i,args,undefined,undefined,{});assert.equal(out.isError,true);const feedback=out.content.map(x=>x.text).join('\n');assert.match(feedback,/value|extra/);assert(!feedback.includes('Received arguments:'));assert(!feedback.includes('private'));}assert.equal(dispatch,0);assert.equal(r.admitted(),0);});
  await check('Signal-ignoring write times out with unknown effect, never retries, and retains actual registry until real settlement',async()=>{const r=runtime();let done,seen;const d=definition('office_edit_text',async(_id,_args,signal)=>{seen=signal;return new Promise(resolve=>{done=resolve;});});const out=await r.execute(d);assert.equal(out.details.execution.code,'timeout');assert.equal(out.details.execution.effect,'unknown');assert(seen.aborted);assert.equal(r.registry.activeCount(r.sessionId),1);assert.equal(r.attempts.filter(a=>a.state==='started').length,1);done(ok());await sleep(5);assert.equal(r.registry.activeCount(r.sessionId),0);});
+ await check('A timed-out safe read blocks the same physical operation, even across a new call ID or run, until actual settlement',async()=>{
+  const r=runtime();let finish,physical=0;
+  const d=definition('office_read_text',async()=>{physical++;return physical===1?new Promise(resolve=>{finish=resolve;}):ok();});
+  try{
+   const first=await r.execute(d,'owned_timeout');
+   assert.equal(first.details.execution.code,'timeout');
+   assert.equal(physical,1);
+   assert.equal(r.registry.activeCount(r.sessionId),1);
+   r.change();
+   const duplicate=await r.execute(d,'fresh_call_id');
+   assert.equal(duplicate.details.execution.code,'resource_busy');
+   assert.equal(physical,1);
+  }finally{finish?.(ok());}
+  await sleep(5);
+  assert.equal((await r.execute(d,'explicitly_new_after_end')).details.execution.state,'succeeded');
+  assert.equal(physical,2);
+  assert.equal(r.registry.activeCount(r.sessionId),0);
+ });
  await check('Caller cancellation settles ignoring tool promptly and suppresses late progress across a new run',async()=>{const r=runtime({timeout:()=>10000}),abort=new AbortController();let done,update,updates=0;const task=r.execute(definition('office_read_text',async(_i,_v,_s,onUpdate)=>{update=onUpdate;return new Promise(resolve=>{done=resolve;});}),'cancel_call',abort.signal,()=>{updates++;});await sleep(5);abort.abort();const out=await task;assert.equal(out.details.execution.code,'cancelled');r.change();update(ok('late'));done(ok());await sleep(5);assert.equal(updates,0);assert.equal(r.registry.activeCount(r.sessionId),0);});
  await check('Pre-aborted call dispatches no work and acquires no stale registry',async()=>{const r=runtime();let count=0;const c=new AbortController();c.abort();const out=await r.execute(definition('office_read_text',async()=>{count++;return ok();}),'pre_abort',c.signal);assert.equal(out.isError,true);assert.equal(count,0);assert.equal(r.registry.activeCount(r.sessionId),0);});
  await check('Synchronous tool throw and late rejection are drained without wedging the race',async()=>{const r=runtime();const out=await r.execute(definition('office_read_text',()=>{throw new Error('permission_denied');}));assert.equal(out.details.execution.code,'permission_denied');assert.equal(r.registry.activeCount(r.sessionId),0);let reject;const task=r.execute(definition('office_edit_text',()=>new Promise((_,bad)=>{reject=bad;})),'late_reject');assert.equal((await task).details.execution.code,'timeout');reject(new Error('owned late failure'));await sleep(5);assert.equal(r.registry.activeCount(r.sessionId),0);});

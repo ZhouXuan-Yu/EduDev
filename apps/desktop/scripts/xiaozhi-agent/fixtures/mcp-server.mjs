@@ -26,9 +26,12 @@ export async function startMcpFixture() {
     state.requests++;
     if (state.auth && req.headers.authorization !== 'Bearer ' + state.auth) { res.writeHead(401).end(); return; }
     let body = ''; for await (const chunk of req) { body += chunk; if (body.length > 262144) { res.writeHead(413).end(); return; } }
-    const response = reply(JSON.parse(body), state);
+    const request = JSON.parse(body);
+    const original = reply(request, state);
+    const response = (await state.beforeReply?.(request, original, res)) ?? original;
     if (response === 'drop') { req.socket.destroy(); return; }
     if (response === 'hang') return;
+    if (response?.httpStatus) {res.writeHead(response.httpStatus, response.headers).end(); return;}
     if (!response) { res.writeHead(202).end(); return; }
     res.writeHead(200, { 'content-type': 'application/json' }).end(JSON.stringify(response));
   });

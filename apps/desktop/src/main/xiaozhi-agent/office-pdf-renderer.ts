@@ -9,7 +9,11 @@ import {isMathOfficeSchema,isTeachingHandoutOfficeDraft,type OfficeDraft} from '
 import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA} from '../../shared/classroom-export';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 import {PAPER_PRINT_LAYOUT,paperContentWidthTwips,paperContentHeightPx,paperMathCellWidth,paperPrintRole,paperAnswerNumber} from '../../shared/paper-print-layout';
+import {withOfficePdfBudget} from './office-pdf-budget';
 const escape=(value:unknown)=>String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+class SettledPdfPrintError extends Error {
+ constructor(cause: Error) {super('generation_failed',{cause});}
+}
 /** Static document data, never arbitrary HTML or resource URLs supplied by a tool. */
 export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()):string{
  const layout='paperSource'in draft?draft.paperSource.layout:undefined;
@@ -38,7 +42,9 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  for(const font of options.fontResources||[]){if(!/^data:(?:font\/[^;,]+|application\/(?:font-woff|x-font-ttf));base64,[A-Za-z0-9+/=]+$/.test(font))throw Error('configuration');allowedImages.add(font);}
  const root=fs.realpathSync(options.dataRoot),staging=fs.mkdtempSync(path.join(root,'office-render-'));
  const htmlPath=path.join(staging,'input.html'),outputPath=path.join(staging,'output.pdf'),url=pathToFileURL(htmlPath).href;
- const privateSession=session.fromPartition(`office-render-${randomUUID()}`);let window:BrowserWindow|undefined,reason:string|undefined;
+ const privateSession=session.fromPartition(`office-render-${randomUUID()}`);
+ let window:BrowserWindow|undefined,reason:string|undefined,destroyWindow:(()=>void)|undefined;
+ const printing=new Set<Promise<Buffer>>();
  privateSession.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));privateSession.setPermissionCheckHandler(()=>false);
  privateSession.webRequest.onBeforeRequest({urls:['<all_urls>']},(details,callback)=>{
   const cancel=details.url!==url&&!allowedImages.has(details.url)&&!(options.inlineResources&&/^(data:|blob:)/.test(details.url));
@@ -48,13 +54,26 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  let settleStop:()=>void=()=>{};
  const stopped=new Promise<void>(resolve=>{settleStop=resolve;});
  // Destroying WebContents can leave its script/print Promise pending indefinitely.
- const stop=(code:string)=>{reason??=code;settleStop();if(window&&!window.isDestroyed())window.destroy();};
+ const stop=(code:string)=>{reason??=code;settleStop();if(!printing.size)destroyWindow?.();};
  const abort=()=>stop('cancelled'),deadline=options.deadlineMs??60000;
  const timer=setTimeout(()=>stop('timeout'),deadline);options.signal?.addEventListener('abort',abort,{once:true});
  // Constructor injection only. The four upstream function bodies stay unchanged.
  class IsolatedWindow{
   constructor(input:Electron.BrowserWindowConstructorOptions){
    window=new BrowserWindow({...input,show:false,webPreferences:{...input.webPreferences,session:privateSession,javascript:input.webPreferences?.javascript??false,sandbox:true,nodeIntegration:false,contextIsolation:true}});
+   const owned=window,destroy=owned.destroy.bind(owned),print=owned.webContents.printToPDF.bind(owned.webContents);
+   destroyWindow=()=>{if(!owned.isDestroyed())destroy();};
+   // A caller can stop waiting while Chromium still owns the print request.
+   owned.destroy=()=>{if(!printing.size)destroyWindow?.();};
+   owned.webContents.printToPDF=async settings=>{
+    if(reason||options.signal?.aborted||owned.isDestroyed())throw Error(reason||'cancelled');
+    const job=print(settings);printing.add(job);
+    try{
+     const bytes=await job;
+     if(reason||options.signal?.aborted)throw Error(reason||'cancelled');
+     return bytes;
+    }finally{printing.delete(job);}
+   };
    window.webContents.on('will-navigate',event=>event.preventDefault());window.webContents.on('will-redirect',event=>event.preventDefault());window.webContents.setWindowOpenHandler(()=>({action:'deny'}));
    if(reason||options.signal?.aborted)stop(reason||'cancelled');return window;
   }
@@ -65,9 +84,14 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
   const result=await Promise.race([run({Window:IsolatedWindow as unknown as typeof BrowserWindow,htmlPath,outputPath,deadline}),stopped.then(()=>{throw new Error(reason||'cancelled');})]);
   if(reason||options.signal?.aborted)throw new Error(reason||'cancelled');
   return result;
- }catch(error){throw Object.assign(new Error(reason||(options.signal?.aborted?'cancelled':error instanceof Error&&error.message==='too_large'?'too_large':'generation_failed')),{cause:error});}
+ }catch(error){
+  if(!reason&&!options.signal?.aborted&&error instanceof SettledPdfPrintError)throw error;
+  throw Object.assign(new Error(reason||(options.signal?.aborted?'cancelled':error instanceof Error&&error.message==='too_large'?'too_large':'generation_failed')),{cause:error});
+ }
  finally{
-  clearTimeout(timer);options.signal?.removeEventListener('abort',abort);if(window&&!window.isDestroyed())window.destroy();
+  clearTimeout(timer);options.signal?.removeEventListener('abort',abort);
+  await Promise.allSettled(printing);
+  destroyWindow?.();
   privateSession.webRequest.onBeforeRequest(null);await privateSession.clearStorageData();
   // Two fixed owned files only; no recursive deletion or user-directory traversal.
   for(const file of [htmlPath,outputPath])try{fs.unlinkSync(file);}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw new Error('cleanup_failed');}
@@ -76,19 +100,38 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
 }
 
 /** Same static sandbox and unmodified Hana PDF job as v1–v3. */
-export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>}):Promise<Buffer>{
+type PdfOptions={dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;classroomPages?:ReadonlyMap<string,OfficeMathImage>;beforePrintRetry?:()=>Promise<void>};
+export async function renderOfficePdf(draft:OfficeDraft,options:PdfOptions):Promise<Buffer>{
+ return withOfficePdfBudget(options.signal,options.deadlineMs??60000,
+  deadlineMs=>renderAdmittedOfficePdf(draft,{...options,deadlineMs}));
+}
+async function renderAdmittedOfficePdf(draft:OfficeDraft,options:PdfOptions&{deadlineMs:number}):Promise<Buffer>{
  const images=officeImageSnapshot(draft,options.images);
  const resources=new Map(images);for(const [key,value]of options.classroomPages||[])resources.set('classroom-'+key,value.bytes);
- return withStaticOfficePage(officeDraftHtml(draft,images,options.classroomPages),{...options,images:resources},async({Window,htmlPath,outputPath,deadline})=>{
+ const html=officeDraftHtml(draft,images,options.classroomPages);
+ const budget=options.deadlineMs,expires=performance.now()+budget;
+ const render=(deadlineMs:number)=>withStaticOfficePage(html,{...options,deadlineMs,images:resources},async({Window,htmlPath,outputPath,deadline})=>{
   const layout='paperSource'in draft?draft.paperSource.layout:undefined,g=layout?paperLayoutGeometry(layout):undefined;
   const printed='paperSource'in draft&&draft.paperSource.printLayout===PAPER_PRINT_LAYOUT;
   // Adapt the print boundary without changing Hana's original job or its lifecycle.
-  class PaperWindow {
+  class PrintWindow {
    constructor(input:Electron.BrowserWindowConstructorOptions){
     // Host geometry runs with page JavaScript enabled; generated CSP still forbids
     // every page script, external resource and navigation in the private session.
-    const win=new Window({...input,webPreferences:{...input.webPreferences,javascript:true}}),print=win.webContents.printToPDF.bind(win.webContents);
+    const win=new Window(printed?{...input,webPreferences:{...input.webPreferences,javascript:true}}:input);
+    const native=win.webContents.printToPDF.bind(win.webContents);
+    const print=async(settings:Electron.PrintToPDFOptions)=>{
+     try{return await native(settings);}
+     catch(error){
+      // Only an actual rejection from the native print call proves that no PDF
+      // reached the next step. A timeout or closed window alone proves neither.
+      if(options.beforePrintRetry&&!win.isDestroyed()&&!options.signal?.aborted&&error instanceof Error&&error.name==='Error')
+       throw new SettledPdfPrintError(error);
+      throw error;
+     }
+    };
     win.webContents.printToPDF=async settings=>{
+     if(!printed)return print(settings);
      const fits=await win.webContents.executeJavaScript(`(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));const root=document.body.getBoundingClientRect();${g?`const header=document.querySelector('.paper-header').getBoundingClientRect().height,available=${g.contentHeight.px}-header-16;if(available<=0)return false;return [...document.querySelectorAll('math,figure,table,tr')].every(e=>{const r=e.getBoundingClientRect(),cell=e.closest('td,th');if(cell&&e!==cell){const c=cell.getBoundingClientRect(),style=getComputedStyle(cell);if(r.width>c.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-2)return false;}else if(r.width>${g.safeColumnPx}+1)return false;return e.tagName==='TABLE'||r.height<=available;});`:`return [...document.querySelectorAll('math,figure,table,tr')].every(e=>{const r=e.getBoundingClientRect(),cell=e.closest('td,th'),limit=cell?cell.getBoundingClientRect():root;return r.left>=limit.left-1&&r.right<=limit.right+1&&(e.tagName==='TABLE'||r.height<=${paperContentHeightPx}-16);});`}})()`);
      if(!fits)throw Error('too_large');
      if(g)return print({...settings,landscape:g.layout.orientation==='landscape',preferCSSPageSize:true,displayHeaderFooter:false});
@@ -97,9 +140,20 @@ export async function renderOfficePdf(draft:OfficeDraft,options:{dataRoot:string
     return win;
    }
   }
-  await renderHanaPdfJob({htmlPath,outputPath,viewport:{width:1280,height:900},embedHanaFonts:false,allowJavaScript:false,timeoutMs:deadline,settleMs:0,pageSize:'A4',preferCSSPageSize:true,printBackground:true,landscape:false},printed?PaperWindow as unknown as typeof BrowserWindow:Window);
+  await renderHanaPdfJob({htmlPath,outputPath,viewport:{width:1280,height:900},embedHanaFonts:false,allowJavaScript:false,timeoutMs:deadline,settleMs:0,pageSize:'A4',preferCSSPageSize:true,printBackground:true,landscape:false},PrintWindow as unknown as typeof BrowserWindow);
   return fs.readFileSync(outputPath);
  });
+ try{return await render(budget);}
+ catch(error){
+  if(!(error instanceof SettledPdfPrintError)||!options.beforePrintRetry)throw error;
+  // The failed render has returned through its private window/staging cleanup.
+  // Re-enter only the local PDF renderer, once, within the original deadline.
+  await options.beforePrintRetry();
+  options.signal?.throwIfAborted();
+  const remaining=Math.floor(expires-performance.now());
+  if(remaining<=0)throw Error('timeout');
+  return render(remaining);
+ }
 }
 export type OfficeMathImage={bytes:Buffer;width:number;height:number};
 /** Host-owned DOM measurement only; generated CSP still forbids every page script/resource.

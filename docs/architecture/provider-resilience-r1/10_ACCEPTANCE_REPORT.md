@@ -1,0 +1,277 @@
+# Provider 恢复 R1 验收
+
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 28/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+
+| 条款 | 当前状态 | 已验证的子条件和剩余范围 |
+| --- | --- | --- |
+| AC-01 | PASS · 已实现 | 固定 22 条故障矩阵与 8 条补充混合、未知和不可信来源反例全部通过。证据见 WP-01。 |
+| AC-02 | PASS · 已实现 | 实际 MCP 权限、待审批、资源锁、取消和非法输入均为零派发、零健康增量。CAS 与来源版本冲突保留教师原变更和读回入口，同一旧请求未补发。实际业务文件未被覆盖，只有正确的要求版本提交成功 Effect。 |
+| AC-03 | PASS · 已实现 | 真实 HTTP、直接受控 stdio、Managed stdio 同一来源重新核验、SQLite 原信任与选中工具读回，恢复后真实读取。正式生产 Pi 在故障和冷却期仍成功调用内置文件列表。 |
+| AC-04 | PASS · 已实现 | 实际 Windows 受管 MCP 拒绝包内容与版本、停用实例和 Binding、撤销 Grant 与信任，零新增进程。真实 stdio 凭证更替与真实 HTTP Schema 漂移使原工具不可用。宿主替代路径拒绝不符合数据驻留约束的候选。 |
+| AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
+| AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
+| AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
+| AC-08 | NOT_RUN | 实际 Electron 冷启保留 Retry-After、凭证隔离和原额度，缓存与 SQLite 期限合同 7/7。生产回调已注入，真实 Windows S0 未验。WP-03 余项 `PAUSED_BUDGET`。 |
+| AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
+| AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
+| AC-11 | PASS · 已实现 | 同一 Windows 构建覆盖 Pi 原请求账、实际 Hana 读取和真实 PDF 领域重试。单个逻辑导出最多两次打印。停止中维持原 lease，原回执清理后才允许教师审批后的新操作。 |
+| AC-12 | PASS · 已实现 | Windows Electron 生产 Pi 在原 Task 内，从不可用的 Hana stat 切到已登记的 workspace stat。A 发起 0 次，B 发起 1 次，原要求版本、默认优先级和快照内容保留。实际 SQLite 有两条链接快照与一条成功执行回执。 |
+| AC-13 | PASS · 已实现 | 实际 Registry/Resolver、原生只读 Adapter 与 SQLite 验证缺必要证据、自述证据、缺触发条件、撤销版本、新授权、驻留、预算、固定及两处忙碌屏障。每条实际替代为零，原任务、快照和 Effect 不变，返回真实原因和可执行的下一步。 |
+| AC-14 | PASS · 已实现 | 正式 Windows Electron 启动同一 SQLite，原任务主动继续前实际模型请求为零。新 Run 使用旧 Provider 版本和 hash，保留原快照字节，追加带 `resume_revalidate` 的 lineage。真实快照、文件结果和两个 PID 可读回。 |
+| AC-15 | PASS · 已实现 | Windows 生产文件经过两次明确拒绝，存入两份权威的未派发证明，重启并重新授权后各保存一次。未知写入、真实 HTTP 丢回执与真实终端未发布均受保护。已有文件和已匹配网络回执通过独立读回保持原物理次数。 |
+| AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
+| AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
+| AC-18 | PASS · 已实现 | 正式 Electron 实测 HTTP 连接挂起与真实 Windows Job 异常退出及超时。故障期间另一会话查题、保存和独立 HTTP MCP 调用成功。真实迟到 stdout 未进入新请求。仅在原 PID、helper 与隔离目录清理后结算资源和回执。 |
+| AC-19 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。Provider 组合阶段重跑。 |
+| AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
+| AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
+| AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
+| AC-23 | NOT_RUN | 模型等待与取消已通过真实回环断开重连及 Electron 生产恢复回调，原 Retry-After 未提前发送。缺隔离 Windows S0 原生事件与工具、副作用绝对截止时间矩阵。 |
+| AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
+| AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
+| AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
+| AC-27 | PASS · 已实现 | 真实 Goal 遇到 503 原地等待，查询与独立保存不增加模型次数、进展和修订。原 Goal 恢复后教师确认完成。真实三轮停滞呈现准确，等待中暂停无后续物理请求。 |
+| AC-28 | PASS · 已实现 | 实际 Goal 中先保存讲义，再拒绝练习或耗尽同一请求的三次物理恢复。原成果不变，教师拒绝继续记为暂停；原任务只保留显式续做入口。 |
+| AC-29 | PASS · 已实现 | 正式 Windows 桌面显示恢复、冷却未发、需教师设置及未知回执。连续生产事件、唯一提示、切回原会话、实际重启、诊断导出、原话与继续入口均已核对。 |
+| AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
+| AC-31 | PASS · 已实现 | 同一正式构建通过 DB R2 历史准备记录、缺失与损坏记录拒绝、实时撤权、DB R3 旧库升级和验证还原。首次升级前原 SQLite、历史行和原生运行文件保持。 |
+| AC-32 | NOT_RUN | 等待资源 R1 可执行组合及原六类性能基线。Provider 单独构建的 PDF 槽位证据已经保留。 |
+| AC-33 | NOT_RUN | 固定扫描件已生成并实际归档，当前构建中原文解析未完成。四条任务的无故障、可恢复和失败矩阵尚无完整端到端证据。 |
+| AC-34 | NOT_RUN | 恢复会改变可用工具选择和兼容 Provider 执行路径，按合同触发真实模型对照。隔离验收环境没有可用的测试账号配置。 |
+| AC-35 | NOT_RUN | 模块构建与现有组件回归有据。正式组合和最终 main 的版本绑定、完整门禁和串行事实仍待验。 |
+| AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
+
+## 首轮 HTTP 故障证据
+
+- `wp02-mcp-http-behavior-red.log` 为真实失败。服务端收到初始化请求，原已验证哈希却被清空。`wp02-mcp-http-red.log` 中早先的 `invalid_input` 是夹具输入形状错误，记录保留，未计作行为红灯。
+- `wp02-mcp-http-final-inspection.log` 使用实际 HTTP、SQLite、授予的 MCP/网络/出站权限和原权限引擎。断开没有增加工具调用，正常重连只增加一次读取。配置页检查超时也保留选择。恢复后旧客户端被拒绝，Schema 变化时连接不进入执行。原始 SQLite 快照和服务计数保存在 `mcp-http-reconnect-9cCfe6/report.json`。
+- `wp02-permission-transports.log` 中授权、输入、认证和撤权等 11 项既有回归通过。`wp02-windows-stdio-final.log` 中现有 Windows Electron/stdio 生命周期回归 11/11。两者各自的范围见日志，暂时断开后的 Managed MCP 转发接续仍需专项验收。全部使用合成夹具，真实付费调用为 0。
+- `npm run build -- --outDir test-results/provider-r1-mcp-http` 与渲染组件门禁通过。实际隔离窗口已启动，主进程 SHA-256 为 `6a19e4efbc41eb978b2511c2c3c9a9a640bb170fd7848283a22b3e87ac325eb7`。窗口、数据根与构建核对见 `wp02-manual-window.json`。依赖锁未动，审计记录 30 条通报，其中 5 条 high。
+
+## 第二轮 Managed MCP 故障证据
+
+- 运行 `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery`。在 Windows 10.0.26300、Electron 43.8.3、Node 24.12.0 源码构建环境及独立 SQLite 下，`managed-red/runner.log` 显示真实 AppContainer 断线后进入 Resolver，断言实际发起 0 次握手，预期 1 次。`managed-final/runner.log` 和 `report.json` 为修复后结果，14/14 通过。固定程序、工作区源文件和 SQL 底层审计均可由报告的数据路径读回。
+- 在同一 adapter 中，两个并发的原绑定请求共享一次失败的真实握手，服务恢复后共享一次成功的真实握手。实际读取返回固定内容，未再启动第二个进程，原 Artifact revision 未变化。平台不兼容和撤权后的新请求均未启动进程。逐条终态回执校验 Job 内进程为 0、Profile 已清理、应用添加的 ACL 为 0。夹具使用实装权限和 Windows Job。第三方 npm 发行包与跨 owner 的共享限制仍待实测。
+- 已运行直接 HTTP 重连 1/1、权限传输 11/11 和渲染组件 261/261。证据分别为 `wp02-mcp-http-after-managed.log`、`wp02-managed-permission-transports.log`、`wp02-managed-renderer.log`。桌面产物见 `wp02-managed-build-final.log`，独立启动见 `wp02-managed-manual-window.json`。真实付费请求为 0，本切片未修改模型选择、请求重试或提示词。AC-34 留待完整差异判断。
+
+## 第三轮 SQLite 代际屏障证据
+
+- 在 Windows 10.0.26300、Node 24.12.0 上运行 `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-sqlite-generations.test.mjs scripts/xiaozhi-agent/provider-mcp-reconnection.test.mjs`，通过 11/11。完整命令输出见 `wp02-sqlite-generation-final.log`。其中 10 个用例覆盖 AC-05，每个用例保留实际 SQLite 和 `report.json`，目录由测试日志列出。
+- 控制真实 loopback POST 返回的先后次序。撤销、删除、更换凭证和修改工具选择各验证一次迟到成功与失败。持久化新版本后释放旧响应，读回整行与新版本逐项一致，服务端工具调用均为 0。已返回并通过 transport 代际检查的旧成功结果另获实际 SQLite `conflict`，保留新工具选择。旧失败库经关闭和重新打开，未授权时自动连接为 0，最终只经已有检查与明确选择入口恢复工具定义。
+- 同批权限传输回归 11/11，见 `wp02-sqlite-transports.log`。仅增加测试与证据，使用 `ce0150d` 的产品代码和已启动构建。
+
+## WP-01 第一轮故障语义
+
+- 原始冻结夹具 SHA-256 为 `e4ef64b55ecb80aa75dce373bfa7b430153ad467041d197f5c84942ecdfc9820`。`node --experimental-transform-types --test scripts/xiaozhi-agent/provider-fault-policy.test.mjs` 通过 30/30，见 `wp01-fault-matrix-final.log`，原始 input、actual、expected 见 `provider-fault-cases-kVCZvO/report.json`。补充了模型供应商自述、资源与超时混合、取消或撤权优先级、未知 Effect 优先于业务冲突、无拒绝证据的 503。决策无外部时钟依赖。
+- `5a307da` 真实 loopback 红灯见 `wp01-live-metadata-red.log`。工具未 dispatch 时，已连接的一次元数据请求丢失，原来仍为 ready。修复后 combined Node 测试 42/42，见 `wp01-fault-and-mcp-green.log`。成功恢复后，已 dispatch 的工具响应断开仍只有 1 次实际调用。Windows AppContainer 同批 14/14，见 `wp01-windows/report.json`。
+- `request-recovery-smoke.mjs` 通过 11 项。实际 Electron/Pi `request-recovery-electron.mjs` 在隔离数据根用合成 HTTP/SSE 响应通过 10 项，见 `wp01-model-recovery-electron.log`。503、HTTP500 上限、认证、余额、长限流和已接收部分流行为沿用原次数与版本。停止等待可中断且之后无新增 wire attempt，冷启读回原 SQLite 事件。真实模型调用为 0，模型选择、提示和重试策略没有变更。AC-02 与 AC-09–11 仍按原合同补充门禁。
+- `npm run build -- --outDir test-results/provider-r1-fault-policy` 通过，渲染组件 261/261。已核对独立窗口和实际构建指纹，见 `wp01-manual-window.json`。依赖锁未改，审计保留在 `wp01-npm-audit.json`。
+
+## WP-01 普通工具边界回归
+
+- 主进程边界 21/21，原文件工具 7/7。证据 `wp01-tool-boundaries`，包括无效输入零 dispatch、权限拒绝单次、原资源限制和取消等反例。合成工具的回归仅证明其所在执行边界。
+- `ordinary-tool-recovery-electron.mjs` 首次报告 4 次原始文件读取。`wp01-ordinary-tool-read-inventory.log` 对应实际调用栈和 SQLite 显示其中两次为工具尝试，两次为工具完成后的验收读回。修正夹具，将读取阶段分开计量并验证模型只请求一次工具。下一次捕获了停止后界面已经展开时被测试再次关闭的情况，证据 `wp01-ordinary-tool-electron-corrected.log`。测试改为读取面板展开状态后按需点击，并保留原内容及 300 毫秒反馈断言。
+- 正式 Electron 最终 6/6，见 `wp01-ordinary-tool-electron-final.log` 与 `xiaozhi-ordinary-recovery-ui-oEtnEY/report.json`。实际占用时成功或失败均最多两次读取。停止反馈为 38.96 毫秒，停止后仅有一次已发文件读取、一次已发合成模型请求。冷启未增加调用或改变文件与事件 hash。AC-02 全项仍待健康计量和权限/Effect 对照。
+
+## WP-03 第一轮 MCP 运行健康
+
+- 真实 `initialize` 断线红灯在 `8facf3c`，三次失败后再次准备和显式检查仍各发送一次，共 5 次。见 `wp03-shared-mcp-red.log`。修复后 `wp03-source-gate.log` 48/48，同一健康域三次失败后无额外连接。冷却结束后十个并发准备只有一个物理握手，Schema 重新核验成功后清零。注入真实 HTTP 429 与 `Retry-After: 120` 时，另外一个端点仍可工作，同一端点在早 1 毫秒时仍无发送。证据包括每条隔离 SQLite、服务计数和脱敏的域键。
+- `provider-mcp-health-ipc.mjs` 在实际 Windows Electron 产物通过 3/3。`mcp-health-desktop-fmjQPa/report.json` 记录主进程 SHA-256、preload 结果、实际 SQLite 和重新连接的间隔 12,138 毫秒。未依赖模型账户，恢复过程中没有发送工具业务调用。Windows 受管 stdio 生命周期 14/14。渲染组件 261/261。
+- `wp03-mcp-permissions-ac02.log` 12/12，原权限引擎及真实 HTTP 确认无 Grant 时写入待审批记录。无效输入、权限拒绝、资源占用、取消均无实际请求，健康快照前后一致。有效授权仍可执行原工具。
+- 现有模型请求的白名单、长 Retry-After 和三次上限回归 11/11。模型域尚未接到健康协调，未发真实模型请求。真实生产宿主 Effect 回归 5/5，见 `wp03-mcp-effect-host-final.log`。首次运行在编辑期间发现源文件变化，保留 `wp03-mcp-effect-host.log`，冻结源文件后以 944 个输入无漂移复跑。独立窗口见 `wp03-manual-window.json`，回退见合并记录。
+
+## WP-03 第二轮跨会话熔断验收
+
+- `node scripts/xiaozhi-agent/mcp-effect-host-smoke.mjs` 通过 6/6。`mcp-effect-P3g135/REPORT.json` 保留四组不同的 Session ID、Run ID、实际合成模型请求与外部服务计数。连续四个宿主请求在真实 MCP 服务的握手计数为 1/2/3/3，没有额外业务工具请求，原信任存留。报告内同时保留生产 Effect 的五个原有回归用例。
+- `wp03-mcp-production-sessions.log` 记录 944 个源输入和 0 条漂移。与正式 preload 的来源隔离、熔断拦截、恢复证据以及实际 HTTP 执行的健康清零合并判定 AC-06。实际失败探针、取消探针与冷启动仍按 AC-07/08 补齐。
+
+## WP-02 第四轮 Windows 受控 stdio
+
+- `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 15/15。新用例在真正 Windows AppContainer 中停住直接工具准备的初始化，确认 SQLite 原 Schema 与工具选择保留、Job 释放，再用同一授权读取固定文件。原 Managed 用例保留实际读取及撤权反例。证据见 `wp02-direct-stdio/runner.log`。
+- 正式 Electron 宿主 `mcp-effect-host-smoke.mjs` 6/6，`mcp-effect-TMPXp8/REPORT.json` 记录四个生产 Pi session 均在 MCP 故障期间通过实际内置工具列目录。外部 MCP 初始化累计 1/2/3/3，无额外外部任务调用。原五组 Effect 回归保持通过。`worker.log` 记录一次 Chromium 网络服务重启。
+
+## WP-03 第三至第五轮模型与取消探针
+
+- `6d2a9c1` 真实 Windows 基线证实三次失败后，下一轮仍发送一次。保留 `wp03-model-wire-red.log`。接线后先通过 4 项窄回归。混合 429/503/200 的完整场景发现，SDK 正常结束的同时取消包装读取，会误占用健康结算。诊断证据在 `model-wire-health-sbW7A0/report.json`。修复后等待底层取消或 EOF，并同时要求 SDK 原生终态确认，才结算成功。
+- `provider-model-health-electron.mjs` 正式 Electron / Pi 和真实本机 HTTP/SSE 8/8，见 `wp03-model-wire-final-fixed.log` 和 `model-wire-health-hlEZum/report.json`。`wp03-model-wire-sqlite.json` 从实际 `app.db` 核对 11 个运行，发送事件计数、服务实际次数及原预算逐项相等。原桌面请求回归 10/10，渲染组件 261/261，最终构建及独立窗口证据分别见 `wp03-model-wire-build-final.log` 和 `wp03-model-manual-window.json`。使用合成模型响应，真实付费调用为 0，AC-34 留待组合判断。
+- `22650c0` 的红灯显示停止后准备仍在等待远端探针。传递原 Run 取消信号后，实际取消先于迟到的 HTTP 响应，健康域保留 Open、失败数维持 4。等待满足后只用原 Schema 核验，旧代际响应不影响恢复。证据见 `wp03-mcp-cancel-red.log`、`wp03-model-source-all.log` 与 `mcp-sqlite-generation-cRMHZF/report.json`，最终 Node 合并门禁 53/53。
+
+## WP-03 第六至第七轮冷启动与读取退出
+
+- 冷启动基线 `88c2dca` 在同一隔离 SQLite 中读回记录，重启后一轮向仍限流的服务发送 1 次请求。见 `wp03-cold-red.log` 与 `model-wire-health-1Ycxwz/report.json`。修复后复用设置表保存有界的冷却账本，真实 Electron 退出并重启后仍是零请求、零扣减。更换合成凭证可实际发送 1 次。生产 `powerMonitor` 回调通过事件注入触发，已检查没有主动执行或缩短冷却。正式回归 11/11 见 `wp03-cold-final.log` 和 `model-wire-health-S6Qd9E/report.json`。系统挂起与恢复保留待验。
+- `wp03-cold-source-final.log` 记录 Node 56/56，覆盖真实 SQLite 关闭与重开、时钟回拨、健康代际和空闲缓存回收。账本只保存随机 salt、不可直接识别的域键和期限。无表结构变更，原设置、任务和事件继续使用现有表。
+- `feb632b` 复现第一次工具调用超时但底层仍在读取时，第二次已开始。见 `wp03-physical-read-red.log`。修复后只有实际结束才解除同会话、同工具、同输入的占用。主进程边界 22/22 和已有 Hana 文件工具 7/7 分别见 `wp03-physical-read-green.log` 和 `wp03-ordinary-tool-regression.log`。最终正式 Electron 文件回归 6/6，报告为 `xiaozhi-ordinary-recovery-ui-s5orMb/report.json`。还未串联原生 worker 租约与跨业务预算。
+- 最终构建见 `wp03-cold-build-final.log`，渲染组件 261/261 见 `wp03-cold-renderer.log`。真实付费调用为 0。依赖锁未动，审计见 `wp03-cold-npm-audit.json`。
+- 原桌面请求回归串行运行通过 10/10，停止反馈 186.63 毫秒，见 `wp03-final-request-recovery-serial.log` 与 `xiaozhi-request-recovery-ui-ZBDmxf/report.json`。第一次与文件桌面回归及渲染组件同时执行时为 362.87 毫秒，未达 300 毫秒门槛，原样保留在 `wp03-final-request-recovery.log` 和 `xiaozhi-request-recovery-ui-b6gfTi/report.json`。混合负载下本轮未确认能稳定满足该门槛。
+
+## WP-04 恢复基线
+
+- `phase6-provider-resume-smoke.mjs` 10/12，证据 `wp04-resolver-starting-baseline.log` 与 `xiaozhi-phase6-provider-resume-pyQazG/report.json`。R01 在调用前失败，R08 无执行记录。现有夹具 Adapter 缺少 `schemas`，其中 R08 将 stat Provider 绑定在合成的写入能力。先用符合生产合同的两个原生 stat Provider 复核实际路径，再判断是否需要调整产品。原失败报告保留。
+
+## WP-04 第一轮原生只读接续
+
+- `6464760` 使用现有两个原生 stat 实现、真实文件和实际 SQLite，切换前红灯 4/5。原实现不可用时，主进程只返回 `needs_refresh`，替代实际读取次数为 0。见 `wp04-native-snapshot-red.log`。生产范围限定在已知原生 stat 合同，原请求未进入旧 Adapter，当前任务安全点允许，原要求有效，候选满足全部所需条件且在同一驻留约束内。复用已有 `explicit_refresh` 持久值和前序快照链接，保持旧版读回兼容。
+- Node 真实文件和 SQLite 最终 7/7，见 `wp04-native-snapshot-guards.log` 和 `provider-snapshot-recovery-TRnzJe`。运行 `node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs --provider-recovery`，实际 Electron 43.8.3 / Pi 专项 1/1。合成 SSE 只发原 resolve、execute 和终态应答，宿主在处理中完成替代，无模型刷新请求。报告 `wp04-native-pi-report.json` 记录替代内容、版本、hash、Task 和 Snapshot。关闭后独立以 SQLite 只读方式核对，见 `wp04-native-pi-sqlite.json`。Chrome 网络服务有一次重启，见 `wp04-native-pi-worker.log`。
+- 构建通过，见 `wp04-safe-stat-build.log`。原能力合同 10/10，渲染组件 261/261，日志 `wp04-predeployment-contract.log` 与 `wp04-safe-stat-renderer.log`。真实付费模型调用为 0。AC-34 仍留待组合差异审查。
+
+## WP-04 第二至第三轮拒绝及正式冷启
+
+- `034d472` 的原生只读矩阵以两套实际实现、真实文件、SQLite 和控制屏障运行。所有负例已经没有实际替代，但缺少与原因对应的后续入口，9 条行为断言失败。见 `wp04-refusal-red.log`。增加结构化原因和可继续动作后通过 11/11，见 `wp04-refusal-green.log` 与 `provider-snapshot-recovery-LTbXit`。断言包括原 Task、原 Snapshot、零 Effect 和零替代执行。合同缺失、驻留和权限仍由原 Resolver 判定。
+- `node scripts/xiaozhi-agent/capability-phase2-production-smoke.mjs --provider-cold` 以两个真实且先后退出的 Electron 进程通过，见 `wp04-cold-actual.log` 和 `wp04-cold-host/`。随后从独立案例运行同一命令并附加 `--desktop-build <绝对路径>`，由生产 Electron 产物的 typed Preload 发出原明确继续请求。两次进程 PID 为 38800 和 55980。正式读取继承原 capability、版本 hash 和文件元信息。另一兼容 Provider 的声明耗时与优先级更优，普通解析排序选它，原任务继续仍保留旧快照。启动至继续前模型请求为零，继续后两次合成 HTTP 请求均使用原模型。见 `wp04-cold-formal.log`、`wp04-cold-formal/report.json` 和 `wp04-cold-formal/cold-identity.json`。
+- 构建 `test-results/provider-r1-refusal-lineage` 通过。原 D2 合同 10/10，渲染组件 261/261，见 `wp04-refusal-build.log`、`wp04-refusal-d2-contract-final.log` 和 `wp04-refusal-renderer-final.log`。本段新增模型可见的结构化失败结果，AC-34 后续需要固定任务真模型对照，本轮真实付费调用为 0。
+
+## WP-04 第四轮 Effect 回归与现行审批等待
+
+- 实际 Windows 子进程 SIGKILL 和 SQLite 文件对账 `phase6-state-foundation-smoke.mjs` 8/8，原文件字节 hash 与物理生成次数保持稳定。真实网络回执和独立 HTTP 线计数 `phase6-network-effects-smoke.mjs` 8/8。两者使用 `node --experimental-transform-types`，原工作子进程也显式启用该模式。首次子进程启动失败及故障诊断目录缺失分别见 `wp04-state-foundation-node24.log`、`wp04-network-effects-node24.log`。复跑日志为 `wp04-state-foundation-final.log`、`wp04-network-effects-final.log`，原报告位于 `xiaozhi-phase6-state-ngB6UV` 和 `xiaozhi-phase6-network-effects-Ckqxng`。
+- `non-dispatch-host-smoke.mjs` 现行代码实际到达第一条文件工具的已准入状态，等待教师授权。旧夹具却等工具回到模型并让模型生成两个调用后才检查审批，30 秒后超时。保留 `wp04-authoritative-no-dispatch.log`、`xiaozhi-non-dispatch-host-qiyTZ7/REPORT.json` 和实际请求记录。另一个 Windows 终端权限用例未到达最后断言，退出码为空，源输入 945 未漂移。保留 `wp04-terminal-effects-final.log` 与 `terminal-grant-rINQgw`。现有两组生产验收缺口仍需沿当前授权入口复现。
+
+## WP-04 第五至第七轮权限与版本屏障
+
+- `node scripts/xiaozhi-agent/non-dispatch-host-smoke.mjs` 4/4。生产宿主用当前权限入口逐一拒绝旧请求，得到两份 `host-filesystem-not-dispatched.v1`。关闭并重新打开 SQLite，再由教师显式授权，只有当前 Task 写入两份实际文件。再次继续时两份 SHA-256 不变，新增写入准入为零。原记录见 `wp04-permission-file-current.log` 与 `xiaozhi-non-dispatch-host-KCOWGz/REPORT.json`。只读复制对账 8/8，拒绝缺失、篡改、未知执行、跨版本或跨所有者的证明。见 `wp04-file-proof-readback-final.log`。
+- `node scripts/xiaozhi-agent/terminal-grant-host-smoke.mjs` 5/5。实际原生终端审批前零启动，原任务授权后启动一次，其他任务或撤销后均未启动。另一条真实命令已执行但确认前停止，保留 `unknown` 及原执行身份。重开宿主后，用相同逻辑操作试探原 Task，实际启动总数保持 2，未确认文件仍未发布。见 `wp04-terminal-current-grants.log` 与 `terminal-grant-Lg9HGC/REPORT.json`。连续 HTTP 和本地进程失败切点另由第四轮文件、网络各 8/8 对照。
+- `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 2/2。对真实确认中的文件手工写入，旧提议进入 `conflict`，保留教师版本 SHA。另一个任务暂停、订正后从要求版本 1 进入 2，新 Run 等待确认时才提交迟到的旧审批，结果为 `permission_denied`。旧文件未生成，唯一提交 Effect 属于 V2。在窗体可见校验前尝试审批及把机器核验项当做人类可编辑要求的两次夹具失败保留于 `wp04-task-fence-host.log` 和 `wp04-task-fence-published.log`。最终报告见 `wp04-task-fence-requirements-final.log` 与 `provider-task-fence-QKRQQd/REPORT.json`。真 Grant 撤销和在途响应边界见网络 N07。
+- AC-17 预检 `paper-c2-office-recovery-focused-test.mjs` 连接阶段因 `store.openDatabase` 不存在退出，0 项业务断言。见 `wp04-office-recovery-existing.log`。未由此判定产品恢复行为。
+
+## WP-04 第八轮原题卷部分导出恢复
+
+- 基线产品代码 `7c27138`、复现提交 `079f303`。用当前 typed Preload 建立、确认并导出合成试卷，真实保存 DOCX 后，在原 PDF 导出任务的私有 `printToPDF` 接口注入一次已结算的错误。基线没有进入 PDF 审批，实际打印尝试 1 次，私有窗口已关闭。见 `wp04-paper-pdf-native-red-actual.log`、`provider-paper-export-HncUY5/report.json`。
+- 原 owner 在首次打印明确失败且私有资源清理结束后，复核当前授权、确认源、工作区与目标文件，再在原时限内重试一次。导出成功以实际文件、原 SQLite 产物和绑定的试卷来源读回为准。中间验证识别出通用 Effect 读回未识别原题卷工具，保留 `provider-paper-export-s5PxUd/report.json`。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <绝对构建目录>`，再附加 `--keep-failing` 运行反例。正式构建为 `test-results/provider-r1-pdf-owner-receipt`，主进程 SHA-256 为 `b6511c2b6e075f8dc06d7cb50141975a957f5cfd90ac5780610863af04210e5e`。两次各通过 2 项。正例见 `provider-paper-export-3Yjuc0/report.json`，两次私有窗口先后销毁，Word 的 hash 与文件身份不变，PDF 审批前无目标文件，最终 Word/PDF 各一个持久化成功 Effect，DOCX XML 与 pypdf 分别读出同一题目。反例见 `provider-paper-export-Jo4fCp/report.json`，两次打印失败后无 PDF 或成功 Effect，原 Word 保持一致。真实付费模型调用 0。
+- 正式构建通过、渲染组件 261/261，见 `wp04-native-pdf-owner-build-final.log` 和 `wp04-native-pdf-renderer.log`。依赖锁保持原样，审计记录 30 项已存在风险，其中高危 5 项，见 `wp04-native-pdf-npm-audit.json`。旧 Office 扩展回归运行了 16 项后，缺少脚本硬编码的历史数据库，整组未跑完，见 `wp04-office-artifact-foundation-node24.log`。AC-21、AC-22 的取消、迟到回调和实际 lease 归还仍按原要求实测。
+
+## WP-05 第一轮 MCP 握手隔离
+
+- `152380d` 在独立 SQLite 和两个实际 HTTP 服务上复现。首个已验证服务挂起至准备截止，另一个服务保持 `ready`，原运行可用 MCP 定义却为空。见 `wp05-preparation-isolation-red.log` 和 `provider-mcp-preparation-dB6rwC/report.json`。
+- 同一 Run 最多并发准备四个连接，维持总准备期限和每服务的权限、信任与健康域。目录更新仍使用版本检查，按原目录顺序暴露已核验工具。关闭 Run/宿主时取消准备并等待对应传输清理。`node scripts/xiaozhi-agent/provider-mcp-preparation-isolation.mjs` 通过 3/3，见 `provider-mcp-preparation-47pieG/report.json`。覆盖另一连接实际调用、超时后旧响应与主动关闭。
+- 正式构建 `test-results/provider-r1-mcp-preparation` 的主进程 SHA-256 为 `b474e3f9e0025926caa7fce8b1110bcfdc5d3cea0c9196db2ffa940c831566cc`。运行 `node scripts/xiaozhi-agent/provider-mcp-health-ipc.mjs <绝对构建目录> --preparation-isolation`，正式 Electron 通过 2/2。`mcp-health-desktop-wW6veK/report.json` 显示旧传输挂起后 157.3 毫秒另一服务回送 Schema，4.872 秒另一会话通过 Pi 搜索实际题库，4.879 秒保存另一道合成题并经 SQLite 验证，9.957 秒后原传输真正关闭。原服务故障后迟到响应未改变其目录记录。该测试控制单条连接挂起，服务允许另一条连接正常握手。
+- 对同一构建正常运行 IPC 熔断回归 3/3，见 `mcp-health-desktop-IxMUnY/report.json`。Windows direct/managed MCP 工作者回归 15/15，生产宿主及 Effect 回归 6/6，渲染组件 261/261。日志包括 `wp05-preparation-stdio-regression.log`、`wp05-preparation-effect-regression.log`、`wp05-preparation-renderer.log` 和 `wp05-preparation-build.log`。锁文件无变更，审计见 `wp05-preparation-npm-audit.json`。真实付费调用 0。AC-18 的异常进程退出与独立会话同一时间线仍待补。
+
+## WP-05 第二轮 Windows MCP 异常退出与真实旧输出
+
+- 基线 `10f07c2`，复现提交 `d87cecf`。测试夹具只写独占 SQLite、AppContainer 投影和合成素材。使用真实 Windows helper 与已核验的测试包授权，同一正式 Electron 主进程走真实 typed Preload、Pi 调用及题库保存。最初尝试的 PowerShell 语法及临时文件观察分别保留在 `wp05-native-seed.log`、`wp05-native-stdio-initial.log`。随后改从实际 helper 帧观察 PID、退出及响应。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-mcp-stdio-desktop.mjs <绝对构建目录>`。基线完成两个故障隔离断言后，原子进程退出码 23，SQLite 的原权限 lease 却写为 `execution_completed`。见 `wp05-native-stdio-permission-red.log`、`provider-mcp-stdio-desktop-MJNLtV/desktop-report.json`。修复后 Windows Job 回执保留原始退出码，非零退出按失败结算，已有投影提交分支只在干净结束后可达。
+- 正式构建 `test-results/provider-r1-mcp-native-exit`，主进程 SHA-256 为 `8ce5ce68ebf14695de0d59c8d0cbb49af6a3ccbaafd08b80e3631ce09c225d79`。专项 3/3，见 `wp05-native-stdio-final.log`、`provider-mcp-stdio-desktop-DwXfEw/desktop-report.json`。一次完整时间线中，原进程开始故障调用后 2.084 秒另一会话完成本地查题与保存、3.521 秒独立 HTTP 工具实际调用一次、8.584 秒原进程与 helper 退出并清除投影。第二个原进程超时后真实发出旧 stdout 并以 31 退出，原回执失败，后续新 Run 只返回新连接的回执。保留同一已验证信任。
+- 同一构建的 HTTP 隔离重跑 2/2，见 `mcp-health-desktop-LzZLz7/report.json`。实际宿主与 Effect 回归 6/6，见 `mcp-effect-sim676/REPORT.json`。正式构建通过，Windows MCP 生命周期 15/15，渲染组件 261/261。见 `wp05-native-stdio-build.log`、`wp05-native-stdio-lifecycle.log`、`wp05-native-stdio-renderer.log`。已保留锁文件审计 `wp05-native-stdio-audit.json`，真实付费请求为 0。各执行器十轮资源回收仍由 AC-22 真实组合验证。
+
+## WP-05 第三轮 OCR 实际退出与同源续页
+
+- 沿用资源调度 R1 `ed618c1c68e3e5561fe57d7555e62073978ebc72` 的 `r1-office-fences` 正式构建。走现有资料导入、队列、PDF 文件型 OCR、预加载 IPC、SQLite 与共用的资源调度器。Provider 分支相对原 main 未修改该调用链的 OCR、PDF 文件宿主及材料队列。`wp05-ocr-runtime-preflight.json` 核对原生分发物 712 个文件，冻结六页扫描件 SHA-256 为 `cbff60e34d5ff6e57d9ee2ecaed8e5ea364e41a27e3e2f519ebeb92df2bd957c`。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-ocr-recovery-desktop.mjs <绝对构建目录> <冻结六页扫描件> <固定证据根>`。Electron 43.8.3 / Node 24.22.0，主进程 SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`。正式结果 4/4，见 `wp05-ocr-recovery-final.log` 和 `provider-ocr-recovery-SuCzTu/report.json`。
+- 首次真实进程在第 1 页持久化后非正常退出。第二轮在第 2 页持久化后点停止，测试的旧进程保持存活，实际产生第 3 页结果，交还给旧读取器的 1,393 字节未导致第三页落库。此时独立教师保存经 SQLite 读回。旧 lease `14` 收到 `cancel_requested` 后仍占进程额度，原 PID 关闭后才产生唯一 `actual_settled`。新 lease `15` 收尾时同样只结算一次。首次固定探针曾因即时整机降额误判，见 `provider-ocr-recovery-0NoWOY/report.json`。暂停式观测未完成，见 `wp05-ocr-recovery-lease.log`。最终从原调度器只读提取具体 lease 与状态序列。
+- 第三轮原任务重试只收到实际 OCR 第 3–6 页。前两页摘要和原件 hash 保持，六页各保存一次。OCR 完成时原资料任务仍在运行，等后续处理实际结算后再核对原任务 `succeeded` 与可见的「正文已收录」。本轮代码仅新增验收入口，沿用原 R1 受控生命周期。Provider 与资源 R1 最终组合构建未形成，AC-19 须在组合重跑。真实付费调用 0。
+- 新脚本通过 `node --check`，`git diff --check` 通过。锁文件内容未变，`wp05-ocr-recovery-npm-audit.json` 记录 30 项既有依赖通报，其中高危 5 项。
+
+## WP-05 第四轮向量世代、游标与实际 embedding 超时
+
+- 沿用资源调度 R1 `ed618c1c68e3e5561fe57d7555e62073978ebc72` 的 `r1-office-fences` 正式构建。主进程 SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`，实际向量工作器 SHA-256 `464053d494c4006e4a9e80ecb88b94c0c6fd04eb0168d58d55e3cc51ca44be66`。`wp05-vector-runtime-preflight.json` 核对原生二进制及模型共 154 个文件。当前 Provider 分支相对原 main 未改检索生产代码。
+- 在 `apps/desktop` 运行 `node scripts/xiaozhi-agent/provider-vector-recovery-desktop.mjs <绝对构建目录> <固定证据根>`。正式结果 3/3，见 `wp05-vector-native-uncached.log` 和 `provider-vector-recovery-HNX9uG/report.json`。通过现有资料库导入并索引 25 份合成资料，对两种改写确认题意检索首位命中真实几何来源。旧 active generation 保持可查，实际工作器在新的世代已有有效游标后退出，旧工作器的成功回执重放未推进原游标，替换进程对同一组八条索引事实重新生成回执。新世代只在完整追平后发布，游标终止，`applied_seq` 等于原事件序号 50，原数据摘要及索引数量保持。
+- 正式原生 embedding 对查询实际生成结果，夹具在 stdout 边界暂缓交付，派发后 30.014 秒触发生产超时。返回 `embedding_unavailable`、`available=false`、`complete=false`，语义改写返回空结果，关键词仍能命中原文。旧进程尚存时交付其真实迟到数据 6,061 字节，下一查询仍未完成或启动新的 embedding。旧 PID 41064 关闭后新 PID 49524 才启动，成功命中相同 `resourceId/chunkId`。原始 native 管道和时间线见同目录 `embedding-trace.jsonl`。质量对照限固定原文、同一查询、来源与完整覆盖语义。
+- 首次复跑定位到资料库展开后才出现重建按钮，见 `wp05-vector-native-initial.log`。真实世代退出已通过的中间复跑使用了原内存缓存查询，未触发原生超时，见 `provider-vector-recovery-WI7pvf/report.json`。正式测试使用在旧 utility 测过、在新 utility 未缓存的等义查询。测试入口和两处观测夹具通过 `node --check`，`git diff --check` 通过。依赖锁未改，`wp05-vector-native-npm-audit.json` 记录 30 项既有依赖通报，真实付费调用 0。嵌套模型常驻额度和多轮回收仍由 AC-22、AC-32 验证。
+
+## WP-05 第五轮 PDF 窗口退出与旧回执
+
+- 基线 `df24d1a`，测试提交 `143bc07`。Windows Electron 实际执行 `printToPDF`，测试在 Chromium 已生成 49,145 字节后暂停向主进程交付回执。点击停止后，旧版过早销毁窗口 2（渲染进程 9136），真实断言失败。见 `wp05-pdf-cancel-red.log` 及 `provider-paper-export-CaceVn/report.json`。
+- 接入资源调度 R1 `ed618c1` 原有的 PDF 配额及宿主调度器，复用同一层实际 lease，包含图片和 HTML 准备、真实打印回执、原窗口和临时文件清理。重新打印前通过现有授权、记录修订、来源和目标校验。教师停止后拒绝旧回执写入，保留原 Effect 状态待对账。
+- 正式构建主进程 SHA-256 为 `a2a589037b74bd60a0d124b9df93dc8657f301cfd194a41e639d05f876eb2606`，渲染入口为 `719270bcc6b4c9a4073d31ddd1d0bb18264cb9c6a9fe53f4b13b0d68fe4208e8`。窗口 2（渲染进程 48748）在停止确认后仍存活，500 毫秒的第二次同类准入等待超时，独立会话通过真实查题工具得到原题。回执交付后旧窗口关闭、专属临时目录消失、PDF 配额可重新取得。旧 run 持久化为中断，Effect 保持 unknown，未生成已保存回执。原试卷、Word 与教师笔记摘要一致。重新提交并获教师授权后，独立 PDF 与 DOCX 读取确认内容、答案和份数。见 `provider-paper-export-JWmNVd/report.json`，共 3/3。
+- 同一构建复验暂态失败仅补齐缺失 PDF（2/2），持续失败为两次实际打印、零已保存回执（2/2）。分别见 `provider-paper-export-ZIgwaM/report.json`、`provider-paper-export-2xZ4gV/report.json`。命令为 `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <本轮实际构建>`，分别使用 `--cancel-in-flight`、默认模式及 `--keep-failing`。
+- 正式构建、渲染组件 261/261、资源压力与调度合同 10/10 均通过。原日志为 `wp05-pdf-lease-build.log`、`wp05-pdf-lease-renderer.log`、`wp05-pdf-lease-resource-contract.log`。依赖锁未变，审计维持 30 项通报（高危 5 项）。实际模型付费调用为 0。各 owner 多轮回收与不退出实例留给 AC-22。
+
+## WP-05 第六至八轮 执行器资源结算与关停
+
+| 路径 | 实际结果 | 本地证据 |
+| --- | --- | --- |
+| Windows MCP stdio | 10 次故障 owner，独立会话继续查题。Windows AppContainer 的子进程、helper、Job、投影目录均退出或清理。真实旧 stdout 在原超时后到达，后续工具仅接受新回执。旧版物理退出后仍有 1 个数据监听器，修复后 stdout 和 stderr 监听器均为 0，权限审计与发生的效果一致。 | `provider-mcp-stdio-desktop-nMsRyq/desktop-report.json`、`provider-mcp-stdio-desktop-aPNeA4/desktop-report.json` |
+| MCP HTTP | 10 次本地真实连接断开，记录关闭回执和同一来源的重新握手。独立来源始终正常，原已核验的 Schema 保持一致。 | `mcp-health-desktop-DgpQMU/report.json` |
+| OCR | 同一正式资源 R1 桌面执行 10 次故障 owner。检查原材文件摘要、实际 PID、nonce、页码 checkpoint、准确的 lease 和每轮恰好一次 `actual_settled`。确认取消前景独立保存、旧输出不覆盖原页。 | `provider-ocr-recovery-ABeSuf/report.json` |
+| 向量和 embedding | 同一个资源 R1 桌面各 10 次。原始向量 utility 的 PID 与世代退出后，旧回执不推进游标。新 utility 用原游标恢复。原 ONNX 请求超时后发生真实迟到管道回执，旧子进程关闭前未开启新模型进程。关闭后连续 10 次恢复同一来源。21 个观测到的原生进程在测试退出后均已结束。 | `provider-vector-recovery-YrDust/report.json`、同目录 `embedding-trace.jsonl` |
+| 本地文档解析 | 实际 Electron utility 使用正式构建内的 `document-worker.js` 读回 DOCX。基线原消息监听器为 1，修复后停用和恢复的各十个物理子进程均以 0 个专属监听器结算；在该旧子进程仍活着时，全部八个真实槽位保持占满，迟到合法回执不能覆盖取消。 | `provider-document-owner-SvZLHL/REPORT.json`、`provider-document-owner-rjBNMO/REPORT.json`、`wp05-ownership-document-contract.log` |
+| PDF 同进程循环 | 10 个唯一浏览上下文和临时目录，记录实际窗口/PID、原 Chromium 字节、停止与结算。停止后原 PDF 类目不可重新准入，各轮窗体、监听器和临时项目均回到基线。 | `provider-pdf-lifecycle-QvWfb2/report.json` |
+| PDF 长时间无法退出 | 旧版主进程在真实打印回执尚未交付时退出。修复后保留原窗口及租约，5 秒后提示，并可开新会话。继续等待时相同槽位仍不可用。由原窗口再次触发退出，经真实回执和清理后进程以 0 退出，重启读回原中断任务、原 Word 和教师确认，无 PDF 已保存记录。 | `provider-paper-export-EnivwN/report.json`、`provider-paper-export-Ac46n7/report.json` |
+
+正式构建主进程为 `9b018a32ac40ef0898078b0f629ea7dae42a9c86c815920e9895ba8bbb13d6a6`，渲染入口为 `719270bcc6b4c9a4073d31ddd1d0bb18264cb9c6a9fe53f4b13b0d68fe4208e8`。同一源码构建时 `npm run build` 通过，渲染组件 261/261，文档生命周期合同 4/4。依赖审计锁未改，30 项既有通报含高危 5 项。模型付费请求为 0。
+
+三次实现验证分别消耗 WP-05 第 6、7、8 轮。保留 MCP 池超时和测试上下文被压缩的原始失败。反例中的旧进程信号只对合成服务延迟交付，重跑在同一 Electron 实例以两个获授同一固定能力的会话复用原 Provider，从而单独测量 owner 回收。AC-22 暂不计入必需项完成数。
+
+## WP-06 冷启基线
+
+- 当前 Node 24 需通过 `node --experimental-transform-types scripts/xiaozhi-agent/phase6-startup-recovery-smoke.mjs` 运行原 TypeScript 依赖，实际 SQLite、Task 和 Journal 冷启 2/2。原 strip-only 错误、修正命令和读回分别见 `wp06-cold-current-contract.log`、`wp06-cold-current-contract-transform.log`、`xiaozhi-phase6-startup-recovery-hhJRGv/report.json`。
+- `node scripts/xiaozhi-agent/phase6-recovery-host-parent.mjs` 使用真实 Electron Host 及受控终端，H01–H04 共 4/4。冷启原任务、显式继续、缺失或损坏 JSONL 的受控重建，以及 native binding 失败回滚和再次继续通过。见 `xiaozhi-phase6-recovery-host-Ps7VIq/report.json`。此基线未覆盖同时存在原待审、撤权、未知 Effect 和旧快照的前端场景。
+- `file-stage-recovery-electron.mjs --build <实际构建>` 在实际 DOCX 专属临时文件写入后、原子发布前终止隔离 Electron 进程。冷启零模型请求，原 HTML 摘要和修改时间不变，前端显示待核对，点核对只清理记录的临时文件。第二次重新启动状态一致，4/4。见 `xiaozhi-stage-ui-yXh0ko/report.json`。
+
+## WP-06 固定修复与危险请求拒绝
+
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-runtime-smoke.mjs` 原生实测 5/5。合成旧元数据触发内置源码配方，实际编译固定 helper、以 Windows AppContainer 运行健康命令并核实摘要，之后才发布活动指针。再次准备 `changed=false` 且数据库仅有一次实际构建意图。错源拒绝且原活动指针字节一致。见 `wp06-fixed-native-runtime-report.json`，原报告 SHA-256 为 `cfc00f84f83d2e98fcbcb97ded1ec8511542fcbef16c1762b35812c56654c9d1`。
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-phase3-store-smoke.mjs` 15/15。真实演练目录与 SQLite 验证写入失败无成果、配置修复后重复不写、hash 变化拒绝、未知字段保留、撤权后实际写入数为 0，以及分别受控的所属网络与出站授权。见 `xiaozhi-permission-phase3-store-fm6TSd/report.json`。
+- 在主进程 `9b018a32ac40ef0898078b0f629ea7dae42a9c86c815920e9895ba8bbb13d6a6` 的正式桌面，预加载拒绝未知下载、数据库自动修复和关闭权限。缺凭据时显示原安全入口。使用隔离合成模型响应，实际 Pi 对 `environment_repair(recipe=disable_permissions)` 返回失败回执，无 Effect 写入，原资料和配置字节不变。另一个真实桌面用损坏 SQLite 冷启以退出码 1 停止，原始 DB SHA-256 `5d1fc514904bc265b8fb840f2b21d200b3405bbb023db96af04b0117b7d44017` 不变，弹窗指向备份和诊断。见 `provider-environment-refusal-LLBMS8/report.json`，3/3。
+- 运行证据统一在指定验收根中。固定修复沿用权限引擎、已有 recipe 和原数据路径。本切片只增加真实验收入口，无生产行为变更和实际付费调用。
+
+## WP-06 同一任务的冷启审批与未知结果
+
+- `file-stage-recovery-electron.mjs --build <实际构建> --continue --pending-approval` 通过 6/6。正式 Electron 首先在合成 DOCX 原子提交前终止。原 HTML 成果、两条未知 Effect 和其绑定的旧 Provider Snapshot 保留。冷启等待教师操作，核对 DOCX 唯一临时文件，未接触无关文件。
+- 教师从实际任务卡点击继续，Pi 在同一 Task 新世代产生真实等待审批，不执行终端。再次精确终止验收 Electron 主进程后，独立进程冷读零模型请求，实际恢复卡显示原审批仍待处理。又一次显式继续发出一条合成模型请求，Task ID、要求版本、原快照 hash、未知 Effect 与原 HTML 完全一致。随后用真实撤权入口撤销相关 Grant，原 approval 失效，提交旧版本审批被拒，终端派发审计数仍为 0。见 `xiaozhi-stage-ui-KqOoHK/report.json`。
+- 保留三条中间失败证据。原核对卡需先展开，`xiaozhi-stage-ui-DHkcoK/report.json`；Office 审批阻塞同一顺序工具批次，改为同一任务跨世代生成待审，`xiaozhi-stage-ui-b7mv9a/report.json`；Windows 包装进程 PID 与真实 Electron 主进程可能不同，`xiaozhi-stage-ui-B7T1gp/report.json`。最终先核对实际主进程 PID、构建和隔离 profile，再终止目标进程。无生产改动和付费模型调用。
+
+## WP-07 Goal 健康等待与停止原因
+
+- 基线 `provider-goal-recovery-ORPtEL/report.json`。实际 Goal 在三轮未新增证据后正确保存了停止状态，最终显示错误的 `skill_source_changed`。SQLite 的原事件序列先持久化 Goal 停滞与中断，再产生错误的权限复核提示。宿主结束当前 Task 后，Pi 返回时额外读取旧技能授权导致诊断错误。
+- 最小修复沿 Pi 原终止决定收尾，终止后的旧 owner 跳过最终权限复核，活跃模型与工具的交付继续走原检查。正式主进程 `f4d2be02d2eb773bb18d7ad45ef9e5d93aa394d2095f341ad380211dc2430431` 实测 `provider-goal-recovery-Mmmiae/report.json`，3/3。原 Goal 的 503 至第二次尝试期间，重复读取四次和另存合成题库记录均未增加请求、核验证据或 Goal 修订，约定等待 2.5 秒。恢复沿同一 Goal 和原 Run，读到合成文件真实标记，再由教师确认完成。SQLite 对账共 4 次模型调用和 2 个工具，`activeMs=7012`、`waitingMs=0`。停滞 3 次准确报告 `goal_stalled`。暂停场景只接收了 1 次实际请求。
+- 同一源码的 Goal 状态合同 16/16、技能隔离合同 14/14、渲染组件 261/261 和正式构建通过。原始证据见 `wp07-goal-boundary-baseline.log`、`wp07-goal-owner-skills.log`、`wp07-goal-owner-renderer.log`、`wp07-goal-owner-build.log`。另复跑最新构建的模型恢复与注入生产 powerMonitor 恢复事件 11/11，见 `model-wire-health-qQxxCd/report.json`。真实 S0 仍由 AC-23 单独验收。
+
+## WP-07 原 Goal 的预算、拒绝和产物
+
+- `provider-goal-recovery-electron.mjs <实际构建> <验收根> --budget` 通过 5/5。正式 Pi 走原文件权限审批和精确稿件审批，第一份讲义提交后，用拒绝处理第二份练习。接受不完整成果的尝试被阻止，教师拒绝整个成果后 Goal 沿原 Task 暂停，无自动运行，原讲义摘要不变。
+- 同一实际构建的另一原 Goal 保存讲义后收到连续三个实际 HTTP 503。同一 DeepSeek 模型在该物理请求达到恢复上限后以 `provider_unavailable` 中断，原 Run 共差异化计量 2 次正常、3 次失败。实际等待后仍只有该原 Run，未写练习，原讲义、Task ID 和 Goal ID 保持，剩余练习步骤待做。见 `provider-goal-recovery-YoJSPW/report.json`。首次夹具只等待稿件、遗漏工作区权限审批，原始日志 `provider-goal-recovery-YbrFtL/report.json`。最终验证使用真实教师授予的任务范围和独立文件审阅。
+
+## WP-07 诊断导出与隔离
+
+- 实际 Windows Electron 设置页 6/6。原模型合成成功和 401 原因准确显示，学生名、私人路径、假凭证及服务器敏感回显均未进入诊断预览或文件。真实保存对话框通过取消、写入、失败保留及显式再保存。导出与原预览 SHA-256 一致，为 `6b690dda75429ba67132a29025c1f59ca2742e416566555fa320cce7058bd649`。同一真实 preload 拒绝已存在的另一会话读和导出，在达到原缓存容量后拒绝旧预览。两个所需分辨率均在原生视口通过，冷启原草稿和日志保持且零模型重放。见 `xiaozhi-diagnostic-ui-p36T6Q/report.json`。
+- 生产域规则和实际 SQLite 文件边界 12/12。不同记录类型给定 90 条时各保留上限 64 条并披露省略 26 条。过大旧 SQLite 记录拒绝读取，不越权恢复。预览过期、旧预览容量淘汰、取消或写入失败均不覆盖现有文件。域测试本地解析使用该工作树自己已安装的依赖。见 `xiaozhi-diagnostic-domain-PiBKoB/report.json`。本切片未修改诊断生产功能、教师资料或原数据真源。
+
+## WP-07 原对话的恢复状态
+
+- 基线 `model-wire-health-ZfKfQr/report.json` 经真实 429、503、200 恢复，但只显示模型请求记录。现有请求栏根据已完成回执显示「连接已恢复」。只有宿主判定冷却且整轮实际请求为零时，才记录「服务正在冷却，本轮未发送」。耗尽实际尝试、HTTP 限流及凭证错误保留原原因和对应入口。
+- `node scripts/xiaozhi-agent/provider-model-health-electron.mjs <实际构建> --cold --status-ui` 通过 12/12。Windows Electron 经真实 loopback 请求收到连续模型事件，序列 7、8、10、11、13、14，第三次实际派发后约 377 毫秒观测到恢复提示。原记录同一位置仅一个提示，提示与教师原话切换后保留。真实重启、切换、新凭证隔离及导出期间的派发数按场景核对。导出 SHA-256 `d9de09ec04817ffec4b2a362faee603b40af00416be3c11227d49f03d55425ed` 与预览一致。见 `model-wire-health-92esB9/report.json` 和三张状态截图。
+- `file-stage-recovery-electron.mjs --build <实际构建> --continue --pending-approval` 通过 6/6。原任务卡显示「结果未知」，待审批与可继续的操作各走原控件。中断轮未显示完成。已有 HTML 保留，实际确认和续做不会重放未知 DOCX 或终端 Effect。见 `xiaozhi-stage-ui-ouVgRQ/report.json` 和 `provider-task-recovery-actions.png`。
+- 主进程 SHA-256 `47bcd6afb99565aff45f97c901cd877d2fe083823002f96249b4fd1272448f37`，渲染入口 `1ad6301a2ef27b877f43b7cbd1de5abb819f9a429c28a39cc872ae1ed1d77219`。正式构建通过，渲染合同 261/261，模型健康 4/4。隔离验收版已启动，实际窗体和 SQLite 见 `wp07-state-ui-manual-window.json`。
+
+## WP-08 旧库、历史准备与回退
+
+- `node scripts/acceptance/db-foundation-r2-prepared.mjs` 使用 `OMNI_EDU_TEST_BUILD_ROOT=provider-r1-state-ui`，与真实桌面状态同一 SHA-256，通过 12/12。真实记录在模型派发前持久化，历史配置与当前六类模型来源分别读回。写入失败不派发。完整与便携副本经备份校验后冷启动，原 prepared 行和原生文件 hash 相同。有效关联缺失显示未记录。完整恢复副本里人为写入了伪授权历史行，现有生产读者显示 `invalid`，保留原记录与实际授权，模型请求为零。见 `fixtures/R2-prepared-KtoKue/report.json`。首次命令误启测试目录选择队列导致备份夹具失败，日志为 `wp08-db-r2-prepared-current.log`，随后由原脚本控制选择对话框。
+- `node scripts/acceptance/db-r3-migration-backup.mjs` 使用上述同一构建及实际 R2 V6 合成验收库的只读源，在副本运行已有 V7 迁移。原始 SQLite SHA-256 `db10b49bec4ba1668531518f5d6c8f97f2cfcfcd2a04b3e70cd45d41bbd22c06` 保持。迁移台账、SQLite 历史准备及任务行、Pi Session 文件均读回。首次升级生成恢复备份，完整/便携备份及真实恢复经原入口验证。便携副本无凭证和生效 Grant，正式冷读保留历史，见 `wp08-r3-migration/fixtures/R3-migration-backup-lq4wAU/report.json`。DB R2 旧兼容夹具另过 2/2，见 `wp08-db-r2-compat-current.log`。
+- 同一构建的实际撤权证据在 `xiaozhi-stage-ui-ouVgRQ/report.json`。原准备记录与既有待审批可读，撤权后旧决定被拒、实际终端派发为零。专项复用现有迁移和备份实现，未更改数据库合同。
+
+## WP-01 实际权限、CAS 和来源版本对照
+
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs` 在 SQLite 持久化权限和真实 HTTP 回环通过 12/12。原审批、输入校验、资源占用和取消均未触发网络请求或健康增量。按源授权正常派发，真实认证失败仍单独显示。见 `xiaozhi-mcp-transports-cuTWxv/report.json`。
+- `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-sqlite-generations.test.mjs` 通过 14/14。SQLite 冲突时保留新版工具选择，重读可获取版本 4。重试旧版本实际派发为零，业务调用数、健康失败和活动尝试均为零。见 `mcp-sqlite-generation-8U7ozN/report.json`。
+- `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 真实 Electron/Pi 宿主通过 2/2，冻结 949 个源输入，零漂移。实际文件变更仅一个已结算工具回执，保留教师修改的 SHA-256，无成功写入 Effect。旧要求以 `task_context_changed` 拒绝且没有模型请求，迟到审批失败。原任务在更新版本后只写一次合法成果，见 `provider-task-fence-y7mFP8/REPORT.json`。本次仅新增原边界断言。
+
+## WP-02 原信任恢复的失效矩阵
+
+- `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 在固定根运行通过 16/16。真实受管 MCP 在 native 连接成功后再暂时失联，同一来源分别接受错误版本、包 hash、文件原地变更、停用 Binding、停用默认实例，以及撤销 Grant 和原信任的核对。每组均拒绝旧选择，实际 `mcp_service_intent` 计数不变。实际 SQLite 可读回版本、绑定、审批和撤权。真正 Windows Job 终态确认无剩余进程、权限与 profile。凭证更替经 Windows 加密存储与冷启验证，原凭证 Grant 不匹配。见 `phase5-mcp-lifecycle-HBdPXD/report.json`、`xiaozhi-phase5-mcp-lifecycle-k8bsSJ/authority.sqlite`。第一次夹具移动到固定根后依赖解析中断，见 `phase5-mcp-lifecycle-GvhxTD/worker.log`，尚未运行产品断言。复跑解析本工作树自己的依赖。
+- `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-reconnection.test.mjs scripts/xiaozhi-agent/provider-snapshot-recovery.test.mjs` 通过 12/12。真实 HTTP Schema 改变时旧信任和工具选择清空，业务调用数不变。宿主真实 Registry/Resolver 与 SQLite 快照检查本地任务拒绝远端候选，保留历史快照、权限与 Effect，实际替代计数为零。见 `wp02-ac04-http-and-residency.log`。此切片只加强现有生产边界的验收。
+
+## WP-03 模型、工具与实际资源的尝试账
+
+- 在 `provider-r1-state-ui` 正式 Windows 构建运行实际 Pi/真实 loopback 模型 12/12，确认三次实际派发上限以及冷却零计量，见 `model-wire-health-92esB9/report.json`。同一正式构建的真实 Pi/Hana 读取通过 6/6，单个模型工具请求遇 EBUSY 最多读取两次，退避中取消仅有一次实际读取、无下一次模型派发。冷启保持记录。见 `xiaozhi-ordinary-recovery-ui-0J72f4/report.json`。
+- `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <实际构建>` 加默认、`--keep-failing`、`--cancel-in-flight` 三组分别通过 2/2、2/2、3/3。实际模型只调用一次 PDF 导出工具，领域内尝试最多两次打印。持续失败后没有成功 Effect。停止时保留旧 PDF 窗口、进程和原 R1 配额，同类申请超时。旧回执到达并清理后教师再次审批，第二个 Run 有独立许可，只生成一份新 PDF。用实际 SQLite 与独立文件解析核对。报告 `provider-paper-export-ns0Gnc/report.json`、`provider-paper-export-T6shIC/report.json`、`provider-paper-export-1ZXDsG/report.json`。资源及模型合同 11/11，见 `wp03-ac11-budget-contract.log`。
+- AC-08 的真实 SQLite 冷读、缓存活跃条目保留、旧代际和期限合同 7/7，见 `wp03-ac08-cache-and-cold-sqlite-verified.log`。第一次命令缺少固定根环境变量，原日志保留。本机仅支持 Modern Standby S0。生产 Electron 电源回调已经注入，无真实系统待机。见 `wp06-s0-environment-readback.txt`。
+
+## WP-08 固定教学输入与合并前置核对
+
+- `python scripts/acceptance/provider-resilience-journey-inputs.py <专项 fixtures 绝对目录> <固定验收根>`。实际 MuPDF 两次离线渲染，六份输出与清单均有相同 SHA-256。A、B 切分题册和答案区域，C 只生成原第一页，`SYN-OCR-01` 保持原页。分别用实际 PDF 读者核对每份只有一个扫描图和没有预埋正文层，保留 `mock-source.txt`、CSV 和讲义来源摘要。见 `wp08-ac33-frozen-scan-readback.json` 及 `provider-journey-inputs-cz4lw12g/inputs.json`。
+- `node scripts/acceptance/provider-resilience-journey-import.mjs <该扫描目录> <固定验收根>` 使用同一 Windows 正式构建，从资料库文件夹选择入口实际确认，归档前 0 份，归档完成后 SQLite 六个独立来源和本地原件摘要均吻合，外部请求 0。解析状态仍为 `failed`，引擎回执 `hana-anydoc-0.1.2:unavailable`。归档成功单独记录，AC-33 不通过此项完成。见 `provider-journey-import-Buk0dK/report.json`。续做需在保留原输入清单的前提下使用具备实际 parser/OCR 的组合构建，并按原校验导入题目与具名讲义。
+- 独立运行锁定的 AnyDoc 0.1.2 识别固定 PDF 的类型为 `pdf`，明确返回扫描页需要 OCR。资源 R1 同版本 OCR 清单的 712 个本地文件均和编译锁一致。原宿主拒绝使用目录链接启动 OCR，实际正式解析报告 `provider-journey-import-YSx0i7/report.json` 失败，临时链接已精确移除，资源调度 R1 原运行包保持。当前 D 盘空间不足以按保留空间复制独立实体运行包。继续验收时使用正式安装的实体运行包，然后以 `--require-text` 从原窗口核对逐页 OCR、A/B 答案独立来源与 C 的缺页事实。
+- `npm run test:renderer-components` 已复跑 261/261。最后一次生产源码变化仍为 `8e58147`，核对原 Windows 主进程和渲染 SHA 未变。`npm audit --package-lock-only --json` 记录现有高危 5 项、中危 17 项、低危 8 项，锁文件未更改。`git diff --check` 通过。见 `wp08-module-renderer-final.log`、`wp08-module-npm-audit.json`、`wp08-main-readback.txt`。
+- `git merge-tree --write-tree HEAD codex/host-resource-scheduling-r1` 只读预检记录共享代码与协作文件的实际冲突，见 `wp08-r1-join-readonly.txt`。未建立正式集成候选，未执行本地 main 合并或远端写入。必须先处理原调度依赖的工作器账和性能证据，再核对组合权限、生命周期及实际 Windows 门禁。
+
+## WP-06 模型等待中的真实连接重建
+
+- `node scripts/xiaozhi-agent/provider-model-health-electron.mjs <Provider 实际构建> --wake-network` 通过 2/2。在 Pi 已持久化 503 的 4 秒重试等待后，实际关闭回环监听与连接，确认 TCP 不可用，再重新绑定同一端口并确认服务可用。注入生产 Electron `resume` 回调后未提前发出请求。持续运行的原 Run 在原可重试时间之后 271 毫秒发出第二次请求并结束，额度为 2。另一次教师在断开期间点击停止，重连和回调后仍为中断，原等待期过后物理请求数和额度均保持 1。原数据和面向教师的运行由实际 renderer/preload 读回。见 `model-wire-health-miXx5L/report.json`。
+- 首次将新用例和旧三次上限用例放在同一健康域，已取消请求的实际 503 累计进入原共享熔断，导致旧用例的基线前提被改变。第二次组合观察在旧凭证反例期间桌面关闭。保留 `model-wire-health-xTJMpM/report.json` 与 `model-wire-health-5fGUrj/report.json`。最终独立运行网络用例，产品重试逻辑未改。本次回调是受控注入，真实系统待机仍由 AC-23 单独验证。
+
+## WP-08 原生 OCR 依赖对照
+
+- D 盘压缩目录复制在 82/712 文件时触及磁盘保留空间，未启动该不完整运行包。已清理这个新建目录，原资源 R1 运行包与全部证据保留。见 `wp08-ocr-copy-and-cleanup-current.json`。
+- 同一验收脚本支持 `OMNI_EDU_PROVIDER_JOURNEY_DESKTOP` 和 `OMNI_EDU_PROVIDER_JOURNEY_MAIN_SHA256`，仅运行指纹匹配的原依赖构建。对照实际 `ed618c1` 的 `r1-office-fences` 主进程，SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`。从资料库归档六份后，原生 `pdfium-5.14.0-rapidocr-3.9.2-file.v3` 实际进入处理。独立验收进程关闭，两条原解析工作在真实 SQLite 记录 `shutdown` 并返回待处理，归档源仍在，文本块为零。见 `provider-journey-import-aXnYGn/report.json` 与对应 SQLite。
+- 尝试改用应用已有的隔离后台模式，正式 renderer 报截图稳定性超时，导入命令尚未提交。保留 `omni-edu-provider-journey-import-CYOBft/report.json`。工作树恢复已实测可归档的可见窗口入口。下一次在独占桌面串行执行，先采集原生窗口与进程退出事件，观察实际 parser/OCR 与 SQLite 文本页。WP-08 达 8/8，未产生正式集成候选，AC-32 至 AC-36 保留原判定。

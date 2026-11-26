@@ -82,7 +82,8 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
   }
   // The existing permission engine authorizes the real function probe. The fixture
   // lives only in the owned projection and is never written into teacher files.
-  const prepared = await options.mcp.tools(permission(options, {...stdio, transformInput: stdio.healthInput}), {preparationTimeoutMs: 30000});
+  const prepared = await options.mcp.tools(permission(options, {...stdio, transformInput: stdio.healthInput}),
+    {preparationTimeoutMs: 30000, serverId: server.id, signal: options.context.signal});
   const healthCallId = 'acquisition_health_' + artifact.id.slice(-16);
   const recordPending = async () => {
     const approval = (await options.store.approvals(options.context.owner.sessionId)).find(row => row.state === 'pending'
@@ -127,8 +128,8 @@ function readData(value: unknown) {
 }
 
 export function createManagedMcpProviderRuntime(options: Options): CapabilityAdapterRuntime & {dispose: () => Promise<void>} {
-  const clients = new Map<string, Awaited<ReturnType<Options['mcp']['tools']>>>();
-  const opened = new Map<string, Promise<Awaited<ReturnType<Options['mcp']['tools']>>>>();
+  type PreparedTools = Awaited<ReturnType<Options['mcp']['tools']>>;
+  const opened = new Map<string, {pending: Promise<PreparedTools | null>; reconnecting: boolean}>();
   let disposed = false;
   const available = new Set<string>();
   let sharedStdio: ReturnType<typeof owned> | undefined;
@@ -138,49 +139,87 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
     const artifact = (await options.state.artifacts()).find(row => managedMcpProviderId(row) === id);
     if (!artifact || artifact.status !== 'ready' || !(Date.parse(artifact.expiresAt) > Date.now())
         || protocolHash(artifact.binding.files) !== hash || declaration(artifact, '').provider.version !== version || !artifact.serverId) return null;
-    const authority = await options.mcp.authority(artifact.serverId);
-    if (!authority || authority.schemaHash !== artifact.schemaHash || authority.sourceHash !== artifact.sourceHash) return null;
     return artifact;
   }
-  async function authorized(provider: Readonly<ProviderManifest>) {
+  async function matchingAuthority(artifact: AcquisitionArtifact, allowOffline: boolean) {
+    const source = allowOffline ? await options.mcp.trustedAuthority(artifact.serverId!) : await options.mcp.authority(artifact.serverId!);
+    return source?.schemaHash === artifact.schemaHash && source.sourceHash === artifact.sourceHash ? source : null;
+  }
+  async function authorized(provider: Readonly<ProviderManifest>, allowOffline = false) {
+    if (disposed || options.context.signal.aborted || !await options.context.current()) return false;
     const artifact = await artifactFor(provider.id, provider.version, provider.source.packageHash);
     if (!artifact) return false;
-    const source = await options.mcp.authority(artifact.serverId!);
+    const source = await matchingAuthority(artifact, allowOffline);
     if (!source) return false;
     const stdio = ownerStdio();
     const scopes: PermissionScope[] = [...await stdio.scopes(source, 'read_text_file', {}), {kind: 'mcp', serverId: source.serverId,
       sourceHash: source.sourceHash, schemaHash: source.schemaHash, tools: ['read_text_file']}];
+    if (source.secret) scopes.push(source.secret);
     const request: PermissionRequest = {schemaVersion: 2, owner: options.context.owner, requirementsVersion: options.context.requirementsVersion,
       callId: 'capability_resolve', action: 'capability_resolve', inputDigest: protocolHash({providerId: provider.id, version: provider.version}),
       purpose: '核对当前任务的已验证资料读取能力与授权', scopes, files: [], provider: null, classification: 'teacher_private',
       expiresAt: new Date(Date.now() + 60000).toISOString()};
     const allowed = (await options.permissions.engine.evaluate(request)).state === 'allow';
-    if (allowed) available.add(key(provider.id, provider.version, provider.source.packageHash));
     return allowed;
   }
-  const resolver = () => createCapabilityResolver(options.registry, authorized, {
+  const resolver = (allowOffline: boolean) => createCapabilityResolver(options.registry, async provider => {
+    const availableKey = key(provider.id, provider.version, provider.source.packageHash);
+    if (!allowOffline) available.delete(availableKey);
+    const allowed = await authorized(provider, allowOffline);
+    if (allowed && !allowOffline) available.add(availableKey);
+    return allowed;
+  }, {
     verifySource: provider => provider.type === 'mcp' && provider.runtime === 'isolated' && provider.publisher.official === false
       && provider.id.startsWith('mcp.managed.filesystem.')});
-  async function tools(artifact: AcquisitionArtifact) {
+  async function resolve(requirement: CapabilityRequirement, pinned?: {id: string; version: string; hash: string}) {
+    const resolveOnce = (allowOffline: boolean) => pinned
+      ? resolver(allowOffline).resolveVersion(requirement, pinned.id, pinned.version, pinned.hash)
+      : resolver(allowOffline).resolve(requirement);
+    const ready = await resolveOnce(false);
+    if (ready.selectedProviders.length || !ready.blockedReasons.includes('permission_denied')) return ready;
+
+    // Qualify the exact binding through the existing resolver before opening a process.
+    const candidate = (await resolveOnce(true)).selectedProviders[0];
+    if (!candidate) return ready;
+    const record = await options.registry.providerVersion(candidate.providerId, candidate.providerVersion, requirement.capabilityId);
+    if (!record || record.revoked || !await authorized(record.provider, true)) return ready;
+    const artifact = await artifactFor(candidate.providerId, candidate.providerVersion, record.provider.source.packageHash);
+    if (!artifact) return ready;
+    if (!await matchingAuthority(artifact, false)) await tools(artifact, record.provider);
+    return resolveOnce(false);
+  }
+  async function tools(artifact: AcquisitionArtifact, reconnectFor?: Readonly<ProviderManifest>) {
     if (disposed) throw Error('cancelled');
-    const previous = clients.get(artifact.id);
-    if (previous) return previous;
-    let pending = opened.get(artifact.id);
-    if (!pending) {
-      pending = options.mcp.tools(permission(options, ownerStdio().fork()), {preparationTimeoutMs: 30000});
-      opened.set(artifact.id, pending);
+    const previous = opened.get(artifact.id);
+    if (previous && (!reconnectFor || previous.reconnecting)) return previous.pending;
+    const prepare = async () => {
+      // Dispose and settle the former Job before preparing the replacement.
+      if (previous) await (await previous.pending)?.dispose();
+      if (disposed || options.context.signal.aborted || !await options.context.current()) return null;
+      if (reconnectFor && !await authorized(reconnectFor, true)) return null;
+      const prepared = await options.mcp.tools(permission(options, ownerStdio().fork()),
+        {preparationTimeoutMs: 30000, serverId: artifact.serverId!, signal: options.context.signal});
+      if (!disposed && prepared.definitions.some(tool => tool.name === mcpToolName(artifact.serverId!, 'read_text_file'))) return prepared;
+      await prepared.dispose();
+      return null;
+    };
+    const entry = {pending: prepare(), reconnecting: Boolean(reconnectFor)};
+    opened.set(artifact.id, entry);
+    let result: PreparedTools | null = null;
+    try {
+      result = await entry.pending;
+      return result;
+    } finally {
+      entry.reconnecting = false;
+      if (!result && opened.get(artifact.id) === entry) opened.delete(artifact.id);
     }
-    const prepared = await pending;
-    if (disposed) {await prepared.dispose(); throw Error('cancelled');}
-    clients.set(artifact.id, prepared);
-    return prepared;
   }
   return {
     supports: capabilityId => capabilityId === MANAGED_READ_CAPABILITY.id,
     schemas: {input:MANAGED_READ_CAPABILITY.inputSchemaRef, output:MANAGED_READ_CAPABILITY.outputSchemaRef,
       validateInput:validStatInput, validateOutput:readData},
-    resolve: (_sessionId: string, requirement: CapabilityRequirement) => resolver().resolve(requirement),
-    resolveVersion: (_sessionId, requirement, id, version, hash) => resolver().resolveVersion(requirement, id, version, hash),
+    resolve: (_sessionId: string, requirement: CapabilityRequirement) => resolve(requirement),
+    resolveVersion: (_sessionId, requirement, id, version, hash) => resolve(requirement, {id, version, hash}),
     hasExecutable: (id, version, hash) => available.has(key(id, version, hash)),
     async execute(context: ProviderExecutionContext, input: unknown) {
       if (disposed || !await options.context.current() || !input || typeof input !== 'object' || Array.isArray(input)
@@ -194,7 +233,7 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
       const before = await fs.lstat(filename);
       if (!before.isFile() || before.size > 32 * 1048576) throw Error('invalid_input');
       const prepared = await tools(artifact);
-      const tool = prepared.definitions.find(row => row.name === mcpToolName(artifact.serverId!, 'read_text_file'));
+      const tool = prepared?.definitions.find(row => row.name === mcpToolName(artifact.serverId!, 'read_text_file'));
       if (!tool) throw Error('permission_denied');
       const result = await tool.execute(context.callId, {path: relative}, context.signal, undefined, undefined as never);
       if (result.isError) throw Error('provider_unavailable');
@@ -207,8 +246,8 @@ export function createManagedMcpProviderRuntime(options: Options): CapabilityAda
     },
     async dispose() {
       disposed = true;
-      await Promise.allSettled([...opened.values()].map(async pending => {await (await pending).dispose();}));
-      opened.clear(); clients.clear();
+      await Promise.allSettled([...opened.values()].map(async entry => {await (await entry.pending)?.dispose();}));
+      opened.clear(); available.clear();
     },
   };
 }

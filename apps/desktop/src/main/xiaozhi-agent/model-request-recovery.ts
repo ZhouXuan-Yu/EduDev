@@ -1,11 +1,14 @@
 import type {XiaozhiModelRequest} from '../../shared/xiaozhi-model-request';
-type RetryOptions={beforeRetry:()=>Promise<void>;onRetry?:(attempt:number,status:number)=>void;onState?:(request:XiaozhiModelRequest)=>void;delayMs?:number};
+import {isTemporaryProviderHttpStatus, providerRetryAfterSeconds} from './provider-fault-policy';
+import type {createModelHealthScope} from './model-provider-health';
+type RetryOptions={beforeRetry:()=>Promise<void>;onRetry?:(attempt:number,status:number)=>void;onState?:(request:XiaozhiModelRequest)=>void;delayMs?:number;
+  nextRequest?:()=>number; maxAttempts?:1|3; beforeSend?:()=>void; health?:ReturnType<typeof createModelHealthScope>};
 /** Retry only explicit transient HTTP rejection, before any response body is read.
  * Never replay a tool, a partial stream, an ambiguous network failure or auth error. */
 export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptions):typeof fetch {
   let requestSequence=0;
   return async(input,init)=>{
-    const request=++requestSequence;let currentAttempt=1,started=false,lastStatus:number|undefined;
+    const request=options.nextRequest?.() ?? ++requestSequence;let currentAttempt=1,started=false,lastStatus:number|undefined;
     const state=(value:Pick<XiaozhiModelRequest,'state'>&Partial<Pick<XiaozhiModelRequest,'status'|'waitMs'>>)=>options.onState?.({schemaVersion:1,request,attempt:currentAttempt as 1|2|3,at:Date.now(),...value});
     const signal=init?.signal??(input instanceof Request?input.signal:undefined);
     // The Pi adapter supplies a replayable JSON POST. Unknown bodies remain one-shot.
@@ -14,16 +17,21 @@ export function withModelRequestRecovery(fetcher:typeof fetch,options:RetryOptio
       currentAttempt=attempt+1;
       started=false;lastStatus=undefined;
       signal?.throwIfAborted();
-      started=true;
-      state({state:'sending'});
-      const response=await fetcher(input,init);
+      if(options.health)await options.health.ready();
+      signal?.throwIfAborted();
+      const attemptHealth=options.health?.begin();
+      let response: Response;
+      try {
+        options.beforeSend?.();
+        started=true;
+        state({state:'sending'});
+        const received=await fetcher(input,init);
+        response=attemptHealth ? await attemptHealth.response(received) : received;
+      } catch (error) {await attemptHealth?.failed(error,started);throw error;}
       lastStatus=response.status;
       const done=()=>{state({state:response.ok?'accepted':'rejected',status:response.status});return response;};
-      if(!replayable||attempt>=2||![429,500,502,503,504].includes(response.status))return done();
-      const header=response.headers.get('retry-after');
-      const retryAt=header?Date.parse(header):NaN;
-      const seconds=header&&/^\d+(\.\d+)?$/.test(header)?Number(header)
-        :Number.isFinite(retryAt)?Math.max(0,(retryAt-Date.now())/1000):undefined;
+      if(!replayable||attempt+1>=(options.maxAttempts??3)||!isTemporaryProviderHttpStatus(response.status))return done();
+      const seconds=providerRetryAfterSeconds(response.headers.get('retry-after'));
       // Long server backoff belongs to an explicit later user retry.
       if(seconds!==undefined&&seconds>5)return done();
       await response.body?.cancel();

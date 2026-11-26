@@ -70,11 +70,13 @@ const model = http.createServer(async (req, res) => {
         requests.push({ phase, body });
         const n = index++;
         let tool: {name: string; input: Record<string, unknown>} | undefined;
-        if (n === 0) {
+        if (phase !== 'health_sessions' && n === 0) {
             tool = { name: 'find_education_tools', input: { query: '合成课程连接 查询公开课程', limit: 5 } };
-        } else if (n === 1) {
+        } else if (phase !== 'health_sessions' && n === 1) {
             const topics: Record<string, string> = {drop: '合成断线课程', drop_retry: '合成断线课程', cancel: '合成停止课程', revoke: '合成撤销课程'};
             tool = { name: toolName, input: { topic: topics[phase] ?? '合成公开课程' } };
+        } else if (phase === 'health_sessions' && n === 0) {
+            tool = {name: 'office_list_files', input: {path: '.'}};
         }
         const base = { id: 'owned-mcp-effect', object: 'chat.completion.chunk', created: 1, model: 'deepseek-flash' };
         const chunk = (delta: Record<string, unknown>, finish_reason: string | null = null) =>
@@ -222,6 +224,35 @@ try {
         (report.lateFences ??= []).push({ action, runId: pendingRun.runId, effect: fenced, receipts: await receipts(pendingRun.runId), calls: fixture.state.calls });
         checks.push({ name: 'Actual ' + action + ' after durable begin fences the original HTTP send and retains conservative unknown', pass: true });
     }
+    phase = 'health_sessions';
+    let initializations = 0;
+    fixture.state.beforeReply = (request: {method: string}) => {
+        if (request.method === 'initialize') {initializations++; return 'drop';}
+    };
+    const counts: number[] = [], sessionIds: string[] = [], runIds: string[] = [];
+    for (let index = 0; index < 4; index++) {
+        sessionId = (await store.createAiConversationSession({title: '合成 MCP 健康 ' + index, folderId: null})).session.id;
+        sessionIds.push(sessionId);
+        await store.xiaozhiState.setWorkspace(sessionId, workspace, 'Owned teaching source');
+        runIds.push(await start());
+        counts.push(initializations);
+    }
+    report.healthSessions = {sessionIds, runIds, counts, paidCalls: 0};
+    assert.equal(new Set(sessionIds).size, 4);
+    assert.equal(new Set(runIds).size, 4);
+    assert.deepEqual(counts, [1, 2, 3, 3]);
+    const healthModelRequests = requests.filter(row => row.phase === 'health_sessions');
+    assert.equal(healthModelRequests.length, 8);
+    for (const id of runIds) {
+        const tools = await store.xiaozhiState.sql.all('SELECT success FROM xiaozhi_tool_receipts WHERE run_id=? AND tool=?', [id, 'office_list_files']);
+        assert.equal(tools.length, 1);
+        assert.equal(tools[0].success, 1, 'ordinary built-in workspace reads stay available during the MCP outage');
+    }
+    assert.equal(fixture.state.calls, 2, 'MCP cooldown cannot create an external tool effect');
+    const offline = (await host.mcpCatalog()).servers.find(row => row.id === serverId);
+    assert.equal(offline?.status, 'failed');
+    assert.equal(offline.trustedSchemaHash, catalog.servers[0].trustedSchemaHash);
+    checks.push({name: 'Four distinct production Pi sessions share one MCP failure domain and only three physical connections are sent', pass: true});
     report.success = true;
 }
 catch (error) {
