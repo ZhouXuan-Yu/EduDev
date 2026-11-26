@@ -6,9 +6,9 @@ import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/c
 import {historyMemorySchema} from './xiaozhi-agent/history/schema';
 import {preparedAgentConfigSchema} from './xiaozhi-agent/prepared-agent-config';
 import {taskSummaryMaintenanceV6} from './xiaozhi-agent/task-summary-maintenance-v6';
-import {ordinaryConfigSchema} from './xiaozhi-agent/ordinary-config-journal';
 import {ensureTaskSummarySchema} from './xiaozhi-agent/task-summary-projection';
 import {personalMemorySchema} from './education/personal-memory/schema';
+import {ordinaryConfigSchema} from './xiaozhi-agent/ordinary-config-journal';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -76,7 +76,12 @@ const historyFirstMigrations: readonly Migration[] = [...sharedMigrations,histor
 const personalBeforeConfigMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,
   {...historyMigration,id:'r1.history_memory_access_and_index.after_database_foundation.v7'},personalMigration,
   {...ordinaryMigration,id:'r3.ordinary_config_history.after_personal.v9'}];
-const supportedMigrations = [canonicalMigrations,historyFirstMigrations,personalBeforeConfigMigrations];
+const historyFirstConfigMigrations: readonly Migration[] = [...sharedMigrations,historyMigration,
+  {...preparedMigration,id:'r2.prepared_agent_config.after_history.v6'},
+  {...summaryMigration,id:'r2.task_summary_maintenance.after_history.v7'},
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_history.v8'},
+  {...personalMigration,id:'r2.personal_memory.after_config.v9'}];
+const supportedMigrations = [canonicalMigrations,historyFirstConfigMigrations,historyFirstMigrations,personalBeforeConfigMigrations];
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = canonicalMigrations.length;
 

@@ -4,14 +4,17 @@ import {DatabaseSync} from 'node:sqlite'
 import {randomUUID,createHash} from 'node:crypto'
 const {historyMemorySchema}=await import('../../src/main/xiaozhi-agent/history/schema.ts')
 const {createHistoryState,historyId}=await import('../../src/main/xiaozhi-agent/history/state.ts')
+const {createHistoryMemory}=await import('../../src/main/xiaozhi-agent/history/memory.ts')
+const {teacherRequestSources}=await import('../../src/main/xiaozhi-agent/request-sources.ts')
 const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memory-scope-state.ts')
 const {validMemoryScopeInput}=await import('../../src/main/xiaozhi-agent/memory-selection.ts')
 
 const db=new DatabaseSync(':memory:')
-db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);')
+db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,student_id TEXT,archived_at TEXT);')
 const old='aisession_'+randomUUID(), target='aisession_'+randomUUID()
 const hash=text=>createHash('sha256').update(text).digest('hex')
-db.prepare('INSERT INTO ai_conversation_sessions VALUES (?),(?)').run(old,target)
+db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES (?),(?)').run(old,target)
+db.prepare("UPDATE ai_conversation_sessions SET student_id='' WHERE id=?").run(old)
 db.exec(historyMemorySchema)
 const work={
   all:async (query,params=[])=>db.prepare(query).all(...params),
@@ -64,6 +67,58 @@ try{
   await check('identity follows record, not body hash',async()=>{
     assert.equal(historyId({...ref,sourceVersion:hash('changed')}),grant.sourceId)
     assert.notEqual(historyId({...ref,recordId:'other'}),grant.sourceId)
+  })
+  await check('the final discovery response excludes a permission revoked during candidate assembly',async()=>{
+    const messages=['algebra exercise worksheet','exercise'].map((content,i)=>({id:'race-record-'+i,role:'user',content,
+      metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'run_'+i}}));
+    const refs=teacherRequestSources(messages,[]).map(source=>({kind:'history_request',sessionId:old,
+      recordId:source.sourceId,sourceVersion:source.sourceVersion}));
+    const first=await memory.change(refs[0],0,'allow');
+    const second=await memory.change(refs[1],0,'allow');
+    let revocation=false,secondReads=0;
+    const watched={...sql,all:async(query,args=[])=>{
+      const secondLookup=query==='SELECT * FROM memory_source_access WHERE source_id=?'&&args[0]===second.sourceId;
+      const publicationLookup=query.includes('a.source_id IN (')&&query.includes('FROM memory_source_access a');
+      if(!revocation&&(publicationLookup||(secondLookup&&++secondReads===2))){
+        await memory.change(refs[0],first.revision,'forget');
+        revocation=true;
+      }
+      return sql.all(query,args);
+    }};
+    const served=createHistoryMemory({xiaozhiState:{sql:watched,memoryScope:scope.memoryScope},
+      getAiConversationSession:async id=>({session:{title:id===old?'来源会话':'当前任务'},messages:id===old?messages:[]}),
+      sanitizeProblemText:async text=>({sanitizedText:text})});
+    const found=await served.discover(target,'algebra exercise worksheet');
+    assert(revocation,'Expected to hit the publication boundary.');
+    assert.deepEqual(found.candidates.map(candidate=>candidate.sourceId),[second.sourceId]);
+    // Reclassification of either session during assembly must still exclude the title.
+    for(const id of [old,target]){
+      await sql.run('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?',['test-student',id]);
+      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      await sql.run('UPDATE ai_conversation_sessions SET student_id=NULL WHERE id=?',[id]);
+      await sql.run('UPDATE ai_conversation_sessions SET archived_at=? WHERE id=?',['2026-11-25',id]);
+      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      await sql.run('UPDATE ai_conversation_sessions SET archived_at=NULL WHERE id=?',[id]);
+    }
+  })
+  await check('authorized preview discards source text when access changes before publication',async()=>{
+    const messages=[{id:'preview-request',role:'user',content:'用于核验的讲义原话',
+      metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'preview-run'}}];
+    const [source]=teacherRequestSources(messages,[]);
+    const ref={kind:'history_request',sessionId:old,recordId:source.sourceId,sourceVersion:source.sourceVersion};
+    const grant=await memory.change(ref,0,'allow');
+    let revoked=false;
+    const watched={...sql,all:async(query,args=[])=>{
+      if(!revoked && query.includes('AS pending') && args[0]===grant.sourceId){
+        revoked=true;
+        await memory.change(ref,grant.revision,'revoke');
+      }
+      return sql.all(query,args);
+    }};
+    const served=createHistoryMemory({xiaozhiState:{sql:watched},getAiConversationSession:async()=>({session:{title:'测试'},messages}),
+      sanitizeProblemText:async text=>({sanitizedText:text})});
+    await assert.rejects(served.preview(ref,0,true),/permission_denied|source_changed/);
+    assert(revoked);
   })
   await check('unknown scope schema rejected',async()=>{
     await sql.run('UPDATE xiaozhi_pi_memory_scopes SET schema_version=17')

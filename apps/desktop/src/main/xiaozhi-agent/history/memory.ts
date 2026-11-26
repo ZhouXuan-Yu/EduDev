@@ -33,7 +33,29 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       selection:{layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion}});
     return {...source,ticket};
   }
-  async function session(id: string) {
+  // Check all returned titles against one SQLite snapshot, after asynchronous source reads.
+  async function publish(sessionId: string, scopeVersion: number, sources: HistorySource[], signal?: AbortSignal) {
+    signal?.throwIfAborted();
+    const limited = sources.slice(0,12);
+    if (!limited.length) return [];
+    const ids = limited.map(source => source.sourceId);
+    const rows = await sql.all(`SELECT a.source_id,a.source_version,a.generation FROM memory_source_access a
+      JOIN ai_conversation_sessions owner ON owner.id=a.session_id
+      JOIN ai_conversation_sessions target ON target.id=?
+      WHERE a.source_id IN (${ids.map(() => '?').join(',')}) AND a.memory_state='active'
+        AND a.discover_allowed=1 AND a.index_allowed=1 AND NULLIF(owner.student_id,'') IS NULL AND NULLIF(owner.archived_at,'') IS NULL
+        AND NULLIF(target.student_id,'') IS NULL AND NULLIF(target.archived_at,'') IS NULL
+        AND COALESCE((SELECT version FROM xiaozhi_pi_memory_scopes WHERE conversation_id=target.id),0)=?`,
+      [sessionId,...ids,scopeVersion]);
+    signal?.throwIfAborted();
+    const current = new Map(rows.map(row => [row.source_id,row]));
+    return limited.flatMap(source => {
+      const row = current.get(source.sourceId);
+      return row && row.source_version === source.ref.sourceVersion && row.generation === source.generation
+        ? [issue(sessionId,scopeVersion,source)] : [];
+    });
+  }
+  async function session(id: string, includeControls = true) {
     if (!validMemorySession(id)) throw Error('invalid_input');
     const detail = await store.getAiConversationSession(id).catch(()=>null);
     if (!detail || detail.session.archivedAt || detail.session.studentId) throw Error('source_unavailable');
@@ -137,7 +159,7 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
               const row=await readAllowed(saved).catch(()=>null);
               if(row)candidates.push(await project(row.ref,row.label,row.title,saved));
             }
-            return {mode:'hindsight',candidates:candidates.map(row=>issue(sessionId,scope.version,row)),elapsedMs:Math.round(performance.now()-started)};
+            return {mode:'hindsight',candidates:await publish(sessionId,scope.version,candidates,signal),elapsedMs:Math.round(performance.now()-started)};
           }
         } catch { signal?.throwIfAborted(); }
       }
@@ -153,12 +175,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
           if (!(error instanceof Error)||!['source_unavailable','source_changed','permission_denied'].includes(error.message)) throw error;
         }
       }
-      const candidates:HistorySource[] = [];
-      for (const result of score.sort((a,b)=>b.score-a.score).slice(0,12)) {
-        const latest = await access.get(result.source.sourceId);
-        if (latest?.allowed && latest.status==='active' && latest.generation===result.source.generation) candidates.push(result.source);
-      }
-      return {mode:'local',candidates:candidates.map(row=>issue(sessionId,scope.version,row)),
+      const ranked = score.sort((a,b)=>b.score-a.score).map(item=>item.source);
+      return {mode:'local',candidates:await publish(sessionId,scope.version,ranked,signal),
         ...(engine?{reason:'service_unavailable' as const}:{}),elapsedMs:Math.round(performance.now()-started)};
     },
     async preview(ref: HistorySourceRef, offset: number, permittedOnly: boolean): Promise<HistoryPreview> {
@@ -170,7 +188,13 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       const text = 'fingerprint' in source ? source.text : (await store.sanitizeProblemText(source.text)).sanitizedText;
       if (offset>text.length) throw Error('invalid_input');
       const end = Math.min(text.length,offset+1200);
-      return {source:await project(ref,source.label,source.title,saved),text:text.slice(offset,end),offset,nextOffset:end<text.length?end:null};
+      const view = await project(ref,source.label,source.title,saved);
+      if (permittedOnly) {
+        const current = await access.get(view.sourceId);
+        if (!current?.allowed || current.status !== 'active') throw Error('permission_denied');
+        if (current.generation !== view.generation || current.ref.sourceVersion !== ref.sourceVersion) throw Error('source_changed');
+      }
+      return {source:view,text:text.slice(offset,end),offset,nextOffset:end<text.length?end:null};
     },
     async selected(selection: HistorySelection) {
       const saved = await access.get(selection.id);
