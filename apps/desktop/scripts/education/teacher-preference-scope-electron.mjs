@@ -221,6 +221,7 @@ try{
  const id=await reopened.session();
  await reopened.app.close();active=undefined;
  const cold=await open('teacher-a');
+ await until(async()=>(await cold.session())===id);
  assert.equal(await cold.session(),id);
  const after=await cold.send('为什么水结冰会膨胀？');
  assert.equal(after.versions,0);assert.deepEqual(cold.revisions(),retained);
