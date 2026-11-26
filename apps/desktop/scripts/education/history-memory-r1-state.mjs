@@ -14,6 +14,7 @@ db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT P
 const old='aisession_'+randomUUID(), target='aisession_'+randomUUID()
 const hash=text=>createHash('sha256').update(text).digest('hex')
 db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES (?),(?)').run(old,target)
+db.prepare("UPDATE ai_conversation_sessions SET student_id='' WHERE id=?").run(old)
 db.exec(historyMemorySchema)
 const work={
   all:async (query,params=[])=>db.prepare(query).all(...params),
@@ -90,6 +91,15 @@ try{
     const found=await served.discover(target,'algebra exercise worksheet');
     assert(revocation,'Expected to hit the publication boundary.');
     assert.deepEqual(found.candidates.map(candidate=>candidate.sourceId),[second.sourceId]);
+    // Reclassification of either session during assembly must still exclude the title.
+    for(const id of [old,target]){
+      await sql.run('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?',['test-student',id]);
+      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      await sql.run('UPDATE ai_conversation_sessions SET student_id=NULL WHERE id=?',[id]);
+      await sql.run('UPDATE ai_conversation_sessions SET archived_at=? WHERE id=?',['2026-11-25',id]);
+      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      await sql.run('UPDATE ai_conversation_sessions SET archived_at=NULL WHERE id=?',[id]);
+    }
   })
   await check('authorized preview discards source text when access changes before publication',async()=>{
     const messages=[{id:'preview-request',role:'user',content:'用于核验的讲义原话',

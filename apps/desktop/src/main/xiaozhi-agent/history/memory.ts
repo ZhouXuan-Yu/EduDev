@@ -50,8 +50,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       JOIN ai_conversation_sessions owner ON owner.id=a.session_id
       JOIN ai_conversation_sessions target ON target.id=?
       WHERE a.source_id IN (${ids.map(() => '?').join(',')}) AND a.memory_state='active'
-        AND a.discover_allowed=1 AND a.index_allowed=1 AND owner.student_id IS NULL AND owner.archived_at IS NULL
-        AND target.student_id IS NULL AND target.archived_at IS NULL
+        AND a.discover_allowed=1 AND a.index_allowed=1 AND NULLIF(owner.student_id,'') IS NULL AND NULLIF(owner.archived_at,'') IS NULL
+        AND NULLIF(target.student_id,'') IS NULL AND NULLIF(target.archived_at,'') IS NULL
         AND COALESCE((SELECT version FROM xiaozhi_pi_memory_scopes WHERE conversation_id=target.id),0)=?`,
       [sessionId,...ids,scopeVersion]);
     signal?.throwIfAborted();
