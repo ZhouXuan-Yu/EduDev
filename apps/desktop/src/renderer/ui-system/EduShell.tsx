@@ -1,4 +1,5 @@
 import {useSurfaceEntrance} from './motion/useSurfaceEntrance';
+import {useHeaderExtent} from './useHeaderExtent';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from './ColumnResizeHandle';
@@ -31,6 +32,8 @@ export function EduShell({
   navigationResizable?: boolean;
 }) {
   const surface = useRef<HTMLElement>(null);
+  const header = useRef<HTMLElement>(null);
+  useHeaderExtent(header,surface);
   useSurfaceEntrance(surface,view,view!=='ai');
   const [navWidth, setNavWidth] = useState(() => {
     const savedWidth = readColumnWidth('xiaozhi.ui.navWidth.v1', 232, 200, 360);
@@ -55,7 +58,7 @@ export function EduShell({
       {navigationOpen && <EduNavigation view={view} disabled={disabled} />}
       {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={200} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onCommit={value=>writeColumnWidth('xiaozhi.ui.navWidth.v1',value)} onReset={()=>{setNavWidth(232);writeColumnWidth('xiaozhi.ui.navWidth.v1',232);}} />}
       <main ref={surface} className="edu-workspace">
-        <header className="edu-header" data-testid={headerTestId || 'edu-header'}>
+        <header ref={header} className="edu-header" data-testid={headerTestId || 'edu-header'}>
           <div className="edu-breadcrumb">
             {!teachingWorkspace && !['ai', 'teaching', 'student_workbench', 'knowledge', 'settings', 'paper'].includes(view) && <><span>{contract.group}</span><ChevronRight size={14} /></>}
             <strong>{heading}</strong>

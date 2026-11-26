@@ -73,7 +73,7 @@
   flex-shrink: 0;
 }
 @media (max-width: 480px) {
-  .edu-header { flex-wrap: wrap; gap: 4px 8px; padding: 8px 12px; }
+  .edu-header { height:auto; flex-wrap: wrap; gap: 4px 8px; padding: 8px 12px; }
   .edu-header-actions { flex-wrap: wrap; flex-shrink: 1; max-width: 100%; margin-left: auto; }
 }
 .edu-page {
@@ -98,7 +98,7 @@
 .edu-history-panel {
   position: absolute;
   z-index: 30;
-  top: 60px;
+  top: var(--edu-header-height,60px);
   left: 0;
   bottom: 0;
   width: min(360px, 100%);
@@ -168,7 +168,7 @@
   .edu-context-panel {
     position: absolute;
     z-index: 25;
-    inset: 60px 0 0 auto;
+    inset: var(--edu-header-height,60px) 0 0 auto;
     width: min(100%, 520px);
     min-width: 0;
   }

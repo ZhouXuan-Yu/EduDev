@@ -3,14 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {_electron as electron} from 'playwright';
 import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
-import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
+import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint} from './acceptance/evidence.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'..'),repo=path.resolve(desktop,'../..');
 const output=fs.mkdtempSync(path.join(repo,'docs/audit/ux-motion-20261126/electron-'));
 const root=path.join(desktop,'test-results',path.basename(output)),data=path.join(root,'data'),profile=path.join(root,'profile');
 for(const p of [data,profile])fs.mkdirSync(p,{recursive:true});
-const main=path.join(desktop,'out/main/index.js'),source=fingerprint(path.join(desktop,'src')),build=fingerprint(path.join(desktop,'out'));
+const main=testMain(desktop),source=fingerprint(path.join(desktop,'src')),build=fingerprint(path.dirname(path.dirname(main)));
 const bootstrap=zeroNetworkBootstrap({output,main,profile,counter:'__uxMotionHttp'});
 const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:repo,OMNI_EDU_SKIP_DOTENV:'1'};
 for(const k of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(k)||k.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(k))delete env[k];
@@ -74,6 +74,7 @@ try{
  for(const reducedMotion of ['no-preference','reduce'])for(const colorScheme of ['light','dark'])for(const [width,height] of [[390,844],[800,768],[1366,768],[1920,1080]]){
   await page.emulateMedia({reducedMotion,colorScheme});await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),[width,height]);await page.waitForTimeout(220);
   assert(!(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1)),`${width} document overflow`);
+  assert(await page.locator('.edu-shell:visible .edu-header').evaluate(header=>{const box=header.getBoundingClientRect();return [...header.querySelectorAll('button')].every(button=>{const rect=button.getBoundingClientRect();return !rect.width||!rect.height||rect.bottom<=box.bottom+1&&rect.top>=box.top-1;});}),`${width} clipped header actions`);
   if(width<=800){const toggle=page.locator('[data-testid=edu-navigation]:visible').getByTestId('workbench-sidebar-toggle');await toggle.click();await page.getByTestId('workbench-dismiss-navigation').waitFor();assert(await page.locator('.edu-shell:visible .edu-workspace').evaluate(el=>el.inert));for(let i=0;i<8;i++)await page.keyboard.press('Tab');assert(!(await page.evaluate(()=>!!document.activeElement?.closest('.edu-workspace'))));await page.getByTestId('workbench-dismiss-navigation').focus();await page.keyboard.press('Escape');await page.getByTestId('workbench-dismiss-navigation').waitFor({state:'hidden'});assert.equal(await toggle.getAttribute('aria-expanded'),'false');assert(await toggle.evaluate(el=>document.activeElement===el));}
   const duration=await page.locator('[data-testid=edu-navigation]:visible').evaluate(el=>getComputedStyle(el).getPropertyValue('--edu-motion-standard').trim());if(reducedMotion==='reduce')assert.equal(duration,'0ms');
   await screenshot(`chat-${width}-${colorScheme}-${reducedMotion}`);
@@ -81,7 +82,7 @@ try{
  check('four viewport widths, both OS schemes and reduced motion retain reachability without document overflow');
  await page.emulateMedia({reducedMotion:'no-preference',colorScheme:'light'});await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].setContentSize(1366,768));
  await samples('page transitions',async()=>{for(const id of ['nav-knowledge','nav-teaching','nav-student-workbench','nav-ai-workspace']){await nav(id);await page.waitForTimeout(220);}});
- assert.deepEqual(report.errors,[]);assert.deepEqual(report.consoleErrors,[]);assert.equal(fingerprint(path.join(desktop,'src')).sha256,source.sha256);assert.equal(fingerprint(path.join(desktop,'out')).sha256,build.sha256);
+ assert.deepEqual(report.errors,[]);assert.deepEqual(report.consoleErrors,[]);assert.equal(fingerprint(path.join(desktop,'src')).sha256,source.sha256);assert.equal(fingerprint(path.dirname(path.dirname(main))).sha256,build.sha256);
  await app.close();await start();const persisted=await read(ids['交互验收甲']);assert.equal(persisted.find(x=>x.title==='甲记录已改标题')?.occurredAt,originalTime);const books=await page.evaluate(()=>window.omniEdu.listTeacherNotebooks(false));assert(books.some(x=>x.name==='验收备课本甲已改名'));check('restart readback retains original record timestamp and notebook metadata');
  report.httpAttempts=await app.evaluate(()=>globalThis.__uxMotionHttp);report.success=true;
 }catch(error){report.failure=String(error.stack||error);process.exitCode=1;if(page&&!page.isClosed()){await screenshot('failure').catch(()=>{});fs.writeFileSync(path.join(output,'failure-body.txt'),await page.locator('body').innerText().catch(()=>''));}}

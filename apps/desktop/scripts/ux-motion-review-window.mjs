@@ -3,13 +3,13 @@ import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
-import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
+import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'..'),repo=path.resolve(desktop,'../..');
 const proof=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
 if(!proof.success)throw new Error('Acceptance has not passed');
-const main=path.join(desktop,'out/main/index.js');
-if(fingerprint(path.join(desktop,'out')).sha256!==proof.build)throw new Error('Build changed since acceptance');
+const main=testMain(desktop);
+if(fingerprint(path.dirname(path.dirname(main))).sha256!==proof.build)throw new Error('Build changed since acceptance');
 const env={...process.env,OMNI_EDU_DATA_ROOT:proof.data,OMNI_EDU_REPO_ROOT:repo,OMNI_EDU_SKIP_DOTENV:'1'};
 for(const key of Object.keys(env))if(/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key)||key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
 const app=await electron.launch({args:[main,'--user-data-dir='+proof.profile],cwd:desktop,env,timeout:60000});

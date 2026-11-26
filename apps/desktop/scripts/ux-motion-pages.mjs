@@ -4,7 +4,7 @@ import path from 'node:path';
 import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {zeroNetworkBootstrap} from './acceptance/zero-network-bootstrap.mjs';
-import {assertIsolatedPiMain} from './acceptance/build-root.mjs';
+import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 
 const desktop = path.resolve(import.meta.dirname, '..');
 const mode = process.argv[2];
@@ -14,9 +14,9 @@ const output = fs.mkdtempSync(path.join(delivery, mode + '-pages-'));
 const data = path.join(desktop, 'test-results', path.basename(output), 'data');
 const profile = path.join(desktop, 'test-results', path.basename(output), 'profile');
 for (const directory of [data, profile]) fs.mkdirSync(directory, {recursive: true});
-const main = path.join(desktop, 'out/main/index.js');
+const main = testMain(desktop);
 const before = fingerprint(path.join(desktop, 'src'));
-const build = fingerprint(path.join(desktop, 'out'));
+const build = fingerprint(path.dirname(path.dirname(main)));
 const bootstrap = zeroNetworkBootstrap({output, main, profile, counter: '__uiRoneHttp'});
 const env = {...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'), NODE_ENV: 'development'};
 for (const key of Object.keys(env)) if (/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL/i.test(key) || key.startsWith('OMNI_EDU_E2E_') || ['ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'NODE_OPTIONS'].includes(key)) delete env[key];
@@ -37,6 +37,8 @@ async function capture(id, state = 'current') {
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const viewport = await page.evaluate(() => ({width: innerWidth, height: innerHeight, dpr: devicePixelRatio,
       horizontalOverflow: document.documentElement.scrollWidth > innerWidth + 1}));
+    const clippedHeader=await page.locator('.edu-shell:visible .edu-header').evaluate(header=>{const box=header.getBoundingClientRect();return [...header.querySelectorAll('button')].filter(button=>{const rect=button.getBoundingClientRect();return rect.width>0&&rect.height>0&&(rect.bottom>box.bottom+1||rect.top<box.top-1||rect.right>box.right+1||rect.left<box.left-1);}).map(button=>button.getAttribute('aria-label')||button.textContent);});
+    assert.deepEqual(clippedHeader,[],`${id} ${width}: header actions must be fully inside the header`);
     const filename = `${id}-${width}-${state}.png`;
     await page.screenshot({path: path.join(output, filename)});
     const sample = {id, state, viewport, screenshot: filename,
@@ -111,7 +113,7 @@ try {
   assert.deepEqual(report.errors,[]);assert.deepEqual(report.consoleErrors,[]);assert(report.pages.every(p=>!p.viewport.horizontalOverflow),'No document horizontal overflow');
   report.httpAttempts = await app.evaluate(() => globalThis.__uiRoneHttp);
   assert.equal(fingerprint(path.join(desktop, 'src')).sha256, before.sha256);
-  assert.equal(fingerprint(path.join(desktop, 'out')).sha256, build.sha256);
+  assert.equal(fingerprint(path.dirname(path.dirname(main))).sha256, build.sha256);
   report.success = true;
 } catch (error) {
   report.failure = String(error.stack || error); process.exitCode = 1;
