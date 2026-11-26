@@ -17,6 +17,7 @@ import { PiConversationSurface } from './PiConversationSurface';
 import {PiGoalControl} from './PiGoalControl';
 import {taskReviewInteraction} from './PiInteractionCards';
 import {PiComposerPendingPanel,pendingComposerItems} from './PiComposerPendingPanel';
+import {readComposerDraft} from './composer-drafts';
 import { OfficeComposer } from './OfficeComposer';
 import {PiThinkingPicker} from './PiThinkingPicker';
 import type {OrdinaryCommit} from '../../../shared/xiaozhi-ordinary-config';
@@ -402,6 +403,10 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const projection = snapshot?.projection;
   const current = projection?.turns.at(-1);
   const composerItems=visible&&!syncBlocked?pendingComposerItems(snapshot,id,current?.id):[];
+  const [historyLookup,setHistoryLookup]=useState<{sessionId:string;query:string}>();
+  const openHistory=historyLookup?.sessionId===id&&visible&&!syncBlocked&&!snapshot?.running?snapshot?.memoryScope:undefined;
+  const selectedHistoryCount=snapshot?.memoryScope?.enabled
+    ? snapshot.memoryScope.selections.filter(item=>item.layer==='history'&&item.state==='ready').length : 0;
   const composerItemIds=new Set(composerItems.map(item=>item.id));
   const showInConversation=(item:{id:string;runId:string},turnId:string)=>item.runId===turnId&&!composerItemIds.has(item.id);
   async function answerQuestion(controlId:string,answer:string){
@@ -493,7 +498,17 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       .concat((snapshot?.mockExamEdits||[]).filter(item=>item.runId===turnId).map(summary=><PiMockExamEdit key={summary.id} summary={summary}
         sessionId={id} enabled={!snapshot?.running&&!syncBlocked} onRefresh={()=>hydrate(id)}/>))
       .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
-      <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined} onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}/><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
+      <div className="edu-composer-viewport" data-testid="pi-composer-viewport">
+        {visible&&selectedHistoryCount>0&&<p role="status" className="pi-history-note" data-testid="history-use-selection">
+          已选择 {selectedHistoryCount} 条历史，供本会话参考。</p>}
+        {visible&&snapshot?.memoryScope&&!openHistory&&!snapshot.running&&!syncBlocked&&
+          <Button size="sm" variant="ghost" data-testid="history-lookup-open"
+            onPress={()=>setHistoryLookup({sessionId:id,query:readComposerDraft(id).text.slice(0,1800)})}>查找历史</Button>}
+        <PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined}
+          onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}
+          history={openHistory?{scope:openHistory,query:historyLookup!.query,close:()=>setHistoryLookup(undefined),
+            confirmed:async()=>{setHistoryLookup(undefined);await hydrate(id);}}:undefined}/>
+        <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" sessionId={id} visible={visible}
           onHistoryChange={()=>void hydrate(id)} disabled={!snapshot||!id||modelSelecting||syncBlocked} onChange={choice=>{
           if(mutationsBlocked()||modelLock.current||!models?.thinking?.session)return;

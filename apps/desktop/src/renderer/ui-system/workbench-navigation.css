@@ -21,7 +21,7 @@
 .wb-subnav { margin-left:18px; padding-left:5px; border-left:1px solid #dddde2; }
 .wb-subnav[hidden] { display:none; }
 .wb-subnav .wb-item { font-size:13px; min-height:34px; }
-.wb-chevron { margin-left:auto; flex:none; transition:transform .15s ease; }
+.wb-chevron { margin-left:auto; flex:none; transition:transform var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease); }
 .wb-chevron[data-expanded=true] { transform:rotate(90deg); }
 .wb-session-copy { display:flex; flex-direction:column; min-width:0; gap:3px; }
 .wb-session-copy > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

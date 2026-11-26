@@ -1,0 +1,51 @@
+{
+  "scope": "Teacher UX and application-owned motion",
+  "sourceCommit": "14099494f028f2a3447a23f3aa4a329fb97b3fc8",
+  "implementationCommits": [
+    "4996957",
+    "aa870c5",
+    "1409949"
+  ],
+  "integratedMain": "d9a87bf2042ffbbd4627cd85e776bd734bd8fe31",
+  "mergeCommit": "f3a07f936969166c19c38278d66b742c571c68e7",
+  "sourceSnapshot": "28fa45cd57b7bbc4e34d13f53d89330d0b480d13055f0abb7a1b31cf3a709240",
+  "build": "e3997eb486ccba14b5809ed9f78289db807c3b6d840b473173b1bb4014b0f336",
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-motion-header-final\\main\\index.js",
+  "checks": {
+    "build": "PASS",
+    "typecheck": "PASS",
+    "mountedComponents": "15/15",
+    "rendererComponents": "261/261",
+    "styleIsolation": "9/9",
+    "productionElectron": "10/10",
+    "pageSamples": 76,
+    "settingsViews": 9,
+    "composerProtection": "5/5",
+    "finalSmokeCases": 207,
+    "finalSmokeExit": 0,
+    "nativeWindowOperation": "PASS",
+    "gptReview": "NO_P1_P2_IN_SCOPE",
+    "uiContracts": "28_PASS_1_BASELINE_FAIL",
+    "dependencyAudit": {
+      "high": 2,
+      "moderate": 10,
+      "low": 8,
+      "critical": 0
+    }
+  },
+  "overallUiR1": "BLOCKED_EXISTING_GATES",
+  "teacherTrial": "NOT_RUN",
+  "providerQuality": "NOT_RUN",
+  "native125Percent": "NOT_RUN",
+  "theme": "approved light-only product under both OS preferences",
+  "runtime": "review-window.json; fictional isolated data; real production entry",
+  "git": {
+    "acceptedSnapshot": "3ffab1df7f3224bf3296896e5903064041c5c4b0",
+    "remoteMainAtVerification": "3ffab1df7f3224bf3296896e5903064041c5c4b0",
+    "match": true,
+    "sourceUnchangedSince1409949": true,
+    "receipt": "GIT_RECEIPT.json"
+  },
+  "rollback": "Normal revert of UI implementation commits, retain integrated history/config/database changes. No real-data reset.",
+  "status": "DELIVERED_UX_MOTION_SCOPE_WITH_EXISTING_GLOBAL_GATES_OPEN"
+}

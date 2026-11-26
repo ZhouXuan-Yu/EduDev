@@ -1,0 +1,48 @@
+{
+  "head": "14099494f028f2a3447a23f3aa4a329fb97b3fc8",
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-motion-header-final\\main\\index.js",
+  "source": "28fa45cd57b7bbc4e34d13f53d89330d0b480d13055f0abb7a1b31cf3a709240",
+  "build": "e3997eb486ccba14b5809ed9f78289db807c3b6d840b473173b1bb4014b0f336",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-SDlvJb\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-SDlvJb\\profile",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-SDlvJb\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-SDlvJb\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-images-2mtjbdlt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-pdf-renderer-bzxonzus.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-relative-path-dx7n7yht.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/pi-session-ctuthgxa.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/typed-table-dhnk4c9t.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "window": {
+    "pid": 43612,
+    "title": "小智 · 体验与动效验收（最新版·独立数据）",
+    "visible": true,
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 769
+    }
+  },
+  "scope": "Actual production main; fictional acceptance data retained. No replacement of daily configuration, user data or source worktree."
+}

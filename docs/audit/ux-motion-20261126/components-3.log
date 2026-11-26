@@ -1,0 +1,18 @@
+PASS student-owned save settlement cannot clear another student draft
+PASS late record save preserves the newer revision
+PASS local datetime is 09:30 and a title-only edit retains exact original timestamp
+PASS review save receipt keeps edits made while awaiting host
+PASS late save never switches the selected report and retained drafts reopen
+D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\node_modules\jsdom\lib\generated\idl\Event.js:22
+  throw new globalObject.TypeError(`${context} is not of type 'Event'.`);
+  ^
+
+TypeError: Failed to execute 'dispatchEvent' on 'EventTarget': parameter 1 is not of type 'Event'.
+    at exports.convert (D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\node_modules\jsdom\lib\generated\idl\Event.js:22:9)
+    at HTMLBodyElement.dispatchEvent (D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\node_modules\jsdom\lib\generated\idl\EventTarget.js:236:24)
+    at $535772f9d2c1f38d$var$restoreFocusToElement (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/node_modules/react-aria/dist/private/focus/FocusScope.mjs:569:14)
+    at Timeout._onTimeout (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/node_modules/react-aria/dist/private/focus/FocusScope.mjs:537:33)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+
+Node.js v24.12.0

@@ -1,0 +1,266 @@
+[
+  {
+    "path": "apps/desktop/src/renderer/styles.css",
+    "line": 747,
+    "declaration": ".spin { animation: student-lifecycle-spin .9s linear infinite; }",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/styles.css",
+    "line": 1814,
+    "declaration": "transition:",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/styles.css",
+    "line": 2971,
+    "declaration": ".backup-spinner { flex: 0 0 auto; animation: backup-spin 900ms linear infinite; }",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/chat.css",
+    "line": 173,
+    "declaration": "animation: edu-operation-spin 1s linear infinite;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/chat.css",
+    "line": 182,
+    "declaration": "animation: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/chat.css",
+    "line": 347,
+    "declaration": "transition: color 180ms ease, background-color 180ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/chat.css",
+    "line": 369,
+    "declaration": "transition: transform 180ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/chat.css",
+    "line": 390,
+    "declaration": "transition: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/layout.css",
+    "line": 201,
+    "declaration": "transition: background-color 120ms ease;",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/navigation.css",
+    "line": 66,
+    "declaration": "transition: transform 180ms ease, opacity 180ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/navigation.css",
+    "line": 78,
+    "declaration": "transition: grid-template-rows 180ms ease, visibility 0s linear 180ms;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/navigation.css",
+    "line": 83,
+    "declaration": "transition: grid-template-rows 180ms ease, visibility 0s;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/navigation.css",
+    "line": 141,
+    "declaration": "transition: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/skill-row.module.css",
+    "line": 13,
+    "declaration": "transition: background-color 150ms;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/skill-row.module.css",
+    "line": 53,
+    "declaration": "transition: opacity 150ms, color 150ms, background-color 150ms;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/skill-row.module.css",
+    "line": 60,
+    "declaration": ".skills-list-item, .skill-card-delete { transition: none; }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/u5-settings.module.css",
+    "line": 7,
+    "declaration": ".chevron { transition:transform 180ms ease; }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/u5-settings.module.css",
+    "line": 9,
+    "declaration": "@media(prefers-reduced-motion:reduce) { .chevron { transition:none; } }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/workbench-navigation.css",
+    "line": 24,
+    "declaration": ".wb-chevron { margin-left:auto; flex:none; transition:transform .15s ease; }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/workbench-navigation.css",
+    "line": 48,
+    "declaration": "@media (prefers-reduced-motion:reduce) { .wb-chevron { transition:none; } }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/workbench-pages.css",
+    "line": 48,
+    "declaration": "transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/workbench-pages.css",
+    "line": 144,
+    "declaration": ".wb-hub-primary { transition: none; }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 218,
+    "declaration": "transition:",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 244,
+    "declaration": "transition: background-color 0.15s;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 299,
+    "declaration": "animation: bui-ws-star ease-in-out infinite;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 317,
+    "declaration": "animation: bui-ws-shimmer 3.4s linear infinite;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 370,
+    "declaration": "animation: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 375,
+    "declaration": "animation: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 379,
+    "declaration": "animation: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/vendor/boardui-web-search/web-search.css",
+    "line": 384,
+    "declaration": "transition: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/material-library/material-library.module.css",
+    "line": 250,
+    "declaration": "transition: transform 150ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/material-library/material-library.module.css",
+    "line": 554,
+    "declaration": "transition: none;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/student-settings/student-settings-layout.module.css",
+    "line": 169,
+    "declaration": "transition: transform 180ms ease;",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/ui-system/student-settings/student-settings-layout.module.css",
+    "line": 365,
+    "declaration": ".chevron { transition: none; }",
+    "reducedMotionInFile": true
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/settings-components.module.css",
+    "line": 172,
+    "declaration": "transition: background var(--duration-fast);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/settings-components.module.css",
+    "line": 312,
+    "declaration": "transition: color var(--duration-fast);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/settings-components.module.css",
+    "line": 323,
+    "declaration": "transition: transform var(--duration-fast) ease;",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/settings-components.module.css",
+    "line": 362,
+    "declaration": "transition: border-color var(--duration-slow) var(--ease-out);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/settings-components.module.css",
+    "line": 436,
+    "declaration": "transition:",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/workspace-nav.module.css",
+    "line": 32,
+    "declaration": "transition:",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-settings/workspace-nav.module.css",
+    "line": 80,
+    "declaration": "transition: all var(--duration-fast) var(--ease-out);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-skills/SkillBadgeView.module.css",
+    "line": 41,
+    "declaration": "transition: opacity var(--duration-instant);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-skills/SkillRow.module.css",
+    "line": 10,
+    "declaration": "transition: background var(--duration-fast);",
+    "reducedMotionInFile": false
+  },
+  {
+    "path": "apps/desktop/src/renderer/components/office/hana-skills/SkillRow.module.css",
+    "line": 73,
+    "declaration": "transition: all var(--duration-fast);",
+    "reducedMotionInFile": false
+  }
+]

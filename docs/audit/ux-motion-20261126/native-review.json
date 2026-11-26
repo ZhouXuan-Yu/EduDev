@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "app": "electron.exe",
+  "windowId": 9311646,
+  "pid": 43612,
+  "title": "小智 · 体验与动效验收（最新版·独立数据）",
+  "sourceCommit": "1409949",
+  "build": "e3997eb486ccba14b5809ed9f78289db807c3b6d840b473173b1bb4014b0f336",
+  "method": "Windows Computer Use Sky: fresh observed accessibility indices, one action then reobserve. First occluded screenshot discarded; explicit activation followed by actual document URL and workspace verification.",
+  "checks": [
+    "entered actual production document at immutable build path",
+    "home -> teaching workbench",
+    "opened notebook page",
+    "opened saved notebook: retained name and two notes",
+    "expanded teaching space then collapsed it",
+    "returned to home and retained trial window"
+  ],
+  "boundary": "Navigation and persisted-state inspection only. No actual user data mutation, deletion, configuration/permission changes or provider send. Native snapshots are auto-displayed in tool history; review-window.png is a separate Playwright launch capture."
+}

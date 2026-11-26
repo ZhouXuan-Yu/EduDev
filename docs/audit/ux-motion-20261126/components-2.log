@@ -1,0 +1,10 @@
+PASS student-owned save settlement cannot clear another student draft
+PASS late record save preserves the newer revision
+PASS local datetime is 09:30 and a title-only edit retains exact original timestamp
+PASS review save receipt keeps edits made while awaiting host
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'正文a' !== '保存期间的新输入'
+
+    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ux-motion-components.mjs:52:342
+{"success":false,"layer":"component","baseline":false,"source":"working tree","checks":["student-owned save settlement cannot clear another student draft","late record save preserves the newer revision","local datetime is 09:30 and a title-only edit retains exact original timestamp","review save receipt keeps edits made while awaiting host"],"boundary":"Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance.","failure":"AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'正文a' !== '保存期间的新输入'\n\n    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/ux-motion-components.mjs:52:342"}

@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+学习记录附件导入按发起学生保存和显示回执，覆盖切换学生、归档与列表读回失败。专项入线状态和本轮验证见 [2026-11-26 质量复查](../audit/quality-review-20261126.md)。
+
 小智数据库 R3 的实际代码、Windows 构建和合并读回以 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json` 为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
 
 小智数据库 R2 的实际构建、迁移、Windows 验收和合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2/state.json`。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)
@@ -668,3 +670,7 @@ D3 资料库加入文件夹勾选导入和单份手动整理快捷入口。题�
 ## 数据库基础治理 R1
 
 主库当前支持 `user_version` 2。升级前快照和两个版本的账本与任务摘要回填分别验证。 [架构入口](../architecture/CURRENT.md#数据库基础治理-r1)
+
+## 2026-11-26 教师体验与状态动效
+
+教师体验与状态动效专项的代码、实测构建和各层验收以 [交付报告](../audit/ux-motion-20261126/RESULT.md) 为准。未改 Master 或其他团队执行队列；完整 UI_R1 仍保留旧指纹、原生缩放及未覆盖状态的阻断。

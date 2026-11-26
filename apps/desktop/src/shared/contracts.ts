@@ -162,6 +162,8 @@ export type AttachmentImportResult = {
   status: AttachmentImportStatus;
   records: LearningRecord[];
   items: AttachmentImportItem[];
+  /** The copy results are final even when the follow-up student or record read failed. */
+  refreshFailed?: true;
 };
 
 export type MistakeImageOcrStatus = 'needs_ocr' | 'sanitized' | 'teacher_corrected' | 'failed';

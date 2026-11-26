@@ -4,6 +4,10 @@
 
 数据库 R2 的 Windows 更新、备份恢复和兼容确认继续使用正式 preload。准备基线关联 Pi 原生 owner 与原有教师观察及决策。集成夹具使用受控模型响应。 [架构](../architecture/CURRENT.md#小智数据库-r2)
 
+## 2026-11-25 历史记忆 R1
+
+隔离实施使用官方 Hindsight SDK 1.3.0 及回环开发服务。SQLite 保持来源、许可和撤销的权威，现有 Pi scope 继续约束引用。教师受管部署仍按专项单独验收。 [历史记忆入口与恢复边界](../product-agent/HISTORY_MEMORY_R1.md)
+
 ## 2026-11-23 扫描结构质量
 
 保留 PDFium、RapidOCR 和 PP-DocLayoutV3。参考 PP-StructureV3 的专项识别、Docling 的来源绑定和 OmniDocBench 的分项测量，继续用现有 SQLite 世代和任务。 [调研与落点](../product-agent/06_SCAN_QUALITY_WORKFLOW.md)
@@ -2860,3 +2864,7 @@ fresh npm audit --omit=dev --json exit1，0critical/3high/2moderate；npm explai
 ## 数据库基础治理 R1
 
 凭据迁移沿用 Electron `safeStorage`，以实际本地密文回读和事务校验完成迁移。诊断读取配置来源和是否配置状态。换机包使用统一字段清单清除本机凭据和旧设备授权，恢复后由教师重新配置。
+
+## 2026-11-26 教师体验与状态动效
+
+应用自有动效与确认适配复用现有 HeroUI；官方 MCP 已核对 Modal/Disclosure API，未引入新 UI 库。Pi、Composer、底部工具栏与弹层、队列及 PendingPanel 由既有实现维护，main 的历史记忆集成保留原负责方边界。 [变更说明](../audit/ux-motion-20261126/IMPLEMENTATION.md)

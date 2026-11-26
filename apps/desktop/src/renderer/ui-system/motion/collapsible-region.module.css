@@ -1,0 +1,4 @@
+.region { display:grid; grid-template-rows:0fr; visibility:hidden; transition:grid-template-rows var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease), visibility 0s linear var(--edu-motion-standard,180ms); }
+.region[data-expanded=true] { grid-template-rows:1fr; visibility:visible; transition-delay:0s; }
+.content { min-height:0; overflow:hidden; }
+@media (prefers-reduced-motion:reduce) { .region { transition:none; } }

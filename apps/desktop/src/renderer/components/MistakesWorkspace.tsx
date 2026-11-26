@@ -12,6 +12,7 @@ import type {
 import { ExerciseSetLibrary } from './ExerciseSetLibrary';
 import {StudentMistakeOcr} from './students/StudentMistakeOcr';
 import {StudentMistakeFacts} from './students/StudentMistakeFacts';
+import {AttachmentImportFeedback} from './students/AttachmentImportFeedback';
 import {MISTAKE_OCR_SCHEMA,MISTAKE_OCR_ERRORS} from '../../shared/mistake-ocr';
 
 type MistakesWorkspaceProps = {
@@ -19,6 +20,7 @@ type MistakesWorkspaceProps = {
   activeStudent?: Student;
   records: LearningRecord[];
   attachmentImport: AttachmentImportResult | null;
+  attachmentImportBusy?: boolean;
   aiResult: AiConsoleRunResult | null;
   aiRunning: boolean;
   confirmations: AiConfirmationItem[];
@@ -41,6 +43,7 @@ export function MistakesWorkspace({
   activeStudent,
   records,
   attachmentImport,
+  attachmentImportBusy = attachmentImport?.status === 'copying',
   aiResult,
   aiRunning,
   confirmations,
@@ -220,16 +223,13 @@ export function MistakesWorkspace({
 
       <section className="work-panel" data-testid="mistake-image-import-panel">
         <div className="panel-heading"><div><h3>1. 导入错题图片</h3><p className="muted">原始图片只复制到本地数据目录，不上传模型。</p></div></div>
-        {attachmentImport?.status === 'copying' ? <p data-testid="mistake-attachment-import-loading">正在复制附件到学生本地目录…</p> : null}
-        {attachmentImport?.status === 'canceled' ? <div className="warning-box" data-testid="mistake-attachment-import-canceled">已取消附件选择，没有写入任何附件。</div> : null}
-        {attachmentImport?.status === 'succeeded' ? <div className="success-box" data-testid="mistake-attachment-import-success">已复制 {attachmentImport.items.filter((item) => item.ok).length} 个附件到本地学生档案。</div> : null}
-        {attachmentImport?.status === 'partial' || attachmentImport?.status === 'failed' ? <div className="warning-box" data-testid="mistake-attachment-import-failed">{attachmentImport.items.filter((item) => !item.ok).map((item) => `${item.fileName}：${item.errorMessage ?? '复制失败'}`).join('；') || '附件导入失败，请重试。'}</div> : null}
+        {attachmentImport && <AttachmentImportFeedback result={attachmentImport} testId="mistake-attachment-import" />}
         {!mistakeRecords.length ? <p data-testid="mistake-image-empty">当前学生没有错题记录，请先在录入页创建错题记录。</p> : null}
         {mistakeRecords.map((record) => (
           <article className="evidence-row" key={record.id} data-testid={`mistake-record-${record.id}`}>
             <div><strong>{record.title}</strong><span>{record.attachments.length} 个附件</span></div>
             <div className="toolbar-row">
-              <button className="secondary-action compact-button" onClick={() => void onImportAttachment(record.id)} disabled={!activeStudent || loading || attachmentImport?.status === 'copying'} data-testid={`mistake-import-${record.id}`}>导入附件</button>
+              <button className="secondary-action compact-button" onClick={() => void onImportAttachment(record.id)} disabled={!activeStudent || loading || attachmentImportBusy} data-testid={`mistake-import-${record.id}`}>导入附件</button>
               {record.attachments.filter((attachment) => attachment.fileType === 'image').map((attachment) => (
                 <button className="link-button" key={attachment.id} onClick={() => createNeedsOcr(record, attachment)} disabled={loading||recognizing||savingCorrection} data-testid={`create-ocr-${attachment.id}`}>处理图片文字</button>
               ))}

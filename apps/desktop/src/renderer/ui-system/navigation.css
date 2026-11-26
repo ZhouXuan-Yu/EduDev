@@ -63,7 +63,7 @@
 .edu-nav-chevron {
   flex: none;
   opacity: 0.55;
-  transition: transform 180ms ease, opacity 180ms ease;
+  transition: transform var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease), opacity var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease);
 }
 .edu-nav-group-title[aria-expanded='true'] .edu-nav-chevron {
   transform: rotate(90deg);
@@ -75,12 +75,12 @@
   display: grid;
   grid-template-rows: 0fr;
   visibility: hidden;
-  transition: grid-template-rows 180ms ease, visibility 0s linear 180ms;
+  transition: grid-template-rows var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease), visibility 0s linear var(--edu-motion-standard,180ms);
 }
 .edu-nav-disclosure[data-expanded='true'] {
   grid-template-rows: 1fr;
   visibility: visible;
-  transition: grid-template-rows 180ms ease, visibility 0s;
+  transition: grid-template-rows var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease), visibility 0s;
 }
 .edu-nav-disclosure-content {
   min-height: 0;

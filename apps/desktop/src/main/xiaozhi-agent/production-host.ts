@@ -264,6 +264,8 @@ import type {PreparedAgentConfig} from '../../shared/xiaozhi-resolved-config';
 import type { XiaozhiSettingsInput, XiaozhiSessionModelInput, XiaozhiCredentialInput } from '../../shared/xiaozhi-settings';
 import { createQueueMutationHandler } from './queue-mutations';
 import { createPiMemoryScope } from './memory-scope';
+import { createHistoryMemory } from './history/memory';
+import { historyOperations } from './history/operations';
 import { validMemoryScopeInput } from './memory-selection';
 import type { XiaozhiMemoryScopeInput } from '../../shared/xiaozhi-memory';
 import type { XiaozhiActionResult, XiaozhiQueueInput } from '../../shared/xiaozhi-agent';
@@ -356,7 +358,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const queueing = new Map<string,{hash:string;result:Promise<XiaozhiActionResult>}>();
   const enabled = options.enabled !== false;
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
-  const memory = createPiMemoryScope(store, { modelAccess: 'available' });
+  const history = createHistoryMemory(store,options.dataRoot);
+  const memory = createPiMemoryScope(store, { modelAccess: 'available', history });
   let closing = false;
   const startupPrewarm=createStartupPrewarm(async signal=>{
     signal.throwIfAborted();
@@ -2129,7 +2132,24 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing) throw new Error('busy');
       return directory ? governedLegacySkills.importDirectory(directory, revision) : null;
     }),
-    async setMemoryScope(input: XiaozhiMemoryScopeInput): Promise<XiaozhiActionResult> {
+    historyMemory: historyOperations(history,async sourceId=>{
+      for (const [sessionId,run] of active) {
+        const scope = await store.xiaozhiState.memoryScope(sessionId);
+        if (scope.enabled && scope.selections.some(item=>item.layer==='history'&&item.id===sourceId)) {
+          await host.stop(sessionId);
+          await run.done;
+        }
+      }
+    }),
+    async confirmHistoryMemory(id:string,version:number,ticket:string):Promise<XiaozhiActionResult> {
+      const selected=history.candidate(id,version,ticket);
+      if(!selected)return {ok:false,error:'command_conflict'};
+      const current=await store.xiaozhiState.memoryScope(id);
+      if(current.version!==version||current.selections.length>=12)return {ok:false,error:'command_conflict'};
+      return host.setMemoryScope({sessionId:id,version,enabled:true,
+        selections:[...current.selections.map(({fingerprint:_private,...item})=>item),selected]},ticket);
+    },
+    async setMemoryScope(input: XiaozhiMemoryScopeInput, ticket?:string): Promise<XiaozhiActionResult> {
       if (!validMemoryScopeInput(input)) return { ok: false, error: 'invalid_input' };
       const id = input.sessionId;
       if (closing || skillsMutating || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
@@ -2143,6 +2163,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           if (current.version !== input.version) return { ok: false, error: 'command_conflict' };
           if ((await store.getAiConversationSession(id)).session.archivedAt) return { ok: false, error: 'permission_denied' };
           await host.stop(id); await run.done;
+        }
+        if(input.selections.some(item=>item.layer==='history')){
+          const saved=await store.xiaozhiState.memoryScope(id);
+          const selected=ticket?history.candidate(id,input.version,ticket):undefined;
+          for(const item of input.selections)if(item.layer==='history'&&
+            !saved.selections.some(row=>row.layer==='history'&&row.id===item.id&&row.version===item.version&&row.sourceVersion===item.sourceVersion)&&
+            (selected?.id!==item.id||selected.version!==item.version||selected.sourceVersion!==item.sourceVersion))return {ok:false,error:'permission_denied'};
         }
         return await memory.save(input);
       } catch { return { ok: false, error: 'configuration' }; }
@@ -2468,6 +2495,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       for(const run of active.values())void run.agent?.abort().catch(()=>undefined);
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
+      await history.close();
       await attachments.close();
       await artifactReferences.close();
       await savedArtifactPreview.close();

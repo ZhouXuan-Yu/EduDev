@@ -1,5 +1,5 @@
 import { XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES } from '../../shared/xiaozhi-memory';
-import type { XiaozhiMemorySelection, XiaozhiMemorySource, XiaozhiMemoryScopeInput } from '../../shared/xiaozhi-memory';
+import type { XiaozhiMemorySelection, XiaozhiMemorySource, XiaozhiMemoryScopeInput, XiaozhiMemoryUseSelection } from '../../shared/xiaozhi-memory';
 
 export const validMemorySession = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 export function validMemorySource(value: unknown): value is XiaozhiMemorySource {
@@ -17,12 +17,23 @@ export function validMemorySelection(value: unknown, privateFields = false): val
     && Number.isSafeInteger(item.version) && Number(item.version) >= 1
     && (!privateFields || typeof item.fingerprint === 'string' && /^[a-f0-9]{64}$/.test(item.fingerprint));
 }
-export const memorySelectionKey = (item: XiaozhiMemorySelection) => `${item.layer}:${item.source}:${item.id}`;
+export function validMemoryUseSelection(value: unknown, privateFields = false): value is XiaozhiMemoryUseSelection {
+  if (!value || typeof value!=='object'||Array.isArray(value)) return false;
+  const row = value as Record<string,unknown>;
+  if (row.layer!=='history') return validMemorySelection(value,privateFields);
+  const keys=['layer','source','id','version','sourceVersion',...(privateFields?['fingerprint']:[])];
+  return Object.keys(row).length===keys.length && Object.keys(row).every(key=>keys.includes(key)) &&
+    row.source==='history' && typeof row.id==='string' && /^[a-f0-9]{64}$/.test(row.id) &&
+    typeof row.sourceVersion==='string' && /^[a-f0-9]{64}$/.test(row.sourceVersion) &&
+    Number.isSafeInteger(row.version) && Number(row.version)>0 &&
+    (!privateFields || typeof row.fingerprint==='string' && /^[a-f0-9]{64}$/.test(row.fingerprint));
+}
+export const memorySelectionKey = (item: XiaozhiMemoryUseSelection) => `${item.layer}:${item.source}:${item.id}`;
 export function validMemoryScopeInput(value: unknown): value is XiaozhiMemoryScopeInput {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const input = value as XiaozhiMemoryScopeInput;
   return Object.keys(input).length === 4 && Object.keys(input).every(key => ['sessionId', 'version', 'enabled', 'selections'].includes(key))
     && validMemorySession(input.sessionId) && Number.isSafeInteger(input.version) && input.version >= 0 && typeof input.enabled === 'boolean'
-    && Array.isArray(input.selections) && input.selections.length <= 12 && input.selections.every(item => validMemorySelection(item))
+    && Array.isArray(input.selections) && input.selections.length <= 12 && input.selections.every(item => validMemoryUseSelection(item))
     && new Set(input.selections.map(memorySelectionKey)).size === input.selections.length;
 }
