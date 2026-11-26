@@ -55,6 +55,7 @@ import { createPiInstructionQueue } from './instruction-queue';
 import { privateWorkspaceFingerprintCwd } from './private-workspace-identity';
 import { resolveCreationPromptIdentity,resolveControlPromptIdentity } from './creation-prompt-identity';
 import { createPiMemoryEpoch } from './native-memory-epoch';
+import {protectedMemoryReadback} from './memory-use/protected-readback';
 import { createPiMemoryTools, type PiMemoryRuntime } from './memory-tools';
 import { createEducationSkillRuntime } from './skill-runtime';
 import { createManagedSkillRuntime, type ManagedSkillSource } from './managed-skill-runtime';
@@ -832,13 +833,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     images: { blockImages: !(options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale),autoResize:true }, packages: [], extensions: [], skills: [], prompts: [], themes: [],
     cacheWarming:'off',enableAnalytics: false, enableInstallTelemetry: false, defaultProjectTrust: 'never', transport: 'sse' });
   // Fixed full-control SDK example, with explicit education prompt and no discovery.
-  const getProtectedContext = async () => {
+  const getProtectedContext = async (currentPersonalIds:readonly string[]=[]) => {
     const excluded = [...new Set([...(memoryEpoch?.blockedRunIds() || []), ...(skillEpoch?.blockedRunIds() || [])])];
     const facts = (await phase('pi_read_protected_context',async()=>options.protectedContext?.(excluded)) || '')+(taskRuntime?await phase('pi_read_task_context',()=>taskRuntime.context()):'');
     // Protect only facts already delivered by the explicit model tool. Rebuild from
     // the current main authority; never keep a second copy or revive revoked text.
     if (!options.memory || !memoryEpoch?.hasDelivery()) return facts;
-    const memories = await phase('pi_read_selected_memory',signal=>options.memory!.readSelected(initialAuthority!.fingerprint,signal));
+    const memories = await phase('pi_read_selected_memory',signal=>protectedMemoryReadback(manager,options.memory!,initialAuthority!.fingerprint,currentPersonalIds,signal));
     if (!memories.length) return facts;
     const necessary = memories.map(({ reference, source, version, text, provenance, sourceDocuments, history }) =>
       ({ reference, source, version, text, provenance, sourceDocuments, ...(history?{history}:{}) }));
@@ -1200,6 +1201,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const handoutGuidance=!compacting&&options.handoutBasis
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
       : '';
+    const priorPersonalIds=projectedPersonalIds;
     projectedPersonalIds=[];
     const personalPlan = !compacting && submittedTeacherTimestamp!==undefined && teacherQuery && initialAuthority?.personal
       ? await options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,teacherQuery,
@@ -1211,6 +1213,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       currentGuidance, submittedTeacherTimestamp,()=>{
         if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
       });
+    const streamPersonalIds=projectedPersonalIds;
     if (projectedPersonalIds.length && personalPlan && initialAuthority && options.memory?.referenceReceived) {
       const writeReceipt=options.memory.referenceReceived;
       const {projection,receipts}=personalPlan;
@@ -1335,7 +1338,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const raw = message.content.filter(part => part.type === 'text').map(part => part.text).join('\n');
         if (!raw.trim() || raw.length > 24000) throw new Error('model_error');
         const clean = options.sanitizeFileText ? await options.sanitizeFileText(raw) : raw;
-        const facts = await phase('pi_prepare_model_context',()=>getProtectedContext(),args[2]?.signal);
+        const facts = await phase('pi_prepare_model_context',()=>getProtectedContext(compacting?priorPersonalIds:streamPersonalIds),args[2]?.signal);
+        if(streamPersonalIds!==projectedPersonalIds)throw Error('memory_scope_changed');
         await checkMemory();
         if (interrupted || budget!.snapshot().exhausted || args[2]?.signal?.aborted) throw new Error('cancelled');
         if (!clean.trim()) throw new Error('model_error');
