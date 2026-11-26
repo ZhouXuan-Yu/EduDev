@@ -8,6 +8,8 @@ import {_electron as electron} from 'playwright';
 
 const build = process.argv[2], acceptance = process.env.OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT;
 const statusUi=process.argv.includes('--status-ui');
+const wakeNetwork=process.argv.includes('--wake-network');
+assert(!wakeNetwork||(!statusUi&&!process.argv.includes('--cold')),'Run transport reconnect independently of the health regression');
 assert(path.isAbsolute(build ?? '') && path.isAbsolute(acceptance ?? ''), 'Set the verified build and acceptance root');
 const main = await fs.realpath(path.join(build, 'main/index.js'));
 const root = await fs.mkdtemp(path.join(await fs.realpath(acceptance), 'model-wire-health-'));
@@ -25,12 +27,13 @@ const server = http.createServer(async (request, response) => {
   let encoded = '';
   for await (const part of request) encoded += part;
   const body = JSON.parse(encoded), number = ++attempts;
+  const reconnecting = mode === 'wake-live' || mode === 'wake-cancelled';
   const status = mode === 'exhausted' ? 500 : mode === 'long-rate-limit' || mode === 'sequence' && number === 1 ? 429
-    : mode === 'sequence' && number === 2 ? 503 : mode === 'auth-401' ? 401 : mode === 'auth-403' ? 403 : 200;
-  report.calls.push({mode, number, status, at: performance.now(), model: body.model});
+    : mode === 'sequence' && number === 2 || reconnecting && number === 1 ? 503 : mode === 'auth-401' ? 401 : mode === 'auth-403' ? 403 : 200;
+  report.calls.push({mode, number, status, at: performance.now(), wall: Date.now(), model: body.model});
   if (mode === 'uncertain-post') {response.destroy(); return;}
   if (status !== 200) {
-    const retryAfter = mode === 'long-rate-limit' ? '90' : mode === 'sequence' ? number === 1 ? '0.02' : 'invalid' : '0';
+    const retryAfter = mode === 'long-rate-limit' ? '90' : reconnecting ? '4' : mode === 'sequence' ? number === 1 ? '0.02' : 'invalid' : '0';
     report.calls.at(-1).retryAfter = retryAfter;
     response.writeHead(status, {'content-type': 'application/json', 'retry-after': retryAfter,
       ...(status === 401 || status === 403 ? {'x-should-retry': 'true'} : {})});
@@ -62,7 +65,7 @@ function verifyCount(phase, count) {
   assert.equal(report.calls.filter(entry => entry.mode === phase).length, count);
 }
 
-try {
+async function run() {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const env = Object.fromEntries(Object.entries(process.env).filter(([name]) =>
     !/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(name)));
@@ -104,6 +107,52 @@ try {
     return {turn, usage};
   }
 
+  async function verifyReconnect(){
+    const port=server.address().port;
+    const endpoint='http://127.0.0.1:'+port+'/v1/models';
+    for(const phase of ['wake-live','wake-cancelled']){
+      const cancelled=phase==='wake-cancelled';
+      const pending=send('核对服务断开恢复后，小智是否保留本轮。',phase);
+      void pending.catch(()=>undefined);
+      const waiting=await until(async()=>{
+        const state=await snapshot(),turn=state.projection.turns.at(-1);
+        const wait=turn?.modelRequests?.at(-1);
+        return state.running&&wait?.state==='retry_wait'&&wait.waitMs===4000?{runId:turn.id,...wait}:undefined;
+      });
+      verifyCount(phase,1);
+      server.closeAllConnections();
+      await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));
+      const disconnectedAt=Date.now();
+      await assert.rejects(fetch(endpoint,{signal:AbortSignal.timeout(1000)}),{name:'TypeError'});
+      if(cancelled)await page.getByRole('button',{name:'停止本轮',exact:true}).click();
+      await new Promise((resolve,reject)=>{
+        server.once('error',reject);
+        server.listen(port,'127.0.0.1',()=>{server.removeListener('error',reject);resolve();});
+      });
+      assert.equal((await fetch(endpoint,{signal:AbortSignal.timeout(1000)})).status,200);
+      const reconnectedAt=Date.now();
+      const resumedAt=await app.evaluate(({powerMonitor})=>{powerMonitor.emit('resume');return Date.now();});
+      const eligibleAt=waiting.at+waiting.waitMs;
+      assert(resumedAt<eligibleAt,'The controlled reconnect must precede the original retry time');
+      verifyCount(phase,1);
+      const settled=await pending;
+      if(cancelled)await delay(Math.max(0,eligibleAt-Date.now())+200);
+      const physical=report.calls.filter(entry=>entry.mode===phase);
+      assert.equal(settled.turn.id,waiting.runId);
+      assert.equal(settled.turn.status,cancelled?'interrupted':'completed');
+      assert.equal(physical.length,cancelled?1:2);
+      assert.equal(settled.usage?.modelCalls,physical.length);
+      assert(physical.slice(1).every(entry=>entry.wall>=eligibleAt));
+      (report.resumeNetwork??=[]).push({phase,runId:waiting.runId,disconnectedAt,reconnectedAt,resumedAt,eligibleAt,
+        final:settled.turn.status,physicalAttempts:physical.length});
+      report.checks.push(cancelled?'Physical reconnect and the production resume handler leave the explicitly cancelled model turn interrupted':
+        'Physical reconnect and the production resume handler keep the original retry time and reuse its same model turn');
+    }
+  }
+  if(wakeNetwork){
+    await verifyReconnect();
+    return;
+  }
   if(statusUi)await page.evaluate(()=>{
     window.providerStatusEvents=[];
     window.omniEdu.onXiaozhiEvent(event=>{
@@ -276,6 +325,10 @@ try {
     assert.equal(separate.turn.status, 'completed');
     report.checks.push('A different credential verifies its own domain without borrowing the previous cooldown');
   }
+}
+
+try {
+  await run();
   report.success = true;
 } catch (error) {
   report.error = String(error.stack ?? error);

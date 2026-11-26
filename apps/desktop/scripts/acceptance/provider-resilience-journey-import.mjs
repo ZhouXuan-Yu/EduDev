@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import fs from 'node:fs';
+import {createRequire} from 'node:module';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -10,15 +11,20 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const [prepared, acceptance, mode]=process.argv.slice(2);
 assert(path.isAbsolute(prepared??'')&&path.isAbsolute(acceptance??''));
 assert(mode===undefined||mode==='--require-text');
-const desktop=path.resolve(import.meta.dirname,'../..');
+const dependencyDesktop=process.env.OMNI_EDU_PROVIDER_JOURNEY_DESKTOP;
+const desktop=fs.realpathSync(dependencyDesktop||path.resolve(import.meta.dirname,'../..'));
 const main=testMain(desktop);
+const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const mainSha256=sha(main);
+const executablePath=dependencyDesktop?createRequire(path.join(desktop,'package.json'))('electron'):undefined;
+if(dependencyDesktop)assert.equal(mainSha256,process.env.OMNI_EDU_PROVIDER_JOURNEY_MAIN_SHA256);
 const files=JSON.parse(fs.readFileSync(path.join(prepared,'inputs.json'),'utf8')).scans;
 const expected=['SYN-OCR-01','SYNTHETIC-A-A','SYNTHETIC-A-B','SYNTHETIC-M-A','SYNTHETIC-M-B','SYNTHETIC-M-C'].map(name=>name+'.pdf');
 assert.deepEqual(files.map(row=>row.file).sort(),expected);
 const root=fs.mkdtempSync(path.join(fs.realpathSync(acceptance),'provider-journey-import-'));
 const source=path.join(root,'source'),data=path.join(root,'data'),profile=path.join(root,'profile');
-const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-const report={ok:false,scope:mode?'Fixture archiving and native OCR per source':'Fixture archiving and source identity',root,mainSha256:sha(main),
+const report={ok:false,scope:mode?'Fixture archiving and native OCR per source':'Fixture archiving and source identity',root,mainSha256,
+  build:{entry:main,dependency:Boolean(dependencyDesktop),electron:executablePath},
   inputs:{prepared,sha256:sha(path.join(prepared,'inputs.json'))}};
 fs.mkdirSync(source);
 for(const file of files){
@@ -37,7 +43,7 @@ function read(query){
   try{return db.prepare(query).all();}finally{db.close();}
 }
 try{
-  app=await _electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60_000});
+  app=await _electron.launch({args:[main,'--user-data-dir='+profile],executablePath,cwd:desktop,env,timeout:60_000});
   await assertIsolatedPiMain(app,main,profile);
   await app.evaluate(({dialog,net},folder)=>{
     dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});
@@ -73,6 +79,7 @@ try{
         FROM resource_chunks c JOIN teacher_resources r ON c.resource_id=r.id ORDER BY r.original_file_name,c.chunk_index`);
       if(new Set(chunks.map(chunk=>chunk.original_file_name)).size===files.length){report.ocr=chunks;break;}
       if(read("SELECT 1 FROM teacher_resources WHERE parse_status='failed' LIMIT 1").length)break;
+      assert(!page.isClosed(),'The isolated desktop closed before the local parse jobs completed');
       await delay(100);
     }
     assert(report.ocr,'All fixed scans need text from the real local parser');
@@ -83,6 +90,7 @@ try{
       assert.doesNotMatch(inSource('SYNTHETIC-M-'+suffix),/ANSWER\s*KEY/iu);
     }
     assert.match(inSource('SYNTHETIC-M-C'),/PAGE\s*1\s*OF\s*2/iu);
+    report.processed=read('SELECT original_file_name,parse_status,parse_engine FROM teacher_resources ORDER BY original_file_name');
   }
   report.externalCalls=await app.evaluate(()=>globalThis.journeyExternalCalls);
   assert.equal(report.externalCalls,0);

@@ -26,7 +26,7 @@
 | AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
 | AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
-| AC-23 | NOT_RUN | 合成模型实际连线和 Electron 生产回调已验，缺隔离 Windows S0 原生事件和绝对截止时间矩阵。 |
+| AC-23 | NOT_RUN | 模型等待与取消已通过真实回环断开重连及 Electron 生产恢复回调，原 Retry-After 未提前发送。缺隔离 Windows S0 原生事件与工具、副作用绝对截止时间矩阵。 |
 | AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
@@ -264,3 +264,14 @@
 - 独立运行锁定的 AnyDoc 0.1.2 识别固定 PDF 的类型为 `pdf`，明确返回扫描页需要 OCR。资源 R1 同版本 OCR 清单的 712 个本地文件均和编译锁一致。原宿主拒绝使用目录链接启动 OCR，实际正式解析报告 `provider-journey-import-YSx0i7/report.json` 失败，临时链接已精确移除，资源调度 R1 原运行包保持。当前 D 盘空间不足以按保留空间复制独立实体运行包。继续验收时使用正式安装的实体运行包，然后以 `--require-text` 从原窗口核对逐页 OCR、A/B 答案独立来源与 C 的缺页事实。
 - `npm run test:renderer-components` 已复跑 261/261。最后一次生产源码变化仍为 `8e58147`，核对原 Windows 主进程和渲染 SHA 未变。`npm audit --package-lock-only --json` 记录现有高危 5 项、中危 17 项、低危 8 项，锁文件未更改。`git diff --check` 通过。见 `wp08-module-renderer-final.log`、`wp08-module-npm-audit.json`、`wp08-main-readback.txt`。
 - `git merge-tree --write-tree HEAD codex/host-resource-scheduling-r1` 只读预检记录共享代码与协作文件的实际冲突，见 `wp08-r1-join-readonly.txt`。未建立正式集成候选，未执行本地 main 合并或远端写入。必须先处理原调度依赖的工作器账和性能证据，再核对组合权限、生命周期及实际 Windows 门禁。
+
+## WP-06 模型等待中的真实连接重建
+
+- `node scripts/xiaozhi-agent/provider-model-health-electron.mjs <Provider 实际构建> --wake-network` 通过 2/2。在 Pi 已持久化 503 的 4 秒重试等待后，实际关闭回环监听与连接，确认 TCP 不可用，再重新绑定同一端口并确认服务可用。注入生产 Electron `resume` 回调后未提前发出请求。持续运行的原 Run 在原可重试时间之后 271 毫秒发出第二次请求并结束，额度为 2。另一次教师在断开期间点击停止，重连和回调后仍为中断，原等待期过后物理请求数和额度均保持 1。原数据和面向教师的运行由实际 renderer/preload 读回。见 `model-wire-health-miXx5L/report.json`。
+- 首次将新用例和旧三次上限用例放在同一健康域，已取消请求的实际 503 累计进入原共享熔断，导致旧用例的基线前提被改变。第二次组合观察在旧凭证反例期间桌面关闭。保留 `model-wire-health-xTJMpM/report.json` 与 `model-wire-health-5fGUrj/report.json`。最终独立运行网络用例，产品重试逻辑未改。本次回调是受控注入，真实系统待机仍由 AC-23 单独验证。
+
+## WP-08 原生 OCR 依赖对照
+
+- D 盘压缩目录复制在 82/712 文件时触及磁盘保留空间，未启动该不完整运行包。已清理这个新建目录，原资源 R1 运行包与全部证据保留。见 `wp08-ocr-copy-and-cleanup-current.json`。
+- 同一验收脚本支持 `OMNI_EDU_PROVIDER_JOURNEY_DESKTOP` 和 `OMNI_EDU_PROVIDER_JOURNEY_MAIN_SHA256`，仅运行指纹匹配的原依赖构建。对照实际 `ed618c1` 的 `r1-office-fences` 主进程，SHA-256 `0ff1d8e9dfd129037c616e6d1f7cd49e7f0fa2aa2ad544bd7ea37fa315dea23d`。从资料库归档六份后，原生 `pdfium-5.14.0-rapidocr-3.9.2-file.v3` 实际进入处理。独立验收进程关闭，两条原解析工作在真实 SQLite 记录 `shutdown` 并返回待处理，归档源仍在，文本块为零。见 `provider-journey-import-aXnYGn/report.json` 与对应 SQLite。
+- 尝试改用应用已有的隔离后台模式，正式 renderer 报截图稳定性超时，导入命令尚未提交。保留 `omni-edu-provider-journey-import-CYOBft/report.json`。工作树恢复已实测可归档的可见窗口入口。下一次在独占桌面串行执行，先采集原生窗口与进程退出事件，观察实际 parser/OCR 与 SQLite 文本页。WP-08 达 8/8，未产生正式集成候选，AC-32 至 AC-36 保留原判定。
