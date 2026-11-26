@@ -1,7 +1,9 @@
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash} from 'node:crypto';import {build} from 'esbuild';
+import {pathToFileURL} from 'node:url';
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-diagnostic-domain-')),checks=[];
+fs.symlinkSync(fs.realpathSync(path.join(import.meta.dirname,'../../node_modules')),path.join(root,'node_modules'),process.platform==='win32'?'junction':'dir');
 const hash=v=>createHash('sha256').update(v).digest('hex');
-async function module(file,label){const target=path.join(root,label+'.mjs');await build({entryPoints:[file],outfile:target,bundle:true,platform:'node',format:'esm',packages:'external',logLevel:'silent'});return import('file:///'+target.replace(/\\/g,'/'));}
+async function module(file,label){const target=path.join(root,label+'.mjs');await build({entryPoints:[file],outfile:target,bundle:true,platform:'node',format:'esm',packages:'external',logLevel:'silent'});return import(pathToFileURL(target).href);}
 const {diagnosticReport}=await module('src/main/xiaozhi-agent/diagnostics/report.ts','report'),{createDiagnostics}=await module('src/main/xiaozhi-agent/diagnostics/service.ts','service'),{createEventJournal}=await module('src/main/xiaozhi-agent/events/journal.ts','journal'),{createPiBudgetState}=await module('src/main/xiaozhi-agent/budget-state.ts','budget'),{validDiagnosticInput,validDiagnosticExportInput}=await module('src/shared/xiaozhi-diagnostics.ts','contract');
 const sessionId='aisession_00000000-0000-4000-8000-000000000001',other='aisession_00000000-0000-4000-8000-000000000002',runId='run_current',input={sessionId,runId};
 const sentinel='FAKE-STUDENT-001 FAKE-KEY-NOT-A-CREDENTIAL C:\\Users\\PRIVATE-TEACHER\\private.txt',at=1793540000000;

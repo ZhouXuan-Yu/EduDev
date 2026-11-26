@@ -9,12 +9,18 @@ import {_electron as electron} from 'playwright';
 
 const [build,acceptance]=process.argv.slice(2);
 assert(path.isAbsolute(build??'')&&path.isAbsolute(acceptance??''));
+const budgetCases=process.argv[4]==='--budget';
+assert(!process.argv[4]||budgetCases,'Unknown fixture argument');
 const main=fs.realpathSync(path.join(build,'main/index.js'));
 const root=fs.mkdtempSync(path.join(fs.realpathSync(acceptance),'provider-goal-recovery-'));
 const data=path.join(root,'data'),profile=path.join(root,'profile'),workspace=path.join(root,'workspace');
 const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const report={ok:false,root,mainHash:sha(main),checks:[],calls:[],paidCalls:0};
 const input=path.join(workspace,'课堂资料.txt'),code='GOAL-RECOVERY-3719';
+const outputs={
+  denial:{first:'教师已保存的讲义.md',second:'教师拒绝的练习.md'},
+  budget:{first:'超时前已保存讲义.md',second:'预算耗尽未保存练习.md'},
+};
 fs.mkdirSync(workspace);
 fs.writeFileSync(input,'浮力方向竖直向上。资料核验码 '+code);
 const originalSha=sha(input);
@@ -41,15 +47,39 @@ const server=http.createServer(async(request,response)=>{
     response.writeHead(503,{'content-type':'application/json','retry-after':'2.5'}).end(JSON.stringify({error:{message:'Owned transient failure'}}));
     return;
   }
+  if(mode==='budget'&&ordinal>=3){
+    row.status=503;
+    response.writeHead(503,{'content-type':'application/json','retry-after':'0'}).end(JSON.stringify({error:{message:'Owned recovery ceiling'}}));
+    return;
+  }
   let tool;
   if(mode==='review'&&ordinal===2)tool={name:'office_read_text',arguments:JSON.stringify({path:'课堂资料.txt'})};
   if(mode==='review'&&ordinal===3){
     row.sourceSeen=body.messages.some(message=>message.role==='tool'&&JSON.stringify(message.content).includes(code));
     tool={name:'report_goal_progress',arguments:JSON.stringify({summary:'已核对一次合成课堂资料。',nextStep:'交给教师确认',readyForReview:true})};
   }
+  if(outputs[mode]&&ordinal===1){
+    const {first,second}=outputs[mode];
+    tool={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:1,expectedRevision:0,
+      reason:'先保存讲义，再单独审核练习',steps:[
+        {id:'lesson',text:'审核并保留讲义',kind:'saved_text',target:first,reported:'pending',dependsOn:[]},
+        {id:'practice',text:'审核并保存练习',kind:'saved_text',target:second,reported:'pending',dependsOn:['lesson']},
+        {id:'review',text:'教师核对',kind:'human',reported:'pending',dependsOn:['practice']},
+      ]})};
+  }
+  if(outputs[mode]&&ordinal===2)tool={name:'office_create_text',arguments:JSON.stringify({
+    taskStepId:'lesson',path:outputs[mode].first,content:'# 已核对的讲义\n版次 '+code
+  })};
+  if(mode==='denial'&&ordinal===3)tool={name:'office_create_text',arguments:JSON.stringify({
+    taskStepId:'practice',path:outputs[mode].second,content:'# 待审核的练习\n浮力方向。'
+  })};
+  if(mode==='denial'&&ordinal===4)tool={name:'report_goal_progress',arguments:JSON.stringify({
+    summary:'老师确认的讲义已保留，练习未获批准。',nextStep:'待教师确认剩余安排',readyForReview:true
+  })};
   if(mode==='pause'||mode==='inactive'||ordinal>7){row.status=412;response.writeHead(412).end();return;}
   const delta=tool?{role:'assistant',tool_calls:[{index:0,id:'goal_recovery_'+ordinal,type:'function',function:tool}]}:
-    {role:'assistant',content:mode==='review'?'依据课堂资料，浮力竖直向上。核验码 '+code:'这一轮没有新增核验证据。'};
+    {role:'assistant',content:mode==='review'?'依据课堂资料，浮力竖直向上。核验码 '+code:
+      mode==='denial'?'讲义已保存，练习尚未获准。':'这一轮没有新增核验证据。'};
   const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'goal-'+mode+'-'+ordinal,object:'chat.completion.chunk',created:1,
     model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
   response.writeHead(200,{'content-type':'text/event-stream'}).end(chunk(delta,null)+chunk({},tool?'tool_calls':'stop')+'data: [DONE]\n\n');
@@ -78,8 +108,11 @@ async function create(phase){
     if(!selected.ok)throw Error(JSON.stringify(selected));
     return {sessionId:session.id,id:'xigoal_'+crypto.randomUUID()};
   },'目标故障恢复 '+phase);
+  const pathPair=outputs[phase];
+  const objective=pathPair?`分两步实际保存“${pathPair.first}”和“${pathPair.second}”，每次先等教师审批，再提交验收。`:
+    '核对合成课堂资料中的浮力方向及标记，提交老师核对。';
   const response=await mutate({...goal,schemaVersion:1,action:'create',revision:0,
-    objective:'核对合成课堂资料中的浮力方向及标记，提交老师核对。',criteria:['讲解保留资料真实标记']});
+    objective,criteria:['讲解保留资料真实标记']});
   assert(response.ok,JSON.stringify(response));
   return goal;
 }
@@ -88,6 +121,31 @@ async function waitRetry(owner){
     const state=await snapshot(owner.sessionId);
     return state.projection.turns.find(turn=>turn.id===state.goal?.runId)?.modelRequests?.find(item=>item.state==='retry_wait');
   },'the authoritative retry event');
+}
+async function decideText(owner,file,action){
+  if(action==='approve'){
+    const pending=await until(async()=>{
+      const result=await page.evaluate(id=>window.omniEdu.getXiaozhiPermissions(id),owner.sessionId);
+      return result.ok&&result.value.approvals.find(item=>item.state==='pending'&&item.request.action==='office_create_text'&&
+        item.request.files.some(target=>target.path===file));
+    },'a teacher-owned write permission for '+file);
+    const allowed=await page.evaluate(input=>window.omniEdu.decideXiaozhiPermission(input),{
+      sessionId:owner.sessionId,approvalId:pending.id,revision:pending.revision,decision:'approve',scope:'task'
+    });
+    assert(allowed.ok,JSON.stringify(allowed));
+  }
+  const change=await until(async()=> (await snapshot(owner.sessionId)).changes.find(item=>item.path===file&&item.state==='pending'),
+    'the real text approval '+file);
+  assert(!fs.existsSync(path.join(workspace,file)));
+  const result=await page.evaluate(input=>window.omniEdu.decideXiaozhiChange(input),{schemaVersion:'xiaozhi.change.v1',
+    sessionId:owner.sessionId,changeId:change.id,revision:change.revision,action});
+  assert(result.ok,JSON.stringify(result));
+  return change;
+}
+function countRuns(sessionId){
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{return db.prepare('SELECT count(*) AS n FROM xiaozhi_event_runs WHERE session_id=?').get(sessionId).n;}
+  finally{db.close();}
 }
 try{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -173,6 +231,68 @@ try{
   assert.equal(sha(input),originalSha);
   report.pause={goal:terminal.goal,calls:number,sourceHash:originalSha};
   report.checks.push('Teacher pause during a real retry wait remains terminal for that run and sends no second request');
+  if(budgetCases){
+    const denial=await create('denial');
+    const first=await decideText(denial,outputs.denial.first,'approve');
+    const second=await decideText(denial,outputs.denial.second,'reject');
+    const original=path.join(workspace,outputs.denial.first),originalHash=sha(original);
+    const refused=await until(async()=>{
+      const item=await snapshot(denial.sessionId);
+      return !item.running&&item.goal?.state==='review_required'&&item.goal.resultRunId&&item;
+    },'the teacher reviews the partial goal after a denied file');
+    assert.equal(refused.changes.find(item=>item.id===first.id).state,'applied');
+    assert.equal(refused.changes.find(item=>item.id===second.id).state,'rejected');
+    assert(!fs.existsSync(path.join(workspace,outputs.denial.second)));
+    const unready=await mutate({...denial,schemaVersion:1,action:'accept',revision:refused.goal.revision,checked:[0]});
+    assert(!unready.ok,'An unfulfilled file criterion cannot be accepted');
+    const detail=await page.evaluate(id=>window.omniEdu.getXiaozhiTask({sessionId:id}),denial.sessionId);
+    assert(detail.ok&&detail.value.candidate);
+    const view=detail.value.task;
+    const returned=await page.evaluate(input=>window.omniEdu.reviewXiaozhiTask(input),{
+      schema:'xiaozhi.task.v1',sessionId:denial.sessionId,taskId:view.id,revision:view.revision,requirementsVersion:view.requirementsVersion,
+      requestId:'xitact_'+randomUUID(),candidate:detail.value.candidate,
+      checked:view.criteria.filter(item=>item.kind==='human').map(item=>({criterionId:item.id,version:item.version,accepted:false})),
+    });
+    assert(returned.ok,JSON.stringify(returned));
+    const afterDenial=await snapshot(denial.sessionId);
+    const paid=number;
+    await delay(350);
+    assert.equal(afterDenial.goal.state,'paused');
+    assert.equal(afterDenial.task.id,view.id);
+    assert.equal(number,paid);
+    assert.equal(countRuns(denial.sessionId),1);
+    assert.equal(sha(original),originalHash);
+    report.denial={state:afterDenial.goal.state,artifactSha256:originalHash,calls:paid,task:view.id,retained:afterDenial.goal.id};
+    report.checks.push('Teacher refusal keeps the real saved file, blocks incomplete approval and pauses the same goal with zero automatic continuation');
+
+    const budget=await create('budget');
+    await decideText(budget,outputs.budget.first,'approve');
+    const frozen=path.join(workspace,outputs.budget.first);
+    const exhausted=await until(async()=>{
+      const item=await snapshot(budget.sessionId);
+      return !item.running&&item.goal?.state==='interrupted'&&item;
+    },'three allowed recovery attempts close the original goal');
+    const failed=exhausted.projection.turns.find(turn=>turn.id===exhausted.goal.runId);
+    assert.equal(failed.errorCode,'provider_unavailable');
+    const active=exhausted.usage.find(row=>row.runId===failed.id);
+    assert.equal(active.modelCalls,5);
+    const actualBudget=report.calls.filter(row=>row.mode==='budget');
+    assert.deepEqual(actualBudget.map(row=>row.status),[200,200,503,503,503]);
+    assert(actualBudget.every(row=>row.model==='deepseek-flash'));
+    const retainedHash=sha(frozen);
+    await delay(1100);
+    const settled=await snapshot(budget.sessionId);
+    assert.equal(number,5);
+    assert.equal(countRuns(budget.sessionId),1);
+    assert.equal(settled.task.id,exhausted.task.id);
+    assert.equal(settled.goal.id,budget.id);
+    assert.equal(sha(frozen),retainedHash);
+    assert(!fs.existsSync(path.join(workspace,outputs.budget.second)));
+    const remaining=await page.evaluate(id=>window.omniEdu.getXiaozhiTask({sessionId:id}),budget.sessionId);
+    assert(remaining.ok&&remaining.value.task?.steps.some(step=>step.id==='practice'&&step.reported==='pending'));
+    report.exhausted={goal:settled.goal.id,task:settled.task.id,error:failed.errorCode,usage:active,retainedHash,calls:actualBudget};
+    report.checks.push('Exhausted wire recovery spends three physical attempts, preserves the saved artifact and retains only the explicit continuation boundary');
+  }
   report.ok=true;
 }catch(error){
   report.error=String(error.stack??error);

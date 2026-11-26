@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 21/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 23/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -31,9 +31,9 @@
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
 | AC-27 | PASS · 已实现 | 真实 Goal 遇到 503 原地等待，查询与独立保存不增加模型次数、进展和修订。原 Goal 恢复后教师确认完成。真实三轮停滞呈现准确，等待中暂停无后续物理请求。 |
-| AC-28 | NOT_RUN | Goal 预算、停止及教师最终验收约束。 |
+| AC-28 | PASS · 已实现 | 实际 Goal 中先保存讲义，再拒绝练习或耗尽同一请求的三次物理恢复。原成果不变，教师拒绝继续记为暂停；原任务只保留显式续做入口。 |
 | AC-29 | NOT_RUN | 正式界面的健康、停止、回执未知和继续入口。 |
-| AC-30 | NOT_RUN | 诊断导出脱敏、隔离、大小边界与 hash。 |
+| AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
 | AC-31 | NOT_RUN | DB R2 prepared-run 组合与旧库、损坏记录和回退矩阵。 |
 | AC-32 | NOT_RUN | 组合下租约和 Agent Experience R1 的性能合同。 |
 | AC-33 | NOT_RUN | 四类教学任务的无故障、可恢复和不可恢复矩阵。 |
@@ -216,3 +216,13 @@
 - 基线 `provider-goal-recovery-ORPtEL/report.json`。实际 Goal 在三轮未新增证据后正确保存了停止状态，最终显示错误的 `skill_source_changed`。SQLite 的原事件序列先持久化 Goal 停滞与中断，再产生错误的权限复核提示。宿主结束当前 Task 后，Pi 返回时额外读取旧技能授权导致诊断错误。
 - 最小修复沿 Pi 原终止决定收尾，终止后的旧 owner 跳过最终权限复核，活跃模型与工具的交付继续走原检查。正式主进程 `f4d2be02d2eb773bb18d7ad45ef9e5d93aa394d2095f341ad380211dc2430431` 实测 `provider-goal-recovery-Mmmiae/report.json`，3/3。原 Goal 的 503 至第二次尝试期间，重复读取四次和另存合成题库记录均未增加请求、核验证据或 Goal 修订，约定等待 2.5 秒。恢复沿同一 Goal 和原 Run，读到合成文件真实标记，再由教师确认完成。SQLite 对账共 4 次模型调用和 2 个工具，`activeMs=7012`、`waitingMs=0`。停滞 3 次准确报告 `goal_stalled`。暂停场景只接收了 1 次实际请求。
 - 同一源码的 Goal 状态合同 16/16、技能隔离合同 14/14、渲染组件 261/261 和正式构建通过。原始证据见 `wp07-goal-boundary-baseline.log`、`wp07-goal-owner-skills.log`、`wp07-goal-owner-renderer.log`、`wp07-goal-owner-build.log`。另复跑最新构建的模型恢复与注入生产 powerMonitor 恢复事件 11/11，见 `model-wire-health-qQxxCd/report.json`。真实 S0 仍由 AC-23 单独验收。
+
+## WP-07 原 Goal 的预算、拒绝和产物
+
+- `provider-goal-recovery-electron.mjs <实际构建> <验收根> --budget` 通过 5/5。正式 Pi 走原文件权限审批和精确稿件审批，第一份讲义提交后，用拒绝处理第二份练习。接受不完整成果的尝试被阻止，教师拒绝整个成果后 Goal 沿原 Task 暂停，无自动运行，原讲义摘要不变。
+- 同一实际构建的另一原 Goal 保存讲义后收到连续三个实际 HTTP 503。同一 DeepSeek 模型在该物理请求达到恢复上限后以 `provider_unavailable` 中断，原 Run 共差异化计量 2 次正常、3 次失败。实际等待后仍只有该原 Run，未写练习，原讲义、Task ID 和 Goal ID 保持，剩余练习步骤待做。见 `provider-goal-recovery-YoJSPW/report.json`。首次夹具只等待稿件、遗漏工作区权限审批，原始日志 `provider-goal-recovery-YbrFtL/report.json`。最终验证使用真实教师授予的任务范围和独立文件审阅。
+
+## WP-07 诊断导出与隔离
+
+- 实际 Windows Electron 设置页 6/6。原模型合成成功和 401 原因准确显示，学生名、私人路径、假凭证及服务器敏感回显均未进入诊断预览或文件。真实保存对话框通过取消、写入、失败保留及显式再保存。导出与原预览 SHA-256 一致，为 `6b690dda75429ba67132a29025c1f59ca2742e416566555fa320cce7058bd649`。同一真实 preload 拒绝已存在的另一会话读和导出，在达到原缓存容量后拒绝旧预览。两个所需分辨率均在原生视口通过，冷启原草稿和日志保持且零模型重放。见 `xiaozhi-diagnostic-ui-p36T6Q/report.json`。
+- 生产域规则和实际 SQLite 文件边界 12/12。不同记录类型给定 90 条时各保留上限 64 条并披露省略 26 条。过大旧 SQLite 记录拒绝读取，不越权恢复。预览过期、旧预览容量淘汰、取消或写入失败均不覆盖现有文件。域测试本地解析使用该工作树自己已安装的依赖。见 `xiaozhi-diagnostic-domain-PiBKoB/report.json`。本切片未修改诊断生产功能、教师资料或原数据真源。
