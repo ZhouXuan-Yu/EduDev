@@ -1,3 +1,27 @@
+# V3.1 当前执行入口
+
+状态：IMPLEMENTING；自动Goal仍active，完整90 AC＋36 LG及SET-P0/MG/FG未通过，不合并main。分支codex/ui-ux-r1-20261125，起点42340fd。独立设置窗、最小接口、主窗可信会话和十类原设置已接入正式Pi构建，保留原业务真源。
+
+磁盘阻断曾导致本文件为空，已从C盘完整恢复。后续出现约100MB可用空间，继续正式源码修复：W2-C第5/8轮补上readRevision等待后重新核验主窗身份，正式新增红灯复现并修复为10/10。此前双窗实测8、接口12、组件261、Pi9、旧legacy回归207和audit0为分层证据；本轮最后同版结果以CHECKPOINT_W2_INTEGRATION.json为准。C盘RECOVERY为历史快照，不能盲目覆盖当前工作树。
+
+下一步：按RUNTIME_INTEGRATION.md继续正式A→B、subframe/导航及await撤权，再做配置保存/历史/撤销/冲突与数据库读回，以及记忆/权限/工具/归档/备份闭环，最后原生焦点/DPI/键盘/性能。旧Pi设置UI脚本需适配独立owner window并保留断言；desktopRevision身份应包含新增设置入口。W2-A3/8、B1/8、C5/8、D2/8、E0/8、F0/8、W10 0/3，预算不重置。
+
+## 历史：磁盘阻断及C盘恢复记录（不代表当前仍停止）
+
+State: BLOCKED_STORAGE; automatic Goal remains active, not complete. Branch codex/ui-ux-r1-20261125; HEAD 42340fd6f3f82285791576266b3d3788b27166db. Current changes are UNCOMMITTED and main has NOT been changed.
+
+Actual production Pi main/settings windows and all ten original setting components are integrated. Current formal Electron product test is C:\Users\ZhouXuan\AppData\Local\Temp\edudev-v31-settings-final-20261126\product-NF4jKy\report.json, 8/8, full build unchanged. IPC contract 12, controller/scope 9+9, renderer 261, Pi boundary 9, audit 0. Legacy smoke 207/207 passed on its protected legacy entry before final settings-only notice cleanup and unused API removal; it is not full V3 acceptance.
+
+D disk has only 4 KiB free. A D-root final test could not launch; subsequent C-root actual production test passed. Automatic approval rejected cleanup of owned Electron caches with blocked by policy, no additional reason; no cleanup ran. Attempt to update the D state document failed and left it empty. This is the reconstructed state; original committed history is retained below. Production code was not truncated.
+
+Recovery: C:\Users\ZhouXuan\AppData\Local\Temp\edudev-v31-settings-final-20261126\RECOVERY\RECOVERY.json. Source snapshots, raw tracked patch, original failures, C-root product evidence and hashes are retained here. After freeing D disk space, first verify current branch/source/build against this manifest; restore this document, copy final C product report/screenshots to the evidence tree, preserve the failed D launch log, run checkpoint-integration.mjs, review and commit only this task. Do not reset, clean or overwrite collaborators.
+
+Next: W2-C real A-to-B, subframe/navigation and await revocation; W2-E real configuration save/history/undo/conflict and SQLite/file readback; teacher/L2/history memory, permissions/tools/archive/backup; W2-B/F active Pi/draft/queue/focus/IME/DPI/performance. Original Pi settings UI scripts still require independent-window ownership adaptation without weakening assertions. See RUNTIME_INTEGRATION.md. Native 100/150% two displays observed; 125% not verified.
+
+Budgets: W2-A3/8, W2-B1/8, W2-C4/8, W2-D2/8, W2-E0/8, W2-F0/8, W10 0/3. The storage failure does not reset these. All90 AC and36 LG remain not formally completed; SET-P0/MG/FG not PASS. No main merge.
+
+## Historical foundation checkpoint
+
 # V3.1 设置优先执行入口
 
 状态：IMPLEMENTING；不是SET-P0_ACCEPTED或DONE。工作树和分支见PHASE0.md；起点main=d16b0af。

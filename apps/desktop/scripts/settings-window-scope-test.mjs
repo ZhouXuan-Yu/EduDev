@@ -39,4 +39,10 @@ await check('caller mutation of a snapshot cannot grant authority',async()=>{
  const b=authority.snapshot();b.sessionId='a';assert.equal(authority.snapshot().sessionId,'b');
  await authority.select(main,null);await assert.rejects(authority.assertCurrent(settings,authority.snapshot(),'a'),/scope_changed/);
 });
+await check('main authority revoked during revision lookup cannot publish a selected session',async()=>{
+ const sender={},published=[];let trusted=true,resolve;
+ const scope=new SettingsScopeAuthority({trustedMain:event=>event===sender&&trusted,trustedSettings:()=>true,readRevision:()=>new Promise(done=>resolve=done),changed:value=>published.push(value)});
+ const pending=scope.select(sender,'verified-session');trusted=false;resolve('verified-revision');
+ await assert.rejects(pending,/permission_denied/);assert.equal(scope.snapshot().sessionId,null);assert(!published.some(frame=>frame.sessionId==='verified-session'));
+});
 console.log(JSON.stringify({passed:checks.length,checks,boundary:'Capability/epoch unit contract. Host-adapter and actual settings IPC integration remain required; not a substitute configuration store.'}));

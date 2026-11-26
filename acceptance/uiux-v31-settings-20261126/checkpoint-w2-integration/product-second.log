@@ -1,0 +1,6 @@
+PASS production main keeps composer draft while opening real settings from navigation
+PASS settings is a top-level nonmodal sandboxed singleton with its own minimal preload
+PASS real settings reads the verified main session instead of a local preference
+PASS all ten existing categories are reachable including three memory modules
+PASS main remains editable; closing settings leaves Pi window and composer intact
+{"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\uiux-v31-settings-20261126\\product-kGQhbk","success":true,"passed":5}

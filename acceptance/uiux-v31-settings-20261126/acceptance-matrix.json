@@ -300,15 +300,33 @@
     },
     {
       "id": "AC-075",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-076",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-077",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-078",
@@ -320,7 +338,13 @@
     },
     {
       "id": "AC-080",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-081",
@@ -332,15 +356,33 @@
     },
     {
       "id": "AC-083",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-084",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-085",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-086",
@@ -356,7 +398,13 @@
     },
     {
       "id": "AC-089",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_W2_INTEGRATION.json",
+        "checkpoint-w2-integration/product-9pAd6R--report.json",
+        "RUNTIME_INTEGRATION.md"
+      ],
+      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
     },
     {
       "id": "AC-090",

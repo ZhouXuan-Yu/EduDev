@@ -3,6 +3,7 @@ import {Button, Label, ListBox, Select, TextArea} from '@heroui/react';
 import type {AiMemoryEntry, AiMemorySurface} from '../../../shared/contracts';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
+import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 
 const surfaces: Array<{id:AiMemorySurface; name:string}> = [
   {id:'chat',name:'对话'}, {id:'notebook',name:'备课本'}, {id:'quiz',name:'练习'},
@@ -19,6 +20,7 @@ function EntryEditor({entry, onSaved, refresh}: {
   const [message,setMessage]=useState<{error:boolean;text:string}>();
   const [forget,setForget]=useState(false);
   const text=draft?.text ?? entry.text;
+  useDesktopNavigationGuard(!!draft||!!pending,'教学记忆有未保存的更改，请先保存或放弃。');
 
   async function save() {
     const api=window.omniEdu;

@@ -1,5 +1,9 @@
 # 当前架构
 
+## V3.1设置窗口适配（任务分支，尚未整体验收）
+
+独立top-level非模态窗口通过settings-window controller/runtime与精简preload复用原宿主服务；主窗不离开原工作区。窗口角色、mainFrame、文档地址、版本化session scope及原业务schema分别校验。没有新增配置/记忆/权限或数据库真源。实施边界与验收入口见[专项Goal](../goal/UIUX_V31_EXECUTION.md)，不得把当前分支实现写成main已交付。
+
 ## 小智数据库 R3
 
 SQLite v7 追加普通配置变更、字段头及幂等回执。默认模型与思考档位仍保存在原设置行，原配置和新账本同一短事务写入。Pi 在准入时用一笔 SQLite 只读快照捕获模型与思考来源，沿原生绑定保存 R2 准备基线。工具执行仍核对当前授权。

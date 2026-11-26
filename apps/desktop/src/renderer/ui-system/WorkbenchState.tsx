@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AiConversationWorkspace } from '../../shared/contracts';
-import { defaultWorkbenchPreferences, readWorkbenchPreferences, writeWorkbenchPreferences, type WorkbenchPreferences } from './workbench-preferences';
+import { WORKBENCH_PREFERENCES_KEY,defaultWorkbenchPreferences, readWorkbenchPreferences, writeWorkbenchPreferences, type WorkbenchPreferences } from './workbench-preferences';
 
 export type WorkbenchData = {
   folders: AiConversationWorkspace['folders'];
@@ -24,6 +24,10 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const publish = useCallback<Publisher>(next => setData(next), []);
   const [preferences, setPreferences] = useState(readWorkbenchPreferences);
   const current = useRef(preferences);
+  useEffect(()=>{
+    const synchronize=(event:StorageEvent)=>{if(event.key!==WORKBENCH_PREFERENCES_KEY&&event.key!==null)return;const next=readWorkbenchPreferences();current.current=next;setPreferences(next);};
+    window.addEventListener('storage',synchronize);return()=>window.removeEventListener('storage',synchronize);
+  },[]);
   const update = useCallback((value: Partial<WorkbenchPreferences>) => {
     const next = { ...current.current, ...value };
     if (!writeWorkbenchPreferences(next)) return false;

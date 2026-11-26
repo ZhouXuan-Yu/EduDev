@@ -76,7 +76,8 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     live.current=true;
     void reload();
     const unsubscribe=window.omniEdu?.onXiaozhiEvent(event=>{if(event.kind==='status')void reload(false,true);});
-    return ()=>{live.current=false;stamp.current++;unsubscribe?.();};
+    const changed=(window.settingsWindow??window.settingsHost)?.onChanged(()=>void reload(false,true));
+    return ()=>{live.current=false;stamp.current++;unsubscribe?.();changed?.();};
   },[]);
 
   async function save(){

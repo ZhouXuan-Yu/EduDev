@@ -1,0 +1,16 @@
+PASS production main keeps composer draft while opening real settings from navigation
+PASS settings is a top-level nonmodal sandboxed singleton with its own minimal preload
+PASS real settings reads the verified main session instead of a local preference
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByTestId('pi-history-memory-settings') to be visible
+
+    at D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\scripts\settings-window-product-test.mjs:52:108
+    at async check (D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\scripts\settings-window-product-test.mjs:21:35)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-product-test.mjs:49:2 {
+  log: [
+    "  - waiting for getByTestId('pi-history-memory-settings') to be visible"
+  ],
+  name: 'TimeoutError'
+}
+{"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\uiux-v31-settings-20261126\\product-FZEYpH","success":false,"passed":3,"failure":"TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-history-memory-settings') to be visible\u001b[22m\n"}

@@ -5,7 +5,7 @@ import { SettingsSurface } from './SettingsPrimitives';
 type Variant = 'default' | 'hero' | 'double-column' | 'list';
 type Surface = 'card' | 'plain';
 
-interface SettingsSectionProps {
+interface SettingsSectionProps extends Omit<React.HTMLAttributes<HTMLElement>,'title'> {
   title?: React.ReactNode;
   description?: React.ReactNode;
   /** Section 的上下文（如 agent 选择器），渲染在 title 右侧。
@@ -67,6 +67,7 @@ function SettingsSectionBase({
   surface,
   children,
   className,
+  ...attributes
 }: SettingsSectionProps) {
   const id = useId();
   const titleId = title ? `${id}-title` : undefined;
@@ -88,7 +89,7 @@ function SettingsSectionBase({
   ].filter(Boolean).join(' ');
 
   return (
-    <section className={rootClass} aria-labelledby={titleId} aria-describedby={descriptionId}>
+    <section {...attributes} className={rootClass} aria-labelledby={titleId} aria-describedby={descriptionId}>
       {hasHeader && (
         <div className={headerClass}>
           {title && <h2 id={titleId} className={styles.sectionTitle}>{title}</h2>}

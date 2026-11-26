@@ -376,7 +376,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     });
     eventReceiver.current = receiver;
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
-    return () => { viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.(); };
+    const settingsChanged=window.settingsHost?.onChanged(()=>{if(live&&idRef.current)void hydrate(idRef.current).catch(()=>undefined);});
+    return () => { viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.();settingsChanged?.(); };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
     requireSynchronized();

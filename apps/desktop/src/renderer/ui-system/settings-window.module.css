@@ -1,0 +1,7 @@
+/* Application columns only; HeroUI's control internals retain their own CSS. */
+.workspace {padding:0;max-width:none;overflow:hidden;display:flex;flex-direction:column;}
+.layout {display:grid;grid-template-columns:184px minmax(0,1fr);gap:0;flex:1;min-height:0;overflow:hidden;}
+.sidebar {padding:20px 12px;background:#fafafa;border-right:1px solid #ededf0;overflow-y:auto;min-height:0;gap:12px;}
+.main {padding:24px 28px 36px;overflow-y:auto;min-height:0;max-width:none;}
+.context {margin:0 0 16px;font-size:13px;color:var(--muted);overflow-wrap:anywhere;}
+@media(max-width:780px){.layout{grid-template-columns:164px minmax(0,1fr);}.main{padding:20px;}}

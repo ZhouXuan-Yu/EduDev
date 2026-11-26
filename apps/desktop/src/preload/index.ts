@@ -1,3 +1,4 @@
+import './settings-host';
 import {createTerminalPreload} from './terminal';
 
 import type {StructureReviewInput} from '../shared/material-structure-review';

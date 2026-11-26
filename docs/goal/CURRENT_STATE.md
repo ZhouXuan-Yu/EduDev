@@ -1,6 +1,6 @@
 # 当前状态与恢复入口
 
-UI当前执行切换到[V3.1设置优先](UIUX_V31_EXECUTION.md)，active Goal及状态入口为任务树acceptance/uiux-v31-settings-20261126/EXECUTION_STATE.md。90 AC＋36 LG尚未正式通过；窗口/scope基础模块已实现，正式入口与十类设置桥接继续。按新门禁禁止提前合并main。
+UI当前执行切换到[V3.1设置优先](UIUX_V31_EXECUTION.md)，active Goal及状态入口为任务树acceptance/uiux-v31-settings-20261126/EXECUTION_STATE.md。窗口、精简接口、可信会话和十类真实设置已接入正式构建，取得局部实操证据；90 AC＋36 LG尚未正式通过。继续业务读写/版本/恢复、安全与性能验收；禁止提前合并main。
 
 2026-11-26 UI遗留修复已通过本轮构建、261组件、29合同、9样式及补强后的9项Pi协议边界；原生实操使用固定正式Pi构建。整体UI_R1仍BLOCKED：原生125%、首次冷峰及未完整覆盖状态保留。[报告与恢复](../audit/ux-followup-20261126/RESULT.md)。不替换其他领域Goal。
 

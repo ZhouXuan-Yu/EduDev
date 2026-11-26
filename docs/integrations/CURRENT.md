@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+V3.1设置窗分支接入采用固定方法allowlist代理原handler，scope epoch来自可信主窗选择，原配置版本、权限、Pi、记忆和备份规则继续负责业务校验。子窗未获得通用终端/文件/Agent接口。当前仅局部正式Electron验证；完整门禁和剩余读写链路见[专项入口](../goal/UIUX_V31_EXECUTION.md)。
+
 数据库 R3 的设置回执、历史和撤回由原设置主进程校验与 typed preload 提供。普通配置历史随完整备份与换机包保存，换机包复用统一规则移除凭据及本机授权。 [数据库 R3](../architecture/CURRENT.md#小智数据库-r3)
 
 数据库 R2 的 Windows 更新、备份恢复和兼容确认继续使用正式 preload。准备基线关联 Pi 原生 owner 与原有教师观察及决策。集成夹具使用受控模型响应。 [架构](../architecture/CURRENT.md#小智数据库-r2)

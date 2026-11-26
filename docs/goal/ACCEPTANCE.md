@@ -1,6 +1,6 @@
 # Goal 验收台账
 
-V3.1按工程包06_ATDD_ACCEPTANCE.md的90项及36 LG独立建账，原R1证据不自动转PASS。生命周期/scope单测与真实Electron夹具仅为子条件，不能声称SET-P0_ACCEPTED。全部合并前必需和MG-01通过才可main集成。[当前入口](UIUX_V31_EXECUTION.md)。
+V3.1按工程包06_ATDD_ACCEPTANCE.md的90项及36 LG独立建账，原R1证据不自动转PASS。正式Pi双窗与十类入口已有局部Electron证据，接口契约12项通过；未完成业务闭环与完整原生状态仍保留，不能声称SET-P0_ACCEPTED。精确构建/测试边界见任务树CHECKPOINT_W2_INTEGRATION.json及RUNTIME_INTEGRATION.md。全部合并前必需和MG-01通过才可main集成。[当前入口](UIUX_V31_EXECUTION.md)。
 
 UI遗留专项的当前构建、来源、测试与原生操作见[报告](../audit/ux-followup-20261126/RESULT.md)和`acceptance/ux-followup-20261126/delivery.json`。保留旧UIR1-01至28及A01–A36影响记录，不以本轮局部通过覆盖原失败/未执行；原生125%、完整状态与真实教师/provider边界仍公开记录。
 

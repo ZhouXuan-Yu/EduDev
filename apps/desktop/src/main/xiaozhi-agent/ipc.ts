@@ -45,7 +45,8 @@ import {mockExamErrors} from '../../shared/mock-exam-compilation';
 import type { RuntimeAuthority } from './runtime-authority';
 import {isBackgroundAcceptance} from './runtime-authority';
 
-export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority }) {
+export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority;
+  settingsAccess?:{allows:(event:Electron.IpcMainInvokeEvent)=>boolean;onStatus:(event:import('../../shared/xiaozhi-agent').XiaozhiAgentEvent)=>void} }) {
   const commitDelay = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'
     ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMPACT_COMMIT_DELAY_MS) || 0)) : 0;
   const testing = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1';
@@ -96,8 +97,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     await new Promise(resolve => setTimeout(resolve, commitDelay));
   } } : {}), emit: event => {
     const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:event', event);
+    options.settingsAccess?.onStatus(event);
   } });
-  const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
+  const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame || !!options.settingsAccess?.allows(event);
   registerWorkbenchIpc({ipcMain: options.ipcMain, allowed: fromMain, read: action => options.store.readWorkbench(action),
     indexedTasks:true,repairTaskRows:ids=>options.store.taskSummary.repairRows(ids),recentArtifacts: () => options.store.listDocumentArtifacts()});
   const readResolvedConfig=createResolvedAgentConfig(action=>options.store.readWorkbench(action));
@@ -214,6 +216,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     return host.selectWorkspace(id, async () => {
       const current = options.window(); if (!current) return;
       const result = await dialog.showOpenDialog(current, { title: '选择本会话的教学工作目录', properties: ['openDirectory'] });
+      if(!fromMain(event))throw Error('permission_denied');
       return result.canceled ? undefined : result.filePaths[0];
     });
   });

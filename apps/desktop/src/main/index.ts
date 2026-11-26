@@ -11,12 +11,13 @@ import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation'
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
 import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTheme } from 'electron';
 import {createDesktopIpcLifetime} from './desktop-ipc-lifetime';
+import {createSettingsWindowRuntime} from './settings-window/runtime';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
 import { restoreWindowGeometry, installWindowGeometry, MIN_HOST_WINDOW_WIDTH } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, isAbsolute, join } from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
 import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
@@ -49,9 +50,10 @@ let store: OmniEduStore;
 const publications=new BackupPublicationBarrier();
 const ipcLifetime=createDesktopIpcLifetime(electronIpcMain,publications);
 let backupExport: {controller:AbortController; committing:boolean}|undefined;
-const ipcMain=ipcLifetime.ipcMain;
+let ipcMain=ipcLifetime.ipcMain;
 let mainWindow: BrowserWindow | undefined;
 let backgroundAcceptance = false;
+let piSettingsWindow = false;
 let e2eAttachmentDialogQueue: string[][] | undefined;
 let e2eStudentExportDialogQueue: string[][] | undefined;
 let e2eDataBackupExportDialogQueue: string[] | undefined;
@@ -192,6 +194,7 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: true,
       backgroundThrottling: !backgroundAcceptance,
+      additionalArguments:piSettingsWindow?['--xiaozhi-settings-window']:[],
     },
   });
   mainWindow = window;
@@ -269,6 +272,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   let dataRoot=baseDataRoot;
   try{dataRoot=(await selectedBackupRoot(app.getPath('userData'),baseDataRoot,appVersion)).dataRoot;}catch(error){dialog.showErrorBox('恢复目录不可用',error instanceof Error?error.message:'仍使用原数据目录');if(error instanceof BackupRestoreVersionError||!existsSync(join(baseDataRoot,'app.db'))){app.quit();return;}}
   const authority = resolveRuntimeAuthority({ packaged: app.isPackaged, env: process.env, dataRoot, profileRoot: app.getPath('userData') });
+  piSettingsWindow=authority.mode==='pi';
   store = new OmniEduStore(dataRoot, () => appVersion + ':' + createHash('sha256')
     .update(readFileSync(fileURLToPath(import.meta.url))).digest('hex'),publications);
   try {
@@ -292,8 +296,17 @@ if (ownsDesktop) app.whenReady().then(async () => {
   const legacyTestRuntime = authority.mode === 'legacy-test'
     ? (await import('./legacy-ai/test-runtime')).registerLegacyTestRuntime({store,authority,window:()=>mainWindow})
     : undefined;
-
-
+  const rendererUrl=process.env.NODE_ENV==='development'?process.env.ELECTRON_RENDERER_URL:undefined;
+  const settingsWindow=createSettingsWindowRuntime({ipc:ipcLifetime.ipcMain,main:()=>mainWindow,
+    mainUrl:rendererUrl?new URL(rendererUrl).href:pathToFileURL(join(mainEntryDirectory,'../renderer/index.html')).href,
+    settingsUrl:rendererUrl?new URL('settings.html',rendererUrl).href:pathToFileURL(join(mainEntryDirectory,'../renderer/settings.html')).href,
+    preload:join(mainEntryDirectory,'../preload/settings.cjs'),
+    // Stable identity revision; ordinary configuration retains its own CAS/version.
+    // Streamed message timestamps cannot revoke every in-flight settings request.
+    readRevision:async id=>{const workspace=await store.listAiConversationWorkspace();const session=workspace.sessions.find(row=>row.id===id);return session?session.id+':'+session.createdAt:null;},
+    canReadArchive:async id=>(await store.listAiConversationWorkspace()).archivedSessions.some(row=>row.id===id),
+  });
+  ipcMain=settingsWindow.ipcMain;
   ipcMain.handle('app:bootstrap', () => store.init());
   ipcMain.handle('ai:deepTutorListPendingInputs', event => {
     if (!mainWindow || mainWindow.isDestroyed() || event.sender !== mainWindow.webContents || event.senderFrame !== event.sender.mainFrame) throw new Error('permission_denied');
@@ -301,7 +314,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
   ipcMain.handle('app:getPlatformOverview', () => store.getPlatformOverview());
-  const settingsSender = (event: Electron.IpcMainInvokeEvent) => event.sender === mainWindow?.webContents && event.senderFrame === event.sender.mainFrame;
+  const settingsSender = (event: Electron.IpcMainInvokeEvent) => event.sender === mainWindow?.webContents && event.senderFrame === event.sender.mainFrame || settingsWindow.allows(event);
   ipcMain.handle('students:createConversation',async(event,input)=>{
     if(!settingsSender(event))throw new Error('permission_denied');
     const {createStudentConversation}=await import('./students/context-service');return createStudentConversation(store,input);
@@ -620,7 +633,8 @@ if (ownsDesktop) app.whenReady().then(async () => {
     store.archiveAiConversationSession(sessionId),
   );
 
-  const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
+  const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow,
+    settingsAccess:{allows:settingsWindow.allows,onStatus:settingsWindow.onStatus} });
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
   registerBackupRestore({ipcMain,store,baseRoot:baseDataRoot,profile:app.getPath('userData'),allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),restart:()=>{app.relaunch();app.quit();}});
   registerWindowsUpdate({ipcMain,store,allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),
@@ -637,6 +651,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
     if(shutdown)return;
     const ipcDrained=ipcLifetime.close();
     shutdown=Promise.resolve().then(async()=>{
+      settingsWindow.dispose();
       // Closing windows stops renderer polling. A repeated quit must still wait.
       for(const window of BrowserWindow.getAllWindows())window.destroy();
       await Promise.allSettled([ipcDrained,materialAiStartup,xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialFolderAi.close(),store.materialAi.close(),store.retrieval.close(),store.materialImports.close().then(()=>materialQueueStartup).then(()=>store.materialQueue.close()).then(()=>store.materialSearch.close()).then(()=>store.materialQuestions.close())]);
@@ -647,6 +662,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       .finally(() => {shutdownReady=true;app.quit();});
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
+  settingsWindow.register();
   createWindow();
   store.taskSummary.start();
   const startupWindow=mainWindow;

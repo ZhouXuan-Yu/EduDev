@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { DesktopFrame } from './components/desktop/DesktopFrame';
 import { WorkbenchProvider } from './ui-system/WorkbenchState';
+import {SettingsWindowBridge} from './ui-system/SettingsWindowBridge';
 import './heroui-styles';
 import './ui-system/base.css';
 import './styles.css';
@@ -13,6 +14,6 @@ document.documentElement.dataset.theme='light';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <DesktopFrame><WorkbenchProvider><App /></WorkbenchProvider></DesktopFrame>
+    <DesktopFrame><WorkbenchProvider><App /><SettingsWindowBridge/></WorkbenchProvider></DesktopFrame>
   </React.StrictMode>,
 );

@@ -21,6 +21,7 @@ export class SettingsScopeAuthority {
     this.current=Object.freeze({schemaVersion:'settings.scope.v1',epoch,sessionId:null,revision:null});this.options.changed(this.snapshot());
     const revision=sessionId===null?null:await this.options.readRevision(sessionId);
     if(this.current.epoch!==epoch)throw Error('scope_changed');
+    if(!this.options.trustedMain(event))throw Error('permission_denied');
     if(sessionId!==null&&(revision===null||typeof revision!=='string'||!revision.length))throw Error('session_unavailable');
     this.current=Object.freeze({schemaVersion:'settings.scope.v1',epoch,sessionId,revision});this.options.changed(this.snapshot());
     return this.snapshot();
