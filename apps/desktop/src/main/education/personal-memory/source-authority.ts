@@ -1,3 +1,4 @@
+import {currentTeachingTarget} from '../../xiaozhi-agent/memory-scope-state';
 import { createHash } from 'node:crypto';
 import type { HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
 import { readHistorySource, validHistoryRef } from '../../xiaozhi-agent/history/source';
@@ -78,7 +79,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
       allowed:row.extract_allowed===1 && row.memory_state==='active' && row.generation===historyGeneration};
   }
 
-  async function change(ref: HistorySourceRef, expectedRevision: number, binding: Binding | null) {
+  async function change(ref: HistorySourceRef, expectedRevision: number, binding: Binding | null, teachingTargetVersion?:number) {
     if (!validHistoryRef(ref) || !Number.isSafeInteger(expectedRevision) || expectedRevision < 0
         || (binding !== null && !validBinding(binding))) throw Error('invalid_input');
     if (!sql.transaction) throw Error('configuration');
@@ -86,6 +87,12 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     return sql.transaction(async db=>{
       const current = await permission(id,db);
       if ((current?.revision ?? 0)!==expectedRevision) throw Error('revision_conflict');
+      if (teachingTargetVersion !== undefined) {
+        if (!binding || !Number.isSafeInteger(teachingTargetVersion) || teachingTargetVersion < 1) throw Error('invalid_input');
+        const target = await currentTeachingTarget(db,ref.sessionId);
+        if (!target || target.version !== teachingTargetVersion) throw Error('revision_conflict');
+        binding = {scope:{kind:'class',id:target.folderId},term:target.term};
+      }
       if (!binding) {
         if (!current) return null;
         if (current.ref.sourceVersion !== ref.sourceVersion) throw Error('source_changed');

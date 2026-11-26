@@ -11,7 +11,7 @@ const asksForSelection = /(?:读取|查看|核对|查阅|参考|列出|使用|�
 export async function personalReferencePlan(saved:PrivateMemoryScope, read:ReturnType<typeof createPersonalMemoryUse>|undefined,
   sessionId:string, authority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) {
   const tokens = Math.max(0, Math.min(1024, Math.floor(availableTokens/20)) - Buffer.byteLength(instruction));
-  const host = {sessionId,requestId,authority,scopeVersion:saved.version,scope:{teacher:'self'},
+  const host = {sessionId,requestId,authority,scopeVersion:saved.version,scope:{teacher:'self',classRef:saved.teachingTarget?.folderId,termRef:saved.teachingTarget?.term},
     enabled:saved.enabled,selections:saved.selections,preferences:[],named:[],availableTokens:tokens*20};
   const facts:Parameters<typeof planMemoryUse>[1][number][] = [];
   const normalized = query.normalize('NFKC').toLowerCase().trim().slice(0,4096);
@@ -24,10 +24,14 @@ export async function personalReferencePlan(saved:PrivateMemoryScope, read:Retur
       signal?.throwIfAborted();
       const record = await read(sessionId,pin);
       signal?.throwIfAborted();
-      if (!record || record.scope !== 'teacher' || record.term !== 'unknown' || record.fingerprint !== pin.fingerprint) continue;
+      if (!record || record.fingerprint !== pin.fingerprint) continue;
+      const scope = record.scope === 'class' && saved.teachingTarget && record.scopeId === saved.teachingTarget.folderId
+          && record.term === saved.teachingTarget.term ? {classRef:record.scopeId,termRef:record.term}
+        : record.scope === 'teacher' && record.term === 'unknown' ? {teacher:'self'} : null;
+      if (!scope) continue;
       const text = record.text.normalize('NFKC').toLowerCase();
       const relevance = terms.reduce((score,term)=>score+(text.includes(term)?term.length:0),0);
-      facts.push({...pin,state:'active',provenance:'exact',scope:{teacher:'self'},relevant:lookup || relevance>0,relevance});
+      facts.push({...pin,state:'active',provenance:'exact',scope,relevant:lookup || relevance>0,relevance});
     }
   }
   const plan = planMemoryUse(host,facts);

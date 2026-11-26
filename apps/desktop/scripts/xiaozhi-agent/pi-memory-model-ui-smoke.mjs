@@ -51,6 +51,10 @@ try {
   const emptyTrace = await page.evaluate(id => window.omniEdu.getXiaozhiMemoryTrace(id), session);
   check('New conversation has empty disabled scope and no global latest-run fallback', () => { assert.equal(state.memoryScope.version, 0); assert(!state.memoryScope.enabled); assert.equal(emptyTrace, null); });
   await send('请检索老师知识库有没有三年级分数课导入资料；没有资料就说明没有资料并给一句纸条比较分数的建议。'); state = await terminal(session);
+  const comparison=state.projection.turns.at(-1);
+  report.knowledgeComparison={id:comparison.id,status:comparison.status,error:comparison.error,
+    toolReceipts:comparison.items.filter(item=>item.kind==='tool').map(item=>({name:item.toolName,status:item.status})),
+    response:assistantText(state).slice(0,1800)};
   check('Real existing DeepSeek knowledge path still completes before memory setup', () => { assert.equal(state.projection.turns.at(-1).status, 'completed'); assert(state.projection.turns.at(-1).items.some(item => item.kind === 'tool')); });
   const trace = await page.evaluate(id => window.omniEdu.getXiaozhiMemoryTrace(id), session);
   check('L1 preview is bound to this conversation and projects only safe event fields', () => { assert.equal(trace.runId, state.projection.turns.at(-1).id); assert(trace.events.length); assert(trace.events.every(item => Object.keys(item).every(key => ['sequence', 'label', 'status', 'tool'].includes(key)))); });

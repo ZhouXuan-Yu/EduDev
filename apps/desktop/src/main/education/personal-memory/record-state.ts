@@ -228,12 +228,17 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);
     },
-    async list(limit: number) {
+    async list(limit: number, applicable?:{folderId?:string;term?:string}) {
       if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100) throw Error('invalid_input');
       const read = async (db: Sql) => {
         const rows = await db.all(`SELECT v.* FROM personal_memory_records r
           JOIN personal_memory_versions v ON v.memory_id=r.memory_id AND v.revision=r.current_revision
-          ORDER BY v.recorded_at DESC,v.memory_id LIMIT ?`,[limit]);
+          ${applicable ? `JOIN personal_memory_pending p ON p.draft_key=v.draft_key AND p.state='accepted'
+            JOIN personal_memory_extract_grants g ON g.source_id=p.source_id AND g.extract_allowed=1
+            AND g.grant_revision=p.source_generation AND g.source_version=p.source_version
+            WHERE v.state='active' AND ((g.scope_kind='teacher' AND g.scope_id='self' AND g.term='unknown')
+              OR (g.scope_kind='class' AND g.scope_id=? AND g.term=?))` : ''}
+          ORDER BY v.recorded_at DESC,v.memory_id LIMIT ?`,applicable?[applicable.folderId??null,applicable.term??null,limit]:[limit]);
         return Promise.all(rows.map(row=>present(db,version(row),sources)));
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);

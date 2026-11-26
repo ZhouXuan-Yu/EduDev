@@ -3,6 +3,8 @@ import type {
   PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryQueue, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
   PersonalMemorySummary, PersonalMemoryView,
 } from '../../../shared/xiaozhi-personal-memory';
+import {currentTeachingTarget} from '../../xiaozhi-agent/memory-scope-state';
+import {readTeacherMemoryPolicy} from '../teacher-memory-policy';
 import {validHistoryRef} from '../../xiaozhi-agent/history/source';
 import {historyId} from '../../xiaozhi-agent/history/state';
 import {validMemorySession} from '../../xiaozhi-agent/memory-selection';
@@ -73,6 +75,18 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
       return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),
         candidates:await visibleCandidates(open),jobs:background};
     }),
+    catalog:(sessionId:unknown)=>respond<PersonalMemorySummary[]>(async()=>{
+      if (!validMemorySession(sessionId)) throw Error('invalid_input');
+      const read=async(db:Sql)=>{
+        const [session]=await db.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]);
+        if (!session || session.student_id || session.archived_at) throw Error('permission_denied');
+        if (Object.keys((await readTeacherMemoryPolicy(db)).use).length) return [];
+        const target=await currentTeachingTarget(db,sessionId);
+        const saved=await createPersonalMemoryRecordState(db,sources).list(40,target??{});
+        return saved.filter(record=>record.sourceCurrent).map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion}));
+      };
+      return sql.readTransaction ? sql.readTransaction(read) : read(sql);
+    }),
     queue:(sessionId:unknown)=>respond<PersonalMemoryQueue>(async()=>{
       if (!validMemorySession(sessionId)) throw Error('invalid_input');
       const [session]=await sql.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]);
@@ -124,12 +138,16 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     sourceStatus:(ref:unknown)=>respond<PersonalMemorySourcePermission>(async()=>{
       if (!validHistoryRef(ref)) throw Error('invalid_input');
       const grant=await sources.permission(historyId(ref));
-      return {allowed:grant?.allowed===true && grant.ref.sourceVersion===ref.sourceVersion,revision:grant?.revision ?? 0};
+      const target=await currentTeachingTarget(sql,ref.sessionId);
+      return {allowed:grant?.allowed===true && grant.ref.sourceVersion===ref.sourceVersion,revision:grant?.revision ?? 0,
+        ...(target?{teachingTarget:{term:target.term,version:target.version}}:{})};
     }),
     setSource:(value:unknown)=>respond<PersonalMemorySourcePermission>(()=>mutate(async()=>{
       if (!inputObject(value) || !validHistoryRef(value.ref) || typeof value.enabled!=='boolean' ||
           (value.revision!==0 && !safeRevision(value.revision))) throw Error('invalid_input');
-      const grant=await sources.change(value.ref,value.revision,value.enabled?{scope:{kind:'teacher',id:'self'},term:'unknown'}:null);
+      if (value.teachingTargetVersion!==undefined && (!value.enabled || !safeRevision(value.teachingTargetVersion))) throw Error('invalid_input');
+      const grant=await sources.change(value.ref,value.revision,value.enabled?{scope:{kind:'teacher',id:'self'},term:'unknown'}:null,
+        value.teachingTargetVersion as number|undefined);
       if (!grant?.allowed) {
         options.stopBackground?.();
         await options.invalidateUse?.();

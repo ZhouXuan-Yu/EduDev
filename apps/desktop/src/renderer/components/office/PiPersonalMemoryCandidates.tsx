@@ -26,7 +26,7 @@ export function PiPersonalMemoryCandidates({queue,busy,perform}:{
       })}>拒绝</Button>
     </SettingsInline>
     {review?.key===item.key&&review.revision===item.revision&&<SettingsStack gap="sm">
-      <p>{review.source.quote}</p>
+      <blockquote data-testid="personal-memory-reviewed-quote">{review.source.quote}</blockquote>
       {review.source.occurredAt&&<time dateTime={review.source.occurredAt}>{review.source.occurredAt}</time>}
       <SettingsInline>
         <Button size="sm" variant="secondary" isDisabled={busy || !queue.policy.enabled || queue.policy.pausedByUsePolicy}

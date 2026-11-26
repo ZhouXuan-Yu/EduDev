@@ -234,6 +234,53 @@ assert.equal((await use(session,savedSelection)).fingerprint,useValue.fingerprin
 db.prepare('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?').run('synthetic-student-scope',session);
 assert.equal(await use(session,selection),null);
 console.log('PASS a teacher record can join the existing scope only with its exact revision and source; a student session cannot resolve it');
+// Use the same authority ledgers and teacher actions, with separate synthetic classes and sessions.
+const {createPersonalMemoryOperations}=await import('../../src/main/education/personal-memory/operations.ts');
+const ops=createPersonalMemoryOperations(sql,async value=>value);
+db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,name TEXT,archived_at TEXT); ALTER TABLE ai_conversation_sessions ADD COLUMN folder_id TEXT');
+await scopeState.migrateMemoryScope();
+const classA='aifolder_'+randomUUID(),classB='aifolder_'+randomUUID();
+for(const id of [classA,classB]) db.prepare('INSERT INTO ai_conversation_folders VALUES(?,?,NULL)').run(id,'物理');
+const empty={enabled:false,selections:[]};
+async function classSession(folderId,term) {
+  const id='aisession_'+randomUUID();
+  db.prepare('INSERT INTO ai_conversation_sessions(id,title,folder_id) VALUES(?,?,?)').run(id,'合成班级会话',folderId);
+  if(term) assert.equal(await scopeState.saveMemoryScope(id,0,empty,{folderId,term}),true);
+  return id;
+}
+const classSource=await classSession(classB,'2026-fall'),sameClass=await classSession(classB,'2026-fall');
+const otherClass=await classSession(classA,'2026-fall'),otherTerm=await classSession(classB,'2026-spring');
+const noTarget=await classSession(classB,null);
+const classRef=message('class-source','本班做实验时，先画光路。','user',classSource);
+const classPolicy=await state.processing();
+const enabledPolicy=classPolicy.enabled?classPolicy:await state.setEnabled(true,classPolicy.policyRevision);
+assert.equal((await ops.setSource({ref:classRef,revision:0,enabled:true,teachingTargetVersion:8})).ok,false);
+assert.equal((await ops.setSource({ref:classRef,revision:0,enabled:true,teachingTargetVersion:1})).ok,true);
+const [sourceForClass]=await authority.snapshot([historyId(classRef)],enabledPolicy);
+assert.deepEqual(sourceForClass.scope,{kind:'class',id:classB});
+const manifestForClass=preparePersonalMemoryExtraction([sourceForClass],enabledPolicy);
+const proposal={kind:'preference',source_id:sourceForClass.id,source_version:sourceForClass.generation,
+  scope_id:classB,valid_term:'2026-fall',supporting_quote:sourceForClass.sanitizedText,value:sourceForClass.sanitizedText,supersedes:null};
+const [classDraft]=bindPersonalMemoryProposals([proposal],manifestForClass,[sourceForClass],enabledPolicy).candidates;
+await state.savePending([classDraft],enabledPolicy);
+const classReview=await ops.preview({key:classDraft.key,revision:1});
+assert(classReview.ok);
+assert((await ops.adopt({operationId:randomUUID(),key:classDraft.key,revision:1,targetRevision:0,
+  reviewedQuoteSha256:classReview.value.quoteSha256})).ok);
+const classPin={layer:'personal',source:'personal',id:classDraft.key,version:1,sourceVersion:classRef.sourceVersion};
+for (const destination of [otherClass,otherTerm,noTarget]) {
+  assert.equal(await use(destination,classPin),null);
+  const catalog=await ops.catalog(destination);
+  assert(catalog.ok);
+  assert(!catalog.value.some(record=>record.id===classPin.id));
+}
+const allowedCatalog=await ops.catalog(sameClass);
+assert(allowedCatalog.ok && allowedCatalog.value.some(record=>record.id===classPin.id));
+assert.equal((await use(sameClass,classPin)).text,sourceForClass.sanitizedText);
+assert((await ops.setSource({ref:classRef,revision:1,enabled:false})).ok);
+assert.equal(await use(sameClass,classPin),null);
+assert(!(await ops.catalog(sameClass)).value.some(record=>record.id===classPin.id));
+console.log('PASS exact confirmed class and term gate extraction, catalog and readback; stale confirmations and revoked sources stay excluded');
 db.close();
 console.log('PASS closing automatic processing preserves allowed reads, and a forgotten revision stays invalid after restart and a new grant');
-console.log(JSON.stringify({passed:12,database}));
+console.log(JSON.stringify({passed:13,database}));

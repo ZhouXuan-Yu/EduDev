@@ -44,7 +44,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     if ((await store.getAiConversationSession(id)).session.archivedAt && !allowArchived) throw new Error('permission_denied');
   }
   async function scope(id: string): Promise<XiaozhiMemoryScope> {
-    await availableSession(id, true);
+    if (!validMemorySession(id)) throw Error('invalid_input');
+    const {session} = await store.getAiConversationSession(id);
     const saved = await store.xiaozhiState.memoryScope(id);
     const cache = new Map<string, MemoryFact[] | null>();
     const selections: XiaozhiMemoryScope['selections'] = [];
@@ -69,7 +70,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const { fingerprint: _private, ...selection } = item;
       selections.push({ ...selection, state, label: XIAOZHI_MEMORY_LABELS[item.source] });
     }
-    return { version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
+    return { ...(session.folderId && !session.studentId && !session.archivedAt ? {currentFolderId:session.folderId} : {}),
+      ...(saved.teachingTarget ? {teachingTarget:saved.teachingTarget} : {}), version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
   }
   async function authority(id: string) {
     await availableSession(id);
@@ -203,7 +205,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           if (current.version !== item.version) return { ok: false, error: 'command_conflict' };
           selections.push({ ...item, fingerprint: current.fingerprint });
         }
-        return await store.xiaozhiState.saveMemoryScope(input.sessionId, input.version, { enabled: input.enabled, selections })
+        return await store.xiaozhiState.saveMemoryScope(input.sessionId, input.version, { enabled: input.enabled, selections },input.teachingTarget)
           ? { ok: true } : { ok: false, error: 'command_conflict' };
       } catch (error) { return { ok: false, error: error instanceof Error && error.message === 'permission_denied' ? 'permission_denied' : 'configuration' }; }
     },

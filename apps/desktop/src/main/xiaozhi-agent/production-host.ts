@@ -2197,7 +2197,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing || skillsMutating || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       const run = active.get(id);
       // Only an explicit revocation may interrupt execution. A stale request cannot stop it.
-      if (run && (input.enabled || input.selections.length || !run.done)) return { ok: false, error: 'busy' };
+      if (run && (input.enabled || input.selections.length || input.teachingTarget || !run.done)) return { ok: false, error: 'busy' };
       configuring.add(id);
       try {
         if (run) {

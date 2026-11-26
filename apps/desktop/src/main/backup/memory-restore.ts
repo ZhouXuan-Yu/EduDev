@@ -132,8 +132,9 @@ export async function reconcileRestoredMemory(sql:Sql,tables:ReadonlySet<string>
   if (tables.has(scopeTable)) {
     for (const row of await sql.all(scopeQuery)) {
       const id=String(row.conversation_id),current=ledger?.scopes.get(id);
-      if (same(row,current) || JSON.parse(String(row.payload_json))?.enabled===false) continue;
-      await sql.run("UPDATE xiaozhi_pi_memory_scopes SET payload_json=?,version=?,updated_at=? WHERE conversation_id=?",
+      const payload=JSON.parse(String(row.payload_json));
+      if (same(row,current) || payload?.enabled===false && !payload.teachingTarget) continue;
+      await sql.run("UPDATE xiaozhi_pi_memory_scopes SET schema_version=CASE WHEN schema_version=4 THEN 3 ELSE schema_version END,payload_json=?,version=?,updated_at=? WHERE conversation_id=?",
         [JSON.stringify({enabled:false,selections:[]}),Math.max(Number(row.version),Number(current?.version??0))+1,
           new Date(at).toISOString(),id]);
       withheldScopes++;
