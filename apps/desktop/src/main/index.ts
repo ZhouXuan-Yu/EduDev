@@ -16,7 +16,7 @@ import { restoreWindowGeometry, installWindowGeometry, MIN_HOST_WINDOW_WIDTH } f
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, isAbsolute, join } from 'node:path';
-import {fileURLToPath} from 'node:url';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
 import {registerPaperReferenceIpc} from './education/paper-reference-ipc';
@@ -34,6 +34,8 @@ import { buildMasteryPolicy } from './ai-harness/mastery-policy';
 import { buildReviewReminder } from './ai-harness/review-reminder';
 import { renderTeachingBookMarkdown } from './ai-harness/teaching-book-renderer';
 import { registerXiaozhiIpc } from './xiaozhi-agent/ipc';
+import { registerConfigWindow } from './xiaozhi-agent/config-window';
+import type { ConfigChange } from '../shared/xiaozhi-config-window';
 import {registerReplyExport} from './xiaozhi-agent/reply-export';
 import { createPiConsoleFacade } from './xiaozhi-agent/console-facade';
 import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } from './xiaozhi-agent/runtime-authority';
@@ -620,7 +622,19 @@ if (ownsDesktop) app.whenReady().then(async () => {
     store.archiveAiConversationSession(sessionId),
   );
 
-  const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
+  let publishConfigChange: ((change: ConfigChange) => void) | undefined;
+  const xiaozhi = registerXiaozhiIpc({
+    ipcMain, store, authority, dataRoot, window: () => mainWindow, onConfigChange: change => publishConfigChange?.(change),
+  });
+  if (authority.mode === 'pi') {
+    const developmentURL = process.env.NODE_ENV === 'development' ? process.env.ELECTRON_RENDERER_URL : undefined;
+    const primaryURL = developmentURL ? new URL(developmentURL).href : pathToFileURL(join(mainEntryDirectory, '../renderer/index.html')).href;
+    publishConfigChange = registerConfigWindow({
+      ipcMain, host: xiaozhi, primaryWindow: () => mainWindow, primaryURL, developmentURL,
+      settingsPath: join(mainEntryDirectory, '../renderer/config-window.html'),
+      preload: join(mainEntryDirectory, '../preload/config-window.cjs'),
+    });
+  }
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
   registerBackupRestore({ipcMain,store,baseRoot:baseDataRoot,profile:app.getPath('userData'),allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),restart:()=>{app.relaunch();app.quit();}});
   registerWindowsUpdate({ipcMain,store,allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),

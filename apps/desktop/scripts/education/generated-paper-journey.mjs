@@ -78,7 +78,8 @@ export async function generatedPaperJourney(c){
  if(process.env.OMNI_EDU_NATURAL_THREE_MODES==='1')return naturalThreeModeJourney(c);
  const {data,output,report,until,check}=c,page=()=>c.page();
  const query=(sql,p=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all(...p);}finally{db.close();}},questions=()=>query('SELECT * FROM question_bank_items ORDER BY id'),reviews=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_question_candidate' ORDER BY created_at,id"),papers=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' ORDER BY created_at,id"),payload=r=>JSON.parse(r.payload_json);
- const tag='综合组卷'+randomUUID().slice(0,8);
+ const tag=c.fixtureTag??'综合组卷'+randomUUID().slice(0,8);
+ if(c.fixtureTag)report.fixtureTag=c.fixtureTag;
  report.boundaries=['Formal current Electron/sole Pi/real DeepSeek → teacher-reviewed AI original → approved-session eligibility → traditional three-mode blueprint → teacher confirmation → SQLite → cold readback','Composite synthetic mathematics exercises approval/quotas/type mapping; no claim of independent mathematical proof, natural diagrams, all subjects, automatic batch approval, Office or large-library acceptance'];
  await c.launch();await c.navigate('teaching');await page().getByTestId('nav-question_notebook').click();
  const q={subject:'数学',grade:'高二','knowledge-point':tag,type:'解答题',difficulty:'hard','source-kind':'teacher_resource',stem:'已知椭圆x²/4+y²=1，直线y=x+t。\n(1)求与椭圆交于两个不同点的参数范围；\n(2)求弦中点轨迹与弦长，并讨论相切退化边界。',answer:'|t|<√5；中点(-4t/5,t/5)，满足x+4y=0且|y|<√5/5；弦长4√[2(5-t²)]/5。|t|=√5为相切，弦长退化为0。',analysis:'联立得5x²+8tx+4t²-4=0，判别式16(5-t²)。韦达定理给中点；两交点坐标差结合斜率1得到弦长。教师示例答案，尚无独立整题验证。'};

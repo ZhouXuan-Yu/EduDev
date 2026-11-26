@@ -14,13 +14,16 @@ import type {OrdinaryCommit} from '../../../shared/xiaozhi-ordinary-config';
 import type {ThinkingChoice} from '../../../shared/xiaozhi-thinking';
 import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 
-export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSaved }: {
+export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSaved, currentSession }: {
   onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void; onSaved?: (view: XiaozhiSettingsView) => void;
+  currentSession?: { id: string; title: string };
 }) {
   const [view, setView] = useState<XiaozhiSettingsView>(), [model, setModel] = useState<string|null>(null), [key, setKey] = useState('');
   const [busy, setBusy] = useState(false), [verifying,setVerifying]=useState(false), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const [historyOpen,setHistoryOpen]=useState(false);
+  const [windowNotice,setWindowNotice]=useState('');
   const live = useRef(true), lock = useRef(false), stamp = useRef(0);
+  const deferredConfigRead = useRef(false);
   const draft = useRef<{version:number;model:string|null}|undefined>(undefined);
   const pendingSave=useRef<OrdinaryCommit|undefined>(undefined);
   const pendingThinking=useRef<OrdinaryCommit|undefined>(undefined);
@@ -58,6 +61,16 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     draft.current=undefined;pendingSave.current=undefined;
     setModel(view?.defaultModelOverride??null);setKey('');setNotice('已放弃未保存的模型设置。');
   }
+  async function openConfigWindow(sessionId?: string) {
+    setWindowNotice('');
+    try {
+      const result = await window.omniEdu?.openXiaozhiConfigWindow?.(sessionId);
+      if (!result?.ok) setWindowNotice(result ? XIAOZHI_SETTINGS_ERRORS[result.error] : '暂时无法打开普通设置窗口。');
+      else if (result.value === 'focused_other_scope') setWindowNotice('已聚焦原窗口。要更换会话范围，请关闭该窗口后重新打开。');
+    } catch {
+      setWindowNotice('暂时无法打开普通设置窗口。');
+    }
+  }
   async function reload(refresh=false,automatic=false) {
     if(lock.current)return;
     if(!automatic)setLoading(true);
@@ -76,8 +89,22 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     live.current=true;
     void reload();
     const unsubscribe=window.omniEdu?.onXiaozhiEvent(event=>{if(event.kind==='status')void reload(false,true);});
-    return ()=>{live.current=false;stamp.current++;unsubscribe?.();};
+    const unsubscribeConfig=window.omniEdu?.onXiaozhiConfigChange?.(change=>{
+      if(change.sessionId)return;
+      if(lock.current)deferredConfigRead.current=true;
+      else void reload(false,true);
+    });
+    return ()=>{live.current=false;stamp.current++;unsubscribe?.();unsubscribeConfig?.();};
   },[]);
+  function unlock(){
+    lock.current=false;
+    if(!live.current)return;
+    setBusy(false);
+    if(deferredConfigRead.current){
+      deferredConfigRead.current=false;
+      void reload(false,true);
+    }
+  }
 
   async function save(){
     if(disabled||lock.current||!view||!draft.current||!dirty||conflict&&!pendingSave.current||modelUnavailable||key.trim()&&credentialDisabled)return;
@@ -126,8 +153,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
     }catch{
       if(live.current)setNotice(received?'已保存。设置刷新失败，可以单独刷新。':'未收到保存回执，可以重试同一次提交。');
     }finally{
-      lock.current=false;
-      if(live.current)setBusy(false);
+      unlock();
     }
   }
 
@@ -154,7 +180,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
         }
       }
     }catch{if(live.current)setNotice('未收到保存回执，可以重试同一次提交。');}
-    finally{lock.current=false;if(live.current)setBusy(false);}
+    finally{unlock();}
   }
 
   async function verify(){
@@ -169,7 +195,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
         setNotice('密钥验证通过。请选择新对话的默认模型，再点击保存；当前密钥尚未保存。');
       }else setNotice(result?XIAOZHI_SETTINGS_ERRORS[result.error]:'验证没有完成，请重试。');
     }catch{if(live.current)setNotice('验证没有完成，请重试。');}
-    finally{lock.current=false;if(live.current){setBusy(false);setVerifying(false);}}
+    finally{unlock();if(live.current)setVerifying(false);}
   }
   const migrations=Object.values(view?.legacyCredentialMigration ?? {});
   const migrationPending=migrations.some(status=>status!=='not_needed' && status!=='migrated');
@@ -179,6 +205,15 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
       <SettingsPage tab="models" className={styles.modelContent}>
         <section className={styles.section} aria-labelledby="pi-model-heading">
           <header className={styles.sectionHeading}><h2 id="pi-model-heading">模型与连接</h2><p>配置模型后，新对话使用这里的默认值。</p></header>
+          <div className={styles.configActions}>
+            <Button type="button" variant="secondary" data-testid="pi-settings-open-config-window" onPress={() => void openConfigWindow()}>
+              在新窗口打开普通设置
+            </Button>
+            {currentSession&&<Button type="button" variant="ghost" data-testid="pi-settings-open-session-config-window"
+              onPress={() => void openConfigWindow(currentSession.id)}>为当前会话打开</Button>}
+          </div>
+          {currentSession&&<p className={styles.hint}>当前会话：{currentSession.title}</p>}
+          {windowNotice&&<p role="alert">{windowNotice}</p>}
           {view?.credentialError && <p role="alert" data-testid="pi-settings-credential-error">{view.credentialError === 'storage_unavailable' ? '本机安全存储暂时不可用，请稍后重试。' : '本机无法读取已保存的密钥，请重新输入并保存。'}</p>}
           {migrationPending && <p role="status" data-testid="pi-settings-credential-migration-pending">历史密钥尚未迁移。请检查本机安全存储或重新保存密钥。</p>}
           {!migrationPending && migrations.includes('migrated') && <p role="status" data-testid="pi-settings-credential-migration-done">历史密钥已转存到本机安全存储。</p>}
@@ -234,7 +269,10 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
                 isDisabled={disabled||!dirty||conflict&&!pendingSave.current||modelUnavailable||Boolean(key.trim()&&credentialDisabled)}>{busy?'正在处理…':'保存模型设置'}</Button>
             </div>
             {dirty&&<p className={styles.hint} data-testid="pi-settings-unsaved">模型或密钥有未保存的更改。你可以继续编辑、保存或放弃。</p>}
-            {conflict&&<p role="alert" data-testid="pi-settings-draft-conflict">已保存的配置发生变化，当前草稿已保留。</p>}
+            {conflict&&<p role="alert" data-testid="pi-settings-draft-conflict">
+              已保存的配置发生变化，当前草稿已保留。当前已保存：{view?.defaultModelOverride??'跟随当前来源'}。
+              草稿中的默认模型：{model??'跟随当前来源'}。
+            </p>}
           </form>
           {view?.locked&&<p role="status">运行或其他宿主操作期间暂不能更新密钥。</p>}
           {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}

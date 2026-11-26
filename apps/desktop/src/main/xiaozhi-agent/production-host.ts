@@ -1,6 +1,8 @@
 import {createStartupPrewarm} from './startup-prewarm';
 import {persistCurrentToolContract} from './capabilities/queued-contract';
 import type {PermissionOwner} from '../../shared/xiaozhi-permissions';
+import type { ConfigChange, ConfigWindowView } from '../../shared/xiaozhi-config-window';
+import { supportedThinking } from '../../shared/xiaozhi-thinking';
 import {coreToolStartupDefinitions} from './core-tool-startup-definitions';
 import {adaptationIntentFromPrompt} from '../education/paper-basket-adaptation-run';
 import {createTerminalService, type TerminalService} from './terminal/service';
@@ -294,6 +296,7 @@ const validId = (id: unknown): id is string => typeof id === 'string' && /^aises
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
 export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<typeof createManagedTools>; store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
+  onConfigChange?: (change: ConfigChange) => void;
   emitTerminal?: (event: TerminalUpdate) => void;
   /** Main-owned isolated legacy regression only; product launches always enable Pi. */
   enabled?: boolean;
@@ -435,15 +438,18 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const modelSettings = createModelSettings({ store, root, codec: options.settingsCodec, busy: settingsBusy,
     assertMutation: () => { if (closing || !configuring.has('provider')) throw new Error('busy'); }, switchBound });
   const ordinaryBusy=()=>Boolean(closing||skillsMutating||choosing.size||configuring.size);
-  const ordinaryConfig=createOrdinaryConfigService({sql:store.xiaozhiState.sql,model:modelSettings,root,codec:options.settingsCodec});
+  const ordinaryConfig=createOrdinaryConfigService({
+    sql:store.xiaozhiState.sql,model:modelSettings,root,codec:options.settingsCodec,onCommitted:options.onConfigChange,
+  });
   const assertOrdinary=()=>{if(ordinaryBusy())throw Error('busy');};
   const assertCredential=()=>{if(closing||!configuring.has('provider'))throw Error('busy');};
-  async function writeOrdinary(input:OrdinaryIntent){
+  async function writeOrdinary(input:OrdinaryIntent, assertSender?: () => void){
+    assertSender?.();
     const repeat=await ordinaryConfig.repeat(input);
     if(repeat)return repeat;
     return 'credentialId' in input && input.credentialId
       ?mutateSettings(()=>ordinaryConfig.apply(input,assertCredential))
-      :ordinaryConfig.apply(input,assertOrdinary);
+      :ordinaryConfig.apply(input,()=>{assertSender?.();assertOrdinary();});
   }
   const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
     permissionRuntime,
@@ -2025,7 +2031,34 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(query?.sessionId)await recoverModel(query.sessionId);
       return {...await modelSettings.view(query),ordinaryLocked:ordinaryBusy()};
     },
+    async assertConfigWindowSession(sessionId: string) {
+      const sessions = await store.xiaozhiState.sql.all(
+        'SELECT id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL', [sessionId],
+      );
+      if (!sessions.length) throw Error('permission_denied');
+    },
+    async ordinaryConfigWindowView(sessionId: string | undefined, refresh: boolean): Promise<ConfigWindowView> {
+      const view = await modelSettings.view({ refresh }, refresh);
+      const thinking = store.xiaozhiState.modelSettings;
+      const globalThinking = await thinking.thinking();
+      const choices = (id: string) => supportedThinking(view.models.find(model => model.id === id));
+      return {
+        defaultModel: view.defaultModel,
+        defaultModelOverride: view.defaultModelOverride ?? null,
+        modelVersion: view.version,
+        models: view.models.map(({ id }) => ({ id })),
+        catalogueError: view.catalogueError,
+        globalThinking,
+        globalThinkingChoices: choices(view.defaultModel),
+        ...(sessionId ? {
+          sessionThinking: await thinking.thinking(sessionId),
+          sessionThinkingChoices: choices(await modelSettings.model(sessionId)),
+        } : {}),
+        locked: ordinaryBusy(),
+      };
+    },
     ordinaryConfigCommit:(input:OrdinaryCommit)=>trackModelWrite(()=>writeOrdinary(input)),
+    writeConfigWindow:(input:OrdinaryIntent,assertSender:()=>void)=>trackModelWrite(()=>writeOrdinary(input,assertSender)),
     ordinaryConfigUndo:(input:OrdinaryUndo)=>trackModelWrite(()=>writeOrdinary(input)),
     ordinaryConfigHistory:(input:OrdinaryQuery)=>ordinaryConfig.history(input),
     async stageOrdinaryCredential(input:XiaozhiCredentialInput){

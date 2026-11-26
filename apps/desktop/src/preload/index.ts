@@ -241,6 +241,13 @@ const api = {
   saveXiaozhiWebSettings: (input:XiaozhiWebInput)=>ipcRenderer.invoke('xiaozhi:web-settings',input) as Promise<XiaozhiSettingsResult<XiaozhiWebPreferences>>,
   openXiaozhiWebSource: (input:XiaozhiWebSourceInput)=>ipcRenderer.invoke('xiaozhi:web-source-open',input) as Promise<XiaozhiSettingsResult<void>>,
   getXiaozhiSettings: (input?: { refresh?: boolean; sessionId?: string }) => ipcRenderer.invoke('xiaozhi:settings-get', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
+  openXiaozhiConfigWindow: (sessionId?: string) =>
+    ipcRenderer.invoke('xiaozhi:config-window-open', sessionId) as Promise<XiaozhiSettingsResult<import('../shared/xiaozhi-config-window').ConfigWindowOpenOutcome>>,
+  onXiaozhiConfigChange: (listener: (change: import('../shared/xiaozhi-config-window').ConfigChange) => void) => {
+    const handler: Parameters<typeof ipcRenderer.on>[1] = (_event, change) => listener(change);
+    ipcRenderer.on('xiaozhi:config-changed', handler);
+    return () => { ipcRenderer.removeListener('xiaozhi:config-changed', handler); };
+  },
   commitXiaozhiConfig: (input:OrdinaryCommit)=>ipcRenderer.invoke('xiaozhi:config-commit',input) as Promise<XiaozhiSettingsResult<OrdinaryReceipt>>,
   getXiaozhiConfigHistory: (input:OrdinaryQuery)=>ipcRenderer.invoke('xiaozhi:config-history',input) as Promise<XiaozhiSettingsResult<OrdinaryHistory>>,
   undoXiaozhiConfig: (input:OrdinaryUndo)=>ipcRenderer.invoke('xiaozhi:config-undo',input) as Promise<XiaozhiSettingsResult<OrdinaryReceipt>>,
