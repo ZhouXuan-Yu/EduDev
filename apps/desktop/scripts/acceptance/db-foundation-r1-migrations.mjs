@@ -11,7 +11,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
 const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
-const expectedVersion=Number(process.env.OMNI_EDU_DB_EXPECTED_VERSION||6);
+const expectedVersion=Number(process.env.OMNI_EDU_DB_EXPECTED_VERSION||8);
 assert(existsSync(legacy),'The actual frozen WP-00 v0 build is required');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(evidence,'fixtures'),{recursive:true});
@@ -87,8 +87,9 @@ async function startFailing(name,data,interrupt=0) {
         const v4=statement.includes('CREATE TABLE material_local_book_rechecks_v1');
         const v5=statement.includes('CREATE TABLE xiaozhi_prepared_runs_v1');
         const v6=statement.includes('CREATE TABLE xiaozhi_task_summary_row_count_v6');
+        const v8=statement.includes('CREATE TABLE memory_source_access');
         if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3) || (${interrupt}===4 && v4) ||
-          (${interrupt}===5 && v5) || (${interrupt}===6 && v6)){
+          (${interrupt}===5 && v5) || (${interrupt}===6 && v6) || (${interrupt}===8 && v8)){
           return exec.call(this,statement,error=>{
             if(error)return callback(error);
             electron.app.exit(31);
@@ -312,6 +313,21 @@ try{
     receipt('Actual frozen v'+version+' preserves source facts and checksums and restarts after upgrading.',
       {build,sha256:buildHash(build),from:version,to:expectedVersion,oldRows:facts.map(rows=>rows.length),ledger:after.ledger});
   }
+
+  stage='interrupt history-memory migration after v7 commits';
+  const historyUpgrade=join(root,'interrupted-v8','data');
+  cpSync(oldData,historyUpgrade,{recursive:true});
+  await startFailing('interrupted-v8',historyUpgrade,8);
+  const beforeHistory=dataState(historyUpgrade);
+  assert.equal(beforeHistory.version,7);
+  assert(!beforeHistory.schema.some(([,name])=>name==='memory_source_access'));
+  await launch(main,historyUpgrade,profile('interrupted-v8-reentry'));
+  const afterHistory=dataState(historyUpgrade);
+  assert.equal(afterHistory.version,expectedVersion);
+  assert.equal(afterHistory.ledger.at(-1).migration_id,'r1.history_memory_access_and_index.after_r3_config.v8');
+  assert.deepEqual(afterHistory.ledger.slice(0,7),beforeHistory.ledger);
+  assert.deepEqual(afterHistory.students,old.students);
+  receipt('Interrupted history DDL rolls back, then v7 resumes and preserves previous records and ledger.');
 
   const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;
   if(priorFixture){

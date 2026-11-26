@@ -1,4 +1,5 @@
 import type { AiMemorySurface, AiMemoryL3Slot } from './contracts';
+import type { HistorySelection } from './xiaozhi-history-memory';
 
 export const XIAOZHI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
 export const XIAOZHI_MEMORY_SLOTS: AiMemoryL3Slot[] = ['recent', 'profile', 'scope', 'preferences'];
@@ -10,11 +11,12 @@ export type XiaozhiMemorySource = { layer: 'L2'; source: AiMemorySurface } | { l
 export const projectMemorySource = (item: XiaozhiMemorySource): XiaozhiMemorySource => item.layer === 'L2'
   ? { layer: 'L2', source: item.source } : { layer: 'L3', source: item.source };
 export type XiaozhiMemorySelection = XiaozhiMemorySource & { id: string; version: number };
-export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; selections: XiaozhiMemorySelection[] };
+export type XiaozhiMemoryUseSelection = XiaozhiMemorySelection | HistorySelection;
+export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; selections: XiaozhiMemoryUseSelection[] };
 export type XiaozhiMemoryCatalogInput = { sessionId: string; offset: number } & XiaozhiMemorySource;
 export type XiaozhiMemorySelectionState = 'ready' | 'changed' | 'disabled' | 'missing' | 'unavailable';
 export type XiaozhiMemoryScope = { version: number; enabled: boolean; modelAccess: 'unavailable' | 'available';
-  selections: Array<XiaozhiMemorySelection & { state: XiaozhiMemorySelectionState; label: string }> };
+  selections: Array<XiaozhiMemoryUseSelection & { state: XiaozhiMemorySelectionState; label: string }> };
 export type XiaozhiMemoryPreview = XiaozhiMemorySelection & { text: string; sanitizedText: string;
   section: string; status: 'active' | 'disabled' | 'deleted';
   provenance: 'event_refs' | 'surface_only' | 'none'; refs: Array<{ kind: 'run' | 'event'; id: string; label: string }>;
