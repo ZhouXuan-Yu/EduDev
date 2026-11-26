@@ -2,6 +2,8 @@
 
 2026-11-26 接手续交付：本轮修复代码为 `42830ae`、`694da73` 和 `58d74dc`。整体结论仍为 **BLOCKED**，不是 UI_R1_DONE。工程检查和可独立验证的修复已完成；原生125%与未完整覆盖的业务状态不冒充通过。推送身份以本轮 `acceptance/ux-followup-20261126/final-delivery-receipt.json` 的实查记录为准，提交报告本身不代表已推送。
 
+主线交付已实查：正常推送`f420db0 → 9345dc009bf932d3a73a97f0c73724ed8b496fe6`，ls-remote与该HEAD一致，无冲突、无强推。随后仅补交回执/报告，不改应用源码。原生再次选择唯一验收窗口并确认响应；实际运行仍为上述固定生产Pi构建，使用独立虚构数据。用户可从窗口检查“查找历史”对齐和原待处理面板、资料库队列展开/收起、教学/学生导航；模型操作需要用户自行配置连接，本轮未复制日常凭据。
+
 本轮从 be28dd2 复用 codex/ui-ux-r1-20261125，正常快进整合主线 f420db0 的附件归属修复，保留其 App、SQLite、IPC和回执行为。D:/WorkProject/EduProject 仍由协作者维护，没有移动它的分支、清理或覆盖未提交代码。本轮修改位于 D:/WorkProject/EduProject-ui-ux-r1-20261125。
 
 实施合同：[CONTRACT](../../../acceptance/ux-followup-20261126/CONTRACT.md)。原报告和失败证据保留在 docs/audit/ux-motion-20261126 与 acceptance/ui-ux-r1-20261124。本报告不取代 Master Goal 或其他团队的独立验收。

@@ -3,7 +3,7 @@
   "packageId": "XIAOZHI_UI_UX_R1_20261124",
   "round": "ux-followup-20261126",
   "state": "BLOCKED",
-  "headAtCollection": "58d74dc8c5c861fa3e98dd8d86fff82a4e81f698",
+  "headAtCollection": "9345dc009bf932d3a73a97f0c73724ed8b496fe6",
   "sourceRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125",
   "sourceFingerprint": "7f6f84b36df7883a9952c7abafb4b2a5d2de4e4e8695665e9d100fe8db8c4bae",
   "buildFingerprint": "df5c2e85baca1c46a1e4f6c7bade69c8941bb25653299b4dfe1ee4588620aa3c",
@@ -111,8 +111,9 @@
     },
     {
       "id": "R06",
-      "status": "PARTIAL",
-      "reason": "Verified window open; main push must be proven by final-delivery-receipt.json"
+      "status": "PASS",
+      "reason": "Code delivery and actual window verified; full UI goal remains BLOCKED",
+      "evidence": "acceptance/ux-followup-20261126/final-delivery-receipt.json"
     }
   ],
   "historical28": {

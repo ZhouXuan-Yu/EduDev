@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-26",
+  "state": "BLOCKED",
+  "deliveryStatus": "PASS",
+  "deliveredCommit": "9345dc009bf932d3a73a97f0c73724ed8b496fe6",
+  "remoteMainVerified": "9345dc009bf932d3a73a97f0c73724ed8b496fe6",
+  "pushedAndVerified": true,
+  "runtimeCodeCommit": "58d74dc8c5c861fa3e98dd8d86fff82a4e81f698",
+  "runtimeSourceDeltaAfterCodeCommit": [],
+  "sourceFingerprint": "7f6f84b36df7883a9952c7abafb4b2a5d2de4e4e8695665e9d100fe8db8c4bae",
+  "buildFingerprint": "df5c2e85baca1c46a1e4f6c7bade69c8941bb25653299b4dfe1ee4588620aa3c",
+  "runtimeMain": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-followup-context-final\\main\\index.js",
+  "dataRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-7ES1WC\\data",
+  "profileRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-7ES1WC\\profile",
+  "window": {
+    "pid": 67600,
+    "title": "小智 · UI修复验收（最新版·独立数据）",
+    "visible": true,
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1366,
+      "height": 769
+    }
+  },
+  "nativeWindowId": 10160872,
+  "nativeWindowVerifiedAfterPush": true,
+  "gitDiffCheckExit": 0,
+  "integration": "origin/main already ancestor; normal fast-forward push HEAD:main; no conflicts, force push or changes to another worktree",
+  "remaining": [
+    "native125% environment",
+    "cold navigation frames",
+    "full business-state coverage and real provider/teacher boundaries"
+  ],
+  "rollback": "Revert 58d74dc,694da73,42830ae in reverse order as appropriate; retain f420db0 collaboration repair and user data",
+  "scope": "Verified delivery commit and its runtime. A later receipt-only commit may follow; it does not change application source or build."
+}

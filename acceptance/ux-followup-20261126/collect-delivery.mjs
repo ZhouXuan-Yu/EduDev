@@ -55,5 +55,12 @@ const report={schemaVersion:1,packageId:'XIAOZHI_UI_UX_R1_20261124',round:'ux-fo
  historical28:{artifact:'acceptance/ui-ux-r1-20261124/delivery.json',sha256:sha256(fs.readFileSync(path.join(repo,'acceptance/ui-ux-r1-20261124/delivery.json'))),checks:old.checks.map(c=>({id:c.id,historicalStatus:c.status})),boundary:'Historical statuses unchanged; no wholesale current-build re-certification'},legacy36:{artifact:'acceptance/ui-ux-r1-20261124/records/LEGACY_GATE_MAP.csv',count:36,boundary:'Preserved influence map, not36 PASS claims'},
  remaining:['native125%','cold first-navigation frame','full actual business state matrix; see STATE_COVERAGE.md','real provider/teacher quality and physical IME','official licensed component artifact identity','Office/WPS comprehensive output and installer/platform validation by original owners'],
  teacherReview:'NOT_RUN',network:'No new provider call in this continuation. npm/Git read operations only until authorized push.',artifacts};
+const receiptFile=path.join(root,'final-delivery-receipt.json');
+if(fs.existsSync(receiptFile)){
+ const receipt=JSON.parse(fs.readFileSync(receiptFile,'utf8'));
+ assert(receipt.pushedAndVerified);assert.equal(receipt.sourceFingerprint,source);assert.equal(receipt.buildFingerprint,build);
+ execFileSync('git',['merge-base','--is-ancestor',receipt.deliveredCommit,currentHead],{cwd:repo});
+ const item=report.checks.find(c=>c.id==='R06');item.status='PASS';item.reason='Code delivery and actual window verified; full UI goal remains BLOCKED';item.evidence='acceptance/ux-followup-20261126/final-delivery-receipt.json';
+}
 fs.writeFileSync(path.join(root,'delivery.json'),JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({state:report.state,source,build,artifacts:artifacts.length,commands:commands.length}));
