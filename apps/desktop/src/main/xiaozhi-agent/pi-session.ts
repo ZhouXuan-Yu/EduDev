@@ -1162,7 +1162,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     memoryTimer = setInterval(() => {
       // A foreground check already performs full source/privacy validation. Do not
       // launch a second disk scan over it; every delivery gate still checks afresh.
-      if (memoryChecking || (quality && authorityChecks > 0) || !running || interrupted) return;
+      if (memoryChecking || (quality && authorityChecks > 0) || !running || interrupted || goalEndError) return;
       memoryChecking = true;
       void checkMemory().catch(() => undefined).finally(() => { memoryChecking = false; });
     }, 500);
@@ -1565,7 +1565,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         submittedTeacherRequest=context?`${context}\n\n[教师本次请求]\n${text}`:text;
         await session.prompt(submittedTeacherRequest);
-        await checkMemory();
+        // A persisted terminal Goal decision has already ended this Task owner.
+        // Every model and tool delivery still passes the live authority gates above.
+        if(!goalEndError)await checkMemory();
         const last=currentAssistantOutcome();
         if (last?.stopReason === 'error') failure = classifyError(last.errorMessage);
         if (last?.stopReason === 'aborted') failure = 'cancelled';

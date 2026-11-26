@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 20/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。当前模块阶段 21/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -30,7 +30,7 @@
 | AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
-| AC-27 | NOT_RUN | 原 Goal 健康等待与进展证据、空转和停滞。 |
+| AC-27 | PASS · 已实现 | 真实 Goal 遇到 503 原地等待，查询与独立保存不增加模型次数、进展和修订。原 Goal 恢复后教师确认完成。真实三轮停滞呈现准确，等待中暂停无后续物理请求。 |
 | AC-28 | NOT_RUN | Goal 预算、停止及教师最终验收约束。 |
 | AC-29 | NOT_RUN | 正式界面的健康、停止、回执未知和继续入口。 |
 | AC-30 | NOT_RUN | 诊断导出脱敏、隔离、大小边界与 hash。 |
@@ -210,3 +210,9 @@
 - `file-stage-recovery-electron.mjs --build <实际构建> --continue --pending-approval` 通过 6/6。正式 Electron 首先在合成 DOCX 原子提交前终止。原 HTML 成果、两条未知 Effect 和其绑定的旧 Provider Snapshot 保留。冷启等待教师操作，核对 DOCX 唯一临时文件，未接触无关文件。
 - 教师从实际任务卡点击继续，Pi 在同一 Task 新世代产生真实等待审批，不执行终端。再次精确终止验收 Electron 主进程后，独立进程冷读零模型请求，实际恢复卡显示原审批仍待处理。又一次显式继续发出一条合成模型请求，Task ID、要求版本、原快照 hash、未知 Effect 与原 HTML 完全一致。随后用真实撤权入口撤销相关 Grant，原 approval 失效，提交旧版本审批被拒，终端派发审计数仍为 0。见 `xiaozhi-stage-ui-KqOoHK/report.json`。
 - 保留三条中间失败证据。原核对卡需先展开，`xiaozhi-stage-ui-DHkcoK/report.json`；Office 审批阻塞同一顺序工具批次，改为同一任务跨世代生成待审，`xiaozhi-stage-ui-b7mv9a/report.json`；Windows 包装进程 PID 与真实 Electron 主进程可能不同，`xiaozhi-stage-ui-B7T1gp/report.json`。最终先核对实际主进程 PID、构建和隔离 profile，再终止目标进程。无生产改动和付费模型调用。
+
+## WP-07 Goal 健康等待与停止原因
+
+- 基线 `provider-goal-recovery-ORPtEL/report.json`。实际 Goal 在三轮未新增证据后正确保存了停止状态，最终显示错误的 `skill_source_changed`。SQLite 的原事件序列先持久化 Goal 停滞与中断，再产生错误的权限复核提示。宿主结束当前 Task 后，Pi 返回时额外读取旧技能授权导致诊断错误。
+- 最小修复沿 Pi 原终止决定收尾，终止后的旧 owner 跳过最终权限复核，活跃模型与工具的交付继续走原检查。正式主进程 `f4d2be02d2eb773bb18d7ad45ef9e5d93aa394d2095f341ad380211dc2430431` 实测 `provider-goal-recovery-Mmmiae/report.json`，3/3。原 Goal 的 503 至第二次尝试期间，重复读取四次和另存合成题库记录均未增加请求、核验证据或 Goal 修订，约定等待 2.5 秒。恢复沿同一 Goal 和原 Run，读到合成文件真实标记，再由教师确认完成。SQLite 对账共 4 次模型调用和 2 个工具，`activeMs=7012`、`waitingMs=0`。停滞 3 次准确报告 `goal_stalled`。暂停场景只接收了 1 次实际请求。
+- 同一源码的 Goal 状态合同 16/16、技能隔离合同 14/14、渲染组件 261/261 和正式构建通过。原始证据见 `wp07-goal-boundary-baseline.log`、`wp07-goal-owner-skills.log`、`wp07-goal-owner-renderer.log`、`wp07-goal-owner-build.log`。另复跑最新构建的模型恢复与注入生产 powerMonitor 恢复事件 11/11，见 `model-wire-health-qQxxCd/report.json`。真实 S0 仍由 AC-23 单独验收。
