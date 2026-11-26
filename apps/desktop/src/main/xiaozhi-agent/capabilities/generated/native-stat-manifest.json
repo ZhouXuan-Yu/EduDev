@@ -1,12 +1,28 @@
 {
   "schemaVersion": 1,
-  "file": "native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
-  "sha256": "bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274",
-  "version": "1.0.0+bf8b322e1af9",
+  "file": "native-stat-beba8aab9a2974db1925b6089f66102200e0754d82acb11563e1bfa228b111e6.cjs",
+  "sha256": "beba8aab9a2974db1925b6089f66102200e0754d82acb11563e1bfa228b111e6",
+  "version": "1.0.0+beba8aab9a29",
   "sources": [
     {
       "reference": "src/main/ai-harness/vendor/openhanako-tool-input-snapshot.ts",
       "sha256": "dd673ad7289fe1a7caf18369b74e356629e26f711e23842b463636e13bc348ba"
+    },
+    {
+      "reference": "src/main/host-resources/desktop.ts",
+      "sha256": "487c3b58d4f00c9e08850ab529eac5db9ace40c3f8ddb17a348775c283a9b696"
+    },
+    {
+      "reference": "src/main/host-resources/material-buffer-budget.ts",
+      "sha256": "201b84fb1dca2ff30d11ad2bd1b4ce187736c896aa5e537de96e3c679a8e7858"
+    },
+    {
+      "reference": "src/main/host-resources/pressure.ts",
+      "sha256": "b3329dc0a0045a9626cc04eb6b3d04aab9e302714a5b0a80a3225177db66b3e4"
+    },
+    {
+      "reference": "src/main/host-resources/scheduler.ts",
+      "sha256": "f4a4e0dbb37a654f55ddc95be79714ff8e309876111a1a31f3e9a7290334bf11"
     },
     {
       "reference": "src/main/office-agent/hana-tool-adapter.ts",
@@ -42,11 +58,11 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-artifact-entry.ts",
-      "sha256": "72cf598dbebca0966bec31797d4c1c717243df75b714a636b49d15ee4cef3bff"
+      "sha256": "d6477dbc854b9c235e1f7a0bce48414dddee43613dfebc000f6348ceb4146100"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/native-stat-contract.ts",
-      "sha256": "7831af549f28a6055b0be9c3b9018a681d953d78d03fa393590c37849865923f"
+      "sha256": "6892784c2e3c0a33c207abeaf321a1d6c37f592c151f1e285510262bdcb78f36"
     },
     {
       "reference": "src/main/xiaozhi-agent/capabilities/types.ts",
@@ -58,7 +74,7 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/local-utility-host.ts",
-      "sha256": "401c6710b1b45ca27cdcd924b3a3d2724bbd26966ad070d7a98c9c7fcfefc4c1"
+      "sha256": "3deb8b179cad8a5c545fa153c5354a18be75e9d7d7144e17e1ca8fb39d8840b1"
     },
     {
       "reference": "src/main/xiaozhi-agent/science-demo.ts",
