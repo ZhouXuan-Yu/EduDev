@@ -17,6 +17,7 @@ function EntryEditor({entry, onSaved, refresh}: {
   const [draft,setDraft]=useState<{text:string;version:number}>();
   const [pending,setPending]=useState<string>();
   const [message,setMessage]=useState<{error:boolean;text:string}>();
+  const [forget,setForget]=useState(false);
   const text=draft?.text ?? entry.text;
 
   async function save() {
@@ -46,6 +47,20 @@ function EntryEditor({entry, onSaved, refresh}: {
     }
   }
 
+  async function changeState(status:'active'|'disabled'|'deleted') {
+    const api=window.omniEdu;
+    if(!api||pending||draft)return;
+    setPending(crypto.randomUUID());setMessage(undefined);
+    try {
+      const saved=await api.updateAiMemoryEntry(entry.id,{version:entry.version,status});
+      onSaved(saved);setForget(false);
+      setMessage({error:false,text:status==='active'?'已恢复参考。':status==='disabled'?'已暂停参考。':'已停止参考该记录。'});
+    }catch{
+      await refresh();
+      setMessage({error:true,text:'记录已变化或暂不可写，请核对最新版本。'});
+    }finally{setPending(undefined);}
+  }
+
   return <SettingsStack gap="sm">
     <label htmlFor={'memory-l2-'+entry.id}>{entry.section} · 版本 {entry.version}</label>
     {draft?.version === -1 && <p>当前已保存内容：{entry.text}</p>}
@@ -61,6 +76,18 @@ function EntryEditor({entry, onSaved, refresh}: {
       {draft?.version === -1 && <Button variant="ghost" size="sm" data-testid={'memory-reapply-l2-'+entry.id}
         onPress={()=>{setDraft({...draft,version:entry.version});setMessage(undefined);}}>应用草稿到当前版本</Button>}
     </SettingsInline>
+    {entry.refs.length>0&&<DisclosureCard title="查看记录来源">
+      <ul>{entry.refs.map(ref=><li key={ref.kind+':'+ref.id}>{ref.label} · {ref.id}</li>)}</ul>
+    </DisclosureCard>}
+    <SettingsInline>
+      <Button size="sm" variant="ghost" isDisabled={Boolean(pending||draft)} data-testid={'history-l2-state-'+entry.id}
+        onPress={()=>void changeState(entry.status==='active'?'disabled':'active')}>{entry.status==='active'?'暂停参考':'恢复参考'}</Button>
+      <Button size="sm" variant="ghost" isDisabled={Boolean(pending||draft)} onPress={()=>setForget(true)}>不再记住</Button>
+    </SettingsInline>
+    {forget&&<SettingsInline><span>不再使用这条已保存的记录。</span>
+      <Button size="sm" variant="secondary" isDisabled={Boolean(pending||draft)} onPress={()=>void changeState('deleted')}>确认遗忘</Button>
+      <Button size="sm" variant="ghost" onPress={()=>setForget(false)}>取消</Button>
+    </SettingsInline>}
     {message && <p role={message.error?'alert':'status'}
       data-testid={message.error?'memory-error':message.text.startsWith('已取消')?'memory-cancelled':'memory-success'}>{message.text}</p>}
   </SettingsStack>;

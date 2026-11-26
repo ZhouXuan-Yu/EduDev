@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { History, RefreshCw } from 'lucide-react';
 import { Button } from '@heroui/react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
-import type { XiaozhiMemoryCatalog, XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemorySelection, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../../shared/xiaozhi-memory';
+import type { XiaozhiMemoryCatalog, XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemoryUseSelection, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../../shared/xiaozhi-memory';
 import { XIAOZHI_MEMORY_LABELS, XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES, projectMemorySource } from '../../../shared/xiaozhi-memory';
+import type {PersonalMemorySelection, PersonalMemorySummary} from '../../../shared/xiaozhi-personal-memory';
 
-const key = (item: XiaozhiMemorySelection) => `${item.layer}:${item.source}:${item.id}`;
+const key = (item: XiaozhiMemoryUseSelection) => `${item.layer}:${item.source}:${item.id}`;
+const savedChoices = (scope:XiaozhiMemoryScope):XiaozhiMemoryUseSelection[] =>
+  scope.selections.map(({label:_label,state:_state,...selection})=>selection);
 const states = { ready: '版本有效', changed: '内容已变更，请重新选择', disabled: '已停用', missing: '已删除或不存在', unavailable: '暂时无法核验' };
 const sources: XiaozhiMemorySource[] = [
   ...XIAOZHI_MEMORY_SURFACES.map(source => ({ layer: 'L2' as const, source })),
@@ -18,20 +21,29 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
   onSave: (input: XiaozhiMemoryScopeInput) => Promise<void>; onRefresh: () => Promise<void>;
 }) {
   const [enabled, setEnabled] = useState(scope.enabled);
-  const [selected, setSelected] = useState<XiaozhiMemorySelection[]>(scope.selections.map(item => ({ ...projectMemorySource(item), id: item.id, version: item.version })));
+  const [selected, setSelected] = useState<XiaozhiMemoryUseSelection[]>(savedChoices(scope));
   const [sourceIndex, setSourceIndex] = useState(0), [catalog, setCatalog] = useState<XiaozhiMemoryCatalog>();
+  const [personal, setPersonal] = useState<PersonalMemorySummary[]>();
   const [trace, setTrace] = useState<XiaozhiMemoryTrace | null>();
   const [busy, setBusy] = useState(false), [loading, setLoading] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState('');
   const request = useRef(0), mutation = useRef(false), mounted = useRef(true);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; request.current++; }; }, []);
   useEffect(() => {
     setEnabled(scope.enabled);
-    setSelected(scope.selections.map(item => ({ ...projectMemorySource(item), id: item.id, version: item.version })));
+    setSelected(savedChoices(scope));
   }, [scope.version]);
   async function preview(index = sourceIndex, offset = 0) {
     const stamp = ++request.current; setLoading(true); setError('');
     try {
       const api = window.omniEdu; if (!api) throw new Error('configuration');
+      if (index===sources.length) {
+        const result=await api.personalMemory.view();
+        if (!mounted.current || stamp!==request.current) return;
+        if (!result.ok) throw Error('preview_failed');
+        setPersonal(result.value.records.filter(record=>record.state==='active' && record.sourceCurrent &&
+          record.scope.kind==='teacher' && record.scope.id==='self'));
+        return;
+      }
       const [result, ownTrace] = await Promise.all([
         api.getXiaozhiMemoryCatalog({ sessionId, ...sources[index], offset }),
         api.getXiaozhiMemoryTrace(sessionId),
@@ -63,14 +75,33 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
         <Button size="sm" variant="ghost" isDisabled={busy || running} data-testid={`pi-memory-remove-${item.id}`} onPress={() => setSelected(previous => previous.filter(entry => key(entry) !== key(item)))}>取消选择</Button>
       </li>)}</ul>
       {!scope.selections.length && <p data-testid="pi-memory-scope-empty">尚未选择长期记忆。</p>}
-      <label>本地记忆来源<AppNativeSelect value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); void preview(index); }} data-testid="pi-memory-source">
+      <label>本地记忆来源<AppNativeSelect value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); setPersonal(undefined); void preview(index); }} data-testid="pi-memory-source">
         {sources.map((source, index) => <option key={`${source.layer}:${source.source}`} value={index}>{source.layer} · {XIAOZHI_MEMORY_LABELS[source.source]}</option>)}
+        <option value={sources.length}>教师确认的记忆</option>
       </AppNativeSelect></label>
       <div className="pi-memory-actions">
         <Button size="sm" variant="outline" isDisabled={loading} onPress={() => { void preview(); }} data-testid="pi-memory-preview"><History size={14} />查看本地记忆</Button>
         <Button size="sm" variant="ghost" isDisabled={busy || loading} onPress={() => { void onRefresh().then(() => preview()).catch(() => setError('刷新失败，请重试。')); }} data-testid="pi-memory-refresh"><RefreshCw size={14} />刷新</Button>
       </div>
       {loading && <p role="status">正在读取本地记忆…</p>}
+      {personal && <div data-testid="pi-personal-memory-catalog">
+        {!personal.length&&<p>暂无可选的教师记忆。</p>}
+        {personal.map(record=>{
+          const choice:PersonalMemorySelection={layer:'personal',source:'personal',id:record.id,version:record.revision,
+            sourceVersion:record.sourceVersion};
+          const match=(entry:XiaozhiMemoryUseSelection)=>key(entry)===key(choice);
+          const checked=selected.some(entry=>match(entry)&&entry.version===choice.version);
+          return <article key={record.id} className="pi-memory-entry">
+            <label><input type="checkbox" checked={checked} data-testid={`pi-memory-select-${record.id}`}
+              disabled={busy||running||!checked&&selected.length>=12&&!selected.some(match)}
+              onChange={event=>{const include=event.target.checked;setSelected(previous=>
+                include?[...previous.filter(entry=>!match(entry)),choice]:previous.filter(entry=>!match(entry)));}}/>
+              {record.kind==='preference'?'教学偏好':'任教自述'} · 第 {record.revision} 版</label>
+            <p>{record.value}</p>
+            <p>{record.term==='unknown'?'有效期限待核对':record.term}</p>
+          </article>;
+        })}
+      </div>}
       {catalog && <div data-testid="pi-memory-catalog">
         <p>{catalog.total} 条 · 当前 {catalog.entries.length ? catalog.offset + 1 : 0}–{catalog.offset + catalog.entries.length}</p>
         {!catalog.entries.length && <p>该来源尚无记忆。</p>}
@@ -92,7 +123,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
         </div>
       </div>}
       {trace !== undefined &&<DisclosureCard data-testid="pi-memory-own-trace" title={<>本会话最近过程记录</>}>{trace ? <ul>{trace.events.map(event => <li key={event.sequence}>{event.label} · {event.status}</li>)}</ul> : <p>本会话尚无过程记录。</p>}</DisclosureCard>}
-      <p>当前选择 {selected.length}/12 项。记忆编辑、停用及删除仍在工作台“L2 记忆”中完成。</p>
+      <p>当前选择 {selected.length}/12 项。在“设置 → 教师记忆”管理历史查找许可和已保存的记录。</p>
       <div className="pi-memory-actions">
         <Button size="sm" variant="outline" isDisabled={busy || running} onPress={() => { void save(); }} data-testid="pi-memory-save">保存本会话选择</Button>
         <Button size="sm" variant="ghost" isDisabled={busy} onPress={() => { void save(true); }} data-testid="pi-memory-clear">关闭并清空</Button>

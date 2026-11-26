@@ -3,10 +3,12 @@ import type sqlite3 from 'sqlite3';
 import {sqliteExec} from './sqlite-connections';
 import {taskSummarySchema} from './xiaozhi-agent/task-summary-schema';
 import {acquisitionSchema, legacyAcquisitionDefinitions} from './xiaozhi-agent/capabilities/acquisition/schema';
+import {historyMemorySchema} from './xiaozhi-agent/history/schema';
 import {preparedAgentConfigSchema} from './xiaozhi-agent/prepared-agent-config';
 import {taskSummaryMaintenanceV6} from './xiaozhi-agent/task-summary-maintenance-v6';
 import {ordinaryConfigSchema} from './xiaozhi-agent/ordinary-config-journal';
 import {ensureTaskSummarySchema} from './xiaozhi-agent/task-summary-projection';
+import {personalMemorySchema} from './education/personal-memory/schema';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -37,7 +39,7 @@ const baselineControlSql = `
     app_build TEXT NOT NULL
   );
 `;
-const migrations = [{
+const sharedMigrations = [{
   id: 'r1.memory_revision_document_index.v1',
   sql: 'CREATE INDEX idx_ai_memory_revisions_document ON ai_memory_revisions(document_id);',
 }, {
@@ -53,18 +55,30 @@ const migrations = [{
     raw_sha TEXT NOT NULL, body_json TEXT NOT NULL, body_sha TEXT NOT NULL,
     PRIMARY KEY(resource_id,version,generation,page)
   );`,
-}, {
-  id: 'r2.prepared_agent_config.v5',
-  sql: preparedAgentConfigSchema,
-}, {
-  id: 'r2.task_summary_maintenance.v6',
-  sql: taskSummaryMaintenanceV6,
-}, {
-  id: 'r3.ordinary_config_history.v7',
-  sql: ordinaryConfigSchema,
 }] as const;
+type Migration = {id:string; sql:string; before?: (db:sqlite3.Database)=>Promise<void>};
+const historyMigration = {id:'r1.history_memory_access_and_index.v5',sql:historyMemorySchema};
+const preparedMigration = {id:'r2.prepared_agent_config.v5',sql:preparedAgentConfigSchema};
+const summaryMigration = {id:'r2.task_summary_maintenance.v6',sql:taskSummaryMaintenanceV6,
+  before:(db:sqlite3.Database)=>ensureTaskSummarySchema(db,{beforeV6:true})};
+const personalMigration = {id:'r2.personal_memory.v8',sql:personalMemorySchema};
+const ordinaryMigration = {id:'r3.ordinary_config_history.v7',sql:ordinaryConfigSchema};
+// Keep every published ledger prefix. Each sequence appends the other feature only
+// after the migrations already recorded by that installation.
+const canonicalMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,
+  ordinaryMigration,
+  {...historyMigration,id:'r1.history_memory_access_and_index.after_r3_config.v8'},
+  {...personalMigration,id:'r2.personal_memory.after_r3_config.v9'}];
+const historyFirstMigrations: readonly Migration[] = [...sharedMigrations,historyMigration,
+  {...preparedMigration,id:'r2.prepared_agent_config.after_history.v6'},
+  {...summaryMigration,id:'r2.task_summary_maintenance.after_history.v7'},personalMigration,
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_personal.v9'}];
+const personalBeforeConfigMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,
+  {...historyMigration,id:'r1.history_memory_access_and_index.after_database_foundation.v7'},personalMigration,
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_personal.v9'}];
+const supportedMigrations = [canonicalMigrations,historyFirstMigrations,personalBeforeConfigMigrations];
 const ACQUISITION_SCHEMA_VERSION = 3;
-export const MAX_DATABASE_SCHEMA_VERSION = migrations.length;
+export const MAX_DATABASE_SCHEMA_VERSION = canonicalMigrations.length;
 
 type UpgradeIssue = 'newer_version' | 'unknown_legacy' | 'invalid_ledger' | 'changed_during_upgrade'
   | 'recovery_point_failed' | 'migration_failed' | 'foreign_key_check_failed';
@@ -142,7 +156,7 @@ async function inspectDatabase(db: sqlite3.Database, version: number) {
     if (baselinePresent || ledgerPresent) throw new DatabaseUpgradeError('invalid_ledger');
     if (!matchesRegisteredSchema(objects,version,digest,digest)) throw new DatabaseUpgradeError('invalid_ledger');
     if (objects.length) await verifyLegacyCore(db,objects);
-    return {kind: objects.length ? 'adopted' as const : 'fresh' as const,digest};
+    return {kind: objects.length ? 'adopted' as const : 'fresh' as const,digest,migrations:canonicalMigrations};
   }
   if (!baselinePresent || !ledgerPresent) throw new DatabaseUpgradeError('invalid_ledger');
   try {
@@ -153,19 +167,20 @@ async function inspectDatabase(db: sqlite3.Database, version: number) {
     const [info,...other] = await all<{id: number; kind: string; source_schema_sha256: string; recorded_at: string}>(
       db, 'SELECT * FROM xiaozhi_schema_baseline',
     );
+    const migrations = supportedMigrations.find(path=>entries.every((entry,index)=>
+      entry.migration_id===path[index]?.id && entry.checksum===hash(path[index].sql)));
     if (!info || other.length || info.id !== 1 || !['fresh','adopted'].includes(info.kind) ||
         !/^[a-f0-9]{64}$/u.test(info.source_schema_sha256) || !Number.isFinite(Date.parse(info.recorded_at)) ||
-        entries.length !== version || !matchesRegisteredSchema(objects,version,digest,entries.at(-1)?.schema_sha256) ||
+        !migrations || entries.length !== version || !matchesRegisteredSchema(objects,version,digest,entries.at(-1)?.schema_sha256) ||
         entries.some((entry,index) => entry.from_version !== index || entry.to_version !== index+1 ||
-          entry.migration_id !== migrations[index].id || entry.checksum !== hash(migrations[index].sql) ||
           !entry.app_build || !Number.isFinite(Date.parse(entry.applied_at)))) {
       throw new DatabaseUpgradeError('invalid_ledger');
     }
+    return {kind:'managed' as const,digest,migrations};
   } catch (error) {
     if (error instanceof DatabaseUpgradeError) throw error;
     throw new DatabaseUpgradeError('invalid_ledger', {cause:error});
   }
-  return {kind:'managed' as const,digest};
 }
 
 export async function inspectBackupDatabaseVersion(db: sqlite3.Database) {
@@ -184,6 +199,7 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
   const version = await databaseUserVersion(db);
   if (version > MAX_DATABASE_SCHEMA_VERSION) throw new DatabaseUpgradeError('newer_version');
   const current = await inspectDatabase(db,version);
+  const {migrations} = current;
   if (version === MAX_DATABASE_SCHEMA_VERSION) {
     await options.enableJournal();
     return version;
@@ -221,7 +237,7 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
           [current.kind,current.digest,new Date().toISOString()]);
       }
       const migration = migrations[from];
-      if (migration.id === 'r2.task_summary_maintenance.v6') await ensureTaskSummarySchema(db,{beforeV6:true});
+      await migration.before?.(db);
       await sqliteExec(db,migration.sql);
       const check = await all(db,'PRAGMA foreign_key_check');
       if (check.length) throw new DatabaseUpgradeError('foreign_key_check_failed');

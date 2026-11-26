@@ -22,6 +22,8 @@ import {PiResolvedAgentConfig} from './PiResolvedAgentConfig';
 import { PiMemoryScope } from './PiMemoryScope';
 import { PiTeacherMemorySettings } from './PiTeacherMemorySettings';
 import {PiL2MemorySettings} from './PiL2MemorySettings';
+import {PiHistoryMemorySettings} from './PiHistoryMemorySettings';
+import {PiPersonalMemorySettings} from './PiPersonalMemorySettings';
 import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
@@ -201,6 +203,8 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <h2 className={layoutStyles.subheading}>{title}</h2>
             <PiTeacherMemorySettings running={locked || actionBusy} onBusyChange={setChildBusy}/>
             <PiL2MemorySettings/>
+            <PiHistoryMemorySettings/>
+            <PiPersonalMemorySettings/>
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
             {!loading&&<PiResolvedAgentConfig key={sessionId} sessionId={sessionId||undefined} onNavigate={open}/>}

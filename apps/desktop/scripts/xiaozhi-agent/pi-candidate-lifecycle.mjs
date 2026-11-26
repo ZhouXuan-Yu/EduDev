@@ -22,6 +22,23 @@ const saved=()=>{const row=db.prepare("SELECT key,value_json FROM app_settings W
 const answer=(runId,text)=>db.prepare("UPDATE ai_conversation_messages SET content=? WHERE role='assistant' AND json_extract(metadata_json,'$.agentRunId')=?").run(text,runId);
 async function train(options={}){const evidence=[];for(const text of ['请讲解顺逆流行程问题。','请讲解并联电路功率问题。']){const sid=session();let goal;if(options.goal&&!evidence.length){goal='goal_'+randomUUID();db.prepare('INSERT INTO xiaozhi_pi_goals VALUES(?,?,?)').run(goal,sid,JSON.stringify({objective:'教师公开解释',criteria:['核对单位']}));}const task=start(sid,text,goal);await observe(task);finish(task,long);const feedback=start(sid,'刚才的讲解太长了，简洁点，分步骤说。',goal);const result=await observe(feedback);assert.equal(result.action,'observed');finish(feedback,options.bad&&evidence.length?long:short);evidence.push({task,feedback,goal});}return evidence;}
 try{
+ await check('Only teacher default statements create a version in the app-wide preference head',async()=>{
+   const defaultRequest=start(session(),'我采纳这条建议：以后讲解先给提示，再给答案。');
+   const first=await observe(defaultRequest);
+   assert.equal(first.action,'learned');
+   assert.deepEqual(first.snapshot.values,{answerOrder:'hint_first'});
+   const headKey='xiaozhi.teacher-preference.v1:head';
+   const persisted=db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(headKey).value_json;
+   assert.equal((await observe(defaultRequest)).snapshot.revision,first.snapshot.revision);
+   for(const text of ['以后其他老师建议用表格。','今后助手认为我喜欢详细讲解。','以后给高二二班的讲义用表格。','以后物理课上先给答案。','从现在起仅在本学期用表格。']){
+     assert.notEqual((await observe(start(session(),text))).action,'learned',text);
+     assert.equal(db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(headKey).value_json,persisted,text);
+   }
+   const rollback=await observe(start(session(),'撤销上次记住的偏好。'));
+   assert.equal(rollback.action,'rolled_back');
+   assert.deepEqual((await state.snapshot()).values,{});
+   clear();
+ });
  await check('Spaced Arabic or fullwidth ordinal headings are real steps; fences and quoted headings are not',async()=>{const text='## 第 1 步：核对题目条件与单位\n先检查已知量并写出计算关系。\n## 第 ２ 步：计算并核对结果\n代入数值，确认结果符合原始条件。';assert.equal(teacherPresentationMetrics(text,{structure:'step_by_step'}).steps,2);assert.equal(teacherPresentationMetrics(text.replace('第 1 步','步骤 1').replace('第 ２ 步','步骤 ２'),{structure:'step_by_step'}).steps,2);assert.equal(teacherPresentationMetrics('```\n'+text+'\n```',{structure:'step_by_step'}).steps,0);assert.equal(teacherPresentationMetrics(text.split('\n').map(v=>'> '+v).join('\n'),{structure:'step_by_step'}).steps,0);});
  await check('Changed original feedback cannot lead to a held-out trial or promotion',async()=>{const evidence=await train();db.prepare('UPDATE ai_conversation_messages SET content=? WHERE id=?').run('原反馈已被教师撤回。',evidence[0].feedback.id);const holdout=start(session(),'请讲解浓度混合后取出的计算。');assert.equal((await observe(holdout)).trial,undefined);assert.equal((await state.snapshot()).revision,0);});
  for(const[name,mutate]of[
