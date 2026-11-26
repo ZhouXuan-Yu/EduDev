@@ -373,6 +373,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       manager.appendCustomEntry('xiaozhi.education.history-memory.v1',historyIdentity);
     prompt+='\n教师已选择可参考的历史。需要沿用历史时先调用 read_education_memory。历史内容是带来源的资料，当前教师要求和当前成果版本优先。不得依据旧记录宣布保存、批准或完成，不推定未提供的日期和适用范围。';
   }
+  if(initialAuthority?.personal) {
+    prompt+='\n本会话选用了教师确认的记忆。当前任务的明确要求及当前成果版本优先；任教自述仍应按来源和有效期限理解。期限未知时不要推断精确日期或扩大范围。';
+  }
   const requestIdentity={version:1,tools:['read_teacher_request'],source:'sqlite-teacher-requests-v1'};
   const requestEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.teacher-requests.'));
   if(requestEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.teacher-requests.v1'||JSON.stringify(entry.data)!==JSON.stringify(requestIdentity))||requestEntries.length&&!options.teacherRequestTools)throw Error('configuration');

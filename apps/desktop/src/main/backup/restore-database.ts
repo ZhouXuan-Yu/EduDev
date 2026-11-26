@@ -1,10 +1,12 @@
 import {closeSqlite,openSqlite} from '../sqlite-connections';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
+import {reconcileRestoredMemory, type readMemoryRestoreLedger} from './memory-restore';
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 /** Relocate mutable file addresses in the new copy. Immutable event/native/check facts stay byte-identical. */
 export type RestoredExternalRoot={sourceRoot:string;targetRoot:string;files:string[]};
-export async function relocateBackupDatabase(file:string,fromData:string,toData:string,fromOutputs:string,toOutputs:string,external:RestoredExternalRoot[]=[]){
+export async function relocateBackupDatabase(file:string,fromData:string,toData:string,fromOutputs:string,toOutputs:string,
+ external:RestoredExternalRoot[]=[],ledger:Awaited<ReturnType<typeof readMemoryRestoreLedger>>=null){
  const db=await openSqlite(file,'backupWrite');
  const run=(q:string,a:unknown[]=[])=>new Promise<void>((resolve,reject)=>db.run(q,a,e=>e?reject(e):resolve()));
  const all=(q:string,a:unknown[]=[])=>new Promise<Record<string,unknown>[]>((resolve,reject)=>db.all(q,a,(e,r)=>e?reject(e):resolve(r as Record<string,unknown>[])));
@@ -46,6 +48,10 @@ export async function relocateBackupDatabase(file:string,fromData:string,toData:
   if(tables.has('material_import_batches'))await run("UPDATE material_import_batches SET status='paused',owner_pid=0,owner_nonce='' WHERE status IN ('queued','running')");
   if(tables.has('material_folder_ai'))await run("UPDATE material_folder_ai SET status='paused' WHERE status='running'");
   if(tables.has('material_ai_batches'))await run("UPDATE material_ai_batches SET status='paused' WHERE status='running'");
+  const memory=await reconcileRestoredMemory({run,all},tables,ledger);
+  if(Object.values(memory).some(count=>count>0))
+   warnings.push('恢复副本已停用缺少当前授权证明的记忆和选择。使用前请核对来源与现行权限。');
+  if(tables.has('personal_memory_processing'))warnings.push('恢复副本的自动记忆和原后台任务已暂停。');
   // No history is replayed here. Normal original startup recovery settles running/uncertain records.
   if((await all('PRAGMA foreign_key_check')).length)throw Error('恢复后的数据库存在无效关系，未激活恢复');
   await run('COMMIT');return warnings;

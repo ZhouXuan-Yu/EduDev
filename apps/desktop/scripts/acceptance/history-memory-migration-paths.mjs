@@ -9,7 +9,7 @@ import {DatabaseSync} from 'node:sqlite';
 const {migrateDatabase} = await import('../../src/main/database-migrations.ts');
 
 const inputs = process.argv.slice(2);
-assert.equal(inputs.length,3,'Expected history v5, foundation v6 and ordinary config v7 fixtures');
+assert.ok(inputs.length >= 3,'Expected v5, v6 and v7; optional arguments are published v8 fixtures');
 const versions = [5,6,7];
 const root = await mkdtemp(join(tmpdir(),'edudev-history-paths-'));
 const ledger = db => db.prepare('SELECT * FROM xiaozhi_schema_migrations ORDER BY to_version').all();
@@ -28,22 +28,27 @@ async function upgrade(file) {
   } finally { await new Promise((resolve,reject)=>db.close(error=>error?reject(error):resolve())); }
 }
 for (const [index,source] of inputs.entries()) {
-  const file = join(root,'fixture-'+versions[index]+'.db');
+  const version = versions[index] ?? 8;
+  const file = join(root,'fixture-'+index+'.db');
   const original = new DatabaseSync(source,{readOnly:true});
   // VACUUM INTO creates a consistent local copy, including committed WAL rows.
   original.prepare('VACUUM INTO ?').run(file);
   original.close();
   let db = new DatabaseSync(file,{readOnly:true});
   const prefix = ledger(db), beforeStudents = students(db), names = tableNames(db);
-  assert.equal(db.prepare('PRAGMA user_version').get().user_version,versions[index]);
+  assert.equal(db.prepare('PRAGMA user_version').get().user_version,version);
   db.close();
-  assert.deepEqual(await upgrade(file),{result:8,backups:1});
-  assert.deepEqual(await upgrade(file),{result:8,backups:0});
+  assert.deepEqual(await upgrade(file),{result:9,backups:1});
+  assert.deepEqual(await upgrade(file),{result:9,backups:0});
   db = new DatabaseSync(file,{readOnly:true});
   const after = ledger(db), tables = tableNames(db);
   assert.deepEqual(after.slice(0,prefix.length),prefix);
-  assert.equal(after.length,8);
-  assert.equal(after.at(-1).migration_id,index===0?'r3.ordinary_config_history.after_history.v8':'r1.history_memory_access_and_index.after_r3_config.v8');
+  assert.equal(after.length,9);
+  const personalFirst = after[7].migration_id === 'r2.personal_memory.v8';
+  assert.equal(after[8].migration_id,personalFirst?'r3.ordinary_config_history.after_personal.v9':'r2.personal_memory.after_r3_config.v9');
+  assert.ok(after.some(entry=>entry.migration_id.startsWith('r1.history_memory_access_and_index')));
+  assert.ok(after.some(entry=>entry.migration_id.startsWith('r3.ordinary_config_history')));
+  assert.ok(tables.includes('personal_memory_processing'));
   assert.ok(tables.includes('memory_source_access'));
   assert.ok(names.every(name=>tables.includes(name)));
   assert.deepEqual(students(db),beforeStudents);
@@ -54,6 +59,6 @@ for (const [index,source] of inputs.entries()) {
   db.exec("UPDATE xiaozhi_schema_migrations SET checksum=lower(hex(randomblob(32))) WHERE to_version=5");
   db.close();
   await assert.rejects(upgrade(file),error=>error.issue==='invalid_ledger');
-  console.log(JSON.stringify({from:versions[index],to:8,preservedRows:prefix.length,studentRows:beforeStudents.length,
+  console.log(JSON.stringify({from:version,to:9,preservedRows:prefix.length,studentRows:beforeStudents.length,
     restart:true,rejectedTamperedLedger:true}));
 }

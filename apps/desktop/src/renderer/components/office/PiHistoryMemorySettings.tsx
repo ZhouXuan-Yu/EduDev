@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
 import type { HistoryAccessAction, HistoryIndexStatus, HistoryPreview, HistorySource } from '../../../shared/xiaozhi-history-memory';
 import { AppNativeSelect } from '../ui/AppNativeSelect';
+import { PiPersonalMemorySourcePermission } from './PiPersonalMemorySourcePermission';
 import { SettingsInline, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
 
@@ -119,6 +120,7 @@ export function PiHistoryMemorySettings() {
           <p>{preview.text}</p>
           {preview.nextOffset!==null&&<Button size="sm" variant="ghost" isDisabled={busy}
             onPress={()=>void read(item,preview.nextOffset??0)}>阅读后续原文</Button>}
+          {item.state==='active'&&<PiPersonalMemorySourcePermission key={item.ref.sourceVersion} source={item.ref} disabled={busy}/>}
         </section>}
       </article>)}
       {next!==null&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void load(session,next)}>加载更多</Button>}

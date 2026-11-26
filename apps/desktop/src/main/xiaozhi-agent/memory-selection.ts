@@ -20,10 +20,10 @@ export function validMemorySelection(value: unknown, privateFields = false): val
 export function validMemoryUseSelection(value: unknown, privateFields = false): value is XiaozhiMemoryUseSelection {
   if (!value || typeof value!=='object'||Array.isArray(value)) return false;
   const row = value as Record<string,unknown>;
-  if (row.layer!=='history') return validMemorySelection(value,privateFields);
+  if (row.layer!=='history' && row.layer!=='personal') return validMemorySelection(value,privateFields);
   const keys=['layer','source','id','version','sourceVersion',...(privateFields?['fingerprint']:[])];
   return Object.keys(row).length===keys.length && Object.keys(row).every(key=>keys.includes(key)) &&
-    row.source==='history' && typeof row.id==='string' && /^[a-f0-9]{64}$/.test(row.id) &&
+    row.source===row.layer && typeof row.id==='string' && /^[a-f0-9]{64}$/.test(row.id) &&
     typeof row.sourceVersion==='string' && /^[a-f0-9]{64}$/.test(row.sourceVersion) &&
     Number.isSafeInteger(row.version) && Number(row.version)>0 &&
     (!privateFields || typeof row.fingerprint==='string' && /^[a-f0-9]{64}$/.test(row.fingerprint));

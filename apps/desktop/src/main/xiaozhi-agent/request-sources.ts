@@ -6,6 +6,8 @@ import type {PrivateControl} from './control-state';
 
 export type TeacherRequestSource={sourceId:string;sourceVersion:string;runId:string;kind:'request'|'instruction'|'answer';text:string;
   messageId?:string;sequence?:number;afterMessageId?:string;appliedOrder?:number;orderKnown?:boolean};
+export const teacherRequestSourceVersion=(id:string,runId:string,text:string,revision=0)=>
+  createHash('sha256').update(JSON.stringify([id,runId,revision,text])).digest('hex');
 /** Index existing local facts, never a second request ledger. Instructions follow
  * their owning run's user message; enqueue order is not application order. */
 export function teacherRequestSources(messages:Awaited<ReturnType<OmniEduStore['getAiConversationSession']>>['messages'],
@@ -13,9 +15,8 @@ export function teacherRequestSources(messages:Awaited<ReturnType<OmniEduStore['
   const excluded=new Set(excludedRunIds),anchors=new Set(task?.sources.flatMap(s=>s.messageId?[s.messageId]:[])||[]);
   const teachers=messages.filter(m=>m.role==='user'&&m.metadata.piVersion==='xiaozhi.pi.education.v1'
     &&(!excluded.has(String(m.metadata.agentRunId))||anchors.has(m.id)));
-  const version=(id:string,runId:string,text:string,revision=0)=>createHash('sha256').update(JSON.stringify([id,runId,revision,text])).digest('hex');
   const requests:TeacherRequestSource[]=teachers.map((m,i)=>({sourceId:m.id,messageId:m.id,runId:String(m.metadata.agentRunId),
-    kind:'request',sequence:i+1,text:m.content,sourceVersion:version(m.id,String(m.metadata.agentRunId),m.content)}));
+    kind:'request',sequence:i+1,text:m.content,sourceVersion:teacherRequestSourceVersion(m.id,String(m.metadata.agentRunId),m.content)}));
   for(const control of controls){
     if(excluded.has(control.runId))continue;
     const anchor=requests.findLast(m=>m.kind==='request'&&m.runId===control.runId);
@@ -25,7 +26,7 @@ export function teacherRequestSources(messages:Awaited<ReturnType<OmniEduStore['
     if(!instruction&&!answered)continue;
     const text=instruction?control.text:`问题：${control.text}\n教师回答：${control.answer}`;
     requests.push({sourceId:control.id,runId:control.runId,kind:instruction?'instruction':'answer',text,
-      sourceVersion:version(control.id,control.runId,text,control.revision),afterMessageId:anchor.messageId,sequence:anchor.sequence,
+      sourceVersion:teacherRequestSourceVersion(control.id,control.runId,text,control.revision),afterMessageId:anchor.messageId,sequence:anchor.sequence,
       ...(instruction?{orderKnown:Number.isSafeInteger(control.appliedOrder),...(control.appliedOrder?{appliedOrder:control.appliedOrder}:{})}:{})});
   }
   return requests;

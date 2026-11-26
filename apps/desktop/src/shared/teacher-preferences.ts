@@ -3,6 +3,7 @@ export const TEACHER_PREFERENCE_SCHEMA='xiaozhi.teacher-preference.v1' as const;
 export const TEACHER_PREFERENCE_VALUES={
  length:['concise','detailed'],structure:['step_by_step','continuous'],
  answerOrder:['hint_first','answer_first'],presentation:['table','paragraph'],
+ handoutAnswerPlacement:['at_end','after_each'],
  exportFormat:['docx','pdf','pptx'],
 } as const;
 export type TeacherPreferenceValues={ [K in keyof typeof TEACHER_PREFERENCE_VALUES]?:typeof TEACHER_PREFERENCE_VALUES[K][number] };

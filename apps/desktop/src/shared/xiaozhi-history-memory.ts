@@ -17,6 +17,6 @@ export type HistoryPreview = { source: HistorySource; text: string; offset: numb
 export type HistoryCandidate = HistorySource & {ticket:string};
 export type HistoryDiscovery = { candidates: HistoryCandidate[]; mode: 'local' | 'hindsight'; reason?: 'empty_scope' | 'service_unavailable'; elapsedMs: number };
 export type HistoryAccessAction = 'allow' | 'revoke' | 'disable' | 'restore' | 'forget';
-export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'command_conflict' | 'source_changed' | 'source_unavailable' | 'configuration';
+export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'command_conflict' | 'source_changed' | 'source_unavailable' | 'busy' | 'configuration';
 export type HistoryIndexStatus = {configured:boolean;active:number;rebuilding:number|null;ready:number;pending:number;failed:number};
 export type HistoryResult<T> = {ok:true; value:T} | {ok:false; error:HistoryMemoryError};

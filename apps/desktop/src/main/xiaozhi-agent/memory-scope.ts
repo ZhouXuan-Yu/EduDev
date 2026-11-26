@@ -7,10 +7,12 @@ import type { XiaozhiActionResult } from '../../shared/xiaozhi-agent';
 import type { PrivateMemorySelection } from './memory-scope-state';
 import { validMemoryScopeInput, validMemorySelection, validMemorySession, validMemorySource } from './memory-selection';
 import type { createHistoryMemory } from './history/memory';
+import type { createPersonalMemoryUse } from '../education/personal-memory/use';
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
 /** Existing SQLite remains the memory fact source. Nothing here invokes a provider. */
-export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available'; history?: ReturnType<typeof createHistoryMemory> } = {}) {
+export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available'; history?: ReturnType<typeof createHistoryMemory>;
+  personal?:ReturnType<typeof createPersonalMemoryUse> } = {}) {
   async function facts(source: XiaozhiMemorySource): Promise<MemoryFact[]> {
     const items = source.layer === 'L2' ? (await store.getAiMemoryDocument(source.source))?.entries || []
       : (await store.getAiMemoryL3Document(source.source))?.entries || [];
@@ -38,6 +40,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     const cache = new Map<string, MemoryFact[] | null>();
     const selections: XiaozhiMemoryScope['selections'] = [];
     for (const item of saved.selections) {
+      if (item.layer==='personal') {
+        const current=await options.personal?.(id,item).catch(()=>null);
+        const {fingerprint,...selection}=item;
+        selections.push({...selection,label:current?.label ?? '教师确认的记忆',state:current?.fingerprint===fingerprint?'ready':'changed'});
+        continue;
+      }
       if (item.layer==='history') {
         const current = await options.history?.selected(item).catch(()=>null);
         const {fingerprint,...selection}=item;
@@ -60,6 +68,11 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     const current: Array<{ id: string; fingerprint: string | null; state: string }> = [];
     const cache = new Map<string, MemoryFact[] | null>();
     if (saved.enabled) for (const item of saved.selections) {
+      if (item.layer==='personal') {
+        const source=await options.personal?.(id,item).catch(()=>null);
+        current.push({id:item.id,fingerprint:source?.fingerprint??null,state:source?.fingerprint===item.fingerprint?'ready':'personal_unavailable'});
+        continue;
+      }
       if (item.layer==='history') {
         const source = await options.history?.selected(item).catch(()=>null);
         current.push({id:item.id,fingerprint:source?.fingerprint??null,state:source?.fingerprint===item.fingerprint?'ready':'history_unavailable'});
@@ -73,8 +86,10 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     }
     if (JSON.stringify(saved) !== JSON.stringify(await store.xiaozhiState.memoryScope(id))) throw new Error('memory_scope_changed');
     return { fingerprint: createHash('sha256').update(JSON.stringify({ saved, current })).digest('hex'),
-      enabled: saved.enabled, valid: current.every(item => item.state === 'ready'||item.state==='history_unavailable'), version: saved.version,
-      history: saved.enabled&&saved.selections.some(item=>item.layer==='history'&&current.some(row=>row.id===item.id&&row.state==='ready')) };
+      enabled: saved.enabled, valid: current.every(item => ['ready','history_unavailable','personal_unavailable'].includes(item.state)), version: saved.version,
+      history: saved.enabled&&saved.selections.some(item=>item.layer==='history'&&current.some(row=>row.id===item.id&&row.state==='ready')),
+      personal:saved.enabled&&saved.selections.some(item=>item.layer==='personal'&&current.some(row=>row.id===item.id&&
+        row.fingerprint===item.fingerprint&&row.state==='ready')) };
   }
   return {
     scope, authority,
@@ -84,11 +99,21 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const initial = await authority(id);
       if (initial.fingerprint !== expectedAuthority || !initial.valid) throw new Error('memory_scope_changed');
       const saved = await store.xiaozhiState.memoryScope(id);
-      const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history'; source: string; version: number; text: string;
-        provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history'; sourceDocuments: string[]; refs: Array<{ kind: 'run' | 'event'; label: string }>;
-        history?: {sourceId:string; sourceVersion:string; truncated:boolean} }> = [];
+      const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
+        provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
+        refs: Array<{ kind: 'run' | 'event'; label: string }>;
+        history?: {sourceId:string; sourceVersion:string; truncated:boolean};
+        personal?:{sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
       if (saved.enabled) for (const item of saved.selections) {
         signal?.throwIfAborted();
+        if (item.layer==='personal') {
+          const source=await options.personal?.(id,item).catch(()=>null);
+          if (!source || source.fingerprint!==item.fingerprint) continue;
+          payload.push({reference:`记忆${payload.length+1}`,layer:'personal',source:source.label,version:item.version,
+            text:source.text,provenance:'teacher_confirmed',sourceDocuments:[],refs:[],
+            personal:{sourceVersion:item.sourceVersion,scope:source.scope,term:source.term,occurredAt:source.occurredAt}});
+          continue;
+        }
         if (item.layer==='history') {
           const source = await options.history?.selected(item).catch(()=>null);
           if (!source || source.fingerprint!==item.fingerprint) continue;
@@ -139,6 +164,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         await availableSession(input.sessionId);
         const selections: PrivateMemorySelection[] = [], cache = new Map<string, MemoryFact[]>();
         for (const item of input.selections) {
+          if (item.layer==='personal') {
+            const source=await options.personal?.(input.sessionId,item).catch(()=>null);
+            if (!source) return {ok:false,error:'permission_denied'};
+            selections.push({...item,fingerprint:source.fingerprint});
+            continue;
+          }
           if (item.layer==='history') {
             const source=await options.history?.selected(item).catch(()=>null);
             if (!source) return {ok:false,error:'permission_denied'};

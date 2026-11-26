@@ -8,6 +8,7 @@ import {preparedAgentConfigSchema} from './xiaozhi-agent/prepared-agent-config';
 import {taskSummaryMaintenanceV6} from './xiaozhi-agent/task-summary-maintenance-v6';
 import {ensureTaskSummarySchema} from './xiaozhi-agent/task-summary-projection';
 import {ordinaryConfigSchema} from './xiaozhi-agent/ordinary-config-journal';
+import {personalMemorySchema} from './education/personal-memory/schema';
 
 const baselineTable = 'xiaozhi_schema_baseline';
 const migrationsTable = 'xiaozhi_schema_migrations';
@@ -60,15 +61,28 @@ const historyMigration = {id:'r1.history_memory_access_and_index.v5',sql:history
 const preparedMigration = {id:'r2.prepared_agent_config.v5',sql:preparedAgentConfigSchema};
 const summaryMigration = {id:'r2.task_summary_maintenance.v6',sql:taskSummaryMaintenanceV6,
   before:(db:sqlite3.Database)=>ensureTaskSummarySchema(db,{beforeV6:true})};
-const configMigration = {id:'r3.ordinary_config_history.v7',sql:ordinaryConfigSchema};
-const canonicalMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,configMigration,
-  {...historyMigration,id:'r1.history_memory_access_and_index.after_r3_config.v8'}];
-// Preserve the exact applied prefix on installations that first upgraded to history R1.
+const personalMigration = {id:'r2.personal_memory.v8',sql:personalMemorySchema};
+const ordinaryMigration = {id:'r3.ordinary_config_history.v7',sql:ordinaryConfigSchema};
+// Keep every published ledger prefix. Each sequence appends the other feature only
+// after the migrations already recorded by that installation.
+const canonicalMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,
+  ordinaryMigration,
+  {...historyMigration,id:'r1.history_memory_access_and_index.after_r3_config.v8'},
+  {...personalMigration,id:'r2.personal_memory.after_r3_config.v9'}];
 const historyFirstMigrations: readonly Migration[] = [...sharedMigrations,historyMigration,
   {...preparedMigration,id:'r2.prepared_agent_config.after_history.v6'},
-  {...summaryMigration,id:'r2.task_summary_maintenance.after_history.v7'},
-  {...configMigration,id:'r3.ordinary_config_history.after_history.v8'}];
-const supportedMigrations = [canonicalMigrations,historyFirstMigrations];
+  {...summaryMigration,id:'r2.task_summary_maintenance.after_history.v7'},personalMigration,
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_personal.v9'}];
+const personalBeforeConfigMigrations: readonly Migration[] = [...sharedMigrations,preparedMigration,summaryMigration,
+  {...historyMigration,id:'r1.history_memory_access_and_index.after_database_foundation.v7'},personalMigration,
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_personal.v9'}];
+// The published R1 build also reached v8 through the original history-v5 installation.
+const configAfterHistoryMigrations: readonly Migration[] = [
+  ...historyFirstMigrations.slice(0,7),
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_history.v8'},
+  {...personalMigration,id:'r2.personal_memory.after_r3_config.v9'},
+];
+const supportedMigrations = [canonicalMigrations,historyFirstMigrations,personalBeforeConfigMigrations,configAfterHistoryMigrations];
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = canonicalMigrations.length;
 
