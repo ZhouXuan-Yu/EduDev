@@ -14,6 +14,8 @@
 
 本轮 AC-22 模块通过。除普通文档使用同版 Worker 与可核对的宿主源码外，AC-22 运行均绑定正式 Electron 入口 SHA-256 `71b7e98efbd413021706ee18de5a2e25426962a521c406a4b82a11b1c630fa39`。实际构建、宿主资源契约 10/10、原生 embedding 契约 2/2、渲染组件 261/261 均通过。版本、命令和原始窗口见固定验收根 `expanded-20261126`。
 
+`combined-isolated-electron-smoke.log` 以同一构建通过 207 条桌面回归，覆盖 1366×768、1920×1080 和重启读回。该既有回归使用明确隔离的旧运行时。生产 Pi 单独经 `xiaozhi-complex-stream-2QyDvs` 的原界面、受控长流式和真实 SQLite 通过。30 条输入到下一帧 P95 为 8.8 ms，51 条滚动到下一帧 P95 为 1.3 ms。该时序基于流式页面，W-03 所需的六类本地反馈样本仍单独采集。
+
 复跑在依赖组合工作树的 `apps/desktop` 下执行。将下列 `$build` 指向 `test-results/provider-resource-final` 的绝对路径，`$evidence` 指向固定验收根的 `expanded-20261126`，并将 `OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT`、`TEMP`、`TMP` 指向该同一验收目录。
 
 ```powershell
