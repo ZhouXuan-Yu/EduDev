@@ -26,7 +26,7 @@
 | AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
 | AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
-| AC-23 | NOT_RUN | 真实 Windows 系统休眠、重连及原绝对截止时间。 |
+| AC-23 | NOT_RUN | 合成模型实际连线和 Electron 生产回调已验，缺隔离 Windows S0 原生事件和绝对截止时间矩阵。 |
 | AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
@@ -35,10 +35,10 @@
 | AC-29 | PASS · 已实现 | 正式 Windows 桌面显示恢复、冷却未发、需教师设置及未知回执。连续生产事件、唯一提示、切回原会话、实际重启、诊断导出、原话与继续入口均已核对。 |
 | AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
 | AC-31 | PASS · 已实现 | 同一正式构建通过 DB R2 历史准备记录、缺失与损坏记录拒绝、实时撤权、DB R3 旧库升级和验证还原。首次升级前原 SQLite、历史行和原生运行文件保持。 |
-| AC-32 | NOT_RUN | 组合下租约和 Agent Experience R1 的性能合同。 |
-| AC-33 | NOT_RUN | 四类教学任务的无故障、可恢复和不可恢复矩阵。 |
-| AC-34 | NOT_RUN | 按实际差异判定是否触发真实模型质量评测，再跑固定合同。 |
-| AC-35 | NOT_RUN | 模块、真实组合候选和最终 main 的版本绑定与门禁。 |
+| AC-32 | NOT_RUN | 等待资源 R1 可执行组合及原六类性能基线。Provider 单独构建的 PDF 槽位证据已经保留。 |
+| AC-33 | NOT_RUN | 固定扫描件已生成并实际归档，当前构建中原文解析未完成。四条任务的无故障、可恢复和失败矩阵尚无完整端到端证据。 |
+| AC-34 | NOT_RUN | 恢复会改变可用工具选择和兼容 Provider 执行路径，按合同触发真实模型对照。隔离验收环境没有可用的测试账号配置。 |
+| AC-35 | NOT_RUN | 模块构建与现有组件回归有据。正式组合和最终 main 的版本绑定、完整门禁和串行事实仍待验。 |
 | AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
 
 ## 首轮 HTTP 故障证据
@@ -256,3 +256,11 @@
 - 在 `provider-r1-state-ui` 正式 Windows 构建运行实际 Pi/真实 loopback 模型 12/12，确认三次实际派发上限以及冷却零计量，见 `model-wire-health-92esB9/report.json`。同一正式构建的真实 Pi/Hana 读取通过 6/6，单个模型工具请求遇 EBUSY 最多读取两次，退避中取消仅有一次实际读取、无下一次模型派发。冷启保持记录。见 `xiaozhi-ordinary-recovery-ui-0J72f4/report.json`。
 - `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <实际构建>` 加默认、`--keep-failing`、`--cancel-in-flight` 三组分别通过 2/2、2/2、3/3。实际模型只调用一次 PDF 导出工具，领域内尝试最多两次打印。持续失败后没有成功 Effect。停止时保留旧 PDF 窗口、进程和原 R1 配额，同类申请超时。旧回执到达并清理后教师再次审批，第二个 Run 有独立许可，只生成一份新 PDF。用实际 SQLite 与独立文件解析核对。报告 `provider-paper-export-ns0Gnc/report.json`、`provider-paper-export-T6shIC/report.json`、`provider-paper-export-1ZXDsG/report.json`。资源及模型合同 11/11，见 `wp03-ac11-budget-contract.log`。
 - AC-08 的真实 SQLite 冷读、缓存活跃条目保留、旧代际和期限合同 7/7，见 `wp03-ac08-cache-and-cold-sqlite-verified.log`。第一次命令缺少固定根环境变量，原日志保留。本机仅支持 Modern Standby S0。生产 Electron 电源回调已经注入，无真实系统待机。见 `wp06-s0-environment-readback.txt`。
+
+## WP-08 固定教学输入与合并前置核对
+
+- `python scripts/acceptance/provider-resilience-journey-inputs.py <专项 fixtures 绝对目录> <固定验收根>`。实际 MuPDF 两次离线渲染，六份输出与清单均有相同 SHA-256。A、B 切分题册和答案区域，C 只生成原第一页，`SYN-OCR-01` 保持原页。分别用实际 PDF 读者核对每份只有一个扫描图和没有预埋正文层，保留 `mock-source.txt`、CSV 和讲义来源摘要。见 `wp08-ac33-frozen-scan-readback.json` 及 `provider-journey-inputs-cz4lw12g/inputs.json`。
+- `node scripts/acceptance/provider-resilience-journey-import.mjs <该扫描目录> <固定验收根>` 使用同一 Windows 正式构建，从资料库文件夹选择入口实际确认，归档前 0 份，归档完成后 SQLite 六个独立来源和本地原件摘要均吻合，外部请求 0。解析状态仍为 `failed`，引擎回执 `hana-anydoc-0.1.2:unavailable`。归档成功单独记录，AC-33 不通过此项完成。见 `provider-journey-import-Buk0dK/report.json`。续做需在保留原输入清单的前提下使用具备实际 parser/OCR 的组合构建，并按原校验导入题目与具名讲义。
+- 独立运行锁定的 AnyDoc 0.1.2 识别固定 PDF 的类型为 `pdf`，明确返回扫描页需要 OCR。资源 R1 同版本 OCR 清单的 712 个本地文件均和编译锁一致。原宿主拒绝使用目录链接启动 OCR，实际正式解析报告 `provider-journey-import-YSx0i7/report.json` 失败，临时链接已精确移除，资源调度 R1 原运行包保持。当前 D 盘空间不足以按保留空间复制独立实体运行包。继续验收时使用正式安装的实体运行包，然后以 `--require-text` 从原窗口核对逐页 OCR、A/B 答案独立来源与 C 的缺页事实。
+- `npm run test:renderer-components` 已复跑 261/261。最后一次生产源码变化仍为 `8e58147`，核对原 Windows 主进程和渲染 SHA 未变。`npm audit --package-lock-only --json` 记录现有高危 5 项、中危 17 项、低危 8 项，锁文件未更改。`git diff --check` 通过。见 `wp08-module-renderer-final.log`、`wp08-module-npm-audit.json`、`wp08-main-readback.txt`。
+- `git merge-tree --write-tree HEAD codex/host-resource-scheduling-r1` 只读预检记录共享代码与协作文件的实际冲突，见 `wp08-r1-join-readonly.txt`。未建立正式集成候选，未执行本地 main 合并或远端写入。必须先处理原调度依赖的工作器账和性能证据，再核对组合权限、生命周期及实际 Windows 门禁。
