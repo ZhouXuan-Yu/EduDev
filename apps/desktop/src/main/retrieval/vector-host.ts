@@ -142,5 +142,9 @@ export class VectorHost implements VectorPort{
     if(child){const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));this.stop(child);await exited;}
     await starting?.catch(()=>undefined);
   }
-  async close(){this.closing=true;await this.interrupt();}
+  async close(){
+    this.closing=true;
+    await this.interrupt();
+    await this.retiringEmbedding;
+  }
 }

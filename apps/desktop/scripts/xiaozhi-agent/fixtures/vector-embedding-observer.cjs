@@ -14,6 +14,15 @@ cp.spawn = function (file,...args) {
   const pid=child.pid, decoder=new StringDecoder('utf8'), push=child.stdout.push.bind(child.stdout), write=child.stdin.write.bind(child.stdin), kill=child.kill.bind(child);
   let active, pending='', held=[], holding=false, timer;
   log('spawn',{pid});
+  const emit=child.emit.bind(child);
+  child.emit=function(event,...values){
+    if(event==='close'&&fs.existsSync(flag('observe-desktop-close-order'))){
+      log('close_notification_delayed',{pid});
+      setTimeout(()=>emit(event,...values),500);
+      return true;
+    }
+    return emit(event,...values);
+  };
   child.once('close',(code,signal)=>{clearInterval(timer);log('close',{pid,code,signal});});
   child.stdin.write = function (raw,...rest) {
     let request;

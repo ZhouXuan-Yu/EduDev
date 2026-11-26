@@ -210,9 +210,24 @@ try {
 }finally{
   if(app){
     report.trace=await trace().catch(()=>undefined);
+    if(report.success)fs.writeFileSync(file('observe-desktop-close-order'),'');
     await app.close().catch(()=>undefined);
   }
   report.native=native();
+  if(report.success){
+    const spawned=report.native.filter(event=>event.event==='spawn').map(event=>event.pid).sort((a,b)=>a-b);
+    const closed=report.native.filter(event=>event.event==='close').map(event=>event.pid).sort((a,b)=>a-b);
+    report.shutdown={spawned,closed};
+    try {
+      assert(report.native.some(event=>event.event==='close_notification_delayed'),'The shutdown race must be exercised');
+      assert.deepEqual(closed,spawned,'Every native model process must publish its actual close before Electron exits');
+      assert(spawned.every(gone),'No native model process may survive the owned desktop');
+    } catch(error) {
+      report.success=false;
+      report.error=String(error.stack??error);
+      process.exitCode=1;
+    }
+  }
   fs.writeFileSync(file('report.json'),JSON.stringify(report,null,2),{flag:'wx'});
   console.log(JSON.stringify({success:report.success,root,checks:report.checks,error:report.error}));
 }
