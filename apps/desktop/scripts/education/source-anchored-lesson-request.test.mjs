@@ -106,4 +106,7 @@ test('keeps a combined closing check in its original slot and preserves all teac
   assert(combined.scenes[3].title.includes('评价')&&combined.scenes[3].title.includes('小结'));
   assert.deepEqual(combined.lesson.phases[3].checks,[assessment]);
   assert.equal(naturalLessonDocument(split,intent).document.scenes.length,5);
+  const damaged=structuredClone(raw);
+  damaged.details.content='原始要求\uFFFD这一段有缺字';
+  assert.equal(naturalLessonDocument(damaged,intent).error,'lesson_text_encoding');
 });

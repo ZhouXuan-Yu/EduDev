@@ -126,6 +126,7 @@ try {
   assert.equal(draft.status, 'pending');
   const payload = JSON.parse(draft.payload_json);
   report.lesson = { id: draft.id, runId: draft.run_id, document: payload.document };
+  assert(!JSON.stringify(payload.document).includes('\uFFFD'), 'Draft contains damaged text');
   assert.equal(payload.document.totalMinutes, 45);
   assert.deepEqual(payload.document.scenes.map(scene => scene.durationMinutes), [5, 12, 18, 10]);
   assert.equal(payload.document.objectives.length, 2);

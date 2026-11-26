@@ -74,6 +74,10 @@ function keepClosingSlot(scenes:NaturalLessonInput['scenes'],agenda?:readonly Le
 
 export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent, requestedMaterials?: number, agenda?:readonly LessonAgendaSlot[]):
   { document: ClassroomPlanDocument; materialCount: number } | { issue: string; error: string } {
+  if(JSON.stringify(raw)?.includes("\uFFFD"))return {
+    error:"lesson_text_encoding",
+    issue:"教案含有解码损坏标记 U+FFFD。请按已读资料重新生成对应文字，保留原题、目标和环节安排。来源确实缺字时请明确标为待核对。",
+  };
   const { title, totalMinutes, objectives, preparation, details, scenes:submittedScenes, materials, mappings = [] } = raw as NaturalLessonInput;
   const scenes=keepClosingSlot(submittedScenes,agenda);
   const included = includeLessonMaterials(details.content, materials, requestedMaterials);
