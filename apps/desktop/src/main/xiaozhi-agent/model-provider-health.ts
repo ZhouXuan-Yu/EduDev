@@ -21,7 +21,7 @@ function rejection(response: Response): ProviderHealthOutcome {
 
 /** One Pi SDK stream owns the transport. Health completes only when its body or abort settles. */
 export function createModelHealthScope(configuration: ModelProviderHealth, modelId: string, cancelled: () => boolean,
-  onBlocked: () => void) {
+  onBlocked: (reason: ProviderHealthBlocked['reason']) => void) {
   const key = configuration.keyForModel(modelId);
   let sdkVerified: boolean | undefined;
   let settleAccepted: (() => void | Promise<void>) | undefined;
@@ -30,7 +30,7 @@ export function createModelHealthScope(configuration: ModelProviderHealth, model
     begin() {
       let permit;
       try {permit = configuration.health.begin(key, true);}
-      catch (error) {if (error instanceof ProviderHealthBlocked) onBlocked(); throw error;}
+      catch (error) {if (error instanceof ProviderHealthBlocked) onBlocked(error.reason); throw error;}
       const finish = (outcome: ProviderHealthOutcome) => permit.complete(cancelled() ? {kind: 'ignored'} : outcome);
       const failed = (error: unknown, dispatched: boolean) =>
         finish(dispatched && transportLoss(error) ? {kind: 'dependency_failure'} : {kind: 'ignored'});

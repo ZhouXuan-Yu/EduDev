@@ -7,6 +7,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {_electron as electron} from 'playwright';
 
 const build = process.argv[2], acceptance = process.env.OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT;
+const statusUi=process.argv.includes('--status-ui');
 assert(path.isAbsolute(build ?? '') && path.isAbsolute(acceptance ?? ''), 'Set the verified build and acceptance root');
 const main = await fs.realpath(path.join(build, 'main/index.js'));
 const root = await fs.mkdtemp(path.join(await fs.realpath(acceptance), 'model-wire-health-'));
@@ -103,6 +104,12 @@ try {
     return {turn, usage};
   }
 
+  if(statusUi)await page.evaluate(()=>{
+    window.providerStatusEvents=[];
+    window.omniEdu.onXiaozhiEvent(event=>{
+      if(event.kind==='model_request')window.providerStatusEvents.push(event);
+    });
+  });
   const sequence = await send('用一句话说明浮力方向和大小。', 'sequence');
   verifyCount('sequence', 3);
   assert.equal(sequence.usage.modelCalls, 3);
@@ -110,6 +117,25 @@ try {
   const wire = report.calls.filter(row => row.mode === 'sequence');
   assert.deepEqual(wire.map(row => row.status), [429, 503, 200]);
   assert(wire[1].at - wire[0].at >= 20);
+  if(statusUi){
+    const section=page.locator(`[data-turn-id="${sequence.turn.id}"]`);
+    const notice=section.getByTestId('office-model-requests');
+    assert.equal(await notice.count(),1);
+    assert.match(await notice.innerText(),/连接已恢复/u);
+    assert.equal(new Set(sequence.turn.modelRequests.map(row=>`${row.request}:${row.attempt}`)).size,3);
+    assert.match(await section.innerText(),/用一句话说明浮力方向和大小/u);
+    const feedbackObservedAt=performance.now();
+    const lastDispatchAt=wire.at(-1).at;
+    assert(feedbackObservedAt>=lastDispatchAt);
+    const events=await page.evaluate(id=>window.providerStatusEvents.filter(event=>event.runId===id),sequence.turn.id);
+    assert(events.length>=3);
+    assert(events.every((event,index)=>!index||event.sequence>events[index-1].sequence));
+    assert.deepEqual(events.filter(event=>event.request.state==='sending').map(event=>event.request.attempt),[1,2,3]);
+    assert.equal(events.at(-1).request.state,'accepted');
+    await section.screenshot({path:path.join(root,'connection-recovered.png')});
+    report.statusUi={recovered:sequence.turn.id,feedbackObservedAt,lastDispatchAt,
+      feedbackAfterDispatchMs:feedbackObservedAt-lastDispatchAt,events};
+  }
   report.checks.push('Short valid Retry-After and invalid-header fallback stay within the original three physical requests');
   const exhausted = await send('用一句话说明浮力方向。', 'exhausted');
   verifyCount('exhausted', 3);
@@ -119,7 +145,15 @@ try {
   const blocked = await send('再次说明浮力方向。', 'blocked');
   verifyCount('blocked', 0);
   assert.equal(blocked.usage?.modelCalls ?? 0, 0);
-  assert.equal(blocked.turn.errorCode, 'provider_unavailable');
+  assert.equal(blocked.turn.errorCode, 'provider_cooldown');
+  if(statusUi){
+    const section=page.locator(`[data-turn-id="${blocked.turn.id}"]`);
+    assert.equal(await section.getAttribute('data-state'),'failed');
+    assert.match(await section.innerText(),/服务正在冷却，本轮未发送/u);
+    assert(await section.getByTestId('office-turn-retry').isEnabled());
+    await section.screenshot({path:path.join(root,'cooldown-not-sent.png')});
+    report.statusUi.cooldown=blocked.turn.id;
+  }
   report.checks.push('A new turn during cooldown uses zero requests and zero attempt budget');
   await delay(12_100);
   const recovered = await send('恢复后说明浮力方向。', 'recovered');
@@ -138,6 +172,13 @@ try {
     verifyCount(phase, 1);
     assert.equal(rejected.usage.modelCalls, 1);
     assert.equal(rejected.turn.errorCode, 'authentication');
+    if(statusUi&&status===401){
+      const section=page.locator(`[data-turn-id="${rejected.turn.id}"]`);
+      assert.match(await section.innerText(),/凭证不可用/u);
+      assert(await section.getByTestId('office-turn-configure').isEnabled());
+      await section.screenshot({path:path.join(root,'connection-needs-teacher.png')});
+      report.statusUi.needsTeacher=rejected.turn.id;
+    }
   }
   report.checks.push('401 and 403 are sent exactly once even when the provider advertises an SDK retry');
   const unknown = await send('核对合成请求在连接断开后的尝试数。', 'uncertain-post');
@@ -157,7 +198,7 @@ try {
   const delayed = await send('在冷却期内再次检查合成限流。', 'long-rate-blocked');
   verifyCount('long-rate-blocked', 0);
   assert.equal(delayed.usage?.modelCalls ?? 0, 0);
-  assert.equal(delayed.turn.errorCode, 'provider_unavailable');
+  assert.equal(delayed.turn.errorCode, 'provider_cooldown');
   report.checks.push('A long Retry-After causes no early send or budget charge on the next turn');
   if (process.argv.includes('--cold')) {
     const beforeWake = report.calls.length;
@@ -167,7 +208,7 @@ try {
     const afterWake = await send('唤醒事件后核对合成限流。', 'wake-blocked');
     verifyCount('wake-blocked', 0);
     assert.equal(afterWake.usage?.modelCalls ?? 0, 0);
-    assert.equal(afterWake.turn.errorCode, 'provider_unavailable');
+    assert.equal(afterWake.turn.errorCode, 'provider_cooldown');
     report.checks.push('The Electron resume handler schedules no work and keeps the active Retry-After');
     await app.close();app=undefined;
     const before = report.calls.length;
@@ -180,8 +221,54 @@ try {
     const cold = await send('重启后检查合成限流是否仍然生效。', 'cold-blocked');
     verifyCount('cold-blocked', 0);
     assert.equal(cold.usage?.modelCalls ?? 0, 0);
-    assert.equal(cold.turn.errorCode, 'provider_unavailable');
+    assert.equal(cold.turn.errorCode, 'provider_cooldown');
     report.checks.push('After a real Electron restart the original Retry-After and the persisted attempt count are intact');
+    if(statusUi){
+      const restored=page.locator(`[data-turn-id="${report.statusUi.recovered}"]`);
+      assert.match(await restored.getByTestId('office-model-requests').innerText(),/连接已恢复/u);
+      const stopped=page.locator(`[data-turn-id="${cold.turn.id}"]`);
+      assert.match(await stopped.innerText(),/服务正在冷却，本轮未发送/u);
+      assert.equal(await stopped.getAttribute('data-state'),'failed');
+      report.statusUi.cold=cold.turn.id;
+      const composer=page.locator('.office-composer-container');
+      const beforeSessionSwitch=report.calls.length;
+      await page.getByTestId('pi-new-session').click();
+      const otherSession=await until(async()=>{
+        const id=await composer.getAttribute('data-session-id');
+        return id&&id!=='loading'&&id!==session?id:undefined;
+      });
+      await restored.waitFor({state:'detached'});
+      await page.getByTestId('pi-sidebar-toggle').click();
+      await page.getByTestId(`ai-conversation-session-${session}`).click();
+      await until(async()=>await composer.getAttribute('data-session-id')===session);
+      const restoredNotice=restored.getByTestId('office-model-requests');
+      await restoredNotice.waitFor({state:'visible'});
+      assert.equal(await restoredNotice.count(),1);
+      assert.match(await restoredNotice.innerText(),/连接已恢复/u);
+      assert.match(await restored.innerText(),/用一句话说明浮力方向和大小/u);
+      assert.equal(report.calls.length,beforeSessionSwitch);
+      report.statusUi.switched={from:session,to:otherSession,returned:session,dispatched:0};
+      const diagnosticFile=path.join(root,'provider-recovery-diagnostic.json');
+      await app.evaluate(({dialog},filePath)=>{
+        dialog.showSaveDialog=async()=>({canceled:false,filePath});
+      },diagnosticFile);
+      await page.getByRole('button',{name:'设置',exact:true}).click();
+      const advanced=page.getByTestId('pi-settings-advanced-toggle');
+      if(await advanced.getAttribute('aria-expanded')!=='true')await advanced.click();
+      await page.getByTestId('pi-settings-tab-diagnostics').click();
+      await page.getByTestId('pi-diagnostic-run').selectOption(sequence.turn.id);
+      await page.getByTestId('pi-diagnostic-preview').click();
+      const diagnostic=JSON.parse(await page.getByTestId('pi-diagnostic-json').innerText());
+      assert.equal(diagnostic.state,'completed');
+      assert.deepEqual(diagnostic.requests.map(request=>request.attempt),[1,2,3]);
+      await page.getByTestId('pi-diagnostic-save').click();
+      await until(async()=>(await page.getByTestId('pi-diagnostic-notice').innerText()).includes('已保存'));
+      const diagnosticHash=createHash('sha256').update(await fs.readFile(diagnosticFile)).digest('hex');
+      assert.equal(diagnosticHash,await page.getByTestId('pi-diagnostic-hash').innerText());
+      assert.equal(report.calls.length,beforeSessionSwitch);
+      report.statusUi.diagnostic={file:diagnosticFile,sha256:diagnosticHash};
+      report.checks.push('The actual conversation renders distinct recovered, cooldown and teacher settings feedback, restores it across restart and session switching, then exports the exact trace without duplicate prompts');
+    }
     await app.close();app=undefined;
     await launch('owned-alternate-wire-fixture');
     const separate = await send('使用当前合成连接说明浮力。', 'separate-credential');

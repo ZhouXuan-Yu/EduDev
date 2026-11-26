@@ -137,11 +137,15 @@ try{
    if(reference)assert(snapshots.some(snapshot=>snapshot.snapshot_id===reference));
   }
   const review=await openReview();
+  assert.match(await review.getByTestId('pi-task-recovery-effects').innerText(),/结果未知/u);
+  assert.notEqual(await review.getAttribute('data-state'),'completed');
+  await until(()=>review.getByTestId('pi-task-resume').isEnabled(),10_000);
   if(pendingApproval){
    const approvalPanel=review.getByTestId('pi-task-recovery-approvals');
    await approvalPanel.waitFor();
    assert.match(await approvalPanel.innerText(),/待审批/u);
   }
+  await review.screenshot({path:path.join(root,'provider-task-recovery-actions.png')});
   const beforeRuns=query('SELECT run_id,status FROM xiaozhi_event_runs ORDER BY rowid');
   assert.equal(beforeRuns.length,withPending?2:1);
   assert.equal((await app.evaluate(()=>globalThis.stageTest)).requests,0);

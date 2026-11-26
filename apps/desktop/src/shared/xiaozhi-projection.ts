@@ -23,6 +23,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   insufficient_balance:'DeepSeek 账户余额不足，请检查当前账户余额后再继续；不会自动更换密钥或账户。原任务和草稿保留。',
   rate_limited: 'DeepSeek 请求受到限流，请按服务等待时间稍后继续；原任务和草稿保留。',
   provider_unavailable:'DeepSeek 服务暂不可用，本轮未完成。请稍后继续，已保存文件和部分回复保留。',
+  provider_cooldown:'DeepSeek 服务正在冷却，本轮未发送。请稍后重试，此前已保存的成果会保留。',
   timeout: '本轮等待超时，请重试。', transport: '无法连接 DeepSeek，请检查网络后重试。',
   cancelled: '已停止本轮。', model_error: '模型没有完成有效回复，请重试。',
   goal_stalled:'未取得新的可核验证据，已停止自动继续。请核对目标进度后恢复；已完成操作会保留。',

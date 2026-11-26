@@ -7,9 +7,10 @@ const states={sending:'正在连接',retry_wait:'等待重试',retried:'已等�
 export function OfficeModelRequestNotice({turn}:{turn:OfficeProjectedTurn}){
  const rows=turn.modelRequests?.filter(validModelRequest)||[],last=rows.at(-1);if(!last||rows.length===1&&last.state==='accepted'&&['completed','running'].includes(turn.status))return null;
  const waiting=turn.status==='running'&&last.state==='retry_wait';
+ const recovered=turn.status==='completed'&&rows.some(row=>row.attempt>1&&row.state==='accepted');
  const count=rows.length+(turn.modelRequestsOmitted||0);
  const status=waiting?`连接暂时失败，正在等待重试（${last.attempt}/2），约 ${Math.ceil((last.waitMs||0)/1000)} 秒后尝试`
-  :last.state==='rejected'||last.state==='interrupted'?`${states[last.state]}${last.status?`（HTTP ${last.status}）`:''}`:undefined;
+  :recovered?'连接已恢复':last.state==='rejected'||last.state==='interrupted'?`${states[last.state]}${last.status?`（HTTP ${last.status}）`:''}`:undefined;
  return <div className="office-verification-notice" data-edu-domain="" data-testid="office-model-requests" data-state={last.state} role="status"><div>
   <DisclosureCard title={<>模型请求记录（{count}）{status&&<span> · {status}</span>}</>}>
    {waiting&&<p>约 {Math.ceil((last.waitMs||0)/1000)} 秒后尝试。可用下方停止按钮结束本轮。</p>}

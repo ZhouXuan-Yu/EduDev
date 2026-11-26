@@ -1169,7 +1169,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     memoryTimer.unref();
   }
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
-  let modelHttpStatus:number|undefined, modelHealthBlocked=false, modelRequestSequence=0;
+  let modelHttpStatus:number|undefined, modelHealthBlocked:'provider_unavailable'|'provider_cooldown'|undefined, modelRequestSequence=0;
   let submittedTeacherRequest:string|undefined;
   let lessonDraftAttempts=0;
   let lessonBasisAttempts=0;
@@ -1180,9 +1180,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   session.agent.streamFunction=async (...args)=>{
     const modelSignal=args[2]?.signal;
     const health=options.modelProviderHealth ? createModelHealthScope(options.modelProviderHealth,args[0].id,
-      ()=>interrupted||disposed||Boolean(modelSignal?.aborted||options.lifecycleSignal?.aborted),()=>{modelHealthBlocked=true;}) : undefined;
+      ()=>interrupted||disposed||Boolean(modelSignal?.aborted||options.lifecycleSignal?.aborted),reason=>{
+        modelHealthBlocked=reason==='cooldown'&&budget?.snapshot().modelCalls===0?'provider_cooldown':'provider_unavailable';
+      }) : undefined;
     const guarded=quality||Boolean(health);
-    modelHealthBlocked=false;
+    modelHealthBlocked=undefined;
     modelHttpStatus=undefined;
     let logicalRequestStarted=false;
     const wireFetch=guarded?withModelRequestRecovery(rawProviderFetch,{health,maxAttempts:quality?3:1,nextRequest:()=>++modelRequestSequence,
@@ -1574,7 +1576,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         if (last?.stopReason === 'length') outputLimited=true;
       } catch (error) { failure = classifyError(error); }
       finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
-      if((failure==='model_error'||failure==='transport')&&modelHealthBlocked)failure='provider_unavailable';
+      if((failure==='model_error'||failure==='transport')&&modelHealthBlocked)failure=modelHealthBlocked;
       if(failure==='model_error')failure=modelHttpError(modelHttpStatus)||failure;
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;
