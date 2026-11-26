@@ -58,3 +58,10 @@ apps/desktop/scripts/release/prepare-retrieval-assets.mjs text eol=lf
 # SHA-256 evidence keeps exact Windows/package bytes across Git checkouts.
 # Retain normal whitespace checks; terminal CR is part of recorded CRLF.
 /acceptance/ui-ux-r1-20261124/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve the reviewed PromptInput source hashes across Git checkout settings.
+/apps/desktop/src/renderer/heroui-pro/components/prompt-input/index.ts text eol=lf
+/apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.context.tsx text eol=lf
+/apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.styles.ts text eol=lf
+/apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.tsx text eol=lf
+/apps/desktop/src/renderer/heroui-pro/components/prompt-input/prompt-input.utils.ts text eol=lf

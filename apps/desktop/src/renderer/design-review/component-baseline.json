@@ -37,11 +37,11 @@
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/index.ts",
-      "sha256": "671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26"
+      "sha256": "a795ef163a15f337655b122cad57eca37059debf0e78be927495bbed480bcc11"
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.context.tsx",
-      "sha256": "72eb4473879b735370632a12693a90e5709ca7946b99d59c7dc940b4779eddb4"
+      "sha256": "d0f916a40ce66cc151d0a41f2df901f9b830d01f9474bdf4b10851e2c0e7e2db"
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.context.tsx",
@@ -53,11 +53,11 @@
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.styles.ts",
-      "sha256": "0de89cef3510e05b4877826303f7ca5c87c818056b2ac1dab2d1b07f5ef74f7c"
+      "sha256": "a0afb149c689fadc739b649d6a4ba0a58feea8db92e5cefc3337773aa42186b3"
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.tsx",
-      "sha256": "239a579a14c816689d94245a7aea9732fc8dc90cb0615411ee9de3a0567dd158"
+      "sha256": "1fc5c8f62b29d122a27cb9bfd490e816e6833742a3fc6265d0a9537c75532089"
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.types.ts",
@@ -65,7 +65,7 @@
     },
     {
       "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.utils.ts",
-      "sha256": "5cd8396dabbc736965c5bd2a966e9e7331788747f8fa388616e00724a86dd85f"
+      "sha256": "ac989a1e4657a2bd39901752d216ca788258cad56e61bddda0d4c85ca6f3007b"
     }
   ],
   "officialReferenceSha256": "b40a60eafd9e42351c32597f4d60b7aa2aeba6877d1cb9a38596663fc152884a",

@@ -52,7 +52,7 @@ async function command(id) {
 try {
   await launch();
 
-  const border = await page.locator('[data-testid="office-composer"] [data-slot="prompt-input-shell"]').evaluate((el) => {
+  const border = await page.getByTestId('office-composer').locator('.wb-input-frame').evaluate((el) => {
     const s = getComputedStyle(el);
     return { style: s.borderStyle, width: parseFloat(s.borderWidth) };
   });
@@ -107,9 +107,19 @@ try {
   await page.getByTestId('pi-command-picker').click();
   await page.waitForTimeout(150);
   await page.getByTestId('pi-command-permissions').click();
-  await page.waitForTimeout(400);
-  assert(await page.getByText('工作目录与权限', { exact: true }).first().isVisible());
+  const settings = page.getByTestId('pi-settings-workspace');
+  await settings.waitFor({ state: 'visible' });
+  assert.equal(await settings.getAttribute('data-tab'), 'permissions');
+  assert(await settings.getByRole('heading', { name: '资料与权限', exact: true }).isVisible());
+  await settings.getByTestId('pi-settings-workspace-choose').waitFor({ state: 'visible' });
   check('/permissions reaches the real workspace and permission settings');
+
+  await page.getByTestId('nav-ai').click();
+  await page.getByTestId('office-prompt-input').waitFor({ state: 'visible' });
+  await page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-settings').click();
+  await settings.waitFor({ state: 'visible' });
+  assert.equal(await settings.getAttribute('data-tab'), 'models');
+  check('The ordinary settings destination still starts on the models page');
 
   assert.deepEqual(errors, []);
   report.success = true;
