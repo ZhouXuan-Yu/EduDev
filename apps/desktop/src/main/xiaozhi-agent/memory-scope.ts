@@ -6,10 +6,11 @@ import { XIAOZHI_MEMORY_LABELS, projectMemorySource } from '../../shared/xiaozhi
 import type { XiaozhiActionResult } from '../../shared/xiaozhi-agent';
 import type { PrivateMemorySelection } from './memory-scope-state';
 import { validMemoryScopeInput, validMemorySelection, validMemorySession, validMemorySource } from './memory-selection';
+import type { createHistoryMemory } from './history/memory';
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
 /** Existing SQLite remains the memory fact source. Nothing here invokes a provider. */
-export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available' } = {}) {
+export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available'; history?: ReturnType<typeof createHistoryMemory> } = {}) {
   async function facts(source: XiaozhiMemorySource): Promise<MemoryFact[]> {
     const items = source.layer === 'L2' ? (await store.getAiMemoryDocument(source.source))?.entries || []
       : (await store.getAiMemoryL3Document(source.source))?.entries || [];
@@ -37,6 +38,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     const cache = new Map<string, MemoryFact[] | null>();
     const selections: XiaozhiMemoryScope['selections'] = [];
     for (const item of saved.selections) {
+      if (item.layer==='history') {
+        const current = await options.history?.selected(item).catch(()=>null);
+        const {fingerprint,...selection}=item;
+        selections.push({...selection,label:current?.label??'历史来源',state:current?.fingerprint===fingerprint?'ready':'changed'});
+        continue;
+      }
       const key = `${item.layer}:${item.source}`;
       if (!cache.has(key)) { try { cache.set(key, await facts(item)); } catch { cache.set(key, null); } }
       const list = cache.get(key), current = list?.find(entry => entry.id === item.id);
@@ -53,6 +60,11 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     const current: Array<{ id: string; fingerprint: string | null; state: string }> = [];
     const cache = new Map<string, MemoryFact[] | null>();
     if (saved.enabled) for (const item of saved.selections) {
+      if (item.layer==='history') {
+        const source = await options.history?.selected(item).catch(()=>null);
+        current.push({id:item.id,fingerprint:source?.fingerprint??null,state:source?.fingerprint===item.fingerprint?'ready':'history_unavailable'});
+        continue;
+      }
       const sourceKey = `${item.layer}:${item.source}`;
       if (!cache.has(sourceKey)) { try { cache.set(sourceKey, await facts(item)); } catch { cache.set(sourceKey, null); } }
       const list = cache.get(sourceKey), fact = list?.find(entry => entry.id === item.id);
@@ -61,7 +73,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     }
     if (JSON.stringify(saved) !== JSON.stringify(await store.xiaozhiState.memoryScope(id))) throw new Error('memory_scope_changed');
     return { fingerprint: createHash('sha256').update(JSON.stringify({ saved, current })).digest('hex'),
-      enabled: saved.enabled, valid: current.every(item => item.state === 'ready'), version: saved.version };
+      enabled: saved.enabled, valid: current.every(item => item.state === 'ready'||item.state==='history_unavailable'), version: saved.version,
+      history: saved.enabled&&saved.selections.some(item=>item.layer==='history'&&current.some(row=>row.id===item.id&&row.state==='ready')) };
   }
   return {
     scope, authority,
@@ -71,10 +84,19 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const initial = await authority(id);
       if (initial.fingerprint !== expectedAuthority || !initial.valid) throw new Error('memory_scope_changed');
       const saved = await store.xiaozhiState.memoryScope(id);
-      const payload: Array<{ reference: string; layer: 'L2' | 'L3'; source: string; version: number; text: string;
-        provenance: XiaozhiMemoryPreview['provenance']; sourceDocuments: string[]; refs: Array<{ kind: 'run' | 'event'; label: string }> }> = [];
+      const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history'; source: string; version: number; text: string;
+        provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history'; sourceDocuments: string[]; refs: Array<{ kind: 'run' | 'event'; label: string }>;
+        history?: {sourceId:string; sourceVersion:string; truncated:boolean} }> = [];
       if (saved.enabled) for (const item of saved.selections) {
         signal?.throwIfAborted();
+        if (item.layer==='history') {
+          const source = await options.history?.selected(item).catch(()=>null);
+          if (!source || source.fingerprint!==item.fingerprint) continue;
+          payload.push({reference:`记忆${payload.length+1}`,layer:'history',source:source.label,version:item.version,
+            text:source.text.slice(0,1600),provenance:'teacher_history',sourceDocuments:[],refs:[],
+            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated:source.text.length>1600}});
+          continue;
+        }
         const fact = (await facts(item)).find(entry => entry.id === item.id);
         if (!fact || fact.status !== 'active' || fact.version !== item.version || fact.fingerprint !== item.fingerprint) throw new Error('memory_scope_changed');
         const text = (await store.sanitizeProblemText(fact.text)).sanitizedText;
@@ -117,6 +139,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         await availableSession(input.sessionId);
         const selections: PrivateMemorySelection[] = [], cache = new Map<string, MemoryFact[]>();
         for (const item of input.selections) {
+          if (item.layer==='history') {
+            const source=await options.history?.selected(item).catch(()=>null);
+            if (!source) return {ok:false,error:'permission_denied'};
+            selections.push({...item,fingerprint:source.fingerprint});
+            continue;
+          }
           const key = `${item.layer}:${item.source}`;
           if (!cache.has(key)) cache.set(key, await facts(item));
           const current = cache.get(key)!.find(entry => entry.id === item.id);

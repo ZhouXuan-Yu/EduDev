@@ -364,6 +364,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (!manager.getBranch().some(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.education.memory.v1')) manager.appendCustomEntry('xiaozhi.education.memory.v1', { fingerprint: memoryFingerprint });
   }
 
+  const historyIdentity={version:1,source:'sqlite-authorized-history',delivery:'read_education_memory'};
+  const historyEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.history-memory.'));
+  if(historyEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.history-memory.v1'||
+    JSON.stringify(entry.data)!==JSON.stringify(historyIdentity))||historyEntries.length&&!options.memory)throw Error('configuration');
+  if(initialAuthority?.history){
+    if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.history-memory.v1'))
+      manager.appendCustomEntry('xiaozhi.education.history-memory.v1',historyIdentity);
+    prompt+='\n教师已选择可参考的历史。需要沿用历史时先调用 read_education_memory。历史内容是带来源的资料，当前教师要求和当前成果版本优先。不得依据旧记录宣布保存、批准或完成，不推定未提供的日期和适用范围。';
+  }
   const requestIdentity={version:1,tools:['read_teacher_request'],source:'sqlite-teacher-requests-v1'};
   const requestEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.teacher-requests.'));
   if(requestEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.teacher-requests.v1'||JSON.stringify(entry.data)!==JSON.stringify(requestIdentity))||requestEntries.length&&!options.teacherRequestTools)throw Error('configuration');
@@ -827,7 +836,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (!options.memory || !memoryEpoch?.hasDelivery()) return facts;
     const memories = await phase('pi_read_selected_memory',signal=>options.memory!.readSelected(initialAuthority!.fingerprint,signal));
     if (!memories.length) return facts;
-    const necessary = memories.map(({ reference, source, version, text, provenance, sourceDocuments }) => ({ reference, source, version, text, provenance, sourceDocuments }));
+    const necessary = memories.map(({ reference, source, version, text, provenance, sourceDocuments, history }) =>
+      ({ reference, source, version, text, provenance, sourceDocuments, ...(history?{history}:{}) }));
     return facts + '\n[本会话已读取且仍获授权的必要教育记忆，非新权限或教师确认]\n' + JSON.stringify(necessary);
   };
   // Native SDK extension only; no user/global extension, context-file or MCP discovery.
