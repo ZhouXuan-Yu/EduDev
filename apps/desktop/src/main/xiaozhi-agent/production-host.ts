@@ -1229,7 +1229,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }}),
       }:{}),
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
-        handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,
+        handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,prompt:cleanPrompt,
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
             requirementsVersion:owner.task!.requirementsVersion}),
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,

@@ -195,8 +195,10 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
               <PiPermissionSettings key={'permissions-' + sessionId} sessionId={sessionId}/>
               <PiEnvironmentSettings key={'environment-' + sessionId} sessionId={sessionId}/>
               <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
-              {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
               </>}
+            {!readFailed && sessionId && snapshot?.memoryScope &&
+              <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope}
+                running={locked || busy || loading} onSave={saveMemory} onRefresh={reload}/>}
           </SettingsStack></SettingsPage>}
           {tab === 'teacher-memory' && <SettingsPage tab={tab}><SettingsStack gap="lg">
             <h2 className={layoutStyles.subheading}>{title}</h2>
