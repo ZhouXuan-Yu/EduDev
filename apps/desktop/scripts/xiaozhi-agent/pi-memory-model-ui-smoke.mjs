@@ -7,9 +7,9 @@ import { DatabaseSync } from 'node:sqlite';
 import { _electron as electron } from 'playwright';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const output = fs.mkdtempSync(path.join(root, 'test-results/xiaozhi-agent/pi-memory-model-ui-')), data = path.join(output, 'data'); fs.mkdirSync(data);
-const cfg = fs.readFileSync(path.join(root, '.env.local'), 'utf8'), pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
-const apiKey = pick('DEEPSEEK_API_KEY'), model = pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(apiKey);
+const output = fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT || path.join(root, 'test-results/xiaozhi-agent'), 'pi-memory-model-ui-')), data = path.join(output, 'data'); fs.mkdirSync(data);
+const cfg = fs.existsSync(path.join(root, '.env.local')) ? fs.readFileSync(path.join(root, '.env.local'), 'utf8') : '', pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
+const apiKey = process.env.DEEPSEEK_API_KEY || pick('DEEPSEEK_API_KEY'), model = process.env.DEEPSEEK_MODEL || pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(apiKey);
 const checks = [], report = { suite: 'pi-memory-model-formal-ui', success: false, model, checks,
   boundaries: ['Real Electron/DeepSeek with synthetic teacher materials only', 'Manual native compaction and real scope/source revocation; automatic compaction requires separate evidence', 'Existing teacher governance UI creates and edits source facts'] };
 let app, page;
@@ -21,7 +21,7 @@ const scopeSet = input => page.evaluate(input => window.omniEdu.setXiaozhiMemory
 async function launch() {
   const env = { ...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(root, '../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: apiKey, DEEPSEEK_MODEL: model };
   delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
-  app = await electron.launch({ args: [path.join(root, 'out/main/index.js')], env, timeout: 60000 }); page = await app.firstWindow();
+  app = await electron.launch({ args: [path.join(root, 'out/main/index.js'), '--user-data-dir=' + path.join(output, 'profile')], env, timeout: 60000 }); page = await app.firstWindow();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ state: 'visible' });
   await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
 }

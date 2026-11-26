@@ -1169,6 +1169,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
   let modelHttpStatus:number|undefined;
   let submittedTeacherRequest:string|undefined;
+  let submittedTeacherTimestamp:number|undefined;
   let lessonDraftAttempts=0;
   let lessonBasisAttempts=0;
   let confirmedPaper: {callId:string;text:string} | undefined;
@@ -1183,7 +1184,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
       : '';
     const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
-    args[1]=projectTeacherPreferenceRequest(args[1],compacting?undefined:submittedTeacherRequest,currentGuidance);
+    args[1]=projectTeacherPreferenceRequest(args[1],
+      compacting || submittedTeacherTimestamp === undefined ? undefined : submittedTeacherRequest,
+      currentGuidance, submittedTeacherTimestamp);
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
@@ -1391,7 +1394,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       repetition.reset();
       const text = typeof event.message.content === 'string' ? event.message.content : event.message.content.filter(part => part.type === 'text').map(part => part.text).join('');
       const id = instructions.consume(text);
-      if (id) delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
+      if (id) {
+        // A teacher correction has taken effect. The earlier request's guidance is stale.
+        submittedTeacherRequest = undefined;
+        submittedTeacherTimestamp = undefined;
+        delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
+      } else if (submittedTeacherTimestamp === undefined && submittedTeacherRequest === text) {
+        submittedTeacherTimestamp = event.message.timestamp;
+      }
     } else if(event.type === 'message_start' && event.message.role === 'assistant') {
       emit({kind:'assistant_start',segment:++segment});
       presentation.start(segment);
@@ -1539,6 +1549,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const scopeInstructions=quality?responseScopeInstructions(text,Boolean(subjectInstructions)):'';
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         submittedTeacherRequest=context?`${context}\n\n[教师本次请求]\n${text}`:text;
+        submittedTeacherTimestamp = undefined;
         await session.prompt(submittedTeacherRequest);
         await checkMemory();
         const last=currentAssistantOutcome();

@@ -30,10 +30,13 @@ function withoutLegacyPreferences(text:string){
 }
 
 /** Request projection only. Neither prior turns nor current preferences are written to history. */
-export function projectTeacherPreferenceRequest(context:TranscriptContext,submittedText?:string,guidance=''):TranscriptContext {
- const current=guidance&&submittedText?context.messages.findLastIndex(message=>message.role==='user'
-  &&(typeof message.content==='string'?message.content===submittedText:
-   message.content.some(part=>part.type==='text'&&part.text===submittedText))):-1;
+export function projectTeacherPreferenceRequest(context:TranscriptContext,submittedText?:string,guidance='',submittedAt?:number):TranscriptContext {
+ const matches = (message: TranscriptContext['messages'][number]) => message.role === 'user'
+  && (submittedAt === undefined || message.timestamp === submittedAt)
+  && (typeof message.content === 'string' ? message.content === submittedText :
+   message.content.some(part => part.type === 'text' && part.text === submittedText));
+ let current = guidance && submittedText ? context.messages.findLastIndex(matches) : -1;
+ if (current >= 0 && submittedAt !== undefined && context.messages.findIndex(matches) !== current) current = -1;
  const messages=context.messages.map<TranscriptContext['messages'][number]>((message,index)=>{
   if(message.role!=='user')return message;
   if(typeof message.content==='string'){
