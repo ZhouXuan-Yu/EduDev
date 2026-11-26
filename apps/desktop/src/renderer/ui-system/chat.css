@@ -344,7 +344,7 @@
   min-width: 0;
   max-width: 100%;
   border-radius: 4px;
-  transition: color 180ms ease, background-color 180ms ease;
+  transition: color var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease), background-color var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease);
 }
 .edu-process-tool-label:hover {
   color: var(--foreground);
@@ -366,7 +366,7 @@
 .edu-operation-chevron {
   opacity: 0.6;
   transform: rotate(0deg);
-  transition: transform 180ms ease;
+  transition: transform var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease);
 }
 .edu-operation-chevron[data-expanded='true'] {
   transform: rotate(90deg);

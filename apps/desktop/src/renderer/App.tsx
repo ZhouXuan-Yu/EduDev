@@ -1,3 +1,5 @@
+import type {GlobalSearchSnapshot} from './components/GlobalSearchWorkspace';
+import {useStudentRecordDraft} from './interaction/student-record-draft';
 import {AppNativeSelect} from './components/ui/AppNativeSelect';
 import {PaperBlueprintWorkspace} from './components/PaperBlueprintWorkspace';
 import {openPaperMaterialSource, paperMaterialActions} from './components/paper-ui/paper-material-handoff';
@@ -62,6 +64,8 @@ import { AiConversationSidebar, type AiConversationTarget } from './components/A
 import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
 import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
 import { useDesktopCommands, useDesktopNavigation, useDesktopNavigationGuard } from './components/desktop/DesktopFrame';
+import {useActionConfirmation} from './components/ui/ActionConfirmation';
+import {locateRecordPage} from './interaction/locate-record';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { WorkbenchHub } from './components/product/WorkbenchHub';
 import {StudentWorkbench,rememberStudentContext} from './components/product/StudentWorkbench';
@@ -438,14 +442,17 @@ export function App() {
   const [dataRoot, setDataRoot] = useState('正在连接本地数据目录');
   const [overview, setOverview] = useState<PlatformOverview>(emptyOverview);
   const [students, setStudents] = useState<Student[]>([]);
-  const [records, setRecords] = useState<LearningRecord[]>([]);
-  const [reports, setReports] = useState<ReviewReport[]>([]);
+  const [loadedRecords, setRecords] = useState<LearningRecord[]>([]);
+  const [loadedReports, setReports] = useState<ReviewReport[]>([]);
   const [reviewReportSelectionId, setReviewReportSelectionId] = useState('');
   const [activeStudentId, setActiveStudentId] = useState('');
   const activeStudentIdRef=useRef('');
   const [studentQuery, setStudentQuery] = useState('');
   const studentSearchRequest = useRef(0);
   const [recordKeyword, setRecordKeyword] = useState('');
+  const [searchSnapshot,setSearchSnapshot]=useState<GlobalSearchSnapshot>();
+  const [locatedRecordId,setLocatedRecordId]=useState('');
+  const pendingRecordLocation=useRef('');
   const [recordTypeFilter, setRecordTypeFilter] = useState('');
   const [recordSubjectFilter, setRecordSubjectFilter] = useState('');
   const [recordTagFilter, setRecordTagFilter] = useState('');
@@ -476,15 +483,10 @@ export function App() {
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
   const [studentFormMode, setStudentFormMode] = useState<StudentFormMode>('closed');
   useDesktopNavigationGuard(studentFormMode !== 'closed', '学生档案尚未保存，请先保存或取消再离开。');
-  const [recordForm, setRecordForm] = useState({
-    recordType: 'mistake',
-    subject: '数学',
-    title: '',
-    content: '',
-    tags: '',
-    occurredAt: new Date().toISOString().slice(0, 16),
-  });
-  const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
+  const [recordSaving, setRecordSaving] = useState(false);
+  const [newRecordSavingOwner, setNewRecordSavingOwner] = useState('');
+  const recordSaveLock = useRef(false);
+  const recordConfirmation = useActionConfirmation();
   const [status, setStatus] = useState('本地工作台正在准备。');
   const [attachmentImport, setAttachmentImport] = useState<AttachmentImportResult | null>(null);
   const [knowledgeOverview, setKnowledgeOverview] = useState<KnowledgeOverview>(emptyKnowledgeOverview);
@@ -493,9 +495,15 @@ export function App() {
   const activeStudent = useMemo(() => {
     const selected = students.find((student) => student.id === activeStudentId);
     if (activeView === 'students') return selected ?? students.find((student) => student.status === 'active') ?? students[0];
-    return selected?.status === 'active' ? selected : students.find((student) => student.status === 'active');
+    return selected?.status === 'active' ? selected : undefined;
   }, [students, activeStudentId, activeView]);
   activeStudentIdRef.current=activeStudent?.id||'';
+  const records=loadedRecords.filter(record=>record.studentId===activeStudent?.id);
+  const reports=loadedReports.filter(report=>report.studentId===activeStudent?.id);
+  const recordDraft = useStudentRecordDraft(activeStudent?.id ?? '',activeStudent?.subjects[0] ?? '数学');
+  const recordForm = recordDraft.form, setRecordForm = recordDraft.setForm, editingRecordId = recordDraft.editingId;
+  const recordReadEpoch = useRef(0);
+  const recordOpenEpoch = useRef(0);
 
   const recentStudents = students.filter((student) => student.status === 'active').slice(0, 6);
   const activeAttachments = records.flatMap((record) =>
@@ -692,7 +700,10 @@ export function App() {
 
   async function refreshRecords(studentId = activeStudent?.id) {
     if (!studentId) return;
-    const nextRecords = await window.omniEdu?.listRecords(studentId, {
+    const stamp=++recordReadEpoch.current;
+    const location=pendingRecordLocation.current;
+    try {
+    const nextRecords = location && window.omniEdu ? await locateRecordPage(offset=>window.omniEdu!.listRecords(studentId,{offset,limit:100}),location) : await window.omniEdu?.listRecords(studentId, {
       type: recordTypeFilter || undefined,
       subject: recordSubjectFilter || undefined,
       tag: recordTagFilter || undefined,
@@ -701,10 +712,15 @@ export function App() {
       endDate: recordEndDate || undefined,
     });
     const nextReports = await window.omniEdu?.listReports(studentId);
-    if(activeStudentIdRef.current!==studentId)return;
+    if(activeStudentIdRef.current!==studentId || stamp!==recordReadEpoch.current)return;
     setRecords(nextRecords ?? []);
     setReports(nextReports ?? []);
     await refreshOverview();
+    } catch(error) {
+      if(activeStudentIdRef.current!==studentId||stamp!==recordReadEpoch.current)return;
+      if(pendingRecordLocation.current===location)pendingRecordLocation.current='';
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -742,7 +758,7 @@ export function App() {
 
   useEffect(() => {
     if (activeStudent) {
-      refreshRecords(activeStudent.id).catch(() => setStatus('读取学习记录失败'));
+      refreshRecords(activeStudent.id).catch(error => setStatus(error instanceof Error?error.message:'读取学习记录失败，请重试。'));
       setStudentForm({
         displayName: activeStudent.displayName,
         realName: activeStudent.realName,
@@ -755,12 +771,14 @@ export function App() {
         teacherNotes: activeStudent.teacherNotes,
         tags: activeStudent.tags,
       });
-      setRecordForm((current) => ({
-        ...current,
-        subject: current.subject || activeStudent.subjects[0] || '数学',
-      }));
     }
   }, [activeStudent?.id, recordTypeFilter, recordSubjectFilter, recordTagFilter, recordKeyword, recordStartDate, recordEndDate]);
+
+  useEffect(()=>{
+    if(activeView!=='students'||!pendingRecordLocation.current)return;
+    const element=document.querySelector<HTMLElement>(`[data-testid="timeline-record-${CSS.escape(pendingRecordLocation.current)}"]`);
+    if(element){element.scrollIntoView({block:'center',behavior:'auto'});element.focus({preventScroll:true});pendingRecordLocation.current='';setStatus('已定位原记录。');}
+  },[activeView,records,locatedRecordId]);
 
   async function submitStudent() {
     if (!studentForm.displayName?.trim()) {
@@ -793,50 +811,35 @@ export function App() {
       setStatus('归档学生为只读状态，不能新增或修改学习记录。');
       return;
     }
-    const payload = {
-      recordType: recordForm.recordType,
-      subject: recordForm.subject,
-      title: recordForm.title,
-      content: recordForm.content,
-      tags: splitList(recordForm.tags),
-      occurredAt: new Date(recordForm.occurredAt).toISOString(),
-    };
-    const nextRecords = editingRecordId
-      ? await window.omniEdu?.updateRecord(editingRecordId, payload)
-      : await window.omniEdu?.createRecord({
-          studentId: activeStudent.id,
-          ...payload,
-        });
-    setRecords(nextRecords ?? []);
-    await refreshStudents();
-    resetRecordForm();
-    setStatus(editingRecordId ? '学习记录已更新。' : '学习记录已保存。');
+    if (recordSaveLock.current) return;
+    const owner = activeStudent.id, subject = activeStudent.subjects[0] ?? '数学';
+    recordSaveLock.current = true; setRecordSaving(true);
+    try {
+      const submitted = recordDraft.capture();
+      if(!submitted.editingId)setNewRecordSavingOwner(owner);
+      if (submitted.owner !== owner) throw new Error('记录归属已变化，请重新选择学生后保存。');
+      const payload = {recordType:submitted.form.recordType,subject:submitted.form.subject,title:submitted.form.title,
+        content:submitted.form.content,tags:splitList(submitted.form.tags),occurredAt:submitted.occurredAt};
+      const next = submitted.editingId ? await window.omniEdu?.updateRecord(submitted.editingId,payload)
+        : await window.omniEdu?.createRecord({studentId:owner,...payload});
+      if (!next) throw new Error('记录没有保存，请重试；填写内容已保留。');
+      if (activeStudentIdRef.current === owner) setRecords(next);
+      const cleared = recordDraft.settled(submitted,subject);
+      try {await refreshStudents();}
+      catch {setStatus(`${activeStudent.displayName}的记录已保存，但学生列表刷新失败。请重新读取列表，无需重复保存。`);return;}
+      setStatus(activeStudentIdRef.current!==owner ? `已保存${activeStudent.displayName}的记录；当前学生的输入未改动。` : cleared ? '学习记录已保存。' : '上一版已保存，当前修改仍为草稿。');
+    } catch (error) { const message=error instanceof Error ? error.message : '记录未保存，填写内容已保留。';setStatus(activeStudentIdRef.current===owner?message:`${activeStudent.displayName}：${message}`); }
+    finally { recordSaveLock.current = false; setRecordSaving(false); setNewRecordSavingOwner(''); }
   }
 
-  function resetRecordForm() {
-    setEditingRecordId(null);
-    setRecordForm({
-      recordType: 'mistake',
-      subject: activeStudent?.subjects[0] ?? '数学',
-      title: '',
-      content: '',
-      tags: '',
-      occurredAt: new Date().toISOString().slice(0, 16),
-    });
-  }
+  function resetRecordForm() { recordDraft.reset(activeStudent?.id ?? '',activeStudent?.subjects[0] ?? '数学'); }
 
   function editRecord(record: LearningRecord) {
-    setActiveView('intake');
-    setEditingRecordId(record.id);
-    setRecordForm({
-      recordType: record.recordType,
-      subject: record.subject,
-      title: record.title,
-      content: record.content,
-      tags: record.tags.join('、'),
-      occurredAt: record.occurredAt.slice(0, 16),
-    });
-    setStatus('已载入学习记录，可在录入页修改。');
+    if (recordSaving) return;
+    const open=()=>{recordDraft.edit(record);setActiveStudentId(record.studentId);setActiveView('intake');setStatus('已打开这条学习记录。切换学生时，各自草稿会保留。');};
+    if(record.studentId===activeStudent?.id && recordDraft.editingId===record.id){setActiveView('intake');return;}
+    if(recordDraft.dirty)recordConfirmation.request({title:'保留当前记录草稿？',description:'打开另一条记录会替换当前学生尚未保存的输入。请先保存，或确认放弃。',confirmLabel:'放弃草稿并打开',action:open});
+    else open();
   }
 
   async function importAttachment(recordId: string) {
@@ -1605,7 +1608,7 @@ export function App() {
         </div>
         <div className="timeline">
           {records.map((record) => (
-            <article className="timeline-item" data-testid={`timeline-record-${record.id}`} key={record.id}>
+            <article className="timeline-item" tabIndex={-1} aria-current={locatedRecordId===record.id?'true':undefined} data-testid={`timeline-record-${record.id}`} key={record.id}>
               <time>{formatTime(record.occurredAt)}</time>
               <div className="timeline-body">
                 <div className="record-head">
@@ -1615,7 +1618,7 @@ export function App() {
                   </div>
                   {readOnly ? <span className="student-readonly-label">归档档案只读</span> : (
                     <div className="record-actions">
-                      <button className="secondary-action compact-button" onClick={() => editRecord(record)}>编辑</button>
+                      <button data-testid={`record-edit-${record.id}`} className="secondary-action compact-button" disabled={recordSaving} onClick={() => editRecord(record)}>编辑</button>
                       <button className="secondary-action compact-button" onClick={() => importAttachment(record.id)}>导入附件</button>
                     </div>
                   )}
@@ -1643,10 +1646,11 @@ export function App() {
   }
 
   function renderRecordForm() {
+    if(!activeStudent)return <EmptyState>先选择一位在读学生，再添加学习记录。</EmptyState>;
     return (
       <section className="work-panel form-panel" data-testid="learning-record-form">
         <WorkspaceLabel number="02" title={editingRecordId ? '编辑学习记录' : '添加学习记录'} description="一条记录只服务一件事实，方便复盘引用。" />
-        <div className="form-grid">
+        <fieldset className="form-grid" disabled={newRecordSavingOwner===activeStudent?.id} style={{border:0,padding:0,margin:0,minWidth:0}}>
           <label>
             记录类型
             <AppNativeSelect data-testid="record-form-type" value={recordForm.recordType} onChange={(event) => setRecordForm({ ...recordForm, recordType: event.target.value })}>
@@ -1659,7 +1663,7 @@ export function App() {
           </label>
           <label>
             发生时间
-            <input type="datetime-local" value={recordForm.occurredAt} onChange={(event) => setRecordForm({ ...recordForm, occurredAt: event.target.value })} />
+            <input data-testid="record-form-time" type="datetime-local" value={recordForm.occurredAt} onChange={(event) => setRecordForm({ ...recordForm, occurredAt: event.target.value })} />
           </label>
           <label className="full">
             标题
@@ -1673,12 +1677,12 @@ export function App() {
             标签
             <input value={recordForm.tags} onChange={(event) => setRecordForm({ ...recordForm, tags: event.target.value })} placeholder="一次函数、审题、计算粗心" />
           </label>
-          <button data-testid="record-form-save" className="primary-action wide" onClick={submitRecord}>
+          <button data-testid="record-form-save" className="primary-action wide" onClick={() => void submitRecord()} disabled={recordSaving}>
             <Plus size={16} />
-            {editingRecordId ? '保存修改' : '保存记录'}
+            {recordSaving ? '正在保存…' : editingRecordId ? '保存修改' : '保存记录'}
           </button>
-          {editingRecordId ? <button className="secondary-action full-button" onClick={resetRecordForm}>取消编辑</button> : null}
-        </div>
+          {editingRecordId ? <button className="secondary-action full-button" disabled={recordSaving} onClick={()=>recordDraft.dirty?recordConfirmation.request({title:'放弃这次修改？',description:'已保存的原记录会保留。',confirmLabel:'放弃修改',action:resetRecordForm}):resetRecordForm()}>取消编辑</button> : null}
+        </fieldset>
       </section>
     );
   }
@@ -2523,7 +2527,7 @@ export function App() {
           ) : <EmptyState>请选择学生。</EmptyState>}
           <div className="compact-list">
             {recentStudents.map((student) => (
-              <button key={student.id} onClick={() => setActiveStudentId(student.id)}>
+              <button data-testid={`record-student-${student.id}`} key={student.id} onClick={() => setActiveStudentId(student.id)}>
                 <strong>{student.displayName}</strong>
                 <span>{student.recordCount} 条记录</span>
               </button>
@@ -2570,21 +2574,31 @@ export function App() {
 
   function renderSearchView() {
     const openStudentFromSearch = async (student: Student) => {
-      setStudentQuery('');
-      setStudents((await window.omniEdu?.listStudents('')) ?? []);
-      setActiveStudentId(student.id);
-      setActiveView('students');
-      setStatus(`已打开学生：${student.displayName}`);
+      const stamp=++recordOpenEpoch.current,intent=desktopNavigation.intent;
+      try{
+        const next:Student[]|undefined=await window.omniEdu?.listStudents('');
+        if(stamp!==recordOpenEpoch.current||!desktopNavigation.isCurrent(intent))return;
+        if(!next?.some(item=>item.id===student.id))throw new Error('这份学生档案已变化，请重新检索。');
+        if(!desktopNavigation.navigate({view:'students'},{ifIntent:intent}))return;
+        setStudentQuery('');setStudents(next);setActiveStudentId(student.id);updateActiveView('students');setStatus(`已打开学生：${student.displayName}`);
+      }catch(error){if(stamp===recordOpenEpoch.current&&desktopNavigation.isCurrent(intent))setStatus(error instanceof Error?error.message:'无法打开学生档案，请重试。');}
     };
     const openRecordFromSearch = async (record: LearningRecord) => {
-      setStudentQuery('');
-      setRecordTypeFilter(''); setRecordSubjectFilter(''); setRecordTagFilter(''); setRecordKeyword(record.title); setRecordStartDate(''); setRecordEndDate('');
-      setStudents((await window.omniEdu?.listStudents('')) ?? []);
-      setActiveStudentId(record.studentId);
-      setActiveView('students');
-      setStatus(`已打开记录所属学生，时间线将定位到：${record.title}`);
+      const stamp=++recordOpenEpoch.current,intent=desktopNavigation.intent;
+      setStatus('正在定位原记录…');
+      try{
+        if(!window.omniEdu)throw new Error('本地资料暂不可用，请重试。');
+        const [next,page]=await Promise.all([window.omniEdu.listStudents(''),locateRecordPage(offset=>window.omniEdu!.listRecords(record.studentId,{offset,limit:100}),record.id)]);
+        if(stamp!==recordOpenEpoch.current||!desktopNavigation.isCurrent(intent))return;
+        if(!next.some((item:Student)=>item.id===record.studentId))throw new Error('这条记录的学生档案已变化，请重新检索。');
+        if(!desktopNavigation.navigate({view:'students'},{ifIntent:intent}))return;
+        ++recordReadEpoch.current;
+        setStudentQuery('');setStudents(next);setActiveStudentId(record.studentId);setRecords(page);
+        setRecordTypeFilter('');setRecordSubjectFilter('');setRecordTagFilter('');setRecordKeyword('');setRecordStartDate('');setRecordEndDate('');
+        setLocatedRecordId(record.id);pendingRecordLocation.current=record.id;updateActiveView('students');
+      }catch(error){if(stamp===recordOpenEpoch.current&&desktopNavigation.isCurrent(intent))setStatus(error instanceof Error?error.message:'未能定位原记录，请重试。');}
     };
-    return <GlobalSearchWorkspace setStatus={setStatus} onOpenStudent={openStudentFromSearch} onOpenRecord={openRecordFromSearch} />;
+    return <GlobalSearchWorkspace initialState={searchSnapshot} onStateChange={setSearchSnapshot} studentNames={Object.fromEntries(students.map(student=>[student.id,student.displayName]))} setStatus={setStatus} onOpenStudent={openStudentFromSearch} onOpenRecord={openRecordFromSearch} />;
   }
 
   function renderQuestionNotebookView() {
@@ -2847,6 +2861,7 @@ export function App() {
   }}><MaterialSourceNavigation.Provider value={async source=>{
     await openPaperMaterialSource(desktopNavigation, source, materialOpenEpoch, setMaterialSourceView);
   }}>
+    {recordConfirmation.dialog}
     {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
     {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
       <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView}

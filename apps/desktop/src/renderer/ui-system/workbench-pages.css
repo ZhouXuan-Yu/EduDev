@@ -45,7 +45,7 @@
   text-align: left;
   cursor: pointer;
   appearance: none;
-  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+  transition: background-color var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease), border-color var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease), box-shadow var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease);
 }
 
 .wb-home-task {

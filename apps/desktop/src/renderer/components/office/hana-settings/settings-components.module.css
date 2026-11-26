@@ -169,7 +169,7 @@
 /* List variant：保留卡片容器，行内去分隔线、加 hover、压缩行高 */
 .sectionList > .sectionBody > .row {
     padding: 5px var(--space-12);
-    transition: background var(--duration-fast);
+    transition: background var(--edu-motion-fast,120ms);
 }
 
 .sectionList > .sectionBody > .row:hover {
@@ -309,7 +309,7 @@
     font-size: var(--fs-ui);
     color: var(--text-light);
     cursor: default;
-    transition: color var(--duration-fast);
+    transition: color var(--edu-motion-fast,120ms);
     width: 100%;
     text-align: left;
 }
@@ -320,7 +320,7 @@
 
 .expandableChevron {
     display: inline-block;
-    transition: transform var(--duration-fast) ease;
+    transition: transform var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease);
     font-size: var(--fs-title);
     color: var(--text-muted);
 }
@@ -359,7 +359,7 @@
     font-family: inherit;
     font-size: var(--fs-body);
     text-align: right;
-    transition: border-color var(--duration-slow) var(--ease-out);
+    transition: border-color var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease-out);
 }
 
 .numberInputFieldWide {
@@ -434,8 +434,8 @@
     background: var(--accent);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
     transition:
-        transform var(--duration-fast) var(--ease-out),
-        box-shadow var(--duration-fast) var(--ease-out);
+        transform var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease-out),
+        box-shadow var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease-out);
 }
 
 .stepSliderInput:hover::-webkit-slider-thumb,

@@ -1,3 +1,4 @@
+import {CollapsibleRegion} from './motion/CollapsibleRegion';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button, Modal } from '@heroui/react';
 import { BookOpen, ChevronRight, Folder, FolderPlus, Library, ListTodo, MessageSquare, PanelLeftClose, PanelLeftOpen, Plus, Search, Settings, SlidersHorizontal, Users, type LucideIcon } from 'lucide-react';
@@ -33,7 +34,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     query.addEventListener('change', changed);
     return () => query.removeEventListener('change', changed);
   }, []);
-  const setOpenFolders = (value: (old: Record<string, boolean>) => Record<string, boolean>) => update({ openFolders: value(openFolders) });
+  const setOpenFolders = (value: (old: Record<string, boolean>) => Record<string, boolean>) => {if(!update({openFolders:value(openFolders)}))setError('展开状态未保存，请重试。');};
   const [dialog, setDialog] = useState<Dialog>();
   const [query, setQuery] = useState('');
   const [title, setTitle] = useState('');
@@ -57,6 +58,19 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     const frame = requestAnimationFrame(() => root.current?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' }));
     return () => cancelAnimationFrame(frame);
   }, [view]);
+  useEffect(()=>{
+    if(!narrow||!mobileOpen||dialog)return;
+    const workspace=root.current?.closest('.edu-shell')?.querySelector<HTMLElement>('.edu-workspace');
+    const wasInert=workspace?.inert;
+    if(workspace)workspace.inert=true;
+    const close=(event:KeyboardEvent)=>{
+      if(event.key!=='Escape'||event.defaultPrevented)return;
+      const inside=root.current?.contains(document.activeElement);
+      setMobileOpen(false);
+      if(inside)root.current?.querySelector<HTMLButtonElement>('[data-testid="workbench-sidebar-toggle"]')?.focus({preventScroll:true});
+    };
+    window.addEventListener('keydown',close);return()=>{window.removeEventListener('keydown',close);if(workspace)workspace.inert=!!wasInert;};
+  },[narrow,mobileOpen,dialog]);
   const folders = useMemo(() => (data?.folders ?? []).filter(folder => !folder.archivedAt).slice().sort((a, b) => a.sortOrder - b.sortOrder), [data?.folders]);
   const sessions = useMemo(() => (data?.sessions ?? []).filter(session => !session.archivedAt).slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)), [data?.sessions]);
   const matches = sessions.filter(session => session.title.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
@@ -95,9 +109,9 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
       <MessageSquare size={16} aria-hidden="true" /><span className="wb-session-copy"><span>{session.title || '未命名对话'}</span>{withTime && <time dateTime={session.updatedAt}>{dateLabel(session.updatedAt)}</time>}</span>
     </button>;
   }
-  return <aside ref={root} className="edu-navigation wb-navigation" data-testid="edu-navigation" data-collapsed={collapsed}>
+  return <><aside ref={root} className="edu-navigation wb-navigation" data-testid="edu-navigation" data-collapsed={collapsed} data-mobile-open={narrow&&mobileOpen}>
     <header className="wb-brand"><span className="wb-logo" aria-hidden="true"><BookOpen size={23} /></span><strong className="wb-label">小智</strong>
-      <button type="button" className="wb-icon-button" disabled={disabled} onClick={toggleCollapsed} aria-label={collapsed ? '展开侧栏' : '折叠侧栏'} title={collapsed ? '展开侧栏' : '折叠侧栏'} data-testid="workbench-sidebar-toggle">{collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</button>
+      <button type="button" className="wb-icon-button" disabled={disabled} onClick={toggleCollapsed} aria-expanded={!collapsed} aria-label={collapsed ? '展开侧栏' : '折叠侧栏'} title={collapsed ? '展开侧栏' : '折叠侧栏'} data-testid="workbench-sidebar-toggle">{collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}</button>
     </header>
     <nav className="wb-scroll" aria-label="教师工作空间" data-testid="product-rail">
       {navItem('ai', '问小智', MessageSquare)}
@@ -108,7 +122,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
         <div className="wb-section-heading"><span>教学空间</span><button type="button" className="wb-icon-button" disabled={unavailable} aria-label="新建教学空间" title="新建教学空间" data-testid="workbench-new-folder" onClick={() => showDialog('folder')}><FolderPlus size={16} /></button></div>
         {folders.map(folder => <div key={folder.id}>
           <button type="button" className="wb-item" disabled={disabled} title={folder.name} aria-expanded={!!openFolders[folder.id]} aria-controls={`${panelId}-${folder.id}`} onClick={() => setOpenFolders(old => ({ ...old, [folder.id]: !old[folder.id] }))}><Folder size={17} /><span className="wb-label">{folder.name}</span><ChevronRight size={14} className="wb-chevron" data-expanded={!!openFolders[folder.id]} /></button>
-          <div id={`${panelId}-${folder.id}`} hidden={!openFolders[folder.id]} className="wb-subnav">{sessions.filter(session => session.folderId === folder.id).map(session => sessionItem(session))}{!sessions.some(session => session.folderId === folder.id) && <p className="wb-empty">暂无对话</p>}</div>
+          <CollapsibleRegion id={`${panelId}-${folder.id}`} expanded={!!openFolders[folder.id]} className="wb-subnav">{sessions.filter(session => session.folderId === folder.id).map(session => sessionItem(session))}{!sessions.some(session => session.folderId === folder.id) && <p className="wb-empty">暂无对话</p>}</CollapsibleRegion>
         </div>)}
         {!folders.length && <p className="wb-empty">{data ? '还没有教学空间' : '会话加载后显示'}</p>}
         <div className="wb-section-heading"><span>最近对话</span><button type="button" className="wb-icon-button" disabled={unavailable} aria-label="管理对话" title="管理对话" data-testid="workbench-manage-history" onClick={() => showDialog('history')}><SlidersHorizontal size={16} /></button></div>
@@ -144,6 +158,6 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
         </Modal.Footer>
       </Modal.Dialog></Modal.Container>
     </Modal.Backdrop>}
-  </aside>;
+  </aside>{narrow&&mobileOpen&&<button className="wb-nav-backdrop" aria-label="收起侧栏" data-testid="workbench-dismiss-navigation" onClick={()=>{setMobileOpen(false);root.current?.querySelector<HTMLButtonElement>('[data-testid="workbench-sidebar-toggle"]')?.focus({preventScroll:true});}}/>}</>;
 }
 import {AppNativeSelect} from '../components/ui/AppNativeSelect';

@@ -198,7 +198,7 @@
   background: #e7eaee;
   content: "";
   opacity: .8;
-  transition: background-color 120ms ease;
+  transition: background-color var(--edu-motion-fast,120ms) var(--edu-motion-ease,ease);
 }
 .edu-resizer:hover::after,
 .edu-resizer:focus-visible::after,
