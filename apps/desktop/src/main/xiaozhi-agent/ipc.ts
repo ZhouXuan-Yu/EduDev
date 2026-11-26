@@ -14,6 +14,8 @@ import { registerMcpIpc } from './mcp-api';
 import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerTeacherMemorySettingsIpc} from '../education/teacher-memory-settings-ipc';
+import {registerPersonalMemoryIpc} from '../education/personal-memory/ipc';
+import {personalMemoryWorkerPaths} from '../education/personal-memory/runtime';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {registerPaperBasketIpc} from '../education/paper-basket-api';
@@ -59,6 +61,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
   const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
+    personalMemoryPaths:()=>personalMemoryWorkerPaths({packaged:app.isPackaged,resourcesPath:process.resourcesPath,
+      dataRoot:options.dataRoot,repoRoot:process.env.OMNI_EDU_REPO_ROOT || path.resolve(process.cwd(),'../..'),
+      configuredPython:process.env.OMNI_EDU_R2_PYTHON}),
     emitTerminal: event => {const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:terminal:update', event);},
     ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
       const held=path.join(options.dataRoot,'.e2e-model-wait');
@@ -131,6 +136,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerDecisionIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTeacherCandidateIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerTeacherMemorySettingsIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerPersonalMemoryIpc(options.ipcMain,event=>options.authority.mode==='pi' && fromMain(event),host.personalMemory);
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
@@ -198,6 +204,15 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   options.ipcMain.handle('xiaozhi:budget', (event,input) => { if (!fromMain(event)) return {ok:false,error:'permission_denied'}; return host.setBudget(input); });
   options.ipcMain.handle('xiaozhi:memory-catalog', (event,input) => { if (!fromMain(event)) return {ok:false,error:'permission_denied'}; return host.memoryCatalog(input); });
   options.ipcMain.handle('xiaozhi:memory-scope', (event,input) => { if (!fromMain(event)) return {ok:false,error:'permission_denied'}; return host.setMemoryScope(input); });
+  const history=host.historyMemory;
+  options.ipcMain.handle('xiaozhi:history-sessions',event=>fromMain(event)?history.sessions():{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-index-status',event=>fromMain(event)?history.status():{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-index-rebuild',event=>fromMain(event)?history.rebuild():{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-list',(event,id,offset)=>fromMain(event)?history.list(id,offset):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-preview',(event,ref,offset,allowed)=>fromMain(event)?history.preview(ref,offset,allowed):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-discover',(event,id,query)=>fromMain(event)?history.discover(id,query):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-confirm',(event,id,version,ticket)=>fromMain(event)?host.confirmHistoryMemory(id,version,ticket):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-access',(event,ref,revision,action)=>fromMain(event)?history.change(ref,revision,action):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:memory-trace', (event,id) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.memoryTrace(id); });
   options.ipcMain.handle('xiaozhi:compact', (event,input) => { if (!fromMain(event)) return {ok:false,error:'permission_denied'}; return host.compact(input); });
   options.ipcMain.handle('xiaozhi:workspace', (event, id) => {

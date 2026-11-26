@@ -12,6 +12,8 @@ const comparison=/比较|对比|区别|差异|异同|优缺点|逐项|列表|分
 const fileIntent=/导出|另存(?:为)?|保存(?:为|成)|(?:输出|交付|生成|制作).{0,12}(?:文件|讲义|试卷|教案|课件)/u;
 const explicitFile=/\b(?:docx?|pdf|pptx?|xlsx?|csv|html?|png|jpe?g|word|excel|powerpoint|markdown)\b|文本文件|演示稿|幻灯片|网页版|图片版/u;
 const noFile=/(?:不|别|不要|无需|不需要|不用|不能)(?:再|另|自动)?(?:导出|生成|制作|保存|输出|写入)(?:.{0,12}(?:文件|副本))?/gu;
+const handoutWork=/(?:生成|制作|编写|准备|设计|整理|修订|修改|改写|排版|输出|导出|给我|写一份).{0,28}(?:讲义|学案)|(?:讲义|学案).{0,20}(?:排版|整理|修改|修订|导出|重做)/u;
+const currentHandoutAnswer=/(?:只|仅).{0,8}学生版|(?:不(?:要|用|附|给|含|提供|包含)|无需|省略).{0,6}(?:答案|参考解答)|(?:答案|参考解答).{0,12}(?:最后|末尾|文末|结尾|末页|逐题|每道?题|各题|页首|开头|单独|另附)|(?:逐题|各题|每道?题|最末|文末|末尾).{0,10}(?:答案|参考解答)/u;
 
 /** The saved record remains complete. Select only the axes relevant to this request. */
 export function selectTeacherPreferenceValues(values:TeacherPreferenceValues,request:string,exportAlreadyChosen=false):TeacherPreferenceValues {
@@ -20,6 +22,9 @@ export function selectTeacherPreferenceValues(values:TeacherPreferenceValues,req
  if(!text)return selected;
  if(!exportAlreadyChosen&&fileIntent.test(text)&&!processQuestion.test(text)&&!explicitFile.test(text.toLowerCase())&&values.exportFormat)
   selected.exportFormat=values.exportFormat;
+ const studentVersion=/学生(?:用)?版/.test(text)&&!/教师(?:用)?版|答案版|解析版/.test(text);
+ if(values.handoutAnswerPlacement&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentHandoutAnswer.test(text)&&!studentVersion)
+  selected.handoutAnswerPlacement=values.handoutAnswerPlacement;
  if(!explanation.test(text)||artifactOnly.test(text)||processQuestion.test(text)||shortAnswer.test(text))return selected;
  if(values.length&&!length.test(text))selected.length=values.length;
  if(values.structure&&!structure.test(text))selected.structure=values.structure;

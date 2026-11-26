@@ -34,6 +34,9 @@ try {
   await assert.rejects(state.saveMemoryScope(session, 2, { enabled: true, selections: Array.from({ length: 13 }, () => ({ ...selection, id: `memory_entry_${randomUUID()}` })) }), /invalid_input/);
   check('Raw text/authority extras, duplicates and more than twelve grants reject', () => assert(!(db.prepare('SELECT payload_json FROM xiaozhi_pi_memory_scopes WHERE conversation_id=?').get(session).payload_json).includes('rawText')));
   db.prepare('UPDATE xiaozhi_pi_memory_scopes SET schema_version=2 WHERE conversation_id=?').run(session);
+  assert.deepEqual((await state.memoryScope(session)).selections,[selection]);
+  check('Existing R1 memory scope remains readable', () => {});
+  db.prepare('UPDATE xiaozhi_pi_memory_scopes SET schema_version=99 WHERE conversation_id=?').run(session);
   await assert.rejects(state.memoryScope(session), /configuration/); await assert.rejects(state.saveMemoryScope(session, 2, { enabled: false, selections: [] }), /configuration/);
   check('Unknown future schema is rejected on reads and mutations', () => {});
   db.prepare('UPDATE xiaozhi_pi_memory_scopes SET schema_version=1,payload_json=? WHERE conversation_id=?').run(JSON.stringify({ enabled: true, selections: [selection], modelAccess: 'automatic' }), session);

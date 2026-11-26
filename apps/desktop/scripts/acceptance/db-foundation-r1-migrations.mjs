@@ -11,7 +11,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=resolve(import.meta.dirname,'../..');
 const main=testMain(desktop);
 const legacy=resolve(process.env.OMNI_EDU_DB_V0_BUILD || join(desktop,'test-results/xiaozhi-db-r1-baseline/out/main/index.js'));
-const expectedVersion=Number(process.env.OMNI_EDU_DB_EXPECTED_VERSION||6);
+const expectedVersion=Number(process.env.OMNI_EDU_DB_EXPECTED_VERSION||9);
 assert(existsSync(legacy),'The actual frozen WP-00 v0 build is required');
 const evidence=resolve(process.env.OMNI_EDU_ACCEPTANCE_ROOT||join(desktop,'test-results'));
 mkdirSync(join(evidence,'fixtures'),{recursive:true});
@@ -87,8 +87,10 @@ async function startFailing(name,data,interrupt=0) {
         const v4=statement.includes('CREATE TABLE material_local_book_rechecks_v1');
         const v5=statement.includes('CREATE TABLE xiaozhi_prepared_runs_v1');
         const v6=statement.includes('CREATE TABLE xiaozhi_task_summary_row_count_v6');
+        const v8=statement.includes('CREATE TABLE memory_source_access');
+        const personalDDL=statement.includes('CREATE TABLE personal_memory_processing');
         if((${interrupt}===1 && v1) || (${interrupt}===2 && v2) || (${interrupt}===3 && v3) || (${interrupt}===4 && v4) ||
-          (${interrupt}===5 && v5) || (${interrupt}===6 && v6)){
+          (${interrupt}===5 && v5) || (${interrupt}===6 && v6) || (${interrupt}===8 && v8) || (${interrupt}===9 && personalDDL)){
           return exec.call(this,statement,error=>{
             if(error)return callback(error);
             electron.app.exit(31);
@@ -251,6 +253,23 @@ try{
   assert.deepEqual(stableV4.students,old.students);
   receipt('Interrupting v4 rolls back the evidence table and leaves the committed v3 ledger readable.');
 
+  if (expectedVersion>=9) {
+    stage='interrupt personal-memory migration after history';
+    const historyUpgrade=join(root,'interrupted-personal','data');
+    cpSync(oldData,historyUpgrade,{recursive:true});
+    await startFailing('interrupted-personal',historyUpgrade,9);
+    const beforeHistory=dataState(historyUpgrade);
+    assert.equal(beforeHistory.version,8);
+    assert(!beforeHistory.schema.some(([,name])=>name==='personal_memory_processing'));
+    await launch(main,historyUpgrade,profile('interrupted-personal-reentry'));
+    const afterHistory=dataState(historyUpgrade);
+    assert.equal(afterHistory.version,expectedVersion);
+    assert.equal(afterHistory.ledger[8].migration_id,'r2.personal_memory.after_r3_config.v9');
+    assert.deepEqual(afterHistory.ledger.slice(0,8),beforeHistory.ledger);
+    assert.deepEqual(afterHistory.students,old.students);
+    receipt('Interrupted personal DDL preserves the committed history ledger and resumes on the next start.');
+  }
+
   const historicalBuilds=[
     [2,process.env.OMNI_EDU_DB_V2_BUILD||join(desktop,'test-results/xiaozhi-db-r1-delivery-8492/out/main/index.js')],
     [3,process.env.OMNI_EDU_DB_V3_BUILD],
@@ -311,6 +330,77 @@ try{
     assert.deepEqual(historicalFacts(candidate),afterFacts);
     receipt('Actual frozen v'+version+' preserves source facts and checksums and restarts after upgrading.',
       {build,sha256:buildHash(build),from:version,to:expectedVersion,oldRows:facts.map(rows=>rows.length),ledger:after.ledger});
+  }
+
+  stage='interrupt history-memory migration after v7 commits';
+  const historyUpgrade=join(root,'interrupted-v8','data');
+  cpSync(oldData,historyUpgrade,{recursive:true});
+  await startFailing('interrupted-v8',historyUpgrade,8);
+  const beforeHistory=dataState(historyUpgrade);
+  assert.equal(beforeHistory.version,7);
+  assert(!beforeHistory.schema.some(([,name])=>name==='memory_source_access'));
+  await launch(main,historyUpgrade,profile('interrupted-v8-reentry'));
+  const afterHistory=dataState(historyUpgrade);
+  assert.equal(afterHistory.version,expectedVersion);
+  assert.equal(afterHistory.ledger[7].migration_id,'r1.history_memory_access_and_index.after_r3_config.v8');
+  assert.deepEqual(afterHistory.ledger.slice(0,7),beforeHistory.ledger);
+  assert.deepEqual(afterHistory.students,old.students);
+  receipt('Interrupted history DDL rolls back, then v7 resumes and preserves previous records and ledger.');
+
+  const branchFixtureList=process.env.OMNI_EDU_R2_MIGRATION_BRANCH_FIXTURES;
+  if (branchFixtureList) {
+    const fixtures=JSON.parse(readFileSync(branchFixtureList,'utf8'));
+    const branches=[
+      ['R1-history-v5',5,'r1.history_memory_access_and_index.v5','r2.task_summary_maintenance.after_history.v7'],
+      ['DB-foundation-v6',6,'r2.prepared_agent_config.v5','r3.ordinary_config_history.v7'],
+    ];
+    const definitions=[];
+    const readHistory=data=>sql(data,true,db=>db.prepare("SELECT 1 FROM sqlite_schema WHERE name='memory_source_access'").get()
+      ? db.prepare('SELECT * FROM memory_source_access ORDER BY source_id').all() : []);
+    for (const [label,version,fifth,seventh] of branches) {
+      stage='upgrade restored isolated database '+label;
+      const fixture=fixtures.find(row=>row.label===label)?.isolatedCopy;
+      assert(fixture&&existsSync(fixture),label+' actual frozen isolated database is required');
+      const originalHash=buildHash(fixture);
+      const frozen=dataState(dirname(fixture));
+      const sourceRows=readHistory(dirname(fixture));
+      assert.equal(frozen.version,version);
+      assert.equal(frozen.ledger[4].migration_id,fifth);
+      const data=join(root,label,'data');
+      mkdirSync(data,{recursive:true});
+      const source=new DatabaseSync(fixture,{readOnly:true});
+      try {await backup(source,dbPath(data));}
+      finally {source.close();}
+      await startFailing(label,data,9);
+      const interrupted=dataState(data);
+      assert.equal(interrupted.version,version===5?7:8);
+      assert.equal(interrupted.ledger[6].migration_id,seventh);
+      assert.deepEqual(interrupted.ledger.slice(0,version),frozen.ledger);
+      assert(!interrupted.schema.some(([,name])=>name==='personal_memory_processing'));
+      assert.deepEqual(readHistory(data),sourceRows);
+      await launch(main,data,profile(label+'-upgrade'),async page=>{
+        const view=await page.evaluate(()=>window.omniEdu.personalMemory.view());
+        assert(view.ok&&view.value.policy.enabled===false);
+        assert.deepEqual(view.value.records,[]);
+        assert.deepEqual(view.value.candidates,[]);
+      });
+      const migrated=dataState(data);
+      assert.equal(migrated.version,expectedVersion);
+      assert.equal(migrated.ledger[version===5?7:8].migration_id,version===5?'r2.personal_memory.v8':'r2.personal_memory.after_r3_config.v9');
+      assert.deepEqual(migrated.ledger.slice(0,version),frozen.ledger);
+      assert.deepEqual(migrated.students,frozen.students);
+      assert.deepEqual(migrated.foreignKeys,[]);
+      assert.equal(migrated.integrity,'ok');
+      assert.deepEqual(readHistory(data),sourceRows);
+      definitions.push(migrated.schema.filter(([,name])=>/^(personal_memory_|memory_source_|memory_index_|memory_history_|xiaozhi_prepared_runs|xiaozhi_task_summary_)/.test(name)));
+      await launch(main,data,profile(label+'-restart'));
+      assert.deepEqual(dataState(data),migrated);
+      assert.equal(buildHash(fixture),originalHash);
+      receipt('Actual '+label+' survives an interrupted R2 schema upgrade and a cold restart with the original ledger.',
+        {from:version,fixtureHash:originalHash,historicalSourceRows:sourceRows.length,ledger:migrated.ledger});
+    }
+    assert.deepEqual(definitions[0],definitions[1]);
+    receipt('Both released ledger prefixes converge to identical history, preparation, task summary and personal memory schema.');
   }
 
   const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;

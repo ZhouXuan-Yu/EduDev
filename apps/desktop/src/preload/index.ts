@@ -68,6 +68,11 @@ import { DESKTOP_COMMANDS, type DesktopChromeState, type DesktopCommand, type De
 import type { XiaozhiControlInput, XiaozhiQueueInput, XiaozhiActionResult, XiaozhiDecisionInput, XiaozhiAgentEvent, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../shared/xiaozhi-agent';
 import type { XiaozhiBudgetInput, XiaozhiCompactInput, XiaozhiQueueMutationInput } from '../shared/xiaozhi-agent';
 import type { XiaozhiMemoryCatalogInput, XiaozhiMemoryCatalogResult, XiaozhiMemoryScopeInput, XiaozhiMemoryTrace } from '../shared/xiaozhi-memory';
+import type { HistoryAccessAction, HistoryDiscovery, HistoryIndexStatus, HistoryPreview, HistoryResult, HistorySource, HistorySourceRef } from '../shared/xiaozhi-history-memory';
+import type {PersonalMemoryAdoptInput, PersonalMemoryCancelJobInput, PersonalMemoryCancelJobReceipt,
+  PersonalMemoryCandidateInput, PersonalMemoryEditInput, PersonalMemoryPolicy, PersonalMemoryQueue,
+  PersonalMemoryPolicyInput, PersonalMemoryReceipt, PersonalMemoryRecordInput, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourceInput,
+  PersonalMemorySourcePermission, PersonalMemoryView} from '../shared/xiaozhi-personal-memory';
 import type { XiaozhiSkillCatalog, XiaozhiSkillPreview, XiaozhiSkillResult, XiaozhiSkillMutation, XiaozhiSkillMutationResult } from '../shared/xiaozhi-skills';
 import type { XiaozhiFileInput, XiaozhiPreviewInput, XiaozhiFileResult, XiaozhiFileList, XiaozhiFilePreview } from '../shared/xiaozhi-files';
 import type {OrdinaryCommit,OrdinaryHistory,OrdinaryQuery,OrdinaryReceipt,OrdinaryUndo} from '../shared/xiaozhi-ordinary-config';
@@ -414,12 +419,33 @@ const api = {
   mutateXiaozhiQueue: (input: XiaozhiQueueMutationInput) => ipcRenderer.invoke('xiaozhi:queue-mutate',input) as Promise<XiaozhiActionResult>,
   getXiaozhiMemoryCatalog: (input: XiaozhiMemoryCatalogInput) => ipcRenderer.invoke('xiaozhi:memory-catalog', input) as Promise<XiaozhiMemoryCatalogResult>,
   setXiaozhiMemoryScope: (input: XiaozhiMemoryScopeInput) => ipcRenderer.invoke('xiaozhi:memory-scope', input) as Promise<XiaozhiActionResult>,
+  listHistoryMemorySessions: () => ipcRenderer.invoke('xiaozhi:history-sessions') as Promise<HistoryResult<Array<{id:string;title:string}>>>,
+  getHistoryMemoryIndex: () => ipcRenderer.invoke('xiaozhi:history-index-status') as Promise<HistoryResult<HistoryIndexStatus>>,
+  rebuildHistoryMemoryIndex: () => ipcRenderer.invoke('xiaozhi:history-index-rebuild') as Promise<HistoryResult<HistoryIndexStatus>>,
+  listHistoryMemory: (id:string,offset:number) => ipcRenderer.invoke('xiaozhi:history-list',id,offset) as Promise<HistoryResult<{items:HistorySource[];nextOffset:number|null}>>,
+  previewHistoryMemory: (ref:HistorySourceRef,offset:number,authorized:boolean) => ipcRenderer.invoke('xiaozhi:history-preview',ref,offset,authorized) as Promise<HistoryResult<HistoryPreview>>,
+  discoverHistoryMemory: (id:string,query:string) => ipcRenderer.invoke('xiaozhi:history-discover',id,query) as Promise<HistoryResult<HistoryDiscovery>>,
+  confirmHistoryMemory: (id:string,version:number,ticket:string) => ipcRenderer.invoke('xiaozhi:history-confirm',id,version,ticket) as Promise<XiaozhiActionResult>,
+  changeHistoryMemory: (ref:HistorySourceRef,revision:number,action:HistoryAccessAction) => ipcRenderer.invoke('xiaozhi:history-access',ref,revision,action) as Promise<HistoryResult<HistorySource>>,
   getXiaozhiMemoryTrace: (sessionId: string) => ipcRenderer.invoke('xiaozhi:memory-trace', sessionId) as Promise<XiaozhiMemoryTrace | null>,
   getTeacherCandidates:(sessionId:string)=>ipcRenderer.invoke('xiaozhi:candidate-history',sessionId) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary[]>>,
   evaluateTeacherCandidate:(input:import('../shared/teacher-candidates').TeacherCandidateInput)=>ipcRenderer.invoke('xiaozhi:candidate-evaluate',input) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary>>,
   rejectTeacherCandidate:(input:import('../shared/teacher-candidates').TeacherCandidateInput)=>ipcRenderer.invoke('xiaozhi:candidate-reject',input) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary>>,
   getTeacherMemorySettings:()=>ipcRenderer.invoke('xiaozhi:teacher-memory-settings') as Promise<import('../shared/teacher-memory-settings').TeacherMemorySettingsResult>,
   saveTeacherMemorySettings:(input:import('../shared/teacher-memory-settings').TeacherMemorySettingsInput)=>ipcRenderer.invoke('xiaozhi:teacher-memory-save',input) as Promise<import('../shared/teacher-memory-settings').TeacherMemorySettingsResult>,
+  personalMemory: {
+    view:()=>ipcRenderer.invoke('xiaozhi:personal-memory-view') as Promise<PersonalMemoryResult<PersonalMemoryView>>,
+    queue:(sessionId:string)=>ipcRenderer.invoke('xiaozhi:personal-memory-queue',sessionId) as Promise<PersonalMemoryResult<PersonalMemoryQueue>>,
+    setEnabled:(input:PersonalMemoryPolicyInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-auto',input) as Promise<PersonalMemoryResult<PersonalMemoryPolicy>>,
+    preview:(input:PersonalMemoryCandidateInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-preview',input) as Promise<PersonalMemoryResult<PersonalMemoryReview>>,
+    previewRecord:(input:PersonalMemoryRecordInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-record-preview',input) as Promise<PersonalMemoryResult<PersonalMemoryReview>>,
+    adopt:(input:PersonalMemoryAdoptInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-adopt',input) as Promise<PersonalMemoryResult<PersonalMemoryReceipt>>,
+    reject:(input:PersonalMemoryCandidateInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-reject',input) as Promise<PersonalMemoryResult<{revision:number}>>,
+    edit:(input:PersonalMemoryEditInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-edit',input) as Promise<PersonalMemoryResult<PersonalMemoryReceipt>>,
+    sourceStatus:(ref:HistorySourceRef)=>ipcRenderer.invoke('xiaozhi:personal-memory-source',ref) as Promise<PersonalMemoryResult<PersonalMemorySourcePermission>>,
+    setSource:(input:PersonalMemorySourceInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-source-change',input) as Promise<PersonalMemoryResult<PersonalMemorySourcePermission>>,
+    cancelJob:(input:PersonalMemoryCancelJobInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-job-cancel',input) as Promise<PersonalMemoryResult<PersonalMemoryCancelJobReceipt>>,
+  },
   getXiaozhiDecisions: (sessionId: string) => ipcRenderer.invoke('xiaozhi:decision-history',sessionId) as Promise<DecisionResult<DecisionSummary[]>>,
   replayXiaozhiDecision: (input: DecisionInput) => ipcRenderer.invoke('xiaozhi:decision-replay',input) as Promise<DecisionResult<DecisionReplay>>,
   reviewXiaozhiDecision: (input: DecisionInput) => ipcRenderer.invoke('xiaozhi:decision-shadow',input) as Promise<DecisionResult<DecisionSummary>>,

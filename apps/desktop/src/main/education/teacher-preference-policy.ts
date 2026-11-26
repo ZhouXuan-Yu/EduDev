@@ -1,12 +1,25 @@
 import {TEACHER_PREFERENCE_SCHEMA,validTeacherPreferenceValues,type TeacherPreferenceValues,type TeacherPreferenceSnapshot} from '../../shared/teacher-preferences';
 
 export type TeacherPreferenceSignal={kind:'none'}|{kind:'rollback'}|{kind:'candidate';patch:TeacherPreferenceValues}|{kind:'rejected';reason:'ambiguous'};
+
+const attributedSpeech = /(?:同事|别的?老师|其他老师|助教|学生|家长|助手|小智|模型|AI).{0,10}(?:建议|推荐|(?:说|认为|觉得|猜)(?:[，,：:\s]|你|我|应|要|更|喜|用|先|以后|今后))/i;
+const restrictedAudience = /(?:[一二三四五六七八九十零〇\dA-Z]+\s*班(?:级)?|(?:这个|那个|某个|本|当前|指定)(?:班级?|课程|小组|教学组)|[一二三四五六七八九十零〇\d]+\s*年级)/i;
+const restrictedSubject = /(?:语文|数学|英语|物理|化学|生物|地理|历史|道德与法治|政治|信息技术|科学)(?:课程|课(?:上|内|的|里|时|，|,|都)|学科|讲义|作业|试卷)/;
+const restrictedTime = /(?:本|上|下|这[个一]?|那[个一]?|每[个一]?|第[一二三四五六七八九十\d]+|春季|秋季)(?:学期|学年)|(?:下周|本周|下个月|本月|今年|明年)(?:开始|结束|起|前|后|内|为止)|(?:接下来|未来|仅限|只在|直到).{0,12}(?:天|周|个月|学期|学年|月底|期末)/;
+const handoutAtEnd = /(?:答案|参考解答).{0,12}(?:放[在到]?|排[在到]?|置[于在]|列在|集中|统一在|附在)(?:整份|这份|整篇)?(?:讲义|学案|文档|全文)?(?:的)?(?:最后|末尾|文末|结尾)|(?:讲义|学案)(?:的)?(?:末尾|最后|文末|结尾).{0,6}(?:附|列|给|放).{0,4}答案/;
+const handoutAfterEach = /(?:每道?题|逐题|各题).{0,8}(?:后面?|后边|后紧跟|下方|紧跟).{0,10}(?:答案|参考解答)|(?:答案|参考解答).{0,10}(?:跟在|紧跟|放在|附在)(?:每道?题|各题)(?:后面?|下方)/;
+
 /** Only explicit general future presentation requests. Sources/quotes are never feedback. */
 export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  let input=text.trim();
  if(input.length>8000||/[`“”「」『』"<>]|(?:引用|假设|例如|例子|翻译|资料中|题目中|不要记住|别记住|不用记住|如果)/.test(input))return{kind:'none'};
  if(/^(?:请)?撤销(?:上次|上一版|刚才)(?:记住的|的)?(?:教学)?(?:偏好|习惯)[。！!\s]*$/.test(input))return{kind:'rollback'};
+ // Accept an adoption only when this teacher message restates the actual requirement.
+ input=input.replace(/^我(?:明确)?(?:采纳|采用)(?:这条|这个|上述|上面(?:的)?)建议[，,：:]\s*/,'');
+ input=input.replace(/^(?:(?:请|帮我)?记住)[，,：:\s]*/,'');
  if(!/^(?:请)?(?:以后|今后|后续|下次|从现在起|我习惯|我更喜欢|我偏好)/.test(input))return{kind:'none'};
+ // This head is app-wide. A request with an unbound audience or term remains in the current task.
+ if(attributedSpeech.test(input)||restrictedAudience.test(input)||restrictedSubject.test(input)||restrictedTime.test(input))return{kind:'none'};
  // Never learn policies, student facts, temporary/per-student requests or credentials.
  if(/权限|审批|批准|安全|隐私|密钥|凭证|API|token|成绩|分数|正确答案|数据库|源代码|系统提示|忽略规则|绕过|这次|这道|本题|本次|只针对|仅针对|(?:给|对|帮).{0,24}(?:同学|学生|孩子)/i.test(input))return{kind:'none'};
  // Resolve only unambiguous negative alternatives before positive matching.
@@ -26,6 +39,7 @@ export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  choose('answerOrder',[['hint_first',/先(?:给)?提示|先引导|不要直接.{0,8}答案/],['answer_first',/先(?:给|说|列|给出)?答案|先结论/]]);
  choose('presentation',[['table',/用表格|表格形式|优先.{0,6}表格/],['paragraph',/用段落|采用段落|不要.{0,5}表格/]]);
  choose('exportFormat',[['docx',/(?:导出|输出|保存).{0,10}(?:word|docx)/i],['pdf',/(?:导出|输出|保存).{0,10}pdf/i],['pptx',/(?:导出|输出|保存).{0,10}(?:pptx|ppt)/i]]);
+ if(/讲义|学案/.test(input))choose('handoutAnswerPlacement',[['at_end',handoutAtEnd],['after_each',handoutAfterEach]]);
  if(ambiguous)return{kind:'rejected',reason:'ambiguous'};
  return Object.keys(patch).length?{kind:'candidate',patch}:{kind:'none'};
 }
@@ -40,7 +54,8 @@ export function evaluateTeacherPreference(baseline:TeacherPreferenceValues,patch
  return{candidate,evaluation:{metric:'teacher_preference_contract.v1',matched,total:expected.length,baselineMatched,preserved,passed:matched===expected.length&&preserved,educationalCorrectness:'not_evaluated'}};
 }
 
-const labels:Record<string,string>={concise:'讲解简洁',detailed:'讲解详细',step_by_step:'分步骤讲解',continuous:'连贯叙述',hint_first:'先给提示，再给答案',answer_first:'先给答案或结论',table:'适合比较的信息优先用表格',paragraph:'优先用段落',docx:'未指定时优先导出Word',pdf:'未指定时优先导出PDF',pptx:'未指定时优先导出PPTX'};
+const labels:Record<string,string>={concise:'讲解简洁',detailed:'讲解详细',step_by_step:'分步骤讲解',continuous:'连贯叙述',hint_first:'先给提示，再给答案',answer_first:'先给答案或结论',table:'适合比较的信息优先用表格',paragraph:'优先用段落',docx:'未指定时优先导出Word',pdf:'未指定时优先导出PDF',pptx:'未指定时优先导出PPTX',
+ at_end:'讲义需附答案时，将答案集中放在讲义末尾',after_each:'讲义需附答案时，将答案放在各题后'};
 function presentationAdvice(values:TeacherPreferenceValues){
  return values.length==='concise'?'\n简洁讲解以约400–600字为宜，含公式和表格尽量控制在800字内。保留关键条件、关系式、单位与结论；步骤正文和表格不要重复同一组计算，不另附无关扩展、变式邀请或重复提醒。不能为满足篇幅删掉解题必需条件，必要内容确实超长时优先保证完整和正确。':'';
 }
@@ -49,7 +64,7 @@ export function teacherPreferenceContext(snapshot:TeacherPreferenceSnapshot,acti
  const notice=action==='rejected'?'本条表达存在歧义，偏好没有保存；不能声称已经记住，请简短澄清。':action==='no_previous'?'当前没有可撤销的教师表达偏好；不能声称恢复了一个不存在的版本。':'';
  if(!snapshot.revision)return notice+(action==='observed'?'本次只是当前讲解的修正，尚未保存长期表达习惯；正常修改当前讲解，不称已经学会或记住。':'');
  const preferences=Object.values(snapshot.values).map(value=>labels[value]);
- return'\n[当前教师表达偏好：本机已保存的明确要求；非学生事实、权限或答案依据]\n'+JSON.stringify({version:snapshot.revision,preferences,latestAction:action})+'\n仅在适合任务且教师本次未另行指定时采用；本次明确要求优先。以上明确习惯已经由宿主保存，不要重复询问详细程度、档位或要求教师配置记忆/技能；若本次仅说明习惯，简短确认即可。旧对话中的偏好若与此版本冲突，以此版本为准；空列表表示已撤销，不恢复旧习惯。不改变审批、隐私、来源、题目答案和学生事实。'+presentationAdvice(snapshot.values)+notice;
+ return'\n[当前教师表达偏好：本机已保存的明确要求；非学生事实、权限或答案依据]\n'+JSON.stringify({version:snapshot.revision,preferences,latestAction:action})+'\n仅在适合任务且教师本次未另行指定时采用；本次明确要求优先。以上明确习惯已经由宿主保存，不要重复询问详细程度、档位或要求教师配置记忆/技能。仅当 latestAction 为 learned 且本次只说明习惯时，可以简短确认已记住本次要求。旧对话中的偏好若与此版本冲突，以此版本为准；空列表表示已撤销，不恢复旧习惯。不改变审批、隐私、来源、题目答案和学生事实。'+presentationAdvice(snapshot.values)+notice;
 }
 export function teacherPreferenceTrialContext(values:TeacherPreferenceValues){
  if(!validTeacherPreferenceValues(values))throw Error('configuration');
