@@ -1,0 +1,8 @@
+PASS student switches preserve separate drafts and local time
+PASS UI edit retains exact timestamp and same-record click never reloads draft
+PASS replacing an unfinished record is cancelable by Escape
+PASS saving a child note preserves unsaved notebook metadata
+PASS page exit and whole-book deletion protect unfinished edits with explicit safe cancellation
+PASS folder state transitions preserve DOM and make collapsed content inert
+PASS resize is direct and Escape restores the starting width
+{"success":false,"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\docs\\audit\\ux-motion-20261126\\electron-fiYZBw","checks":7,"failure":"locator.evaluate: Timeout 18000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=edu-navigation]:visible').getByRole('button', { name: '动效验收空间', exact: true })\u001b[22m\n\n    at D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\scripts\\ux-motion-electron.mjs:73:31"}

@@ -1,0 +1,311 @@
+{
+  "description": "Raw terminal bytes preserved in raw-logs.zip. Committed text logs only normalize line endings, trailing spaces and trailing empty lines. No assertions, error messages or checking rules changed. Active review-window.log stays open and Git performs its ordinary CRLF clean conversion.",
+  "archiveSha256": "92a7d4538f3311c5a66f337f58acdf43b79d4fbe77fb3055b6112104884dfbaf",
+  "files": [
+    {
+      "file": "build-final.log",
+      "rawSha256": "5c654567dcda07fc087f9c4ec58ec22b8f0e3c1ba8e221a9c20a7b2ec206c2f1",
+      "committedTextSha256": "a8e5d36f16914ada35ceaa352df9150ae957468e4f0a83222ca6125b59f6c7b3"
+    },
+    {
+      "file": "build.log",
+      "rawSha256": "66506c4d9fb921f52f4022928de09b7530b48e1b1cc9856bf81ef8e1f793cef6",
+      "committedTextSha256": "c229f39ae4af1e517d556959e5a5da7cbdd31752fd990214d6a01e4f74ec9be6"
+    },
+    {
+      "file": "components-2.log",
+      "rawSha256": "d751511d2adcf4c60eca9d70ba825166f5b4abcdb9fdd8b0e5e1de270311b32b",
+      "committedTextSha256": "2f33c43665bce943d9fc8830e0c564afa116d9bd42d2e95cc62eddf55d6d7336"
+    },
+    {
+      "file": "components-3.log",
+      "rawSha256": "75851ebf918120647b3bdbe555e06a526dfb0ac088c046eb773bf30906bc4381",
+      "committedTextSha256": "73dacff5ade3bc626753fe9731746f80a9dea2a4bc242c776123e8d0cd8251db"
+    },
+    {
+      "file": "components-4.log",
+      "rawSha256": "75851ebf918120647b3bdbe555e06a526dfb0ac088c046eb773bf30906bc4381",
+      "committedTextSha256": "73dacff5ade3bc626753fe9731746f80a9dea2a4bc242c776123e8d0cd8251db"
+    },
+    {
+      "file": "components-5.log",
+      "rawSha256": "54d46214c7cd69614270672382e84c54a21f136b58ca939e5b2c90ee300eb5c7",
+      "committedTextSha256": "d8eafa621155436e7ad6a8af70d6c24db6518fe337b37778012f0be4e37f57a5"
+    },
+    {
+      "file": "components-6.log",
+      "rawSha256": "54d46214c7cd69614270672382e84c54a21f136b58ca939e5b2c90ee300eb5c7",
+      "committedTextSha256": "d8eafa621155436e7ad6a8af70d6c24db6518fe337b37778012f0be4e37f57a5"
+    },
+    {
+      "file": "components-7.log",
+      "rawSha256": "5b777ec03b91aee4b18f120b5002179e25200201543e8e09c0f9358f93d6c7ed",
+      "committedTextSha256": "178660fdeba97e88057fd353adbfba840b39a3c4d238575d5005283f32085741"
+    },
+    {
+      "file": "components-8.log",
+      "rawSha256": "9334f9b552fb9e91e14ce7efb88e30fe48c56d18bfefe1804d2644714052b0bd",
+      "committedTextSha256": "8b8f6a9e27f82d1dc8480052464169e228cfa558e36342da829c67854698055f"
+    },
+    {
+      "file": "components-9.log",
+      "rawSha256": "9334f9b552fb9e91e14ce7efb88e30fe48c56d18bfefe1804d2644714052b0bd",
+      "committedTextSha256": "8b8f6a9e27f82d1dc8480052464169e228cfa558e36342da829c67854698055f"
+    },
+    {
+      "file": "components-final-prebuild.log",
+      "rawSha256": "54d46214c7cd69614270672382e84c54a21f136b58ca939e5b2c90ee300eb5c7",
+      "committedTextSha256": "d8eafa621155436e7ad6a8af70d6c24db6518fe337b37778012f0be4e37f57a5"
+    },
+    {
+      "file": "components-frozen.log",
+      "rawSha256": "f3e7530de8891d4a4d4a05739862657d357940fcb0bc63c7558c60a55f394398",
+      "committedTextSha256": "d80925fdbc67e62c60e7181f3df966f9a0afe7b052a3a3be0551453324b3b9fe"
+    },
+    {
+      "file": "components.log",
+      "rawSha256": "42b81a1e80b3d9f29e2ad59f26fc8ceb8cd37b5f0a8312df149a8cb440697dfa",
+      "committedTextSha256": "1a797345fcf24cf88538c95f53db15508fc1988e53942547001bef525183329f"
+    },
+    {
+      "file": "composer.log",
+      "rawSha256": "88564db3eae44014a78b10886a10499311d90e7ee60aec8dd97c8628c0002d5a",
+      "committedTextSha256": "2ebf7d59782b8f04f853c11cdaab6705039552a2f5518e8a845dcbc22c077484"
+    },
+    {
+      "file": "contracts-frozen.log",
+      "rawSha256": "8031770777a3df66c163ba062d9f31fd917c6a6738cea7e29c44b64efa041595",
+      "committedTextSha256": "e7e7569f666fbdb603e973747424b52b3415f837e4c549ab361d69bbdeb6fd61"
+    },
+    {
+      "file": "diff-check.log",
+      "rawSha256": "4cd4af86df203f4f413212be88b3af95d97f4100a54ce41bb662f12d619986a3",
+      "committedTextSha256": "f99c6759f9a1d93d2ff3c8ac400b1f04ca1f4291d299cd21470f2adb0687aa19"
+    },
+    {
+      "file": "electron-final.log",
+      "rawSha256": "13662cc95e361e436648315351e5e9100ad52111df5cc1e499cafc698a17871c",
+      "committedTextSha256": "64f67b9cebe5092878f4807b6e3440eca6ddccff9499f0ddd9c7ec9d48d4fdc3"
+    },
+    {
+      "file": "electron.log",
+      "rawSha256": "23af1bd244fad755cc780e82ad34137664d7a77b24701db80dda588894c23308",
+      "committedTextSha256": "8b9211d7cf044f0452f7c7fe6b9d61ea3e112c258b217c7959e4ed42ed862b4b"
+    },
+    {
+      "file": "final-composer.log",
+      "rawSha256": "57a03243f60350b4a40673cb0e321223e71b301074ff93b8d7633b9e486078ce",
+      "committedTextSha256": "5d6ef58f7462d18f6e3ceb215bc26984661f3544712aeb05173e92abd93f141d"
+    },
+    {
+      "file": "final-smoke.log",
+      "rawSha256": "ff1d9dbb0a272d482e42a028c106d34f33511116f9cc9c409625d2bc441d7d59",
+      "committedTextSha256": "0597540c9aaca4810c9c0c5ade8f5893f5ec81a023fc91a7ac2c2f50ce081684"
+    },
+    {
+      "file": "frozen-build.log",
+      "rawSha256": "178147370cb629b11ade61e3597eaaae42e0f40e3b1db5fcaa178f6a42bbba0d",
+      "committedTextSha256": "1de28df2f0c45acd72e1071c6f7523d6768185f53a014a3075c945025126bcd0"
+    },
+    {
+      "file": "header-build.log",
+      "rawSha256": "5021e07881a0c863b154cdfa2b48f2d85099bb2c92fb61c2ac0997de247ad352",
+      "committedTextSha256": "831772ffac51ad601a0c1fb6b1225bde6333fc64ba6ac9a9f8528070cd80a32f"
+    },
+    {
+      "file": "header-electron.log",
+      "rawSha256": "305d6147e88726612c50d052c80f1eb8a6ac6283caad8f970782cc809863e992",
+      "committedTextSha256": "45151dfa100ab992b8a06737cb79c3f54ff1338118b406ec9b6e570648778a70"
+    },
+    {
+      "file": "header-pages.log",
+      "rawSha256": "6f525549dddbd1aa37718e6a6d33abb722953febf01a1a2d29913a67b5e4d4bb",
+      "committedTextSha256": "856814c51a7cfb9e40b9b0d175ddcc7f118da2f39a8f5ad385f03ebb66e3b682"
+    },
+    {
+      "file": "header-renderer.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "committedTextSha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "file": "header-style.log",
+      "rawSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "committedTextSha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b"
+    },
+    {
+      "file": "header-typecheck.log",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "committedTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "integration-build.log",
+      "rawSha256": "39e0165f845bb92f119ab98cfb9fa641507182e64c76735f5bec04e845024186",
+      "committedTextSha256": "59010efddd415514b3a427a1e6655591015a5a7503738774ca51cee79f6f954b"
+    },
+    {
+      "file": "integration-components.log",
+      "rawSha256": "f3e7530de8891d4a4d4a05739862657d357940fcb0bc63c7558c60a55f394398",
+      "committedTextSha256": "d80925fdbc67e62c60e7181f3df966f9a0afe7b052a3a3be0551453324b3b9fe"
+    },
+    {
+      "file": "integration-electron-install.log",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "committedTextSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "integration-electron.log",
+      "rawSha256": "02d44b7d3a709fe9e30ebfcaaecd1b61610f2d200fd66396a9023e4d8a00b245",
+      "committedTextSha256": "1b6a58aef8ec1923ff43116975f8693094080353bd6b0e2988333c88b05fe6ed"
+    },
+    {
+      "file": "integration-npm-ci.log",
+      "rawSha256": "0e5b3b4cb97460246024abeffe22100c43bf300806f877d8acda47f38ebd9f1d",
+      "committedTextSha256": "4caddb260751fa48c9051feb3cb7811a55ad2b16868a565ec3a184acbe26f6a5"
+    },
+    {
+      "file": "integration-pages.log",
+      "rawSha256": "776efb5e852ce4319665d5edeac5c057b7faaf5f95e86451036cedf9bf2ba47d",
+      "committedTextSha256": "21429fd9f118be6479e494cabec9802b2c9b9ce07848e271ce450447141b264e"
+    },
+    {
+      "file": "integration-renderer.log",
+      "rawSha256": "714859121163926545126e05b90b20077c22bd524c9ee73ad2850eda2c785ee8",
+      "committedTextSha256": "3a840e31d05ff540c65510084c00b30e64e330e51d742a215f00f3b2c9a6e927"
+    },
+    {
+      "file": "integration-smoke.log",
+      "rawSha256": "d6b57c3bf0b2c91f2d4b6f1e51c67a5a7c036f71a49b61042edde96a4405ebf7",
+      "committedTextSha256": "e1f0c32a515801d6bccf98af53b0fcd7799ae24b56b03a0bc5fad5784207e13c"
+    },
+    {
+      "file": "integration-sqlite-rebuild.log",
+      "rawSha256": "735478f546fc7efd5952d03fea585fa26a33f96eaff79116fd33442d6f7d23e2",
+      "committedTextSha256": "5fea06889844726ffbf8e27f38feb7a12898a3d5a295ed2d1284ad720672f18e"
+    },
+    {
+      "file": "merged-components.log",
+      "rawSha256": "f3e7530de8891d4a4d4a05739862657d357940fcb0bc63c7558c60a55f394398",
+      "committedTextSha256": "d80925fdbc67e62c60e7181f3df966f9a0afe7b052a3a3be0551453324b3b9fe"
+    },
+    {
+      "file": "merged-composer.log",
+      "rawSha256": "6d2bd04b43108f482693375e8f66c10ed79ecd4abf88f18d43474c5acee0aa0e",
+      "committedTextSha256": "131f31501959b81f97fca9fd3d0fa0085e18ee4767ec61db7f36584519f270c5"
+    },
+    {
+      "file": "merged-contracts.log",
+      "rawSha256": "8031770777a3df66c163ba062d9f31fd917c6a6738cea7e29c44b64efa041595",
+      "committedTextSha256": "e7e7569f666fbdb603e973747424b52b3415f837e4c549ab361d69bbdeb6fd61"
+    },
+    {
+      "file": "merged-renderer.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "committedTextSha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "file": "merged-style.log",
+      "rawSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "committedTextSha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b"
+    },
+    {
+      "file": "pages-final.log",
+      "rawSha256": "c787ffb039404f5796a4ba3640e90f8cdf7db0ee4edfe1e15058cfbafe566092",
+      "committedTextSha256": "ea7a99c2182c0a327fd4d7cd3164e11b70b0ee7f8f310fad497aa3d41ed5beff"
+    },
+    {
+      "file": "pages.log",
+      "rawSha256": "09bab2a89fb03356239f2c46e5a8f20600bdfc474a24a0edb30410de958edc76",
+      "committedTextSha256": "059dfe4c50c03fc6cd636230d0ee4ba925c7acd345ba471b21557208fda82a49"
+    },
+    {
+      "file": "performance-final.log",
+      "rawSha256": "9eb443d046a2510a27956b86bc19f703cd9d09d060a06d0ec27fb90e9e5ec306",
+      "committedTextSha256": "2335e0222303d53ee0a556e021c812c5a912943b2c7a2968c5302883af8acd68"
+    },
+    {
+      "file": "remaining-install-scripts.log",
+      "rawSha256": "735478f546fc7efd5952d03fea585fa26a33f96eaff79116fd33442d6f7d23e2",
+      "committedTextSha256": "5fea06889844726ffbf8e27f38feb7a12898a3d5a295ed2d1284ad720672f18e"
+    },
+    {
+      "file": "renderer-final.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "committedTextSha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "file": "renderer-frozen.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "committedTextSha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "file": "renderer.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "committedTextSha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "file": "repaired-electron.log",
+      "rawSha256": "7f8e444288b1ddf001e910c86b97fd36bd6dc4b66a26841e632e3bba52f42888",
+      "committedTextSha256": "f8e713187b5418f3bbcb98d68627287075bf11a246bb8a2e0d9ffccddd7d037d"
+    },
+    {
+      "file": "repaired-pages.log",
+      "rawSha256": "fd1a6af498300a0c470abf72459480e213de5b553f3e0c83bdf5bd14ed9ec2f9",
+      "committedTextSha256": "86cb9abff7b6955feda8110a0742bcb32111041f6b1e3094ac5666501244e4e3"
+    },
+    {
+      "file": "repaired-smoke.log",
+      "rawSha256": "2299a8fb3b3e5738b6ead6eb9f3eb443e12d9284a05864ec025ea897f6bca2c9",
+      "committedTextSha256": "91a3a8d2ebc93a4c9e4de964ca159f7ba180bde56caea8f7d9f7f5aafbcaf49e"
+    },
+    {
+      "file": "review-window.log",
+      "rawSha256": "f0aad0f6bca77bdb13aad618577b35eb780c4ca89155db8a0a406edfa078dba9",
+      "committedTextSha256": "2822d979199e38269f9d21a9d996b58e76eed2251ac448782f7b628cbd518202"
+    },
+    {
+      "file": "smoke-2.log",
+      "rawSha256": "d662e92f8863031a02c573246937e19ccae2c9450ad6b2fa61e5e2169ef5905d",
+      "committedTextSha256": "d0a655581afc75fed5f3da51bca6fe174fd472d3429941a450342dc182783183"
+    },
+    {
+      "file": "smoke-final.log",
+      "rawSha256": "8ef2de92a7e4b8673ec7dee82225c14f7921c5074c830837cac74cc814d3f069",
+      "committedTextSha256": "1c72d3745ce6ea960aec803f8e9f9b061fdcfc2981b45eee35d572156097102b"
+    },
+    {
+      "file": "smoke-frozen.log",
+      "rawSha256": "09720c53312d94477225257b3c34d2fbe7cce681a1931899ff7059053166403a",
+      "committedTextSha256": "897cfb22bd065a6ca80e7459f844b7c6012e132b0f4f2a5eb8f60fa2d1ef4dd5"
+    },
+    {
+      "file": "smoke.log",
+      "rawSha256": "7c4195214b8bce8ba8b87779fab9f95421a54a3588a2f3a1e8bdcc98f9d5a586",
+      "committedTextSha256": "b9b4c4aae273ed529c761ff380c78b8203f6dba940bbeac4c525718fbb5cdc12"
+    },
+    {
+      "file": "style-final.log",
+      "rawSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "committedTextSha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b"
+    },
+    {
+      "file": "style-frozen.log",
+      "rawSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "committedTextSha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b"
+    },
+    {
+      "file": "style-isolation.log",
+      "rawSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "committedTextSha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b"
+    },
+    {
+      "file": "typecheck.log",
+      "rawSha256": "a23d0cd3f0269357c0b13b307068a8b8b0ca9b43433b2a18f076e0cf67a1ed4f",
+      "committedTextSha256": "60648736687061e6daa0128dc3d7adb4c096bccca2d706c1a338f49927d3de15"
+    },
+    {
+      "file": "ui-contracts.log",
+      "rawSha256": "8031770777a3df66c163ba062d9f31fd917c6a6738cea7e29c44b64efa041595",
+      "committedTextSha256": "e7e7569f666fbdb603e973747424b52b3415f837e4c549ab361d69bbdeb6fd61"
+    }
+  ]
+}

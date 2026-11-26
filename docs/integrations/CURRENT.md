@@ -2864,3 +2864,7 @@ fresh npm audit --omit=dev --json exit1，0critical/3high/2moderate；npm explai
 ## 数据库基础治理 R1
 
 凭据迁移沿用 Electron `safeStorage`，以实际本地密文回读和事务校验完成迁移。诊断读取配置来源和是否配置状态。换机包使用统一字段清单清除本机凭据和旧设备授权，恢复后由教师重新配置。
+
+## 2026-11-26 教师体验与状态动效
+
+应用自有动效与确认适配复用现有 HeroUI；官方 MCP 已核对 Modal/Disclosure API，未引入新 UI 库。Pi、Composer、底部工具栏与弹层、队列及 PendingPanel 由既有实现维护，main 的历史记忆集成保留原负责方边界。 [变更说明](../audit/ux-motion-20261126/IMPLEMENTATION.md)

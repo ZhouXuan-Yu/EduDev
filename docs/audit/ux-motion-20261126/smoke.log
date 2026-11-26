@@ -1,0 +1,13 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:smoke
+> npm run build && node scripts/electron-smoke.mjs
+
+
+> omni-edu-desktop-prototype@0.1.0 build
+> node scripts/sync-pi-package-capabilities.mjs && node scripts/build-capability-artifacts.mjs && node scripts/build-permission-runtime.mjs && node scripts/build-core-tool-manifest.mjs && tsc --noEmit && electron-vite build
+
+Compiled reviewed Pi package capabilities: web-find.js, usage-query.js
+{"file":"native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs","sha256":"bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274","sources":22}
+{"permissionRuntime":"b244cf4c3cfb137c935e858bffdd9dc07c70c325a127f8d79bb8b7e67b7d165d","bytes":58880,"reused":true}
+{"coreToolSourceHash":"aeac6456a48045320565493d22597464e838fa049d3c0c96bea3562e91641513","sources":719}
+src/renderer/components/TeacherNotebookWorkspace.tsx(52,26): error TS2554: Expected 1 arguments, but got 0.

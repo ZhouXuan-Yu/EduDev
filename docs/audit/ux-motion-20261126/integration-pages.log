@@ -1,0 +1,1 @@
+{"success":false,"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\docs\\audit\\ux-motion-20261126\\verification-pages-nkRj4e","pages":0,"failure":"electronApplication.firstWindow: Target page, context or browser has been closed\n    at D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\scripts\\ux-motion-pages.mjs:49:20"}

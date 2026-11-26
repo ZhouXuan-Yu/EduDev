@@ -16,7 +16,7 @@ let app;
 const report={success:false,source:proof.source,build:proof.build,samples:[],boundary:'Follow-up per-route attribution on the identical accepted build and fictional profile. Original measurements remain retained; this does not supersede them.'};
 try{
  app=await electron.launch({args:[bootstrap,'--user-data-dir='+proof.profile],cwd:desktop,env});const page=await app.firstWindow();await page.getByTestId('office-prompt-input').waitFor({timeout:60000});
- await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0];w.setContentSize(1366,768);w.show();w.focus();});
+ await app.evaluate(({BrowserWindow})=>{const w=BrowserWindow.getAllWindows()[0];globalThis.__focusEvents=[];w.on('blur',()=>globalThis.__focusEvents.push({event:'blur',time:Date.now()}));w.on('focus',()=>globalThis.__focusEvents.push({event:'focus',time:Date.now()}));w.setContentSize(1366,768);w.show();w.focus();});
  await page.waitForTimeout(400);
  for(let cycle=0;cycle<3;cycle++)for(const id of ['knowledge','teaching','student-workbench','ai-workspace']){
   await page.evaluate(()=>{cancelAnimationFrame(globalThis.__frameId);globalThis.__frames=[];globalThis.__long=[];globalThis.__frameStop=false;globalThis.__previous=0;
@@ -25,6 +25,7 @@ try{
   await page.locator('[data-testid=edu-navigation]:visible').getByTestId('nav-'+id).click();await page.waitForTimeout(300);
   const sample=await page.evaluate(()=>{__frameStop=true;cancelAnimationFrame(__frameId);__obs.disconnect();const f=__frames.sort((a,b)=>a-b);return{visibility:document.visibilityState,count:f.length,p95:f[Math.floor((f.length-1)*.95)],max:f.at(-1),longTasks:__long};});report.samples.push({cycle,id,...sample});
  }
+ report.focusEvents=await app.evaluate(()=>globalThis.__focusEvents);
  report.success=true;
 }catch(error){report.failure=String(error.stack||error);process.exitCode=1;}
 finally{if(app)await app.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({output,...report}));}

@@ -1,0 +1,3 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:renderer-components
+> node scripts/renderer-component-state-test.mjs
