@@ -39,6 +39,13 @@
   "native125Percent": "NOT_RUN",
   "theme": "approved light-only product under both OS preferences",
   "runtime": "review-window.json; fictional isolated data; real production entry",
-  "git": "pending final commit/push receipt",
-  "rollback": "Normal revert of UI implementation commits, retain integrated history/config/database changes. No real-data reset."
+  "git": {
+    "acceptedSnapshot": "3ffab1df7f3224bf3296896e5903064041c5c4b0",
+    "remoteMainAtVerification": "3ffab1df7f3224bf3296896e5903064041c5c4b0",
+    "match": true,
+    "sourceUnchangedSince1409949": true,
+    "receipt": "GIT_RECEIPT.json"
+  },
+  "rollback": "Normal revert of UI implementation commits, retain integrated history/config/database changes. No real-data reset.",
+  "status": "DELIVERED_UX_MOTION_SCOPE_WITH_EXISTING_GLOBAL_GATES_OPEN"
 }
