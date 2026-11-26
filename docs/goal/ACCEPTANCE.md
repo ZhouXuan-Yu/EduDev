@@ -80,6 +80,10 @@ D3 当前专项包含任务修订、暂停取消、两种退出方式后的澄�
 
 可编辑讲义专项已核对本地实读、拒绝错误引文、任务与回执、局部修改、来源变化和冷启动。教师确认和历史恢复追加真实 Electron 检查。讲义的对话修改与精确 Office 导出待继续。 [讲义专项证据](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-42-讲义教师确认与恢复)
 
+## 2026-11-22 小智 Harness D2
+
+用户指定的 D2-A-001～014、D2-B-001～008 和 D2-ALL-001～003 逐条记录。真实 DeepSeek 小样本对照、桌面操作和离线测试分别留证。 [D2 明细](xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 D1-001 至 D1-017 单列自检与原始运行证据。 [专项自检](xiaozhi-harness/D1_SELF_CHECK.md)

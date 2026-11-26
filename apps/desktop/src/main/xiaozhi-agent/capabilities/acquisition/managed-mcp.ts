@@ -49,7 +49,8 @@ function declaration(artifact: AcquisitionArtifact, evidence: string) {
 
 type Options = {mcp: ReturnType<typeof createMcpRuntime>; controlled: ReturnType<typeof createControlledMcpService>;
   registry: CapabilityRegistry; permissions: PermissionService; store: PermissionStore; state: AcquisitionState; context: AcquisitionContext;
-  probe?: (result: unknown) => void};
+  probe?: (result: unknown) => void;
+  observeVerifiedProbe?: (target:{providerId:string;version:string;hash:string;latencyMs:number}) => void};
 function owned(options: Options) {
   return options.controlled.forOwner({owner: () => {if (options.context.signal.aborted) throw Error('cancelled'); return options.context.owner;},
     recordAuthority: options.context.recordAuthority, acquisitionCall: options.context.acquisitionCall, recordPendingApproval: options.context.recordPendingApproval,
@@ -93,13 +94,16 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
     if (approval) await options.context.recordPendingApproval?.(approval.request);
   };
   const read = prepared.definitions.find(tool => tool.name === mcpToolName(server!.id, 'read_text_file'));
+  let probeLatencyMs=0;
   try {
     if (!read) {
       const approval = (await options.store.approvals(options.context.owner.sessionId)).find(row => row.state === 'pending');
       throw Error(approval ? 'permission_pending' : 'provider_unavailable');
     }
     // Domain health is supplied by the main-owned canary adapter below.
+    const started=performance.now();
     const result = await read.execute(healthCallId, {path: '__edudev_health__'}, options.context.signal, undefined, undefined as never);
+    probeLatencyMs=performance.now()-started;
     options.probe?.(result);
     await options.store.audit(options.context.owner.sessionId, 'capability_function_probe', artifact.id,
       {owner: options.context.owner, ...(options.context.acquisitionCall ? {acquisitionCall: options.context.acquisitionCall} : {}), failed: result.isError === true, code: (result.details as {error?: {code?: unknown}})?.error?.code || null,
@@ -116,6 +120,7 @@ export async function registerManagedMcpArtifact(options: Options, artifact: Acq
   const snapshot = await options.registry.snapshot();
   const prior = snapshot.providers.find(row => row.id === next.provider.id);
   if (!prior || prior.version !== next.provider.version || prior.health !== 'ready') await options.registry.register(MANAGED_READ_CAPABILITY, next.provider, next.binding, snapshot.revision);
+  options.observeVerifiedProbe?.({providerId:next.provider.id,version:next.provider.version,hash:next.provider.source.packageHash,latencyMs:probeLatencyMs});
   return {serverId: server.id, schemaHash: server.schemaHash!, evidence: [evidence]};
 }
 

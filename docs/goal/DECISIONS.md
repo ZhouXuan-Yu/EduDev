@@ -80,6 +80,10 @@ D3 的 D11 由主进程先识别明确的答复型输入，不产生业务 Task 
 
 试卷导出沿读卷回执和原文件审批核对同一份确认卷。当前试卷卡点选优先，纯对话在无引用时沿任务推导唯一候选。 [导出合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-纯对话精确导出)
 
+## 2026-11-22 小智 Harness D2
+
+生产继续使用 D1 Resolver。Context 沿 Pi 原生 Session 与 SQLite 权威记录，通过兼容性验收才讨论其他引擎。 [D2 取舍](../architecture/HARNESS_D2.md)
+
 ## 2026-11-22 小智 Harness D1
 
 复用原 Registry 和版本快照，增量管理 Provider Instance 与 Binding 控制。Core 与 Community 在可信宿主中统一接入，通过已存在的许可服务和 Windows 隔离执行。 [D1 架构](../architecture/HARNESS_D1.md)

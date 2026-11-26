@@ -49,7 +49,9 @@ import { DEFAULT_PI_BUDGET, validPiBudget } from './budget-state';
 import type { XiaozhiBudget } from '../../shared/xiaozhi-agent';
 import type { XiaozhiContextPolicy, XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import { prepareSafeNativeCompaction, estimateFullRequest, NATIVE_COMPACTION_RESERVE_TOKENS } from './native-compaction';
-import { computeCompactionReserveTokens } from './vendor/hana/core/session-compaction-runtime';
+import {createCompactionBudget} from './context/budget';
+import {createContextAdapter,type ContextFacts} from './context/authority';
+import {contextCacheReceipt,requestPrefixDigest} from './context/model-cache';
 import { createPiInstructionQueue } from './instruction-queue';
 import { privateWorkspaceFingerprintCwd } from './private-workspace-identity';
 import { resolveCreationPromptIdentity,resolveControlPromptIdentity } from './creation-prompt-identity';
@@ -214,6 +216,7 @@ export interface PiXiaozhiOptions {
   protectedContext?: (excludedRunIds?: readonly string[]) => Promise<string>;
   /** Main-owned presentation guidance for this run's request only. */
   teacherPreferenceGuidance?:string;
+  contextFacts?: () => Promise<ContextFacts>;
   /** Main-only callbacks and run identity, never accepted from IPC. */
   memory?: PiMemoryRuntime;
   computationTools?:ToolDefinition[];
@@ -384,7 +387,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.teacherRequestTools){
     if(!requestEntries.length)manager.appendCustomEntry('xiaozhi.education.teacher-requests.v1',requestIdentity);
     names.push('read_teacher_request');
-    prompt+='\n教师要求索引使用sourceId/sourceVersion；被截断或省略的原文通过read_teacher_request分段重读，直到nextOffset=null。生成中已应用追加和教师选项回答均沿所属消息记录；历史应用顺序未知时不能猜覆盖关系。教师明确指明文件名/artifactId时直接沿该版本修改；多份独立课件而目标不明确时，用ask_teacher列出实际文件名集中问一次，已回答后沿选定目标继续，不再次询问或擅改第一份。';
+    prompt+='\n教师要求索引使用sourceId/sourceVersion；整理后找不到旧讨论时用read_teacher_request的query查找同会话原请求。命中片段已经给出所问事实时直接引用来源并回答；需要完整原要求时按sourceId分段读到nextOffset=null。生成中已应用追加和教师选项回答均沿所属消息记录；历史应用顺序未知时不能猜覆盖关系。教师明确指明文件名/artifactId时直接沿该版本修改；多份独立课件而目标不明确时，用ask_teacher列出实际文件名集中问一次，已回答后沿选定目标继续，不再次询问或擅改第一份。';
   }
 
   const computeIdentity={version:1,tools:['prepare_education_tool','education_compute'],engine:'quickjs-wasi-3.6.2'};
@@ -814,6 +817,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     window: options.testContextWindow ? Math.min(providerWindow, options.testContextWindow) : providerWindow,
     maxOutputTokens: thinkingPolicy.maxOutputTokens, verified: Boolean(capabilities),
     ...(options.testContextWindow ? { testPolicy: true } : {}) };
+  const contextAdapter=createContextAdapter(manager,options.contextFacts);
+  const contextBudget=createCompactionBudget(policy.window,policy.maxOutputTokens);
   registry.registerProvider(PROVIDER, { name: 'DeepSeek', apiKey: options.apiKey, baseUrl: 'https://api.deepseek.com/v1', api: 'openai-completions',
     models: [{ id: options.model, name: capabilities?.name || options.model, reasoning: true, input: options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale?['text','image']:['text'], contextWindow: providerWindow, maxTokens: policy.maxOutputTokens,
       // Required SDK numeric fields; no price/zero-cost claim is exposed publicly.
@@ -848,19 +853,21 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   // Native SDK extension only; no user/global extension, context-file or MCP discovery.
   const nativeResources=new DefaultResourceLoader({cwd:workspace,agentDir,settingsManager:settings,noExtensions:true,noSkills:true,noPromptTemplates:true,noThemes:true,noContextFiles:true,
     extensionFactories:[pi=>{pi.on('session_before_compact',async event=>{
+      let transaction: Awaited<ReturnType<typeof contextAdapter.begin>>|undefined;
       compacting=true; autoAbort=event.reason==='manual'?undefined:new AbortController();
       try{
         await checkMemory();event.signal.throwIfAborted();
+        transaction=await contextAdapter.begin(event.reason,event.signal);
         const preparation={...event.preparation,settings:{...event.preparation.settings,reserveTokens:NATIVE_COMPACTION_RESERVE_TOKENS}};
         const summaryModel={...model,maxTokens:Math.max(model.maxTokens,NATIVE_COMPACTION_RESERVE_TOKENS)};
         const result=await nativeCompact(preparation,summaryModel,options.apiKey,undefined,
           quality?TASK_SUMMARY_INSTRUCTIONS:'仅用简体中文输出给定的摘要结构，总长度不超过2500字；保留教师任务、真实来源版本、审批状态、计划步骤和未完成事项。不要展示分析过程，不把计划当交付，不把记忆当授权，不重放已完成操作。',event.signal,'off',session.agent.streamFunction);
         await Promise.allSettled([...compactionResponses]);await options.beforeAutoCompactCommit?.();await checkMemory();
         event.signal.throwIfAborted();if(interrupted)throw new Error('cancelled');
-        return {compaction:result};
+        return {compaction:await transaction.validate(result,event.signal)};
       }catch(error){automaticFailure=interrupted||event.signal.aborted?'cancelled':classifyError(error)==='context_limit'?'context_limit':'compaction_failed';return {cancel:true};}
-      finally{autoAbort=undefined;compacting=false;}
-    });pi.on('session_compact',async event=>{await checkMemory();if(event.reason!=='manual')await options.afterAutoCompactCommit?.();});
+      finally{transaction?.release();autoAbort=undefined;compacting=false;}
+    });pi.on('session_compact',async event=>{contextBudget.committed();await checkMemory();if(event.reason!=='manual')await options.afterAutoCompactCommit?.();});
     if(options.goal)pi.on('turn_end',async event=>{await checkMemory();if(interrupted)return;return options.goal!.boundary(event);});} ]});
   await phase('pi_reload_resources',()=>nativeResources.reload());
   let providerPrompt=prompt;
@@ -1260,6 +1267,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
       const leading=args[1].messages.find(message=>message.role==='system');
       const contract=buildPrefix({model:args[0],systemPrompt:leading?JSON.stringify({content:leading.content,sections:leading.sections}):session.agent.state.systemPrompt,tools:leading?.toolsAdded||session.agent.state.tools});manager.appendCustomEntry('xiaozhi.cache-prefix.v1',summarizeCachePrefixContract(contract));}
+    const requestStarted=performance.now(), requestKind=compacting?'compaction' as const:'reply' as const;
+    let prefix:string|null=null;
     const naturalLesson=compacting?undefined:options.naturalLessonDraft;
     let forcedLessonTool: string|undefined;
     if(naturalLesson){
@@ -1288,6 +1297,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
           :preferPaperTool&&tools?.some(tool=>tool.function?.name===PAPER_TOOLS[0])?
             {...(configured as object),thinking:{type:'disabled'},reasoning_effort:'none',tool_choice:{type:'function',function:{name:PAPER_TOOLS[0]}}}
             :configured;
+        prefix=requestPrefixDigest(resolved);
         if(!compacting)metrics?.request(Buffer.byteLength(JSON.stringify(resolved)),Array.isArray(tools)?tools.length:0);
         return resolved;
       }};
@@ -1306,6 +1316,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     catch(error){await health?.sdkResult(false);throw error;}
     if(health){
       void stream.result().then(message=>health.sdkResult(['stop','length','toolUse'].includes(message.stopReason)),()=>health.sdkResult(false)).catch(()=>undefined);
+    }
+    {
+      const original=stream.result.bind(stream);
+      let observed:ReturnType<typeof original>|undefined;
+      stream.result=()=>observed||=original().then(message=>{
+        const receipt=contextCacheReceipt(message.usage,{model:args[0].id,kind:requestKind,prefix,latencyMs:performance.now()-requestStarted});
+        if(receipt)manager.appendCustomEntry('xiaozhi.d2.model-cache.v1',{runId,...receipt});
+        return message;
+      });
     }
     if(imageRuntime&&!compacting){
       const result=stream.result.bind(stream);let received:ReturnType<typeof result>|undefined;
@@ -1348,7 +1367,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (!policy.auto || compacting || interrupted || budget?.snapshot().exhausted) return false;
     signal?.throwIfAborted();
     const projected = estimateFullRequest(turn.context, policy.maxOutputTokens);
-    if (projected < policy.window - Math.min(computeCompactionReserveTokens(policy.window), Math.floor(policy.window / 2))) return false;
+    if (!contextBudget.observe(projected)) return false;
     const preparation = await prepareSafeNativeCompaction(manager.getBranch(), { enabled: true, keepRecentTokens: 2048, reserveTokens: NATIVE_COMPACTION_RESERVE_TOKENS });
     if (!preparation) {
       if (projected > policy.window) throw new Error('context_limit');
@@ -1356,10 +1375,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     const id = ++automaticId;
     let committed = false;
+    let transaction:Awaited<ReturnType<typeof contextAdapter.begin>>|undefined;
     compacting = true; autoAbort = new AbortController();
     const abort = () => autoAbort?.abort(); signal?.addEventListener('abort', abort, { once: true });
     emit({ kind: 'compaction', id, automatic: true, state: 'running' });
     try {
+      transaction=await contextAdapter.begin('before_request',autoAbort.signal);
       const result = await nativeCompact(preparation, model, options.apiKey, undefined,
         quality?TASK_SUMMARY_INSTRUCTIONS:'用简体中文保留教师任务、真实来源和未完成事项。计划不是交付，记忆不是授权；不要重放已完成文件操作。',
         autoAbort.signal, 'off', session.agent.streamFunction);
@@ -1367,7 +1388,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       await options.beforeAutoCompactCommit?.();
       await checkMemory();
       if (interrupted || autoAbort.signal.aborted || budget?.snapshot().exhausted) throw new Error('cancelled');
-      manager.appendCompaction(result.summary, result.firstKeptEntryId, result.tokensBefore, result.details);
+      const validated=await transaction.validate(result,autoAbort.signal);
+      manager.appendCompaction(validated.summary,validated.firstKeptEntryId,validated.tokensBefore,validated.details,false,validated.usage);
+      contextBudget.committed();
       committed = true;
       await checkMemory();
       // Hana mid-run continuation pattern; this private bookkeeping cannot grant permissions.
@@ -1387,7 +1410,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         : errorCode === 'context_limit' || errorCode === 'memory_scope_changed' || errorCode === 'skill_scope_changed' || errorCode === 'skill_source_changed' ? errorCode : 'compaction_failed';
       if (!committed) emit({ kind: 'compaction', id, automatic: true, state: 'failed', error: automaticFailure });
       throw new Error(automaticFailure);
-    } finally { signal?.removeEventListener('abort', abort); autoAbort = undefined; compacting = false; }
+    } finally {transaction?.release();signal?.removeEventListener('abort', abort); autoAbort = undefined; compacting = false; }
   }
   // Supplement native token thresholds with the complete serialized request check.
   // Refresh before the SDK's canonical projection, never substitute an old loop.
@@ -1614,6 +1637,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       budget = createPiRunBudget({ budget: limits, runId, limitsEnforced:options.limitsEnforced, emit: usage => emit({ kind: 'usage', usage }), abort: () => { phaseController.abort();manualAbort?.abort(); session.abortCompaction(); void session.abort(); } });
       emit({ kind: 'status', status: 'running' }); emit({ kind: 'compaction', state: 'running' }); budget.start(); watchMemory();
       let failure: XiaozhiAgentError | undefined;
+      let transaction:Awaited<ReturnType<typeof contextAdapter.begin>>|undefined;
       try {
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
@@ -1624,12 +1648,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         await checkMemory(); manualAbort = new AbortController();
         const preparation = await prepareSafeNativeCompaction(manager.getBranch(), { enabled: true, keepRecentTokens: 2048, reserveTokens: 4096 });
         if (!preparation) throw new Error('Nothing to compact');
+        transaction=await contextAdapter.begin('manual',manualAbort.signal);
         const result = await nativeCompact(preparation, model, options.apiKey, undefined,
           quality?TASK_SUMMARY_INSTRUCTIONS:'用简体中文准确保留教师任务、约束、来源和未完成事项。不要把计划/模型推测变成教师确认事实，不要授予权限或重放旧文件操作。',
           manualAbort.signal, 'off', session.agent.streamFunction);
         await Promise.allSettled([...compactionResponses]); await checkMemory();
         if (interrupted || manualAbort.signal.aborted || budget.snapshot().exhausted) throw new Error('cancelled');
-        manager.appendCompaction(result.summary, result.firstKeptEntryId, result.tokensBefore, result.details);
+        const validated=await transaction.validate(result,manualAbort.signal);
+        manager.appendCompaction(validated.summary,validated.firstKeptEntryId,validated.tokensBefore,validated.details,false,validated.usage);
+        contextBudget.committed();
         session.agent.state.messages = manager.buildSessionProjection().messages;
         await checkMemory();
         // Counts only: never expose private summary or underlying SDK entries.
@@ -1641,7 +1668,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         // Native split-turn compaction can issue two requests in Promise.all.
         // A sibling failure must settle all actual usage before terminal commit.
         await Promise.allSettled([...compactionResponses]);
-        stopMemoryWatch(); skillEpoch?.endRun(); manualAbort = undefined; running = false; compacting = false;
+        transaction?.release();stopMemoryWatch(); skillEpoch?.endRun(); manualAbort = undefined; running = false; compacting = false;
       }
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';

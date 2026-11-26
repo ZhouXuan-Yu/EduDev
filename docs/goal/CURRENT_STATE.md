@@ -98,6 +98,10 @@ Phase 4.3 已验证扫描页码、封面分类、跨行分值和圈号陈述后�
 
 Phase 4.3 上海模考年度目录、工作台、历史恢复和对话局部修订可用。老师核对字段差异后可应用为新待确认版本，已有其他条目与许可保留。已确认目录可导出 Word 和 PDF，部分保存后可沿原任务补齐缺失文件。原件 ZIP 按各自许可打包。继续缺页、扫描与分栏质量专项。 [模考文件组续做](../product-agent/04_PROGRESS_AND_EVIDENCE.md#phase-43-模考文件组续做)
 
+## 2026-11-22 小智 Harness D2
+
+D2-A 运行影子选择，D2-B 运行 Pi 原生整理事务。保留 D1 独立有条件通过的结论。D2 结论、测量范围和余项详见专项。 [D2 验收与复跑](xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 原 Provider 与 Binding 版本归档接入独立实例和逐配对控制。原 Native、Managed MCP 和社区钩子经统一 Adapter 运行。D1 交付自检后等待独立验收。 [实施记录](xiaozhi-harness/D1_IMPLEMENTATION.md) · [验收自检](xiaozhi-harness/D1_SELF_CHECK.md)

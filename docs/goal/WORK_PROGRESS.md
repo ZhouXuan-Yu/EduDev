@@ -56,6 +56,10 @@ Phase 4.3 已接通年度目录的工作台、任务定位、历史、恢复与�
 
 D3 完成 Phase 0–3 个人版、Phase 4.1 组卷和 Phase 4.2 讲义工程路径。讲义支持对话精准修改、老师核对应用、单独确认版本、历史恢复及学生和教师版 Word。继续 Phase 4.3 上海各区模考资料和年度汇编。 [同步进度](../product-agent/04_PROGRESS_AND_EVIDENCE.md)
 
+## 2026-11-22 小智 Harness D2
+
+D2-A 落地影子观察与健康记账。D2-B 为现有 Pi 请求与整理增加保护事务和模型前缀用量账。下一步按专项未完成项，不启动 D3。 [进度与证据](xiaozhi-harness/D2_SELF_CHECK.md)
+
 ## 2026-11-22 小智 Harness D1
 
 第一轮对象和适配器改造的实现、移交流程与独立验收入口见专项。待独立验收后另行启动下一阶段。 [D1 实施](xiaozhi-harness/D1_IMPLEMENTATION.md)

@@ -17,6 +17,12 @@ const listed=await read({limit:2});assert.equal(listed.sources.length,2);assert.
 let data=await read({sourceId:'long',limit:1999}),full=data.text;assert.equal(data.offset,0);assert(data.nextOffset);const version=data.sourceVersion;
 while(data.nextOffset!==null){data=await read({sourceId:'long',offset:data.nextOffset,limit:1999,sourceVersion:version});full+=data.text;}
 assert.equal(full,await sanitize(messages[1].content));assert(full.endsWith('尾部必须包含排液体积'));assert(!full.includes('私人姓名'));check('Long sanitized request reconstructs exactly across segments including final constraints');
+const recovered=await read({query:'尾部必须包含排液体积'});
+assert.deepEqual(await read({query:'尾部必须包含排液体积',limit:4000}),recovered);
+assert.equal(recovered.sources.length,1);assert.equal(recovered.sources[0].sourceId,'long');assert.equal(recovered.sources[0].sourceVersion,version);
+assert(recovered.sources[0].text.includes('尾部必须包含排液体积'));
+for(const query of ['私人姓名','隔离要求','不可读私人推理'])assert.deepEqual((await read({query})).sources,[]);
+await assert.rejects(()=>read({query:'浮力',sourceId:'long'}),/invalid_input/);check('History keyword retrieval finds late excerpts and original identifiers without searching raw private text');
 for(const args of [{sourceId:'private'},{sourceId:'blocked'},{sourceId:'long',offset:1},{sourceId:'long',limit:4001},{sourceId:'long',offset:99999,sourceVersion:version},{sourceId:'long',sourceVersion:'0'.repeat(64)},{sourceId:'long',sessionId:'B'}])await assert.rejects(()=>read(args));
 current=false;await assert.rejects(()=>read({sourceId:'long'}),/cancelled/);current=true;check('Version changes, invalid pages, other sessions and stale runs cannot deliver a partial or unrelated source');
 const store={xiaozhiState:{controls:async()=>controls,approvals:async()=>[]},getAiConversationSession:async()=>({session:{},messages}),sanitizeProblemText:async text=>({sanitizedText:text})};

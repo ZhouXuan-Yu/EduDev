@@ -110,6 +110,10 @@ Windows 更新快照沿用已有发布屏障、取消和关闭协调。恢复预
 
 对话导出的 ID 与摘要在编译、审批和安装阶段沿既有精确快照校验。教师明确点选时保持该输入的规格和授权，自动选卷仅在任务候选可以唯一确定时使用。 [导出合同](../product-agent/03_TECHNICAL_EXECUTION_PLAN.md#phase-41-纯对话精确导出)
 
+## 2026-11-22 小智 Harness D2
+
+D1 继续决定生产 Provider。D2 记录影子排序、按范围采集健康和明确切换依据。Pi 原生压缩使用唯一事务租约，先校验权威状态及原史范围，再追加摘要和恢复引用。 [D2 架构与迁移](HARNESS_D2.md)
+
 ## 2026-11-22 小智 Harness D1
 
 Capability 定义、Provider 定义和实例、Adapter、Binding 使用原能力目录及其版本档案。执行经过同一宿主管理的 Adapter 边界，权限上限先于用户授权。现有 Windows 受控运行时支持社区扩展逐钩子核验。 [架构和迁移](HARNESS_D1.md)
