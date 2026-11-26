@@ -30,7 +30,7 @@ function withoutLegacyPreferences(text:string){
 }
 
 /** Request projection only. Neither prior turns nor current preferences are written to history. */
-export function projectTeacherPreferenceRequest(context:TranscriptContext,submittedText?:string,guidance='',submittedAt?:number):TranscriptContext {
+export function projectTeacherPreferenceRequest(context:TranscriptContext,submittedText?:string,guidance='',submittedAt?:number,onProjected?:()=>void):TranscriptContext {
  const matches = (message: TranscriptContext['messages'][number]) => message.role === 'user'
   && (submittedAt === undefined || message.timestamp === submittedAt)
   && (typeof message.content === 'string' ? message.content === submittedText :
@@ -47,5 +47,6 @@ export function projectTeacherPreferenceRequest(context:TranscriptContext,submit
   if(index===current)filtered.push({type:'text',text:guidance});
   return {...message,content:filtered};
  });
+ if (current >= 0) onProjected?.();
  return {...context,messages};
 }

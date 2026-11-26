@@ -52,7 +52,10 @@ async function launch() {
       const strings=body.messages.map(m=>typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.map(c=>c.text).join(' '):'');
       const preference=strings.filter(text=>text.includes('当前教师表达偏好')||text.includes('[教师偏好操作结果]'));
       const personalItems=strings.filter(text=>text.includes('"teacher_confirmed"')).map(text=>text.slice(0,2500));
-      const row={model:body.model,status:0,preference,personalItems,startedAt:new Date().toISOString()};
+      const projectedPersonal = strings.flatMap((text,index) => body.messages[index].role === 'user'
+        ? [...text.matchAll(/\{"layer":"personal","source":"personal","id":"([a-f0-9]{64})","version":(\d+)\}/g)]
+          .map(match=>({id:match[1],version:Number(match[2])})) : []);
+      const row={model:body.model,status:0,preference,personalItems,projectedPersonal,startedAt:new Date().toISOString()};
       globalThis.r2Wire.push(row);
       const started=performance.now();
       const response=await fetch(input,init);
@@ -230,7 +233,10 @@ async function useAdoptedMemory(record,source){
   await page.getByTestId('nav-ai').click();
   const offset=(await wire()).length;
   const follow=await send('请先调用 read_education_memory 读取本会话已选任教自述，再说明我负责哪一年级的哪门课程。');
-  const delivered=(await wire()).slice(offset).flatMap(row=>row.personalItems);
+  const requests=(await wire()).slice(offset);
+  assert.deepEqual(requests[0].projectedPersonal,[{id:record.id,version:record.revision}]);
+  assert.deepEqual(requests[0].personalItems,[]);
+  const delivered=requests.flatMap(row=>row.personalItems);
   assert(delivered.some(text=>text.includes('四年级科学')&&text.includes(record.sourceVersion)));
   const outcome=follow.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
   assert(outcome.includes('四年级')&&outcome.includes('科学'),outcome);

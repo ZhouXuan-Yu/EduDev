@@ -967,7 +967,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     },
   })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.equationTools||[]),...(options.quantityTools||[]),...(options.solutionTools||[]),...(options.buoyancyTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...teachingLessonExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
     return budget!.wait(()=>def.execute(...args));
-  } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
+  } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint,
+    () => memoryEpoch.beforeDelivery(),options.memory.personalReferences?()=>projectedPersonalIds:undefined) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
@@ -1183,6 +1184,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let modelHttpStatus:number|undefined;
   let submittedTeacherRequest:string|undefined;
   let submittedTeacherTimestamp:number|undefined;
+  let teacherQuery:string|undefined;
+  let projectedPersonalIds:readonly string[]=[];
   let lessonDraftAttempts=0;
   let lessonBasisAttempts=0;
   let confirmedPaper: {callId:string;text:string} | undefined;
@@ -1196,10 +1199,17 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const handoutGuidance=!compacting&&options.handoutBasis
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
       : '';
-    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
+    projectedPersonalIds=[];
+    const personalPlan = !compacting && submittedTeacherTimestamp!==undefined && teacherQuery && initialAuthority?.personal
+      ? await options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,teacherQuery,
+        Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)),args[2]?.signal)
+      : undefined;
+    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,personalPlan?.projection].filter(Boolean).join('\n\n');
     args[1]=projectTeacherPreferenceRequest(args[1],
       compacting || submittedTeacherTimestamp === undefined ? undefined : submittedTeacherRequest,
-      currentGuidance, submittedTeacherTimestamp);
+      currentGuidance, submittedTeacherTimestamp,()=>{
+        if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
+      });
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
@@ -1236,6 +1246,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     await phase('pi_before_model_delivery',async()=>options.beforeModelDelivery?.(),args[2]?.signal);
     await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
     skillEpoch?.beforeDelivery();
+    if (projectedPersonalIds.length) memoryEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
@@ -1410,6 +1421,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       if (id) {
         // A teacher correction has taken effect. The earlier request's guidance is stale.
         submittedTeacherRequest = undefined;
+        teacherQuery = undefined;
+        projectedPersonalIds = [];
         submittedTeacherTimestamp = undefined;
         delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
       } else if (submittedTeacherTimestamp === undefined && submittedTeacherRequest === text) {
@@ -1562,6 +1575,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const scopeInstructions=quality?responseScopeInstructions(text,Boolean(subjectInstructions)):'';
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         submittedTeacherRequest=context?`${context}\n\n[教师本次请求]\n${text}`:text;
+        teacherQuery = text;
         submittedTeacherTimestamp = undefined;
         await session.prompt(submittedTeacherRequest);
         await checkMemory();

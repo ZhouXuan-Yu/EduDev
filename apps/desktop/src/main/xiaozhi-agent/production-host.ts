@@ -1258,7 +1258,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
-      memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
+      memory:{runId,authority:()=>memory.authority(id),
+        personalReferences:(authority,requestId,query,tokens,signal)=>memory.personalReferences(id,authority,requestId,query,tokens,signal),
+        readSelected:(authority,signal,personalIds)=>memory.readSelected(id,authority,signal,personalIds),
+        trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;
         const [task,approvals]=await Promise.all([tasks.committed(id),store.xiaozhiState.permissions.approvalSnapshot(id)]);

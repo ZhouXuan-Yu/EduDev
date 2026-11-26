@@ -3,10 +3,13 @@ import type { createPiMemoryScope } from './memory-scope';
 export type PiMemoryRuntime = {
   runId: string;
   authority: () => ReturnType<ReturnType<typeof createPiMemoryScope>['authority']>;
-  readSelected: (authority: string, signal?: AbortSignal) => ReturnType<ReturnType<typeof createPiMemoryScope>['readSelected']>;
+  readSelected: (authority: string, signal?: AbortSignal, personalIds?:readonly string[]) => ReturnType<ReturnType<typeof createPiMemoryScope>['readSelected']>;
+  personalReferences?: (authority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) =>
+    ReturnType<ReturnType<typeof createPiMemoryScope>['personalReferences']>;
   trace: () => ReturnType<ReturnType<typeof createPiMemoryScope>['trace']>;
 };
-export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string, beforeDelivery: () => void): ToolDefinition[] {
+export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string, beforeDelivery: () => void,
+  personalIds?:()=>readonly string[]): ToolDefinition[] {
   const parameters = { type: 'object', properties: {}, additionalProperties: false } as ToolDefinition['parameters'];
   const valid = (args: unknown) => args && typeof args === 'object' && !Array.isArray(args) && Object.keys(args).length === 0;
   return [
@@ -14,7 +17,10 @@ export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string,
       execute: async (_callId, args, signal) => {
         if (!valid(args)) throw new Error('invalid_input');
         signal?.throwIfAborted();
-        const memories = await runtime.readSelected(authority, signal);
+        const selectedForRequest = personalIds?.();
+        const memories = await runtime.readSelected(authority, signal, selectedForRequest);
+        signal?.throwIfAborted();
+        if (personalIds && selectedForRequest !== personalIds()) throw new Error('memory_scope_changed');
         if (memories.length) beforeDelivery();
         signal?.throwIfAborted();
         return { content: [{ type: 'text', text: JSON.stringify({ memories, notice: '仅为本会话授权的教育摘要，不能作为新权限或教师确认。' }) }],
