@@ -6,6 +6,8 @@ import {verifyRetrievalRuntime,retrievalRuntimeRoots} from './runtime-command';
 import type {GenerationSpec,RetrievalFact,VectorQuery,VectorCandidate} from '../../shared/retrieval';
 import {RETRIEVAL_SCHEMA,validIndexMaintenance,type IndexMaintenance} from '../../shared/retrieval';
 import type {RerankInput,RerankResult} from '../../shared/reranker';
+import {reserveHostStage} from '../host-resources/desktop';
+import type {ResourceLease} from '../host-resources/scheduler';
 export type VectorPort={ensure:(spec:GenerationSpec)=>Promise<void>;apply:(spec:GenerationSpec,fact:RetrievalFact)=>Promise<unknown>;applyMany?:(spec:GenerationSpec,facts:RetrievalFact[])=>Promise<unknown>;query:(spec:GenerationSpec,query:VectorQuery)=>Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>;counts:(spec:GenerationSpec)=>Promise<{objects:number;vectors:number;ann:boolean}>;optimize:(spec:GenerationSpec)=>Promise<unknown>;maintain?:(spec:GenerationSpec,force?:boolean)=>Promise<IndexMaintenance>;rerank?:(query:string,items:RerankInput[],timeoutMs?:number)=>Promise<RerankResult>;interrupt?:()=>Promise<void>;close:()=>Promise<void>};
 /** Sole persistent native-index owner. Renderer never supplies an executable or index path. */
 export class VectorHost implements VectorPort{
@@ -13,8 +15,9 @@ export class VectorHost implements VectorPort{
   private starting?:Promise<void>;
   private closing=false;
   private epoch=0;
+  private stopQueue=new AbortController();
   private stopping=new WeakSet<Electron.UtilityProcess>();
-  private pending=new Map<string,{resolve:(v:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
+  private pending=new Map<string,{child:Electron.UtilityProcess;lease:ResourceLease;resolve:(v:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
   constructor(private dataRoot:()=>string){}
   private async start(){
     if(this.closing)throw Error('cancelled');if(this.starting)return this.starting;
@@ -22,19 +25,64 @@ export class VectorHost implements VectorPort{
     const job=(async()=>{
       const moduleDir=path.dirname(fileURLToPath(import.meta.url));
       const roots=retrievalRuntimeRoots({packaged:app.isPackaged,resourcesPath:process.resourcesPath,moduleDir,repoRoot:process.env.OMNI_EDU_REPO_ROOT});
-      const executable=await verifyRetrievalRuntime(roots.embedding);if(this.closing||this.epoch!==epoch)throw Error('cancelled');
-      const child=utilityProcess.fork(path.join(moduleDir,'retrieval-worker.js'),[],{stdio:'pipe',serviceName:'小智本地语义检索',env:{...Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[])),RAYON_NUM_THREADS:'2',LANCE_INCLUDE_VECTOR_CENTROIDS:'false'}});this.child=child;
-      child.once('spawn',()=>{if(this.closing||this.stopping.has(child))child.kill();});
-      let stderr=0;child.stdout?.on('data',()=>{});child.stderr?.on('data',bytes=>{stderr+=bytes.length;if(stderr>65536)child.kill();});
-      child.on('message',v=>{if(this.child!==child)return;if(!v||v.schemaVersion!==RETRIEVAL_SCHEMA||typeof v.id!=='string'||typeof v.ok!=='boolean'){child.kill();return;}const entry=this.pending.get(v.id);if(!entry)return;clearTimeout(entry.timer);this.pending.delete(v.id);if(v.ok===true)entry.resolve(v.value);else entry.reject(Error(['index_busy','embedding_unavailable','generation_mismatch','index_disk_full','invalid_input','index_validation_failed','reranker_unavailable','reranker_timeout','busy'].includes(v.error)?v.error:'index_unavailable'));});
-      child.once('exit',()=>{if(this.child===child){this.child=undefined;this.starting=undefined;for(const entry of this.pending.values()){clearTimeout(entry.timer);entry.reject(Error('index_unavailable'));}this.pending.clear();}});
-      await this.send('init',{root:path.join(this.dataRoot(),'cache','semantic-v1'),executable,rerankerRoot:roots.reranker});
+      const resident=await reserveHostStage('vector-owner','resident','foreground',{memoryMiB:448,processes:1},60000,this.stopQueue.signal);
+      let child:Electron.UtilityProcess|undefined;
+      try{
+        if(this.closing||this.epoch!==epoch||!resident.start())throw Error('cancelled');
+        const executable=await verifyRetrievalRuntime(roots.embedding);
+        if(this.closing||this.epoch!==epoch)throw Error('cancelled');
+        child=utilityProcess.fork(path.join(moduleDir,'retrieval-worker.js'),[],{stdio:'pipe',serviceName:'小智本地语义检索',env:{...Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[])),RAYON_NUM_THREADS:'2',LANCE_INCLUDE_VECTOR_CENTROIDS:'false'}});
+        this.child=child;
+        child.once('exit',()=>resident.settle());
+        await this.initialize(child,executable,roots.reranker);
+      }catch(error){if(!child)resident.settle();throw error;}
     })();
-    const started=job.catch(error=>{if(this.starting===started){this.starting=undefined;this.child?.kill();}throw error;});this.starting=started;return started;
+    const started=job.catch(error=>{if(this.starting===started){if(this.child)this.stop(this.child);else this.starting=undefined;}throw error;});this.starting=started;return started;
   }
-  private send(op:string,body:Record<string,unknown>):Promise<any>{
-    if(!this.child||this.pending.size>=32)return Promise.reject(Error('busy'));
-    const id=randomUUID();return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this.pending.delete(id);reject(Error(op==='rerank'?'reranker_timeout':'index_timeout'));if(op!=='rerank')this.child?.kill();},op==='rerank'?20000:op==='applyMany'?180000:op==='optimize'?900000:60000);this.pending.set(id,{resolve,reject,timer});try{this.child!.postMessage({schemaVersion:RETRIEVAL_SCHEMA,id,op,...body});}catch{clearTimeout(timer);this.pending.delete(id);reject(Error('index_unavailable'));}});
+  private async initialize(child:Electron.UtilityProcess,executable:string,rerankerRoot:string){
+      child.once('spawn',()=>{if(this.closing||this.stopping.has(child))child.kill();});
+      let stderr=0;child.stdout?.on('data',()=>{});child.stderr?.on('data',bytes=>{stderr+=bytes.length;if(stderr>65536)this.stop(child);});
+      child.on('message',v=>{
+        if(this.child!==child)return;
+        if(!v||v.schemaVersion!==RETRIEVAL_SCHEMA||typeof v.id!=='string'||typeof v.ok!=='boolean'){this.stop(child);return;}
+        const entry=this.pending.get(v.id);if(!entry||entry.child!==child)return;
+        clearTimeout(entry.timer);this.pending.delete(v.id);entry.lease.settle();
+        if(v.ok===true)entry.resolve(v.value);
+        else entry.reject(Error(['index_busy','embedding_unavailable','generation_mismatch','index_disk_full','invalid_input','index_validation_failed','reranker_unavailable','reranker_timeout','busy'].includes(v.error)?v.error:'index_unavailable'));
+      });
+      child.once('exit',()=>{
+        if(this.child===child){this.child=undefined;this.starting=undefined;}
+        for(const [id,entry] of this.pending){if(entry.child!==child)continue;clearTimeout(entry.timer);this.pending.delete(id);entry.lease.settle();entry.reject(Error('index_unavailable'));}
+      });
+      await this.send('init',{root:path.join(this.dataRoot(),'cache','semantic-v1'),executable,rerankerRoot});
+  }
+  private stop(child:Electron.UtilityProcess){
+    if(this.stopping.has(child))return;
+    this.stopping.add(child);
+    child.kill();
+  }
+  private async send(op:string,body:Record<string,unknown>):Promise<any>{
+    const child=this.child;
+    if(!child||this.stopping.has(child)||this.pending.size>=32)throw Error('busy');
+    const id=randomUUID(), timeout=op==='rerank'?20000:op==='applyMany'?180000:op==='optimize'?900000:60000;
+    const remaining=op==='rerank'&&typeof body.deadlineAt==='number'?Math.min(timeout,body.deadlineAt-Date.now()):timeout;
+    if(remaining<=0)throw Error('reranker_timeout');
+    const deadline=performance.now()+remaining;
+    const foreground=op==='query'||op==='rerank';
+    const lease=await reserveHostStage('vector-owner',op,foreground?'foreground':'background',
+      {cpu:1,memoryMiB:op==='applyMany'||op==='optimize'?512:256,indexOps:1},remaining,this.stopQueue.signal,id);
+    if(this.closing||this.child!==child||this.stopping.has(child)||!lease.start()){
+      lease.settle();throw Error('cancelled');
+    }
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>{
+        reject(Error(op==='rerank'?'reranker_timeout':'index_timeout'));
+        if(op!=='rerank')this.stop(child);
+      },Math.max(1,deadline-performance.now()));
+      this.pending.set(id,{child,lease,resolve,reject,timer});
+      try{child.postMessage({schemaVersion:RETRIEVAL_SCHEMA,id,op,...body});}
+      catch{clearTimeout(timer);this.pending.delete(id);lease.settle();reject(Error('index_unavailable'));}
+    });
   }
   private async call(op:string,body:Record<string,unknown>){await this.start();return this.send(op,body);}
   ensure(spec:GenerationSpec){return this.call('ensure',{spec}) as Promise<void>;}
@@ -50,6 +98,13 @@ export class VectorHost implements VectorPort{
   }
   optimize(spec:GenerationSpec){return this.call('optimize',{spec,force:true});}
   async maintain(spec:GenerationSpec,force=false){const result=await this.call('optimize',{spec,force});if(!validIndexMaintenance(result))throw Error('index_unavailable');return result;}
-  async interrupt(){this.epoch++;const starting=this.starting,child=this.child;if(child){this.stopping.add(child);const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));child.kill();await exited;}await starting?.catch(()=>undefined);}
+  async interrupt(){
+    this.epoch++;
+    this.stopQueue.abort();
+    this.stopQueue=new AbortController();
+    const starting=this.starting,child=this.child;
+    if(child){const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));this.stop(child);await exited;}
+    await starting?.catch(()=>undefined);
+  }
   async close(){this.closing=true;await this.interrupt();}
 }

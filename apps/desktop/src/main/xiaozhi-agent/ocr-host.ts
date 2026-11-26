@@ -15,6 +15,12 @@ import {materialOcrCheckpoint} from '../assets/material-ocr-checkpoint';
 import {PDF_LAYOUT_SCHEMA,validPdfLayout,type PdfLayoutReceipt} from '../../shared/material-layout';
 import {PAGE_BLOCKS_SCHEMA,validPageBlocks,type PageBlocksReceipt} from '../../shared/material-page-blocks';
 import {METAFILE_SCHEMA,METAFILE_INPUT,validMetafileReceipt,type MetafileInput,type MetafileReceipt} from '../../shared/material-metafile';
+import {runHostStage} from '../host-resources/desktop';
+import {runMaterialWorker} from '../host-resources/material-buffer-budget';
+
+type OcrOptions<T> = {schema:string;maxInput:number;maxOutput:number;timeout:number;valid:(value:unknown)=>value is T;
+ onProgress?:(progress:MaterialOcrProgress)=>void;onCompleted?:(item:import('../../shared/material-pdf-ocr').MaterialOcrCompleted)=>void;
+ payload?:{page:number;box?:PageBox}|{resumePages:MaterialOcrPage[]}};
 
 export function ocrRuntimeRoot(includeBlocks=false){
  if(app.isPackaged)return path.join(process.resourcesPath,includeBlocks?'page-blocks-runtime':'ocr-runtime');
@@ -52,9 +58,17 @@ export async function recognizeLocalPageBlocks(bytes:Buffer,signal:AbortSignal):
  if(!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw new Error('invalid_input');
  return runOcr(bytes,signal,{schema:PAGE_BLOCKS_SCHEMA,maxInput:4*1048576,maxOutput:128*1024,timeout:60000,valid:validPageBlocks});
 }
-async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:{schema:string;maxInput:number;maxOutput:number;timeout:number;valid:(value:unknown)=>value is T;onProgress?:(progress:MaterialOcrProgress)=>void;onCompleted?:(item:import('../../shared/material-pdf-ocr').MaterialOcrCompleted)=>void;payload?:{page:number;box?:PageBox}|{resumePages:MaterialOcrPage[]}},ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
+async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:OcrOptions<T>,ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
  signal.throwIfAborted();if(!bytes.length||bytes.length>options.maxInput)throw new Error('too_large');
+ const demand={cpu:2,memoryMiB:640+Math.ceil((bytes.length*4+options.maxOutput*3)/1048576),processes:1};
+ const run=(remaining:number)=>runAdmittedOcr(bytes,signal,{...options,timeout:remaining},ownedRuntimeRoot);
+ return runMaterialWorker(signal,demand,options.timeout,run)??
+  runHostStage('ocr','worker',options.onProgress?'background':'foreground',demand,options.timeout,signal,run);
+}
+async function runAdmittedOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:OcrOptions<T>,ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
+ const deadline=performance.now()+options.timeout;
  const root=await verifyOcrRuntime(signal,ownedRuntimeRoot,options.schema===PAGE_BLOCKS_SCHEMA);
+ if(performance.now()>=deadline)throw Error('timeout');
  signal.throwIfAborted();const release=reserveLocalWorker();if(!release)throw new Error('busy');
  return new Promise((resolve,reject)=>{
   let stdout='',size=0,stderrSize=0,reason='',settled=false,phase:OcrDiagnostic['phase']='exit',exitCode:number|null=null,signalled=false;
@@ -66,7 +80,7 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
   try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{phase='spawn';release();reject(failure('unavailable'));return;}
   const stop=(code:string,stage:OcrDiagnostic['phase'])=>{if(reason||settled)return;reason=code;phase=stage;child.kill();};
   const abort=()=>stop(signal.reason==='timeout'?'timeout':'cancelled',signal.reason==='timeout'?'timeout':'cancelled');
-  const timer=setTimeout(()=>stop('timeout','timeout'),options.timeout);
+  const timer=setTimeout(()=>stop('timeout','timeout'),Math.max(1,deadline-performance.now()));
   const finish=(error?:string)=>{
    if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);release();
    if(error||reason||signal.aborted){reject(failure(reason||error||'cancelled'));return;}
@@ -85,10 +99,11 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
    }}
   });
   child.stderr?.on('data',value=>{stderrSize+=value.length;if(stderrSize>65536)stop('too_large','stderr_limit');});
-  child.once('error',()=>{phase='spawn';finish('unavailable');});
+  child.on('error',()=>stop('unavailable',child.pid===undefined?'spawn':'exit'));
   child.once('close',(code,signal)=>{exitCode=code;signalled=signal!==null;finish(code===0?undefined:'parse_failed');});
   child.stdin?.on('error',()=>stop('unavailable','stdin'));
-  child.stdin?.end(JSON.stringify({schemaVersion:options.schema,parentPid:process.pid,data:bytes.toString('base64'),...options.payload})+'\n');
+  try{child.stdin?.end(JSON.stringify({schemaVersion:options.schema,parentPid:process.pid,data:bytes.toString('base64'),...options.payload})+'\n');}
+  catch{stop('unavailable','stdin');}
   if(signal.aborted)abort();
  });
 }
@@ -99,7 +114,10 @@ export async function verifyOcrRuntime(signal:AbortSignal,ownedRuntimeRoot?:stri
  try{for(const file of (includeBlocks?blocksManifest:manifest).files){
   signal.throwIfAborted();const target=path.join(root,file.path);let cursor=root;
   for(const piece of file.path.split('/')){cursor=path.join(cursor,piece);if((await fs.promises.lstat(cursor)).isSymbolicLink())throw new Error('configuration');}
-  const stat=await fs.promises.stat(target);if(!stat.isFile()||stat.size!==file.size||createHash('sha256').update(await fs.promises.readFile(target)).digest('hex')!==file.sha256)throw new Error('configuration');
+  const stat=await fs.promises.stat(target);if(!stat.isFile()||stat.size!==file.size)throw new Error('configuration');
+  const digest=createHash('sha256');
+  for await(const chunk of fs.createReadStream(target,{highWaterMark:256*1024,signal}))digest.update(chunk);
+  if(digest.digest('hex')!==file.sha256)throw new Error('configuration');
  }}catch(error){if(signal.aborted)throw Error('cancelled');if(includeBlocks)throw Error('configuration');throw error;}
  signal.throwIfAborted();return root;
 }

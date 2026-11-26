@@ -21,6 +21,7 @@ import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pd
 import {readMaterialOriginal,verifyMaterialOriginal,verifyStampedOriginal} from './material-original';
 import type {MaterialParseLease} from './material-parse-queue';
 import {saveImageOcr} from './material-image-ocr';
+import {withMaterialBufferBudget} from '../host-resources/material-buffer-budget';
 
 export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
@@ -34,6 +35,7 @@ export type MaterialRepositoryHost={
  commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease,word?:WordPayload)=>Promise<void>;
  reuse:(id:string,engine:string,lease?:MaterialParseLease)=>Promise<void>;
  failure:(id:string,code:string,lease?:MaterialParseLease)=>Promise<void>;
+ leaseCurrent:(lease:MaterialParseLease)=>Promise<boolean>;
  pdf?:(resource:TeacherResource,signal:AbortSignal,lease?:MaterialParseLease)=>Promise<TeacherResource>;
 };
 /** Business adapter only: same SQLite facts and existing Hana worker, no runtime. */
@@ -206,15 +208,19 @@ export class MaterialRepository {
     signal.throwIfAborted();
     structured=await this.host.structure?.begin(resource,signal,lease)??false;
     if(this.host.pdf&&/\.pdf$/i.test(resource.originalFileName)){const parsed=await this.host.pdf(resource,signal,lease);if(structured)await this.host.structure!.complete(parsed,signal,lease);return await this.resource(id);}
-    {
+    const complete=await withMaterialBufferBudget(lease?.taskId??id,lease?.priority===0?'background':'foreground',
+     resource.originalFileName,signal,async()=>{
+     if(lease&&!await this.host.leaseCurrent(lease))throw Error('cancelled');
+     const current=await this.resource(id);
+     if(current.contentHash!==resource.contentHash||current.localPath!==resource.localPath||current.originalFileName!==resource.originalFileName)
+      throw Error('source_changed');
      const bytes=await this.original(id,resource.contentHash,signal);signal.throwIfAborted();
-     const hash=createHash('sha256').update(bytes).digest('hex');
-     if(hash!==resource.contentHash)failure='source_changed';
-     else if(resource.chunkCount>0&&['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)){if(structured)await this.host.structure!.complete(resource,signal,lease);return await this.resource(id);}
-     else if(resource.chunkCount>0&&/:(missing|source_changed)$/.test(resource.parseEngine)){
-      signal.throwIfAborted();await this.host.reuse(id,resource.parseEngine.split(':')[0],lease);
+     const hash=resource.contentHash;
+     if(current.chunkCount>0&&['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(current.parseStatus))return current;
+     if(current.chunkCount>0&&/:(missing|source_changed)$/.test(current.parseEngine)){
+      signal.throwIfAborted();await this.host.reuse(id,current.parseEngine.split(':')[0],lease);
      }
-     else if(resource.chunkCount>0)failure='partial_existing';
+     else if(current.chunkCount>0)failure='partial_existing';
      else {
       let content='',engine='local-text-v1',pages:MaterialOcrPage[]|undefined,word:WordPayload|undefined;
       if(/\.(txt|md)$/i.test(resource.originalFileName)){
@@ -226,11 +232,11 @@ export class MaterialRepository {
        try{ocr=await recognizeLocalImage(bytes,signal);}
        catch(error){
         if(!signal.aborted&&error instanceof Error&&['empty','parse_failed','configuration','too_large','invalid_input','timeout','unavailable'].includes(error.message)){
-         await this.original(id,hash,signal);await saveImageOcr(this.host,id,hash,error,signal,lease);
+         await this.verify(id,hash,signal);await saveImageOcr(this.host,id,hash,error,signal,lease);
         }
         throw error;
        }
-       signal.throwIfAborted();await this.original(id,hash,signal);await saveImageOcr(this.host,id,hash,ocr,signal,lease);
+       signal.throwIfAborted();await this.verify(id,hash,signal);await saveImageOcr(this.host,id,hash,ocr,signal,lease);
        content=ocr.text;engine='image-'+ocr.engine;
        pages=[{page:1,text:ocr.text,width:ocr.width,height:ocr.height}];
       } else if(/\.docx$/i.test(resource.originalFileName)){
@@ -244,10 +250,11 @@ export class MaterialRepository {
         pages=ocr.pages;content=pages.map(page=>page.text).join('\n\n');engine=ocr.engine;
        }else failure=parsed.error;
       } else failure='unsupported';
-      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);if(structured)await this.host.structure!.complete(await this.resource(id),signal,lease);}}
+      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.verify(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);return this.resource(id);}}
      }
-    }
-   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':isSqliteWriteLock(error)?'busy':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
+    });
+    if(complete&&structured)await this.host.structure!.complete(complete,signal,lease);
+   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted||code==='cancelled'?'cancelled':isSqliteWriteLock(error)||code==='resource_busy'?'busy':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
    if(failure){if(structured)await this.host.structure!.fail(id,new Error(failure),lease);await this.host.failure(id,failure,lease);}
    return await this.resource(id);
   }finally{this.progress=undefined;this.active.delete(id);}

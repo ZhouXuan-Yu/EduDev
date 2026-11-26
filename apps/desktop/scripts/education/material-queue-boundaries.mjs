@@ -24,6 +24,32 @@ export function fixture(slots=()=>1){
  return{db,host,queue,add,row,calls,gates,failures,action,commits:()=>commits,close:async()=>{await queue.close();db.close();}};
 }
 export async function materialQueueBoundaries(check){
+ await check('Resource waiting and actual stopping are reported without rewriting the durable task contract',async()=>{
+  const f=fixture(),item=f.add();
+  let waiting=true,finish;
+  const actualEnd=new Promise(resolve=>{finish=resolve;});
+  f.host.isResourceQueued=task=>waiting&&task===item.task;
+  f.host.ingest=async(id,signal)=>{
+   f.calls.push(id);
+   await actualEnd;
+   signal.throwIfAborted();
+   return f.host.resource(id);
+  };
+  try{
+   await f.queue.enqueue(item.id,item.version);
+   await f.queue.start();
+   await wait(()=>f.calls.length===1);
+   assert.equal((await f.queue.snapshot(item.id)).tasks[0].resourceState,'waiting_resources');
+   assert.equal(f.row(item.id).status,'running');
+   waiting=false;
+   const requested=await f.action(item,'cancel');
+   assert.equal(requested.tasks[0].resourceState,'stopping');
+   assert.equal(f.row(item.id).status,'cancelled');
+   finish();
+   await wait(async()=>(await f.queue.snapshot(item.id)).tasks[0].resourceState===undefined);
+   assert.equal(f.commits(),0);
+  }finally{finish();await f.close();}
+ });
  await check('An explicit retry requeues a readable PDF with unfinished pages on the same task',async()=>{
   const f=fixture();
   try{

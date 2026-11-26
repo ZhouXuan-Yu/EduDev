@@ -57,6 +57,7 @@ import {MaterialRepository} from './assets/material-repository';
 import {MaterialCurriculumRepository,ensureMaterialCurriculum} from './assets/material-curriculum';
 import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
+import {isHostResourceQueued} from './host-resources/desktop';
 import {MaterialImportBatches} from './assets/material-import-batches';
 import {MaterialStructureRecovery} from './assets/material-structure-recovery';
 import {MaterialFolderAiRepository} from './assets/material-folder-ai';
@@ -1197,6 +1198,7 @@ export class OmniEduStore {
     commit: (id, content, engine, hash, signal, pages, lease, word) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease, word),
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
+    leaseCurrent: lease => this.materialLeaseCurrent(lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
     structure:{begin:(r,s,l)=>this.materialStructures.begin(r,s,l),complete:(r,s,l)=>this.materialStructures.complete(r,s,l),fail:(id,e,l)=>this.materialStructures.fail(id,e,l)},
   });
@@ -1208,7 +1210,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await openSqlite(this.dbPath, 'retryWrite');
       try{await beginMaterialWrite(sql=>work.exec(sql));try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQueue=new MaterialParseQueue({publications:this.publications,structureReady:r=>this.materialStructures.published(r),structureRequired:id=>this.materialStructures.required(id),hasUnfinishedPdf:id=>this.materialPdf.hasUnfinished(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
+    this.materialQueue=new MaterialParseQueue({publications:this.publications,isResourceQueued:isHostResourceQueued,structureReady:r=>this.materialStructures.published(r),structureRequired:id=>this.materialStructures.required(id),hasUnfinishedPdf:id=>this.materialPdf.hasUnfinished(id),all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialStructureRecovery=new MaterialStructureRecovery({publications:this.publications,
       all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),
       structures:()=>this.materialStructures,queue:()=>this.materialQueue,writer:async action=>{

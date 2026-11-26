@@ -79,15 +79,17 @@ export class MaterialPdfRepository{
   if(resource.fileSize>PDF_FILE_MAX_BYTES)throw new Error('too_large');
   await verifyMaterialOriginal(path.join(this.host.root(),'teacher_resources'),resource.localPath,resource.contentHash,signal);
   const previous=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=?',[resource.id]))[0];
-  if(['complete','partial'].includes(String(previous?.state))&&await this.host.structureRequired?.(resource.id))return resource;
-  if(previous?.state==='complete'&&previous.version===resource.contentHash&&previous.worker===pdfFileWorkerVersion()&&resource.parseEngine===PDF_FILE_ENGINE&&resource.parseStatus==='ready')return resource;
+  const checkpointMatches=previous?.version===resource.contentHash&&previous.worker===pdfFileWorkerVersion();
+  if(checkpointMatches&&['complete','partial'].includes(String(previous.state))&&await this.host.structureRequired?.(resource.id))return resource;
+  if(checkpointMatches&&previous.state==='complete'&&resource.parseEngine===PDF_FILE_ENGINE&&resource.parseStatus==='ready')return resource;
   const claim=await this.start(resource,signal,lease),blocked=new Set<number>();let currentPage=0,published=false;
+  const stage={owner:lease?.taskId??resource.id,lane:lease?.priority===0?'background' as const:'foreground' as const,beforeStart:()=>this.guard(claim)};
   try{
    for(let attempts=0;attempts<4;attempts++){
     const saved=await this.host.all("SELECT page,status,attempts FROM material_pdf_pages WHERE generation=? AND (status IN ('complete','blank','needs_review') OR attempts>=3)",[claim.generation]);
     const skip=[...new Set([...saved.map(r=>Number(r.page)),...blocked])];currentPage=0;
     try{
-     await parsePdfFile(resource,skip,signal,async(event,executionSignal)=>{await this.accept({...claim,signal:AbortSignal.any([signal,executionSignal])},event);if(event.kind==='progress')currentPage=event.page;else if(event.kind==='page')currentPage=0;else if(event.kind==='finished')published=true;});break;
+     await parsePdfFile(resource,skip,signal,async(event,executionSignal)=>{await this.accept({...claim,signal:AbortSignal.any([signal,executionSignal])},event);if(event.kind==='progress')currentPage=event.page;else if(event.kind==='page')currentPage=0;else if(event.kind==='finished')published=true;},stage);break;
     }catch(error){
      signal.throwIfAborted();const code=error instanceof Error?error.message:'';
      if(code!=='timeout'||!currentPage)throw error;
@@ -97,7 +99,7 @@ export class MaterialPdfRepository{
    if(!published){
     const total=Number((await this.guard(claim)).total);if(!total)throw new Error('parse_failed');
     // Even a partial publication holds a verified read-only worker handle until commit.
-    await parsePdfFile(resource,Array.from({length:total},(_,i)=>i+1),signal,async(event,executionSignal)=>this.accept({...claim,signal:AbortSignal.any([signal,executionSignal])},event));
+    await parsePdfFile(resource,Array.from({length:total},(_,i)=>i+1),signal,async(event,executionSignal)=>this.accept({...claim,signal:AbortSignal.any([signal,executionSignal])},event),stage);
    }return await this.host.resource(resource.id);
   }catch(error){
    if(!signal.aborted)await this.failedPage(claim,currentPage,error instanceof Error?error.message:'parse_failed').catch(()=>undefined);
