@@ -84,6 +84,12 @@ await writeFile(join(rollbackInstance,'restoration-files.v1.json'),JSON.stringif
   files:[{file:rollbackFile,size:(await stat(rollbackFile)).size,sha256:await hash(rollbackFile)}],
 }));
 await stageUpdateRollback(rollbackProfile,live,live,'0.1.1',rollbackReceipt,()=>{});
+const matchingProfile=join(root,'matching-rollback-profile');
+await mkdir(matchingProfile);
+await stageUpdateRollback(matchingProfile,live,live,'0.1.1',rollbackReceipt,()=>{});
+await applyPendingUpdateRollback(matchingProfile,live,'0.1.0');
+assert.equal((await selectedBackupRoot(matchingProfile,live,'0.1.0')).dataRoot,rollbackData);
+assert.equal(await readPendingRollback(matchingProfile,live),undefined);
 
 const db=new DatabaseSync(join(live,'app.db'));
 try {
