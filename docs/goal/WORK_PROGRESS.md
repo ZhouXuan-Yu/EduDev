@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+学习记录附件导入补齐归属校验、晚回执和写入后读回失败处理。 [复查记录](../audit/quality-review-20261126.md#本次修复)
+
 小智数据库 R3 在独立工作树接续 R2，并依次验证配置继承、普通提交、准入捕获、字段级撤回、界面与备份恢复。各切片进度和累计回合记录见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json`。
 
 D3 修复首个会话写入期间切到资料库造成的返回后输入锁定。页面契约由已交付导航枚举读取，并保留补填弹窗和重启验收条目。 [专项](../product-agent/04_PROGRESS_AND_EVIDENCE.md#首个对话初始化与页面契约)

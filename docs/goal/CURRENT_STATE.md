@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+学习记录附件导入按发起学生保存和显示回执，覆盖切换学生、归档与列表读回失败。专项入线状态和本轮验证见 [2026-11-26 质量复查](../audit/quality-review-20261126.md)。
+
 小智数据库 R3 的实际代码、Windows 构建和合并读回以 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json` 为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
 
 小智数据库 R2 的实际构建、迁移、Windows 验收和合并状态在 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r2/state.json`。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)

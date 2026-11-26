@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+学习记录附件导入在独立 Windows Electron 和真实 SQLite 验证。 [验收方法和记录](../audit/quality-review-20261126.md#验收方法和记录)
+
 数据库 R3 先验收 AC-00 至 AC-28，按实际 diff 处置 AC-30，合并后在最终 main 构建验证 AC-29。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
 
 数据库 R2 按工程包 `contracts/acceptance.json` 的 20 项与 82 个子断言验收，结果以本轮隔离 Windows 构建和验收账本为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)

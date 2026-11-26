@@ -53,6 +53,7 @@ import { MasteryPathWorkspace } from './components/MasteryPathWorkspace';
 import { GlobalSearchWorkspace } from './components/GlobalSearchWorkspace';
 import { ReviewReminderPanel } from './components/ReviewReminderPanel';
 import { StudentProfileLifecycle, type StudentFormMode } from './components/StudentProfileLifecycle';
+import { AttachmentImportFeedback } from './components/students/AttachmentImportFeedback';
 import {StudentConversationAction} from './components/students/StudentConversationAction';
 import {StudentTrainingWorkspace} from './components/students/StudentTrainingWorkspace';
 import {MistakeRecordContent} from './components/students/MistakeRecordContent';
@@ -488,7 +489,8 @@ export function App() {
   const recordSaveLock = useRef(false);
   const recordConfirmation = useActionConfirmation();
   const [status, setStatus] = useState('本地工作台正在准备。');
-  const [attachmentImport, setAttachmentImport] = useState<AttachmentImportResult | null>(null);
+  const [attachmentImportState, setAttachmentImport] = useState<{ studentId: string; result: AttachmentImportResult }>();
+  const attachmentImportLock = useRef(false);
   const [knowledgeOverview, setKnowledgeOverview] = useState<KnowledgeOverview>(emptyKnowledgeOverview);
   const [knowledgeImport, setKnowledgeImport] = useState<KnowledgeImportResult | null>(null);
 
@@ -498,6 +500,8 @@ export function App() {
     return selected?.status === 'active' ? selected : undefined;
   }, [students, activeStudentId, activeView]);
   activeStudentIdRef.current=activeStudent?.id||'';
+  const attachmentImport = attachmentImportState?.studentId === activeStudent?.id ? attachmentImportState?.result ?? null : null;
+  const attachmentImportBusy = attachmentImportState?.result.status === 'copying';
   const records=loadedRecords.filter(record=>record.studentId===activeStudent?.id);
   const reports=loadedReports.filter(report=>report.studentId===activeStudent?.id);
   const recordDraft = useStudentRecordDraft(activeStudent?.id ?? '',activeStudent?.subjects[0] ?? '数学');
@@ -698,7 +702,7 @@ export function App() {
     await refreshOverview();
   }
 
-  async function refreshRecords(studentId = activeStudent?.id) {
+  async function refreshRecords(studentId = activeStudent?.id, refreshSummary = true) {
     if (!studentId) return;
     const stamp=++recordReadEpoch.current;
     const location=pendingRecordLocation.current;
@@ -715,13 +719,16 @@ export function App() {
     if(activeStudentIdRef.current!==studentId || stamp!==recordReadEpoch.current)return;
     setRecords(nextRecords ?? []);
     setReports(nextReports ?? []);
-    await refreshOverview();
+    if (refreshSummary) await refreshOverview();
     } catch(error) {
       if(activeStudentIdRef.current!==studentId||stamp!==recordReadEpoch.current)return;
       if(pendingRecordLocation.current===location)pendingRecordLocation.current='';
       throw error;
     }
   }
+
+  const attachmentViewRefresh = useRef({ records: refreshRecords, students: refreshStudents });
+  attachmentViewRefresh.current = { records: refreshRecords, students: refreshStudents };
 
   useEffect(() => {
     if (runtime === 'preparing') return;
@@ -843,31 +850,34 @@ export function App() {
   }
 
   async function importAttachment(recordId: string) {
-    if (!activeStudent) return;
+    if (!activeStudent || attachmentImportLock.current) return;
     if (activeStudent.status === 'archived') {
       setStatus('归档学生为只读状态，不能继续导入附件。');
       return;
     }
-    setAttachmentImport({ status: 'copying', records, items: [] });
-    setStatus('正在复制附件到学生本地目录。');
+    const studentId = activeStudent.id;
+    attachmentImportLock.current = true;
+    setAttachmentImport({ studentId, result: { status: 'copying', records: [], items: [] } });
     try {
-      const result = await window.omniEdu?.importAttachments(activeStudent.id, recordId);
+      const result = await window.omniEdu?.importAttachments(studentId, recordId);
       if (!result) throw new Error('附件导入没有返回结果，请重试。');
-      setAttachmentImport(result);
-      setRecords(result.records ?? []);
-      await refreshStudents();
-      const okCount = result.items.filter((item) => item.ok).length;
-      const failedCount = result.items.length - okCount;
-      if (result.status === 'canceled') {
-        setStatus('已取消附件导入。');
-      } else if (failedCount > 0) {
-        setStatus(`附件导入完成：成功 ${okCount} 个，失败 ${failedCount} 个。`);
-      } else {
-        setStatus(`附件已复制：${okCount} 个文件。`);
+      const refresh = attachmentViewRefresh.current;
+      if (result.status === 'succeeded' || result.status === 'partial') {
+        const updates = await Promise.allSettled([
+          activeStudentIdRef.current === studentId ? refresh.records(studentId, false) : Promise.resolve(),
+          refresh.students(),
+        ]);
+        if (updates.some(update => update.status === 'rejected')) result.refreshFailed = true;
       }
+      setAttachmentImport({ studentId, result });
     } catch (error) {
-      setAttachmentImport({ status: 'failed', records, items: [{ sourcePath: '', fileName: '附件选择或复制', ok: false, fileSize: 0, errorMessage: error instanceof Error ? error.message : '附件导入失败' }] });
-      setStatus(error instanceof Error ? error.message : '附件导入失败，请重试。');
+      const errorMessage = error instanceof Error ? error.message : '附件导入失败，请重试。';
+      setAttachmentImport({ studentId, result: {
+        status: 'failed', records: [],
+        items: [{ sourcePath: '', fileName: '附件选择或复制', ok: false, fileSize: 0, errorMessage }],
+      } });
+    } finally {
+      attachmentImportLock.current = false;
     }
   }
 
@@ -1606,6 +1616,7 @@ export function App() {
             </div></StudentRecordFilters>
           ) : null}
         </div>
+        {attachmentImport && <AttachmentImportFeedback result={attachmentImport} />}
         <div className="timeline">
           {records.map((record) => (
             <article className="timeline-item" tabIndex={-1} aria-current={locatedRecordId===record.id?'true':undefined} data-testid={`timeline-record-${record.id}`} key={record.id}>
@@ -1619,7 +1630,7 @@ export function App() {
                   {readOnly ? <span className="student-readonly-label">归档档案只读</span> : (
                     <div className="record-actions">
                       <button data-testid={`record-edit-${record.id}`} className="secondary-action compact-button" disabled={recordSaving} onClick={() => editRecord(record)}>编辑</button>
-                      <button className="secondary-action compact-button" onClick={() => importAttachment(record.id)}>导入附件</button>
+                      <button className="secondary-action compact-button" disabled={attachmentImportBusy} onClick={() => importAttachment(record.id)}>导入附件</button>
                     </div>
                   )}
                 </div>
@@ -2549,6 +2560,7 @@ export function App() {
         activeStudent={activeStudent}
         records={records}
         attachmentImport={attachmentImport}
+        attachmentImportBusy={attachmentImportBusy}
         aiResult={aiResult}
         aiRunning={aiRunning}
         confirmations={aiConfirmations}
