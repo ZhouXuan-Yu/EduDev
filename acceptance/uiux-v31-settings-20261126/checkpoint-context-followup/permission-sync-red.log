@@ -1,0 +1,18 @@
+PASS production main keeps composer draft while opening real settings from navigation
+PASS settings is a top-level nonmodal sandboxed singleton with its own minimal preload
+PASS real settings reads the verified main session instead of a local preference
+PASS real A to B selection rejects an old A permission write without side effects
+locator.waitFor: Timeout 4000ms exceeded.
+Call log:
+  - waiting for getByTestId('pi-permission-picker').filter({ hasText: '接受编辑' }) to be visible
+
+    at D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\scripts\settings-window-cases\context-security.mjs:34:75
+    at async check (D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\scripts\settings-window-product-test.mjs:31:55)
+    at async contextSecurity (D:\WorkProject\EduProject-ui-ux-r1-20261125\apps\desktop\scripts\settings-window-cases\context-security.mjs:27:2)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-product-test.mjs:60:14 {
+  log: [
+    "  - waiting for getByTestId('pi-permission-picker').filter({ hasText: '接受编辑' }) to be visible"
+  ],
+  name: 'TimeoutError'
+}
+{"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\edudev-v31-settings-final-20261126\\product-jFVFMx","success":false,"passed":4,"failure":"TimeoutError: locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-permission-picker').filter({ hasText: '接受编辑' }) to be visible\u001b[22m\n"}

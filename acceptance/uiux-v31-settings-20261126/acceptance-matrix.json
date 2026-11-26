@@ -330,7 +330,12 @@
     },
     {
       "id": "AC-078",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_CONTEXT_FOLLOWUP.json",
+        "checkpoint-context-followup/product-report.json"
+      ],
+      "coverageNote": "Partial module evidence only; complete the authoritative contract scenario before assigning PASS."
     },
     {
       "id": "AC-079",
@@ -360,9 +365,11 @@
       "moduleEvidence": [
         "CHECKPOINT_W2_INTEGRATION.json",
         "checkpoint-w2-integration/product-9pAd6R--report.json",
-        "RUNTIME_INTEGRATION.md"
+        "RUNTIME_INTEGRATION.md",
+        "CHECKPOINT_CONTEXT_FOLLOWUP.json",
+        "checkpoint-context-followup/product-report.json"
       ],
-      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
+      "coverageNote": "Partial module evidence only; complete the authoritative contract scenario before assigning PASS."
     },
     {
       "id": "AC-084",
@@ -380,9 +387,11 @@
       "moduleEvidence": [
         "CHECKPOINT_W2_INTEGRATION.json",
         "checkpoint-w2-integration/product-9pAd6R--report.json",
-        "RUNTIME_INTEGRATION.md"
+        "RUNTIME_INTEGRATION.md",
+        "CHECKPOINT_CONTEXT_FOLLOWUP.json",
+        "checkpoint-context-followup/product-report.json"
       ],
-      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
+      "coverageNote": "Partial module evidence only; complete the authoritative contract scenario before assigning PASS."
     },
     {
       "id": "AC-086",
@@ -390,7 +399,12 @@
     },
     {
       "id": "AC-087",
-      "status": "NOT_RUN"
+      "status": "NOT_RUN",
+      "moduleEvidence": [
+        "CHECKPOINT_CONTEXT_FOLLOWUP.json",
+        "checkpoint-context-followup/product-report.json"
+      ],
+      "coverageNote": "Partial module evidence only; complete the authoritative contract scenario before assigning PASS."
     },
     {
       "id": "AC-088",
@@ -402,9 +416,11 @@
       "moduleEvidence": [
         "CHECKPOINT_W2_INTEGRATION.json",
         "checkpoint-w2-integration/product-9pAd6R--report.json",
-        "RUNTIME_INTEGRATION.md"
+        "RUNTIME_INTEGRATION.md",
+        "CHECKPOINT_CONTEXT_FOLLOWUP.json",
+        "checkpoint-context-followup/product-report.json"
       ],
-      "coverageNote": "Only module subconditions exercised; full contract scenario remains NOT_RUN, not PASS."
+      "coverageNote": "Partial module evidence only; complete the authoritative contract scenario before assigning PASS."
     },
     {
       "id": "AC-090",

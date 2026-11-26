@@ -5,8 +5,10 @@ import {createHash} from 'node:crypto';
 import {_electron as electron} from 'playwright';
 import {fingerprint} from './acceptance/evidence.mjs';
 import {tmpdir} from 'node:os';
+import {contextSecurity,navigationSecurity,permissionPersistence,frameSurface} from './settings-window-cases/context-security.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'..'),repo=path.resolve(desktop,'../..');
+const followup=process.argv.includes('--security-followup');
 const external=process.env.OMNI_EDU_SETTINGS_ACCEPTANCE_ROOT;
 if(external){const relative=path.relative(tmpdir(),path.resolve(external));assert(/^edudev-v31-[A-Za-z0-9_-]+$/.test(relative),'External root must be an owned task directory directly in OS temp');}
 const output=external?fs.mkdtempSync(path.join(external,'product-')):fs.mkdtempSync(path.join(repo,'acceptance/uiux-v31-settings-20261126/product-'));
@@ -55,6 +57,7 @@ try{
   await settings.evaluate(()=>localStorage.setItem('xiaozhi.current-session.v1','forged-local-preference'));
   assert.equal((await settings.evaluate(()=>window.settingsWindow.getScope())).sessionId,valid.scope.sessionId);
  });
+ if(followup)await contextSecurity({main,settings,check,report});
  await check('unsaved teacher memory blocks native close and preserves the editor on repeated open',async()=>{
   await settings.getByTestId('pi-settings-tab-teacher-memory').click();
   await settings.getByTestId('teacher-memory-textbook').fill('隔离验收教材草稿');
@@ -82,10 +85,13 @@ try{
   await app.evaluate(async({BrowserWindow},{preload,html})=>{const probe=new BrowserWindow({show:false,webPreferences:{preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});await probe.loadFile(html);},{preload:probePreload,html:probeHtml});
   const probe=await opened;
   const denied=await probe.evaluate(async scope=>{
-   const channels=['settings-window:api:app:getDataRoot','app:getDataRoot','settings-window:open','settings-window:select','settings-window:bootstrap'];
+   const channels=['settings-window:api:app:getDataRoot','app:getDataRoot','settings-window:open','settings-window:select','settings-window:bootstrap',
+    'settings-window:api:xiaozhi:settings-get','settings-window:api:xiaozhi:permission-view','settings-window:api:app:exportDataRoot',
+    'settings-window:api:xiaozhi:skill-governance','settings-window:api:xiaozhi:mcp-catalog','settings-window:api:xiaozhi:diagnostic-preview',
+    'xiaozhi:settings-get','xiaozhi:permission-view','app:exportDataRoot','xiaozhi:skill-governance','xiaozhi:mcp-catalog','xiaozhi:diagnostic-preview'];
    const answers=[];for(const channel of channels){try{await window.probe.call(channel,{schemaVersion:'settings.request.v1',scope,args:[]});answers.push('allowed');}catch(error){answers.push(String(error).includes('permission_denied')?'denied':'other');}}return answers;
   },scope);
-  assert.deepEqual(denied,['denied','denied','denied','denied','denied']);
+  assert.equal(denied.length,17);assert(denied.every(result=>result==='denied'));report.untrustedEndpointDenials=denied.length;
   await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows().find(window=>window.webContents.getURL().endsWith('/hostile.html')).destroy());
  });
  await check('all ten existing categories are reachable including three memory modules',async()=>{
@@ -98,6 +104,7 @@ try{
   await settings.getByTestId('pi-settings-advanced-toggle').click();
   for(const tab of ['capabilities','skills','tools','diagnostics']){await settings.getByTestId('pi-settings-tab-'+tab).click();await settings.locator('[data-testid="pi-settings-workspace"][data-tab="'+tab+'"]').waitFor();await settings.screenshot({path:path.join(output,'settings-'+tab+'.png')});}
  });
+ if(followup){await frameSurface({settings,check,report});await navigationSecurity({app,main,getSettings:()=>settings,setSettings:page=>{settings=page;observe(page);},check,report});}
  await check('main remains editable; closing settings leaves Pi window and composer intact',async()=>{
   await main.bringToFront();await main.getByTestId('office-prompt-input').fill('设置关闭后仍然保留的草稿');
   await main.getByTestId('settings-main-dim').waitFor({state:'detached',timeout:3000});
@@ -109,6 +116,7 @@ try{
 }catch(error){report.failure=String(error);console.error(error);if(main)await main.screenshot({path:path.join(output,'main-failure.png')}).catch(()=>{});if(settings&&!settings.isClosed())await settings.screenshot({path:path.join(output,'settings-failure.png')}).catch(()=>{});}
 finally{
  if(app){report.blockedNetwork=await app.evaluate(()=>globalThis.__settingsBlockedNetwork).catch(()=>null);await app.close().catch(()=>{});}
+ if(followup)try{permissionPersistence(report);}catch(error){report.success=false;report.failure='Permission SQLite readback: '+String(error);}
  report.buildUnchanged=fingerprint(path.join(desktop,'out')).sha256===report.build.sha256;
  if(!report.buildUnchanged){report.success=false;report.failure='Build changed during acceptance';}
  fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({output,success:report.success,passed:report.checks.length,failure:report.failure}));if(!report.success)process.exitCode=1;

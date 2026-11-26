@@ -1,10 +1,14 @@
 # V3.1 当前执行入口
 
+最新检查点：751ae4f之后继续正式跨会话/权限同步验收。CHECKPOINT_CONTEXT_FOLLOWUP.json记录13/13真实双窗检查、17个新旧通道拒绝、关闭后SQLite核对B已保存/A无改动，以及正式导航撤销重开。修复usePermissionMode未订阅设置变更、旧读回可能覆盖新版本的问题；OfficeComposer和权限业务未改。沙盒frame仅验证无preload/不能访问parent，不冒称已经发出原生IPC。
+
+W2-C累计7/8：第6轮修复真实权限显示不同步；第7轮修正frame测试未等待frameattached的夹具竞态，失败保留。最后一轮前先集中补齐await对话框撤权、全局/会话配置迟到响应的真实证据，再实施；不得换名称重置预算。W2-E0/8继续原配置、凭证、历史、撤销和冲突。全部90AC/36LG与SET-P0/MG/FG仍未通过，不合并main。
+
 状态：IMPLEMENTING；自动Goal仍active，完整90 AC＋36 LG及SET-P0/MG/FG未通过，不合并main。分支codex/ui-ux-r1-20261125，起点42340fd。独立设置窗、最小接口、主窗可信会话和十类原设置已接入正式Pi构建，保留原业务真源。
 
 磁盘阻断曾导致本文件为空，已从C盘完整恢复。后续出现约100MB可用空间，继续正式源码修复：W2-C第5/8轮补上readRevision等待后重新核验主窗身份，正式新增红灯复现并修复为10/10。此前双窗实测8、接口12、组件261、Pi9、旧legacy回归207和audit0为分层证据；本轮最后同版结果以CHECKPOINT_W2_INTEGRATION.json为准。C盘RECOVERY为历史快照，不能盲目覆盖当前工作树。
 
-下一步：按RUNTIME_INTEGRATION.md继续正式A→B、subframe/导航及await撤权，再做配置保存/历史/撤销/冲突与数据库读回，以及记忆/权限/工具/归档/备份闭环，最后原生焦点/DPI/键盘/性能。旧Pi设置UI脚本需适配独立owner window并保留断言；desktopRevision身份应包含新增设置入口。W2-A3/8、B1/8、C5/8、D2/8、E0/8、F0/8、W10 0/3，预算不重置。
+下一步：按RUNTIME_INTEGRATION.md集中补齐await对话框和全局/会话配置迟到回执证据，再做配置保存/历史/撤销/冲突与数据库读回，以及记忆/权限/工具/归档/备份闭环，最后原生焦点/DPI/键盘/性能。旧Pi设置UI脚本需适配独立owner window并保留断言；desktopRevision身份应包含新增设置入口。W2-A3/8、B1/8、C7/8、D2/8、E0/8、F0/8、W10 0/3，预算不重置。
 
 ## 历史：磁盘阻断及C盘恢复记录（不代表当前仍停止）
 
