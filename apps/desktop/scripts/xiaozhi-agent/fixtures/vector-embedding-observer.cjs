@@ -1,11 +1,10 @@
-const {pathToFileURL} = require('node:url');
 const path = require('node:path');
 const fs = require('node:fs');
 const cp = require('node:child_process');
 const {syncBuiltinESMExports} = require('node:module');
 const {StringDecoder} = require('node:string_decoder');
 
-const [entry, root] = process.argv.slice(2);
+function observeEmbedding(root) {
 const flag = name => path.join(root, name);
 const log = (event, detail) => fs.appendFileSync(flag('embedding-trace.jsonl'), JSON.stringify({event, utility:process.pid, at:Date.now(),...detail})+'\n');
 const spawn = cp.spawn;
@@ -69,4 +68,5 @@ cp.spawn = function (file,...args) {
   return child;
 };
 syncBuiltinESMExports();
-import(pathToFileURL(entry).href).catch(error=>{console.error(error.stack??error);process.exitCode=1;});
+}
+module.exports={observeEmbedding};

@@ -169,6 +169,17 @@ void app.whenReady().then(async()=>{
     assert.equal(BrowserWindow.getAllWindows().length,0);
     assert(!(await fs.readdir(dataRoot)).some(name=>name.startsWith('office-render-')));
     checks.push('The private print window and its owned staging files are gone');
+    const residency=()=>hostResourceDiagnostics().events.filter(event=>event.phase==='embedding-resident');
+    const started=residency().filter(event=>event.state==='started');
+    assert(started.length>0&&started.every(event=>event.demand.processes===1&&event.demand.memoryMiB===640));
+    assert(started.some(event=>!residency().some(exit=>exit.lease===event.lease&&exit.state==='actual_settled')));
+    await owner.close();
+    const drainedBy=performance.now()+10_000;
+    while(started.some(event=>!residency().some(exit=>exit.lease===event.lease&&exit.state==='actual_settled'))){
+      if(performance.now()>=drainedBy)throw Error('Native embedding residency did not settle after owner shutdown');
+      await new Promise(resolve=>setTimeout(resolve,25));
+    }
+    checks.push('Native embedding has independent residency after query results and settles at actual process close');
     report.success=true;
   }catch(error){
     report.error=String((error as Error).stack??error);

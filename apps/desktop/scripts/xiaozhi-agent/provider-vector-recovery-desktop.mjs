@@ -69,7 +69,7 @@ try {
   const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
   Object.assign(env,{OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'), OMNI_EDU_DATA_ROOT:data, OMNI_EDU_SKIP_DOTENV:'1',
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_VECTOR_EVIDENCE_ROOT:root,OMNI_EDU_VECTOR_EVIDENCE_MAIN:main,
-    OMNI_EDU_VECTOR_EVIDENCE_WRAPPER:path.resolve(import.meta.dirname,'fixtures/vector-embedding-observer.cjs'),TEMP:root,TMP:root});
+    TEMP:root,TMP:root});
   const boot=path.resolve(import.meta.dirname,'fixtures/vector-recovery-main.cjs');
   app=await electron.launch({args:[boot,'--user-data-dir='+profile],cwd:root,env,timeout:60000});
   await assertIsolatedPiMain(app,main,profile);

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {connect,Index} from '@lancedb/lancedb';
 import {Schema,Field,Utf8,Float64,Float32,FixedSizeList} from 'apache-arrow';
-import {EmbeddingClient} from './embedding-client';
+import type {EmbeddingClient} from './embedding-client';
 import {materialId} from '../../shared/materials';
 import {CATALOG_VECTOR_IDS} from '../../shared/material-catalog';
 import {questionGradeLabels} from '../../shared/question-grade';
@@ -27,7 +27,7 @@ export class LocalVectorStore{
   private openings=new Map<string,Promise<GenerationTables>>();
   private writes:Promise<unknown>=Promise.resolve();
   private queries=new Map<string,number[]>();
-  constructor(private root:string,private encoder:EmbeddingClient,private exclusiveOwner:()=>boolean=()=>false){}
+  constructor(private root:string,private encoder:Pick<EmbeddingClient,'embed'|'close'>,private exclusiveOwner:()=>boolean=()=>false){}
   private async open(spec:GenerationSpec):Promise<GenerationTables>{
     if(!validGeneration(spec.id)||spec.modelHash!==EMBEDDING_MODEL||spec.tokenizerHash!==EMBEDDING_TOKENIZER||spec.identity!==EMBEDDING_ID||spec.dimension!==512||spec.normalization!=='l2'||spec.pooling!=='cls'||spec.distanceMetric!=='cosine'||!Number.isSafeInteger(spec.factSnapshotSeq)||spec.factSnapshotSeq<0)throw Error('generation_mismatch');
     if(this.generations.has(spec.id))return this.generations.get(spec.id)!;

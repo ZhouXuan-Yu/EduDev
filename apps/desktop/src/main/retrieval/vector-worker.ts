@@ -7,10 +7,13 @@ import {RETRIEVAL_SCHEMA} from '../../shared/retrieval';
 import {acquireWriterLock} from './writer-lock';
 import {RerankerClient} from './reranker-client';
 import {verifyRerankerRuntime} from './reranker-runtime';
+import {createWorkerEmbedding} from './embedding-worker-port';
 const parent=(process as unknown as {parentPort?:{on:(name:string,fn:(event:{data:unknown})=>void)=>void;postMessage:(value:unknown)=>void}}).parentPort;
 let store:LocalVectorStore|undefined,ranker:RerankerClient|undefined,owner:import('node:fs/promises').FileHandle|undefined;
 const reply=(v:Record<string,unknown>)=>{const message={schemaVersion:RETRIEVAL_SCHEMA,...v};return parent?parent.postMessage(message):process.send?.(message);};
+const embedding=parent ? createWorkerEmbedding(reply) : undefined;
 async function receive(message:unknown){
+  if(embedding?.receive(message))return;
   const v=message as Record<string,any>,id=v?.id;
   if(typeof id!=='string'||id.length>64)return;
   try{
@@ -22,7 +25,8 @@ async function receive(message:unknown){
       if((await fs.lstat(root)).isSymbolicLink()||(await fs.realpath(root)).toLowerCase()!==root.toLowerCase())throw Error('index_path');
       owner=await acquireWriterLock(root);
       if(typeof v.rerankerRoot==='string'&&path.isAbsolute(v.rerankerRoot))ranker=new RerankerClient(signal=>verifyRerankerRuntime(v.rerankerRoot,signal));
-      store=new LocalVectorStore(root,new EmbeddingClient(v.executable,async()=>{await verifyRetrievalRuntime(path.dirname(v.executable));}),()=>!!owner&&owner.fd>=0);reply({id,ok:true,value:{ready:true}});return;
+      const encoder=embedding??new EmbeddingClient(v.executable,async()=>{await verifyRetrievalRuntime(path.dirname(v.executable));});
+      store=new LocalVectorStore(root,encoder,()=>!!owner&&owner.fd>=0);reply({id,ok:true,value:{ready:true}});return;
     }
     if(!store||!owner||owner.fd<0)throw Error('unavailable');
     let value;
