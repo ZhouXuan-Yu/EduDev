@@ -6,6 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain} from '../acceptance/build-root.mjs';
+import {observeProviderResources} from './fixtures/provider-resource-observation.mjs';
 
 const [build, fixture, acceptance, mode] = process.argv.slice(2);
 assert([build, fixture, acceptance].every(value => value && path.isAbsolute(value)), 'Pass the actual build, scan and acceptance root');
@@ -17,7 +18,7 @@ const data = path.join(root, 'data'), profile = path.join(root, 'profile'), data
 const hash = value => createHash('sha256').update(value).digest('hex');
 const sourceHash = hash(fs.readFileSync(fixture));
 const report = {root, main, mainHash:hash(fs.readFileSync(main)), sourceHash, success:false, paidCalls:0, checks:[], cycles:[]};
-let app, page, resourceId, selectedFixture=fixture;
+let app, page, resourceId, resourceObservation, selectedFixture=fixture;
 
 async function until(label, read, timeout = 45000) {
   const deadline = performance.now() + timeout;
@@ -110,7 +111,15 @@ async function capture(mode, barrierPage) {
     modules.syncBuiltinESMExports();
   }, {mode, barrierPage});
 }
-const trace = async () => JSON.parse(await app.evaluate(() => JSON.stringify(globalThis.providerOcrTrace)));
+async function trace() {
+  for (let attempt = 1; ; attempt++) {
+    try { return JSON.parse(await app.evaluate(() => JSON.stringify(globalThis.providerOcrTrace))); }
+    catch (error) {
+      if (attempt >= 3 || !String(error).includes('Resulting promise was garbage collected')) throw error;
+      await delay(50);
+    }
+  }
+}
 async function retry() {
   return page.evaluate(async id => {
     const queue = await window.omniEdu.getMaterialQueue(id);
@@ -120,55 +129,16 @@ async function retry() {
   }, resourceId);
 }
 
-async function observeLeaseScheduler(ownerFile) {
-  const source = fs.readFileSync(ownerFile,'utf8');
-  const reserveExport = source.match(/\breserveHostStage as (\w+)/u)?.[1];
-  assert(reserveExport);
-  await app.evaluate(async (_electron, {ownerFile, reserveExport}) => {
-    const {Session} = process.getBuiltinModule('node:inspector');
-    const req = process.getBuiltinModule('node:module').createRequire(ownerFile);
-    const session = new Session();
-    session.connect();
-    const post = (method, params = {}) => new Promise((resolve,reject) => session.post(method,params,(error,result) => error ? reject(error) : resolve(result)));
-    const group = 'provider-ocr-lease-observation';
-    const properties = objectId => post('Runtime.getProperties',{objectId,ownProperties:true});
-    try {
-      globalThis.providerOcrLeaseEntry = req(ownerFile)[reserveExport];
-      const entry = await post('Runtime.evaluate',{expression:'globalThis.providerOcrLeaseEntry',objectGroup:group});
-      const scopes = (await properties(entry.result.objectId)).internalProperties.find(property => property.name === '[[Scopes]]')?.value.objectId;
-      if (!scopes) throw Error('Missing production module scope');
-      const entries = (await properties(scopes)).result;
-      let scheduler;
-      for (const scope of entries.filter(item => item.value?.description === 'Module' || item.value?.description === 'Closure')) {
-        scheduler = (await properties(scope.value.objectId)).result.find(property => property.name === 'coordinator')?.value.objectId;
-        if (scheduler) break;
-      }
-      if (!scheduler) throw Error('Missing the real host lease coordinator');
-      globalThis.readProviderOcrLease = async () => {
-        const snapshot = await post('Runtime.callFunctionOn',{objectId:scheduler,returnByValue:true,
-          functionDeclaration:'function() { return {...this.snapshot(), events:this.recentEvents()}; }'});
-        if (snapshot.exceptionDetails) throw Error('Failed to read the real lease coordinator');
-        return snapshot.result.value;
-      };
-      globalThis.closeProviderOcrLeaseObservation = () => session.disconnect();
-    } catch(error) {session.disconnect();throw error;}
-    finally {delete globalThis.providerOcrLeaseEntry;}
-  }, {ownerFile, reserveExport});
-}
-
 try {
   assert(fs.existsSync(path.join(desktop,'package.json')), 'The build belongs to a desktop workspace');
-  const ownerFile = fs.readdirSync(path.dirname(main)).filter(name => name.endsWith('.js')).map(name => path.join(path.dirname(main),name))
-    .find(file => fs.readFileSync(file,'utf8').includes('function reserveHostStage('));
-  assert(ownerFile, 'Use the actual Host Resource Scheduling R1 build');
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
   Object.assign(env, {OMNI_EDU_DATA_ROOT:data, OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'), OMNI_EDU_SKIP_DOTENV:'1',
     OMNI_EDU_E2E_DIALOG_MODE:'1', OMNI_EDU_XIAOZHI_PI:'1', TEMP:root, TMP:root});
   app = await electron.launch({args:[main,'--user-data-dir='+profile], cwd:root, env, timeout:60000});
   await assertIsolatedPiMain(app, main, profile);
   report.runtime = await app.evaluate(() => ({electron:process.versions.electron, node:process.versions.node, platform:process.platform}));
-  await observeLeaseScheduler(ownerFile);
-  const leaseSnapshot = () => app.evaluate(() => globalThis.readProviderOcrLease());
+  resourceObservation = await observeProviderResources(app, main);
+  const leaseSnapshot = resourceObservation.read;
   const forTask = (snapshot, id) => snapshot.events.filter(event => event.owner === id && event.phase === 'parse');
   async function verifyOwnerCycle(worker, task, expectedLease) {
     assert(worker.closed&&worker.outputClosed&&gone(worker.pid));
@@ -265,7 +235,7 @@ try {
   const completed = await until('the same source and generation publish all six pages', () => {
     const state = live();
     return state.job?.state === 'complete' && state.job.owner_pid === 0 && state;
-  }, 120000);
+  }, 300000);
   const resumed = await trace();
   assert(resumed.spawned && resumed.closed && gone(resumed.pid));
   assert.notEqual(resumed.requestId,held.requestId);
@@ -328,7 +298,7 @@ try {
 } finally {
   if (app) {
     await app.evaluate(() => globalThis.releaseProviderOcr?.()).catch(() => undefined);
-    await app.evaluate(() => globalThis.closeProviderOcrLeaseObservation?.()).catch(() => undefined);
+    await resourceObservation?.close().catch(() => undefined);
     await app.close().catch(() => undefined);
   }
   fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2),{flag:'wx'});

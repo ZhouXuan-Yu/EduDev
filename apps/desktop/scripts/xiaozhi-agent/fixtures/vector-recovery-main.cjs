@@ -17,7 +17,8 @@ globalThis.armProviderVectorRebuild = active => {
 utilityProcess.fork = function (modulePath, args, options) {
   if (path.basename(modulePath) !== 'retrieval-worker.js') return fork(modulePath, args, options);
   const child = fork(modulePath, args, options);
-  const worker = {instance:capture.workers.length+1, pid:null, closed:false};
+  const listeners=()=>[child.listenerCount('message'),child.stdout?.listenerCount('data')??0,child.stderr?.listenerCount('data')??0];
+  const worker = {instance:capture.workers.length+1, pid:null, closed:false, listenerBaseline:listeners()};
   capture.workers.push(worker);
   child.once('spawn', () => {worker.pid=child.pid;});
   child.once('exit', code => {worker.closed=true;worker.exitCode=code;worker.exitedAt=performance.now();});
@@ -58,7 +59,9 @@ utilityProcess.fork = function (modulePath, args, options) {
         return true;
       }
     }
-    return emit(type,reply,...rest);
+    const handled=emit(type,reply,...rest);
+    if(type==='exit')worker.listenersAfterExit=listeners();
+    return handled;
   };
   return child;
 };

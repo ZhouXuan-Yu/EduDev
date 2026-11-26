@@ -15,13 +15,21 @@ cp.spawn = function (file,...args) {
   let active, pending='', held=[], holding=false, timer;
   log('spawn',{pid});
   const emit=child.emit.bind(child);
+  const listeners=()=>[child.stdout.listenerCount('data'),child.stderr.listenerCount('data'),child.listenerCount('error')];
+  const baseline=listeners();
+  const publishClose=values=>{
+    const handled=emit('close',...values);
+    log('listeners_after_close',{pid,baseline,remaining:listeners()});
+    return handled;
+  };
   child.emit=function(event,...values){
-    if(event==='close'&&fs.existsSync(flag('observe-desktop-close-order'))){
+    if(event!=='close')return emit(event,...values);
+    if(fs.existsSync(flag('observe-desktop-close-order'))){
       log('close_notification_delayed',{pid});
-      setTimeout(()=>emit(event,...values),500);
+      setTimeout(()=>publishClose(values),500);
       return true;
     }
-    return emit(event,...values);
+    return publishClose(values);
   };
   child.once('close',(code,signal)=>{clearInterval(timer);log('close',{pid,code,signal});});
   child.stdin.write = function (raw,...rest) {
