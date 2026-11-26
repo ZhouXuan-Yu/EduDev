@@ -1,5 +1,31 @@
 # Provider 恢复 R1 验收
 
+## 2026-11-26 固定组卷、讲义与导入失败反馈
+
+| 检查 | 结果 |
+| --- | --- |
+| J01 真实组卷草稿 | 5 次内置 `deepseek-flash` 完成请求。实际模型读到原题，回复写出了指定的六题和答案，但 SQLite 无 `pi_paper_candidate`，教师没有独立确认对象。原始记录 `provider-question-fixture-iMN6yr/report.json`。J01 失败，未进入故障重跑。 |
+| J02 真实讲义草稿 | 4 次内置模型请求，`education_create_teaching_handout` 结算成功，原 Run 结束并有持久草稿，未生成导出文件。独立读回题例 A/B、代入检查、Q04/Q08 的正确解和两个额外可选练习，见 `provider-question-fixture-uZiAD9/report.json` 和 `j02-settled-draft-independent-readback.json`。第一次观察在写入后过早关闭窗口导致未结算，原报告 `provider-question-fixture-7SLYSf/report.json` 保留。确认、角色导出和打印故障未验。 |
+| 导入容量不足 · 已实现 | 实际 D 盘低于宿主原 64 MiB 保留线后，旧窗误报为文件不可读。使用真实 Electron 和受控文件系统容量重复验证。`material-capacity-red.log` 捕获原错文案。修复后两份资料分别提示空间不足，零记录、零残留拷贝；恢复容量后同一批原件和固定八题全部成功。见 `provider-question-fixture-cZCbJC/report.json`。 |
+| 构建与回归 | `npm run build -- --outDir test-results/provider-material-capacity-r1` 退出 0，`npm run test:renderer-components` 261/261。这轮 UI 修复的 renderer index SHA-256 为 `7107e7c20dc285e2df05717b7cf68af0c61e555248d0cde8c33991601b9282dd`，main 与上一构建相同。`npm audit --json` 仍列 30 项既有依赖通报，依赖锁未变化。 |
+
+验收记录仍写入固定 D 盘目录。J01/J02 的最后三次实测把临时 SQLite 和 Electron 缓存放在明确隔离的 Windows 临时目录，具体路径写入各 `report.json`。已把验收过程中产生的五份 Word 调试日志移到同一临时归档，逐份核对 SHA-256，释放 100 MiB。清单为 `word-diagnostics-archive.json`，原业务数据和成果均保留。本次 J04 诊断与复跑 68 次真实完成请求，J01/J02 额外 14 次，金额未知。
+
+## 2026-11-26 具名资料与固定时段教案
+
+冻结原指令及资料字节，最终入口为 `test-results/provider-lesson-normalized-r1`，main SHA-256 `cdef4f12f4208674e42e91ce4668e24307d9e09d8dbd92c7e26642801864fd2a`，源码 `5452bd0`。
+
+| 检查 | 结果 |
+| --- | --- |
+| 普通来源与课时合同 | 9/9。具名普通资料、新建请求、已登记课程依据保持原路径、缺失/同名/学科年级不合/未收录/隐私/版本漂移，以及原时段内保留总结和检查、拒绝损坏文字。 |
+| 正常与恢复 J04 · 已实现 | `j04-normalized-matrix.json`。内置 `deepseek-flash` 正常 3/3、真实回环 503 恢复 3/3。同一模型和原 Run 读取真实版本，SQLite 读回一条任务、一条 Run、两个目标、45 分钟和四个原时段。故障端点无凭证。确认前无文件。 |
+| 同一确认版导出 · 已实现 | 同一矩阵六份 Word 和 PDF 均通过。输入框上方实际确认交付，独立解析文件正文、A4 页和版本。未确认版和旧版拒绝，重启校验原文件哈希、老师的新修订和来源。正文由真模型生成，导出链路用受控响应。两例验算、文件哈希、运行 ID 与原分段见 `j04-normalized-independent-readback.json`。 |
+| 严格参数回放与真实调用 | `lesson-replay-observed-domain-arguments.json` 中此前失败的四组实际参数通过原 SDK 和领域校验。预处理只丢弃未声明的空白附注，必填项、非空未知字段和任务参数守原合同。最终六轮使用 18 次真实完成请求，本轮含诊断共 68 次，计费金额未知。 |
+| J01/J02 固定资料就绪 | `provider-question-fixture-8vaabC/report.json`。两个具名资料经实际界面导入，八道固定题经既有题库保存入口入库。来源分组、题目正文、答案和外部编号逐条读回。该报告记录验收数据准备。 |
+| 保留的失败 | `provider-live-j04-fOtSaa/report.json` 走到目录工具，`provider-live-j04-kiMhah/report.json` 草稿因评价阶段与额外字段未获校验，`provider-live-j04-i4Y2IO/report.json` 保存了拆分的 8+2 分钟。现有检查字段仍为严格合同。首次独立 PDF 读回被旧 PyMuPDF 导入警告妨碍，文件和原结论保留。 |
+
+验收操作在隔离构建中进行。资料库导入原合成资料后，在问小智发送 J04 固定原话。卡片须显示可编辑教案，核对两个目标、来源、5/12/18/10 分钟与两个例题。点确认后从原会话发起 Word/PDF 交付，输入框上方确认后核对两个文件的版次和正文。真实模型步骤用内置 API，导出回归沿用同一版本和相同教师审批入口。原始报告位于固定验收根 `remaining-20261126`。原 `j04-agenda-matrix.json` 和 `j04-release-matrix.json` 继续保留原始失败。AC-33/34 的全量判定仍待执行。
+
 ## 2026-11-26 取消工程轮数上限后的实测
 
 | 证据 | 结果 |
@@ -63,7 +89,7 @@ node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs $build --
 | AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
 | AC-31 | PASS · 已实现 | 同一正式构建通过 DB R2 历史准备记录、缺失与损坏记录拒绝、实时撤权、DB R3 旧库升级和验证还原。首次升级前原 SQLite、历史行和原生运行文件保持。 |
 | AC-32 | NOT_RUN | 组合原生混载子集已通过。正式三次 W-03、六类各 ≥100 个有效样本和 Provider 交互对照待运行。 |
-| AC-33 | FAIL | 固定 J04 真实生产试跑未能生成待教师确认的持久教案。固定扫描件已准备完毕。其余固定场景、无故障、可恢复、不可恢复矩阵未跑完。 |
+| AC-33 | FAIL | J04 已按固定指令复验 3+3。J01 实测发现没有可确认的试卷，J02 只验证了真实草稿，J03 和剩余故障矩阵待运行。 |
 | AC-34 | NOT_RUN | 工具选择和兼容恢复路径变化触发。用户授权的内置模型实际可用，首组试跑未出有效教案。完成教学任务路径后，执行冻结的四条每侧三次及独立阅卷。 |
 | AC-35 | NOT_RUN | 模块构建与现有组件回归有据。正式组合和最终 main 的版本绑定、完整门禁和串行事实仍待验。 |
 | AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
