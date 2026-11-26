@@ -1,13 +1,13 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 26/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 27/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
 | AC-01 | PASS · 已实现 | 固定 22 条故障矩阵与 8 条补充混合、未知和不可信来源反例全部通过。证据见 WP-01。 |
 | AC-02 | PASS · 已实现 | 实际 MCP 权限、待审批、资源锁、取消和非法输入均为零派发、零健康增量。CAS 与来源版本冲突保留教师原变更和读回入口，同一旧请求未补发。实际业务文件未被覆盖，只有正确的要求版本提交成功 Effect。 |
 | AC-03 | PASS · 已实现 | 真实 HTTP、直接受控 stdio、Managed stdio 同一来源重新核验、SQLite 原信任与选中工具读回，恢复后真实读取。正式生产 Pi 在故障和冷却期仍成功调用内置文件列表。 |
-| AC-04 | NOT_RUN | 已验证 HTTP Schema 漂移、Managed stdio 原绑定不兼容及信任撤销时不尝试重连。还需包、凭证、Instance、Binding、Grant 与驻留的完整变体。 |
+| AC-04 | PASS · 已实现 | 实际 Windows 受管 MCP 拒绝包内容与版本、停用实例和 Binding、撤销 Grant 与信任，零新增进程。真实 stdio 凭证更替与真实 HTTP Schema 漂移使原工具不可用。宿主替代路径拒绝不符合数据驻留约束的候选。 |
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
 | AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
 | AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
@@ -245,3 +245,8 @@
 - `node --experimental-transform-types scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs` 在 SQLite 持久化权限和真实 HTTP 回环通过 12/12。原审批、输入校验、资源占用和取消均未触发网络请求或健康增量。按源授权正常派发，真实认证失败仍单独显示。见 `xiaozhi-mcp-transports-cuTWxv/report.json`。
 - `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-sqlite-generations.test.mjs` 通过 14/14。SQLite 冲突时保留新版工具选择，重读可获取版本 4。重试旧版本实际派发为零，业务调用数、健康失败和活动尝试均为零。见 `mcp-sqlite-generation-8U7ozN/report.json`。
 - `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 真实 Electron/Pi 宿主通过 2/2，冻结 949 个源输入，零漂移。实际文件变更仅一个已结算工具回执，保留教师修改的 SHA-256，无成功写入 Effect。旧要求以 `task_context_changed` 拒绝且没有模型请求，迟到审批失败。原任务在更新版本后只写一次合法成果，见 `provider-task-fence-y7mFP8/REPORT.json`。本次仅新增原边界断言。
+
+## WP-02 原信任恢复的失效矩阵
+
+- `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 在固定根运行通过 16/16。真实受管 MCP 在 native 连接成功后再暂时失联，同一来源分别接受错误版本、包 hash、文件原地变更、停用 Binding、停用默认实例，以及撤销 Grant 和原信任的核对。每组均拒绝旧选择，实际 `mcp_service_intent` 计数不变。实际 SQLite 可读回版本、绑定、审批和撤权。真正 Windows Job 终态确认无剩余进程、权限与 profile。凭证更替经 Windows 加密存储与冷启验证，原凭证 Grant 不匹配。见 `phase5-mcp-lifecycle-HBdPXD/report.json`、`xiaozhi-phase5-mcp-lifecycle-k8bsSJ/authority.sqlite`。第一次夹具移动到固定根后依赖解析中断，见 `phase5-mcp-lifecycle-GvhxTD/worker.log`，尚未运行产品断言。复跑解析本工作树自己的依赖。
+- `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-reconnection.test.mjs scripts/xiaozhi-agent/provider-snapshot-recovery.test.mjs` 通过 12/12。真实 HTTP Schema 改变时旧信任和工具选择清空，业务调用数不变。宿主真实 Registry/Resolver 与 SQLite 快照检查本地任务拒绝远端候选，保留历史快照、权限与 Effect，实际替代计数为零。见 `wp02-ac04-http-and-residency.log`。此切片只加强现有生产边界的验收。

@@ -171,10 +171,43 @@ export async function testManagedMcpRecovery(options: {sql: Sql; workspace: stri
       assert.equal((result.data as {text: string}).text, 'MANAGED_MCP_SYNTHETIC_PHYSICS');
       assert.equal((await services('mcp_service_intent')).length - count, 2, 'real read keeps the recovered session');
       assert.equal((await state.artifact(artifact.id))?.revision, 1);
-      const catalog = await mcp.catalog();
-      await mcp.revoke({schemaVersion: catalog.schemaVersion, revision: catalog.revision, serverId: artifact.serverId!});
-      assert.equal((await resolvePinned()).selectedProviders.length, 0);
-      assert.equal((await services('mcp_service_intent')).length - count, 2, 'revocation never opens a replacement process');
+    });
+    await check('Managed recovery refuses changed source, version, instance, binding and grants before reopening a process', async () => {
+      fs.writeFileSync(outage, 'synthetic handshake outage for authority checks');
+      assert.equal((await inspect()).status,'failed');
+      fs.unlinkSync(outage);
+      const count=(await services('mcp_service_intent')).length;
+      const resolvePinned=(pinnedVersion=version,pinnedHash=providerHash)=>adapter.resolveVersion(owner.sessionId,requirement,providerId,pinnedVersion,pinnedHash);
+      const denied=async(reason:string,pinnedVersion=version,pinnedHash=providerHash)=>{
+        const resolution=await resolvePinned(pinnedVersion,pinnedHash);
+        assert.equal(resolution.selectedProviders.length,0,reason);
+        assert(resolution.blockedReasons.includes(reason),JSON.stringify(resolution));
+        assert.equal((await services('mcp_service_intent')).length,count,reason);
+      };
+      await denied('provider_version_missing','99.0.0');
+      await denied('provider_version_missing',digest('different installed package revision'));
+      const original=fs.readFileSync(script);
+      const changed=Buffer.from(original);
+      changed[changed.length-1]^=1;
+      try {
+        fs.writeFileSync(script,changed);
+        await denied('permission_denied');
+      } finally {fs.writeFileSync(script,original);}
+      await registry.setBindingState(requirement.capabilityId,providerId,'disabled');
+      await denied('disabled');
+      await registry.setBindingState(requirement.capabilityId,providerId,'enabled');
+      const instance={id:'default',configurationRef:null,connectionRef:null,authorityRef:null,health:'ready' as const};
+      const disabled=await registry.putProviderInstance(providerId,{...instance,state:'disabled'},0);
+      await denied('unhealthy');
+      await registry.putProviderInstance(providerId,{...instance,state:'enabled'},disabled.revision);
+      const grant=(await store.view(owner.sessionId)).grants.find(grant=>grant.scope.kind==='mcp'&&grant.scope.serverId===artifact.serverId&&!grant.revokedAt);
+      assert(grant);
+      await store.revoke(owner.sessionId,grant.grantId,grant.revision);
+      await denied('permission_denied');
+      const catalog=await mcp.catalog();
+      await mcp.revoke({schemaVersion:catalog.schemaVersion,revision:catalog.revision,serverId:artifact.serverId!});
+      await denied('permission_denied');
+      assert.equal(await mcp.trustedAuthority(artifact.serverId!),null);
       await adapter.dispose();
       assert.equal(permissions.engine.activeCount(), 0);
       const receipts = await sql.all("SELECT metadata_json FROM xiaozhi_permission_audit_v1 WHERE kind='mcp_service_terminal' AND json_extract(metadata_json,'$.artifactId')=?", [artifact.id]);
