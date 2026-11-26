@@ -49,6 +49,7 @@ import {
   type StructureIllustrationPage, type StructureIllustrationPlan, type StructureIllustrationProof,
 } from './material-structure-illustrations';
 import { checkedStructureArchive, STRUCTURE_BANK_REVISION } from "./material-structure-bank";
+import { withMaterialBufferBudget } from "../host-resources/material-buffer-budget";
 import {
   alignPdfChoiceAnswers, isPrintedAnswerCoverPart, literalPrintedChoiceProjection, pdfChoiceHeadings, pdfPrintedAnswers,
   type PdfChoiceHeading, type PdfPrintedAnswers,
@@ -567,7 +568,14 @@ export class MaterialStructureRepository {
         )
           throw Error("source_changed");
       } else {
-        const receipt = await this.host.page(resource, page, signal);
+        const readPage = () => this.host.page(resource, page, signal);
+        const receipt = /\.(png|jpe?g|webp)$/i.test(resource.originalFileName)
+          ? await withMaterialBufferBudget(lease?.taskId ?? resource.id, lease?.priority === 0 ? 'background' : 'foreground',
+            resource.originalFileName, signal, async () => {
+              await this.guard(resource, generation, signal, lease);
+              return readPage();
+            }, 'material-image-structure')
+          : await readPage();
         structure = recoverStructurePage(receipt.input);
         image = receipt.image;
         await this.host.writer(async (target) => {

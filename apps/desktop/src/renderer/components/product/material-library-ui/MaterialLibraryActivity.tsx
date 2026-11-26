@@ -8,6 +8,8 @@ import styles from '../../../ui-system/material-library/material-library.module.
 const taskLabels = {
     pending: '等待收录', running: '正在收录', succeeded: '正文已收录', failed: '收录未完成', cancelled: '已停止'
 };
+const resourceLabels={waiting_resources:'等待本机资源',stopping:'正在停止'};
+const taskLabel=(task:MaterialTaskView)=>task.resourceState?resourceLabels[task.resourceState]:taskLabels[task.status];
 
 /** Local disclosure keeps batch recovery forms and diagnostics mounted. */
 export function MaterialLibraryDisclosure({ title, testId, children }: {
@@ -29,7 +31,11 @@ export function MaterialLibraryDisclosure({ title, testId, children }: {
 export function materialQueueSummary(queue?: MaterialQueueView) {
     if (!queue) return '处理队列 · 状态读取中';
     const failures = queue.tasks.filter(task => task.status === 'failed').length;
-    return `处理队列 · ${queue.running} 进行中${queue.pending ? ` · ${queue.pending} 等待` : ''}`
+    const resourceWaiting=queue.tasks.filter(task=>task.resourceState==='waiting_resources').length;
+    const stopping=queue.tasks.filter(task=>task.resourceState==='stopping').length;
+    return `处理队列 · ${Math.max(0,queue.running-resourceWaiting)} 进行中${queue.pending ? ` · ${queue.pending} 等待` : ''}`
+        + (resourceWaiting?` · ${resourceWaiting} 等待本机资源`:'')
+        + (stopping?` · ${stopping} 正在停止`:'')
         + (failures ? ' · 有失败项' : '') + (queue.invalid ? ' · 有记录需处理' : '');
 }
 
@@ -46,7 +52,7 @@ export function MaterialLibraryActivity({ queue, disabled, open, batches, diagno
             {!queue ? <p role="status">正在读取处理队列…</p>
                 : !queue.tasks.length ? <p className={styles.caption}>当前没有可显示的收录任务。</p>
                     : <ul className={styles.queueTasks}>{queue.tasks.map(task => <li key={task.resourceId + task.version}>
-                        <div><strong>{task.title}</strong><span>{taskLabels[task.status]}</span>
+                        <div><strong>{task.title}</strong><span>{taskLabel(task)}</span>
                             {task.status === 'failed' && <p>{materialFailureText('parser:' + task.error)}</p>}</div>
                         <Button variant="ghost" isDisabled={disabled} onPress={() => open(task.resourceId)}>打开资料</Button>
                     </li>)}</ul>}
@@ -66,7 +72,7 @@ export function MaterialLibraryTask({ task, disabled, prioritize, cancel, retry 
 }) {
     if (!task) return null;
     return <div className={styles.currentTask} data-testid="materials-task" data-status={task.status}>
-        <p role={task.status === 'failed' ? 'alert' : 'status'}>{task.title} · {taskLabels[task.status]}
+        <p role={task.status === 'failed' ? 'alert' : 'status'}>{task.title} · {taskLabel(task)}
             {task.status === 'failed' ? ` · ${materialFailureText('parser:' + task.error)}` : ''}</p>
         <div className={styles.actions}>
             {(task.status === 'pending' || task.status === 'running' && task.priority === 0) &&

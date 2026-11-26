@@ -8,27 +8,41 @@ import {verifyOcrRuntime} from './ocr-host';
 import type {PdfLayout} from '../../shared/material-layout';
 import manifest from './ocr-runtime-manifest.json';
 import {reserveLocalWorker} from './local-utility-host';
+import {runHostStage} from '../host-resources/desktop';
+import type {ResourceLane} from '../host-resources/scheduler';
 
 export const pdfFileWorkerVersion=()=>createHash('sha256').update(JSON.stringify([PDF_FILE_ENGINE,manifest.workerSha256,(manifest as {pdfStreamSha256?:string}).pdfStreamSha256])).digest('hex');
 type Input={localPath:string;contentHash:string};
 type Operation={operation:'parse';skipPages:number[]}|{operation:'preview';page:number;box:PageBox}|{operation:'layout';page:number};
+type FileParseStage={lane:ResourceLane;owner:string;beforeStart:()=>Promise<unknown>};
 /** One parent-owned worker, bounded NDJSON, durable page ACK before advancing. */
-async function runFile(input:Input,operation:Operation,signal:AbortSignal,onEvent?:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>){
+async function runFile(input:Input,operation:Operation,signal:AbortSignal,onEvent?:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>,stage?:FileParseStage){
+ return runHostStage(stage?.owner??'pdf-file',operation.operation,stage?.lane??'foreground',
+  {cpu:2,memoryMiB:1024,processes:1},180000,signal,async remaining=>{
+   const deadline=performance.now()+remaining;
+   await stage?.beforeStart();
+   return runAdmittedFile(input,operation,signal,deadline,onEvent);
+  });
+}
+async function runAdmittedFile(input:Input,operation:Operation,signal:AbortSignal,startDeadline:number,onEvent?:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>){
  const root=await verifyOcrRuntime(signal);signal.throwIfAborted();const release=reserveLocalWorker();if(!release)throw new Error('busy');
+ if(performance.now()>=startDeadline){release();throw Error('timeout');}
  const requestId=randomUUID(),environment=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[]));
- let child:ReturnType<typeof spawn>;try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env:environment,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{release();throw new Error('unavailable');}if(!child.stdout||!child.stderr||!child.stdin){child.kill();release();throw new Error('unavailable');}
+ let child:ReturnType<typeof spawn>;try{child=spawn(path.join(root,'omni-edu-ocr.exe'),[],{env:environment,windowsHide:true,stdio:['pipe','pipe','pipe']});}catch{release();throw new Error('unavailable');}
  let reason='',timer:ReturnType<typeof setTimeout>|undefined,stderr=0,manifestTotal=0,active=0,expected=1,finished=false,publication=false,publicationCommitted=false,preview:Extract<PdfPageReceipt,{ok:true}>|PdfLayout|undefined;
  const skipped=new Set(operation.operation==='parse'?operation.skipPages:[]),received=new Set<number>();
  const execution=new AbortController();
- const stopped=new Promise<{code:number|null;error?:string}>(resolve=>{child.once('error',()=>{execution.abort('unavailable');resolve({code:null,error:'unavailable'});});child.once('close',code=>{if(!finished&&!publicationCommitted)execution.abort('worker_closed');resolve({code});});});
- const stop=(code:string)=>{if(!reason)reason=code;execution.abort(code);child.kill();};
+ const stopped=new Promise<number|null>(resolve=>{child.once('close',code=>{if(!finished&&!publicationCommitted)execution.abort('worker_closed');resolve(code);});});
+ const stop=(code:string)=>{if(reason)return;reason=code;execution.abort(code);child.kill();};
+ child.on('error',()=>stop('unavailable'));
+ if(!child.stdout||!child.stderr||!child.stdin){stop('unavailable');await stopped;release();throw Error('unavailable');}
  const deadline=(ms:number)=>{if(timer)clearTimeout(timer);timer=setTimeout(()=>stop('timeout'),ms);};
  const abort=()=>stop('cancelled');signal.addEventListener('abort',abort,{once:true});
  child.stderr.on('data',value=>{stderr+=value.length;if(stderr>65536)stop('too_large');});
  child.stdin.on('error',()=>{if(!finished)stop('unavailable');});
  function next(){while(skipped.has(expected)||received.has(expected))expected++;}
  try{
-  deadline(180000);
+  deadline(Math.max(1,startDeadline-performance.now()));
   child.stdin.write(JSON.stringify({schemaVersion:PDF_FILE_SCHEMA,requestId,parentPid:process.pid,root:path.dirname(input.localPath),file:input.localPath,inputSha256:input.contentHash,...operation})+'\n');
   if(operation.operation!=='parse')child.stdin.end();
   if(signal.aborted)abort();
@@ -63,12 +77,12 @@ async function runFile(input:Input,operation:Operation,signal:AbortSignal,onEven
   }
   pending+=decoder.end();const result=await stopped;
   if(reason||signal.aborted)throw new Error(reason||'cancelled');
-  if(result.error||result.code!==0||!finished||pending.trim())throw new Error(result.error||'parse_failed');
+  if(result!==0||!finished||pending.trim())throw new Error('parse_failed');
   return preview;
  }catch(error){stop(error instanceof Error?error.message:'parse_failed');await stopped;throw new Error(signal.aborted?'cancelled':reason||'parse_failed');}
  finally{if(timer)clearTimeout(timer);signal.removeEventListener('abort',abort);child.stdin.destroy();release();}
 }
-export async function parsePdfFile(input:Input,skipPages:number[],signal:AbortSignal,onEvent:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>){await runFile(input,{operation:'parse',skipPages},signal,onEvent);}
+export async function parsePdfFile(input:Input,skipPages:number[],signal:AbortSignal,onEvent:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>,stage?:FileParseStage){await runFile(input,{operation:'parse',skipPages},signal,onEvent,stage);}
 export async function previewPdfFile(input:Input,page:number,box:PageBox,signal:AbortSignal){const receipt=await runFile(input,{operation:'preview',page,box},signal);if(!receipt||receipt.schemaVersion!=='xiaozhi.local-pdf-page.v1')throw new Error('parse_failed');return receipt;}
 /** Shared file-render adapter for UI, Pi and original-question consumers. */
 export const renderPdfFilePage=(input:Input,region:{page:number;box:PageBox},signal:AbortSignal)=>previewPdfFile(input,region.page,region.box,signal);
