@@ -1,11 +1,11 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 25/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 26/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
 | AC-01 | PASS · 已实现 | 固定 22 条故障矩阵与 8 条补充混合、未知和不可信来源反例全部通过。证据见 WP-01。 |
-| AC-02 | NOT_RUN | 实际 MCP 权限否决、既有审批、资源锁、取消和非法输入均验证零外部请求与零健康增量。业务 CAS、来源冲突及通过真实 Effect 的组合对照待补。 |
+| AC-02 | PASS · 已实现 | 实际 MCP 权限、待审批、资源锁、取消和非法输入均为零派发、零健康增量。CAS 与来源版本冲突保留教师原变更和读回入口，同一旧请求未补发。实际业务文件未被覆盖，只有正确的要求版本提交成功 Effect。 |
 | AC-03 | PASS · 已实现 | 真实 HTTP、直接受控 stdio、Managed stdio 同一来源重新核验、SQLite 原信任与选中工具读回，恢复后真实读取。正式生产 Pi 在故障和冷却期仍成功调用内置文件列表。 |
 | AC-04 | NOT_RUN | 已验证 HTTP Schema 漂移、Managed stdio 原绑定不兼容及信任撤销时不尝试重连。还需包、凭证、Instance、Binding、Grant 与驻留的完整变体。 |
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
@@ -239,3 +239,9 @@
 - `node scripts/acceptance/db-foundation-r2-prepared.mjs` 使用 `OMNI_EDU_TEST_BUILD_ROOT=provider-r1-state-ui`，与真实桌面状态同一 SHA-256，通过 12/12。真实记录在模型派发前持久化，历史配置与当前六类模型来源分别读回。写入失败不派发。完整与便携副本经备份校验后冷启动，原 prepared 行和原生文件 hash 相同。有效关联缺失显示未记录。完整恢复副本里人为写入了伪授权历史行，现有生产读者显示 `invalid`，保留原记录与实际授权，模型请求为零。见 `fixtures/R2-prepared-KtoKue/report.json`。首次命令误启测试目录选择队列导致备份夹具失败，日志为 `wp08-db-r2-prepared-current.log`，随后由原脚本控制选择对话框。
 - `node scripts/acceptance/db-r3-migration-backup.mjs` 使用上述同一构建及实际 R2 V6 合成验收库的只读源，在副本运行已有 V7 迁移。原始 SQLite SHA-256 `db10b49bec4ba1668531518f5d6c8f97f2cfcfcd2a04b3e70cd45d41bbd22c06` 保持。迁移台账、SQLite 历史准备及任务行、Pi Session 文件均读回。首次升级生成恢复备份，完整/便携备份及真实恢复经原入口验证。便携副本无凭证和生效 Grant，正式冷读保留历史，见 `wp08-r3-migration/fixtures/R3-migration-backup-lq4wAU/report.json`。DB R2 旧兼容夹具另过 2/2，见 `wp08-db-r2-compat-current.log`。
 - 同一构建的实际撤权证据在 `xiaozhi-stage-ui-ouVgRQ/report.json`。原准备记录与既有待审批可读，撤权后旧决定被拒、实际终端派发为零。专项复用现有迁移和备份实现，未更改数据库合同。
+
+## WP-01 实际权限、CAS 和来源版本对照
+
+- `node --experimental-transform-types scripts/xiaozhi-agent/permission-mcp-transports-smoke.mjs` 在 SQLite 持久化权限和真实 HTTP 回环通过 12/12。原审批、输入校验、资源占用和取消均未触发网络请求或健康增量。按源授权正常派发，真实认证失败仍单独显示。见 `xiaozhi-mcp-transports-cuTWxv/report.json`。
+- `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-sqlite-generations.test.mjs` 通过 14/14。SQLite 冲突时保留新版工具选择，重读可获取版本 4。重试旧版本实际派发为零，业务调用数、健康失败和活动尝试均为零。见 `mcp-sqlite-generation-8U7ozN/report.json`。
+- `node scripts/xiaozhi-agent/provider-task-fence-host-smoke.mjs` 真实 Electron/Pi 宿主通过 2/2，冻结 949 个源输入，零漂移。实际文件变更仅一个已结算工具回执，保留教师修改的 SHA-256，无成功写入 Effect。旧要求以 `task_context_changed` 拒绝且没有模型请求，迟到审批失败。原任务在更新版本后只写一次合法成果，见 `provider-task-fence-y7mFP8/REPORT.json`。本次仅新增原边界断言。

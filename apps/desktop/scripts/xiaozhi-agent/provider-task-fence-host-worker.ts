@@ -133,14 +133,18 @@ try {
   const teacherHash=contentHash(file);
   const decision=await approve(fileSession,fileReview);
   assert(decision.ok,JSON.stringify(decision));
-  await settle(fileSession,fileRun);
+  const fileTurn=await settle(fileSession,fileRun);
   const current=(await store.xiaozhiState.changes.list(fileSession)).find(item=>item.id===fileReview.id);
   assert.equal(current?.state,'conflict');
   assert.equal(contentHash(file),teacherHash);
   const fileTask=(await host.snapshot(fileSession)).task!;
   const fileEffects=await effects(fileSession,fileTask.id);
   assert(!fileEffects.some(item=>item.tool==='office_create_text'&&item.state==='committed'));
-  report.cases.manualFile={file,teacherHash,decision,current,receipts:await audit(fileRun),effects:fileEffects};
+  const fileReceipts=await audit(fileRun);
+  const fileAttempts=fileReceipts.filter(item=>item.tool==='office_create_text');
+  assert.equal(fileAttempts.length,1);
+  assert.equal(fileAttempts[0].phase,'settled');
+  report.cases.manualFile={file,teacherHash,decision,current,turnStatus:fileTurn.status,receipts:fileReceipts,effects:fileEffects};
   checks.push({name:'Actual change confirmation refuses a teacher file changed during waiting and preserves its SHA-256',pass:true});
 
   const id=await session('新教学要求');
@@ -162,9 +166,12 @@ try {
   const updated=corrected.value.task!;
   assert.equal(updated.id,before.id);
   assert.equal(updated.requirementsVersion,before.requirementsVersion+1);
+  const callsBeforeStaleStart=calls.length;
   const staleStart=await host.start({sessionId:id,commandId:'xicmd_'+randomUUID(),prompt:'继续旧要求',
     continueTask:{taskId:before.id,requirementsVersion:before.requirementsVersion}});
   assert(!staleStart.ok,JSON.stringify(staleStart));
+  assert.equal(calls.length,callsBeforeStaleStart);
+  assert.equal((await host.snapshot(id)).task?.requirementsVersion,updated.requirementsVersion);
   const freshName='new-requirement.txt';
   const fresh=await send(id,{caseName:'new-requirement',path:freshName,text:'教师确认的新版讲义',
     requirementsVersion:updated.requirementsVersion,revision:updated.planRevision,preserve:path.basename(previousFile)},
@@ -185,7 +192,7 @@ try {
   const finalEffects=await effects(id,final.id);
   const ownedWrites=finalEffects.filter(item=>item.tool==='office_create_text'&&item.state==='committed');
   assert.deepEqual(ownedWrites.map(item=>[item.owner.runId,item.contract.requirementsVersion]),[[fresh,updated.requirementsVersion]]);
-  report.cases.requirements={before,stopped,updated,staleStart,late,final,finalFile,sha256:contentHash(finalFile),
+  report.cases.requirements={before,stopped,updated,staleStart,staleStartModelCalls:0,late,final,finalFile,sha256:contentHash(finalFile),
     previousReceipts:await audit(first),currentReceipts:await audit(fresh),effects:finalEffects};
   checks.push({name:'Actual task correction advances the generation, blocks the old pending approval and saves only the new requirements',pass:true});
   report.success=true;

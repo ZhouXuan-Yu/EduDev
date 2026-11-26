@@ -117,7 +117,7 @@ for (const [label, change] of Object.entries({
 }
 
 test('SQLite CAS discards a verified HTTP response when B commits before A writes', async () => {
-  await scenario('trust-cas-after-response', async ({runtime, fixture, input, read, report, schemaHash, setSanitizer}) => {
+  await scenario('trust-cas-after-response', async ({runtime, fixture, id, input, read, report, schemaHash, setSanitizer}) => {
     const cleaning = deferred(), resume = deferred();
     setSanitizer(async text => {
       if (!report.responseCheckedAt) {
@@ -128,7 +128,9 @@ test('SQLite CAS discards a verified HTTP response when B commits before A write
       return text;
     });
     report.before = read();
-    const handling = runtime.inspect(await input()).then(value => ({value}), error => ({error: String(error)}));
+    const previousInput=await input();
+    const attemptsBefore=fixture.state.requests;
+    const handling = runtime.inspect(previousInput).then(value => ({value}), error => ({error: String(error)}));
     try {
       await Promise.race([cleaning.promise, handling.then(() => {throw Error('Probe completed before post-response barrier');})]);
       await runtime.trust({...await input(), schemaHash, tools: ['unknown_effect']});
@@ -143,6 +145,17 @@ test('SQLite CAS discards a verified HTTP response when B commits before A write
     assert.deepEqual(report.after, report.changed);
     assert.equal(report.after.revision, report.before.revision + 1);
     assert.equal(fixture.state.calls, 0);
+    const attemptsAfter=fixture.state.requests;
+    assert(attemptsAfter>attemptsBefore);
+    await assert.rejects(runtime.inspect(previousInput),{message:'conflict'});
+    assert.equal(fixture.state.requests,attemptsAfter);
+    const health=await runtime.healthSnapshot(id);
+    assert.equal(health.failures,0);
+    assert.equal(health.active,0);
+    const current=await runtime.catalog();
+    assert.equal(current.revision,report.after.revision);
+    assert.deepEqual(current.servers[0].tools.filter(tool=>tool.selected).map(tool=>tool.name),['unknown_effect']);
+    report.conflictBoundary={attemptsBefore,attemptsAfter,retryDispatched:0,health,currentRevision:current.revision};
   });
 });
 
