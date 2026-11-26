@@ -1,3 +1,4 @@
+import type { PiSettingsEntry } from './PiSettingsWorkspace';
 import {samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {paperExportSendError} from './paper-export-request';
 import { createPiSessionNavigation } from './pi-session-navigation';
@@ -65,7 +66,7 @@ async function readPiSnapshot(target: string) {
   return { current, settings };
 }
 
-export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { onLeave: () => void; onSettings: () => void; visible?: boolean }) {
+export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { onLeave: () => void; onSettings: (entry?: PiSettingsEntry) => void; visible?: boolean }) {
   const navigation=useDesktopNavigation(),navigationRef=useRef(navigation);navigationRef.current=navigation;
   const active=useRef(false);
   const visibleRef=useRef(visible);visibleRef.current=visible;
@@ -477,7 +478,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={open=>{if(open)setWorkbenchInitialTab('tasks');setWorkbenchOpen(open);}} onWorkbenchClose={closeWorkbench}
     workbench={<PiRecoveryOverview key={workbenchInitialTab} initialTab={workbenchInitialTab} activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{setHomeActivityRevision(value=>value+1);if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
-    onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
+    onLeave={onLeave} onSettings={() => onSettings()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
@@ -500,7 +501,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         &&<PiClassroomPlanReview review={returnedClassroomPlan} focus={focusClassroomPlan}/>}
       {Boolean(snapshot?.approvalRecordsUnavailable)&&<p role="alert" className="pi-history-note" data-testid="pi-approval-records-incomplete">有 {snapshot!.approvalRecordsUnavailable} 条审批记录无法核对，原记录已保留。现有对话仍可查看；无法核对的审批不能用于授权。<Button size="sm" variant="ghost" isDisabled={returnHydrating} onPress={()=>void refreshCurrent()}>重新读取会话</Button></p>}
       {syncBlocked&&<OfficeSynchronizationNotice unavailable={eventSync==='unavailable'||refreshFailed||Boolean(snapshot?.eventPersistence)} refreshing={returnHydrating} onRefresh={()=>void refreshCurrent()}/>}
-      <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => showInConversation(item,turnId)).map(approval => approval.permission ? <PiPermissionApproval key={approval.id} approval={approval.permission} onRefresh={() => hydrate(id)}/> : <PiCopyApproval key={approval.id} approval={approval} onDecision={decideCopy}/>).concat(taskReview?.runId===turnId?[<div key={taskReview.id}>{taskReview.content}</div>]:[]).concat((snapshot?.classroomPlanReviews||[]).filter(item=>item.originRunId===turnId).map(review=>
+      <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={() => onSettings()} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => showInConversation(item,turnId)).map(approval => approval.permission ? <PiPermissionApproval key={approval.id} approval={approval.permission} onRefresh={() => hydrate(id)}/> : <PiCopyApproval key={approval.id} approval={approval} onDecision={decideCopy}/>).concat(taskReview?.runId===turnId?[<div key={taskReview.id}>{taskReview.content}</div>]:[]).concat((snapshot?.classroomPlanReviews||[]).filter(item=>item.originRunId===turnId).map(review=>
         <PiClassroomPlanReview key={review.rootId} review={review} focus={focusClassroomPlan&&returnedClassroomPlan?.rootId===review.rootId}/>))
       .concat((snapshot?.teachingHandouts||[]).filter(item=>item.runId===turnId).map(handout=><PiTeachingHandout key={handout.bookId} handout={handout}/>))
       .concat((snapshot?.handoutEdits||[]).filter(item=>item.runId===turnId).map(summary=><PiTeachingHandoutEdit key={summary.id}
@@ -579,7 +580,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           });
         }}
         attachments={attachments.cards} hasAttachments={attachments.hasAttachments} sendBlocked={attachments.sendBlocked} attachDisabled={attachments.busy||Boolean(snapshot?.running)||syncBlocked} onAttach={()=>{if(!mutationsBlocked())void attachments.choose();}} onFilesSelected={files=>{if(!mutationsBlocked())void attachments.importFiles(files);}}
-        onPermissions={onSettings} permissionMode={permissionMode} onPermissionModeChange={setPermissionMode}
+        onPermissions={() => onSettings('permissions')} permissionMode={permissionMode} onPermissionModeChange={setPermissionMode}
         onNewChat={()=>void fresh(null)} onOpenGoal={objective=>setGoalOpenSignal({token:Date.now(),sessionId:id,objective})} onCompact={()=>void compact()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
         attachLabel="添加本地附件" permissionLabel={snapshot?.workspace ? '工作目录 · 写入需确认' : '教师资料 · 只读'} onWorkspace={() => { void (async () => {
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);

@@ -40,7 +40,7 @@ import { PromptInput } from './heroui-pro/components/prompt-input';
 import { normalizeAiConsoleError } from './ai-console-error';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
 import { MistakesWorkspace } from './components/MistakesWorkspace';
-import { PiSettingsWorkspace } from './components/office/PiSettingsWorkspace';
+import { PiSettingsWorkspace, type PiSettingsEntry } from './components/office/PiSettingsWorkspace';
 import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
 import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
 import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
@@ -413,11 +413,13 @@ export function App() {
   const {paperReturn, returnToPaper, openSourcePage: openPaperSourcePage} = paperMaterialActions(desktopNavigation);
   const materialOpenEpoch = useRef(0);
   const [activeView, updateActiveView] = useState<ViewKey>('ai');
+  const [piSettingsEntry, setPiSettingsEntry] = useState<PiSettingsEntry>('models');
   const [materialSourceView,setMaterialSourceView]=useState<MaterialSourceView>();
   const [studentSourceView,setStudentSourceView]=useState<StudentContextSourceView>();
-  function setActiveView(view:ViewKey){
+  function setActiveView(view: ViewKey, settingsEntry: PiSettingsEntry = 'models') {
     const target = runtime === 'legacy-test' || isProductView(view) ? view : 'ai';
     if(!desktopNavigation.navigate({view:target}))return;
+    if(target === 'settings')setPiSettingsEntry(settingsEntry);
     if(target !== activeView)setStatus('');
     updateActiveView(target);
   }
@@ -427,6 +429,7 @@ export function App() {
     if(runtime !== 'legacy-test' || valid.includes(view as ViewKey)){
       const target = runtime === 'legacy-test' || isProductView(view) ? view as ViewKey : 'ai';
       if(target !== activeView)setStatus('');
+      if(target !== 'settings')setPiSettingsEntry('models');
       updateActiveView(target);
     }
   },[desktopNavigation.target.view,runtime]);
@@ -1910,7 +1913,7 @@ export function App() {
   }
 
   function renderAIConsoleViewV2() {
-    if (piEnabled) return <PiEducationWorkspace onLeave={() => setActiveView('today')} onSettings={() => setActiveView('settings')} />;
+    if (piEnabled) return <PiEducationWorkspace onLeave={() => setActiveView('today')} onSettings={entry => setActiveView('settings', entry)} />;
     if (runtime !== 'legacy-test') return <PiRuntimeStartup failed={runtime === 'failed'} onRetry={() => setRuntimeAttempt(value => value + 1)} onLeave={() => setActiveView('today')} />;
     const liveArtifacts = aiResult?.executionMode === 'direct' ? [] : buildAiArtifacts(aiPrompt, aiResult);
     const selectedArtifact = activeAiArtifact ?? liveArtifacts[0] ?? null;
@@ -2847,8 +2850,8 @@ export function App() {
   }}><MaterialSourceNavigation.Provider value={async source=>{
     await openPaperMaterialSource(desktopNavigation, source, materialOpenEpoch, setMaterialSourceView);
   }}>
-    {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
-    {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
+    {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={entry => setActiveView('settings', entry)} /></div>}
+    {activeView === 'settings' ? <PiSettingsWorkspace entry={piSettingsEntry} onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
       <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView}
         paperReturn={paperReturn} onReturnToPaper={returnToPaper} onOpenQuestionNotebook={() => openPaperSourcePage('question_notebook')}
         onAsk={async prompt=>{try{const list=await window.omniEdu?.listAiConversations();let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{}const existing=list?.sessions.find(item=>item.id===remembered)||list?.sessions[0];const detail=existing?{session:existing}:await window.omniEdu?.createAiConversationSession({title:'阅读辅导'});if(!detail)throw new Error();desktopNavigation.navigate({view:'ai',sessionId:detail.session.id,draft:prompt});}catch{setStatus('阅读辅导对话未打开，请重试。');}}}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}

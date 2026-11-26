@@ -53,6 +53,7 @@ const tabs = [
   { id: 'diagnostics', label: '策略与诊断', icon: RefreshCw },
 ] as const;
 type Tab = typeof tabs[number]['id'];
+export type PiSettingsEntry = Extract<Tab, 'models' | 'permissions'>;
 // Capability-only metadata. Never index credentials, history, paths or document contents.
 export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   ...tabs.map(tab => ({ id: `tab-${tab.id}`, tabId: tab.id, title: tab.label, path: [tab.label] })),
@@ -75,10 +76,10 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-resolved-config', tabId: 'diagnostics', title: '当前配置来源', path: ['策略与诊断', '当前配置来源'], aliases: ['模型来源', '配置版本', '只读'] },
 ];
 
-export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
+export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () => void; entry?: PiSettingsEntry }) {
   const followUp=useComposerFollowUp();
   const [followUpSaveFailed,setFollowUpSaveFailed]=useState(false);
-  const [tab, setTab] = useState<Tab>('models'), [query, setQuery] = useState('');
+  const [tab, setTab] = useState<Tab>(entry), [query, setQuery] = useState('');
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>(), [sessionId, setSessionId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>(), [dataRoot, setDataRoot] = useState('');
   const [recoveryModel, setRecoveryModel] = useState<RecoveryModelSettings>();

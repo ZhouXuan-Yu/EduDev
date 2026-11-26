@@ -146,7 +146,16 @@ async function trial(repetition) {
   try {
     await open();
     const newSession = name => page.evaluate(async title => (await window.omniEdu.createAiConversationSession({ title })).session.id, name);
-    const session = await newSession(scenario);
+    const composerSession = () => page.locator('.office-composer-container').getAttribute('data-session-id');
+    async function startVisibleSession() {
+      const previous = await until(composerSession, 'initial composer session');
+      await page.getByTestId('pi-new-session').click();
+      return until(async () => {
+        const current = await composerSession();
+        return current && current !== previous ? current : null;
+      }, 'teacher-created session');
+    }
+    const session = scenario === 'BOUND-COLD' ? await startVisibleSession() : await newSession(scenario);
     const mutate = input => page.evaluate(value => window.omniEdu.commitXiaozhiConfig(value), { operationId: randomUUID(), ...input });
     const history = field => page.evaluate(value => window.omniEdu.getXiaozhiConfigHistory({ field: value }), field).then(value);
     const wire = () => readFileSync(wirePath, 'utf8').split('\n').slice(0, -1).map(JSON.parse);
@@ -211,7 +220,23 @@ async function trial(repetition) {
         return null;
       }, 'formal Pi request projection');
       if (afterAdmission) await afterAdmission(admitted.runId);
-      const terminal = await settled(admitted.runId);
+      const terminal = scenario === 'BOUND-COLD' && !offline ? await until(async () => {
+        const result = query("SELECT id,status FROM ai_agent_runs WHERE id=? AND status<>'running'", [admitted.runId]);
+        if (result) return result;
+        const panel = page.getByTestId('pi-composer-pending-panel');
+        const control = panel.getByTestId('pi-teacher-question');
+        const id = await control.count() ? await control.getAttribute('data-control-id') : null;
+        if (!id || sample.teacherAnswers?.some(item => item.id === id)) return null;
+        assert((sample.teacherAnswers ??= []).length < 2, 'Model exceeded the frozen teacher answer fixture');
+        const snapshot = await page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), sessionId);
+        const question = snapshot.controls?.find(item => item.id === id && item.runId === admitted.runId && item.state === 'pending');
+        if (!question) return null;
+        const answer = '只核对上次已经确认的原任务判据42，不增加新要求，不读取外部资料。';
+        await control.getByTestId('pi-question-answer').fill(answer);
+        await control.getByTestId('pi-question-submit').click();
+        sample.teacherAnswers.push({ id, question: question.text, answer });
+        return null;
+      }, 'terminal resumed run with the teacher answer fixture') : await settled(admitted.runId);
       sample.prepared = await prepared(sessionId, admitted.runId);
       assert.equal(sample.prepared.receipt.modelValue, model);
       sample.requests = wire().slice(before);
@@ -276,12 +301,18 @@ async function trial(repetition) {
       writeFileSync(releaseFile, '');
       const stopped = await settled(started.runId);
       assert.notEqual(stopped.status, 'succeeded');
-      const paused = await task();
-      assert(['paused', 'interrupted', 'review_required'].includes(paused.state));
+      const paused = await until(async () => {
+        const current = await task();
+        return ['paused', 'interrupted', 'review_required'].includes(current?.state) ? current : null;
+      }, 'paused task settlement after the run stopped', 15000);
       assert.equal(paused.id, original.id);
       await app.close();
       app = undefined;
       await open();
+      if (await until(composerSession, 'restored composer session') !== session) {
+        await page.getByTestId('workbench-session-' + session).click();
+      }
+      await until(async () => await composerSession() === session, 'restored bound session selection');
       assert.deepEqual(query(bindingQuery, [session]), oldBinding);
       assert.equal((await history('default_model')).value, replacementModel);
       const resumed = await runSample(session, { text: taskContinuation, options: {
