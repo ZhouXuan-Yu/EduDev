@@ -5,7 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {randomUUID,createHash} from 'node:crypto';
 import {reviewQuestionQuality} from './review-question-quality.mjs';
 import {settleWorkspaceTransitions} from '../xiaozhi-agent/capture-workspace-metrics.mjs';
-import {expandDisclosure} from './paper-ui-disclosure.mjs';
+import {expandDisclosure,openPaperHistory} from './paper-ui-disclosure.mjs';
 
 /** Reuse accepted source facts and the same production workflow; no DB seeding or new runtime. */
 async function naturalThreeModeJourney(c){
@@ -78,32 +78,107 @@ export async function generatedPaperJourney(c){
  if(process.env.OMNI_EDU_NATURAL_THREE_MODES==='1')return naturalThreeModeJourney(c);
  const {data,output,report,until,check}=c,page=()=>c.page();
  const query=(sql,p=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all(...p);}finally{db.close();}},questions=()=>query('SELECT * FROM question_bank_items ORDER BY id'),reviews=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_question_candidate' ORDER BY created_at,id"),papers=()=>query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' ORDER BY created_at,id"),payload=r=>JSON.parse(r.payload_json);
+ async function openAutomaticPaper(){
+  await c.navigate('teaching');
+  await page().getByTestId('hub-entry-paper').click();
+  const automatic=page().getByTestId('paper-workspace');
+  const basket=page().getByTestId('paper-basket-workspace');
+  await until(async()=>await automatic.isVisible()||await basket.isVisible());
+  if(await automatic.isVisible())return;
+  if(!await basket.getAttribute('data-basket-id')){
+    await basket.getByTestId('paper-basket-new').click();
+    const create=page().getByTestId('paper-basket-create');
+    if(await create.isVisible())await create.click();
+    await until(()=>basket.getAttribute('data-basket-id'));
+  }
+  await basket.getByTestId('paper-basket-stage-select').click();
+  await expandDisclosure(basket.getByTestId('paper-basket-advanced'),/^更多筛选/);
+  await basket.getByTestId('paper-entry-automatic').click();
+  await automatic.waitFor({state:'visible'});
+ }
  const tag=c.fixtureTag??'综合组卷'+randomUUID().slice(0,8);
  if(c.fixtureTag)report.fixtureTag=c.fixtureTag;
  report.boundaries=['Formal current Electron/sole Pi/real DeepSeek → teacher-reviewed AI original → approved-session eligibility → traditional three-mode blueprint → teacher confirmation → SQLite → cold readback','Composite synthetic mathematics exercises approval/quotas/type mapping; no claim of independent mathematical proof, natural diagrams, all subjects, automatic batch approval, Office or large-library acceptance'];
- await c.launch();await c.navigate('teaching');await page().getByTestId('nav-question_notebook').click();
+ await c.launch();await c.navigate('teaching');await page().getByTestId('hub-entry-question_notebook').click();
+ await page().getByTestId('question-notebook-create-toggle').click();
  const q={subject:'数学',grade:'高二','knowledge-point':tag,type:'解答题',difficulty:'hard','source-kind':'teacher_resource',stem:'已知椭圆x²/4+y²=1，直线y=x+t。\n(1)求与椭圆交于两个不同点的参数范围；\n(2)求弦中点轨迹与弦长，并讨论相切退化边界。',answer:'|t|<√5；中点(-4t/5,t/5)，满足x+4y=0且|y|<√5/5；弦长4√[2(5-t²)]/5。|t|=√5为相切，弦长退化为0。',analysis:'联立得5x²+8tx+4t²-4=0，判别式16(5-t²)。韦达定理给中点；两交点坐标差结合斜率1得到弦长。教师示例答案，尚无独立整题验证。'};
  for(const[key,value]of Object.entries(q)){const input=page().getByTestId('question-notebook-new-'+key);if(['difficulty','source-kind'].includes(key))await input.selectOption(value);else await input.fill(value);}
  await page().getByTestId('question-notebook-create-question').click();await until(()=>questions().length===1);const parent=questions()[0];check('Teacher creates a multi-part conic-section bank question through the current traditional notebook');
- await c.navigate('ask');const owner=c.session(),prompt=page().getByTestId('office-prompt-input');await prompt.fill(`直接通过education_propose_questions提交1道AI原创written题，generationKind=ai_original，sourceReferences=[]；不检索、不编造教材父题。subject数学、grade高二、knowledgePoint“${tag}”、title“${tag}原创组”、difficulty hard、options null。题干：设f(x)=x³-3x，(1)求单调区间及极值；(2)结合函数图像讨论方程f(x)=m不同实根个数，说明边界m=±2时重根情况。答案：增区间(-∞,-1)及(1,∞)，减区间(-1,1)，极大值2，极小值-2；|m|<2有三个不同实根，|m|=2有两个不同实根（其中一个二重根），|m|>2一个实根。解析写出导数3x²-3及极值与水平线的交点讨论。该整题不在当前确定性计算支持范围，不提交mathChecks、不宣称自动证明。等待教师核对，不组卷或导出。`);await prompt.press('Enter');assert.equal(await prompt.inputValue(),'');await until(()=>reviews().length>=1,180000);
+ await c.navigate('ask');const owner=c.session(),prompt=page().getByTestId('office-prompt-input');await prompt.fill(`直接通过education_propose_questions提交1道AI原创written题，generationKind=ai_original，sourceReferences=[]；不检索、不编造教材父题。subject数学、grade高二、knowledgePoint“${tag}”、title“${tag}原创组”、difficulty hard、options null。题干：设f(x)=x³-3x，(1)求单调区间及极值；(2)结合函数图像讨论方程f(x)=m不同实根个数，说明边界m=±2时重根情况。答案：增区间(-∞,-1)及(1,∞)，减区间(-1,1)，极大值2，极小值-2；|m|<2有三个不同实根，|m|=2有两个不同实根（其中一个二重根），|m|>2一个实根。解析写出导数3x²-3及极值与水平线的交点讨论。该整题不在当前确定性计算支持范围，不提交mathChecks、不宣称自动证明。等待教师核对，不组卷或导出。`);await page().getByRole('button',{name:'发送消息',exact:true}).click();await until(async()=>await prompt.inputValue()==='');await until(()=>{
+  if(reviews().length>=1)return true;
+  const failed=query("SELECT error_message FROM ai_agent_runs WHERE session_id=? AND status='failed' ORDER BY created_at DESC LIMIT 1",[owner])[0];
+  assert(!failed,failed?.error_message);
+  return false;
+ },180000);
  const review=reviews().at(-1),card=page().locator(`[data-testid="pi-question-review"][data-review-id="${review.id}"]`);await card.getByTestId('question-review-stem').waitFor();await reviewQuestionQuality(card);await card.getByTestId('question-review-confirm').click();await until(()=>reviews().find(r=>r.id===review.id).status==='confirmed');await until(async()=>!(await c.snapshot()).running,180000);assert.equal(questions().length,2);check('Real DeepSeek original composite function question is checked and explicitly approved in the existing Pi teacher card');
- await c.navigate('teaching');await page().getByTestId('nav-paper').click();await until(async()=>!await page().getByTestId('paper-generate').isDisabled());await page().getByTestId('paper-grade').fill('高二');await page().getByTestId('paper-title').fill(tag+'原创100分');
+ await openAutomaticPaper();await until(async()=>!await page().getByTestId('paper-generate').isDisabled());await page().getByTestId('paper-grade').fill('高二');await page().getByTestId('paper-title').fill(tag+'原创100分');
  for(let i=0;i<2;i++)await page().getByTestId('paper-section').last().getByRole('button',{name:'移除此部分',exact:true}).click();
  await page().getByTestId('paper-section-label').fill('综合解答');await page().getByTestId('paper-section-type').fill('解答题');await page().getByTestId('paper-section-count').fill('1');await page().getByTestId('paper-section-points').fill('100');await page().getByTestId('paper-mode').selectOption('ai_original');await until(async()=>!await page().getByTestId('paper-generate').isDisabled());await until(async()=>await page().getByTestId('paper-generation-context').inputValue()===owner);assert.equal(await page().getByTestId('paper-generation-context').inputValue(),owner);check('Traditional original-paper mode discovers and binds the one approved task automatically without manual batch IDs');
  async function generate(){const before=new Set(papers().map(p=>p.id));await page().getByTestId('paper-generate').click();await until(()=>papers().some(p=>!before.has(p.id)),60000);await until(async()=>!await page().getByTestId('paper-generate').isDisabled());return papers().find(p=>!before.has(p.id));}
+ async function editBlueprint(){
+  await page().getByRole('button',{name:'返回修改蓝图',exact:true}).click();
+  await page().getByTestId('paper-mode').waitFor({state:'visible'});
+ }
  async function approve(){await page().getByTestId('paper-confirm').click();await page().getByTestId('paper-confirmed').waitFor();}
- async function visual(label,target){for(const theme of['light','dark'])for(const[width,height]of[[1366,768],[1920,1080]]){await page().emulateMedia({colorScheme:theme});await c.app().evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await page().waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});await settleWorkspaceTransitions(page(),{hiddenSnapshot:true});await target().scrollIntoViewIfNeeded();await c.neutralCapture();const geometry=await page().evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));assert(geometry.scrollWidth<=geometry.width);const png=`${label}-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height,geometry});}}
+ async function visual(label,target){
+  for(const theme of ['light','dark'])for(const [width,height] of [[1366,768],[1920,1080]]){
+   await page().emulateMedia({colorScheme:theme});
+   const app=c.app();
+   await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});
+   await page().waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+   await settleWorkspaceTransitions(page(),{hiddenSnapshot:!report.sharedBudget});
+   await target().scrollIntoViewIfNeeded();
+   await c.neutralCapture();
+   const geometry=await page().evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
+   assert(geometry.scrollWidth<=geometry.width);
+   const png=`${label}-${theme}-${width}x${height}.png`;
+   const buffer=await page().screenshot({path:path.join(output,png),animations:'disabled'});
+   assert.equal(buffer.readUInt32BE(16),width);
+   assert.equal(buffer.readUInt32BE(20),height);
+   report.visuals.push({png,theme,width,height,geometry});
+  }
+ }
  const original=await generate();assert.equal(payload(original).schemaVersion,'xiaozhi.paper-blueprint.v2');assert.equal(payload(original).selection.items[0].generation.groupId,review.id);assert.equal(payload(original).selection.items[0].generation.generationKind,'ai_original');await page().getByTestId('paper-mode-summary').getByText('AI原创组卷',{exact:false}).waitFor();const originalQuestion=page().getByTestId('paper-question').first();
  await expandDisclosure(originalQuestion,/^第 /);
  await expandDisclosure(originalQuestion.getByTestId('paper-question-answer'),'参考答案与解析');
  await expandDisclosure(originalQuestion.getByTestId('paper-question-source'),'题目来源与版本');
  await page().getByTestId('paper-generation-provenance').waitFor();assert((await page().getByTestId('question-answer-origin').innerText()).includes('AI起草，教师核对保存版本'));assert((await page().getByTestId('question-analysis-origin').innerText()).includes('AI起草，教师核对保存版本'));await visual('generated-paper-original',()=>page().getByTestId('paper-generation-provenance'));await approve();const approvedOriginalResult=papers().find(p=>p.id===original.id).result_json;check('Original 100-point preview retains exact approved zero-parent provenance and saves only after whole-paper teacher confirmation');
- await c.restart();await c.navigate('teaching');await page().getByTestId('nav-paper').click();await page().getByTestId('paper-saved').filter({hasText:tag+'原创100分'}).click();await page().getByTestId('paper-confirmed').waitFor();assert.equal(papers().find(p=>p.id===original.id).result_json,approvedOriginalResult);assert.equal(await page().getByTestId('paper-mode').inputValue(),'ai_original');check('Cold restart restores approved original paper and mode without model replay or changing bank facts');
+ await c.restart();await openAutomaticPaper();await openPaperHistory(page());await page().getByTestId('paper-saved').filter({hasText:tag+'原创100分'}).click();await page().getByTestId('paper-confirmed').waitFor();assert.equal(papers().find(p=>p.id===original.id).result_json,approvedOriginalResult);assert.equal(await page().getByTestId('paper-mode').inputValue(),'ai_original');check('Cold restart restores approved original paper and mode without model replay or changing bank facts');
+ await editBlueprint();
  await page().getByTestId('paper-grade').fill('');await page().getByTestId('paper-grade').pressSequentially('高二',{delay:40});assert.equal(await page().getByTestId('paper-grade').inputValue(),'高二');await until(async()=>await page().getByTestId('paper-generation-context').inputValue()===owner);check('Editing grade remains usable while approved-task contexts refresh; only selection is blocked during lookup');
  await page().getByTestId('paper-mode').selectOption('hybrid');await until(async()=>!await page().getByTestId('paper-generate').isDisabled());await page().getByTestId('paper-title').fill(tag+'混合100分');await page().getByTestId('paper-section-count').fill('2');await page().getByTestId('paper-section-points').fill('50');await page().getByTestId('paper-section-generated-count').fill('1');const hybrid=await generate(),hybridItems=payload(hybrid).selection.items;assert.equal(hybridItems.filter(q=>q.generation).length,1);assert.equal(hybridItems.filter(q=>!q.generation).length,1);assert(hybridItems.some(q=>q.question.id===parent.id));await visual('generated-paper-hybrid',()=>page().getByTestId('paper-source-counts'));await approve();check('Traditional hybrid 100-point paper deterministically reserves one bank source and one approved generation with no repeated batch approval');
+ await editBlueprint();
  await page().getByTestId('paper-section-count').fill('4');await page().getByTestId('paper-section-points').fill('25');await page().getByTestId('paper-section-generated-count').fill('2');const short=await generate();assert.equal(payload(short).selection.shortages.length,2);assert(await page().getByTestId('paper-confirm').isDisabled());assert((await page().getByTestId('paper-shortages').innerText()).includes('生成题'));assert((await page().getByTestId('paper-shortages').innerText()).includes('原题'));await page().getByTestId('paper-reject').click();await until(()=>papers().find(p=>p.id===short.id).status==='rejected');assert.equal(questions().length,2);check('Both source shortages remain visible and unconfirmable; rejecting incomplete paper creates no question or substitute');
+ await editBlueprint();
  await page().getByTestId('paper-mode').selectOption('source_only');await page().getByTestId('paper-title').fill(tag+'原题100分');await page().getByTestId('paper-section-count').fill('1');await page().getByTestId('paper-section-points').fill('100');const bank=await generate();assert.equal(payload(bank).schemaVersion,'xiaozhi.paper-blueprint.v1');assert.equal(payload(bank).selection.items[0].question.id,parent.id);assert(!payload(bank).selection.items[0].generation);await approve();check('Source-only still uses the original v1 contract and excludes approved generated questions');
- await c.navigate('ask');assert.equal(c.session(),owner);const before=new Set(papers().map(p=>p.id)),blueprint={title:tag+'Pi混合100分',subject:'数学',grade:'高二',durationMinutes:120,totalPoints:100,mode:'hybrid',sections:[{id:'solve',label:'综合解答',questionType:'解答题',count:2,points:50,generatedCount:1}]};await page().getByTestId('office-prompt-input').fill('实际调用education_propose_paper按此混合蓝图组卷，使用当前任务已确认生成题，等待教师预览确认，再调用education_read_paper读取最终结果。不得生成新题或文件，不改题库。蓝图：'+JSON.stringify(blueprint));await page().getByTestId('office-prompt-input').press('Enter');await until(()=>papers().some(p=>!before.has(p.id)),180000);const native=papers().find(p=>!before.has(p.id));await page().getByTestId('pi-paper-preview').last().click();const dialog=page().getByTestId('pi-paper-dialog');await dialog.waitFor();assert.equal(await dialog.getByTestId('paper-question').count(),2);await dialog.getByTestId('paper-confirm').click();await dialog.getByTestId('paper-confirmed').waitFor();await dialog.getByRole('button',{name:'关闭',exact:true}).click();await until(async()=>!(await c.snapshot()).running,180000);assert.equal(papers().find(p=>p.id===native.id).status,'confirmed');const nativeResults=c.native().entries.filter(e=>e.message?.role==='toolResult'&&['education_propose_paper','education_read_paper'].includes(e.message.toolName));assert(nativeResults.some(e=>e.message.toolName==='education_read_paper'));assert(!JSON.stringify(nativeResults).includes(review.id));check('Real same-Pi hybrid tool waits for actual teacher whole-paper approval and reads durable summary without exposing approval IDs');
+ await c.navigate('ask');
+ assert.equal(c.session(),owner);
+ const before=new Set(papers().map(p=>p.id));
+ const blueprint={title:tag+'Pi混合100分',subject:'数学',grade:'高二',durationMinutes:120,totalPoints:100,mode:'hybrid',
+  sections:[{id:'solve',label:'综合解答',questionType:'解答题',count:2,points:50,generatedCount:1}]};
+ const request='实际调用 education_propose_paper 按此混合蓝图组卷，使用当前任务已确认生成题，等待教师预览确认，再调用education_read_paper读取最终结果。不得生成新题或文件，不改题库。蓝图：'+JSON.stringify(blueprint);
+ await page().getByTestId('office-prompt-input').fill(request);
+ await page().getByRole('button',{name:'发送消息',exact:true}).click();
+ await until(()=>{
+  if(papers().some(p=>!before.has(p.id)))return true;
+  const run=query("SELECT status,error_message FROM ai_agent_runs WHERE session_id=? AND prompt=? ORDER BY created_at DESC LIMIT 1",[owner,request])[0];
+  assert(!run||run.status==='running','Pi settled without a new paper: '+(run?.error_message||run?.status));
+  return false;
+ },180000);
+ const native=papers().find(p=>!before.has(p.id));
+ await page().getByTestId('pi-paper-preview').last().click();
+ const dialog=page().getByTestId('pi-paper-dialog');
+ await dialog.waitFor();
+ assert.equal(await dialog.getByTestId('paper-question').count(),2);
+ await dialog.getByTestId('paper-confirm').click();
+ await dialog.getByTestId('paper-confirmed').waitFor();
+ await dialog.getByRole('button',{name:'关闭',exact:true}).click();
+ await until(async()=>!(await c.snapshot()).running,180000);
+ assert.equal(papers().find(p=>p.id===native.id).status,'confirmed');
+ const nativeResults=c.native().entries.filter(e=>e.message?.role==='toolResult'&&['education_propose_paper','education_read_paper'].includes(e.message.toolName));
+ assert(nativeResults.some(e=>e.message.toolName==='education_read_paper'));
+ assert(!JSON.stringify(nativeResults).includes(review.id));
+ check('Real same-Pi hybrid tool waits for actual teacher whole-paper approval and reads durable summary without exposing approval IDs');
  const beforeCold={questions:questions(),papers:papers()},entryCount=c.native().entries.length;await c.restart();assert.equal(c.native().entries.length,entryCount);assert.deepEqual(questions(),beforeCold.questions);assert.deepEqual(papers(),beforeCold.papers);check('Second cold restart retains all three modes and exact generated-paper effects with zero model replay');
  report.result={owner,review:review.id,original:original.id,hybrid:hybrid.id,sourceOnly:bank.id,native:native.id,questions:questions(),papers:papers(),checksAreApprovalNotAccuracy:true};fs.writeFileSync(path.join(output,'readback.json'),JSON.stringify(report.result,null,2));
 }
