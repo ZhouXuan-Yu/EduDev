@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 27/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 28/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -11,10 +11,10 @@
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
 | AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
 | AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
-| AC-08 | NOT_RUN | 实际闭合 Electron 后冷启动，同一合成凭证仍受原 Retry-After 约束，零请求、零扣减。另一合成凭证可用。真实 Windows 系统挂起及完整矩阵仍待验。 |
+| AC-08 | NOT_RUN | 实际 Electron 冷启保留 Retry-After、凭证隔离和原额度，缓存与 SQLite 期限合同 7/7。生产回调已注入，真实 Windows S0 未验。WP-03 余项 `PAUSED_BUDGET`。 |
 | AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
 | AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
-| AC-11 | NOT_RUN | 实际旧读取未归还前，同一输入不得再次触发读取。原只读 EBUSY 补发与停止回归通过。尚需串联真实业务和 R1 资源租约计数。 |
+| AC-11 | PASS · 已实现 | 同一 Windows 构建覆盖 Pi 原请求账、实际 Hana 读取和真实 PDF 领域重试。单个逻辑导出最多两次打印。停止中维持原 lease，原回执清理后才允许教师审批后的新操作。 |
 | AC-12 | PASS · 已实现 | Windows Electron 生产 Pi 在原 Task 内，从不可用的 Hana stat 切到已登记的 workspace stat。A 发起 0 次，B 发起 1 次，原要求版本、默认优先级和快照内容保留。实际 SQLite 有两条链接快照与一条成功执行回执。 |
 | AC-13 | PASS · 已实现 | 实际 Registry/Resolver、原生只读 Adapter 与 SQLite 验证缺必要证据、自述证据、缺触发条件、撤销版本、新授权、驻留、预算、固定及两处忙碌屏障。每条实际替代为零，原任务、快照和 Effect 不变，返回真实原因和可执行的下一步。 |
 | AC-14 | PASS · 已实现 | 正式 Windows Electron 启动同一 SQLite，原任务主动继续前实际模型请求为零。新 Run 使用旧 Provider 版本和 hash，保留原快照字节，追加带 `resume_revalidate` 的 lineage。真实快照、文件结果和两个 PID 可读回。 |
@@ -250,3 +250,9 @@
 
 - `node scripts/xiaozhi-agent/phase5-mcp-lifecycle-smoke.mjs --managed-recovery` 在固定根运行通过 16/16。真实受管 MCP 在 native 连接成功后再暂时失联，同一来源分别接受错误版本、包 hash、文件原地变更、停用 Binding、停用默认实例，以及撤销 Grant 和原信任的核对。每组均拒绝旧选择，实际 `mcp_service_intent` 计数不变。实际 SQLite 可读回版本、绑定、审批和撤权。真正 Windows Job 终态确认无剩余进程、权限与 profile。凭证更替经 Windows 加密存储与冷启验证，原凭证 Grant 不匹配。见 `phase5-mcp-lifecycle-HBdPXD/report.json`、`xiaozhi-phase5-mcp-lifecycle-k8bsSJ/authority.sqlite`。第一次夹具移动到固定根后依赖解析中断，见 `phase5-mcp-lifecycle-GvhxTD/worker.log`，尚未运行产品断言。复跑解析本工作树自己的依赖。
 - `node --experimental-transform-types --test scripts/xiaozhi-agent/provider-mcp-reconnection.test.mjs scripts/xiaozhi-agent/provider-snapshot-recovery.test.mjs` 通过 12/12。真实 HTTP Schema 改变时旧信任和工具选择清空，业务调用数不变。宿主真实 Registry/Resolver 与 SQLite 快照检查本地任务拒绝远端候选，保留历史快照、权限与 Effect，实际替代计数为零。见 `wp02-ac04-http-and-residency.log`。此切片只加强现有生产边界的验收。
+
+## WP-03 模型、工具与实际资源的尝试账
+
+- 在 `provider-r1-state-ui` 正式 Windows 构建运行实际 Pi/真实 loopback 模型 12/12，确认三次实际派发上限以及冷却零计量，见 `model-wire-health-92esB9/report.json`。同一正式构建的真实 Pi/Hana 读取通过 6/6，单个模型工具请求遇 EBUSY 最多读取两次，退避中取消仅有一次实际读取、无下一次模型派发。冷启保持记录。见 `xiaozhi-ordinary-recovery-ui-0J72f4/report.json`。
+- `node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs <实际构建>` 加默认、`--keep-failing`、`--cancel-in-flight` 三组分别通过 2/2、2/2、3/3。实际模型只调用一次 PDF 导出工具，领域内尝试最多两次打印。持续失败后没有成功 Effect。停止时保留旧 PDF 窗口、进程和原 R1 配额，同类申请超时。旧回执到达并清理后教师再次审批，第二个 Run 有独立许可，只生成一份新 PDF。用实际 SQLite 与独立文件解析核对。报告 `provider-paper-export-ns0Gnc/report.json`、`provider-paper-export-T6shIC/report.json`、`provider-paper-export-1ZXDsG/report.json`。资源及模型合同 11/11，见 `wp03-ac11-budget-contract.log`。
+- AC-08 的真实 SQLite 冷读、缓存活跃条目保留、旧代际和期限合同 7/7，见 `wp03-ac08-cache-and-cold-sqlite-verified.log`。第一次命令缺少固定根环境变量，原日志保留。本机仅支持 Modern Standby S0。生产 Electron 电源回调已经注入，无真实系统待机。见 `wp06-s0-environment-readback.txt`。

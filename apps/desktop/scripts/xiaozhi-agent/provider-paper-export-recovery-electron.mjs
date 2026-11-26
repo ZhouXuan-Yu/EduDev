@@ -162,6 +162,7 @@ async function verifyPrintCancellation(paper,confirmed,previousWord) {
   Object.assign(report.cancellation,{beforeClose,closed, independent:{sessionId:other,runId:search.runId,result:independent.status},
     originalStatus:original.status,originalEffect:physical(runId),preservedHash});
   report.checks.push('The cancelled PDF retains its actual slot until its late native reply, while another teacher query succeeds and original files are preserved');
+  return {runId};
 }
 
 async function verifyShutdown({kept,runId,probe},env,facts,oldHash,oldOutput) {
@@ -329,6 +330,12 @@ try {
     report.instrumentation=await app.evaluate(()=>globalThis.providerPaperRecovery);
     assert.deepEqual(report.instrumentation.printing.map(p=>[p.failed,p.previousClosed,p.closed]),
       cancelInFlight?[[false,true,true],[false,true,true]]:[[true,true,true],[keepFailing,true,true]]);
+    const logicalExports=report.instrumentation.requests.filter(item=>item.tool==='education_export_paper');
+    assert.deepEqual(logicalExports.map(item=>item.format),cancelInFlight?['docx','pdf','pdf']:['docx','pdf']);
+    if(cancelInFlight)assert.notEqual(report.second.runId,stopped.runId);
+    report.attemptCounts={logicalExports:logicalExports.map(item=>item.format),
+      physicalPrints:report.instrumentation.printing.length,ownerRun:report.second.runId,
+      ...(stopped?{stoppedOwnerRun:stopped.runId}:{})};
     assert.equal(fileHash(docx),oldHash);
     assert.deepEqual(fileIdentity(docx),oldIdentity);
     assert(!fs.readdirSync(data).some(name=>name.startsWith('office-render-')));
