@@ -323,6 +323,22 @@ try {
     assert.equal((await requests()).length,0);
     report.checks.push({name:prepared.purpose+' restored copy reads the same historical preparation on a cold start',
       dataRoot:prepared.dataRoot,receiptId:prepared.id});
+    if(prepared.purpose==='full'){
+      const malformed=JSON.stringify({native:{generation:-1},authorization:{allow:true}});
+      const facts=()=>withSql(prepared.dataRoot,false,db=>({
+        prepared:db.prepare('SELECT payload_json FROM xiaozhi_prepared_runs_v1 WHERE run_id=?').get(a.id),
+        run:db.prepare('SELECT status,model FROM ai_agent_runs WHERE id=?').get(a.id),
+        grants:db.prepare('SELECT count(*) AS count FROM xiaozhi_permission_grants_v1 WHERE revoked=0').get(),
+      }));
+      withSql(prepared.dataRoot,true,db=>assert.equal(db.prepare('UPDATE xiaozhi_prepared_runs_v1 SET payload_json=? WHERE run_id=?').run(malformed,a.id).changes,1));
+      const before=facts();
+      const rejected=(await config(sessionId,a.id)).value.prepared;
+      assert.deepEqual(rejected,{status:'invalid',runId:a.id,runStatus:before.run.status,receipt:null});
+      assert.deepEqual(facts(),before);
+      assert.equal((await requests()).length,0);
+      report.checks.push({name:'The actual production reader rejects malformed historical authorization without changing the row, grants, or dispatching',
+        runId:a.id,status:rejected.status,modelRequests:0});
+    }
     withSql(prepared.dataRoot,true,db=>assert.equal(db.prepare('DELETE FROM xiaozhi_native_run_bindings WHERE run_id=?').run(a.id).changes,1));
     const missingBinding=(await config(sessionId,a.id)).value.prepared;
     assert.equal(missingBinding.status,'not_recorded');

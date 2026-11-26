@@ -1,6 +1,6 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 24/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 25/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -34,7 +34,7 @@
 | AC-28 | PASS · 已实现 | 实际 Goal 中先保存讲义，再拒绝练习或耗尽同一请求的三次物理恢复。原成果不变，教师拒绝继续记为暂停；原任务只保留显式续做入口。 |
 | AC-29 | PASS · 已实现 | 正式 Windows 桌面显示恢复、冷却未发、需教师设置及未知回执。连续生产事件、唯一提示、切回原会话、实际重启、诊断导出、原话与继续入口均已核对。 |
 | AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
-| AC-31 | NOT_RUN | DB R2 prepared-run 组合与旧库、损坏记录和回退矩阵。 |
+| AC-31 | PASS · 已实现 | 同一正式构建通过 DB R2 历史准备记录、缺失与损坏记录拒绝、实时撤权、DB R3 旧库升级和验证还原。首次升级前原 SQLite、历史行和原生运行文件保持。 |
 | AC-32 | NOT_RUN | 组合下租约和 Agent Experience R1 的性能合同。 |
 | AC-33 | NOT_RUN | 四类教学任务的无故障、可恢复和不可恢复矩阵。 |
 | AC-34 | NOT_RUN | 按实际差异判定是否触发真实模型质量评测，再跑固定合同。 |
@@ -233,3 +233,9 @@
 - `node scripts/xiaozhi-agent/provider-model-health-electron.mjs <实际构建> --cold --status-ui` 通过 12/12。Windows Electron 经真实 loopback 请求收到连续模型事件，序列 7、8、10、11、13、14，第三次实际派发后约 377 毫秒观测到恢复提示。原记录同一位置仅一个提示，提示与教师原话切换后保留。真实重启、切换、新凭证隔离及导出期间的派发数按场景核对。导出 SHA-256 `d9de09ec04817ffec4b2a362faee603b40af00416be3c11227d49f03d55425ed` 与预览一致。见 `model-wire-health-92esB9/report.json` 和三张状态截图。
 - `file-stage-recovery-electron.mjs --build <实际构建> --continue --pending-approval` 通过 6/6。原任务卡显示「结果未知」，待审批与可继续的操作各走原控件。中断轮未显示完成。已有 HTML 保留，实际确认和续做不会重放未知 DOCX 或终端 Effect。见 `xiaozhi-stage-ui-ouVgRQ/report.json` 和 `provider-task-recovery-actions.png`。
 - 主进程 SHA-256 `47bcd6afb99565aff45f97c901cd877d2fe083823002f96249b4fd1272448f37`，渲染入口 `1ad6301a2ef27b877f43b7cbd1de5abb819f9a429c28a39cc872ae1ed1d77219`。正式构建通过，渲染合同 261/261，模型健康 4/4。隔离验收版已启动，实际窗体和 SQLite 见 `wp07-state-ui-manual-window.json`。
+
+## WP-08 旧库、历史准备与回退
+
+- `node scripts/acceptance/db-foundation-r2-prepared.mjs` 使用 `OMNI_EDU_TEST_BUILD_ROOT=provider-r1-state-ui`，与真实桌面状态同一 SHA-256，通过 12/12。真实记录在模型派发前持久化，历史配置与当前六类模型来源分别读回。写入失败不派发。完整与便携副本经备份校验后冷启动，原 prepared 行和原生文件 hash 相同。有效关联缺失显示未记录。完整恢复副本里人为写入了伪授权历史行，现有生产读者显示 `invalid`，保留原记录与实际授权，模型请求为零。见 `fixtures/R2-prepared-KtoKue/report.json`。首次命令误启测试目录选择队列导致备份夹具失败，日志为 `wp08-db-r2-prepared-current.log`，随后由原脚本控制选择对话框。
+- `node scripts/acceptance/db-r3-migration-backup.mjs` 使用上述同一构建及实际 R2 V6 合成验收库的只读源，在副本运行已有 V7 迁移。原始 SQLite SHA-256 `db10b49bec4ba1668531518f5d6c8f97f2cfcfcd2a04b3e70cd45d41bbd22c06` 保持。迁移台账、SQLite 历史准备及任务行、Pi Session 文件均读回。首次升级生成恢复备份，完整/便携备份及真实恢复经原入口验证。便携副本无凭证和生效 Grant，正式冷读保留历史，见 `wp08-r3-migration/fixtures/R3-migration-backup-lq4wAU/report.json`。DB R2 旧兼容夹具另过 2/2，见 `wp08-db-r2-compat-current.log`。
+- 同一构建的实际撤权证据在 `xiaozhi-stage-ui-ouVgRQ/report.json`。原准备记录与既有待审批可读，撤权后旧决定被拒、实际终端派发为零。专项复用现有迁移和备份实现，未更改数据库合同。
