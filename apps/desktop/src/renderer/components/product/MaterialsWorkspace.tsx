@@ -46,6 +46,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
 }) {
     const [catalog, setCatalog] = useState<CatalogPage>(), [query, setQuery] = useState(''), [offset, setOffset] = useState(0), [selected, setSelected] = useState('');
     const [mode, setMode] = useState<'catalog' | 'text'>('catalog'), [filters, setFilters] = useState<CatalogScope>(emptyCatalogScope);
+    const [textVisited, setTextVisited] = useState(false);
     const [clearEpoch, setClearEpoch] = useState(0);
     const scopeKey = catalogScopeKey(filters);
     const sourceEpoch = useRef(0);
@@ -307,6 +308,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
         if (!canChangeSource()) return;
         setMode(next);
         if (next === 'text') {
+            setTextVisited(true);
             setQuery('');
             setOffset(0);
         }
@@ -420,7 +422,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                     </Pagination>}
                 </div>
                 <div hidden={mode !== 'text'} className={styles.textSearch}>
-                    <MaterialTextSearch scope={filters} resetKey={clearEpoch} disabled={busy || detailBlocked}
+                    {textVisited && <MaterialTextSearch scope={filters} resetKey={clearEpoch} disabled={busy || detailBlocked}
                         open={source => {
                             if (!canChangeSource()) return;
                             const stamp = ++sourceEpoch.current;
@@ -433,7 +435,7 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                             }).catch(() => {
                                 if (alive.current && stamp === sourceEpoch.current) setError('资料来源已变化，请重新查找。');
                             });
-                        }}/>
+                        }}/>}
                 </div>
                 <footer className={styles.count} data-testid="materials-count">
                     <span>{fetching ? '正在读取资料…' : !catalog && error ? '资料数量尚未读取' : `${catalog?.total || 0} 份资料${mode === 'catalog' ? ' · 当前页显示 ' + visibleRows.length + ' / ' + rows.length + ' 份' : ''}`}</span>

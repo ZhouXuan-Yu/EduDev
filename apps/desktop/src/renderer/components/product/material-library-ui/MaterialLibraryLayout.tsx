@@ -22,6 +22,7 @@ export function MaterialLibraryLayout({
     children: ReactNode;
 }) {
     const [activityOpen, setActivityOpen] = useState(false);
+    const [activityVisited, setActivityVisited] = useState(false);
     const activityId = useId();
 
     return <section className={'edu-materials ' + styles.workspace}
@@ -45,16 +46,16 @@ export function MaterialLibraryLayout({
                     </nav>
                     <button type="button" className={styles.queueLink} data-testid="materials-queue-toggle"
                         aria-expanded={activityOpen} aria-controls={activityId}
-                        onClick={() => setActivityOpen(value => !value)}>
+                        onClick={() => { setActivityVisited(true); setActivityOpen(value => !value); }}>
                         <RefreshCw size={14} aria-hidden="true"/><span>{queueSummary}</span>
                         <ChevronDown size={14} aria-hidden="true"/>
                     </button>
                 </div>
                 <div className={styles.controls}>{controls}</div>
                 {feedback}
-                {/* Keep batch forms and their async guards mounted when folded. */}
+                {/* Initialize on first use; keep drafts and async guards mounted thereafter. */}
                 <div id={activityId} hidden={!activityOpen} className={styles.activity}>
-                    {activity}
+                    {activityVisited && activity}
                 </div>
                 {children}
             </div>

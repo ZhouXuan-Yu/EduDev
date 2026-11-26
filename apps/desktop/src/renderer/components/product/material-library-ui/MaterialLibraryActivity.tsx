@@ -9,20 +9,21 @@ const taskLabels = {
     pending: '等待收录', running: '正在收录', succeeded: '正文已收录', failed: '收录未完成', cancelled: '已停止'
 };
 
-/** Local disclosure keeps batch recovery forms and diagnostics mounted. */
+/** First use initializes the panel; later folds preserve its forms and async guards. */
 export function MaterialLibraryDisclosure({ title, testId, children }: {
     title: string;
     testId: string;
     children: ReactNode;
 }) {
     const [expanded, setExpanded] = useState(false);
+    const [visited, setVisited] = useState(false);
     const contentId = useId();
     return <section className={styles.disclosure} data-testid={testId}>
         <h3><button type="button" className={styles.disclosureToggle} aria-expanded={expanded}
-            aria-controls={contentId} onClick={() => setExpanded(value => !value)}>
+            aria-controls={contentId} onClick={() => { setVisited(true); setExpanded(value => !value); }}>
             {title}<ChevronDown size={16} aria-hidden="true"/>
         </button></h3>
-        <div id={contentId} hidden={!expanded}>{children}</div>
+        <div id={contentId} hidden={!expanded}>{visited && children}</div>
     </section>;
 }
 

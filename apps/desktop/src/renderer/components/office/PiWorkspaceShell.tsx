@@ -69,7 +69,9 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   }
   useEffect(() => {
     const query = matchMedia('(max-width: 1050px)');
-    const resize = () => { setNarrow(query.matches); setRequestedInNarrow(false); setPanelFocus({ request: 0 }); panelOrigin.current = undefined; };
+    // Preserve an explicit open request across breakpoints. An automatically
+    // restored wide panel still folds in narrow windows until the teacher opens it.
+    const resize = () => { setNarrow(query.matches); setPanelFocus({ request: 0 }); panelOrigin.current = undefined; };
     query.addEventListener('change', resize);
     return () => query.removeEventListener('change', resize);
   }, []);
