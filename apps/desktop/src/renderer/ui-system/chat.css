@@ -63,20 +63,24 @@
   padding: 30px 34px 20px;
   margin-inline: auto;
 }
-.edu-chat .office-composer-container {
+.edu-chat .office-composer-container,
+.edu-chat .edu-conversation-context {
   width: min(100%, 840px);
   box-sizing: border-box;
   padding: 12px 34px 22px;
   margin-inline: auto;
   flex-shrink: 0;
 }
-.edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container {
+.edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container,
+.edu-chat .ai-chat-surface[data-empty='true'] .edu-conversation-context {
   width: min(100%, 792px);
   padding-inline: 36px;
 }
 @media (max-width: 900px) {
   .edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container { padding-inline: 24px; }
+  .edu-chat .ai-chat-surface[data-empty='true'] .edu-conversation-context { padding-inline: 24px; }
 }
+.edu-chat .edu-conversation-context { padding-block:0; display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
 /* User-approved application composer frame and toolbar layout. */
 .edu-chat .wb-input-frame {
   border:1px solid #e3e5eb;
@@ -108,6 +112,7 @@
   .edu-composer-viewport { overflow-x: auto; }
   .edu-chat .office-composer-container { min-width: 260px; padding-inline: 12px; }
   .edu-chat .ai-chat-surface[data-empty='true'] .office-composer-container { padding-inline: 12px; }
+  .edu-chat .ai-chat-surface[data-empty='true'] .edu-conversation-context { padding-inline: 12px; }
   .edu-chat .office-conversation-content { padding-inline: 12px; }
   .wb-start-heading { padding-inline: 12px; }
 }
@@ -329,7 +334,8 @@
   .edu-chat .office-conversation-content {
     padding-inline: 24px;
   }
-  .edu-chat .office-composer-container {
+  .edu-chat .office-composer-container,
+  .edu-chat .edu-conversation-context {
     padding-inline: 24px;
   }
 }

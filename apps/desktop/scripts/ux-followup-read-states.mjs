@@ -90,6 +90,22 @@ try{
   report.cases.push({id:item.id,channel:item.channel,states:['loading','read-failed','recovered'],calls:await app.evaluate(()=>globalThis.__readFault.calls)});save();
   await page.locator('[data-testid=edu-navigation]:visible').getByTestId('nav-ai-workspace').click();
  }
+ report.contextAlignment=[];
+ await page.getByTestId('history-lookup-open').waitFor();
+ for(const width of [1366,1920,800,390]){
+  await app.evaluate(({BrowserWindow},width)=>BrowserWindow.getAllWindows()[0].setContentSize(width,844),width);
+  await page.waitForFunction(width=>innerWidth===width,width);
+  await page.getByTestId('history-lookup-open').waitFor();
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  const geometry=await page.evaluate(()=>{
+   const context=document.querySelector('[data-testid=pi-conversation-context-actions]'),frame=document.querySelector('.edu-shell .wb-input-frame'),button=document.querySelector('[data-testid=history-lookup-open]');
+   const rect=context.getBoundingClientRect(),style=getComputedStyle(context),input=frame.getBoundingClientRect();
+   return {width:innerWidth,left:rect.left+parseFloat(style.paddingLeft),right:rect.right-parseFloat(style.paddingRight),buttonLeft:button.getBoundingClientRect().left,buttonInBoundary:context.contains(button),inputLeft:input.left,inputRight:input.right,nativeBoundary:context.hasAttribute('data-heroui-native')};
+  });
+  assert.equal(geometry.width,width);assert(geometry.nativeBoundary&&geometry.buttonInBoundary);assert(Math.abs(geometry.buttonLeft-geometry.inputLeft)<=1&&Math.abs(geometry.left-geometry.inputLeft)<=1&&Math.abs(geometry.right-geometry.inputRight)<=1,JSON.stringify(geometry));
+  report.contextAlignment.push(geometry);
+  await page.screenshot({path:path.join(output,'context-aligned-'+width+'.png')});
+ }
  report.headerGeometry=[];
  for(const [toggle,panelId]of [['pi-sidebar-toggle','edu-history-panel'],['pi-aside-toggle','edu-context-panel']]){
   for(const resizeWhileOpen of [false,true]){

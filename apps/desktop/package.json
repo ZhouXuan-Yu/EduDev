@@ -49,7 +49,7 @@
     "test:renderer-components": "node scripts/renderer-component-state-test.mjs",
     "test:office-tool-expansion": "node scripts/office-tool-expansion-interaction.mjs",
     "test:office-tool-grouping": "node scripts/office-tool-expansion-grouping.mjs",
-    "test:xiaozhi-pi": "tsc --noEmit && node scripts/xiaozhi-agent/pi-education-boundary-smoke.mjs",
+    "test:xiaozhi-pi": "tsc --noEmit && node --experimental-transform-types scripts/xiaozhi-agent/pi-education-boundary-smoke.mjs",
     "test:xiaozhi-pi-live": "node scripts/xiaozhi-agent/pi-education-live-smoke.mjs",
     "test:xiaozhi-pi-electron": "node scripts/xiaozhi-agent/pi-education-electron-smoke.mjs",
     "test:xiaozhi-pi-ui": "npm run build && node scripts/xiaozhi-agent/pi-production-ui-smoke.mjs",
