@@ -45,6 +45,22 @@ export const naturalLessonToolSchema = {
   },
 };
 
+type DraftShape={type?:string;properties?:Record<string,DraftShape>;items?:DraftShape};
+function prepareDraftValue(value:unknown,schema:DraftShape,nested=false):unknown {
+  if(Array.isArray(value)&&schema.items)return value.map(item=>prepareDraftValue(item,schema.items!,true));
+  if(!value||typeof value!=="object"||Array.isArray(value)||!schema.properties)return value;
+  const properties=schema.properties;
+  return Object.fromEntries(Object.entries(value).flatMap(([name,child])=>{
+    if(Object.hasOwn(properties,name))return [[name,prepareDraftValue(child,properties[name],true)]];
+    return nested&&child===""?[]:[[name,child]];
+  }));
+}
+
+/** Strip empty model annotations before the original strict schema and action checks. */
+export function prepareNaturalLessonArguments(value:unknown) {
+  return prepareDraftValue(value,naturalLessonToolSchema);
+}
+
 type NaturalLessonInput = {
   title: string;
   totalMinutes: number;
@@ -78,7 +94,8 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
     error:"lesson_text_encoding",
     issue:"教案含有解码损坏标记 U+FFFD。请按已读资料重新生成对应文字，保留原题、目标和环节安排。来源确实缺字时请明确标为待核对。",
   };
-  const { title, totalMinutes, objectives, preparation, details, scenes:submittedScenes, materials, mappings = [] } = raw as NaturalLessonInput;
+  const { title, totalMinutes, objectives, preparation, details, scenes:submittedScenes, materials, mappings:submittedMappings=[] } = raw as NaturalLessonInput;
+  const mappings=intent.curricula.length?submittedMappings:[];
   const scenes=keepClosingSlot(submittedScenes,agenda);
   const included = includeLessonMaterials(details.content, materials, requestedMaterials);
   if ("issue" in included) return { ...included, error: "lesson_materials_incomplete" };

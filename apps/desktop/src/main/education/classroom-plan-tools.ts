@@ -7,7 +7,7 @@ import {validClassroomScene,classroomErrors} from '../../shared/classroom';
 import type {createClassroomPlanState} from './classroom-plan-state';
 import {physicsAnswerInstructions} from '../xiaozhi-agent/physics-answer-quality';
 import {teachingLessonToolSchema,teachingLessonIssues,lessonDetailIssues,teachingLessonCoverageIssues} from '../../shared/teaching-lesson';
-import {naturalLessonDocument,naturalLessonToolSchema} from './natural-lesson-tool';
+import {naturalLessonDocument,naturalLessonToolSchema,prepareNaturalLessonArguments} from './natural-lesson-tool';
 import type {NaturalLessonRequirements} from './natural-lesson-draft';
 import {lessonSlotMatches} from './natural-lesson-agenda';
 
@@ -72,7 +72,7 @@ export function createClassroomPlanTools(options:{sessionId:string;runId:string;
   options.naturalDraft ? {
     name:NATURAL_LESSON_TOOL,label:'生成教案草稿',
     description:'保存可编辑教案草稿。填写教学主题、总分钟、目标和对应达成标准、准备材料、六项 details，以及每个环节的学生活动、教师提问、目标编号和检查。自拟材料逐份填在 materials，每份有 title 和给学生看的 text 正文。收到回执后提示老师核对草稿。',
-    parameters:naturalLessonToolSchema as ToolDefinition['parameters'],execute:classroomOutline.execute,
+    parameters:naturalLessonToolSchema as ToolDefinition['parameters'],prepareArguments:prepareNaturalLessonArguments,execute:classroomOutline.execute,
   } : classroomOutline,
   {name:'education_read_classroom_plan',label:'读取已确认课堂大纲',description:'教师在页面明确点击生成/继续后，读取宿主绑定的大纲、来源及缺页。不能选其他id或自行启动。只补missingSceneIds，已保存页不得重复生成。读到来源版本不是引文已核验；必要时沿原资料读取及education_verify_material_quote核验。',parameters:empty as ToolDefinition['parameters'],execute:async(_id,raw,signal)=>{
    try{check(signal);if(!exact(raw,[]))throw Error('invalid_input');

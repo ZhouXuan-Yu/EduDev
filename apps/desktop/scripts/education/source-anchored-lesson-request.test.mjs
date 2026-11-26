@@ -3,7 +3,8 @@ import test from 'node:test';
 import '../office-agent/register-source.mjs';
 const {naturalLessonDraft} = await import('../../src/main/education/natural-lesson-draft.ts');
 const {resolveOrdinaryLessonBasis} = await import('../../src/main/education/natural-lesson-basis.ts');
-const {naturalLessonDocument} = await import('../../src/main/education/natural-lesson-tool.ts');
+const naturalLesson = await import('../../src/main/education/natural-lesson-tool.ts');
+const {naturalLessonDocument} = naturalLesson;
 
 test('binds an explicitly named ordinary source and leaves an unstated subject for source resolution', () => {
   assert.deepEqual(naturalLessonDraft('根据 SYN-LESSON-01 制作45分钟七年级一次方程教案，包含两个教学目标、导入5/讲解12/练习18/总结10分钟，例题和检验准确，先确认后导出。'), {
@@ -11,6 +12,27 @@ test('binds an explicitly named ordinary source and leaves an unstated subject f
     requestedAgenda:[{kind:'introduction',minutes:5},{kind:'activity',minutes:12},
       {kind:'practice',minutes:18},{kind:'closure',minutes:10}],
   });
+});
+
+test('ordinary sources stay outside the curriculum mapping authority', () => {
+  const mapping={objectiveIndex:0,curriculumIndex:0,quote:'实际来源原句',explanation:'支撑目标'};
+  const raw={title:'教案',totalMinutes:35,objectives:[{goal:'观察',criterion:'举例'}],preparation:[],
+    details:{content:'观察正文'},scenes:[],mappings:[mapping]};
+  const intent={subject:'科学',grade:'五年级',curricula:[]};
+  assert.deepEqual(naturalLessonDocument(raw,intent).document.lesson.mappings,[]);
+  assert.deepEqual(naturalLessonDocument(raw,{...intent,curricula:[{resourceId,revision:version}]}).document.lesson.mappings,[mapping]);
+});
+
+test('argument preparation removes empty nested annotations and preserves strict meaningful input', () => {
+  const raw={taskStepId:'owner',authority:'',details:{difficulty:'',difficulty_note:''},scenes:[{
+    title:'检查',title2:'',checks:[{prompt:'真实检查',expectedEvidence:'',note:'',extra:'保留给验证器'}],
+  }]};
+  assert.deepEqual(naturalLesson.prepareNaturalLessonArguments(raw),{
+    taskStepId:'owner',authority:'',details:{difficulty:''},scenes:[{
+      title:'检查',checks:[{prompt:'真实检查',expectedEvidence:'',extra:'保留给验证器'}],
+    }],
+  });
+  assert.equal(raw.scenes[0].title2,'');
 });
 
 test('recognizes another subject and a quoted file name without treating it as a curriculum registration', () => {
