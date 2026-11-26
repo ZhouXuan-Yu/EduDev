@@ -1,6 +1,31 @@
 # Provider 恢复 R1 验收
 
-判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 28/36 项通过，其中 AC-19、AC-20 绑定资源调度 R1 依赖版本，Provider 组合须重跑。待完整运行的条款保持 `NOT_RUN`，已观察的子条件另记证据。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
+## 2026-11-26 取消工程轮数上限后的实测
+
+| 证据 | 结果 |
+| --- | --- |
+| 原生驻留准入红绿 | `wp05-embedding-residency-red-contract.log` 的两项真实失败与 `wp05-embedding-residency-final.log` 的 2/2 通过。拒绝准入时不启动新模型，空闲期间仍保有额度，释放跟随实际关闭。 |
+| 同版原生混合路径 | `r1-native-mixed-FjpBct/report.json` 6/6，同目录 `identity.json` 绑定关停修复后的构建。真实 12 页 OCR、48 条向量来源、真实 Chromium PDF、取消回执和独立 embedding 驻留结算。完整 W-03 及其前台采集仍待运行。 |
+| 同版向量与 embedding | `provider-vector-recovery-ADqSm4/report.json` 在旧构建延后原生关闭回执后，观测到 3 次启动、2 次关闭。提交 `7b6e5c3` 修复后，`provider-vector-recovery-4k223W/report.json` 10 轮通过：21 次原生启动和关闭逐一配对，无残留进程。释放前后核对原专属租约、监听器和索引游标。 |
+| 同版 MCP 与 PDF | `mcp-health-desktop-Qc44Vl/report.json`、`provider-mcp-stdio-desktop-EQC8ti/desktop-report.json`、`provider-pdf-lifecycle-rkbiWI/report.json` 各十轮。stdio 读取 Windows AppContainer Job、目录、ACL、管道和信任。另在 `provider-paper-export-8EpVPY/report.json` 观察被卡住的实际打印拒绝提前退出并保留原任务，确认清理后原任务可恢复。前序 stdio 第六轮 15 秒服务超时原报告继续保留。 |
+| 同版 OCR 与文档 | `provider-ocr-recovery-SMMDCF/report.json` 10 轮。重新启动的原任务跳过前两页，补齐 3–6 页后 SQLite 与界面一致。普通 DOCX `provider-document-owner-AKGwIQ/REPORT.json` 十轮，通过同版原生 Worker、宿主源码及租约身份校验。固定六份文件另见 `provider-journey-import-Al8qpq/report.json`。 |
+| 同版系统恢复接线 | `model-wire-health-og72i7/report.json` 2/2。回环服务实际关闭并重新监听。生产唤醒回调受控触发，仍遵守原 Retry-After 时间且只增派发一次，已取消任务保持原中断。原生进入待机和唤醒待独占 Windows 执行。 |
+| J04 真实模型诊断 | `provider-live-j04-fHCGUF/report.json` 与 `provider-live-j04-VdL6cm/report.json` 使用固定指令和内置 `deepseek-flash`，真实发出 12 次完成请求，均为 HTTP 200。候选在读取材料后仍无待确认教案，转为询问导出格式。主线达到试跑上限时仍无教案。SQLite、两版四条路由的同源探针见 `wp08-j04-sqlite-readback.json`、`wp08-j04-intent-source-readback.json` 和 `wp08-fixed-journeys-admission-source.json`。 |
+
+本轮 AC-22 模块通过。除普通文档使用同版 Worker 与可核对的宿主源码外，AC-22 运行均绑定正式 Electron 入口 SHA-256 `71b7e98efbd413021706ee18de5a2e25426962a521c406a4b82a11b1c630fa39`。实际构建、宿主资源契约 10/10、原生 embedding 契约 2/2、渲染组件 261/261 均通过。版本、命令和原始窗口见固定验收根 `expanded-20261126`。
+
+复跑在依赖组合工作树的 `apps/desktop` 下执行。将下列 `$build` 指向 `test-results/provider-resource-final` 的绝对路径，`$evidence` 指向固定验收根的 `expanded-20261126`，并将 `OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT`、`TEMP`、`TMP` 指向该同一验收目录。
+
+```powershell
+node scripts/xiaozhi-agent/provider-vector-recovery-desktop.mjs $build $evidence --owner-cycles
+node scripts/xiaozhi-agent/provider-ocr-recovery-desktop.mjs $build (Join-Path $evidence 'resume-fixed-inputs/material-scanned.pdf') $evidence --owner-cycles
+node scripts/xiaozhi-agent/provider-mcp-stdio-desktop.mjs $build --owner-cycles
+node scripts/xiaozhi-agent/provider-mcp-health-ipc.mjs $build --owner-cycles
+node scripts/xiaozhi-agent/provider-pdf-owner-lifecycle-electron.mjs $build $evidence
+node scripts/xiaozhi-agent/provider-paper-export-recovery-electron.mjs $build --shutdown-in-flight
+```
+
+判定依据为工程包的 `05_ACCEPTANCE_CRITERIA.md`。当前模块阶段 29/36 项通过。AC-19、AC-20 的资源调度依赖证据已在同一组合构建复核。固定合成材料和真实服务证据均保留。基线、首次实际验证及固定证据根见 [09 状态](09_STATUS.md)。
 
 | 条款 | 当前状态 | 已验证的子条件和剩余范围 |
 | --- | --- | --- |
@@ -11,7 +36,7 @@
 | AC-05 | PASS · 已实现 | 真实 HTTP 探测冻结在 `tools/list`。SQLite 并发更新信任、撤销、删除、更换凭证，旧成功或失败均不能变更新版本。另观察 SQL CAS 冲突和无信任旧行冷启。见第三轮。 |
 | AC-06 | PASS · 已实现 | 四个不同生产 Pi session 的实际初始化累计 1/2/3/3。正式 Windows typed IPC 证实状态拦截、另一来源可用和重新核验。结合实际服务与故障域读回，符合冻结阈值。 |
 | AC-07 | PASS · 已实现 | 模拟时钟下真实 HTTP 10 路只发一次探针，失败退避、实际取消时旧响应无法确认恢复。原授权和版本重新核验。真实 429 的 Retry-After 未提前发送。 |
-| AC-08 | NOT_RUN | 实际 Electron 冷启保留 Retry-After、凭证隔离和原额度，缓存与 SQLite 期限合同 7/7。生产回调已注入，真实 Windows S0 未验。WP-03 余项 `PAUSED_BUDGET`。 |
+| AC-08 | BLOCKED | 实际 Electron 冷启保留 Retry-After、凭证隔离和原额度，缓存与 SQLite 期限合同 7/7。生产回调已有注入证据。真实 Windows S0 需要独占环境与实际唤醒记录。 |
 | AC-09 | PASS · 已实现 | Windows Pi 经真实 loopback 收到短 Retry-After 的 429、无效 Retry-After 的 503、最终 200。物理请求、SQLite 发送事件和原预算一致，长 Retry-After 期间无后续尝试。 |
 | AC-10 | PASS · 已实现 | 真实 Windows loopback 的模糊 POST、收到部分文本后断流、401/403 和底层重试提示各只发一次，原模型与配置入口保留。成本未知，记录为 `null`。 |
 | AC-11 | PASS · 已实现 | 同一 Windows 构建覆盖 Pi 原请求账、实际 Hana 读取和真实 PDF 领域重试。单个逻辑导出最多两次打印。停止中维持原 lease，原回执清理后才允许教师审批后的新操作。 |
@@ -22,11 +47,11 @@
 | AC-16 | PASS · 已实现 | 等待提交时保留教师手工修改并拒绝旧文件版本。原任务暂停后修改要求 1→2，旧继续请求和迟到确认均失败，只按 V2 提交一份成果。真实网络 Grant 撤销会停止在途工作，显式续跑不重复派发。 |
 | AC-17 | PASS · 已实现 | 正式 Electron 与原导出审批。真实 Word 已保存，原 PDF 导出任务在首个私有打印窗口退出后只补齐缺失 PDF。独立解析确认两种文件内容，SQLite 核对原确认、历史文件和各一次成功 Effect。连续打印失败的反例两次后停止。 |
 | AC-18 | PASS · 已实现 | 正式 Electron 实测 HTTP 连接挂起与真实 Windows Job 异常退出及超时。故障期间另一会话查题、保存和独立 HTTP MCP 调用成功。真实迟到 stdout 未进入新请求。仅在原 PID、helper 与隔离目录清理后结算资源和回执。 |
-| AC-19 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。Provider 组合阶段重跑。 |
-| AC-20 | PASS · 已实现（依赖模块） | `ed618c1` 正式 Electron 的实际向量及 embedding 恢复 3/3。旧工作器在中段批次退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中与基线相同的原文，SQLite 来源保持。Provider 组合阶段重跑。 |
+| AC-19 | PASS · 已实现（依赖模块） | 依赖与组合版都通过真实 OCR 故障及停止验证 4/4。旧进程实际退出后租约只结算一次，旧第 3 页未落库，独立教师保存成功。原任务复用前两页，只处理第 3–6 页，最终 SQLite 与「正文已收录」一致。 |
+| AC-20 | PASS · 已实现（依赖模块） | 依赖与组合版都通过实际向量及 embedding 恢复。旧工作器在中段退出，原索引可查，替换进程从同一游标重做原批次。真实 embedding 30 秒超时后明确降级，旧管道结果隔离，恢复查询命中同一份原文，SQLite 来源保持。 |
 | AC-21 | PASS · 已实现 | Windows Electron 原打印回执延迟交付期间，教师可停止，另一会话正常查题，同类 PDF 无法提前获得原配额。实际回执结算后清理，旧输出未写入，教师重新授权的新 PDF 通过独立解析。 |
-| AC-22 | NOT_RUN | 七类实际 owner 各十轮和 PDF 阻塞关停已验证。实际 Provider 与调度 R1 同一候选的租约、旧监听器和临时项全量对账待验。 |
-| AC-23 | NOT_RUN | 模型等待与取消已通过真实回环断开重连及 Electron 生产恢复回调，原 Retry-After 未提前发送。缺隔离 Windows S0 原生事件与工具、副作用绝对截止时间矩阵。 |
+| AC-22 | PASS · 已实现 | Provider 与调度 R1 组合之上，HTTP、Windows stdio、原生 OCR、文档、向量、embedding、PDF 各十轮。实际关闭回执、租约结算、主进程和计算进程的监听器、Job 目录和 PDF 临时项已按原执行器核对。受控卡住的打印阻止提前退出，其他教师操作继续，释放后原任务可恢复。 |
+| AC-23 | BLOCKED | 模型等待与取消已通过真实回环断开重连及 Electron 生产恢复回调，原 Retry-After 未提前发送。原生 S0 及同时验证工具、未知副作用与绝对截止时间，仍要独占 Windows 运行矩阵。 |
 | AC-24 | PASS · 已实现 | 正式桌面在同一任务 lineage 中真实中断未知 DOCX 发布和原等待审批。冷启显示原成果、未知 Effect、原审批和旧快照。点击继续只执行原任务的核对，撤权后旧决定拒绝，原终端执行次数为 0。 |
 | AC-25 | PASS · 已实现 | 原受权固定 recipe 编译实际 Windows helper，经原生 AppContainer 自检后激活，重复无有效改写，拒绝错误来源且保留原活动指针。 |
 | AC-26 | PASS · 已实现 | 原权限对版本、撤权和用途继续生效。真实 Pi 模型工具调用不能关闭权限。未知 recipe 零派发，原 SQLite 损坏时完全保留原文件并提示恢复。 |
@@ -35,9 +60,9 @@
 | AC-29 | PASS · 已实现 | 正式 Windows 桌面显示恢复、冷却未发、需教师设置及未知回执。连续生产事件、唯一提示、切回原会话、实际重启、诊断导出、原话与继续入口均已核对。 |
 | AC-30 | PASS · 已实现 | 正式桌面诊断及实际导出通过标记脱敏、预览摘要一致、跨会话拒绝与过期预览拒绝。生产域合同验证 90 条记录压缩至上限和超限旧记录拒绝。 |
 | AC-31 | PASS · 已实现 | 同一正式构建通过 DB R2 历史准备记录、缺失与损坏记录拒绝、实时撤权、DB R3 旧库升级和验证还原。首次升级前原 SQLite、历史行和原生运行文件保持。 |
-| AC-32 | NOT_RUN | 等待资源 R1 可执行组合及原六类性能基线。Provider 单独构建的 PDF 槽位证据已经保留。 |
-| AC-33 | NOT_RUN | 固定扫描件已生成并实际归档，当前构建中原文解析未完成。四条任务的无故障、可恢复和失败矩阵尚无完整端到端证据。 |
-| AC-34 | NOT_RUN | 恢复会改变可用工具选择和兼容 Provider 执行路径，按合同触发真实模型对照。隔离验收环境没有可用的测试账号配置。 |
+| AC-32 | NOT_RUN | 组合原生混载子集已通过。正式三次 W-03、六类各 ≥100 个有效样本和 Provider 交互对照待运行。 |
+| AC-33 | FAIL | 固定 J04 真实生产试跑未能生成待教师确认的持久教案。固定扫描件已准备完毕。其余固定场景、无故障、可恢复、不可恢复矩阵未跑完。 |
+| AC-34 | NOT_RUN | 工具选择和兼容恢复路径变化触发。用户授权的内置模型实际可用，首组试跑未出有效教案。完成教学任务路径后，执行冻结的四条每侧三次及独立阅卷。 |
 | AC-35 | NOT_RUN | 模块构建与现有组件回归有据。正式组合和最终 main 的版本绑定、完整门禁和串行事实仍待验。 |
 | AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
 

@@ -24,7 +24,7 @@ assert.deepEqual(files.map(row=>row.file).sort(),expected);
 const root=fs.mkdtempSync(path.join(fs.realpathSync(acceptance),'provider-journey-import-'));
 const source=path.join(root,'source'),data=path.join(root,'data'),profile=path.join(root,'profile');
 const report={ok:false,scope:mode?'Fixture archiving and native OCR per source':'Fixture archiving and source identity',root,mainSha256,
-  build:{entry:main,dependency:Boolean(dependencyDesktop),electron:executablePath},
+  build:{entry:main,dependency:Boolean(dependencyDesktop),electron:executablePath},parseTimeline:[],
   inputs:{prepared,sha256:sha(path.join(prepared,'inputs.json'))}};
 fs.mkdirSync(source);
 for(const file of files){
@@ -57,9 +57,14 @@ try{
   const submit=selection.getByRole('button',{name:'导入 6 个文件',exact:true});
   await submit.waitFor({timeout:60_000});
   assert.equal(read('SELECT count(*) n FROM teacher_resources')[0].n,0);
-  await selection.screenshot({path:path.join(root,'fixed-inputs-selected.png')});
+  report.selection=await selection.innerText();
+  try {
+    await selection.screenshot({path:path.join(root,'fixed-inputs-selected.png'),animations:'disabled',timeout:5_000});
+  } catch (error) {
+    report.selectionScreenshotError=String(error.message??error);
+  }
   await submit.click();
-  const deadline=performance.now()+(mode?120_000:60_000);
+  const deadline=performance.now()+60_000;
   while(performance.now()<deadline){
     const [batch]=read('SELECT id,status FROM material_import_batches ORDER BY created_at DESC LIMIT 1');
     if(batch&&['completed','partial','failed'].includes(batch.status)){report.batch=batch;break;}
@@ -74,13 +79,21 @@ try{
     return {file:row.original_file_name,id:row.id,sha256:actual,parseStatus:row.parse_status,parseEngine:row.parse_engine};
   });
   if(mode){
-    while(performance.now()<deadline){
+    // The native owner may use up to five minutes per PDF. Archiving and
+    // native parsing have separate observation windows.
+    const parseStarted=performance.now(),parseDeadline=parseStarted+files.length*300_000+60_000;
+    let previous='';
+    while(performance.now()<parseDeadline){
+      const sources=read('SELECT original_file_name,parse_status,parse_engine FROM teacher_resources ORDER BY original_file_name');
       const chunks=read(`SELECT r.original_file_name,c.page_number,c.content_md
         FROM resource_chunks c JOIN teacher_resources r ON c.resource_id=r.id ORDER BY r.original_file_name,c.chunk_index`);
+      const snapshot={sources,publishedPages:chunks.map(({original_file_name,page_number})=>({original_file_name,page_number}))};
+      const signature=JSON.stringify(snapshot);
+      if(signature!==previous){report.parseTimeline.push({elapsedMs:Math.round(performance.now()-parseStarted),...snapshot});previous=signature;}
       if(new Set(chunks.map(chunk=>chunk.original_file_name)).size===files.length){report.ocr=chunks;break;}
-      if(read("SELECT 1 FROM teacher_resources WHERE parse_status='failed' LIMIT 1").length)break;
+      if(sources.some(source=>source.parse_status==='failed'))break;
       assert(!page.isClosed(),'The isolated desktop closed before the local parse jobs completed');
-      await delay(100);
+      await delay(500);
     }
     assert(report.ocr,'All fixed scans need text from the real local parser');
     assert(report.ocr.every(chunk=>chunk.page_number===1&&chunk.content_md.trim()));
