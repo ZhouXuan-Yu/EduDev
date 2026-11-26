@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-26",
+  "layer": "Windows native desktop via @oai/sky; observations in this conversation",
+  "window": {"id": 10160872, "title": "小智 · UI修复验收（最新版·独立数据）"},
+  "renderer": "D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/renderer/index.html",
+  "checks": [
+    {"name": "Select unique actual Electron window and activate", "status": "PASS"},
+    {"name": "Homepage history action aligned with composer content; native screenshot observed", "status": "PASS"},
+    {"name": "Navigate materials, observe loading unknown counts then actual SQLite empty counts0", "status": "PASS"},
+    {"name": "Expand process queue and folder-recovery group using visible buttons", "status": "PASS"},
+    {"name": "Collapse queue; child activity and recovery headings leave accessibility tree", "status": "PASS"},
+    {"name": "Return to conversation, history action opens original unique pending panel", "status": "PASS"},
+    {"name": "Collapse pending panel; expand action remains and composer remains accessible", "status": "PASS"}
+  ],
+  "boundaries": ["No data import/deletion or credentials changed", "No model request submitted", "Screenshots returned inline by sky; stored PNGs are same-build Electron automation artifacts, not a native recording", "Native125% and physical IME not verified"]
+}

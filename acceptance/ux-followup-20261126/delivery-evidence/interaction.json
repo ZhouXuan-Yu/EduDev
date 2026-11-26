@@ -1,0 +1,267 @@
+{
+  "success": true,
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\docs\\audit\\ux-motion-20261126\\electron-VuNFAH",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-VuNFAH\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-VuNFAH\\profile",
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-followup-context-final\\main\\index.js",
+  "source": "7f6f84b36df7883a9952c7abafb4b2a5d2de4e4e8695665e9d100fe8db8c4bae",
+  "build": "df5c2e85baca1c46a1e4f6c7bade69c8941bb25653299b4dfe1ee4588620aa3c",
+  "checks": [
+    "student switches preserve separate drafts and local time",
+    "UI edit retains exact timestamp and same-record click never reloads draft",
+    "replacing an unfinished record is cancelable by Escape",
+    "same-student old search hit beyond 100 rows focuses exact ID and restores search on Back",
+    "saving a child note preserves unsaved notebook metadata",
+    "page exit and whole-book deletion protect unfinished edits with explicit safe cancellation",
+    "folder state transitions preserve DOM and make collapsed content inert",
+    "resize is direct and Escape restores the starting width",
+    "four viewport widths, both OS schemes and reduced motion retain reachability without document overflow",
+    "restart readback retains original record timestamp and notebook metadata"
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "motion": [
+    {
+      "name": "long record timeline / idle",
+      "visible": "visible",
+      "count": 224,
+      "p50": 6.099999999998545,
+      "p95": 6.200000000000728,
+      "max": 6.30000000000291,
+      "longTasks": [],
+      "layoutShifts": []
+    },
+    {
+      "name": "folder open / close",
+      "visible": "visible",
+      "count": 249,
+      "p50": 6.099999999998545,
+      "p95": 24.200000000000728,
+      "max": 30.400000000001455,
+      "longTasks": [],
+      "layoutShifts": [
+        {
+          "value": 0.0002801961250799461,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004967289351420967,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004881089102372447,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004644038417489017,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004216450950735967,
+          "recentInput": true
+        },
+        {
+          "value": 0.00003344072085564871,
+          "recentInput": true
+        },
+        {
+          "value": 0.000064977769959325,
+          "recentInput": true
+        },
+        {
+          "value": 0.000050353578395415036,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004967289351420967,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004644038417489017,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004077681678939593,
+          "recentInput": true
+        },
+        {
+          "value": 0.00003396487008536107,
+          "recentInput": true
+        },
+        {
+          "value": 0.0000417375271326016,
+          "recentInput": true
+        },
+        {
+          "value": 0.000049026391646345774,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004967289351420967,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004719463635406472,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004141729035153304,
+          "recentInput": true
+        },
+        {
+          "value": 0.00003281174177999387,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004959229319289257,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004967289351420967,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004644038417489017,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004152403594522256,
+          "recentInput": true
+        },
+        {
+          "value": 0.00003396487008536107,
+          "recentInput": true
+        },
+        {
+          "value": 0.000050642646316005524,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004881089102372447,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004644038417489017,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004141729035153304,
+          "recentInput": true
+        },
+        {
+          "value": 0.000033335891009706234,
+          "recentInput": true
+        },
+        {
+          "value": 0.000064977769959325,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004872225296143831,
+          "recentInput": true
+        },
+        {
+          "value": 0.00005024482336648326,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004719463635406472,
+          "recentInput": true
+        },
+        {
+          "value": 0.00004152403594522256,
+          "recentInput": true
+        },
+        {
+          "value": 0.000032916571625936345,
+          "recentInput": true
+        },
+        {
+          "value": 0.000051181397872558776,
+          "recentInput": true
+        }
+      ]
+    },
+    {
+      "name": "page transitions",
+      "visible": "visible",
+      "count": 197,
+      "p50": 6.099999999998545,
+      "p95": 18.099999999998545,
+      "max": 48.5,
+      "longTasks": [],
+      "layoutShifts": [
+        {
+          "value": 0.00004693627208707951,
+          "recentInput": true
+        },
+        {
+          "value": 0.0037832769051042684,
+          "recentInput": true
+        },
+        {
+          "value": 0.019625898199100086,
+          "recentInput": true
+        },
+        {
+          "value": 0.0021599278887850697,
+          "recentInput": true
+        },
+        {
+          "value": 0.01985285960655021,
+          "recentInput": true
+        }
+      ]
+    }
+  ],
+  "screens": [
+    "record-timeline.png",
+    "notebook-protected-draft.png",
+    "chat-390-light-no-preference.png",
+    "chat-800-light-no-preference.png",
+    "chat-1366-light-no-preference.png",
+    "chat-1920-light-no-preference.png",
+    "chat-390-dark-no-preference.png",
+    "chat-800-dark-no-preference.png",
+    "chat-1366-dark-no-preference.png",
+    "chat-1920-dark-no-preference.png",
+    "chat-390-light-reduce.png",
+    "chat-800-light-reduce.png",
+    "chat-1366-light-reduce.png",
+    "chat-1920-light-reduce.png",
+    "chat-390-dark-reduce.png",
+    "chat-800-dark-reduce.png",
+    "chat-1366-dark-reduce.png",
+    "chat-1920-dark-reduce.png"
+  ],
+  "boundary": "Production Electron, original typed IPC/SQLite, fictional data entered via UI. Network denied; no model/provider or deletion performed. Narrow desktop CSS is measured, not a mobile installer claim.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-VuNFAH\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\electron-VuNFAH\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-images-2mtjbdlt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-pdf-renderer-bzxonzus.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-relative-path-dx7n7yht.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/pi-session-ctuthgxa.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/typed-table-dhnk4c9t.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "httpAttempts": []
+}

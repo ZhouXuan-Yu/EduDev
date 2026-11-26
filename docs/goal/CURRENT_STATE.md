@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+2026-11-26 UI遗留修复已通过本轮构建、261组件、29合同、9样式及补强后的9项Pi协议边界；原生实操使用固定正式Pi构建。整体UI_R1仍BLOCKED：原生125%、首次冷峰及未完整覆盖状态保留。[报告与恢复](../audit/ux-followup-20261126/RESULT.md)。不替换其他领域Goal。
+
 学习记录附件导入按发起学生保存和显示回执，覆盖切换学生、归档与列表读回失败。专项入线状态和本轮验证见 [2026-11-26 质量复查](../audit/quality-review-20261126.md)。
 
 小智数据库 R3 的实际代码、Windows 构建和合并读回以 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r3/state.json` 为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)

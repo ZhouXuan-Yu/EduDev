@@ -1,0 +1,35 @@
+
+> omni-edu-desktop-prototype@0.1.0 test:ui-contracts
+> node scripts/ui-contracts.mjs
+
+WebSocket server error: Port 24678 is already in use
+PASS each actual product page has one and only one contract
+PASS page contract is actionable: teaching
+PASS page contract is actionable: my_tasks
+PASS page contract is actionable: student_workbench
+PASS page contract is actionable: ai
+PASS page contract is actionable: knowledge
+PASS page contract is actionable: artifacts
+PASS page contract is actionable: notebook
+PASS page contract is actionable: book
+PASS page contract is actionable: question_notebook
+PASS page contract is actionable: paper
+PASS page contract is actionable: students
+PASS page contract is actionable: search
+PASS page contract is actionable: intake
+PASS page contract is actionable: mistakes
+PASS page contract is actionable: mastery
+PASS page contract is actionable: review
+PASS page contract is actionable: analytics
+PASS page contract is actionable: settings
+PASS shared lifecycle includes recovery and partial results
+PASS conversation contract keeps the pending panel and restart acceptance when rendered
+PASS review and production share one page metadata source
+PASS frozen sources/CSS and reconstructed production PromptInput revision match
+PASS official Agent Trace Streaming reference configuration is frozen
+PASS new review layout cannot override vendor selectors, tokens or important states
+PASS review has no business IPC or model requests
+PASS temporary domain adapter contains geometry but no inherited cosmetics
+PASS scope boundaries survive the Vite 6 CSS Modules parser
+PASS retired glass theme and rejected demo are absent from formal source
+{"suite":"ui-contracts","passed":29,"pages":18,"failures":[]}

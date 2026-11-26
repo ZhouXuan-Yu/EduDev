@@ -1,0 +1,14 @@
+(node:31116) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Mixed adapter leaves HTTP input unchanged and does not invoke the stdio converter
+PASS Stdio converter result and denial still propagate
+PASS Real HTTP metadata and selected tools initialize with the mixed adapter
+PASS Network grant for another actual URL origin cannot authorize this endpoint
+PASS Exact Network Egress and MCP grants permit the actual HTTP call without stdio projection
+PASS Input schema and privacy refusals happen before any HTTP request
+PASS Server authentication failure is reported independently from URL authorization
+PASS Relevant Egress revocation blocks the registered callback before network IO
+PASS Relevant MCP revocation blocks the registered callback before network IO
+PASS Relevant Network revocation blocks the registered callback before network IO
+PASS Server revocation blocks the old registered callback with all grants still present
+{"success":true,"checks":11,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-mcp-transports-75Egm9"}

@@ -1,0 +1,10 @@
+(node:16708) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"name":"pending receipt stays with original student and preserves navigation","status":"PASS"}
+{"name":"committed import survives both receipt and timeline read errors","status":"PASS"}
+{"name":"archive during copy prevents commit and removes the new copy","status":"PASS"}
+{"name":"mismatched student and record creates neither row nor directory","status":"PASS"}
+{"name":"partial copies and cancellation have accurate typed receipts","status":"PASS"}
+{"name":"a successful import preserves the active timeline filter","status":"PASS"}
+{"name":"restart reads owned bytes and hides an inconsistent old attachment link","status":"PASS"}
+{"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\ux-followup-20261126\\student-attachments-p27jJ8","success":true}

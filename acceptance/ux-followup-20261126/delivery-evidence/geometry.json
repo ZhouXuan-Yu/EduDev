@@ -1,0 +1,116 @@
+{
+  "success": true,
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-followup-context-final\\main\\index.js",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\read-states-8pnNED\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\read-states-8pnNED\\profile",
+  "source": "7f6f84b36df7883a9952c7abafb4b2a5d2de4e4e8695665e9d100fe8db8c4bae",
+  "build": "df5c2e85baca1c46a1e4f6c7bade69c8941bb25653299b4dfe1ee4588620aa3c",
+  "cases": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "boundary": "Production Electron with delayed/rejected original readonly IPC; recovered empty results come from real SQLite. No OCR/provider output is simulated. These are controlled UI failure tests, not service outage or natural teacher acceptance.",
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\read-states-8pnNED\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\read-states-8pnNED\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-images-2mtjbdlt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-pdf-renderer-bzxonzus.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/office-relative-path-dx7n7yht.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/pi-session-ctuthgxa.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/typed-table-dhnk4c9t.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-followup-context-final/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "contextAlignment": [
+    {
+      "width": 1366,
+      "left": 439,
+      "right": 1159,
+      "buttonLeft": 439,
+      "buttonInBoundary": true,
+      "inputLeft": 439,
+      "inputRight": 1159,
+      "nativeBoundary": true
+    },
+    {
+      "width": 1920,
+      "left": 716,
+      "right": 1436,
+      "buttonLeft": 716,
+      "buttonInBoundary": true,
+      "inputLeft": 716,
+      "inputRight": 1436,
+      "nativeBoundary": true
+    },
+    {
+      "width": 800,
+      "left": 92,
+      "right": 776,
+      "buttonLeft": 92,
+      "buttonInBoundary": true,
+      "inputLeft": 92,
+      "inputRight": 776,
+      "nativeBoundary": true
+    },
+    {
+      "width": 390,
+      "left": 92,
+      "right": 350.66668701171875,
+      "buttonLeft": 92,
+      "buttonInBoundary": true,
+      "inputLeft": 92,
+      "inputRight": 350.66668701171875,
+      "nativeBoundary": true
+    }
+  ],
+  "headerGeometry": [
+    {
+      "toggle": "pi-sidebar-toggle",
+      "panelId": "edu-history-panel",
+      "resizeWhileOpen": false,
+      "headerBottom": 175.9166717529297,
+      "panelTop": 175.90625,
+      "width": 390
+    },
+    {
+      "toggle": "pi-sidebar-toggle",
+      "panelId": "edu-history-panel",
+      "resizeWhileOpen": true,
+      "headerBottom": 175.9166717529297,
+      "panelTop": 175.90625,
+      "width": 390
+    },
+    {
+      "toggle": "pi-aside-toggle",
+      "panelId": "edu-context-panel",
+      "resizeWhileOpen": false,
+      "headerBottom": 175.9166717529297,
+      "panelTop": 175.9166717529297,
+      "width": 390
+    },
+    {
+      "toggle": "pi-aside-toggle",
+      "panelId": "edu-context-panel",
+      "resizeWhileOpen": true,
+      "headerBottom": 175.9166717529297,
+      "panelTop": 175.9166717529297,
+      "width": 390
+    }
+  ]
+}

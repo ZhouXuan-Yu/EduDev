@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+UI遗留专项的当前构建、来源、测试与原生操作见[报告](../audit/ux-followup-20261126/RESULT.md)和`acceptance/ux-followup-20261126/delivery.json`。保留旧UIR1-01至28及A01–A36影响记录，不以本轮局部通过覆盖原失败/未执行；原生125%、完整状态与真实教师/provider边界仍公开记录。
+
 学习记录附件导入在独立 Windows Electron 和真实 SQLite 验证。 [验收方法和记录](../audit/quality-review-20261126.md#验收方法和记录)
 
 数据库 R3 先验收 AC-00 至 AC-28，按实际 diff 处置 AC-30，合并后在最终 main 构建验证 AC-29。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)

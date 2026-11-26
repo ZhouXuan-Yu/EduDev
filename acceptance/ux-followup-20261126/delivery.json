@@ -1,0 +1,450 @@
+{
+  "schemaVersion": 1,
+  "packageId": "XIAOZHI_UI_UX_R1_20261124",
+  "round": "ux-followup-20261126",
+  "state": "BLOCKED",
+  "headAtCollection": "58d74dc8c5c861fa3e98dd8d86fff82a4e81f698",
+  "sourceRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125",
+  "sourceFingerprint": "7f6f84b36df7883a9952c7abafb4b2a5d2de4e4e8695665e9d100fe8db8c4bae",
+  "buildFingerprint": "df5c2e85baca1c46a1e4f6c7bade69c8941bb25653299b4dfe1ee4588620aa3c",
+  "buildRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-followup-context-final",
+  "commands": [
+    {
+      "command": "npm.cmd run test:xiaozhi-pi",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "9/9; actual SDK, controlled protocol",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/pi-boundary-attributed.log"
+    },
+    {
+      "command": "npm.cmd run build",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "tsc and production build; exact out/isolate fingerprint match",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/build-resumed.log"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "261/261",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/renderer-resumed.log"
+    },
+    {
+      "command": "npm.cmd run test:ui-contracts",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "29/29",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/contracts-resumed.log"
+    },
+    {
+      "command": "npm.cmd run test:ui-style-isolation",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "9/9",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/isolation-resumed.log"
+    },
+    {
+      "command": "node scripts/acceptance/frozen-component-sources-test.mjs",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "11 original +5 production;16 drift +5 rollback rejected",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/source-guard-resumed.log"
+    },
+    {
+      "command": "node scripts/ux-followup-read-states.mjs --header-only",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "4 alignments +4 panel resize geometries; NOT five-directory rerun",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/geometry-resumed.log"
+    },
+    {
+      "command": "node scripts/ux-motion-electron.mjs",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "10/10 production local interactions and SQLite restart",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/interaction-resumed.log"
+    },
+    {
+      "command": "npx.cmd --yes --package=npm@11.21.3 --prefer-offline npm audit --noproxy=registry.npmjs.org --fetch-retries=0 --fetch-timeout=20000 --json",
+      "cwd": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop",
+      "exitCode": 0,
+      "result": "0 vulnerabilities",
+      "evidence": "acceptance/ux-followup-20261126/delivery-evidence/audit-resumed.json"
+    }
+  ],
+  "checks": [
+    {
+      "id": "R01",
+      "status": "PASS",
+      "evidence": [
+        "audit-resumed.json",
+        "ci-peer.log",
+        "npm-ls-peer.json",
+        "dependency-peer.log",
+        "mcp-peer.log"
+      ]
+    },
+    {
+      "id": "R02",
+      "status": "PASS",
+      "evidence": [
+        "contracts-resumed.log",
+        "source-guard-resumed.log"
+      ],
+      "boundary": "Deployed source snapshot, not official artifact identity certification"
+    },
+    {
+      "id": "R03",
+      "status": "PARTIAL",
+      "reason": "Initial DOM reduced; cold max66.7-84.8ms remains. GPU attribution is not root-cause certification."
+    },
+    {
+      "id": "R04",
+      "status": "PARTIAL",
+      "reason": "5 readonly failures/recovery +4 geometries +10 interactions +5 controlled Pi composer checks. Full page/business-state matrix remains open."
+    },
+    {
+      "id": "R05",
+      "status": "BLOCKED",
+      "reason": "Actual native DPR1.5; real125% environment unavailable. No forced-DPR substitution."
+    },
+    {
+      "id": "R06",
+      "status": "PARTIAL",
+      "reason": "Verified window open; main push must be proven by final-delivery-receipt.json"
+    }
+  ],
+  "historical28": {
+    "artifact": "acceptance/ui-ux-r1-20261124/delivery.json",
+    "sha256": "f78ad9574d6e1bedc9aea65fd463abf5df1c2f371d86743482e564f318763a29",
+    "checks": [
+      {
+        "id": "UIR1-01",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-02",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-03",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-04",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-05",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-06",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-07",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-08",
+        "historicalStatus": "BLOCKED"
+      },
+      {
+        "id": "UIR1-09",
+        "historicalStatus": "FAIL"
+      },
+      {
+        "id": "UIR1-10",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-11",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-12",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-13",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-14",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-15",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-16",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-17",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-18",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-19",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-20",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-21",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-22",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-23",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-24",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-25",
+        "historicalStatus": "BLOCKED"
+      },
+      {
+        "id": "UIR1-26",
+        "historicalStatus": "BLOCKED"
+      },
+      {
+        "id": "UIR1-27",
+        "historicalStatus": "PASS"
+      },
+      {
+        "id": "UIR1-28",
+        "historicalStatus": "BLOCKED"
+      }
+    ],
+    "boundary": "Historical statuses unchanged; no wholesale current-build re-certification"
+  },
+  "legacy36": {
+    "artifact": "acceptance/ui-ux-r1-20261124/records/LEGACY_GATE_MAP.csv",
+    "count": 36,
+    "boundary": "Preserved influence map, not36 PASS claims"
+  },
+  "remaining": [
+    "native125%",
+    "cold first-navigation frame",
+    "full actual business state matrix; see STATE_COVERAGE.md",
+    "real provider/teacher quality and physical IME",
+    "official licensed component artifact identity",
+    "Office/WPS comprehensive output and installer/platform validation by original owners"
+  ],
+  "teacherReview": "NOT_RUN",
+  "network": "No new provider call in this continuation. npm/Git read operations only until authorized push.",
+  "artifacts": [
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/build-resumed.log",
+      "sha256": "f4163d0d46624336ec64e6b553caf3ae9666081653b11741392ceb457e89c505",
+      "source": "acceptance/ux-followup-20261126/build-resumed.log",
+      "originalSha256": "f3d39882dd5c9693bf7bb668875e14c0de8fa2327283970ae6228ad024927edb",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/renderer-resumed.log",
+      "sha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03",
+      "source": "acceptance/ux-followup-20261126/renderer-resumed.log",
+      "originalSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/contracts-resumed.log",
+      "sha256": "bf143ba9068cf01239d5641b88a92e63a12ed09cd4612732f048b50274557f0b",
+      "source": "acceptance/ux-followup-20261126/contracts-resumed.log",
+      "originalSha256": "d81c335d5a2ec12831afefc092dc3105a4df466e6b4377aa7aa74c8450228d61",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/isolation-resumed.log",
+      "sha256": "8052936eb309d6647140727e93928114ff24483814903d87fdedb0124719fd7b",
+      "source": "acceptance/ux-followup-20261126/isolation-resumed.log",
+      "originalSha256": "94f5f30a7437fbf9ed8002463515ef87bc1227e340936265409eb8aa57cad631",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/source-guard-resumed.log",
+      "sha256": "0cf0c89e890442d068dcfc90e7f430a2a95673455e159bf582d39a444e9a87da",
+      "source": "acceptance/ux-followup-20261126/source-guard-resumed.log",
+      "originalSha256": "caf7026d6e07958edd513620fd5d63fa50bfa30ca5947f9616103ee259e1aa8d",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/pi-boundary-attributed.log",
+      "sha256": "978bb3a7455cbfd07ff9810cf5acb88bac2427048034d77aea7d1b57cf72845a",
+      "source": "acceptance/ux-followup-20261126/pi-boundary-attributed.log",
+      "originalSha256": "73240f095ae180ca0affb20f9aff8d127d9974725c4d914ec69df8d0265fb8a3",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/geometry-resumed.log",
+      "sha256": "ebed0d5e7483d67510af1cb741143d41be2a6efdaf414d2b1ffa2ec25e18ce18",
+      "source": "acceptance/ux-followup-20261126/geometry-resumed.log",
+      "originalSha256": "713ec03e37c4d75650813ed889c19b3a81303755e6596cf598ce867a17aba485",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/interaction-resumed.log",
+      "sha256": "75aca89d50477c0d18970be6a09cb0bc215be09729133a6f3c14a3fcdfa7a553",
+      "source": "acceptance/ux-followup-20261126/interaction-resumed.log",
+      "originalSha256": "81932347e4ddca829ed7ee20b4f761422f73604ade4cf62a3b130cc0ab05c51f",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/audit-resumed.json",
+      "sha256": "40cb8db956267f5928c63e7c394b3e377b3a2a28b965a75ded61e8ff3a4b54cc",
+      "source": "acceptance/ux-followup-20261126/audit-resumed.json",
+      "originalSha256": "bad0b7f195c9ec4505503ba2baa2f20b784ba411a1f45287d0a120216b46e87e",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/ci-peer.log",
+      "sha256": "7aa17ae3db9be82aeeef7f9d64980c9ce005612debeead9e8075b128e64a6e28",
+      "source": "acceptance/ux-followup-20261126/ci-peer.log",
+      "originalSha256": "61e4a726bb79e1e0030ccbc6cac8bd17057dacd0f0510b07aca7fef8d349a041",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/npm-ls-peer.json",
+      "sha256": "70a097dcab4d1390497f60472544be15deee82256859db8f00cb6c75228a83ac",
+      "source": "acceptance/ux-followup-20261126/npm-ls-peer.json",
+      "originalSha256": "a25c336d89458e0fa5e65f721a9ea0f0129ebc65d509a415095b7b1f802cf8e2",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/dependency-peer.log",
+      "sha256": "611ad9f76e79fefcab97acb8d29cb5688c5f428c7d49cbcb78dc34e52828267d",
+      "source": "acceptance/ux-followup-20261126/dependency-peer.log",
+      "originalSha256": "fa6ed0e088ea9e2583d691322cec2a38afe13be8ff26298c9f3edbdae7144a58",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/mcp-peer.log",
+      "sha256": "c8906587f263d43afc277aac9db218702dff4c6c74b03d3530fc3abe8d4d266c",
+      "source": "acceptance/ux-followup-20261126/mcp-peer.log",
+      "originalSha256": "5f04a633a824b3b29f877b11ef560fd9075c642b346bd27724b6759e8633adac",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/attachment-peer.log",
+      "sha256": "abc4206b0c54cd75dab7d1bc1d92731ce425fc5359597b87735401f1dd886c39",
+      "source": "acceptance/ux-followup-20261126/attachment-peer.log",
+      "originalSha256": "69900c59dde502e50a9fc1bb5328b4df1d6ee30b9066b5dc487b33c45b27bb8e",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/composer-context.log",
+      "sha256": "95f2f526a06e88f93922e31008d84becc2ae170367c2719dd08ccf2907b22fbd",
+      "source": "acceptance/ux-followup-20261126/composer-context.log",
+      "originalSha256": "ec08e5a4cedf7ef4833086b170e1bf0e9f68005eb51e408294fb873e3d8c4aca",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/states-context.log",
+      "sha256": "7277fa63ccef92456fe7bd58ca167c5cfb59a2eda3fba4121addf83cfdb89620",
+      "source": "acceptance/ux-followup-20261126/states-context.log",
+      "originalSha256": "58ac54ae13554bf9da8c8d79f0f0966289ad552c6e1a917ba26a16828a53229f",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/full-smoke-accepted.log",
+      "sha256": "4e5de9a463cd5bb203605aa95029aff6ccde7b3b9c73064c1ff75819b968371c",
+      "source": "acceptance/ux-followup-20261126/full-smoke-accepted.log",
+      "originalSha256": "4079c4e619d508179062ffa8c6fdab3d99540b102eb7ddfa3dd8383b905b6ec2",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/invalidated-smoke.txt",
+      "sha256": "de1aa37eb2cbaf40fd1cd46ef2e82c698275797d03930cf244ec4904f147de70",
+      "source": "acceptance/ux-followup-20261126/invalidated-smoke.txt",
+      "originalSha256": "3d3739ec03961c03c3e832a51d5515466607801d1fa6c1779948a32713be9146",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/interaction.json",
+      "sha256": "929d2308bc4c1825b9362a9f597cdce0c0cd78451a317c4017ea270164e1f0f9",
+      "source": "docs\\audit\\ux-motion-20261126\\electron-VuNFAH\\report.json",
+      "originalSha256": "1678bde5924311ffc182b59986063e3c46bda970bb12d380363f3013bc2d2bec",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/read-states.json",
+      "sha256": "a64bcefc8f63a5de1ac31ecc536beaa8a10ad2ae6c9d822863be445bad4bf5d0",
+      "source": "acceptance/ux-followup-20261126/read-states-bf27UF/report.json",
+      "originalSha256": "0fc16fb96b6d08188a30fbd371e60262504255f00bbc64bcb0e0a35ee5973279",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/geometry.json",
+      "sha256": "80aa99f33b69a0b7f5f863f79294b3494a1d790a2a6e2082b7586d736695155e",
+      "source": "acceptance/ux-followup-20261126/read-states-8pnNED/report.json",
+      "originalSha256": "092bb6ac392ca68eb182f923739cbfcd27cf899d44a2cacfdd50aea3a8cea58f",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/composer.json",
+      "sha256": "a9584dba027b47d687dd6852808ed73b58b0c60a1226f815b2c998cec617d333",
+      "source": "acceptance/ux-followup-20261126/composer-e8Kyof/report.json",
+      "originalSha256": "f16d1746e70a5629b653e3d78145630ffacc8f12acfa34136d9fec36e83a9c77",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/pi-boundary.json",
+      "sha256": "b5c67d4a09644407eb8f19f01e06fd00f1cac1046284edf0080378b1791bfe15",
+      "source": "apps\\desktop\\test-results\\xiaozhi-agent\\pi-boundary-Iwj7yP\\report.json",
+      "originalSha256": "3eeb6cbe145fba2d81a8846c977bf171fe225055269369bcdebd7be2a7b94f4c",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/review-window.json",
+      "sha256": "adf7134b3f1b8d288ea8f5708706f443dd84563af7efc4d5da635d848cf466f9",
+      "source": "acceptance/ux-followup-20261126/review-window.json",
+      "originalSha256": "4688d3865ee0bd96bb6b4d9c378782342f81ea22a917ca0a4df72edd9f625bf1",
+      "textWhitespaceNormalized": true
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/home.png",
+      "sha256": "511c695e7126a01a6e638ccfa8f94321ad49f46ff63b8c6d40d841fc1e543ecb",
+      "source": "acceptance/ux-followup-20261126/review-window.png",
+      "originalSha256": "511c695e7126a01a6e638ccfa8f94321ad49f46ff63b8c6d40d841fc1e543ecb",
+      "textWhitespaceNormalized": false
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/context-1366.png",
+      "sha256": "a89103ba3f7cc4104cd0e64e5c48483435d9190a7edc3a6f29389f666f0e050a",
+      "source": "acceptance/ux-followup-20261126/read-states-bf27UF/context-aligned-1366.png",
+      "originalSha256": "a89103ba3f7cc4104cd0e64e5c48483435d9190a7edc3a6f29389f666f0e050a",
+      "textWhitespaceNormalized": false
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/context-390.png",
+      "sha256": "170bb81f285cd66adec16dbb588074351b0775ea76cde74839a415519532eb60",
+      "source": "acceptance/ux-followup-20261126/read-states-bf27UF/context-aligned-390.png",
+      "originalSha256": "170bb81f285cd66adec16dbb588074351b0775ea76cde74839a415519532eb60",
+      "textWhitespaceNormalized": false
+    },
+    {
+      "path": "acceptance/ux-followup-20261126/delivery-evidence/knowledge-failed-1366.png",
+      "sha256": "79c43a35dd34a996d1895365a574b2f3bb5c2efa59a5de96b0ccd6be8c4229e9",
+      "source": "acceptance/ux-followup-20261126/read-states-bf27UF/knowledge-read-failed-1366.png",
+      "originalSha256": "79c43a35dd34a996d1895365a574b2f3bb5c2efa59a5de96b0ccd6be8c4229e9",
+      "textWhitespaceNormalized": false
+    }
+  ]
+}

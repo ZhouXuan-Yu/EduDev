@@ -1,0 +1,1 @@
+This test began before useHeaderExtent changed and its out build was refreshed while running. No result from full-smoke.log may be counted. Re-run from the final frozen build.

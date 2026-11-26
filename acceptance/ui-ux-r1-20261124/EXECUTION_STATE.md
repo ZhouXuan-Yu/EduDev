@@ -1,5 +1,11 @@
 # UI / UX R1 恢复入口
 
+## 2026-11-26 补充修复入口
+
+当前恢复请先读`../ux-followup-20261126/delivery.json`及`../../docs/audit/ux-followup-20261126/RESULT.md`。部署组件来源守卫、依赖漏洞和新的Pi测试误绿问题已有修复及当前构建证据；原生125%、首次冷峰与完整业务状态仍未全部关闭，整体仍BLOCKED。此处不覆写历史28项或旧失败，主线及窗口以新final-delivery-receipt.json核实。
+
+## 以下为前次交付快照（保留历史）
+
 最新状态：**BLOCKED，未输出UI_R1_DONE**。28项23 PASS/1 FAIL（完整状态证据不足）/4 BLOCKED。机器validator结构有效exit2。教师试用NOT_RUN。
 
 任务入口contract/01_EXECUTION_GOAL.md，包目录结构完整；不限正常修复轮次，未修改Master及其他AI任务。旧阶段历史见history/与既有日志。当前没有自动Goal工具实例（get_goal=null），未虚假complete。
