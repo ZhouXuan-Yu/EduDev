@@ -1,5 +1,16 @@
 # Provider 恢复 R1 集成记录
 
+## 2026-11-26 集成前置核对
+
+| 核对项 | 结果 |
+| --- | --- |
+| 版本 | 专项源 `7f54a01f3db87eda80d5805315be5dec766a2942`，实际远端 main `f420db00e4c124a1320aab57c82e65017ee89297`，资源调度 `ed618c1c68e3e5561fe57d7555e62073978ebc72`。 |
+| 主线写入约束 | GitHub 当次返回 `protected=false` 及作用于该分支的规则空列表，主线树未见 `.github`。串行维护安排和产品门禁仍须分别成立。 |
+| 两组预检 | `git merge-tree --write-tree --name-only --messages` 检查 Git 对象，未创建候选分支、工作树或合并提交。Provider 与现有 main 文本预检退出 0。Provider 与资源调度文本预检退出 1，冲突涉及 `2.Memory.md`、`local-utility-host.ts`、`office-artifact-service.ts`、`office-generator.ts`、`office-pdf-budget.ts` 和 `office-pdf-renderer.ts`。无冲突的合并文本仍需实际接线回归。 |
+| 交付状态 | `PAUSED_BUDGET`。正式候选 0/3，尚未满足模块门禁，故未进入合并。源码与已有模块回退点见下表。 |
+
+原始证据在固定验收根 `resume-20261126-f420db0` 中的 `phase0-readback.json`、`git-main-preflight.log`、`git-resource-preflight.log`、`git-preflight-result.json` 和 GitHub 查询结果。资源调度的实际组合需要同时保留真实退出回执、原有资源准入、PDF 版本校验和产品副作用对账。原 owner 核准组合后才能使用正式候选额度。
+
 | 项目 | 截点 |
 | --- | --- |
 | 原远端参考 | `0dc86d8` |
