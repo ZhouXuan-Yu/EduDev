@@ -4,6 +4,7 @@ import type {ResourceChunk} from '../../shared/contracts';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {assertCurriculumEntry} from '../assets/material-curriculum';
 import type {CurriculumEntry} from '../../shared/material-curriculum';
+import type {MaterialSource} from '../../shared/materials';
 
 /** Host-owned run evidence: the model cannot supply or replace these references. */
 export function createClassroomContext(preferenceRevision:number,adopted?:CurriculumEntry[]){
@@ -16,8 +17,7 @@ export function createClassroomContext(preferenceRevision:number,adopted?:Curric
    if(!delivered.has(key)&&delivered.size>=24)throw Error('too_large');
    delivered.set(key,structuredClone(material));
   },
-  hasRead(entry:CurriculumEntry){
-   const source=entry.source;
+  hasRead(source:MaterialSource){
    const material=delivered.get(source.resourceId+'/'+source.chunkId);
    return Boolean(material&&!material.truncated&&sameMaterialSource(source,material.source));
   },

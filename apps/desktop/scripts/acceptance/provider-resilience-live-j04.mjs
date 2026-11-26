@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { createServer } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
 import { setTimeout as delay } from 'node:timers/promises';
 import { _electron as electron } from 'playwright';
@@ -10,7 +11,8 @@ import { assertIsolatedPiMain, testMain } from './build-root.mjs';
 import { productEntry } from '../product-navigation.mjs';
 import { openLessonFromChat } from '../education/teaching-lesson-task-journey.mjs';
 
-const [fixtures, evidence] = process.argv.slice(2);
+const [fixtures, evidence, scenario] = process.argv.slice(2);
+assert(scenario===undefined||scenario==='--transient');
 assert([fixtures, evidence].every(value => value && path.isAbsolute(value)));
 assert(process.env.DEEPSEEK_API_KEY, 'Built-in DeepSeek test credential is unavailable');
 const desktop = fs.realpathSync(process.env.OMNI_EDU_PROVIDER_LIVE_DESKTOP ?? path.resolve(import.meta.dirname, '../..'));
@@ -26,14 +28,15 @@ fs.writeFileSync(materialPath, source);
 const contract = fs.readFileSync(path.join(fixtures, 'journeys.md'), 'utf8');
 const prompt = contract.match(/^\| J04 教案 \| “([^”]+)”/mu)?.[1];
 assert(prompt);
-const report = { ok: false, root, main, mainHash: hash(fs.readFileSync(main)), fixtureHash: hash(source), prompt, checks: [], wire: [], paidRequests: 0 };
+const report = { ok: false, root, main, mainHash: hash(fs.readFileSync(main)), fixtureHash: hash(source), prompt,
+  scenario:scenario?'recover-503':'healthy', checks: [], wire: [], paidRequests: 0, injectedRequests:0 };
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) =>
   key === 'DEEPSEEK_API_KEY' || !/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
 Object.assign(env, {
   OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..'), OMNI_EDU_SKIP_DOTENV: '1',
-  OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_MODEL: process.env.DEEPSEEK_MODEL || 'deepseek-flash',
+  OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_MODEL: process.env.DEEPSEEK_MODEL || 'deepseek-flash', TEMP: root, TMP: root,
 });
-let app, page;
+let app, page, faultServer;
 function read(statement) {
   const db = new DatabaseSync(path.join(data, 'app.db'), { readOnly: true, timeout: 5000 });
   try { return db.prepare(statement).all(); }
@@ -51,9 +54,20 @@ async function until(label, readValue, timeout) {
 function check(label) { report.checks.push(label); }
 
 try {
+  let transientEndpoint;
+  if(scenario){
+    faultServer=createServer((request,response)=>{
+      report.injectedRequests++;
+      if(request.headers.authorization){response.writeHead(400).end();return;}
+      response.writeHead(503,{'Content-Type':'application/json','Retry-After':'1'});
+      response.end(JSON.stringify({error:{message:'Owned assessment transient unavailable',type:'server_error'}}));
+    });
+    await new Promise((resolve,reject)=>faultServer.once('error',reject).listen(0,'127.0.0.1',resolve));
+    transientEndpoint='http://127.0.0.1:'+faultServer.address().port;
+  }
   app = await electron.launch({ executablePath, args: [main, '--user-data-dir=' + profile], env, cwd: desktop, timeout: 60_000 });
   await assertIsolatedPiMain(app, main, profile);
-  await app.evaluate(({ dialog, net }, localSource) => {
+  await app.evaluate(({ dialog, net }, {localSource,transientEndpoint}) => {
     const wire = globalThis.providerLiveJ04Wire = [];
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [localSource] });
     const remote = net.fetch.bind(net);
@@ -66,10 +80,13 @@ try {
       if (target.origin !== 'https://api.deepseek.com' || (!catalogue && !completion)) throw Error('Unexpected external destination');
       if (wire.filter(entry => entry.completion === completion).length >= (completion ? 7 : 3)) throw Error('Isolated request ceiling reached');
       const body = completion && typeof options?.body === 'string' ? JSON.parse(options.body) : undefined;
-      const record = { completion, model: body?.model, startedAt: performance.now(), status: null };
+      const injected=Boolean(transientEndpoint&&completion&&!wire.some(entry=>entry.completion));
+      const record = { completion, injected, model: body?.model, toolChoice: body?.tool_choice?.function?.name ?? body?.tool_choice,
+        toolNames:body?.tools?.map(tool=>tool.function?.name),
+        startedAt: performance.now(), status: null };
       wire.push(record);
       try {
-        const response = await remote(address, options);
+        const response = injected ? await remote(transientEndpoint,{method:'POST',signal:options?.signal}) : await remote(address, options);
         record.status = response.status;
         if (catalogue && response.ok) {
           const publicCatalogue = await response.clone().json().catch(() => null);
@@ -79,7 +96,7 @@ try {
         return response;
       } finally { record.elapsedMs = Math.round(performance.now() - record.startedAt); }
     };
-  }, materialPath);
+  }, {localSource:materialPath,transientEndpoint});
   page = await app.firstWindow();
   await productEntry(page, 'materials').click();
   await page.getByTestId('materials-import').click();
@@ -113,6 +130,18 @@ try {
   assert.deepEqual(payload.document.scenes.map(scene => scene.durationMinutes), [5, 12, 18, 10]);
   assert.equal(payload.document.objectives.length, 2);
   assert(JSON.stringify(payload.context).includes(item.id), 'Draft must preserve the original source identity');
+  assert.equal(read("SELECT COUNT(*) AS total FROM document_artifacts")[0].total,0);
+  if(scenario){
+    const attempts=(await app.evaluate(()=>globalThis.providerLiveJ04Wire)).filter(entry=>entry.completion);
+    assert.equal(report.injectedRequests,1);
+    assert.equal(attempts[0].status,503);
+    assert.equal(attempts[1].status,200);
+    assert.equal(attempts[0].model,attempts[1].model);
+    assert.equal(attempts[0].toolChoice,attempts[1].toolChoice);
+    assert(attempts[1].startedAt-attempts[0].startedAt>=1000);
+    assert.deepEqual(read('SELECT id FROM ai_agent_runs').map(row=>row.id),[draft.run_id]);
+    check('The actual 503, retry delay, and recovery use the same model, tool and persisted run');
+  }
   check('The real model saved the exact lesson duration, four phase durations, and source linkage');
   await openLessonFromChat(page, draft.id, draft.id);
   await page.getByTestId('classroom-plan-confirm').click();
@@ -125,9 +154,10 @@ try {
 } finally {
   if (app) {
     report.wire = await app.evaluate(() => globalThis.providerLiveJ04Wire).catch(() => []) ?? [];
-    report.paidRequests = report.wire.filter(entry => entry.completion).length;
+    report.paidRequests = report.wire.filter(entry => entry.completion&&!entry.injected).length;
     await app.close().catch(() => undefined);
   }
+  if(faultServer)await new Promise(resolve=>faultServer.close(resolve));
   fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify({ ok: report.ok, root, checks: report.checks.length, paidRequests: report.paidRequests, error: report.error }));
 }

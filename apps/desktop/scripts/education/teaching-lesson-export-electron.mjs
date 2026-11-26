@@ -10,8 +10,9 @@ const fixture=process.argv[2];assert(fixture);
 const composerMode=process.argv.includes('--composer');
 const natural=path.basename(fixture).startsWith('lesson-from-chat-');
 const named=path.basename(fixture).startsWith('named-lesson-');
-const outputName=named?'具名依据教案':natural?'教案':'教案第5版';
-assert(natural||named||path.basename(fixture).startsWith('xiaozhi-teaching-lesson-ui-'));
+const ordinary=path.basename(fixture).startsWith('provider-live-j04-');
+const outputName=named?'具名依据教案':ordinary?'资料备课教案':natural?'教案':'教案第5版';
+assert(natural||named||ordinary||path.basename(fixture).startsWith('xiaozhi-teaching-lesson-ui-'));
 const fixtureReport=JSON.parse(fs.readFileSync(path.join(fixture,fs.existsSync(path.join(fixture,'report-resume.json'))?'report-resume.json':'report.json')));
 assert(fixtureReport.ok);
 const desktop=path.resolve(import.meta.dirname,'../..'),root=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT||os.tmpdir(),'omni-edu-lesson-export-pi-')),data=path.join(root,'data'),profile=path.join(root,'profile');fs.cpSync(path.join(fixture,'data'),data,{recursive:true});fs.mkdirSync(profile);
@@ -63,8 +64,8 @@ async function start(id,prompt){
 async function idle(id){return until(async()=>{const value=await snapshot(id);return !value.running&&value.projection.turns.length?value:null;});}
 try{
  const originalRows=query("SELECT * FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'");
- assert.equal(originalRows.length,natural||named?1:5);
- const row=natural||named?originalRows[0]:originalRows.find(r=>JSON.parse(r.payload_json).revision===5);assert(row);
+ assert.equal(originalRows.length,natural||named||ordinary?1:5);
+ const row=natural||named||ordinary?originalRows[0]:originalRows.find(r=>JSON.parse(r.payload_json).revision===5);assert(row);
  const payload=JSON.parse(row.payload_json),document=payload.document;
  if(natural){
   assert.equal(JSON.parse(row.result_json).state,'draft');
@@ -75,6 +76,12 @@ try{
   assert.equal(JSON.parse(row.result_json).state,'confirmed');
   assert.equal(payload.context.adopted.length,2);
   assert.deepEqual(new Set(document.lesson.mappings.map(mapping=>mapping.curriculumIndex)),new Set([0,1]));
+ } else if(ordinary) {
+  assert.equal(row.id,fixtureReport.lesson.id);
+  assert.equal(JSON.parse(row.result_json).state,'confirmed');
+  assert.deepEqual(document,fixtureReport.lesson.document);
+  assert(payload.context.materials.length>0);
+  assert.equal(payload.context.adopted?.length??0,0);
  } else {
   assert.deepEqual(document,lessonDocument);
   assert.equal(JSON.parse(row.result_json).state,'confirmed');
@@ -108,7 +115,7 @@ try{
  }
  report.turn=(await idle(id)).projection.turns.at(-1);report.goodWire=await wire();assert.equal(report.goodWire.calls.length,5);assert.equal(report.goodWire.blocked.length,0);report.bundle=bundle;
  const files=['docx','pdf'].map(format=>path.join(out,outputName+'.'+format));assert(files.every(fs.existsSync));report.files=files.map(file=>({file,sha256:sha(fs.readFileSync(file)),bytes:fs.statSync(file).size,mtime:fs.statSync(file).mtimeMs}));
- const parser=path.join(root,'readback.py');fs.writeFileSync(parser,`import sys,json,zipfile,xml.etree.ElementTree as ET,fitz\nwith zipfile.ZipFile(sys.argv[1]) as z:\n r=ET.fromstring(z.read('word/document.xml'));ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'};text='\\n'.join(n.text or '' for n in r.findall('.//w:t',ns));images=[n for n in z.namelist() if n.startswith('word/media/')];size=r.find('.//w:pgSz',ns).attrib\nd=fitz.open(sys.argv[2]);pages=[]\nfor p in d:\n spans=[s for b in p.get_text('dict')['blocks'] if 'lines' in b for l in b['lines'] for s in l['spans'] if s['text'].strip()];pages.append({'size':[p.rect.width,p.rect.height],'text':p.get_text(),'bounds':[s['bbox'] for s in spans]})\nprint(json.dumps({'docxText':text,'images':images,'docxSize':size,'pages':pages},ensure_ascii=True))\n`);
+ const parser=path.join(root,'readback.py');fs.writeFileSync(parser,`import sys,json,zipfile,xml.etree.ElementTree as ET\nimport pymupdf as fitz\nwith zipfile.ZipFile(sys.argv[1]) as z:\n r=ET.fromstring(z.read('word/document.xml'));ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'};text='\\n'.join(n.text or '' for n in r.findall('.//w:t',ns));images=[n for n in z.namelist() if n.startswith('word/media/')];size=r.find('.//w:pgSz',ns).attrib\nd=fitz.open(sys.argv[2]);pages=[]\nfor p in d:\n spans=[s for b in p.get_text('dict')['blocks'] if 'lines' in b for l in b['lines'] for s in l['spans'] if s['text'].strip()];pages.append({'size':[p.rect.width,p.rect.height],'text':p.get_text(),'bounds':[s['bbox'] for s in spans]})\nprint(json.dumps({'docxText':text,'images':images,'docxSize':size,'pages':pages},ensure_ascii=True))\n`);
  const parsed=JSON.parse(execFileSync('python',[parser,...files],{encoding:'utf8'}));report.readback=parsed;assert.equal(parsed.images.length,0);assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}w'],'11906');assert.equal(parsed.docxSize['{http://schemas.openxmlformats.org/wordprocessingml/2006/main}h'],'16838');
  const normalize=text=>text.replace(/\s+/g,''),pdfText=parsed.pages.map(p=>p.text).join('');const required=[document.title,...document.objectives,...document.lesson.goalCriteria,...document.lesson.preparation,...Object.values(document.lesson.details),...document.scenes.flatMap(s=>[s.title,s.activity]),...document.lesson.phases.flatMap(p=>[p.teacherPrompt,...p.checks.flatMap(c=>[c.prompt,c.expectedEvidence,c.criterion])]),...document.lesson.mappings.flatMap(m=>[m.quote,m.explanation]),...document.lesson.missingSources,plan.id,plan.version];
  if(named)required.push(...payload.context.adopted.flatMap(entry=>[entry.id,entry.source.version,entry.source.chunkId]));

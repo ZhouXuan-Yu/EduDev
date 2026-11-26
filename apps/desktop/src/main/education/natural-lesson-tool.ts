@@ -2,6 +2,7 @@ import { CLASSROOM_PLAN_SCHEMA, type ClassroomPlanDocument, type ClassroomLesson
 import { TEACHING_LESSON_SCHEMA, teachingLessonToolSchema, type TeachingLesson, type LessonPhase } from "../../shared/teaching-lesson";
 
 import { includeLessonMaterials, lessonMaterialsToolSchema } from "./natural-lesson-materials";
+import { lessonSlotMatches, type LessonAgendaSlot } from "./natural-lesson-agenda";
 
 const lesson = teachingLessonToolSchema.properties;
 const phase = lesson.phases.items.properties;
@@ -55,9 +56,26 @@ type NaturalLessonInput = {
   scenes: (Omit<LessonPhase, "sceneId"> & { title: string; activity: string; durationMinutes: number })[];
 };
 
-export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent, requestedMaterials?: number):
+function keepClosingSlot(scenes:NaturalLessonInput['scenes'],agenda?:readonly LessonAgendaSlot[]) {
+  const assessment=scenes.at(-2),closing=scenes.at(-1),slot=agenda?.at(-1);
+  if(!agenda||slot?.kind!=='closure'||scenes.length!==agenda.length+1||
+     assessment?.kind!=='assessment'||closing?.kind!=='closure'||
+     assessment.durationMinutes+closing.durationMinutes!==slot.minutes||
+     !agenda.slice(0,-1).every((item,index)=>lessonSlotMatches(item,scenes[index].kind,scenes[index].durationMinutes)))
+    return scenes;
+  const title=assessment.title+' · '+closing.title;
+  const activity=assessment.activity+'\n'+closing.activity;
+  const teacherPrompt=assessment.teacherPrompt+'\n'+closing.teacherPrompt;
+  const checks=[...assessment.checks,...closing.checks];
+  if(title.length>160||activity.length>3000||teacherPrompt.length>1500||checks.length>3)return scenes;
+  return [...scenes.slice(0,-2),{...assessment,title,activity,teacherPrompt,checks,durationMinutes:slot.minutes,
+    objectiveIndices:[...new Set([...assessment.objectiveIndices,...closing.objectiveIndices])]}];
+}
+
+export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonIntent, requestedMaterials?: number, agenda?:readonly LessonAgendaSlot[]):
   { document: ClassroomPlanDocument; materialCount: number } | { issue: string; error: string } {
-  const { title, totalMinutes, objectives, preparation, details, scenes, materials, mappings = [] } = raw as NaturalLessonInput;
+  const { title, totalMinutes, objectives, preparation, details, scenes:submittedScenes, materials, mappings = [] } = raw as NaturalLessonInput;
+  const scenes=keepClosingSlot(submittedScenes,agenda);
   const included = includeLessonMaterials(details.content, materials, requestedMaterials);
   if ("issue" in included) return { ...included, error: "lesson_materials_incomplete" };
   const missingBasis = intent.curricula.findIndex((_,index) => !mappings.some(mapping => mapping.curriculumIndex === index));
@@ -67,13 +85,17 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
   const missingSources = !intent.curricula.length ? ["本轮未选用课标或教材，请教师对照适用版本。"] :
     objectives.flatMap((_,index) => mappings.some(mapping => mapping.objectiveIndex === index) ? [] :
       [`目标 ${index + 1} 尚无直接对应的资料依据，请教师复核。`]);
+  const closing=scenes.at(-1);
+  // A final check can share the closing slot. Coverage still validates every actual check.
+  const scheduled=closing?.kind==="closure"&&closing.checks.length&&!scenes.some(scene=>scene.kind==="assessment")
+    ? scenes.with(-1,{...closing,kind:"assessment"}) : scenes;
   const sceneId = (index: number) => `lesson-${index + 1}`;
   const document: ClassroomPlanDocument = {
     schemaVersion: CLASSROOM_PLAN_SCHEMA,
     title,
     totalMinutes,
     objectives: objectives.map(({ goal }) => goal),
-    scenes: scenes.map(({ title, kind, activity, durationMinutes }, index) => ({
+    scenes: scheduled.map(({ title, kind, activity, durationMinutes }, index) => ({
       sceneId: sceneId(index),
       type: kind === "assessment" ? "quiz" : "slide",
       title,
@@ -87,7 +109,7 @@ export function naturalLessonDocument(raw: unknown, intent: ClassroomLessonInten
       preparation,
       details: { ...details, content: included.content },
       goalCriteria: objectives.map(({ criterion }) => criterion),
-      phases: scenes.map(({ kind, objectiveIndices, teacherPrompt, checks }, index) => ({
+      phases: scheduled.map(({ kind, objectiveIndices, teacherPrompt, checks }, index) => ({
         sceneId: sceneId(index), kind, objectiveIndices, teacherPrompt, checks,
       })),
       mappings,

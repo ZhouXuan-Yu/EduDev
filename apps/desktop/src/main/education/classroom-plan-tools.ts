@@ -9,6 +9,7 @@ import {physicsAnswerInstructions} from '../xiaozhi-agent/physics-answer-quality
 import {teachingLessonToolSchema,teachingLessonIssues,lessonDetailIssues,teachingLessonCoverageIssues} from '../../shared/teaching-lesson';
 import {naturalLessonDocument,naturalLessonToolSchema} from './natural-lesson-tool';
 import type {NaturalLessonRequirements} from './natural-lesson-draft';
+import {lessonSlotMatches} from './natural-lesson-agenda';
 
 const empty={type:'object',additionalProperties:false,properties:{}} as const;
 const sceneId={type:'string',pattern:'^[A-Za-z0-9_-]{1,64}$'};
@@ -23,7 +24,7 @@ function outline(scene:ClassroomPlanScene,index:number,document:ClassroomPlanDoc
  return{id:scene.sceneId,type:scene.type,title:scene.title,description:`${scene.activity}\n教学目标：${document.objectives.join('；')}。本页安排${scene.durationMinutes}分钟。`,keyPoints:document.objectives,order:index,...(scene.type==='quiz'?{quizConfig:{questionCount:1,difficulty:'medium',questionTypes:['single']}}:{})};
 }
 /** Same Pi owns every model call. OpenMAIC only supplies prompts and normalizes Pi JSON. */
-export function createClassroomPlanTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomPlanState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context:()=>ClassroomContext;binding?:ClassroomPlanStart;naturalDraft?:NaturalLessonRequirements;revisionTools?:[ToolDefinition,ToolDefinition]}):ToolDefinition[]{
+export function createClassroomPlanTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomPlanState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context:()=>ClassroomContext;binding?:ClassroomPlanStart;naturalDraft?:NaturalLessonRequirements;requiredSourcesRead?:()=>boolean;revisionTools?:[ToolDefinition,ToolDefinition]}):ToolDefinition[]{
  const check=(signal?:AbortSignal)=>{if(signal?.aborted||!options.current())throw Error('cancelled');};
  const binding=():ClassroomPlanBinding=>{if(options.binding?.mode!=='generate')throw Error('not_confirmed');return options.binding;};
  const read=(signal?:AbortSignal)=>options.state.readForRun(options.sessionId,options.runId,binding(),()=>options.current()&&!signal?.aborted);
@@ -42,13 +43,19 @@ export function createClassroomPlanTools(options:{sessionId:string;runId:string;
  };
  const classroomOutline:ToolDefinition={name:'education_propose_classroom_outline',label:'整理教学设计',description:options.binding?.mode==='outline'&&options.binding.lesson?'保存完整可编辑教案，仍用原课堂版本账本，不需要通用update_task_plan。lesson必填，版本xiaozhi.teaching-lesson.v1。lesson.details写明教学内容(content)、重点(focus)、难点(difficulty)、板书结构(boardwork)、作业任务及提交要求(homework)、课后反思时要对照的学生证据与调整问题(reflection)。反思写观察和追问计划，不能假定已上课或捏造课堂表现。顶层objectives写可观察行动，scenes保存4–12个环节（sceneId稳定、type用slide/quiz、activity为具体任务、durationMinutes为分钟）；lesson.phases逐环节关联sceneId、kind（introduction/activity/practice/assessment/closure）、objectiveIndices（从0开始）、teacherPrompt及checks（实际检查题、expectedEvidence、criterion、objectiveIndices）。每个目标均有探究或练习和具体检查；goalCriteria逐目标对应。先实读教师选定的各依据锚点；mappings用curriculumIndex按教师选定顺序，从实际原文quote到objectiveIndex并解释关系。未选依据或未映射目标在missingSources明确待对照，不编标准编号，不宣称正式课标对齐；合成和参考资料不能成为正式标准。缺资料可交待对照通用教案。总时长与各环节应一致，有冲突只保存待调整草稿。只保存草稿后停止，提示教师到互动课堂核对。':'先office_list_materials、office_read_material实读已保存正文，再只提交课堂大纲。来源由宿主绑定，不接受模型提供来源。schemaVersion=xiaozhi.classroom-plan.v1；2–12页，slide与quiz均需有；稳定sceneId，总分钟数等于各页时长之和。此工具只在教师从课堂制作入口开启的大纲模式可用，由课堂版本账本准入；直接调用，不为它建立通用update_task_plan步骤。仅保存草稿，随后停止页生成，提示教师到教学工作台→互动课堂编辑并明确确认；模型不能批准。AI还原页/学生证据未绑定，不支持本片。',parameters:(options.binding?.mode==='outline'&&options.binding.lesson?{...outlineSchema,required:[...outlineSchema.required,'lesson'],properties:{...outlineSchema.properties,lesson:teachingLessonToolSchema}}:outlineSchema) as ToolDefinition['parameters'],execute:async(callId,raw,signal)=>{
    try{check(signal);if(options.binding?.mode!=='outline')throw Error('not_confirmed');const intent=options.binding.lesson;
-    const submission=options.naturalDraft&&intent?naturalLessonDocument(raw,intent,options.naturalDraft.requestedMaterials):undefined;
+    if(options.requiredSourcesRead&&!options.requiredSourcesRead())throw Error('source_required');
+    const submission=options.naturalDraft&&intent?naturalLessonDocument(raw,intent,options.naturalDraft.requestedMaterials,options.naturalDraft.requestedAgenda):undefined;
     if(submission&&'issue' in submission)return failure(submission.error,submission.issue);
     const document=submission?.document??raw as ClassroomPlanDocument;
     if(intent?(!document.lesson||document.lesson.subject!==intent.subject||document.lesson.grade!==intent.grade||lessonDetailIssues(document.lesson.details).length>0):document.lesson!==undefined)throw Error('invalid_input');
     if(options.naturalDraft&&document.lesson){
       const issues=teachingLessonCoverageIssues(document.lesson.phases,document.objectives.length);
       if(issues.length>0)return failure('lesson_objective_coverage',issues.join(' '));
+      const agenda=options.naturalDraft.requestedAgenda;
+      if(agenda&&(document.scenes.length!==agenda.length||!document.lesson.phases.every((phase,index)=>
+         lessonSlotMatches(agenda[index],phase.kind,document.scenes[index].durationMinutes)))){
+        return failure('lesson_schedule_mismatch','请按教师明示的顺序、数量和分钟数保存环节。若最后的总结含检查，把评价与总结保存在同一个环节。');
+      }
     }
     const requestedMinutes=options.naturalDraft?.requestedMinutes;
     if(requestedMinutes!==undefined){

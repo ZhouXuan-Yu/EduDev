@@ -37,7 +37,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   lesson_draft_missing: '本轮未保存成可编辑教案。可以在原对话重新发起教案，或从互动课堂的教案入口重试。',
   lesson_revision_missing: '本轮没有保存教案修改。请按对话提示核对教案标题、修改范围或课时，再从原对话重试。',
   lesson_basis_ambiguous: '本轮无法确定唯一的备课资料版本。请在教学工作台的互动课堂中选择具体版本，一次最多选三份。',
-  lesson_basis_unavailable: '本轮指定的备课依据不可用。请回资料库核对完整名称、学科、年级和依据登记状态，然后重试。',
+  lesson_basis_unavailable: '本轮指定的备课依据不可用。请在资料库核对名称、学科、年级和正文收录状态。使用课程依据时，请同时核对登记状态。',
   handout_basis_ambiguous: '无法确定讲义所用的资料。请核对重名文件，使用唯一的完整名称，一次最多指定三份。',
   handout_basis_unavailable: '资料库里找不到讲义指定的文件。请核对完整名称或先导入资料，再重新发送。',
   handout_basis_unread: '本轮没有保存指定资料的讲义。请检查每份资料是否已收录正文，再重试生成。',
