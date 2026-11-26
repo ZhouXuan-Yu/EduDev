@@ -55,8 +55,11 @@ try {
   inject([{ stopReason: 'toolUse', content: [call('exec_command', { command: 'blocked-default-command' }, 'invalid-terminal')] }, end]);
   await agent.prompt('协议注入：无效受控终端参数');
   check('Invalid registered terminal arguments are rejected before the executor', () => {
+    const result = lastTool();
+    assert.equal(result?.toolCallId, 'invalid-terminal', 'Rejection must belong to this invocation, not a previous tool result');
+    assert.equal(result?.toolName, 'exec_command');
     assert.equal(agent.session.agent.state.tools.find(tool => tool.name === 'exec_command').execute, monitored);
-    assert.equal(terminalExecutions, 0); assert(lastTool()?.isError);
+    assert.equal(terminalExecutions, 0); assert(result.isError);
     assert(!fs.existsSync(path.join(workspace, 'unauthorized.md')));
   });
   terminal.execute = execute;
