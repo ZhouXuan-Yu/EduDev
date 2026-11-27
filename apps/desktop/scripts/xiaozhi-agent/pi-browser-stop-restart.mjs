@@ -66,10 +66,17 @@ try {
     await guest.waitForFunction(()=>window.count===1, undefined, {polling:25,timeout:5000});
   }
   await page.getByRole('button', {name:'停止本轮',exact:true}).click();
-  await page.waitForFunction(async id=>{
-    const snapshot = await window.omniEdu.getXiaozhiSnapshot(id);
-    return !snapshot.running && snapshot.projection.turns.at(-1)?.status==='interrupted';
-  }, sessionId, {timeout:20000});
+  const stopDeadline = Date.now()+20000;
+  let interrupted = false;
+  while (Date.now()<stopDeadline) {
+    interrupted = await page.evaluate(async id=>{
+      const snapshot = await window.omniEdu.getXiaozhiSnapshot(id);
+      return !snapshot.running && snapshot.projection.turns.at(-1)?.status==='interrupted';
+    },sessionId);
+    if (interrupted) break;
+    await new Promise(resolve=>setTimeout(resolve,100));
+  }
+  assert(interrupted,'Stop did not settle in the original conversation');
   report.clicks = await guest.evaluate(()=>window.count);
   assert.equal(report.clicks, stage==='after-click'?1:0);
   report.checks.push('Teacher stop reached an interrupted durable turn with expected independent page count');

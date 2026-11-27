@@ -15,6 +15,45 @@ try{
  const manager=createManagedEducationSkills({root,state,assertIdle:()=>{}});let catalog=await manager.initialize();catalog=await manager.importDirectory(input,catalog.revision);await manager.setEnabled('timing-fixture',catalog.revision,true);
  await check('Real package proof results retain catalog and explicit selection order',async()=>{const enabled=(await manager.catalog()).skills.filter(item=>item.enabled&&!item.archived);assert.deepEqual((await manager.enabledResources()).resources.map(resource=>resource.item.name),enabled.map(item=>item.name));const reversed=enabled.slice().reverse();assert.deepEqual((await manager.resourcesForItems(reversed)).resources.map(resource=>resource.item.name),reversed.map(item=>item.name));});
  const session=SessionManager.create(output,output);session.appendCustomEntry('xiaozhi.education.snapshot.v1',{fixture:true});const runtime=await createManagedSkillRuntime(path.join(output,'agent'),session.getSessionFile(),{resources:manager.enabledResources,sanitize:async text=>text});
+ if (process.argv.includes('--measure-files')) {
+   const original = fs.promises.lstat;
+   const samples = [];
+   let calls = 0;
+   fs.promises.lstat = async function(...args) { calls++; return original.apply(this,args); };
+   try {
+     for (let i=0;i<12;i++) {
+       calls=0;
+       const started=performance.now();
+       await runtime.check();
+       samples.push({ms:Math.round(performance.now()-started),pathStats:calls});
+     }
+   } finally { fs.promises.lstat=original; }
+   console.log(JSON.stringify({measure:'fresh full source and cache proof',samples}));
+ }
+ await check('Sibling path checks share an unstarted ancestor observation; later checks re-read', async () => {
+   const {createAncestorStatBatch} = await import('../../src/main/xiaozhi-agent/skill-package-async.ts');
+   const original = fs.promises.lstat;
+   let count=0, release, notify;
+   const started = new Promise(resolve=>{notify=resolve;});
+   const gate = new Promise(resolve=>{release=resolve;});
+   fs.promises.lstat = async function(file,...args) {
+     count++;
+     notify();
+     await gate;
+     return original.call(this,file,...args);
+   };
+   try {
+     const observe = createAncestorStatBatch();
+     const first=observe(output), sibling=observe(output);
+     await started;
+     const late=observe(output);
+     release();
+     await Promise.all([first,sibling,late]);
+     assert.equal(count,2,'Independent proofs repeated the same not-yet-started ancestor stat');
+     assert((await observe(output)).isDirectory());
+     assert.equal(count,3);
+   } finally { release(); fs.promises.lstat=original; }
+ });
  await check('Fresh source collection overlaps the cache proof; no text is consumed before both finish', async () => {
    const agent = path.join(output,'overlap-agent');
    let enabled = false, firstRead, allowCache, cacheEntered, sanitized = 0;
@@ -54,6 +93,19 @@ try{
      try { await inFlight; } finally { fs.promises.opendir = open; }
    }
    assert(sanitized>0);
+ });
+ await check('Reading immutable skill text uses one full fresh proof immediately before return', async () => {
+   let probes=0;
+   const source={resources:async signal=>{probes++;return manager.enabledResources(signal);},sanitize:async text=>text};
+   const guarded=await createManagedSkillRuntime(path.join(output,'text-read-agent'),session.getSessionFile(),source);
+   probes=0;
+   await guarded.check();
+   const fullProof=probes;
+   assert.equal(fullProof,2);
+   probes=0;
+   const reply=await guarded.tool.execute('read-one',{path:guarded.result.skills[0].filePath});
+   assert(reply.content[0].text.length>0);
+   assert.equal(probes,fullProof,'A synchronous read of immutable text repeated the complete proof');
  });
  await check('Withdrawal and a cache change at the final source read still block delivery', async () => {
    let reads = 0;
