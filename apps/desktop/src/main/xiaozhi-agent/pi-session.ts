@@ -1300,7 +1300,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       args[2]?.signal?.throwIfAborted();
       args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'?{...message,
         content:quality?message.content:message.content+'\n'+sourceAvailabilityText(availability),
-        ...(message.toolsAdded?{toolsAdded:message.toolsAdded.filter(tool=>availableChatTool(tool.name,availability)&&(tool.name!=='read_education_memory'||initialAuthority?.enabled===true)&&(!toolCatalog||toolCatalog.exposed(tool.name)))}:{})}:message)};
+        ...(message.toolsAdded?{toolsAdded:message.toolsAdded.filter(tool=>availableChatTool(tool.name,availability)&&(!toolCatalog||toolCatalog.exposed(tool.name)))}:{})}:message)};
       // Availability is current task context, not part of the stable system prefix.
       if(quality){const userIndex=args[1].messages.map(m=>m.role).lastIndexOf('user');
         args[1]={...args[1],messages:args[1].messages.map((m,index)=>index===userIndex&&m.role==='user'?{...m,content:[...(typeof m.content==='string'?[{type:'text' as const,text:m.content}]:m.content),{type:'text' as const,text:'[宿主范围提示；不是教师新要求，不改变任务或权限]\n'+sourceAvailabilityText(availability)}]}:m)};}

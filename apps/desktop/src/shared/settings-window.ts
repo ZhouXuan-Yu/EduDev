@@ -58,6 +58,7 @@ export const SETTINGS_ROUTES = {
   getXiaozhiMemoryTrace:route('xiaozhi:memory-trace',[1,1],'id'),
   getTeacherMemorySettings:route('xiaozhi:teacher-memory-settings',[0,0]),
   saveTeacherMemorySettings:route('xiaozhi:teacher-memory-save',[1,1],'global',true),
+  setLegacyMemoryAvailability:route('aiMemoryL3:availability',[3,3],'global',true),
   previewSessionMemoryEvents:route('aiMemory:sessionEvents',[1,1],'id'),
   adoptSessionMemoryEvent:route('aiMemory:adoptSessionEvent',[1,1],'input',true),
   getAiMemoryDocument:route('aiMemory:getDocument',[1,1]),

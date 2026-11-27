@@ -78,7 +78,7 @@ const labels: Record<string, string> = {
   education_analyse_learning:'核对学习证据与复习顺序',
   education_propose_learning_change:'请教师核对学习建议',
   report_goal_progress:'记录目标进度',office_list_attachments:'查看已发送附件',office_read_attachment:'读取已发送附件',office_view_public_image:'确认公开图片分析',
-  office_browser:'浏览网页',office_web_search:'联网搜索',office_web_fetch:'读取公开网页',office_file_stat: '检查资料信息', office_list_files: '查看授权文件目录', office_copy_file: '复制教学资料', office_create_text: '创建教学文档', office_edit_text: '修改教学文档', office_create_document:'生成办公文档', office_read_document:'读取办公文档',update_plan:'更新任务计划',ask_teacher:'请教师补充', read_education_memory:'读取本会话教育记忆', read_session_process:'查看本会话过程' };
+  office_browser:'浏览网页',office_web_search:'联网搜索',office_web_fetch:'读取公开网页',office_file_stat: '检查资料信息', office_list_files: '查看授权文件目录', office_copy_file: '复制教学资料', office_create_text: '创建教学文档', office_edit_text: '修改教学文档', office_create_document:'生成办公文档', office_read_document:'读取办公文档',update_plan:'更新任务计划',ask_teacher:'请教师补充', read_education_memory:'读取已授权的教育记忆', read_session_process:'查看本会话过程' };
 /** Provider reasoning is separate from answer segments and public execution telemetry. */
 export const xiaozhiToolLabel=(tool:string)=>labels[tool]||'执行授权工具';
 export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgentEvent): OfficeProjectedTurn {

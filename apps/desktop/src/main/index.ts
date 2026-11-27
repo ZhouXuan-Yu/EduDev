@@ -524,6 +524,14 @@ if (ownsDesktop) app.whenReady().then(async () => {
   ipcMain.handle('aiMemoryL3:getDocument', (_event, slot: AiMemoryL3Slot) => store.getAiMemoryL3Document(slot));
   ipcMain.handle('aiMemoryL3:draft', (_event, slot: AiMemoryL3Slot, limit = 8) => store.draftAiMemoryL3(slot, limit));
   ipcMain.handle('aiMemoryL3:createEntry', (_event, input: AiMemoryL3EntryInput) => store.createAiMemoryL3Entry(input));
+  ipcMain.handle('aiMemoryL3:availability',(event,id:unknown,version:unknown,status:unknown)=>{
+    const fence=()=>{if(!settingsSender(event))throw Error('permission_denied');};
+    fence();
+    if(typeof id!=='string'||!/^memory_l3_entry_[a-f0-9-]{36}$/iu.test(id)||
+        typeof version!=='number'||!Number.isSafeInteger(version)||version<1||
+        (status!=='active'&&status!=='disabled'))throw Error('invalid_input');
+    return store.updateAiMemoryL3Entry(id,{version,status},fence);
+  });
   ipcMain.handle('aiMemoryL3:updateEntry', (_event, entryId: string, input: AiMemoryL3EntryUpdateInput) => store.updateAiMemoryL3Entry(entryId, input));
   ipcMain.handle('aiMemoryGraph:get', (_event, limit = 200) => store.getAiMemoryEvidenceGraph(limit) as Promise<AiMemoryEvidenceGraph>);
   ipcMain.handle('aiMemoryGovernance:get', () => store.getAiMemoryGovernanceReport());

@@ -749,6 +749,8 @@ const api = {
   getAiMemoryL3Document: (slot: AiMemoryL3Slot) => ipcRenderer.invoke('aiMemoryL3:getDocument', slot) as Promise<AiMemoryL3DocumentDetail | null>,
   draftAiMemoryL3: (slot: AiMemoryL3Slot, limit = 8) => ipcRenderer.invoke('aiMemoryL3:draft', slot, limit) as Promise<AiMemoryL3Draft>,
   createAiMemoryL3Entry: (input: AiMemoryL3EntryInput) => ipcRenderer.invoke('aiMemoryL3:createEntry', input) as Promise<AiMemoryL3Entry>,
+  setLegacyMemoryAvailability: (entryId:string,version:number,status:'active'|'disabled') =>
+    ipcRenderer.invoke('aiMemoryL3:availability',entryId,version,status) as Promise<AiMemoryL3Entry>,
   updateAiMemoryL3Entry: (entryId: string, input: AiMemoryL3EntryUpdateInput) => ipcRenderer.invoke('aiMemoryL3:updateEntry', entryId, input) as Promise<AiMemoryL3Entry>,
   getAiMemoryEvidenceGraph: (limit = 200) => ipcRenderer.invoke('aiMemoryGraph:get', limit) as Promise<AiMemoryEvidenceGraph>,
   getAiMemoryGovernanceReport: () => ipcRenderer.invoke('aiMemoryGovernance:get') as Promise<AiMemoryGovernanceReport>,

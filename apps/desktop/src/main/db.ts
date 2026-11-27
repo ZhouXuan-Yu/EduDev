@@ -3529,21 +3529,23 @@ export class OmniEduStore {
     return entry;
   }
 
-  async updateAiMemoryL3Entry(entryId: string, input: AiMemoryL3EntryUpdateInput): Promise<AiMemoryL3Entry> {
-    const row = (await this.all(`SELECT e.*, d.slot FROM ai_memory_l3_entries e JOIN ai_memory_l3_documents d ON d.id = e.document_id WHERE e.id = ?`, [entryId]))[0];
-    if (!row) throw new Error('L3 entry not found');
-    if (Number(row.version) !== input.version) throw new Error('L3 entry version conflict; refresh before editing');
-    const slot = String(row.slot) as AiMemoryL3Slot;
-    const text = input.text == null ? String(row.text) : normalizeMemoryText(input.text);
-    const status = input.status ?? String(row.status) as AiMemoryL3Entry['status'];
-    const now = new Date().toISOString();
-    const changed = await this.runWithChanges(`UPDATE ai_memory_l3_entries SET text = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ?`, [text, status, now, entryId, input.version]);
-    if (!changed) throw new Error('L3 entry version conflict; refresh before editing');
-    await this.run(`UPDATE ai_memory_l3_documents SET version = version + 1, updated_at = ? WHERE slot = ?`, [now, slot]);
-    const detail = await this.getAiMemoryL3Document(slot);
-    const entry = detail?.entries.find((item) => item.id === entryId);
-    if (!entry) throw new Error('L3 entry readback failed');
-    return entry;
+  async updateAiMemoryL3Entry(entryId: string, input: AiMemoryL3EntryUpdateInput,commitStarted?:()=>void): Promise<AiMemoryL3Entry> {
+    return this.shortWrite(async work=>{
+      const row = (await work.all(`SELECT e.*, d.slot FROM ai_memory_l3_entries e JOIN ai_memory_l3_documents d ON d.id = e.document_id WHERE e.id = ?`, [entryId]))[0];
+      if (!row) throw new Error('L3 entry not found');
+      if (Number(row.version) !== input.version) throw new Error('L3 entry version conflict; refresh before editing');
+      const slot = String(row.slot) as AiMemoryL3Slot;
+      const text = input.text == null ? String(row.text) : normalizeMemoryText(input.text);
+      const status = input.status ?? String(row.status) as AiMemoryL3Entry['status'];
+      const now = new Date().toISOString();
+      const changed = await work.runWithChanges(`UPDATE ai_memory_l3_entries SET text = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ?`, [text, status, now, entryId, input.version]);
+      if (!changed) throw new Error('L3 entry version conflict; refresh before editing');
+      await work.run(`UPDATE ai_memory_l3_documents SET version = version + 1, updated_at = ? WHERE slot = ?`, [now, slot]);
+      const detail = await work.getAiMemoryL3Document(slot);
+      const entry = detail?.entries.find((item) => item.id === entryId);
+      if (!entry) throw new Error('L3 entry readback failed');
+      return entry;
+    },{commitStarted});
   }
 
   async getAiMemoryEvidenceGraph(limit = 200): Promise<AiMemoryEvidenceGraph> {

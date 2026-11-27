@@ -52,6 +52,22 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
     } catch { if (mounted.current) setError('范围保存失败，请刷新后核对当前教学空间。'); }
     finally { mutation.current=false; if (mounted.current) setBusy(false); }
   }
+  async function changeLegacyAvailability(id:string,version:number,status:'active'|'disabled') {
+    if(mutation.current)return;
+    mutation.current=true;setBusy(true);setError('');setNotice('');
+    try{
+      if(!window.omniEdu)throw Error('unavailable');
+      await window.omniEdu.setLegacyMemoryAvailability(id,version,status);
+      if(!mounted.current)return;
+      await preview(sourceIndex,catalog?.offset??0);
+      await onRefresh();
+      if(mounted.current)setNotice(status==='disabled'?'这条旧综合记录已停用。':'已恢复参考资格，请重新核对本会话的选择。');
+    }catch{
+      if(mounted.current)setError('记录已变化或暂不可写，请重新查看当前版本。');
+    }finally{
+      mutation.current=false;if(mounted.current)setBusy(false);
+    }
+  }
   async function preview(index = sourceIndex, offset = 0) {
     const stamp = ++request.current; setLoading(true); setError('');
     try {
@@ -149,6 +165,12 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
             <DisclosureCard title={<>查看脱敏摘要</>}><p data-testid="pi-memory-sanitized-text">{item.sanitizedText}</p></DisclosureCard>
             <p data-testid="pi-memory-provenance">{item.provenance === 'surface_only' ? `仅有来源分类：${item.sourceDocuments.map(source => XIAOZHI_MEMORY_LABELS[source]).join('、')}；没有逐条证据。`
               : item.provenance === 'event_refs' ? `记录引用 ${item.referenceCount} 项；不表示结论已经核实。` : '没有记录来源引用。'}</p>
+            {item.layer==='L3' && (item.status==='active'||item.status==='disabled') &&
+              <Button size="sm" variant="ghost" isDisabled={busy}
+                data-testid={'memory-'+(item.status==='active'?'disable':'restore')+'-l3-'+item.id}
+                onPress={()=>void changeLegacyAvailability(item.id,item.version,item.status==='active'?'disabled':'active')}>
+                {item.status==='active'?'在所有会话停用这条旧综合记录':'恢复这条旧综合记录的参考资格'}
+              </Button>}
             {item.refs.length > 0 &&<DisclosureCard title={<>来源记录</>}><ul>{item.refs.map(ref => <li key={`${ref.kind}:${ref.id}`}>{ref.label} · {ref.kind === 'run' ? '任务' : '事件'} · {ref.id}</li>)}</ul></DisclosureCard>}
           </article>;
         })}
