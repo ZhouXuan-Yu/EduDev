@@ -106,6 +106,73 @@ try {
     assert.equal(clicks[0].id,'browser_2');
   } finally { db.close(); }
   report.checks.push('Cold SQLite, Pi transcript and absence of a reopened guest confirm no replay');
+  if (stage==='after-click') {
+    const composer=reopened.locator('.office-composer-container');
+    if (await composer.getAttribute('data-session-id')!==sessionId) {
+      await reopened.getByTestId('pi-sidebar-toggle').click();
+      await reopened.getByTestId('ai-conversation-session-'+sessionId).click();
+    }
+    await reopened.waitForFunction(id=>document.querySelector('.office-composer-container')?.dataset.sessionId===id,sessionId);
+    let turns=0;
+    fixture.server.removeAllListeners('request');
+    fixture.server.on('request',async(req,res)=>{
+      if (req.url.endsWith('/models')) {
+        res.end(JSON.stringify({object:'list',data:[{id:'deepseek-flash',input_modalities:['text']}]}));
+        return;
+      }
+      let body='';
+      for await (const part of req) body+=part;
+      const messages=JSON.parse(body).messages;
+      const system=messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');
+      const planLine=system.split('\n').findLast(line=>line.startsWith('{"schemaVersion":"xiaozhi.task-plan.v3"'));
+      const task=planLine?JSON.parse(planLine):{requirementsVersion:1,revision:0};
+      res.setHeader('content-type','text/event-stream');
+      const frame=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'resume',model:'deepseek-flash',object:'chat.completion.chunk',choices:[{index:0,delta,finish_reason}]})+'\n\n';
+      const tool=(id,name,args)=>({tool_calls:[{index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}}]});
+      const responses=[
+        tool('resume_plan','update_task_plan',{schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:task.requirementsVersion,expectedRevision:task.revision,reason:'按老师要求只读核对当前网页状态',steps:[
+          {id:'verify-tabs',text:'查看本次可用的浏览器标签',kind:'web',target:url,dependsOn:[],reported:'pending'},
+          {id:'inspect',text:'核对现有标签是否仍含原站结果',kind:'web',target:url,dependsOn:['verify-tabs'],reported:'pending'},
+          {id:'review',text:'教师核对恢复状态',kind:'human',dependsOn:['inspect'],reported:'pending'}
+        ]}),
+        tool('resume_tabs','office_browser',{action:'tabs',taskStepId:'verify-tabs'}),
+        {content:'上次筛选仍需核对，本轮没有再次点击。'}
+      ];
+      const delta=responses[Math.min(turns++,responses.length-1)];
+      res.end(frame({role:'assistant'})+frame(delta)+frame({},delta.tool_calls?'tool_calls':'stop')+'data: [DONE]\n\n');
+    });
+    const prompt=reopened.getByTestId('office-prompt-input');
+    await prompt.fill('请继续刚才的任务。先只读核对当前标签，上次筛选效果未知，不要重复点击。原页是 '+url);
+    await prompt.press('Enter');
+    const until=Date.now()+60000;
+    let resumed=false;
+    while(Date.now()<until) {
+      resumed=await reopened.evaluate(async({id,old})=>{
+        const s=await window.omniEdu.getXiaozhiSnapshot(id);
+        const turn=s.projection.turns.at(-1);
+        return !s.running && turn?.id!==old && turn?.status==='completed';
+      },{id:sessionId,old:restored.projection.turns.at(-1).id});
+      if(resumed && turns>=3)break;
+      await new Promise(resolve=>setTimeout(resolve,150));
+    }
+    const resumedDb=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+    try {
+      const calls=resumedDb.prepare("SELECT call_id,success FROM xiaozhi_tool_receipts WHERE tool='office_browser' ORDER BY rowid").all();
+      report.resumeCalls=calls.map(c=>[c.call_id,c.success]);
+      assert(resumed && turns>=3,'The read-only continuation did not finish');
+      assert.equal(calls.filter(c=>c.call_id==='browser_2').length,1);
+      assert.equal(calls.at(-1).call_id,'resume_tabs');
+      assert.equal(calls.at(-1).success,1);
+      assert.equal(calls.length,4);
+      const binding=resumedDb.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(sessionId);
+      const history=fs.readFileSync(path.join(data,'xiaozhi-pi',binding.session_file),'utf8').trim().split('\n').map(line=>JSON.parse(line).message);
+      const receipt=history.findLast(m=>m?.role==='toolResult' && m.toolCallId==='resume_tabs');
+      const actual=JSON.parse(receipt.content[0].text);
+      assert(Array.isArray(actual.tabs) && !actual.tabs.some(t=>t.url===url));
+      assert.equal(resumedDb.prepare("SELECT state FROM xiaozhi_effects_v1 WHERE call_id='browser_2'").get().state,'unknown');
+      report.checks.push('Resuming the original chat reads current tabs; the old click remains unknown and is never submitted again');
+    } finally {resumedDb.close();}
+  }
   report.pass=true;
 } catch(error) {
   report.error=String(error);
