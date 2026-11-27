@@ -110,7 +110,19 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return {token,sourceId:pin.id,scopeVersion,title:source.title+' · '+source.label};
   }
 
-  async function prepare(sessionId:string,tokens:readonly string[]) {
+  type Prepared={
+    sessionId:string;scopeVersion:number;target:Target;selections:HistoryPin[];
+  } & ({tokens:string[];namedTitle?:never}|{namedTitle:string;tokens?:never});
+
+  function assertCurrentIntent(sessionId:string,proof:Prepared) {
+    if(proof.sessionId!==sessionId)throw Error('memory_scope_changed');
+    for(const token of proof.tokens??[]){
+      const intent=pending.get(token);
+      if(!intent||intent.sessionId!==sessionId||intent.expires<=Date.now())throw Error('memory_scope_changed');
+    }
+  }
+
+  async function prepare(sessionId:string,tokens:readonly string[]):Promise<Prepared> {
     const {saved,target}=await historyTeachingContext(sql,sessionId);
     const pins:HistoryPin[]=[];
     for(const token of tokens){
@@ -122,10 +134,9 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     }
     const selections=[...new Map(pins.map(pin=>[pin.id,pin])).values()];
     combinedMemorySelections(saved.selections,selections);
-    return {scopeVersion:saved.version,target,selections};
+    return {sessionId,scopeVersion:saved.version,target,selections,tokens:[...tokens]};
   }
 
-  type Prepared=Awaited<ReturnType<typeof prepare>> & {namedTitle?:string};
 
   async function namedSessionPin(work:Sql,title:string,saved:PrivateMemoryScope,target:Target) {
     if(!saved.enabled||!saved.selections.some(pin=>pin.layer==='history'))return;
@@ -149,10 +160,11 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     if(!pin)return;
     const source=await history.selected(pin).catch(()=>null);
     if(source?.fingerprint!==pin.fingerprint)return;
-    return {scopeVersion:saved.version,target,selections:[pin],namedTitle:title};
+    return {sessionId,scopeVersion:saved.version,target,selections:[pin],namedTitle:title};
   }
 
   async function confirm(work:Sql,sessionId:string,proof:Prepared) {
+    assertCurrentIntent(sessionId,proof);
     const {saved,target}=await historyTeachingContext(work,sessionId);
     if(saved.version!==proof.scopeVersion||!sameTarget(target,proof.target))throw Error('memory_scope_changed');
     if(proof.namedTitle){
@@ -201,9 +213,11 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     }
     const selections=combinedMemorySelections(existing,proof.selections);
     combinedMemorySelections(saved.selections,selections);
+    assertCurrentIntent(owner.sessionId,proof);
     await writeBinding(work,task,owner,prior,proof.target,selections,prior?.excludeSessionHistory,{
       kind:proof.namedTitle?'session_reference':'confirmed_picker',scopeVersion:proof.scopeVersion,
     });
+    assertCurrentIntent(owner.sessionId,proof);
   }
 
   async function excludeForTask(work:Sql,task:TaskView,owner:TaskOwner) {
@@ -282,6 +296,7 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
   async function turn(ownerId:string,sessionId:string,proof:Prepared):Promise<RunHistory> {
     const saved=await confirm(sql,sessionId,proof);
     combinedMemorySelections(saved.selections,proof.selections);
+    assertCurrentIntent(sessionId,proof);
     return {scope:'turn',ownerId,revision:1,selections:proof.selections};
   }
 

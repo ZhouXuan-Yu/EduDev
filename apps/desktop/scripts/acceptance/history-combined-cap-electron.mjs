@@ -69,7 +69,15 @@ try{
   const start=historyIntents=>invoke('startXiaozhi',{sessionId:target,commandId:'xicmd_'+randomUUID(),prompt,historyIntents});
   for(let i=0;i<2;i++){const denied=await start(tokens);assert.equal(denied.ok,false);assert.deepEqual(saved(),[row]);assert.deepEqual(bindings(),[]);}
   report.checks.push('Two over-limit submissions leave the ten Session references and Task grants unchanged');
-  const accepted=await start(tokens.slice(0,4));assert(accepted.ok,JSON.stringify(accepted));
+  const authorized=tokens.slice(0,4);
+  const forged=await invoke('startXiaozhi',{sessionId:target,commandId:'xicmd_'+randomUUID(),prompt,
+    taskId:'xitask_'+randomUUID(),historyIntents:authorized});
+  assert.equal(forged.ok,false);assert.deepEqual(bindings(),[]);assert.deepEqual(saved(),[row]);
+  const competing=await Promise.all([start(authorized),start(authorized)]);
+  assert.equal(competing.filter(result=>result.ok).length,1,JSON.stringify(competing));
+  const rejection=competing.find(result=>!result.ok);
+  report.checks.push('The host rejects a client-selected Task and admits one of two simultaneous sends');
+  report.concurrentDenial=rejection.error;
   const deadline=Date.now()+120000;
   for(;;){
     const state=await snap();if(!state.running && bindings().length===1)break;
@@ -79,6 +87,10 @@ try{
   assert.equal(new Set([...ten,...binding.selections].map(item=>item.id)).size,12);
   report.checks.push('Two overlapping pins allow exactly twelve distinct Session and Task references');
   const durable=bindings();
+  const duplicate=await start(authorized);
+  assert.equal(duplicate.ok,false);assert.deepEqual(bindings(),durable);assert.deepEqual(saved(),[row]);
+  assert.equal(read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',target)[0].n,1);
+  report.checks.push('A consumed intent cannot admit another Run or alter the committed Task binding');
   for(let i=0;i<2;i++){
     const denied=await invoke('setXiaozhiMemoryScope',{sessionId:target,version,enabled:true,selections:[...ten,notes[8]]});
     assert.deepEqual(denied,{ok:false,error:'command_conflict'});assert.deepEqual(saved(),[row]);assert.deepEqual(bindings(),durable);

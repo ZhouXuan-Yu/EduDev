@@ -121,6 +121,23 @@ test('Replaying a committed Task admission is idempotent and cannot undo teacher
   assert.deepEqual(await grants(),removed);
 });
 
+for(const state of ['expired','withdrawn','different conversation']){
+  test('Prepared history is rechecked at Task and Turn admission when '+state,async t=>{
+    const {binding,sql,grants,target,source,task,owner}=await fixture(t);
+    const clock=t.mock.method(Date,'now',()=>1000);
+    const {token}=await binding.stage(target,0,'signed-ticket');
+    const proof=await binding.prepare(target,[token]);
+    if(state==='expired')clock.mock.mockImplementation(()=>1000+30*60*1000);
+    if(state==='withdrawn')assert(binding.discard(target,token));
+    const sessionId=state==='different conversation'?source:target;
+    const actualOwner={...owner,sessionId};
+    const actualTask={...task,sessionId,binding:actualOwner};
+    await assert.rejects(sql.transaction(work=>binding.attachTask(work,actualTask,actualOwner,proof)),/memory_scope_changed/);
+    await assert.rejects(binding.turn(owner.runId,sessionId,proof),/memory_scope_changed/);
+    assert.deepEqual(await grants(),[]);
+  });
+}
+
 test('A Task in review reads its own last Run use stage even when a different conversation Run is newer',async t=>{
   const f=await fixture(t),{sql,binding,task,owner,target,state}=f;
   const {token}=await binding.stage(target,0,'signed-ticket');
