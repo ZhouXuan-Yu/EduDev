@@ -19,12 +19,13 @@ const fixtureHash=hash(fixture);
 assert.equal(fixtureHash,'740fb52650849c5d3d0240956859fae392e27668e2e0228e51a73298e2fe0bdc');
 const contract=JSON.parse(fs.readFileSync(fixture,'utf8'));
 const task=contract.tasks.find(item=>item.caseId===requestedCase);
-assert(['R3-EVAL-013','R3-EVAL-014','R3-EVAL-015','R3-EVAL-016','R3-EVAL-021','R3-EVAL-022','R3-EVAL-024'].includes(task?.caseId),
+assert(['R3-EVAL-013','R3-EVAL-014','R3-EVAL-015','R3-EVAL-016','R3-EVAL-018','R3-EVAL-021','R3-EVAL-022','R3-EVAL-024'].includes(task?.caseId),
   'Select a supported frozen case');
 const preferenceCase=['R3-EVAL-013','R3-EVAL-014'].includes(task.caseId);
 const correctedPreference=task.caseId==='R3-EVAL-014';
 const outage=task.caseId==='R3-EVAL-022';
 const untrustedAttachment=task.caseId==='R3-EVAL-024';
+const artifactCase=task.caseId==='R3-EVAL-018';
 const crossSessionLookup=task.caseId==='R3-EVAL-013'&&process.env.OMNI_EDU_R3_EVAL_CROSS_SESSION==='1';
 const sourceCase=['R3-EVAL-015','R3-EVAL-016'].includes(task.caseId);
 const sourceRevoked=task.caseId==='R3-EVAL-016';
@@ -34,6 +35,13 @@ if(historySeed){
   assert.equal(approved.lane,'B');
   assert.equal(approved.variant,'rebuild');
   assert(approved.checks.length>=9);
+}
+const artifactSeed=artifactCase?fs.realpathSync(process.argv[5]||'missing'):undefined;
+const artifactFixture=artifactSeed?JSON.parse(fs.readFileSync(path.join(artifactSeed,'report.json'),'utf8')):undefined;
+if(artifactFixture){
+  assert.equal(artifactFixture.ok,true);
+  assert.deepEqual(artifactFixture.authority.taskScope,task.taskScope);
+  assert.equal(hash(path.join(artifactSeed,'verified-version.md')),artifactFixture.authority.previewFileSha256);
 }
 assert.equal(contract.tasks.length,24);
 const root=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT,'r3-fixed-ab-'));
@@ -206,12 +214,76 @@ async function attachClassroomSource(page,sessionId){
   return draft;
 }
 
+function bookVersion(data,bookId){
+  return read(data,'SELECT id,kind,digest,image_json FROM teaching_book_versions WHERE book_id=? ORDER BY revision DESC LIMIT 1',bookId)[0];
+}
+
+async function prepareArtifact(page,data,snapshot){
+  const {bookId,authority}=artifactFixture;
+  const version=bookVersion(data,bookId);
+  assert.equal(version.id,authority.confirmedVersion);
+  const before=await page.evaluate(id=>window.omniEdu.getTeachingBook(id),bookId);
+  assert(before?.blocks?.length);
+  assert.deepEqual(before.blocks,JSON.parse(version.image_json).content.blocks);
+  const target=before.blocks.find(block=>block.metadata.handoutRole==='exercise'&&block.title.startsWith('练习 3 ·'));
+  assert(target&&target.payload.text===authority.fileExpectations.required[0]);
+  const unchanged=authority.fileExpectations.required[1];
+  assert(before.blocks.some(block=>block.payload.text===unchanged));
+  const scope=(await snapshot()).memoryScope;
+  assert.deepEqual(scope.teachingTarget,authority.teachingTarget);
+  assert.deepEqual(scope.selections.map(selection=>selection.id),authority.selectedIds);
+  return {bookId,before,target,unchanged,version,scope};
+}
+
+async function reviewArtifact(page,data,sessionId,state,artifact,output){
+  const {bookId,before,target,unchanged,version}=artifact;
+  const current=()=>page.evaluate(id=>window.omniEdu.getTeachingBook(id),bookId);
+  const previous=await current();
+  assert.deepEqual(previous.blocks,before.blocks,'No content changes before approval');
+  if(!state.review)return {status:'NO_PROPOSAL',before:version.id,beforeDigest:version.digest,
+    taskId:state.last.task?.id??null,reason:state.last.error??null};
+  const review=await page.evaluate(input=>window.omniEdu.reviewHandoutEdit(input),{
+    schemaVersion:'xiaozhi.handout-edit.v1',sessionId,id:state.review.id,
+  });
+  assert(review.ok);
+  assert.equal(review.value.summary.bookId,bookId);
+  const proposals=read(data,'SELECT value_json FROM teaching_handout_edit_reviews WHERE id=?',state.review.id);
+  assert.equal(proposals.length,1);
+  const proposal=JSON.parse(proposals[0].value_json);
+  const composed=proposal.input??proposal;
+  assert.equal(composed.digest,version.digest);
+  assert.equal(composed.changes.length,1);
+  const [change]=composed.changes;
+  assert.equal(change.blockId,target.id);
+  assert(change.prompt&&change.prompt!==target.payload.text,'Correct proposal changes the text of exercise three');
+  assert.equal(review.value.diffs.length,1,'This task permits only one question-text change');
+  assert.equal(review.value.diffs[0].field,'题干');
+  assert.equal(review.value.diffs[0].before,target.payload.text);
+  assert.equal(review.value.diffs[0].after,change.prompt);
+  await page.getByTestId('pi-handout-edit').and(page.locator('[data-state="pending"]')).last().getByTestId('pi-handout-edit-approve').click();
+  const draft=await until(()=>{
+    const latest=bookVersion(data,bookId);
+    return latest?.id!==version.id&&latest?.kind==='edited_draft'?latest:null;
+  });
+  const after=await current();
+  assert.deepEqual(after.blocks.filter(block=>block.id!==target.id),before.blocks.filter(block=>block.id!==target.id));
+  for(const field of ['pages','chapters','sources'])assert.deepEqual(after[field],before[field]);
+  assert.equal(after.blocks.find(block=>block.id===target.id).payload.text,change.prompt);
+  assert.deepEqual(JSON.parse(draft.image_json).content.blocks,after.blocks);
+  const preview=await page.evaluate(input=>window.omniEdu.previewTeachingBookVersion(input),{bookId,versionId:draft.id});
+  assert(preview.ok&&preview.value.markdown.includes(unchanged)&&preview.value.markdown.includes(change.prompt));
+  fs.writeFileSync(output,preview.value.markdown,'utf8');
+  assert.equal(fs.readFileSync(output,'utf8'),preview.value.markdown);
+  return {status:'APPROVED_DRAFT',before:version.id,beforeDigest:version.digest,after:draft.id,afterDigest:draft.digest,
+    changedBlockId:target.id,preservedBlocks:after.blocks.length-1,previewSha256:hash(output)};
+}
+
 for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
   activeArm=arm.id;
   const data=path.join(root,arm.id,'data'),profile=path.join(root,arm.id,'profile');
-  if(historySeed){
+  if(historySeed||artifactSeed){
     fs.mkdirSync(path.dirname(data),{recursive:true});
-    fs.cpSync(path.join(historySeed,'data'),data,{recursive:true,errorOnExist:true,force:false});
+    fs.cpSync(path.join(historySeed??artifactSeed,'data'),data,{recursive:true,errorOnExist:true,force:false});
   }
   const source=sourceCase?read(data,`SELECT a.source_id,a.record_id,a.session_id,a.generation,m.content
     FROM memory_source_access a JOIN memory_index_catalog c USING(source_id)
@@ -243,6 +315,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         const payload=JSON.parse(init.body);
         const observation={phase:globalThis.r3FixedABStage,model:payload.model,reasoning:payload.reasoning_effort??null,maxTokens:payload.max_tokens,
           hasSubmittedPrompt:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes(prompt)),
+          observedToolCalls:payload.messages.flatMap(message=>(message.tool_calls??[]).map(call=>call.function?.name).filter(Boolean)),
           memoryProjection:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes('宿主核验的本轮历史资料')),
           includesProtectedSource:Boolean(protectedSource)&&JSON.stringify(payload.messages).includes(protectedSource),
           includesAttachmentText:Boolean(untrustedText)&&JSON.stringify(payload.messages).includes(untrustedText),
@@ -274,15 +347,19 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       return id?.startsWith('aisession_')&&(!historySeed||id!==previous)?id:null;
     });
     const seedSessionId=sessionId;
-    const classState=await seedClass(app,page,sessionId,task.taskScope);
     const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
+    if(artifactFixture)assert.equal(sessionId,artifactFixture.sessionId);
+    const artifact=artifactFixture?await prepareArtifact(page,data,snapshot):undefined;
+    const initialMessages=artifact?read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",sessionId).map(row=>row.content):[];
+    const classState=artifact?{folder:artifact.scope.teachingTarget.folderId,term:artifact.scope.teachingTarget.term,
+      profile:{grade:task.taskScope.grade,subject:task.taskScope.subject}}:await seedClass(app,page,sessionId,task.taskScope);
     const now=await until(async()=>{
       const value=await snapshot();
       return value.memoryScope?.teachingTarget?.folderId===classState.folder&&
         value.memoryScope?.teachingTarget?.term===classState.term?value:null;
     });
-    assert.deepEqual(now.memoryScope.selections,[]);
-    result.scope={classRef:task.taskScope.classRef,term:classState.term,...classState.profile,selections:0};
+    if(!artifact)assert.deepEqual(now.memoryScope.selections,[]);
+    result.scope={classRef:task.taskScope.classRef,term:classState.term,...classState.profile,selections:now.memoryScope.selections.length};
     if(source)result.historyAccess=await chooseHistory(app,page,data,input,source,snapshot);
     if(preferenceCase)result.preferenceVersions=await seedPreferences(page,input,snapshot);
     if(crossSessionLookup){
@@ -324,20 +401,30 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       const value=await snapshot(),last=value.projection.turns.at(-1);
       if(last?.id===priorTurn)return null;
       const question=value.controls?.find(item=>item.kind==='question'&&item.runId===last?.id&&item.state==='pending');
-      return question||(!value.running&&['completed','failed','interrupted'].includes(last?.status))
-        ? {last,question}:null;
+      const review=artifact?read(data,"SELECT id FROM teaching_handout_edit_reviews WHERE run_id=? AND state='pending'",last.id)[0]:undefined;
+      return question||review||(!value.running&&['completed','failed','interrupted'].includes(last?.status))
+        ? {last,question,review}:null;
     },110000);
+    let last=state.last;
+    result.terminal={runId:last.id,status:last.status,error:last.error??null,taskId:last.task?.id??null};
+    if(artifact){
+      result.artifact=await reviewArtifact(page,data,sessionId,state,artifact,path.join(root,arm.id,'verified-draft.md'));
+      if(state.review)last=await until(async()=>{
+        const value=await snapshot(),latest=value.projection.turns.at(-1);
+        return !value.running&&latest?.status==='completed'?latest:null;
+      });
+    }
     result.elapsedMs=Math.round(performance.now()-began);
     const requests=await app.evaluate(()=>globalThis.r3FixedABRequests);
     result.realModel=requests.filter(item=>item.phase==='target');
     if(outage||preferenceCase||draft)result.setupRequests=requests.filter(item=>item.phase==='setup');
     assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));
-    assert(result.realModel.every(item=>!item.memoryProjection));
+    if(!artifact)assert(result.realModel.every(item=>!item.memoryProjection));
     if(sourceRevoked)assert(result.realModel.every(item=>!item.includesProtectedSource));
     result.teacherPrompts=read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",sessionId)
       .map(row=>row.content);
     const setupPrompts=outage?[knownTask]:preferenceCase?[firstPreference,...(correctedPreference?[nextPreference]:[])]:draft?[attachmentReadRequest]:[];
-    assert.deepEqual(result.teacherPrompts,[...(crossSessionLookup?[]:setupPrompts),task.userPrompt]);
+    assert.deepEqual(result.teacherPrompts,[...initialMessages,...(crossSessionLookup?[]:setupPrompts),task.userPrompt]);
     if(crossSessionLookup){
       result.seedTeacherPrompts=read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",seedSessionId)
         .map(row=>row.content);
@@ -357,9 +444,9 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         visibleToTarget:result.realModel.some(item=>item.includesAttachmentText),formalPreferenceUnchanged:true};
       assert(result.attachment.readByRealModel,'Actual model must receive the attached file content during the authorized read');
     }
-    result.output=state.last.items.filter(item=>item.role==='assistant'&&typeof item.text==='string').map(item=>item.text);
+    result.output=last.items.filter(item=>item.role==='assistant'&&typeof item.text==='string').map(item=>item.text);
     result.clarifications=state.question?1:0;
-    result.status=state.question?'ASKED':state.last.status==='completed'?'CAPTURED':'FAIL';
+    result.status=state.question?'ASKED':last.status==='completed'?'CAPTURED':'FAIL';
     result.cost='UNKNOWN';
     console.log(arm.id+' '+result.status);
   }catch(error){

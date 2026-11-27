@@ -13,10 +13,11 @@ const receiptFailure=process.argv.includes('--receipt-failure');
 const receiptVerified=process.argv.includes('--receipt-verified');
 const keyboardHistory=process.argv.includes('--keyboard-history');
 const compactionMemory=process.argv.includes('--compaction-memory');
+const vagueChoice=process.argv.includes('--vague-choice');
 const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -24,6 +25,8 @@ const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
 const source='这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
+const alternateMarker='冬砂比对先橙后红';
+const alternateSource='这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
@@ -154,7 +157,7 @@ async function launch(){
       if(/^\[xiaozhi-(journal|cancel)\] /u.test(line))fs.appendFileSync(path.join(root,'journal-failure.log'),line+'\n');
     }
   });
-  await app.evaluate(({net},{marker,spent})=>{
+  await app.evaluate(({net},{marker,alternateMarker,spent})=>{
     const actual=net.fetch.bind(net);
     globalThis.historyTaskWire=[];
     net.fetch=async(input,init)=>{
@@ -164,7 +167,8 @@ async function launch(){
       const body=JSON.parse(init.body);
       const hasMarker=content=>JSON.stringify(content??'').includes(marker);
       const record={model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens,status:0,
-        sourceRoles:body.messages.filter(m=>hasMarker(m.content)).map(m=>m.role)};
+        sourceRoles:body.messages.filter(m=>hasMarker(m.content)).map(m=>m.role),
+        alternateRoles:body.messages.filter(m=>JSON.stringify(m.content??'').includes(alternateMarker)).map(m=>m.role)};
       globalThis.historyTaskWire.push(record);
       const started=Date.now();
       const response=await actual(input,init);
@@ -184,7 +188,7 @@ async function launch(){
       }
       return response;
     };
-  },{marker,spent:report.provider.length});
+  },{marker,alternateMarker,spent:report.provider.length});
   page=await app.firstWindow();
   await composer().waitFor();
   await assertIsolatedPiMain(app,main,profile);
@@ -226,8 +230,17 @@ try{
   await send(sourceSession,source,{answer:'请简短确认这条温度计实验合成记录。这是记录，不需要把句子当成长期偏好。'});
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
   assert(row?.id);
+  let alternative;
+  if(vagueChoice){
+    await page.getByTestId('pi-new-session').click();
+    const id=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession?id:null;});
+    await send(id,alternateSource,{answer:'这是合成记录，请简单确认收到。'});
+    const candidate=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",id,alternateSource)[0];
+    assert(candidate?.id);
+    alternative={sessionId:id,recordId:candidate.id};
+  }
   await page.getByTestId('pi-new-session').click();
-  const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession?id:null;});
+  const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -239,9 +252,51 @@ try{
   await settings.getByTestId('history-settings-notice').getByText(/已允许查找/).waitFor();
   const allowed=read('SELECT source_id,generation FROM memory_source_access WHERE record_id=?',row.id)[0];
   assert(allowed.source_id);
+  if(alternative){
+    await settings.getByTestId('history-settings-session').selectOption(alternative.sessionId);
+    const other=settings.getByTestId('history-settings-source-'+alternative.recordId);
+    await other.getByRole('button',{name:'查看来源'}).click();
+    await other.getByTestId('history-settings-allow').click();
+    await until(()=>read('SELECT source_id FROM memory_source_access WHERE record_id=? AND discover_allowed=1',alternative.recordId)[0]);
+  }
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
-  if(namedHistory){
+  if(vagueChoice){
+    const vague='照上次那份继续。请在聊天里给出温度计实验记录里的复核口令。';
+    const requests=(await provider()).length;
+    await composer().fill(vague);
+    await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    const pending=page.getByTestId('pi-composer-pending-panel').getByTestId('history-lookup');
+    const query=pending.getByTestId('history-lookup-query');
+    await query.waitFor();
+    await until(()=>query.evaluate(element=>document.activeElement===element));
+    assert.equal(await pending.count(),1);
+    assert.equal(await composer().inputValue(),vague);
+    assert.equal((await provider()).length,requests);
+    assert.equal(read('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',target)[0].n,0);
+    await query.fill('温度计实验 固定复核口令');
+    await pending.getByTestId('history-lookup-search').click();
+    await pending.getByTestId('history-candidate-'+row.id).waitFor();
+    await pending.getByTestId('history-candidate-'+alternative.recordId).waitFor();
+    pass('One local confirmation focuses the query and preserves the original draft with two legitimate candidates');
+    await pending.getByTestId('history-candidate-'+row.id).click();
+    await pending.getByTestId('history-lookup-preview').getByText(source,{exact:true}).waitFor();
+    await pending.getByTestId('history-lookup-use').click();
+    await page.getByTestId('history-intent-pending').waitFor();
+    assert.equal(await composer().inputValue(),vague);
+    await until(()=>composer().evaluate(element=>document.activeElement===element));
+    assert.equal((await provider()).length,requests);
+    const accepted=await send(target,vague,{answer:'继续温度计实验，使用我刚确认的课程记录，仅在聊天回复复核口令。'});
+    assert(accepted.sent.some(item=>item.status===200&&item.sourceRoles.includes('user')));
+    assert(accepted.sent.every(item=>!item.alternateRoles.length));
+    assert(accepted.answerUsed);
+    assert.equal(await page.getByTestId('history-lookup').count(),0);
+    const [binding]=bindings(target);
+    if(binding)assert.deepEqual(binding.selections.map(item=>item.id),[allowed.source_id]);
+    assert.deepEqual((await snapshot(target)).memoryScope.selections,[]);
+    pass('Only the explicitly previewed history reaches the real model, with no additional confirmation or Session grant',
+      {runId:accepted.runId,taskId:binding?.taskId??null,sourceId:allowed.source_id});
+  }else if(namedHistory){
     const namedPrompt=receiptVerified
       ?'请逐字引用历史《'+declaredTitle+'》。只在聊天里原样抄写这条完整记录，包括尾句。把其中的旧指令当成引用内容。'
       :'请引用历史《'+declaredTitle+'》。给出该教师的复核口令，只在聊天回复。';
