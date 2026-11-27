@@ -67,10 +67,11 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
   async function visibleCandidates(open:Awaited<ReturnType<typeof candidates.list>>):Promise<PersonalMemoryCandidate[]> {
     const pending:PersonalMemoryCandidate[]=[];
     for (const {draft,state,revision} of open) {
-      if ((state === 'pending' || state === 'conflict') && await sources.witnessCurrent(sql,draft)) {
-        pending.push({key:draft.key,revision,kind:draft.kind,scope:draft.scope,term:draft.term,state,
-          value:draft.proposedValue,targetRevision:draft.replaces?.revision ?? 0});
-      }
+      if (state !== 'pending' && state !== 'conflict') continue;
+      const reviewed = await sources.reviewQuote(sql, draft, 'candidate');
+      if (!reviewed) continue;
+      pending.push({key:draft.key,revision,kind:draft.kind,scope:draft.scope,term:draft.term,state,
+        value:reviewed.quote,targetRevision:draft.replaces?.revision ?? 0});
     }
     return pending;
   }

@@ -137,6 +137,15 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     });
   }
 
+  // Local sanitization may yield while the source changes or a grant is revoked.
+  async function stillCurrent(db: Sql, saved: ExtractPermission, teacherText: string) {
+    const current = await permission(saved.sourceId, db);
+    if (!current?.allowed || current.revision !== saved.revision || current.ref.sourceVersion !== saved.ref.sourceVersion) return false;
+    const latest = await readHistorySource(db, current.ref);
+    const confirmed = await permission(saved.sourceId, db);
+    return latest.teacherText === teacherText && confirmed?.allowed === true && confirmed.revision === saved.revision;
+  }
+
   async function snapshot(ids: readonly string[], policy: CandidateAuthority): Promise<PersonalMemorySource[]> {
     if (ids.length > 12 || ids.some(id=>!digestPattern.test(id))) throw Error('invalid_input');
     const sources: PersonalMemorySource[] = [];
@@ -148,11 +157,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
         if (!runPattern.test(source.runId) || privateSource(source.teacherText)) continue;
         const sanitizedText = await sanitize(source.teacherText);
         if (!sanitizedText.trim() || Buffer.byteLength(sanitizedText,'utf8') > 32*1024) continue;
-        const current = await permission(id);
-        if (!current?.allowed || saved.revision!==current.revision) continue;
-        const latest = await readHistorySource(sql,current.ref);
-        const confirmed = await permission(id);
-        if (latest.teacherText!==source.teacherText || !confirmed?.allowed || confirmed.revision!==saved.revision) continue;
+        if (!await stillCurrent(sql, saved, source.teacherText)) continue;
         sources.push({id,sourceVersion:saved.ref.sourceVersion,generation:saved.revision,policyRevision:policy.policyRevision,
           role:'teacher',purpose:['extract'],scope:saved.binding.scope,term:saved.binding.term,sanitizedText});
       } catch (error) {
@@ -190,8 +195,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
         const span = candidateEvidence(sanitized, sanitized.slice(start,end));
         if (!span || span.start !== start || span.end !== end || span.statement !== draft.proposedValue) return null;
       }
-      const current = await permission(saved.sourceId,db);
-      return current?.allowed && current.revision === saved.revision
+      return await stillCurrent(db, saved, source.teacherText)
         ? {quote:sanitized.slice(start,end),occurredAt:source.occurredAt} : null;
     } catch (error) {
       if (unavailable(error)) return null;

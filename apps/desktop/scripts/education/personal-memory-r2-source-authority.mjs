@@ -139,10 +139,16 @@ console.log('PASS R1 forgetting invalidates R2 extraction without crossing into 
 
 const records=createPersonalMemoryRecordState(sql,authority);
 // An older pending draft can contain a paraphrase that differs from the verified quote.
+const {createPersonalMemoryOperations}=await import('../../src/main/education/personal-memory/operations.ts');
+const ops=createPersonalMemoryOperations(sql,async value=>value);
 const legacySource = message('legacy-candidate', '我教三年级音乐。');
 await authority.change(legacySource, 0, scope);
 const legacy = draft((await authority.snapshot([historyId(legacySource)], policy))[0]);
 await state.savePending([{...legacy, proposedValue:'我负责全年级音乐。'}], policy);
+const legacyQueue = await ops.queue(session);
+assert(legacyQueue.ok);
+assert(!legacyQueue.value.candidates.some(row => row.key === legacy.key),
+  'Candidate list must withhold a stored paraphrase that differs from the current source');
 const legacyQuote = await authority.reviewQuote(sql, legacy);
 const legacyHash = (await import('node:crypto')).createHash('sha256').update(legacyQuote.quote).digest('hex');
 await assert.rejects(records.accept({key:legacy.key, revision:1, operationId:randomUUID(),
@@ -153,6 +159,18 @@ const committedSource=message('confirmed','这学期我负责四年级科学。'
 await authority.change(committedSource,0,scope);
 const confirmed=draft((await authority.snapshot([historyId(committedSource)],policy))[0]);
 await state.savePending([confirmed],policy);
+const currentQueue = await ops.queue(session);
+assert(currentQueue.ok);
+assert.equal(currentQueue.value.candidates.find(row => row.key === confirmed.key)?.value, confirmed.proposedValue);
+// A legacy source can change on disk without changing the extraction grant.
+const original = confirmed.proposedValue;
+const concurrentReview = createPersonalMemorySourceAuthority(sql, async text => {
+  db.prepare('UPDATE ai_conversation_messages SET content=? WHERE id=?').run('已修订的合成原话', committedSource.recordId);
+  return text;
+});
+assert.equal(await concurrentReview.reviewQuote(sql, confirmed, 'candidate'), null,
+  'Review must recheck the source version after asynchronous sanitization');
+db.prepare('UPDATE ai_conversation_messages SET content=? WHERE id=?').run(original, committedSource.recordId);
 const preview=await records.preview(confirmed.key,1);
 assert.equal(preview.quote,'这学期我负责四年级科学。');
 assert.equal(preview.occurredAt,'2026-11-25');
@@ -258,8 +276,6 @@ db.prepare('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?').run('s
 assert.equal(await use(session,selection),null);
 console.log('PASS a teacher record can join the existing scope only with its exact revision and source; a student session cannot resolve it');
 // Use the same authority ledgers and teacher actions, with separate synthetic classes and sessions.
-const {createPersonalMemoryOperations}=await import('../../src/main/education/personal-memory/operations.ts');
-const ops=createPersonalMemoryOperations(sql,async value=>value);
 db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,name TEXT,archived_at TEXT); ALTER TABLE ai_conversation_sessions ADD COLUMN folder_id TEXT');
 await scopeState.migrateMemoryScope();
 const classA='aifolder_'+randomUUID(),classB='aifolder_'+randomUUID();
