@@ -483,6 +483,15 @@ if (ownsDesktop) app.whenReady().then(async () => {
   ipcMain.handle('aiAgent:getMemoryTrace', (_event, runId: string, limit = 50) => store.getAiMemoryTrace(runId, limit));
   ipcMain.handle('aiMemory:listDocuments', () => store.listAiMemoryDocuments());
   ipcMain.handle('aiMemory:getDocument', (_event, surface: AiMemorySurface) => store.getAiMemoryDocument(surface));
+  ipcMain.handle('aiMemory:sessionEvents', (event,sessionId:string) => {
+    if(!settingsSender(event))throw Error('permission_denied');
+    return store.previewSessionMemoryEvents(sessionId);
+  });
+  ipcMain.handle('aiMemory:adoptSessionEvent', (event,input:import('../shared/contracts').SessionMemoryEventInput) => {
+    const fence=()=>{if(!settingsSender(event))throw Error('permission_denied');};
+    fence();
+    return store.adoptSessionMemoryEvent(input,fence);
+  });
   ipcMain.handle('aiMemory:draftSummary', (_event, surface: AiMemorySurface, runId?: string, limit = 8) => store.draftAiMemorySummary(surface, runId, limit));
   ipcMain.handle('aiMemory:listRevisions', (_event, entryId: string, limit = 50) => store.listAiMemoryRevisions(entryId, limit));
   ipcMain.handle('aiMemory:createEntry', (_event, input: AiMemoryEntryInput) => store.createAiMemoryEntry(input));

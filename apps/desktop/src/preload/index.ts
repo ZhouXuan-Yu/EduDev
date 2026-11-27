@@ -736,6 +736,9 @@ const api = {
   getAiMemoryTrace: (runId: string, limit = 50) => ipcRenderer.invoke('aiAgent:getMemoryTrace', runId, limit) as Promise<AiMemoryTraceSummary>,
   listAiMemoryDocuments: () => ipcRenderer.invoke('aiMemory:listDocuments') as Promise<AiMemoryDocument[]>,
   getAiMemoryDocument: (surface: AiMemorySurface) => ipcRenderer.invoke('aiMemory:getDocument', surface) as Promise<AiMemoryDocumentDetail | null>,
+  previewSessionMemoryEvents: (sessionId:string) => ipcRenderer.invoke('aiMemory:sessionEvents',sessionId) as Promise<import('../shared/contracts').SessionMemoryEventDraft>,
+  adoptSessionMemoryEvent: (input:import('../shared/contracts').SessionMemoryEventInput) =>
+    ipcRenderer.invoke('aiMemory:adoptSessionEvent',input) as Promise<AiMemoryEntry>,
   draftAiMemorySummary: (surface: AiMemorySurface, runId?: string, limit = 8) => ipcRenderer.invoke('aiMemory:draftSummary', surface, runId, limit) as Promise<AiMemorySummaryDraft>,
   listAiMemoryRevisions: (entryId: string, limit = 50) => ipcRenderer.invoke('aiMemory:listRevisions', entryId, limit) as Promise<AiMemoryRevision[]>,
   createAiMemoryEntry: (input: AiMemoryEntryInput) => ipcRenderer.invoke('aiMemory:createEntry', input) as Promise<AiMemoryEntry>,

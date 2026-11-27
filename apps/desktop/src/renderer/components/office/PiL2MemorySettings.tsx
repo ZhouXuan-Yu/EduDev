@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {Button, Label, ListBox, Select, TextArea} from '@heroui/react';
-import type {AiMemoryEntry, AiMemorySurface} from '../../../shared/contracts';
+import type {AiMemoryEntry, AiMemorySummaryDraft, AiMemorySurface} from '../../../shared/contracts';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
 import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
@@ -95,7 +95,47 @@ function EntryEditor({entry, onSaved, refresh}: {
   </SettingsStack>;
 }
 
-function L2Entries() {
+function SessionEventReview({sessionId,onSaved}:{sessionId:string;onSaved:()=>Promise<void>}) {
+  const [preview,setPreview]=useState<AiMemorySummaryDraft>();
+  const [busy,setBusy]=useState(false);
+  const [message,setMessage]=useState('');
+  const [error,setError]=useState('');
+  async function review(index?:number){
+    if(busy)return;
+    setBusy(true);setError('');setMessage('');
+    try{
+      const api=window.omniEdu;
+      if(!api)throw Error('unavailable');
+      if(index===undefined){
+        const draft=await api.previewSessionMemoryEvents(sessionId);
+        setPreview(draft);
+        if(!draft.entries.length)setMessage('这段对话还没有可保存的工作记录。');
+      }else{
+        const entry=preview?.entries[index];
+        if(!entry||!preview)throw Error('source_changed');
+        await api.adoptSessionMemoryEvent({sessionId,runId:preview.sourceRunId,eventId:entry.refs[0].id,expectedText:entry.text});
+        await onSaved();
+        setMessage('已保存到工作记录。');
+      }
+    }catch{
+      setPreview(undefined);setError('暂时无法核对记录，请重新查看本轮事件。');
+    }finally{setBusy(false);}
+  }
+  return <SettingsStack gap="sm">
+    <Button size="sm" variant="secondary" data-testid="memory-draft-l2" isDisabled={busy}
+      onPress={()=>void review()}>查看本轮工作记录</Button>
+    {preview?.entries.map((entry,index)=><SettingsInline key={entry.refs[0].id}>
+      <span>{entry.text}</span>
+      <Button size="sm" variant="ghost" data-testid={'memory-adopt-l2-'+index} isDisabled={busy}
+        onPress={()=>void review(index)}>保存这条记录</Button>
+    </SettingsInline>)}
+    {busy&&<p role="status">正在核对工作记录…</p>}
+    {message&&<p role="status">{message}</p>}
+    {error&&<p role="alert">{error}</p>}
+  </SettingsStack>;
+}
+
+function L2Entries({sessionId}:{sessionId?:string}) {
   const [surface,setSurface]=useState<AiMemorySurface>('chat');
   const [entries,setEntries]=useState<AiMemoryEntry[]>();
   const [loading,setLoading]=useState(true);
@@ -140,6 +180,7 @@ function L2Entries() {
       <Button variant="ghost" size="sm" data-testid="memory-refresh" isDisabled={loading}
         onPress={()=>void load(surface)}>刷新记忆</Button>
     </SettingsInline>
+    {sessionId&&surface==='chat'&&<SessionEventReview key={sessionId} sessionId={sessionId} onSaved={()=>target.current==='chat'?load('chat'):Promise.resolve()}/>}
     {loading && <p role="status">正在读取记忆…</p>}
     {error && <p role="alert">暂时无法读取记忆，请刷新重试。</p>}
     {entries?.length===0 && !loading && !error && <p>这里还没有已保存的记忆。</p>}
@@ -153,11 +194,11 @@ function L2Entries() {
   </SettingsStack>;
 }
 
-export function PiL2MemorySettings() {
+export function PiL2MemorySettings({sessionId}:{sessionId?:string}) {
   const [expanded,setExpanded]=useState(false);
   const [opened,setOpened]=useState(false);
   return <DisclosureCard title="可修订的记忆条目" data-testid="pi-settings-l2-memory"
     isExpanded={expanded} onExpandedChange={value=>{setExpanded(value);if(value)setOpened(true);}}>
-    {opened && <L2Entries/>}
+    {opened && <L2Entries sessionId={sessionId}/>}
   </DisclosureCard>;
 }

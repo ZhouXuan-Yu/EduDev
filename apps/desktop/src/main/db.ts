@@ -1,3 +1,4 @@
+import {sessionEventSummary} from './education/session-event-summary';
 import {invalidateTeachingHistoryForSession} from './xiaozhi-agent/history/invalidate-teaching-history';
 import {createZipBuffer} from './file-zip';
 import {splitMaterialParagraphs} from './assets/material-chunks';
@@ -3349,7 +3350,7 @@ export class OmniEduStore {
     return rows.map((row) => this.mapAiMemoryRevision(row));
   }
 
-  async draftAiMemorySummary(surface: AiMemorySurface, runId?: string, limit = 8): Promise<AiMemorySummaryDraft> {
+  async draftAiMemorySummary(surface: AiMemorySurface, runId?: string, limit = 8, format?: (event:AiAgentEvent)=>string): Promise<AiMemorySummaryDraft> {
     assertAiMemorySurface(surface);
     const boundedLimit = Math.min(8, Math.max(1, Math.trunc(limit) || 8));
     const requestedRunId = String(runId ?? '').trim();
@@ -3368,7 +3369,7 @@ export class OmniEduStore {
       sourceRunId: run.id,
       entries: events.map((event) => ({
         section: 'Recent activity',
-        text: `Observed ${event.phase} stage: ${event.status}${event.toolName ? `; tool=${event.toolName}` : ''}.`,
+        text: format ? format(event) : `Observed ${event.phase} stage: ${event.status}${event.toolName ? `; tool=${event.toolName}` : ''}.`,
         refs: [{ ref: `ai_agent_event:${event.id}`, kind: 'event' as const, id: event.id, label: `${event.phase} event` }],
         origin: 'derived' as const,
         requiresTeacherReview: true as const,
@@ -3379,29 +3380,63 @@ export class OmniEduStore {
     };
   }
 
+  async previewSessionMemoryEvents(sessionId:string): Promise<import('../shared/contracts').SessionMemoryEventDraft> {
+    const source={category:'work_experience',evidence:'system_verified'} as const;
+    if(typeof sessionId!=='string'||!/^aisession_[a-f0-9-]{36}$/iu.test(sessionId))throw Error('invalid_input');
+    const [session]=await this.all('SELECT student_id,archived_at FROM ai_conversation_sessions WHERE id=?',[sessionId]);
+    if(!session||session.student_id||session.archived_at)throw Error('permission_denied');
+    const latest=(await this.xiaozhiState.runs(sessionId)).at(-1);
+    if(!latest)return {...source,layer:'L2',surface:'chat',sourceRunId:'',entries:[],bounded:true,rawPromptIncluded:false,hiddenReasoningIncluded:false};
+    // Supplying the exact Run prevents the legacy all-conversation fallback.
+    return {...await this.draftAiMemorySummary('chat',String(latest.id),8,sessionEventSummary),...source};
+  }
+
+  async adoptSessionMemoryEvent(input:import('../shared/contracts').SessionMemoryEventInput,fence:()=>void) {
+    if(!input||Object.keys(input).sort().join(',')!=='eventId,expectedText,runId,sessionId'||
+        typeof input.expectedText!=='string'||input.expectedText.length>1000||
+        typeof input.runId!=='string'||typeof input.eventId!=='string'||input.eventId.length>160)throw Error('invalid_input');
+    return this.shortWrite(async work=>{
+      const draft=await work.previewSessionMemoryEvents(input.sessionId);
+      const event=draft.entries.find(item=>item.refs.length===1&&item.refs[0].kind==='event'&&item.refs[0].id===input.eventId);
+      if(draft.sourceRunId!==input.runId||!event||event.text!==input.expectedText)throw Error('source_changed');
+      const receiptKey='xiaozhi.memory.event-review.v1:'+input.eventId;
+      const [receipt]=await work.all('SELECT value_json FROM app_settings WHERE key=?',[receiptKey]);
+      if(receipt){
+        const existing=await work.readAiMemoryEntry(JSON.parse(String(receipt.value_json)));
+        if(existing.status!=='active')throw Error('source_changed');
+        return existing;
+      }
+      const entry=await work.insertAiMemoryEntry('chat','工作记录',event.text,[event.refs[0].ref]);
+      await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[receiptKey,JSON.stringify(entry.id),now()]);
+      return entry;
+    },{commitStarted:fence});
+  }
+
   async createAiMemoryEntry(input: AiMemoryEntryInput): Promise<AiMemoryEntry> {
     assertAiMemorySurface(input.surface);
     if (input.origin && input.origin !== 'teacher') throw new Error('Derived L2 summaries must remain drafts until teacher review');
     const text = normalizeMemoryText(input.text);
     const section = String(input.section ?? 'Teacher notes').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Teacher notes';
-    return this.shortWrite(async work => {
-      const timestamp = now();
-      const refs = await work.validateAiMemoryRefs(input.refs);
-      const documentId = await work.ensureAiMemoryDocumentId(input.surface, timestamp);
-      const entryId = `memory_entry_${randomUUID()}`;
-      await work.run(
-        `INSERT INTO ai_memory_entries (id, document_id, section, text, refs_json, status, origin, version, created_at, updated_at, deleted_at)
-         VALUES (?, ?, ?, ?, ?, 'active', 'teacher', 1, ?, ?, NULL)`,
-        [entryId, documentId, section, text, JSON.stringify(refs), timestamp, timestamp],
-      );
-      await work.run(
-        `INSERT INTO ai_memory_revisions (id, document_id, entry_id, action, before_json, after_json, created_at)
-         VALUES (?, ?, ?, 'create', NULL, ?, ?)`,
-        [`memory_revision_${randomUUID()}`, documentId, entryId, JSON.stringify({ section, text, refs, status: 'active', origin: 'teacher', version: 1 }), timestamp],
-      );
-      await work.advanceAiMemoryDocument(documentId, timestamp);
-      return work.readAiMemoryEntry(entryId);
-    });
+    return this.shortWrite(work=>work.insertAiMemoryEntry(input.surface,section,text,input.refs));
+  }
+
+  private async insertAiMemoryEntry(surface:AiMemorySurface,section:string,text:string,sourceRefs:string[]) {
+    const timestamp = now();
+    const refs = await this.validateAiMemoryRefs(sourceRefs);
+    const documentId = await this.ensureAiMemoryDocumentId(surface, timestamp);
+    const entryId = `memory_entry_${randomUUID()}`;
+    await this.run(
+      `INSERT INTO ai_memory_entries (id, document_id, section, text, refs_json, status, origin, version, created_at, updated_at, deleted_at)
+       VALUES (?, ?, ?, ?, ?, 'active', 'teacher', 1, ?, ?, NULL)`,
+      [entryId, documentId, section, text, JSON.stringify(refs), timestamp, timestamp],
+    );
+    await this.run(
+      `INSERT INTO ai_memory_revisions (id, document_id, entry_id, action, before_json, after_json, created_at)
+       VALUES (?, ?, ?, 'create', NULL, ?, ?)`,
+      [`memory_revision_${randomUUID()}`, documentId, entryId, JSON.stringify({ section, text, refs, status: 'active', origin: 'teacher', version: 1 }), timestamp],
+    );
+    await this.advanceAiMemoryDocument(documentId, timestamp);
+    return this.readAiMemoryEntry(entryId);
   }
 
   async updateAiMemoryEntry(entryId: string, input: AiMemoryEntryUpdateInput,

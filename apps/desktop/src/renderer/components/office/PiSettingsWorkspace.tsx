@@ -219,7 +219,7 @@ export function PiSettingsWorkspace({onBack,entry='models',standalone=false}:{on
             <h2 className={layoutStyles.subheading}>{title}</h2>
             <PiPersonalMemorySettings/>
             <PiTeacherMemorySettings running={locked || actionBusy} onBusyChange={setChildBusy}/>
-            <PiL2MemorySettings/>
+            <PiL2MemorySettings sessionId={sessionId||undefined}/>
             <PiHistoryMemorySettings/>
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>

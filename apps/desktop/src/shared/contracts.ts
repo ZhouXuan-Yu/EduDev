@@ -996,6 +996,18 @@ export type AiMemorySummaryDraft = {
   hiddenReasoningIncluded: false;
 };
 
+export type SessionMemoryEventDraft = AiMemorySummaryDraft & {
+  category:'work_experience';
+  evidence:'system_verified';
+};
+
+export type SessionMemoryEventInput = {
+  sessionId:string;
+  runId:string;
+  eventId:string;
+  expectedText:string;
+};
+
 export type AiMemoryEntryInput = {
   surface: AiMemorySurface;
   section?: string;

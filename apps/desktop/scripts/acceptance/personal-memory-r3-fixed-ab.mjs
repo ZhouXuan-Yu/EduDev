@@ -404,14 +404,33 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     const began=performance.now();
     await input.fill(task.userPrompt);
     await page.getByRole('button',{name:'发送消息',exact:true}).click();
-    const state=await until(async()=>{
+    const waitForOutcome=(previousId,answeredId)=>until(async()=>{
       const value=await snapshot(),last=value.projection.turns.at(-1);
-      if(last?.id===priorTurn)return null;
-      const question=value.controls?.find(item=>item.kind==='question'&&item.runId===last?.id&&item.state==='pending');
+      if(last?.id===previousId)return null;
+      const question=value.controls?.find(item=>item.kind==='question'&&item.runId===last?.id&&item.state==='pending'&&item.id!==answeredId);
       const review=artifact?read(data,"SELECT id FROM teaching_handout_edit_reviews WHERE run_id=? AND state='pending'",last.id)[0]:undefined;
       return question||review||(!value.running&&['completed','failed','interrupted'].includes(last?.status))
         ? {last,question,review}:null;
     },110000);
+    let state=await waitForOutcome(priorTurn);
+    const answer=artifact?'请修改《'+artifact.before.book.title+'》，仅把第 3 题的题干改为“请在数轴上标出一对相反数，并写出它们分别到原点的距离。”原有答案、解析和其他题目保持原样。':undefined;
+    if(answer && state.question){
+      const card=page.getByTestId('pi-composer-pending-panel').locator('[data-control-id="'+state.question.id+'"]');
+      result.teacherClarification={controlId:state.question.id,runId:state.last.id,answer,question:await card.innerText()};
+      await card.getByTestId('pi-question-answer').fill(answer);
+      await card.getByTestId('pi-question-submit').click();
+      state=await waitForOutcome(priorTurn,result.teacherClarification.controlId);
+      const answered=(await snapshot()).controls.find(item=>item.id===result.teacherClarification.controlId);
+      assert.equal(answered?.state,'answered');
+      assert.equal(answered.answer,answer);
+    }else if(answer && !state.review && state.last.status==='completed'){
+      const originalRun=state.last.id;
+      result.firstAttempt={runId:originalRun,output:state.last.items.filter(item=>item.role==='assistant').map(item=>item.text)};
+      result.teacherFollowup=answer;
+      await input.fill(answer);
+      await page.getByRole('button',{name:'发送消息',exact:true}).click();
+      state=await waitForOutcome(originalRun);
+    }
     let last=state.last;
     result.terminal={runId:last.id,status:last.status,error:last.error??null,taskId:last.task?.id??null};
     if(artifact){
@@ -431,7 +450,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     result.teacherPrompts=read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",sessionId)
       .map(row=>row.content);
     const setupPrompts=deliverySetup?[deliverySetup]:outage?[knownTask]:preferenceCase?[firstPreference,...(correctedPreference?[nextPreference]:[])]:draft?[attachmentReadRequest]:[];
-    assert.deepEqual(result.teacherPrompts,[...initialMessages,...(crossSessionLookup?[]:setupPrompts),task.userPrompt]);
+    assert.deepEqual(result.teacherPrompts,[...initialMessages,...(crossSessionLookup?[]:setupPrompts),task.userPrompt,...(result.teacherFollowup?[result.teacherFollowup]:[])]);
     if(crossSessionLookup){
       result.seedTeacherPrompts=read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",seedSessionId)
         .map(row=>row.content);
@@ -462,7 +481,8 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       if(task.caseId==='R3-EVAL-005')assert.equal(result.effects.length,0,'Paused export must not execute a new effect');
     }
     result.output=last.items.filter(item=>item.role==='assistant'&&typeof item.text==='string').map(item=>item.text);
-    result.clarifications=state.question?1:0;
+    result.clarifications=Number(Boolean(result.teacherClarification))+Number(Boolean(state.question));
+    result.teacherRestatements=Number(Boolean(result.teacherFollowup));
     result.status=state.question?'ASKED':last.status==='completed'?'CAPTURED':'FAIL';
     result.cost='UNKNOWN';
     console.log(arm.id+' '+result.status);
