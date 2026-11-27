@@ -1,6 +1,6 @@
 import type {createPersonalMemoryUse} from '../../education/personal-memory/use';
 import type {PrivateMemoryScope} from '../memory-scope-state';
-import {planMemoryUse} from './selection';
+import {planMemoryUse,REFERENCE_CONTEXT_FACTOR} from './selection';
 
 const words = new Intl.Segmenter('zh', {granularity:'word'});
 const instruction = '下列是当前问题可核对的个人记忆引用。需要正文时调用 read_education_memory；当前教师要求优先。\n';
@@ -10,9 +10,9 @@ const asksForSelection = /(?:读取|查看|核对|查阅|参考|列出|使用|�
 /** Only host-pinned, adopted records returned by R2 can be projected. */
 export async function personalReferencePlan(saved:PrivateMemoryScope, read:ReturnType<typeof createPersonalMemoryUse>|undefined,
   sessionId:string, authority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) {
-  const tokens = Math.max(0, Math.min(1024, Math.floor(availableTokens/20)) - Buffer.byteLength(instruction));
+  const tokens = Math.max(0, Math.min(1024, Math.floor(availableTokens/REFERENCE_CONTEXT_FACTOR)) - Buffer.byteLength(instruction));
   const host = {sessionId,requestId,authority,scopeVersion:saved.version,scope:{teacher:'self',classRef:saved.teachingTarget?.folderId,termRef:saved.teachingTarget?.term},
-    enabled:saved.enabled,selections:saved.selections,preferences:[],named:[],availableTokens:tokens*20};
+    enabled:saved.enabled,selections:saved.selections,preferences:[],named:[],availableTokens:tokens*REFERENCE_CONTEXT_FACTOR};
   const facts:Parameters<typeof planMemoryUse>[1][number][] = [];
   const normalized = query.normalize('NFKC').toLowerCase().trim().slice(0,4096);
   if (saved.enabled === true && saved.selections.length <= 12 && normalized && !declinesMemory.test(normalized) && tokens > 0 && read) {

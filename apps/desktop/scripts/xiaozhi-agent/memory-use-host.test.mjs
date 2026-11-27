@@ -4,6 +4,25 @@ import assert from 'node:assert/strict';
 const {createPiMemoryScope} = await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const {createPiMemoryTools} = await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 
+test('explicit Task history has first use of the shared outbound reference allowance',async()=>{
+  const {assembleRequestMemory}=await import('../../src/main/xiaozhi-agent/memory-use/selection.ts');
+  const history={projection:'原文片段\n包含 JSON 转义引号 " 与多字节',source:'task'};
+  const trace=[];
+  const plan=await assembleRequestMemory(8400,async capacity=>{
+    trace.push(['task',capacity]);
+    return history;
+  },async capacity=>{
+    trace.push(['personal',capacity]);
+    return {capacity};
+  });
+  const transferred=Buffer.byteLength(JSON.stringify(history.projection))+4;
+  assert.deepEqual(trace,[['task',8400],['personal',8400-transferred*20]]);
+  assert.equal(plan.historyPlan,history);
+  assert.equal(plan.personalPlan.capacity,8400-transferred*20);
+  const empty=await assembleRequestMemory(280,()=>undefined,async capacity=>capacity);
+  assert.equal(empty.personalPlan,280);
+});
+
 test('the native read accepts only personal references included in this request', async () => {
   const sessionId = 'aisession_11111111-1111-4111-8111-111111111111';
   const pin = n => ({layer:'personal',source:'personal',id:n.repeat(64),version:1,

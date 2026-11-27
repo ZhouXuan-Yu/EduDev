@@ -71,9 +71,25 @@ function compareText(a: string, b: string) {
   return a < b ? -1 : a > b ? 1 : 0;
 }
 
+// Both planners spend from the same conservative fraction of remaining context.
+export const REFERENCE_CONTEXT_FACTOR=20;
+
+export async function assembleRequestMemory<History extends {projection:string}, Personal>(
+  available:number,
+  loadHistory:(remaining:number)=>Promise<History|undefined>|undefined,
+  loadPersonal:(remaining:number)=>Promise<Personal|undefined>|undefined,
+) {
+  const historyPlan=await loadHistory(available);
+  const used=historyPlan?.projection
+    ? (Buffer.byteLength(JSON.stringify(historyPlan.projection)) + 4)*REFERENCE_CONTEXT_FACTOR
+    : 0;
+  const personalPlan=await loadPersonal(Math.max(0,available-used));
+  return {historyPlan,personalPlan};
+}
+
 function projectionBudget(availableTokens: number) {
   return Number.isSafeInteger(availableTokens) && availableTokens > 0
-    ? Math.min(1024, Math.floor(availableTokens / 20)) : 0;
+    ? Math.min(1024, Math.floor(availableTokens / REFERENCE_CONTEXT_FACTOR)) : 0;
 }
 
 function referenceOf({layer,source,id,version}: Pin): Reference {

@@ -76,6 +76,7 @@ import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,visibleAssistantText} from './presentation-event-adapter';
 import {withPublicResponsePrompt} from './public-response-prompt';
 import {projectTeacherPreferenceRequest} from './preference-request-context';
+import {assembleRequestMemory} from './memory-use/selection';
 import {responseScopeInstructions} from './response-scope';
 import {teachingPresentationInstructions} from './teaching-presentation';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
@@ -1237,14 +1238,21 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       : '';
     const priorPersonalIds=projectedPersonalIds;
     projectedPersonalIds=[];
-    const personalPlan = !compacting && submittedTeacherTimestamp!==undefined && teacherQuery && initialAuthority?.personal
-      ? await options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,teacherQuery,
-        Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)),args[2]?.signal)
-      : undefined;
-    const historyPlan=!compacting&&submittedTeacherTimestamp!==undefined&&initialAuthority?.history
-      ? await options.memory?.historyProjection?.(initialAuthority.fingerprint,teacherQuery??'',
-        Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)-(personalPlan?.estimatedTokens??0)),args[2]?.signal)
-      : undefined;
+    const originalTeacherRequest=compacting||submittedTeacherTimestamp===undefined?undefined:submittedTeacherRequest;
+    const requiredGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
+    const eligible=!compacting&&submittedTeacherTimestamp!==undefined&&Boolean(initialAuthority?.history||initialAuthority?.personal);
+    const query=teacherQuery;
+    const {historyPlan,personalPlan}=eligible&&initialAuthority ? await assembleRequestMemory(
+      Math.max(0,Math.min(policy.window,providerWindow)-estimateFullRequest(
+        projectTeacherPreferenceRequest(args[1],originalTeacherRequest,requiredGuidance,submittedTeacherTimestamp),
+        thinkingPolicy.maxOutputTokens)),
+      remaining=>initialAuthority.history
+        ? options.memory?.historyProjection?.(initialAuthority.fingerprint,query??'',remaining,args[2]?.signal)
+        : undefined,
+      remaining=>query&&initialAuthority.personal
+        ? options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,query,remaining,args[2]?.signal)
+        : undefined,
+    ) : {};
     const readbacks=[...(historyPlan?.readbacks??[]),...(personalPlan?.receipts??[])];
     if (readbacks.length && initialAuthority && options.memory?.referenceRead) {
       await options.memory.referenceRead(initialAuthority.version,readbacks);
@@ -1252,10 +1260,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     let projectedHistory=false;
     const historyProjection=historyPlan?.projection;
-    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,historyProjection,personalPlan?.projection].filter(Boolean).join('\n\n');
+    const currentGuidance=[requiredGuidance,historyProjection,personalPlan?.projection].filter(Boolean).join('\n\n');
     args[1]=projectTeacherPreferenceRequest(args[1],
-      compacting || submittedTeacherTimestamp === undefined ? undefined : submittedTeacherRequest,
-      currentGuidance, submittedTeacherTimestamp,()=>{
+      originalTeacherRequest,currentGuidance,submittedTeacherTimestamp,()=>{
         projectedHistory=!!historyProjection;
         if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
       });

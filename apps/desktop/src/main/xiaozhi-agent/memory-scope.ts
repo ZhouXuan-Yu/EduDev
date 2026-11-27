@@ -11,6 +11,7 @@ import { rankHindsightTrialRows } from './memory-hindsight-trial';
 import type { createHistoryMemory } from './history/memory';
 import type { createPersonalMemoryUse } from '../education/personal-memory/use';
 import {personalReferencePlan} from './memory-use/personal-references';
+import {REFERENCE_CONTEXT_FACTOR} from './memory-use/selection';
 import type {ReceivedReference} from './memory-use/receipts';
 import {combinedMemorySelections,type RunHistory} from './memory-use/history-binding';
 
@@ -149,7 +150,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     async historyProjection(id:string,expectedAuthority:string,query:string,availableTokens:number,signal?:AbortSignal,policy?:RunMemoryPolicy) {
       if(policy?.omitHistory)return;
       const extra=await policy?.loadHistory();
-      const budget=Math.min(1400,Math.floor(availableTokens/20))
+      const budget=Math.min(1400,Math.floor(availableTokens/REFERENCE_CONTEXT_FACTOR))
         -Buffer.byteLength(historyProjectionPrefix+historyProjectionSuffix);
       if(!extra||budget<160)return;
       const initial=await authority(id,policy);
