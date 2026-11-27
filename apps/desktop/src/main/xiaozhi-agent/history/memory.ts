@@ -152,18 +152,32 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       worker?.wake();
       return project(saved.ref,source?.label??'历史来源',source?.title??'',saved);
     },
-    async discover(sessionId: string, query: string, signal?: AbortSignal): Promise<HistoryDiscovery> {
+    async discover(sessionId: string, query: string, signal?: AbortSignal, includeSelected=false): Promise<HistoryDiscovery> {
       if (typeof query!=='string'||!query.trim()||query.length>1800||!validMemorySession(sessionId)) throw Error('invalid_input');
       const started = performance.now();
       const {saved:scope,target}=await historyTeachingContext(sql,sessionId);
       const selected=new Set(scope.selections.filter(item=>item.layer==='history').map(item=>item.id));
-      const granted=(await access.permitted()).filter(item=>!selected.has(item.sourceId));
+      const granted=(await access.permitted()).filter(item=>includeSelected||!selected.has(item.sourceId));
       const permittedSessions=await eligibleHistorySessions(sql,granted.map(item=>item.ref.sessionId),target);
       const active=granted.filter(item=>permittedSessions.has(item.ref.sessionId));
       signal?.throwIfAborted();
       if(!active.length)return {mode:'local',candidates:[],reason:'empty_scope',elapsedMs:Math.round(performance.now()-started)};
       const cleaned = (await store.sanitizeProblemText(query)).sanitizedText;
       if (!cleaned.trim()) return {mode:'local',candidates:[],elapsedMs:Math.round(performance.now()-started)};
+      if(query.trim().length<=80){
+        const titles=await sql.all('SELECT id FROM ai_conversation_sessions WHERE title=? ORDER BY id LIMIT 25',[query.trim()]);
+        const exact=new Set(titles.map(row=>row.id));
+        const selectedByTitle:HistorySource[]=[];
+        for(const saved of active){
+          signal?.throwIfAborted();
+          if(!exact.has(saved.ref.sessionId))continue;
+          const row=await readAllowed(saved).catch(()=>null);
+          if(row)selectedByTitle.push(await project(row.ref,row.label,row.title,saved));
+          if(selectedByTitle.length===12)break;
+        }
+        if(selectedByTitle.length)return {mode:'local',candidates:await publish(sessionId,scope.version,selectedByTitle,signal),
+          elapsedMs:Math.round(performance.now()-started)};
+      }
       if (engine) {
         try {
           const index=await access.indexState();

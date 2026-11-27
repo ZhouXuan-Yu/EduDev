@@ -32,7 +32,7 @@ import {resolveNaturalLessonBasis,resolveOrdinaryLessonBasis} from '../education
 import type {MaterialSource} from '../../shared/materials';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
-import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,type RunHistory} from './memory-use/history-binding';
+import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyUseRequest,type RunHistory} from './memory-use/history-binding';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -2514,6 +2514,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(input.historyIntents&&!omitHistory){
         try{historyProof=await phase(()=>taskHistory.prepare(id,input.historyIntents!));}
         catch{return {ok:false,error:controller.signal.aborted?'cancelled':'memory_scope_changed'};}
+      }else if(!omitHistory&&operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId){
+        const request=historyUseRequest(input.prompt);
+        if(request){
+          if(request.kind==='named'){
+            try{historyProof=await phase(()=>taskHistory.prepareNamed(id,request.title));}
+            catch{return {ok:false,error:controller.signal.aborted?'cancelled':'memory_scope_changed'};}
+          }
+          if(!historyProof)return {ok:false,error:'history_confirmation_required',historyQuery:request.query};
+        }
       }
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id)||configuring.has(id))return{ok:false,error:'busy'};

@@ -428,7 +428,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
     if (!result.ok) {
       attempt.current=undefined;
-      if(result.error!=='handout_basis_ambiguous'&&result.error!=='handout_basis_unavailable')setNotice(XIAOZHI_ERRORS[result.error]);
+      if(result.error==='history_confirmation_required'){
+        setHistoryLookup({sessionId:id,query:result.historyQuery??prompt.slice(0,1800),includeSelected:true});
+      }else if(result.error!=='handout_basis_ambiguous'&&result.error!=='handout_basis_unavailable'){
+        setNotice(XIAOZHI_ERRORS[result.error]);
+      }
       await Promise.allSettled([hydrate(id),attachments.refresh()]);
       throw new Error(result.error);
     }
@@ -439,7 +443,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const projection = snapshot?.projection;
   const current = projection?.turns.at(-1);
   const composerItems=visible&&!syncBlocked?pendingComposerItems(snapshot,id,current?.id):[];
-  const [historyLookup,setHistoryLookup]=useState<{sessionId:string;query:string}>();
+  const [historyLookup,setHistoryLookup]=useState<{sessionId:string;query:string;includeSelected?:boolean}>();
   const openHistory=historyLookup?.sessionId===id&&visible&&!syncBlocked&&!snapshot?.running?snapshot?.memoryScope:undefined;
   const [personalReviewSession,setPersonalReviewSession]=useState<string>();
   const personalReviewButton=useRef<HTMLButtonElement>(null);
@@ -566,7 +570,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         <PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined}
           onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}
           personalReview={openPersonalReview} onClosePersonalReview={()=>{setPersonalReviewSession(undefined);personalReviewButton.current?.focus();}}
-          history={openHistory?{scope:openHistory,query:historyLookup!.query,pending:pendingHistory,close:()=>setHistoryLookup(undefined),
+          history={openHistory?{scope:openHistory,query:historyLookup!.query,includeSelected:historyLookup!.includeSelected,pending:pendingHistory,close:()=>setHistoryLookup(undefined),
             staged:item=>{
               setDraftHistory(old=>({...old,[id]:[...(old[id]??[]).filter(row=>row.sourceId!==item.sourceId),item]}));
               setHistoryLookup(undefined);

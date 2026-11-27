@@ -9,8 +9,10 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const exclusion=process.argv.includes('--task-exclusion');
+const namedHistory=process.argv.includes('--named-history');
+const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const root=fs.mkdtempSync(path.join(acceptance,exclusion?'history-exclusion-':'history-task-'));
+const root=fs.mkdtempSync(path.join(acceptance,namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-'));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
 const source='这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
@@ -130,6 +132,17 @@ async function close(){
 try{
   await launch();
   const sourceSession=await until(async()=>{const id=await session();return id?.startsWith('aisession_')?id:null;});
+  if(namedHistory){
+    await page.getByTestId('workbench-manage-history').click();
+    const manage=page.getByTestId('workbench-history-dialog');
+    await manage.getByTestId('ai-conversation-session-'+sourceSession).click({button:'right'});
+    await page.getByTestId('ai-conversation-context-rename').click();
+    const name=manage.getByTestId('ai-conversation-rename-session-'+sourceSession);
+    await name.fill(declaredTitle);
+    await name.press('Enter');
+    await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
+    await manage.getByRole('button',{name:'关闭',exact:true}).click();
+  }
   await send(sourceSession,source);
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
   assert(row?.id);
@@ -148,7 +161,42 @@ try{
   assert(allowed.source_id);
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
-  if(exclusion){
+  if(namedHistory){
+    const namedPrompt='请引用历史《'+declaredTitle+'》。给出该教师的复核口令，只在聊天回复。';
+    const before=await provider();
+    const count=read('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',target)[0].n;
+    await composer().fill(namedPrompt);
+    await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    await page.getByTestId('history-lookup').waitFor();
+    assert.equal(await page.getByTestId('history-lookup-query').inputValue(),declaredTitle);
+    assert.equal(await composer().inputValue(),namedPrompt);
+    assert.equal((await provider()).length,before.length);
+    assert.equal(read('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',target)[0].n,count);
+    pass('Exact title with discovery consent alone opens the existing confirmation before admitting any Run');
+    await page.getByTestId('history-lookup-search').click();
+    await page.getByTestId('history-candidate-'+row.id).click();
+    await page.getByTestId('history-lookup-use-session').click();
+    await page.getByTestId('history-use-selection').waitFor();
+    const task=await send(target,namedPrompt);
+    const [binding]=bindings(target);
+    assert.equal(binding.admittedBy.runId,task.runId);
+    assert.equal(binding.permissionBasis.kind,'session_reference');
+    assert(task.sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
+    assert.equal(await page.getByTestId('history-lookup').count(),0);
+    pass('One exact, currently authorized Session source binds directly to a real Task',{answerUsed:task.answerUsed});
+    const calls=(await provider()).length;
+    const vague='照上次那份继续。';
+    await composer().fill(vague);
+    await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    await page.getByTestId('history-lookup').waitFor();
+    assert.equal(await composer().inputValue(),vague);
+    await page.getByTestId('history-lookup-query').fill(declaredTitle);
+    await page.getByTestId('history-lookup-search').click();
+    await page.getByTestId('history-candidate-'+row.id).waitFor();
+    assert.equal((await provider()).length,calls);
+    assert.deepEqual(bindings(target),[binding]);
+    pass('Vague history opens one local confirmation with the preserved draft and no prompt delivery');
+  }else if(exclusion){
     await composer().fill(taskRequest);
     await page.getByTestId('history-lookup-open').click();
     await page.getByTestId('history-lookup-query').fill(search);

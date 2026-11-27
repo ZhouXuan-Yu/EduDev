@@ -3,8 +3,8 @@ import { Button, Input } from '@heroui/react';
 import type { HistoryCandidate, HistoryDiscovery, HistoryPreview, PendingHistoryReference } from '../../../shared/xiaozhi-history-memory';
 import type { XiaozhiMemoryScope } from '../../../shared/xiaozhi-memory';
 
-export function PiHistoryLookup({sessionId,scope,query,pending,onClose,onConfirmed,onStaged}:{
-  sessionId:string;scope:XiaozhiMemoryScope;query:string;pending:readonly PendingHistoryReference[];
+export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=false,onClose,onConfirmed,onStaged}:{
+  sessionId:string;scope:XiaozhiMemoryScope;query:string;includeSelected?:boolean;pending:readonly PendingHistoryReference[];
   onClose:()=>void;onConfirmed:()=>Promise<void>;onStaged:(intent:PendingHistoryReference)=>void;
 }) {
   const [input,setInput]=useState(query);
@@ -18,7 +18,7 @@ export function PiHistoryLookup({sessionId,scope,query,pending,onClose,onConfirm
     work.current=true;setBusy(true);setMessage('');setPreview(undefined);setResult(undefined);
     const version=scope.version;
     try{
-      const reply=await window.omniEdu?.discoverHistoryMemory(sessionId,input);
+      const reply=await window.omniEdu?.discoverHistoryMemory(sessionId,input,includeSelected);
       if(!reply?.ok)throw Error('discover');
       setResult({scopeVersion:version,reply:reply.value});
     }catch{setMessage('无法查找，请核对许可或重试。');}

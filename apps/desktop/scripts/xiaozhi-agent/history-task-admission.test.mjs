@@ -22,7 +22,7 @@ import {DatabaseSync} from 'node:sqlite';
 const {historyMemorySchema}=await import('../../src/main/xiaozhi-agent/history/schema.ts');
 const {createHistoryState,historyHash}=await import('../../src/main/xiaozhi-agent/history/state.ts');
 const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memory-scope-state.ts');
-const {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
+const {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyUseRequest}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
 const {createPiMemoryScope}=await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const {createPiMemoryTools}=await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 
@@ -32,7 +32,7 @@ async function fixture(t){
   const db=new DatabaseSync(':memory:');
   t.after(()=>db.close());
   db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT);'+
-    'CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT);'+
+    'CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT);'+
     'CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);');
   const sql={
     run:async(query,args=[])=>db.prepare(query).run(...args),
@@ -277,4 +277,26 @@ test('An explicit Task history exclusion survives a new Run and does not edit Se
   assert.equal((await f.access.get(pin.id)).allowed,true);
   const other={...resumed,id:'xitask_'+f.sortKey()};
   assert.equal((await scope.authority(f.target,{omitHistory:false,loadHistory:()=>runtime.forRun(other,owner)})).history,true);
+});
+
+test('An exact historical title grants Task use only with one existing explicit Session selection',async t=>{
+  const f=await fixture(t),title='源会话手工标题';
+  assert.deepEqual(historyUseRequest('请引用历史《源会话手工标题》。'),{kind:'named',title,query:title});
+  assert.equal(historyUseRequest('请参考历史《源会话手工标题》和《另一份》。').kind,'confirm');
+  assert.equal(historyUseRequest('照上次那份继续。').kind,'confirm');
+  assert.equal(historyUseRequest('请改第三题，参考当前讲义版本。'),undefined);
+
+  await f.sql.run('UPDATE ai_conversation_sessions SET title=? WHERE id=?',[title,f.source]);
+  assert.equal(typeof f.binding.prepareNamed,'function');
+  assert.equal(await f.binding.prepareNamed(f.target,title),undefined);
+  const pin={...f.pin,fingerprint:f.original.fingerprint};
+  assert(await f.state.saveMemoryScope(f.target,0,{enabled:true,selections:[pin]}));
+  assert.equal(await f.binding.prepareNamed(f.target,'手工标题'),undefined);
+  const exact=await f.binding.prepareNamed(f.target,title);
+  assert.deepEqual(exact.selections,[pin]);
+  const sameTitle={...f.ref,recordId:'second_source'};
+  await f.access.change(sameTitle,0,'allow');
+  assert.equal(await f.binding.prepareNamed(f.target,title),undefined);
+  await assert.rejects(f.sql.transaction(work=>f.binding.attachTask(work,f.task,f.owner,exact)),/memory_scope_changed/);
+  assert.equal((await f.grants()).length,0);
 });

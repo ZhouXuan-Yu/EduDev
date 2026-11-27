@@ -18,7 +18,7 @@ export function historyOperations(history: ReturnType<typeof createHistoryMemory
       if (typeof authorized!=='boolean') throw Error('invalid_input');
       return history.preview(ref,offset,authorized);
     }),
-    discover:(sessionId:string,query:string)=>result(()=>history.discover(sessionId,query)),
+    discover:(sessionId:string,query:string,includeSelected=false)=>result(()=>history.discover(sessionId,query,undefined,includeSelected)),
     change:(ref:HistorySourceRef,revision:number,action:HistoryAccessAction)=>result(()=>mutate(async()=>{
       const updated = await history.change(ref,revision,action);
       await revokeRunning(updated.sourceId);

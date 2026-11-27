@@ -219,7 +219,7 @@ export function registerXiaozhiIpc(options: {
   options.ipcMain.handle('xiaozhi:history-index-rebuild',event=>fromMain(event)?history.rebuild():{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-list',(event,id,offset)=>fromMain(event)?history.list(id,offset):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-preview',(event,ref,offset,allowed)=>fromMain(event)?history.preview(ref,offset,allowed):{ok:false,error:'permission_denied'});
-  options.ipcMain.handle('xiaozhi:history-discover',(event,id,query)=>fromMain(event)?history.discover(id,query):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:history-discover',(event,id,query,includeSelected)=>fromMain(event)?history.discover(id,query,includeSelected===true):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-stage',(event,id,version,ticket)=>fromMain(event)?host.stageHistoryMemory(id,version,ticket):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-remove-task',(event,input)=>fromMain(event)?host.removeTaskHistory(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-discard',(event,id,token)=>fromMain(event)?host.discardHistoryIntent(id,token):{ok:false,error:'permission_denied'});

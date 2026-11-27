@@ -432,7 +432,7 @@ const api = {
   rebuildHistoryMemoryIndex: () => ipcRenderer.invoke('xiaozhi:history-index-rebuild') as Promise<HistoryResult<HistoryIndexStatus>>,
   listHistoryMemory: (id:string,offset:number) => ipcRenderer.invoke('xiaozhi:history-list',id,offset) as Promise<HistoryResult<{items:HistorySource[];nextOffset:number|null}>>,
   previewHistoryMemory: (ref:HistorySourceRef,offset:number,authorized:boolean) => ipcRenderer.invoke('xiaozhi:history-preview',ref,offset,authorized) as Promise<HistoryResult<HistoryPreview>>,
-  discoverHistoryMemory: (id:string,query:string) => ipcRenderer.invoke('xiaozhi:history-discover',id,query) as Promise<HistoryResult<HistoryDiscovery>>,
+  discoverHistoryMemory: (id:string,query:string,includeSelected=false) => ipcRenderer.invoke('xiaozhi:history-discover',id,query,includeSelected) as Promise<HistoryResult<HistoryDiscovery>>,
   stageHistoryMemory:(id:string,version:number,ticket:string)=>ipcRenderer.invoke('xiaozhi:history-stage',id,version,ticket) as Promise<HistoryResult<import('../shared/xiaozhi-history-memory').PendingHistoryReference>>,
   removeTaskHistory:(input:import('../shared/xiaozhi-history-memory').TaskHistoryRemoval)=>ipcRenderer.invoke('xiaozhi:history-remove-task',input) as Promise<XiaozhiActionResult>,
   discardHistoryIntent:(id:string,token:string)=>ipcRenderer.invoke('xiaozhi:history-discard',id,token) as Promise<XiaozhiActionResult>,

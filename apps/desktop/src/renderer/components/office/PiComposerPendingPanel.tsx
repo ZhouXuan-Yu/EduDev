@@ -53,7 +53,7 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
   onDecision:(id:string,decision:XiaozhiDecisionInput['decision'])=>Promise<void>;
   onRefresh:()=>Promise<void>;
   onOpen:(path:string)=>void;
-  history?:{scope:XiaozhiMemoryScope;query:string;pending:readonly PendingHistoryReference[];close:()=>void;confirmed:()=>Promise<void>;staged:(item:PendingHistoryReference)=>void};
+  history?:{scope:XiaozhiMemoryScope;query:string;includeSelected?:boolean;pending:readonly PendingHistoryReference[];close:()=>void;confirmed:()=>Promise<void>;staged:(item:PendingHistoryReference)=>void};
   personalReview?:boolean;
   onClosePersonalReview?:()=>void;
 }) {
@@ -112,7 +112,7 @@ export function PiComposerPendingPanel({items,sessionId,reveal,onAnswer,onDecisi
           :active.kind==='change'?<PiTextChangeCard key={active.id} {...shared} change={active.item} composerReview/>
           :active.kind==='office'?<PiOfficeArtifactCard key={active.id} {...shared} artifact={active.item}/>
           :active.kind==='history'?<PiHistoryLookup key={active.id} sessionId={sessionId} scope={active.item.scope}
-            query={active.item.query} pending={active.item.pending} onStaged={active.item.staged} onClose={active.item.close} onConfirmed={active.item.confirmed}/>
+            query={active.item.query} includeSelected={active.item.includeSelected} pending={active.item.pending} onStaged={active.item.staged} onClose={active.item.close} onConfirmed={active.item.confirmed}/>
           :active.kind==='personal-memory'?<PiPersonalMemoryPending key={active.id} sessionId={sessionId} onClose={()=>onClosePersonalReview?.()}/>
           :<PiDeliveryBundleCard key={active.id} {...shared} delivery={active.item}/>}
       </div>

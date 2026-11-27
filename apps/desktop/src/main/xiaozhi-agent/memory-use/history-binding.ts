@@ -4,7 +4,8 @@ import type {XiaozhiMemoryUseSelection} from '../../../shared/xiaozhi-memory';
 import {validTaskOwner,type TaskView,type TaskOwner} from '../../../shared/xiaozhi-task';
 import type {createHistoryMemory} from '../history/memory';
 import {createHistoryState} from '../history/state';
-import {historyTargetApplies,historyTeachingContext,type HistoryTeachingTarget as Target} from '../history/teaching-target';
+import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext,type HistoryTeachingTarget as Target} from '../history/teaching-target';
+import type {PrivateMemoryScope} from '../memory-scope-state';
 import {createReferenceReceipts} from './receipts';
 import {memorySelectionKey,validMemoryUseSelection} from '../memory-selection';
 import type {Sql} from '../session-state';
@@ -13,9 +14,10 @@ export type HistoryPin=HistorySelection & {fingerprint:string};
 type BoundHistory={scope:'task'|'turn';ownerId:string;revision:number;selections:HistoryPin[];excludeSessionHistory?:true};
 export type RunHistory=BoundHistory;
 type Pending={sessionId:string;scopeVersion:number;target:Target;pin:HistoryPin;expires:number};
+type PermissionBasis={kind:'confirmed_picker'|'session_reference';scopeVersion:number};
 type TaskBinding={
   schemaVersion:1;sessionId:string;taskId:string;revision:number;requirementsVersion:number;
-  target:Target;admittedBy:TaskOwner;selections:HistoryPin[];invalidated?:true;excludeSessionHistory?:true;
+  target:Target;admittedBy:TaskOwner;selections:HistoryPin[];invalidated?:true;excludeSessionHistory?:true;permissionBasis?:PermissionBasis;
 };
 const taskKey=(id:string)=>'xiaozhi.memory-use.task.v1:'+id;
 const sameTarget=(a:Target,b:Target)=>a.folderId===b.folderId&&a.term===b.term;
@@ -26,6 +28,17 @@ export function historyOmissionScope(prompt:string) {
   return ['本任务','这项任务','当前任务','本次任务'].includes(match[1])?'task':'turn';
 }
 
+
+export function historyUseRequest(prompt:string) {
+  const text=prompt.normalize('NFKC');
+  const named=[...text.matchAll(/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:参考|引用|沿用|使用)\s*历史(?:记录|资料|对话|来源)?\s*[:：]?\s*《([^《》\n]{1,80})》/gu)]
+    .map(match=>match[1].trim()).filter(Boolean);
+  const vague=/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:照|按|参考|沿用|使用|接着)\s*(?:上次|上回|之前|过去)的?(?:那份|那个|那一份|那一条)/u.test(text);
+  if(!named.length&&!vague)return;
+  const quotedTitles=[...text.matchAll(/《([^《》\n]{1,80})》/gu)];
+  if(named.length===1&&quotedTitles.length===1&&!vague)return {kind:'named' as const,title:named[0],query:named[0]};
+  return {kind:'confirm' as const,query:text.trim().slice(0,1800)};
+}
 
 export function combinedMemorySelections<T extends XiaozhiMemoryUseSelection>(session:T[],extra:HistoryPin[]):(T|HistoryPin)[] {
   const merged=new Map<string,T|HistoryPin>(session.map(item=>[memorySelectionKey(item),item]));
@@ -56,7 +69,11 @@ async function readTaskBinding(sql:Sql,task:TaskView):Promise<TaskBinding|null> 
     binding.target.folderId!==null&&typeof binding.target.folderId!=='string'||
     binding.target.term!==null&&typeof binding.target.term!=='string'||
     binding.invalidated!==undefined&&binding.invalidated!==true||
-    binding.excludeSessionHistory!==undefined&&binding.excludeSessionHistory!==true||!validTaskOwner(binding.admittedBy)||binding.admittedBy.sessionId!==task.sessionId)throw Error('memory_scope_changed');
+    binding.excludeSessionHistory!==undefined&&binding.excludeSessionHistory!==true||
+    binding.permissionBasis!==undefined&&(!binding.permissionBasis||
+      !['confirmed_picker','session_reference'].includes(binding.permissionBasis.kind)||
+      !Number.isSafeInteger(binding.permissionBasis.scopeVersion)||binding.permissionBasis.scopeVersion<0)||
+    !validTaskOwner(binding.admittedBy)||binding.admittedBy.sessionId!==task.sessionId)throw Error('memory_scope_changed');
   return binding;
 }
 
@@ -94,10 +111,40 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return {scopeVersion:saved.version,target,selections};
   }
 
-  type Prepared=Awaited<ReturnType<typeof prepare>>;
+  type Prepared=Awaited<ReturnType<typeof prepare>> & {namedTitle?:string};
+
+  async function namedSessionPin(work:Sql,title:string,saved:PrivateMemoryScope,target:Target) {
+    if(!saved.enabled||!saved.selections.some(pin=>pin.layer==='history'))return;
+    const rows=await work.all(`SELECT a.source_id,a.session_id,a.generation,a.source_version FROM memory_source_access a
+      JOIN ai_conversation_sessions s ON s.id=a.session_id
+      WHERE a.memory_state='active' AND a.index_allowed=1 AND a.discover_allowed=1 AND s.title=?
+        AND COALESCE(s.archived_at,'')='' AND COALESCE(s.student_id,'')=''
+        AND (s.folder_id IS NULL OR s.folder_id=?) ORDER BY a.source_id LIMIT 25`,[title,target.folderId]);
+    if(!rows.length||rows.length===25)return;
+    const applicable=await eligibleHistorySessions(work,rows.map(row=>String(row.session_id)),target);
+    const candidates=rows.filter(row=>applicable.has(String(row.session_id)));
+    if(candidates.length!==1)return;
+    const [found]=candidates;
+    return saved.selections.find((pin):pin is HistoryPin=>pin.layer==='history'&&pin.id===found.source_id&&
+      pin.version===found.generation&&pin.sourceVersion===found.source_version);
+  }
+
+  async function prepareNamed(sessionId:string,title:string):Promise<Prepared|undefined> {
+    const {saved,target}=await historyTeachingContext(sql,sessionId);
+    const pin=await namedSessionPin(sql,title,saved,target);
+    if(!pin)return;
+    const source=await history.selected(pin).catch(()=>null);
+    if(source?.fingerprint!==pin.fingerprint)return;
+    return {scopeVersion:saved.version,target,selections:[pin],namedTitle:title};
+  }
+
   async function confirm(work:Sql,sessionId:string,proof:Prepared) {
     const {saved,target}=await historyTeachingContext(work,sessionId);
     if(saved.version!==proof.scopeVersion||!sameTarget(target,proof.target))throw Error('memory_scope_changed');
+    if(proof.namedTitle){
+      const named=await namedSessionPin(work,proof.namedTitle,saved,target);
+      if(!named||JSON.stringify(named)!==JSON.stringify(proof.selections[0]))throw Error('memory_scope_changed');
+    }
     for(const pin of proof.selections)if(!await currentPin(work,pin,target))throw Error('memory_scope_changed');
     return saved;
   }
@@ -108,10 +155,10 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
   }
 
   async function writeBinding(work:Sql,task:TaskView,owner:TaskOwner,prior:TaskBinding|null,target:Target,
-    selections:HistoryPin[],excludeSessionHistory?:true) {
+    selections:HistoryPin[],excludeSessionHistory?:true,permissionBasis?:PermissionBasis) {
     const binding:TaskBinding={schemaVersion:1,sessionId:owner.sessionId,taskId:task.id,
       revision:(prior?.revision??0)+1,requirementsVersion:task.requirementsVersion,target,admittedBy:owner,selections,
-      ...(excludeSessionHistory?{excludeSessionHistory}:{}),
+      ...(excludeSessionHistory?{excludeSessionHistory}:{}),...(permissionBasis?{permissionBasis}:{}),
     };
     // Writes here share the Task checkpoint transaction, including journal publication.
     await work.run(`INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)
@@ -129,7 +176,9 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     }
     const selections=combinedMemorySelections(existing,proof.selections);
     combinedMemorySelections(saved.selections,selections);
-    await writeBinding(work,task,owner,prior,proof.target,selections,prior?.excludeSessionHistory);
+    await writeBinding(work,task,owner,prior,proof.target,selections,prior?.excludeSessionHistory,{
+      kind:proof.namedTitle?'session_reference':'confirmed_picker',scopeVersion:proof.scopeVersion,
+    });
   }
 
   async function excludeForTask(work:Sql,task:TaskView,owner:TaskOwner) {
@@ -205,5 +254,5 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return selections.length?{...history,selections}:undefined;
   }
 
-  return {stage,prepare,attachTask,excludeForTask,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
+  return {stage,prepare,prepareNamed,attachTask,excludeForTask,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
 }
