@@ -115,7 +115,7 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
     const fence=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!run.current())throw Error('cancelled');};
     return [{
       name:READ_HANDOUT_EDIT,label:'读取讲义修改位置',
-      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。未提供标题时使用当前任务唯一讲义或会话唯一讲义。若当前任务没有讲义，请用 ask_teacher 询问老师要修改哪份讲义，待老师明确指定书名后重新读取。',
+      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。未提供标题时使用当前任务唯一讲义或会话唯一讲义。遇 book_selection_required 时用 ask_teacher 请老师回答“请修改《完整书名》”并说明本次改动，收到回答后重新读取。',
       parameters:handoutEditReadParameters as ToolDefinition['parameters'],
       execute:async(_id,raw,signal)=>{
         try{
@@ -129,7 +129,11 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
           const selectedTitle=clarifiedBookTitle(answer);
           fence(signal);
           const target=numbers ? {title:titles[0]??selectedTitle,taskOnly:implicitBook&&!selectedTitle} : {bookId:raw.bookId,title:raw.title};
-          const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,target);
+          const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,target).catch(error=>{
+            if('taskOnly' in target&&target.taskOnly&&error instanceof Error&&error.message==='book_unavailable')
+              throw Error('book_selection_required');
+            throw error;
+          });
           const sanitize=await options.sanitizer();
           fence(signal);
           if(item.kind==='ambiguous'){

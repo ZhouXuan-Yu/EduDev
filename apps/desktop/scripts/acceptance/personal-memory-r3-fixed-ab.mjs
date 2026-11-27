@@ -439,10 +439,14 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     result.terminal={runId:last.id,status:last.status,error:last.error??null,taskId:last.task?.id??null};
     if(artifact){
       result.artifact=await reviewArtifact(page,data,sessionId,state,artifact,path.join(root,arm.id,'verified-draft.md'));
-      if(state.review)last=await until(async()=>{
-        const value=await snapshot(),latest=value.projection.turns.at(-1);
-        return !value.running&&latest?.status==='completed'?latest:null;
-      });
+      if(state.review){
+        last=await until(async()=>{
+          const value=await snapshot(),latest=value.projection.turns.at(-1);
+          return !value.running&&latest?.id===state.last.id?latest:null;
+        });
+        result.terminal={runId:last.id,status:last.status,error:last.error??null,taskId:last.task?.id??null};
+        assert.equal(last.status,'completed','The run must complete after teacher approval');
+      }
     }
     result.elapsedMs=Math.round(performance.now()-began);
     const requests=await app.evaluate(()=>globalThis.r3FixedABRequests);

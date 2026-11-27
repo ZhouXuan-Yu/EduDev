@@ -40,6 +40,7 @@ export const handoutEditPatchReview=(reason:string)=>reason.match(/^对话审阅
 
 export const handoutEditErrors:Record<string,string>={
   invalid_input:'请使用本轮读到的讲义、章节或练习，并指定准确的修改内容。',
+  book_selection_required:'当前任务尚未绑定要修改的讲义。请询问老师要修改的完整书名和具体改动。',
   book_unavailable:'本会话没有找到这份可编辑讲义。请从原对话打开它。',
   ambiguous:'找到多份讲义，请老师选择要修改的讲义。',
   source_required:'请先读取老师指定的章节和当前正文版本。',

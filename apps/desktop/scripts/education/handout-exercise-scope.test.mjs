@@ -5,7 +5,7 @@ import {test} from 'node:test';
 const {createHandoutEditCoordinator,handoutEditRequest}=await import('../../src/main/education/teaching-handout-edit.ts');
 
 const id=kind=>'teaching_'+kind+'_'+randomUUID();
-async function exerciseTools(prompt,numbers=[3,12],teacherSelection) {
+async function exerciseTools(prompt,numbers=[3,12],teacherSelection,bookInTask=true) {
   const book={id:id('book'),title:'教学讲义'};
   const chapters=numbers.map((number,i)=>({id:id('chapter'),title:'章节 '+i,summary:'',learningObjectives:[]}));
   const pages=chapters.map(chapter=>({id:id('page'),chapterId:chapter.id}));
@@ -15,7 +15,7 @@ async function exerciseTools(prompt,numbers=[3,12],teacherSelection) {
   })));
   const content={book,chapters,pages,blocks},digest='b'.repeat(64),proposed=[],queries=[],reads=[];
   const coordinator=createHandoutEditCoordinator({
-    versions:{forEdit:async(_session,_task,target)=>{queries.push(target);return {kind:'found',content,digest};}},
+    versions:{forEdit:async(_session,_task,target)=>{queries.push(target);if(target.taskOnly&&!bookInTask)throw Error('book_unavailable');return {kind:'found',content,digest};}},
     sanitizer:async()=>text=>text,publish:()=>{},
     state:{propose:async(_versions,_owner,_call,input)=>{proposed.push(input);return {state:'rejected',id:'r'};},
       view:async()=>({state:'rejected',input:{bookId:book.id}})},
@@ -117,4 +117,11 @@ test('a title supplied by the model, a quotation or an ambiguous teacher answer 
   }
   const {queries}=await exerciseTools('请修改《教学讲义》，只改第三题。',[3],async()=>'请修改《另一份》。');
   assert(queries.every(q=>q.title==='教学讲义'));
+});
+
+test('an unbound follow-up asks the teacher for the title without claiming the book is absent from the conversation',async()=>{
+  const {reads}=await exerciseTools('只改第三题。',[3],async()=>undefined,false);
+  assert.equal(reads[0].error,'book_selection_required');
+  assert.equal(reads[0].choices,undefined);
+  assert(!JSON.stringify(reads[0]).includes('教学讲义'));
 });
