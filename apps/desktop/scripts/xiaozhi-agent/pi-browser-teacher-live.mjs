@@ -113,6 +113,11 @@ try {
     report.receipts = db.prepare("SELECT call_id,phase,success FROM xiaozhi_tool_receipts WHERE tool='office_browser' ORDER BY start_sequence").all();
     const binding = db.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(session);
     const messages = fs.readFileSync(path.join(data, 'xiaozhi-pi', binding.session_file),'utf8').trim().split('\n').map(line => JSON.parse(line).message);
+    report.groupedPreparation=messages.some(m=>{
+      if(m?.role!=='assistant'||!Array.isArray(m.content))return false;
+      const tools=m.content.filter(c=>c.type==='toolCall').map(c=>c.name);
+      return tools.includes('read') && tools.includes('update_task_plan');
+    });
     const usage=messages.filter(m=>m?.role==='assistant'&&m.usage).map(m=>m.usage);
     report.usage={turns:usage.length,input:usage.reduce((n,u)=>n+(u.input||0),0),output:usage.reduce((n,u)=>n+(u.output||0),0),cost:null};
     if(handbackAt)report.afterHandback=messages.filter(m=>m?.role==='assistant'&&m.timestamp>=handbackAt).flatMap(m=>(Array.isArray(m.content)?m.content:[]).filter(c=>c.type==='toolCall'&&c.name==='office_browser').map(c=>c.arguments.action));

@@ -89,6 +89,16 @@ try {
         const {session_file}=db.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(priorId);
         const entries=fs.readFileSync(path.join(data,'xiaozhi-pi',session_file),'utf8').trim().split('\n').map(l=>JSON.parse(l)).filter(e=>e.message);
         row.events=entries.map(e=>({at:Date.parse(e.timestamp),role:e.message.role,tool:e.message.toolName}));
+        const toolsInReply = entries.filter(e=>e.message.role==='assistant').map(e=>
+          (Array.isArray(e.message.content)?e.message.content:[]).filter(item=>item.type==='toolCall').map(item=>item.name));
+        row.groupedPreparation = toolsInReply.some(names=>names.includes('read') && names.includes('update_task_plan'));
+        if (strategy==='grounded' && process.env.OMNI_EDU_EXPECT_GROUPED_PREPARATION==='1') {
+          assert(row.groupedPreparation, 'Pi must record both independent calls in one assistant reply');
+          for (const name of ['read','update_task_plan']) {
+            assert(entries.slice(0, entries.findIndex(e=>e.message.role==='assistant' && Array.isArray(e.message.content) && e.message.content.some(c=>c.type==='toolCall' && c.name==='office_browser')))
+              .some(e=>e.message.role==='toolResult' && e.message.toolName===name && !e.message.isError), 'Missing successful preparation before navigation: '+name);
+          }
+        }
         const last=entries.findLast(e=>e.message.role==='toolResult'&&e.message.toolName==='office_browser');
         const receipt=JSON.parse(last.message.content[0].text);
         assert.equal(receipt.url,url); assert(receipt.text.includes(resultText));
