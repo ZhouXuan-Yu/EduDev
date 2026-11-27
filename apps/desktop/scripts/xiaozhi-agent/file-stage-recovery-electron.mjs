@@ -14,6 +14,9 @@ const main=fs.realpathSync(path.join(build,'main/index.js'));
 const readRoot=process.argv.includes('--read')?path.resolve(process.argv[process.argv.indexOf('--read')+1]):undefined;
 const continueRestored=process.argv.includes('--continue');
 const withPending=process.argv.includes('--pending-approval');
+const withHistory=process.argv.includes('--with-history');
+assert(!withHistory||continueRestored&&!withPending,'The history lane uses the isolated explicit Continue flow');
+const historyMarker='量杯气泡按三圈复核';
 assert(!continueRestored||!readRoot,'Continuation always starts in a new isolated fixture');
 assert(!withPending||continueRestored,'The cold approval case must exercise explicit Continue');
 if(readRoot){assert.equal(path.dirname(readRoot).toLowerCase(),os.tmpdir().toLowerCase());assert(path.basename(readRoot).startsWith('xiaozhi-stage-ui-'));}
@@ -29,16 +32,35 @@ async function launch(){
  Object.assign(env,{OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
   OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'});
  app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});
- await app.evaluate(({net})=>{
-  const state=globalThis.stageTest={requests:0,blocked:[],continueReadback:false,requestApproval:false};
+ await app.evaluate(({net},historyMarker)=>{
+  const state=globalThis.stageTest={requests:0,blocked:[],continueReadback:false,requestApproval:false,
+    seedHistory:false,inspectHistoryOnContinue:false,sourceInPayload:false,sourceInToolPayload:false};
   net.fetch=async(url,init)=>{
    const endpoint=new URL(typeof url==='string'?url:url instanceof URL?url.href:url.url);
    if(endpoint.origin==='https://api.deepseek.com'&&endpoint.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768,input_modalities:['text']}]}),{headers:{'content-type':'application/json'}});
    if(endpoint.origin!=='https://api.deepseek.com'||endpoint.pathname!=='/v1/chat/completions'){state.blocked.push(endpoint.origin);throw Error('External network forbidden');}
-   const body=JSON.parse(init.body),i=state.requests++,planned=body.tools?.some(t=>t.function.name==='update_task_plan');let call;
+   const body=JSON.parse(init.body);
+   if(state.seedHistory){
+    const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-history-source',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
+    return new Response(chunk({role:'assistant',content:'已收到原始合成教学记录。'},null)+chunk({},'stop')+'data: [DONE]\n\n',
+      {headers:{'content-type':'text/event-stream'}});
+   }
+   state.sourceInPayload ||= body.messages.some(msg=>msg.role==='user'&&JSON.stringify(msg.content).includes(historyMarker));
+   state.sourceInToolPayload ||= body.messages.some(msg=>msg.role==='tool'&&JSON.stringify(msg.content).includes(historyMarker));
+   const i=state.requests++,planned=body.tools?.some(t=>t.function.name==='update_task_plan');let call;
    if(state.continueReadback||state.requestApproval){
     state.continuation={prompt:body.messages.at(-1)?.content,toolCount:body.tools?.length??0};
     const repair=state.requestApproval&&i===0;
+    if(state.inspectHistoryOnContinue&&i===0){
+     assertTool('read_education_memory');
+     const one={role:'assistant',tool_calls:[{index:0,id:'cold-history-readback',type:'function',
+       function:{name:'read_education_memory',arguments:'{}'}}]};
+     const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'owned-history-continue',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
+     return new Response(chunk(one,null)+chunk({},'tool_calls')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
+    }
+    function assertTool(name){
+     if(!body.tools?.some(tool=>tool.function.name===name))throw Error('The current authorized history tool was not available');
+    }
     if(repair&&!body.tools?.some(tool=>tool.function.name==='exec_command'))throw Error('The real pending permission tool was not offered');
     const delta=repair?{role:'assistant',tool_calls:[{index:0,id:'cold-approval-hold',type:'function',function:{
       name:'exec_command',arguments:JSON.stringify({cmd:"Write-Output 'Should only run after teacher approval'",timeout:30})
@@ -54,9 +76,47 @@ async function launch(){
    const chunk=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'local-stage',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
    return new Response(chunk({role:'assistant',content:''})+chunk(delta)+chunk({},call?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
   };
- });
+ },historyMarker);
  page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());
  const id=await page.locator('.office-composer-container').getAttribute('data-session-id');if(session)assert.equal(id,session);session=id;
+}
+async function selectTaskHistory(prompt){
+ const author=session;
+ const original='这是合成教师的浮力课演示记录。正式复核口令是'+historyMarker+'。请仅回复已收到。';
+ const input=page.getByTestId('office-prompt-input');
+ await app.evaluate(()=>{globalThis.stageTest.seedHistory=true;});
+ await input.fill(original);
+ await page.getByRole('button',{name:'发送消息',exact:true}).click();
+ const source=await until(async()=>{
+  const state=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),author);
+  const row=query("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",author,original)[0];
+  return row&&!state.running&&state.projection.turns.some(turn=>turn.status==='completed')?row:null;
+ });
+ await app.evaluate(()=>{globalThis.stageTest.seedHistory=false;});
+ await page.getByTestId('pi-new-session').click();
+ session=await until(async()=>{
+  const next=await page.locator('.office-composer-container').getAttribute('data-session-id');
+  return next?.startsWith('aisession_')&&next!==author?next:null;
+ });
+ const opened=app.waitForEvent('window');
+ await page.getByRole('button',{name:'设置',exact:true}).click();
+ const settings=await opened;
+ await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+ await settings.getByTestId('history-settings-session').selectOption(author);
+ const controls=settings.getByTestId('history-settings-source-'+source.id);
+ await controls.getByRole('button',{name:'查看来源'}).click();
+ await controls.getByTestId('history-settings-allow').click();
+ await settings.getByTestId('history-settings-notice').getByText(/已允许查找/).waitFor();
+ await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
+ await input.fill(prompt);
+ await page.getByTestId('history-lookup-open').click();
+ await page.getByTestId('history-lookup-query').fill('浮力课演示 正式复核口令');
+ await page.getByTestId('history-lookup-search').click();
+ await page.getByTestId('history-candidate-'+source.id).click();
+ await page.getByTestId('history-lookup-preview').getByText(original,{exact:true}).waitFor();
+ await page.getByTestId('history-lookup-use').click();
+ await page.getByTestId('history-intent-pending').waitFor();
+ assert.equal(await input.inputValue(),prompt);
 }
 try{
  await launch();const identity=await app.evaluate(({app})=>({pid:process.pid,userData:app.getPath('userData')}));assert.equal(identity.userData,path.resolve(profile));report.identity=identity;
@@ -67,9 +127,17 @@ try{
   for(const [width,height]of[[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await page.getByTestId('pi-delivery-bundle').last().waitFor();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(root,'readback-'+width+'.png')});}
   check('Final-build dual-viewport readback keeps exact saved bytes and unrelated/legacy temporaries, zero model replay');report.ok=true;
  }else{
- await page.getByTestId('office-prompt-input').fill('保存一份浮力HTML演示与一份讲解DOCX，整包审阅后交付。');await page.getByRole('button',{name:'发送消息',exact:true}).click();
+ const request='保存一份浮力HTML演示与一份讲解DOCX，整包审阅后交付。';
+ if(withHistory)await selectTaskHistory(request);
+ else await page.getByTestId('office-prompt-input').fill(request);
+ await page.getByRole('button',{name:'发送消息',exact:true}).click();
  const bundle=page.getByTestId('pi-delivery-bundle').last();await bundle.waitFor({timeout:120000});await until(async()=>!await bundle.getByTestId('pi-delivery-approve').isDisabled());
- report.syntheticRequests=(await app.evaluate(()=>globalThis.stageTest)).requests;
+ const initialModel=await app.evaluate(()=>globalThis.stageTest);
+ report.syntheticRequests=initialModel.requests;
+ if(withHistory){
+  assert.equal(initialModel.sourceInPayload,true);
+  check('Task confirmation reads the real authorized history and sends it in the current task payload');
+ }
  await app.evaluate((_,marker)=>{const fs=process.getBuiltinModule('fs'),path=process.getBuiltinModule('path'),link=fs.linkSync;fs.linkSync=function(from,to,...args){if(path.basename(to)==='未完成讲解.docx'){fs.writeFileSync(marker,JSON.stringify({pid:process.pid,temporary:from,destination:to}));Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,60000);throw Error('Owned cut was not terminated');}return link.call(this,from,to,...args);};},marker);
  const click=bundle.getByTestId('pi-delivery-approve').click();void click.catch(()=>{});await until(()=>fs.existsSync(marker));assert.equal(JSON.parse(fs.readFileSync(marker)).pid,identity.pid);execFileSync('taskkill',['/PID',String(identity.pid),'/T','/F'],{windowsHide:true,stdio:'pipe'});await click.catch(()=>{});await app.close().catch(()=>{});app=undefined;
  const cut=JSON.parse(fs.readFileSync(marker));assert.equal(cut.pid,identity.pid);assert(fs.existsSync(cut.temporary));assert(!fs.existsSync(cut.destination));const formal=path.join(path.dirname(cut.destination),'保留演示.html'),before=fs.readFileSync(formal),beforeHash=sha(before),beforeMtime=fs.statSync(formal).mtimeMs;report.cut={...cut,formal,formalSha256:beforeHash,tempSha256:sha(fs.readFileSync(cut.temporary))};
@@ -147,9 +215,12 @@ try{
   }
   await review.screenshot({path:path.join(root,'provider-task-recovery-actions.png')});
   const beforeRuns=query('SELECT run_id,status FROM xiaozhi_event_runs ORDER BY rowid');
-  assert.equal(beforeRuns.length,withPending?2:1);
+  assert.equal(beforeRuns.length,(withPending?2:1)+(withHistory?1:0));
   assert.equal((await app.evaluate(()=>globalThis.stageTest)).requests,0);
-  await app.evaluate(()=>{globalThis.stageTest.continueReadback=true;});
+  await app.evaluate((_,withHistory)=>{
+   globalThis.stageTest.continueReadback=true;
+   globalThis.stageTest.inspectHistoryOnContinue=withHistory;
+  },withHistory);
   await review.getByTestId('pi-task-resume').click();
   const resumed=await until(async()=>{
    const live=await page.evaluate(sessionId=>window.omniEdu.getXiaozhiSnapshot(sessionId),session);
@@ -161,7 +232,11 @@ try{
   assert.equal(after.length,beforeRuns.length+1);
   assert.equal(after.at(-1).run_id,resumed.id);
   const model=await app.evaluate(()=>globalThis.stageTest);
-  assert.equal(model.requests,1);
+  assert.equal(model.requests,withHistory?2:1);
+  if(withHistory){
+   assert.equal(model.sourceInToolPayload,true);
+   check('Resuming the same interrupted Task can still read the exact authorized original');
+  }
   assert.deepEqual(query('SELECT effect_id,state,document_json FROM xiaozhi_effects_v1 WHERE task_id=? ORDER BY effect_id',originalTask.id),effects);
   const retained=query('SELECT snapshot_id,snapshot_hash FROM xiaozhi_capability_snapshots_v1 WHERE task_id=? ORDER BY snapshot_id',originalTask.id);
   assert(snapshots.every(snapshot=>retained.some(row=>row.snapshot_id===snapshot.snapshot_id&&row.snapshot_hash===snapshot.snapshot_hash)));
