@@ -6,7 +6,8 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import sqlite3 from 'sqlite3';
 import {DatabaseSync} from 'node:sqlite';
-const {migrateDatabase} = await import('../../src/main/database-migrations.ts');
+const {databaseUserVersion,migrateDatabase} = await import('../../src/main/database-migrations.ts');
+const {closeSqlite,openSqlite,setSqliteJournalMode} = await import('../../src/main/sqlite-connections.ts');
 
 const inputs = process.argv.slice(2);
 assert.equal(inputs.length,3,'Expected history v5, foundation v6 and ordinary config v7 fixtures');
@@ -58,3 +59,59 @@ for (const [index,source] of inputs.entries()) {
   console.log(JSON.stringify({from:versions[index],to:9,preservedRows:prefix.length,studentRows:beforeStudents.length,
     restart:true,rejectedTamperedLedger:true}));
 }
+
+async function checkLegacyJournalWrite(when) {
+  const file = join(root,when+'.db');
+  const recovered = file+'.before';
+  const copy = (from,to) => {
+    const reader = new DatabaseSync(from,{readOnly:true});
+    try { reader.prepare('VACUUM INTO ?').run(to); }
+    finally { reader.close(); }
+  };
+  copy(inputs[1],file);
+  const db = await openSqlite(file,'primary');
+  const key = 'db-audit-late-save';
+  let writeVersion;
+  const writeFromAnotherConnection = () => {
+    const writer = new DatabaseSync(file);
+    try {
+      writeVersion = writer.prepare('PRAGMA user_version').get().user_version;
+      writer.prepare('INSERT INTO app_settings (key,value_json,updated_at) VALUES (?,?,?)')
+        .run(key,'{}',new Date().toISOString());
+    } finally { writer.close(); }
+  };
+  try {
+    await setSqliteJournalMode(db,'delete');
+    const upgraded = migrateDatabase(db,{
+      bootstrap:assert.fail,
+      recoveryPoint:async()=>copy(file,recovered),
+      enableJournal:async()=>{
+        if (when==='journal-transition') writeFromAnotherConnection();
+        await setSqliteJournalMode(db,'wal');
+      },
+      appBuild:()=>{
+        if (when==='before-first-migration') writeFromAnotherConnection();
+        return 'foundation-journal-concurrency';
+      },
+    });
+    if (when==='before-first-migration') {
+      await assert.rejects(upgraded,error=>error.issue==='changed_during_upgrade');
+      assert.equal(writeVersion,6);
+      assert.equal(await databaseUserVersion(db),6);
+    } else {
+      assert.equal(await upgraded,9);
+      assert.equal(writeVersion,9,'Changing journal mode must not conceal an intervening write at an old schema version');
+    }
+  } finally { await closeSqlite(db); }
+  const legacy = new DatabaseSync(recovered,{readOnly:true});
+  const updated = new DatabaseSync(file,{readOnly:true});
+  try {
+    assert.equal(legacy.prepare('PRAGMA user_version').get().user_version,6);
+    assert.deepEqual(ledger(updated).slice(0,6),ledger(legacy));
+    assert.equal(legacy.prepare('SELECT value_json FROM app_settings WHERE key=?').get(key),undefined);
+    assert.equal(updated.prepare('SELECT value_json FROM app_settings WHERE key=?').get(key).value_json,'{}');
+  } finally { legacy.close(); updated.close(); }
+  console.log(JSON.stringify({scenario:when,writeVersion,legacyRecoveryUnchanged:true}));
+}
+await checkLegacyJournalWrite('journal-transition');
+await checkLegacyJournalWrite('before-first-migration');

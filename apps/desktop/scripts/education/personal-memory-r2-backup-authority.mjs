@@ -1,7 +1,7 @@
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';
 import {createHash,randomUUID} from 'node:crypto';
-import {copyFile,mkdir,mkdtemp,readFile} from 'node:fs/promises';
+import {copyFile,mkdir,mkdtemp,readFile,stat,writeFile} from 'node:fs/promises';
 import {dirname,isAbsolute,join,relative,resolve} from 'node:path';
 import {backup,DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
@@ -10,6 +10,10 @@ import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 const {readMemoryRestoreLedger}=await import('../../src/main/backup/memory-restore.ts');
 const {relocateBackupDatabase}=await import('../../src/main/backup/restore-database.ts');
 const {verifyRestoredMemoryAuthority}=await import('../../src/main/backup/restore.ts');
+const {selectedBackupRoot}=await import('../../src/main/backup/activation.ts');
+const {recoveryReceiptName}=await import('../../src/main/backup/restore-plan.ts');
+const {applyPendingUpdateRollback,readPendingRollback,stageUpdateRollback}=await import('../../src/main/updates/pending-rollback.ts');
+const {BACKUP_RESTORE_SCHEMA}=await import('../../src/shared/backup-restore.ts');
 const {createPersonalMemoryRecordState}=await import('../../src/main/education/personal-memory/record-state.ts');
 const {createPersonalMemorySourceAuthority}=await import('../../src/main/education/personal-memory/source-authority.ts');
 const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memory-scope-state.ts');
@@ -62,6 +66,31 @@ assert.equal(matching.state.scope.enabled,true);
 assert.equal(matching.state.enabled,0);
 console.log('PASS matching current authority preserves a valid record and active selection while pausing background work');
 
+const rollbackProfile=join(root,'rollback-profile');
+const rollbackInstance=join(root,'rollback-instance');
+const rollbackData=join(rollbackInstance,'OmniEduData');
+await mkdir(rollbackProfile);
+await mkdir(rollbackData,{recursive:true});
+const rollbackFile=join(rollbackData,'app.db');
+await copyFile(join(matching.output,'app.db'),rollbackFile);
+const rollbackReceipt={
+  schemaVersion:BACKUP_RESTORE_SCHEMA,id:'restore_'+randomUUID(),dataRoot:rollbackData,
+  backupPath:fixture,fileCount:1,generatedFiles:0,warnings:[],memoryAuthority:preceding.hash,
+  rollback:{sourceVersion:'0.1.0',targetVersion:'0.1.1',preparedAt:new Date().toISOString()},
+};
+await writeFile(join(rollbackData,recoveryReceiptName),JSON.stringify(rollbackReceipt));
+await writeFile(join(rollbackInstance,'restoration-files.v1.json'),JSON.stringify({
+  schemaVersion:BACKUP_RESTORE_SCHEMA,id:rollbackReceipt.id,
+  files:[{file:rollbackFile,size:(await stat(rollbackFile)).size,sha256:await hash(rollbackFile)}],
+}));
+await stageUpdateRollback(rollbackProfile,live,live,'0.1.1',rollbackReceipt,()=>{});
+const matchingProfile=join(root,'matching-rollback-profile');
+await mkdir(matchingProfile);
+await stageUpdateRollback(matchingProfile,live,live,'0.1.1',rollbackReceipt,()=>{});
+await applyPendingUpdateRollback(matchingProfile,live,'0.1.0');
+assert.equal((await selectedBackupRoot(matchingProfile,live,'0.1.0')).dataRoot,rollbackData);
+assert.equal(await readPendingRollback(matchingProfile,live),undefined);
+
 const db=new DatabaseSync(join(live,'app.db'));
 try {
   const sql={
@@ -86,6 +115,11 @@ try {
 const latest=await readMemoryRestoreLedger(live);
 assert(latest&&latest.hash!==preceding.hash);
 await assert.rejects(verifyRestoredMemoryAuthority({memoryAuthority:preceding.hash},live),/准备后有变化/);
+await assert.rejects(applyPendingUpdateRollback(rollbackProfile,live,'0.1.0'),/准备后有变化/,
+  'Starting the older application must reject a scheduled rollback after memory authority changes');
+assert.equal((await selectedBackupRoot(rollbackProfile,live)).dataRoot,live);
+assert.equal((await readPendingRollback(rollbackProfile,live)).restoreId,rollbackReceipt.id);
+console.log('PASS a scheduled rollback rechecks the live grant after restart and cannot select stale authority');
 const reconciled=await restore('reconciled',latest);
 assert.equal(reconciled.state.record.state,'forgotten');
 assert.equal(reconciled.state.allowed,0);
@@ -197,4 +231,4 @@ async function electronRestore() {
 
 const desktopCheck=process.argv.includes('--electron');
 if(desktopCheck)await electronRestore();
-console.log(JSON.stringify({passed:desktopCheck?5:4,root,originalHash}));
+console.log(JSON.stringify({passed:desktopCheck?6:5,root,originalHash}));

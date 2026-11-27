@@ -5,7 +5,7 @@ import type {UpdateRollback} from '../../shared/windows-update';
 import type {PreparedBackupRestore} from '../../shared/backup-restore';
 import {hashFileSha256} from '../local-file-security';
 import {selectedBackupRoot,selectBackupRoot} from '../backup/activation';
-import {readRecoveryReceipt,verifyPreparedBackupRestore} from '../backup/restore';
+import {readRecoveryReceipt,verifyPreparedBackupRestore,verifyRestoredMemoryAuthority} from '../backup/restore';
 import {validUpdateRollback} from './windows-update-record';
 
 const schema = 'xiaozhi.pending-update-rollback.v1';
@@ -73,6 +73,8 @@ export async function applyPendingUpdateRollback(profile: string, baseRoot: stri
     }
     await verifyPreparedBackupRestore(receipt);
     if (await hashFileSha256(manifestFor(pending.dataRoot)) !== pending.manifestSha256) throw Error('回退副本清单已变化。');
+    // Scheduling and activation can be separated by arbitrary live changes and a restart.
+    await verifyRestoredMemoryAuthority(receipt,pending.previousRoot);
     await selectBackupRoot(profile,baseRoot,pending.dataRoot,pending.previousRoot,{active:runningVersion,previous:pending.fromVersion});
   }
   await fs.unlink(fileFor(profile));

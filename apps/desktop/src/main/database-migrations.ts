@@ -218,10 +218,6 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
       throw new DatabaseUpgradeError('changed_during_upgrade');
     }
   }
-  const [{journal_mode: journalMode}] = await all<{journal_mode: string}>(db, 'PRAGMA journal_mode');
-  await options.enableJournal();
-  // SQLite advances data_version when this handle moves a new file into WAL.
-  const changeNumber = journalMode === 'wal' ? beforeRecovery : await externalChangeNumber(db);
 
   let began = false;
   let expectedDigest = current.digest;
@@ -231,7 +227,7 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
       await sqliteExec(db,'BEGIN IMMEDIATE;');
       began = true;
       const lockedVersion = await databaseUserVersion(db);
-      if (lockedVersion !== from || await externalChangeNumber(db) !== changeNumber ||
+      if (lockedVersion !== from || await externalChangeNumber(db) !== beforeRecovery ||
           (await inspectDatabase(db,lockedVersion)).digest !== expectedDigest) {
         throw new DatabaseUpgradeError('changed_during_upgrade');
       }
@@ -255,10 +251,13 @@ export async function migrateDatabase(db: sqlite3.Database, options: {
       await sqliteExec(db,'COMMIT;');
       began = false;
     }
-    return MAX_DATABASE_SCHEMA_VERSION;
   } catch (error) {
     if (began) await sqliteExec(db,'ROLLBACK;').catch(()=>undefined);
     if (error instanceof DatabaseUpgradeError) throw error;
     throw new DatabaseUpgradeError('migration_failed',{cause:error});
   }
+  // Switching a legacy database to WAL can advance data_version on this handle.
+  // Keep the recovery-point fence intact until all migration transactions commit.
+  await options.enableJournal();
+  return MAX_DATABASE_SCHEMA_VERSION;
 }
