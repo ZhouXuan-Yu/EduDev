@@ -10,16 +10,19 @@ const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const exclusion=process.argv.includes('--task-exclusion');
 const suspendedTask=process.argv.includes('--paused-task')?'paused':process.argv.includes('--interrupted-task')?'interrupted':null;
+const recoveryIndex=process.argv.indexOf('--recover-from');
 const terminalTask=process.argv.includes('--completed-task')?'completed':process.argv.includes('--ended-task')?'ended':null;
 const receiptFailure=process.argv.includes('--receipt-failure');
 const receiptVerified=process.argv.includes('--receipt-verified');
 const keyboardHistory=process.argv.includes('--keyboard-history');
 const compactionMemory=process.argv.includes('--compaction-memory');
-const vagueChoice=process.argv.includes('--vague-choice');
+const unknownHistory=process.argv.includes('--unknown-history');
+const checkPreference=process.argv.includes('--preference-and-history');
+const vagueChoice=checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -169,6 +172,7 @@ async function launch(){
       const body=JSON.parse(init.body);
       const hasMarker=content=>JSON.stringify(content??'').includes(marker);
       const record={model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens,status:0,
+        stepPreference:body.messages.some(message=>message.role==='user'&&JSON.stringify(message.content).includes('当前教师表达偏好')&&JSON.stringify(message.content).includes('分步骤讲解')),
         sourceRoles:body.messages.filter(m=>hasMarker(m.content)).map(m=>m.role),
         alternateRoles:body.messages.filter(m=>JSON.stringify(m.content??'').includes(alternateMarker)).map(m=>m.role)};
       globalThis.historyTaskWire.push(record);
@@ -209,7 +213,74 @@ async function close(){
   await app.close();
   app=undefined;
 }
-try{
+async function recoverBoundTask(){
+  const fixture=fs.realpathSync(process.argv[recoveryIndex+1]);
+  assert.equal(path.dirname(fixture),fs.realpathSync(acceptance));
+  const prior=JSON.parse(fs.readFileSync(path.join(fixture,'report.json'),'utf8'));
+  assert(prior.ok&&prior.buildHash&&prior.provider.some(call=>call.status===200));
+  assert(!fs.existsSync(path.join(fixture,'data','app.db-wal'))||fs.statSync(path.join(fixture,'data','app.db-wal')).size===0);
+  fs.cpSync(path.join(fixture,'data'),data,{recursive:true});
+  const saved=read("SELECT value_json FROM app_settings WHERE key GLOB 'xiaozhi.memory-use.task.v1:*'")
+    .map(row=>JSON.parse(row.value_json)).filter(row=>row.selections.length>0);
+  assert.equal(saved.length,1);
+  const [binding]=saved;
+  const taskView=()=>JSON.parse(read('SELECT value_json FROM app_settings WHERE key=?','xiaozhi.task.v1:'+binding.taskId)[0].value_json).view;
+  const original=taskView();
+  assert(['paused','interrupted','review_required'].includes(original.state));
+  const effects=()=>read('SELECT effect_id,operation FROM xiaozhi_effects_v1 ORDER BY effect_id');
+  const before=effects();
+  await launch();
+  const button=page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-my_tasks');
+  await button.click({timeout:10000});
+  const row=page.getByTestId('my-tasks-workspace').locator('[data-task-id="'+binding.taskId+'"]');
+  await row.waitFor({timeout:10000});
+  assert.deepEqual(bindings(binding.sessionId),[binding]);
+  assert.equal((await provider()).length,0);
+  await row.getByTestId('pi-task-open-session').click({timeout:10000});
+  await until(async()=>await session()===binding.sessionId);
+  if(original.state==='review_required'){
+    await composer().fill('继续核对刚才任务，只把清单的标题改为《课堂复核》。请保留教师原话，直接在聊天中给出修改后的内容。');
+  }else{
+    const priorTurn=page.locator('[data-turn-id="'+(original.lastRunId||original.origin.runId)+'"]');
+    await priorTurn.getByTestId('office-turn-continue').click({timeout:10000});
+    assert((await composer().inputValue()).length>0);
+  }
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  let answered;
+  const teacherAnswer='五年级，请在对话里完成这份清单，不操作文件。';
+  const turn=await until(async()=>{
+    const st=await snapshot(binding.sessionId),turn=st.projection.turns.at(-1);
+    if(!turn||turn.id===(original.lastRunId||original.origin.runId))return;
+    const pending=st.controls?.find(item=>item.runId===turn.id&&item.kind==='question'&&item.state==='pending');
+    if(pending&&!answered){
+      const card=page.getByTestId('pi-composer-pending-panel').locator('[data-control-id="'+pending.id+'"]');
+      await card.getByTestId('pi-question-answer').fill(teacherAnswer);
+      await card.getByTestId('pi-question-submit').click();answered=pending.id;
+    }
+    return !st.running&&['completed','failed','interrupted'].includes(turn.status)?turn:null;
+  });
+  assert.equal(turn.status,'completed',turn.error);
+  assert.equal((await snapshot(binding.sessionId)).task?.id,binding.taskId);
+  assert.deepEqual(bindings(binding.sessionId),[binding]);
+  const expectedEffects=[...before];
+  if(answered){
+    const [control]=read("SELECT payload_json FROM xiaozhi_pi_controls WHERE id=? AND conversation_id=? AND run_id=? AND kind='question' AND state='answered'",answered,binding.sessionId,turn.id);
+    const answer=JSON.parse(control.payload_json);assert.equal(answer.answer,teacherAnswer);
+    const explicit=read(`SELECT e.effect_id,e.operation FROM xiaozhi_effects_v1 e JOIN xiaozhi_tool_receipts r
+      ON r.run_id=e.run_id AND r.call_id=e.call_id WHERE e.run_id=? AND e.session_id=? AND e.task_id=? AND e.call_id=?
+      AND r.tool='ask_teacher' AND r.admitted=1 AND r.success=1 AND r.native_state='matched'`,turn.id,binding.sessionId,binding.taskId,answer.callId);
+    assert(explicit.length<=1);
+    expectedEffects.push(...explicit);
+  }
+  expectedEffects.sort((a,b)=>a.effect_id.localeCompare(b.effect_id));
+  assert.deepEqual(effects(),expectedEffects);
+  const sent=await provider();
+  assert(sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
+  assert.notEqual(taskView().state,'completed');
+  pass('Teacher resumes the exact bound Task from My Tasks after a cold launch without executing an old effect or approving its result',{
+    previousState:original.state,taskId:binding.taskId,runId:turn.id,teacherAnswered:answered,priorEffectCount:before.length});
+}
+async function runHistoryJourney(){
   await launch();
   const sourceSession=await until(async()=>{const id=await session();return id?.startsWith('aisession_')?id:null;});
   if(keyboardHistory){
@@ -236,6 +307,12 @@ try{
     await name.press('Enter');
     await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
+  }
+  if(checkPreference){
+    await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
+    const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
+    assert(saved.ok&&saved.value.preference.values.structure==='step_by_step');
+    report.preferenceRevision=saved.value.preference.revision;
   }
   await send(sourceSession,source,{answer:'请简短确认这条温度计实验合成记录。这是记录，不需要把句子当成长期偏好。'});
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
@@ -271,8 +348,21 @@ try{
   }
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
-  if(vagueChoice){
-    const vague='照上次那份继续。请在聊天里给出温度计实验记录里的复核口令。';
+  if(unknownHistory){
+    const before=(await snapshot(target)).memoryScope;
+    assert.deepEqual(before.selections,[]);
+    const answer=await send(target,'以前我有没有告诉过你我第一次上公开课的具体日期？请只根据已经获准使用的原话核对；缺少依据就说无法确认。');
+    const text=(await snapshot(target)).projection.turns.find(turn=>turn.id===answer.runId).items
+      .filter(item=>item.role==='assistant'&&item.status!=='inProgress').map(item=>item.text).join('\n');
+    assert.match(text,/无法确认|不能确认|无法核实|没有.{0,15}(?:记录|依据|原话|日期|证据)|未.{0,8}(?:找到|提供|记录|提[及过])/u);
+    assert(!/(?:19|20)\d{2}[-年/.]\s*\d{1,2}|\d{1,2}月\d{1,2}[日号]/u.test(text));
+    assert(answer.sent.every(call=>!call.sourceRoles.length&&!call.alternateRoles.length));
+    assert.deepEqual((await snapshot(target)).memoryScope,before);
+    assert.equal(bindings(target).length,0);
+    pass('A discoverable but unrelated source with no usage grant cannot supply a claimed past date',{runId:answer.runId,reply:text});
+  }else if(vagueChoice){
+    const vague=checkPreference?'照上次那份继续。请解释为什么记录温度计读数时要复核，保留这份记录中完整的复核口令，只在聊天中答复。'
+      :'照上次那份继续。请在聊天里给出温度计实验记录里的复核口令。';
     const requests=(await provider()).length;
     await composer().fill(vague);
     await page.getByRole('button',{name:'发送消息',exact:true}).click();
@@ -300,6 +390,13 @@ try{
     assert(accepted.sent.some(item=>item.status===200&&item.sourceRoles.includes('user')));
     assert(accepted.sent.every(item=>!item.alternateRoles.length));
     assert(accepted.answerUsed);
+    if(checkPreference){
+      assert(accepted.sent.some(call=>call.status===200&&call.stepPreference&&call.sourceRoles.includes('user')));
+      const settings=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
+      assert(settings.ok&&settings.value.preference.revision===report.preferenceRevision);
+      pass('The same real request carries the confirmed explanation preference and only the approved original',
+        {revision:report.preferenceRevision,runId:accepted.runId});
+    }
     assert.equal(await page.getByTestId('history-lookup').count(),0);
     const [binding]=bindings(target);
     if(binding)assert.deepEqual(binding.selections.map(item=>item.id),[allowed.source_id]);
@@ -586,6 +683,10 @@ try{
     assert(after.sent.every(r=>!r.sourceRoles.length));
     pass('Teacher removes one Task reference, preserving the draft, Session scope and discovery permission',{runId:after.runId});
   }
+}
+try{
+  if(recoveryIndex>=0)await recoverBoundTask();
+  else await runHistoryJourney();
   report.ok=true;
 }catch(error){
   report.failure=String(error?.stack??error);

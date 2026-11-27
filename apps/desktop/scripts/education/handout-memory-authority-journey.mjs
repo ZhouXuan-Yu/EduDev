@@ -93,7 +93,10 @@ export async function verifyHandoutMemoryAuthority({page,app,sessionId,bookId,ti
   await page.getByTestId('history-lookup-search').click();
   await page.getByTestId('history-candidate-'+ref.id).click();
   await page.getByTestId('history-lookup-preview').getByText(archive,{exact:true}).waitFor();
-  await page.getByTestId('history-lookup-use-session').click();
+  // The frozen A desktop had a single confirmation writing the Session scope.
+  const selectForSession=report.sourceSha==='ca2a51425619dc14412508839e0799338567c399'
+    ?'history-lookup-use':'history-lookup-use-session';
+  await page.getByTestId(selectForSession).click();
   await page.getByTestId('history-use-selection').waitFor();
   const scope=(await snapshot()).memoryScope;
   assert(scope.enabled&&scope.selections.length===1&&scope.selections[0].layer==='history');

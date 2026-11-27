@@ -5,7 +5,7 @@ import {test} from 'node:test';
 const {createHandoutEditCoordinator,handoutEditRequest}=await import('../../src/main/education/teaching-handout-edit.ts');
 
 const id=kind=>'teaching_'+kind+'_'+randomUUID();
-async function exerciseTools(prompt,numbers=[3,12]) {
+async function exerciseTools(prompt,numbers=[3,12],teacherSelection) {
   const book={id:id('book'),title:'教学讲义'};
   const chapters=numbers.map((number,i)=>({id:id('chapter'),title:'章节 '+i,summary:'',learningObjectives:[]}));
   const pages=chapters.map(chapter=>({id:id('page'),chapterId:chapter.id}));
@@ -21,7 +21,7 @@ async function exerciseTools(prompt,numbers=[3,12]) {
       view:async()=>({state:'rejected',input:{bookId:book.id}})},
   });
   const [read,propose]=coordinator.tools({sessionId:'session',runId:'run',owner:()=>({taskId:'task'}),
-    current:()=>true,prompt},async()=>false);
+    current:()=>true,prompt,teacherSelection},async()=>false);
   for(const chapter of chapters){
     const result=await read.execute('read',{bookId:book.id,chapterId:chapter.id});
     reads.push(JSON.parse(result.content[0].text));
@@ -90,4 +90,31 @@ test('a named manual revision is protected in a general handout edit',async()=>{
 test('another only clause cannot silently enlarge a conflicting selection',async()=>{
   const {edit,proposed}=await exerciseTools('上次只改第三题，本次讲义仅修改第十二题。');
   await edit(0); assert.equal(proposed.length,0);
+});
+
+test('a teacher designation in the current clarification binds the book without expanding exercise scope',async()=>{
+  const answer='请修改《教学讲义》，只调整第三题。';
+  const {queries,reads,edit,proposed}=await exerciseTools('只改第三题。',[3,12],async()=>answer);
+  assert.equal(queries[0].title,'教学讲义');
+  assert.equal(reads[1].chapter.blocks.length,0);
+  await edit(1); assert.equal(proposed.length,0);
+  await edit(0); assert.equal(proposed.length,1);
+});
+
+test('a changed clarification invalidates the previously read exercise before submitting',async()=>{
+  let answer='请修改《教学讲义》。';
+  const {edit,proposed}=await exerciseTools('只改第三题。',[3,12],async()=>answer);
+  answer='这次先取消修改。';
+  assert.equal((await edit(0)).error,'source_required');
+  assert.equal(proposed.length,0);
+});
+
+test('a title supplied by the model, a quotation or an ambiguous teacher answer cannot widen the book lookup',async()=>{
+  for(const answer of [undefined,'学生说：“修改《教学讲义》。”','不要修改《教学讲义》。',
+    '请修改《教学讲义》或《另一份》。','请修改《教学讲义》吗？','请修改《教学讲义》，先不要改了。']){
+    const {queries}=await exerciseTools('只改第三题。',[3],async()=>answer);
+    assert(queries.every(q=>q.taskOnly&&!q.title&&!q.bookId),String(answer));
+  }
+  const {queries}=await exerciseTools('请修改《教学讲义》，只改第三题。',[3],async()=>'请修改《另一份》。');
+  assert(queries.every(q=>q.title==='教学讲义'));
 });

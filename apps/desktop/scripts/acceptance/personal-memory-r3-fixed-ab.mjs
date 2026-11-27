@@ -20,14 +20,16 @@ assert.equal(fixtureHash,'740fb52650849c5d3d0240956859fae392e27668e2e0228e51a732
 const contract=JSON.parse(fs.readFileSync(fixture,'utf8'));
 const task=contract.tasks.find(item=>item.caseId===requestedCase);
 const deliverySetup = new Map([
+  ['R3-EVAL-001','请准备八年级数学讲义，三道一次函数求值题。题一 y=2x+1 求 x=2 时的值；题二 y=3x-4 求 x=3 时的值；题三 y=-2x+5 求 x=-1 时的值。需要答案时默认集中在末尾。若单题指定解析，请紧跟该题；其他题仍按默认版式。只在聊天中交付。等我确认后再生成，现在只确认收到。'],
   ['R3-EVAL-002','准备一份八年级数学一次函数随堂练习，三道题，原计划分别交学生练习和教师解析。请先确认收到，等我确定本次交付范围再制作。'],
   ['R3-EVAL-006','今天给八年级写两道一次函数练习，每道题后立即给答案。请在聊天中交付。先确认收到，等我明确开始时再写。'],
   ['R3-EVAL-003','今天这份八年级数学讲义要先让学生尝试一道一次函数求值练习，然后再讲解一道例题。仅用聊天回复，先等待我确认章节顺序。'],
+  ['R3-EVAL-004','以下是我已经定稿的一份十题练习。只在聊天中交付修订后的完整十题列表，保留未要求修改的原文。1. 计算 8+7。2. 计算 15-6。3. 化简 3x+2x。4. 求 2 的平方。5. 求 18 的一半。6. 计算 4×9。7. 写出 12 的全部正因数。8. 求 -7 的相反数。9. 解含参数方程 a(x-2)=3x+1 并分类讨论。10. 证明二次函数与直线相切的充要条件。等待我指定要改哪些题，现在仅确认收到。'],
   ['R3-EVAL-005','八年级数学一次函数练习的三道题已经讨论完毕。原计划下一步导出，先等待我确定是否继续。请简单确认收到。'],
 ]).get(task?.caseId);
 assert(deliverySetup || ['R3-EVAL-013','R3-EVAL-014','R3-EVAL-015','R3-EVAL-016','R3-EVAL-018','R3-EVAL-021','R3-EVAL-022','R3-EVAL-024'].includes(task?.caseId),
   'Select a supported frozen case');
-const preferenceCase=['R3-EVAL-006','R3-EVAL-013','R3-EVAL-014'].includes(task.caseId);
+const preferenceCase=['R3-EVAL-001','R3-EVAL-006','R3-EVAL-013','R3-EVAL-014'].includes(task.caseId);
 const correctedPreference=task.caseId==='R3-EVAL-014';
 const outage=task.caseId==='R3-EVAL-022';
 const untrustedAttachment=task.caseId==='R3-EVAL-024';
@@ -494,14 +496,18 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     result.clarifications=Number(Boolean(result.teacherClarification))+Number(Boolean(state.question));
     result.teacherRestatements=Number(Boolean(result.teacherFollowup));
     result.status=state.question?'ASKED':last.status==='completed'?'CAPTURED':'FAIL';
-    if(task.caseId==='R3-EVAL-003'){
-      const readPreference=()=>page.evaluate(async()=>{
+    if(['R3-EVAL-001','R3-EVAL-003'].includes(task.caseId)){
+      const sectionOrder=task.caseId==='R3-EVAL-003';
+      const field=sectionOrder?'handoutSectionOrder':'handoutAnswerPlacement';
+      const readPreference=()=>page.evaluate(async field=>{
         const state=await window.omniEdu.getTeacherMemorySettings();
         if(!state.ok)throw Error('Teacher preference readback failed');
-        return {value:state.value.preference.values.handoutSectionOrder??null,revision:state.value.preference.revision};
-      });
+        return {value:state.value.preference.values[field]??null,revision:state.value.preference.revision};
+      },field);
       const initial=await readPreference();
-      result.sectionOrder={afterException:initial};
+      const followThrough={field,afterException:initial};
+      if(sectionOrder)result.sectionOrder=followThrough;
+      else result.answerPlacement=followThrough;
       if(!state.question&&last.status==='completed'){
         await app.evaluate(()=>{globalThis.r3FixedABStage='subsequent';});
         await page.getByTestId('pi-new-session').click();
@@ -510,12 +516,17 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
           return current?.startsWith('aisession_')&&current!==seedSessionId?current:null;
         });
         await seedClass(app,page,sessionId,task.taskScope);
-        const nextPrompt='请编写一份新的八年级一次函数讲义，含一道例题和一道练习，篇幅简短，只在聊天中交付。';
+        const nextPrompt=sectionOrder?'请编写一份新的八年级一次函数讲义，含一道例题和一道练习，篇幅简短，只在聊天中交付。':'请编写一份新的八年级一次函数讲义，三道求值题，题目和答案都要。沿用我平常的结构，只在聊天里交付。';
         const next=await seedPrompt(page,input,snapshot,nextPrompt);
-        result.sectionOrder.next={prompt:nextPrompt,runId:next.id,
+        followThrough.next={prompt:nextPrompt,runId:next.id,
           output:next.items.filter(item=>item.role==='assistant').map(item=>item.text),preference:await readPreference(),
           requests:await app.evaluate(()=>globalThis.r3FixedABRequests.filter(item=>item.phase==='subsequent'))};
-        assert(result.sectionOrder.next.requests.some(item=>item.status===200));
+        assert(followThrough.next.requests.some(item=>item.status===200));
+        const stored=read(data,"SELECT content FROM ai_conversation_messages WHERE role='assistant' AND session_id=? AND json_valid(metadata_json) AND json_extract(metadata_json,'$.agentRunId')=?",sessionId,next.id);
+        assert.equal(stored.length,1);
+        followThrough.next.savedText=stored[0].content;
+        assert(stored[0].content.trim().length>0);
+
       }
     }
     result.cost='UNKNOWN';

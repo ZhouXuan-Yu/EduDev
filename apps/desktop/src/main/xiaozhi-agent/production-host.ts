@@ -1124,10 +1124,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const lessonBasis=owner?.naturalLessonSources?.map(source=>({source}))??
       (owner?.naturalLessonDraft&&adopted?.length?adopted:undefined);
     const requiredLessonSourcesRead=lessonBasis?()=>lessonBasis.every(({source})=>classroomContext.hasRead(source)):undefined;
+    const runQuestions=async()=> (await store.xiaozhiState.controls(id))
+      .filter(item=>item.runId===runId&&item.kind==='question');
     const lessonRevisionTools=owner?.lessonRevision?createLessonRevisionTools({sessionId:id,runId,request:owner.lessonRevision,
       state:store.xiaozhiState.classroomPlans,current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
-      sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:async()=> (await store.xiaozhiState.controls(id))
-        .filter(item=>item.runId===runId&&item.kind==='question'&&item.state==='answered').at(-1)?.answer}):undefined;
+      sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:async()=>
+        (await runQuestions()).filter(item=>item.state==='answered').at(-1)?.answer}):undefined;
     const fileReferenceTask=owner?.task?.id||(await tasks.committed(id))?.id;
     const fileReferences=fileReferenceTask?createFileReferenceProjection({state:store.xiaozhiState.fileReferences,sessionId:id,taskId:fileReferenceTask,
       workspace:()=>host.resolveFileWorkspace(id),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped),
@@ -1282,6 +1284,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }:{}),
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
         handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,prompt:cleanPrompt,
+          teacherSelection:async()=>{
+            const question=(await runQuestions()).at(-1);
+            return question?.state==='answered'?question.answer:undefined;
+          },
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
             requirementsVersion:owner.task!.requirementsVersion}),
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,

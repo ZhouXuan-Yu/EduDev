@@ -21,6 +21,18 @@ export function handoutEditRequest(prompt:string) {
     (bounded||/(?:修改|修订|改(?:为|成|一下|写|动|题)|把.{0,80}(?:换|改|调|加|删)|换成|替换|调[低高整为成]|降低|提高|补充|重新写|删掉|重写)/su.test(text));
 }
 
+// Only a direct teacher selection may name a session book for an unbound exercise.
+function clarifiedBookTitle(answer:string | undefined) {
+  if(!answer)return;
+  const text=answer.trim();
+  const match=/^(?:请(?:帮我)?|请你|帮我)?(?:修改|修订|调整|编辑|选择)\s*《([^《》\r\n]{1,200})》\s*([\s\S]*)$/u.exec(text);
+  if(!match)return;
+  const tail=match[2];
+  if(/[《》?？]|(?:不要|取消|别改|先不|不用|假如|如果|转述|原话)/u.test(tail))return;
+  if(tail&&!/^[。.!！]$|^[，,。.]\s*(?:仅|只|单独)(?:把|将|调整|修改|改|修订|替换|重写)/u.test(tail))return;
+  return match[1].trim()||undefined;
+}
+
 type State=ReturnType<typeof createTeachingHandoutEditState>;
 type Versions=ReturnType<typeof createTeachingBookVersions>;
 type Sanitize=(value:string)=>Promise<string>;
@@ -94,16 +106,16 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
       return {ok:true,value:review};
     }catch(error){return failure(error);}
   }
-  function tools(run:{prompt:string;sessionId:string;runId:string;owner:()=>HandoutOwner;current:()=>boolean},wait:Wait):ToolDefinition[] {
+  function tools(run:{prompt:string;sessionId:string;runId:string;owner:()=>HandoutOwner;current:()=>boolean;teacherSelection?:()=>Promise<string|undefined>},wait:Wait):ToolDefinition[] {
     const numbers=requestedExerciseNumbers(run.prompt);
     const preserved=protectedExerciseNumbers(run.prompt);
     const implicitBook=!/(?:讲义|学案|《)/u.test(run.prompt);
     const titles=[...run.prompt.matchAll(/《([^《》]+)》/gu)].map(match=>match[1]);
-    let observed:{protectedBlocks:Set<string>;exerciseTargets?:Set<string>;bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
+    let observed:{clarification?:string;protectedBlocks:Set<string>;exerciseTargets?:Set<string>;bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
     const fence=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!run.current())throw Error('cancelled');};
     return [{
       name:READ_HANDOUT_EDIT,label:'读取讲义修改位置',
-      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。未提供标题时使用当前任务唯一讲义或会话唯一讲义。歧义请老师选择。',
+      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。未提供标题时使用当前任务唯一讲义或会话唯一讲义。若当前任务没有讲义，请用 ask_teacher 询问老师要修改哪份讲义，待老师明确指定书名后重新读取。',
       parameters:handoutEditReadParameters as ToolDefinition['parameters'],
       execute:async(_id,raw,signal)=>{
         try{
@@ -113,7 +125,10 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
             raw.chapterId!==undefined&&!handoutChapterId(raw.chapterId)||
             raw.blockId!==undefined&&(!handoutBlockId(raw.blockId)||raw.chapterId===undefined))throw Error('invalid_input');
           if(numbers && titles.length>1)throw Error('exercise_scope');
-          const target=numbers ? {title:titles[0],taskOnly:implicitBook} : {bookId:raw.bookId,title:raw.title};
+          const answer=numbers&&implicitBook ? await run.teacherSelection?.() : undefined;
+          const selectedTitle=clarifiedBookTitle(answer);
+          fence(signal);
+          const target=numbers ? {title:titles[0]??selectedTitle,taskOnly:implicitBook&&!selectedTitle} : {bookId:raw.bookId,title:raw.title};
           const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,target);
           const sanitize=await options.sanitizer();
           fence(signal);
@@ -127,12 +142,14 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
           if(numbers&&(raw.bookId&&raw.bookId!==bookId||raw.title&&handoutTitleKey(raw.title)!==handoutTitleKey(content.book.title)))throw Error('exercise_scope');
           const chapters=await Promise.all(content.chapters.map(async chapter=>({id:chapter.id,title:await sanitize(chapter.title)})));
           const chapterId=raw.chapterId??(chapters.length===1?chapters[0].id:undefined);
-          const targets=numbers?currentExerciseTargets(content,numbers):undefined;
+          const clarifiedNumbers=selectedTitle&&answer?requestedExerciseNumbers(answer):undefined;
+          const effectiveNumbers=clarifiedNumbers?numbers?.filter(number=>clarifiedNumbers.includes(number)):numbers;
+          const targets=effectiveNumbers?currentExerciseTargets(content,effectiveNumbers):undefined;
           if(targets&&!targets.size)throw Error('exercise_scope');
           const chapter=chapterId?await describeChapter(content,chapterId,sanitize,raw.blockId,targets):undefined;
           fence(signal);
-          if(observed?.bookId!==bookId||observed.digest!==digest)observed={bookId,digest,title,chapters:new Set(),blocks:new Set(),
-            exerciseTargets:targets,protectedBlocks:protectedExerciseBlocks(content,preserved)};
+          if(observed?.bookId!==bookId||observed.digest!==digest||observed.clarification!==answer)observed={bookId,digest,title,clarification:answer,chapters:new Set(),blocks:new Set(),
+            exerciseTargets:targets,protectedBlocks:protectedExerciseBlocks(content,selectedTitle&&answer?[...preserved,...protectedExerciseNumbers(answer)]:preserved)};
           if(chapter){
             observed.chapters.add(chapter.id);
             for(const block of chapter.blocks)if(block.text!==undefined)observed.blocks.add(block.id);
@@ -149,6 +166,11 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
         try{
           guard();
           if(!validHandoutEditInput(raw))throw Error('invalid_input');
+          if(numbers&&implicitBook&&run.teacherSelection){
+            const selection=await run.teacherSelection();
+            guard();
+            if(observed?.clarification!==selection)throw Error('source_required');
+          }
           if(!observed||observed.bookId!==raw.bookId||observed.digest!==raw.digest)throw Error('source_required');
           const {chapters,blocks,exerciseTargets,protectedBlocks}=observed;
           if(raw.changes.some(change=>change.kind!=='chapter'&&protectedBlocks.has(change.blockId)))throw Error('exercise_scope');

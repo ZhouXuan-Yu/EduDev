@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import {execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {createHash} from 'node:crypto';
 import {_electron as electron} from 'playwright';
@@ -17,8 +18,12 @@ const data=path.join(output,'data'),profile=path.join(output,'profile'),oldData=
 const journal=path.join(oldData,'app.db-wal');
 assert(!fs.existsSync(journal)||!fs.statSync(journal).size);
 fs.cpSync(oldData,data,{recursive:true,filter:file=>!/app\.db-(wal|shm)$/u.test(file)});
-const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
-const report={ok:false,output,bookId,sessionId,main,sha256:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),
+const baselineIndex=process.argv.indexOf('--baseline-desktop');
+const desktop=baselineIndex<0?path.resolve(import.meta.dirname,'../..'):fs.realpathSync(process.argv[baselineIndex+1]);
+const sourceSha=execFileSync('git',['rev-parse','HEAD'],{cwd:desktop,encoding:'utf8'}).trim();
+if(baselineIndex>=0)assert.equal(sourceSha,'ca2a51425619dc14412508839e0799338567c399');
+const main=testMain(desktop);
+const report={ok:false,output,bookId,sessionId,sourceSha,main,sha256:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),
   paidRequests:0,checks:[],errors:[]};
 let app,page;
 
@@ -55,7 +60,7 @@ async function launch(cold=false){
   const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
     OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-teaching-handout-edit',DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
-  app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
+  app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,executablePath:path.join(desktop,'node_modules/electron/dist/electron.exe'),timeout:60000});
   await app.evaluate(({net},{cold,title,readTool,reviewTool})=>{
     globalThis.handoutEditTest={cold,requests:[],errors:[]};
     net.fetch=async(input,init)=>{
