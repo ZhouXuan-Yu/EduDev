@@ -21,7 +21,7 @@ export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'comman
 export type HistoryIndexStatus = {configured:boolean;active:number;rebuilding:number|null;ready:number;pending:number;failed:number};
 export type HistoryResult<T> = {ok:true; value:T} | {ok:false; error:HistoryMemoryError};
 
-export type TaskHistoryUseStage='selected'|'source_read'|'delivered';
+export type TaskHistoryUseStage='selected'|'source_read'|'delivered'|'verified';
 export type TaskHistoryScope={taskId:string;revision:number;excludeSessionHistory?:true;runOutcome?:'failed';items:Array<{
   sourceId:string;label:string;useStage:TaskHistoryUseStage;
 }>};

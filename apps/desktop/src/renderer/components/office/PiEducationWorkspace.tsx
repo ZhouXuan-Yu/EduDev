@@ -556,7 +556,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           {currentTaskHistory.excludeSessionHistory&&<p role="status">当前任务已停用会话历史。你仍可单独选择来源。</p>}
           {currentTaskHistory.runOutcome==='failed'&&<p role="status" data-testid="history-task-run-failed">最近一次任务运行失败。</p>}
           {currentTaskHistory.items.map(item=><div key={item.sourceId}>
-            <span>{item.label} · {item.useStage==='delivered'?'已提供给模型，仍待核验成果':
+            <span>{item.label} · {item.useStage==='verified'?'已核对回复中的原文':
+              item.useStage==='delivered'?'已提供给模型，仍待核验成果':
               item.useStage==='source_read'?'已读回来源，暂无投递回执':'已选择，暂无读回回执'}</span>
             <Button size="sm" variant="ghost" aria-label={`停止引用 ${item.label}`} onPress={()=>void removeTaskHistory(item.sourceId)}>停止引用</Button>
           </div>)}

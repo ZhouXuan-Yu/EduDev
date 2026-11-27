@@ -31,13 +31,27 @@ export function historyOmissionScope(prompt:string) {
 
 export function historyUseRequest(prompt:string) {
   const text=prompt.normalize('NFKC');
-  const named=[...text.matchAll(/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:参考|引用|沿用|使用)\s*历史(?:记录|资料|对话|来源)?\s*[:：]?\s*《([^《》\n]{1,80})》/gu)]
-    .map(match=>match[1].trim()).filter(Boolean);
+  const named=[...text.matchAll(/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(逐字\s*)?(参考|引用|沿用|使用)\s*历史(?:记录|资料|对话|来源)?\s*[:：]?\s*《([^《》\n]{1,80})》/gu)]
+    .map(match=>({title:match[3].trim(),literal:Boolean(match[1]&&match[2]==='引用')})).filter(item=>item.title);
   const vague=/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:照|按|参考|沿用|使用|接着)\s*(?:上次|上回|之前|过去)的?(?:那份|那个|那一份|那一条)/u.test(text);
   if(!named.length&&!vague)return;
   const quotedTitles=[...text.matchAll(/《([^《》\n]{1,80})》/gu)];
-  if(named.length===1&&quotedTitles.length===1&&!vague)return {kind:'named' as const,title:named[0],query:named[0]};
+  if(named.length===1&&quotedTitles.length===1&&!vague){
+    const [{title,literal}]=named;
+    return {kind:'named' as const,title,query:title,...(literal?{literal:true as const}:{})};
+  }
   return {kind:'confirm' as const,query:text.trim().slice(0,1800)};
+}
+
+async function verifiedLiteralReply(sql:Sql,sessionId:string,runId:string,sourceText:string) {
+  const literal=sourceText.trim();
+  if(!literal || Buffer.byteLength(literal)>2048)return false;
+  const replies=await sql.all(`SELECT substr(content,1,200001) AS content FROM ai_conversation_messages
+    WHERE session_id=? AND role='assistant' AND CASE WHEN json_valid(metadata_json)
+      THEN (metadata_json->>'$.agentRunId')=? AND (metadata_json->>'$.ok')=1 ELSE 0 END
+    ORDER BY rowid DESC LIMIT 2`,[sessionId,runId]);
+  const result=replies[0]?.content;
+  return replies.length===1&&typeof result==='string'&&result.length<=200000&&result.includes(literal);
 }
 
 export function combinedMemorySelections<T extends XiaozhiMemoryUseSelection>(session:T[],extra:HistoryPin[]):(T|HistoryPin)[] {
@@ -215,15 +229,23 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     const [delivered,readbacks,runs]=runId ? await Promise.all([
       receipts.referenceDeliveriesForRun(task.sessionId,runId),
       receipts.referenceReadbacksForRun(task.sessionId,runId),
-      sql.all("SELECT status FROM ai_agent_runs WHERE id=? AND session_id=? AND sub_intent='pi_education'",[runId,task.sessionId]),
+      sql.all("SELECT status,prompt FROM ai_agent_runs WHERE id=? AND session_id=? AND sub_intent='pi_education'",[runId,task.sessionId]),
     ]) : [[],[],[]];
+    const latestRun=runs[0];
+    const request=latestRun?.status==='succeeded'&&typeof latestRun.prompt==='string'
+      ? historyUseRequest(latestRun.prompt) : undefined;
+    const exactQuoteTitle=request?.kind==='named'&&request.literal&&runId===task.origin.runId&&task.requirementsVersion===1
+      ? request.title : undefined;
     const items:TaskHistoryScope['items']=[];
     for(const pin of binding.selections){
       const source=await history.selected(pin).catch(()=>null);
       if(source?.fingerprint!==pin.fingerprint)continue;
       const matches=(row:typeof delivered[number]|typeof readbacks[number])=>
         row.reason==='task'&&row.id===pin.id&&row.version===pin.version&&row.fingerprint===pin.fingerprint;
-      const useStage=delivered.some(matches)?'delivered':readbacks.some(matches)?'source_read':'selected';
+      const sent=delivered.find(matches), read=readbacks.find(matches);
+      const isVerified=runId&&sent&&read&&sent.scopeVersion===read.scopeVersion&&exactQuoteTitle===source.title
+        &&await verifiedLiteralReply(sql,task.sessionId,runId,source.text);
+      const useStage=isVerified?'verified':sent?'delivered':read?'source_read':'selected';
       items.push({sourceId:pin.id,label:source.title+' · '+source.label,useStage});
     }
     const after=await forTask(task);

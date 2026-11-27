@@ -34,7 +34,8 @@ async function fixture(t){
   db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT);'+
     'CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT);'+
     'CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);'+
-    "CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT,status TEXT NOT NULL DEFAULT 'running');");
+    "CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT,status TEXT NOT NULL DEFAULT 'running',prompt TEXT);"+
+    "CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);");
   const sql={
     run:async(query,args=[])=>db.prepare(query).run(...args),
     all:async(query,args=[])=>db.prepare(query).all(...args),
@@ -70,7 +71,7 @@ async function fixture(t){
   const binding=createTaskHistoryUse(sql,history);
   const grants=()=>sql.all("SELECT value_json FROM app_settings WHERE key GLOB 'xiaozhi.memory-use.task.v1:*'");
   const owner={sessionId:target,runId:'run_'+randomUUID(),generation:1};
-  const task={id:'xitask_'+sortKey(),sessionId:target,state:'active',requirementsVersion:1,binding:owner};
+  const task={id:'xitask_'+sortKey(),sessionId:target,state:'active',requirementsVersion:1,binding:owner,origin:{runId:owner.runId}};
   return {sql,access,state,ref,pin,text,original,history,binding,task,owner,target,source,a,b,grants,sortKey};
 }
 
@@ -125,6 +126,36 @@ test('A Task in review reads its own last Run use stage even when a different co
   const failed=await view();
   assert.equal(failed.items[0].useStage,'delivered');
   assert.equal(failed.runOutcome,'failed');
+});
+
+test('Verbatim history is verified only by the complete reply for its exact owning Run and source',async t=>{
+  const f=await fixture(t),{sql,binding,task,owner,target,state}=f;
+  f.original.text='完整记录包含两个句子。教师先记录零点，再核对刻度间隔。';
+  f.original.fingerprint=historyHash(f.original.text);
+  const {token}=await binding.stage(target,0,'signed-ticket');
+  const proof=await binding.prepare(target,[token]);
+  await sql.transaction(work=>binding.attachTask(work,task,owner,proof));
+  const exact='请逐字引用历史《'+f.original.title+'》。';
+  await sql.run(`INSERT INTO ai_agent_runs(id,session_id,sub_intent,created_at,status,prompt) VALUES(?,?,?,?,'succeeded',?)`,
+    [owner.runId,target,'pi_education','2026-11-26',exact]);
+  const item={id:f.pin.id,version:1,fingerprint:f.original.fingerprint,reason:'task',estimatedTokens:30};
+  await state.recordReferenceReadback(target,owner.runId,0,[item]);
+  await state.recordReferenceDelivery(target,owner.runId,0,[item]);
+  const reviewing={...task,state:'review_required',binding:null};
+  const stage=async()=>(await binding.view(reviewing,owner.runId)).items[0].useStage;
+  const record=(id,runId,content,ok)=>sql.run('INSERT INTO ai_conversation_messages VALUES(?,?,?,?,?,?)',
+    [id,target,'assistant',content,JSON.stringify({agentRunId:runId,ok}),'2026-11-26']);
+  await record('unrelated','run_'+randomUUID(),f.original.text,true);
+  await record('own',owner.runId,f.original.text.slice(0,15),true);
+  assert.equal(await stage(),'delivered');
+  await sql.run('UPDATE ai_conversation_messages SET content=?,metadata_json=? WHERE id=?',
+    [f.original.text,JSON.stringify({agentRunId:owner.runId,ok:false}),'own']);
+  assert.equal(await stage(),'delivered');
+  await sql.run('UPDATE ai_conversation_messages SET metadata_json=? WHERE id=?',
+    [JSON.stringify({agentRunId:owner.runId,ok:true}),'own']);
+  assert.equal(await stage(),'verified');
+  await sql.run('UPDATE ai_agent_runs SET prompt=? WHERE id=?',['内容请参考原历史。',owner.runId]);
+  assert.equal(await stage(),'delivered');
 });
 
 test('Task and Turn fail closed after revocation, restoration and classroom departure',async t=>{
