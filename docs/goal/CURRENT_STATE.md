@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+2026-11-27 本轮执行用户授权的全分支整合与清理，旧自动 Goal 已清除。保留各领域代码、未提交备份及未完成验收。Git 整合不代表 UI 或业务全部达标；本轮准确 refs、回归结果与恢复入口见 [分支整合回执](../audit/branch-consolidation-20261127/README.md)。下文旧执行指针按所属日期理解。
+
 数据库 R4 的版本、构建、测试和集成状态见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4/state.json`。按 [验收入口](../acceptance/CURRENT.md#小智数据库-r4) 核对当前阶段。
 
 UI当前执行切换到[V3.1设置优先](UIUX_V31_EXECUTION.md)，active Goal及状态入口为任务树acceptance/uiux-v31-settings-20261126/EXECUTION_STATE.md。窗口、精简接口、可信会话和十类真实设置已接入正式构建，取得局部实操证据；90 AC＋36 LG尚未正式通过。继续业务读写/版本/恢复、安全与性能验收；禁止提前合并main。

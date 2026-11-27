@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { performance } from 'node:perf_hooks';
+import { arch, cpus, release, totalmem } from 'node:os';
 import { setTimeout as wait } from 'node:timers/promises';
 import { _electron as electron } from 'playwright';
 import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
@@ -16,10 +18,14 @@ const verifyClass=process.argv.includes('--class-scope');
 let classFolders;
 const verifyUse=process.argv.includes('--use');
 const verifyPending=process.argv.includes('--pending');
+const cancelJob=process.argv.includes('--cancel-job');
+const measureLatency=process.argv.includes('--latency');
+const workerUnavailable=process.argv.includes('--worker-unavailable');
 const handout=process.argv.includes('--handout');
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
-const root = fs.mkdtempSync(path.join(evidence,adoption?'r2-adoption-electron-':handout?'r2-handout-electron-':'r2-fast-path-electron-'));
+const root = fs.mkdtempSync(path.join(evidence,workerUnavailable?'r2-worker-unavailable-electron-':cancelJob?'r2-cancel-electron-':
+  measureLatency?'r2-latency-electron-':adoption?'r2-adoption-electron-':handout?'r2-handout-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
@@ -42,7 +48,11 @@ async function launch() {
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',
     DEEPSEEK_MODEL:report.model,DEEPSEEK_API_KEY:modelKey};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','OMNI_EDU_HISTORY_LOOPBACK','OMNI_EDU_HISTORY_TOKEN'])delete env[key];
+  if(workerUnavailable)delete env.OMNI_EDU_R2_PYTHON;
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
+  const launchExit={exited:false};
+  (report.launches??=[]).push(launchExit);
+  app.process().once('exit',(code,signal)=>Object.assign(launchExit,{exited:true,code,signal}));
   await app.evaluate(({net})=>{
     const fetch=net.fetch.bind(net);
     globalThis.r2Wire=[];
@@ -81,6 +91,15 @@ function currentHead(){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
   try {
     const row=db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(prefix+':head');
+    return row?JSON.parse(row.value_json):null;
+  }finally{db.close();}
+}
+
+function currentPreference() {
+  const head=currentHead();
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const row=db.prepare('SELECT value_json FROM app_settings WHERE key=?').get(prefix+':version:'+head?.revision);
     return row?JSON.parse(row.value_json):null;
   }finally{db.close();}
 }
@@ -203,17 +222,99 @@ const memoryRead = async()=> {
   return view.value;
 };
 
-function backgroundReceipt(){
+function latestBackgroundJob(){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
-  try{
-    const row=db.prepare("SELECT status,error_message,result_json FROM ai_tasks WHERE task_type='personal_memory' ORDER BY created_at DESC LIMIT 1").get();
+  try{return db.prepare(`SELECT id,status,error_message,result_json,json_extract(payload_json,'$.dispatch') AS dispatch
+    FROM ai_tasks WHERE task_type='personal_memory' ORDER BY created_at DESC LIMIT 1`).get();}
+  finally{db.close();}
+}
+
+function backgroundReceipt(){
+    const row=latestBackgroundJob();
     if(!row||row.status==='pending'||row.status==='running')return null;
     assert.equal(row.status,'succeeded',row.error_message);
     const result=JSON.parse(row.result_json);
     assert(result.modelCalls>=1 && result.modelCalls<=2);
     assert.equal(result.saved,1);
     return result;
-  }finally{db.close();}
+}
+
+async function verifyJobCancellation(memory) {
+  const running=await until(()=>{
+    if(app.process().exitCode!==null)throw Error('Electron exited before the worker reached dispatch.');
+    const job=latestBackgroundJob();
+    if(job?.status==='running'&&job.dispatch)return job;
+    if(job&&!['pending','running'].includes(job.status))throw Error('Background job completed before cancellation was requested.');
+    return null;
+  },180000,150);
+  await memory.getByRole('button',{name:'刷新记忆',exact:true}).click();
+  await memory.getByRole('button',{name:'后台任务',exact:true}).click();
+  await memory.getByTestId('personal-memory-cancel-'+running.id).click({timeout:12000});
+  const feedback=memory.getByTestId('personal-memory-feedback');
+  await feedback.waitFor({timeout:15000});
+  const message=await feedback.textContent();
+  assert.match(message,/^已取消此任务。.*后续结果不会保存/);
+  await until(()=>latestBackgroundJob()?.status==='cancelled');
+  assert.deepEqual((await memoryRead()).candidates,[]);
+  check('the teacher cancels an active real worker from the settings page',{jobId:running.id,message});
+  await close();
+  await launch();
+  assert.equal(latestBackgroundJob()?.status,'cancelled');
+  assert.deepEqual((await memoryRead()).candidates,[]);
+  check('the cancelled job and no candidate persist after a real cold restart',{jobId:running.id});
+}
+
+async function measureWhileProcessing() {
+  const pressKey=async(samples,activeExpected)=>{
+    for(let i=0;i<50;i++){
+      const activeBefore=latestBackgroundJob()?.status==='running';
+      const begin=performance.now();
+      await input().press('x');
+      const current=await input().inputValue();
+      const ms=performance.now()-begin;
+      const activeAfter=latestBackgroundJob()?.status==='running';
+      assert.equal(current.length,samples.length+1);
+      samples.push({ms,activeBefore,activeAfter});
+      assert.equal(activeBefore,activeExpected,'Worker state before the input did not match the sample group.');
+      assert.equal(activeAfter,activeExpected,'Worker state changed while this input was being measured.');
+    }
+  };
+  report.latency={idle:[],running:[],hardware:{cpu:cpus()[0]?.model,threads:cpus().length,ramBytes:totalmem(),os:release(),arch:arch()},
+    metric:'Playwright key press to rendered value readback; includes driver latency'};
+  await page.getByTestId('nav-ai').click();
+  await input().fill('');
+  await pressKey(report.latency.idle,false);
+  await input().fill('');
+  await until(()=>{
+    const job=latestBackgroundJob();
+    if(job?.status==='running'&&job.dispatch)return job;
+    if(job&&!['pending','running'].includes(job.status))throw Error('Background job ended before foreground latency capture.');
+    return null;
+  },180000,40);
+  await pressKey(report.latency.running,true);
+  const p95=values=>[...values].sort((a,b)=>a.ms-b.ms)[Math.ceil(values.length*0.95)-1].ms;
+  const idleP95=p95(report.latency.idle),runningP95=p95(report.latency.running);
+  report.latency.percentile={idleP95,runningP95};
+  report.background=await until(backgroundReceipt,130000,125);
+  assert(idleP95<=200 && runningP95<=200,JSON.stringify(report.latency.percentile));
+  check('100 real composer inputs meet the local P95 threshold in idle and dispatched worker windows',{idleP95,runningP95});
+}
+
+async function verifyUnavailableWorker() {
+  let memory=await memorySettings();
+  await memory.getByTestId('personal-memory-auto').click();
+  await memory.getByText('自动记忆组件暂不可用。仍可查看和管理已有记忆。',{exact:true}).waitFor();
+  assert.equal((await memoryRead()).workerAvailable,false);
+  check('missing worker is visible with automatic processing enabled',{workerAvailable:false});
+  await page.getByTestId('nav-ai').click();
+  await send('请记住，以后讲解先提示再给答案。');
+  assert.equal(currentPreference().values.answerOrder,'hint_first');
+  await close();
+  await launch();
+  memory=await memorySettings();
+  await memory.getByText('自动记忆组件暂不可用。仍可查看和管理已有记忆。',{exact:true}).waitFor();
+  assert.equal(currentPreference().values.answerOrder,'hint_first');
+  check('original explicit saving remains available and persists without the new worker',{revision:currentHead().revision});
 }
 
 async function openSessionMemory() {
@@ -350,6 +451,9 @@ async function candidateAdoption(){
   if(verifyClass) assert(await sourcePreview.getByRole('checkbox',{name:/仅用于此来源会话已确认的班级和学期/}).isChecked());
   await sourcePreview.getByTestId('personal-memory-source-consent').click();
   await sourcePreview.getByText('已允许从这条原话提取记忆建议。',{exact:true}).waitFor();
+  assert.equal((await memoryRead()).workerAvailable,true);
+  if(cancelJob)return verifyJobCancellation(memory);
+  if(measureLatency)return measureWhileProcessing();
   const draft='这段是尚未发送的新任务草稿。';
   if(verifyPending){
     await page.getByTestId('nav-ai').click();
@@ -434,7 +538,8 @@ async function candidateAdoption(){
 
 try{
   await launch();
-  if(adoption)await candidateAdoption();
+  if(workerUnavailable)await verifyUnavailableWorker();
+  else if(adoption)await candidateAdoption();
   else if(handout)await handoutPreference();
   else await fastPath();
   await page.screenshot({path:path.join(root,'restart.png')});

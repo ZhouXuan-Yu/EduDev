@@ -13,6 +13,7 @@ export const SETTINGS_ROUTES = {
   getDataRoot:route('app:getDataRoot',[0,0]),
   listAiConversations:route('aiConversations:list',[0,0]),
   getXiaozhiSettings:route('xiaozhi:settings-get',[0,1],'optionalInput'),
+  openXiaozhiConfigWindow:route('xiaozhi:config-window-open',[0,1],'optionalId'),
   commitXiaozhiConfig:route('xiaozhi:config-commit',[1,1],'optionalInput',true),
   getXiaozhiConfigHistory:route('xiaozhi:config-history',[1,1],'optionalInput'),
   undoXiaozhiConfig:route('xiaozhi:config-undo',[1,1],'optionalInput',true),

@@ -41,6 +41,7 @@ export function PiPersonalMemorySettings() {
           })}>{view.policy.enabled?'关闭自动处理':'开启自动处理'}</Button>}
       </SettingsInline>
       {view?.policy.enabled&&view.policy.pausedByUsePolicy&&<p role="status">当前记忆使用策略暂停了自动处理。</p>}
+      {view?.policy.enabled&&!view.workerAvailable&&<p role="status">自动记忆组件暂不可用。仍可查看和管理已有记忆。</p>}
       {busy&&<p role="status">正在处理…</p>}
       {feedback&&<p role={feedback.error?'alert':'status'} data-testid="personal-memory-feedback">{feedback.message}</p>}
       {!!view?.jobs.length&&<DisclosureCard title="后台任务">

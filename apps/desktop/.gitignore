@@ -7,5 +7,6 @@ release/
 .local-education/
 .local-retrieval/
 .local-reranker/
+.local-personal-memory/
 .retired-builds/
 .release/

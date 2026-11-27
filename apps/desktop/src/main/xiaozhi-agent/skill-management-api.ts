@@ -45,7 +45,14 @@ export function createSkillManagementApi(host: Host, choose: () => Promise<strin
 }
 export function registerSkillManagementIpc(options: { ipcMain: IpcMain; allowed: (event: Electron.IpcMainInvokeEvent) => boolean; host: Host; choose: () => Promise<string | undefined> }) {
   const api = createSkillManagementApi(options.host, options.choose);
-  for (const [channel, method] of [['xiaozhi:skill-catalog', api.catalog], ['xiaozhi:skill-preview', api.preview], ['xiaozhi:skill-mutate', api.mutate]] as const) {
+  for (const [channel, method] of [['xiaozhi:skill-catalog', api.catalog], ['xiaozhi:skill-preview', api.preview]] as const) {
     options.ipcMain.handle(channel, (event, input) => options.allowed(event) ? method(input) : { ok: false, error: 'permission_denied' });
   }
+  options.ipcMain.handle('xiaozhi:skill-mutate',(event,input)=>options.allowed(event)
+    ?createSkillManagementApi(options.host,async()=>{
+      if(!options.allowed(event))throw Error('permission_denied');
+      const selected=await options.choose();
+      if(!options.allowed(event))throw Error('permission_denied');
+      return selected;
+    }).mutate(input):{ok:false,error:'permission_denied'});
 }

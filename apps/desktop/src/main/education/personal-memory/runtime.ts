@@ -1,6 +1,7 @@
-import {access} from 'node:fs/promises';
+import {access,lstat,realpath,readdir} from 'node:fs/promises';
 import {freemem} from 'node:os';
-import {isAbsolute, join} from 'node:path';
+import {isAbsolute, join, relative} from 'node:path';
+import {hashFileSha256,resolveInsideRoot} from '../../local-file-security';
 import type {Sql} from '../../xiaozhi-agent/session-state';
 import {createPersonalMemoryBackgroundConsumer} from './background-consumer';
 import {createPersonalMemoryJobs} from './background-jobs';
@@ -8,7 +9,8 @@ import {readPersonalMemoryProcessing} from './candidate-state';
 import {createPersonalMemoryRecordState} from './record-state';
 import {createPersonalMemoryOrganization} from './organization';
 import {createPersonalMemorySourceAuthority} from './source-authority';
-import type {runPersonalMemoryCandidateWorker} from './candidate-worker-client';
+import type {PersonalMemoryWorkerLaunch,runPersonalMemoryCandidateWorker} from './candidate-worker-client';
+import manifest from './runtime-manifest.json' with {type:'json'};
 
 type Provider = Parameters<typeof runPersonalMemoryCandidateWorker>[0];
 type RuntimeOptions = {
@@ -88,15 +90,41 @@ export function createPersonalMemoryRuntime(sql:Sql, options:RuntimeOptions) {
   };
 }
 
-export async function personalMemoryWorkerPaths(options:{packaged:boolean;resourcesPath:string;dataRoot:string;repoRoot:string;
-  configuredPython?:string}) {
-  const repoRoot=options.packaged ? join(options.resourcesPath,'personal-memory-runtime') : options.repoRoot;
-  const pythonExecutable=options.packaged
-    ? join(options.dataRoot,'managed-tools','personal-memory','Scripts','python.exe')
-    : options.configuredPython ?? '';
-  if (!isAbsolute(repoRoot) || !isAbsolute(pythonExecutable)) return null;
-  try {
-    await Promise.all([access(pythonExecutable),access(join(repoRoot,'python','omni_edu_personal_memory','worker.py'))]);
-    return {repoRoot,pythonExecutable};
-  } catch {return null;}
+async function verifyPackagedWorker(root:string):Promise<PersonalMemoryWorkerLaunch|null> {
+  if (process.platform!=='win32' || process.arch!=='x64' || !isAbsolute(root)) return null;
+  if ((await realpath(root)).toLowerCase()!==root.toLowerCase()) return null;
+  const expected=new Map(manifest.files.map(item=>[item.path,item]));
+  async function walk(directory:string) {
+    for (const entry of await readdir(directory,{withFileTypes:true})) {
+      const file=resolveInsideRoot(root,relative(root,directory),entry.name);
+      if (entry.isSymbolicLink() || (await realpath(file)).toLowerCase()!==file.toLowerCase()) return false;
+      if (entry.isDirectory()) {
+        if (!await walk(file)) return false;
+      } else {
+        const key=relative(root,file).replaceAll('\\','/');
+        const item=expected.get(key);
+        if (!entry.isFile() || !item || (await lstat(file)).size!==item.size || await hashFileSha256(file)!==item.sha256) return false;
+        expected.delete(key);
+      }
+    }
+    return true;
+  }
+  return await walk(root)&&expected.size===0?{repoRoot:root,executable:join(root,manifest.executable)}:null;
+}
+
+export function createPersonalMemoryWorkerPaths(options:{packaged:boolean;resourcesPath:string;repoRoot:string;
+  configuredPython?:string}):()=>Promise<PersonalMemoryWorkerLaunch|null> {
+  let verified:Promise<PersonalMemoryWorkerLaunch|null>|undefined;
+  return async()=>{
+    if (options.packaged) {
+      const root=join(options.resourcesPath,'personal-memory-runtime');
+      return verified ??= verifyPackagedWorker(root).catch(()=>null);
+    }
+    const {repoRoot,configuredPython:pythonExecutable}=options;
+    if (!isAbsolute(repoRoot) || !pythonExecutable || !isAbsolute(pythonExecutable)) return null;
+    try {
+      await Promise.all([access(pythonExecutable),access(join(repoRoot,'python','omni_edu_personal_memory','worker.py'))]);
+      return {repoRoot,pythonExecutable};
+    } catch {return null;}
+  };
 }

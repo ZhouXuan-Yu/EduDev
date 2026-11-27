@@ -55,7 +55,7 @@ export function PiHistoryLookup({sessionId,scope,query,onClose,onConfirmed}:{
     {message&&<p role="status" data-testid="history-lookup-message">{message}</p>}
     {result?.reply.reason==='empty_scope'&&<p>当前没有更多获准查找的来源。可在“设置 → 教师记忆”选择。</p>}
     {result?.reply.reason==='service_unavailable'&&<p>历史索引暂不可用，当前使用本机关键词查找。</p>}
-    {result&&!result.reply.reason&&!result.reply.candidates.length&&<p>没有找到相符的历史。</p>}
+    {result&&result.reply.reason!=='empty_scope'&&!result.reply.candidates.length&&<p>没有找到相符的历史。</p>}
     <ul>{result?.reply.candidates.map(source=><li key={source.sourceId}>
       <Button size="sm" variant="ghost" isDisabled={busy} data-testid={'history-candidate-'+source.ref.recordId}
         onPress={()=>void show(source)}>{source.sessionTitle} · {source.label}</Button>

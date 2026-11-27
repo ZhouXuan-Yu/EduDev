@@ -163,7 +163,8 @@ def main():
         result = {"status": str(error)}
     except Exception:
         result = {"status": "worker_failed"}
-    sys.stdout.write(json.dumps({"schemaVersion": PROTOCOL, "requestId": request_id, **result}, ensure_ascii=False))
+    response = json.dumps({"schemaVersion": PROTOCOL, "requestId": request_id, **result}, ensure_ascii=False)
+    sys.stdout.buffer.write(response.encode("utf-8"))
     return 0
 
 

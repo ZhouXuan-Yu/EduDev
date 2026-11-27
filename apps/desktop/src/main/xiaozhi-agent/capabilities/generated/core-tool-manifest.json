@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "a4e9b7cc52c4a09d24950d25a2f96e0a4639ffd80e91f5638ce6f0fa6a0d44e3",
+  "sourceHash": "698ef8899aecb118ce827f32fefb5007fdc35486ad6c4ed43be1bb68fb50e820",
   "sources": [
     {
       "file": "package-lock.json",
-      "sha256": "9ad885412311d5580b2157febe76febadb9a831dee7186c5d2ba6e1bb96b43f9"
+      "sha256": "552f1274b6826a67cb52c9eff59ed8ed92449e8481ebe429478c01d9f33a59c0"
     },
     {
       "file": "src/main/ai-harness/error-taxonomy.ts",
@@ -104,7 +104,7 @@
     },
     {
       "file": "src/main/assets/material-tools.ts",
-      "sha256": "5e3d66d0b6b30c3a8daea6648a64ea88538214b04af621a4e25603e5510735ac"
+      "sha256": "6297e21425575d74e33a448a730eb95ae72a9a54ef2ce8991b73a4d163342a67"
     },
     {
       "file": "src/main/assets/word-package.ts",
@@ -124,7 +124,7 @@
     },
     {
       "file": "src/main/education/classroom-context.ts",
-      "sha256": "42d5aa66a0a5ea70300d105a337eb2a6ac49b68060f131f77a532eccfc41662c"
+      "sha256": "2ec8c3a34a5d46a5dca6c10977cc6dfebecddfe9adec8028675ffac39153aec9"
     },
     {
       "file": "src/main/education/classroom-document-pages.ts",
@@ -144,7 +144,7 @@
     },
     {
       "file": "src/main/education/classroom-plan-tools.ts",
-      "sha256": "f644a0e4559ec5e3b5d27549366eec3cb7e3ad59bdced4bf298b9b45a5d2741b"
+      "sha256": "10f39d0e5f000ce0932fd1808ebe6c680682d90733bbf6c896b9c01a2bdb1cf0"
     },
     {
       "file": "src/main/education/classroom-pptx.ts",
@@ -157,6 +157,10 @@
     {
       "file": "src/main/education/equation-tools.ts",
       "sha256": "3d3311f266e6e54c69a78482ee11f9a720b0af2b19800e19555fddac74170df2"
+    },
+    {
+      "file": "src/main/education/handout-exercise-scope.ts",
+      "sha256": "6b487cf15a3b5caecfa5f6e76c96ca428e4945e0ecfe7a70dd2cb72d49f181cf"
     },
     {
       "file": "src/main/education/learning-evidence.ts",
@@ -176,7 +180,7 @@
     },
     {
       "file": "src/main/education/lesson-agenda-revision.ts",
-      "sha256": "5dcb2ffd5dcab6f90e19d094610004a66796a608a41d9df8f0e67043d500e669"
+      "sha256": "331d33235e8dbd03cd67d0f4bad80cc38e46c9a94e65e2fa23ab2bc5aaf2eb0a"
     },
     {
       "file": "src/main/education/lesson-revision-request.ts",
@@ -255,12 +259,16 @@
       "sha256": "a741b4dde89d62c68f0bfe28832fae337d8e212515db99a8aa562045ab334fd9"
     },
     {
+      "file": "src/main/education/natural-lesson-agenda.ts",
+      "sha256": "ff9d6f0897b4cad10007cf6e7c09fad40549593831a81bb76ea47e42f3d7eabc"
+    },
+    {
       "file": "src/main/education/natural-lesson-basis.ts",
-      "sha256": "9aa554d59601844de60b0c1809e7c34b32db790998033b45845211d22f24900e"
+      "sha256": "ae858757fb2a596577841d7cf9d79a04607d74d007f1b2e5e46bbb4c0d3dc7ee"
     },
     {
       "file": "src/main/education/natural-lesson-draft.ts",
-      "sha256": "a4070ba7210d2deef0b574feb5e9a394d57aee02edfd6a3f9b6e4dd9114e6a94"
+      "sha256": "6d5f51a0a24727f22cfff81d9a93d9fb579d297c140c2a9f4dfb03ba0ed28521"
     },
     {
       "file": "src/main/education/natural-lesson-materials.ts",
@@ -268,7 +276,7 @@
     },
     {
       "file": "src/main/education/natural-lesson-tool.ts",
-      "sha256": "967128fa13f75ca5427d37c21b9dc0778b47b6c8b0d4f1fdfb71a6fba24679bf"
+      "sha256": "ae93d5ec23994d6c305aca07b0bf29824bcfe006a63b2f08a0f88c20ba693451"
     },
     {
       "file": "src/main/education/original-question-batch-tool.ts",
@@ -412,11 +420,11 @@
     },
     {
       "file": "src/main/education/personal-memory/candidate-worker-client.ts",
-      "sha256": "812b5ce147d5ffc75459f162ef7e429b6d76951bb33e9cc36da7dc6370132ce6"
+      "sha256": "5d948fd8b63e15dee2b7f25f39b32671640a01c3cdb67751026becec02c1442e"
     },
     {
       "file": "src/main/education/personal-memory/operations.ts",
-      "sha256": "26b798598639d827c81018c9f6a8bc01061c248b1b0f1fdeda5c392ea32f82d9"
+      "sha256": "44626c7c12043d6ab5187882c3bc491d9be8e5a8bfd7ae3de675f4cd9778711c"
     },
     {
       "file": "src/main/education/personal-memory/organization.ts",
@@ -424,19 +432,23 @@
     },
     {
       "file": "src/main/education/personal-memory/record-state.ts",
-      "sha256": "a7f8c542b6c7831220be5b30734a0d0b46ef669990c817254c263b8c0391d950"
+      "sha256": "2acc1cad1f0b45f137cf1aff3341dec4b4c750dc0bf8c1f684dafbe978f05ae8"
+    },
+    {
+      "file": "src/main/education/personal-memory/runtime-manifest.json",
+      "sha256": "71a55778cd3ccb452c8d5f834c5d21bd139a0a5394eb7746660e165a81078be0"
     },
     {
       "file": "src/main/education/personal-memory/runtime.ts",
-      "sha256": "9a0b3d5b9581c53248d08b5924c442056e160fa2343616b337d10a751a3d3a25"
+      "sha256": "be2d9996c386f9e773d2de592996b3c62820d63b04c33b7dcec859ed110230e3"
     },
     {
       "file": "src/main/education/personal-memory/source-authority.ts",
-      "sha256": "6f38a4b43e2cee074f357a7b2911c5a371e66b31b4f208c3f1a705de5de59bb0"
+      "sha256": "6a05edd3f8fe76e073a1a64760d09194f2ed6f3c7f5a6694bc9fb42a0eea42d4"
     },
     {
       "file": "src/main/education/personal-memory/use.ts",
-      "sha256": "bfbd854e608ca8b603a8c6ccad118ecad699070c3c836fe24d22ffa73fccda51"
+      "sha256": "d92ba2e20f6beb99612942265f78dc8c49f758b9e48baa5c1d9a81628ebb03c2"
     },
     {
       "file": "src/main/education/practice-review-coordinator.ts",
@@ -584,7 +596,7 @@
     },
     {
       "file": "src/main/education/teaching-handout-edit.ts",
-      "sha256": "da25ce6651589cea89ca7e8963fbed6889fc96897dde738cd5a4a60319ecc3b2"
+      "sha256": "ce9f886dc919d9a9e5be9425cb12f5d72be206021fece4b868cda8e350ce87de"
     },
     {
       "file": "src/main/education/teaching-handout-export-tools.ts",
@@ -852,7 +864,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/api.ts",
-      "sha256": "9511e483ade09f8bf0e77b5169c5c28a2ebbae0094feb77113269d175f53a911"
+      "sha256": "6fc064c5c271d6a835608995bcf428091cde3d528b078629e2f746da3485442c"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/acquisition/file-hash.ts",
@@ -944,11 +956,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "abd861b83264861c2366341ba0566ed832ef72877d18905f6a6b6fad360e1daf"
+      "sha256": "eb4f915ad84f989b87e89325a1ef4e7ee0e20169aead22a534431a50b25f7426"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
-      "sha256": "fdb8f9be4bb0252cbdc9a4be724809cbc1279ebd1c7f939b6f34409d8f962189"
+      "sha256": "285e47e4eed7bc726e96c23d6b9c09ea8de62843a3818f8f7b640849738f707d"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/intelligence/evidence.ts",
@@ -1016,7 +1028,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/runtime.ts",
-      "sha256": "4bbea170bf314a4fb01baa92a2695d79f7301cb37e36acd34af391a3e8e513f4"
+      "sha256": "44a7d21cb7e7d9d976130ac2b7da9b387d63e11d04a079ad8c32bcb2c62cdcc0"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/types.ts",
@@ -1388,7 +1400,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/history/memory.ts",
-      "sha256": "3d04a83fcd9a8f016e573bc44bdc26c1aff26e2419b521dc78f8ac15ae61acb3"
+      "sha256": "922603f873515d7f1cd6d9fed5f179787ebaf54ef7c2d32a9e7e5a61c1cfd179"
     },
     {
       "file": "src/main/xiaozhi-agent/history/operations.ts",
@@ -1424,7 +1436,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/local-utility-host.ts",
-      "sha256": "3deb8b179cad8a5c545fa153c5354a18be75e9d7d7144e17e1ca8fb39d8840b1"
+      "sha256": "e1edab5dfbd6f5861661a24b3c7d27cd8a87bf929c5a9691097fe0e7bbf42575"
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skill-runtime.ts",
@@ -1455,16 +1467,36 @@
       "sha256": "3793cf17ea7b6c916da75e49fbb215b72f4a27fd4894b2e0f731ab17263f36a4"
     },
     {
+      "file": "src/main/xiaozhi-agent/memory-scope-state.ts",
+      "sha256": "d54f030cc42435885d5b284a713d91282e8b5c9126c0079d799caab550ced381"
+    },
+    {
       "file": "src/main/xiaozhi-agent/memory-scope.ts",
-      "sha256": "c2a1d2842bafb32108778eb42fd8beac56df18e71354cefccca0d50d389596f9"
+      "sha256": "9fe3b60ac46f31a18532075ecebdb6598f7edf11222a37e56ebbac6f99173969"
     },
     {
       "file": "src/main/xiaozhi-agent/memory-selection.ts",
-      "sha256": "234f06f75fc5c4f36b7e1dd4803553391c620c77fecbddb25e457624213c68b6"
+      "sha256": "949cf1b5120331ed352f336261488f7e88d5a1fd1c1f92f9cb2acc80bbe9ec68"
     },
     {
       "file": "src/main/xiaozhi-agent/memory-tools.ts",
-      "sha256": "c667a50e06e59114c7341294ddb803ec0339d361775d76a3a5bd8d8620b9c85f"
+      "sha256": "a8f2bbcdace6286fa5c75c2d239a2c3aa4a91e0b59c4dfc18bc7eddb06f0f258"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/memory-use/personal-references.ts",
+      "sha256": "27188c11a655bce88ba68a0c39065c22a0eeace30ff165771eb70015935721d4"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/memory-use/protected-readback.ts",
+      "sha256": "d6ef8f441a5d6afeb2ad4d97cea74c323a495fd435a6ce20ad95a477b4aefbf0"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/memory-use/receipts.ts",
+      "sha256": "7e3521fbe8fad501df18741da0eade56004af4b5ca54b2184cd8fecd7fd4a928"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/memory-use/selection.ts",
+      "sha256": "e13c927a9f22405d4d5d02e560e6c444e01377a10c9f92072319013f0d723443"
     },
     {
       "file": "src/main/xiaozhi-agent/mock-exam-delivery-resume.ts",
@@ -1548,7 +1580,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-service.ts",
-      "sha256": "31ba08b2d912c8ee6339582743fd9ec55f3c2a76652eaee1fef62e7e94ff8f2b"
+      "sha256": "14ddfbbc464b8cf4f9354eecd9268e53730de687ea6353a935318f1dc3c2ec22"
     },
     {
       "file": "src/main/xiaozhi-agent/office-artifact-state.ts",
@@ -1568,7 +1600,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-generator.ts",
-      "sha256": "67064be43b3cf156b58b00c163c83805016f29e0bd0d7dfac7da01a09247a05a"
+      "sha256": "c8dab20d8eb9e4599068e2201400967649ed780fb9f75fd7115c1cabcfd537dc"
     },
     {
       "file": "src/main/xiaozhi-agent/office-images.ts",
@@ -1580,11 +1612,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/office-pdf-budget.ts",
-      "sha256": "5f95d2d976bb73d706c5f60a00bc4afe65f7b84ee47104e6411f7c502cd2c0a9"
+      "sha256": "fcb5722a97e3ce2e463f62897e8860a14ee81439d57330a40dbd599d76ea4a53"
     },
     {
       "file": "src/main/xiaozhi-agent/office-pdf-renderer.ts",
-      "sha256": "ba79247ad7fa2087ca32987b96911d35b56579e76f91557fca2c6a7ea5df1404"
+      "sha256": "01adea704f85832d37f28d520ff21f087042caf465169559225c4944cbea7371"
     },
     {
       "file": "src/main/xiaozhi-agent/office-version-family.ts",
@@ -1696,7 +1728,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
-      "sha256": "af3005ec2392ee954abd82de06409b0b4666a663f23052966ec2fe56f4650b01"
+      "sha256": "556f1e063e7dd3ffca1f128245f14d2fdae7932f28803b68bc448ba148218c3a"
     },
     {
       "file": "src/main/xiaozhi-agent/permissions/windows/launcher.ts",
@@ -1732,7 +1764,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/pi-session.ts",
-      "sha256": "71c48f99d74323b50a5c53f00fec64e1f6fa66f5421b1cdd09173b1196813ce6"
+      "sha256": "868d127bce7c81ec5ba3e9e645a8200add1487879ed0b5101980e9e3f8b538a5"
     },
     {
       "file": "src/main/xiaozhi-agent/plan-native.ts",
@@ -1744,7 +1776,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/preference-request-context.ts",
-      "sha256": "ef0f26971359d03668ccb738ec6d72b2f05e3bcbc04c2574031921a9fb7a977f"
+      "sha256": "9a10e84b003803ec3e1c4ef08fb4e947add00598d86d5791c7efb7237d3d66e3"
     },
     {
       "file": "src/main/xiaozhi-agent/prepared-agent-config.ts",
@@ -1772,7 +1804,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "e460f508819ab66149e86eb1f7a1bddc5650b7e55dd2c76a31d3e81ad187eca7"
+      "sha256": "8c23f83c5da159568703726d4ea247f7875a32f445b3e02df88de7f396ccab8c"
     },
     {
       "file": "src/main/xiaozhi-agent/provider-cooldown-store.ts",
@@ -1960,7 +1992,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/plan-runtime.ts",
-      "sha256": "4a5a75037d6fc1303650c07faf29364b7a53960490bca3d52f9a539a4c5d5798"
+      "sha256": "6577da1c34131ad90c6f2bda3d7d903cc642768c43d03227559fbf4f625b53a1"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/planning-policy.ts",
@@ -1968,7 +2000,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/planning-runtime.ts",
-      "sha256": "e84ef0208c6a6ac903d0a9f41d38df82d7a5ca8d5df790f5744573c697d67597"
+      "sha256": "76a5fdff094e28b9c38dc20d23e5db38e053d8592f17032dee2763bdcba7fbe6"
     },
     {
       "file": "src/main/xiaozhi-agent/tasks/recovery-inspection.ts",
@@ -2812,7 +2844,7 @@
     },
     {
       "file": "src/shared/teaching-handout-edit.ts",
-      "sha256": "39082f4e8adc9e7937bfb328113a9505829af4393069a243ab544636d38fc8cb"
+      "sha256": "92be1c9de6a9ddcb50c24d7e972e8e461ab34336a701d839c8d8bace617ee0df"
     },
     {
       "file": "src/shared/teaching-handout-export.ts",
@@ -2912,7 +2944,7 @@
     },
     {
       "file": "src/shared/xiaozhi-memory.ts",
-      "sha256": "55f52b10d1b2ff3668deb1cd0864d1c2b10a1cdf00d23bd5e39b5d3bd859e144"
+      "sha256": "dec62d041177c4cbe236a0143cd7d90d1253221fe540cd0b7b8a163005ea9f16"
     },
     {
       "file": "src/shared/xiaozhi-message-presentation.ts",
@@ -2956,7 +2988,7 @@
     },
     {
       "file": "src/shared/xiaozhi-projection.ts",
-      "sha256": "961e2a03ff943d0d0dad3ccd31b1236c6dd98eae936212511654d9c71d03f584"
+      "sha256": "d825343bcd0ba72376d15875e1f739e6d030c781c0641811461efdf5d8d42b8c"
     },
     {
       "file": "src/shared/xiaozhi-public-images.ts",

@@ -36,7 +36,7 @@ async function result<T>(action: () => Promise<T>): Promise<AcquisitionApiResult
 export function registerAcquisitionIpc(options: {ipcMain: IpcMain; allowed: (event: IpcMainInvokeEvent) => boolean;
   view: (sessionId: string) => Promise<AcquisitionView>; search: (input: AcquisitionSearch) => Promise<AcquisitionView>;
   mutate: (input: AcquisitionMutation) => Promise<AcquisitionView>;
-  importExtension?: (sessionId: string) => Promise<AcquisitionView>}) {
+  importExtension?: (sessionId: string,isCurrent:()=>boolean) => Promise<AcquisitionView>}) {
   options.ipcMain.handle('xiaozhi:acquisition', (event, id) => options.allowed(event) && validAcquisitionSession(id)
     ? result(() => options.view(id)) : {ok: false, error: 'permission_denied'});
   options.ipcMain.handle('xiaozhi:acquisition-search', (event, input) => {
@@ -48,7 +48,7 @@ export function registerAcquisitionIpc(options: {ipcMain: IpcMain; allowed: (eve
     const frozen = acquisitionMutationInput(input);
     if (frozen?.action === 'extension_import') return result(() => {
       if (!options.importExtension) throw Error('unavailable');
-      return options.importExtension(frozen.sessionId);
+      return options.importExtension(frozen.sessionId,()=>options.allowed(event));
     });
     return frozen ? result(() => options.mutate(frozen)) : {ok: false, error: 'invalid_input'};
   });

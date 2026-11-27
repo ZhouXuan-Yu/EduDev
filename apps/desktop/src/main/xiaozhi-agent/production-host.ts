@@ -232,7 +232,7 @@ import type {QuestionAliases} from '../education/question-aliases';
 import {createLearningReviewCoordinator} from '../education/learning-review-coordinator';
 import {validLearningBatchDecision,validLearningReview,type LearningReviewBatchDecision,type LearningReviewBatchSummary,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
-import {createPersonalMemoryRuntime, type personalMemoryWorkerPaths} from '../education/personal-memory/runtime';
+import {createPersonalMemoryRuntime, type createPersonalMemoryWorkerPaths} from '../education/personal-memory/runtime';
 import {createPersonalMemoryOperations} from '../education/personal-memory/operations';
 import {createPersonalMemoryUse} from '../education/personal-memory/use';
 import {readModelReasoning} from '../../shared/model-reasoning';
@@ -327,7 +327,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   afterOfficeArtifactStage?: (stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;
   afterAttachmentSendStage?: (stage:'claimed'|'committed')=>Promise<void>;
   autoCompaction?: boolean; testContextWindow?: number; settingsCodec?: SettingsKeyCodec;
-  personalMemoryPaths?:()=>ReturnType<typeof personalMemoryWorkerPaths>;
+  personalMemoryPaths?:ReturnType<typeof createPersonalMemoryWorkerPaths>;
   /** Main-only failure acceptance; never renderer supplied. */
   lifecycleTimeoutMs?:number; shutdownTimeoutMs?:number;
   beforeModelDelivery?:()=>Promise<void>;
@@ -502,6 +502,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   }
   const personalMemory=createPersonalMemoryOperations(store.xiaozhiState.sql,sanitizePersonalMemory,{
     stopBackground:()=>personalMemoryRuntime?.interrupt(), invalidateUse:revokeUnavailablePersonalMemory,mutate:mutateMemory,
+    workerAvailable:async()=>Boolean(await options.personalMemoryPaths?.()),
   });
   const environment = createEnvironmentService({workspace: sessionId => host.resolveFileWorkspace(sessionId),
     permissionRuntime,

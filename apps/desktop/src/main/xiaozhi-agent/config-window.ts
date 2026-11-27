@@ -11,7 +11,7 @@ type Host = Pick<ReturnType<typeof createXiaozhiProductionHost>,
 type WindowScope = { window: BrowserWindow; sessionId?: string };
 
 export function registerConfigWindow({
-  ipcMain, host, primaryWindow, primaryURL, settingsPath, developmentURL, preload,
+  ipcMain, host, primaryWindow, primaryURL, settingsPath, developmentURL, preload, settingsOpenAllowed,
 }: {
   ipcMain: IpcMain;
   host: Host;
@@ -20,6 +20,8 @@ export function registerConfigWindow({
   settingsPath: string;
   developmentURL?: string;
   preload: string;
+  /** Only the request-local reviewed settings bridge can delegate this opener. */
+  settingsOpenAllowed?: (event: IpcMainInvokeEvent) => boolean;
 }) {
   const settingsURL = developmentURL ? new URL('/config-window.html', developmentURL).href : pathToFileURL(settingsPath).href;
   let scope: WindowScope | undefined;
@@ -64,12 +66,13 @@ export function registerConfigWindow({
 
   ipcMain.handle('xiaozhi:config-window-open', async (event, sessionId: unknown): Promise<XiaozhiSettingsResult<ConfigWindowOpenOutcome>> => {
     const parent = primaryWindow();
-    if (!parent || !allowed(event, parent, primaryURL)) return denied;
+    const trustedOpener = () => allowed(event, parent, primaryURL) || Boolean(settingsOpenAllowed?.(event));
+    if (!parent || !trustedOpener()) return denied;
     if (sessionId !== undefined && !validOrdinaryQuery({ field: 'session_thinking', sessionId })) return invalid;
     try {
       const selected = typeof sessionId === 'string' ? sessionId : undefined;
       if (selected) await host.assertConfigWindowSession(selected);
-      if (!allowed(event, parent, primaryURL)) return denied;
+      if (!trustedOpener()) return denied;
       return { ok: true, value: open(parent, selected) };
     } catch (error) {
       return { ok: false, error: settingsError(error) };

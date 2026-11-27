@@ -15,7 +15,7 @@ import { registerDecisionIpc } from './decisions/api';
 import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerTeacherMemorySettingsIpc} from '../education/teacher-memory-settings-ipc';
 import {registerPersonalMemoryIpc} from '../education/personal-memory/ipc';
-import {personalMemoryWorkerPaths} from '../education/personal-memory/runtime';
+import {createPersonalMemoryWorkerPaths} from '../education/personal-memory/runtime';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {registerPaperBasketIpc} from '../education/paper-basket-api';
@@ -66,8 +66,8 @@ export function registerXiaozhiIpc(options: {
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
   const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
-    personalMemoryPaths:()=>personalMemoryWorkerPaths({packaged:app.isPackaged,resourcesPath:process.resourcesPath,
-      dataRoot:options.dataRoot,repoRoot:process.env.OMNI_EDU_REPO_ROOT || path.resolve(process.cwd(),'../..'),
+    personalMemoryPaths:createPersonalMemoryWorkerPaths({packaged:app.isPackaged,resourcesPath:process.resourcesPath,
+      repoRoot:process.env.OMNI_EDU_REPO_ROOT || path.resolve(process.cwd(),'../..'),
       configuredPython:process.env.OMNI_EDU_R2_PYTHON}),
     emitTerminal: event => {const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:terminal:update', event);},
     ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
@@ -121,10 +121,12 @@ export function registerXiaozhiIpc(options: {
   registerEnvironmentIpc({ipcMain: options.ipcMain, allowed: fromMain, host});
   registerAcquisitionIpc({ipcMain: options.ipcMain, allowed: fromMain,
     view: host.acquisitionView, search: host.acquisitionSearch, mutate: host.acquisitionMutate,
-    importExtension: async id => {
+    importExtension: async (id,isCurrent) => {
       await host.acquisitionView(id);
+      if(!isCurrent())throw Error('permission_denied');
       const current = options.window(); if (!current || current.isDestroyed()) throw Error('unavailable');
       const selected = await dialog.showOpenDialog(current, {title: '导入本地扩展（选择包含 edudev.extension.json 的目录）', properties: ['openDirectory']});
+      if(!isCurrent())throw Error('permission_denied');
       if (selected.canceled || !selected.filePaths[0]) return host.acquisitionView(id);
       return host.extensionImport(id, selected.filePaths[0]);
     }});

@@ -10,6 +10,7 @@ module.exports=async function verifyPackagedResources(context){
   ['src/main/education/runtime-manifest.json','.local-education/dist/omni-edu-education','education-runtime'],
   ['src/main/retrieval/runtime-manifest.json','.local-retrieval/dist/omni-edu-retrieval','retrieval-runtime'],
   ['src/main/retrieval/reranker-runtime-manifest.json','.local-reranker/dist/omni-edu-reranker','reranker-runtime'],
+  ['src/main/education/personal-memory/runtime-manifest.json','.local-personal-memory/dist/omni-edu-personal-memory','personal-memory-runtime'],
  ]){
   const manifest=JSON.parse(fs.readFileSync(path.join(desktop,manifestFile))),root=path.resolve(context.appOutDir,'resources',targetFolder);
   if(fs.realpathSync(root).toLowerCase()!==root.toLowerCase())throw new Error('Linked packaged runtime');

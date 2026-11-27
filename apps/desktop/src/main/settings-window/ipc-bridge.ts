@@ -19,21 +19,25 @@ const object=(value:unknown):value is Record<string,unknown>=>!!value&&typeof va
 export function createSettingsIpcBridge(options:SettingsBridgeOptions){
   const handlers=new Map<string,Handler>();
   const settingsSenders=new WeakSet<WebContents>();
-  const active=new AsyncLocalStorage<{event:IpcMainInvokeEvent;scope:SettingsSessionScope}>();
+  const active=new AsyncLocalStorage<{event:IpcMainInvokeEvent;scope:SettingsSessionScope;selectionBound:boolean}>();
   const channels=new Set(Object.values(SETTINGS_ROUTES).map(route=>route.channel));
+  // Observe existing main-window consumers without adding these APIs to settings.
+  const writeChannels=new Set([...Object.values(SETTINGS_ROUTES).filter(route=>route.write).map(route=>route.channel),'xiaozhi:model-select','xiaozhi:thinking-save']);
   const handle:IpcMain['handle']=(channel,listener)=>{
     if(channels.has(channel))handlers.set(channel,listener);
     options.ipc.handle(channel,(event,...args)=>{
       // Even direct calls to previously unguarded channels cannot bypass the
       // settings surface. This check also retains revoked window identities.
       if(settingsSenders.has(event.sender)||channels.has(channel)&&!options.trustedMain(event))throw Error('permission_denied');
-      return listener(event,...args);
+      const result=listener(event,...args);
+      if(!writeChannels.has(channel)||!options.trustedMain(event))return result;
+      return Promise.resolve(result).then(value=>{if(!object(value)||value.ok!==false)options.changed();return value;});
     });
   };
   const ipcMain=new Proxy(options.ipc,{get(target,key){if(key==='handle')return handle;const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;}});
   function allows(event:IpcMainInvokeEvent){
     const permit=active.getStore(),now=options.scope();
-    return !!permit&&permit.event===event&&options.trusted(event)&&permit.scope.epoch===now.epoch&&permit.scope.sessionId===now.sessionId&&permit.scope.revision===now.revision;
+    return !!permit&&permit.event===event&&options.trusted(event)&&(!permit.selectionBound||permit.scope.epoch===now.epoch&&permit.scope.sessionId===now.sessionId&&permit.scope.revision===now.revision);
   }
   async function invoke(method:SettingsMethod,event:IpcMainInvokeEvent,input:unknown){
     if(!options.trusted(event))throw Error('permission_denied');
@@ -53,10 +57,14 @@ export function createSettingsIpcBridge(options:SettingsBridgeOptions){
     const permit=scope as SettingsSessionScope;
     if(route.scope==='snapshot'&&id!==permit.sessionId){if(!await options.canReadArchive(id!))throw Error('permission_denied');id=undefined;}
     await options.assertScope(event,permit,id);
+    // Selection changes revoke session requests. An already-admitted global
+    // transaction retains its window role and the original domain CAS contract.
+    const selectionBound=route.scope==='snapshot'||id!==undefined;
     const listener=handlers.get(route.channel);if(!listener)throw Error('settings_api_unavailable');
     // Each original handler still validates its domain schema and authorization.
-    const result=await active.run({event,scope:permit},()=>listener(event,...args));
-    await options.assertScope(event,permit);
+    const result=await active.run({event,scope:permit,selectionBound},()=>listener(event,...args));
+    if(selectionBound)await options.assertScope(event,permit);
+    else if(!options.trusted(event))throw Error('permission_denied');
     if(route.write&&(!object(result)||result.ok!==false))options.changed();
     return result;
   }

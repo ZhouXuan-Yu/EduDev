@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "file": "native-stat-beba8aab9a2974db1925b6089f66102200e0754d82acb11563e1bfa228b111e6.cjs",
-  "sha256": "beba8aab9a2974db1925b6089f66102200e0754d82acb11563e1bfa228b111e6",
-  "version": "1.0.0+beba8aab9a29",
+  "file": "native-stat-8fdf229bc524bdf330ab215ccd51eeec1d2756ad0b6feb42ff5f0e22476c9b43.cjs",
+  "sha256": "8fdf229bc524bdf330ab215ccd51eeec1d2756ad0b6feb42ff5f0e22476c9b43",
+  "version": "1.0.0+8fdf229bc524",
   "sources": [
     {
       "reference": "src/main/ai-harness/vendor/openhanako-tool-input-snapshot.ts",
@@ -74,7 +74,7 @@
     },
     {
       "reference": "src/main/xiaozhi-agent/local-utility-host.ts",
-      "sha256": "3deb8b179cad8a5c545fa153c5354a18be75e9d7d7144e17e1ca8fb39d8840b1"
+      "sha256": "e1edab5dfbd6f5861661a24b3c7d27cd8a87bf929c5a9691097fe0e7bbf42575"
     },
     {
       "reference": "src/main/xiaozhi-agent/science-demo.ts",

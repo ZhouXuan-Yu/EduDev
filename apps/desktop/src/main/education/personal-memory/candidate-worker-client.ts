@@ -18,7 +18,10 @@ export type CandidateWorkerSuccess = {
   usage: CandidateUsage[];
 };
 
-type WorkerOptions = { pythonExecutable: string; repoRoot: string; providerKey: string };
+export type PersonalMemoryWorkerLaunch = {repoRoot:string} & (
+  {pythonExecutable:string; executable?:never} | {executable:string; pythonExecutable?:never}
+);
+type WorkerOptions = PersonalMemoryWorkerLaunch & {providerKey:string};
 
 function validUsage(value: unknown): value is CandidateUsage {
   return !!value && typeof value==='object' && !Array.isArray(value) && Object.entries(value).every(([key,count])=>
@@ -46,12 +49,13 @@ function parseResult(output: Buffer, requestId: string): CandidateWorkerSuccess 
   return {status: result.status, proposals, modelCalls, usage};
 }
 
-/** Runs one operation on the explicitly configured local LangMem interpreter. No credentials travel in argv. */
+/** Runs a single local worker operation. No credentials travel in argv. */
 export function runPersonalMemoryCandidateWorker(options: WorkerOptions, manifest: PersonalMemoryManifest,
   existing: readonly ExistingRecord[] = [], signal?: AbortSignal): Promise<CandidateWorkerSuccess> {
   if (signal?.aborted) return Promise.reject(Error('cancelled'));
   if (!manifest.sources.length) return Promise.resolve({status:'success_empty', proposals:[], modelCalls:0, usage:[]});
-  if (!isAbsolute(options.pythonExecutable) || !isAbsolute(options.repoRoot) || !options.providerKey) {
+  const executable=options.executable ?? options.pythonExecutable;
+  if (!isAbsolute(executable) || !isAbsolute(options.repoRoot) || !options.providerKey) {
     return Promise.reject(Error('provider_configuration'));
   }
   const targets = new Set(manifest.targets.map(target => target.id));
@@ -61,11 +65,11 @@ export function runPersonalMemoryCandidateWorker(options: WorkerOptions, manifes
   const payload = Buffer.from(JSON.stringify({schemaVersion:protocol, requestId, mode:existing.length ? 'organize' : 'extract',
     sources:manifest.sources, existing}));
   if (payload.length > maximumRequestBytes) return Promise.reject(Error('invalid_input'));
-  const worker = join(options.repoRoot, 'python', 'omni_edu_personal_memory', 'worker.py');
+  const args=options.executable?[]:['-I','-X','utf8',join(options.repoRoot,'python','omni_edu_personal_memory','worker.py')];
   return new Promise((resolve, reject) => {
     const env = Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP','TMPDIR','USERPROFILE','HOME']
       .flatMap(key => process.env[key] ? [[key,process.env[key]]] : []));
-    const child = spawn(options.pythonExecutable, ['-I','-X','utf8',worker],
+    const child = spawn(executable, args,
       {cwd:options.repoRoot, windowsHide:true, stdio:['pipe','pipe','pipe'],
         env:{...env, OMNI_EDU_MEMORY_PROVIDER_KEY:options.providerKey, LANGSMITH_TRACING:'false', LANGCHAIN_TRACING_V2:'false'}});
     const chunks: Buffer[] = [];

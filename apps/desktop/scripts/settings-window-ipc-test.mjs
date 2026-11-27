@@ -48,7 +48,7 @@ await test('trusted settings delegates to original schema and main authorization
  await t.handlers.get('xiaozhi:permission-mode')(t.main,{mode:'ask'});
  await t.call('setXiaozhiPermissionMode',t.child,t.request([{sessionId:'a',mode:'ask'}]));
  await assert.rejects(t.call('setXiaozhiPermissionMode',t.child,t.request([{sessionId:'a',mode:'invented'}])),/domain_schema_rejected/);
- assert.equal(count,2);assert.equal(t.changes(),1);assert.equal(t.bridge.allows(t.child),false);
+ assert.equal(count,2);assert.equal(t.changes(),2);assert.equal(t.bridge.allows(t.child),false);
 });
 await test('direct original channels are denied even when their legacy handler has no guard',async()=>{
  const t=setup();t.bridge.ipcMain.handle('app:getDataRoot',()=>'/private');t.bridge.register();
@@ -73,6 +73,16 @@ await test('optional session selectors reject falsy non-string values',async()=>
  const t=setup();t.bridge.ipcMain.handle('xiaozhi:acquisition',()=>({ok:true}));t.bridge.register();
  for(const bad of [0,false,null])await assert.rejects(t.call('getXiaozhiAcquisition',t.child,t.request([bad])),/invalid_input/);
 });
+await test('auxiliary configuration opener retains selection and role checks',async()=>{
+ const t=setup();let calls=0;t.bridge.ipcMain.handle('xiaozhi:config-window-open',event=>{
+  assert(t.bridge.allows(event));calls++;return {ok:true,value:'opened'};
+ });t.bridge.register();
+ assert.equal((await t.call('openXiaozhiConfigWindow',t.child,t.request(['a']))).ok,true);
+ await assert.rejects(t.call('openXiaozhiConfigWindow',t.child,t.request(['b'])),/scope_changed/);
+ await assert.rejects(t.handlers.get('xiaozhi:config-window-open')(t.child,'a'),/permission_denied/);
+ t.revoke();await assert.rejects(t.call('openXiaozhiConfigWindow',t.child,t.request([])),/permission_denied/);
+ assert.equal(calls,1);
+});
 await test('global MCP inputs match the real host contract without fabricated session fields',async()=>{
  const t=setup();let received;t.bridge.ipcMain.handle('xiaozhi:mcp-add',(_event,input)=>{received=input;return {ok:true};});t.bridge.register();
  const input={name:'test',transport:'http',url:'https://example.test/mcp'};
@@ -83,10 +93,18 @@ await test('archived snapshot exception is read-only and requires host archive e
  assert.equal(await t.call('getXiaozhiSnapshot',t.child,t.request(['archived'])),'archived');
  await assert.rejects(t.call('getXiaozhiSnapshot',t.child,t.request(['other-live'])),/permission_denied/);
 });
-await test('scope switch suppresses late results; failed domain writes do not broadcast success',async()=>{
- const t=setup();let finish;t.bridge.ipcMain.handle('xiaozhi:web-settings',()=>new Promise(resolve=>finish=resolve));t.bridge.register();
- const pending=t.call('saveXiaozhiWebSettings',t.child,t.request([{}]));await new Promise(resolve=>setImmediate(resolve));t.switch();finish({ok:true});await assert.rejects(pending,/scope_changed/);assert.equal(t.changes(),0);
+await test('scope switch suppresses late session results; failed domain writes do not broadcast success',async()=>{
+ const t=setup();let finish;t.bridge.ipcMain.handle('xiaozhi:permission-mode',()=>new Promise(resolve=>finish=resolve));t.bridge.register();
+ const pending=t.call('setXiaozhiPermissionMode',t.child,t.request([{sessionId:'a'}]));await new Promise(resolve=>setImmediate(resolve));t.switch();finish({ok:true});await assert.rejects(pending,/scope_changed/);assert.equal(t.changes(),0);
  const u=setup();u.bridge.ipcMain.handle('xiaozhi:web-settings',()=>({ok:false,error:'conflict'}));u.bridge.register();await u.call('saveXiaozhiWebSettings',u.child,u.request([{}]));assert.equal(u.changes(),0);
+});
+await test('an admitted global request keeps its role capability across selection changes',async()=>{
+ const t=setup();let finish;t.bridge.ipcMain.handle('xiaozhi:web-settings',async event=>{await new Promise(resolve=>finish=resolve);assert(t.bridge.allows(event));return {ok:true};});t.bridge.register();
+ const pending=t.call('saveXiaozhiWebSettings',t.child,t.request([{}]));await new Promise(resolve=>setImmediate(resolve));t.switch();finish();assert.deepEqual(await pending,{ok:true});assert.equal(t.changes(),1);
+});
+await test('global requests still reject stale admission and a revoked window after await',async()=>{
+ const t=setup();let calls=0;t.bridge.ipcMain.handle('xiaozhi:web-settings',()=>{calls++;return {ok:true};});t.bridge.register();const request=t.request([{}]);t.switch();await assert.rejects(t.call('saveXiaozhiWebSettings',t.child,request),/scope_changed/);assert.equal(calls,0);
+ const u=setup();let finish;u.bridge.ipcMain.handle('xiaozhi:web-settings',()=>new Promise(resolve=>finish=resolve));u.bridge.register();const pending=u.call('saveXiaozhiWebSettings',u.child,u.request([{}]));await new Promise(resolve=>setImmediate(resolve));u.revoke();finish({ok:true});await assert.rejects(pending,/permission_denied/);assert.equal(u.changes(),0);
 });
 await test('prefixed backup export keeps original snapshot classification and does not deadlock itself',async()=>{
  const t=setup();t.bridge.ipcMain.handle('app:exportDataRoot',()=>t.barrier.snapshot(async()=>({ok:true}),AbortSignal.timeout(120)));t.bridge.register();

@@ -10,6 +10,7 @@ const manifests=[
  ['src/main/education/runtime-manifest.json','.local-education/dist/omni-edu-education'],
  ['src/main/retrieval/runtime-manifest.json','.local-retrieval/dist/omni-edu-retrieval'],
  ['src/main/retrieval/reranker-runtime-manifest.json','.local-reranker/dist/omni-edu-reranker'],
+ ['src/main/education/personal-memory/runtime-manifest.json','.local-personal-memory/dist/omni-edu-personal-memory'],
 ];
 for(const [manifestPath,relative] of manifests){
  const manifest=JSON.parse(fs.readFileSync(path.join(desktop,manifestPath))),root=path.resolve(desktop,relative);
@@ -20,7 +21,11 @@ for(const [manifestPath,relative] of manifests){
   verify(source,manifest);fs.mkdirSync(path.dirname(root),{recursive:true});fs.cpSync(source,root,{recursive:true,errorOnExist:true,force:false});
  }
  verify(root,manifest);
- for(const input of manifest.buildInputs||[]){if(sha(path.resolve(desktop,'../..',input.path))!==input.sha256)throw new Error('Frozen education runtime is stale: '+input.path);}
+ for(const input of manifest.buildInputs||[]){
+  const file=path.resolve(desktop,'../..',input.path);
+  const digest=input.normalizeEol?createHash('sha256').update(fs.readFileSync(file,'utf8').replaceAll('\r\n','\n')).digest('hex'):sha(file);
+  if(digest!==input.sha256)throw new Error('Frozen runtime inputs are stale: '+input.path);
+ }
  console.log(JSON.stringify({runtime:relative,files:manifest.files.length,bytes:manifest.files.reduce((n,f)=>n+f.size,0)}));
 }
 function verify(root,manifest){

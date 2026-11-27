@@ -53,7 +53,8 @@ function editInput(value:unknown):value is PersonalMemoryEditInput {
 
 /** Renderer requests are evidence review and teacher mutations, with no renderer control of job dispatch. */
 export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>Promise<string>,
-  options:{stopBackground?:()=>void;invalidateUse?:()=>Promise<void>;mutate?:<T>(work:()=>Promise<T>)=>Promise<T>}={}) {
+  options:{stopBackground?:()=>void;invalidateUse?:()=>Promise<void>;mutate?:<T>(work:()=>Promise<T>)=>Promise<T>;
+    workerAvailable?:()=>Promise<boolean>}={}) {
   const sources = createPersonalMemorySourceAuthority(sql,sanitize);
   const candidates = createPersonalMemoryCandidateState(sql,sources.witnessCurrent);
   const records = createPersonalMemoryRecordState(sql,sources);
@@ -71,9 +72,10 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
   }
   return {
     view:()=>respond<PersonalMemoryView>(async()=>{
-      const [policy,saved,open,background] = await Promise.all([candidates.processing(),records.list(40),candidates.list(40,true),jobs.list()]);
+      const [policy,saved,open,background,workerAvailable] = await Promise.all([
+        candidates.processing(),records.list(40),candidates.list(40,true),jobs.list(),options.workerAvailable?.() ?? true]);
       return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),
-        candidates:await visibleCandidates(open),jobs:background};
+        candidates:await visibleCandidates(open),jobs:background,workerAvailable};
     }),
     catalog:(sessionId:unknown)=>respond<PersonalMemorySummary[]>(async()=>{
       if (!validMemorySession(sessionId)) throw Error('invalid_input');

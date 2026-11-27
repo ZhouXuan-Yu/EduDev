@@ -10,6 +10,7 @@ module.exports={
   {from:'.local-education/dist/omni-edu-education',to:'education-runtime'},
   {from:'.local-retrieval/dist/omni-edu-retrieval',to:'retrieval-runtime'},
   {from:'.local-reranker/dist/omni-edu-reranker',to:'reranker-runtime'},
+  {from:'.local-personal-memory/dist/omni-edu-personal-memory',to:'personal-memory-runtime'},
   {from:'../../python/omni_edu_reranker/SOURCE.md',to:'licenses/reranker/SOURCE.md'},
   {from:'../../python/omni_edu_retrieval/SOURCE.md',to:'licenses/retrieval/SOURCE.md'},
   {from:'../../python/omni_edu_education/licenses',to:'licenses/education'},

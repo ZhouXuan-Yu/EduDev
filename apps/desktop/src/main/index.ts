@@ -653,6 +653,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
       ipcMain, host: xiaozhi, primaryWindow: () => mainWindow, primaryURL, developmentURL,
       settingsPath: join(mainEntryDirectory, '../renderer/config-window.html'),
       preload: join(mainEntryDirectory, '../preload/config-window.cjs'),
+      settingsOpenAllowed: settingsWindow.allows,
     });
   }
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
