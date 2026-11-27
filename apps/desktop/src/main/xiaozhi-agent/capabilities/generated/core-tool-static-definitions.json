@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "d991e958b0fb34c7c5398454d32916d42ef9bdc7db332a33c1647778833a0365",
+  "sourceFingerprint": "ec55ff04f4f7885b7fcd2dd5021bf64254f6c43435f2df46a218fcac6cbcf326",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -2361,6 +2361,10 @@
               "up",
               "down"
             ],
+            "type": "string"
+          },
+          "expectText": {
+            "maxLength": 500,
             "type": "string"
           },
           "key": {

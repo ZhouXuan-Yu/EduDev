@@ -12,8 +12,9 @@ const output=process.env.OMNI_EDU_BROWSER_TEST_OUTPUT||process.argv[2],report:{s
 const check=(name:string)=>{report.checks.push({name,pass:true});console.log('PASS '+name);};
 const html=`<!doctype html><title>合成教研浏览器</title><h1>教研资料</h1><p id="result">尚未处理</p><input aria-label="检索内容" id="q"><input type="password" value="synthetic-secret"><select aria-label="学科" id="subject"><option value="math">数学</option><option value="cn">语文</option></select><button onclick="document.getElementById('result').textContent='已处理数学教研'">处理</button><a href="https://fixture.invalid/next">下一页</a><a href="http://127.0.0.1/private">私网</a><div style="height:1600px">尾部资料</div>`;
 let writes=0,confirmations=0,allow=true,contents:electron.WebContents|undefined;
+const fixtures=new WeakSet<electron.Session>();
 const host=createXiaozhiBrowserHost({statusFile,root:path.join(output,'captures'),sanitize:async text=>text.replaceAll('student-private','[已脱敏]'),afterTabCreated:async(wc,partition)=>{
-  contents=wc;await partition.protocol.handle('https',request=>{if(new URL(request.url).hostname!=='fixture.invalid')return electron.net.fetch(request,{bypassCustomProtocolHandlers:true});if(request.method==='POST')writes++;return new Response(html,{headers:{'content-type':'text/html; charset=utf-8'}});});
+  contents=wc;if(fixtures.has(partition))return;fixtures.add(partition);await partition.protocol.handle('https',request=>{if(new URL(request.url).hostname!=='fixture.invalid')return electron.net.fetch(request,{bypassCustomProtocolHandlers:true});if(request.method==='POST')writes++;return new Response(html,{headers:{'content-type':'text/html; charset=utf-8'}});});
 }});
 const id='aisession_'+randomUUID(),other='aisession_'+randomUUID(),controller=new AbortController();
 const context={signal:controller.signal,dnsMode:'auto' as const,current:()=>true,confirm:async()=>{confirmations++;return allow;}};
@@ -65,6 +66,36 @@ try{
  setTimeout(()=>void wc.loadURL('https://fixture.invalid/other'),100);
  await assert.rejects(changing,/attachment_changed/);assert(!host.hasLiveNavigation(id,navigation.runId,navigation.callId));check('Timeout and teacher navigation end the original wait');
  p=page(await call({action:'navigate',url:'https://fixture.invalid'}));
+ const ownerWindow=new electron.BrowserWindow({show:false,width:800,height:600});
+ try{
+   await wc.executeJavaScript("document.querySelector('#q').value='draft'");
+   await host.teacher(id,'dock',ownerWindow,{x:300,y:80,width:420,height:400});
+   assert(ownerWindow.contentView.children.some(view=>(view as electron.WebContentsView).webContents===wc));
+   await host.teacher(id,'float');assert(!ownerWindow.contentView.children.some(view=>(view as electron.WebContentsView).webContents===wc));
+   assert.equal(await wc.executeJavaScript("document.querySelector('#q').value"),'draft');
+   check('Dock and float retain the original guest and unsaved input');
+ }finally{ownerWindow.destroy();}
+ const requested=Promise.withResolvers<void>(),decision=Promise.withResolvers<boolean>();
+ const previous={...latest(),ref:ref(p,'处理')};
+ const inFlight=host.execute(id,{action:'click',...previous},{...context,confirm:async()=>{requested.resolve();return decision.promise;}});
+ await requested.promise;await host.teacher(id,'teacher');
+ for(const action of ['snapshot','tabs','close','screenshot'] as const)await assert.rejects(call({action}),/teacher_control/);
+ decision.resolve(true);await assert.rejects(inFlight);
+ const stopPage=wc.stop.bind(wc);let stoppedManual=0;
+ wc.stop=()=>{stoppedManual++;stopPage();};
+ try{host.cancel(id);assert.equal(stoppedManual,0);}finally{wc.stop=stopPage;}
+
+ assert.equal(await wc.executeJavaScript("document.querySelector('#result').textContent"),'尚未处理');
+ await host.teacher(id,'agent');await assert.rejects(call({action:'click',...previous}),/observation_required/);
+ p=page(await call({action:'snapshot'}));await assert.rejects(call({action:'click',...previous}),/attachment_changed/);
+ check('Teacher takeover cancels pending authorization, forbids reading and screenshots, and requires fresh observation');
+ const copied=ref(p,'处理');
+ await wc.executeJavaScript("const old=document.querySelector('button');old.replaceWith(old.cloneNode(true));");
+ await assert.rejects(call({action:'click',...latest(),ref:copied}),/attachment_changed/);
+ p=page(await call({action:'snapshot'}));
+ await assert.rejects(call({action:'select',...latest(),ref:ref(p,'学科'),value:'not-present'}),/target_unavailable/);
+ await assert.rejects(call({action:'click',...latest(),ref:ref(p,'处理'),expectText:'教研资料'}),/result_already_visible/);
+ check('Identical replacement, missing option and previously visible expected result are rejected');
  const initial=p;await assert.rejects(call({action:'snapshot',tabId:p.tabId},other),/permission_denied/);check('Cross-conversation tab identity denied');
  allow=false;await assert.rejects(call({action:'click',ref:ref(p,'处理'),snapshotId:p.snapshotId}),/permission_denied/);assert.equal(await wc.executeJavaScript("document.getElementById('result').textContent"),'尚未处理');check('Teacher rejection produces no button effect');
  allow=true;p=page(await call({action:'click',ref:ref(p,'处理'),snapshotId:p.snapshotId}));assert(p.text!.includes('已处理数学教研'));await assert.rejects(call({action:'click',ref:ref(initial,'处理'),snapshotId:initial.snapshotId}),/attachment_changed/);check('Actual authorized DOM action changes content; stale snapshot rejected');
@@ -106,6 +137,34 @@ try{
   await assert.rejects(actual.execute(id,{action:'navigate',url:'https://xiaozhi-test.invalid'},{...context,dnsMode:'auto'}),/permission_denied/);const failed=status;await until(()=>failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]')!==null"));await failed.executeJavaScript("location.href='xiaozhi-browser:unknown'");assert((await actual.status(id)).open);await failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]').click()");await until(async()=>!(await actual.status(id)).open);assert((await host.status(id)).open);check('Trusted local return action closes only its browser; unknown action refused and independent group preserved');
 
  }finally{await actual.dispose();}
+ const profileChat='aisession_'+randomUUID();
+ await call({action:'navigate',url:'https://fixture.invalid'},profileChat);
+ await host.teacher(profileChat,'teacher');
+ const temp=contents!.session;
+ await host.teacher(profileChat,'remember');const remembered=contents!.session;
+ assert.notEqual(temp,remembered);
+ await remembered.cookies.set({url:'https://fixture.invalid',name:'test_profile',value:'synthetic',expirationDate:Date.now()/1000+600});
+ assert.equal((await temp.cookies.get({name:'test_profile'})).length,0);
+ const profileOther='aisession_'+randomUUID();
+ await call({action:'navigate',url:'https://fixture.invalid'},profileOther);await host.teacher(profileOther,'teacher');
+ await assert.rejects(host.teacher(profileOther,'remember'),/busy/);
+ await assert.rejects(host.teacher(profileOther,'forget'),/busy/);
+ await host.teacher(profileChat,'forget');
+ assert.equal((await remembered.cookies.get({name:'test_profile'})).length,0);assert.notEqual(contents!.session,remembered);
+ await host.teacher(profileOther,'remember');assert.equal(contents!.session,remembered);await host.teacher(profileOther,'forget');
+ check('Remembered HTTPS partition isolates synthetic login, excludes another chat, and clears stored cookies');
+ await host.teacher(profileOther,'remember');
+ const store=contents!.session;
+ const entered=Promise.withResolvers<void>(),resume=Promise.withResolvers<void>();
+ const clear=store.clearStorageData.bind(store);
+ store.clearStorageData=async (...args)=>{entered.resolve();await resume.promise;return clear(...args);};
+ const forgetting=host.teacher(profileOther,'forget');
+ await entered.promise;
+ let closed=false;
+ const close=host.dispose().then(()=>{closed=true;});
+ await new Promise(resolve=>setTimeout(resolve,30));
+ assert(!closed);resume.resolve();await forgetting;await close;
+ check('Closing the host waits for an admitted site-login removal before releasing the browser');
  assert(confirmations>=4);report.success=true;
 }catch(error){report.error=String(error);throw error;}finally{await host.dispose();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log('REPORT '+output);}
 

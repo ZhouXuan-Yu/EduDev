@@ -309,7 +309,7 @@ type Active = {
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
-export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<typeof createManagedTools>; store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
+export function createXiaozhiProductionHost(options: { requestBrowserDock?:(id:string)=>void; managedTools?:ReturnType<typeof createManagedTools>; store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
   onConfigChange?: (change: ConfigChange) => void;
   emitTerminal?: (event: TerminalUpdate) => void;
   /** Main-owned isolated legacy regression only; product launches always enable Pi. */
@@ -371,7 +371,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const configuring = new Set<string>();
   const queueing = new Map<string,{hash:string;result:Promise<XiaozhiActionResult>}>();
   const enabled = options.enabled !== false;
-  const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
+  const browser=createXiaozhiBrowserHost({requestDock:options.requestBrowserDock,root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   store.xiaozhiState.setNavigationReadback(browser.hasLiveNavigation);
   const history = createHistoryMemory(store,options.dataRoot);
   const sanitizePersonalMemory=async(text:string)=>(await createStudentContextSanitizer(store))(text);
@@ -2582,6 +2582,14 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     },
     attachments,
     referenceTeachingArtifact:artifactReferences.create,
+    async browserControl(id:unknown, command:unknown, parent:import('electron').BrowserWindow, rect?:import('electron').Rectangle) {
+      if(!validId(id)||typeof command!=='string'||closing)return {ok:false} as const;
+      try {
+        if(command==='status')return {ok:true,status:await browser.status(id)} as const;
+        await browser.teacher(id,command,parent,rect);
+        return {ok:true,status:await browser.status(id)} as const;
+      } catch {return {ok:false} as const;}
+    },
     async showBrowser(raw:unknown):Promise<XiaozhiActionResult>{
       if(!validId(raw))return {ok:false,error:'invalid_input'};
       try{if(closing||(await store.getAiConversationSession(raw)).session.archivedAt)throw new Error('permission_denied');browser.show(raw);return {ok:true};}catch{return {ok:false,error:'permission_denied'};}

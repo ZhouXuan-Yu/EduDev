@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1ee7083b29971668efb8204165511aafd916cc52d616b0c877fc8023472f4930",
+  "sourceHash": "1846b57f94a1074385ee00b6d4ce5d4a99d4c35853c1667d6494b6375838aca8",
   "sources": [
     {
       "file": "package-lock.json",
@@ -840,23 +840,27 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-dom-observation.ts",
-      "sha256": "63ed7eb95c1049099c86c093adbbcdd47487915992596c5866f858e407160a6e"
+      "sha256": "94eb2f923cdac2f346788466eb023700e9057ff2018ffcb4de8ec77fbacaf20f"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-extract-script.ts",
-      "sha256": "90a43d7ad7dc5a08445768e4fe8feb3b47f7251cb76ab5f91dc32b0ade85c255"
+      "sha256": "0ffdc7b60f1397d117c41535db8ea83a9c3d233afdf6b2ab47ec19e6daa528eb"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "efe848feef30814cf6cbd9bb05db43595548b94543b96d976b4dcb13ed62b6f6"
+      "sha256": "8f1007cbf7798357cc20d8ae7ccd3cf22fdb10bae0998d985506f65a4c272ee8"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-proxy.ts",
       "sha256": "5fa3ebc3ba056327da41d4d9b3c7d47ed2e212c82da8a80ef5279d13601fa5b6"
     },
     {
+      "file": "src/main/xiaozhi-agent/browser-surface.ts",
+      "sha256": "62b12ae7e6cd1c96af51685a0335991916432c6f8cb8fc74b2897333ad0084e2"
+    },
+    {
       "file": "src/main/xiaozhi-agent/browser-tools.ts",
-      "sha256": "4f76ddbfb578d9f7617f57b3c7f72d921f7d3533ed3afb67520c127514d76496"
+      "sha256": "9752c636b9b7ed9abb28293ed2b4e347c1c0bc148c24f763d194c46b628fd756"
     },
     {
       "file": "src/main/xiaozhi-agent/budget-state.ts",
@@ -960,7 +964,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "908060d87ff0069be7022692baeb141e6f355b1dd0fd71ef0fcad47ecb50c888"
+      "sha256": "d63872dd471c12d323cbfe3c8737b05421ac033bcdc64e30a49c5011ed17c3e1"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1244,7 +1248,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/education-skills.ts",
-      "sha256": "655e4443d7a7d68f33969bc470d6a2608dd9f582e9ccc6eb206835f305ac40dc"
+      "sha256": "d1f1a6b48ae43040879506edb70dad935db6bae6acd5892b9e37b5b7a9ae66ac"
     },
     {
       "file": "src/main/xiaozhi-agent/education-tool-catalog.ts",
@@ -1448,7 +1452,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skills.ts",
-      "sha256": "83bc0ed4fbff3f024e77b6fb589eedeb5b01234e4c1f50a1efd76ad9c73ae2ca"
+      "sha256": "3ab4d6fd58341140fbcdb4af3c50937a5ef738611f02e2927cd086530dc7f531"
     },
     {
       "file": "src/main/xiaozhi-agent/mcp-controlled-service.ts",
@@ -1808,7 +1812,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "ae6cb40b361a5eb03ef687a087f62d028301aa5a7f0474cb3f605545ef484e3a"
+      "sha256": "fdd3adcdcc6245bdf9522cde5b7d6d87af468d9c5d2c8efc75b98f0cbf9ed279"
     },
     {
       "file": "src/main/xiaozhi-agent/provider-cooldown-store.ts",
@@ -2888,7 +2892,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "ba8e420a2bfa1ec48cf984f970e6637f36a9bb1165c5d9a6c7c4c0a85d05d6de"
+      "sha256": "d977d358109db0618440f1c8b6515b1eca41c0c7b0560b84a818c9085874a1fb"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2904,7 +2908,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "f4c353085766b3516ab3ad52b273eb229cf8e21f8a13b7d515f0f38d6e110e59"
+      "sha256": "c8cd18cf733a8d65a9e57203c41df4e76d76ba84fd552bd51ab5932075d5a998"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

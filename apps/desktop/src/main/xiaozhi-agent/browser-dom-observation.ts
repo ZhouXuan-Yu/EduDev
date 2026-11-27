@@ -35,6 +35,7 @@ export async function uniqueBrowserRef(contents: WebContents, role: string, name
 }
 
 export async function waitForBrowserText(contents: WebContents, text: string, signal: AbortSignal, checkPage: () => void) {
+  const started = performance.now();
   const deadline = AbortSignal.timeout(8000);
   const stop = AbortSignal.any([signal, deadline]);
   const query = `document.body?.innerText.includes(${JSON.stringify(text)}) === true`;
@@ -45,7 +46,10 @@ export async function waitForBrowserText(contents: WebContents, text: string, si
       const found = await waitOfficeAbort(contents.executeJavaScriptInIsolatedWorld(1005, [{ code: query }]), stop);
       checkPage();
       if (found) return;
-      await delay(150, undefined, { signal: stop });
+      // Short initial probes catch interactive updates. Keep each renderer call
+      // synchronous so navigating/replacing the document cannot strand a promise.
+      const pollInterval = performance.now()-started < 200 ? 35 : 150;
+      await delay(pollInterval, undefined, { signal: stop });
     }
   } catch (error) {
     signal.throwIfAborted();

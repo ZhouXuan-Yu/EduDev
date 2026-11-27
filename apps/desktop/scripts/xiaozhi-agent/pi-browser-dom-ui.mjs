@@ -31,8 +31,8 @@ const server=http.createServer(async(req,res)=>{
   const body=JSON.parse(raw), last=observe(body.messages);
   const step=actions.length;
   const inputs=[{action:'navigate',url},{action:'snapshot',tabId,snapshotId:lastSnapshot,role:'button',name:'筛选年级'},
-    {action:'click',tabId,snapshotId:lastSnapshot,ref:target},{action:'wait',tabId,snapshotId:lastSnapshot,text:resultText}];
-  const valid=step===0||step===1&&lastSnapshot||step===2&&target>0||step===3&&lastSnapshot||step===4&&last?.includes(resultText);
+    {action:'click',tabId,snapshotId:lastSnapshot,ref:target,expectText:resultText}];
+  const valid=step===0||step===1&&lastSnapshot||step===2&&target>0||step===3&&last?.includes(resultText);
   res.setHeader('content-type','text/event-stream');
   const chunk=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'browser-test',object:'chat.completion.chunk',created:1,model:'deepseek-flash',choices:[{index:0,delta,finish_reason}]})+'\n\n';
   if (!guideRequested) {
@@ -63,7 +63,7 @@ const server=http.createServer(async(req,res)=>{
     return res.end(chunk({role:'assistant'})+chunk({tool_calls:[{index:0,id:'plan_1',type:'function',function:{name:'update_task_plan',arguments:JSON.stringify(args)}}]})+chunk({},'tool_calls')+'data: [DONE]\n\n');
   }
   if(!valid)problem={step,last:last?.slice(0,600),tools:body.tools?.map(t=>t.function.name)};
-  if(step<4&&valid){
+  if(step<3&&valid){
     const input={...inputs[step],taskStepId:step < 2 ? "open" : "filter"};actions.push(input.action);
     return res.end(chunk({role:'assistant'})+chunk({tool_calls:[{index:0,id:'browser_'+step,type:'function',function:{name:'office_browser',arguments:JSON.stringify(input)}}]})+chunk({},'tool_calls')+'data: [DONE]\n\n');
   }
@@ -107,8 +107,39 @@ try {
   assert.equal(await view.getByRole('button',{name:'筛选年级'}).count(),1);
   checks.push('Playwright sees the same guest and also the application renderer');
   const count=await app.evaluate(({webContents},id)=>webContents.fromId(id).executeJavaScript('window.count'),views[0]);
-  assert.equal(count,1);assert.deepEqual(actions,['navigate','snapshot','click','wait']);assert(!problem);
+  assert.equal(count,1);assert.deepEqual(actions,['navigate','snapshot','click']);assert(!problem);
   checks.push('Composer → Pi → teacher approval → one Chromium click → delayed text');
+  const dock=page.getByTestId('pi-browser-dock');
+  await dock.waitFor({timeout:15000});
+  const owner=page.getByTestId('pi-browser-owner');
+  await owner.click();await dock.getByText('老师操作中',{exact:true}).waitFor();
+  await dock.getByRole('button',{name:'独立窗口'}).click();
+  await dock.getByText('网页已在独立窗口打开。').waitFor();
+  await dock.getByRole('button',{name:'放回对话'}).click();
+  await page.getByTestId('pi-browser-slot').waitFor();
+  await owner.click();await dock.getByText('小智操作中',{exact:true}).waitFor();
+  assert.equal(await app.evaluate(({BrowserWindow,webContents},id)=>BrowserWindow.getAllWindows().some(w=>w.contentView.children.some(v=>v.webContents===webContents.fromId(id))),views[0]),true);
+  checks.push('Teacher takes and returns control and reattaches the same native guest through visible controls');
+  for(const [width,height] of [[1366,768],[1920,1080]]){
+    await app.evaluate(({BrowserWindow,webContents},{id,width,height})=>{
+      const win=BrowserWindow.getAllWindows().find(w=>w.contentView.children.some(v=>v.webContents===webContents.fromId(id)));
+      win.setContentSize(width,height);
+    },{id:views[0],width,height});
+    await page.waitForFunction(w=>Math.abs(innerWidth-w)<3,width);
+    const slot=await page.getByTestId('pi-browser-slot').boundingBox();
+    assert(slot&&slot.width>250&&slot.height>150);
+    await view.waitForFunction(size=>Math.abs(innerWidth-size.width)<3&&Math.abs(innerHeight-size.height)<3,slot);
+  }
+  checks.push('Native viewport follows the visible right-hand slot at 1366×768 and 1920×1080');
+  await owner.click();
+  const remember=dock.getByRole('button',{name:'打开此站的本机登录'});
+  await remember.click();
+  await remember.waitFor({state:'hidden'});
+  await dock.getByRole('button',{name:'清除此站登录',exact:true}).click();
+  await dock.getByRole('button',{name:'确认清除此站登录',exact:true}).click();
+  await dock.getByText('已清除此站保存在小智中的登录信息。').waitFor();
+  await remember.waitFor();
+  checks.push('Teacher selects the local login profile and explicitly confirms clearing it in the conversation');
   await app.close();app=undefined;await launch();
   assert.equal(await app.evaluate(({webContents},url)=>webContents.getAllWebContents().filter(w=>w.getURL()===url).length,url),0);
   const db = new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -119,13 +150,13 @@ try {
     assert.deepEqual(effects.map(row => [row.call_id,row.state]),[['browser_0','committed'],['browser_2','unknown']]);
     const {session_file} = db.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings').get();
     const entries = fs.readFileSync(path.join(data,'xiaozhi-pi',session_file),'utf8').trim().split('\n').map(line=>JSON.parse(line));
-    const wait = entries.find(entry => entry.message?.role==='toolResult' && entry.message.toolCallId==='browser_3');
+    const wait = entries.find(entry => entry.message?.role==='toolResult' && entry.message.toolCallId==='browser_2');
     const result = JSON.parse(wait.message.content[0].text);
     assert.equal(result.url,url);
     assert(result.text.includes(resultText));
     checks.push('Restored SQLite receipts and Pi result bind the updated list to the requested URL');
   } finally {db.close();}
-  assert.equal(actions.length,4);checks.push('Reopened profile, zero browser replays');
+  assert.equal(actions.length,3);checks.push('Reopened profile, zero browser replays');
 } catch(error){problem={detail:problem,error:String(error)};process.exitCode=1;}
 finally {
   if(app)await app.close().catch(()=>{});

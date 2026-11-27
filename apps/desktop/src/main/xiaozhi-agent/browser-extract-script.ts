@@ -8,7 +8,7 @@ export function browserExtractScript(scope?:{ref:number;expectedHtml:string}){
   if(document.querySelectorAll('*').length>20000)throw Error('too_large');
   const scope=${JSON.stringify(scope||null)};
   const original=scope?document.querySelector('[data-hana-ref="'+scope.ref+'"]'):document.body;
-  if(!original||scope&&original.outerHTML!==scope.expectedHtml)throw Error('attachment_changed');
+  if(!original||scope&&(globalThis.__xiaozhiObservedNodes?.get(scope.ref)!==original||original.outerHTML!==scope.expectedHtml))throw Error('attachment_changed');
   const hidden=el=>{let style={};try{style=getComputedStyle(el);}catch{}const parent=el.parentElement;if(parent?.tagName==='DETAILS'&&!parent.open&&el!==[...parent.children].find(c=>c.tagName==='SUMMARY'))return true;return el.hidden||el.getAttribute('aria-hidden')==='true'||style.display==='none'||style.visibility==='hidden'||style.visibility==='collapse'||style.opacity==='0'||style.contentVisibility==='hidden';};
   for(let ancestor=original;ancestor;ancestor=ancestor.parentElement)if(hidden(ancestor))throw Error('source_unreadable');
   if(original.textContent.length>2097152)throw Error('too_large');

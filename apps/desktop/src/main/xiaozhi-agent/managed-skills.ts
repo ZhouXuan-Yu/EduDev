@@ -5,7 +5,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import {answerQualityEnabled} from './answer-quality';
 import {readPackageAsync} from './skill-package-async';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
-import { EDUCATION_SKILLS, EDUCATION_SKILLS_V2, builtinSkillVersion, skillDocument } from './education-skills';
+import { EDUCATION_SKILLS, EDUCATION_SKILLS_V2, EDUCATION_SKILLS_V3, builtinSkillVersion, skillDocument } from './education-skills';
 import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
 import { assertInstallTargetInsideRoot, sanitizeSkillName } from './vendor/hana/lib/skills/skill-package-installer';
 import { SKILL_LIMITS, validSkillName, validSkillRelative, type PrivateManagedSkill, type PrivateSkillCatalog,
@@ -117,6 +117,7 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
       const item = builtins.find(skill => skill.name === currentDefinition.name);
       const definition = item?.version === 1 ? LEGACY_EDUCATION_SKILLS.find(skill => skill.name === item.name)
         : item?.version === 2 ? EDUCATION_SKILLS_V2.find(skill => skill.name === item.name)
+        : item?.version === 3 && item.name === 'education-evidence' ? EDUCATION_SKILLS_V3.find(skill => skill.name === item.name)
         : item?.version === builtinSkillVersion(currentDefinition.name) ? currentDefinition : undefined;
       if (!item || !definition) throw new Error('configuration');
       const document = item.version === 1 ? legacySkillDocument(definition) : skillDocument(definition);

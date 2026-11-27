@@ -2881,3 +2881,5 @@ fresh npm audit --omit=dev --json exit1，0critical/3high/2moderate；npm explai
 ## 2026-11-26 教师体验与状态动效
 
 应用自有动效与确认适配复用现有 HeroUI；官方 MCP 已核对 Modal/Disclosure API，未引入新 UI 库。Pi、Composer、底部工具栏与弹层、队列及 PendingPanel 由既有实现维护，main 的历史记忆集成保留原负责方边界。 [变更说明](../audit/ux-motion-20261126/IMPLEMENTATION.md)
+
+内置浏览器沿用 Chromium、Pi 和原有网页提取工具。本机同来源持久分区由老师选择。[浏览器 R2](../goal/BROWSER_CONTROL_R2.md)

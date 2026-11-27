@@ -65,7 +65,7 @@ export function registerXiaozhiIpc(options: {
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
-  const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
+  const host = createXiaozhiProductionHost({ ...options,requestBrowserDock:id=>options.window()?.webContents.send('xiaozhi:browser-dock-request',id),managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
     personalMemoryPaths:createPersonalMemoryWorkerPaths({packaged:app.isPackaged,resourcesPath:process.resourcesPath,
       repoRoot:process.env.OMNI_EDU_REPO_ROOT || path.resolve(process.cwd(),'../..'),
       configuredPython:process.env.OMNI_EDU_R2_PYTHON}),
@@ -202,6 +202,16 @@ export function registerXiaozhiIpc(options: {
   options.ipcMain.handle('xiaozhi:events', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.listEvents(input); });
   options.ipcMain.handle('xiaozhi:plan-history',(event,input)=>fromMain(event)?host.planHistory(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:goal-mutate',(event,input)=>fromMain(event)?host.mutateGoal(input):{ok:false,error:'permission_denied'});
+  options.ipcMain.handle('xiaozhi:browser-control',(event,id,command,rect)=>{
+    const main=options.window();
+    if(!main||event.sender!==main.webContents||event.senderFrame!==main.webContents.mainFrame)return {ok:false};
+    if(command==='dock'){
+      if(!rect||!['x','y','width','height'].every(k=>Number.isSafeInteger(rect[k])))return {ok:false};
+      const zoom=main.webContents.getZoomFactor();
+      rect={x:Math.round(rect.x*zoom),y:Math.round(rect.y*zoom),width:Math.floor(rect.width*zoom),height:Math.floor(rect.height*zoom)};
+    }
+    return host.browserControl(id,command,main,rect);
+  });
   options.ipcMain.handle('xiaozhi:browser-show',(event,id)=>fromMain(event)?host.showBrowser(id):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:browser-capture-preview',(event,input)=>fromMain(event)?host.previewBrowserCapture(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:start', (event, input) => { if (!fromMain(event)) return { ok: false, error: 'configuration' }; return host.start(input); });

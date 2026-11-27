@@ -36,10 +36,13 @@ const browserGuide = `## 内置浏览器操作手册
 - 动态筛选。以当前标签及最新快照按角色和名称定位，重绘后重新取引用。多个同名项先根据当前可见区域核对，缺少唯一依据时请老师选择。点击或选择后用 wait 携带 tabId、最新 snapshotId 和预期可见 text，核对结果列表或明确的空状态。超时先 snapshot 核对，效果未知时避免再次提交。
 - 题解阅读。阅读当前题干与答案区域，可按 ref 和 snapshotId 调用 extract。报告省略、截断、图形和公式缺口。题目、选项或已有答案冲突时保留来源供教师判断。screenshot 保存本地原页，模型只根据实际收到的内容回答。
 `;
-export const EDUCATION_SKILLS = EDUCATION_SKILLS_V2.map(skill => skill.name === 'education-evidence'
+export const EDUCATION_SKILLS_V3 = EDUCATION_SKILLS_V2.map(skill => skill.name === 'education-evidence'
   ? { ...skill, description: skill.description + ' 包含内置浏览器操作手册、动态筛选与等待、题解网页核对。', instructions: skill.instructions + browserGuide }
   : skill);
-export const builtinSkillVersion = (name: string) => name === 'education-evidence' ? 3 : EDUCATION_SKILL_VERSION;
+export const EDUCATION_SKILLS = EDUCATION_SKILLS_V3.map(skill => skill.name === 'education-evidence'
+  ? {...skill,instructions:skill.instructions+'\n老师接管时暂停所有浏览器调用，包括截图与读取。老师交还后先获取新快照。登录和验证码由老师在原网页处理。对同页按钮或下拉框，若能确定操作后才出现的文字，click 或 select 带 expectText，一次调用即可等待并核验结果。已有文字不能作为新结果，超时先重新观察，避免重复提交。'}
+  : skill);
+export const builtinSkillVersion = (name: string) => name === 'education-evidence' ? 4 : EDUCATION_SKILL_VERSION;
 
 export function publicEducationSkills(): XiaozhiSkill[] { return structuredClone(EDUCATION_SKILLS) as XiaozhiSkill[]; }
 export function skillDocument(skill: XiaozhiSkill): string {

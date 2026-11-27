@@ -2075,3 +2075,5 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 - DT-03 只读/审核/历史/并发切片：7/7、11/11、10/10、6/6，报告分别为 `education-journey-uoFHqO`、`JqFKdk`、`crF5um`、`fCqxMu`；当前冻结构建 `fed5e0bd...`，所有实例 0 renderer errors。
 - DT-04 两周训练计划切片：9/9，`education-journey-ChIaul`，12 张双尺寸视觉图；真实证据、教师编辑确认/拒绝、错误输入、冷恢复、空档案边界通过。
 - 状态保持 LIMITED_ACCEPTED：完整 DT-03/DT-04、题目/练习、视觉学习、Golden F、日常人工、安装/无 VPN仍 OPEN。下一入口为 DT-05。
+
+M10/M12 浏览器可在老师操作和小智操作间切换。同来源登录由老师显式开启，切换窗口保留当前页面。[能力边界](BROWSER_CONTROL_R2.md)

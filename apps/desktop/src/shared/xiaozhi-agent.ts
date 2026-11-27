@@ -17,7 +17,7 @@ export type XiaozhiCompactInput = { sessionId: string; commandId: string };
 export type XiaozhiBudget = { maxModelCalls: number; maxToolCalls: number; maxTokens: number; activeMs: number; waitMs: number };
 export type XiaozhiBudgetSettings = { version: number; budget: XiaozhiBudget };
 export type XiaozhiBudgetInput = { sessionId: string; version: number; budget: XiaozhiBudget };
-export type XiaozhiBrowserStatus={open:boolean;tabs?:{tabId:string;title:string;url:string;active:boolean}[]};
+export type XiaozhiBrowserStatus={open:boolean;owner?:'teacher'|'agent';remembered?:boolean;siteOrigin?:string;tabs?:{tabId:string;title:string;url:string;active:boolean}[]};
 export type XiaozhiUsage = { runId: string; budget: XiaozhiBudget; modelCalls: number; toolCalls: number;
   limitsEnforced?: boolean;
   tokens: { input: number; output: number; cacheRead: number; cacheWrite: number; total: number } | null;
