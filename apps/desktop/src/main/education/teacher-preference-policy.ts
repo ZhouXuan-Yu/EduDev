@@ -1,10 +1,13 @@
+import {TEACHER_SUBJECTS} from '../../shared/teacher-memory-settings';
 import {TEACHER_PREFERENCE_SCHEMA,validTeacherPreferenceValues,type TeacherPreferenceValues,type TeacherPreferenceSnapshot} from '../../shared/teacher-preferences';
 
 export type TeacherPreferenceSignal={kind:'none'}|{kind:'rollback'}|{kind:'candidate';patch:TeacherPreferenceValues}|{kind:'rejected';reason:'ambiguous'};
 
 const attributedSpeech = /(?:同事|别的?老师|其他老师|助教|学生|家长|助手|小智|模型|AI).{0,10}(?:建议|推荐|(?:说|认为|觉得|猜)(?:[，,：:\s]|你|我|应|要|更|喜|用|先|以后|今后))/i;
 const restrictedAudience = /(?:[一二三四五六七八九十零〇\dA-Z]+\s*班(?:级)?|(?:这个|那个|某个|本|当前|指定)(?:班级?|课程|小组|教学组)|[一二三四五六七八九十零〇\d]+\s*年级)/i;
-const restrictedSubject = /(?:语文|数学|英语|物理|化学|生物|地理|历史|道德与法治|政治|信息技术|科学)(?:课程|课(?:上|内|的|里|时|，|,|都)|学科|讲义|作业|试卷)/;
+const subjectNames = [...TEACHER_SUBJECTS, '道德与法治'].join('|');
+const restrictedSubject = new RegExp('(?:'+subjectNames+')(?:课(?:程|堂)?|学科|的?(?:讲义|作业|试卷))','u');
+const restrictedCurriculum = /(?:高|初)[一二三123](?:年级|的?(?:学生|同学|课程|课堂|讲义|作业|试卷)|[，,：:\s])|版(?:的)?(?:教材|课本)|(?:这套|本套|指定的?)(?:教材|课本)/u;
 const restrictedTime = /(?:本|上|下|这[个一]?|那[个一]?|每[个一]?|第[一二三四五六七八九十\d]+|春季|秋季)(?:学期|学年)|(?:下周|本周|下个月|本月|今年|明年)(?:开始|结束|起|前|后|内|为止)|(?:接下来|未来|仅限|只在|直到).{0,12}(?:天|周|个月|学期|学年|月底|期末)/;
 const handoutAtEnd = /(?:答案|参考解答).{0,12}(?:放[在到]?|排[在到]?|置[于在]|列在|集中|统一在|附在)(?:整份|这份|整篇)?(?:讲义|学案|文档|全文)?(?:的)?(?:最后|末尾|文末|结尾)|(?:讲义|学案)(?:的)?(?:末尾|最后|文末|结尾).{0,6}(?:附|列|给|放).{0,4}答案/;
 const handoutAfterEach = /(?:每道?题|逐题|各题).{0,8}(?:后面?|后边|后紧跟|下方|紧跟).{0,10}(?:答案|参考解答)|(?:答案|参考解答).{0,10}(?:跟在|紧跟|放在|附在)(?:每道?题|各题)(?:后面?|下方)/;
@@ -19,7 +22,7 @@ export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  input=input.replace(/^(?:(?:请|帮我)?记住)[，,：:\s]*/,'');
  if(!/^(?:请)?(?:以后|今后|后续|下次|从现在起|我习惯|我更喜欢|我偏好)/.test(input))return{kind:'none'};
  // This head is app-wide. A request with an unbound audience or term remains in the current task.
- if(attributedSpeech.test(input)||restrictedAudience.test(input)||restrictedSubject.test(input)||restrictedTime.test(input))return{kind:'none'};
+ if(attributedSpeech.test(input)||restrictedAudience.test(input)||restrictedSubject.test(input)||restrictedCurriculum.test(input)||restrictedTime.test(input))return{kind:'none'};
  // Never learn policies, student facts, temporary/per-student requests or credentials.
  if(/权限|审批|批准|安全|隐私|密钥|凭证|API|token|成绩|分数|正确答案|数据库|源代码|系统提示|忽略规则|绕过|这次|这道|本题|本次|只针对|仅针对|(?:给|对|帮).{0,24}(?:同学|学生|孩子)/i.test(input))return{kind:'none'};
  // Resolve only unambiguous negative alternatives before positive matching.

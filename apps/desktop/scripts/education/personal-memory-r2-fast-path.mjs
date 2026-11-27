@@ -8,6 +8,11 @@ const cases = [
   ['教师默认表达', '以后讲解先提示再给答案。', { kind: 'candidate', patch: { answerOrder: 'hint_first' } }],
   ['显式记住默认要求', '请记住，以后讲义优先用段落。', { kind: 'candidate', patch: { presentation: 'paragraph' } }],
   ['保存意图不扩大课程范围', '帮我记住：今后化学课上讲义用表格。', { kind: 'none' }],
+  ...['音乐','美术','体育','信息技术','道德与法治'].map(subject => [
+    '学科限制 '+subject, '以后'+subject+'课的讲义用表格。', {kind:'none'},
+  ]),
+  ['高中年级限制', '以后高二讲义用表格。', {kind:'none'}],
+  ['教材版本限制', '以后人教版教材的讲义答案放在末尾。', {kind:'none'}],
   ['既有撤销入口', '请撤销上次记住的教学偏好。', { kind: 'rollback' }],
   ['同事的意见', '以后同事建议优先用表格讲解。', { kind: 'none' }],
   ['模型推测', '以后小智猜你更喜欢详细讲解。', { kind: 'none' }],

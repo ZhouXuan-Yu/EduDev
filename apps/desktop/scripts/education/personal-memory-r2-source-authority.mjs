@@ -92,6 +92,18 @@ await assert.rejects(authority.change(assistant,0,scope),/source_unavailable/);
 await assert.rejects(authority.change(unknown,0,scope),/source_unavailable/);
 const sensitive=message('credentials','Authorization: Bearer synthetic-only-test');
 await assert.rejects(authority.change(sensitive,0,scope),/permission_denied/);
+for (const [index, text] of [
+  '学生姓名：合成甲。数学成绩 83 分。',
+  '学号：S20263001，错题记录见练习本。',
+  '合成乙同学这次测验得了 76 分。',
+].entries()) {
+  const sensitiveStudent = message('student-record-'+index, text);
+  await assert.rejects(authority.change(sensitiveStudent,0,scope),/permission_denied/);
+  assert.deepEqual(await authority.snapshot([historyId(sensitiveStudent)],policy),[]);
+}
+const studentEdition = message('student-edition','以后学生版讲义不附答案。');
+assert((await authority.change(studentEdition,0,scope)).allowed);
+await authority.change(studentEdition,1,null);
 db.prepare('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?').run('synthetic-student',session);
 assert.deepEqual(await authority.snapshot([historyId(ref),historyId(answer)],policy),[]);
 db.prepare('UPDATE ai_conversation_sessions SET student_id=NULL WHERE id=?').run(session);
@@ -293,7 +305,12 @@ assert.equal(classSummary.category, 'teaching_preference');
 assert(Number.isSafeInteger(classSummary.recordedAt) && classSummary.recordedAt > 0);
 assert.equal(classSummary.sourceOccurredAt, classReview.value.occurredAt);
 assert.equal((await use(sameClass,classPin)).text,sourceForClass.sanitizedText);
-assert((await ops.setSource({ref:classRef,revision:1,enabled:false})).ok);
+// The teacher revokes the exact source while the host is sanitizing its body.
+const delayedRead = createPersonalMemoryUse(sql, async text => {
+  assert((await ops.setSource({ref:classRef,revision:1,enabled:false})).ok);
+  return text;
+});
+assert.equal(await delayedRead(sameClass, classPin), null);
 assert.equal(await use(sameClass,classPin),null);
 assert(!(await ops.catalog(sameClass)).value.some(record=>record.id===classPin.id));
 console.log('PASS exact confirmed class and term gate extraction, catalog and readback; stale confirmations and revoked sources stay excluded');

@@ -182,6 +182,11 @@ async function fastPath(){
   check('the explicit rollback persists across a fresh Electron process',{revision:after.revision});
 }
 
+function sectionTitle(line) {
+  return line.trim().replace(/^#{1,6}\s+/, '').replace(/^(?:\*\*|__)(.*)(?:\*\*|__)$/, '$1')
+    .replace(/^[一二三四五六七八九十\d]+[、.．]\s*/, '').replace(/[：:]$/, '').trim();
+}
+
 async function handoutPreference(){
   const requirement='以后我的讲义答案统一放最后。';
   const taught=await send(requirement);
@@ -208,7 +213,15 @@ async function handoutPreference(){
   const appliedWire=(await wire()).slice(offset).flatMap(row=>row.preference);
   assert(appliedWire.some(text=>text.includes('将答案集中放在讲义末尾')));
   const appliedText=applied.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
-  assert(appliedText.includes('练习')&&appliedText.lastIndexOf('参考答案')>appliedText.lastIndexOf('练习'),appliedText);
+  // Compare section headings. A sentence after the answers may also mention exercises.
+  const lines = appliedText.split(/\r?\n/);
+  const headings = lines.map(sectionTitle);
+  const exercise = headings.findLastIndex(title => /^(?:随堂|课堂|巩固|课后|小)?练习(?:题|小节)?$/.test(title));
+  const answers = headings.indexOf('参考答案');
+  assert(exercise >= 0 && answers > exercise && headings.lastIndexOf('参考答案') === answers, appliedText);
+  const numbered = lines => lines.filter(line => /^\s*\d+[.、．)）]\s*\S/.test(line));
+  assert.equal(numbered(lines.slice(exercise+1, answers)).length, 2, appliedText);
+  assert.equal(numbered(lines.slice(answers+1)).length, 2, appliedText);
   check('a new handout receives the saved layout and places its answer section after the exercises',{runId:applied.id});
 
   offset=(await wire()).length;
@@ -216,7 +229,7 @@ async function handoutPreference(){
   assert(!(await wire()).slice(offset).flatMap(row=>row.preference).some(text=>text.includes('将答案集中放在讲义末尾')));
   assert.deepEqual(currentHead(),head);
   const studentText=student.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
-  assert(!/^\s*#{1,6}\s*(?:参考)?答案\s*[:：]?\s*$/m.test(studentText),studentText);
+  assert(!studentText.split(/\r?\n/).map(sectionTitle).some(title => /^(?:参考)?答案$/.test(title)),studentText);
   await close();
   await launch();
   assert.deepEqual(currentHead(),head);
