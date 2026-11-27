@@ -19,7 +19,10 @@ const fixtureHash=hash(fixture);
 assert.equal(fixtureHash,'740fb52650849c5d3d0240956859fae392e27668e2e0228e51a73298e2fe0bdc');
 const contract=JSON.parse(fs.readFileSync(fixture,'utf8'));
 const task=contract.tasks.find(item=>item.caseId===requestedCase);
-assert(['R3-EVAL-015','R3-EVAL-016','R3-EVAL-021','R3-EVAL-022'].includes(task?.caseId),'Select a supported frozen case');
+assert(['R3-EVAL-013','R3-EVAL-014','R3-EVAL-015','R3-EVAL-016','R3-EVAL-021','R3-EVAL-022'].includes(task?.caseId),
+  'Select a supported frozen case');
+const preferenceCase=['R3-EVAL-013','R3-EVAL-014'].includes(task.caseId);
+const correctedPreference=task.caseId==='R3-EVAL-014';
 const outage=task.caseId==='R3-EVAL-022';
 const sourceCase=['R3-EVAL-015','R3-EVAL-016'].includes(task.caseId);
 const sourceRevoked=task.caseId==='R3-EVAL-016';
@@ -34,13 +37,22 @@ assert.equal(contract.tasks.length,24);
 const root=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT,'r3-fixed-ab-'));
 const git=dir=>execFileSync('git',['rev-parse','HEAD'],{cwd:dir,encoding:'utf8'}).trim();
 assert.equal(git(baseline),'ca2a51425619dc14412508839e0799338567c399');
+const bSource=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
+const bBuild=process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256;
+assert(/^[a-f0-9]{40}$/.test(bSource??'')&&/^[a-f0-9]{64}$/.test(bBuild??''));
+execFileSync('git',['diff','--exit-code',bSource,'--','src','package-lock.json','package.json',
+  ':(exclude)src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json',
+  ':(exclude)src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json'],{cwd:desktop,stdio:'ignore'});
 const arms=[
   {id:'A',desktop:baseline,main:path.join(baseline,'out/main/index.js'),source:git(baseline)},
-  {id:'B',desktop,main:testMain(desktop),source:git(desktop)},
+  {id:'B',desktop,main:testMain(desktop),source:bSource},
 ];
+assert.equal(hash(arms[1].main),bBuild,'The B arm must use the recorded product build');
+const selectedArm=process.env.OMNI_EDU_R3_EVAL_ARM;
+assert(selectedArm===undefined||selectedArm==='A'||selectedArm==='B');
 const report={
   caseId:task.caseId,fixtureHash,caseCount:contract.tasks.length,target:task.expectedObservableResult,
-  results:[],model:'deepseek-flash',scope:'One frozen synthetic case per invocation.',
+  results:[],model:'deepseek-flash',harnessCheckout:git(desktop),scope:'One frozen synthetic case per invocation.',
 };
 function read(data,sql,...args){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -70,6 +82,35 @@ if(server){
 }
 const knownTask='当前已知的任务要求：面向八年级，用两句话解释冰水共存时为什么会出现温度平台。接下来我会让你完成这项说明。现在只确认已收到，先不要生成说明或文件。';
 const localQuery='查询冰水共存及冰融化实验温度平台的观察要求';
+const firstPreference='请记住，以后我的讲义答案统一放最后。请简单确认。';
+const nextPreference='请记住，今后学案每道题后附参考答案。请简单确认。';
+
+async function seedPrompt(page,input,snapshot,text){
+  const prior=(await snapshot()).projection.turns.at(-1)?.id;
+  await input.fill(text);
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  const turn=await until(async()=>{
+    const value=await snapshot(),last=value.projection.turns.at(-1);
+    return !value.running&&last?.id!==prior&&['completed','failed','interrupted'].includes(last?.status)?last:null;
+  });
+  assert.equal(turn.status,'completed',turn.error);
+  return turn;
+}
+
+async function seedPreferences(page,input,snapshot){
+  const versions=[];
+  for(const [prompt,value] of [[firstPreference,'at_end'],...(correctedPreference?[[nextPreference,'after_each']]:[])]){
+    const turn=await seedPrompt(page,input,snapshot,prompt);
+    const observed=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
+    assert(observed.ok);
+    const preference=observed.value.preference;
+    assert.equal(preference.values.handoutAnswerPlacement,value);
+    const prior=versions.at(-1);
+    if(prior)assert(preference.revision>prior.revision);
+    versions.push({revision:preference.revision,value,runId:turn.id});
+  }
+  return versions;
+}
 
 async function chooseHistory(app,page,data,input,source,snapshot){
   await input.fill(localQuery);
@@ -135,7 +176,7 @@ async function seedClass(app,page,sessionId,scope){
   return {folder,term,profile};
 }
 
-for(const arm of arms){
+for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
   activeArm=arm.id;
   const data=path.join(root,arm.id,'data'),profile=path.join(root,arm.id,'profile');
   if(historySeed){
@@ -174,6 +215,8 @@ for(const arm of arms){
           hasSubmittedPrompt:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes(prompt)),
           memoryProjection:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes('宿主核验的本轮历史资料')),
           includesProtectedSource:Boolean(protectedSource)&&JSON.stringify(payload.messages).includes(protectedSource),
+          includesPreferenceGuidance:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes('当前教师表达偏好')),
+          includesConfirmedPreferenceReadback:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes('已确认偏好的宿主状态')),
           status:0};
         records.push(observation);
         const started=performance.now(),response=await original(input,init);
@@ -209,15 +252,9 @@ for(const arm of arms){
     assert.deepEqual(now.memoryScope.selections,[]);
     result.scope={classRef:task.taskScope.classRef,term:classState.term,...classState.profile,selections:0};
     if(source)result.historyAccess=await chooseHistory(app,page,data,input,source,snapshot);
+    if(preferenceCase)result.preferenceVersions=await seedPreferences(page,input,snapshot);
     if(outage){
-      await input.fill(knownTask);
-      await page.getByRole('button',{name:'发送消息',exact:true}).click();
-      const seeded=await until(async()=>{
-        const value=await snapshot(),last=value.projection.turns.at(-1);
-        return !value.running&&['completed','failed','interrupted'].includes(last?.status)?last:null;
-      });
-      assert.equal(seeded.status,'completed',seeded.error);
-      result.seedRun=seeded.id;
+      result.seedRun=(await seedPrompt(page,input,snapshot,knownTask)).id;
       await input.fill(localQuery);
       await page.getByTestId('history-lookup-open').click();
       const before=faults.length;
@@ -245,13 +282,14 @@ for(const arm of arms){
     result.elapsedMs=Math.round(performance.now()-began);
     const requests=await app.evaluate(()=>globalThis.r3FixedABRequests);
     result.realModel=requests.filter(item=>item.phase==='target');
-    if(outage)result.setupRequests=requests.filter(item=>item.phase==='setup');
+    if(outage||preferenceCase)result.setupRequests=requests.filter(item=>item.phase==='setup');
     assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));
     assert(result.realModel.every(item=>!item.memoryProjection));
     if(sourceRevoked)assert(result.realModel.every(item=>!item.includesProtectedSource));
     result.teacherPrompts=read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",sessionId)
       .map(row=>row.content);
-    assert.deepEqual(result.teacherPrompts,outage?[knownTask,task.userPrompt]:[task.userPrompt]);
+    const setupPrompts=outage?[knownTask]:preferenceCase?[firstPreference,...(correctedPreference?[nextPreference]:[])]:[];
+    assert.deepEqual(result.teacherPrompts,[...setupPrompts,task.userPrompt]);
     result.output=state.last.items.filter(item=>item.role==='assistant'&&typeof item.text==='string').map(item=>item.text);
     result.clarifications=state.question?1:0;
     result.status=state.question?'ASKED':state.last.status==='completed'?'CAPTURED':'FAIL';

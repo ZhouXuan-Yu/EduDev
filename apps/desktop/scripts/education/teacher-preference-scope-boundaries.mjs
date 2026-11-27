@@ -43,6 +43,22 @@ check('Acknowledgement, rollback and trials stay distinct from the saved prefere
  const follow=teacherPreferenceForRequest({snapshot,action:'trial',trial:values},'请解释降雨的原因。');
  assert(follow.text.includes('本轮表达方式试用')&&!follow.text.includes('导出Word'));
 });
+check('Confirmed preference lookup reports the durable authorized record without applying or saving it again',()=>{
+ const lookup={...snapshot,revision:3,values:{...values,handoutAnswerPlacement:'at_end'}};
+ const request='请核对我已保存的学案习惯。';
+ const result=teacherPreferenceForRequest({snapshot:lookup,action:'none'},request);
+ assert.equal(result.applied,false);
+ assert(result.text.includes('已确认偏好的宿主状态'));
+ assert(result.text.includes('讲义末尾'));
+ assert(result.text.includes('跨会话')&&result.text.includes('"version":3'));
+ assert(!result.text.includes('导出Word'));
+ assert(!result.text.includes('分步骤讲解'));
+ const policy={revision:1,profile:{subject:'数学',grade:'八年级',textbook:''},use:{handoutAnswerPlacement:'off'},updatedAt:null};
+ const withheld=teacherPreferenceForRequest({snapshot:lookup,action:'none',policy},request);
+ assert(withheld.text.includes('没有可核对'));
+ assert(!withheld.text.includes('讲义末尾'));
+ assert(!teacherPreferenceForRequest({snapshot:lookup,action:'none'},'请翻译“请核对我已保存的学案习惯”。').text.includes('已确认偏好的宿主状态'));
+});
 check('Legacy blended blocks and compacted summaries disappear from requests without mutating recorded messages',()=>{
  const old=teacherPreferenceContext(snapshot,'none')+teacherPreferenceTrialContext(values);
  const user={role:'user',content:`[其他任务索引]\n保留引用${old}\n\n[教师本次请求]\n旧问题`,timestamp:1};

@@ -66,6 +66,15 @@ export function teacherPreferenceContext(snapshot:TeacherPreferenceSnapshot,acti
  const preferences=Object.values(snapshot.values).map(value=>labels[value]);
  return'\n[当前教师表达偏好：本机已保存的明确要求；非学生事实、权限或答案依据]\n'+JSON.stringify({version:snapshot.revision,preferences,latestAction:action})+'\n仅在适合任务且教师本次未另行指定时采用；本次明确要求优先。以上明确习惯已经由宿主保存，不要重复询问详细程度、档位或要求教师配置记忆/技能。仅当 latestAction 为 learned 且本次只说明习惯时，可以简短确认已记住本次要求。旧对话中的偏好若与此版本冲突，以此版本为准；空列表表示已撤销，不恢复旧习惯。不改变审批、隐私、来源、题目答案和学生事实。'+presentationAdvice(snapshot.values)+notice;
 }
+export function teacherPreferenceLookupContext(snapshot:TeacherPreferenceSnapshot){
+ if(snapshot.schemaVersion!==TEACHER_PREFERENCE_SCHEMA||!validTeacherPreferenceValues(snapshot.values))throw Error('configuration');
+ const preferences=snapshot.revision?Object.values(snapshot.values).map(value=>labels[value]):[];
+ const status=preferences.length?'已由宿主保存在本机，可按教师使用策略跨会话生效。自动处理开关用于生成系统建议。此次查询保持配置原样。'
+  :'当前使用策略与查询范围内没有可核对的已确认偏好。需要管理设置时，指向设置中的教师记忆和已确认偏好。';
+ return '[已确认偏好的宿主状态]\n'+JSON.stringify({version:snapshot.revision,preferences})+'\n'+status+
+  '请按该状态回答，保留适用范围，不从旧回复推断内容或另作保存声称。';
+}
+
 export function teacherPreferenceTrialContext(values:TeacherPreferenceValues){
  if(!validTeacherPreferenceValues(values))throw Error('configuration');
  return '\n[本轮表达方式试用：来自多次实际讲解修正，尚未成为长期习惯]\n'+JSON.stringify(Object.values(values).map(v=>labels[v]))+'\n仅在当前任务未另有要求时采用；本轮正常完成教学讲解，不说明技术评价，不称已永久记住。表达要求不能替代正确解答、证据、权限或审批；步骤保持完整，不为缩短篇幅省掉关键条件。'+presentationAdvice(values);
