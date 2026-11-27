@@ -56,10 +56,11 @@ export function TeachingArtifactsWorkspace() {
 }
 function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:{auxiliaryActions?:ReactNode;artifactId?:string;artifactVersionId?:string}) {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<TeachingFileCatalogEntry[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
+  const [readFailed,setReadFailed]=useState(false);
   const [loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
   const [reveal,setReveal]=useState<{id:string;path:string}>();const epoch=useRef(0);
   const [requestedVersion,setRequestedVersion]=useState<string>();
-  async function load(){const stamp=++epoch.current;setLoading(true);setError('');try{const result=await window.omniEdu?.listDocumentArtifacts();if(!result)throw new Error();if(stamp===epoch.current){setRows(result);setReveal(undefined);}}catch{if(stamp===epoch.current)setError('无法读取教学文件，请重试。');}finally{if(stamp===epoch.current)setLoading(false);}}
+  async function load(){const stamp=++epoch.current;setLoading(true);setError('');try{const result=await window.omniEdu?.listDocumentArtifacts();if(!result)throw new Error();if(stamp===epoch.current){setRows(result);setReadFailed(false);setReveal(undefined);}}catch{if(stamp===epoch.current){setReadFailed(true);setError('教学文件暂未读出，请重试。');}}finally{if(stamp===epoch.current)setLoading(false);}}
   useEffect(()=>{void load();return()=>{++epoch.current;};},[]);
   const handledIntent=useRef<number|undefined>(undefined),refreshedIntent=useRef<number|undefined>(undefined);
   useEffect(()=>{
@@ -91,7 +92,7 @@ function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:
       <Button variant="ghost" onPress={()=>void load()} isDisabled={loading||busy} data-testid="artifacts-refresh"><RefreshCw size={16}/>刷新</Button></div>
     {error&&<p role="alert" className={alignment.error} data-testid="artifacts-error">{error}</p>}{notice&&<p role="status" className={alignment.notice}>{notice}</p>}
     <div className={alignment.columns} data-detail-open={Boolean(artifact)}>
-      <ResourceTable className={alignment.catalogue} label="教学文件列表" rows={filtered.map(row=>({id:row.id,title:row.title,description:(row.htmlVersion?(row.htmlVersion.savedAt?libraryDate(row.htmlVersion.savedAt):row.htmlVersion.verifiedAt?'保存时间未知 · 已核验':'保存时间未知'):libraryDate(row.updatedAt))+' · '+libraryFileSize(row.fileSize)+(row.officeVersion?` · 当前第 ${row.officeVersion.version} 版`:''),type:row.type.toUpperCase(),state:row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}))} selected={artifact?.id} onSelect={select} testPrefix="artifact" empty={loading?<p role="status">正在读取教学文件…</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}/>
+      <ResourceTable className={alignment.catalogue} label="教学文件列表" rows={filtered.map(row=>({id:row.id,title:row.title,description:(row.htmlVersion?(row.htmlVersion.savedAt?libraryDate(row.htmlVersion.savedAt):row.htmlVersion.verifiedAt?'保存时间未知 · 已核验':'保存时间未知'):libraryDate(row.updatedAt))+' · '+libraryFileSize(row.fileSize)+(row.officeVersion?` · 当前第 ${row.officeVersion.version} 版`:''),type:row.type.toUpperCase(),state:row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}))} selected={artifact?.id} onSelect={select} testPrefix="artifact" empty={loading?<p role="status">正在读取教学文件…</p>:readFailed?<p role="status" data-testid="artifacts-read-failed">目录暂未读出。点击“刷新”重试，不会重新制作文件。</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}/>
       <section className={alignment.detail} hidden={!artifact} data-testid="artifacts-detail" aria-label="教学文件内容">
         <Button variant="ghost" onPress={()=>{setSelected('');setReveal(undefined);}} data-testid="artifacts-back">返回文件列表</Button>
         {artifact?<><header className="artifact-file-header" data-artifact-file-header=""><div><h2>{artifact.title}</h2><p>{artifact.fileName}</p></div>
@@ -110,6 +111,6 @@ function TeachingFilesWorkspace({auxiliaryActions,artifactId,artifactVersionId}:
         </>:<LibraryEmpty title="选择一份教学文件" description="查看内容、预览当前文件，或回到制作时的对话继续修改。"/>}
       </section>
     </div>
-    <p className={alignment.count}>{loading?'正在读取教学文件…':`${filtered.length} 份当前教学文件 · 文档与HTML各取最近100条保存记录及对应当前版本 · 旧版保留在版本历史`}</p>
+    <p className={alignment.count}>{loading?'正在读取教学文件…':readFailed?(rows.length?'保留上次读取的文件列表，请刷新核对。':'教学文件数量暂未读出。'):`${filtered.length} 份当前教学文件 · 文档与HTML各取最近100条保存记录及对应当前版本 · 旧版保留在版本历史`}</p>
   </section>;
 }

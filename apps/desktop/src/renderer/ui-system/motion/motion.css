@@ -1,0 +1,28 @@
+/* Application-owned motion. HeroUI keeps its component motion and theme. */
+html[data-edu-modern] {
+  --edu-motion-press: 60ms;
+  --edu-motion-fast: 120ms;
+  --edu-motion-standard: 180ms;
+  --edu-motion-ease: cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-edu-modern] {
+    --edu-motion-press: 0ms;
+    --edu-motion-fast: 0ms;
+    --edu-motion-standard: 0ms;
+  }
+  html[data-edu-modern] .spin,
+  html[data-edu-modern] .backup-spinner { animation: none; }
+}
+.wb-item, .wb-icon-button {
+  transition: background-color var(--edu-motion-fast) var(--edu-motion-ease), color var(--edu-motion-fast) var(--edu-motion-ease);
+}
+.wb-item:active:enabled, .wb-icon-button:active:enabled { transition-duration: var(--edu-motion-press); }
+.wb-session-copy time { font-variant-numeric: tabular-nums; }
+.timeline-item[aria-current='true'] { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wb-nav-backdrop { display:none; }
+@media (max-width:800px) {
+  .wb-nav-backdrop { display:block; position:absolute; inset:0; z-index:49; border:0; background:rgb(20 20 24 / 12%); }
+  .wb-navigation[data-collapsed=false] { animation: edu-navigation-reveal var(--edu-motion-standard) var(--edu-motion-ease); }
+}
+@keyframes edu-navigation-reveal { from { opacity:.7; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }

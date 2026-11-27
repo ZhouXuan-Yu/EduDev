@@ -31,6 +31,7 @@ function CatalogFilters({ facets, value, disabled, onChange, onClear, active, pl
     const tags = choices(facets?.tags || [], value.tags), formats = choices(facets?.formats || [], value.format ? [value.format] : []);
     if (placement === 'navigation') return <MaterialLibraryNavigation
         directories={directories} tags={tags} states={facets?.states || []} value={value}
+        countsKnown={facets !== undefined}
         disabled={disabled} active={active} onChange={onChange} onClear={onClear}/>;
     if (placement === 'toolbar') return <div className={libraryStyles.filterToolbar}>
         <label className={libraryStyles.filterField}>

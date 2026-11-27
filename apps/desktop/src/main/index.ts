@@ -538,7 +538,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   ipcMain.handle('notebooks:deleteRecord', (_event, id: string) => store.deleteTeacherNotebookRecord(id));
   ipcMain.handle('attachments:import', async (_event, studentId: string, recordId: string) => {
     const result = await selectAttachmentPaths();
-    if (result.canceled) return { status: 'canceled', records: await store.listRecords(studentId), items: [] };
+    if (result.canceled) return { status: 'canceled', records: await store.listRecords(studentId).catch(() => []), items: [] };
     return store.importAttachments(studentId, recordId, result.filePaths);
   });
   ipcMain.handle('attachments:show', async (_event, filePath: string) => {

@@ -38,12 +38,31 @@ const lastTool = () => [...agent.session.messages].reverse().find(m => m.role ==
 try {
   agent = await createPiXiaozhiSession({ stateRoot, workspace, apiKey: 'synthetic-sdk-test-key', model: 'deepseek-chat',
     onEvent: event => events.push(event), turnTimeoutMs: 1000, approveCopy: async () => { approvalCount++; return true; } });
-  inject([{ stopReason: 'toolUse', content: [call('exec_command', { command: 'blocked-default-command' })] }, end]);
+  // exec_command is now the host's explicitly registered, controlled terminal.
+  // Probe the SDK's disabled builtin instead of assuming that host tool is absent.
+  assert(!agent.session.agent.state.tools.some(tool => tool.name === 'bash'));
+  inject([{ stopReason: 'toolUse', content: [call('bash', { command: 'echo boundary_probe > unauthorized.md' })] }, end]);
   await agent.prompt('协议注入：默认命令工具');
   check('SDK rejects an unregistered built-in tool without executing it', () => {
     assert(lastTool()?.isError); assert(!fs.existsSync(path.join(workspace, 'unauthorized.md')));
-    assert(!events.some(e => e.kind === 'tool_start' && e.tool === 'exec_command'));
+    assert(!events.some(e => e.kind === 'tool_start' && e.tool === 'bash'));
   });
+  const terminal = agent.session.agent.state.tools.find(tool => tool.name === 'exec_command');
+  assert(terminal, 'The current host terminal must be present for the schema boundary probe');
+  const execute = terminal.execute; let terminalExecutions = 0;
+  const monitored = (...args) => { terminalExecutions++; return execute.apply(terminal, args); };
+  terminal.execute = monitored;
+  inject([{ stopReason: 'toolUse', content: [call('exec_command', { command: 'blocked-default-command' }, 'invalid-terminal')] }, end]);
+  await agent.prompt('协议注入：无效受控终端参数');
+  check('Invalid registered terminal arguments are rejected before the executor', () => {
+    const result = lastTool();
+    assert.equal(result?.toolCallId, 'invalid-terminal', 'Rejection must belong to this invocation, not a previous tool result');
+    assert.equal(result?.toolName, 'exec_command');
+    assert.equal(agent.session.agent.state.tools.find(tool => tool.name === 'exec_command').execute, monitored);
+    assert.equal(terminalExecutions, 0); assert(result.isError);
+    assert(!fs.existsSync(path.join(workspace, 'unauthorized.md')));
+  });
+  terminal.execute = execute;
   inject([{ stopReason: 'toolUse', content: [call('office_read_text', { path: 'a.md' })] }, end]);
   await agent.prompt('第一轮读取'); assert.equal(lastTool().details.data.text, 'FACT_A');
   assert.equal(lastTool().details.data.version, fileVersion(fs.statSync(path.join(workspace,'a.md'))));

@@ -1,4 +1,6 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import {useSurfaceEntrance} from './motion/useSurfaceEntrance';
+import {useHeaderExtent} from './useHeaderExtent';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from './ColumnResizeHandle';
 import { EduNavigation } from './EduNavigation';
@@ -29,12 +31,16 @@ export function EduShell({
   headerTestId?: string;
   navigationResizable?: boolean;
 }) {
+  const surface = useRef<HTMLElement>(null);
+  const header = useRef<HTMLElement>(null);
+  useHeaderExtent(header,surface);
+  useSurfaceEntrance(surface,view,view!=='ai');
   const [navWidth, setNavWidth] = useState(() => {
     const savedWidth = readColumnWidth('xiaozhi.ui.navWidth.v1', 232, 200, 360);
     // Move the former default to the approved width while keeping resized columns.
     return savedWidth === 248 ? 232 : savedWidth;
   });
-  useEffect(() => { writeColumnWidth('xiaozhi.ui.navWidth.v1', navWidth); }, [navWidth]);
+  useEffect(() => {const timer=setTimeout(()=>writeColumnWidth('xiaozhi.ui.navWidth.v1',navWidth),150);return()=>clearTimeout(timer);},[navWidth]);
   const contract = PAGE_CONTRACTS.find((p) => p.id === view)!;
   const teachingWorkspace = contract.group === '教学' && view !== 'paper';
   const heading = view === 'paper' ? '出题与组卷' : teachingWorkspace ? '教学工作台' : contract.title;
@@ -50,9 +56,9 @@ export function EduShell({
       style={{'--edu-nav-width': `${navWidth}px`} as CSSProperties}
     >
       {navigationOpen && <EduNavigation view={view} disabled={disabled} />}
-      {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={200} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onReset={() => setNavWidth(232)} />}
-      <main className="edu-workspace">
-        <header className="edu-header" data-testid={headerTestId || 'edu-header'}>
+      {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={200} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onCommit={value=>writeColumnWidth('xiaozhi.ui.navWidth.v1',value)} onReset={()=>{setNavWidth(232);writeColumnWidth('xiaozhi.ui.navWidth.v1',232);}} />}
+      <main ref={surface} className="edu-workspace">
+        <header ref={header} className="edu-header" data-testid={headerTestId || 'edu-header'}>
           <div className="edu-breadcrumb">
             {!teachingWorkspace && !['ai', 'teaching', 'student_workbench', 'knowledge', 'settings', 'paper'].includes(view) && <><span>{contract.group}</span><ChevronRight size={14} /></>}
             <strong>{heading}</strong>

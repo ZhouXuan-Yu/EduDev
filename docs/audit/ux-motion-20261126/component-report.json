@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "layer": "component",
+  "baseline": false,
+  "source": "working tree",
+  "checks": [
+    "student-owned save settlement cannot clear another student draft",
+    "late record save preserves the newer revision",
+    "local datetime is 09:30 and a title-only edit retains exact original timestamp",
+    "review save receipt keeps edits made while awaiting host",
+    "late save never switches the selected report and retained drafts reopen",
+    "same notebook return preserves input; changing notebook requires explicit discard",
+    "note deletion invokes host only after explicit confirmation",
+    "child-note receipt preserves unfinished notebook metadata",
+    "concurrent notebook metadata conflict keeps draft and prevents overwrite",
+    "discarding a conflict adopts host baseline and permits a fresh edit",
+    "same-version refresh establishes a new metadata baseline",
+    "exact search target is located beyond the first 100 records",
+    "teaching file read rejection does not imply empty catalog or zero count",
+    "unknown model configuration is retryable instead of unconfigured",
+    "same-title search results identify owners and retain exact return target"
+  ],
+  "boundary": "Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance."
+}

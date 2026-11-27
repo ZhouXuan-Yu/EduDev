@@ -219,12 +219,13 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
           {!migrationPending && migrations.includes('migrated') && <p role="status" data-testid="pi-settings-credential-migration-done">历史密钥已转存到本机安全存储。</p>}
           {loading && <p role="status" data-testid="pi-settings-loading">正在读取模型设置…</p>}
           {view?.catalogueError && <p role="alert" data-testid="pi-settings-catalogue-error">{XIAOZHI_SETTINGS_ERRORS[view.catalogueError]}{view.models.length ? ' 显示上次读取的官方目录。' : ''}</p>}
+          {!loading&&!view&&<Button variant="secondary" data-testid="pi-settings-retry-read" onPress={()=>void reload()}>重新读取设置</Button>}
           <form onSubmit={event => { event.preventDefault(); void save(); }}>
             <div className={styles.row}>
               <div className={styles.rowText}>
                 <label className={styles.rowLabel} htmlFor="pi-settings-api-key">API 密钥</label>
                 <p className={styles.hint}>留空时保留已有密钥。当前使用 DeepSeek 官方接口。</p>
-                <p className={styles.hint} data-testid="pi-settings-configured">{view?.configured ? `已配置 · ${view.maskedApiKey}` : '尚未配置'}</p>
+                <p className={styles.hint} data-testid="pi-settings-configured">{loading ? '正在读取配置状态…' : !view ? '配置状态尚未读出' : view.configured ? `已配置 · ${view.maskedApiKey}` : '尚未配置'}</p>
               </div>
               <div className={styles.credentialControl}>
                 <TextField aria-label="API 密钥" isDisabled={credentialDisabled} value={key} onChange={editKey}><Input className={styles.readablePlaceholder} id="pi-settings-api-key" type="password" autoComplete="off" data-testid="pi-settings-key" placeholder="留空保留现有密钥" /></TextField>

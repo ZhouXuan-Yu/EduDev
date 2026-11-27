@@ -1,0 +1,11 @@
+PASS student switches preserve separate drafts and local time
+PASS UI edit retains exact timestamp and same-record click never reloads draft
+PASS replacing an unfinished record is cancelable by Escape
+PASS same-student old search hit beyond 100 rows focuses exact ID and restores search on Back
+PASS saving a child note preserves unsaved notebook metadata
+PASS page exit and whole-book deletion protect unfinished edits with explicit safe cancellation
+PASS folder state transitions preserve DOM and make collapsed content inert
+PASS resize is direct and Escape restores the starting width
+PASS four viewport widths, both OS schemes and reduced motion retain reachability without document overflow
+PASS restart readback retains original record timestamp and notebook metadata
+{"success":true,"output":"D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\docs\\audit\\ux-motion-20261126\\electron-VuNFAH","checks":10}

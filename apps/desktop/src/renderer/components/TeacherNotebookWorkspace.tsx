@@ -1,3 +1,5 @@
+import {useActionConfirmation} from './ui/ActionConfirmation';
+import {useDesktopNavigationGuard} from './desktop/DesktopFrame';
 import {AppNativeSelect} from './ui/AppNativeSelect';
 import { ArchiveRestore, Plus, RefreshCw, Save, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -37,11 +39,25 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   const [description, setDescription] = useState('');
   const [recordDraft, setRecordDraft] = useState(emptyRecordDraft);
   const [editingRecordId, setEditingRecordId] = useState('');
+  const editingVersion=useRef<number|undefined>(undefined);
   const listEpoch = useRef(0), recordEpoch = useRef(0), actionLock = useRef(false), selectedRef = useRef('');
   const selected = useMemo(() => notebooks.find(item => item.id === selectedId), [notebooks, selectedId]);
   const filtered = notebooks.filter(item => `${item.name} ${item.description}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
   const blocked = saving || loading || catalogueFailed;
 
+  const confirmation = useActionConfirmation();
+  const originalRecord = records.find(item=>item.id===editingRecordId);
+  const recordDirty = JSON.stringify(recordDraft) !== JSON.stringify(originalRecord
+    ? {recordType:originalRecord.recordType,title:originalRecord.title,summary:originalRecord.summary,userQuery:originalRecord.userQuery,output:originalRecord.output} : emptyRecordDraft);
+  const notebookDirty = selected ? name!==selected.name || description!==selected.description : !!(name.trim()||description.trim());
+  const metadataBaseline=useRef<{id:string;name:string;description:string}|undefined>(undefined);
+  const [metadataConflict,setMetadataConflict]=useState(false);
+  useDesktopNavigationGuard(recordDirty||notebookDirty||saving,'备课本有尚未保存的修改，请先保存或放弃修改再离开。');
+  function change(action:()=>void, recordOnly=false) {
+    if (saving) return;
+    if (recordDirty || (!recordOnly && notebookDirty)) confirmation.request({title:'保留当前修改？',description:'切换会放弃当前尚未保存的内容。也可以继续编辑并先保存。',confirmLabel:'放弃修改并继续',action:()=>{resetRecord();if(!recordOnly){setMetadataConflict(false);setName(selected?.name??'');setDescription(selected?.description??'');}action();}});
+    else action();
+  }
   function api() { if (!window.omniEdu) throw new Error('Notebook host unavailable'); return window.omniEdu; }
   function success(message: string) { setNotice(message); setErrorMessage(''); setStatus(''); }
   function fail(error: unknown, fallback: string) {
@@ -49,8 +65,9 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
     const message = /版本|version|conflict|已被.*修改/i.test(raw) ? '内容已在其他地方修改，请刷新后再试。' : fallback;
     setErrorMessage(message); setNotice(''); setStatus('');
   }
-  function resetRecord() { setEditingRecordId(''); setRecordDraft(emptyRecordDraft); }
+  function resetRecord() { editingVersion.current=undefined;setEditingRecordId(''); setRecordDraft(emptyRecordDraft); }
   function choose(id: string) {
+    metadataBaseline.current=undefined;setMetadataConflict(false);
     ++recordEpoch.current; selectedRef.current = id; setSelectedId(id); setRecords([]); resetRecord();
     setErrorMessage(''); setNotice('');
     if (!id) { setName(''); setDescription(''); setRecordsLoading(false); }
@@ -67,7 +84,7 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
       return true;
     } catch (error) {
       if (stamp !== listEpoch.current) return false;
-      setCatalogueFailed(true); setNotebooks([]); choose(''); fail(error, '无法读取备课本，请点击刷新重试。'); return false;
+      setCatalogueFailed(true); fail(error, '无法读取备课本，请点击刷新重试。'); return false;
     } finally { if (stamp === listEpoch.current) setLoading(false); }
   }
   async function loadRecords(notebookId = selectedRef.current, showDeleted = includeDeletedRecords) {
@@ -85,7 +102,14 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   }
   useEffect(() => { void loadNotebooks(); return () => { ++listEpoch.current; ++recordEpoch.current; }; }, []);
   useEffect(() => { void loadRecords(selectedId, includeDeletedRecords); }, [selectedId, includeDeletedRecords]);
-  useEffect(() => { if (selected) { setName(selected.name); setDescription(selected.description); } }, [selected?.id, selected?.version]);
+  useEffect(() => {
+    if(!selected)return;
+    const previous=metadataBaseline.current;
+    if(previous?.id===selected.id&&((name!==previous.name&&selected.name!==previous.name&&name!==selected.name)||(description!==previous.description&&selected.description!==previous.description&&description!==selected.description)))setMetadataConflict(true);
+    setName(value=>previous?.id!==selected.id||value===previous.name?selected.name:value);
+    setDescription(value=>previous?.id!==selected.id||value===previous.description?selected.description:value);
+    metadataBaseline.current={id:selected.id,name:selected.name,description:selected.description};
+  }, [selected]);
 
   async function action(work: () => Promise<void>, fallback: string) {
     if (actionLock.current || loading || catalogueFailed) return;
@@ -103,9 +127,11 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
   }
   function updateNotebook() {
     if (!selected || selected.status !== 'active') return;
+    if(metadataConflict){fail(undefined,'备课本信息已在另一窗口修改。你的输入已保留，请核对后刷新读取最新版本。');return;}
     if (!name.trim()) { fail(undefined, '请输入备课本名称。'); return; }
     void action(async () => {
       const updated = await api().updateTeacherNotebook(selected.id, { name: name.trim(), description: description.trim(), version: selected.version });
+      setName(updated.name);setDescription(updated.description);
       if (await loadNotebooks(updated.id)) success('备课本信息已保存。');
       else setNotice('信息已保存，请刷新列表后继续操作。');
     }, '保存失败，填写的内容已保留，请重试。');
@@ -118,13 +144,22 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
       else setNotice('备课本已删除，请刷新后查看。');
     }, '删除失败，请重试。');
   }
+  function confirmDeleteNotebook() {
+    if(!selected)return;
+    confirmation.request({title:`删除《${selected.name}》？`,description:`备课本及原笔记可在“显示已删除”中恢复。${recordDirty||notebookDirty?'尚未保存的修改会被放弃。':''}`,confirmLabel:'删除备课本',cancelLabel:'取消',destructive:true,action:deleteNotebook});
+  }
   function restoreNotebook() {
     if (!selected || selected.status !== 'deleted') return;
     void action(async () => { await api().restoreTeacherNotebook(selected.id); if (await loadNotebooks(selected.id)) success('备课本已恢复。'); else setNotice('备课本已恢复，请刷新后查看。'); }, '恢复失败，请重试。');
   }
-  function editRecord(item: TeacherNotebookRecord) {
+  function openRecord(item: TeacherNotebookRecord) {
+    editingVersion.current=item.version;
     setEditingRecordId(item.id); setRecordDraft({ recordType: item.recordType, title: item.title, summary: item.summary, userQuery: item.userQuery, output: item.output });
     setNotice(''); setErrorMessage('');
+  }
+  function editRecord(item:TeacherNotebookRecord) {
+    if (editingRecordId === item.id) return;
+    change(()=>openRecord(item),true);
   }
   function saveRecord() {
     if (!selected || selected.status !== 'active' || recordsLoading) return;
@@ -132,14 +167,16 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
     void action(async () => {
       const current = records.find(item => item.id === editingRecordId);
       if (editingRecordId && !current) throw new Error('Record no longer loaded');
-      if (current) await api().updateTeacherNotebookRecord(current.id, { ...recordDraft, version: current.version });
+      const version=editingVersion.current;
+      if(current&&version===undefined)throw new Error('请重新打开笔记后保存。');
+      if (current && version!==undefined) await api().updateTeacherNotebookRecord(current.id, { ...recordDraft, version });
       else await api().addTeacherNotebookRecord({ notebookId: selected.id, ...recordDraft });
       resetRecord(); const loaded = await Promise.all([loadRecords(selected.id), loadNotebooks(selected.id)]);
       if (loaded.every(Boolean)) success(current ? '备课笔记已更新。' : '备课笔记已保存。');
       else setNotice('笔记已保存，请刷新后查看。');
     }, '笔记未能保存，填写的内容已保留，请重试。');
   }
-  function deleteRecord(item: TeacherNotebookRecord) {
+  function deleteRecordConfirmed(item: TeacherNotebookRecord) {
     void action(async () => {
       await api().deleteTeacherNotebookRecord(item.id); if (editingRecordId === item.id) resetRecord();
       const loaded = await Promise.all([loadRecords(selectedId), loadNotebooks(selectedId)]);
@@ -147,21 +184,26 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
       else setNotice('笔记已删除，请刷新后查看。');
     }, '删除笔记失败，请重试。');
   }
-  async function refresh() { if (saving || loading) return; if (await loadNotebooks()) await loadRecords(); }
+  function deleteRecord(item:TeacherNotebookRecord) {
+    confirmation.request({title:`删除《${item.title}》？`,description:'删除后仍可查看，但无法在此恢复这条笔记。',confirmLabel:'确认删除笔记',cancelLabel:'取消',destructive:true,action:()=>deleteRecordConfirmed(item)});
+  }
+  async function refresh() { if (saving || loading) return;resetRecord();setMetadataConflict(false);metadataBaseline.current=undefined;if (await loadNotebooks()) await loadRecords(); }
 
   return <section className={`teacher-library teacher-notebook-workspace ${styles.workspace}`} data-testid="teacher-notebook-workspace" aria-label="备课本">
     <header className={`teacher-library-heading ${styles.heading}`}><div><h2>备课本</h2><p>按课程整理笔记、教学想法和课堂准备。</p></div>
-      <TeachingPageAction><Button isDisabled={blocked} onPress={() => { setQuery(''); if (selectedId) choose(''); setEditorOpen(true); }} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></TeachingPageAction></header>
+      <TeachingPageAction><Button isDisabled={blocked} onPress={() => change(() => {setQuery('');choose('');setEditorOpen(true);})} data-testid="teacher-notebook-new"><Plus size={17}/>新建备课本</Button></TeachingPageAction></header>
     <div className={`teacher-library-toolbar ${styles.toolbar}`}><div className={styles.searchLayout}><SearchField value={query} onChange={setQuery} aria-label="查找备课本" variant="secondary" className="teacher-library-search" style={{width:'100%'}}><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找名称或说明" maxLength={128} data-testid="teacher-notebook-search"/><SearchField.ClearButton aria-label="清除备课本查找"/></SearchField.Group></SearchField></div>
-      <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => void refresh()} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button>
-      <label className={`teacher-notebook-check ${styles.archiveFilter}`}><input type="checkbox" checked={includeDeleted} disabled={blocked} onChange={event => { setIncludeDeleted(event.target.checked); void loadNotebooks(selectedId, event.target.checked); }} data-testid="teacher-notebook-show-deleted"/>显示已删除</label></div>
+      <Button variant="ghost" aria-label="刷新备课本" isDisabled={saving || loading} onPress={() => change(()=>void refresh())} data-testid="teacher-notebook-refresh"><RefreshCw size={16}/>刷新</Button>
+      <label className={`teacher-notebook-check ${styles.archiveFilter}`}><input type="checkbox" checked={includeDeleted} disabled={blocked} onChange={event => {const checked=event.target.checked;change(()=>{setIncludeDeleted(checked);void loadNotebooks(selectedId,checked);});}} data-testid="teacher-notebook-show-deleted"/>显示已删除</label></div>
     {errorMessage && <p className="teacher-library-error" role="alert" data-testid="teacher-notebook-error">{errorMessage}</p>}
+    {metadataConflict&&<p className="teacher-library-error" role="alert" data-testid="teacher-notebook-metadata-conflict">备课本信息已在另一窗口修改。你的输入已保留，请核对后刷新。</p>}
     {notice && <p className="teacher-library-notice" role="status" data-testid="teacher-notebook-notice">{notice}</p>}
+    {(recordDirty||notebookDirty)&&<Button variant="ghost" isDisabled={saving} data-testid="teacher-notebook-discard" onPress={()=>confirmation.request({title:'放弃未保存的修改？',description:'已经保存的备课本和笔记会保留。',confirmLabel:'放弃修改',action:()=>{resetRecord();setMetadataConflict(false);metadataBaseline.current=selected?{id:selected.id,name:selected.name,description:selected.description}:undefined;setName(selected?.name??'');setDescription(selected?.description??'');}})}>放弃未保存修改</Button>}
     <div className={`teacher-notebook-grid ${styles.notebookGrid}`} data-editor-open={editorOpen}>
       <aside className="teacher-notebook-directory" data-testid="teacher-notebook-list-panel">
         <div className={styles.catalogue}>
           <table aria-label="备课本列表"><thead><tr><th>名称</th><th>笔记</th><th>更新</th></tr></thead><tbody>
-            {(loading ? [] : filtered).map(item => <tr key={item.id} aria-selected={selectedId === item.id}><td><button disabled={blocked} onClick={() => { if (item.id !== selectedRef.current) choose(item.id); setEditorOpen(true); }} data-testid={`teacher-notebook-item-${item.id}`}><strong>{item.name}</strong><small>{item.description || (item.status === 'deleted' ? '已删除' : '备课本')}</small></button></td><td>{item.recordCount} 条笔记</td><td>{displayDate(item.updatedAt)}{item.status === 'deleted' ? ' · 已删除' : ''}</td></tr>)}
+            {(loading ? [] : filtered).map(item => <tr key={item.id} aria-selected={selectedId === item.id}><td><button disabled={blocked} onClick={() => { if(item.id===selectedRef.current)setEditorOpen(true);else change(()=>{choose(item.id);setEditorOpen(true);}); }} data-testid={`teacher-notebook-item-${item.id}`}><strong>{item.name}</strong><small>{item.description || (item.status === 'deleted' ? '已删除' : '备课本')}</small></button></td><td>{item.recordCount} 条笔记</td><td>{displayDate(item.updatedAt)}{item.status === 'deleted' ? ' · 已删除' : ''}</td></tr>)}
           </tbody></table>
           {(loading || !filtered.length) && (loading ? <p role="status" data-testid="teacher-notebook-loading">正在读取备课本…</p> : errorMessage ? <p>刷新后重新读取备课本。</p> : <div data-testid={query ? 'teacher-notebook-filter-empty' : 'teacher-notebook-empty'}><LibraryEmpty title={query ? '没有匹配的备课本' : '还没有备课本'} description={query ? '换个关键词，或清除查找条件。' : '点击“新建备课本”，从第一条笔记开始。'}/></div>)}
         </div>
@@ -172,7 +214,7 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
         <section className="teacher-library-detail" data-testid="teacher-notebook-editor-panel"><header><div><h2>{selected ? selected.status === 'deleted' ? '已删除的备课本' : '备课本信息' : '新建备课本'}</h2><p>{selected?.status === 'deleted' ? '恢复后可以继续编辑，原笔记仍保留。' : '填写课程名称和说明，保存后继续添加笔记。'}</p></div></header>
           <fieldset disabled={blocked || selected?.status === 'deleted'} className={`teacher-notebook-fields ${styles.fields}`}><label>名称<input value={name} onChange={event => setName(event.target.value)} data-testid="teacher-notebook-name"/></label><label>说明<textarea value={description} onChange={event => setDescription(event.target.value)} rows={2} data-testid="teacher-notebook-description"/></label></fieldset>
           <div className="teacher-library-detail-actions">{!selected && <Button onPress={createNotebook} isDisabled={blocked} isPending={saving} data-testid="teacher-notebook-create">创建备课本</Button>}
-            {selected?.status === 'active' && <><Button onPress={updateNotebook} isDisabled={blocked} isPending={saving} data-testid="teacher-notebook-save"><Save size={16}/>保存信息</Button><Button variant="danger-soft" onPress={deleteNotebook} isDisabled={blocked} data-testid="teacher-notebook-delete"><Trash2 size={16}/>删除备课本</Button></>}
+            {selected?.status === 'active' && <><Button onPress={updateNotebook} isDisabled={blocked} isPending={saving} data-testid="teacher-notebook-save"><Save size={16}/>保存信息</Button><Button variant="danger-soft" onPress={confirmDeleteNotebook} isDisabled={blocked} data-testid="teacher-notebook-delete"><Trash2 size={16}/>删除备课本</Button></>}
             {selected?.status === 'deleted' && <Button onPress={restoreNotebook} isDisabled={blocked} data-testid="teacher-notebook-restore"><ArchiveRestore size={16}/>恢复备课本</Button>}</div>
         </section>
         <section className="teacher-library-detail" data-testid="teacher-notebook-records-panel"><header><div><h2>备课笔记</h2><p>保留教学思路、问题和可再次使用的内容。</p></div><label className="teacher-notebook-check"><input type="checkbox" checked={includeDeletedRecords} disabled={blocked || recordsLoading} onChange={event => setIncludeDeletedRecords(event.target.checked)} data-testid="teacher-notebook-records-show-deleted"/>显示已删除笔记</label></header>
@@ -191,9 +233,10 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
               </label>
             </DisclosureCard>
           </fieldset>
-            <div className="teacher-library-detail-actions"><Button onPress={saveRecord} isDisabled={blocked || recordsLoading} isPending={saving} data-testid="teacher-notebook-record-save"><Save size={16}/>{editingRecordId ? '保存修改' : '保存笔记'}</Button><Button variant="ghost" onPress={() => {resetRecord();success('已取消笔记编辑。');}} isDisabled={blocked} data-testid="teacher-notebook-record-cancel">取消编辑</Button></div></div>}
+            <div className="teacher-library-detail-actions"><Button onPress={saveRecord} isDisabled={blocked || recordsLoading} isPending={saving} data-testid="teacher-notebook-record-save"><Save size={16}/>{editingRecordId ? '保存修改' : '保存笔记'}</Button><Button variant="ghost" onPress={() => change(()=>{resetRecord();success('已取消笔记编辑。');},true)} isDisabled={blocked} data-testid="teacher-notebook-record-cancel">取消编辑</Button></div></div>}
         </section>
       </div>
     </div>
+    {confirmation.dialog}
   </section>;
 }

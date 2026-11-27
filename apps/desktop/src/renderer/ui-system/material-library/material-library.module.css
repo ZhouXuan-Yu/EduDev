@@ -247,7 +247,7 @@
 }
 .disclosureToggle > svg {
     flex-shrink: 0;
-    transition: transform 150ms ease;
+    transition: transform var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease);
 }
 .queueTasks {
     list-style: none;

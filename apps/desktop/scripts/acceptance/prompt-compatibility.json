@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "revision": "effc6c0109bdc4c8fc892ac7ad7639bfbed99cde",
+  "scope": "Existing production PromptInput update, not certification of an official licensed package. Original frozen baseline and original failures remain historical evidence.",
+  "files": {
+    "src/renderer/heroui-pro/components/prompt-input/index.ts": "Existing attachment/context exports; optional token exports were not imported into the application.",
+    "src/renderer/heroui-pro/components/prompt-input/prompt-input.context.tsx": "Existing updated layout and token-input context.",
+    "src/renderer/heroui-pro/components/prompt-input/prompt-input.styles.ts": "Existing stacked/inline layout variants; no new styles approved by this record.",
+    "src/renderer/heroui-pro/components/prompt-input/prompt-input.tsx": "Existing production template sync, compatibility CSS import, consumer key handler precedence and IME Enter protection.",
+    "src/renderer/heroui-pro/components/prompt-input/prompt-input.utils.ts": "Existing attachment/textarea expansion helpers."
+  }
+}

@@ -38,7 +38,7 @@
   color: inherit;
   opacity: 0.45;
   cursor: default;
-  transition: opacity var(--duration-instant);
+  transition: opacity var(--edu-motion-press,60ms);
 }
 
 .remove:hover {

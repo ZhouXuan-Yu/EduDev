@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {createServer} from 'vite';
 import postcss from 'postcss';
+import {verifyFrozenComponentSources} from './acceptance/frozen-component-sources.mjs';
 const desktop=path.resolve(import.meta.dirname,'..'),review=path.join(desktop,'src/renderer/design-review');
 const docs=path.resolve(desktop,'../../docs/design/ui-rebuild-2026-10-24/pages');
 const args=process.argv.slice(2),onlyPages=args.includes('--page-contracts');
@@ -50,9 +51,10 @@ try{
  check('review and production share one page metadata source',()=>assert.strictEqual(reviewed.PAGE_CONTRACTS,PAGE_CONTRACTS));
  if(!onlyPages){
   const baseline=JSON.parse(fs.readFileSync(path.join(review,'component-baseline.json'),'utf8'));
-  check('recorded native sources and CSS have not changed',()=>{
-   const changed=baseline.files.filter(f=>createHash('sha256').update(fs.readFileSync(path.join(desktop,f.path))).digest('hex')!==f.sha256);
-   assert.deepEqual(changed.map(file=>file.path),[]);
+  check('frozen sources/CSS and reconstructed production PromptInput revision match',()=>{
+   const sources=verifyFrozenComponentSources(desktop,baseline);
+   assert.equal(sources.filter(file=>file.kind==='original-frozen').length,11);
+   assert.equal(sources.filter(file=>file.kind==='historical-production-update').length,5);
   });
   check('official Agent Trace Streaming reference configuration is frozen',()=>assert.equal(createHash('sha256').update(fs.readFileSync(path.join(review,'OfficialTraceReference.tsx'))).digest('hex'),baseline.officialReferenceSha256));
   check('new review layout cannot override vendor selectors, tokens or important states',()=>{

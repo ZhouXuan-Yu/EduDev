@@ -3189,3 +3189,7 @@ M11 沿用 SQLite 在线备份和已有 typed IPC。新清单在原 v1 结构加
 D3 冷启动修复将能力获取的三张原有表登记为数据库 v3 迁移。v1/v2 只接纳定义逐字匹配的历史迟建表，并复算原账本摘要。未知结构仍阻止启动。升级复用原备份、锁和事务，已有记录留在原表。
 
 主库、后台短写、只读快照和备份连接各自读回 SQLite 策略。`user_version` 与迁移账本逐版原子提交。任务摘要通过同事务失效队列分批追赶，使用 `updated_at DESC, task_id ASC` 的有界 SQL 分页。计数与页内记录来自同一个只读事务。
+
+## 2026-11-26 教师体验与状态动效
+
+本轮 UI 状态适配拆在 renderer/interaction、components/ui/ActionConfirmation 和 ui-system/motion，不新增数据表、IPC 或第二套运行时。记录与报告按学生投影，回执核对对象/版本；备课笔记沿原宿主版本校验。应用面板使用实测栏高适应窄窗。 [实现与证据](../audit/ux-motion-20261126/RESULT.md)

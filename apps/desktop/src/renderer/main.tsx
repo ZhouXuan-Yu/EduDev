@@ -6,6 +6,7 @@ import { WorkbenchProvider } from './ui-system/WorkbenchState';
 import './heroui-styles';
 import './ui-system/base.css';
 import './styles.css';
+import './ui-system/motion/motion.css';
 
 document.documentElement.setAttribute('data-edu-modern','');
 document.documentElement.dataset.theme='light';

@@ -7,7 +7,7 @@
     padding: 5px var(--space-12);
     background: transparent;
     cursor: default;
-    transition: background var(--duration-fast);
+    transition: background var(--edu-motion-fast,120ms);
 }
 
 .skills-list-item:hover {
@@ -70,7 +70,7 @@
     cursor: default;
     border-radius: var(--radius-input, 6px);
     opacity: 0;
-    transition: all var(--duration-fast);
+    transition: color var(--edu-motion-fast,120ms), background-color var(--edu-motion-fast,120ms), opacity var(--edu-motion-fast,120ms);
 }
 
 .skills-list-item:hover .skill-card-delete {

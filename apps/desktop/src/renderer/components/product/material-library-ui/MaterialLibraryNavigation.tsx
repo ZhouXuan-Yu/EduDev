@@ -4,10 +4,11 @@ import { catalogKey, type CatalogFacet, type CatalogScope } from '../../../../sh
 import styles from '../../../ui-system/material-library/material-library.module.css';
 
 /** Every directory, tag and count comes from the full database facets. */
-export function MaterialLibraryNavigation({ directories, tags, states, value, disabled, active, onChange, onClear }: {
+export function MaterialLibraryNavigation({ directories, tags, states, countsKnown = true, value, disabled, active, onChange, onClear }: {
     directories: CatalogFacet[];
     tags: CatalogFacet[];
     states: CatalogFacet[];
+    countsKnown?: boolean;
     value: CatalogScope;
     disabled: boolean;
     active: boolean;
@@ -28,17 +29,17 @@ export function MaterialLibraryNavigation({ directories, tags, states, value, di
         <div className={styles.quickRanges} aria-label="资料快速范围">
             <button type="button" className={styles.treeButton} disabled={disabled}
                 aria-pressed={!active} onClick={onClear} data-testid="materials-range-all">
-                <Library size={16} aria-hidden="true"/><span>全部资料</span><small>{total}</small>
+                <Library size={16} aria-hidden="true"/><span>全部资料</span><small aria-label={countsKnown ? undefined : '数量尚未读取'}>{countsKnown ? total : '—'}</small>
             </button>
             <button type="button" className={styles.treeButton} disabled={disabled}
                 aria-pressed={value.state === 'waiting'} onClick={() => onChange({ ...value, state: value.state === 'waiting' ? '' : 'waiting' })}
                 data-testid="materials-range-waiting">
-                <ListFilter size={16} aria-hidden="true"/><span>待处理</span><small>{waiting}</small>
+                <ListFilter size={16} aria-hidden="true"/><span>待处理</span><small aria-label={countsKnown ? undefined : '数量尚未读取'}>{countsKnown ? waiting : '—'}</small>
             </button>
             <button type="button" className={styles.treeButton} disabled={disabled}
                 aria-pressed={value.state === 'error'} onClick={() => onChange({ ...value, state: value.state === 'error' ? '' : 'error' })}
                 data-testid="materials-range-error">
-                <CircleAlert size={16} aria-hidden="true"/><span>读取失败</span><small>{failed}</small>
+                <CircleAlert size={16} aria-hidden="true"/><span>读取失败</span><small aria-label={countsKnown ? undefined : '数量尚未读取'}>{countsKnown ? failed : '—'}</small>
             </button>
         </div>
         <button type="button" className={styles.mobileNavigationToggle}

@@ -166,7 +166,7 @@
 
 .chevron {
   flex: none;
-  transition: transform 180ms ease;
+  transition: transform var(--edu-motion-standard,180ms) var(--edu-motion-ease,ease);
 }
 
 .chevron[data-expanded='true'] {

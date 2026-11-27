@@ -2,6 +2,10 @@
 
 数据库 R4 对每项验收分别保存代码与构建身份、运行命令和原始证据。人工操作和自动 Windows 验收分别记录。 [验收入口](../acceptance/CURRENT.md#小智数据库-r4)
 
+UI遗留专项的当前构建、来源、测试与原生操作见[报告](../audit/ux-followup-20261126/RESULT.md)和`acceptance/ux-followup-20261126/delivery.json`。保留旧UIR1-01至28及A01–A36影响记录，不以本轮局部通过覆盖原失败/未执行；原生125%、完整状态与真实教师/provider边界仍公开记录。
+
+学习记录附件导入在独立 Windows Electron 和真实 SQLite 验证。 [验收方法和记录](../audit/quality-review-20261126.md#验收方法和记录)
+
 数据库 R3 先验收 AC-00 至 AC-28，按实际 diff 处置 AC-30，合并后在最终 main 构建验证 AC-29。 [验收入口](../acceptance/CURRENT.md#小智数据库-r3)
 
 数据库 R2 按工程包 `contracts/acceptance.json` 的 20 项与 82 个子断言验收，结果以本轮隔离 Windows 构建和验收账本为准。 [验收入口](../acceptance/CURRENT.md#小智数据库-r2)
@@ -4045,3 +4049,7 @@ D3 勾选导入和手动整理入口通过真实 Electron 专项。批量发现�
 ## 数据库基础治理 R1
 
 验收采用附件冻结的 28 项。历史基线的实际 Electron 证据与集成构建的验收证据在账本内分别标明。 [验收入口](../acceptance/CURRENT.md#数据库基础治理-r1)
+
+## 2026-11-26 教师体验与状态动效
+
+教师体验与动效专项按 [报告中的分层证据](../audit/ux-motion-20261126/RESULT.md) 验收。76 个页面/状态/尺寸样本覆盖逐按钮顶栏边界，不能代替全部业务状态、真实 provider 或教师试用。完整 UI_R1 的历史 23 PASS / 1 FAIL / 4 BLOCKED 不被本轮专项通过覆盖。

@@ -1302,10 +1302,18 @@ async function run() {
   teacherNotebookRecordFixture = (await first.page.evaluate((notebookId) => window.omniEdu.listTeacherNotebookRecords(notebookId), teacherNotebookFixture.id))[0];
   assert.match(teacherNotebookRecordFixture.output, /教师修订/, 'record edit click should persist the revised output');
   await first.page.getByTestId(`teacher-notebook-record-delete-${teacherNotebookRecordFixture.id}`).click();
+  await first.page.getByTestId('action-confirmation-cancel').click();
+  assert.equal((await first.page.evaluate((notebookId) => window.omniEdu.listTeacherNotebookRecords(notebookId), teacherNotebookFixture.id)).length, 1, 'canceling deletion must retain the fictional notebook record');
+  await first.page.getByTestId(`teacher-notebook-record-delete-${teacherNotebookRecordFixture.id}`).click();
+  await first.page.getByTestId('action-confirmation-accept').click();
   await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebookRecords(notebookId)).length === 0, teacherNotebookFixture.id);
   await first.page.getByTestId('teacher-notebook-records-show-deleted').check();
   await first.page.getByTestId(`teacher-notebook-record-${teacherNotebookRecordFixture.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId('teacher-notebook-delete').click();
+  await first.page.getByTestId('action-confirmation-cancel').click();
+  assert.equal(await first.page.evaluate(async notebookId => (await window.omniEdu.listTeacherNotebooks(true)).find(item=>item.id===notebookId)?.status, teacherNotebookFixture.id), 'active', 'canceling deletion must retain the fictional notebook');
+  await first.page.getByTestId('teacher-notebook-delete').click();
+  await first.page.getByTestId('action-confirmation-accept').click();
   await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'deleted', teacherNotebookFixture.id);
   await first.page.getByTestId('teacher-notebook-restore').click();
   await waitForAsyncUi(first.page, async (notebookId) => (await window.omniEdu.listTeacherNotebooks(true)).find((item) => item.id === notebookId)?.status === 'active', teacherNotebookFixture.id);

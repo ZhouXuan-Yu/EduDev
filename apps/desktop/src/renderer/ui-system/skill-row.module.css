@@ -10,7 +10,7 @@
   padding: 5px 12px;
   background: transparent;
   cursor: default;
-  transition: background-color 150ms;
+  transition: background-color var(--edu-motion-fast,120ms);
 }
 .skills-list-item:hover { background: var(--default); }
 .skills-list-info {
@@ -50,7 +50,7 @@
   font-size: 12px;
   cursor: default;
   opacity: 0;
-  transition: opacity 150ms, color 150ms, background-color 150ms;
+  transition: opacity var(--edu-motion-fast,120ms), color var(--edu-motion-fast,120ms), background-color var(--edu-motion-fast,120ms);
 }
 .skills-list-item:hover .skill-card-delete,
 .skills-list-item:focus-within .skill-card-delete { opacity: 1; }

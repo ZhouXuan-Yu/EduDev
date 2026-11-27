@@ -1,0 +1,46 @@
+{
+  "suite": "pi-education-injected-boundaries",
+  "success": true,
+  "checks": [
+    {
+      "name": "SDK rejects an unregistered built-in tool without executing it",
+      "pass": true
+    },
+    {
+      "name": "Invalid registered terminal arguments are rejected before the executor",
+      "pass": true
+    },
+    {
+      "name": "Reused call ID in a new run reads current facts, not old cached results",
+      "pass": true
+    },
+    {
+      "name": "Actual Pi run tool returns the current file version distinct from body SHA",
+      "pass": true
+    },
+    {
+      "name": "Same call ID with different arguments becomes explicit conflict",
+      "pass": true
+    },
+    {
+      "name": "Identical duplicate copy calls approve and write only once",
+      "pass": true
+    },
+    {
+      "name": "Transport failure has one failed terminal event and safe error code",
+      "pass": true
+    },
+    {
+      "name": "Empty answer fails, private reasoning stays out of public projection",
+      "pass": true
+    },
+    {
+      "name": "Run budget aborts a stalled stream and releases ownership",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual Pi SDK and real host tools with injected model protocol",
+    "No provider-call or formal UI claim"
+  ]
+}

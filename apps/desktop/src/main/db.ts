@@ -49,7 +49,8 @@ import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
 import {mapQuestionSearchCandidates,ensureQuestionRetrievalIndex,questionKeywordOrder,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import {equivalentQuestionGradeLabels} from '../shared/question-grade';
-import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { closeSync, constants, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { copyFile, mkdir, rm, stat } from 'node:fs/promises';
 import { basename, dirname, extname, join } from 'node:path';
 import type sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
@@ -1796,40 +1797,65 @@ export class OmniEduStore {
   }
 
   async importAttachments(studentId: string, recordId: string, sourcePaths: string[]): Promise<AttachmentImportResult> {
+    const writableRecord = `FROM learning_records AS record
+      JOIN students AS student ON student.id = record.student_id
+      WHERE record.id = ? AND record.student_id = ? AND student.status = 'active'`;
+    const target = [recordId, studentId];
+    const unavailable = '学习记录不存在、不属于当前学生或已归档。';
+    if (!(await this.all(`SELECT 1 ${writableRecord}`, target)).length) throw new Error(unavailable);
+
     const attachmentRoot = this.resolveInsideDataRoot('students', studentId, 'records', recordId, 'attachments');
-    mkdirSync(attachmentRoot, { recursive: true });
+    await mkdir(attachmentRoot, { recursive: true });
     const items: AttachmentImportItem[] = [];
     for (const sourcePath of sourcePaths) {
       const originalName = basename(sourcePath);
+      let ownedCopy: string | undefined;
       try {
-        const stat = statSync(sourcePath);
-        if (!stat.isFile()) throw new Error('不是可导入的文件');
+        if (!(await stat(sourcePath)).isFile()) throw new Error('不是可导入的文件');
         const id = `attachment_${randomUUID()}`;
         const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
         const targetPath = resolveInsideRoot(attachmentRoot, targetName);
-        copyFileSync(sourcePath, targetPath);
+        await copyFile(sourcePath, targetPath, constants.COPYFILE_EXCL);
+        ownedCopy = targetPath;
+        const { size } = await stat(targetPath);
         const hash = await hashFileSha256(targetPath);
-        await this.run(
+        // An archive can commit while the copy or hash is in progress.
+        const changes = await this.runChangeCount(
           `INSERT INTO attachments (
             id, student_id, record_id, file_name, file_path, file_type, file_size, content_hash, extracted_text, created_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', ?)`,
-          [id, studentId, recordId, originalName, targetPath, fileType(originalName), stat.size, hash, now()],
+          ) SELECT ?, record.student_id, record.id, ?, ?, ?, ?, ?, '', ? ${writableRecord}`,
+          [id, originalName, targetPath, fileType(originalName), size, hash, now(), ...target],
         );
-        items.push({ sourcePath, fileName: originalName, ok: true, fileSize: stat.size });
+        if (!changes) throw new Error(unavailable);
+        ownedCopy = undefined;
+        items.push({ sourcePath, fileName: originalName, ok: true, fileSize: size });
       } catch (error) {
+        let errorMessage = error instanceof Error ? error.message : '附件复制失败';
+        if (ownedCopy) {
+          try { await rm(ownedCopy, { force: true }); }
+          catch { errorMessage += ' 未提交的本地副本未能清理。'; }
+        }
         items.push({
           sourcePath,
           fileName: originalName,
           ok: false,
           fileSize: 0,
-          errorMessage: error instanceof Error ? error.message : '附件复制失败',
+          errorMessage,
         });
       }
     }
-    await this.touchStudent(studentId);
     const failed = items.filter((item) => !item.ok).length;
     const status = failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
-    return { status, records: await this.listRecords(studentId), items };
+    // Once written, a failed projection/readback must not turn into a copy failure.
+    const [studentRefresh, records] = await Promise.allSettled([
+      failed < items.length ? this.touchStudent(studentId) : Promise.resolve(),
+      this.listRecords(studentId),
+    ]);
+    return {
+      status, items,
+      records: records.status === 'fulfilled' ? records.value : [],
+      ...(studentRefresh.status === 'rejected' || records.status === 'rejected' ? { refreshFailed: true } : {}),
+    };
   }
 
   async sanitizeProblemText(text: string, studentId?: string): Promise<SanitizedProblemText> {
@@ -6593,7 +6619,9 @@ export class OmniEduStore {
     const grouped = new Map<string, Attachment[]>();
     if (!recordIds.length) return grouped;
     const rows = (await this.all(
-      `SELECT * FROM attachments WHERE record_id IN (${recordIds.map(() => '?').join(',')}) ORDER BY created_at DESC`,
+      `SELECT attachment.* FROM attachments AS attachment
+       JOIN learning_records AS record ON record.id = attachment.record_id AND record.student_id = attachment.student_id
+       WHERE attachment.record_id IN (${recordIds.map(() => '?').join(',')}) ORDER BY attachment.created_at DESC`,
       recordIds,
     )).map(this.mapAttachment);
     for (const attachment of rows) {

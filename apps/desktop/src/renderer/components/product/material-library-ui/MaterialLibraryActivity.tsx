@@ -11,20 +11,21 @@ const taskLabels = {
 const resourceLabels={waiting_resources:'等待本机资源',stopping:'正在停止'};
 const taskLabel=(task:MaterialTaskView)=>task.resourceState?resourceLabels[task.resourceState]:taskLabels[task.status];
 
-/** Local disclosure keeps batch recovery forms and diagnostics mounted. */
+/** First use initializes the panel; later folds preserve its forms and async guards. */
 export function MaterialLibraryDisclosure({ title, testId, children }: {
     title: string;
     testId: string;
     children: ReactNode;
 }) {
     const [expanded, setExpanded] = useState(false);
+    const [visited, setVisited] = useState(false);
     const contentId = useId();
     return <section className={styles.disclosure} data-testid={testId}>
         <h3><button type="button" className={styles.disclosureToggle} aria-expanded={expanded}
-            aria-controls={contentId} onClick={() => setExpanded(value => !value)}>
+            aria-controls={contentId} onClick={() => { setVisited(true); setExpanded(value => !value); }}>
             {title}<ChevronDown size={16} aria-hidden="true"/>
         </button></h3>
-        <div id={contentId} hidden={!expanded}>{children}</div>
+        <div id={contentId} hidden={!expanded}>{visited && children}</div>
     </section>;
 }
 

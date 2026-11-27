@@ -1,0 +1,6255 @@
+{
+  "success": true,
+  "mode": "verification",
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\docs\\audit\\ux-motion-20261126\\verification-pages-RIvdLM",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\data",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\profile",
+  "main": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\ux-motion-header-final\\main\\index.js",
+  "source": "28fa45cd57b7bbc4e34d13f53d89330d0b480d13055f0abb7a1b31cf3a709240",
+  "build": "e3997eb486ccba14b5809ed9f78289db807c3b6d840b473173b1bb4014b0f336",
+  "scope": "Real production Electron with own npm-ci dependencies, clean isolated profile and fictional student created by UI. HTTP forbidden. No provider responses or teaching outputs are simulated.",
+  "pages": [
+    {
+      "id": "ai",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "ai-1366-current.png",
+      "headings": [
+        "今天想完成什么教学任务？"
+      ]
+    },
+    {
+      "id": "ai",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "ai-1920-current.png",
+      "headings": [
+        "今天想完成什么教学任务？"
+      ]
+    },
+    {
+      "id": "ai",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "ai-800-current.png",
+      "headings": [
+        "今天想完成什么教学任务？"
+      ]
+    },
+    {
+      "id": "ai",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "ai-390-current.png",
+      "headings": [
+        "今天想完成什么教学任务？"
+      ]
+    },
+    {
+      "id": "my_tasks",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "my_tasks-1366-current.png",
+      "headings": [
+        "我的任务"
+      ]
+    },
+    {
+      "id": "my_tasks",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "my_tasks-1920-current.png",
+      "headings": [
+        "我的任务"
+      ]
+    },
+    {
+      "id": "my_tasks",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "my_tasks-800-current.png",
+      "headings": [
+        "我的任务"
+      ]
+    },
+    {
+      "id": "my_tasks",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "my_tasks-390-current.png",
+      "headings": [
+        "我的任务"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "knowledge-1366-current.png",
+      "headings": [
+        "资料库",
+        "收录与处理",
+        "自动归档题库",
+        "本地智能检索"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "knowledge-1920-current.png",
+      "headings": [
+        "资料库",
+        "收录与处理",
+        "自动归档题库",
+        "本地智能检索"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "knowledge-800-current.png",
+      "headings": [
+        "资料库",
+        "收录与处理",
+        "自动归档题库",
+        "本地智能检索"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "knowledge-390-current.png",
+      "headings": [
+        "资料库",
+        "收录与处理",
+        "自动归档题库",
+        "本地智能检索"
+      ]
+    },
+    {
+      "id": "teaching",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "teaching-1366-current.png",
+      "headings": [
+        "教学工作台",
+        "教学任务"
+      ]
+    },
+    {
+      "id": "teaching",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "teaching-1920-current.png",
+      "headings": [
+        "教学工作台",
+        "教学任务"
+      ]
+    },
+    {
+      "id": "teaching",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "teaching-800-current.png",
+      "headings": [
+        "教学工作台",
+        "教学任务"
+      ]
+    },
+    {
+      "id": "teaching",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "teaching-390-current.png",
+      "headings": [
+        "教学工作台",
+        "教学任务"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "artifacts-1366-current.png",
+      "headings": [
+        "教学工作台",
+        "教学文件"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "artifacts-1920-current.png",
+      "headings": [
+        "教学工作台",
+        "教学文件"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "artifacts-800-current.png",
+      "headings": [
+        "教学工作台",
+        "教学文件"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "artifacts-390-current.png",
+      "headings": [
+        "教学工作台",
+        "教学文件"
+      ]
+    },
+    {
+      "id": "notebook",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "notebook-1366-current.png",
+      "headings": [
+        "教学工作台",
+        "备课本",
+        "新建备课本",
+        "备课笔记"
+      ]
+    },
+    {
+      "id": "notebook",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "notebook-1920-current.png",
+      "headings": [
+        "教学工作台",
+        "备课本",
+        "新建备课本",
+        "备课笔记"
+      ]
+    },
+    {
+      "id": "notebook",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "notebook-800-current.png",
+      "headings": [
+        "教学工作台",
+        "备课本",
+        "新建备课本",
+        "备课笔记"
+      ]
+    },
+    {
+      "id": "notebook",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "notebook-390-current.png",
+      "headings": [
+        "教学工作台",
+        "备课本",
+        "新建备课本",
+        "备课笔记"
+      ]
+    },
+    {
+      "id": "book",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "book-1366-current.png",
+      "headings": [
+        "教学工作台",
+        "讲义"
+      ]
+    },
+    {
+      "id": "book",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "book-1920-current.png",
+      "headings": [
+        "教学工作台",
+        "讲义"
+      ]
+    },
+    {
+      "id": "book",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "book-800-current.png",
+      "headings": [
+        "教学工作台",
+        "讲义"
+      ]
+    },
+    {
+      "id": "book",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "book-390-current.png",
+      "headings": [
+        "教学工作台",
+        "讲义"
+      ]
+    },
+    {
+      "id": "question_notebook",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "question_notebook-1366-current.png",
+      "headings": [
+        "教学工作台",
+        "题本",
+        "按题意找相似题"
+      ]
+    },
+    {
+      "id": "question_notebook",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "question_notebook-1920-current.png",
+      "headings": [
+        "教学工作台",
+        "题本",
+        "按题意找相似题"
+      ]
+    },
+    {
+      "id": "question_notebook",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "question_notebook-800-current.png",
+      "headings": [
+        "教学工作台",
+        "题本",
+        "按题意找相似题"
+      ]
+    },
+    {
+      "id": "question_notebook",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "question_notebook-390-current.png",
+      "headings": [
+        "教学工作台",
+        "题本",
+        "按题意找相似题"
+      ]
+    },
+    {
+      "id": "paper",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "paper-1366-current.png",
+      "headings": [
+        "出题与组卷",
+        "我的练习与试卷",
+        "命题结构与卷面模板",
+        "题库中还没有题目",
+        "已选题目 0"
+      ]
+    },
+    {
+      "id": "paper",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "paper-1920-current.png",
+      "headings": [
+        "出题与组卷",
+        "我的练习与试卷",
+        "命题结构与卷面模板",
+        "题库中还没有题目",
+        "已选题目 0"
+      ]
+    },
+    {
+      "id": "paper",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "paper-800-current.png",
+      "headings": [
+        "出题与组卷",
+        "我的练习与试卷",
+        "命题结构与卷面模板",
+        "题库中还没有题目",
+        "已选题目 0"
+      ]
+    },
+    {
+      "id": "paper",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "paper-390-current.png",
+      "headings": [
+        "出题与组卷",
+        "我的练习与试卷",
+        "命题结构与卷面模板",
+        "题库中还没有题目",
+        "已选题目 0"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "empty",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-1366-empty.png",
+      "headings": [
+        "学生工作台",
+        "选择一位学生"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "empty",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-1920-empty.png",
+      "headings": [
+        "学生工作台",
+        "选择一位学生"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "empty",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-800-empty.png",
+      "headings": [
+        "学生工作台",
+        "选择一位学生"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "empty",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-390-empty.png",
+      "headings": [
+        "学生工作台",
+        "选择一位学生"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "selected",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-1366-selected.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "selected",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-1920-selected.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "selected",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-800-selected.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "student_workbench",
+      "state": "selected",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "student_workbench-390-selected.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "students",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "students-1366-current.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "students",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "students-1920-current.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "students",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "students-800-current.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "students",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "students-390-current.png",
+      "headings": [
+        "学生目录",
+        "证据时间线",
+        "附件与历史复盘"
+      ]
+    },
+    {
+      "id": "search",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "search-1366-current.png",
+      "headings": [
+        "跨学生证据检索"
+      ]
+    },
+    {
+      "id": "search",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "search-1920-current.png",
+      "headings": [
+        "跨学生证据检索"
+      ]
+    },
+    {
+      "id": "search",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "search-800-current.png",
+      "headings": [
+        "跨学生证据检索"
+      ]
+    },
+    {
+      "id": "search",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "search-390-current.png",
+      "headings": [
+        "跨学生证据检索"
+      ]
+    },
+    {
+      "id": "intake",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "intake-1366-current.png",
+      "headings": [
+        "当前学生",
+        "添加学习记录",
+        "证据时间线"
+      ]
+    },
+    {
+      "id": "intake",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "intake-1920-current.png",
+      "headings": [
+        "当前学生",
+        "添加学习记录",
+        "证据时间线"
+      ]
+    },
+    {
+      "id": "intake",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "intake-800-current.png",
+      "headings": [
+        "当前学生",
+        "添加学习记录",
+        "证据时间线"
+      ]
+    },
+    {
+      "id": "intake",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "intake-390-current.png",
+      "headings": [
+        "当前学生",
+        "添加学习记录",
+        "证据时间线"
+      ]
+    },
+    {
+      "id": "mistakes",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mistakes-1366-current.png",
+      "headings": [
+        "错题资产工作区"
+      ]
+    },
+    {
+      "id": "mistakes",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mistakes-1920-current.png",
+      "headings": [
+        "错题资产工作区"
+      ]
+    },
+    {
+      "id": "mistakes",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mistakes-800-current.png",
+      "headings": [
+        "错题资产工作区"
+      ]
+    },
+    {
+      "id": "mistakes",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mistakes-390-current.png",
+      "headings": [
+        "错题资产工作区"
+      ]
+    },
+    {
+      "id": "mastery",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mastery-1366-current.png",
+      "headings": [
+        "UI验收学生甲的学习计划"
+      ]
+    },
+    {
+      "id": "mastery",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mastery-1920-current.png",
+      "headings": [
+        "UI验收学生甲的学习计划"
+      ]
+    },
+    {
+      "id": "mastery",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mastery-800-current.png",
+      "headings": [
+        "UI验收学生甲的学习计划"
+      ]
+    },
+    {
+      "id": "mastery",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "mastery-390-current.png",
+      "headings": [
+        "UI验收学生甲的学习计划"
+      ]
+    },
+    {
+      "id": "review",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "review-1366-current.png",
+      "headings": [
+        "复盘条件",
+        "报告编辑器",
+        "家长版、证据与质量检查"
+      ]
+    },
+    {
+      "id": "review",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "review-1920-current.png",
+      "headings": [
+        "复盘条件",
+        "报告编辑器",
+        "家长版、证据与质量检查"
+      ]
+    },
+    {
+      "id": "review",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "review-800-current.png",
+      "headings": [
+        "复盘条件",
+        "报告编辑器",
+        "家长版、证据与质量检查"
+      ]
+    },
+    {
+      "id": "review",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "review-390-current.png",
+      "headings": [
+        "复盘条件",
+        "报告编辑器",
+        "家长版、证据与质量检查"
+      ]
+    },
+    {
+      "id": "analytics",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "analytics-1366-current.png",
+      "headings": [
+        "教师工作台概览",
+        "AI 与知识资产状态",
+        "待续费风险 · 未接入",
+        "高频薄弱点 · 未接入",
+        "小智运行观测"
+      ]
+    },
+    {
+      "id": "analytics",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "analytics-1920-current.png",
+      "headings": [
+        "教师工作台概览",
+        "AI 与知识资产状态",
+        "待续费风险 · 未接入",
+        "高频薄弱点 · 未接入",
+        "小智运行观测"
+      ]
+    },
+    {
+      "id": "analytics",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "analytics-800-current.png",
+      "headings": [
+        "教师工作台概览",
+        "AI 与知识资产状态",
+        "待续费风险 · 未接入",
+        "高频薄弱点 · 未接入",
+        "小智运行观测"
+      ]
+    },
+    {
+      "id": "analytics",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "analytics-390-current.png",
+      "headings": [
+        "教师工作台概览",
+        "AI 与知识资产状态",
+        "待续费风险 · 未接入",
+        "高频薄弱点 · 未接入",
+        "小智运行观测"
+      ]
+    },
+    {
+      "id": "settings",
+      "state": "current",
+      "viewport": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "settings-1366-current.png",
+      "headings": [
+        "设置",
+        "模型与连接",
+        "联网资料",
+        "可用模型",
+        "账户余额"
+      ]
+    },
+    {
+      "id": "settings",
+      "state": "current",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "settings-1920-current.png",
+      "headings": [
+        "设置",
+        "模型与连接",
+        "联网资料",
+        "可用模型",
+        "账户余额"
+      ]
+    },
+    {
+      "id": "settings",
+      "state": "current",
+      "viewport": {
+        "width": 800,
+        "height": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "settings-800-current.png",
+      "headings": [
+        "设置",
+        "模型与连接",
+        "联网资料",
+        "可用模型",
+        "账户余额"
+      ]
+    },
+    {
+      "id": "settings",
+      "state": "current",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 1.5,
+        "horizontalOverflow": false
+      },
+      "screenshot": "settings-390-current.png",
+      "headings": [
+        "设置",
+        "模型与连接",
+        "联网资料",
+        "可用模型",
+        "账户余额"
+      ]
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "settings": [
+    {
+      "id": "interface",
+      "screenshot": "settings-interface.png",
+      "text": "界面偏好\n对话\n追加消息的发送时机\nEnter 本轮结束后发送 · Ctrl+Enter 补充到本轮\n本轮结束后发送\n \n本轮结束后发送\n补充到本轮\n工作区面板\n展开左侧导航\n关闭后保留图标导航，收起项目和最近对话。\n任务详情\n显示任务、来源和本会话设置。\n本地文件面板\n有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。"
+    },
+    {
+      "id": "teacher-memory",
+      "screenshot": "settings-teacher-memory.png",
+      "text": "教师记忆\n教学画像\n仅匹配教学画像的偏好，需要当轮的学科和年级都相符。教材记录保存在本机。\n学科\n未设置\n \n未设置\n语文\n数学\n英语\n物理\n化学\n生物\n历史\n地理\n政治\n科学\n信息技术\n音乐\n美术\n体育\n年级\n未设置\n \n未设置\n一年级\n二年级\n三年级\n四年级\n五年级\n六年级\n七年级\n八年级\n九年级\n高一\n高二\n高三\n教材版本（选填）\n已确认偏好\n在对话中可明确保存新的长期偏好。每轮明确提出的要求优先。\n\n还没有已确认的长期偏好。\n\n保存教师记忆\n可修订的记忆条目\n可参考的历史\n选择允许小智查找的记录。候选只供本机预览，聊天中需要另选本次引用。\n\n使用本机关键词查找\n\n选择历史对话\n请选择\n新对话"
+    },
+    {
+      "id": "permissions",
+      "screenshot": "settings-permissions.png",
+      "text": "资料与权限\n\n授权属于当前对话，明确范围内自动执行，新增范围集中申请。\n\n本会话工作目录\n新对话\n小智生成文件\n实际操作按当前主进程授权范围执行，新范围集中申请。\n选择目录\n自主模式\n\n模式作用于当前明确授权的工作目录。网络、工具连接和资料外发分别授权。\n\n请求批准接受编辑替我批准完全访问\n刷新权限\n\nD:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\XiaozhiOutputs\\1043057f7ee5d705\\aisession_27907eb3-b638-470a-b452-65e869da02eb · 删除、读取、写入或覆盖\n\n撤销\n本地环境\n\n正在检查已授本地环境…\n\n外部能力状态\n重新检查\n联网与资料保护\n\n小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。\n\n原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。\n\n本会话记忆\n未开启"
+    },
+    {
+      "id": "backup",
+      "screenshot": "settings-backup.png",
+      "text": "本地备份\n归档\n备份与归档\n\n在本机保存和检查资料副本。\n\n本地备份\n\n换机包带走教学资料、题库、对话、已登记的成果和偏好。模型密钥、MCP 连接和工具授权在新电脑重新配置。\n\n本地资料位置：D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\data\n\n创建本地备份\n创建换机包\n检查已有备份\n恢复备份到新目录\n按更新记录准备回退\n\n选择资料目录之外的位置保存备份。\n\nWindows 版本更新\n\n检查已下载的安装包，先保存可恢复的数据快照。检查签名有效后，会查询小智的公开发行记录。\n\n检查安装包"
+    },
+    {
+      "id": "skills",
+      "screenshot": "settings-skills.png",
+      "text": "技能\n\n整理小智处理教育与办公任务的工作方法。\n\n保存工作方法\n刷新版本\n\n当前教师 默认老师。个人技能默认私有。\n\n版本与来源\n选择技能\n官方 · 教育知识查证\n官方 · 备课资料整理\n官方 · 题目分析与练习草稿\n官方 · 科普绘图（Anatomy）\n官方 · 教学办公文稿\n团队\n本地团队名称\n创建本地团队\n导入本地技能\n刷新\n已归档\n教育知识查证内建 · v2 · 已启用\n核对教师知识库、授权资料或已启用联网的官方网页。适用于教学政策查证、资料比较和需要真实来源的任务。\n预览\n备课资料整理内建 · v2 · 已启用\n根据教师授权的本地资料或知识库整理备课、课时目标、教学流程与来源。适用于阅读教学资料并制定有证据的教案草稿。\n预览\n题目分析与练习草稿内建 · v2 · 已启用\n分析教师提供的脱敏题目、核对解答、整理知识点与练习草稿。适用于教学题目讲解和需要教师校正的变式建议。\n预览\n科普绘图（Anatomy）内建 · v2 · 已启用\n使用Anatomy等轴测SVG几何工具绘制物理仪器、机械结构与科学原理的科普示意图。适用于科普绘图、科学插图、杠杆/测量/装置结构说明；教师预览确认后保存本机S…\n预览\n教学办公文稿内建 · v2 · 已启用\n根据授权材料起草教研计划、纪要、通知与教学办公文稿；用当前注册工具提出文档草稿，经教师审阅后保存。\n预览\n\n选择技能查看完整说明。导入后默认关闭。"
+    },
+    {
+      "id": "tools",
+      "screenshot": "settings-tools.png",
+      "text": "本地计算工具\n需要时由小智准备认可的免费组件，然后继续任务；已有工具可离线使用。\n本地 JavaScript 计算 · 3.6.2\n可用 · 内置组件已通过实际健康检查\n准备工具\n\n可离线计算\n\n正在计算 0 个 · 排队 0 个 · 最多同时 2 个\n\n版本管理\n来源与组件信息\n重新检查\n受管外部能力\n\n正在读取能力状态…\n\n刷新能力状态\n本地扩展\n导入本地扩展包，在当前小智任务中准备并选择所需版本。\n导入本地扩展\n\n请在小智当前任务中准备所需能力。 返回当前小智对话，启动任务后可准备或选择扩展版本。\n\n尚无本地扩展导入记录。\n\n刷新扩展状态\n发现与准备外部能力\n搜索公开能力目录\n搜索\n\n正在读取能力状态…\n\n刷新能力状态\n外部工具连接（高级）\n仅连接你信任的服务。工具参数会发送至该服务；读取工具也可能接触服务自身的数据。\n\n请核实服务或程序的来源与用途，工具的只读声明来自服务。选中工具均按外部操作治理，每次调用按当前任务权限校验并执行一次尝试。学生原图和未脱敏资料不得通过外部工具传出。\n\n刷新连接列表\n\n尚未添加外部工具。\n\n添加连接\n远程 HTTP\n本地程序 stdio\n连接名称\n服务地址（HTTPS）\nBearer 密钥（可选）\n我已确认此服务或程序可信，并了解其数据访问范围\n保存连接"
+    },
+    {
+      "id": "diagnostics",
+      "screenshot": "settings-diagnostics.png",
+      "text": "策略与诊断\n\n按需核对执行策略与候选记录，不改变会话权限。\n\n当前配置来源\n策略选择记录（高级）\n查看本会话准备采用的呈现策略与来源版本。记录不包含教师原话、学生事实或模型私有推理。\n刷新选择记录\n\n还没有选择记录。新任务会记录实际选择，旧历史不补造记录。\n\n表达偏好候选（高级）\n只学习表达方式；学生成绩、答案和教学事实不由这些候选修改。复核在本机完成。\n刷新候选\n\n尚无表达候选。明确偏好可在对话中提出；隐式反馈需要独立样本与试用。\n\n本轮诊断（高级）\n在本机查看与另存，不自动上传，也不会重新执行任务。\n\n还没有运行记录。诊断不会为此创建模型请求。"
+    },
+    {
+      "id": "capabilities",
+      "screenshot": "settings-capabilities.png",
+      "text": "能力中心\n\n安装、核验、任务授权与可用性分别核对。读取本页不会连接工具、运行探测或安装组件。\n\n搜索能力\n搜索\n刷新记录\n管理工具与安装\n管理教育技能\n查看资料与权限\n\n选择任务后可核对授权与可用性。\n\n中心记录 63 · 当前筛选 63 · 同一能力的不同提供方分别列出。\n\n查看可用扩展 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取工具目录\n\n来源与核验详情\n运行已授权扩展 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对扩展运行授权\n\n来源与核验详情\n准备本地扩展 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 准备本地扩展\n\n来源与核验详情\n查找可用能力 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取工具目录\n\n来源与核验详情\n查看终端作业 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取当前终端作业\n\n来源与核验详情\n浏览网页 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 使用授权网页\n\n来源与核验详情\n修改教学文档 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对文件范围\n\n来源与核验详情\n查看已发送附件 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对教学资料范围\n\n来源与核验详情\n查找资料库文件 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对教学资料范围\n\n来源与核验详情\n读取已发送附件 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对教学资料范围\n\n来源与核验详情\n读取办公文档 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对文件范围\n\n来源与核验详情\n读取资料库正文 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对教学资料范围\n\n来源与核验详情\n确认公开图片分析 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 需核对教学资料范围\n\n来源与核验详情\n准备教学工具 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 准备教学工具\n\n来源与核验详情\n读取教育技能 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取已选技能\n\n来源与核验详情\n核对已有操作结果 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取已有操作结果\n\n来源与核验详情\n读取教师要求 1.0.0\n\n来源 小智内置工具 · 登记能力\n\n安装\n随应用提供\n核验\n已核验\n任务授权\n需任务核对\n可用性\n满足当前能力要求\n\n调用范围 读取当前任务\n\n来源与核验详情\n检索老师知识库 1.0.0\n\n来源 小智内置工具 · 登记能力\n"
+    },
+    {
+      "id": "models",
+      "screenshot": "settings-models.png",
+      "text": "模型与连接\n\n配置模型后，新对话使用这里的默认值。\n\nAPI 密钥\n\n留空时保留已有密钥。当前使用 DeepSeek 官方接口。\n\n尚未配置\n\n验证密钥\n默认模型\n\n会话内可以单独选择，已有对话继续使用原模型。\n\n跟随当前来源 · deepseek-flash\n默认思考强度\n\n选择后即保存，没有会话覆盖的对话从下一轮生效。\n\n默认思考：自动\n\n模型思考能力尚未确认，请在设置中刷新官方目录；当前仅可自动。 默认适用于没有会话覆盖的对话，不切换模型。\n\n保存模型设置\n最近配置修改\n联网资料\n\n公开网页用于补充资料，原始文件与学生图片保留本机。\n\n允许搜索和读取公开网页\n\n只发送必要的脱敏查询，搜索摘要与网页正文分别标注来源。\n\n网络解析\n\n仅用于小智的公开资料查询，不修改系统网络设置。自动模式在系统解析失败或返回代理虚拟地址时使用国内解析。\n\n自动（推荐）\n保存联网设置\n可用模型与账户信息"
+    }
+  ],
+  "cssom": [
+    {
+      "state": "normal",
+      "computed": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.2103 0.0059 285.89)",
+        "outline": "oklch(0.2103 0.0059 285.89) none 2.66667px",
+        "font": "14px / 22.4px ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "selected": null
+      },
+      "rules": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font-style",
+              "value": ""
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": ""
+            },
+            {
+              "name": "font-variant-caps",
+              "value": ""
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": ""
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": ""
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": ""
+            },
+            {
+              "name": "font-variant-position",
+              "value": ""
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": ""
+            },
+            {
+              "name": "font-weight",
+              "value": ""
+            },
+            {
+              "name": "font-stretch",
+              "value": ""
+            },
+            {
+              "name": "font-size",
+              "value": ""
+            },
+            {
+              "name": "font-family",
+              "value": ""
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": ""
+            },
+            {
+              "name": "font-size-adjust",
+              "value": ""
+            },
+            {
+              "name": "font-kerning",
+              "value": ""
+            },
+            {
+              "name": "font-feature-settings",
+              "value": ""
+            },
+            {
+              "name": "font-variation-settings",
+              "value": ""
+            },
+            {
+              "name": "font-language-override",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "fieldtext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-right-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-left-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "background-color",
+              "value": "buttonface"
+            },
+            {
+              "name": "color",
+              "value": "buttontext"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-color",
+              "value": "var(--border,currentColor)",
+              "implicit": false,
+              "text": "border-color:var(--border,currentColor)",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 29606,
+                "endLine": 1,
+                "endColumn": 29645
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": ""
+            },
+            {
+              "name": "border-right-color",
+              "value": ""
+            },
+            {
+              "name": "border-bottom-color",
+              "value": ""
+            },
+            {
+              "name": "border-left-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "button, input, select, optgroup, textarea",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27733,
+                "endLine": 1,
+                "endColumn": 27746
+              }
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-feature-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27746,
+                "endLine": 1,
+                "endColumn": 27776
+              }
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-variation-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27776,
+                "endLine": 1,
+                "endColumn": 27808
+              }
+            },
+            {
+              "name": "color",
+              "value": "inherit",
+              "implicit": false,
+              "text": "color:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27831,
+                "endLine": 1,
+                "endColumn": 27845
+              }
+            },
+            {
+              "name": "background-color",
+              "value": "#0000",
+              "implicit": false,
+              "text": "background-color:#0000;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27855,
+                "endLine": 1,
+                "endColumn": 27878
+              }
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "inherit"
+            },
+            {
+              "name": "background-color",
+              "value": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "selector": "button, input:where([type=\"button\"], [type=\"reset\"], [type=\"submit\"])",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": []
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 4763,
+                "startColumn": 4,
+                "endLine": 4763,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 4765,
+                "startColumn": 4,
+                "endLine": 4765,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background",
+              "value": "#fff",
+              "implicit": false,
+              "text": "background: #fff;",
+              "disabled": false,
+              "range": {
+                "startLine": 4769,
+                "startColumn": 4,
+                "endLine": 4769,
+                "endColumn": 21
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(255, 255, 255)"
+                }
+              ]
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "border-top-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-right-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-left-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223, ._advancedToggle_1fpx4_225",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "transparent",
+              "implicit": false,
+              "text": "background: transparent;",
+              "disabled": false,
+              "range": {
+                "startLine": 2834,
+                "startColumn": 2,
+                "endLine": 2834,
+                "endColumn": 26
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "transparent"
+                }
+              ]
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 2835,
+                "startColumn": 2,
+                "endLine": 2835,
+                "endColumn": 27
+              }
+            },
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 2836,
+                "startColumn": 2,
+                "endLine": 2836,
+                "endColumn": 16
+              }
+            },
+            {
+              "name": "font-size",
+              "value": "14px",
+              "implicit": false,
+              "text": "font-size: 14px;",
+              "disabled": false,
+              "range": {
+                "startLine": 2837,
+                "startColumn": 2,
+                "endLine": 2837,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "transparent"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "14px"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "state": "hover",
+      "computed": {
+        "background": "oklch(0.94 0.001 286.375)",
+        "color": "oklch(0.2103 0.0059 285.89)",
+        "outline": "oklch(0.2103 0.0059 285.89) none 2.66667px",
+        "font": "14px / 22.4px ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "selected": null
+      },
+      "rules": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font-style",
+              "value": ""
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": ""
+            },
+            {
+              "name": "font-variant-caps",
+              "value": ""
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": ""
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": ""
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": ""
+            },
+            {
+              "name": "font-variant-position",
+              "value": ""
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": ""
+            },
+            {
+              "name": "font-weight",
+              "value": ""
+            },
+            {
+              "name": "font-stretch",
+              "value": ""
+            },
+            {
+              "name": "font-size",
+              "value": ""
+            },
+            {
+              "name": "font-family",
+              "value": ""
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": ""
+            },
+            {
+              "name": "font-size-adjust",
+              "value": ""
+            },
+            {
+              "name": "font-kerning",
+              "value": ""
+            },
+            {
+              "name": "font-feature-settings",
+              "value": ""
+            },
+            {
+              "name": "font-variation-settings",
+              "value": ""
+            },
+            {
+              "name": "font-language-override",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "fieldtext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-right-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-left-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "background-color",
+              "value": "buttonface"
+            },
+            {
+              "name": "color",
+              "value": "buttontext"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-color",
+              "value": "var(--border,currentColor)",
+              "implicit": false,
+              "text": "border-color:var(--border,currentColor)",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 29606,
+                "endLine": 1,
+                "endColumn": 29645
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": ""
+            },
+            {
+              "name": "border-right-color",
+              "value": ""
+            },
+            {
+              "name": "border-bottom-color",
+              "value": ""
+            },
+            {
+              "name": "border-left-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "button, input, select, optgroup, textarea",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27733,
+                "endLine": 1,
+                "endColumn": 27746
+              }
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-feature-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27746,
+                "endLine": 1,
+                "endColumn": 27776
+              }
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-variation-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27776,
+                "endLine": 1,
+                "endColumn": 27808
+              }
+            },
+            {
+              "name": "color",
+              "value": "inherit",
+              "implicit": false,
+              "text": "color:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27831,
+                "endLine": 1,
+                "endColumn": 27845
+              }
+            },
+            {
+              "name": "background-color",
+              "value": "#0000",
+              "implicit": false,
+              "text": "background-color:#0000;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27855,
+                "endLine": 1,
+                "endColumn": 27878
+              }
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "inherit"
+            },
+            {
+              "name": "background-color",
+              "value": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "selector": "button, input:where([type=\"button\"], [type=\"reset\"], [type=\"submit\"])",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": []
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 4763,
+                "startColumn": 4,
+                "endLine": 4763,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 4765,
+                "startColumn": 4,
+                "endLine": 4765,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background",
+              "value": "#fff",
+              "implicit": false,
+              "text": "background: #fff;",
+              "disabled": false,
+              "range": {
+                "startLine": 4769,
+                "startColumn": 4,
+                "endLine": 4769,
+                "endColumn": 21
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(255, 255, 255)"
+                }
+              ]
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "border-top-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-right-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-left-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223, ._advancedToggle_1fpx4_225",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "transparent",
+              "implicit": false,
+              "text": "background: transparent;",
+              "disabled": false,
+              "range": {
+                "startLine": 2834,
+                "startColumn": 2,
+                "endLine": 2834,
+                "endColumn": 26
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "transparent"
+                }
+              ]
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 2835,
+                "startColumn": 2,
+                "endLine": 2835,
+                "endColumn": 27
+              }
+            },
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 2836,
+                "startColumn": 2,
+                "endLine": 2836,
+                "endColumn": 16
+              }
+            },
+            {
+              "name": "font-size",
+              "value": "14px",
+              "implicit": false,
+              "text": "font-size: 14px;",
+              "disabled": false,
+              "range": {
+                "startLine": 2837,
+                "startColumn": 2,
+                "endLine": 2837,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "transparent"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "14px"
+            }
+          ]
+        },
+        {
+          "selector": "button:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "#f6f6f3",
+              "implicit": false,
+              "text": "background: #f6f6f3;",
+              "disabled": false,
+              "range": {
+                "startLine": 4773,
+                "startColumn": 4,
+                "endLine": 4773,
+                "endColumn": 24
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(246, 246, 243)"
+                }
+              ]
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(246, 246, 243)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223:hover, ._advancedToggle_1fpx4_225:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "var(--default)",
+              "implicit": false,
+              "text": "background: var(--default);",
+              "disabled": false,
+              "range": {
+                "startLine": 2845,
+                "startColumn": 2,
+                "endLine": 2845,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "state": "focus",
+      "computed": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.2103 0.0059 285.89)",
+        "outline": "oklch(0.2103 0.0059 285.89) none 2.66667px",
+        "font": "14px / 22.4px ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "selected": null
+      },
+      "rules": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font-style",
+              "value": ""
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": ""
+            },
+            {
+              "name": "font-variant-caps",
+              "value": ""
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": ""
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": ""
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": ""
+            },
+            {
+              "name": "font-variant-position",
+              "value": ""
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": ""
+            },
+            {
+              "name": "font-weight",
+              "value": ""
+            },
+            {
+              "name": "font-stretch",
+              "value": ""
+            },
+            {
+              "name": "font-size",
+              "value": ""
+            },
+            {
+              "name": "font-family",
+              "value": ""
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": ""
+            },
+            {
+              "name": "font-size-adjust",
+              "value": ""
+            },
+            {
+              "name": "font-kerning",
+              "value": ""
+            },
+            {
+              "name": "font-feature-settings",
+              "value": ""
+            },
+            {
+              "name": "font-variation-settings",
+              "value": ""
+            },
+            {
+              "name": "font-language-override",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "fieldtext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-right-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-left-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "background-color",
+              "value": "buttonface"
+            },
+            {
+              "name": "color",
+              "value": "buttontext"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-color",
+              "value": "var(--border,currentColor)",
+              "implicit": false,
+              "text": "border-color:var(--border,currentColor)",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 29606,
+                "endLine": 1,
+                "endColumn": 29645
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": ""
+            },
+            {
+              "name": "border-right-color",
+              "value": ""
+            },
+            {
+              "name": "border-bottom-color",
+              "value": ""
+            },
+            {
+              "name": "border-left-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "button, input, select, optgroup, textarea",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27733,
+                "endLine": 1,
+                "endColumn": 27746
+              }
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-feature-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27746,
+                "endLine": 1,
+                "endColumn": 27776
+              }
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-variation-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27776,
+                "endLine": 1,
+                "endColumn": 27808
+              }
+            },
+            {
+              "name": "color",
+              "value": "inherit",
+              "implicit": false,
+              "text": "color:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27831,
+                "endLine": 1,
+                "endColumn": 27845
+              }
+            },
+            {
+              "name": "background-color",
+              "value": "#0000",
+              "implicit": false,
+              "text": "background-color:#0000;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27855,
+                "endLine": 1,
+                "endColumn": 27878
+              }
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "inherit"
+            },
+            {
+              "name": "background-color",
+              "value": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "selector": "button, input:where([type=\"button\"], [type=\"reset\"], [type=\"submit\"])",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": []
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 4763,
+                "startColumn": 4,
+                "endLine": 4763,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 4765,
+                "startColumn": 4,
+                "endLine": 4765,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background",
+              "value": "#fff",
+              "implicit": false,
+              "text": "background: #fff;",
+              "disabled": false,
+              "range": {
+                "startLine": 4769,
+                "startColumn": 4,
+                "endLine": 4769,
+                "endColumn": 21
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(255, 255, 255)"
+                }
+              ]
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "border-top-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-right-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-left-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223, ._advancedToggle_1fpx4_225",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "transparent",
+              "implicit": false,
+              "text": "background: transparent;",
+              "disabled": false,
+              "range": {
+                "startLine": 2834,
+                "startColumn": 2,
+                "endLine": 2834,
+                "endColumn": 26
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "transparent"
+                }
+              ]
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 2835,
+                "startColumn": 2,
+                "endLine": 2835,
+                "endColumn": 27
+              }
+            },
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 2836,
+                "startColumn": 2,
+                "endLine": 2836,
+                "endColumn": 16
+              }
+            },
+            {
+              "name": "font-size",
+              "value": "14px",
+              "implicit": false,
+              "text": "font-size: 14px;",
+              "disabled": false,
+              "range": {
+                "startLine": 2837,
+                "startColumn": 2,
+                "endLine": 2837,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "transparent"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "14px"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "state": "selected",
+      "computed": {
+        "background": "oklab(0.93522 -0.00543053 -0.0187286)",
+        "color": "rgb(0, 47, 167)",
+        "outline": "rgb(0, 47, 167) none 2.66667px",
+        "font": "600 14px / 22.4px ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "selected": "page"
+      },
+      "rules": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font-style",
+              "value": ""
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": ""
+            },
+            {
+              "name": "font-variant-caps",
+              "value": ""
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": ""
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": ""
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": ""
+            },
+            {
+              "name": "font-variant-position",
+              "value": ""
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": ""
+            },
+            {
+              "name": "font-weight",
+              "value": ""
+            },
+            {
+              "name": "font-stretch",
+              "value": ""
+            },
+            {
+              "name": "font-size",
+              "value": ""
+            },
+            {
+              "name": "font-family",
+              "value": ""
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": ""
+            },
+            {
+              "name": "font-size-adjust",
+              "value": ""
+            },
+            {
+              "name": "font-kerning",
+              "value": ""
+            },
+            {
+              "name": "font-feature-settings",
+              "value": ""
+            },
+            {
+              "name": "font-variation-settings",
+              "value": ""
+            },
+            {
+              "name": "font-language-override",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "fieldtext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-right-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-left-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "background-color",
+              "value": "buttonface"
+            },
+            {
+              "name": "color",
+              "value": "buttontext"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-color",
+              "value": "var(--border,currentColor)",
+              "implicit": false,
+              "text": "border-color:var(--border,currentColor)",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 29606,
+                "endLine": 1,
+                "endColumn": 29645
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": ""
+            },
+            {
+              "name": "border-right-color",
+              "value": ""
+            },
+            {
+              "name": "border-bottom-color",
+              "value": ""
+            },
+            {
+              "name": "border-left-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "button, input, select, optgroup, textarea",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27733,
+                "endLine": 1,
+                "endColumn": 27746
+              }
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-feature-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27746,
+                "endLine": 1,
+                "endColumn": 27776
+              }
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-variation-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27776,
+                "endLine": 1,
+                "endColumn": 27808
+              }
+            },
+            {
+              "name": "color",
+              "value": "inherit",
+              "implicit": false,
+              "text": "color:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27831,
+                "endLine": 1,
+                "endColumn": 27845
+              }
+            },
+            {
+              "name": "background-color",
+              "value": "#0000",
+              "implicit": false,
+              "text": "background-color:#0000;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27855,
+                "endLine": 1,
+                "endColumn": 27878
+              }
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "inherit"
+            },
+            {
+              "name": "background-color",
+              "value": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "selector": "button, input:where([type=\"button\"], [type=\"reset\"], [type=\"submit\"])",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": []
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 4763,
+                "startColumn": 4,
+                "endLine": 4763,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 4765,
+                "startColumn": 4,
+                "endLine": 4765,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background",
+              "value": "#fff",
+              "implicit": false,
+              "text": "background: #fff;",
+              "disabled": false,
+              "range": {
+                "startLine": 4769,
+                "startColumn": 4,
+                "endLine": 4769,
+                "endColumn": 21
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(255, 255, 255)"
+                }
+              ]
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "border-top-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-right-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-left-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223, ._advancedToggle_1fpx4_225",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "transparent",
+              "implicit": false,
+              "text": "background: transparent;",
+              "disabled": false,
+              "range": {
+                "startLine": 2834,
+                "startColumn": 2,
+                "endLine": 2834,
+                "endColumn": 26
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "transparent"
+                }
+              ]
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 2835,
+                "startColumn": 2,
+                "endLine": 2835,
+                "endColumn": 27
+              }
+            },
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 2836,
+                "startColumn": 2,
+                "endLine": 2836,
+                "endColumn": 16
+              }
+            },
+            {
+              "name": "font-size",
+              "value": "14px",
+              "implicit": false,
+              "text": "font-size: 14px;",
+              "disabled": false,
+              "range": {
+                "startLine": 2837,
+                "startColumn": 2,
+                "endLine": 2837,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "transparent"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "14px"
+            }
+          ]
+        },
+        {
+          "selector": "button:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "#f6f6f3",
+              "implicit": false,
+              "text": "background: #f6f6f3;",
+              "disabled": false,
+              "range": {
+                "startLine": 4773,
+                "startColumn": 4,
+                "endLine": 4773,
+                "endColumn": 24
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(246, 246, 243)"
+                }
+              ]
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(246, 246, 243)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223:hover, ._advancedToggle_1fpx4_225:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "var(--default)",
+              "implicit": false,
+              "text": "background: var(--default);",
+              "disabled": false,
+              "range": {
+                "startLine": 2845,
+                "startColumn": 2,
+                "endLine": 2845,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223[aria-current=\"page\"]",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "color-mix(in oklab, var(--accent) 10%, var(--background))",
+              "implicit": false,
+              "text": "background: color-mix(in oklab, var(--accent) 10%, var(--background));",
+              "disabled": false,
+              "range": {
+                "startLine": 2849,
+                "startColumn": 2,
+                "endLine": 2849,
+                "endColumn": 72
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--edu-accent, #002fa7)",
+              "implicit": false,
+              "text": "color: var(--edu-accent, #002fa7);",
+              "disabled": false,
+              "range": {
+                "startLine": 2850,
+                "startColumn": 2,
+                "endLine": 2850,
+                "endColumn": 36
+              }
+            },
+            {
+              "name": "font-weight",
+              "value": "600",
+              "implicit": false,
+              "text": "font-weight: 600;",
+              "disabled": false,
+              "range": {
+                "startLine": 2851,
+                "startColumn": 2,
+                "endLine": 2851,
+                "endColumn": 19
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "var(--edu-accent, #002fa7)"
+            },
+            {
+              "name": "font-weight",
+              "value": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "state": "pressed",
+      "computed": {
+        "background": "oklab(0.907236 -0.00977494 -0.0337114)",
+        "color": "rgb(0, 47, 167)",
+        "outline": "rgb(0, 47, 167) none 2.66667px",
+        "font": "600 14px / 22.4px ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+        "selected": "page"
+      },
+      "rules": [
+        {
+          "selector": "button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input, textarea, select, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font-style",
+              "value": ""
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": ""
+            },
+            {
+              "name": "font-variant-caps",
+              "value": ""
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": ""
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": ""
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": ""
+            },
+            {
+              "name": "font-variant-position",
+              "value": ""
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": ""
+            },
+            {
+              "name": "font-weight",
+              "value": ""
+            },
+            {
+              "name": "font-stretch",
+              "value": ""
+            },
+            {
+              "name": "font-size",
+              "value": ""
+            },
+            {
+              "name": "font-family",
+              "value": ""
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": ""
+            },
+            {
+              "name": "font-size-adjust",
+              "value": ""
+            },
+            {
+              "name": "font-kerning",
+              "value": ""
+            },
+            {
+              "name": "font-feature-settings",
+              "value": ""
+            },
+            {
+              "name": "font-variation-settings",
+              "value": ""
+            },
+            {
+              "name": "font-language-override",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "fieldtext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-right-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "border-left-color",
+              "value": "buttonborder"
+            },
+            {
+              "name": "background-color",
+              "value": "buttonface"
+            },
+            {
+              "name": "color",
+              "value": "buttontext"
+            }
+          ]
+        },
+        {
+          "selector": "input[type=\"button\" i]:active, input[type=\"submit\" i]:active, input[type=\"reset\" i]:active, input[type=\"file\" i]:active::-webkit-file-upload-button, button:active",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "input[type=\"button\" i]:active, input[type=\"submit\" i]:active, input[type=\"reset\" i]:active, input[type=\"file\" i]:active::-webkit-file-upload-button, button:active",
+          "origin": "user-agent",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "border-color",
+              "value": "var(--border,currentColor)",
+              "implicit": false,
+              "text": "border-color:var(--border,currentColor)",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 29606,
+                "endLine": 1,
+                "endColumn": 29645
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": ""
+            },
+            {
+              "name": "border-right-color",
+              "value": ""
+            },
+            {
+              "name": "border-bottom-color",
+              "value": ""
+            },
+            {
+              "name": "border-left-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "button, input, select, optgroup, textarea",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27733,
+                "endLine": 1,
+                "endColumn": 27746
+              }
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-feature-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27746,
+                "endLine": 1,
+                "endColumn": 27776
+              }
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font-variation-settings:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27776,
+                "endLine": 1,
+                "endColumn": 27808
+              }
+            },
+            {
+              "name": "color",
+              "value": "inherit",
+              "implicit": false,
+              "text": "color:inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27831,
+                "endLine": 1,
+                "endColumn": 27845
+              }
+            },
+            {
+              "name": "background-color",
+              "value": "#0000",
+              "implicit": false,
+              "text": "background-color:#0000;",
+              "disabled": false,
+              "range": {
+                "startLine": 1,
+                "startColumn": 27855,
+                "endLine": 1,
+                "endColumn": 27878
+              }
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "inherit"
+            },
+            {
+              "name": "background-color",
+              "value": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "selector": "button, input:where([type=\"button\"], [type=\"reset\"], [type=\"submit\"])",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/heroui-pro-WPeDvs3H.css",
+          "layers": [
+            {
+              "text": "base",
+              "range": {
+                "startLine": 1,
+                "startColumn": 26016,
+                "endLine": 1,
+                "endColumn": 26020
+              },
+              "styleSheetId": "style-sheet-60964-2"
+            }
+          ],
+          "properties": []
+        },
+        {
+          "selector": "*",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": []
+        },
+        {
+          "selector": "button",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 4763,
+                "startColumn": 4,
+                "endLine": 4763,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 4765,
+                "startColumn": 4,
+                "endLine": 4765,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background",
+              "value": "#fff",
+              "implicit": false,
+              "text": "background: #fff;",
+              "disabled": false,
+              "range": {
+                "startLine": 4769,
+                "startColumn": 4,
+                "endLine": 4769,
+                "endColumn": 21
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(255, 255, 255)"
+                }
+              ]
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "border-top-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-right-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "border-left-color",
+              "value": "rgb(227, 227, 220)"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223, ._advancedToggle_1fpx4_225",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "transparent",
+              "implicit": false,
+              "text": "background: transparent;",
+              "disabled": false,
+              "range": {
+                "startLine": 2834,
+                "startColumn": 2,
+                "endLine": 2834,
+                "endColumn": 26
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "transparent"
+                }
+              ]
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "implicit": false,
+              "text": "color: var(--foreground);",
+              "disabled": false,
+              "range": {
+                "startLine": 2835,
+                "startColumn": 2,
+                "endLine": 2835,
+                "endColumn": 27
+              }
+            },
+            {
+              "name": "font",
+              "value": "inherit",
+              "implicit": false,
+              "text": "font: inherit;",
+              "disabled": false,
+              "range": {
+                "startLine": 2836,
+                "startColumn": 2,
+                "endLine": 2836,
+                "endColumn": 16
+              }
+            },
+            {
+              "name": "font-size",
+              "value": "14px",
+              "implicit": false,
+              "text": "font-size: 14px;",
+              "disabled": false,
+              "range": {
+                "startLine": 2837,
+                "startColumn": 2,
+                "endLine": 2837,
+                "endColumn": 18
+              }
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-right-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-bottom-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "border-left-color",
+              "value": "currentcolor"
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "transparent"
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)"
+            },
+            {
+              "name": "font-style",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-ligatures",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-caps",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-numeric",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-east-asian",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-alternates",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-position",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variant-emoji",
+              "value": "inherit"
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit"
+            },
+            {
+              "name": "font-stretch",
+              "value": "inherit"
+            },
+            {
+              "name": "font-family",
+              "value": "inherit"
+            },
+            {
+              "name": "font-optical-sizing",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size-adjust",
+              "value": "inherit"
+            },
+            {
+              "name": "font-kerning",
+              "value": "inherit"
+            },
+            {
+              "name": "font-feature-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-variation-settings",
+              "value": "inherit"
+            },
+            {
+              "name": "font-language-override",
+              "value": "inherit"
+            },
+            {
+              "name": "font-size",
+              "value": "14px"
+            }
+          ]
+        },
+        {
+          "selector": "button:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "#f6f6f3",
+              "implicit": false,
+              "text": "background: #f6f6f3;",
+              "disabled": false,
+              "range": {
+                "startLine": 4773,
+                "startColumn": 4,
+                "endLine": 4773,
+                "endColumn": 24
+              },
+              "longhandProperties": [
+                {
+                  "name": "background-image",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-x",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-position-y",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-size",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-repeat",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-attachment",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-origin",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-clip",
+                  "value": "initial"
+                },
+                {
+                  "name": "background-color",
+                  "value": "rgb(246, 246, 243)"
+                }
+              ]
+            },
+            {
+              "name": "background-image",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-x",
+              "value": "initial"
+            },
+            {
+              "name": "background-position-y",
+              "value": "initial"
+            },
+            {
+              "name": "background-size",
+              "value": "initial"
+            },
+            {
+              "name": "background-repeat",
+              "value": "initial"
+            },
+            {
+              "name": "background-attachment",
+              "value": "initial"
+            },
+            {
+              "name": "background-origin",
+              "value": "initial"
+            },
+            {
+              "name": "background-clip",
+              "value": "initial"
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(246, 246, 243)"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223:hover, ._advancedToggle_1fpx4_225:hover",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "var(--default)",
+              "implicit": false,
+              "text": "background: var(--default);",
+              "disabled": false,
+              "range": {
+                "startLine": 2845,
+                "startColumn": 2,
+                "endLine": 2845,
+                "endColumn": 29
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223[aria-current=\"page\"]",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "color-mix(in oklab, var(--accent) 10%, var(--background))",
+              "implicit": false,
+              "text": "background: color-mix(in oklab, var(--accent) 10%, var(--background));",
+              "disabled": false,
+              "range": {
+                "startLine": 2849,
+                "startColumn": 2,
+                "endLine": 2849,
+                "endColumn": 72
+              }
+            },
+            {
+              "name": "color",
+              "value": "var(--edu-accent, #002fa7)",
+              "implicit": false,
+              "text": "color: var(--edu-accent, #002fa7);",
+              "disabled": false,
+              "range": {
+                "startLine": 2850,
+                "startColumn": 2,
+                "endLine": 2850,
+                "endColumn": 36
+              }
+            },
+            {
+              "name": "font-weight",
+              "value": "600",
+              "implicit": false,
+              "text": "font-weight: 600;",
+              "disabled": false,
+              "range": {
+                "startLine": 2851,
+                "startColumn": 2,
+                "endLine": 2851,
+                "endColumn": 19
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            },
+            {
+              "name": "color",
+              "value": "var(--edu-accent, #002fa7)"
+            },
+            {
+              "name": "font-weight",
+              "value": "600"
+            }
+          ]
+        },
+        {
+          "selector": "._navigationEntry_1fpx4_223:active, ._advancedToggle_1fpx4_225:active",
+          "origin": "regular",
+          "source": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/assets/index-B1xj3j30.css",
+          "layers": [],
+          "properties": [
+            {
+              "name": "background",
+              "value": "color-mix(in oklab, var(--accent) 18%, var(--background))",
+              "implicit": false,
+              "text": "background: color-mix(in oklab, var(--accent) 18%, var(--background));",
+              "disabled": false,
+              "range": {
+                "startLine": 2856,
+                "startColumn": 2,
+                "endLine": 2856,
+                "endColumn": 72
+              }
+            },
+            {
+              "name": "background-image",
+              "value": ""
+            },
+            {
+              "name": "background-position-x",
+              "value": ""
+            },
+            {
+              "name": "background-position-y",
+              "value": ""
+            },
+            {
+              "name": "background-size",
+              "value": ""
+            },
+            {
+              "name": "background-repeat",
+              "value": ""
+            },
+            {
+              "name": "background-attachment",
+              "value": ""
+            },
+            {
+              "name": "background-origin",
+              "value": ""
+            },
+            {
+              "name": "background-clip",
+              "value": ""
+            },
+            {
+              "name": "background-color",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unavailable": [],
+  "identity": {
+    "paths": {
+      "userData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\profile",
+      "sessionData": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\verification-pages-RIvdLM\\profile"
+    },
+    "modules": [
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/capability-artifacts/native-stat-bf8b322e1af99bc7c9907f0eb6e1d75d6ab620824728fef8d3f1014d4aab5274.cjs",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/education-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/image-header-brk_mayj.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/index.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/manifest-swncwwn7.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-metafile-c0rwtaoe.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-native-text-bieha9e0.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/material-page-preview-cvfz6rxo.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/materials-cmb2vdqq.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/ocr-runtime.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-images-2mtjbdlt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-pdf-renderer-bzxonzus.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/office-relative-path-dx7n7yht.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/pi-session-ctuthgxa.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/runtime-command-dn7kmtff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/typed-table-dhnk4c9t.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/word-xml-bom_mlff.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-attachments-ffopi2jt.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-documents-de5zjvnu.js",
+      "/d:/workproject/eduproject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/main/xiaozhi-ocr-d7k1wwvb.js"
+    ]
+  },
+  "pid": 24736,
+  "url": "file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/test-results/ux-motion-header-final/renderer/index.html",
+  "spacing": {
+    "space24": "24px",
+    "space40": "40px"
+  },
+  "displays": [
+    {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1707,
+        "height": 1067
+      },
+      "scaleFactor": 1.5
+    }
+  ],
+  "httpAttempts": []
+}

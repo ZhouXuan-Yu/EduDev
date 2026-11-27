@@ -1,0 +1,11 @@
+PASS student-owned save settlement cannot clear another student draft
+PASS late record save preserves the newer revision
+PASS local datetime is 09:30 and a title-only edit retains exact original timestamp
+PASS review save receipt keeps edits made while awaiting host
+PASS late save never switches the selected report and retained drafts reopen
+PASS same notebook return preserves input; changing notebook requires explicit discard
+PASS note deletion invokes host only after explicit confirmation
+PASS teaching file read rejection does not imply empty catalog or zero count
+PASS unknown model configuration is retryable instead of unconfigured
+PASS same-title search results identify owners and retain exact return target
+{"success":true,"layer":"component","baseline":false,"source":"working tree","checks":["student-owned save settlement cannot clear another student draft","late record save preserves the newer revision","local datetime is 09:30 and a title-only edit retains exact original timestamp","review save receipt keeps edits made while awaiting host","late save never switches the selected report and retained drafts reopen","same notebook return preserves input; changing notebook requires explicit discard","note deletion invokes host only after explicit confirmation","teaching file read rejection does not imply empty catalog or zero count","unknown model configuration is retryable instead of unconfigured","same-title search results identify owners and retain exact return target"],"boundary":"Mounted production components with rejected/deferred read fixtures. Not a domain, provider, Electron or persistence acceptance."}
