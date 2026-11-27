@@ -10,7 +10,7 @@ const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memo
 const {validMemoryScopeInput}=await import('../../src/main/xiaozhi-agent/memory-selection.ts')
 
 const db=new DatabaseSync(':memory:')
-db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,student_id TEXT,archived_at TEXT,title TEXT); CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);')
+db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT); CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT); CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);')
 const old='aisession_'+randomUUID(), target='aisession_'+randomUUID()
 const hash=text=>createHash('sha256').update(text).digest('hex')
 db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES (?),(?)').run(old,target)
@@ -96,13 +96,21 @@ try{
     const found=await served.discover(target,'algebra exercise worksheet');
     assert(revocation,'Expected to hit the publication boundary.');
     assert.deepEqual(found.candidates.map(candidate=>candidate.sourceId),[second.sourceId]);
+    const folder='aifolder_'+randomUUID();
+    await sql.run('INSERT INTO ai_conversation_folders(id) VALUES(?)',[folder]);
+    await sql.run('UPDATE ai_conversation_sessions SET folder_id=? WHERE id=?',[folder,old]);
+    assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+    await assert.rejects(served.selectedFor(target,{layer:'history',source:'history',id:second.sourceId,version:second.generation,sourceVersion:second.ref.sourceVersion}),/permission_denied/);
+    await sql.run('UPDATE ai_conversation_sessions SET folder_id=NULL WHERE id=?',[old]);
     // Reclassification of either session during assembly must still exclude the title.
     for(const id of [old,target]){
       await sql.run('UPDATE ai_conversation_sessions SET student_id=? WHERE id=?',['test-student',id]);
-      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      if(id===target)await assert.rejects(served.discover(target,'exercise'),/permission_denied/);
+      else assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
       await sql.run('UPDATE ai_conversation_sessions SET student_id=NULL WHERE id=?',[id]);
       await sql.run('UPDATE ai_conversation_sessions SET archived_at=? WHERE id=?',['2026-11-25',id]);
-      assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
+      if(id===target)await assert.rejects(served.discover(target,'exercise'),/permission_denied/);
+      else assert.deepEqual((await served.discover(target,'exercise')).candidates,[]);
       await sql.run('UPDATE ai_conversation_sessions SET archived_at=NULL WHERE id=?',[id]);
     }
   })

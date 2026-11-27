@@ -1,3 +1,4 @@
+import {invalidateTaskHistoryForSession} from './history/invalidate-task-history';
 import {createReferenceReceipts,referenceReceiptSchema} from './memory-use/receipts';
 import type { Sql } from './session-state';
 import { validTeachingTarget, type MemoryTeachingTarget, type XiaozhiMemoryUseSelection } from '../../shared/xiaozhi-memory';
@@ -67,12 +68,22 @@ export function createPiMemoryScopeState(sql: Sql) {
         JOIN ai_conversation_folders f ON f.id=s.folder_id WHERE s.id=? AND f.id=?
         AND COALESCE(s.student_id,'')='' AND s.archived_at IS NULL AND f.archived_at IS NULL)` : '1';
       const targetArgs = target ? [id,target.folderId] : [];
-      if (version === 0) return (await sql.change(`INSERT OR IGNORE INTO xiaozhi_pi_memory_scopes
+      const persist=async (work:Sql)=>{
+        if(!work.change)throw Error('configuration');
+        if (version === 0) return (await work.change(`INSERT OR IGNORE INTO xiaozhi_pi_memory_scopes
         (conversation_id,schema_version,version,payload_json,updated_at) SELECT ?,?,1,?,? WHERE ${targetCheck}`,
         [id,schema,payload,timestamp,...targetArgs])) === 1;
-      return (await sql.change(`UPDATE xiaozhi_pi_memory_scopes SET version=version+1,schema_version=MAX(CASE WHEN schema_version=4 THEN 3 ELSE schema_version END,?),payload_json=?,updated_at=?
+        return (await work.change(`UPDATE xiaozhi_pi_memory_scopes SET version=version+1,schema_version=MAX(CASE WHEN schema_version=4 THEN 3 ELSE schema_version END,?),payload_json=?,updated_at=?
         WHERE conversation_id=? AND schema_version IN (1,2,3,4) AND version=? AND ${targetCheck}`,
         [schema,payload,timestamp,id,version,...targetArgs])) === 1;
+      };
+      if((target?.term??null)===(previous.teachingTarget?.term??null))return persist(sql);
+      if(!sql.transaction)throw Error('configuration');
+      return sql.transaction(async work=>{
+        const updated=await persist(work);
+        if(updated)await invalidateTaskHistoryForSession(work,id);
+        return updated;
+      });
     },
   };
 }

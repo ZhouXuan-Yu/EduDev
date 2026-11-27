@@ -4,14 +4,22 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 const {createPiMemoryScopeState} = await import('../../src/main/xiaozhi-agent/memory-scope-state.ts');
+const {historyMemorySchema}=await import('../../src/main/xiaozhi-agent/history/schema.ts');
 
 test('a confirmed class and term persist, old clients preserve them, and moving away and back requires confirmation', async () => {
   const db = new DatabaseSync(':memory:');
   try {
     db.exec(`CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY, name TEXT, archived_at TEXT);
-      CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY, folder_id TEXT, student_id TEXT, archived_at TEXT)`);
+      CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY, folder_id TEXT, student_id TEXT, archived_at TEXT);
+      CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)`);
+    db.exec(historyMemorySchema);
     const sql = {run:async (q,args=[])=>db.prepare(q).run(...args),
-      all:async (q,args=[])=>db.prepare(q).all(...args),change:async (q,args=[])=>db.prepare(q).run(...args).changes};
+      all:async (q,args=[])=>db.prepare(q).all(...args),change:async (q,args=[])=>db.prepare(q).run(...args).changes,
+      transaction:async work=>{
+        db.exec('BEGIN');
+        try{const value=await work(sql);db.exec('COMMIT');return value;}
+        catch(error){db.exec('ROLLBACK');throw error;}
+      }};
     const state = createPiMemoryScopeState(sql);
     await state.migrateMemoryScope();
     const folder = 'aifolder_'+randomUUID(), other = 'aifolder_'+randomUUID(), session = 'aisession_'+randomUUID();

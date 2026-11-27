@@ -11,6 +11,13 @@ import { rankHindsightTrialRows } from './memory-hindsight-trial';
 import type { createHistoryMemory } from './history/memory';
 import type { createPersonalMemoryUse } from '../education/personal-memory/use';
 import {personalReferencePlan} from './memory-use/personal-references';
+import type {ReceivedReference} from './memory-use/receipts';
+import {combinedMemorySelections,type RunHistory} from './memory-use/history-binding';
+
+type RunMemoryPolicy={loadHistory:()=>Promise<RunHistory|undefined>;omitHistory:boolean};
+const historyProjectionPrefix='[宿主核验的本轮历史资料]\n';
+const historyProjectionSuffix='\n这些是授权的历史资料，当前教师要求和成果原件优先。excerptOnly 为 true 表示仅片段，需详情时用 read_education_memory 按来源读回。';
+const historyPromptWords=new Intl.Segmenter('zh',{granularity:'word'});
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
 function inRequestOrder(selections:PrivateMemorySelection[], personalIds?:readonly string[]) {
@@ -24,6 +31,8 @@ function inRequestOrder(selections:PrivateMemorySelection[], personalIds?:readon
 /** Existing SQLite remains the memory fact source. Nothing here invokes a provider. */
 export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available'; history?: ReturnType<typeof createHistoryMemory>;
   personal?:ReturnType<typeof createPersonalMemoryUse> } = {}) {
+  const selectedHistory=async (id:string,pin:import('../../shared/xiaozhi-history-memory').HistorySelection)=>
+    options.history?.selectedFor(id,pin);
   async function facts(source: XiaozhiMemorySource): Promise<MemoryFact[]> {
     const items = source.layer === 'L2' ? (await store.getAiMemoryDocument(source.source))?.entries || []
       : (await store.getAiMemoryL3Document(source.source))?.entries || [];
@@ -59,7 +68,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         continue;
       }
       if (item.layer==='history') {
-        const current = await options.history?.selected(item).catch(()=>null);
+        const current = await selectedHistory(id,item).catch(()=>null);
         const {fingerprint,...selection}=item;
         selections.push({...selection,label:current?.label??'历史来源',state:current?.fingerprint===fingerprint?'ready':'changed'});
         continue;
@@ -83,9 +92,19 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     return { ...(receivedReferences.length?{receivedReferences}:{}), ...(session.folderId && !session.studentId && !session.archivedAt ? {currentFolderId:session.folderId} : {}),
       ...(saved.teachingTarget ? {teachingTarget:saved.teachingTarget} : {}), version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
   }
-  async function authority(id: string) {
+  async function scopeForRun(id:string,policy?:RunMemoryPolicy) {
+    const saved=await store.xiaozhiState.memoryScope(id);
+    if(policy?.omitHistory)return {...saved,selections:saved.selections.filter(pin=>pin.layer!=='history'),omitHistory:true};
+    const extra=await policy?.loadHistory();
+    if(!extra)return saved;
+    return {...saved,enabled:true,
+      selections:combinedMemorySelections(saved.enabled?saved.selections:[],extra.selections),
+      historyOwner:{scope:extra.scope,id:extra.ownerId,revision:extra.revision}};
+  }
+
+  async function authority(id: string,policy?:RunMemoryPolicy) {
     await availableSession(id);
-    const saved = await store.xiaozhiState.memoryScope(id);
+    const saved = await scopeForRun(id,policy);
     const current: Array<{ id: string; fingerprint: string | null; state: string }> = [];
     const cache = new Map<string, MemoryFact[] | null>();
     if (saved.enabled) for (const item of saved.selections) {
@@ -95,7 +114,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         continue;
       }
       if (item.layer==='history') {
-        const source = await options.history?.selected(item).catch(()=>null);
+        const source = await selectedHistory(id,item).catch(()=>null);
         current.push({id:item.id,fingerprint:source?.fingerprint??null,state:source?.fingerprint===item.fingerprint?'ready':'history_unavailable'});
         continue;
       }
@@ -105,7 +124,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       current.push({ id: item.id, fingerprint: fact?.fingerprint || null, state: !list ? 'unavailable' : !fact || fact.status === 'deleted' ? 'missing'
         : fact.status !== 'active' ? 'disabled' : fact.version !== item.version || fact.fingerprint !== item.fingerprint ? 'changed' : 'ready' });
     }
-    if (JSON.stringify(saved) !== JSON.stringify(await store.xiaozhiState.memoryScope(id))) throw new Error('memory_scope_changed');
+    if (JSON.stringify(saved) !== JSON.stringify(await scopeForRun(id,policy))) throw new Error('memory_scope_changed');
     return { fingerprint: createHash('sha256').update(JSON.stringify({ saved, current })).digest('hex'),
       enabled: saved.enabled, valid: current.every(item => ['ready','history_unavailable','personal_unavailable'].includes(item.state)), version: saved.version,
       history: saved.enabled&&saved.selections.some(item=>item.layer==='history'&&current.some(row=>row.id===item.id&&row.state==='ready')),
@@ -114,23 +133,77 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
   }
   return {
     scope, authority,
-    async personalReferences(id:string, expectedAuthority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) {
+    async personalReferences(id:string, expectedAuthority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal, policy?:RunMemoryPolicy) {
       signal?.throwIfAborted();
-      const saved = await store.xiaozhiState.memoryScope(id);
-      const initial = await authority(id);
+      const saved = await scopeForRun(id,policy);
+      const initial = await authority(id,policy);
       if (!initial.valid || initial.fingerprint!==expectedAuthority || initial.version!==saved.version) throw Error('memory_scope_changed');
       const plan = await personalReferencePlan(saved,options.personal,id,expectedAuthority,requestId,query,availableTokens,signal);
-      const final = await authority(id);
+      const final = await authority(id,policy);
       signal?.throwIfAborted();
       if (!final.valid || final.fingerprint!==expectedAuthority) throw Error('memory_scope_changed');
       return plan;
     },
-    /** Main-only model payload. Never expose this method or authority hash through preload. */
-    async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal, personalIds?:readonly string[]) {
+    async historyProjection(id:string,expectedAuthority:string,query:string,availableTokens:number,signal?:AbortSignal,policy?:RunMemoryPolicy) {
+      if(policy?.omitHistory)return;
+      const extra=await policy?.loadHistory();
+      const budget=Math.min(1400,Math.floor(availableTokens/20))
+        -Buffer.byteLength(historyProjectionPrefix+historyProjectionSuffix);
+      if(!extra||budget<160)return;
+      const initial=await authority(id,policy);
+      if(!initial.valid||initial.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
+      const terms=[...new Set(Array.from(historyPromptWords.segment(query.normalize('NFKC').toLowerCase().slice(0,4096)))
+        .filter(item=>item.isWordLike&&item.segment.length>=2).map(item=>item.segment))].slice(0,48);
+      const candidates=[];
+      for(const pin of extra.selections){
+        signal?.throwIfAborted();
+        const source=await selectedHistory(id,pin).catch(()=>null);
+        if(!source||source.fingerprint!==pin.fingerprint)continue;
+        const excerpt=Array.from(source.text).slice(0,200).join('');
+        const normalized=source.text.normalize('NFKC').toLowerCase();
+        const score=terms.reduce((sum,term)=>sum+(normalized.includes(term)?term.length:0),0);
+        candidates.push({pin,score,row:{sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
+          excerpt,excerptOnly:excerpt.length<source.text.length}});
+      }
+      candidates.sort((a,b)=>b.score-a.score||a.pin.id.localeCompare(b.pin.id,'en'));
+      const output:typeof candidates=[];
+      for(const item of candidates){
+        if(output.length===2)break;
+        if(Buffer.byteLength(JSON.stringify([...output,item].map(candidate=>candidate.row)))<=budget)output.push(item);
+      }
+      const final=await authority(id,policy);
       signal?.throwIfAborted();
-      const initial = await authority(id);
+      if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
+      if(!output.length)return;
+      const receipts:ReceivedReference[]=output.map(({pin,row})=>({id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
+        reason:extra.scope,estimatedTokens:Buffer.byteLength(JSON.stringify(row))}));
+      return {projection:historyProjectionPrefix+JSON.stringify(output.map(item=>item.row))+historyProjectionSuffix,receipts};
+    },
+    async readHistoryPage(id:string,expectedAuthority:string,request:import('./memory-tools').HistoryPageRequest,signal?:AbortSignal,policy?:RunMemoryPolicy) {
+      signal?.throwIfAborted();
+      const initial=await authority(id,policy);
+      if(!initial.valid||initial.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
+      const saved=await scopeForRun(id,policy);
+      const pin=saved.enabled?saved.selections.find(item=>item.layer==='history'&&
+        item.id===request.sourceId&&item.sourceVersion===request.sourceVersion):undefined;
+      if(!pin||pin.layer!=='history'||!options.history)throw Error('permission_denied');
+      const source=await options.history.selectedFor(id,pin);
+      if(source.fingerprint!==pin.fingerprint)throw Error('memory_scope_changed');
+      const characters=Array.from(source.text);
+      if(request.offset<0||request.offset>=characters.length)throw Error('invalid_input');
+      const end=Math.min(characters.length,request.offset+900);
+      const final=await authority(id,policy);
+      signal?.throwIfAborted();
+      if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
+      return {sourceId:pin.id,sourceVersion:pin.sourceVersion,version:pin.version,offset:request.offset,
+        nextOffset:end<characters.length?end:null,text:characters.slice(request.offset,end).join('')};
+    },
+    /** Main-only model payload. Never expose this method or authority hash through preload. */
+    async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal, personalIds?:readonly string[], policy?:RunMemoryPolicy) {
+      signal?.throwIfAborted();
+      const initial = await authority(id,policy);
       if (initial.fingerprint !== expectedAuthority || !initial.valid) throw new Error('memory_scope_changed');
-      const saved = await store.xiaozhiState.memoryScope(id);
+      const saved = await scopeForRun(id,policy);
       const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
@@ -147,7 +220,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           continue;
         }
         if (item.layer==='history') {
-          const source = await options.history?.selected(item).catch(()=>null);
+          const source = await selectedHistory(id,item).catch(()=>null);
           if (!source || source.fingerprint!==item.fingerprint) continue;
           payload.push({reference:`记忆${payload.length+1}`,layer:'history',source:source.label,version:item.version,
             text:source.text.slice(0,1600),provenance:'teacher_history',sourceDocuments:[],refs:[],
@@ -163,7 +236,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           version: fact.version, text, provenance: fact.provenance, sourceDocuments: fact.sourceDocuments.map(source => XIAOZHI_MEMORY_LABELS[source]), refs });
       }
       const ranked = await rankHindsightTrialRows(payload, signal);
-      const final = await authority(id);
+      const final = await authority(id,policy);
       signal?.throwIfAborted();
       if (final.fingerprint !== expectedAuthority || !final.valid) throw new Error('memory_scope_changed');
       return ranked;
@@ -204,7 +277,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
             continue;
           }
           if (item.layer==='history') {
-            const source=await options.history?.selected(item).catch(()=>null);
+            const source=await selectedHistory(input.sessionId,item).catch(()=>null);
             if (!source) return {ok:false,error:'permission_denied'};
             selections.push({...item,fingerprint:source.fingerprint});
             continue;

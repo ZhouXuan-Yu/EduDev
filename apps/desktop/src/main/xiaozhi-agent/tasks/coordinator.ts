@@ -85,26 +85,40 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
  }
  return{
   assertContinuationAllowed,
-  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation,allowNaturalAmendment=true){
+  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation,allowNaturalAmendment=true,
+   admission?:{onAdmitted?:(work:Sql,task:TaskView,owner:TaskOwner)=>Promise<void>;
+    recoveryBase?:{taskId:string;requirementsVersion:number}}){
+   const checkpointAdmission=(admit:(work:Sql)=>Promise<TaskView>)=>publisher.checkpointTask(async work=>{
+    const base=admission?.recoveryBase;
+    if(base){
+     const previous=await state(inline(work)).get(base.taskId);
+     if(!previous||previous.sessionId!==sessionId||previous.requirementsVersion!==base.requirementsVersion)
+      throw Error('task_source_changed');
+    }
+    const task=await admit(work);
+    if(base&&task.id!==base.taskId)throw Error('task_source_changed');
+    await admission?.onAdmitted?.(work,task,publisher.owner);
+    return task;
+   });
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
    if(continuation){
     const current=await committed(sessionId);
     if(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion||current.goal||!['paused','interrupted','review_required'].includes(current.state))throw Error('task_resume_invalid');
     assertPaperTaskContinuation(current,detail.messages);
-    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,current.id,current.revision,commandId,undefined,message.id,continuation));
+    return checkpointAdmission(work=>state(inline(work)).resume(publisher.owner,current.id,current.revision,commandId,undefined,message.id,continuation));
    }
    const goal=await goalFromSource(sql,sessionId,message.id),prior=goal?await state().forGoal(sessionId,goal.id):null;
-   if(goal&&prior)return publisher.checkpointTask(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
+   if(goal&&prior)return checkpointAdmission(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
    const amend=allowNaturalAmendment&&isBoundTaskAmendment(message.content);
    const unfinished=!goal&&(amend||isTaskContinuation(message.content))?await committed(sessionId):null;
    if(unfinished&&!unfinished.goal&&['paused','interrupted','review_required'].includes(unfinished.state)){
     assertPaperTaskContinuation(unfinished,detail.messages);
     const amended=amend?(await options.store.sanitizeProblemText(message.content)).sanitizedText.trim():undefined;
     const revisionInstruction=amended&&amended.length>400?amended.slice(0,399)+'…':amended;
-    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id,undefined,revisionInstruction));
+    return checkpointAdmission(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id,undefined,revisionInstruction));
    }
    const cleaned=(await options.store.sanitizeProblemText(message.content)).sanitizedText;
-   return publisher.checkpointTask(work=>state(inline(work),async text=>{if(text!==message.content)throw Error('task_source_changed');return cleaned;}).create(publisher.owner,message.id,commandId));
+   return checkpointAdmission(work=>state(inline(work),async text=>{if(text!==message.content)throw Error('task_source_changed');return cleaned;}).create(publisher.owner,message.id,commandId));
   },
   async finish(task:TaskView,publisher:ReturnType<typeof createEventPublisher>,failed:boolean,control?:TaskControlAction){return publisher.checkpointTask(async work=>{
    const tasks=state(inline(work)),actual=await tasks.get(task.id);if(!actual)throw Error('task_missing');return tasks.settle(publisher.owner,actual.id,actual.revision,failed,control);

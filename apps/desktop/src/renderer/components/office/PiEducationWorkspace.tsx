@@ -1,3 +1,4 @@
+import type {PendingHistoryReference} from '../../../shared/xiaozhi-history-memory';
 import type { PiSettingsEntry } from './PiSettingsWorkspace';
 import {samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {paperExportSendError} from './paper-export-request';
@@ -389,6 +390,27 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeConfig?.();settingsChanged?.();
     };
   }, [hasEntered]);
+  const [draftHistory,setDraftHistory]=useState<Record<string,PendingHistoryReference[]>>({});
+  const pendingHistory=draftHistory[id]??[];
+  const currentTaskHistory=snapshot?.taskHistory?.taskId===snapshot?.task?.id?snapshot?.taskHistory:undefined;
+  async function removeTaskHistory(sourceId:string){
+    if(!currentTaskHistory||!id)return;
+    try{
+      requireSynchronized();
+      const result=await window.omniEdu?.removeTaskHistory({sessionId:id,taskId:currentTaskHistory.taskId,
+        revision:currentTaskHistory.revision,sourceId});
+      if(!result?.ok)throw Error('remove_failed');
+      await hydrate(id);
+    }catch{setNotice('暂时无法停止当前任务引用，请刷新后重试。');}
+  }
+  async function removePendingHistory(token:string){
+    try{
+      const result=await window.omniEdu?.discardHistoryIntent(id,token);
+      if(!result?.ok)throw Error('discard_failed');
+      setDraftHistory(old=>({...old,[id]:(old[id]??[]).filter(item=>item.token!==token)}));
+    }catch{setNotice('暂时无法移除待发送引用，请稍后重试。');}
+  }
+
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
     requireSynchronized();
     if (!id || !window.omniEdu) throw new Error('configuration');
@@ -399,8 +421,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     setNotice('');
     setSnapshot(previous => previous ? { ...previous, running: true, projection: { ...previous.projection,
       turns: [...previous.projection.turns, { id: 'pending-send', status: 'running', items: [{ id: 'pending-user', kind: 'message', role: 'user', text: publicMessageText(prompt,presentation) }] }] } } : previous);
-    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || !samePaperExportIntent(attempt.current.paperExportIntent,paperExportIntent) || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(paperExportIntent?{paperExportIntent:copyPaperExportIntent(paperExportIntent)}:{}), ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
-      ...(attachments.selections.length?{attachments:attachments.selections}:{}) };
+    const historyIntents=pendingHistory.length?pendingHistory.map(item=>item.token):undefined;
+    if (!attempt.current || JSON.stringify(attempt.current.historyIntents)!==JSON.stringify(historyIntents) || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || !samePaperExportIntent(attempt.current.paperExportIntent,paperExportIntent) || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)||JSON.stringify(attempt.current.continueTask)!==JSON.stringify(continueTask)) attempt.current = { sessionId: id, prompt, ...(paperExportIntent?{paperExportIntent:copyPaperExportIntent(paperExportIntent)}:{}), ...(continueTask?{continueTask}:{}), ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
+      ...(historyIntents?{historyIntents}:{}),...(attachments.selections.length?{attachments:attachments.selections}:{}) };
     let result;
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
     if (!result.ok) {
@@ -410,6 +433,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       throw new Error(result.error);
     }
     attempt.current = undefined;
+    if(historyIntents)setDraftHistory(old=>({...old,[id]:(old[id]??[]).filter(item=>!historyIntents.includes(item.token))}));
     await Promise.all([hydrate(id), refreshList(),attachments.refresh()]).catch(() => setNotice('消息已接收，暂时无法刷新记录。'));
   }
   const projection = snapshot?.projection;
@@ -517,6 +541,19 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       .concat((snapshot?.changes||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>showInConversation(item,turnId)&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.deliveries||[]).filter(item=>showInConversation(item,turnId)).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={revealFile}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} reviews={snapshot?.paperReviews} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>showInConversation(item,turnId)) || []}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <div className="edu-composer-viewport" data-testid="pi-composer-viewport">
         <PiConversationContextActions>
+        {visible&&pendingHistory.length>0&&<section aria-label="待发送历史引用" data-testid="history-intent-pending">
+          <p role="status">已准备 {pendingHistory.length} 条历史。发送后随任务引用，普通问答仅用于本轮。</p>
+          {pendingHistory.map((item,index)=><Button key={item.token} size="sm" variant="ghost"
+            aria-label={`移除待发送历史 ${index+1}`} isDisabled={snapshot?.running}
+            onPress={()=>void removePendingHistory(item.token)}>移除 {item.title}</Button>)}
+        </section>}
+        {visible&&currentTaskHistory&&currentTaskHistory.items.length>0&&<section aria-label="当前任务引用" data-testid="history-task-selection">
+          <p>当前任务引用</p>
+          {currentTaskHistory.items.map(item=><div key={item.sourceId}>
+            <span>{item.label}{item.delivered?' · 最近一轮已提供给模型':''}</span>
+            <Button size="sm" variant="ghost" aria-label={`停止引用 ${item.label}`} onPress={()=>void removeTaskHistory(item.sourceId)}>停止引用</Button>
+          </div>)}
+        </section>}
         {visible&&selectedHistoryCount>0&&<p role="status" className="pi-history-note" data-testid="history-use-selection">
           已选择 {selectedHistoryCount} 条历史，供本会话参考。</p>}
         {visible&&snapshot?.memoryScope&&!openHistory&&!snapshot.running&&!syncBlocked&&
@@ -528,7 +565,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         <PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined}
           onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}
           personalReview={openPersonalReview} onClosePersonalReview={()=>{setPersonalReviewSession(undefined);personalReviewButton.current?.focus();}}
-          history={openHistory?{scope:openHistory,query:historyLookup!.query,close:()=>setHistoryLookup(undefined),
+          history={openHistory?{scope:openHistory,query:historyLookup!.query,pending:pendingHistory,close:()=>setHistoryLookup(undefined),
+            staged:item=>{
+              setDraftHistory(old=>({...old,[id]:[...(old[id]??[]).filter(row=>row.sourceId!==item.sourceId),item]}));
+              setHistoryLookup(undefined);
+            },
             confirmed:async()=>{setHistoryLookup(undefined);await hydrate(id);}}:undefined}/>
         <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" sessionId={id} visible={visible}

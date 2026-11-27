@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
 import { Button, Input } from '@heroui/react';
-import type { HistoryCandidate, HistoryDiscovery, HistoryPreview } from '../../../shared/xiaozhi-history-memory';
+import type { HistoryCandidate, HistoryDiscovery, HistoryPreview, PendingHistoryReference } from '../../../shared/xiaozhi-history-memory';
 import type { XiaozhiMemoryScope } from '../../../shared/xiaozhi-memory';
 
-export function PiHistoryLookup({sessionId,scope,query,onClose,onConfirmed}:{
-  sessionId:string;scope:XiaozhiMemoryScope;query:string;onClose:()=>void;onConfirmed:()=>Promise<void>;
+export function PiHistoryLookup({sessionId,scope,query,pending,onClose,onConfirmed,onStaged}:{
+  sessionId:string;scope:XiaozhiMemoryScope;query:string;pending:readonly PendingHistoryReference[];
+  onClose:()=>void;onConfirmed:()=>Promise<void>;onStaged:(intent:PendingHistoryReference)=>void;
 }) {
   const [input,setInput]=useState(query);
   const [result,setResult]=useState<{scopeVersion:number;reply:HistoryDiscovery}>();
@@ -33,15 +34,24 @@ export function PiHistoryLookup({sessionId,scope,query,onClose,onConfirmed}:{
     }catch{setPreview(undefined);setMessage('来源的内容或许可已变化，请重新查找。');}
     finally{work.current=false;setBusy(false);}
   }
-  async function confirm() {
+  async function confirm(scopeKind:'task'|'session') {
     if(!preview||work.current)return;
     if(result?.scopeVersion!==scope.version){setMessage('会话引用范围已变化，请重新查找。');return;}
-    if(scope.selections.length>=12){setMessage('本会话已选择 12 项，请先取消一项。');return;}
+    const selected=new Set([...scope.selections.map(item=>item.id),...pending.map(item=>item.sourceId),preview.source.sourceId]);
+    if(selected.size>12){setMessage('任务与会话合计最多引用 12 项，请先取消一项。');return;}
     work.current=true;setBusy(true);setMessage('');
     try{
-      const reply=await window.omniEdu?.confirmHistoryMemory(sessionId,scope.version,preview.candidate.ticket);
-      if(!reply?.ok)throw Error(reply?.error||'save');
-      await onConfirmed();
+      if(scopeKind==='task'){
+        const existing=pending.find(item=>item.sourceId===preview.source.sourceId&&item.scopeVersion===scope.version);
+        if(existing){onStaged(existing);return;}
+        const reply=await window.omniEdu?.stageHistoryMemory(sessionId,scope.version,preview.candidate.ticket);
+        if(!reply?.ok)throw Error(reply?.error||'save');
+        onStaged(reply.value);
+      }else{
+        const reply=await window.omniEdu?.confirmHistoryMemory(sessionId,scope.version,preview.candidate.ticket);
+        if(!reply?.ok)throw Error(reply?.error||'save');
+        await onConfirmed();
+      }
     }catch{setMessage('选择未保存。请核对当前范围，重新查找。');}
     finally{work.current=false;setBusy(false);}
   }
@@ -65,7 +75,9 @@ export function PiHistoryLookup({sessionId,scope,query,onClose,onConfirmed}:{
       <p>{preview.text}</p>
       {preview.nextOffset!==null&&<Button size="sm" variant="ghost" isDisabled={busy}
         onPress={()=>void show(preview.candidate,preview.nextOffset??0)}>查阅下一段</Button>}
-      <Button size="sm" variant="secondary" isDisabled={busy} data-testid="history-lookup-use" onPress={()=>void confirm()}>本次引用</Button>
+      <Button size="sm" variant="secondary" isDisabled={busy} data-testid="history-lookup-use" onPress={()=>void confirm('task')}>随任务引用</Button>
+      <Button size="sm" variant="ghost" isDisabled={busy} data-testid="history-lookup-use-session"
+        onPress={()=>void confirm('session')}>本会话引用</Button>
     </section>}
     <Button size="sm" variant="ghost" isDisabled={busy} onPress={onClose}>不再查找</Button>
   </section>;

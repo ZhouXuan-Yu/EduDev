@@ -1241,31 +1241,42 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       ? await options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,teacherQuery,
         Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)),args[2]?.signal)
       : undefined;
-    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,personalPlan?.projection].filter(Boolean).join('\n\n');
+    const historyPlan=!compacting&&submittedTeacherTimestamp!==undefined&&initialAuthority?.history
+      ? await options.memory?.historyProjection?.(initialAuthority.fingerprint,teacherQuery??'',
+        Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)-(personalPlan?.estimatedTokens??0)),args[2]?.signal)
+      : undefined;
+    let projectedHistory=false;
+    const historyProjection=historyPlan?.projection;
+    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,historyProjection,personalPlan?.projection].filter(Boolean).join('\n\n');
     args[1]=projectTeacherPreferenceRequest(args[1],
       compacting || submittedTeacherTimestamp === undefined ? undefined : submittedTeacherRequest,
       currentGuidance, submittedTeacherTimestamp,()=>{
+        projectedHistory=!!historyProjection;
         if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
       });
     const streamPersonalIds=projectedPersonalIds;
-    if (projectedPersonalIds.length && personalPlan && initialAuthority && options.memory?.referenceReceived) {
+    const plans=[
+      ...(projectedPersonalIds.length&&personalPlan?[personalPlan]:[]),
+      ...(projectedHistory&&historyPlan?[historyPlan]:[]),
+    ];
+    if (plans.length && initialAuthority && options.memory?.referenceReceived) {
       const writeReceipt=options.memory.referenceReceived;
-      const {projection,receipts}=personalPlan;
       const {version}=initialAuthority;
       const ids=projectedPersonalIds;
       const previousPayload=args[2]?.onPayload,previousResponse=args[2]?.onResponse;
-      let inPayload=false;
+      let delivered:typeof plans=[];
       args[2]={...args[2],onPayload:async(payload,model)=>{
         const changed=await previousPayload?.(payload,model);
-        inPayload=carriesReferenceProjection(changed??payload,projection);
+        delivered=plans.filter(plan=>carriesReferenceProjection(changed??payload,plan.projection));
         await checkMemory();
         if(ids!==projectedPersonalIds)throw Error('memory_scope_changed');
         return changed;
       },onResponse:async(response,model)=>{
         await previousResponse?.(response,model);
-        if(inPayload && response.status>=200 && response.status<300) {
-          // Loss of a diagnostic receipt leaves the UI unverified after the actual HTTP response.
-          await writeReceipt(version,receipts).catch(()=>undefined);
+        if(response.status>=200&&response.status<300){
+          // The ledger records provider receipt, not adherence in the resulting output.
+          const receipts=delivered.flatMap(plan=>plan.receipts);
+          if(receipts.length)await writeReceipt(version,receipts).catch(()=>undefined);
         }
       }};
     }
@@ -1306,7 +1317,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted();
     if(!guarded)budget!.model();
     skillEpoch?.beforeDelivery();
-    if (projectedPersonalIds.length) memoryEpoch?.beforeDelivery();
+    if (projectedHistory||projectedPersonalIds.length) memoryEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;

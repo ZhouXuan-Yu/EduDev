@@ -1,3 +1,4 @@
+import {invalidateTaskHistoryForSession} from './xiaozhi-agent/history/invalidate-task-history';
 import {createZipBuffer} from './file-zip';
 import {splitMaterialParagraphs} from './assets/material-chunks';
 import {MaterialStructureRepository,reviseStructureDocument} from './assets/material-structure-repository';
@@ -4749,10 +4750,12 @@ export class OmniEduStore {
 
   async moveAiConversationSession(sessionId: string, folderId: string | null): Promise<AiConversationWorkspace> {
     if (folderId) await this.ensureAiConversationFolder(folderId);
-    await this.run(
-      `UPDATE ai_conversation_sessions SET folder_id = ?, updated_at = ? WHERE id = ?`,
-      [folderId || null, now(), sessionId],
-    );
+    const wanted=folderId||null;
+    await this.xiaozhiState.sql.transaction!(async work=>{
+      const [changed]=await work.all('SELECT id FROM ai_conversation_sessions WHERE id=? AND folder_id IS NOT ?',[sessionId,wanted]);
+      await work.run('UPDATE ai_conversation_sessions SET folder_id = ?, updated_at = ? WHERE id = ?',[wanted,now(),sessionId]);
+      if(changed)await invalidateTaskHistoryForSession(work,sessionId);
+    });
     return this.listAiConversationWorkspace();
   }
 
@@ -4778,23 +4781,22 @@ export class OmniEduStore {
   async archiveAiConversationFolder(folderId: string): Promise<AiConversationWorkspace> {
     await this.ensureAiConversationFolder(folderId);
     const timestamp = now();
-    await this.run(
-      `UPDATE ai_conversation_folders SET archived_at = ?, updated_at = ? WHERE id = ?`,
-      [timestamp, timestamp, folderId],
-    );
-    await this.run(
-      `UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE folder_id = ? AND archived_at IS NULL`,
-      [timestamp, timestamp, folderId],
-    );
+    await this.xiaozhiState.sql.transaction!(async work=>{
+      const sessions=await work.all('SELECT id FROM ai_conversation_sessions WHERE folder_id=? AND archived_at IS NULL',[folderId]);
+      await work.run('UPDATE ai_conversation_folders SET archived_at = ?, updated_at = ? WHERE id = ?',[timestamp,timestamp,folderId]);
+      await work.run('UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE folder_id = ? AND archived_at IS NULL',
+        [timestamp,timestamp,folderId]);
+      for(const session of sessions)await invalidateTaskHistoryForSession(work,String(session.id));
+    });
     return this.listAiConversationWorkspace();
   }
 
   async archiveAiConversationSession(sessionId: string): Promise<AiConversationWorkspace> {
     const timestamp = now();
-    await this.run(
-      `UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE id = ?`,
-      [timestamp, timestamp, sessionId],
-    );
+    await this.xiaozhiState.sql.transaction!(async work=>{
+      await work.run('UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE id = ?',[timestamp,timestamp,sessionId]);
+      await invalidateTaskHistoryForSession(work,sessionId);
+    });
     return this.listAiConversationWorkspace();
   }
 

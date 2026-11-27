@@ -16,6 +16,7 @@ const scopeTable='xiaozhi_pi_memory_scopes';
 const scopeQuery=`SELECT p.conversation_id,p.version,p.schema_version,p.payload_json,COALESCE(s.archived_at,'') AS archived_at
   FROM xiaozhi_pi_memory_scopes p JOIN ai_conversation_sessions s ON s.id=p.conversation_id ORDER BY p.conversation_id`;
 const preferencesQuery=`SELECT key,value_json FROM app_settings WHERE key IN ('xiaozhi.teacher-preference.v1:head', '${TEACHER_MEMORY_POLICY_KEY}') ORDER BY key`;
+const taskBindingsQuery="SELECT key,value_json FROM app_settings WHERE key GLOB 'xiaozhi.memory-use.task.v1:*' ORDER BY key";
 const historyQuery=`SELECT source_id,kind,session_id,record_id,source_version,access_revision,generation,
   index_allowed,discover_allowed,memory_state FROM memory_source_access ORDER BY source_id`;
 const grantsQuery=`SELECT source_id,source_version,history_generation,grant_revision,extract_allowed,scope_kind,scope_id,term
@@ -26,7 +27,7 @@ const recordsQuery=`SELECT r.memory_id,v.revision,v.state,v.draft_key,v.value
 const digest=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const same=(left:Row,right:Row|undefined)=>!!right&&digest(left)===digest(right);
 type Ledger={hash:string;history:Map<string,Row>;grants:Map<string,Row>;records:Map<string,Row>;
-  scopes:Map<string,Row>;preferences:string};
+  scopes:Map<string,Row>;taskBindings:Map<string,Row>;preferences:string};
 const by=(rows:Row[],key:string)=>new Map(rows.map(row=>[String(row[key]),row]));
 
 async function currentSource(sql:Sql,row:Row|undefined,version:unknown) {
@@ -66,8 +67,9 @@ export async function readMemoryRestoreLedger(root:string):Promise<Ledger|null> 
     const records=tables.has(recordsTable)?(await all(recordsQuery)).map(record=>({...record,value:digest(record.value)})):[];
     const scopes=tables.has(scopeTable)?await all(scopeQuery):[];
     const preferences=tables.has('app_settings')?digest(await all(preferencesQuery)):digest([]);
-    return {hash:digest([history,grants,records,scopes,preferences]),history:historyBySource,
-      grants:by(grants,'source_id'),records:by(records,'memory_id'),scopes:by(scopes,'conversation_id'),preferences};
+    const taskBindings=tables.has('app_settings')?await all(taskBindingsQuery):[];
+    return {hash:digest([history,grants,records,scopes,preferences,...(taskBindings.length?[taskBindings]:[])]),history:historyBySource,
+      grants:by(grants,'source_id'),records:by(records,'memory_id'),scopes:by(scopes,'conversation_id'),taskBindings:by(taskBindings,'key'),preferences};
   } catch {
     return null;
   } finally {
@@ -138,6 +140,13 @@ export async function reconcileRestoredMemory(sql:Sql,tables:ReadonlySet<string>
         [JSON.stringify({enabled:false,selections:[]}),Math.max(Number(row.version),Number(current?.version??0))+1,
           new Date(at).toISOString(),id]);
       withheldScopes++;
+    }
+  }
+  if(tables.has('app_settings')){
+    for(const row of await sql.all(taskBindingsQuery)){
+      if(same(row,ledger?.taskBindings.get(String(row.key))))continue;
+      await sql.run(`UPDATE app_settings SET value_json=json_set(value_json,'$.invalidated',json('true')),updated_at=?
+        WHERE key=? AND json_valid(value_json) AND json_type(value_json)='object'`,[new Date(at).toISOString(),String(row.key)]);
     }
   }
   if (tables.has('app_settings') && digest(await sql.all(preferencesQuery))!==ledger?.preferences) {

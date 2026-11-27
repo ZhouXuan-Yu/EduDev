@@ -27,7 +27,7 @@ const confirmQuery='请参考这位老师以前的二次函数配方法讲义，
 const secondSource='这是合成教师记录。物态变化实验观察冰水共存，冰融化时记录温度平台。请只回复收到。'
 const secondQuery='按物态变化实验中冰融化时温度平台的记录，查找观察要求。'
 const report={lane,variant:extended?'rebuild':offline?'offline':'discovery',root,main,sha256:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],paidRequests:0}
-let app,page,paused=false
+let app,page,mainPage,paused=false
 const check=(name,details={})=>{report.checks.push({name,...details});console.log('PASS '+name)}
 async function until(read,timeout=90000){
   const end=Date.now()+timeout
@@ -99,12 +99,16 @@ async function fresh(){
   return until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==old?id:null})
 }
 async function settings(){
+  mainPage=page
+  const opening=app.waitForEvent('window')
   await page.getByRole('button',{name:'设置',exact:true}).click()
+  page=await opening
   await page.getByTestId('pi-settings-tab-teacher-memory').click()
   await page.getByTestId('history-settings-session').waitFor()
 }
 async function back(){
-  await page.getByRole('button',{name:'返回对话',exact:true}).click()
+  await Promise.all([page.waitForEvent('close'),page.getByTestId('settings-window-close').click()])
+  page=mainPage
   await prompt().waitFor()
 }
 async function close(){
@@ -187,7 +191,7 @@ try{
   assert.equal((await snapshot(target)).memoryScope.selections.length,0)
   assert.equal(await prompt().inputValue(),confirmQuery)
   await page.screenshot({path:path.join(root,'source-preview.png')})
-  await page.getByTestId('history-lookup-use').click()
+  await page.getByTestId('history-lookup-use-session').click()
   await page.getByTestId('history-use-selection').waitFor()
   const scoped=await snapshot(target)
   assert.equal(scoped.memoryScope.selections[0].id,row.source_id)

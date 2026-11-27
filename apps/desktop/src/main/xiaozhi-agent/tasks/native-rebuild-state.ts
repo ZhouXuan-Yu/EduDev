@@ -10,6 +10,7 @@ export async function commitNativeSessionRebuild(sql: Sql, input: {
   owner: TaskOwner;
   taskId: string;
   inspection: TaskRecoveryInspection;
+  admittedAmendment?: {revision:number;requirementsVersion:number};
   expectedFile: string;
   replacement: {file: string; nativeSessionId: string; model: string; baseline: string[]};
 }) {
@@ -18,7 +19,12 @@ export async function commitNativeSessionRebuild(sql: Sql, input: {
   return sql.transaction(async work => {
     const tasks = createTaskState({...work, transaction: action => action(work)}, {sanitize: async () => {throw Error('invalid_input');}});
     const task = await tasks.get(input.taskId);
-    if (!task || task.sessionId !== input.owner.sessionId || task.requirementsVersion !== input.inspection.requirementsVersion) throw Error('task_source_changed');
+    const amendment=input.admittedAmendment;
+    if(amendment&&(!Number.isSafeInteger(amendment.revision)||amendment.revision<1||
+      amendment.requirementsVersion!==input.inspection.requirementsVersion+1))throw Error('task_source_changed');
+    const expected=amendment?.requirementsVersion??input.inspection.requirementsVersion;
+    if(!task||task.sessionId!==input.owner.sessionId||task.requirementsVersion!==expected||amendment&&task.revision!==amendment.revision)
+      throw Error('task_source_changed');
     await tasks.validateCurrent(input.owner, task.id, task.revision);
     const binding = (await work.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [input.owner.sessionId]))[0];
     if (!binding || String(binding.session_file).replaceAll('\\', '/') !== input.expectedFile.replaceAll('\\', '/')
@@ -35,7 +41,7 @@ export async function commitNativeSessionRebuild(sql: Sql, input: {
         || ledger && (ledger.session_file !== binding.session_file || ledger.current_model !== binding.model)) throw Error('configuration');
     const stamp = new Date().toISOString();
     const archive = JSON.parse(JSON.stringify({schemaVersion: 1, owner: input.owner, taskId: task.id, inspection: input.inspection,
-      previousBinding: binding, previousLedger: ledger || null, previousTransitions: transitions, replacement, createdAt: stamp}));
+      ...(amendment?{admittedAmendment:amendment}:{}),previousBinding: binding, previousLedger: ledger || null, previousTransitions: transitions, replacement, createdAt: stamp}));
     if (!work.change || await work.change('INSERT OR IGNORE INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',
       ['xiaozhi.native-rebuild.v1:' + input.owner.runId, JSON.stringify({schemaVersion:1,document:archive,hash:protocolHash(archive)}), stamp]) !== 1) throw Error('command_conflict');
     if (ledger) {

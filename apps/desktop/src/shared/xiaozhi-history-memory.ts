@@ -20,3 +20,22 @@ export type HistoryAccessAction = 'allow' | 'revoke' | 'disable' | 'restore' | '
 export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'command_conflict' | 'source_changed' | 'source_unavailable' | 'busy' | 'configuration';
 export type HistoryIndexStatus = {configured:boolean;active:number;rebuilding:number|null;ready:number;pending:number;failed:number};
 export type HistoryResult<T> = {ok:true; value:T} | {ok:false; error:HistoryMemoryError};
+
+export type TaskHistoryScope={taskId:string;revision:number;items:Array<{sourceId:string;label:string;delivered?:true}>};
+export type TaskHistoryRemoval = {sessionId:string;taskId:string;revision:number;sourceId:string};
+export function validTaskHistoryRemoval(value:unknown):value is TaskHistoryRemoval {
+  if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==4)return false;
+  const {sessionId,taskId,revision,sourceId}=value as Partial<TaskHistoryRemoval>;
+  return typeof sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/iu.test(sessionId)&&
+    typeof taskId==='string'&&/^xitask_[a-f0-9]{64}$/u.test(taskId)&&
+    typeof revision==='number'&&Number.isSafeInteger(revision)&&revision>0&&
+    typeof sourceId==='string'&&/^[a-f0-9]{64}$/u.test(sourceId);
+}
+
+export type PendingHistoryReference = {token:string;sourceId:string;scopeVersion:number;title:string};
+
+export function validHistoryIntentIds(value:unknown):value is string[] {
+  return Array.isArray(value) && value.length>0 && value.length<=12 &&
+    value.every(token=>typeof token==='string' && /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/u.test(token)) &&
+    new Set(value).size===value.length;
+}

@@ -4,18 +4,20 @@ import type {XiaozhiStartInput} from './xiaozhi-agent';
 import {validMessagePresentation} from './xiaozhi-message-presentation';
 import {validMockExamExportIntent} from './mock-exam-export';
 import {validPaperExportIntent} from './paper-export';
+import {validHistoryIntentIds} from './xiaozhi-history-memory';
 import {MAX_XIAOZHI_ATTACHMENTS,validAttachmentSession,validAttachmentSelection} from './xiaozhi-attachments';
 
 /** Validate descriptors before reading values: accessors/symbols never run at admission. */
 export function validXiaozhiStart(value:unknown):value is XiaozhiStartInput{
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(value);
- if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask','classroomPlan','resumeDeliveryId','paperExportIntent','mockExamExportIntent'].includes(k))
+ if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask','classroomPlan','resumeDeliveryId','paperExportIntent','mockExamExportIntent','historyIntents'].includes(k))
   ||!['sessionId','commandId','prompt'].every(k=>Object.prototype.hasOwnProperty.call(descriptors,k))
   ||Object.values(descriptors).some(d=>!('value'in d)))return false;
  const session=descriptors.sessionId.value,command=descriptors.commandId.value,prompt=descriptors.prompt.value;
  if(!validAttachmentSession(session)||typeof command!=='string'||!/^xicmd_[a-f0-9-]{36}$/i.test(command)
   ||typeof prompt!=='string'||prompt.length>32768||prompt.includes('\0'))return false;
+ if(descriptors.historyIntents&&!validHistoryIntentIds(descriptors.historyIntents.value))return false;
  if(descriptors.classroomPlan&&(!validClassroomPlanStart(descriptors.classroomPlan.value)||descriptors.attachments||descriptors.continueTask))return false;
  if(descriptors.resumeDeliveryId&&(!deliveryId(descriptors.resumeDeliveryId.value)||descriptors.classroomPlan||descriptors.attachments||descriptors.continueTask))return false;
  if(descriptors.continueTask&&!validTaskContinuation(descriptors.continueTask.value))return false;

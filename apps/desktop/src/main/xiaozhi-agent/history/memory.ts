@@ -6,6 +6,7 @@ import { validMemorySession } from '../memory-selection';
 import { createHistoryState, historyHash, historyId, type Access } from './state';
 import { createHistoryIndexWorker } from './index-worker';
 import { configuredHistoryIndex } from './hindsight';
+import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext,type HistoryTeachingTarget} from './teaching-target';
 import { historyRecordId, readHistorySource, validHistoryRef } from './source';
 
 export { validHistoryRef } from './source';
@@ -33,20 +34,39 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       selection:{layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion}});
     return {...source,ticket};
   }
+  async function eligible(sessionId:string,ref:HistorySourceRef,target?:HistoryTeachingTarget) {
+    const source=(await historyTeachingContext(sql,ref.sessionId).catch(()=>null))?.target;
+    return !!source&&historyTargetApplies(source,target??(await historyTeachingContext(sql,sessionId)).target);
+  }
   // Check all returned titles against one SQLite snapshot, after asynchronous source reads.
   async function publish(sessionId: string, scopeVersion: number, sources: HistorySource[], signal?: AbortSignal) {
     signal?.throwIfAborted();
-    const limited = sources.slice(0,12);
+    const {saved,target}=await historyTeachingContext(sql,sessionId);
+    if(saved.version!==scopeVersion)return [];
+    const permittedSessions=await eligibleHistorySessions(sql,sources.map(source=>source.ref.sessionId),target);
+    const limited=sources.filter(source=>permittedSessions.has(source.ref.sessionId)).slice(0,12);
     if (!limited.length) return [];
     const ids = limited.map(source => source.sourceId);
+    const final=await historyTeachingContext(sql,sessionId).catch(()=>null);
+    if(!final||final.saved.version!==scopeVersion||final.target.folderId!==target.folderId||final.target.term!==target.term)return [];
     const rows = await sql.all(`SELECT a.source_id,a.source_version,a.generation FROM memory_source_access a
       JOIN ai_conversation_sessions owner ON owner.id=a.session_id
       JOIN ai_conversation_sessions target ON target.id=?
       WHERE a.source_id IN (${ids.map(() => '?').join(',')}) AND a.memory_state='active'
         AND a.discover_allowed=1 AND a.index_allowed=1 AND NULLIF(owner.student_id,'') IS NULL AND NULLIF(owner.archived_at,'') IS NULL
         AND NULLIF(target.student_id,'') IS NULL AND NULLIF(target.archived_at,'') IS NULL
+        AND target.folder_id IS ?
+        AND (target.folder_id IS NULL OR EXISTS(SELECT 1 FROM ai_conversation_folders f
+          WHERE f.id=target.folder_id AND COALESCE(f.archived_at,'')=''))
+        AND (owner.folder_id IS NULL OR owner.folder_id=target.folder_id)
+        AND NOT EXISTS(SELECT 1 FROM xiaozhi_pi_memory_scopes source_scope WHERE source_scope.conversation_id=owner.id AND
+          CASE WHEN json_valid(source_scope.payload_json) THEN
+            json_type(source_scope.payload_json,'$.teachingTarget') IS NOT NULL AND
+              ((source_scope.payload_json->>'$.teachingTarget.term') IS NOT ? OR
+               (source_scope.payload_json->>'$.teachingTarget.folderId') IS NOT owner.folder_id)
+            ELSE 1 END)
         AND COALESCE((SELECT version FROM xiaozhi_pi_memory_scopes WHERE conversation_id=target.id),0)=?`,
-      [sessionId,...ids,scopeVersion]);
+      [sessionId,...ids,target.folderId,target.term,scopeVersion]);
     signal?.throwIfAborted();
     const current = new Map(rows.map(row => [row.source_id,row]));
     return limited.flatMap(source => {
@@ -129,12 +149,13 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     async discover(sessionId: string, query: string, signal?: AbortSignal): Promise<HistoryDiscovery> {
       if (typeof query!=='string'||!query.trim()||query.length>1800||!validMemorySession(sessionId)) throw Error('invalid_input');
       const started = performance.now();
-      const scope=await store.xiaozhiState.memoryScope(sessionId);
-      const selected = new Set(scope.selections.filter(item=>item.layer==='history').map(item=>item.id));
-      const active = (await access.permitted()).filter(item=>!selected.has(item.sourceId));
-      if (!active.length) return {mode:'local',candidates:[],reason:'empty_scope',elapsedMs:Math.round(performance.now()-started)};
-      const target = await store.getAiConversationSession(sessionId);
-      if (target.session.archivedAt||target.session.studentId) throw Error('permission_denied');
+      const {saved:scope,target}=await historyTeachingContext(sql,sessionId);
+      const selected=new Set(scope.selections.filter(item=>item.layer==='history').map(item=>item.id));
+      const granted=(await access.permitted()).filter(item=>!selected.has(item.sourceId));
+      const permittedSessions=await eligibleHistorySessions(sql,granted.map(item=>item.ref.sessionId),target);
+      const active=granted.filter(item=>permittedSessions.has(item.ref.sessionId));
+      signal?.throwIfAborted();
+      if(!active.length)return {mode:'local',candidates:[],reason:'empty_scope',elapsedMs:Math.round(performance.now()-started)};
       const cleaned = (await store.sanitizeProblemText(query)).sanitizedText;
       if (!cleaned.trim()) return {mode:'local',candidates:[],elapsedMs:Math.round(performance.now()-started)};
       if (engine) {
@@ -200,6 +221,17 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       const saved = await access.get(selection.id);
       if (!saved || saved.generation!==selection.version || saved.ref.sourceVersion!==selection.sourceVersion) throw Error('source_changed');
       return readAllowed(saved);
+    },
+    async selectedFor(sessionId:string,selection:HistorySelection) {
+      const saved=await access.get(selection.id);
+      if(!saved||saved.generation!==selection.version||saved.ref.sourceVersion!==selection.sourceVersion)throw Error('source_changed');
+      if(!await eligible(sessionId,saved.ref))throw Error('permission_denied');
+      const source=await readAllowed(saved);
+      if(!await eligible(sessionId,saved.ref))throw Error('permission_denied');
+      const current=await access.get(selection.id);
+      if(!current?.allowed||current.status!=='active'||current.generation!==saved.generation||current.ref.sourceVersion!==saved.ref.sourceVersion)
+        throw Error('source_changed');
+      return source;
     },
   };
 }

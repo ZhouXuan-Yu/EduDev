@@ -2,13 +2,13 @@ import type {Sql} from '../session-state';
 import {validMemorySession} from '../memory-selection';
 
 export type ReceivedReference = {
-  id:string; version:number; fingerprint:string; reason:'named'|'task'|'teaching_scope'|'global'; estimatedTokens:number;
+  id:string; version:number; fingerprint:string; reason:'named'|'task'|'turn'|'teaching_scope'|'global'; estimatedTokens:number;
 };
 const digest=/^[a-f0-9]{64}$/;
 function valid(item:ReceivedReference) {
   return item && Object.keys(item).length===5 && typeof item.id==='string' && digest.test(item.id)
     && typeof item.fingerprint==='string' && digest.test(item.fingerprint)
-    && Number.isSafeInteger(item.version) && item.version>0 && ['named','task','teaching_scope','global'].includes(item.reason)
+    && Number.isSafeInteger(item.version) && item.version>0 && ['named','task','turn','teaching_scope','global'].includes(item.reason)
     && Number.isSafeInteger(item.estimatedTokens) && item.estimatedTokens>0 && item.estimatedTokens<=1024;
 }
 export const referenceReceiptSchema=`CREATE TABLE IF NOT EXISTS xiaozhi_memory_reference_deliveries (
@@ -21,7 +21,8 @@ export function createReferenceReceipts(sql:Sql) {
   return {
     async recordReferenceDelivery(sessionId:string,runId:string,scopeVersion:number,items:readonly ReceivedReference[]) {
       if (!validMemorySession(sessionId) || !/^run_[a-zA-Z0-9_-]{1,120}$/.test(runId)
-        || !Number.isSafeInteger(scopeVersion) || scopeVersion<1 || !Array.isArray(items) || items.length>12
+        || !Number.isSafeInteger(scopeVersion) || scopeVersion<0 || !Array.isArray(items) || items.length>12
+        || scopeVersion===0&&items.some(item=>item?.reason!=='task'&&item?.reason!=='turn')
         || !items.every(valid)) throw Error('invalid_input');
       if (!items.length) return;
       await sql.run(`INSERT OR IGNORE INTO xiaozhi_memory_reference_deliveries
