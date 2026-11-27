@@ -1,5 +1,8 @@
 # Goal 验收台账
 
+2026-11-27　浏览器 DOM 专项的自动验证及独立教师复核。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
+
+
 数据库 R4 对每项验收分别保存代码与构建身份、运行命令和原始证据。人工操作和自动 Windows 验收分别记录。 [验收入口](../acceptance/CURRENT.md#小智数据库-r4)
 
 V3.1后续13项实际双窗检查、17接口拒绝及权限SQLite读回通过；frame层只证明无preload/parent访问，不替代原生IPC负例。失败与修复保留于任务树checkpoint-context-followup，完整AC不得从这些子条件自动转PASS。

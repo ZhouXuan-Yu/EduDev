@@ -271,7 +271,10 @@ export function createRunToolGovernance(options: {owner: PermissionOwner; regist
       let effect = record.effect;
       if (name === 'office_browser') {
         const {input: browser} = unwrapTaskArguments(input);
-        if (validBrowserInput(browser) && browser.action === 'extract') effect = 'local_cache';
+        if (validBrowserInput(browser)) {
+          if (browser.action === 'extract') effect = 'local_cache';
+          if (['snapshot', 'tabs', 'wait'].includes(browser.action)) effect = 'safe_read';
+        }
       }
       const receipt: ToolContractReceipt = {schemaVersion: 1, capabilityId: record.capabilityId, providerId: record.providerId,
         providerVersion: record.providerVersion, providerHash: record.providerHash, schemaHash: record.schemaHash, sourceHash: record.sourceHash,

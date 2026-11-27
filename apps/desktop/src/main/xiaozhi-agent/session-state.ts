@@ -69,7 +69,8 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const attachmentSends=createAttachmentSendState(sql);
   const attachmentOcr=createAttachmentOcrState(sql);
   const goals=createGoalState(sql);
-  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot,sql})});
+  let liveNavigation: ((sessionId:string, runId:string, callId:string) => boolean) | undefined;
+  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({liveNavigation:(...args)=>liveNavigation?.(...args) === true,persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot,sql})});
   const classrooms=createClassroomState(sql);
   const classroomPlans=createClassroomPlanState(sql);
   const teachingHandouts=createTeachingHandoutState(sql);
@@ -81,6 +82,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     capabilities,
     effects,
     terminalJobs,
+    setNavigationReadback(reader:typeof liveNavigation) { liveNavigation = reader; },
     capabilitySnapshots,
     permissions,
     skillGovernance,

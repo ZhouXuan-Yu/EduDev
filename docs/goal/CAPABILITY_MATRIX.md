@@ -1,5 +1,8 @@
 # 小智能力与复用矩阵
 
+2026-11-27　M10 浏览器按标签和快照定位唯一控件、核对动态文字，保留老师确认。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
+
+
 数据库 R2 复用 SQLite、原生 Pi、正式 preload、既有备份和恢复、Task/Approval/Effect 与会话 JSONL。当前配置诊断和每轮准备基线沿用同一次实际解析的来源。 [架构](../architecture/CURRENT.md#小智数据库-r2)
 
 ## 2026-11-22 小智长期个人教学 Agent D3

@@ -1,5 +1,8 @@
 # EduDev 当前任务进度
 
+2026-11-27　内置浏览器动态筛选的基线、复现和验收记录。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
+
+
 数据库 R4 分基线、R3 回归、受控窗口、并发提交、字段撤回、Windows 工程验收和条件集成推进。阶段和证据回执见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4/reports`。
 
 V3.1进一步完成正式A→B→A、原权限设置保存/主输入栏同步、关闭后SQLite核对和导航撤销重建；扩展实操13项通过，17个新旧接口拒绝伪造窗口。修复只在切会话时读权限导致的跨窗旧显示，保留原组件和业务规则。状态与有限预算见任务树CHECKPOINT_CONTEXT_FOLLOWUP.json；配置/记忆/备份完整链路仍未结项。

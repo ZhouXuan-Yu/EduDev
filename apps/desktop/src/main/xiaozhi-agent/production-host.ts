@@ -372,6 +372,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const queueing = new Map<string,{hash:string;result:Promise<XiaozhiActionResult>}>();
   const enabled = options.enabled !== false;
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
+  store.xiaozhiState.setNavigationReadback(browser.hasLiveNavigation);
   const history = createHistoryMemory(store,options.dataRoot);
   const sanitizePersonalMemory=async(text:string)=>(await createStudentContextSanitizer(store))(text);
   const personalMemoryUse=createPersonalMemoryUse(store.xiaozhiState.sql,sanitizePersonalMemory);
@@ -442,7 +443,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const permissionRuntime = createPermissionRuntimeManager({root: path.join(options.dataRoot, 'managed-tools/permission-runtime'), store: store.xiaozhiState.permissions});
   const networkReceiptDirectory=path.join(options.dataRoot,'xiaozhi-effects/network');
   const effectReconciler=createEffectReconciler({sql:store.xiaozhiState.sql,networkDirectory:networkReceiptDirectory,
-    readback:{readEffect:createRecoveryEffectReader({sql:store.xiaozhiState.sql,persistent:store.xiaozhiState,
+    readback:{readEffect:createRecoveryEffectReader({liveNavigation:browser.hasLiveNavigation,sql:store.xiaozhiState.sql,persistent:store.xiaozhiState,
       changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,dataRoot:()=>options.dataRoot})}});
   const terminalOperations = createControlledPowerShellOperations({runtime: permissionRuntime, store: store.xiaozhiState.permissions,
     broker: createPermissionNetworkBroker({engine: permissions.engine, effects: createNetworkEffects(store.xiaozhiState.sql,networkReceiptDirectory),
@@ -1186,7 +1187,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         emit:goal=>{if(active.get(id)===owner)publicEvent(id,owner,{kind:'goal',goal});}})}:{}),
       ...(web.enabled?{webTools:createPiWebTools({workspace,sessionId:id,runId,dnsMode:web.dnsMode,limitsEnforced:false,beforeExecute:()=>{if(observedEnrichmentQuestions.size)throw Error('permission_denied');},
         sanitize:text=>sanitizeOfficeDocumentText(store,text),isCurrent:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)})}:{}),
-      ...(web.enabled?{browserTools:wait=>createPiBrowserTools({host:browser,sessionId:id,dnsMode:web.dnsMode,
+      ...(web.enabled?{browserTools:wait=>createPiBrowserTools({host:browser,sessionId:id,runId,dnsMode:web.dnsMode,
         beforeExecute:input=>webAnswerRuntime?.guard(input),onExtract:(callId,data,signal)=>webAnswerRuntime?.observe(callId,data,signal)||Promise.resolve(undefined),
         current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         confirm:(question,signal,callId)=>wait(async()=>{const tool=controls.tools(id,runId).find(item=>item.name==='ask_teacher')!;
@@ -2633,6 +2634,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await terminalService.close();
       await skillsReady.catch(() => undefined);
       await managedTools.dispose();
+      store.xiaozhiState.setNavigationReadback(undefined);
       await browser.dispose();
       await acquisition.close();
       await extensionHost.dispose();

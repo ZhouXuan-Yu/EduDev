@@ -1,5 +1,8 @@
 # 当前集成与复用
 
+2026-11-27　内置浏览器复用 Electron、Hana 和 Mozilla Readability；受管技能包含网页操作手册。[实施与验收](../goal/BROWSER_DOM_ACCEPTANCE.md)
+
+
 数据库 R4 的辅窗复用 v7 事务账本。辅助 preload 暴露普通配置读写、历史、撤回、目录刷新和变更通知。辅窗关闭后由主进程撤销该窗口的调用资格。 [架构](../architecture/CURRENT.md#小智数据库-r4)
 
 V3.1设置窗分支接入采用固定方法allowlist代理原handler，scope epoch来自可信主窗选择，原配置版本、权限、Pi、记忆和备份规则继续负责业务校验。子窗未获得通用终端/文件/Agent接口。当前仅局部正式Electron验证；完整门禁和剩余读写链路见[专项入口](../goal/UIUX_V31_EXECUTION.md)。

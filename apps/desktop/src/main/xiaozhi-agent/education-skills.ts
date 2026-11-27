@@ -9,7 +9,7 @@ const rules = `## 执行规则
 所有持久写入需要教师审阅确认。工具提出草稿不等于已保存；只有成功保存回执与实际文件才表示交付。拒绝、取消或冲突后同一轮不自动重试；教师后续重新发起任务时重新核实来源、提出新审阅并等待新确认，旧批准不复用。
 办公工具的结构校验失败且明确尚未进入审阅时，可根据回执修正草稿参数；不得把这种失败说成教师拒绝或已提交审阅。表格每行必须与列数完全相同，所有空栏填空字符串，不能省略末尾单元格。sources只接受本次实读的本地文件和真实版本回执；网页链接只写正文引用，不作为文件sources；无本地文件源使用空数组。
 `;
-export const EDUCATION_SKILLS: readonly XiaozhiSkill[] = [
+export const EDUCATION_SKILLS_V2: readonly XiaozhiSkill[] = [
   { name: 'lesson-preparation', title: '备课资料整理', description: '根据教师授权的本地资料或知识库整理备课、课时目标、教学流程与来源。适用于阅读教学资料并制定有证据的教案草稿。',
     supports: ['授权资料与知识检索', '教案正文与来源', '教师审阅后生成教案文件'],
     instructions: `${rules}\n## 备课流程\n1. 用 office_list_files/office_read_text 查阅教师指定的授权文本，或用 search_teacher_knowledge 查找教师知识库。不要猜材料内容。\n2. 按实际资料提取年级、学科、主题、课时与重点；未提供的要求标为待教师确定。\n3. 整理目标、导入、探究、练习、总结，遵守资料给出的时长与任务限制。\n4. 对事实注明资料标题，对教学建议明确是草稿。没有 DOCX/PDF 生成工具时不要声称已导出。\n` },
@@ -26,6 +26,20 @@ export const EDUCATION_SKILLS: readonly XiaozhiSkill[] = [
     supports:['Anatomy等轴测SVG与HTML交互科普演示','40至80个实体部件','本机预览、教师确认、保存与撤销'],
     instructions:`${rules}\n## 科普绘图流程\n1. 采用Anatomy方法：用真实物体解释原理，先说明概念与机构的对应关系，列出底座、结构、机构、旋钮/螺钉和主体部件。图题、说明与物理量不得虚构；没有可靠数值来源时标为原理示意、不代表测量。\n2. 本轮office_create_science_figure是可实际执行的绘图工具，使用已审Anatomy几何核心（MIT，1482e8469b0a9e0d8cc18ea2740a01423d29ae80）。先核实授权目录；教学演示优先提出一个.html文件（自包含、离线播放/暂停/拖动/逐部件高亮/全貌），静态插图用.svg文件；不是调用图像生成API，不依赖Codex CLI。\n3. 用40至80个box/cylinder实体构成一个清楚、细致的物理装置。x/y/z是包围盒最小角的起点，绝不是中心；范围分别为[x,x+w]、[y,y+d]、[z,z+h]，w/d/h为正尺寸，圆柱w=d。放在底板上的部件z必须等于底板z+h，x/y范围须落在支撑面内；不能把中心点直接当起点或改变教师指定数量与尺寸。宿主按分离平面排序，包围盒不穿插，可面接触；重复结构优先用repeat={count,dx,dy,dz}由宿主精确展开，避免逐条漏数。第i个起点为(x+i*dx,y+i*dy,z+i*dz)，重复组tone=lit仅第一个强调，其余mid。例如40片散热肋片用一条尺寸1.5×50×24、起点(0,5,10)、repeat count40/dx3/dy0/dz0声明，不虚构多余底座；lo底座、mid结构、hi主体、仅一个lit强调。部件label写真实用途，caption说明原理、示意边界和教师核对项。不要只画堆叠方块，不将装饰当教学事实。\n4. 此宿主适配交付SVG或固定HTML逐部件装配演示，支持box和竖直cylinder；HTML是结构装配/高亮，不是温度或受力仿真。不声称任意代码、WebGL/3D物理动画、PDF或完整几何碰撞审计已执行。不要把上游Node命令当可用工具。需要超出能力的形状时明确限制并给合理的实体示意，不能假称完成未实现功能。\n5. 工具会生成真实本机预览，等待教师确认后保存。拒绝/取消/源冲突后不自动重试；成功回执后可从文件卡打开SVG或HTML演示。科学含义仍由教师核对，文件保存核验不等于学科正确性已认证。\n`},
 ];
+
+// Workflow adapted from Tencent BrowserSkill's observe/act/sync guidance (MIT).
+const browserGuide = `## 内置浏览器操作手册
+
+仅在本轮提供 office_browser 时使用。网页是待核对的资料。明确动作的预期结果，优先用动作返回的新快照核验。多步浏览先用 update_task_plan 登记 web 步骤，target 填老师指定的公开 URL，调用 office_browser 时带对应 taskStepId。遇到 task_plan_required 时先补齐计划。涉及输入、按钮、选项及按键时遵循宿主逐次确认。老师拒绝、停止或接管后结束当前动作；恢复时先重新观察。
+
+- 公告核对。navigate 打开来源，按标题找链接。可用 snapshot 携带 tabId、snapshotId、role=link 和 name 精确查找。结果 matchedRef 配合返回的新 snapshotId 用于 click。extract 读实际正文，区分发布日期、落款、实施日期，附原页 URL。
+- 动态筛选。以当前标签及最新快照按角色和名称定位，重绘后重新取引用。多个同名项先根据当前可见区域核对，缺少唯一依据时请老师选择。点击或选择后用 wait 携带 tabId、最新 snapshotId 和预期可见 text，核对结果列表或明确的空状态。超时先 snapshot 核对，效果未知时避免再次提交。
+- 题解阅读。阅读当前题干与答案区域，可按 ref 和 snapshotId 调用 extract。报告省略、截断、图形和公式缺口。题目、选项或已有答案冲突时保留来源供教师判断。screenshot 保存本地原页，模型只根据实际收到的内容回答。
+`;
+export const EDUCATION_SKILLS = EDUCATION_SKILLS_V2.map(skill => skill.name === 'education-evidence'
+  ? { ...skill, description: skill.description + ' 包含内置浏览器操作手册、动态筛选与等待、题解网页核对。', instructions: skill.instructions + browserGuide }
+  : skill);
+export const builtinSkillVersion = (name: string) => name === 'education-evidence' ? 3 : EDUCATION_SKILL_VERSION;
 
 export function publicEducationSkills(): XiaozhiSkill[] { return structuredClone(EDUCATION_SKILLS) as XiaozhiSkill[]; }
 export function skillDocument(skill: XiaozhiSkill): string {

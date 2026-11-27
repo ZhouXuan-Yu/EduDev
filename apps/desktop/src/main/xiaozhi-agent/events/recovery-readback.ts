@@ -29,10 +29,11 @@ import {mockExamDelivery} from '../mock-exam-delivery-resume';
 import {createDeliveryReadback} from '../verification/delivery-readback';
 
 /** Reuse independent teacher-confirmed ledger/disk readback. No grants are revived. */
-export function createRecoveryEffectReader(state:{persistent:ReturnType<typeof createPiPersistentState>;changes:ReturnType<typeof createTextChangeState>;artifacts:ReturnType<typeof createOfficeArtifactState>;dataRoot?:()=>string;sql?:Sql}){
+export function createRecoveryEffectReader(state:{liveNavigation?:(sessionId:string,runId:string,callId:string)=>boolean;persistent:ReturnType<typeof createPiPersistentState>;changes:ReturnType<typeof createTextChangeState>;artifacts:ReturnType<typeof createOfficeArtifactState>;dataRoot?:()=>string;sql?:Sql}){
  const acquisitionReader=state.sql?createAcquisitionPrepareEffectReader(state.sql):undefined;
  const executionReader=state.sql?createExecutionEffectReader(state.sql):undefined;
  return async(owner:JournalOwner,callId:string,tool:string,entry?:NativeToolEntry):Promise<'matched'|'uncertain'|'not_checked'>=>{
+  if(tool==='office_browser')return state.liveNavigation?.(owner.sessionId,owner.runId,callId)?'matched':'uncertain';
   if(tool===TEACHING_HANDOUT_TOOL)return state.sql?readTeachingHandoutEffect(state.sql,owner,callId):'uncertain';
   if(tool===PROPOSE_HANDOUT_EDIT)return state.sql?readHandoutEditEffect(state.sql,owner,callId):'uncertain';
   if(tool===BUILD_MOCK_EXAM_CATALOG)return state.sql?readMockExamEffect(state.sql,owner,callId):'uncertain';

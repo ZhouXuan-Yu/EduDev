@@ -23,7 +23,48 @@ const ref=(p:XiaozhiBrowserReceipt,name:string)=>{const line=p.text!.split('\n')
 const until=async(fn:()=>unknown)=>{for(let i=0;i<100;i++){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,50));}throw new Error('Native status did not arrive');};
 try{
  let got=0;const accessor=Object.defineProperty({action:'snapshot'},'text',{get(){got++;return 'x';},enumerable:true});assert(!validBrowserInput(accessor));assert.equal(got,0);assert(!validBrowserInput({action:'snapshot',url:'x'}));assert(!validBrowserInput({action:'type',ref:1}));check('Strict browser boundary rejects accessors, extra action fields and missing ref epoch');
- let p=page(await call({action:'navigate',url:'https://fixture.invalid'}));assert(p.text!.includes('教研资料'));assert(!p.text!.includes('synthetic-secret'));const wc=contents!;assert.deepEqual(await wc.executeJavaScript('({node:typeof process,ipc:typeof window.omniEdu})'),{node:'undefined',ipc:'undefined'});check('Actual native view renders fixture, original Hana snapshot has refs, password value omitted and Node/business IPC absent');
+ const navigation = {runId:randomUUID(), callId:randomUUID()};
+ let p=page(await host.execute(id,{action:'navigate',url:'https://fixture.invalid'},{...context,invocation:navigation}));
+ assert(host.hasLiveNavigation(id,navigation.runId,navigation.callId));
+ assert(!host.hasLiveNavigation(other,navigation.runId,navigation.callId));
+ assert(!host.hasLiveNavigation(id,randomUUID(),navigation.callId));
+ assert(!host.hasLiveNavigation(id,navigation.runId,randomUUID()));
+ check('Navigation proof matches only its owning live session, run and call');
+ assert(p.text!.includes('教研资料'));assert(!p.text!.includes('synthetic-secret'));const wc=contents!;assert.deepEqual(await wc.executeJavaScript('({node:typeof process,ipc:typeof window.omniEdu})'),{node:'undefined',ipc:'undefined'});check('Actual native view renders fixture, original Hana snapshot has refs, password value omitted and Node/business IPC absent');
+ const latest = () => ({tabId:p.tabId,snapshotId:p.snapshotId});
+ await wc.executeJavaScript(`{
+   const button=document.createElement('button');
+   button.setAttribute('aria-label','筛选年级');
+   button.textContent='筛选';
+   button.onclick=()=>{window.filterClicks=(window.filterClicks||0)+1;setTimeout(()=>document.querySelector('#result').textContent='初二列表已更新',1600)};
+   document.querySelector('button').replaceWith(button);
+ }`);
+ const found=page(await call({action:'snapshot',role:'button',name:'筛选年级',...latest()}));
+ assert(found.matchedRef, 'unique accessible target');
+ p=page(await call({action:'click',ref:found.matchedRef,tabId:found.tabId,snapshotId:found.snapshotId}));
+ p=page(await call({action:'wait',text:'初二列表已更新',...latest()}));
+ assert(p.text?.includes('初二列表已更新'));assert.equal(await wc.executeJavaScript('window.filterClicks'),1);
+ check('Redrawn control found by Chromium role and name; delayed result verified after one click');
+ await wc.executeJavaScript("document.body.append(document.querySelector('button').cloneNode(true))");
+ await assert.rejects(call({action:'snapshot',role:'button',name:'筛选年级',...latest()}),/ambiguous_target/);
+ p=page(await call({action:'snapshot'}));
+ await wc.executeJavaScript("document.querySelectorAll('button')[1].hidden=true");
+ p=page(await call({action:'snapshot',role:'button',name:'筛选年级',...latest()}));assert(p.matchedRef);
+ check('Same names refused; hidden duplicate excluded');
+ await wc.executeJavaScript(`document.body.insertAdjacentHTML('beforeend','<div id="cover" style="position:fixed;inset:0;z-index:9999"></div>')`);
+ await assert.rejects(call({action:'click',ref:p.matchedRef,...latest()}),/target_unavailable/);
+ assert.equal(await wc.executeJavaScript('window.filterClicks'),1);
+ await wc.executeJavaScript("document.querySelector('#cover').remove()");
+ check('Covered controls are refused without another click');
+
+ const stopping=new AbortController();
+ const waiting=host.execute(id,{action:'wait',text:'不会出现',...latest()},{...context,signal:stopping.signal});
+ setTimeout(()=>stopping.abort(),100);await assert.rejects(waiting);check('Stopping conditional wait produces no success');
+ await assert.rejects(call({action:'wait',text:'不会出现',...latest()}),/timeout/);
+ const changing=call({action:'wait',text:'不会出现',...latest()});
+ setTimeout(()=>void wc.loadURL('https://fixture.invalid/other'),100);
+ await assert.rejects(changing,/attachment_changed/);assert(!host.hasLiveNavigation(id,navigation.runId,navigation.callId));check('Timeout and teacher navigation end the original wait');
+ p=page(await call({action:'navigate',url:'https://fixture.invalid'}));
  const initial=p;await assert.rejects(call({action:'snapshot',tabId:p.tabId},other),/permission_denied/);check('Cross-conversation tab identity denied');
  allow=false;await assert.rejects(call({action:'click',ref:ref(p,'处理'),snapshotId:p.snapshotId}),/permission_denied/);assert.equal(await wc.executeJavaScript("document.getElementById('result').textContent"),'尚未处理');check('Teacher rejection produces no button effect');
  allow=true;p=page(await call({action:'click',ref:ref(p,'处理'),snapshotId:p.snapshotId}));assert(p.text!.includes('已处理数学教研'));await assert.rejects(call({action:'click',ref:ref(initial,'处理'),snapshotId:initial.snapshotId}),/attachment_changed/);check('Actual authorized DOM action changes content; stale snapshot rejected');
@@ -46,7 +87,17 @@ try{
  const stopped=new AbortController();stopped.abort();await assert.rejects(host.execute(id,{action:'snapshot'},{...context,signal:stopped.signal}),()=>true);check('Cancelled command admits no new browser operation');
  const proxy=await createPublicBrowserProxy('system');try{const status=(headers={})=>new Promise<number>((resolve,reject)=>{http.get({hostname:'127.0.0.1',port:proxy.port,path:'http://127.0.0.1/private',headers},response=>{response.resume();resolve(response.statusCode!);}).on('error',reject);});assert.equal(await status(),407);assert.equal(await status({'Proxy-Authorization':'Basic '+Buffer.from(proxy.username+':'+proxy.password).toString('base64')}),403);}finally{await proxy.close();}check('Owned proxy requires ephemeral credentials and denies unauthorized/private target');
  const actual=createXiaozhiBrowserHost({statusFile,root:path.join(output,'actual'),sanitize:async t=>t});try{
-  await assert.rejects(actual.execute(id,{action:'navigate',url:'http://www.moe.gov.cn'},{...context,dnsMode:'system'}),/dns_blocked/);assert.deepEqual((await actual.status(id)).tabs,[]);await assert.rejects(actual.execute(id,{action:'snapshot'},context),/dns_blocked/);
+  // OS DNS can legitimately return public addresses on an unproxied machine.
+  // Inject only the system DNS answer in this disposable Electron process.
+  const dns=(await import('node:dns/promises')).default;
+  const {syncBuiltinESMExports}=await import('node:module');
+  const lookup=dns.lookup;
+  try {
+    dns.lookup=((name,...args)=>name==='virtual-dns.example.com'
+      ? Promise.resolve([{address:'198.18.0.23',family:4}]) : Reflect.apply(lookup,dns,[name,...args])) as typeof lookup;
+    syncBuiltinESMExports();
+    await assert.rejects(actual.execute(id,{action:'navigate',url:'http://virtual-dns.example.com'},{...context,dnsMode:'system'}),/dns_blocked/);
+  } finally {dns.lookup=lookup;syncBuiltinESMExports();}assert.deepEqual((await actual.status(id)).tabs,[]);await assert.rejects(actual.execute(id,{action:'snapshot'},context),/dns_blocked/);
   const status=await until(()=>electron.webContents.getAllWebContents().find(wc=>wc.getURL().includes('/browser-status.html#dns_blocked'))) as electron.WebContents;
   await until(()=>status.executeJavaScript("document.querySelector('[data-state=dns_blocked]')!==null"));assert((await status.executeJavaScript('document.body.innerText')).includes('网页解析受阻'));assert.deepEqual(await status.executeJavaScript('({node:typeof process,ipc:typeof window.omniEdu})'),{node:'undefined',ipc:'undefined'});
   const window=electron.BaseWindow.getAllWindows().find(w=>w.contentView.children.some(view=>(view as electron.WebContentsView).webContents===status))!;assert(window);

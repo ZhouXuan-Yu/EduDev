@@ -1,5 +1,8 @@
 # 当前状态与恢复入口
 
+2026-11-27　M10/M12 浏览器支持同页语义定位和条件等待。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
+
+
 2026-11-27 本轮执行用户授权的全分支整合与清理，旧自动 Goal 已清除。保留各领域代码、未提交备份及未完成验收。Git 整合不代表 UI 或业务全部达标；本轮准确 refs、回归结果与恢复入口见 [分支整合回执](../audit/branch-consolidation-20261127/README.md)。下文旧执行指针按所属日期理解。
 
 数据库 R4 的版本、构建、测试和集成状态见 `D:/WorkProject/EduProject/acceptance/xiaozhi-db-r4/state.json`。按 [验收入口](../acceptance/CURRENT.md#小智数据库-r4) 核对当前阶段。

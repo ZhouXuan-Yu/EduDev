@@ -2,8 +2,10 @@ import type {BaseWindow,WebContentsView,Session} from 'electron';
 import {randomUUID,createHash} from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {setTimeout as delay} from 'node:timers/promises';
 import {officeWebUrl,waitOfficeAbort,type OfficeDnsMode} from '../office-agent/office-network';
 import {createPublicBrowserProxy} from './browser-proxy';
+import {uniqueBrowserRef,waitForBrowserText} from './browser-dom-observation';
 import {SNAPSHOT_SCRIPT} from './vendor/hana/browser/snapshot';
 import {validBrowserInput,type XiaozhiBrowserInput,type XiaozhiBrowserReceipt} from '../../shared/xiaozhi-browser';
 import {BROWSER_CAPTURE_SCHEMA,validBrowserCapture} from '../../shared/xiaozhi-browser-capture';
@@ -12,7 +14,8 @@ import {approvedFile} from './workspace-authority';
 import {readBrowserCapture} from './browser-capture-reader';
 import {browserExtractScript} from './browser-extract-script';
 
-type Tab={id:string;view:WebContentsView;session:Session;state:'loading'|'ready'|'failed';error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
+type NavigationProof = {runId:string; callId:string; revision:number; url:string};
+type Tab={navigation?:NavigationProof;id:string;view:WebContentsView;session:Session;state:'loading'|'ready'|'failed';error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
 type Group={window:BaseWindow;status:WebContentsView;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;busy:boolean;closing:boolean};
 const sensitive=/sk-[\w-]{20,}|(?:api[-_]?key|token|secret|password|authorization)=/i;
 let nativeRuntime:typeof import('electron')|undefined;
@@ -83,10 +86,21 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     signal.throwIfAborted();if(tab.revision!==revision||wc.isDestroyed())throw new Error('attachment_changed');tab.refs=new Map(refs.filter(([_ref,html])=>!!html));tab.snapshotId=receipt.snapshotId;return receipt;
   }
   return {
+    hasLiveNavigation(sessionId:string, runId:string, callId:string) {
+      const group = groups.get(sessionId);
+      if (!group || group.closing) return false;
+      for (const tab of group.tabs.values()) {
+        const proof = tab.navigation;
+        if (proof?.runId === runId && proof.callId === callId && proof.revision === tab.revision &&
+            tab.state === 'ready' && !tab.view.webContents.isDestroyed() &&
+            tab.view.webContents.getURL() === proof.url) return true;
+      }
+      return false;
+    },
     async status(id:string){const g=groups.get(id);if(!g||g.closing)return {open:false};const tabs=[];for(const tab of g.tabs.values()){if(tab.state!=='ready'||tab.view.webContents.isDestroyed())continue;try{tabs.push({tabId:tab.id,title:(await options.sanitize(tab.view.webContents.getTitle())).slice(0,200),url:await safeUrl(tab.view.webContents.getURL()),active:tab.id===g.active});}catch{/* Blank/blocked pages are not a source. */}}return {open:true,tabs};},
     show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.window.show();g.window.focus();},
     setNetworkScope(id:string,scope:(url:string)=>boolean,resetConnections=false){if(networkScopes.get(id)===scope&&!resetConnections)return;networkScopes.set(id,scope);groups.get(id)?.proxy.stopConnections();},
-    async execute(id:string,input:XiaozhiBrowserInput,context:{signal:AbortSignal;dnsMode:OfficeDnsMode;current:()=>boolean;confirm:(question:string,signal:AbortSignal)=>Promise<boolean>}):Promise<XiaozhiBrowserReceipt|{tabs:{tabId:string;title:string;url:string;active:boolean}[]}|{closed:true}> {
+    async execute(id:string,input:XiaozhiBrowserInput,context:{invocation?:{runId:string;callId:string};signal:AbortSignal;dnsMode:OfficeDnsMode;current:()=>boolean;confirm:(question:string,signal:AbortSignal)=>Promise<boolean>}):Promise<XiaozhiBrowserReceipt|{tabs:{tabId:string;title:string;url:string;active:boolean}[]}|{closed:true}> {
       if(!validBrowserInput(input)||disposed)throw new Error('invalid_input');const check=()=>{context.signal.throwIfAborted();if(!context.current())throw new Error('cancelled');};check();
       if(input.action==='close'&&!input.tabId){await closeGroup(id);return {closed:true};}
       const g=await group(id,context.dnsMode);check();if(g.busy)throw new Error('busy');g.busy=true;
@@ -97,9 +111,51 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         tab=input.tabId?g.tabs.get(input.tabId):g.tabs.get(g.active);if(input.tabId&&!tab)throw new Error('permission_denied');
         if(input.action==='navigate'&&(input.newTab||!tab))tab=await createTab(id,g);if(!tab||tab.view.webContents.isDestroyed())throw new Error('permission_denied');check();
         const wc=tab.view.webContents;
+        if ((input.action === 'snapshot' && input.name) || (input.action === 'wait' && input.text)) {
+          const revision = tab.revision;
+          const url = wc.getURL();
+          const checkPage = () => {
+            check();
+            if (wc.isDestroyed() || tab!.revision !== revision || tab!.state !== 'ready' || wc.getURL() !== url)
+              throw new Error('attachment_changed');
+          };
+          checkPage();
+          if (input.snapshotId !== tab.snapshotId) throw new Error('attachment_changed');
+          if (input.action === 'wait') await waitForBrowserText(wc, input.text!, context.signal, checkPage);
+          const receipt = await snapshot(tab, context.signal);
+          checkPage();
+          if (input.action === 'snapshot') {
+            const signal = AbortSignal.any([context.signal, AbortSignal.timeout(8000)]);
+            const ref = await uniqueBrowserRef(wc, input.role!, input.name!.trim(), signal);
+            checkPage();
+            if (!tab.refs.has(ref)) throw new Error('attachment_changed');
+            receipt.matchedRef = ref;
+          }
+          return receipt;
+        }
         const activate=()=>{showTab(g,tab!);g.window.show();g.window.focus();};
         const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
-        const refScript=(body:string)=>{if(input.snapshotId!==tab!.snapshotId)throw new Error('attachment_changed');const expected=tab!.refs.get(input.ref!);if(!expected)throw new Error('attachment_changed');return `(function(){const el=document.querySelector('[data-hana-ref="${input.ref}"]');if(!el||el.outerHTML!==${JSON.stringify(expected)})throw new Error('Browser reference changed');${body}})()`;};
+        const withRef = async (body: string) => {
+          if (input.snapshotId !== tab!.snapshotId) throw new Error('attachment_changed');
+          const expected = tab!.refs.get(input.ref!);
+          if (!expected) throw new Error('attachment_changed');
+          const code = `(() => {
+            const nodes = document.querySelectorAll('[data-hana-ref="${input.ref}"]');
+            const el = nodes[0];
+            if (nodes.length !== 1 || el.outerHTML !== ${JSON.stringify(expected)}) return {error:'attachment_changed'};
+            el.scrollIntoView({block:'center', inline:'nearest'});
+            const box = el.getBoundingClientRect();
+            const x = (Math.max(box.left,0) + Math.min(box.right,innerWidth)) / 2;
+            const y = (Math.max(box.top,0) + Math.min(box.bottom,innerHeight)) / 2;
+            if (el.matches(':disabled') || el.closest('[inert],[aria-disabled="true"]') ||
+                !el.contains(document.elementFromPoint(x,y))) return {error:'target_unavailable'};
+            return {value:(() => {${body}})()};
+          })()`;
+          const result = await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005, [{code}]), context.signal);
+          check();
+          if (result.error) throw new Error(result.error);
+          return result.value;
+        };
         const approve=async()=>{const url=await safeUrl(wc.getURL()),revision=tab!.revision;
           checkScope(id,url);
           const question=await options.sanitize(`允许小智在 ${new URL(url).hostname} 的“${wc.getTitle().slice(0,100)}”页面执行这次“${input.action}”操作${input.ref?`（控件 ${input.ref}）`:''}${input.text!==undefined?`，输入“${input.text.slice(0,200)}”`:input.value!==undefined?`，选择“${input.value.slice(0,200)}”`:input.key?`，按 ${input.key}`:''}吗？页面可能提交内容。`);
@@ -120,12 +176,12 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         else if(input.action==='show'){activate();}
         else if(input.action==='close'){g.tabs.delete(tab.id);wc.close({waitForBeforeUnload:false});if(!g.tabs.size){await closeGroup(id);}else{showTab(g,g.tabs.values().next().value!);}return {closed:true};}
         else if(input.action==='click'){
-          const href=await wc.executeJavaScript(refScript("return el.tagName==='A'?el.href:null;"));check();
-          if(typeof href==='string'&&href)await navigate(href);else{await approve();await waitOfficeAbort(wc.executeJavaScript(refScript('el.scrollIntoView({block:"center"});el.click();')),context.signal);}
+          const href=await withRef("return el.tagName==='A'?el.href:null;");check();
+          if(typeof href==='string'&&href)await navigate(href);else{await approve();await withRef('el.click();');}
         }else if(input.action==='type'){
           if(sensitive.test(input.text!)||await options.sanitize(input.text!)!==input.text)throw new Error('permission_denied');
-          await approve();await waitOfficeAbort(wc.executeJavaScript(refScript("if(!['INPUT','TEXTAREA'].includes(el.tagName)||['password','file','hidden'].includes(el.type)||el.readOnly||el.disabled)throw new Error('Protected input');el.scrollIntoView({block:'center'});el.focus();if(el.select)el.select();")),context.signal);check();await wc.insertText(input.text!);
-        }else if(input.action==='select'){await approve();await waitOfficeAbort(wc.executeJavaScript(refScript(`if(el.tagName!=='SELECT'||el.disabled)throw new Error('Protected select');el.value=${JSON.stringify(input.value)};el.dispatchEvent(new Event('change',{bubbles:true}));`)),context.signal);}
+          await approve();await withRef("if(!['INPUT','TEXTAREA'].includes(el.tagName)||['password','file','hidden'].includes(el.type)||el.readOnly||el.disabled)throw new Error('Protected input');el.scrollIntoView({block:'center'});el.focus();if(el.select)el.select();");check();await wc.insertText(input.text!);
+        }else if(input.action==='select'){await approve();await withRef(`if(el.tagName!=='SELECT'||el.disabled)throw new Error('Protected select');el.value=${JSON.stringify(input.value)};el.dispatchEvent(new Event('change',{bubbles:true}));`);}
         else if(input.action==='key'){if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');await approve();if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');const key=input.key==='Enter'?'Return':input.key!;wc.sendInputEvent({type:'keyDown',keyCode:key});wc.sendInputEvent({type:'keyUp',keyCode:key});}
         else if(input.action==='scroll'){await waitOfficeAbort(wc.executeJavaScript(`window.scrollBy(0,${(input.direction==='up'?-1:1)*(input.amount||3)*300})`),context.signal);}
         else if(input.action==='screenshot'){
@@ -135,7 +191,21 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           // Native capture makes the page visible and keeps the system awake.
           // Do not wait on a renderer RAF that can suspend while occluded.
           activate();samePage();
-          const image=await waitOfficeAbort(wc.capturePage(undefined,{stayAwake:true}),AbortSignal.any([context.signal,AbortSignal.timeout(15000)]));samePage();if(image.isEmpty())throw new Error('network');
+          const signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
+          // Chromium can briefly lack a compositor frame after a completed navigation.
+          let image;
+          for (let attempt=0; ; attempt++) {
+            samePage();
+            try {
+              image=await waitOfficeAbort(wc.capturePage(undefined,{stayAwake:true}),signal);
+              break;
+            } catch (error) {
+              samePage();
+              if (attempt >= 2 || !(error instanceof Error) || !error.message.includes('UnknownVizError')) throw error;
+              await delay(150 * (attempt+1),undefined,{signal});
+            }
+          }
+          samePage();if(image.isEmpty())throw new Error('network');
           const bytes=image.toPNG(),size=image.getSize(),capture={schemaVersion:BROWSER_CAPTURE_SCHEMA,id:browserScreenshotFilename({base64:bytes.toString('base64'),mimeType:'image/png'}),sha256:createHash('sha256').update(bytes).digest('hex'),size:bytes.length,width:size.width,height:size.height,title:(await options.sanitize(wc.getTitle())).slice(0,200),url,observedAt:new Date().toISOString()};
           if(!validBrowserCapture(capture))throw new Error('too_large');samePage();
           const relative=path.join(createHash('sha256').update(id).digest('hex'),capture.id),file=approvedFile(options.root,relative);
@@ -147,7 +217,13 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         if(!['snapshot','show'].includes(input.action)){
           const {waitForBrowserState}=await import('./vendor/hana/browser/browser-wait.cjs');
           await waitOfficeAbort(waitForBrowserState(wc,{state:'stable',timeoutMs:5000}),context.signal);
-        }check();return await snapshot(tab,context.signal);
+        }
+        check();
+        const receipt = await snapshot(tab,context.signal);
+        check();
+        if (input.action === 'navigate' && context.invocation && wc.getURL() === receipt.url && tab.state === 'ready')
+          tab.navigation = {...context.invocation, revision:tab.revision, url:receipt.url};
+        return receipt;
       }finally{if(tab)tab.write=undefined;context.signal.removeEventListener('abort',stop);g.busy=false;}
     },
     cancel(id:string){const g=groups.get(id);if(g){for(const tab of g.tabs.values()){tab.write=undefined;tab.view.webContents.stop();}g.proxy.stopConnections();}},

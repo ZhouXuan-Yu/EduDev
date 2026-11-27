@@ -5,7 +5,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import {answerQualityEnabled} from './answer-quality';
 import {readPackageAsync} from './skill-package-async';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
-import { EDUCATION_SKILLS, EDUCATION_SKILL_VERSION, skillDocument } from './education-skills';
+import { EDUCATION_SKILLS, EDUCATION_SKILLS_V2, builtinSkillVersion, skillDocument } from './education-skills';
 import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
 import { assertInstallTargetInsideRoot, sanitizeSkillName } from './vendor/hana/lib/skills/skill-package-installer';
 import { SKILL_LIMITS, validSkillName, validSkillRelative, type PrivateManagedSkill, type PrivateSkillCatalog,
@@ -116,7 +116,8 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     for (const currentDefinition of EDUCATION_SKILLS.filter(definition => builtins.some(item => item.name === definition.name))) {
       const item = builtins.find(skill => skill.name === currentDefinition.name);
       const definition = item?.version === 1 ? LEGACY_EDUCATION_SKILLS.find(skill => skill.name === item.name)
-        : item?.version === EDUCATION_SKILL_VERSION ? currentDefinition : undefined;
+        : item?.version === 2 ? EDUCATION_SKILLS_V2.find(skill => skill.name === item.name)
+        : item?.version === builtinSkillVersion(currentDefinition.name) ? currentDefinition : undefined;
       if (!item || !definition) throw new Error('configuration');
       const document = item.version === 1 ? legacySkillDocument(definition) : skillDocument(definition);
       const expectedFiles = filesOf(new Map([['SKILL.md', Buffer.from(document)]]));
@@ -227,18 +228,18 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
       // Interrupted/unpublished immutable directories remain inert; never rewrite old files.
       for (let attempt = 0; attempt < 3; attempt++) {
         const current = await readCatalog();
-        const outdated = current.skills.filter(item => item.origin === 'builtin' && item.version !== EDUCATION_SKILL_VERSION);
+        const outdated = current.skills.filter(item => item.origin === 'builtin' && item.version !== builtinSkillVersion(item.name));
         const missing = EDUCATION_SKILLS.filter(definition => !current.skills.some(item => item.name === definition.name));
         if (current.revision && !outdated.length && !missing.length) return current;
         outdated.forEach(verify);
         options.assertIdle();
-        const fresh = () => EDUCATION_SKILLS.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', EDUCATION_SKILL_VERSION));
+        const fresh = () => EDUCATION_SKILLS.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', builtinSkillVersion(item.name)));
         const skills = !current.revision ? fresh() : current.skills.map(item => {
-          if (item.origin !== 'builtin' || item.version === EDUCATION_SKILL_VERSION) return item;
+          if (item.origin !== 'builtin' || item.version === builtinSkillVersion(item.name)) return item;
           const definition = EDUCATION_SKILLS.find(skill => skill.name === item.name)!;
-          return { ...writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(definition))]]), 'builtin', EDUCATION_SKILL_VERSION), enabled: item.enabled };
+          return { ...writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(definition))]]), 'builtin', builtinSkillVersion(item.name)), enabled: item.enabled };
         });
-        if (current.revision) skills.push(...missing.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', EDUCATION_SKILL_VERSION)));
+        if (current.revision) skills.push(...missing.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', builtinSkillVersion(item.name))));
         outdated.forEach(verify); // A source changed during capture cannot publish a silently repaired catalog.
         options.assertIdle();
         if (await state.saveSkillCatalog(current.revision, skills)) return { revision: current.revision + 1, skills };
