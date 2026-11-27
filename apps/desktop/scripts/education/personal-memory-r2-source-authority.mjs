@@ -161,7 +161,12 @@ const confirmed=draft((await authority.snapshot([historyId(committedSource)],pol
 await state.savePending([confirmed],policy);
 const currentQueue = await ops.queue(session);
 assert(currentQueue.ok);
-assert.equal(currentQueue.value.candidates.find(row => row.key === confirmed.key)?.value, confirmed.proposedValue);
+const listed = currentQueue.value.candidates.find(row => row.key === confirmed.key);
+assert.equal(listed?.value, confirmed.proposedValue);
+assert.equal(listed.category, 'teaching_context');
+assert.equal(listed.evidence, 'ai_inferred');
+assert.equal(listed.sourceOccurredAt, '2026-11-25');
+assert.equal(listed.recordedAt, db.prepare('SELECT created_at FROM personal_memory_pending WHERE draft_key=?').get(confirmed.key).created_at);
 // A legacy source can change on disk without changing the extraction grant.
 const original = confirmed.proposedValue;
 const concurrentReview = createPersonalMemorySourceAuthority(sql, async text => {

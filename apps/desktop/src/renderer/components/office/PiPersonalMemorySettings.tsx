@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Button, TextArea} from '@heroui/react';
-import type {PersonalMemoryEditInput, PersonalMemoryJob, PersonalMemoryReview} from '../../../shared/xiaozhi-personal-memory';
+import {teacherMemoryCategories, type PersonalMemoryEditInput, type PersonalMemoryJob, type PersonalMemoryReview} from '../../../shared/xiaozhi-personal-memory';
 import {DisclosureCard} from '../ui/DisclosureCard';
 import {SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
 import {PiPersonalMemoryCandidates} from './PiPersonalMemoryCandidates';
@@ -67,7 +67,7 @@ export function PiPersonalMemorySettings() {
       {view?.records.map(item=>{
         const editing=draft?.id===item.id ? draft : undefined;
         return <article key={item.id} data-testid={'personal-memory-record-'+item.id}>
-          <h4>{item.kind==='preference'?'教学偏好':'任教背景'}</h4>
+          <h4>{teacherMemoryCategories[item.category].label}</h4>
           <p>{scopeText(item.scope,item.term)} · 第 {item.revision} 版</p>
           <p>{item.state==='forgotten'?'已遗忘':item.state==='disabled'?'已停用':item.sourceCurrent?'有效':'来源已失效'}
             {item.cleanupPending?' · 清理待完成':''}</p>

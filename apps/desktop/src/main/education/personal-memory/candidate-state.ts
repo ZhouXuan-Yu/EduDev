@@ -25,7 +25,7 @@ CREATE INDEX personal_memory_pending_source ON personal_memory_pending(source_id
 `;
 
 export type PersonalMemoryProcessing = CandidateAuthority & Readonly<{ enabled: boolean; pausedByUsePolicy: boolean }>;
-type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict' | 'accepted'; revision: number };
+type PendingDraft = { draft: PersonalMemoryDraft; state: 'pending' | 'rejected' | 'stale' | 'conflict' | 'accepted'; revision: number; recordedAt: number | null };
 export type CandidateWriteReceipt = { saved: string[]; stale: string[]; conflicted: string[]; repeated: number };
 type SourceWitnessReader = (transaction: Sql, draft: PersonalMemoryDraft) => Promise<boolean>;
 type WritableSql = Sql & { change: NonNullable<Sql['change']> };
@@ -54,7 +54,9 @@ function pendingDraft(row: Record<string, unknown>): PendingDraft {
       || draft.witness.generation !== row.source_generation || !Number.isSafeInteger(revision) || revision < 1
       || (state !== 'pending' && state !== 'rejected' && state !== 'stale' && state !== 'conflict' && state !== 'accepted'))
     throw Error('configuration');
-  return {draft, state, revision};
+  const time = row.created_at;
+  const recordedAt = typeof time === 'number' && Number.isSafeInteger(time) && Number.isFinite(new Date(time).getTime()) ? time : null;
+  return {draft, state, revision, recordedAt};
 }
 
 export async function readPersonalMemoryDraft(db: Sql, key: string) {

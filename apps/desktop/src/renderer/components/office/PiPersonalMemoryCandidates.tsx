@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Button} from '@heroui/react';
-import type {PersonalMemoryQueue, PersonalMemoryReview} from '../../../shared/xiaozhi-personal-memory';
+import {teacherMemoryCategories, type PersonalMemoryQueue, type PersonalMemoryReview} from '../../../shared/xiaozhi-personal-memory';
 import {SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
 import {afterMemoryCommit, replyValue, scopeText, type PerformMemoryAction} from './personal-memory-view';
 
@@ -12,7 +12,7 @@ export function PiPersonalMemoryCandidates({queue,busy,perform}:{
   if (queue.candidates.length===0) return <p>暂无待核对的建议。</p>;
   return queue.candidates.map(item=><article key={item.key} data-testid={'personal-memory-candidate-'+item.key}>
     <h4>{item.state==='conflict'?'待处理的冲突':'待核对的建议'}</h4>
-    <p>{item.value}</p><p>{scopeText(item.scope,item.term)}</p>
+    <p>{item.value}</p><p>{teacherMemoryCategories[item.category].label} · {scopeText(item.scope,item.term)}</p>
     <SettingsInline>
       {item.state==='pending'&&<Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>void perform(async()=>{
         const {key,revision}=item;
@@ -27,7 +27,9 @@ export function PiPersonalMemoryCandidates({queue,busy,perform}:{
     </SettingsInline>
     {review?.key===item.key&&review.revision===item.revision&&<SettingsStack gap="sm">
       <blockquote data-testid="personal-memory-reviewed-quote">{review.source.quote}</blockquote>
-      {review.source.occurredAt&&<time dateTime={review.source.occurredAt}>{review.source.occurredAt}</time>}
+      <p>教师原话记录时间 {review.source.occurredAt ? <time dateTime={review.source.occurredAt}>{review.source.occurredAt}</time> : '未知'}</p>
+      <p>建议生成时间 {item.recordedAt === null ? '未知' :
+        <time dateTime={new Date(item.recordedAt).toISOString()}>{new Date(item.recordedAt).toLocaleString('zh-CN')}</time>}</p>
       <SettingsInline>
         <Button size="sm" variant="secondary" isDisabled={busy || !queue.policy.enabled || queue.policy.pausedByUsePolicy}
           onPress={()=>void perform(async reload=>{

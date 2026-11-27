@@ -25,6 +25,7 @@ export type PersonalMemorySummary = {category:ReturnType<typeof personalMemoryCa
   scope:PersonalMemoryScope; term:string; value:string; sourceVersion:string; sourceOccurredAt:string|null; sourceCurrent:boolean;
   state:'active'|'disabled'|'forgotten'; cleanupPending:boolean};
 export type PersonalMemoryCandidate = {key:string; revision:number; kind:PersonalMemoryKind;
+  category:ReturnType<typeof personalMemoryCategory>; evidence:'ai_inferred'; recordedAt:number|null; sourceOccurredAt:string|null;
   scope:PersonalMemoryScope; term:string; state:'pending'|'conflict'; value:string; targetRevision:number};
 export type PersonalMemoryJob = {id:string; revision:string; kind:'extract'|'organize';
   state:'pending'|'running'|'waiting_budget'|'succeeded'|'partial'|'failed'|'cancelled';
