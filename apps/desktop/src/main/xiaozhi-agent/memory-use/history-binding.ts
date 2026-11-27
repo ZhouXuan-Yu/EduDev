@@ -212,10 +212,11 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     if(!binding)return;
     const receipts=createReferenceReceipts(sql);
     const runId=task.binding?.runId??lastOwnedRunId;
-    const [delivered,readbacks]=runId ? await Promise.all([
+    const [delivered,readbacks,runs]=runId ? await Promise.all([
       receipts.referenceDeliveriesForRun(task.sessionId,runId),
       receipts.referenceReadbacksForRun(task.sessionId,runId),
-    ]) : [[],[]];
+      sql.all("SELECT status FROM ai_agent_runs WHERE id=? AND session_id=? AND sub_intent='pi_education'",[runId,task.sessionId]),
+    ]) : [[],[],[]];
     const items:TaskHistoryScope['items']=[];
     for(const pin of binding.selections){
       const source=await history.selected(pin).catch(()=>null);
@@ -228,6 +229,7 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     const after=await forTask(task);
     if(!after||after.revision!==binding.revision||!items.length&&!after.excludeSessionHistory)return;
     return {taskId:task.id,revision:binding.revision,items:items.filter(item=>after.selections.some(pin=>pin.id===item.sourceId)),
+      ...(runs[0]?.status==='failed'?{runOutcome:'failed' as const}:{}),
       ...(after.excludeSessionHistory?{excludeSessionHistory:true}:{})};
   }
 

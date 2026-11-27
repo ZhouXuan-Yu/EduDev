@@ -9,10 +9,12 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const exclusion=process.argv.includes('--task-exclusion');
-const namedHistory=process.argv.includes('--named-history');
+const receiptFailure=process.argv.includes('--receipt-failure');
+const namedHistory=receiptFailure||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const root=fs.mkdtempSync(path.join(acceptance,namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-'));
+const lane=receiptFailure?'history-receipt-failure-':namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
+const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
 const source='这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
@@ -45,7 +47,7 @@ const composer=()=>page.getByTestId('office-prompt-input');
 const session=()=>page.locator('.office-composer-container').getAttribute('data-session-id');
 const snapshot=id=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),id);
 const provider=()=>app.evaluate(()=>globalThis.historyTaskWire);
-async function send(id,text,{answer}={}){
+async function send(id,text,{answer,expectedStatus='completed'}={}){
   const prior=(await snapshot(id)).projection.turns.at(-1)?.id;
   const offset=(await provider()).length;
   await composer().fill(text);
@@ -67,7 +69,7 @@ async function send(id,text,{answer}={}){
     assert.equal(control?.state,'answered');
     report.teacherAnswer={runId:turn.id,controlId:submitted};
   }
-  assert.equal(turn.status,'completed',turn.error);
+  assert.equal(turn.status,expectedStatus,turn.error);
   const sent=(await provider()).slice(offset);
   assert(sent.length,'A real provider request is required');
   return {runId:turn.id,sent,answerUsed:turn.items.some(item=>item.role==='assistant'&&item.text?.includes(marker))};
@@ -116,6 +118,12 @@ async function launch(){
         }
         record.elapsedMs=Date.now()-started;
       }).catch(()=>{});
+      if(globalThis.failHistoryTaskAfterAcknowledgement&&response.ok&&record.sourceRoles.includes('user')){
+        globalThis.failHistoryTaskAfterAcknowledgement=false;
+        record.controlledStreamFailure=true;
+        const body=new ReadableStream({start(controller){controller.error(Error('controlled post-acknowledgement stream interruption'));}});
+        return new Response(body,{status:response.status,headers:response.headers});
+      }
       return response;
     };
   },{marker,spent:report.provider.length});
@@ -177,7 +185,8 @@ try{
     await page.getByTestId('history-candidate-'+row.id).click();
     await page.getByTestId('history-lookup-use-session').click();
     await page.getByTestId('history-use-selection').waitFor();
-    const task=await send(target,namedPrompt);
+    if(receiptFailure)await app.evaluate(()=>{globalThis.failHistoryTaskAfterAcknowledgement=true;});
+    const task=await send(target,namedPrompt,{expectedStatus:receiptFailure?'failed':'completed'});
     const [binding]=bindings(target);
     assert.equal(binding.admittedBy.runId,task.runId);
     assert.equal(binding.permissionBasis.kind,'session_reference');
@@ -190,6 +199,13 @@ try{
     assert.deepEqual(Object.keys(reads[0]).sort(),['estimatedTokens','fingerprint','id','reason','scopeVersion','version']);
     await page.getByTestId('history-task-selection').getByText(/已提供给模型，仍待核验成果/).waitFor();
     pass('The real desktop distinguishes source readback and acknowledged delivery from verified use',{runId:task.runId});
+    if(receiptFailure){
+      const request=task.sent.find(call=>call.controlledStreamFailure);
+      assert.equal(request?.status,200,'The provider must acknowledge the actual request before the controlled fault');
+      assert.equal(read('SELECT status FROM ai_agent_runs WHERE id=?',task.runId)[0].status,'failed');
+      await page.getByTestId('history-task-run-failed').waitFor();
+      pass('A failed Run retains its specific provider delivery while exposing the durable failure state',{runId:task.runId});
+    }
     const calls=(await provider()).length;
     const vague='照上次那份继续。';
     await composer().fill(vague);

@@ -22,7 +22,7 @@ export type HistoryIndexStatus = {configured:boolean;active:number;rebuilding:nu
 export type HistoryResult<T> = {ok:true; value:T} | {ok:false; error:HistoryMemoryError};
 
 export type TaskHistoryUseStage='selected'|'source_read'|'delivered';
-export type TaskHistoryScope={taskId:string;revision:number;excludeSessionHistory?:true;items:Array<{
+export type TaskHistoryScope={taskId:string;revision:number;excludeSessionHistory?:true;runOutcome?:'failed';items:Array<{
   sourceId:string;label:string;useStage:TaskHistoryUseStage;
 }>};
 export type TaskHistoryRemoval = {sessionId:string;taskId:string;revision:number;sourceId:string};
