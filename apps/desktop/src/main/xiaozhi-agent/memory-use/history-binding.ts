@@ -174,6 +174,17 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
       revision:(prior?.revision??0)+1,requirementsVersion:task.requirementsVersion,target,admittedBy:owner,selections,
       ...(excludeSessionHistory?{excludeSessionHistory}:{}),...(permissionBasis?{permissionBasis}:{}),
     };
+    if(prior?.admittedBy.runId===owner.runId){
+      // A run has one admission. Never replace a teacher's subsequent removal with its old proof.
+      const unchanged=prior.admittedBy.generation===owner.generation && !prior.invalidated &&
+        prior.requirementsVersion===task.requirementsVersion && sameTarget(prior.target,target) &&
+        prior.excludeSessionHistory===excludeSessionHistory && prior.permissionBasis?.kind===permissionBasis?.kind &&
+        prior.permissionBasis?.scopeVersion===permissionBasis?.scopeVersion && prior.selections.length===selections.length &&
+        selections.every(pin=>prior.selections.some(item=>item.id===pin.id && item.version===pin.version &&
+          item.sourceVersion===pin.sourceVersion && item.fingerprint===pin.fingerprint));
+      if(!unchanged)throw Error('memory_scope_changed');
+      return;
+    }
     // Writes here share the Task checkpoint transaction, including journal publication.
     await work.run(`INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)
       ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at`,

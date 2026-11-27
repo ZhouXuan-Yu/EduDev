@@ -106,6 +106,21 @@ test('Task rollback, Run ownership, restart, resume and confirmed scope removal'
   assert.equal((await f.state.memoryScope(target)).version,0);
 });
 
+test('Replaying a committed Task admission is idempotent and cannot undo teacher removal',async t=>{
+  const {binding,sql,grants,target,task,owner,pin}=await fixture(t);
+  const {token}=await binding.stage(target,0,'signed-ticket');
+  const proof=await binding.prepare(target,[token]);
+  const attach=()=>sql.transaction(work=>binding.attachTask(work,task,owner,proof));
+  await attach();
+  const committed=await grants();
+  await attach();
+  assert.deepEqual(await grants(),committed,'an acknowledged admission must not advance the binding revision');
+  assert(await binding.remove(task,{sessionId:target,taskId:task.id,revision:1,sourceId:pin.id}));
+  const removed=await grants();
+  await assert.rejects(attach(),/memory_scope_changed/);
+  assert.deepEqual(await grants(),removed);
+});
+
 test('A Task in review reads its own last Run use stage even when a different conversation Run is newer',async t=>{
   const f=await fixture(t),{sql,binding,task,owner,target,state}=f;
   const {token}=await binding.stage(target,0,'signed-ticket');
