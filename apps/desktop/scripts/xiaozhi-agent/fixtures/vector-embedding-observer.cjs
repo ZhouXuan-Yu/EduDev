@@ -1,11 +1,10 @@
-const {pathToFileURL} = require('node:url');
 const path = require('node:path');
 const fs = require('node:fs');
 const cp = require('node:child_process');
 const {syncBuiltinESMExports} = require('node:module');
 const {StringDecoder} = require('node:string_decoder');
 
-const [entry, root] = process.argv.slice(2);
+function observeEmbedding(root) {
 const flag = name => path.join(root, name);
 const log = (event, detail) => fs.appendFileSync(flag('embedding-trace.jsonl'), JSON.stringify({event, utility:process.pid, at:Date.now(),...detail})+'\n');
 const spawn = cp.spawn;
@@ -15,6 +14,23 @@ cp.spawn = function (file,...args) {
   const pid=child.pid, decoder=new StringDecoder('utf8'), push=child.stdout.push.bind(child.stdout), write=child.stdin.write.bind(child.stdin), kill=child.kill.bind(child);
   let active, pending='', held=[], holding=false, timer;
   log('spawn',{pid});
+  const emit=child.emit.bind(child);
+  const listeners=()=>[child.stdout.listenerCount('data'),child.stderr.listenerCount('data'),child.listenerCount('error')];
+  const baseline=listeners();
+  const publishClose=values=>{
+    const handled=emit('close',...values);
+    log('listeners_after_close',{pid,baseline,remaining:listeners()});
+    return handled;
+  };
+  child.emit=function(event,...values){
+    if(event!=='close')return emit(event,...values);
+    if(fs.existsSync(flag('observe-desktop-close-order'))){
+      log('close_notification_delayed',{pid});
+      setTimeout(()=>publishClose(values),500);
+      return true;
+    }
+    return publishClose(values);
+  };
   child.once('close',(code,signal)=>{clearInterval(timer);log('close',{pid,code,signal});});
   child.stdin.write = function (raw,...rest) {
     let request;
@@ -69,4 +85,5 @@ cp.spawn = function (file,...args) {
   return child;
 };
 syncBuiltinESMExports();
-import(pathToFileURL(entry).href).catch(error=>{console.error(error.stack??error);process.exitCode=1;});
+}
+module.exports={observeEmbedding};

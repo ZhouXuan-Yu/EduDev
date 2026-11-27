@@ -63,7 +63,8 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
    window=new BrowserWindow({...input,show:false,webPreferences:{...input.webPreferences,session:privateSession,javascript:input.webPreferences?.javascript??false,sandbox:true,nodeIntegration:false,contextIsolation:true}});
    const owned=window,destroy=owned.destroy.bind(owned),print=owned.webContents.printToPDF.bind(owned.webContents);
    destroyWindow=()=>{if(!owned.isDestroyed())destroy();};
-   // A caller can stop waiting while Chromium still owns the print request.
+   // The vendor job may time out before native printing returns. Keep the window and
+   // its lease while Chromium still owns the print request. Block any late new print.
    owned.destroy=()=>{if(!printing.size)destroyWindow?.();};
    owned.webContents.printToPDF=async settings=>{
     if(reason||options.signal?.aborted||owned.isDestroyed())throw Error(reason||'cancelled');

@@ -27,7 +27,8 @@ import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {lessonRevisionRequest,matchesLessonRevision,type LessonRevisionRequest} from '../education/lesson-revision-request';
 import {createLessonRevisionTools} from '../education/lesson-revision-tools';
-import {resolveNaturalLessonBasis} from '../education/natural-lesson-basis';
+import {resolveNaturalLessonBasis,resolveOrdinaryLessonBasis} from '../education/natural-lesson-basis';
+import type {MaterialSource} from '../../shared/materials';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
@@ -291,6 +292,7 @@ type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSe
 type Active = {
   answerOnly?: boolean;
   naturalLessonDraft?: NaturalLessonRequirements;
+  naturalLessonSources?: MaterialSource[];
   handoutBasis?: NamedHandoutSource[];
   directOriginalPaper?: true;
   paperReceiptSummary?: true;
@@ -1111,7 +1113,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const adopted=lessonIntent?await Promise.all(lessonIntent.curricula.map(binding=>store.materialCurriculum.bound(binding))):undefined;
     if(adopted?.some(entry=>entry.metadata.status!=='active'))throw Error('source_changed');
     const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0,adopted);
-    const lessonBasis=owner?.naturalLessonDraft&&adopted?.length?adopted:undefined;
+    const lessonBasis=owner?.naturalLessonSources?.map(source=>({source}))??
+      (owner?.naturalLessonDraft&&adopted?.length?adopted:undefined);
+    const requiredLessonSourcesRead=lessonBasis?()=>lessonBasis.every(({source})=>classroomContext.hasRead(source)):undefined;
     const lessonRevisionTools=owner?.lessonRevision?createLessonRevisionTools({sessionId:id,runId,request:owner.lessonRevision,
       state:store.xiaozhiState.classroomPlans,current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
       sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:async()=> (await store.xiaozhiState.controls(id))
@@ -1150,9 +1154,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         .update(JSON.stringify([settings.providerConfigRevision,settings.apiKey,modelId])).digest('hex')},
       ...(owner?.naturalLessonDraft&&lessonIntent?{naturalLessonDraft:{
         subject:lessonIntent.subject,grade:lessonIntent.grade,...owner.naturalLessonDraft,
-        basis:lessonBasis&&{
+        basis:lessonBasis&&requiredLessonSourcesRead&&{
+          kind:owner.naturalLessonSources?'ordinary':'curriculum',
           sources:lessonBasis.map(({source:{resourceId,offset}})=>({resourceId,offset})),
-          hasPendingRead:()=>lessonBasis.some(entry=>!classroomContext.hasRead(entry)),
+          hasPendingRead:()=>!requiredLessonSourcesRead(),
         },
         hasDraft:()=>store.xiaozhiState.classroomPlans.hasDraftedLesson(id,runId),
       }}:{}),
@@ -1321,7 +1326,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       solutionTools:createSolutionTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       buoyancyTools:createBuoyancyTools(()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       ...(lessonRevisionTools?{lessonRevision:true as const}:{}),
-      classroomTools:[...createClassroomTools({outlineOnly:Boolean(owner?.classroomPlan),context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),...createClassroomPlanTools({sessionId:id,runId,state:store.xiaozhiState.classroomPlans,binding:owner?.classroomPlan,naturalDraft:owner?.naturalLessonDraft,revisionTools:lessonRevisionTools,context:()=>classroomContext.snapshot(),current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)})],
+      classroomTools:[...createClassroomTools({outlineOnly:Boolean(owner?.classroomPlan),context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),...createClassroomPlanTools({sessionId:id,runId,state:store.xiaozhiState.classroomPlans,binding:owner?.classroomPlan,naturalDraft:owner?.naturalLessonDraft,requiredSourcesRead:requiredLessonSourcesRead,revisionTools:lessonRevisionTools,context:()=>classroomContext.snapshot(),current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)})],
       educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
       studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(facts,delivered)=>{observedLearning=facts;observedMistakeLearning={facts,delivered};})},
@@ -2422,7 +2427,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt,...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:input.paperExportIntent}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}),...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}), ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const hash=input.continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask:input.continueTask})).digest('hex'):baseHash;
       // Command identity is the caller's request; host routing can evolve between retries.
-      if(inferredLesson)input={...input,classroomPlan:{mode:inferredLesson.mode,lesson:inferredLesson.lesson}};
+      if(inferredLesson&&'lesson' in inferredLesson)input={...input,classroomPlan:{mode:inferredLesson.mode,lesson:inferredLesson.lesson}};
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const admission = invalidateLearningDecisions(id);
@@ -2449,7 +2454,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&!requestedLessonRevision&&isStandaloneAnswer(input);
-      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials,requestedAgenda:inferredLesson.requestedAgenda}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),...(requestedLessonRevision?{lessonRevision:requestedLessonRevision}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),
@@ -2460,7 +2465,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       try {
         const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
         if(requestedLessonRevision&&detail.session.studentId)throw Error('permission_denied');
-        if(inferredLesson?.sourceTitles&&inferredLesson.lesson){
+        if(inferredLesson&&'materialTitle' in inferredLesson){
+          if(detail.session.studentId)throw Error('permission_denied');
+          const {lesson,sources}=await phase(()=>resolveOrdinaryLessonBasis(inferredLesson,store.materials));
+          run.naturalLessonSources=sources;
+          run.classroomPlan=input.classroomPlan={mode:'outline',lesson};
+        }else if(inferredLesson?.sourceTitles&&inferredLesson.lesson){
           if(detail.session.studentId)throw Error('permission_denied');
           const lesson=await phase(()=>resolveNaturalLessonBasis(inferredLesson.sourceTitles!,inferredLesson.lesson!,
             title=>store.materialCurriculum.namedBasis(title)));

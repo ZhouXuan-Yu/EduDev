@@ -36,6 +36,14 @@ import { MaterialQuestionStatus } from './MaterialQuestionStatus';
 import { MaterialTextSearch } from './MaterialTextSearch';
 import { RetrievalProgress } from './RetrievalProgress';
 import type { PaperReturnReference } from '../paper-ui/paper-material-handoff';
+
+const materialImportFailure = {
+    ENOSPC: '磁盘空间不足，请释放空间后重试。',
+    EACCES: '没有读取或写入权限，请检查文件和资料库的权限后重试。',
+    EPERM: '没有读取或写入权限，请检查文件和资料库的权限后重试。',
+    ENOENT: '文件或目录已不可用，请确认位置后重新选择。',
+} satisfies Record<NonNullable<KnowledgeImportResult['items'][number]['errorCode']>, string>;
+
 /** Local catalogue and committed body pages; never uploads or grants paths. */
 export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToPaper, onOpenQuestionNotebook }: {
     sourceView?: MaterialSourceView;
@@ -391,7 +399,9 @@ export function MaterialsWorkspace({ sourceView, onAsk, paperReturn, onReturnToP
                 当前资料有未保存或待核实内容。请展开目录与标签编辑，或返回原页、题目与校正、阅读笔记处理草稿后再切换。
             </p>}
             {imported?.items.some(item => !item.ok) && <ul className={styles.error} data-testid="materials-import-failures">
-                {imported.items.filter(item => !item.ok).map((item, index) => <li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}
+                {imported.items.filter(item => !item.ok).map((item, index) => <li key={index}>
+                    {item.fileName}：{item.errorCode ? materialImportFailure[item.errorCode] : '未能添加，请检查文件是否可读取。'}
+                </li>)}
             </ul>}
             {detailBlocked && candidateResource && resource && candidateResource.contentHash !== resource.contentHash &&
                 <p role="alert">资料版本已更新，当前草稿仍绑定旧版本。请先处理未保存内容，再重新打开当前资料。</p>}

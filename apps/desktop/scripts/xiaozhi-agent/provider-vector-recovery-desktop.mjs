@@ -6,6 +6,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {setTimeout as delay} from 'node:timers/promises';
 import {_electron as electron} from 'playwright';
 import {assertIsolatedPiMain} from '../acceptance/build-root.mjs';
+import {observeProviderResources} from './fixtures/provider-resource-observation.mjs';
 
 const [build, acceptance, mode] = process.argv.slice(2);
 assert([build,acceptance].every(item=>item&&path.isAbsolute(item)), 'Pass the real desktop build and isolated acceptance root');
@@ -25,7 +26,7 @@ const expectedSource = '几何习题.md', fixtureCount = 25;
 fs.writeFileSync(path.join(sources,expectedSource),'# 勾股定理\n已知直角三角形的两直角边为3厘米和4厘米，求斜边长。\n勾股定理给出斜边为5厘米。');
 for(let n=1;n<fixtureCount;n++) fs.writeFileSync(path.join(sources,`植物资料-${n}.md`),
   `# 植物与生态 ${n}\n叶绿体借助阳光将水和二氧化碳转化为有机物。探究植物蒸腾和生态环境。`);
-let app,page;
+let app,page,resources;
 
 async function until(label, read, timeout=45000) {
   const deadline=performance.now()+timeout;
@@ -41,6 +42,17 @@ const sourceFacts = ()=>sql(db=>checksum(JSON.stringify(['teacher_resources','re
   .map(table=>db.prepare(`SELECT * FROM ${table} ORDER BY id`).all()))));
 const status = ()=>page.evaluate(()=>window.omniEdu.getRetrievalStatus());
 const trace = async()=>JSON.parse(await app.evaluate(()=>JSON.stringify(globalThis.providerVectorRecovery)));
+const residentEvents = async phase => (await resources.read()).events.filter(event => event.owner==='vector-owner'&&event.phase===phase);
+function activeResident(events) {
+  const active=events.filter(event=>event.state==='started'&&!events.some(other=>other.lease===event.lease&&other.state==='actual_settled'));
+  assert.equal(active.length,1,'Observe the single active resident lease');
+  return active[0];
+}
+function actualSettlement(events,lease) {
+  const settled=events.filter(event=>event.lease===lease&&event.state==='actual_settled');
+  assert.equal(settled.length,1,'Only the old resident lease must settle once');
+  return settled[0];
+}
 function native() {
   const location=file('embedding-trace.jsonl');
   if(!fs.existsSync(location))return [];
@@ -69,10 +81,11 @@ try {
   const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!/KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|NODE_OPTIONS|ELECTRON_RUN_AS_NODE|ELECTRON_RENDERER_URL/iu.test(key)));
   Object.assign(env,{OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'), OMNI_EDU_DATA_ROOT:data, OMNI_EDU_SKIP_DOTENV:'1',
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_VECTOR_EVIDENCE_ROOT:root,OMNI_EDU_VECTOR_EVIDENCE_MAIN:main,
-    OMNI_EDU_VECTOR_EVIDENCE_WRAPPER:path.resolve(import.meta.dirname,'fixtures/vector-embedding-observer.cjs'),TEMP:root,TMP:root});
+    TEMP:root,TMP:root});
   const boot=path.resolve(import.meta.dirname,'fixtures/vector-recovery-main.cjs');
   app=await electron.launch({args:[boot,'--user-data-dir='+profile],cwd:root,env,timeout:60000});
   await assertIsolatedPiMain(app,main,profile);
+  resources=await observeProviderResources(app,main);
   page=await app.firstWindow();
   await page.locator('[data-testid="nav-knowledge"]:visible').click();
   await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},sources);
@@ -105,11 +118,14 @@ try {
     const checkpoint=generation(crash.generation);
     assert(checkpoint.material_cursor&&checkpoint.material_cursor!=='~'&&!checkpoint.backfill_done);
     assert.equal((await status()).generation,active);
+    const oldResident=activeResident(await residentEvents('resident'));
     await app.evaluate(()=>globalThis.crashProviderVector());
     const retired=await until('old utility exits at the original failed batch',async()=>{
       const worker=(await trace()).workers.find(item=>item.instance===crash.worker);
       return worker?.closed&&gone(worker.pid)&&worker;
     });
+    assert.deepEqual(retired.listenersAfterExit,retired.listenerBaseline);
+    const retiredLease=actualSettlement(await residentEvents('resident'),oldResident.lease);
     const stable=await until('a restarted owner can still query the published index',async()=>{
       const current=await search();
       return current.semantic.available&&current;
@@ -137,7 +153,7 @@ try {
     assert.equal(finished.applied_seq,sql(db=>db.prepare('SELECT MAX(seq) n FROM retrieval_changes').get().n));
     assert.equal(finished.indexed,ready.indexed);
     assert.equal(sourceFacts(),before);
-    return {crash,retired,checkpoint,replacement,finished,beforePublish:comparison(stable),afterPublish:comparison(after)};
+    return {crash,retired,oldResident,retiredLease,checkpoint,replacement,finished,beforePublish:comparison(stable),afterPublish:comparison(after)};
   }
 
   async function verifyEmbeddingOwner(generationId,indexed) {
@@ -150,6 +166,7 @@ try {
     void pending.catch(()=>undefined);
     const delayed=await until('the actual ONNX result is received but held on its original stdout',()=>evidence().find(event=>event.event==='native_reply_held'));
     assert(delayed.pid&&!gone(delayed.pid));
+    const oldResident=activeResident(await residentEvents('embedding-resident'));
     const stopped=await until('the full production embedding timeout asks the old child to stop',()=>evidence().find(event=>event.event==='kill_requested'&&event.request===delayed.request));
     const dispatched=evidence().find(event=>event.event==='query_dispatched'&&event.request===delayed.request);
     assert(stopped.at-dispatched.at>=29000);
@@ -173,6 +190,7 @@ try {
     await until('a new foreground query reaches the actual retrieval worker',async()=> (await trace()).requests.filter(request=>request.operation==='query').length>requests);
     assert(!settled&& !gone(delayed.pid));
     assert.equal(native().filter(event=>event.event==='spawn').length,attempts);
+    assert.equal(activeResident(await residentEvents('embedding-resident')).lease,oldResident.lease);
     fs.writeFileSync(file('release-old-embedding'),'release',{flag:'wx'});
     const resumed=await queryAgain;
     compareSource(resumed,timeoutBaseline,generationId);
@@ -180,10 +198,13 @@ try {
     const closed= nativeTrace.find(event=>event.event==='close'&&event.pid===delayed.pid&&event.at>=stopped.at);
     const newChild=nativeTrace.find(event=>event.event==='spawn'&&event.pid!==delayed.pid&&event.at>=stopped.at);
     assert(closed&&newChild&&gone(delayed.pid)&&closed.at<=newChild.at);
+    const leaseEvents=await residentEvents('embedding-resident');
+    const retiredLease=actualSettlement(leaseEvents,oldResident.lease);
+    assert(activeResident(leaseEvents).at>=retiredLease.at);
     assert.equal(sourceFacts(),before);
     assert.equal(generation(generationId).indexed,indexed);
     for(const flag of ['owned-query-marker','deliver-late-embedding','release-old-embedding'])fs.unlinkSync(file(flag));
-    return {dispatched,delayed,stopped,late,closed,newChild,degraded:comparison(fallback),resumed:comparison(resumed)};
+    return {dispatched,delayed,stopped,late,closed,newChild,oldResident,retiredLease,degraded:comparison(fallback),resumed:comparison(resumed)};
   }
 
   let generationId=active;
@@ -210,9 +231,28 @@ try {
 }finally{
   if(app){
     report.trace=await trace().catch(()=>undefined);
+    await resources?.close().catch(()=>undefined);
+    if(report.success)fs.writeFileSync(file('observe-desktop-close-order'),'');
     await app.close().catch(()=>undefined);
   }
   report.native=native();
+  if(report.success){
+    const spawned=report.native.filter(event=>event.event==='spawn').map(event=>event.pid).sort((a,b)=>a-b);
+    const closed=report.native.filter(event=>event.event==='close').map(event=>event.pid).sort((a,b)=>a-b);
+    report.shutdown={spawned,closed};
+    try {
+      assert(report.native.some(event=>event.event==='close_notification_delayed'),'The shutdown race must be exercised');
+      assert.deepEqual(closed,spawned,'Every native model process must publish its actual close before Electron exits');
+      assert(spawned.every(gone),'No native model process may survive the owned desktop');
+      const listeners=report.native.filter(event=>event.event==='listeners_after_close');
+      assert.equal(listeners.length,spawned.length);
+      for(const event of listeners)assert.deepEqual(event.remaining,event.baseline);
+    } catch(error) {
+      report.success=false;
+      report.error=String(error.stack??error);
+      process.exitCode=1;
+    }
+  }
   fs.writeFileSync(file('report.json'),JSON.stringify(report,null,2),{flag:'wx'});
   console.log(JSON.stringify({success:report.success,root,checks:report.checks,error:report.error}));
 }

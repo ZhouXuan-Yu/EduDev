@@ -1,6 +1,9 @@
 const {utilityProcess} = require('electron');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
+const {observeEmbedding} = require('./vector-embedding-observer.cjs');
+
+observeEmbedding(process.env.OMNI_EDU_VECTOR_EVIDENCE_ROOT);
 
 const fork = utilityProcess.fork.bind(utilityProcess);
 const capture = globalThis.providerVectorRecovery = {workers:[], requests:[], mode:'observe'};
@@ -13,15 +16,16 @@ globalThis.armProviderVectorRebuild = active => {
 };
 utilityProcess.fork = function (modulePath, args, options) {
   if (path.basename(modulePath) !== 'retrieval-worker.js') return fork(modulePath, args, options);
-  const child = fork(process.env.OMNI_EDU_VECTOR_EVIDENCE_WRAPPER,
-    [modulePath, process.env.OMNI_EDU_VECTOR_EVIDENCE_ROOT, ...(args || [])], options);
-  const worker = {instance:capture.workers.length+1, pid:null, closed:false};
+  const child = fork(modulePath, args, options);
+  const listeners=()=>[child.listenerCount('message'),child.stdout?.listenerCount('data')??0,child.stderr?.listenerCount('data')??0];
+  const worker = {instance:capture.workers.length+1, pid:null, closed:false, listenerBaseline:listeners()};
   capture.workers.push(worker);
   child.once('spawn', () => {worker.pid=child.pid;});
   child.once('exit', code => {worker.closed=true;worker.exitCode=code;worker.exitedAt=performance.now();});
   const requests = new Map();
   const post = child.postMessage.bind(child);
   child.postMessage = function (message, ...rest) {
+    if(message.kind==='embedding.result')return post(message,...rest);
     const request = {worker:worker.instance, id:message.id, operation:message.op,
       generation:message.spec?.id, ids:message.op==='applyMany' ? message.facts.map(fact=>fact.id) : undefined};
     if(capture.requests.length>=2000) throw Error('Test fixture exceeded the bounded observation limit');
@@ -55,7 +59,9 @@ utilityProcess.fork = function (modulePath, args, options) {
         return true;
       }
     }
-    return emit(type,reply,...rest);
+    const handled=emit(type,reply,...rest);
+    if(type==='exit')worker.listenersAfterExit=listeners();
+    return handled;
   };
   return child;
 };

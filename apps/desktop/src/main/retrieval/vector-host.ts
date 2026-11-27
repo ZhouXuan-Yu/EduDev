@@ -8,11 +8,14 @@ import {RETRIEVAL_SCHEMA,validIndexMaintenance,type IndexMaintenance} from '../.
 import type {RerankInput,RerankResult} from '../../shared/reranker';
 import {reserveHostStage} from '../host-resources/desktop';
 import type {ResourceLease} from '../host-resources/scheduler';
+import {EmbeddingClient} from './embedding-client';
+import {embeddingResult,isEmbeddingRequest} from './embedding-worker-port';
 export type VectorPort={ensure:(spec:GenerationSpec)=>Promise<void>;apply:(spec:GenerationSpec,fact:RetrievalFact)=>Promise<unknown>;applyMany?:(spec:GenerationSpec,facts:RetrievalFact[])=>Promise<unknown>;query:(spec:GenerationSpec,query:VectorQuery)=>Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>;counts:(spec:GenerationSpec)=>Promise<{objects:number;vectors:number;ann:boolean}>;optimize:(spec:GenerationSpec)=>Promise<unknown>;maintain?:(spec:GenerationSpec,force?:boolean)=>Promise<IndexMaintenance>;rerank?:(query:string,items:RerankInput[],timeoutMs?:number)=>Promise<RerankResult>;interrupt?:()=>Promise<void>;close:()=>Promise<void>};
 /** Sole persistent native-index owner. Renderer never supplies an executable or index path. */
 export class VectorHost implements VectorPort{
   private child?:Electron.UtilityProcess;
   private starting?:Promise<void>;
+  private retiringEmbedding?:Promise<void>;
   private closing=false;
   private epoch=0;
   private stopQueue=new AbortController();
@@ -20,7 +23,9 @@ export class VectorHost implements VectorPort{
   private pending=new Map<string,{child:Electron.UtilityProcess;lease:ResourceLease;resolve:(v:any)=>void;reject:(error:Error)=>void;timer:ReturnType<typeof setTimeout>}>();
   constructor(private dataRoot:()=>string){}
   private async start(){
-    if(this.closing)throw Error('cancelled');if(this.starting)return this.starting;
+    if(this.closing)throw Error('cancelled');
+    if(this.retiringEmbedding)throw Error('busy');
+    if(this.starting)return this.starting;
     const epoch=this.epoch;
     const job=(async()=>{
       const moduleDir=path.dirname(fileURLToPath(import.meta.url));
@@ -40,18 +45,49 @@ export class VectorHost implements VectorPort{
     const started=job.catch(error=>{if(this.starting===started){if(this.child)this.stop(this.child);else this.starting=undefined;}throw error;});this.starting=started;return started;
   }
   private async initialize(child:Electron.UtilityProcess,executable:string,rerankerRoot:string){
-      child.once('spawn',()=>{if(this.closing||this.stopping.has(child))child.kill();});
-      let stderr=0;child.stdout?.on('data',()=>{});child.stderr?.on('data',bytes=>{stderr+=bytes.length;if(stderr>65536)this.stop(child);});
-      child.on('message',v=>{
+      // The main process owns this native child and can observe its real close
+      // even if the vector utility crashes before reporting back.
+      const embedding=new EmbeddingClient(executable,async()=>{await verifyRetrievalRuntime(path.dirname(executable));},async (signal,role)=>{
+        const lease=await reserveHostStage('vector-owner','embedding-resident',role==='query'?'foreground':'background',
+          {memoryMiB:640,processes:1},60000,signal);
+        if(signal.aborted||!lease.start()){lease.settle();throw Error('embedding_unavailable');}
+        return ()=>{lease.settle();};
+      });
+      const onSpawn=()=>{if(this.closing||this.stopping.has(child))child.kill();};
+      const drain=()=>{};
+      let stderr=0;
+      const onStderr=(bytes:Buffer)=>{stderr+=bytes.length;if(stderr>65536)this.stop(child);};
+      const sendEmbedding=(result:ReturnType<typeof embeddingResult>)=>{
+        if(this.child!==child||this.stopping.has(child))return;
+        try{child.postMessage(result);}catch{this.stop(child);}
+      };
+      const onMessage=(v:any)=>{
         if(this.child!==child)return;
+        if(v?.schemaVersion===RETRIEVAL_SCHEMA&&isEmbeddingRequest(v)){
+          if(this.stopping.has(child)||this.closing)return;
+          void embedding.embed(v.role,v.texts).then(
+            values=>sendEmbedding(embeddingResult(v.id,values)),
+            error=>sendEmbedding(embeddingResult(v.id,undefined,error instanceof Error?error.message:undefined)));
+          return;
+        }
         if(!v||v.schemaVersion!==RETRIEVAL_SCHEMA||typeof v.id!=='string'||typeof v.ok!=='boolean'){this.stop(child);return;}
         const entry=this.pending.get(v.id);if(!entry||entry.child!==child)return;
         clearTimeout(entry.timer);this.pending.delete(v.id);entry.lease.settle();
         if(v.ok===true)entry.resolve(v.value);
         else entry.reject(Error(['index_busy','embedding_unavailable','generation_mismatch','index_disk_full','invalid_input','index_validation_failed','reranker_unavailable','reranker_timeout','busy'].includes(v.error)?v.error:'index_unavailable'));
-      });
+      };
+      child.once('spawn',onSpawn);
+      child.stdout?.on('data',drain);child.stderr?.on('data',onStderr);
+      child.on('message',onMessage);
       child.once('exit',()=>{
-        if(this.child===child){this.child=undefined;this.starting=undefined;}
+        child.removeListener('spawn',onSpawn);child.removeListener('message',onMessage);
+        child.stdout?.removeListener('data',drain);child.stderr?.removeListener('data',onStderr);
+        const retiring=embedding.closeAndWait();
+        if(this.child===child){
+          this.retiringEmbedding=retiring;
+          this.child=undefined;this.starting=undefined;
+          void retiring.then(()=>{if(this.retiringEmbedding===retiring)this.retiringEmbedding=undefined;},()=>{});
+        }
         for(const [id,entry] of this.pending){if(entry.child!==child)continue;clearTimeout(entry.timer);this.pending.delete(id);entry.lease.settle();entry.reject(Error('index_unavailable'));}
       });
       await this.send('init',{root:path.join(this.dataRoot(),'cache','semantic-v1'),executable,rerankerRoot});
@@ -106,5 +142,9 @@ export class VectorHost implements VectorPort{
     if(child){const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));this.stop(child);await exited;}
     await starting?.catch(()=>undefined);
   }
-  async close(){this.closing=true;await this.interrupt();}
+  async close(){
+    this.closing=true;
+    await this.interrupt();
+    await this.retiringEmbedding;
+  }
 }

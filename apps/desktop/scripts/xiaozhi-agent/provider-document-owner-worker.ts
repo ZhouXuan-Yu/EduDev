@@ -6,6 +6,7 @@ import {setTimeout as delay} from 'node:timers/promises';
 import {utilityProcess} from 'electron';
 import {extractLocalDocument} from '../../src/main/xiaozhi-agent/document-host';
 import {reserveLocalWorker} from '../../src/main/xiaozhi-agent/local-utility-host';
+import {hostResourceDiagnostics} from '../../src/main/host-resources/desktop';
 import {DOCUMENT_SCHEMA,type DocumentExtraction,type DocumentRequest} from '../../src/shared/xiaozhi-documents';
 
 const output=process.argv[2];
@@ -14,10 +15,13 @@ const input=fs.readFileSync(fs.realpathSync(process.env.OMNI_EDU_PROVIDER_DOCUME
 const sha=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 type Owner={pid?:number;killRequests:number;exited?:number;reply?:DocumentExtraction;
   release?:()=>boolean;deliver?:()=>void;counts?:{stdout:number;stderr:number;messages:number}};
-const report={success:false,checks:[] as string[],cycles:[] as {cancelled:Owner;recovered?:Owner}[],
+const report={success:false,checks:[] as string[],cycles:[] as {
+  cancelled:Owner;recovered?:Owner;heldLease?:number;recoveredLease?:number
+}[],
   input:sha(input),worker:sha(fs.readFileSync(workerPath)),error:undefined as string|undefined};
 const actualFork=utilityProcess.fork.bind(utilityProcess);
-let armed=false, last:Owner;
+let armed=false, last:Owner|undefined;
+const leaseEvents=()=>hostResourceDiagnostics().events.filter(event=>event.owner==='local-utility'&&event.phase==='document-worker.js');
 
 async function until<T>(read:()=>T|undefined, label:string) {
   const deadline=performance.now()+10_000;
@@ -62,9 +66,12 @@ try{
     assert(spare.every(Boolean),'Seven spare slots must return to baseline');
     try{
       armed=true;
+      const previous=last;
       const cancel=new AbortController(),pending=extractLocalDocument(request(),cancel.signal);
-      const owner=last!;
-      const caseEvidence:{cancelled:Owner;recovered?:Owner}={cancelled:owner};
+      const owner=await until(()=>last!==previous?last:undefined,'real document owner after host admission');
+      const heldLease=leaseEvents().findLast(event=>event.state==='started')?.lease;
+      assert(heldLease);
+      const caseEvidence:typeof report.cycles[number]={cancelled:owner,heldLease};
       report.cycles.push(caseEvidence);
       const reply=await until(()=>owner.reply,'actual owned DOCX parser reply');
       assert(reply.ok&&reply.markdown.includes('PHYSICS-RECOVERY-719')&&owner.pid&&!exited(owner.pid));
@@ -75,20 +82,26 @@ try{
       const blocked=await extractLocalDocument(request(),new AbortController().signal);
       assert(!blocked.ok&&blocked.error==='busy'&&!exited(owner.pid));
       assert(last===owner);
+      assert(!leaseEvents().some(event=>event.lease===heldLease&&event.state==='actual_settled'));
       owner.deliver?.();
       assert(!exited(owner.pid));
       assert(owner.release?.(),'Wait for the owned worker after the actual kill request');
       const counts=await until(()=>owner.counts,'actual exit and owned listener cleanup');
       assert(exited(owner.pid));
       assert.deepEqual(counts,{stdout:0,stderr:0,messages:0});
+      assert.equal(leaseEvents().filter(event=>event.lease===heldLease&&event.state==='actual_settled').length,1);
       armed=false;
       const recovered=await extractLocalDocument(request(),new AbortController().signal);
       const fresh=last!;
       caseEvidence.recovered=fresh;
+      const recoveredLease=leaseEvents().findLast(event=>event.state==='started')?.lease;
+      assert(recoveredLease&&recoveredLease!==heldLease);
+      caseEvidence.recoveredLease=recoveredLease;
       assert(recovered.ok&&recovered.markdown===reply.markdown&&recovered.requestId!==reply.requestId&&fresh!==owner);
       const freshCounts=await until(()=>fresh.counts,'actual successful parser exit');
       assert(fresh.pid&&exited(fresh.pid));
       assert.deepEqual(freshCounts,{stdout:0,stderr:0,messages:0});
+      assert.equal(leaseEvents().filter(event=>event.lease===recoveredLease&&event.state==='actual_settled').length,1);
       assert.equal(sha(input),report.input);
     }finally{
       for(const release of spare)release?.();

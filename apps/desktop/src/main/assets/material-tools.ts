@@ -2,25 +2,26 @@ import type {ClassroomMaterial} from '../../shared/classroom-context';
 import {curriculumBoundary,type CurriculumEntry} from '../../shared/material-curriculum';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
-import {MATERIALS_SCHEMA,validMaterialQuery,validMaterialBodyQuery,materialFailureText,materialIsOcr,materialCitation} from '../../shared/materials';
+import {MATERIALS_SCHEMA,validMaterialQuery,validMaterialBodyQuery,materialFailureText,materialIsOcr,materialCitation,type MaterialSource} from '../../shared/materials';
 import {createOfficeDocumentSanitizer} from '../xiaozhi-agent/office-document-tools';
 import {materialSource,sameMaterialSource} from './material-source';
 import type {XiaozhiPublicSource} from '../../shared/xiaozhi-web';
 import {AI_TEXT_SOURCE_PARAMETERS,validAiTextSource} from '../../shared/material-ai-text';
 
 /** Read saved derivatives by resource ID; never expand workspace file authority. */
-export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string,material:ClassroomMaterial)=>void,basis?:readonly CurriculumEntry[]):ToolDefinition[]{
+export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string,material:ClassroomMaterial)=>void,basis?:readonly (CurriculumEntry|{source:MaterialSource;id?:never})[]):ToolDefinition[]{
  const current=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!isCurrent())throw new Error('permission_denied');};
  const execute=(body:boolean):ToolDefinition['execute']=>async(_callId,args,signal)=>{
   try{
    current(signal);
    if(!args||typeof args!=='object'||Array.isArray(args))throw new Error('invalid_input');
+   if(!body&&basis)throw Error('permission_denied');
    const raw=args as Record<string,unknown>;
    const input={...raw,schemaVersion:MATERIALS_SCHEMA};
    if(Object.keys(args).some(key=>!['offset',body?'resourceId':'query',...(body?['restoredSource','characterOffset']:[])].includes(key)))throw new Error('invalid_input');
    const required=body&&basis?basis.find(entry=>entry.source.resourceId===raw.resourceId&&entry.source.offset===raw.offset):undefined;
    if(body&&basis&&(!required||Object.hasOwn(args,'restoredSource')))throw Error('permission_denied');
-   if(required){await store.materialCurriculum.bound({resourceId:required.source.resourceId,revision:required.id});current(signal);}
+   if(required?.id){await store.materialCurriculum.bound({resourceId:required.source.resourceId,revision:required.id});current(signal);}
    const clean=await createOfficeDocumentSanitizer(store);current(signal);
    let payload:Record<string,unknown>,sources:XiaozhiPublicSource[]=[];
    if(body&&Object.hasOwn(args,'restoredSource')){
@@ -50,7 +51,7 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     const source=materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk});
     const curriculum=await store.materialCurriculum?.view(input.resourceId);current(signal);
     const snapshot=curriculum?.entry&&!curriculum.stale?curriculum.entry:undefined;
-    if(required&&(snapshot?.id!==required.id||!sameMaterialSource(required.source,source)||
+    if(required&&(required.id&&snapshot?.id!==required.id||!sameMaterialSource(required.source,source)||
        chunk.containsPersonalData||text!==chunk.contentMd))throw Error('read_failed');
     if(snapshot){await store.materialCurriculum.bound({resourceId:input.resourceId,revision:snapshot.id});current(signal);}
     if(!chunk.containsPersonalData){await store.materials.source(source);current(signal);if(text.length)observed?.(input.resourceId,result.resource.contentHash,{source,title,characters:text.length,truncated:text.length<chunk.contentMd.length,recognition:materialIsOcr(result.resource.parseEngine)?'local_ocr_unreviewed':'saved_text',...(snapshot?{curriculum:snapshot}:{})});}

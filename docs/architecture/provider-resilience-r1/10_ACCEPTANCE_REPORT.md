@@ -41,6 +41,19 @@
 | AC-35 | NOT_RUN | 模块构建与现有组件回归有据。正式组合和最终 main 的版本绑定、完整门禁和串行事实仍待验。 |
 | AC-36 | NOT_RUN | 实际 main 集成、核验与最终报告。 |
 
+## 2026-11-26 续做回归
+
+本轮只在 `7f54a01` 的专项工作树验证，Windows 版本 10.0.26300，Node v24.12.0，附带 Electron 43.8.3。下列命令在 `apps/desktop` 执行，设置 `OMNI_EDU_PROVIDER_ACCEPTANCE_ROOT` 为固定验收根的 `resume-20261126-f420db0` 子目录。
+
+| 工作包 | 命令与结果 | 原始证据 |
+| --- | --- | --- |
+| WP-01，第 7 轮 | `node --test scripts/xiaozhi-agent/provider-fault-policy.test.mjs`。30/30，退出 0，外层耗时 503 ms。固定 22 条和 8 条未知、混合或不可信来源反例。 | `wp01-fault-policy.log`、`wp01-run.json`、`provider-fault-cases-jX9rVv`。 |
+| WP-02，第 7 轮 | `node --test --test-concurrency=1 scripts/xiaozhi-agent/provider-mcp-reconnection.test.mjs scripts/xiaozhi-agent/provider-mcp-sqlite-generations.test.mjs`。15/15，退出 0，外层耗时 13114 ms。独立 SQLite 与真实 loopback HTTP 验证信任保留、恢复实际读取、旧代际 CAS、无信任旧记录和探针拒绝迟到结果。 | `wp02-mcp-sqlite.log`、`wp02-run.json`、`mcp-http-reconnect-yVqlbP` 和各 `mcp-sqlite-generation-*`。 |
+
+本轮回归针对源码和实际本机 I/O。既有 Electron 证据仍归属原构建，WP-03/05/06/08 未新增实质尝试。AC-08/22/23/32–36 仍为 `NOT_RUN`，保留上表列出的已观察子条件。阶段总数维持 28/36。真实模型请求为 0。
+
+提交前的 `npm audit --omit=dev` 返回 20 项现有依赖告警，含 2 高、10 中、8 低，报告见 `npm-audit.json`。本轮差异仅为 09/10/11 续做交付记录。
+
 ## 首轮 HTTP 故障证据
 
 - `wp02-mcp-http-behavior-red.log` 为真实失败。服务端收到初始化请求，原已验证哈希却被清空。`wp02-mcp-http-red.log` 中早先的 `invalid_input` 是夹具输入形状错误，记录保留，未计作行为红灯。

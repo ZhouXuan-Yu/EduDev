@@ -55,10 +55,14 @@ export class MaterialRepository {
   const row=(await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?`,[id]))[0];
   if(!row)throw new Error('material_not_found');return this.host.mapResource(row);
  }
- async exactNames(title:string):Promise<{resourceId:string;version:string}[]>{
+ async exactNames(title:string, options?:{includeFileStem:boolean}):Promise<{resourceId:string;version:string}[]>{
   if(!title||title.length>200)return [];
+  const fileStem=options?.includeFileStem
+   ? " OR (substr(lower(trim(original_file_name)),1,length(?)+1)=lower(?)||'.' AND instr(substr(trim(original_file_name),length(?)+2),'.')=0 AND length(trim(original_file_name))>length(?)+1)"
+   : '';
   const rows=await this.host.all(`SELECT id,content_hash FROM teacher_resources
-   WHERE lower(trim(title))=lower(?) OR lower(trim(original_file_name))=lower(?) LIMIT 2`,[title,title]);
+   WHERE lower(trim(title))=lower(?) OR lower(trim(original_file_name))=lower(?)${fileStem} LIMIT 2`,
+   [title,title,...(fileStem?[title,title,title,title]:[])]);
   return rows.map(row=>({resourceId:String(row.id),version:String(row.content_hash)}));
  }
  /** Conservative reference-use gate; no private chunk contents or local paths cross IPC. */

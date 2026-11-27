@@ -40,16 +40,15 @@ function runUtilityProcess<T>(options:UtilityOptions<T>,deadline:number,waitForE
  const release=()=>{localRelease();settle();};
  return new Promise(resolve=>{
   let settled=false;
-  let resultAfterExit:T;
+  let resultAfterExit:{value:T}|undefined;
   let child:Electron.UtilityProcess;
   const env=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP','LANG'].flatMap(key=>process.env[key]?[[key,process.env[key]!]]:[]));
   try{child=utilityProcess.fork(path.join(path.dirname(fileURLToPath(import.meta.url)),options.entry),[],{stdio:'pipe',serviceName:options.serviceName,env});}
   catch{release();resolve(fail('unavailable'));return;}
-  const finish=(result:T,stop=true)=>{
+  const finish=(result:T)=>{
    if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);
-   resultAfterExit=result;
-   if(stop)child.kill();
-   if(!waitForExit)resolve(result);
+   resultAfterExit={value:result};
+   child.kill();if(!waitForExit)resolve(result);
   };
   const abort=()=>finish(cancelled());
   const timer=setTimeout(()=>finish(fail('timeout')),Math.max(1,deadline-performance.now()));
@@ -62,13 +61,14 @@ function runUtilityProcess<T>(options:UtilityOptions<T>,deadline:number,waitForE
   stdout?.on('data',drain);stderr?.on('data',drain);
   child.once('spawn',onSpawn);
   child.once('exit',()=>{
+   const finishedBeforeExit=settled;
+   settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);
    child.removeListener('spawn',onSpawn);
    child.removeListener('message',onMessage);
    stdout?.removeListener('data',drain);stderr?.removeListener('data',drain);
    release();
-   clearTimeout(timer);signal.removeEventListener('abort',abort);
-   if(!settled){settled=true;resolve(signal.aborted?cancelled():fail('unavailable'));}
-   else if(waitForExit)resolve(signal.aborted?cancelled():resultAfterExit!);
+   // Material admission owns the lease around this awaited callback.
+   if(waitForExit||!finishedBeforeExit)resolve(signal.aborted?cancelled():resultAfterExit?resultAfterExit.value:fail('unavailable'));
   });
   child.on('message',onMessage);
   try{child.postMessage(options.request);}catch{finish(fail('unavailable'));}

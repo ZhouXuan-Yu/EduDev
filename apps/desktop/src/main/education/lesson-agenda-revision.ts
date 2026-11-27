@@ -18,12 +18,12 @@ const checkFields = ['checkPrompt','expectedEvidence','criterion'] as const;
 const checkNumbers: Record<string, number> = {'一':1,'二':2,'三':3,'1':1,'2':2,'3':3};
 
 const phaseNames: Record<PhaseKind, string> = {
-  introduction: '导入', activity: '探究与讲授|探究|讲授', practice: '练习', assessment: '评价|检测', closure: '总结|小结',
+  introduction: '导入', activity: '探究与讲授|探究|讲授|讲解', practice: '练习', assessment: '评价|检测', closure: '总结|小结',
 };
-function phaseKind(name: string) {
+export function phaseKind(name: string) {
   return (Object.keys(phaseNames) as PhaseKind[]).find(kind => phaseNames[kind].split('|').includes(name));
 }
-const phasePattern = Object.values(phaseNames).join('|');
+export const phasePattern = Object.values(phaseNames).join('|');
 const timingClause = new RegExp(`^(全课(?:总时长|时长)?|总时长|${phasePattern})(?:环节)?(?:的?时长)?\\s*(?:改为|改成|调为|调整为|设为|用|为|[:：])\\s*([0-9]{1,3})\\s*分钟$`, 'u');
 const stageTarget = new RegExp(`教案(?:中|里)?的?\\s*(${phasePattern})环节的?(?:(?:第([一二三123])(?:个|项|道)?(?:检查题|检查|评价题)|检查([一二三123]))的?)?(.+)$`, 'u');
 const stageFieldPattern = Object.values(lessonStageFields).map(field=>field.names).join('|');
