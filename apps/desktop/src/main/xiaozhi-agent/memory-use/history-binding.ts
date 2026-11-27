@@ -207,16 +207,23 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return forTask(task,includeInvalidated);
   }
 
-  async function view(task:TaskView):Promise<TaskHistoryScope|undefined> {
+  async function view(task:TaskView,lastOwnedRunId?:string):Promise<TaskHistoryScope|undefined> {
     const binding=await forTask(task);
     if(!binding)return;
-    const delivered=await createReferenceReceipts(sql).latestReferenceDeliveries(task.sessionId);
+    const receipts=createReferenceReceipts(sql);
+    const runId=task.binding?.runId??lastOwnedRunId;
+    const [delivered,readbacks]=runId ? await Promise.all([
+      receipts.referenceDeliveriesForRun(task.sessionId,runId),
+      receipts.referenceReadbacksForRun(task.sessionId,runId),
+    ]) : [[],[]];
     const items:TaskHistoryScope['items']=[];
     for(const pin of binding.selections){
       const source=await history.selected(pin).catch(()=>null);
-      if(source?.fingerprint===pin.fingerprint)items.push({sourceId:pin.id,label:source.title+' · '+source.label,
-        ...(delivered.some(row=>row.reason==='task'&&row.id===pin.id&&row.version===pin.version&&row.fingerprint===pin.fingerprint)
-          ?{delivered:true as const}:{})});
+      if(source?.fingerprint!==pin.fingerprint)continue;
+      const matches=(row:typeof delivered[number]|typeof readbacks[number])=>
+        row.reason==='task'&&row.id===pin.id&&row.version===pin.version&&row.fingerprint===pin.fingerprint;
+      const useStage=delivered.some(matches)?'delivered':readbacks.some(matches)?'source_read':'selected';
+      items.push({sourceId:pin.id,label:source.title+' · '+source.label,useStage});
     }
     const after=await forTask(task);
     if(!after||after.revision!==binding.revision||!items.length&&!after.excludeSessionHistory)return;

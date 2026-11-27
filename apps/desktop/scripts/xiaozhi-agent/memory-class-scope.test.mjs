@@ -72,6 +72,34 @@ test('only the owning Pi run can attest a reference received, with no body store
   } finally {db.close();}
 });
 
+test('the source readback is a persistent run-bound observation independent of provider delivery',async()=>{
+  const db=new DatabaseSync(':memory:');
+  try{
+    db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);
+      CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT);
+      CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)`);
+    const session='aisession_'+randomUUID(),other='aisession_'+randomUUID(),run='run_'+randomUUID(),nextRun='run_'+randomUUID();
+    for(const id of [run,nextRun])db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(id,session,'pi_education','2026-11-27');
+    const sql={run:async(q,args=[])=>db.prepare(q).run(...args),all:async(q,args=[])=>db.prepare(q).all(...args)};
+    const state=createPiMemoryScopeState(sql);
+    await state.migrateMemoryScope();
+    const item={id:'c'.repeat(64),version:2,fingerprint:'d'.repeat(64),reason:'task',estimatedTokens:70};
+    await state.recordReferenceReadback(other,run,0,[item]);
+    assert.deepEqual(await state.referenceReadbacksForRun(session,run),[]);
+    await state.recordReferenceReadback(session,run,0,[item]);
+    await state.recordReferenceReadback(session,run,0,[item]);
+    assert.deepEqual(await createPiMemoryScopeState(sql).referenceReadbacksForRun(session,run),[{...item,scopeVersion:0}]);
+    assert.deepEqual(await state.referenceReadbacksForRun(other,run),[]);
+    assert.deepEqual(await state.referenceReadbacksForRun(session,nextRun),[]);
+    assert.deepEqual(await state.referenceDeliveriesForRun(session,run),[]);
+    await state.recordReferenceDelivery(session,run,0,[item]);
+    assert.deepEqual(await state.referenceDeliveriesForRun(session,run),[{...item,runId:run,scopeVersion:0}]);
+    assert.deepEqual(await state.referenceDeliveriesForRun(session,nextRun),[]);
+    await assert.rejects(state.recordReferenceReadback(session,run,0,[{...item,text:'PRIVATE'}]),/invalid_input/);
+    assert.equal(db.prepare('SELECT count(*) AS n FROM app_settings').get().n,1);
+  }finally{db.close();}
+});
+
 test('only the outgoing current user content can confirm inclusion',async()=>{
   const {carriesReferenceProjection}=await import('../../src/main/xiaozhi-agent/memory-use/receipts.ts');
   const marker='引用 '+randomUUID();

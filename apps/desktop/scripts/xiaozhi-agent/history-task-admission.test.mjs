@@ -33,7 +33,8 @@ async function fixture(t){
   t.after(()=>db.close());
   db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT);'+
     'CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT);'+
-    'CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);');
+    'CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT);'+
+    'CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT);');
   const sql={
     run:async(query,args=[])=>db.prepare(query).run(...args),
     all:async(query,args=[])=>db.prepare(query).all(...args),
@@ -102,6 +103,23 @@ test('Task rollback, Run ownership, restart, resume and confirmed scope removal'
   assert.equal(await restarted.forRun(next,resumed),undefined);
   assert.equal((await f.access.get(f.pin.id)).allowed,true);
   assert.equal((await f.state.memoryScope(target)).version,0);
+});
+
+test('A Task in review reads its own last Run use stage even when a different conversation Run is newer',async t=>{
+  const f=await fixture(t),{sql,binding,task,owner,target,state}=f;
+  const {token}=await binding.stage(target,0,'signed-ticket');
+  const proof=await binding.prepare(target,[token]);
+  await sql.transaction(work=>binding.attachTask(work,task,owner,proof));
+  await sql.run('INSERT INTO ai_agent_runs VALUES(?,?,?,?)',[owner.runId,target,'pi_education','2026-11-26']);
+  const reviewing={...task,state:'review_required',binding:null};
+  const view=()=>binding.view(reviewing,owner.runId);
+  assert.equal((await view()).items[0].useStage,'selected');
+  const item={id:f.pin.id,version:1,fingerprint:f.original.fingerprint,reason:'task',estimatedTokens:30};
+  await state.recordReferenceReadback(target,owner.runId,0,[item]);
+  assert.equal((await view()).items[0].useStage,'source_read');
+  await sql.run('INSERT INTO ai_agent_runs VALUES(?,?,?,?)',['run_'+randomUUID(),target,'pi_education','2026-11-27']);
+  await state.recordReferenceDelivery(target,owner.runId,0,[item]);
+  assert.equal((await view()).items[0].useStage,'delivered');
 });
 
 test('Task and Turn fail closed after revocation, restoration and classroom departure',async t=>{

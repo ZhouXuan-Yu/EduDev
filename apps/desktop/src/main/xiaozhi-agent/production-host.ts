@@ -987,7 +987,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const browserStatus=await browser.status(id);
     const usage=await store.xiaozhiState.usage(id);
     const memoryScope = await memory.scope(id);
-    const currentTaskHistory=task?await taskHistory.view(task.view).catch(()=>undefined):undefined;
+    // Lifecycle projections may clear the live binding before the teacher reads the receipt.
+    const currentTaskHistory=task?await taskHistory.view(task.view,task.runIds.at(-1)).catch(()=>undefined):undefined;
     const skillCatalog = await publicSkills();
     for (const control of storedControls.filter(item=>item.kind === 'plan')) {
       const index=projection.turns.findIndex(turn=>turn.id === control.runId);
@@ -1315,6 +1316,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         readSelected:(authority,signal,personalIds)=>memory.readSelected(id,authority,signal,personalIds,memoryPolicy),
         readHistoryPage:(authority,request,signal)=>memory.readHistoryPage(id,authority,request,signal,memoryPolicy),
         referenceReceived:(scopeVersion,items)=>store.xiaozhiState.recordReferenceDelivery(id,runId,scopeVersion,items),
+        referenceRead:(scopeVersion,items)=>store.xiaozhiState.recordReferenceReadback(id,runId,scopeVersion,items),
         trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;

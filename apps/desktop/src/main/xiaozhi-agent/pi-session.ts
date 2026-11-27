@@ -1245,6 +1245,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       ? await options.memory?.historyProjection?.(initialAuthority.fingerprint,teacherQuery??'',
         Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)-(personalPlan?.estimatedTokens??0)),args[2]?.signal)
       : undefined;
+    const readbacks=[...(historyPlan?.readbacks??[]),...(personalPlan?.receipts??[])];
+    if (readbacks.length && initialAuthority && options.memory?.referenceRead) {
+      await options.memory.referenceRead(initialAuthority.version,readbacks);
+      await checkMemory();
+    }
     let projectedHistory=false;
     const historyProjection=historyPlan?.projection;
     const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,historyProjection,personalPlan?.projection].filter(Boolean).join('\n\n');

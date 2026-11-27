@@ -21,7 +21,10 @@ export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'comman
 export type HistoryIndexStatus = {configured:boolean;active:number;rebuilding:number|null;ready:number;pending:number;failed:number};
 export type HistoryResult<T> = {ok:true; value:T} | {ok:false; error:HistoryMemoryError};
 
-export type TaskHistoryScope={taskId:string;revision:number;excludeSessionHistory?:true;items:Array<{sourceId:string;label:string;delivered?:true}>};
+export type TaskHistoryUseStage='selected'|'source_read'|'delivered';
+export type TaskHistoryScope={taskId:string;revision:number;excludeSessionHistory?:true;items:Array<{
+  sourceId:string;label:string;useStage:TaskHistoryUseStage;
+}>};
 export type TaskHistoryRemoval = {sessionId:string;taskId:string;revision:number;sourceId:string};
 export function validTaskHistoryRemoval(value:unknown):value is TaskHistoryRemoval {
   if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==4)return false;

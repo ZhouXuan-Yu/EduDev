@@ -184,6 +184,12 @@ try{
     assert(task.sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
     assert.equal(await page.getByTestId('history-lookup').count(),0);
     pass('One exact, currently authorized Session source binds directly to a real Task',{answerUsed:task.answerUsed});
+    const reads=read("SELECT value_json FROM app_settings WHERE key GLOB ?",
+      'xiaozhi.memory.reference-readback.v1:'+task.runId+':*').map(row=>JSON.parse(row.value_json));
+    assert.deepEqual(reads.map(item=>[item.id,item.reason]),[[binding.selections[0].id,'task']]);
+    assert.deepEqual(Object.keys(reads[0]).sort(),['estimatedTokens','fingerprint','id','reason','scopeVersion','version']);
+    await page.getByTestId('history-task-selection').getByText(/已提供给模型，仍待核验成果/).waitFor();
+    pass('The real desktop distinguishes source readback and acknowledged delivery from verified use',{runId:task.runId});
     const calls=(await provider()).length;
     const vague='照上次那份继续。';
     await composer().fill(vague);

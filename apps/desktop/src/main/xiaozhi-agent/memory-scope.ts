@@ -164,8 +164,11 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         const excerpt=Array.from(source.text).slice(0,200).join('');
         const normalized=source.text.normalize('NFKC').toLowerCase();
         const score=terms.reduce((sum,term)=>sum+(normalized.includes(term)?term.length:0),0);
-        candidates.push({pin,score,row:{sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
-          excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal}});
+        const row={sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
+          excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal};
+        const receipt:ReceivedReference={id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
+          reason:extra.scope,estimatedTokens:Math.min(1024,Buffer.byteLength(JSON.stringify(row)))};
+        candidates.push({pin,score,row,receipt});
       }
       candidates.sort((a,b)=>b.score-a.score||a.pin.id.localeCompare(b.pin.id,'en'));
       const output:typeof candidates=[];
@@ -176,10 +179,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const final=await authority(id,policy);
       signal?.throwIfAborted();
       if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
-      if(!output.length)return;
-      const receipts:ReceivedReference[]=output.map(({pin,row})=>({id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
-        reason:extra.scope,estimatedTokens:Buffer.byteLength(JSON.stringify(row))}));
-      return {projection:historyProjectionPrefix+JSON.stringify(output.map(item=>item.row))+historyProjectionSuffix,receipts};
+      return {projection:output.length?historyProjectionPrefix+JSON.stringify(output.map(item=>item.row))+historyProjectionSuffix:'',
+        receipts:output.map(item=>item.receipt),readbacks:candidates.map(item=>item.receipt)};
     },
     async readHistoryPage(id:string,expectedAuthority:string,request:import('./memory-tools').HistoryPageRequest,signal?:AbortSignal,policy?:RunMemoryPolicy) {
       signal?.throwIfAborted();

@@ -10,6 +10,7 @@ export type PiMemoryRuntime = {
   historyProjection?: (authority:string,query:string,availableTokens:number,signal?:AbortSignal)=>
     ReturnType<ReturnType<typeof createPiMemoryScope>['historyProjection']>;
   referenceReceived?: (scopeVersion:number,items:readonly import('./memory-use/receipts').ReceivedReference[])=>Promise<void>;
+  referenceRead?: PiMemoryRuntime['referenceReceived'];
   readHistoryPage?: (authority:string,request:HistoryPageRequest,signal?:AbortSignal) =>
     ReturnType<ReturnType<typeof createPiMemoryScope>['readHistoryPage']>;
   trace: () => ReturnType<ReturnType<typeof createPiMemoryScope>['trace']>;
