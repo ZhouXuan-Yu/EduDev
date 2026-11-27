@@ -1,3 +1,4 @@
+import {isPersonalMemoryKind} from '../../../shared/xiaozhi-personal-memory';
 import { createHash } from 'node:crypto';
 import type { PersonalMemoryKind as MemoryKind, PersonalMemoryScope } from '../../../shared/xiaozhi-personal-memory';
 
@@ -98,7 +99,7 @@ function authorized(source: PersonalMemorySource, policyRevision: number) {
 function parseProposal(value: unknown): Proposal | undefined {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return;
   const p = value as Partial<Proposal>;
-  if (Object.keys(p).length !== 8 || (p.kind !== 'teaching_context' && p.kind !== 'preference')
+  if (Object.keys(p).length !== 8 || !isPersonalMemoryKind(p.kind)
       || !safeId(p.source_id) || !integer(p.source_version) || !safeId(p.scope_id) || !bounded(p.valid_term, 80)
       || !bounded(p.supporting_quote, 320) || !bounded(p.value, 320) || (p.supersedes !== null && !safeId(p.supersedes))) return;
   return p as Proposal;

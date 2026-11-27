@@ -22,6 +22,9 @@ const { createPiMemoryScopeState }=await import('../../src/main/xiaozhi-agent/me
 const database=join(mkdtempSync(join(tmpdir(),'edudev-personal-memory-source-')),'app.db');
 let db=new DatabaseSync(database);
 db.exec(`PRAGMA foreign_keys=ON;
+  CREATE TABLE ai_tasks(id TEXT PRIMARY KEY,task_type TEXT NOT NULL,status TEXT NOT NULL,input_hash TEXT,
+    payload_json TEXT NOT NULL,result_json TEXT,error_message TEXT,retry_count INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
   CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,title TEXT,student_id TEXT,archived_at TEXT);
   CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);`);
 db.exec(historyMemorySchema);
@@ -159,6 +162,18 @@ const committedSource=message('confirmed','这学期我负责四年级科学。'
 await authority.change(committedSource,0,scope);
 const confirmed=draft((await authority.snapshot([historyId(committedSource)],policy))[0]);
 await state.savePending([confirmed],policy);
+// Stored v1 JSON has no SQL enum constraint. An unknown kind may not become a formal memory.
+const overwriteDraft = db.prepare('UPDATE personal_memory_pending SET draft_json=? WHERE draft_key=?');
+for (const kind of ['reusable_method', 'teacher_profile', null]) {
+  overwriteDraft.run(JSON.stringify({...confirmed,kind}), confirmed.key);
+  const result = await ops.preview({key:confirmed.key,revision:1});
+  assert.equal(result.ok,false,'Stored kind outside PersonalMemoryKind must not be previewed for adoption');
+  const attempted = await ops.adopt({operationId:randomUUID(),key:confirmed.key,revision:1,targetRevision:0,
+    reviewedQuoteSha256:(await import('node:crypto')).createHash('sha256').update(confirmed.proposedValue).digest('hex')});
+  assert.equal(attempted.ok,false);
+  assert.equal(await records.read(confirmed.key),null);
+}
+overwriteDraft.run(JSON.stringify(confirmed),confirmed.key);
 const currentQueue = await ops.queue(session);
 assert(currentQueue.ok);
 const listed = currentQueue.value.candidates.find(row => row.key === confirmed.key);
@@ -339,6 +354,14 @@ assert(Number.isSafeInteger(classSummary.recordedAt) && classSummary.recordedAt 
 assert.equal(classSummary.sourceOccurredAt, classReview.value.occurredAt);
 assert.equal((await use(sameClass,classPin)).text,sourceForClass.sanitizedText);
 // The teacher revokes the exact source while the host is sanitizing its body.
+const savedClassDraft=db.prepare('SELECT draft_json FROM personal_memory_pending WHERE draft_key=?').get(classPin.id).draft_json;
+const classDraftUpdate=db.prepare('UPDATE personal_memory_pending SET draft_json=? WHERE draft_key=?');
+classDraftUpdate.run(JSON.stringify({...JSON.parse(savedClassDraft),kind:'reusable_method'}),classPin.id);
+assert.equal(await use(sameClass,classPin),null);
+const unrecognized=await ops.view();
+assert(unrecognized.ok && !unrecognized.value.records.some(item=>item.id===classPin.id));
+classDraftUpdate.run(savedClassDraft,classPin.id);
+assert.equal((await use(sameClass,classPin)).text,sourceForClass.sanitizedText);
 const delayedRead = createPersonalMemoryUse(sql, async text => {
   assert((await ops.setSource({ref:classRef,revision:1,enabled:false})).ok);
   return text;

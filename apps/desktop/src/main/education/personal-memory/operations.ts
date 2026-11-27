@@ -3,7 +3,7 @@ import type {
   PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryQueue, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
   PersonalMemorySummary, PersonalMemoryView,
 } from '../../../shared/xiaozhi-personal-memory';
-import {personalMemoryCategory} from '../../../shared/xiaozhi-personal-memory';
+import {isPersonalMemoryKind, personalMemoryCategory} from '../../../shared/xiaozhi-personal-memory';
 import {currentTeachingTarget} from '../../xiaozhi-agent/memory-scope-state';
 import {readTeacherMemoryPolicy} from '../teacher-memory-policy';
 import {validHistoryRef} from '../../xiaozhi-agent/history/source';
@@ -80,7 +80,7 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     view:()=>respond<PersonalMemoryView>(async()=>{
       const [policy,saved,open,background,workerAvailable] = await Promise.all([
         candidates.processing(),records.list(40),candidates.list(40,true),jobs.list(),options.workerAvailable?.() ?? true]);
-      return {policy:policyView(policy),records:saved.map(recordView),
+      return {policy:policyView(policy),records:saved.filter(item=>isPersonalMemoryKind(item.kind)).map(recordView),
         candidates:await visibleCandidates(open),jobs:background,workerAvailable};
     }),
     catalog:(sessionId:unknown)=>respond<PersonalMemorySummary[]>(async()=>{

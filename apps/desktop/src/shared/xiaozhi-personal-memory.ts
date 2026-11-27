@@ -12,6 +12,10 @@ export const teacherMemoryCategories = {
   reusable_method: {layer:'L4', family:'procedural', authority:'verified_method', label:'可复用工作方法'},
 } as const;
 
+export function isPersonalMemoryKind(value:unknown):value is PersonalMemoryKind {
+  return value === 'preference' || value === 'teaching_context';
+}
+
 export function personalMemoryCategory(kind:PersonalMemoryKind) {
   return kind === 'preference' ? 'teaching_preference' : 'teaching_context';
 }

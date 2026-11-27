@@ -1,3 +1,4 @@
+import {isPersonalMemoryKind} from '../../../shared/xiaozhi-personal-memory';
 import {currentTeachingTarget} from '../../xiaozhi-agent/memory-scope-state';
 import { createHash } from 'node:crypto';
 import type { HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
@@ -168,6 +169,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
   }
 
   async function witnessCurrent(db: Sql, draft: PersonalMemoryDraft) {
+    if (!isPersonalMemoryKind(draft.kind)) return false;
     const {witness} = draft;
     const saved = await permission(witness.sourceId,db);
     if (!saved?.allowed || saved.revision!==witness.generation || saved.ref.sourceVersion!==witness.sourceVersion
