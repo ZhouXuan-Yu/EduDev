@@ -3,6 +3,7 @@ import type {
   PersonalMemoryError, PersonalMemoryPolicy, PersonalMemoryQueue, PersonalMemoryResult, PersonalMemoryReview, PersonalMemorySourcePermission,
   PersonalMemorySummary, PersonalMemoryView,
 } from '../../../shared/xiaozhi-personal-memory';
+import {personalMemoryCategory} from '../../../shared/xiaozhi-personal-memory';
 import {currentTeachingTarget} from '../../xiaozhi-agent/memory-scope-state';
 import {readTeacherMemoryPolicy} from '../teacher-memory-policy';
 import {validHistoryRef} from '../../xiaozhi-agent/history/source';
@@ -33,8 +34,11 @@ function policyView({enabled,pausedByUsePolicy,policyRevision}:PersonalMemoryPol
   return {enabled,pausedByUsePolicy,policyRevision};
 }
 
-function recordView({id,revision,kind,scope,term,value,sourceVersion,sourceOccurredAt,sourceCurrent,state,cleanupPending}:PersonalMemorySummary):PersonalMemorySummary {
-  return {id,revision,kind,scope,term,value,sourceVersion,sourceOccurredAt,sourceCurrent,state,cleanupPending};
+type StoredRecord = NonNullable<Awaited<ReturnType<ReturnType<typeof createPersonalMemoryRecordState>['read']>>>;
+function recordView(record:StoredRecord):PersonalMemorySummary {
+  const {id,revision,kind,scope,term,value,witness,sourceOccurredAt,recordedAt,sourceCurrent,state,cleanupPending}=record;
+  return {id,revision,kind,category:personalMemoryCategory(kind),evidence:'teacher_confirmed',scope,term,value,
+    sourceVersion:witness.sourceVersion,sourceOccurredAt,recordedAt,sourceCurrent,state,cleanupPending};
 }
 
 function candidateInput(value:unknown):value is PersonalMemoryCandidateInput & Record<string,unknown> {
@@ -74,7 +78,7 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
     view:()=>respond<PersonalMemoryView>(async()=>{
       const [policy,saved,open,background,workerAvailable] = await Promise.all([
         candidates.processing(),records.list(40),candidates.list(40,true),jobs.list(),options.workerAvailable?.() ?? true]);
-      return {policy:policyView(policy),records:saved.map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion})),
+      return {policy:policyView(policy),records:saved.map(recordView),
         candidates:await visibleCandidates(open),jobs:background,workerAvailable};
     }),
     catalog:(sessionId:unknown)=>respond<PersonalMemorySummary[]>(async()=>{
@@ -85,7 +89,7 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
         if (Object.keys((await readTeacherMemoryPolicy(db)).use).length) return [];
         const target=await currentTeachingTarget(db,sessionId);
         const saved=await createPersonalMemoryRecordState(db,sources).list(40,target??{});
-        return saved.filter(record=>record.sourceCurrent).map(record=>recordView({...record,sourceVersion:record.witness.sourceVersion}));
+        return saved.filter(record=>record.sourceCurrent).map(recordView);
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);
     }),

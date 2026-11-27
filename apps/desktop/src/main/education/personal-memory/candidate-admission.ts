@@ -104,7 +104,7 @@ function parseProposal(value: unknown): Proposal | undefined {
   return p as Proposal;
 }
 
-function candidateEvidence(text:string, quote:string, kind:MemoryKind) {
+export function candidateEvidence(text:string, quote:string) {
   const match = text.indexOf(quote);
   if (match < 0 || text.lastIndexOf(quote) !== match) return;
   // Keep the surrounding statement, including subject, negation and time qualifiers.
@@ -117,7 +117,7 @@ function candidateEvidence(text:string, quote:string, kind:MemoryKind) {
   const statement=text.slice(start,matchEnd+after.length).trimEnd();
   if (!bounded(statement,320) || /[`“”「」『』"<>]|引用材料|忽略(?:前文|规则|指令)|系统提示/u.test(text) ||
       /(?:同事|别的?老师|其他老师|助教|学生|家长|助手|模型|AI).{0,10}(?:说|建议|推荐|认为|猜测|觉得)/iu.test(statement) ||
-      (kind==='preference' && /这次|这个任务|这份|本次|仅本轮|本题|这道题|例如|假设/u.test(statement))) return;
+      /这次|这个任务|这份|本次|仅本轮|本题|这道题|例如|假设/u.test(statement)) return;
   return {start,end:start+statement.length,statement};
 }
 
@@ -158,7 +158,7 @@ function createDraft(proposal: Proposal, pin: SourcePin, liveSource: PersonalMem
       || hash(liveSource.sanitizedText) !== pin.textDigest) return 'source_changed';
   if (proposal.scope_id !== projection.scope.id) return 'scope_mismatch';
   if (proposal.valid_term !== projection.term) return 'term_mismatch';
-  const evidence=candidateEvidence(projection.text,proposal.supporting_quote,proposal.kind);
+  const evidence=candidateEvidence(projection.text,proposal.supporting_quote);
   if (!evidence) return 'ungrounded';
   if (proposal.supersedes && (!pinnedTarget || !liveTarget || pinnedTarget.revision !== liveTarget.revision
       || !sameScope(pinnedTarget.scope, projection.scope) || !sameScope(liveTarget.scope, pinnedTarget.scope)

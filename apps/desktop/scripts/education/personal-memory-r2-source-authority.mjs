@@ -126,6 +126,17 @@ await assert.rejects(authority.change(newer,5,scope),/permission_denied/);
 console.log('PASS R1 forgetting invalidates R2 extraction without crossing into index or scope grants');
 
 const records=createPersonalMemoryRecordState(sql,authority);
+// An older pending draft can contain a paraphrase that differs from the verified quote.
+const legacySource = message('legacy-candidate', '我教三年级音乐。');
+await authority.change(legacySource, 0, scope);
+const legacy = draft((await authority.snapshot([historyId(legacySource)], policy))[0]);
+await state.savePending([{...legacy, proposedValue:'我负责全年级音乐。'}], policy);
+const legacyQuote = await authority.reviewQuote(sql, legacy);
+const legacyHash = (await import('node:crypto')).createHash('sha256').update(legacyQuote.quote).digest('hex');
+await assert.rejects(records.accept({key:legacy.key, revision:1, operationId:randomUUID(),
+  targetRevision:0, reviewedQuoteSha256:legacyHash}), /source_changed/);
+assert.equal(await records.read(legacy.key), null);
+await state.reject(legacy.key, 1);
 const committedSource=message('confirmed','这学期我负责四年级科学。');
 await authority.change(committedSource,0,scope);
 const confirmed=draft((await authority.snapshot([historyId(committedSource)],policy))[0]);
@@ -276,6 +287,11 @@ for (const destination of [otherClass,otherTerm,noTarget]) {
 }
 const allowedCatalog=await ops.catalog(sameClass);
 assert(allowedCatalog.ok && allowedCatalog.value.some(record=>record.id===classPin.id));
+const classSummary = allowedCatalog.value.find(record => record.id === classPin.id);
+assert.equal(classSummary.evidence, 'teacher_confirmed');
+assert.equal(classSummary.category, 'teaching_preference');
+assert(Number.isSafeInteger(classSummary.recordedAt) && classSummary.recordedAt > 0);
+assert.equal(classSummary.sourceOccurredAt, classReview.value.occurredAt);
 assert.equal((await use(sameClass,classPin)).text,sourceForClass.sanitizedText);
 assert((await ops.setSource({ref:classRef,revision:1,enabled:false})).ok);
 assert.equal(await use(sameClass,classPin),null);

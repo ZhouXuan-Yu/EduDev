@@ -4,6 +4,7 @@ import type { HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
 import { readHistorySource, validHistoryRef } from '../../xiaozhi-agent/history/source';
 import { createHistoryState, historyId } from '../../xiaozhi-agent/history/state';
 import type { Sql } from '../../xiaozhi-agent/session-state';
+import { candidateEvidence } from './candidate-admission';
 import type { CandidateAuthority, PersonalMemoryDraft, PersonalMemorySource } from './candidate-admission';
 import { invalidatePersonalMemoryDrafts } from './candidate-state';
 
@@ -166,7 +167,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     }
   }
 
-  async function reviewQuote(db: Sql, draft: PersonalMemoryDraft) {
+  async function reviewQuote(db: Sql, draft: PersonalMemoryDraft, purpose:'candidate'|'record'='record') {
     if (!await witnessCurrent(db,draft)) return null;
     const saved = await permission(draft.witness.sourceId,db);
     if (!saved?.allowed) return null;
@@ -176,6 +177,10 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
       const {textDigest,start,end} = draft.witness;
       if (start < 0 || end <= start || end > sanitized.length ||
           createHash('sha256').update(sanitized).digest('hex') !== textDigest) return null;
+      if (purpose === 'candidate') {
+        const span = candidateEvidence(sanitized, sanitized.slice(start,end));
+        if (!span || span.start !== start || span.end !== end || span.statement !== draft.proposedValue) return null;
+      }
       const current = await permission(saved.sourceId,db);
       return current?.allowed && current.revision === saved.revision
         ? {quote:sanitized.slice(start,end),occurredAt:source.occurredAt} : null;

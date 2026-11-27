@@ -93,6 +93,17 @@ const cases = [
       assert.deepEqual(admitted.rejections,['ungrounded']);
     }
   }],
+  ['Task-only and hypothetical statements stay local for both proposed memory kinds', () => {
+    for (const kind of ['teaching_context', 'preference']) {
+      for (const text of ['这次我代教三年级音乐。', '假设我教四年级科学。', '仅本轮按高一物理备课。']) {
+        const observed = {...source, sanitizedText:text};
+        const result = bindPersonalMemoryProposals([{...proposal, kind, supporting_quote:text}],
+          preparePersonalMemoryExtraction([observed], policy), [observed], policy);
+        assert.deepEqual(result.rejections, ['ungrounded']);
+        assert.equal(result.candidates.length, 0);
+      }
+    }
+  }],
   ['Revoked grants, a changed source and cancellation invalidate in-flight output', () => {
     const request = preparePersonalMemoryExtraction([source],policy);
     const revoked = {...source,generation:2,purpose:['discover']};

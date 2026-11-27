@@ -6,6 +6,7 @@ import { Button } from '@heroui/react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import type { XiaozhiMemoryCatalog, XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemoryUseSelection, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../../shared/xiaozhi-memory';
 import { XIAOZHI_MEMORY_LABELS, XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES, projectMemorySource } from '../../../shared/xiaozhi-memory';
+import {personalMemoryCategory, teacherMemoryCategories} from '../../../shared/xiaozhi-personal-memory';
 import type {PersonalMemorySelection, PersonalMemorySummary} from '../../../shared/xiaozhi-personal-memory';
 
 const key = (item: XiaozhiMemoryUseSelection) => `${item.layer}:${item.source}:${item.id}`;
@@ -130,7 +131,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
               disabled={busy||running||!checked&&selected.length>=12&&!selected.some(match)}
               onChange={event=>{const include=event.target.checked;setSelected(previous=>
                 include?[...previous.filter(entry=>!match(entry)),choice]:previous.filter(entry=>!match(entry)));}}/>
-              {record.kind==='preference'?'教学偏好':'任教自述'} · 第 {record.revision} 版</label>
+              {teacherMemoryCategories[record.category ?? personalMemoryCategory(record.kind)].label} · 第 {record.revision} 版</label>
             <p>{record.value}</p>
             <p>{record.term==='unknown'?'有效期限待核对':record.term}</p>
           </article>;

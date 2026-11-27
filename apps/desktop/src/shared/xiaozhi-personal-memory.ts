@@ -1,13 +1,27 @@
 export type PersonalMemoryScope = {kind:'teacher'|'class'|'course'|'task'|'artifact'; id:string};
 export type PersonalMemorySelection = {layer:'personal'; source:'personal'; id:string; version:number; sourceVersion:string};
 export type PersonalMemoryKind = 'preference'|'teaching_context';
+// Business roles describe the authority being read. Classification never grants access.
+export const teacherMemoryCategories = {
+  teacher_profile: {layer:'L3', family:'semantic', authority:'teacher_profile', label:'教学画像'},
+  teaching_preference: {layer:'L3', family:'semantic', authority:'teacher_preference', label:'教学偏好'},
+  teaching_context: {layer:'L3', family:'semantic', authority:'teaching_context', label:'教学情境'},
+  task_requirement: {layer:'L1', family:'working', authority:'task', label:'当前任务要求'},
+  work_experience: {layer:'L2', family:'episodic', authority:'session_task_effect', label:'历史工作经历'},
+  artifact_reference: {layer:'L2', family:'episodic', authority:'artifact_version', label:'历史成果关联'},
+  reusable_method: {layer:'L4', family:'procedural', authority:'verified_method', label:'可复用工作方法'},
+} as const;
+
+export function personalMemoryCategory(kind:PersonalMemoryKind) {
+  return kind === 'preference' ? 'teaching_preference' : 'teaching_context';
+}
 export type PersonalMemoryError = 'invalid_input'|'permission_denied'|'revision_conflict'|'command_conflict'
   | 'source_changed'|'stale_policy'|'cancelled'|'busy'|'configuration';
 export type PersonalMemoryResult<T> = {ok:true; value:T}|{ok:false; error:PersonalMemoryError};
 
 export type PersonalMemoryPolicy = {enabled:boolean; pausedByUsePolicy:boolean; policyRevision:number};
 export type PersonalMemoryPolicyInput = {enabled:boolean; revision:number};
-export type PersonalMemorySummary = {id:string; revision:number; kind:PersonalMemoryKind;
+export type PersonalMemorySummary = {category:ReturnType<typeof personalMemoryCategory>; evidence:'teacher_confirmed'; recordedAt:number; id:string; revision:number; kind:PersonalMemoryKind;
   scope:PersonalMemoryScope; term:string; value:string; sourceVersion:string; sourceOccurredAt:string|null; sourceCurrent:boolean;
   state:'active'|'disabled'|'forgotten'; cleanupPending:boolean};
 export type PersonalMemoryCandidate = {key:string; revision:number; kind:PersonalMemoryKind;

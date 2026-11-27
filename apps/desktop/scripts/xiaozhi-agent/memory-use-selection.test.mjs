@@ -39,6 +39,22 @@ test('requires all known scope dimensions and an explicit global scope for globa
   }
   assert.deepEqual(ids(planMemoryUse(snapshot([ref]), [fact(ref, {scope:{teacher:'self'}})])), ['exercise']);
 });
+test('requires the authorized host to match every textbook, task and artifact classification', () => {
+  const ref = pin('approved');
+  const scope = {subject:'数学', textbook:'人教版', taskType:'备课', artifactType:'讲义'};
+  const context = snapshot([ref], {scope});
+  assert.deepEqual(ids(planMemoryUse(context, [fact(ref, {scope})])), [ref.id]);
+  for (const field of Object.keys(scope)) {
+    const missing = {...scope};
+    delete missing[field];
+    for (const current of [missing, {...scope, [field]:'其它'}]) {
+      assert.deepEqual(ids(planMemoryUse({...context, scope:current}, [fact(ref, {scope})])), []);
+    }
+  }
+  for (const corrupt of [{grade:4}, {subject:null}, {textbook:'   '}]) {
+    assert.deepEqual(ids(planMemoryUse(context, [fact(ref, {scope:corrupt})])), []);
+  }
+});
 test('requires current pin, exact provenance, relevance and no current conflict', () => {
   const ref = pin('source');
   for (const delta of [{sourceVersion:'stale'}, {fingerprint:''}, {fingerprint:'c'.repeat(64)}, {version:3}, {state:'disabled'},

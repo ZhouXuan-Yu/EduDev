@@ -6,8 +6,9 @@ type Pin = {
   layer: Layer; source: string; id: string; version: number;
   fingerprint: string; sourceVersion?: string;
 };
-type TeachingScope = Partial<Record<'classRef' | 'termRef' | 'courseRef' | 'subject' | 'grade'
-  | 'taskId' | 'artifactId' | 'teacher', string>>;
+const teachingDimensions = ['teacher', 'classRef', 'termRef', 'courseRef', 'subject', 'grade',
+  'textbook', 'taskType', 'artifactType', 'taskId', 'artifactId'] as const;
+type TeachingScope = Partial<Record<typeof teachingDimensions[number], string>>;
 type SourceFact = Pin & {
   state: string; provenance: string; scope: TeachingScope | null;
   relevant: boolean; relevance: number; conflicts?: boolean;
@@ -19,7 +20,7 @@ type HostSnapshot = {
 };
 type Reference = Pick<Pin, 'layer' | 'source' | 'id' | 'version'>;
 type Decision = Reference & {reason: 'named' | 'task' | 'teaching_scope' | 'global'};
-const scopeFields = new Set(['classRef','termRef','courseRef','subject','grade','taskId','artifactId','teacher']);
+const scopeFields = new Set(teachingDimensions);
 
 function identity(ref: Reference) {
   return JSON.stringify([ref.layer, ref.source, ref.id]);
@@ -57,7 +58,8 @@ function scopePriority(scope: TeachingScope | null, current: TeachingScope) {
   const keys = Object.keys(scope) as (keyof TeachingScope)[];
   if (!keys.length) return -1;
   for (const key of keys) {
-    if (!scopeFields.has(key) || !scope[key]?.trim()) return -1;
+    const value = scope[key];
+    if (!scopeFields.has(key) || typeof value !== 'string' || !value.trim()) return -1;
     if (key === 'teacher') {
       if (scope[key] !== 'self') return -1;
     } else if (scope[key] !== current[key]) return -1;

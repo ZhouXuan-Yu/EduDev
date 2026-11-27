@@ -140,7 +140,7 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
       if (!hashPattern.test(key) || !safeRevision(revision)) throw Error('invalid_input');
       const row = await readPersonalMemoryDraft(sql,key);
       if (row?.state !== 'pending' || row.revision !== revision) throw Error('revision_conflict');
-      const reviewed = await sources.reviewQuote(sql,row.draft);
+      const reviewed = await sources.reviewQuote(sql,row.draft,'candidate');
       if (!reviewed) throw Error('source_changed');
       return {draft:row.draft,...reviewed,quoteSha256:digest(reviewed.quote)};
     },
@@ -156,7 +156,7 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         if (!policy.enabled || policy.pausedByUsePolicy || policy.cancelGeneration !== draft.authority.cancelGeneration)
           throw Error('cancelled');
         if (!sameCandidatePolicy(policy,draft.authority)) throw Error('stale_policy');
-        const reviewed = await sources.reviewQuote(db,draft);
+        const reviewed = await sources.reviewQuote(db,draft,'candidate');
         if (!reviewed || digest(reviewed.quote) !== reviewedQuoteSha256) throw Error('source_changed');
 
         if (targetRevision !== (draft.replaces?.revision ?? 0)) throw Error('revision_conflict');
