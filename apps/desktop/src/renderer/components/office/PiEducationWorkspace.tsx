@@ -383,9 +383,10 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       hydration.current!.changed();
       void hydrate(target).catch(() => undefined);
     });
+    const settingsChanged=window.settingsHost?.onChanged(()=>{if(live&&idRef.current)void hydrate(idRef.current).catch(()=>undefined);});
     return () => {
       viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false;
-      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeConfig?.();
+      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeConfig?.();settingsChanged?.();
     };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {

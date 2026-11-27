@@ -1,0 +1,107 @@
+{
+  "state": "IMPLEMENTING",
+  "headBeforeCheckpoint": "751ae4fbe22fab8d374cd393df88ebf46daed251",
+  "attempts": {
+    "W2-A": 3,
+    "W2-B": 1,
+    "W2-C": 7,
+    "W2-D": 2,
+    "W2-E": 0,
+    "W2-F": 0,
+    "W10": 0
+  },
+  "results": {
+    "formalWindowChecks": 13,
+    "invalidEndpointDenials": 17,
+    "permissionSqliteReadback": true,
+    "rendererComponents": 261,
+    "buildPass": true,
+    "audit": 0
+  },
+  "buildSha256": "eb9011f6f3fd613fe2d738f75b051fd7c4ca5ac7f9ab30279fd7d300f573702a",
+  "rows": [
+    {
+      "source": "product-rKvSHX/report.json",
+      "rawSha256": "e0ae2cf63a5fd1ec3274a212a9e7eea792767cec3962ee8f0f4c32fec29c930c",
+      "file": "product-report.json",
+      "sha256": "a195cfdb11de1d5fe7b9562e4a36fa5e391e9eff788ed17abe3c9c473b7ad077"
+    },
+    {
+      "source": "product-jFVFMx/report.json",
+      "rawSha256": "64c945cc8b7e3eab86ae5fd58f10cb084fdd255541349fb7b69e1be9e3851ae0",
+      "file": "permission-sync-failed.json",
+      "sha256": "9c0cf84b8af7004e560abfcb495eab4d72bb85784a561d8a065caf57af5278ea"
+    },
+    {
+      "source": "product-jFVFMx/main-failure.png",
+      "rawSha256": "88c02d1e0887a8e5a95127aa0c05d8ebb46e04b3dfe8e209319063bf61029008",
+      "file": "permission-main-before.png",
+      "sha256": "88c02d1e0887a8e5a95127aa0c05d8ebb46e04b3dfe8e209319063bf61029008"
+    },
+    {
+      "source": "product-jFVFMx/settings-failure.png",
+      "rawSha256": "1664b8d50ab48b8b22eb11b90e6da8b5567930a210d9b707e1a8ea1caf06651b",
+      "file": "permission-settings-before.png",
+      "sha256": "1664b8d50ab48b8b22eb11b90e6da8b5567930a210d9b707e1a8ea1caf06651b"
+    },
+    {
+      "source": "product-fxCIkf/report.json",
+      "rawSha256": "f53e5ab05b44bb0ce13a09e9244877092390ff365393b8e5179303fb0f9f4fc8",
+      "file": "frame-fixture-failed.json",
+      "sha256": "e7852055b21916a51ce681768c513ae247ccf3c615959eebcd15d802b64ba27b"
+    },
+    {
+      "source": "context-security-first.log",
+      "rawSha256": "146ae9e5cace788bb50d338f59bdf2f788503d8f22a2d27a96b5216246af17a0",
+      "file": "permission-sync-red.log",
+      "sha256": "d6c111a0341f0d6b319ef20062bd3cc3a6f200c5d4e81c92a918d6fa76b2aa3d"
+    },
+    {
+      "source": "context-security-complete.log",
+      "rawSha256": "d6d73adf50c37beefbb44604ac90eb0dc57bb980cbb7173e8b3c5e0ec3ef67f6",
+      "file": "frame-fixture-red.log",
+      "sha256": "62b50e7b7701c74177fe62b3c92876a59020b4f046b106098fbe92f52fe181ea"
+    },
+    {
+      "source": "context-security-final.log",
+      "rawSha256": "a06e95cbcf9f27dded8f126124c5ff9db3f02418a8ba15c6dfaf6cc64991b33d",
+      "file": "context-green.log",
+      "sha256": "7bdded8f0dcf2baddef521ce3861a7e415402f2bf7605066828003757e585adf"
+    },
+    {
+      "source": "build-context-sync.log",
+      "rawSha256": "20a14af367a80ed53b5212dd794f652dc7edc1a1ff72bebff55c8d32722b72e9",
+      "file": "build-context-sync.log",
+      "sha256": "0703837c08955ebeece268bffc2575151f5bc8fd9c958768ab4fcee74056eeb1"
+    },
+    {
+      "source": "renderer-context-sync.log",
+      "rawSha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3",
+      "file": "renderer-context-sync.log",
+      "sha256": "4b7f862f81fa78d42f25696a2e34ba53661b9755cb7baa436d6a416fdf465b03"
+    },
+    {
+      "source": "audit-context.json",
+      "rawSha256": "bad0b7f195c9ec4505503ba2baa2f20b784ba411a1f45287d0a120216b46e87e",
+      "file": "audit-context.json",
+      "sha256": "40cb8db956267f5928c63e7c394b3e377b3a2a28b965a75ded61e8ff3a4b54cc"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "apps/desktop/src/renderer/components/office/usePermissionMode.ts",
+      "sha256": "155f005c5d83f206314208e0f682fce45bcb815016154a2ced0f4341cbd728e7"
+    },
+    {
+      "file": "apps/desktop/scripts/settings-window-product-test.mjs",
+      "sha256": "0f5ae76e76644d5d25df0925205193673912d192a1678ce53d0e7144ce0c01a3"
+    },
+    {
+      "file": "apps/desktop/scripts/settings-window-cases/context-security.mjs",
+      "sha256": "a5fa436692b1083fd79e9a20fd134b703618431b99628a50e90c454a5af15ba7"
+    }
+  ],
+  "mergeAllowed": false,
+  "coverage": "Actual A-to-B-to-A UI navigation, old-request denial, original permission UI save, main composer display, post-close SQLite readback, document replacement/reopen. The sandbox frame probe proves absence of preload/parent access, not a raw IPC request from an incapable frame. Full90 AC/36 LG and SET-P0/MG/FG are not PASS.",
+  "next": "W2-E configuration/credential/history/undo/conflict using original services and permitted isolated transport fixtures. Before the final W2-C repair round, collect remaining await-dialog and global-vs-session stale-request cases together. Do not reset the accumulated budget."
+}

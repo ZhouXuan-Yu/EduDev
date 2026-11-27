@@ -1,0 +1,96 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "actual top-level nonmodal sandboxed windows",
+      "pass": true
+    },
+    {
+      "name": "repeated visible-entry open preserves same renderer and draft",
+      "pass": true
+    },
+    {
+      "name": "real frame identity and isolated fixture preload",
+      "pass": true
+    },
+    {
+      "name": "main stays editable and focus removes dimming",
+      "pass": true
+    },
+    {
+      "name": "closing settings preserves main renderer draft",
+      "pass": true
+    },
+    {
+      "name": "actual create/load failure releases reference",
+      "pass": true
+    },
+    {
+      "name": "visible-entry retry creates a fresh real window",
+      "pass": true
+    },
+    {
+      "name": "actual programmatic navigation invalidates privileged document",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "output": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\acceptance\\uiux-v31-settings-20261126\\controller-electron-EOcbKR",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\controller-electron-EOcbKR\\profile",
+  "controllerSha256": "47465a70b750224235e24faec0c49e74d0441486a529a10c7c05f5af6677ba78",
+  "boundary": "Actual Electron exercising the production lifecycle module with isolated HTML fixtures. No domain API/configuration/Pi integration or formal V3 AC PASS claim.",
+  "windows": {
+    "windows": [
+      {
+        "id": 2,
+        "parent": null,
+        "modal": false,
+        "alwaysOnTop": false,
+        "bounds": {
+          "x": 374,
+          "y": 180,
+          "width": 962,
+          "height": 662
+        },
+        "sandbox": true
+      },
+      {
+        "id": 1,
+        "parent": null,
+        "modal": false,
+        "alwaysOnTop": false,
+        "bounds": {
+          "x": 353,
+          "y": 159,
+          "width": 1001,
+          "height": 701
+        },
+        "sandbox": true
+      }
+    ],
+    "displays": [
+      {
+        "id": 1155089144,
+        "workArea": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        },
+        "scaleFactor": 1,
+        "displayFrequency": 144
+      },
+      {
+        "id": 813368306,
+        "workArea": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "scaleFactor": 1.5,
+        "displayFrequency": 165
+      }
+    ]
+  }
+}

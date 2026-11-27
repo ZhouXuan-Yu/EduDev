@@ -1,9 +1,12 @@
 import type {IpcMain} from 'electron';
 import type {BackupPublicationBarrier} from './backup/publication-barrier';
+import {SETTINGS_API_PREFIX} from '../shared/settings-window';
 
 // These IPCs coordinate a snapshot or inspect its lifecycle. They still drain at shutdown.
 const snapshotChannels = new Set([
   'app:exportDataRoot', 'app:prepareWindowsUpdate', 'app:cancelDataBackup', 'app:getDataRoot',
+  // Window lifecycle changes have no business publication or database write.
+  'settings-window:open','settings-window:select','settings-window:bootstrap','settings-window:blocked','settings-window:close',
 ]);
 
 /** Own admitted IPC work until shutdown; callers cannot reopen the admission gate. */
@@ -18,7 +21,10 @@ export function createDesktopIpcLifetime(target:IpcMain, publications?:BackupPub
     pending.add(result);
     void result.finally(()=>pending.delete(result)).catch(()=>undefined);
     try{
-      if (publications && !snapshotChannels.has(channel)) {
+      // Settings delegates to the same service; retain its publication class.
+      // Otherwise a snapshot would wait for its own outer publisher forever.
+      const publicationChannel=channel.startsWith(SETTINGS_API_PREFIX)?channel.slice(SETTINGS_API_PREFIX.length):channel;
+      if (publications && !snapshotChannels.has(publicationChannel)) {
         const operation = publications.tryPublish(()=>listener(...args));
         if (!operation) throw Error('backup_busy');
         resolve(operation);

@@ -4,7 +4,7 @@ import { History, PanelRight, Files, SquarePen, Ellipsis, ListTodo } from 'lucid
 import { useDesktopCommands } from '../desktop/DesktopFrame';
 import { EduShell } from '../../ui-system/EduShell';
 import { EduPanel } from '../../ui-system/EduPanel';
-import { initialWorkspacePreferences, writeWorkspacePreferences } from './workspace-preferences';
+import { WORKSPACE_PREFERENCES_KEY,readWorkspacePreferences,initialWorkspacePreferences, writeWorkspacePreferences } from './workspace-preferences';
 import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-system/ColumnResizeHandle';
 import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
@@ -21,6 +21,10 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   const main = useRef<HTMLDivElement>(null);
   const { hasFiles, pending } = notifications;
   const [preferences, setPreferences] = useState(() => initialWorkspacePreferences(isEmpty||replyOnly));
+  useEffect(()=>{
+    const synchronize=(event:StorageEvent)=>{if(event.key!==WORKSPACE_PREFERENCES_KEY&&event.key!==null)return;setPreferences(readWorkspacePreferences());};
+    window.addEventListener('storage',synchronize);return()=>window.removeEventListener('storage',synchronize);
+  },[]);
   const handledFileRequest = useRef<string | undefined>(undefined);
   const emptyWasVisible = useRef(isEmpty);
   const [historyOpen, setHistoryOpen] = useState(false);

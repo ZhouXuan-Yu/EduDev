@@ -67,7 +67,7 @@ export default defineConfig(({ command }) => ({
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {
-        input: { index: resolve('src/preload/index.ts'), 'config-window': resolve('src/preload/config-window.ts') },
+        input:{index:resolve('src/preload/index.ts'),settings:resolve('src/preload/settings.ts'),'config-window':resolve('src/preload/config-window.ts')},
         output: {
           format: 'cjs',
           entryFileNames: '[name].cjs',
@@ -77,11 +77,7 @@ export default defineConfig(({ command }) => ({
   },
   renderer: {
     css: {postcss: {plugins:[nativeComponentBoundary(resolve('src/renderer'))]}},
-    build: { rollupOptions: { input: {
-      index: resolve('src/renderer/index.html'),
-      'browser-status': resolve('src/renderer/browser-status.html'),
-      'config-window': resolve('src/renderer/config-window.html'),
-    } } },
+    build: {rollupOptions:{input:{index:resolve('src/renderer/index.html'),settings:resolve('src/renderer/settings.html'),'browser-status':resolve('src/renderer/browser-status.html'),'config-window':resolve('src/renderer/config-window.html')}}},
     resolve: {
       dedupe:['react','react-dom'],
       alias: {

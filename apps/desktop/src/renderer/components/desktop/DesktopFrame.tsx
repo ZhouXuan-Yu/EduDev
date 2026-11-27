@@ -6,6 +6,7 @@ import '../../ui-system/chrome.css';
 import {samePaperReturn, type PaperReturnReference} from '../paper-ui/paper-material-handoff';
 import {validPaperExportIntent,samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {readComposerDraft} from '../office/composer-drafts';
+import {useSettingsWindowGuard} from './SettingsCloseGuards';
 import type {ClassroomPlanReference} from '../../../shared/classroom-plan';
 import type {MockExamCatalogRef} from '../../../shared/mock-exam-compilation';
 
@@ -29,6 +30,7 @@ const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
 /** Shared by draft owners. Blocking consumes native commands instead of replaying them later. */
 export function useDesktopNavigationGuard(dirty:boolean,message:string) {
+  useSettingsWindowGuard(dirty,message);
   const {registerGuard,clearGuardNotice}=useDesktopNavigation(),latest=useRef({dirty,message});latest.current={dirty,message};
   useLayoutEffect(()=>registerGuard(()=>latest.current.dirty?latest.current.message:undefined),[registerGuard]);
   useEffect(()=>{if(!dirty)clearGuardNotice?.(message);},[dirty,message,clearGuardNotice]);
@@ -62,6 +64,7 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   },[]);
   const handlers=useRef(new Map<symbol,{handler:Handler;priority:number}>()),pending=useRef<DesktopCommand[]>([]);
   const deliver=useCallback((command:DesktopCommand)=>{
+    if(command==='settings'&&window.settingsHost){void window.settingsHost.open().catch(()=>setNotice('设置窗口未能打开，请重试。'));return true;}
     // Native IPC has no DOM event to cancel; guard before any handler mutates page/session state.
     if(['settings','new-chat','sidebar','files'].includes(command)&&!allowNavigation())return true;
     for(const {handler} of [...handlers.current.values()].sort((a,b)=>b.priority-a.priority))if(handler(command))return true;
@@ -70,6 +73,9 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   const flush=useCallback(()=>{pending.current=pending.current.filter(command=>!deliver(command));},[deliver]);
   const register=useCallback((handler:Handler,priority:number)=>{const id=Symbol();handlers.current.set(id,{handler,priority});return ()=>{handlers.current.delete(id);};},[]);
   const navigate=useCallback((target:Target,options?:NavigationOptions)=>{
+    // Opening a nonmodal settings window does not leave the current page,
+    // alter history or discard its draft. false means the route was consumed.
+    if(target.view==='settings'&&window.settingsHost){void window.settingsHost.open().catch(()=>setNotice('设置窗口未能打开，请重试。'));return false;}
     const old=historyRef.current,active=old.entries[old.index];
     if(options?.ifCurrent && active !== options.ifCurrent)return false;
     if(options?.ifIntent!==undefined&&!isCurrent(options.ifIntent))return false;

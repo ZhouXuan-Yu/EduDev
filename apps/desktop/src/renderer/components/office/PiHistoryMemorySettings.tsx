@@ -5,6 +5,7 @@ import { AppNativeSelect } from '../ui/AppNativeSelect';
 import { PiPersonalMemorySourcePermission } from './PiPersonalMemorySourcePermission';
 import { SettingsInline, SettingsStack } from './hana-settings/SettingsPrimitives';
 import { SettingsSection } from './hana-settings/SettingsSection';
+import {useSettingsWindowGuard} from '../desktop/SettingsCloseGuards';
 
 export function PiHistoryMemorySettings() {
   const [sessions,setSessions]=useState<Array<{id:string;title:string}>>();
@@ -14,6 +15,7 @@ export function PiHistoryMemorySettings() {
   const [preview,setPreview]=useState<HistoryPreview>();
   const [confirm,setConfirm]=useState('');
   const [busy,setBusy]=useState(false);
+  useSettingsWindowGuard(busy,'历史记忆正在更新，请稍候。');
   const [notice,setNotice]=useState('');
   const [index,setIndex]=useState<HistoryIndexStatus>();
   const request = useRef(0);

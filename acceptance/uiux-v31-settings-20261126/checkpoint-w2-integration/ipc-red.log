@@ -1,0 +1,12 @@
+PASS only reviewed fixed endpoints exist; no terminal, file or agent launch endpoint
+PASS trusted settings delegates to original schema and main authorization remains unchanged
+PASS direct original channels are denied even when their legacy handler has no guard
+PASS untrusted sender, revoked frame and forged scope cannot reach the domain service
+PASS envelope version, extra keys, arity and cross-session input are rejected
+FAIL optional session selectors reject falsy non-string values AssertionError [ERR_ASSERTION]: Missing expected rejection.
+FAIL global MCP inputs match the real host contract without fabricated session fields Error: invalid_input
+PASS archived snapshot exception is read-only and requires host archive eligibility
+PASS scope switch suppresses late results; failed domain writes do not broadcast success
+FAIL prefixed backup export keeps original snapshot classification and does not deadlock itself TimeoutError: The operation was aborted due to timeout
+PASS ordinary settings writes remain blocked during a backup and drain before shutdown
+{"passed":8,"failed":3,"checks":[{"name":"only reviewed fixed endpoints exist; no terminal, file or agent launch endpoint","status":"PASS"},{"name":"trusted settings delegates to original schema and main authorization remains unchanged","status":"PASS"},{"name":"direct original channels are denied even when their legacy handler has no guard","status":"PASS"},{"name":"untrusted sender, revoked frame and forged scope cannot reach the domain service","status":"PASS"},{"name":"envelope version, extra keys, arity and cross-session input are rejected","status":"PASS"},{"name":"optional session selectors reject falsy non-string values","status":"FAIL","error":"AssertionError [ERR_ASSERTION]: Missing expected rejection."},{"name":"global MCP inputs match the real host contract without fabricated session fields","status":"FAIL","error":"Error: invalid_input"},{"name":"archived snapshot exception is read-only and requires host archive eligibility","status":"PASS"},{"name":"scope switch suppresses late results; failed domain writes do not broadcast success","status":"PASS"},{"name":"prefixed backup export keeps original snapshot classification and does not deadlock itself","status":"FAIL","error":"TimeoutError: The operation was aborted due to timeout"},{"name":"ordinary settings writes remain blocked during a backup and drain before shutdown","status":"PASS"}],"boundary":"Real bridge and publication-barrier contracts. Production-window end-to-end checks remain required."}

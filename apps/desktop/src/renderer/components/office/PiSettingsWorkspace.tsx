@@ -39,6 +39,8 @@ import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePref
 import './pi-settings-workspace.css';
 import {EduShell} from '../../ui-system/EduShell';
 import { useWorkbenchPreferences } from '../../ui-system/WorkbenchState';
+import windowStyles from '../../ui-system/settings-window.module.css';
+import {useSettingsWindowGuard,useSettingsWindowBlocked} from '../desktop/SettingsCloseGuards';
 
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
@@ -54,6 +56,7 @@ const tabs = [
 ] as const;
 type Tab = typeof tabs[number]['id'];
 export type PiSettingsEntry = Extract<Tab, 'models' | 'permissions'>;
+const CLOSE_GUARD_NOTICE='请先保存或放弃未保存的更改，并等待当前操作结束。';
 // Capability-only metadata. Never index credentials, history, paths or document contents.
 export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   ...tabs.map(tab => ({ id: `tab-${tab.id}`, tabId: tab.id, title: tab.label, path: [tab.label] })),
@@ -76,7 +79,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-resolved-config', tabId: 'diagnostics', title: '当前配置来源', path: ['策略与诊断', '当前配置来源'], aliases: ['模型来源', '配置版本', '只读'] },
 ];
 
-export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () => void; entry?: PiSettingsEntry }) {
+export function PiSettingsWorkspace({onBack,entry='models',standalone=false}:{onBack:()=>void;entry?:PiSettingsEntry;standalone?:boolean}) {
   const followUp=useComposerFollowUp();
   const [followUpSaveFailed,setFollowUpSaveFailed]=useState(false);
   const [tab, setTab] = useState<Tab>(entry), [query, setQuery] = useState('');
@@ -91,7 +94,11 @@ export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () =
   const [updateBusy, setUpdateBusy] = useState(false);
   const [archive, setArchive] = useState<{ title: string; value: XiaozhiWorkspaceSnapshot }>(), [archiveLoading, setArchiveLoading] = useState(false), [archiveNotice, setArchiveNotice] = useState('');
   const live = useRef(true), request = useRef(0), archiveRequest = useRef(0), action = useRef(false), target = useRef('');
-  const busy = actionBusy || childBusy || updateBusy;
+  const localBusy = actionBusy || childBusy || updateBusy;
+  useSettingsWindowGuard(localBusy,'请先保存或放弃更改，并等待当前操作结束。');
+  const guarded=useSettingsWindowBlocked();
+  const busy=localBusy||guarded;
+  useEffect(()=>{if(!busy)setNotice(current=>current===CLOSE_GUARD_NOTICE?'':current);},[busy]);
   const results = useMemo(() => searchSettings(query, XIAOZHI_SETTINGS_SEARCH_ENTRIES, key => key), [query]);
   async function reload() {
     const own = ++request.current;
@@ -101,7 +108,8 @@ export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () =
       const [list, settings, root] = await Promise.all([api.listAiConversations(), api.getXiaozhiSettings(), api.getDataRoot()]);
       if (!live.current || request.current !== own) return;
       let remembered = '';
-      try { remembered = localStorage.getItem('xiaozhi.current-session.v1') || ''; } catch { /* No authority in preferences. */ }
+      if(standalone)remembered=window.settingsWindow?.getScope()?.sessionId||'';
+      else try { remembered = localStorage.getItem('xiaozhi.current-session.v1') || ''; } catch { /* No authority in preferences. */ }
       const id = list.sessions.find(item => item.id === remembered)?.id || '';
       const current = id ? await api.getXiaozhiSnapshot(id) : undefined;
       if (!live.current || request.current !== own) return;
@@ -114,7 +122,10 @@ export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () =
   useEffect(() => {
     live.current = true; void reload();
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (event.kind === 'status') void reload(); });
-    return () => { live.current = false; request.current++; archiveRequest.current++; unsubscribe?.(); };
+    const scope=standalone?window.settingsWindow?.onScope(()=>{request.current++;archiveRequest.current++;setSessionId('');setSnapshot(undefined);setArchive(undefined);void reload();}):undefined;
+    const changed=standalone?window.settingsWindow?.onChanged(()=>void reload()):undefined;
+    const blocked=standalone?window.settingsWindow?.onCloseBlocked(()=>setNotice(CLOSE_GUARD_NOTICE)):undefined;
+    return () => { live.current = false; request.current++; archiveRequest.current++; unsubscribe?.();scope?.();changed?.();blocked?.(); };
   }, []);
   useEffect(() => {
     if (!target.current) return;
@@ -166,18 +177,19 @@ export function PiSettingsWorkspace({ onBack, entry = 'models' }: { onBack: () =
     finally { if (live.current && archiveRequest.current === own) setArchiveLoading(false); }
   }
   const title = tabs.find(item => item.id === tab)!.label;
-  return <EduShell view="settings" disabled={busy} actions={<Button variant="ghost" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回对话</Button>}>
-    <div className={`${layoutStyles.workspace} edu-domain`} data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
-      <header className={layoutStyles.heading}><h1>设置</h1><p>日常设置直接可见，技术细节按需查看。</p></header>
-      <div className={layoutStyles.layout}>
-        <nav className={layoutStyles.sidebar} aria-label="小智设置分类">
-          {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
-          {!query.trim()&&<button type="button" className={layoutStyles.navigationEntry} aria-current={tab==='capabilities'?'page':undefined} disabled={busy} data-testid="pi-settings-tab-capabilities" onClick={()=>open('capabilities')}>能力中心</button>}
+  return <EduShell view="settings" navigationOpen={!standalone} disabled={busy} actions={<Button variant="ghost" data-testid={standalone?'settings-window-close':'nav-ai'} isDisabled={busy} onPress={onBack}>{!standalone&&<ArrowLeft size={17}/>}{standalone?'关闭设置':'返回对话'}</Button>}>
+    <div className={`${layoutStyles.workspace} ${standalone?windowStyles.workspace:''} edu-domain`} data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
+      {!standalone&&<header className={layoutStyles.heading}><h1>设置</h1><p>日常设置直接可见，技术细节按需查看。</p></header>}
+      <div className={standalone?windowStyles.layout:layoutStyles.layout}>
+        <nav className={`${layoutStyles.sidebar} ${standalone?windowStyles.sidebar:''}`} aria-label="小智设置分类">
+          {query.trim() ? <SettingsSearchResults results={results} disabled={busy} onSelect={result=>open(result.tabId, result.id.startsWith('tab-') ? '' : result.id)}/> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open} icons={standalone}/>}
+          {!standalone&&!query.trim()&&<button type="button" className={layoutStyles.navigationEntry} aria-current={tab==='capabilities'?'page':undefined} disabled={busy} data-testid="pi-settings-tab-capabilities" onClick={()=>open('capabilities')}>能力中心</button>}
           <SearchField fullWidth value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy}>
             <SearchField.Group><SearchField.SearchIcon/><SearchField.Input size={1} className={`edu-settings-search-input ${layoutStyles.readablePlaceholder}`} placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
           </SearchField>
         </nav>
-        <main className={layoutStyles.main} aria-label={title} data-testid="pi-settings-main">
+        <main className={`${layoutStyles.main} ${standalone?windowStyles.main:''}`} aria-label={title} data-testid="pi-settings-main">
+          {standalone&&<p className={windowStyles.context} data-testid="settings-window-scope">{sessionId?`当前对话：${workspace?.sessions.find(item=>item.id===sessionId)?.title||'正在读取'}`:'未选择对话；全局设置仍可使用。'}</p>}
           {(tab === 'backup' || tab === 'archives') && <nav className={layoutStyles.sectionNavigation} aria-label="备份与归档">
             <Button variant={tab === 'backup' ? 'secondary' : 'ghost'} aria-pressed={tab === 'backup'} isDisabled={busy} data-testid="pi-settings-backup-panel" onPress={() => open('backup')}>本地备份</Button>
             <Button variant={tab === 'archives' ? 'secondary' : 'ghost'} aria-pressed={tab === 'archives'} isDisabled={busy} data-testid="pi-settings-tab-archives" onPress={() => open('archives')}>归档</Button>

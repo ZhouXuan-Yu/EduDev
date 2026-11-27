@@ -1,0 +1,26 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "production main keeps composer draft while opening real settings from navigation",
+      "status": "PASS"
+    },
+    {
+      "name": "settings is a top-level nonmodal sandboxed singleton with its own minimal preload",
+      "status": "PASS"
+    },
+    {
+      "name": "real settings reads the verified main session instead of a local preference",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "sourceRoot": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125",
+  "entry": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\out\\main\\index.js",
+  "profile": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\product-FZEYpH\\profile",
+  "data": "D:\\WorkProject\\EduProject-ui-ux-r1-20261125\\apps\\desktop\\test-results\\product-FZEYpH\\data",
+  "buildSha256": "9658df26f3187c6bdcc4414fe5b48448420a81583da46b1cfeedc66199604656",
+  "boundary": "Actual production main/settings bundles and original services with a fresh owned database. Network/provider quality and other V3 pages are not accepted by this run.",
+  "failure": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-history-memory-settings') to be visible\u001b[22m\n",
+  "blockedNetwork": 0
+}

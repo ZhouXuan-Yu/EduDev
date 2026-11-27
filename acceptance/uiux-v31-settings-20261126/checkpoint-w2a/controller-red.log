@@ -1,0 +1,23 @@
+(node:64360) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+0 !== 1
+
+    at file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:34:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async test (file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:31:30)
+    at async file:///D:/WorkProject/EduProject-ui-ux-r1-20261125/apps/desktop/scripts/settings-window-controller-test.mjs:32:1 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 1,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

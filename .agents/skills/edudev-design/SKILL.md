@@ -3,6 +3,8 @@ name: edudev-design
 description: Design and review EduDev desktop pages using the user-approved navigation, progressive disclosure and HeroUI boundaries. Use for Xiaozhi UI changes, page simplification, screenshot review and interaction design; not for unrelated runtime or backend work.
 ---
 
+> 2026-11-26当前专项：UI/UX V3.1 设置窗口优先，见[执行入口](../../../docs/goal/UIUX_V31_EXECUTION.md)与决策D16。90 AC＋36 LG、SET-P0/MG/FG为当前门禁；未通过禁止提前合并main。原厂组件、Pi、数据和业务保护继续有效，旧版时间/次数/优先级仅保留历史。
+
 > 2026-11-03最新：当前UI已获用户最终批准。实施先读 [最终交接书](../../../docs/design/system/UI_FINAL_HANDOFF.md)、[有限Goal](../../../docs/goal/UI_FINAL_IMPLEMENTATION_GOAL.md) 与固定36项验收。设计不再重新确认；旧待确认语句只保留历史。生产实现按最终Goal结项，禁止无限美化。
 
 # 小智项目 UI 设计

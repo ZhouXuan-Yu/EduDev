@@ -1,0 +1,12 @@
+(node:29824) ExperimentalWarning: Transform Types is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS repeated opens during creation share one top-level nonmodal sandboxed window
+PASS load failure rejects, destroys its window and permits a fresh retry
+PASS missing first paint times out and leaves no hidden singleton
+PASS close during creation settles the pending open instead of hanging
+PASS main focus, settings blur, hide, minimize and close clear dimming
+PASS all geometry stays in DIP workArea including a removed display
+PASS only current settings mainFrame at its exact local document is trusted
+PASS unexpected navigation, webviews and popup windows are denied
+PASS a crashed settings renderer is revoked and a subsequent open recreates it
+{"suite":"settings-window-controller","passed":9,"checks":["repeated opens during creation share one top-level nonmodal sandboxed window","load failure rejects, destroys its window and permits a fresh retry","missing first paint times out and leaves no hidden singleton","close during creation settles the pending open instead of hanging","main focus, settings blur, hide, minimize and close clear dimming","all geometry stays in DIP workArea including a removed display","only current settings mainFrame at its exact local document is trusted","unexpected navigation, webviews and popup windows are denied","a crashed settings renderer is revoked and a subsequent open recreates it"],"boundary":"Lifecycle unit tests with injected window ports; not actual Electron or configuration acceptance"}

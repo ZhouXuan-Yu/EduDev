@@ -94,7 +94,10 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange, onSave
       if(lock.current)deferredConfigRead.current=true;
       else void reload(false,true);
     });
-    return ()=>{live.current=false;stamp.current++;unsubscribe?.();unsubscribeConfig?.();};
+    const changed=(window.settingsWindow??window.settingsHost)?.onChanged(()=>{
+      if(lock.current)deferredConfigRead.current=true;else void reload(false,true);
+    });
+    return ()=>{live.current=false;stamp.current++;unsubscribe?.();unsubscribeConfig?.();changed?.();};
   },[]);
   function unlock(){
     lock.current=false;
