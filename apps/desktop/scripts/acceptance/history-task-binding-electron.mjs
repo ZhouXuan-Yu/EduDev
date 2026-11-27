@@ -12,11 +12,13 @@ const exclusion=process.argv.includes('--task-exclusion');
 const receiptFailure=process.argv.includes('--receipt-failure');
 const receiptVerified=process.argv.includes('--receipt-verified');
 const keyboardHistory=process.argv.includes('--keyboard-history');
-const namedHistory=receiptFailure||receiptVerified||keyboardHistory||process.argv.includes('--named-history');
+const compactionMemory=process.argv.includes('--compaction-memory');
+const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
 const lane=receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
-  :keyboardHistory?'history-keyboard-':namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
+  :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
+  :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
@@ -88,6 +90,59 @@ async function stage(recordId,text){
   await page.getByTestId('history-intent-pending').waitFor();
   assert.equal(await composer().inputValue(),text);
 }
+async function revokeThenCompact(target,sourceSession,sourceRecord,initialGrant){
+  const material=Array.from({length:120},(_,index)=>
+    `合成教研段落 ${index+1}。先观察相同液体的温度变化，再比较不同试管的刻度。课堂演示由教师复核，课后只保留合成练习和脱敏记录。`).join('\n');
+  for(let batch=1;batch<=3;batch++){
+    await send(target,`请通读第 ${batch} 批合成教学资料。只回复一句已阅读，不要文件或工具。
+${material}`);
+  }
+  const jsonl=()=>path.join(data,'xiaozhi-pi',read(
+    'SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?',target)[0].session_file);
+  const originalFile=jsonl(),oldBytes=fs.readFileSync(originalFile);
+  assert(oldBytes.includes(Buffer.from(marker)),'Before revocation the native branch must contain the prior authorized result');
+  const countCompactions=file=>fs.readFileSync(file,'utf8').split('\n').filter(line=>line.includes('"type":"compaction"')).length;
+  const beforeCount=countCompactions(originalFile);
+  const opening=app.waitForEvent('window');
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  const settings=await opening;
+  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+  await settings.getByTestId('history-settings-session').selectOption(sourceSession);
+  const entry=settings.getByTestId('history-settings-source-'+sourceRecord);
+  await entry.getByRole('button',{name:'暂停参考',exact:true}).click();
+  const revoked=await until(()=>read(`SELECT generation,index_allowed,memory_state FROM memory_source_access WHERE record_id=?
+    AND index_allowed=0 AND memory_state='disabled'`,sourceRecord)[0]);
+  assert(revoked.generation>initialGrant.generation);
+  await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
+  const previous=(await snapshot(target)).projection.turns.at(-1).id;
+  const offset=(await provider()).length;
+  await composer().fill('/compact');
+  await composer().press('Enter');
+  const compact=await until(async()=>{
+    const state=await snapshot(target),turn=state.projection.turns.at(-1);
+    return !state.running&&turn?.id!==previous&&['completed','failed','interrupted'].includes(turn?.status)?turn:null;
+  });
+  assert.equal(compact.status,'completed',compact.error);
+  const calls=(await provider()).slice(offset);
+  assert(calls.some(call=>call.status===200),'Actual manual compaction must have run through DeepSeek');
+  assert(calls.every(call=>call.sourceRoles.length===0),'Revoked source leaked into a compaction model request');
+  assert(fs.readFileSync(originalFile).subarray(0,oldBytes.length).equals(oldBytes));
+  assert(countCompactions(jsonl())>(jsonl()===originalFile?beforeCount:0));
+  assert(!JSON.stringify(compact.items).includes(marker));
+  pass('Revocation fences all actual compaction model requests without changing the old native bytes',
+    {runId:compact.id,generation:revoked.generation,priorSha256:createHash('sha256').update(oldBytes).digest('hex')});
+  await close();
+  await launch();
+  if(await session()!==target)await page.getByTestId('workbench-session-'+target).click();
+  await until(async()=>await session()===target);
+  assert(fs.readFileSync(originalFile).subarray(0,oldBytes.length).equals(oldBytes));
+  const resumed=await send(target,'请说明刚才的合成观察记录安排了哪个实验主题，只在聊天中回答。');
+  assert(resumed.sent.every(call=>call.sourceRoles.length===0));
+  assert.equal(resumed.answerUsed,false);
+  assert.deepEqual(read('SELECT generation,index_allowed,memory_state FROM memory_source_access WHERE record_id=?',sourceRecord),[revoked]);
+  pass('Post-compaction cold startup and actual model continuation retain the revocation',{runId:resumed.runId});
+}
+
 async function launch(){
   const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_MODEL:process.env.DEEPSEEK_MODEL||'deepseek-flash'};
@@ -168,7 +223,7 @@ try{
     await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
   }
-  await send(sourceSession,source);
+  await send(sourceSession,source,{answer:'请简短确认这条温度计实验合成记录。这是记录，不需要把句子当成长期偏好。'});
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
   assert(row?.id);
   await page.getByTestId('pi-new-session').click();
@@ -234,39 +289,44 @@ try{
       await page.getByTestId('history-task-run-failed').waitFor();
       pass('A failed Run retains its specific provider delivery while exposing the durable failure state',{runId:task.runId});
     }
-    const calls=(await provider()).length;
-    const vague='照上次那份继续。';
-    await composer().fill(vague);
-    await page.getByRole('button',{name:'发送消息',exact:true}).click();
-    await page.getByTestId('history-lookup').waitFor();
-    assert.equal(await composer().inputValue(),vague);
-    const query=page.getByTestId('history-lookup-query');
-    if(keyboardHistory)await until(()=>query.evaluate(el=>document.activeElement===el));
-    await query.fill(declaredTitle);
-    if(keyboardHistory)await query.press('Enter');
-    else await page.getByTestId('history-lookup-search').click();
-    await page.getByTestId('history-candidate-'+row.id).waitFor();
-    assert.equal((await provider()).length,calls);
-    assert.deepEqual(bindings(target),[binding]);
-    pass('Vague history opens one local confirmation with the preserved draft and no prompt delivery');
-    if(keyboardHistory){
-      const searchInput=page.getByTestId('history-lookup-query');
-      await searchInput.press('Escape');
-      await page.getByTestId('history-lookup').waitFor({state:'hidden'});
-      await until(()=>composer().evaluate(el=>document.activeElement===el));
-      const sessionSelections=(await snapshot(target)).memoryScope.selections;
-      assert(sessionSelections.some(item=>item.layer==='history'&&item.id===binding.selections[0].id));
-      await page.getByTestId('history-task-selection').getByRole('button',{name:/停止引用/}).press('Enter');
-      await page.getByTestId('history-task-selection').waitFor({state:'hidden'});
-      const remaining=(await snapshot(target)).memoryScope.selections;
-      assert.deepEqual(remaining,sessionSelections);
+    if(compactionMemory){
+      assert.equal(task.answerUsed,true,'The first full Task must actually use the authorized source before testing revocation');
+      await revokeThenCompact(target,sourceSession,row.id,allowed);
+    }else{
+      const calls=(await provider()).length;
+      const vague='照上次那份继续。';
+      await composer().fill(vague);
+      await page.getByRole('button',{name:'发送消息',exact:true}).click();
+      await page.getByTestId('history-lookup').waitFor();
       assert.equal(await composer().inputValue(),vague);
-      await page.getByTestId('pi-new-session').click();
-      const next=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==target?id:null;});
-      await until(async()=>!(await snapshot(next)).taskHistory);
-      assert.equal(await page.getByTestId('history-lookup').count(),0);
+      const query=page.getByTestId('history-lookup-query');
+      if(keyboardHistory)await until(()=>query.evaluate(el=>document.activeElement===el));
+      await query.fill(declaredTitle);
+      if(keyboardHistory)await query.press('Enter');
+      else await page.getByTestId('history-lookup-search').click();
+      await page.getByTestId('history-candidate-'+row.id).waitFor();
       assert.equal((await provider()).length,calls);
-      pass('Keyboard stops Task use while preserving Session use, drafts and conversation isolation');
+      assert.deepEqual(bindings(target),[binding]);
+      pass('Vague history opens one local confirmation with the preserved draft and no prompt delivery');
+      if(keyboardHistory){
+        const searchInput=page.getByTestId('history-lookup-query');
+        await searchInput.press('Escape');
+        await page.getByTestId('history-lookup').waitFor({state:'hidden'});
+        await until(()=>composer().evaluate(el=>document.activeElement===el));
+        const sessionSelections=(await snapshot(target)).memoryScope.selections;
+        assert(sessionSelections.some(item=>item.layer==='history'&&item.id===binding.selections[0].id));
+        await page.getByTestId('history-task-selection').getByRole('button',{name:/停止引用/}).press('Enter');
+        await page.getByTestId('history-task-selection').waitFor({state:'hidden'});
+        const remaining=(await snapshot(target)).memoryScope.selections;
+        assert.deepEqual(remaining,sessionSelections);
+        assert.equal(await composer().inputValue(),vague);
+        await page.getByTestId('pi-new-session').click();
+        const next=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==target?id:null;});
+        await until(async()=>!(await snapshot(next)).taskHistory);
+        assert.equal(await page.getByTestId('history-lookup').count(),0);
+        assert.equal((await provider()).length,calls);
+        pass('Keyboard stops Task use while preserving Session use, drafts and conversation isolation');
+      }
     }
   }else if(exclusion){
     await composer().fill(taskRequest);
