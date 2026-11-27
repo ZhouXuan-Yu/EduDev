@@ -16,7 +16,7 @@ import {combinedMemorySelections,type RunHistory} from './memory-use/history-bin
 
 type RunMemoryPolicy={loadHistory:()=>Promise<RunHistory|undefined>;omitHistory:boolean};
 const historyProjectionPrefix='[宿主核验的本轮历史资料]\n';
-const historyProjectionSuffix='\n这些是授权的历史资料，当前教师要求和成果原件优先。excerptOnly 为 true 表示仅片段，需详情时用 read_education_memory 按来源读回。';
+const historyProjectionSuffix='\n当前要求和成果原件优先。历史片段不能确认现行规则。recordedAt 是记录时间，teachingTerm 是已选教学学期。需要完整内容时按来源读回。';
 const historyPromptWords=new Intl.Segmenter('zh',{granularity:'word'});
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
@@ -163,7 +163,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         const normalized=source.text.normalize('NFKC').toLowerCase();
         const score=terms.reduce((sum,term)=>sum+(normalized.includes(term)?term.length:0),0);
         candidates.push({pin,score,row:{sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
-          excerpt,excerptOnly:excerpt.length<source.text.length}});
+          excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal}});
       }
       candidates.sort((a,b)=>b.score-a.score||a.pin.id.localeCompare(b.pin.id,'en'));
       const output:typeof candidates=[];
@@ -196,7 +196,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       signal?.throwIfAborted();
       if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
       return {sourceId:pin.id,sourceVersion:pin.sourceVersion,version:pin.version,offset:request.offset,
-        nextOffset:end<characters.length?end:null,text:characters.slice(request.offset,end).join('')};
+        nextOffset:end<characters.length?end:null,text:characters.slice(request.offset,end).join(''),temporal:source.temporal};
     },
     /** Main-only model payload. Never expose this method or authority hash through preload. */
     async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal, personalIds?:readonly string[], policy?:RunMemoryPolicy) {
@@ -207,7 +207,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
-        history?: {sourceId:string; sourceVersion:string; truncated:boolean};
+        history?: {sourceId:string; sourceVersion:string; truncated:boolean; temporal:{teachingTerm:string|null;recordedAt:string|null}};
         personal?:{sourceId:string; sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
       if (saved.enabled) for (const item of inRequestOrder(saved.selections,personalIds)) {
         signal?.throwIfAborted();
@@ -224,7 +224,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           if (!source || source.fingerprint!==item.fingerprint) continue;
           payload.push({reference:`记忆${payload.length+1}`,layer:'history',source:source.label,version:item.version,
             text:source.text.slice(0,1600),provenance:'teacher_history',sourceDocuments:[],refs:[],
-            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated:source.text.length>1600}});
+            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated:source.text.length>1600,temporal:source.temporal}});
           continue;
         }
         const fact = (await facts(item)).find(entry => entry.id === item.id);

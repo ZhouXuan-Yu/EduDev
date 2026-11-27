@@ -26,7 +26,7 @@ const {combinedMemorySelections,createTaskHistoryUse,requestDeclinesHistory}=awa
 const {createPiMemoryScope}=await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const {createPiMemoryTools}=await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 
-const {invalidateTaskHistoryForSession}=await import('../../src/main/xiaozhi-agent/history/invalidate-task-history.ts');
+const {invalidateTeachingHistoryForSession}=await import('../../src/main/xiaozhi-agent/history/invalidate-teaching-history.ts');
 
 async function fixture(t){
   const db=new DatabaseSync(':memory:');
@@ -117,7 +117,7 @@ test('Task and Turn fail closed after revocation, restoration and classroom depa
   await sql.run('UPDATE ai_conversation_sessions SET folder_id=NULL WHERE id=?',[f.source]);
   for(const folder of [a,null])await sql.transaction(async work=>{
     await work.run('UPDATE ai_conversation_sessions SET folder_id=? WHERE id=?',[folder,target]);
-    await invalidateTaskHistoryForSession(work,target);
+    await invalidateTeachingHistoryForSession(work,target);
   });
   assert.equal(await binding.forRun(task,owner),undefined);
   await access.change(ref,1,'forget');
@@ -198,4 +198,58 @@ test('Restoring an older snapshot cannot reactivate a Task grant missing from li
   assert.equal(await f.binding.forRun(f.task,f.owner),undefined);
   assert.equal((await f.access.get(f.pin.id)).allowed,true);
   assert.equal(JSON.parse((await f.grants())[0].value_json).invalidated,true);
+});
+
+test('Changing a source teaching scope retires its former R1 grant and leaves unrelated grants intact',async t=>{
+  const f=await fixture(t);
+  const sourcePin={...f.pin,fingerprint:f.original.fingerprint};
+  const unrelated={...f.ref,sessionId:f.target,recordId:'message_2',sourceVersion:f.sortKey()};
+  const survivor=await f.access.change(unrelated,0,'allow');
+  const {token}=await f.binding.stage(f.target,0,'signed-ticket');
+  const staged=await f.binding.prepare(f.target,[token]);
+  await f.sql.transaction(work=>f.binding.attachTask(work,f.task,f.owner,staged));
+  const oldJobs=await f.sql.all("SELECT state FROM memory_index_jobs WHERE source_id=? AND action='upsert'",[sourcePin.id]);
+  assert.equal(oldJobs[0].state,'pending');
+
+  await f.sql.transaction(async work=>{
+    await work.run('UPDATE ai_conversation_sessions SET folder_id=? WHERE id=?',[f.a,f.source]);
+    await invalidateTeachingHistoryForSession(work,f.source);
+  });
+  const changed=await f.access.get(sourcePin.id);
+  assert.equal(changed.allowed,false);
+  assert.equal(changed.status,'disabled');
+  assert.equal(changed.generation,sourcePin.version+1);
+  assert.equal((await f.access.get(survivor.sourceId)).allowed,true);
+  assert.equal((await f.sql.all("SELECT state FROM memory_index_jobs WHERE source_id=? AND action='upsert'",[sourcePin.id]))[0].state,'cancelled');
+  assert.equal(await f.binding.forRun(f.task,f.owner),undefined);
+  await assert.rejects(f.binding.prepare(f.target,[token]),/memory_scope_changed/);
+  const restored=await f.access.change(f.ref,changed.revision,'restore');
+  assert.equal(restored.allowed,true);
+  assert.equal(restored.generation,changed.generation+1);
+  assert.equal(await f.binding.forRun(f.task,f.owner),undefined);
+});
+
+test('A published planning contract upgrades append-only and rejects foreign schema identities',async()=>{
+  const {createHash}=await import('node:crypto');
+  const {ensureNativeTaskContract}=await import('../../src/main/xiaozhi-agent/plan-native.ts');
+  const {TASK_PLAN_PARAMETERS:current}=await import('../../src/shared/xiaozhi-task-plan.ts');
+  const {capabilityRequirements}=current.properties,{items}=capabilityRequirements;
+  const {dependsOn:unused,...published}=items.properties;
+  const previous={...current,properties:{...current.properties,capabilityRequirements:{...capabilityRequirements,items:{...items,properties:published}}}};
+  const hash=schema=>createHash('sha256').update(JSON.stringify(schema)).digest('hex');
+  const base=hash('host control identity');
+  const original={type:'custom',customType:'xiaozhi.education.task-plan.v3',
+    data:{schemaVersion:3,base,envelopeVersion:1,schemaHash:hash(previous)}};
+  const entries=[structuredClone(original)];
+  const manager={getEntries:()=>entries,appendCustomEntry:(customType,data)=>entries.push({type:'custom',customType,data})};
+  const tools=[{name:'update_task_plan',parameters:current}];
+  ensureNativeTaskContract(manager,base,tools);
+  assert.deepEqual(entries[0],original);
+  assert.equal(entries[1].data.previousSchemaHash,hash(previous));
+  assert.equal(entries[1].data.schemaHash,hash(current));
+  ensureNativeTaskContract(manager,base,tools);
+  assert.equal(entries.length,2);
+  assert.throws(()=>ensureNativeTaskContract(manager,hash('different authority'),tools),/configuration/);
+  entries[0].data.schemaHash=hash('unrecognized tool schema');
+  assert.throws(()=>ensureNativeTaskContract(manager,base,tools),/configuration/);
 });

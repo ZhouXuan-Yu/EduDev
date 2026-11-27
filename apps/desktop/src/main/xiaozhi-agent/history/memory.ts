@@ -6,7 +6,7 @@ import { validMemorySession } from '../memory-selection';
 import { createHistoryState, historyHash, historyId, type Access } from './state';
 import { createHistoryIndexWorker } from './index-worker';
 import { configuredHistoryIndex } from './hindsight';
-import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext,type HistoryTeachingTarget} from './teaching-target';
+import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext} from './teaching-target';
 import { historyRecordId, readHistorySource, validHistoryRef } from './source';
 
 export { validHistoryRef } from './source';
@@ -34,9 +34,9 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       selection:{layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion}});
     return {...source,ticket};
   }
-  async function eligible(sessionId:string,ref:HistorySourceRef,target?:HistoryTeachingTarget) {
+  async function eligibleTarget(sessionId:string,ref:HistorySourceRef) {
     const source=(await historyTeachingContext(sql,ref.sessionId).catch(()=>null))?.target;
-    return !!source&&historyTargetApplies(source,target??(await historyTeachingContext(sql,sessionId)).target);
+    return source&&historyTargetApplies(source,(await historyTeachingContext(sql,sessionId)).target)?source:null;
   }
   // Check all returned titles against one SQLite snapshot, after asynchronous source reads.
   async function publish(sessionId: string, scopeVersion: number, sources: HistorySource[], signal?: AbortSignal) {
@@ -83,8 +83,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     return {title:detail.session.title,sources:teacherRequestSources(detail.messages,controls).filter(item=>historyRecordId.test(item.sourceId))};
   }
   async function original(ref: HistorySourceRef) {
-    const {title,label,text} = await readHistorySource(sql,ref);
-    return {ref,title,label,text};
+    const {title,label,text,occurredAt} = await readHistorySource(sql,ref);
+    return {ref,title,label,text,recordedAt:occurredAt};
   }
   async function project(ref: HistorySourceRef, label: string, title: string, known?: Access|null): Promise<HistorySource> {
     const id = historyId(ref);
@@ -141,8 +141,14 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     async change(ref: HistorySourceRef, revision: number, action: HistoryAccessAction) {
       if (!validHistoryRef(ref)||!Number.isSafeInteger(revision)||revision<0||
           !['allow','revoke','disable','restore','forget'].includes(action)) throw Error('invalid_input');
-      const source = action==='allow'||action==='restore' ? await original(ref) : null;
-      const saved = await access.change(ref,revision,action);
+      const granting=action==='allow'||action==='restore';
+      const before=granting?(await historyTeachingContext(sql,ref.sessionId)).target:null;
+      const source=before?await original(ref):null;
+      const saved=await access.change(ref,revision,action,before?async work=>{
+        const {target}=await historyTeachingContext(work,ref.sessionId);
+        if(target.folderId!==before.folderId||target.term!==before.term)throw Error('source_changed');
+        await readHistorySource(work,ref);
+      }:undefined);
       worker?.wake();
       return project(saved.ref,source?.label??'历史来源',source?.title??'',saved);
     },
@@ -196,7 +202,7 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
           if (!(error instanceof Error)||!['source_unavailable','source_changed','permission_denied'].includes(error.message)) throw error;
         }
       }
-      const ranked = score.sort((a,b)=>b.score-a.score).map(item=>item.source);
+      const ranked = score.sort((a,b)=>b.score-a.score||a.source.sourceId.localeCompare(b.source.sourceId,'en')).map(item=>item.source);
       return {mode:'local',candidates:await publish(sessionId,scope.version,ranked,signal),
         ...(engine?{reason:'service_unavailable' as const}:{}),elapsedMs:Math.round(performance.now()-started)};
     },
@@ -225,13 +231,16 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     async selectedFor(sessionId:string,selection:HistorySelection) {
       const saved=await access.get(selection.id);
       if(!saved||saved.generation!==selection.version||saved.ref.sourceVersion!==selection.sourceVersion)throw Error('source_changed');
-      if(!await eligible(sessionId,saved.ref))throw Error('permission_denied');
+      const before=await eligibleTarget(sessionId,saved.ref);
+      if(!before)throw Error('permission_denied');
       const source=await readAllowed(saved);
-      if(!await eligible(sessionId,saved.ref))throw Error('permission_denied');
+      const after=await eligibleTarget(sessionId,saved.ref);
+      if(!after)throw Error('permission_denied');
+      if(after.folderId!==before.folderId||after.term!==before.term)throw Error('source_changed');
       const current=await access.get(selection.id);
       if(!current?.allowed||current.status!=='active'||current.generation!==saved.generation||current.ref.sourceVersion!==saved.ref.sourceVersion)
         throw Error('source_changed');
-      return source;
+      return {...source,temporal:{teachingTerm:after.term,recordedAt:source.recordedAt}};
     },
   };
 }

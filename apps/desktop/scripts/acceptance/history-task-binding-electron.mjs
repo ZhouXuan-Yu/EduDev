@@ -42,15 +42,28 @@ const composer=()=>page.getByTestId('office-prompt-input');
 const session=()=>page.locator('.office-composer-container').getAttribute('data-session-id');
 const snapshot=id=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),id);
 const provider=()=>app.evaluate(()=>globalThis.historyTaskWire);
-async function send(id,text){
+async function send(id,text,{answer}={}){
   const prior=(await snapshot(id)).projection.turns.at(-1)?.id;
   const offset=(await provider()).length;
   await composer().fill(text);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  let submitted;
   const turn=await until(async()=>{
     const state=await snapshot(id),last=state.projection.turns.at(-1);
     if(!state.running&&last?.id&&last.id!==prior&&['completed','failed','interrupted'].includes(last.status))return last;
+    const question=state.controls?.find(item=>item.kind==='question'&&item.state==='pending'&&item.runId===last?.id);
+    if(question&&answer&&!submitted){
+      const card=page.getByTestId('pi-composer-pending-panel').locator(`[data-control-id="${question.id}"]`);
+      await card.getByTestId('pi-question-answer').fill(answer);
+      await card.getByTestId('pi-question-submit').click();
+      submitted=question.id;
+    }
   });
+  if(submitted){
+    const control=(await snapshot(id)).controls?.find(item=>item.id===submitted);
+    assert.equal(control?.state,'answered');
+    report.teacherAnswer={runId:turn.id,controlId:submitted};
+  }
   assert.equal(turn.status,'completed',turn.error);
   const sent=(await provider()).slice(offset);
   assert(sent.length,'A real provider request is required');
@@ -201,7 +214,9 @@ try{
   assert.deepEqual(removed.selections,[]);
   assert.deepEqual((await snapshot(target)).memoryScope,initial);
   assert.equal(read('SELECT index_allowed FROM memory_source_access WHERE source_id=?',allowed.source_id)[0].index_allowed,1);
-  const after=await send(target,'只改刚才标题的标点，其他不变。请基于当前任务说明。');
+  const after=await send(target,'只改刚才标题的标点，其他不变。请基于当前任务说明。',{
+    answer:'标题是《实验复核》。把标题末尾标点改为全角句号，其他内容不变。只在聊天中给出新标题。'
+  });
   assert(after.sent.every(r=>!r.sourceRoles.length));
   pass('Teacher removes one Task reference, preserving the draft, Session scope and discovery permission',{runId:after.runId});
   report.ok=true;

@@ -1,9 +1,16 @@
 import type {Sql} from '../session-state';
+import {invalidateHistoryProjections} from './state';
 
 const keys='xiaozhi.memory-use.task.v1:*';
 
-/** The session/classroom mutation and all dependent Task invalidations share its SQLite transaction. */
-export async function invalidateTaskHistoryForSession(work:Sql,sessionId:string) {
+/** A source moved to another teaching scope requires fresh consent in that scope. */
+export async function invalidateTeachingHistoryForSession(work:Sql,sessionId:string) {
+  const affected=await work.all(`SELECT source_id FROM memory_source_access WHERE session_id=? AND memory_state='active'
+    AND (discover_allowed=1 OR index_allowed=1)`,[sessionId]);
+  await work.run(`UPDATE memory_source_access SET memory_state='disabled',discover_allowed=0,index_allowed=0,
+    access_revision=access_revision+1,generation=generation+1,updated_at=? WHERE session_id=? AND memory_state='active'
+    AND (discover_allowed=1 OR index_allowed=1)`,[new Date().toISOString(),sessionId]);
+  for(const row of affected)await invalidateHistoryProjections(work,String(row.source_id));
   await work.run(`UPDATE app_settings SET value_json=json_set(value_json,'$.invalidated',json('true')),updated_at=?
     WHERE key GLOB ? AND CASE WHEN json_valid(value_json) THEN value_json->>'$.sessionId' END=?`,
   [new Date().toISOString(),keys,sessionId]);

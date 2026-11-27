@@ -4,21 +4,45 @@ import {PLAN_UPDATE_SCHEMA} from '../../shared/xiaozhi-plan';
 import {TASK_PLAN_PARAMETERS} from '../../shared/xiaozhi-task-plan';
 const PLAN_BASIS_NOTE='计划关联时使用此宿主调用标识，不猜测模型侧ID；宿主仍须核对已提交的同轮回执，此标识不代表结果已核验。';
 
-/** Additive capability after all historical creation/control/memory identities. */
-export function ensureNativeTaskContract(manager:Pick<SessionManager,'getEntries'|'appendCustomEntry'>,base:string,tools:ToolDefinition[]){
- if(tools.length!==1||tools[0].name!=='update_task_plan'||JSON.stringify(tools[0].parameters)!==JSON.stringify(TASK_PLAN_PARAMETERS))throw Error('configuration');
- const entries=manager.getEntries().filter(e=>e.type==='custom'&&e.customType==='xiaozhi.education.task-plan.v3');
- const data={schemaVersion:3,base,envelopeVersion:1,schemaHash:createHash('sha256').update(JSON.stringify(TASK_PLAN_PARAMETERS)).digest('hex')};
- const {planningLevel:_level,capabilityRequirements:_requirements,...legacyProperties}=TASK_PLAN_PARAMETERS.properties;
- const legacy={...data,schemaHash:createHash('sha256').update(JSON.stringify({...TASK_PLAN_PARAMETERS,properties:legacyProperties})).digest('hex')};
- const planning={schemaVersion:1,base,previousSchemaHash:legacy.schemaHash,schemaHash:data.schemaHash};
- const additions=manager.getEntries().filter(e=>e.type==='custom'&&e.customType==='xiaozhi.education.task-planning.v1');
- if(entries.length>1||additions.length>1||entries.some(e=>e.type!=='custom'||![JSON.stringify(data),JSON.stringify(legacy)].includes(JSON.stringify(e.data)))
-   ||additions.some(e=>e.type!=='custom'||JSON.stringify(e.data)!==JSON.stringify(planning)))throw Error('configuration');
- const historical=entries.some(e=>e.type==='custom'&&JSON.stringify(e.data)===JSON.stringify(legacy));
- if(additions.length&&!historical)throw Error('configuration');
- if(!entries.length)manager.appendCustomEntry('xiaozhi.education.task-plan.v3',data);
- if(historical&&!additions.length)manager.appendCustomEntry('xiaozhi.education.task-planning.v1',planning);
+const taskPlanHash=(schema:unknown)=>createHash('sha256').update(JSON.stringify(schema)).digest('hex');
+const taskPlanMarker='xiaozhi.education.task-plan.v3';
+const planningMarker='xiaozhi.education.task-planning.v1';
+const dependencyMarker='xiaozhi.education.task-planning.v2';
+
+/** Match published tool contracts exactly and record capability additions without rewriting history. */
+export function ensureNativeTaskContract(manager:Pick<SessionManager,'getEntries'|'appendCustomEntry'>,base:string,tools:ToolDefinition[]) {
+  const schema=TASK_PLAN_PARAMETERS;
+  if(tools.length!==1||tools[0].name!=='update_task_plan'||JSON.stringify(tools[0].parameters)!==JSON.stringify(schema))
+    throw Error('configuration');
+
+  const {planningLevel:_level,capabilityRequirements,...originalProperties}=schema.properties;
+  const {dependsOn:_dependencies,...publishedRequirements}=capabilityRequirements.items.properties;
+  const originalHash=taskPlanHash({...schema,properties:originalProperties});
+  const planningHash=taskPlanHash({...schema,properties:{...schema.properties,capabilityRequirements:{
+    ...capabilityRequirements,items:{...capabilityRequirements.items,properties:publishedRequirements},
+  }}});
+  const currentHash=taskPlanHash(schema);
+  const plan=(schemaHash:string)=>({schemaVersion:3,base,envelopeVersion:1,schemaHash});
+  const planning=(schemaHash:string)=>({schemaVersion:1,base,previousSchemaHash:originalHash,schemaHash});
+  const dependencyUpgrade={schemaVersion:2,base,previousSchemaHash:planningHash,schemaHash:currentHash};
+
+  const entries=manager.getEntries();
+  const plans=entries.filter(e=>e.type==='custom'&&e.customType===taskPlanMarker);
+  const additions=entries.filter(e=>e.type==='custom'&&e.customType===planningMarker);
+  const upgrades=entries.filter(e=>e.type==='custom'&&e.customType===dependencyMarker);
+  const [saved]=plans,[addition]=additions,[upgrade]=upgrades;
+  if(plans.length>1||additions.length>1||upgrades.length>1)throw Error('configuration');
+  const matches=(entry:typeof saved|undefined,data:object)=>entry?.type==='custom'&&JSON.stringify(entry.data)===JSON.stringify(data);
+  const original=matches(saved,plan(originalHash)), published=matches(saved,plan(planningHash)), current=matches(saved,plan(currentHash));
+  const intermediate=original&&matches(addition,planning(planningHash));
+  if(saved&&!original&&!published&&!current ||
+    addition&&!intermediate&&!(original&&matches(addition,planning(currentHash))) ||
+    upgrade&&!(published||intermediate) ||
+    upgrade&&!matches(upgrade,dependencyUpgrade))throw Error('configuration');
+
+  if(!saved)manager.appendCustomEntry(taskPlanMarker,plan(currentHash));
+  if(original&&!addition)manager.appendCustomEntry(planningMarker,planning(currentHash));
+  if((published||intermediate)&&!upgrade)manager.appendCustomEntry(dependencyMarker,dependencyUpgrade);
 }
 
 /** Opaque host identity, not provider-generated tool IDs or a success claim.

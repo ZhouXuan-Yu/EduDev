@@ -1,4 +1,4 @@
-import {invalidateTaskHistoryForSession} from './xiaozhi-agent/history/invalidate-task-history';
+import {invalidateTeachingHistoryForSession} from './xiaozhi-agent/history/invalidate-teaching-history';
 import {createZipBuffer} from './file-zip';
 import {splitMaterialParagraphs} from './assets/material-chunks';
 import {MaterialStructureRepository,reviseStructureDocument} from './assets/material-structure-repository';
@@ -4754,7 +4754,7 @@ export class OmniEduStore {
     await this.xiaozhiState.sql.transaction!(async work=>{
       const [changed]=await work.all('SELECT id FROM ai_conversation_sessions WHERE id=? AND folder_id IS NOT ?',[sessionId,wanted]);
       await work.run('UPDATE ai_conversation_sessions SET folder_id = ?, updated_at = ? WHERE id = ?',[wanted,now(),sessionId]);
-      if(changed)await invalidateTaskHistoryForSession(work,sessionId);
+      if(changed)await invalidateTeachingHistoryForSession(work,sessionId);
     });
     return this.listAiConversationWorkspace();
   }
@@ -4786,7 +4786,7 @@ export class OmniEduStore {
       await work.run('UPDATE ai_conversation_folders SET archived_at = ?, updated_at = ? WHERE id = ?',[timestamp,timestamp,folderId]);
       await work.run('UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE folder_id = ? AND archived_at IS NULL',
         [timestamp,timestamp,folderId]);
-      for(const session of sessions)await invalidateTaskHistoryForSession(work,String(session.id));
+      for(const session of sessions)await invalidateTeachingHistoryForSession(work,String(session.id));
     });
     return this.listAiConversationWorkspace();
   }
@@ -4795,7 +4795,7 @@ export class OmniEduStore {
     const timestamp = now();
     await this.xiaozhiState.sql.transaction!(async work=>{
       await work.run('UPDATE ai_conversation_sessions SET archived_at = ?, updated_at = ? WHERE id = ?',[timestamp,timestamp,sessionId]);
-      await invalidateTaskHistoryForSession(work,sessionId);
+      await invalidateTeachingHistoryForSession(work,sessionId);
     });
     return this.listAiConversationWorkspace();
   }

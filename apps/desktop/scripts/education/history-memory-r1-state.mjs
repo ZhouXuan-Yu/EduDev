@@ -10,7 +10,7 @@ const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memo
 const {validMemoryScopeInput}=await import('../../src/main/xiaozhi-agent/memory-selection.ts')
 
 const db=new DatabaseSync(':memory:')
-db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT); CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT); CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);')
+db.exec('PRAGMA foreign_keys=ON; CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT); CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT); CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,folder_id TEXT,student_id TEXT,archived_at TEXT,title TEXT); CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);')
 const old='aisession_'+randomUUID(), target='aisession_'+randomUUID()
 const hash=text=>createHash('sha256').update(text).digest('hex')
 db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES (?),(?)').run(old,target)
@@ -134,6 +134,37 @@ try{
     await assert.rejects(served.preview(ref,0,true),/permission_denied|source_changed/);
     assert(revoked);
   })
+
+  await check('source teaching term applies independently of its message recording time',async()=>{
+    const folder='aifolder_'+randomUUID();
+    const autumn='aisession_'+randomUUID(),spring='aisession_'+randomUUID();
+    await sql.run('INSERT INTO ai_conversation_folders(id) VALUES(?)',[folder]);
+    for(const id of [spring,autumn])await sql.run('INSERT INTO ai_conversation_sessions(id,folder_id) VALUES(?,?)',[id,folder]);
+    assert(await scope.saveMemoryScope(spring,0,{enabled:false,selections:[]},{folderId:folder,term:'2026-spring'}));
+    assert(await scope.saveMemoryScope(autumn,0,{enabled:false,selections:[]},{folderId:folder,term:'2026-fall'}));
+    const messages=['spring rotation rule','autumn rotation rule'].map((content,i)=>({id:'term-message-'+i,role:'user',content,
+      metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'term-run-'+i}}));
+    const served=createHistoryMemory({xiaozhiState:{sql},sanitizeProblemText:async text=>({sanitizedText:text})});
+    const pins=[];
+    for(const [i,sessionId] of [spring,autumn].entries()){
+      const message=messages[i];
+      await sql.run('INSERT INTO ai_conversation_messages VALUES(?,?,?,?,?,?)',
+        [message.id,sessionId,message.role,message.content,JSON.stringify(message.metadata),'2026-11-25T10:00:00Z']);
+      const [source]=teacherRequestSources([message],[]);
+      const ref={kind:'history_request',sessionId,recordId:source.sourceId,sourceVersion:source.sourceVersion};
+      const granted=await served.change(ref,0,'allow');
+      pins.push({layer:'history',source:'history',id:granted.sourceId,version:granted.generation,sourceVersion:ref.sourceVersion});
+    }
+    const springRead=await served.selectedFor(spring,pins[0]);
+    assert.deepEqual(springRead.temporal,{teachingTerm:'2026-spring',recordedAt:'2026-11-25T10:00:00Z'});
+    await assert.rejects(served.selectedFor(autumn,pins[0]),/permission_denied/);
+    assert.equal((await served.selectedFor(autumn,pins[1])).temporal.teachingTerm,'2026-fall');
+    for(const [i,sessionId] of [spring,autumn].entries()){
+      const results=await served.discover(sessionId,'rotation rule');
+      assert.deepEqual(results.candidates.map(candidate=>candidate.sourceId),[pins[i].id]);
+    }
+  })
+
   await check('unknown scope schema rejected',async()=>{
     await sql.run('UPDATE xiaozhi_pi_memory_scopes SET schema_version=17')
     await assert.rejects(scope.memoryScope(target),/configuration/)

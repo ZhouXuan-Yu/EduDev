@@ -83,7 +83,8 @@ export function createHistoryState(sql: Sql) {
         FROM memory_index_jobs WHERE source_id=? AND action='delete'`,[id]);
       return Number(row.total)===0 ? 'none' : Number(row.pending)>0 ? 'pending' : 'done';
     },
-    async change(ref: HistorySourceRef, expected: number, action: HistoryAccessAction): Promise<Access> {
+    async change(ref: HistorySourceRef, expected: number, action: HistoryAccessAction,
+      verifySource?:(work:Sql)=>Promise<void>): Promise<Access> {
       if (!sql.transaction) throw Error('configuration');
       const id = historyId(ref);
       return sql.transaction(async work => {
@@ -92,6 +93,7 @@ export function createHistoryState(sql: Sql) {
         if (!prior && action!=='allow' || prior?.status==='forgotten' && action!=='restore' ||
           action==='restore' && prior?.status==='active') throw Error('permission_denied');
         const allowed = action==='allow' || action==='restore';
+        if(allowed)await verifySource?.(work);
         const status = action==='forget' ? 'forgotten' : action==='disable' ? 'disabled' : 'active';
         const revision = expected+1, generation = (prior?.generation ?? 0)+1;
         const version = allowed ? ref.sourceVersion : prior!.ref.sourceVersion;

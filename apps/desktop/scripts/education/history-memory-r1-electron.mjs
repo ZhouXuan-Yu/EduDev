@@ -11,6 +11,8 @@ const lane=process.argv[2]
 assert(['A_prime','B'].includes(lane))
 const extended=process.argv.includes('--rebuild')
 const offline=process.argv.includes('--offline')
+const sourceMove=process.argv.includes('--source-move')
+if(sourceMove)assert.equal(lane,'A_prime')
 if(extended||offline)assert.equal(lane,'B')
 assert(!(extended&&offline))
 const testContainer='edudev-history-r1-test'
@@ -26,7 +28,7 @@ const source='这是合成教师规则。九年级二次函数配方法的讲义
 const confirmQuery='请参考这位老师以前的二次函数配方法讲义，先调用读取本会话教育记忆工具，核对老师原话中的固定口令，给一句建议并注明来源。'
 const secondSource='这是合成教师记录。物态变化实验观察冰水共存，冰融化时记录温度平台。请只回复收到。'
 const secondQuery='按物态变化实验中冰融化时温度平台的记录，查找观察要求。'
-const report={lane,variant:extended?'rebuild':offline?'offline':'discovery',root,main,sha256:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],paidRequests:0}
+const report={lane,variant:sourceMove?'source-move':extended?'rebuild':offline?'offline':'discovery',root,main,sha256:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],paidRequests:0}
 let app,page,mainPage,paused=false
 const check=(name,details={})=>{report.checks.push({name,...details});console.log('PASS '+name)}
 async function until(read,timeout=90000){
@@ -203,29 +205,56 @@ try{
   assert(delivery.some(m=>m.role==='tool'&&m.content.includes(marker)),'No authorized source in actual provider request')
   assert(response.items.filter(i=>i.role==='assistant').some(i=>i.text?.includes(marker)),'Answer did not use the source')
   check('current real model consumed verified source',{turnId:response.id,delivery})
-  await settings()
-  await page.getByTestId('history-settings-session').selectOption(old)
-  entry=page.getByTestId('history-settings-source-'+message.id)
-  await entry.getByRole('button',{name:'不再记住'}).click()
-  await entry.getByTestId('history-settings-forget').click()
-  await page.getByTestId('history-settings-notice').getByText(/已停止参考/).waitFor()
-  if(second){
-    await page.getByTestId('history-index-rebuild').click()
-    const generation=await until(async()=>{
-      const value=db('SELECT active_generation,rebuild_generation FROM memory_history_index_state')[0]
-      return value.active_generation===2&&value.rebuild_generation===null?value:null
-    },40000)
-    assert.equal(db("SELECT COUNT(*) n FROM memory_index_catalog WHERE source_id=? AND status='ready'",[row.source_id])[0].n,0)
-    check('verified shadow generation promoted after tombstone; forgotten source never re-indexed',{generation})
+  if(sourceMove){
+    await page.getByTestId('workbench-new-folder').click()
+    const create=page.getByTestId('workbench-folder-dialog')
+    const folderName='合成验收的新教学空间'
+    await create.getByLabel('空间名称').fill(folderName)
+    await create.getByRole('button',{name:'创建空间'}).click()
+    await create.waitFor({state:'hidden'})
+    const folder=await until(()=>db('SELECT id FROM ai_conversation_folders WHERE name=?',[folderName])[0])
+    await page.getByTestId('workbench-manage-history').click()
+    const manage=page.getByTestId('workbench-history-dialog')
+    const moved=manage.getByTestId('ai-conversation-session-'+old)
+    await moved.dragTo(manage.getByTestId('ai-conversation-drop-'+folder.id))
+    await until(()=>db('SELECT folder_id FROM ai_conversation_sessions WHERE id=?',[old])[0]?.folder_id===folder.id)
+    await manage.getByRole('button',{name:'关闭',exact:true}).click()
+    const disabled=db('SELECT index_allowed,discover_allowed,memory_state,generation FROM memory_source_access WHERE source_id=?',[row.source_id])[0]
+    assert.deepEqual({...disabled},{index_allowed:0,discover_allowed:0,memory_state:'disabled',generation:row.generation+1})
+    assert.equal((await snapshot(target)).memoryScope.selections.find(pin=>pin.id===row.source_id)?.state,'changed')
+    check('Teacher moves a source to another teaching space and the old grant is retired in SQLite',{disabled,folderId:folder.id})
+    const afterMove=(await wire()).length
+    const safe=await send('请简述之前核对过的教师口令是什么？如果无法确认，请直接说明。')
+    assert.equal(safe.status,'completed')
+    const postMove=(await wire()).slice(afterMove)
+    assert(postMove.length>0&&postMove.every(call=>call.sourceMessages.length===0))
+    check('The original receiving session sends no former source after the move',{turnId:safe.id})
+
+  }else{
+    await settings()
+    await page.getByTestId('history-settings-session').selectOption(old)
+    entry=page.getByTestId('history-settings-source-'+message.id)
+    await entry.getByRole('button',{name:'不再记住'}).click()
+    await entry.getByTestId('history-settings-forget').click()
+    await page.getByTestId('history-settings-notice').getByText(/已停止参考/).waitFor()
+    if(second){
+      await page.getByTestId('history-index-rebuild').click()
+      const generation=await until(async()=>{
+        const value=db('SELECT active_generation,rebuild_generation FROM memory_history_index_state')[0]
+        return value.active_generation===2&&value.rebuild_generation===null?value:null
+      },40000)
+      assert.equal(db("SELECT COUNT(*) n FROM memory_index_catalog WHERE source_id=? AND status='ready'",[row.source_id])[0].n,0)
+      check('verified shadow generation promoted after tombstone; forgotten source never re-indexed',{generation})
+    }
   }
   await close()
   await launch()
   const saved=db('SELECT source_id,generation,index_allowed,memory_state FROM memory_source_access WHERE record_id=?',[message.id])[0]
   assert.equal(saved.source_id,row.source_id)
   assert.equal(saved.index_allowed,0)
-  assert.equal(saved.memory_state,'forgotten')
+  assert.equal(saved.memory_state,sourceMove?'disabled':'forgotten')
   assert(saved.generation>row.generation)
-  check('cold restart retains source tombstone',{saved})
+  check('cold restart retains retired source generation',{saved})
   const blank=await fresh()
   await prompt().fill(confirmQuery)
   await page.getByTestId('history-lookup-open').click()
@@ -235,7 +264,7 @@ try{
     assert.equal(await page.getByTestId('history-candidate-'+message.id).count(),0)
   }else await page.getByText('当前没有更多获准查找的来源。',{exact:false}).waitFor()
   assert.equal((await snapshot(blank)).memoryScope.selections.length,0)
-  check('forgotten source cannot rediscover after restart')
+  check('retired source cannot rediscover after restart')
   report.ok=true
 }catch(error){
   report.ok=false;report.error=String(error.stack)

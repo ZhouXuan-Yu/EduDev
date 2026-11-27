@@ -46,6 +46,11 @@ async function launch(cold=false){
   app=await electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env});
   await app.evaluate(({net},cold)=>{
     globalThis.legacyWire={calls:0,memory:null};
+    globalThis.legacyLifecycle=[];
+    const diagnostics=process.getBuiltinModule('node:diagnostics_channel');
+    diagnostics.channel('omni-edu.xiaozhi.lifecycle.v1').subscribe(event=>{
+      if(globalThis.legacyLifecycle.length<250)globalThis.legacyLifecycle.push({operation:event.operation,outcome:event.outcome});
+    });
     net.fetch=async(input,init)=>{
       const u=new URL(typeof input==='string'?input:input.url);
       if(u.origin!=='https://api.deepseek.com')throw Error('Unexpected remote path');
@@ -128,6 +133,10 @@ try{
   report.checks.push('Cold restart retains the completed turn without replay and source fixtures remain unchanged');report.ok=true;
 }catch(error){
   report.error=String(error?.stack||error);process.exitCode=1;
+  if(app){
+    report.lifecycle=await app.evaluate(()=>globalThis.legacyLifecycle).catch(()=>[]);
+    report.transportCalls=await app.evaluate(()=>globalThis.legacyWire?.calls).catch(()=>0);
+  }
   if(page)await page.screenshot({path:path.join(root,'failure.png')}).catch(()=>{});
 }finally{
   if(app)await app.close().catch(()=>{});

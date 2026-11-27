@@ -1,4 +1,4 @@
-import {invalidateTaskHistoryForSession} from './history/invalidate-task-history';
+import {invalidateTeachingHistoryForSession} from './history/invalidate-teaching-history';
 import {createReferenceReceipts,referenceReceiptSchema} from './memory-use/receipts';
 import type { Sql } from './session-state';
 import { validTeachingTarget, type MemoryTeachingTarget, type XiaozhiMemoryUseSelection } from '../../shared/xiaozhi-memory';
@@ -81,7 +81,7 @@ export function createPiMemoryScopeState(sql: Sql) {
       if(!sql.transaction)throw Error('configuration');
       return sql.transaction(async work=>{
         const updated=await persist(work);
-        if(updated)await invalidateTaskHistoryForSession(work,id);
+        if(updated)await invalidateTeachingHistoryForSession(work,id);
         return updated;
       });
     },
