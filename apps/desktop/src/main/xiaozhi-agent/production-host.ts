@@ -32,7 +32,7 @@ import {resolveNaturalLessonBasis,resolveOrdinaryLessonBasis} from '../education
 import type {MaterialSource} from '../../shared/materials';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
-import {combinedMemorySelections,createTaskHistoryUse,requestDeclinesHistory,type RunHistory} from './memory-use/history-binding';
+import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,type RunHistory} from './memory-use/history-binding';
 import {isStandaloneAnswer} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -2508,7 +2508,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
-      const omitHistory=requestDeclinesHistory(input.prompt);
+      const omission=historyOmissionScope(input.prompt);
+      const omitHistory=omission!==undefined;
       let historyProof:Awaited<ReturnType<typeof taskHistory.prepare>>|undefined;
       if(input.historyIntents&&!omitHistory){
         try{historyProof=await phase(()=>taskHistory.prepare(id,input.historyIntents!));}
@@ -2615,7 +2616,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
         if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,deliveryContinuation??input.continueTask,allowNaturalAmendment,
-          {...(historyProof?{onAdmitted:(work,task,owner)=>taskHistory.attachTask(work,task,owner,historyProof!)}:{}),
+          {...(omission==='task'?{onAdmitted:taskHistory.excludeForTask}:
+            historyProof?{onAdmitted:(work,task,owner)=>taskHistory.attachTask(work,task,owner,historyProof!)}:{}),
             ...(recoveryInspection?.canRebuildSession?{recoveryBase:{taskId:recoveryInspection.taskId,requirementsVersion:recoveryInspection.requirementsVersion}}:{})}));
         else {
           await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));

@@ -22,7 +22,7 @@ import {DatabaseSync} from 'node:sqlite';
 const {historyMemorySchema}=await import('../../src/main/xiaozhi-agent/history/schema.ts');
 const {createHistoryState,historyHash}=await import('../../src/main/xiaozhi-agent/history/state.ts');
 const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memory-scope-state.ts');
-const {combinedMemorySelections,createTaskHistoryUse,requestDeclinesHistory}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
+const {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
 const {createPiMemoryScope}=await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const {createPiMemoryTools}=await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 
@@ -174,8 +174,8 @@ test('Long source reads require the active version and return all authoritative 
 
 test('Temporary history opt-out changes only current request authority',async t=>{
   const f=await fixture(t);
-  assert.equal(requestDeclinesHistory('这次不要参考历史记忆，只根据当前要求。'),true);
-  assert.equal(requestDeclinesHistory('请给出相关记录，并说明历史来源。'),false);
+  assert.equal(historyOmissionScope('这次不要参考历史记忆，只根据当前要求。'),'turn');
+  assert.equal(historyOmissionScope('请给出相关记录，并说明历史来源。'),undefined);
   const {token}=await f.binding.stage(f.target,0,'signed-ticket');
   const proof=await f.binding.prepare(f.target,[token]);
   const turn=await f.binding.turn(f.owner.runId,f.target,proof);
@@ -252,4 +252,29 @@ test('A published planning contract upgrades append-only and rejects foreign sch
   assert.throws(()=>ensureNativeTaskContract(manager,hash('different authority'),tools),/configuration/);
   entries[0].data.schemaHash=hash('unrecognized tool schema');
   assert.throws(()=>ensureNativeTaskContract(manager,base,tools),/configuration/);
+});
+
+test('An explicit Task history exclusion survives a new Run and does not edit Session permission',async t=>{
+  const f=await fixture(t);
+  const pin={...f.pin,fingerprint:f.original.fingerprint};
+  assert.equal(await f.state.saveMemoryScope(f.target,0,{enabled:true,selections:[pin]}),true);
+  const saved=await f.state.memoryScope(f.target);
+  const scope=createPiMemoryScope({xiaozhiState:f.state,getAiConversationSession:async()=>({session:{}})},{history:f.history});
+  const initial=await scope.authority(f.target);
+  assert.equal(initial.history,true);
+  assert.equal(historyOmissionScope('本任务不用历史，仅按现有正文。'),'task');
+  assert.equal(historyOmissionScope('只改第三题。请这次别引用之前的历史记录。'),'turn');
+  assert.equal(historyOmissionScope('请分析“本任务不用历史”的语义。'),undefined);
+  await f.sql.transaction(work=>f.binding.excludeForTask(work,f.task,f.owner));
+  const owner={...f.owner,runId:'run_'+randomUUID(),generation:2};
+  const resumed={...f.task,binding:owner};
+  const runtime=createTaskHistoryUse(f.sql,f.history);
+  const history=()=>runtime.forRun(resumed,owner);
+  const without=await scope.authority(f.target,{omitHistory:false,loadHistory:history});
+  assert.equal(without.history,false);
+  assert.notEqual(without.fingerprint,initial.fingerprint);
+  assert.deepEqual(await f.state.memoryScope(f.target),saved);
+  assert.equal((await f.access.get(pin.id)).allowed,true);
+  const other={...resumed,id:'xitask_'+f.sortKey()};
+  assert.equal((await scope.authority(f.target,{omitHistory:false,loadHistory:()=>runtime.forRun(other,owner)})).history,true);
 });

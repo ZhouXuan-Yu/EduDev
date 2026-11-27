@@ -10,18 +10,20 @@ import {memorySelectionKey,validMemoryUseSelection} from '../memory-selection';
 import type {Sql} from '../session-state';
 
 export type HistoryPin=HistorySelection & {fingerprint:string};
-type BoundHistory={scope:'task'|'turn';ownerId:string;revision:number;selections:HistoryPin[]};
+type BoundHistory={scope:'task'|'turn';ownerId:string;revision:number;selections:HistoryPin[];excludeSessionHistory?:true};
 export type RunHistory=BoundHistory;
 type Pending={sessionId:string;scopeVersion:number;target:Target;pin:HistoryPin;expires:number};
 type TaskBinding={
   schemaVersion:1;sessionId:string;taskId:string;revision:number;requirementsVersion:number;
-  target:Target;admittedBy:TaskOwner;selections:HistoryPin[];invalidated?:true;
+  target:Target;admittedBy:TaskOwner;selections:HistoryPin[];invalidated?:true;excludeSessionHistory?:true;
 };
 const taskKey=(id:string)=>'xiaozhi.memory-use.task.v1:'+id;
 const sameTarget=(a:Target,b:Target)=>a.folderId===b.folderId&&a.term===b.term;
 
-export function requestDeclinesHistory(prompt:string) {
-  return /(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:这次|本次|这一轮|本轮|本任务|这项任务)?\s*(?:不要|不用|别|无需|不必|不需要|不使用|不引用|不参考)\s*(?:(?:再|去)?(?:读取|引用|参考|沿用|使用|查阅))?\s*(?:(?:先前|之前|过去|以前|已选|已授权)的?)?(?:历史(?:记忆|引用|来源|记录)?|旧(?:会话|对话))(?=[，。；！？,;!?\s]|$)/u.test(prompt.normalize('NFKC'));
+export function historyOmissionScope(prompt:string) {
+  const match=/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(本任务|这项任务|当前任务|本次任务|这次|本次|这一轮|本轮)?\s*(?:不要|不用|别|无需|不必|不需要|不使用|不引用|不参考)\s*(?:(?:再|去)?(?:读取|引用|参考|沿用|使用|查阅))?\s*(?:(?:先前|之前|过去|以前|已选|已授权)的?)?(?:历史(?:记忆|引用|来源|记录)?|旧(?:会话|对话))(?=[，。；！？,;!?\s]|$)/u.exec(prompt.normalize('NFKC'));
+  if(!match)return;
+  return ['本任务','这项任务','当前任务','本次任务'].includes(match[1])?'task':'turn';
 }
 
 
@@ -53,7 +55,8 @@ async function readTaskBinding(sql:Sql,task:TaskView):Promise<TaskBinding|null> 
     !binding.target||
     binding.target.folderId!==null&&typeof binding.target.folderId!=='string'||
     binding.target.term!==null&&typeof binding.target.term!=='string'||
-    binding.invalidated!==undefined&&binding.invalidated!==true||!validTaskOwner(binding.admittedBy)||binding.admittedBy.sessionId!==task.sessionId)throw Error('memory_scope_changed');
+    binding.invalidated!==undefined&&binding.invalidated!==true||
+    binding.excludeSessionHistory!==undefined&&binding.excludeSessionHistory!==true||!validTaskOwner(binding.admittedBy)||binding.admittedBy.sessionId!==task.sessionId)throw Error('memory_scope_changed');
   return binding;
 }
 
@@ -99,9 +102,25 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return saved;
   }
 
+  function ownsTask(task:TaskView,owner:TaskOwner) {
+    return task.state==='active'&&task.sessionId===owner.sessionId&&task.binding?.runId===owner.runId&&
+      task.binding.generation===owner.generation;
+  }
+
+  async function writeBinding(work:Sql,task:TaskView,owner:TaskOwner,prior:TaskBinding|null,target:Target,
+    selections:HistoryPin[],excludeSessionHistory?:true) {
+    const binding:TaskBinding={schemaVersion:1,sessionId:owner.sessionId,taskId:task.id,
+      revision:(prior?.revision??0)+1,requirementsVersion:task.requirementsVersion,target,admittedBy:owner,selections,
+      ...(excludeSessionHistory?{excludeSessionHistory}:{}),
+    };
+    // Writes here share the Task checkpoint transaction, including journal publication.
+    await work.run(`INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)
+      ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at`,
+    [taskKey(task.id),JSON.stringify(binding),new Date().toISOString()]);
+  }
+
   async function attachTask(work:Sql,task:TaskView,owner:TaskOwner,proof:Prepared) {
-    if(task.state!=='active'||task.sessionId!==owner.sessionId||task.binding?.runId!==owner.runId||
-      task.binding.generation!==owner.generation)throw Error('memory_scope_changed');
+    if(!ownsTask(task,owner))throw Error('memory_scope_changed');
     const saved=await confirm(work,owner.sessionId,proof);
     const prior=await readTaskBinding(work,task);
     const existing:HistoryPin[]=[];
@@ -110,29 +129,32 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     }
     const selections=combinedMemorySelections(existing,proof.selections);
     combinedMemorySelections(saved.selections,selections);
-    const binding:TaskBinding={schemaVersion:1,sessionId:owner.sessionId,taskId:task.id,
-      revision:(prior?.revision??0)+1,requirementsVersion:task.requirementsVersion,target:proof.target,admittedBy:owner,selections};
-    // The caller owns the real Task checkpoint transaction, including journal publication.
-    await work.run(`INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)
-      ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at`,
-    [taskKey(task.id),JSON.stringify(binding),new Date().toISOString()]);
+    await writeBinding(work,task,owner,prior,proof.target,selections,prior?.excludeSessionHistory);
+  }
+
+  async function excludeForTask(work:Sql,task:TaskView,owner:TaskOwner) {
+    if(!ownsTask(task,owner))throw Error('memory_scope_changed');
+    const {target}=await historyTeachingContext(work,owner.sessionId);
+    const prior=await readTaskBinding(work,task);
+    await writeBinding(work,task,owner,prior,target,[],true);
   }
 
   async function forTask(task:TaskView,includeInvalidated=false):Promise<RunHistory|undefined> {
     if(task.state==='ended'||task.state==='completed')return;
     const binding=await readTaskBinding(sql,task);
-    if(!binding||binding.invalidated)return;
+    if(!binding)return;
     const {target}=await historyTeachingContext(sql,task.sessionId);
-    if(!sameTarget(binding.target,target))return;
     const selections:HistoryPin[]=[];
-    for(const pin of binding.selections)if(includeInvalidated||await currentPin(sql,pin,target))selections.push(pin);
-    if(!selections.length)return;
-    return {scope:'task',ownerId:task.id,revision:binding.revision,selections};
+    if(!binding.invalidated&&sameTarget(binding.target,target)){
+      for(const pin of binding.selections)if(includeInvalidated||await currentPin(sql,pin,target))selections.push(pin);
+    }
+    if(!selections.length&&!binding.excludeSessionHistory)return;
+    return {scope:'task',ownerId:task.id,revision:binding.revision,selections,
+      ...(binding.excludeSessionHistory?{excludeSessionHistory:true}:{})};
   }
 
   async function forRun(task:TaskView,owner:TaskOwner,includeInvalidated=false) {
-    if(task.state!=='active'||task.sessionId!==owner.sessionId||task.binding?.runId!==owner.runId||
-      task.binding.generation!==owner.generation)return;
+    if(!ownsTask(task,owner))return;
     return forTask(task,includeInvalidated);
   }
 
@@ -148,8 +170,9 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
           ?{delivered:true as const}:{})});
     }
     const after=await forTask(task);
-    if(!after||after.revision!==binding.revision||!items.length)return;
-    return {taskId:task.id,revision:binding.revision,items:items.filter(item=>after.selections.some(pin=>pin.id===item.sourceId))};
+    if(!after||after.revision!==binding.revision||!items.length&&!after.excludeSessionHistory)return;
+    return {taskId:task.id,revision:binding.revision,items:items.filter(item=>after.selections.some(pin=>pin.id===item.sourceId)),
+      ...(after.excludeSessionHistory?{excludeSessionHistory:true}:{})};
   }
 
   async function remove(task:TaskView,input:TaskHistoryRemoval) {
@@ -182,5 +205,5 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return selections.length?{...history,selections}:undefined;
   }
 
-  return {stage,prepare,attachTask,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
+  return {stage,prepare,attachTask,excludeForTask,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
 }

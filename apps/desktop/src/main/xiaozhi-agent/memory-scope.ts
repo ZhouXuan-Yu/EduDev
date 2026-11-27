@@ -97,9 +97,11 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     if(policy?.omitHistory)return {...saved,selections:saved.selections.filter(pin=>pin.layer!=='history'),omitHistory:true};
     const extra=await policy?.loadHistory();
     if(!extra)return saved;
-    return {...saved,enabled:true,
-      selections:combinedMemorySelections(saved.enabled?saved.selections:[],extra.selections),
-      historyOwner:{scope:extra.scope,id:extra.ownerId,revision:extra.revision}};
+    const allowedSession=saved.enabled?saved.selections.filter(pin=>!extra.excludeSessionHistory||pin.layer!=='history'):[];
+    return {...saved,enabled:saved.enabled||extra.selections.length>0,
+      selections:combinedMemorySelections(allowedSession,extra.selections),
+      historyOwner:{scope:extra.scope,id:extra.ownerId,revision:extra.revision,
+        ...(extra.excludeSessionHistory?{excludeSessionHistory:true}:{})}};
   }
 
   async function authority(id: string,policy?:RunMemoryPolicy) {

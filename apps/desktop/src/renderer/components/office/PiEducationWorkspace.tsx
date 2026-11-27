@@ -547,8 +547,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
             aria-label={`移除待发送历史 ${index+1}`} isDisabled={snapshot?.running}
             onPress={()=>void removePendingHistory(item.token)}>移除 {item.title}</Button>)}
         </section>}
-        {visible&&currentTaskHistory&&currentTaskHistory.items.length>0&&<section aria-label="当前任务引用" data-testid="history-task-selection">
+        {visible&&currentTaskHistory&&(currentTaskHistory.items.length>0||currentTaskHistory.excludeSessionHistory)&&<section aria-label="当前任务引用" data-testid="history-task-selection">
           <p>当前任务引用</p>
+          {currentTaskHistory.excludeSessionHistory&&<p role="status">当前任务已停用会话历史。你仍可单独选择来源。</p>}
           {currentTaskHistory.items.map(item=><div key={item.sourceId}>
             <span>{item.label}{item.delivered?' · 最近一轮已提供给模型':''}</span>
             <Button size="sm" variant="ghost" aria-label={`停止引用 ${item.label}`} onPress={()=>void removeTaskHistory(item.sourceId)}>停止引用</Button>
