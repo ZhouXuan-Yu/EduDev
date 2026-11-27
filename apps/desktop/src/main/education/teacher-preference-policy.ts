@@ -71,7 +71,11 @@ export function teacherPreferenceLookupContext(snapshot:TeacherPreferenceSnapsho
  const preferences=snapshot.revision?Object.values(snapshot.values).map(value=>labels[value]):[];
  const status=preferences.length?'已由宿主保存在本机，可按教师使用策略跨会话生效。自动处理开关用于生成系统建议。此次查询保持配置原样。'
   :'当前使用策略与查询范围内没有可核对的已确认偏好。需要管理设置时，指向设置中的教师记忆和已确认偏好。';
- return '[已确认偏好的宿主状态]\n'+JSON.stringify({version:snapshot.revision,preferences})+'\n'+status+
+ const scopes=[
+  ...(snapshot.values.handoutAnswerPlacement?['答案位置仅用于需要附答案的讲义。是否附答案仍由本次任务决定。']:[]),
+  ...(snapshot.values.exportFormat?['默认格式只用于本次已需要导出且格式未指定的任务。']:[]),
+ ];
+ return '[已确认偏好的宿主状态]\n'+JSON.stringify({version:snapshot.revision,preferences,scopes})+'\n'+status+
   '请按该状态回答，保留适用范围，不从旧回复推断内容或另作保存声称。';
 }
 

@@ -50,6 +50,7 @@ check('Confirmed preference lookup reports the durable authorized record without
  assert.equal(result.applied,false);
  assert(result.text.includes('已确认偏好的宿主状态'));
  assert(result.text.includes('讲义末尾'));
+ assert(result.text.includes('是否附答案仍由本次任务决定'));
  assert(result.text.includes('跨会话')&&result.text.includes('"version":3'));
  assert(!result.text.includes('导出Word'));
  assert(!result.text.includes('分步骤讲解'));
