@@ -60,6 +60,12 @@ check('Confirmed preference lookup reports the durable authorized record without
  assert(!withheld.text.includes('讲义末尾'));
  assert(!teacherPreferenceForRequest({snapshot:lookup,action:'none'},'请翻译“请核对我已保存的学案习惯”。').text.includes('已确认偏好的宿主状态'));
 });
+check('Lookup of two handout axes does not expose unrelated preferences',()=>{
+ const both={...snapshot,values:{...values,handoutAnswerPlacement:'at_end',handoutSectionOrder:'examples_first'}};
+ const result=teacherPreferenceForRequest({snapshot:both,action:'none'},'请核对我已保存的讲义章节顺序和答案位置。');
+ assert(result.text.includes('讲义末尾')&&result.text.includes('讲义先安排例题'));
+ assert(!result.text.includes('分步骤讲解'));
+});
 check('Legacy blended blocks and compacted summaries disappear from requests without mutating recorded messages',()=>{
  const old=teacherPreferenceContext(snapshot,'none')+teacherPreferenceTrialContext(values);
  const user={role:'user',content:`[其他任务索引]\n保留引用${old}\n\n[教师本次请求]\n旧问题`,timestamp:1};

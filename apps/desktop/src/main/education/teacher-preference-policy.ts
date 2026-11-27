@@ -10,6 +10,8 @@ const restrictedSubject = new RegExp('(?:'+subjectNames+')(?:课(?:程|堂)?|学
 const restrictedCurriculum = /(?:高|初)[一二三123](?:年级|的?(?:学生|同学|课程|课堂|讲义|作业|试卷)|[，,：:\s])|版(?:的)?(?:教材|课本)|(?:这套|本套|指定的?)(?:教材|课本)/u;
 const restrictedTime = /(?:本|上|下|这[个一]?|那[个一]?|每[个一]?|第[一二三四五六七八九十\d]+|春季|秋季)(?:学期|学年)|(?:下周|本周|下个月|本月|今年|明年)(?:开始|结束|起|前|后|内|为止)|(?:接下来|未来|仅限|只在|直到).{0,12}(?:天|周|个月|学期|学年|月底|期末)/;
 const handoutAtEnd = /(?:答案|参考解答).{0,12}(?:放[在到]?|排[在到]?|置[于在]|列在|集中|统一在|附在)(?:整份|这份|整篇)?(?:讲义|学案|文档|全文)?(?:的)?(?:最后|末尾|文末|结尾)|(?:讲义|学案)(?:的)?(?:末尾|最后|文末|结尾).{0,6}(?:附|列|给|放).{0,4}答案/;
+const examplesFirst = /先(?:安排|讲解|讲|给出|列出|放)?例题[，,、\s]*(?:然后|再|后)(?:安排|进行|做|给出|放)?练习/u;
+const practiceFirst = /先(?:安排|进行|做|给出|放)?练习[，,、\s]*(?:然后|再|后)(?:安排|讲解|讲|给出|列出|放)?例题/u;
 const handoutAfterEach = /(?:每道?题|逐题|各题).{0,8}(?:后面?|后边|后紧跟|下方|紧跟).{0,10}(?:答案|参考解答)|(?:答案|参考解答).{0,10}(?:跟在|紧跟|放在|附在)(?:每道?题|各题)(?:后面?|下方)/;
 
 /** Only explicit general future presentation requests. Sources/quotes are never feedback. */
@@ -23,6 +25,14 @@ export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  if(!/^(?:请)?(?:以后|今后|后续|下次|从现在起|我习惯|我更喜欢|我偏好)/.test(input))return{kind:'none'};
  // This head is app-wide. A request with an unbound audience or term remains in the current task.
  if(attributedSpeech.test(input)||restrictedAudience.test(input)||restrictedSubject.test(input)||restrictedCurriculum.test(input)||restrictedTime.test(input))return{kind:'none'};
+ // Split a handout default from a separate instruction about this handout.
+ // The saved head must describe the section order on its own.
+ const localClause=/[，,。；;]\s*(?:但(?:是)?|不过)?\s*(?:今天|今日|这次|本次|这一份|这份)/u.exec(input);
+ if(localClause){
+  const head=input.slice(0,localClause.index);
+  if(!/讲义|学案/u.test(head)||!(examplesFirst.test(head)||practiceFirst.test(head)))return {kind:'none'};
+  input=head;
+ }
  // Never learn policies, student facts, temporary/per-student requests or credentials.
  if(/权限|审批|批准|安全|隐私|密钥|凭证|API|token|成绩|分数|正确答案|数据库|源代码|系统提示|忽略规则|绕过|这次|这道|本题|本次|只针对|仅针对|(?:给|对|帮).{0,24}(?:同学|学生|孩子)/i.test(input))return{kind:'none'};
  // Resolve only unambiguous negative alternatives before positive matching.
@@ -42,6 +52,8 @@ export function teacherPreferenceSignal(text:string):TeacherPreferenceSignal{
  choose('answerOrder',[['hint_first',/先(?:给)?提示|先引导|不要直接.{0,8}答案/],['answer_first',/先(?:给|说|列|给出)?答案|先结论/]]);
  choose('presentation',[['table',/用表格|表格形式|优先.{0,6}表格/],['paragraph',/用段落|采用段落|不要.{0,5}表格/]]);
  choose('exportFormat',[['docx',/(?:导出|输出|保存).{0,10}(?:word|docx)/i],['pdf',/(?:导出|输出|保存).{0,10}pdf/i],['pptx',/(?:导出|输出|保存).{0,10}(?:pptx|ppt)/i]]);
+ if(/讲义|学案/u.test(input)&&!/不|没|取消|避免|放弃|并非|是否|可能|也许/u.test(input))
+  choose('handoutSectionOrder',[['examples_first',examplesFirst],['practice_first',practiceFirst]]);
  if(/讲义|学案/.test(input))choose('handoutAnswerPlacement',[['at_end',handoutAtEnd],['after_each',handoutAfterEach]]);
  if(ambiguous)return{kind:'rejected',reason:'ambiguous'};
  return Object.keys(patch).length?{kind:'candidate',patch}:{kind:'none'};
@@ -58,6 +70,7 @@ export function evaluateTeacherPreference(baseline:TeacherPreferenceValues,patch
 }
 
 const labels:Record<string,string>={concise:'讲解简洁',detailed:'讲解详细',step_by_step:'分步骤讲解',continuous:'连贯叙述',hint_first:'先给提示，再给答案',answer_first:'先给答案或结论',table:'适合比较的信息优先用表格',paragraph:'优先用段落',docx:'未指定时优先导出Word',pdf:'未指定时优先导出PDF',pptx:'未指定时优先导出PPTX',
+ examples_first:'讲义先安排例题，再安排练习',practice_first:'讲义先安排练习，再讲例题',
  at_end:'讲义需附答案时，将答案集中放在讲义末尾',after_each:'讲义需附答案时，将答案放在各题后'};
 function presentationAdvice(values:TeacherPreferenceValues){
  return values.length==='concise'?'\n简洁讲解以约400–600字为宜，含公式和表格尽量控制在800字内。保留关键条件、关系式、单位与结论；步骤正文和表格不要重复同一组计算，不另附无关扩展、变式邀请或重复提醒。不能为满足篇幅删掉解题必需条件，必要内容确实超长时优先保证完整和正确。':'';

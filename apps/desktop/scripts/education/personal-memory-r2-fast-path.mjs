@@ -24,6 +24,16 @@ const cases = [
   ['限定课程', '以后物理课的讲义要用表格。', { kind: 'none' }],
   ['有限学期', '以后只在本学期的讲义用表格。', { kind: 'none' }],
   ['任务临时例外', '以后讲解用表格，这次只做学生版。', { kind: 'none' }],
+  ['讲义章节默认顺序与单次例外', '以后讲义先例题再练习，今天这个例外。', {kind:'candidate',patch:{handoutSectionOrder:'examples_first'}}],
+  ['学案章节顺序反向', '请记住，今后学案先安排练习，然后讲例题。', {kind:'candidate',patch:{handoutSectionOrder:'practice_first'}}],
+  ['今次另有顺序仍保留未来要求', '今后学案先练习再例题，本次先例题再练习。',{kind:'candidate',patch:{handoutSectionOrder:'practice_first'}}],
+  ['当日顺序不晋升', '以后照旧即可，今天讲义先例题再练习。',{kind:'none'}],
+  ['否定整个顺序', '以后讲义不采用先例题再练习。',{kind:'none'}],
+  ['临时章节顺序', '今天的讲义先例题再练习。', {kind:'none'}],
+  ['受众限定不能推广顺序', '以后B班讲义先例题再练习。', {kind:'none'}],
+  ['转述顺序', '以后同事建议讲义先例题再练习。', {kind:'none'}],
+  ['否定顺序不当作采纳', '今后讲义不要先例题再练习。', {kind:'none'}],
+  ['两种长期顺序冲突', '以后讲义先例题再练习，或先练习再例题。', {kind:'rejected',reason:'ambiguous'}],
   ['讲义答案的明确长期位置', '以后我的讲义答案统一放最后。', {kind:'candidate',patch:{handoutAnswerPlacement:'at_end'}}],
   ['学案使用相同规则', '请记住，今后学案每道题后附参考答案。', {kind:'candidate',patch:{handoutAnswerPlacement:'after_each'}}],
   ['本次安排不改长期位置', '这次讲义答案放在文末。', {kind:'none'}],
@@ -41,6 +51,16 @@ for (const [name, text, expected] of cases) {
     console.log('FAIL '+name+' '+error.message);
   }
 }
+const sectionCases=[
+  ['请编写一份介绍有理数的学案。','examples_first'],
+  ['今天这个例外，请制作一份讲义。',undefined],
+  ['请编写讲义，这次先练习再例题。',undefined],
+  ['八年级的一次函数有什么特点？',undefined],
+];
+for(const [request,expected] of sectionCases){
+  const actual=selectTeacherPreferenceValues({handoutSectionOrder:'examples_first'},request).handoutSectionOrder;
+  if(actual!==expected)failures.push({request,actual,expected});
+}
 const contextCases=[
   ['实际讲义任务使用保存的位置','请制作一份带两道题的科学讲义。','at_end'],
   ['单次学生版不使用位置','这次制作一份讲义，只做学生版，不要答案。',undefined],
@@ -52,5 +72,5 @@ for(const [name,request,expected] of contextCases) {
   if(actual!==expected)failures.push({name,actual,expected});
   console.log((actual===expected?'PASS ':'FAIL ')+name);
 }
-console.log(JSON.stringify({ passed: cases.length+contextCases.length-failures.length, failures }));
+console.log(JSON.stringify({ passed: cases.length+sectionCases.length+contextCases.length-failures.length, failures }));
 if (failures.length) process.exitCode = 1;

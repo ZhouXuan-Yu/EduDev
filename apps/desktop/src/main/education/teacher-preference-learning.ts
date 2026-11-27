@@ -74,7 +74,7 @@ export function implicitTeacherCorrection(text:string):TeacherPreferenceValues|u
  const normalized=text.replace(/太长(?:了)?|太啰嗦(?:了)?/g,'简洁').replace(/太简略(?:了)?|太短(?:了)?/g,'详细些');
  const signal=teacherPreferenceSignal('以后'+normalized);
  if(signal.kind!=='candidate')return;
- const patch={...signal.patch};delete patch.exportFormat;delete patch.answerOrder;delete patch.handoutAnswerPlacement;
+ const patch={...signal.patch};delete patch.exportFormat;delete patch.answerOrder;delete patch.handoutAnswerPlacement;delete patch.handoutSectionOrder;
  return Object.keys(patch).length?patch:undefined;
 }
 async function get(sql:Sql,key:string){const r=(await sql.all('SELECT value_json FROM app_settings WHERE key=?',[key]))[0];return r?String(r.value_json):undefined;}

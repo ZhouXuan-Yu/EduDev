@@ -11,6 +11,7 @@ const fields = {
   length: {label: '讲解篇幅', values: {concise: '简明', detailed: '详细'}},
   structure: {label: '讲解结构', values: {step_by_step: '分步骤讲解', continuous: '连贯讲解'}},
   answerOrder: {label: '答案顺序', values: {hint_first: '先提示再给答案', answer_first: '先给答案'}},
+  handoutSectionOrder: {label: '讲义章节顺序', values: {examples_first: '先例题，再练习', practice_first: '先练习，再讲例题'}},
   handoutAnswerPlacement: {label: '讲义答案位置', values: {at_end: '集中放在末尾', after_each: '放在各题后'}},
   presentation: {label: '呈现方式', values: {table: '适合时用表格', paragraph: '使用段落'}},
   exportFormat: {label: '导出格式', values: {docx: 'Word', pdf: 'PDF', pptx: 'PowerPoint'}},

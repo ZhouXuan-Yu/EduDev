@@ -13,6 +13,7 @@ const fileIntent=/导出|另存(?:为)?|保存(?:为|成)|(?:输出|交付|生�
 const explicitFile=/\b(?:docx?|pdf|pptx?|xlsx?|csv|html?|png|jpe?g|word|excel|powerpoint|markdown)\b|文本文件|演示稿|幻灯片|网页版|图片版/u;
 const noFile=/(?:不|别|不要|无需|不需要|不用|不能)(?:再|另|自动)?(?:导出|生成|制作|保存|输出|写入)(?:.{0,12}(?:文件|副本))?/gu;
 const handoutWork=/(?:生成|制作|编写|准备|设计|整理|修订|修改|改写|排版|输出|导出|给我|写一份).{0,28}(?:讲义|学案)|(?:讲义|学案).{0,20}(?:排版|整理|修改|修订|导出|重做)/u;
+const currentSectionOrder=/(?:例题|练习).{0,12}(?:在前|在后|开头|末尾|最后|优先)|(?:先|先从|先用|开头|从).{0,8}(?:例题|练习)|(?:本次|这次|今天|这份|本份).{0,8}例外|(?:不用|不要|不使用|不沿用).{0,6}(?:默认|旧版|原有|原先)(?:的)?(?:结构|顺序|格式)/u;
 const currentHandoutAnswer=/(?:只|仅).{0,8}学生版|(?:不(?:要|用|附|给|含|提供|包含)|无需|省略).{0,6}(?:答案|参考解答)|(?:答案|参考解答).{0,12}(?:最后|末尾|文末|结尾|末页|逐题|每道?题|各题|页首|开头|单独|另附)|(?:逐题|各题|每道?题|最末|文末|末尾).{0,10}(?:答案|参考解答)/u;
 
 /** The saved record remains complete. Select only the axes relevant to this request. */
@@ -23,6 +24,8 @@ export function selectTeacherPreferenceValues(values:TeacherPreferenceValues,req
  if(!exportAlreadyChosen&&fileIntent.test(text)&&!processQuestion.test(text)&&!explicitFile.test(text.toLowerCase())&&values.exportFormat)
   selected.exportFormat=values.exportFormat;
  const studentVersion=/学生(?:用)?版/.test(text)&&!/教师(?:用)?版|答案版|解析版/.test(text);
+ if(values.handoutSectionOrder&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentSectionOrder.test(text))
+  selected.handoutSectionOrder=values.handoutSectionOrder;
  if(values.handoutAnswerPlacement&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentHandoutAnswer.test(text)&&!studentVersion)
   selected.handoutAnswerPlacement=values.handoutAnswerPlacement;
  if(!explanation.test(text)||artifactOnly.test(text)||processQuestion.test(text)||shortAnswer.test(text))return selected;

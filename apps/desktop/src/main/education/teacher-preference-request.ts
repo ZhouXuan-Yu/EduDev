@@ -16,10 +16,15 @@ const actionNotice:Record<string,string>={
 function requestedConfirmedPreferenceFields(request:string) {
  const text=request.trim().normalize('NFKC');
  if(!/^(?:请(?:问)?[，, ]*)?(?:(?:帮我|给我) ?)?(?:找回|查找|查看|核对|回顾|查一下|列出|告诉我)/u.test(text)
-   || !/偏好|习惯|默认规则/u.test(text) || !/已确认|已保存|记住的|上次|长期|默认/u.test(text)
+   || !/偏好|习惯|默认规则|(?:讲义|学案)(?:的)?(?:章节顺序|答案位置)/u.test(text) || !/已确认|已保存|记住的|上次|长期|默认/u.test(text)
    || /同事|别的?老师|其他老师|别人|转述|翻译|资料中|示例/u.test(text))return;
  const keys=new Set<string>();
- if(/讲义|学案/u.test(text))keys.add('handoutAnswerPlacement');
+ if(/讲义|学案/u.test(text)){
+  const sections=/章节|例题|练习顺序/u.test(text);
+  const answers=/答案位置|答案放|参考解答/u.test(text);
+  if(answers||!sections)keys.add('handoutAnswerPlacement');
+  if(sections||!answers)keys.add('handoutSectionOrder');
+ }
  if(/导出|文件格式/u.test(text))keys.add('exportFormat');
  if(/讲解|解题|解答|回答方式|回复方式/u.test(text))
   for(const key of ['length','structure','answerOrder','presentation'])keys.add(key);
