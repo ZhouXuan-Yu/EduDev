@@ -8,7 +8,10 @@ export function createTeacherMemorySettingsState(sql: Sql) {
   async function read(work: Sql): Promise<TeacherMemorySettings> {
     const policy = await readTeacherMemoryPolicy(work);
     const {snapshot: preference, updatedAt: preferenceUpdatedAt} = await createTeacherPreferenceState(work).readCurrent();
-    return { ...policy, preference, preferenceUpdatedAt };
+    const {subject,grade,textbook}=policy.profile;
+    const profileOrigin = subject || grade || textbook
+      ? {category:'teacher_profile', evidence:'teacher_explicit'} as const : null;
+    return { ...policy, profileOrigin, preference, preferenceUpdatedAt };
   }
   return {
     read: () => (sql.readTransaction ?? sql.transaction!)(read),
@@ -31,7 +34,7 @@ export function createTeacherMemorySettingsState(sql: Sql) {
           [TEACHER_MEMORY_POLICY_KEY, JSON.stringify({schemaVersion: 1, revision, profile, use}), updatedAt],
         );
         if (Object.keys(current.use).length || Object.keys(use).length) await abandonTeacherLearning(work);
-        return { ...current, revision, profile, use, updatedAt };
+        return read(work);
       });
     },
   };

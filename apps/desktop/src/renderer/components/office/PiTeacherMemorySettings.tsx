@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Button, Input, Label, ListBox, Select, TextField} from '@heroui/react';
 import {TEACHER_GRADES, TEACHER_SUBJECTS, type TeacherMemoryPolicy, type TeacherMemorySettings, type TeacherMemorySettingsInput, type TeacherPreferenceUse, type TeacherProfile} from '../../../shared/teacher-memory-settings';
+import {teacherMemoryCategories} from '../../../shared/xiaozhi-personal-memory';
 import {useDesktopNavigationGuard} from '../desktop/DesktopFrame';
 import {SettingsGrid, SettingsInline, SettingsStack} from './hana-settings/SettingsPrimitives';
 import {SettingsRow} from './hana-settings/SettingsRow';
@@ -138,6 +139,9 @@ export function PiTeacherMemorySettings({running, onBusyChange}: {running: boole
           <Label>教材版本（选填）</Label>
           <Input maxLength={60} placeholder="如 人教版" data-testid="teacher-memory-textbook"/>
         </TextField>
+        {saved.profileOrigin && <SettingsSection.Note>
+          <span data-testid="teacher-profile-origin">{teacherMemoryCategories[saved.profileOrigin.category].label}来自本机教师设置 · 设置版本 {saved.revision}</span>
+        </SettingsSection.Note>}
       </SettingsSection>
       <SettingsSection title="已确认偏好" description="在对话中可明确保存新的长期偏好。每轮明确提出的要求优先。">
         {Object.keys(fields).map(key => {

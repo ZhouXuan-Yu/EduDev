@@ -16,6 +16,7 @@ export type TeacherMemoryPolicy = {
   updatedAt: string | null;
 };
 export type TeacherMemorySettings = TeacherMemoryPolicy & {
+  profileOrigin: {category:'teacher_profile'; evidence:'teacher_explicit'} | null;
   preference: TeacherPreferenceSnapshot;
   preferenceUpdatedAt: string | null;
 };
