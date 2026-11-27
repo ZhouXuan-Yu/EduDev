@@ -1,0 +1,93 @@
+import '../office-agent/register-source.mjs';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {test} from 'node:test';
+const {createHandoutEditCoordinator,handoutEditRequest}=await import('../../src/main/education/teaching-handout-edit.ts');
+
+const id=kind=>'teaching_'+kind+'_'+randomUUID();
+async function exerciseTools(prompt,numbers=[3,12]) {
+  const book={id:id('book'),title:'教学讲义'};
+  const chapters=numbers.map((number,i)=>({id:id('chapter'),title:'章节 '+i,summary:'',learningObjectives:[]}));
+  const pages=chapters.map(chapter=>({id:id('page'),chapterId:chapter.id}));
+  const blocks=numbers.flatMap((number,i)=>['exercise','exercise_solution'].map(role=>({
+    id:id('block'),pageId:pages[i].id,type:'text',status:'ready',metadata:{handoutRole:role},
+    title:'练习 '+number+' · '+(role==='exercise'?'基础':'答案与解析'),payload:{text:role==='exercise'?'新题干':'答案\n\n解析'},
+  })));
+  const content={book,chapters,pages,blocks},digest='b'.repeat(64),proposed=[],queries=[],reads=[];
+  const coordinator=createHandoutEditCoordinator({
+    versions:{forEdit:async(_session,_task,target)=>{queries.push(target);return {kind:'found',content,digest};}},
+    sanitizer:async()=>text=>text,publish:()=>{},
+    state:{propose:async(_versions,_owner,_call,input)=>{proposed.push(input);return {state:'rejected',id:'r'};},
+      view:async()=>({state:'rejected',input:{bookId:book.id}})},
+  });
+  const [read,propose]=coordinator.tools({sessionId:'session',runId:'run',owner:()=>({taskId:'task'}),
+    current:()=>true,prompt},async()=>false);
+  for(const chapter of chapters){
+    const result=await read.execute('read',{bookId:book.id,chapterId:chapter.id});
+    reads.push(JSON.parse(result.content[0].text));
+  }
+  const edit=async(...indices)=>{
+    const changes=indices.map(i=>({kind:'exercise',blockId:blocks[2*i].id,difficulty:'拓展'}));
+    const result=await propose.execute('proposal',{bookId:book.id,digest,changes});
+    return JSON.parse(result.content[0].text);
+  };
+  return {edit,proposed,reads,queries};
+}
+
+for(const [prompt,allowed] of [['修改这份讲义，只改第十二题。',1],['这份学案仅修改练习３。',0],
+  ['请只调整讲义的第 12 道练习。',1]]) {
+  test(prompt,async()=>{
+    const {edit,proposed,reads}=await exerciseTools(prompt);
+    assert.equal(reads[1-allowed].chapter.blocks.length,0);
+    assert.equal(reads[allowed].chapter.blocks.length,1);
+    assert.equal((await edit(1-allowed,allowed)).error,'exercise_scope');
+    assert.equal(proposed.length,0);
+    await edit(allowed);
+    assert.equal(proposed.length,1);
+    assert.equal(handoutEditRequest(prompt),true);
+  });
+}
+test('repeated ordinal in two chapters needs clarification even after opening one chapter',async()=>{
+  const {edit,proposed}=await exerciseTools('这份讲义只改第三题',[3,3]);
+  await edit(0);
+  assert.equal(proposed.length,0);
+});
+test('ordinary multi-location edit can still reach teacher review',async()=>{
+  const {edit,proposed}=await exerciseTools('修改讲义中的两处练习。');
+  await edit(0,1);
+  assert.equal(proposed.length,1);
+});
+
+
+test('short follow-up requires the current task and excludes a named exam',async()=>{
+  const prompt='只改第三题';
+  assert(handoutEditRequest(prompt));
+  assert(!handoutEditRequest('这份试卷只改第三题'));
+  const {queries}=await exerciseTools(prompt);
+  assert(queries.every(q=>q.taskOnly===true&&!q.bookId&&!q.title));
+});
+test('range without exact supported endpoints requires clarification',async()=>{
+  const {edit,proposed}=await exerciseTools('讲义只改第三题到第十二题');
+  await edit(0);
+  assert.equal(proposed.length,0);
+});
+test('two explicitly named exercises are eligible together',async()=>{
+  const {edit,proposed}=await exerciseTools('讲义只改第三题和第十二题');
+  await edit(0,1);
+  assert.equal(proposed.length,1);
+});
+
+test('quoted older instructions cannot extend the current selection',async()=>{
+  const {edit,proposed}=await exerciseTools('旧说明是“只改第三题”。这次讲义仅修改第十二题。');
+  await edit(0); assert.equal(proposed.length,0);
+  await edit(1); assert.equal(proposed.length,1);
+});
+test('a named manual revision is protected in a general handout edit',async()=>{
+  const {edit,proposed}=await exerciseTools('修改讲义，保留我刚改好的第三题。');
+  await edit(0,1); assert.equal(proposed.length,0);
+  await edit(1); assert.equal(proposed.length,1);
+});
+test('another only clause cannot silently enlarge a conflicting selection',async()=>{
+  const {edit,proposed}=await exerciseTools('上次只改第三题，本次讲义仅修改第十二题。');
+  await edit(0); assert.equal(proposed.length,0);
+});

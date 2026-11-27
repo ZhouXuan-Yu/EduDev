@@ -10,7 +10,7 @@ const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memo
 const {validMemoryScopeInput}=await import('../../src/main/xiaozhi-agent/memory-selection.ts')
 
 const db=new DatabaseSync(':memory:')
-db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,student_id TEXT,archived_at TEXT);')
+db.exec('PRAGMA foreign_keys=ON; CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,student_id TEXT,archived_at TEXT,title TEXT); CREATE TABLE ai_conversation_messages(id TEXT PRIMARY KEY,session_id TEXT,role TEXT,content TEXT,metadata_json TEXT,created_at TEXT);')
 const old='aisession_'+randomUUID(), target='aisession_'+randomUUID()
 const hash=text=>createHash('sha256').update(text).digest('hex')
 db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES (?),(?)').run(old,target)
@@ -34,6 +34,10 @@ const ref={kind:'history_request',sessionId:old,recordId:'record-local-1',source
 try{
   await scope.migrateMemoryScope()
   const legacy={layer:'L2',source:'chat',id:'memory_entry_'+randomUUID(),version:1,fingerprint:hash('legacy')}
+  function persistRequests(messages) {
+    for (const message of messages) db.prepare('INSERT INTO ai_conversation_messages VALUES(?,?,?,?,?,?)')
+      .run(message.id,old,message.role,message.content,JSON.stringify(message.metadata),'2026-11-25T10:00:00Z');
+  }
   await check('v1 scope byte shape is stable',async()=>{
     assert(await scope.saveMemoryScope(target,0,{enabled:true,selections:[legacy]}))
     assert.deepEqual(await scope.memoryScope(target),{version:1,enabled:true,selections:[legacy]})
@@ -71,6 +75,7 @@ try{
   await check('the final discovery response excludes a permission revoked during candidate assembly',async()=>{
     const messages=['algebra exercise worksheet','exercise'].map((content,i)=>({id:'race-record-'+i,role:'user',content,
       metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'run_'+i}}));
+    persistRequests(messages);
     const refs=teacherRequestSources(messages,[]).map(source=>({kind:'history_request',sessionId:old,
       recordId:source.sourceId,sourceVersion:source.sourceVersion}));
     const first=await memory.change(refs[0],0,'allow');
@@ -104,6 +109,7 @@ try{
   await check('authorized preview discards source text when access changes before publication',async()=>{
     const messages=[{id:'preview-request',role:'user',content:'用于核验的讲义原话',
       metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'preview-run'}}];
+    persistRequests(messages);
     const [source]=teacherRequestSources(messages,[]);
     const ref={kind:'history_request',sessionId:old,recordId:source.sourceId,sourceVersion:source.sourceVersion};
     const grant=await memory.change(ref,0,'allow');

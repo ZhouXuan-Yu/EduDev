@@ -1260,7 +1260,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }}),
       }:{}),
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
-        handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,
+        handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,prompt:cleanPrompt,
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
             requirementsVersion:owner.task!.requirementsVersion}),
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
@@ -1289,7 +1289,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
-      memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
+      memory:{runId,authority:()=>memory.authority(id),
+        personalReferences:(authority,requestId,query,tokens,signal)=>memory.personalReferences(id,authority,requestId,query,tokens,signal),
+        readSelected:(authority,signal,personalIds)=>memory.readSelected(id,authority,signal,personalIds),
+        referenceReceived:(scopeVersion,items)=>store.xiaozhiState.recordReferenceDelivery(id,runId,scopeVersion,items),
+        trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;
         const [task,approvals]=await Promise.all([tasks.committed(id),store.xiaozhiState.permissions.approvalSnapshot(id)]);
@@ -2268,7 +2272,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing || skillsMutating || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       const run = active.get(id);
       // Only an explicit revocation may interrupt execution. A stale request cannot stop it.
-      if (run && (input.enabled || input.selections.length || !run.done)) return { ok: false, error: 'busy' };
+      if (run && (input.enabled || input.selections.length || input.teachingTarget || !run.done)) return { ok: false, error: 'busy' };
       configuring.add(id);
       try {
         if (run) {

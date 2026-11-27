@@ -1,3 +1,4 @@
+import {carriesReferenceProjection} from './memory-use/receipts';
 import {createTerminalTool} from './tools/terminal';
 import type {FileReferenceProjection} from './file-references';
 import type {ModelToolPrivacy} from './model-tool-privacy';
@@ -56,6 +57,7 @@ import { createPiInstructionQueue } from './instruction-queue';
 import { privateWorkspaceFingerprintCwd } from './private-workspace-identity';
 import { resolveCreationPromptIdentity,resolveControlPromptIdentity } from './creation-prompt-identity';
 import { createPiMemoryEpoch } from './native-memory-epoch';
+import {protectedMemoryReadback} from './memory-use/protected-readback';
 import { createPiMemoryTools, type PiMemoryRuntime } from './memory-tools';
 import { createEducationSkillRuntime } from './skill-runtime';
 import { createManagedSkillRuntime, type ManagedSkillSource } from './managed-skill-runtime';
@@ -838,13 +840,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     images: { blockImages: !(options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale),autoResize:true }, packages: [], extensions: [], skills: [], prompts: [], themes: [],
     cacheWarming:'off',enableAnalytics: false, enableInstallTelemetry: false, defaultProjectTrust: 'never', transport: 'sse' });
   // Fixed full-control SDK example, with explicit education prompt and no discovery.
-  const getProtectedContext = async () => {
+  const getProtectedContext = async (currentPersonalIds:readonly string[]=[]) => {
     const excluded = [...new Set([...(memoryEpoch?.blockedRunIds() || []), ...(skillEpoch?.blockedRunIds() || [])])];
     const facts = (await phase('pi_read_protected_context',async()=>options.protectedContext?.(excluded)) || '')+(taskRuntime?await phase('pi_read_task_context',()=>taskRuntime.context()):'');
     // Protect only facts already delivered by the explicit model tool. Rebuild from
     // the current main authority; never keep a second copy or revive revoked text.
     if (!options.memory || !memoryEpoch?.hasDelivery()) return facts;
-    const memories = await phase('pi_read_selected_memory',signal=>options.memory!.readSelected(initialAuthority!.fingerprint,signal));
+    const memories = await phase('pi_read_selected_memory',signal=>protectedMemoryReadback(manager,options.memory!,initialAuthority!.fingerprint,currentPersonalIds,signal));
     if (!memories.length) return facts;
     const necessary = memories.map(({ reference, source, version, text, provenance, sourceDocuments, history }) =>
       ({ reference, source, version, text, provenance, sourceDocuments, ...(history?{history}:{}) }));
@@ -976,7 +978,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     },
   })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.equationTools||[]),...(options.quantityTools||[]),...(options.solutionTools||[]),...(options.buoyancyTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...teachingLessonExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
     return budget!.wait(()=>def.execute(...args));
-  } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
+  } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint,
+    () => memoryEpoch.beforeDelivery(),options.memory.personalReferences?()=>projectedPersonalIds:undefined) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
@@ -1191,6 +1194,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
   let modelHttpStatus:number|undefined, modelHealthBlocked:'provider_unavailable'|'provider_cooldown'|undefined, modelRequestSequence=0;
   let submittedTeacherRequest:string|undefined;
+  let submittedTeacherTimestamp:number|undefined;
+  let teacherQuery:string|undefined;
+  let projectedPersonalIds:readonly string[]=[];
   let lessonDraftAttempts=0;
   let lessonBasisAttempts=0;
   let confirmedPaper: {callId:string;text:string} | undefined;
@@ -1223,8 +1229,40 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const handoutGuidance=!compacting&&options.handoutBasis
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
       : '';
-    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
-    args[1]=projectTeacherPreferenceRequest(args[1],compacting?undefined:submittedTeacherRequest,currentGuidance);
+    const priorPersonalIds=projectedPersonalIds;
+    projectedPersonalIds=[];
+    const personalPlan = !compacting && submittedTeacherTimestamp!==undefined && teacherQuery && initialAuthority?.personal
+      ? await options.memory?.personalReferences?.(initialAuthority.fingerprint,runId,teacherQuery,
+        Math.max(0,policy.window-estimateFullRequest(args[1],policy.maxOutputTokens)),args[2]?.signal)
+      : undefined;
+    const currentGuidance=[options.teacherPreferenceGuidance,handoutGuidance,personalPlan?.projection].filter(Boolean).join('\n\n');
+    args[1]=projectTeacherPreferenceRequest(args[1],
+      compacting || submittedTeacherTimestamp === undefined ? undefined : submittedTeacherRequest,
+      currentGuidance, submittedTeacherTimestamp,()=>{
+        if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
+      });
+    const streamPersonalIds=projectedPersonalIds;
+    if (projectedPersonalIds.length && personalPlan && initialAuthority && options.memory?.referenceReceived) {
+      const writeReceipt=options.memory.referenceReceived;
+      const {projection,receipts}=personalPlan;
+      const {version}=initialAuthority;
+      const ids=projectedPersonalIds;
+      const previousPayload=args[2]?.onPayload,previousResponse=args[2]?.onResponse;
+      let inPayload=false;
+      args[2]={...args[2],onPayload:async(payload,model)=>{
+        const changed=await previousPayload?.(payload,model);
+        inPayload=carriesReferenceProjection(changed??payload,projection);
+        await checkMemory();
+        if(ids!==projectedPersonalIds)throw Error('memory_scope_changed');
+        return changed;
+      },onResponse:async(response,model)=>{
+        await previousResponse?.(response,model);
+        if(inPayload && response.status>=200 && response.status<300) {
+          // Loss of a diagnostic receipt leaves the UI unverified after the actual HTTP response.
+          await writeReceipt(version,receipts).catch(()=>undefined);
+        }
+      }};
+    }
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
@@ -1262,6 +1300,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted();
     if(!guarded)budget!.model();
     skillEpoch?.beforeDelivery();
+    if (projectedPersonalIds.length) memoryEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
@@ -1345,7 +1384,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const raw = message.content.filter(part => part.type === 'text').map(part => part.text).join('\n');
         if (!raw.trim() || raw.length > 24000) throw new Error('model_error');
         const clean = options.sanitizeFileText ? await options.sanitizeFileText(raw) : raw;
-        const facts = await phase('pi_prepare_model_context',()=>getProtectedContext(),args[2]?.signal);
+        const facts = await phase('pi_prepare_model_context',()=>getProtectedContext(compacting?priorPersonalIds:streamPersonalIds),args[2]?.signal);
+        if(streamPersonalIds!==projectedPersonalIds)throw Error('memory_scope_changed');
         await checkMemory();
         if (interrupted || budget!.snapshot().exhausted || args[2]?.signal?.aborted) throw new Error('cancelled');
         if (!clean.trim()) throw new Error('model_error');
@@ -1454,7 +1494,16 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       repetition.reset();
       const text = typeof event.message.content === 'string' ? event.message.content : event.message.content.filter(part => part.type === 'text').map(part => part.text).join('');
       const id = instructions.consume(text);
-      if (id) delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
+      if (id) {
+        // A teacher correction has taken effect. The earlier request's guidance is stale.
+        submittedTeacherRequest = undefined;
+        teacherQuery = undefined;
+        projectedPersonalIds = [];
+        submittedTeacherTimestamp = undefined;
+        delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
+      } else if (submittedTeacherTimestamp === undefined && submittedTeacherRequest === text) {
+        submittedTeacherTimestamp = event.message.timestamp;
+      }
     } else if(event.type === 'message_start' && event.message.role === 'assistant') {
       emit({kind:'assistant_start',segment:++segment});
       presentation.start(segment);
@@ -1602,6 +1651,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const scopeInstructions=quality?responseScopeInstructions(text,Boolean(subjectInstructions)):'';
         const context=[facts,subjectInstructions,scopeInstructions,quality?teachingPresentationInstructions(text):''].filter(Boolean).join('\n\n');
         submittedTeacherRequest=context?`${context}\n\n[教师本次请求]\n${text}`:text;
+        teacherQuery = text;
+        submittedTeacherTimestamp = undefined;
         await session.prompt(submittedTeacherRequest);
         // A persisted terminal Goal decision has already ended this Task owner.
         // Every model and tool delivery still passes the live authority gates above.

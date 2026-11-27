@@ -66,12 +66,12 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
       ORDER BY origin.created_at DESC,origin.book_id`,[sessionId]);
     return rows.map(row=>({bookId:String(row.book_id),taskId:String(row.task_id),title:String(row.title)}));
   }
-  async function chooseBook(work:Sql,sessionId:string,taskId:string,target:{title?:string;bookId?:string}) {
+  async function chooseBook(work:Sql,sessionId:string,taskId:string,target:{title?:string;bookId?:string;taskOnly?:boolean}) {
     const rows=await sessionBooks(work,sessionId);
     const byTask=rows.filter(row=>row.taskId===taskId);
     const matches=target.bookId?rows.filter(row=>row.bookId===target.bookId):
       target.title!==undefined?rows.filter(row=>handoutTitleKey(row.title)===handoutTitleKey(target.title!)):
-      byTask.length?byTask:rows;
+      target.taskOnly||byTask.length?byTask:rows;
     if(!matches.length)throw Error('book_unavailable');
     if(matches.length>1)return {kind:'ambiguous' as const,choices:matches.slice(0,8).map(({bookId,title})=>({bookId,title}))};
     return {kind:'found' as const,bookId:matches[0].bookId};
@@ -150,7 +150,7 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
         return {kind:'found' as const,...await confirmedContent(work,selected.bookId,'versionId'in target?target:undefined)};
       });
     },
-    async forEdit(sessionId:string,taskId:string,target:{title?:string;bookId?:string}) {
+    async forEdit(sessionId:string,taskId:string,target:{title?:string;bookId?:string;taskOnly?:boolean}) {
       return read(async work=>{
         const selected=await chooseBook(work,sessionId,taskId,target);
         if(selected.kind==='ambiguous')return selected;

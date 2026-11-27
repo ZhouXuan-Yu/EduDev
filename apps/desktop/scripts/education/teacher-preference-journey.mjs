@@ -9,14 +9,37 @@ export async function teacherPreferenceJourney(ctx){
  const revision=n=>settings().find(r=>r.key.endsWith(':version:'+n))?.value;
  const session=()=>page().locator('.office-composer-container').getAttribute('data-session-id');
  const snapshot=async()=>page().evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),await session());
- const send=async text=>{const input=page().getByTestId('office-prompt-input');await until(async()=>!await input.isDisabled());const old=(await snapshot()).projection.turns.at(-1)?.id;await input.fill(text);await input.press('Enter');assert.equal(await input.inputValue(),'');await until(async()=>{const s=await snapshot();return s.projection.turns.at(-1)?.id!==old&&!s.running;},150000);const s=await snapshot();assert.equal(s.projection.turns.at(-1).status,'completed',JSON.stringify(s.projection.turns.at(-1)));return s.projection.turns.at(-1);};
+ const send=async text=>{const input=page().getByTestId('office-prompt-input');await until(async()=>!await input.isDisabled());const old=(await snapshot()).projection.turns.at(-1)?.id;await input.fill(text);await input.press('Enter');await until(async()=>await input.inputValue()==='');await until(async()=>{const s=await snapshot(),turn=s.projection.turns.at(-1);return turn&&turn.id!==old&&!s.running&&['completed','failed','cancelled'].includes(turn.status);},150000);const s=await snapshot();assert.equal(s.projection.turns.at(-1).status,'completed',JSON.stringify(s.projection.turns.at(-1)));return s.projection.turns.at(-1);};
  const text=turn=>turn.items.filter(i=>i.kind==='message'&&i.role==='assistant').map(i=>i.text).join('\n');
  const newChat=async()=>{const old=await session();const button=page().getByTestId('ai-conversation-new');if(!await button.isVisible())await page().getByTestId('pi-sidebar-toggle').click();await button.click();await until(async()=>await session()!==old&&!await page().getByTestId('office-prompt-input').isDisabled());return session();};
  const nativeMessages=()=>{const out=[];const walk=d=>{for(const f of fs.readdirSync(d,{withFileTypes:true})){const full=path.join(d,f.name);if(f.isDirectory())walk(full);else if(f.name.endsWith('.jsonl'))for(const line of fs.readFileSync(full,'utf8').split('\n').filter(Boolean)){const e=JSON.parse(line);if(e.message?.role==='user')out.push(e.message);}}};walk(path.join(data,'xiaozhi-pi'));return out;};
  await launch();assert.equal(settings().length,0);
+ await app().evaluate(({net})=>{
+   const fetch=net.fetch.bind(net);
+   globalThis.preferenceWire=[];
+   net.fetch=async(resource,init)=>{
+     if(typeof init?.body==='string' && new URL(typeof resource==='string'?resource:resource.url).pathname.endsWith('/chat/completions')){
+       const body=JSON.parse(init.body);
+       const messages=body.messages??[];
+       const user=messages.findLast(message=>message.role==='user');
+       const text=typeof user?.content==='string'?user.content:JSON.stringify(user?.content??[]);
+       globalThis.preferenceWire.push({model:body.model,hintFirst:text.includes('先给提示，再给答案'),
+         stepByStep:text.includes('分步骤讲解'),detailed:text.includes('讲解详细')});
+     }
+     return fetch(resource,init);
+   };
+ });
  const feedback='以后讲解详细些，分步骤，先给提示再给答案。';await send(feedback);assert.equal(head().revision,1);assert.deepEqual(revision(1).values,{length:'detailed',structure:'step_by_step',answerOrder:'hint_first'});assert(revision(1).evaluation.passed);check('Ordinary teacher future feedback creates an evaluated version from the saved real user message without a preferences dialog');
- const firstSession=await session(),secondSession=await newChat(),question='请讲解：小船在静水中的速度是每小时12千米，水流速度是每小时3千米。它顺流航行30千米再逆流返回，往返共需要多少小时？不生成文件。';assert(!/偏好|分步|提示|详细/.test(question));const answer=await send(question),answerText=text(answer);assert(/提示|引导|先想|思考/.test(answerText));assert(/步骤|第一步|1[.、）]|①/.test(answerText));assert(/16\s*\/\s*3|5\.33|\\frac\{16\}\{3\}|5\s*又|5.{0,8}小时.{0,8}20.{0,5}分/.test(answerText));const native=nativeMessages(),current=native.find(m=>JSON.stringify(m.content).includes(question));assert(current);assert(!JSON.stringify(current.content).includes('[当前教师表达偏好：'));assert(!JSON.stringify(current.content).includes(feedback));check('A separate real Pi/DeepSeek chat applies the persisted detailed/hint-first strategy to a multi-step rate problem absent from its request');
- const before=settings(),turns=(await snapshot()).projection.turns;await restart();await page().getByTestId('ai-conversation-session-'+secondSession).click();await until(async()=>await session()===secondSession);assert.deepEqual(settings(),before);assert.deepEqual((await snapshot()).projection.turns,turns);check('Cold Electron preserves preference evidence, version and actual answer without replaying the model');
+ const firstSession=await session(),secondSession=await newChat(),question='请讲解：小船在静水中的速度是每小时12千米，水流速度是每小时3千米。它顺流航行30千米再逆流返回，往返共需要多少小时？不生成文件。';assert(!/偏好|分步|提示|详细/.test(question));const answer=await send(question),answerText=text(answer);
+ report.followupEvidence={requests:await app().evaluate(()=>globalThis.preferenceWire),answer:answerText,runId:answer.id};
+ assert(/提示|引导|先想|思考/.test(answerText));assert(/步骤|第一步|1[.、）]|①/.test(answerText));assert(/16\s*\/\s*3|5\.33|\\frac\{16\}\{3\}|5\s*又|5.{0,8}小时.{0,8}20.{0,5}分/.test(answerText));const native=nativeMessages(),current=native.find(m=>JSON.stringify(m.content).includes(question));assert(current);assert(!JSON.stringify(current.content).includes('[当前教师表达偏好：'));assert(!JSON.stringify(current.content).includes(feedback));check('A separate real Pi/DeepSeek chat applies the persisted detailed/hint-first strategy to a multi-step rate problem absent from its request');
+ const before=settings(),turns=(await snapshot()).projection.turns;await restart();
+ if(await session()!==secondSession){
+   const side=page().getByTestId('pi-sidebar-toggle');
+   if(await side.getAttribute('aria-expanded')!=='true')await side.click();
+   await page().getByTestId('ai-conversation-session-'+secondSession).click();
+ }
+ await until(async()=>await session()===secondSession);assert.deepEqual(settings(),before);assert.deepEqual((await snapshot()).projection.turns,turns);check('Cold Electron preserves preference evidence, version and actual answer without replaying the model');
  const captures=[];for(const[theme,width,height]of[['light',1366,768],['dark',1920,1080]]){await page().emulateMedia({colorScheme:theme});await app().evaluate(({BrowserWindow},size)=>{const w=BrowserWindow.getAllWindows()[0];w.setPosition(0,0);w.setContentSize(size.width,size.height);},{width,height});await page().waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});await page().locator('[data-slot="chat-message-assistant"]').last().scrollIntoViewIfNeeded();const png=`preference-answer-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(output,png),animations:'disabled'});captures.push({png,theme,width,height});}report.visuals.push(...captures);
  await newChat();const undo=await send('撤销上次记住的教学偏好');assert.equal(head().revision,2);assert.deepEqual(revision(2).values,{});await newChat();const follow=await send('请简短回答：三角形内角和是多少？不生成文件。');const last=nativeMessages().findLast(m=>JSON.stringify(m.content).includes('请简短回答：三角形内角和是多少'));assert(!JSON.stringify(last.content).includes('[当前教师表达偏好：'));assert(!JSON.stringify(last.content).includes('分步骤讲解'));assert(text(follow).includes('180'));check('Ordinary undo appends an empty active strategy; the next real task retains no old preference guidance in its native history');
  report.preferences={firstSession,secondSession,feedback,question,answer:answerText,undo:text(undo),following:text(follow),settings:settings(),modelRequests:4};fs.writeFileSync(path.join(output,'preference-readback.json'),JSON.stringify(report.preferences,null,2));

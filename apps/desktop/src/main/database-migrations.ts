@@ -81,7 +81,13 @@ const historyFirstConfigMigrations: readonly Migration[] = [...sharedMigrations,
   {...summaryMigration,id:'r2.task_summary_maintenance.after_history.v7'},
   {...ordinaryMigration,id:'r3.ordinary_config_history.after_history.v8'},
   {...personalMigration,id:'r2.personal_memory.after_config.v9'}];
-const supportedMigrations = [canonicalMigrations,historyFirstConfigMigrations,historyFirstMigrations,personalBeforeConfigMigrations];
+// The published R1 build also reached v8 through the original history-v5 installation.
+const configAfterHistoryMigrations: readonly Migration[] = [
+  ...historyFirstMigrations.slice(0,7),
+  {...ordinaryMigration,id:'r3.ordinary_config_history.after_history.v8'},
+  {...personalMigration,id:'r2.personal_memory.after_r3_config.v9'},
+];
+const supportedMigrations = [canonicalMigrations,historyFirstConfigMigrations,historyFirstMigrations,personalBeforeConfigMigrations,configAfterHistoryMigrations];
 const ACQUISITION_SCHEMA_VERSION = 3;
 export const MAX_DATABASE_SCHEMA_VERSION = canonicalMigrations.length;
 

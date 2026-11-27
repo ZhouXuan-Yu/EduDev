@@ -13,10 +13,19 @@ export const projectMemorySource = (item: XiaozhiMemorySource): XiaozhiMemorySou
   ? { layer: 'L2', source: item.source } : { layer: 'L3', source: item.source };
 export type XiaozhiMemorySelection = XiaozhiMemorySource & { id: string; version: number };
 export type XiaozhiMemoryUseSelection = XiaozhiMemorySelection | HistorySelection | PersonalMemorySelection;
-export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; selections: XiaozhiMemoryUseSelection[] };
+export type MemoryTeachingTarget = { folderId: string; term: string };
+export function validTeachingTarget(value: unknown): value is MemoryTeachingTarget {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const target = value as Partial<MemoryTeachingTarget>;
+  return Object.keys(value).length === 2 && typeof target.folderId === 'string'
+    && /^aifolder_[0-9a-f-]{36}$/i.test(target.folderId) && typeof target.term === 'string'
+    && /^20[0-9]{2}-(spring|fall)$/.test(target.term);
+}
+export type XiaozhiMemoryScopeInput = { sessionId: string; version: number; enabled: boolean; teachingTarget?: MemoryTeachingTarget | null; selections: XiaozhiMemoryUseSelection[] };
 export type XiaozhiMemoryCatalogInput = { sessionId: string; offset: number } & XiaozhiMemorySource;
 export type XiaozhiMemorySelectionState = 'ready' | 'changed' | 'disabled' | 'missing' | 'unavailable';
-export type XiaozhiMemoryScope = { version: number; enabled: boolean; modelAccess: 'unavailable' | 'available';
+export type XiaozhiMemoryScope = { receivedReferences?:Array<{id:string;version:number;estimatedTokens:number;reason:string}>;
+  teachingTarget?: MemoryTeachingTarget; currentFolderId?: string; version: number; enabled: boolean; modelAccess: 'unavailable' | 'available';
   selections: Array<XiaozhiMemoryUseSelection & { state: XiaozhiMemorySelectionState; label: string }> };
 export type XiaozhiMemoryPreview = XiaozhiMemorySelection & { text: string; sanitizedText: string;
   section: string; status: 'active' | 'disabled' | 'deleted';

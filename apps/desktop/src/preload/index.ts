@@ -442,6 +442,7 @@ const api = {
   saveTeacherMemorySettings:(input:import('../shared/teacher-memory-settings').TeacherMemorySettingsInput)=>ipcRenderer.invoke('xiaozhi:teacher-memory-save',input) as Promise<import('../shared/teacher-memory-settings').TeacherMemorySettingsResult>,
   personalMemory: {
     view:()=>ipcRenderer.invoke('xiaozhi:personal-memory-view') as Promise<PersonalMemoryResult<PersonalMemoryView>>,
+    catalog:(sessionId:string)=>ipcRenderer.invoke('xiaozhi:personal-memory-catalog',sessionId) as Promise<PersonalMemoryResult<PersonalMemoryView['records']>>,
     queue:(sessionId:string)=>ipcRenderer.invoke('xiaozhi:personal-memory-queue',sessionId) as Promise<PersonalMemoryResult<PersonalMemoryQueue>>,
     setEnabled:(input:PersonalMemoryPolicyInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-auto',input) as Promise<PersonalMemoryResult<PersonalMemoryPolicy>>,
     preview:(input:PersonalMemoryCandidateInput)=>ipcRenderer.invoke('xiaozhi:personal-memory-preview',input) as Promise<PersonalMemoryResult<PersonalMemoryReview>>,

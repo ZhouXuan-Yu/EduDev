@@ -213,6 +213,16 @@ try{
     else assert(item.formulas.some(formula=>formula?.replace(/\s+/gu,'')==='5x-2=2x+7'));
     assert(item.page.includes('11906')&&item.page.includes('16838'));
   }
+  if(baseline.authority){
+    assert.equal(version.id,baseline.authority.confirmedVersion);
+    assert.equal(version.digest,baseline.authority.verifiedDigest);
+    const {required,excluded}=baseline.authority.fileExpectations;
+    for(const file of [student,teacher]){
+      for(const value of required)assert(file.text.includes(value),'Missing confirmed content in '+file.audience+' Word file');
+      for(const value of excluded)assert(!file.text.includes(value),'Superseded content in '+file.audience+' Word file');
+    }
+    check('Both approved DOCX files contain the hand-edited V2 and final exercise and exclude the authorized V1 description');
+  }
   assert.doesNotMatch(student.text,/答案与解析|参考资料/);
   if(physics){
     const content=file=>[file.text,...file.formulas.filter(Boolean)].map(physicsNotation).join('\n');

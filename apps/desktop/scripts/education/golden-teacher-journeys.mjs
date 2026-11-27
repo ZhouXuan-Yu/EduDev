@@ -49,9 +49,13 @@ const joinCold=process.argv.find(a=>a.startsWith('--join-cold='))?.split('=')[1]
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const sharedBudget=readSharedModelBudget(process.argv,desktop);
 if(sharedBudget)assert(scenario==='KB-GENERATED-PAPER'&&process.env.OMNI_EDU_NATURAL_THREE_MODES!=='1','Shared R4 budget is for the frozen composite paper journey');
-const output=fs.mkdtempSync(path.join(desktop,'test-results/education-journey-'));
+const defaultRoot=path.join(desktop,'test-results');
+const outputRoot=scenario==='EV-FEEDBACK' && process.env.OMNI_EDU_ACCEPTANCE_ROOT ? process.env.OMNI_EDU_ACCEPTANCE_ROOT : defaultRoot;
+const output=fs.mkdtempSync(path.join(outputRoot,'education-journey-'));
 const runtimeRoot=sharedBudget?fs.mkdtempSync(path.join(os.tmpdir(),'r4-paper-runtime-')):output;
-const data=path.join(joinCold?path.join(desktop,'test-results',joinCold):readingResume?path.join(desktop,'test-results',readingResume):choiceResume?path.join(desktop,'test-results',choiceResume):runtimeRoot,'data'),profile=path.join(joinCold?path.join(desktop,'test-results',joinCold):readingResume?path.join(desktop,'test-results',readingResume):choiceResume?path.join(desktop,'test-results',choiceResume):runtimeRoot,'electron-profile');
+const resume=joinCold || readingResume || choiceResume;
+const stateRoot=resume ? path.join(defaultRoot,resume) : runtimeRoot;
+const data=path.join(stateRoot,'data'),profile=path.join(stateRoot,'electron-profile');
 const key=process.env.DEEPSEEK_API_KEY||(!sharedBudget?fs.readFileSync(path.join(desktop,'.env.local'),'utf8').match(/^DEEPSEEK_API_KEY\s*=\s*(.*?)\s*$/m)?.[1]?.replace(/^['"]|['"]$/g,''):undefined);
 assert(key,'Local test credential required');
 const main=testMain(desktop),fixed=fingerprint(path.dirname(path.dirname(main))),report={success:false,scenario,checks:[],launches:[],visuals:[],rendererErrors:[],build:{sha256:fixed.sha256,files:fixed.files.length},scriptSha256:sha256(fs.readFileSync(fileURLToPath(import.meta.url))),boundaries:['Actual UI import → main SQLite → Pi → unmodified DeepTutor worker → real DeepSeek → durable assistant → cold restoration','Synthetic owned teacher file only; no daily facts, full DeepTutor/Golden F, OpenMAIC/Golden E, installer or VPN-off acceptance']};

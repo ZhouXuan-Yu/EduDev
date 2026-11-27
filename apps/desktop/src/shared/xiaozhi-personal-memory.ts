@@ -29,5 +29,5 @@ export type PersonalMemoryEditInput = {operationId:string; id:string; revision:n
 export type PersonalMemoryReceipt = {operationId:string; id:string; revision:number};
 import type {HistorySourceRef} from './xiaozhi-history-memory';
 
-export type PersonalMemorySourcePermission = {allowed:boolean; revision:number};
-export type PersonalMemorySourceInput = {ref:HistorySourceRef; enabled:boolean; revision:number};
+export type PersonalMemorySourcePermission = {allowed:boolean; revision:number; teachingTarget?:{term:string;version:number}};
+export type PersonalMemorySourceInput = {ref:HistorySourceRef; enabled:boolean; revision:number; teachingTargetVersion?:number};

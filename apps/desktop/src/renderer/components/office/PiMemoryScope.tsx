@@ -22,6 +22,8 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
 }) {
   const [enabled, setEnabled] = useState(scope.enabled);
   const [selected, setSelected] = useState<XiaozhiMemoryUseSelection[]>(savedChoices(scope));
+  const [schoolYear,setSchoolYear]=useState(scope.teachingTarget?.term.slice(0,4) ?? '');
+  const [season,setSeason]=useState(scope.teachingTarget?.term.split('-')[1] ?? 'fall');
   const [sourceIndex, setSourceIndex] = useState(0), [catalog, setCatalog] = useState<XiaozhiMemoryCatalog>();
   const [personal, setPersonal] = useState<PersonalMemorySummary[]>();
   const [trace, setTrace] = useState<XiaozhiMemoryTrace | null>();
@@ -31,17 +33,33 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
   useEffect(() => {
     setEnabled(scope.enabled);
     setSelected(savedChoices(scope));
-  }, [scope.version]);
+    setSchoolYear(scope.teachingTarget?.term.slice(0,4) ?? '');
+    setSeason(scope.teachingTarget?.term.split('-')[1] ?? 'fall');
+    request.current++;
+    setSourceIndex(0);
+    setPersonal(undefined);
+    setCatalog(undefined);
+    setLoading(false);
+  }, [scope.version,sessionId]);
+  async function confirmTeachingTarget(clear=false) {
+    if (mutation.current || running || !scope.currentFolderId || (!clear && !/^20[0-9]{2}$/.test(schoolYear))) return;
+    mutation.current=true; setBusy(true); setError(''); setNotice('');
+    try {
+      await onSave({sessionId,version:scope.version,enabled:false,selections:[],
+        teachingTarget:clear?null:{folderId:scope.currentFolderId,term:schoolYear+'-'+season}});
+      if (mounted.current) setNotice(clear?'已解除班级和学期绑定。':'已确认班级和学期，可重新选择本会话的记忆。');
+    } catch { if (mounted.current) setError('范围保存失败，请刷新后核对当前教学空间。'); }
+    finally { mutation.current=false; if (mounted.current) setBusy(false); }
+  }
   async function preview(index = sourceIndex, offset = 0) {
     const stamp = ++request.current; setLoading(true); setError('');
     try {
       const api = window.omniEdu; if (!api) throw new Error('configuration');
       if (index===sources.length) {
-        const result=await api.personalMemory.view();
+        const result=await api.personalMemory.catalog(sessionId);
         if (!mounted.current || stamp!==request.current) return;
         if (!result.ok) throw Error('preview_failed');
-        setPersonal(result.value.records.filter(record=>record.state==='active' && record.sourceCurrent &&
-          record.scope.kind==='teacher' && record.scope.id==='self'));
+        setPersonal(result.value);
         return;
       }
       const [result, ownTrace] = await Promise.all([
@@ -67,20 +85,36 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
     <ChatTool.Trigger><History size={15} aria-hidden="true" /><span>本会话记忆</span><span>{scope.enabled ? `${scope.selections.length} 项选择` : '未开启'}</span></ChatTool.Trigger>
     <ChatTool.Content>
       <p data-testid="pi-memory-model-access">{scope.modelAccess === 'available' ? '小智可通过工具读取本会话所选的脱敏摘要，并显示来源回执。' : '本地预览与选择；模型读取尚未接入。'}</p>
+      {scope.currentFolderId && <DisclosureCard title={<>本会话的班级和学期</>}>
+        <p>{scope.teachingTarget?'当前记忆范围为本教学空间，'+scope.teachingTarget.term.slice(0,4)+' 年'+(scope.teachingTarget.term.endsWith('fall')?'秋季':'春季')+'。':'要使用仅限本班的记忆，请确认本教学空间代表当前班级。'}</p>
+        <label>学期年份<input aria-label="学期年份" inputMode="numeric" maxLength={4} placeholder="例如 2026"
+          value={schoolYear} onChange={event=>setSchoolYear(event.target.value)} disabled={busy||running}/></label>
+        <label>学期<AppNativeSelect aria-label="学期" value={season} onChange={event=>setSeason(event.target.value)} disabled={busy||running}>
+          <option value="fall">秋季</option><option value="spring">春季</option></AppNativeSelect></label>
+        <p>更改范围会清空本会话已选记忆。</p>
+        <Button size="sm" variant="outline" isDisabled={busy||running||!/^20[0-9]{2}$/.test(schoolYear)||scope.teachingTarget?.term===schoolYear+'-'+season}
+          data-testid="pi-memory-confirm-class" onPress={()=>void confirmTeachingTarget()}>确认本班和学期</Button>
+        {scope.teachingTarget && <Button size="sm" variant="ghost" isDisabled={busy||running}
+          onPress={()=>void confirmTeachingTarget(true)}>解除绑定</Button>}
+      </DisclosureCard>}
       <label className="pi-memory-switch"><input type="checkbox" checked={enabled} disabled={busy || running} onChange={event => setEnabled(event.target.checked)} data-testid="pi-memory-enabled" />允许本会话引用所选的必要脱敏摘要</label>
       <p>当前查看保留在本机。旧记忆不会自动分享给新会话。</p>
       {running && <p role="status">本轮结束或停止后可修改选择。“关闭并清空”会先停止本轮，再撤销记忆引用。</p>}
       <ul className="pi-memory-selected" data-testid="pi-memory-selected">{scope.selections.map(item => <li key={key(item)} data-memory-id={item.id} data-state={item.state}>
         <span>{item.label} · v{item.version} · {selected.some(entry => key(entry) === key(item)) ? states[item.state] : '已取消，待保存'}</span>
+        {item.layer==='personal' && item.state==='ready' && <span data-testid={`pi-memory-use-${item.id}`}>
+          {scope.receivedReferences?.some(ref=>ref.id===item.id && ref.version===item.version)
+            ? '最近一轮已提供引用，成果仍需核验' : '已选择，最近一轮暂无引用投递回执'}
+        </span>}
         <Button size="sm" variant="ghost" isDisabled={busy || running} data-testid={`pi-memory-remove-${item.id}`} onPress={() => setSelected(previous => previous.filter(entry => key(entry) !== key(item)))}>取消选择</Button>
       </li>)}</ul>
       {!scope.selections.length && <p data-testid="pi-memory-scope-empty">尚未选择长期记忆。</p>}
-      <label>本地记忆来源<AppNativeSelect value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); setPersonal(undefined); void preview(index); }} data-testid="pi-memory-source">
+      <label>本地记忆来源<AppNativeSelect disabled={busy} value={sourceIndex} onChange={event => { const index = Number(event.target.value); setSourceIndex(index); setCatalog(undefined); setPersonal(undefined); void preview(index); }} data-testid="pi-memory-source">
         {sources.map((source, index) => <option key={`${source.layer}:${source.source}`} value={index}>{source.layer} · {XIAOZHI_MEMORY_LABELS[source.source]}</option>)}
         <option value={sources.length}>教师确认的记忆</option>
       </AppNativeSelect></label>
       <div className="pi-memory-actions">
-        <Button size="sm" variant="outline" isDisabled={loading} onPress={() => { void preview(); }} data-testid="pi-memory-preview"><History size={14} />查看本地记忆</Button>
+        <Button size="sm" variant="outline" isDisabled={busy||loading} onPress={() => { void preview(); }} data-testid="pi-memory-preview"><History size={14} />查看本地记忆</Button>
         <Button size="sm" variant="ghost" isDisabled={busy || loading} onPress={() => { void onRefresh().then(() => preview()).catch(() => setError('刷新失败，请重试。')); }} data-testid="pi-memory-refresh"><RefreshCw size={14} />刷新</Button>
       </div>
       {loading && <p role="status">正在读取本地记忆…</p>}

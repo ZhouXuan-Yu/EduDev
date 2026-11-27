@@ -4,6 +4,7 @@ import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
 import {createHash} from 'node:crypto';
 import {_electron as electron} from 'playwright';
+import {verifyHandoutMemoryAuthority} from './handout-memory-authority-journey.mjs';
 import {assertIsolatedPiMain,testMain} from '../acceptance/build-root.mjs';
 
 const root=process.env.OMNI_EDU_ACCEPTANCE_ROOT,fixture=process.env.OMNI_EDU_HANDOUT_FIXTURE;
@@ -39,13 +40,15 @@ async function until(read,timeout=60000){
 const reviewTool='education_propose_handout_edit',readTool='education_read_handout_for_edit';
 const title='等式变形分层学案';
 const schemaVersion='xiaozhi.handout-edit.v1';
+let selectedSentence;
 const phases={
-  apply:'修改《等式变形分层学案》。第一章标题改为「等式变形与验算」，将知识讲解中的「等式性质可以用于移项。」改为「等式变形后要代回原式验算。」。把第 2 道练习调为基础并改成 5x-2=2x+10，更新答案和解析。',
+  apply:'修改《等式变形分层学案》。第一章标题改为「等式变形与验算」，将知识讲解中的「{选区}」改为「等式变形后要代回原式验算。」。把第 2 道练习调为基础并改成 5x-2=2x+10，更新答案和解析。',
+  bounded:'继续修改《等式变形分层学案》，这次仅改第２题，把难度调为拓展。',
   reject:'将《等式变形分层学案》第 2 道练习改为拓展，我先核对再决定。',
   conflict:'把《等式变形分层学案》的知识讲解段落改成强调核对两边同做一种运算。',
   source:'再次修改《等式变形分层学案》的讲解段落，先由我核对后再应用。',
-  stop:'修改《等式变形分层学案》，第 2 道练习调为拓展。',
-  interrupted:'修改《等式变形分层学案》，把第 2 道练习变成拓展，先等我确认。',
+  stop:'修改《等式变形分层学案》，第 2 道练习调为巩固。',
+  interrupted:'修改《等式变形分层学案》，把第 2 道练习变成巩固，先等我确认。',
 };
 
 async function launch(cold=false){
@@ -71,8 +74,32 @@ async function launch(cold=false){
           try{previous=JSON.parse(text.split('\n')[0]);}catch{previous={unparsed:text};}
         }
         let call,content;
-        if(index===0)call={name:readTool,args:{title}};
-        else if(index===1&&phase==='apply'){
+        if(phase==='authority-archive')content='收到。';
+        else if(phase==='authority-edit'){
+          if(index===0)call={name:'read_education_memory',args:{}};
+          else if(index===1){
+            if(!previous.memories?.some(item=>JSON.stringify(item).includes(state.oldText)))throw Error('Authorized V1 missing from Pi memory tool');
+            call={name:readTool,args:{title}};
+          }else if(index===2){
+            if(previous.digest!==state.v2Digest||previous.chapter?.blocks?.length!==1)throw Error('Expected the current V2 exercise alone');
+            const [exercise]=previous.chapter.blocks;
+            if(exercise.id!==state.target||exercise.text!==state.newText)throw Error('Old memory replaced current handout');
+            state.authorityInput={bookId:previous.bookId,digest:previous.digest,changes:[{kind:'exercise',blockId:exercise.id,difficulty:'拓展'}]};
+            call={name:reviewTool,args:state.authorityInput};
+          }else content=previous.success?'已按审核修改。':'未应用。';
+        }else if(index===0)call={name:readTool,args:{title}};
+        else if(phase==='bounded'&&index===1){
+          if(!previous.success||!previous.chapter)throw Error('Cannot read current bounded exercise');
+          const {bookId,digest,chapter}=previous;
+          if(chapter.blocks.length!==1||chapter.blocks[0].role!=='exercise'||!chapter.blocks[0].title.startsWith('练习 2 ·'))
+            throw Error('Expected only the named current exercise');
+          state.bounded={bookId,digest,changes:[{kind:'exercise',blockId:chapter.blocks[0].id,difficulty:'拓展'}]};
+          call={name:reviewTool,args:{bookId,digest,changes:[...state.bounded.changes,
+            {kind:'chapter',chapterId:chapter.id,title:'超出本次范围的标题'}]}};
+        }else if(phase==='bounded'&&index===2){
+          if(previous.success||previous.error!=='exercise_scope')throw Error('Mixed proposal crossed teacher selection');
+          call={name:reviewTool,args:state.bounded};
+        }else if(index===1&&phase==='apply'){
           if(!previous.success||!previous.chapter)throw Error('Unable to read exact handout: '+JSON.stringify(previous));
           state.scoped=previous;
           call={name:readTool,args:{bookId:previous.bookId,chapterId:previous.chapter.id,
@@ -84,9 +111,9 @@ async function launch(cold=false){
           const {bookId,digest,chapter}=phase==='apply'?state.scoped:previous;
           const block=chapter.blocks.find(item=>item.role==='explanation');
           const question=chapter.blocks.find(item=>item.title.startsWith('练习 2 ·'));
-          const paragraph={kind:'paragraph',blockId:block.id,selectedText:phase==='apply'?'等式性质可以用于移项。':'等式变形后要代回原式验算。',
+          const paragraph={kind:'paragraph',blockId:block.id,selectedText:phase==='apply'?state.selectedSentence:'等式变形后要代回原式验算。',
             replacement:phase==='apply'?'等式变形后要代回原式验算。':'每次运算都应同步作用于等式两边。'};
-          const exercise={kind:'exercise',blockId:question.id,difficulty:phase==='apply'?'基础':'拓展',
+          const exercise={kind:'exercise',blockId:question.id,difficulty:phase==='apply'?'基础':['stop','interrupted'].includes(phase)?'巩固':'拓展',
             ...(phase==='apply'?{prompt:'解 $5x-2=2x+10$ 并代回。',answer:'$x=4$',explanation:'两边减去 $2x$ 并加 2，得到 $3x=12$。'}:{})};
           state.valid=phase==='apply'?{bookId,digest,changes:[{kind:'chapter',chapterId:chapter.id,title:'等式变形与验算',
             objectives:['用代入检查解是否满足原方程']},paragraph,exercise]}:
@@ -120,8 +147,8 @@ const reply=()=>page.getByTestId('pi-handout-edit').last();
 const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
 async function send(phase){
   await until(async()=>!(await snapshot()).running&&!await page.getByTestId('office-prompt-input').isDisabled());
-  await app.evaluate((_electron,phase)=>Object.assign(globalThis.handoutEditTest,{phase,index:0}),phase);
-  await page.getByTestId('office-prompt-input').fill(phases[phase]);
+  await app.evaluate((_electron,input)=>Object.assign(globalThis.handoutEditTest,input),{phase,index:0,selectedSentence});
+  await page.getByTestId('office-prompt-input').fill(phases[phase].replace('{选区}',()=>selectedSentence));
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   const approve=reply().getByTestId('pi-handout-edit-approve');
   await until(async()=>{
@@ -138,15 +165,14 @@ async function settle(state){
   assert.deepEqual(wire.errors,[]);
 }
 
-try{
-  const [resource]=sql('SELECT id,local_path FROM teacher_resources');
-  const relative=path.relative(oldData,resource.local_path);
-  assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
-  assert(fs.existsSync(path.join(data,relative)));
-  sql('UPDATE teacher_resources SET local_path=? WHERE id=?',[path.join(data,relative),resource.id],true);
+async function verifyHandoutEdits(){
   const baselineVersions=versions();
   await launch();
   const before=await current();
+  const explanation=blockOf(before,'explanation').payload.text;
+  selectedSentence=explanation.match(/[^。！？\n]+[。！？]/gu)?.map(part=>part.trim())
+    .find(part=>part.length>1&&explanation.indexOf(part)===explanation.lastIndexOf(part));
+  assert(selectedSentence,'The original fixture must contain a uniquely locatable explanation sentence');
   await page.setViewportSize({width:1366,height:768});
   const approve=await send('apply');
   const proposal=reviews().at(-1);
@@ -172,7 +198,7 @@ try{
   assert.equal(after.chapters[0].title,'等式变形与验算');
   assert.deepEqual(after.chapters[0].learningObjectives,['用代入检查解是否满足原方程']);
   const oldText=blockOf(before,'explanation').payload.text,newText=blockOf(after,'explanation').payload.text;
-  assert.equal(newText,oldText.replace('等式性质可以用于移项。','等式变形后要代回原式验算。'));
+  assert.equal(newText,oldText.replace(selectedSentence,'等式变形后要代回原式验算。'));
   assert.deepEqual(after.blocks.filter(block=>!['explanation'].includes(block.metadata.handoutRole)&&!block.title.startsWith('练习 2 ·')),
     before.blocks.filter(block=>!['explanation'].includes(block.metadata.handoutRole)&&!block.title.startsWith('练习 2 ·')));
   assert.equal(blockOf(after,'exercise',2).title,'练习 2 · 基础');
@@ -212,6 +238,23 @@ try{
   assert.equal(versions().length,baselineVersions.length+2);
   check('A concurrent teacher edit invalidates the base version without overwriting either block');
 
+  // Re-open the teacher-modified version through the normal Pi conversation.
+  const beforeBounded=await current(),beforeReviewCount=reviews().length;
+  const boundedApprove=await send('bounded');
+  assert.equal(reviews().length,beforeReviewCount+1);
+  assert(!/超出本次范围的标题/u.test(await reply().getByTestId('pi-handout-edit-diffs').innerText()));
+  await boundedApprove.click();
+  await settle('applied');
+  const bounded=await current(),expected=blockOf(beforeBounded,'exercise',2);
+  assert.equal(blockOf(bounded,'exercise',2).title,'练习 2 · 拓展');
+  assert.deepEqual(bounded.chapters,beforeBounded.chapters);
+  assert.deepEqual(bounded.blocks.filter(b=>b.id!==expected.id),beforeBounded.blocks.filter(b=>b.id!==expected.id));
+  assert.equal(blockOf(bounded,'focus').payload.text,'老师在另一个界面保存的重点。');
+  const savedImage=JSON.parse(versions().at(-1).image_json);
+  assert.equal(blockOf(savedImage.content,'focus').payload.text,blockOf(bounded,'focus').payload.text);
+  assert.equal(blockOf(savedImage.content,'exercise',2).title,'练习 2 · 拓展');
+  check('Current edited version restricts the Pi read and proposal to the named exercise; SQLite version preserves the teacher edit');
+
   const sourceApprove=await send('source');
   const [source]=sql('SELECT id,content_md FROM resource_chunks WHERE id=?',[competing.materialSources[0].chunkId]);
   assert(sql('UPDATE resource_chunks SET content_md=? WHERE id=?',[source.content_md+'\n合成资料在预览后修订。',source.id],true).changes);
@@ -224,7 +267,7 @@ try{
   await send('stop');
   await page.getByRole('button',{name:'停止本轮',exact:true}).click();
   await settle('interrupted');
-  assert.deepEqual((await current()).blocks,competing.blocks);
+  assert.deepEqual((await current()).blocks,bounded.blocks);
   check('Stopping a live teacher review leaves the book unchanged');
 
   await send('interrupted');
@@ -237,7 +280,7 @@ try{
   const reopen=await page.evaluate(({sessionId,schemaVersion,id})=>window.omniEdu.reviewHandoutEdit({sessionId,schemaVersion,id}),
     {sessionId,schemaVersion,id:pending.id});
   assert(reopen.ok&&reopen.value.summary.state==='interrupted');
-  assert.equal(versions().length,baselineVersions.length+2);
+  assert.equal(versions().length,baselineVersions.length+4);
   check('Shutdown settles pending review as interrupted and cold start never replays it');
 
   const savedCard=page.locator('[data-testid="pi-handout-edit"][data-state="applied"]').first();
@@ -250,13 +293,25 @@ try{
   if(!await checkpoint.isVisible())await disclosure.getByRole('button',{name:'历史版本'}).click();
   await checkpoint.click();
   await page.getByTestId('teaching-book-version-dialog').waitFor();
-  assert.match(await page.getByTestId('teaching-book-version-preview').innerText(),/等式两边同做一种运算/);
+  assert((await page.getByTestId('teaching-book-version-preview').innerText()).includes(selectedSentence));
   await page.screenshot({path:path.join(output,'rollback-preview-1920.png')});
   await page.getByTestId('teaching-book-version-restore').click();
   await until(async()=>blockOf(await current(),'exercise',2).title==='练习 2 · 巩固');
   assert.equal(blockOf(await current(),'explanation').payload.text,oldText);
   assert.deepEqual(report.errors,[]);
   check('Opening the exact edited book exposes previous content and restores the original paired exercise');
+}
+
+try{
+  const [resource]=sql('SELECT id,local_path FROM teacher_resources');
+  const relative=path.relative(oldData,resource.local_path);
+  assert(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative));
+  assert(fs.existsSync(path.join(data,relative)));
+  sql('UPDATE teacher_resources SET local_path=? WHERE id=?',[path.join(data,relative),resource.id],true);
+  if(process.argv.includes('--memory-authority')){
+    await launch();
+    await verifyHandoutMemoryAuthority({page,app,sessionId,bookId,title,until,current,snapshot,sql,versions,output,check,report});
+  }else await verifyHandoutEdits();
   report.ok=true;
 }catch(error){
   report.errors.push(String(error?.stack||error));

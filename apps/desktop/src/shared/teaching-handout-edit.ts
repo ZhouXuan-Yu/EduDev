@@ -49,6 +49,7 @@ export const handoutEditErrors:Record<string,string>={
   exercise_unavailable:'未找到唯一对应的练习和答案，请在讲义编辑器核对这道题。',
   no_change:'拟修改内容与原文相同。',
   unsupported_math:'拟修改内容含无法排版的数学公式，请修正公式。',
+  exercise_scope:'请只提交老师指定的练习。若题号重复或范围不清，请老师确认讲义及具体位置。',
   scope_conflict:'多项修改同时指向同一个内容块，请合并成一项。',
   review_exists:'本轮已有一份审阅记录，请根据原决定结束本轮。',
   permission_denied:'当前窗口或会话无法处理这个讲义建议。',

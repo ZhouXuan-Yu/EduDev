@@ -12,6 +12,8 @@ const evidence = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
 const adoption=process.argv.includes('--adoption');
+const verifyClass=process.argv.includes('--class-scope');
+let classFolders;
 const verifyUse=process.argv.includes('--use');
 const verifyPending=process.argv.includes('--pending');
 const handout=process.argv.includes('--handout');
@@ -52,7 +54,10 @@ async function launch() {
       const strings=body.messages.map(m=>typeof m.content==='string'?m.content:Array.isArray(m.content)?m.content.map(c=>c.text).join(' '):'');
       const preference=strings.filter(text=>text.includes('当前教师表达偏好')||text.includes('[教师偏好操作结果]'));
       const personalItems=strings.filter(text=>text.includes('"teacher_confirmed"')).map(text=>text.slice(0,2500));
-      const row={model:body.model,status:0,preference,personalItems,startedAt:new Date().toISOString()};
+      const projectedPersonal = strings.flatMap((text,index) => body.messages[index].role === 'user'
+        ? [...text.matchAll(/\{"layer":"personal","source":"personal","id":"([a-f0-9]{64})","version":(\d+)\}/g)]
+          .map(match=>({id:match[1],version:Number(match[2])})) : []);
+      const row={model:body.model,status:0,preference,personalItems,projectedPersonal,startedAt:new Date().toISOString()};
       globalThis.r2Wire.push(row);
       const started=performance.now();
       const response=await fetch(input,init);
@@ -211,14 +216,44 @@ function backgroundReceipt(){
   }finally{db.close();}
 }
 
-async function useAdoptedMemory(record,source){
-  await page.getByTestId('nav-ai').click();
-  await fresh();
-  const sessionId=await active();
+async function openSessionMemory() {
   await page.getByRole('button',{name:'设置',exact:true}).click();
   await page.getByTestId('pi-settings-tab-permissions').click();
   const panel=page.getByTestId('pi-settings-main').getByTestId('pi-memory-scope');
   if(!await panel.getByTestId('pi-memory-enabled').isVisible())await panel.locator('[data-slot="chat-tool-trigger"]').click();
+  return panel;
+}
+
+// Create and move synthetic sessions via public workspace operations. Only visible controls confirm memory use.
+async function confirmClass(sessionId,folderId,season) {
+  await page.evaluate(([session,folder])=>window.omniEdu.moveAiConversationSession(session,folder),[sessionId,folderId]);
+  const panel=await openSessionMemory();
+  await panel.getByRole('button',{name:'本会话的班级和学期'}).click();
+  await panel.getByLabel('学期年份',{exact:true}).fill('2026');
+  await panel.getByLabel('学期',{exact:true}).selectOption(season);
+  await panel.getByTestId('pi-memory-confirm-class').click();
+  await panel.getByText('已确认班级和学期，可重新选择本会话的记忆。',{exact:true}).waitFor();
+  await until(async()=>{const scope=(await snapshot(sessionId)).memoryScope;
+    return scope.teachingTarget?.folderId===folderId&&scope.teachingTarget.term==='2026-'+season;});
+  return panel;
+}
+
+async function useAdoptedMemory(record,source){
+  await page.getByTestId('nav-ai').click();
+  await fresh();
+  const sessionId=await active();
+  let panel;
+  if (verifyClass) {
+    for (const [folder,season] of [[classFolders[1],'fall'],[classFolders[0],'spring']]) {
+      panel=await confirmClass(sessionId,folder,season);
+      await panel.getByTestId('pi-memory-source').selectOption({label:'教师确认的记忆'});
+      await panel.getByTestId('pi-personal-memory-catalog').getByText('暂无可选的教师记忆。').waitFor();
+      assert.equal(await panel.getByTestId('pi-memory-select-'+record.id).count(),0);
+      await page.getByTestId('nav-ai').click();
+    }
+    panel=await confirmClass(sessionId,classFolders[0],'fall');
+    check('another class and another term reveal no confirmed source in the session picker',{sessionId,checks:2});
+  } else panel=await openSessionMemory();
   await panel.getByTestId('pi-memory-source').selectOption({label:'教师确认的记忆'});
   await panel.getByTestId('pi-memory-select-'+record.id).check();
   await panel.getByTestId('pi-memory-enabled').check();
@@ -230,7 +265,10 @@ async function useAdoptedMemory(record,source){
   await page.getByTestId('nav-ai').click();
   const offset=(await wire()).length;
   const follow=await send('请先调用 read_education_memory 读取本会话已选任教自述，再说明我负责哪一年级的哪门课程。');
-  const delivered=(await wire()).slice(offset).flatMap(row=>row.personalItems);
+  const requests=(await wire()).slice(offset);
+  assert.deepEqual(requests[0].projectedPersonal,[{id:record.id,version:record.revision}]);
+  assert.deepEqual(requests[0].personalItems,[]);
+  const delivered=requests.flatMap(row=>row.personalItems);
   assert(delivered.some(text=>text.includes('四年级科学')&&text.includes(record.sourceVersion)));
   const outcome=follow.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
   assert(outcome.includes('四年级')&&outcome.includes('科学'),outcome);
@@ -254,7 +292,8 @@ async function reviewInConversation(sessionId,candidateId,draft,source){
     await until(async()=>page.evaluate(([w,h])=>innerWidth===w&&innerHeight===h,[width,height]),10000);
     await open().click();
     await candidate().getByRole('button',{name:'查看来源',exact:true}).click();
-    await candidate().getByText(review.value.quote,{exact:true}).waitFor();
+    await candidate().getByTestId('personal-memory-reviewed-quote').waitFor();
+  assert.equal(await candidate().getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
     assert.equal(await input().inputValue(),draft);
     await page.screenshot({path:path.join(root,`conversation-review-${width}x${height}.png`)});
     await pending().getByRole('button',{name:'关闭核对',exact:true}).click();
@@ -274,7 +313,8 @@ async function reviewInConversation(sessionId,candidateId,draft,source){
   }
   await open().click();
   await candidate().getByRole('button',{name:'查看来源',exact:true}).click();
-  await candidate().getByText(review.value.quote,{exact:true}).waitFor();
+  await candidate().getByTestId('personal-memory-reviewed-quote').waitFor();
+  assert.equal(await candidate().getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
   assert.equal(await input().inputValue(),draft);
   await candidate().getByRole('button',{name:'确认采用',exact:true}).click();
   await pending().getByText('已保存为正式记忆。',{exact:true}).waitFor();
@@ -284,6 +324,18 @@ async function reviewInConversation(sessionId,candidateId,draft,source){
 
 async function candidateAdoption(){
   const sessionId=await active();
+  if (verifyClass) {
+    classFolders=await page.evaluate(async()=>{
+      const folders=[];
+      for (const name of ['物理一班（合成）','物理二班（合成）']) {
+        const workspace=await window.omniEdu.createAiConversationFolder({name});
+        folders.push(workspace.folders.find(row=>row.name===name).id);
+      }
+      return folders;
+    });
+    await confirmClass(sessionId,classFolders[0],'fall');
+    await page.getByTestId('nav-ai').click();
+  }
   const source='我本学期负责四年级科学。';
   const turn=await send(source);
   let memory=await memorySettings();
@@ -295,6 +347,7 @@ async function candidateAdoption(){
   await history.getByRole('button',{name:'查看来源',exact:true}).click();
   const sourcePreview=history.getByTestId('history-settings-preview');
   assert((await sourcePreview.textContent()).includes(source));
+  if(verifyClass) assert(await sourcePreview.getByRole('checkbox',{name:/仅用于此来源会话已确认的班级和学期/}).isChecked());
   await sourcePreview.getByTestId('personal-memory-source-consent').click();
   await sourcePreview.getByText('已允许从这条原话提取记忆建议。',{exact:true}).waitFor();
   const draft='这段是尚未发送的新任务草稿。';
@@ -329,13 +382,15 @@ async function candidateAdoption(){
     await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
     const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
     assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
-    await candidate.getByText(review.value.quote,{exact:true}).waitFor();
+    await candidate.getByTestId('personal-memory-reviewed-quote').waitFor();
+    assert.equal(await candidate.getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
     await page.screenshot({path:path.join(root,'review-candidate.png')});
     await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
     await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
   }
   const adopted=(await memoryRead()).records[0];
   assert.equal(adopted.id,candidateId);
+  if(verifyClass){assert.deepEqual(adopted.scope,{kind:'class',id:classFolders[0]});assert.equal(adopted.term,'2026-fall');}
   assert.equal(adopted.revision,1);
   assert.equal(adopted.sourceCurrent,true);
   check('the teacher reviews a real source and adopts a formal memory through typed preload',{id:adopted.id,revision:adopted.revision});

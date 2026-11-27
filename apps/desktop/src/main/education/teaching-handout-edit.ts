@@ -4,6 +4,8 @@ import {HANDOUT_EDIT_SCHEMA,PROPOSE_HANDOUT_EDIT,READ_HANDOUT_EDIT,handoutChapte
   type HandoutEditSummary} from '../../shared/teaching-handout-edit';
 import {handoutBookId,handoutDigest} from '../../shared/teaching-handout-export';
 import {plainStudentInput} from '../../shared/student-context';
+import {handoutTitleKey} from './teaching-handout-output-scope';
+import {currentExerciseTargets,protectedExerciseBlocks,protectedExerciseNumbers,requestedExerciseNumbers} from './handout-exercise-scope';
 import {handoutExercise,validHandoutEditInput} from './teaching-handout-edit-plan';
 import {handoutEditSummary,type createTeachingHandoutEditState} from './teaching-handout-edit-state';
 import type {createTeachingBookVersions} from './teaching-book-versions';
@@ -14,8 +16,9 @@ export function handoutEditRequest(prompt:string) {
   const text=prompt.normalize('NFKC');
   const handout=/(?:讲义|学案)/u.test(text);
   const local=/(?:章节|第.{0,5}章|段落|知识讲解|练习\s*\d|第.{0,5}道练习|练习题)/u.test(text);
-  return (handout||local&&!/(?:试卷|组卷|教案|课堂)/u.test(text))&&
-    /(?:修改|修订|改(?:为|成|一下|写|动|题)|把.{0,80}(?:换|改|调|加|删)|换成|替换|调[低高整为成]|降低|提高|补充|重新写|删掉|重写)/su.test(text);
+  const bounded=requestedExerciseNumbers(text)!==undefined;
+  return (handout||(local||bounded)&&!/(?:试卷|组卷|教案|课堂)/u.test(text))&&
+    (bounded||/(?:修改|修订|改(?:为|成|一下|写|动|题)|把.{0,80}(?:换|改|调|加|删)|换成|替换|调[低高整为成]|降低|提高|补充|重新写|删掉|重写)/su.test(text));
 }
 
 type State=ReturnType<typeof createTeachingHandoutEditState>;
@@ -31,13 +34,13 @@ const failure=(error:unknown)=>{
 const receipt=(data:object,success:boolean)=>({content:[{type:'text' as const,text:JSON.stringify({success,...data})}],
   details:{success},isError:!success});
 
-async function describeChapter(content:TeachingBookContent,chapterId:string,sanitize:Sanitize,blockId?:string) {
+async function describeChapter(content:TeachingBookContent,chapterId:string,sanitize:Sanitize,blockId?:string,allowed?:Set<string>) {
   const chapter=content.chapters.find(item=>item.id===chapterId);
   if(!chapter)throw Error('version_conflict');
   const pages=new Set(content.pages.filter(page=>page.chapterId===chapter.id).map(page=>page.id));
   const blocks=content.blocks.filter(block=>pages.has(block.pageId)&&block.status==='ready'&&
     block.type==='text'&&typeof block.payload.text==='string'&&block.metadata.handoutRole!=='exercise_solution'&&
-    (!blockId||block.id===blockId));
+    (!blockId||block.id===blockId)&&(!allowed||allowed.has(block.id)));
   if(blockId&&!blocks.length)throw Error('version_conflict');
   const details:{id:string;title:string;role:string;text?:string;exercise?:{difficulty:string;answer:string;explanation:string}}[]=[];
   let size=0;
@@ -52,8 +55,8 @@ async function describeChapter(content:TeachingBookContent,chapterId:string,sani
       difficulty:exercise.difficulty,answer:await sanitize(exercise.answer),explanation:await sanitize(exercise.explanation),
     }}:{})});
   }
-  return {id:chapter.id,title:await sanitize(chapter.title),summary:await sanitize(chapter.summary),
-    objectives:await Promise.all(chapter.learningObjectives.map(sanitize)),blocks:details};
+  return {id:chapter.id,title:await sanitize(chapter.title),summary:allowed?'':await sanitize(chapter.summary),
+    objectives:allowed?[]:await Promise.all(chapter.learningObjectives.map(sanitize)),blocks:details};
 }
 
 export function createHandoutEditCoordinator(options:{state:State;versions:Versions;
@@ -91,8 +94,12 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
       return {ok:true,value:review};
     }catch(error){return failure(error);}
   }
-  function tools(run:{sessionId:string;runId:string;owner:()=>HandoutOwner;current:()=>boolean},wait:Wait):ToolDefinition[] {
-    let observed:{bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
+  function tools(run:{prompt:string;sessionId:string;runId:string;owner:()=>HandoutOwner;current:()=>boolean},wait:Wait):ToolDefinition[] {
+    const numbers=requestedExerciseNumbers(run.prompt);
+    const preserved=protectedExerciseNumbers(run.prompt);
+    const implicitBook=!/(?:讲义|学案|《)/u.test(run.prompt);
+    const titles=[...run.prompt.matchAll(/《([^《》]+)》/gu)].map(match=>match[1]);
+    let observed:{protectedBlocks:Set<string>;exerciseTargets?:Set<string>;bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
     const fence=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!run.current())throw Error('cancelled');};
     return [{
       name:READ_HANDOUT_EDIT,label:'读取讲义修改位置',
@@ -105,7 +112,9 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
             raw.title!==undefined&&(typeof raw.title!=='string'||!raw.title.trim()||raw.title.length>200||raw.bookId!==undefined)||
             raw.chapterId!==undefined&&!handoutChapterId(raw.chapterId)||
             raw.blockId!==undefined&&(!handoutBlockId(raw.blockId)||raw.chapterId===undefined))throw Error('invalid_input');
-          const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,{bookId:raw.bookId,title:raw.title});
+          if(numbers && titles.length>1)throw Error('exercise_scope');
+          const target=numbers ? {title:titles[0],taskOnly:implicitBook} : {bookId:raw.bookId,title:raw.title};
+          const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,target);
           const sanitize=await options.sanitizer();
           fence(signal);
           if(item.kind==='ambiguous'){
@@ -115,11 +124,15 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
             return receipt({error:'ambiguous',message:handoutEditErrors.ambiguous,choices},false);
           }
           const {content,digest}=item,bookId=content.book.id,title=await sanitize(content.book.title);
+          if(numbers&&(raw.bookId&&raw.bookId!==bookId||raw.title&&handoutTitleKey(raw.title)!==handoutTitleKey(content.book.title)))throw Error('exercise_scope');
           const chapters=await Promise.all(content.chapters.map(async chapter=>({id:chapter.id,title:await sanitize(chapter.title)})));
           const chapterId=raw.chapterId??(chapters.length===1?chapters[0].id:undefined);
-          const chapter=chapterId?await describeChapter(content,chapterId,sanitize,raw.blockId):undefined;
+          const targets=numbers?currentExerciseTargets(content,numbers):undefined;
+          if(targets&&!targets.size)throw Error('exercise_scope');
+          const chapter=chapterId?await describeChapter(content,chapterId,sanitize,raw.blockId,targets):undefined;
           fence(signal);
-          if(observed?.bookId!==bookId||observed.digest!==digest)observed={bookId,digest,title,chapters:new Set(),blocks:new Set()};
+          if(observed?.bookId!==bookId||observed.digest!==digest)observed={bookId,digest,title,chapters:new Set(),blocks:new Set(),
+            exerciseTargets:targets,protectedBlocks:protectedExerciseBlocks(content,preserved)};
           if(chapter){
             observed.chapters.add(chapter.id);
             for(const block of chapter.blocks)if(block.text!==undefined)observed.blocks.add(block.id);
@@ -136,8 +149,12 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
         try{
           guard();
           if(!validHandoutEditInput(raw))throw Error('invalid_input');
-          if(!observed||observed.bookId!==raw.bookId||observed.digest!==raw.digest||raw.changes.some(change=>
-            change.kind==='chapter'?!observed!.chapters.has(change.chapterId):!observed!.blocks.has(change.blockId)))throw Error('source_required');
+          if(!observed||observed.bookId!==raw.bookId||observed.digest!==raw.digest)throw Error('source_required');
+          const {chapters,blocks,exerciseTargets,protectedBlocks}=observed;
+          if(raw.changes.some(change=>change.kind!=='chapter'&&protectedBlocks.has(change.blockId)))throw Error('exercise_scope');
+          if(exerciseTargets&&raw.changes.some(change=>change.kind!=='exercise'||!exerciseTargets.has(change.blockId)))throw Error('exercise_scope');
+          if(raw.changes.some(change=>change.kind==='chapter'?!chapters.has(change.chapterId):!blocks.has(change.blockId)))
+            throw Error('source_required');
           const pending=await options.state.propose(options.versions,run.owner(),callId,raw,observed.title,guard);
           if(pending.state==='pending'){
             await wait(()=>new Promise<boolean>(resolve=>{

@@ -254,6 +254,23 @@ try{
   assert.deepEqual(stableV4.students,old.students);
   receipt('Interrupting v4 rolls back the evidence table and leaves the committed v3 ledger readable.');
 
+  if (expectedVersion>=9) {
+    stage='interrupt personal-memory migration after history';
+    const historyUpgrade=join(root,'interrupted-personal','data');
+    cpSync(oldData,historyUpgrade,{recursive:true});
+    await startFailing('interrupted-personal',historyUpgrade,9);
+    const beforeHistory=dataState(historyUpgrade);
+    assert.equal(beforeHistory.version,8);
+    assert(!beforeHistory.schema.some(([,name])=>name==='personal_memory_processing'));
+    await launch(main,historyUpgrade,profile('interrupted-personal-reentry'));
+    const afterHistory=dataState(historyUpgrade);
+    assert.equal(afterHistory.version,expectedVersion);
+    assert.equal(afterHistory.ledger[8].migration_id,'r2.personal_memory.after_r3_config.v9');
+    assert.deepEqual(afterHistory.ledger.slice(0,8),beforeHistory.ledger);
+    assert.deepEqual(afterHistory.students,old.students);
+    receipt('Interrupted personal DDL preserves the committed history ledger and resumes on the next start.');
+  }
+
   const historicalBuilds=[
     [2,process.env.OMNI_EDU_DB_V2_BUILD||join(desktop,'test-results/xiaozhi-db-r1-delivery-8492/out/main/index.js')],
     [3,process.env.OMNI_EDU_DB_V3_BUILD],
@@ -316,6 +333,21 @@ try{
       {build,sha256:buildHash(build),from:version,to:expectedVersion,oldRows:facts.map(rows=>rows.length),ledger:after.ledger});
   }
 
+  stage='interrupt history-memory migration after v7 commits';
+  const historyUpgrade=join(root,'interrupted-v8','data');
+  cpSync(oldData,historyUpgrade,{recursive:true});
+  await startFailing('interrupted-v8',historyUpgrade,8);
+  const beforeHistory=dataState(historyUpgrade);
+  assert.equal(beforeHistory.version,7);
+  assert(!beforeHistory.schema.some(([,name])=>name==='memory_source_access'));
+  await launch(main,historyUpgrade,profile('interrupted-v8-reentry'));
+  const afterHistory=dataState(historyUpgrade);
+  assert.equal(afterHistory.version,expectedVersion);
+  assert.equal(afterHistory.ledger[7].migration_id,'r1.history_memory_access_and_index.after_r3_config.v8');
+  assert.deepEqual(afterHistory.ledger.slice(0,7),beforeHistory.ledger);
+  assert.deepEqual(afterHistory.students,old.students);
+  receipt('Interrupted history DDL rolls back, then v7 resumes and preserves previous records and ledger.');
+
   const branchFixtureList=process.env.OMNI_EDU_R2_MIGRATION_BRANCH_FIXTURES;
   if (branchFixtureList) {
     const fixtures=JSON.parse(readFileSync(branchFixtureList,'utf8'));
@@ -340,9 +372,9 @@ try{
       const source=new DatabaseSync(fixture,{readOnly:true});
       try {await backup(source,dbPath(data));}
       finally {source.close();}
-      await startFailing(label,data,8);
+      await startFailing(label,data,9);
       const interrupted=dataState(data);
-      assert.equal(interrupted.version,7);
+      assert.equal(interrupted.version,version===5?7:8);
       assert.equal(interrupted.ledger[6].migration_id,seventh);
       assert.deepEqual(interrupted.ledger.slice(0,version),frozen.ledger);
       assert(!interrupted.schema.some(([,name])=>name==='personal_memory_processing'));
@@ -372,20 +404,6 @@ try{
     assert.deepEqual(definitions[0],definitions[1]);
     receipt('Both released ledger prefixes converge to identical history, preparation, task summary and personal memory schema.');
   }
-  stage='interrupt history-memory migration after v7 commits';
-  const historyUpgrade=join(root,'interrupted-v8','data');
-  cpSync(oldData,historyUpgrade,{recursive:true});
-  await startFailing('interrupted-v8',historyUpgrade,8);
-  const beforeHistory=dataState(historyUpgrade);
-  assert.equal(beforeHistory.version,7);
-  assert(!beforeHistory.schema.some(([,name])=>name==='memory_source_access'));
-  await launch(main,historyUpgrade,profile('interrupted-v8-reentry'));
-  const afterHistory=dataState(historyUpgrade);
-  assert.equal(afterHistory.version,expectedVersion);
-  assert.equal(afterHistory.ledger[7].migration_id,'r1.history_memory_access_and_index.after_r3_config.v8');
-  assert.deepEqual(afterHistory.ledger.slice(0,7),beforeHistory.ledger);
-  assert.deepEqual(afterHistory.students,old.students);
-  receipt('Interrupted history DDL rolls back, then v8 resumes and preserves previous records and ledger.');
 
   const priorFixture=process.env.OMNI_EDU_DB_V2_ACQUISITION_FIXTURE;
   if(priorFixture){

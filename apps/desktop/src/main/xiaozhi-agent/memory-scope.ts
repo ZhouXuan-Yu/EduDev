@@ -10,8 +10,17 @@ import { rankHindsightTrialRows } from './memory-hindsight-trial';
 
 import type { createHistoryMemory } from './history/memory';
 import type { createPersonalMemoryUse } from '../education/personal-memory/use';
+import {personalReferencePlan} from './memory-use/personal-references';
 
 type MemoryFact = XiaozhiMemorySource & Omit<XiaozhiMemoryPreview, 'sanitizedText' | 'layer' | 'source'> & { fingerprint: string };
+function inRequestOrder(selections:PrivateMemorySelection[], personalIds?:readonly string[]) {
+  if (!personalIds) return selections;
+  const personal = new Map(selections.filter(item=>item.layer==='personal').map(item=>[item.id,item]));
+  const ranked = [...new Set(personalIds)].map(id=>personal.get(id)).filter(item=>item!==undefined);
+  let index=0;
+  return selections.flatMap<PrivateMemorySelection>(item=>item.layer!=='personal' ? [item] :
+    index < ranked.length ? [ranked[index++]] : []);
+}
 /** Existing SQLite remains the memory fact source. Nothing here invokes a provider. */
 export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?: 'available'; history?: ReturnType<typeof createHistoryMemory>;
   personal?:ReturnType<typeof createPersonalMemoryUse> } = {}) {
@@ -37,7 +46,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     if ((await store.getAiConversationSession(id)).session.archivedAt && !allowArchived) throw new Error('permission_denied');
   }
   async function scope(id: string): Promise<XiaozhiMemoryScope> {
-    await availableSession(id, true);
+    if (!validMemorySession(id)) throw Error('invalid_input');
+    const {session} = await store.getAiConversationSession(id);
     const saved = await store.xiaozhiState.memoryScope(id);
     const cache = new Map<string, MemoryFact[] | null>();
     const selections: XiaozhiMemoryScope['selections'] = [];
@@ -62,7 +72,16 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const { fingerprint: _private, ...selection } = item;
       selections.push({ ...selection, state, label: XIAOZHI_MEMORY_LABELS[item.source] });
     }
-    return { version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
+    const receipts=saved.enabled && selections.some(item=>item.layer==='personal' && item.state==='ready')
+      ? await store.xiaozhiState.latestReferenceDeliveries(id) : [];
+    const receivedReferences=receipts.flatMap(row=>{
+      const pin=saved.selections.find(item=>item.layer==='personal' && item.id===row.id && item.version===row.version);
+      if (!pin || pin.fingerprint!==row.fingerprint || saved.version!==row.scopeVersion ||
+          !selections.some(item=>item.layer==='personal' && item.id===row.id && item.state==='ready')) return [];
+      return [{id:pin.id,version:pin.version,estimatedTokens:Number(row.estimatedTokens),reason:String(row.reason)}];
+    });
+    return { ...(receivedReferences.length?{receivedReferences}:{}), ...(session.folderId && !session.studentId && !session.archivedAt ? {currentFolderId:session.folderId} : {}),
+      ...(saved.teachingTarget ? {teachingTarget:saved.teachingTarget} : {}), version: saved.version, enabled: saved.enabled, modelAccess: options.modelAccess || 'unavailable', selections };
   }
   async function authority(id: string) {
     await availableSession(id);
@@ -95,8 +114,19 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
   }
   return {
     scope, authority,
+    async personalReferences(id:string, expectedAuthority:string, requestId:string, query:string, availableTokens:number, signal?:AbortSignal) {
+      signal?.throwIfAborted();
+      const saved = await store.xiaozhiState.memoryScope(id);
+      const initial = await authority(id);
+      if (!initial.valid || initial.fingerprint!==expectedAuthority || initial.version!==saved.version) throw Error('memory_scope_changed');
+      const plan = await personalReferencePlan(saved,options.personal,id,expectedAuthority,requestId,query,availableTokens,signal);
+      const final = await authority(id);
+      signal?.throwIfAborted();
+      if (!final.valid || final.fingerprint!==expectedAuthority) throw Error('memory_scope_changed');
+      return plan;
+    },
     /** Main-only model payload. Never expose this method or authority hash through preload. */
-    async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal) {
+    async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal, personalIds?:readonly string[]) {
       signal?.throwIfAborted();
       const initial = await authority(id);
       if (initial.fingerprint !== expectedAuthority || !initial.valid) throw new Error('memory_scope_changed');
@@ -105,15 +135,15 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
         history?: {sourceId:string; sourceVersion:string; truncated:boolean};
-        personal?:{sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
-      if (saved.enabled) for (const item of saved.selections) {
+        personal?:{sourceId:string; sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
+      if (saved.enabled) for (const item of inRequestOrder(saved.selections,personalIds)) {
         signal?.throwIfAborted();
         if (item.layer==='personal') {
           const source=await options.personal?.(id,item).catch(()=>null);
           if (!source || source.fingerprint!==item.fingerprint) continue;
           payload.push({reference:`记忆${payload.length+1}`,layer:'personal',source:source.label,version:item.version,
             text:source.text,provenance:'teacher_confirmed',sourceDocuments:[],refs:[],
-            personal:{sourceVersion:item.sourceVersion,scope:source.scope,term:source.term,occurredAt:source.occurredAt}});
+            personal:{sourceId:item.id,sourceVersion:item.sourceVersion,scope:source.scope,term:source.term,occurredAt:source.occurredAt}});
           continue;
         }
         if (item.layer==='history') {
@@ -186,7 +216,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           if (current.version !== item.version) return { ok: false, error: 'command_conflict' };
           selections.push({ ...item, fingerprint: current.fingerprint });
         }
-        return await store.xiaozhiState.saveMemoryScope(input.sessionId, input.version, { enabled: input.enabled, selections })
+        return await store.xiaozhiState.saveMemoryScope(input.sessionId, input.version, { enabled: input.enabled, selections },input.teachingTarget)
           ? { ok: true } : { ok: false, error: 'command_conflict' };
       } catch (error) { return { ok: false, error: error instanceof Error && error.message === 'permission_denied' ? 'permission_denied' : 'configuration' }; }
     },

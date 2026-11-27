@@ -7,9 +7,9 @@ import { DatabaseSync } from 'node:sqlite';
 import { _electron as electron } from 'playwright';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const output = fs.mkdtempSync(path.join(root, 'test-results/xiaozhi-agent/pi-memory-model-ui-')), data = path.join(output, 'data'); fs.mkdirSync(data);
-const cfg = fs.readFileSync(path.join(root, '.env.local'), 'utf8'), pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
-const apiKey = pick('DEEPSEEK_API_KEY'), model = pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(apiKey);
+const output = fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT || path.join(root, 'test-results/xiaozhi-agent'), 'pi-memory-model-ui-')), data = path.join(output, 'data'); fs.mkdirSync(data);
+const cfg = fs.existsSync(path.join(root, '.env.local')) ? fs.readFileSync(path.join(root, '.env.local'), 'utf8') : '', pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
+const apiKey = process.env.DEEPSEEK_API_KEY || pick('DEEPSEEK_API_KEY'), model = process.env.DEEPSEEK_MODEL || pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(apiKey);
 const checks = [], report = { suite: 'pi-memory-model-formal-ui', success: false, model, checks,
   boundaries: ['Real Electron/DeepSeek with synthetic teacher materials only', 'Manual native compaction and real scope/source revocation; automatic compaction requires separate evidence', 'Existing teacher governance UI creates and edits source facts'] };
 let app, page;
@@ -21,7 +21,7 @@ const scopeSet = input => page.evaluate(input => window.omniEdu.setXiaozhiMemory
 async function launch() {
   const env = { ...process.env, OMNI_EDU_DATA_ROOT: data, OMNI_EDU_REPO_ROOT: path.resolve(root, '../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: apiKey, DEEPSEEK_MODEL: model };
   delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
-  app = await electron.launch({ args: [path.join(root, 'out/main/index.js')], env, timeout: 60000 }); page = await app.firstWindow();
+  app = await electron.launch({ args: [path.join(root, 'out/main/index.js'), '--user-data-dir=' + path.join(output, 'profile')], env, timeout: 60000 }); page = await app.firstWindow();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ state: 'visible' });
   await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
 }
@@ -51,6 +51,10 @@ try {
   const emptyTrace = await page.evaluate(id => window.omniEdu.getXiaozhiMemoryTrace(id), session);
   check('New conversation has empty disabled scope and no global latest-run fallback', () => { assert.equal(state.memoryScope.version, 0); assert(!state.memoryScope.enabled); assert.equal(emptyTrace, null); });
   await send('请检索老师知识库有没有三年级分数课导入资料；没有资料就说明没有资料并给一句纸条比较分数的建议。'); state = await terminal(session);
+  const comparison=state.projection.turns.at(-1);
+  report.knowledgeComparison={id:comparison.id,status:comparison.status,error:comparison.error,
+    toolReceipts:comparison.items.filter(item=>item.kind==='tool').map(item=>({name:item.toolName,status:item.status})),
+    response:assistantText(state).slice(0,1800)};
   check('Real existing DeepSeek knowledge path still completes before memory setup', () => { assert.equal(state.projection.turns.at(-1).status, 'completed'); assert(state.projection.turns.at(-1).items.some(item => item.kind === 'tool')); });
   const trace = await page.evaluate(id => window.omniEdu.getXiaozhiMemoryTrace(id), session);
   check('L1 preview is bound to this conversation and projects only safe event fields', () => { assert.equal(trace.runId, state.projection.turns.at(-1).id); assert(trace.events.length); assert(trace.events.every(item => Object.keys(item).every(key => ['sequence', 'label', 'status', 'tool'].includes(key)))); });

@@ -1,4 +1,4 @@
-import { XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES } from '../../shared/xiaozhi-memory';
+import { validTeachingTarget, XIAOZHI_MEMORY_SLOTS, XIAOZHI_MEMORY_SURFACES } from '../../shared/xiaozhi-memory';
 import type { XiaozhiMemorySelection, XiaozhiMemorySource, XiaozhiMemoryScopeInput, XiaozhiMemoryUseSelection } from '../../shared/xiaozhi-memory';
 
 export const validMemorySession = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
@@ -32,8 +32,9 @@ export const memorySelectionKey = (item: XiaozhiMemoryUseSelection) => `${item.l
 export function validMemoryScopeInput(value: unknown): value is XiaozhiMemoryScopeInput {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const input = value as XiaozhiMemoryScopeInput;
-  return Object.keys(input).length === 4 && Object.keys(input).every(key => ['sessionId', 'version', 'enabled', 'selections'].includes(key))
+  return Object.keys(input).every(key => ['sessionId', 'version', 'enabled', 'selections','teachingTarget'].includes(key))
+    && (!('teachingTarget' in input) || (input.teachingTarget === null || validTeachingTarget(input.teachingTarget)) && input.enabled === false)
     && validMemorySession(input.sessionId) && Number.isSafeInteger(input.version) && input.version >= 0 && typeof input.enabled === 'boolean'
-    && Array.isArray(input.selections) && input.selections.length <= 12 && input.selections.every(item => validMemoryUseSelection(item))
+    && Array.isArray(input.selections) && input.selections.length <= 12 && (!('teachingTarget' in input) || input.selections.length === 0) && input.selections.every(item => validMemoryUseSelection(item))
     && new Set(input.selections.map(memorySelectionKey)).size === input.selections.length;
 }
