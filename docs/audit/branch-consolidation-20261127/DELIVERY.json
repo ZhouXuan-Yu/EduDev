@@ -1,0 +1,201 @@
+{
+  "date": "2026-11-27",
+  "status": "CODE_MERGED_AND_PUSHED_VALIDATION_PASS",
+  "sourceCommit": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+  "authoritativeWorktree": "D:/WorkProject/EduProject",
+  "keptBranches": [
+    {
+      "branch": "main",
+      "tree": "D:/WorkProject/EduProject"
+    },
+    {
+      "branch": "codex/ui-ux-r1-20261125",
+      "tree": "D:/WorkProject/EduProject-ui-ux-r1-20261125"
+    },
+    {
+      "branch": "codex/provider-resource-recovery-20261126",
+      "tree": "C:/Users/ZhouXuan/.codex/worktrees/xiaozhi-provider-resource-recovery"
+    },
+    {
+      "branch": "feature/xiaozhi-memory-r3-use-quality",
+      "tree": "C:/Users/ZhouXuan/.codex/worktrees/personal-memory-r3"
+    },
+    {
+      "branch": "codex/xiaozhi-db-audit-20261126",
+      "tree": "E:/EduDev-db-audit-20261126"
+    }
+  ],
+  "retiredLocal": [
+    "refs/heads/codex/host-resource-scheduling-r1",
+    "refs/heads/codex/kb-structure-answer-book",
+    "refs/heads/codex/product-agent-d3",
+    "refs/heads/codex/quality-review-20261126",
+    "refs/heads/codex/xiaozhi-db-r4-config",
+    "refs/heads/codex/xiaozhi-personal-memory-r2",
+    "refs/heads/codex/xiaozhi-provider-resilience-r1",
+    "refs/heads/integration/personal-memory-r2-main",
+    "refs/heads/ui-audit/20261124-1848",
+    "refs/heads/codex/integrate-four-domains-20261127"
+  ],
+  "oldHeads": [
+    {
+      "ref": "refs/heads/codex/host-resource-scheduling-r1",
+      "sha": "ed618c1c68e3e5561fe57d7555e62073978ebc72"
+    },
+    {
+      "ref": "refs/heads/codex/kb-structure-answer-book",
+      "sha": "f8381dbf04503bd8e32106dccad3d7daf24892e7"
+    },
+    {
+      "ref": "refs/heads/codex/product-agent-d3",
+      "sha": "29e836e54dff917b005afd3b36d637d3aef289f4"
+    },
+    {
+      "ref": "refs/heads/codex/provider-resource-recovery-20261126",
+      "sha": "ed771d7f3da271fd36257aa5afab3e460f6d6053"
+    },
+    {
+      "ref": "refs/heads/codex/quality-review-20261126",
+      "sha": "f420db00e4c124a1320aab57c82e65017ee89297"
+    },
+    {
+      "ref": "refs/heads/codex/ui-ux-r1-20261125",
+      "sha": "88e5656ad3b32908c8c8ba82776f425f942acb63"
+    },
+    {
+      "ref": "refs/heads/codex/xiaozhi-db-audit-20261126",
+      "sha": "cbc0872cc5fb114d13407306ee2575600bc99953"
+    },
+    {
+      "ref": "refs/heads/codex/xiaozhi-db-r4-config",
+      "sha": "67d273e818d25db8e5a837cac2590a9881a7e315"
+    },
+    {
+      "ref": "refs/heads/codex/xiaozhi-personal-memory-r2",
+      "sha": "c372ec3423d6d252bad3b598043f1a81b4229350"
+    },
+    {
+      "ref": "refs/heads/codex/xiaozhi-provider-resilience-r1",
+      "sha": "7615d5ceb6ed907e934715832b7a5eace54cbb01"
+    },
+    {
+      "ref": "refs/heads/feature/xiaozhi-memory-r3-use-quality",
+      "sha": "0e0eb04f9bbd805e9e225cfab7bf1710b7fc990e"
+    },
+    {
+      "ref": "refs/heads/integration/personal-memory-r2-main",
+      "sha": "988a29d83eb661f8db4d706bd82d2270cfebadea"
+    },
+    {
+      "ref": "refs/heads/main",
+      "sha": "3af57365ca3ce415ec92d6b385f0e9018ee7f217"
+    },
+    {
+      "ref": "refs/heads/ui-audit/20261124-1848",
+      "sha": "db9056a6633b1fad14f652840810ae889c65c1ca"
+    }
+  ],
+  "allOriginalHeadsIncluded": true,
+  "preservedStashes": [
+    {
+      "tree": "D:/WorkProject/EduProject",
+      "stash": "44bfa5bdf62fed2be844ebef83b957b94bd75cb5",
+      "paths": [
+        "2.Memory.md",
+        "3.Learning.md",
+        "4.Wiki.md",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        "docs/goal/xiaozhi-harness/00_HARNESS_DECISION_LOG.md",
+        "docs/goal/xiaozhi-harness/EXECUTION_BOOK.md",
+        "docs/goal/xiaozhi-harness/GOAL_XIAOZHI_HARNESS.md",
+        "docs/integrations/ANATOMY.md",
+        "启动知识库开发版.cmd",
+        "科普课件使用.md"
+      ]
+    },
+    {
+      "tree": "D:/WorkProject/EduProject-ui-ux-r1-20261125",
+      "stash": "05c79604aaf2421a180c00c9b9f08c48324d22df",
+      "paths": [
+        "apps/desktop/scripts/settings-window-ipc-test.mjs",
+        "apps/desktop/scripts/settings-window-product-test.mjs",
+        "apps/desktop/src/main/settings-window/ipc-bridge.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/acquisition/api.ts",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/skill-management-api.ts",
+        "apps/desktop/scripts/settings-window-await-test.mjs",
+        "apps/desktop/scripts/settings-window-cases/configuration.mjs",
+        "apps/desktop/scripts/settings-window-cases/provider-fixture.mjs",
+        "apps/desktop/scripts/settings-window-cases/scope-races.mjs",
+        "apps/desktop/scripts/settings-window-skill-await-test.mjs"
+      ]
+    },
+    {
+      "tree": "C:/Users/ZhouXuan/.codex/worktrees/personal-memory-r3",
+      "stash": "682a5fcc3e694cdd6c3211d0036cdf84aa926ff0",
+      "paths": [
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
+        "apps/desktop/src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
+        "apps/desktop/src/main/xiaozhi-agent/permissions/windows/generated/sandbox-manifest.json",
+        "apps/desktop/src/renderer/components/office/PiHistoryLookup.tsx",
+        "apps/desktop/scripts/acceptance/history-fallback-electron.mjs"
+      ]
+    }
+  ],
+  "backups": "E:/EduDev-branch-integration-20261127",
+  "rollback": "Use original SHA or verified bundle on a new branch; apply only reviewed scoped stash paths. No reset or force push.",
+  "productCompletion": "Not claimed; unfinished product acceptance remains in VALIDATION.json and original domain reports",
+  "remote": {
+    "verifiedAt": "2026-11-27T07:11:18.405Z",
+    "commit": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+    "refs": [
+      {
+        "sha": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+        "ref": "refs/heads/codex/provider-resource-recovery-20261126",
+        "branch": "codex/provider-resource-recovery-20261126"
+      },
+      {
+        "sha": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+        "ref": "refs/heads/codex/ui-ux-r1-20261125",
+        "branch": "codex/ui-ux-r1-20261125"
+      },
+      {
+        "sha": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+        "ref": "refs/heads/codex/xiaozhi-db-audit-20261126",
+        "branch": "codex/xiaozhi-db-audit-20261126"
+      },
+      {
+        "sha": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+        "ref": "refs/heads/feature/xiaozhi-memory-r3-use-quality",
+        "branch": "feature/xiaozhi-memory-r3-use-quality"
+      },
+      {
+        "sha": "ef4d0e7bfcd42f31ec7708d503a3ded9a3afa648",
+        "ref": "refs/heads/main",
+        "branch": "main"
+      }
+    ],
+    "retired": [
+      "codex/harness-phase8-tail-evidence-20261121",
+      "codex/kb-structure-answer-book",
+      "codex/product-agent-d3",
+      "ui-audit/20261124-1848"
+    ],
+    "atomic": true,
+    "force": false
+  },
+  "validation": "VALIDATION.json",
+  "preservation": {
+    "report": "E:/EduDev-branch-integration-20261127/PRESERVATION_POSTCHECK.json",
+    "existingWorktreeDirectoriesPreserved": 31,
+    "backedUpSourceFiles": 245,
+    "backupHashesVerified": true
+  }
+}

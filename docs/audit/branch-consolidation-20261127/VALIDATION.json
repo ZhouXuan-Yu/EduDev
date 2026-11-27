@@ -1,0 +1,189 @@
+{
+  "date": "2026-11-27",
+  "scope": "Branch consolidation compatibility, not all product acceptance",
+  "checks": [
+    {
+      "id": "BUILD",
+      "command": "npm.cmd run build",
+      "status": "PASS",
+      "details": "tsc --noEmit and Electron main/preloads/renderers",
+      "log": "build-delivery.log",
+      "sha256": "5a8e164cf679f919b8702ca6bf9f4a6101879fbc841065825025bdebde58fba9"
+    },
+    {
+      "id": "RENDERER",
+      "command": "npm.cmd run test:renderer-components",
+      "status": "PASS",
+      "details": "261/261",
+      "log": "renderer.log",
+      "sha256": "e1a483f24ed5bad39ff33c98f2e87fe200109cd4794feb7a1752c40744d1c7b3"
+    },
+    {
+      "id": "IPC",
+      "command": "node scripts/settings-window-ipc-test.mjs",
+      "status": "PASS",
+      "details": "15 scoped IPC and source contracts",
+      "log": "settings-ipc-final.log",
+      "sha256": "d449cd01e6d3f30cfdf72ed3c052464ae1692358577644ae6c640bf202182d8a"
+    },
+    {
+      "id": "REVOKE",
+      "command": "node scripts/settings-window-await-test.mjs; node scripts/settings-window-skill-await-test.mjs",
+      "status": "PASS",
+      "details": "Two chooser cancellation/revocation checks: zero effects"
+    },
+    {
+      "id": "RESOURCE",
+      "command": "npm.cmd run test:host-resources",
+      "status": "PASS",
+      "details": "10/10",
+      "log": "resources.log",
+      "sha256": "4e4c6e974b2bf5f11ec29f2ac2290c2a96373888d4fe548f6258087f0ef7fce1"
+    },
+    {
+      "id": "MIGRATION",
+      "command": "node --experimental-transform-types scripts/acceptance/history-memory-migration-paths.mjs [five closed legacy fixtures]",
+      "status": "PASS",
+      "details": "v5/v6/v7/two v8 upgrades, unchanged ledger prefix, restart, rejected tamper and two concurrent-write cases",
+      "log": "migrations.log",
+      "sha256": "759c5efb66f3623d77015f5bdecf3e174409d644466b2d86e3f4036381f6740c"
+    },
+    {
+      "id": "SMOKE",
+      "command": "node scripts/electron-smoke.mjs",
+      "status": "PASS",
+      "details": "Legacy education smoke completed; not Pi/real-provider product acceptance",
+      "log": "smoke-delivery.log",
+      "sha256": "5fc2702a8c37d070df6ecbd42c07f89c8c551adf505a8f9aa14089feec63f687"
+    },
+    {
+      "id": "SETTINGS",
+      "command": "node scripts/settings-window-product-test.mjs --security-followup --config-followup --scope-race",
+      "status": "PASS",
+      "details": "19 actual Electron checks, 19 untrusted endpoint denials, no renderer errors",
+      "log": "settings-product-delivery.log",
+      "sha256": "520eaa58f708c98918eeca338a90be2da76582087433a96f67119a2899812b55"
+    },
+    {
+      "id": "AUDIT-PRODUCTION",
+      "command": "npm@11.21.3 audit --omit=dev --json",
+      "status": "PASS",
+      "details": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "log": "npm-audit-production.json",
+      "sha256": "ce5e07e3bce0956ea376e3097998765721dfdce1933c97b70b14604a00e9befe"
+    },
+    {
+      "id": "AUDIT-ALL",
+      "command": "npm@11.21.3 audit  --json",
+      "status": "PASS",
+      "details": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "log": "npm-audit-all.json",
+      "sha256": "ce5e07e3bce0956ea376e3097998765721dfdce1933c97b70b14604a00e9befe"
+    }
+  ],
+  "knownGaps": [
+    "Native 125 percent UI scale and cold-start long frames have not been fully accepted",
+    "Real provider teaching quality and complete business-state matrix remain incomplete",
+    "Packaged memory-worker installation has not been accepted by this branch integration",
+    "Skill unsaved draft close protection remains a known follow-up",
+    "The historical R4 page-runner expects the old main-window settings route; its original FAIL remains recorded"
+  ],
+  "rawEvidenceRoot": "E:/EduDev-branch-integration-20261127",
+  "settingsChecks": [
+    {
+      "name": "production main keeps composer draft while opening real settings from navigation",
+      "status": "PASS"
+    },
+    {
+      "name": "settings is a top-level nonmodal sandboxed singleton with its own minimal preload",
+      "status": "PASS"
+    },
+    {
+      "name": "real settings reads the verified main session instead of a local preference",
+      "status": "PASS"
+    },
+    {
+      "name": "real A to B selection rejects an old A permission write without side effects",
+      "status": "PASS"
+    },
+    {
+      "name": "permission saved in settings reads back from host and appears in the main composer",
+      "status": "PASS"
+    },
+    {
+      "name": "returning to A restores its original authority and unsent draft",
+      "status": "PASS"
+    },
+    {
+      "name": "rejected credential stays editable and does not create saved configuration",
+      "status": "PASS"
+    },
+    {
+      "name": "visible credential save uses encrypted host storage and authoritative readback",
+      "status": "PASS"
+    },
+    {
+      "name": "default model save and field undo use real journal versions without undoing the credential",
+      "status": "PASS"
+    },
+    {
+      "name": "a concurrent main-window writer preserves the settings draft and recovers through rebase",
+      "status": "PASS"
+    },
+    {
+      "name": "an admitted global save survives a main-session switch and reports the committed result",
+      "status": "PASS"
+    },
+    {
+      "name": "unsaved teacher memory blocks native close and preserves the editor on repeated open",
+      "status": "PASS"
+    },
+    {
+      "name": "existing navigation preference synchronizes between both real windows",
+      "status": "PASS"
+    },
+    {
+      "name": "actual IPC rejects an untrusted window even with a copied legitimate scope",
+      "status": "PASS"
+    },
+    {
+      "name": "all ten existing categories are reachable including three memory modules",
+      "status": "PASS"
+    },
+    {
+      "name": "real settings opens the existing R4 window through its scoped adapter",
+      "status": "PASS"
+    },
+    {
+      "name": "opaque sandboxed child frame receives no settings preload or parent API access",
+      "status": "PASS"
+    },
+    {
+      "name": "programmatic document replacement revokes the settings window and reopening uses a fresh instance",
+      "status": "PASS"
+    },
+    {
+      "name": "main remains editable; closing settings leaves Pi window and composer intact",
+      "status": "PASS"
+    }
+  ],
+  "artifact": {
+    "root": "E:/EduDev-branch-integration-20261127/checkout/apps/desktop/out",
+    "mainSha256": "f7b8088e017f8a408d851c67abed619c44d76ab8e6bcc6d1bc91f1994794240b"
+  },
+  "boundary": "Isolated local synthetic databases and models-directory transport fixture. No raw teacher data, production API credential or full database is included in this report."
+}
