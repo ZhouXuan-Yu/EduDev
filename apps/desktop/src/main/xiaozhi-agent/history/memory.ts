@@ -86,6 +86,13 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     const {title,label,text,occurredAt} = await readHistorySource(sql,ref);
     return {ref,title,label,text,recordedAt:occurredAt};
   }
+  async function sanitizedOriginal(ref: HistorySourceRef) {
+    const source = await original(ref);
+    const text = (await store.sanitizeProblemText(source.text)).sanitizedText;
+    // Sanitization yields. Resolve the pinned version again before returning its text.
+    const current = await original(ref);
+    return {...current,text};
+  }
   async function project(ref: HistorySourceRef, label: string, title: string, known?: Access|null): Promise<HistorySource> {
     const id = historyId(ref);
     const saved = known === undefined ? await access.get(id) : known;
@@ -95,8 +102,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
   }
   async function readAllowed(saved: Access) {
     if (!saved.allowed||saved.status!=='active') throw Error('permission_denied');
-    const source = await original(saved.ref);
-    const text = (await store.sanitizeProblemText(source.text)).sanitizedText;
+    const source = await sanitizedOriginal(saved.ref);
+    const {text} = source;
     const current = await access.get(saved.sourceId);
     if (current?.generation!==saved.generation || current.ref.sourceVersion!==saved.ref.sourceVersion || !current.allowed || current.status!=='active')
       throw Error('source_changed');
@@ -225,8 +232,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       const saved = await access.get(historyId(ref));
       if (permittedOnly && (!saved||!saved.allowed||saved.status!=='active')) throw Error('permission_denied');
       if (permittedOnly && saved!.ref.sourceVersion!==ref.sourceVersion) throw Error('source_changed');
-      const source = permittedOnly ? await readAllowed(saved!) : await original(ref);
-      const text = 'fingerprint' in source ? source.text : (await store.sanitizeProblemText(source.text)).sanitizedText;
+      const source = await sanitizedOriginal(ref);
+      const {text} = source;
       if (offset>text.length) throw Error('invalid_input');
       const end = Math.min(text.length,offset+1200);
       const view = await project(ref,source.label,source.title,saved);

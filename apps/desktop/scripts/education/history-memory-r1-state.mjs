@@ -135,6 +135,28 @@ try{
     assert(revoked);
   })
 
+  await check('preview and selected read withhold changed source bytes even when the grant row is unchanged',async()=>{
+    const message={id:'revised-during-read',role:'user',content:'教师已保存的历史原话。',
+      metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'run_'+randomUUID()}};
+    persistRequests([message]);
+    const [source]=teacherRequestSources([message],[]);
+    const ref={kind:'history_request',sessionId:old,recordId:source.sourceId,sourceVersion:source.sourceVersion};
+    const saved=await memory.change(ref,0,'allow');
+    const pin={layer:'history',source:'history',id:saved.sourceId,version:saved.generation,sourceVersion:ref.sourceVersion};
+    let revise=false;
+    const served=createHistoryMemory({xiaozhiState:{sql},sanitizeProblemText:async text=>{
+      if(revise)await sql.run('UPDATE ai_conversation_messages SET content=? WHERE id=?',['合成的新版本。',message.id]);
+      return {sanitizedText:text};
+    }});
+    assert.equal((await served.selected(pin)).text,message.content);
+    revise=true;
+    for(const read of [()=>served.selected(pin),()=>served.preview(ref,0,true),()=>served.preview(ref,0,false)]){
+      await sql.run('UPDATE ai_conversation_messages SET content=? WHERE id=?',[message.content,message.id]);
+      await assert.rejects(read,/source_changed/);
+    }
+    assert.equal((await memory.get(saved.sourceId)).generation,saved.generation);
+  })
+
   await check('source teaching term applies independently of its message recording time',async()=>{
     const folder='aifolder_'+randomUUID();
     const autumn='aisession_'+randomUUID(),spring='aisession_'+randomUUID();
