@@ -63,6 +63,38 @@ try{
   await settings.evaluate(()=>localStorage.setItem('xiaozhi.current-session.v1','forged-local-preference'));
   assert.equal((await settings.evaluate(()=>window.settingsWindow.getScope())).sessionId,valid.scope.sessionId);
  });
+ if(process.argv.includes('--personal-memory'))await check('Automatic memory is available in the separate settings window and changes persist',async()=>{
+  const tab=settings.getByTestId('pi-settings-tab-teacher-memory');
+  await settings.getByTestId('pi-settings-search').fill('长期记忆');
+  await settings.getByTestId('pi-settings-search-results').getByRole('button',{name:/自动记忆/}).click();
+  assert.equal(await tab.getAttribute('aria-current'),'page');
+  const section=settings.getByTestId('pi-personal-memory-settings');
+  async function openAutomaticMemory() {
+   const disclosure=section.getByRole('button',{name:'自动记忆',exact:true});
+   if(await disclosure.getAttribute('aria-expanded')!=='true')await disclosure.click();
+  }
+  await openAutomaticMemory();
+  const toggle=section.getByTestId('personal-memory-auto');
+  await section.getByRole('button',{name:'开启自动处理',exact:true}).waitFor({timeout:8000});
+  const read=()=>main.evaluate(async()=>{const result=await window.omniEdu.personalMemory.view();if(!result.ok)throw Error(result.error);return result.value.policy;});
+  const initial=await read();
+  assert.equal(initial.enabled,false);
+  await toggle.click();
+  await section.getByTestId('personal-memory-feedback').getByText('已开启自动处理。',{exact:true}).waitFor();
+  const saved=await read();
+  assert.equal(saved.enabled,true);
+  await settings.getByTestId('pi-settings-tab-models').click();
+  await tab.click();
+  await openAutomaticMemory();
+  await section.getByRole('button',{name:'关闭自动处理',exact:true}).waitFor();
+  assert.deepEqual(await read(),saved);
+  await toggle.click();
+  await section.getByTestId('personal-memory-feedback').getByText('已关闭自动处理。',{exact:true}).waitFor();
+  const disabled=await read();
+  assert.equal(disabled.enabled,false);
+  assert(disabled.policyRevision>saved.policyRevision);
+  report.personalMemory={initial,saved,disabled};
+ });
  if(followup)await contextSecurity({main,settings,check,report});
  if(configFollowup){report.transportFixture=true;report.boundary+=' Models endpoint uses a synthetic transport; no live-provider acceptance.';await configuration({app,main,settings,check,report});}
  if(scopeRace){assert(configFollowup,'Scope race requires isolated configuration transport');await globalSaveDuringSelection({app,main,settings,check,report});}

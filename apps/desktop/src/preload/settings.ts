@@ -1,5 +1,5 @@
 import {contextBridge,ipcRenderer} from 'electron';
-import {SETTINGS_API_PREFIX,SETTINGS_ROUTES,type SettingsDomainApi,type SettingsSessionScope,type SettingsWindowClient} from '../shared/settings-window';
+import {SETTINGS_API_PREFIX,SETTINGS_ROUTES,SETTINGS_PERSONAL_MEMORY_ROUTES,type SettingsRoute,type SettingsDomainApi,type SettingsPersonalMemoryApi,type SettingsSessionScope,type SettingsWindowClient} from '../shared/settings-window';
 
 let scope:SettingsSessionScope|undefined;
 ipcRenderer.on('settings-window:scope',(_event,next:SettingsSessionScope)=>{scope=next;});
@@ -9,11 +9,15 @@ function subscribe<T>(channel:string,listener:(value:T)=>void){
 }
 // A fixed method map, not an exposed invoke primitive. Original service argument
 // types are retained; the host independently checks both scope and domain input.
-const domain=Object.fromEntries(Object.entries(SETTINGS_ROUTES).map(([method,route])=>[method,(...args:unknown[])=>{
-  if(!scope)return Promise.reject(Error('settings_not_ready'));
-  return ipcRenderer.invoke(SETTINGS_API_PREFIX+route.channel,{schemaVersion:'settings.request.v1',scope:{...scope},args});
-}])) as Omit<SettingsDomainApi,'onXiaozhiEvent'>;
-const api:SettingsDomainApi={...domain,onXiaozhiEvent:listener=>subscribe('settings-window:status',listener)};
+function bind(routes:Record<string,SettingsRoute>){
+  return Object.fromEntries(Object.entries(routes).map(([method,route])=>[method,(...args:unknown[])=>{
+    if(!scope)return Promise.reject(Error('settings_not_ready'));
+    return ipcRenderer.invoke(SETTINGS_API_PREFIX+route.channel,{schemaVersion:'settings.request.v1',scope:{...scope},args});
+  }]));
+}
+const domain=bind(SETTINGS_ROUTES) as Omit<SettingsDomainApi,'personalMemory'|'onXiaozhiEvent'>;
+const personalMemory=bind(SETTINGS_PERSONAL_MEMORY_ROUTES) as SettingsPersonalMemoryApi;
+const api:SettingsDomainApi={...domain,personalMemory,onXiaozhiEvent:listener=>subscribe('settings-window:status',listener)};
 const windowApi:SettingsWindowClient={
   bootstrap:async()=>{scope=await ipcRenderer.invoke('settings-window:bootstrap') as SettingsSessionScope;return {...scope};},
   getScope:()=>scope?{...scope}:null,

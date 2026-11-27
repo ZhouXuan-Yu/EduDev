@@ -884,7 +884,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     getThemes: () => ({ themes: [], diagnostics: [] }), getAgentsFiles: () => ({ agentsFiles: [] }),
     getSystemPrompt: () => options.answerOnly
       ? '你是小智，面向教师的教学助手。直接回答本轮问题。根据同一会话已知信息说明有用的结论和必要条件。需要查资料、修改成果或执行工作时，请教师作为后续任务发起。所有已有成果以实际记录为准，不声称本轮执行过操作。'
-      : providerPrompt + (options.memory ? `\n本轮长期记忆选择：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}` : ''), getAppendSystemPrompt: () => [],
+      : providerPrompt + (options.memory ? `\n本轮会话引用权限：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}
+教师询问开启长期记忆或自动记忆时，指向小智左下角「设置 → 教师记忆 → 自动记忆 → 开启自动处理」，说明由教师在设置中确认。这个开关与本会话的历史引用权限分别设置。按请求范围说明，不虚构账户、隐私菜单、开关状态或已执行的操作。` : ''), getAppendSystemPrompt: () => [],
     getSystemPromptSource:()=>undefined,getAppendSystemPromptSources:()=>[],extendResources: () => {}, reload: async () => {},
   };
   const executions = new SessionExecutionRegistry();

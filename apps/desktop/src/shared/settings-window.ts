@@ -4,8 +4,8 @@ export const SETTINGS_API_PREFIX = 'settings-window:api:';
 export type SettingsSessionScope = Readonly<{schemaVersion:'settings.scope.v1';epoch:number;sessionId:string|null;revision:string|null}>;
 export type SettingsApiRequest = {schemaVersion:'settings.request.v1';scope:SettingsSessionScope;args:unknown[]};
 type ScopeRule = 'global'|'id'|'optionalId'|'input'|'optionalInput'|'snapshot';
-type Route = {channel:string;arity:readonly [number,number];scope:ScopeRule;write:boolean};
-const route=(channel:string,arity:readonly[number,number],scope:ScopeRule='global',write=false):Route=>({channel,arity,scope,write});
+export type SettingsRoute = {channel:string;arity:readonly [number,number];scope:ScopeRule;write:boolean};
+const route=(channel:string,arity:readonly[number,number],scope:ScopeRule='global',write=false):SettingsRoute=>({channel,arity,scope,write});
 
 // Reviewed settings dependencies only. No generic invoke, terminal, agent start,
 // file reader, student mutation or material editor is exposed to this window.
@@ -87,9 +87,24 @@ export const SETTINGS_ROUTES = {
   activateBackupRestore:route('app:activateBackupRestore',[1,1],'global',true),
   inspectWindowsUpdate:route('app:inspectWindowsUpdate',[0,0]),
   prepareWindowsUpdate:route('app:prepareWindowsUpdate',[1,1],'global',true),
-} as const satisfies Partial<Record<keyof OmniEduApi,Route>>;
+} as const satisfies Partial<Record<keyof OmniEduApi,SettingsRoute>>;
+export const SETTINGS_PERSONAL_MEMORY_ROUTES = {
+  view:route('xiaozhi:personal-memory-view',[0,0]),
+  catalog:route('xiaozhi:personal-memory-catalog',[1,1],'id'),
+  setEnabled:route('xiaozhi:personal-memory-auto',[1,1],'global',true),
+  preview:route('xiaozhi:personal-memory-preview',[1,1]),
+  previewRecord:route('xiaozhi:personal-memory-record-preview',[1,1]),
+  adopt:route('xiaozhi:personal-memory-adopt',[1,1],'global',true),
+  reject:route('xiaozhi:personal-memory-reject',[1,1],'global',true),
+  edit:route('xiaozhi:personal-memory-edit',[1,1],'global',true),
+  sourceStatus:route('xiaozhi:personal-memory-source',[1,1]),
+  setSource:route('xiaozhi:personal-memory-source-change',[1,1],'global',true),
+  cancelJob:route('xiaozhi:personal-memory-job-cancel',[1,1],'global',true),
+} as const satisfies Partial<Record<keyof OmniEduApi['personalMemory'],SettingsRoute>>;
+
 export type SettingsMethod=keyof typeof SETTINGS_ROUTES;
-export type SettingsDomainApi=Pick<OmniEduApi,SettingsMethod|'onXiaozhiEvent'>;
+export type SettingsPersonalMemoryApi=Pick<OmniEduApi['personalMemory'],keyof typeof SETTINGS_PERSONAL_MEMORY_ROUTES>;
+export type SettingsDomainApi=Pick<OmniEduApi,SettingsMethod|'onXiaozhiEvent'> & {personalMemory:SettingsPersonalMemoryApi};
 export type SettingsWindowClient={
   bootstrap:()=>Promise<SettingsSessionScope>;
   getScope:()=>SettingsSessionScope|null;

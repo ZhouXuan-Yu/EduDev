@@ -67,6 +67,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-mcp-name', tabId: 'tools', title: '外部工具连接', path: ['外部工具（高级）', 'MCP'], aliases: ['mcp', 'stdio', '外部服务', '工具授权'] },
   { id: 'pi-settings-workspace-choose', tabId: 'permissions', title: '本会话工作目录', path: ['工作目录与权限', '工作目录'], aliases: ['workspace', 'folder', '文件', '写入', '授权', '确认'] },
   { id: 'pi-memory-scope', tabId: 'permissions', title: '本会话记忆', path: ['工作目录与权限', '记忆'], aliases: ['memory', '脱敏', '摘要', '撤权', '隐私'] },
+  { id: 'pi-personal-memory-settings', tabId: 'teacher-memory', title: '自动记忆', path: ['教师记忆', '自动记忆'], aliases: ['长期记忆', '开启长期记忆', '开启自动处理', '记忆整理', '入梦'] },
   { id: 'pi-teacher-memory', tabId: 'teacher-memory', title: '教学画像和长期偏好', path: ['教师记忆', '教师画像和长期偏好'], aliases: ['教学画像', '学科', '年级', '教材', '停用'] },
   { id: 'pi-preference-sidebar', tabId: 'interface', title: '展开左侧导航', path: ['界面偏好', '展开左侧导航'], aliases: ['sidebar', '侧边栏', '会话侧栏'] },
   { id: 'pi-preference-aside', tabId: 'interface', title: '任务详情', path: ['界面偏好', '任务详情'], aliases: ['aside', '任务面板'] },
@@ -216,10 +217,10 @@ export function PiSettingsWorkspace({onBack,entry='models',standalone=false}:{on
           </SettingsStack></SettingsPage>}
           {tab === 'teacher-memory' && <SettingsPage tab={tab}><SettingsStack gap="lg">
             <h2 className={layoutStyles.subheading}>{title}</h2>
+            <PiPersonalMemorySettings/>
             <PiTeacherMemorySettings running={locked || actionBusy} onBusyChange={setChildBusy}/>
             <PiL2MemorySettings/>
             <PiHistoryMemorySettings/>
-            <PiPersonalMemorySettings/>
           </SettingsStack></SettingsPage>}
           {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h2 className={layoutStyles.subheading}>策略与诊断</h2><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
             {!loading&&<PiResolvedAgentConfig key={sessionId} sessionId={sessionId||undefined} onNavigate={open}/>}

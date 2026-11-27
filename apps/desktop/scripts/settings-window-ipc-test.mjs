@@ -2,9 +2,10 @@ import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import fs from 'node:fs';
 import ts from 'typescript';
-const bundled=await build({stdin:{contents:`export {createSettingsIpcBridge} from './src/main/settings-window/ipc-bridge';export {SETTINGS_API_PREFIX,SETTINGS_ROUTES} from './src/shared/settings-window';export {createDesktopIpcLifetime} from './src/main/desktop-ipc-lifetime';export {BackupPublicationBarrier} from './src/main/backup/publication-barrier';`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false});
-const {createSettingsIpcBridge,SETTINGS_API_PREFIX,SETTINGS_ROUTES,createDesktopIpcLifetime,BackupPublicationBarrier}=await import('data:text/javascript;base64,'+Buffer.from(bundled.outputFiles[0].text).toString('base64'));
+const bundled=await build({stdin:{contents:`export {createSettingsIpcBridge} from './src/main/settings-window/ipc-bridge';export {SETTINGS_API_PREFIX,SETTINGS_ROUTES,SETTINGS_PERSONAL_MEMORY_ROUTES} from './src/shared/settings-window';export {createDesktopIpcLifetime} from './src/main/desktop-ipc-lifetime';export {BackupPublicationBarrier} from './src/main/backup/publication-barrier';`,resolveDir:process.cwd(),loader:'ts'},bundle:true,platform:'node',format:'esm',write:false});
+const {createSettingsIpcBridge,SETTINGS_API_PREFIX,SETTINGS_ROUTES,SETTINGS_PERSONAL_MEMORY_ROUTES,createDesktopIpcLifetime,BackupPublicationBarrier}=await import('data:text/javascript;base64,'+Buffer.from(bundled.outputFiles[0].text).toString('base64'));
 const checks=[];
+const routeMethods={...SETTINGS_ROUTES,...SETTINGS_PERSONAL_MEMORY_ROUTES};
 async function test(name,fn){try{await fn();checks.push({name,status:'PASS'});console.log('PASS '+name);}catch(error){checks.push({name,status:'FAIL',error:String(error)});console.error('FAIL '+name+' '+error);}}
 function setup(){
  const handlers=new Map(),main={sender:{}},child={sender:{}},other={sender:{}},barrier=new BackupPublicationBarrier();
@@ -31,14 +32,32 @@ await test('allowlist channels and forwarded argument counts match the current t
   ts.forEachChild(node,visit);
  }
  visit(source);
- for(const [method,route] of Object.entries(SETTINGS_ROUTES)){
+ for(const [method,route] of Object.entries(routeMethods)){
   const original=definitions.get(method);assert(original,'missing original '+method);assert.equal(route.channel,original.channel,method);assert(original.args>=route.arity[0]&&original.args<=route.arity[1],method+' arity');
  }
 });
 await test('only reviewed fixed endpoints exist; no terminal, file or agent launch endpoint',async()=>{
- const t=setup();t.bridge.register();assert.equal(t.handlers.size,Object.keys(SETTINGS_ROUTES).length);
- assert(!Object.keys(SETTINGS_ROUTES).some(key=>/terminal|exec|readfile|writefile|startxiaozhi|stopxiaozhi/i.test(key)));
- assert.equal(new Set(Object.values(SETTINGS_ROUTES).map(route=>route.channel)).size,Object.keys(SETTINGS_ROUTES).length);
+ const t=setup();t.bridge.register();assert.equal(t.handlers.size,Object.keys(routeMethods).length);
+ assert(!Object.keys(routeMethods).some(key=>/terminal|exec|readfile|writefile|startxiaozhi|stopxiaozhi/i.test(key)));
+ assert.equal(new Set(Object.values(routeMethods).map(route=>route.channel)).size,Object.keys(routeMethods).length);
+});
+await test('personal memory setting delegates typed policy changes and scopes the catalog to the selected session',async()=>{
+ const t=setup();
+ for(const name of ['setEnabled','catalog']){
+  t.bridge.ipcMain.handle(SETTINGS_PERSONAL_MEMORY_ROUTES[name].channel,(event,input)=>{
+   assert(event===t.main||t.bridge.allows(event));return {ok:true,value:input};
+  });
+ }
+ t.bridge.register();
+ const call=(name,event,args)=>t.handlers.get(SETTINGS_API_PREFIX+SETTINGS_PERSONAL_MEMORY_ROUTES[name].channel)(event,t.request(args));
+ const change={enabled:true,revision:7};
+ assert.deepEqual(await call('setEnabled',t.child,[change]),{ok:true,value:change});
+ assert.equal(t.changes(),1);
+ assert.deepEqual(await call('catalog',t.child,['a']),{ok:true,value:'a'});
+ await assert.rejects(call('catalog',t.child,['another-session']),/scope_changed/);
+ await assert.rejects(call('setEnabled',t.other,[change]),/permission_denied/);
+ await assert.rejects(t.handlers.get(SETTINGS_PERSONAL_MEMORY_ROUTES.setEnabled.channel)(t.child,change),/permission_denied/);
+ assert(!t.handlers.has(SETTINGS_API_PREFIX+'xiaozhi:personal-memory-queue'));
 });
 await test('trusted settings delegates to original schema and main authorization remains unchanged',async()=>{
  const t=setup();let count=0;t.bridge.ipcMain.handle('xiaozhi:permission-mode',(event,input)=>{

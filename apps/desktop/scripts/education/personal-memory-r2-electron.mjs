@@ -31,7 +31,7 @@ const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
 const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root, sha256 };
 const prefix = 'xiaozhi.teacher-preference.v1';
-let app, page;
+let app, page, settingsPage;
 
 async function until(read, timeout=90000, interval=140) {
   const stop=Date.now()+timeout;
@@ -135,6 +135,7 @@ async function close(){
   report.modelRequests.push(...await wire());
   await app.close();
   app=undefined;
+  settingsPage=undefined;
 }
 async function fastPath(){
   assert.equal(currentHead(),null);
@@ -206,10 +207,31 @@ async function handoutPreference(){
   check('the student-only request leaves the long-term version unchanged across restart',{runId:student.id,revision:head.revision});
 }
 
+async function openSettings() {
+  if(!settingsPage||settingsPage.isClosed()) {
+    const opened=app.waitForEvent('window');
+    await page.getByTestId('nav-settings').click();
+    settingsPage=await opened;
+    await settingsPage.getByTestId('pi-settings-workspace').waitFor();
+    assert(settingsPage.url().endsWith('/settings.html'));
+  }
+  return settingsPage;
+}
+
+async function returnToConversation() {
+  if(settingsPage&&!settingsPage.isClosed()){
+    const closed=settingsPage.waitForEvent('close');
+    await settingsPage.getByTestId('settings-window-close').click();
+    await closed;
+  }
+  settingsPage=undefined;
+  await input().waitFor();
+}
+
 async function memorySettings(){
-  await page.getByRole('button',{name:'设置',exact:true}).click();
-  await page.getByTestId('pi-settings-tab-teacher-memory').click();
-  const memory=page.getByTestId('pi-personal-memory-settings');
+  const settings=await openSettings();
+  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+  const memory=settings.getByTestId('pi-personal-memory-settings');
   const heading=memory.getByRole('button',{name:'自动记忆',exact:true});
   if(await heading.getAttribute('aria-expanded')!=='true')await heading.click();
   await memory.getByTestId('personal-memory-auto').waitFor();
@@ -217,7 +239,7 @@ async function memorySettings(){
 }
 
 const memoryRead = async()=> {
-  const view=await page.evaluate(()=>window.omniEdu.personalMemory.view());
+  const view=await (settingsPage??page).evaluate(()=>window.omniEdu.personalMemory.view());
   assert(view.ok,JSON.stringify(view));
   return view.value;
 };
@@ -281,7 +303,7 @@ async function measureWhileProcessing() {
   };
   report.latency={idle:[],running:[],hardware:{cpu:cpus()[0]?.model,threads:cpus().length,ramBytes:totalmem(),os:release(),arch:arch()},
     metric:'Playwright key press to rendered value readback; includes driver latency'};
-  await page.getByTestId('nav-ai').click();
+  await returnToConversation();
   await input().fill('');
   await pressKey(report.latency.idle,false);
   await input().fill('');
@@ -306,7 +328,7 @@ async function verifyUnavailableWorker() {
   await memory.getByText('自动记忆组件暂不可用。仍可查看和管理已有记忆。',{exact:true}).waitFor();
   assert.equal((await memoryRead()).workerAvailable,false);
   check('missing worker is visible with automatic processing enabled',{workerAvailable:false});
-  await page.getByTestId('nav-ai').click();
+  await returnToConversation();
   await send('请记住，以后讲解先提示再给答案。');
   assert.equal(currentPreference().values.answerOrder,'hint_first');
   await close();
@@ -318,9 +340,9 @@ async function verifyUnavailableWorker() {
 }
 
 async function openSessionMemory() {
-  await page.getByRole('button',{name:'设置',exact:true}).click();
-  await page.getByTestId('pi-settings-tab-permissions').click();
-  const panel=page.getByTestId('pi-settings-main').getByTestId('pi-memory-scope');
+  const settings=await openSettings();
+  await settings.getByTestId('pi-settings-tab-permissions').click();
+  const panel=settings.getByTestId('pi-settings-main').getByTestId('pi-memory-scope');
   if(!await panel.getByTestId('pi-memory-enabled').isVisible())await panel.locator('[data-slot="chat-tool-trigger"]').click();
   return panel;
 }
@@ -340,7 +362,7 @@ async function confirmClass(sessionId,folderId,season) {
 }
 
 async function useAdoptedMemory(record,source){
-  await page.getByTestId('nav-ai').click();
+  await returnToConversation();
   await fresh();
   const sessionId=await active();
   let panel;
@@ -350,7 +372,7 @@ async function useAdoptedMemory(record,source){
       await panel.getByTestId('pi-memory-source').selectOption({label:'教师确认的记忆'});
       await panel.getByTestId('pi-personal-memory-catalog').getByText('暂无可选的教师记忆。').waitFor();
       assert.equal(await panel.getByTestId('pi-memory-select-'+record.id).count(),0);
-      await page.getByTestId('nav-ai').click();
+      await returnToConversation();
     }
     panel=await confirmClass(sessionId,classFolders[0],'fall');
     check('another class and another term reveal no confirmed source in the session picker',{sessionId,checks:2});
@@ -363,7 +385,7 @@ async function useAdoptedMemory(record,source){
     const settings=(await snapshot(sessionId)).memoryScope;
     return settings.enabled && settings.selections.some(item=>item.id===record.id && item.version===1 && item.state==='ready');
   });
-  await page.getByTestId('nav-ai').click();
+  await returnToConversation();
   const offset=(await wire()).length;
   const follow=await send('请先调用 read_education_memory 读取本会话已选任教自述，再说明我负责哪一年级的哪门课程。');
   const requests=(await wire()).slice(offset);
@@ -435,7 +457,7 @@ async function candidateAdoption(){
       return folders;
     });
     await confirmClass(sessionId,classFolders[0],'fall');
-    await page.getByTestId('nav-ai').click();
+    await returnToConversation();
   }
   const source='我本学期负责四年级科学。';
   const turn=await send(source);
@@ -443,7 +465,7 @@ async function candidateAdoption(){
   const auto=memory.getByTestId('personal-memory-auto');
   await auto.click();
   await memory.getByText('已开启自动处理。',{exact:true}).waitFor();
-  const history=page.getByRole('region',{name:'可参考的历史'});
+  const history=settingsPage.getByRole('region',{name:'可参考的历史'});
   await history.getByTestId('history-settings-session').selectOption(sessionId);
   await history.getByRole('button',{name:'查看来源',exact:true}).click();
   const sourcePreview=history.getByTestId('history-settings-preview');
@@ -456,7 +478,7 @@ async function candidateAdoption(){
   if(measureLatency)return measureWhileProcessing();
   const draft='这段是尚未发送的新任务草稿。';
   if(verifyPending){
-    await page.getByTestId('nav-ai').click();
+    await returnToConversation();
     await input().fill(draft);
     assert(await input().evaluate(element=>element===document.activeElement));
   }
@@ -484,11 +506,11 @@ async function candidateAdoption(){
   if(!verifyPending){
     const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
     await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
-    const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
+    const review=await settingsPage.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
     assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
     await candidate.getByTestId('personal-memory-reviewed-quote').waitFor();
     assert.equal(await candidate.getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
-    await page.screenshot({path:path.join(root,'review-candidate.png')});
+    await settingsPage.screenshot({path:path.join(root,'review-candidate.png')});
     await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
     await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
   }

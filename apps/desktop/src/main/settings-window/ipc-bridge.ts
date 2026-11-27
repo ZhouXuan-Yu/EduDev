@@ -1,6 +1,6 @@
 import {AsyncLocalStorage} from 'node:async_hooks';
 import type {IpcMain,IpcMainInvokeEvent,WebContents} from 'electron';
-import {SETTINGS_API_PREFIX,SETTINGS_ROUTES,type SettingsSessionScope,type SettingsMethod} from '../../shared/settings-window';
+import {SETTINGS_API_PREFIX,SETTINGS_ROUTES,SETTINGS_PERSONAL_MEMORY_ROUTES,type SettingsRoute,type SettingsSessionScope} from '../../shared/settings-window';
 
 type Handler=Parameters<IpcMain['handle']>[1];
 export interface SettingsBridgeOptions {
@@ -20,9 +20,10 @@ export function createSettingsIpcBridge(options:SettingsBridgeOptions){
   const handlers=new Map<string,Handler>();
   const settingsSenders=new WeakSet<WebContents>();
   const active=new AsyncLocalStorage<{event:IpcMainInvokeEvent;scope:SettingsSessionScope;selectionBound:boolean}>();
-  const channels=new Set(Object.values(SETTINGS_ROUTES).map(route=>route.channel));
+  const routes=[...Object.values(SETTINGS_ROUTES),...Object.values(SETTINGS_PERSONAL_MEMORY_ROUTES)];
+  const channels=new Set(routes.map(route=>route.channel));
   // Observe existing main-window consumers without adding these APIs to settings.
-  const writeChannels=new Set([...Object.values(SETTINGS_ROUTES).filter(route=>route.write).map(route=>route.channel),'xiaozhi:model-select','xiaozhi:thinking-save']);
+  const writeChannels=new Set([...routes.filter(route=>route.write).map(route=>route.channel),'xiaozhi:model-select','xiaozhi:thinking-save']);
   const handle:IpcMain['handle']=(channel,listener)=>{
     if(channels.has(channel))handlers.set(channel,listener);
     options.ipc.handle(channel,(event,...args)=>{
@@ -39,12 +40,12 @@ export function createSettingsIpcBridge(options:SettingsBridgeOptions){
     const permit=active.getStore(),now=options.scope();
     return !!permit&&permit.event===event&&options.trusted(event)&&(!permit.selectionBound||permit.scope.epoch===now.epoch&&permit.scope.sessionId===now.sessionId&&permit.scope.revision===now.revision);
   }
-  async function invoke(method:SettingsMethod,event:IpcMainInvokeEvent,input:unknown){
+  async function invoke(route:SettingsRoute,event:IpcMainInvokeEvent,input:unknown){
     if(!options.trusted(event))throw Error('permission_denied');
     if(!object(input)||Object.keys(input).sort().join(',')!=='args,schemaVersion,scope'||input.schemaVersion!=='settings.request.v1'||!Array.isArray(input.args)||!object(input.scope))throw Error('invalid_input');
     const scope=input.scope;
     if(Object.keys(scope).sort().join(',')!=='epoch,revision,schemaVersion,sessionId'||scope.schemaVersion!=='settings.scope.v1'||!Number.isSafeInteger(scope.epoch)||Number(scope.epoch)<0||!(scope.sessionId===null||typeof scope.sessionId==='string')||!(scope.revision===null||typeof scope.revision==='string'))throw Error('invalid_input');
-    const route=SETTINGS_ROUTES[method],args=input.args;
+    const args=input.args;
     if(args.length<route.arity[0]||args.length>route.arity[1])throw Error('invalid_input');
     let id:string|undefined;
     if(route.scope==='id'||route.scope==='snapshot'){if(typeof args[0]!=='string'||!args[0])throw Error('invalid_input');id=args[0];}
@@ -69,8 +70,8 @@ export function createSettingsIpcBridge(options:SettingsBridgeOptions){
     return result;
   }
   function register(){
-    for(const method of Object.keys(SETTINGS_ROUTES) as SettingsMethod[]){
-      options.ipc.handle(SETTINGS_API_PREFIX+SETTINGS_ROUTES[method].channel,(event,input)=>invoke(method,event,input));
+    for(const route of routes){
+      options.ipc.handle(SETTINGS_API_PREFIX+route.channel,(event,input)=>invoke(route,event,input));
     }
   }
   return {ipcMain,allows,register,track:(contents:WebContents)=>settingsSenders.add(contents)};
