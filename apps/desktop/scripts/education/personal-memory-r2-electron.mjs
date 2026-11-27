@@ -13,11 +13,13 @@ const desktop = path.resolve(import.meta.dirname,'../..');
 const evidence = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
-const adoption=process.argv.includes('--adoption');
+const rejection=process.argv.includes('--reject');
+const adoption=rejection||process.argv.includes('--adoption');
 const verifyClass=process.argv.includes('--class-scope');
 let classFolders;
 const verifyUse=process.argv.includes('--use');
 const verifyPending=process.argv.includes('--pending');
+assert(!(rejection&&verifyPending),'The explicit rejection journey uses the existing settings review');
 const cancelJob=process.argv.includes('--cancel-job');
 const measureLatency=process.argv.includes('--latency');
 const workerUnavailable=process.argv.includes('--worker-unavailable');
@@ -25,7 +27,8 @@ const handout=process.argv.includes('--handout');
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
 const root = fs.mkdtempSync(path.join(evidence,workerUnavailable?'r2-worker-unavailable-electron-':cancelJob?'r2-cancel-electron-':
-  measureLatency?'r2-latency-electron-':adoption?'r2-adoption-electron-':handout?'r2-handout-electron-':'r2-fast-path-electron-'));
+  measureLatency?'r2-latency-electron-':rejection?'r2-reject-electron-':adoption?'r2-adoption-electron-'
+  :handout?'r2-handout-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
@@ -109,17 +112,30 @@ const session=()=>page.locator('.office-composer-container').getAttribute('data-
 const active=()=>until(async()=>{const id=await session();return id?.startsWith('aisession_')?id:null;});
 const input=()=>page.getByTestId('office-prompt-input');
 const wire=()=>app.evaluate(()=>globalThis.r2Wire);
-async function send(text){
+async function send(text,{answer}={}){
   const id=await active();
   const prior=(await snapshot(id)).projection.turns.at(-1)?.id;
   await input().fill(text);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  let answered;
   const turn=await until(async()=>{
     const value=await snapshot(id);
-    const turn=value.projection.turns.at(-1);
-    return !value.running&&turn?.id!==prior&&['completed','failed','interrupted'].includes(turn?.status)?turn:null;
+    const current=value.projection.turns.at(-1);
+    if(current?.id===prior)return null;
+    const request=value.controls?.find(item=>item.kind==='question'&&item.state==='pending'&&item.runId===current?.id);
+    if(answer&&request&&!answered){
+      const panel=page.getByTestId('pi-composer-pending-panel').locator(`[data-control-id="${request.id}"]`);
+      await panel.getByTestId('pi-question-answer').fill(answer);
+      await panel.getByTestId('pi-question-submit').click();
+      answered=request.id;
+    }
+    return !value.running&&['completed','failed','interrupted'].includes(current?.status)?current:null;
   });
   assert.equal(turn.status,'completed',turn.error);
+  if(answered){
+    assert.equal((await snapshot(id)).controls?.find(item=>item.id===answered)?.state,'answered');
+    report.teacherAnswer={runId:turn.id,controlId:answered};
+  }
   return turn;
 }
 async function fresh(){
@@ -460,14 +476,20 @@ async function candidateAdoption(){
     await returnToConversation();
   }
   const source='我本学期负责四年级科学。';
-  const turn=await send(source);
+  const turn=await send(source,{answer:'请简短确认这条四年级科学任教记录。这一步只确认原话，不替我采用记忆建议。'});
   let memory=await memorySettings();
   const auto=memory.getByTestId('personal-memory-auto');
   await auto.click();
   await memory.getByText('已开启自动处理。',{exact:true}).waitFor();
   const history=settingsPage.getByRole('region',{name:'可参考的历史'});
   await history.getByTestId('history-settings-session').selectOption(sessionId);
-  await history.getByRole('button',{name:'查看来源',exact:true}).click();
+  const database=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  let originalId;
+  try{
+    originalId=database.prepare("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?").get(sessionId,source)?.id;
+  }finally{database.close();}
+  assert(originalId);
+  await history.getByTestId('history-settings-source-'+originalId).getByRole('button',{name:'查看来源',exact:true}).click();
   const sourcePreview=history.getByTestId('history-settings-preview');
   assert((await sourcePreview.textContent()).includes(source));
   if(verifyClass) assert(await sourcePreview.getByRole('checkbox',{name:/仅用于此来源会话已确认的班级和学期/}).isChecked());
@@ -511,6 +533,26 @@ async function candidateAdoption(){
     await candidate.getByTestId('personal-memory-reviewed-quote').waitFor();
     assert.equal(await candidate.getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
     await settingsPage.screenshot({path:path.join(root,'review-candidate.png')});
+    if(rejection){
+      assert.deepEqual((await memoryRead()).records,[]);
+      check('Opening and inspecting a candidate does not grant or promote memory',{candidateId});
+      await candidate.getByRole('button',{name:'拒绝',exact:true}).click();
+      await memory.getByText('已拒绝建议。',{exact:true}).waitFor();
+      await close();
+      await launch();
+      await memorySettings();
+      const after=await memoryRead();
+      assert.deepEqual(after.records,[]);
+      assert.deepEqual(after.candidates,[]);
+      const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+      try{
+        const row=db.prepare('SELECT state,revision FROM personal_memory_pending WHERE draft_key=?').get(candidateId);
+        assert.equal(row?.state,'rejected');
+        assert.equal(row?.revision,2);
+      }finally{db.close();}
+      check('Explicit rejection persists after cold restart without creating a formal memory',{candidateId});
+      return;
+    }
     await candidate.getByRole('button',{name:'确认采用',exact:true}).click();
     await memory.getByText('已保存为正式记忆。',{exact:true}).waitFor();
   }
