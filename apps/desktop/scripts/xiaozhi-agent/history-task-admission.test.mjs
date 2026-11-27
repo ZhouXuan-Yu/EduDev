@@ -208,6 +208,38 @@ test('Combined explicit scope deduplicates references and rejects thirteen witho
   assert.equal(session.length,10);
 });
 
+test('Ten session grants and overlapping task intents share one limit across saves and retries',async t=>{
+  const {sql,access,state,task,owner,target,ref,history,sortKey,grants}=await fixture(t);
+  const pins=[];
+  for(let i=0;i<14;i++){
+    const source={...ref,recordId:'cap-record-'+i,sourceVersion:sortKey()};
+    const grant=await access.change(source,0,'allow');
+    const pin={layer:'history',source:'history',id:grant.sourceId,sourceVersion:source.sourceVersion,version:grant.generation};
+    pins.push({...pin,fingerprint:(await history.selected(pin)).fingerprint});
+  }
+  const session=pins.slice(0,10);
+  assert(await state.saveMemoryScope(target,0,{enabled:true,selections:session}));
+  const tickets=new Map(pins.map(pin=>[randomUUID(),pin]));
+  const binding=createTaskHistoryUse(sql,{...history,candidate:(id,version,ticket)=>
+    id===target && version===1 ? tickets.get(ticket) : undefined});
+  const tokens=[];
+  for(const ticket of [...tickets.keys()].slice(8))tokens.push((await binding.stage(target,1,ticket)).token);
+  const proof=await binding.prepare(target,tokens.slice(0,4));
+  const attach=proof=>sql.transaction(work=>binding.attachTask(work,task,owner,proof));
+  await attach(proof);
+  const committed=await grants();
+  assert.equal(JSON.parse(committed[0].value_json).selections.length,4);
+  // Two old and two new references occupy exactly twelve distinct slots.
+  assert.equal(combinedMemorySelections(session,proof.selections).length,12);
+  for(let attempt=0;attempt<2;attempt++){
+    await assert.rejects(binding.prepare(target,tokens),/memory_scope_changed/);
+    // This single intent fits the session alone. It exceeds twelve when the committed Task is included.
+    await assert.rejects(attach(await binding.prepare(target,[tokens[4]])),/memory_scope_changed/);
+    assert.deepEqual(await grants(),committed);
+    assert.deepEqual((await state.memoryScope(target)).selections,session);
+  }
+});
+
 test('Long source reads require the active version and return all authoritative pages in order',async t=>{
   const f=await fixture(t);
   const {token}=await f.binding.stage(f.target,0,'signed-ticket');

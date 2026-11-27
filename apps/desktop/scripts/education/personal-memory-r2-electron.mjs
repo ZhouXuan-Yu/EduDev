@@ -187,6 +187,18 @@ function sectionTitle(line) {
     .replace(/^[一二三四五六七八九十\d]+[、.．]\s*/, '').replace(/[：:]$/, '').trim();
 }
 
+function verifyHandoutLayout(text) {
+  // Compare section headings. A sentence after the answers may also mention exercises.
+  const lines = text.split(/\r?\n/);
+  const headings = lines.map(sectionTitle);
+  const exercise = headings.findLastIndex(title => /^(?:随堂|课堂|巩固|课后|小)?练习(?:题|小节)?$/.test(title));
+  const answers = headings.indexOf('参考答案');
+  assert(exercise >= 0 && answers > exercise && headings.lastIndexOf('参考答案') === answers, text);
+  const numbered = lines => lines.filter(line => /^\s*\d+[.、．)）]\s*\S/.test(line));
+  assert.equal(numbered(lines.slice(exercise+1, answers)).length, 2, text);
+  assert.equal(numbered(lines.slice(answers+1)).length, 2, text);
+}
+
 async function handoutPreference(){
   const requirement='以后我的讲义答案统一放最后。';
   const taught=await send(requirement);
@@ -213,15 +225,7 @@ async function handoutPreference(){
   const appliedWire=(await wire()).slice(offset).flatMap(row=>row.preference);
   assert(appliedWire.some(text=>text.includes('将答案集中放在讲义末尾')));
   const appliedText=applied.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
-  // Compare section headings. A sentence after the answers may also mention exercises.
-  const lines = appliedText.split(/\r?\n/);
-  const headings = lines.map(sectionTitle);
-  const exercise = headings.findLastIndex(title => /^(?:随堂|课堂|巩固|课后|小)?练习(?:题|小节)?$/.test(title));
-  const answers = headings.indexOf('参考答案');
-  assert(exercise >= 0 && answers > exercise && headings.lastIndexOf('参考答案') === answers, appliedText);
-  const numbered = lines => lines.filter(line => /^\s*\d+[.、．)）]\s*\S/.test(line));
-  assert.equal(numbered(lines.slice(exercise+1, answers)).length, 2, appliedText);
-  assert.equal(numbered(lines.slice(answers+1)).length, 2, appliedText);
+  verifyHandoutLayout(appliedText);
   check('a new handout receives the saved layout and places its answer section after the exercises',{runId:applied.id});
 
   offset=(await wire()).length;
@@ -234,6 +238,22 @@ async function handoutPreference(){
   await launch();
   assert.deepEqual(currentHead(),head);
   check('the student-only request leaves the long-term version unchanged across restart',{runId:student.id,revision:head.revision});
+
+  await fresh();
+  const nextSession=await active();
+  const callsBefore=(await wire()).length;
+  const next=await send('制作一份声音传播的科学小讲义。练习小节列两道短题，答案小节标题为参考答案。只在对话里给出，不导出。');
+  assert((await wire()).slice(callsBefore).some(row=>row.status===200 && row.preference.some(text=>text.includes('将答案集中放在讲义末尾'))));
+  const nextText=next.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
+  verifyHandoutLayout(nextText);
+  assert.deepEqual(currentHead(),head);
+  const readback=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const replies=readback.prepare("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='assistant' AND json_extract(metadata_json,'$.agentRunId')=?").all(nextSession,next.id);
+    assert(replies.some(row=>row.content.trim()===nextText.trim()));
+  }finally{readback.close();}
+  check('A fresh task after cold restart applies the original answer layout and its persisted reply matches the actual output',
+    {sessionId:nextSession,runId:next.id,revision:head.revision,text:nextText});
 }
 
 async function openSettings() {

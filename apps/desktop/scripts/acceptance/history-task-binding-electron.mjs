@@ -447,6 +447,12 @@ try{
     assert.equal((await snapshot(target)).task.id,binding.taskId);
     assert.equal(bindings(target).length,1);
     pass('A requirements amendment preserves the existing Task source',{runId:followup.runId,taskId:binding.taskId});
+    const nextAmendment=await send(target,'继续修改刚才清单，只把第一个要点改为一句简短的提醒，保留老师的原话和其余要点。请直接在对话中给出修改后的清单。');
+    assert(nextAmendment.sent.some(call=>call.status===200 && call.sourceRoles.includes('user')));
+    assert.equal((await snapshot(target)).task.id,binding.taskId);
+    assert.deepEqual(bindings(target),[binding]);
+    pass('Two consecutive amendments use the same granted source and Task without asking for another reference',
+      {taskId:binding.taskId,runIds:[followup.runId,nextAmendment.runId]});
     await stage(row.id,question);
     await page.getByRole('button',{name:'移除待发送历史 1'}).click();
     await page.getByTestId('history-intent-pending').waitFor({state:'hidden'});
