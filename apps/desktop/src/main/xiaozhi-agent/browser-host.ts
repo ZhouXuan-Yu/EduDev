@@ -47,9 +47,16 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       if(url&&url.protocol==='https:')return url.origin;
     }catch{/* Opaque and blocked pages have no reusable login. */}
   }
+  function updateWindowTitle(g:Group) {
+    if(g.window.isDestroyed())return;
+    const tab=g.tabs.get(g.active);
+    const pageTitle=tab?.state==='ready' && !tab.view.webContents.isDestroyed() ? tab.view.webContents.getTitle().slice(0,150) : '';
+    const owner=g.owner==='teacher'?'老师操作中':'小智操作中';
+    g.window.setTitle(['小智浏览器',owner,pageTitle].filter(Boolean).join(' · '));
+  }
   function setOwner(g:Group, owner:Group['owner']) {
     if (g.owner===owner || (owner==='agent' && g.profileChange)) return;
-    g.owner=owner;g.needsObservation=true;
+    g.owner=owner;g.needsObservation=true;updateWindowTitle(g);
     g.control.abort();
     g.control=new AbortController();
     for(const tab of g.tabs.values()) {tab.refs.clear();tab.snapshotId=undefined;tab.write=undefined;}
@@ -72,8 +79,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   const networkScopes=new Map<string,(url:string)=>boolean>();
   const checkScope=(id:string,url:string)=>{if(networkScopes.has(id)&&!networkScopes.get(id)!(url))throw new Error('permission_denied');};
   const safeUrl=async(raw:string)=>{const url=officeWebUrl(raw).href;let decoded:string;try{decoded=decodeURIComponent(url);}catch{throw new Error('permission_denied');}if(sensitive.test(decoded)||(await options.sanitize(decoded))!==decoded)throw new Error('permission_denied');return url;};
-  function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});g.window.setTitle('小智 · 浏览器');}
-  function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready')g.status.setVisible(false);else showStatus(g,tab.error||'loading');}
+  function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});updateWindowTitle(g);}
+  function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready'){g.status.setVisible(false);updateWindowTitle(g);}else showStatus(g,tab.error||'loading');}
   async function closeGroup(id:string){const group=groups.get(id);if(!group)return;
     group.closing=true;group.control.abort();
     if(group.profileChange){
@@ -86,7 +93,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     if(disposed||!/^aisession_[a-f0-9-]{36}$/i.test(id))throw new Error('permission_denied');
     const existing=groups.get(id);if(existing){if(existing.closing)throw new Error('cancelled');if(!existing.busy&&existing.proxy.setDnsMode(dnsMode))await Promise.all([...existing.tabs.values()].map(t=>t.session.closeAllConnections()));return existing;}const started=pending.get(id);if(started)return started;
     const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode,url=>{checkScope(id,url);return true;});if(disposed){await proxy.close();throw new Error('cancelled');}
-      const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智 · 浏览器',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
+      const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智浏览器 · 小智操作中',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
       const status=new electron.WebContentsView({webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
       status.webContents.setWindowOpenHandler(()=>({action:'deny'}));
       // Only this main-owned local status view may close its own browser group.
@@ -138,7 +145,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     wc.on('did-start-loading',()=>{tab.state='loading';tab.error=undefined;if(g.active===tab.id)showStatus(g,'loading');});
     wc.on('did-finish-load',()=>{if(tab.error)return;const error=g.proxy.failureFor(wc.getURL());if(error){tab.state='failed';tab.error=error;if(g.active===tab.id)showStatus(g,error);return;}tab.state='ready';if(g.active===tab.id)showTab(g,tab);});
     wc.on('did-fail-load',(_event,code,_description,url,isMainFrame)=>{if(!isMainFrame||code===-3&&tab.error)return;tab.state='failed';tab.error=g.proxy.failureFor(url)||(code===-3?'cancelled':code===-7?'timeout':'network');if(g.active===tab.id)showStatus(g,tab.error);});
-    wc.on('page-title-updated',()=>{if(!g.window.isDestroyed()&&g.active===tab.id)g.window.setTitle('小智 · 浏览器 · '+wc.getTitle().slice(0,150));});
+    wc.on('page-title-updated',()=>{if(!g.window.isDestroyed()&&g.active===tab.id)updateWindowTitle(g);});
     partition.webRequest.onBeforeRequest((request,done)=>{void(async()=>{try{
       const owner=g.owner,control=g.control;
       const current=()=>{if(disposed||g.closing||wc.isDestroyed()||control.signal.aborted||
@@ -308,6 +315,14 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         };
         const conditionRevision=tab.revision;
         const checkConditionPage=()=>{check();if(wc.isDestroyed()||tab!.revision!==conditionRevision||tab!.state!=='ready')throw new Error('attachment_changed');};
+        const verifyNamedClick=async()=>{
+          checkConditionPage();
+          if(input.snapshotId!==tab!.snapshotId)throw new Error('attachment_changed');
+          const signal=AbortSignal.any([context.signal,AbortSignal.timeout(8000)]);
+          const matched=await uniqueBrowserRef(wc,input.role!,input.name!.trim(),signal);
+          checkConditionPage();
+          if(matched!==input.ref || !tab!.refs.has(matched))throw new Error('attachment_changed');
+        };
         const ensureNewResult=async()=>{
           if(!input.expectText)return;
           checkConditionPage();
@@ -316,8 +331,11 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         };
         const approve=async()=>{const url=await safeUrl(wc.getURL()),revision=tab!.revision;
           checkScope(id,url);
+          // Refuse an already-satisfied condition before opening the approval panel.
+          // The second check below still fences DOM changes during teacher review.
+          await ensureNewResult();check();
           const question=await options.sanitize(`允许小智在 ${new URL(url).hostname} 的“${wc.getTitle().slice(0,100)}”页面执行这次“${input.action}”操作${input.ref?`（控件 ${input.ref}）`:''}${input.text!==undefined?`，输入“${input.text.slice(0,200)}”`:input.value!==undefined?`，选择“${input.value.slice(0,200)}”`:input.key?`，按 ${input.key}`:''}吗？页面可能提交内容。`);
-          if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();checkScope(id,url);if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');await ensureNewResult();check();tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
+          if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();checkScope(id,url);if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');await ensureNewResult();if(input.action==='click' && input.name)await verifyNamedClick();check();tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
         if(input.action==='extract'){
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision,signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
@@ -335,6 +353,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         else if(input.action==='show'){activate();}
         else if(input.action==='close'){releaseTab(g,tab);if(!g.tabs.size){await closeGroup(id);}else{showTab(g,g.tabs.values().next().value!);}return {closed:true};}
         else if(input.action==='click'){
+          if(input.name)await verifyNamedClick();
           const href=await withRef("return el.tagName==='A'?el.href:null;");check();
           if(typeof href==='string'&&href){if(input.expectText)throw new Error('invalid_input');await navigate(href);}else{await approve();await withRef('el.click();');}
         }else if(input.action==='type'){

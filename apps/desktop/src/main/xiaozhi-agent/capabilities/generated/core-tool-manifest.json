@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "1846b57f94a1074385ee00b6d4ce5d4a99d4c35853c1667d6494b6375838aca8",
+  "sourceHash": "0ebb5b22f475f76507aab26e1c73e00ad944fc534adad9d89fdcb8c305f2fc8c",
   "sources": [
     {
       "file": "package-lock.json",
@@ -848,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "8f1007cbf7798357cc20d8ae7ccd3cf22fdb10bae0998d985506f65a4c272ee8"
+      "sha256": "124275e4c54951ea60c65f72beeb2e6d3fe029be218a152f39b6e9aba2ee8dcd"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-proxy.ts",
@@ -860,7 +860,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-tools.ts",
-      "sha256": "9752c636b9b7ed9abb28293ed2b4e347c1c0bc148c24f763d194c46b628fd756"
+      "sha256": "41982e7d11d82baffd976b5f2433809352097ac05419e837a464581333d5053f"
     },
     {
       "file": "src/main/xiaozhi-agent/budget-state.ts",
@@ -964,7 +964,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "d63872dd471c12d323cbfe3c8737b05421ac033bcdc64e30a49c5011ed17c3e1"
+      "sha256": "96bfc52064aab7832c8b68edf3465ce0246cb93e4f90feab5b3f52a3f0b08f48"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2908,7 +2908,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "c8cd18cf733a8d65a9e57203c41df4e76d76ba84fd552bd51ab5932075d5a998"
+      "sha256": "9ca4d21a5e0d215fcfd559a0de45fbd86780da81bbc67ee28656562440f7eb89"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

@@ -15,9 +15,12 @@ export function validBrowserInput(value:unknown):value is XiaozhiBrowserInput {
   if(v.snapshotId!==undefined&&(!string(v.snapshotId,64)||!/^pisnapshot_[a-f0-9-]{36}$/i.test(String(v.snapshotId))))return false;
   if(v.url!==undefined&&!string(v.url,2048)||v.text!==undefined&&!string(v.text,4000)||v.value!==undefined&&!string(v.value,1000)||v.key!==undefined&&!['Enter','Escape','Tab','Backspace','Delete','Space','ArrowDown','ArrowUp'].includes(String(v.key)))return false;
   if(v.ref!==undefined&&(!Number.isSafeInteger(v.ref)||Number(v.ref)<1||Number(v.ref)>100000)||v.direction!==undefined&&!['up','down'].includes(String(v.direction))||v.amount!==undefined&&(!Number.isSafeInteger(v.amount)||Number(v.amount)<1||Number(v.amount)>10)||v.newTab!==undefined&&typeof v.newTab!=='boolean')return false;
-  const fields:Record<string,string[]>={navigate:['url','newTab'],snapshot:['role','name','snapshotId'],extract:['ref','snapshotId'],click:['ref','snapshotId','expectText'],type:['ref','snapshotId','text'],select:['ref','snapshotId','value','expectText'],key:['key','snapshotId'],scroll:['direction','amount'],wait:['text','snapshotId'],tabs:[],show:[],close:[],screenshot:[]};
+  const fields:Record<string,string[]>={navigate:['url','newTab'],snapshot:['role','name','snapshotId'],extract:['ref','snapshotId'],click:['ref','snapshotId','expectText','role','name'],type:['ref','snapshotId','text'],select:['ref','snapshotId','value','expectText'],key:['key','snapshotId'],scroll:['direction','amount'],wait:['text','snapshotId'],tabs:[],show:[],close:[],screenshot:[]};
   if(Object.keys(v).some(k=>!['action','tabId'].includes(k)&&!fields[String(v.action)].includes(k)))return false;
   if(v.expectText !== undefined && (!string(v.expectText,500)||!String(v.expectText).trim()||!v.tabId))return false;
+  if (v.action === 'click' && (v.name !== undefined || v.role !== undefined)) {
+    if (!v.tabId || !string(v.name,200) || !String(v.name).trim() || !BROWSER_TARGET_ROLES.includes(v.role as typeof BROWSER_TARGET_ROLES[number])) return false;
+  }
   if (v.action === 'snapshot' && (v.name !== undefined || v.role !== undefined || v.snapshotId !== undefined))
     return !!v.tabId && !!v.snapshotId && string(v.name, 200) && !!String(v.name).trim() && BROWSER_TARGET_ROLES.includes(v.role as typeof BROWSER_TARGET_ROLES[number]);
   if (v.action === 'wait' && (v.text !== undefined || v.snapshotId !== undefined))

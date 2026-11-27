@@ -377,6 +377,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     });
     eventReceiver.current = receiver;
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
+    const unsubscribeBrowser = window.omniEdu?.onXiaozhiBrowserDock?.(target => {
+      if (!live || !visibleRef.current || target !== idRef.current || snapshotRef.current?.browser?.open) return;
+      // The host creates the guest before a running turn publishes its terminal snapshot.
+      hydration.current!.changed();
+      void hydrate(target).catch(() => undefined);
+    });
     const unsubscribeConfig = window.omniEdu?.onXiaozhiConfigChange?.(change => {
       const target = idRef.current;
       if (!live || !visibleRef.current || !target || change.sessionId && change.sessionId !== target) return;
@@ -386,7 +392,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     const settingsChanged=window.settingsHost?.onChanged(()=>{if(live&&idRef.current)void hydrate(idRef.current).catch(()=>undefined);});
     return () => {
       viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false;
-      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeConfig?.();settingsChanged?.();
+      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeBrowser?.(); unsubscribeConfig?.();settingsChanged?.();
     };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
