@@ -7,6 +7,7 @@ export type ReceivedReference = {
 const digest=/^[a-f0-9]{64}$/;
 const runKey=/^run_[a-zA-Z0-9_-]{1,120}$/;
 const readbackPrefix='xiaozhi.memory.reference-readback.v1:';
+const deliveryPrefix='xiaozhi.memory.reference-delivery.v1:';
 type ScopedReference=ReceivedReference & {scopeVersion:number};
 function valid(item:ReceivedReference) {
   return item && Object.keys(item).length===5 && typeof item.id==='string' && digest.test(item.id)
@@ -28,23 +29,63 @@ function validateWrite(sessionId:string,runId:string,scopeVersion:number,items:r
 
 /** Observations of readback and transport never confer read permission. */
 export function createReferenceReceipts(sql:Sql) {
-  function readDeliveries(sessionId:string,runId?:string) {
+  async function hasDeliveryLedger() {
+    const [table]=await sql.all("SELECT 1 FROM sqlite_schema WHERE type='table' AND name='xiaozhi_memory_reference_deliveries'");
+    return Boolean(table);
+  }
+
+  async function writeStored(prefix:string,sessionId:string,runId:string,scopeVersion:number,items:readonly ReceivedReference[]) {
+    await sql.run(`INSERT OR IGNORE INTO app_settings (key,value_json,updated_at)
+      SELECT ? || (j.value->>'$.id') || ':' || (j.value->>'$.version') || ':' || (j.value->>'$.fingerprint'),
+        j.value,? FROM ai_agent_runs r,json_each(?) j
+      WHERE r.id=? AND r.session_id=? AND r.sub_intent='pi_education'`,
+      [prefix+runId+':'+scopeVersion+':',new Date().toISOString(),JSON.stringify(items.map(item=>({...item,scopeVersion}))),runId,sessionId]);
+  }
+
+  async function readStored(kind:string,sessionId:string,runId:string):Promise<ScopedReference[]> {
+    if (!validMemorySession(sessionId) || !runKey.test(runId)) throw Error('invalid_input');
+    const prefix=kind+runId+':';
+    const rows=await sql.all(`SELECT s.value_json AS value FROM app_settings s
+      WHERE s.key>=? AND s.key<? AND EXISTS
+        (SELECT 1 FROM ai_agent_runs WHERE id=? AND session_id=? AND sub_intent='pi_education')
+      ORDER BY s.key LIMIT 12`,[prefix,prefix+'\uffff',runId,sessionId]);
+    return rows.flatMap(row=>{
+      try {
+        const {scopeVersion,...item}=JSON.parse(String(row.value));
+        return Number.isSafeInteger(scopeVersion)&&scopeVersion>=0&&valid(item)?[{...item,scopeVersion}]:[];
+      } catch { return []; }
+    });
+  }
+
+  async function readDeliveries(sessionId:string,runId?:string) {
     if (!validMemorySession(sessionId) || runId!==undefined&&!runKey.test(runId)) throw Error('invalid_input');
-    return sql.all(`SELECT d.run_id AS runId,d.scope_version AS scopeVersion,d.source_id AS id,d.source_version AS version,
-      d.fingerprint,d.reason,d.estimated_tokens AS estimatedTokens FROM xiaozhi_memory_reference_deliveries d
-      WHERE d.run_id=(SELECT id FROM ai_agent_runs WHERE session_id=? AND sub_intent='pi_education'
-        AND (? IS NULL OR id=?) ORDER BY created_at DESC,rowid DESC LIMIT 1)
-      ORDER BY d.scope_version DESC,d.source_id LIMIT 12`,[sessionId,runId??null,runId??null]).then(rows=>rows.flatMap(row=>{
+    const [owner]=await sql.all(`SELECT id FROM ai_agent_runs WHERE session_id=? AND sub_intent='pi_education'
+      AND (? IS NULL OR id=?) ORDER BY created_at DESC,rowid DESC LIMIT 1`,[sessionId,runId??null,runId??null]);
+    if (!owner || typeof owner.id!=='string' || !runKey.test(owner.id)) return [];
+    const ownerRun=owner.id;
+    const fallback=await readStored(deliveryPrefix,sessionId,ownerRun);
+    const rows=await hasDeliveryLedger()?await sql.all(`SELECT scope_version AS scopeVersion,source_id AS id,source_version AS version,
+      fingerprint,reason,estimated_tokens AS estimatedTokens FROM xiaozhi_memory_reference_deliveries
+      WHERE run_id=? ORDER BY scope_version DESC,source_id LIMIT 12`,[ownerRun]):[];
+    const normal=rows.flatMap(row=>{
       const item:ReceivedReference={id:String(row.id),version:Number(row.version),fingerprint:String(row.fingerprint),
         reason:row.reason as ReceivedReference['reason'],estimatedTokens:Number(row.estimatedTokens)};
-      return valid(item)?[{...item,runId:String(row.runId),scopeVersion:Number(row.scopeVersion)}]:[];
-    }));
+      const scopeVersion=Number(row.scopeVersion);
+      return valid(item)&&Number.isSafeInteger(scopeVersion)&&scopeVersion>=0?[{...item,scopeVersion}]:[];
+    });
+    const unique=new Map([...fallback,...normal].map(item=>
+      [`${item.scopeVersion}:${item.id}:${item.version}:${item.fingerprint}`,item]));
+    return [...unique.values()].sort((a,b)=>b.scopeVersion-a.scopeVersion||a.id.localeCompare(b.id,'en'))
+      .slice(0,12).map(item=>({...item,runId:ownerRun}));
   }
 
   return {
     async recordReferenceDelivery(sessionId:string,runId:string,scopeVersion:number,items:readonly ReceivedReference[]) {
       validateWrite(sessionId,runId,scopeVersion,items);
       if (!items.length) return;
+      // A published schema lineage can reach v9 without the optional ledger.
+      // Keep new observations durable in that valid layout without runtime DDL.
+      if (!await hasDeliveryLedger()) return writeStored(deliveryPrefix,sessionId,runId,scopeVersion,items);
       await sql.run(`INSERT OR IGNORE INTO xiaozhi_memory_reference_deliveries
         (run_id,scope_version,source_id,source_version,fingerprint,reason,estimated_tokens)
         SELECT r.id,?,j.value->>'$.id',j.value->>'$.version',j.value->>'$.fingerprint',j.value->>'$.reason',j.value->>'$.estimatedTokens'
@@ -56,29 +97,9 @@ export function createReferenceReceipts(sql:Sql) {
 
     async recordReferenceReadback(sessionId:string,runId:string,scopeVersion:number,items:readonly ReceivedReference[]) {
       validateWrite(sessionId,runId,scopeVersion,items);
-      if (!items.length) return;
-      const prefix=readbackPrefix+runId+':'+scopeVersion+':';
-      await sql.run(`INSERT OR IGNORE INTO app_settings (key,value_json,updated_at)
-        SELECT ? || (j.value->>'$.id') || ':' || (j.value->>'$.version') || ':' || (j.value->>'$.fingerprint'),
-          j.value,? FROM ai_agent_runs r,json_each(?) j
-        WHERE r.id=? AND r.session_id=? AND r.sub_intent='pi_education'`,
-        [prefix,new Date().toISOString(),JSON.stringify(items.map(item=>({...item,scopeVersion}))),runId,sessionId]);
+      if (items.length) await writeStored(readbackPrefix,sessionId,runId,scopeVersion,items);
     },
-
-    async referenceReadbacksForRun(sessionId:string,runId:string):Promise<ScopedReference[]> {
-      if (!validMemorySession(sessionId) || !runKey.test(runId)) throw Error('invalid_input');
-      const prefix=readbackPrefix+runId+':';
-      const rows=await sql.all(`SELECT s.value_json AS value FROM app_settings s
-        WHERE s.key>=? AND s.key<? AND EXISTS
-          (SELECT 1 FROM ai_agent_runs WHERE id=? AND session_id=? AND sub_intent='pi_education')
-        ORDER BY s.key LIMIT 12`,[prefix,prefix+'\uffff',runId,sessionId]);
-      return rows.flatMap(row=>{
-        try {
-          const {scopeVersion,...item}=JSON.parse(String(row.value));
-          return Number.isSafeInteger(scopeVersion)&&scopeVersion>=0&&valid(item)?[{...item,scopeVersion}]:[];
-        } catch { return []; }
-      });
-    },
+    referenceReadbacksForRun:(sessionId:string,runId:string)=>readStored(readbackPrefix,sessionId,runId),
   };
 }
 

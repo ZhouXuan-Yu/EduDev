@@ -54,7 +54,9 @@ test('a confirmed class and term persist, old clients preserve them, and moving 
 test('only the owning Pi run can attest a reference received, with no body stored or duplicate rows',async()=>{
   const db=new DatabaseSync(':memory:');
   try {
-    db.exec('CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY); CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT)');
+    db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);
+      CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT);
+      CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)`);
     const session='aisession_'+randomUUID(),other='aisession_'+randomUUID(),run='run_'+randomUUID();
     db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(run,session,'pi_education','2026-11-26');
     const sql={run:async(q,args=[])=>db.prepare(q).run(...args),all:async(q,args=[])=>db.prepare(q).all(...args)};
@@ -97,6 +99,29 @@ test('the source readback is a persistent run-bound observation independent of p
     assert.deepEqual(await state.referenceDeliveriesForRun(session,nextRun),[]);
     await assert.rejects(state.recordReferenceReadback(session,run,0,[{...item,text:'PRIVATE'}]),/invalid_input/);
     assert.equal(db.prepare('SELECT count(*) AS n FROM app_settings').get().n,1);
+  }finally{db.close();}
+});
+
+test('a migrated database without the optional delivery table can observe and persist run receipts',async()=>{
+  const db=new DatabaseSync(':memory:');
+  try{
+    db.exec(`CREATE TABLE ai_agent_runs(id TEXT PRIMARY KEY,session_id TEXT,sub_intent TEXT,created_at TEXT);
+      CREATE TABLE app_settings(key TEXT PRIMARY KEY,value_json TEXT,updated_at TEXT)`);
+    const session='aisession_'+randomUUID(),other='aisession_'+randomUUID(),run='run_'+randomUUID(),next='run_'+randomUUID();
+    db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(run,session,'pi_education','2026-11-26');
+    const sql={run:async(q,args=[])=>db.prepare(q).run(...args),all:async(q,args=[])=>db.prepare(q).all(...args)};
+    const state=createPiMemoryScopeState(sql);
+    const item={id:'e'.repeat(64),version:3,fingerprint:'f'.repeat(64),reason:'teaching_scope',estimatedTokens:112};
+    assert.deepEqual(await state.latestReferenceDeliveries(session),[]);
+    await state.recordReferenceDelivery(other,run,4,[item]);
+    assert.deepEqual(await state.referenceDeliveriesForRun(session,run),[]);
+    await state.recordReferenceDelivery(session,run,4,[item]);
+    await state.recordReferenceDelivery(session,run,4,[item]);
+    assert.deepEqual(await createPiMemoryScopeState(sql).referenceDeliveriesForRun(session,run),[{...item,scopeVersion:4,runId:run}]);
+    assert.deepEqual(await state.latestReferenceDeliveries(session),[{...item,scopeVersion:4,runId:run}]);
+    db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?,?)').run(next,session,'pi_education','2026-11-27');
+    assert.deepEqual(await state.latestReferenceDeliveries(session),[]);
+    assert.equal(db.prepare("SELECT COUNT(*) AS n FROM sqlite_schema WHERE name='xiaozhi_memory_reference_deliveries'").get().n,0);
   }finally{db.close();}
 });
 

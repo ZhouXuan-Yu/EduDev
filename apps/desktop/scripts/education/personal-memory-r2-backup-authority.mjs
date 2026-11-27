@@ -168,7 +168,7 @@ async function electronRestore() {
   }
   const profile=join(root,'desktop-profile'),exportsRoot=join(root,'desktop-exports'),target=join(root,'desktop-restored');
   for (const directory of [profile,exportsRoot,target]) await mkdir(directory);
-  let backupPath='',app,page;
+  let backupPath='',app,page,settingsPage;
   try {
     async function launch(){
       const env={...process.env,OMNI_EDU_REPO_ROOT:resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,
@@ -182,35 +182,55 @@ async function electronRestore() {
       await assertIsolatedPiMain(app,main,profile);
     }
     async function settings(tab) {
-      await page.getByRole('button',{name:'设置',exact:true}).click();
-      await page.getByTestId('pi-settings-tab-'+tab).click();
+      if(!settingsPage||settingsPage.isClosed()){
+        const opening=app.waitForEvent('window');
+        await page.getByRole('button',{name:'设置',exact:true}).click();
+        settingsPage=await opening;
+      }
+      await settingsPage.getByTestId('pi-settings-tab-'+tab).click();
     }
     await launch();
     await settings('backup');
-    await page.getByTestId('data-backup-export').click();
+    const readiness=await settingsPage.evaluate(async()=>{
+      const api=window.omniEdu;
+      const scope=window.settingsWindow?.getScope();
+      const calls={
+        settings:()=>api.getXiaozhiSettings().then(result=>result.ok?{ok:true,locked:result.value.locked}:{ok:false,error:result.error}),
+        data:()=>api.getDataRoot().then(value=>({available:Boolean(value)})),
+        conversations:()=>api.listAiConversations().then(value=>({count:value.sessions.length})),
+        snapshot:()=>scope?.sessionId?api.getXiaozhiSnapshot(scope.sessionId).then(value=>({running:value.running})):Promise.resolve({none:true}),
+      };
+      return Object.fromEntries(await Promise.all(Object.entries(calls).map(async([name,call])=>{
+        try{return [name,await call()];}
+        catch(error){return [name,{error:String(error?.message??'unavailable').slice(0,200)}];}
+      })));
+    });
+    await writeFile(join(root,'backup-settings-readiness.json'),JSON.stringify(readiness,null,2));
+    await settingsPage.getByTestId('data-backup-export').click();
     const exported=await Promise.race([
-      page.getByTestId('data-backup-export-success').waitFor({timeout:60000}).then(()=>true),
-      page.getByText('备份未完成。',{exact:false}).waitFor({timeout:60000}).then(()=>false),
+      settingsPage.getByTestId('data-backup-export-success').waitFor({timeout:60000}).then(()=>true),
+      settingsPage.getByText('备份未完成。',{exact:false}).waitFor({timeout:60000}).then(()=>false),
     ]);
     assert(exported,'The formal backup export reported failure');
-    backupPath=await page.getByTestId('data-backup-export-path').innerText();
+    backupPath=await settingsPage.getByTestId('data-backup-export-path').innerText();
     assert.equal(settingsRead().record.state,'active');
     await app.close();
+    settingsPage=undefined;
     await launch();
     await settings('teacher-memory');
-    const memory=page.getByTestId('pi-personal-memory-settings');
+    const memory=settingsPage.getByTestId('pi-personal-memory-settings');
     await memory.getByRole('button',{name:'自动记忆',exact:true}).click();
     const record=memory.getByTestId('personal-memory-record-'+[...preceding.records.keys()][0]);
     await record.getByRole('button',{name:'遗忘',exact:true}).click();
     await record.getByRole('button',{name:'确认遗忘',exact:true}).click();
     await memory.getByText('已停止使用这条记忆。',{exact:true}).waitFor();
     assert.equal(settingsRead().record.state,'forgotten');
-    await page.getByTestId('pi-settings-tab-backup').click();
-    await page.getByTestId('data-backup-restore').click();
-    await page.getByTestId('data-backup-restore-prepare').click();
-    await page.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
-    await page.getByTestId('data-backup-restore-activate').click();
-    await page.getByTestId('data-backup-restore-revert').waitFor({timeout:30000});
+    await settingsPage.getByTestId('pi-settings-tab-backup').click();
+    await settingsPage.getByTestId('data-backup-restore').click();
+    await settingsPage.getByTestId('data-backup-restore-prepare').click();
+    await settingsPage.getByTestId('data-backup-restore-ready').waitFor({timeout:60000});
+    await settingsPage.getByTestId('data-backup-restore-activate').click();
+    await settingsPage.getByTestId('data-backup-restore-revert').waitFor({timeout:30000});
     await app.close();
     const hashAfterForget=await hash(join(data,'app.db'));
     await launch();
