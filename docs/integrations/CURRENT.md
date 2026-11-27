@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+Pi 浏览器工具允许用 tabId、snapshotId 读取当前整页，读取指定区域还需 ref。点击继续使用独立任务步骤和教师确认。见[教师复核与实测记录](../goal/BROWSER_TEACHER_ACCEPTANCE.md)
+
 2026-11-27　内置浏览器复用 Electron、Hana 和 Mozilla Readability；受管技能包含网页操作手册。[实施与验收](../goal/BROWSER_DOM_ACCEPTANCE.md)
 
 

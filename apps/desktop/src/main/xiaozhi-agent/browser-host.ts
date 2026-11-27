@@ -164,7 +164,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision,signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
           const samePage=()=>{check();signal.throwIfAborted();if(wc.isDestroyed()||tab!.state!=='ready'||tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');};
-          let scope:Parameters<typeof browserExtractScript>[0];if(input.ref!==undefined){if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');const expectedHtml=tab.refs.get(input.ref);if(!expectedHtml)throw new Error('attachment_changed');scope={ref:input.ref,expectedHtml};}
+          if (input.snapshotId !== undefined && input.snapshotId !== tab.snapshotId) throw new Error('attachment_changed');
+          let scope:Parameters<typeof browserExtractScript>[0];if(input.ref!==undefined){const expectedHtml=tab.refs.get(input.ref);if(!expectedHtml)throw new Error('attachment_changed');scope={ref:input.ref,expectedHtml};}
           samePage();
           const result=await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:browserExtractScript(scope)}]),signal) as {method:'readability'|'dom_region';text:string;sourceChars:number;truncated:boolean;lossy:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge'};
           samePage();let text=await options.sanitize(result.text),truncated=result.truncated;

@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+官网原文、筛选一次和拒绝零点击均已取得真实模型和原生页面证据。见[教师复核与实测记录](BROWSER_TEACHER_ACCEPTANCE.md)
+
 2026-11-27　浏览器 DOM 专项的自动验证及独立教师复核。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
 
 

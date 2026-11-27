@@ -21,5 +21,9 @@ export function validBrowserInput(value:unknown):value is XiaozhiBrowserInput {
     return !!v.tabId && !!v.snapshotId && string(v.name, 200) && !!String(v.name).trim() && BROWSER_TARGET_ROLES.includes(v.role as typeof BROWSER_TARGET_ROLES[number]);
   if (v.action === 'wait' && (v.text !== undefined || v.snapshotId !== undefined))
     return !!v.tabId && !!v.snapshotId && string(v.text, 500) && !!String(v.text).trim();
-  return v.action==='navigate'?typeof v.url==='string'&&v.url.trim().length>0:v.action==='extract'?(v.ref===undefined)===(v.snapshotId===undefined):['click','type','select'].includes(String(v.action))?v.ref!==undefined&&v.snapshotId!==undefined&&(v.action!=='type'||typeof v.text==='string')&&(v.action!=='select'||typeof v.value==='string'):v.action==='key'?v.key!==undefined&&v.snapshotId!==undefined:true;
+  if (v.action === 'extract') {
+    if (v.ref !== undefined) return v.snapshotId !== undefined;
+    return v.snapshotId === undefined || v.tabId !== undefined;
+  }
+  return v.action==='navigate'?typeof v.url==='string'&&v.url.trim().length>0:['click','type','select'].includes(String(v.action))?v.ref!==undefined&&v.snapshotId!==undefined&&(v.action!=='type'||typeof v.text==='string')&&(v.action!=='select'||typeof v.value==='string'):v.action==='key'?v.key!==undefined&&v.snapshotId!==undefined:true;
 }

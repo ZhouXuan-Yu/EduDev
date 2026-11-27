@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+已修复官网整页提取对标签和快照组合的拒绝，并用官网通知、批准筛选、拒绝筛选复验。见[教师复核与实测记录](BROWSER_TEACHER_ACCEPTANCE.md)
+
 2026-11-27　内置浏览器动态筛选的基线、复现和验收记录。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
 
 

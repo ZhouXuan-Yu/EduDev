@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "dc06f8285ee10e3de092d09fe62f0087ea996b4b13102d0e0bfca8fac390c6b0",
+  "sourceHash": "1ee7083b29971668efb8204165511aafd916cc52d616b0c877fc8023472f4930",
   "sources": [
     {
       "file": "package-lock.json",
@@ -840,7 +840,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-dom-observation.ts",
-      "sha256": "7552d9c41f284df4eecaeeba6564e070eeb74cd180fa2fde2eaf4316cde157b4"
+      "sha256": "63ed7eb95c1049099c86c093adbbcdd47487915992596c5866f858e407160a6e"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-extract-script.ts",
@@ -848,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "2231b973821653771c6ff023b9845c7349f417f28e5d9b856c9a5bf8a6c416a4"
+      "sha256": "efe848feef30814cf6cbd9bb05db43595548b94543b96d976b4dcb13ed62b6f6"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-proxy.ts",
@@ -856,7 +856,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-tools.ts",
-      "sha256": "84e4b6b32e4c4499cc8acdf6992d1b89a1bf5aee98e14e4d0f2c51791c54a208"
+      "sha256": "4f76ddbfb578d9f7617f57b3c7f72d921f7d3533ed3afb67520c127514d76496"
     },
     {
       "file": "src/main/xiaozhi-agent/budget-state.ts",
@@ -960,7 +960,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "9a1915b281a8fcdae87aa865a9f550571e47fc3c237a727a4ae475fba51a6d65"
+      "sha256": "908060d87ff0069be7022692baeb141e6f355b1dd0fd71ef0fcad47ecb50c888"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2904,7 +2904,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "628ad2d3009f17385a1488b72f1259f05d648b2b3b40c89fe9e4bb64d5db68bf"
+      "sha256": "f4c353085766b3516ab3ad52b273eb229cf8e21f8a13b7d515f0f38d6e110e59"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

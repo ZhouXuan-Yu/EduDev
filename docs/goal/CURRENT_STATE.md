@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+浏览器的三个教师场景已在真实 DeepSeek 对话中通过，保留教师人工复核。见[教师复核与实测记录](BROWSER_TEACHER_ACCEPTANCE.md)
+
 2026-11-27　M10/M12 浏览器支持同页语义定位和条件等待。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)
 
 
