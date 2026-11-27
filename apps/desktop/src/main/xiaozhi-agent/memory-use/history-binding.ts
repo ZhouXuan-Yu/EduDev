@@ -234,7 +234,8 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     const latestRun=runs[0];
     const request=latestRun?.status==='succeeded'&&typeof latestRun.prompt==='string'
       ? historyUseRequest(latestRun.prompt) : undefined;
-    const exactQuoteTitle=request?.kind==='named'&&request.literal&&runId===task.origin.runId&&task.requirementsVersion===1
+    const exactQuoteTitle=binding.selections.length===1&&request?.kind==='named'&&request.literal
+      &&runId===task.origin.runId&&task.requirementsVersion===1
       ? request.title : undefined;
     const items:TaskHistoryScope['items']=[];
     for(const pin of binding.selections){

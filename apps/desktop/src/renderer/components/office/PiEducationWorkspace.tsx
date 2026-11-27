@@ -444,7 +444,24 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const current = projection?.turns.at(-1);
   const composerItems=visible&&!syncBlocked?pendingComposerItems(snapshot,id,current?.id):[];
   const [historyLookup,setHistoryLookup]=useState<{sessionId:string;query:string;includeSelected?:boolean}>();
+  const lookupButton=useRef<HTMLButtonElement>(null);
   const openHistory=historyLookup?.sessionId===id&&visible&&!syncBlocked&&!snapshot?.running?snapshot?.memoryScope:undefined;
+  useEffect(()=>{setHistoryLookup(current=>visible&&current?.sessionId===id?current:undefined);},[id,visible]);
+  function closeHistoryLookup(returnToComposer=false) {
+    if(!historyLookup||idRef.current!==historyLookup.sessionId)return;
+    setHistoryLookup(current=>current===historyLookup?undefined:current);
+    window.requestAnimationFrame(()=>{
+      if(idRef.current!==historyLookup.sessionId)return;
+      if(!returnToComposer&&!historyLookup.includeSelected){
+        lookupButton.current?.focus();
+        return;
+      }
+      const sessionSelector=CSS.escape(historyLookup.sessionId);
+      document.querySelector<HTMLTextAreaElement>(
+        `.office-composer-container[data-session-id="${sessionSelector}"] [data-testid="office-prompt-input"]`
+      )?.focus();
+    });
+  }
   const [personalReviewSession,setPersonalReviewSession]=useState<string>();
   const personalReviewButton=useRef<HTMLButtonElement>(null);
   const showPersonalReview=Boolean(visible&&snapshot&&snapshot.projection.threadId===id&&!snapshot.studentContext&&!snapshot.running&&!syncBlocked);
@@ -565,7 +582,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         {visible&&selectedHistoryCount>0&&<p role="status" className="pi-history-note" data-testid="history-use-selection">
           已选择 {selectedHistoryCount} 条历史，供本会话参考。</p>}
         {visible&&snapshot?.memoryScope&&!openHistory&&!snapshot.running&&!syncBlocked&&
-          <Button size="sm" variant="ghost" data-testid="history-lookup-open"
+          <Button ref={lookupButton} size="sm" variant="ghost" data-testid="history-lookup-open"
             onPress={()=>setHistoryLookup({sessionId:id,query:readComposerDraft(id).text.slice(0,1800)})}>查找历史</Button>}
         {showPersonalReview&&<Button ref={personalReviewButton} size="sm" variant="ghost" data-testid="personal-memory-review-open"
           aria-expanded={openPersonalReview} onPress={()=>setPersonalReviewSession(openPersonalReview?undefined:id)}>核对记忆建议</Button>}
@@ -573,12 +590,15 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         <PiComposerPendingPanel key={id} items={composerItems} sessionId={id} reveal={pendingReveal?.sessionId===id?pendingReveal.item:undefined}
           onAnswer={answerQuestion} onDecision={decideCopy} onRefresh={()=>hydrate(id)} onOpen={revealFile}
           personalReview={openPersonalReview} onClosePersonalReview={()=>{setPersonalReviewSession(undefined);personalReviewButton.current?.focus();}}
-          history={openHistory?{scope:openHistory,query:historyLookup!.query,includeSelected:historyLookup!.includeSelected,pending:pendingHistory,close:()=>setHistoryLookup(undefined),
+          history={openHistory?{scope:openHistory,query:historyLookup!.query,includeSelected:historyLookup!.includeSelected,pending:pendingHistory,close:()=>closeHistoryLookup(),
             staged:item=>{
               setDraftHistory(old=>({...old,[id]:[...(old[id]??[]).filter(row=>row.sourceId!==item.sourceId),item]}));
-              setHistoryLookup(undefined);
+              closeHistoryLookup(true);
             },
-            confirmed:async()=>{setHistoryLookup(undefined);await hydrate(id);}}:undefined}/>
+            confirmed:async()=>{
+              closeHistoryLookup(true);
+              await hydrate(id).catch(()=>{if(idRef.current===id)setNotice('会话引用已保存，暂时无法刷新。');});
+            }}:undefined}/>
         <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" sessionId={id} visible={visible}
           onHistoryChange={()=>void hydrate(id)} disabled={!snapshot||!id||modelSelecting||syncBlocked} onChange={choice=>{

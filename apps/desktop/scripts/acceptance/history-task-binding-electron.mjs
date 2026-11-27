@@ -11,11 +11,12 @@ const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const exclusion=process.argv.includes('--task-exclusion');
 const receiptFailure=process.argv.includes('--receipt-failure');
 const receiptVerified=process.argv.includes('--receipt-verified');
-const namedHistory=receiptFailure||receiptVerified||process.argv.includes('--named-history');
+const keyboardHistory=process.argv.includes('--keyboard-history');
+const namedHistory=receiptFailure||receiptVerified||keyboardHistory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
 const lane=receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
-  :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
+  :keyboardHistory?'history-keyboard-':namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
@@ -142,6 +143,20 @@ async function close(){
 try{
   await launch();
   const sourceSession=await until(async()=>{const id=await session();return id?.startsWith('aisession_')?id:null;});
+  if(keyboardHistory){
+    const saved='这是按键打开查找时保留的合成草稿。';
+    await composer().fill(saved);
+    const open=page.getByTestId('history-lookup-open');
+    await open.press('Enter');
+    const query=page.getByTestId('history-lookup-query');
+    await query.waitFor();
+    assert.equal(await query.evaluate(el=>document.activeElement===el),true,'The search input must receive keyboard focus when opened');
+    await query.press('Escape');
+    await page.getByTestId('history-lookup').waitFor({state:'hidden'});
+    await until(()=>open.evaluate(el=>document.activeElement===el));
+    assert.equal(await composer().inputValue(),saved);
+    pass('Keyboard opening and cancellation restore lookup focus and preserve the draft');
+  }
   if(namedHistory){
     await page.getByTestId('workbench-manage-history').click();
     const manage=page.getByTestId('workbench-history-dialog');
@@ -225,12 +240,34 @@ try{
     await page.getByRole('button',{name:'发送消息',exact:true}).click();
     await page.getByTestId('history-lookup').waitFor();
     assert.equal(await composer().inputValue(),vague);
-    await page.getByTestId('history-lookup-query').fill(declaredTitle);
-    await page.getByTestId('history-lookup-search').click();
+    const query=page.getByTestId('history-lookup-query');
+    if(keyboardHistory)await until(()=>query.evaluate(el=>document.activeElement===el));
+    await query.fill(declaredTitle);
+    if(keyboardHistory)await query.press('Enter');
+    else await page.getByTestId('history-lookup-search').click();
     await page.getByTestId('history-candidate-'+row.id).waitFor();
     assert.equal((await provider()).length,calls);
     assert.deepEqual(bindings(target),[binding]);
     pass('Vague history opens one local confirmation with the preserved draft and no prompt delivery');
+    if(keyboardHistory){
+      const searchInput=page.getByTestId('history-lookup-query');
+      await searchInput.press('Escape');
+      await page.getByTestId('history-lookup').waitFor({state:'hidden'});
+      await until(()=>composer().evaluate(el=>document.activeElement===el));
+      const sessionSelections=(await snapshot(target)).memoryScope.selections;
+      assert(sessionSelections.some(item=>item.layer==='history'&&item.id===binding.selections[0].id));
+      await page.getByTestId('history-task-selection').getByRole('button',{name:/停止引用/}).press('Enter');
+      await page.getByTestId('history-task-selection').waitFor({state:'hidden'});
+      const remaining=(await snapshot(target)).memoryScope.selections;
+      assert.deepEqual(remaining,sessionSelections);
+      assert.equal(await composer().inputValue(),vague);
+      await page.getByTestId('pi-new-session').click();
+      const next=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==target?id:null;});
+      await until(async()=>!(await snapshot(next)).taskHistory);
+      assert.equal(await page.getByTestId('history-lookup').count(),0);
+      assert.equal((await provider()).length,calls);
+      pass('Keyboard stops Task use while preserving Session use, drafts and conversation isolation');
+    }
   }else if(exclusion){
     await composer().fill(taskRequest);
     await page.getByTestId('history-lookup-open').click();

@@ -55,10 +55,24 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
     }catch{setMessage('选择未保存。请核对当前范围，重新查找。');}
     finally{work.current=false;setBusy(false);}
   }
-  return <section data-testid="history-lookup" data-mode={result?.reply.mode}>
+  return <section aria-label="查找历史记录" data-testid="history-lookup" data-mode={result?.reply.mode}
+    onKeyDown={event=>{
+      if(event.key==='Escape'&&!event.nativeEvent.isComposing&&!work.current){
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      }
+    }}>
     <label htmlFor="history-lookup-query">要查找的历史</label>
-    <Input id="history-lookup-query" value={input} maxLength={1800}
-      data-testid="history-lookup-query" onChange={event=>setInput(event.target.value)} />
+    <Input id="history-lookup-query" autoFocus value={input} maxLength={1800}
+      data-testid="history-lookup-query" onChange={event=>setInput(event.target.value)}
+      onKeyDown={event=>{
+        if(event.key==='Enter'&&!event.nativeEvent.isComposing){
+          event.preventDefault();
+          event.stopPropagation();
+          void search();
+        }
+      }} />
     <Button size="sm" variant="secondary" isDisabled={busy||!input.trim()} data-testid="history-lookup-search"
       onPress={()=>void search()}>查找</Button>
     {busy&&<p role="status">正在处理…</p>}
