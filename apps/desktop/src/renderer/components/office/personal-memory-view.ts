@@ -9,6 +9,7 @@ const failureText:Partial<Record<PersonalMemoryError,string>> = {
   cancelled:'自动处理已暂停，这次采用未保存。',
   command_conflict:'这次操作与已记录的请求不一致，请刷新后核对。',
   busy:'小智正在处理其他操作，请稍后重试。',
+  permission_denied:'当前授权或内容限制了这项操作。个人记忆不能保存学生个人记录或凭据。',
 };
 
 export function scopeText(scope:PersonalMemoryScope,term:string) {

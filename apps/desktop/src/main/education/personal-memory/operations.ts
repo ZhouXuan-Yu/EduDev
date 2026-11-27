@@ -36,9 +36,9 @@ function policyView({enabled,pausedByUsePolicy,policyRevision}:PersonalMemoryPol
 
 type StoredRecord = NonNullable<Awaited<ReturnType<ReturnType<typeof createPersonalMemoryRecordState>['read']>>>;
 function recordView(record:StoredRecord):PersonalMemorySummary {
-  const {id,revision,kind,scope,term,value,witness,sourceOccurredAt,recordedAt,sourceCurrent,state,cleanupPending}=record;
+  const {id,revision,kind,scope,term,value,witness,sourceOccurredAt,recordedAt,sourceCurrent,contentRestricted,state,cleanupPending}=record;
   return {id,revision,kind,category:personalMemoryCategory(kind),evidence:'teacher_confirmed',scope,term,value,
-    sourceVersion:witness.sourceVersion,sourceOccurredAt,recordedAt,sourceCurrent,state,cleanupPending};
+    sourceVersion:witness.sourceVersion,sourceOccurredAt,recordedAt,sourceCurrent,contentRestricted,state,cleanupPending};
 }
 
 function candidateInput(value:unknown):value is PersonalMemoryCandidateInput & Record<string,unknown> {
@@ -91,7 +91,7 @@ export function createPersonalMemoryOperations(sql:Sql, sanitize:(text:string)=>
         if (Object.keys((await readTeacherMemoryPolicy(db)).use).length) return [];
         const target=await currentTeachingTarget(db,sessionId);
         const saved=await createPersonalMemoryRecordState(db,sources).list(40,target??{});
-        return saved.filter(record=>record.sourceCurrent).map(recordView);
+        return saved.filter(record=>record.sourceCurrent && record.value).map(recordView);
       };
       return sql.readTransaction ? sql.readTransaction(read) : read(sql);
     }),

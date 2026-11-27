@@ -15,7 +15,7 @@ export function createPersonalMemoryUse(sql:Sql,sanitize:(text:string)=>Promise<
     const policy=await readTeacherMemoryPolicy(db);
     if (Object.keys(policy.use).length) return null;
     const record=await createPersonalMemoryRecordState(db,authority).read(selected.id);
-    if (!record || record.state!=='active' || !record.sourceCurrent || record.revision!==selected.version ||
+    if (!record?.value || record.state!=='active' || !record.sourceCurrent || record.revision!==selected.version ||
         record.witness.sourceVersion!==selected.sourceVersion) return null;
     let targetVersion:number|undefined;
     if (record.scope.kind === 'class') {

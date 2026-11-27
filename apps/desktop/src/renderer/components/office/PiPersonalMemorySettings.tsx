@@ -69,7 +69,7 @@ export function PiPersonalMemorySettings() {
         return <article key={item.id} data-testid={'personal-memory-record-'+item.id}>
           <h4>{teacherMemoryCategories[item.category].label}</h4>
           <p>{scopeText(item.scope,item.term)} · 第 {item.revision} 版</p>
-          <p>{item.state==='forgotten'?'已遗忘':item.state==='disabled'?'已停用':item.sourceCurrent?'有效':'来源已失效'}
+          <p>{item.state==='forgotten'?'已遗忘':item.state==='disabled'?'已停用':item.contentRestricted?'含受限内容，已停止参考':item.sourceCurrent?'有效':'来源已失效'}
             {item.cleanupPending?' · 清理待完成':''}</p>
           {item.value&&<p>{item.value}</p>}
           {editing&&<SettingsStack gap="sm">
@@ -93,7 +93,7 @@ export function PiPersonalMemorySettings() {
             })}>查看来源</Button>}
             {item.state==='active'&&item.sourceCurrent&&<Button size="sm" variant="ghost" isDisabled={busy}
               onPress={()=>setDraft({id:item.id,revision:item.revision,text:item.value})}>修订</Button>}
-            {(item.state==='active'||item.sourceCurrent)&&<Button size="sm" variant="ghost" isDisabled={busy}
+            {(item.state==='active'||item.sourceCurrent)&&<Button size="sm" variant="ghost" isDisabled={busy || (item.state==='disabled' && item.contentRestricted)}
               onPress={()=>void change({action:item.state==='active'?'disable':'restore',id:item.id,revision:item.revision,
                 operationId:crypto.randomUUID()})}>{item.state==='active'?'停用':'恢复'}</Button>}
             <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>setForget({id:item.id,revision:item.revision})}>遗忘</Button>

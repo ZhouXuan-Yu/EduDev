@@ -583,6 +583,16 @@ async function candidateAdoption(){
 
   const record=memory.getByTestId('personal-memory-record-'+adopted.id);
   await record.getByRole('button',{name:'修订',exact:true}).click();
+  const privateEdit='学生姓名：合成丙，成绩 92 分。';
+  await record.getByLabel('修订内容',{exact:true}).fill(privateEdit);
+  await record.getByRole('button',{name:'保存修订',exact:true}).click();
+  await memory.getByRole('alert').filter({hasText:'个人记忆不能保存学生个人记录或凭据'}).waitFor();
+  const stored=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const rows=stored.prepare('SELECT value,revision FROM personal_memory_versions WHERE memory_id=? ORDER BY revision').all(adopted.id);
+    assert.deepEqual(rows.map(row=>[row.revision,row.value]),[[adopted.revision,adopted.value]]);
+  }finally{stored.close();}
+  check('An identified student record is refused in the teacher editor and no new version is persisted');
   await record.getByLabel('修订内容',{exact:true}).fill('本学期负责四年级两个科学班。');
   await record.getByRole('button',{name:'保存修订',exact:true}).click();
   await memory.getByText('已保存修订。',{exact:true}).waitFor();

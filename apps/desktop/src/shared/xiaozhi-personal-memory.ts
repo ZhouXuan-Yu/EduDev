@@ -22,7 +22,7 @@ export type PersonalMemoryResult<T> = {ok:true; value:T}|{ok:false; error:Person
 export type PersonalMemoryPolicy = {enabled:boolean; pausedByUsePolicy:boolean; policyRevision:number};
 export type PersonalMemoryPolicyInput = {enabled:boolean; revision:number};
 export type PersonalMemorySummary = {category:ReturnType<typeof personalMemoryCategory>; evidence:'teacher_confirmed'; recordedAt:number; id:string; revision:number; kind:PersonalMemoryKind;
-  scope:PersonalMemoryScope; term:string; value:string; sourceVersion:string; sourceOccurredAt:string|null; sourceCurrent:boolean;
+  scope:PersonalMemoryScope; term:string; value:string; sourceVersion:string; sourceOccurredAt:string|null; sourceCurrent:boolean; contentRestricted:boolean;
   state:'active'|'disabled'|'forgotten'; cleanupPending:boolean};
 export type PersonalMemoryCandidate = {key:string; revision:number; kind:PersonalMemoryKind;
   category:ReturnType<typeof personalMemoryCategory>; evidence:'ai_inferred'; recordedAt:number|null; sourceOccurredAt:string|null;

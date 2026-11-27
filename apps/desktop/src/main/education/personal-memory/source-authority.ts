@@ -53,7 +53,7 @@ const sensitiveCredential = /(?:-----BEGIN [A-Z ]*PRIVATE KEY-----|\b(?:sk-|ghp_
 // student data out of personal-memory extraction, including late job delivery.
 const studentIdentifier = /(?:学生姓名|学生编号|学籍号|学号)\s*[：:=]\s*\S|(?:学籍号|学号)\s*[a-z]?\d{3,}/iu;
 const individualScore = /(?:学生(?!版|用书)|同学)[^。！？\n]{0,32}(?:成绩|分数|得分|得了|考了|考得|考到)\s*[：:=为是]?\s*\d+(?:\.\d+)?\s*分/u;
-function privateSource(text:string) {
+export function containsPrivateMemoryText(text:string) {
   return sensitiveCredential.test(text) || studentIdentifier.test(text) || individualScore.test(text);
 }
 
@@ -114,7 +114,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
       }
 
       const source = await readHistorySource(db,ref);
-      if (!runPattern.test(source.runId) || privateSource(source.teacherText)) throw Error('permission_denied');
+      if (!runPattern.test(source.runId) || containsPrivateMemoryText(source.teacherText)) throw Error('permission_denied');
       if (current?.allowed && current.ref.sourceVersion === ref.sourceVersion &&
           current.binding.scope.kind === binding.scope.kind && current.binding.scope.id === binding.scope.id &&
           current.binding.term === binding.term) return current;
@@ -154,7 +154,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
       if (!saved?.allowed) continue;
       try {
         const source = await readHistorySource(sql,saved.ref);
-        if (!runPattern.test(source.runId) || privateSource(source.teacherText)) continue;
+        if (!runPattern.test(source.runId) || containsPrivateMemoryText(source.teacherText)) continue;
         const sanitizedText = await sanitize(source.teacherText);
         if (!sanitizedText.trim() || Buffer.byteLength(sanitizedText,'utf8') > 32*1024) continue;
         if (!await stillCurrent(sql, saved, source.teacherText)) continue;
@@ -174,7 +174,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
         || saved.binding.scope.kind!==draft.scope.kind || saved.binding.scope.id!==draft.scope.id || saved.binding.term!==draft.term) return false;
     try {
       const source = await readHistorySource(db,saved.ref);
-      return runPattern.test(source.runId) && !privateSource(source.teacherText);
+      return runPattern.test(source.runId) && !containsPrivateMemoryText(source.teacherText);
     } catch(error) {
       if (unavailable(error)) return false;
       throw error;
@@ -216,7 +216,7 @@ export function createPersonalMemorySourceAuthority(sql: Sql, sanitize: (text: s
     if (!saved?.allowed || saved.ref.sourceVersion!==sourceVersion || saved.revision!==revision) return false;
     try {
       const source=await readHistorySource(db,saved.ref);
-      return runPattern.test(source.runId) && !privateSource(source.teacherText);
+      return runPattern.test(source.runId) && !containsPrivateMemoryText(source.teacherText);
     } catch(error) {
       if (unavailable(error)) return false;
       throw error;

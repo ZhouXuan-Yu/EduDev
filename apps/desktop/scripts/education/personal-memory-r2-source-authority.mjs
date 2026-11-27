@@ -198,6 +198,18 @@ assert.equal(await records.reconcile(),1);
 assert.equal(db.prepare('SELECT revision FROM personal_memory_catalog WHERE memory_id=?').get(accepted.id).revision,accepted.revision);
 console.log('PASS adoption needs the reviewed source and commits a revision, decision, receipt and outbox atomically');
 
+// A valid source grant does not make sensitive replacement text eligible for personal memory.
+for (const value of ['学生姓名：合成丙，成绩 92 分。','API key: synthetic-test-value']) {
+  const rejectedEdit=await ops.edit({operationId:randomUUID(),action:'edit',id:accepted.id,revision:1,value});
+  assert.deepEqual(rejectedEdit,{ok:false,error:'permission_denied'});
+}
+assert.equal((await records.read(accepted.id)).revision,1);
+const originalValue=(await records.read(accepted.id)).value;
+db.prepare('UPDATE personal_memory_versions SET value=? WHERE memory_id=? AND revision=1')
+  .run('学生编号：synthetic-student-02',accepted.id);
+assert.equal((await records.read(accepted.id)).value,'','An older sensitive revision must be withheld at readback');
+db.prepare('UPDATE personal_memory_versions SET value=? WHERE memory_id=? AND revision=1').run(originalValue,accepted.id);
+
 const correctionSource=message('correction','我现在负责五年级科学。');
 await authority.change(correctionSource,0,scope);
 const correction=draft((await authority.snapshot([historyId(correctionSource)],policy))[0],{

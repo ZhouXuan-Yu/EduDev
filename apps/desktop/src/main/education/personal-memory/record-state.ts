@@ -3,7 +3,7 @@ import type { PersonalMemoryAdoptInput, PersonalMemoryEditInput, PersonalMemoryR
 import type { Sql } from '../../xiaozhi-agent/session-state';
 import { sameCandidatePolicy, type PersonalMemoryDraft } from './candidate-admission';
 import { readPersonalMemoryDraft, readPersonalMemoryProcessing } from './candidate-state';
-import type { createPersonalMemorySourceAuthority } from './source-authority';
+import { containsPrivateMemoryText, type createPersonalMemorySourceAuthority } from './source-authority';
 
 export const personalMemoryRecordSchema = `
 CREATE TABLE personal_memory_records (
@@ -99,7 +99,8 @@ async function present(db: Sql, record: MemoryVersion, sources: SourceAuthority)
   const sourceCurrent = record.state !== 'forgotten' && await sources.witnessCurrent(db,draft);
   const [onHold] = record.state === 'active' ? [] : await db.all(`SELECT 1 FROM personal_memory_outbox
     WHERE memory_id=? AND revision=? AND state='pending' AND action='invalidate'`,[record.id,record.revision]);
-  return {...record, value:sourceCurrent ? record.value : '', sourceCurrent,
+  const contentRestricted = containsPrivateMemoryText(record.value);
+  return {...record, value:sourceCurrent && !contentRestricted ? record.value : '', sourceCurrent, contentRestricted,
     kind:draft.kind, scope:draft.scope, term:draft.term, witness:draft.witness, cleanupPending:!!onHold};
 }
 
@@ -183,11 +184,13 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         throw Error('invalid_input');
       const value = action === 'edit' && typeof input.value === 'string' ? input.value.trim() : '';
       if (action === 'edit' && (!value || value.length > 320 || /[\u0000-\u001f\u007f]/u.test(value))) throw Error('invalid_input');
+      if (action === 'edit' && containsPrivateMemoryText(value)) throw Error('permission_denied');
       return commit(input.operationId,[action,id,revision,value],async db => {
         const record = await head(db,id);
         if (!record || record.revision !== revision || record.state === 'forgotten' ||
             (action === 'restore' && record.state !== 'disabled') ||
             ((action === 'edit' || action === 'disable') && record.state !== 'active')) throw Error('revision_conflict');
+        if (action === 'restore' && containsPrivateMemoryText(record.value)) throw Error('permission_denied');
         if ((action === 'edit' || action === 'restore') && !await sources.witnessCurrent(db,await sourceDraft(db,record)))
           throw Error('source_changed');
         if (action === 'forget') {
@@ -214,7 +217,7 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
     },
     async organizationTargetCurrent(db:Sql,id:string,revision:number) {
       const record=await head(db,id);
-      return record?.state==='active' && record.operation==='accept' && record.revision===revision &&
+      return record?.state==='active' && !containsPrivateMemoryText(record.value) && record.operation==='accept' && record.revision===revision &&
         await sources.witnessCurrent(db,await sourceDraft(db,record));
     },
     async previewRecord(id: string, revision: number) {
@@ -252,7 +255,7 @@ export function createPersonalMemoryRecordState(sql: Sql, sources: SourceAuthori
         for (const row of pending) {
           const id=String(row.memory_id), revision=Number(row.revision);
           const current=await head(db,id);
-          const draft=row.action==='upsert' && current?.state==='active' && current.revision===revision
+          const draft=row.action==='upsert' && current?.state==='active' && !containsPrivateMemoryText(current.value) && current.revision===revision
             ? await sourceDraft(db,current) : null;
           if (draft && await sources.witnessCurrent(db,draft)) {
             await db.run(`INSERT INTO personal_memory_catalog VALUES(?,?,?,?)
