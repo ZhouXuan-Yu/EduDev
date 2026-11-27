@@ -18,8 +18,8 @@ const key = (value: string) => process.platform === 'win32' ? path.resolve(value
 const MAX_REFERENCE = 65536;
 /** Model resources contain only authorized necessary text; original packages remain local. */
 export async function createManagedSkillRuntime(agentDir: string, sessionFile: string, source: ManagedSkillSource, startupSignal?: AbortSignal) {
-  async function capture(signal?:AbortSignal) {
-    signal?.throwIfAborted();const current = await source.resources(signal), identities: SkillAuthorityIdentity[] = [];
+  async function capture(current: Awaited<ReturnType<ManagedSkillSource['resources']>>, signal?:AbortSignal) {
+    const identities: SkillAuthorityIdentity[] = [];
     signal?.throwIfAborted();
     const prepared: { name: string; title: string; texts: Map<string, string> }[] = [];
     for (const { item, bytes } of current.resources) {
@@ -51,7 +51,9 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
     if (JSON.stringify(current.resources.map(resource => resource.item)) !== JSON.stringify(after.resources.map(resource => resource.item))) throw new Error('skill_scope_changed');
     return { identity: identities, authority: skillAuthority(identities), prepared };
   }
-  const initial = await capture(startupSignal), root = path.join(agentDir, 'managed-skills-v2', initial.authority);
+  startupSignal?.throwIfAborted();
+  const initial = await capture(await source.resources(startupSignal), startupSignal);
+  const root = path.join(agentDir, 'managed-skills-v2', initial.authority);
   startupSignal?.throwIfAborted();
   noLinks(root, true); fs.mkdirSync(root, { recursive: true }); noLinks(root);
   const expected = new Map<string, { filePath: string; text: string; name: string; title: string; sha256: string }>();
@@ -92,8 +94,17 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
   startupSignal?.throwIfAborted();
   if (result.diagnostics.length || result.skills.length !== initial.identity.length) throw new Error('skill_source_changed');
   async function check(signal?:AbortSignal) {
-    await checkFiles(signal);
-    const current = await capture(signal);
+    signal?.throwIfAborted();
+    // Independent roots. Drain both reads before inspecting or sanitizing any source
+    // text. The second authority read and the final cache proof still run in order.
+    const [cache, resources] = await Promise.allSettled([
+      checkFiles(signal),
+      Promise.resolve().then(() => source.resources(signal)),
+    ]);
+    signal?.throwIfAborted();
+    if (cache.status === 'rejected') throw cache.reason;
+    if (resources.status === 'rejected') throw resources.reason;
+    const current = await capture(resources.value, signal);
     if (current.authority !== initial.authority) throw new Error('skill_scope_changed');
     await checkFiles(signal);
   }

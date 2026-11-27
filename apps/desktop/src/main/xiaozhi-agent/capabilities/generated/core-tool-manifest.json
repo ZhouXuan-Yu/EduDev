@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "0ebb5b22f475f76507aab26e1c73e00ad944fc534adad9d89fdcb8c305f2fc8c",
+  "sourceHash": "bacff2f7008e97bc595ac4c8c8d6ae7f70de731a4a2d52e918f9d2141bdf98ad",
   "sources": [
     {
       "file": "package-lock.json",
@@ -964,7 +964,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "96bfc52064aab7832c8b68edf3465ce0246cb93e4f90feab5b3f52a3f0b08f48"
+      "sha256": "48467d4f26cb3cf6ef2d22068f86e8fcc069c12ab926f27e146e053f19d291ce"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1448,7 +1448,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skill-runtime.ts",
-      "sha256": "3c00c4ea4ca10a6c5de21e8625657b645da5b9f829b11e12b4089c14dac2d84e"
+      "sha256": "c4144222043b9575387485304179563a573d5db22a6ca42b34f4f599a8231277"
     },
     {
       "file": "src/main/xiaozhi-agent/managed-skills.ts",

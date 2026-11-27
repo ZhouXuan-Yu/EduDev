@@ -15,6 +15,75 @@ try{
  const manager=createManagedEducationSkills({root,state,assertIdle:()=>{}});let catalog=await manager.initialize();catalog=await manager.importDirectory(input,catalog.revision);await manager.setEnabled('timing-fixture',catalog.revision,true);
  await check('Real package proof results retain catalog and explicit selection order',async()=>{const enabled=(await manager.catalog()).skills.filter(item=>item.enabled&&!item.archived);assert.deepEqual((await manager.enabledResources()).resources.map(resource=>resource.item.name),enabled.map(item=>item.name));const reversed=enabled.slice().reverse();assert.deepEqual((await manager.resourcesForItems(reversed)).resources.map(resource=>resource.item.name),reversed.map(item=>item.name));});
  const session=SessionManager.create(output,output);session.appendCustomEntry('xiaozhi.education.snapshot.v1',{fixture:true});const runtime=await createManagedSkillRuntime(path.join(output,'agent'),session.getSessionFile(),{resources:manager.enabledResources,sanitize:async text=>text});
+ await check('Fresh source collection overlaps the cache proof; no text is consumed before both finish', async () => {
+   const agent = path.join(output,'overlap-agent');
+   let enabled = false, firstRead, allowCache, cacheEntered, sanitized = 0;
+   const sourceStarted = new Promise(resolve => { firstRead = resolve; });
+   const release = new Promise(resolve => { allowCache = resolve; });
+   const entered = new Promise(resolve => { cacheEntered = resolve; });
+   const controlled = await createManagedSkillRuntime(agent, session.getSessionFile(), {
+     resources: async signal => {
+       if (enabled) firstRead();
+       return manager.enabledResources(signal);
+     },
+     sanitize: async text => { if (enabled) sanitized++; return text; }
+   });
+   const open = fs.promises.opendir;
+   let inFlight;
+   const pauseMarker = Symbol('cache not released');
+   let timer;
+   try {
+     fs.promises.opendir = async function(directory,...args) {
+       if (enabled && String(directory).startsWith(agent+path.sep)) {
+         cacheEntered();
+         await release;
+       }
+       return open.call(this,directory,...args);
+     };
+     enabled = true;
+     inFlight = controlled.check();
+     await entered;
+     const winner = await Promise.race([sourceStarted, new Promise(resolve => {
+       timer = setTimeout(() => resolve(pauseMarker),500);
+     })]);
+     assert.notEqual(winner,pauseMarker,'source bytes were requested only after the independent cache proof');
+     assert.equal(sanitized,0);
+   } finally {
+     clearTimeout(timer);
+     allowCache();
+     try { await inFlight; } finally { fs.promises.opendir = open; }
+   }
+   assert(sanitized>0);
+ });
+ await check('Withdrawal and a cache change at the final source read still block delivery', async () => {
+   let reads = 0;
+   let fault;
+   let cached;
+   const controlled = await createManagedSkillRuntime(path.join(output,'late-change-agent'), session.getSessionFile(), {
+     resources: async signal => {
+       const resources = await manager.enabledResources(signal);
+       if (fault && ++reads===2) {
+         if (fault==='withdraw') throw Error('permission_denied');
+         fs.appendFileSync(cached,'changed-after-source-check');
+       }
+       return resources;
+     },
+     sanitize: async text => text
+   });
+   cached = controlled.result.skills[0].filePath;
+   const prior = fs.readFileSync(cached);
+   try {
+     fault='withdraw';
+     await assert.rejects(controlled.check(),/permission_denied/);
+     reads=0;
+     fault='cache';
+     await assert.rejects(controlled.check(),/skill_source_changed/);
+   } finally {
+     fault=undefined;
+     fs.writeFileSync(cached,prior);
+   }
+   await controlled.check();
+ });
  await check('Startup cancellation reaches active package reads and stops further capture',async()=>{const controller=new AbortController();let reads=0,receivedSignal;await assert.rejects(()=>createManagedSkillRuntime(path.join(output,'cancel-agent'),session.getSessionFile(),{resources:async signal=>{reads++;receivedSignal=signal;const resources=await manager.enabledResources(signal);controller.abort();return resources;},sanitize:async text=>text},controller.signal),/abort|cancel/i);assert.equal(receivedSignal,controller.signal);assert.equal(reads,1);assert.equal(fs.existsSync(path.join(output,'cancel-agent','managed-skills-v2')),false);});
  await check('A cache changed after native parsing is rejected before startup returns',async()=>{let reads=0,tampered=false;const agent=path.join(output,'tamper-agent');await assert.rejects(()=>createManagedSkillRuntime(agent,session.getSessionFile(),{resources:async signal=>{if(++reads===3){const authority=fs.readdirSync(path.join(agent,'managed-skills-v2'))[0];fs.writeFileSync(path.join(agent,'managed-skills-v2',authority,'timing-fixture','refs','lesson.md'),'伪造内容');tampered=true;}return manager.enabledResources(signal);},sanitize:async text=>text}),/skill_source_changed/);assert.equal(tampered,true);});
  await check('Cancellation during governed snapshot save rolls back the actual SQLite transaction',async()=>{const {createSkillGovernanceState}=await import('../../src/main/xiaozhi-agent/skills/state.ts'),{createSkillGovernance}=await import('../../src/main/xiaozhi-agent/skills/service.ts'),{createGovernedSkillSource}=await import('../../src/main/xiaozhi-agent/skills/runtime.ts');const governanceSql={...sql,transaction:async action=>{db.exec('BEGIN IMMEDIATE');try{const value=await action(governanceSql);db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}}},governanceState=createSkillGovernanceState(governanceSql);await governanceState.migrate();const service=createSkillGovernance({state:governanceState,managed:manager,actor:async()=>({id:'fixture-owner',displayName:'Fixture'}),sanitize:async text=>text,dependency:async()=>true,current:async()=>true});await service.initialize();const owner={sessionId:'fixture-session',taskId:'fixture-task',runId:'fixture-cancel-run',generation:1},controller=new AbortController(),save=governanceState.save;let saved=false;governanceState.save=async function(kind,...args){await save.call(this,kind,...args);if(kind==='snapshots'){saved=true;controller.abort();}};try{const source=createGovernedSkillSource(service,owner,async text=>text,async()=>true);await assert.rejects(()=>source.resources(controller.signal),/abort|cancel/i);assert.equal(saved,true);assert.equal(await governanceState.get('snapshots',owner.runId),null);}finally{governanceState.save=save;}const fresh=createGovernedSkillSource(service,{...owner,runId:'fixture-fresh-run'},async text=>text,async()=>true);assert((await fresh.resources()).resources.length>0);});
